@@ -107,18 +107,15 @@ function bodies() {
   bm.unloadBlock('block-adjacent-east');
   await bm.loadBlock('block-adjacent-east'); // reviewed active: replaced suppressed
   const withReview = east.placeholders.filter(p => bm.byPlaceholder.get(p.ph.id)?.replacedBy === 'block-review-street').length;
-  bm.revokeReviewed();
+  await bm.revokeReviewed(); // refreshes the loaded east block in place (相邻占位同步)
   check('reviewed unloaded by revoke', bm.blocks.get('block-review-street').state === 'unloaded');
-  bm.unloadBlock('block-adjacent-east');
-  await bm.loadBlock('block-adjacent-east');
   const afterRevoke = east.placeholders.filter(p => bm.byPlaceholder.get(p.ph.id)?.replacedBy === 'block-review-street').length;
-  check('revoking reviewed restores replaced placeholders', withReview === 0 && afterRevoke === replacedInEast,
-    `whileReviewed=${withReview} afterRevoke=${afterRevoke} expected=${replacedInEast}`);
-  await bm.restoreReviewed();
-  bm.unloadBlock('block-adjacent-east');
-  await bm.loadBlock('block-adjacent-east');
+  check('revoking reviewed refreshes the adjacent block and restores replaced placeholders',
+    east.state === 'loaded' && withReview === 0 && afterRevoke === replacedInEast,
+    `whileReviewed=${withReview} afterRevoke=${afterRevoke} expected=${replacedInEast} state=${east.state}`);
+  await bm.restoreReviewed(); // refreshes again -> replaced suppressed
   const afterRestore = east.placeholders.filter(p => bm.byPlaceholder.get(p.ph.id)?.replacedBy === 'block-review-street').length;
-  check('restoring reviewed suppresses them again', afterRestore === 0, `afterRestore=${afterRestore}`);
+  check('restoring reviewed suppresses them again', east.state === 'loaded' && afterRestore === 0, `afterRestore=${afterRestore}`);
 }
 
 // --- 5. rotated placeholder transform consistency (旋转建筑变换一致)

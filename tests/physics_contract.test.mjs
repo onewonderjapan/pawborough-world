@@ -25,10 +25,10 @@ function check(name, cond, detail = '') {
 const close = (a, b, eps) => Math.abs(a - b) <= eps;
 
 await RAPIER.init();
-const [manifest, instances, collision, route] = await Promise.all([
-  'world/review-manifest.json', 'world/instances.json', 'world/collision-world.json', 'world/route.json',
+const [manifest, instances, collision, route, blocks] = await Promise.all([
+  'world/review-manifest.json', 'world/instances.json', 'world/collision-world.json', 'world/route.json', 'world/blocks.json',
 ].map(p => readFile(resolve(root, p), 'utf8').then(JSON.parse)));
-validateWorldInputs({ manifest, instances, collision, route });
+validateWorldInputs({ manifest, instances, collision, route, blocks });
 
 const glb = readGlb(await readFile(resolve(root, manifest.worldAssembly.path.replace(/^\.\//, ''))));
 const groundTriangles = collectGroundTriangles(glb.meshes);

@@ -50,7 +50,10 @@ export function headingVector(yaw) {
 
 // Conservative checks a WorldLoader performs on its JSON inputs before any
 // physics exists. Throws with a precise message on the first inconsistency.
-export function validateWorldInputs({ manifest, instances, collision, route }) {
+// blocks is a REQUIRED input: the block-lifecycle dataset must exist and be
+// coherent, or the load fails — it must never degrade to a silently
+// block-less scene (R3).
+export function validateWorldInputs({ manifest, instances, collision, route, blocks }) {
   if (!manifest || !Array.isArray(manifest.modules) || manifest.modules.length === 0)
     throw new Error('world input: manifest.modules missing or empty');
   if (typeof manifest.placedTriangles !== 'number' || manifest.placedTriangles <= 0)
@@ -86,6 +89,37 @@ export function validateWorldInputs({ manifest, instances, collision, route }) {
   if (!route || !Array.isArray(route.mainStreet) || route.mainStreet.length < 2)
     throw new Error('world input: route.mainStreet missing or too short');
   if (!route.entries?.west) throw new Error('world input: route.entries.west missing');
+
+  if (!blocks || !Array.isArray(blocks.blocks) || blocks.blocks.length === 0)
+    throw new Error('world input: blocks.blocks missing or empty');
+  if (!Array.isArray(blocks.placeholders))
+    throw new Error('world input: blocks.placeholders missing');
+  if (!Array.isArray(blocks.streetExtentX) || blocks.streetExtentX.length !== 2 ||
+      !(blocks.streetExtentX[0] < blocks.streetExtentX[1]))
+    throw new Error('world input: blocks.streetExtentX malformed');
+  const placeholderIds = new Set(blocks.placeholders.map(p => p.id));
+  const blockIds = new Set();
+  for (const b of blocks.blocks) {
+    if (!b.id || blockIds.has(b.id)) throw new Error(`world input: block id missing or duplicated (${b.id})`);
+    blockIds.add(b.id);
+    for (const phId of b.placeholderIds ?? []) {
+      if (!placeholderIds.has(phId))
+        throw new Error(`world input: block ${b.id} references unknown placeholder ${phId}`);
+    }
+    for (const baseId of b.replacesBaseIds ?? []) {
+      if (!placeholderIds.has(baseId))
+        throw new Error(`world input: block ${b.id} replaces unknown placeholder ${baseId}`);
+    }
+  }
+  for (const ph of blocks.placeholders) {
+    if (ph.replacedBy && !blockIds.has(ph.replacedBy))
+      throw new Error(`world input: placeholder ${ph.id} replacedBy unknown block ${ph.replacedBy}`);
+    if (!Array.isArray(ph.glbPoint) || ph.glbPoint.length !== 2 ||
+        typeof ph.angleRad !== 'number' || !(ph.widthM > 0) || !(ph.depthM > 0) || !(ph.heightM > 0))
+      throw new Error(`world input: placeholder ${ph.id} geometry malformed`);
+  }
+  if (!blocks.blocks.some(b => b.kind === 'reviewed'))
+    throw new Error('world input: blocks dataset has no reviewed street block');
   return true;
 }
 

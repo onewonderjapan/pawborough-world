@@ -153,39 +153,76 @@ for (const mesh of world.meshes) {
   delete prim.__keep;
 }
 
-// ---- 4. image remap by content hash
-const worldImageSha = (wjson.images || []).map(im => {
-  const bv = wjson.bufferViews[im.bufferView];
-  const bytes = world.bin.subarray(bv.byteOffset, bv.byteOffset + bv.byteLength);
-  return sha(bytes);
+// ---- 4. image / texture remap by content hash
+// Images and textures are DIFFERENT glTF concepts: the frozen world has 161
+// texture entries sharing 18 embedded images. An image index is therefore NOT
+// a texture index — the R2 regression reused worldImageSha.indexOf() (an
+// IMAGE index) as a texture index and pointed the merged paving at plaster.
+// Here: images are shared by byte content; textures are matched by
+// (image, sampler params) and only appended when no equivalent entry exists;
+// material slots keep texCoord/extensions and only get their index rewritten.
+const shaOfImage = (json, bin, im) => {
+  const bv = json.bufferViews[im.bufferView];
+  return sha(bin.subarray(bv.byteOffset, bv.byteOffset + bv.byteLength));
+};
+const worldImageBySha = new Map();
+(wjson.images || []).forEach((im, i) => worldImageBySha.set(shaOfImage(wjson, world.bin, im), i));
+const modSamplerKey = (s) => JSON.stringify([s?.magFilter ?? 9728, s?.minFilter ?? 9728, s?.wrapS ?? 10497, s?.wrapT ?? 10497]);
+const worldSamplerKeys = (wjson.samplers || [undefined]).map(modSamplerKey);
+// texture key = resolved world image + effective sampler params (first match wins)
+const worldTextureByKey = new Map();
+(wjson.textures || []).forEach((t, i) => {
+  const key = t.source + '|' + modSamplerKey((wjson.samplers || [undefined])[t.sampler ?? 0]);
+  if (!worldTextureByKey.has(key)) worldTextureByKey.set(key, i);
 });
 let appendedImages = 0;
+let appendedSamplers = 0;
+let appendedTextures = 0;
 const texRemap = new Map(); // module texture index -> world texture index
 const matRemap = new Map(); // module material index -> world material index
 for (let mt = 0; mt < (mod.gltf.textures || []).length; mt++) {
   const tex = mod.gltf.textures[mt];
   const mImg = mod.gltf.images[tex.source];
-  const bv = mod.gltf.bufferViews[mImg.bufferView];
-  const bytes = mod.bin.subarray(bv.byteOffset, bv.byteOffset + bv.byteLength);
+  const mSampler = (mod.gltf.samplers || [undefined])[tex.sampler ?? 0];
+  const mBv = mod.gltf.bufferViews[mImg.bufferView];
+  const bytes = mod.bin.subarray(mBv.byteOffset, mBv.byteOffset + mBv.byteLength);
   const h = sha(bytes);
-  let worldTex = worldImageSha.indexOf(h);
-  if (worldTex < 0) {
-    // append image bytes + texture
+  // 1. resolve the IMAGE by content (reuse — never duplicate bytes)
+  let worldImage = worldImageBySha.get(h);
+  if (worldImage === undefined) {
     const at = pushBin(pad4(bytes));
     wjson.bufferViews.push({ buffer: 0, byteOffset: at.byteOffset, byteLength: bytes.byteLength });
     wjson.images.push({ bufferView: wjson.bufferViews.length - 1, mimeType: mImg.mimeType, name: mImg.name });
-    wjson.textures.push({ source: wjson.images.length - 1 });
-    worldTex = wjson.textures.length - 1;
+    worldImage = wjson.images.length - 1;
+    worldImageBySha.set(h, worldImage);
     appendedImages++;
+  }
+  // 2. resolve a sampler with the same parameters (reuse or append)
+  const sKey = modSamplerKey(mSampler);
+  let worldSampler = worldSamplerKeys.indexOf(sKey);
+  if (worldSampler < 0) {
+    wjson.samplers = wjson.samplers || [];
+    wjson.samplers.push(mSampler ? { ...mSampler } : {});
+    worldSampler = wjson.samplers.length - 1;
+    worldSamplerKeys.push(sKey);
+    appendedSamplers++;
+  }
+  // 3. resolve a TEXTURE entry pointing at that image+sampler (reuse or append)
+  const tKey = worldImage + '|' + sKey;
+  let worldTex = worldTextureByKey.get(tKey);
+  if (worldTex === undefined) {
+    wjson.textures.push({ sampler: worldSampler, source: worldImage });
+    worldTex = wjson.textures.length - 1;
+    worldTextureByKey.set(tKey, worldTex);
+    appendedTextures++;
   }
   texRemap.set(mt, worldTex);
 }
 for (let mm = 0; mm < (mod.gltf.materials || []).length; mm++) {
   const m = structuredClone(mod.gltf.materials[mm]);
-  const rewrite = (tex) => {
-    if (!tex) return tex;
-    return { index: texRemap.get(tex.index) };
-  };
+  // spread keeps texCoord / KHR_texture_transform extensions / every slot
+  // parameter; only the texture INDEX is remapped
+  const rewrite = (tex) => tex ? { ...tex, index: texRemap.get(tex.index) } : tex;
   const pbr = m.pbrMetallicRoughness;
   if (pbr?.baseColorTexture) pbr.baseColorTexture = rewrite(pbr.baseColorTexture);
   if (pbr?.metallicRoughnessTexture) pbr.metallicRoughnessTexture = rewrite(pbr.metallicRoughnessTexture);
@@ -288,7 +325,7 @@ glb.set(binBuffer, 28 + jsonBytes.byteLength);
 await writeFile(join(OUT, 'laneb.glb'), glb);
 const glbSha = sha(glb);
 const placedTriangles = 171464 - removedTris + moduleTris;
-console.log(`module tris ${moduleTris}, placed total ${placedTriangles}, appended images ${appendedImages}, bytes ${glb.byteLength}`);
+console.log(`module tris ${moduleTris}, placed total ${placedTriangles}, images ${appendedImages ? '+' + appendedImages : 'all reused'}, samplers +${appendedSamplers}, textures +${appendedTextures}, bytes ${glb.byteLength}`);
 
 // ---- 7. dataset JSONs
 const frozenManifest = JSON.parse(await readFile(resolve(root, 'world/review-manifest.json'), 'utf8'));
@@ -363,4 +400,12 @@ cams.cameras.push(
   { id: 'lane-b-detail', positionGlb: [59.24, 1.45, 12.72], targetGlb: [PORTAL_C[0], 1.3, PORTAL_C[2]], lensMm: 35, sensorWidthMm: 36, sensorFit: 'HORIZONTAL', source: 'N5 design: door frame/drainage/wall detail closeup' },
 );
 await writeFile(join(OUT, 'cameras.json'), JSON.stringify(cams, null, 2) + '\n');
+
+// blocks dataset is a REQUIRED world input (R3): derive it 1:1 from the
+// frozen street dataset — the candidate shares the street extent and anchor,
+// so the same block layout applies; a missing blocks.json must never disable
+// the lifecycle manager through the HTML/catch fallback.
+const blocks = JSON.parse(await readFile(resolve(root, 'world/blocks.json'), 'utf8'));
+blocks.generatedBy = 'scripts/build_laneb_world.mjs (derived candidate; block layout identical to frozen world/blocks.json)';
+await writeFile(join(OUT, 'blocks.json'), JSON.stringify(blocks, null, 2) + '\n');
 console.log('LANEB_WORLD_READY', OUT);

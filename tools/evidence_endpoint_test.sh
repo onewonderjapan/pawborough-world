@@ -33,6 +33,13 @@ json.dump({'name': name, 'image': 'data:image/jpeg;base64,' + data,
 PYEOF
 
 PORT=""; PID=""
+# Ports default to the PROJECT-configured 5284/5285; EV_PREVIEW_PORT /
+# EV_DEV_PORT let verification runs use their own idle ports (e.g. when the
+# owner's live preview already holds 5285). The vite children get a matching
+# EVIDENCE_PORTS origin allowlist.
+PREVIEW_PORT="${EV_PREVIEW_PORT:-5285}"
+DEV_PORT="${EV_DEV_PORT:-5284}"
+export EVIDENCE_PORTS="${EVIDENCE_PORTS:-${PREVIEW_PORT}|${DEV_PORT}}"
 start_server() { # $1=mode(dev|preview) $2=port
   "$VITE" "$1" --host 127.0.0.1 --port "$2" --strictPort >>"$LOG" 2>&1 &
   PID=$!
@@ -66,7 +73,7 @@ comma=""
   echo "  \"fixtureImage\": \"$FIXTURE\","
   echo "  \"fixtureIsBrowserScreenshot\": false,"
   echo "  \"checks\": ["
-  for entry in "preview 5285" "dev 5284"; do
+  for entry in "preview $PREVIEW_PORT" "dev $DEV_PORT"; do
     set -- $entry
     mode=$1; port=$2
     start_server "$mode" "$port"

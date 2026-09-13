@@ -22,11 +22,11 @@ function check(name, cond, detail = '') {
 }
 
 await RAPIER.init();
-const [manifest, instances, collision, route] = await Promise.all([
-  'review-manifest.json', 'instances.json', 'collision-world.json', 'route.json',
+const [manifest, instances, collision, route, blocks] = await Promise.all([
+  'review-manifest.json', 'instances.json', 'collision-world.json', 'route.json', 'blocks.json',
 ].map(p => readFile(resolve(root, D, p), 'utf8').then(JSON.parse)));
-validateWorldInputs({ manifest, instances, collision, route });
-check('laneb dataset validates', true);
+validateWorldInputs({ manifest, instances, collision, route, blocks });
+check('laneb dataset validates (blocks dataset included)', true);
 
 const glb = readGlb(await readFile(resolve(root, manifest.worldAssembly.path.replace(/^\.\//, ''))));
 const groundTriangles = collectGroundTriangles(glb.meshes);

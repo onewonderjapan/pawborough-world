@@ -4,6 +4,7 @@ import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 import RAPIER from '@dimforge/rapier3d-compat';
 import {loadWorld} from './world/WorldLoader.js';
 import {WalkController} from './player/WalkController.js';
+import {applyWalkOrientation} from './player/walkCamera.js';
 import {CruiseDriver} from './player/cruise.js';
 import {BlockManager} from './world/BlockManager.js';
 import {createBlockViews} from './world/blockViews.js';
@@ -27,7 +28,7 @@ let streetKitNodeCount=0;let ready=false,clayOn=false,selected='full-west',camer
 let session=null,controller=null,mode='view',paused=false,cruise=null,lastCruiseStatus=null,resetCount=0,blocks=null;
 const keys={w:false,a:false,s:false,d:false};
 function resources(){const g=new Set(),m=new Set(),t=new Set();let triangles=0,meshes=0;world.traverse(o=>{if(!o.isMesh)return;meshes++;g.add(o.geometry);triangles+=(o.geometry.index?.count??o.geometry.attributes.position.count)/3;for(const mat of [o.material].flat()){m.add(mat);for(const v of Object.values(mat))if(v?.isTexture)t.add(v);}});return{meshes,triangles,uniqueGeometries:g.size,uniqueMaterials:m.size,uniqueTextures:t.size};}
-function record(){return{ready,view:selected,mode,paused,resources:resources(),expectedWorldTriangles:manifest?.placedTriangles,streetKitLoaded:streetKitNodeCount>0,streetKitNodeCount,loadMode:'single_assembly_sharing_embedded_images',placedBuildingCount:instances?.instances.length,assets:manifest,load:loadStats,fetches:[],render:lastRender,camera:{position:camera.position.toArray(),target:mode==='view'?controls.target.toArray():controller?.feetPosition()??null,fov:camera.fov,near:camera.near},framebuffer:renderer.getSize(new T.Vector2()).toArray(),lighting:{shadows:renderer.shadowMap.enabled,shadowBias:sun.shadow.bias,shadowNormalBias:sun.shadow.normalBias,toneMapping:'AgX',exposure:1,environmentIntensity:.28,hemisphereIntensity:.72,sunIntensity:2.4,sunPosition:sun.position.toArray()},browserRendered:true,
+function record(){return{ready,view:selected,mode,paused,resources:resources(),expectedWorldTriangles:manifest?.placedTriangles,streetKitLoaded:streetKitNodeCount>0,streetKitNodeCount,loadMode:'single_assembly_sharing_embedded_images',placedBuildingCount:instances?.instances.length,assets:manifest,load:loadStats,fetches:[],render:lastRender,camera:{position:camera.position.toArray(),target:mode==='view'?controls.target.toArray():controller?.feetPosition()??null,fov:camera.fov,near:camera.near,quaternion:camera.quaternion.toArray(),matrixWorldFinite:[...camera.matrixWorld.elements].every(Number.isFinite),walkOrientationFinite:camera.quaternion.toArray().every(Number.isFinite)},framebuffer:renderer.getSize(new T.Vector2()).toArray(),lighting:{shadows:renderer.shadowMap.enabled,shadowBias:sun.shadow.bias,shadowNormalBias:sun.shadow.normalBias,toneMapping:'AgX',exposure:1,environmentIntensity:.28,hemisphereIntensity:.72,sunIntensity:2.4,sunPosition:sun.position.toArray()},browserRendered:true,
   walking:{walkingVerified:false,manualKeyboardWalkTested:false,walkResets:resetCount,capsuleFeet:controller?controller.feetPosition():null,eyeHeightM:1.6,capsuleRadiusM:.35,autoPhysicsCruise:lastCruiseStatus,blocks:blocks?{active:blocks.activeIds(),epoch:blocks.epoch}:null},ownerAdopted:false};}
 function render(){if(!ready)return;const near=mode==='view'?Math.max(.05,Math.min(2,camera.position.distanceTo(controls.target)*.003)):.1;if(camera.near!==near){camera.near=near;camera.updateProjectionMatrix();}renderer.info.reset();const started=performance.now();renderer.render(scene,camera);lastRender={callsIncludingShadow:renderer.info.render.calls,trianglesIncludingShadow:renderer.info.render.triangles,cpuSubmitMs:performance.now()-started};const r=resources();stats.textContent=mode==='walk'?`行走模式 · 脚底 (${controller.feetPosition().map(v=>v.toFixed(1)).join(', ')}) ${paused?'· 已暂停':''}\nWASD 移动 · 鼠标环视(点击画面锁定) · 空格跳 · P 暂停 · V 返回取景`:`${instances.instances.length} 门面＋完整路面/支弄/前庭 · ${r.triangles.toLocaleString()} 三角形\n几何/材质/纹理 ${r.uniqueGeometries}/${r.uniqueMaterials}/${r.uniqueTextures} · 本机资产 ${(loadStats.bytes/1e6).toFixed(2)} MB\n拖动旋转 · 滚轮缩放 · 右键平移 · 行走模式按钮在上方`;document.querySelector('#record').textContent=JSON.stringify(record(),null,2);}
 function setView(id){const v=cameras.find(c=>c.id===id);if(!v)return;selected=id;camera.position.set(...v.positionGlb);controls.target.set(...v.targetGlb);camera.fov=2*Math.atan(v.sensorWidthMm/2/v.lensMm/camera.aspect)*180/Math.PI;camera.updateProjectionMatrix();controls.update();for(const b of viewsEl.querySelectorAll('[data-view]'))b.classList.toggle('on',b.dataset.view===id);render();}
@@ -101,7 +102,7 @@ function frame(t){
   if(mode==='walk'){
     const eye=controller.eyePosition();
     camera.position.set(...eye);
-    camera.quaternion.setFromEuler(new T.Euler(controller.pitch,controller.yaw,'YXZ'));
+    applyWalkOrientation(camera,controller.pitch,controller.yaw);
     if(blocks)blocks.update(...controller.feetPosition());
   }
   render();
@@ -118,11 +119,11 @@ async function load(){const t0=performance.now();
   const total=resources().triangles;
   if(total!==manifest.placedTriangles)throw Error(`几何不完整：实际 ${total} / 预期 ${manifest.placedTriangles}`);
   controller=new WalkController({RAPIER,physics:session.physics,capsule:{...session.capsule,spawn:session.spawn}});
-  try{
-    const dataset=await json(WORLD_BASE+'blocks.json');
-    blocks=new BlockManager({RAPIER,physics:session.physics,views:createBlockViews(scene),dataset});
-    await blocks.applyReviewed(); // suppress replaced placeholders; adjacent blocks cycle in walk mode
-  }catch(e){blocks=null;console.warn('blocks dataset unavailable:',e);}
+  // blocks dataset is a REQUIRED world input (fetched+validated in loadWorld):
+  // a missing/corrupt blocks.json must fail the load loudly, never fall back
+  // to a silently block-less scene (R3)
+  blocks=new BlockManager({RAPIER,physics:session.physics,views:createBlockViews(scene,session),dataset:session.blocks});
+  await blocks.applyReviewed(); // reviewed street owned by the manager; adjacent blocks cycle in walk mode
   loadStats={bytes:manifest.worldAssembly.bytes,fpsNotMeasured:true,localOnly:true};
   setupButtons();setView('full-west');
   const parsed=performance.now();await renderer.compileAsync(scene,camera);const compiled=performance.now();
@@ -132,4 +133,4 @@ async function load(){const t0=performance.now();
   notice('完整世界已载入 · 取景模式。点「行走模式」落入街面（切换/重置不计路线），「路线巡游」走物理链全段。');}
 controls.addEventListener('change',render);new ResizeObserver(()=>{const w=app.clientWidth,h=app.clientHeight,k=Math.min(1,1600/w,900/h);renderer.setSize(Math.round(w*k),Math.round(h*k),false);camera.aspect=w/h;const v=cameras.find(v=>v.id===selected);if(v)camera.fov=2*Math.atan(v.sensorWidthMm/2/v.lensMm/camera.aspect)*180/Math.PI;camera.updateProjectionMatrix();render();}).observe(app);
 void load().catch(e=>{stats.textContent='载入失败：'+e.message;notice('未取得完整场景，不计为验证通过。');console.error(e);});
-window.addEventListener('pagehide',()=>{controls.dispose();if(controller)controller.dispose();if(session)session.dispose();renderer.dispose();renderer.forceContextLoss();});
+window.addEventListener('pagehide',()=>{controls.dispose();if(controller)controller.dispose();if(blocks)blocks.dispose();if(session)session.dispose();renderer.dispose();renderer.forceContextLoss();});

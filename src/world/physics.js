@@ -12,19 +12,36 @@
 
 import { obbToWorld as obbToWorldRecord } from './collisionAdapter.js';
 
+// One collision-world.json record -> { collider, body, handle, record }.
+// Shared by buildPhysicsWorld AND the BlockManager reviewed-street
+// re-creation, so a revoke/restore cycle produces byte-identical colliders.
+export function addWallCollider(RAPIER, world, record) {
+  const { center, halfExtents, yaw } = obbToWorldRecord(record);
+  const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(center[0], center[1], center[2]));
+  const desc = RAPIER.ColliderDesc.cuboid(halfExtents[0], halfExtents[1], halfExtents[2])
+    .setRotation({ w: Math.cos(yaw / 2), x: 0, y: Math.sin(yaw / 2), z: 0 });
+  const collider = world.createCollider(desc, body);
+  return { collider, body, handle: collider.handle, record };
+}
+
+export function addGroundCollider(RAPIER, world, groundTriangles) {
+  const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed());
+  const collider = world.createCollider(
+    RAPIER.ColliderDesc.trimesh(groundTriangles.positions, groundTriangles.indices), body);
+  return { collider, body, handle: collider.handle };
+}
+
+// Collider + its rigid body leave the world together (the reviewed-street
+// takeover relies on this to keep revoke/restore symmetric in body counts).
+export function removeColliderWithBody(world, collider, body) {
+  if (collider) world.removeCollider(collider, false);
+  if (body) world.removeRigidBody(body);
+}
+
 export function buildPhysicsWorld(RAPIER, { collision, groundTriangles }) {
   const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
-  const colliders = [];
-  for (const record of collision.colliders) {
-    const { center, halfExtents, yaw } = obbToWorldRecord(record);
-    const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(center[0], center[1], center[2]));
-    const desc = RAPIER.ColliderDesc.cuboid(halfExtents[0], halfExtents[1], halfExtents[2])
-      .setRotation({ w: Math.cos(yaw / 2), x: 0, y: Math.sin(yaw / 2), z: 0 });
-    colliders.push({ handle: world.createCollider(desc, body), record });
-  }
-  const groundBody = world.createRigidBody(RAPIER.RigidBodyDesc.fixed());
-  const groundCollider = world.createCollider(
-    RAPIER.ColliderDesc.trimesh(groundTriangles.positions, groundTriangles.indices), groundBody);
+  const colliders = collision.colliders.map((record) => addWallCollider(RAPIER, world, record));
+  const ground = addGroundCollider(RAPIER, world, groundTriangles);
   // Prime the query pipeline: until the first world.step() the broad-phase is
   // empty and shape casts (including the character controller) see nothing.
   world.step();
@@ -32,7 +49,8 @@ export function buildPhysicsWorld(RAPIER, { collision, groundTriangles }) {
   return {
     world,
     colliders,
-    groundCollider,
+    groundCollider: ground.collider,
+    groundBody: ground.body,
     wallCount: colliders.length,
     groundTriangleCount: groundTriangles.indices.length / 3,
     dispose() {

@@ -29,14 +29,18 @@ export async function fetchJson(path) {
 
 export async function loadWorld({ RAPIER, baseUrl = './world/', renderer = null } = {}) {
   const u = (p) => new URL(p, new URL(baseUrl, location.href)).href;
-  // baseUrl is the DATASET directory (files directly inside it)
-  const [manifest, instances, collision, route] = await Promise.all([
+  // baseUrl is the DATASET directory (files directly inside it). blocks.json
+  // is required: fetchJson throws on HTTP errors and validateWorldInputs
+  // throws on malformed content, so a missing/corrupt block dataset can never
+  // come back as an HTML error page and silently disable the block lifecycle.
+  const [manifest, instances, collision, route, blocks] = await Promise.all([
     fetchJson(u('review-manifest.json')),
     fetchJson(u('instances.json')),
     fetchJson(u('collision-world.json')),
     fetchJson(u('route.json')),
+    fetchJson(u('blocks.json')),
   ]);
-  validateWorldInputs({ manifest, instances, collision, route });
+  validateWorldInputs({ manifest, instances, collision, route, blocks });
 
   // --- geometry (single assembly; identical to the shipped orbit viewer) ---
   // manifest asset paths are site-root-relative (frozen: ./world/..., laneb: ./world/laneb/...)
@@ -88,11 +92,15 @@ export async function loadWorld({ RAPIER, baseUrl = './world/', renderer = null 
 
   let disposed = false;
   return {
+    RAPIER,
     root,
     physics,
     route,
     instances,
     manifest,
+    collision,
+    blocks,
+    groundTriangles,
     capsule: CAPSULE,
     spawn,
     stats: {

@@ -73,8 +73,16 @@ box6('portal-lintel-timber', (0.0, 2.37, -0.05), (1.66, 0.14, 0.2), 'wood', 0.00
 for sx in (-0.75, 0.75):
     box6('portal-reveal', (sx, 1.15, -0.06), (0.05, 2.3, 0.13), 'plaster', 0.004)
 box6('portal-threshold', (0.0, 0.03, -0.05), (1.5, 0.06, 0.16), 'stone', 0.006)
-# inset drain just outside the portal (dark grate recessed below floor top)
-box6('drain-frame', (0.0, 0.008, 0.42), (0.72, 0.035, 0.26), 'stone', 0.004)
+# inset drain just outside the portal (dark grate recessed below floor top).
+# The frame is a four-rail border leaving a 0.62x0.16 opening over the grate;
+# a single solid slab here (old build) covered the recessed grate entirely.
+for nm, c, s in [
+    ('drain-frame-rail-n', (0.0, 0.008, 0.315), (0.72, 0.035, 0.05)),
+    ('drain-frame-rail-s', (0.0, 0.008, 0.525), (0.72, 0.035, 0.05)),
+    ('drain-frame-rail-w', (-0.335, 0.008, 0.42), (0.05, 0.035, 0.16)),
+    ('drain-frame-rail-e', (0.335, 0.008, 0.42), (0.05, 0.035, 0.16)),
+]:
+    box6(nm, c, s, 'stone', 0.004)
 box6('drain-grate', (0.0, -0.004, 0.42), (0.6, 0.02, 0.16), 'iron', 0.002)
 
 def shutter_window_x(x, y, z, w=1.4, h=1.9):
