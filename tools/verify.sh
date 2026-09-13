@@ -53,6 +53,7 @@ run_step "world-inputs" node tests/world_inputs.test.mjs
 run_step "physics-contract" node tests/physics_contract.test.mjs
 run_step "session-lifecycle" node tests/session_lifecycle.test.mjs
 run_step "laneb-contract" node tests/laneb_contract.test.mjs
+run_step "block-lifecycle" node tests/block_lifecycle.test.mjs
 run_step "browser-smoke" node tools/browser_smoke.mjs
 run_step "evidence-endpoint-origin" bash tools/evidence_endpoint_test.sh
 
