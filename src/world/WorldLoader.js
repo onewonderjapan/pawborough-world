@@ -10,10 +10,10 @@
 // three.js + fetch + Rapier.
 
 import * as T from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { validateWorldInputs, GROUND_NODE_RE } from './collisionAdapter.js';
 import { collectGroundTriangles } from './groundExtractor.js';
 import { buildPhysicsWorld } from './physics.js';
+import { createGLTFLoader } from './decoders.js';
 
 export const CAPSULE = {
   radius: 0.35,      // = route.json clearance.clearRadiusM
@@ -27,7 +27,7 @@ export async function fetchJson(path) {
   return r.json();
 }
 
-export async function loadWorld({ RAPIER, baseUrl = './' } = {}) {
+export async function loadWorld({ RAPIER, baseUrl = './', renderer = null } = {}) {
   const u = (p) => new URL(p, new URL(baseUrl, location.href)).href;
   const [manifest, instances, collision, route] = await Promise.all([
     fetchJson(u('world/review-manifest.json')),
@@ -41,7 +41,7 @@ export async function loadWorld({ RAPIER, baseUrl = './' } = {}) {
   const res = await fetch(u(manifest.worldAssembly.path), { cache: 'no-cache' });
   if (!res.ok) throw new Error(`world input: ${manifest.worldAssembly.path} HTTP ${res.status}`);
   const data = await res.arrayBuffer();
-  const model = await new GLTFLoader().parseAsync(data, u('./'));
+  const model = await createGLTFLoader({ renderer, baseUrl }).parseAsync(data, u('./'));
   const root = model.scene;
   root.name = 'world-root';
 

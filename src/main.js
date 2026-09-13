@@ -102,7 +102,7 @@ function frame(t){
 }
 async function load(){const t0=performance.now();
   await RAPIER.init();
-  session=await loadWorld({RAPIER,baseUrl:'./'});
+  session=await loadWorld({RAPIER,baseUrl:'./',renderer});
   ({cameras}=await json('./world/cameras.json'));
   instances=session.instances;manifest=session.manifest;
   world.add(session.root);
