@@ -3,11 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1 --port 5282 --strictPort",
+    "dev": "vite --host 127.0.0.1 --port 5284 --strictPort",
     "build": "node scripts/build_review.mjs",
-    "preview": "vite preview --host 127.0.0.1 --port 5283 --strictPort"
+    "preview": "vite preview --host 127.0.0.1 --port 5285 --strictPort"
   },
   "dependencies": {
+    "gltf-validator": "2.0.0-dev.3.10",
     "three": "0.180.0"
   },
   "devDependencies": {

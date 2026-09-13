@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# Evidence-endpoint origin contract test (N1).
+# Starts the built preview server on 5285 and the dev server on 5284 as
+# temporary local services owned by this run, then issues real HTTP requests:
+#   - POST with a correct same-origin Origin header  -> 200, jpg+json saved
+#   - POST with a wrong-port Origin                  -> 403
+#   - POST with a foreign-host Origin                -> 403
+# The test image is an existing task JPEG fixture sent over HTTP; it is NOT a
+# browser screenshot and is recorded nowhere as one.
+#
+# Run: bash tools/evidence_endpoint_test.sh   (exit 0 = contract holds)
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
+EV="../artifacts/N1"
+mkdir -p "$EV"
+LOG="$EV/evidence-endpoint-$STAMP.log"
+FIXTURE="$(ls ../inputs/photos/*.jpg | head -1)"
+NAME="http-fixture-pbr"
+VITE="node_modules/.bin/vite"
+
+echo "== evidence endpoint origin test $STAMP ==" | tee -a "$LOG"
+echo "fixture: $FIXTURE ($(stat -c%s "$FIXTURE") bytes)" | tee -a "$LOG"
+
+python3 - "$FIXTURE" "$NAME" > "$EV/.fixture-body.json" <<'PYEOF'
+import base64, json, sys
+path, name = sys.argv[1], sys.argv[2]
+data = base64.b64encode(open(path, 'rb').read()).decode()
+json.dump({'name': name, 'image': 'data:image/jpeg;base64,' + data,
+           'record': {'fixture': True, 'note': 'HTTP-level endpoint test with an existing task JPEG; not a browser screenshot'}},
+          sys.stdout)
+PYEOF
+
+PORT=""; PID=""
+start_server() { # $1=mode(dev|preview) $2=port
+  "$VITE" "$1" --host 127.0.0.1 --port "$2" --strictPort >>"$LOG" 2>&1 &
+  PID=$!
+  PORT="$2"
+  for _ in $(seq 1 60); do
+    if curl -s -o /dev/null "http://127.0.0.1:$2/"; then return 0; fi
+    sleep 0.3
+  done
+  echo "server $1 on $2 did not come up"; return 1
+}
+stop_server() {
+  [ -n "$PID" ] && kill "$PID" 2>/dev/null || true
+  sleep 0.5
+  PID=""
+}
+check() { # $1=origin $2=expect $3=label ; uses $PORT
+  local code
+  code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "http://127.0.0.1:$PORT/__review-evidence" \
+    -H 'Content-Type: application/json' -H "Origin: $1" --data-binary @"$EV/.fixture-body.json")
+  echo "$3 -> HTTP $code (expect $2)" >>"$LOG"
+  [ "$code" = "$2" ]
+}
+
+RESULT="$EV/evidence-endpoint-result.json"
+overall=0
+comma=""
+{
+  echo "{"
+  echo "  \"what\": \"/__review-evidence origin contract over real HTTP\","
+  echo "  \"atUTC\": \"$STAMP\","
+  echo "  \"fixtureImage\": \"$FIXTURE\","
+  echo "  \"fixtureIsBrowserScreenshot\": false,"
+  echo "  \"checks\": ["
+  for entry in "preview 5285" "dev 5284"; do
+    set -- $entry
+    mode=$1; port=$2
+    start_server "$mode" "$port"
+    set +e
+    check "http://127.0.0.1:$port"    200 "$port correct-origin"      ; r1=$?
+    check "http://127.0.0.1:9999"     403 "$port wrong-port-origin"   ; r2=$?
+    check "http://evil.example:$port" 403 "$port foreign-host-origin" ; r3=$?
+    set -e
+    stop_server
+    overall=$((overall + r1 + r2 + r3))
+    printf '%s\n    {"mode": "%s", "port": %s, "checks": ["correct-origin %s", "wrong-port-origin %s", "foreign-host-origin %s"]}' \
+      "$comma" "$mode" "$port" \
+      "$([ $r1 -eq 0 ] && echo pass || echo FAIL)" \
+      "$([ $r2 -eq 0 ] && echo pass || echo FAIL)" \
+      "$([ $r3 -eq 0 ] && echo pass || echo FAIL)"
+    comma=","
+  done
+  echo ""
+  echo "  ],"
+  echo "  \"verdict\": \"$([ $overall -eq 0 ] && echo PASS || echo FAIL)\""
+  echo "}"
+} > "$RESULT"
+rm -f "$EV/.fixture-body.json"
+echo "EVIDENCE_ENDPOINT $([ $overall -eq 0 ] && echo PASS || echo FAIL) result=$RESULT"
+[ $overall -eq 0 ]
