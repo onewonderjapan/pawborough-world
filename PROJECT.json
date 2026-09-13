@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "projectId": "pawborough-world",
+  "phase": "world-v1",
+  "workspaceRoot": ".",
+  "convenienceLink": "/home/baibai/pawborough-world",
+  "git": {
+    "branch": "work/world-foundation-20260914",
+    "baselineBranch": "main",
+    "baselineCommit": "3f6cacd",
+    "remote": null,
+    "lfs": {
+      "installed": true,
+      "version": "3.8.0",
+      "install": "user-local binary at ~/.local/bin/git-lfs, `git lfs install --local`; no remote, no push",
+      "binarySource": "https://github.com/git-lfs/git-lfs/releases/tag/v3.8.0 git-lfs-linux-arm64-v3.8.0.tar.gz",
+      "binarySha256": "ac9c8efac980bb0505ead384d087e2acb6486fd8498691a2165fa174ec6118c2",
+      "checksumFile": "sha256sums.asc (GPG-signed, key fingerprint 86CD3297749375BCF8206715F54FE648088335A9, uid Chris Darroch CODE SIGNING KEY)"
+    }
+  },
+  "canonicalRoadmap": {
+    "path": "/home/baibai/outbox/pawborough-development-history-20260913/开发过程与v1.0目标.md",
+    "scope": "V01–V10/P0–P6",
+    "approvedSnapshot": "docs/ROADMAP.snapshot.md",
+    "snapshotSha256": "14398f2df621853baf60e06e0ecbf94981af8bcf59bfb3ee922627ba434d6770",
+    "note": "snapshot is a byte-exact copy of the source at snapshot time; source document remains the management canonical, not migrated"
+  },
+  "ownerDecision": {
+    "path": "/home/baibai/outbox/pawborough-repo-review-20260913/OWNER_DECISION.json",
+    "frozenCopy": "docs/OWNER_DECISION.snapshot.json",
+    "sha256": "6ec125b4c7c543952e8b7499ec669ea728805736a8f79f7e05ef247ee9d00c53"
+  },
+  "runtime": {
+    "devPort": 5284,
+    "previewPort": 5285,
+    "host": "127.0.0.1"
+  },
+  "assets": {
+    "mode": "assembly",
+    "manifest": "world/review-manifest.json",
+    "instances": "world/instances.json",
+    "colliders": "world/collision-world.json",
+    "route": "world/route.json",
+    "cameras": "world/cameras.json",
+    "worldGlb": "world/street-reviewed.glb"
+  },
+  "evidence": {
+    "root": "../artifacts",
+    "currentRun": "../artifacts/N0"
+  },
+  "capabilities": {
+    "characters": "deferred_G1",
+    "unity": "optional_W2_import_once_nonblocking",
+    "gameplayExpansion": "deferred_G3"
+  },
+  "managementAuthority": "W2",
+  "implementation": {
+    "executor": "zcode",
+    "model": "owner-selected model in owner-started ZCode session",
+    "executionMode": "owner_started_continuous",
+    "executionPolicy": "../control/EXECUTION_POLICY.json"
+  },
+  "skills": {
+    "sourceOfTruth": "~/.codex/skills (lead-maintained)",
+    "claudeLinks": [
+      "~/.claude/skills/pawborough-static-architecture",
+      "~/.claude/skills/pawborough-game-client",
+      "~/.claude/skills/pawborough-character"
+    ],
+    "repoSnapshot": "docs/skills-snapshot/ (read-only copy for reproducibility; NOT a second editable canonical)"
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "route": "template_fit",
+  "revision": "r02",
+  "declaration": "Deforms the approved A teacher neutral mesh toward C-adult proportions. NOT an independent mesh; texture and topology inherited unchanged. r02 revisions follow analysis/LEAD_REVIEW_C_R01.md; visual feedback was supplied as text by the lead, no image service was used.",
+  "base": "/home/baibai/outbox/pawborough-image-to-cat-glm-20260911/teacher/neutral-standing.glb",
+  "base_sha256": "7927effddb0ef044f79a701fb5c6bfda71e49a631c6d7116c7aada16f7eba068",
+  "fixes_vs_r01": [
+    "1. Head: ONE uniform scale (0.9) for face/eyes/cheeks/ears/skull; r01's ellipsoidal radius falloff (which squeezed the face middle while keeping cheek/skull-back volume) is removed. Transition is placed only at the neck root (y-band with a z-dependent shift so ears stay fully weighted), plus a low-z guard so front-leg columns are never head-scaled.",
+    "2. Old belly_tuck removed (it lifted every vert below z~0.1 including hind paws). Replaced by a ground-anchored monotone height map z_new = z + 0.020*smoothstep((z-0.025)/(0.14-0.025)): feet stay, knees/hocks rise, chest and hips get the full +0.020, everything above the shoulder keeps +0.020. Monotone z remap keeps knee/hock fold lines; x/y of legs untouched so legs are not straightened.",
+    "3. All four feet grounded individually by spatial cluster (not global minZ). Source hind +x foot rests 1.70mm high; it is lowered 1.70mm with a smooth height fade, other feet already at 0.",
+    "Chest/waist x-narrowing and torso y-stretch now carry a low-z guard so paws/feet columns are excluded; torso stretch damped 1.10 -> 1.05 (conservative).",
+    "r01 ear elongation (1.15) dropped: ears share the same uniform 0.9 head scale per lead point 1."
+  ],
+  "image_inputs": [
+    "inputs/C-adult-four-views.png",
+    "inputs/C-adult-single.png"
+  ],
+  "feedback_inputs": [
+    "analysis/LEAD_REVIEW_C_R01.md (lead visual review of r01 renders, applied as text)"
+  ],
+  "region_anchors_source": "worker/C-template/r02/probe_r02.json (measured from teacher GLB vertices this revision)",
+  "deformation": {
+    "head": {
+      "center_xyz": [
+        -0.013,
+        -0.161,
+        0.222
+      ],
+      "center_source": "measured: probe_r02 head p50 incl. ears (r01 center -0.008,-0.15,0.222 close; kept measured value)",
+      "uniform_scale": 0.9,
+      "scale_source": "lead direction: one consistent conservative scale ~0.9 for the whole head incl. ears, instead of r01 measured per-axis 0.75/0.8/0.82 with radius falloff",
+      "neck_transition": {
+        "full_y_edge_low_z": -0.145,
+        "zero_y_edge_low_z": -0.055,
+        "z_ramp": [
+          0.2,
+          0.24
+        ],
+        "note": "At upper head height use full head weight; interpolation only at lower neck. See template_fit.py corrected upper-head mask.",
+        "source": "measured + lead: transition only at neck root"
+      },
+      "leg_guard_z": [
+        0.145,
+        0.166
+      ],
+      "leg_guard_source": "measured: head bottom (jaw) ~0.168-0.175, front-leg columns share y<-0.11 below that; guard zeroes head weight on leg verts"
+    },
+    "muzzle_push_forward_m": 0.006,
+    "muzzle_push_source": "inferred: C read has a longer muzzle; kept small (r01 0.008) so face relations dominate",
+    "torso_stretch": {
+      "anchor_y": 0.03,
+      "factor": 1.05,
+      "rise_band_y": [
+        -0.09,
+        -0.03
+      ],
+      "fall_band_y": [
+        0.13,
+        0.19
+      ],
+      "z_guard": [
+        0.04,
+        0.09
+      ],
+      "source": "inferred, damped from r01 1.10 (measured length ratio 1.126); z-guard keeps paws fixed in y"
+    },
+    "chest_width_factor": {
+      "region_y": [
+        -0.1,
+        -0.02
+      ],
+      "ramp": 0.02,
+      "factor": 0.95,
+      "z_guard": [
+        0.06,
+        0.095
+      ],
+      "source": "inferred: C slimmer chest relative to head; z-guard excludes feet"
+    },
+    "waist_width_factor": {
+      "region_y": [
+        0.02,
+        0.1
+      ],
+      "ramp": 0.02,
+      "factor": 0.9,
+      "z_guard": [
+        0.06,
+        0.095
+      ],
+      "source": "inferred: C side waist tuck; z-guard excludes hind paws (r01 let the waist band reach them in x)"
+    },
+    "height_lift": {
+      "lift_max_m": 0.02,
+      "z_start": 0.025,
+      "z_full": 0.14,
+      "formula": "z_new = z + lift_max * smoothstep((z - z_start) / (z_full - z_start))",
+      "source": "lead-provided starting map; ground-anchored so paw soles stay, chest/hip and everything above z_full rise the full 2cm, knee/hock rise progressively; monotone so fold lines survive"
+    },
+    "foot_grounding": {
+      "cluster_z_max": 0.03,
+      "fade_z": [
+        0.004,
+        0.03
+      ],
+      "bbox_margin_m": 0.003,
+      "source": "lead: check four soles separately, never let torso ops touch feet; measured hind_pos_x sole at z=0.00170, other three at 0"
+    }
+  },
+  "inherited_unchanged": [
+    "topology (16632 verts / 20293 tris)",
+    "UV map",
+    "packed BaseColor/Metallic/Normal textures",
+    "no armature in source; static mesh only"
+  ],
+  "pose": "static neutral standing, four soles on z=0; no animation exported",
+  "not_claimed": "no aesthetic adoption score; lead reviews renders, GLM cannot view images in this task",
+  "implementation_note": "Use template_fit.py with the three lead code corrections; source GLB hash is checked. This profile is fitted to the supplied A, not arbitrary cats."
+}

@@ -1,0 +1,24 @@
+{
+  "decided_at": "2026-09-13T22:10+09:00",
+  "decision": "roadmap_canonical=world_version",
+  "owner_statement": "世界版",
+  "meaning": {
+    "canonical_roadmap": "/home/baibai/outbox/pawborough-development-history-20260913/开发过程与v1.0目标.md (V01–V10, P0–P6)",
+    "demoted_to_long_term": "/home/baibai/outbox/pawborough-long-term-plan-20260912/ROADMAP.md (M0–M7, U0–U2) → G1/G2/G3 远期",
+    "unity": "不再作为门槛；仅保留一次 U0 导入验证，在 W2 上执行",
+    "characters": "后置，按 G1 另开决策",
+    "skills_to_align": [
+      "pawborough-static-architecture (保留)",
+      "pawborough-chapter-production (瘦身为游戏客户端规则，指向世界版)",
+      "pawborough-shanghai-art-night (归档)",
+      "pawborough-cat-modeling + pawborough-image-to-cat (合并，标暂缓)"
+    ]
+  },
+  "not_yet_done": [
+    "git 仓库未建",
+    "Skill 未改",
+    "旧预览服务未停",
+    "ROADMAP.md 与 development-history 文档本身未被改写"
+  ],
+  "source": "机主本会话口头决定；本文件由 Claude 记录，不替代 W2 管理正本"
+}
