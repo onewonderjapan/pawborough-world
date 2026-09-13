@@ -16,7 +16,10 @@ const outside=new T.Mesh(new T.PlaneGeometry(600,600),new T.MeshStandardMaterial
 const camera=new T.PerspectiveCamera(45,1,.1,600),controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=false;controls.minDistance=.5;controls.maxDistance=220;controls.maxPolarAngle=Math.PI;
 const world=new T.Group();world.name='complete-fangbang-world';scene.add(world);
 const clay=new T.MeshStandardMaterial({color:0xb8b7ae,roughness:.86});
-const labels={'full-west':'全段·西','full-east':'全段·东','eye-west':'沿街·西向东','eye-east':'沿街·东向西',across:'对街北望',corner:'光启路口',lane:'支弄B',catwall:'猫墙',plaza:'玄扈台前空地','corner-close':'路名牌近景','module-near':'店面近景'};
+const labels={'full-west':'全段·西','full-east':'全段·东','eye-west':'沿街·西向东','eye-east':'沿街·东向西',across:'对街北望',corner:'光启路口',lane:'支弄B',catwall:'猫墙',plaza:'玄扈台前空地','corner-close':'路名牌近景','module-near':'店面近景','lane-b-axis':'支弄B·门洞轴线','lane-b-inside-return':'支弄B·门后回望','lane-b-detail':'支弄B·门框细节'};
+// candidate dataset switch: ?world=laneb loads the N5 derived world
+const WORLD_PARAM = new URLSearchParams(location.search).get('world');
+const WORLD_BASE = WORLD_PARAM === 'laneb' ? './world/laneb/' : './world/';
 let streetKitNodeCount=0;let ready=false,clayOn=false,selected='full-west',cameras=[],instances=null,manifest=null,lastRender={},loadStats={};
 // walking session state (single authority chain: input -> WalkController -> camera follows)
 let session=null,controller=null,mode='view',paused=false,cruise=null,lastCruiseStatus=null,resetCount=0;
@@ -102,8 +105,8 @@ function frame(t){
 }
 async function load(){const t0=performance.now();
   await RAPIER.init();
-  session=await loadWorld({RAPIER,baseUrl:'./',renderer});
-  ({cameras}=await json('./world/cameras.json'));
+  session=await loadWorld({RAPIER,baseUrl:WORLD_BASE,renderer});
+  ({cameras}=await json(WORLD_BASE+'cameras.json'));
   instances=session.instances;manifest=session.manifest;
   world.add(session.root);
   session.root.traverse(o=>{if(o.name.startsWith('street-kit__'))streetKitNodeCount++;});

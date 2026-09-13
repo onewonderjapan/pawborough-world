@@ -63,7 +63,7 @@ export function readGlb(input) {
     }
   }
   const totalTriangles = meshes.reduce((s, m) => s + m.indices.length / 3, 0);
-  return { gltf, meshes, totalTriangles };
+  return { gltf, meshes, totalTriangles, bin };
 }
 
 export function identity() {

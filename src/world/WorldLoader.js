@@ -27,18 +27,20 @@ export async function fetchJson(path) {
   return r.json();
 }
 
-export async function loadWorld({ RAPIER, baseUrl = './', renderer = null } = {}) {
+export async function loadWorld({ RAPIER, baseUrl = './world/', renderer = null } = {}) {
   const u = (p) => new URL(p, new URL(baseUrl, location.href)).href;
+  // baseUrl is the DATASET directory (files directly inside it)
   const [manifest, instances, collision, route] = await Promise.all([
-    fetchJson(u('world/review-manifest.json')),
-    fetchJson(u('world/instances.json')),
-    fetchJson(u('world/collision-world.json')),
-    fetchJson(u('world/route.json')),
+    fetchJson(u('review-manifest.json')),
+    fetchJson(u('instances.json')),
+    fetchJson(u('collision-world.json')),
+    fetchJson(u('route.json')),
   ]);
   validateWorldInputs({ manifest, instances, collision, route });
 
   // --- geometry (single assembly; identical to the shipped orbit viewer) ---
-  const res = await fetch(u(manifest.worldAssembly.path), { cache: 'no-cache' });
+  // manifest asset paths are site-root-relative (frozen: ./world/..., laneb: ./world/laneb/...)
+  const res = await fetch(new URL(manifest.worldAssembly.path, location.href), { cache: 'no-cache' });
   if (!res.ok) throw new Error(`world input: ${manifest.worldAssembly.path} HTTP ${res.status}`);
   const data = await res.arrayBuffer();
   const model = await createGLTFLoader({ renderer, baseUrl }).parseAsync(data, u('./'));

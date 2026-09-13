@@ -1,0 +1,103 @@
+{
+  "axis": "glTF Y-up, facade +Z, front-wall center bottom origin",
+  "colliders": [
+    {
+      "name": "portal-pier-left",
+      "group": "lane-b",
+      "center": [
+        -0.925,
+        1.325,
+        -0.06
+      ],
+      "size": [
+        0.35,
+        2.65,
+        0.12
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "portal-pier-right",
+      "group": "lane-b",
+      "center": [
+        0.925,
+        1.325,
+        -0.06
+      ],
+      "size": [
+        0.35,
+        2.65,
+        0.12
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "back-facade",
+      "group": "lane-b",
+      "center": [
+        0.0,
+        3.1,
+        5.56
+      ],
+      "size": [
+        3.6,
+        6.2,
+        0.12
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "side-facade",
+      "group": "lane-b",
+      "center": [
+        1.86,
+        2.4,
+        4.0
+      ],
+      "size": [
+        0.12,
+        4.8,
+        3.0
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "side-door",
+      "group": "lane-b",
+      "center": [
+        1.78,
+        1.025,
+        3.1
+      ],
+      "size": [
+        0.09,
+        2.05,
+        1.0
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "pocket-wall-left",
+      "group": "lane-b",
+      "center": [
+        -1.86,
+        1.8,
+        4.5
+      ],
+      "size": [
+        0.12,
+        3.6,
+        2.0
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    }
+  ],
+  "doors": "ground-floor front open into shallow interior; rear and sides closed",
+  "notIntegratedOrWalkingTested": true
+}
