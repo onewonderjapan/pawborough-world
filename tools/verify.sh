@@ -49,6 +49,10 @@ run_step "manifest-and-dist-hash" node scripts/validate_manifest.cjs --report "$
 run_step "negative-manifest-corruption" node scripts/manifest_negative_test.mjs
 run_step "negative-corrupted-glb" node scripts/validate_negative_test.mjs
 run_step "camera-contract" node scripts/camera_contract_test.mjs
+run_step "world-inputs" node tests/world_inputs.test.mjs
+run_step "physics-contract" node tests/physics_contract.test.mjs
+run_step "session-lifecycle" node tests/session_lifecycle.test.mjs
+run_step "browser-smoke" node tools/browser_smoke.mjs
 run_step "evidence-endpoint-origin" bash tools/evidence_endpoint_test.sh
 
 RESULT="$EV/verify-result.json"
