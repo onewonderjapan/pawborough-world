@@ -1,0 +1,18 @@
+# Shared / machine-local artifacts — never commit
+node_modules
+node_modules/
+.zcode/
+dist/
+.cache/
+*.log
+logs/
+*.pid
+
+# Task-local test sandboxes (created per-run by validator/negative tests)
+sandbox*/
+tmp/
+.night-runner-state
+
+# OS / editor noise
+.DS_Store
+Thumbs.db

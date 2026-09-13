@@ -1,0 +1,71 @@
+{
+  "axis": "glTF Y-up, facade +Z, front-wall center bottom origin",
+  "colliders": [
+    {
+      "name": "mural-front-wall",
+      "group": "cat-corner",
+      "center": [
+        0.0,
+        3.25,
+        -0.15
+      ],
+      "size": [
+        7.2,
+        6.5,
+        0.3
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "mural-side-left",
+      "group": "cat-corner",
+      "center": [
+        -3.45,
+        3.25,
+        -2.9
+      ],
+      "size": [
+        0.3,
+        6.5,
+        5.8
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "mural-side-right",
+      "group": "cat-corner",
+      "center": [
+        3.45,
+        3.25,
+        -2.9
+      ],
+      "size": [
+        0.3,
+        6.5,
+        5.8
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "mural-back-wall",
+      "group": "cat-corner",
+      "center": [
+        0.0,
+        3.25,
+        -5.6499999999999995
+      ],
+      "size": [
+        7.2,
+        6.5,
+        0.3
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    }
+  ],
+  "doors": "closed memorial wall block; no public door",
+  "notIntegratedOrWalkingTested": true
+}

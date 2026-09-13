@@ -1,0 +1,29 @@
+{
+  "moduleId": "plain-v2",
+  "triangles": 6852,
+  "meshes": 10,
+  "fileBytes": 1863044,
+  "sha256": "c08d816d6e144893bfcd9e6c4aacce890137d977de579fb8f6fab10cf4a04ea8",
+  "design": {
+    "family": "plain",
+    "variant": "v2",
+    "frontageM": 10.7,
+    "depthM": 6.4,
+    "eaveM": 6.8,
+    "ridgeM": 8.0,
+    "eaveMarginM": 0.4,
+    "frontProtrusionM": 0.45,
+    "distinctFromBaseline": [
+      "simple straight slope roof",
+      "shutter windows vs open lattice",
+      "2 posts vs 4",
+      "front brick plinth"
+    ],
+    "signage": "main + sub typeset board",
+    "source": "new module for fangbang-parallel-night-20260913, derived from baseline method"
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

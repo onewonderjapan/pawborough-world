@@ -1,0 +1,22 @@
+{
+  "moduleId": "cloth-shop",
+  "triangles": 10068,
+  "meshes": 15,
+  "fileBytes": 2222268,
+  "sha256": "87c89a4620532eb351df7af21665a29c40c43fad610fe3a759aa5335ec85362d",
+  "design": {
+    "family": "cloth-shop",
+    "source": "derived from inputs/baseline 檐下三间 build.py; rebuilt in unit-local frame",
+    "frontageM": 7.6,
+    "depthM": 6.7,
+    "eaveM": 7.7,
+    "ridgeM": 9.2,
+    "eaveMarginM": 0.4,
+    "frontProtrusionM": 0.5,
+    "doors": "ground floor open bays into shallow display interior"
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

@@ -1,0 +1,327 @@
+{
+  "axis": "glTF Y-up, facade +Z, front-wall center bottom origin",
+  "colliders": [
+    {
+      "name": "left-side",
+      "group": "corner",
+      "center": [
+        -4.91,
+        3.7,
+        -3.48
+      ],
+      "size": [
+        0.28,
+        7.4,
+        7.2
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "branch-parapet-wall",
+      "group": "corner",
+      "center": [
+        -4.95,
+        3.7,
+        -6.8425
+      ],
+      "size": [
+        0.28,
+        7.4,
+        0.47499999999999964
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "branch-parapet-wall",
+      "group": "corner",
+      "center": [
+        -4.95,
+        3.7,
+        -2.7175
+      ],
+      "size": [
+        0.28,
+        7.4,
+        5.675
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "branch-parapet-wall-head",
+      "group": "corner",
+      "center": [
+        -4.95,
+        4.83,
+        -6.08
+      ],
+      "size": [
+        0.28,
+        5.140000000000001,
+        1.0500000000000007
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "back-wall",
+      "group": "corner",
+      "center": [
+        0.0,
+        3.7,
+        -6.94
+      ],
+      "size": [
+        9.549999999999999,
+        7.4,
+        0.28
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "shop-floor",
+      "group": "corner",
+      "center": [
+        0.0,
+        0.07,
+        -3.48
+      ],
+      "size": [
+        10.08,
+        0.14,
+        7.2
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "upper-floor",
+      "group": "corner",
+      "center": [
+        0.0,
+        3.7,
+        -3.48
+      ],
+      "size": [
+        9.54,
+        0.22,
+        6.65
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "rear-interior",
+      "group": "corner",
+      "center": [
+        0.0,
+        1.7,
+        -3.78
+      ],
+      "size": [
+        9.6,
+        3.25,
+        0.2
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "corner-pier",
+      "group": "corner",
+      "center": [
+        -4.77,
+        3.85,
+        0.28
+      ],
+      "size": [
+        0.4,
+        7.5,
+        0.44
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "corner-pier-foot",
+      "group": "corner",
+      "center": [
+        -4.77,
+        0.38,
+        0.28
+      ],
+      "size": [
+        0.52,
+        0.76,
+        0.56
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "facade-post",
+      "group": "corner",
+      "center": [
+        4.87,
+        3.8,
+        0.21
+      ],
+      "size": [
+        0.2,
+        7.4,
+        0.24
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "stone-post-foot",
+      "group": "corner",
+      "center": [
+        4.87,
+        0.35,
+        0.21
+      ],
+      "size": [
+        0.34,
+        0.7,
+        0.34
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "facade-post",
+      "group": "corner",
+      "center": [
+        -1.8179999999999998,
+        3.8,
+        0.21
+      ],
+      "size": [
+        0.2,
+        7.4,
+        0.24
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "stone-post-foot",
+      "group": "corner",
+      "center": [
+        -1.8179999999999998,
+        0.35,
+        0.21
+      ],
+      "size": [
+        0.34,
+        0.7,
+        0.34
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "facade-post",
+      "group": "corner",
+      "center": [
+        -0.20199999999999999,
+        3.8,
+        0.21
+      ],
+      "size": [
+        0.2,
+        7.4,
+        0.24
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "stone-post-foot",
+      "group": "corner",
+      "center": [
+        -0.20199999999999999,
+        0.35,
+        0.21
+      ],
+      "size": [
+        0.34,
+        0.7,
+        0.34
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "threshold",
+      "group": "corner",
+      "center": [
+        0.0,
+        0.12,
+        0.33999999999999997
+      ],
+      "size": [
+        9.6,
+        0.24,
+        0.55
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "shop-door",
+      "group": "corner",
+      "center": [
+        -1.6159999999999999,
+        1.05,
+        0.06
+      ],
+      "size": [
+        1.15,
+        2.1,
+        0.09
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "counter-cabinet",
+      "group": "corner",
+      "center": [
+        -2.525,
+        1.0,
+        -1.58
+      ],
+      "size": [
+        4.242,
+        1.9,
+        0.5
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "branch-door",
+      "group": "corner",
+      "center": [
+        -5.1499999999999995,
+        1.1,
+        -6.08
+      ],
+      "size": [
+        0.08,
+        1.96,
+        0.7900000000000007
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    }
+  ],
+  "doors": "ground-floor front open into shallow interior; rear and sides closed",
+  "notIntegratedOrWalkingTested": true
+}

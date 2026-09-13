@@ -1,0 +1,23 @@
+{
+  "moduleId": "cat-corner",
+  "triangles": 2988,
+  "meshes": 8,
+  "fileBytes": 1580852,
+  "sha256": "90f3d33ba782666093f2456b9890bed63bf2d45dc3019c136cbd6174eac072d3",
+  "design": {
+    "family": "cat-corner",
+    "source": "derived from inputs/baseline cat-corner block; mural texture reused unchanged",
+    "frontageM": 7.2,
+    "depthM": 5.8,
+    "eaveM": 6.5,
+    "ridgeM": 7.75,
+    "eaveMarginM": 0.4,
+    "frontProtrusionM": 0.15,
+    "doors": "closed memorial wall block; no public door",
+    "eraNote": "mural artwork is the owner-designated 2023 feature kept inside a 1990s street"
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

@@ -1,0 +1,28 @@
+{
+  "moduleId": "curio-b",
+  "triangles": 7490,
+  "meshes": 13,
+  "fileBytes": 1953600,
+  "sha256": "768062ada15239ba5d086a09939a4e8b593677d0ac06180357728591c426ee40",
+  "design": {
+    "family": "curio",
+    "variant": "b-calligraphy",
+    "frontageM": 6.2,
+    "depthM": 5.2,
+    "eaveM": 6.6,
+    "ridgeM": 7.6,
+    "eaveMarginM": 0.4,
+    "frontProtrusionM": 1.3,
+    "distinctFromBaseline": [
+      "narrow 6.2m bay",
+      "full-width big-pane display window",
+      "shallow porch 1.0m",
+      "brass accents"
+    ],
+    "source": "new module for fangbang-parallel-night-20260913, derived from baseline method"
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

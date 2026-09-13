@@ -1,0 +1,183 @@
+{
+  "axis": "glTF Y-up, facade +Z, front-wall center bottom origin",
+  "colliders": [
+    {
+      "name": "left-side",
+      "group": "curio",
+      "center": [
+        -2.96,
+        3.3,
+        -2.48
+      ],
+      "size": [
+        0.28,
+        6.6,
+        5.2
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "right-side",
+      "group": "curio",
+      "center": [
+        2.96,
+        3.3,
+        -2.48
+      ],
+      "size": [
+        0.28,
+        6.6,
+        5.2
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "back-wall",
+      "group": "curio",
+      "center": [
+        0.0,
+        3.3,
+        -4.94
+      ],
+      "size": [
+        5.65,
+        6.6,
+        0.28
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "shop-floor",
+      "group": "curio",
+      "center": [
+        0.0,
+        0.07,
+        -2.48
+      ],
+      "size": [
+        6.2,
+        0.14,
+        5.2
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "upper-floor",
+      "group": "curio",
+      "center": [
+        0.0,
+        3.6,
+        -2.48
+      ],
+      "size": [
+        5.640000000000001,
+        0.22,
+        4.65
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "rear-interior",
+      "group": "curio",
+      "center": [
+        0.0,
+        1.65,
+        -3.28
+      ],
+      "size": [
+        5.7,
+        3.15,
+        0.2
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "porch-platform",
+      "group": "curio",
+      "center": [
+        0.0,
+        0.16,
+        0.62
+      ],
+      "size": [
+        5.8,
+        0.22,
+        1.0
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "shop-door",
+      "group": "curio",
+      "center": [
+        2.25,
+        1.05,
+        0.06
+      ],
+      "size": [
+        1.05,
+        2.1,
+        0.09
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "facade-post",
+      "group": "curio",
+      "center": [
+        -2.94,
+        3.6,
+        0.19
+      ],
+      "size": [
+        0.18,
+        7.0,
+        0.22
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "facade-post",
+      "group": "curio",
+      "center": [
+        2.94,
+        3.6,
+        0.19
+      ],
+      "size": [
+        0.18,
+        7.0,
+        0.22
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "counter-cabinet",
+      "group": "curio",
+      "center": [
+        -0.55,
+        1.0,
+        -1.48
+      ],
+      "size": [
+        4.0,
+        1.9,
+        0.5
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    }
+  ],
+  "doors": "ground-floor front open into shallow interior; rear and sides closed",
+  "notIntegratedOrWalkingTested": true
+}

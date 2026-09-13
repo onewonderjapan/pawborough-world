@@ -1,0 +1,28 @@
+{
+  "sourceGlbSha256": "95d1cdd31eb61406c7a8b832548db515509184b8ddfe0a448c7fa0165d1aa111",
+  "reviewedWorldGlb": "street-reviewed.glb",
+  "roadWindingCorrected": true,
+  "sceneBlend": "scene.blend",
+  "engine": "Cycles CPU",
+  "samples": 24,
+  "threads": 4,
+  "viewTransform": "AgX",
+  "look": "AgX - Medium High Contrast",
+  "worldColorLinear": [
+    0.72,
+    0.78,
+    0.82
+  ],
+  "worldStrength": 0.42,
+  "sunEulerBlenderDegrees": [
+    26,
+    -22,
+    -35
+  ],
+  "sunEnergy": 2.8,
+  "sunAngleDegrees": 10,
+  "bakedGlobalIllumination": false,
+  "texturesPacked": true,
+  "browserLighting": "separate real-time setup; not pixel-identical to Cycles",
+  "contextFloorExportedAsGameGeometry": false
+}
