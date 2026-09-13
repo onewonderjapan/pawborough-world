@@ -1,0 +1,27 @@
+{
+  "moduleId": "plain-shop-b",
+  "triangles": 6696,
+  "meshes": 9,
+  "fileBytes": 1588144,
+  "sha256": "b454737b5a9e783e148034b560171943a8cc4d637e0b9226ce9be39e77105375",
+  "design": {
+    "family": "plain-config-sample",
+    "sampleId": "plain-shop-b",
+    "basedOn": "configurability proof: narrow bay, ornate windows, ornate roof, no signage (plain-v3-like proportions, window type per legacy family)",
+    "frontageM": 10.7,
+    "depthM": 6.4,
+    "eaveM": 6.8,
+    "ridgeM": 8.4,
+    "floors": 2,
+    "windowType": "ornate",
+    "upperWindowCount": 3,
+    "roofType": "ornate",
+    "materialSet": "pawborough-street-v1 (mb_lib.build_materials, frozen)",
+    "signage": "none",
+    "configDriven": true
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

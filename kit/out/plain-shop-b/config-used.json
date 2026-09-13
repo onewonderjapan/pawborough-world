@@ -1,0 +1,45 @@
+{
+  "sampleId": "plain-shop-b",
+  "basedOn": "configurability proof: narrow bay, ornate windows, ornate roof, no signage (plain-v3-like proportions, window type per legacy family)",
+  "units": "meters",
+  "bay": {
+    "widthM": 10.7,
+    "depthM": 6.4
+  },
+  "floors": 2,
+  "heights": {
+    "eaveM": 6.8,
+    "ridgeM": 8.4,
+    "upperFloorY": 3.55,
+    "sillWallCenterY": 4.25,
+    "sillWallHeightM": 1.0,
+    "headerFromY": 6.6,
+    "windowY": 5.65,
+    "pierHeightM": 1.85
+  },
+  "roof": {
+    "type": "ornate"
+  },
+  "upperWindows": {
+    "type": "ornate",
+    "count": 3,
+    "widthM": 1.55,
+    "heightM": 2.05
+  },
+  "shopfront": {
+    "doorWidthM": 1.1,
+    "doorHeightM": 2.1,
+    "doorCenterRatio": -0.22,
+    "counterWidthRatio": 0.5,
+    "counterCenterRatio": 0.18,
+    "frontBrickPlinth": true,
+    "plinthHeightM": 0.6
+  },
+  "streetPosts": {
+    "count": 2,
+    "postHeightM": 6.9
+  },
+  "signage": null,
+  "materialSet": "pawborough-street-v1 (mb_lib.build_materials, frozen)",
+  "configSha256": "c19de3f6c62238316588cb538af00327cb981c977d51aa2d0d7472241b2172c0"
+}
