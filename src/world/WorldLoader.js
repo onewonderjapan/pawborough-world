@@ -69,6 +69,20 @@ export async function loadWorld({ RAPIER, baseUrl = './world/', renderer = null 
   if (uniqueTextures.size > manifest.sceneImages.count * 2)
     throw new Error(`world integrity: ${uniqueTextures.size} textures — image sharing regressed (expected ~${manifest.sceneImages.count})`);
 
+  // --- optional dataset-level surface (street-completion tail): visible
+  // pavement that IS walkable ground, same faces via GROUND_NODE_RE ---
+  if (manifest.streetCompletion?.surface) {
+    const spath = manifest.streetCompletion.surface.path;
+    const sres = await fetch(new URL(spath, location.href), { cache: 'no-cache' });
+    if (!sres.ok) throw new Error(`world input: ${spath} HTTP ${sres.status}`);
+    const sdata = await sres.arrayBuffer();
+    if (sdata.byteLength !== manifest.streetCompletion.surface.bytes)
+      throw new Error(`world integrity: surface bytes ${sdata.byteLength} != manifest ${manifest.streetCompletion.surface.bytes}`);
+    const smodel = await createGLTFLoader({ renderer, baseUrl }).parseAsync(sdata, u('./'));
+    smodel.scene.name = 'dataset-surface';
+    root.add(smodel.scene);
+  }
+
   // --- ground triangles from the verified street-kit faces ---
   root.updateMatrixWorld(true);
   const groundMeshes = [];

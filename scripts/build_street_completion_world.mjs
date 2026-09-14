@@ -134,6 +134,17 @@ blocks.blocks.push({
 blocks.generatedBy = 'scripts/build_street_completion_world.mjs (derived candidate; frozen world/blocks.json untouched; east-edge block copied verbatim from world/east-edge/blocks.json)';
 await writeFile(resolve(OUT, 'blocks.json'), JSON.stringify(blocks, null, 2) + '\n');
 
+// ---- surface: visible tail pavement = walkable ground (same faces) --------
+const SURFACE_SRC = resolve(root, 'kit/out/sctail');
+const surfaceGlb = await readFile(resolve(SURFACE_SRC, 'model.glb'));
+const surfaceSpec = await readJson(resolve(SURFACE_SRC, 'surface-spec.json'));
+const surfaceMeasurements = await readJson(resolve(SURFACE_SRC, 'measurements.json'));
+await copyFile(resolve(SURFACE_SRC, 'model.glb'), resolve(OUT, 'surface.glb'));
+await copyFile(resolve(SURFACE_SRC, 'surface-spec.json'), resolve(OUT, 'surface-spec.json'));
+const clearances = surfaceSpec.clearance.perBuilding;
+const failedClearance = Object.entries(clearances).filter(([k, v]) => k !== '_argmin' && !v.pass);
+if (failedClearance.length) throw new Error(`surface clearance failed: ${failedClearance.map(([k]) => k).join(',')}`);
+
 // ---- manifest --------------------------------------------------------------
 const manifest = await readJson(resolve(root, 'world/review-manifest.json'));
 manifest.generatedBy = 'scripts/build_street_completion_world.mjs (derived candidate; frozen dataset untouched)';
@@ -147,12 +158,32 @@ manifest.streetCompletion = {
   combinedTriangleCount: assetTris,
   runtimeTextureSharing: 'none claimed — standalone GLBs embed their own image copies; unique images by content sha are counted in validation.json',
   designSpec: { path: SPEC, sha256: sha(await readFile(SPEC)) },
+  surface: {
+    path: './world/street-completion/surface.glb',
+    bytes: surfaceGlb.byteLength,
+    sha256: sha(surfaceGlb),
+    triangles: surfaceMeasurements.triangles,
+    groundNodeNames: ['sctail__quiet-gray-asphalt', 'sctail__worn-stone'],
+    spec: './world/street-completion/surface-spec.json',
+    noCitywideSlab: true,
+  },
 };
 await writeFile(resolve(OUT, 'review-manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
 await copyFile(SPEC, resolve(OUT, 'next-four-design.snapshot.json'));
 
+// ---- route: frozen mainStreet extended east through the tail ---------------
+const routeFrozen = await readJson(resolve(root, 'world/route.json'));
+const east = routeFrozen.entries.east;
+const tail = [[+east[0].toFixed(3), 0, +east[2].toFixed(3)],
+  ...surfaceSpec.route.tailSamplesEvery2M.filter(([x, z]) => x > east[0]).map(([x, z]) => [+x.toFixed(3), 0, +z.toFixed(3)])];
+const routeDerived = JSON.parse(JSON.stringify(routeFrozen));
+routeDerived.mainStreet = routeFrozen.mainStreet.concat(tail.slice(1));
+routeDerived.entries = { ...routeFrozen.entries, sctailEnd: [...tail[tail.length - 1]] };
+routeDerived.note = `${routeFrozen.note}; mainStreet extended over the street-completion tail (surface-spec.json route extension; geometry-verified only at dataset build time)`;
+await writeFile(resolve(OUT, 'route.json'), JSON.stringify(routeDerived, null, 2) + '\n');
+
 // ---- frozen pass-through inputs (client datasets fetch these by name) ------
-for (const f of ['instances.json', 'collision-world.json', 'route.json']) {
+for (const f of ['instances.json', 'collision-world.json']) {
   await copyFile(resolve(root, `world/${f}`), resolve(OUT, f));
 }
 

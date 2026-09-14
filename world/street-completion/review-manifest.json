@@ -186,6 +186,18 @@
     "designSpec": {
       "path": "/home/baibai/outbox/pawborough-lane-b-night-20260914/artifacts/street-completion-night-plan-20260915/NEXT_FOUR_DESIGN.json",
       "sha256": "535a1fb955980af74b191c2ed77f83e5f9ff8e01589647fcde566d443756288c"
+    },
+    "surface": {
+      "path": "./world/street-completion/surface.glb",
+      "bytes": 985560,
+      "sha256": "4d5c352c8d80617c0b110415b260486b678f1d36a5d6235e7eb1c43faa1be128",
+      "triangles": 1468,
+      "groundNodeNames": [
+        "sctail__quiet-gray-asphalt",
+        "sctail__worn-stone"
+      ],
+      "spec": "./world/street-completion/surface-spec.json",
+      "noCitywideSlab": true
     }
   }
 }

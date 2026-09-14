@@ -1,0 +1,63 @@
+{
+  "moduleId": "sctail",
+  "triangles": 1468,
+  "meshes": 2,
+  "fileBytes": 985560,
+  "sha256": "4d5c352c8d80617c0b110415b260486b678f1d36a5d6235e7eb1c43faa1be128",
+  "design": {
+    "family": "street-completion-tail-surface",
+    "sampleId": "sctail",
+    "frontageM": 39.6,
+    "band": {
+      "widthTailM": 4.0,
+      "widthStartM": 8.44,
+      "taperS": 8.0,
+      "walkBandNetM": 4.0,
+      "curbW": 0.25,
+      "curbH": 0.09
+    },
+    "controlPoints": [
+      [
+        86.25,
+        17.88
+      ],
+      [
+        96.7016,
+        20.8414
+      ],
+      [
+        104.07,
+        23.08
+      ],
+      [
+        109.2719,
+        24.2916
+      ],
+      [
+        120.9569,
+        27.0216
+      ],
+      [
+        124.6,
+        27.65
+      ]
+    ],
+    "endpoints": {
+      "start": [
+        86.25,
+        17.88
+      ],
+      "end": [
+        124.6,
+        27.65
+      ]
+    },
+    "clearanceRule": "pavement edge >= 0.1m from wall/footing (foundation +0.06m included)",
+    "interiorBuilt": false,
+    "surveyed": false
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}
