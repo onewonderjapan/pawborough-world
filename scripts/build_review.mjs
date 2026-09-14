@@ -30,6 +30,23 @@ for(const b of eeBlocks.blocks){
 }
 if(!eastEdgeFiles.some(f=>f.endsWith('.glb')))throw Error('east-edge dataset declares no asset GLBs — refusing to build an empty candidate');
 files.push(...eastEdgeFiles);
+// street-completion candidate dataset (?world=street-completion): same strict
+// required-file list; surface.glb is required too (visible pavement = ground)
+const scFiles=['world/street-completion/review-manifest.json','world/street-completion/instances.json','world/street-completion/collision-world.json','world/street-completion/blocks.json','world/street-completion/route.json','world/street-completion/cameras.json','world/street-completion/surface.glb','world/street-completion/surface-spec.json','world/street-completion/next-four-design.snapshot.json'];
+const scBlocks=JSON.parse(await readFile(resolve(root,'world/street-completion/blocks.json'),'utf8'));
+for(const b of scBlocks.blocks){
+  // the verbatim east-edge block keeps pointing at world/east-edge/* (already
+  // whitelisted above); only collect assets that live in this dataset
+  if(b.kind!=='assets'||b.id==='block-east-edge-shops')continue;
+  for(const a of b.assets){
+    for(const p of [a.glb,a.collision]){
+      if(typeof p!=='string'||!p.startsWith('./world/street-completion/'))throw Error(`street-completion asset path escapes the dataset dir: ${p}`);
+      scFiles.push(p.slice(2));
+    }
+  }
+}
+if(!scFiles.some(f=>f.endsWith('surface.glb')))throw Error('street-completion dataset lacks surface.glb — the tail would have no walkable ground');
+files.push(...scFiles);
 for(const f of files){
   const dest=resolve(root,'dist',f);
   await mkdir(dirname(dest),{recursive:true});
@@ -37,4 +54,4 @@ for(const f of files){
   const [src,dst]=await Promise.all([stat(resolve(root,f)),stat(dest)]);
   if(src.size!==dst.size)throw Error(`build copy size mismatch: ${f} ${src.size} -> ${dst.size}`);
 }
-console.log(`Strict review build copied ${files.length} required files incl. ${eastEdgeFiles.length} east-edge dataset files + world/laneb; errors are not suppressed.`);
+console.log(`Strict review build copied ${files.length} required files incl. ${eastEdgeFiles.length} east-edge + ${scFiles.length} street-completion dataset files + world/laneb; errors are not suppressed.`);

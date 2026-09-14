@@ -1,0 +1,73 @@
+{
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "date": "2026-09-15",
+  "batch": "street-completion-night-20260915 (S0-S6, 机主手动启动单会话连续执行)",
+  "task": "方浜中路街道完善整包：承接东端返修、四栋130–133、连续街尾、真实街面边界、8机位取景、城隍庙山门资料标注",
+  "baseline": {
+    "inheritedFrom": "east-fix-20260914T165929Z (R1-R3 rework), state delivered_for_lead_review, exitCode 0",
+    "trueHead": "4a2e76f",
+    "branch": "work/street-completion-20260915",
+    "note": "返修会话活跃期间本批按预设降级先行完成S5（独立产物目录），其退出后取真实HEAD建分支"
+  },
+  "commits": [
+    {"sha": "9e6caae", "scope": "S1+S2 四栋与六栋装配数据集"},
+    {"sha": "a3d939e", "scope": "S3 街面连通+route+物理巡游"},
+    {"sha": "c376c9b", "scope": "S4 8机位证据+Blender装配+性能记录"},
+    {"sha": "THIS", "scope": "S6 收口（构建白名单+交付文档）"}
+  ],
+  "deliverables": {
+    "fourShops": [
+      {"id": "east-shop-130", "designName": "棉布店", "triangles": 6916, "bytes": 1751408, "display": "布行：凹龛内6卷布匹（米白/灰蓝/棕红，随窗宽展开）"},
+      {"id": "east-shop-131", "designName": "绸缎店", "triangles": 6864, "bytes": 1742588, "display": "绸庄：4卷布匹+横向层板，窄招牌"},
+      {"id": "east-shop-132", "designName": "绣品店", "triangles": 7244, "bytes": 1793052, "display": "绣坊：3幅原创几何纹样挂框"},
+      {"id": "east-shop-133", "designName": "皮货店", "triangles": 6964, "bytes": 1755416, "display": "皮货：木板闭合+小展示窗"}
+    ],
+    "derivedDataset": "world/street-completion/（blocks.json 含逐字携带的128/129块+新130–133块、8固定机位、surface.glb+surface-spec、route向东延伸、6资产GLB+世界坐标碰撞侧车）",
+    "surface": "39.6m街尾路面：自实测路楔形端经三对前墙走廊中线，宽8.44→4.0m，可见面=物理地面（GROUND_NODE_RE提取，无隐形平板）；路缘石连续、2落水口+1井盖有据；逐栋边缘间隙全部≥0.10m（最紧130号0.137m），构建时硬校验",
+    "evidence": {
+      "webgl": "artifacts/street-completion/web-evidence/ 11张+2张机位修正重拍，每张附客户端自身遥测JSON",
+      "blender": "kit/out/sctail-scene/ scene.blend+cameras.json侧车+sc-czero PBR/clay+俯视总览（与WebGL明确分开）",
+      "constructionRenders": "kit/out/east-shop-13*/evidence/（含130 blend/reimport回环与v1实心栓橱窗失败留证）"
+    },
+    "templeReference": "artifacts/street-completion/temple-entry-reference/（S5资料包：8图辨认矩阵+山门六类要素像素标注+标注叠图+unknown清单）"
+  },
+  "budgets": {
+    "fourBuildingsTriangles": {"actual": 27988, "limit": 48000, "pass": true},
+    "perBuildingGlbBytes": {"max": 1793052, "limit": 10000000, "pass": true},
+    "combinedNewDownloadBytes": {"actual": 7042464, "note": "四栋新增；含128/129与街面的数据集总追加下载11,419,200B"},
+    "gltfValidator": {"errors": 0, "warnings": 0, "checked": "4 GLB"},
+    "surfaceEdgeClearance": {"rule": ">=0.10m", "min": 0.137, "pass": true}
+  },
+  "validation": {
+    "tests": {
+      "new": "tests/street_completion_contract.test.mjs 28/28 PASS；tests/street_completion_cruise.test.mjs 13/13 PASS（真实Rapier：西→东端→西自动往返、8/8站位落地、墙面拦停、闭门拦停、界外坠落证无隐形平板）",
+      "regression": "全套13套测试全部PASS（含eastedge/asset_cancel/physics等既有套件）"
+    },
+    "preview": "npm run build 后 preview(5285) 实测加载通过：候选(street-completion)、对照(assets=off)、默认、laneb、east-edge 五个世界均完整载入",
+    "cameraFixes": "S4审看后修正2处机位（sc-roof-north拉高后撤、sc-ground-seam重对接缝），前后坐标已记录，未超三类修正限额"
+  },
+  "failuresEncounteredAndFixed": [
+    "SCHEMA可选键机制两层失误（displayProps全键必填→REQ_SPEC；required缺省语义→req.get(k,{})）——负例+冻结128/129兼容性验证通过后才上分支",
+    "构建器validate()内部还有第二处check_keys(SCHEMA)调用未覆盖——130首建CONFIG_INVALID后修复",
+    "橱窗陈列为实心暗盒插栓、道具全被埋没——新增display_niche_on_wall开放凹龛（边框+受光背板、无玻璃），冻结128/129不受影响；v1渲染留证",
+    "布卷相对4.9m橱窗过小读不出业态——两轮放大（0.44/0.065→0.70/0.11）+间距随窗宽展开",
+    "S3走廊中线初版用粗中点+错误的最近点对中点两次失败——改用逐图argmin定位+130/131走廊中线转向点后全过",
+    "WebGL载入三处连锁修复：几何复核/诚实计量/资产完整性均未把surface计入——按数据集清单扩展预期值",
+    "两机位ID带数字不满足页面证据名[a-z-]+校验导致保存400——改名sc-pair-cloth-silk/sc-pair-embroidery-leather",
+    "build_review.mjs白名单无新数据集——按east-edge同款严格清单扩展；逐字携带的128/129块按其原数据集路径收集",
+    "Blender sc-pair-cloth-silk渲染黑帧（疑似相机入几何）——定位超时，如实降级记录；scene.blend与侧车已可复用，WebGL为主证据"
+  ],
+  "degradedOrKnownIssues": [
+    "Blender sc-pair-cloth-silk渲染黑帧（见上）；WebGL同机位正常",
+    "E128/E129既有橱窗为实心暗盒且碰撞未封（继承自已交付资产，本次未改动）——建议主控下一批决定是否同样改凹龛+封碰撞",
+    "离线高分辨率复渲未做（GPU共享规则：不抢占），WebGL+CPU Cycles小样已覆盖审看需要",
+    "FPS/P50/P95未报：本批无连续渲染帧间隔采样，不作假"
+  ],
+  "ownerReviewPoints": [
+    "四栋业态可辨度与陈列密度（web-evidence sc-pair-*两张）",
+    "130/131走廊0.137/0.187m间隙是否接受（surface-spec.json clearance）",
+    "E128/E129橱窗碰撞缺口的处置",
+    "S5资料包→山门+短前庭样板设计输入（temple-entry-reference/INDEX.md）"
+  ]
+}
