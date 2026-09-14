@@ -26,21 +26,56 @@ const WORLD_BASE = WORLD_PARAM === 'laneb' ? './world/laneb/' : './world/';
 let streetKitNodeCount=0;let ready=false,clayOn=false,selected='full-west',cameras=[],instances=null,manifest=null,lastRender={},loadStats={};
 // walking session state (single authority chain: input -> WalkController -> camera follows)
 let session=null,controller=null,mode='view',paused=false,cruise=null,lastCruiseStatus=null,resetCount=0,blocks=null;
+// F3 framing-view placeholder preference: false = refined buildings only (the
+// default). Walk mode ignores it and always shows placeholders together with
+// their collision; returning to view restores it.
+let placeholderPref=false;
 const keys={w:false,a:false,s:false,d:false};
 function resources(){const g=new Set(),m=new Set(),t=new Set();let triangles=0,meshes=0;world.traverse(o=>{if(!o.isMesh)return;meshes++;g.add(o.geometry);triangles+=(o.geometry.index?.count??o.geometry.attributes.position.count)/3;for(const mat of [o.material].flat()){m.add(mat);for(const v of Object.values(mat))if(v?.isTexture)t.add(v);}});return{meshes,triangles,uniqueGeometries:g.size,uniqueMaterials:m.size,uniqueTextures:t.size};}
 function record(){return{ready,view:selected,mode,paused,resources:resources(),expectedWorldTriangles:manifest?.placedTriangles,streetKitLoaded:streetKitNodeCount>0,streetKitNodeCount,loadMode:'single_assembly_sharing_embedded_images',placedBuildingCount:instances?.instances.length,assets:manifest,load:loadStats,fetches:[],render:lastRender,camera:{position:camera.position.toArray(),target:mode==='view'?controls.target.toArray():controller?.feetPosition()??null,fov:camera.fov,near:camera.near,quaternion:camera.quaternion.toArray(),matrixWorldFinite:[...camera.matrixWorld.elements].every(Number.isFinite),walkOrientationFinite:camera.quaternion.toArray().every(Number.isFinite)},framebuffer:renderer.getSize(new T.Vector2()).toArray(),lighting:{shadows:renderer.shadowMap.enabled,shadowBias:sun.shadow.bias,shadowNormalBias:sun.shadow.normalBias,toneMapping:'AgX',exposure:1,environmentIntensity:.28,hemisphereIntensity:.72,sunIntensity:2.4,sunPosition:sun.position.toArray()},browserRendered:true,
-  walking:{walkingVerified:false,manualKeyboardWalkTested:false,walkResets:resetCount,capsuleFeet:controller?controller.feetPosition():null,eyeHeightM:1.6,capsuleRadiusM:.35,autoPhysicsCruise:lastCruiseStatus,blocks:blocks?{active:blocks.activeIds(),epoch:blocks.epoch}:null},ownerAdopted:false};}
+  walking:{walkingVerified:false,manualKeyboardWalkTested:false,walkResets:resetCount,capsuleFeet:controller?controller.feetPosition():null,eyeHeightM:1.6,capsuleRadiusM:.35,autoPhysicsCruise:lastCruiseStatus,blocks:blocks?{active:blocks.activeIds(),epoch:blocks.epoch}:null},ownerAdopted:false,
+  // F3 placeholder presentation: framing view can hide gray-box placeholders
+  // (display only). hiddenPlaceholderIds are real loaded stable IDs currently
+  // not rendered; colliders stay untouched, so this is NOT a smaller asset
+  // pack and NOT an FPS claim — resources() still counts every placed mesh.
+  presentation:{placeholdersVisible:mode==='walk'?true:placeholderPref,viewPreference:placeholderPref,
+    hiddenPlaceholderIds:mode==='walk'||placeholderPref||!blocks?[]:blocks.loadedPlaceholderIds(),
+    loadedPlaceholderCount:blocks?blocks.loadedPlaceholderIds().length:0,
+    placeholderColliders:blocks?blocks.colliderCount():null,
+    worldVersion:manifest?.worldAssembly?`glb-sha256-${manifest.worldAssembly.sha256}`:null,
+    worldAssemblyPath:manifest?.worldAssembly?.path??null}};}
 function render(){if(!ready)return;const near=mode==='view'?Math.max(.05,Math.min(2,camera.position.distanceTo(controls.target)*.003)):.1;if(camera.near!==near){camera.near=near;camera.updateProjectionMatrix();}renderer.info.reset();const started=performance.now();renderer.render(scene,camera);lastRender={callsIncludingShadow:renderer.info.render.calls,trianglesIncludingShadow:renderer.info.render.triangles,cpuSubmitMs:performance.now()-started};const r=resources();stats.textContent=mode==='walk'?`行走模式 · 脚底 (${controller.feetPosition().map(v=>v.toFixed(1)).join(', ')}) ${paused?'· 已暂停':''}\nWASD 移动 · 鼠标环视(点击画面锁定) · 空格跳 · P 暂停 · V 返回取景`:`${instances.instances.length} 门面＋完整路面/支弄/前庭 · ${r.triangles.toLocaleString()} 三角形\n几何/材质/纹理 ${r.uniqueGeometries}/${r.uniqueMaterials}/${r.uniqueTextures} · 本机资产 ${(loadStats.bytes/1e6).toFixed(2)} MB\n拖动旋转 · 滚轮缩放 · 右键平移 · 行走模式按钮在上方`;document.querySelector('#record').textContent=JSON.stringify(record(),null,2);}
 function setView(id){const v=cameras.find(c=>c.id===id);if(!v)return;selected=id;camera.position.set(...v.positionGlb);controls.target.set(...v.targetGlb);camera.fov=2*Math.atan(v.sensorWidthMm/2/v.lensMm/camera.aspect)*180/Math.PI;camera.updateProjectionMatrix();controls.update();for(const b of viewsEl.querySelectorAll('[data-view]'))b.classList.toggle('on',b.dataset.view===id);render();}
 function setupButtons(){for(const c of cameras){const b=document.createElement('button');b.textContent=labels[c.id]??c.id;b.dataset.view=c.id;b.onclick=()=>{if(mode==='walk')setMode('view');setView(c.id);};viewsEl.appendChild(b);}
 const walkBtn=document.createElement('button');walkBtn.id='btn-walk';walkBtn.textContent='行走模式';walkBtn.onclick=()=>setMode(mode==='walk'?'view':'walk');viewsEl.appendChild(walkBtn);
 const cruiseBtn=document.createElement('button');cruiseBtn.textContent='路线巡游（物理链）';cruiseBtn.onclick=()=>startCruise();viewsEl.appendChild(cruiseBtn);
+// F3: framing-view switch for gray-box placeholders. Checked state in walk
+// mode is enforced (visible == collision) and the box is disabled there.
+const phLabel=document.createElement('label');phLabel.style.cssText='display:inline-flex;align-items:center;gap:4px;padding:5px 9px;border:1px solid #c7c6b9;border-radius:3px;background:#f8f5ed;cursor:pointer;user-select:none';
+const phBox=document.createElement('input');phBox.type='checkbox';phBox.id='chk-placeholder';
+phBox.onchange=()=>{if(mode!=='view'){phBox.checked=placeholderPref;return;}const prev=placeholderPref;placeholderPref=phBox.checked;try{applyPlaceholderDisplay(placeholderPref);notice(placeholderPref?'取景：显示占位建筑（仅显示切换，碰撞不变）。':'取景：仅显示精修建筑，占位已隐藏（碰撞不变）。');}catch(e){placeholderPref=prev;phBox.checked=prev;notice('占位显示切换失败：'+e.message);}render();};
+phLabel.appendChild(phBox);phLabel.appendChild(document.createTextNode('占位建筑'));viewsEl.appendChild(phLabel);
 const c=document.createElement('button');c.textContent='灰模';c.onclick=()=>{clayOn=!clayOn;scene.overrideMaterial=clayOn?clay:null;c.classList.toggle('on',clayOn);sun.shadow.needsUpdate=true;render();};viewsEl.appendChild(c);
-const save=document.createElement('button');save.textContent='保存实测图';save.onclick=async()=>{if(!ready)return;render();const image=renderer.domElement.toDataURL('image/jpeg',.94);try{const res=await fetch('/__review-evidence',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:`${mode==='walk'?'walk':selected}-${clayOn?'clay':'pbr'}`,image,record:record()})});if(!res.ok)throw Error(`保存 HTTP ${res.status}`);document.querySelector('#notice').textContent='当前WebGL画面与数据已保存。';}catch(e){document.querySelector('#notice').textContent=e.message;}};viewsEl.appendChild(save);}
+const save=document.createElement('button');save.textContent='保存实测图';save.onclick=async()=>{if(!ready)return;render();const image=renderer.domElement.toDataURL('image/jpeg',.94);// the name labels the presentation state: refined-only (-noph) and
+// engineering (-ph) shots of the same camera are never confused
+const phHidden=mode!=='walk'&&!placeholderPref;try{const res=await fetch('/__review-evidence',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:`${mode==='walk'?'walk':selected}-${clayOn?'clay':'pbr'}${phHidden?'-noph':'-ph'}`,image,record:record()})});if(!res.ok)throw Error(`保存 HTTP ${res.status}`);document.querySelector('#notice').textContent='当前WebGL画面与数据已保存。';}catch(e){document.querySelector('#notice').textContent=e.message;}};viewsEl.appendChild(save);}
+// F3 display-only application: manager flips loaded placeholder views by their
+// stable identity; the static shadow map must be re-rendered afterwards or the
+// hidden boxes would leave ghost shadows behind. Never destroys colliders.
+function applyPlaceholderDisplay(visible){const applied=blocks.setPlaceholdersVisible(visible);sun.shadow.needsUpdate=true;return applied;}
+function syncPlaceholderUi(){const box=document.querySelector('#chk-placeholder');if(!box)return;box.checked=mode==='walk'?true:placeholderPref;box.disabled=mode==='walk';box.parentElement.classList.toggle('on',mode==='walk'||placeholderPref);}
 async function json(path){const r=await fetch(path);if(!r.ok)throw Error(`${path} HTTP ${r.status}`);return r.json();}
 // ---- walk mode ----------------------------------------------------------
 function setMode(next){
   if(!ready||!controller||next===mode)return;
+  if(next==='walk'){
+    // F3: restore placeholder display/collision consistency BEFORE any
+    // movement is enabled — a hidden box must never stand as an invisible
+    // wall. On failure stay in view mode paused with the reason; no
+    // half-switched state.
+    try{applyPlaceholderDisplay(true);}
+    catch(e){paused=true;controller.pause();notice('占位显示恢复失败，已保持暂停：'+e.message);render();return;}
+  }
   mode=next;paused=false;
   document.querySelector('#btn-walk').classList.toggle('on',mode==='walk');
   controls.enabled=mode==='view';
@@ -55,9 +90,14 @@ function setMode(next){
     const v=cameras.find(c=>c.id===selected);
     if(v){camera.fov=2*Math.atan(v.sensorWidthMm/2/v.lensMm/camera.aspect)*180/Math.PI;}
     camera.updateProjectionMatrix();controls.update();
+    // F3: return to the user's framing preference; if applying it somehow
+    // fails, fall back to VISIBLE (fail-safe side), never half-hidden
+    try{applyPlaceholderDisplay(placeholderPref);}
+    catch(e){applyPlaceholderDisplay(true);notice('恢复取景占位偏好失败，已回退为显示占位。');}
     if(document.pointerLockElement)document.exitPointerLock();
     keys.w=keys.a=keys.s=keys.d=false;
   }
+  syncPlaceholderUi();
   sun.shadow.needsUpdate=true;render();
 }
 function resetController(spawn,countsAsReset){
@@ -132,8 +172,9 @@ async function load(){const t0=performance.now();
   // to a silently block-less scene (R3)
   blocks=new BlockManager({RAPIER,physics:session.physics,views:createBlockViews(scene,session),dataset:session.blocks});
   await blocks.applyReviewed(); // reviewed street owned by the manager; adjacent blocks cycle in walk mode
+  blocks.setPlaceholdersVisible(placeholderPref); // F3 framing default: refined only; any later load follows this preference
   loadStats={bytes:manifest.worldAssembly.bytes,fpsNotMeasured:true,localOnly:true};
-  setupButtons();setView('full-west');
+  setupButtons();setView('full-west');syncPlaceholderUi();
   const parsed=performance.now();await renderer.compileAsync(scene,camera);const compiled=performance.now();
   loadStats={...loadStats,allAssetsReadyMs:parsed-t0,shaderCompileMs:compiled-parsed};
   ready=true;sun.shadow.needsUpdate=true;render();

@@ -18,18 +18,20 @@ mkdir -p "$EV"
 LOG="$EV/evidence-endpoint-$STAMP.log"
 FIXTURE="$(ls ../inputs/photos/*.jpg | head -1)"
 NAME="http-fixture-pbr"
+NAME_SUFFIXED="http-fixture-pbr-noph"   # F3 presentation-labeled shots
 VITE="node_modules/.bin/vite"
 
 echo "== evidence endpoint origin test $STAMP ==" | tee -a "$LOG"
 echo "fixture: $FIXTURE ($(stat -c%s "$FIXTURE") bytes)" | tee -a "$LOG"
 
-python3 - "$FIXTURE" "$NAME" > "$EV/.fixture-body.json" <<'PYEOF'
+python3 - "$FIXTURE" "$NAME" "$NAME_SUFFIXED" "$EV/.fixture-body-suffixed.json" > "$EV/.fixture-body.json" <<'PYEOF'
 import base64, json, sys
-path, name = sys.argv[1], sys.argv[2]
+path, name, name_suffixed, suffixed_out = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
 data = base64.b64encode(open(path, 'rb').read()).decode()
-json.dump({'name': name, 'image': 'data:image/jpeg;base64,' + data,
-           'record': {'fixture': True, 'note': 'HTTP-level endpoint test with an existing task JPEG; not a browser screenshot'}},
-          sys.stdout)
+record = {'fixture': True, 'note': 'HTTP-level endpoint test with an existing task JPEG; not a browser screenshot'}
+with open(suffixed_out, 'w') as f:
+    json.dump({'name': name_suffixed, 'image': 'data:image/jpeg;base64,' + data, 'record': record}, f)
+json.dump({'name': name, 'image': 'data:image/jpeg;base64,' + data, 'record': record}, sys.stdout)
 PYEOF
 
 PORT=""; PID=""
@@ -55,12 +57,12 @@ stop_server() {
   sleep 0.5
   PID=""
 }
-check() { # $1=origin $2=expect $3=label ; uses $PORT
+check() { # $1=body-file $2=origin $3=expect $4=label ; uses $PORT
   local code
   code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "http://127.0.0.1:$PORT/__review-evidence" \
-    -H 'Content-Type: application/json' -H "Origin: $1" --data-binary @"$EV/.fixture-body.json")
-  echo "$3 -> HTTP $code (expect $2)" >>"$LOG"
-  [ "$code" = "$2" ]
+    -H 'Content-Type: application/json' -H "Origin: $2" --data-binary @"$1")
+  echo "$4 -> HTTP $code (expect $3)" >>"$LOG"
+  [ "$code" = "$3" ]
 }
 
 RESULT="$EV/evidence-endpoint-result.json"
@@ -78,15 +80,17 @@ comma=""
     mode=$1; port=$2
     start_server "$mode" "$port"
     set +e
-    check "http://127.0.0.1:$port"    200 "$port correct-origin"      ; r1=$?
-    check "http://127.0.0.1:9999"     403 "$port wrong-port-origin"   ; r2=$?
-    check "http://evil.example:$port" 403 "$port foreign-host-origin" ; r3=$?
+    check "$EV/.fixture-body.json" "http://127.0.0.1:$port"    200 "$port correct-origin"      ; r1=$?
+    check "$EV/.fixture-body-suffixed.json" "http://127.0.0.1:$port" 200 "$port suffix-name-accepted" ; r1b=$?
+    check "$EV/.fixture-body.json" "http://127.0.0.1:9999"     403 "$port wrong-port-origin"   ; r2=$?
+    check "$EV/.fixture-body.json" "http://evil.example:$port" 403 "$port foreign-host-origin" ; r3=$?
     set -e
     stop_server
-    overall=$((overall + r1 + r2 + r3))
-    printf '%s\n    {"mode": "%s", "port": %s, "checks": ["correct-origin %s", "wrong-port-origin %s", "foreign-host-origin %s"]}' \
+    overall=$((overall + r1 + r1b + r2 + r3))
+    printf '%s\n    {"mode": "%s", "port": %s, "checks": ["correct-origin %s", "suffix-name-accepted %s", "wrong-port-origin %s", "foreign-host-origin %s"]}' \
       "$comma" "$mode" "$port" \
       "$([ $r1 -eq 0 ] && echo pass || echo FAIL)" \
+      "$([ $r1b -eq 0 ] && echo pass || echo FAIL)" \
       "$([ $r2 -eq 0 ] && echo pass || echo FAIL)" \
       "$([ $r3 -eq 0 ] && echo pass || echo FAIL)"
     comma=","
@@ -96,6 +100,6 @@ comma=""
   echo "  \"verdict\": \"$([ $overall -eq 0 ] && echo PASS || echo FAIL)\""
   echo "}"
 } > "$RESULT"
-rm -f "$EV/.fixture-body.json"
+rm -f "$EV/.fixture-body.json" "$EV/.fixture-body-suffixed.json"
 echo "EVIDENCE_ENDPOINT $([ $overall -eq 0 ] && echo PASS || echo FAIL) result=$RESULT"
 [ $overall -eq 0 ]

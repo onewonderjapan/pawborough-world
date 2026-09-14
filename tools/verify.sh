@@ -57,6 +57,7 @@ run_step "laneb-contract" node tests/laneb_contract.test.mjs
 run_step "laneb-texture-slots" node tests/laneb_texture_slots.test.mjs
 run_step "block-lifecycle" node tests/block_lifecycle.test.mjs
 run_step "block-production" node tests/block_production.test.mjs
+run_step "placeholder-presentation" node tests/placeholder_presentation.test.mjs
 # browser smoke + evidence endpoint: SMOKE_PORT / EV_PREVIEW_PORT / EV_DEV_PORT
 # default to the PROJECT ports; override them when those are occupied (e.g.
 # the owner's live 5285 preview must never be disturbed)

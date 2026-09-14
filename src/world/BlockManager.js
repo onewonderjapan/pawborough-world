@@ -37,6 +37,12 @@ export class BlockManager {
     this.blocks = new Map();            // id -> {def, state, epoch, views, colliders, placeholders, reviewed}
     this.epoch = 0;                     // bumped on every unload; stale loads are discarded
     this.byPlaceholder = new Map(dataset.placeholders.map(p => [p.id, p]));
+    // F3 placeholder presentation: display-only visibility for the framing
+    // view. Default true (everything the manager loads shows); main.js flips
+    // it to the user's "refined only" preference in view mode and forces it
+    // back to true before walk movement (visible == collision, never an
+    // invisible wall).
+    this.placeholderVisible = true;
     for (const b of dataset.blocks) {
       this.blocks.set(b.id, { def: b, state: 'unloaded', epoch: 0, views: [], colliders: [], placeholders: [], reviewed: null });
     }
@@ -114,6 +120,11 @@ export class BlockManager {
 
     block.views = views; block.colliders = colliders; block.placeholders = placeholders; block.reviewed = reviewedParts;
     for (const v of views) this.views.add(v, reviewedParts?.parent);
+    // late-arriving loads follow the current presentation preference (F3): a
+    // placeholder completing while "refined only" is active comes in hidden,
+    // while its collider has already been created — walk mode re-enforces
+    // visible==true before any movement
+    for (const p of placeholders) if (p.view?.object) p.view.object.visible = this.placeholderVisible;
     block.state = 'loaded';
     this.primePipeline();
     return { stale: false, block };
@@ -179,6 +190,34 @@ export class BlockManager {
 
   activeIds() { return [...this.blocks.values()].filter(b => b.state === 'loaded').map(b => b.def.id); }
   colliderCount() { return this.blocks.size && [...this.blocks.values()].reduce((s, b) => s + b.placeholders.length, 0); }
+
+  // F3 framing-view presentation switch. Display ONLY: flips `.visible` on the
+  // currently loaded placeholder views selected by their real registry identity
+  // (stable map IDs via b.placeholders) — never by color/geometry sniffing, and
+  // never the reviewed street group. Colliders are not created, removed or
+  // hidden here, so a hidden box cannot become an invisible wall; the caller
+  // (main.js) refreshes the static shadow map after toggling. Returns the
+  // number of placeholder views the state was applied to.
+  setPlaceholdersVisible(visible) {
+    this.placeholderVisible = visible !== false;
+    let count = 0;
+    for (const b of this.blocks.values()) {
+      for (const p of b.placeholders) {
+        if (p.view?.object) p.view.object.visible = this.placeholderVisible;
+        count++;
+      }
+    }
+    return count;
+  }
+
+  // stable IDs of placeholders currently loaded (view exists in the scene),
+  // for screenshot/record honesty: these are exactly the boxes a
+  // "refined only" framing view is hiding
+  loadedPlaceholderIds() {
+    const ids = [];
+    for (const b of this.blocks.values()) for (const p of b.placeholders) ids.push(p.ph.id);
+    return ids.sort();
+  }
 
   // position-driven cycling (called each frame with the capsule position)
   update(px, pz) {
