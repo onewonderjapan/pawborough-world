@@ -68,9 +68,17 @@ function resetController(spawn,countsAsReset){
 }
 function startCruise(){
   if(!ready||!controller)return;
-  if(mode!=='walk')setMode('walk');else resetController(session.spawn,false);
+  if(mode!=='walk')setMode('walk');
+  else{
+    // F2-01: clicking cruise starts a NEW run — page pause and controller
+    // pause must clear together and leftover key input must drop, or the
+    // capsule sits frozen at spawn height until P is pressed again
+    paused=false;
+    keys.w=keys.a=keys.s=keys.d=false;
+    resetController(session.spawn,false);
+  }
   cruise=new CruiseDriver({controller,waypoints:session.route.mainStreet});
-  notice('巡游中：经由与人工输入相同的物理链向东路过全部路点…');
+  notice('巡游中：从合法出生点开始新一轮巡游，经由与人工输入相同的物理链向东路过全部路点…');
 }
 function notice(text){document.querySelector('#notice').textContent=text;}
 const KEYMAP={KeyW:'w',KeyA:'a',KeyS:'s',KeyD:'d'};
