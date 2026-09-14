@@ -19,10 +19,15 @@ const outside=new T.Mesh(new T.PlaneGeometry(600,600),new T.MeshStandardMaterial
 const camera=new T.PerspectiveCamera(45,1,.1,600),controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=false;controls.minDistance=.5;controls.maxDistance=220;controls.maxPolarAngle=Math.PI;
 const world=new T.Group();world.name='complete-fangbang-world';scene.add(world);
 const clay=new T.MeshStandardMaterial({color:0xb8b7ae,roughness:.86});
-const labels={'full-west':'全段·西','full-east':'全段·东','eye-west':'沿街·西向东','eye-east':'沿街·东向西',across:'对街北望',corner:'光启路口',lane:'支弄B',catwall:'猫墙',plaza:'玄扈台前空地','corner-close':'路名牌近景','module-near':'店面近景','lane-b-axis':'支弄B·门洞轴线','lane-b-inside-return':'支弄B·门后回望','lane-b-detail':'支弄B·门框细节'};
-// candidate dataset switch: ?world=laneb loads the N5 derived world
+const labels={'full-west':'全段·西','full-east':'全段·东','eye-west':'沿街·西向东','eye-east':'沿街·东向西',across:'对街北望',corner:'光启路口',lane:'支弄B',catwall:'猫墙',plaza:'玄扈台前空地','corner-close':'路名牌近景','module-near':'店面近景','lane-b-axis':'支弄B·门洞轴线','lane-b-inside-return':'支弄B·门后回望','lane-b-detail':'支弄B·门框细节','east-czero':'东端C0·原巡游终点视线','east-cone':'东端C1·两栋四分之三','east-front-a':'东128·正面','east-west-a':'东128·西侧山墙','east-front-b':'东129·正面','east-west-b':'东129·西侧山墙'};
+// candidate dataset switch: ?world=laneb loads the N5 derived world,
+// ?world=east-edge loads the east-edge shops candidate (block-level replacement);
+// &assets=off holds the replacement blocks back so the SAME dataset can show
+// its original gray boxes for the C0 same-camera comparison
 const WORLD_PARAM = new URLSearchParams(location.search).get('world');
-const WORLD_BASE = WORLD_PARAM === 'laneb' ? './world/laneb/' : './world/';
+const ASSETS_PARAM = new URLSearchParams(location.search).get('assets');
+const WORLD_BASE = WORLD_PARAM === 'laneb' ? './world/laneb/' : WORLD_PARAM === 'east-edge' ? './world/east-edge/' : './world/';
+const DATASET_TAG = WORLD_PARAM === 'laneb' ? 'laneb' : WORLD_PARAM === 'east-edge' ? 'east-edge' : 'base';
 let streetKitNodeCount=0;let ready=false,clayOn=false,selected='full-west',cameras=[],instances=null,manifest=null,lastRender={},loadStats={};
 // walking session state (single authority chain: input -> WalkController -> camera follows)
 let session=null,controller=null,mode='view',paused=false,cruise=null,lastCruiseStatus=null,resetCount=0,blocks=null;
@@ -56,9 +61,9 @@ const phBox=document.createElement('input');phBox.type='checkbox';phBox.id='chk-
 phBox.onchange=()=>{if(mode!=='view'){phBox.checked=placeholderPref;return;}const prev=placeholderPref;placeholderPref=phBox.checked;try{applyPlaceholderDisplay(placeholderPref);notice(placeholderPref?'取景：显示占位建筑（仅显示切换，碰撞不变）。':'取景：仅显示精修建筑，占位已隐藏（碰撞不变）。');}catch(e){placeholderPref=prev;phBox.checked=prev;notice('占位显示切换失败：'+e.message);}render();};
 phLabel.appendChild(phBox);phLabel.appendChild(document.createTextNode('占位建筑'));viewsEl.appendChild(phLabel);
 const c=document.createElement('button');c.textContent='灰模';c.onclick=()=>{clayOn=!clayOn;scene.overrideMaterial=clayOn?clay:null;c.classList.toggle('on',clayOn);sun.shadow.needsUpdate=true;render();};viewsEl.appendChild(c);
-const save=document.createElement('button');save.textContent='保存实测图';save.onclick=async()=>{if(!ready)return;render();const image=renderer.domElement.toDataURL('image/jpeg',.94);// the name labels the presentation state: refined-only (-noph) and
+const save=document.createElement('button');save.textContent='保存实测图';save.onclick=async()=>{if(!ready)return;render();const image=renderer.domElement.toDataURL('image/jpeg',.94);// the name labels the dataset + presentation state: refined-only (-noph) and
 // engineering (-ph) shots of the same camera are never confused
-const phHidden=mode!=='walk'&&!placeholderPref;try{const res=await fetch('/__review-evidence',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:`${mode==='walk'?'walk':selected}-${clayOn?'clay':'pbr'}${phHidden?'-noph':'-ph'}`,image,record:record()})});if(!res.ok)throw Error(`保存 HTTP ${res.status}`);document.querySelector('#notice').textContent='当前WebGL画面与数据已保存。';}catch(e){document.querySelector('#notice').textContent=e.message;}};viewsEl.appendChild(save);}
+const phHidden=mode!=='walk'&&!placeholderPref;try{const res=await fetch('/__review-evidence',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:`${DATASET_TAG}-${mode==='walk'?'walk':selected}-${clayOn?'clay':'pbr'}${phHidden?'-noph':'-ph'}`,image,record:record()})});if(!res.ok)throw Error(`保存 HTTP ${res.status}`);document.querySelector('#notice').textContent='当前WebGL画面与数据已保存。';}catch(e){document.querySelector('#notice').textContent=e.message;}};viewsEl.appendChild(save);}
 // F3 display-only application: manager flips loaded placeholder views by their
 // stable identity; the static shadow map must be re-rendered afterwards or the
 // hidden boxes would leave ghost shadows behind. Never destroys colliders.
@@ -172,6 +177,8 @@ async function load(){const t0=performance.now();
   // to a silently block-less scene (R3)
   blocks=new BlockManager({RAPIER,physics:session.physics,views:createBlockViews(scene,session),dataset:session.blocks});
   await blocks.applyReviewed(); // reviewed street owned by the manager; adjacent blocks cycle in walk mode
+  if (ASSETS_PARAM !== 'off') for (const id of blocks.assetBlockIds()) await blocks.applyAssets(id); // refined replacement blocks declared autoApply in the dataset
+  if (WORLD_PARAM === 'east-edge') await blocks.loadBlock('block-adjacent-east'); // the C0 comparison frames the street end from view mode: load the east district here too (walk mode still cycles it as before), so gray-box and candidate shots see the same context
   blocks.setPlaceholdersVisible(placeholderPref); // F3 framing default: refined only; any later load follows this preference
   loadStats={bytes:manifest.worldAssembly.bytes,fpsNotMeasured:true,localOnly:true};
   setupButtons();setView('full-west');syncPlaceholderUi();

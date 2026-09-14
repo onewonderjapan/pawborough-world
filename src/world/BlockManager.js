@@ -79,6 +79,16 @@ export class BlockManager {
       reviewedParts = made;
       views = [made.group];
       colliders = made.colliders.map(c => c.collider);
+    } else if (block.def.kind === 'assets') {
+      // refined standalone assets (e.g. east-edge shops): the factory loads
+      // the GLBs and creates their wall colliders; the block owns both, so a
+      // revoke removes the geometry AND its collision, and the placeholders
+      // it replaces come back (same teardown slot as the reviewed street).
+      const made = await this.views.makeAssets(block.def);
+      if (this.disposed) { block.state = 'unloaded'; return { stale: true, disposed: true, block }; }
+      reviewedParts = made;
+      views = [made.group];
+      colliders = made.colliders.map(c => c.collider);
     } else {
       for (const phId of block.def.placeholderIds ?? []) {
         const ph = this.byPlaceholder.get(phId);
@@ -113,7 +123,8 @@ export class BlockManager {
         this.physics.world.removeRigidBody(p.body);
         this.views.disposePlaceholder?.(p.view);
       }
-      if (reviewedParts) this.views.discardReviewed?.(reviewedParts);
+      if (reviewedParts?.isAssetGroup) this.views.discardAssets?.(reviewedParts);
+      else if (reviewedParts) this.views.discardReviewed?.(reviewedParts);
       block.state = 'unloaded';
       return { stale: true, block };
     }
@@ -147,9 +158,12 @@ export class BlockManager {
     for (const v of block.views) this.views.remove(v);
     if (block.reviewed) {
       // real street ownership: walls + ground trimesh leave the world with
-      // their rigid bodies, in the same order they were created
+      // their rigid bodies, in the same order they were created; asset groups
+      // additionally release their GPU geometry (they own it, the street
+      // root stays with the session)
       for (const c of block.reviewed.colliders) removeColliderWithBody(this.physics.world, c.collider, c.body);
       if (block.reviewed.ground) removeColliderWithBody(this.physics.world, block.reviewed.ground.collider, block.reviewed.ground.body);
+      if (block.reviewed.isAssetGroup) this.views.disposeAssets?.(block.reviewed);
       block.reviewed = null;
     }
     for (const p of block.placeholders) {
@@ -187,6 +201,36 @@ export class BlockManager {
     }
   }
   restoreReviewed() { return this.applyReviewed(); }
+
+  // ---- refined asset blocks (e.g. east-edge shops) ------------------------
+  // Same replacement semantics as the reviewed street, parameterized by block
+  // id: apply loads the block's refined assets and suppresses its replaced
+  // placeholders (visible geometry AND collision); revoke unloads and lets
+  // the placeholders spawn again. Loaded blocks that contain affected
+  // placeholders are refreshed in place so suppression never stacks.
+  assetBlockIds() {
+    return this.dataset.blocks.filter(b => b.kind === 'assets' && b.autoApply).map(b => b.id);
+  }
+  async applyAssets(id) {
+    const res = await this.loadBlock(id);
+    await this.refreshReplacedOf(id);
+    return res;
+  }
+  async revokeAssets(id) {
+    this.unloadBlock(id);
+    await this.refreshReplacedOf(id);
+  }
+  async refreshReplacedOf(id) {
+    const replaced = new Set(this.dataset.placeholders.filter(p => p.replacedBy === id).map(p => p.id));
+    if (!replaced.size) return;
+    for (const b of this.blocks.values()) {
+      if (b.state !== 'loaded' || b.def.id === id || b.def.kind !== 'placeholders') continue;
+      if ((b.def.placeholderIds ?? []).some(pid => replaced.has(pid))) {
+        this.unloadBlock(b.def.id);
+        await this.loadBlock(b.def.id);
+      }
+    }
+  }
 
   activeIds() { return [...this.blocks.values()].filter(b => b.state === 'loaded').map(b => b.def.id); }
   colliderCount() { return this.blocks.size && [...this.blocks.values()].reduce((s, b) => s + b.placeholders.length, 0); }

@@ -1,0 +1,266 @@
+{
+  "status": "design_ready_for_sample",
+  "productionStarted": false,
+  "reviewedClientCommit": "bcc787b",
+  "scope": "E128/E129 background replacement only",
+  "materialPolicy": {
+    "reuse": "kit/mb_lib.py build_materials; existing texture files, color factors, roughness, normal convention and meter tiling",
+    "additionalWeathering": false,
+    "reason": "机主本轮：材料只要一致，先不考虑做旧",
+    "existingTextureMicrodetail": "保留现有材质颗粒，不要求清除；不增加污渍、斑驳、破损、苔藓或做旧评分",
+    "newImageBudget": "最多1张共享1024招牌图集；其余沿用，不把参考照片贴上建筑"
+  },
+  "buildings": [
+    {
+      "id": "east-shop-128",
+      "replacesBaseIds": [
+        "shop-128"
+      ],
+      "sourcePlaceholder": {
+        "id": "shop-128",
+        "baseId": "shop-128",
+        "replacedBy": null,
+        "mapPoint": [
+          152.65,
+          -4.44
+        ],
+        "glbPoint": [
+          99.15,
+          12.96
+        ],
+        "angleRad": -0.301652,
+        "widthM": 10.7,
+        "depthM": 10,
+        "heightM": 10.2,
+        "category": "酒楼",
+        "historicalPositionVerified": false,
+        "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      },
+      "originConvention": "GLB Y-up, +Z facade, depth toward -Z; origin=front-wall-bottom-center",
+      "frontOriginXYZ": [
+        97.66450990714537,
+        0,
+        17.734234931801197
+      ],
+      "yawRad": -0.301652,
+      "footprintCornersXZ": [
+        [
+          92.5560785301181,
+          16.144760532446746
+        ],
+        [
+          102.77294128417265,
+          19.323709331155648
+        ],
+        [
+          105.7439214698819,
+          9.77523946755326
+        ],
+        [
+          95.52705871582735,
+          6.596290668844357
+        ]
+      ],
+      "foundationBottomY": -0.2,
+      "foundationTopY": 0.6,
+      "foundationNote": "基脚与既有Y=-0.18背景表面搭接；不是新增行走地面。",
+      "startingConfig": "E128.starting-config.json",
+      "identity": "普通两层小酒楼",
+      "roofDesign": {
+        "profile": "two planar slopes, ridge parallel to facade",
+        "gableOverhangM": 0.25,
+        "frontBackOverhangM": 0.3,
+        "eaveM": 7.2,
+        "ridgeM": 8.8,
+        "maxFinishedRoofY": 9.0,
+        "note": "现有straight仍调用弯曲屋顶，须新增共享planar分支；保留旧默认外观。"
+      },
+      "dominantSideFromC0": {
+        "localX": -5.35,
+        "label": "西侧山墙",
+        "upperWindows": [
+          {
+            "centerYZ": [
+              5.5,
+              -2.4
+            ],
+            "sizeWH": [
+              0.8,
+              1.1
+            ]
+          },
+          {
+            "centerYZ": [
+              5.5,
+              -6.5
+            ],
+            "sizeWH": [
+              0.8,
+              1.1
+            ]
+          }
+        ],
+        "recessDepthM": 0.1,
+        "downpipe": {
+          "localZ": -0.45,
+          "radiusM": 0.04,
+          "clamps": 3
+        },
+        "closedSideDoor": null
+      },
+      "shopSign": {
+        "text": "小酒楼",
+        "historicalBrand": false,
+        "widthM": 3.3,
+        "heightM": 0.5,
+        "centerY": 3.15,
+        "centerX": 0
+      },
+      "closedFront": true,
+      "interiorRequired": false,
+      "shortCanopy": null,
+      "budget": {
+        "targetMaxTriangles": 12000,
+        "targetMaxStandaloneBytes": 2500000
+      },
+      "historicalPositionVerified": false,
+      "designValuesNotSurvey": true
+    },
+    {
+      "id": "east-shop-129",
+      "replacesBaseIds": [
+        "shop-129"
+      ],
+      "sourcePlaceholder": {
+        "id": "shop-129",
+        "baseId": "shop-129",
+        "replacedBy": null,
+        "mapPoint": [
+          147.6,
+          11.79
+        ],
+        "glbPoint": [
+          94.1,
+          29.19
+        ],
+        "angleRad": 2.839941,
+        "widthM": 10.7,
+        "depthM": 11,
+        "heightM": 7.4,
+        "category": "饭馆",
+        "historicalPositionVerified": false,
+        "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      },
+      "originConvention": "GLB Y-up, +Z facade, depth toward -Z; origin=front-wall-bottom-center",
+      "frontOriginXYZ": [
+        95.7340372829119,
+        0,
+        23.93834100897118
+      ],
+      "yawRad": 2.839941,
+      "footprintCornersXZ": [
+        [
+          100.84246921054903,
+          25.527813638712765
+        ],
+        [
+          90.62560535527477,
+          22.348868379229593
+        ],
+        [
+          87.35753078945095,
+          32.85218636128724
+        ],
+        [
+          97.5743946447252,
+          36.03113162077041
+        ]
+      ],
+      "foundationBottomY": -0.2,
+      "foundationTopY": 0.6,
+      "foundationNote": "基脚与既有Y=-0.18背景表面搭接；不是新增行走地面。",
+      "startingConfig": "E129.starting-config.json",
+      "identity": "普通两层饭馆店宅",
+      "roofDesign": {
+        "profile": "two planar slopes, ridge parallel to facade",
+        "gableOverhangM": 0.25,
+        "frontBackOverhangM": 0.3,
+        "eaveM": 6.4,
+        "ridgeM": 7.4,
+        "maxFinishedRoofY": 7.6000000000000005,
+        "note": "现有straight仍调用弯曲屋顶，须新增共享planar分支；保留旧默认外观。"
+      },
+      "dominantSideFromC0": {
+        "localX": 5.35,
+        "label": "西侧山墙",
+        "upperWindows": [
+          {
+            "centerYZ": [
+              5.1,
+              -2.4
+            ],
+            "sizeWH": [
+              0.8,
+              1.1
+            ]
+          },
+          {
+            "centerYZ": [
+              5.1,
+              -7.2
+            ],
+            "sizeWH": [
+              0.8,
+              1.1
+            ]
+          }
+        ],
+        "recessDepthM": 0.1,
+        "downpipe": {
+          "localZ": -0.45,
+          "radiusM": 0.04,
+          "clamps": 3
+        },
+        "closedSideDoor": {
+          "centerYZ": [
+            1.05,
+            -3.9
+          ],
+          "sizeWH": [
+            0.95,
+            2.1
+          ],
+          "recessDepthM": 0.12
+        }
+      },
+      "shopSign": {
+        "text": "饭馆",
+        "historicalBrand": false,
+        "widthM": 2.2,
+        "heightM": 0.5,
+        "centerY": 3.15,
+        "centerX": 0
+      },
+      "closedFront": true,
+      "interiorRequired": false,
+      "shortCanopy": {
+        "widthM": 4.8,
+        "projectionM": 0.3,
+        "heightM": 2.85,
+        "profile": "straight"
+      },
+      "budget": {
+        "targetMaxTriangles": 12000,
+        "targetMaxStandaloneBytes": 2500000
+      },
+      "historicalPositionVerified": false,
+      "designValuesNotSurvey": true
+    }
+  ],
+  "deferredIds": [
+    "shop-130",
+    "shop-131"
+  ],
+  "routeExpansion": false,
+  "longTaskScheduled": false
+}

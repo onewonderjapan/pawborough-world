@@ -1,0 +1,299 @@
+{
+  "axis": "GLB Y-up X east Z south; instances: rotationY about +Y at ground y=0",
+  "worldOriginMapSpace": [
+    53.5,
+    -17.4
+  ],
+  "frontLineOffsetM": 5.6,
+  "streetKit": [
+    "road",
+    "sidewalks",
+    "curbs",
+    "branchGuangqi",
+    "laneA",
+    "laneB",
+    "plaza",
+    "lamps",
+    "drains",
+    "manhole"
+  ],
+  "instances": [
+    {
+      "id": "N01-plain-v1",
+      "module": "plain-v1",
+      "side": "north",
+      "sRange": [
+        0.0,
+        11.38
+      ],
+      "frontOffsetM": 5.6,
+      "positionGlb": [
+        3.8891,
+        0.0,
+        -7.1414
+      ],
+      "rotationYRad": 0.31264,
+      "collisionSource": "building/plain-v1/collision.json"
+    },
+    {
+      "id": "N02-pharmacy_shop",
+      "module": "pharmacy_shop",
+      "side": "north",
+      "sRange": [
+        11.38,
+        18.58
+      ],
+      "frontOffsetM": 5.6,
+      "positionGlb": [
+        13.4345,
+        0.0,
+        -9.6949
+      ],
+      "rotationYRad": 0.18246,
+      "collisionSource": "building/pharmacy_shop/collision.json"
+    },
+    {
+      "id": "N03-cloth_shop",
+      "module": "cloth_shop",
+      "side": "north",
+      "sRange": [
+        18.58,
+        25.62
+      ],
+      "frontOffsetM": 5.6,
+      "positionGlb": [
+        21.0594,
+        0.0,
+        -10.6774
+      ],
+      "rotationYRad": 0.07244,
+      "collisionSource": "building/cloth_shop/collision.json"
+    },
+    {
+      "id": "N04-dry_goods_shop",
+      "module": "dry_goods_shop",
+      "side": "north",
+      "sRange": [
+        25.62,
+        31.28
+      ],
+      "frontOffsetM": 5.9,
+      "positionGlb": [
+        27.8117,
+        0.0,
+        -11.2131
+      ],
+      "rotationYRad": -0.01331,
+      "collisionSource": "building/dry_goods_shop/collision.json"
+    },
+    {
+      "id": "N05-restaurant-a",
+      "module": "restaurant-a",
+      "side": "north",
+      "sRange": [
+        31.28,
+        42.24
+      ],
+      "frontOffsetM": 5.6,
+      "positionGlb": [
+        36.4005,
+        0.0,
+        -10.4263
+      ],
+      "rotationYRad": -0.07925,
+      "collisionSource": "building/restaurant-a/collision.json"
+    },
+    {
+      "id": "N06-curio-a",
+      "module": "curio-a",
+      "side": "north",
+      "sRange": [
+        44.24,
+        49.36
+      ],
+      "frontOffsetM": 5.6,
+      "positionGlb": [
+        47.0775,
+        0.0,
+        -9.2669
+      ],
+      "rotationYRad": -0.16793,
+      "collisionSource": "building/curio-a/collision.json"
+    },
+    {
+      "id": "N07-cat_corner",
+      "module": "cat_corner",
+      "side": "north",
+      "sRange": [
+        49.36,
+        55.74
+      ],
+      "frontOffsetM": 5.6,
+      "positionGlb": [
+        53.4837,
+        0.0,
+        -7.4571
+      ],
+      "rotationYRad": -0.36775,
+      "collisionSource": "building/cat_corner/collision.json"
+    },
+    {
+      "id": "N08-plain-v2",
+      "module": "plain-v2",
+      "side": "north",
+      "sRange": [
+        55.74,
+        66.0
+      ],
+      "frontOffsetM": 5.6,
+      "positionGlb": [
+        61.5527,
+        0.0,
+        -3.6307
+      ],
+      "rotationYRad": -0.4932,
+      "collisionSource": "building/plain-v2/collision.json"
+    },
+    {
+      "id": "N09-curio-b",
+      "module": "curio-b",
+      "side": "north",
+      "sRange": [
+        66.0,
+        72.14
+      ],
+      "frontOffsetM": 5.6,
+      "positionGlb": [
+        68.9525,
+        0.0,
+        0.4654
+      ],
+      "rotationYRad": -0.52685,
+      "collisionSource": "building/curio-b/collision.json"
+    },
+    {
+      "id": "N10-plain-v3",
+      "module": "plain-v3",
+      "side": "north",
+      "sRange": [
+        72.14,
+        82.7
+      ],
+      "frontOffsetM": 5.6,
+      "positionGlb": [
+        76.2227,
+        0.0,
+        4.7948
+      ],
+      "rotationYRad": -0.54305,
+      "collisionSource": "building/plain-v3/collision.json"
+    },
+    {
+      "id": "S01-corner",
+      "module": "corner",
+      "side": "south",
+      "sRange": [
+        0.0,
+        9.84
+      ],
+      "frontOffsetM": 5.6,
+      "positionGlb": [
+        6.338,
+        0.0,
+        3.7891
+      ],
+      "rotationYRad": -2.81966,
+      "collisionSource": "building/corner/collision.json"
+    },
+    {
+      "id": "S02-photo_shop",
+      "module": "photo_shop",
+      "side": "south",
+      "sRange": [
+        28.36,
+        33.76
+      ],
+      "frontOffsetM": 5.9,
+      "positionGlb": [
+        30.012,
+        0.0,
+        0.6408
+      ],
+      "rotationYRad": 3.09299,
+      "collisionSource": "building/photo_shop/collision.json"
+    },
+    {
+      "id": "S03-plain-v2",
+      "module": "plain-v2",
+      "side": "south",
+      "sRange": [
+        33.76,
+        44.48
+      ],
+      "frontOffsetM": 5.6,
+      "positionGlb": [
+        37.8893,
+        0.0,
+        0.9262
+      ],
+      "rotationYRad": 3.05483,
+      "collisionSource": "building/plain-v2/collision.json"
+    },
+    {
+      "id": "S04-restaurant-b",
+      "module": "restaurant-b",
+      "side": "south",
+      "sRange": [
+        44.48,
+        54.08
+      ],
+      "frontOffsetM": 5.6,
+      "positionGlb": [
+        46.8837,
+        0.0,
+        2.3324
+      ],
+      "rotationYRad": 2.89171,
+      "collisionSource": "building/restaurant-b/collision.json"
+    },
+    {
+      "id": "S05-plain-v3",
+      "module": "plain-v3",
+      "side": "south",
+      "sRange": [
+        54.08,
+        64.46
+      ],
+      "frontOffsetM": 5.6,
+      "positionGlb": [
+        54.9927,
+        0.0,
+        5.5789
+      ],
+      "rotationYRad": 2.65997,
+      "collisionSource": "building/plain-v3/collision.json"
+    },
+    {
+      "id": "S07-plain-v2",
+      "module": "plain-v2",
+      "side": "south",
+      "sRange": [
+        66.86,
+        77.54
+      ],
+      "frontOffsetM": 5.6,
+      "positionGlb": [
+        66.0107,
+        0.0,
+        11.7373
+      ],
+      "rotationYRad": 2.6087,
+      "collisionSource": "building/plain-v2/collision.json"
+    }
+  ],
+  "counts": {
+    "storefronts": 16,
+    "north": 10,
+    "south": 6
+  }
+}

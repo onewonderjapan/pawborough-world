@@ -11,6 +11,7 @@
 // reviewed path against a real session-shaped handle.
 import * as T from 'three';
 import { addWallCollider, addGroundCollider, removeColliderWithBody } from './physics.js';
+import { createGLTFLoader } from './decoders.js';
 
 export function createBlockViews(scene, session = null) {
   const material = new T.MeshStandardMaterial({ color: 0x9aa09b, roughness: .95 });
@@ -77,6 +78,74 @@ export function createBlockViews(scene, session = null) {
     // geometry disposal stays with session.dispose (it traverses the root);
     // collider teardown is BlockManager's job while the physics world lives
     disposeReviewed() {},
+    // ---- refined standalone assets (east-edge shops) ----------------------
+    // Each asset def: { id, glb, collision?, positionGlb, rotationYRad }. GLBs
+    // load through the same production decode path as the world assembly;
+    // collision sidecars are already world-space obb wall records, so render
+    // and physics share one transform definition. The returned parts own both
+    // the group (GPU resources) and the colliders: revoke removes them all and
+    // the replaced placeholders come back. No ground collider is created here
+    // — assets never add walkable area.
+    async makeAssets(def) {
+      if (!session) throw new Error('blockViews: assets blocks require the loaded world session');
+      const group = new T.Group();
+      group.name = `assets__${def.id}`;
+      const loader = createGLTFLoader({ renderer: session.renderer ?? null, baseUrl: new URL(def.baseUrl ?? './', location.href).href });
+      const world = session.physics.world;
+      const colliders = [];
+      for (const asset of def.assets) {
+        const url = new URL(asset.glb, location.href).href;
+        const res = await fetch(url, { cache: 'no-cache' });
+        if (!res.ok) throw new Error(`asset ${asset.id}: ${asset.glb} HTTP ${res.status}`);
+        const model = await loader.parseAsync(await res.arrayBuffer(), url);
+        model.scene.traverse((o) => {
+          if (!o.isMesh) return;
+          o.castShadow = true;
+          o.receiveShadow = true;
+          for (const m of [o.material].flat()) {
+            m.shadowSide = T.FrontSide;
+            for (const v of Object.values(m)) if (v?.isTexture) v.anisotropy = Math.min(4, session.renderer.capabilities.getMaxAnisotropy());
+          }
+        });
+        const holder = new T.Group();
+        holder.name = `asset__${asset.id}`;
+        holder.position.set(...asset.positionGlb);
+        holder.rotation.y = asset.rotationYRad;
+        holder.add(model.scene);
+        group.add(holder);
+        if (asset.collision) {
+          const cres = await fetch(new URL(asset.collision, location.href).href, { cache: 'no-cache' });
+          if (!cres.ok) throw new Error(`asset ${asset.id}: ${asset.collision} HTTP ${cres.status}`);
+          const sidecar = await cres.json();
+          for (const record of sidecar.colliders) {
+            const c = addWallCollider(session.RAPIER, world, record);
+            colliders.push({ collider: c.collider, body: c.body });
+          }
+        }
+      }
+      return { group, parent: reviewedParent, colliders, ground: null, owns: true, isAssetGroup: true };
+    },
+    // applied block revoked: colliders were already removed by the manager
+    // (owns slot) — release the GPU geometry that belongs to this block
+    disposeAssets(parts) {
+      if (!parts?.group) return;
+      parts.group.traverse((o) => {
+        if (!o.isMesh) return;
+        o.geometry.dispose();
+        for (const m of [o.material].flat()) {
+          for (const v of Object.values(m)) if (v?.isTexture) v.dispose();
+          m.dispose();
+        }
+      });
+      parts.group.removeFromParent();
+    },
+    // stale load never applied: colliders leave the world here, geometry too
+    discardAssets(parts) {
+      if (!parts) return;
+      const world = session.physics.world;
+      for (const c of parts.colliders) removeColliderWithBody(world, c.collider, c.body);
+      this.disposeAssets(parts);
+    },
   };
   return api;
 }

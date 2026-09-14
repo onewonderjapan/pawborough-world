@@ -1,0 +1,55 @@
+{
+  "input": "kit/out/east-shop-129/model.blend",
+  "tag": "blend",
+  "westSign": 1,
+  "resolution": [
+    1280,
+    960
+  ],
+  "lensMm": 50,
+  "engine": "cycles-cpu",
+  "samples": 24,
+  "viewTransform": "AgX - Medium High Contrast",
+  "sun": "daylight 2.8 @ (26,-22,-35)",
+  "cameras": {
+    "front": {
+      "location": [
+        0.0,
+        -18.919,
+        2.5247
+      ],
+      "lensMm": 50,
+      "target": [
+        0.0,
+        5.4987,
+        3.3032
+      ]
+    },
+    "west": {
+      "location": [
+        27.906,
+        5.4987,
+        2.5247
+      ],
+      "lensMm": 50,
+      "target": [
+        0.0,
+        5.4987,
+        3.3032
+      ]
+    },
+    "quarter-west": {
+      "location": [
+        19.7668,
+        -14.268,
+        9.142
+      ],
+      "lensMm": 50,
+      "target": [
+        0.0,
+        5.4987,
+        3.3032
+      ]
+    }
+  }
+}

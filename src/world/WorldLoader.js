@@ -93,6 +93,7 @@ export async function loadWorld({ RAPIER, baseUrl = './world/', renderer = null 
   let disposed = false;
   return {
     RAPIER,
+    renderer,
     root,
     physics,
     route,

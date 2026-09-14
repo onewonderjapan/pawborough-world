@@ -87,6 +87,7 @@ def build_materials():
     M['iron'] = mat('dark-iron', '44453d', .64, .48)
     M['paper'] = mat('aged-paper', 'c1b18b', .93)
     M['sign'] = mat('shop-sign-typeset-atlas', base='sign-atlas.png', rough=.68)
+    M['signGeneric'] = mat('shop-sign-generic-atlas', base='sign-atlas-generic.png', rough=.68)
     M['cat'] = mat('cat-wall-reference-repaint', base='catwall-mural.png', rough=.98, extend=True)
     M['clothR'] = mat('wine-cotton', '8b4346', .98)
     M['clothB'] = mat('indigo-cotton', '536b7d', .98)
@@ -161,9 +162,9 @@ def rod(name, a, b, w, m='wood'):
     return cyl(name, a, b, w, m, 6)
 
 
-def sign(x, y, z, w, h, row):
+def sign(x, y, z, w, h, row, lettering='sign'):
     box('sign-solid-backing', (x, y, z - .07), (w + .2, h + .18, .15), 'dark', .016)
-    plane('sign-lettering', x, y, z + .012, w, h, 'sign', row)
+    plane('sign-lettering', x, y, z + .012, w, h, lettering, row)
     for xx in (x - w / 2 - .035, x + w / 2 + .035):
         box('sign-side-frame', (xx, y, z + .04), (.075, h + .18, .075), 'wood')
     for yy in (y - h / 2 - .035, y + h / 2 + .035):
@@ -303,6 +304,76 @@ def downpipe(x_right, eave, z=0.0):
     for yy in (1.2, 3.0, 5.0, 7.0):
         if yy < eave:
             rod('pipe-wall-clip', (px, yy, z + .14), (px, yy, z + .30), .023, 'iron')
+
+
+def _recalc_outward(obj):
+    """Closed-manifold meshes get guaranteed-outward normals from winding."""
+    bm = bmesh.new(); bm.from_mesh(obj.data)
+    bmesh.ops.recalc_face_normals(bm, faces=list(bm.faces))
+    bm.to_mesh(obj.data); bm.free()
+    obj.data.update()
+
+
+def planar_roof(x, w, d, eave, ridge, z0=0, overhang_fb=0.30, overhang_g=0.25,
+                thickness=0.10, fascia_h=0.16, ridge_roll_r=0.115):
+    """True two-planar-slope roof, ridge parallel to the facade. Unlike roof()
+    (curved surfaces + lifted corners), both slopes are flat, closed slabs: the
+    soffit is real geometry visible from below, gable walls close eave..ridge
+    on their own plane (no coplanar faces with the slab), eaves extend
+    overhang_fb to front/back and overhang_g at both gable ends. The only
+    attachment is the ridge roll: its top stays within ridge + 0.20 (r=.115 at
+    center ridge+.07). Spans X, slopes fall toward +/-Z, facade at z0.
+    """
+    hw = w / 2 + overhang_g
+    z_mid = z0 - d / 2
+    dy = eave - ridge  # < 0
+
+    def slab(name, xa, xb, z_e):
+        dz = z_e - z_mid
+        L2 = math.hypot(dy, dz)
+        ny, nz = abs(dz) / L2, ((-dy) if dz > 0 else dy) / L2
+        top = [(xa, ridge, z_mid), (xb, ridge, z_mid), (xb, eave, z_e), (xa, eave, z_e)]
+        bot = [(vx, vy - thickness * ny, vz - thickness * nz) for vx, vy, vz in top]
+        o = mesh(name, top + bot,
+                 [(0, 3, 2, 1), (4, 5, 6, 7), (0, 4, 5, 1), (1, 5, 6, 2), (2, 6, 7, 3), (3, 7, 4, 0)],
+                 'roof')
+        _recalc_outward(o)
+        return ny, nz
+
+    ny = abs(d / 2 + overhang_fb) / math.hypot(dy, d / 2 + overhang_fb)
+    zb_f, zb_b = z0 + overhang_fb, z0 - d - overhang_fb
+    slab('planar-roof-slope-front', x - hw, x + hw, zb_f)
+    slab('planar-roof-slope-back', x - hw, x + hw, zb_b)
+    # gable closures: pentagon walls eave..slab underside, on the wall plane
+    y_wall_top_f = ridge + dy * (d / 2) / (d / 2 + overhang_fb) - thickness * ny
+    for side in (-1, 1):
+        xg = x + side * w / 2
+        v = [(xg, eave, z0), (xg, eave, z0 - d),
+             (xg, y_wall_top_f, z0 - d), (xg, ridge - thickness * ny, z_mid),
+             (xg, y_wall_top_f, z0)]
+        mesh('planar-gable-closure', v if side > 0 else list(reversed(v)),
+             [(0, 1, 2, 3, 4)], 'plaster')
+    # verge caps ride ON the slope near each gable edge (same language as the
+    # old sloped-barge-cap rods; one straight segment per slope)
+    for side in (-1, 1):
+        xg = x + side * (w / 2 + overhang_g - .03)
+        rod('planar-verge-cap', (xg, ridge + ny * .04, z_mid), (xg, eave + ny * .04, zb_b), .07, 'roof')
+        rod('planar-verge-cap', (xg, ridge + ny * .04, z_mid), (xg, eave + ny * .04, zb_f), .07, 'roof')
+    # vertical fascia boards on front/back eave edges, proud of the slab edge
+    for z_e, name in ((zb_f, 'front'), (zb_b, 'back')):
+        box(f'planar-eave-fascia-{name}', (x, eave - fascia_h / 2 + .02, z_e - .01 * (1 if name == 'front' else -1)),
+            (w + 2 * overhang_g, fascia_h, .045), 'dark', 0)
+    cyl('planar-ridge-roll', (x - hw, ridge + .07, z_mid), (x + hw, ridge + .07, z_mid), ridge_roll_r, 'roof', 10)
+
+
+def side_downpipe(x_wall, inward, y0, y1, z, r=0.04, clamps=3):
+    """Downpipe on a gable wall (runs vertically along Y). x_wall is the wall's
+    outer face; the pipe stands `r + .03` proud, clamps tie it back."""
+    px = x_wall - inward * (r + .03)
+    cyl('side-downpipe', (px, y0 + .15, z), (px, y1 - .05, z), r, 'iron', 10)
+    for k in range(clamps):
+        yy = y0 + .6 + (y1 - y0 - 1.4) * k / max(1, clamps - 1)
+        rod('pipe-wall-clip', (x_wall, yy, z), (px, yy, z), .023, 'iron')
 
 
 def finalize(module_id, out_dir, design):

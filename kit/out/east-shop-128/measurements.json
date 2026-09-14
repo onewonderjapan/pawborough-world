@@ -1,0 +1,53 @@
+{
+  "moduleId": "east-shop-128",
+  "triangles": 6724,
+  "meshes": 9,
+  "fileBytes": 1697716,
+  "sha256": "af93a694b72a242e746a33204c5425f86837adac56dd28f3e759785c584c3798",
+  "design": {
+    "family": "east-edge-background-shop",
+    "sampleId": "east-shop-128",
+    "basedOn": "lead design DESIGN_SPEC.json east-shop-128; starting-config seed extended with the new schema fields defined in kit/build_east_shop.py",
+    "frontageM": 10.7,
+    "depthM": 10.0,
+    "eaveM": 7.2,
+    "ridgeM": 8.8,
+    "floors": 2,
+    "roofType": "planar",
+    "roofOverhangFB_M": 0.3,
+    "roofOverhangGable_M": 0.25,
+    "maxFinishedRoofY": 8.985000000000001,
+    "upperWindowCount": 4,
+    "gableOpenings": [
+      {
+        "kind": "window",
+        "zM": -2.4,
+        "yM": 5.5,
+        "widthM": 0.8,
+        "heightM": 1.1,
+        "recessM": 0.1
+      },
+      {
+        "kind": "window",
+        "zM": -6.5,
+        "yM": 5.5,
+        "widthM": 0.8,
+        "heightM": 1.1,
+        "recessM": 0.1
+      }
+    ],
+    "interiorBuilt": false,
+    "doors": "all doors closed with real panels (front + any gable door); no interior, building not enterable",
+    "signage": "generic-atlas row 0 (小酒楼, historicalBrand=false)",
+    "specAdjustments": {
+      "signYm": "DESIGN_SPEC 3.15 -> 2.96: board+backing (0.68m) must clear the frozen 3.4m lower beam (bottom 3.31m)"
+    },
+    "materialSet": "pawborough-street-v1 (mb_lib.build_materials, frozen) + generic sign atlas",
+    "configDriven": true,
+    "surveyed": false
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

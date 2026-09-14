@@ -1,0 +1,73 @@
+{
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "date": "2026-09-15",
+  "task": "CONSTRUCTION_HANDOFF.md (east-edge-design-20260914) — shop-128/129 灰盒替换为普通两层店宅候选",
+  "baseline": {
+    "reviewedClientCommit": "bcc787b21459cb401b0e09d3d6bbba24862cbd45",
+    "verifiedAtStart": true,
+    "branch": "work/east-edge-shops-20260914",
+    "branchBase": "bcc787b",
+    "inputHashes": "INPUTS.json 5/5 sha256 match; workspace kit byte-identical to repo kit at start"
+  },
+  "deliverables": {
+    "sharedLibrary": [
+      "kit/mb_lib.py: planar_roof (两片平面坡、封闭檐底、山墙五边形非共面、verge/fascia/ridge-roll 附件≤+0.20m), side_downpipe, sign() 加 lettering 参数（默认不变）, signGeneric 材质",
+      "kit/components.py: wall_with_openings（通用开洞分段墙，真实洞口非贴面）, window_on_wall, closed_door_on_wall（门框按宽高凹深生成、门板碰撞）, display_window_on_wall, straight_canopy",
+      "kit/build_east_shop.py: 严格 schema 构建器（未知字段拒绝）",
+      "kit/textures/sign-atlas-generic.png (+.json): 新共享 1024x2048 通用店名图集（小酒楼/饭馆，Noto Serif CJK SC Bold，无做旧，不触碰既有 sign-atlas.png）",
+      "src/world/BlockManager.js: kind:'assets' 块（applyAssets/revokeAssets/refreshReplacedOf/assetBlockIds，泛化无项目ID）",
+      "src/world/blockViews.js: makeAssets/discardAssets/disposeAssets（生产解码路径 createGLTFLoader；碰撞用与渲染同一 obbToWorld 数学；无地面碰撞）",
+      "src/main.js: ?world=east-edge 数据集开关、&assets=off 对照模式、view 模式加载东侧块（C0 对照语境）、证据名带数据集前缀",
+      "scripts/build_eastedge_world.mjs, scripts/validate_eastedge.mjs, scripts/capture_eastedge_web.mjs, kit/render_east_evidence.py"
+    ],
+    "assets": [
+      { "id": "east-shop-128", "replaces": "shop-128", "triangles": 6724, "bytes": 1697716, "maxFinishedRoofY": 8.985 },
+      { "id": "east-shop-129", "replaces": "shop-129", "triangles": 6716, "bytes": 1691916, "maxFinishedRoofY": 7.585 }
+    ],
+    "derivedDataset": "world/east-edge/（blocks.json 替换契约 + 相机 + 两 GLB + 世界坐标碰撞 sidecar + design-spec 快照）",
+    "preview": "?world=east-edge 打开审看客户端；?world=east-edge&assets=off 看原灰盒"
+  },
+  "budgets": {
+    "triangles": { "combined": 13440, "limit": 24000, "pass": true },
+    "bytes": { "combinedDownload": 3391172, "limit": 5000000, "pass": true },
+    "newImages": { "count": 1, "note": "sign-atlas-generic.png 仅此一张新增；两 GLB 各自内嵌全部贴图副本，不声称运行时自动共享（validation.json 记录 unique-by-content 数）" }
+  },
+  "validation": {
+    "gltfValidator": { "errors": 0, "warnings": 0, "infos": 9, "file": "world/east-edge/validation.json" },
+    "reimportCheck": "每栋 finalize 内置重导入：9 材质全部带真实图像连接存活（reimport-check.json）",
+    "tests": {
+      "new": "tests/eastedge_contract.test.mjs 27/27 PASS（真实 Rapier：替换/撤回恢复/F3不触及精修/晚到丢弃/数据集逐字段对比）",
+      "regression": "既有 9 套测试全部 PASS（block_lifecycle/block_production/laneb_contract/laneb_texture_slots/physics_contract/placeholder_presentation/session_lifecycle/walk_camera/world_inputs）"
+    },
+    "replacementProof": "web record JSON 机器可证：灰盒态 171464 tri（=冻结）vs 候选态 184904 tri（=冻结+13440）；blocks.activeIds 区分 assets 块启停"
+  },
+  "evidence": {
+    "blenderSameCamera": "kit/out/east-shop-12{8,9}/evidence/{blend,reimport}/ — 正面/西侧/三qtr PBR + 西侧灰模，.blend 与重导入 GLB 同机位（cameras.json sidecar）",
+    "webC0Comparison": "world/east-edge/web-evidence/ — C0 规格 1280x572@45°fov：灰盒（assets=off+占位ON）vs 候选（占位ON，其余灰盒保留在画面）；C1、两栋店面近景（弄巷口）、两栋西山墙、灰模",
+    "webEvidenceTelemetry": "每张附 record JSON（真实相机位/资源计数/活动块ID）"
+  },
+  "specAdjustments": [
+    "E128 招牌 y 3.15→2.96（板+背板 0.68m 须让过 3.4m 下横梁，冻结沿街模式）",
+    "E129 雨棚 2.85→2.74、招牌 3.15→3.16（雨棚顶与上墙裙底 3.50m 之间放不下 0.68m 板，避让穿插）",
+    "両正面视图为弄巷口近景：两立面隔 ~3m 弄巷相对，开阔空间不存在直视正面（C1 与 Blender 立面承担全身文档）"
+  ],
+  "failuresEncounteredAndFixed": [
+    "构建脚本 gable opening 键名 zM/u 混用 KeyError ×2 — 修复",
+    "前脸基脚凸出方向反了（凹进 6cm 与山墙侧不一致）— 修复重建",
+    "橱窗柜台面齐平偏黑 — 改为外凸（对齐样板A语言）",
+    "E129 直雨棚过薄如浮杆 — 板 0.05→0.07、封边 0.09→0.12",
+    "view 模式东侧邻接块从不加载（仅 walk 循环）→ C0 灰盒对照侧为空 — east-edge 数据集在 view 模式加载东侧块（两侧对称）",
+    "证据相机三轮撞进街体/建筑体 — 最终点位用 collision-world.json 实测无碰撞后固定"
+  ],
+  "claimsNotMade": {
+    "historicalSurveyAccuracy": false,
+    "ownerAdopted": false,
+    "manualFullWalkTested": false,
+    "unityValidated": false,
+    "historicalPositionVerified": "两栋保持 false（DESIGN_SPEC 原值）",
+    "webVsOffline": "WebGL 截图标 browserRendered；Blender Cycles CPU 渲染单独目录；互不冒充",
+    "fpsOrPerformance": "未测 FPS，不声称"
+  },
+  "notInScope": ["shop-130/131（deferredIds，未动）", "路线扩张（routeExpansion=false）", "新增可步行地面（无地面碰撞）", "做旧（机主本轮免除）"]
+}

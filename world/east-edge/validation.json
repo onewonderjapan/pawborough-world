@@ -1,0 +1,38 @@
+{
+  "generatedBy": "scripts/validate_eastedge.mjs",
+  "assets": [
+    {
+      "id": "east-shop-128",
+      "bytes": 1697716,
+      "sha256": "af93a694b72a242e746a33204c5425f86837adac56dd28f3e759785c584c3798",
+      "triangles": 6724,
+      "validator": {
+        "errors": 0,
+        "warnings": [],
+        "infos": 9
+      },
+      "images": 11,
+      "materials": 9,
+      "generator": "Khronos glTF Blender I/O v4.5.47"
+    },
+    {
+      "id": "east-shop-129",
+      "bytes": 1693456,
+      "sha256": "2620ea4db1d6dc90e2825b8e9e3c5f72d8f2bcd83fa9e0bbb9ab95e87d27d3cf",
+      "triangles": 6716,
+      "validator": {
+        "errors": 0,
+        "warnings": [],
+        "infos": 9
+      },
+      "images": 11,
+      "materials": 9,
+      "generator": "Khronos glTF Blender I/O v4.5.47"
+    }
+  ],
+  "combinedDownloadBytes": 3391172,
+  "combinedTriangles": 13440,
+  "uniqueImagesAcrossAssetsByContentSha": 11,
+  "imageCopiesPerAsset": 2,
+  "note": "each standalone GLB embeds its own image copies; runtime texture objects are per-asset (no auto-sharing claimed)"
+}
