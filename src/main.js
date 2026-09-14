@@ -29,6 +29,12 @@ const ASSETS_PARAM = new URLSearchParams(location.search).get('assets');
 const WORLD_BASE = WORLD_PARAM === 'laneb' ? './world/laneb/' : WORLD_PARAM === 'east-edge' ? './world/east-edge/' : './world/';
 const DATASET_TAG = WORLD_PARAM === 'laneb' ? 'laneb' : WORLD_PARAM === 'east-edge' ? 'east-edge' : 'base';
 let streetKitNodeCount=0;let ready=false,clayOn=false,selected='full-west',cameras=[],instances=null,manifest=null,lastRender={},loadStats={};
+// R3 honest asset accounting: the base assembly and the enabled refined
+// asset blocks are reported separately (bytes and triangles) plus their sum;
+// assets=off records which additional assets it did NOT load. Everything is
+// derived from the dataset manifest (bytes/sha validated against the real
+// files by the contract tests) and cross-checked against the live scene.
+let assetStats={enabled:false,infos:[],excludedIds:[],bytesBase:0,bytesAdditional:0,bytesTotal:0,additionalTriangles:0,fingerprint:null};
 // walking session state (single authority chain: input -> WalkController -> camera follows)
 let session=null,controller=null,mode='view',paused=false,cruise=null,lastCruiseStatus=null,resetCount=0,blocks=null;
 // F3 framing-view placeholder preference: false = refined buildings only (the
@@ -37,7 +43,11 @@ let session=null,controller=null,mode='view',paused=false,cruise=null,lastCruise
 let placeholderPref=false;
 const keys={w:false,a:false,s:false,d:false};
 function resources(){const g=new Set(),m=new Set(),t=new Set();let triangles=0,meshes=0;world.traverse(o=>{if(!o.isMesh)return;meshes++;g.add(o.geometry);triangles+=(o.geometry.index?.count??o.geometry.attributes.position.count)/3;for(const mat of [o.material].flat()){m.add(mat);for(const v of Object.values(mat))if(v?.isTexture)t.add(v);}});return{meshes,triangles,uniqueGeometries:g.size,uniqueMaterials:m.size,uniqueTextures:t.size};}
-function record(){return{ready,view:selected,mode,paused,resources:resources(),expectedWorldTriangles:manifest?.placedTriangles,streetKitLoaded:streetKitNodeCount>0,streetKitNodeCount,loadMode:'single_assembly_sharing_embedded_images',placedBuildingCount:instances?.instances.length,assets:manifest,load:loadStats,fetches:[],render:lastRender,camera:{position:camera.position.toArray(),target:mode==='view'?controls.target.toArray():controller?.feetPosition()??null,fov:camera.fov,near:camera.near,quaternion:camera.quaternion.toArray(),matrixWorldFinite:[...camera.matrixWorld.elements].every(Number.isFinite),walkOrientationFinite:camera.quaternion.toArray().every(Number.isFinite)},framebuffer:renderer.getSize(new T.Vector2()).toArray(),lighting:{shadows:renderer.shadowMap.enabled,shadowBias:sun.shadow.bias,shadowNormalBias:sun.shadow.normalBias,toneMapping:'AgX',exposure:1,environmentIntensity:.28,hemisphereIntensity:.72,sunIntensity:2.4,sunPosition:sun.position.toArray()},browserRendered:true,
+function record(){return{ready,view:selected,mode,paused,resources:resources(),
+  // triangle accounting with explicit scope naming: baseAssembly is the
+  // single assembly, additionalAssets are the refined replacement GLBs, and
+  // total is what the scene actually places when this record was taken
+  trianglesExpected:{baseAssembly:manifest?.placedTriangles??null,additionalAssets:assetStats.enabled?assetStats.additionalTriangles:0,total:(manifest?.placedTriangles??0)+(assetStats.enabled?assetStats.additionalTriangles:0),additionalAssetsIncluded:assetStats.enabled,excludedAdditionalAssetIds:assetStats.excludedIds},streetKitLoaded:streetKitNodeCount>0,streetKitNodeCount,loadMode:assetStats.enabled?'single_assembly_plus_refined_asset_blocks':'single_assembly_base_only',placedBuildingCount:instances?.instances.length,assets:manifest,dataset:DATASET_TAG,load:loadStats,fetches:[],render:lastRender,camera:{position:camera.position.toArray(),target:mode==='view'?controls.target.toArray():controller?.feetPosition()??null,fov:camera.fov,near:camera.near,quaternion:camera.quaternion.toArray(),matrixWorldFinite:[...camera.matrixWorld.elements].every(Number.isFinite),walkOrientationFinite:camera.quaternion.toArray().every(Number.isFinite)},framebuffer:renderer.getSize(new T.Vector2()).toArray(),lighting:{shadows:renderer.shadowMap.enabled,shadowBias:sun.shadow.bias,shadowNormalBias:sun.shadow.normalBias,toneMapping:'AgX',exposure:1,environmentIntensity:.28,hemisphereIntensity:.72,sunIntensity:2.4,sunPosition:sun.position.toArray()},browserRendered:true,
   walking:{walkingVerified:false,manualKeyboardWalkTested:false,walkResets:resetCount,capsuleFeet:controller?controller.feetPosition():null,eyeHeightM:1.6,capsuleRadiusM:.35,autoPhysicsCruise:lastCruiseStatus,blocks:blocks?{active:blocks.activeIds(),epoch:blocks.epoch}:null},ownerAdopted:false,
   // F3 placeholder presentation: framing view can hide gray-box placeholders
   // (display only). hiddenPlaceholderIds are real loaded stable IDs currently
@@ -46,10 +56,14 @@ function record(){return{ready,view:selected,mode,paused,resources:resources(),e
   presentation:{placeholdersVisible:mode==='walk'?true:placeholderPref,viewPreference:placeholderPref,
     hiddenPlaceholderIds:mode==='walk'||placeholderPref||!blocks?[]:blocks.loadedPlaceholderIds(),
     loadedPlaceholderCount:blocks?blocks.loadedPlaceholderIds().length:0,
-    placeholderColliders:blocks?blocks.colliderCount():null,
-    worldVersion:manifest?.worldAssembly?`glb-sha256-${manifest.worldAssembly.sha256}`:null,
-    worldAssemblyPath:manifest?.worldAssembly?.path??null}};}
-function render(){if(!ready)return;const near=mode==='view'?Math.max(.05,Math.min(2,camera.position.distanceTo(controls.target)*.003)):.1;if(camera.near!==near){camera.near=near;camera.updateProjectionMatrix();}renderer.info.reset();const started=performance.now();renderer.render(scene,camera);lastRender={callsIncludingShadow:renderer.info.render.calls,trianglesIncludingShadow:renderer.info.render.triangles,cpuSubmitMs:performance.now()-started};const r=resources();stats.textContent=mode==='walk'?`行走模式 · 脚底 (${controller.feetPosition().map(v=>v.toFixed(1)).join(', ')}) ${paused?'· 已暂停':''}\nWASD 移动 · 鼠标环视(点击画面锁定) · 空格跳 · P 暂停 · V 返回取景`:`${instances.instances.length} 门面＋完整路面/支弄/前庭 · ${r.triangles.toLocaleString()} 三角形\n几何/材质/纹理 ${r.uniqueGeometries}/${r.uniqueMaterials}/${r.uniqueTextures} · 本机资产 ${(loadStats.bytes/1e6).toFixed(2)} MB\n拖动旋转 · 滚轮缩放 · 右键平移 · 行走模式按钮在上方`;document.querySelector('#record').textContent=JSON.stringify(record(),null,2);}
+    placeholderColliders:blocks?blocks.colliderCount():null},
+  // dataset/version fingerprint: base assembly GLB sha + each ENABLED
+  // additional asset's GLB sha + the on/off state, so assets=on vs off and
+  // a changed candidate GLB always produce different records (R3). The old
+  // single-string field only hashed the base assembly and could not tell
+  // the candidate states apart.
+  version:{dataset:DATASET_TAG,baseAssemblyPath:manifest?.worldAssembly?.path??null,baseAssembly:manifest?.worldAssembly?`glb-sha256-${manifest.worldAssembly.sha256}`:null,additionalAssets:assetStats.enabled?assetStats.infos.map(a=>({id:a.id,sha256:a.sha256})):[],additionalAssetsIncluded:assetStats.enabled,excludedAdditionalAssetIds:assetStats.excludedIds,fingerprint:assetStats.fingerprint}};}
+function render(){if(!ready)return;const near=mode==='view'?Math.max(.05,Math.min(2,camera.position.distanceTo(controls.target)*.003)):.1;if(camera.near!==near){camera.near=near;camera.updateProjectionMatrix();}renderer.info.reset();const started=performance.now();renderer.render(scene,camera);lastRender={callsIncludingShadow:renderer.info.render.calls,trianglesIncludingShadow:renderer.info.render.triangles,cpuSubmitMs:performance.now()-started};const r=resources();stats.textContent=mode==='walk'?`行走模式 · 脚底 (${controller.feetPosition().map(v=>v.toFixed(1)).join(', ')}) ${paused?'· 已暂停':''}\nWASD 移动 · 鼠标环视(点击画面锁定) · 空格跳 · P 暂停 · V 返回取景`:`${instances.instances.length} 门面＋完整路面/支弄/前庭 · ${r.triangles.toLocaleString()} 三角形\n几何/材质/纹理 ${r.uniqueGeometries}/${r.uniqueMaterials}/${r.uniqueTextures} · 本机资产 ${(loadStats.bytesTotal/1e6).toFixed(2)} MB${assetStats.enabled&&loadStats.bytesAdditional>0?`（基础 ${(loadStats.bytesBase/1e6).toFixed(2)} + 追加精修 ${(loadStats.bytesAdditional/1e6).toFixed(2)}）`:''}\n拖动旋转 · 滚轮缩放 · 右键平移 · 行走模式按钮在上方`;document.querySelector('#record').textContent=JSON.stringify(record(),null,2);}
 function setView(id){const v=cameras.find(c=>c.id===id);if(!v)return;selected=id;camera.position.set(...v.positionGlb);controls.target.set(...v.targetGlb);camera.fov=2*Math.atan(v.sensorWidthMm/2/v.lensMm/camera.aspect)*180/Math.PI;camera.updateProjectionMatrix();controls.update();for(const b of viewsEl.querySelectorAll('[data-view]'))b.classList.toggle('on',b.dataset.view===id);render();}
 function setupButtons(){for(const c of cameras){const b=document.createElement('button');b.textContent=labels[c.id]??c.id;b.dataset.view=c.id;b.onclick=()=>{if(mode==='walk')setMode('view');setView(c.id);};viewsEl.appendChild(b);}
 const walkBtn=document.createElement('button');walkBtn.id='btn-walk';walkBtn.textContent='行走模式';walkBtn.onclick=()=>setMode(mode==='walk'?'view':'walk');viewsEl.appendChild(walkBtn);
@@ -175,12 +189,35 @@ async function load(){const t0=performance.now();
   // blocks dataset is a REQUIRED world input (fetched+validated in loadWorld):
   // a missing/corrupt blocks.json must fail the load loudly, never fall back
   // to a silently block-less scene (R3)
-  blocks=new BlockManager({RAPIER,physics:session.physics,views:createBlockViews(scene,session),dataset:session.blocks});
+  blocks=new BlockManager({RAPIER,physics:session.physics,views:createBlockViews(scene,session),dataset:session.blocks,
+    // a load resumed after pagehide sees session.disposed and releases only
+    // GPU resources — never calls into the already-freed Rapier world (R2)
+    physicsAlive:()=>!session.disposed});
   await blocks.applyReviewed(); // reviewed street owned by the manager; adjacent blocks cycle in walk mode
   if (ASSETS_PARAM !== 'off') for (const id of blocks.assetBlockIds()) await blocks.applyAssets(id); // refined replacement blocks declared autoApply in the dataset
   if (WORLD_PARAM === 'east-edge') await blocks.loadBlock('block-adjacent-east'); // the C0 comparison frames the street end from view mode: load the east district here too (walk mode still cycles it as before), so gray-box and candidate shots see the same context
   blocks.setPlaceholdersVisible(placeholderPref); // F3 framing default: refined only; any later load follows this preference
-  loadStats={bytes:manifest.worldAssembly.bytes,fpsNotMeasured:true,localOnly:true};
+  // R3 honest asset accounting from the dataset manifest (bytes/sha are
+  // validated against the real files by the contract tests). assets=off
+  // records exactly which additional assets it held back; a dataset that
+  // declares asset blocks without manifest bytes/sha fails loudly instead
+  // of shipping made-up numbers.
+  const assetBlocks=session.blocks.blocks.filter(b=>b.kind==='assets'&&b.autoApply);
+  const manifestAssets=manifest.eastEdgeAssets?.assets??[];
+  const allAssetIds=assetBlocks.flatMap(b=>(b.assets??[]).map(a=>a.id));
+  const assetsEnabled=ASSETS_PARAM!=='off';
+  const assetInfos=assetsEnabled?assetBlocks.flatMap(b=>b.assets??[]).map(a=>{
+    const m=manifestAssets.find(e=>e.id===a.id);
+    if(!m)throw Error(`asset ${a.id}: bytes/sha missing from dataset manifest — honest load statistics require them`);
+    return {id:a.id,glb:a.glb,bytes:m.bytes,sha256:m.sha256,triangles:m.triangles??0};
+  }):[];
+  const bytesAdditional=assetInfos.reduce((s,a)=>s+a.bytes,0);
+  const additionalTriangles=assetInfos.reduce((s,a)=>s+(a.triangles||0),0);
+  const sceneTriangles=resources().triangles;
+  if(sceneTriangles!==manifest.placedTriangles+additionalTriangles)throw Error(`资产完整性：实际 ${sceneTriangles} / 预期 ${manifest.placedTriangles+additionalTriangles}（基础 ${manifest.placedTriangles} + 追加 ${additionalTriangles}）`);
+  loadStats={bytesBase:manifest.worldAssembly.bytes,bytesAdditional,bytesTotal:manifest.worldAssembly.bytes+bytesAdditional,assetsEnabled,fpsNotMeasured:true,localOnly:true};
+  assetStats={enabled:assetsEnabled,infos:assetInfos,excludedIds:assetsEnabled?[]:allAssetIds,bytesBase:loadStats.bytesBase,bytesAdditional,bytesTotal:loadStats.bytesTotal,additionalTriangles,
+    fingerprint:[`glb-sha256-${manifest.worldAssembly.sha256}`,...(assetsEnabled?assetInfos.map(a=>`${a.id}:${a.sha256}`):['assets-off'])].join('+')};
   setupButtons();setView('full-west');syncPlaceholderUi();
   const parsed=performance.now();await renderer.compileAsync(scene,camera);const compiled=performance.now();
   loadStats={...loadStats,allAssetsReadyMs:parsed-t0,shaderCompileMs:compiled-parsed};

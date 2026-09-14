@@ -23,7 +23,7 @@
     ],
     "assets": [
       { "id": "east-shop-128", "replaces": "shop-128", "triangles": 6724, "bytes": 1697716, "maxFinishedRoofY": 8.985 },
-      { "id": "east-shop-129", "replaces": "shop-129", "triangles": 6716, "bytes": 1691916, "maxFinishedRoofY": 7.585 }
+      { "id": "east-shop-129", "replaces": "shop-129", "triangles": 6716, "bytes": 1693456, "maxFinishedRoofY": 7.585 }
     ],
     "derivedDataset": "world/east-edge/（blocks.json 替换契约 + 相机 + 两 GLB + 世界坐标碰撞 sidecar + design-spec 快照）",
     "preview": "?world=east-edge 打开审看客户端；?world=east-edge&assets=off 看原灰盒"
@@ -50,7 +50,8 @@
   "specAdjustments": [
     "E128 招牌 y 3.15→2.96（板+背板 0.68m 须让过 3.4m 下横梁，冻结沿街模式）",
     "E129 雨棚 2.85→2.74、招牌 3.15→3.16（雨棚顶与上墙裙底 3.50m 之间放不下 0.68m 板，避让穿插）",
-    "両正面视图为弄巷口近景：两立面隔 ~3m 弄巷相对，开阔空间不存在直视正面（C1 与 Blender 立面承担全身文档）"
+    "両正面视图为弄巷口近景：两立面隔 ~3m 弄巷相对，开阔空间不存在直视正面（C1 与 Blender 立面承担全身文档）",
+    "通用招牌图集像素尺寸 1024x2048，原设计为一张 1K（1024x1024）——按主控复审意见保留现有图像不做无意义重建，明确记录为像素尺寸偏差；不以新增图片张数（仍为 1 张）掩盖分辨率差别"
   ],
   "failuresEncounteredAndFixed": [
     "构建脚本 gable opening 键名 zM/u 混用 KeyError ×2 — 修复",

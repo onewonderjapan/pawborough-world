@@ -19,7 +19,15 @@
 //   - revoking the reviewed block restores its replaced placeholders and
 //     refreshes loaded adjacent blocks in place (相邻占位同步)
 //   - dispose before physics.dispose(); any load still in flight discards
-//     itself and never touches the freed world (晚到结果不激活)
+//     itself and never touches the freed world (晚到结果不激活): resumed
+//     loads release GPU resources only — the physicsAlive flag (wired to the
+//     session's disposed state in main.js) decides whether colliders can
+//     still be removed or must die with the freed world
+//   - a mid-flight cancellation (unload or dispose during an await) stops
+//     the production factory before its next collider is created, and a
+//     partial failure (second resource errors after the first applied)
+//     rolls back everything the load created; the block stays reloadable
+//     without stacking (取消/失败不残留，重试不叠加)
 // Rendering is abstracted behind a view factory so node tests run without WebGL.
 
 import { obbToWorld } from './collisionAdapter.js';
@@ -29,11 +37,19 @@ const LOAD_RADIUS = 30;   // m beyond block AABB the block stays loaded (hystere
 const ADJACENT_IDS = ['block-adjacent-east', 'block-adjacent-west'];
 
 export class BlockManager {
-  constructor({ RAPIER, physics, views, dataset }) {
+  constructor({ RAPIER, physics, views, dataset, physicsAlive } = {}) {
     this.RAPIER = RAPIER;
     this.physics = physics;             // { world } from buildPhysicsWorld
     this.views = views;                 // { add(obj, parent?), remove(obj), makePlaceholder(ph), disposePlaceholder(v), makeReviewed() -> {group, parent?, colliders, ground, owns}, discardReviewed?(parts), disposeReviewed?() }
     this.dataset = dataset;
+    // Whether the Rapier world behind this.physics is still usable. An async
+    // load resumed AFTER owner teardown (main.js: blocks.dispose() then
+    // session.dispose() free the world synchronously) must release its own
+    // GPU resources but NEVER call into the freed world; callers that keep
+    // the world alive across manager dispose (tests, probe harnesses) get
+    // full collider removal via the default. main.js wires the session's
+    // disposed flag here.
+    this.physicsAlive = physicsAlive ?? (() => true);
     this.blocks = new Map();            // id -> {def, state, epoch, views, colliders, placeholders, reviewed}
     this.epoch = 0;                     // bumped on every unload; stale loads are discarded
     this.byPlaceholder = new Map(dataset.placeholders.map(p => [p.id, p]));
@@ -75,7 +91,7 @@ export class BlockManager {
     let reviewedParts = null;
     if (reviewed) {
       const made = await this.views.makeReviewed();
-      if (this.disposed) { block.state = 'unloaded'; return { stale: true, disposed: true, block }; }
+      if (this.disposed) { block.state = 'unloaded'; this.releaseMade(made); return { stale: true, disposed: true, block }; }
       reviewedParts = made;
       views = [made.group];
       colliders = made.colliders.map(c => c.collider);
@@ -84,8 +100,20 @@ export class BlockManager {
       // the GLBs and creates their wall colliders; the block owns both, so a
       // revoke removes the geometry AND its collision, and the placeholders
       // it replaces come back (same teardown slot as the reviewed street).
-      const made = await this.views.makeAssets(block.def);
-      if (this.disposed) { block.state = 'unloaded'; return { stale: true, disposed: true, block }; }
+      // The factory owns partial-failure rollback and cancel checks at every
+      // await boundary (fetch/parse/sidecar); `isCancelled` makes an unload
+      // or dispose mid-flight stop the factory BEFORE the next collider is
+      // created. A thrown non-cancel error (e.g. second GLB HTTP 404) must
+      // leave the block reloadable — state resets here, nothing applied.
+      let made;
+      try {
+        made = await this.views.makeAssets(block.def, { isCancelled: () => this.disposed || this.epoch !== epochAtStart });
+      } catch (e) {
+        block.state = 'unloaded'; // factory already rolled its partials back
+        if (e?.cancelled) return this.disposed ? { stale: true, disposed: true, block } : { stale: true, block };
+        throw e;
+      }
+      if (this.disposed) { block.state = 'unloaded'; this.releaseMade(made); return { stale: true, disposed: true, block }; }
       reviewedParts = made;
       views = [made.group];
       colliders = made.colliders.map(c => c.collider);
@@ -97,9 +125,11 @@ export class BlockManager {
         if (ph.replacedBy && this.blocks.get(ph.replacedBy)?.state === 'loaded') continue;
         const view = await this.views.makePlaceholder(ph); // awaitable: allows genuinely in-flight loads
         // teardown may have happened while we awaited — never touch the freed
-        // physics world with late results
+        // physics world with late results; roll back everything this load
+        // already created (earlier placeholders' colliders included)
         if (this.disposed) {
           this.views.disposePlaceholder?.(view);
+          this.rollbackPlaceholders(placeholders);
           block.state = 'unloaded';
           return { stale: true, disposed: true, block };
         }
@@ -118,13 +148,8 @@ export class BlockManager {
     // late-arrival guard: if anything was unloaded while we were building,
     // this load is stale and must not touch the new layout
     if (this.epoch !== epochAtStart) {
-      for (const p of placeholders) {
-        this.physics.world.removeCollider(p.collider, false);
-        this.physics.world.removeRigidBody(p.body);
-        this.views.disposePlaceholder?.(p.view);
-      }
-      if (reviewedParts?.isAssetGroup) this.views.discardAssets?.(reviewedParts);
-      else if (reviewedParts) this.views.discardReviewed?.(reviewedParts);
+      this.rollbackPlaceholders(placeholders);
+      this.releaseMade(reviewedParts);
       block.state = 'unloaded';
       return { stale: true, block };
     }
@@ -139,6 +164,32 @@ export class BlockManager {
     block.state = 'loaded';
     this.primePipeline();
     return { stale: false, block };
+  }
+
+  // Rollback of a load that never applied. Placeholder colliders leave the
+  // world ONLY while it is still alive; after owner teardown they die with
+  // the freed world and only the view (GPU) side is disposed. The reviewed/
+  // assets parts follow the same rule via the factory's discard/dispose
+  // split: discard* removes colliders (live world), dispose* is GPU-only.
+  rollbackPlaceholders(placeholders) {
+    for (const p of placeholders) {
+      if (this.physicsAlive()) {
+        this.physics.world.removeCollider(p.collider, false);
+        this.physics.world.removeRigidBody(p.body);
+      }
+      this.views.disposePlaceholder?.(p.view);
+    }
+  }
+  releaseMade(made) {
+    if (!made) return;
+    if (made.isAssetGroup) {
+      if (this.physicsAlive()) this.views.discardAssets?.(made);
+      else this.views.disposeAssets?.(made);
+    } else if (this.physicsAlive() || made.owns === false) {
+      // owns:false = takeover handles — handing them back touches no physics,
+      // so it stays safe even with the world already freed
+      this.views.discardReviewed?.(made);
+    }
   }
 
   // Re-prime the broad-phase after collider set changes (same reason

@@ -24,6 +24,8 @@ const WORLD = process.argv.includes('--world') ? arg('--world', null) : null;
 const PORT = parseInt(arg('--port', '5285'), 10);
 const SHOTS = arg('--shots', null);
 const URL_PATH = WORLD ? `/?world=${WORLD}` : '/';
+// evidence filenames carry the dataset tag (main.js DATASET_TAG): base-full-west-pbr-… etc.
+const TAG = WORLD ?? 'base';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 // expected triangle total comes from the dataset manifest itself (no drift)
@@ -128,7 +130,7 @@ try {
 
   // control: a preset orbit view must render real content (calibrates the
   // pixel assertions below against a known-good frame)
-  const viewStats = await captureStats('full-west-pbr');
+  const viewStats = await captureStats(`${TAG}-full-west-pbr`);
   check('view-mode frame carries real content (control)',
     viewStats && viewStats.std.every(s => s > 5) && viewStats.meanGradient > 1 && viewStats.distinctColors > 16,
     viewStats ? `std=${viewStats.std.map(v => v.toFixed(1))} grad=${viewStats.meanGradient.toFixed(2)} colors=${viewStats.distinctColors}` : 'capture failed');
@@ -147,7 +149,7 @@ try {
 
   // THE R1 content check: the walk frame must show the world, not a uniform
   // background (old bug rendered background-only despite moving feet)
-  const walkStats = await captureStats('walk-pbr');
+  const walkStats = await captureStats(`${TAG}-walk-pbr`);
   check('walk-mode frame renders actual world content (R1)',
     walkStats && walkStats.std.every(s => s > 3) && walkStats.meanGradient > 0.5 && walkStats.distinctColors > 12,
     walkStats ? `std=${walkStats.std.map(v => v.toFixed(1))} grad=${walkStats.meanGradient.toFixed(2)} colors=${walkStats.distinctColors}` : 'capture failed');
@@ -196,7 +198,7 @@ try {
     // then a walk-mode sanity pass on the candidate world
     await page.getByText('支弄B·门后回望').click();
     await page.waitForTimeout(400);
-    const pavingStats = await captureStats('lane-b-inside-return-pbr');
+    const pavingStats = await captureStats(`${TAG}-lane-b-inside-return-pbr`);
     check('laneb door-behind frame renders world content (R2 paving visible)',
       pavingStats && pavingStats.std.every(s => s > 3) && pavingStats.meanGradient > 0.5 && pavingStats.distinctColors > 12,
       pavingStats ? `std=${pavingStats.std.map(v => v.toFixed(1))} grad=${pavingStats.meanGradient.toFixed(2)} colors=${pavingStats.distinctColors}` : 'capture failed');

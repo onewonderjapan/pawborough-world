@@ -104,6 +104,10 @@ export async function loadWorld({ RAPIER, baseUrl = './world/', renderer = null 
     groundTriangles,
     capsule: CAPSULE,
     spawn,
+    // true from the moment teardown STARTS (before the Rapier world is
+    // freed): late-arriving async work checks this to skip physics calls
+    // on a freed world and release only its own GPU resources
+    get disposed() { return disposed; },
     stats: {
       placedTriangles,
       uniqueGeometries: uniqueGeometries.size,
@@ -114,7 +118,7 @@ export async function loadWorld({ RAPIER, baseUrl = './world/', renderer = null 
     },
     dispose() {
       if (disposed) return;
-      disposed = true;
+      disposed = true; // flag FIRST — physics.free() happens below
       physics.dispose();
       root.traverse((o) => {
         if (o.isMesh) {

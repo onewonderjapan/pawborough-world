@@ -13,6 +13,22 @@ import * as T from 'three';
 import { addWallCollider, addGroundCollider, removeColliderWithBody } from './physics.js';
 import { createGLTFLoader } from './decoders.js';
 
+// Release the GPU resources a loaded asset group owns (geometry, materials,
+// textures) and detach it. Never touches physics — collider removal lives in
+// discardAssets / the BlockManager, which know whether the world is alive.
+function disposeGroupResources(group) {
+  if (!group) return;
+  group.traverse((o) => {
+    if (!o.isMesh) return;
+    o.geometry.dispose();
+    for (const m of [o.material].flat()) {
+      for (const v of Object.values(m)) if (v?.isTexture) v.dispose();
+      m.dispose();
+    }
+  });
+  group.removeFromParent();
+}
+
 export function createBlockViews(scene, session = null) {
   const material = new T.MeshStandardMaterial({ color: 0x9aa09b, roughness: .95 });
   // captured ONCE while the root is still attached: after a revoke the root
@@ -86,42 +102,70 @@ export function createBlockViews(scene, session = null) {
     // the group (GPU resources) and the colliders: revoke removes them all and
     // the replaced placeholders come back. No ground collider is created here
     // — assets never add walkable area.
-    async makeAssets(def) {
+    async makeAssets(def, opts = {}) {
       if (!session) throw new Error('blockViews: assets blocks require the loaded world session');
+      const isCancelled = opts.isCancelled ?? (() => false);
+      // injectable await boundaries (production defaults): node tests drive
+      // THIS factory with gated/failing fetches; the browser always runs the
+      // real fetch + GLTFLoader path
+      const fetchImpl = opts.fetchImpl ?? ((u, init) => fetch(u, init));
+      const parseImpl = opts.parseImpl ?? ((buf, url) => loader.parseAsync(buf, url));
       const group = new T.Group();
       group.name = `assets__${def.id}`;
       const loader = createGLTFLoader({ renderer: session.renderer ?? null, baseUrl: new URL(def.baseUrl ?? './', location.href).href });
       const world = session.physics.world;
       const colliders = [];
-      for (const asset of def.assets) {
-        const url = new URL(asset.glb, location.href).href;
-        const res = await fetch(url, { cache: 'no-cache' });
-        if (!res.ok) throw new Error(`asset ${asset.id}: ${asset.glb} HTTP ${res.status}`);
-        const model = await loader.parseAsync(await res.arrayBuffer(), url);
-        model.scene.traverse((o) => {
-          if (!o.isMesh) return;
-          o.castShadow = true;
-          o.receiveShadow = true;
-          for (const m of [o.material].flat()) {
-            m.shadowSide = T.FrontSide;
-            for (const v of Object.values(m)) if (v?.isTexture) v.anisotropy = Math.min(4, session.renderer.capabilities.getMaxAnisotropy());
-          }
-        });
-        const holder = new T.Group();
-        holder.name = `asset__${asset.id}`;
-        holder.position.set(...asset.positionGlb);
-        holder.rotation.y = asset.rotationYRad;
-        holder.add(model.scene);
-        group.add(holder);
-        if (asset.collision) {
-          const cres = await fetch(new URL(asset.collision, location.href).href, { cache: 'no-cache' });
-          if (!cres.ok) throw new Error(`asset ${asset.id}: ${asset.collision} HTTP ${cres.status}`);
-          const sidecar = await cres.json();
-          for (const record of sidecar.colliders) {
-            const c = addWallCollider(session.RAPIER, world, record);
-            colliders.push({ collider: c.collider, body: c.body });
+      const cancelled = () => Object.assign(new Error(`asset block ${def.id}: load cancelled mid-flight`), { cancelled: true });
+      try {
+        for (const asset of def.assets) {
+          // every await boundary re-checks cancellation: an unload/dispose
+          // during fetch or parse must not create further Rapier bodies
+          if (isCancelled()) throw cancelled();
+          const url = new URL(asset.glb, location.href).href;
+          const res = await fetchImpl(url, { cache: 'no-cache' });
+          if (isCancelled()) throw cancelled();
+          if (!res.ok) throw new Error(`asset ${asset.id}: ${asset.glb} HTTP ${res.status}`);
+          const bytes = await res.arrayBuffer();
+          if (isCancelled()) throw cancelled();
+          const model = await parseImpl(bytes, url);
+          if (isCancelled()) throw cancelled();
+          model.scene.traverse((o) => {
+            if (!o.isMesh) return;
+            o.castShadow = true;
+            o.receiveShadow = true;
+            for (const m of [o.material].flat()) {
+              m.shadowSide = T.FrontSide;
+              for (const v of Object.values(m)) if (v?.isTexture) v.anisotropy = Math.min(4, session.renderer.capabilities.getMaxAnisotropy());
+            }
+          });
+          const holder = new T.Group();
+          holder.name = `asset__${asset.id}`;
+          holder.position.set(...asset.positionGlb);
+          holder.rotation.y = asset.rotationYRad;
+          holder.add(model.scene);
+          group.add(holder);
+          if (asset.collision) {
+            const cres = await fetchImpl(new URL(asset.collision, location.href).href, { cache: 'no-cache' });
+            if (isCancelled()) throw cancelled();
+            if (!cres.ok) throw new Error(`asset ${asset.id}: ${asset.collision} HTTP ${cres.status}`);
+            const sidecar = await cres.json();
+            if (isCancelled()) throw cancelled();
+            for (const record of sidecar.colliders) {
+              const c = addWallCollider(session.RAPIER, world, record);
+              colliders.push({ collider: c.collider, body: c.body });
+            }
           }
         }
+      } catch (e) {
+        // full self-rollback of everything created so far — a failed or
+        // cancelled load leaves NO collider behind and disposes its decoded
+        // GPU resources; after owner teardown (session.disposed) the freed
+        // physics world is left alone and the colliders die with it
+        if (session.disposed !== true) {
+          for (const c of colliders) removeColliderWithBody(world, c.collider, c.body);
+        }
+        disposeGroupResources(group);
+        throw e;
       }
       return { group, parent: reviewedParent, colliders, ground: null, owns: true, isAssetGroup: true };
     },
@@ -129,15 +173,7 @@ export function createBlockViews(scene, session = null) {
     // (owns slot) — release the GPU geometry that belongs to this block
     disposeAssets(parts) {
       if (!parts?.group) return;
-      parts.group.traverse((o) => {
-        if (!o.isMesh) return;
-        o.geometry.dispose();
-        for (const m of [o.material].flat()) {
-          for (const v of Object.values(m)) if (v?.isTexture) v.dispose();
-          m.dispose();
-        }
-      });
-      parts.group.removeFromParent();
+      disposeGroupResources(parts.group);
     },
     // stale load never applied: colliders leave the world here, geometry too
     discardAssets(parts) {
