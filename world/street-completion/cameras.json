@@ -317,14 +317,14 @@
     {
       "id": "sc-roof-north",
       "positionGlb": [
-        88.5,
-        10.5,
-        8.5
+        83,
+        14,
+        3
       ],
       "targetGlb": [
-        116,
-        6,
-        19.5
+        115,
+        6.5,
+        20.5
       ],
       "lensMm": 35,
       "sensorWidthMm": 36,
@@ -351,14 +351,14 @@
     {
       "id": "sc-ground-seam",
       "positionGlb": [
-        82,
-        1.55,
-        24.5
+        79.5,
+        1.6,
+        16.2
       ],
       "targetGlb": [
-        88,
-        0.4,
-        24
+        89,
+        0.2,
+        17.8
       ],
       "lensMm": 40,
       "sensorWidthMm": 36,
@@ -366,7 +366,7 @@
       "source": "street-completion batch: 近地街面接缝 — 原街面铺装东端与后续路面的交界（S3 surface-spec 对照机位）; point checked against visible geometry at capture time, adjust only with recorded before/after"
     },
     {
-      "id": "sc-pair-130-131",
+      "id": "sc-pair-cloth-silk",
       "positionGlb": [
         103.5,
         1.7,
@@ -383,7 +383,7 @@
       "source": "street-completion batch: 棉布店(130,北)/绸缎店(131,南)对街 — 两种陈列构件同框; point checked against visible geometry at capture time, adjust only with recorded before/after"
     },
     {
-      "id": "sc-pair-132-133",
+      "id": "sc-pair-embroidery-leather",
       "positionGlb": [
         116,
         1.7,

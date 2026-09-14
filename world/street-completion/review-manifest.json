@@ -102,6 +102,53 @@
     "allPacked": true
   },
   "previewLoadMode": "single_assembly_sharing_embedded_images",
+  "eastEdgeAssets": {
+    "blockId": "block-east-edge-shops",
+    "assets": [
+      {
+        "id": "east-shop-128",
+        "glb": "./world/east-edge/east-shop-128/model.glb",
+        "collision": "./world/east-edge/east-shop-128/collision.json",
+        "positionGlb": [
+          97.66450990714537,
+          0,
+          17.734234931801197
+        ],
+        "rotationYRad": -0.301652,
+        "replacesBaseIds": [
+          "shop-128"
+        ],
+        "bytes": 1697716,
+        "sha256": "af93a694b72a242e746a33204c5425f86837adac56dd28f3e759785c584c3798",
+        "triangles": 6724
+      },
+      {
+        "id": "east-shop-129",
+        "glb": "./world/east-edge/east-shop-129/model.glb",
+        "collision": "./world/east-edge/east-shop-129/collision.json",
+        "positionGlb": [
+          95.7340372829119,
+          0,
+          23.93834100897118
+        ],
+        "rotationYRad": 2.839941,
+        "replacesBaseIds": [
+          "shop-129"
+        ],
+        "bytes": 1693456,
+        "sha256": "2620ea4db1d6dc90e2825b8e9e3c5f72d8f2bcd83fa9e0bbb9ab95e87d27d3cf",
+        "triangles": 6716
+      }
+    ],
+    "combinedDownloadBytes": 3391172,
+    "combinedTriangleCount": 13440,
+    "runtimeTextureSharing": "none claimed — standalone GLBs embed their own image copies; unique images by content sha are counted in evidence",
+    "designSpec": {
+      "path": "/home/baibai/outbox/pawborough-lane-b-night-20260914/artifacts/east-edge-design-20260914/DESIGN_SPEC.json",
+      "sha256": "90d88b6729d23f4ddd5fc9109d3265375b0faa3f6336c44de53b7d99ac5f885a",
+      "snapshot": "./design-spec.snapshot.json"
+    }
+  },
   "streetCompletion": {
     "blockId": "block-street-completion-shops",
     "eastEdgeBlockId": "block-east-edge-shops",

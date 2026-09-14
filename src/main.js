@@ -184,7 +184,9 @@ async function load(){const t0=performance.now();
   world.traverse(o=>{if(o.isMesh){o.castShadow=![o.material].flat().every(m=>/asphalt|paving/i.test(m.name));o.receiveShadow=true;for(const m of [o.material].flat())for(const v of Object.values(m))if(v?.isTexture)v.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());}});
   world.updateMatrixWorld(true);
   const total=resources().triangles;
-  if(total!==manifest.placedTriangles)throw Error(`几何不完整：实际 ${total} / 预期 ${manifest.placedTriangles}`);
+  // street-completion batch: the dataset surface is part of the scene by design
+  const expected=manifest.placedTriangles+(manifest.streetCompletion?.surface?.triangles??0);
+  if(total!==expected)throw Error(`几何不完整：实际 ${total} / 预期 ${expected}`);
   controller=new WalkController({RAPIER,physics:session.physics,capsule:{...session.capsule,spawn:session.spawn}});
   // blocks dataset is a REQUIRED world input (fetched+validated in loadWorld):
   // a missing/corrupt blocks.json must fail the load loudly, never fall back
@@ -203,7 +205,7 @@ async function load(){const t0=performance.now();
   // declares asset blocks without manifest bytes/sha fails loudly instead
   // of shipping made-up numbers.
   const assetBlocks=session.blocks.blocks.filter(b=>b.kind==='assets'&&b.autoApply);
-  const manifestAssets=manifest.eastEdgeAssets?.assets??[];
+  const manifestAssets=[...(manifest.eastEdgeAssets?.assets??[]),...(manifest.streetCompletion?.assets??[])];
   const allAssetIds=assetBlocks.flatMap(b=>(b.assets??[]).map(a=>a.id));
   const assetsEnabled=ASSETS_PARAM!=='off';
   const assetInfos=assetsEnabled?assetBlocks.flatMap(b=>b.assets??[]).map(a=>{
@@ -214,7 +216,8 @@ async function load(){const t0=performance.now();
   const bytesAdditional=assetInfos.reduce((s,a)=>s+a.bytes,0);
   const additionalTriangles=assetInfos.reduce((s,a)=>s+(a.triangles||0),0);
   const sceneTriangles=resources().triangles;
-  if(sceneTriangles!==manifest.placedTriangles+additionalTriangles)throw Error(`资产完整性：实际 ${sceneTriangles} / 预期 ${manifest.placedTriangles+additionalTriangles}（基础 ${manifest.placedTriangles} + 追加 ${additionalTriangles}）`);
+  const expectedAssets=manifest.placedTriangles+additionalTriangles+(manifest.streetCompletion?.surface?.triangles??0);
+  if(sceneTriangles!==expectedAssets)throw Error(`资产完整性：实际 ${sceneTriangles} / 预期 ${expectedAssets}（基础 ${manifest.placedTriangles} + 追加 ${additionalTriangles} + 街面 ${manifest.streetCompletion?.surface?.triangles??0}）`);
   loadStats={bytesBase:manifest.worldAssembly.bytes,bytesAdditional,bytesTotal:manifest.worldAssembly.bytes+bytesAdditional,assetsEnabled,fpsNotMeasured:true,localOnly:true};
   assetStats={enabled:assetsEnabled,infos:assetInfos,excludedIds:assetsEnabled?[]:allAssetIds,bytesBase:loadStats.bytesBase,bytesAdditional,bytesTotal:loadStats.bytesTotal,additionalTriangles,
     fingerprint:[`glb-sha256-${manifest.worldAssembly.sha256}`,...(assetsEnabled?assetInfos.map(a=>`${a.id}:${a.sha256}`):['assets-off'])].join('+')};

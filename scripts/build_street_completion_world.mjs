@@ -149,6 +149,7 @@ if (failedClearance.length) throw new Error(`surface clearance failed: ${failedC
 const manifest = await readJson(resolve(root, 'world/review-manifest.json'));
 manifest.generatedBy = 'scripts/build_street_completion_world.mjs (derived candidate; frozen dataset untouched)';
 manifest.worldAssembly = { ...manifest.worldAssembly, path: './world/street-reviewed.glb' };
+manifest.eastEdgeAssets = (await readJson(resolve(root, 'world/east-edge/review-manifest.json'))).eastEdgeAssets;
 manifest.streetCompletion = {
   blockId: BLOCK_ID,
   eastEdgeBlockId: EAST_BLOCK_ID,
@@ -202,7 +203,7 @@ const batch = [
   },
   {
     id: 'sc-roof-north',
-    positionGlb: [88.5, 10.5, 8.5], targetGlb: [116.0, 6.0, 19.5], lensMm: 35, sensorWidthMm: 36, sensorFit: 'HORIZONTAL',
+    positionGlb: [83.0, 14.0, 3.0], targetGlb: [115.0, 6.5, 20.5], lensMm: 35, sensorWidthMm: 36, sensorFit: 'HORIZONTAL',
     note: '北侧屋面连续全景（128→130→132 屋脊线）',
   },
   {
@@ -212,16 +213,16 @@ const batch = [
   },
   {
     id: 'sc-ground-seam',
-    positionGlb: [82.0, 1.55, 24.5], targetGlb: [88.0, 0.4, 24.0], lensMm: 40, sensorWidthMm: 36, sensorFit: 'HORIZONTAL',
+    positionGlb: [79.5, 1.6, 16.2], targetGlb: [89.0, 0.2, 17.8], lensMm: 40, sensorWidthMm: 36, sensorFit: 'HORIZONTAL',
     note: '近地街面接缝 — 原街面铺装东端与后续路面的交界（S3 surface-spec 对照机位）',
   },
   {
-    id: 'sc-pair-130-131',
+    id: 'sc-pair-cloth-silk',
     positionGlb: [103.5, 1.7, 24.3], targetGlb: [109.6, 2.6, 24.4], lensMm: 40, sensorWidthMm: 36, sensorFit: 'HORIZONTAL',
     note: '棉布店(130,北)/绸缎店(131,南)对街 — 两种陈列构件同框',
   },
   {
-    id: 'sc-pair-132-133',
+    id: 'sc-pair-embroidery-leather',
     positionGlb: [116.0, 1.7, 27.0], targetGlb: [121.2, 2.6, 27.2], lensMm: 40, sensorWidthMm: 36, sensorFit: 'HORIZONTAL',
     note: '绣品店(132,北)/皮货店(133,南)对街 — 挂框与木板闭合同框',
   },
