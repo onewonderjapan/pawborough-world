@@ -1,0 +1,56 @@
+{
+  "moduleId": "east-shop-133",
+  "triangles": 6964,
+  "meshes": 10,
+  "fileBytes": 1755416,
+  "sha256": "d443aac126f8e81c14a85efcb3baafc9f54d328e726c8f52cbaa524453fb90cc",
+  "design": {
+    "family": "east-edge-background-shop",
+    "sampleId": "east-shop-133",
+    "basedOn": "street-completion-night-20260915 NEXT_FOUR_DESIGN.json east-shop-133 (designName 皮货店); seed kit/east-shop-128.config.json facade style, design dimensions, boarded lower front with a small display window, west gable follows this building's own geometry (south side, west on local +x)",
+    "frontageM": 10.7,
+    "depthM": 11.0,
+    "eaveM": 7.2,
+    "ridgeM": 8.8,
+    "floors": 2,
+    "roofType": "planar",
+    "roofOverhangFB_M": 0.3,
+    "roofOverhangGable_M": 0.25,
+    "maxFinishedRoofY": 8.985000000000001,
+    "upperWindowCount": 4,
+    "gableOpenings": [
+      {
+        "kind": "window",
+        "zM": -2.65,
+        "yM": 5.5,
+        "widthM": 0.8,
+        "heightM": 1.1,
+        "recessM": 0.1
+      },
+      {
+        "kind": "window",
+        "zM": -7.15,
+        "yM": 5.5,
+        "widthM": 0.8,
+        "heightM": 1.1,
+        "recessM": 0.1
+      }
+    ],
+    "interiorBuilt": false,
+    "doors": "all doors closed with real panels (front + any gable door); no interior, building not enterable",
+    "signage": "generic-atlas row 5 (皮货, historicalBrand=false)",
+    "specAdjustments": {
+      "westOnLocalX": "design seed 128 carries -1 because shop-128 is a north-side building; shop-133 is south-side (yaw 2.912213) so its west gable is local +x. Opening style (2 windows) still follows the seed.",
+      "signYm": "kept seed 128 value 2.96; board+backing clears the frozen 3.4m lower beam",
+      "boarding": "wood-plank closure of the lower front except door + small display window; top 2.50 keeps 0.12m clear of the sign backing bottom 2.62",
+      "gableZm": "seed 128 openings scaled to depth 11 by the seed's own depth fractions (0.24/0.65)"
+    },
+    "materialSet": "pawborough-street-v1 (mb_lib.build_materials, frozen) + generic sign atlas",
+    "configDriven": true,
+    "surveyed": false
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

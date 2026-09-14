@@ -61,25 +61,49 @@ SCHEMA = {
 
 GABLE_KINDS = ('window', 'door')
 
+# street-completion batch 20260915: optional keys. Allowed but never demanded,
+# so the frozen 128/129 configs keep validating unchanged.
+SCHEMA_OPTIONAL = {
+    'displayProps': {'kind': None, 'count': None, 'rollLengthM': None, 'rollRadiusM': None,
+                     'shelf': None, 'panelWidthM': None, 'panelHeightM': None},
+}
+FULL_SPEC = dict(SCHEMA)
+for _k, _sub in SCHEMA_OPTIONAL.items():
+    FULL_SPEC[_k] = {**(FULL_SPEC.get(_k) or {}), **_sub}
+FULL_SPEC['front'] = {**SCHEMA['front'],
+                      'boarding': {'topY': None, 'plankWidthM': None, 'gapM': None,
+                                   'thicknessM': None, 'edgeMarginM': None}}
+# required subset per level: a level listed here demands exactly its own keys;
+# optional levels are simply absent from REQ_SPEC (allowed, never demanded), so
+# a fabricRolls block never carries the framedPanels knobs and the frozen
+# 128/129 configs keep validating unchanged.
+REQ_SPEC = dict(SCHEMA)
+REQ_SPEC['front'] = SCHEMA['front']
 
-def check_keys(obj, spec, path):
+
+def check_keys(obj, spec, path, required=None):
+    """spec = allowed keys (nested dict or None leaf); required = the subset
+    that must be present (defaults to all of spec)."""
     problems = []
     if not isinstance(obj, dict):
         return [f'{path}: expected object']
+    req = spec if required is None else required
     extra = sorted(set(obj) - set(spec))
-    missing = sorted(set(spec) - set(obj))
+    missing = sorted(set(req) - set(obj))
     if extra:
         problems.append(f'{path}: unknown keys {extra} (no silent ignoring)')
     if missing:
         problems.append(f'{path}: missing keys {missing}')
     for k, sub in spec.items():
         if sub and k in obj:
-            problems += check_keys(obj[k], sub, f'{path}.{k}')
+            # levels absent from `required` are optional: allowed, never demanded
+            sub_req = req.get(k, {}) if isinstance(req, dict) else None
+            problems += check_keys(obj[k], sub, f'{path}.{k}', sub_req)
     return problems
 
 
 def validate(c, atlas_rows):
-    pr = check_keys(c, SCHEMA, 'config')
+    pr = check_keys(c, FULL_SPEC, 'config', REQ_SPEC)
     W = c['bay']['widthM']
     D = c['bay']['depthM']
     h = c['heights']
@@ -163,6 +187,22 @@ def validate(c, atlas_rows):
     row_text = atlas_rows.get(str(sg['row']))
     if row_text != sg['text']:
         pr.append(f"sign row {sg['row']} maps to {row_text!r} in the generic atlas, config says {sg['text']!r}")
+    dp = c.get('displayProps')
+    if dp is not None and dp.get('kind') not in (None, 'none', 'fabricRolls', 'framedPanels'):
+        pr.append(f"unknown displayProps kind {dp.get('kind')!r}")
+    if dp is not None and dp.get('kind') in ('fabricRolls', 'framedPanels'):
+        if not (1 <= dp.get('count', 0) <= 8):
+            pr.append('displayProps count out of range')
+    bd = sf.get('boarding')
+    if bd is not None:
+        if bd['topY'] > sg['yM'] - sg['heightM'] / 2 - 0.18:
+            pr.append('front boarding would cover the sign backing')
+        if not (0.01 < bd['thicknessM'] <= 0.05):
+            pr.append('boarding thickness out of range')
+        if not (f0['topY'] + 0.3 < bd['topY'] < sill_bottom):
+            pr.append('boarding band out of the lower wall')
+        if abs(bd['topY'] - disp['topY']) < 0.1:
+            pr.append('boarding top too close to the display window top')
     beam_top = c['beams']['lowerY'] + 0.09
     if c['canopy'] is None:
         if sg['yM'] + sg['heightM'] / 2 + 0.09 > beam_top - 0.01:
@@ -240,8 +280,39 @@ K.closed_door_on_wall(L, 'z', 0.0, -1, door_u, sf['door']['heightM'] / 2, sf['do
                       sf['door']['heightM'], sf['door']['recessM'], name='front-door')
 L.box('front-threshold', (door_u, f0['thresholdHeightM'] / 2, -0.01),
       (sf['door']['widthM'] + 0.3, f0['thresholdHeightM'], 0.22), 'stone', .008)
-K.display_window_on_wall(L, 'z', 0.0, -1, disp_u, (disp['bottomY'] + disp['topY']) / 2,
-                         disp_w, disp['topY'] - disp['bottomY'], disp['recessM'])
+_niche = (cfg.get('displayProps') or {}).get('kind') not in (None, 'none') or sf.get('boarding') is not None
+if _niche:
+    K.display_niche_on_wall(L, 'z', 0.0, -1, disp_u, (disp['bottomY'] + disp['topY']) / 2,
+                            disp_w, disp['topY'] - disp['bottomY'], disp['recessM'])
+else:
+    K.display_window_on_wall(L, 'z', 0.0, -1, disp_u, (disp['bottomY'] + disp['topY']) / 2,
+                             disp_w, disp['topY'] - disp['bottomY'], disp['recessM'])
+# street-completion display props: shallow props behind the display glass
+# (counter top = display bottom + counter 0.42 + stone top 0.07)
+dp = cfg.get('displayProps') or {}
+if dp.get('kind') not in (None, 'none'):
+    _counter_y = disp['bottomY'] + 0.42 + 0.07
+    if dp['kind'] == 'fabricRolls':
+        K.fabric_rolls(L, disp_u, disp_w, _counter_y, count=dp.get('count', 6),
+                       roll_len=dp.get('rollLengthM', 0.44),
+                       roll_rx=dp.get('rollRadiusM', 0.065), shelf=bool(dp.get('shelf')))
+    elif dp['kind'] == 'framedPanels':
+        K.framed_panels(L, disp_u, disp_w, _counter_y, count=dp.get('count', 3),
+                        panel_w=dp.get('panelWidthM', 0.52), panel_h=dp.get('panelHeightM', 0.72))
+bd = sf.get('boarding')
+if bd is not None:
+    _margin = bd.get('edgeMarginM', 0.20)
+    _segs, _cursor = [], x - W / 2 + 0.05
+    for _o in sorted(({'u': door_u, 'w': sf['door']['widthM']}, {'u': disp_u, 'w': disp_w}), key=lambda q: q['u']):
+        _lo, _hi = _o['u'] - _o['w'] / 2 - _margin, _o['u'] + _o['w'] / 2 + _margin
+        if _lo > _cursor:
+            _segs.append((_cursor, _lo))
+        _cursor = max(_cursor, _hi)
+    if x + W / 2 - 0.05 > _cursor:
+        _segs.append((_cursor, x + W / 2 - 0.05))
+    K.front_boarding(L, _segs, f0['topY'], bd['topY'],
+                     plank_w=bd.get('plankWidthM', 0.58), gap=bd.get('gapM', 0.015),
+                     thickness=bd.get('thicknessM', 0.03))
 K.wall_with_openings(L, 'z', f0['protrusionM'], -1, x - W / 2, x + W / 2,
                      f0['bottomY'], f0['topY'], f0['thicknessM'], 'brick',
                      [{'u': door_u, 'y': sf['door']['heightM'] / 2, 'w': sf['door']['widthM'] + 0.18,

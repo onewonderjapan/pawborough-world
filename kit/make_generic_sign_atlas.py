@@ -26,7 +26,8 @@ FRAME = (146, 118, 66, 255)     # thin border gold
 FONT_TTC = '/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc'
 
 # row -> generic design text; recorded into the sidecar for provenance
-ROWS_TEXT = {0: '小酒楼', 1: '饭馆'}
+ROWS_TEXT = {0: '小酒楼', 1: '饭馆',
+             2: '布行', 3: '绸庄', 4: '绣坊', 5: '皮货'}  # street-completion batch 20260915; rows 0-1 redrawn identically (deterministic)
 
 
 def sc_face_index(path):

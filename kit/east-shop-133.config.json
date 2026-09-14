@@ -1,0 +1,62 @@
+{
+  "sampleId": "east-shop-133",
+  "basedOn": "street-completion-night-20260915 NEXT_FOUR_DESIGN.json east-shop-133 (designName 皮货店); seed kit/east-shop-128.config.json facade style, design dimensions, boarded lower front with a small display window, west gable follows this building's own geometry (south side, west on local +x)",
+  "units": "meters",
+  "bay": { "widthM": 10.7, "depthM": 11.0 },
+  "floors": 2,
+  "heights": {
+    "eaveM": 7.2,
+    "ridgeM": 8.8,
+    "upperFloorY": 3.6,
+    "sillWallCenterY": 4.35,
+    "sillWallHeightM": 1.1,
+    "headerFromY": 6.75,
+    "windowY": 5.8,
+    "pierHeightM": 1.85
+  },
+  "roof": {
+    "type": "planar",
+    "overhangFrontBackM": 0.30,
+    "overhangGableM": 0.25,
+    "slabThicknessM": 0.10,
+    "ridgeRollRadiusM": 0.115,
+    "maxAttachmentAboveRidgeM": 0.20
+  },
+  "upperWindows": { "type": "shutter", "count": 4, "widthM": 1.45, "heightM": 1.8 },
+  "front": {
+    "wallThicknessM": 0.26,
+    "door": { "uRatio": -0.22, "widthM": 1.1, "heightM": 2.1, "recessM": 0.10 },
+    "display": { "uRatio": 0.19, "widthRatio": 0.20, "bottomY": 0.60, "topY": 1.90, "recessM": 0.12 },
+    "boarding": { "topY": 2.50, "plankWidthM": 0.58, "gapM": 0.015, "thicknessM": 0.03, "edgeMarginM": 0.20 }
+  },
+  "gable": {
+    "wallThicknessM": 0.28,
+    "westOnLocalX": 1,
+    "openings": [
+      { "kind": "window", "zM": -2.65, "yM": 5.5, "widthM": 0.8, "heightM": 1.1, "recessM": 0.10 },
+      { "kind": "window", "zM": -7.15, "yM": 5.5, "widthM": 0.8, "heightM": 1.1, "recessM": 0.10 }
+    ],
+    "downpipe": { "zM": -0.45, "radiusM": 0.04, "clamps": 3 }
+  },
+  "foundation": {
+    "bottomY": -0.20,
+    "topY": 0.60,
+    "thicknessM": 0.34,
+    "protrusionM": 0.06,
+    "thresholdHeightM": 0.08
+  },
+  "streetPosts": { "count": 2, "postHeightM": 7.3 },
+  "beams": { "lowerY": 3.4 },
+  "canopy": null,
+  "signage": {
+    "main": { "text": "皮货", "row": 5, "yM": 2.96, "widthM": 2.6, "heightM": 0.5 }
+  },
+  "displayProps": { "kind": "none" },
+  "materialSet": "pawborough-street-v1 (mb_lib.build_materials, frozen) + generic sign atlas",
+  "specAdjustments": {
+    "westOnLocalX": "design seed 128 carries -1 because shop-128 is a north-side building; shop-133 is south-side (yaw 2.912213) so its west gable is local +x. Opening style (2 windows) still follows the seed.",
+    "signYm": "kept seed 128 value 2.96; board+backing clears the frozen 3.4m lower beam",
+    "boarding": "wood-plank closure of the lower front except door + small display window; top 2.50 keeps 0.12m clear of the sign backing bottom 2.62",
+    "gableZm": "seed 128 openings scaled to depth 11 by the seed's own depth fractions (0.24/0.65)"
+  }
+}

@@ -9,6 +9,7 @@ origin — same as mb_lib and the frozen collision.json sidecars.
 
 Run inside Blender (kit/build_sample.py imports this).
 """
+import math
 
 
 def street_post(L, x, post_height, prefix='', y=3.5, z=0.08,
@@ -188,3 +189,141 @@ def straight_canopy(L, x, y, z0, w, projection, thickness=0.07):
     for xx in (x - w * .38, x + w * .38):
         L.box('canopy-bracket', (xx, y - .3, z0 + .015), (.12, .55, .1), 'wood', .006)
         L.rod('canopy-brace', (xx, y - .55, z0 - .02), (xx, y - .06, z0 + .18), .045, 'wood')
+
+
+# ---- street-completion batch 20260915: shallow display-window props ------
+#
+# Append to kit/components.py. Design props INSIDE the existing display-window
+# reveal of the east-shop builder. Constraints from the batch plan:
+#   - props only occupy the shallow void behind the display glass (local z
+#     -0.1325..-0.26; facade outer face z=0, glass pane z -0.1075..-0.1325,
+#     wall inner face -0.26) — no full interior is implied
+#   - only frozen palette materials (clothB/clothC/clothR, scroll, wood)
+#     — zero new textures, no reference-photo textures
+#   - no collision entries (props sit behind glass, never walkable)
+#   - fabric rolls are low-poly 8-sided ELLIPTICAL prisms (0.13 x 0.10 section)
+#     because the round-bolt diameter would pierce the glass in a 0.13m void
+#
+# Front-wall coordinates (axis 'z', plane 0, inward -1): u runs along X,
+# local z negative = behind the outer face.
+
+_ROLL_PALETTE = ('clothC', 'clothB', 'clothR')  # 米白 / 灰蓝 / 棕红
+
+
+def _ellip_prism(L, name, x_a, x_b, y_c, z_c, ry, rz, mat, sides=8):
+    """Horizontal low-poly elliptical prism, axis along X, in GLB space.
+    Section is ry (vertical) x rz (depth) centered at (y_c, z_c)."""
+    ring_a, ring_b = [], []
+    for i in range(sides):
+        a = 2 * math.pi * i / sides
+        ring_a.append((x_a, y_c + ry * math.cos(a), z_c + rz * math.sin(a)))
+        ring_b.append((x_b, y_c + ry * math.cos(a), z_c + rz * math.sin(a)))
+    verts = ring_a + ring_b
+    faces = [(i, (i + 1) % sides, sides + (i + 1) % sides, sides + i) for i in range(sides)]
+    faces.append(tuple(range(sides - 1, -1, -1)))
+    faces.append(tuple(range(sides, 2 * sides)))
+    return L.mesh(name, verts, faces, mat)
+
+
+def fabric_rolls(L, u_center, span_w, counter_y, count=6,
+                 roll_len=0.70, roll_rx=0.11, roll_rz=0.048, shelf=False,
+                 depth=0.18, name='display-roll'):
+    """Cloth bolts lying horizontally in the display reveal.
+
+    counter_y = top of the proud stone counter; bolts rest on it, split onto
+    an optional mid shelf (+0.42 above the bolt tops) when shelf=True. The
+    whole row stays centered on u_center and within span_w - 0.2; bolt axes
+    run along the facade at local z = -depth (behind the glass inner face
+    -0.1325 for roll_rz + 0.01 <= depth - 0.1325, clear of the wall -0.26).
+    """
+    if count < 1:
+        return
+    gap = min(0.45, max(0.05, (span_w - 0.4 - count * 2 * roll_rx) / max(1, count - 1) * 0.55))
+    rows = [counter_y + roll_rx + 0.01]
+    if shelf:
+        shelf_y = counter_y + 2 * roll_rx + 0.34
+        L.box(name + '-shelf', (u_center, shelf_y, -0.18),
+              (min(span_w - 0.3, count * (2 * roll_rx + gap)), 0.035, 0.07), 'wood', 0.004)
+        rows.append(shelf_y + 0.0175 + roll_rx + 0.01)
+    per_row = -(-count // len(rows))  # ceil split: front row first
+    k = 0
+    for y_c in rows:
+        n_row = min(per_row, count - k)
+        total = n_row * 2 * roll_rx + (n_row - 1) * gap
+        if total > span_w - 0.2:
+            raise ValueError(f'{name}: {n_row} bolts need {total:.2f}m > window {span_w - 0.2:.2f}m')
+        x0 = u_center - total / 2 + roll_rx
+        for i in range(n_row):
+            xc = x0 + i * (2 * roll_rx + gap)
+            _ellip_prism(L, f'{name}-{k}', xc - roll_len / 2, xc + roll_len / 2,
+                         y_c, -depth, roll_rx, roll_rz, _ROLL_PALETTE[k % 3])
+            k += 1
+
+
+def framed_panels(L, u_center, span_w, counter_y, count=3,
+                  panel_w=0.52, panel_h=0.72, depth=0.175, name='display-panel'):
+    """Embroidery display frames standing on the counter.
+
+    Original geometric inlay only: wood frame + scroll ground recessed behind
+    the frame front, thin cloth strips standing slightly proud of the ground
+    (raised-embroidery reading). Colors cycle through the frozen cloth palette.
+    No reference-photo texture anywhere.
+    """
+    if count < 1:
+        return
+    gap = 0.18
+    total = count * panel_w + (count - 1) * gap
+    if total > span_w - 0.2:
+        raise ValueError(f'{name}: {count} panels need {total:.2f}m > window {span_w - 0.2:.2f}m')
+    x0 = u_center - total / 2 + panel_w / 2
+    for k in range(count):
+        xc = x0 + k * (panel_w + gap)
+        yc = counter_y + panel_h / 2 + 0.02
+        col = _ROLL_PALETTE[k % 3]
+        col2 = _ROLL_PALETTE[(k + 1) % 3]
+        L.box(f'{name}-frame-{k}', (xc, yc, -depth), (panel_w, panel_h, 0.035), 'wood', 0.005)
+        L.box(f'{name}-ground-{k}', (xc, yc, -(depth - 0.006)), (panel_w - 0.09, panel_h - 0.09, 0.012), 'scroll', 0)
+        L.box(f'{name}-stripe-v1-{k}', (xc - panel_w * 0.16, yc, -(depth - 0.019)), (0.035, panel_h - 0.2, 0.008), col, 0)
+        L.box(f'{name}-stripe-v2-{k}', (xc + panel_w * 0.16, yc, -(depth - 0.019)), (0.035, panel_h - 0.2, 0.008), col2, 0)
+        L.box(f'{name}-stripe-h-{k}', (xc, yc + panel_h * 0.12, -(depth - 0.019)), (panel_w - 0.16, 0.035, 0.008), col, 0)
+        L.box(f'{name}-stripe-h2-{k}', (xc, yc - panel_h * 0.18, -(depth - 0.019)), (panel_w - 0.16, 0.022, 0.008), col2, 0)
+
+
+def front_boarding(L, segments, bottom_y, top_y, plank_w=0.58, gap=0.015,
+                   thickness=0.03, name='front-boarding'):
+    """Vertical timber planks closing the lower front wall (皮货店).
+
+    segments = list of (u_lo, u_hi) wall spans to board; opening columns are
+    already excluded by the caller (margin covers the proud door frame and the
+    stone counter-top overhang). Planks stand proud of the plaster face at
+    local z 0..thickness. No collision entries — the wall behind collides.
+    """
+    for si, (lo, hi) in enumerate(segments):
+        span = hi - lo
+        if span < plank_w * 0.6:
+            continue
+        n = max(1, int((span + gap) / (plank_w + gap)))
+        pitch = (span - gap) / n - gap
+        used = n * pitch + (n - 1) * gap
+        x0 = lo + (span - used) / 2 + pitch / 2
+        for k in range(n):
+            L.box(f'{name}-{si}p{k}', (x0 + k * (pitch + gap), (bottom_y + top_y) / 2, thickness / 2),
+                  (pitch, top_y - bottom_y, thickness), 'wood', 0.004)
+
+
+def display_niche_on_wall(L, axis, plane, inward, u, y, w, h, recess=0.12,
+                          counter_h=0.42, name='display-niche'):
+    """Open display niche for prop-carrying shopfronts (street-completion batch).
+
+    Same opening language as display_window_on_wall (proud timber counter face,
+    protruding stone top) but the reveal is a real frame — side jambs + head
+    band — around an open niche: no glass, and a warm 'inner' back panel at the
+    wall's inner face so sunlight reaches the shallow display props. The frozen
+    solid-plug display_window_on_wall stays untouched for 128/129.
+    """
+    _wb(L, axis, plane, inward, u, y + h / 2 - 0.04, recess / 2 - 0.02, w + 0.16, 0.08, recess, 'dark', 0, False, f'{name}-head')
+    for du in (-w / 2 + 0.035, w / 2 - 0.035):
+        _wb(L, axis, plane, inward, u + du, y, recess / 2 - 0.02, 0.07, h - 0.08, recess, 'dark', 0, False, f'{name}-jamb')
+    _wb(L, axis, plane, inward, u, y, recess + 0.125, w - 0.07, h - 0.08, 0.02, 'inner', 0, False, f'{name}-back')
+    _wb(L, axis, plane, inward, u, y - h / 2 + counter_h / 2, -.02, w - .06, counter_h, .24, 'wood', .008, False, f'{name}-counter-face')
+    _wb(L, axis, plane, inward, u, y - h / 2 + counter_h + .035, -.05, w + .12, .07, .32, 'stone', .008, False, f'{name}-counter-top')

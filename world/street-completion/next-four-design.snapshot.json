@@ -1,0 +1,184 @@
+{
+  "status": "specified_for_owner_started_continuous_batch",
+  "buildings": [
+    {
+      "id": "east-shop-130",
+      "replacesBaseIds": [
+        "shop-130"
+      ],
+      "sourcePlaceholder": {
+        "id": "shop-130",
+        "baseId": "shop-130",
+        "replacedBy": null,
+        "mapPoint": [
+          164.65,
+          -1.14
+        ],
+        "glbPoint": [
+          111.15,
+          16.26
+        ],
+        "angleRad": -0.22938,
+        "widthM": 10.7,
+        "depthM": 12,
+        "heightM": 8.8,
+        "category": "棉花",
+        "historicalPositionVerified": false,
+        "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      },
+      "seed": "kit/east-shop-128.config.json",
+      "designName": "棉布店",
+      "historicalBrand": false,
+      "positionGlb": [
+        109.78575716044992,
+        0,
+        22.102845323533415
+      ],
+      "yawRad": -0.22938,
+      "widthM": 10.7,
+      "depthM": 12,
+      "eaveM": 7.2,
+      "ridgeM": 8.8,
+      "upperWindowCount": 4,
+      "groundFrontDetail": "浅橱窗内6卷素色布卷，色调限米白、灰蓝、棕；不做散落棉絮",
+      "sideRule": "西侧沿用种子开洞方式；其余暴露侧背面封闭。遮挡内部不堆陈列。",
+      "additionalWeathering": false,
+      "dimensionsAreDesign": true
+    },
+    {
+      "id": "east-shop-131",
+      "replacesBaseIds": [
+        "shop-131"
+      ],
+      "sourcePlaceholder": {
+        "id": "shop-131",
+        "baseId": "shop-131",
+        "replacedBy": null,
+        "mapPoint": [
+          160.78,
+          15.41
+        ],
+        "glbPoint": [
+          107.28,
+          32.81
+        ],
+        "angleRad": 2.912213,
+        "widthM": 10.7,
+        "depthM": 13,
+        "heightM": 10.2,
+        "category": "绸缎",
+        "historicalPositionVerified": false,
+        "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      },
+      "seed": "kit/east-shop-129.config.json",
+      "designName": "绸缎店",
+      "historicalBrand": false,
+      "positionGlb": [
+        108.75792755015615,
+        0,
+        26.4802503875359
+      ],
+      "yawRad": 2.912213,
+      "widthM": 10.7,
+      "depthM": 13,
+      "eaveM": 6.4,
+      "ridgeM": 7.4,
+      "upperWindowCount": 3,
+      "groundFrontDetail": "橱窗内4卷布料和一块横向层板，窗框与窄招牌区分棉布店",
+      "sideRule": "西侧沿用种子开洞方式；其余暴露侧背面封闭。遮挡内部不堆陈列。",
+      "additionalWeathering": false,
+      "dimensionsAreDesign": true
+    },
+    {
+      "id": "east-shop-132",
+      "replacesBaseIds": [
+        "shop-132"
+      ],
+      "sourcePlaceholder": {
+        "id": "shop-132",
+        "baseId": "shop-132",
+        "replacedBy": null,
+        "mapPoint": [
+          176.33,
+          1.59
+        ],
+        "glbPoint": [
+          122.83,
+          18.99
+        ],
+        "angleRad": -0.22938,
+        "widthM": 10.7,
+        "depthM": 10,
+        "heightM": 7.4,
+        "category": "绣品",
+        "historicalPositionVerified": false,
+        "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      },
+      "seed": "kit/east-shop-129.config.json",
+      "designName": "绣品店",
+      "historicalBrand": false,
+      "positionGlb": [
+        121.69313096704158,
+        0,
+        23.859037769611177
+      ],
+      "yawRad": -0.22938,
+      "widthM": 10.7,
+      "depthM": 10,
+      "eaveM": 6.4,
+      "ridgeM": 7.4,
+      "upperWindowCount": 3,
+      "groundFrontDetail": "浅展示窗内3幅简洁挂框，只做原创几何纹样，不贴参考照片",
+      "sideRule": "西侧沿用种子开洞方式；其余暴露侧背面封闭。遮挡内部不堆陈列。",
+      "additionalWeathering": false,
+      "dimensionsAreDesign": true
+    },
+    {
+      "id": "east-shop-133",
+      "replacesBaseIds": [
+        "shop-133"
+      ],
+      "sourcePlaceholder": {
+        "id": "shop-133",
+        "baseId": "shop-133",
+        "replacedBy": null,
+        "mapPoint": [
+          172.47,
+          18.14
+        ],
+        "glbPoint": [
+          118.97,
+          35.54
+        ],
+        "angleRad": 2.912213,
+        "widthM": 10.7,
+        "depthM": 11,
+        "heightM": 8.8,
+        "category": "皮货",
+        "historicalPositionVerified": false,
+        "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      },
+      "seed": "kit/east-shop-128.config.json",
+      "designName": "皮货店",
+      "historicalBrand": false,
+      "positionGlb": [
+        120.22055408090135,
+        0,
+        30.184058020222682
+      ],
+      "yawRad": 2.912213,
+      "widthM": 10.7,
+      "depthM": 11,
+      "eaveM": 7.2,
+      "ridgeM": 8.8,
+      "upperWindowCount": 4,
+      "groundFrontDetail": "木板闭合为主，保留小展示窗；不模拟动物皮毛或复杂软体",
+      "sideRule": "西侧沿用种子开洞方式；其余暴露侧背面封闭。遮挡内部不堆陈列。",
+      "additionalWeathering": false,
+      "dimensionsAreDesign": true
+    }
+  ],
+  "materialPolicy": "reuse accepted baseline, no added weathering",
+  "executionAuthorizedByThisFile": false,
+  "authorizationNote": "机主手动启动本包时覆盖S0-S6；文件本身不启动任务，无中途人工审批"
+}

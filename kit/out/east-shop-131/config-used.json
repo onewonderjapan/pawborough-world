@@ -1,0 +1,128 @@
+{
+  "sampleId": "east-shop-131",
+  "basedOn": "street-completion-night-20260915 NEXT_FOUR_DESIGN.json east-shop-131 (designName 绸缎店); seed kit/east-shop-129.config.json with design dimensions, narrow sign and new optional displayProps",
+  "units": "meters",
+  "bay": {
+    "widthM": 10.7,
+    "depthM": 13.0
+  },
+  "floors": 2,
+  "heights": {
+    "eaveM": 6.4,
+    "ridgeM": 7.4,
+    "upperFloorY": 3.35,
+    "sillWallCenterY": 3.98,
+    "sillWallHeightM": 0.96,
+    "headerFromY": 5.87,
+    "windowY": 5.14,
+    "pierHeightM": 1.41
+  },
+  "roof": {
+    "type": "planar",
+    "overhangFrontBackM": 0.3,
+    "overhangGableM": 0.25,
+    "slabThicknessM": 0.1,
+    "ridgeRollRadiusM": 0.115,
+    "maxAttachmentAboveRidgeM": 0.2
+  },
+  "upperWindows": {
+    "type": "shutter",
+    "count": 3,
+    "widthM": 1.35,
+    "heightM": 1.36
+  },
+  "front": {
+    "wallThicknessM": 0.26,
+    "door": {
+      "uRatio": -0.27,
+      "widthM": 1.1,
+      "heightM": 2.1,
+      "recessM": 0.1
+    },
+    "display": {
+      "uRatio": 0.15,
+      "widthRatio": 0.45,
+      "bottomY": 0.6,
+      "topY": 2.12,
+      "recessM": 0.12
+    }
+  },
+  "gable": {
+    "wallThicknessM": 0.28,
+    "westOnLocalX": 1,
+    "openings": [
+      {
+        "kind": "window",
+        "zM": -2.85,
+        "yM": 5.1,
+        "widthM": 0.8,
+        "heightM": 1.1,
+        "recessM": 0.1
+      },
+      {
+        "kind": "window",
+        "zM": -8.45,
+        "yM": 5.1,
+        "widthM": 0.8,
+        "heightM": 1.1,
+        "recessM": 0.1
+      },
+      {
+        "kind": "door",
+        "zM": -4.6,
+        "yM": 1.05,
+        "widthM": 0.95,
+        "heightM": 2.1,
+        "recessM": 0.12
+      }
+    ],
+    "downpipe": {
+      "zM": -0.45,
+      "radiusM": 0.04,
+      "clamps": 3
+    }
+  },
+  "foundation": {
+    "bottomY": -0.2,
+    "topY": 0.6,
+    "thicknessM": 0.34,
+    "protrusionM": 0.06,
+    "thresholdHeightM": 0.08
+  },
+  "streetPosts": {
+    "count": 2,
+    "postHeightM": 6.5
+  },
+  "beams": {
+    "lowerY": 3.4
+  },
+  "canopy": {
+    "centerURatio": -0.06,
+    "widthM": 4.8,
+    "slabY": 2.74,
+    "projectionM": 0.3
+  },
+  "signage": {
+    "main": {
+      "text": "绸庄",
+      "row": 3,
+      "yM": 3.16,
+      "widthM": 2.0,
+      "heightM": 0.5
+    }
+  },
+  "displayProps": {
+    "kind": "fabricRolls",
+    "count": 4,
+    "rollLengthM": 0.7,
+    "rollRadiusM": 0.11,
+    "shelf": true
+  },
+  "materialSet": "pawborough-street-v1 (mb_lib.build_materials, frozen) + generic sign atlas",
+  "specAdjustments": {
+    "signYm": "kept seed 129 value 3.16 above the canopy slab 2.74",
+    "signWidth": "narrow 2.0m board distinguishes 绸缎店 from 棉布店 per design groundFrontDetail",
+    "gableZm": "seed 129 openings scaled to depth 13 by the seed's own depth fractions (window 0.22/0.65, door 0.354)"
+  },
+  "configSha256": "e27c9bbe474f573f8c145ce2e66f133651a3da86e3171c760979b406498e58dd"
+}

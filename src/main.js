@@ -26,8 +26,8 @@ const labels={'full-west':'全段·西','full-east':'全段·东','eye-west':'�
 // its original gray boxes for the C0 same-camera comparison
 const WORLD_PARAM = new URLSearchParams(location.search).get('world');
 const ASSETS_PARAM = new URLSearchParams(location.search).get('assets');
-const WORLD_BASE = WORLD_PARAM === 'laneb' ? './world/laneb/' : WORLD_PARAM === 'east-edge' ? './world/east-edge/' : './world/';
-const DATASET_TAG = WORLD_PARAM === 'laneb' ? 'laneb' : WORLD_PARAM === 'east-edge' ? 'east-edge' : 'base';
+const WORLD_BASE = WORLD_PARAM === 'laneb' ? './world/laneb/' : WORLD_PARAM === 'east-edge' ? './world/east-edge/' : WORLD_PARAM === 'street-completion' ? './world/street-completion/' : './world/';
+const DATASET_TAG = WORLD_PARAM === 'laneb' ? 'laneb' : WORLD_PARAM === 'east-edge' ? 'east-edge' : WORLD_PARAM === 'street-completion' ? 'street-completion' : 'base';
 let streetKitNodeCount=0;let ready=false,clayOn=false,selected='full-west',cameras=[],instances=null,manifest=null,lastRender={},loadStats={};
 // R3 honest asset accounting: the base assembly and the enabled refined
 // asset blocks are reported separately (bytes and triangles) plus their sum;
@@ -195,7 +195,7 @@ async function load(){const t0=performance.now();
     physicsAlive:()=>!session.disposed});
   await blocks.applyReviewed(); // reviewed street owned by the manager; adjacent blocks cycle in walk mode
   if (ASSETS_PARAM !== 'off') for (const id of blocks.assetBlockIds()) await blocks.applyAssets(id); // refined replacement blocks declared autoApply in the dataset
-  if (WORLD_PARAM === 'east-edge') await blocks.loadBlock('block-adjacent-east'); // the C0 comparison frames the street end from view mode: load the east district here too (walk mode still cycles it as before), so gray-box and candidate shots see the same context
+  if (WORLD_PARAM === 'east-edge' || WORLD_PARAM === 'street-completion') await blocks.loadBlock('block-adjacent-east'); // the C0 comparison frames the street end from view mode: load the east district here too (walk mode still cycles it as before), so gray-box and candidate shots see the same context
   blocks.setPlaceholdersVisible(placeholderPref); // F3 framing default: refined only; any later load follows this preference
   // R3 honest asset accounting from the dataset manifest (bytes/sha are
   // validated against the real files by the contract tests). assets=off
