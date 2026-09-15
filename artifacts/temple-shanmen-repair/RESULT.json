@@ -1,0 +1,85 @@
+{
+  "taskId": "pawborough-temple-shanmen-repair",
+  "title": "山门T1-T3主控返修（匾额遮挡 / 翼墙统一变换 / 肩屋面起翘与瓦垄）",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "visualReview": "pending_lead",
+  "baseHead": "fc66f69",
+  "branch": "work/temple-shanmen-20260915",
+  "revision": "artifacts/lead-review-20260915/DESIGN_REVISION.json (T1-T3)",
+  "scope": "shanmen main body repair only; no yimen/dadian/full-temple expansion",
+  "claims": {
+    "geometryAndPhysics": "verified against exported GLB bytes and collision records (numbers below)",
+    "visual": "NOT claimed. Renders and WebGL captures are provided as evidence; the text executor performed no visual review. Final visual adoption is the lead's decision."
+  },
+  "outputs": {
+    "kitOut": "kit/out/temple-shanmen-repair/ (GLBs, scene.blend, collision.json, materials.json, measurements.json, config-used.json, reimport-check.json, roof-surface-samples.json)",
+    "renders": "kit/out/temple-shanmen-repair/renders/ (8 review views incl. clay pairs, 6 plaque close-ups at raycast azimuths, native-vs-GLB same-camera pairs, camera sidecars)",
+    "webglEvidence": "kit/out/temple-shanmen-repair/web/ (8 real-page captures with telemetry json)",
+    "dataset": "world/temple-shanmen/ (rebuilt from the repair kit; serves 5290/5291)",
+    "pilot": "http://127.0.0.1:5290/temple.html (dev) and :5291 (preview) in this worktree; main street 5284/5285 untouched",
+    "oldOutputsKept": "kit/out/temple-shanmen/ (S1-S7 build + lead-review web captures) and kit/out/temple-shanmen-renders/ (S6 renders) unchanged"
+  },
+  "tests": {
+    "temple_shanmen_repair.test.mjs": "TEMPLE_REPAIR_PASS (T1 raycast, T2 OBB-vs-vertices, T3 equation)",
+    "temple_shanmen_contract.test.mjs": "TEMPLE_CONTRACT_PASS (glTF validator 0 errors on all 4 GLBs, budgets, corridor, bounds, cameras, negative)",
+    "temple_shanmen_passage.test.mjs": "TEMPLE_PASSAGE_PASS (3x3.1 walk-through, off-axis/door-leaf/no-plane negatives, wing OBB negative)",
+    "capture_temple_web.mjs": "TEMPLE_WEB_PASS (8 views, cameraCheck dPos=0 dFov=0, in-page passage check)"
+  },
+  "t1_plaque": {
+    "fix": "Rebuilt as ONE backing plate + four-sided stepped frame rings (outer rim z=0.155 on the plaque outline, mid rim z=0.105, text face recessed at z=0.06) + four thin gold EDGE strips riding the outer rim. The three solid full-face step boards and the full-plate gold fillet are deleted. Texture, +Z facing, and the right-to-left 隅海障保/保障海隅 reading are unchanged.",
+    "evidence": {
+      "textFaceMesh": "shanmen-plaque__temple-plaque-lacquer = exactly 2 triangles (the lone textured quad)",
+      "raycast": "glyph-area grid 15x13 from azimuth 0/+20/-20 deg: 195/195 rays hit the text face first at EVERY azimuth; 0 rays occluded by any full-face board",
+      "method": "Moller-Trumbore over every exported triangle of temple.glb with node transforms applied"
+    }
+  },
+  "t2_wingWalls": {
+    "fix": "make_oriented now returns ONE explicit right-handed frame (lx, +Y, lz = lx x ly) plus a viewer-side sign; obox yaws the box with the GLB-correct sign (rotation_euler=(0,0,+yaw); GLB +Y yaw == Blender same-signed +Z). Wall body, base course, coping, frame grid, relief panel, diamond strips, bosses, tile cap and OBB collision all derive from that single frame. The old lz flip (left-handed left wing) and the mirrored -yaw rotation are gone.",
+    "evidence": {
+      "obbEndpoints": "OBB axis endpoints match config start/end at d=0.000m for both wings",
+      "slabExtents": "measured wall-slab vertices vs OBB: u 0.000..5.062 of 5.062, vMax 3.550 of 3.55, |w|max 0.165 of T/2=0.16 (both wings)",
+      "decorations": "relief panel proud of the FRONT face plane 0.015..0.015m; stone decorations max proud 0.060m (design band 0.03-0.06); 0 vertices leaked to the back face",
+      "capRidge": "roll end rings on the wall axis (dA=dB=0.005m), axis vs wall frame cos=1.00000",
+      "physics": "passage negatives re-run on the real Rapier world: wing blocks through-passage, corridor stays clear, collision-world.json byte-identical to pre-repair records"
+    }
+  },
+  "t3_shoulderRoofs": {
+    "fix": "Shoulder shells now follow the DESIGN_REVISION equation: baseY(t)=ridgeY-(ridgeY-eaveBaselineY)*drop(t); y=baseY+(frontOutline(|x|)-5.95)*smoothstep(0.5,1,t)^2; rear eave keeps the 0.18m drop; ridge never elevated (no max(ridgeY,outline)). Soffits offset along the surface normal. Left-shoulder edge selection corrected (the old build closed the OUTER edge and ran the wing-edge board at the seam - the horizontal shelf the lead saw); a seam skirt now closes the center/shoulder junction. 39 finite half-round tile ribs (r=0.05, spacing 0.24m, 8 sections) ride the front slopes of the center roof and both shoulders, ending in round eave caps.",
+    "evidence": {
+      "equationMatch": "484/484 shell grid vertices match the sampled revision equation, worst |dy|=0.0000m (both shoulders, front+rear)",
+      "ridgeFlat": "ridge band z=-1.8 tops at exactly 7.000 (min 6.880 = soffit)",
+      "noCurtain": "front rows t<=0.5 laterally flat (spread <=0.0177m incl. rib vertices); 0 curtain vertices above +0.12",
+      "noFloat": "0 vertices above the equation surface beyond the rib normal-offset allowance",
+      "ribs": "2255 rib vertices above the shell; 3978 rib triangles <= the 8000 DESIGN_REVISION allowance",
+      "seamClosure": "32/32 horizontal junction rays blocked at the closure (skirt/center shell/outer field)",
+      "silhouette": "front eave column equals the outline at every knot to 1e-9 (builder-side assert); rear eave = outline-0.18"
+    }
+  },
+  "additionalRepair": {
+    "centerSurfaceClamp": "top_y's inline smoothstep is now clamped; the unclamped form exploded to y=61 when seam skirts sampled beyond the shell half-width (caught by the bounds contract test)",
+    "degenerateTangents": "thin 16-24mm wing frame strips lost their bevel; the chamfered rotated end faces produced zero-length exported tangents (glTF validator error, now 0 errors)"
+  },
+  "budgets": {
+    "buildingAndWallsTris": "19800 / 50000",
+    "fullSetTris": "25112 / 60000",
+    "mainGlbBytes": "3437888 / 8000000",
+    "groundGlbBytes": "860820 / 2000000",
+    "newImages": "2 / 2 (unchanged: temple-plaque.png + temple-relief-normal.png)",
+    "tileRibsTris": "3978 / 8000"
+  },
+  "palette": "unchanged (gray tile / gray stone / oxblood timber / restrained brass); no aging, no new materials",
+  "keptSeparate": "stone lions and fish-dragon ridge ornaments remain coarse replaceable candidates (unchanged meshes, still not claimed as refined)",
+  "buildChain": [
+    "blender -b --factory-startup -t 4 -P kit/build_temple_shanmen.py -- --config kit/temple-shanmen.config.json --out kit/out/temple-shanmen-repair",
+    "node scripts/build_temple_world.mjs --kit kit/out/temple-shanmen-repair",
+    "node tests/temple_shanmen_repair.test.mjs && node tests/temple_shanmen_contract.test.mjs && node tests/temple_shanmen_passage.test.mjs",
+    "blender -b --factory-startup -t 4 -P kit/build_temple_scene.py -- --mode review --out kit/out/temple-shanmen-repair/renders",
+    "blender -b --factory-startup -t 4 -P kit/build_temple_scene.py -- --mode compare --source-blend kit/out/temple-shanmen-repair/scene.blend --out kit/out/temple-shanmen-repair/renders",
+    "blender -b --factory-startup -t 4 -P kit/render_plaque_detail.py -- --out kit/out/temple-shanmen-repair/renders",
+    "EVIDENCE_PORTS=529[01] EVIDENCE_DIR=kit/out/temple-shanmen-repair/web npx vite --host 127.0.0.1 --port 5290 --strictPort",
+    "node scripts/capture_temple_web.mjs"
+  ],
+  "executorModel": "GLM-5.3 (unchanged; no model switch, no Flash/external generation)",
+  "deliveredAt": "2026-09-15"
+}

@@ -1,0 +1,110 @@
+{
+  "source": "kit/render_plaque_detail.py",
+  "engine": "cycles-cpu",
+  "samples": 24,
+  "views": [
+    {
+      "view": "plaque-front",
+      "tag": "pbr",
+      "azimuthDeg": 0,
+      "posBlender": [
+        0.0,
+        4.579999999999999,
+        4.4
+      ],
+      "targetBlender": [
+        0.0,
+        4.359999999999999,
+        0.08
+      ],
+      "fovDegVerified": 30.0,
+      "file": "plaque-front-pbr.png"
+    },
+    {
+      "view": "plaque-front",
+      "tag": "clay",
+      "azimuthDeg": 0,
+      "posBlender": [
+        0.0,
+        4.579999999999999,
+        4.4
+      ],
+      "targetBlender": [
+        0.0,
+        4.359999999999999,
+        0.08
+      ],
+      "fovDegVerified": 30.0,
+      "file": "plaque-front-clay.png"
+    },
+    {
+      "view": "plaque-left20",
+      "tag": "pbr",
+      "azimuthDeg": 20,
+      "posBlender": [
+        1.5048886306329425,
+        4.579999999999999,
+        4.134647531457998
+      ],
+      "targetBlender": [
+        0.0,
+        4.359999999999999,
+        0.08
+      ],
+      "fovDegVerified": 30.0,
+      "file": "plaque-left20-pbr.png"
+    },
+    {
+      "view": "plaque-left20",
+      "tag": "clay",
+      "azimuthDeg": 20,
+      "posBlender": [
+        1.5048886306329425,
+        4.579999999999999,
+        4.134647531457998
+      ],
+      "targetBlender": [
+        0.0,
+        4.359999999999999,
+        0.08
+      ],
+      "fovDegVerified": 30.0,
+      "file": "plaque-left20-clay.png"
+    },
+    {
+      "view": "plaque-right20",
+      "tag": "pbr",
+      "azimuthDeg": -20,
+      "posBlender": [
+        -1.5048886306329425,
+        4.579999999999999,
+        4.134647531457998
+      ],
+      "targetBlender": [
+        0.0,
+        4.359999999999999,
+        0.08
+      ],
+      "fovDegVerified": 30.0,
+      "file": "plaque-right20-pbr.png"
+    },
+    {
+      "view": "plaque-right20",
+      "tag": "clay",
+      "azimuthDeg": -20,
+      "posBlender": [
+        -1.5048886306329425,
+        4.579999999999999,
+        4.134647531457998
+      ],
+      "targetBlender": [
+        0.0,
+        4.359999999999999,
+        0.08
+      ],
+      "fovDegVerified": 30.0,
+      "file": "plaque-right20-clay.png"
+    }
+  ],
+  "note": "T1 plaque close-ups at the raycast azimuths; BLENDER evidence"
+}

@@ -13,9 +13,9 @@
   "assets": {
     "temple": {
       "file": "./world/temple-shanmen/temple.glb",
-      "bytes": 3051572,
-      "sha256": "f59aeba7eb993b8d607d815e2d7f330cba950920065873c69d1595b2ae663f25",
-      "triangles": 16322,
+      "bytes": 3437888,
+      "sha256": "9d2b8b5bf808d8f048a0a4d9dde3bfaa023bf34754412800f921e26aee34279f",
+      "triangles": 19800,
       "groups": [
         "shanmen-body",
         "shanmen-plaque"
@@ -23,8 +23,8 @@
     },
     "ground": {
       "file": "./world/temple-shanmen/ground.glb",
-      "bytes": 860724,
-      "sha256": "1b5099650973f9d1b5f339dcf24ef67ad01d51cd1a3910c9deacdae70810f6c9",
+      "bytes": 860820,
+      "sha256": "812525834a74df501aa4eb15983eead25ca59665aa6e5f77b50f36fcc2040601",
       "triangles": 360,
       "groups": [
         "temple-ground"
@@ -33,7 +33,7 @@
     "lions": {
       "file": "./world/temple-shanmen/lions.glb",
       "bytes": 334864,
-      "sha256": "a237b80dc6002b7b8b5fd7d75f8d26921b72324e9d00be5db468caf08758f03a",
+      "sha256": "a679437fe48105add6d4d159be4bc75dfbd1e60655811188ad6907a34e039d15",
       "triangles": 2648,
       "groups": [
         "shanmen-lion"
@@ -41,8 +41,8 @@
     },
     "ornaments": {
       "file": "./world/temple-shanmen/ornaments.glb",
-      "bytes": 437144,
-      "sha256": "e81425a559f03a6280a2663d588adea35a20c21445d088e850e7614e476cbbe3",
+      "bytes": 436952,
+      "sha256": "2ec8532ee92fea121b3b3f8089b4d6bcf0262479728492c6710754ca842b369b",
       "triangles": 2304,
       "groups": [
         "shanmen-ornament"
@@ -51,22 +51,22 @@
   },
   "budgets": {
     "buildingAndWallsTris": {
-      "actual": 16322,
+      "actual": 19800,
       "limit": 50000,
       "pass": true
     },
     "fullSetTris": {
-      "actual": 21634,
+      "actual": 25112,
       "limit": 60000,
       "pass": true
     },
     "mainGlbBytes": {
-      "actual": 3051572,
+      "actual": 3437888,
       "limit": 8000000,
       "pass": true
     },
     "groundGlbBytes": {
-      "actual": 860724,
+      "actual": 860820,
       "limit": 2000000,
       "pass": true
     },
@@ -74,6 +74,12 @@
       "actual": 2,
       "limit": 2,
       "pass": true
+    },
+    "tileRibsTris": {
+      "actual": 3978,
+      "limit": 8000,
+      "pass": true,
+      "note": "DESIGN_REVISION tileRibs allowance on top of the shells"
     }
   },
   "passage": {

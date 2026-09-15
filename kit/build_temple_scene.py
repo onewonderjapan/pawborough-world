@@ -36,11 +36,13 @@ p.add_argument('--out', type=Path, required=True)
 p.add_argument('--width', type=int, default=1280)
 p.add_argument('--height', type=int, default=960)
 p.add_argument('--samples', type=int, default=24)
+p.add_argument('--source-blend', type=Path, default=None,
+               help='compare mode: builder scene.blend to open (default kit/out/temple-shanmen/scene.blend)')
 args = p.parse_args(argv)
 
 ROOT = Path(__file__).resolve().parent.parent
 DS = ROOT / 'world' / 'temple-shanmen'
-KITSRC = ROOT / 'kit' / 'out' / 'temple-shanmen' / 'scene.blend'
+KITSRC = args.source_blend if args.source_blend else ROOT / 'kit' / 'out' / 'temple-shanmen' / 'scene.blend'
 cams = json.loads((DS / 'cameras.json').read_text(encoding='utf-8'))
 by_id = {c['id']: c for c in cams['cameras']}
 fb = cams.get('framebuffer', [1280, 960])

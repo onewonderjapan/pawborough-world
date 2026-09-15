@@ -7,7 +7,20 @@ come from kit/temple-shanmen.config.json; nothing here invents dimensions.
 Roof method (DESIGN.md constraint): ONE continuous thin shell per roof band,
 lofted from the JSON section profile resampled to 10-16 segments — never
 stacks of boxes faking a curve. Shells are true slabs: top surface, closed
-underside 0.12 m below, and edge closures, so eave corners read from below.
+underside offset along the surface normal, and edge closures.
+
+T2 repair (lead review 20260915): wing walls use ONE explicit right-handed
+local frame (lx, +Y, lz = lx x ly) shared by the wall body, every decoration,
+the tile cap and the OBB collision record. The viewer-facing side is
+`front` (+1 or -1) — never a handedness flip. The Blender object yaw is
+GLB-yaw signed (+Z in Blender for +Y in GLB), fixing the old mirrored walls.
+
+T3 repair (DESIGN_REVISION.json): shoulder shells follow
+  baseY(t) = ridgeY - (ridgeY-eaveBaselineY)*drop(t)
+  y(x,t)   = baseY(t) + (frontOutline(|x|)-eaveBaselineY)*smoothstep(0.5,1,t)^2
+The ridge line stays at exactly ridgeY for every shoulder x; the outline lift
+lives only toward the eaves (t>=0.5). Rear eave keeps the 0.18m drop. There is
+no max(ridgeY, outline) elevation anywhere.
 """
 import math
 
@@ -48,7 +61,7 @@ def monotone_cubic(samples):
         h10 = u * (1 - u) ** 2
         h01 = u * u * (3 - 2 * u)
         h11 = u * u * (u - 1)
-        return h00 * ys[i] + h10 * h * m[i] + h01 * ys[i + 1] + h11 * h * m[i + 1]
+        return h00 * ys[i] + h10 * h * m[i] + h01 * ys[i + 1] + h11 * m[i + 1]
 
     return y
 
@@ -60,6 +73,26 @@ def drop_lut(profile_samples, segments):
     y0, y1 = y(0.0), y(1.0)
     span = y0 - y1
     return [max(0.0, min(1.0, (y0 - y(j / segments)) / span)) for j in range(segments + 1)]
+
+
+def make_drop_fn(profile_samples, segments):
+    """Continuous drop(t): piecewise-linear over drop_lut samples. Exact at the
+    grid knots t=j/segments, so shells sampled on the grid and analytic surface
+    functions share bit-identical values."""
+    lut = drop_lut(profile_samples, segments)
+
+    def drop(t):
+        t = max(0.0, min(1.0, t))
+        u = t * segments
+        i = min(segments - 1, int(u))
+        return lut[i] + (lut[i + 1] - lut[i]) * (u - i)
+
+    return drop
+
+
+def smoothstep(edge0, edge1, x):
+    t = max(0.0, min(1.0, (x - edge0) / max(1e-9, edge1 - edge0)))
+    return t * t * (3.0 - 2.0 * t)
 
 
 # --------------------------------------------------------------------------
@@ -75,6 +108,11 @@ def _cross(a, b):
 
 def _dot(a, b):
     return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
+
+
+def _norm(a):
+    l = math.sqrt(_dot(a, a))
+    return (a[0] / l, a[1] / l, a[2] / l)
 
 
 def quad_out(L, name, pts, mat, uvs, hint):
@@ -96,18 +134,18 @@ def tri_out(L, name, pts, mat, uvs, hint):
 
 
 # --------------------------------------------------------------------------
-# oriented geometry for the diagonal wing walls (built per side, never mirrored)
+# T2: oriented geometry for the diagonal wing walls (built per side, never
+# mirrored). ONE right-handed frame: lx along start->end, ly = world +Y,
+# lz = lx x ly (proper rotation, det +1, winding preserved). `front` is the
+# sign that puts a local +z offset on the viewer (+Z world) side.
 
 def make_oriented(start, end):
-    """Local frame for a wing wall: local +x runs start->end, local +z is the
-    front normal (kept on the +Z viewer side), local +y is world +Y."""
     dx, dz = end[0] - start[0], end[2] - start[2]
     length = math.hypot(dx, dz)
     lx = (dx / length, 0.0, dz / length)
-    lz = (-dz / length, 0.0, dx / length)
-    if lz[2] < 0:
-        lz = (-lz[0], 0.0, -lz[2])
-    return length, lx, lz
+    lz = (-dz / length, 0.0, dx / length)  # = lx x (0,1,0); never flipped
+    front = 1 if lz[2] > 0 else -1
+    return length, lx, lz, front
 
 
 def local_to_world(start, lx, lz, p):
@@ -119,16 +157,17 @@ def local_to_world(start, lx, lz, p):
 def obox(L, name, start, lx, lz, center_local, size_local, mat, collision=False, bevel=0.008):
     """Oriented box on a wing-wall frame. Built as a connected 8-vertex box
     (helpers.box_glb: metric loop UVs, bevel, outward normals), then yawed as
-    an object. Collision record is a world-space OBB (theta = GLB yaw about +Y
-    that maps +X onto lx), with the center pre-rotated so obbToWorld()
-    reproduces the world box exactly."""
+    an object with the GLB-correct sign: GLB(x,y,z)->Blender(x,-z,y) maps a
+    +Y GLB yaw to the SAME-signed +Z Blender yaw. Collision record is a
+    world-space OBB (theta = GLB yaw about +Y mapping +X onto lx), with the
+    center pre-rotated so obbToWorld() reproduces the world box exactly."""
     yaw = math.atan2(-lx[2], lx[0])
     vx = lx[0] * center_local[0] + lz[0] * center_local[2]
     vz = lx[2] * center_local[0] + lz[2] * center_local[2]
     world_c = (start[0] + vx, center_local[1], start[2] + vz)
     o = L.tag(box_glb(name, world_c, size_local, L.M[mat],
                       L.META[L.M[mat].name]['tileMeters'], bevel))
-    o.rotation_euler = (0.0, 0.0, -yaw)  # GLB +Y yaw -> Blender -Z yaw
+    o.rotation_euler = (0.0, 0.0, yaw)  # GLB +Y yaw == Blender +Z yaw (same sign)
     if collision:
         ct, st = math.cos(yaw), math.sin(yaw)
         # obbToWorld computes pos + R(theta)*center; store R(-theta)*world_c
@@ -145,9 +184,10 @@ def obox(L, name, start, lx, lz, center_local, size_local, mat, collision=False,
 
 
 # --------------------------------------------------------------------------
-# center roof: hip shell with short ridge, corner lift, closed underside
+# surface functions (single source of truth for shells, closures and tests)
 
-def center_roof(L, rc):
+def center_surface_fn(rc, profile_samples):
+    """Top surface of the center hip shell, y(x, z), mirroring center_roof()."""
     hw = rc['widthM'] / 2
     ridge_y = rc['ridgeY']
     ridge_half = rc['ridgeLengthM'] / 2
@@ -156,23 +196,80 @@ def center_roof(L, rc):
     eave_y = rc['frontEaveY']
     lift = rc['cornerLiftM']
     lift_start = rc['cornerLiftStartX']
-    thick = rc['shellThicknessM']
-    seg = rc['resampleSegments']
-    drops = drop_lut(rc['halfSlopeProfileTY'], seg)
-    nu = 12
+    drop = make_drop_fn(profile_samples, rc['resampleSegments'])
 
     def top_y(x):
         a = abs(x)
         if a <= ridge_half:
             return ridge_y
-        w = (a - ridge_half) / max(1e-6, hw - ridge_half)
-        w = w * w * (3 - 2 * w)  # smoothstep hip beyond the ridge ends
-        return ridge_y + (rc['hipEndTopY'] - ridge_y) * w
+        # clamped smoothstep: stays inside [ridge, hipEndTopY] even if probed
+        # beyond the shell half-width (seam skirts sample this function)
+        return ridge_y + (rc['hipEndTopY'] - ridge_y) * smoothstep(ridge_half, hw, a)
 
     def eave_y_at(x):
         a = abs(x)
-        k = max(0.0, (a - lift_start) / max(1e-6, hw - lift_start))
+        k = min(1.0, max(0.0, (a - lift_start) / max(1e-6, hw - lift_start)))
         return eave_y + lift * k * k
+
+    def y(x, z):
+        if z >= z_mid:
+            t = min(1.0, max(0.0, (z - z_mid) / (zf - z_mid)))
+        else:
+            t = min(1.0, max(0.0, (z_mid - z) / (z_mid - zr)))
+        ty, ey = top_y(x), eave_y_at(x)
+        return ty - (ty - ey) * drop(t)
+
+    return y
+
+
+def shoulder_surface_fn(rs, profile_samples):
+    """T3 DESIGN_REVISION equation. Front silhouette (t=1) is exactly the
+    outline; ridge (t=0) is exactly ridgeY for every shoulder x; the outline
+    lift decays as smoothstep(0.5,1,t)^2 so nothing is extruded along the
+    depth. Rear eave keeps rearEaveDropFromFront."""
+    outline = monotone_cubic(rs['frontOutlineAbsXY'])
+    xa = rs['frontOutlineAbsXY'][0][0]
+    xb = rs['frontOutlineAbsXY'][-1][0]
+    ridge_y = rs['ridgeY']
+    base = rs['eaveBaselineY']
+    rear_drop = rs['rearEaveDropFromFront']
+    z_mid, zf, zr = rs['ridgeZ'], rs['frontEaveZ'], rs['rearEaveZ']
+    drop = make_drop_fn(profile_samples, rs['resampleSegments'])
+
+    def y(x, z):
+        f = outline(min(max(abs(x), xa), xb))
+        if z >= z_mid:
+            t = min(1.0, max(0.0, (z - z_mid) / (zf - z_mid)))
+            outline_eave, baseline_eave = f, base
+        else:
+            t = min(1.0, max(0.0, (z_mid - z) / (z_mid - zr)))
+            outline_eave, baseline_eave = f - rear_drop, base - rear_drop
+        base_y = ridge_y - (ridge_y - baseline_eave) * drop(t)
+        lift = (outline_eave - baseline_eave) * smoothstep(0.5, 1.0, t) ** 2
+        return base_y + lift
+
+    return y
+
+
+def _surface_normal(f, x, z, h=0.01):
+    dydx = (f(x + h, z) - f(x - h, z)) / (2 * h)
+    dydz = (f(x, z + h) - f(x, z - h)) / (2 * h)
+    return _norm((-dydx, 1.0, -dydz))
+
+
+# --------------------------------------------------------------------------
+# center roof: hip shell with short ridge, corner lift, closed underside
+
+def center_roof(L, rc, profile_samples=None):
+    hw = rc['widthM'] / 2
+    ridge_y = rc['ridgeY']
+    ridge_half = rc['ridgeLengthM'] / 2
+    z_mid = rc['ridgeZ']
+    zf, zr = rc['frontEaveZ'], rc['rearEaveZ']
+    thick = rc['shellThicknessM']
+    seg = rc['resampleSegments']
+    surface = center_surface_fn(rc, profile_samples if profile_samples else rc['halfSlopeProfileTY'])
+    nu = 12
 
     for side in (1, -1):
         z_end = zf if side > 0 else zr
@@ -180,13 +277,12 @@ def center_roof(L, rc):
         grid_t, grid_b, uvs = [], [], []
         for j in range(seg + 1):
             t = j / seg
-            d = drops[j]
             for i in range(nu + 1):
                 x = -hw + 2 * hw * i / nu
-                ty, ey = top_y(x), eave_y_at(x)
-                y = ty - (ty - ey) * d
+                y = surface(x, z_mid + side * run * t)
+                n = _surface_normal(surface, x, z_mid + side * run * t)
                 grid_t.append((x, y, z_mid + side * run * t))
-                grid_b.append((x, y - thick, z_mid + side * run * t))
+                grid_b.append((x, y - thick * n[1], z_mid + side * run * t - thick * n[2]))
                 uvs.append((x / 1.44, run * t / 1.36))
         n = len(grid_t)
         faces = []
@@ -218,28 +314,25 @@ def center_roof(L, rc):
                       (grid_t[a + 1][0] / 1.44, .1), (grid_t[a][0] / 1.44, .1)], hint)
     L.cyl('center-ridge-roll', (-ridge_half, ridge_y + .06, z_mid), (ridge_half, ridge_y + .06, z_mid),
           .11, 'roof', 10)
-    L.box('center-ridge-base', (0, ridge_y - .02, z_mid), (ridge_half * 2 + .18, .13, .34), 'roof', .01)
+    L.box('center-ridge-base', (0, ridge_y - .02, z_mid), (ridge_half * 2 + .18, .13, .52), 'roof', .01)
 
 
 # --------------------------------------------------------------------------
-# shoulder roof: continuous shell from the front outline, ridge, rear eave
+# shoulder roof: T3 equation shell, normal-offset soffit, real seam closure
 
-def shoulder_roof(L, rs, side, profile_samples):
-    x0, x1 = rs['xSpans'][1 if side > 0 else 0]
-    outline = monotone_cubic(rs['frontOutlineAbsXY'])
+def shoulder_roof(L, rs, side, profile_samples, center_srf=None):
+    span = rs['xSpans'][1 if side > 0 else 0]
+    x_lo, x_hi = min(span), max(span)  # grid always runs +x so winding stays fixed
+    x_in = x_lo if abs(x_lo) < abs(x_hi) else x_hi   # seam edge (nearest center)
+    x_out = x_hi if abs(x_lo) < abs(x_hi) else x_lo  # wing-tip sweep edge
+    nu = 10
+    i_in = 0 if x_in == x_lo else nu  # column index of the seam edge
     ridge_y = rs['ridgeY']
     z_mid = rs['ridgeZ']
     zf, zr = rs['frontEaveZ'], rs['rearEaveZ']
-    rear_drop = rs['rearEaveDropFromFront']
     thick = rs['shellThicknessM']
     seg = rs['resampleSegments']
-    drops = drop_lut(profile_samples, seg)
-    nu = 10
-    xa = rs['frontOutlineAbsXY'][0][0]
-
-    def sect(x):
-        f = outline(min(max(abs(x), xa), rs['frontOutlineAbsXY'][-1][0]))
-        return f, max(ridge_y, f + .02), f - rear_drop
+    surface = shoulder_surface_fn(rs, profile_samples)
 
     for sdir in (1, -1):
         z_end = zf if sdir > 0 else zr
@@ -247,14 +340,13 @@ def shoulder_roof(L, rs, side, profile_samples):
         grid_t, grid_b, uvs = [], [], []
         for j in range(seg + 1):
             t = j / seg
-            d = drops[j]
             for i in range(nu + 1):
-                x = x0 + (x1 - x0) * i / nu
-                f, g, r = sect(x)
-                ey = f if sdir > 0 else r
-                y = g - (g - ey) * d
-                grid_t.append((x, y, z_mid + sdir * run * t))
-                grid_b.append((x, y - thick, z_mid + sdir * run * t))
+                x = x_lo + (x_hi - x_lo) * i / nu
+                z = z_mid + sdir * run * t
+                y = surface(x, z)
+                n = _surface_normal(surface, x, z)
+                grid_t.append((x, y, z))
+                grid_b.append((x, y - thick * n[1], z - thick * n[2]))
                 uvs.append((x / 1.44, run * t / 1.36))
         n = len(grid_t)
         faces = []
@@ -264,15 +356,17 @@ def shoulder_roof(L, rs, side, profile_samples):
                 b, c, dd = a + 1, a + nu + 2, a + nu + 1
                 faces.append((a, dd, c, b) if sdir > 0 else (a, b, c, dd))
                 faces.append((n + a, n + b, n + c, n + dd) if sdir > 0 else (n + a, n + dd, n + c, n + b))
-        # inner edge ring tucks under the central shell (still closed, not open)
+        # seam-edge ring (column i_in) tucks under the central shell; closed,
+        # not open — on the seam edge for BOTH sides (the old left build
+        # closed the outer edge instead)
         for j in range(seg):
-            a = j * (nu + 1)
-            a2 = (j + 1) * (nu + 1)
+            a = j * (nu + 1) + i_in
+            a2 = (j + 1) * (nu + 1) + i_in
             quad_out(L, 'shoulder-inner-ring',
                      [grid_t[a], grid_t[a2], grid_b[a2], grid_b[a]], 'roof',
                      [(j / seg * run / 1.44, 0), ((j + 1) / seg * run / 1.44, 0),
                       ((j + 1) / seg * run / 1.44, .12), (j / seg * run / 1.44, .12)],
-                     (-1 if side > 0 else 1, 0, 0))
+                     (-side, 0, 0))
         L.mesh('shoulder-roof-shell', grid_t + grid_b, faces, 'roof', uvs + uvs)
         hint = (0, 0, 1) if sdir > 0 else (0, 0, -1)
         for i in range(nu):
@@ -282,19 +376,15 @@ def shoulder_roof(L, rs, side, profile_samples):
                      'dark',
                      [(grid_t[a][0] / 1.44, 0), (grid_t[a + 1][0] / 1.44, 0),
                       (grid_t[a + 1][0] / 1.44, .1), (grid_t[a][0] / 1.44, .1)], hint)
-    # outer rising edge (wing-tip sweep) + verge caps, built per slope half
+    # outer rising edge (wing-tip sweep at x_out, now localized to the eave
+    # third) + caps
     for sdir in (1, -1):
         z_end = zf if sdir > 0 else zr
         run = abs(z_end - z_mid)
-        edge = []
-        for j in range(seg + 1):
-            t = j / seg
-            x = x1
-            f, g, r = sect(x)
-            ey = f if sdir > 0 else r
-            edge.append((x, g - (g - ey) * drops[j], z_mid + sdir * run * t))
-        hint = (1 if side > 0 else -1, 0, 0)
-        xw = x1 + (0.006 if side > 0 else -0.006)  # proud of the shell edge plane
+        edge = [(x_out, surface(x_out, z_mid + sdir * run * j / seg), z_mid + sdir * run * j / seg)
+                for j in range(seg + 1)]
+        hint = (side, 0, 0)
+        xw = x_out + side * 0.006  # proud of the shell edge plane
         for a, b in zip(edge, edge[1:]):
             quad_out(L, 'shoulder-wing-edge',
                      [(xw, a[1] - .02, a[2]), (xw, b[1] - .02, b[2]),
@@ -302,6 +392,126 @@ def shoulder_roof(L, rs, side, profile_samples):
                      'dark',
                      [(a[2] / 1.44, 0), (b[2] / 1.44, 0), (b[2] / 1.44, .2), (a[2] / 1.44, .2)], hint)
             L.rod('shoulder-wing-edge-cap', (a[0], a[1] + .02, a[2]), (b[0], b[1] + .02, b[2]), .07, 'roof')
+    # real seam closure: skirt from the shoulder inner top edge up under the
+    # central shell soffit, so the junction reads closed (no horizontal shelf
+    # or see-through band between the two shells).
+    if center_srf is not None:
+        shoulder_seam_skirt(L, rs, side, surface, center_srf)
+
+
+def shoulder_seam_skirt(L, rs, side, shoulder_srf, center_srf):
+    span = rs['xSpans'][1 if side > 0 else 0]
+    x0 = span[0] if abs(span[0]) < abs(span[1]) else span[1]  # seam edge
+    xs = x0 + side * .02
+    zf, zr, zm = rs['frontEaveZ'], rs['rearEaveZ'], rs['ridgeZ']
+    seg = rs['resampleSegments']
+    c_thick = .12  # center shellThicknessM; sampled soffit = top - thickness
+    for sdir in (1, -1):
+        z_end = zf if sdir > 0 else zr
+        run = abs(z_end - zm)
+        for j in range(seg):
+            z1 = zm + sdir * run * j / seg
+            z2 = zm + sdir * run * (j + 1) / seg
+            y1 = shoulder_srf(x0, z1) - .01
+            y2 = shoulder_srf(x0, z2) - .01
+            c1 = max(y1, center_srf(xs, z1) - c_thick - .02)
+            c2 = max(y2, center_srf(xs, z2) - c_thick - .02)
+            if c1 - y1 < .005 and c2 - y2 < .005:
+                continue  # already tucked under the center shell here
+            v = min((y1 + c1) / 2, (y2 + c2) / 2)
+            quad_out(L, 'shoulder-seam-skirt',
+                     [(xs, y1, z1), (xs, y2, z2), (xs, c2, z2), (xs, c1, z1)], 'dark',
+                     [(z1 / 1.44, y1 / 1.36), (z2 / 1.44, y2 / 1.36),
+                      (z2 / 1.44, c2 / 1.36), (z1 / 1.44, c1 / 1.36)], (side, 0, 0))
+            quad_out(L, 'shoulder-seam-skirt-inner',
+                     [(xs, y1, z1), (xs, y2, z2), (xs, c2, z2), (xs, c1, z1)], 'dark',
+                     [(z1 / 1.44, y1 / 1.36), (z2 / 1.44, y2 / 1.36),
+                      (z2 / 1.44, c2 / 1.36), (z1 / 1.44, c1 / 1.36)], (-side, 0, 0))
+
+
+# --------------------------------------------------------------------------
+# T3 tile ribs: finite continuous half-round tubes following the slope
+
+def rib_tube(L, name, surface, x, t0, t1, z_mid, z_end, r, sections, mat='roof'):
+    """One half-round rib: a 6-gon tube whose centerline follows the roof
+    surface offset along the surface normal (about half buried), `sections`
+    straight sections, open at the ridge end (hidden) and a fan cap at the
+    eave end so the eave reads as a rounded tile course in section."""
+    pts = []
+    for s in range(sections + 1):
+        t = t0 + (t1 - t0) * s / sections
+        z = z_mid + z_end * t
+        y = surface(x, z)
+        n = _surface_normal(surface, x, z)
+        pts.append((x + n[0] * r * .55, y + n[1] * r * .55, z + n[2] * r * .55))
+    tang = []
+    for s in range(sections + 1):
+        a = pts[max(0, s - 1)]
+        b = pts[min(sections, s + 1)]
+        tang.append(_norm(_sub(b, a)))
+    rings = []
+    for p, t_hat in zip(pts, tang):
+        u = _norm((0.0, 1.0, 0.0) if abs(t_hat[1]) < .9 else (1.0, 0.0, 0.0))
+        u = _norm(_sub(u, (t_hat[0] * _dot(u, t_hat), t_hat[1] * _dot(u, t_hat), t_hat[2] * _dot(u, t_hat))))
+        v = _cross(t_hat, u)
+        rings.append([(p[0] + r * (math.cos(k * math.pi / 3) * u[0] + math.sin(k * math.pi / 3) * v[0]),
+                       p[1] + r * (math.cos(k * math.pi / 3) * u[1] + math.sin(k * math.pi / 3) * v[1]),
+                       p[2] + r * (math.cos(k * math.pi / 3) * u[2] + math.sin(k * math.pi / 3) * v[2]))
+                      for k in range(6)])
+    verts, faces, uvs = [], [], []
+    for ring in rings:
+        verts.extend(ring)
+        uvs.extend([((ring[k][0] + ring[k][2]) / 1.44, ring[k][1] / 1.36) for k in range(6)])
+    for s in range(sections):
+        for k in range(6):
+            k2 = (k + 1) % 6
+            a = s * 6 + k
+            b = s * 6 + k2
+            c = (s + 1) * 6 + k2
+            d = (s + 1) * 6 + k
+            faces.append((a, b, c, d))
+    cap_c = len(verts)
+    verts.append(pts[-1])
+    uvs.append((pts[-1][0] / 1.44, pts[-1][1] / 1.36))
+    end_hat = tang[-1]
+    for k in range(6):
+        k2 = (k + 1) % 6
+        nrm = _cross(_sub(rings[-1][k2], pts[-1]), _sub(rings[-1][k], pts[-1]))
+        tri = (cap_c, (sections) * 6 + k, (sections) * 6 + k2)
+        if _dot(nrm, end_hat) < 0:
+            faces.append(tri)
+        else:
+            faces.append((tri[0], tri[2], tri[1]))
+    return L.mesh(name, verts, faces, mat, uvs)
+
+
+def add_roof_ribs(L, roof_cfg, profile_samples):
+    """Continuous tile ribs on the visible FRONT slopes only (center + both
+    shoulders). Returns the rib objects so the caller can count the triangles
+    against tileRibs.budgetExtraTrisMax."""
+    rc, rs = roof_cfg['center'], roof_cfg['shoulders']
+    tr = rs['tileRibs']
+    spacing, r, sections = tr['spacingChosenM'], tr['radiusChosenM'], tr['stripSections']
+    t0, t1 = .10, 1.0
+    ribs = []
+    center_srf = center_surface_fn(rc, profile_samples)
+    run_c = rc['frontEaveZ'] - rc['ridgeZ']
+    hw = rc['widthM'] / 2
+    x = -hw + spacing / 2
+    while x <= hw - spacing / 2 + 1e-9:
+        ribs.append(rib_tube(L, 'roof-tile-rib', center_srf, x, t0, t1,
+                             rc['ridgeZ'], run_c, r, sections))
+        x += spacing
+    sh_srf = shoulder_surface_fn(rs, profile_samples)
+    run_s = rs['frontEaveZ'] - rs['ridgeZ']
+    for side in (1, -1):
+        x0, x1 = rs['xSpans'][1 if side > 0 else 0]
+        x = min(x0, x1) + spacing / 2
+        while x <= max(x0, x1) - spacing / 2 + 1e-9:
+            ribs.append(rib_tube(L, 'roof-tile-rib', sh_srf, x, t0, t1,
+                                 rs['ridgeZ'], run_s, r, sections))
+            x += spacing
+    return ribs
 
 
 # --------------------------------------------------------------------------
@@ -309,21 +519,8 @@ def shoulder_roof(L, rs, side, profile_samples):
 
 def shoulder_surface_y(rs, profile_samples, x, z):
     """Continuous top-surface height of a shoulder shell at world (x, z) —
-    used to tuck closure walls under the shell. Mirrors shoulder_roof math."""
-    outline = monotone_cubic(rs['frontOutlineAbsXY'])
-    xa = rs['frontOutlineAbsXY'][0][0]
-    f = outline(min(max(abs(x), xa), rs['frontOutlineAbsXY'][-1][0]))
-    g = max(rs['ridgeY'], f + .02)
-    r = f - rs['rearEaveDropFromFront']
-    y_profile = monotone_cubic(profile_samples)
-    y0, y1 = y_profile(0.0), y_profile(1.0)
-    drop = lambda t: max(0.0, min(1.0, (y0 - y_profile(t)) / (y0 - y1)))  # noqa: E731
-    z_mid, zf, zr = rs['ridgeZ'], rs['frontEaveZ'], rs['rearEaveZ']
-    if z >= z_mid:
-        t = (z - z_mid) / (zf - z_mid)
-        return g - (g - f) * drop(min(1.0, max(0.0, t)))
-    t = (z_mid - z) / (z_mid - zr)
-    return g - (g - r) * drop(min(1.0, max(0.0, t)))
+    used to tuck closure walls under the shell. Mirrors the T3 equation."""
+    return shoulder_surface_fn(rs, profile_samples)(x, z)
 
 
 def door_frame(L, fr, op):
@@ -370,18 +567,21 @@ def door_frame(L, fr, op):
 
 
 # --------------------------------------------------------------------------
-# wing wall: oriented stone wall, frame grid, relief panel, tile cap
+# wing wall: oriented stone wall, frame grid, relief panel, tile cap.
+# T2: every decoration offset uses the same right-handed frame and the
+# viewer-facing sign; protrusions stay inside the design band 0.015-0.06 m.
 
 def wing_wall(L, w, side):
     start = w[f'{side}Start']
     end = w[f'{side}End']
-    length, lx, lz = make_oriented(start, end)
+    length, lx, lz, front = make_oriented(start, end)
     h = w['heightM']
     t = w['thicknessM']
     cap_max = w['tileCapMaxY']
     pw, ph = w['panelWH']
     pcx = w['panelCenterAlongWallFrac'] * length
-    fz = t / 2
+    fz = front * t / 2  # viewer-facing face plane in local z
+    nf = (lz[0] * front, 0.0, lz[2] * front)  # world viewer-side normal
 
     obox(L, 'wing-wall-body', start, lx, lz, (length / 2, h / 2, 0), (length, h, t), 'stone', True)
     obox(L, 'wing-base-course', start, lx, lz, (length / 2, .14, 0), (length, .28, t + .07), 'stone', True)
@@ -389,33 +589,36 @@ def wing_wall(L, w, side):
 
     fw = .16
     pcy = .5 + ph / 2
+    # thin 16-24mm strips get no bevel: chamfered end faces on the rotated
+    # frame produce degenerate UV derivatives (zero-length exported tangents)
     for u0, v0, uw, vh, name in [
         (pcx - pw / 2 - fw, .5, fw, ph + 2 * fw, 'wing-frame-left'),
         (pcx + pw / 2, .5, fw, ph + 2 * fw, 'wing-frame-right'),
         (pcx - pw / 2 - fw, .5 - fw, pw + 2 * fw, fw, 'wing-frame-bottom'),
         (pcx - pw / 2 - fw, .5 + ph, pw + 2 * fw, fw, 'wing-frame-top'),
     ]:
-        obox(L, name, start, lx, lz, (u0 + uw / 2, v0 + vh / 2, fz + .012), (uw, vh, .024), 'stone')
+        obox(L, name, start, lx, lz, (u0 + uw / 2, v0 + vh / 2, fz + front * .012), (uw, vh, .024), 'stone', bevel=0)
     for v in (1.62, 2.98):
-        obox(L, 'wing-field-band', start, lx, lz, (length / 2, v, fz + .008), (length - .3, .09, .016), 'stone')
+        obox(L, 'wing-field-band', start, lx, lz, (length / 2, v, fz + front * .008), (length - .3, .09, .016), 'stone', bevel=0)
 
     # relief panel: exact 0..1 UV plate (square normal texture) on the front face
     pts = [local_to_world(start, lx, lz, p) for p in [
-        (pcx - pw / 2, pcy - ph / 2, fz + .015), (pcx + pw / 2, pcy - ph / 2, fz + .015),
-        (pcx + pw / 2, pcy + ph / 2, fz + .015), (pcx - pw / 2, pcy + ph / 2, fz + .015)]]
+        (pcx - pw / 2, pcy - ph / 2, fz + front * .015), (pcx + pw / 2, pcy - ph / 2, fz + front * .015),
+        (pcx + pw / 2, pcy + ph / 2, fz + front * .015), (pcx - pw / 2, pcy + ph / 2, fz + front * .015)]]
     quad_out(L, 'wing-relief-panel', pts, 'relief',
-             [(0, 0), (1, 0), (1, 1), (0, 1)], lz)
-    # proud diamond strips + corner bosses (geometry, not texture)
+             [(0, 0), (1, 0), (1, 1), (0, 1)], nf)
+    # proud diamond strips + corner bosses (geometry, not texture); front
+    # surfaces stay within the 0.03-0.06 m relief depth band
     dw, dv = pw * .30, ph * .30
     for (u0, v0, uw, vh) in [
         (pcx - dw, pcy - dv, dw * 2, .05), (pcx - dw, pcy + dv - .05, dw * 2, .05),
         (pcx - dw, pcy - dv, .05, dv * 2), (pcx + dw - .05, pcy - dv, .05, dv * 2),
     ]:
-        obox(L, 'wing-diamond-strip', start, lx, lz, (u0 + uw / 2, v0 + vh / 2, fz + .04),
-             (uw, vh, w['reliefDepthM'][1]), 'stone')
+        obox(L, 'wing-diamond-strip', start, lx, lz, (u0 + uw / 2, v0 + vh / 2, fz + front * .035),
+             (uw, vh, .05), 'stone')
     for du, dv2 in ((-dw, -dv), (dw, -dv), (-dw, dv), (dw, dv)):
-        obox(L, 'wing-corner-boss', start, lx, lz, (pcx + du, pcy + dv2, fz + .048),
-             (.09, .09, .08), 'stone')
+        obox(L, 'wing-corner-boss', start, lx, lz, (pcx + du, pcy + dv2, fz + front * .030),
+             (.09, .09, .06), 'stone')
 
     # tile cap: two sloped quads meeting at a ridge line following the wall
     ov = .10

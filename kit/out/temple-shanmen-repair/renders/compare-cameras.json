@@ -1,0 +1,47 @@
+{
+  "source": "kit/build_temple_scene.py",
+  "engine": "cycles-cpu",
+  "samples": 24,
+  "resolution": [
+    1280,
+    960
+  ],
+  "mode": "compare",
+  "views": [
+    {
+      "view": "front",
+      "tag": "pbr",
+      "geometry": "native-blend",
+      "posBlender": [
+        0,
+        -18,
+        4.3
+      ],
+      "targetBlender": [
+        0,
+        1,
+        4.3
+      ],
+      "fovDegVerified": 48.0,
+      "file": "front-pbr-native.png"
+    },
+    {
+      "view": "quarter-left",
+      "tag": "pbr",
+      "geometry": "native-blend",
+      "posBlender": [
+        -12,
+        -12,
+        5.7
+      ],
+      "targetBlender": [
+        0,
+        1,
+        4
+      ],
+      "fovDegVerified": 48.0,
+      "file": "quarter-left-pbr-native.png"
+    }
+  ],
+  "note": "BLENDER evidence; WebGL captures are separate (kit/out/temple-shanmen/web)"
+}

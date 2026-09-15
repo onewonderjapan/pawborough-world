@@ -62,6 +62,7 @@ SCHEMA = {
                                'leafThicknessM': None, 'standoffZ': None, 'solidCollision': None,
                                'note': None}},
     'plaque': {'widthM': None, 'bottomY': None, 'topY': None, 'centerX': None,
+               'construction': None,
                'steps': None, 'faceTexture': None, 'literalLeftToRight': None,
                'readingRightToLeft': None,
                'sideFloralBoards': {'widthM': None, 'heightM': None, 'centersX': None, 'centerY': None}},
@@ -75,7 +76,11 @@ SCHEMA = {
                    'hipBeyondRidgeEnd': None},
         'shoulders': {'xSpans': None, 'frontOutlineAbsXY': None, 'ridgeY': None, 'ridgeZ': None,
                       'frontEaveZ': None, 'rearEaveZ': None, 'rearEaveDropFromFront': None,
+                      'eaveBaselineY': None,
                       'shellThicknessM': None, 'resampleSegments': None, 'innerSeamOverlapM': None,
+                      'tileRibs': {'method': None, 'spacingM': None, 'spacingChosenM': None,
+                                   'radiusM': None, 'radiusChosenM': None, 'stripSections': None,
+                                   'budgetExtraTrisMax': None},
                       'notes': None},
         'sideBayCanopies': {'xSpans': None, 'baseY': None, 'maxLiftY': None, 'frontZ': None},
         'ornaments': {'centerPair': {'maxHeightM': None, 'x': None, 'baseY': None, 'z': None},
@@ -208,6 +213,36 @@ def validate(c):
         pr.append('plaque glyph layout must read 保障海隅 right-to-left (literal 隅海障保)')
     if not (fr['lintelBandY'][1] <= pl['bottomY'] and pl['topY'] < c['bracketBand']['yRange'][0]):
         pr.append('plaque must sit between lintel top and bracket band')
+    # T1 repair contract: backing plate + stepped four-side frame rings + recessed
+    # text face. No full-face occluder may sit in front of the text plane, so
+    # every step in front of the last must inset enough to be a border ring.
+    if pl['construction'] != 'backing-plate + stepped four-side frame rings + recessed text face':
+        pr.append('plaque.construction must record the T1 repair construction')
+    steps = pl['steps']
+    if [s['zFront'] for s in steps] != sorted((s['zFront'] for s in steps), reverse=True):
+        pr.append('plaque steps must step BACK in z (front to back descending zFront)')
+    # only steps[0] may sit on the plaque outline; every later step insets far
+    # enough to be a border ring, so an opening always remains over the text
+    for s in steps[1:]:
+        if s['insetX'] < .05 or s['insetY'] < .04:
+            pr.append(f"plaque step zFront={s['zFront']} leaves no text opening (insets {s['insetX']},{s['insetY']})")
+    if steps[-1]['insetX'] <= steps[-2]['insetX'] or steps[-1]['insetY'] <= steps[-2]['insetY']:
+        pr.append('the text plane (last step) must be the most recessed plaque step')
+
+    # T3 repair contract: the revision equation parameters
+    tr = rs['tileRibs']
+    if abs(rs['eaveBaselineY'] - min(y for _, y in rs['frontOutlineAbsXY'])) > 1e-6:
+        pr.append('shoulders.eaveBaselineY must equal the lowest front-outline point (5.95)')
+    if not (rs['ridgeY'] > rs['eaveBaselineY']):
+        pr.append('shoulder ridge must sit above the eave baseline')
+    if not (tr['spacingM'][0] <= tr['spacingChosenM'] <= tr['spacingM'][1]):
+        pr.append(f"tile rib spacing {tr['spacingChosenM']} outside design band {tr['spacingM']}")
+    if not (tr['radiusM'][0] <= tr['radiusChosenM'] <= tr['radiusM'][1]):
+        pr.append(f"tile rib radius {tr['radiusChosenM']} outside design band {tr['radiusM']}")
+    if tr['stripSections'] != 8:
+        pr.append('tile ribs must use exactly 8 strip sections (DESIGN_REVISION)')
+    if tr['budgetExtraTrisMax'] > 8000:
+        pr.append('tile rib budget must stay within the 8000-tri DESIGN_REVISION allowance')
 
     # new texture budget: exactly the referenced files, <=2048px
     refs = [pl['faceTexture'], w['reliefNormalTexture']]
@@ -342,10 +377,47 @@ print(f'STAGE walls ok ({time.time() - T0:.1f}s)', flush=True)
 
 # ---------------------------------------------------------------------------
 # S2. curved roofs: center hip shell + two shoulder shells + under-eave soffits
+# T3: shoulder shells follow the DESIGN_REVISION equation; rib tubes are added
+# on the visible front slopes and their triangles are budgeted separately.
 
-C.center_roof(L, rc)
-C.shoulder_roof(L, rs, 1, profile)
-C.shoulder_roof(L, rs, -1, profile)
+C.center_roof(L, rc, profile)
+_center_srf = C.center_surface_fn(rc, profile)
+C.shoulder_roof(L, rs, 1, profile, _center_srf)
+C.shoulder_roof(L, rs, -1, profile, _center_srf)
+_rib_objs = C.add_roof_ribs(L, cfg['roof'], profile)
+_rib_tris = 0
+for _o in _rib_objs:
+    _o.data.calc_loop_triangles()
+    _rib_tris += len(_o.data.loop_triangles)
+if _rib_tris > rs['tileRibs']['budgetExtraTrisMax']:
+    print('RIB_BUDGET_FAIL', _rib_tris, '>', rs['tileRibs']['budgetExtraTrisMax'])
+    sys.exit(7)
+print(f'STAGE roofs ok (tile ribs {_rib_tris} tris <= {rs["tileRibs"]["budgetExtraTrisMax"]})')
+
+# T3 equation self-check against the revision constraints (analytic, no mesh):
+# ridge constant, front silhouette == outline at the knots, no lift before
+# the eave half, rear eave keeps the 0.18m drop.
+_sh_srf = C.shoulder_surface_fn(rs, profile)
+for kx, ky in rs['frontOutlineAbsXY']:
+    if abs(_sh_srf(kx, rs['frontEaveZ']) - ky) > 1e-9:
+        pr = (f'T3 silhouette: y({kx}, front eave)={_sh_srf(kx, rs["frontEaveZ"]):.6f} != outline {ky}')
+        print('T3_EQUATION_FAIL', pr)
+        sys.exit(8)
+for kx, _ in rs['frontOutlineAbsXY']:
+    if abs(_sh_srf(kx, rs['ridgeZ']) - rs['ridgeY']) > 1e-9:
+        print('T3_EQUATION_FAIL ridge not constant at', kx)
+        sys.exit(8)
+_tq_z = rs['ridgeZ'] + 0.25 * (rs['frontEaveZ'] - rs['ridgeZ'])
+_flat = [_sh_srf(kx, _tq_z) for kx, _ in rs['frontOutlineAbsXY']]
+if max(_flat) - min(_flat) > 1e-9:
+    print('T3_EQUATION_FAIL outline lift leaked to quarter depth (vertical curtain)')
+    sys.exit(8)
+for kx, ky in rs['frontOutlineAbsXY']:
+    _rear = _sh_srf(kx, rs['rearEaveZ'])
+    if abs(_rear - (ky - rs['rearEaveDropFromFront'])) > 1e-9:
+        print('T3_EQUATION_FAIL rear eave drop changed at', kx)
+        sys.exit(8)
+print('T3 equation checks ok (ridge const / silhouette / no mid-depth lift / rear drop)')
 L.box('front-eave-soffit', (0, 6.36, .32), (2 * fr['bodyHalfWidthX'], .09, .72), 'dark', 0)
 L.box('rear-eave-soffit', (0, 6.30, -3.9), (2 * fr['bodyHalfWidthX'], .09, .5), 'dark', 0)
 print(f'STAGE roofs ok ({time.time() - T0:.1f}s)')
@@ -414,12 +486,42 @@ L.GROUP = 'shanmen-plaque'
 pl = cfg['plaque']
 pcy = (pl['bottomY'] + pl['topY']) / 2
 phh = pl['topY'] - pl['bottomY']
-for k, stp in enumerate(pl['steps']):
-    zf, ix, iy = stp['zFront'], stp['insetX'], stp['insetY']
-    L.box(f'plaque-step-{k}', (pl['centerX'], pcy, zf - .025),
-          (pl['widthM'] - 2 * ix, phh - 2 * iy, .05), 'dark' if k == 0 else 'wood', .012)
-L.box('plaque-gold-fillet', (pl['centerX'], pcy, pl['steps'][1]['zFront'] - .006),
-      (pl['widthM'] - 2 * pl['steps'][1]['insetX'] + .03, phh - 2 * pl['steps'][1]['insetY'] + .03, .012), 'gold', 0)
+hw, hh = pl['widthM'] / 2, phh / 2
+
+
+def frame_ring(name, ix_o, iy_o, ix_i, iy_i, z_front, mat):
+    """One stepped reveal level: a four-side BORDER RING between the outer
+    (ix_o, iy_o) and inner (ix_i, iy_i) inset boundaries. The opening equals
+    the next level's face, so no ring ever covers the text center."""
+    hx_o, hy_o = hw - ix_o, hh - iy_o
+    hx_i, hy_i = hw - ix_i, hh - iy_i
+    zc = z_front - .025
+    for nm, c, s in [
+        (name + '-left', (pl['centerX'] - (hx_o + hx_i) / 2, pcy, zc), (hx_o - hx_i, 2 * hy_o, .05)),
+        (name + '-right', (pl['centerX'] + (hx_o + hx_i) / 2, pcy, zc), (hx_o - hx_i, 2 * hy_o, .05)),
+        (name + '-bottom', (pl['centerX'], pcy - (hy_o + hy_i) / 2, zc), (2 * hx_i, hy_o - hy_i, .05)),
+        (name + '-top', (pl['centerX'], pcy + (hy_o + hy_i) / 2, zc), (2 * hx_i, hy_o - hy_i, .05)),
+    ]:
+        L.box(nm, c, s, mat, .012)
+
+
+# T1 repair: one backing plate + stepped four-side frame rings + recessed text
+# face. Nothing full-face exists in front of the text plane any more; the old
+# three solid step boards and the full gold fillet plate are gone.
+L.box('plaque-backing-plate', (pl['centerX'], pcy, .030), (pl['widthM'], phh, .050), 'dark', .012)
+frame_ring('plaque-outer-rim', pl['steps'][0]['insetX'], pl['steps'][0]['insetY'],
+           pl['steps'][1]['insetX'], pl['steps'][1]['insetY'], pl['steps'][0]['zFront'], 'dark')
+frame_ring('plaque-mid-rim', pl['steps'][1]['insetX'], pl['steps'][1]['insetY'],
+           pl['steps'][2]['insetX'], pl['steps'][2]['insetY'], pl['steps'][1]['zFront'], 'wood')
+# gold fillet repaired: four thin edge strips riding the outer rim face — a
+# gold BORDER LINE, not a full plate across the glyphs.
+for c, s in [
+    ((pl['centerX'] - hw + .035, pcy, .1585), (.04, phh - .06, .012)),
+    ((pl['centerX'] + hw - .035, pcy, .1585), (.04, phh - .06, .012)),
+    ((pl['centerX'], pcy + hh - .0275, .1585), (pl['widthM'] - .12, .04, .012)),
+    ((pl['centerX'], pcy - hh + .0275, .1585), (pl['widthM'] - .12, .04, .012)),
+]:
+    L.box('plaque-gold-edge', c, s, 'gold', 0)
 fw = pl['widthM'] - 2 * pl['steps'][2]['insetX']
 fh = phh - 2 * pl['steps'][2]['insetY']
 zf = pl['steps'][2]['zFront']
@@ -700,6 +802,8 @@ measure['budgets'] = {
     'groundGlbBytes': {'actual': measure['targets']['ground.glb']['fileBytes'],
                        'limit': BUD['groundGlbBytesMax'], 'pass': True},
     'newImages': {'actual': 2, 'limit': BUD['newImagesMax'], 'pass': True},
+    'tileRibsTris': {'actual': _rib_tris, 'limit': rs['tileRibs']['budgetExtraTrisMax'], 'pass': True,
+                     'note': 'DESIGN_REVISION tileRibs allowance on top of the shells'},
 }
 measure['design'] = {
     'family': cfg['family'],
@@ -707,7 +811,9 @@ measure['design'] = {
     'clearOpeningM': [op['clearWidthM'], op['clearHeightM']],
     'ridgeHeightsM': {'center': rc['ridgeY'], 'shoulders': rs['ridgeY'], 'wingCap': cfg['wings']['tileCapMaxY']},
     'plaque': {'literalLeftToRight': pl['literalLeftToRight'], 'readingRightToLeft': pl['readingRightToLeft']},
-    'roofMethod': 'continuous profile-lofted thin shells, closed undersides, no box stacks',
+    'roofMethod': ('continuous profile-lofted thin shells (normal-offset soffits), T3 revision '
+                   'equation on the shoulders, closed seam skirts, finite half-round tile ribs '
+                   'on the front slopes; no box stacks'),
     'wings': 'built per side with own oriented frames (no mirrored normals)',
     'rearAndDepth': 'design inference (no rear reference) — uncertaintyPolicy in config',
     'lionsOrnaments': 'coarse candidates, replaceable; lead reviews silhouettes',
@@ -717,6 +823,29 @@ measure['timings']['totalSeconds'] = round(time.time() - T0, 1)
 used = dict(cfg)
 used['configSha256'] = hashlib.sha256(a.config.read_bytes()).hexdigest()
 (out / 'config-used.json').write_text(json.dumps(used, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+# T3 verification input: the shoulder equation sampled on the exact shell grid
+# (independent of mesh code paths downstream). The dataset test matches these
+# against vertices parsed from the exported GLB bytes.
+_sh_grid = {'source': 'kit/temple_components.py shoulder_surface_fn (T3 revision equation)',
+            'equation': ('baseY(t)=ridgeY-(ridgeY-eaveBaselineY)*drop(t); '
+                         'y=baseY+(frontOutline(|x|)-eaveBaselineY)*smoothstep(0.5,1,t)^2; rear eave keeps '
+                         'rearEaveDropFromFront; ridge never elevated'),
+            'ridgeY': rs['ridgeY'], 'eaveBaselineY': rs['eaveBaselineY'],
+            'gridX': [], 'front': [], 'rear': []}
+_nu, _seg = 10, rs['resampleSegments']
+_x0, _x1 = rs['xSpans'][1]
+_sh_grid['gridX'] = [_x0 + (_x1 - _x0) * i / _nu for i in range(_nu + 1)]
+for _j in range(_seg + 1):
+    _t = _j / _seg
+    _zf = rs['ridgeZ'] + (rs['frontEaveZ'] - rs['ridgeZ']) * _t
+    _zr2 = rs['ridgeZ'] - (rs['ridgeZ'] - rs['rearEaveZ']) * _t
+    _sh_grid['front'].append({'t': _t, 'z': _zf,
+                              'y': [round(_sh_srf(_x, _zf), 6) for _x in _sh_grid['gridX']]})
+    _sh_grid['rear'].append({'t': _t, 'z': _zr2,
+                             'y': [round(_sh_srf(_x, _zr2), 6) for _x in _sh_grid['gridX']]})
+(out / 'roof-surface-samples.json').write_text(json.dumps(_sh_grid, ensure_ascii=False, indent=2) + '\n',
+                                               encoding='utf-8')
 
 print(f"TEMPLE_READY tris(body+plaque)={main_t['triangles']} fullSet={full_t} "
       f"bytes={main_t['fileBytes']} total={time.time() - T0:.1f}s")

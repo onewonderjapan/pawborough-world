@@ -6,17 +6,21 @@
 //          builder sidecars (measurements/collision), plus the lead camera
 //          contract ../CAMERAS.json (falls back to the dataset's own copy so
 //          reruns stay idempotent after the outbox task dir is gone).
-// Output:  world/temple-shanmen/{temple.glb,ground.glb,lions.glb,ornaments.glb,
+//          --kit <dir> selects an alternate kit output (e.g. the T1-T3 repair
+//          build in kit/out/temple-shanmen-repair); the default stays the
+//          original S1-S7 output.
+// Output: world/temple-shanmen/{temple.glb,ground.glb,lions.glb,ornaments.glb,
 //          cameras.json,review-manifest.json,collision-world.json}
 //
-// Run: node scripts/build_temple_world.mjs
+// Run: node scripts/build_temple_world.mjs [--kit kit/out/temple-shanmen-repair]
 import { createHash } from 'node:crypto';
 import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const KIT = resolve(root, 'kit/out/temple-shanmen');
+const kitArg = process.argv.indexOf('--kit');
+const KIT = kitArg >= 0 ? resolve(root, process.argv[kitArg + 1]) : resolve(root, 'kit/out/temple-shanmen');
 const OUT = resolve(root, 'world/temple-shanmen');
 const sha = (b) => createHash('sha256').update(b).digest('hex');
 
@@ -99,6 +103,14 @@ const manifest = {
 };
 await writeFile(resolve(OUT, 'review-manifest.json'), JSON.stringify(manifest, null, 2) + '\n', 'utf8');
 
+// --- T3 verification input: shoulder equation samples from the kit build ---
+// (copied when present; older kit outputs without it stay valid datasets)
+try {
+  await copyFile(resolve(KIT, 'roof-surface-samples.json'), resolve(OUT, 'roof-surface-samples.json'));
+} catch {
+  // pre-repair kit output — no samples to carry
+}
+
 const tri = Object.values(assets).reduce((s, a) => s + a.triangles, 0);
 const byt = Object.values(assets).reduce((s, a) => s + a.bytes, 0);
-console.log(`TEMPLE_DATASET_READY colliders=${world.colliders.length} tris=${tri} bytes=${byt} cameras=${cameras.cameras.length} (${camSource})`);
+console.log(`TEMPLE_DATASET_READY kit=${KIT.endsWith('temple-shanmen-repair') ? 'repair' : 'original'} colliders=${world.colliders.length} tris=${tri} bytes=${byt} cameras=${cameras.cameras.length} (${camSource})`);
