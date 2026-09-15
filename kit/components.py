@@ -171,12 +171,15 @@ def display_window_on_wall(L, axis, plane, inward, u, y, w, h, recess=0.12,
                            counter_h=0.42, name='display-window'):
     """Shallow shop display window: dark reveal, upper glass, proud timber
     counter face in the lower band (frozen counter reads via its proud sill),
-    protruding stone counter top."""
-    _wb(L, axis, plane, inward, u, y, recess / 2, w + .16, h + .14, recess + .04, 'dark', 0, False, f'{name}-reveal')
+    protruding stone counter top. The visible solid faces — reveal panel,
+    counter face, counter top — carry matching collision (SC-F1); the glass
+    pane sits embedded inside the reveal void, so it stays collision-free
+    (no invisible collider, geometry unchanged)."""
+    _wb(L, axis, plane, inward, u, y, recess / 2, w + .16, h + .14, recess + .04, 'dark', 0, True, f'{name}-reveal')
     gh = h - counter_h - .06
     _wb(L, axis, plane, inward, u, y + counter_h / 2 + gh / 2 + .03, recess - .04, w - .12, gh, .025, 'glass', 0, False, f'{name}-glass')
-    _wb(L, axis, plane, inward, u, y - h / 2 + counter_h / 2, -.02, w - .06, counter_h, .24, 'wood', .008, False, f'{name}-counter-face')
-    _wb(L, axis, plane, inward, u, y - h / 2 + counter_h + .035, -.05, w + .12, .07, .32, 'stone', .008, False, f'{name}-counter-top')
+    _wb(L, axis, plane, inward, u, y - h / 2 + counter_h / 2, -.02, w - .06, counter_h, .24, 'wood', .008, True, f'{name}-counter-face')
+    _wb(L, axis, plane, inward, u, y - h / 2 + counter_h + .035, -.05, w + .12, .07, .32, 'stone', .008, True, f'{name}-counter-top')
 
 
 def straight_canopy(L, x, y, z0, w, projection, thickness=0.07):

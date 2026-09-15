@@ -508,6 +508,105 @@
       }
     },
     {
+      "name": "east-shop-128:display-window-reveal",
+      "module": "east-shop-128",
+      "type": "box",
+      "min": [
+        97.1735,
+        0.53,
+        17.4496
+      ],
+      "max": [
+        102.0736,
+        2.19,
+        19.1123
+      ],
+      "obb": {
+        "pos": [
+          97.66451,
+          0,
+          17.734235
+        ],
+        "theta": -0.301652,
+        "center": [
+          2.033,
+          1.36,
+          -0.06
+        ],
+        "size": [
+          5.082,
+          1.6600000000000001,
+          0.16
+        ]
+      }
+    },
+    {
+      "name": "east-shop-128:display-window-counter-face",
+      "module": "east-shop-128",
+      "type": "box",
+      "min": [
+        97.2429,
+        0.6,
+        17.5205
+      ],
+      "max": [
+        101.9567,
+        1.02,
+        19.1942
+      ],
+      "obb": {
+        "pos": [
+          97.66451,
+          0,
+          17.734235
+        ],
+        "theta": -0.301652,
+        "center": [
+          2.033,
+          0.81,
+          0.02
+        ],
+        "size": [
+          4.862,
+          0.42,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "east-shop-128:display-window-counter-top",
+      "module": "east-shop-128",
+      "type": "box",
+      "min": [
+        97.1362,
+        1.02,
+        17.4842
+      ],
+      "max": [
+        102.0456,
+        1.09,
+        19.2877
+      ],
+      "obb": {
+        "pos": [
+          97.66451,
+          0,
+          17.734235
+        ],
+        "theta": -0.301652,
+        "center": [
+          2.033,
+          1.055,
+          0.05
+        ],
+        "size": [
+          5.042,
+          0.07,
+          0.32
+        ]
+      }
+    },
+    {
       "name": "east-shop-128:foundation-front-b0s0",
       "module": "east-shop-128",
       "type": "box",
