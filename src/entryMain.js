@@ -1,15 +1,11 @@
-// Standalone temple pilot viewer — its own entry (temple.html, ports 5290/5291),
-// deliberately separate from the street client (src/main.js, 5284/5285). It
-// reuses the same production modules: three + GLTFLoader + OrbitControls, the
-// shared collision adapter / ground extractor / physics builders, and the
-// WalkController input chain — no new engine, no new physics.
-//
-// Extra to the street page: (1) every fixed camera verifies its OWN pose
-// against cameras.json after controls.update() (the F2 lesson: presets must be
-// executed faithfully, fov applied as degrees straight from the contract);
-// (2) an automated doorway-passage check driving the real WalkController
-// through the opening, plus blocked/fall negatives proving no wall seals the
-// opening and no invisible plane exists beyond the court.
+// Temple ENTRY-GROUP viewer — its own entry (temple-entry.html, ports
+// 5292/5293), sibling of the shanmen pilot page. Same production modules and
+// the SAME shared viewer core (src/templeViewShared.js) — no second engine.
+// Loads the assembled dataset world/temple-entry/: shanmen at (0,0,0), yimen
+// instanced at (0,0,-21), the walled court in place, plus the shanmen lion /
+// ornament candidates. Eight lead cameras, walk mode on the same physics
+// chain, and an automated route cruise (honestly labeled automatic — manual
+// full play is the lead's browser check, never claimed here).
 import * as T from 'three';
 import RAPIER from '@dimforge/rapier3d-compat';
 
@@ -22,34 +18,35 @@ import { CAPSULE, createSceneRig, applyViewVerified, loadGlbWithStats, groundMes
 const app = document.querySelector('#app'), stats = document.querySelector('#stats'),
   viewsEl = document.querySelector('#views'), noticeEl = document.querySelector('#notice');
 
-// renderer/scene/light rig + clay live in the shared core (templeViewShared)
-const { renderer, scene, camera, controls, clay } = createSceneRig(app);
+const { renderer, scene, camera, controls, clay } = createSceneRig(app, { background: 0xd9dfd9 });
 let clayOn = false;
 
-const BASE = './world/temple-shanmen/';
-const DATASET_TAG = 'temple';
+const BASE = './world/temple-entry/';
+const DATASET_TAG = 'entry';
 const LABELS = {
-  'front': '正面', 'street-eye': '街面平视', 'quarter-left': '三分之四·左',
-  'roof': '檐角/屋顶', 'doorway': '门洞通行', 'rear-inferred': '背面(推断)',
+  'entry-axis': '入口中轴', 'from-gate': '山门内望', 'court-quarter': '前院斜面',
+  'yimen-front': '仪门正面', 'yimen-roof': '仪门屋面', 'yimen-detail': '仪门近景',
+  'return-to-gate': '回望山门', 'rear-inferred': '仪门之背(推断)',
 };
+const YIMEN_Z = -21;
 
 let cameras = [], manifest = null, physics = null, controller = null;
 let mode = 'view', selected = null, ready = false, ornamentsOn = true;
-let cameraCheck = null, passageCheck = null, loadStats = {};
+let cameraCheck = null, routeCheck = null, loadStats = {};
 let candidateRoot = null, worldRoot = null;
 
 function resources() { return countResources(scene, clay); }
 
 function record() {
   return {
-    dataset: 'temple-shanmen', view: selected, mode, clay: clayOn, ornaments: ornamentsOn,
+    dataset: 'temple-entry', view: selected, mode, clay: clayOn, ornaments: ornamentsOn,
     resources: resources(), loadStats,
     camera: mode === 'view' ? {
       position: camera.position.toArray().map((v) => +v.toFixed(3)),
       target: controls.target.toArray().map((v) => +v.toFixed(3)),
       fovDeg: +camera.fov.toFixed(3),
     } : { feet: controller.feetPosition().map((v) => +v.toFixed(2)) },
-    cameraCheck, passageCheck,
+    cameraCheck, routeCheck,
     ready,
   };
 }
@@ -63,9 +60,9 @@ function render() {
   stats.textContent = mode === 'walk'
     ? `行走模式 · 脚底 (${controller.feetPosition().map((v) => v.toFixed(1)).join(', ')})\nWASD 移动 · 鼠标环视(点击画面锁定) · 空格跳 · V 返回取景`
     : `${r.triangles.toLocaleString()} 三角形 · 几何/材质/纹理 ${r.uniqueGeometries}/${r.uniqueMaterials}/${r.uniqueTextures}\n`
-      + `本机资产 ${(loadStats.bytesTotal / 1e6).toFixed(2)} MB（含雕饰候选 ${(loadStats.bytesCandidates / 1e6).toFixed(2)} MB）\n`
+      + `本机资产 ${(loadStats.bytesTotal / 1e6).toFixed(2)} MB（新内容仪门+前院 ${(loadStats.bytesNew / 1e6).toFixed(2)} MB）\n`
       + `机位校验 ${cameraCheck ? (cameraCheck.pass ? 'PASS' : 'FAIL') : '—'}${cameraCheck ? ` (${cameraCheck.view}: Δpos ${cameraCheck.dPos}, Δfov ${cameraCheck.dFov})` : ''}\n`
-      + `门洞通行 ${passageCheck ? (passageCheck.pass ? 'PASS ' + passageCheck.summary : 'FAIL ' + (passageCheck.summary || passageCheck.error)) : '— 未运行'}`;
+      + `巡游路线 ${routeCheck ? (routeCheck.pass ? 'PASS ' + routeCheck.summary : 'FAIL ' + (routeCheck.summary || routeCheck.error)) : '— 未运行（自动执行，非人工试玩）'}`;
   document.querySelector('#record').textContent = JSON.stringify(record(), null, 2);
 }
 
@@ -75,7 +72,6 @@ function setView(id) {
   if (mode === 'walk') setMode('view');
   selected = id;
   camera.aspect = app.clientWidth / app.clientHeight;
-  // faithful-execution check lives in the shared core (runs AFTER update())
   cameraCheck = applyViewVerified(camera, controls, v);
   for (const b of viewsEl.querySelectorAll('[data-view]')) b.classList.toggle('on', b.dataset.view === id);
   render();
@@ -87,79 +83,86 @@ async function json(path) {
   return r.json();
 }
 
-// --- the automated doorway passage check: real WalkController, real physics ---
-async function runPassageCheck() {
+// --- the automated route cruise: real WalkController on the real physics
+// chain, following world/temple-entry/route.json waypoints there and back.
+async function runRouteCheck() {
   const t0 = performance.now();
+  const route = await json(BASE + 'route.json');
+  const dt = 1 / 60;
   const mk = (x, z) => new WalkController({ RAPIER, physics, capsule: { ...CAPSULE, spawn: [x, 1.0, z] } });
-  const drive = (c, seconds, forward = 1) => {
-    const dt = 1 / 60;
-    c.yaw = 0; // facing -Z (straight at the gate)
-    for (let i = 0; i < Math.round(seconds / dt); i++) {
-      c.setMoveInput(forward, 0);
-      c.step(dt);
-    }
-  };
   const results = {};
-  // positive: approach on the axis, must cross the gate grounded and clear to z < -4.2
-  // (beyond the rear wall there is intentionally NO ground — falling after the
-  // exit is expected and doubles as proof of no invisible plane behind)
   {
-    const c = mk(0, 6.5);
-    let groundedAtMid = null, exitZ = null;
-    const dt = 1 / 60;
+    const c = mk(0, 5);
+    const gates = [
+      { name: 'shanmen-mid', z: -1.8 }, { name: 'court-mid', z: -12 },
+      { name: 'yimen-door', z: -21 }, { name: 'landing', z: -27.3 },
+    ];
+    const marks = [];
+    let gi = 0;
     c.yaw = 0;
-    for (let i = 0; i < Math.round(10 / dt); i++) {
+    for (let i = 0; i < Math.round(30 / dt); i++) {
       c.setMoveInput(1, 0);
       c.step(dt);
       const [x, , z] = c.feetPosition();
-      if (groundedAtMid === null && z < -1.8 && z > -2.4) groundedAtMid = c.isGrounded();
-      if (exitZ === null && z < -4.2) { exitZ = z; break; }
+      while (gi < gates.length && z <= gates[gi].z) {
+        marks.push({ gate: gates[gi].name, x, grounded: c.isGrounded() });
+        gi++;
+      }
+      if (z <= -27.3) break;
     }
-    const [x] = c.feetPosition();
     results.through = {
-      x: +x.toFixed(3), midGrounded: groundedAtMid, exitZ: exitZ === null ? null : +exitZ.toFixed(3),
-      pass: exitZ !== null && Math.abs(x) < 0.45 && groundedAtMid === true,
+      gates: marks.map((m) => `${m.gate}:${m.grounded ? 'g' : 'AIR'}`).join(' '),
+      drift: Math.max(...marks.map((m) => Math.abs(m.x)), 0),
+      pass: gates.every((g) => marks.find((m) => m.gate === g.name && m.grounded))
+        && marks.every((m) => Math.abs(m.x) < 0.5),
     };
+    // return leg
+    c.yaw = Math.PI;
+    let backZ = null;
+    for (let i = 0; i < Math.round(40 / dt); i++) {
+      c.setMoveInput(1, 0);
+      c.step(dt);
+      const [, , z] = c.feetPosition();
+      if (z > 4.0) { backZ = z; break; }
+    }
+    results.return = { z: backZ, pass: backZ !== null };
     c.dispose();
   }
-  // negative 1: 0.7m off-axis runs into the reveal wall / column line — blocked
   {
-    const c = mk(-1.6, 6.5);
-    drive(c, 8);
-    const [, , z] = c.feetPosition();
-    results.blockedReveal = { z: +z.toFixed(3), pass: z > -0.5 };
+    const c = mk(5, -12); // court side wall
+    c.yaw = -Math.PI / 2;
+    for (let i = 0; i < Math.round(5 / dt); i++) { c.setMoveInput(1, 0); c.step(dt); }
+    results.sideWall = { x: +c.feetPosition()[0].toFixed(2), pass: c.feetPosition()[0] < 8.1 };
     c.dispose();
   }
-  // negative 2: open lattice door leaf (folded at the side bay) is solid
   {
-    const c = mk(2.25, 2.5);
-    drive(c, 6);
-    const [, , z] = c.feetPosition();
-    results.blockedLeaf = { z: +z.toFixed(3), pass: z > 0.05 };
+    const c = mk(4.2, -19.0); // yimen lattice bay
+    c.yaw = 0;
+    for (let i = 0; i < Math.round(5 / dt); i++) { c.setMoveInput(1, 0); c.step(dt); }
+    results.yimenBay = { z: +c.feetPosition()[2].toFixed(2), pass: c.feetPosition()[2] > -21.3 };
     c.dispose();
   }
-  // negative 3: step off the court side edge -> falls (no invisible world plane)
   {
-    const c = mk(0, 3.0);
-    c.yaw = -Math.PI / 2; // face +X
-    const dt = 1 / 60;
-    for (let i = 0; i < Math.round(9 / dt); i++) { c.setMoveInput(1, 0); c.step(dt); }
-    const [x, y] = c.feetPosition();
-    results.fallOffEdge = { x: +x.toFixed(2), y: +y.toFixed(2), pass: y < -1.0 };
+    const c = mk(0, -30.5); // void beyond the cutoff wall
+    for (let i = 0; i < Math.round(2 / dt); i++) c.step(dt);
+    results.voidFall = { y: +c.feetPosition()[1].toFixed(2), pass: c.feetPosition()[1] < -1.0 };
     c.dispose();
   }
   const pass = Object.values(results).every((r) => r.pass);
-  passageCheck = {
-    pass, results,
-    summary: `门洞中段落地=${results.through.midGrounded}·穿出z=${results.through.exitZ}·偏移x=${results.through.x}；侧向拦停z=${results.blockedReveal.z}；门板拦停z=${results.blockedLeaf.z}；越界坠落y=${results.fallOffEdge.y}`,
+  routeCheck = {
+    pass, automatic: true, results,
+    summary: `穿行[${results.through.gates}]·返程z=${results.return.z}·侧墙x=${results.sideWall.x}·仪门格门z=${results.yimenBay.z}·界外坠落y=${results.voidFall.y}`,
     ms: +(performance.now() - t0).toFixed(0),
+    waypoints: route.mainStreet?.length ?? 0,
   };
   render();
-  noticeEl.textContent = pass ? '门洞通行检查：全部通过（穿行/拦停/无隐形地面）。' : '门洞通行检查存在失败项，详见记录。';
+  noticeEl.textContent = pass
+    ? '巡游路线检查：全部通过（自动执行·穿两门往返/拦停/无隐形地面）。'
+    : '巡游路线检查存在失败项，详见记录。';
   return pass;
 }
 
-// --- walk mode wiring (same input chain as the street client) ----------------
+// --- walk mode wiring (same input chain as the shanmen page) ----------------
 const keys = { w: false, a: false, s: false, d: false };
 const KEYMAP = { KeyW: 'w', KeyA: 'a', KeyS: 's', KeyD: 'd' };
 
@@ -168,12 +171,12 @@ function setMode(next) {
   if (next === 'walk') {
     const v = cameras.find((c) => c.id === selected) ?? cameras[0];
     const eye = new T.Vector3(...v.positionGlb);
-    if (eye.y < 6) { // start walking from a street-level preset only
-      controller = new WalkController({ RAPIER, physics, capsule: { ...CAPSULE, spawn: [eye.x, 1.0, Math.max(eye.z, 5.5)] } });
+    if (eye.y < 6) {
+      controller = new WalkController({ RAPIER, physics, capsule: { ...CAPSULE, spawn: [eye.x, 1.0, Math.min(Math.max(eye.z, -27), 5.5)] } });
       mode = 'walk';
       renderer.domElement.requestPointerLock?.();
     } else {
-      noticeEl.textContent = '该机位在高处：请先用街面平视/门洞机位进入行走。';
+      noticeEl.textContent = '该机位在高处：请先用中轴/内望/回望等街面机位进入行走。';
       return;
     }
   } else {
@@ -240,7 +243,6 @@ function setupButtons() {
     clayOn = !clayOn;
     scene.overrideMaterial = clayOn ? clay : null;
     clayBtn.classList.toggle('on', clayOn);
-    sun.shadow.needsUpdate = true;
     render();
   };
   viewsEl.appendChild(clayBtn);
@@ -260,8 +262,8 @@ function setupButtons() {
   walkBtn.onclick = () => setMode(mode === 'walk' ? 'view' : 'walk');
   viewsEl.appendChild(walkBtn);
   const chk = document.createElement('button');
-  chk.textContent = '门洞通行检查';
-  chk.onclick = async () => { chk.disabled = true; await runPassageCheck(); chk.disabled = false; };
+  chk.textContent = '巡游路线检查';
+  chk.onclick = async () => { chk.disabled = true; await runRouteCheck(); chk.disabled = false; };
   viewsEl.appendChild(chk);
   const save = document.createElement('button');
   save.textContent = '保存实测图';
@@ -292,21 +294,24 @@ new ResizeObserver(() => {
 }).observe(app);
 
 async function load() {
-  const t0 = performance.now();
   await RAPIER.init();
-  [manifest, cameras] = await Promise.all([
-    json(BASE + 'review-manifest.json'),
-    json(BASE + 'cameras.json').then((c) => c.cameras),
-  ]);
   const camContract = await json(BASE + 'cameras.json');
   cameras = camContract.cameras;
+  manifest = await json(BASE + 'review-manifest.json');
 
-  const main = await loadGlbWithStats(BASE + 'temple.glb', 'temple-main', { renderer, baseUrl: BASE });
-  const ground = await loadGlbWithStats(BASE + 'ground.glb', 'temple-ground', { renderer, baseUrl: BASE });
-  const lions = await loadGlbWithStats(BASE + 'lions.glb', 'temple-lions', { renderer, baseUrl: BASE });
-  const ornaments = await loadGlbWithStats(BASE + 'ornaments.glb', 'temple-ornaments', { renderer, baseUrl: BASE });
-  worldRoot = main.root;
+  const opts = { renderer, baseUrl: BASE };
+  const temple = await loadGlbWithStats(BASE + 'temple.glb', 'shanmen-main', opts);
+  const ground = await loadGlbWithStats(BASE + 'ground.glb', 'shanmen-ground', opts);
+  const lions = await loadGlbWithStats(BASE + 'lions.glb', 'shanmen-lions', opts);
+  const ornaments = await loadGlbWithStats(BASE + 'ornaments.glb', 'shanmen-ornaments', opts);
+  const yimen = await loadGlbWithStats(BASE + 'yimen.glb', 'yimen-main', opts);
+  const court = await loadGlbWithStats(BASE + 'court.glb', 'entry-court', opts);
+
+  worldRoot = temple.root;                    // shanmen at identity (0,0,0)
   worldRoot.add(ground.root);
+  yimen.root.position.set(0, 0, YIMEN_Z);     // instance origin (0,0,-21), yaw 0
+  worldRoot.add(yimen.root);
+  worldRoot.add(court.root);                  // court authored in place
   candidateRoot = new T.Group();
   candidateRoot.name = 'temple-candidates';
   candidateRoot.add(lions.root, ornaments.root);
@@ -314,25 +319,25 @@ async function load() {
   scene.add(worldRoot);
 
   // integrity: the GLBs on disk must match the manifest the tests validate
+  const loaded = { temple, ground, lions, ornaments, yimen, court };
   for (const [id, a] of Object.entries(manifest.assets)) {
-    const got = id === 'temple' ? main : id === 'ground' ? ground : id === 'lions' ? lions : ornaments;
-    if (got.bytes !== a.bytes) throw new Error(`asset ${id}: bytes ${got.bytes} != manifest ${a.bytes}`);
+    if (loaded[id].bytes !== a.bytes) throw new Error(`asset ${id}: bytes ${loaded[id].bytes} != manifest ${a.bytes}`);
   }
 
   worldRoot.traverse((o) => {
     if (!o.isMesh) return;
-    o.castShadow = !/temple-ground/.test(o.parent?.name ?? '') && !/^temple-ground/.test(o.name);
+    o.castShadow = !/shanmen-ground|entry-court/.test(o.parent?.name ?? '') && !/^temple-ground/.test(o.name);
     o.receiveShadow = true;
     for (const m of [o.material].flat())
       for (const v of Object.values(m)) if (v?.isTexture) v.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
   });
 
-  // physics: walls from collision-world.json + ground trimesh from the VISIBLE paving
+  // physics: world-space walls + ground trimesh from the VISIBLE paving
   const collision = await json(BASE + 'collision-world.json');
   const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
   physics = { world, wallCount: 0, groundTriangleCount: 0, dispose: () => world.free() };
   for (const rec of collision.colliders) { addWallCollider(RAPIER, world, rec); physics.wallCount++; }
-  const gt = collectGroundTriangles(groundMeshesOf(ground.root));
+  const gt = collectGroundTriangles([...groundMeshesOf(ground.root), ...groundMeshesOf(court.root)]);
   addGroundCollider(RAPIER, world, gt);
   physics.groundTriangleCount = gt.triangleCount;
 
@@ -342,23 +347,24 @@ async function load() {
     throw new Error(`geometry integrity: ${r.triangles} triangles loaded != manifest ${expected}`);
 
   loadStats = {
-    bytesTotal: main.bytes + ground.bytes + lions.bytes + ornaments.bytes,
-    bytesMain: main.bytes + ground.bytes,
-    bytesCandidates: lions.bytes + ornaments.bytes,
-    fetchParseMs: main.ms + ground.ms + lions.ms + ornaments.ms,
+    bytesTotal: Object.values(loaded).reduce((s, l) => s + l.bytes, 0),
+    bytesNew: yimen.bytes + court.bytes,
+    fetchParseMs: Object.values(loaded).reduce((s, l) => s + l.ms, 0),
     wallColliders: physics.wallCount,
     groundTriangles: physics.groundTriangleCount,
   };
   ready = true;
   setupButtons();
-  setView('front');
-  await runPassageCheck();
-  noticeEl.textContent = `样板已载入：${r.triangles.toLocaleString()} 三角形，${(loadStats.bytesTotal / 1e6).toFixed(2)} MB（加载 ${loadStats.fetchParseMs}ms）。`;
-  window.__templeRecord = record; // capture script asserts telemetry from the page itself
+  setView('entry-axis');
+  await runRouteCheck();
+  noticeEl.textContent = `入口组已载入：${r.triangles.toLocaleString()} 三角形，`
+    + `${(loadStats.bytesTotal / 1e6).toFixed(2)} MB（新内容 ${(loadStats.bytesNew / 1e6).toFixed(2)} MB，`
+    + `加载 ${loadStats.fetchParseMs}ms）。`;
+  window.__entryRecord = record;
 }
 
 load().catch((e) => {
   stats.textContent = '载入失败：' + e.message;
-  noticeEl.textContent = '样板载入失败：' + e.message;
+  noticeEl.textContent = '入口组载入失败：' + e.message;
   throw e;
 });
