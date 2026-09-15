@@ -1,0 +1,81 @@
+{
+  "dataset": "temple-dadian",
+  "view": "hall-flank",
+  "mode": "view",
+  "clay": false,
+  "resources": {
+    "meshes": 55,
+    "triangles": 104142,
+    "uniqueGeometries": 55,
+    "uniqueMaterials": 43,
+    "uniqueTextures": 51
+  },
+  "loadStats": {
+    "bytesTotal": 18924480,
+    "bytesNew": 9060756,
+    "fetchParseMs": 419.7,
+    "wallColliders": 128,
+    "groundTriangles": 2340
+  },
+  "camera": {
+    "position": [
+      13.8,
+      3.2,
+      -47
+    ],
+    "target": [
+      0,
+      6.5,
+      -50
+    ],
+    "fovDeg": 55
+  },
+  "cameraCheck": {
+    "view": "hall-flank",
+    "dPos": 0,
+    "dFov": 0,
+    "pass": true
+  },
+  "routeCheck": {
+    "pass": true,
+    "automatic": true,
+    "results": {
+      "through": {
+        "gates": "shanmen-mid:g court-mid:g yimen-door:g entry-landing:g court2-mid:g",
+        "reached": true,
+        "drift": 1.2471684217453003,
+        "pass": true
+      },
+      "stair": {
+        "climbed": true,
+        "y": 0.87,
+        "pass": true
+      },
+      "doors": {
+        "z": -43.98,
+        "pass": true
+      },
+      "return": {
+        "z": 3.754568338394165,
+        "pass": true
+      },
+      "sideWall": {
+        "x": 10.13,
+        "pass": true
+      },
+      "burner": {
+        "minZ": -33.35,
+        "throughBody": false,
+        "pass": true
+      },
+      "voidFall": {
+        "y": -18.78,
+        "pass": true
+      }
+    },
+    "summary": "穿行[shanmen-mid:g court-mid:g yimen-door:g entry-landing:g court2-mid:g]·台阶登顶y=0.87·闭门z=-43.98·返程z=3.754568338394165·侧墙x=10.13·铜鼎未穿身(minZ=-33.35)·界外坠落y=-18.78",
+    "ms": 176,
+    "waypoints": 8
+  },
+  "ready": true
+}

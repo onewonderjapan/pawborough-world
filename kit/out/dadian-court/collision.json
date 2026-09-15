@@ -299,6 +299,39 @@
       }
     },
     {
+      "name": "burner-vessel-block",
+      "group": "dadian-court",
+      "type": "box",
+      "min": [
+        -0.55,
+        0.2749999999999999,
+        -35.05
+      ],
+      "max": [
+        0.55,
+        1.375,
+        -33.95
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0.0,
+        "center": [
+          0,
+          0.825,
+          -34.5
+        ],
+        "size": [
+          1.1,
+          1.1,
+          1.1
+        ]
+      }
+    },
+    {
       "name": "court2-side-wall",
       "group": "dadian-court",
       "type": "box",
