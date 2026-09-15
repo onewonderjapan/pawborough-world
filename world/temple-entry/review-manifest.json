@@ -1,0 +1,110 @@
+{
+  "datasetId": "temple-entry",
+  "title": "城隍庙入口组 · 山门—前院—仪门 样板",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "reference": {
+    "imageId": "PBR-SH-0002-040",
+    "referenceEra": 2015,
+    "historicalAccuracyVerified": false,
+    "dimensionsAreDesign": true
+  },
+  "axis": "GLB Y-up; +Z south toward the street; shanmen threshold at (0,0,0); north = -Z",
+  "assets": {
+    "temple": {
+      "file": "./world/temple-entry/temple.glb",
+      "bytes": 3781204,
+      "sha256": "192aad55c5961495c9516859b933819ebc9a434b309a8f9637aee07df3bb5d5c",
+      "triangles": 22392,
+      "groups": [
+        "shanmen-body",
+        "shanmen-plaque"
+      ]
+    },
+    "ground": {
+      "file": "./world/temple-entry/ground.glb",
+      "bytes": 860820,
+      "sha256": "318db5b43c6f5106f277e78e21980c3409e8a863ed9bbc0fd2a8e5788798c5e0",
+      "triangles": 360,
+      "groups": [
+        "temple-ground"
+      ]
+    },
+    "lions": {
+      "file": "./world/temple-entry/lions.glb",
+      "bytes": 334864,
+      "sha256": "fe4907f38d32017ace652aa91a8875e5a62838f39b9699cec9d95017b01e1ba1",
+      "triangles": 2648,
+      "groups": [
+        "shanmen-lion"
+      ]
+    },
+    "ornaments": {
+      "file": "./world/temple-entry/ornaments.glb",
+      "bytes": 436760,
+      "sha256": "ac83aca106d4a224add108a3511b456fdf8ab9847609e78744374b801afb2f94",
+      "triangles": 2304,
+      "groups": [
+        "shanmen-ornament"
+      ]
+    },
+    "yimen": {
+      "file": "./world/temple-entry/yimen.glb",
+      "bytes": 4343252,
+      "sha256": "e9393cd4017c657e74d2889da812ac16eb70a04664ce8ab829ea126cb7ee48b5",
+      "triangles": 26140,
+      "groups": [
+        "yimen-body",
+        "yimen-plaque"
+      ]
+    },
+    "court": {
+      "file": "./world/temple-entry/court.glb",
+      "bytes": 1148664,
+      "sha256": "c5fe9efb2f403f4cf14397d169e69ba7f8baf28a2e8582305e2be7da8629c406",
+      "triangles": 1604,
+      "groups": [
+        "temple-ground",
+        "entry-court"
+      ]
+    }
+  },
+  "placedTriangles": 55448,
+  "budgets": {
+    "newYimenTris": {
+      "actual": 26140,
+      "limit": 45000,
+      "pass": true
+    },
+    "courtTris": {
+      "actual": 1604,
+      "limit": 12000,
+      "pass": true
+    },
+    "newDownloadBytes": {
+      "actual": 5491916,
+      "limit": 10000000,
+      "pass": true,
+      "note": "new content only; shanmen assets reused from the adopted-candidate dataset"
+    }
+  },
+  "cameras": {
+    "count": 8,
+    "source": "lead designed entry cameras (task CAMERAS.json)",
+    "contract": "positionGlb/targetGlb/verticalFovDegrees applied verbatim; page verifies pose after controls.update()"
+  },
+  "passage": {
+    "shanmenClearM": [
+      3,
+      3.1
+    ],
+    "yimenClearM": [
+      3.6,
+      3.2
+    ],
+    "route": "front approach -> through shanmen -> court -> through yimen -> rear landing -> return"
+  },
+  "groundPolicy": "visible court/paving/hall-floor meshes ARE the physics ground (temple-ground__ nodes); no invisible plane",
+  "buildChain": "build_temple_shanmen.py(N1) + build_yimen.py(N2/N3) + build_entry_court.py(N4) <- DESIGN_SPEC.json (lead design)",
+  "generatedBy": "scripts/build_temple_entry_world.mjs"
+}

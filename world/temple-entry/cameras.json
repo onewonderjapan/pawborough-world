@@ -1,0 +1,121 @@
+{
+  "framebuffer": [
+    1280,
+    960
+  ],
+  "cameraPolicy": "origin/target/FOV are lead design; verify body clearance; small pose adjustments allowed with before-after receipts",
+  "cameras": [
+    {
+      "id": "entry-axis",
+      "positionGlb": [
+        0,
+        3.8,
+        17
+      ],
+      "targetGlb": [
+        0,
+        4,
+        -10
+      ],
+      "verticalFovDegrees": 52
+    },
+    {
+      "id": "from-gate",
+      "positionGlb": [
+        0,
+        1.6,
+        -3.9
+      ],
+      "targetGlb": [
+        0,
+        3.5,
+        -21
+      ],
+      "verticalFovDegrees": 55
+    },
+    {
+      "id": "court-quarter",
+      "positionGlb": [
+        -6.2,
+        2.1,
+        -7.5
+      ],
+      "targetGlb": [
+        0,
+        3.5,
+        -21
+      ],
+      "verticalFovDegrees": 55
+    },
+    {
+      "id": "yimen-front",
+      "positionGlb": [
+        0,
+        4,
+        -10
+      ],
+      "targetGlb": [
+        0,
+        4,
+        -22
+      ],
+      "verticalFovDegrees": 62
+    },
+    {
+      "id": "yimen-roof",
+      "positionGlb": [
+        -10,
+        10,
+        -12
+      ],
+      "targetGlb": [
+        0,
+        6,
+        -23
+      ],
+      "verticalFovDegrees": 52
+    },
+    {
+      "id": "yimen-detail",
+      "positionGlb": [
+        -3,
+        2.6,
+        -16.3
+      ],
+      "targetGlb": [
+        0,
+        3.7,
+        -21
+      ],
+      "verticalFovDegrees": 55
+    },
+    {
+      "id": "return-to-gate",
+      "positionGlb": [
+        0,
+        1.6,
+        -19
+      ],
+      "targetGlb": [
+        0,
+        3.4,
+        -1.8
+      ],
+      "verticalFovDegrees": 55
+    },
+    {
+      "id": "rear-inferred",
+      "positionGlb": [
+        0,
+        3.2,
+        -28
+      ],
+      "targetGlb": [
+        0,
+        3.2,
+        -23.5
+      ],
+      "verticalFovDegrees": 66
+    }
+  ]
+}
