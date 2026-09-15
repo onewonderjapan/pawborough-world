@@ -1,0 +1,71 @@
+{
+  "moduleId": "yimen-pilot",
+  "units": "meters",
+  "surveyed": false,
+  "axis": "GLB Y-up; facade +Z; origin front-wall center bottom; depth -Z (placed by world assembly at (0,0,-21), yaw 0)",
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false,
+  "targets": {
+    "yimen.glb": {
+      "groups": [
+        "yimen-body",
+        "yimen-plaque"
+      ],
+      "objects": 12,
+      "triangles": 26140,
+      "fileBytes": 4343252,
+      "sha256": "e9393cd4017c657e74d2889da812ac16eb70a04664ce8ab829ea126cb7ee48b5"
+    }
+  },
+  "timings": {
+    "totalSeconds": 1.8
+  },
+  "budgets": {
+    "yimenTris": {
+      "actual": 26140,
+      "limit": 45000,
+      "pass": true
+    },
+    "yimenGlbBytes": {
+      "actual": 4343252,
+      "limit": 10000000,
+      "pass": true
+    },
+    "tileRibsTris": {
+      "actual": 12240,
+      "limit": 14000,
+      "pass": true
+    },
+    "newImages": {
+      "actual": 1,
+      "limit": 2,
+      "pass": true,
+      "note": "yimen-plaques.png; relief normal shared with shanmen"
+    }
+  },
+  "design": {
+    "family": "chenghuangmiao-yimen-pilot",
+    "reference": {
+      "imageId": "PBR-SH-0002-040",
+      "referenceEra": 2015,
+      "historicalAccuracyVerified": false,
+      "dimensionsAreDesign": true
+    },
+    "clearDoorwayM": [
+      3.6,
+      3.2
+    ],
+    "ridge": {
+      "y": 7.7,
+      "lengthM": 10.4,
+      "z": -2.6
+    },
+    "roofMethod": "ONE continuous profile-lofted shell both directions, ridge flat 10.4m, corner lift 0.28 confined to |x|>6.2 and outer 35% depth, closed soffit, wing-tip rings close both gables, finite half-round tile ribs on both slopes",
+    "plaques": {
+      "left": "為惡必亡",
+      "right": "為善必昌",
+      "atlas": "yimen-plaques.png (top=left, bottom=right)"
+    },
+    "rear": "simplified design inference — no rear calligraphy"
+  }
+}

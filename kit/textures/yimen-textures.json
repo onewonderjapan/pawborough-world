@@ -1,0 +1,37 @@
+{
+  "generatedBy": "kit/make_yimen_textures.py",
+  "newImageBudgetThisBatch": {
+    "max": 2,
+    "used": 1,
+    "maxEdgePx": 2048
+  },
+  "images": [
+    {
+      "file": "textures/yimen-plaques.png",
+      "size": [
+        2048,
+        1024
+      ],
+      "colorSpace": "sRGB",
+      "atlas": {
+        "topHalf": {
+          "placement": "facade LEFT",
+          "charactersLeftToRight": "亡必惡為",
+          "readingRightToLeft": "為惡必亡"
+        },
+        "bottomHalf": {
+          "placement": "facade RIGHT",
+          "charactersLeftToRight": "昌必善為",
+          "readingRightToLeft": "為善必昌"
+        }
+      },
+      "font": {
+        "path": "/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc",
+        "name": "Noto Serif CJK SC Bold (system package)",
+        "license": "SIL Open Font License 1.1 (Noto family)"
+      },
+      "source": "texts read by the lead from image PBR-SH-0002-040; no other text guessed",
+      "note": "glyphs from the recorded system font; borders/mottling authored locally; no reference-photo pixels"
+    }
+  ]
+}

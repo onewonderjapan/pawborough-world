@@ -1,0 +1,202 @@
+{
+  "sampleId": "yimen-pilot",
+  "family": "chenghuangmiao-yimen-pilot",
+  "units": "meters",
+  "axis": "GLB Y-up; facade +Z; origin front-wall center bottom; depth -Z (placed by world assembly at (0,0,-21), yaw 0)",
+  "basedOn": "pawborough-temple-entry-next-20260915 DESIGN_SPEC.json (lead design values; dimensionsAreDesign=true)",
+  "reference": {
+    "imageId": "PBR-SH-0002-040",
+    "referenceEra": 2015,
+    "historicalAccuracyVerified": false,
+    "dimensionsAreDesign": true
+  },
+  "placement": {
+    "originGlbWorld": [
+      0,
+      0,
+      -21
+    ],
+    "yawRad": 0
+  },
+  "body": {
+    "widthM": 14.4,
+    "depthM": 5.2,
+    "sideWallX": 7.2,
+    "sideWallThicknessM": 0.3,
+    "rearWallZ": -5.06,
+    "rearWallThicknessM": 0.28,
+    "wallEndXBeyondColumn": 0.9
+  },
+  "columns": {
+    "frontX": [
+      -6.3,
+      -2.15,
+      2.15,
+      6.3
+    ],
+    "rearZ": -4.8,
+    "sizeM": [
+      0.3,
+      4.75,
+      0.36
+    ],
+    "material": "wood shaft on stone plinth and foot",
+    "topBeamY": [
+      4.75,
+      4.93
+    ]
+  },
+  "clearDoorway": {
+    "widthM": 3.6,
+    "heightM": 3.2,
+    "localZRange": [
+      0,
+      -5.2
+    ],
+    "jambWidthM": 0.2,
+    "throughFrame": "four-sided frame; open passage, no door leaves"
+  },
+  "sideBays": {
+    "mode": "closed dark-timber lattice doors with real collision; central passage open",
+    "innerEdgeX": 2.0,
+    "outerEdgeX": 6.15,
+    "subDoorCount": 4,
+    "waistRailY": 1.1,
+    "latticeBarStepM": 0.34,
+    "backingMaterial": "dark",
+    "visibleMaterial": "wood lattice + stiles + rails over dark recess (framed, never a bare slab)"
+  },
+  "frontBand": {
+    "yRange": [
+      3.25,
+      4.85
+    ],
+    "upperGoldStripY": 4.55,
+    "mainCarvedLintelY": 3.65,
+    "maxReliefDepthM": 0.08,
+    "darkTimberBase": true,
+    "carvedMotif": "original shallow floral scroll geometry (no legible calligraphy except the two plaques)"
+  },
+  "roof": {
+    "widthM": 15.6,
+    "frontEaveZ": 0.75,
+    "rearEaveZ": -5.95,
+    "ridgeY": 7.7,
+    "ridgeLengthM": 10.4,
+    "ridgeLocalZ": -2.6,
+    "eaveY": 4.9,
+    "shellThicknessM": 0.12,
+    "profileTY": [
+      [
+        0,
+        7.7
+      ],
+      [
+        0.2,
+        7.25
+      ],
+      [
+        0.45,
+        6.3
+      ],
+      [
+        0.7,
+        5.45
+      ],
+      [
+        0.9,
+        5.02
+      ],
+      [
+        1,
+        4.9
+      ]
+    ],
+    "cornerLiftM": 0.28,
+    "cornerLiftXStartsM": 6.2,
+    "cornerLiftDepthTStarts": 0.65,
+    "hipEndTopY": 6.1,
+    "hipStartsXM": 5.2,
+    "surfaceEquation": "topY(x)=ridgeY-(ridgeY-hipEndTopY)*ss(hipStartsX, halfWidth, |x|); y=topY-(topY-eaveY)*drop(t)+lift_total(x)*(drop(t)-drop(0.65))/(1-drop(0.65)); lift_total=cornerLift*ss(6.2,7.8,|x|)^2; ramp is 0 at t=0.65, full at the eave; lift_total < (1-drop(0.65))*(topY-eaveY) everywhere so the surface is monotone ridge->eave by construction; ridge never lifts",
+    "resampleSegments": 12,
+    "tileRibs": {
+      "spacingM": [
+        0.22,
+        0.28
+      ],
+      "spacingChosenM": 0.26,
+      "radiusM": [
+        0.04,
+        0.06
+      ],
+      "radiusChosenM": 0.05,
+      "stripSections": 8,
+      "slopes": [
+        "front",
+        "rear"
+      ],
+      "budgetExtraTrisMax": 14000
+    },
+    "eaveFasciaH": 0.14,
+    "note": "ONE continuous wide slope both directions; NOT the shanmen three-band roof, NOT a low shed; gable ends closed under the wing-tip edges"
+  },
+  "ridgeFrieze": {
+    "heightM": 0.42,
+    "panels": 9,
+    "panelGapM": 0.06,
+    "capRollRadiusM": 0.09,
+    "endBlockM": [
+      0.22,
+      0.5,
+      0.34
+    ],
+    "panelMotif": "alternating diamond and lobed-frame shallow relief (temple-relief-normal), no inscription"
+  },
+  "sidePlaques": {
+    "left": {
+      "literalLeftToRight": "亡必惡為",
+      "readRightToLeft": "為惡必亡"
+    },
+    "right": {
+      "literalLeftToRight": "昌必善為",
+      "readRightToLeft": "為善必昌"
+    },
+    "centersX": [
+      -4.22,
+      4.22
+    ],
+    "sizeWH": [
+      2.25,
+      0.58
+    ],
+    "centerY": 3.85,
+    "faceTexture": "yimen-plaques.png",
+    "construction": "backing plate + four-side stepped frame + recessed text face (T1 lesson applied)",
+    "source": "lead read from the 040 front photo; traditional right-to-left reading; no other small text guessed"
+  },
+  "rearDesign": {
+    "mode": "simplified gray wall + dark timber frame around the through opening",
+    "designInference": true,
+    "note": "no rear photo; no fake rear calligraphy"
+  },
+  "budgets": {
+    "yimenTrisMax": 45000,
+    "yimenGlbBytesMax": 10000000,
+    "newImagesMax": 2,
+    "newImageEdgePxMax": 2048
+  },
+  "runtime": {
+    "isEntryGroupMember": true,
+    "mustNotModifyMainWorld": true
+  },
+  "review": {
+    "ownerAdopted": false,
+    "visualReviewer": "lead, after batch"
+  },
+  "uncertaintyPolicy": {
+    "rear": "simplified design inference",
+    "hipEndTopY": "derived silhouette value (design, not surveyed)",
+    "era": "2015 front visual reference only"
+  },
+  "configSha256": "843e0f9b63351e0fd0dd41f2ddd6f8e90b5dc8252dcddcbbdad8731023ca2d14"
+}
