@@ -47,6 +47,10 @@ for(const b of scBlocks.blocks){
 }
 if(!scFiles.some(f=>f.endsWith('surface.glb')))throw Error('street-completion dataset lacks surface.glb — the tail would have no walkable ground');
 files.push(...scFiles);
+// standalone temple pilot dataset (?world=temple page: temple.html): same strict
+// required-file list so a clean dist either carries the whole pilot or fails
+const templeFiles=['world/temple-shanmen/review-manifest.json','world/temple-shanmen/cameras.json','world/temple-shanmen/collision-world.json','world/temple-shanmen/temple.glb','world/temple-shanmen/ground.glb','world/temple-shanmen/lions.glb','world/temple-shanmen/ornaments.glb'];
+files.push(...templeFiles);
 for(const f of files){
   const dest=resolve(root,'dist',f);
   await mkdir(dirname(dest),{recursive:true});
@@ -54,4 +58,7 @@ for(const f of files){
   const [src,dst]=await Promise.all([stat(resolve(root,f)),stat(dest)]);
   if(src.size!==dst.size)throw Error(`build copy size mismatch: ${f} ${src.size} -> ${dst.size}`);
 }
-console.log(`Strict review build copied ${files.length} required files incl. ${eastEdgeFiles.length} east-edge + ${scFiles.length} street-completion dataset files + world/laneb; errors are not suppressed.`);
+console.log(`Strict review build copied ${files.length} required files incl. ${eastEdgeFiles.length} east-edge + ${scFiles.length} street-completion + ${templeFiles.length} temple pilot dataset files + world/laneb; errors are not suppressed.`);
+// the pilot entry must exist in dist (vite emits it as a second rollup input)
+const{existsSync}=await import('node:fs');
+if(!existsSync(resolve(root,'dist/temple.html')))throw Error('dist/temple.html missing — the standalone pilot entry never reached the build');

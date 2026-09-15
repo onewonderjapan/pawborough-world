@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 5284 --strictPort",
     "build": "node scripts/build_review.mjs",
-    "preview": "vite preview --host 127.0.0.1 --port 5285 --strictPort"
+    "preview": "vite preview --host 127.0.0.1 --port 5285 --strictPort",
+    "dev:temple": "EVIDENCE_PORTS=529[01] EVIDENCE_DIR=kit/out/temple-shanmen/web vite --host 127.0.0.1 --port 5290 --strictPort",
+    "preview:temple": "EVIDENCE_PORTS=529[01] EVIDENCE_DIR=kit/out/temple-shanmen/web vite preview --host 127.0.0.1 --port 5291 --strictPort"
   },
   "dependencies": {
     "@dimforge/rapier3d-compat": "0.19.0",

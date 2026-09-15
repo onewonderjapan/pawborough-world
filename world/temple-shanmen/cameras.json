@@ -1,0 +1,99 @@
+{
+  "framebuffer": [
+    1280,
+    960
+  ],
+  "cameras": [
+    {
+      "id": "front",
+      "positionGlb": [
+        0,
+        4.3,
+        18
+      ],
+      "targetGlb": [
+        0,
+        4.3,
+        -1
+      ],
+      "verticalFovDegrees": 48,
+      "source": "lead designed review camera, not surveyed viewpoint"
+    },
+    {
+      "id": "street-eye",
+      "positionGlb": [
+        0,
+        1.6,
+        13
+      ],
+      "targetGlb": [
+        0,
+        4,
+        -0.8
+      ],
+      "verticalFovDegrees": 50,
+      "source": "lead designed review camera, not surveyed viewpoint"
+    },
+    {
+      "id": "quarter-left",
+      "positionGlb": [
+        -12,
+        5.7,
+        12
+      ],
+      "targetGlb": [
+        0,
+        4,
+        -1
+      ],
+      "verticalFovDegrees": 48,
+      "source": "lead designed review camera, not surveyed viewpoint"
+    },
+    {
+      "id": "roof",
+      "positionGlb": [
+        -9,
+        11,
+        8
+      ],
+      "targetGlb": [
+        0,
+        6.7,
+        -1.5
+      ],
+      "verticalFovDegrees": 42,
+      "source": "lead designed review camera, not surveyed viewpoint"
+    },
+    {
+      "id": "doorway",
+      "positionGlb": [
+        0,
+        1.6,
+        4
+      ],
+      "targetGlb": [
+        0,
+        1.6,
+        -3.2
+      ],
+      "verticalFovDegrees": 55,
+      "source": "lead designed review camera, not surveyed viewpoint"
+    },
+    {
+      "id": "rear-inferred",
+      "positionGlb": [
+        0,
+        4.7,
+        -13
+      ],
+      "targetGlb": [
+        0,
+        3,
+        -1.5
+      ],
+      "verticalFovDegrees": 48,
+      "source": "lead designed review camera, not surveyed viewpoint"
+    }
+  ],
+  "comparisonRule": "same aspect, fov, near, pose and lighting within each renderer; GLB reimport same camera as source"
+}

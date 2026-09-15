@@ -1,0 +1,101 @@
+{
+  "datasetId": "temple-shanmen",
+  "title": "城隍庙山门＋短前庭 · 独立样板",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "reference": {
+    "imageId": "PBR-SH-0002-039",
+    "referenceEra": 2015,
+    "historicalAccuracyVerified": false,
+    "dimensionsAreDesign": true
+  },
+  "axis": "GLB Y-up; facade +Z; origin central-threshold-front; depth -Z",
+  "assets": {
+    "temple": {
+      "file": "./world/temple-shanmen/temple.glb",
+      "bytes": 3051572,
+      "sha256": "f59aeba7eb993b8d607d815e2d7f330cba950920065873c69d1595b2ae663f25",
+      "triangles": 16322,
+      "groups": [
+        "shanmen-body",
+        "shanmen-plaque"
+      ]
+    },
+    "ground": {
+      "file": "./world/temple-shanmen/ground.glb",
+      "bytes": 860724,
+      "sha256": "1b5099650973f9d1b5f339dcf24ef67ad01d51cd1a3910c9deacdae70810f6c9",
+      "triangles": 360,
+      "groups": [
+        "temple-ground"
+      ]
+    },
+    "lions": {
+      "file": "./world/temple-shanmen/lions.glb",
+      "bytes": 334864,
+      "sha256": "a237b80dc6002b7b8b5fd7d75f8d26921b72324e9d00be5db468caf08758f03a",
+      "triangles": 2648,
+      "groups": [
+        "shanmen-lion"
+      ]
+    },
+    "ornaments": {
+      "file": "./world/temple-shanmen/ornaments.glb",
+      "bytes": 437144,
+      "sha256": "e81425a559f03a6280a2663d588adea35a20c21445d088e850e7614e476cbbe3",
+      "triangles": 2304,
+      "groups": [
+        "shanmen-ornament"
+      ]
+    }
+  },
+  "budgets": {
+    "buildingAndWallsTris": {
+      "actual": 16322,
+      "limit": 50000,
+      "pass": true
+    },
+    "fullSetTris": {
+      "actual": 21634,
+      "limit": 60000,
+      "pass": true
+    },
+    "mainGlbBytes": {
+      "actual": 3051572,
+      "limit": 8000000,
+      "pass": true
+    },
+    "groundGlbBytes": {
+      "actual": 860724,
+      "limit": 2000000,
+      "pass": true
+    },
+    "newImages": {
+      "actual": 2,
+      "limit": 2,
+      "pass": true
+    }
+  },
+  "passage": {
+    "clearOpeningM": [
+      3,
+      3.1
+    ],
+    "corridor": {
+      "x": 1.45,
+      "y0": 0.25,
+      "y1": 2.85,
+      "z0": -3.55,
+      "z1": -0.05
+    },
+    "doorLeaves": "open, folded flat against the side bays (solid collision, outside the corridor)"
+  },
+  "cameras": {
+    "count": 6,
+    "source": "lead designed review cameras (task CAMERAS.json)",
+    "contract": "positionGlb/targetGlb/verticalFovDegrees applied verbatim; page verifies pose after controls.update()"
+  },
+  "groundPolicy": "visible forecourt + passage paving IS the physics ground (temple-ground__ nodes); no invisible plane",
+  "buildChain": "kit/build_temple_shanmen.py <- kit/temple-shanmen.config.json <- DESIGN_SPEC.json (lead design values)",
+  "generatedBy": "scripts/build_temple_world.mjs"
+}
