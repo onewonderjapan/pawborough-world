@@ -133,9 +133,15 @@ for seg in cy['southReturns']['xSegments']:
 # north returns on the z=-21 line (beside the yimen front, into its corners)
 for seg in cy['northReturns']['xSegments']:
     boundary_wall('court-north-return', seg[0], seg[1], z_n - th, z_n)
-# sample-terminal cutoff wall (NOT a historical hall)
+# sample-terminal cutoff wall (NOT a historical hall). Optional since the
+# dadian-night batch (20260915): the second court continues through this
+# line, so the dadian world assembly consumes a court-open variant built
+# with buildCutoffWall=false. Default true — delivered datasets unchanged.
 cw = cy['cutoffBackWall']
-boundary_wall('cutoff-back-wall', -8, 8, cw['center'][2] - .14, cw['center'][2] + .14)
+if cfg.get('buildCutoffWall', True):
+    boundary_wall('cutoff-back-wall', -8, 8, cw['center'][2] - .14, cw['center'][2] + .14)
+else:
+    print('STAGE cutoff wall SKIPPED (buildCutoffWall=false — court-open variant)')
 print(f'STAGE walls ok ({time.time() - T0:.1f}s)')
 
 # ---------------------------------------------------------------------------
