@@ -594,23 +594,58 @@ print(f'STAGE ground ok ({time.time() - T0:.1f}s)')
 
 # ---------------------------------------------------------------------------
 # S5. lion candidates (limited mesh, no animation)
+# R1 review revision (owner saw the standing silhouettes read as HORSES): the
+# guardian-lion reading now comes from the silhouette itself — SEATED posture
+# (haunches down, chest up), a broad mane DISC wider than the head, curled
+# tail over the haunch, and the classic pairing under the front paw (right =
+# embroidered ball, left = reclining cub). All stone, plinth unchanged,
+# candidate status unchanged — the lead still decides by looking.
 
 L.GROUP = 'shanmen-lion'
 lio = cfg['lions']
-for cx, _, cz in lio['centers']:
+
+
+def seated_lion(cx, cz, male):
+    sgn = 1 if cx > 0 else -1
+    # plinth (unchanged position/size)
     L.box('lion-plinth', (cx, .13, cz), (.5, .26, .62), 'stone', .012, True)
     L.box('lion-plinth-cap', (cx, .29, cz), (.42, .06, .52), 'stone', .008)
-    L.box('lion-haunch', (cx, .55, cz - .07), (.34, .5, .4), 'stone', .014)
-    L.box('lion-chest', (cx, .93, cz + .02), (.29, .4, .33), 'stone', .012)
-    for dx in (-.085, .085):
-        L.box('lion-leg', (cx + dx, .44, cz + .18), (.09, .44, .11), 'stone', .006)
-    L.cyl('lion-mane', (cx, 1.16, cz - .13), (cx, 1.16, cz + .13), .185, 'stone', 8)
-    L.box('lion-head', (cx, 1.19, cz + .12), (.21, .21, .19), 'stone', .01)
-    L.box('lion-muzzle', (cx, 1.13, cz + .23), (.11, .09, .08), 'stone', .006)
-    for dx in (-.06, .06):
-        L.box('lion-ear', (cx + dx, 1.31, cz + .06), (.05, .06, .04), 'stone', .004)
-    L.box('lion-brow', (cx, 1.24, cz + .2), (.16, .03, .05), 'stone', .004)
-    L.box('lion-tail', (cx - .14 if cx > 0 else cx + .14, .78, cz - .2), (.05, .26, .06), 'stone', .004)
+    base = .32                                  # sit on the plinth cap
+    # seated mass: rear haunches + tall chest leaning forward
+    L.box('lion-haunch', (cx, base + .24, cz - .10), (.46, .48, .50), 'stone', .014)
+    L.box('lion-chest', (cx, base + .58, cz + .10), (.40, .76, .42), 'stone', .012)
+    # broad mane disc (axis Z) with a rolled rim ring — the key lion cue
+    L.cyl('lion-mane', (cx, base + .92, cz - .075), (cx, base + .92, cz + .075), .285, 'stone', 14)
+    L.cyl('lion-mane-rim', (cx, base + .92, cz - .095), (cx, base + .92, cz + .095), .315, 'stone', 8)
+    # head sitting in the disc: skull + muzzle + jaw + brow + ears
+    L.box('lion-head', (cx, base + .97, cz + .10), (.27, .24, .22), 'stone', .01)
+    L.box('lion-muzzle', (cx, base + .90, cz + .24), (.13, .10, .11), 'stone', .006)
+    L.box('lion-jaw', (cx, base + .84, cz + .22), (.11, .05, .10), 'stone', .004)
+    L.box('lion-brow', (cx, base + 1.01, cz + .20), (.19, .035, .06), 'stone', .004)
+    for dx in (-.09, .09):
+        L.box('lion-ear', (cx + dx, base + 1.10, cz + .05), (.06, .07, .045), 'stone', .004)
+    # forelegs straight down the chest front, paws forward
+    for dx in (-.12, .12):
+        L.box('lion-foreleg', (cx + dx, base + .24, cz + .24), (.11, .48, .12), 'stone', .006)
+        L.box('lion-paw', (cx + dx, base + .04, cz + .30), (.13, .09, .17), 'stone', .004)
+    # pairing object under the inner paw
+    if male:  # embroidered ball
+        L.cyl('lion-ball', (cx - sgn * .12, base + .05, cz + .38),
+              (cx - sgn * .12, base + .05, cz + .38), .085, 'stone', 10)
+    else:     # reclining cub
+        L.box('lion-cub', (cx - sgn * .14, base + .06, cz + .36), (.17, .12, .26), 'stone', .006)
+        L.box('lion-cub-head', (cx - sgn * .14, base + .12, cz + .48), (.10, .09, .09), 'stone', .004)
+    # curled tail arcing over the haunch
+    L.rod('lion-tail', (cx + sgn * .18, base + .30, cz - .26),
+          (cx + sgn * .21, base + .52, cz - .30), .045, 'stone')
+    L.rod('lion-tail', (cx + sgn * .21, base + .52, cz - .30),
+          (cx + sgn * .16, base + .66, cz - .22), .04, 'stone')
+    L.rod('lion-tail-tip', (cx + sgn * .16, base + .66, cz - .22),
+          (cx + sgn * .08, base + .62, cz - .12), .034, 'stone')
+
+
+for cx, _, cz in lio['centers']:
+    seated_lion(cx, cz, male=cx > 0)   # right lion: ball; left lion: cub
 print(f'STAGE lions ok ({time.time() - T0:.1f}s)')
 
 # ---------------------------------------------------------------------------

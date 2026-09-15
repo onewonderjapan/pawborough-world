@@ -13,8 +13,8 @@
   "assets": {
     "temple": {
       "file": "./world/temple-entry/temple.glb",
-      "bytes": 3781204,
-      "sha256": "192aad55c5961495c9516859b933819ebc9a434b309a8f9637aee07df3bb5d5c",
+      "bytes": 3782256,
+      "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb",
       "triangles": 22392,
       "groups": [
         "shanmen-body",
@@ -23,8 +23,8 @@
     },
     "ground": {
       "file": "./world/temple-entry/ground.glb",
-      "bytes": 860820,
-      "sha256": "318db5b43c6f5106f277e78e21980c3409e8a863ed9bbc0fd2a8e5788798c5e0",
+      "bytes": 860916,
+      "sha256": "0acf56376883f3faf823c52f8cf8478bf8d731c31606ed22e7eeadc0f7e0879d",
       "triangles": 360,
       "groups": [
         "temple-ground"
@@ -32,17 +32,17 @@
     },
     "lions": {
       "file": "./world/temple-entry/lions.glb",
-      "bytes": 334864,
-      "sha256": "fe4907f38d32017ace652aa91a8875e5a62838f39b9699cec9d95017b01e1ba1",
-      "triangles": 2648,
+      "bytes": 440156,
+      "sha256": "eed2009cca69b5f08a287b4c034f270d817cf1d1bd1ba6859993bcc912278c06",
+      "triangles": 3556,
       "groups": [
         "shanmen-lion"
       ]
     },
     "ornaments": {
       "file": "./world/temple-entry/ornaments.glb",
-      "bytes": 436760,
-      "sha256": "ac83aca106d4a224add108a3511b456fdf8ab9847609e78744374b801afb2f94",
+      "bytes": 437144,
+      "sha256": "feec279340911ce646a96b203c2febaa5a812d10035d9493f06868f73302a8f9",
       "triangles": 2304,
       "groups": [
         "shanmen-ornament"
@@ -69,7 +69,7 @@
       ]
     }
   },
-  "placedTriangles": 55448,
+  "placedTriangles": 56356,
   "budgets": {
     "newYimenTris": {
       "actual": 26140,
