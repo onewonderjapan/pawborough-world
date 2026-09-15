@@ -227,6 +227,26 @@ const batch = [
     note: '绣品店(132,北)/皮货店(133,南)对街 — 挂框与木板闭合同框',
   },
   {
+    id: 'sc-front-cloth',
+    positionGlb: [106.06, 2.7, 24.53], targetGlb: [111.17, 2.05, 22.43], lensMm: 24, sensorWidthMm: 36, sensorFit: 'HORIZONTAL',
+    note: 'SC-F2 评审补图：棉布店(130)正面斜视 — 招牌(布行)与完整展示窗在画内，站在对弄向店面看',
+  },
+  {
+    id: 'sc-front-silk',
+    positionGlb: [112.4, 2.7, 24.04], targetGlb: [107.29, 2.05, 26.14], lensMm: 24, sensorWidthMm: 36, sensorFit: 'HORIZONTAL',
+    note: 'SC-F2 评审补图：绸缎店(131)正面斜视 — 招牌(绸庄)与完整展示窗在画内，站在对弄向店面看',
+  },
+  {
+    id: 'sc-front-embroidery',
+    positionGlb: [117.91, 2.7, 26.27], targetGlb: [123.02, 2.05, 24.17], lensMm: 24, sensorWidthMm: 36, sensorFit: 'HORIZONTAL',
+    note: 'SC-F2 评审补图：绣品店(132)正面斜视 — 招牌(绣坊)与完整展示窗在画内，站在对弄向店面看',
+  },
+  {
+    id: 'sc-front-leather',
+    positionGlb: [124.45, 2.7, 27.88], targetGlb: [119.34, 2.05, 29.98], lensMm: 24, sensorWidthMm: 36, sensorFit: 'HORIZONTAL',
+    note: 'SC-F2 评审补图：皮货店(133)正面斜视 — 招牌(皮货)、木板围挡与完整展示窗在画内，站在对弄向店面看',
+  },
+  {
     id: 'sc-lane-b',
     ref: 'lane',
     note: '支弄B保留 — frozen lane view carried through unchanged',
