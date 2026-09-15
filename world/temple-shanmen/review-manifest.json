@@ -13,9 +13,9 @@
   "assets": {
     "temple": {
       "file": "./world/temple-shanmen/temple.glb",
-      "bytes": 3437888,
-      "sha256": "9d2b8b5bf808d8f048a0a4d9dde3bfaa023bf34754412800f921e26aee34279f",
-      "triangles": 19800,
+      "bytes": 3781204,
+      "sha256": "192aad55c5961495c9516859b933819ebc9a434b309a8f9637aee07df3bb5d5c",
+      "triangles": 22392,
       "groups": [
         "shanmen-body",
         "shanmen-plaque"
@@ -24,7 +24,7 @@
     "ground": {
       "file": "./world/temple-shanmen/ground.glb",
       "bytes": 860820,
-      "sha256": "812525834a74df501aa4eb15983eead25ca59665aa6e5f77b50f36fcc2040601",
+      "sha256": "318db5b43c6f5106f277e78e21980c3409e8a863ed9bbc0fd2a8e5788798c5e0",
       "triangles": 360,
       "groups": [
         "temple-ground"
@@ -33,7 +33,7 @@
     "lions": {
       "file": "./world/temple-shanmen/lions.glb",
       "bytes": 334864,
-      "sha256": "a679437fe48105add6d4d159be4bc75dfbd1e60655811188ad6907a34e039d15",
+      "sha256": "fe4907f38d32017ace652aa91a8875e5a62838f39b9699cec9d95017b01e1ba1",
       "triangles": 2648,
       "groups": [
         "shanmen-lion"
@@ -41,8 +41,8 @@
     },
     "ornaments": {
       "file": "./world/temple-shanmen/ornaments.glb",
-      "bytes": 436952,
-      "sha256": "2ec8532ee92fea121b3b3f8089b4d6bcf0262479728492c6710754ca842b369b",
+      "bytes": 436760,
+      "sha256": "ac83aca106d4a224add108a3511b456fdf8ab9847609e78744374b801afb2f94",
       "triangles": 2304,
       "groups": [
         "shanmen-ornament"
@@ -51,17 +51,17 @@
   },
   "budgets": {
     "buildingAndWallsTris": {
-      "actual": 19800,
+      "actual": 22392,
       "limit": 50000,
       "pass": true
     },
     "fullSetTris": {
-      "actual": 25112,
+      "actual": 27704,
       "limit": 60000,
       "pass": true
     },
     "mainGlbBytes": {
-      "actual": 3437888,
+      "actual": 3781204,
       "limit": 8000000,
       "pass": true
     },

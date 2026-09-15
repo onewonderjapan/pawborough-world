@@ -1,0 +1,149 @@
+{
+  "source": "kit/build_temple_scene.py",
+  "engine": "cycles-cpu",
+  "samples": 24,
+  "resolution": [
+    1280,
+    960
+  ],
+  "mode": "review",
+  "views": [
+    {
+      "view": "front",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        -18,
+        4.3
+      ],
+      "targetBlender": [
+        0,
+        1,
+        4.3
+      ],
+      "fovDegVerified": 48.0,
+      "file": "front-pbr-glb.png"
+    },
+    {
+      "view": "front",
+      "tag": "clay",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        -18,
+        4.3
+      ],
+      "targetBlender": [
+        0,
+        1,
+        4.3
+      ],
+      "fovDegVerified": 48.0,
+      "file": "front-clay-glb.png"
+    },
+    {
+      "view": "street-eye",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        -13,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        0.8,
+        4
+      ],
+      "fovDegVerified": 50.0,
+      "file": "street-eye-pbr-glb.png"
+    },
+    {
+      "view": "quarter-left",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        -12,
+        -12,
+        5.7
+      ],
+      "targetBlender": [
+        0,
+        1,
+        4
+      ],
+      "fovDegVerified": 48.0,
+      "file": "quarter-left-pbr-glb.png"
+    },
+    {
+      "view": "quarter-left",
+      "tag": "clay",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        -12,
+        -12,
+        5.7
+      ],
+      "targetBlender": [
+        0,
+        1,
+        4
+      ],
+      "fovDegVerified": 48.0,
+      "file": "quarter-left-clay-glb.png"
+    },
+    {
+      "view": "roof",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        -9,
+        -8,
+        11
+      ],
+      "targetBlender": [
+        0,
+        1.5,
+        6.7
+      ],
+      "fovDegVerified": 42.0,
+      "file": "roof-pbr-glb.png"
+    },
+    {
+      "view": "doorway",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        -4,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        3.2,
+        1.6
+      ],
+      "fovDegVerified": 55.0,
+      "file": "doorway-pbr-glb.png"
+    },
+    {
+      "view": "rear-inferred",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        13,
+        4.7
+      ],
+      "targetBlender": [
+        0,
+        1.5,
+        3
+      ],
+      "fovDegVerified": 48.0,
+      "file": "rear-inferred-pbr-glb.png"
+    }
+  ],
+  "note": "BLENDER evidence; WebGL captures are separate (kit/out/temple-shanmen/web)"
+}

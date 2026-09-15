@@ -523,6 +523,123 @@ def shoulder_surface_y(rs, profile_samples, x, z):
     return shoulder_surface_fn(rs, profile_samples)(x, z)
 
 
+# --------------------------------------------------------------------------
+# N1 entry batch: closures for the shoulder overhang band and the center/
+# shoulder seam. The shanmen body walls stop at sw_out (~3.46m) while the
+# shoulder shells fly out to the wing tip (4.6m); before this the outer band
+# was an open slot into the dark eave cavity — the "big black block" the lead
+# saw in the 3/4 view. Closures use the existing palette only (plaster/wood/
+# dark/roof); the dark timber stays in the frame language, gray walls read as
+# simplified gable infill, per the lead's N1 instruction.
+
+def gable_closures(L, rs, side, profile_samples, wall_x_out, bottom_y):
+    """Close the shoulder-roof overhang band on one side (N1). The body walls
+    stop at wall_x_out while the shells fly to the wing tip; before this the
+    band was an open slot into the dark eave cavity (the lead's 3/4-view black
+    block). Three closures, every top edge sampled from the ACTUAL T3 shell
+    soffit so no gap reopens:
+      - front end panel, 'dark' timber in the corbel-band plane, from the
+        bracket band edge out to the shell (the eave-space frame continues);
+      - rear end panel, 'plaster', in the rear-wall plane;
+      - outer gable wall, 'plaster', hanging under the shell outer edge with
+        a timber frame border (bottom lands on the wing-wall cap line).
+    All sit at or above bottom_y (~4.0m) — far above the walkable corridor."""
+    srf = shoulder_surface_fn(rs, profile_samples)
+    thick = rs['shellThicknessM']
+    zf, zr = rs['frontEaveZ'], rs['rearEaveZ']
+    x_tip = max(abs(span[1]) for span in rs['xSpans'])
+    x_in = wall_x_out - 0.06          # overlaps the flank wall/bracket band (hidden seam)
+    x_out = x_tip - 0.05              # just inside the wing-edge fascia
+
+    def soffit(x, z):
+        return srf(x, z) - thick - 0.015
+
+    def strip_wall(name, fixed, axis, mat, hint):
+        """Build a vertical strip wall whose top follows the shell soffit.
+        axis='z': wall in the plane x=fixed, sampled along z (outer gable).
+        axis='x': wall in the plane z=fixed, sampled along x (front/rear)."""
+        if axis == 'x':
+            n = 8
+            cols = [(fixed, side * (x_in + (x_out - x_in) * j / n)) for j in range(n + 1)]
+            for (z0, x0), (z1, x1) in zip(cols, cols[1:]):
+                y0, y1 = soffit(abs(x0), z0), soffit(abs(x1), z1)
+                quad_out(L, name,
+                         [(x0, bottom_y, z0), (x1, bottom_y, z1), (x1, y1, z1), (x0, y0, z0)],
+                         mat, [(abs(x0) / 2.5, bottom_y / 2.5), (abs(x1) / 2.5, bottom_y / 2.5),
+                               (abs(x1) / 2.5, y1 / 2.5), (abs(x0) / 2.5, y0 / 2.5)], hint)
+        else:
+            n = 12
+            z0f, z1f = zf - 0.03, zr + 0.06
+            for j in range(n):
+                za = z0f + (z1f - z0f) * j / n
+                zb = z0f + (z1f - z0f) * (j + 1) / n
+                ya, yb = soffit(x_out, za), soffit(x_out, zb)
+                quad_out(L, name,
+                         [(side * x_out, bottom_y, za), (side * x_out, bottom_y, zb),
+                          (side * x_out, yb, zb), (side * x_out, ya, za)],
+                         mat, [(za / 2.5, bottom_y / 2.5), (zb / 2.5, bottom_y / 2.5),
+                               (zb / 2.5, yb / 2.5), (za / 2.5, ya / 2.5)], hint)
+
+    strip_wall('gable-front-end-panel', -0.13, 'x', 'plaster', (0, 0, 1))
+    strip_wall('gable-rear-end-panel', -3.52, 'x', 'plaster', (0, 0, -1))
+    strip_wall('gable-outer-wall', None, 'z', 'plaster', (side, 0, 0))
+
+    # timber frame borders (wood, the dark-timber-in-frame language the lead
+    # specified): stiles + bottom rails around every closure panel and one
+    # middle stile subdividing the wide front infill, so the gray gable reads
+    # framed, never a floating slab. Top edges tuck under the shell fascia.
+    for zc in (-0.13, -3.52):
+        L.box('gable-frame-bottom-rail', (side * (x_in + x_out) / 2, bottom_y + .07, zc),
+              (x_out - x_in, .14, .13), 'wood', .006)
+        for xx in (x_in + .07, x_out - .07, (x_in + x_out) / 2):
+            top = soffit(xx, zc)
+            L.box('gable-frame-stile', (side * xx, (bottom_y + top) / 2, zc),
+                  (.13, top - bottom_y, .13), 'wood', .006)
+    L.box('gable-frame-bottom-rail', (side * x_out, bottom_y + .07, (zf + zr) / 2),
+          (.13, .14, (zf - .06) - (zr + .1)), 'wood', .006)
+    for zz in (zf - .18, zr + .18):
+        top_z = soffit(x_out, zz)
+        L.box('gable-frame-post', (side * x_out, (bottom_y + top_z) / 2, zz),
+              (.13, top_z - bottom_y, .13), 'wood', .006)
+
+
+def seam_trim(L, rs, rc, side, profile_samples):
+    """Local edge finish for the horizontal exposed junction where the tall
+    center shell meets each lower shoulder shell: a narrow sloped flashing
+    board rides from the center shell edge down onto the shoulder top on the
+    front and rear slopes, in roof material so the step reads as tile courses
+    continuing over the seam; a thin dark barge line under the center edge
+    matches the eave-fascia language. The shells themselves are untouched."""
+    center_srf = center_surface_fn(rc, rc['halfSlopeProfileTY'])
+    sh_srf = shoulder_surface_fn(rs, profile_samples)
+    x_c = rc['widthM'] / 2 * side          # center shell edge (2.3)
+    x_s = x_c + side * 0.42                # landing point on the shoulder top
+    for sdir, z_end in ((1, rc['frontEaveZ']), (-1, rc['rearEaveZ'])):
+        z_mid = rc['ridgeZ']
+        nseg = 6
+        for j in range(nseg):
+            t0, t1 = j / nseg, (j + 1) / nseg
+            z0 = z_mid + (z_end - z_mid) * t0
+            z1 = z_mid + (z_end - z_mid) * t1
+            y_c0 = center_srf(x_c, z0) + 0.005
+            y_c1 = center_srf(x_c, z1) + 0.005
+            y_s0 = sh_srf(x_c, z0) + 0.0
+            y_s1 = sh_srf(x_c, z1) + 0.0
+            # sloped flashing: quad from the center edge down onto the shoulder
+            # ('dark' trim — matches the eave-fascia language AND keeps the
+            # band out of the gray-pan-tile mesh the T3 surface checks scan)
+            quad_out(L, 'seam-flashing',
+                     [(x_c, y_c0, z0), (x_c, y_c1, z1), (x_s, y_s1 + .01, z1), (x_s, y_s0 + .01, z0)],
+                     'dark', [(z0 / 1.44, y_c0 / 1.36), (z1 / 1.44, y_c1 / 1.36),
+                              (z1 / 1.44, y_s1 / 1.36), (z0 / 1.44, y_s0 / 1.36)], (0, 1, 0))
+            # dark barge line under the center shell edge
+            quad_out(L, 'seam-barge',
+                     [(x_c, y_c0, z0), (x_c, y_c1, z1),
+                      (x_c - side * .02, y_c1 - .12, z1), (x_c - side * .02, y_c0 - .12, z0)],
+                     'dark', [(z0 / 1.44, 0), (z1 / 1.44, 0), (z1 / 1.44, .12), (z0 / 1.44, .12)],
+                     (side, .4, 0))
+
+
 def door_frame(L, fr, op):
     sz = fr['stoneColumnSize']
     cz = fr['stoneColumnZ']

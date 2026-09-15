@@ -1,0 +1,109 @@
+{
+  "moduleId": "temple-shanmen",
+  "units": "meters",
+  "surveyed": false,
+  "axis": "GLB Y-up; facade +Z; origin central-threshold-front; depth -Z",
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false,
+  "targets": {
+    "temple.glb": {
+      "groups": [
+        "shanmen-body",
+        "shanmen-plaque"
+      ],
+      "objects": 13,
+      "triangles": 22392,
+      "fileBytes": 3781204,
+      "sha256": "192aad55c5961495c9516859b933819ebc9a434b309a8f9637aee07df3bb5d5c"
+    },
+    "ground.glb": {
+      "groups": [
+        "temple-ground"
+      ],
+      "objects": 2,
+      "triangles": 360,
+      "fileBytes": 860820,
+      "sha256": "318db5b43c6f5106f277e78e21980c3409e8a863ed9bbc0fd2a8e5788798c5e0"
+    },
+    "lions.glb": {
+      "groups": [
+        "shanmen-lion"
+      ],
+      "objects": 1,
+      "triangles": 2648,
+      "fileBytes": 334864,
+      "sha256": "fe4907f38d32017ace652aa91a8875e5a62838f39b9699cec9d95017b01e1ba1"
+    },
+    "ornaments.glb": {
+      "groups": [
+        "shanmen-ornament"
+      ],
+      "objects": 2,
+      "triangles": 2304,
+      "fileBytes": 436760,
+      "sha256": "ac83aca106d4a224add108a3511b456fdf8ab9847609e78744374b801afb2f94"
+    }
+  },
+  "timings": {
+    "totalSeconds": 6.6
+  },
+  "budgets": {
+    "buildingAndWallsTris": {
+      "actual": 22392,
+      "limit": 50000,
+      "pass": true
+    },
+    "fullSetTris": {
+      "actual": 27704,
+      "limit": 60000,
+      "pass": true
+    },
+    "mainGlbBytes": {
+      "actual": 3781204,
+      "limit": 8000000,
+      "pass": true
+    },
+    "groundGlbBytes": {
+      "actual": 860820,
+      "limit": 2000000,
+      "pass": true
+    },
+    "newImages": {
+      "actual": 2,
+      "limit": 2,
+      "pass": true
+    },
+    "tileRibsTris": {
+      "actual": 3978,
+      "limit": 8000,
+      "pass": true,
+      "note": "DESIGN_REVISION tileRibs allowance on top of the shells"
+    }
+  },
+  "design": {
+    "family": "chenghuangmiao-shanmen-pilot",
+    "reference": {
+      "imageId": "PBR-SH-0002-039",
+      "referenceEra": 2015,
+      "historicalAccuracyVerified": false,
+      "dimensionsAreDesign": true
+    },
+    "clearOpeningM": [
+      3.0,
+      3.1
+    ],
+    "ridgeHeightsM": {
+      "center": 8.05,
+      "shoulders": 7.0,
+      "wingCap": 4.02
+    },
+    "plaque": {
+      "literalLeftToRight": "隅海障保",
+      "readingRightToLeft": "保障海隅"
+    },
+    "roofMethod": "continuous profile-lofted thin shells (normal-offset soffits), T3 revision equation on the shoulders, closed seam skirts, finite half-round tile ribs on the front slopes; no box stacks",
+    "wings": "built per side with own oriented frames (no mirrored normals)",
+    "rearAndDepth": "design inference (no rear reference) — uncertaintyPolicy in config",
+    "lionsOrnaments": "coarse candidates, replaceable; lead reviews silhouettes"
+  }
+}

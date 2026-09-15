@@ -329,6 +329,14 @@ for sgn in (-1, 1):
 print(f'STAGE columns_grilles ok ({time.time() - T0:.1f}s)')
 
 # gatehouse side walls: lower plain box + upper strip tucked under shoulder shells
+# N1 entry-batch revision: the upper strips' quad hints were swapped (the OUTER
+# plane exported backfacing, so the 3/4 view saw a recessed inner plane and the
+# dark eave cavity behind it), and the strips spanned y=0..yhi coplanar with the
+# lower box (z-fighting). Now: hints face outward/inward correctly, strips start
+# 0.02 INSIDE the box (hidden seam, no coplanar overlap), the front/rear edges
+# of the strip band get closing quads, and the shoulder overhang band is closed
+# by C.gable_closures (front dark end panels, rear plaster panels, outer gable
+# wall with a timber frame) so no black cavity is visible from any 3/4 view.
 sw_in = fr['bodyHalfWidthX'] - .16            # inner face plane
 sw_out = sw_in + fr['sideWallThicknessM']     # outer face plane
 sw_low_top = 5.5
@@ -346,16 +354,28 @@ for sgn in (-1, 1):
         strips.append((z1, z2, min(ya, yb), max(ya, yb)))
     x_in, x_out = sgn * sw_in, sgn * sw_out
     for z1, z2, ylo, yhi in strips:
-        y0 = min(sw_low_top, ylo)
-        # inner + outer faces
-        C.quad_out(L, 'side-wall-upper-inner', [(x_in, 0, z1), (x_in, 0, z2), (x_in, yhi, z2), (x_in, ylo, z1)],
-                   'plaster', [(z1 / 2.5, ylo / 2.5), (z2 / 2.5, ylo / 2.5),
-                               (z2 / 2.5, yhi / 2.5), (z1 / 2.5, yhi / 2.5)], (sgn, 0, 0))
-        C.quad_out(L, 'side-wall-upper-outer', [(x_out, 0, z1), (x_out, 0, z2), (x_out, yhi, z2), (x_out, ylo, z1)],
-                   'plaster', [(z1 / 2.5, ylo / 2.5), (z2 / 2.5, ylo / 2.5),
+        # start 0.02 inside the lower box: the seam is hidden geometry, the
+        # visible surfaces are never coplanar with the box faces
+        y0 = min(sw_low_top - .02, ylo)
+        # inner face (normal toward the passage center), outer face (normal
+        # away from it) — the hint sign is the FACE's own outward direction
+        C.quad_out(L, 'side-wall-upper-inner', [(x_in, y0, z1), (x_in, y0, z2), (x_in, yhi, z2), (x_in, ylo, z1)],
+                   'plaster', [(z1 / 2.5, y0 / 2.5), (z2 / 2.5, y0 / 2.5),
                                (z2 / 2.5, yhi / 2.5), (z1 / 2.5, yhi / 2.5)], (-sgn, 0, 0))
+        C.quad_out(L, 'side-wall-upper-outer', [(x_out, y0, z1), (x_out, y0, z2), (x_out, yhi, z2), (x_out, ylo, z1)],
+                   'plaster', [(z1 / 2.5, y0 / 2.5), (z2 / 2.5, y0 / 2.5),
+                               (z2 / 2.5, yhi / 2.5), (z1 / 2.5, yhi / 2.5)], (sgn, 0, 0))
         C.quad_out(L, 'side-wall-upper-top', [(x_in, yhi, z1), (x_in, yhi, z2), (x_out, yhi, z2), (x_out, yhi, z1)],
                    'plaster', [(z1 / 2.5, 0), (z2 / 2.5, 0), (z2 / 2.5, .13), (z1 / 2.5, .13)], (0, 1, 0))
+    # band end closures at the facade and rear planes (the staircase used to be
+    # open at z=0 and z=-depth, leaving a see-through slot at each corner)
+    for zend, hint in ((0.0, (0, 0, 1)), (-fr['depthM'], (0, 0, -1))):
+        yt = max(s[3] for s in strips if abs(s[0] - zend) < 1e-6 or abs(s[1] - zend) < 1e-6)
+        yb0 = min(sw_low_top - .02, min(s[2] for s in strips))
+        C.quad_out(L, 'side-wall-upper-end', [(x_in, yb0, zend), (x_out, yb0, zend),
+                                              (x_out, yt, zend), (x_in, yt, zend)],
+                   'plaster', [(x_in / 2.5, yb0 / 2.5), (x_out / 2.5, yb0 / 2.5),
+                               (x_out / 2.5, yt / 2.5), (x_in / 2.5, yt / 2.5)], hint)
     L.box('side-corner-post', (sgn * (fr['bodyHalfWidthX'] - .1), 2.45, -0.1),
           (.22, 4.9, .22), 'dark', .008)
     L.box('side-brick-base', (sgn * (sw_in + sw_out) / 2, .4, -fr['depthM'] / 2),
@@ -420,6 +440,13 @@ for kx, ky in rs['frontOutlineAbsXY']:
 print('T3 equation checks ok (ridge const / silhouette / no mid-depth lift / rear drop)')
 L.box('front-eave-soffit', (0, 6.36, .32), (2 * fr['bodyHalfWidthX'], .09, .72), 'dark', 0)
 L.box('rear-eave-soffit', (0, 6.30, -3.9), (2 * fr['bodyHalfWidthX'], .09, .5), 'dark', 0)
+# N1: close the shoulder overhang bands (front dark end panels + rear plaster
+# panels + outer gable walls with timber frames) and dress the center/shoulder
+# seam with a sloped flashing; the shells and T1-T3 constraints are untouched
+for sgn in (-1, 1):
+    C.gable_closures(L, rs, sgn, profile, sw_out, cfg['wings']['tileCapMaxY'])
+    C.seam_trim(L, rs, rc, sgn, profile)
+print(f'STAGE gable_closures+seam_trim ok ({time.time() - T0:.1f}s)')
 print(f'STAGE roofs ok ({time.time() - T0:.1f}s)')
 
 # side-bay tile canopies (small curved shells under the bracket band)
