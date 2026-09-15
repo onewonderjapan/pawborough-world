@@ -165,17 +165,22 @@ async function runRouteCheck() {
       }
       results.doors = { z: +doorZ.toFixed(2), pass: doorZ > -44.35 };
     }
-    // return leg
+    // return leg: mirrored route waypoints back to the street
     c.yaw = Math.PI;
-    let backZ = null, backEnd = null;
-    for (let i = 0; i < Math.round(70 / dt); i++) {
+    const back = [[0, -43.2], [0, -41.9], [0, -39.9], [0, -38.5], [-2.2, -36], [-2.2, -33],
+      [0, -30], [0, -24.5], [0, -12], [0, 4.2]];
+    let backZ = null, bi = 0;
+    for (let i = 0; i < Math.round(150 / dt); i++) {
+      const [x, , z] = c.feetPosition();
+      while (bi < back.length && Math.hypot(x - back[bi][0], z - back[bi][1]) < 0.45) bi++;
+      if (bi >= back.length) { backZ = z; break; }
+      const dx = back[bi][0] - x, dz = back[bi][1] - z;
+      c.yaw = Math.atan2(-dx, -dz);
       c.setMoveInput(1, 0);
       c.step(dt);
-      const p = c.feetPosition();
-      backEnd = [+p[0].toFixed(2), +p[1].toFixed(2), +p[2].toFixed(2)];
-      if (p[2] > 4.0) { backZ = p[2]; break; }
+      if (c.feetPosition()[2] > 4.0) { backZ = c.feetPosition()[2]; break; }
     }
-    results.return = { z: backZ, end: backEnd, pass: backZ !== null };
+    results.return = { z: backZ, pass: backZ !== null };
     c.dispose();
   }
   {
