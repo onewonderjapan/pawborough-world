@@ -1,0 +1,84 @@
+{
+  "source": "client telemetry of the pilot page (capture run), saved with each WebGL shot",
+  "loadStats": {
+    "bytesTotal": 4684304,
+    "bytesMain": 3912296,
+    "bytesCandidates": 772008,
+    "fetchParseMs": 277.29999999999995,
+    "wallColliders": 29,
+    "groundTriangles": 360
+  },
+  "resources": {
+    "meshes": 18,
+    "triangles": 21634,
+    "uniqueGeometries": 18,
+    "uniqueMaterials": 14,
+    "uniqueTextures": 17
+  },
+  "perView": {
+    "doorway": {
+      "cameraCheckPass": true,
+      "dPos": 0,
+      "dFov": 0,
+      "file": "temple-doorway-pbr-1789439817991.json"
+    },
+    "front": {
+      "cameraCheckPass": true,
+      "dPos": 0,
+      "dFov": 0,
+      "file": "temple-front-pbr-1789439812961.json"
+    },
+    "quarter-left": {
+      "cameraCheckPass": true,
+      "dPos": 0,
+      "dFov": 0,
+      "file": "temple-quarter-left-pbr-1789439815126.json"
+    },
+    "rear-inferred": {
+      "cameraCheckPass": true,
+      "dPos": 0,
+      "dFov": 0,
+      "file": "temple-rear-inferred-pbr-1789439819630.json"
+    },
+    "roof": {
+      "cameraCheckPass": true,
+      "dPos": 0,
+      "dFov": 0,
+      "file": "temple-roof-pbr-1789439816983.json"
+    },
+    "street-eye": {
+      "cameraCheckPass": true,
+      "dPos": 0,
+      "dFov": 0,
+      "file": "temple-street-eye-pbr-1789439818797.json"
+    }
+  },
+  "passageCheck": {
+    "pass": true,
+    "results": {
+      "through": {
+        "x": -0.001,
+        "midGrounded": true,
+        "exitZ": -4.217,
+        "pass": true
+      },
+      "blockedReveal": {
+        "z": 0.57,
+        "pass": true
+      },
+      "blockedLeaf": {
+        "z": 0.57,
+        "pass": true
+      },
+      "fallOffEdge": {
+        "x": 19.81,
+        "y": -116.88,
+        "pass": true
+      }
+    },
+    "summary": "门洞中段落地=true·穿出z=-4.217·偏移x=-0.001；侧向拦停z=0.57；门板拦停z=0.57；越界坠落y=-116.88",
+    "ms": 75
+  },
+  "note": "fetchParseMs covers GLB fetch+parse for all four assets on localhost (no network claim); FPS not sampled — not reported",
+  "captureSets": "two capture runs exist (first had a passage-criterion bug in-page, geometry identical); the latest run is the PASS set"
+}
