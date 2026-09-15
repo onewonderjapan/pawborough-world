@@ -1,0 +1,60 @@
+{
+  "axis": "GLB Y-up; +Z south toward the street; shanmen threshold at (0,0,0); north = -Z",
+  "instances": [
+    {
+      "id": "shanmen",
+      "module": "temple-shanmen",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "note": "origin at the central threshold front edge"
+    },
+    {
+      "id": "entrycourt",
+      "module": "temple-entry-court-open",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "note": "authored in place; cutoff wall REMOVED (second court continues through z=-29.2)"
+    },
+    {
+      "id": "yimen",
+      "module": "yimen-pilot",
+      "positionGlb": [
+        0,
+        0,
+        -21
+      ],
+      "rotationYRad": 0,
+      "note": "local facade z=0 maps to world z=-21; yaw 0 (same facing, +Z)"
+    },
+    {
+      "id": "dadiancourt",
+      "module": "temple-dadian-court",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "note": "authored in place (floor x±10.78 z -29.2..-39.4; platform to z -58.2)"
+    },
+    {
+      "id": "dadian",
+      "module": "dadian",
+      "positionGlb": [
+        0,
+        0,
+        -44
+      ],
+      "rotationYRad": 0,
+      "note": "local facade z=0 maps to world z=-44; yaw 0 (same facing, +Z)"
+    }
+  ]
+}

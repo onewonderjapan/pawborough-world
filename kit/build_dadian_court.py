@@ -214,6 +214,12 @@ for r, h in bn['lidDiscsM']:
     L.cyl('burner-lid-disc', (bx, ly, bz), (bx, ly + h, bz), r, 'bronze', 14)
     ly += h + .015
 L.cyl('burner-finial', (bx, ly, bz), (bx, ly + bn['finialR'] * 1.6, bz), bn['finialR'], 'bronze', 10)
+# honest collider for the vessel body itself (matches the visible bronze
+# cylinder bounding box) — the plinth alone lets capsules clip the vessel rim
+vw = bn['vesselR'] * 2
+L.COLL.append({'name': 'burner-vessel-block', 'group': 'dadian-court',
+               'center': [bx, leg_top + bn['vesselH'] / 2, bz],
+               'size': [vw, bn['vesselH'] + bn['legH'], vw], 'type': 'box', 'axis': 'glTF Y-up'})
 print(f'STAGE burner ok ({time.time() - T0:.1f}s)')
 
 # ---------------------------------------------------------------------------

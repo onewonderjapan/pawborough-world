@@ -1,0 +1,147 @@
+{
+  "spec": {
+    "pointsGlb": [
+      [
+        0,
+        -24.5
+      ],
+      [
+        0,
+        -30
+      ],
+      [
+        -2.2,
+        -33
+      ],
+      [
+        -2.2,
+        -36
+      ],
+      [
+        0,
+        -38.5
+      ],
+      [
+        0,
+        -39.9
+      ],
+      [
+        0,
+        -41.9
+      ],
+      [
+        0,
+        -43.2
+      ]
+    ],
+    "routeNotes": "weave around the burner; steps ascent 6th->7th point (y rises 0->0.85); final point stops before the closed doors (z=-43.2, doors at -44.38); return path reverses",
+    "negatives": [
+      {
+        "spawn": [
+          8,
+          -32
+        ],
+        "walkEast": true,
+        "assert": "stopped before x=10.3 (side wall)"
+      },
+      {
+        "spawn": [
+          0,
+          -42.5
+        ],
+        "walkNorth": true,
+        "assert": "stopped before z=-44.2 (closed dadian doors)"
+      },
+      {
+        "spawn": [
+          -1,
+          -31.5
+        ],
+        "walkNorth": true,
+        "assert": "burner blocks: stopped before z=-33.4"
+      },
+      {
+        "spawn": [
+          0,
+          -30
+        ],
+        "walkNorth": true,
+        "assert": "burner blocks axis: stopped before z=-33.4"
+      }
+    ],
+    "walkableGroundSource": "visible temple-ground__ meshes only (court floor, aprons, path, platform top, step tops); no invisible planes",
+    "manualWalkClaim": false
+  },
+  "source": "task DESIGN_SPEC.json",
+  "axis": "temple axis: yimen (z-21) -> second court -> around the burner -> stair attempt -> hall doors (z-43.2) and back",
+  "mainStreet": [
+    [
+      0,
+      -24.5
+    ],
+    [
+      0,
+      -30
+    ],
+    [
+      -2.2,
+      -33
+    ],
+    [
+      -2.2,
+      -36
+    ],
+    [
+      0,
+      -38.5
+    ],
+    [
+      0,
+      -39.9
+    ],
+    [
+      0,
+      -41.9
+    ],
+    [
+      0,
+      -43.2
+    ]
+  ],
+  "walkableGroundSource": "visible temple-ground__ meshes only (court floor, aprons, path, platform top, step tops); no invisible planes",
+  "manualWalkClaim": false,
+  "negatives": [
+    {
+      "spawn": [
+        8,
+        -32
+      ],
+      "walkEast": true,
+      "assert": "stopped before x=10.3 (side wall)"
+    },
+    {
+      "spawn": [
+        0,
+        -42.5
+      ],
+      "walkNorth": true,
+      "assert": "stopped before z=-44.2 (closed dadian doors)"
+    },
+    {
+      "spawn": [
+        -1,
+        -31.5
+      ],
+      "walkNorth": true,
+      "assert": "burner blocks: stopped before z=-33.4"
+    },
+    {
+      "spawn": [
+        0,
+        -30
+      ],
+      "walkNorth": true,
+      "assert": "burner blocks axis: stopped before z=-33.4"
+    }
+  ]
+}
