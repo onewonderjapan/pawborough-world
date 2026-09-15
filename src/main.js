@@ -8,6 +8,7 @@ import {applyWalkOrientation} from './player/walkCamera.js';
 import {CruiseDriver} from './player/cruise.js';
 import {BlockManager} from './world/BlockManager.js';
 import {createBlockViews} from './world/blockViews.js';
+import {loadedSceneAssets,expectedTriangles,sceneFingerprint,surfaceEntry,SURFACE_ID} from './world/sceneAssets.js';
 
 const app=document.querySelector('#app'),stats=document.querySelector('#stats'),viewsEl=document.querySelector('#views');
 const renderer=new T.WebGLRenderer({antialias:true});renderer.setPixelRatio(1);renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.AgXToneMapping;renderer.toneMappingExposure=1;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.info.autoReset=false;app.appendChild(renderer.domElement);renderer.domElement.setAttribute('aria-label','方浜中路完整三维街景');
@@ -34,7 +35,7 @@ let streetKitNodeCount=0;let ready=false,clayOn=false,selected='full-west',camer
 // assets=off records which additional assets it did NOT load. Everything is
 // derived from the dataset manifest (bytes/sha validated against the real
 // files by the contract tests) and cross-checked against the live scene.
-let assetStats={enabled:false,infos:[],excludedIds:[],bytesBase:0,bytesAdditional:0,bytesTotal:0,additionalTriangles:0,fingerprint:null};
+let assetStats={enabled:false,infos:[],excludedIds:[],bytesBase:0,bytesAdditional:0,bytesTotal:0,additionalTriangles:0,sceneAssets:[],fingerprint:null};
 // walking session state (single authority chain: input -> WalkController -> camera follows)
 let session=null,controller=null,mode='view',paused=false,cruise=null,lastCruiseStatus=null,resetCount=0,blocks=null;
 // F3 framing-view placeholder preference: false = refined buildings only (the
@@ -46,8 +47,11 @@ function resources(){const g=new Set(),m=new Set(),t=new Set();let triangles=0,m
 function record(){return{ready,view:selected,mode,paused,resources:resources(),
   // triangle accounting with explicit scope naming: baseAssembly is the
   // single assembly, additionalAssets are the refined replacement GLBs, and
-  // total is what the scene actually places when this record was taken
-  trianglesExpected:{baseAssembly:manifest?.placedTriangles??null,additionalAssets:assetStats.enabled?assetStats.additionalTriangles:0,total:(manifest?.placedTriangles??0)+(assetStats.enabled?assetStats.additionalTriangles:0),additionalAssetsIncluded:assetStats.enabled,excludedAdditionalAssetIds:assetStats.excludedIds},streetKitLoaded:streetKitNodeCount>0,streetKitNodeCount,loadMode:assetStats.enabled?'single_assembly_plus_refined_asset_blocks':'single_assembly_base_only',placedBuildingCount:instances?.instances.length,assets:manifest,dataset:DATASET_TAG,load:loadStats,fetches:[],render:lastRender,camera:{position:camera.position.toArray(),target:mode==='view'?controls.target.toArray():controller?.feetPosition()??null,fov:camera.fov,near:camera.near,quaternion:camera.quaternion.toArray(),matrixWorldFinite:[...camera.matrixWorld.elements].every(Number.isFinite),walkOrientationFinite:camera.quaternion.toArray().every(Number.isFinite)},framebuffer:renderer.getSize(new T.Vector2()).toArray(),lighting:{shadows:renderer.shadowMap.enabled,shadowBias:sun.shadow.bias,shadowNormalBias:sun.shadow.normalBias,toneMapping:'AgX',exposure:1,environmentIntensity:.28,hemisphereIntensity:.72,sunIntensity:2.4,sunPosition:sun.position.toArray()},browserRendered:true,
+  // total is what the scene actually places when this record was taken.
+  // SC-F3: parts + datasetSurface derive from the one loaded-scene inventory,
+  // so the surface (and any future dataset asset) can't fall out of the
+  // statistics again.
+  trianglesExpected:(()=>{const sc=assetStats.sceneAssets??[];const extra=sc.filter(a=>a.kind==='asset').reduce((s,a)=>s+(a.triangles||0),0);const surf=sc.filter(a=>a.kind==='surface').reduce((s,a)=>s+(a.triangles||0),0);const base=manifest?.placedTriangles??0;return{baseAssembly:manifest?.placedTriangles??null,additionalAssets:assetStats.enabled?extra:0,datasetSurface:surf,total:base+(assetStats.enabled?extra:0)+surf,parts:[{kind:'baseAssembly',id:'street-reviewed',triangles:base},...(assetStats.enabled?sc.filter(a=>a.kind==='asset').map(a=>({kind:'asset',id:a.id,triangles:a.triangles||0})):[]),...sc.filter(a=>a.kind==='surface').map(a=>({kind:'surface',id:a.id,triangles:a.triangles||0}))],additionalAssetsIncluded:assetStats.enabled,excludedAdditionalAssetIds:assetStats.excludedIds,assetsOffScope:assetStats.enabled?undefined:'shopfront comparison only — the dataset surface (walkable ground) stays loaded'};})(),streetKitLoaded:streetKitNodeCount>0,streetKitNodeCount,loadMode:assetStats.enabled?'single_assembly_plus_refined_asset_blocks':'single_assembly_base_only',placedBuildingCount:instances?.instances.length,assets:manifest,dataset:DATASET_TAG,load:loadStats,fetches:[],render:lastRender,camera:{position:camera.position.toArray(),target:mode==='view'?controls.target.toArray():controller?.feetPosition()??null,fov:camera.fov,near:camera.near,quaternion:camera.quaternion.toArray(),matrixWorldFinite:[...camera.matrixWorld.elements].every(Number.isFinite),walkOrientationFinite:camera.quaternion.toArray().every(Number.isFinite)},framebuffer:renderer.getSize(new T.Vector2()).toArray(),lighting:{shadows:renderer.shadowMap.enabled,shadowBias:sun.shadow.bias,shadowNormalBias:sun.shadow.normalBias,toneMapping:'AgX',exposure:1,environmentIntensity:.28,hemisphereIntensity:.72,sunIntensity:2.4,sunPosition:sun.position.toArray()},browserRendered:true,
   walking:{walkingVerified:false,manualKeyboardWalkTested:false,walkResets:resetCount,capsuleFeet:controller?controller.feetPosition():null,eyeHeightM:1.6,capsuleRadiusM:.35,autoPhysicsCruise:lastCruiseStatus,blocks:blocks?{active:blocks.activeIds(),epoch:blocks.epoch}:null},ownerAdopted:false,
   // F3 placeholder presentation: framing view can hide gray-box placeholders
   // (display only). hiddenPlaceholderIds are real loaded stable IDs currently
@@ -61,9 +65,11 @@ function record(){return{ready,view:selected,mode,paused,resources:resources(),
   // additional asset's GLB sha + the on/off state, so assets=on vs off and
   // a changed candidate GLB always produce different records (R3). The old
   // single-string field only hashed the base assembly and could not tell
-  // the candidate states apart.
-  version:{dataset:DATASET_TAG,baseAssemblyPath:manifest?.worldAssembly?.path??null,baseAssembly:manifest?.worldAssembly?`glb-sha256-${manifest.worldAssembly.sha256}`:null,additionalAssets:assetStats.enabled?assetStats.infos.map(a=>({id:a.id,sha256:a.sha256})):[],additionalAssetsIncluded:assetStats.enabled,excludedAdditionalAssetIds:assetStats.excludedIds,fingerprint:assetStats.fingerprint}};}
-function render(){if(!ready)return;const near=mode==='view'?Math.max(.05,Math.min(2,camera.position.distanceTo(controls.target)*.003)):.1;if(camera.near!==near){camera.near=near;camera.updateProjectionMatrix();}renderer.info.reset();const started=performance.now();renderer.render(scene,camera);lastRender={callsIncludingShadow:renderer.info.render.calls,trianglesIncludingShadow:renderer.info.render.triangles,cpuSubmitMs:performance.now()-started};const r=resources();stats.textContent=mode==='walk'?`行走模式 · 脚底 (${controller.feetPosition().map(v=>v.toFixed(1)).join(', ')}) ${paused?'· 已暂停':''}\nWASD 移动 · 鼠标环视(点击画面锁定) · 空格跳 · P 暂停 · V 返回取景`:`${instances.instances.length} 门面＋完整路面/支弄/前庭 · ${r.triangles.toLocaleString()} 三角形\n几何/材质/纹理 ${r.uniqueGeometries}/${r.uniqueMaterials}/${r.uniqueTextures} · 本机资产 ${(loadStats.bytesTotal/1e6).toFixed(2)} MB${assetStats.enabled&&loadStats.bytesAdditional>0?`（基础 ${(loadStats.bytesBase/1e6).toFixed(2)} + 追加精修 ${(loadStats.bytesAdditional/1e6).toFixed(2)}）`:''}\n拖动旋转 · 滚轮缩放 · 右键平移 · 行走模式按钮在上方`;document.querySelector('#record').textContent=JSON.stringify(record(),null,2);}
+  // the candidate states apart. SC-F3: the loaded surface joins
+  // additionalAssets and the fingerprint too (it loads in both modes, so the
+  // 'assets-off' marker keeps meaning "shopfront blocks held back").
+  version:{dataset:DATASET_TAG,baseAssemblyPath:manifest?.worldAssembly?.path??null,baseAssembly:manifest?.worldAssembly?`glb-sha256-${manifest.worldAssembly.sha256}`:null,additionalAssets:(assetStats.sceneAssets??[]).map(a=>({id:a.id,sha256:a.sha256,kind:a.kind})),additionalAssetsIncluded:assetStats.enabled,excludedAdditionalAssetIds:assetStats.excludedIds,fingerprint:assetStats.fingerprint}};}
+function render(){if(!ready)return;const near=mode==='view'?Math.max(.05,Math.min(2,camera.position.distanceTo(controls.target)*.003)):.1;if(camera.near!==near){camera.near=near;camera.updateProjectionMatrix();}renderer.info.reset();const started=performance.now();renderer.render(scene,camera);lastRender={callsIncludingShadow:renderer.info.render.calls,trianglesIncludingShadow:renderer.info.render.triangles,cpuSubmitMs:performance.now()-started};const r=resources();stats.textContent=mode==='walk'?`行走模式 · 脚底 (${controller.feetPosition().map(v=>v.toFixed(1)).join(', ')}) ${paused?'· 已暂停':''}\nWASD 移动 · 鼠标环视(点击画面锁定) · 空格跳 · P 暂停 · V 返回取景`:`${instances.instances.length} 门面＋完整路面/支弄/前庭 · ${r.triangles.toLocaleString()} 三角形\n几何/材质/纹理 ${r.uniqueGeometries}/${r.uniqueMaterials}/${r.uniqueTextures} · 本机资产 ${(loadStats.bytesTotal/1e6).toFixed(2)} MB${loadStats.bytesSurface>0?`（基础 ${(loadStats.bytesBase/1e6).toFixed(2)} + 追加精修 ${(loadStats.bytesAdditional/1e6).toFixed(2)} + 街面 ${(loadStats.bytesSurface/1e6).toFixed(2)}）`:assetStats.enabled&&loadStats.bytesAdditional>0?`（基础 ${(loadStats.bytesBase/1e6).toFixed(2)} + 追加精修 ${(loadStats.bytesAdditional/1e6).toFixed(2)}）`:''}\n拖动旋转 · 滚轮缩放 · 右键平移 · 行走模式按钮在上方`;document.querySelector('#record').textContent=JSON.stringify(record(),null,2);}
 function setView(id){const v=cameras.find(c=>c.id===id);if(!v)return;selected=id;camera.position.set(...v.positionGlb);controls.target.set(...v.targetGlb);camera.fov=2*Math.atan(v.sensorWidthMm/2/v.lensMm/camera.aspect)*180/Math.PI;camera.updateProjectionMatrix();controls.update();for(const b of viewsEl.querySelectorAll('[data-view]'))b.classList.toggle('on',b.dataset.view===id);render();}
 function setupButtons(){for(const c of cameras){const b=document.createElement('button');b.textContent=labels[c.id]??c.id;b.dataset.view=c.id;b.onclick=()=>{if(mode==='walk')setMode('view');setView(c.id);};viewsEl.appendChild(b);}
 const walkBtn=document.createElement('button');walkBtn.id='btn-walk';walkBtn.textContent='行走模式';walkBtn.onclick=()=>setMode(mode==='walk'?'view':'walk');viewsEl.appendChild(walkBtn);
@@ -185,7 +191,8 @@ async function load(){const t0=performance.now();
   world.updateMatrixWorld(true);
   const total=resources().triangles;
   // street-completion batch: the dataset surface is part of the scene by design
-  const expected=manifest.placedTriangles+(manifest.streetCompletion?.surface?.triangles??0);
+  // (SC-F3: expectation via the shared inventory helper, never a hand-branch)
+  const expected=expectedTriangles(manifest.placedTriangles,surfaceEntry(manifest)?[surfaceEntry(manifest)]:[]).total;
   if(total!==expected)throw Error(`几何不完整：实际 ${total} / 预期 ${expected}`);
   controller=new WalkController({RAPIER,physics:session.physics,capsule:{...session.capsule,spawn:session.spawn}});
   // blocks dataset is a REQUIRED world input (fetched+validated in loadWorld):
@@ -213,14 +220,21 @@ async function load(){const t0=performance.now();
     if(!m)throw Error(`asset ${a.id}: bytes/sha missing from dataset manifest — honest load statistics require them`);
     return {id:a.id,glb:a.glb,bytes:m.bytes,sha256:m.sha256,triangles:m.triangles??0};
   }):[];
-  const bytesAdditional=assetInfos.reduce((s,a)=>s+a.bytes,0);
-  const additionalTriangles=assetInfos.reduce((s,a)=>s+(a.triangles||0),0);
+  // SC-F3: ONE inventory (src/world/sceneAssets.js) drives bytesTotal, the
+  // record's trianglesExpected, version.additionalAssets and the fingerprint.
+  // The dataset surface (tail pavement) is in it ALWAYS — it loads in both
+  // modes because it IS the walkable ground; assets=off is a shopfront
+  // comparison, never "ground also off".
+  const sceneAssets=loadedSceneAssets(manifest,assetInfos,assetsEnabled);
   const sceneTriangles=resources().triangles;
-  const expectedAssets=manifest.placedTriangles+additionalTriangles+(manifest.streetCompletion?.surface?.triangles??0);
-  if(sceneTriangles!==expectedAssets)throw Error(`资产完整性：实际 ${sceneTriangles} / 预期 ${expectedAssets}（基础 ${manifest.placedTriangles} + 追加 ${additionalTriangles} + 街面 ${manifest.streetCompletion?.surface?.triangles??0}）`);
-  loadStats={bytesBase:manifest.worldAssembly.bytes,bytesAdditional,bytesTotal:manifest.worldAssembly.bytes+bytesAdditional,assetsEnabled,fpsNotMeasured:true,localOnly:true};
-  assetStats={enabled:assetsEnabled,infos:assetInfos,excludedIds:assetsEnabled?[]:allAssetIds,bytesBase:loadStats.bytesBase,bytesAdditional,bytesTotal:loadStats.bytesTotal,additionalTriangles,
-    fingerprint:[`glb-sha256-${manifest.worldAssembly.sha256}`,...(assetsEnabled?assetInfos.map(a=>`${a.id}:${a.sha256}`):['assets-off'])].join('+')};
+  const exp=expectedTriangles(manifest.placedTriangles,sceneAssets);
+  if(sceneTriangles!==exp.total)throw Error(`资产完整性：实际 ${sceneTriangles} / 预期 ${exp.total}（基础 ${manifest.placedTriangles} + ${sceneAssets.map(a=>a.kind==='surface'?'街面':a.id).join(' + ')} = ${exp.extra}）`);
+  const bytesAdditional=assetInfos.reduce((s,a)=>s+a.bytes,0);
+  const bytesScene=sceneAssets.reduce((s,a)=>s+a.bytes,0);
+  const bytesSurface=bytesScene-bytesAdditional;
+  loadStats={bytesBase:manifest.worldAssembly.bytes,bytesAdditional,bytesSurface,bytesTotal:manifest.worldAssembly.bytes+bytesScene,assetsEnabled,fpsNotMeasured:true,localOnly:true};
+  assetStats={enabled:assetsEnabled,infos:assetInfos,excludedIds:assetsEnabled?[]:allAssetIds,bytesBase:loadStats.bytesBase,bytesAdditional,bytesTotal:loadStats.bytesTotal,additionalTriangles:assetInfos.reduce((s,a)=>s+(a.triangles||0),0),sceneAssets,
+    fingerprint:sceneFingerprint(manifest,sceneAssets,assetsEnabled)};
   setupButtons();setView('full-west');syncPlaceholderUi();
   const parsed=performance.now();await renderer.compileAsync(scene,camera);const compiled=performance.now();
   loadStats={...loadStats,allAssetsReadyMs:parsed-t0,shaderCompileMs:compiled-parsed};
