@@ -1,0 +1,103 @@
+{
+  "moduleId": "temple-shanmen",
+  "units": "meters",
+  "surveyed": false,
+  "axis": "GLB Y-up; facade +Z; origin central-threshold-front; depth -Z",
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false,
+  "targets": {
+    "temple.glb": {
+      "groups": [
+        "shanmen-body",
+        "shanmen-plaque"
+      ],
+      "objects": 13,
+      "triangles": 16322,
+      "fileBytes": 3051572,
+      "sha256": "f59aeba7eb993b8d607d815e2d7f330cba950920065873c69d1595b2ae663f25"
+    },
+    "ground.glb": {
+      "groups": [
+        "temple-ground"
+      ],
+      "objects": 2,
+      "triangles": 360,
+      "fileBytes": 860724,
+      "sha256": "1b5099650973f9d1b5f339dcf24ef67ad01d51cd1a3910c9deacdae70810f6c9"
+    },
+    "lions.glb": {
+      "groups": [
+        "shanmen-lion"
+      ],
+      "objects": 1,
+      "triangles": 2648,
+      "fileBytes": 334864,
+      "sha256": "a237b80dc6002b7b8b5fd7d75f8d26921b72324e9d00be5db468caf08758f03a"
+    },
+    "ornaments.glb": {
+      "groups": [
+        "shanmen-ornament"
+      ],
+      "objects": 2,
+      "triangles": 2304,
+      "fileBytes": 437144,
+      "sha256": "e81425a559f03a6280a2663d588adea35a20c21445d088e850e7614e476cbbe3"
+    }
+  },
+  "timings": {
+    "totalSeconds": 5.6
+  },
+  "budgets": {
+    "buildingAndWallsTris": {
+      "actual": 16322,
+      "limit": 50000,
+      "pass": true
+    },
+    "fullSetTris": {
+      "actual": 21634,
+      "limit": 60000,
+      "pass": true
+    },
+    "mainGlbBytes": {
+      "actual": 3051572,
+      "limit": 8000000,
+      "pass": true
+    },
+    "groundGlbBytes": {
+      "actual": 860724,
+      "limit": 2000000,
+      "pass": true
+    },
+    "newImages": {
+      "actual": 2,
+      "limit": 2,
+      "pass": true
+    }
+  },
+  "design": {
+    "family": "chenghuangmiao-shanmen-pilot",
+    "reference": {
+      "imageId": "PBR-SH-0002-039",
+      "referenceEra": 2015,
+      "historicalAccuracyVerified": false,
+      "dimensionsAreDesign": true
+    },
+    "clearOpeningM": [
+      3.0,
+      3.1
+    ],
+    "ridgeHeightsM": {
+      "center": 8.05,
+      "shoulders": 7.0,
+      "wingCap": 4.02
+    },
+    "plaque": {
+      "literalLeftToRight": "隅海障保",
+      "readingRightToLeft": "保障海隅"
+    },
+    "roofMethod": "continuous profile-lofted thin shells, closed undersides, no box stacks",
+    "wings": "built per side with own oriented frames (no mirrored normals)",
+    "rearAndDepth": "design inference (no rear reference) — uncertaintyPolicy in config",
+    "lionsOrnaments": "coarse candidates, replaceable; lead reviews silhouettes"
+  }
+}
