@@ -377,6 +377,17 @@
     "centerlineSpec": "kit/out/fangbang-temple/west-extension-spec.json"
   },
   "streetCompletion": {
+    "surface": {
+      "path": "./world/fangbang-temple/west-extension/surface.glb",
+      "bytes": 1308304,
+      "sha256": "01b8f82f3e26c40e8fc8fc75c872179f90dab4b9133659377eea27b6733f4d45",
+      "triangles": 5960,
+      "groundNodeNames": [
+        "sctail__quiet-gray-asphalt",
+        "sctail__worn-stone"
+      ],
+      "noCitywideSlab": true
+    },
     "eastTailSurface": {
       "path": "./world/street-completion/surface.glb",
       "bytes": 985560,

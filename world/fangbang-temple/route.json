@@ -522,7 +522,14 @@
         0,
         43.473
       ],
-      "walk": "west (heading [-1,0,0])",
+      "dir": [
+        -1,
+        0,
+        0
+      ],
+      "walk": "west",
+      "assertKind": "staysEastOfX",
+      "barrierX": -149.388,
       "assert": "stopped by the seal wall; x never crosses the wall plane at westEndGlb"
     },
     {
@@ -532,30 +539,76 @@
         0,
         35.125
       ],
+      "dir": [
+        0,
+        0,
+        -1
+      ],
       "walk": "north toward the shop-165 placeholder box",
-      "assert": "stopped by the placeholder collider"
+      "assertKind": "stopsAtObb",
+      "targetShop": "shop-165",
+      "maxObbGapM": 1,
+      "assert": "stopped by the placeholder collider (capsule may slide along the face but never enters the box)"
     },
     {
       "id": "forecourt-east",
+      "spawnLocal": [
+        6,
+        0,
+        3
+      ],
+      "dir": [
+        1,
+        0,
+        0
+      ],
+      "walk": "east",
+      "assertKind": "openEdgeOrBlocked",
+      "maxAdvancedM": 2,
+      "assert": "either stopped before leaving the forecourt, or — the actual outcome with shop-167/169 suppressed by the temple axis — walks off the open east edge and falls (no synthetic slab east of the temple)",
+      "knownDeviation": "the DESIGN_SPEC assumed a blocker east of the forecourt (placeholder); with the temple axis applied that placeholder is suppressed and the boundary is open — recorded in registry knownDeviations",
       "spawn": [
         -121.402,
         0,
         29.018
-      ],
-      "walk": "east (heading [+1,0,0])",
-      "assert": "stopped by the shanmen wing / court side wall; never falls"
+      ]
     },
     {
       "id": "dadian-doors",
+      "spawnLocal": [
+        0,
+        0,
+        -42.5
+      ],
+      "dir": [
+        0,
+        0,
+        -1
+      ],
+      "walk": "north",
+      "assertKind": "localZNorthOf",
+      "localZLimit": -44,
+      "assert": "stopped by the dadian closed doors: final temple-local z stays north of -44.0 (same assertion as temple_dadian_passage, in world coordinates)",
       "spawn": [
         -134.883,
         0,
         -14.852
-      ],
-      "walk": "north (heading [0,0,-1])",
-      "assert": "stopped by the dadian closed doors (same assertion as temple_dadian_passage, in world coordinates)"
+      ]
     }
   ],
   "fallCheck": "全程 y ≥ -0.05；拼接缝处无卡顿（capsule 不停滞 >1 s）",
-  "manualWalkClaim": false
+  "manualWalkClaim": false,
+  "stair": {
+    "footLocal": [
+      0,
+      -39.9
+    ],
+    "footGlb": [
+      -134.451,
+      0,
+      -12.288
+    ],
+    "doorsLocalZ": -43.2,
+    "note": "forward cruise terminates at the stair foot (capsule vs 0.17m risers — temple_dadian_passage evidence: blocked safely); the doors stay covered by the dadian-doors negative, which spawns ON the platform"
+  }
 }

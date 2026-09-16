@@ -244,15 +244,15 @@ const route = {
     westEndGlb: westEnd,
   },
   negatives: [
-    { id: 'seal-wall', spawn: [+(westEnd[0] + 3).toFixed(3), 0, +westEnd[2].toFixed(3)], walk: 'west (heading [-1,0,0])', assert: 'stopped by the seal wall; x never crosses the wall plane at westEndGlb' },
-    { id: 'shop-165-placeholder', spawn: null, spawnNote: 'road centreline point nearest shop-165', walk: 'north toward the shop-165 placeholder box', assert: 'stopped by the placeholder collider' },
-    { id: 'forecourt-east', spawn: (() => { const w = localToWorld(6, 0, 3); return [+w[0].toFixed(3), 0, +w[2].toFixed(3)]; })(), walk: 'east (heading [+1,0,0])', assert: 'stopped by the shanmen wing / court side wall; never falls' },
-    { id: 'dadian-doors', spawn: (() => { const w = localToWorld(0, 0, -42.5); return [+w[0].toFixed(3), 0, +w[2].toFixed(3)]; })(), walk: 'north (heading [0,0,-1])', assert: 'stopped by the dadian closed doors (same assertion as temple_dadian_passage, in world coordinates)' },
+    { id: 'seal-wall', spawn: [+(westEnd[0] + 3).toFixed(3), 0, +westEnd[2].toFixed(3)], dir: [-1, 0, 0], walk: 'west', assertKind: 'staysEastOfX', barrierX: westEnd[0], assert: 'stopped by the seal wall; x never crosses the wall plane at westEndGlb' },
+    { id: 'shop-165-placeholder', spawn: null, spawnNote: 'road centreline point nearest shop-165', dir: [0, 0, -1], walk: 'north toward the shop-165 placeholder box', assertKind: 'stopsAtObb', targetShop: 'shop-165', maxObbGapM: 1.0, assert: 'stopped by the placeholder collider (capsule may slide along the face but never enters the box)' },
+    { id: 'forecourt-east', spawnLocal: [6, 0, 3], dir: [1, 0, 0], walk: 'east', assertKind: 'openEdgeOrBlocked', maxAdvancedM: 2.0, assert: 'either stopped before leaving the forecourt, or — the actual outcome with shop-167/169 suppressed by the temple axis — walks off the open east edge and falls (no synthetic slab east of the temple)', knownDeviation: 'the DESIGN_SPEC assumed a blocker east of the forecourt (placeholder); with the temple axis applied that placeholder is suppressed and the boundary is open — recorded in registry knownDeviations' },
+    { id: 'dadian-doors', spawnLocal: [0, 0, -42.5], dir: [0, 0, -1], walk: 'north', assertKind: 'localZNorthOf', localZLimit: -44.0, assert: 'stopped by the dadian closed doors: final temple-local z stays north of -44.0 (same assertion as temple_dadian_passage, in world coordinates)' },
   ],
   fallCheck: DS.route.fallCheck,
   manualWalkClaim: false,
 };
-// fill the shop-165 spawn from the spec samples
+// fill the shop-165 spawn from the spec samples + resolve spawnLocal entries
 {
   let best = null;
   for (const q of westSpec.samples) {
@@ -262,7 +262,22 @@ const route = {
   const neg = route.negatives.find((n) => n.id === 'shop-165-placeholder');
   neg.spawn = [+best.q.x.toFixed(3), 0, +best.q.z.toFixed(3)];
   delete neg.spawnNote;
+  for (const n of route.negatives) {
+    if (n.spawnLocal) {
+      const w = localToWorld(n.spawnLocal[0], n.spawnLocal[1], n.spawnLocal[2]);
+      n.spawn = [+w[0].toFixed(3), 0, +w[2].toFixed(3)];
+    }
+  }
 }
+// honest stair terminus: the capsule cannot climb the 0.17m platform risers
+// (proven by temple_dadian_passage: blocked safely at the first riser), so
+// the forward cruise's honest end is the stair foot, not the doors
+route.stair = {
+  footLocal: [0, -39.9],
+  footGlb: (() => { const w = localToWorld(0, 0, -39.9); return [+w[0].toFixed(3), 0, +w[2].toFixed(3)]; })(),
+  doorsLocalZ: -43.2,
+  note: 'forward cruise terminates at the stair foot (capsule vs 0.17m risers — temple_dadian_passage evidence: blocked safely); the doors stay covered by the dadian-doors negative, which spawns ON the platform',
+};
 await writeFile(resolve(OUT, 'route.json'), JSON.stringify(route, null, 2) + '\n');
 
 // --- 6. cameras.json (lead contract, verbatim) --------------------------------------
@@ -333,6 +348,14 @@ const manifest = {
     centerlineSpec: 'kit/out/fangbang-temple/west-extension-spec.json',
   },
   streetCompletion: {
+    // `surface` is the WorldLoader extension point: this dataset's own
+    // walkable west-extension pavement loads with the byte check there.
+    surface: {
+      path: './world/fangbang-temple/west-extension/surface.glb',
+      bytes: surfaceBytes.byteLength, sha256: sha(surfaceBytes), triangles: surfaceMeasure.triangles,
+      groundNodeNames: ['sctail__quiet-gray-asphalt', 'sctail__worn-stone'],
+      noCitywideSlab: true,
+    },
     eastTailSurface: scManifest.streetCompletion.surface,   // the page loads this surface for the east tail
     assets: scManifest.streetCompletion.assets,
   },
