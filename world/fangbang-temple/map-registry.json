@@ -223,6 +223,79 @@
   "knownDeviations": [
     "OSM 城隍庙轮廓南缘在此 x 处约 z=31（比道路中线北 ~9m）；本批门槛 z=27.06 比轮廓南缘再北 ~4m，前院与轮廓有 ~4m 出入——轮廓是 2019 参照非测绘，记为 knownDeviation，不调整。",
     "map shop centroids carry per-shop residuals up to ~17m (historicalPositionVerified=false); the west-band placeholders therefore intrude the 8.5m design carriageway at 17 stations (see kit/out/fangbang-temple/west-extension/surface-spec.json placeholderResiduals) — recorded, not moved (frontSetback)",
-    "positions are design locator values from the 2019 OSM snapshot, not a 1990s survey (dimensionsAreDesign)"
+    "positions are design locator values from the 2019 OSM snapshot, not a 1990s survey (dimensionsAreDesign)",
+    {
+      "R1": "R1-01 placeholder setback (lead fix order 2026-09-17): active west-band placeholders whose visual box crossed the 5.6m front line were shifted whole along the road normal until the nearest corner sat on the front line; mapPoint/glbPoint keep the pre-shift values, placementAdjust records each move",
+      "shifts": [
+        {
+          "id": "shop-153",
+          "shiftM": 2.597
+        },
+        {
+          "id": "shop-154",
+          "shiftM": 3.115
+        },
+        {
+          "id": "shop-155",
+          "shiftM": 3.595
+        },
+        {
+          "id": "shop-156",
+          "shiftM": 2.114
+        },
+        {
+          "id": "shop-157",
+          "shiftM": 2.595
+        },
+        {
+          "id": "shop-158",
+          "shiftM": 3.114
+        },
+        {
+          "id": "shop-159",
+          "shiftM": 3.588
+        },
+        {
+          "id": "shop-160",
+          "shiftM": 2.09
+        },
+        {
+          "id": "shop-161",
+          "shiftM": 2.582
+        },
+        {
+          "id": "shop-162",
+          "shiftM": 3.047
+        },
+        {
+          "id": "shop-163",
+          "shiftM": 3.725
+        },
+        {
+          "id": "shop-164",
+          "shiftM": 2.094
+        },
+        {
+          "id": "shop-165",
+          "shiftM": 2.686
+        },
+        {
+          "id": "shop-166",
+          "shiftM": 3.099
+        },
+        {
+          "id": "shop-168",
+          "shiftM": 2.4
+        },
+        {
+          "id": "shop-170",
+          "shiftM": 3.443
+        },
+        {
+          "id": "shop-171",
+          "shiftM": 3.261
+        }
+      ]
+    }
   ]
 }

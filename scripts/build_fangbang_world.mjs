@@ -254,9 +254,12 @@ const route = {
 };
 // fill the shop-165 spawn from the spec samples + resolve spawnLocal entries
 {
+  // shop-165's CURRENT (post R1-01 setback) centre comes from blocks.json
+  const s165 = JSON.parse(await readFile(resolve(OUT, 'blocks.json'), 'utf8'))
+    .placeholders.find((p) => p.id === 'shop-165');
   let best = null;
   for (const q of westSpec.samples) {
-    const d = Math.hypot(q.x + 106.92, q.z - 26.92);
+    const d = Math.hypot(q.x - s165.glbPoint[0], q.z - s165.glbPoint[1]);
     if (!best || d < best.d) best = { d, q };
   }
   const neg = route.negatives.find((n) => n.id === 'shop-165-placeholder');

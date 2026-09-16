@@ -86,16 +86,30 @@ def l2w(lx, lz):
 FC = [l2w(-9, 7), l2w(9, 7)]      # forecourt south edge, world xz
 
 # --- active placeholder boxes (BlockManager rotated-box semantics) -----------
+# Source of truth: the dataset blocks.json (post R1-01 setback placement).
+# A pre-setback map position is used only when the dataset does not exist yet.
 REPLACED = set(DS['placeholders']['replacedByTempleAxis'])
+BLOCKS_PATH = ROOT / 'world/fangbang-temple/blocks.json'
 BOXES = []
-for s in MAP['shops']:
-    if s['id'] not in DS['placeholders']['idsInBand'] or s['id'] in REPLACED:
-        continue
-    BOXES.append({
-        'id': s['id'],
-        'x': s['point'][0] - 53.5, 'z': s['point'][1] + 17.4,
-        'theta': s['angle'], 'hw': s['width'] / 2, 'hd': s['depth'] / 2,
-    })
+if BLOCKS_PATH.exists():
+    BLK = json.loads(BLOCKS_PATH.read_text(encoding='utf-8'))
+    for ph in BLK['placeholders']:
+        if ph['id'] not in DS['placeholders']['idsInBand'] or ph['replacedBy']:
+            continue
+        BOXES.append({
+            'id': ph['id'], 'x': ph['glbPoint'][0], 'z': ph['glbPoint'][1],
+            'theta': ph['angleRad'], 'hw': ph['widthM'] / 2, 'hd': ph['depthM'] / 2,
+            'adjusted': 'placementAdjust' in ph,
+        })
+else:
+    for s in MAP['shops']:
+        if s['id'] not in DS['placeholders']['idsInBand'] or s['id'] in REPLACED:
+            continue
+        BOXES.append({
+            'id': s['id'],
+            'x': s['point'][0] - 53.5, 'z': s['point'][1] + 17.4,
+            'theta': s['angle'], 'hw': s['width'] / 2, 'hd': s['depth'] / 2,
+        })
 
 def obb_dist(px, pz, b):
     dx, dz = px - b['x'], pz - b['z']
@@ -110,7 +124,9 @@ for b in BOXES:
     d = min(obb_dist(q['x'], q['z'], b) for q in SAMPLES)
     cls = 'roadway_intrusion' if d < ROAD_HW else ('sidewalk_band' if d < FRONT else 'clear')
     shop_report[b['id']] = {'minCenterlineToBoxM': round(d, 3), 'class': cls,
-                            'handling': 'residual recorded; placeholder not moved (frontSetback)'}
+                            'setbackApplied': bool(b.get('adjusted')),
+                            'handling': ('R1-01 setback applied (placementAdjust in blocks.json)' if b.get('adjusted')
+                                         else 'residual recorded; placeholder not moved (frontSetback)')}
 
 # (b) HARD: capsule-free corridor at every station
 def corridor(px, pz, nx, nz):
@@ -143,7 +159,8 @@ corridor_min = 1e9
 for q, _ in G:
     w = corridor(q['x'], q['z'], q['southNx'], q['southNz'])
     corridor_min = min(corridor_min, w)
-corridor_pass = corridor_min >= MIN_NET_BAND + 2 * CAPSULE_R
+CORRIDOR_MIN_M = 8.4   # R1-01: carriageway basically clear once boxes sit behind the front line
+corridor_pass = corridor_min >= CORRIDOR_MIN_M
 
 # (c) forecourt joint: find the joint band, then snap the north sidewalk outer
 # edge ONTO the forecourt edge inside the band (齐平 by construction, 2m ramps)
@@ -193,7 +210,7 @@ joint_pass = snap_dev <= 0.02
 
 fail = {}
 if not corridor_pass:
-    fail['corridor'] = {'minM': round(corridor_min, 2), 'requiredM': MIN_NET_BAND + 2 * CAPSULE_R}
+    fail['corridor'] = {'minM': round(corridor_min, 2), 'requiredM': CORRIDOR_MIN_M}
 if not joint_pass:
     fail['forecourtJoint'] = joint
 print('WEST_SURFACE_SHOPS', json.dumps(shop_report))
@@ -322,7 +339,7 @@ design = {
              'taperM': 0, 'taperNote': 'measured cut width equals the 8.5m design width — no taper'},
     'forecourtJoint': joint,
     'placeholderResiduals': shop_report,
-    'corridor': {'minFreeM': round(corridor_min, 2), 'capsuleR': CAPSULE_R, 'rule': '>=1.9m (1.2 net + 2r) at every station'},
+    'corridor': {'minFreeM': round(corridor_min, 2), 'capsuleR': CAPSULE_R, 'rule': '>=8.4m (R1-01: carriageway clear; boxes behind the 5.6m front line)'},
     'groundNodeNames': ['sctail__quiet-gray-asphalt', 'sctail__worn-stone'],
     'groundNodeNote': 'paving/curb/drains join into sctail__worn-stone; the sctail__ prefix family is the registered GROUND_NODE_RE walkable set (collisionAdapter.js is frozen — no new prefix)',
     'physics': 'visible faces ARE the walkable ground via GROUND_NODE_RE; no invisible slab',

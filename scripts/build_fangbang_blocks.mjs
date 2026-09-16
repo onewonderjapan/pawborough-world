@@ -126,8 +126,93 @@ dataset.blocks.push({
 });
 dataset.generatedBy = 'scripts/build_fangbang_blocks.mjs (derived candidate; frozen world/blocks.json, world/east-edge and world/street-completion untouched; asset blocks copied verbatim)';
 dataset.bandWidening = { westFloorGlbX: +WEST_FLOOR.toFixed(3), addedIds: wantIds, rule: 'build_blocks.mjs adjacency with the west floor moved to the west end (seal wall half-width + 2m margin)' };
-await writeFile(resolve(OUT, 'blocks.json'), JSON.stringify(dataset, null, 2) + '\n');
 
+// --- R1-01 placeholder setback (lead fix order 2026-09-17) ---------------------
+// Active west-band placeholders whose visual box has any corner closer than
+// the 5.6m front line to the road centerline shift WHOLESALE along the road
+// normal until the nearest corner sits exactly on the front line. No rotation,
+// no scaling, no height change; mapPoint/glbPoint keep the original values and
+// the adjustment is recorded as placementAdjust.
+const FRONT_LINE_M = 5.6;
+const westSpec = JSON.parse(await readFile(resolve(root, 'kit/out/fangbang-temple/west-extension-spec.json'), 'utf8'));
+const segment = JSON.parse(await readFile(resolve(root, 'world/segment.json'), 'utf8'));
+// combined road polyline, one ordered west←east: frozen centerline (x >= -0.5)
+// + west extension samples (x < -0.5), with per-point south normals
+const combined = [
+  ...segment.samplesMeters.filter((s) => s.x >= -0.5).map((s) => ({ x: s.x, z: s.z })).reverse(),
+  ...westSpec.samples.filter((s) => s.x < -0.5).map((s) => ({ x: s.x, z: s.z })),
+];
+const combinedNormals = combined.map((_, i) => {
+  const j = Math.min(i + 1, combined.length - 1), k = Math.max(i - 1, 0);
+  const tx = combined[j].x - combined[k].x, tz = combined[j].z - combined[k].z;
+  const L = Math.hypot(tx, tz) || 1;
+  return { nx: tz / L, nz: -tx / L };   // south normal (tangent (1,0) -> (0,1))
+});
+const nearestOnRoad = (px, pz) => {
+  let best = { d: Infinity, i: -1 };
+  for (let i = 0; i < combined.length - 1; i++) {
+    const a = combined[i], b = combined[i + 1];
+    const vx = b.x - a.x, vz = b.z - a.z;
+    const L2 = vx * vx + vz * vz || 1;
+    const t = Math.max(0, Math.min(1, ((px - a.x) * vx + (pz - a.z) * vz) / L2));
+    const d = Math.hypot(px - (a.x + t * vx), pz - (a.z + t * vz));
+    if (d < best.d) best = { d, i };
+  }
+  return best;
+};
+const cornersOf = (gx, gz, th, hw, hd) => {
+  const c = Math.cos(th), s = Math.sin(th);
+  return [[hw, hd], [hw, -hd], [-hw, hd], [-hw, -hd]].map(([lx, lz]) => [gx + c * lx + s * lz, gz - s * lx + c * lz]);
+};
+const shiftTable = [];
+for (const ph of dataset.placeholders) {
+  if (!DS.placeholders.idsInBand.includes(ph.id) || ph.replacedBy) continue;
+  const hw = ph.widthM / 2, hd = ph.depthM / 2, th = ph.angleRad;
+  let gx = ph.glbPoint[0], gz = ph.glbPoint[1];
+  let netX = 0, netZ = 0;
+  for (let iter = 0; iter < 4; iter++) {
+    const corners = cornersOf(gx, gz, th, hw, hd);
+    let worst = { d: Infinity, i: -1, c: null };
+    for (const c of corners) {
+      const n = nearestOnRoad(c[0], c[1]);
+      if (n.d < worst.d) worst = { d: n.d, i: n.i, c };
+    }
+    if (worst.d >= FRONT_LINE_M - 1e-6) break;
+    // shift along the road normal at the nearest centerline point, away from
+    // the road (side = sign of the box-center offset along that normal)
+    const nrm = combinedNormals[worst.i];
+    const near = nearestOnRoad(gx, gz);
+    const c = Math.cos(th), s = Math.sin(th);
+    void c; void s;
+    const cx = combined[near.i].x, cz = combined[near.i].z;
+    const side = Math.sign((gx - cx) * nrm.nx + (gz - cz) * nrm.nz) || 1;
+    const push = (FRONT_LINE_M - worst.d) * side;
+    gx += nrm.nx * push;
+    gz += nrm.nz * push;
+    netX += nrm.nx * push;
+    netZ += nrm.nz * push;
+  }
+  if (netX || netZ) {
+    const shiftM = Math.hypot(netX, netZ);
+    ph.glbPoint = [+gx.toFixed(3), +gz.toFixed(3)];
+    ph.placementAdjust = {
+      shiftM: +shiftM.toFixed(3),
+      alongNormal: [+(netX / shiftM).toFixed(5), +(netZ / shiftM).toFixed(5)],
+      reason: 'map centroid residual; snapped to design front line',
+    };
+    shiftTable.push({ id: ph.id, shiftM: ph.placementAdjust.shiftM });
+  }
+}
+// sanity: adjusted boxes must not overlap each other
+const active = dataset.placeholders.filter((p) => DS.placeholders.idsInBand.includes(p.id) && !p.replacedBy);
+for (let i = 0; i < active.length; i++) for (let j = i + 1; j < active.length; j++) {
+  const a = active[i], b = active[j];
+  const dx = b.glbPoint[0] - a.glbPoint[0], dz = b.glbPoint[1] - a.glbPoint[1];
+  if (Math.hypot(dx, dz) < (Math.max(a.widthM, a.depthM) + Math.max(b.widthM, b.depthM)) / 2 * 0.5)
+    console.warn(`WARN close pair ${a.id}/${b.id} d=${Math.hypot(dx, dz).toFixed(1)}m (rotated extents may still clear)`);
+}
+
+await writeFile(resolve(OUT, 'blocks.json'), JSON.stringify(dataset, null, 2) + '\n');
 // --- map-registry.json ----------------------------------------------------------
 const reg = DS.mapRegistration;
 const registry = {
@@ -162,9 +247,13 @@ const registry = {
     reg.osmTemplePolygonNote,
     'map shop centroids carry per-shop residuals up to ~17m (historicalPositionVerified=false); the west-band placeholders therefore intrude the 8.5m design carriageway at 17 stations (see kit/out/fangbang-temple/west-extension/surface-spec.json placeholderResiduals) — recorded, not moved (frontSetback)',
     'positions are design locator values from the 2019 OSM snapshot, not a 1990s survey (dimensionsAreDesign)',
+    ...(shiftTable.length ? [{
+      R1: 'R1-01 placeholder setback (lead fix order 2026-09-17): active west-band placeholders whose visual box crossed the 5.6m front line were shifted whole along the road normal until the nearest corner sat on the front line; mapPoint/glbPoint keep the pre-shift values, placementAdjust records each move',
+      shifts: shiftTable,
+    }] : []),
   ],
 };
 await writeFile(resolve(OUT, 'map-registry.json'), JSON.stringify(registry, null, 2) + '\n');
 
 console.log(`FANGBANG_BLOCKS_READY placeholders=${dataset.placeholders.length} blocks=${dataset.blocks.map((b) => b.id).join(',')} templeAssets=${templeAssets.length} replaced=${hits.join(',')}`);
-console.log(`MAP_REGISTRY_READY mapSha=${registry.mapSource.sha256.slice(0, 12)}...`);
+console.log(`MAP_REGISTRY_READY mapSha=${registry.mapSource.sha256.slice(0, 12)}... shifted=${shiftTable.length} (max ${shiftTable.reduce((m, s) => Math.max(m, s.shiftM), 0).toFixed(2)}m)`);

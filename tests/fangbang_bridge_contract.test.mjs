@@ -111,6 +111,64 @@ check('replaced placeholders not deleted', replaced.every((id) => blocks.placeho
 check('west band carries all idsInBand', DS.placeholders.idsInBand.every((id) => blocks.placeholders.some((p) => p.id === id))
   , `${blocks.placeholders.length} placeholders total`);
 
+// --- R1-01: setback — every active west-band box sits behind the front line ---
+{
+  const westSpec = await j('kit/out/fangbang-temple/west-extension-spec.json');
+  const segment = await j('world/segment.json');
+  const combined = [
+    ...segment.samplesMeters.filter((s) => s.x >= -0.5).map((s) => [s.x, s.z]).reverse(),
+    ...westSpec.samples.filter((s) => s.x < -0.5).map((s) => [s.x, s.z]),
+  ];
+  const nearest = (px, pz) => {
+    let best = Infinity;
+    for (let i = 0; i < combined.length - 1; i++) {
+      const vx = combined[i + 1][0] - combined[i][0], vz = combined[i + 1][1] - combined[i][1];
+      const L2 = vx * vx + vz * vz || 1;
+      const t = Math.max(0, Math.min(1, ((px - combined[i][0]) * vx + (pz - combined[i][1]) * vz) / L2));
+      best = Math.min(best, Math.hypot(px - (combined[i][0] + t * vx), pz - (combined[i][1] + t * vz)));
+    }
+    return best;
+  };
+  const FRONT = 5.6;
+  const activeB = blocks.placeholders.filter((p) => DS.placeholders.idsInBand.includes(p.id) && !p.replacedBy);
+  let worst = Infinity, worstId = '';
+  for (const p of activeB) {
+    const c = Math.cos(p.angleRad), s = Math.sin(p.angleRad);
+    for (const [lx, lz] of [[p.widthM / 2, p.depthM / 2], [p.widthM / 2, -p.depthM / 2], [-p.widthM / 2, p.depthM / 2], [-p.widthM / 2, -p.depthM / 2]]) {
+      const d = nearest(p.glbPoint[0] + c * lx + s * lz, p.glbPoint[1] - s * lx + c * lz);
+      if (d < worst) { worst = d; worstId = p.id; }
+    }
+  }
+  check('R1-01: no active west-band corner inside the 5.6m front line', worst >= FRONT - 1e-3, `min ${worst.toFixed(3)}m at ${worstId}`);
+  // capsule corridor across the carriageway (widest contiguous clear interval)
+  const CAPS = 0.37;
+  const boxes = activeB.map((p) => ({ x: p.glbPoint[0], z: p.glbPoint[1], theta: p.angleRad, hw: p.widthM / 2, hd: p.depthM / 2 }));
+  const obbD = (px, pz, b) => {
+    const dx = px - b.x, dz = pz - b.z;
+    const c = Math.cos(b.theta), s = Math.sin(b.theta);
+    return Math.hypot(Math.max(Math.abs(c * dx - s * dz) - b.hw, 0), Math.max(Math.abs(s * dx + c * dz) - b.hd, 0));
+  };
+  const clearAt = (q, n) => (t) => {
+    const px = q.x + n.nx * t, pz = q.z + n.nz * t;
+    return Math.abs(t) <= 4.25 && boxes.every((b) => obbD(px, pz, b) > CAPS);
+  };
+  let corridorMin = Infinity;
+  for (const q of westSpec.samples) {
+    const n = { nx: q.southNx, nz: q.southNz };
+    const ok = clearAt(q, n);
+    let best = 0, cur = 0;
+    for (let k = -85; k <= 85; k++) {
+      if (ok(k * 0.05)) { cur += 0.05; best = Math.max(best, cur); } else cur = 0;
+    }
+    corridorMin = Math.min(corridorMin, best);
+  }
+  check('R1-01: capsule corridor >= 8.4m everywhere (carriageway clear)', corridorMin >= 8.4, `min ${corridorMin.toFixed(2)}m`);
+  const adjusted = activeB.filter((p) => p.placementAdjust);
+  check('R1-01: adjustments recorded with mapPoint/glbPoint preserved',
+    adjusted.length === 17 && adjusted.every((p) => p.mapPoint && p.placementAdjust.reason === 'map centroid residual; snapped to design front line'),
+    `${adjusted.length} placementAdjust records`);
+}
+
 // --- 6. route continuity + walkable-band projection --------------------------------
 const pts = route.mainStreet;
 let maxGap = 0;

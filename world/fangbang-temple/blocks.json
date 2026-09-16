@@ -690,8 +690,8 @@
         -7.41
       ],
       "glbPoint": [
-        -2.82,
-        9.99
+        -1.975,
+        12.446
       ],
       "angleRad": -2.805254,
       "widthM": 10.7,
@@ -699,7 +699,15 @@
       "heightM": 7.4,
       "category": "药材",
       "historicalPositionVerified": false,
-      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.597,
+        "alongNormal": [
+          0.32535,
+          0.94559
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
     },
     {
       "id": "shop-154",
@@ -710,8 +718,8 @@
         -23.45
       ],
       "glbPoint": [
-        -8.43,
-        -6.05
+        -9.459,
+        -8.991
       ],
       "angleRad": 0.336339,
       "widthM": 10.7,
@@ -719,7 +727,15 @@
       "heightM": 8.8,
       "category": "木器",
       "historicalPositionVerified": false,
-      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.115,
+        "alongNormal": [
+          -0.3302,
+          -0.94391
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
     },
     {
       "id": "shop-155",
@@ -730,8 +746,8 @@
         -3.45
       ],
       "glbPoint": [
-        -14.15,
-        13.95
+        -12.963,
+        17.343
       ],
       "angleRad": -2.805254,
       "widthM": 10.7,
@@ -739,7 +755,15 @@
       "heightM": 10.2,
       "category": "洋货",
       "historicalPositionVerified": false,
-      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.595,
+        "alongNormal": [
+          0.3302,
+          0.94391
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
     },
     {
       "id": "shop-156",
@@ -750,8 +774,8 @@
         -19.49
       ],
       "glbPoint": [
-        -19.76,
-        -2.09
+        -20.458,
+        -4.085
       ],
       "angleRad": 0.336339,
       "widthM": 10.7,
@@ -759,7 +783,15 @@
       "heightM": 7.4,
       "category": "海味",
       "historicalPositionVerified": false,
-      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.114,
+        "alongNormal": [
+          -0.3302,
+          -0.94391
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
     },
     {
       "id": "shop-157",
@@ -770,8 +802,8 @@
         0.51
       ],
       "glbPoint": [
-        -25.47,
-        17.91
+        -24.613,
+        20.359
       ],
       "angleRad": -2.805254,
       "widthM": 10.7,
@@ -779,7 +811,15 @@
       "heightM": 8.8,
       "category": "腌腊",
       "historicalPositionVerified": false,
-      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.595,
+        "alongNormal": [
+          0.33011,
+          0.94394
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
     },
     {
       "id": "shop-158",
@@ -790,8 +830,8 @@
         -15.53
       ],
       "glbPoint": [
-        -31.08,
-        1.87
+        -32.108,
+        -1.07
       ],
       "angleRad": 0.336339,
       "widthM": 10.7,
@@ -799,7 +839,15 @@
       "heightM": 10.2,
       "category": "南北杂货",
       "historicalPositionVerified": false,
-      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.114,
+        "alongNormal": [
+          -0.33011,
+          -0.94394
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
     },
     {
       "id": "shop-159",
@@ -810,8 +858,8 @@
         4.48
       ],
       "glbPoint": [
-        -36.8,
-        21.88
+        -35.615,
+        25.267
       ],
       "angleRad": -2.805254,
       "widthM": 10.7,
@@ -819,7 +867,15 @@
       "heightM": 7.4,
       "category": "照相店",
       "historicalPositionVerified": false,
-      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.588,
+        "alongNormal": [
+          0.33017,
+          0.94392
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
     },
     {
       "id": "shop-160",
@@ -830,8 +886,8 @@
         8.44
       ],
       "glbPoint": [
-        -48.13,
-        25.84
+        -47.44,
+        27.812
       ],
       "angleRad": -2.805254,
       "widthM": 10.7,
@@ -839,7 +895,15 @@
       "heightM": 8.8,
       "category": "字画店",
       "historicalPositionVerified": false,
-      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.09,
+        "alongNormal": [
+          0.3302,
+          0.94391
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
     },
     {
       "id": "shop-161",
@@ -850,8 +914,8 @@
         12.4
       ],
       "glbPoint": [
-        -59.46,
-        29.8
+        -58.615,
+        32.24
       ],
       "angleRad": -2.805254,
       "widthM": 10.7,
@@ -859,7 +923,15 @@
       "heightM": 10.2,
       "category": "寿衣店",
       "historicalPositionVerified": false,
-      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.582,
+        "alongNormal": [
+          0.32743,
+          0.94488
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
     },
     {
       "id": "shop-162",
@@ -870,8 +942,8 @@
         16.36
       ],
       "glbPoint": [
-        -70.78,
-        33.76
+        -69.782,
+        36.639
       ],
       "angleRad": -2.805254,
       "widthM": 10.7,
@@ -879,7 +951,15 @@
       "heightM": 7.4,
       "category": "烟纸店",
       "historicalPositionVerified": false,
-      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.047,
+        "alongNormal": [
+          0.3274,
+          0.94489
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
     },
     {
       "id": "shop-163",
@@ -890,8 +970,8 @@
         0.31
       ],
       "glbPoint": [
-        -76.39,
-        17.71
+        -77.592,
+        14.184
       ],
       "angleRad": 0.336339,
       "widthM": 10.7,
@@ -899,7 +979,15 @@
       "heightM": 8.8,
       "category": "银楼",
       "historicalPositionVerified": false,
-      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.725,
+        "alongNormal": [
+          -0.3227,
+          -0.9465
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
     },
     {
       "id": "shop-164",
@@ -910,8 +998,8 @@
         26.06
       ],
       "glbPoint": [
-        -102.99,
-        43.46
+        -102.529,
+        45.503
       ],
       "angleRad": -2.908084,
       "widthM": 10.7,
@@ -919,7 +1007,15 @@
       "heightM": 10.2,
       "category": "酒楼",
       "historicalPositionVerified": false,
-      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.094,
+        "alongNormal": [
+          0.22002,
+          0.9755
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
     },
     {
       "id": "shop-165",
@@ -930,8 +1026,8 @@
         9.52
       ],
       "glbPoint": [
-        -106.92,
-        26.92
+        -107.598,
+        24.321
       ],
       "angleRad": 0.233508,
       "widthM": 10.7,
@@ -939,7 +1035,15 @@
       "heightM": 7.4,
       "category": "饭馆",
       "historicalPositionVerified": false,
-      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.686,
+        "alongNormal": [
+          -0.25259,
+          -0.96757
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
     },
     {
       "id": "shop-166",
@@ -950,8 +1054,8 @@
         29.89
       ],
       "glbPoint": [
-        -120.9,
-        47.29
+        -120.385,
+        50.346
       ],
       "angleRad": -2.974559,
       "widthM": 10.7,
@@ -959,7 +1063,15 @@
       "heightM": 8.8,
       "category": "棉花",
       "historicalPositionVerified": false,
-      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.099,
+        "alongNormal": [
+          0.1663,
+          0.98608
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
     },
     {
       "id": "shop-167",
@@ -990,8 +1102,8 @@
         32.96
       ],
       "glbPoint": [
-        -140.07,
-        50.36
+        -139.671,
+        52.727
       ],
       "angleRad": -3.001241,
       "widthM": 10.7,
@@ -999,7 +1111,15 @@
       "heightM": 7.4,
       "category": "绣品",
       "historicalPositionVerified": false,
-      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.4,
+        "alongNormal": [
+          0.16641,
+          0.98606
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
     },
     {
       "id": "shop-169",
@@ -1030,8 +1150,8 @@
         34.63
       ],
       "glbPoint": [
-        -151.95,
-        52.03
+        -151.377,
+        55.425
       ],
       "angleRad": -3.001241,
       "widthM": 10.7,
@@ -1039,7 +1159,15 @@
       "heightM": 10.2,
       "category": "参茸",
       "historicalPositionVerified": false,
-      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.443,
+        "alongNormal": [
+          0.1663,
+          0.98608
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
     },
     {
       "id": "shop-171",
@@ -1050,8 +1178,8 @@
         17.8
       ],
       "glbPoint": [
-        -154.33,
-        35.2
+        -154.872,
+        31.984
       ],
       "angleRad": 0.140352,
       "widthM": 10.7,
@@ -1059,7 +1187,15 @@
       "heightM": 7.4,
       "category": "药材",
       "historicalPositionVerified": false,
-      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.261,
+        "alongNormal": [
+          -0.1663,
+          -0.98608
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
     }
   ],
   "bandWidening": {
