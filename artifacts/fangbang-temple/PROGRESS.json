@@ -17,9 +17,21 @@
         "kit/out/fangbang-temple/west-extension-spec.json"
       ],
       "facts": {
-        "wedgeCorners": [[-3.274, -3.368], [-0.5084, 4.6695]],
+        "wedgeCorners": [
+          [
+            -3.274,
+            -3.368
+          ],
+          [
+            -0.5084,
+            4.6695
+          ]
+        ],
         "cutWidthM": 8.5,
-        "wedgeMidpoint": [-1.8912, 0.6507],
+        "wedgeMidpoint": [
+          -1.8912,
+          0.6507
+        ],
         "totalLengthM": 153.94,
         "footArcM": 129.94,
         "tailAfterFootM": 24.0,
@@ -41,25 +53,42 @@
         "corridorMinFreeM": 3.75,
         "forecourtSnappedDeviationM": 0.0,
         "forecourtStepM": 0.005,
-        "groundNodes": ["sctail__quiet-gray-asphalt", "sctail__worn-stone"],
+        "groundNodes": [
+          "sctail__quiet-gray-asphalt",
+          "sctail__worn-stone"
+        ],
         "groundNodeNote": "sctail__ prefix family reused because collisionAdapter.GROUND_NODE_RE is frozen (walkable-set contract); sidewalks use the stone material so they join the walkable worn-stone node",
         "placeholderResiduals": "17 west-band shops intrude the 8.5m carriageway per OSM map data; recorded as residuals (frontSetback rule), none moved; capsule corridor >= 3.75m everywhere"
       }
     },
     "N3": {
       "status": "done",
-      "evidence": ["world/fangbang-temple/blocks.json", "world/fangbang-temple/map-registry.json"],
+      "evidence": [
+        "world/fangbang-temple/blocks.json",
+        "world/fangbang-temple/map-registry.json"
+      ],
       "facts": {
         "placeholders": 40,
-        "westBand": ["shop-153..171 (168-171 derived from map per build_blocks rule, band floor = westEnd - sealHalf - 2m)"],
-        "replacedRuleResult": ["shop-167", "shop-169"],
+        "westBand": [
+          "shop-153..171 (168-171 derived from map per build_blocks rule, band floor = westEnd - sealHalf - 2m)"
+        ],
+        "replacedRuleResult": [
+          "shop-167",
+          "shop-169"
+        ],
         "templeAssetsBlock": "8 assets, positionGlb = localToWorld(localOffset), rotationYRad = yaw, no per-asset sidecars (collision-world is the single wall authority)",
         "validateWorldInputs": "OK"
       }
     },
     "N4": {
       "status": "done",
-      "evidence": ["world/fangbang-temple/instances.json", "world/fangbang-temple/collision-world.json", "world/fangbang-temple/route.json", "world/fangbang-temple/cameras.json", "world/fangbang-temple/review-manifest.json"],
+      "evidence": [
+        "world/fangbang-temple/instances.json",
+        "world/fangbang-temple/collision-world.json",
+        "world/fangbang-temple/route.json",
+        "world/fangbang-temple/cameras.json",
+        "world/fangbang-temple/review-manifest.json"
+      ],
       "facts": {
         "instances": 32,
         "colliders": "337 = street 208 (verbatim) + seal wall 1 + temple 128 composed",
@@ -70,9 +99,17 @@
     },
     "N5": {
       "status": "done",
-      "evidence": ["fangbang.html", "src/fangbangMain.js", "package.json dev/preview scripts", "vite.config.js entry"],
+      "evidence": [
+        "fangbang.html",
+        "src/fangbangMain.js",
+        "package.json dev/preview scripts",
+        "vite.config.js entry"
+      ],
       "facts": {
-        "ports": { "dev": 5296, "preview": 5297 },
+        "ports": {
+          "dev": 5296,
+          "preview": 5297
+        },
         "loading": "WorldLoader (assembly + west surface via manifest extension point) + page-level east tail + seal wall (byte-checked) + temple axis via blockViews assets block + extra ground trimeshes (east tail sctail__ + temple courts temple-ground__)",
         "integrity": "324474 == expected (base + all asset blocks + both surfaces + wall)",
         "cruise": "automatic out-and-back PASS + 4 negatives PASS headless on 5296 and on dist 5297",
@@ -81,12 +118,19 @@
     },
     "N6": {
       "status": "done",
-      "suites": ["tests/fangbang_bridge_contract.test.mjs", "tests/fangbang_bridge_passage.test.mjs", "tests/fangbang_map_registry.test.mjs"],
+      "suites": [
+        "tests/fangbang_bridge_contract.test.mjs",
+        "tests/fangbang_bridge_passage.test.mjs",
+        "tests/fangbang_map_registry.test.mjs"
+      ],
       "result": "29/29 green (26 regression + 3 new)"
     },
     "N7": {
       "status": "done",
-      "evidence": ["kit/out/fangbang-temple/renders/ (9 png + cameras.json sidecar + scene.blend)", "kit/out/fangbang-temple/compare-shanmen-from-road.png"],
+      "evidence": [
+        "kit/out/fangbang-temple/renders/ (9 png + cameras.json sidecar + scene.blend)",
+        "kit/out/fangbang-temple/compare-shanmen-from-road.png"
+      ],
       "facts": {
         "views": "8 pbr + 1 clay (shanmen-from-road), fov verified per camera (verticalFovDegrees)",
         "engine": "Cycles CPU 24spp 1600x900 AgX, wall 3m33s (no per-frame >10min fallback needed)",
@@ -95,7 +139,9 @@
     },
     "N8": {
       "status": "done",
-      "evidence": ["artifacts/fangbang-temple/perf.json"],
+      "evidence": [
+        "artifacts/fangbang-temple/perf.json"
+      ],
       "facts": {
         "label": "headless software GL (SwiftShader) 960x600, NOT the target device, regression baseline only (V09)",
         "load": "72.9MB first-load transfer, integrity 324474==expected, ready wall 4.3s",
@@ -119,5 +165,23 @@
     "17 placeholder visual boxes intrude the carriageway (map centroid residuals) — residuals recorded, none moved; corridor >= 3.75m",
     "temple-axis assets block carries no collision sidecars: collision-world.json is the single wall authority; revoking the block removes visuals only (page exposes no revoke)",
     "ground node family reuses the frozen sctail__ prefix (GROUND_NODE_RE is delivered code, read-only this batch)"
-  ]
+  ],
+  "r1": {
+    "status": "done",
+    "order": "R1-FIXES.md",
+    "commits": {
+      "R1-01": "85b639c",
+      "R1-02": "4e7d7a0",
+      "R1-03": "c96b539",
+      "R1-04": "8e53e00"
+    },
+    "facts": {
+      "setback": "17 shifted (max 3.73m), min corner distance exactly 5.600m, corridor 8.55m >= 8.4, surface GLB byte-identical",
+      "forecourtBounds": "forecourt-bounds.glb 24 tris + temple-bounds instance + 2 records (339 colliders); forecourt-east deterministic (advanced 3.06 <= 3.5, feetY 0.03)",
+      "stair": "terminus z_local -43.979 (node + page), within -43.98+/-0.1",
+      "hygiene": "pyc untracked + ignored",
+      "evidence": "Blender 9 views re-rendered + WebGL 8 shots re-captured (FANGBANG_WEB_PASS), dist rebuilt + 5297 verified"
+    },
+    "blockers": []
+  }
 }
