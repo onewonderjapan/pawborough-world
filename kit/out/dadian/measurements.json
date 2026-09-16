@@ -1,0 +1,76 @@
+{
+  "moduleId": "dadian",
+  "units": "meters",
+  "surveyed": false,
+  "axis": "GLB Y-up; facade +Z; depth -Z; front-wall center bottom origin (local), world placement (0,0,-44)",
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false,
+  "targets": {
+    "dadian.glb": {
+      "groups": [
+        "dadian-body",
+        "dadian-plaque"
+      ],
+      "objects": 12,
+      "triangles": 43826,
+      "fileBytes": 6295144,
+      "sha256": "8a722d9dc7663cefea0f94409a8911c65cf824756a60220ec7d1c88d4f1dabee"
+    }
+  },
+  "timings": {
+    "totalSeconds": 2.4
+  },
+  "budgets": {
+    "dadianTris": {
+      "actual": 43826,
+      "limit": 58000,
+      "pass": true
+    },
+    "dadianGlbBytes": {
+      "actual": 6295144,
+      "limit": 9500000,
+      "pass": true
+    },
+    "skirtRibsTris": {
+      "actual": 12408,
+      "limit": 16000,
+      "pass": true
+    },
+    "mainRibsTris": {
+      "actual": 10692,
+      "limit": 20000,
+      "pass": true
+    },
+    "ornamentsTris": {
+      "actual": 648,
+      "limit": 700,
+      "pass": true
+    },
+    "newImages": {
+      "actual": 1,
+      "limit": 1,
+      "pass": true,
+      "note": "dadian-plaque.png; relief normal shared with shanmen"
+    }
+  },
+  "design": {
+    "family": "temple-axis-hall",
+    "reference": {
+      "imageId": "PBR-SH-0002-043 + PBR-SH-0005-001/002/003/004 (batch-005)",
+      "referenceEra": "2007/2015 photos; hall form (double eave, five bays, xieshan-read gables, 城隍廟 plaque) confirmed by machine-vision screening; photos support, never override the frozen numbers",
+      "historicalAccuracyVerified": false,
+      "dimensionsAreDesign": true
+    },
+    "clearDoorwayM": [
+      4.2,
+      3.6
+    ],
+    "plaque": {
+      "text": "城隍廟",
+      "atlas": "dadian-plaque.png (single, full UV)"
+    },
+    "roofMethod": "TWO yimen-style profile-lofted shells: skirt 26.4m eave 5.2 ridge 6.0, main 22.8m eave 7.0 ridge 12.4; midWallBand 5.95-7.0 is the 重檐 diaphragm; 歇山读感 gable overlays at x=+-9.0 + 18m crest beam (pre-set 2026-09-16, aerial PBR-SH-0005-001; NOT a true-xieshan topology)",
+    "stackingClearanceM": 1.0,
+    "rear": "plain design inference"
+  }
+}

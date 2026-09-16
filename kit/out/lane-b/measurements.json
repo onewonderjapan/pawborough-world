@@ -1,0 +1,35 @@
+{
+  "moduleId": "lane-b",
+  "triangles": 5284,
+  "meshes": 12,
+  "fileBytes": 2296396,
+  "sha256": "16164c1e76c8e47fae0dc080304d02f87c6325be007d03b1f5723e4e2491d566",
+  "design": {
+    "family": "lane-b-module",
+    "sampleId": "lane-b",
+    "basedOn": "before-owner-decision-2210/DESIGN.md + DESIGN_SPEC.json (frozen design)",
+    "localFrame": "origin=portal centre on old seal wall inner face at floor y=0.09; +X right(0.8863,0,0.4631); +Z inward(-0.4631,0,0.8863)",
+    "portalClearWidthM": 1.5,
+    "portalClearHeightM": 2.3,
+    "portalOverallHeightM": 2.65,
+    "depthM": 5.5,
+    "pocketWidthM": 3.6,
+    "facadeHeightsM": [
+      6.2,
+      4.8
+    ],
+    "detailGroups": [
+      "downpipe+clamps+shoe",
+      "clothesline+2 cloth (2.45m clearance)",
+      "conduit+clips",
+      "inset drain + threshold"
+    ],
+    "newTextures": 0,
+    "configDriven": false,
+    "designFrozen": true
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

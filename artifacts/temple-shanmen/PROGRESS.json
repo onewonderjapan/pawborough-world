@@ -1,0 +1,25 @@
+{
+  "taskId": "pawborough-temple-shanmen-main",
+  "session": "GLM-5.3 single continuous session, owner-started 2026-09-15 morning",
+  "clock": "local wall time from git commit timestamps + shell time logs; no hand-written future times",
+  "stages": [
+    {"stage": "S0 读任务与基础设施", "window": "10:47–10:52", "done": "TASK/DESIGN/DESIGN_SPEC/CAMERAS/REFERENCE + skill参考 + kit/physics/capture/validator模式；确认Blender 4.5.1、node、PIL、Noto CJK、GB10(GPU不抢)"},
+    {"stage": "S1 配置与构件库", "window": "10:53–10:58", "done": "temple-shanmen.config.json(严格schema) + temple_components.py(单调三次剖面放样/闭合薄壳/斜向翼墙/门框) + 两张本地贴图生成", "note": "贴图重写一次删掉无效分支"},
+    {"stage": "S2-S4 构建与导出", "window": "10:58–11:32", "done": "build_temple_shanmen.py 全几何+碰撞+四目标导出+预算硬门+重导入核验", "fixedIssues": [
+      "侧墙条带while循环在z=-3.6边界max()钳位死循环(10分钟单核/6GB内存后定位) → 改定数for循环",
+      "校验规则两处自身写错(外端起翘高于肩脊是设计意图; outline为绝对x)",
+      "通道内壁z尺寸负号; passage-slab z尺寸负号; rear_half_in取错字典",
+      "首跑CONFIG_INVALID×2与KeyError各一次, 全部当轮修复"
+    ], "actuals": "body+plaque 16,322 tris / 全套 21,634 / temple.glb 3.05MB / ground 0.86MB / 构建总耗时5.6s / 走廊29碰撞体零占用"},
+    {"stage": "S5 数据集+独立入口+测试", "window": "11:32–11:43", "done": "build_temple_world.mjs装配 + temple.html/templeMain.js(6机位忠实校验/灰模/雕饰开关/行走/门洞通行检查/存图) + 端口5290/5291 + 严格构建白名单 + contract/passage两套node测试", "fixedIssues": [
+      "页面通行判据首版要求穿出后仍落地(庙后本无地面) → 改为通道中段落地+穿出即证",
+      "翼墙负例出生点在墙外侧、后又取到右翼记录 → 修正; 再发现滑墙行为合法 → 断言改'不越墙线'+接触带单位换算(斜率2.325, x单位接触带≈1.29m)"
+    ], "evidence": "WebGL 8张两轮(首轮判据bug留证) + preview5291真实载入PASS"},
+    {"stage": "S6 渲染与对照", "window": "11:44–11:48", "done": "build_temple_scene.py review(6机位PBR+2灰模)+compare(native 2张) + 可复用scene.blend×2 + 侧车记每机位验证fov", "fixedIssues": [
+      "Blender 4.5 VERTICAL fit等效24mm传感高导致fov 33.06≠48 → 防弧度护栏拦截, 改测量+一步牛顿校正, 断言保持"
+    ], "actuals": "review 8帧109s + compare 2帧24s(Cycles CPU 24spp 1280×960); native↔GLB mean|d|=0.057/255"},
+    {"stage": "S7 收口", "window": "11:49–", "done": "RESULT/DELIVERY/PROGRESS/INDEX + 全量回归15/15 + 终提交"}
+  ],
+  "totals": {"testSuites": "15/15 PASS", "newTests": "temple contract 33 checks + passage 11 checks", "budgetsPass": "5/5"},
+  "stopCondition": "全部可执行内容交付完毕，按预设决策停包；未跑无限重试"
+}

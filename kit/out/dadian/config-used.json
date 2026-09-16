@@ -1,0 +1,343 @@
+{
+  "sampleId": "dadian",
+  "family": "temple-axis-hall",
+  "units": "meters",
+  "axis": "GLB Y-up; facade +Z; depth -Z; front-wall center bottom origin (local), world placement (0,0,-44)",
+  "basedOn": "DESIGN_SPEC.json pawborough-temple-dadian-night-20260915 (lead-frozen design values; NOT a survey)",
+  "reference": {
+    "imageId": "PBR-SH-0002-043 + PBR-SH-0005-001/002/003/004 (batch-005)",
+    "referenceEra": "2007/2015 photos; hall form (double eave, five bays, xieshan-read gables, 城隍廟 plaque) confirmed by machine-vision screening; photos support, never override the frozen numbers",
+    "historicalAccuracyVerified": false,
+    "dimensionsAreDesign": true
+  },
+  "placement": {
+    "originGlbWorld": [
+      0,
+      0,
+      -44
+    ],
+    "yawRad": 0
+  },
+  "body": {
+    "widthM": 22.0,
+    "depthM": 12.0,
+    "sideWallX": 11.0,
+    "sideWallThicknessM": 0.3,
+    "rearWallZ": -12.0,
+    "rearWallThicknessM": 0.3
+  },
+  "columns": {
+    "frontX": [
+      -10.4,
+      -6.5,
+      -2.3,
+      2.3,
+      6.5,
+      10.4
+    ],
+    "frontZ": -0.35,
+    "rearZ": -11.65,
+    "sizeM": [
+      0.42,
+      5.0,
+      0.46
+    ],
+    "material": "wood",
+    "topBeamY": [
+      4.55,
+      5.05
+    ]
+  },
+  "clearDoorway": {
+    "widthM": 4.2,
+    "heightM": 3.6,
+    "localZRange": [
+      0,
+      -1.1
+    ],
+    "note": "4.2 is the nominal frozen value; the physical opening runs between the inner faces of the +-2.3 columns (4.18m) — leaves sized to the physical opening, |built-4.2|<=0.05"
+  },
+  "doors": {
+    "leafCount": 2,
+    "leafSizeM": [
+      2.09,
+      3.6,
+      0.06
+    ],
+    "leafCenterZ": -0.38,
+    "thresholdM": [
+      4.4,
+      0.25,
+      0.12
+    ],
+    "pullRingRadiusM": 0.07,
+    "pullRingY": 1.15,
+    "pullRingInsetX": 0.16,
+    "closedCollider": true,
+    "goldSeamGapM": 0.02
+  },
+  "latticeBays": {
+    "baySpansX": [
+      [
+        2.51,
+        6.29
+      ],
+      [
+        6.71,
+        10.19
+      ]
+    ],
+    "sillY": [
+      0.0,
+      0.35
+    ],
+    "latticeY": [
+      0.35,
+      3.6
+    ],
+    "waistRailY": 1.1,
+    "mullionSpacingM": 0.3,
+    "transomY": [
+      3.6,
+      4.3
+    ],
+    "transomMaterial": "relief",
+    "backingZ": -0.18
+  },
+  "frontBand": {
+    "yRange": [
+      4.3,
+      5.2
+    ],
+    "upperGoldStripY": 4.55
+  },
+  "midWallBand": {
+    "y": [
+      5.95,
+      7.0
+    ],
+    "outlineXM": 11.15,
+    "thicknessM": 0.3,
+    "rearZ": -12.0,
+    "plankGrooveStepM": 0.55,
+    "baseApronH": 0.16
+  },
+  "mainPlaque": {
+    "centerY": 6.5,
+    "sizeWH": [
+      4.6,
+      1.05
+    ],
+    "faceZ": 0.055,
+    "literalLeftToRight": "廟隍城",
+    "readRightToLeft": "城隍廟",
+    "faceTexture": "dadian-plaque.png",
+    "construction": "T1 lesson: backing plate + stepped four-side frame rings + recessed text face (yimen plaque builder)"
+  },
+  "coupletBoards": {
+    "onColumnsX": [
+      -2.3,
+      2.3
+    ],
+    "sizeM": [
+      0.42,
+      2.6,
+      0.05
+    ],
+    "centerY": 2.6,
+    "boardFaceZ": -0.06
+  },
+  "sideWalls": {
+    "x": 11.0,
+    "thicknessM": 0.3,
+    "zRange": [
+      0,
+      -12.0
+    ],
+    "lowerTopY": 5.3
+  },
+  "rearDesign": {
+    "mode": "plain",
+    "designInference": true,
+    "note": "rear wall plain plaster + wood frame, no openings; only seen from behind/above; design_inference"
+  },
+  "roofLower": {
+    "widthM": 26.4,
+    "frontEaveZ": 2.2,
+    "rearEaveZ": -14.2,
+    "ridgeY": 6.0,
+    "ridgeLengthM": 19.0,
+    "ridgeLocalZ": -6.0,
+    "eaveY": 5.2,
+    "shellThicknessM": 0.1,
+    "profileTY": [
+      [
+        0,
+        6.0
+      ],
+      [
+        0.5,
+        5.6
+      ],
+      [
+        1,
+        5.2
+      ]
+    ],
+    "cornerLiftM": 0.08,
+    "cornerLiftXStartsM": 11.0,
+    "cornerLiftDepthTStarts": 0.75,
+    "hipEndTopY": 5.8,
+    "hipStartsXM": 9.5,
+    "surfaceEquation": "same drop-following ramp family as yimen: y=topY-(topY-eaveY)*drop(t)+lift_total(x)*(drop(t)-drop(t0))/(1-drop(t0))",
+    "resampleSegments": 12,
+    "tileRibs": {
+      "spacingM": [
+        0.22,
+        0.28
+      ],
+      "spacingChosenM": 0.28,
+      "radiusM": [
+        0.04,
+        0.06
+      ],
+      "radiusChosenM": 0.05,
+      "stripSections": 8,
+      "ribSections": 5,
+      "slopes": [
+        "front",
+        "rear"
+      ],
+      "budgetExtraTrisMax": 16000,
+      "note": "spacing raised to the frozen band max and rib along-slope sampling 8->5 (fallback #4) to hold the frozen tri budget at 26.4m width"
+    },
+    "eaveFasciaH": 0.14,
+    "ridgeCapRollRadiusM": 0.16,
+    "soffitDepthM": 1.3,
+    "note": "shallow skirt; top plane hidden under midWallBand; gable/wing closures per yimen pattern"
+  },
+  "roofUpper": {
+    "widthM": 22.8,
+    "frontEaveZ": 1.4,
+    "rearEaveZ": -13.4,
+    "ridgeY": 12.4,
+    "ridgeLengthM": 18.0,
+    "ridgeLocalZ": -6.0,
+    "eaveY": 7.0,
+    "shellThicknessM": 0.12,
+    "profileTY": [
+      [
+        0,
+        12.4
+      ],
+      [
+        0.2,
+        11.55
+      ],
+      [
+        0.45,
+        9.9
+      ],
+      [
+        0.7,
+        8.35
+      ],
+      [
+        0.9,
+        7.3
+      ],
+      [
+        1,
+        7.0
+      ]
+    ],
+    "cornerLiftM": 0.3,
+    "cornerLiftXStartsM": 9.2,
+    "cornerLiftDepthTStarts": 0.65,
+    "hipEndTopY": 9.8,
+    "hipStartsXM": 8.9,
+    "surfaceEquation": "yimen ramp formula verbatim",
+    "resampleSegments": 12,
+    "tileRibs": {
+      "spacingM": [
+        0.22,
+        0.28
+      ],
+      "spacingChosenM": 0.28,
+      "radiusM": [
+        0.04,
+        0.06
+      ],
+      "radiusChosenM": 0.05,
+      "stripSections": 8,
+      "ribSections": 5,
+      "slopes": [
+        "front",
+        "rear"
+      ],
+      "budgetExtraTrisMax": 20000
+    },
+    "eaveFasciaH": 0.14,
+    "soffitDepthM": 1.3,
+    "ridge": {
+      "crestBeamM": [
+        0.32,
+        0.42,
+        18.0
+      ],
+      "crestCenterZ": -6.0,
+      "endOrnamentTrisMax": 700,
+      "build": "dark crest beam x -9..9 carried by shell ridge + both gable apexes; two simplified box-step curls; NO 宝顶"
+    },
+    "gableTreatment": {
+      "gablePlaneXM": 9.0,
+      "baseY": 8.6,
+      "triangleZRange": [
+        -2.2,
+        -9.8
+      ],
+      "apex": [
+        -6.0,
+        12.4
+      ],
+      "panelThicknessM": 0.1,
+      "apronM": [
+        7.6,
+        0.18,
+        0.16
+      ],
+      "edgeTrimW": 0.09,
+      "trisMaxBothEnds": 1200,
+      "approvalStatus": "歇山读感 pre-set 2026-09-16 from aerial PBR-SH-0005-001; DELIVERY must label it, never claim true-xieshan survey"
+    },
+    "note": "R1 2026-09-16: ridgeLengthM 8.6->18.0 — the flat ridge now reaches both gable feet so the 18m crest beam is fully supported (the shipped R0 floated over the hip zone x 4.3..9.0, lead review finding P1); hipStartsXM 7.2->8.9 and cornerLiftXStartsM 8.6->9.2 keep the validation bands consistent"
+  },
+  "budgets": {
+    "dadianTrisMax": 58000,
+    "dadianBodyStageTrisMax": 20000,
+    "dadianGlbBytesMax": 9500000,
+    "newImagesMax": 1,
+    "newImageEdgePxMax": 2048
+  },
+  "runtime": {
+    "capsule": {
+      "radius": 0.35,
+      "halfHeight": 0.6,
+      "eyeHeight": 1.6
+    }
+  },
+  "review": {
+    "ports": {
+      "dev": 5294,
+      "preview": 5295
+    }
+  },
+  "uncertaintyPolicy": {
+    "plaqueText": "evidenced 城隍廟 per PBR-SH-0005-004 (pre-set 2026-09-16, owner may veto)",
+    "roofForm": "xieshan-read gable overlay on the proven four-slope shell (aerial PBR-SH-0005-001); true-xieshan topology is a possible R1",
+    "burner": "built by build_dadian_court.py (court-side), photo-informed",
+    "doorWidth": "4.2 nominal frozen; physical opening 4.18 between column faces",
+    "interior": "none modeled; doors closed"
+  },
+  "configSha256": "8b7bac0575e53d79d1ee9f735d9b0a1fd447234e61a8a9f2cb5a0da81362ede8"
+}

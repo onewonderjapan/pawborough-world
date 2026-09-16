@@ -1,0 +1,27 @@
+{
+  "moduleId": "plain-shop-a",
+  "triangles": 7596,
+  "meshes": 10,
+  "fileBytes": 1953304,
+  "sha256": "a2013eced1bf5b328a249a661e888e0378419d19389fb15d90a149beea87d06b",
+  "design": {
+    "family": "plain-config-sample",
+    "sampleId": "plain-shop-a",
+    "basedOn": "plain-v1 frozen form (fangbang-parallel-night 20260913); no new landmark design",
+    "frontageM": 12.0,
+    "depthM": 6.4,
+    "eaveM": 6.8,
+    "ridgeM": 8.0,
+    "floors": 2,
+    "windowType": "shutter",
+    "upperWindowCount": 4,
+    "roofType": "straight",
+    "materialSet": "pawborough-street-v1 (mb_lib.build_materials, frozen)",
+    "signage": "main + sub typeset board",
+    "configDriven": true
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

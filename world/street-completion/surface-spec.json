@@ -1,0 +1,231 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "kit/build_street_completion_surface.py",
+  "sources": {
+    "verifiedRoadEnd": {
+      "mesh": "street-kit__quiet-gray-asphalt (world/street-reviewed.glb)",
+      "wedgeEndMeters": [
+        [
+          84.0,
+          21.45
+        ],
+        [
+          88.5,
+          14.31
+        ]
+      ],
+      "measuredBy": "scripts read of assembly GLB, batch 20260915"
+    },
+    "frontWallOrigins": "delivered east-edge + street-completion assets (positionGlb/yawRad from collision sidecars)"
+  },
+  "connectedBand": {
+    "from": "the frozen road’s east wedge end",
+    "through": [
+      "128/129 pair midpoint",
+      "130/131 pair midpoint",
+      "132/133 pair midpoint"
+    ],
+    "to": [
+      124.6,
+      27.65
+    ],
+    "centerlineSamplesEveryM": 0.5,
+    "widthProfile": "8.44m at the joint tapering to 4.0m over the first 8.0m, then constant",
+    "walkBandNetM": 4.0,
+    "noCitywideSlab": true,
+    "jointOverlap": "first 0.4m sits 4mm under the frozen road top so the joint cannot gap or z-fight"
+  },
+  "clearance": {
+    "requiredEdgeClearanceM": 0.1,
+    "foundationProtrusionM": 0.06,
+    "perBuilding": {
+      "_argmin": {
+        "east-shop-128": {
+          "at": [
+            101.62,
+            22.33
+          ]
+        },
+        "east-shop-129": {
+          "at": [
+            91.54,
+            19.38
+          ]
+        },
+        "east-shop-130": {
+          "at": [
+            104.02,
+            23.01
+          ]
+        },
+        "east-shop-131": {
+          "at": [
+            106.44,
+            23.63
+          ]
+        },
+        "east-shop-132": {
+          "at": [
+            124.6,
+            27.65
+          ]
+        },
+        "east-shop-133": {
+          "at": [
+            116.18,
+            25.91
+          ]
+        }
+      },
+      "east-shop-128": {
+        "minCenterlineToWallM": 3.214,
+        "minPavementEdgeToFoundationM": 1.154,
+        "pass": true
+      },
+      "east-shop-129": {
+        "minCenterlineToWallM": 3.108,
+        "minPavementEdgeToFoundationM": 1.048,
+        "pass": true
+      },
+      "east-shop-130": {
+        "minCenterlineToWallM": 2.197,
+        "minPavementEdgeToFoundationM": 0.137,
+        "pass": true
+      },
+      "east-shop-131": {
+        "minCenterlineToWallM": 2.247,
+        "minPavementEdgeToFoundationM": 0.187,
+        "pass": true
+      },
+      "east-shop-132": {
+        "minCenterlineToWallM": 3.031,
+        "minPavementEdgeToFoundationM": 0.971,
+        "pass": true
+      },
+      "east-shop-133": {
+        "minCenterlineToWallM": 3.248,
+        "minPavementEdgeToFoundationM": 1.188,
+        "pass": true
+      }
+    }
+  },
+  "curbs": {
+    "widthM": 0.25,
+    "heightM": 0.09,
+    "section": "constant-width section only; the taper zone meets the frozen sidewalk/curb geometry",
+    "walkableNote": "curb tops are walkable (matches frozen walkableLow curb-stone 0.10m language)"
+  },
+  "drains": [
+    {
+      "stationX": 100.661,
+      "stationZ": 20.32,
+      "basis": "south kerb line, 0.35m inboard; continues the frozen street’s frontage-drain side"
+    },
+    {
+      "stationX": 124.291,
+      "stationZ": 25.922,
+      "basis": "south kerb line, 0.35m inboard; continues the frozen street’s frontage-drain side"
+    }
+  ],
+  "manhole": {
+    "stationX": 109.594,
+    "stationZ": 23.34,
+    "basis": "1.0m south of the 130/131 pair midpoint (the narrowest pinch), off the walking line"
+  },
+  "physics": {
+    "groundSource": "this GLB’s own faces, extracted client-side by GROUND_NODE_RE (sctail__ nodes); visible surface = walkable surface, same source"
+  },
+  "route": {
+    "extension": "derived dataset route.json extends mainStreet from entries.east through the pair midpoints to the tail end",
+    "tailSamplesEvery2M": [
+      [
+        86.25,
+        17.88
+      ],
+      [
+        88.174,
+        18.425
+      ],
+      [
+        90.098,
+        18.97
+      ],
+      [
+        92.023,
+        19.516
+      ],
+      [
+        93.946,
+        20.065
+      ],
+      [
+        95.867,
+        20.62
+      ],
+      [
+        97.787,
+        21.182
+      ],
+      [
+        99.703,
+        21.753
+      ],
+      [
+        101.618,
+        22.331
+      ],
+      [
+        103.541,
+        22.881
+      ],
+      [
+        105.474,
+        23.395
+      ],
+      [
+        107.419,
+        23.86
+      ],
+      [
+        109.366,
+        24.314
+      ],
+      [
+        111.314,
+        24.769
+      ],
+      [
+        113.262,
+        25.224
+      ],
+      [
+        115.209,
+        25.679
+      ],
+      [
+        117.158,
+        26.131
+      ],
+      [
+        119.108,
+        26.574
+      ],
+      [
+        121.062,
+        27.0
+      ],
+      [
+        123.026,
+        27.378
+      ],
+      [
+        124.6,
+        27.65
+      ]
+    ],
+    "tailEnd": [
+      124.6,
+      27.65
+    ]
+  }
+}

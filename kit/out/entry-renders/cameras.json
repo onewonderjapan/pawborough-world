@@ -1,0 +1,184 @@
+{
+  "source": "kit/build_temple_entry_scene.py",
+  "engine": "cycles-cpu",
+  "samples": 24,
+  "resolution": [
+    1280,
+    960
+  ],
+  "mode": "review",
+  "assembly": "shanmen identity + yimen GLB z-21 (Blender +Y 21) + court in place",
+  "views": [
+    {
+      "view": "entry-axis",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        -17,
+        3.8
+      ],
+      "targetBlender": [
+        0,
+        10,
+        4
+      ],
+      "fovDegVerified": 52.0,
+      "file": "entry-axis-pbr-glb.png"
+    },
+    {
+      "view": "from-gate",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        3.9,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        21,
+        3.5
+      ],
+      "fovDegVerified": 55.0,
+      "file": "from-gate-pbr-glb.png"
+    },
+    {
+      "view": "court-quarter",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        -6.2,
+        7.5,
+        2.1
+      ],
+      "targetBlender": [
+        0,
+        21,
+        3.5
+      ],
+      "fovDegVerified": 55.0,
+      "file": "court-quarter-pbr-glb.png"
+    },
+    {
+      "view": "court-quarter",
+      "tag": "clay",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        -6.2,
+        7.5,
+        2.1
+      ],
+      "targetBlender": [
+        0,
+        21,
+        3.5
+      ],
+      "fovDegVerified": 55.0,
+      "file": "court-quarter-clay-glb.png"
+    },
+    {
+      "view": "yimen-front",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        10,
+        4
+      ],
+      "targetBlender": [
+        0,
+        22,
+        4
+      ],
+      "fovDegVerified": 62.0,
+      "file": "yimen-front-pbr-glb.png"
+    },
+    {
+      "view": "yimen-front",
+      "tag": "clay",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        10,
+        4
+      ],
+      "targetBlender": [
+        0,
+        22,
+        4
+      ],
+      "fovDegVerified": 62.0,
+      "file": "yimen-front-clay-glb.png"
+    },
+    {
+      "view": "yimen-roof",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        -10,
+        12,
+        10
+      ],
+      "targetBlender": [
+        0,
+        23,
+        6
+      ],
+      "fovDegVerified": 52.0,
+      "file": "yimen-roof-pbr-glb.png"
+    },
+    {
+      "view": "yimen-detail",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        -3,
+        16.3,
+        2.6
+      ],
+      "targetBlender": [
+        0,
+        21,
+        3.7
+      ],
+      "fovDegVerified": 55.0,
+      "file": "yimen-detail-pbr-glb.png"
+    },
+    {
+      "view": "return-to-gate",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        19,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        1.8,
+        3.4
+      ],
+      "fovDegVerified": 55.0,
+      "file": "return-to-gate-pbr-glb.png"
+    },
+    {
+      "view": "rear-inferred",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        28,
+        3.2
+      ],
+      "targetBlender": [
+        0,
+        23.5,
+        3.2
+      ],
+      "fovDegVerified": 66.0,
+      "file": "rear-inferred-pbr-glb.png"
+    }
+  ],
+  "note": "BLENDER evidence; WebGL captures are separate (kit/out/entry-renders/web)"
+}

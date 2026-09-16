@@ -1,0 +1,27 @@
+{
+  "generatedBy": "kit/make_dadian_textures.py",
+  "newImageBudget": {
+    "max": 1,
+    "used": 1,
+    "maxEdgePx": 2048
+  },
+  "images": [
+    {
+      "file": "textures/dadian-plaque.png",
+      "size": [
+        2048,
+        768
+      ],
+      "colorSpace": "sRGB",
+      "charactersLeftToRight": "廟隍城",
+      "readingRightToLeft": "城隍廟",
+      "evidence": "photo PBR-SH-0005-004 (batch-005, CC BY-SA 4.0): outer plaque 城隍廟 right-to-left",
+      "font": {
+        "path": "/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc",
+        "name": "Noto Serif CJK SC Bold (system package)",
+        "license": "SIL Open Font License 1.1 (Noto family)"
+      },
+      "note": "glyph shapes from the recorded system font; layout/borders/mottling authored locally; no reference-photo pixels"
+    }
+  ]
+}

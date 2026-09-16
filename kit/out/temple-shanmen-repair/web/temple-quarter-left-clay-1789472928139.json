@@ -1,0 +1,68 @@
+{
+  "dataset": "temple-shanmen",
+  "view": "quarter-left",
+  "mode": "view",
+  "clay": true,
+  "ornaments": true,
+  "resources": {
+    "meshes": 18,
+    "triangles": 28612,
+    "uniqueGeometries": 18,
+    "uniqueMaterials": 14,
+    "uniqueTextures": 17
+  },
+  "loadStats": {
+    "bytesTotal": 5520472,
+    "bytesMain": 4643172,
+    "bytesCandidates": 877300,
+    "fetchParseMs": 119.6,
+    "wallColliders": 29,
+    "groundTriangles": 360
+  },
+  "camera": {
+    "position": [
+      -12,
+      5.7,
+      12
+    ],
+    "target": [
+      0,
+      4,
+      -1
+    ],
+    "fovDeg": 48
+  },
+  "cameraCheck": {
+    "view": "quarter-left",
+    "dPos": 0,
+    "dFov": 0,
+    "pass": true
+  },
+  "passageCheck": {
+    "pass": true,
+    "results": {
+      "through": {
+        "x": -0.001,
+        "midGrounded": true,
+        "exitZ": -4.217,
+        "pass": true
+      },
+      "blockedReveal": {
+        "z": 0.57,
+        "pass": true
+      },
+      "blockedLeaf": {
+        "z": 0.57,
+        "pass": true
+      },
+      "fallOffEdge": {
+        "x": 19.81,
+        "y": -116.88,
+        "pass": true
+      }
+    },
+    "summary": "门洞中段落地=true·穿出z=-4.217·偏移x=-0.001；侧向拦停z=0.57；门板拦停z=0.57；越界坠落y=-116.88",
+    "ms": 101
+  },
+  "ready": true
+}

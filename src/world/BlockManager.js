@@ -1,0 +1,343 @@
+// N6 block lifecycle manager — the data/lifecycle layer for map-driven
+// districts. One stable-ID layout (world/blocks.json) drives placeholders,
+// their low-poly views AND their collision; the reviewed street is itself a
+// block whose replacesBaseIds suppress overlapping placeholders (no stacking)
+// and whose revocation restores them (撤回恢复).
+//
+// The reviewed block owns the REAL street: the session-backed view factory
+// (blockViews.createBlockViews(scene, session)) hands over the actual
+// WorldLoader root group and the live wall/ground collider handles, so a
+// revoke removes the geometry AND its collision, and a restore re-creates
+// exactly the same set (no stacking, no null-group placeholder).
+//
+// Guarantees (covered by tests/block_lifecycle.test.mjs and
+// tests/block_production.test.mjs):
+//   - enter/exit symmetric: load adds exactly the block's views+colliders,
+//     unload removes exactly them (渲染和碰撞同生命周期)
+//   - replacement never stacks (替换不叠加)
+//   - late-arriving loads of a stale epoch are discarded (晚到版本不覆盖新布局)
+//   - revoking the reviewed block restores its replaced placeholders and
+//     refreshes loaded adjacent blocks in place (相邻占位同步)
+//   - dispose before physics.dispose(); any load still in flight discards
+//     itself and never touches the freed world (晚到结果不激活): resumed
+//     loads release GPU resources only — the physicsAlive flag (wired to the
+//     session's disposed state in main.js) decides whether colliders can
+//     still be removed or must die with the freed world
+//   - a mid-flight cancellation (unload or dispose during an await) stops
+//     the production factory before its next collider is created, and a
+//     partial failure (second resource errors after the first applied)
+//     rolls back everything the load created; the block stays reloadable
+//     without stacking (取消/失败不残留，重试不叠加)
+// Rendering is abstracted behind a view factory so node tests run without WebGL.
+
+import { obbToWorld } from './collisionAdapter.js';
+import { removeColliderWithBody } from './physics.js';
+
+const LOAD_RADIUS = 30;   // m beyond block AABB the block stays loaded (hysteresis)
+const ADJACENT_IDS = ['block-adjacent-east', 'block-adjacent-west'];
+
+export class BlockManager {
+  constructor({ RAPIER, physics, views, dataset, physicsAlive } = {}) {
+    this.RAPIER = RAPIER;
+    this.physics = physics;             // { world } from buildPhysicsWorld
+    this.views = views;                 // { add(obj, parent?), remove(obj), makePlaceholder(ph), disposePlaceholder(v), makeReviewed() -> {group, parent?, colliders, ground, owns}, discardReviewed?(parts), disposeReviewed?() }
+    this.dataset = dataset;
+    // Whether the Rapier world behind this.physics is still usable. An async
+    // load resumed AFTER owner teardown (main.js: blocks.dispose() then
+    // session.dispose() free the world synchronously) must release its own
+    // GPU resources but NEVER call into the freed world; callers that keep
+    // the world alive across manager dispose (tests, probe harnesses) get
+    // full collider removal via the default. main.js wires the session's
+    // disposed flag here.
+    this.physicsAlive = physicsAlive ?? (() => true);
+    this.blocks = new Map();            // id -> {def, state, epoch, views, colliders, placeholders, reviewed}
+    this.epoch = 0;                     // bumped on every unload; stale loads are discarded
+    this.byPlaceholder = new Map(dataset.placeholders.map(p => [p.id, p]));
+    // F3 placeholder presentation: display-only visibility for the framing
+    // view. Default true (everything the manager loads shows); main.js flips
+    // it to the user's "refined only" preference in view mode and forces it
+    // back to true before walk movement (visible == collision, never an
+    // invisible wall).
+    this.placeholderVisible = true;
+    for (const b of dataset.blocks) {
+      this.blocks.set(b.id, { def: b, state: 'unloaded', epoch: 0, views: [], colliders: [], placeholders: [], reviewed: null });
+    }
+    this.disposed = false;
+  }
+
+  placeholderCollider(ph) {
+    // rotated box from map data via the SHARED transform math (render and
+    // collision agree by construction)
+    const rec = {
+      name: `placeholder:${ph.id}`, type: 'box',
+      obb: { pos: [ph.glbPoint[0], 0, ph.glbPoint[1]], theta: ph.angleRad, center: [0, ph.heightM / 2, 0], size: [ph.widthM, ph.heightM, ph.depthM] },
+      min: [0, 0, 0], max: [0, ph.heightM, 0],
+    };
+    return obbToWorld(rec);
+  }
+
+  async loadBlock(id, { reviewed = false } = {}) {
+    const block = this.blocks.get(id);
+    if (!block) throw new Error(`block lifecycle: unknown block ${id}`);
+    if (this.disposed) return { stale: true, disposed: true, block };
+    if (block.state === 'loaded' || block.state === 'loading') return block; // never stack
+    block.state = 'loading';
+    const epochAtStart = this.epoch;
+
+    // gather content
+    let views = [];
+    let colliders = [];
+    let placeholders = [];
+    let reviewedParts = null;
+    if (reviewed) {
+      const made = await this.views.makeReviewed();
+      if (this.disposed) { block.state = 'unloaded'; this.releaseMade(made); return { stale: true, disposed: true, block }; }
+      reviewedParts = made;
+      views = [made.group];
+      colliders = made.colliders.map(c => c.collider);
+    } else if (block.def.kind === 'assets') {
+      // refined standalone assets (e.g. east-edge shops): the factory loads
+      // the GLBs and creates their wall colliders; the block owns both, so a
+      // revoke removes the geometry AND its collision, and the placeholders
+      // it replaces come back (same teardown slot as the reviewed street).
+      // The factory owns partial-failure rollback and cancel checks at every
+      // await boundary (fetch/parse/sidecar); `isCancelled` makes an unload
+      // or dispose mid-flight stop the factory BEFORE the next collider is
+      // created. A thrown non-cancel error (e.g. second GLB HTTP 404) must
+      // leave the block reloadable — state resets here, nothing applied.
+      let made;
+      try {
+        made = await this.views.makeAssets(block.def, { isCancelled: () => this.disposed || this.epoch !== epochAtStart });
+      } catch (e) {
+        block.state = 'unloaded'; // factory already rolled its partials back
+        if (e?.cancelled) return this.disposed ? { stale: true, disposed: true, block } : { stale: true, block };
+        throw e;
+      }
+      if (this.disposed) { block.state = 'unloaded'; this.releaseMade(made); return { stale: true, disposed: true, block }; }
+      reviewedParts = made;
+      views = [made.group];
+      colliders = made.colliders.map(c => c.collider);
+    } else {
+      for (const phId of block.def.placeholderIds ?? []) {
+        const ph = this.byPlaceholder.get(phId);
+        if (!ph) throw new Error(`block lifecycle: placeholder ${phId} missing from dataset`);
+        // replaced placeholders never spawn while their replacement is active
+        if (ph.replacedBy && this.blocks.get(ph.replacedBy)?.state === 'loaded') continue;
+        const view = await this.views.makePlaceholder(ph); // awaitable: allows genuinely in-flight loads
+        // teardown may have happened while we awaited — never touch the freed
+        // physics world with late results; roll back everything this load
+        // already created (earlier placeholders' colliders included)
+        if (this.disposed) {
+          this.views.disposePlaceholder?.(view);
+          this.rollbackPlaceholders(placeholders);
+          block.state = 'unloaded';
+          return { stale: true, disposed: true, block };
+        }
+        const { center, halfExtents, yaw } = this.placeholderCollider(ph);
+        const body = this.physics.world.createRigidBody(
+          this.RAPIER.RigidBodyDesc.fixed().setTranslation(center[0], center[1], center[2]));
+        const collider = this.physics.world.createCollider(
+          this.RAPIER.ColliderDesc.cuboid(halfExtents[0], halfExtents[1], halfExtents[2])
+            .setRotation({ w: Math.cos(yaw / 2), x: 0, y: Math.sin(yaw / 2), z: 0 }), body);
+        placeholders.push({ ph, view, body, collider });
+      }
+      views = placeholders.map(p => p.view.object);
+      colliders = placeholders.map(p => p.collider);
+    }
+
+    // late-arrival guard: if anything was unloaded while we were building,
+    // this load is stale and must not touch the new layout
+    if (this.epoch !== epochAtStart) {
+      this.rollbackPlaceholders(placeholders);
+      this.releaseMade(reviewedParts);
+      block.state = 'unloaded';
+      return { stale: true, block };
+    }
+
+    block.views = views; block.colliders = colliders; block.placeholders = placeholders; block.reviewed = reviewedParts;
+    for (const v of views) this.views.add(v, reviewedParts?.parent);
+    // late-arriving loads follow the current presentation preference (F3): a
+    // placeholder completing while "refined only" is active comes in hidden,
+    // while its collider has already been created — walk mode re-enforces
+    // visible==true before any movement
+    for (const p of placeholders) if (p.view?.object) p.view.object.visible = this.placeholderVisible;
+    block.state = 'loaded';
+    this.primePipeline();
+    return { stale: false, block };
+  }
+
+  // Rollback of a load that never applied. Placeholder colliders leave the
+  // world ONLY while it is still alive; after owner teardown they die with
+  // the freed world and only the view (GPU) side is disposed. The reviewed/
+  // assets parts follow the same rule via the factory's discard/dispose
+  // split: discard* removes colliders (live world), dispose* is GPU-only.
+  rollbackPlaceholders(placeholders) {
+    for (const p of placeholders) {
+      if (this.physicsAlive()) {
+        this.physics.world.removeCollider(p.collider, false);
+        this.physics.world.removeRigidBody(p.body);
+      }
+      this.views.disposePlaceholder?.(p.view);
+    }
+  }
+  releaseMade(made) {
+    if (!made) return;
+    if (made.isAssetGroup) {
+      if (this.physicsAlive()) this.views.discardAssets?.(made);
+      else this.views.disposeAssets?.(made);
+    } else if (this.physicsAlive() || made.owns === false) {
+      // owns:false = takeover handles — handing them back touches no physics,
+      // so it stays safe even with the world already freed
+      this.views.discardReviewed?.(made);
+    }
+  }
+
+  // Re-prime the broad-phase after collider set changes (same reason
+  // buildPhysicsWorld steps once at creation): the character controller's
+  // next query must see the freshly created/removed colliders immediately.
+  primePipeline() {
+    if (this.disposed) return;
+    this.physics.world.step();
+  }
+
+  unloadBlock(id) {
+    const block = this.blocks.get(id);
+    if (!block) throw new Error(`block lifecycle: unknown block ${id}`);
+    if (block.state === 'unloaded') return;
+    // remove whatever content is currently applied; a load still in flight
+    // keeps its own epoch/disposed guard and will discard itself
+    for (const v of block.views) this.views.remove(v);
+    if (block.reviewed) {
+      // real street ownership: walls + ground trimesh leave the world with
+      // their rigid bodies, in the same order they were created; asset groups
+      // additionally release their GPU geometry (they own it, the street
+      // root stays with the session)
+      for (const c of block.reviewed.colliders) removeColliderWithBody(this.physics.world, c.collider, c.body);
+      if (block.reviewed.ground) removeColliderWithBody(this.physics.world, block.reviewed.ground.collider, block.reviewed.ground.body);
+      if (block.reviewed.isAssetGroup) this.views.disposeAssets?.(block.reviewed);
+      block.reviewed = null;
+    }
+    for (const p of block.placeholders) {
+      this.physics.world.removeCollider(p.collider, false);
+      this.physics.world.removeRigidBody(p.body);
+      this.views.disposePlaceholder?.(p.view);
+    }
+    block.views = []; block.colliders = []; block.placeholders = [];
+    block.state = 'unloaded';
+    this.epoch += 1; // any in-flight load for this block is now stale
+    this.primePipeline();
+  }
+
+  // reviewed street replacement semantics. Both directions refresh loaded
+  // adjacent blocks so placeholder spawns/suppressions stay in sync with the
+  // reviewed state immediately (相邻占位同步), not just on the next
+  // position-driven unload/reload cycle.
+  async applyReviewed() {
+    const res = await this.loadBlock('block-review-street', { reviewed: true });
+    await this.refreshAdjacent();
+    return res;
+  }
+  async revokeReviewed() {
+    this.unloadBlock('block-review-street');
+    await this.refreshAdjacent();
+  }
+  async refreshAdjacent() {
+    // 撤回恢复: replaced placeholders spawn once the reviewed street is gone;
+    // restoring it suppresses them again
+    for (const id of ADJACENT_IDS) {
+      if (this.blocks.get(id)?.state === 'loaded') {
+        this.unloadBlock(id);
+        await this.loadBlock(id);
+      }
+    }
+  }
+  restoreReviewed() { return this.applyReviewed(); }
+
+  // ---- refined asset blocks (e.g. east-edge shops) ------------------------
+  // Same replacement semantics as the reviewed street, parameterized by block
+  // id: apply loads the block's refined assets and suppresses its replaced
+  // placeholders (visible geometry AND collision); revoke unloads and lets
+  // the placeholders spawn again. Loaded blocks that contain affected
+  // placeholders are refreshed in place so suppression never stacks.
+  assetBlockIds() {
+    return this.dataset.blocks.filter(b => b.kind === 'assets' && b.autoApply).map(b => b.id);
+  }
+  async applyAssets(id) {
+    const res = await this.loadBlock(id);
+    await this.refreshReplacedOf(id);
+    return res;
+  }
+  async revokeAssets(id) {
+    this.unloadBlock(id);
+    await this.refreshReplacedOf(id);
+  }
+  async refreshReplacedOf(id) {
+    const replaced = new Set(this.dataset.placeholders.filter(p => p.replacedBy === id).map(p => p.id));
+    if (!replaced.size) return;
+    for (const b of this.blocks.values()) {
+      if (b.state !== 'loaded' || b.def.id === id || b.def.kind !== 'placeholders') continue;
+      if ((b.def.placeholderIds ?? []).some(pid => replaced.has(pid))) {
+        this.unloadBlock(b.def.id);
+        await this.loadBlock(b.def.id);
+      }
+    }
+  }
+
+  activeIds() { return [...this.blocks.values()].filter(b => b.state === 'loaded').map(b => b.def.id); }
+  colliderCount() { return this.blocks.size && [...this.blocks.values()].reduce((s, b) => s + b.placeholders.length, 0); }
+
+  // F3 framing-view presentation switch. Display ONLY: flips `.visible` on the
+  // currently loaded placeholder views selected by their real registry identity
+  // (stable map IDs via b.placeholders) — never by color/geometry sniffing, and
+  // never the reviewed street group. Colliders are not created, removed or
+  // hidden here, so a hidden box cannot become an invisible wall; the caller
+  // (main.js) refreshes the static shadow map after toggling. Returns the
+  // number of placeholder views the state was applied to.
+  setPlaceholdersVisible(visible) {
+    this.placeholderVisible = visible !== false;
+    let count = 0;
+    for (const b of this.blocks.values()) {
+      for (const p of b.placeholders) {
+        if (p.view?.object) p.view.object.visible = this.placeholderVisible;
+        count++;
+      }
+    }
+    return count;
+  }
+
+  // stable IDs of placeholders currently loaded (view exists in the scene),
+  // for screenshot/record honesty: these are exactly the boxes a
+  // "refined only" framing view is hiding
+  loadedPlaceholderIds() {
+    const ids = [];
+    for (const b of this.blocks.values()) for (const p of b.placeholders) ids.push(p.ph.id);
+    return ids.sort();
+  }
+
+  // position-driven cycling (called each frame with the capsule position)
+  update(px, pz) {
+    if (this.disposed) return;
+    // placeholder blocks cycle by adjacency to the street ends
+    const east = this.blocks.get('block-adjacent-east');
+    const west = this.blocks.get('block-adjacent-west');
+    const [X0, X1] = this.dataset.streetExtentX;
+    const wantEast = px > X1 - LOAD_RADIUS;
+    const wantWest = px < X0 + LOAD_RADIUS;
+    if (wantEast && east.state === 'unloaded') void this.loadBlock('block-adjacent-east');
+    if (!wantEast && east.state === 'loaded') this.unloadBlock('block-adjacent-east');
+    if (wantWest && west.state === 'unloaded') void this.loadBlock('block-adjacent-west');
+    if (!wantWest && west.state === 'loaded') this.unloadBlock('block-adjacent-west');
+  }
+
+  // Ordered teardown — MUST run while the physics world is still alive
+  // (main.js: blocks.dispose() before session.dispose()). An async load still
+  // in flight sees this.disposed afterwards and discards itself without
+  // touching the world the owner is about to free.
+  dispose() {
+    if (this.disposed) return;
+    this.disposed = true;
+    for (const id of [...this.blocks.keys()]) {
+      try { this.unloadBlock(id); } catch { /* already unloaded */ }
+    }
+  }
+}

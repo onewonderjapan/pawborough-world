@@ -1,0 +1,455 @@
+{
+  "axis": "glTF Y-up, facade +Z, front-wall center bottom origin",
+  "colliders": [
+    {
+      "name": "gable-wall-east-b0s0",
+      "group": "east-shop-131",
+      "center": [
+        -5.21,
+        3.5,
+        -6.5
+      ],
+      "size": [
+        0.28,
+        5.800000000000001,
+        13.0
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "foundation-gable-east-b0s0",
+      "group": "east-shop-131",
+      "center": [
+        -5.239999999999999,
+        -0.1,
+        -6.5
+      ],
+      "size": [
+        0.34,
+        0.2,
+        13.0
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "foundation-gable-east-b1s0",
+      "group": "east-shop-131",
+      "center": [
+        -5.239999999999999,
+        0.3,
+        -9.0825
+      ],
+      "size": [
+        0.34,
+        0.6,
+        7.835000000000001
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "foundation-gable-east-b1s1",
+      "group": "east-shop-131",
+      "center": [
+        -5.239999999999999,
+        0.3,
+        -2.0175
+      ],
+      "size": [
+        0.34,
+        0.6,
+        4.035
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "gable-wall-west-b0s0",
+      "group": "east-shop-131",
+      "center": [
+        5.21,
+        1.35,
+        -9.0375
+      ],
+      "size": [
+        0.28,
+        1.5,
+        7.925000000000001
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "gable-wall-west-b0s1",
+      "group": "east-shop-131",
+      "center": [
+        5.21,
+        1.35,
+        -2.0625
+      ],
+      "size": [
+        0.28,
+        1.5,
+        4.125
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "gable-wall-west-b1s0",
+      "group": "east-shop-131",
+      "center": [
+        5.21,
+        3.325,
+        -6.5
+      ],
+      "size": [
+        0.28,
+        2.4499999999999997,
+        13.0
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "gable-wall-west-b2s0",
+      "group": "east-shop-131",
+      "center": [
+        5.21,
+        5.1,
+        -10.925
+      ],
+      "size": [
+        0.28,
+        1.0999999999999996,
+        4.15
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "gable-wall-west-b2s1",
+      "group": "east-shop-131",
+      "center": [
+        5.21,
+        5.1,
+        -5.6499999999999995
+      ],
+      "size": [
+        0.28,
+        1.0999999999999996,
+        4.799999999999999
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "gable-wall-west-b2s2",
+      "group": "east-shop-131",
+      "center": [
+        5.21,
+        5.1,
+        -1.225
+      ],
+      "size": [
+        0.28,
+        1.0999999999999996,
+        2.45
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "gable-wall-west-b3s0",
+      "group": "east-shop-131",
+      "center": [
+        5.21,
+        6.025,
+        -6.5
+      ],
+      "size": [
+        0.28,
+        0.7500000000000009,
+        13.0
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "gable-door-z-4.6-panel",
+      "group": "east-shop-131",
+      "center": [
+        5.2299999999999995,
+        1.05,
+        -4.6
+      ],
+      "size": [
+        0.06,
+        2.1,
+        0.95
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "foundation-gable-west-b0s0",
+      "group": "east-shop-131",
+      "center": [
+        5.239999999999999,
+        -0.1,
+        -6.5
+      ],
+      "size": [
+        0.34,
+        0.2,
+        13.0
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "foundation-gable-west-b1s0",
+      "group": "east-shop-131",
+      "center": [
+        5.239999999999999,
+        0.3,
+        -9.0825
+      ],
+      "size": [
+        0.34,
+        0.6,
+        7.835000000000001
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "foundation-gable-west-b1s1",
+      "group": "east-shop-131",
+      "center": [
+        5.239999999999999,
+        0.3,
+        -2.0175
+      ],
+      "size": [
+        0.34,
+        0.6,
+        4.035
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "front-wall-b1s0",
+      "group": "east-shop-131",
+      "center": [
+        -4.3945,
+        1.35,
+        -0.13
+      ],
+      "size": [
+        1.9109999999999996,
+        1.5,
+        0.26
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "front-wall-b1s1",
+      "group": "east-shop-131",
+      "center": [
+        -1.5707499999999999,
+        1.35,
+        -0.13
+      ],
+      "size": [
+        1.5364999999999995,
+        1.5,
+        0.26
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "front-wall-b1s2",
+      "group": "east-shop-131",
+      "center": [
+        4.6812499999999995,
+        1.35,
+        -0.13
+      ],
+      "size": [
+        1.3375000000000004,
+        1.5,
+        0.26
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "front-wall-b2s0",
+      "group": "east-shop-131",
+      "center": [
+        -3.07625,
+        2.1100000000000003,
+        -0.13
+      ],
+      "size": [
+        4.547499999999999,
+        0.020000000000000018,
+        0.26
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "front-wall-b2s1",
+      "group": "east-shop-131",
+      "center": [
+        4.6812499999999995,
+        2.1100000000000003,
+        -0.13
+      ],
+      "size": [
+        1.3375000000000004,
+        0.020000000000000018,
+        0.26
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "front-wall-b3s0",
+      "group": "east-shop-131",
+      "center": [
+        0.0,
+        2.81,
+        -0.13
+      ],
+      "size": [
+        10.7,
+        1.38,
+        0.26
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "front-door-panel",
+      "group": "east-shop-131",
+      "center": [
+        -2.889,
+        1.05,
+        -0.1
+      ],
+      "size": [
+        1.1,
+        2.1,
+        0.06
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "foundation-front-b0s0",
+      "group": "east-shop-131",
+      "center": [
+        0.0,
+        -0.1,
+        -0.11000000000000001
+      ],
+      "size": [
+        10.7,
+        0.2,
+        0.34
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "foundation-front-b1s0",
+      "group": "east-shop-131",
+      "center": [
+        -4.4395,
+        0.3,
+        -0.11000000000000001
+      ],
+      "size": [
+        1.8209999999999997,
+        0.6,
+        0.34
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "foundation-front-b1s1",
+      "group": "east-shop-131",
+      "center": [
+        1.5505,
+        0.3,
+        -0.11000000000000001
+      ],
+      "size": [
+        7.598999999999999,
+        0.6,
+        0.34
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "back-wall",
+      "group": "east-shop-131",
+      "center": [
+        0.0,
+        3.2,
+        -12.86
+      ],
+      "size": [
+        10.149999999999999,
+        6.4,
+        0.28
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "facade-post",
+      "group": "east-shop-131",
+      "center": [
+        -5.1499999999999995,
+        3.5,
+        0.08
+      ],
+      "size": [
+        0.2,
+        6.5,
+        0.24
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "facade-post",
+      "group": "east-shop-131",
+      "center": [
+        5.1499999999999995,
+        3.5,
+        0.08
+      ],
+      "size": [
+        0.2,
+        6.5,
+        0.24
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    }
+  ],
+  "doors": "all doors closed with real panels (front + any gable door); no interior, building not enterable",
+  "notIntegratedOrWalkingTested": true
+}

@@ -1,0 +1,48 @@
+{
+  "source": "kit/build_dadian_scene.py",
+  "engine": "cycles-cpu",
+  "samples": 24,
+  "resolution": [
+    1600,
+    900
+  ],
+  "mode": "compare",
+  "assembly": "shanmen identity + yimen GLB z-21 (Blender +Y 21) + court-open in place + dadian-court in place + dadian GLB z-44 (Blender +Y 44)",
+  "views": [
+    {
+      "view": "court-axis",
+      "tag": "pbr",
+      "geometry": "native-blend",
+      "posBlender": [
+        0,
+        30.5,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        46,
+        5.5
+      ],
+      "fovDegVerified": 50.0,
+      "file": "court-axis-pbr-native.png"
+    },
+    {
+      "view": "dadian-front",
+      "tag": "pbr",
+      "geometry": "native-blend",
+      "posBlender": [
+        0,
+        38.5,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        44,
+        6.5
+      ],
+      "fovDegVerified": 55.0,
+      "file": "dadian-front-pbr-native.png"
+    }
+  ],
+  "note": "BLENDER evidence; WebGL captures are separate (kit/out/temple-dadian/web)"
+}

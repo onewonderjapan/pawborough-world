@@ -1,0 +1,114 @@
+{
+  "sampleId": "east-shop-130",
+  "basedOn": "street-completion-night-20260915 NEXT_FOUR_DESIGN.json east-shop-130 (designName 棉布店); seed kit/east-shop-128.config.json with design dimensions and new optional displayProps",
+  "units": "meters",
+  "bay": {
+    "widthM": 10.7,
+    "depthM": 12.0
+  },
+  "floors": 2,
+  "heights": {
+    "eaveM": 7.2,
+    "ridgeM": 8.8,
+    "upperFloorY": 3.6,
+    "sillWallCenterY": 4.35,
+    "sillWallHeightM": 1.1,
+    "headerFromY": 6.75,
+    "windowY": 5.8,
+    "pierHeightM": 1.85
+  },
+  "roof": {
+    "type": "planar",
+    "overhangFrontBackM": 0.3,
+    "overhangGableM": 0.25,
+    "slabThicknessM": 0.1,
+    "ridgeRollRadiusM": 0.115,
+    "maxAttachmentAboveRidgeM": 0.2
+  },
+  "upperWindows": {
+    "type": "shutter",
+    "count": 4,
+    "widthM": 1.45,
+    "heightM": 1.8
+  },
+  "front": {
+    "wallThicknessM": 0.26,
+    "door": {
+      "uRatio": -0.22,
+      "widthM": 1.1,
+      "heightM": 2.1,
+      "recessM": 0.1
+    },
+    "display": {
+      "uRatio": 0.19,
+      "widthRatio": 0.46,
+      "bottomY": 0.6,
+      "topY": 2.12,
+      "recessM": 0.12
+    }
+  },
+  "gable": {
+    "wallThicknessM": 0.28,
+    "westOnLocalX": -1,
+    "openings": [
+      {
+        "kind": "window",
+        "zM": -2.85,
+        "yM": 5.5,
+        "widthM": 0.8,
+        "heightM": 1.1,
+        "recessM": 0.1
+      },
+      {
+        "kind": "window",
+        "zM": -7.8,
+        "yM": 5.5,
+        "widthM": 0.8,
+        "heightM": 1.1,
+        "recessM": 0.1
+      }
+    ],
+    "downpipe": {
+      "zM": -0.45,
+      "radiusM": 0.04,
+      "clamps": 3
+    }
+  },
+  "foundation": {
+    "bottomY": -0.2,
+    "topY": 0.6,
+    "thicknessM": 0.34,
+    "protrusionM": 0.06,
+    "thresholdHeightM": 0.08
+  },
+  "streetPosts": {
+    "count": 2,
+    "postHeightM": 7.3
+  },
+  "beams": {
+    "lowerY": 3.4
+  },
+  "canopy": null,
+  "signage": {
+    "main": {
+      "text": "布行",
+      "row": 2,
+      "yM": 2.96,
+      "widthM": 3.3,
+      "heightM": 0.5
+    }
+  },
+  "displayProps": {
+    "kind": "fabricRolls",
+    "count": 6,
+    "rollLengthM": 0.7,
+    "rollRadiusM": 0.11,
+    "shelf": false
+  },
+  "materialSet": "pawborough-street-v1 (mb_lib.build_materials, frozen) + generic sign atlas",
+  "specAdjustments": {
+    "signYm": "kept seed 128 value 2.96; board+backing clears the frozen 3.4m lower beam",
+    "gableZm": "seed 128 openings -2.4/-6.5 at depth 10 scaled to depth 12 by the seed's own depth fractions (0.24/0.65)"
+  },
+  "configSha256": "037563d17ddbb3c9e6194d7a981cbd7a7a65e51d8582541f318079cd9e9b0d39"
+}

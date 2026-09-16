@@ -1,0 +1,63 @@
+{
+  "moduleId": "east-shop-131",
+  "triangles": 6864,
+  "meshes": 13,
+  "fileBytes": 1742588,
+  "sha256": "0ee8b33eacac8b9b708e5e50649a426117829fba906c1fd438152e3051da9aad",
+  "design": {
+    "family": "east-edge-background-shop",
+    "sampleId": "east-shop-131",
+    "basedOn": "street-completion-night-20260915 NEXT_FOUR_DESIGN.json east-shop-131 (designName 绸缎店); seed kit/east-shop-129.config.json with design dimensions, narrow sign and new optional displayProps",
+    "frontageM": 10.7,
+    "depthM": 13.0,
+    "eaveM": 6.4,
+    "ridgeM": 7.4,
+    "floors": 2,
+    "roofType": "planar",
+    "roofOverhangFB_M": 0.3,
+    "roofOverhangGable_M": 0.25,
+    "maxFinishedRoofY": 7.585000000000001,
+    "upperWindowCount": 3,
+    "gableOpenings": [
+      {
+        "kind": "window",
+        "zM": -2.85,
+        "yM": 5.1,
+        "widthM": 0.8,
+        "heightM": 1.1,
+        "recessM": 0.1
+      },
+      {
+        "kind": "window",
+        "zM": -8.45,
+        "yM": 5.1,
+        "widthM": 0.8,
+        "heightM": 1.1,
+        "recessM": 0.1
+      },
+      {
+        "kind": "door",
+        "zM": -4.6,
+        "yM": 1.05,
+        "widthM": 0.95,
+        "heightM": 2.1,
+        "recessM": 0.12
+      }
+    ],
+    "interiorBuilt": false,
+    "doors": "all doors closed with real panels (front + any gable door); no interior, building not enterable",
+    "signage": "generic-atlas row 3 (绸庄, historicalBrand=false)",
+    "specAdjustments": {
+      "signYm": "kept seed 129 value 3.16 above the canopy slab 2.74",
+      "signWidth": "narrow 2.0m board distinguishes 绸缎店 from 棉布店 per design groundFrontDetail",
+      "gableZm": "seed 129 openings scaled to depth 13 by the seed's own depth fractions (window 0.22/0.65, door 0.354)"
+    },
+    "materialSet": "pawborough-street-v1 (mb_lib.build_materials, frozen) + generic sign atlas",
+    "configDriven": true,
+    "surveyed": false
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

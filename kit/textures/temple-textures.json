@@ -1,0 +1,37 @@
+{
+  "generatedBy": "kit/make_temple_textures.py",
+  "newImageBudget": {
+    "max": 2,
+    "used": 2,
+    "maxEdgePx": 2048
+  },
+  "images": [
+    {
+      "file": "textures/temple-plaque.png",
+      "size": [
+        2048,
+        720
+      ],
+      "colorSpace": "sRGB",
+      "charactersLeftToRight": "隅海障保",
+      "readingRightToLeft": "保障海隅",
+      "font": {
+        "path": "/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc",
+        "name": "Noto Serif CJK SC Bold (system package)",
+        "license": "SIL Open Font License 1.1 (Noto family)"
+      },
+      "note": "glyph shapes from the recorded system font; layout/borders/mottling authored locally; no reference-photo pixels"
+    },
+    {
+      "file": "textures/temple-relief-normal.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "colorSpace": "Non-Color",
+      "normalConvention": "OpenGL (+Y up in UV)",
+      "motif": "lobed floral frame + inner diamond + foliage, original",
+      "note": "procedural height field authored locally; no reference-photo-derived pixels"
+    }
+  ]
+}

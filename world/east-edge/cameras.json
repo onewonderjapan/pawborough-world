@@ -1,0 +1,301 @@
+{
+  "axis": "glTF Y-up X-east Z-south",
+  "resolution": [
+    1280,
+    720
+  ],
+  "sourceGlbSha256": "95d1cdd31eb61406c7a8b832548db515509184b8ddfe0a448c7fa0165d1aa111",
+  "reviewedWorldGlb": "street-reviewed.glb",
+  "roadWindingCorrected": true,
+  "cameras": [
+    {
+      "id": "full-west",
+      "positionGlb": [
+        -18,
+        34,
+        34
+      ],
+      "targetGlb": [
+        28,
+        0,
+        -2
+      ],
+      "lensMm": 35,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "full-east",
+      "positionGlb": [
+        108,
+        30,
+        40
+      ],
+      "targetGlb": [
+        52,
+        0,
+        6
+      ],
+      "lensMm": 38,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "eye-west",
+      "positionGlb": [
+        2.5,
+        1.6,
+        0.2
+      ],
+      "targetGlb": [
+        50,
+        1.6,
+        2.5
+      ],
+      "lensMm": 32,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "eye-east",
+      "positionGlb": [
+        80,
+        1.6,
+        13
+      ],
+      "targetGlb": [
+        26,
+        1.6,
+        -1
+      ],
+      "lensMm": 32,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "across",
+      "positionGlb": [
+        27,
+        2,
+        1
+      ],
+      "targetGlb": [
+        28,
+        3.2,
+        -6
+      ],
+      "lensMm": 35,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "corner",
+      "positionGlb": [
+        26,
+        3,
+        7
+      ],
+      "targetGlb": [
+        7,
+        2.2,
+        0
+      ],
+      "lensMm": 30,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "lane",
+      "positionGlb": [
+        61.6,
+        1.9,
+        6.4
+      ],
+      "targetGlb": [
+        59.9,
+        1.4,
+        11.6
+      ],
+      "lensMm": 30,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "module-near",
+      "positionGlb": [
+        63,
+        2,
+        -1
+      ],
+      "targetGlb": [
+        49,
+        2.8,
+        -5
+      ],
+      "lensMm": 30,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "catwall",
+      "positionGlb": [
+        62.5,
+        2.2,
+        6.5
+      ],
+      "targetGlb": [
+        56.5,
+        3.4,
+        -5.4
+      ],
+      "lensMm": 40,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "plaza",
+      "positionGlb": [
+        17,
+        3.4,
+        -4
+      ],
+      "targetGlb": [
+        27,
+        1.5,
+        6.5
+      ],
+      "lensMm": 30,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "corner-close",
+      "positionGlb": [
+        18.5,
+        1.7,
+        7.6
+      ],
+      "targetGlb": [
+        11.4,
+        1.5,
+        7.6
+      ],
+      "lensMm": 50,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "east-czero",
+      "positionGlb": [
+        83.7401,
+        1.6201,
+        16.0891
+      ],
+      "targetGlb": [
+        100.5646,
+        1.6201,
+        26.9029
+      ],
+      "lensMm": 19.419330342338583,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "CAMERAS.json C0: measured cruise-end original direction; comparison camera, not a display angle"
+    },
+    {
+      "id": "east-cone",
+      "positionGlb": [
+        83.7401,
+        1.6201,
+        16.0891
+      ],
+      "targetGlb": [
+        97,
+        3.3,
+        21
+      ],
+      "lensMm": 24.444,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "CAMERAS.json C1: separate 3/4 display view; must not pose as the original cruise line"
+    },
+    {
+      "id": "east-front-a",
+      "positionGlb": [
+        94.0529,
+        1.7,
+        20.5902
+      ],
+      "targetGlb": [
+        97.6645,
+        2.4,
+        17.7342
+      ],
+      "lensMm": 35,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "design evidence view: east-shop-128 storefront near view from the alley mouth (facades face each other; no open straight-on front exists)"
+    },
+    {
+      "id": "east-west-a",
+      "positionGlb": [
+        82.58,
+        3.4,
+        7.81
+      ],
+      "targetGlb": [
+        94.0416,
+        5.2,
+        11.3705
+      ],
+      "lensMm": 35,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "design evidence view: east-shop-128 west gable from the site's open pocket (the side C0 actually sees); full square-on elevation in the Blender evidence set"
+    },
+    {
+      "id": "east-front-b",
+      "positionGlb": [
+        99.3456,
+        1.7,
+        21.0824
+      ],
+      "targetGlb": [
+        95.734,
+        2.4,
+        23.9383
+      ],
+      "lensMm": 35,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "design evidence view: east-shop-129 storefront near view from the alley mouth (facades face each other; no open straight-on front exists)"
+    },
+    {
+      "id": "east-west-b",
+      "positionGlb": [
+        77.5,
+        5.5,
+        24
+      ],
+      "targetGlb": [
+        88.9916,
+        5.2,
+        27.6005
+      ],
+      "lensMm": 35,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "design evidence view: east-shop-129 west gable from the site's open pocket (the side C0 actually sees); full square-on elevation in the Blender evidence set"
+    }
+  ]
+}

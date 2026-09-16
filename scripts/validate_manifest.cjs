@@ -1,9 +1,12 @@
 // Strict manifest verifier: every file the manifest references must match its
 // recorded bytes AND sha256, both in the workspace and in dist/ (the built
-// review bundle). Exits non-zero on any mismatch. --expect-fail inverts the
-// exit logic for the negative test (a corrupted manifest must be rejected).
+// review bundle). Exits non-zero on any mismatch.
 //
-// Run: node scripts/validate_manifest.cjs [--root <workspace>] [--expect-fail]
+// Negative tests run this SAME command against an isolated sandbox copy with a
+// corrupted hash and assert a non-zero exit; there is deliberately no
+// --expect-fail switch that could mask a real exit code.
+//
+// Run: node scripts/validate_manifest.cjs [--root <workspace>] [--report <out.json>]
 const {createHash} = require('crypto');
 const fs = require('fs');
 const path = require('path');
@@ -11,7 +14,9 @@ const path = require('path');
 const args = process.argv.slice(2);
 const rootArg = args.indexOf('--root');
 const WS = rootArg >= 0 ? path.resolve(args[rootArg + 1]) : path.resolve(__dirname, '..');
-const expectFail = args.includes('--expect-fail');
+const reportArgIdx = args.indexOf('--report');
+const reportPath = reportArgIdx >= 0 ? path.resolve(args[reportArgIdx + 1])
+                                    : path.join(WS, '..', 'artifacts', 'r2', 'manifest-validation.json');
 const manifest = JSON.parse(fs.readFileSync(path.join(WS, 'world/review-manifest.json'), 'utf8'));
 
 const failures = [];
@@ -56,13 +61,8 @@ const report = {
   failures,
   verdict: failures.length === 0 ? 'PASS' : 'FAIL',
 };
-fs.mkdirSync(path.join(WS, '../artifacts/r2'), {recursive: true});
-fs.writeFileSync(path.join(WS, '../artifacts/r2/manifest-validation.json'),
-                 JSON.stringify(report, null, 2) + '\n', 'utf8');
-console.log(`MANIFEST_VALIDATE ${report.verdict} failures=${failures.length}`);
+fs.mkdirSync(path.dirname(reportPath), {recursive: true});
+fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + '\n', 'utf8');
+console.log(`MANIFEST_VALIDATE ${report.verdict} failures=${failures.length} report=${reportPath}`);
 for (const f of failures) console.log('  - ' + f);
-if (expectFail) {
-  if (report.verdict === 'FAIL') { console.log('NEGATIVE_OK corrupted manifest was rejected'); process.exit(0); }
-  console.log('NEGATIVE_BROKEN corrupted manifest was accepted'); process.exit(1);
-}
 process.exit(report.verdict === 'PASS' ? 0 : 1);

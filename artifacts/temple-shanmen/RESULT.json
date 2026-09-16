@@ -1,0 +1,69 @@
+{
+  "taskId": "pawborough-temple-shanmen-main",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "visualReview": "pending_lead",
+  "date": "2026-09-15",
+  "executor": "GLM-5.3 (owner-started single session, continuous run)",
+  "branch": "work/temple-shanmen-20260915",
+  "baseline": "10df12a (street-completion closeout)",
+  "commits": [
+    {"sha": "a385d8f", "scope": "S1-S4 配置校验构建器 + 剖面放样屋面 + 两翼/前场 + 候选雕饰 + 四目标导出"},
+    {"sha": "f49819c", "scope": "S5 独立样板入口5290/5291 + 数据集 + node契约/通行测试"},
+    {"sha": "1f76437", "scope": "S6 6机位Blender渲染 + 灰模 + native↔GLB同机位对照 + 性能记录"},
+    {"sha": "THIS", "scope": "S7 交付收口（RESULT/DELIVERY/PROGRESS/证据索引）"}
+  ],
+  "deliverables": {
+    "building": "world/temple-shanmen/temple.glb（门楼+两翼八字墙+匾额，16,322 tris，3.05MB）",
+    "ground": "world/temple-shanmen/ground.glb（18×7前场+3m通道，可见面=物理地面，360 tris，0.86MB）",
+    "candidates": "lions.glb（石狮一对，1,324 tris/只 ≤1,800）+ ornaments.glb（鱼龙吻×2+肩饰×2粗轮廓）",
+    "source": "kit/out/temple-shanmen/scene.blend + config-used/collision/materials/measurements/reimport-check 侧车",
+    "preview": "temple.html + src/templeMain.js，dev 5290 / preview 5291（主世界5284/5285未动）",
+    "renders": "kit/out/temple-shanmen-renders/（6机位PBR + 正面/三分之四灰模 + native对照2张 + 可复用scene.blend×2）",
+    "webgl": "kit/out/temple-shanmen/web/（8张实测图+每张页面遥测JSON）"
+  },
+  "budgets": {
+    "buildingAndWallsTris": {"actual": 16322, "limit": 50000, "pass": true},
+    "fullSetTris": {"actual": 21634, "limit": 60000, "pass": true},
+    "mainGlbBytes": {"actual": 3051572, "limit": 8000000, "pass": true},
+    "groundGlbBytes": {"actual": 860724, "limit": 2000000, "pass": true},
+    "newImages": {"actual": 2, "limit": 2, "pass": true, "note": "匾额2048×720 sRGB(字体来源已记录) + 浮雕法线1024 Non-Color，本地原创"}
+  },
+  "validation": {
+    "gltfValidator": {"errors": 0, "warnings": 0, "checked": "4 GLB"},
+    "tests": "15/15 套件 PASS（含新增 temple contract 33项 / passage 11项；13套既有回归全绿）",
+    "clearOpening": {"netM": [3.0, 3.1], "verifiedFrom": "配置三字段交叉 + 导出GLB顶点走廊零占用 + Rapier胶囊穿行(横向漂移1mm, 通道内落地)"},
+    "negatives": "侧向拦停/门板拦停/越界坠落(无隐形地面)/斜墙OBB记录自洽/损坏GLB被validator拒绝",
+    "cameras": "6机位逐值核对：WebGL dPos=0/dFov=0；Blender镜头经测量+牛顿校正后 degrees(angle)==合同值",
+    "roundTrip": "native↔GLB同机位像素对照 mean|d|=0.057/255，max12，>8级差异像素0.003%（纹理重编码量级）"
+  },
+  "designInferences": {
+    "rear": "简化暗木框+灰墙+真开门洞（无假匾文），标design_inference",
+    "doorLeaves": "光栅门板开放折叠贴侧间，实体碰撞且在净宽之外",
+    "roofSeams": "中央壳与肩壳内搭0.25m（配置设计值带0.10–0.30校验带内），肩壳内缘收口条隐藏于中央壳下",
+    "plinthOffset": "柱础外移0.10m保3.0m净宽（柱础宽0.58）",
+    "candidates": "鱼龙吻/石狮为粗轮廓候选，主控看剪影后决定精修"
+  },
+  "knownNotes": [
+    "首轮WebGL取证有一次页面内通行判据bug（穿出后按落地判定），几何未变，修正后全套PASS；两轮截图均保留",
+    "Blender 4.5 VERTICAL sensor fit 实际按~24mm等效传感高计算：首跑被防弧度护栏拦下，改测量+一步校正后过（未放宽断言）",
+    "翼墙负例语义：胶囊被斜墙法向挡住后沿墙面滑行属合法，断言改为'不越过墙线'；AABB化会导致提前拦停、缺碰撞体则直接穿越，两者都被排除",
+    "FPS未采样不报告；fetchParse 277ms为localhost数据，不作公网声明"
+  ],
+  "ownerReviewPoints": [
+    "正面灰模四要素同读：中央门洞/短脊+脊饰/两肩起翘/两翼低墙（front-clay-glb.png + temple-front-clay WebGL）",
+    "匾额右起读法与金字观感（贴图为本地字体排印+自绘边框，非照片拷贝）",
+    "鱼龙吻/石狮剪影是否进入精修（ornaments.glb/lions.glb可整体替换）",
+    "两翼墙菱形花瓣框浅浮雕的密度与凸起（relief法线+菱形压条几何）"
+  ],
+  "rerun": {
+    "textures": "python3 -X utf8 kit/make_temple_textures.py",
+    "build": "blender -b --factory-startup -t 4 -P kit/build_temple_shanmen.py -- --config kit/temple-shanmen.config.json --out kit/out/temple-shanmen",
+    "dataset": "node scripts/build_temple_world.mjs",
+    "tests": "node tests/temple_shanmen_contract.test.mjs && node tests/temple_shanmen_passage.test.mjs",
+    "dev": "npm run dev:temple   # http://127.0.0.1:5290/temple.html",
+    "buildDist": "npm run build && npm run preview:temple   # 5291",
+    "webglEvidence": "node scripts/capture_temple_web.mjs",
+    "renders": "blender -b --factory-startup -t 4 -P kit/build_temple_scene.py -- --mode review --out kit/out/temple-shanmen-renders && blender -b --factory-startup -t 4 -P kit/build_temple_scene.py -- --mode compare --out kit/out/temple-shanmen-renders"
+  }
+}

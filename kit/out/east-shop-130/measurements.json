@@ -1,0 +1,54 @@
+{
+  "moduleId": "east-shop-130",
+  "triangles": 6916,
+  "meshes": 13,
+  "fileBytes": 1751412,
+  "sha256": "654022fbe6088079b287927ad9cdfb3cf5f526f4e7454209b54fb4fca1b076e3",
+  "design": {
+    "family": "east-edge-background-shop",
+    "sampleId": "east-shop-130",
+    "basedOn": "street-completion-night-20260915 NEXT_FOUR_DESIGN.json east-shop-130 (designName 棉布店); seed kit/east-shop-128.config.json with design dimensions and new optional displayProps",
+    "frontageM": 10.7,
+    "depthM": 12.0,
+    "eaveM": 7.2,
+    "ridgeM": 8.8,
+    "floors": 2,
+    "roofType": "planar",
+    "roofOverhangFB_M": 0.3,
+    "roofOverhangGable_M": 0.25,
+    "maxFinishedRoofY": 8.985000000000001,
+    "upperWindowCount": 4,
+    "gableOpenings": [
+      {
+        "kind": "window",
+        "zM": -2.85,
+        "yM": 5.5,
+        "widthM": 0.8,
+        "heightM": 1.1,
+        "recessM": 0.1
+      },
+      {
+        "kind": "window",
+        "zM": -7.8,
+        "yM": 5.5,
+        "widthM": 0.8,
+        "heightM": 1.1,
+        "recessM": 0.1
+      }
+    ],
+    "interiorBuilt": false,
+    "doors": "all doors closed with real panels (front + any gable door); no interior, building not enterable",
+    "signage": "generic-atlas row 2 (布行, historicalBrand=false)",
+    "specAdjustments": {
+      "signYm": "kept seed 128 value 2.96; board+backing clears the frozen 3.4m lower beam",
+      "gableZm": "seed 128 openings -2.4/-6.5 at depth 10 scaled to depth 12 by the seed's own depth fractions (0.24/0.65)"
+    },
+    "materialSet": "pawborough-street-v1 (mb_lib.build_materials, frozen) + generic sign atlas",
+    "configDriven": true,
+    "surveyed": false
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

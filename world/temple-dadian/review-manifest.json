@@ -1,0 +1,132 @@
+{
+  "datasetId": "temple-dadian",
+  "title": "城隍庙庙轴线 · 山门—前院—仪门—二进院—大殿 样板",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "reference": {
+    "imageId": "PBR-SH-0002-043 + PBR-SH-0005-001/002/003/004 (batch-005)",
+    "referenceEra": "2007/2015 photos; hall form (double eave, five bays, xieshan-read gables, 城隍廟 plaque) confirmed by machine-vision screening; photos support, never override the frozen numbers",
+    "historicalAccuracyVerified": false,
+    "dimensionsAreDesign": true
+  },
+  "axis": "GLB Y-up; +Z south toward the street; shanmen threshold at (0,0,0); north = -Z",
+  "assets": {
+    "temple": {
+      "file": "./world/temple-dadian/temple.glb",
+      "bytes": 3782256,
+      "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb",
+      "triangles": 22392,
+      "groups": [
+        "shanmen-body",
+        "shanmen-plaque"
+      ]
+    },
+    "ground": {
+      "file": "./world/temple-dadian/ground.glb",
+      "bytes": 860916,
+      "sha256": "0acf56376883f3faf823c52f8cf8478bf8d731c31606ed22e7eeadc0f7e0879d",
+      "triangles": 360,
+      "groups": [
+        "temple-ground"
+      ]
+    },
+    "lions": {
+      "file": "./world/temple-dadian/lions.glb",
+      "bytes": 440156,
+      "sha256": "eed2009cca69b5f08a287b4c034f270d817cf1d1bd1ba6859993bcc912278c06",
+      "triangles": 3556,
+      "groups": [
+        "shanmen-lion"
+      ]
+    },
+    "ornaments": {
+      "file": "./world/temple-dadian/ornaments.glb",
+      "bytes": 437144,
+      "sha256": "feec279340911ce646a96b203c2febaa5a812d10035d9493f06868f73302a8f9",
+      "triangles": 2304,
+      "groups": [
+        "shanmen-ornament"
+      ]
+    },
+    "yimen": {
+      "file": "./world/temple-dadian/yimen.glb",
+      "bytes": 4343252,
+      "sha256": "e9393cd4017c657e74d2889da812ac16eb70a04664ce8ab829ea126cb7ee48b5",
+      "triangles": 26140,
+      "groups": [
+        "yimen-body",
+        "yimen-plaque"
+      ]
+    },
+    "courtOpen": {
+      "file": "./world/temple-dadian/court-open.glb",
+      "bytes": 1145928,
+      "sha256": "ade97662e4be178ba0faf93ff66c48e7c6b55011c8df8edbb27bab1449d4aded",
+      "triangles": 1580,
+      "groups": [
+        "temple-ground",
+        "entry-court"
+      ]
+    },
+    "dadian": {
+      "file": "./world/temple-dadian/dadian.glb",
+      "bytes": 6295144,
+      "sha256": "8a722d9dc7663cefea0f94409a8911c65cf824756a60220ec7d1c88d4f1dabee",
+      "triangles": 43826,
+      "groups": [
+        "dadian-body",
+        "dadian-plaque"
+      ]
+    },
+    "dadianCourt": {
+      "file": "./world/temple-dadian/dadian-court.glb",
+      "bytes": 1446932,
+      "sha256": "c08856597ff60fde9df17726276bddbd13ae0f5497be80ee61ea2d668fccab40",
+      "triangles": 3984,
+      "groups": [
+        "temple-ground",
+        "dadian-court"
+      ]
+    }
+  },
+  "placedTriangles": 104142,
+  "budgets": {
+    "dadianTris": {
+      "actual": 43826,
+      "limit": 58000,
+      "pass": true
+    },
+    "dadianCourtTris": {
+      "actual": 3984,
+      "limit": 4500,
+      "pass": true
+    },
+    "combinedPlacedTriangles": {
+      "actual": 104142,
+      "limit": 170000,
+      "pass": true
+    }
+  },
+  "cameras": {
+    "count": 10,
+    "source": "lead designed dadian cameras (task CAMERAS.json)",
+    "contract": "positionGlb/targetGlb/verticalFovDegrees applied verbatim; page verifies pose after controls.update()"
+  },
+  "passage": {
+    "yimenClearM": [
+      3.6,
+      3.2
+    ],
+    "dadianDoors": "CLOSED (two leaves, full box collider); route stops at z=-43.2",
+    "stair": "5 x 0.17 risers; walk route attempts the ascent; honest fallback if the capsule cannot climb",
+    "route": "court -> around the burner -> stair attempt -> platform -> stop before the doors -> return"
+  },
+  "groundPolicy": "visible court/path/platform/step meshes ARE the physics ground (temple-ground__ nodes); no invisible plane",
+  "designPresets": {
+    "plaque": "城隍廟 (evidenced, PBR-SH-0005-004; pre-set 2026-09-16, owner may veto)",
+    "roofForm": "歇山读感 gable overlays on the proven shell (aerial PBR-SH-0005-001; NOT true-xieshan survey)",
+    "burner": "tripod ding per PBR-SH-0005-002/003"
+  },
+  "buildChain": "build_dadian.py(N1-N3) + build_dadian_court.py(N4) + build_entry_court.py(court-open variant) <- DESIGN_SPEC.json (lead design)",
+  "generatedBy": "scripts/build_temple_dadian_world.mjs"
+}

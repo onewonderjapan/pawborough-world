@@ -1,0 +1,31 @@
+{
+  "sampleId": "plain-shop-a",
+  "basedOn": "plain-v1 frozen form (fangbang-parallel-night 20260913); no new landmark design",
+  "units": "meters",
+  "bay": { "widthM": 12.0, "depthM": 6.4 },
+  "floors": 2,
+  "heights": {
+    "eaveM": 6.8,
+    "ridgeM": 8.0,
+    "upperFloorY": 3.55,
+    "sillWallCenterY": 4.25,
+    "sillWallHeightM": 1.0,
+    "headerFromY": 6.6,
+    "windowY": 5.65,
+    "pierHeightM": 1.85
+  },
+  "roof": { "type": "straight" },
+  "upperWindows": { "type": "shutter", "count": 4, "widthM": 1.4, "heightM": 1.8 },
+  "shopfront": {
+    "doorWidthM": 1.1, "doorHeightM": 2.1, "doorCenterRatio": -0.22,
+    "counterWidthRatio": 0.5, "counterCenterRatio": 0.18,
+    "frontBrickPlinth": true, "plinthHeightM": 0.6
+  },
+  "streetPosts": { "count": 2, "postHeightM": 6.9 },
+  "signage": {
+    "main": { "textRow": 11, "y": 3.7, "widthRatio": 0.52, "heightM": 0.52 },
+    "sub": { "textRow": 12, "y": 2.35, "widthRatio": 0.7, "heightM": 0.2 }
+  },
+  "materialSet": "pawborough-street-v1 (mb_lib.build_materials, frozen)",
+  "collision": { "wallThicknessM": 0.28, "clearRadiusAssumedM": 0.35 }
+}

@@ -1,0 +1,55 @@
+{
+  "input": "kit/out/east-shop-128/model.glb",
+  "tag": "reimport",
+  "westSign": -1,
+  "resolution": [
+    1280,
+    960
+  ],
+  "lensMm": 50,
+  "engine": "cycles-cpu",
+  "samples": 24,
+  "viewTransform": "AgX - Medium High Contrast",
+  "sun": "daylight 2.8 @ (26,-22,-35)",
+  "cameras": {
+    "front": {
+      "location": [
+        0.0,
+        -18.6486,
+        3.0147
+      ],
+      "lensMm": 50,
+      "target": [
+        0.0,
+        5.0,
+        3.9332
+      ]
+    },
+    "west": {
+      "location": [
+        -27.027,
+        5.0,
+        3.0147
+      ],
+      "lensMm": 50,
+      "target": [
+        0.0,
+        5.0,
+        3.9332
+      ]
+    },
+    "quarter-west": {
+      "location": [
+        -19.1441,
+        -14.1441,
+        10.822
+      ],
+      "lensMm": 50,
+      "target": [
+        0.0,
+        5.0,
+        3.9332
+      ]
+    }
+  }
+}

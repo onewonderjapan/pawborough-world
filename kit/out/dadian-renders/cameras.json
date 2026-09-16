@@ -1,0 +1,218 @@
+{
+  "source": "kit/build_dadian_scene.py",
+  "engine": "cycles-cpu",
+  "samples": 24,
+  "resolution": [
+    1600,
+    900
+  ],
+  "mode": "review",
+  "assembly": "shanmen identity + yimen GLB z-21 (Blender +Y 21) + court-open in place + dadian-court in place + dadian GLB z-44 (Blender +Y 44)",
+  "views": [
+    {
+      "view": "court-axis",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        30.5,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        46,
+        5.5
+      ],
+      "fovDegVerified": 50.0,
+      "file": "court-axis-pbr-glb.png"
+    },
+    {
+      "view": "court-axis",
+      "tag": "clay",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        30.5,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        46,
+        5.5
+      ],
+      "fovDegVerified": 50.0,
+      "file": "court-axis-clay-glb.png"
+    },
+    {
+      "view": "dadian-front",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        38.5,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        44,
+        6.5
+      ],
+      "fovDegVerified": 55.0,
+      "file": "dadian-front-pbr-glb.png"
+    },
+    {
+      "view": "dadian-front",
+      "tag": "clay",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        38.5,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        44,
+        6.5
+      ],
+      "fovDegVerified": 55.0,
+      "file": "dadian-front-clay-glb.png"
+    },
+    {
+      "view": "steps-low",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        41.8,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        45,
+        8
+      ],
+      "fovDegVerified": 65.0,
+      "file": "steps-low-pbr-glb.png"
+    },
+    {
+      "view": "plaque-close",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        42.6,
+        2.45
+      ],
+      "targetBlender": [
+        0,
+        44.1,
+        6.5
+      ],
+      "fovDegVerified": 45.0,
+      "file": "plaque-close-pbr-glb.png"
+    },
+    {
+      "view": "burner-close",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        2.4,
+        33.2,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        34.6,
+        1.3
+      ],
+      "fovDegVerified": 45.0,
+      "file": "burner-close-pbr-glb.png"
+    },
+    {
+      "view": "dadian-roof",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        14.5,
+        38,
+        10
+      ],
+      "targetBlender": [
+        0,
+        50,
+        9.5
+      ],
+      "fovDegVerified": 50.0,
+      "file": "dadian-roof-pbr-glb.png"
+    },
+    {
+      "view": "court-quarter",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        9.2,
+        31,
+        1.6
+      ],
+      "targetBlender": [
+        -2,
+        40,
+        4.5
+      ],
+      "fovDegVerified": 55.0,
+      "file": "court-quarter-pbr-glb.png"
+    },
+    {
+      "view": "look-back",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        38,
+        1.7
+      ],
+      "targetBlender": [
+        0,
+        22,
+        5
+      ],
+      "fovDegVerified": 50.0,
+      "file": "look-back-pbr-glb.png"
+    },
+    {
+      "view": "corner-detail",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        -9.5,
+        38.8,
+        1.6
+      ],
+      "targetBlender": [
+        -6,
+        33.5,
+        2
+      ],
+      "fovDegVerified": 45.0,
+      "file": "corner-detail-pbr-glb.png"
+    },
+    {
+      "view": "hall-flank",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        13.8,
+        47,
+        3.2
+      ],
+      "targetBlender": [
+        0,
+        50,
+        6.5
+      ],
+      "fovDegVerified": 55.0,
+      "file": "hall-flank-pbr-glb.png"
+    }
+  ],
+  "note": "BLENDER evidence; WebGL captures are separate (kit/out/temple-dadian/web)"
+}

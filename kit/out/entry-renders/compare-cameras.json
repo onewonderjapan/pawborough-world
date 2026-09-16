@@ -1,0 +1,48 @@
+{
+  "source": "kit/build_temple_entry_scene.py",
+  "engine": "cycles-cpu",
+  "samples": 24,
+  "resolution": [
+    1280,
+    960
+  ],
+  "mode": "compare",
+  "assembly": "shanmen identity + yimen GLB z-21 (Blender +Y 21) + court in place",
+  "views": [
+    {
+      "view": "yimen-front",
+      "tag": "pbr",
+      "geometry": "native-blend",
+      "posBlender": [
+        0,
+        10,
+        4
+      ],
+      "targetBlender": [
+        0,
+        22,
+        4
+      ],
+      "fovDegVerified": 62.0,
+      "file": "yimen-front-pbr-native.png"
+    },
+    {
+      "view": "entry-axis",
+      "tag": "pbr",
+      "geometry": "native-blend",
+      "posBlender": [
+        0,
+        -17,
+        3.8
+      ],
+      "targetBlender": [
+        0,
+        10,
+        4
+      ],
+      "fovDegVerified": 52.0,
+      "file": "entry-axis-pbr-native.png"
+    }
+  ],
+  "note": "BLENDER evidence; WebGL captures are separate (kit/out/entry-renders/web)"
+}

@@ -1,0 +1,126 @@
+{
+  "sampleId": "temple-entry-court",
+  "family": "chenghuangmiao-entry-court-pilot",
+  "units": "meters",
+  "axis": "world GLB Y-up; court authored in place between the two gates (no instance transform)",
+  "basedOn": "pawborough-temple-entry-next-20260915 DESIGN_SPEC.json courtyard block (lead design; contextNotSurvey=true)",
+  "reference": {
+    "imageId": "PBR-SH-0002-040",
+    "referenceEra": 2015,
+    "historicalAccuracyVerified": false,
+    "dimensionsAreDesign": true
+  },
+  "centralPathWidthM": 3.6,
+  "courtyard": {
+    "interiorX": [
+      -8,
+      8
+    ],
+    "interiorZ": [
+      -21,
+      -3.6
+    ],
+    "surfaceY": 0,
+    "slabThicknessM": 0.12,
+    "sideWalls": {
+      "x": [
+        -8,
+        8
+      ],
+      "zRange": [
+        -21,
+        -3.6
+      ],
+      "heightM": 2.8,
+      "thicknessM": 0.28,
+      "capTopY": 3.02
+    },
+    "southReturns": {
+      "z": -3.6,
+      "xSegments": [
+        [
+          -8.28,
+          -3.3
+        ],
+        [
+          3.3,
+          8.28
+        ]
+      ],
+      "heightM": 2.8
+    },
+    "northReturns": {
+      "z": -21,
+      "xSegments": [
+        [
+          -8.28,
+          -7.2
+        ],
+        [
+          7.2,
+          8.28
+        ]
+      ],
+      "heightM": 2.8
+    },
+    "drains": [
+      [
+        -6.8,
+        0,
+        -8
+      ],
+      [
+        6.8,
+        0,
+        -17
+      ]
+    ],
+    "rearLanding": {
+      "x": [
+        -8,
+        8
+      ],
+      "z": [
+        -29.2,
+        -26.2
+      ],
+      "y": 0
+    },
+    "cutoffBackWall": {
+      "center": [
+        0,
+        1.4,
+        -29.2
+      ],
+      "size": [
+        16,
+        2.8,
+        0.28
+      ],
+      "semantic": "样板终端界面，非历史殿宇"
+    },
+    "contextNotSurvey": true
+  },
+  "pathSlab": {
+    "halfWidthM": 1.85,
+    "zRange": [
+      -29.2,
+      -3.6
+    ],
+    "topY": 0.0,
+    "note": "continues through the yimen hall to the landing; side fields 4mm lower; yimen threshold 12mm"
+  },
+  "budgets": {
+    "courtAndContextTrisMax": 12000,
+    "courtGlbBytesMax": 2500000
+  },
+  "review": {
+    "ownerAdopted": false,
+    "visualReviewer": "lead, after batch"
+  },
+  "uncertaintyPolicy": {
+    "layout": "court depth/positioning is this batch's design, not a surveyed courtyard",
+    "walls": "simplified stone boundary with tile coping; no historical claim"
+  },
+  "buildCutoffWall": true
+}

@@ -1,0 +1,11 @@
+{
+  "purpose": "read-only snapshot of the lead-maintained skills at ~/.codex/skills for build reproducibility; NOT a second editable canonical",
+  "snapshottedAt": "2026-09-14T00:00:00+09:00 (see git commit time for exact)",
+  "source": "~/.codex/skills",
+  "sha256": {
+    "pawborough-static-architecture/SKILL.md": "c3205a40b5dd21fcb8fade827fa7056db0f247f852f5d4ca59492107bf900419",
+    "pawborough-game-client/SKILL.md": "ac2d8b03f2244e8f0146782d4637b7fa1f0e8bf4a3d832f726dd55b3a476af58",
+    "pawborough-character/SKILL.md": "1905b76cceddd59cb1a31f4814c6d97c9b7a9e84ee4ba8e1f3680f79b4a649b5"
+  },
+  "note": "package frozen inputs at inputs/skills/ are older than this snapshot; current authority is the lead-maintained ~/.codex/skills"
+}

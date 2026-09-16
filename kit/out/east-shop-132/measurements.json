@@ -1,0 +1,63 @@
+{
+  "moduleId": "east-shop-132",
+  "triangles": 7244,
+  "meshes": 14,
+  "fileBytes": 1793052,
+  "sha256": "68716bb1a5f33d0cdc0fad1172984b5021281bf7c6874bf0da0077f761d775aa",
+  "design": {
+    "family": "east-edge-background-shop",
+    "sampleId": "east-shop-132",
+    "basedOn": "street-completion-night-20260915 NEXT_FOUR_DESIGN.json east-shop-132 (designName 绣品店); seed kit/east-shop-129.config.json facade style, design dimensions, west gable follows this building's own geometry (north side, west on local -x)",
+    "frontageM": 10.7,
+    "depthM": 10.0,
+    "eaveM": 6.4,
+    "ridgeM": 7.4,
+    "floors": 2,
+    "roofType": "planar",
+    "roofOverhangFB_M": 0.3,
+    "roofOverhangGable_M": 0.25,
+    "maxFinishedRoofY": 7.585000000000001,
+    "upperWindowCount": 3,
+    "gableOpenings": [
+      {
+        "kind": "window",
+        "zM": -2.2,
+        "yM": 5.1,
+        "widthM": 0.8,
+        "heightM": 1.1,
+        "recessM": 0.1
+      },
+      {
+        "kind": "window",
+        "zM": -6.5,
+        "yM": 5.1,
+        "widthM": 0.8,
+        "heightM": 1.1,
+        "recessM": 0.1
+      },
+      {
+        "kind": "door",
+        "zM": -3.55,
+        "yM": 1.05,
+        "widthM": 0.95,
+        "heightM": 2.1,
+        "recessM": 0.12
+      }
+    ],
+    "interiorBuilt": false,
+    "doors": "all doors closed with real panels (front + any gable door); no interior, building not enterable",
+    "signage": "generic-atlas row 4 (绣坊, historicalBrand=false)",
+    "specAdjustments": {
+      "westOnLocalX": "design seed 129 carries +1 because shop-129 is a south-side building; shop-132 is north-side (yaw -0.22938) so its west gable is local -x. Opening style (2 windows + 1 side door) still follows the seed.",
+      "signYm": "kept seed 129 value 3.16 above the canopy slab 2.74",
+      "gableZm": "seed 129 openings scaled to depth 10 by the seed's own depth fractions"
+    },
+    "materialSet": "pawborough-street-v1 (mb_lib.build_materials, frozen) + generic sign atlas",
+    "configDriven": true,
+    "surveyed": false
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

@@ -1,0 +1,152 @@
+{
+  "generatedBy": "scripts/build_eastedge_world.mjs (derived candidate; frozen dataset untouched)",
+  "modules": [
+    {
+      "id": "plain-v1",
+      "path": "./building/plain-v1/model.glb",
+      "bytes": 1953264,
+      "sha256": "9567bf0e96aec885116e2ad7692e4a90f440073d6d158b8454e344119910cbad"
+    },
+    {
+      "id": "plain-v2",
+      "path": "./building/plain-v2/model.glb",
+      "bytes": 1863044,
+      "sha256": "c08d816d6e144893bfcd9e6c4aacce890137d977de579fb8f6fab10cf4a04ea8"
+    },
+    {
+      "id": "plain-v3",
+      "path": "./building/plain-v3/model.glb",
+      "bytes": 1495532,
+      "sha256": "155809ebd42e37dd319a7cee0b5ccbaad2b2db21a15b21930608e914714112b7"
+    },
+    {
+      "id": "pharmacy_shop",
+      "path": "./building/pharmacy_shop/model.glb",
+      "bytes": 3679732,
+      "sha256": "f51cf055f8a86ca16bf763f43689a7a4cbe536a59f6bd420b9f50751c52b9574"
+    },
+    {
+      "id": "cloth_shop",
+      "path": "./building/cloth_shop/model.glb",
+      "bytes": 2222268,
+      "sha256": "87c89a4620532eb351df7af21665a29c40c43fad610fe3a759aa5335ec85362d"
+    },
+    {
+      "id": "curio-a",
+      "path": "./building/curio-a/model.glb",
+      "bytes": 1972556,
+      "sha256": "aa178b96876d22f5c598db3837b541229e852c069d18c43b5dda27dc52199747"
+    },
+    {
+      "id": "curio-b",
+      "path": "./building/curio-b/model.glb",
+      "bytes": 1953600,
+      "sha256": "768062ada15239ba5d086a09939a4e8b593677d0ac06180357728591c426ee40"
+    },
+    {
+      "id": "restaurant-a",
+      "path": "./building/restaurant-a/model.glb",
+      "bytes": 2146768,
+      "sha256": "40b5d2ded1554565739aa9041d35f1bd2fbc4d6dd50be9888e0336faf7300b7d"
+    },
+    {
+      "id": "restaurant-b",
+      "path": "./building/restaurant-b/model.glb",
+      "bytes": 2147344,
+      "sha256": "e083e811762487b415d289bbaa853bb1ad94e5283591ba3866c48b929c5fef2f"
+    },
+    {
+      "id": "cat_corner",
+      "path": "./building/cat_corner/model.glb",
+      "bytes": 1580852,
+      "sha256": "90f3d33ba782666093f2456b9890bed63bf2d45dc3019c136cbd6174eac072d3"
+    },
+    {
+      "id": "corner",
+      "path": "./building/corner/model.glb",
+      "bytes": 2146508,
+      "sha256": "3e68b5833c61d6f2bfe20cf96d561c90618483a319599abcc81385ca4e8bb9a5"
+    },
+    {
+      "id": "photo_shop",
+      "path": "./building/photo_shop/model.glb",
+      "bytes": 4105324,
+      "sha256": "5d885af6eb8b76ef1147a06499eed100da32593e149cd3dd6bf434d2acd84f76"
+    },
+    {
+      "id": "dry_goods_shop",
+      "path": "./building/dry_goods_shop/model.glb",
+      "bytes": 3562760,
+      "sha256": "052fadafda116d08356ded8544e32a71323f4adbff2ca9420dfce2f4e0bcd1c9"
+    }
+  ],
+  "streetKit": {
+    "path": "./world/street-kit.glb",
+    "bytes": 3556168,
+    "sha256": "e1622aa2607cd1d7119ccaa5f79cf1bb057364ddc2bb37dcd93ffac5b7b33bea",
+    "triangles": 10948
+  },
+  "placedTriangles": 171464,
+  "completeWebPayloadBytes": 54957340,
+  "originalStreetGlbSha256": "95d1cdd31eb61406c7a8b832548db515509184b8ddfe0a448c7fa0165d1aa111",
+  "kitExtractedWithoutMovingBuildings": true,
+  "reviewedWorldGlbSha256": "b386ff72eb990e92c21c64d7e3895ddb42c14a3de1b0a9786abce726cffd3b37",
+  "roadWindingCorrected": true,
+  "worldAssembly": {
+    "path": "./world/street-reviewed.glb",
+    "bytes": 20571620,
+    "sha256": "b386ff72eb990e92c21c64d7e3895ddb42c14a3de1b0a9786abce726cffd3b37"
+  },
+  "sceneImages": {
+    "count": 18,
+    "allPacked": true
+  },
+  "previewLoadMode": "single_assembly_sharing_embedded_images",
+  "eastEdgeAssets": {
+    "blockId": "block-east-edge-shops",
+    "assets": [
+      {
+        "id": "east-shop-128",
+        "glb": "./world/east-edge/east-shop-128/model.glb",
+        "collision": "./world/east-edge/east-shop-128/collision.json",
+        "positionGlb": [
+          97.66450990714537,
+          0,
+          17.734234931801197
+        ],
+        "rotationYRad": -0.301652,
+        "replacesBaseIds": [
+          "shop-128"
+        ],
+        "bytes": 1697716,
+        "sha256": "af93a694b72a242e746a33204c5425f86837adac56dd28f3e759785c584c3798",
+        "triangles": 6724
+      },
+      {
+        "id": "east-shop-129",
+        "glb": "./world/east-edge/east-shop-129/model.glb",
+        "collision": "./world/east-edge/east-shop-129/collision.json",
+        "positionGlb": [
+          95.7340372829119,
+          0,
+          23.93834100897118
+        ],
+        "rotationYRad": 2.839941,
+        "replacesBaseIds": [
+          "shop-129"
+        ],
+        "bytes": 1693456,
+        "sha256": "2620ea4db1d6dc90e2825b8e9e3c5f72d8f2bcd83fa9e0bbb9ab95e87d27d3cf",
+        "triangles": 6716
+      }
+    ],
+    "combinedDownloadBytes": 3391172,
+    "combinedTriangleCount": 13440,
+    "runtimeTextureSharing": "none claimed — standalone GLBs embed their own image copies; unique images by content sha are counted in evidence",
+    "designSpec": {
+      "path": "/home/baibai/outbox/pawborough-lane-b-night-20260914/artifacts/east-edge-design-20260914/DESIGN_SPEC.json",
+      "sha256": "90d88b6729d23f4ddd5fc9109d3265375b0faa3f6336c44de53b7d99ac5f885a",
+      "snapshot": "./design-spec.snapshot.json"
+    }
+  }
+}
