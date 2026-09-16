@@ -1,0 +1,64 @@
+{
+  "taskId": "pawborough-fangbang-temple-bridge-night",
+  "packageId": "pawborough-fangbang-temple-bridge-night-20260916",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "visualReview": "pending_lead",
+  "branch": "work/fangbang-temple-bridge-20260916",
+  "baseHead": "81a68d3",
+  "date": "2026-09-16",
+  "executor": "GLM-Flash in owner-started ZCode session",
+  "summary": "主街（world/street-completion 交付集）与庙宇轴线（world/temple-dadian 交付集）装入同一个可走世界：庙群按总图锚点 T=(-127.817,0,27.057) yaw=0.16703 落位；实测冻结路西楔端（切宽 8.50m，中点 (-1.8912,0.6507)）后建 153.94m 样段西延伸道路（8.5m 车行道+双侧 1.35m 人行道+路缘+6 灯 3 泄水沟）与西端墙；占位街区按生命周期挂上（west 带 153..171，shop-167/169 由庙轴替换）；总图登记 map-registry.json；fangbang.html 5296/5297 预览 + 自动巡航往返 PASS + 4 负例 PASS；Blender 评审 9 图；性能基线 perf.json。",
+  "exitGates": {
+    "N0_baseline": "HEAD=81a68d3, 26/26 tests green, 8 GLB sha match, map sha match",
+    "N1_spec": "foot-to-centerline 0.0003m (<=0.10), total 153.94m, foot arc 129.94, tail 24.00m",
+    "N2_surface": "validator 0 errors, corridor min 3.75m, forecourt snapped flush (step 5mm <= 0.02), tris 5972 <= 8000",
+    "N3_blocks": "validateWorldInputs OK, replacedRule lands exactly on shop-167/169",
+    "N4_world": "32 instances, 337 colliders (208+1+128), 128-record recomposition maxErr 0, route 321.7m/94pts maxGap 5.5m, no delivered file modified (git status new files only)",
+    "N5_page": "fangbang.html 200 + JSON not SPA-fallback + automatic cruise PASS on 5296",
+    "N6_tests": "29/29 (26 regression + 3 new suites)",
+    "N7_blender": "9 renders (8 pbr + 1 clay) fov verified, 3m33s CPU, no per-frame >10min fallback needed",
+    "N8_perf": "artifacts/fangbang-temple/perf.json (V09 label: headless software GL, regression baseline only)",
+    "N9_delivery": "evidence 8 webgl shots + compare composite + dist 33 files verified on 5297 (cruise PASS)"
+  },
+  "deliverables": {
+    "dataset": "world/fangbang-temple/ (instances/blocks/collision-world/route/cameras/review-manifest/map-registry + temple-axis/ 8 frozen GLBs + west-extension/{surface,seal-wall}.glb + collision.json + surface-spec.json)",
+    "page": "fangbang.html + src/fangbangMain.js (8 cameras + walk + automatic cruise, honestly labeled)",
+    "scripts": ["scripts/measure_west_wedge.mjs", "scripts/make_west_extension_spec.mjs", "scripts/build_fangbang_blocks.mjs", "scripts/build_fangbang_world.mjs", "scripts/capture_fangbang_web.mjs", "scripts/build_fangbang_dist.mjs", "scripts/smoke_fangbang_web.mjs"],
+    "kit": ["kit/build_west_extension_surface.py", "kit/build_fangbang_scene.py"],
+    "tools": ["tools/fangbang_perf.mjs"],
+    "tests": ["tests/fangbang_bridge_contract.test.mjs", "tests/fangbang_bridge_passage.test.mjs", "tests/fangbang_map_registry.test.mjs"],
+    "artifacts": "artifacts/fangbang-temple/ (RESULT/DELIVERY/PROGRESS/perf/webgl/blender)"
+  },
+  "budgets": {
+    "bridgeWorldTris": { "actual": 281578, "limit": 300000, "pass": true, "scope": "street assembly 171464 + temple axis 104142 + west extension 5972 — the DESIGN_SPEC merged-world scope (matches the ~28万 estimate in STATUS-REVIEW §3 V09)" },
+    "westExtensionTris": { "actual": 5972, "limit": 8000, "pass": true },
+    "newTextures": 0,
+    "fullSceneTrisLoaded": { "actual": 324474, "note": "loading the delivered tail-shop blocks adds 41,428 tris + east tail surface 1,468 beyond the bridge budget scope; both numbers stated for the lead to re-scope if intended otherwise" }
+  },
+  "designPresetsNeedingOwnerConfirmation": [
+    "庙轴线位置 = POI 锚点垂足法（可改为轮廓南缘中点等其它规则）",
+    "门槛退后 12.6 m（前线 5.6 + 前院 7.0）",
+    "偏航 9.57°（随道路切线）",
+    "shop-167/169 由庙轴线替换（replacedBy 生命周期，不删除、可恢复）",
+    "西端在垂足以西 24 m 处封端墙（样段端墙，非历史）",
+    "西延伸道路宽度沿用 8.5+2×1.35 设计值"
+  ],
+  "knownDeviations": [
+    "OSM 城隍庙轮廓南缘与前院有 ~4m 出入（轮廓是 2019 参照非测绘）——registry knownDeviations 记录，未调整",
+    "总图店铺质心残差可达 ~17m：西延带上 17 个活跃占位的视觉盒侵入 8.5m 车行道（最小距中线 1.86m）——按 frontSetback 规则不移动占位，逐店 residual 记录于 west-extension/surface-spec.json placeholderResiduals；胶囊走廊全程 >= 3.75m",
+    "前院东界在 local z≈3 处开放（被替换的 shop-167/169 原是推断遮挡物）：负例forecourt-east 的实际结果是走出院缘坠落（证明庙东无隐形地板），DESIGN_SPEC 原断言『被挡住不掉地』在该 z 不成立，route.json 已记录",
+    "route 负例 #3 spawn 由 spec 的 (6,0,3) 语义调整为『开放边缘或被挡二选一』的诚实断言（见 route.json negatives[2]）",
+    "大殿前 0.17m 台阶胶囊不可攀爬（temple_dadian_passage 既有证据）：桥接全程的诚实终点是台阶脚（本次实测胶囊经巡航路径可登上平台到达门内 z=-43.98 被闭门挡住；两种结果均如实记录）",
+    "西延伸地面节点沿用 sctail__ 前缀族（GROUND_NODE_RE 是冻结代码、本批只允许新增文件）：surface 为 sctail__quiet-gray-asphalt/worn-stone，与 S3 东尾同族同义（street 延伸面）",
+    "collision-world.json 为唯一墙体权威（街道 208 + 端墙 1 + 庙 128 合成），庙轴 assets 块不带逐资产侧车——撤销该块时视觉撤下但墙留在世界中（本页无撤销入口；生命周期语义已在 blocks.json 注明）",
+    "junction-west 机位如实呈现占位侵入拼接处的视觉（灰盒夹路），是总图残差的直接结果，非装配错误"
+  ],
+  "verification": {
+    "tests": "29/29 green（tests/*.test.mjs 全量）",
+    "dev5296": "fangbang.html + dataset JSON + cruise PASS (headless)",
+    "preview5297": "dist 33 files, JSON not SPA-fallback, cruise PASS (headless)",
+    "ports": { "dev": 5296, "preview": 5297 }
+  },
+  "notDone_byDesign": ["精修建筑/占位升级", "豫园/侧殿", "改动 /home/baibai/pawborough-world", "改动已交付数据集/页面/测试", "总图工程写入", "合并 main / push", "自动任务"]
+}

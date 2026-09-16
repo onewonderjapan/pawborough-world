@@ -1,0 +1,157 @@
+{
+  "source": "kit/build_fangbang_scene.py",
+  "engine": "cycles-cpu",
+  "samples": 24,
+  "resolution": [
+    1600,
+    900
+  ],
+  "assembly": "street assembly identity + west-extension surface/seal-wall in place + east tail surface in place + 8 temple-axis GLBs at T+R(yaw) + 27 active placeholder gray boxes",
+  "views": [
+    {
+      "view": "junction-west",
+      "tag": "pbr",
+      "posBlender": [
+        8,
+        3,
+        1.6
+      ],
+      "targetBlender": [
+        -30,
+        -10.5,
+        2
+      ],
+      "fovDegVerified": 55.0,
+      "file": "fangbang-junction-west-pbr.png"
+    },
+    {
+      "view": "west-road-mid",
+      "tag": "pbr",
+      "posBlender": [
+        -60,
+        -21,
+        1.6
+      ],
+      "targetBlender": [
+        -127.817,
+        -27.057,
+        4
+      ],
+      "fovDegVerified": 50.0,
+      "file": "fangbang-west-road-mid-pbr.png"
+    },
+    {
+      "view": "placeholder-band",
+      "tag": "pbr",
+      "posBlender": [
+        -95,
+        -33,
+        1.6
+      ],
+      "targetBlender": [
+        -40,
+        -14,
+        2
+      ],
+      "fovDegVerified": 55.0,
+      "file": "fangbang-placeholder-band-pbr.png"
+    },
+    {
+      "view": "shanmen-from-road",
+      "tag": "pbr",
+      "posBlender": [
+        -125.722,
+        -39.482,
+        1.6
+      ],
+      "targetBlender": [
+        -127.817,
+        -27.057,
+        4.5
+      ],
+      "fovDegVerified": 55.0,
+      "file": "fangbang-shanmen-from-road-pbr.png"
+    },
+    {
+      "view": "shanmen-from-road",
+      "tag": "clay",
+      "posBlender": [
+        -125.722,
+        -39.482,
+        1.6
+      ],
+      "targetBlender": [
+        -127.817,
+        -27.057,
+        4.5
+      ],
+      "fovDegVerified": 55.0,
+      "file": "fangbang-shanmen-from-road-clay.png"
+    },
+    {
+      "view": "forecourt-oblique",
+      "tag": "pbr",
+      "posBlender": [
+        -135.195,
+        -37.428,
+        1.6
+      ],
+      "targetBlender": [
+        -127.983,
+        -26.071,
+        4.5
+      ],
+      "fovDegVerified": 55.0,
+      "file": "fangbang-forecourt-oblique-pbr.png"
+    },
+    {
+      "view": "axis-long",
+      "tag": "pbr",
+      "posBlender": [
+        -125.822,
+        -38.89,
+        1.6
+      ],
+      "targetBlender": [
+        -135.465,
+        18.303,
+        6
+      ],
+      "fovDegVerified": 45.0,
+      "file": "fangbang-axis-long-pbr.png"
+    },
+    {
+      "view": "temple-side-east",
+      "tag": "pbr",
+      "posBlender": [
+        -113.702,
+        -14.536,
+        1.6
+      ],
+      "targetBlender": [
+        -131.308,
+        -6.349,
+        6
+      ],
+      "fovDegVerified": 55.0,
+      "file": "fangbang-temple-side-east-pbr.png"
+    },
+    {
+      "view": "aerial-overview",
+      "tag": "pbr",
+      "posBlender": [
+        -70,
+        -70,
+        45
+      ],
+      "targetBlender": [
+        -95,
+        -5,
+        0
+      ],
+      "fovDegVerified": 50.0,
+      "file": "fangbang-aerial-overview-pbr.png"
+    }
+  ],
+  "note": "BLENDER evidence; WebGL captures are separate (kit/out/fangbang-temple/web)"
+}
