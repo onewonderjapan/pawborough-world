@@ -15,7 +15,20 @@
   ],
   "materials": [
     {
-      "name": "aged-brass.001",
+      "name": "temple-relief-stone.001",
+      "imageNodes": [
+        {
+          "name": "temple-relief-normal",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
+    },
+    {
+      "name": "deep-door-lacquer.001",
       "imageNodes": []
     },
     {
@@ -61,46 +74,8 @@
       ]
     },
     {
-      "name": "weathered-lime-plaster.001",
-      "imageNodes": [
-        {
-          "name": "PaintedPlaster017_2K-JPG_Color_1K",
-          "size": [
-            1024,
-            512
-          ],
-          "colorSpace": "sRGB"
-        },
-        {
-          "name": "PaintedPlaster017_2K-JPG_Roughness_1K",
-          "size": [
-            1024,
-            512
-          ],
-          "colorSpace": "Non-Color"
-        },
-        {
-          "name": "PaintedPlaster017_2K-JPG_NormalGL_1K",
-          "size": [
-            1024,
-            512
-          ],
-          "colorSpace": "Non-Color"
-        }
-      ]
-    },
-    {
-      "name": "dadian-plaque-lacquer.001",
-      "imageNodes": [
-        {
-          "name": "dadian-plaque",
-          "size": [
-            2048,
-            768
-          ],
-          "colorSpace": "sRGB"
-        }
-      ]
+      "name": "worn-stone.001",
+      "imageNodes": []
     },
     {
       "name": "blue-gray-brick.001",
@@ -132,25 +107,50 @@
       ]
     },
     {
-      "name": "deep-door-lacquer.001",
+      "name": "aged-brass.001",
       "imageNodes": []
     },
     {
-      "name": "temple-relief-stone.001",
+      "name": "dadian-plaque-lacquer.001",
       "imageNodes": [
         {
-          "name": "temple-relief-normal",
+          "name": "dadian-plaque",
           "size": [
-            1024,
-            1024
+            2048,
+            768
           ],
-          "colorSpace": "Non-Color"
+          "colorSpace": "sRGB"
         }
       ]
     },
     {
-      "name": "worn-stone.001",
-      "imageNodes": []
+      "name": "weathered-lime-plaster.001",
+      "imageNodes": [
+        {
+          "name": "PaintedPlaster017_2K-JPG_Color_1K",
+          "size": [
+            1024,
+            512
+          ],
+          "colorSpace": "sRGB"
+        },
+        {
+          "name": "PaintedPlaster017_2K-JPG_Roughness_1K",
+          "size": [
+            1024,
+            512
+          ],
+          "colorSpace": "Non-Color"
+        },
+        {
+          "name": "PaintedPlaster017_2K-JPG_NormalGL_1K",
+          "size": [
+            1024,
+            512
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
     }
   ]
 }

@@ -221,7 +221,7 @@
     "frontEaveZ": 1.4,
     "rearEaveZ": -13.4,
     "ridgeY": 12.4,
-    "ridgeLengthM": 8.6,
+    "ridgeLengthM": 18.0,
     "ridgeLocalZ": -6.0,
     "eaveY": 7.0,
     "shellThicknessM": 0.12,
@@ -252,10 +252,10 @@
       ]
     ],
     "cornerLiftM": 0.3,
-    "cornerLiftXStartsM": 8.6,
+    "cornerLiftXStartsM": 9.2,
     "cornerLiftDepthTStarts": 0.65,
     "hipEndTopY": 9.8,
-    "hipStartsXM": 7.2,
+    "hipStartsXM": 8.9,
     "surfaceEquation": "yimen ramp formula verbatim",
     "resampleSegments": 12,
     "tileRibs": {
@@ -310,7 +310,7 @@
       "trisMaxBothEnds": 1200,
       "approvalStatus": "歇山读感 pre-set 2026-09-16 from aerial PBR-SH-0005-001; DELIVERY must label it, never claim true-xieshan survey"
     },
-    "note": "upper eave sits 1.05m above skirt ridge — midWallBand fills the gap on all sides"
+    "note": "R1 2026-09-16: ridgeLengthM 8.6->18.0 — the flat ridge now reaches both gable feet so the 18m crest beam is fully supported (the shipped R0 floated over the hip zone x 4.3..9.0, lead review finding P1); hipStartsXM 7.2->8.9 and cornerLiftXStartsM 8.6->9.2 keep the validation bands consistent"
   },
   "budgets": {
     "dadianTrisMax": 58000,
@@ -339,5 +339,5 @@
     "doorWidth": "4.2 nominal frozen; physical opening 4.18 between column faces",
     "interior": "none modeled; doors closed"
   },
-  "configSha256": "c26e6d0538103c3b10c1174f22f435cbb2ac428da87f3047ad1a51864dd8dda3"
+  "configSha256": "8b7bac0575e53d79d1ee9f735d9b0a1fd447234e61a8a9f2cb5a0da81362ede8"
 }

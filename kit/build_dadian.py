@@ -736,7 +736,7 @@ for sgn in (-1, 1):
           (g['panelThicknessM'] + .04, g['apronM'][1], abs(gz1 - gz0) + .04), 'dark', 0)
 # crest beam between the gable apexes + end ornaments
 cr = ru['ridge']['crestBeamM']
-L.box('crest-beam', (0, apex_y + cr[1] / 2 - cr[1] / 2 + cr[1] / 2, cr[2] * 0 + ru['ridgeLocalZ']),
+L.box('crest-beam', (0, apex_y + cr[1] / 2 + 0.02, ru['ridgeLocalZ']),
       (cr[2], cr[1], cr[0]), 'dark', .01)
 # ornaments: simplified box-step curls at both crest ends
 orn = []
