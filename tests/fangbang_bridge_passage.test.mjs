@@ -134,11 +134,30 @@ const dt = 1 / 60;
     } else { stillS = 0; if (!jointZone(p)) jointStallS = 0; }
     last = p;
   }
+  // R1-03: after the waypoints, keep pushing north — the capsule climbs the
+  // platform via the cruise path and the closed doors are the terminus
+  {
+    const doorW = [T[0] + SY * route.stair.terminusLocalZ, T[2] + CY * route.stair.terminusLocalZ];
+    let lastP = c.feetPosition(), doorStill = 0;
+    for (let i = 0; i < Math.round(40 / dt); i++) {
+      const dx = doorW[0] - c.feetPosition()[0], dz = doorW[1] - c.feetPosition()[2];
+      c.yaw = Math.atan2(-dx, -dz);
+      c.setMoveInput(1, 0);
+      c.step(dt);
+      const p = c.feetPosition();
+      if (p[1] < -0.05) break;
+      if (Math.hypot(p[0] - lastP[0], p[2] - lastP[2]) < 0.008) {
+        doorStill += dt;
+        if (doorStill > 1.0) break;
+      } else doorStill = 0;
+      lastP = p;
+    }
+  }
   const end = c.feetPosition();
-  const stairFootLZ = localZ(route.stair.footGlb[0], route.stair.footGlb[2]);
-  check('forward cruise reaches the stair foot (localZ <= stair foot + 0.5)',
-    localZ(end[0], end[2]) <= stairFootLZ + 0.5 && !driver.blocked,
-    `stop localZ=${localZ(end[0], end[2]).toFixed(2)} (stair foot ${stairFootLZ.toFixed(2)}) blocked=${JSON.stringify(driver.blocked)}`);
+  const endLZ = localZ(end[0], end[2]);
+  check('forward cruise climbs the platform and stops at the closed doors (localZ -43.98 +/- 0.1)',
+    Math.abs(endLZ - route.stair.terminusLocalZ) <= route.stair.terminusToleranceM && !driver.blocked,
+    `stop localZ=${endLZ.toFixed(3)} (terminus ${route.stair.terminusLocalZ}) blocked=${JSON.stringify(driver.blocked)}`);
   check('no fall on the forward leg (y >= -0.05 throughout)', !fell && minFeetY >= -0.05, `minY ${minFeetY.toFixed(3)}`);
   check('joint seams stall <= 1s', maxJointStallS <= 1.0, `max ${maxJointStallS.toFixed(2)}s`);
   check('cruise marked auto (driver log)', driver.log.length > 40, `${driver.log.length}/${route.mainStreet.length - 1} waypoints`);

@@ -260,18 +260,37 @@ async function runRouteCheck() {
       lastPos = p;
       if (p[1] < -0.05) { driver.blocked = { reason: 'fell below y=-0.05', at: p.map((v) => +v.toFixed(2)) }; break; }
     }
+    // R1-03: keep pushing after the last waypoint — the capsule climbs the
+    // platform via the cruise path and the CLOSED DOORS are the terminus
+    let lastP = c.feetPosition(), doorStill = 0;
+    const T3 = manifest.mapRegistration.templePlacement.translationGlb;
+    const Y3 = manifest.mapRegistration.templePlacement.yawRad;
+    const doorW = [T3[0] + Math.sin(Y3) * route.stair.terminusLocalZ, 0, T3[2] + Math.cos(Y3) * route.stair.terminusLocalZ];
+    for (let i = 0; i < Math.round(40 / dt); i++) {
+      const dx = doorW[0] - c.feetPosition()[0], dz = doorW[2] - c.feetPosition()[2];
+      c.yaw = Math.atan2(-dx, -dz);
+      c.setMoveInput(1, 0);
+      c.step(dt);
+      const p = c.feetPosition();
+      if (p[1] < -0.05) break;
+      if (Math.hypot(p[0] - lastP[0], p[2] - lastP[2]) < 0.008) {
+        doorStill += dt;
+        if (doorStill > 1.0) break;
+      } else doorStill = 0;
+      lastP = p;
+    }
     const [fx, fy, fz] = c.feetPosition();
+    const lzEnd = localZ(fx, fz);
     results.forward = {
       blocked: driver.blocked,
-      stairBlocked,
       stuckOutside,
       feetY: +fy.toFixed(3),
       stop: [+fx.toFixed(1), +fz.toFixed(1)],
-      finalLocalZ: +localZ(fx, fz).toFixed(2),
-      stairFootLocalZ: -39.9,
+      finalLocalZ: +lzEnd.toFixed(3),
+      terminusLocalZ: route.stair.terminusLocalZ,
       maxJointStallS: +stall.maxStallS.toFixed(2),
       stallWhere: stall.where,
-      pass: !driver.blocked && fy >= -0.05 && localZ(fx, fz) <= -39.4 && stall.maxStallS <= 1.0,
+      pass: !driver.blocked && fy >= -0.05 && Math.abs(lzEnd - route.stair.terminusLocalZ) <= route.stair.terminusToleranceM && stall.maxStallS <= 1.0,
     };
     // return: stair foot -> back east to the tail start
     const back = new CruiseDriver({ controller: c, waypoints: [...route.mainStreet].reverse(), reachRadius: 1.6, timeoutSteps: 60 * 900 });
@@ -346,7 +365,7 @@ async function runRouteCheck() {
   const pass = Object.values(results).every((r) => r.pass);
   routeCheck = {
     pass, automatic: true, results,
-    summary: `去程${results.forward.pass ? '至台阶脚' : '未达'}(${results.forward.stop.join(',')})`
+    summary: `去程${results.forward.pass ? '至闭门前' : '未达'}(z_local=${results.forward.finalLocalZ})`
       + `·返程${results.return.pass ? '达' : '未达'}`
       + `·端墙挡${results.sealWall.pass ? '✓' : '✗'}·占位挡${results.shopPlaceholder.pass ? '✓' : '✗'}`
       + `·前院东界${results.forecourtEast.pass ? '✓' : '✗'}·闭门挡${results.dadianDoors.pass ? '✓' : '✗'}`

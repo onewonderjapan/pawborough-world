@@ -283,7 +283,9 @@ route.stair = {
   footLocal: [0, -39.9],
   footGlb: (() => { const w = localToWorld(0, 0, -39.9); return [+w[0].toFixed(3), 0, +w[2].toFixed(3)]; })(),
   doorsLocalZ: -43.2,
-  note: 'forward cruise terminates at the stair foot (capsule vs 0.17m risers — temple_dadian_passage evidence: blocked safely); the doors stay covered by the dadian-doors negative, which spawns ON the platform',
+  terminusLocalZ: -43.98,
+  terminusToleranceM: 0.1,
+  note: 'R1-03 (lead fix order 2026-09-17): the forward cruise CLIMBS the platform via the cruise approach path (this batch\'s measurement supersedes the old temple_dadian_passage blocked-at-first-riser record) and the terminus is the CLOSED DOORS at temple-local z = -43.98 +/- 0.1',
 };
 await writeFile(resolve(OUT, 'route.json'), JSON.stringify(route, null, 2) + '\n');
 
