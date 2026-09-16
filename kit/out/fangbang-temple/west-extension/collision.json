@@ -1,0 +1,40 @@
+{
+  "axis": "glTF Y-up; world-space records consumed by src/world/collisionAdapter",
+  "colliders": [
+    {
+      "name": "west-extension:seal-wall",
+      "group": "west-extension:seal-wall",
+      "type": "box",
+      "min": [
+        -150.4669,
+        0.0,
+        37.926
+      ],
+      "max": [
+        -148.3091,
+        3.4,
+        49.02
+      ],
+      "obb": {
+        "pos": [
+          -149.388,
+          0.0,
+          43.473
+        ],
+        "theta": 0.16703,
+        "center": [
+          0.0,
+          1.7,
+          0.0
+        ],
+        "size": [
+          0.3,
+          3.4,
+          11.2
+        ]
+      }
+    }
+  ],
+  "surfaceGroundColliders": false,
+  "note": "the surface needs no wall colliders: its visible faces are the ground trimesh (GROUND_NODE_RE); the seal wall is the only solid here"
+}

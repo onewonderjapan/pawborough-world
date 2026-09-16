@@ -1,0 +1,51 @@
+{
+  "batchId": "pawborough-fangbang-temple-bridge-night-20260916",
+  "updatedAt": "2026-09-16",
+  "stages": {
+    "N0": {
+      "status": "done",
+      "head": "81a68d3",
+      "branch": "work/fangbang-temple-bridge-20260916",
+      "baselineTests": "26/26 green",
+      "templeGlbSha256": "8/8 match world/temple-dadian/review-manifest.json",
+      "mapDataSha256Match": true
+    },
+    "N1": {
+      "status": "done",
+      "evidence": [
+        "kit/out/fangbang-temple/west-wedge.json",
+        "kit/out/fangbang-temple/west-extension-spec.json"
+      ],
+      "facts": {
+        "wedgeCorners": [[-3.274, -3.368], [-0.5084, 4.6695]],
+        "cutWidthM": 8.5,
+        "wedgeMidpoint": [-1.8912, 0.6507],
+        "totalLengthM": 153.94,
+        "footArcM": 129.94,
+        "tailAfterFootM": 24.0,
+        "footToCenterlineM": 0.0003,
+        "note": "wedge midpoint lies exactly on the frozen centerline extension (2.0m west of segment-spec start) — measured, not fallback #2; junction control (0.04,-0.01) and overshoot control (-167.95,45.71) dropped to keep the polyline monotone west"
+      }
+    },
+    "N2": {
+      "status": "done",
+      "evidence": [
+        "kit/out/fangbang-temple/west-extension/model.glb",
+        "kit/out/fangbang-temple/west-extension/seal-wall.glb",
+        "kit/out/fangbang-temple/west-extension/collision.json",
+        "kit/out/fangbang-temple/west-extension/surface-spec.json"
+      ],
+      "facts": {
+        "surfaceTris": 5960,
+        "sealWallTris": 12,
+        "corridorMinFreeM": 3.75,
+        "forecourtSnappedDeviationM": 0.0,
+        "forecourtStepM": 0.005,
+        "groundNodes": ["sctail__quiet-gray-asphalt", "sctail__worn-stone"],
+        "groundNodeNote": "sctail__ prefix family reused because collisionAdapter.GROUND_NODE_RE is frozen (walkable-set contract); sidewalks use the stone material so they join the walkable worn-stone node",
+        "placeholderResiduals": "17 west-band shops intrude the 8.5m carriageway per OSM map data; recorded as residuals (frontSetback rule), none moved; capsule corridor >= 3.75m everywhere"
+      }
+    }
+  },
+  "blockers": []
+}

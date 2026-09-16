@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "kit/build_west_extension_surface.py",
+  "inputs": {
+    "centerline": "kit/out/fangbang-temple/west-extension-spec.json (N1)",
+    "templeFrame": "DESIGN_SPEC.templePlacement (T + yaw)"
+  },
+  "design": {
+    "family": "fangbang-west-extension-surface",
+    "sampleId": "westext",
+    "frontageM": 153.94,
+    "buildStepM": 1,
+    "band": {
+      "roadCurbToCurbM": 8.5,
+      "curbW": 0.25,
+      "curbH": 0.09,
+      "sidewalkM": 1.35,
+      "frontLineM": 5.6,
+      "junctionMeasuredCutWidthM": 8.5,
+      "taperM": 0,
+      "taperNote": "measured cut width equals the 8.5m design width — no taper"
+    },
+    "forecourtJoint": {
+      "forecourtBandS": [
+        121,
+        138.5
+      ],
+      "rawFrontlineDeviationM": 0.13406122892241285,
+      "stepAtJointM": 0.08499999999999999,
+      "maxSnappedDeviationM": 0.0
+    },
+    "placeholderResiduals": {
+      "shop-153": {
+        "minCenterlineToBoxM": 3.008,
+        "class": "roadway_intrusion",
+        "handling": "residual recorded; placeholder not moved (frontSetback)"
+      },
+      "shop-154": {
+        "minCenterlineToBoxM": 2.483,
+        "class": "roadway_intrusion",
+        "handling": "residual recorded; placeholder not moved (frontSetback)"
+      },
+      "shop-155": {
+        "minCenterlineToBoxM": 2.005,
+        "class": "roadway_intrusion",
+        "handling": "residual recorded; placeholder not moved (frontSetback)"
+      },
+      "shop-156": {
+        "minCenterlineToBoxM": 3.486,
+        "class": "roadway_intrusion",
+        "handling": "residual recorded; placeholder not moved (frontSetback)"
+      },
+      "shop-157": {
+        "minCenterlineToBoxM": 3.005,
+        "class": "roadway_intrusion",
+        "handling": "residual recorded; placeholder not moved (frontSetback)"
+      },
+      "shop-158": {
+        "minCenterlineToBoxM": 2.486,
+        "class": "roadway_intrusion",
+        "handling": "residual recorded; placeholder not moved (frontSetback)"
+      },
+      "shop-159": {
+        "minCenterlineToBoxM": 2.012,
+        "class": "roadway_intrusion",
+        "handling": "residual recorded; placeholder not moved (frontSetback)"
+      },
+      "shop-160": {
+        "minCenterlineToBoxM": 3.509,
+        "class": "roadway_intrusion",
+        "handling": "residual recorded; placeholder not moved (frontSetback)"
+      },
+      "shop-161": {
+        "minCenterlineToBoxM": 3.019,
+        "class": "roadway_intrusion",
+        "handling": "residual recorded; placeholder not moved (frontSetback)"
+      },
+      "shop-162": {
+        "minCenterlineToBoxM": 2.554,
+        "class": "roadway_intrusion",
+        "handling": "residual recorded; placeholder not moved (frontSetback)"
+      },
+      "shop-163": {
+        "minCenterlineToBoxM": 1.877,
+        "class": "roadway_intrusion",
+        "handling": "residual recorded; placeholder not moved (frontSetback)"
+      },
+      "shop-164": {
+        "minCenterlineToBoxM": 3.502,
+        "class": "roadway_intrusion",
+        "handling": "residual recorded; placeholder not moved (frontSetback)"
+      },
+      "shop-165": {
+        "minCenterlineToBoxM": 2.918,
+        "class": "roadway_intrusion",
+        "handling": "residual recorded; placeholder not moved (frontSetback)"
+      },
+      "shop-166": {
+        "minCenterlineToBoxM": 2.501,
+        "class": "roadway_intrusion",
+        "handling": "residual recorded; placeholder not moved (frontSetback)"
+      },
+      "shop-168": {
+        "minCenterlineToBoxM": 3.202,
+        "class": "roadway_intrusion",
+        "handling": "residual recorded; placeholder not moved (frontSetback)"
+      },
+      "shop-170": {
+        "minCenterlineToBoxM": 2.114,
+        "class": "roadway_intrusion",
+        "handling": "residual recorded; placeholder not moved (frontSetback)"
+      },
+      "shop-171": {
+        "minCenterlineToBoxM": 2.344,
+        "class": "roadway_intrusion",
+        "handling": "residual recorded; placeholder not moved (frontSetback)"
+      }
+    },
+    "corridor": {
+      "minFreeM": 3.75,
+      "capsuleR": 0.35,
+      "rule": ">=1.9m (1.2 net + 2r) at every station"
+    },
+    "groundNodeNames": [
+      "sctail__quiet-gray-asphalt",
+      "sctail__worn-stone"
+    ],
+    "groundNodeNote": "paving/curb/drains join into sctail__worn-stone; the sctail__ prefix family is the registered GROUND_NODE_RE walkable set (collisionAdapter.js is frozen — no new prefix)",
+    "physics": "visible faces ARE the walkable ground via GROUND_NODE_RE; no invisible slab",
+    "surveyed": false
+  },
+  "lamps": [
+    {
+      "stationS": 25,
+      "side": "south",
+      "x": -23.78,
+      "z": 13.79,
+      "basis": "every 25m from the junction, alternating sides, mid-sidewalk (design)"
+    },
+    {
+      "stationS": 50,
+      "side": "north",
+      "x": -50.796,
+      "z": 12.275,
+      "basis": "every 25m from the junction, alternating sides, mid-sidewalk (design)"
+    },
+    {
+      "stationS": 75,
+      "side": "south",
+      "x": -71.039,
+      "z": 30.245,
+      "basis": "every 25m from the junction, alternating sides, mid-sidewalk (design)"
+    },
+    {
+      "stationS": 100,
+      "side": "north",
+      "x": -97.871,
+      "z": 28.012,
+      "basis": "every 25m from the junction, alternating sides, mid-sidewalk (design)"
+    },
+    {
+      "stationS": 125,
+      "side": "south",
+      "x": -119.914,
+      "z": 43.707,
+      "basis": "every 25m from the junction, alternating sides, mid-sidewalk (design)"
+    },
+    {
+      "stationS": 150,
+      "side": "north",
+      "x": -146.36,
+      "z": 37.714,
+      "basis": "every 25m from the junction, alternating sides, mid-sidewalk (design)"
+    }
+  ],
+  "drains": [
+    {
+      "stationS": 40,
+      "x": -38.36,
+      "z": 17.539,
+      "basis": "south kerb line, 0.35m inboard (S3 rule), every 40m (design)"
+    },
+    {
+      "stationS": 80,
+      "x": -76.183,
+      "z": 30.651,
+      "basis": "south kerb line, 0.35m inboard (S3 rule), every 40m (design)"
+    },
+    {
+      "stationS": 120,
+      "x": -115.176,
+      "z": 41.485,
+      "basis": "south kerb line, 0.35m inboard (S3 rule), every 40m (design)"
+    }
+  ],
+  "sealWall": {
+    "at": "westEndGlb, 垂直于道路切线",
+    "widthM": 11.2,
+    "heightM": 3.4,
+    "thicknessM": 0.3,
+    "label": "样段端墙，非历史（同 lane-A/B 端墙与大殿北端墙口径）",
+    "material": "dark"
+  }
+}
