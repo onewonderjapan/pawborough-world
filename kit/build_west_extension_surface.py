@@ -405,5 +405,62 @@ hz = abs(SY) * (W['thicknessM'] / 2) + abs(CY) * (W['widthM'] / 2)
     'note': 'the surface needs no wall colliders: its visible faces are the ground trimesh (GROUND_NODE_RE); the seal wall is the only solid here',
 }, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 
-print(f'WEST_SURFACE_READY tris={tris} wall_tris={wall_tris} bytes={bytes_} wall_bytes={wall_bytes} '
-      f'corridor_min={corridor_min:.2f} length={G[-1][0]["s"]:.1f}m')
+# ---- forecourt boundary walls (R1-02, lead fix order 2026-09-17) --------------
+# Two sample-segment low walls on the forecourt side edges (temple-local
+# x=+/-9, z 0..7), height 0.9, thickness 0.25, worn-stone gray (same family as
+# the shanmen wing-wall stone; no new textures). design_inference: sample-segment
+# boundary, NOT historical. Authored in world coordinates via T + R(yaw).
+L.reset_scene()
+L.build_materials()
+L.GROUP = 'westbounds'
+FC_HW, FC_Z0, FC_Z1, FC_H, FC_T = 9.0, 0.0, 7.0, 0.9, 0.25
+wall_records = []
+for side_name, lx in (('east', FC_HW), ('west', -FC_HW)):
+    cx0, cz0 = l2w(lx, FC_Z0)
+    cx1, cz1 = l2w(lx, FC_Z1)
+    ux, uz = cx1 - cx0, cz1 - cz0
+    Lw = math.hypot(ux, uz)
+    ux, uz = ux / Lw, uz / Lw            # along-wall unit (local +z direction)
+    vx, vz = uz, -ux                     # thickness unit (local +x direction)
+    mx, mz = (cx0 + cx1) / 2, (cz0 + cz1) / 2
+    ht = FC_T / 2
+
+    def corner(a, b, y):
+        return (mx + ux * a + vx * b, y, mz + uz * a + vz * b)
+
+    hw2 = Lw / 2
+    vs = [corner(-hw2, -ht, 0.0), corner(hw2, -ht, 0.0), corner(hw2, ht, 0.0), corner(-hw2, ht, 0.0),
+          corner(-hw2, -ht, FC_H), corner(hw2, -ht, FC_H), corner(hw2, ht, FC_H), corner(-hw2, ht, FC_H)]
+    fs = [(0, 1, 2, 3), (7, 6, 5, 4), (0, 4, 5, 1), (1, 5, 6, 2), (2, 6, 7, 3), (3, 7, 4, 0)]
+    L.mesh(f'forecourt-bound-{side_name}', vs, fs, 'stone')
+    hx = abs(ux) * ht + abs(vx) * hw2
+    hz = abs(uz) * ht + abs(vz) * hw2
+    wall_records.append({
+        'name': f'temple-bounds:forecourt-bound-{side_name}', 'group': 'temple-bounds:forecourt-bound', 'type': 'box',
+        'min': [round(mx - hx, 4), 0.0, round(mz - hz, 4)],
+        'max': [round(mx + hx, 4), round(FC_H, 4), round(mz + hz, 4)],
+        'obb': {'pos': [round(mx, 6), 0.0, round(mz, 6)], 'theta': round(YAW, 8),
+                'center': [0.0, FC_H / 2, 0.0], 'size': [FC_T, FC_H, Lw]},
+        'design_inference': 'sample-segment boundary, NOT historical (R1-02)',
+    })
+
+fb_tris, fb_bytes = L.finalize('westbounds', args.out / 'forecourt-bounds', {
+    'family': 'fangbang-forecourt-bounds',
+    'label': '前院两侧样段矮墙（R1-02）',
+    'placement': 'temple-local x=+/-9, z 0..7; height 0.9, thickness 0.25',
+    'material': 'worn-stone gray (same family as the shanmen wing-wall stone, no new textures)',
+    'designInference': '样段边界，非历史',
+    'obbRecords': wall_records,
+    'surveyed': False,
+})
+shutil.copyfile(args.out / 'forecourt-bounds' / 'model.glb', outdir / 'forecourt-bounds.glb')
+# append the two wall records to the dataset collision sidecar
+collision_path = outdir / 'collision.json'
+collision = json.loads(collision_path.read_text(encoding='utf-8'))
+collision['colliders'].extend(wall_records)
+collision['note'] = (collision.get('note') or '') + ' | forecourt boundary walls (R1-02) ride on the temple-axis placement: obb pos = wall center in world coordinates, theta = temple yaw'
+collision_path.write_text(json.dumps(collision, ensure_ascii=False, indent=2) + chr(10), encoding='utf-8')
+
+
+print(f'WEST_SURFACE_READY tris={tris} wall_tris={wall_tris} bounds_tris={fb_tris} bytes={bytes_} wall_bytes={wall_bytes} '
+      f'bounds_bytes={fb_bytes} corridor_min={corridor_min:.2f} length={G[-1][0]["s"]:.1f}m')

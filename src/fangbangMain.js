@@ -324,16 +324,12 @@ async function runRouteCheck() {
     results.shopPlaceholder = r;
   }
   {
-    // The forecourt's east boundary is OPEN at this z (the spec's presumed
-    // placeholder blocker shop-167/169 is suppressed by the temple axis), so
-    // the capsule either stops at the wing wall or walks off the edge and
-    // falls — the fall itself proves there is no synthetic floor east of the
-    // temple (same no-invisible-slab evidence as the S3 band-edge negative).
+    // R1-02: the forecourt side edges carry sample-segment boundary walls
+    // (temple-local x=+/-9, h 0.9) — the capsule is stopped deterministically.
     const n = route.negatives[2];
     const r = runNeg(n, n.dir, 5);
     r.assert = n.assert;
-    r.outcome = r.feetY < -1.0 ? 'fell off the open forecourt edge (no synthetic slab)' : 'stopped';
-    r.pass = (r.feetY < -1.0 && r.advanced > 1.0) || (r.feetY >= -0.05 && r.advanced < n.maxAdvancedM);
+    r.pass = r.advanced < n.maxAdvancedM && r.feetY >= -0.05;
     results.forecourtEast = r;
   }
   {

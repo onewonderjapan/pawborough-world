@@ -563,10 +563,10 @@
         0
       ],
       "walk": "east",
-      "assertKind": "openEdgeOrBlocked",
-      "maxAdvancedM": 2,
-      "assert": "either stopped before leaving the forecourt, or — the actual outcome with shop-167/169 suppressed by the temple axis — walks off the open east edge and falls (no synthetic slab east of the temple)",
-      "knownDeviation": "the DESIGN_SPEC assumed a blocker east of the forecourt (placeholder); with the temple axis applied that placeholder is suppressed and the boundary is open — recorded in registry knownDeviations",
+      "assertKind": "advancedUnder",
+      "maxAdvancedM": 3.5,
+      "assert": "stopped by the R1-02 forecourt boundary wall (temple-local x=+9, h 0.9); never falls",
+      "knownDeviation": null,
       "spawn": [
         -121.402,
         0,

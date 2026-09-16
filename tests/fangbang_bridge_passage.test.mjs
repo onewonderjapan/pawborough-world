@@ -204,8 +204,8 @@ const runNeg = (neg, seconds = 4) => {
 {
   const n = route.negatives[2];
   const r = runNeg(n, 5);
-  check('negative: forecourt east edge is open and falls (no synthetic slab)',
-    (r.feetY < -1.0 && r.advanced > 1.0) || (r.feetY >= -0.05 && r.advanced < n.maxAdvancedM),
+  check('negative: forecourt boundary wall stops the capsule (never falls)',
+    r.advanced < n.maxAdvancedM && r.feetY >= -0.05,
     `advanced ${r.advanced.toFixed(2)} feetY ${r.feetY.toFixed(2)}`);
 }
 {

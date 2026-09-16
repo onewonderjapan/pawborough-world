@@ -1,0 +1,89 @@
+{
+  "moduleId": "westbounds",
+  "triangles": 24,
+  "meshes": 1,
+  "fileBytes": 4020,
+  "sha256": "e9997259ad2ebe60819c5086f4e86fafdbae9de3c76233cecaf7a609186b49ef",
+  "design": {
+    "family": "fangbang-forecourt-bounds",
+    "label": "前院两侧样段矮墙（R1-02）",
+    "placement": "temple-local x=+/-9, z 0..7; height 0.9, thickness 0.25",
+    "material": "worn-stone gray (same family as the shanmen wing-wall stone, no new textures)",
+    "designInference": "样段边界，非历史",
+    "obbRecords": [
+      {
+        "name": "temple-bounds:forecourt-bound-east",
+        "group": "temple-bounds:forecourt-bound",
+        "type": "box",
+        "min": [
+          -121.8324,
+          0.0,
+          28.3068
+        ],
+        "max": [
+          -114.8883,
+          0.9,
+          29.7172
+        ],
+        "obb": {
+          "pos": [
+            -118.360364,
+            0.0,
+            29.012
+          ],
+          "theta": 0.16703,
+          "center": [
+            0.0,
+            0.45,
+            0.0
+          ],
+          "size": [
+            0.25,
+            0.9,
+            7.000000000000002
+          ]
+        },
+        "design_inference": "sample-segment boundary, NOT historical (R1-02)"
+      },
+      {
+        "name": "temple-bounds:forecourt-bound-west",
+        "group": "temple-bounds:forecourt-bound",
+        "type": "box",
+        "min": [
+          -139.5819,
+          0.0,
+          31.2994
+        ],
+        "max": [
+          -132.6378,
+          0.9,
+          32.7097
+        ],
+        "obb": {
+          "pos": [
+            -136.109856,
+            0.0,
+            32.00458
+          ],
+          "theta": 0.16703,
+          "center": [
+            0.0,
+            0.45,
+            0.0
+          ],
+          "size": [
+            0.25,
+            0.9,
+            7.000000000000002
+          ]
+        },
+        "design_inference": "sample-segment boundary, NOT historical (R1-02)"
+      }
+    ],
+    "surveyed": false
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

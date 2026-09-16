@@ -80,7 +80,7 @@ check('temple record count preserved', collision.colliders.filter((c) => c.name.
   `${dadianCollision.colliders.length} source records`);
 let maxErr = 0;
 let worst = '';
-const COMPOSED_BASE = 209;   // collision.colliders = [...208 street, 1 wall, ...128 composed]
+const COMPOSED_BASE = collision.colliders.length - 128;   // composed records are the trailing 128
 for (let i = 0; i < dadianCollision.colliders.length; i++) {
   const src = dadianCollision.colliders[i];
   const dst = collision.colliders[COMPOSED_BASE + i];
@@ -103,6 +103,8 @@ for (let i = 0; i < dadianCollision.colliders.length; i++) {
 }
 check('128 records recompose (obbToWorld corners vs min/max)', maxErr <= 1e-6, `maxErr ${maxErr.toExponential(2)} at ${worst}`);
 check('west seal-wall record present', collision.colliders.some((c) => c.name === 'westext-seal-wall:seal-wall'));
+check('R1-02: forecourt boundary wall records present', ['east', 'west'].every((s) => collision.colliders.some((c) => c.name === `temple-bounds:forecourt-bound-${s}`)));
+check('R1-02: temple-bounds instance + GLB entry', instances.instances.some((i) => i.id === 'temple-bounds') && Boolean(manifest.westExtension.forecourtBounds?.sha256));
 
 // --- 5. replacedRule lands exactly on shop-167/169 --------------------------------
 const replaced = blocks.placeholders.filter((p) => p.replacedBy === DS.templePlacement.groupId).map((p) => p.id).sort();

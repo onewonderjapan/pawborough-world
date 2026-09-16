@@ -355,6 +355,18 @@
       "rotationYRad": 0,
       "group": "west-extension",
       "note": "authored in world coordinates"
+    },
+    {
+      "id": "temple-bounds",
+      "module": "temple-bounds",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "group": "west-extension",
+      "note": "R1-02 forecourt boundary walls, authored in world coordinates (design_inference: sample-segment boundary, not historical)"
     }
   ]
 }

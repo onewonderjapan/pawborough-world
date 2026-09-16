@@ -54,6 +54,7 @@ const WK = resolve(root, 'kit/out/fangbang-temple');
 for (const [src, dst] of [
   ['west-extension/model.glb', 'west-extension/surface.glb'],
   ['west-extension/seal-wall.glb', 'west-extension/seal-wall.glb'],
+  ['west-extension/forecourt-bounds.glb', 'west-extension/forecourt-bounds.glb'],
   ['west-extension/collision.json', 'west-extension/collision.json'],
   ['west-extension/surface-spec.json', 'west-extension/surface-spec.json'],
   ['west-extension/measurements.json', 'west-extension/measurements.json'],
@@ -64,6 +65,7 @@ const surfaceBytes = await readFile(resolve(OUT, 'west-extension/surface.glb'));
 const surfaceMeasure = JSON.parse(await readFile(resolve(WK, 'west-extension/measurements.json'), 'utf8'));
 const wallMeasure = JSON.parse(await readFile(resolve(WK, 'west-seal/measurements.json'), 'utf8'));
 const wallBytes = await readFile(resolve(OUT, 'west-extension/seal-wall.glb'));
+const boundsBytes = await readFile(resolve(OUT, 'west-extension/forecourt-bounds.glb'));
 const westSpec = JSON.parse(await readFile(resolve(WK, 'west-extension-spec.json'), 'utf8'));
 
 // --- 3. instances.json ----------------------------------------------------------
@@ -88,6 +90,7 @@ const instances = {
     ...templeAssets.map(({ id, module, positionGlb, rotationYRad }) => ({ id, module, positionGlb, rotationYRad, group: 'temple-axis' })),
     { id: 'westext-surface', module: 'westext-surface', positionGlb: [0, 0, 0], rotationYRad: 0, group: 'west-extension', note: 'authored in world coordinates' },
     { id: 'westext-seal-wall', module: 'westext-seal-wall', positionGlb: [0, 0, 0], rotationYRad: 0, group: 'west-extension', note: 'authored in world coordinates' },
+    { id: 'temple-bounds', module: 'temple-bounds', positionGlb: [0, 0, 0], rotationYRad: 0, group: 'west-extension', note: 'R1-02 forecourt boundary walls, authored in world coordinates (design_inference: sample-segment boundary, not historical)' },
   ],
 };
 await writeFile(resolve(OUT, 'instances.json'), JSON.stringify(instances, null, 2) + '\n');
@@ -133,6 +136,7 @@ const composeTemple = (record) => {
 const streetCollision = JSON.parse(await readFile(resolve(root, 'world/collision-world.json'), 'utf8'));
 const templeCollision = JSON.parse(await readFile(resolve(root, 'world/temple-dadian/collision-world.json'), 'utf8'));
 const westWall = JSON.parse(await readFile(resolve(OUT, 'west-extension/collision.json'), 'utf8'));
+const boundsRecords = westWall.colliders.filter((c) => c.name.startsWith('temple-bounds:'));
 const composed = templeCollision.colliders.map(composeTemple);
 
 // self-check (PLAN N4): re-derive 5 records (incl. one slanted shanmen wing wall
@@ -169,7 +173,7 @@ const world = {
   instances: instances.instances,
   colliders: [
     ...streetCollision.colliders,                       // 208 frozen street walls (verbatim)
-    ...westWall.colliders,                              // 1 seal wall (world-space obb + AABB)
+    ...westWall.colliders,                              // 1 seal wall + 2 forecourt bounds (R1-02)
     ...composed,                                        // 128 temple records composed with T+yaw
   ],
   composition: {
@@ -246,7 +250,7 @@ const route = {
   negatives: [
     { id: 'seal-wall', spawn: [+(westEnd[0] + 3).toFixed(3), 0, +westEnd[2].toFixed(3)], dir: [-1, 0, 0], walk: 'west', assertKind: 'staysEastOfX', barrierX: westEnd[0], assert: 'stopped by the seal wall; x never crosses the wall plane at westEndGlb' },
     { id: 'shop-165-placeholder', spawn: null, spawnNote: 'road centreline point nearest shop-165', dir: [0, 0, -1], walk: 'north toward the shop-165 placeholder box', assertKind: 'stopsAtObb', targetShop: 'shop-165', maxObbGapM: 1.0, assert: 'stopped by the placeholder collider (capsule may slide along the face but never enters the box)' },
-    { id: 'forecourt-east', spawnLocal: [6, 0, 3], dir: [1, 0, 0], walk: 'east', assertKind: 'openEdgeOrBlocked', maxAdvancedM: 2.0, assert: 'either stopped before leaving the forecourt, or — the actual outcome with shop-167/169 suppressed by the temple axis — walks off the open east edge and falls (no synthetic slab east of the temple)', knownDeviation: 'the DESIGN_SPEC assumed a blocker east of the forecourt (placeholder); with the temple axis applied that placeholder is suppressed and the boundary is open — recorded in registry knownDeviations' },
+    { id: 'forecourt-east', spawnLocal: [6, 0, 3], dir: [1, 0, 0], walk: 'east', assertKind: 'advancedUnder', maxAdvancedM: 3.5, assert: 'stopped by the R1-02 forecourt boundary wall (temple-local x=+9, h 0.9); never falls', knownDeviation: null },
     { id: 'dadian-doors', spawnLocal: [0, 0, -42.5], dir: [0, 0, -1], walk: 'north', assertKind: 'localZNorthOf', localZLimit: -44.0, assert: 'stopped by the dadian closed doors: final temple-local z stays north of -44.0 (same assertion as temple_dadian_passage, in world coordinates)' },
   ],
   fallCheck: DS.route.fallCheck,
@@ -301,6 +305,7 @@ for (const inst of instances.instances) {
   if (ta) { modules.push({ id: inst.module, path: ta.glb, bytes: ta.bytes, sha256: ta.sha256, triangles: ta.triangles }); continue; }
   if (inst.module === 'westext-surface') { modules.push({ id: inst.module, path: './world/fangbang-temple/west-extension/surface.glb', bytes: surfaceBytes.byteLength, sha256: sha(surfaceBytes), triangles: surfaceMeasure.triangles }); continue; }
   if (inst.module === 'westext-seal-wall') { modules.push({ id: inst.module, path: './world/fangbang-temple/west-extension/seal-wall.glb', bytes: wallBytes.byteLength, sha256: sha(wallBytes), triangles: wallMeasure.triangles }); continue; }
+  if (inst.module === 'temple-bounds') { modules.push({ id: inst.module, path: './world/fangbang-temple/west-extension/forecourt-bounds.glb', bytes: boundsBytes.byteLength, sha256: sha(boundsBytes), triangles: 24 }); continue; }
   const sa = shopAssets.find((a) => a.module === inst.module);
   if (sa) {
     const ref = [...(scManifest.streetCompletion?.assets ?? []), ...(eeManifest.eastEdgeAssets?.assets ?? [])].find((x) => x.id === inst.module);
@@ -347,6 +352,7 @@ const manifest = {
   westExtension: {
     surface: { path: './world/fangbang-temple/west-extension/surface.glb', bytes: surfaceBytes.byteLength, sha256: sha(surfaceBytes), triangles: surfaceMeasure.triangles, groundNodeNames: ['sctail__quiet-gray-asphalt', 'sctail__worn-stone'], spec: './world/fangbang-temple/west-extension/surface-spec.json' },
     sealWall: { path: './world/fangbang-temple/west-extension/seal-wall.glb', bytes: wallBytes.byteLength, sha256: sha(wallBytes), triangles: wallMeasure.triangles },
+    forecourtBounds: { path: './world/fangbang-temple/west-extension/forecourt-bounds.glb', bytes: boundsBytes.byteLength, sha256: sha(boundsBytes), triangles: 24, designInference: 'sample-segment boundary, NOT historical (R1-02)', placement: 'temple-local x=+/-9, z 0..7, h 0.9, t 0.25' },
     checks: { note: 'corridor / forecourt-joint / placeholder-residual reports live in west-extension/surface-spec.json (written by the Blender builder)' },
     centerlineSpec: 'kit/out/fangbang-temple/west-extension-spec.json',
   },
@@ -375,5 +381,5 @@ const manifest = {
 };
 await writeFile(resolve(OUT, 'review-manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
 
-console.log(`FANGBANG_WORLD_READY instances=${instances.instances.length} colliders=${world.colliders.length} (street 208 + wall 1 + temple ${composed.length})`);
+console.log(`FANGBANG_WORLD_READY instances=${instances.instances.length} colliders=${world.colliders.length} (street 208 + walls 3 + temple ${composed.length})`);
 console.log(`route ${pts.length} pts ${route.totalLengthM}m maxGap ${route.maxAdjacentGapM}m; bridgeWorldTris=${bridgeWorldTris}/300000 fullSceneTris=${fullSceneTris}`);

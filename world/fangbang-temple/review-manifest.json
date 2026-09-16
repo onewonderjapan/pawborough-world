@@ -200,6 +200,13 @@
       "bytes": 2804,
       "sha256": "dd07c8ea5d6ded4b74391b2fe887cf0926a997c746c2c9414d8b13da454fcd1a",
       "triangles": 12
+    },
+    {
+      "id": "temple-bounds",
+      "path": "./world/fangbang-temple/west-extension/forecourt-bounds.glb",
+      "bytes": 4020,
+      "sha256": "e9997259ad2ebe60819c5086f4e86fafdbae9de3c76233cecaf7a609186b49ef",
+      "triangles": 24
     }
   ],
   "worldAssembly": {
@@ -370,6 +377,14 @@
       "bytes": 2804,
       "sha256": "dd07c8ea5d6ded4b74391b2fe887cf0926a997c746c2c9414d8b13da454fcd1a",
       "triangles": 12
+    },
+    "forecourtBounds": {
+      "path": "./world/fangbang-temple/west-extension/forecourt-bounds.glb",
+      "bytes": 4020,
+      "sha256": "e9997259ad2ebe60819c5086f4e86fafdbae9de3c76233cecaf7a609186b49ef",
+      "triangles": 24,
+      "designInference": "sample-segment boundary, NOT historical (R1-02)",
+      "placement": "temple-local x=+/-9, z 0..7, h 0.9, t 0.25"
     },
     "checks": {
       "note": "corridor / forecourt-joint / placeholder-residual reports live in west-extension/surface-spec.json (written by the Blender builder)"
