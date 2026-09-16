@@ -1,0 +1,124 @@
+{
+  "views": [
+    {
+      "view": "sc-czero",
+      "tag": "pbr",
+      "posBlender": [
+        83.7401,
+        -16.0891,
+        1.6201
+      ],
+      "targetBlender": [
+        100.5646,
+        -26.9029,
+        1.6201
+      ],
+      "lensMm": 19.419330342338583,
+      "resolution": [
+        1280,
+        960
+      ]
+    },
+    {
+      "view": "sc-czero",
+      "tag": "clay",
+      "posBlender": [
+        83.7401,
+        -16.0891,
+        1.6201
+      ],
+      "targetBlender": [
+        100.5646,
+        -26.9029,
+        1.6201
+      ],
+      "lensMm": 19.419330342338583,
+      "resolution": [
+        1280,
+        960
+      ]
+    },
+    {
+      "view": "sc-pair-cloth-silk",
+      "tag": "pbr",
+      "posBlender": [
+        103.5,
+        -24.3,
+        1.7
+      ],
+      "targetBlender": [
+        109.6,
+        -24.4,
+        2.6
+      ],
+      "lensMm": 40,
+      "resolution": [
+        1280,
+        960
+      ]
+    },
+    {
+      "view": "sc-pair-cloth-silk",
+      "tag": "clay",
+      "posBlender": [
+        103.5,
+        -24.3,
+        1.7
+      ],
+      "targetBlender": [
+        109.6,
+        -24.4,
+        2.6
+      ],
+      "lensMm": 40,
+      "resolution": [
+        1280,
+        960
+      ]
+    },
+    {
+      "view": "sc-pair-embroidery-leather",
+      "tag": "pbr",
+      "posBlender": [
+        116,
+        -27,
+        1.7
+      ],
+      "targetBlender": [
+        121.2,
+        -27.2,
+        2.6
+      ],
+      "lensMm": 40,
+      "resolution": [
+        1280,
+        960
+      ]
+    },
+    {
+      "view": "sc-pair-embroidery-leather",
+      "tag": "clay",
+      "posBlender": [
+        116,
+        -27,
+        1.7
+      ],
+      "targetBlender": [
+        121.2,
+        -27.2,
+        2.6
+      ],
+      "lensMm": 40,
+      "resolution": [
+        1280,
+        960
+      ]
+    }
+  ],
+  "source": "kit/build_street_completion_scene.py",
+  "engine": "cycles-cpu",
+  "samples": 32,
+  "note": "BLENDER evidence; WebGL captures are separate",
+  "assembly": "GLB(x,y,z)->Blender(x,-z,y); pivot Z-rotation = +rotationYRad (radians, same sign)",
+  "verifyFile": "scene-verify.json"
+}

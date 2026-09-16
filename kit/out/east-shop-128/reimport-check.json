@@ -2,6 +2,44 @@
   "imported": true,
   "materials": [
     {
+      "name": "gray-pan-tile.001",
+      "imageNodes": [
+        {
+          "name": "roof-color",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "sRGB"
+        },
+        {
+          "name": "roof-normal",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
+    },
+    {
+      "name": "recessed-old-glass.001",
+      "imageNodes": []
+    },
+    {
+      "name": "shop-sign-generic-atlas.001",
+      "imageNodes": [
+        {
+          "name": "sign-atlas-generic",
+          "size": [
+            1024,
+            2048
+          ],
+          "colorSpace": "sRGB"
+        }
+      ]
+    },
+    {
       "name": "deep-door-lacquer.001",
       "imageNodes": []
     },
@@ -39,10 +77,6 @@
       "imageNodes": []
     },
     {
-      "name": "worn-stone.001",
-      "imageNodes": []
-    },
-    {
       "name": "weathered-lime-plaster.001",
       "imageNodes": [
         {
@@ -72,25 +106,8 @@
       ]
     },
     {
-      "name": "gray-pan-tile.001",
-      "imageNodes": [
-        {
-          "name": "roof-color",
-          "size": [
-            1024,
-            1024
-          ],
-          "colorSpace": "sRGB"
-        },
-        {
-          "name": "roof-normal",
-          "size": [
-            1024,
-            1024
-          ],
-          "colorSpace": "Non-Color"
-        }
-      ]
+      "name": "worn-stone.001",
+      "imageNodes": []
     },
     {
       "name": "oxblood-stained-timber.001",
@@ -112,23 +129,6 @@
           "colorSpace": "Non-Color"
         }
       ]
-    },
-    {
-      "name": "shop-sign-generic-atlas.001",
-      "imageNodes": [
-        {
-          "name": "sign-atlas-generic",
-          "size": [
-            1024,
-            2048
-          ],
-          "colorSpace": "sRGB"
-        }
-      ]
-    },
-    {
-      "name": "recessed-old-glass.001",
-      "imageNodes": []
     }
   ],
   "meshes": 9
