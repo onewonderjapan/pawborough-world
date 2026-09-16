@@ -1,0 +1,360 @@
+{
+  "axis": "GLB Y-up X east Z south; street assembly + refined shop assets + temple axis (T+yaw) + west extension (authored in place)",
+  "streetSource": "./world/street-completion/instances.json (16 storefronts verbatim)",
+  "instances": [
+    {
+      "id": "N01-plain-v1",
+      "module": "plain-v1",
+      "positionGlb": [
+        3.8891,
+        0,
+        -7.1414
+      ],
+      "rotationYRad": 0.31264,
+      "group": "street"
+    },
+    {
+      "id": "N02-pharmacy_shop",
+      "module": "pharmacy_shop",
+      "positionGlb": [
+        13.4345,
+        0,
+        -9.6949
+      ],
+      "rotationYRad": 0.18246,
+      "group": "street"
+    },
+    {
+      "id": "N03-cloth_shop",
+      "module": "cloth_shop",
+      "positionGlb": [
+        21.0594,
+        0,
+        -10.6774
+      ],
+      "rotationYRad": 0.07244,
+      "group": "street"
+    },
+    {
+      "id": "N04-dry_goods_shop",
+      "module": "dry_goods_shop",
+      "positionGlb": [
+        27.8117,
+        0,
+        -11.2131
+      ],
+      "rotationYRad": -0.01331,
+      "group": "street"
+    },
+    {
+      "id": "N05-restaurant-a",
+      "module": "restaurant-a",
+      "positionGlb": [
+        36.4005,
+        0,
+        -10.4263
+      ],
+      "rotationYRad": -0.07925,
+      "group": "street"
+    },
+    {
+      "id": "N06-curio-a",
+      "module": "curio-a",
+      "positionGlb": [
+        47.0775,
+        0,
+        -9.2669
+      ],
+      "rotationYRad": -0.16793,
+      "group": "street"
+    },
+    {
+      "id": "N07-cat_corner",
+      "module": "cat_corner",
+      "positionGlb": [
+        53.4837,
+        0,
+        -7.4571
+      ],
+      "rotationYRad": -0.36775,
+      "group": "street"
+    },
+    {
+      "id": "N08-plain-v2",
+      "module": "plain-v2",
+      "positionGlb": [
+        61.5527,
+        0,
+        -3.6307
+      ],
+      "rotationYRad": -0.4932,
+      "group": "street"
+    },
+    {
+      "id": "N09-curio-b",
+      "module": "curio-b",
+      "positionGlb": [
+        68.9525,
+        0,
+        0.4654
+      ],
+      "rotationYRad": -0.52685,
+      "group": "street"
+    },
+    {
+      "id": "N10-plain-v3",
+      "module": "plain-v3",
+      "positionGlb": [
+        76.2227,
+        0,
+        4.7948
+      ],
+      "rotationYRad": -0.54305,
+      "group": "street"
+    },
+    {
+      "id": "S01-corner",
+      "module": "corner",
+      "positionGlb": [
+        6.338,
+        0,
+        3.7891
+      ],
+      "rotationYRad": -2.81966,
+      "group": "street"
+    },
+    {
+      "id": "S02-photo_shop",
+      "module": "photo_shop",
+      "positionGlb": [
+        30.012,
+        0,
+        0.6408
+      ],
+      "rotationYRad": 3.09299,
+      "group": "street"
+    },
+    {
+      "id": "S03-plain-v2",
+      "module": "plain-v2",
+      "positionGlb": [
+        37.8893,
+        0,
+        0.9262
+      ],
+      "rotationYRad": 3.05483,
+      "group": "street"
+    },
+    {
+      "id": "S04-restaurant-b",
+      "module": "restaurant-b",
+      "positionGlb": [
+        46.8837,
+        0,
+        2.3324
+      ],
+      "rotationYRad": 2.89171,
+      "group": "street"
+    },
+    {
+      "id": "S05-plain-v3",
+      "module": "plain-v3",
+      "positionGlb": [
+        54.9927,
+        0,
+        5.5789
+      ],
+      "rotationYRad": 2.65997,
+      "group": "street"
+    },
+    {
+      "id": "S07-plain-v2",
+      "module": "plain-v2",
+      "positionGlb": [
+        66.0107,
+        0,
+        11.7373
+      ],
+      "rotationYRad": 2.6087,
+      "group": "street"
+    },
+    {
+      "id": "east-shop-128",
+      "module": "east-shop-128",
+      "positionGlb": [
+        97.66450990714537,
+        0,
+        17.734234931801197
+      ],
+      "rotationYRad": -0.301652,
+      "group": "street-tail-shops"
+    },
+    {
+      "id": "east-shop-129",
+      "module": "east-shop-129",
+      "positionGlb": [
+        95.7340372829119,
+        0,
+        23.93834100897118
+      ],
+      "rotationYRad": 2.839941,
+      "group": "street-tail-shops"
+    },
+    {
+      "id": "east-shop-130",
+      "module": "east-shop-130",
+      "positionGlb": [
+        109.78575716044992,
+        0,
+        22.102845323533415
+      ],
+      "rotationYRad": -0.22938,
+      "group": "street-tail-shops"
+    },
+    {
+      "id": "east-shop-131",
+      "module": "east-shop-131",
+      "positionGlb": [
+        108.75792755015615,
+        0,
+        26.4802503875359
+      ],
+      "rotationYRad": 2.912213,
+      "group": "street-tail-shops"
+    },
+    {
+      "id": "east-shop-132",
+      "module": "east-shop-132",
+      "positionGlb": [
+        121.69313096704158,
+        0,
+        23.859037769611177
+      ],
+      "rotationYRad": -0.22938,
+      "group": "street-tail-shops"
+    },
+    {
+      "id": "east-shop-133",
+      "module": "east-shop-133",
+      "positionGlb": [
+        120.22055408090135,
+        0,
+        30.184058020222682
+      ],
+      "rotationYRad": 2.912213,
+      "group": "street-tail-shops"
+    },
+    {
+      "id": "shanmen",
+      "module": "temple-axis-shanmen",
+      "positionGlb": [
+        -127.817,
+        0,
+        27.057
+      ],
+      "rotationYRad": 0.16703,
+      "group": "temple-axis"
+    },
+    {
+      "id": "shanmen-ground",
+      "module": "temple-axis-shanmen-ground",
+      "positionGlb": [
+        -127.817,
+        0,
+        27.057
+      ],
+      "rotationYRad": 0.16703,
+      "group": "temple-axis"
+    },
+    {
+      "id": "shanmen-lions",
+      "module": "temple-axis-shanmen-lions",
+      "positionGlb": [
+        -127.817,
+        0,
+        27.057
+      ],
+      "rotationYRad": 0.16703,
+      "group": "temple-axis"
+    },
+    {
+      "id": "shanmen-ornaments",
+      "module": "temple-axis-shanmen-ornaments",
+      "positionGlb": [
+        -127.817,
+        0,
+        27.057
+      ],
+      "rotationYRad": 0.16703,
+      "group": "temple-axis"
+    },
+    {
+      "id": "entrycourt-open",
+      "module": "temple-axis-entrycourt-open",
+      "positionGlb": [
+        -127.817,
+        0,
+        27.057
+      ],
+      "rotationYRad": 0.16703,
+      "group": "temple-axis"
+    },
+    {
+      "id": "yimen",
+      "module": "temple-axis-yimen",
+      "positionGlb": [
+        -131.308343,
+        0,
+        6.349259
+      ],
+      "rotationYRad": 0.16703,
+      "group": "temple-axis"
+    },
+    {
+      "id": "dadiancourt",
+      "module": "temple-axis-dadiancourt",
+      "positionGlb": [
+        -127.817,
+        0,
+        27.057
+      ],
+      "rotationYRad": 0.16703,
+      "group": "temple-axis"
+    },
+    {
+      "id": "dadian",
+      "module": "temple-axis-dadian",
+      "positionGlb": [
+        -135.132194,
+        0,
+        -16.330647
+      ],
+      "rotationYRad": 0.16703,
+      "group": "temple-axis"
+    },
+    {
+      "id": "westext-surface",
+      "module": "westext-surface",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "group": "west-extension",
+      "note": "authored in world coordinates"
+    },
+    {
+      "id": "westext-seal-wall",
+      "module": "westext-seal-wall",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "group": "west-extension",
+      "note": "authored in world coordinates"
+    }
+  ]
+}

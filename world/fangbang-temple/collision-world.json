@@ -1,0 +1,11388 @@
+{
+  "axis": "glTF Y-up; world records — obbToWorld() reproduces every box",
+  "adapterFormat": "obb {pos,theta,center,size} consumed by src/world/collisionAdapter.obbToWorld",
+  "dataset": "fangbang-temple",
+  "instances": [
+    {
+      "id": "N01-plain-v1",
+      "module": "plain-v1",
+      "positionGlb": [
+        3.8891,
+        0,
+        -7.1414
+      ],
+      "rotationYRad": 0.31264,
+      "group": "street"
+    },
+    {
+      "id": "N02-pharmacy_shop",
+      "module": "pharmacy_shop",
+      "positionGlb": [
+        13.4345,
+        0,
+        -9.6949
+      ],
+      "rotationYRad": 0.18246,
+      "group": "street"
+    },
+    {
+      "id": "N03-cloth_shop",
+      "module": "cloth_shop",
+      "positionGlb": [
+        21.0594,
+        0,
+        -10.6774
+      ],
+      "rotationYRad": 0.07244,
+      "group": "street"
+    },
+    {
+      "id": "N04-dry_goods_shop",
+      "module": "dry_goods_shop",
+      "positionGlb": [
+        27.8117,
+        0,
+        -11.2131
+      ],
+      "rotationYRad": -0.01331,
+      "group": "street"
+    },
+    {
+      "id": "N05-restaurant-a",
+      "module": "restaurant-a",
+      "positionGlb": [
+        36.4005,
+        0,
+        -10.4263
+      ],
+      "rotationYRad": -0.07925,
+      "group": "street"
+    },
+    {
+      "id": "N06-curio-a",
+      "module": "curio-a",
+      "positionGlb": [
+        47.0775,
+        0,
+        -9.2669
+      ],
+      "rotationYRad": -0.16793,
+      "group": "street"
+    },
+    {
+      "id": "N07-cat_corner",
+      "module": "cat_corner",
+      "positionGlb": [
+        53.4837,
+        0,
+        -7.4571
+      ],
+      "rotationYRad": -0.36775,
+      "group": "street"
+    },
+    {
+      "id": "N08-plain-v2",
+      "module": "plain-v2",
+      "positionGlb": [
+        61.5527,
+        0,
+        -3.6307
+      ],
+      "rotationYRad": -0.4932,
+      "group": "street"
+    },
+    {
+      "id": "N09-curio-b",
+      "module": "curio-b",
+      "positionGlb": [
+        68.9525,
+        0,
+        0.4654
+      ],
+      "rotationYRad": -0.52685,
+      "group": "street"
+    },
+    {
+      "id": "N10-plain-v3",
+      "module": "plain-v3",
+      "positionGlb": [
+        76.2227,
+        0,
+        4.7948
+      ],
+      "rotationYRad": -0.54305,
+      "group": "street"
+    },
+    {
+      "id": "S01-corner",
+      "module": "corner",
+      "positionGlb": [
+        6.338,
+        0,
+        3.7891
+      ],
+      "rotationYRad": -2.81966,
+      "group": "street"
+    },
+    {
+      "id": "S02-photo_shop",
+      "module": "photo_shop",
+      "positionGlb": [
+        30.012,
+        0,
+        0.6408
+      ],
+      "rotationYRad": 3.09299,
+      "group": "street"
+    },
+    {
+      "id": "S03-plain-v2",
+      "module": "plain-v2",
+      "positionGlb": [
+        37.8893,
+        0,
+        0.9262
+      ],
+      "rotationYRad": 3.05483,
+      "group": "street"
+    },
+    {
+      "id": "S04-restaurant-b",
+      "module": "restaurant-b",
+      "positionGlb": [
+        46.8837,
+        0,
+        2.3324
+      ],
+      "rotationYRad": 2.89171,
+      "group": "street"
+    },
+    {
+      "id": "S05-plain-v3",
+      "module": "plain-v3",
+      "positionGlb": [
+        54.9927,
+        0,
+        5.5789
+      ],
+      "rotationYRad": 2.65997,
+      "group": "street"
+    },
+    {
+      "id": "S07-plain-v2",
+      "module": "plain-v2",
+      "positionGlb": [
+        66.0107,
+        0,
+        11.7373
+      ],
+      "rotationYRad": 2.6087,
+      "group": "street"
+    },
+    {
+      "id": "east-shop-128",
+      "module": "east-shop-128",
+      "positionGlb": [
+        97.66450990714537,
+        0,
+        17.734234931801197
+      ],
+      "rotationYRad": -0.301652,
+      "group": "street-tail-shops"
+    },
+    {
+      "id": "east-shop-129",
+      "module": "east-shop-129",
+      "positionGlb": [
+        95.7340372829119,
+        0,
+        23.93834100897118
+      ],
+      "rotationYRad": 2.839941,
+      "group": "street-tail-shops"
+    },
+    {
+      "id": "east-shop-130",
+      "module": "east-shop-130",
+      "positionGlb": [
+        109.78575716044992,
+        0,
+        22.102845323533415
+      ],
+      "rotationYRad": -0.22938,
+      "group": "street-tail-shops"
+    },
+    {
+      "id": "east-shop-131",
+      "module": "east-shop-131",
+      "positionGlb": [
+        108.75792755015615,
+        0,
+        26.4802503875359
+      ],
+      "rotationYRad": 2.912213,
+      "group": "street-tail-shops"
+    },
+    {
+      "id": "east-shop-132",
+      "module": "east-shop-132",
+      "positionGlb": [
+        121.69313096704158,
+        0,
+        23.859037769611177
+      ],
+      "rotationYRad": -0.22938,
+      "group": "street-tail-shops"
+    },
+    {
+      "id": "east-shop-133",
+      "module": "east-shop-133",
+      "positionGlb": [
+        120.22055408090135,
+        0,
+        30.184058020222682
+      ],
+      "rotationYRad": 2.912213,
+      "group": "street-tail-shops"
+    },
+    {
+      "id": "shanmen",
+      "module": "temple-axis-shanmen",
+      "positionGlb": [
+        -127.817,
+        0,
+        27.057
+      ],
+      "rotationYRad": 0.16703,
+      "group": "temple-axis"
+    },
+    {
+      "id": "shanmen-ground",
+      "module": "temple-axis-shanmen-ground",
+      "positionGlb": [
+        -127.817,
+        0,
+        27.057
+      ],
+      "rotationYRad": 0.16703,
+      "group": "temple-axis"
+    },
+    {
+      "id": "shanmen-lions",
+      "module": "temple-axis-shanmen-lions",
+      "positionGlb": [
+        -127.817,
+        0,
+        27.057
+      ],
+      "rotationYRad": 0.16703,
+      "group": "temple-axis"
+    },
+    {
+      "id": "shanmen-ornaments",
+      "module": "temple-axis-shanmen-ornaments",
+      "positionGlb": [
+        -127.817,
+        0,
+        27.057
+      ],
+      "rotationYRad": 0.16703,
+      "group": "temple-axis"
+    },
+    {
+      "id": "entrycourt-open",
+      "module": "temple-axis-entrycourt-open",
+      "positionGlb": [
+        -127.817,
+        0,
+        27.057
+      ],
+      "rotationYRad": 0.16703,
+      "group": "temple-axis"
+    },
+    {
+      "id": "yimen",
+      "module": "temple-axis-yimen",
+      "positionGlb": [
+        -131.308343,
+        0,
+        6.349259
+      ],
+      "rotationYRad": 0.16703,
+      "group": "temple-axis"
+    },
+    {
+      "id": "dadiancourt",
+      "module": "temple-axis-dadiancourt",
+      "positionGlb": [
+        -127.817,
+        0,
+        27.057
+      ],
+      "rotationYRad": 0.16703,
+      "group": "temple-axis"
+    },
+    {
+      "id": "dadian",
+      "module": "temple-axis-dadian",
+      "positionGlb": [
+        -135.132194,
+        0,
+        -16.330647
+      ],
+      "rotationYRad": 0.16703,
+      "group": "temple-axis"
+    },
+    {
+      "id": "westext-surface",
+      "module": "westext-surface",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "group": "west-extension",
+      "note": "authored in world coordinates"
+    },
+    {
+      "id": "westext-seal-wall",
+      "module": "westext-seal-wall",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "group": "west-extension",
+      "note": "authored in world coordinates"
+    }
+  ],
+  "colliders": [
+    {
+      "name": "N01-plain-v1:left-side",
+      "module": "plain-v1",
+      "min": [
+        -3.788,
+        0,
+        -11.472
+      ],
+      "max": [
+        -1.554,
+        6.8,
+        -5.296
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          3.889,
+          0,
+          -7.141
+        ],
+        "theta": 0.31264,
+        "center": [
+          -5.86,
+          3.4,
+          -3.2
+        ],
+        "size": [
+          0.28,
+          6.8,
+          6.4
+        ]
+      }
+    },
+    {
+      "name": "N01-plain-v1:right-side",
+      "module": "plain-v1",
+      "min": [
+        7.363,
+        0,
+        -15.077
+      ],
+      "max": [
+        9.598,
+        6.8,
+        -8.901
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          3.889,
+          0,
+          -7.141
+        ],
+        "theta": 0.31264,
+        "center": [
+          5.86,
+          3.4,
+          -3.2
+        ],
+        "size": [
+          0.28,
+          6.8,
+          6.4
+        ]
+      }
+    },
+    {
+      "name": "N01-plain-v1:back-wall",
+      "module": "plain-v1",
+      "min": [
+        -3.527,
+        0,
+        -14.992
+      ],
+      "max": [
+        7.454,
+        6.8,
+        -11.204
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          3.889,
+          0,
+          -7.141
+        ],
+        "theta": 0.31264,
+        "center": [
+          0,
+          3.4,
+          -6.26
+        ],
+        "size": [
+          11.45,
+          6.8,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "N01-plain-v1:shop-floor",
+      "module": "plain-v1",
+      "min": [
+        -3.788,
+        0,
+        -15.077
+      ],
+      "max": [
+        9.598,
+        0.14,
+        -5.296
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          3.889,
+          0,
+          -7.141
+        ],
+        "theta": 0.31264,
+        "center": [
+          0,
+          0.07,
+          -3.2
+        ],
+        "size": [
+          12,
+          0.14,
+          6.4
+        ]
+      }
+    },
+    {
+      "name": "N01-plain-v1:upper-floor",
+      "module": "plain-v1",
+      "min": [
+        -3.437,
+        3.44,
+        -14.729
+      ],
+      "max": [
+        9.247,
+        3.66,
+        -5.644
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          3.889,
+          0,
+          -7.141
+        ],
+        "theta": 0.31264,
+        "center": [
+          0,
+          3.55,
+          -3.2
+        ],
+        "size": [
+          11.44,
+          0.22,
+          5.85
+        ]
+      }
+    },
+    {
+      "name": "N01-plain-v1:rear-interior",
+      "module": "plain-v1",
+      "min": [
+        -2.689,
+        0.07,
+        -12.335
+      ],
+      "max": [
+        8.315,
+        3.17,
+        -8.608
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          3.889,
+          0,
+          -7.141
+        ],
+        "theta": 0.31264,
+        "center": [
+          0,
+          1.62,
+          -3.5
+        ],
+        "size": [
+          11.5,
+          3.1,
+          0.2
+        ]
+      }
+    },
+    {
+      "name": "N01-plain-v1:front-brick-plinth",
+      "module": "plain-v1",
+      "min": [
+        -1.711,
+        0,
+        -9.045
+      ],
+      "max": [
+        9.496,
+        0.6,
+        -5.218
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          3.889,
+          0,
+          -7.141
+        ],
+        "theta": 0.31264,
+        "center": [
+          0,
+          0.3,
+          0.01
+        ],
+        "size": [
+          11.7,
+          0.6,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "N01-plain-v1:shop-door",
+      "module": "plain-v1",
+      "min": [
+        0.825,
+        0,
+        -6.589
+      ],
+      "max": [
+        1.899,
+        2.1,
+        -6.165
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          3.889,
+          0,
+          -7.141
+        ],
+        "theta": 0.31264,
+        "center": [
+          -2.64,
+          1.05,
+          -0.05
+        ],
+        "size": [
+          1.1,
+          2.1,
+          0.09
+        ]
+      }
+    },
+    {
+      "name": "N01-plain-v1:counter-sill",
+      "module": "plain-v1",
+      "min": [
+        3.002,
+        0.7,
+        -8.868
+      ],
+      "max": [
+        8.874,
+        1.2,
+        -6.782
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          3.889,
+          0,
+          -7.141
+        ],
+        "theta": 0.31264,
+        "center": [
+          2.16,
+          0.95,
+          -0.02
+        ],
+        "size": [
+          6.1,
+          0.5,
+          0.22
+        ]
+      }
+    },
+    {
+      "name": "N01-plain-v1:facade-post",
+      "module": "plain-v1",
+      "min": [
+        -1.737,
+        0.05,
+        -5.426
+      ],
+      "max": [
+        -1.473,
+        6.95,
+        -5.136
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          3.889,
+          0,
+          -7.141
+        ],
+        "theta": 0.31264,
+        "center": [
+          -5.8,
+          3.5,
+          0.08
+        ],
+        "size": [
+          0.2,
+          6.9,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "N01-plain-v1:facade-post",
+      "module": "plain-v1",
+      "min": [
+        9.301,
+        0.05,
+        -8.994
+      ],
+      "max": [
+        9.565,
+        6.95,
+        -8.704
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          3.889,
+          0,
+          -7.141
+        ],
+        "theta": 0.31264,
+        "center": [
+          5.8,
+          3.5,
+          0.08
+        ],
+        "size": [
+          0.2,
+          6.9,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "N02-pharmacy_shop:left-side",
+      "module": "pharmacy_shop",
+      "min": [
+        8.356,
+        0,
+        -15.774
+      ],
+      "max": [
+        9.902,
+        8,
+        -8.84
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          13.434,
+          0,
+          -9.695
+        ],
+        "theta": 0.18246,
+        "center": [
+          -3.76,
+          4,
+          -3.35
+        ],
+        "size": [
+          0.28,
+          8,
+          7
+        ]
+      }
+    },
+    {
+      "name": "N02-pharmacy_shop:right-side",
+      "module": "pharmacy_shop",
+      "min": [
+        15.751,
+        0,
+        -17.139
+      ],
+      "max": [
+        17.297,
+        8,
+        -10.204
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          13.434,
+          0,
+          -9.695
+        ],
+        "theta": 0.18246,
+        "center": [
+          3.76,
+          4,
+          -3.35
+        ],
+        "size": [
+          0.28,
+          8,
+          7
+        ]
+      }
+    },
+    {
+      "name": "N02-pharmacy_shop:back-wall",
+      "module": "pharmacy_shop",
+      "min": [
+        8.627,
+        0,
+        -17.089
+      ],
+      "max": [
+        15.807,
+        8,
+        -15.498
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          13.434,
+          0,
+          -9.695
+        ],
+        "theta": 0.18246,
+        "center": [
+          0,
+          4,
+          -6.71
+        ],
+        "size": [
+          7.25,
+          8,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "N02-pharmacy_shop:shop-floor",
+      "module": "pharmacy_shop",
+      "min": [
+        8.356,
+        0,
+        -17.139
+      ],
+      "max": [
+        17.297,
+        0.14,
+        -8.84
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          13.434,
+          0,
+          -9.695
+        ],
+        "theta": 0.18246,
+        "center": [
+          0,
+          0.07,
+          -3.35
+        ],
+        "size": [
+          7.8,
+          0.14,
+          7
+        ]
+      }
+    },
+    {
+      "name": "N02-pharmacy_shop:upper-floor",
+      "module": "pharmacy_shop",
+      "min": [
+        8.682,
+        3.49,
+        -16.818
+      ],
+      "max": [
+        16.972,
+        3.71,
+        -9.161
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          13.434,
+          0,
+          -9.695
+        ],
+        "theta": 0.18246,
+        "center": [
+          0,
+          3.6,
+          -3.35
+        ],
+        "size": [
+          7.24,
+          0.22,
+          6.45
+        ]
+      }
+    },
+    {
+      "name": "N02-pharmacy_shop:rear-interior",
+      "module": "pharmacy_shop",
+      "min": [
+        9.192,
+        0.075,
+        -13.897
+      ],
+      "max": [
+        16.407,
+        3.225,
+        -12.376
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          13.434,
+          0,
+          -9.695
+        ],
+        "theta": 0.18246,
+        "center": [
+          0,
+          1.65,
+          -3.5
+        ],
+        "size": [
+          7.3,
+          3.15,
+          0.2
+        ]
+      }
+    },
+    {
+      "name": "N02-pharmacy_shop:facade-post",
+      "module": "pharmacy_shop",
+      "min": [
+        9.68,
+        0,
+        -8.916
+      ],
+      "max": [
+        9.92,
+        7.6,
+        -8.644
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          13.434,
+          0,
+          -9.695
+        ],
+        "theta": 0.18246,
+        "center": [
+          -3.74,
+          3.8,
+          0.24
+        ],
+        "size": [
+          0.2,
+          7.6,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "N02-pharmacy_shop:stone-post-foot",
+      "module": "pharmacy_shop",
+      "min": [
+        9.601,
+        0,
+        -8.983
+      ],
+      "max": [
+        9.999,
+        0.7,
+        -8.577
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          13.434,
+          0,
+          -9.695
+        ],
+        "theta": 0.18246,
+        "center": [
+          -3.74,
+          0.35,
+          0.24
+        ],
+        "size": [
+          0.34,
+          0.7,
+          0.35
+        ]
+      }
+    },
+    {
+      "name": "N02-pharmacy_shop:facade-post",
+      "module": "pharmacy_shop",
+      "min": [
+        12.08,
+        0,
+        -9.359
+      ],
+      "max": [
+        12.32,
+        7.6,
+        -9.087
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          13.434,
+          0,
+          -9.695
+        ],
+        "theta": 0.18246,
+        "center": [
+          -1.3,
+          3.8,
+          0.24
+        ],
+        "size": [
+          0.2,
+          7.6,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "N02-pharmacy_shop:stone-post-foot",
+      "module": "pharmacy_shop",
+      "min": [
+        12.001,
+        0,
+        -9.426
+      ],
+      "max": [
+        12.399,
+        0.7,
+        -9.02
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          13.434,
+          0,
+          -9.695
+        ],
+        "theta": 0.18246,
+        "center": [
+          -1.3,
+          0.35,
+          0.24
+        ],
+        "size": [
+          0.34,
+          0.7,
+          0.35
+        ]
+      }
+    },
+    {
+      "name": "N02-pharmacy_shop:facade-post",
+      "module": "pharmacy_shop",
+      "min": [
+        14.636,
+        0,
+        -9.831
+      ],
+      "max": [
+        14.877,
+        7.6,
+        -9.559
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          13.434,
+          0,
+          -9.695
+        ],
+        "theta": 0.18246,
+        "center": [
+          1.3,
+          3.8,
+          0.24
+        ],
+        "size": [
+          0.2,
+          7.6,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "N02-pharmacy_shop:stone-post-foot",
+      "module": "pharmacy_shop",
+      "min": [
+        14.558,
+        0,
+        -9.898
+      ],
+      "max": [
+        14.955,
+        0.7,
+        -9.492
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          13.434,
+          0,
+          -9.695
+        ],
+        "theta": 0.18246,
+        "center": [
+          1.3,
+          0.35,
+          0.24
+        ],
+        "size": [
+          0.34,
+          0.7,
+          0.35
+        ]
+      }
+    },
+    {
+      "name": "N02-pharmacy_shop:facade-post",
+      "module": "pharmacy_shop",
+      "min": [
+        17.036,
+        0,
+        -10.274
+      ],
+      "max": [
+        17.276,
+        7.6,
+        -10.001
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          13.434,
+          0,
+          -9.695
+        ],
+        "theta": 0.18246,
+        "center": [
+          3.74,
+          3.8,
+          0.24
+        ],
+        "size": [
+          0.2,
+          7.6,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "N02-pharmacy_shop:stone-post-foot",
+      "module": "pharmacy_shop",
+      "min": [
+        16.957,
+        0,
+        -10.34
+      ],
+      "max": [
+        17.355,
+        0.7,
+        -9.935
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          13.434,
+          0,
+          -9.695
+        ],
+        "theta": 0.18246,
+        "center": [
+          3.74,
+          0.35,
+          0.24
+        ],
+        "size": [
+          0.34,
+          0.7,
+          0.35
+        ]
+      }
+    },
+    {
+      "name": "N02-pharmacy_shop:threshold",
+      "module": "pharmacy_shop",
+      "min": [
+        9.789,
+        0,
+        -10.277
+      ],
+      "max": [
+        17.215,
+        0.24,
+        -8.385
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          13.434,
+          0,
+          -9.695
+        ],
+        "theta": 0.18246,
+        "center": [
+          0,
+          0.12,
+          0.37
+        ],
+        "size": [
+          7.45,
+          0.24,
+          0.55
+        ]
+      }
+    },
+    {
+      "name": "N02-pharmacy_shop:medicine-counter",
+      "module": "pharmacy_shop",
+      "min": [
+        10.69,
+        0.095,
+        -11.697
+      ],
+      "max": [
+        15.725,
+        1.845,
+        -10.151
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          13.434,
+          0,
+          -9.695
+        ],
+        "theta": 0.18246,
+        "center": [
+          0,
+          0.97,
+          -1.25
+        ],
+        "size": [
+          5,
+          1.75,
+          0.65
+        ]
+      }
+    },
+    {
+      "name": "N03-cloth_shop:left-side",
+      "module": "cloth_shop",
+      "min": [
+        16.784,
+        0,
+        -17.105
+      ],
+      "max": [
+        17.549,
+        7.7,
+        -10.402
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          21.059,
+          0,
+          -10.677
+        ],
+        "theta": 0.07244,
+        "center": [
+          -3.66,
+          3.85,
+          -3.35
+        ],
+        "size": [
+          0.28,
+          7.7,
+          6.7
+        ]
+      }
+    },
+    {
+      "name": "N03-cloth_shop:right-side",
+      "module": "cloth_shop",
+      "min": [
+        24.085,
+        0,
+        -17.635
+      ],
+      "max": [
+        24.849,
+        7.7,
+        -10.932
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          21.059,
+          0,
+          -10.677
+        ],
+        "theta": 0.07244,
+        "center": [
+          3.66,
+          3.85,
+          -3.35
+        ],
+        "size": [
+          0.28,
+          7.7,
+          6.7
+        ]
+      }
+    },
+    {
+      "name": "N03-cloth_shop:back-wall",
+      "module": "cloth_shop",
+      "min": [
+        17.059,
+        0,
+        -17.615
+      ],
+      "max": [
+        24.11,
+        7.7,
+        -16.825
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          21.059,
+          0,
+          -10.677
+        ],
+        "theta": 0.07244,
+        "center": [
+          0,
+          3.85,
+          -6.56
+        ],
+        "size": [
+          7.05,
+          7.7,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "N03-cloth_shop:shop-floor",
+      "module": "cloth_shop",
+      "min": [
+        16.784,
+        0,
+        -17.635
+      ],
+      "max": [
+        24.849,
+        0.14,
+        -10.402
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          21.059,
+          0,
+          -10.677
+        ],
+        "theta": 0.07244,
+        "center": [
+          0,
+          0.07,
+          -3.35
+        ],
+        "size": [
+          7.6,
+          0.14,
+          6.7
+        ]
+      }
+    },
+    {
+      "name": "N03-cloth_shop:upper-floor",
+      "module": "cloth_shop",
+      "min": [
+        17.084,
+        3.49,
+        -17.34
+      ],
+      "max": [
+        24.55,
+        3.71,
+        -10.697
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          21.059,
+          0,
+          -10.677
+        ],
+        "theta": 0.07244,
+        "center": [
+          0,
+          3.6,
+          -3.35
+        ],
+        "size": [
+          7.04,
+          0.22,
+          6.15
+        ]
+      }
+    },
+    {
+      "name": "N03-cloth_shop:rear-interior",
+      "module": "cloth_shop",
+      "min": [
+        17.247,
+        0.075,
+        -14.675
+      ],
+      "max": [
+        24.343,
+        3.225,
+        -13.961
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          21.059,
+          0,
+          -10.677
+        ],
+        "theta": 0.07244,
+        "center": [
+          0,
+          1.65,
+          -3.65
+        ],
+        "size": [
+          7.1,
+          3.15,
+          0.2
+        ]
+      }
+    },
+    {
+      "name": "N03-cloth_shop:facade-post",
+      "module": "cloth_shop",
+      "min": [
+        17.327,
+        0,
+        -10.451
+      ],
+      "max": [
+        17.544,
+        7.6,
+        -10.197
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          21.059,
+          0,
+          -10.677
+        ],
+        "theta": 0.07244,
+        "center": [
+          -3.64,
+          3.8,
+          0.09
+        ],
+        "size": [
+          0.2,
+          7.6,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "N03-cloth_shop:stone-post-foot",
+      "module": "cloth_shop",
+      "min": [
+        17.253,
+        0,
+        -10.511
+      ],
+      "max": [
+        17.618,
+        0.7,
+        -10.137
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          21.059,
+          0,
+          -10.677
+        ],
+        "theta": 0.07244,
+        "center": [
+          -3.64,
+          0.35,
+          0.09
+        ],
+        "size": [
+          0.34,
+          0.7,
+          0.35
+        ]
+      }
+    },
+    {
+      "name": "N03-cloth_shop:facade-post",
+      "module": "cloth_shop",
+      "min": [
+        19.694,
+        0,
+        -10.623
+      ],
+      "max": [
+        19.911,
+        7.6,
+        -10.369
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          21.059,
+          0,
+          -10.677
+        ],
+        "theta": 0.07244,
+        "center": [
+          -1.267,
+          3.8,
+          0.09
+        ],
+        "size": [
+          0.2,
+          7.6,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "N03-cloth_shop:stone-post-foot",
+      "module": "cloth_shop",
+      "min": [
+        19.62,
+        0,
+        -10.683
+      ],
+      "max": [
+        19.985,
+        0.7,
+        -10.309
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          21.059,
+          0,
+          -10.677
+        ],
+        "theta": 0.07244,
+        "center": [
+          -1.267,
+          0.35,
+          0.09
+        ],
+        "size": [
+          0.34,
+          0.7,
+          0.35
+        ]
+      }
+    },
+    {
+      "name": "N03-cloth_shop:facade-post",
+      "module": "cloth_shop",
+      "min": [
+        22.221,
+        0,
+        -10.806
+      ],
+      "max": [
+        22.438,
+        7.6,
+        -10.552
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          21.059,
+          0,
+          -10.677
+        ],
+        "theta": 0.07244,
+        "center": [
+          1.267,
+          3.8,
+          0.09
+        ],
+        "size": [
+          0.2,
+          7.6,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "N03-cloth_shop:stone-post-foot",
+      "module": "cloth_shop",
+      "min": [
+        22.147,
+        0,
+        -10.866
+      ],
+      "max": [
+        22.511,
+        0.7,
+        -10.493
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          21.059,
+          0,
+          -10.677
+        ],
+        "theta": 0.07244,
+        "center": [
+          1.267,
+          0.35,
+          0.09
+        ],
+        "size": [
+          0.34,
+          0.7,
+          0.35
+        ]
+      }
+    },
+    {
+      "name": "N03-cloth_shop:facade-post",
+      "module": "cloth_shop",
+      "min": [
+        24.588,
+        0,
+        -10.978
+      ],
+      "max": [
+        24.805,
+        7.6,
+        -10.724
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          21.059,
+          0,
+          -10.677
+        ],
+        "theta": 0.07244,
+        "center": [
+          3.64,
+          3.8,
+          0.09
+        ],
+        "size": [
+          0.2,
+          7.6,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "N03-cloth_shop:stone-post-foot",
+      "module": "cloth_shop",
+      "min": [
+        24.514,
+        0,
+        -11.038
+      ],
+      "max": [
+        24.879,
+        0.7,
+        -10.664
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          21.059,
+          0,
+          -10.677
+        ],
+        "theta": 0.07244,
+        "center": [
+          3.64,
+          0.35,
+          0.09
+        ],
+        "size": [
+          0.34,
+          0.7,
+          0.35
+        ]
+      }
+    },
+    {
+      "name": "N03-cloth_shop:threshold",
+      "module": "cloth_shop",
+      "min": [
+        17.44,
+        0,
+        -10.995
+      ],
+      "max": [
+        24.711,
+        0.24,
+        -9.921
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          21.059,
+          0,
+          -10.677
+        ],
+        "theta": 0.07244,
+        "center": [
+          0,
+          0.12,
+          0.22
+        ],
+        "size": [
+          7.25,
+          0.24,
+          0.55
+        ]
+      }
+    },
+    {
+      "name": "N04-dry_goods_shop:frontage-stone-pad",
+      "module": "dry_goods_shop",
+      "min": [
+        24.042,
+        -0.1,
+        -11.078
+      ],
+      "max": [
+        31.559,
+        0.02,
+        -9.628
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          27.812,
+          0,
+          -11.213
+        ],
+        "theta": -0.01331,
+        "center": [
+          0,
+          -0.04,
+          0.86
+        ],
+        "size": [
+          7.5,
+          0.12,
+          1.35
+        ]
+      }
+    },
+    {
+      "name": "N04-dry_goods_shop:frontage-threshold",
+      "module": "dry_goods_shop",
+      "min": [
+        24.732,
+        -0.03,
+        -11.074
+      ],
+      "max": [
+        30.884,
+        0.19,
+        -10.812
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          27.812,
+          0,
+          -11.213
+        ],
+        "theta": -0.01331,
+        "center": [
+          0,
+          0.08,
+          0.27
+        ],
+        "size": [
+          6.15,
+          0.22,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "N04-dry_goods_shop:left-side-wall",
+      "module": "dry_goods_shop",
+      "min": [
+        24.862,
+        0,
+        -14.952
+      ],
+      "max": [
+        25.191,
+        5.2,
+        -11.249
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          27.812,
+          0,
+          -11.213
+        ],
+        "theta": -0.01331,
+        "center": [
+          -2.81,
+          2.6,
+          -1.85
+        ],
+        "size": [
+          0.28,
+          5.2,
+          3.7
+        ]
+      }
+    },
+    {
+      "name": "N04-dry_goods_shop:right-side-wall",
+      "module": "dry_goods_shop",
+      "min": [
+        30.481,
+        0,
+        -14.877
+      ],
+      "max": [
+        30.811,
+        5.2,
+        -11.174
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          27.812,
+          0,
+          -11.213
+        ],
+        "theta": -0.01331,
+        "center": [
+          2.81,
+          2.6,
+          -1.85
+        ],
+        "size": [
+          0.28,
+          5.2,
+          3.7
+        ]
+      }
+    },
+    {
+      "name": "N04-dry_goods_shop:rear-wall",
+      "module": "dry_goods_shop",
+      "min": [
+        25.187,
+        0,
+        -14.948
+      ],
+      "max": [
+        30.531,
+        5.2,
+        -14.597
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          27.812,
+          0,
+          -11.213
+        ],
+        "theta": -0.01331,
+        "center": [
+          0,
+          2.6,
+          -3.56
+        ],
+        "size": [
+          5.34,
+          5.2,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "N04-dry_goods_shop:ground-floor",
+      "module": "dry_goods_shop",
+      "min": [
+        24.862,
+        0,
+        -14.952
+      ],
+      "max": [
+        30.811,
+        0.16,
+        -11.174
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          27.812,
+          0,
+          -11.213
+        ],
+        "theta": -0.01331,
+        "center": [
+          0,
+          0.08,
+          -1.85
+        ],
+        "size": [
+          5.9,
+          0.16,
+          3.7
+        ]
+      }
+    },
+    {
+      "name": "N04-dry_goods_shop:open-front-post",
+      "module": "dry_goods_shop",
+      "min": [
+        24.938,
+        0.045,
+        -11.236
+      ],
+      "max": [
+        25.142,
+        4.995,
+        -10.984
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          27.812,
+          0,
+          -11.213
+        ],
+        "theta": -0.01331,
+        "center": [
+          -2.77,
+          2.52,
+          0.14
+        ],
+        "size": [
+          0.2,
+          4.95,
+          0.25
+        ]
+      }
+    },
+    {
+      "name": "N04-dry_goods_shop:stone-post-foot",
+      "module": "dry_goods_shop",
+      "min": [
+        24.868,
+        0.075,
+        -11.292
+      ],
+      "max": [
+        25.212,
+        0.725,
+        -10.928
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          27.812,
+          0,
+          -11.213
+        ],
+        "theta": -0.01331,
+        "center": [
+          -2.77,
+          0.4,
+          0.14
+        ],
+        "size": [
+          0.34,
+          0.65,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "N04-dry_goods_shop:open-front-post",
+      "module": "dry_goods_shop",
+      "min": [
+        27.708,
+        0.045,
+        -11.199
+      ],
+      "max": [
+        27.911,
+        4.995,
+        -10.947
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          27.812,
+          0,
+          -11.213
+        ],
+        "theta": -0.01331,
+        "center": [
+          0,
+          2.52,
+          0.14
+        ],
+        "size": [
+          0.2,
+          4.95,
+          0.25
+        ]
+      }
+    },
+    {
+      "name": "N04-dry_goods_shop:stone-post-foot",
+      "module": "dry_goods_shop",
+      "min": [
+        27.637,
+        0.075,
+        -11.255
+      ],
+      "max": [
+        27.982,
+        0.725,
+        -10.891
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          27.812,
+          0,
+          -11.213
+        ],
+        "theta": -0.01331,
+        "center": [
+          0,
+          0.4,
+          0.14
+        ],
+        "size": [
+          0.34,
+          0.65,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "N04-dry_goods_shop:open-front-post",
+      "module": "dry_goods_shop",
+      "min": [
+        30.478,
+        0.045,
+        -11.163
+      ],
+      "max": [
+        30.681,
+        4.995,
+        -10.91
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          27.812,
+          0,
+          -11.213
+        ],
+        "theta": -0.01331,
+        "center": [
+          2.77,
+          2.52,
+          0.14
+        ],
+        "size": [
+          0.2,
+          4.95,
+          0.25
+        ]
+      }
+    },
+    {
+      "name": "N04-dry_goods_shop:stone-post-foot",
+      "module": "dry_goods_shop",
+      "min": [
+        30.407,
+        0.075,
+        -11.219
+      ],
+      "max": [
+        30.752,
+        0.725,
+        -10.854
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          27.812,
+          0,
+          -11.213
+        ],
+        "theta": -0.01331,
+        "center": [
+          2.77,
+          0.4,
+          0.14
+        ],
+        "size": [
+          0.34,
+          0.65,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "N04-dry_goods_shop:goods-threshold",
+      "module": "dry_goods_shop",
+      "min": [
+        25.056,
+        0.09,
+        -11.185
+      ],
+      "max": [
+        30.561,
+        0.31,
+        -10.762
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          27.812,
+          0,
+          -11.213
+        ],
+        "theta": -0.01331,
+        "center": [
+          0,
+          0.2,
+          0.24
+        ],
+        "size": [
+          5.5,
+          0.22,
+          0.35
+        ]
+      }
+    },
+    {
+      "name": "N05-restaurant-a:left-side",
+      "module": "restaurant-a",
+      "min": [
+        30.756,
+        0,
+        -17.702
+      ],
+      "max": [
+        31.59,
+        7.9,
+        -10.702
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          36.401,
+          0,
+          -10.426
+        ],
+        "theta": -0.07925,
+        "center": [
+          -5.51,
+          3.95,
+          -3.35
+        ],
+        "size": [
+          0.28,
+          7.9,
+          7
+        ]
+      }
+    },
+    {
+      "name": "N05-restaurant-a:right-side",
+      "module": "restaurant-a",
+      "min": [
+        41.742,
+        0,
+        -16.83
+      ],
+      "max": [
+        42.575,
+        7.9,
+        -9.829
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          36.401,
+          0,
+          -10.426
+        ],
+        "theta": -0.07925,
+        "center": [
+          5.51,
+          3.95,
+          -3.35
+        ],
+        "size": [
+          0.28,
+          7.9,
+          7
+        ]
+      }
+    },
+    {
+      "name": "N05-restaurant-a:back-wall",
+      "module": "restaurant-a",
+      "min": [
+        31.563,
+        0,
+        -17.68
+      ],
+      "max": [
+        42.301,
+        7.9,
+        -16.55
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          36.401,
+          0,
+          -10.426
+        ],
+        "theta": -0.07925,
+        "center": [
+          0,
+          3.95,
+          -6.71
+        ],
+        "size": [
+          10.75,
+          7.9,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "N05-restaurant-a:shop-floor",
+      "module": "restaurant-a",
+      "min": [
+        30.756,
+        0,
+        -17.702
+      ],
+      "max": [
+        42.575,
+        0.14,
+        -9.829
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          36.401,
+          0,
+          -10.426
+        ],
+        "theta": -0.07925,
+        "center": [
+          0,
+          0.07,
+          -3.35
+        ],
+        "size": [
+          11.3,
+          0.14,
+          7
+        ]
+      }
+    },
+    {
+      "name": "N05-restaurant-a:upper-floor",
+      "module": "restaurant-a",
+      "min": [
+        31.057,
+        3.64,
+        -17.406
+      ],
+      "max": [
+        42.274,
+        3.86,
+        -10.126
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          36.401,
+          0,
+          -10.426
+        ],
+        "theta": -0.07925,
+        "center": [
+          0,
+          3.75,
+          -3.35
+        ],
+        "size": [
+          10.74,
+          0.22,
+          6.45
+        ]
+      }
+    },
+    {
+      "name": "N05-restaurant-a:rear-interior",
+      "module": "restaurant-a",
+      "min": [
+        31.299,
+        0.05,
+        -14.592
+      ],
+      "max": [
+        42.08,
+        3.35,
+        -13.538
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          36.401,
+          0,
+          -10.426
+        ],
+        "theta": -0.07925,
+        "center": [
+          0,
+          1.7,
+          -3.65
+        ],
+        "size": [
+          10.8,
+          3.3,
+          0.2
+        ]
+      }
+    },
+    {
+      "name": "N05-restaurant-a:facade-post",
+      "module": "restaurant-a",
+      "min": [
+        30.809,
+        0.05,
+        -10.758
+      ],
+      "max": [
+        31.049,
+        7.75,
+        -10.482
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          36.401,
+          0,
+          -10.426
+        ],
+        "theta": -0.07925,
+        "center": [
+          -5.47,
+          3.9,
+          0.24
+        ],
+        "size": [
+          0.22,
+          7.7,
+          0.26
+        ]
+      }
+    },
+    {
+      "name": "N05-restaurant-a:stone-post-foot",
+      "module": "restaurant-a",
+      "min": [
+        30.735,
+        -0.01,
+        -10.814
+      ],
+      "max": [
+        31.122,
+        0.71,
+        -10.426
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          36.401,
+          0,
+          -10.426
+        ],
+        "theta": -0.07925,
+        "center": [
+          -5.47,
+          0.35,
+          0.24
+        ],
+        "size": [
+          0.36,
+          0.72,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "N05-restaurant-a:facade-post",
+      "module": "restaurant-a",
+      "min": [
+        34.384,
+        0.05,
+        -10.474
+      ],
+      "max": [
+        34.624,
+        7.75,
+        -10.198
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          36.401,
+          0,
+          -10.426
+        ],
+        "theta": -0.07925,
+        "center": [
+          -1.883,
+          3.9,
+          0.24
+        ],
+        "size": [
+          0.22,
+          7.7,
+          0.26
+        ]
+      }
+    },
+    {
+      "name": "N05-restaurant-a:stone-post-foot",
+      "module": "restaurant-a",
+      "min": [
+        34.31,
+        -0.01,
+        -10.53
+      ],
+      "max": [
+        34.698,
+        0.71,
+        -10.142
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          36.401,
+          0,
+          -10.426
+        ],
+        "theta": -0.07925,
+        "center": [
+          -1.883,
+          0.35,
+          0.24
+        ],
+        "size": [
+          0.36,
+          0.72,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "N05-restaurant-a:facade-post",
+      "module": "restaurant-a",
+      "min": [
+        38.139,
+        0.05,
+        -10.176
+      ],
+      "max": [
+        38.379,
+        7.75,
+        -9.9
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          36.401,
+          0,
+          -10.426
+        ],
+        "theta": -0.07925,
+        "center": [
+          1.883,
+          3.9,
+          0.24
+        ],
+        "size": [
+          0.22,
+          7.7,
+          0.26
+        ]
+      }
+    },
+    {
+      "name": "N05-restaurant-a:stone-post-foot",
+      "module": "restaurant-a",
+      "min": [
+        38.065,
+        -0.01,
+        -10.232
+      ],
+      "max": [
+        38.453,
+        0.71,
+        -9.844
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          36.401,
+          0,
+          -10.426
+        ],
+        "theta": -0.07925,
+        "center": [
+          1.883,
+          0.35,
+          0.24
+        ],
+        "size": [
+          0.36,
+          0.72,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "N05-restaurant-a:facade-post",
+      "module": "restaurant-a",
+      "min": [
+        41.714,
+        0.05,
+        -9.892
+      ],
+      "max": [
+        41.954,
+        7.75,
+        -9.616
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          36.401,
+          0,
+          -10.426
+        ],
+        "theta": -0.07925,
+        "center": [
+          5.47,
+          3.9,
+          0.24
+        ],
+        "size": [
+          0.22,
+          7.7,
+          0.26
+        ]
+      }
+    },
+    {
+      "name": "N05-restaurant-a:stone-post-foot",
+      "module": "restaurant-a",
+      "min": [
+        41.641,
+        -0.01,
+        -9.948
+      ],
+      "max": [
+        42.028,
+        0.71,
+        -9.56
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          36.401,
+          0,
+          -10.426
+        ],
+        "theta": -0.07925,
+        "center": [
+          5.47,
+          0.35,
+          0.24
+        ],
+        "size": [
+          0.36,
+          0.72,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "N05-restaurant-a:threshold",
+      "module": "restaurant-a",
+      "min": [
+        30.917,
+        0,
+        -10.763
+      ],
+      "max": [
+        41.826,
+        0.24,
+        -9.352
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          36.401,
+          0,
+          -10.426
+        ],
+        "theta": -0.07925,
+        "center": [
+          0,
+          0.12,
+          0.37
+        ],
+        "size": [
+          10.9,
+          0.24,
+          0.55
+        ]
+      }
+    },
+    {
+      "name": "N05-restaurant-a:restaurant-counter",
+      "module": "restaurant-a",
+      "min": [
+        38.844,
+        0.05,
+        -13.527
+      ],
+      "max": [
+        40.139,
+        2.05,
+        -10.948
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          36.401,
+          0,
+          -10.426
+        ],
+        "theta": -0.07925,
+        "center": [
+          2.938,
+          1.05,
+          -2.05
+        ],
+        "size": [
+          1.1,
+          2,
+          2.5
+        ]
+      }
+    },
+    {
+      "name": "N06-curio-a:left-side",
+      "module": "curio-a",
+      "min": [
+        44.001,
+        0,
+        -14.794
+      ],
+      "max": [
+        45.146,
+        6.6,
+        -9.62
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          47.077,
+          0,
+          -9.267
+        ],
+        "theta": -0.16793,
+        "center": [
+          -2.96,
+          3.3,
+          -2.48
+        ],
+        "size": [
+          0.28,
+          6.6,
+          5.2
+        ]
+      }
+    },
+    {
+      "name": "N06-curio-a:right-side",
+      "module": "curio-a",
+      "min": [
+        49.838,
+        0,
+        -13.804
+      ],
+      "max": [
+        50.983,
+        6.6,
+        -8.63
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          47.077,
+          0,
+          -9.267
+        ],
+        "theta": -0.16793,
+        "center": [
+          2.96,
+          3.3,
+          -2.48
+        ],
+        "size": [
+          0.28,
+          6.6,
+          5.2
+        ]
+      }
+    },
+    {
+      "name": "N06-curio-a:back-wall",
+      "module": "curio-a",
+      "min": [
+        45.095,
+        0,
+        -14.748
+      ],
+      "max": [
+        50.712,
+        6.6,
+        -13.527
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          47.077,
+          0,
+          -9.267
+        ],
+        "theta": -0.16793,
+        "center": [
+          0,
+          3.3,
+          -4.94
+        ],
+        "size": [
+          5.65,
+          6.6,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "N06-curio-a:shop-floor",
+      "module": "curio-a",
+      "min": [
+        44.001,
+        0,
+        -14.794
+      ],
+      "max": [
+        50.983,
+        0.14,
+        -8.63
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          47.077,
+          0,
+          -9.267
+        ],
+        "theta": -0.16793,
+        "center": [
+          0,
+          0.07,
+          -2.48
+        ],
+        "size": [
+          6.2,
+          0.14,
+          5.2
+        ]
+      }
+    },
+    {
+      "name": "N06-curio-a:upper-floor",
+      "module": "curio-a",
+      "min": [
+        44.323,
+        3.49,
+        -14.476
+      ],
+      "max": [
+        50.661,
+        3.71,
+        -8.948
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          47.077,
+          0,
+          -9.267
+        ],
+        "theta": -0.16793,
+        "center": [
+          0,
+          3.6,
+          -2.48
+        ],
+        "size": [
+          5.64,
+          0.22,
+          4.65
+        ]
+      }
+    },
+    {
+      "name": "N06-curio-a:rear-interior",
+      "module": "curio-a",
+      "min": [
+        44.799,
+        0.075,
+        -13.076
+      ],
+      "max": [
+        50.452,
+        3.225,
+        -11.926
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          47.077,
+          0,
+          -9.267
+        ],
+        "theta": -0.16793,
+        "center": [
+          0,
+          1.65,
+          -3.28
+        ],
+        "size": [
+          5.7,
+          3.15,
+          0.2
+        ]
+      }
+    },
+    {
+      "name": "N06-curio-a:porch-platform",
+      "module": "curio-a",
+      "min": [
+        44.031,
+        0.05,
+        -9.633
+      ],
+      "max": [
+        49.917,
+        0.27,
+        -7.678
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          47.077,
+          0,
+          -9.267
+        ],
+        "theta": -0.16793,
+        "center": [
+          0,
+          0.16,
+          0.62
+        ],
+        "size": [
+          5.8,
+          0.22,
+          1
+        ]
+      }
+    },
+    {
+      "name": "N06-curio-a:shop-door",
+      "module": "curio-a",
+      "min": [
+        48.761,
+        0,
+        -8.964
+      ],
+      "max": [
+        49.811,
+        2.1,
+        -8.7
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          47.077,
+          0,
+          -9.267
+        ],
+        "theta": -0.16793,
+        "center": [
+          2.25,
+          1.05,
+          0.06
+        ],
+        "size": [
+          1.05,
+          2.1,
+          0.09
+        ]
+      }
+    },
+    {
+      "name": "N06-curio-a:facade-post",
+      "module": "curio-a",
+      "min": [
+        44.04,
+        0.1,
+        -9.694
+      ],
+      "max": [
+        44.254,
+        7.1,
+        -9.447
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          47.077,
+          0,
+          -9.267
+        ],
+        "theta": -0.16793,
+        "center": [
+          -2.94,
+          3.6,
+          0.19
+        ],
+        "size": [
+          0.18,
+          7,
+          0.22
+        ]
+      }
+    },
+    {
+      "name": "N06-curio-a:facade-post",
+      "module": "curio-a",
+      "min": [
+        49.837,
+        0.1,
+        -8.712
+      ],
+      "max": [
+        50.051,
+        7.1,
+        -8.465
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          47.077,
+          0,
+          -9.267
+        ],
+        "theta": -0.16793,
+        "center": [
+          2.94,
+          3.6,
+          0.19
+        ],
+        "size": [
+          0.18,
+          7,
+          0.22
+        ]
+      }
+    },
+    {
+      "name": "N06-curio-a:counter-cabinet",
+      "module": "curio-a",
+      "min": [
+        44.769,
+        0.05,
+        -11.399
+      ],
+      "max": [
+        48.796,
+        1.95,
+        -10.237
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          47.077,
+          0,
+          -9.267
+        ],
+        "theta": -0.16793,
+        "center": [
+          -0.55,
+          1,
+          -1.48
+        ],
+        "size": [
+          4,
+          1.9,
+          0.5
+        ]
+      }
+    },
+    {
+      "name": "N07-cat_corner:mural-front-wall",
+      "module": "cat_corner",
+      "min": [
+        50.124,
+        0,
+        -9.031
+      ],
+      "max": [
+        56.951,
+        6.5,
+        -6.163
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          53.484,
+          0,
+          -7.457
+        ],
+        "theta": -0.36775,
+        "center": [
+          0,
+          3.25,
+          -0.15
+        ],
+        "size": [
+          7.2,
+          6.5,
+          0.3
+        ]
+      }
+    },
+    {
+      "name": "N07-cat_corner:mural-side-left",
+      "module": "cat_corner",
+      "min": [
+        50.124,
+        0,
+        -14.164
+      ],
+      "max": [
+        52.49,
+        6.5,
+        -8.643
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          53.484,
+          0,
+          -7.457
+        ],
+        "theta": -0.36775,
+        "center": [
+          -3.45,
+          3.25,
+          -2.9
+        ],
+        "size": [
+          0.3,
+          6.5,
+          5.8
+        ]
+      }
+    },
+    {
+      "name": "N07-cat_corner:mural-side-right",
+      "module": "cat_corner",
+      "min": [
+        56.563,
+        0,
+        -11.683
+      ],
+      "max": [
+        58.928,
+        6.5,
+        -6.163
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          53.484,
+          0,
+          -7.457
+        ],
+        "theta": -0.36775,
+        "center": [
+          3.45,
+          3.25,
+          -2.9
+        ],
+        "size": [
+          0.3,
+          6.5,
+          5.8
+        ]
+      }
+    },
+    {
+      "name": "N07-cat_corner:mural-back-wall",
+      "module": "cat_corner",
+      "min": [
+        52.102,
+        0,
+        -14.164
+      ],
+      "max": [
+        58.928,
+        6.5,
+        -11.295
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          53.484,
+          0,
+          -7.457
+        ],
+        "theta": -0.36775,
+        "center": [
+          0,
+          3.25,
+          -5.65
+        ],
+        "size": [
+          7.2,
+          6.5,
+          0.3
+        ]
+      }
+    },
+    {
+      "name": "N08-plain-v2:left-side",
+      "module": "plain-v2",
+      "min": [
+        56.84,
+        0,
+        -11.801
+      ],
+      "max": [
+        60.117,
+        6.8,
+        -6.031
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          61.553,
+          0,
+          -3.631
+        ],
+        "theta": -0.4932,
+        "center": [
+          -5.21,
+          3.4,
+          -3.2
+        ],
+        "size": [
+          0.28,
+          6.8,
+          6.4
+        ]
+      }
+    },
+    {
+      "name": "N08-plain-v2:right-side",
+      "module": "plain-v2",
+      "min": [
+        66.018,
+        0,
+        -6.868
+      ],
+      "max": [
+        69.295,
+        6.8,
+        -1.098
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          61.553,
+          0,
+          -3.631
+        ],
+        "theta": -0.4932,
+        "center": [
+          5.21,
+          3.4,
+          -3.2
+        ],
+        "size": [
+          0.28,
+          6.8,
+          6.4
+        ]
+      }
+    },
+    {
+      "name": "N08-plain-v2:back-wall",
+      "module": "plain-v2",
+      "min": [
+        59.98,
+        0,
+        -11.671
+      ],
+      "max": [
+        69.053,
+        6.8,
+        -6.619
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          61.553,
+          0,
+          -3.631
+        ],
+        "theta": -0.4932,
+        "center": [
+          0,
+          3.4,
+          -6.26
+        ],
+        "size": [
+          10.15,
+          6.8,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "N08-plain-v2:shop-floor",
+      "module": "plain-v2",
+      "min": [
+        56.84,
+        0,
+        -11.801
+      ],
+      "max": [
+        69.295,
+        0.14,
+        -1.098
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          61.553,
+          0,
+          -3.631
+        ],
+        "theta": -0.4932,
+        "center": [
+          0,
+          0.07,
+          -3.2
+        ],
+        "size": [
+          10.7,
+          0.14,
+          6.4
+        ]
+      }
+    },
+    {
+      "name": "N08-plain-v2:upper-floor",
+      "module": "plain-v2",
+      "min": [
+        57.217,
+        3.44,
+        -11.426
+      ],
+      "max": [
+        68.918,
+        3.66,
+        -1.473
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          61.553,
+          0,
+          -3.631
+        ],
+        "theta": -0.4932,
+        "center": [
+          0,
+          3.55,
+          -3.2
+        ],
+        "size": [
+          10.14,
+          0.22,
+          5.85
+        ]
+      }
+    },
+    {
+      "name": "N08-plain-v2:rear-interior",
+      "module": "plain-v2",
+      "min": [
+        58.67,
+        0.07,
+        -9.216
+      ],
+      "max": [
+        67.749,
+        3.17,
+        -4.211
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          61.553,
+          0,
+          -3.631
+        ],
+        "theta": -0.4932,
+        "center": [
+          0,
+          1.62,
+          -3.5
+        ],
+        "size": [
+          10.2,
+          3.1,
+          0.2
+        ]
+      }
+    },
+    {
+      "name": "N08-plain-v2:front-brick-plinth",
+      "module": "plain-v2",
+      "min": [
+        56.911,
+        0,
+        -6.19
+      ],
+      "max": [
+        66.185,
+        0.6,
+        -1.054
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          61.553,
+          0,
+          -3.631
+        ],
+        "theta": -0.4932,
+        "center": [
+          0,
+          0.3,
+          0.01
+        ],
+        "size": [
+          10.4,
+          0.6,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "N08-plain-v2:shop-door",
+      "module": "plain-v2",
+      "min": [
+        58.997,
+        0,
+        -5.089
+      ],
+      "max": [
+        60.009,
+        2.1,
+        -4.489
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          61.553,
+          0,
+          -3.631
+        ],
+        "theta": -0.4932,
+        "center": [
+          -2.354,
+          1.05,
+          -0.05
+        ],
+        "size": [
+          1.1,
+          2.1,
+          0.09
+        ]
+      }
+    },
+    {
+      "name": "N08-plain-v2:counter-sill",
+      "module": "plain-v2",
+      "min": [
+        60.806,
+        0.7,
+        -4.124
+      ],
+      "max": [
+        65.711,
+        1.2,
+        -1.349
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          61.553,
+          0,
+          -3.631
+        ],
+        "theta": -0.4932,
+        "center": [
+          1.926,
+          0.95,
+          -0.02
+        ],
+        "size": [
+          5.45,
+          0.5,
+          0.22
+        ]
+      }
+    },
+    {
+      "name": "N08-plain-v2:facade-post",
+      "module": "plain-v2",
+      "min": [
+        56.834,
+        0.05,
+        -6.152
+      ],
+      "max": [
+        57.123,
+        6.95,
+        -5.845
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          61.553,
+          0,
+          -3.631
+        ],
+        "theta": -0.4932,
+        "center": [
+          -5.15,
+          3.5,
+          0.08
+        ],
+        "size": [
+          0.2,
+          6.9,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "N08-plain-v2:facade-post",
+      "module": "plain-v2",
+      "min": [
+        65.906,
+        0.05,
+        -1.275
+      ],
+      "max": [
+        66.196,
+        6.95,
+        -0.969
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          61.553,
+          0,
+          -3.631
+        ],
+        "theta": -0.4932,
+        "center": [
+          5.15,
+          3.5,
+          0.08
+        ],
+        "size": [
+          0.2,
+          6.9,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "N09-curio-b:left-side",
+      "module": "curio-b",
+      "min": [
+        66.213,
+        0,
+        -5.484
+      ],
+      "max": [
+        69.069,
+        6.6,
+        -0.849
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          68.953,
+          0,
+          0.465
+        ],
+        "theta": -0.52685,
+        "center": [
+          -2.96,
+          3.3,
+          -2.48
+        ],
+        "size": [
+          0.28,
+          6.6,
+          5.2
+        ]
+      }
+    },
+    {
+      "name": "N09-curio-b:right-side",
+      "module": "curio-b",
+      "min": [
+        71.33,
+        0,
+        -2.508
+      ],
+      "max": [
+        74.186,
+        6.6,
+        2.128
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          68.953,
+          0,
+          0.465
+        ],
+        "theta": -0.52685,
+        "center": [
+          2.96,
+          3.3,
+          -2.48
+        ],
+        "size": [
+          0.28,
+          6.6,
+          5.2
+        ]
+      }
+    },
+    {
+      "name": "N09-curio-b:back-wall",
+      "module": "curio-b",
+      "min": [
+        68.924,
+        0,
+        -5.346
+      ],
+      "max": [
+        73.949,
+        6.6,
+        -2.263
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          68.953,
+          0,
+          0.465
+        ],
+        "theta": -0.52685,
+        "center": [
+          0,
+          3.3,
+          -4.94
+        ],
+        "size": [
+          5.65,
+          6.6,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "N09-curio-b:shop-floor",
+      "module": "curio-b",
+      "min": [
+        66.213,
+        0,
+        -5.484
+      ],
+      "max": [
+        74.186,
+        0.14,
+        2.128
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          68.953,
+          0,
+          0.465
+        ],
+        "theta": -0.52685,
+        "center": [
+          0,
+          0.07,
+          -2.48
+        ],
+        "size": [
+          6.2,
+          0.14,
+          5.2
+        ]
+      }
+    },
+    {
+      "name": "N09-curio-b:upper-floor",
+      "module": "curio-b",
+      "min": [
+        66.593,
+        3.49,
+        -5.106
+      ],
+      "max": [
+        73.806,
+        3.71,
+        1.749
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          68.953,
+          0,
+          0.465
+        ],
+        "theta": -0.52685,
+        "center": [
+          0,
+          3.6,
+          -2.48
+        ],
+        "size": [
+          5.64,
+          0.22,
+          4.65
+        ]
+      }
+    },
+    {
+      "name": "N09-curio-b:rear-interior",
+      "module": "curio-b",
+      "min": [
+        68.088,
+        0.075,
+        -3.889
+      ],
+      "max": [
+        73.116,
+        3.225,
+        -0.85
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          68.953,
+          0,
+          0.465
+        ],
+        "theta": -0.52685,
+        "center": [
+          0,
+          1.65,
+          -3.28
+        ],
+        "size": [
+          5.7,
+          3.15,
+          0.2
+        ]
+      }
+    },
+    {
+      "name": "N09-curio-b:porch-platform",
+      "module": "curio-b",
+      "min": [
+        65.883,
+        0.05,
+        -0.889
+      ],
+      "max": [
+        71.399,
+        0.27,
+        2.892
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          68.953,
+          0,
+          0.465
+        ],
+        "theta": -0.52685,
+        "center": [
+          0,
+          0.16,
+          0.62
+        ],
+        "size": [
+          5.8,
+          0.22,
+          1
+        ]
+      }
+    },
+    {
+      "name": "N09-curio-b:shop-door",
+      "module": "curio-b",
+      "min": [
+        70.391,
+        0,
+        1.346
+      ],
+      "max": [
+        71.344,
+        2.1,
+        1.952
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          68.953,
+          0,
+          0.465
+        ],
+        "theta": -0.52685,
+        "center": [
+          2.25,
+          1.05,
+          0.06
+        ],
+        "size": [
+          1.05,
+          2.1,
+          0.09
+        ]
+      }
+    },
+    {
+      "name": "N09-curio-b:facade-post",
+      "module": "curio-b",
+      "min": [
+        66.183,
+        0.1,
+        -0.989
+      ],
+      "max": [
+        66.449,
+        7.1,
+        -0.708
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          68.953,
+          0,
+          0.465
+        ],
+        "theta": -0.52685,
+        "center": [
+          -2.94,
+          3.6,
+          0.19
+        ],
+        "size": [
+          0.18,
+          7,
+          0.22
+        ]
+      }
+    },
+    {
+      "name": "N09-curio-b:facade-post",
+      "module": "curio-b",
+      "min": [
+        71.265,
+        0.1,
+        1.968
+      ],
+      "max": [
+        71.531,
+        7.1,
+        2.248
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          68.953,
+          0,
+          0.465
+        ],
+        "theta": -0.52685,
+        "center": [
+          2.94,
+          3.6,
+          0.19
+        ],
+        "size": [
+          0.18,
+          7,
+          0.22
+        ]
+      }
+    },
+    {
+      "name": "N10-plain-v3:left-side",
+      "module": "plain-v3",
+      "min": [
+        71.642,
+        0,
+        -3.449
+      ],
+      "max": [
+        75.189,
+        6.8,
+        2.175
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          76.223,
+          0,
+          4.795
+        ],
+        "theta": -0.54305,
+        "center": [
+          -5.21,
+          3.4,
+          -3.2
+        ],
+        "size": [
+          0.28,
+          6.8,
+          6.4
+        ]
+      }
+    },
+    {
+      "name": "N10-plain-v3:right-side",
+      "module": "plain-v3",
+      "min": [
+        80.563,
+        0,
+        1.935
+      ],
+      "max": [
+        84.11,
+        6.8,
+        7.559
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          76.223,
+          0,
+          4.795
+        ],
+        "theta": -0.54305,
+        "center": [
+          5.21,
+          3.4,
+          -3.2
+        ],
+        "size": [
+          0.28,
+          6.8,
+          6.4
+        ]
+      }
+    },
+    {
+      "name": "N10-plain-v3:back-wall",
+      "module": "plain-v3",
+      "min": [
+        75.04,
+        0,
+        -3.307
+      ],
+      "max": [
+        83.875,
+        6.8,
+        2.178
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          76.223,
+          0,
+          4.795
+        ],
+        "theta": -0.54305,
+        "center": [
+          0,
+          3.4,
+          -6.26
+        ],
+        "size": [
+          10.15,
+          6.8,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "N10-plain-v3:shop-floor",
+      "module": "plain-v3",
+      "min": [
+        71.642,
+        0,
+        -3.449
+      ],
+      "max": [
+        84.11,
+        0.14,
+        7.559
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          76.223,
+          0,
+          4.795
+        ],
+        "theta": -0.54305,
+        "center": [
+          0,
+          0.07,
+          -3.2
+        ],
+        "size": [
+          10.7,
+          0.14,
+          6.4
+        ]
+      }
+    },
+    {
+      "name": "N10-plain-v3:upper-floor",
+      "module": "plain-v3",
+      "min": [
+        72.024,
+        3.44,
+        -3.069
+      ],
+      "max": [
+        83.728,
+        3.66,
+        7.179
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          76.223,
+          0,
+          4.795
+        ],
+        "theta": -0.54305,
+        "center": [
+          0,
+          3.55,
+          -3.2
+        ],
+        "size": [
+          10.14,
+          0.22,
+          5.85
+        ]
+      }
+    },
+    {
+      "name": "N10-plain-v3:rear-interior",
+      "module": "plain-v3",
+      "min": [
+        73.613,
+        0.07,
+        -0.923
+      ],
+      "max": [
+        82.449,
+        3.17,
+        4.519
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          76.223,
+          0,
+          4.795
+        ],
+        "theta": -0.54305,
+        "center": [
+          0,
+          1.62,
+          -3.5
+        ],
+        "size": [
+          10.2,
+          3.1,
+          0.2
+        ]
+      }
+    },
+    {
+      "name": "N10-plain-v3:front-brick-plinth",
+      "module": "plain-v3",
+      "min": [
+        71.704,
+        0,
+        2.014
+      ],
+      "max": [
+        80.732,
+        0.6,
+        7.593
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          76.223,
+          0,
+          4.795
+        ],
+        "theta": -0.54305,
+        "center": [
+          0,
+          0.3,
+          0.01
+        ],
+        "size": [
+          10.4,
+          0.6,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "N10-plain-v3:shop-door",
+      "module": "plain-v3",
+      "min": [
+        73.739,
+        0,
+        3.213
+      ],
+      "max": [
+        74.727,
+        2.1,
+        3.858
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          76.223,
+          0,
+          4.795
+        ],
+        "theta": -0.54305,
+        "center": [
+          -2.354,
+          1.05,
+          -0.05
+        ],
+        "size": [
+          1.1,
+          2.1,
+          0.09
+        ]
+      }
+    },
+    {
+      "name": "N10-plain-v3:counter-sill",
+      "module": "plain-v3",
+      "min": [
+        75.492,
+        0.7,
+        4.271
+      ],
+      "max": [
+        80.272,
+        1.2,
+        7.275
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          76.223,
+          0,
+          4.795
+        ],
+        "theta": -0.54305,
+        "center": [
+          1.926,
+          0.95,
+          -0.02
+        ],
+        "size": [
+          5.45,
+          0.5,
+          0.22
+        ]
+      }
+    },
+    {
+      "name": "N10-plain-v3:facade-post",
+      "module": "plain-v3",
+      "min": [
+        71.625,
+        0.05,
+        2.048
+      ],
+      "max": [
+        71.92,
+        6.95,
+        2.356
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          76.223,
+          0,
+          4.795
+        ],
+        "theta": -0.54305,
+        "center": [
+          -5.15,
+          3.5,
+          0.08
+        ],
+        "size": [
+          0.2,
+          6.9,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "N10-plain-v3:facade-post",
+      "module": "plain-v3",
+      "min": [
+        80.443,
+        0.05,
+        7.37
+      ],
+      "max": [
+        80.738,
+        6.95,
+        7.679
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          76.223,
+          0,
+          4.795
+        ],
+        "theta": -0.54305,
+        "center": [
+          5.15,
+          3.5,
+          0.08
+        ],
+        "size": [
+          0.2,
+          6.9,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:left-side",
+      "module": "corner",
+      "min": [
+        10.825,
+        0,
+        2.077
+      ],
+      "max": [
+        13.369,
+        7.4,
+        8.996
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          -4.91,
+          3.7,
+          -3.48
+        ],
+        "size": [
+          0.28,
+          7.4,
+          7.2
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:branch-parapet-wall",
+      "module": "corner",
+      "min": [
+        12.991,
+        0,
+        8.444
+      ],
+      "max": [
+        13.407,
+        7.4,
+        8.983
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          -4.95,
+          3.7,
+          -6.843
+        ],
+        "size": [
+          0.28,
+          7.4,
+          0.475
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:branch-parapet-wall",
+      "module": "corner",
+      "min": [
+        10.863,
+        0,
+        2.065
+      ],
+      "max": [
+        12.924,
+        7.4,
+        7.537
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          -4.95,
+          3.7,
+          -2.717
+        ],
+        "size": [
+          0.28,
+          7.4,
+          5.675
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:branch-parapet-wall-head",
+      "module": "corner",
+      "min": [
+        12.658,
+        2.26,
+        7.448
+      ],
+      "max": [
+        13.256,
+        7.4,
+        8.533
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          -4.95,
+          4.83,
+          -6.08
+        ],
+        "size": [
+          0.28,
+          5.14,
+          1.05
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:back-wall",
+      "module": "corner",
+      "min": [
+        3.96,
+        0,
+        8.729
+      ],
+      "max": [
+        13.108,
+        7.4,
+        12.016
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          0,
+          3.7,
+          -6.94
+        ],
+        "size": [
+          9.55,
+          7.4,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:shop-floor",
+      "module": "corner",
+      "min": [
+        1.519,
+        0,
+        2.081
+      ],
+      "max": [
+        13.359,
+        0.14,
+        12.1
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          0,
+          0.07,
+          -3.48
+        ],
+        "size": [
+          10.08,
+          0.14,
+          7.2
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:upper-floor",
+      "module": "corner",
+      "min": [
+        1.862,
+        3.59,
+        2.427
+      ],
+      "max": [
+        13.016,
+        3.81,
+        11.754
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          0,
+          3.7,
+          -3.48
+        ],
+        "size": [
+          9.54,
+          0.22,
+          6.65
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:rear-interior",
+      "module": "corner",
+      "min": [
+        2.949,
+        0.075,
+        5.761
+      ],
+      "max": [
+        12.119,
+        3.325,
+        8.988
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          0,
+          1.7,
+          -3.78
+        ],
+        "size": [
+          9.6,
+          3.25,
+          0.2
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:corner-pier",
+      "module": "corner",
+      "min": [
+        10.515,
+        0.1,
+        1.742
+      ],
+      "max": [
+        11.034,
+        7.6,
+        2.286
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          -4.77,
+          3.85,
+          0.28
+        ],
+        "size": [
+          0.4,
+          7.5,
+          0.44
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:corner-pier-foot",
+      "module": "corner",
+      "min": [
+        10.439,
+        0,
+        1.666
+      ],
+      "max": [
+        11.11,
+        0.76,
+        2.362
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          -4.77,
+          0.38,
+          0.28
+        ],
+        "size": [
+          0.52,
+          0.76,
+          0.56
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:facade-post",
+      "module": "corner",
+      "min": [
+        1.519,
+        0.1,
+        4.985
+      ],
+      "max": [
+        1.785,
+        7.5,
+        5.276
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          4.87,
+          3.8,
+          0.21
+        ],
+        "size": [
+          0.2,
+          7.4,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:stone-post-foot",
+      "module": "corner",
+      "min": [
+        1.437,
+        0,
+        4.916
+      ],
+      "max": [
+        1.867,
+        0.7,
+        5.346
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          4.87,
+          0.35,
+          0.21
+        ],
+        "size": [
+          0.34,
+          0.7,
+          0.34
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:facade-post",
+      "module": "corner",
+      "min": [
+        7.863,
+        0.1,
+        2.869
+      ],
+      "max": [
+        8.129,
+        7.5,
+        3.16
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          -1.818,
+          3.8,
+          0.21
+        ],
+        "size": [
+          0.2,
+          7.4,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:stone-post-foot",
+      "module": "corner",
+      "min": [
+        7.781,
+        0,
+        2.8
+      ],
+      "max": [
+        8.211,
+        0.7,
+        3.23
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          -1.818,
+          0.35,
+          0.21
+        ],
+        "size": [
+          0.34,
+          0.7,
+          0.34
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:facade-post",
+      "module": "corner",
+      "min": [
+        6.33,
+        0.1,
+        3.38
+      ],
+      "max": [
+        6.596,
+        7.5,
+        3.671
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          -0.202,
+          3.8,
+          0.21
+        ],
+        "size": [
+          0.2,
+          7.4,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:stone-post-foot",
+      "module": "corner",
+      "min": [
+        6.248,
+        0,
+        3.311
+      ],
+      "max": [
+        6.678,
+        0.7,
+        3.741
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          -0.202,
+          0.35,
+          0.21
+        ],
+        "size": [
+          0.34,
+          0.7,
+          0.34
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:threshold",
+      "module": "corner",
+      "min": [
+        1.59,
+        0,
+        1.687
+      ],
+      "max": [
+        10.871,
+        0.24,
+        5.246
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          0,
+          0.12,
+          0.34
+        ],
+        "size": [
+          9.6,
+          0.24,
+          0.55
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:shop-door",
+      "module": "corner",
+      "min": [
+        7.292,
+        0,
+        2.996
+      ],
+      "max": [
+        8.412,
+        2.1,
+        3.445
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          -1.616,
+          1.05,
+          0.06
+        ],
+        "size": [
+          1.15,
+          2.1,
+          0.09
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:counter-cabinet",
+      "module": "corner",
+      "min": [
+        7.142,
+        0.05,
+        3.581
+      ],
+      "max": [
+        11.324,
+        1.95,
+        5.397
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          -2.525,
+          1,
+          -1.58
+        ],
+        "size": [
+          4.242,
+          1.9,
+          0.5
+        ]
+      }
+    },
+    {
+      "name": "S01-corner:branch-door",
+      "module": "corner",
+      "min": [
+        12.984,
+        0.12,
+        7.54
+      ],
+      "max": [
+        13.31,
+        2.08,
+        8.315
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          6.338,
+          0,
+          3.789
+        ],
+        "theta": -2.81966,
+        "center": [
+          -5.15,
+          1.1,
+          -6.08
+        ],
+        "size": [
+          0.08,
+          1.96,
+          0.79
+        ]
+      }
+    },
+    {
+      "name": "S02-photo_shop:frontage-stone-pad",
+      "module": "photo_shop",
+      "min": [
+        26.425,
+        -0.1,
+        -1.067
+      ],
+      "max": [
+        33.682,
+        0.02,
+        0.631
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          30.012,
+          0,
+          0.641
+        ],
+        "theta": 3.09299,
+        "center": [
+          0,
+          -0.04,
+          0.86
+        ],
+        "size": [
+          7.2,
+          0.12,
+          1.35
+        ]
+      }
+    },
+    {
+      "name": "S02-photo_shop:frontage-threshold",
+      "module": "photo_shop",
+      "min": [
+        27.099,
+        -0.03,
+        0.139
+      ],
+      "max": [
+        32.951,
+        0.19,
+        0.603
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          30.012,
+          0,
+          0.641
+        ],
+        "theta": 3.09299,
+        "center": [
+          0,
+          0.08,
+          0.27
+        ],
+        "size": [
+          5.85,
+          0.22,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "S02-photo_shop:left-side-wall",
+      "module": "photo_shop",
+      "min": [
+        32.32,
+        0,
+        0.763
+      ],
+      "max": [
+        32.809,
+        6.4,
+        5.072
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          30.012,
+          0,
+          0.641
+        ],
+        "theta": 3.09299,
+        "center": [
+          -2.66,
+          3.2,
+          -2.15
+        ],
+        "size": [
+          0.28,
+          6.4,
+          4.3
+        ]
+      }
+    },
+    {
+      "name": "S02-photo_shop:right-side-wall",
+      "module": "photo_shop",
+      "min": [
+        27.006,
+        0,
+        0.505
+      ],
+      "max": [
+        27.495,
+        6.4,
+        4.813
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          30.012,
+          0,
+          0.641
+        ],
+        "theta": 3.09299,
+        "center": [
+          2.66,
+          3.2,
+          -2.15
+        ],
+        "size": [
+          0.28,
+          6.4,
+          4.3
+        ]
+      }
+    },
+    {
+      "name": "S02-photo_shop:rear-wall",
+      "module": "photo_shop",
+      "min": [
+        27.286,
+        0,
+        4.534
+      ],
+      "max": [
+        32.334,
+        6.4,
+        5.058
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          30.012,
+          0,
+          0.641
+        ],
+        "theta": 3.09299,
+        "center": [
+          0,
+          3.2,
+          -4.16
+        ],
+        "size": [
+          5.04,
+          6.4,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "S02-photo_shop:ground-floor",
+      "module": "photo_shop",
+      "min": [
+        27.006,
+        0,
+        0.505
+      ],
+      "max": [
+        32.809,
+        0.16,
+        5.072
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          30.012,
+          0,
+          0.641
+        ],
+        "theta": 3.09299,
+        "center": [
+          0,
+          0.08,
+          -2.15
+        ],
+        "size": [
+          5.6,
+          0.16,
+          4.3
+        ]
+      }
+    },
+    {
+      "name": "S02-photo_shop:upper-floor-slab",
+      "module": "photo_shop",
+      "min": [
+        27.257,
+        3.12,
+        0.736
+      ],
+      "max": [
+        32.558,
+        3.32,
+        4.84
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          30.012,
+          0,
+          0.641
+        ],
+        "theta": 3.09299,
+        "center": [
+          0,
+          3.22,
+          -2.15
+        ],
+        "size": [
+          5.12,
+          0.2,
+          3.86
+        ]
+      }
+    },
+    {
+      "name": "S02-photo_shop:front-post",
+      "module": "photo_shop",
+      "min": [
+        32.549,
+        0.42,
+        0.509
+      ],
+      "max": [
+        32.741,
+        6.12,
+        0.768
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          30.012,
+          0,
+          0.641
+        ],
+        "theta": 3.09299,
+        "center": [
+          -2.63,
+          3.27,
+          0.13
+        ],
+        "size": [
+          0.18,
+          5.7,
+          0.25
+        ]
+      }
+    },
+    {
+      "name": "S02-photo_shop:stone-post-foot",
+      "module": "photo_shop",
+      "min": [
+        32.477,
+        0.08,
+        0.461
+      ],
+      "max": [
+        32.813,
+        0.76,
+        0.816
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          30.012,
+          0,
+          0.641
+        ],
+        "theta": 3.09299,
+        "center": [
+          -2.63,
+          0.42,
+          0.13
+        ],
+        "size": [
+          0.32,
+          0.68,
+          0.34
+        ]
+      }
+    },
+    {
+      "name": "S02-photo_shop:front-post",
+      "module": "photo_shop",
+      "min": [
+        29.872,
+        0.42,
+        0.379
+      ],
+      "max": [
+        30.064,
+        6.12,
+        0.638
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          30.012,
+          0,
+          0.641
+        ],
+        "theta": 3.09299,
+        "center": [
+          0.05,
+          3.27,
+          0.13
+        ],
+        "size": [
+          0.18,
+          5.7,
+          0.25
+        ]
+      }
+    },
+    {
+      "name": "S02-photo_shop:stone-post-foot",
+      "module": "photo_shop",
+      "min": [
+        29.8,
+        0.08,
+        0.331
+      ],
+      "max": [
+        30.136,
+        0.76,
+        0.686
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          30.012,
+          0,
+          0.641
+        ],
+        "theta": 3.09299,
+        "center": [
+          0.05,
+          0.42,
+          0.13
+        ],
+        "size": [
+          0.32,
+          0.68,
+          0.34
+        ]
+      }
+    },
+    {
+      "name": "S02-photo_shop:front-post",
+      "module": "photo_shop",
+      "min": [
+        27.295,
+        0.42,
+        0.254
+      ],
+      "max": [
+        27.487,
+        6.12,
+        0.512
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          30.012,
+          0,
+          0.641
+        ],
+        "theta": 3.09299,
+        "center": [
+          2.63,
+          3.27,
+          0.13
+        ],
+        "size": [
+          0.18,
+          5.7,
+          0.25
+        ]
+      }
+    },
+    {
+      "name": "S02-photo_shop:stone-post-foot",
+      "module": "photo_shop",
+      "min": [
+        27.223,
+        0.08,
+        0.206
+      ],
+      "max": [
+        27.559,
+        0.76,
+        0.561
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          30.012,
+          0,
+          0.641
+        ],
+        "theta": 3.09299,
+        "center": [
+          2.63,
+          0.42,
+          0.13
+        ],
+        "size": [
+          0.32,
+          0.68,
+          0.34
+        ]
+      }
+    },
+    {
+      "name": "S02-photo_shop:photo-door-dark",
+      "module": "photo_shop",
+      "min": [
+        31.149,
+        0.155,
+        0.616
+      ],
+      "max": [
+        32.273,
+        2.805,
+        0.791
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          30.012,
+          0,
+          0.641
+        ],
+        "theta": 3.09299,
+        "center": [
+          -1.7,
+          1.48,
+          0.02
+        ],
+        "size": [
+          1.12,
+          2.65,
+          0.12
+        ]
+      }
+    },
+    {
+      "name": "S03-plain-v2:left-side",
+      "module": "plain-v2",
+      "min": [
+        42.386,
+        0,
+        1.366
+      ],
+      "max": [
+        43.219,
+        6.8,
+        7.766
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          37.889,
+          0,
+          0.926
+        ],
+        "theta": 3.05483,
+        "center": [
+          -5.21,
+          3.4,
+          -3.2
+        ],
+        "size": [
+          0.28,
+          6.8,
+          6.4
+        ]
+      }
+    },
+    {
+      "name": "S03-plain-v2:right-side",
+      "module": "plain-v2",
+      "min": [
+        32.005,
+        0,
+        0.463
+      ],
+      "max": [
+        32.838,
+        6.8,
+        6.863
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          37.889,
+          0,
+          0.926
+        ],
+        "theta": 3.05483,
+        "center": [
+          5.21,
+          3.4,
+          -3.2
+        ],
+        "size": [
+          0.28,
+          6.8,
+          6.4
+        ]
+      }
+    },
+    {
+      "name": "S03-plain-v2:back-wall",
+      "module": "plain-v2",
+      "min": [
+        32.279,
+        0,
+        6.583
+      ],
+      "max": [
+        42.415,
+        6.8,
+        7.742
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          37.889,
+          0,
+          0.926
+        ],
+        "theta": 3.05483,
+        "center": [
+          0,
+          3.4,
+          -6.26
+        ],
+        "size": [
+          10.15,
+          6.8,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "S03-plain-v2:shop-floor",
+      "module": "plain-v2",
+      "min": [
+        32.005,
+        0,
+        0.463
+      ],
+      "max": [
+        43.219,
+        0.14,
+        7.766
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          37.889,
+          0,
+          0.926
+        ],
+        "theta": 3.05483,
+        "center": [
+          0,
+          0.07,
+          -3.2
+        ],
+        "size": [
+          10.7,
+          0.14,
+          6.4
+        ]
+      }
+    },
+    {
+      "name": "S03-plain-v2:upper-floor",
+      "module": "plain-v2",
+      "min": [
+        32.308,
+        3.44,
+        0.761
+      ],
+      "max": [
+        42.916,
+        3.66,
+        7.468
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          37.889,
+          0,
+          0.926
+        ],
+        "theta": 3.05483,
+        "center": [
+          0,
+          3.55,
+          -3.2
+        ],
+        "size": [
+          10.14,
+          0.22,
+          5.85
+        ]
+      }
+    },
+    {
+      "name": "S03-plain-v2:rear-interior",
+      "module": "plain-v2",
+      "min": [
+        32.497,
+        0.07,
+        3.872
+      ],
+      "max": [
+        42.676,
+        3.17,
+        4.955
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          37.889,
+          0,
+          0.926
+        ],
+        "theta": 3.05483,
+        "center": [
+          0,
+          1.62,
+          -3.5
+        ],
+        "size": [
+          10.2,
+          3.1,
+          0.2
+        ]
+      }
+    },
+    {
+      "name": "S03-plain-v2:front-brick-plinth",
+      "module": "plain-v2",
+      "min": [
+        32.699,
+        0,
+        0.346
+      ],
+      "max": [
+        43.081,
+        0.6,
+        1.486
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          37.889,
+          0,
+          0.926
+        ],
+        "theta": 3.05483,
+        "center": [
+          0,
+          0.3,
+          0.01
+        ],
+        "size": [
+          10.4,
+          0.6,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "S03-plain-v2:shop-door",
+      "module": "plain-v2",
+      "min": [
+        39.678,
+        0,
+        1.088
+      ],
+      "max": [
+        40.782,
+        2.1,
+        1.273
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          37.889,
+          0,
+          0.926
+        ],
+        "theta": 3.05483,
+        "center": [
+          -2.354,
+          1.05,
+          -0.05
+        ],
+        "size": [
+          1.1,
+          2.1,
+          0.09
+        ]
+      }
+    },
+    {
+      "name": "S03-plain-v2:counter-sill",
+      "module": "plain-v2",
+      "min": [
+        33.245,
+        0.7,
+        0.434
+      ],
+      "max": [
+        38.693,
+        1.2,
+        1.125
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          37.889,
+          0,
+          0.926
+        ],
+        "theta": 3.05483,
+        "center": [
+          1.926,
+          0.95,
+          -0.02
+        ],
+        "size": [
+          5.45,
+          0.5,
+          0.22
+        ]
+      }
+    },
+    {
+      "name": "S03-plain-v2:facade-post",
+      "module": "plain-v2",
+      "min": [
+        42.917,
+        0.05,
+        1.165
+      ],
+      "max": [
+        43.137,
+        6.95,
+        1.421
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          37.889,
+          0,
+          0.926
+        ],
+        "theta": 3.05483,
+        "center": [
+          -5.15,
+          3.5,
+          0.08
+        ],
+        "size": [
+          0.2,
+          6.9,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "S03-plain-v2:facade-post",
+      "module": "plain-v2",
+      "min": [
+        32.656,
+        0.05,
+        0.272
+      ],
+      "max": [
+        32.876,
+        6.95,
+        0.529
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          37.889,
+          0,
+          0.926
+        ],
+        "theta": 3.05483,
+        "center": [
+          5.15,
+          3.5,
+          0.08
+        ],
+        "size": [
+          0.2,
+          6.9,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "S04-restaurant-b:left-side",
+      "module": "restaurant-b",
+      "min": [
+        50.393,
+        0,
+        3.515
+      ],
+      "max": [
+        52.395,
+        7.9,
+        10.367
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          46.884,
+          0,
+          2.332
+        ],
+        "theta": 2.89171,
+        "center": [
+          -5.51,
+          3.95,
+          -3.35
+        ],
+        "size": [
+          0.28,
+          7.9,
+          7
+        ]
+      }
+    },
+    {
+      "name": "S04-restaurant-b:right-side",
+      "module": "restaurant-b",
+      "min": [
+        39.715,
+        0,
+        0.79
+      ],
+      "max": [
+        41.718,
+        7.9,
+        7.642
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          46.884,
+          0,
+          2.332
+        ],
+        "theta": 2.89171,
+        "center": [
+          5.51,
+          3.95,
+          -3.35
+        ],
+        "size": [
+          0.28,
+          7.9,
+          7
+        ]
+      }
+    },
+    {
+      "name": "S04-restaurant-b:back-wall",
+      "module": "restaurant-b",
+      "min": [
+        39.982,
+        0,
+        7.369
+      ],
+      "max": [
+        50.467,
+        7.9,
+        10.299
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          46.884,
+          0,
+          2.332
+        ],
+        "theta": 2.89171,
+        "center": [
+          0,
+          3.95,
+          -6.71
+        ],
+        "size": [
+          10.75,
+          7.9,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "S04-restaurant-b:shop-floor",
+      "module": "restaurant-b",
+      "min": [
+        39.715,
+        0,
+        0.79
+      ],
+      "max": [
+        52.395,
+        0.14,
+        10.367
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          46.884,
+          0,
+          2.332
+        ],
+        "theta": 2.89171,
+        "center": [
+          0,
+          0.07,
+          -3.35
+        ],
+        "size": [
+          11.3,
+          0.14,
+          7
+        ]
+      }
+    },
+    {
+      "name": "S04-restaurant-b:upper-floor",
+      "module": "restaurant-b",
+      "min": [
+        40.055,
+        3.64,
+        1.126
+      ],
+      "max": [
+        52.056,
+        3.86,
+        10.031
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          46.884,
+          0,
+          2.332
+        ],
+        "theta": 2.89171,
+        "center": [
+          0,
+          3.75,
+          -3.35
+        ],
+        "size": [
+          10.74,
+          0.22,
+          6.45
+        ]
+      }
+    },
+    {
+      "name": "S04-restaurant-b:rear-interior",
+      "module": "restaurant-b",
+      "min": [
+        40.724,
+        0.05,
+        4.437
+      ],
+      "max": [
+        51.238,
+        3.35,
+        7.301
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          46.884,
+          0,
+          2.332
+        ],
+        "theta": 2.89171,
+        "center": [
+          0,
+          1.7,
+          -3.65
+        ],
+        "size": [
+          10.8,
+          3.3,
+          0.2
+        ]
+      }
+    },
+    {
+      "name": "S04-restaurant-b:facade-post",
+      "module": "restaurant-b",
+      "min": [
+        52.104,
+        0.05,
+        3.299
+      ],
+      "max": [
+        52.382,
+        7.75,
+        3.606
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          46.884,
+          0,
+          2.332
+        ],
+        "theta": 2.89171,
+        "center": [
+          -5.47,
+          3.9,
+          0.24
+        ],
+        "size": [
+          0.22,
+          7.7,
+          0.26
+        ]
+      }
+    },
+    {
+      "name": "S04-restaurant-b:stone-post-foot",
+      "module": "restaurant-b",
+      "min": [
+        52.024,
+        -0.01,
+        3.234
+      ],
+      "max": [
+        52.462,
+        0.71,
+        3.671
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          46.884,
+          0,
+          2.332
+        ],
+        "theta": 2.89171,
+        "center": [
+          -5.47,
+          0.35,
+          0.24
+        ],
+        "size": [
+          0.36,
+          0.72,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "S04-restaurant-b:facade-post",
+      "module": "restaurant-b",
+      "min": [
+        48.629,
+        0.05,
+        2.412
+      ],
+      "max": [
+        48.907,
+        7.75,
+        2.719
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          46.884,
+          0,
+          2.332
+        ],
+        "theta": 2.89171,
+        "center": [
+          -1.883,
+          3.9,
+          0.24
+        ],
+        "size": [
+          0.22,
+          7.7,
+          0.26
+        ]
+      }
+    },
+    {
+      "name": "S04-restaurant-b:stone-post-foot",
+      "module": "restaurant-b",
+      "min": [
+        48.549,
+        -0.01,
+        2.347
+      ],
+      "max": [
+        48.987,
+        0.71,
+        2.785
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          46.884,
+          0,
+          2.332
+        ],
+        "theta": 2.89171,
+        "center": [
+          -1.883,
+          0.35,
+          0.24
+        ],
+        "size": [
+          0.36,
+          0.72,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "S04-restaurant-b:facade-post",
+      "module": "restaurant-b",
+      "min": [
+        44.979,
+        0.05,
+        1.481
+      ],
+      "max": [
+        45.257,
+        7.75,
+        1.787
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          46.884,
+          0,
+          2.332
+        ],
+        "theta": 2.89171,
+        "center": [
+          1.883,
+          3.9,
+          0.24
+        ],
+        "size": [
+          0.22,
+          7.7,
+          0.26
+        ]
+      }
+    },
+    {
+      "name": "S04-restaurant-b:stone-post-foot",
+      "module": "restaurant-b",
+      "min": [
+        44.899,
+        -0.01,
+        1.415
+      ],
+      "max": [
+        45.337,
+        0.71,
+        1.853
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          46.884,
+          0,
+          2.332
+        ],
+        "theta": 2.89171,
+        "center": [
+          1.883,
+          0.35,
+          0.24
+        ],
+        "size": [
+          0.36,
+          0.72,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "S04-restaurant-b:facade-post",
+      "module": "restaurant-b",
+      "min": [
+        41.504,
+        0.05,
+        0.594
+      ],
+      "max": [
+        41.782,
+        7.75,
+        0.9
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          46.884,
+          0,
+          2.332
+        ],
+        "theta": 2.89171,
+        "center": [
+          5.47,
+          3.9,
+          0.24
+        ],
+        "size": [
+          0.22,
+          7.7,
+          0.26
+        ]
+      }
+    },
+    {
+      "name": "S04-restaurant-b:stone-post-foot",
+      "module": "restaurant-b",
+      "min": [
+        41.424,
+        -0.01,
+        0.528
+      ],
+      "max": [
+        41.862,
+        0.71,
+        0.966
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          46.884,
+          0,
+          2.332
+        ],
+        "theta": 2.89171,
+        "center": [
+          5.47,
+          0.35,
+          0.24
+        ],
+        "size": [
+          0.36,
+          0.72,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "S04-restaurant-b:threshold",
+      "module": "restaurant-b",
+      "min": [
+        41.626,
+        0,
+        0.36
+      ],
+      "max": [
+        52.324,
+        0.24,
+        3.588
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          46.884,
+          0,
+          2.332
+        ],
+        "theta": 2.89171,
+        "center": [
+          0,
+          0.12,
+          0.37
+        ],
+        "size": [
+          10.9,
+          0.24,
+          0.55
+        ]
+      }
+    },
+    {
+      "name": "S04-restaurant-b:restaurant-counter",
+      "module": "restaurant-b",
+      "min": [
+        42.688,
+        0.05,
+        2.245
+      ],
+      "max": [
+        44.372,
+        2.05,
+        4.939
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          46.884,
+          0,
+          2.332
+        ],
+        "theta": 2.89171,
+        "center": [
+          2.938,
+          1.05,
+          -2.05
+        ],
+        "size": [
+          1.1,
+          2,
+          2.5
+        ]
+      }
+    },
+    {
+      "name": "S05-plain-v3:left-side",
+      "module": "plain-v3",
+      "min": [
+        56.521,
+        0,
+        7.927
+      ],
+      "max": [
+        59.734,
+        6.8,
+        13.729
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          54.993,
+          0,
+          5.579
+        ],
+        "theta": 2.65997,
+        "center": [
+          -5.21,
+          3.4,
+          -3.2
+        ],
+        "size": [
+          0.28,
+          6.8,
+          6.4
+        ]
+      }
+    },
+    {
+      "name": "S05-plain-v3:right-side",
+      "module": "plain-v3",
+      "min": [
+        47.287,
+        0,
+        3.101
+      ],
+      "max": [
+        50.499,
+        6.8,
+        8.902
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          54.993,
+          0,
+          5.579
+        ],
+        "theta": 2.65997,
+        "center": [
+          5.21,
+          3.4,
+          -3.2
+        ],
+        "size": [
+          0.28,
+          6.8,
+          6.4
+        ]
+      }
+    },
+    {
+      "name": "S05-plain-v3:back-wall",
+      "module": "plain-v3",
+      "min": [
+        47.53,
+        0,
+        8.652
+      ],
+      "max": [
+        56.655,
+        6.8,
+        13.602
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          54.993,
+          0,
+          5.579
+        ],
+        "theta": 2.65997,
+        "center": [
+          0,
+          3.4,
+          -6.26
+        ],
+        "size": [
+          10.15,
+          6.8,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "S05-plain-v3:shop-floor",
+      "module": "plain-v3",
+      "min": [
+        47.287,
+        0,
+        3.101
+      ],
+      "max": [
+        59.734,
+        0.14,
+        13.729
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          54.993,
+          0,
+          5.579
+        ],
+        "theta": 2.65997,
+        "center": [
+          0,
+          0.07,
+          -3.2
+        ],
+        "size": [
+          10.7,
+          0.14,
+          6.4
+        ]
+      }
+    },
+    {
+      "name": "S05-plain-v3:upper-floor",
+      "module": "plain-v3",
+      "min": [
+        47.662,
+        3.44,
+        3.474
+      ],
+      "max": [
+        59.359,
+        3.66,
+        13.356
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          54.993,
+          0,
+          5.579
+        ],
+        "theta": 2.65997,
+        "center": [
+          0,
+          3.55,
+          -3.2
+        ],
+        "size": [
+          10.14,
+          0.22,
+          5.85
+        ]
+      }
+    },
+    {
+      "name": "S05-plain-v3:rear-interior",
+      "module": "plain-v3",
+      "min": [
+        48.805,
+        0.07,
+        6.23
+      ],
+      "max": [
+        57.938,
+        3.17,
+        11.132
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          54.993,
+          0,
+          5.579
+        ],
+        "theta": 2.65997,
+        "center": [
+          0,
+          1.62,
+          -3.5
+        ],
+        "size": [
+          10.2,
+          3.1,
+          0.2
+        ]
+      }
+    },
+    {
+      "name": "S05-plain-v3:front-brick-plinth",
+      "module": "plain-v3",
+      "min": [
+        50.333,
+        0,
+        3.055
+      ],
+      "max": [
+        59.661,
+        0.6,
+        8.085
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          54.993,
+          0,
+          5.579
+        ],
+        "theta": 2.65997,
+        "center": [
+          0,
+          0.3,
+          0.01
+        ],
+        "size": [
+          10.4,
+          0.6,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "S05-plain-v3:shop-door",
+      "module": "plain-v3",
+      "min": [
+        56.547,
+        0,
+        6.419
+      ],
+      "max": [
+        57.564,
+        2.1,
+        7.008
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          54.993,
+          0,
+          5.579
+        ],
+        "theta": 2.65997,
+        "center": [
+          -2.354,
+          1.05,
+          -0.05
+        ],
+        "size": [
+          1.1,
+          2.1,
+          0.09
+        ]
+      }
+    },
+    {
+      "name": "S05-plain-v3:counter-sill",
+      "module": "plain-v3",
+      "min": [
+        50.811,
+        0.7,
+        3.345
+      ],
+      "max": [
+        55.742,
+        1.2,
+        6.064
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          54.993,
+          0,
+          5.579
+        ],
+        "theta": 2.65997,
+        "center": [
+          1.926,
+          0.95,
+          -0.02
+        ],
+        "size": [
+          5.45,
+          0.5,
+          0.22
+        ]
+      }
+    },
+    {
+      "name": "S05-plain-v3:facade-post",
+      "module": "plain-v3",
+      "min": [
+        59.45,
+        0.05,
+        7.741
+      ],
+      "max": [
+        59.738,
+        6.95,
+        8.046
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          54.993,
+          0,
+          5.579
+        ],
+        "theta": 2.65997,
+        "center": [
+          -5.15,
+          3.5,
+          0.08
+        ],
+        "size": [
+          0.2,
+          6.9,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "S05-plain-v3:facade-post",
+      "module": "plain-v3",
+      "min": [
+        50.321,
+        0.05,
+        2.97
+      ],
+      "max": [
+        50.61,
+        6.95,
+        3.275
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          54.993,
+          0,
+          5.579
+        ],
+        "theta": 2.65997,
+        "center": [
+          5.15,
+          3.5,
+          0.08
+        ],
+        "size": [
+          0.2,
+          6.9,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "S07-plain-v2:left-side",
+      "module": "plain-v2",
+      "min": [
+        67.126,
+        0,
+        14.313
+      ],
+      "max": [
+        70.619,
+        6.8,
+        19.968
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          66.011,
+          0,
+          11.737
+        ],
+        "theta": 2.6087,
+        "center": [
+          -5.21,
+          3.4,
+          -3.2
+        ],
+        "size": [
+          0.28,
+          6.8,
+          6.4
+        ]
+      }
+    },
+    {
+      "name": "S07-plain-v2:right-side",
+      "module": "plain-v2",
+      "min": [
+        58.151,
+        0,
+        9.019
+      ],
+      "max": [
+        61.644,
+        6.8,
+        14.674
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          66.011,
+          0,
+          11.737
+        ],
+        "theta": 2.6087,
+        "center": [
+          5.21,
+          3.4,
+          -3.2
+        ],
+        "size": [
+          0.28,
+          6.8,
+          6.4
+        ]
+      }
+    },
+    {
+      "name": "S07-plain-v2:back-wall",
+      "module": "plain-v2",
+      "min": [
+        58.388,
+        0,
+        14.431
+      ],
+      "max": [
+        67.273,
+        6.8,
+        19.828
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          66.011,
+          0,
+          11.737
+        ],
+        "theta": 2.6087,
+        "center": [
+          0,
+          3.4,
+          -6.26
+        ],
+        "size": [
+          10.15,
+          6.8,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "S07-plain-v2:shop-floor",
+      "module": "plain-v2",
+      "min": [
+        58.151,
+        0,
+        9.019
+      ],
+      "max": [
+        70.619,
+        0.14,
+        19.968
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          66.011,
+          0,
+          11.737
+        ],
+        "theta": 2.6087,
+        "center": [
+          0,
+          0.07,
+          -3.2
+        ],
+        "size": [
+          10.7,
+          0.14,
+          6.4
+        ]
+      }
+    },
+    {
+      "name": "S07-plain-v2:upper-floor",
+      "module": "plain-v2",
+      "min": [
+        58.532,
+        3.44,
+        9.399
+      ],
+      "max": [
+        70.238,
+        3.66,
+        19.589
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          66.011,
+          0,
+          11.737
+        ],
+        "theta": 2.6087,
+        "center": [
+          0,
+          3.55,
+          -3.2
+        ],
+        "size": [
+          10.14,
+          0.22,
+          5.85
+        ]
+      }
+    },
+    {
+      "name": "S07-plain-v2:rear-interior",
+      "module": "plain-v2",
+      "min": [
+        59.789,
+        0.07,
+        12.075
+      ],
+      "max": [
+        68.676,
+        3.17,
+        17.429
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          66.011,
+          0,
+          11.737
+        ],
+        "theta": 2.6087,
+        "center": [
+          0,
+          1.62,
+          -3.5
+        ],
+        "size": [
+          10.2,
+          3.1,
+          0.2
+        ]
+      }
+    },
+    {
+      "name": "S07-plain-v2:front-brick-plinth",
+      "module": "plain-v2",
+      "min": [
+        61.476,
+        0,
+        8.984
+      ],
+      "max": [
+        70.556,
+        0.6,
+        14.474
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          66.011,
+          0,
+          11.737
+        ],
+        "theta": 2.6087,
+        "center": [
+          0,
+          0.3,
+          0.01
+        ],
+        "size": [
+          10.4,
+          0.6,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "S07-plain-v2:shop-door",
+      "module": "plain-v2",
+      "min": [
+        67.516,
+        0,
+        12.658
+      ],
+      "max": [
+        68.509,
+        2.1,
+        13.294
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          66.011,
+          0,
+          11.737
+        ],
+        "theta": 2.6087,
+        "center": [
+          -2.354,
+          1.05,
+          -0.05
+        ],
+        "size": [
+          1.1,
+          2.1,
+          0.09
+        ]
+      }
+    },
+    {
+      "name": "S07-plain-v2:counter-sill",
+      "module": "plain-v2",
+      "min": [
+        61.939,
+        0.7,
+        9.297
+      ],
+      "max": [
+        66.745,
+        1.2,
+        12.255
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          66.011,
+          0,
+          11.737
+        ],
+        "theta": 2.6087,
+        "center": [
+          1.926,
+          0.95,
+          -0.02
+        ],
+        "size": [
+          5.45,
+          0.5,
+          0.22
+        ]
+      }
+    },
+    {
+      "name": "S07-plain-v2:facade-post",
+      "module": "plain-v2",
+      "min": [
+        70.34,
+        0.05,
+        14.131
+      ],
+      "max": [
+        70.634,
+        6.95,
+        14.439
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          66.011,
+          0,
+          11.737
+        ],
+        "theta": 2.6087,
+        "center": [
+          -5.15,
+          3.5,
+          0.08
+        ],
+        "size": [
+          0.2,
+          6.9,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "S07-plain-v2:facade-post",
+      "module": "plain-v2",
+      "min": [
+        61.468,
+        0.05,
+        8.898
+      ],
+      "max": [
+        61.762,
+        6.95,
+        9.206
+      ],
+      "type": "box",
+      "obb": {
+        "pos": [
+          66.011,
+          0,
+          11.737
+        ],
+        "theta": 2.6087,
+        "center": [
+          5.15,
+          3.5,
+          0.08
+        ],
+        "size": [
+          0.2,
+          6.9,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "lane-A-end-wall",
+      "type": "box",
+      "axis": "glTF Y-up",
+      "min": [
+        42.47,
+        0.05,
+        -16.538
+      ],
+      "max": [
+        44.624,
+        3.15,
+        -16.22
+      ]
+    },
+    {
+      "name": "lane-B-end-wall",
+      "type": "box",
+      "axis": "glTF Y-up",
+      "min": [
+        56.48,
+        0.05,
+        13.652
+      ],
+      "max": [
+        58.412,
+        3.15,
+        14.738
+      ]
+    },
+    {
+      "name": "lot-front-wall",
+      "type": "box",
+      "axis": "glTF Y-up",
+      "min": [
+        70.632,
+        0,
+        14.434
+      ],
+      "max": [
+        72.606,
+        1.2,
+        15.694
+      ]
+    },
+    {
+      "name": "lot-front-wall",
+      "type": "box",
+      "axis": "glTF Y-up",
+      "min": [
+        73.196,
+        0,
+        15.989
+      ],
+      "max": [
+        74.798,
+        1.2,
+        17.045
+      ]
+    },
+    {
+      "name": "plaza-back-wall",
+      "type": "box",
+      "axis": "glTF Y-up",
+      "min": [
+        15.551,
+        0.045,
+        5.273
+      ],
+      "max": [
+        18.468,
+        0.995,
+        5.938
+      ]
+    },
+    {
+      "name": "plaza-back-wall",
+      "type": "box",
+      "axis": "glTF Y-up",
+      "min": [
+        19.36,
+        0.045,
+        4.785
+      ],
+      "max": [
+        23.959,
+        0.995,
+        5.351
+      ]
+    },
+    {
+      "name": "plaza-back-wall",
+      "type": "box",
+      "axis": "glTF Y-up",
+      "min": [
+        24.358,
+        0.045,
+        4.713
+      ],
+      "max": [
+        27.387,
+        0.995,
+        4.952
+      ]
+    },
+    {
+      "name": "westext-seal-wall:seal-wall",
+      "group": "westext-seal-wall:seal-wall",
+      "type": "box",
+      "min": [
+        -150.4669,
+        0,
+        37.926
+      ],
+      "max": [
+        -148.3091,
+        3.4,
+        49.02
+      ],
+      "obb": {
+        "pos": [
+          -149.388,
+          0,
+          43.473
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          1.7,
+          0
+        ],
+        "size": [
+          0.3,
+          3.4,
+          11.2
+        ]
+      }
+    },
+    {
+      "name": "shanmen:stone-column",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -129.809803,
+        0,
+        26.833062
+      ],
+      "max": [
+        -129.296124,
+        4.9,
+        27.379534
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          -1.72,
+          2.45,
+          -0.24
+        ],
+        "size": [
+          0.44,
+          4.9,
+          0.48
+        ]
+      }
+    },
+    {
+      "name": "shanmen:stone-plinth",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -129.987412,
+        0,
+        26.778885
+      ],
+      "max": [
+        -129.315732,
+        0.32,
+        27.466962
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          -1.82,
+          0.16,
+          -0.24
+        ],
+        "size": [
+          0.58,
+          0.32,
+          0.6
+        ]
+      }
+    },
+    {
+      "name": "shanmen:stone-column",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -126.417678,
+        0,
+        26.261147
+      ],
+      "max": [
+        -125.903999,
+        4.9,
+        26.807618
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          1.72,
+          2.45,
+          -0.24
+        ],
+        "size": [
+          0.44,
+          4.9,
+          0.48
+        ]
+      }
+    },
+    {
+      "name": "shanmen:stone-plinth",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -126.398071,
+        0,
+        26.173718
+      ],
+      "max": [
+        -125.72639,
+        0.32,
+        26.861796
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          1.82,
+          0.16,
+          -0.24
+        ],
+        "size": [
+          0.58,
+          0.32,
+          0.6
+        ]
+      }
+    },
+    {
+      "name": "shanmen:stone-column",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -130.328517,
+        0,
+        23.756483
+      ],
+      "max": [
+        -129.814838,
+        4.9,
+        24.302955
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          -1.72,
+          2.45,
+          -3.36
+        ],
+        "size": [
+          0.44,
+          4.9,
+          0.48
+        ]
+      }
+    },
+    {
+      "name": "shanmen:stone-plinth",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -130.506126,
+        0,
+        23.702306
+      ],
+      "max": [
+        -129.834445,
+        0.32,
+        24.390383
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          -1.82,
+          0.16,
+          -3.36
+        ],
+        "size": [
+          0.58,
+          0.32,
+          0.6
+        ]
+      }
+    },
+    {
+      "name": "shanmen:stone-column",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -126.936392,
+        0,
+        23.184568
+      ],
+      "max": [
+        -126.422713,
+        4.9,
+        23.73104
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          1.72,
+          2.45,
+          -3.36
+        ],
+        "size": [
+          0.44,
+          4.9,
+          0.48
+        ]
+      }
+    },
+    {
+      "name": "shanmen:stone-plinth",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -126.916784,
+        0,
+        23.09714
+      ],
+      "max": [
+        -126.245104,
+        0.32,
+        23.785217
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          1.82,
+          0.16,
+          -3.36
+        ],
+        "size": [
+          0.58,
+          0.32,
+          0.6
+        ]
+      }
+    },
+    {
+      "name": "shanmen:door-lintel-beam",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -129.814791,
+        3.1,
+        26.231564
+      ],
+      "max": [
+        -125.899012,
+        3.8,
+        27.409116
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          3.45,
+          -0.24
+        ],
+        "size": [
+          3.88,
+          0.6999999999999997,
+          0.54
+        ]
+      }
+    },
+    {
+      "name": "shanmen:passage-reveal-wall",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -130.091857,
+        0,
+        23.756483
+      ],
+      "max": [
+        -129.375926,
+        3.6,
+        26.866313
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          -1.6,
+          1.8,
+          -2.04
+        ],
+        "size": [
+          0.19999999999999996,
+          3.6,
+          3.12
+        ]
+      }
+    },
+    {
+      "name": "shanmen:passage-reveal-wall",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -126.936392,
+        0,
+        23.224469
+      ],
+      "max": [
+        -126.220461,
+        3.6,
+        26.334299
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          1.6,
+          1.8,
+          -2.04
+        ],
+        "size": [
+          0.19999999999999996,
+          3.6,
+          3.12
+        ]
+      }
+    },
+    {
+      "name": "shanmen:lattice-door-leaf",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -130.704331,
+        0.05,
+        27.434572
+      ],
+      "max": [
+        -129.262873,
+        3,
+        27.744667
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          -2.225,
+          1.5250000000000001,
+          0.165
+        ],
+        "size": [
+          1.45,
+          2.95,
+          0.07
+        ]
+      }
+    },
+    {
+      "name": "shanmen:lattice-door-leaf",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -126.316263,
+        0.05,
+        26.69474
+      ],
+      "max": [
+        -124.874805,
+        3,
+        27.004835
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          2.225,
+          1.5250000000000001,
+          0.165
+        ],
+        "size": [
+          1.45,
+          2.95,
+          0.07
+        ]
+      }
+    },
+    {
+      "name": "shanmen:timber-column",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -131.002734,
+        0,
+        27.189136
+      ],
+      "max": [
+        -130.726173,
+        4.9,
+        27.465697
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          -3.05,
+          2.45,
+          -0.24
+        ],
+        "size": [
+          0.24,
+          4.9,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "shanmen:timber-column",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -124.987629,
+        0,
+        26.174984
+      ],
+      "max": [
+        -124.711068,
+        4.9,
+        26.451545
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          3.05,
+          2.45,
+          -0.24
+        ],
+        "size": [
+          0.24,
+          4.9,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "shanmen:grille-backing",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -130.723077,
+        0,
+        27.162595
+      ],
+      "max": [
+        -129.746626,
+        4.9,
+        27.442192
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          -2.425,
+          2.45,
+          -0.16
+        ],
+        "size": [
+          0.9699999999999998,
+          4.9,
+          0.12
+        ]
+      }
+    },
+    {
+      "name": "shanmen:grille-backing",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -125.940575,
+        0,
+        26.356261
+      ],
+      "max": [
+        -124.964124,
+        4.9,
+        26.635858
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          2.425,
+          2.45,
+          -0.16
+        ],
+        "size": [
+          0.9699999999999998,
+          4.9,
+          0.12
+        ]
+      }
+    },
+    {
+      "name": "shanmen:side-wall-lower",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -131.827363,
+        0,
+        24.02914
+      ],
+      "max": [
+        -130.9133,
+        5.5,
+        27.63224
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          -3.3,
+          2.75,
+          -1.8
+        ],
+        "size": [
+          0.32,
+          5.5,
+          3.6
+        ]
+      }
+    },
+    {
+      "name": "shanmen:side-wall-lower",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -125.319216,
+        0,
+        22.931861
+      ],
+      "max": [
+        -124.405153,
+        5.5,
+        26.534961
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          3.3,
+          2.75,
+          -1.8
+        ],
+        "size": [
+          0.32,
+          5.5,
+          3.6
+        ]
+      }
+    },
+    {
+      "name": "shanmen:rear-wall-side",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -131.827363,
+        0,
+        23.776434
+      ],
+      "max": [
+        -129.966419,
+        5.9,
+        24.358445
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          -2.54,
+          2.95,
+          -3.46
+        ],
+        "size": [
+          1.8399999999999994,
+          5.9,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "shanmen:rear-wall-side",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -126.818062,
+        0,
+        22.931861
+      ],
+      "max": [
+        -124.957118,
+        5.9,
+        23.513873
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          2.54,
+          2.95,
+          -3.46
+        ],
+        "size": [
+          1.8399999999999994,
+          5.9,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "shanmen:rear-wall-header",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -130.01297,
+        3.1,
+        23.237769
+      ],
+      "max": [
+        -126.77151,
+        5.9,
+        24.052537
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          4.5,
+          -3.46
+        ],
+        "size": [
+          3.24,
+          2.8000000000000003,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "shanmen:bracket-backing-wall",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -131.1143,
+        4.95,
+        26.251979
+      ],
+      "max": [
+        -124.562926,
+        6.25,
+        27.60564
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          5.6,
+          -0.13
+        ],
+        "size": [
+          6.6,
+          1.2999999999999998,
+          0.26
+        ]
+      }
+    },
+    {
+      "name": "shanmen:wing-wall-body",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -124.526586,
+        0,
+        26.492514
+      ],
+      "max": [
+        -119.532988,
+        3.55,
+        28.002489
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": -0.2391588,
+        "center": [
+          5.667621969284022,
+          1.775,
+          -1.1858272274193664
+        ],
+        "size": [
+          5.061867244406949,
+          3.55,
+          0.32
+        ]
+      }
+    },
+    {
+      "name": "shanmen:wing-base-course",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -124.534877,
+        0,
+        26.45851
+      ],
+      "max": [
+        -119.524697,
+        0.28,
+        28.036493
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": -0.2391588,
+        "center": [
+          5.667621969284022,
+          0.14,
+          -1.1858272274193664
+        ],
+        "size": [
+          5.061867244406949,
+          0.28,
+          0.39
+        ]
+      }
+    },
+    {
+      "name": "shanmen:wing-wall-body",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -135.43499,
+        0,
+        27.627439
+      ],
+      "max": [
+        -131.008665,
+        3.55,
+        30.641539
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": -2.56837385,
+        "center": [
+          5.667621969284023,
+          1.775,
+          1.1858272274193669
+        ],
+        "size": [
+          5.061867244406949,
+          3.55,
+          0.32
+        ]
+      }
+    },
+    {
+      "name": "shanmen:wing-base-course",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -135.453972,
+        0,
+        27.598034
+      ],
+      "max": [
+        -130.989683,
+        0.28,
+        30.670945
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": -2.56837385,
+        "center": [
+          5.667621969284023,
+          0.14,
+          1.1858272274193669
+        ],
+        "size": [
+          5.061867244406949,
+          0.28,
+          0.39
+        ]
+      }
+    },
+    {
+      "name": "shanmen:lion-plinth",
+      "group": "shanmen:shanmen-lion",
+      "type": "box",
+      "min": [
+        -130.068883,
+        0,
+        28.053281
+      ],
+      "max": [
+        -129.472764,
+        0.26,
+        28.747779
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          -2.15,
+          0.13,
+          1
+        ],
+        "size": [
+          0.5,
+          0.26,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "shanmen:lion-plinth",
+      "group": "shanmen:shanmen-lion",
+      "type": "box",
+      "min": [
+        -125.828727,
+        0,
+        27.338387
+      ],
+      "max": [
+        -125.232608,
+        0.26,
+        28.032885
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          2.15,
+          0.13,
+          1
+        ],
+        "size": [
+          0.5,
+          0.26,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -137.731754,
+        0,
+        6.997012
+      ],
+      "max": [
+        -137.376078,
+        4.75,
+        7.401879
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          -6.3,
+          2.375,
+          -0.19999999999999998
+        ],
+        "size": [
+          0.3,
+          4.75,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column-plinth",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -137.823941,
+        0,
+        6.904825
+      ],
+      "max": [
+        -137.283891,
+        0.34,
+        7.494066
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          -6.3,
+          0.17,
+          -0.19999999999999998
+        ],
+        "size": [
+          0.45999999999999996,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -138.496524,
+        0,
+        2.461031
+      ],
+      "max": [
+        -138.140848,
+        4.75,
+        2.865897
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          -6.3,
+          2.375,
+          -4.8
+        ],
+        "size": [
+          0.3,
+          4.75,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column-plinth",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -138.588711,
+        0,
+        2.368844
+      ],
+      "max": [
+        -138.048661,
+        0.34,
+        2.958084
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          -6.3,
+          0.17,
+          -4.8
+        ],
+        "size": [
+          0.45999999999999996,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -133.63951,
+        0,
+        6.307057
+      ],
+      "max": [
+        -133.283834,
+        4.75,
+        6.711923
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          -2.15,
+          2.375,
+          -0.19999999999999998
+        ],
+        "size": [
+          0.3,
+          4.75,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column-plinth",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -133.731697,
+        0,
+        6.21487
+      ],
+      "max": [
+        -133.191647,
+        0.34,
+        6.80411
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          -2.15,
+          0.17,
+          -0.19999999999999998
+        ],
+        "size": [
+          0.45999999999999996,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -134.40428,
+        0,
+        1.771075
+      ],
+      "max": [
+        -134.048604,
+        4.75,
+        2.175942
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          -2.15,
+          2.375,
+          -4.8
+        ],
+        "size": [
+          0.3,
+          4.75,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column-plinth",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -134.496467,
+        0,
+        1.678888
+      ],
+      "max": [
+        -133.956417,
+        0.34,
+        2.268128
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          -2.15,
+          0.17,
+          -4.8
+        ],
+        "size": [
+          0.45999999999999996,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -129.399354,
+        0,
+        5.592163
+      ],
+      "max": [
+        -129.043677,
+        4.75,
+        5.997029
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          2.15,
+          2.375,
+          -0.19999999999999998
+        ],
+        "size": [
+          0.3,
+          4.75,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column-plinth",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -129.491541,
+        0,
+        5.499976
+      ],
+      "max": [
+        -128.95149,
+        0.34,
+        6.089216
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          2.15,
+          0.17,
+          -0.19999999999999998
+        ],
+        "size": [
+          0.45999999999999996,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -130.164124,
+        0,
+        1.056181
+      ],
+      "max": [
+        -129.808448,
+        4.75,
+        1.461047
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          2.15,
+          2.375,
+          -4.8
+        ],
+        "size": [
+          0.3,
+          4.75,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column-plinth",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -130.256311,
+        0,
+        0.963994
+      ],
+      "max": [
+        -129.716261,
+        0.34,
+        1.553234
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          2.15,
+          0.17,
+          -4.8
+        ],
+        "size": [
+          0.45999999999999996,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -125.30711,
+        0,
+        4.902207
+      ],
+      "max": [
+        -124.951433,
+        4.75,
+        5.307073
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          6.3,
+          2.375,
+          -0.19999999999999998
+        ],
+        "size": [
+          0.3,
+          4.75,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column-plinth",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -125.399297,
+        0,
+        4.81002
+      ],
+      "max": [
+        -124.859246,
+        0.34,
+        5.39926
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          6.3,
+          0.17,
+          -0.19999999999999998
+        ],
+        "size": [
+          0.45999999999999996,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -126.07188,
+        0,
+        0.366225
+      ],
+      "max": [
+        -125.716204,
+        4.75,
+        0.771092
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          6.3,
+          2.375,
+          -4.8
+        ],
+        "size": [
+          0.3,
+          4.75,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column-plinth",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -126.164067,
+        0,
+        0.274038
+      ],
+      "max": [
+        -125.624017,
+        0.34,
+        0.863279
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          6.3,
+          0.17,
+          -4.8
+        ],
+        "size": [
+          0.45999999999999996,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-tie-beam",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -132.323874,
+        4.75,
+        1.291973
+      ],
+      "max": [
+        -131.157334,
+        4.93,
+        6.278914
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          4.84,
+          -2.6
+        ],
+        "size": [
+          0.34,
+          0.17999999999999972,
+          5
+        ]
+      }
+    },
+    {
+      "name": "yimen:door-jamb",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -134.140044,
+        0,
+        1.550469
+      ],
+      "max": [
+        -133.08828,
+        4.85,
+        6.652186
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          -1.9000000000000001,
+          2.425,
+          -2.6
+        ],
+        "size": [
+          0.2,
+          4.85,
+          5.140000000000001
+        ]
+      }
+    },
+    {
+      "name": "yimen:door-jamb",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -130.392929,
+        0,
+        0.918702
+      ],
+      "max": [
+        -129.341165,
+        4.85,
+        6.020419
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          1.9000000000000001,
+          2.425,
+          -2.6
+        ],
+        "size": [
+          0.2,
+          4.85,
+          5.140000000000001
+        ]
+      }
+    },
+    {
+      "name": "yimen:door-lintel",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -134.136719,
+        3.2,
+        0.938424
+      ],
+      "max": [
+        -129.34449,
+        3.56,
+        6.632464
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          3.3800000000000003,
+          -2.6
+        ],
+        "size": [
+          4,
+          0.36,
+          5.1000000000000005
+        ]
+      }
+    },
+    {
+      "name": "yimen:bay-backing",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -137.410991,
+        0,
+        6.454969
+      ],
+      "max": [
+        -133.302122,
+        3.4,
+        7.243533
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          -4.075,
+          1.7000000000000002,
+          -0.18
+        ],
+        "size": [
+          4.15,
+          3.4000000000000004,
+          0.1
+        ]
+      }
+    },
+    {
+      "name": "yimen:bay-end-pier",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -138.303453,
+        0,
+        7.118668
+      ],
+      "max": [
+        -137.4091,
+        3.4,
+        7.422745
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          -6.609999999999999,
+          1.7000000000000002,
+          -0.18
+        ],
+        "size": [
+          0.8799999999999999,
+          3.4000000000000004,
+          0.16
+        ]
+      }
+    },
+    {
+      "name": "yimen:bay-backing",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -129.374416,
+        0,
+        5.099996
+      ],
+      "max": [
+        -125.265546,
+        3.4,
+        5.88856
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          4.075,
+          1.7000000000000002,
+          -0.18
+        ],
+        "size": [
+          4.15,
+          3.4000000000000004,
+          0.1
+        ]
+      }
+    },
+    {
+      "name": "yimen:bay-end-pier",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -125.267438,
+        0,
+        4.920784
+      ],
+      "max": [
+        -124.373084,
+        3.4,
+        5.224861
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          6.609999999999999,
+          1.7000000000000002,
+          -0.18
+        ],
+        "size": [
+          0.8799999999999999,
+          3.4000000000000004,
+          0.16
+        ]
+      }
+    },
+    {
+      "name": "yimen:front-band-backing",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -138.446378,
+        3.25,
+        4.925428
+      ],
+      "max": [
+        -124.210209,
+        4.85,
+        7.53643
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          4.05,
+          -0.12
+        ],
+        "size": [
+          14.4,
+          1.5999999999999996,
+          0.22
+        ]
+      }
+    },
+    {
+      "name": "yimen:side-wall-lower",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -139.12475,
+        0,
+        2.343846
+      ],
+      "max": [
+        -137.964402,
+        4.95,
+        7.521353
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          -6.8999999999999995,
+          2.4749999999999996,
+          -2.6
+        ],
+        "size": [
+          0.3,
+          4.949999999999999,
+          5.2
+        ]
+      }
+    },
+    {
+      "name": "yimen:side-wall-lower",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -125.516806,
+        0,
+        0.049535
+      ],
+      "max": [
+        -124.356458,
+        4.95,
+        5.227042
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          6.8999999999999995,
+          2.4749999999999996,
+          -2.6
+        ],
+        "size": [
+          0.3,
+          4.949999999999999,
+          5.2
+        ]
+      }
+    },
+    {
+      "name": "yimen:rear-wall-side",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -139.12475,
+        0,
+        1.540837
+      ],
+      "max": [
+        -134.019594,
+        5.75,
+        2.669825
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          -4.484999999999999,
+          2.875,
+          -5.06
+        ],
+        "size": [
+          5.13,
+          5.75,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "yimen:rear-wall-side",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -130.279587,
+        0,
+        0.049535
+      ],
+      "max": [
+        -125.17443,
+        5.75,
+        1.178523
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          4.484999999999999,
+          2.875,
+          -5.06
+        ],
+        "size": [
+          5.13,
+          5.75,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "yimen:rear-wall-header",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -134.066145,
+        3.2,
+        0.90242
+      ],
+      "max": [
+        -130.233035,
+        5.75,
+        1.81694
+      ],
+      "obb": {
+        "pos": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          4.4750000000000005,
+          -5.06
+        ],
+        "size": [
+          3.84,
+          2.55,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "entrycourt-open:court-side-wall",
+      "group": "entrycourt-open:entry-court",
+      "type": "box",
+      "min": [
+        -139.473109,
+        0,
+        7.679295
+      ],
+      "max": [
+        -136.304179,
+        2.8,
+        24.883688
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          -8.14,
+          1.4,
+          -12.3
+        ],
+        "size": [
+          0.27999999999999936,
+          2.8,
+          17.4
+        ]
+      }
+    },
+    {
+      "name": "entrycourt-open:court-side-wall",
+      "group": "entrycourt-open:entry-court",
+      "type": "box",
+      "min": [
+        -123.41968,
+        0,
+        4.972673
+      ],
+      "max": [
+        -120.25075,
+        2.8,
+        22.177066
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          8.14,
+          1.4,
+          -12.3
+        ],
+        "size": [
+          0.27999999999999936,
+          2.8,
+          17.4
+        ]
+      }
+    },
+    {
+      "name": "entrycourt-open:court-south-return",
+      "group": "entrycourt-open:entry-court",
+      "type": "box",
+      "min": [
+        -136.580282,
+        0,
+        24.055741
+      ],
+      "max": [
+        -131.623038,
+        2.8,
+        25.159791
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          -5.789999999999999,
+          1.4,
+          -3.46
+        ],
+        "size": [
+          4.9799999999999995,
+          2.8,
+          0.2799999999999998
+        ]
+      }
+    },
+    {
+      "name": "entrycourt-open:court-south-return",
+      "group": "entrycourt-open:entry-court",
+      "type": "box",
+      "min": [
+        -125.161442,
+        0,
+        22.130515
+      ],
+      "max": [
+        -120.204198,
+        2.8,
+        23.234565
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          5.789999999999999,
+          1.4,
+          -3.46
+        ],
+        "size": [
+          4.9799999999999995,
+          2.8,
+          0.2799999999999998
+        ]
+      }
+    },
+    {
+      "name": "entrycourt-open:court-north-return",
+      "group": "entrycourt-open:entry-court",
+      "type": "box",
+      "min": [
+        -139.51966,
+        0,
+        7.270188
+      ],
+      "max": [
+        -138.40814,
+        2.8,
+        7.725846
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          -7.74,
+          1.4,
+          -21.14
+        ],
+        "size": [
+          1.0799999999999992,
+          2.8,
+          0.28000000000000114
+        ]
+      }
+    },
+    {
+      "name": "entrycourt-open:court-north-return",
+      "group": "entrycourt-open:entry-court",
+      "type": "box",
+      "min": [
+        -124.255097,
+        0,
+        4.696569
+      ],
+      "max": [
+        -123.143576,
+        2.8,
+        5.152227
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          7.74,
+          1.4,
+          -21.14
+        ],
+        "size": [
+          1.0799999999999992,
+          2.8,
+          0.28000000000000114
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -145.690962,
+        0,
+        -15.208443
+      ],
+      "max": [
+        -145.20033,
+        5,
+        -14.685018
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -10.4,
+          2.5,
+          -0.35
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -145.783149,
+        0,
+        -15.30063
+      ],
+      "max": [
+        -145.108143,
+        0.34,
+        -14.592831
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -10.4,
+          0.17,
+          -0.35
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -141.845238,
+        0,
+        -15.856835
+      ],
+      "max": [
+        -141.354606,
+        5,
+        -15.33341
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -6.5,
+          2.5,
+          -0.35
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -141.937425,
+        0,
+        -15.949022
+      ],
+      "max": [
+        -141.262419,
+        0.34,
+        -15.241223
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -6.5,
+          0.17,
+          -0.35
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -137.70369,
+        0,
+        -16.555104
+      ],
+      "max": [
+        -137.213058,
+        5,
+        -16.031679
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -2.3,
+          2.5,
+          -0.35
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -137.795877,
+        0,
+        -16.647291
+      ],
+      "max": [
+        -137.120871,
+        0.34,
+        -15.939492
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -2.3,
+          0.17,
+          -0.35
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -133.167709,
+        0,
+        -17.319874
+      ],
+      "max": [
+        -132.677077,
+        5,
+        -16.796449
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          2.3,
+          2.5,
+          -0.35
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -133.259896,
+        0,
+        -17.412061
+      ],
+      "max": [
+        -132.58489,
+        0.34,
+        -16.704262
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          2.3,
+          0.17,
+          -0.35
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -129.026161,
+        0,
+        -18.018142
+      ],
+      "max": [
+        -128.535529,
+        5,
+        -17.494717
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          6.5,
+          2.5,
+          -0.35
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -129.118348,
+        0,
+        -18.110329
+      ],
+      "max": [
+        -128.443342,
+        0.34,
+        -17.40253
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          6.5,
+          0.17,
+          -0.35
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -125.180437,
+        0,
+        -18.666535
+      ],
+      "max": [
+        -124.689806,
+        5,
+        -18.14311
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          10.4,
+          2.5,
+          -0.35
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -125.272624,
+        0,
+        -18.758722
+      ],
+      "max": [
+        -124.597619,
+        0.34,
+        -18.050923
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          10.4,
+          0.17,
+          -0.35
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -147.569636,
+        0,
+        -26.351179
+      ],
+      "max": [
+        -147.079005,
+        5,
+        -25.827754
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -10.4,
+          2.5,
+          -11.65
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -147.661823,
+        0,
+        -26.443366
+      ],
+      "max": [
+        -146.986818,
+        0.34,
+        -25.735567
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -10.4,
+          0.17,
+          -11.65
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -143.723913,
+        0,
+        -26.999572
+      ],
+      "max": [
+        -143.233281,
+        5,
+        -26.476147
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -6.5,
+          2.5,
+          -11.65
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -143.8161,
+        0,
+        -27.091759
+      ],
+      "max": [
+        -143.141094,
+        0.34,
+        -26.38396
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -6.5,
+          0.17,
+          -11.65
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -139.582365,
+        0,
+        -27.69784
+      ],
+      "max": [
+        -139.091733,
+        5,
+        -27.174415
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -2.3,
+          2.5,
+          -11.65
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -139.674552,
+        0,
+        -27.790027
+      ],
+      "max": [
+        -138.999546,
+        0.34,
+        -27.082228
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -2.3,
+          0.17,
+          -11.65
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -135.046384,
+        0,
+        -28.462611
+      ],
+      "max": [
+        -134.555752,
+        5,
+        -27.939186
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          2.3,
+          2.5,
+          -11.65
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -135.138571,
+        0,
+        -28.554798
+      ],
+      "max": [
+        -134.463565,
+        0.34,
+        -27.846999
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          2.3,
+          0.17,
+          -11.65
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -130.904836,
+        0,
+        -29.160879
+      ],
+      "max": [
+        -130.414204,
+        5,
+        -28.637454
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          6.5,
+          2.5,
+          -11.65
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -130.997023,
+        0,
+        -29.253066
+      ],
+      "max": [
+        -130.322017,
+        0.34,
+        -28.545267
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          6.5,
+          0.17,
+          -11.65
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -127.059112,
+        0,
+        -29.809271
+      ],
+      "max": [
+        -126.568481,
+        5,
+        -29.285846
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          10.4,
+          2.5,
+          -11.65
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -127.151299,
+        0,
+        -29.901458
+      ],
+      "max": [
+        -126.476294,
+        0.34,
+        -29.193659
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          10.4,
+          0.17,
+          -11.65
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-tie-beam",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -137.278256,
+        4.55,
+        -28.093297
+      ],
+      "max": [
+        -134.981186,
+        5.05,
+        -16.400992
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          4.8,
+          -6
+        ],
+        "size": [
+          0.34,
+          0.5,
+          11.8
+        ]
+      }
+    },
+    {
+      "name": "dadian:door-threshold",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -137.314877,
+        0,
+        -16.775294
+      ],
+      "max": [
+        -132.956162,
+        0.25,
+        -15.925444
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          0.125,
+          -0.02
+        ],
+        "size": [
+          4.4,
+          0.25,
+          0.12
+        ]
+      }
+    },
+    {
+      "name": "dadian:door-leaf",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -137.261272,
+        0.25,
+        -16.734941
+      ],
+      "max": [
+        -135.190384,
+        3.85,
+        -16.328304
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -1.045,
+          2.05,
+          -0.38
+        ],
+        "size": [
+          2.09,
+          3.6,
+          0.06
+        ]
+      }
+    },
+    {
+      "name": "dadian:door-leaf",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -135.200359,
+        0.25,
+        -17.082413
+      ],
+      "max": [
+        -133.12947,
+        3.85,
+        -16.675776
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          1.045,
+          2.05,
+          -0.38
+        ],
+        "size": [
+          2.09,
+          3.6,
+          0.06
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-sill",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -141.379545,
+        0,
+        -16.179591
+      ],
+      "max": [
+        -137.622225,
+        0.35,
+        -15.373654
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -4.4,
+          0.175,
+          -0.18
+        ],
+        "size": [
+          3.7800000000000002,
+          0.35,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-backing",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -141.372894,
+        0.35,
+        -16.140148
+      ],
+      "max": [
+        -137.628876,
+        3.6,
+        -15.413098
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -4.4,
+          1.975,
+          -0.18
+        ],
+        "size": [
+          3.7800000000000002,
+          3.25,
+          0.1
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-sill",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -145.225268,
+        0,
+        -15.481322
+      ],
+      "max": [
+        -141.763774,
+        0.35,
+        -14.725262
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -8.45,
+          0.175,
+          -0.18
+        ],
+        "size": [
+          3.4799999999999995,
+          0.35,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-backing",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -145.218618,
+        0.35,
+        -15.441879
+      ],
+      "max": [
+        -141.770424,
+        3.6,
+        -14.764705
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -8.45,
+          1.975,
+          -0.18
+        ],
+        "size": [
+          3.4799999999999995,
+          3.25,
+          0.1
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-sill",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -132.702015,
+        0,
+        -17.64263
+      ],
+      "max": [
+        -128.944696,
+        0.35,
+        -16.836693
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          4.4,
+          0.175,
+          -0.18
+        ],
+        "size": [
+          3.7800000000000002,
+          0.35,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-backing",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -132.695365,
+        0.35,
+        -17.603187
+      ],
+      "max": [
+        -128.951346,
+        3.6,
+        -16.876137
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          4.4,
+          1.975,
+          -0.18
+        ],
+        "size": [
+          3.7800000000000002,
+          3.25,
+          0.1
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-sill",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -128.560467,
+        0,
+        -18.291022
+      ],
+      "max": [
+        -125.098973,
+        0.35,
+        -17.534962
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          8.45,
+          0.175,
+          -0.18
+        ],
+        "size": [
+          3.4799999999999995,
+          0.35,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-backing",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -128.553817,
+        0.35,
+        -18.251579
+      ],
+      "max": [
+        -125.105623,
+        3.6,
+        -17.574405
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          8.45,
+          1.975,
+          -0.18
+        ],
+        "size": [
+          3.4799999999999995,
+          3.25,
+          0.1
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-end-pier",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -145.726508,
+        0,
+        -14.892896
+      ],
+      "max": [
+        -145.197005,
+        4.3,
+        -14.650333
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -10.445,
+          2.15,
+          -0.18
+        ],
+        "size": [
+          0.5099999999999998,
+          4.3,
+          0.16
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-end-pier",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -125.127236,
+        0,
+        -18.365951
+      ],
+      "max": [
+        -124.597733,
+        4.3,
+        -18.123388
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          10.445,
+          2.15,
+          -0.18
+        ],
+        "size": [
+          0.5099999999999998,
+          4.3,
+          0.16
+        ]
+      }
+    },
+    {
+      "name": "dadian:front-band-backing",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -146.017345,
+        4.3,
+        -18.386245
+      ],
+      "max": [
+        -124.286945,
+        5.2,
+        -14.511709
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          4.75,
+          -0.12
+        ],
+        "size": [
+          22,
+          0.9000000000000004,
+          0.22
+        ]
+      }
+    },
+    {
+      "name": "dadian:band-front",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -146.176895,
+        5.95,
+        -18.480209
+      ],
+      "max": [
+        -124.13737,
+        7,
+        -14.47691
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          6.475,
+          -0.15
+        ],
+        "size": [
+          22.3,
+          1.0499999999999998,
+          0.3
+        ]
+      }
+    },
+    {
+      "name": "dadian:band-rear",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -148.122072,
+        5.95,
+        -30.017379
+      ],
+      "max": [
+        -126.082547,
+        7,
+        -26.01408
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          6.475,
+          -11.85
+        ],
+        "size": [
+          22.3,
+          1.0499999999999998,
+          0.3
+        ]
+      }
+    },
+    {
+      "name": "dadian:band-left",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -148.097134,
+        5.95,
+        -26.211869
+      ],
+      "max": [
+        -145.856132,
+        7,
+        -14.624823
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -11,
+          6.475,
+          -6
+        ],
+        "size": [
+          0.3,
+          1.0499999999999998,
+          11.7
+        ]
+      }
+    },
+    {
+      "name": "dadian:band-right",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -126.40331,
+        5.95,
+        -29.869466
+      ],
+      "max": [
+        -124.162308,
+        7,
+        -18.28242
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          11,
+          6.475,
+          -6
+        ],
+        "size": [
+          0.3,
+          1.0499999999999998,
+          11.7
+        ]
+      }
+    },
+    {
+      "name": "dadian:side-wall-lower",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -147.826247,
+        0,
+        -26.409658
+      ],
+      "max": [
+        -145.535369,
+        5.3,
+        -14.526787
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          -10.7,
+          2.65,
+          -6
+        ],
+        "size": [
+          0.3,
+          5.3,
+          12
+        ]
+      }
+    },
+    {
+      "name": "dadian:side-wall-lower",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -126.724073,
+        0,
+        -29.967502
+      ],
+      "max": [
+        -124.433195,
+        5.3,
+        -18.084631
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          10.7,
+          2.65,
+          -6
+        ],
+        "size": [
+          0.3,
+          5.3,
+          12
+        ]
+      }
+    },
+    {
+      "name": "dadian:rear-wall",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -147.579726,
+        0,
+        -29.925939
+      ],
+      "max": [
+        -126.624893,
+        5.1,
+        -26.10552
+      ],
+      "obb": {
+        "pos": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          2.55,
+          -11.85
+        ],
+        "size": [
+          21.2,
+          5.1,
+          0.3
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:stair-step",
+      "group": "dadiancourt:temple-ground",
+      "type": "box",
+      "min": [
+        -137.378874,
+        0,
+        -12.608976
+      ],
+      "max": [
+        -131.409175,
+        0.17,
+        -11.295903
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          0.085,
+          -39.559999999999995
+        ],
+        "size": [
+          6,
+          0.17,
+          0.32
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:stair-step",
+      "group": "dadiancourt:temple-ground",
+      "type": "box",
+      "min": [
+        -137.432076,
+        0.17,
+        -12.924522
+      ],
+      "max": [
+        -131.462377,
+        0.34,
+        -11.611449
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          0.255,
+          -39.879999999999995
+        ],
+        "size": [
+          6,
+          0.17,
+          0.32
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:stair-step",
+      "group": "dadiancourt:temple-ground",
+      "type": "box",
+      "min": [
+        -137.485277,
+        0.34,
+        -13.240069
+      ],
+      "max": [
+        -131.515578,
+        0.51,
+        -11.926996
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          0.425,
+          -40.199999999999996
+        ],
+        "size": [
+          6,
+          0.17,
+          0.32
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:stair-step",
+      "group": "dadiancourt:temple-ground",
+      "type": "box",
+      "min": [
+        -137.538478,
+        0.51,
+        -13.555615
+      ],
+      "max": [
+        -131.56878,
+        0.68,
+        -12.242542
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          0.5950000000000001,
+          -40.519999999999996
+        ],
+        "size": [
+          6,
+          0.17,
+          0.32
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:stair-step",
+      "group": "dadiancourt:temple-ground",
+      "type": "box",
+      "min": [
+        -137.59168,
+        0.68,
+        -13.871162
+      ],
+      "max": [
+        -131.621981,
+        0.85,
+        -12.558089
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          0.7650000000000001,
+          -40.839999999999996
+        ],
+        "size": [
+          6,
+          0.17,
+          0.32
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:stair-cheek",
+      "group": "dadiancourt:temple-ground",
+      "type": "box",
+      "min": [
+        -138.142338,
+        0,
+        -12.922939
+      ],
+      "max": [
+        -137.31736,
+        0.85,
+        -11.155159
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          -3.275,
+          0.425,
+          -40.2
+        ],
+        "size": [
+          0.55,
+          0.85,
+          1.7000000000000015
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:stair-cheek",
+      "group": "dadiancourt:temple-ground",
+      "type": "box",
+      "min": [
+        -131.683495,
+        0,
+        -14.011906
+      ],
+      "max": [
+        -130.858517,
+        0.85,
+        -12.244125
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          3.275,
+          0.425,
+          -40.2
+        ],
+        "size": [
+          0.55,
+          0.85,
+          1.7000000000000015
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:burner-plinth",
+      "group": "dadiancourt:dadian-court",
+      "type": "box",
+      "min": [
+        -134.474647,
+        0,
+        -7.88473
+      ],
+      "max": [
+        -132.630908,
+        0.25,
+        -6.04099
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          0.125,
+          -34.5
+        ],
+        "size": [
+          1.6,
+          0.25,
+          1.6
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:burner-plinth",
+      "group": "dadiancourt:dadian-court",
+      "type": "box",
+      "min": [
+        -134.24418,
+        0.25,
+        -7.654262
+      ],
+      "max": [
+        -132.861375,
+        0.45,
+        -6.271457
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          0.35,
+          -34.5
+        ],
+        "size": [
+          1.2,
+          0.2,
+          1.2
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:burner-vessel-block",
+      "group": "dadiancourt:dadian-court",
+      "type": "box",
+      "min": [
+        -134.186563,
+        0.275,
+        -7.596645
+      ],
+      "max": [
+        -132.918992,
+        1.375,
+        -6.329074
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          0.825,
+          -34.5
+        ],
+        "size": [
+          1.1,
+          1.1,
+          1.1
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:court2-side-wall",
+      "group": "dadiancourt:dadian-court",
+      "type": "box",
+      "min": [
+        -144.997398,
+        0,
+        -10.048994
+      ],
+      "max": [
+        -143.025499,
+        2.9,
+        0.055602
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          -10.64,
+          1.45,
+          -34.3
+        ],
+        "size": [
+          0.27999999999999936,
+          2.9,
+          10.2
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:court2-side-wall",
+      "group": "dadiancourt:dadian-court",
+      "type": "box",
+      "min": [
+        -124.013554,
+        0,
+        -13.586889
+      ],
+      "max": [
+        -122.041656,
+        2.9,
+        -3.482292
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          10.64,
+          1.45,
+          -34.3
+        ],
+        "size": [
+          0.27999999999999936,
+          2.9,
+          10.2
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:court2-south-return",
+      "group": "dadiancourt:dadian-court",
+      "type": "box",
+      "min": [
+        -143.348154,
+        0,
+        -0.636137
+      ],
+      "max": [
+        -140.836395,
+        2.9,
+        0.055602
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          -9.53,
+          1.45,
+          -29.34
+        ],
+        "size": [
+          2.5,
+          2.9,
+          0.28000000000000114
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:court2-south-return",
+      "group": "dadiancourt:dadian-court",
+      "type": "box",
+      "min": [
+        -124.553414,
+        0,
+        -3.804946
+      ],
+      "max": [
+        -122.041656,
+        2.9,
+        -3.113207
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          9.53,
+          1.45,
+          -29.34
+        ],
+        "size": [
+          2.5,
+          2.9,
+          0.28000000000000114
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:court2-north-closure",
+      "group": "dadiancourt:dadian-court",
+      "type": "box",
+      "min": [
+        -150.995801,
+        0,
+        -34.276618
+      ],
+      "max": [
+        -124.522228,
+        3.4,
+        -29.544896
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          0,
+          1.7,
+          -59.8
+        ],
+        "size": [
+          26.8,
+          3.4,
+          0.28000000000000114
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:court2-north-return",
+      "group": "dadiancourt:dadian-court",
+      "type": "box",
+      "min": [
+        -150.972525,
+        0,
+        -29.948955
+      ],
+      "max": [
+        -146.535216,
+        3.4,
+        -12.722322
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          -12.600000000000001,
+          1.7,
+          -51.2
+        ],
+        "size": [
+          1.5999999999999996,
+          3.4,
+          17.199999999999996
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:court2-north-return",
+      "group": "dadiancourt:dadian-court",
+      "type": "box",
+      "min": [
+        -126.123236,
+        0,
+        -34.138566
+      ],
+      "max": [
+        -121.685928,
+        3.4,
+        -16.911933
+      ],
+      "obb": {
+        "pos": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "theta": 0.16703,
+        "center": [
+          12.600000000000001,
+          1.7,
+          -51.2
+        ],
+        "size": [
+          1.5999999999999996,
+          3.4,
+          17.199999999999996
+        ]
+      }
+    }
+  ],
+  "composition": {
+    "rule": "for every record of world/temple-dadian/collision-world.json: obb.pos' = T + R(yaw)·obb.pos, obb.theta' = obb.theta + yaw, obb.center/size unchanged; min/max recomputed from the 4 rotated corners (as scripts/build_street_completion_world.mjs does). Records that only carry min/max (no obb) are first converted to obb{pos:[0,0,0],theta:0,center:mid,size:extent}.",
+    "templeRecords": 128,
+    "selfCheck": {
+      "sampled": [
+        {
+          "name": "shanmen:stone-column",
+          "maxCornerErr": 4.243e-7
+        },
+        {
+          "name": "shanmen:wing-wall-body",
+          "maxCornerErr": 1.946e-7
+        },
+        {
+          "name": "yimen:door-jamb",
+          "maxCornerErr": 6.458e-7
+        },
+        {
+          "name": "dadian:bay-backing",
+          "maxCornerErr": 6.811e-7
+        },
+        {
+          "name": "dadiancourt:court2-north-return",
+          "maxCornerErr": 4.269e-7
+        }
+      ],
+      "maxCornerError": 6.810924730871193e-7
+    },
+    "note": "east-edge/street-completion shop walls live in their per-asset sidecars (blocks.json, verbatim delivered contracts) and are NOT duplicated here"
+  }
+}

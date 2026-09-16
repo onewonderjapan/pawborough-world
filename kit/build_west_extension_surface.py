@@ -378,7 +378,7 @@ hz = abs(SY) * (W['thicknessM'] / 2) + abs(CY) * (W['widthM'] / 2)
 (outdir / 'collision.json').write_text(json.dumps({
     'axis': 'glTF Y-up; world-space records consumed by src/world/collisionAdapter',
     'colliders': [{
-        'name': 'west-extension:seal-wall', 'group': 'west-extension:seal-wall', 'type': 'box',
+        'name': 'westext-seal-wall:seal-wall', 'group': 'westext-seal-wall:seal-wall', 'type': 'box',
         'min': [round(wx - hx, 4), 0.0, round(wz - hz, 4)],
         'max': [round(wx + hx, 4), round(h, 4), round(wz + hz, 4)],
         'obb': {'pos': [wx, 0.0, wz], 'theta': YAW, 'center': [0.0, h / 2, 0.0],
