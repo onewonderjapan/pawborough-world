@@ -1,0 +1,55 @@
+// Fangbang↔temple BRIDGE V2 WebGL evidence (expansion batch N9): the three
+// bridge views through the REAL page with ?ds=fangbang-temple-v2 (dev server
+// on the fallback port 5300; 5296 occupied) + playwright + chrome
+// (SwiftShader). Copy-adapted from capture_fangbang_web.mjs; the delivered
+// script is untouched.
+//
+// Run:
+//   EVIDENCE_PORTS='530[01]' EVIDENCE_DIR=kit/out/fangbang-temple-v2/web \
+//     BASE_URL=http://127.0.0.1:5300 node scripts/capture_fangbang_v2_web.mjs
+import { chromium } from '../node_modules/playwright/index.mjs';
+
+const BASE = process.env.BASE_URL ?? 'http://127.0.0.1:5300';
+const VIEWS = ['shanmen-from-road', 'axis-long', 'aerial-overview'];
+
+const browser = await chromium.launch({
+  executablePath: '/usr/bin/google-chrome',
+  headless: true,
+  args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'],
+});
+
+let failures = 0;
+const page = await browser.newPage({ viewport: { width: 1280, height: 960 } });
+try {
+  await page.goto(BASE + '/fangbang.html?ds=fangbang-temple-v2', { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => window.__fangbangRecord, null, { timeout: 600000 });
+  const rec = await page.evaluate(() => window.__fangbangRecord());
+  if (!rec.ready || !rec.routeCheck?.pass) {
+    console.log(`FAIL page telemetry: ready=${rec.ready} route=${JSON.stringify(rec.routeCheck?.summary ?? rec.routeCheck)}`);
+    failures += 1;
+  } else {
+    console.log(`ok  page loaded: ${rec.resources.triangles} tris, route ${rec.routeCheck.summary}`);
+  }
+  for (const view of VIEWS) {
+    try {
+      await page.click(`button[data-view="${view}"]`);
+      await page.waitForTimeout(600);
+      const before = await page.evaluate(() => window.__fangbangRecord());
+      if (!before.cameraCheck?.pass) throw new Error(`cameraCheck failed for ${view}: ${JSON.stringify(before.cameraCheck)}`);
+      await page.click('button:has-text("保存实测图")');
+      await page.waitForFunction(() => document.querySelector('#notice')?.textContent?.includes('已保存'), null, { timeout: 20000 });
+      console.log(`ok  fangbangv2-${view}-pbr (dPos=${before.cameraCheck.dPos}, dFov=${before.cameraCheck.dFov})`);
+    } catch (e) {
+      failures += 1;
+      console.log(`FAIL fangbangv2-${view}: ${e.message.split('\n')[0]}`);
+    }
+  }
+} catch (e) {
+  failures += 1;
+  console.log(`FAIL page load: ${e.message.split('\n')[0]}`);
+} finally {
+  await page.close();
+}
+await browser.close();
+console.log(failures === 0 ? 'FANGBANG_WEB_PASS' : `FANGBANG_WEB FAIL (${failures})`);
+process.exit(failures === 0 ? 0 : 1);

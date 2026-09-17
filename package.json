@@ -11,7 +11,9 @@
     "dev:dadian": "EVIDENCE_PORTS=529[45] EVIDENCE_DIR=kit/out/temple-dadian/web vite --host 127.0.0.1 --port 5294 --strictPort",
     "preview:dadian": "EVIDENCE_PORTS=529[45] EVIDENCE_DIR=kit/out/temple-dadian/web vite preview --host 127.0.0.1 --port 5295 --strictPort",
     "dev:fangbang": "EVIDENCE_PORTS=529[67] EVIDENCE_DIR=kit/out/fangbang-temple/web vite --host 127.0.0.1 --port 5296 --strictPort",
-    "preview:fangbang": "EVIDENCE_PORTS=529[67] EVIDENCE_DIR=kit/out/fangbang-temple/web vite preview --host 127.0.0.1 --port 5297 --strictPort"
+    "preview:fangbang": "EVIDENCE_PORTS=529[67] EVIDENCE_DIR=kit/out/fangbang-temple/web vite preview --host 127.0.0.1 --port 5297 --strictPort",
+    "dev:temple-v2": "EVIDENCE_PORTS=529[89] EVIDENCE_DIR=kit/out/temple-axis-v2/web vite --host 127.0.0.1 --port 5298 --strictPort",
+    "preview:temple-v2": "EVIDENCE_PORTS=529[89] EVIDENCE_DIR=kit/out/temple-axis-v2/web vite preview --host 127.0.0.1 --port 5299 --strictPort"
   },
   "dependencies": {
     "@dimforge/rapier3d-compat": "0.19.0",

@@ -1,0 +1,131 @@
+{
+  "framebuffer": [
+    1280,
+    960
+  ],
+  "cameraPolicy": "origin/target/FOV are lead design in WORLD GLB coordinates; verify body clearance (no camera inside a collider or below ground); small pose adjustments allowed with before-after receipts",
+  "derivation": "temple-local poses converted with DESIGN_SPEC.coordinateConvention.localToWorld (T=[-127.817,0,27.057], yaw=0.16703)",
+  "cameras": [
+    {
+      "id": "junction-west",
+      "positionGlb": [
+        8,
+        1.6,
+        -3
+      ],
+      "targetGlb": [
+        -30,
+        2,
+        10.5
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "主街西口回望西延伸道路（拼接处）"
+    },
+    {
+      "id": "west-road-mid",
+      "positionGlb": [
+        -60,
+        1.6,
+        21
+      ],
+      "targetGlb": [
+        -127.817,
+        4,
+        27.057
+      ],
+      "verticalFovDegrees": 50,
+      "labelZh": "西延伸道路中段望山门（占位两侧）"
+    },
+    {
+      "id": "placeholder-band",
+      "positionGlb": [
+        -95,
+        1.6,
+        33
+      ],
+      "targetGlb": [
+        -40,
+        2,
+        14
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "占位街区回望主街方向"
+    },
+    {
+      "id": "shanmen-from-road",
+      "positionGlb": [
+        -125.722,
+        1.6,
+        39.482
+      ],
+      "targetGlb": [
+        -127.817,
+        4.5,
+        27.057
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "方浜路中线正望山门（主画面）"
+    },
+    {
+      "id": "forecourt-oblique",
+      "positionGlb": [
+        -135.195,
+        1.6,
+        37.428
+      ],
+      "targetGlb": [
+        -127.983,
+        4.5,
+        26.071
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "前院西南角斜看山门与坐狮"
+    },
+    {
+      "id": "axis-long",
+      "positionGlb": [
+        -125.822,
+        1.6,
+        38.89
+      ],
+      "targetGlb": [
+        -135.465,
+        6,
+        -18.303
+      ],
+      "verticalFovDegrees": 45,
+      "labelZh": "从街面穿山门远望大殿（全轴线）"
+    },
+    {
+      "id": "temple-side-east",
+      "positionGlb": [
+        -113.702,
+        1.6,
+        14.536
+      ],
+      "targetGlb": [
+        -131.308,
+        6,
+        6.349
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "庙东侧看仪门与院墙（与占位关系）"
+    },
+    {
+      "id": "aerial-overview",
+      "positionGlb": [
+        -70,
+        45,
+        70
+      ],
+      "targetGlb": [
+        -95,
+        0,
+        5
+      ],
+      "verticalFovDegrees": 50,
+      "labelZh": "高空总览：主街西端—西延伸—庙轴线"
+    }
+  ],
+  "generatedBy": "delivered bridge cameras copied verbatim (temple-axis unchanged at the street scale); see temple-axis-v2/cameras.json for the 10 expansion cameras"
+}

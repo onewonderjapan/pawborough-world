@@ -1,0 +1,62 @@
+{
+  "moduleId": "yimen-stage",
+  "units": "meters",
+  "surveyed": false,
+  "axis": "GLB Y-up; yimen-LOCAL frame (origin = yimen origin, world (0,0,-21), facade +Z); the stage hangs on the yimen REAR face",
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false,
+  "targets": {
+    "yimen-stage.glb": {
+      "groups": [
+        "yimen-stage-body"
+      ],
+      "objects": 5,
+      "triangles": 7212,
+      "fileBytes": 1288428,
+      "sha256": "d553ab85034a679c908400c52185af52cb266da63d9e664894bf5afd4e5b83ef"
+    }
+  },
+  "timings": {
+    "totalSeconds": 1.0
+  },
+  "budgets": {
+    "stageTris": {
+      "actual": 7212,
+      "limit": 9000,
+      "pass": true
+    },
+    "tileRibsTris": {
+      "actual": 3828,
+      "limit": 4500,
+      "pass": true
+    },
+    "newImages": {
+      "actual": 0,
+      "limit": 0,
+      "pass": true
+    }
+  },
+  "design": {
+    "family": "temple-axis-stage",
+    "reference": {
+      "imageId": "PBR-SH-0006-G13/G14/G15/G16 + photo PBR-SH-0005-007 (weak)",
+      "referenceEra": "GEN inference images (notHistoricalEvidence) + one weak CC photo; form direction only — no curtain, text, figures, stairs or dimensions copied",
+      "historicalAccuracyVerified": false,
+      "dimensionsAreDesign": true
+    },
+    "ridgeBelowYimen": {
+      "stage": 7.4,
+      "yimen": 7.7
+    },
+    "floorUnreachable": "no stair, no temple-ground naming, no floor collider",
+    "roofMethod": "yimen hip-shell machinery (ridge 3.6, lift 0.18) + gable panels + crest; dark seam band over the yimen rear slope sampled from kit/yimen.config.json",
+    "placement": {
+      "originGlbWorld": [
+        0,
+        0,
+        -21
+      ],
+      "yawRad": 0
+    }
+  }
+}

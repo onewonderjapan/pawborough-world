@@ -1,0 +1,105 @@
+{
+  "axis": "glTF Y-up; WORLD records (court3 authored in place)",
+  "colliders": [
+    {
+      "name": "boundary-wall",
+      "group": "court3-boundary",
+      "type": "box",
+      "min": [
+        -16.68,
+        0.0,
+        -84.0
+      ],
+      "max": [
+        -16.4,
+        2.9,
+        -26.200000000000003
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0.0,
+        "center": [
+          -16.54,
+          1.45,
+          -55.1
+        ],
+        "size": [
+          0.28000000000000114,
+          2.9,
+          57.8
+        ]
+      }
+    },
+    {
+      "name": "boundary-wall",
+      "group": "court3-boundary",
+      "type": "box",
+      "min": [
+        16.4,
+        0.0,
+        -84.0
+      ],
+      "max": [
+        16.68,
+        2.9,
+        -26.200000000000003
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0.0,
+        "center": [
+          16.54,
+          1.45,
+          -55.1
+        ],
+        "size": [
+          0.28000000000000114,
+          2.9,
+          57.8
+        ]
+      }
+    },
+    {
+      "name": "north-closure",
+      "group": "court3-boundary",
+      "type": "box",
+      "min": [
+        -16.4,
+        0.0,
+        -84.14
+      ],
+      "max": [
+        16.4,
+        3.4,
+        -83.86
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0.0,
+        "center": [
+          0.0,
+          1.7,
+          -84.0
+        ],
+        "size": [
+          32.8,
+          3.4,
+          0.28000000000000114
+        ]
+      }
+    }
+  ],
+  "notIntegratedOrWalkingTested": true
+}

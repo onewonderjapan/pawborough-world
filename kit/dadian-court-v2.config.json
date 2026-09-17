@@ -1,0 +1,152 @@
+{
+  "sampleId": "dadian-court-v2",
+  "units": "meters",
+  "axis": "world GLB Y-up (court authored in place, no instance transform)",
+  "basedOn": "DESIGN_SPEC.json pawborough-temple-expansion-night-20260917 court2Recomposition.variantOfDeliveredCourt — the delivered second court MINUS side walls and MINUS north closure+return stubs (strict builder keys, default true elsewhere); delivered dadian-court.glb untouched",
+  "floor": {
+    "xM": [
+      -10.78,
+      10.78
+    ],
+    "zM": [
+      -29.2,
+      -39.4
+    ],
+    "pathHalfWidthM": 1.95,
+    "pathY": 0.0,
+    "fieldY": -0.004,
+    "slabThicknessM": 0.22
+  },
+  "apronsBehindYimen": {
+    "xInnerM": 7.4,
+    "zM": [
+      -26.2,
+      -29.2
+    ],
+    "y": 0.0
+  },
+  "sideWalls": {
+    "innerX": 10.5,
+    "thicknessM": 0.28,
+    "heightM": 2.9,
+    "capTopY": 3.12,
+    "zM": [
+      -29.2,
+      -39.4
+    ]
+  },
+  "southReturns": {
+    "z": [
+      -29.2,
+      -29.48
+    ],
+    "xM": [
+      8.28,
+      10.78
+    ],
+    "heightM": 2.9,
+    "capTopY": 3.12
+  },
+  "northClosure": {
+    "z": -59.8,
+    "thicknessM": 0.28,
+    "xM": [
+      -13.4,
+      13.4
+    ],
+    "heightM": 3.4,
+    "capTopY": 3.62,
+    "returnStubDepthM": 1.6,
+    "note": "sample terminal wall behind the hall (非历史), same honesty as the entry cutoff"
+  },
+  "platform": {
+    "xM": [
+      -12.0,
+      12.0
+    ],
+    "zM": [
+      -41.0,
+      -58.2
+    ],
+    "topY": 0.85,
+    "skirtInsetM": 0.12
+  },
+  "steps": {
+    "count": 5,
+    "riserM": 0.17,
+    "treadM": 0.32,
+    "widthM": 6.0,
+    "zM": [
+      -41.0,
+      -39.4
+    ],
+    "cheekWidthM": 0.55,
+    "walkabilityNote": "step tops and platform top are temple-ground__worn-stone; the walk route attempts the ascent"
+  },
+  "burner": {
+    "centerGlb": [
+      0,
+      0,
+      -34.5
+    ],
+    "plinthTiersM": [
+      [
+        1.6,
+        0.25
+      ],
+      [
+        1.2,
+        0.2
+      ]
+    ],
+    "vesselR": 0.55,
+    "vesselH": 0.75,
+    "legR": 0.09,
+    "legH": 0.35,
+    "pawBlockM": [
+      0.16,
+      0.08,
+      0.2
+    ],
+    "handleTorusR": 0.12,
+    "handleTubeR": 0.03,
+    "lidDiscsM": [
+      [
+        0.5,
+        0.06
+      ],
+      [
+        0.34,
+        0.05
+      ]
+    ],
+    "finialR": 0.09,
+    "trisMax": 900,
+    "evidence": "photo-informed per PBR-SH-0005-002/003 (beast legs, double-eave lid); overall scale design value",
+    "note": "NOT the four-leg pavilion burner of PBR-SH-0005-005"
+  },
+  "drains": [
+    [
+      -9.8,
+      -31.5
+    ],
+    [
+      9.8,
+      -31.5
+    ],
+    [
+      -9.8,
+      -38.5
+    ],
+    [
+      9.8,
+      -38.5
+    ]
+  ],
+  "budgets": {
+    "courtTrisMax": 4500
+  },
+  "contextNotSurvey": "second-court width, wall heights, burner, closure placement are all design values continuing the adopted sample-axis language; no survey exists",
+  "buildSideWalls": false,
+  "buildNorthClosure": false
+}

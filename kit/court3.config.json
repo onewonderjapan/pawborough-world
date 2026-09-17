@@ -1,0 +1,118 @@
+{
+  "sampleId": "court3",
+  "units": "meters",
+  "axis": "world GLB Y-up (authored in place, no instance transform); +Z south, shanmen threshold (0,0,0), north = -Z",
+  "basedOn": "DESIGN_SPEC.json pawborough-temple-expansion-night-20260917 court3AndHoudian.* (lead-frozen design values; NOT a survey)",
+  "sidePassages": {
+    "xM": [
+      [
+        -16.4,
+        -10.78
+      ],
+      [
+        10.78,
+        16.4
+      ]
+    ],
+    "zM": [
+      -39.1,
+      -58.2
+    ],
+    "y": 0.0
+  },
+  "deadPockets": {
+    "xM": [
+      -16.4,
+      -10.78
+    ],
+    "zM": [
+      -29.48,
+      -39.1
+    ],
+    "y": -0.004
+  },
+  "court3Floor": {
+    "xM": [
+      -16.4,
+      16.4
+    ],
+    "zM": [
+      -58.2,
+      -72.2
+    ],
+    "pathHalfWidthM": 1.95,
+    "pathY": 0.0,
+    "fieldY": -0.004,
+    "slabThicknessM": 0.22
+  },
+  "drains": [
+    [
+      -15.0,
+      -60.0
+    ],
+    [
+      15.0,
+      -60.0
+    ],
+    [
+      -15.0,
+      -70.0
+    ],
+    [
+      15.0,
+      -70.0
+    ]
+  ],
+  "boundaryWall": {
+    "innerX": 16.4,
+    "thicknessM": 0.28,
+    "heightM": 2.9,
+    "capTopY": 3.12,
+    "zM": [
+      -26.2,
+      -84.0
+    ],
+    "postSpacingM": 3.5,
+    "postSizeM": [
+      0.16,
+      0.16,
+      0.16
+    ]
+  },
+  "northClosure": {
+    "z": -84.0,
+    "xM": [
+      -16.4,
+      16.4
+    ],
+    "heightM": 3.4,
+    "capTopY": 3.62,
+    "thicknessM": 0.28
+  },
+  "budgets": {
+    "court3TrisMax": 7000
+  },
+  "contextNotSurvey": "third-court width, boundary walls and the north closure are all design values continuing the adopted axis language (boundaryWallNotHistorical); no survey exists",
+  "passageMouths": {
+    "xHalfFrom": 1.1,
+    "xTo": 10.78,
+    "zM": [
+      -41.0,
+      -39.1
+    ],
+    "y": 0.0,
+    "note": "the DESIGN_SPEC opening band (-39.1..-41.0) floored from the stair edge (x=±1.1, under the step margin) to the court edge — required by the frozen route legs; design_inference fill, no frozen number contradicted"
+  },
+  "northStrip": {
+    "xM": [
+      -16.4,
+      16.4
+    ],
+    "zM": [
+      -83.86,
+      -72.2
+    ],
+    "y": -0.004,
+    "note": "unreachable strip behind the houdian down to the north closure, paved as a fall guard (same language as the dead pockets)"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "sampleId": "gallery",
+  "family": "temple-axis-gallery-bay",
+  "units": "meters",
+  "axis": "GLB Y-up; facade +Z; depth -Z; front-column-line center bottom origin (local); instanced at (±10.78, 0, -30.99) yaw ±π/2 by the world assembly",
+  "basedOn": "DESIGN_SPEC.json pawborough-temple-expansion-night-20260917 gallery.* (lead-frozen design values; NOT a survey)",
+  "reference": {
+    "imageId": "PBR-SH-0007-G11 + PBR-SH-0007-G09",
+    "referenceEra": "GEN inference images (notHistoricalEvidence); form direction only — no dimensions, no outside railings, no trees copied",
+    "historicalAccuracyVerified": false,
+    "dimensionsAreDesign": true
+  },
+  "placement": {
+    "west": {
+      "originGlb": [
+        -10.78,
+        0,
+        -30.99
+      ],
+      "yawRad": 1.5707963
+    },
+    "east": {
+      "originGlb": [
+        10.78,
+        0,
+        -30.99
+      ],
+      "yawRad": -1.5707963
+    }
+  },
+  "body": {
+    "lengthM": 3.0,
+    "depthM": 2.4,
+    "bays": 1,
+    "columnsLocalX": [
+      -1.35,
+      1.35
+    ],
+    "columnLocalZ": 0.0,
+    "columnSizeM": [
+      0.24,
+      2.7,
+      0.24
+    ]
+  },
+  "bench": {
+    "kind": "坐凳栏 (allowed item)",
+    "heightM": 0.45,
+    "depthM": 0.3,
+    "span": "full length between the two columns",
+    "localZ": 0.0
+  },
+  "backWall": {
+    "localZ": -2.4,
+    "thicknessM": 0.24,
+    "heightM": 3.4,
+    "material": "plaster"
+  },
+  "roof": {
+    "type": "单坡 single slope, high at the back wall, low over the columns",
+    "highY": 3.4,
+    "lowY": 2.7,
+    "frontEaveZ": 0.5,
+    "rearEaveZ": -2.4,
+    "thicknessM": 0.09,
+    "tileRibSpacingM": 0.26,
+    "tileRibRadiusM": 0.04,
+    "eaveFasciaH": 0.12
+  },
+  "floor": {
+    "topY": 0.15,
+    "thicknessM": 0.15,
+    "extentX": [
+      -1.5,
+      1.5
+    ],
+    "extentZ": [
+      0.4,
+      -2.4
+    ],
+    "groundNaming": "temple-ground__worn-stone"
+  },
+  "budgets": {
+    "galleryTrisMax": 2500
+  },
+  "uncertaintyPolicy": {
+    "allNewBuildingsAreDesignInference": true,
+    "evidence": "PBR-SH-0005-007 weak + GEN 0007-G11/G09",
+    "interior": "open walk-through bay, nothing modeled inside"
+  },
+  "configSha256": "6fd19bc2753e5395e36e314e7e2398fc65a9bc1f17fcf1dce045c8d18afefb31"
+}

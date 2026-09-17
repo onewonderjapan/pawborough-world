@@ -1,0 +1,69 @@
+{
+  "moduleId": "gallery",
+  "units": "meters",
+  "surveyed": false,
+  "axis": "GLB Y-up; facade +Z; depth -Z; front-column-line center bottom origin (local); instanced at (±10.78, 0, -30.99) yaw ±π/2 by the world assembly",
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false,
+  "targets": {
+    "gallery.glb": {
+      "groups": [
+        "gallery-body",
+        "temple-ground"
+      ],
+      "objects": 6,
+      "triangles": 1134,
+      "fileBytes": 493232,
+      "sha256": "69ec8e6ad326b015f215fd00918f15b05dc32e4d1642238bacb2839802f93ad1"
+    }
+  },
+  "timings": {
+    "totalSeconds": 0.3
+  },
+  "budgets": {
+    "galleryTris": {
+      "actual": 1134,
+      "limit": 2500,
+      "pass": true
+    },
+    "tileRibsTris": {
+      "actual": 220,
+      "limit": 800,
+      "pass": true
+    },
+    "newImages": {
+      "actual": 0,
+      "limit": 0,
+      "pass": true
+    }
+  },
+  "design": {
+    "family": "temple-axis-gallery-bay",
+    "reference": {
+      "imageId": "PBR-SH-0007-G11 + PBR-SH-0007-G09",
+      "referenceEra": "GEN inference images (notHistoricalEvidence); form direction only — no dimensions, no outside railings, no trees copied",
+      "historicalAccuracyVerified": false,
+      "dimensionsAreDesign": true
+    },
+    "bench": "坐凳栏 between the columns, full length (allowed item)",
+    "roofMethod": "single-slope closed slab, high 3.4 at the back wall, low 2.7 over the columns",
+    "placement": {
+      "west": {
+        "originGlb": [
+          -10.78,
+          0,
+          -30.99
+        ],
+        "yawRad": 1.5707963
+      },
+      "east": {
+        "originGlb": [
+          10.78,
+          0,
+          -30.99
+        ],
+        "yawRad": -1.5707963
+      }
+    }
+  }
+}

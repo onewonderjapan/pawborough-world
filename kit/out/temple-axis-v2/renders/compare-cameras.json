@@ -1,0 +1,48 @@
+{
+  "source": "kit/build_temple_v2_scene.py",
+  "engine": "cycles-cpu",
+  "samples": 24,
+  "resolution": [
+    1600,
+    900
+  ],
+  "mode": "compare",
+  "assembly": "temple-axis-v2 instances verbatim (peidian/gallery yaw \u00b190\u00b0)",
+  "views": [
+    {
+      "view": "court2-pair",
+      "tag": "pbr",
+      "geometry": "native-blend",
+      "posBlender": [
+        0,
+        28.5,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        42,
+        4.5
+      ],
+      "fovDegVerified": 60.0,
+      "file": "court2-pair-pbr-native.png"
+    },
+    {
+      "view": "houdian-front",
+      "tag": "pbr",
+      "geometry": "native-blend",
+      "posBlender": [
+        0,
+        69.5,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        74.5,
+        5
+      ],
+      "fovDegVerified": 55.0,
+      "file": "houdian-front-pbr-native.png"
+    }
+  ],
+  "note": "BLENDER evidence; WebGL captures are separate (kit/out/temple-axis-v2/web)"
+}

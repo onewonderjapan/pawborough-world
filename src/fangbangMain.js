@@ -33,8 +33,14 @@ import { applyViewVerified, loadGlbWithStats, saveEvidence, countResources } fro
 const app = document.querySelector('#app'), stats = document.querySelector('#stats'),
   viewsEl = document.querySelector('#views'), noticeEl = document.querySelector('#notice');
 
-const BASE = './world/fangbang-temple/';
-const DATASET_TAG = 'fangbang';
+// Expansion batch 20260917: ?ds=<dataset> selects the world dataset
+// (default 'fangbang-temple' — unchanged behavior for every existing URL).
+// ?skins=1 (second package) appends the street-sidefaces skins.
+const PARAMS = new URLSearchParams(location.search);
+const DATASET_ID = PARAMS.get('ds') || 'fangbang-temple';
+const WANT_SKINS = PARAMS.get('skins') === '1';
+const BASE = `./world/${DATASET_ID}/`;
+const DATASET_TAG = DATASET_ID === 'fangbang-temple' ? 'fangbang' : `fangbang-${DATASET_ID}`;
 
 const renderer = new T.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(1);
@@ -94,7 +100,7 @@ function resources() { return countResources(world, clay); }
 
 function record() {
   return {
-    dataset: 'fangbang-temple', view: selected, mode, paused, clay: clayOn, ready,
+    dataset: DATASET_ID, view: selected, mode, paused, clay: clayOn, ready,
     resources: resources(),
     trianglesExpected: session
       ? expectedTriangles(manifest.placedTriangles, [

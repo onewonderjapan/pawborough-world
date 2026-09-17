@@ -1,0 +1,218 @@
+{
+  "source": "kit/build_temple_v2_scene.py",
+  "engine": "cycles-cpu",
+  "samples": 24,
+  "resolution": [
+    1600,
+    900
+  ],
+  "mode": "review",
+  "assembly": "temple-axis-v2 instances verbatim (peidian/gallery yaw \u00b190\u00b0)",
+  "views": [
+    {
+      "view": "court2-pair",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        28.5,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        42,
+        4.5
+      ],
+      "fovDegVerified": 60.0,
+      "file": "court2-pair-pbr-glb.png"
+    },
+    {
+      "view": "court2-pair",
+      "tag": "clay",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        28.5,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        42,
+        4.5
+      ],
+      "fovDegVerified": 60.0,
+      "file": "court2-pair-clay-glb.png"
+    },
+    {
+      "view": "peidian-west-front",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        -3,
+        35.8,
+        1.6
+      ],
+      "targetBlender": [
+        -11.2,
+        35.8,
+        3
+      ],
+      "fovDegVerified": 55.0,
+      "file": "peidian-west-front-pbr-glb.png"
+    },
+    {
+      "view": "gallery-link",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        -6.5,
+        27,
+        1.6
+      ],
+      "targetBlender": [
+        -12,
+        33.5,
+        2.4
+      ],
+      "fovDegVerified": 55.0,
+      "file": "gallery-link-pbr-glb.png"
+    },
+    {
+      "view": "stage-from-court",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        38,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        27,
+        4.5
+      ],
+      "fovDegVerified": 55.0,
+      "file": "stage-from-court-pbr-glb.png"
+    },
+    {
+      "view": "stage-3q",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        7.5,
+        33,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        27.5,
+        4.8
+      ],
+      "fovDegVerified": 55.0,
+      "file": "stage-3q-pbr-glb.png"
+    },
+    {
+      "view": "passage-east",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        13.5,
+        41.5,
+        1.6
+      ],
+      "targetBlender": [
+        13.5,
+        60,
+        2
+      ],
+      "fovDegVerified": 55.0,
+      "file": "passage-east-pbr-glb.png"
+    },
+    {
+      "view": "court3-axis",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        59.5,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        76,
+        5
+      ],
+      "fovDegVerified": 50.0,
+      "file": "court3-axis-pbr-glb.png"
+    },
+    {
+      "view": "court3-axis",
+      "tag": "clay",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        59.5,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        76,
+        5
+      ],
+      "fovDegVerified": 50.0,
+      "file": "court3-axis-clay-glb.png"
+    },
+    {
+      "view": "houdian-front",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        0,
+        69.5,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        74.5,
+        5
+      ],
+      "fovDegVerified": 55.0,
+      "file": "houdian-front-pbr-glb.png"
+    },
+    {
+      "view": "houdian-3q",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        -10,
+        66,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        76,
+        5
+      ],
+      "fovDegVerified": 55.0,
+      "file": "houdian-3q-pbr-glb.png"
+    },
+    {
+      "view": "axis-aerial",
+      "tag": "pbr",
+      "geometry": "glb-reimport",
+      "posBlender": [
+        -30,
+        20,
+        42
+      ],
+      "targetBlender": [
+        0,
+        50,
+        0
+      ],
+      "fovDegVerified": 50.0,
+      "file": "axis-aerial-pbr-glb.png"
+    }
+  ],
+  "note": "BLENDER evidence; WebGL captures are separate (kit/out/temple-axis-v2/web)"
+}

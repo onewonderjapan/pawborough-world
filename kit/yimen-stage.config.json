@@ -1,0 +1,64 @@
+{
+  "sampleId": "yimen-stage",
+  "family": "temple-axis-stage",
+  "units": "meters",
+  "axis": "GLB Y-up; yimen-LOCAL frame (origin = yimen origin, world (0,0,-21), facade +Z); the stage hangs on the yimen REAR face",
+  "basedOn": "DESIGN_SPEC.json pawborough-temple-expansion-night-20260917 stage.* (lead-frozen design values; NOT a survey)",
+  "reference": {
+    "imageId": "PBR-SH-0006-G13/G14/G15/G16 + photo PBR-SH-0005-007 (weak)",
+    "referenceEra": "GEN inference images (notHistoricalEvidence) + one weak CC photo; form direction only — no curtain, text, figures, stairs or dimensions copied",
+    "historicalAccuracyVerified": false,
+    "dimensionsAreDesign": true
+  },
+  "placement": { "originGlbWorld": [0, 0, -21], "yawRad": 0 },
+  "yimenReference": {
+    "config": "kit/yimen.config.json",
+    "ridgeY": 7.7,
+    "assert": "stage ridgeY must stay below the yimen ridge 7.7"
+  },
+  "floor": {
+    "y": 2.6,
+    "thicknessM": 0.2,
+    "xM": [-3.2, 3.2],
+    "zLocal": [-5.2, -8.9],
+    "naming": "NOT walkable, NOT temple-ground__ (unreachable, no stair)"
+  },
+  "columns": {
+    "positions": [[-3.0, -5.6], [3.0, -5.6], [-3.0, -8.6], [3.0, -8.6]],
+    "sizeM": [0.26, 2.6, 0.26],
+    "onGround": "feet land on the existing y=0 ground behind the yimen; verified against assembled collision/ground at world build time",
+    "plinthM": [0.4, 0.4, 0.08]
+  },
+  "frontRail": { "kind": "台口栏板 plain board", "heightM": 0.55, "atLocalZ": -8.9 },
+  "wingWalls": { "widthZM": 0.9, "xM": [-3.2, 3.2], "zLocal": [-5.2, -6.1], "topY": 5.6 },
+  "roof": {
+    "type": "歇山读感: yimen four-slope hip shell + two vertical gable panels + crest (dadian gableTreatment language)",
+    "widthM": 7.6,
+    "depthLocalZ": [-4.9, -9.6],
+    "ridgeY": 7.4,
+    "ridgeLengthM": 3.6,
+    "eaveY": 5.6,
+    "shellThicknessM": 0.09,
+    "profileTY": [[0, 7.4], [0.5, 6.4], [1, 5.6]],
+    "resampleSegments": 12,
+    "cornerLiftM": 0.18,
+    "cornerLiftXStartsM": 3.0,
+    "cornerLiftDepthTStarts": 0.65,
+    "hipEndTopY": 6.4,
+    "hipStartsXM": 1.8,
+    "tileRibSpacingM": 0.26,
+    "tileRibRadiusM": 0.04,
+    "eaveFasciaH": 0.12,
+    "gablePlaneXM": 2.0,
+    "gableBaseY": 5.9,
+    "gableZRange": [-5.6, -8.9],
+    "seam": "dark seam_trim band where the stage roof front edge rides over the yimen rear slope"
+  },
+  "budgets": { "stageTrisMax": 9000 },
+  "uncertaintyPolicy": {
+    "allNewBuildingsAreDesignInference": true,
+    "upperBack": "stage rear upper wall = the yimen rear face itself, nothing new built",
+    "noStair": "no stair built; the stage floor is unreachable by design",
+    "evidence": "photo 0005-007 weak + GEN 0006-G13/14/15/16"
+  }
+}
