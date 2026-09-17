@@ -1,0 +1,3794 @@
+{
+  "source": "world/fangbang-temple/route.json + delivered street/east-edge/street-completion collision sidecars",
+  "method": "route sampled every 2m at eye 1.6; wall face samples ray-tested against ALL other module solid boxes (slab OBB, proper inverse rotation); unobstructed = visible",
+  "eyesSampled": 161,
+  "wallsTested": 119,
+  "occluders": 320,
+  "selectedTargets": [
+    {
+      "place": "N01-west-gable",
+      "module": "N01-plain-v1",
+      "faces": [
+        {
+          "module": "N01-plain-v1",
+          "record": "left-side",
+          "center": [
+            -2.67,
+            3.4,
+            -8.38
+          ],
+          "half": [
+            0.14,
+            3.4,
+            3.2
+          ],
+          "yaw": 0.3126,
+          "visibleEyes": {
+            "eye": [
+              70.84,
+              1.6,
+              8.06
+            ],
+            "sample": [
+              -3.55,
+              2.21,
+              -11.46
+            ],
+            "dist": 76.9
+          },
+          "evidence": "unobstructed eye->face segment(s) exist; nearest eye 76.9m"
+        }
+      ]
+    },
+    {
+      "place": "laneA-west-flank",
+      "module": "N05-restaurant-a",
+      "faces": [
+        {
+          "module": "N05-restaurant-a",
+          "record": "right-side",
+          "center": [
+            42.16,
+            3.95,
+            -13.33
+          ],
+          "half": [
+            0.14,
+            3.95,
+            3.5
+          ],
+          "yaw": -0.0793,
+          "visibleEyes": {
+            "eye": [
+              105.47,
+              1.6,
+              23.39
+            ],
+            "sample": [
+              41.99,
+              2.57,
+              -9.83
+            ],
+            "dist": 71.7
+          },
+          "evidence": "unobstructed eye->face segment(s) exist; nearest eye 71.7m"
+        },
+        {
+          "module": "N05-restaurant-a",
+          "record": "back-wall",
+          "center": [
+            36.93,
+            3.95,
+            -17.11
+          ],
+          "half": [
+            5.38,
+            3.95,
+            0.14
+          ],
+          "yaw": -0.0793,
+          "visibleEyes": {
+            "eye": [
+              84.75,
+              1.6,
+              16.74
+            ],
+            "sample": [
+              31.57,
+              2.57,
+              -17.43
+            ],
+            "dist": 63.2
+          },
+          "evidence": "unobstructed eye->face segment(s) exist; nearest eye 63.2m"
+        }
+      ],
+      "rearNote": "skin covers the first 6 m of the rear wall adjacent to the lane mouth"
+    },
+    {
+      "place": "laneA-east-flank",
+      "module": "N06-curio-a",
+      "faces": [
+        {
+          "module": "N06-curio-a",
+          "record": "left-side",
+          "center": [
+            44.57,
+            3.3,
+            -12.21
+          ],
+          "half": [
+            0.14,
+            3.3,
+            2.6
+          ],
+          "yaw": -0.1679,
+          "visibleEyes": {
+            "eye": [
+              105.47,
+              1.6,
+              23.39
+            ],
+            "sample": [
+              44.25,
+              2.15,
+              -9.62
+            ],
+            "dist": 69.6
+          },
+          "evidence": "unobstructed eye->face segment(s) exist; nearest eye 69.6m"
+        },
+        {
+          "module": "N06-curio-a",
+          "record": "back-wall",
+          "center": [
+            47.9,
+            3.3,
+            -14.14
+          ],
+          "half": [
+            2.83,
+            3.3,
+            0.14
+          ],
+          "yaw": -0.1679,
+          "visibleEyes": {
+            "eye": [
+              56.92,
+              1.6,
+              0.17
+            ],
+            "sample": [
+              45.12,
+              2.15,
+              -14.61
+            ],
+            "dist": 18.9
+          },
+          "evidence": "unobstructed eye->face segment(s) exist; nearest eye 18.9m"
+        }
+      ],
+      "rearNote": "skin covers the first 6 m of the rear wall adjacent to the lane mouth"
+    },
+    {
+      "place": "laneB-west-flank",
+      "module": "S05-plain-v3",
+      "faces": [
+        {
+          "module": "S05-plain-v3",
+          "record": "left-side",
+          "center": [
+            58.13,
+            3.4,
+            10.83
+          ],
+          "half": [
+            0.14,
+            3.4,
+            3.2
+          ],
+          "yaw": 2.66,
+          "visibleEyes": {
+            "eye": [
+              124.6,
+              1.6,
+              27.65
+            ],
+            "sample": [
+              59.71,
+              4.25,
+              8.04
+            ],
+            "dist": 67.8
+          },
+          "evidence": "unobstructed eye->face segment(s) exist; nearest eye 67.8m"
+        },
+        {
+          "module": "S05-plain-v3",
+          "record": "back-wall",
+          "center": [
+            52.09,
+            3.4,
+            11.13
+          ],
+          "half": [
+            5.08,
+            3.4,
+            0.14
+          ],
+          "yaw": 2.66,
+          "visibleEyes": {
+            "eye": [
+              65.67,
+              1.6,
+              5.02
+            ],
+            "sample": [
+              56.64,
+              2.21,
+              13.38
+            ],
+            "dist": 12.3
+          },
+          "evidence": "unobstructed eye->face segment(s) exist; nearest eye 12.3m"
+        }
+      ],
+      "rearNote": "skin covers the first 6 m of the rear wall adjacent to the lane mouth"
+    },
+    {
+      "place": "laneB-east-flank",
+      "module": "S07-plain-v2",
+      "faces": [
+        {
+          "module": "S07-plain-v2",
+          "record": "right-side",
+          "center": [
+            59.9,
+            3.4,
+            11.85
+          ],
+          "half": [
+            0.14,
+            3.4,
+            3.2
+          ],
+          "yaw": 2.6087,
+          "visibleEyes": {
+            "eye": [
+              124.6,
+              1.6,
+              27.65
+            ],
+            "sample": [
+              61.62,
+              2.21,
+              9.15
+            ],
+            "dist": 65.6
+          },
+          "evidence": "unobstructed eye->face segment(s) exist; nearest eye 65.6m"
+        },
+        {
+          "module": "S07-plain-v2",
+          "record": "back-wall",
+          "center": [
+            62.83,
+            3.4,
+            17.13
+          ],
+          "half": [
+            5.08,
+            3.4,
+            0.14
+          ],
+          "yaw": 2.6087,
+          "visibleEyes": {
+            "eye": [
+              124.6,
+              1.6,
+              27.65
+            ],
+            "sample": [
+              58.52,
+              2.21,
+              14.45
+            ],
+            "dist": 67.4
+          },
+          "evidence": "unobstructed eye->face segment(s) exist; nearest eye 67.4m"
+        }
+      ],
+      "rearNote": "skin covers the first 6 m of the rear wall adjacent to the lane mouth"
+    },
+    {
+      "place": "east-tail-133-east-gable",
+      "module": "east-shop-133",
+      "faces": [
+        {
+          "module": "east-shop-133",
+          "record": "gable-wall-east-b0s0",
+          "center": [
+            124.04,
+            3.9,
+            36.72
+          ],
+          "half": [
+            0.14,
+            3.3,
+            5.5
+          ],
+          "yaw": 2.9122,
+          "visibleEyes": {
+            "eye": [
+              124.6,
+              1.6,
+              27.65
+            ],
+            "sample": [
+              125.29,
+              2.75,
+              31.37
+            ],
+            "dist": 3.8
+          },
+          "evidence": "unobstructed eye->face segment(s) exist; nearest eye 3.8m"
+        }
+      ],
+      "note": "foundation-gable-east is the same wall in the foundation band; one skin covers the full gable"
+    }
+  ],
+  "selectionNote": "the PLAN package-2 set: N01 west gable, lane-A/B mouth flanks (gable + rear first 6m each), east tail 133 east gable; per-face ray evidence below in visibleFaces",
+  "visibleFaces": [
+    {
+      "module": "east-shop-128",
+      "record": "back-wall",
+      "center": [
+        100.59,
+        3.6,
+        8.32
+      ],
+      "half": [
+        5.07,
+        3.6,
+        0.14
+      ],
+      "yaw": -0.3017,
+      "visibleEyes": {
+        "eye": [
+          105.47,
+          1.6,
+          23.39
+        ],
+        "sample": [
+          95.71,
+          2.34,
+          6.92
+        ],
+        "dist": 19.1
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 19.1m"
+    },
+    {
+      "module": "east-shop-128",
+      "record": "foundation-gable-east-b0s0",
+      "center": [
+        104.15,
+        0.2,
+        14.52
+      ],
+      "half": [
+        0.17,
+        0.4,
+        5
+      ],
+      "yaw": -0.3017,
+      "visibleEyes": {
+        "eye": [
+          107.42,
+          1.6,
+          23.86
+        ],
+        "sample": [
+          102.8,
+          0.06,
+          19.33
+        ],
+        "dist": 6.5
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 6.5m"
+    },
+    {
+      "module": "east-shop-128",
+      "record": "foundation-gable-west-b0s0",
+      "center": [
+        94.15,
+        0.2,
+        11.4
+      ],
+      "half": [
+        0.17,
+        0.4,
+        5
+      ],
+      "yaw": -0.3017,
+      "visibleEyes": {
+        "eye": [
+          115.21,
+          1.6,
+          25.68
+        ],
+        "sample": [
+          92.79,
+          0.06,
+          16.22
+        ],
+        "dist": 24.3
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 24.3m"
+    },
+    {
+      "module": "east-shop-128",
+      "record": "gable-wall-east-b0s0",
+      "center": [
+        104.12,
+        3.9,
+        14.51
+      ],
+      "half": [
+        0.14,
+        3.3,
+        5
+      ],
+      "yaw": -0.3017,
+      "visibleEyes": {
+        "eye": [
+          107.42,
+          1.6,
+          23.86
+        ],
+        "sample": [
+          102.75,
+          2.75,
+          19.32
+        ],
+        "dist": 6.5
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 6.5m"
+    },
+    {
+      "module": "east-shop-128",
+      "record": "gable-wall-west-b0s0",
+      "center": [
+        94.18,
+        2.77,
+        11.41
+      ],
+      "half": [
+        0.14,
+        2.18,
+        5
+      ],
+      "yaw": -0.3017,
+      "visibleEyes": {
+        "eye": [
+          115.21,
+          1.6,
+          25.68
+        ],
+        "sample": [
+          92.8,
+          2.01,
+          16.22
+        ],
+        "dist": 24.3
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 24.3m"
+    },
+    {
+      "module": "east-shop-128",
+      "record": "gable-wall-west-b1s0",
+      "center": [
+        95.2,
+        5.5,
+        8.12
+      ],
+      "half": [
+        0.14,
+        0.55,
+        1.55
+      ],
+      "yaw": -0.3017,
+      "visibleEyes": {
+        "eye": [
+          105.47,
+          1.6,
+          23.39
+        ],
+        "sample": [
+          94.74,
+          5.31,
+          9.6
+        ],
+        "dist": 17.5
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 17.5m"
+    },
+    {
+      "module": "east-shop-128",
+      "record": "gable-wall-west-b1s1",
+      "center": [
+        94.01,
+        5.5,
+        11.94
+      ],
+      "half": [
+        0.14,
+        0.55,
+        1.65
+      ],
+      "yaw": -0.3017,
+      "visibleEyes": {
+        "eye": [
+          107.42,
+          1.6,
+          23.86
+        ],
+        "sample": [
+          93.63,
+          5.31,
+          13.55
+        ],
+        "dist": 17.2
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 17.2m"
+    },
+    {
+      "module": "east-shop-128",
+      "record": "gable-wall-west-b1s2",
+      "center": [
+        92.99,
+        5.5,
+        15.23
+      ],
+      "half": [
+        0.14,
+        0.55,
+        1
+      ],
+      "yaw": -0.3017,
+      "visibleEyes": {
+        "eye": [
+          115.21,
+          1.6,
+          25.68
+        ],
+        "sample": [
+          92.8,
+          5.31,
+          16.22
+        ],
+        "dist": 24.3
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 24.3m"
+    },
+    {
+      "module": "east-shop-128",
+      "record": "gable-wall-west-b2s0",
+      "center": [
+        94.18,
+        6.63,
+        11.41
+      ],
+      "half": [
+        0.14,
+        0.58,
+        5
+      ],
+      "yaw": -0.3017,
+      "visibleEyes": {
+        "eye": [
+          115.21,
+          1.6,
+          25.68
+        ],
+        "sample": [
+          92.8,
+          6.42,
+          16.22
+        ],
+        "dist": 24.3
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 24.3m"
+    },
+    {
+      "module": "east-shop-129",
+      "record": "back-wall",
+      "center": [
+        92.51,
+        3.2,
+        34.31
+      ],
+      "half": [
+        5.07,
+        3.2,
+        0.14
+      ],
+      "yaw": 2.8399,
+      "visibleEyes": {
+        "eye": [
+          105.47,
+          1.6,
+          23.39
+        ],
+        "sample": [
+          87.69,
+          2.08,
+          32.69
+        ],
+        "dist": 20.1
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 20.1m"
+    },
+    {
+      "module": "east-shop-129",
+      "record": "foundation-gable-east-b0s0",
+      "center": [
+        99.1,
+        -0.1,
+        30.75
+      ],
+      "half": [
+        0.17,
+        0.1,
+        5.5
+      ],
+      "yaw": 2.8399,
+      "visibleEyes": {
+        "eye": [
+          107.42,
+          1.6,
+          23.86
+        ],
+        "sample": [
+          100.87,
+          -0.14,
+          25.54
+        ],
+        "dist": 6.8
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 6.8m"
+    },
+    {
+      "module": "east-shop-129",
+      "record": "foundation-gable-east-b1s0",
+      "center": [
+        98.44,
+        0.3,
+        32.88
+      ],
+      "half": [
+        0.17,
+        0.3,
+        3.27
+      ],
+      "yaw": 2.8399,
+      "visibleEyes": {
+        "eye": [
+          103.54,
+          1.6,
+          22.88
+        ],
+        "sample": [
+          99.54,
+          0.38,
+          29.8
+        ],
+        "dist": 8
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 8m"
+    },
+    {
+      "module": "east-shop-129",
+      "record": "foundation-gable-east-b1s1",
+      "center": [
+        100.24,
+        0.3,
+        27.09
+      ],
+      "half": [
+        0.17,
+        0.3,
+        1.67
+      ],
+      "yaw": 2.8399,
+      "visibleEyes": {
+        "eye": [
+          107.42,
+          1.6,
+          23.86
+        ],
+        "sample": [
+          100.87,
+          0.2,
+          25.54
+        ],
+        "dist": 6.8
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 6.8m"
+    },
+    {
+      "module": "east-shop-129",
+      "record": "foundation-gable-west-b0s0",
+      "center": [
+        89.1,
+        -0.1,
+        27.63
+      ],
+      "half": [
+        0.17,
+        0.1,
+        5.5
+      ],
+      "yaw": 2.8399,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          90.86,
+          -0.14,
+          22.42
+        ],
+        "dist": 34.1
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 34.1m"
+    },
+    {
+      "module": "east-shop-129",
+      "record": "foundation-gable-west-b1s0",
+      "center": [
+        88.43,
+        0.3,
+        29.76
+      ],
+      "half": [
+        0.17,
+        0.3,
+        3.27
+      ],
+      "yaw": 2.8399,
+      "visibleEyes": {
+        "eye": [
+          109.37,
+          1.6,
+          24.31
+        ],
+        "sample": [
+          89.53,
+          0.38,
+          26.69
+        ],
+        "dist": 20
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 20m"
+    },
+    {
+      "module": "east-shop-129",
+      "record": "foundation-gable-west-b1s1",
+      "center": [
+        90.24,
+        0.3,
+        23.97
+      ],
+      "half": [
+        0.17,
+        0.3,
+        1.67
+      ],
+      "yaw": 2.8399,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          90.86,
+          0.2,
+          22.42
+        ],
+        "dist": 34.1
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 34.1m"
+    },
+    {
+      "module": "east-shop-129",
+      "record": "gable-wall-east-b0s0",
+      "center": [
+        99.07,
+        3.5,
+        30.74
+      ],
+      "half": [
+        0.14,
+        2.9,
+        5.5
+      ],
+      "yaw": 2.8399,
+      "visibleEyes": {
+        "eye": [
+          107.42,
+          1.6,
+          23.86
+        ],
+        "sample": [
+          100.82,
+          2.48,
+          25.52
+        ],
+        "dist": 6.8
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 6.8m"
+    },
+    {
+      "module": "east-shop-129",
+      "record": "gable-wall-west-b0s0",
+      "center": [
+        88.48,
+        1.35,
+        29.73
+      ],
+      "half": [
+        0.14,
+        0.75,
+        3.31
+      ],
+      "yaw": 2.8399,
+      "visibleEyes": {
+        "eye": [
+          109.37,
+          1.6,
+          24.31
+        ],
+        "sample": [
+          89.57,
+          1.09,
+          26.6
+        ],
+        "dist": 19.9
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 19.9m"
+    },
+    {
+      "module": "east-shop-129",
+      "record": "gable-wall-west-b0s1",
+      "center": [
+        90.25,
+        1.35,
+        24.03
+      ],
+      "half": [
+        0.14,
+        0.75,
+        1.71
+      ],
+      "yaw": 2.8399,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          90.87,
+          1.09,
+          22.42
+        ],
+        "dist": 34.1
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 34.1m"
+    },
+    {
+      "module": "east-shop-129",
+      "record": "gable-wall-west-b1s0",
+      "center": [
+        89.13,
+        3.33,
+        27.64
+      ],
+      "half": [
+        0.14,
+        1.22,
+        5.5
+      ],
+      "yaw": 2.8399,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          90.87,
+          2.9,
+          22.42
+        ],
+        "dist": 34.1
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 34.1m"
+    },
+    {
+      "module": "east-shop-129",
+      "record": "gable-wall-west-b2s0",
+      "center": [
+        88,
+        5.1,
+        31.27
+      ],
+      "half": [
+        0.14,
+        0.55,
+        1.7
+      ],
+      "yaw": 2.8399,
+      "visibleEyes": {
+        "eye": [
+          107.42,
+          1.6,
+          23.86
+        ],
+        "sample": [
+          88.61,
+          5.24,
+          29.68
+        ],
+        "dist": 19.7
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 19.7m"
+    },
+    {
+      "module": "east-shop-129",
+      "record": "gable-wall-west-b2s1",
+      "center": [
+        89.33,
+        5.1,
+        26.97
+      ],
+      "half": [
+        0.14,
+        0.55,
+        2
+      ],
+      "yaw": 2.8399,
+      "visibleEyes": {
+        "eye": [
+          111.31,
+          1.6,
+          24.77
+        ],
+        "sample": [
+          90.03,
+          5.24,
+          25.1
+        ],
+        "dist": 21.3
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 21.3m"
+    },
+    {
+      "module": "east-shop-129",
+      "record": "gable-wall-west-b2s2",
+      "center": [
+        90.46,
+        5.1,
+        23.35
+      ],
+      "half": [
+        0.14,
+        0.55,
+        1
+      ],
+      "yaw": 2.8399,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          90.87,
+          4.91,
+          22.42
+        ],
+        "dist": 34.1
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 34.1m"
+    },
+    {
+      "module": "east-shop-129",
+      "record": "gable-wall-west-b3s0",
+      "center": [
+        89.13,
+        6.03,
+        27.64
+      ],
+      "half": [
+        0.14,
+        0.38,
+        5.5
+      ],
+      "yaw": 2.8399,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          90.87,
+          5.89,
+          22.42
+        ],
+        "dist": 34.1
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 34.1m"
+    },
+    {
+      "module": "east-shop-130",
+      "record": "back-wall",
+      "center": [
+        112.48,
+        3.6,
+        10.55
+      ],
+      "half": [
+        5.07,
+        3.6,
+        0.14
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          117.16,
+          1.6,
+          26.13
+        ],
+        "sample": [
+          107.51,
+          2.34,
+          9.51
+        ],
+        "dist": 19.2
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 19.2m"
+    },
+    {
+      "module": "east-shop-130",
+      "record": "foundation-gable-east-b0s0",
+      "center": [
+        116.25,
+        0.2,
+        17.45
+      ],
+      "half": [
+        0.17,
+        0.4,
+        6
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          115.02,
+          0.06,
+          23.33
+        ],
+        "dist": 10.5
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 10.5m"
+    },
+    {
+      "module": "east-shop-130",
+      "record": "foundation-gable-west-b0s0",
+      "center": [
+        106.05,
+        0.2,
+        15.07
+      ],
+      "half": [
+        0.17,
+        0.4,
+        6
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          104.82,
+          0.06,
+          20.94
+        ],
+        "dist": 20.9
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 20.9m"
+    },
+    {
+      "module": "east-shop-130",
+      "record": "gable-wall-east-b0s0",
+      "center": [
+        116.22,
+        3.9,
+        17.44
+      ],
+      "half": [
+        0.14,
+        3.3,
+        6
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          114.97,
+          2.75,
+          23.31
+        ],
+        "dist": 10.6
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 10.6m"
+    },
+    {
+      "module": "east-shop-130",
+      "record": "gable-wall-west-b0s0",
+      "center": [
+        106.08,
+        2.77,
+        15.08
+      ],
+      "half": [
+        0.14,
+        2.18,
+        6
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          104.82,
+          2.01,
+          20.94
+        ],
+        "dist": 20.9
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 20.9m"
+    },
+    {
+      "module": "east-shop-130",
+      "record": "gable-wall-west-b1s0",
+      "center": [
+        107.01,
+        5.5,
+        11.08
+      ],
+      "half": [
+        0.14,
+        0.55,
+        1.9
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          119.11,
+          1.6,
+          26.57
+        ],
+        "sample": [
+          106.69,
+          5.31,
+          12.96
+        ],
+        "dist": 18.4
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 18.4m"
+    },
+    {
+      "module": "east-shop-130",
+      "record": "gable-wall-west-b1s1",
+      "center": [
+        105.92,
+        5.5,
+        15.73
+      ],
+      "half": [
+        0.14,
+        0.55,
+        2.07
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          105.56,
+          5.31,
+          17.78
+        ],
+        "dist": 21.4
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 21.4m"
+    },
+    {
+      "module": "east-shop-130",
+      "record": "gable-wall-west-b1s2",
+      "center": [
+        104.99,
+        5.5,
+        19.73
+      ],
+      "half": [
+        0.14,
+        0.55,
+        1.23
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          104.71,
+          5.31,
+          20.92
+        ],
+        "dist": 21
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 21m"
+    },
+    {
+      "module": "east-shop-130",
+      "record": "gable-wall-west-b2s0",
+      "center": [
+        106.08,
+        6.63,
+        15.08
+      ],
+      "half": [
+        0.14,
+        0.58,
+        6
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          104.82,
+          6.42,
+          20.94
+        ],
+        "dist": 20.9
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 20.9m"
+    },
+    {
+      "module": "east-shop-131",
+      "record": "back-wall",
+      "center": [
+        105.83,
+        3.2,
+        39
+      ],
+      "half": [
+        5.07,
+        3.2,
+        0.14
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          117.16,
+          1.6,
+          26.13
+        ],
+        "sample": [
+          100.92,
+          2.08,
+          37.74
+        ],
+        "dist": 20
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 20m"
+    },
+    {
+      "module": "east-shop-131",
+      "record": "foundation-gable-east-b0s0",
+      "center": [
+        112.38,
+        -0.1,
+        34
+      ],
+      "half": [
+        0.17,
+        0.1,
+        6.5
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          113.99,
+          -0.14,
+          27.7
+        ],
+        "dist": 10.6
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 10.6m"
+    },
+    {
+      "module": "east-shop-131",
+      "record": "foundation-gable-east-b1s0",
+      "center": [
+        111.8,
+        0.3,
+        36.52
+      ],
+      "half": [
+        0.17,
+        0.3,
+        3.92
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          115.21,
+          1.6,
+          25.68
+        ],
+        "sample": [
+          112.82,
+          0.2,
+          32.73
+        ],
+        "dist": 7.4
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 7.4m"
+    },
+    {
+      "module": "east-shop-131",
+      "record": "foundation-gable-east-b1s1",
+      "center": [
+        113.4,
+        0.3,
+        29.64
+      ],
+      "half": [
+        0.17,
+        0.3,
+        2.02
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          113.99,
+          0.2,
+          27.7
+        ],
+        "dist": 10.6
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 10.6m"
+    },
+    {
+      "module": "east-shop-131",
+      "record": "foundation-gable-west-b0s0",
+      "center": [
+        102.18,
+        -0.1,
+        31.62
+      ],
+      "half": [
+        0.17,
+        0.1,
+        6.5
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          103.79,
+          -0.14,
+          25.32
+        ],
+        "dist": 20.9
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 20.9m"
+    },
+    {
+      "module": "east-shop-131",
+      "record": "foundation-gable-west-b1s0",
+      "center": [
+        101.59,
+        0.3,
+        34.13
+      ],
+      "half": [
+        0.17,
+        0.3,
+        3.92
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          123.03,
+          1.6,
+          27.38
+        ],
+        "sample": [
+          102.61,
+          0.2,
+          30.35
+        ],
+        "dist": 20.6
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 20.6m"
+    },
+    {
+      "module": "east-shop-131",
+      "record": "foundation-gable-west-b1s1",
+      "center": [
+        103.2,
+        0.3,
+        27.25
+      ],
+      "half": [
+        0.17,
+        0.3,
+        2.02
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          103.79,
+          0.2,
+          25.32
+        ],
+        "dist": 20.9
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 20.9m"
+    },
+    {
+      "module": "east-shop-131",
+      "record": "gable-wall-east-b0s0",
+      "center": [
+        112.35,
+        3.5,
+        33.99
+      ],
+      "half": [
+        0.14,
+        2.9,
+        6.5
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          113.94,
+          4.22,
+          27.69
+        ],
+        "dist": 10.7
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 10.7m"
+    },
+    {
+      "module": "east-shop-131",
+      "record": "gable-wall-west-b0s0",
+      "center": [
+        101.63,
+        1.35,
+        34.1
+      ],
+      "half": [
+        0.14,
+        0.75,
+        3.96
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          102.64,
+          1.09,
+          30.26
+        ],
+        "dist": 22.1
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 22.1m"
+    },
+    {
+      "module": "east-shop-131",
+      "record": "gable-wall-west-b0s1",
+      "center": [
+        103.22,
+        1.35,
+        27.3
+      ],
+      "half": [
+        0.14,
+        0.75,
+        2.06
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          103.79,
+          1.09,
+          25.32
+        ],
+        "dist": 20.9
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 20.9m"
+    },
+    {
+      "module": "east-shop-131",
+      "record": "gable-wall-west-b1s0",
+      "center": [
+        102.21,
+        3.33,
+        31.63
+      ],
+      "half": [
+        0.14,
+        1.22,
+        6.5
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          103.79,
+          2.9,
+          25.32
+        ],
+        "dist": 20.9
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 20.9m"
+    },
+    {
+      "module": "east-shop-131",
+      "record": "gable-wall-west-b2s0",
+      "center": [
+        101.2,
+        5.1,
+        35.93
+      ],
+      "half": [
+        0.14,
+        0.55,
+        2.08
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          119.11,
+          1.6,
+          26.57
+        ],
+        "sample": [
+          101.78,
+          4.91,
+          33.94
+        ],
+        "dist": 18.8
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 18.8m"
+    },
+    {
+      "module": "east-shop-131",
+      "record": "gable-wall-west-b2s1",
+      "center": [
+        102.4,
+        5.1,
+        30.8
+      ],
+      "half": [
+        0.14,
+        0.55,
+        2.4
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          103.05,
+          5.24,
+          28.49
+        ],
+        "dist": 21.6
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 21.6m"
+    },
+    {
+      "module": "east-shop-131",
+      "record": "gable-wall-west-b2s2",
+      "center": [
+        103.41,
+        5.1,
+        26.49
+      ],
+      "half": [
+        0.14,
+        0.55,
+        1.23
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          103.79,
+          4.91,
+          25.32
+        ],
+        "dist": 20.9
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 20.9m"
+    },
+    {
+      "module": "east-shop-131",
+      "record": "gable-wall-west-b3s0",
+      "center": [
+        102.21,
+        6.03,
+        31.63
+      ],
+      "half": [
+        0.14,
+        0.38,
+        6.5
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          103.79,
+          5.89,
+          25.32
+        ],
+        "dist": 20.9
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 20.9m"
+    },
+    {
+      "module": "east-shop-132",
+      "record": "back-wall",
+      "center": [
+        123.94,
+        3.2,
+        14.26
+      ],
+      "half": [
+        5.07,
+        3.2,
+        0.14
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          128.88,
+          2.08,
+          15.41
+        ],
+        "dist": 13
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 13m"
+    },
+    {
+      "module": "east-shop-132",
+      "record": "foundation-gable-east-b0s0",
+      "center": [
+        127.93,
+        -0.1,
+        20.18
+      ],
+      "half": [
+        0.17,
+        0.1,
+        5
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          126.66,
+          -0.14,
+          25.02
+        ],
+        "dist": 3.3
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 3.3m"
+    },
+    {
+      "module": "east-shop-132",
+      "record": "foundation-gable-east-b1s0",
+      "center": [
+        128.4,
+        0.3,
+        18.18
+      ],
+      "half": [
+        0.17,
+        0.3,
+        2.94
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          127.6,
+          0.38,
+          21.01
+        ],
+        "dist": 7.3
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 7.3m"
+    },
+    {
+      "module": "east-shop-132",
+      "record": "foundation-gable-east-b1s1",
+      "center": [
+        127.14,
+        0.3,
+        23.6
+      ],
+      "half": [
+        0.17,
+        0.3,
+        1.49
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          126.66,
+          0.2,
+          25.02
+        ],
+        "dist": 3.3
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 3.3m"
+    },
+    {
+      "module": "east-shop-132",
+      "record": "foundation-gable-west-b0s0",
+      "center": [
+        117.73,
+        -0.1,
+        17.8
+      ],
+      "half": [
+        0.17,
+        0.1,
+        5
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          116.59,
+          -0.14,
+          22.67
+        ],
+        "dist": 9.4
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 9.4m"
+    },
+    {
+      "module": "east-shop-132",
+      "record": "foundation-gable-west-b1s0",
+      "center": [
+        118.2,
+        0.3,
+        15.79
+      ],
+      "half": [
+        0.17,
+        0.3,
+        2.94
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          117.53,
+          0.2,
+          18.66
+        ],
+        "dist": 11.4
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 11.4m"
+    },
+    {
+      "module": "east-shop-132",
+      "record": "foundation-gable-west-b1s1",
+      "center": [
+        116.93,
+        0.3,
+        21.21
+      ],
+      "half": [
+        0.17,
+        0.3,
+        1.49
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          116.59,
+          0.2,
+          22.67
+        ],
+        "dist": 9.4
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 9.4m"
+    },
+    {
+      "module": "east-shop-132",
+      "record": "gable-wall-east-b0s0",
+      "center": [
+        127.9,
+        3.5,
+        20.17
+      ],
+      "half": [
+        0.14,
+        2.9,
+        5
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          126.66,
+          2.48,
+          25.02
+        ],
+        "dist": 3.3
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 3.3m"
+    },
+    {
+      "module": "east-shop-132",
+      "record": "gable-wall-west-b0s0",
+      "center": [
+        118.21,
+        1.35,
+        15.85
+      ],
+      "half": [
+        0.14,
+        0.75,
+        2.99
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          117.53,
+          1.09,
+          18.75
+        ],
+        "dist": 11.4
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 11.4m"
+    },
+    {
+      "module": "east-shop-132",
+      "record": "gable-wall-west-b0s1",
+      "center": [
+        116.97,
+        1.35,
+        21.18
+      ],
+      "half": [
+        0.14,
+        0.75,
+        1.54
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          116.62,
+          1.09,
+          22.67
+        ],
+        "dist": 9.4
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 9.4m"
+    },
+    {
+      "module": "east-shop-132",
+      "record": "gable-wall-west-b1s0",
+      "center": [
+        117.76,
+        3.33,
+        17.81
+      ],
+      "half": [
+        0.14,
+        1.22,
+        5
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          116.62,
+          2.9,
+          22.67
+        ],
+        "dist": 9.4
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 9.4m"
+    },
+    {
+      "module": "east-shop-132",
+      "record": "gable-wall-west-b2s0",
+      "center": [
+        118.54,
+        5.1,
+        14.45
+      ],
+      "half": [
+        0.14,
+        0.55,
+        1.55
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          118.19,
+          4.91,
+          15.96
+        ],
+        "dist": 13.3
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 13.3m"
+    },
+    {
+      "module": "east-shop-132",
+      "record": "gable-wall-west-b2s1",
+      "center": [
+        117.61,
+        5.1,
+        18.44
+      ],
+      "half": [
+        0.14,
+        0.55,
+        1.75
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          117.21,
+          4.91,
+          20.14
+        ],
+        "dist": 10.5
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 10.5m"
+    },
+    {
+      "module": "east-shop-132",
+      "record": "gable-wall-west-b2s2",
+      "center": [
+        116.82,
+        5.1,
+        21.8
+      ],
+      "half": [
+        0.14,
+        0.55,
+        0.9
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          116.62,
+          4.91,
+          22.67
+        ],
+        "dist": 9.4
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 9.4m"
+    },
+    {
+      "module": "east-shop-132",
+      "record": "gable-wall-west-b3s0",
+      "center": [
+        117.76,
+        6.03,
+        17.81
+      ],
+      "half": [
+        0.14,
+        0.38,
+        5
+      ],
+      "yaw": -0.2294,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          116.62,
+          5.89,
+          22.67
+        ],
+        "dist": 9.4
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 9.4m"
+    },
+    {
+      "module": "east-shop-133",
+      "record": "back-wall",
+      "center": [
+        117.75,
+        3.6,
+        40.76
+      ],
+      "half": [
+        5.07,
+        3.6,
+        0.14
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          122.67,
+          2.34,
+          42.02
+        ],
+        "dist": 14.5
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 14.5m"
+    },
+    {
+      "module": "east-shop-133",
+      "record": "foundation-gable-east-b0s0",
+      "center": [
+        124.07,
+        0.2,
+        36.73
+      ],
+      "half": [
+        0.17,
+        0.4,
+        5.5
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          125.32,
+          0.06,
+          31.38
+        ],
+        "dist": 3.8
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 3.8m"
+    },
+    {
+      "module": "east-shop-133",
+      "record": "foundation-gable-west-b0s0",
+      "center": [
+        113.87,
+        0.2,
+        34.35
+      ],
+      "half": [
+        0.17,
+        0.4,
+        5.5
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          115.25,
+          0.3,
+          29.02
+        ],
+        "dist": 9.5
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 9.5m"
+    },
+    {
+      "module": "east-shop-133",
+      "record": "gable-wall-east-b0s0",
+      "center": [
+        124.04,
+        3.9,
+        36.72
+      ],
+      "half": [
+        0.14,
+        3.3,
+        5.5
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          125.29,
+          2.75,
+          31.37
+        ],
+        "dist": 3.8
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 3.8m"
+    },
+    {
+      "module": "east-shop-133",
+      "record": "gable-wall-west-b0s0",
+      "center": [
+        113.9,
+        2.77,
+        34.36
+      ],
+      "half": [
+        0.14,
+        2.18,
+        5.5
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          115.26,
+          2.01,
+          29.02
+        ],
+        "dist": 9.4
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 9.4m"
+    },
+    {
+      "module": "east-shop-133",
+      "record": "gable-wall-west-b1s0",
+      "center": [
+        113.04,
+        5.5,
+        38.03
+      ],
+      "half": [
+        0.14,
+        0.55,
+        1.72
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          113.54,
+          5.64,
+          36.38
+        ],
+        "dist": 14.1
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 14.1m"
+    },
+    {
+      "module": "east-shop-133",
+      "record": "gable-wall-west-b1s1",
+      "center": [
+        114.03,
+        5.5,
+        33.77
+      ],
+      "half": [
+        0.14,
+        0.55,
+        1.85
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          114.56,
+          5.31,
+          32
+        ],
+        "dist": 10.9
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 10.9m"
+    },
+    {
+      "module": "east-shop-133",
+      "record": "gable-wall-west-b1s2",
+      "center": [
+        114.89,
+        5.5,
+        30.09
+      ],
+      "half": [
+        0.14,
+        0.55,
+        1.13
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          115.26,
+          5.31,
+          29.02
+        ],
+        "dist": 9.4
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 9.4m"
+    },
+    {
+      "module": "east-shop-133",
+      "record": "gable-wall-west-b2s0",
+      "center": [
+        113.9,
+        6.63,
+        34.36
+      ],
+      "half": [
+        0.14,
+        0.58,
+        5.5
+      ],
+      "yaw": 2.9122,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          115.26,
+          6.42,
+          29.02
+        ],
+        "dist": 9.4
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 9.4m"
+    },
+    {
+      "module": "N01-plain-v1",
+      "record": "back-wall",
+      "center": [
+        1.96,
+        3.4,
+        -13.1
+      ],
+      "half": [
+        5.72,
+        3.4,
+        0.14
+      ],
+      "yaw": 0.3126,
+      "visibleEyes": {
+        "eye": [
+          70.84,
+          1.6,
+          8.06
+        ],
+        "sample": [
+          -3.45,
+          2.21,
+          -11.23
+        ],
+        "dist": 76.8
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 76.8m"
+    },
+    {
+      "module": "N01-plain-v1",
+      "record": "left-side",
+      "center": [
+        -2.67,
+        3.4,
+        -8.38
+      ],
+      "half": [
+        0.14,
+        3.4,
+        3.2
+      ],
+      "yaw": 0.3126,
+      "visibleEyes": {
+        "eye": [
+          70.84,
+          1.6,
+          8.06
+        ],
+        "sample": [
+          -3.55,
+          2.21,
+          -11.46
+        ],
+        "dist": 76.9
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 76.9m"
+    },
+    {
+      "module": "N01-plain-v1",
+      "record": "right-side",
+      "center": [
+        8.48,
+        3.4,
+        -11.99
+      ],
+      "half": [
+        0.14,
+        3.4,
+        3.2
+      ],
+      "yaw": 0.3126,
+      "visibleEyes": {
+        "eye": [
+          11.91,
+          1.6,
+          -3.77
+        ],
+        "sample": [
+          9.36,
+          2.21,
+          -8.91
+        ],
+        "dist": 5.7
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 5.7m"
+    },
+    {
+      "module": "N02-pharmacy_shop",
+      "record": "back-wall",
+      "center": [
+        12.22,
+        4,
+        -16.29
+      ],
+      "half": [
+        3.63,
+        4,
+        0.14
+      ],
+      "yaw": 0.1825,
+      "visibleEyes": {
+        "eye": [
+          23.79,
+          1.6,
+          -5.33
+        ],
+        "sample": [
+          8.67,
+          2.6,
+          -15.53
+        ],
+        "dist": 18.2
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 18.2m"
+    },
+    {
+      "module": "N02-pharmacy_shop",
+      "record": "left-side",
+      "center": [
+        9.13,
+        4,
+        -12.31
+      ],
+      "half": [
+        0.14,
+        4,
+        3.5
+      ],
+      "yaw": 0.1825,
+      "visibleEyes": {
+        "eye": [
+          72.56,
+          1.6,
+          9.09
+        ],
+        "sample": [
+          9.87,
+          2.6,
+          -8.89
+        ],
+        "dist": 65.2
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 65.2m"
+    },
+    {
+      "module": "N02-pharmacy_shop",
+      "record": "right-side",
+      "center": [
+        16.52,
+        4,
+        -13.67
+      ],
+      "half": [
+        0.14,
+        4,
+        3.5
+      ],
+      "yaw": 0.1825,
+      "visibleEyes": {
+        "eye": [
+          79.37,
+          1.6,
+          13.27
+        ],
+        "sample": [
+          17.05,
+          2.6,
+          -10.21
+        ],
+        "dist": 66.6
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 66.6m"
+    },
+    {
+      "module": "N03-cloth_shop",
+      "record": "back-wall",
+      "center": [
+        20.58,
+        3.85,
+        -17.22
+      ],
+      "half": [
+        3.52,
+        3.85,
+        0.14
+      ],
+      "yaw": 0.0724,
+      "visibleEyes": {
+        "eye": [
+          31.79,
+          1.6,
+          -5.21
+        ],
+        "sample": [
+          17.08,
+          2.5,
+          -16.85
+        ],
+        "dist": 18.8
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 18.8m"
+    },
+    {
+      "module": "N03-cloth_shop",
+      "record": "left-side",
+      "center": [
+        17.17,
+        3.85,
+        -13.75
+      ],
+      "half": [
+        0.14,
+        3.85,
+        3.35
+      ],
+      "yaw": 0.0724,
+      "visibleEyes": {
+        "eye": [
+          99.7,
+          1.6,
+          21.75
+        ],
+        "sample": [
+          17.52,
+          2.5,
+          -10.42
+        ],
+        "dist": 88.3
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 88.3m"
+    },
+    {
+      "module": "N03-cloth_shop",
+      "record": "right-side",
+      "center": [
+        24.47,
+        3.85,
+        -14.28
+      ],
+      "half": [
+        0.14,
+        3.85,
+        3.35
+      ],
+      "yaw": 0.0724,
+      "visibleEyes": {
+        "eye": [
+          107.42,
+          1.6,
+          23.86
+        ],
+        "sample": [
+          24.82,
+          2.5,
+          -10.95
+        ],
+        "dist": 89.6
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 89.6m"
+    },
+    {
+      "module": "N04-dry_goods_shop",
+      "record": "left-side-wall",
+      "center": [
+        25.03,
+        2.6,
+        -13.1
+      ],
+      "half": [
+        0.14,
+        2.6,
+        1.85
+      ],
+      "yaw": -0.0133,
+      "visibleEyes": {
+        "eye": [
+          107.42,
+          1.6,
+          23.86
+        ],
+        "sample": [
+          25.11,
+          1.69,
+          -11.25
+        ],
+        "dist": 89.5
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 89.5m"
+    },
+    {
+      "module": "N04-dry_goods_shop",
+      "record": "rear-wall",
+      "center": [
+        27.86,
+        2.6,
+        -14.77
+      ],
+      "half": [
+        2.67,
+        2.6,
+        0.14
+      ],
+      "yaw": -0.0133,
+      "visibleEyes": {
+        "eye": [
+          37.77,
+          1.6,
+          -4.73
+        ],
+        "sample": [
+          25.19,
+          1.69,
+          -14.7
+        ],
+        "dist": 16
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 16m"
+    },
+    {
+      "module": "N04-dry_goods_shop",
+      "record": "right-side-wall",
+      "center": [
+        30.65,
+        2.6,
+        -13.03
+      ],
+      "half": [
+        0.14,
+        2.6,
+        1.85
+      ],
+      "yaw": -0.0133,
+      "visibleEyes": {
+        "eye": [
+          29.79,
+          1.6,
+          -5.3
+        ],
+        "sample": [
+          30.51,
+          1.69,
+          -11.18
+        ],
+        "dist": 5.9
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 5.9m"
+    },
+    {
+      "module": "N05-restaurant-a",
+      "record": "back-wall",
+      "center": [
+        36.93,
+        3.95,
+        -17.11
+      ],
+      "half": [
+        5.38,
+        3.95,
+        0.14
+      ],
+      "yaw": -0.0793,
+      "visibleEyes": {
+        "eye": [
+          84.75,
+          1.6,
+          16.74
+        ],
+        "sample": [
+          31.57,
+          2.57,
+          -17.43
+        ],
+        "dist": 63.2
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 63.2m"
+    },
+    {
+      "module": "N05-restaurant-a",
+      "record": "left-side",
+      "center": [
+        31.17,
+        3.95,
+        -14.2
+      ],
+      "half": [
+        0.14,
+        3.95,
+        3.5
+      ],
+      "yaw": -0.0793,
+      "visibleEyes": {
+        "eye": [
+          111.31,
+          1.6,
+          24.77
+        ],
+        "sample": [
+          31.01,
+          2.57,
+          -10.7
+        ],
+        "dist": 87.8
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 87.8m"
+    },
+    {
+      "module": "N05-restaurant-a",
+      "record": "right-side",
+      "center": [
+        42.16,
+        3.95,
+        -13.33
+      ],
+      "half": [
+        0.14,
+        3.95,
+        3.5
+      ],
+      "yaw": -0.0793,
+      "visibleEyes": {
+        "eye": [
+          105.47,
+          1.6,
+          23.39
+        ],
+        "sample": [
+          41.99,
+          2.57,
+          -9.83
+        ],
+        "dist": 71.7
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 71.7m"
+    },
+    {
+      "module": "N06-curio-a",
+      "record": "back-wall",
+      "center": [
+        47.9,
+        3.3,
+        -14.14
+      ],
+      "half": [
+        2.83,
+        3.3,
+        0.14
+      ],
+      "yaw": -0.1679,
+      "visibleEyes": {
+        "eye": [
+          56.92,
+          1.6,
+          0.17
+        ],
+        "sample": [
+          45.12,
+          2.15,
+          -14.61
+        ],
+        "dist": 18.9
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 18.9m"
+    },
+    {
+      "module": "N06-curio-a",
+      "record": "left-side",
+      "center": [
+        44.57,
+        3.3,
+        -12.21
+      ],
+      "half": [
+        0.14,
+        3.3,
+        2.6
+      ],
+      "yaw": -0.1679,
+      "visibleEyes": {
+        "eye": [
+          105.47,
+          1.6,
+          23.39
+        ],
+        "sample": [
+          44.25,
+          2.15,
+          -9.62
+        ],
+        "dist": 69.6
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 69.6m"
+    },
+    {
+      "module": "N06-curio-a",
+      "record": "right-side",
+      "center": [
+        50.41,
+        3.3,
+        -11.22
+      ],
+      "half": [
+        0.14,
+        3.3,
+        2.6
+      ],
+      "yaw": -0.1679,
+      "visibleEyes": {
+        "eye": [
+          103.54,
+          1.6,
+          22.88
+        ],
+        "sample": [
+          50.09,
+          2.15,
+          -8.64
+        ],
+        "dist": 62.1
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 62.1m"
+    },
+    {
+      "module": "N07-cat_corner",
+      "record": "mural-back-wall",
+      "center": [
+        55.52,
+        3.25,
+        -12.73
+      ],
+      "half": [
+        3.6,
+        3.25,
+        0.15
+      ],
+      "yaw": -0.3678,
+      "visibleEyes": {
+        "eye": [
+          60.45,
+          1.6,
+          2.06
+        ],
+        "sample": [
+          52.11,
+          2.11,
+          -13.91
+        ],
+        "dist": 18
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 18m"
+    },
+    {
+      "module": "N07-cat_corner",
+      "record": "mural-side-left",
+      "center": [
+        51.31,
+        3.25,
+        -11.4
+      ],
+      "half": [
+        0.15,
+        3.25,
+        2.9
+      ],
+      "yaw": -0.3678,
+      "visibleEyes": {
+        "eye": [
+          103.54,
+          1.6,
+          22.88
+        ],
+        "sample": [
+          50.38,
+          2.11,
+          -8.65
+        ],
+        "dist": 61.8
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 61.8m"
+    },
+    {
+      "module": "N07-cat_corner",
+      "record": "mural-side-right",
+      "center": [
+        57.75,
+        3.25,
+        -8.92
+      ],
+      "half": [
+        0.15,
+        3.25,
+        2.9
+      ],
+      "yaw": -0.3678,
+      "visibleEyes": {
+        "eye": [
+          60.45,
+          1.6,
+          2.06
+        ],
+        "sample": [
+          56.59,
+          2.11,
+          -6.26
+        ],
+        "dist": 9.2
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 9.2m"
+    },
+    {
+      "module": "N08-plain-v2",
+      "record": "back-wall",
+      "center": [
+        64.52,
+        3.4,
+        -9.14
+      ],
+      "half": [
+        5.08,
+        3.4,
+        0.14
+      ],
+      "yaw": -0.4932,
+      "visibleEyes": {
+        "eye": [
+          70.84,
+          1.6,
+          8.06
+        ],
+        "sample": [
+          59.99,
+          2.21,
+          -11.45
+        ],
+        "dist": 22.3
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 22.3m"
+    },
+    {
+      "module": "N08-plain-v2",
+      "record": "left-side",
+      "center": [
+        58.48,
+        3.4,
+        -8.92
+      ],
+      "half": [
+        0.14,
+        3.4,
+        3.2
+      ],
+      "yaw": -0.4932,
+      "visibleEyes": {
+        "eye": [
+          101.62,
+          1.6,
+          22.33
+        ],
+        "sample": [
+          57.06,
+          2.21,
+          -6.04
+        ],
+        "dist": 52.8
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 52.8m"
+    },
+    {
+      "module": "N08-plain-v2",
+      "record": "right-side",
+      "center": [
+        67.66,
+        3.4,
+        -3.98
+      ],
+      "half": [
+        0.14,
+        3.4,
+        3.2
+      ],
+      "yaw": -0.4932,
+      "visibleEyes": {
+        "eye": [
+          65.67,
+          1.6,
+          5.02
+        ],
+        "sample": [
+          66.04,
+          2.21,
+          -1.22
+        ],
+        "dist": 6.2
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 6.2m"
+    },
+    {
+      "module": "N09-curio-b",
+      "record": "back-wall",
+      "center": [
+        71.44,
+        3.3,
+        -3.81
+      ],
+      "half": [
+        2.83,
+        3.3,
+        0.14
+      ],
+      "yaw": -0.5269,
+      "visibleEyes": {
+        "eye": [
+          74.27,
+          1.6,
+          10.12
+        ],
+        "sample": [
+          68.94,
+          2.15,
+          -5.13
+        ],
+        "dist": 16.2
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 16.2m"
+    },
+    {
+      "module": "N09-curio-b",
+      "record": "left-side",
+      "center": [
+        67.64,
+        3.3,
+        -3.17
+      ],
+      "half": [
+        0.14,
+        3.3,
+        2.6
+      ],
+      "yaw": -0.5269,
+      "visibleEyes": {
+        "eye": [
+          101.62,
+          1.6,
+          22.33
+        ],
+        "sample": [
+          66.43,
+          2.15,
+          -0.86
+        ],
+        "dist": 42.1
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 42.1m"
+    },
+    {
+      "module": "N09-curio-b",
+      "record": "right-side",
+      "center": [
+        72.76,
+        3.3,
+        -0.19
+      ],
+      "half": [
+        0.14,
+        3.3,
+        2.6
+      ],
+      "yaw": -0.5269,
+      "visibleEyes": {
+        "eye": [
+          84.75,
+          1.6,
+          16.74
+        ],
+        "sample": [
+          71.35,
+          2.15,
+          2
+        ],
+        "dist": 19.9
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 19.9m"
+    },
+    {
+      "module": "N10-plain-v3",
+      "record": "back-wall",
+      "center": [
+        79.46,
+        3.4,
+        -0.56
+      ],
+      "half": [
+        5.08,
+        3.4,
+        0.14
+      ],
+      "yaw": -0.5431,
+      "visibleEyes": {
+        "eye": [
+          95.87,
+          1.6,
+          20.62
+        ],
+        "sample": [
+          75.06,
+          2.21,
+          -3.09
+        ],
+        "dist": 31.5
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 31.5m"
+    },
+    {
+      "module": "N10-plain-v3",
+      "record": "left-side",
+      "center": [
+        73.42,
+        3.4,
+        -0.64
+      ],
+      "half": [
+        0.14,
+        3.4,
+        3.2
+      ],
+      "yaw": -0.5431,
+      "visibleEyes": {
+        "eye": [
+          99.7,
+          1.6,
+          21.75
+        ],
+        "sample": [
+          71.86,
+          2.21,
+          2.16
+        ],
+        "dist": 34
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 34m"
+    },
+    {
+      "module": "N10-plain-v3",
+      "record": "right-side",
+      "center": [
+        82.34,
+        3.4,
+        4.75
+      ],
+      "half": [
+        0.14,
+        3.4,
+        3.2
+      ],
+      "yaw": -0.5431,
+      "visibleEyes": {
+        "eye": [
+          99.7,
+          1.6,
+          21.75
+        ],
+        "sample": [
+          80.78,
+          2.21,
+          7.55
+        ],
+        "dist": 23.7
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 23.7m"
+    },
+    {
+      "module": "S01-corner",
+      "record": "back-wall",
+      "center": [
+        8.53,
+        3.7,
+        10.37
+      ],
+      "half": [
+        4.78,
+        3.7,
+        0.14
+      ],
+      "yaw": -2.8197,
+      "visibleEyes": {
+        "eye": [
+          35.77,
+          1.6,
+          -4.9
+        ],
+        "sample": [
+          13.06,
+          2.41,
+          8.86
+        ],
+        "dist": 26.6
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 26.6m"
+    },
+    {
+      "module": "S01-corner",
+      "record": "left-side",
+      "center": [
+        12.1,
+        3.7,
+        5.54
+      ],
+      "half": [
+        0.14,
+        3.7,
+        3.6
+      ],
+      "yaw": -2.8197,
+      "visibleEyes": {
+        "eye": [
+          49.6,
+          1.6,
+          -2.99
+        ],
+        "sample": [
+          11.06,
+          4.63,
+          2.09
+        ],
+        "dist": 38.9
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 38.9m"
+    },
+    {
+      "module": "S02-photo_shop",
+      "record": "left-side-wall",
+      "center": [
+        32.56,
+        3.2,
+        2.92
+      ],
+      "half": [
+        0.14,
+        3.2,
+        2.15
+      ],
+      "yaw": 3.093,
+      "visibleEyes": {
+        "eye": [
+          45.72,
+          1.6,
+          -3.89
+        ],
+        "sample": [
+          32.57,
+          2.08,
+          5.07
+        ],
+        "dist": 15.9
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 15.9m"
+    },
+    {
+      "module": "S02-photo_shop",
+      "record": "rear-wall",
+      "center": [
+        29.81,
+        3.2,
+        4.8
+      ],
+      "half": [
+        2.52,
+        3.2,
+        0.14
+      ],
+      "yaw": 3.093,
+      "visibleEyes": {
+        "eye": [
+          37.77,
+          1.6,
+          -4.73
+        ],
+        "sample": [
+          27.3,
+          2.08,
+          4.56
+        ],
+        "dist": 14
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 14m"
+    },
+    {
+      "module": "S02-photo_shop",
+      "record": "right-side-wall",
+      "center": [
+        27.25,
+        3.2,
+        2.66
+      ],
+      "half": [
+        0.14,
+        3.2,
+        2.15
+      ],
+      "yaw": 3.093,
+      "visibleEyes": {
+        "eye": [
+          53.33,
+          1.6,
+          -1.57
+        ],
+        "sample": [
+          27.47,
+          2.08,
+          0.52
+        ],
+        "dist": 25.9
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 25.9m"
+    },
+    {
+      "module": "S03-plain-v2",
+      "record": "back-wall",
+      "center": [
+        37.35,
+        3.4,
+        7.16
+      ],
+      "half": [
+        5.08,
+        3.4,
+        0.14
+      ],
+      "yaw": 3.0548,
+      "visibleEyes": {
+        "eye": [
+          55.15,
+          1.6,
+          -0.76
+        ],
+        "sample": [
+          42.41,
+          2.21,
+          7.49
+        ],
+        "dist": 15.2
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 15.2m"
+    },
+    {
+      "module": "S03-plain-v2",
+      "record": "left-side",
+      "center": [
+        42.8,
+        3.4,
+        4.57
+      ],
+      "half": [
+        0.14,
+        3.4,
+        3.2
+      ],
+      "yaw": 3.0548,
+      "visibleEyes": {
+        "eye": [
+          60.45,
+          1.6,
+          2.06
+        ],
+        "sample": [
+          43.19,
+          4.25,
+          1.39
+        ],
+        "dist": 17.3
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 17.3m"
+    },
+    {
+      "module": "S03-plain-v2",
+      "record": "right-side",
+      "center": [
+        32.42,
+        3.4,
+        3.66
+      ],
+      "half": [
+        0.14,
+        3.4,
+        3.2
+      ],
+      "yaw": 3.0548,
+      "visibleEyes": {
+        "eye": [
+          56.92,
+          1.6,
+          0.17
+        ],
+        "sample": [
+          32.81,
+          2.21,
+          0.48
+        ],
+        "dist": 24.1
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 24.1m"
+    },
+    {
+      "module": "S04-restaurant-b",
+      "record": "back-wall",
+      "center": [
+        45.22,
+        3.95,
+        8.83
+      ],
+      "half": [
+        5.38,
+        3.95,
+        0.14
+      ],
+      "yaw": 2.8917,
+      "visibleEyes": {
+        "eye": [
+          62.2,
+          1.6,
+          3.03
+        ],
+        "sample": [
+          50.46,
+          4.94,
+          10.05
+        ],
+        "dist": 13.7
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 13.7m"
+    },
+    {
+      "module": "S04-restaurant-b",
+      "record": "left-side",
+      "center": [
+        51.39,
+        3.95,
+        6.94
+      ],
+      "half": [
+        0.14,
+        3.95,
+        3.5
+      ],
+      "yaw": 2.8917,
+      "visibleEyes": {
+        "eye": [
+          123.03,
+          1.6,
+          27.38
+        ],
+        "sample": [
+          52.37,
+          4.94,
+          3.58
+        ],
+        "dist": 74.6
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 74.6m"
+    },
+    {
+      "module": "S04-restaurant-b",
+      "record": "right-side",
+      "center": [
+        40.72,
+        3.95,
+        4.22
+      ],
+      "half": [
+        0.14,
+        3.95,
+        3.5
+      ],
+      "yaw": 2.8917,
+      "visibleEyes": {
+        "eye": [
+          69.12,
+          1.6,
+          7.04
+        ],
+        "sample": [
+          41.69,
+          2.57,
+          0.85
+        ],
+        "dist": 28.1
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 28.1m"
+    },
+    {
+      "module": "S05-plain-v3",
+      "record": "back-wall",
+      "center": [
+        52.09,
+        3.4,
+        11.13
+      ],
+      "half": [
+        5.08,
+        3.4,
+        0.14
+      ],
+      "yaw": 2.66,
+      "visibleEyes": {
+        "eye": [
+          65.67,
+          1.6,
+          5.02
+        ],
+        "sample": [
+          56.64,
+          2.21,
+          13.38
+        ],
+        "dist": 12.3
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 12.3m"
+    },
+    {
+      "module": "S05-plain-v3",
+      "record": "left-side",
+      "center": [
+        58.13,
+        3.4,
+        10.83
+      ],
+      "half": [
+        0.14,
+        3.4,
+        3.2
+      ],
+      "yaw": 2.66,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          59.71,
+          4.25,
+          8.04
+        ],
+        "dist": 67.8
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 67.8m"
+    },
+    {
+      "module": "S05-plain-v3",
+      "record": "right-side",
+      "center": [
+        48.89,
+        3.4,
+        6
+      ],
+      "half": [
+        0.14,
+        3.4,
+        3.2
+      ],
+      "yaw": 2.66,
+      "visibleEyes": {
+        "eye": [
+          62.2,
+          1.6,
+          3.03
+        ],
+        "sample": [
+          50.47,
+          2.21,
+          3.22
+        ],
+        "dist": 11.7
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 11.7m"
+    },
+    {
+      "module": "S07-plain-v2",
+      "record": "back-wall",
+      "center": [
+        62.83,
+        3.4,
+        17.13
+      ],
+      "half": [
+        5.08,
+        3.4,
+        0.14
+      ],
+      "yaw": 2.6087,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          58.52,
+          2.21,
+          14.45
+        ],
+        "dist": 67.4
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 67.4m"
+    },
+    {
+      "module": "S07-plain-v2",
+      "record": "left-side",
+      "center": [
+        68.87,
+        3.4,
+        17.14
+      ],
+      "half": [
+        0.14,
+        3.4,
+        3.2
+      ],
+      "yaw": 2.6087,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          70.6,
+          4.25,
+          14.44
+        ],
+        "dist": 55.6
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 55.6m"
+    },
+    {
+      "module": "S07-plain-v2",
+      "record": "right-side",
+      "center": [
+        59.9,
+        3.4,
+        11.85
+      ],
+      "half": [
+        0.14,
+        3.4,
+        3.2
+      ],
+      "yaw": 2.6087,
+      "visibleEyes": {
+        "eye": [
+          124.6,
+          1.6,
+          27.65
+        ],
+        "sample": [
+          61.62,
+          2.21,
+          9.15
+        ],
+        "dist": 65.6
+      },
+      "evidence": "unobstructed eye->face segment(s) exist; nearest eye 65.6m"
+    }
+  ]
+}

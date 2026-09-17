@@ -19,6 +19,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import RAPIER from '@dimforge/rapier3d-compat';
 
 import { loadWorld, CAPSULE } from './world/WorldLoader.js';
+import { addWallCollider } from './world/physics.js';
 import { GROUND_NODE_RE } from './world/collisionAdapter.js';
 import { collectGroundTriangles } from './world/groundExtractor.js';
 import { addGroundCollider } from './world/physics.js';
@@ -89,7 +90,7 @@ world.name = 'fangbang-bridge-world';
 scene.add(world);
 const clay = new T.MeshStandardMaterial({ color: 0xb8b7ae, roughness: .86 });
 
-let session = null, controller = null, blocks = null, cruise = null;
+let session = null, controller = null, blocks = null, cruise = null, skinsStats = null, viewLabelOverride = null;
 let mode = 'view', paused = false, ready = false, clayOn = false, selected = null;
 let cameras = [], manifest = null, lastRender = {}, loadStats = {};
 let routeCheck = null, cameraCheck = null, resetCount = 0, lastCruiseStatus = null;
@@ -101,6 +102,7 @@ function resources() { return countResources(world, clay); }
 function record() {
   return {
     dataset: DATASET_ID, view: selected, mode, paused, clay: clayOn, ready,
+    skins: skinsStats,
     resources: resources(),
     trianglesExpected: session
       ? expectedTriangles(manifest.placedTriangles, [
@@ -493,7 +495,7 @@ function setupButtons() {
     const image = renderer.domElement.toDataURL('image/jpeg', .94);
     const phHidden = mode !== 'walk' && !placeholderPref;
     try {
-      await saveEvidence(`${DATASET_TAG}-${selected}-${clayOn ? 'clay' : 'pbr'}${phHidden ? '-noph' : '-ph'}`, image, record());
+      await saveEvidence(`${DATASET_TAG}-${viewLabelOverride ?? selected}-${clayOn ? 'clay' : 'pbr'}${phHidden ? '-noph' : '-ph'}`, image, record());
       notice('当前WebGL画面与数据已保存。');
     } catch (e) { notice(e.message); }
   };
@@ -521,6 +523,25 @@ async function load() {
   if (wall.bytes !== wallInfo.bytes) throw new Error(`seal wall bytes ${wall.bytes} != manifest ${wallInfo.bytes}`);
   world.add(wall.root);
   world.add(session.root);
+
+  // ?skins=1 (expansion batch 20260917, default OFF): append the
+  // street-sidefaces skins — world-coord GLBs at identity + their thin-box
+  // colliders into the SAME physics world
+  if (WANT_SKINS) {
+    const skManifest = await json('./world/street-sidefaces/review-manifest.json');
+    const skCollision = await json('./world/street-sidefaces/collision-world.json');
+    const skinStats = [];
+    for (const k of skManifest.skins) {
+      const sk = await loadGlbWithStats(k.glb, `sideface-${k.id}`, { renderer, baseUrl: './' });
+      if (sk.bytes !== k.bytes) throw new Error(`skin ${k.id} bytes ${sk.bytes} != manifest ${k.bytes}`);
+      world.add(sk.root);
+      skinStats.push(sk);
+    }
+    for (const rec of skCollision.colliders) { addWallCollider(RAPIER, session.physics.world, rec); session.physics.wallCount++; }
+    skinsStats = { count: skinStats.length, bytes: skinStats.reduce((s2, x) => s2 + x.bytes, 0),
+      triangles: skManifest.placedTriangles, colliders: skCollision.colliders.length,
+      manifest: skManifest.datasetId };
+  }
 
   world.traverse((o) => {
     if (!o.isMesh) return;
@@ -566,7 +587,7 @@ async function load() {
     return { id: a.id, glb: a.glb, bytes: m.bytes, sha256: m.sha256, triangles: m.triangles ?? 0 };
   });
   session.sceneInventory = loadedSceneAssets(manifest, assetInfos, true);
-  const exp = expectedTriangles(manifest.placedTriangles, [
+  const exp = expectedTriangles(manifest.placedTriangles + (skinsStats?.triangles ?? 0), [
     ...session.sceneInventory.filter((e) => e.kind === 'asset'),
     { kind: 'surface', triangles: manifest.streetCompletion.surface.triangles },   // west surface (WorldLoader-loaded)
     { kind: 'surface', triangles: eastTail.triangles },
@@ -621,6 +642,14 @@ async function load() {
   notice('桥接世界已载入 · 取景模式。「行走模式」从东尾落入街面，「路线巡游检查（自动）」走全程物理链（automatic，非人工试玩）。');
   await runRouteCheck();
   window.__fangbangRecord = record;
+  // expansion batch 20260917: evidence hook for the sideface skins capture
+  // (drives the SAME camera/controls the buttons drive; no gameplay effect)
+  window.__fangbangView = (pos, target, label) => {
+    camera.position.set(...pos);
+    controls.target.set(...target);
+    viewLabelOverride = label ?? null;
+    controls.update();
+  };
 }
 
 load().catch((e) => {

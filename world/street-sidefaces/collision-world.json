@@ -1,0 +1,589 @@
+{
+  "axis": "glTF Y-up; WORLD records — obbToWorld() reproduces every box",
+  "adapterFormat": "obb {pos,theta,center,size} consumed by src/world/collisionAdapter.obbToWorld",
+  "dataset": "street-sidefaces",
+  "instances": [
+    {
+      "id": "skin-N01-plain-v1-left-side",
+      "module": "sideface-N01-plain-v1-left-side",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "bakedFrom": {
+        "module": "N01-plain-v1",
+        "placement": {
+          "positionGlb": [
+            3.8891,
+            0,
+            -7.1414
+          ],
+          "rotationYRad": 0.31264
+        }
+      }
+    },
+    {
+      "id": "skin-N05-restaurant-a-right-side",
+      "module": "sideface-N05-restaurant-a-right-side",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "bakedFrom": {
+        "module": "N05-restaurant-a",
+        "placement": {
+          "positionGlb": [
+            36.4005,
+            0,
+            -10.4263
+          ],
+          "rotationYRad": -0.07925
+        }
+      }
+    },
+    {
+      "id": "skin-N05-restaurant-a-back-wall",
+      "module": "sideface-N05-restaurant-a-back-wall",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "bakedFrom": {
+        "module": "N05-restaurant-a",
+        "placement": {
+          "positionGlb": [
+            36.4005,
+            0,
+            -10.4263
+          ],
+          "rotationYRad": -0.07925
+        }
+      }
+    },
+    {
+      "id": "skin-N06-curio-a-left-side",
+      "module": "sideface-N06-curio-a-left-side",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "bakedFrom": {
+        "module": "N06-curio-a",
+        "placement": {
+          "positionGlb": [
+            47.0775,
+            0,
+            -9.2669
+          ],
+          "rotationYRad": -0.16793
+        }
+      }
+    },
+    {
+      "id": "skin-N06-curio-a-back-wall",
+      "module": "sideface-N06-curio-a-back-wall",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "bakedFrom": {
+        "module": "N06-curio-a",
+        "placement": {
+          "positionGlb": [
+            47.0775,
+            0,
+            -9.2669
+          ],
+          "rotationYRad": -0.16793
+        }
+      }
+    },
+    {
+      "id": "skin-S05-plain-v3-left-side",
+      "module": "sideface-S05-plain-v3-left-side",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "bakedFrom": {
+        "module": "S05-plain-v3",
+        "placement": {
+          "positionGlb": [
+            54.9927,
+            0,
+            5.5789
+          ],
+          "rotationYRad": 2.65997
+        }
+      }
+    },
+    {
+      "id": "skin-S05-plain-v3-back-wall",
+      "module": "sideface-S05-plain-v3-back-wall",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "bakedFrom": {
+        "module": "S05-plain-v3",
+        "placement": {
+          "positionGlb": [
+            54.9927,
+            0,
+            5.5789
+          ],
+          "rotationYRad": 2.65997
+        }
+      }
+    },
+    {
+      "id": "skin-S07-plain-v2-right-side",
+      "module": "sideface-S07-plain-v2-right-side",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "bakedFrom": {
+        "module": "S07-plain-v2",
+        "placement": {
+          "positionGlb": [
+            66.0107,
+            0,
+            11.7373
+          ],
+          "rotationYRad": 2.6087
+        }
+      }
+    },
+    {
+      "id": "skin-S07-plain-v2-back-wall",
+      "module": "sideface-S07-plain-v2-back-wall",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "bakedFrom": {
+        "module": "S07-plain-v2",
+        "placement": {
+          "positionGlb": [
+            66.0107,
+            0,
+            11.7373
+          ],
+          "rotationYRad": 2.6087
+        }
+      }
+    },
+    {
+      "id": "skin-east-shop-133-gable-wall-east-b0s0",
+      "module": "sideface-east-shop-133-gable-wall-east-b0s0",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "bakedFrom": {
+        "module": "east-shop-133",
+        "placement": {
+          "positionGlb": [
+            120.22055408090135,
+            0,
+            30.184058020222682
+          ],
+          "rotationYRad": 2.912213
+        }
+      }
+    }
+  ],
+  "colliders": [
+    {
+      "name": "gableskin:N01-plain-v1-left-side",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        -3.893176201602393,
+        0,
+        -11.37035036988516
+      ],
+      "max": [
+        -1.8676256288519797,
+        6.8,
+        -5.262136723102575
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0.3126399999999999,
+        "center": [
+          -0.18293176145727008,
+          3.4,
+          -8.799042682456578
+        ],
+        "size": [
+          0.06,
+          6.8,
+          6.4
+        ]
+      },
+      "outward": [
+        -0.951525,
+        0.307572
+      ]
+    },
+    {
+      "name": "gableskin:N05-restaurant-a-right-side",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        42.07073470266943,
+        0,
+        -16.803548028857918
+      ],
+      "max": [
+        42.68471587637214,
+        7.9,
+        -9.820768470871833
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": -0.07925000000000001,
+        "center": [
+          41.19083238138303,
+          3.95,
+          -16.625296560132156
+        ],
+        "size": [
+          0.06,
+          7.9,
+          7
+        ]
+      },
+      "outward": [
+        0.996861,
+        0.079167
+      ]
+    },
+    {
+      "name": "gableskin:N05-restaurant-a-back-wall",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        36.323714433726956,
+        0,
+        -17.413934498217596
+      ],
+      "max": [
+        42.30963262974603,
+        7.9,
+        -16.879120394798417
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": -0.07925000000000001,
+        "center": [
+          37.83583238138303,
+          3.95,
+          -20.205296560132158
+        ],
+        "size": [
+          6,
+          7.9,
+          0.06
+        ]
+      },
+      "outward": [
+        0.079167,
+        -0.996861
+      ]
+    },
+    {
+      "name": "gableskin:N06-curio-a-left-side",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        43.89259849188197,
+        0,
+        -14.811964208357963
+      ],
+      "max": [
+        44.82089196711314,
+        6.6,
+        -9.675084813407615
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": -0.16793,
+        "center": [
+          41.6863677349018,
+          3.3,
+          -19.485160632483364
+        ],
+        "size": [
+          0.06,
+          6.6,
+          5.2
+        ]
+      },
+      "outward": [
+        -0.985933,
+        -0.167142
+      ]
+    },
+    {
+      "name": "gableskin:N06-curio-a-back-wall",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        45.149677238823664,
+        0,
+        -14.856067219616326
+      ],
+      "max": [
+        51.07530292381937,
+        6.6,
+        -13.79406028231165
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": -0.16793,
+        "center": [
+          45.04136773490181,
+          3.3,
+          -22.165160632483364
+        ],
+        "size": [
+          6,
+          6.6,
+          0.06
+        ]
+      },
+      "outward": [
+        0.167142,
+        -0.985933
+      ]
+    },
+    {
+      "name": "gableskin:S05-plain-v3-left-side",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        56.813825761976965,
+        0,
+        8.080276403349995
+      ],
+      "max": [
+        59.83159468466362,
+        6.8,
+        13.780033940038106
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 2.65997,
+        "center": [
+          -56.751221118421206,
+          3.4,
+          17.329331246149167
+        ],
+        "size": [
+          0.06,
+          6.8,
+          6.4
+        ]
+      },
+      "outward": [
+        0.886244,
+        0.463218
+      ]
+    },
+    {
+      "name": "gableskin:S05-plain-v3-back-wall",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        51.15737566624579,
+        0,
+        10.86670017439
+      ],
+      "max": [
+        56.50263542383767,
+        6.8,
+        13.699181956087765
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 2.65997,
+        "center": [
+          -53.39622111842122,
+          3.4,
+          14.049331246149166
+        ],
+        "size": [
+          6,
+          6.8,
+          0.06
+        ]
+      },
+      "outward": [
+        -0.463218,
+        0.886244
+      ]
+    },
+    {
+      "name": "gableskin:S07-plain-v2-right-side",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        58.05640447234458,
+        0,
+        8.963472445223148
+      ],
+      "max": [
+        61.359457898123395,
+        6.8,
+        14.506537298557964
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 2.6087,
+        "center": [
+          -57.39059652541082,
+          3.4,
+          20.22540027345406
+        ],
+        "size": [
+          0.06,
+          6.8,
+          6.4
+        ]
+      },
+      "outward": [
+        -0.861341,
+        -0.508027
+      ]
+    },
+    {
+      "name": "gableskin:S07-plain-v2-back-wall",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        58.3321378346705,
+        0,
+        14.714713138079253
+      ],
+      "max": [
+        63.53066623601445,
+        6.8,
+        17.814555753984312
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 2.6087,
+        "center": [
+          -60.74559652541082,
+          3.4,
+          16.945400273454062
+        ],
+        "size": [
+          6,
+          6.8,
+          0.06
+        ]
+      },
+      "outward": [
+        -0.508027,
+        0.861341
+      ]
+    },
+    {
+      "name": "gableskin:east-shop-133-gable-wall-east-b0s0",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        123.03643559356848,
+        0.5999999999999996,
+        31.42551716235385
+      ],
+      "max": [
+        125.5959722133324,
+        7.2,
+        42.15104353006377
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 2.912213,
+        "center": [
+          -129.4247471580621,
+          3.9,
+          -7.558501628445718
+        ],
+        "size": [
+          0.06,
+          6.6000000000000005,
+          11
+        ]
+      },
+      "outward": [
+        0.973808,
+        0.227373
+      ]
+    }
+  ]
+}

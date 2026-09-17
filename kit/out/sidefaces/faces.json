@@ -1,0 +1,499 @@
+{
+  "config": "kit/gable-skin.config.json",
+  "faces": [
+    {
+      "faceId": "N01-plain-v1-left-side",
+      "target": "gable-skin-n01-west",
+      "kind": "gable",
+      "module": "N01-plain-v1",
+      "rec": "left-side",
+      "tris": 60,
+      "budget": 1500,
+      "pass": true,
+      "bytes": 782760,
+      "sha256": "20cbb99d283b78b9806600a1f9b8828691cf3b5ff7f256b67d7efff330ef113d"
+    },
+    {
+      "faceId": "N05-restaurant-a-right-side",
+      "target": "gable-skin-lane-a-w",
+      "kind": "gable",
+      "module": "N05-restaurant-a",
+      "rec": "right-side",
+      "tris": 60,
+      "budget": 1500,
+      "pass": true,
+      "bytes": 782748,
+      "sha256": "19976e7f6df40fe2227fc496e8efdf4706d601cea03ab0d9bbc438afa73b63f4"
+    },
+    {
+      "faceId": "N05-restaurant-a-back-wall",
+      "target": "gable-skin-lane-a-w",
+      "kind": "rear",
+      "module": "N05-restaurant-a",
+      "rec": "back-wall",
+      "tris": 180,
+      "budget": 1500,
+      "pass": true,
+      "bytes": 804260,
+      "sha256": "eb2db18a13366ee1bbf33015ed27aea6cfe408409b58bf7772176cf2d7c12664"
+    },
+    {
+      "faceId": "N06-curio-a-left-side",
+      "target": "gable-skin-lane-a-e",
+      "kind": "gable",
+      "module": "N06-curio-a",
+      "rec": "left-side",
+      "tris": 60,
+      "budget": 1500,
+      "pass": true,
+      "bytes": 782840,
+      "sha256": "2e2bbb7edfe24ed92df85a807403a33fc2e575c1a572aaa7d37d61521ca983f7"
+    },
+    {
+      "faceId": "N06-curio-a-back-wall",
+      "target": "gable-skin-lane-a-e",
+      "kind": "rear",
+      "module": "N06-curio-a",
+      "rec": "back-wall",
+      "tris": 180,
+      "budget": 1500,
+      "pass": true,
+      "bytes": 804276,
+      "sha256": "e6d59c497049f63caba086a6f740d1bb8553e1da7f92e3bf53a01744a1099abb"
+    },
+    {
+      "faceId": "S05-plain-v3-left-side",
+      "target": "gable-skin-lane-b-w",
+      "kind": "gable",
+      "module": "S05-plain-v3",
+      "rec": "left-side",
+      "tris": 60,
+      "budget": 1500,
+      "pass": true,
+      "bytes": 782768,
+      "sha256": "4db67e369bf0f05b8febaa5c3504fc598989c431c472fe96212f55f0a5a84023"
+    },
+    {
+      "faceId": "S05-plain-v3-back-wall",
+      "target": "gable-skin-lane-b-w",
+      "kind": "rear",
+      "module": "S05-plain-v3",
+      "rec": "back-wall",
+      "tris": 180,
+      "budget": 1500,
+      "pass": true,
+      "bytes": 804216,
+      "sha256": "378e08d5106231dd41796654367b25a8dbb47318c71a261acf84588cad312ed2"
+    },
+    {
+      "faceId": "S07-plain-v2-right-side",
+      "target": "gable-skin-lane-b-e",
+      "kind": "gable",
+      "module": "S07-plain-v2",
+      "rec": "right-side",
+      "tris": 60,
+      "budget": 1500,
+      "pass": true,
+      "bytes": 782768,
+      "sha256": "63b211c5fe4589311c6dd531d96af4f88eff7b0ae668adfb14b057285803b771"
+    },
+    {
+      "faceId": "S07-plain-v2-back-wall",
+      "target": "gable-skin-lane-b-e",
+      "kind": "rear",
+      "module": "S07-plain-v2",
+      "rec": "back-wall",
+      "tris": 180,
+      "budget": 1500,
+      "pass": true,
+      "bytes": 804220,
+      "sha256": "86469b1a07c5480aaef786433fd8501ef58712819730de466c379eaf955c11c4"
+    },
+    {
+      "faceId": "east-shop-133-gable-wall-east-b0s0",
+      "target": "gable-skin-east-133",
+      "kind": "gable",
+      "module": "east-shop-133",
+      "rec": "gable-wall-east-b0s0",
+      "tris": 60,
+      "budget": 1500,
+      "pass": true,
+      "bytes": 782732,
+      "sha256": "ae39e33031e0f2b5d4db2b4313883ce91790bfec4b20a721d815d44be7db4616"
+    }
+  ],
+  "totalTris": 1080,
+  "colliders": [
+    {
+      "name": "gableskin:N01-plain-v1-left-side",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        -3.893176201602393,
+        0.0,
+        -11.37035036988516
+      ],
+      "max": [
+        -1.8676256288519797,
+        6.8,
+        -5.262136723102575
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0.3126399999999999,
+        "center": [
+          -0.18293176145727008,
+          3.4,
+          -8.799042682456578
+        ],
+        "size": [
+          0.06,
+          6.8,
+          6.4
+        ]
+      },
+      "outward": [
+        -0.951525,
+        0.307572
+      ]
+    },
+    {
+      "name": "gableskin:N05-restaurant-a-right-side",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        42.07073470266943,
+        0.0,
+        -16.803548028857918
+      ],
+      "max": [
+        42.68471587637214,
+        7.9,
+        -9.820768470871833
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": -0.07925000000000001,
+        "center": [
+          41.19083238138303,
+          3.95,
+          -16.625296560132156
+        ],
+        "size": [
+          0.06,
+          7.9,
+          7.0
+        ]
+      },
+      "outward": [
+        0.996861,
+        0.079167
+      ]
+    },
+    {
+      "name": "gableskin:N05-restaurant-a-back-wall",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        36.323714433726956,
+        0.0,
+        -17.413934498217596
+      ],
+      "max": [
+        42.30963262974603,
+        7.9,
+        -16.879120394798417
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": -0.07925000000000001,
+        "center": [
+          37.83583238138303,
+          3.95,
+          -20.205296560132158
+        ],
+        "size": [
+          6.0,
+          7.9,
+          0.06
+        ]
+      },
+      "outward": [
+        0.079167,
+        -0.996861
+      ]
+    },
+    {
+      "name": "gableskin:N06-curio-a-left-side",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        43.89259849188197,
+        0.0,
+        -14.811964208357963
+      ],
+      "max": [
+        44.82089196711314,
+        6.6,
+        -9.675084813407615
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": -0.16793,
+        "center": [
+          41.6863677349018,
+          3.3,
+          -19.485160632483364
+        ],
+        "size": [
+          0.06,
+          6.6,
+          5.2
+        ]
+      },
+      "outward": [
+        -0.985933,
+        -0.167142
+      ]
+    },
+    {
+      "name": "gableskin:N06-curio-a-back-wall",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        45.149677238823664,
+        0.0,
+        -14.856067219616326
+      ],
+      "max": [
+        51.07530292381937,
+        6.6,
+        -13.79406028231165
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": -0.16793,
+        "center": [
+          45.04136773490181,
+          3.3,
+          -22.165160632483364
+        ],
+        "size": [
+          6.0,
+          6.6,
+          0.06
+        ]
+      },
+      "outward": [
+        0.167142,
+        -0.985933
+      ]
+    },
+    {
+      "name": "gableskin:S05-plain-v3-left-side",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        56.813825761976965,
+        0.0,
+        8.080276403349995
+      ],
+      "max": [
+        59.83159468466362,
+        6.8,
+        13.780033940038106
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 2.65997,
+        "center": [
+          -56.751221118421206,
+          3.4,
+          17.329331246149167
+        ],
+        "size": [
+          0.06,
+          6.8,
+          6.4
+        ]
+      },
+      "outward": [
+        0.886244,
+        0.463218
+      ]
+    },
+    {
+      "name": "gableskin:S05-plain-v3-back-wall",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        51.15737566624579,
+        0.0,
+        10.86670017439
+      ],
+      "max": [
+        56.50263542383767,
+        6.8,
+        13.699181956087765
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 2.65997,
+        "center": [
+          -53.39622111842122,
+          3.4,
+          14.049331246149166
+        ],
+        "size": [
+          6.0,
+          6.8,
+          0.06
+        ]
+      },
+      "outward": [
+        -0.463218,
+        0.886244
+      ]
+    },
+    {
+      "name": "gableskin:S07-plain-v2-right-side",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        58.05640447234458,
+        0.0,
+        8.963472445223148
+      ],
+      "max": [
+        61.359457898123395,
+        6.8,
+        14.506537298557964
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 2.6087,
+        "center": [
+          -57.39059652541082,
+          3.4,
+          20.22540027345406
+        ],
+        "size": [
+          0.06,
+          6.8,
+          6.4
+        ]
+      },
+      "outward": [
+        -0.861341,
+        -0.508027
+      ]
+    },
+    {
+      "name": "gableskin:S07-plain-v2-back-wall",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        58.3321378346705,
+        0.0,
+        14.714713138079253
+      ],
+      "max": [
+        63.53066623601445,
+        6.8,
+        17.814555753984312
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 2.6087,
+        "center": [
+          -60.74559652541082,
+          3.4,
+          16.945400273454062
+        ],
+        "size": [
+          6.0,
+          6.8,
+          0.06
+        ]
+      },
+      "outward": [
+        -0.508027,
+        0.861341
+      ]
+    },
+    {
+      "name": "gableskin:east-shop-133-gable-wall-east-b0s0",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        123.03643559356848,
+        0.5999999999999996,
+        31.42551716235385
+      ],
+      "max": [
+        125.5959722133324,
+        7.2,
+        42.15104353006377
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 2.912213,
+        "center": [
+          -129.4247471580621,
+          3.9,
+          -7.558501628445718
+        ],
+        "size": [
+          0.06,
+          6.6000000000000005,
+          11.0
+        ]
+      },
+      "outward": [
+        0.973808,
+        0.227373
+      ]
+    }
+  ],
+  "axis": "glTF Y-up; WORLD records (placement baked in; obbToWorld reproduces every box)"
+}

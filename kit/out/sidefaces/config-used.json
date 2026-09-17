@@ -1,0 +1,281 @@
+{
+  "sampleId": "gable-skins",
+  "family": "street-sideface-skins",
+  "units": "meters",
+  "axis": "entries carry module-LOCAL boxes (from the delivered collision records) + the module instance placement; the builder bakes the placement into world-coord GLBs (authored in place, court3 precedent)",
+  "basedOn": "DESIGN_SPEC.json pawborough-temple-expansion-night-20260917 secondPackage_visibleSideFaces (lead-frozen design values; NOT a survey)",
+  "reference": {
+    "imageId": "PBR-SH-0007-G01/G02/G05/G06",
+    "referenceEra": "GEN inference images (notHistoricalEvidence); form direction only",
+    "historicalAccuracyVerified": false,
+    "dimensionsAreDesign": true
+  },
+  "skin": {
+    "thicknessM": 0.06,
+    "offsetM": 0.05,
+    "brickBaseH": 0.9,
+    "woodBandH": 0.12,
+    "copingH": 0.28,
+    "rearWindowM": [
+      0.6,
+      0.8,
+      1.8
+    ],
+    "rearDoorM": [
+      0.9,
+      2.0
+    ]
+  },
+  "instancesSource": "world/fangbang-temple/instances.json (street modules verbatim; identical in fangbang-temple-v2)",
+  "targets": [
+    {
+      "id": "gable-skin-n01-west",
+      "module": "N01-plain-v1",
+      "placement": {
+        "positionGlb": [
+          3.8891,
+          0,
+          -7.1414
+        ],
+        "rotationYRad": 0.31264
+      },
+      "faces": [
+        {
+          "kind": "gable",
+          "rec": "left-side",
+          "localBox": {
+            "center": [
+              -5.86,
+              3.4,
+              -3.2
+            ],
+            "size": [
+              0.28,
+              6.8,
+              6.4
+            ]
+          }
+        }
+      ],
+      "note": "west-most side wall (west extension road side)"
+    },
+    {
+      "id": "gable-skin-lane-a-w",
+      "module": "N05-restaurant-a",
+      "placement": {
+        "positionGlb": [
+          36.4005,
+          0,
+          -10.4263
+        ],
+        "rotationYRad": -0.07925
+      },
+      "faces": [
+        {
+          "kind": "gable",
+          "rec": "right-side",
+          "localBox": {
+            "center": [
+              5.51,
+              3.95,
+              -3.35
+            ],
+            "size": [
+              0.28,
+              7.9,
+              7.0
+            ]
+          }
+        },
+        {
+          "kind": "rear",
+          "rec": "back-wall",
+          "localBox": {
+            "center": [
+              2.375,
+              3.95,
+              -6.71
+            ],
+            "size": [
+              6.0,
+              7.9,
+              0.28
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "gable-skin-lane-a-e",
+      "module": "N06-curio-a",
+      "placement": {
+        "positionGlb": [
+          47.0775,
+          0,
+          -9.2669
+        ],
+        "rotationYRad": -0.16793
+      },
+      "faces": [
+        {
+          "kind": "gable",
+          "rec": "left-side",
+          "localBox": {
+            "center": [
+              -2.96,
+              3.3,
+              -2.48
+            ],
+            "size": [
+              0.28,
+              6.6,
+              5.2
+            ]
+          }
+        },
+        {
+          "kind": "rear",
+          "rec": "back-wall",
+          "localBox": {
+            "center": [
+              0.17499999999999982,
+              3.3,
+              -4.94
+            ],
+            "size": [
+              6.0,
+              6.6,
+              0.28
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "gable-skin-lane-b-w",
+      "module": "S05-plain-v3",
+      "placement": {
+        "positionGlb": [
+          54.9927,
+          0,
+          5.5789
+        ],
+        "rotationYRad": 2.65997
+      },
+      "faces": [
+        {
+          "kind": "gable",
+          "rec": "left-side",
+          "localBox": {
+            "center": [
+              -5.21,
+              3.4,
+              -3.2
+            ],
+            "size": [
+              0.28,
+              6.8,
+              6.4
+            ]
+          }
+        },
+        {
+          "kind": "rear",
+          "rec": "back-wall",
+          "localBox": {
+            "center": [
+              -2.075,
+              3.4,
+              -6.26
+            ],
+            "size": [
+              6.0,
+              6.8,
+              0.28
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "gable-skin-lane-b-e",
+      "module": "S07-plain-v2",
+      "placement": {
+        "positionGlb": [
+          66.0107,
+          0,
+          11.7373
+        ],
+        "rotationYRad": 2.6087
+      },
+      "faces": [
+        {
+          "kind": "gable",
+          "rec": "right-side",
+          "localBox": {
+            "center": [
+              5.21,
+              3.4,
+              -3.2
+            ],
+            "size": [
+              0.28,
+              6.8,
+              6.4
+            ]
+          }
+        },
+        {
+          "kind": "rear",
+          "rec": "back-wall",
+          "localBox": {
+            "center": [
+              2.075,
+              3.4,
+              -6.26
+            ],
+            "size": [
+              6.0,
+              6.8,
+              0.28
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "gable-skin-east-133",
+      "module": "east-shop-133",
+      "placement": {
+        "positionGlb": [
+          120.22055408090135,
+          0,
+          30.184058020222682
+        ],
+        "rotationYRad": 2.912213
+      },
+      "faces": [
+        {
+          "kind": "gable",
+          "rec": "gable-wall-east-b0s0",
+          "localBox": {
+            "center": [
+              -5.21,
+              3.9,
+              -5.5
+            ],
+            "size": [
+              0.28,
+              6.6000000000000005,
+              11.0
+            ]
+          },
+          "offsetOverrideM": 0.06,
+          "note": "skin offsets from the FOUNDATION band outer face (0.34 thick, protrudes 0.06 past the 0.28 wall): 0.05 off the foundation face"
+        }
+      ],
+      "note": "foundation-gable-east is the same wall in the foundation band; one skin covers the full height"
+    }
+  ],
+  "configSha256": "3cdcb5a21f4ad21637173fd792451de2fb4141f2a425cff0cae9f0bd1505e3b7"
+}

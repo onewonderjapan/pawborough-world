@@ -1,0 +1,61 @@
+{
+  "source": "kit/build_sidefaces_scene.py",
+  "engine": "cycles-cpu",
+  "samples": 24,
+  "resolution": [
+    1600,
+    900
+  ],
+  "views": [
+    {
+      "view": "skin-gable-skin-n01-west-0",
+      "file": "skin-gable-skin-n01-west-0-pbr.png",
+      "calibratedDistanceM": 6
+    },
+    {
+      "view": "skin-gable-skin-lane-a-w-0",
+      "file": "skin-gable-skin-lane-a-w-0-pbr.png",
+      "calibratedDistanceM": 2
+    },
+    {
+      "view": "skin-gable-skin-lane-a-w-1",
+      "file": "skin-gable-skin-lane-a-w-1-pbr.png",
+      "calibratedDistanceM": 6
+    },
+    {
+      "view": "skin-gable-skin-lane-a-e-0",
+      "file": "skin-gable-skin-lane-a-e-0-pbr.png",
+      "calibratedDistanceM": 2
+    },
+    {
+      "view": "skin-gable-skin-lane-a-e-1",
+      "file": "skin-gable-skin-lane-a-e-1-pbr.png",
+      "calibratedDistanceM": 6
+    },
+    {
+      "view": "skin-gable-skin-lane-b-w-0",
+      "file": "skin-gable-skin-lane-b-w-0-pbr.png",
+      "calibratedDistanceM": 1.5
+    },
+    {
+      "view": "skin-gable-skin-lane-b-w-1",
+      "file": "skin-gable-skin-lane-b-w-1-pbr.png",
+      "calibratedDistanceM": 6
+    },
+    {
+      "view": "skin-gable-skin-lane-b-e-0",
+      "file": "skin-gable-skin-lane-b-e-0-pbr.png",
+      "calibratedDistanceM": 1.5
+    },
+    {
+      "view": "skin-gable-skin-lane-b-e-1",
+      "file": "skin-gable-skin-lane-b-e-1-pbr.png",
+      "calibratedDistanceM": 6
+    },
+    {
+      "view": "skin-gable-skin-east-133-0",
+      "file": "skin-gable-skin-east-133-0-pbr.png",
+      "calibratedDistanceM": 6
+    }
+  ]
+}
