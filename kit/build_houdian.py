@@ -320,13 +320,20 @@ for sgn in (-1, 1):
         C.quad_out(L, 'gable-wall-upper-top',
                    [(x_in, yhi, z1), (x_in, yhi, z2), (x_out, yhi, z2), (x_out, yhi, z1)],
                    'plaster', [(z1 / 2.5, 0), (z2 / 2.5, 0), (z2 / 2.5, .13), (z1 / 2.5, .13)], (0, 1, 0))
+    # R1-02: the corner end caps used to run up to the RIDGE-height max of the
+    # strips (a full-height plaster slab at each wall corner, poking 2-3 m past
+    # the eave). They must close at the LOCAL roof soffit height at their own z.
     for zend, hint in ((0.0, (0, 0, 1)), (-bd['bodyDepthM'], (0, 0, -1))):
-        yt = max(s[3] for s in strips)
-        yb0 = min(low_top - .02, min(s[2] for s in strips))
+        zq = zend - (0.01 if zend > 0 else -0.01) * -1  # sample just inside the wall
+        zq = 0.0 if zend > 0 else -bd['bodyDepthM']
+        ytop = roof_y(sgn * sw_x, zq) - THICK - .02
+        yb0 = low_top - .02
+        if ytop <= yb0 + 0.01:
+            continue  # the gable strip band already closes this corner
         C.quad_out(L, 'gable-wall-upper-end', [(x_in, yb0, zend), (x_out, yb0, zend),
-                                               (x_out, yt, zend), (x_in, yt, zend)],
+                                               (x_out, ytop, zend), (x_in, ytop, zend)],
                    'plaster', [(x_in / 2.5, yb0 / 2.5), (x_out / 2.5, yb0 / 2.5),
-                               (x_out / 2.5, yt / 2.5), (x_in / 2.5, yt / 2.5)], hint)
+                               (x_out / 2.5, ytop / 2.5), (x_in / 2.5, ytop / 2.5)], hint)
     L.box('gable-brick-base', (sgn * sw_x, .4, -bd['bodyDepthM'] / 2),
           (bd['sideWallThicknessM'] + .06, .8, bd['bodyDepthM'] - .1), 'brick', 0)
     # 博风 verge board riding the gable top edge (dark trim, no ornament)

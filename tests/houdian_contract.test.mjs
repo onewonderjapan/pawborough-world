@@ -26,6 +26,13 @@ const materials = JSON.parse(await readFile(resolve(KIT, 'materials.json'), 'utf
 const reimport = JSON.parse(await readFile(resolve(KIT, 'reimport-check.json'), 'utf8'));
 const roof = JSON.parse(await readFile(resolve(KIT, 'roof-surface-samples.json'), 'utf8'));
 const glb = readGlb(bytes);
+const SW_GABLE = 6.45;
+const DEPTH_C = 8.4;
+const THICK_C = 0.1;
+const EAVE_C = 4.9;
+const RIDGE_C = 8.0;
+const RIDGE_Z_C = -3.6;
+const ZF_C = 2.0;   // side-wall band |x|
 
 // world-space bounds from the raw meshes (matrix is column-major, same as
 // groundMeshesOf in templeViewShared)
@@ -147,6 +154,34 @@ const BOUNDS = boundsOf(glb);
     `${measure.budgets.ridgeOrnamentsTris?.actual}`);
   check('C7: interiorVerifiedEmpty recorded', !!collision.interiorVerifiedEmpty);
 }
+
+  // R1-02: the wall corners must NOT carry thin full-height plaster slabs
+  // (they used to reach the ridge soffit: 6.02 / 7.83). Corner bands now close
+  // at the LOCAL roof soffit — the frozen roof puts its edge at the wall ends
+  // ~1.2 m above the eave (the ridge sits INSIDE the depth), so the bound is
+  // the roof slope line at that z, not the flat eave. Regression bound: the
+  // corner plaster stays >= 1 m below the ridge.
+  {
+    const plasterNode = glb.meshes.find((m) => m.name === 'houdian-body__weathered-lime-plaster');
+    const aPos2 = null; void aPos2;
+    const f32raw = plasterNode.positions; // readGlb node: already-world Float32 locals
+    const f32 = f32raw;
+    const localRoofAt = (z) => EAVE_C + (RIDGE_C - EAVE_C) * Math.min(1, Math.max(0, (ZF_C - z) / (ZF_C - RIDGE_Z_C)));
+    let worst = 0, worstAt = '', over = false;
+    for (let i = 0; i < f32.length / 3; i++) {
+      const x = f32[i * 3], y = f32[i * 3 + 1], z = f32[i * 3 + 2];
+      if (Math.abs(Math.abs(x) - SW_GABLE) > 0.2) continue;
+      let bound = null, at = '';
+      if (Math.abs(z) < 0.3) { bound = localRoofAt(-0.3) - THICK_C + 0.20; at = `front z=${z.toFixed(2)}`; }
+      else if (Math.abs(Math.abs(z) - DEPTH_C) < 0.3) { bound = localRoofAt(-(DEPTH_C - 0.3)) - THICK_C + 0.20; at = `rear z=${z.toFixed(2)}`; }
+      if (bound !== null) {
+        if (y > worst) { worst = y; worstAt = at; }
+        if (y > bound) over = true;
+      }
+    }
+    check('C8: corner bands cap at the local roof soffit, never the ridge (R1-02)',
+      !over && worst < RIDGE_C - 1.0, `worst corner y ${worst.toFixed(3)} at ${worstAt}`);
+  }
 
 console.log(failures === 0 ? '\nHOUDIAN_CONTRACT PASS' : `\nHOUDIAN_CONTRACT FAIL (${failures})`);
 process.exit(failures === 0 ? 0 : 1);

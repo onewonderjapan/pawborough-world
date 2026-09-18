@@ -190,15 +190,15 @@
     {
       "id": "temple-axis-peidian-w",
       "path": "./world/fangbang-temple-v2/temple-axis/peidian.glb",
-      "bytes": 2079872,
-      "sha256": "b776187f15ebba584ab70ff6a1f3a28732a5d2bdcaacb2e1b2e2003b92fe93db",
+      "bytes": 2079008,
+      "sha256": "e139da890252ab1a6540d5b401b94122be5f9831506d959fedf2976c1fb34e39",
       "triangles": 11432
     },
     {
       "id": "temple-axis-peidian-e",
       "path": "./world/fangbang-temple-v2/temple-axis/peidian.glb",
-      "bytes": 2079872,
-      "sha256": "b776187f15ebba584ab70ff6a1f3a28732a5d2bdcaacb2e1b2e2003b92fe93db",
+      "bytes": 2079008,
+      "sha256": "e139da890252ab1a6540d5b401b94122be5f9831506d959fedf2976c1fb34e39",
       "triangles": 11432
     },
     {
@@ -233,7 +233,7 @@
       "id": "temple-axis-houdian",
       "path": "./world/fangbang-temple-v2/temple-axis/houdian.glb",
       "bytes": 2706132,
-      "sha256": "64421178e2a643c4d936988f298104985405bced02663c249b74189863e4a195",
+      "sha256": "079faad9473bb2ef3719927e26f8e504b223ee94590fe4d9f495f801d476711e",
       "triangles": 16200
     },
     {
@@ -414,8 +414,8 @@
           -6.382718
         ],
         "rotationYRad": 1.73782633,
-        "bytes": 2079872,
-        "sha256": "b776187f15ebba584ab70ff6a1f3a28732a5d2bdcaacb2e1b2e2003b92fe93db",
+        "bytes": 2079008,
+        "sha256": "e139da890252ab1a6540d5b401b94122be5f9831506d959fedf2976c1fb34e39",
         "triangles": 11432,
         "module": "temple-axis-peidian-w"
       },
@@ -428,8 +428,8 @@
           -10.106817
         ],
         "rotationYRad": -1.40376633,
-        "bytes": 2079872,
-        "sha256": "b776187f15ebba584ab70ff6a1f3a28732a5d2bdcaacb2e1b2e2003b92fe93db",
+        "bytes": 2079008,
+        "sha256": "e139da890252ab1a6540d5b401b94122be5f9831506d959fedf2976c1fb34e39",
         "triangles": 11432,
         "module": "temple-axis-peidian-e"
       },
@@ -499,7 +499,7 @@
         ],
         "rotationYRad": 0.16703,
         "bytes": 2706132,
-        "sha256": "64421178e2a643c4d936988f298104985405bced02663c249b74189863e4a195",
+        "sha256": "079faad9473bb2ef3719927e26f8e504b223ee94590fe4d9f495f801d476711e",
         "triangles": 16200,
         "module": "temple-axis-houdian"
       }
