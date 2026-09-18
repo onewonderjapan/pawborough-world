@@ -12,6 +12,7 @@ const page = await browser.newPage({ viewport: { width: 1280, height: 960 } });
 page.on('console', (msg) => { if (msg.type() === 'error' || msg.type() === 'warning') console.log(`[console.${msg.type()}] ${msg.text().slice(0, 20000)}`); });
 page.on('pageerror', (err) => console.log(`[pageerror] ${String(err).slice(0, 500)}`));
 page.on('requestfailed', (req) => console.log(`[reqfail] ${req.url().slice(0, 160)} ${req.failure()?.errorText}`));
+page.on('request', (req) => { if (/\.glb|manifest/.test(req.url())) console.log(`[req] ${req.url().slice(0, 180)}`); });
 page.on('response', (res) => { console.log(`[http ${res.status()}] ${res.url().slice(0, 200)}`); });
 await page.goto(URL, { waitUntil: 'domcontentloaded' });
 await page.waitForTimeout(15000);

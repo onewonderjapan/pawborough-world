@@ -18,3 +18,7 @@ tmp/
 Thumbs.db
 __pycache__/
 *.pyc
+
+# C4: dist-compressed/ is a build output — reproduce with tools/build_compressed_dist.mjs
+# (its sources: committed world/**/ *.cm.glb + *.cm.json + the dist/ baseline)
+dist-compressed/
