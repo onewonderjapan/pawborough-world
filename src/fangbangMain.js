@@ -329,17 +329,20 @@ async function runRouteCheck() {
     c.dispose();
     return out;
   };
+  // negatives matched by id (v3 replaces the shop-165 placeholder probe with
+  // westshop facade/strip probes; v2 keeps its delivered set unchanged)
+  const negs = Object.fromEntries(route.negatives.map((n) => [n.id, n]));
   {
-    const n = route.negatives[0];
+    const n = negs['seal-wall'];
     const r = runNeg(n, n.dir, 4);
     r.assert = n.assert;
     r.pass = r.final[0] > n.barrierX - 0.2 && r.feetY >= -0.05;
     results.sealWall = r;
   }
-  {
+  if (negs['shop-165-placeholder']) {
     // stops AT the placeholder box: OBB surface distance in (0, maxObbGapM]
     // (the capsule may slide along the rotated face — never inside it)
-    const n = route.negatives[1];
+    const n = negs['shop-165-placeholder'];
     const r = runNeg(n, n.dir, 4);
     const b = shopOBB['shop-165'];
     const dx = r.final[0] - b.x, dz = r.final[1] - b.z;
@@ -353,14 +356,14 @@ async function runRouteCheck() {
   {
     // R1-02: the forecourt side edges carry sample-segment boundary walls
     // (temple-local x=+/-9, h 0.9) — the capsule is stopped deterministically.
-    const n = route.negatives[2];
+    const n = negs['forecourt-east'];
     const r = runNeg(n, n.dir, 5);
     r.assert = n.assert;
     r.pass = r.advanced < n.maxAdvancedM && r.feetY >= -0.05;
     results.forecourtEast = r;
   }
   {
-    const n = route.negatives[3];
+    const n = negs['dadian-doors'];
     const r = runNeg(n, n.dir, 4);
     const T = manifest.mapRegistration.templePlacement.translationGlb;
     const YAW = manifest.mapRegistration.templePlacement.yawRad;
@@ -370,20 +373,46 @@ async function runRouteCheck() {
     r.pass = r.finalLocalZ > n.localZLimit && r.feetY >= -0.05;
     results.dadianDoors = r;
   }
+  if (negs['westshop-facade']) {
+    // v3: the upgraded storefront's front wall stops the capsule on the road
+    // side (the walker never crosses the facade line, never falls)
+    const n = negs['westshop-facade'];
+    const r = runNeg(n, n.dir, 4);
+    r.assert = n.assert;
+    r.pass = r.advanced < n.maxAdvancedM && r.feetY >= -0.05;
+    results.westshopFacade = r;
+  }
+  if (negs['weststrip-wall']) {
+    // v3: a >1.5 m gap strip blocks crossing between two west-band shops
+    const n = negs['weststrip-wall'];
+    const r = runNeg(n, n.dir, 4);
+    r.assert = n.assert;
+    r.pass = r.advanced < n.maxAdvancedM && r.feetY >= -0.05;
+    results.weststripWall = r;
+  }
+  const negResults = [results.shopPlaceholder, results.westshopFacade, results.weststripWall]
+    .filter(Boolean);
+  const negCount = [results.sealWall, ...negResults, results.forecourtEast, results.dadianDoors].length;
+  const negLabels = [
+    `端墙挡${results.sealWall.pass ? '✓' : '✗'}`,
+    results.shopPlaceholder ? `占位挡${results.shopPlaceholder.pass ? '✓' : '✗'}` : null,
+    results.westshopFacade ? `店面挡${results.westshopFacade.pass ? '✓' : '✗'}` : null,
+    results.weststripWall ? `条带挡${results.weststripWall.pass ? '✓' : '✗'}` : null,
+    `前院东界${results.forecourtEast.pass ? '✓' : '✗'}·闭门挡${results.dadianDoors.pass ? '✓' : '✗'}`,
+  ].filter(Boolean).join('·');
   const pass = Object.values(results).every((r) => r.pass);
   routeCheck = {
     pass, automatic: true, results,
     summary: `去程${results.forward.pass ? '至闭门前' : '未达'}(z_local=${results.forward.finalLocalZ})`
       + `·返程${results.return.pass ? '达' : '未达'}`
-      + `·端墙挡${results.sealWall.pass ? '✓' : '✗'}·占位挡${results.shopPlaceholder.pass ? '✓' : '✗'}`
-      + `·前院东界${results.forecourtEast.pass ? '✓' : '✗'}·闭门挡${results.dadianDoors.pass ? '✓' : '✗'}`
+      + `·${negLabels}`
       + `·接缝最长停滞${results.forward.maxJointStallS}s`,
     ms: +(performance.now() - t0).toFixed(0),
     waypoints: route.mainStreet.length,
   };
   render();
   notice(pass
-    ? '巡游路线检查：全程往返 + 4 负例全部通过（automatic，非人工试玩）。'
+    ? `巡游路线检查：全程往返 + ${negCount} 负例全部通过（automatic，非人工试玩）。`
     : '巡游路线检查存在失败项，详见记录。');
   return pass;
 }
@@ -605,6 +634,7 @@ async function load() {
     ...(manifest.eastEdgeAssets?.assets ?? []),
     ...(manifest.streetCompletion?.assets ?? []),
     ...(manifest.templeAxis?.assets ?? []),
+    ...(manifest.westShops?.assets ?? []),
   ];
   const assetInfos = assetBlocks.flatMap((b) => (b.assets ?? [])).map((a) => {
     const m = manifestAssets.find((e) => e.id === a.id);
@@ -623,7 +653,7 @@ async function load() {
   ]);
   const r = resources();
   if (r.triangles !== exp.total)
-    throw new Error(`几何不完整：实际 ${r.triangles} / 预期 ${exp.total}（基础 ${manifest.placedTriangles} + 资产 ${session.sceneInventory.filter((e) => e.kind === 'asset').map((a) => a.id).join(' + ')} + 东西延伸面 + 端墙）`);
+    throw new Error(`几何不完整：实际 ${r.triangles} / 预期 ${exp.total}（基础 ${manifest.placedTriangles} + 皮肤 ${skinsStats?.placedTris ?? 0} + 资产 ${session.sceneInventory.filter((e) => e.kind === 'asset').map((a) => a.id).join(' + ')} + 东西延伸面 + 端墙）`);
 
 
   // extra walkable ground OUTSIDE the session trimesh: the east tail surface

@@ -1,0 +1,108 @@
+{
+  "axis": "glTF Y-up; world-space records consumed by src/world/collisionAdapter",
+  "colliders": [
+    {
+      "name": "westext-seal-wall:seal-wall",
+      "group": "westext-seal-wall:seal-wall",
+      "type": "box",
+      "min": [
+        -150.4669,
+        0.0,
+        37.926
+      ],
+      "max": [
+        -148.3091,
+        3.4,
+        49.02
+      ],
+      "obb": {
+        "pos": [
+          -149.388,
+          0.0,
+          43.473
+        ],
+        "theta": 0.16703,
+        "center": [
+          0.0,
+          1.7,
+          0.0
+        ],
+        "size": [
+          0.3,
+          3.4,
+          11.2
+        ]
+      }
+    },
+    {
+      "name": "temple-bounds:forecourt-bound-east",
+      "group": "temple-bounds:forecourt-bound",
+      "type": "box",
+      "min": [
+        -121.8324,
+        0.0,
+        28.3068
+      ],
+      "max": [
+        -114.8883,
+        0.9,
+        29.7172
+      ],
+      "obb": {
+        "pos": [
+          -118.360364,
+          0.0,
+          29.012
+        ],
+        "theta": 0.16703,
+        "center": [
+          0.0,
+          0.45,
+          0.0
+        ],
+        "size": [
+          0.25,
+          0.9,
+          7.000000000000002
+        ]
+      },
+      "design_inference": "sample-segment boundary, NOT historical (R1-02)"
+    },
+    {
+      "name": "temple-bounds:forecourt-bound-west",
+      "group": "temple-bounds:forecourt-bound",
+      "type": "box",
+      "min": [
+        -139.5819,
+        0.0,
+        31.2994
+      ],
+      "max": [
+        -132.6378,
+        0.9,
+        32.7097
+      ],
+      "obb": {
+        "pos": [
+          -136.109856,
+          0.0,
+          32.00458
+        ],
+        "theta": 0.16703,
+        "center": [
+          0.0,
+          0.45,
+          0.0
+        ],
+        "size": [
+          0.25,
+          0.9,
+          7.000000000000002
+        ]
+      },
+      "design_inference": "sample-segment boundary, NOT historical (R1-02)"
+    }
+  ],
+  "surfaceGroundColliders": false,
+  "note": "the surface needs no wall colliders: its visible faces are the ground trimesh (GROUND_NODE_RE); the seal wall is the only solid here | forecourt boundary walls (R1-02) ride on the temple-axis placement: obb pos = wall center in world coordinates, theta = temple yaw"
+}

@@ -1,0 +1,56 @@
+{
+  "batch": "pawborough-v1-candidate-night-20260918",
+  "package": "B 西延带 17 占位升级（B0–B5）",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "head": "see git log -1",
+  "dataset": {
+    "id": "fangbang-temple-v3",
+    "path": "world/fangbang-temple-v3/",
+    "base": "world/fangbang-temple-v2 (只读) + block-west-shops",
+    "instances": 58,
+    "colliders": 666,
+    "placedTrianglesBridge": 171464,
+    "westShopsPlacedTris": 188706
+  },
+  "placement": {
+    "frontLine": "模块前墙中心沿道路法线落线（plan.entries.frontCenter；重叠>0.2m 顺序切向移位，见 plan.shiftLog）",
+    "gaps": "净距>1.5m 同侧补院墙 strip ×3（westshops-strips.glb，h2.9 t0.28）",
+    "modules": "17 占位按 category→module 映射引用 building/ 冻结模块（0 新建模，0 新贴图）"
+  },
+  "budgets": {
+    "westShopsBlock": {
+      "actual": 188706,
+      "limit": 180000,
+      "pass": false
+    },
+    "fullSceneV3": {
+      "actual": 522480,
+      "limit": 600000,
+      "pass": true
+    },
+    "newTextures": 0
+  },
+  "budgetNote": "westShopsBlock 188,706 > 180,000（超 4.8%）：17 个冻结模块实测三角数合计超预算，按纪律如实记录不算失败；回滚或换更小模块需机主裁决",
+  "tests": {
+    "suite": "39/39 全绿",
+    "westshops_contract": "PASS（17 资产 sha 对 building/ 一致、精确 SAT 零相邻重叠、3 strips、预算如实）",
+    "fangbang_v3_passage": "PASS（西延带中心线双向 + 立面/条带阻挡）",
+    "page": "三态 PASS：?ds=fangbang-temple-v3&skins=1（567,764 tris）/ ?ds=fangbang-temple-v3（565,304）/ 默认（不变，占位挡✓）"
+  },
+  "routeContractChange": {
+    "dropped": "shop-165-placeholder 活体负例：该占位被开放门面餐厅模块替换（replacedBy），“挡在占位盒外”断言与交付几何矛盾",
+    "offlineCoverage": "店内/条带阻挡由 fangbang_v3_passage P2/P3/P4 对 collision-world.json 强制（DESIGN_SPEC.packageB.tests 口径）；17 店门面均离可行走路面 8.7m+，活体探针只能落空",
+    "v2Unchanged": "v2 页面 routeCheck 原样（占位挡✓，4 负例）"
+  },
+  "evidence": {
+    "webgl": "artifacts/westshops/web/ 8 机位（?ds=fangbang-temple-v3&skins=1，dPos=0 dFov=0，空白帧守卫全过）",
+    "blender": "artifacts/westshops/blender/ 4 张（junction-west/west-road-mid/placeholder-band/aerial-overview，Cycles CPU 24spp，无空白帧）+ scene.blend",
+    "perf": "perf-v2.json 5,774ms/88.1MB/P50 166.8ms vs perf-v3.json 8,448ms/173MB/P50 183.3ms（SwiftShader 软件GL，仅回归基线；3×重载 stable 无泄漏）"
+  },
+  "ports": {
+    "planned": "5302/5303",
+    "actual": "5304 dev server（5302 被既有进程占用 → fallback #8；vite preview 的 dist 是旧提交产物不含 v3 数据集，验证走 dev server，与桥接批/A 批先例一致）"
+  },
+  "ownerVetoable": "整块可一键 revoke：blocks.json 删除 block-west-shops 资产块并清空 17 个占位的 replacedBy 即回到灰盒；category→module 映射与 gap strip 均为设计推断"
+}

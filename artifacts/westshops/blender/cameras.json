@@ -1,0 +1,106 @@
+{
+  "source": "kit/build_westshops_v3_scene.py",
+  "engine": "cycles-cpu",
+  "samples": 24,
+  "resolution": [
+    1600,
+    900
+  ],
+  "assembly": "street assembly identity + west-extension surface/seal-wall/bounds + east tail surface + 15 temple-axis-V2 assets at T+R(yaw+local) + 17 block-west-shops module instances + westshops-strips.glb + 10 remaining placeholder gray boxes",
+  "views": [
+    {
+      "view": "junction-west",
+      "tag": "pbr",
+      "posBlender": [
+        8,
+        3,
+        1.6
+      ],
+      "targetBlender": [
+        -30,
+        -10.5,
+        2
+      ],
+      "fovDegVerified": 55.0,
+      "file": "fangbangv3-junction-west-pbr.png"
+    },
+    {
+      "view": "west-road-mid",
+      "tag": "pbr",
+      "posBlender": [
+        -60,
+        -21,
+        1.6
+      ],
+      "targetBlender": [
+        -127.817,
+        -27.057,
+        4
+      ],
+      "fovDegVerified": 50.0,
+      "file": "fangbangv3-west-road-mid-pbr.png"
+    },
+    {
+      "view": "placeholder-band",
+      "tag": "pbr",
+      "posBlender": [
+        -95,
+        -33,
+        1.6
+      ],
+      "targetBlender": [
+        -40,
+        -14,
+        2
+      ],
+      "fovDegVerified": 55.0,
+      "file": "fangbangv3-placeholder-band-pbr.png"
+    },
+    {
+      "view": "aerial-overview",
+      "tag": "pbr",
+      "posBlender": [
+        -70,
+        -70,
+        45
+      ],
+      "targetBlender": [
+        -95,
+        -5,
+        0
+      ],
+      "fovDegVerified": 50.0,
+      "file": "fangbangv3-aerial-overview-pbr.png"
+    }
+  ],
+  "note": "BLENDER evidence; WebGL captures are separate (artifacts/westshops/web)",
+  "blankGuard": {
+    "frames": [
+      {
+        "file": "fangbangv3-junction-west-pbr.png",
+        "lumStd255": 60.265,
+        "dominantShare": 0.2002,
+        "blank": false
+      },
+      {
+        "file": "fangbangv3-west-road-mid-pbr.png",
+        "lumStd255": 45.709,
+        "dominantShare": 0.3135,
+        "blank": false
+      },
+      {
+        "file": "fangbangv3-placeholder-band-pbr.png",
+        "lumStd255": 44.597,
+        "dominantShare": 0.3265,
+        "blank": false
+      },
+      {
+        "file": "fangbangv3-aerial-overview-pbr.png",
+        "lumStd255": 40.915,
+        "dominantShare": 0.5042,
+        "blank": false
+      }
+    ],
+    "anyBlank": false
+  }
+}

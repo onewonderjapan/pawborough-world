@@ -1,0 +1,17 @@
+{
+  "batch": "pawborough-v1-candidate-night-20260918",
+  "package": "B",
+  "stages": {
+    "B0_plan": "done: kit/out/westshops/plan.json (17 占位→模块映射、开间实测、切向排序)",
+    "B1_placement": "done: 前线落位+移位+3 strips GLB (kit/build_weststrips.py)",
+    "B2_world": "done: world/fangbang-temple-v3 装配（58 实例/666 碰撞/blocks 17 replacedBy/manifest westShops 段）",
+    "B3_tests": "done: 39/39 全绿；三态页面 PASS（5304 dev server）",
+    "B4_evidence": "done: 8 WebGL + 4 Blender(无空白帧) + perf v2/v3",
+    "B5_delivery": "done: artifacts/westshops/{RESULT,DELIVERY,PROGRESS}"
+  },
+  "blockers": [
+    "westShopsBlock 188,706 > 180,000（超 4.8%，如实记录，机主裁决）",
+    "shop-165 活体负例撤下（开放门面+门面离路面 8.7m+，离线 passage 承担）"
+  ],
+  "next": "C0–C6"
+}
