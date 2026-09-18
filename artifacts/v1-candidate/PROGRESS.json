@@ -1,0 +1,15 @@
+{
+  "batch": "pawborough-v1-candidate-night-20260918",
+  "stages": {
+    "A0-A4": "done (f4fdec0): 主街可见面全量外皮 119 面→52 墙，21 实例（10 M 冻结 + 11 A），39 测试绿，12 证据",
+    "B0-B5": "done (e3b7f64): 西延带 17 占位升级 fangbang-temple-v3，blocks replacedBy 可回滚，westShopsBlock 188,706/180,000 如实超 4.8%",
+    "C0-C1": "done (793fa98): index-v1.html + VERSION.json + make_version.mjs",
+    "C2": "done (793fa98): verify_all.sh 首跑 8/8 绿",
+    "C3": "done (793fa98): scene-v1.blend 26 机位/缺图 0/CPU 3 张计时，GPU 忙跳过 CUDA",
+    "C4": "done (793fa98): 压缩变体 ratio 0.537，首帧传输 −33.6%，双态对账过",
+    "C5": "done: restore_check 全绿（LFS pull + 哨兵）",
+    "C6": "done: 本交付包 + GATE 原样附 DELIVERY 末尾 + 提交"
+  },
+  "blockers": [],
+  "next": "停止。GATE.md 十项决策全部等待机主，施工者不自行进入"
+}

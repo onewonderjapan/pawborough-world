@@ -41,6 +41,28 @@ EOF
 fi
 HEAD_IN_CLONE=$(git -C "$DEST" rev-parse HEAD)
 
+# GLBs live in Git LFS: a fresh clone checks out pointer stubs, so pull the
+# real objects and VERIFY a sentinel GLB magic before spending time on
+# verify_all (a pointer file starts with "vers", a GLB with "glTF").
+git -C "$DEST" lfs install --local >>"$CLONE_LOG" 2>&1 || true
+if ! git -C "$DEST" lfs pull >>"$CLONE_LOG" 2>&1; then
+  echo "FAIL git lfs pull (see $CLONE_LOG)"
+fi
+SENTINEL="$DEST/building/plain-v1/model.glb"
+if [ "$(head -c 4 "$SENTINEL" 2>/dev/null)" != "glTF" ]; then
+  echo "FAIL lfs sentinel: building/plain-v1/model.glb is not a real GLB (see $CLONE_LOG)"
+  python3 - "$REPORT_DIR/restore-report.json" "$STARTED_AT" "$DEST" false "$HEAD_IN_CLONE" "$CLONE_LOG" <<'EOF'
+import json, sys, datetime
+out, started, dest, ok, head, log = sys.argv[1:7]
+json.dump({'tool': 'tools/restore_check.sh', 'startedAt': started,
+           'finishedAt': datetime.datetime.now().astimezone().isoformat(),
+           'clone': dest, 'head': head, 'pass': ok == 'true',
+           'error': 'lfs pull left pointer stubs; see clone log'},
+          open(out, 'w'), ensure_ascii=False, indent=2)
+EOF
+  exit 1
+fi
+
 echo "==== [restore_check] verify_all.sh in the clone (fresh environment)"
 VERIFY_LOG=/tmp/restore_verify_$TS.log
 if (cd "$DEST" && PREVIEW_PORT_A=5316 PREVIEW_PORT_B=5317 bash tools/verify_all.sh) >"$VERIFY_LOG" 2>&1; then
@@ -49,8 +71,10 @@ else
   VERIFY_PASS=false
 fi
 tail -3 "$VERIFY_LOG"
+# free the clone's previews so a re-run never fights stale listeners
+pkill -f "[v]ite preview --port 531[67]" 2>/dev/null || true
 
-python3 - "$REPORT_DIR/restore-report.json" "$STARTED_AT" "$DEST" "$VERIFY_PASS" "$HEAD_IN_CLONE" "$VERIFY_LOG" "$WS/artifacts/v1-candidate/verify-report.json" <<'EOF'
+python3 - "$REPORT_DIR/restore-report.json" "$STARTED_AT" "$DEST" "$VERIFY_PASS" "$HEAD_IN_CLONE" "$VERIFY_LOG" "$DEST/artifacts/v1-candidate/verify-report.json" <<'EOF'
 import json, sys, datetime, os
 out, started, dest, ok, head, vlog, vreport = sys.argv[1:8]
 entry = {

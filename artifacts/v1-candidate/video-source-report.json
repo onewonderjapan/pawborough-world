@@ -59,5 +59,16 @@
       "seconds": 8.7,
       "file": "scene-v1-court2-pair-cpu.png"
     }
-  ]
+  ],
+  "reopenCheck": {
+    "command": "blender -b kit/out/scene-v1/scene-v1.blend -P kit/check_scene_v1.py",
+    "result": "missing_images=0 cameras=26 SCENE_V1_CHECK PASS",
+    "cameraIds": "street:* 8 + bridge:* 8 + temple:* 10 (dataset-prefixed)"
+  },
+  "gpu": {
+    "device": "NVIDIA GB10 (aarch64)",
+    "utilizationAtCheck": "96% (busy)",
+    "decision": "CUDA comparison render skipped per DESIGN_SPEC (\"GPU 空闲则再渲\") and fallback #6; CPU timings stand as the record"
+  },
+  "streetCameraRule": "street set = first 8 entries of world/cameras.json (main-street views), lensMm converted to verticalFovDegrees via the shared 36mm-vertical sensor geometry"
 }

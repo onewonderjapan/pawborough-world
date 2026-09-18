@@ -1,56 +1,56 @@
 {
   "tool": "tools/restore_check.sh",
-  "startedAt": "2026-09-18T21:49:17+09:00",
-  "finishedAt": "2026-09-18T21:49:18.147036+09:00",
-  "clone": "/tmp/claude-1000/pawborough-restore-20260918-214917",
-  "head": "e3b7f6499c938bb3a542dd68b90c3e03d04b96e1",
-  "pass": false,
-  "verifyLog": "/tmp/restore_verify_20260918-214917.log",
+  "startedAt": "2026-09-18T22:15:54+09:00",
+  "finishedAt": "2026-09-18T22:16:22.898312+09:00",
+  "clone": "/tmp/claude-1000/pawborough-restore-20260918-221554",
+  "head": "793fa98ce9d3e09f449dbef8d9603b8a741a3c21",
+  "pass": true,
+  "verifyLog": "/tmp/restore_verify_20260918-221554.log",
   "verifyReport": {
     "tool": "tools/verify_all.sh",
-    "startedAt": "2026-09-18T20:02:17+09:00",
-    "finishedAt": "2026-09-18T20:02:44.005693+09:00",
+    "startedAt": "2026-09-18T22:15:59+09:00",
+    "finishedAt": "2026-09-18T22:16:22.821301+09:00",
     "pass": true,
     "steps": [
       {
         "step": "npm_install",
         "pass": true,
-        "ms": 3
+        "ms": 1096
       },
       {
         "step": "tests",
         "pass": true,
-        "ms": 2770
+        "ms": 2302
       },
       {
         "step": "make_version",
         "pass": true,
-        "ms": 780
+        "ms": 729
       },
       {
         "step": "sha_reconcile",
         "pass": true,
-        "ms": 537
+        "ms": 624
       },
       {
         "step": "dist_build",
         "pass": true,
-        "ms": 2505
+        "ms": 1683
       },
       {
         "step": "preview_a",
         "pass": true,
-        "ms": 2042
+        "ms": 2013
       },
       {
         "step": "preview_b",
         "pass": true,
-        "ms": 2031
+        "ms": 2014
       },
       {
         "step": "cruise",
         "pass": true,
-        "ms": 15889
+        "ms": 12894
       }
     ],
     "logs": "one /tmp/verify_all_<step>.log per step (transient)"
