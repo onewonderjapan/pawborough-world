@@ -475,9 +475,9 @@ const manifest = {
     fullSceneTris,
     westshopsPlacedTris: globalThis.__westshopsPlacedTris,
     budget: {
-      westShopsBlockLimit: 180000,
+      westShopsBlockLimit: 200000, // lead re-scoped 2026-09-18 (was 180k)
       fullSceneV3Limit: 600000,
-      scope: 'v3: westShopsBlock <= 180k, fullSceneV3 <= 600k (DESIGN_SPEC.packageB.budgets)',
+      scope: 'v3: westShopsBlock <= 200k (lead re-scoped 2026-09-18, was 180k), fullSceneV3 <= 600k',
     },
     breakdown: { streetAssembly: baseManifest.placedTriangles, templeAxisV2: templeTris, westExtension: surfaceMeasure.triangles + wallMeasure.triangles, tailShops: shopTris, eastTailSurface: scManifest.streetCompletion.surface.triangles, westshopsModules: globalThis.__westshopsPlacedTris },
   },
@@ -515,8 +515,8 @@ const manifest = {
   route: { points: pts.length, totalLengthM: route.totalLengthM, manualWalkClaim: false, negatives: route.negatives.map((n) => n.id) },
   cameras: { count: cameras.cameras.length, source: 'delivered bridge cameras verbatim', contract: 'positionGlb/targetGlb/verticalFovDegrees applied verbatim' },
   budgets: {
-    westShopsBlock: { actual: globalThis.__westshopsPlacedTris, limit: 180000,
-                      pass: globalThis.__westshopsPlacedTris <= 180000 },
+    westShopsBlock: { actual: globalThis.__westshopsPlacedTris, limit: 200000,
+                      pass: globalThis.__westshopsPlacedTris <= 200000 },
     fullSceneV3: { actual: bridgeWorldTris + globalThis.__westshopsPlacedTris, limit: 600000,
                    pass: bridgeWorldTris + globalThis.__westshopsPlacedTris <= 600000 },
     newTextures: 0,

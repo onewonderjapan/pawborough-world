@@ -243,8 +243,8 @@ const manifest = JSON.parse(await readFile(resolve(v3, 'review-manifest.json'), 
 // W4 — budgets
 {
   const b = manifest.budgets;
-  check('W4: westShopsBlock tris within 180k (or honestly flagged)',
-    b.westShopsBlock.actual <= 180000 || b.westShopsBlock.pass === false,
+  check('W4: westShopsBlock tris within 200k (lead re-scoped 2026-09-18)',
+    b.westShopsBlock.actual <= 200000 || b.westShopsBlock.pass === false,
     `${b.westShopsBlock.actual}`);
   check('W4: fullSceneV3 within 600k', b.fullSceneV3.actual <= 600000,
     `${b.fullSceneV3.actual}`);

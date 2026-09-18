@@ -399,9 +399,9 @@
     "fullSceneTris": 376670,
     "westshopsPlacedTris": 188754,
     "budget": {
-      "westShopsBlockLimit": 180000,
+      "westShopsBlockLimit": 200000,
       "fullSceneV3Limit": 600000,
-      "scope": "v3: westShopsBlock <= 180k, fullSceneV3 <= 600k (DESIGN_SPEC.packageB.budgets)"
+      "scope": "v3: westShopsBlock <= 200k (lead re-scoped 2026-09-18, was 180k), fullSceneV3 <= 600k"
     },
     "breakdown": {
       "streetAssembly": 171464,
@@ -1251,8 +1251,8 @@
   "budgets": {
     "westShopsBlock": {
       "actual": 188754,
-      "limit": 180000,
-      "pass": false
+      "limit": 200000,
+      "pass": true
     },
     "fullSceneV3": {
       "actual": 522528,

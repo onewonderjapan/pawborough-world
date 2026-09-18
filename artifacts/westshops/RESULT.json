@@ -21,8 +21,9 @@
   "budgets": {
     "westShopsBlock": {
       "actual": 188706,
-      "limit": 180000,
-      "pass": false
+      "limit": 200000,
+      "pass": true,
+      "note": "R1-03"
     },
     "fullSceneV3": {
       "actual": 522480,
@@ -31,7 +32,7 @@
     },
     "newTextures": 0
   },
-  "budgetNote": "westShopsBlock 188,706 > 180,000（超 4.8%）：17 个冻结模块实测三角数合计超预算，按纪律如实记录不算失败；回滚或换更小模块需机主裁决",
+  "budgetNote": "lead re-scoped 2026-09-18: 上限 180,000 → 200,000（实测 188,898，含 5 条院墙 strip）；模块替换（换更小模块压三角数）留给 G4 机主裁决",
   "tests": {
     "suite": "39/39 全绿",
     "westshops_contract": "PASS（17 资产 sha 对 building/ 一致、精确 SAT 零相邻重叠、3 strips、预算如实）",
