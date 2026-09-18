@@ -64,6 +64,32 @@ scene = bpy.context.scene
 scene.unit_settings.system = 'METRIC'
 scene.unit_settings.scale_length = 1
 
+
+BLANK_FRAMES = []
+
+
+def blank_stats(png_path, name):
+    img = bpy.data.images.load(str(png_path))
+    px = list(img.pixels)
+    bpy.data.images.remove(img)
+    n = len(px) // 4
+    step = max(1, n // 20000)
+    lum = []
+    for i in range(0, n, step):
+        r, g, b = px[i * 4], px[i * 4 + 1], px[i * 4 + 2]
+        lum.append(0.2126 * r + 0.7152 * g + 0.0722 * b)
+    mean = sum(lum) / len(lum)
+    std = (sum((v - mean) ** 2 for v in lum) / len(lum)) ** 0.5
+    counts = {}
+    for v in lum:
+        counts[round(v * 255)] = counts.get(round(v * 255), 0) + 1
+    dom = max(counts.values()) / len(lum)
+    blank = std * 255 < 2.0 or dom > 0.95
+    BLANK_FRAMES.append({'file': name, 'lumStd255': round(std * 255, 3),
+                         'dominantShare': round(dom, 4), 'blank': blank})
+    if blank:
+        print(f"BLANK_FRAME {name}")
+
 sun = bpy.data.objects.new('sun', bpy.data.lights.new('sun', 'SUN'))
 scene.collection.objects.link(sun)
 sun.data.energy = 2.8
@@ -119,6 +145,7 @@ for target in cfg['targets']:
         cam.data.lens = 36.0 / (2.0 * math.tan(fov / 2.0))
         scene.render.filepath = str(args.out / f'{c["id"]}-pbr.png')
         bpy.ops.render.render(write_still=True)
+        blank_stats(scene.render.filepath, scene.render.filepath.split('/')[-1])
         sidecar['views'].append({'view': c['id'], 'file': scene.render.filepath.split('/')[-1],
                                  'calibratedDistanceM': c.get('calibratedDistanceM')})
         print(f'RENDERED {c["id"]}')
@@ -132,4 +159,7 @@ for target in cfg['targets']:
 sidecar_path = args.out / 'cameras.json'
 sidecar_path.parent.mkdir(parents=True, exist_ok=True)
 sidecar_path.write_text(json.dumps(sidecar, indent=2) + '\n', encoding='utf-8')
+sidecar['blankGuard'] = {'frames': BLANK_FRAMES, 'anyBlank': any(f['blank'] for f in BLANK_FRAMES)}
+if sidecar['blankGuard']['anyBlank']:
+    print('BLANK_FRAMES_PRESENT'); sys.exit(10)
 print(f'SIDEFACES_SCENE_READY views={len(sidecar["views"])} out={args.out}')

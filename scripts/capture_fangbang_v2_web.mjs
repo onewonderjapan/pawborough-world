@@ -36,6 +36,26 @@ try {
       await page.waitForTimeout(600);
       const before = await page.evaluate(() => window.__fangbangRecord());
       if (!before.cameraCheck?.pass) throw new Error(`cameraCheck failed for ${view}: ${JSON.stringify(before.cameraCheck)}`);
+      const frameStats = await page.evaluate(() => {
+        const src = document.querySelector('#app canvas');
+        if (!src) return { blank: true, std255: 0, dominantShare: 1 };
+        const w = 160, h = 100;
+        const c2 = document.createElement('canvas');
+        c2.width = w; c2.height = h;
+        const ctx = c2.getContext('2d');
+        ctx.drawImage(src, 0, 0, w, h);
+        const d = ctx.getImageData(0, 0, w, h).data;
+        const lum = [];
+        for (let i = 0; i < w * h; i++)
+          lum.push(0.2126 * d[i * 4] + 0.7152 * d[i * 4 + 1] + 0.0722 * d[i * 4 + 2]);
+        const mean = lum.reduce((a, b) => a + b, 0) / lum.length;
+        const std = Math.sqrt(lum.reduce((a, b) => a + (b - mean) ** 2, 0) / lum.length);
+        const counts = {};
+        for (const v of lum) { const k = Math.round(v); counts[k] = (counts[k] ?? 0) + 1; }
+        const dom = Math.max(...Object.values(counts)) / lum.length;
+        return { blank: std < 2 || dom > 0.95, std255: +std.toFixed(2), dominantShare: +dom.toFixed(3) };
+      });
+      if (frameStats.blank) throw new Error(`BLANK frame: std=${frameStats.std255} dom=${frameStats.dominantShare}`);
       await page.click('button:has-text("保存实测图")');
       await page.waitForFunction(() => document.querySelector('#notice')?.textContent?.includes('已保存'), null, { timeout: 20000 });
       console.log(`ok  fangbangv2-${view}-pbr (dPos=${before.cameraCheck.dPos}, dFov=${before.cameraCheck.dFov})`);

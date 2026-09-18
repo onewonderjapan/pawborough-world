@@ -242,6 +242,37 @@ else:
 
 meshes = [o for o in scene.objects if o.type == 'MESH']
 
+BLANK_FRAMES = []
+
+
+def blank_stats(png_path, name):
+    """R1-04: luminance std < 2/255 or >95% single level = blank frame."""
+    img = bpy.data.images.load(str(png_path))
+    px = list(img.pixels)  # RGBA floats
+    bpy.data.images.remove(img)
+    n = len(px) // 4
+    step = max(1, n // 20000)  # subsample to ~20k points
+    lum = []
+    for i in range(0, n, step):
+        r, g, b = px[i * 4], px[i * 4 + 1], px[i * 4 + 2]
+        lum.append(0.2126 * r + 0.7152 * g + 0.0722 * b)
+    mean = sum(lum) / len(lum)
+    var = sum((v - mean) ** 2 for v in lum) / len(lum)
+    std = var ** 0.5
+    counts = {}
+    for v in lum:
+        k = round(v * 255)
+        counts[k] = counts.get(k, 0) + 1
+    dom = max(counts.values()) / len(lum)
+    blank = std * 255 < 2.0 or dom > 0.95
+    entry = {'file': name, 'lumStd255': round(std * 255, 3),
+             'dominantShare': round(dom, 4), 'blank': blank}
+    BLANK_FRAMES.append(entry)
+    if blank:
+        print(f"BLANK_FRAME {name} std={entry['lumStd255']} dom={entry['dominantShare']}")
+    return entry
+
+
 for vid, tag in PLAN:
     c = by_id[vid]
     loc, tar, got = apply_camera(c)
@@ -252,6 +283,7 @@ for vid, tag in PLAN:
                 s.material = clay
     scene.render.filepath = str(args.out / f'{vid}-{tag}{"-native" if args.mode == "compare" else "-glb"}.png')
     bpy.ops.render.render(write_still=True)
+    blank_stats(scene.render.filepath, scene.render.filepath.split('/')[-1])
     if tag == 'clay':
         for o, mats in saved:
             for s, m in zip(o.material_slots, mats):
@@ -263,8 +295,14 @@ for vid, tag in PLAN:
                              'file': scene.render.filepath.split('/')[-1]})
     print(f'RENDERED {vid}-{tag} fov={got:.3f}deg')
 
+sidecar['blankGuard'] = {'thresholdStd255': 2.0, 'thresholdDominant': 0.95,
+                         'frames': BLANK_FRAMES,
+                         'anyBlank': any(f['blank'] for f in BLANK_FRAMES)}
 (args.out / ('compare-cameras.json' if args.mode == 'compare' else 'cameras.json')).write_text(
     json.dumps(sidecar, indent=2) + '\n', encoding='utf-8')
+if sidecar['blankGuard']['anyBlank']:
+    print('BLANK_FRAMES_PRESENT', [f['file'] for f in BLANK_FRAMES if f['blank']])
+    sys.exit(10)
 if INSTANCE_CHECK:
     (args.out / 'instance-check.json').write_text(
         json.dumps({'source': 'R1-03', 'tolerance': 1e-3, 'checks': INSTANCE_CHECK},

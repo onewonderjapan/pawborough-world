@@ -101,6 +101,32 @@ for ph in blocks['placeholders']:
     o.data.materials.append(gray)
     n_boxes += 1
 
+
+BLANK_FRAMES = []
+
+
+def blank_stats(png_path, name):
+    img = bpy.data.images.load(str(png_path))
+    px = list(img.pixels)
+    bpy.data.images.remove(img)
+    n = len(px) // 4
+    step = max(1, n // 20000)
+    lum = []
+    for i in range(0, n, step):
+        r, g, b = px[i * 4], px[i * 4 + 1], px[i * 4 + 2]
+        lum.append(0.2126 * r + 0.7152 * g + 0.0722 * b)
+    mean = sum(lum) / len(lum)
+    std = (sum((v - mean) ** 2 for v in lum) / len(lum)) ** 0.5
+    counts = {}
+    for v in lum:
+        counts[round(v * 255)] = counts.get(round(v * 255), 0) + 1
+    dom = max(counts.values()) / len(lum)
+    blank = std * 255 < 2.0 or dom > 0.95
+    BLANK_FRAMES.append({'file': name, 'lumStd255': round(std * 255, 3),
+                         'dominantShare': round(dom, 4), 'blank': blank})
+    if blank:
+        print(f"BLANK_FRAME {name}")
+
 sun = bpy.data.objects.new('sun', bpy.data.lights.new('sun', 'SUN'))
 scene.collection.objects.link(sun)
 sun.data.energy = 2.8
@@ -180,6 +206,7 @@ for vid, tag in PLAN:
                 sl.material = clay
     scene.render.filepath = str(args.out / f'fangbang-{vid}-{tag}.png')
     bpy.ops.render.render(write_still=True)
+    blank_stats(scene.render.filepath, scene.render.filepath.split('/')[-1])
     if tag == 'clay':
         for o, mats in saved:
             for sl, m in zip(o.material_slots, mats):
@@ -192,4 +219,7 @@ for vid, tag in PLAN:
 
 (args.out / 'cameras.json').write_text(json.dumps(sidecar, indent=2) + '\n', encoding='utf-8')
 bpy.ops.wm.save_as_mainfile(filepath=str(args.out / 'scene.blend'))
+sidecar['blankGuard'] = {'frames': BLANK_FRAMES, 'anyBlank': any(f['blank'] for f in BLANK_FRAMES)}
+if sidecar['blankGuard']['anyBlank']:
+    print('BLANK_FRAMES_PRESENT'); sys.exit(10)
 print(f'FANGBANG_V2_SCENE_READY views={len(PLAN)} out={args.out}')
