@@ -19,6 +19,9 @@ from pathlib import Path
 
 import bpy
 import numpy as np
+import sys as _sys
+import pathlib as _pathlib
+_sys.path.insert(0, str(_pathlib.Path(__file__).resolve().parent))
 
 argv = sys.argv[sys.argv.index('--') + 1:]
 p = argparse.ArgumentParser()
@@ -32,6 +35,7 @@ p.add_argument('--device', type=str, default='CPU', choices=['CPU', 'GPU'])
 p.add_argument('--prefix', type=str, default='view')
 p.add_argument('--log', type=Path, default=None)
 p.add_argument('--denoise', type=str, default='OIDN', choices=['OIDN', 'OPENIMAGEDENOISE', 'NONE'])
+p.add_argument('--no-rig', action='store_true')
 p.add_argument('--fix-temple-cameras', action='store_true',
                help='rebuild temple:* cameras from world/temple-axis-v2/cameras.json '
                     '(axis-local) transformed by the bridge placement T+yaw. scene-v1 '
@@ -39,6 +43,11 @@ p.add_argument('--fix-temple-cameras', action='store_true',
 args = p.parse_args(argv)
 
 scene = bpy.context.scene
+# F0 unified rig (re-applied per camera below); --no-rig keeps legacy lighting
+import light_rig
+RIG = not args.no_rig
+if RIG:
+    light_rig.apply(scene)
 if args.fix_temple_cameras:
     import math
     import mathutils
@@ -58,7 +67,8 @@ if args.fix_temple_cameras:
         p_w = w(c['positionGlb'])
         t_w = w(c['targetGlb'])
         o.location = (p_w[0], -p_w[2], p_w[1])
-        d = mathutils.Vector((t_w[0] - p_w[0], t_w[1] - p_w[1], t_w[2] - p_w[2]))
+        # BL axes: (x, -z, y) — map the DELTA too
+        d = mathutils.Vector((t_w[0] - p_w[0], -(t_w[2] - p_w[2]), t_w[1] - p_w[1]))
         o.rotation_euler = d.to_track_quat('-Z', 'Y').to_euler()
         o.data.angle = math.radians(c['verticalFovDegrees'])
     bpy.context.view_layer.update()
@@ -124,6 +134,8 @@ def blank_guard(img_path: Path) -> dict:
 fails = 0
 for cid in wanted:
     scene.camera = cams[cid]
+    if RIG:
+        light_rig.apply(scene, scene.camera)
     fp = out_abs / f'{args.prefix}--{cid.replace(":", "__")}-{args.device.lower()}.png'
     scene.render.filepath = str(fp)
     scene.render.image_settings.file_format = 'PNG'

@@ -35,6 +35,9 @@ p.add_argument('--props', action='store_true',
                help='instance the street-props layer (E batch, kit/out/props/plan.json)')
 args = p.parse_args(argv)
 
+import sys as _sys
+_sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 ROOT = Path(__file__).resolve().parent.parent
 DS_DIR = ROOT / 'world' / 'fangbang-temple-v3'
 V3 = ROOT / 'world' / 'temple-axis-v3'
@@ -218,21 +221,9 @@ for ph in blocks['placeholders']:
     o.data.materials.append(gray)
     n_boxes += 1
 
-# --- lights + world -------------------------------------------------------------
-sun = bpy.data.objects.new('sun', bpy.data.lights.new('sun', 'SUN'))
-scene.collection.objects.link(sun)
-sun.data.energy = 2.8
-sun.rotation_euler = (math.radians(55), 0.0, math.radians(-35))
-fill = bpy.data.objects.new('fill', bpy.data.lights.new('fill', 'SUN'))
-scene.collection.objects.link(fill)
-fill.data.energy = 0.9
-fill.data.color = (0.92, 0.94, 1.0)
-fill.rotation_euler = (math.radians(35), 0.0, math.radians(145))
-bl_world = bpy.data.worlds.new('world')
-scene.world = bl_world
-bl_world.use_nodes = True
-bl_world.node_tree.nodes['Background'].inputs[0].default_value = (0.75, 0.82, 0.88, 1)
-bl_world.node_tree.nodes['Background'].inputs[1].default_value = 0.6
+# --- lights + world: the F0 unified rig (DESIGN_SPEC packageF.lightRig) --------
+import light_rig
+light_rig.apply(scene)
 
 # --- 26 cameras ------------------------------------------------------------------
 cam_col = bpy.data.collections.new('v2_cameras')
@@ -269,8 +260,6 @@ scene.render.engine = 'CYCLES'
 scene.cycles.samples = args.samples
 scene.render.resolution_x = W
 scene.render.resolution_y = H
-scene.view_settings.view_transform = 'AgX'
-scene.view_settings.look = 'AgX - Medium High Contrast'
 if args.device == 'GPU':
     prefs = bpy.context.preferences.addons['cycles'].preferences
     prefs.compute_device_type = 'CUDA'
@@ -369,6 +358,7 @@ for name in [x.strip() for x in args.render.split(',') if x.strip() and x != 'no
         continue
     cid, fname = RENDER_MAP[name]
     scene.camera = cam_objects[cid]
+    light_rig.apply(scene, scene.camera)          # fill follows each camera
     fp = args.out / f'{fname}-{args.device.lower()}.png'
     scene.render.filepath = str(fp)
     scene.render.image_settings.file_format = 'PNG'

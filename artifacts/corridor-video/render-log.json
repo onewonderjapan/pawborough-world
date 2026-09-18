@@ -1,0 +1,2842 @@
+{
+ "clip": "walkthrough-street-to-houdian",
+ "route": "world/fangbang-temple-v4/route.json",
+ "polylinePoints": 115,
+ "polylineLengthM": 402.23,
+ "fps": 24,
+ "speed": 1.4,
+ "samples": 16,
+ "resolution": [
+  1280,
+  720
+ ],
+ "framesPlanned": 6895,
+ "devicePolicy": "nvidia-smi at start + every 200 frames; CUDA <20% else CPU; resume on switch",
+ "events": [
+  {
+   "event": "render_start",
+   "device": "CPU",
+   "utilizationPct": "12 ",
+   "wallClock": "04:01:42"
+  },
+  {
+   "event": "progress_200",
+   "frame": 199,
+   "device": "CPU",
+   "avgFrameSeconds": 5.29,
+   "utilizationPct": "9 ",
+   "wallClock": "04:19:51"
+  },
+  {
+   "event": "progress_200",
+   "frame": 399,
+   "device": "CPU",
+   "avgFrameSeconds": 4.52,
+   "utilizationPct": "9 ",
+   "wallClock": "04:35:21"
+  }
+ ],
+ "frames": [
+  {
+   "frame": 0,
+   "seconds": 3.89,
+   "std": 41.0,
+   "mono": 0.222,
+   "blank": false
+  },
+  {
+   "frame": 1,
+   "seconds": 4.41,
+   "std": 40.6,
+   "mono": 0.222,
+   "blank": false
+  },
+  {
+   "frame": 2,
+   "seconds": 4.08,
+   "std": 40.5,
+   "mono": 0.221,
+   "blank": false
+  },
+  {
+   "frame": 3,
+   "seconds": 4.14,
+   "std": 40.5,
+   "mono": 0.221,
+   "blank": false
+  },
+  {
+   "frame": 4,
+   "seconds": 4.12,
+   "std": 40.4,
+   "mono": 0.22,
+   "blank": false
+  },
+  {
+   "frame": 5,
+   "seconds": 4.12,
+   "std": 40.4,
+   "mono": 0.219,
+   "blank": false
+  },
+  {
+   "frame": 6,
+   "seconds": 4.11,
+   "std": 40.4,
+   "mono": 0.218,
+   "blank": false
+  },
+  {
+   "frame": 7,
+   "seconds": 4.13,
+   "std": 40.4,
+   "mono": 0.217,
+   "blank": false
+  },
+  {
+   "frame": 8,
+   "seconds": 4.17,
+   "std": 40.4,
+   "mono": 0.216,
+   "blank": false
+  },
+  {
+   "frame": 9,
+   "seconds": 4.21,
+   "std": 40.3,
+   "mono": 0.215,
+   "blank": false
+  },
+  {
+   "frame": 10,
+   "seconds": 4.16,
+   "std": 40.3,
+   "mono": 0.214,
+   "blank": false
+  },
+  {
+   "frame": 11,
+   "seconds": 4.18,
+   "std": 40.3,
+   "mono": 0.213,
+   "blank": false
+  },
+  {
+   "frame": 12,
+   "seconds": 4.22,
+   "std": 40.3,
+   "mono": 0.213,
+   "blank": false
+  },
+  {
+   "frame": 13,
+   "seconds": 4.23,
+   "std": 40.2,
+   "mono": 0.213,
+   "blank": false
+  },
+  {
+   "frame": 14,
+   "seconds": 4.23,
+   "std": 40.1,
+   "mono": 0.213,
+   "blank": false
+  },
+  {
+   "frame": 15,
+   "seconds": 4.25,
+   "std": 40.1,
+   "mono": 0.213,
+   "blank": false
+  },
+  {
+   "frame": 16,
+   "seconds": 4.22,
+   "std": 40.0,
+   "mono": 0.213,
+   "blank": false
+  },
+  {
+   "frame": 17,
+   "seconds": 4.26,
+   "std": 39.9,
+   "mono": 0.213,
+   "blank": false
+  },
+  {
+   "frame": 18,
+   "seconds": 4.23,
+   "std": 39.9,
+   "mono": 0.214,
+   "blank": false
+  },
+  {
+   "frame": 19,
+   "seconds": 4.21,
+   "std": 39.8,
+   "mono": 0.214,
+   "blank": false
+  },
+  {
+   "frame": 20,
+   "seconds": 4.29,
+   "std": 39.8,
+   "mono": 0.214,
+   "blank": false
+  },
+  {
+   "frame": 21,
+   "seconds": 4.31,
+   "std": 39.7,
+   "mono": 0.214,
+   "blank": false
+  },
+  {
+   "frame": 22,
+   "seconds": 4.24,
+   "std": 39.7,
+   "mono": 0.215,
+   "blank": false
+  },
+  {
+   "frame": 23,
+   "seconds": 4.26,
+   "std": 39.7,
+   "mono": 0.215,
+   "blank": false
+  },
+  {
+   "frame": 24,
+   "seconds": 4.43,
+   "std": 39.6,
+   "mono": 0.216,
+   "blank": false
+  },
+  {
+   "frame": 25,
+   "seconds": 4.26,
+   "std": 39.6,
+   "mono": 0.216,
+   "blank": false
+  },
+  {
+   "frame": 26,
+   "seconds": 4.43,
+   "std": 39.6,
+   "mono": 0.216,
+   "blank": false
+  },
+  {
+   "frame": 27,
+   "seconds": 4.3,
+   "std": 39.6,
+   "mono": 0.217,
+   "blank": false
+  },
+  {
+   "frame": 28,
+   "seconds": 4.26,
+   "std": 39.6,
+   "mono": 0.217,
+   "blank": false
+  },
+  {
+   "frame": 29,
+   "seconds": 4.24,
+   "std": 39.5,
+   "mono": 0.218,
+   "blank": false
+  },
+  {
+   "frame": 30,
+   "seconds": 4.27,
+   "std": 39.5,
+   "mono": 0.218,
+   "blank": false
+  },
+  {
+   "frame": 31,
+   "seconds": 4.33,
+   "std": 39.5,
+   "mono": 0.219,
+   "blank": false
+  },
+  {
+   "frame": 32,
+   "seconds": 4.3,
+   "std": 39.5,
+   "mono": 0.219,
+   "blank": false
+  },
+  {
+   "frame": 33,
+   "seconds": 4.3,
+   "std": 39.5,
+   "mono": 0.22,
+   "blank": false
+  },
+  {
+   "frame": 34,
+   "seconds": 4.29,
+   "std": 39.5,
+   "mono": 0.22,
+   "blank": false
+  },
+  {
+   "frame": 35,
+   "seconds": 4.9,
+   "std": 39.5,
+   "mono": 0.221,
+   "blank": false
+  },
+  {
+   "frame": 36,
+   "seconds": 8.72,
+   "std": 39.4,
+   "mono": 0.221,
+   "blank": false
+  },
+  {
+   "frame": 37,
+   "seconds": 10.41,
+   "std": 39.4,
+   "mono": 0.222,
+   "blank": false
+  },
+  {
+   "frame": 38,
+   "seconds": 7.46,
+   "std": 39.4,
+   "mono": 0.222,
+   "blank": false
+  },
+  {
+   "frame": 39,
+   "seconds": 8.31,
+   "std": 39.4,
+   "mono": 0.222,
+   "blank": false
+  },
+  {
+   "frame": 40,
+   "seconds": 10.26,
+   "std": 39.3,
+   "mono": 0.223,
+   "blank": false
+  },
+  {
+   "frame": 41,
+   "seconds": 6.82,
+   "std": 39.3,
+   "mono": 0.223,
+   "blank": false
+  },
+  {
+   "frame": 42,
+   "seconds": 8.55,
+   "std": 39.3,
+   "mono": 0.223,
+   "blank": false
+  },
+  {
+   "frame": 43,
+   "seconds": 8.98,
+   "std": 39.3,
+   "mono": 0.224,
+   "blank": false
+  },
+  {
+   "frame": 44,
+   "seconds": 7.95,
+   "std": 39.3,
+   "mono": 0.224,
+   "blank": false
+  },
+  {
+   "frame": 45,
+   "seconds": 6.88,
+   "std": 39.2,
+   "mono": 0.224,
+   "blank": false
+  },
+  {
+   "frame": 46,
+   "seconds": 8.07,
+   "std": 39.2,
+   "mono": 0.224,
+   "blank": false
+  },
+  {
+   "frame": 47,
+   "seconds": 9.19,
+   "std": 39.3,
+   "mono": 0.223,
+   "blank": false
+  },
+  {
+   "frame": 48,
+   "seconds": 8.03,
+   "std": 39.3,
+   "mono": 0.223,
+   "blank": false
+  },
+  {
+   "frame": 49,
+   "seconds": 9.08,
+   "std": 39.3,
+   "mono": 0.223,
+   "blank": false
+  },
+  {
+   "frame": 50,
+   "seconds": 6.5,
+   "std": 39.3,
+   "mono": 0.222,
+   "blank": false
+  },
+  {
+   "frame": 51,
+   "seconds": 9.24,
+   "std": 39.3,
+   "mono": 0.222,
+   "blank": false
+  },
+  {
+   "frame": 52,
+   "seconds": 7.52,
+   "std": 39.3,
+   "mono": 0.221,
+   "blank": false
+  },
+  {
+   "frame": 53,
+   "seconds": 10.19,
+   "std": 39.3,
+   "mono": 0.22,
+   "blank": false
+  },
+  {
+   "frame": 54,
+   "seconds": 7.41,
+   "std": 39.2,
+   "mono": 0.22,
+   "blank": false
+  },
+  {
+   "frame": 55,
+   "seconds": 7.98,
+   "std": 39.2,
+   "mono": 0.219,
+   "blank": false
+  },
+  {
+   "frame": 56,
+   "seconds": 8.42,
+   "std": 39.2,
+   "mono": 0.219,
+   "blank": false
+  },
+  {
+   "frame": 57,
+   "seconds": 7.96,
+   "std": 39.2,
+   "mono": 0.22,
+   "blank": false
+  },
+  {
+   "frame": 58,
+   "seconds": 9.76,
+   "std": 39.1,
+   "mono": 0.219,
+   "blank": false
+  },
+  {
+   "frame": 59,
+   "seconds": 7.59,
+   "std": 39.1,
+   "mono": 0.219,
+   "blank": false
+  },
+  {
+   "frame": 60,
+   "seconds": 10.73,
+   "std": 39.1,
+   "mono": 0.219,
+   "blank": false
+  },
+  {
+   "frame": 61,
+   "seconds": 8.47,
+   "std": 39.1,
+   "mono": 0.219,
+   "blank": false
+  },
+  {
+   "frame": 62,
+   "seconds": 7.97,
+   "std": 39.1,
+   "mono": 0.22,
+   "blank": false
+  },
+  {
+   "frame": 63,
+   "seconds": 7.98,
+   "std": 39.2,
+   "mono": 0.221,
+   "blank": false
+  },
+  {
+   "frame": 64,
+   "seconds": 9.6,
+   "std": 39.2,
+   "mono": 0.221,
+   "blank": false
+  },
+  {
+   "frame": 65,
+   "seconds": 8.31,
+   "std": 39.2,
+   "mono": 0.221,
+   "blank": false
+  },
+  {
+   "frame": 66,
+   "seconds": 8.6,
+   "std": 39.2,
+   "mono": 0.222,
+   "blank": false
+  },
+  {
+   "frame": 67,
+   "seconds": 8.88,
+   "std": 39.2,
+   "mono": 0.223,
+   "blank": false
+  },
+  {
+   "frame": 68,
+   "seconds": 7.22,
+   "std": 39.2,
+   "mono": 0.224,
+   "blank": false
+  },
+  {
+   "frame": 69,
+   "seconds": 9.97,
+   "std": 39.2,
+   "mono": 0.225,
+   "blank": false
+  },
+  {
+   "frame": 70,
+   "seconds": 7.71,
+   "std": 39.1,
+   "mono": 0.227,
+   "blank": false
+  },
+  {
+   "frame": 71,
+   "seconds": 9.56,
+   "std": 39.1,
+   "mono": 0.228,
+   "blank": false
+  },
+  {
+   "frame": 72,
+   "seconds": 7.7,
+   "std": 39.0,
+   "mono": 0.23,
+   "blank": false
+  },
+  {
+   "frame": 73,
+   "seconds": 9.55,
+   "std": 38.9,
+   "mono": 0.232,
+   "blank": false
+  },
+  {
+   "frame": 74,
+   "seconds": 7.4,
+   "std": 38.8,
+   "mono": 0.234,
+   "blank": false
+  },
+  {
+   "frame": 75,
+   "seconds": 9.57,
+   "std": 38.8,
+   "mono": 0.235,
+   "blank": false
+  },
+  {
+   "frame": 76,
+   "seconds": 7.36,
+   "std": 38.8,
+   "mono": 0.237,
+   "blank": false
+  },
+  {
+   "frame": 77,
+   "seconds": 6.91,
+   "std": 38.8,
+   "mono": 0.238,
+   "blank": false
+  },
+  {
+   "frame": 78,
+   "seconds": 6.52,
+   "std": 38.8,
+   "mono": 0.24,
+   "blank": false
+  },
+  {
+   "frame": 79,
+   "seconds": 4.5,
+   "std": 38.9,
+   "mono": 0.24,
+   "blank": false
+  },
+  {
+   "frame": 80,
+   "seconds": 4.48,
+   "std": 39.0,
+   "mono": 0.24,
+   "blank": false
+  },
+  {
+   "frame": 81,
+   "seconds": 4.63,
+   "std": 39.1,
+   "mono": 0.241,
+   "blank": false
+  },
+  {
+   "frame": 82,
+   "seconds": 4.38,
+   "std": 39.2,
+   "mono": 0.241,
+   "blank": false
+  },
+  {
+   "frame": 83,
+   "seconds": 4.42,
+   "std": 39.3,
+   "mono": 0.241,
+   "blank": false
+  },
+  {
+   "frame": 84,
+   "seconds": 4.48,
+   "std": 39.4,
+   "mono": 0.241,
+   "blank": false
+  },
+  {
+   "frame": 85,
+   "seconds": 4.42,
+   "std": 39.5,
+   "mono": 0.241,
+   "blank": false
+  },
+  {
+   "frame": 86,
+   "seconds": 4.35,
+   "std": 39.6,
+   "mono": 0.242,
+   "blank": false
+  },
+  {
+   "frame": 87,
+   "seconds": 4.32,
+   "std": 39.7,
+   "mono": 0.242,
+   "blank": false
+  },
+  {
+   "frame": 88,
+   "seconds": 4.42,
+   "std": 39.9,
+   "mono": 0.242,
+   "blank": false
+  },
+  {
+   "frame": 89,
+   "seconds": 4.35,
+   "std": 40.0,
+   "mono": 0.243,
+   "blank": false
+  },
+  {
+   "frame": 90,
+   "seconds": 4.37,
+   "std": 40.1,
+   "mono": 0.243,
+   "blank": false
+  },
+  {
+   "frame": 91,
+   "seconds": 4.42,
+   "std": 40.3,
+   "mono": 0.243,
+   "blank": false
+  },
+  {
+   "frame": 92,
+   "seconds": 4.33,
+   "std": 40.4,
+   "mono": 0.243,
+   "blank": false
+  },
+  {
+   "frame": 93,
+   "seconds": 4.39,
+   "std": 40.6,
+   "mono": 0.244,
+   "blank": false
+  },
+  {
+   "frame": 94,
+   "seconds": 4.45,
+   "std": 40.8,
+   "mono": 0.244,
+   "blank": false
+  },
+  {
+   "frame": 95,
+   "seconds": 4.4,
+   "std": 40.9,
+   "mono": 0.244,
+   "blank": false
+  },
+  {
+   "frame": 96,
+   "seconds": 4.33,
+   "std": 41.0,
+   "mono": 0.245,
+   "blank": false
+  },
+  {
+   "frame": 97,
+   "seconds": 4.39,
+   "std": 41.0,
+   "mono": 0.245,
+   "blank": false
+  },
+  {
+   "frame": 98,
+   "seconds": 4.39,
+   "std": 41.0,
+   "mono": 0.245,
+   "blank": false
+  },
+  {
+   "frame": 99,
+   "seconds": 4.41,
+   "std": 41.0,
+   "mono": 0.246,
+   "blank": false
+  },
+  {
+   "frame": 100,
+   "seconds": 4.49,
+   "std": 41.0,
+   "mono": 0.246,
+   "blank": false
+  },
+  {
+   "frame": 101,
+   "seconds": 4.78,
+   "std": 41.0,
+   "mono": 0.247,
+   "blank": false
+  },
+  {
+   "frame": 102,
+   "seconds": 10.43,
+   "std": 41.0,
+   "mono": 0.247,
+   "blank": false
+  },
+  {
+   "frame": 103,
+   "seconds": 6.83,
+   "std": 41.0,
+   "mono": 0.247,
+   "blank": false
+  },
+  {
+   "frame": 104,
+   "seconds": 8.43,
+   "std": 41.0,
+   "mono": 0.248,
+   "blank": false
+  },
+  {
+   "frame": 105,
+   "seconds": 7.72,
+   "std": 41.0,
+   "mono": 0.248,
+   "blank": false
+  },
+  {
+   "frame": 106,
+   "seconds": 8.99,
+   "std": 40.9,
+   "mono": 0.249,
+   "blank": false
+  },
+  {
+   "frame": 107,
+   "seconds": 8.62,
+   "std": 40.9,
+   "mono": 0.249,
+   "blank": false
+  },
+  {
+   "frame": 108,
+   "seconds": 7.78,
+   "std": 40.9,
+   "mono": 0.249,
+   "blank": false
+  },
+  {
+   "frame": 109,
+   "seconds": 7.69,
+   "std": 40.9,
+   "mono": 0.25,
+   "blank": false
+  },
+  {
+   "frame": 110,
+   "seconds": 7.33,
+   "std": 40.9,
+   "mono": 0.251,
+   "blank": false
+  },
+  {
+   "frame": 111,
+   "seconds": 4.31,
+   "std": 40.9,
+   "mono": 0.251,
+   "blank": false
+  },
+  {
+   "frame": 112,
+   "seconds": 4.35,
+   "std": 40.8,
+   "mono": 0.252,
+   "blank": false
+  },
+  {
+   "frame": 113,
+   "seconds": 4.5,
+   "std": 40.8,
+   "mono": 0.252,
+   "blank": false
+  },
+  {
+   "frame": 114,
+   "seconds": 4.3,
+   "std": 40.8,
+   "mono": 0.253,
+   "blank": false
+  },
+  {
+   "frame": 115,
+   "seconds": 4.46,
+   "std": 40.8,
+   "mono": 0.253,
+   "blank": false
+  },
+  {
+   "frame": 116,
+   "seconds": 4.44,
+   "std": 40.8,
+   "mono": 0.254,
+   "blank": false
+  },
+  {
+   "frame": 117,
+   "seconds": 4.31,
+   "std": 40.7,
+   "mono": 0.255,
+   "blank": false
+  },
+  {
+   "frame": 118,
+   "seconds": 4.31,
+   "std": 40.7,
+   "mono": 0.256,
+   "blank": false
+  },
+  {
+   "frame": 119,
+   "seconds": 4.36,
+   "std": 40.7,
+   "mono": 0.257,
+   "blank": false
+  },
+  {
+   "frame": 120,
+   "seconds": 4.3,
+   "std": 40.6,
+   "mono": 0.257,
+   "blank": false
+  },
+  {
+   "frame": 121,
+   "seconds": 4.28,
+   "std": 40.6,
+   "mono": 0.258,
+   "blank": false
+  },
+  {
+   "frame": 122,
+   "seconds": 4.36,
+   "std": 40.5,
+   "mono": 0.259,
+   "blank": false
+  },
+  {
+   "frame": 123,
+   "seconds": 4.31,
+   "std": 40.5,
+   "mono": 0.26,
+   "blank": false
+  },
+  {
+   "frame": 124,
+   "seconds": 4.24,
+   "std": 40.5,
+   "mono": 0.261,
+   "blank": false
+  },
+  {
+   "frame": 125,
+   "seconds": 4.29,
+   "std": 40.4,
+   "mono": 0.262,
+   "blank": false
+  },
+  {
+   "frame": 126,
+   "seconds": 4.28,
+   "std": 40.4,
+   "mono": 0.263,
+   "blank": false
+  },
+  {
+   "frame": 127,
+   "seconds": 4.3,
+   "std": 40.4,
+   "mono": 0.265,
+   "blank": false
+  },
+  {
+   "frame": 128,
+   "seconds": 4.29,
+   "std": 40.3,
+   "mono": 0.266,
+   "blank": false
+  },
+  {
+   "frame": 129,
+   "seconds": 4.66,
+   "std": 40.3,
+   "mono": 0.267,
+   "blank": false
+  },
+  {
+   "frame": 130,
+   "seconds": 5.07,
+   "std": 40.3,
+   "mono": 0.268,
+   "blank": false
+  },
+  {
+   "frame": 131,
+   "seconds": 5.73,
+   "std": 40.3,
+   "mono": 0.27,
+   "blank": false
+  },
+  {
+   "frame": 132,
+   "seconds": 4.24,
+   "std": 40.3,
+   "mono": 0.271,
+   "blank": false
+  },
+  {
+   "frame": 133,
+   "seconds": 4.24,
+   "std": 40.3,
+   "mono": 0.273,
+   "blank": false
+  },
+  {
+   "frame": 134,
+   "seconds": 4.26,
+   "std": 40.3,
+   "mono": 0.274,
+   "blank": false
+  },
+  {
+   "frame": 135,
+   "seconds": 4.26,
+   "std": 40.3,
+   "mono": 0.276,
+   "blank": false
+  },
+  {
+   "frame": 136,
+   "seconds": 4.24,
+   "std": 40.3,
+   "mono": 0.277,
+   "blank": false
+  },
+  {
+   "frame": 137,
+   "seconds": 4.22,
+   "std": 40.3,
+   "mono": 0.279,
+   "blank": false
+  },
+  {
+   "frame": 138,
+   "seconds": 4.27,
+   "std": 40.3,
+   "mono": 0.281,
+   "blank": false
+  },
+  {
+   "frame": 139,
+   "seconds": 4.24,
+   "std": 40.3,
+   "mono": 0.283,
+   "blank": false
+  },
+  {
+   "frame": 140,
+   "seconds": 4.24,
+   "std": 40.4,
+   "mono": 0.286,
+   "blank": false
+  },
+  {
+   "frame": 141,
+   "seconds": 4.16,
+   "std": 40.4,
+   "mono": 0.288,
+   "blank": false
+  },
+  {
+   "frame": 142,
+   "seconds": 4.21,
+   "std": 40.5,
+   "mono": 0.29,
+   "blank": false
+  },
+  {
+   "frame": 143,
+   "seconds": 4.13,
+   "std": 40.5,
+   "mono": 0.293,
+   "blank": false
+  },
+  {
+   "frame": 144,
+   "seconds": 4.26,
+   "std": 40.6,
+   "mono": 0.296,
+   "blank": false
+  },
+  {
+   "frame": 145,
+   "seconds": 4.17,
+   "std": 40.6,
+   "mono": 0.299,
+   "blank": false
+  },
+  {
+   "frame": 146,
+   "seconds": 4.1,
+   "std": 40.7,
+   "mono": 0.302,
+   "blank": false
+  },
+  {
+   "frame": 147,
+   "seconds": 4.09,
+   "std": 40.8,
+   "mono": 0.305,
+   "blank": false
+  },
+  {
+   "frame": 148,
+   "seconds": 4.16,
+   "std": 40.8,
+   "mono": 0.309,
+   "blank": false
+  },
+  {
+   "frame": 149,
+   "seconds": 4.11,
+   "std": 40.9,
+   "mono": 0.312,
+   "blank": false
+  },
+  {
+   "frame": 150,
+   "seconds": 4.08,
+   "std": 41.0,
+   "mono": 0.316,
+   "blank": false
+  },
+  {
+   "frame": 151,
+   "seconds": 4.03,
+   "std": 41.1,
+   "mono": 0.321,
+   "blank": false
+  },
+  {
+   "frame": 152,
+   "seconds": 4.07,
+   "std": 41.2,
+   "mono": 0.328,
+   "blank": false
+  },
+  {
+   "frame": 153,
+   "seconds": 4.01,
+   "std": 41.4,
+   "mono": 0.336,
+   "blank": false
+  },
+  {
+   "frame": 154,
+   "seconds": 4.02,
+   "std": 41.5,
+   "mono": 0.338,
+   "blank": false
+  },
+  {
+   "frame": 155,
+   "seconds": 3.99,
+   "std": 41.5,
+   "mono": 0.339,
+   "blank": false
+  },
+  {
+   "frame": 156,
+   "seconds": 3.98,
+   "std": 41.6,
+   "mono": 0.342,
+   "blank": false
+  },
+  {
+   "frame": 157,
+   "seconds": 3.99,
+   "std": 41.6,
+   "mono": 0.346,
+   "blank": false
+  },
+  {
+   "frame": 158,
+   "seconds": 3.96,
+   "std": 41.7,
+   "mono": 0.35,
+   "blank": false
+  },
+  {
+   "frame": 159,
+   "seconds": 3.95,
+   "std": 41.7,
+   "mono": 0.354,
+   "blank": false
+  },
+  {
+   "frame": 160,
+   "seconds": 3.95,
+   "std": 41.8,
+   "mono": 0.358,
+   "blank": false
+  },
+  {
+   "frame": 161,
+   "seconds": 3.85,
+   "std": 41.8,
+   "mono": 0.363,
+   "blank": false
+  },
+  {
+   "frame": 162,
+   "seconds": 3.77,
+   "std": 41.8,
+   "mono": 0.365,
+   "blank": false
+  },
+  {
+   "frame": 163,
+   "seconds": 3.88,
+   "std": 41.9,
+   "mono": 0.363,
+   "blank": false
+  },
+  {
+   "frame": 164,
+   "seconds": 3.88,
+   "std": 42.0,
+   "mono": 0.362,
+   "blank": false
+  },
+  {
+   "frame": 165,
+   "seconds": 3.86,
+   "std": 42.0,
+   "mono": 0.361,
+   "blank": false
+  },
+  {
+   "frame": 166,
+   "seconds": 3.87,
+   "std": 42.1,
+   "mono": 0.359,
+   "blank": false
+  },
+  {
+   "frame": 167,
+   "seconds": 3.87,
+   "std": 42.1,
+   "mono": 0.358,
+   "blank": false
+  },
+  {
+   "frame": 168,
+   "seconds": 3.9,
+   "std": 42.2,
+   "mono": 0.357,
+   "blank": false
+  },
+  {
+   "frame": 169,
+   "seconds": 3.91,
+   "std": 42.2,
+   "mono": 0.355,
+   "blank": false
+  },
+  {
+   "frame": 170,
+   "seconds": 3.93,
+   "std": 42.2,
+   "mono": 0.354,
+   "blank": false
+  },
+  {
+   "frame": 171,
+   "seconds": 3.9,
+   "std": 42.3,
+   "mono": 0.353,
+   "blank": false
+  },
+  {
+   "frame": 172,
+   "seconds": 3.92,
+   "std": 42.3,
+   "mono": 0.351,
+   "blank": false
+  },
+  {
+   "frame": 173,
+   "seconds": 3.95,
+   "std": 42.4,
+   "mono": 0.35,
+   "blank": false
+  },
+  {
+   "frame": 174,
+   "seconds": 3.93,
+   "std": 42.4,
+   "mono": 0.349,
+   "blank": false
+  },
+  {
+   "frame": 175,
+   "seconds": 3.97,
+   "std": 42.5,
+   "mono": 0.347,
+   "blank": false
+  },
+  {
+   "frame": 176,
+   "seconds": 3.95,
+   "std": 42.5,
+   "mono": 0.346,
+   "blank": false
+  },
+  {
+   "frame": 177,
+   "seconds": 3.92,
+   "std": 42.6,
+   "mono": 0.344,
+   "blank": false
+  },
+  {
+   "frame": 178,
+   "seconds": 3.98,
+   "std": 42.6,
+   "mono": 0.343,
+   "blank": false
+  },
+  {
+   "frame": 179,
+   "seconds": 4.18,
+   "std": 42.6,
+   "mono": 0.341,
+   "blank": false
+  },
+  {
+   "frame": 180,
+   "seconds": 4.01,
+   "std": 42.7,
+   "mono": 0.34,
+   "blank": false
+  },
+  {
+   "frame": 181,
+   "seconds": 4.07,
+   "std": 42.8,
+   "mono": 0.338,
+   "blank": false
+  },
+  {
+   "frame": 182,
+   "seconds": 4.0,
+   "std": 42.8,
+   "mono": 0.336,
+   "blank": false
+  },
+  {
+   "frame": 183,
+   "seconds": 4.04,
+   "std": 42.9,
+   "mono": 0.335,
+   "blank": false
+  },
+  {
+   "frame": 184,
+   "seconds": 4.08,
+   "std": 42.9,
+   "mono": 0.333,
+   "blank": false
+  },
+  {
+   "frame": 185,
+   "seconds": 4.06,
+   "std": 43.0,
+   "mono": 0.332,
+   "blank": false
+  },
+  {
+   "frame": 186,
+   "seconds": 4.04,
+   "std": 43.0,
+   "mono": 0.33,
+   "blank": false
+  },
+  {
+   "frame": 187,
+   "seconds": 4.06,
+   "std": 43.1,
+   "mono": 0.328,
+   "blank": false
+  },
+  {
+   "frame": 188,
+   "seconds": 3.99,
+   "std": 43.1,
+   "mono": 0.327,
+   "blank": false
+  },
+  {
+   "frame": 189,
+   "seconds": 4.06,
+   "std": 43.2,
+   "mono": 0.325,
+   "blank": false
+  },
+  {
+   "frame": 190,
+   "seconds": 4.03,
+   "std": 43.2,
+   "mono": 0.323,
+   "blank": false
+  },
+  {
+   "frame": 191,
+   "seconds": 4.08,
+   "std": 43.3,
+   "mono": 0.322,
+   "blank": false
+  },
+  {
+   "frame": 192,
+   "seconds": 4.08,
+   "std": 43.4,
+   "mono": 0.321,
+   "blank": false
+  },
+  {
+   "frame": 193,
+   "seconds": 4.09,
+   "std": 43.5,
+   "mono": 0.32,
+   "blank": false
+  },
+  {
+   "frame": 194,
+   "seconds": 4.1,
+   "std": 43.5,
+   "mono": 0.318,
+   "blank": false
+  },
+  {
+   "frame": 195,
+   "seconds": 4.12,
+   "std": 43.6,
+   "mono": 0.317,
+   "blank": false
+  },
+  {
+   "frame": 196,
+   "seconds": 4.13,
+   "std": 43.7,
+   "mono": 0.316,
+   "blank": false
+  },
+  {
+   "frame": 197,
+   "seconds": 4.07,
+   "std": 43.8,
+   "mono": 0.315,
+   "blank": false
+  },
+  {
+   "frame": 198,
+   "seconds": 4.13,
+   "std": 43.9,
+   "mono": 0.314,
+   "blank": false
+  },
+  {
+   "frame": 199,
+   "seconds": 4.14,
+   "std": 44.0,
+   "mono": 0.312,
+   "blank": false
+  },
+  {
+   "frame": 200,
+   "seconds": 4.13,
+   "std": 44.1,
+   "mono": 0.311,
+   "blank": false
+  },
+  {
+   "frame": 201,
+   "seconds": 4.06,
+   "std": 44.2,
+   "mono": 0.31,
+   "blank": false
+  },
+  {
+   "frame": 202,
+   "seconds": 4.13,
+   "std": 44.3,
+   "mono": 0.309,
+   "blank": false
+  },
+  {
+   "frame": 203,
+   "seconds": 4.27,
+   "std": 44.4,
+   "mono": 0.307,
+   "blank": false
+  },
+  {
+   "frame": 204,
+   "seconds": 4.14,
+   "std": 44.5,
+   "mono": 0.306,
+   "blank": false
+  },
+  {
+   "frame": 205,
+   "seconds": 4.2,
+   "std": 44.6,
+   "mono": 0.305,
+   "blank": false
+  },
+  {
+   "frame": 206,
+   "seconds": 4.17,
+   "std": 44.7,
+   "mono": 0.303,
+   "blank": false
+  },
+  {
+   "frame": 207,
+   "seconds": 4.15,
+   "std": 44.8,
+   "mono": 0.302,
+   "blank": false
+  },
+  {
+   "frame": 208,
+   "seconds": 4.16,
+   "std": 44.9,
+   "mono": 0.3,
+   "blank": false
+  },
+  {
+   "frame": 209,
+   "seconds": 4.2,
+   "std": 44.9,
+   "mono": 0.299,
+   "blank": false
+  },
+  {
+   "frame": 210,
+   "seconds": 4.23,
+   "std": 44.9,
+   "mono": 0.297,
+   "blank": false
+  },
+  {
+   "frame": 211,
+   "seconds": 4.14,
+   "std": 45.0,
+   "mono": 0.296,
+   "blank": false
+  },
+  {
+   "frame": 212,
+   "seconds": 4.07,
+   "std": 45.1,
+   "mono": 0.294,
+   "blank": false
+  },
+  {
+   "frame": 213,
+   "seconds": 4.01,
+   "std": 45.2,
+   "mono": 0.292,
+   "blank": false
+  },
+  {
+   "frame": 214,
+   "seconds": 4.05,
+   "std": 45.3,
+   "mono": 0.291,
+   "blank": false
+  },
+  {
+   "frame": 215,
+   "seconds": 4.36,
+   "std": 45.4,
+   "mono": 0.289,
+   "blank": false
+  },
+  {
+   "frame": 216,
+   "seconds": 4.18,
+   "std": 45.5,
+   "mono": 0.288,
+   "blank": false
+  },
+  {
+   "frame": 217,
+   "seconds": 4.31,
+   "std": 45.5,
+   "mono": 0.286,
+   "blank": false
+  },
+  {
+   "frame": 218,
+   "seconds": 4.26,
+   "std": 45.5,
+   "mono": 0.285,
+   "blank": false
+  },
+  {
+   "frame": 219,
+   "seconds": 4.27,
+   "std": 45.5,
+   "mono": 0.284,
+   "blank": false
+  },
+  {
+   "frame": 220,
+   "seconds": 4.24,
+   "std": 45.5,
+   "mono": 0.282,
+   "blank": false
+  },
+  {
+   "frame": 221,
+   "seconds": 4.26,
+   "std": 45.5,
+   "mono": 0.281,
+   "blank": false
+  },
+  {
+   "frame": 222,
+   "seconds": 4.26,
+   "std": 45.4,
+   "mono": 0.281,
+   "blank": false
+  },
+  {
+   "frame": 223,
+   "seconds": 4.22,
+   "std": 45.3,
+   "mono": 0.281,
+   "blank": false
+  },
+  {
+   "frame": 224,
+   "seconds": 4.14,
+   "std": 45.3,
+   "mono": 0.281,
+   "blank": false
+  },
+  {
+   "frame": 225,
+   "seconds": 4.25,
+   "std": 45.2,
+   "mono": 0.281,
+   "blank": false
+  },
+  {
+   "frame": 226,
+   "seconds": 4.24,
+   "std": 45.0,
+   "mono": 0.283,
+   "blank": false
+  },
+  {
+   "frame": 227,
+   "seconds": 4.25,
+   "std": 44.9,
+   "mono": 0.283,
+   "blank": false
+  },
+  {
+   "frame": 228,
+   "seconds": 4.18,
+   "std": 44.8,
+   "mono": 0.283,
+   "blank": false
+  },
+  {
+   "frame": 229,
+   "seconds": 4.25,
+   "std": 44.7,
+   "mono": 0.283,
+   "blank": false
+  },
+  {
+   "frame": 230,
+   "seconds": 4.2,
+   "std": 44.7,
+   "mono": 0.283,
+   "blank": false
+  },
+  {
+   "frame": 231,
+   "seconds": 4.25,
+   "std": 44.6,
+   "mono": 0.283,
+   "blank": false
+  },
+  {
+   "frame": 232,
+   "seconds": 4.25,
+   "std": 44.4,
+   "mono": 0.283,
+   "blank": false
+  },
+  {
+   "frame": 233,
+   "seconds": 4.26,
+   "std": 44.4,
+   "mono": 0.283,
+   "blank": false
+  },
+  {
+   "frame": 234,
+   "seconds": 4.29,
+   "std": 44.2,
+   "mono": 0.283,
+   "blank": false
+  },
+  {
+   "frame": 235,
+   "seconds": 4.33,
+   "std": 44.1,
+   "mono": 0.282,
+   "blank": false
+  },
+  {
+   "frame": 236,
+   "seconds": 4.24,
+   "std": 44.0,
+   "mono": 0.282,
+   "blank": false
+  },
+  {
+   "frame": 237,
+   "seconds": 4.24,
+   "std": 43.9,
+   "mono": 0.281,
+   "blank": false
+  },
+  {
+   "frame": 238,
+   "seconds": 4.28,
+   "std": 43.8,
+   "mono": 0.28,
+   "blank": false
+  },
+  {
+   "frame": 239,
+   "seconds": 4.26,
+   "std": 43.7,
+   "mono": 0.279,
+   "blank": false
+  },
+  {
+   "frame": 240,
+   "seconds": 4.28,
+   "std": 43.6,
+   "mono": 0.278,
+   "blank": false
+  },
+  {
+   "frame": 241,
+   "seconds": 4.33,
+   "std": 43.5,
+   "mono": 0.277,
+   "blank": false
+  },
+  {
+   "frame": 242,
+   "seconds": 4.3,
+   "std": 43.3,
+   "mono": 0.276,
+   "blank": false
+  },
+  {
+   "frame": 243,
+   "seconds": 4.24,
+   "std": 43.2,
+   "mono": 0.275,
+   "blank": false
+  },
+  {
+   "frame": 244,
+   "seconds": 4.3,
+   "std": 43.1,
+   "mono": 0.274,
+   "blank": false
+  },
+  {
+   "frame": 245,
+   "seconds": 4.24,
+   "std": 43.0,
+   "mono": 0.273,
+   "blank": false
+  },
+  {
+   "frame": 246,
+   "seconds": 4.31,
+   "std": 42.8,
+   "mono": 0.272,
+   "blank": false
+  },
+  {
+   "frame": 247,
+   "seconds": 4.27,
+   "std": 42.6,
+   "mono": 0.272,
+   "blank": false
+  },
+  {
+   "frame": 248,
+   "seconds": 4.31,
+   "std": 42.5,
+   "mono": 0.272,
+   "blank": false
+  },
+  {
+   "frame": 249,
+   "seconds": 4.28,
+   "std": 42.3,
+   "mono": 0.271,
+   "blank": false
+  },
+  {
+   "frame": 250,
+   "seconds": 4.25,
+   "std": 42.1,
+   "mono": 0.271,
+   "blank": false
+  },
+  {
+   "frame": 251,
+   "seconds": 4.2,
+   "std": 42.0,
+   "mono": 0.271,
+   "blank": false
+  },
+  {
+   "frame": 252,
+   "seconds": 4.29,
+   "std": 42.0,
+   "mono": 0.271,
+   "blank": false
+  },
+  {
+   "frame": 253,
+   "seconds": 4.32,
+   "std": 42.0,
+   "mono": 0.271,
+   "blank": false
+  },
+  {
+   "frame": 254,
+   "seconds": 4.28,
+   "std": 42.0,
+   "mono": 0.271,
+   "blank": false
+  },
+  {
+   "frame": 255,
+   "seconds": 4.27,
+   "std": 42.1,
+   "mono": 0.271,
+   "blank": false
+  },
+  {
+   "frame": 256,
+   "seconds": 4.23,
+   "std": 42.1,
+   "mono": 0.271,
+   "blank": false
+  },
+  {
+   "frame": 257,
+   "seconds": 4.21,
+   "std": 42.1,
+   "mono": 0.271,
+   "blank": false
+  },
+  {
+   "frame": 258,
+   "seconds": 4.3,
+   "std": 42.1,
+   "mono": 0.272,
+   "blank": false
+  },
+  {
+   "frame": 259,
+   "seconds": 4.29,
+   "std": 42.1,
+   "mono": 0.272,
+   "blank": false
+  },
+  {
+   "frame": 260,
+   "seconds": 4.24,
+   "std": 42.1,
+   "mono": 0.272,
+   "blank": false
+  },
+  {
+   "frame": 261,
+   "seconds": 4.25,
+   "std": 42.1,
+   "mono": 0.271,
+   "blank": false
+  },
+  {
+   "frame": 262,
+   "seconds": 4.27,
+   "std": 42.2,
+   "mono": 0.27,
+   "blank": false
+  },
+  {
+   "frame": 263,
+   "seconds": 4.26,
+   "std": 42.3,
+   "mono": 0.269,
+   "blank": false
+  },
+  {
+   "frame": 264,
+   "seconds": 4.32,
+   "std": 42.3,
+   "mono": 0.268,
+   "blank": false
+  },
+  {
+   "frame": 265,
+   "seconds": 4.27,
+   "std": 42.4,
+   "mono": 0.267,
+   "blank": false
+  },
+  {
+   "frame": 266,
+   "seconds": 4.31,
+   "std": 42.5,
+   "mono": 0.266,
+   "blank": false
+  },
+  {
+   "frame": 267,
+   "seconds": 4.31,
+   "std": 42.5,
+   "mono": 0.265,
+   "blank": false
+  },
+  {
+   "frame": 268,
+   "seconds": 4.27,
+   "std": 42.5,
+   "mono": 0.264,
+   "blank": false
+  },
+  {
+   "frame": 269,
+   "seconds": 4.28,
+   "std": 42.5,
+   "mono": 0.263,
+   "blank": false
+  },
+  {
+   "frame": 270,
+   "seconds": 4.36,
+   "std": 42.4,
+   "mono": 0.263,
+   "blank": false
+  },
+  {
+   "frame": 271,
+   "seconds": 4.32,
+   "std": 42.4,
+   "mono": 0.262,
+   "blank": false
+  },
+  {
+   "frame": 272,
+   "seconds": 4.33,
+   "std": 42.3,
+   "mono": 0.262,
+   "blank": false
+  },
+  {
+   "frame": 273,
+   "seconds": 4.32,
+   "std": 42.2,
+   "mono": 0.262,
+   "blank": false
+  },
+  {
+   "frame": 274,
+   "seconds": 4.25,
+   "std": 42.1,
+   "mono": 0.263,
+   "blank": false
+  },
+  {
+   "frame": 275,
+   "seconds": 4.36,
+   "std": 41.9,
+   "mono": 0.263,
+   "blank": false
+  },
+  {
+   "frame": 276,
+   "seconds": 4.21,
+   "std": 41.7,
+   "mono": 0.264,
+   "blank": false
+  },
+  {
+   "frame": 277,
+   "seconds": 4.3,
+   "std": 41.5,
+   "mono": 0.265,
+   "blank": false
+  },
+  {
+   "frame": 278,
+   "seconds": 4.24,
+   "std": 41.3,
+   "mono": 0.266,
+   "blank": false
+  },
+  {
+   "frame": 279,
+   "seconds": 4.33,
+   "std": 41.0,
+   "mono": 0.268,
+   "blank": false
+  },
+  {
+   "frame": 280,
+   "seconds": 4.23,
+   "std": 40.8,
+   "mono": 0.268,
+   "blank": false
+  },
+  {
+   "frame": 281,
+   "seconds": 4.27,
+   "std": 40.6,
+   "mono": 0.269,
+   "blank": false
+  },
+  {
+   "frame": 282,
+   "seconds": 4.27,
+   "std": 40.4,
+   "mono": 0.27,
+   "blank": false
+  },
+  {
+   "frame": 283,
+   "seconds": 4.22,
+   "std": 40.2,
+   "mono": 0.27,
+   "blank": false
+  },
+  {
+   "frame": 284,
+   "seconds": 4.22,
+   "std": 40.0,
+   "mono": 0.271,
+   "blank": false
+  },
+  {
+   "frame": 285,
+   "seconds": 4.24,
+   "std": 39.8,
+   "mono": 0.272,
+   "blank": false
+  },
+  {
+   "frame": 286,
+   "seconds": 4.22,
+   "std": 39.6,
+   "mono": 0.273,
+   "blank": false
+  },
+  {
+   "frame": 287,
+   "seconds": 4.11,
+   "std": 39.5,
+   "mono": 0.274,
+   "blank": false
+  },
+  {
+   "frame": 288,
+   "seconds": 4.22,
+   "std": 39.4,
+   "mono": 0.276,
+   "blank": false
+  },
+  {
+   "frame": 289,
+   "seconds": 4.15,
+   "std": 39.4,
+   "mono": 0.277,
+   "blank": false
+  },
+  {
+   "frame": 290,
+   "seconds": 4.1,
+   "std": 39.4,
+   "mono": 0.278,
+   "blank": false
+  },
+  {
+   "frame": 291,
+   "seconds": 4.11,
+   "std": 39.3,
+   "mono": 0.279,
+   "blank": false
+  },
+  {
+   "frame": 292,
+   "seconds": 4.19,
+   "std": 39.4,
+   "mono": 0.28,
+   "blank": false
+  },
+  {
+   "frame": 293,
+   "seconds": 4.19,
+   "std": 39.4,
+   "mono": 0.281,
+   "blank": false
+  },
+  {
+   "frame": 294,
+   "seconds": 4.19,
+   "std": 39.4,
+   "mono": 0.282,
+   "blank": false
+  },
+  {
+   "frame": 295,
+   "seconds": 4.14,
+   "std": 39.4,
+   "mono": 0.282,
+   "blank": false
+  },
+  {
+   "frame": 296,
+   "seconds": 4.15,
+   "std": 39.3,
+   "mono": 0.283,
+   "blank": false
+  },
+  {
+   "frame": 297,
+   "seconds": 4.18,
+   "std": 39.3,
+   "mono": 0.284,
+   "blank": false
+  },
+  {
+   "frame": 298,
+   "seconds": 4.73,
+   "std": 39.3,
+   "mono": 0.285,
+   "blank": false
+  },
+  {
+   "frame": 299,
+   "seconds": 5.53,
+   "std": 39.3,
+   "mono": 0.286,
+   "blank": false
+  },
+  {
+   "frame": 300,
+   "seconds": 5.43,
+   "std": 39.3,
+   "mono": 0.287,
+   "blank": false
+  },
+  {
+   "frame": 301,
+   "seconds": 5.47,
+   "std": 39.4,
+   "mono": 0.287,
+   "blank": false
+  },
+  {
+   "frame": 302,
+   "seconds": 5.45,
+   "std": 39.5,
+   "mono": 0.289,
+   "blank": false
+  },
+  {
+   "frame": 303,
+   "seconds": 5.37,
+   "std": 39.5,
+   "mono": 0.29,
+   "blank": false
+  },
+  {
+   "frame": 304,
+   "seconds": 5.3,
+   "std": 39.6,
+   "mono": 0.291,
+   "blank": false
+  },
+  {
+   "frame": 305,
+   "seconds": 5.47,
+   "std": 39.6,
+   "mono": 0.292,
+   "blank": false
+  },
+  {
+   "frame": 306,
+   "seconds": 5.45,
+   "std": 39.7,
+   "mono": 0.293,
+   "blank": false
+  },
+  {
+   "frame": 307,
+   "seconds": 5.42,
+   "std": 39.8,
+   "mono": 0.294,
+   "blank": false
+  },
+  {
+   "frame": 308,
+   "seconds": 5.42,
+   "std": 39.9,
+   "mono": 0.295,
+   "blank": false
+  },
+  {
+   "frame": 309,
+   "seconds": 5.4,
+   "std": 40.0,
+   "mono": 0.297,
+   "blank": false
+  },
+  {
+   "frame": 310,
+   "seconds": 5.42,
+   "std": 40.1,
+   "mono": 0.298,
+   "blank": false
+  },
+  {
+   "frame": 311,
+   "seconds": 5.32,
+   "std": 40.1,
+   "mono": 0.3,
+   "blank": false
+  },
+  {
+   "frame": 312,
+   "seconds": 5.22,
+   "std": 40.2,
+   "mono": 0.301,
+   "blank": false
+  },
+  {
+   "frame": 313,
+   "seconds": 5.21,
+   "std": 40.3,
+   "mono": 0.303,
+   "blank": false
+  },
+  {
+   "frame": 314,
+   "seconds": 5.25,
+   "std": 40.4,
+   "mono": 0.305,
+   "blank": false
+  },
+  {
+   "frame": 315,
+   "seconds": 5.35,
+   "std": 40.5,
+   "mono": 0.307,
+   "blank": false
+  },
+  {
+   "frame": 316,
+   "seconds": 5.26,
+   "std": 40.6,
+   "mono": 0.309,
+   "blank": false
+  },
+  {
+   "frame": 317,
+   "seconds": 5.33,
+   "std": 40.7,
+   "mono": 0.311,
+   "blank": false
+  },
+  {
+   "frame": 318,
+   "seconds": 5.25,
+   "std": 40.8,
+   "mono": 0.313,
+   "blank": false
+  },
+  {
+   "frame": 319,
+   "seconds": 5.21,
+   "std": 40.9,
+   "mono": 0.315,
+   "blank": false
+  },
+  {
+   "frame": 320,
+   "seconds": 5.42,
+   "std": 41.1,
+   "mono": 0.317,
+   "blank": false
+  },
+  {
+   "frame": 321,
+   "seconds": 5.16,
+   "std": 41.2,
+   "mono": 0.319,
+   "blank": false
+  },
+  {
+   "frame": 322,
+   "seconds": 5.17,
+   "std": 41.3,
+   "mono": 0.321,
+   "blank": false
+  },
+  {
+   "frame": 323,
+   "seconds": 5.04,
+   "std": 41.4,
+   "mono": 0.323,
+   "blank": false
+  },
+  {
+   "frame": 324,
+   "seconds": 5.32,
+   "std": 41.6,
+   "mono": 0.325,
+   "blank": false
+  },
+  {
+   "frame": 325,
+   "seconds": 5.25,
+   "std": 41.7,
+   "mono": 0.327,
+   "blank": false
+  },
+  {
+   "frame": 326,
+   "seconds": 5.21,
+   "std": 41.9,
+   "mono": 0.33,
+   "blank": false
+  },
+  {
+   "frame": 327,
+   "seconds": 5.19,
+   "std": 42.0,
+   "mono": 0.332,
+   "blank": false
+  },
+  {
+   "frame": 328,
+   "seconds": 5.26,
+   "std": 42.2,
+   "mono": 0.335,
+   "blank": false
+  },
+  {
+   "frame": 329,
+   "seconds": 5.2,
+   "std": 42.3,
+   "mono": 0.338,
+   "blank": false
+  },
+  {
+   "frame": 330,
+   "seconds": 5.19,
+   "std": 42.3,
+   "mono": 0.34,
+   "blank": false
+  },
+  {
+   "frame": 331,
+   "seconds": 5.42,
+   "std": 42.3,
+   "mono": 0.343,
+   "blank": false
+  },
+  {
+   "frame": 332,
+   "seconds": 5.06,
+   "std": 42.3,
+   "mono": 0.346,
+   "blank": false
+  },
+  {
+   "frame": 333,
+   "seconds": 5.03,
+   "std": 42.3,
+   "mono": 0.349,
+   "blank": false
+  },
+  {
+   "frame": 334,
+   "seconds": 4.93,
+   "std": 42.2,
+   "mono": 0.352,
+   "blank": false
+  },
+  {
+   "frame": 335,
+   "seconds": 4.81,
+   "std": 42.1,
+   "mono": 0.355,
+   "blank": false
+  },
+  {
+   "frame": 336,
+   "seconds": 5.06,
+   "std": 42.1,
+   "mono": 0.358,
+   "blank": false
+  },
+  {
+   "frame": 337,
+   "seconds": 5.12,
+   "std": 42.0,
+   "mono": 0.362,
+   "blank": false
+  },
+  {
+   "frame": 338,
+   "seconds": 5.05,
+   "std": 41.9,
+   "mono": 0.365,
+   "blank": false
+  },
+  {
+   "frame": 339,
+   "seconds": 5.07,
+   "std": 41.8,
+   "mono": 0.369,
+   "blank": false
+  },
+  {
+   "frame": 340,
+   "seconds": 5.04,
+   "std": 41.7,
+   "mono": 0.372,
+   "blank": false
+  },
+  {
+   "frame": 341,
+   "seconds": 4.97,
+   "std": 41.6,
+   "mono": 0.376,
+   "blank": false
+  },
+  {
+   "frame": 342,
+   "seconds": 4.97,
+   "std": 41.4,
+   "mono": 0.38,
+   "blank": false
+  },
+  {
+   "frame": 343,
+   "seconds": 4.95,
+   "std": 41.3,
+   "mono": 0.384,
+   "blank": false
+  },
+  {
+   "frame": 344,
+   "seconds": 4.88,
+   "std": 41.1,
+   "mono": 0.388,
+   "blank": false
+  },
+  {
+   "frame": 345,
+   "seconds": 4.89,
+   "std": 40.9,
+   "mono": 0.393,
+   "blank": false
+  },
+  {
+   "frame": 346,
+   "seconds": 4.89,
+   "std": 40.7,
+   "mono": 0.397,
+   "blank": false
+  },
+  {
+   "frame": 347,
+   "seconds": 4.77,
+   "std": 40.6,
+   "mono": 0.402,
+   "blank": false
+  },
+  {
+   "frame": 348,
+   "seconds": 4.81,
+   "std": 40.4,
+   "mono": 0.407,
+   "blank": false
+  },
+  {
+   "frame": 349,
+   "seconds": 4.78,
+   "std": 40.2,
+   "mono": 0.412,
+   "blank": false
+  },
+  {
+   "frame": 350,
+   "seconds": 4.72,
+   "std": 40.0,
+   "mono": 0.417,
+   "blank": false
+  },
+  {
+   "frame": 351,
+   "seconds": 4.7,
+   "std": 39.7,
+   "mono": 0.423,
+   "blank": false
+  },
+  {
+   "frame": 352,
+   "seconds": 4.65,
+   "std": 39.5,
+   "mono": 0.428,
+   "blank": false
+  },
+  {
+   "frame": 353,
+   "seconds": 4.66,
+   "std": 39.3,
+   "mono": 0.434,
+   "blank": false
+  },
+  {
+   "frame": 354,
+   "seconds": 4.62,
+   "std": 39.0,
+   "mono": 0.44,
+   "blank": false
+  },
+  {
+   "frame": 355,
+   "seconds": 4.61,
+   "std": 38.7,
+   "mono": 0.446,
+   "blank": false
+  },
+  {
+   "frame": 356,
+   "seconds": 4.58,
+   "std": 38.5,
+   "mono": 0.453,
+   "blank": false
+  },
+  {
+   "frame": 357,
+   "seconds": 4.52,
+   "std": 38.2,
+   "mono": 0.46,
+   "blank": false
+  },
+  {
+   "frame": 358,
+   "seconds": 4.56,
+   "std": 38.1,
+   "mono": 0.466,
+   "blank": false
+  },
+  {
+   "frame": 359,
+   "seconds": 4.55,
+   "std": 37.9,
+   "mono": 0.469,
+   "blank": false
+  },
+  {
+   "frame": 360,
+   "seconds": 4.37,
+   "std": 37.7,
+   "mono": 0.472,
+   "blank": false
+  },
+  {
+   "frame": 361,
+   "seconds": 4.53,
+   "std": 37.6,
+   "mono": 0.475,
+   "blank": false
+  },
+  {
+   "frame": 362,
+   "seconds": 4.24,
+   "std": 37.4,
+   "mono": 0.478,
+   "blank": false
+  },
+  {
+   "frame": 363,
+   "seconds": 4.44,
+   "std": 37.2,
+   "mono": 0.481,
+   "blank": false
+  },
+  {
+   "frame": 364,
+   "seconds": 4.38,
+   "std": 37.0,
+   "mono": 0.484,
+   "blank": false
+  },
+  {
+   "frame": 365,
+   "seconds": 4.29,
+   "std": 36.9,
+   "mono": 0.487,
+   "blank": false
+  },
+  {
+   "frame": 366,
+   "seconds": 4.21,
+   "std": 36.7,
+   "mono": 0.491,
+   "blank": false
+  },
+  {
+   "frame": 367,
+   "seconds": 4.0,
+   "std": 36.7,
+   "mono": 0.491,
+   "blank": false
+  },
+  {
+   "frame": 368,
+   "seconds": 3.74,
+   "std": 36.7,
+   "mono": 0.491,
+   "blank": false
+  },
+  {
+   "frame": 369,
+   "seconds": 3.84,
+   "std": 36.8,
+   "mono": 0.49,
+   "blank": false
+  },
+  {
+   "frame": 370,
+   "seconds": 4.31,
+   "std": 36.9,
+   "mono": 0.489,
+   "blank": false
+  },
+  {
+   "frame": 371,
+   "seconds": 4.46,
+   "std": 36.9,
+   "mono": 0.488,
+   "blank": false
+  },
+  {
+   "frame": 372,
+   "seconds": 4.47,
+   "std": 37.0,
+   "mono": 0.487,
+   "blank": false
+  },
+  {
+   "frame": 373,
+   "seconds": 4.36,
+   "std": 37.0,
+   "mono": 0.486,
+   "blank": false
+  },
+  {
+   "frame": 374,
+   "seconds": 4.47,
+   "std": 37.1,
+   "mono": 0.485,
+   "blank": false
+  },
+  {
+   "frame": 375,
+   "seconds": 4.69,
+   "std": 37.2,
+   "mono": 0.484,
+   "blank": false
+  },
+  {
+   "frame": 376,
+   "seconds": 4.75,
+   "std": 37.2,
+   "mono": 0.484,
+   "blank": false
+  },
+  {
+   "frame": 377,
+   "seconds": 4.64,
+   "std": 37.3,
+   "mono": 0.482,
+   "blank": false
+  },
+  {
+   "frame": 378,
+   "seconds": 4.43,
+   "std": 37.4,
+   "mono": 0.481,
+   "blank": false
+  },
+  {
+   "frame": 379,
+   "seconds": 4.24,
+   "std": 37.5,
+   "mono": 0.48,
+   "blank": false
+  },
+  {
+   "frame": 380,
+   "seconds": 4.16,
+   "std": 37.5,
+   "mono": 0.479,
+   "blank": false
+  },
+  {
+   "frame": 381,
+   "seconds": 3.86,
+   "std": 37.6,
+   "mono": 0.478,
+   "blank": false
+  },
+  {
+   "frame": 382,
+   "seconds": 4.17,
+   "std": 37.7,
+   "mono": 0.477,
+   "blank": false
+  },
+  {
+   "frame": 383,
+   "seconds": 3.98,
+   "std": 37.8,
+   "mono": 0.476,
+   "blank": false
+  },
+  {
+   "frame": 384,
+   "seconds": 4.45,
+   "std": 37.9,
+   "mono": 0.475,
+   "blank": false
+  },
+  {
+   "frame": 385,
+   "seconds": 4.33,
+   "std": 37.9,
+   "mono": 0.474,
+   "blank": false
+  },
+  {
+   "frame": 386,
+   "seconds": 4.41,
+   "std": 38.0,
+   "mono": 0.473,
+   "blank": false
+  },
+  {
+   "frame": 387,
+   "seconds": 4.46,
+   "std": 38.1,
+   "mono": 0.472,
+   "blank": false
+  },
+  {
+   "frame": 388,
+   "seconds": 4.46,
+   "std": 38.2,
+   "mono": 0.471,
+   "blank": false
+  },
+  {
+   "frame": 389,
+   "seconds": 4.5,
+   "std": 38.3,
+   "mono": 0.469,
+   "blank": false
+  },
+  {
+   "frame": 390,
+   "seconds": 4.42,
+   "std": 38.4,
+   "mono": 0.468,
+   "blank": false
+  },
+  {
+   "frame": 391,
+   "seconds": 4.45,
+   "std": 38.5,
+   "mono": 0.467,
+   "blank": false
+  },
+  {
+   "frame": 392,
+   "seconds": 4.49,
+   "std": 38.6,
+   "mono": 0.466,
+   "blank": false
+  },
+  {
+   "frame": 393,
+   "seconds": 4.47,
+   "std": 38.7,
+   "mono": 0.465,
+   "blank": false
+  },
+  {
+   "frame": 394,
+   "seconds": 4.47,
+   "std": 38.8,
+   "mono": 0.463,
+   "blank": false
+  },
+  {
+   "frame": 395,
+   "seconds": 4.35,
+   "std": 38.9,
+   "mono": 0.462,
+   "blank": false
+  },
+  {
+   "frame": 396,
+   "seconds": 4.42,
+   "std": 39.0,
+   "mono": 0.461,
+   "blank": false
+  },
+  {
+   "frame": 397,
+   "seconds": 4.33,
+   "std": 39.1,
+   "mono": 0.46,
+   "blank": false
+  },
+  {
+   "frame": 398,
+   "seconds": 4.31,
+   "std": 39.1,
+   "mono": 0.458,
+   "blank": false
+  },
+  {
+   "frame": 399,
+   "seconds": 4.32,
+   "std": 39.1,
+   "mono": 0.457,
+   "blank": false
+  }
+ ],
+ "blankRuns": []
+}

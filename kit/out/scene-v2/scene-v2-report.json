@@ -77,26 +77,14 @@
   ],
   "renders": [
     {
-      "view": "street-junction-west",
-      "camera": "bridge:junction-west",
+      "view": "shanmen-from-road",
+      "camera": "bridge:shanmen-from-road",
       "device": "CPU",
-      "seconds": 39.5,
-      "file": "bridge__junction-west-cpu.png",
+      "seconds": 24.5,
+      "file": "bridge__shanmen-from-road-cpu.png",
       "guard": {
-        "brightnessStd255": 54.466,
-        "monoFraction": 0.063,
-        "blank": false
-      }
-    },
-    {
-      "view": "street-placeholder-band",
-      "camera": "bridge:placeholder-band",
-      "device": "CPU",
-      "seconds": 19.6,
-      "file": "bridge__placeholder-band-cpu.png",
-      "guard": {
-        "brightnessStd255": 49.499,
-        "monoFraction": 0.2126,
+        "brightnessStd255": 47.777,
+        "monoFraction": 0.3656,
         "blank": false
       }
     }

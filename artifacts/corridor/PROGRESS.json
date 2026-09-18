@@ -2,7 +2,7 @@
   "batch": "pawborough-corridor-video-night-20260919",
   "branch": "work/corridor-video-20260919",
   "baseline": "8fa1bcc",
-  "updated": "2026-09-19T03:34:06.646449+09:00",
+  "updated": "2026-09-19T04:39:31.701404+09:00",
   "packages": {
     "D": "delivered",
     "E": "delivered",
@@ -56,5 +56,12 @@
     "E3": "fangbangMain.js ?props=1 (default OFF; expectedTriangles includes props only when loaded); tests props_contract + props_visibility; 46/46 green",
     "E4": "4 WebGL views (?props=1&skins=1, propsLoaded=38 verified in-page) + 2 Blender views (scene-v2 --props)",
     "evidenceCameras": "junction-west / west-road-mid / temple-side-east / axis-long (the page exposes only the 8 bridge views; street eye/corner have no page buttons)"
+  },
+  "F": {
+    "F0": "kit/light_rig.py (Sun 3.0 @(55,0,-35) 1.5deg, world gray 0.55, fill AREA 60W camera-following, AgX Base Contrast, legacy lights disabled); wired into build_world_v2_scene + render_scene_views (+ render_walkthrough/orbit). Pixel-diff check: builder vs reopen same camera = 0.000% diff (<=2% contract). Interpretation recorded: scene-v1 blend is frozen (not in allowedModifiedFiles) so the three unified paths are scene-v2 builder / reopen stills / walkthrough+orbit, all importing the same module.",
+    "F1": "world/fangbang-temple-v4 assembled (scripts/build_fangbang_v4_world.mjs): v3 bridge + axis-v3 variants swapped (681 colliders, route detour carried into world coords, 19 axis assets incl. 4 trees, propsBlock referenced default OFF). ?ds= mechanism already shipped with the expansion batch — page change is nil. scene-v2 rebuilt with unified rig + props + axis-aerial fix (nonbg 0.435 >= 0.40 acceptance; spec pose measured 0.22-0.26, deviation recorded).",
+    "F2": "26 stills re-rendered on the unified rig (1600x900 24spp OIDN CPU), 0 blank frames",
+    "F3": "preflight 5 frames verified eye-level poses; full render running (CPU ~4.4-6.4s/frame, GPU benchmark 12.2s/frame under contention = CPU stays per policy); render-log device/utilization events at start + every 200 frames",
+    "F4": "clipB orbit renderer (axis-local center/target transformed by T+yaw) running on GPU (~5s/frame, 576 frames)"
   }
 }
