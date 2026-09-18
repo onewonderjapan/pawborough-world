@@ -61,12 +61,16 @@ scene = None
 
 
 def import_instance(path, pos, yaw):
-    """Import one GLB root and apply the instance transform in Blender space."""
+    """Import one GLB root and apply the instance transform in Blender space.
+    R1-03: the glTF importer sets rotation_mode='QUATERNION' on imported
+    objects, so writing rotation_euler silently did NOTHING and the yawed
+    peidian/gallery instances stayed axis-aligned. Force 'XYZ' first."""
     before = set(scene.objects)
     bpy.ops.import_scene.gltf(filepath=str(path))
     new = [o for o in scene.objects if o not in before]
     roots = [o for o in new if o.parent is None or o.parent in before]
     for o in roots:
+        o.rotation_mode = 'XYZ'
         o.location.x += pos[0]
         o.location.y += -pos[2]
         o.location.z += pos[1]
@@ -119,6 +123,48 @@ else:
                 o.location.z += pos[1]
                 if yaw:
                     o.rotation_euler.z += yaw
+
+# R1-03 keypoint verification: two keypoints per yawed instance, world pos
+# from the Blender matrix vs the obbToWorld semantics of instances.json (<=1e-3)
+INSTANCE_CHECK = []
+if args.mode == 'review':
+    from mathutils import Vector as _V
+    _KEYPOINTS = {
+        'peidian-w': [('front-gallery-column', (-1.1, 1.85, 0.9)),
+                      ('rear-wall-center', (0.0, 1.9, -4.45))],
+        'gallery-w': [('front-column', (-1.35, 1.5, 0.0)),
+                      ('back-wall-center', (0.0, 1.5, -2.4))],
+    }
+    _WANT = {
+        'peidian-w': {'front-gallery-column': (-10.3, -34.7), 'rear-wall-center': (-15.65, -35.8)},
+        'gallery-w': {'front-column': (-10.78, -29.64), 'back-wall-center': (-13.18, -30.99)},
+    }
+    _roots_by_glb = {}
+    for _glb, _pos, _yaw in INSTANCES:
+        _roots_by_glb.setdefault(_glb, []).append((_pos, _yaw))
+    for _inst_id, _kps in _KEYPOINTS.items():
+        _glb = 'peidian.glb' if _inst_id.startswith('peidian') else 'gallery.glb'
+        _pos, _yaw = _roots_by_glb[_glb][0 if _inst_id.endswith('-w') else 1]
+        _root = [o for o in scene.objects
+                 if o.parent is None and abs(o.location.x - _pos[0]) < 1e-4
+                 and abs(o.location.y + _pos[2]) < 1e-4]
+        assert _root, f'instance check: root for {_inst_id} not found'
+        _M = _root[0].matrix_world
+        for _kp_name, _kp in _kps:
+            _bl = _V((_kp[0], -_kp[2], _kp[1]))
+            _w = _M @ _bl
+            _wx_want, _wz_want = _WANT[_inst_id][_kp_name]
+            INSTANCE_CHECK.append({
+                'instance': _inst_id, 'keypoint': _kp_name,
+                'blenderWorld': [round(_w.x, 6), round(_w.y, 6), round(_w.z, 6)],
+                'expectedGlbWorld': [_wx_want, _wz_want],
+                'errXZ': round(math.hypot(_w.x - _wx_want, _w.y - (-_wz_want)), 9),
+            })
+    _bad = [r for r in INSTANCE_CHECK if r['errXZ'] > 1e-3]
+    if _bad:
+        print('INSTANCE_CHECK_FAIL', _bad)
+        sys.exit(9)
+    print(f'INSTANCE_CHECK_OK {len(INSTANCE_CHECK)} keypoints <=1e-3')
 
 sun = bpy.data.objects.new('sun', bpy.data.lights.new('sun', 'SUN'))
 scene.collection.objects.link(sun)
@@ -186,7 +232,7 @@ ALL_VIEWS = ['court2-pair', 'peidian-west-front', 'gallery-link', 'stage-from-co
              'stage-3q', 'passage-east', 'court3-axis', 'houdian-front', 'houdian-3q',
              'axis-aerial']
 CLAY_VIEWS = {'court2-pair', 'court3-axis'}
-COMPARE_VIEWS = ['court2-pair', 'houdian-front']
+COMPARE_VIEWS = ['court2-pair', 'houdian-front', 'peidian-west-front']
 
 if args.mode == 'review':
     PLAN = [(v, tag) for v in ALL_VIEWS
@@ -219,5 +265,9 @@ for vid, tag in PLAN:
 
 (args.out / ('compare-cameras.json' if args.mode == 'compare' else 'cameras.json')).write_text(
     json.dumps(sidecar, indent=2) + '\n', encoding='utf-8')
+if INSTANCE_CHECK:
+    (args.out / 'instance-check.json').write_text(
+        json.dumps({'source': 'R1-03', 'tolerance': 1e-3, 'checks': INSTANCE_CHECK},
+                   indent=2) + '\n', encoding='utf-8')
 bpy.ops.wm.save_as_mainfile(filepath=str(args.out / ('compare-scene.blend' if args.mode == 'compare' else 'scene.blend')))
 print(f'TEMPLE_V2_SCENE_{args.mode.upper()}_READY views={len(PLAN)} out={args.out}')

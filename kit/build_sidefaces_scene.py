@@ -49,6 +49,7 @@ def import_glb(path, loc_bl=None, rot_z=0.0):
     new = [o for o in scene.objects if o not in before]
     roots = [o for o in new if o.parent is None or o.parent in before]
     for o in roots:
+        o.rotation_mode = 'XYZ'  # R1-03: importer defaults to QUATERNION; euler writes are ignored otherwise
         if loc_bl:
             o.location.x += loc_bl[0]
             o.location.y += loc_bl[1]
