@@ -90,7 +90,7 @@ world.name = 'fangbang-bridge-world';
 scene.add(world);
 const clay = new T.MeshStandardMaterial({ color: 0xb8b7ae, roughness: .86 });
 
-let session = null, controller = null, blocks = null, cruise = null, skinsStats = null, viewLabelOverride = null;
+let session = null, controller = null, blocks = null, cruise = null, skinsStats = null, skInstancesCount = 0, viewLabelOverride = null;
 let mode = 'view', paused = false, ready = false, clayOn = false, selected = null;
 let cameras = [], manifest = null, lastRender = {}, loadStats = {};
 let routeCheck = null, cameraCheck = null, resetCount = 0, lastCruiseStatus = null;
@@ -530,17 +530,42 @@ async function load() {
   if (WANT_SKINS) {
     const skManifest = await json('./world/street-sidefaces/review-manifest.json');
     const skCollision = await json('./world/street-sidefaces/collision-world.json');
-    const skinStats = [];
-    for (const k of skManifest.skins) {
-      const sk = await loadGlbWithStats(k.glb, `sideface-${k.id}`, { renderer, baseUrl: './' });
-      if (sk.bytes !== k.bytes) throw new Error(`skin ${k.id} bytes ${sk.bytes} != manifest ${k.bytes}`);
-      world.add(sk.root);
-      skinStats.push(sk);
+    const skInstances = await json('./world/street-sidefaces/instances.json');
+    const skinGLBs = new Map();
+    let skinBytes = 0;
+    // M-batch skins are baked in world coords (identity placement); A-batch
+    // centered skins are instanced per visible face (obbToWorld semantics)
+    let placedTris = 0;
+    const sources = new Map(); // glb -> parsed root (kept OUT of the scene)
+    const loadSkinSource = async (k) => {
+      if (!sources.has(k.glb)) {
+        const sk = await loadGlbWithStats(k.glb, `sideface-${k.id}`, { renderer, baseUrl: './' });
+        if (sk.bytes !== k.bytes) throw new Error(`skin ${k.id} bytes ${sk.bytes} != manifest ${k.bytes}`);
+        sources.set(k.glb, sk.root);
+      }
+      return sources.get(k.glb);
+    };
+    let placedCount = 0;
+    for (const i of skInstances.instances) {
+      const k = skManifest.skins.find((x) => x.id === i.skin);
+      if (!k) throw new Error(`instance ${i.id}: skin ${i.skin} missing from manifest`);
+      const src = await loadSkinSource(k);
+      const instRoot = src.clone(true);
+      if (i.batch === 'A') {
+        instRoot.position.set(...i.positionGlb);
+        instRoot.rotation.y = i.rotationYRad;
+      }
+      world.add(instRoot);
+      placedTris += k.triangles;
+      placedCount++;
     }
     for (const rec of skCollision.colliders) { addWallCollider(RAPIER, session.physics.world, rec); session.physics.wallCount++; }
-    skinsStats = { count: skinStats.length, bytes: skinStats.reduce((s2, x) => s2 + x.bytes, 0),
-      triangles: skManifest.placedTriangles, colliders: skCollision.colliders.length,
-      manifest: skManifest.datasetId };
+    skInstancesCount = skInstances.instances.length;
+    skinsStats = { count: placedCount, uniqueGlbs: skinGLBs.size,
+      bytes: [...skinGLBs.values()].reduce((s2, x) => s2 + x.bytes, 0),
+      placedTris,
+      triangles: skManifest.triangleAccounting.instancedPlacedTris.actual,
+      colliders: skCollision.colliders.length, manifest: skManifest.datasetId };
   }
 
   world.traverse((o) => {
@@ -587,7 +612,10 @@ async function load() {
     return { id: a.id, glb: a.glb, bytes: m.bytes, sha256: m.sha256, triangles: m.triangles ?? 0 };
   });
   session.sceneInventory = loadedSceneAssets(manifest, assetInfos, true);
-  const exp = expectedTriangles(manifest.placedTriangles + (skinsStats?.triangles ?? 0), [
+  // manifest.placedTriangles already includes M-batch + A-batch instanced tris
+  // skinsStats.placedTris counts every instance's skin tris (the bridge
+  // manifest does not include the sidefaces dataset)
+  const exp = expectedTriangles(manifest.placedTriangles + (skinsStats?.placedTris ?? 0), [
     ...session.sceneInventory.filter((e) => e.kind === 'asset'),
     { kind: 'surface', triangles: manifest.streetCompletion.surface.triangles },   // west surface (WorldLoader-loaded)
     { kind: 'surface', triangles: eastTail.triangles },
