@@ -190,29 +190,29 @@
     {
       "id": "temple-axis-peidian-w",
       "path": "./world/fangbang-temple-v2/temple-axis/peidian.glb",
-      "bytes": 2079008,
-      "sha256": "e139da890252ab1a6540d5b401b94122be5f9831506d959fedf2976c1fb34e39",
+      "bytes": 2079584,
+      "sha256": "5094b6b5ccfe6a516017520f3079e426f429164aaa78975da5c82cf003910310",
       "triangles": 11432
     },
     {
       "id": "temple-axis-peidian-e",
       "path": "./world/fangbang-temple-v2/temple-axis/peidian.glb",
-      "bytes": 2079008,
-      "sha256": "e139da890252ab1a6540d5b401b94122be5f9831506d959fedf2976c1fb34e39",
+      "bytes": 2079584,
+      "sha256": "5094b6b5ccfe6a516017520f3079e426f429164aaa78975da5c82cf003910310",
       "triangles": 11432
     },
     {
       "id": "temple-axis-gallery-w",
       "path": "./world/fangbang-temple-v2/temple-axis/gallery.glb",
-      "bytes": 493232,
-      "sha256": "69ec8e6ad326b015f215fd00918f15b05dc32e4d1642238bacb2839802f93ad1",
+      "bytes": 493260,
+      "sha256": "643780215e30f779800584e2c15ffc3927034ba9831e3601cd10cd83b32294f2",
       "triangles": 1134
     },
     {
       "id": "temple-axis-gallery-e",
       "path": "./world/fangbang-temple-v2/temple-axis/gallery.glb",
-      "bytes": 493232,
-      "sha256": "69ec8e6ad326b015f215fd00918f15b05dc32e4d1642238bacb2839802f93ad1",
+      "bytes": 493260,
+      "sha256": "643780215e30f779800584e2c15ffc3927034ba9831e3601cd10cd83b32294f2",
       "triangles": 1134
     },
     {
@@ -232,8 +232,8 @@
     {
       "id": "temple-axis-houdian",
       "path": "./world/fangbang-temple-v2/temple-axis/houdian.glb",
-      "bytes": 2706132,
-      "sha256": "079faad9473bb2ef3719927e26f8e504b223ee94590fe4d9f495f801d476711e",
+      "bytes": 2706228,
+      "sha256": "158218ec8156d7e92d7cec1f637e8f1474ed063b509056739388e6ded756bdb9",
       "triangles": 16200
     },
     {
@@ -414,8 +414,8 @@
           -6.382718
         ],
         "rotationYRad": 1.73782633,
-        "bytes": 2079008,
-        "sha256": "e139da890252ab1a6540d5b401b94122be5f9831506d959fedf2976c1fb34e39",
+        "bytes": 2079584,
+        "sha256": "5094b6b5ccfe6a516017520f3079e426f429164aaa78975da5c82cf003910310",
         "triangles": 11432,
         "module": "temple-axis-peidian-w"
       },
@@ -428,8 +428,8 @@
           -10.106817
         ],
         "rotationYRad": -1.40376633,
-        "bytes": 2079008,
-        "sha256": "e139da890252ab1a6540d5b401b94122be5f9831506d959fedf2976c1fb34e39",
+        "bytes": 2079584,
+        "sha256": "5094b6b5ccfe6a516017520f3079e426f429164aaa78975da5c82cf003910310",
         "triangles": 11432,
         "module": "temple-axis-peidian-e"
       },
@@ -442,8 +442,8 @@
           -1.709486
         ],
         "rotationYRad": 1.73782633,
-        "bytes": 493232,
-        "sha256": "69ec8e6ad326b015f215fd00918f15b05dc32e4d1642238bacb2839802f93ad1",
+        "bytes": 493260,
+        "sha256": "643780215e30f779800584e2c15ffc3927034ba9831e3601cd10cd83b32294f2",
         "triangles": 1134,
         "module": "temple-axis-gallery-w"
       },
@@ -456,8 +456,8 @@
           -5.293931
         ],
         "rotationYRad": -1.40376633,
-        "bytes": 493232,
-        "sha256": "69ec8e6ad326b015f215fd00918f15b05dc32e4d1642238bacb2839802f93ad1",
+        "bytes": 493260,
+        "sha256": "643780215e30f779800584e2c15ffc3927034ba9831e3601cd10cd83b32294f2",
         "triangles": 1134,
         "module": "temple-axis-gallery-e"
       },
@@ -498,8 +498,8 @@
           -45.913134
         ],
         "rotationYRad": 0.16703,
-        "bytes": 2706132,
-        "sha256": "079faad9473bb2ef3719927e26f8e504b223ee94590fe4d9f495f801d476711e",
+        "bytes": 2706228,
+        "sha256": "158218ec8156d7e92d7cec1f637e8f1474ed063b509056739388e6ded756bdb9",
         "triangles": 16200,
         "module": "temple-axis-houdian"
       }
