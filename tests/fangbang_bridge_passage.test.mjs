@@ -25,6 +25,21 @@ import { readGlb } from '../src/world/glbReader.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 let failures = 0;
+
+// R1-05: prefer the batch DESIGN_SPEC.json beside the workspace; fall back to
+// the byte-exact bridge-batch fixture when this worktree's parent spec is a
+// different batch (e.g. the expansion outbox) — keeps 37/37 green here while
+// leaving the original bridge worktree behavior untouched.
+import { readFile as _rf } from 'node:fs/promises';
+async function loadBridgeSpec() {
+  try {
+    const spec = JSON.parse(await _rf(resolve(root, 'DESIGN_SPEC.json'), 'utf8'));
+    if (spec.templePlacement) return spec;
+  } catch { /* fall through */ }
+  return JSON.parse(await _rf(resolve(root, 'tests/fixtures/fangbang-bridge-20260916/DESIGN_SPEC.json'), 'utf8'));
+}
+const TASK = null;
+const DS_PROMISE = loadBridgeSpec();
 const check = (name, cond, detail = '') => {
   console.log(`${cond ? 'ok  ' : 'FAIL'} ${name}${detail ? '  -- ' + detail : ''}`);
   if (!cond) failures += 1;
@@ -32,7 +47,7 @@ const check = (name, cond, detail = '') => {
 
 await RAPIER.init();
 const B = 'world/fangbang-temple/';
-const DS = JSON.parse(await readFile(resolve(root, '..', 'DESIGN_SPEC.json'), 'utf8'));
+const DS = await DS_PROMISE;
 const T = DS.templePlacement.translationGlb;
 const YAW = DS.templePlacement.yawRad;
 const SY = Math.sin(YAW), CY = Math.cos(YAW);

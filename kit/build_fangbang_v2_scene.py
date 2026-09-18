@@ -83,6 +83,19 @@ for a in _v2m['templeAxis']['assets']:
                rot_z=+a['rotationYRad'])
 
 # placeholder districts: neutral gray extrusions (blockViews rule)
+# R1-06: recalc outward normals on imported meshes (base faces rendered
+# black in Cycles otherwise; WebGL lit both hemispheres so it never showed)
+import bmesh as _bm
+for _o in scene.objects:
+    if _o.type != 'MESH':
+        continue
+    _b = _bm.new()
+    _b.from_mesh(_o.data)
+    _bm.ops.recalc_face_normals(_b, faces=_b.faces)
+    _b.to_mesh(_o.data)
+    _b.free()
+    _o.data.update()
+
 gray = bpy.data.materials.new('placeholder-gray')
 gray.use_nodes = True
 gb = gray.node_tree.nodes['Principled BSDF']
@@ -126,11 +139,17 @@ def blank_stats(png_path, name):
                          'dominantShare': round(dom, 4), 'blank': blank})
     if blank:
         print(f"BLANK_FRAME {name}")
+    return BLANK_FRAMES[-1]
 
 sun = bpy.data.objects.new('sun', bpy.data.lights.new('sun', 'SUN'))
 scene.collection.objects.link(sun)
 sun.data.energy = 2.8
 sun.rotation_euler = (math.radians(55), 0.0, math.radians(-35))
+fill = bpy.data.objects.new('fill', bpy.data.lights.new('fill', 'SUN'))
+scene.collection.objects.link(fill)
+fill.data.energy = 0.9
+fill.data.color = (0.92, 0.94, 1.0)
+fill.rotation_euler = (math.radians(35), 0.0, math.radians(145))
 world = bpy.data.worlds.new('world')
 scene.world = world
 world.use_nodes = True
@@ -217,9 +236,9 @@ for vid, tag in PLAN:
                              'file': scene.render.filepath.split('/')[-1]})
     print(f'RENDERED fangbangv2-{vid}-{tag} fov={got:.3f}deg')
 
-(args.out / 'cameras.json').write_text(json.dumps(sidecar, indent=2) + '\n', encoding='utf-8')
-bpy.ops.wm.save_as_mainfile(filepath=str(args.out / 'scene.blend'))
 sidecar['blankGuard'] = {'frames': BLANK_FRAMES, 'anyBlank': any(f['blank'] for f in BLANK_FRAMES)}
 if sidecar['blankGuard']['anyBlank']:
     print('BLANK_FRAMES_PRESENT'); sys.exit(10)
+(args.out / 'cameras.json').write_text(json.dumps(sidecar, indent=2) + '\n', encoding='utf-8')
+bpy.ops.wm.save_as_mainfile(filepath=str(args.out / 'scene.blend'))
 print(f'FANGBANG_V2_SCENE_READY views={len(PLAN)} out={args.out}')

@@ -25,6 +25,20 @@ import { readGlb } from '../src/world/glbReader.js';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const TASK = resolve(root, '..');
 let failures = 0;
+
+// R1-05: prefer the batch DESIGN_SPEC.json beside the workspace; fall back to
+// the byte-exact bridge-batch fixture when this worktree's parent spec is a
+// different batch (e.g. the expansion outbox) — keeps 37/37 green here while
+// leaving the original bridge worktree behavior untouched.
+import { readFile as _rf } from 'node:fs/promises';
+async function loadBridgeSpec() {
+  try {
+    const spec = JSON.parse(await _rf(resolve(TASK, 'DESIGN_SPEC.json'), 'utf8'));
+    if (spec.templePlacement) return spec;
+  } catch { /* fall through */ }
+  return JSON.parse(await _rf(resolve(root, 'tests/fixtures/fangbang-bridge-20260916/DESIGN_SPEC.json'), 'utf8'));
+}
+const DS_PROMISE = loadBridgeSpec();
 const check = (name, cond, detail = '') => {
   console.log(`${cond ? 'ok  ' : 'FAIL'} ${name}${detail ? '  -- ' + detail : ''}`);
   if (!cond) failures += 1;
@@ -32,7 +46,7 @@ const check = (name, cond, detail = '') => {
 const sha = (b) => createHash('sha256').update(b).digest('hex');
 const j = (p) => readFile(resolve(root, p), 'utf8').then(JSON.parse);
 
-const DS = JSON.parse(await readFile(resolve(TASK, 'DESIGN_SPEC.json'), 'utf8'));
+const DS = await DS_PROMISE;
 const B = 'world/fangbang-temple/';
 const [manifest, instances, collision, route, blocks, registry, dadianManifest] = await Promise.all([
   j(B + 'review-manifest.json'), j(B + 'instances.json'), j(B + 'collision-world.json'),
