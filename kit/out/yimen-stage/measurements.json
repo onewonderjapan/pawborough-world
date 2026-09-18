@@ -11,17 +11,17 @@
         "yimen-stage-body"
       ],
       "objects": 5,
-      "triangles": 7212,
-      "fileBytes": 1288428,
-      "sha256": "d553ab85034a679c908400c52185af52cb266da63d9e664894bf5afd4e5b83ef"
+      "triangles": 7164,
+      "fileBytes": 1283532,
+      "sha256": "509fd8913f90cbdce61a55ba3187030da304140216cbb4f368127dd8eb59a51d"
     }
   },
   "timings": {
-    "totalSeconds": 1.0
+    "totalSeconds": 0.3
   },
   "budgets": {
     "stageTris": {
-      "actual": 7212,
+      "actual": 7164,
       "limit": 9000,
       "pass": true
     },

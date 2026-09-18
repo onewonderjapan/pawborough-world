@@ -1,0 +1,62 @@
+{
+  "source": "R1-03",
+  "tolerance": 0.001,
+  "checks": [
+    {
+      "instance": "peidian-w",
+      "keypoint": "front-gallery-column",
+      "blenderWorld": [
+        -10.3,
+        34.700001,
+        1.85
+      ],
+      "expectedGlbWorld": [
+        -10.3,
+        -34.7
+      ],
+      "errXZ": 7.86e-07
+    },
+    {
+      "instance": "peidian-w",
+      "keypoint": "rear-wall-center",
+      "blenderWorld": [
+        -15.65,
+        35.799999,
+        1.9
+      ],
+      "expectedGlbWorld": [
+        -15.65,
+        -35.8
+      ],
+      "errXZ": 8.53e-07
+    },
+    {
+      "instance": "gallery-w",
+      "keypoint": "front-column",
+      "blenderWorld": [
+        -10.78,
+        29.639999,
+        1.5
+      ],
+      "expectedGlbWorld": [
+        -10.78,
+        -29.64
+      ],
+      "errXZ": 6.66e-07
+    },
+    {
+      "instance": "gallery-w",
+      "keypoint": "back-wall-center",
+      "blenderWorld": [
+        -13.18,
+        30.99,
+        1.5
+      ],
+      "expectedGlbWorld": [
+        -13.18,
+        -30.99
+      ],
+      "errXZ": 3.81e-07
+    }
+  ]
+}

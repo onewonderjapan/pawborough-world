@@ -176,9 +176,9 @@
     {
       "id": "temple-axis-yimenstage",
       "path": "./world/fangbang-temple-v2/temple-axis/yimen-stage.glb",
-      "bytes": 1288428,
-      "sha256": "d553ab85034a679c908400c52185af52cb266da63d9e664894bf5afd4e5b83ef",
-      "triangles": 7212
+      "bytes": 1283532,
+      "sha256": "509fd8913f90cbdce61a55ba3187030da304140216cbb4f368127dd8eb59a51d",
+      "triangles": 7164
     },
     {
       "id": "temple-axis-dadiancourt",
@@ -269,8 +269,8 @@
     "allPacked": true
   },
   "triangleAccounting": {
-    "bridgeWorldTris": 333978,
-    "fullSceneTris": 376874,
+    "bridgeWorldTris": 333930,
+    "fullSceneTris": 376826,
     "budget": {
       "bridgeScopeLimit": 360000,
       "fullSceneLimit": 400000,
@@ -278,7 +278,7 @@
     },
     "breakdown": {
       "streetAssembly": 171464,
-      "templeAxisV2": 156542,
+      "templeAxisV2": 156494,
       "westExtension": 5972,
       "tailShops": 41428,
       "eastTailSurface": 1468
@@ -386,9 +386,9 @@
           6.349259
         ],
         "rotationYRad": 0.16703,
-        "bytes": 1288428,
-        "sha256": "d553ab85034a679c908400c52185af52cb266da63d9e664894bf5afd4e5b83ef",
-        "triangles": 7212,
+        "bytes": 1283532,
+        "sha256": "509fd8913f90cbdce61a55ba3187030da304140216cbb4f368127dd8eb59a51d",
+        "triangles": 7164,
         "module": "temple-axis-yimenstage"
       },
       {
@@ -504,7 +504,7 @@
         "module": "temple-axis-houdian"
       }
     ],
-    "placedTriangles": 156542,
+    "placedTriangles": 156494,
     "collision": "246 records composed into collision-world.json (self-check sampled 6, maxCornerError 6.347e-7)"
   },
   "westExtension": {
@@ -997,12 +997,12 @@
   },
   "budgets": {
     "bridgeScopeTris": {
-      "actual": 333978,
+      "actual": 333930,
       "limit": 360000,
       "pass": true
     },
     "fullSceneTris": {
-      "actual": 376874,
+      "actual": 376826,
       "limit": 400000,
       "pass": true
     },

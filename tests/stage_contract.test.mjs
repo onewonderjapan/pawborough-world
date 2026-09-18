@@ -55,6 +55,37 @@ const glb = readGlb(bytes);
   check('S2: columns reach the ground, roof reaches the ridge zone',
     b.min[1] > -0.01 && b.min[1] < 0.05 && b.max[1] > 7.4 && b.max[1] < 7.9,
     `y ${b.min[1].toFixed(2)}..${b.max[1].toFixed(2)}`);
+  // R1-01: NO visible mesh in the open under-stage zone
+  // x in [-2.87,2.87], y in [0.10,2.40], z in [-8.90,-5.20] (GLB coords)
+  let underStage = 0;
+  for (const m of glb.meshes) {
+    const p = m.positions, mt = m.matrix;
+    for (let i = 0; i < p.length; i += 3) {
+      const x = mt[0] * p[i] + mt[4] * p[i + 1] + mt[8] * p[i + 2] + mt[12];
+      const y = mt[1] * p[i] + mt[5] * p[i + 1] + mt[9] * p[i + 2] + mt[13];
+      const z = mt[2] * p[i] + mt[6] * p[i + 1] + mt[10] * p[i + 2] + mt[14];
+      if (Math.abs(x) < 2.87 - 1e-4 && y > 0.10 + 1e-4 && y < 2.40 - 1e-4
+        && z > -8.90 + 1e-4 && z < -5.20 - 1e-4) { underStage++; break; }
+    }
+  }
+  check('S2: under-stage zone is open (R1-01: the old solid wood box is gone)',
+    underStage === 0, `${underStage} meshes with vertices in the zone`);
+  {
+    // the passage CORE (|x| < 2.5, well inside the column inner faces) has no
+    // wood below 2.4 — the columns (x ±3.0) legitimately reach the ground
+    let coreWood = 0;
+    for (const m of glb.meshes) {
+      const p = m.positions, mt = m.matrix;
+      for (let i = 0; i < p.length; i += 3) {
+        const x = mt[0] * p[i] + mt[4] * p[i + 1] + mt[8] * p[i + 2] + mt[12];
+        const y = mt[1] * p[i] + mt[5] * p[i + 1] + mt[9] * p[i + 2] + mt[13];
+        const z = mt[2] * p[i] + mt[6] * p[i + 1] + mt[10] * p[i + 2] + mt[14];
+        if (Math.abs(x) < 2.5 && y < 2.4 - 1e-4 && z > -8.9 && z < -5.2) { coreWood++; break; }
+      }
+    }
+    check('S2: passage core (|x|<2.5) free of wood below the floor (columns carry the stage)',
+      coreWood === 0, `${coreWood} meshes`);
+  }
   const groundNodes = glb.gltf.nodes.map((n) => n.name ?? '').filter((n) => /^temple-ground__/.test(n));
   check('S2: NO temple-ground__ nodes (floor is not walkable ground)', groundNodes.length === 0,
     groundNodes.join(','));

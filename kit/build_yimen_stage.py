@@ -217,15 +217,9 @@ for cx, cz in cols['positions']:
 L.box('stage-floor', (0, fl['y'] - fl['thicknessM'] / 2, (fl['zLocal'][0] + fl['zLocal'][1]) / 2),
       (fl['xM'][1] - fl['xM'][0], fl['thicknessM'], abs(fl['zLocal'][1] - fl['zLocal'][0])),
       'wood', .01)
-# skirt boards closing the floor edge to the ground line
-L.box('stage-floor-skirt-front', (0, fl['y'] / 2, fl['zLocal'][1] - .05),
-      (fl['xM'][1] - fl['xM'][0], fl['y'], .1), 'wood', 0)
-L.box('stage-floor-skirt-rear', (0, fl['y'] / 2, fl['zLocal'][0] + .05),
-      (fl['xM'][1] - fl['xM'][0], fl['y'], .1), 'wood', 0)
-for sgn in (-1, 1):
-    L.box('stage-floor-skirt-side', (sgn * (fl['xM'][1] - .05), fl['y'] / 2,
-                                     (fl['zLocal'][0] + fl['zLocal'][1]) / 2),
-          (.1, fl['y'], abs(fl['zLocal'][1] - fl['zLocal'][0])), 'wood', 0)
+# R1-01: NO skirt boards — the stage stands on its 4 columns (the old
+# floor-edge skirts formed a solid wood box under the stage that blocked the
+# court2-pair camera and had no collider). Under-stage zone stays open.
 
 # 台口栏板 plain rail on the front edge (y 2.6..3.15)
 L.box('stage-front-rail', (0, fl['y'] + rail['heightM'] / 2, rail['atLocalZ'] - .04),
@@ -373,6 +367,29 @@ for k in range(NS):
                'dark', [(x0 / 1.44, 0), (x1 / 1.44, 0), (x1 / 1.44, .3), (x0 / 1.44, .3)],
                (0, -1, 0))
 print(f'STAGE seam ok ({time.time() - T0:.1f}s)')
+
+# R1-01 guard: the open under-stage zone must contain NO visible mesh:
+# x in [-2.87,2.87] (between the column inner faces), y in [0.10,2.40]
+# (above the frozen 0.08 plinths, below the 2.4 floor soffit), z in
+# [zLocal0..zLocal1]. Wing walls live at |x| >= 3.02, columns at 2.87..3.13.
+_zone = {'x': 2.87 - 1e-4, 'y0': 0.10, 'y1': 2.40 - 1e-4,
+         'z0': fl['zLocal'][0] + 1e-4, 'z1': fl['zLocal'][1] - 1e-4}
+_offenders = []
+for _o in bpy.context.scene.objects:
+    if _o.type != 'MESH':
+        continue
+    for _v in _o.data.vertices:
+        _c = _o.matrix_world @ _v.co  # Blender space: (x, -z_glb, y_glb)
+        _gx, _gy_glb = _c.x, -_c.y
+        _gy = _c.z
+        if abs(_gx) < _zone['x'] and _zone['y0'] < _gy < _zone['y1'] \
+                and _zone['z0'] < _gy_glb < _zone['z1']:
+            _offenders.append((_o.name, tuple(round(v, 2) for v in _c)))
+            break
+if _offenders:
+    print('UNDER_STAGE_BLOCKED', _offenders[:6])
+    sys.exit(3)
+print(f"UNDER_STAGE_CLEAR ({len(_offenders)} offenders)")
 
 # ---------------------------------------------------------------------------
 # collision: exactly 4 columns + 1 rail; the floor has NO collider

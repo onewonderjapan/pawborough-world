@@ -106,9 +106,9 @@
     },
     "yimenStage": {
       "file": "./world/temple-axis-v2/yimen-stage.glb",
-      "bytes": 1288428,
-      "sha256": "d553ab85034a679c908400c52185af52cb266da63d9e664894bf5afd4e5b83ef",
-      "triangles": 7212,
+      "bytes": 1283532,
+      "sha256": "509fd8913f90cbdce61a55ba3187030da304140216cbb4f368127dd8eb59a51d",
+      "triangles": 7164,
       "groups": [
         "yimen-stage-body"
       ]
@@ -134,14 +134,14 @@
       ]
     }
   },
-  "placedTriangles": 143976,
+  "placedTriangles": 143928,
   "budgets": {
     "newModulesTris": {
-      "actual": 43818,
+      "actual": 43770,
       "limit": 70000
     },
     "placedTriangles": {
-      "actual": 143976,
+      "actual": 143928,
       "limit": 180000
     }
   },
