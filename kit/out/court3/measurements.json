@@ -1,0 +1,76 @@
+{
+  "moduleId": "court3",
+  "units": "meters",
+  "surveyed": false,
+  "axis": "world GLB Y-up (court3 authored in place, no instance transform)",
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false,
+  "targets": {
+    "court3.glb": {
+      "groups": [
+        "temple-ground",
+        "court3-boundary"
+      ],
+      "objects": 7,
+      "triangles": 4552,
+      "fileBytes": 1634368,
+      "sha256": "3921895487fb7581e4fce7e31c8534153329ab61ea186a3e961b6a1e44bb0f0c"
+    }
+  },
+  "timings": {
+    "totalSeconds": 0.6
+  },
+  "budgets": {
+    "court3Tris": {
+      "actual": 4552,
+      "limit": 7000,
+      "pass": true
+    }
+  },
+  "design": {
+    "contextNotSurvey": "third-court width, boundary walls and the north closure are all design values continuing the adopted axis language (boundaryWallNotHistorical); no survey exists",
+    "sidePassages": {
+      "xM": [
+        [
+          -16.4,
+          -10.78
+        ],
+        [
+          10.78,
+          16.4
+        ]
+      ],
+      "zM": [
+        -39.1,
+        -58.2
+      ],
+      "y": 0.0
+    },
+    "deadPockets": {
+      "xM": [
+        -16.4,
+        -10.78
+      ],
+      "zM": [
+        -29.48,
+        -39.1
+      ],
+      "y": -0.004
+    },
+    "court3": {
+      "x": [
+        -16.4,
+        16.4
+      ],
+      "z": [
+        -58.2,
+        -72.2
+      ],
+      "pathHalf": 1.95
+    },
+    "boundaryWall": "inner x ±16.4, wood posts every 3.5m; NOT historical (sample terminal language)",
+    "northClosure": "z -84.0 sample terminal (非历史), replaces the removed -59.8 wall",
+    "noBurner": "DESIGN_SPEC: 无证据，不加",
+    "groundSeams": "passages y=0 flush with the second court; fields 4mm low"
+  }
+}

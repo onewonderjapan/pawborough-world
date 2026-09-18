@@ -1,0 +1,90 @@
+{
+  "source": "kit/build_temple_v2_scene.py",
+  "engine": "cycles-cpu",
+  "samples": 24,
+  "resolution": [
+    1600,
+    900
+  ],
+  "mode": "compare",
+  "assembly": "temple-axis-v2 instances verbatim (peidian/gallery yaw \u00b190\u00b0)",
+  "views": [
+    {
+      "view": "court2-pair",
+      "tag": "pbr",
+      "geometry": "native-blend",
+      "posBlender": [
+        0,
+        28.5,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        42,
+        4.5
+      ],
+      "fovDegVerified": 60.0,
+      "file": "court2-pair-pbr-native.png"
+    },
+    {
+      "view": "houdian-front",
+      "tag": "pbr",
+      "geometry": "native-blend",
+      "posBlender": [
+        0,
+        69.5,
+        1.6
+      ],
+      "targetBlender": [
+        0,
+        74.5,
+        5
+      ],
+      "fovDegVerified": 55.0,
+      "file": "houdian-front-pbr-native.png"
+    },
+    {
+      "view": "peidian-west-front",
+      "tag": "pbr",
+      "geometry": "native-blend",
+      "posBlender": [
+        -3,
+        35.8,
+        1.6
+      ],
+      "targetBlender": [
+        -11.2,
+        35.8,
+        3
+      ],
+      "fovDegVerified": 55.0,
+      "file": "peidian-west-front-pbr-native.png"
+    }
+  ],
+  "note": "BLENDER evidence; WebGL captures are separate (kit/out/temple-axis-v2/web)",
+  "blankGuard": {
+    "thresholdStd255": 2.0,
+    "thresholdDominant": 0.95,
+    "frames": [
+      {
+        "file": "court2-pair-pbr-native.png",
+        "lumStd255": 65.883,
+        "dominantShare": 0.1023,
+        "blank": false
+      },
+      {
+        "file": "houdian-front-pbr-native.png",
+        "lumStd255": 62.349,
+        "dominantShare": 0.1253,
+        "blank": false
+      },
+      {
+        "file": "peidian-west-front-pbr-native.png",
+        "lumStd255": 66.481,
+        "dominantShare": 0.259,
+        "blank": false
+      }
+    ],
+    "anyBlank": false
+  }
+}

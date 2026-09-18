@@ -1,0 +1,301 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "fangbang-temple",
+  "batchId": "pawborough-fangbang-temple-bridge-night-20260916",
+  "registeredBy": "batch fangbang-temple-bridge-night-20260916",
+  "ownerAdopted": false,
+  "mapSource": {
+    "path": "/home/baibai/outbox/pawborough-fangbang-map-1990s-20260912/workspace/public/map-data.json",
+    "sha256": "1dee4831060a2e587769df5ad9f26455c2e1b4ac7841aacafcb9712d29a8884e",
+    "readOnly": true
+  },
+  "anchor": {
+    "worldOriginMapSpace": [
+      53.5,
+      -17.4
+    ],
+    "kind": "documented approximate anchor (map local metres -> GLB translation only)"
+  },
+  "poi": {
+    "id": "temple",
+    "name": "老城隍庙",
+    "pointMap": [
+      -82.829,
+      -40.827
+    ],
+    "pointGlb": [
+      -136.329,
+      -23.427
+    ]
+  },
+  "road": {
+    "id": "238219466",
+    "name": "方浜中路",
+    "centerlineGlbWestOfStreet": [
+      [
+        0.04,
+        -0.01
+      ],
+      [
+        -84.88,
+        29.68
+      ],
+      [
+        -99.12,
+        33.8
+      ],
+      [
+        -116.4,
+        37.91
+      ],
+      [
+        -135.32,
+        41.1
+      ],
+      [
+        -167.95,
+        45.71
+      ]
+    ]
+  },
+  "method": "庙轴线 = 总图 POI 锚点在方浜中路中线上的垂足；山门门槛 = 垂足沿北法线偏移 frontLine(5.6)+forecourtDepth(7.0)=12.6 m；偏航 = 使山门正面(+Z local)指向道路的正南法线",
+  "foot": {
+    "onCenterlineGlb": [
+      -125.722,
+      0,
+      39.482
+    ],
+    "segment": [
+      [
+        -135.32,
+        41.1
+      ],
+      [
+        -116.4,
+        37.91
+      ]
+    ],
+    "roadTangentUnit": [
+      0.9861,
+      -0.1663
+    ],
+    "northNormalUnit": [
+      -0.1663,
+      -0.9861
+    ],
+    "arcLengthFromStreetWestVertexM": 132
+  },
+  "templePlacement": {
+    "groupId": "block-temple-axis",
+    "translationGlb": [
+      -127.817,
+      0,
+      27.057
+    ],
+    "yawRad": 0.16703,
+    "yawDeg": 9.57,
+    "assets": [
+      {
+        "id": "shanmen",
+        "glb": "./world/fangbang-temple/temple-axis/temple.glb",
+        "positionGlb": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "rotationYRad": 0.16703
+      },
+      {
+        "id": "shanmen-ground",
+        "glb": "./world/fangbang-temple/temple-axis/ground.glb",
+        "positionGlb": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "rotationYRad": 0.16703
+      },
+      {
+        "id": "shanmen-lions",
+        "glb": "./world/fangbang-temple/temple-axis/lions.glb",
+        "positionGlb": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "rotationYRad": 0.16703
+      },
+      {
+        "id": "shanmen-ornaments",
+        "glb": "./world/fangbang-temple/temple-axis/ornaments.glb",
+        "positionGlb": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "rotationYRad": 0.16703
+      },
+      {
+        "id": "entrycourt-open",
+        "glb": "./world/fangbang-temple/temple-axis/court-open.glb",
+        "positionGlb": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "rotationYRad": 0.16703
+      },
+      {
+        "id": "yimen",
+        "glb": "./world/fangbang-temple/temple-axis/yimen.glb",
+        "positionGlb": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "rotationYRad": 0.16703
+      },
+      {
+        "id": "dadiancourt",
+        "glb": "./world/fangbang-temple/temple-axis/dadian-court.glb",
+        "positionGlb": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "rotationYRad": 0.16703
+      },
+      {
+        "id": "dadian",
+        "glb": "./world/fangbang-temple/temple-axis/dadian.glb",
+        "positionGlb": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "rotationYRad": 0.16703
+      }
+    ],
+    "worldFootprintCornersGlb": [
+      [
+        -139.9,
+        36.2
+      ],
+      [
+        -113.4,
+        31.7
+      ],
+      [
+        -124.5,
+        -34.1
+      ],
+      [
+        -151,
+        -29.7
+      ]
+    ]
+  },
+  "westEnd": {
+    "glb": [
+      -149.388,
+      0,
+      43.473
+    ],
+    "arcFromFootM": 24,
+    "sealWall": {
+      "at": "westEndGlb, 垂直于道路切线",
+      "widthM": 11.2,
+      "heightM": 3.4,
+      "thicknessM": 0.3,
+      "label": "样段端墙，非历史（同 lane-A/B 端墙与大殿北端墙口径）",
+      "material": "dark"
+    }
+  },
+  "replaced": {
+    "rule": "店铺中心的 temple-local 坐标满足 |lx| < 13.4 + max(w,d)/2 且 -59.8 - max(w,d)/2 < lz < 7 + max(w,d)/2 → replacedBy=block-temple-axis（沿用 replacedBy/restore 生命周期，不删除记录）",
+    "ids": [
+      "shop-167",
+      "shop-169"
+    ],
+    "blockId": "block-temple-axis",
+    "reversible": "replacedBy lifecycle; revoke restores the placeholders"
+  },
+  "knownDeviations": [
+    "OSM 城隍庙轮廓南缘在此 x 处约 z=31（比道路中线北 ~9m）；本批门槛 z=27.06 比轮廓南缘再北 ~4m，前院与轮廓有 ~4m 出入——轮廓是 2019 参照非测绘，记为 knownDeviation，不调整。",
+    "map shop centroids carry per-shop residuals up to ~17m (historicalPositionVerified=false); the west-band placeholders therefore intrude the 8.5m design carriageway at 17 stations (see kit/out/fangbang-temple/west-extension/surface-spec.json placeholderResiduals) — recorded, not moved (frontSetback)",
+    "positions are design locator values from the 2019 OSM snapshot, not a 1990s survey (dimensionsAreDesign)",
+    {
+      "R1": "R1-01 placeholder setback (lead fix order 2026-09-17): active west-band placeholders whose visual box crossed the 5.6m front line were shifted whole along the road normal until the nearest corner sat on the front line; mapPoint/glbPoint keep the pre-shift values, placementAdjust records each move",
+      "shifts": [
+        {
+          "id": "shop-153",
+          "shiftM": 2.597
+        },
+        {
+          "id": "shop-154",
+          "shiftM": 3.115
+        },
+        {
+          "id": "shop-155",
+          "shiftM": 3.595
+        },
+        {
+          "id": "shop-156",
+          "shiftM": 2.114
+        },
+        {
+          "id": "shop-157",
+          "shiftM": 2.595
+        },
+        {
+          "id": "shop-158",
+          "shiftM": 3.114
+        },
+        {
+          "id": "shop-159",
+          "shiftM": 3.588
+        },
+        {
+          "id": "shop-160",
+          "shiftM": 2.09
+        },
+        {
+          "id": "shop-161",
+          "shiftM": 2.582
+        },
+        {
+          "id": "shop-162",
+          "shiftM": 3.047
+        },
+        {
+          "id": "shop-163",
+          "shiftM": 3.725
+        },
+        {
+          "id": "shop-164",
+          "shiftM": 2.094
+        },
+        {
+          "id": "shop-165",
+          "shiftM": 2.686
+        },
+        {
+          "id": "shop-166",
+          "shiftM": 3.099
+        },
+        {
+          "id": "shop-168",
+          "shiftM": 2.4
+        },
+        {
+          "id": "shop-170",
+          "shiftM": 3.443
+        },
+        {
+          "id": "shop-171",
+          "shiftM": 3.261
+        }
+      ]
+    }
+  ]
+}

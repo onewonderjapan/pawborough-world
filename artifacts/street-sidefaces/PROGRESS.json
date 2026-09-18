@@ -1,0 +1,60 @@
+{
+  "batch": "pawborough-temple-expansion-night-20260917",
+  "package": 2,
+  "checkpoints": [
+    {
+      "stage": "M1",
+      "status": "done",
+      "evidence": [
+        "scripts/find_visible_side_faces.mjs -> kit/out/sidefaces/targets.json: 161 route eyes (2m/1.6m) x 119 wall boxes vs ALL solid records (exact 2D SAT OBB occlusion)",
+        "selected 6 places / 10 faces per PLAN package-2: N01 west gable, lane-A flanks (N05/N06 gable+rear-6m), lane-B flanks (S05/S07 gable+rear-6m), east tail 133 east gable",
+        "visibleFaces keeps the full 119-entry survey as evidence; lane-mouth gables show far-corridor visibility (near views are narrow slivers through ~2m gaps)"
+      ],
+      "notes": [
+        "fixed the segment-OBB inverse rotation mid-stage (affected large-yaw S05/S07)"
+      ]
+    },
+    {
+      "stage": "M2",
+      "status": "done",
+      "evidence": [
+        "kit/gable-skin.config.json (module-LOCAL boxes from delivered collision records + module placements; rear 6m slices computed; 133 offsetOverrideM=0.06 off the foundation band)",
+        "kit/build_gable_skins.py -> kit/out/sidefaces/skins/*.glb x10: plaster panel + brick base 0.9 + wood band 0.12 + tile coping 0.28; rear faces add window 0.6x0.8 sill 1.8 + door 0.9x2.0; thickness 0.06 offset 0.05; one thin-box collider each",
+        "1080 tris total (per-face <=180 <=1500; total <=8000); zero new textures (shared palette)"
+      ]
+    },
+    {
+      "stage": "M3",
+      "status": "done",
+      "evidence": [
+        "world/street-sidefaces/: skins/*.glb byte-checked, instances (identity + baked placement provenance), collision-world 10 slabs, cameras.json 10 self-calibrated poses (largest distance 1.5-6m whose ray hits the skin first), review-manifest"
+      ]
+    },
+    {
+      "stage": "M4",
+      "status": "done",
+      "evidence": [
+        "src/fangbangMain.js ?skins=1 (default off; skins appended at identity + colliders into the same physics world; integrity expectation includes skins)",
+        "tests/sideface_contract (offset 0.05 >=0.04, exact-SAT zero intersections vs ALL delivered colliders, budgets, byte-faithful) + tests/sideface_visibility (every calibrated camera ray first-hits its skin) both PASS",
+        "full run kit/out/m4-full.log: 37 suites, 34 pass + the same 3 bridge-spec layout artifacts",
+        "browser: ?ds=fangbang-temple-v2&skins=1 PASS (skins=10) / ?ds= without skins PASS / default dataset PASS"
+      ]
+    },
+    {
+      "stage": "M5",
+      "status": "done",
+      "evidence": [
+        "Blender 10 place renders (kit/build_sidefaces_scene.py, module GLB at instance transform + skins, calibrated cameras)",
+        "WebGL 10 shots (scripts/capture_sidefaces_web.mjs via __fangbangView evidence hook) SIDEFACES_WEB_PASS"
+      ]
+    },
+    {
+      "stage": "R1",
+      "status": "done",
+      "evidence": [
+        "sidefaces renders re-shot with oblique/2-D-calibrated cameras + blank guards (10/10 non-blank)",
+        "webgl 10 shots re-shot after the R1-06 geometry changes (skirts removed on peidian/houdian/gallery; gallery floor-edge colliders now via slab box)"
+      ]
+    }
+  ]
+}

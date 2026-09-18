@@ -1,0 +1,62 @@
+{
+  "source": "kit/build_fangbang_scene.py",
+  "engine": "cycles-cpu",
+  "samples": 24,
+  "resolution": [
+    1600,
+    900
+  ],
+  "assembly": "street assembly identity + west-extension surface/seal-wall in place + east tail surface in place + 15 temple-axis-V2 GLBs at T+R(yaw+local) + 27 active placeholder gray boxes",
+  "views": [
+    {
+      "view": "axis-long",
+      "tag": "pbr",
+      "posBlender": [
+        -125.822,
+        -38.89,
+        1.6
+      ],
+      "targetBlender": [
+        -135.465,
+        18.303,
+        6
+      ],
+      "fovDegVerified": 45.0,
+      "file": "fangbang-axis-long-pbr.png"
+    },
+    {
+      "view": "aerial-overview",
+      "tag": "pbr",
+      "posBlender": [
+        -70,
+        -70,
+        45
+      ],
+      "targetBlender": [
+        -95,
+        -5,
+        0
+      ],
+      "fovDegVerified": 50.0,
+      "file": "fangbang-aerial-overview-pbr.png"
+    }
+  ],
+  "note": "BLENDER evidence; WebGL captures are separate (kit/out/fangbang-temple-v2/web)",
+  "blankGuard": {
+    "frames": [
+      {
+        "file": "fangbang-axis-long-pbr.png",
+        "lumStd255": 57.3,
+        "dominantShare": 0.1312,
+        "blank": false
+      },
+      {
+        "file": "fangbang-aerial-overview-pbr.png",
+        "lumStd255": 34.727,
+        "dominantShare": 0.434,
+        "blank": false
+      }
+    ],
+    "anyBlank": false
+  }
+}

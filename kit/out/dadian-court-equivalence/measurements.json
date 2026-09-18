@@ -1,0 +1,58 @@
+{
+  "moduleId": "dadian-court",
+  "units": "meters",
+  "surveyed": false,
+  "axis": "world GLB Y-up (court authored in place, no instance transform)",
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false,
+  "targets": {
+    "dadian-court.glb": {
+      "groups": [
+        "temple-ground",
+        "dadian-court"
+      ],
+      "objects": 7,
+      "triangles": 3984,
+      "fileBytes": 1446644,
+      "sha256": "e094748266516c9eb59d2b38800363403adbd3fcb0dd2e0062a289a262eb915c"
+    }
+  },
+  "timings": {
+    "totalSeconds": 0.6
+  },
+  "budgets": {
+    "courtTris": {
+      "actual": 3984,
+      "limit": 4500,
+      "pass": true
+    }
+  },
+  "design": {
+    "contextNotSurvey": "second-court width, wall heights, burner, closure placement are all design values continuing the adopted sample-axis language; no survey exists",
+    "floor": {
+      "x": [
+        -10.78,
+        10.78
+      ],
+      "z": [
+        -29.2,
+        -39.4
+      ]
+    },
+    "platform": {
+      "topY": 0.85,
+      "steps": 5
+    },
+    "burner": {
+      "center": [
+        0,
+        0,
+        -34.5
+      ],
+      "evidence": "photo-informed per PBR-SH-0005-002/003 (beast legs, double-eave lid); overall scale design value",
+      "notThePavilionBurner": "NOT the four-leg pavilion burner of PBR-SH-0005-005"
+    },
+    "northClosure": "sample terminal (非历史), z -59.8",
+    "groundSeams": "flush adjoining; path 4mm proud; floor north edge meets the first step face"
+  }
+}

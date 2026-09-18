@@ -1,0 +1,79 @@
+{
+  "moduleId": "peidian",
+  "units": "meters",
+  "surveyed": false,
+  "axis": "GLB Y-up; facade +Z; depth -Z; front-wall center bottom origin (local); instanced at (±11.2, 0, -35.8) yaw ±π/2 by the world assembly",
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false,
+  "targets": {
+    "peidian.glb": {
+      "groups": [
+        "peidian-body",
+        "temple-ground"
+      ],
+      "objects": 8,
+      "triangles": 11396,
+      "fileBytes": 2075332,
+      "sha256": "b3dba52114ed22f25e916f9d5cc72cff6ba2cf13082eae16daa099deabc1771d"
+    }
+  },
+  "timings": {
+    "totalSeconds": 0.4
+  },
+  "budgets": {
+    "peidianTris": {
+      "actual": 11396,
+      "limit": 14000,
+      "pass": true
+    },
+    "tileRibsTris": {
+      "actual": 3300,
+      "limit": 6000,
+      "pass": true
+    },
+    "newImages": {
+      "actual": 0,
+      "limit": 0,
+      "pass": true,
+      "note": "blank plaque, palette only"
+    }
+  },
+  "design": {
+    "family": "temple-axis-side-hall",
+    "reference": {
+      "imageId": "PBR-SH-0007-G07/G08/G09/G12 + photos PBR-SH-0005-008/009/010",
+      "referenceEra": "GEN inference images (notHistoricalEvidence) + CC photos; form direction only — no dimension, step count, gable curve (观音兜 vetoed) or ridge ornament copied from images",
+      "historicalAccuracyVerified": false,
+      "dimensionsAreDesign": true
+    },
+    "bays": [
+      3,
+      2.2
+    ],
+    "doorClosedM": [
+      1.6,
+      2.6
+    ],
+    "plaque": "blank board 2.2x0.7 @3.15 (no text, no texture)",
+    "gable": "硬山 strips to the roof soffit; 观音兜 NOT copied (owner ruling)",
+    "roofMethod": "ONE two-slope shell lofted from the section profile, full-width flat ridge (no hip), no corner lift, closed soffit, gable-edge rings, finite half-round tile ribs, plain ridge beam without 吻",
+    "placement": {
+      "west": {
+        "originGlb": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "yawRad": 1.5707963
+      },
+      "east": {
+        "originGlb": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "yawRad": -1.5707963
+      }
+    }
+  }
+}

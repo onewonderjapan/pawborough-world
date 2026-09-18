@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "scripts/measure_west_wedge.mjs",
+  "source": {
+    "glb": "world/street-reviewed.glb",
+    "node": "street-kit__quiet-gray-asphalt",
+    "method": "S3 east-wedge method (min/max extreme vertices of the min-x cut), batch fangbang-temple-bridge-night-20260916"
+  },
+  "verticesSampled": 236,
+  "westEnd": {
+    "minX": -3.274,
+    "cornerLowZ": [
+      -3.274,
+      0,
+      -3.368
+    ],
+    "cornerHighZ": [
+      -0.5084,
+      0,
+      4.6695
+    ],
+    "cutWidthM": 8.5,
+    "midpoint": [
+      -1.8912,
+      0,
+      0.6507
+    ],
+    "cutTangentXZ": [
+      2.7656,
+      8.0375
+    ]
+  }
+}

@@ -1,0 +1,7822 @@
+{
+  "axis": "glTF Y-up; +Z south; world records — obbToWorld() reproduces every box",
+  "adapterFormat": "obb {pos,theta,center,size} consumed by src/world/collisionAdapter.obbToWorld",
+  "dataset": "temple-axis-v2",
+  "instances": [
+    {
+      "id": "shanmen",
+      "module": "temple-shanmen",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0
+    },
+    {
+      "id": "entrycourt",
+      "module": "temple-entry-court-open",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0
+    },
+    {
+      "id": "yimen",
+      "module": "yimen-pilot",
+      "positionGlb": [
+        0,
+        0,
+        -21
+      ],
+      "rotationYRad": 0
+    },
+    {
+      "id": "yimenstage",
+      "module": "yimen-stage",
+      "positionGlb": [
+        0,
+        0,
+        -21
+      ],
+      "rotationYRad": 0,
+      "note": "yimen-LOCAL authored; hangs on the yimen rear face"
+    },
+    {
+      "id": "dadiancourt",
+      "module": "dadian-court-v2",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "note": "VARIANT: side walls + north closure + stubs removed"
+    },
+    {
+      "id": "peidian-w",
+      "module": "peidian",
+      "positionGlb": [
+        -11.2,
+        0,
+        -35.8
+      ],
+      "rotationYRad": 1.5707963267948966
+    },
+    {
+      "id": "peidian-e",
+      "module": "peidian",
+      "positionGlb": [
+        11.2,
+        0,
+        -35.8
+      ],
+      "rotationYRad": -1.5707963267948966
+    },
+    {
+      "id": "gallery-w",
+      "module": "gallery",
+      "positionGlb": [
+        -10.78,
+        0,
+        -30.99
+      ],
+      "rotationYRad": 1.5707963267948966
+    },
+    {
+      "id": "gallery-e",
+      "module": "gallery",
+      "positionGlb": [
+        10.78,
+        0,
+        -30.99
+      ],
+      "rotationYRad": -1.5707963267948966
+    },
+    {
+      "id": "dadian",
+      "module": "dadian",
+      "positionGlb": [
+        0,
+        0,
+        -44
+      ],
+      "rotationYRad": 0
+    },
+    {
+      "id": "court3",
+      "module": "court3",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "note": "authored in place (passages z -39.1..-58.2, court3 to -72.2, walls to -84)"
+    },
+    {
+      "id": "houdian",
+      "module": "houdian",
+      "positionGlb": [
+        0,
+        0,
+        -74
+      ],
+      "rotationYRad": 0
+    }
+  ],
+  "variant": "dadian-court-v2: side walls + north closure + stubs removed (buildSideWalls/buildNorthClosure=false)",
+  "colliders": [
+    {
+      "name": "shanmen:stone-column",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -1.94,
+        0,
+        -0.48
+      ],
+      "max": [
+        -1.5,
+        4.9,
+        0
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          -1.72,
+          2.45,
+          -0.24
+        ],
+        "size": [
+          0.44,
+          4.9,
+          0.48
+        ]
+      }
+    },
+    {
+      "name": "shanmen:stone-plinth",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -2.11,
+        0,
+        -0.54
+      ],
+      "max": [
+        -1.53,
+        0.32,
+        0.06
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          -1.82,
+          0.16,
+          -0.24
+        ],
+        "size": [
+          0.58,
+          0.32,
+          0.6
+        ]
+      }
+    },
+    {
+      "name": "shanmen:stone-column",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        1.5,
+        0,
+        -0.48
+      ],
+      "max": [
+        1.94,
+        4.9,
+        0
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          1.72,
+          2.45,
+          -0.24
+        ],
+        "size": [
+          0.44,
+          4.9,
+          0.48
+        ]
+      }
+    },
+    {
+      "name": "shanmen:stone-plinth",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        1.53,
+        0,
+        -0.54
+      ],
+      "max": [
+        2.11,
+        0.32,
+        0.06
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          1.82,
+          0.16,
+          -0.24
+        ],
+        "size": [
+          0.58,
+          0.32,
+          0.6
+        ]
+      }
+    },
+    {
+      "name": "shanmen:stone-column",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -1.94,
+        0,
+        -3.5999999999999996
+      ],
+      "max": [
+        -1.5,
+        4.9,
+        -3.12
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          -1.72,
+          2.45,
+          -3.36
+        ],
+        "size": [
+          0.44,
+          4.9,
+          0.48
+        ]
+      }
+    },
+    {
+      "name": "shanmen:stone-plinth",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -2.11,
+        0,
+        -3.6599999999999997
+      ],
+      "max": [
+        -1.53,
+        0.32,
+        -3.06
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          -1.82,
+          0.16,
+          -3.36
+        ],
+        "size": [
+          0.58,
+          0.32,
+          0.6
+        ]
+      }
+    },
+    {
+      "name": "shanmen:stone-column",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        1.5,
+        0,
+        -3.5999999999999996
+      ],
+      "max": [
+        1.94,
+        4.9,
+        -3.12
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          1.72,
+          2.45,
+          -3.36
+        ],
+        "size": [
+          0.44,
+          4.9,
+          0.48
+        ]
+      }
+    },
+    {
+      "name": "shanmen:stone-plinth",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        1.53,
+        0,
+        -3.6599999999999997
+      ],
+      "max": [
+        2.11,
+        0.32,
+        -3.06
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          1.82,
+          0.16,
+          -3.36
+        ],
+        "size": [
+          0.58,
+          0.32,
+          0.6
+        ]
+      }
+    },
+    {
+      "name": "shanmen:door-lintel-beam",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -1.94,
+        3.1000000000000005,
+        -0.51
+      ],
+      "max": [
+        1.94,
+        3.8,
+        0.030000000000000027
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          3.45,
+          -0.24
+        ],
+        "size": [
+          3.88,
+          0.6999999999999997,
+          0.54
+        ]
+      }
+    },
+    {
+      "name": "shanmen:passage-reveal-wall",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -1.7000000000000002,
+        0,
+        -3.6
+      ],
+      "max": [
+        -1.5,
+        3.6,
+        -0.48
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          -1.6,
+          1.8,
+          -2.04
+        ],
+        "size": [
+          0.19999999999999996,
+          3.6,
+          3.12
+        ]
+      }
+    },
+    {
+      "name": "shanmen:passage-reveal-wall",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        1.5,
+        0,
+        -3.6
+      ],
+      "max": [
+        1.7000000000000002,
+        3.6,
+        -0.48
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          1.6,
+          1.8,
+          -2.04
+        ],
+        "size": [
+          0.19999999999999996,
+          3.6,
+          3.12
+        ]
+      }
+    },
+    {
+      "name": "shanmen:lattice-door-leaf",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -2.95,
+        0.050000000000000044,
+        0.13
+      ],
+      "max": [
+        -1.5,
+        3,
+        0.2
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          -2.225,
+          1.5250000000000001,
+          0.165
+        ],
+        "size": [
+          1.45,
+          2.95,
+          0.07
+        ]
+      }
+    },
+    {
+      "name": "shanmen:lattice-door-leaf",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        1.5,
+        0.050000000000000044,
+        0.13
+      ],
+      "max": [
+        2.95,
+        3,
+        0.2
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          2.225,
+          1.5250000000000001,
+          0.165
+        ],
+        "size": [
+          1.45,
+          2.95,
+          0.07
+        ]
+      }
+    },
+    {
+      "name": "shanmen:timber-column",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -3.17,
+        0,
+        -0.36
+      ],
+      "max": [
+        -2.9299999999999997,
+        4.9,
+        -0.12
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          -3.05,
+          2.45,
+          -0.24
+        ],
+        "size": [
+          0.24,
+          4.9,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "shanmen:timber-column",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        2.9299999999999997,
+        0,
+        -0.36
+      ],
+      "max": [
+        3.17,
+        4.9,
+        -0.12
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          3.05,
+          2.45,
+          -0.24
+        ],
+        "size": [
+          0.24,
+          4.9,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "shanmen:grille-backing",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -2.9099999999999997,
+        0,
+        -0.22
+      ],
+      "max": [
+        -1.94,
+        4.9,
+        -0.1
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          -2.425,
+          2.45,
+          -0.16
+        ],
+        "size": [
+          0.9699999999999998,
+          4.9,
+          0.12
+        ]
+      }
+    },
+    {
+      "name": "shanmen:grille-backing",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        1.94,
+        0,
+        -0.22
+      ],
+      "max": [
+        2.9099999999999997,
+        4.9,
+        -0.1
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          2.425,
+          2.45,
+          -0.16
+        ],
+        "size": [
+          0.9699999999999998,
+          4.9,
+          0.12
+        ]
+      }
+    },
+    {
+      "name": "shanmen:side-wall-lower",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -3.46,
+        0,
+        -3.6
+      ],
+      "max": [
+        -3.1399999999999997,
+        5.5,
+        0
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          -3.3,
+          2.75,
+          -1.8
+        ],
+        "size": [
+          0.32,
+          5.5,
+          3.6
+        ]
+      }
+    },
+    {
+      "name": "shanmen:side-wall-lower",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        3.1399999999999997,
+        0,
+        -3.6
+      ],
+      "max": [
+        3.46,
+        5.5,
+        0
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          3.3,
+          2.75,
+          -1.8
+        ],
+        "size": [
+          0.32,
+          5.5,
+          3.6
+        ]
+      }
+    },
+    {
+      "name": "shanmen:rear-wall-side",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -3.46,
+        0,
+        -3.6
+      ],
+      "max": [
+        -1.6200000000000003,
+        5.9,
+        -3.32
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          -2.54,
+          2.95,
+          -3.46
+        ],
+        "size": [
+          1.8399999999999994,
+          5.9,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "shanmen:rear-wall-side",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        1.6200000000000003,
+        0,
+        -3.6
+      ],
+      "max": [
+        3.46,
+        5.9,
+        -3.32
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          2.54,
+          2.95,
+          -3.46
+        ],
+        "size": [
+          1.8399999999999994,
+          5.9,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "shanmen:rear-wall-header",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -1.62,
+        3.0999999999999996,
+        -3.6
+      ],
+      "max": [
+        1.62,
+        5.9,
+        -3.32
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          4.5,
+          -3.46
+        ],
+        "size": [
+          3.24,
+          2.8000000000000003,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "shanmen:bracket-backing-wall",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -3.3,
+        4.949999999999999,
+        -0.26
+      ],
+      "max": [
+        3.3,
+        6.25,
+        0
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          5.6,
+          -0.13
+        ],
+        "size": [
+          6.6,
+          1.2999999999999998,
+          0.26
+        ]
+      }
+    },
+    {
+      "name": "shanmen:wing-wall-body",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        3.286782221945157,
+        0,
+        0.003018666022489125
+      ],
+      "max": [
+        8.063217778054845,
+        3.55,
+        2.2969813339775107
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": -0.4061888024189999,
+        "center": [
+          5.667621969284022,
+          1.775,
+          -1.1858272274193664
+        ],
+        "size": [
+          5.061867244406949,
+          3.55,
+          0.32
+        ]
+      }
+    },
+    {
+      "name": "shanmen:wing-base-course",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        3.27295333299566,
+        0,
+        -0.02913350078509125
+      ],
+      "max": [
+        8.07704666700434,
+        0.28,
+        2.3291335007850913
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": -0.4061888024189999,
+        "center": [
+          5.667621969284022,
+          0.14,
+          -1.1858272274193664
+        ],
+        "size": [
+          5.061867244406949,
+          0.28,
+          0.39
+        ]
+      }
+    },
+    {
+      "name": "shanmen:wing-wall-body",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -8.063217778054845,
+        0,
+        0.003018666022488903
+      ],
+      "max": [
+        -3.286782221945157,
+        3.55,
+        2.296981333977511
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": -2.735403851170793,
+        "center": [
+          5.667621969284023,
+          1.775,
+          1.1858272274193669
+        ],
+        "size": [
+          5.061867244406949,
+          3.55,
+          0.32
+        ]
+      }
+    },
+    {
+      "name": "shanmen:wing-base-course",
+      "group": "shanmen:shanmen-body",
+      "type": "box",
+      "min": [
+        -8.07704666700434,
+        0,
+        -0.02913350078509147
+      ],
+      "max": [
+        -3.27295333299566,
+        0.28,
+        2.3291335007850913
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": -2.735403851170793,
+        "center": [
+          5.667621969284023,
+          0.14,
+          1.1858272274193669
+        ],
+        "size": [
+          5.061867244406949,
+          0.28,
+          0.39
+        ]
+      }
+    },
+    {
+      "name": "shanmen:lion-plinth",
+      "group": "shanmen:shanmen-lion",
+      "type": "box",
+      "min": [
+        -2.4,
+        0,
+        0.69
+      ],
+      "max": [
+        -1.9,
+        0.26,
+        1.31
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          -2.15,
+          0.13,
+          1
+        ],
+        "size": [
+          0.5,
+          0.26,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "shanmen:lion-plinth",
+      "group": "shanmen:shanmen-lion",
+      "type": "box",
+      "min": [
+        1.9,
+        0,
+        0.69
+      ],
+      "max": [
+        2.4,
+        0.26,
+        1.31
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          2.15,
+          0.13,
+          1
+        ],
+        "size": [
+          0.5,
+          0.26,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -6.45,
+        0,
+        -21.38
+      ],
+      "max": [
+        -6.1499999999999995,
+        4.75,
+        -21.02
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          -6.3,
+          2.375,
+          -0.19999999999999998
+        ],
+        "size": [
+          0.3,
+          4.75,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column-plinth",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -6.529999999999999,
+        0,
+        -21.46
+      ],
+      "max": [
+        -6.07,
+        0.34,
+        -20.939999999999998
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          -6.3,
+          0.17,
+          -0.19999999999999998
+        ],
+        "size": [
+          0.45999999999999996,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -6.45,
+        0,
+        -25.98
+      ],
+      "max": [
+        -6.1499999999999995,
+        4.75,
+        -25.62
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          -6.3,
+          2.375,
+          -4.8
+        ],
+        "size": [
+          0.3,
+          4.75,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column-plinth",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -6.529999999999999,
+        0,
+        -26.060000000000002
+      ],
+      "max": [
+        -6.07,
+        0.34,
+        -25.54
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          -6.3,
+          0.17,
+          -4.8
+        ],
+        "size": [
+          0.45999999999999996,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -2.3,
+        0,
+        -21.38
+      ],
+      "max": [
+        -2,
+        4.75,
+        -21.02
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          -2.15,
+          2.375,
+          -0.19999999999999998
+        ],
+        "size": [
+          0.3,
+          4.75,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column-plinth",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -2.38,
+        0,
+        -21.46
+      ],
+      "max": [
+        -1.92,
+        0.34,
+        -20.939999999999998
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          -2.15,
+          0.17,
+          -0.19999999999999998
+        ],
+        "size": [
+          0.45999999999999996,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -2.3,
+        0,
+        -25.98
+      ],
+      "max": [
+        -2,
+        4.75,
+        -25.62
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          -2.15,
+          2.375,
+          -4.8
+        ],
+        "size": [
+          0.3,
+          4.75,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column-plinth",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -2.38,
+        0,
+        -26.060000000000002
+      ],
+      "max": [
+        -1.92,
+        0.34,
+        -25.54
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          -2.15,
+          0.17,
+          -4.8
+        ],
+        "size": [
+          0.45999999999999996,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        2,
+        0,
+        -21.38
+      ],
+      "max": [
+        2.3,
+        4.75,
+        -21.02
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          2.15,
+          2.375,
+          -0.19999999999999998
+        ],
+        "size": [
+          0.3,
+          4.75,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column-plinth",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        1.92,
+        0,
+        -21.46
+      ],
+      "max": [
+        2.38,
+        0.34,
+        -20.939999999999998
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          2.15,
+          0.17,
+          -0.19999999999999998
+        ],
+        "size": [
+          0.45999999999999996,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        2,
+        0,
+        -25.98
+      ],
+      "max": [
+        2.3,
+        4.75,
+        -25.62
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          2.15,
+          2.375,
+          -4.8
+        ],
+        "size": [
+          0.3,
+          4.75,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column-plinth",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        1.92,
+        0,
+        -26.060000000000002
+      ],
+      "max": [
+        2.38,
+        0.34,
+        -25.54
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          2.15,
+          0.17,
+          -4.8
+        ],
+        "size": [
+          0.45999999999999996,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        6.1499999999999995,
+        0,
+        -21.38
+      ],
+      "max": [
+        6.45,
+        4.75,
+        -21.02
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          6.3,
+          2.375,
+          -0.19999999999999998
+        ],
+        "size": [
+          0.3,
+          4.75,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column-plinth",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        6.07,
+        0,
+        -21.46
+      ],
+      "max": [
+        6.529999999999999,
+        0.34,
+        -20.939999999999998
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          6.3,
+          0.17,
+          -0.19999999999999998
+        ],
+        "size": [
+          0.45999999999999996,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        6.1499999999999995,
+        0,
+        -25.98
+      ],
+      "max": [
+        6.45,
+        4.75,
+        -25.62
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          6.3,
+          2.375,
+          -4.8
+        ],
+        "size": [
+          0.3,
+          4.75,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-column-plinth",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        6.07,
+        0,
+        -26.060000000000002
+      ],
+      "max": [
+        6.529999999999999,
+        0.34,
+        -25.54
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          6.3,
+          0.17,
+          -4.8
+        ],
+        "size": [
+          0.45999999999999996,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "yimen:yimen-tie-beam",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -0.17,
+        4.75,
+        -26.1
+      ],
+      "max": [
+        0.17,
+        4.93,
+        -21.1
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          4.84,
+          -2.6
+        ],
+        "size": [
+          0.34,
+          0.17999999999999972,
+          5
+        ]
+      }
+    },
+    {
+      "name": "yimen:door-jamb",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -2,
+        0,
+        -26.17
+      ],
+      "max": [
+        -1.8,
+        4.85,
+        -21.03
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          -1.9000000000000001,
+          2.425,
+          -2.6
+        ],
+        "size": [
+          0.2,
+          4.85,
+          5.140000000000001
+        ]
+      }
+    },
+    {
+      "name": "yimen:door-jamb",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        1.8,
+        0,
+        -26.17
+      ],
+      "max": [
+        2,
+        4.85,
+        -21.03
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          1.9000000000000001,
+          2.425,
+          -2.6
+        ],
+        "size": [
+          0.2,
+          4.85,
+          5.140000000000001
+        ]
+      }
+    },
+    {
+      "name": "yimen:door-lintel",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -2,
+        3.2,
+        -26.150000000000002
+      ],
+      "max": [
+        2,
+        3.5600000000000005,
+        -21.05
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          3.3800000000000003,
+          -2.6
+        ],
+        "size": [
+          4,
+          0.36,
+          5.1000000000000005
+        ]
+      }
+    },
+    {
+      "name": "yimen:bay-backing",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -6.15,
+        0,
+        -21.23
+      ],
+      "max": [
+        -2,
+        3.4000000000000004,
+        -21.13
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          -4.075,
+          1.7000000000000002,
+          -0.18
+        ],
+        "size": [
+          4.15,
+          3.4000000000000004,
+          0.1
+        ]
+      }
+    },
+    {
+      "name": "yimen:bay-end-pier",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -7.049999999999999,
+        0,
+        -21.259999999999998
+      ],
+      "max": [
+        -6.17,
+        3.4000000000000004,
+        -21.1
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          -6.609999999999999,
+          1.7000000000000002,
+          -0.18
+        ],
+        "size": [
+          0.8799999999999999,
+          3.4000000000000004,
+          0.16
+        ]
+      }
+    },
+    {
+      "name": "yimen:bay-backing",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        2,
+        0,
+        -21.23
+      ],
+      "max": [
+        6.15,
+        3.4000000000000004,
+        -21.13
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          4.075,
+          1.7000000000000002,
+          -0.18
+        ],
+        "size": [
+          4.15,
+          3.4000000000000004,
+          0.1
+        ]
+      }
+    },
+    {
+      "name": "yimen:bay-end-pier",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        6.17,
+        0,
+        -21.259999999999998
+      ],
+      "max": [
+        7.049999999999999,
+        3.4000000000000004,
+        -21.1
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          6.609999999999999,
+          1.7000000000000002,
+          -0.18
+        ],
+        "size": [
+          0.8799999999999999,
+          3.4000000000000004,
+          0.16
+        ]
+      }
+    },
+    {
+      "name": "yimen:front-band-backing",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -7.2,
+        3.25,
+        -21.23
+      ],
+      "max": [
+        7.2,
+        4.85,
+        -21.01
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          4.05,
+          -0.12
+        ],
+        "size": [
+          14.4,
+          1.5999999999999996,
+          0.22
+        ]
+      }
+    },
+    {
+      "name": "yimen:side-wall-lower",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -7.05,
+        0,
+        -26.200000000000003
+      ],
+      "max": [
+        -6.749999999999999,
+        4.949999999999999,
+        -21
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          -6.8999999999999995,
+          2.4749999999999996,
+          -2.6
+        ],
+        "size": [
+          0.3,
+          4.949999999999999,
+          5.2
+        ]
+      }
+    },
+    {
+      "name": "yimen:side-wall-lower",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        6.749999999999999,
+        0,
+        -26.200000000000003
+      ],
+      "max": [
+        7.05,
+        4.949999999999999,
+        -21
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          6.8999999999999995,
+          2.4749999999999996,
+          -2.6
+        ],
+        "size": [
+          0.3,
+          4.949999999999999,
+          5.2
+        ]
+      }
+    },
+    {
+      "name": "yimen:rear-wall-side",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -7.049999999999999,
+        0,
+        -26.2
+      ],
+      "max": [
+        -1.9199999999999995,
+        5.75,
+        -25.919999999999998
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          -4.484999999999999,
+          2.875,
+          -5.06
+        ],
+        "size": [
+          5.13,
+          5.75,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "yimen:rear-wall-side",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        1.9199999999999995,
+        0,
+        -26.2
+      ],
+      "max": [
+        7.049999999999999,
+        5.75,
+        -25.919999999999998
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          4.484999999999999,
+          2.875,
+          -5.06
+        ],
+        "size": [
+          5.13,
+          5.75,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "yimen:rear-wall-header",
+      "group": "yimen:yimen-body",
+      "type": "box",
+      "min": [
+        -1.92,
+        3.2000000000000006,
+        -26.2
+      ],
+      "max": [
+        1.92,
+        5.75,
+        -25.919999999999998
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          4.4750000000000005,
+          -5.06
+        ],
+        "size": [
+          3.84,
+          2.55,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "court:court-side-wall",
+      "group": "court:entry-court",
+      "type": "box",
+      "min": [
+        -8.280000000000001,
+        0,
+        -21
+      ],
+      "max": [
+        -8,
+        2.8,
+        -3.6000000000000014
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          -8.14,
+          1.4,
+          -12.3
+        ],
+        "size": [
+          0.27999999999999936,
+          2.8,
+          17.4
+        ]
+      }
+    },
+    {
+      "name": "court:court-side-wall",
+      "group": "court:entry-court",
+      "type": "box",
+      "min": [
+        8,
+        0,
+        -21
+      ],
+      "max": [
+        8.280000000000001,
+        2.8,
+        -3.6000000000000014
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          8.14,
+          1.4,
+          -12.3
+        ],
+        "size": [
+          0.27999999999999936,
+          2.8,
+          17.4
+        ]
+      }
+    },
+    {
+      "name": "court:court-south-return",
+      "group": "court:entry-court",
+      "type": "box",
+      "min": [
+        -8.28,
+        0,
+        -3.5999999999999996
+      ],
+      "max": [
+        -3.2999999999999994,
+        2.8,
+        -3.3200000000000003
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          -5.789999999999999,
+          1.4,
+          -3.46
+        ],
+        "size": [
+          4.9799999999999995,
+          2.8,
+          0.2799999999999998
+        ]
+      }
+    },
+    {
+      "name": "court:court-south-return",
+      "group": "court:entry-court",
+      "type": "box",
+      "min": [
+        3.2999999999999994,
+        0,
+        -3.5999999999999996
+      ],
+      "max": [
+        8.28,
+        2.8,
+        -3.3200000000000003
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          5.789999999999999,
+          1.4,
+          -3.46
+        ],
+        "size": [
+          4.9799999999999995,
+          2.8,
+          0.2799999999999998
+        ]
+      }
+    },
+    {
+      "name": "court:court-north-return",
+      "group": "court:entry-court",
+      "type": "box",
+      "min": [
+        -8.28,
+        0,
+        -21.28
+      ],
+      "max": [
+        -7.200000000000001,
+        2.8,
+        -21
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          -7.74,
+          1.4,
+          -21.14
+        ],
+        "size": [
+          1.0799999999999992,
+          2.8,
+          0.28000000000000114
+        ]
+      }
+    },
+    {
+      "name": "court:court-north-return",
+      "group": "court:entry-court",
+      "type": "box",
+      "min": [
+        7.200000000000001,
+        0,
+        -21.28
+      ],
+      "max": [
+        8.28,
+        2.8,
+        -21
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          7.74,
+          1.4,
+          -21.14
+        ],
+        "size": [
+          1.0799999999999992,
+          2.8,
+          0.28000000000000114
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -10.610000000000001,
+        0,
+        -44.58
+      ],
+      "max": [
+        -10.19,
+        5,
+        -44.120000000000005
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -10.4,
+          2.5,
+          -0.35
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -10.69,
+        0,
+        -44.660000000000004
+      ],
+      "max": [
+        -10.110000000000001,
+        0.34,
+        -44.04
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -10.4,
+          0.17,
+          -0.35
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -6.71,
+        0,
+        -44.58
+      ],
+      "max": [
+        -6.29,
+        5,
+        -44.120000000000005
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -6.5,
+          2.5,
+          -0.35
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -6.79,
+        0,
+        -44.660000000000004
+      ],
+      "max": [
+        -6.21,
+        0.34,
+        -44.04
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -6.5,
+          0.17,
+          -0.35
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -2.51,
+        0,
+        -44.58
+      ],
+      "max": [
+        -2.09,
+        5,
+        -44.120000000000005
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -2.3,
+          2.5,
+          -0.35
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -2.59,
+        0,
+        -44.660000000000004
+      ],
+      "max": [
+        -2.01,
+        0.34,
+        -44.04
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -2.3,
+          0.17,
+          -0.35
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        2.09,
+        0,
+        -44.58
+      ],
+      "max": [
+        2.51,
+        5,
+        -44.120000000000005
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          2.3,
+          2.5,
+          -0.35
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        2.01,
+        0,
+        -44.660000000000004
+      ],
+      "max": [
+        2.59,
+        0.34,
+        -44.04
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          2.3,
+          0.17,
+          -0.35
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        6.29,
+        0,
+        -44.58
+      ],
+      "max": [
+        6.71,
+        5,
+        -44.120000000000005
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          6.5,
+          2.5,
+          -0.35
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        6.21,
+        0,
+        -44.660000000000004
+      ],
+      "max": [
+        6.79,
+        0.34,
+        -44.04
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          6.5,
+          0.17,
+          -0.35
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        10.19,
+        0,
+        -44.58
+      ],
+      "max": [
+        10.610000000000001,
+        5,
+        -44.120000000000005
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          10.4,
+          2.5,
+          -0.35
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        10.110000000000001,
+        0,
+        -44.660000000000004
+      ],
+      "max": [
+        10.69,
+        0.34,
+        -44.04
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          10.4,
+          0.17,
+          -0.35
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -10.610000000000001,
+        0,
+        -55.879999999999995
+      ],
+      "max": [
+        -10.19,
+        5,
+        -55.42
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -10.4,
+          2.5,
+          -11.65
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -10.69,
+        0,
+        -55.96
+      ],
+      "max": [
+        -10.110000000000001,
+        0.34,
+        -55.339999999999996
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -10.4,
+          0.17,
+          -11.65
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -6.71,
+        0,
+        -55.879999999999995
+      ],
+      "max": [
+        -6.29,
+        5,
+        -55.42
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -6.5,
+          2.5,
+          -11.65
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -6.79,
+        0,
+        -55.96
+      ],
+      "max": [
+        -6.21,
+        0.34,
+        -55.339999999999996
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -6.5,
+          0.17,
+          -11.65
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -2.51,
+        0,
+        -55.879999999999995
+      ],
+      "max": [
+        -2.09,
+        5,
+        -55.42
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -2.3,
+          2.5,
+          -11.65
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -2.59,
+        0,
+        -55.96
+      ],
+      "max": [
+        -2.01,
+        0.34,
+        -55.339999999999996
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -2.3,
+          0.17,
+          -11.65
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        2.09,
+        0,
+        -55.879999999999995
+      ],
+      "max": [
+        2.51,
+        5,
+        -55.42
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          2.3,
+          2.5,
+          -11.65
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        2.01,
+        0,
+        -55.96
+      ],
+      "max": [
+        2.59,
+        0.34,
+        -55.339999999999996
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          2.3,
+          0.17,
+          -11.65
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        6.29,
+        0,
+        -55.879999999999995
+      ],
+      "max": [
+        6.71,
+        5,
+        -55.42
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          6.5,
+          2.5,
+          -11.65
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        6.21,
+        0,
+        -55.96
+      ],
+      "max": [
+        6.79,
+        0.34,
+        -55.339999999999996
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          6.5,
+          0.17,
+          -11.65
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        10.19,
+        0,
+        -55.879999999999995
+      ],
+      "max": [
+        10.610000000000001,
+        5,
+        -55.42
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          10.4,
+          2.5,
+          -11.65
+        ],
+        "size": [
+          0.42,
+          5,
+          0.46
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-column-plinth",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        10.110000000000001,
+        0,
+        -55.96
+      ],
+      "max": [
+        10.69,
+        0.34,
+        -55.339999999999996
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          10.4,
+          0.17,
+          -11.65
+        ],
+        "size": [
+          0.58,
+          0.34,
+          0.62
+        ]
+      }
+    },
+    {
+      "name": "dadian:dadian-tie-beam",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -0.17,
+        4.55,
+        -55.9
+      ],
+      "max": [
+        0.17,
+        5.05,
+        -44.1
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          4.8,
+          -6
+        ],
+        "size": [
+          0.34,
+          0.5,
+          11.8
+        ]
+      }
+    },
+    {
+      "name": "dadian:door-threshold",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -2.2,
+        0,
+        -44.080000000000005
+      ],
+      "max": [
+        2.2,
+        0.25,
+        -43.96
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          0.125,
+          -0.02
+        ],
+        "size": [
+          4.4,
+          0.25,
+          0.12
+        ]
+      }
+    },
+    {
+      "name": "dadian:door-leaf",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -2.09,
+        0.24999999999999978,
+        -44.410000000000004
+      ],
+      "max": [
+        0,
+        3.8499999999999996,
+        -44.35
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -1.045,
+          2.05,
+          -0.38
+        ],
+        "size": [
+          2.09,
+          3.6,
+          0.06
+        ]
+      }
+    },
+    {
+      "name": "dadian:door-leaf",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        0,
+        0.24999999999999978,
+        -44.410000000000004
+      ],
+      "max": [
+        2.09,
+        3.8499999999999996,
+        -44.35
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          1.045,
+          2.05,
+          -0.38
+        ],
+        "size": [
+          2.09,
+          3.6,
+          0.06
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-sill",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -6.290000000000001,
+        0,
+        -44.27
+      ],
+      "max": [
+        -2.5100000000000002,
+        0.35,
+        -44.089999999999996
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -4.4,
+          0.175,
+          -0.18
+        ],
+        "size": [
+          3.7800000000000002,
+          0.35,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-backing",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -6.290000000000001,
+        0.3500000000000001,
+        -44.23
+      ],
+      "max": [
+        -2.5100000000000002,
+        3.6,
+        -44.13
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -4.4,
+          1.975,
+          -0.18
+        ],
+        "size": [
+          3.7800000000000002,
+          3.25,
+          0.1
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-sill",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -10.19,
+        0,
+        -44.27
+      ],
+      "max": [
+        -6.709999999999999,
+        0.35,
+        -44.089999999999996
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -8.45,
+          0.175,
+          -0.18
+        ],
+        "size": [
+          3.4799999999999995,
+          0.35,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-backing",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -10.19,
+        0.3500000000000001,
+        -44.23
+      ],
+      "max": [
+        -6.709999999999999,
+        3.6,
+        -44.13
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -8.45,
+          1.975,
+          -0.18
+        ],
+        "size": [
+          3.4799999999999995,
+          3.25,
+          0.1
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-sill",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        2.5100000000000002,
+        0,
+        -44.27
+      ],
+      "max": [
+        6.290000000000001,
+        0.35,
+        -44.089999999999996
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          4.4,
+          0.175,
+          -0.18
+        ],
+        "size": [
+          3.7800000000000002,
+          0.35,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-backing",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        2.5100000000000002,
+        0.3500000000000001,
+        -44.23
+      ],
+      "max": [
+        6.290000000000001,
+        3.6,
+        -44.13
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          4.4,
+          1.975,
+          -0.18
+        ],
+        "size": [
+          3.7800000000000002,
+          3.25,
+          0.1
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-sill",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        6.709999999999999,
+        0,
+        -44.27
+      ],
+      "max": [
+        10.19,
+        0.35,
+        -44.089999999999996
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          8.45,
+          0.175,
+          -0.18
+        ],
+        "size": [
+          3.4799999999999995,
+          0.35,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-backing",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        6.709999999999999,
+        0.3500000000000001,
+        -44.23
+      ],
+      "max": [
+        10.19,
+        3.6,
+        -44.13
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          8.45,
+          1.975,
+          -0.18
+        ],
+        "size": [
+          3.4799999999999995,
+          3.25,
+          0.1
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-end-pier",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -10.7,
+        0,
+        -44.26
+      ],
+      "max": [
+        -10.190000000000001,
+        4.3,
+        -44.1
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -10.445,
+          2.15,
+          -0.18
+        ],
+        "size": [
+          0.5099999999999998,
+          4.3,
+          0.16
+        ]
+      }
+    },
+    {
+      "name": "dadian:bay-end-pier",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        10.190000000000001,
+        0,
+        -44.26
+      ],
+      "max": [
+        10.7,
+        4.3,
+        -44.1
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          10.445,
+          2.15,
+          -0.18
+        ],
+        "size": [
+          0.5099999999999998,
+          4.3,
+          0.16
+        ]
+      }
+    },
+    {
+      "name": "dadian:front-band-backing",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -11,
+        4.3,
+        -44.23
+      ],
+      "max": [
+        11,
+        5.2,
+        -44.01
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          4.75,
+          -0.12
+        ],
+        "size": [
+          22,
+          0.9000000000000004,
+          0.22
+        ]
+      }
+    },
+    {
+      "name": "dadian:band-front",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -11.15,
+        5.949999999999999,
+        -44.3
+      ],
+      "max": [
+        11.15,
+        7,
+        -44
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          6.475,
+          -0.15
+        ],
+        "size": [
+          22.3,
+          1.0499999999999998,
+          0.3
+        ]
+      }
+    },
+    {
+      "name": "dadian:band-rear",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -11.15,
+        5.949999999999999,
+        -56
+      ],
+      "max": [
+        11.15,
+        7,
+        -55.7
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          6.475,
+          -11.85
+        ],
+        "size": [
+          22.3,
+          1.0499999999999998,
+          0.3
+        ]
+      }
+    },
+    {
+      "name": "dadian:band-left",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -11.15,
+        5.949999999999999,
+        -55.85
+      ],
+      "max": [
+        -10.85,
+        7,
+        -44.15
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -11,
+          6.475,
+          -6
+        ],
+        "size": [
+          0.3,
+          1.0499999999999998,
+          11.7
+        ]
+      }
+    },
+    {
+      "name": "dadian:band-right",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        10.85,
+        5.949999999999999,
+        -55.85
+      ],
+      "max": [
+        11.15,
+        7,
+        -44.15
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          11,
+          6.475,
+          -6
+        ],
+        "size": [
+          0.3,
+          1.0499999999999998,
+          11.7
+        ]
+      }
+    },
+    {
+      "name": "dadian:side-wall-lower",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -10.85,
+        0,
+        -56
+      ],
+      "max": [
+        -10.549999999999999,
+        5.3,
+        -44
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          -10.7,
+          2.65,
+          -6
+        ],
+        "size": [
+          0.3,
+          5.3,
+          12
+        ]
+      }
+    },
+    {
+      "name": "dadian:side-wall-lower",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        10.549999999999999,
+        0,
+        -56
+      ],
+      "max": [
+        10.85,
+        5.3,
+        -44
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          10.7,
+          2.65,
+          -6
+        ],
+        "size": [
+          0.3,
+          5.3,
+          12
+        ]
+      }
+    },
+    {
+      "name": "dadian:rear-wall",
+      "group": "dadian:dadian-body",
+      "type": "box",
+      "min": [
+        -10.6,
+        0,
+        -56
+      ],
+      "max": [
+        10.6,
+        5.1,
+        -55.7
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -44
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          2.55,
+          -11.85
+        ],
+        "size": [
+          21.2,
+          5.1,
+          0.3
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:stair-step",
+      "group": "dadiancourt:temple-ground",
+      "type": "box",
+      "min": [
+        -3,
+        0,
+        -39.71999999999999
+      ],
+      "max": [
+        3,
+        0.17,
+        -39.4
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          0.085,
+          -39.559999999999995
+        ],
+        "size": [
+          6,
+          0.17,
+          0.32
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:stair-step",
+      "group": "dadiancourt:temple-ground",
+      "type": "box",
+      "min": [
+        -3,
+        0.16999999999999998,
+        -40.03999999999999
+      ],
+      "max": [
+        3,
+        0.34,
+        -39.72
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          0.255,
+          -39.879999999999995
+        ],
+        "size": [
+          6,
+          0.17,
+          0.32
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:stair-step",
+      "group": "dadiancourt:temple-ground",
+      "type": "box",
+      "min": [
+        -3,
+        0.33999999999999997,
+        -40.35999999999999
+      ],
+      "max": [
+        3,
+        0.51,
+        -40.04
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          0.425,
+          -40.199999999999996
+        ],
+        "size": [
+          6,
+          0.17,
+          0.32
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:stair-step",
+      "group": "dadiancourt:temple-ground",
+      "type": "box",
+      "min": [
+        -3,
+        0.5100000000000001,
+        -40.67999999999999
+      ],
+      "max": [
+        3,
+        0.68,
+        -40.36
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          0.5950000000000001,
+          -40.519999999999996
+        ],
+        "size": [
+          6,
+          0.17,
+          0.32
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:stair-step",
+      "group": "dadiancourt:temple-ground",
+      "type": "box",
+      "min": [
+        -3,
+        0.6800000000000002,
+        -40.99999999999999
+      ],
+      "max": [
+        3,
+        0.8500000000000001,
+        -40.68
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          0.7650000000000001,
+          -40.839999999999996
+        ],
+        "size": [
+          6,
+          0.17,
+          0.32
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:stair-cheek",
+      "group": "dadiancourt:temple-ground",
+      "type": "box",
+      "min": [
+        -3.55,
+        0,
+        -41.050000000000004
+      ],
+      "max": [
+        -3,
+        0.85,
+        -39.35
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          -3.275,
+          0.425,
+          -40.2
+        ],
+        "size": [
+          0.55,
+          0.85,
+          1.7000000000000015
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:stair-cheek",
+      "group": "dadiancourt:temple-ground",
+      "type": "box",
+      "min": [
+        3,
+        0,
+        -41.050000000000004
+      ],
+      "max": [
+        3.55,
+        0.85,
+        -39.35
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          3.275,
+          0.425,
+          -40.2
+        ],
+        "size": [
+          0.55,
+          0.85,
+          1.7000000000000015
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:burner-plinth",
+      "group": "dadiancourt:dadian-court",
+      "type": "box",
+      "min": [
+        -0.8,
+        0,
+        -35.3
+      ],
+      "max": [
+        0.8,
+        0.25,
+        -33.7
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          0.125,
+          -34.5
+        ],
+        "size": [
+          1.6,
+          0.25,
+          1.6
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:burner-plinth",
+      "group": "dadiancourt:dadian-court",
+      "type": "box",
+      "min": [
+        -0.6,
+        0.24999999999999997,
+        -35.1
+      ],
+      "max": [
+        0.6,
+        0.44999999999999996,
+        -33.9
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          0.35,
+          -34.5
+        ],
+        "size": [
+          1.2,
+          0.2,
+          1.2
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:burner-vessel-block",
+      "group": "dadiancourt:dadian-court",
+      "type": "box",
+      "min": [
+        -0.55,
+        0.2749999999999999,
+        -35.05
+      ],
+      "max": [
+        0.55,
+        1.375,
+        -33.95
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          0.825,
+          -34.5
+        ],
+        "size": [
+          1.1,
+          1.1,
+          1.1
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:court2-south-return",
+      "group": "dadiancourt:dadian-court",
+      "type": "box",
+      "min": [
+        -10.78,
+        0,
+        -29.48
+      ],
+      "max": [
+        -8.28,
+        2.9,
+        -29.2
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          -9.53,
+          1.45,
+          -29.34
+        ],
+        "size": [
+          2.5,
+          2.9,
+          0.28000000000000114
+        ]
+      }
+    },
+    {
+      "name": "dadiancourt:court2-south-return",
+      "group": "dadiancourt:dadian-court",
+      "type": "box",
+      "min": [
+        8.28,
+        0,
+        -29.48
+      ],
+      "max": [
+        10.78,
+        2.9,
+        -29.2
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          9.53,
+          1.45,
+          -29.34
+        ],
+        "size": [
+          2.5,
+          2.9,
+          0.28000000000000114
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:peidian-base",
+      "group": "peidian:temple-ground",
+      "type": "box",
+      "min": [
+        -15.8,
+        0,
+        -39.55
+      ],
+      "max": [
+        -9.7,
+        0.3,
+        -32.05
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          0,
+          0.15,
+          -1.5499999999999998
+        ],
+        "size": [
+          7.5,
+          0.3,
+          6.1
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:peidian-base",
+      "group": "peidian:temple-ground",
+      "type": "box",
+      "min": [
+        9.7,
+        0,
+        -39.55
+      ],
+      "max": [
+        15.8,
+        0.3,
+        -32.05
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          0,
+          0.15,
+          -1.5499999999999998
+        ],
+        "size": [
+          7.5,
+          0.3,
+          6.1
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:peidian-step",
+      "group": "peidian:temple-ground",
+      "type": "box",
+      "min": [
+        -10,
+        0,
+        -37
+      ],
+      "max": [
+        -9.7,
+        0.15,
+        -34.599999999999994
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          0,
+          0.075,
+          1.35
+        ],
+        "size": [
+          2.4,
+          0.15,
+          0.3
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:peidian-step",
+      "group": "peidian:temple-ground",
+      "type": "box",
+      "min": [
+        9.7,
+        0,
+        -37
+      ],
+      "max": [
+        10,
+        0.15,
+        -34.599999999999994
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          0,
+          0.075,
+          1.35
+        ],
+        "size": [
+          2.4,
+          0.15,
+          0.3
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:peidian-step",
+      "group": "peidian:temple-ground",
+      "type": "box",
+      "min": [
+        -10.299999999999999,
+        0.14999999999999997,
+        -37
+      ],
+      "max": [
+        -9.999999999999998,
+        0.3,
+        -34.599999999999994
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          0,
+          0.22499999999999998,
+          1.05
+        ],
+        "size": [
+          2.4,
+          0.15,
+          0.3
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:peidian-step",
+      "group": "peidian:temple-ground",
+      "type": "box",
+      "min": [
+        9.999999999999998,
+        0.14999999999999997,
+        -37
+      ],
+      "max": [
+        10.299999999999999,
+        0.3,
+        -34.599999999999994
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          0,
+          0.22499999999999998,
+          1.05
+        ],
+        "size": [
+          2.4,
+          0.15,
+          0.3
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:peidian-column",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -10.44,
+        0.2999999999999998,
+        -32.64
+      ],
+      "max": [
+        -10.159999999999998,
+        4,
+        -32.36
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          -3.3,
+          2.15,
+          0.9
+        ],
+        "size": [
+          0.28,
+          3.7,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:peidian-column",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        10.159999999999998,
+        0.2999999999999998,
+        -39.239999999999995
+      ],
+      "max": [
+        10.44,
+        4,
+        -38.959999999999994
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          -3.3,
+          2.15,
+          0.9
+        ],
+        "size": [
+          0.28,
+          3.7,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:peidian-column-plinth",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -10.52,
+        0.29999999999999993,
+        -32.72
+      ],
+      "max": [
+        -10.079999999999998,
+        0.64,
+        -32.28
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          -3.3,
+          0.47,
+          0.9
+        ],
+        "size": [
+          0.44000000000000006,
+          0.34,
+          0.44000000000000006
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:peidian-column-plinth",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        10.079999999999998,
+        0.29999999999999993,
+        -39.31999999999999
+      ],
+      "max": [
+        10.52,
+        0.64,
+        -38.879999999999995
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          -3.3,
+          0.47,
+          0.9
+        ],
+        "size": [
+          0.44000000000000006,
+          0.34,
+          0.44000000000000006
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:peidian-column",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -10.44,
+        0.2999999999999998,
+        -34.839999999999996
+      ],
+      "max": [
+        -10.159999999999998,
+        4,
+        -34.559999999999995
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          -1.1,
+          2.15,
+          0.9
+        ],
+        "size": [
+          0.28,
+          3.7,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:peidian-column",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        10.159999999999998,
+        0.2999999999999998,
+        -37.04
+      ],
+      "max": [
+        10.44,
+        4,
+        -36.76
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          -1.1,
+          2.15,
+          0.9
+        ],
+        "size": [
+          0.28,
+          3.7,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:peidian-column-plinth",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -10.52,
+        0.29999999999999993,
+        -34.919999999999995
+      ],
+      "max": [
+        -10.079999999999998,
+        0.64,
+        -34.48
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          -1.1,
+          0.47,
+          0.9
+        ],
+        "size": [
+          0.44000000000000006,
+          0.34,
+          0.44000000000000006
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:peidian-column-plinth",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        10.079999999999998,
+        0.29999999999999993,
+        -37.12
+      ],
+      "max": [
+        10.52,
+        0.64,
+        -36.68
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          -1.1,
+          0.47,
+          0.9
+        ],
+        "size": [
+          0.44000000000000006,
+          0.34,
+          0.44000000000000006
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:peidian-column",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -10.44,
+        0.2999999999999998,
+        -37.04
+      ],
+      "max": [
+        -10.159999999999998,
+        4,
+        -36.76
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          1.1,
+          2.15,
+          0.9
+        ],
+        "size": [
+          0.28,
+          3.7,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:peidian-column",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        10.159999999999998,
+        0.2999999999999998,
+        -34.839999999999996
+      ],
+      "max": [
+        10.44,
+        4,
+        -34.559999999999995
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          1.1,
+          2.15,
+          0.9
+        ],
+        "size": [
+          0.28,
+          3.7,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:peidian-column-plinth",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -10.52,
+        0.29999999999999993,
+        -37.12
+      ],
+      "max": [
+        -10.079999999999998,
+        0.64,
+        -36.68
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          1.1,
+          0.47,
+          0.9
+        ],
+        "size": [
+          0.44000000000000006,
+          0.34,
+          0.44000000000000006
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:peidian-column-plinth",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        10.079999999999998,
+        0.29999999999999993,
+        -34.919999999999995
+      ],
+      "max": [
+        10.52,
+        0.64,
+        -34.48
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          1.1,
+          0.47,
+          0.9
+        ],
+        "size": [
+          0.44000000000000006,
+          0.34,
+          0.44000000000000006
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:peidian-column",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -10.44,
+        0.2999999999999998,
+        -39.239999999999995
+      ],
+      "max": [
+        -10.159999999999998,
+        4,
+        -38.959999999999994
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          3.3,
+          2.15,
+          0.9
+        ],
+        "size": [
+          0.28,
+          3.7,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:peidian-column",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        10.159999999999998,
+        0.2999999999999998,
+        -32.64
+      ],
+      "max": [
+        10.44,
+        4,
+        -32.36
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          3.3,
+          2.15,
+          0.9
+        ],
+        "size": [
+          0.28,
+          3.7,
+          0.28
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:peidian-column-plinth",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -10.52,
+        0.29999999999999993,
+        -39.31999999999999
+      ],
+      "max": [
+        -10.079999999999998,
+        0.64,
+        -38.879999999999995
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          3.3,
+          0.47,
+          0.9
+        ],
+        "size": [
+          0.44000000000000006,
+          0.34,
+          0.44000000000000006
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:peidian-column-plinth",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        10.079999999999998,
+        0.29999999999999993,
+        -32.72
+      ],
+      "max": [
+        10.52,
+        0.64,
+        -32.28
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          3.3,
+          0.47,
+          0.9
+        ],
+        "size": [
+          0.44000000000000006,
+          0.34,
+          0.44000000000000006
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:peidian-wall-plate",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -11.3,
+        3.57,
+        -39.199999999999996
+      ],
+      "max": [
+        -11.059999999999999,
+        3.8699999999999997,
+        -32.4
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          0,
+          3.7199999999999998,
+          0.02
+        ],
+        "size": [
+          6.800000000000001,
+          0.3,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:peidian-wall-plate",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        11.059999999999999,
+        3.57,
+        -39.199999999999996
+      ],
+      "max": [
+        11.3,
+        3.8699999999999997,
+        -32.4
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          0,
+          3.7199999999999998,
+          0.02
+        ],
+        "size": [
+          6.800000000000001,
+          0.3,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:front-wall",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -11.379999999999999,
+        2.72,
+        -34.74999999999999
+      ],
+      "max": [
+        -11.2,
+        3.85,
+        -32.65
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          -2.1,
+          3.285,
+          -0.09
+        ],
+        "size": [
+          2.1000000000000005,
+          1.13,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:front-wall",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        11.2,
+        2.72,
+        -38.949999999999996
+      ],
+      "max": [
+        11.379999999999999,
+        3.85,
+        -36.85
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          -2.1,
+          3.285,
+          -0.09
+        ],
+        "size": [
+          2.1000000000000005,
+          1.13,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:front-wall",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -11.379999999999999,
+        0,
+        -34.74999999999999
+      ],
+      "max": [
+        -11.2,
+        0.9,
+        -32.65
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          -2.1,
+          0.45,
+          -0.09
+        ],
+        "size": [
+          2.1000000000000005,
+          0.9,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:front-wall",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        11.2,
+        0,
+        -38.949999999999996
+      ],
+      "max": [
+        11.379999999999999,
+        0.9,
+        -36.85
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          -2.1,
+          0.45,
+          -0.09
+        ],
+        "size": [
+          2.1000000000000005,
+          0.9,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:door-jamb",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -11.379999999999999,
+        0.1200000000000001,
+        -35
+      ],
+      "max": [
+        -11.2,
+        2.72,
+        -34.75
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          -0.925,
+          1.4200000000000002,
+          -0.09
+        ],
+        "size": [
+          0.25,
+          2.6,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:door-jamb",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        11.2,
+        0.1200000000000001,
+        -36.849999999999994
+      ],
+      "max": [
+        11.379999999999999,
+        2.72,
+        -36.599999999999994
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          -0.925,
+          1.4200000000000002,
+          -0.09
+        ],
+        "size": [
+          0.25,
+          2.6,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:front-wall",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -11.379999999999999,
+        2.72,
+        -38.949999999999996
+      ],
+      "max": [
+        -11.2,
+        3.85,
+        -36.85
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          2.1,
+          3.285,
+          -0.09
+        ],
+        "size": [
+          2.1000000000000005,
+          1.13,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:front-wall",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        11.2,
+        2.72,
+        -34.74999999999999
+      ],
+      "max": [
+        11.379999999999999,
+        3.85,
+        -32.65
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          2.1,
+          3.285,
+          -0.09
+        ],
+        "size": [
+          2.1000000000000005,
+          1.13,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:front-wall",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -11.379999999999999,
+        0,
+        -38.949999999999996
+      ],
+      "max": [
+        -11.2,
+        0.9,
+        -36.85
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          2.1,
+          0.45,
+          -0.09
+        ],
+        "size": [
+          2.1000000000000005,
+          0.9,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:front-wall",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        11.2,
+        0,
+        -34.74999999999999
+      ],
+      "max": [
+        11.379999999999999,
+        0.9,
+        -32.65
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          2.1,
+          0.45,
+          -0.09
+        ],
+        "size": [
+          2.1000000000000005,
+          0.9,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:door-jamb",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -11.379999999999999,
+        0.1200000000000001,
+        -36.849999999999994
+      ],
+      "max": [
+        -11.2,
+        2.72,
+        -36.599999999999994
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          0.925,
+          1.4200000000000002,
+          -0.09
+        ],
+        "size": [
+          0.25,
+          2.6,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:door-jamb",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        11.2,
+        0.1200000000000001,
+        -35
+      ],
+      "max": [
+        11.379999999999999,
+        2.72,
+        -34.75
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          0.925,
+          1.4200000000000002,
+          -0.09
+        ],
+        "size": [
+          0.25,
+          2.6,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:front-wall",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -11.379999999999999,
+        2.72,
+        -36.849999999999994
+      ],
+      "max": [
+        -11.2,
+        3.85,
+        -34.75
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          0,
+          3.285,
+          -0.09
+        ],
+        "size": [
+          2.1,
+          1.13,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:front-wall",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        11.2,
+        2.72,
+        -36.849999999999994
+      ],
+      "max": [
+        11.379999999999999,
+        3.85,
+        -34.75
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          0,
+          3.285,
+          -0.09
+        ],
+        "size": [
+          2.1,
+          1.13,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:door-threshold",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -11.29,
+        0,
+        -36.699999999999996
+      ],
+      "max": [
+        -11.149999999999999,
+        0.12,
+        -34.9
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          0,
+          0.06,
+          -0.02
+        ],
+        "size": [
+          1.8,
+          0.12,
+          0.14
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:door-threshold",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        11.149999999999999,
+        0,
+        -36.699999999999996
+      ],
+      "max": [
+        11.29,
+        0.12,
+        -34.9
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          0,
+          0.06,
+          -0.02
+        ],
+        "size": [
+          1.8,
+          0.12,
+          0.14
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:door-leaf",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -11.29,
+        0.11999999999999988,
+        -35.8
+      ],
+      "max": [
+        -11.23,
+        2.7199999999999998,
+        -35
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          -0.4,
+          1.42,
+          -0.06
+        ],
+        "size": [
+          0.8,
+          2.6,
+          0.06
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:door-leaf",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        11.23,
+        0.11999999999999988,
+        -36.599999999999994
+      ],
+      "max": [
+        11.29,
+        2.7199999999999998,
+        -35.8
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          -0.4,
+          1.42,
+          -0.06
+        ],
+        "size": [
+          0.8,
+          2.6,
+          0.06
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:door-leaf",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -11.29,
+        0.11999999999999988,
+        -36.599999999999994
+      ],
+      "max": [
+        -11.23,
+        2.7199999999999998,
+        -35.8
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          0.4,
+          1.42,
+          -0.06
+        ],
+        "size": [
+          0.8,
+          2.6,
+          0.06
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:door-leaf",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        11.23,
+        0.11999999999999988,
+        -35.8
+      ],
+      "max": [
+        11.29,
+        2.7199999999999998,
+        -35
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          0.4,
+          1.42,
+          -0.06
+        ],
+        "size": [
+          0.8,
+          2.6,
+          0.06
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:bay-sill",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -11.409999999999998,
+        0.9,
+        -34.49999999999999
+      ],
+      "max": [
+        -11.17,
+        1,
+        -32.699999999999996
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          -2.2,
+          0.9500000000000001,
+          -0.09
+        ],
+        "size": [
+          1.8,
+          0.1,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:bay-sill",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        11.17,
+        0.9,
+        -38.9
+      ],
+      "max": [
+        11.409999999999998,
+        1,
+        -37.1
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          -2.2,
+          0.9500000000000001,
+          -0.09
+        ],
+        "size": [
+          1.8,
+          0.1,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:bay-backing",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -11.34,
+        0.8999999999999999,
+        -34.49999999999999
+      ],
+      "max": [
+        -11.239999999999998,
+        2.6,
+        -32.699999999999996
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          -2.2,
+          1.75,
+          -0.09
+        ],
+        "size": [
+          1.8,
+          1.7000000000000002,
+          0.1
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:bay-backing",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        11.239999999999998,
+        0.8999999999999999,
+        -38.9
+      ],
+      "max": [
+        11.34,
+        2.6,
+        -37.1
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          -2.2,
+          1.75,
+          -0.09
+        ],
+        "size": [
+          1.8,
+          1.7000000000000002,
+          0.1
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:bay-sill",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -11.409999999999998,
+        0.9,
+        -38.9
+      ],
+      "max": [
+        -11.17,
+        1,
+        -37.1
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          2.2,
+          0.9500000000000001,
+          -0.09
+        ],
+        "size": [
+          1.8,
+          0.1,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:bay-sill",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        11.17,
+        0.9,
+        -34.49999999999999
+      ],
+      "max": [
+        11.409999999999998,
+        1,
+        -32.699999999999996
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          2.2,
+          0.9500000000000001,
+          -0.09
+        ],
+        "size": [
+          1.8,
+          0.1,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:bay-backing",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -11.34,
+        0.8999999999999999,
+        -38.9
+      ],
+      "max": [
+        -11.239999999999998,
+        2.6,
+        -37.1
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          2.2,
+          1.75,
+          -0.09
+        ],
+        "size": [
+          1.8,
+          1.7000000000000002,
+          0.1
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:bay-backing",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        11.239999999999998,
+        0.8999999999999999,
+        -34.49999999999999
+      ],
+      "max": [
+        11.34,
+        2.6,
+        -32.699999999999996
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          2.2,
+          1.75,
+          -0.09
+        ],
+        "size": [
+          1.8,
+          1.7000000000000002,
+          0.1
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:gable-wall-lower",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -15.8,
+        0,
+        -32.65
+      ],
+      "max": [
+        -11.2,
+        3.2,
+        -32.35
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          -3.3000000000000003,
+          1.6,
+          -2.3
+        ],
+        "size": [
+          0.3,
+          3.2,
+          4.6
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:gable-wall-lower",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        11.2,
+        0,
+        -39.24999999999999
+      ],
+      "max": [
+        15.8,
+        3.2,
+        -38.949999999999996
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          -3.3000000000000003,
+          1.6,
+          -2.3
+        ],
+        "size": [
+          0.3,
+          3.2,
+          4.6
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:gable-wall-lower",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -15.8,
+        0,
+        -39.24999999999999
+      ],
+      "max": [
+        -11.2,
+        3.2,
+        -38.949999999999996
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          3.3000000000000003,
+          1.6,
+          -2.3
+        ],
+        "size": [
+          0.3,
+          3.2,
+          4.6
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:gable-wall-lower",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        11.2,
+        0,
+        -32.65
+      ],
+      "max": [
+        15.8,
+        3.2,
+        -32.35
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          3.3000000000000003,
+          1.6,
+          -2.3
+        ],
+        "size": [
+          0.3,
+          3.2,
+          4.6
+        ]
+      }
+    },
+    {
+      "name": "peidian-w:rear-wall",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        -15.799999999999999,
+        0,
+        -38.849999999999994
+      ],
+      "max": [
+        -15.499999999999998,
+        3.85,
+        -32.75
+      ],
+      "obb": {
+        "pos": [
+          -11.2,
+          0,
+          -35.8
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          0,
+          1.925,
+          -4.449999999999999
+        ],
+        "size": [
+          6.1000000000000005,
+          3.85,
+          0.3
+        ]
+      }
+    },
+    {
+      "name": "peidian-e:rear-wall",
+      "group": "peidian:peidian-body",
+      "type": "box",
+      "min": [
+        15.499999999999998,
+        0,
+        -38.849999999999994
+      ],
+      "max": [
+        15.799999999999999,
+        3.85,
+        -32.75
+      ],
+      "obb": {
+        "pos": [
+          11.2,
+          0,
+          -35.8
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          0,
+          1.925,
+          -4.449999999999999
+        ],
+        "size": [
+          6.1000000000000005,
+          3.85,
+          0.3
+        ]
+      }
+    },
+    {
+      "name": "gallery-w:gallery-floor",
+      "group": "gallery:temple-ground",
+      "type": "box",
+      "min": [
+        -13.18,
+        0,
+        -32.489999999999995
+      ],
+      "max": [
+        -10.379999999999999,
+        0.15,
+        -29.49
+      ],
+      "obb": {
+        "pos": [
+          -10.78,
+          0,
+          -30.99
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          0,
+          0.075,
+          -1
+        ],
+        "size": [
+          3,
+          0.15,
+          2.8
+        ]
+      }
+    },
+    {
+      "name": "gallery-e:gallery-floor",
+      "group": "gallery:temple-ground",
+      "type": "box",
+      "min": [
+        10.379999999999999,
+        0,
+        -32.489999999999995
+      ],
+      "max": [
+        13.18,
+        0.15,
+        -29.49
+      ],
+      "obb": {
+        "pos": [
+          10.78,
+          0,
+          -30.99
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          0,
+          0.075,
+          -1
+        ],
+        "size": [
+          3,
+          0.15,
+          2.8
+        ]
+      }
+    },
+    {
+      "name": "gallery-w:gallery-column",
+      "group": "gallery:gallery-body",
+      "type": "box",
+      "min": [
+        -10.899999999999999,
+        0.1499999999999999,
+        -29.759999999999998
+      ],
+      "max": [
+        -10.66,
+        2.85,
+        -29.519999999999996
+      ],
+      "obb": {
+        "pos": [
+          -10.78,
+          0,
+          -30.99
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          -1.35,
+          1.5,
+          0
+        ],
+        "size": [
+          0.24,
+          2.7,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "gallery-e:gallery-column",
+      "group": "gallery:gallery-body",
+      "type": "box",
+      "min": [
+        10.66,
+        0.1499999999999999,
+        -32.459999999999994
+      ],
+      "max": [
+        10.899999999999999,
+        2.85,
+        -32.22
+      ],
+      "obb": {
+        "pos": [
+          10.78,
+          0,
+          -30.99
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          -1.35,
+          1.5,
+          0
+        ],
+        "size": [
+          0.24,
+          2.7,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "gallery-w:gallery-column-plinth",
+      "group": "gallery:gallery-body",
+      "type": "box",
+      "min": [
+        -10.969999999999999,
+        0.15000000000000002,
+        -29.83
+      ],
+      "max": [
+        -10.59,
+        0.43000000000000005,
+        -29.449999999999996
+      ],
+      "obb": {
+        "pos": [
+          -10.78,
+          0,
+          -30.99
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          -1.35,
+          0.29000000000000004,
+          0
+        ],
+        "size": [
+          0.38,
+          0.28,
+          0.38
+        ]
+      }
+    },
+    {
+      "name": "gallery-e:gallery-column-plinth",
+      "group": "gallery:gallery-body",
+      "type": "box",
+      "min": [
+        10.59,
+        0.15000000000000002,
+        -32.529999999999994
+      ],
+      "max": [
+        10.969999999999999,
+        0.43000000000000005,
+        -32.15
+      ],
+      "obb": {
+        "pos": [
+          10.78,
+          0,
+          -30.99
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          -1.35,
+          0.29000000000000004,
+          0
+        ],
+        "size": [
+          0.38,
+          0.28,
+          0.38
+        ]
+      }
+    },
+    {
+      "name": "gallery-w:gallery-column",
+      "group": "gallery:gallery-body",
+      "type": "box",
+      "min": [
+        -10.899999999999999,
+        0.1499999999999999,
+        -32.459999999999994
+      ],
+      "max": [
+        -10.66,
+        2.85,
+        -32.22
+      ],
+      "obb": {
+        "pos": [
+          -10.78,
+          0,
+          -30.99
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          1.35,
+          1.5,
+          0
+        ],
+        "size": [
+          0.24,
+          2.7,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "gallery-e:gallery-column",
+      "group": "gallery:gallery-body",
+      "type": "box",
+      "min": [
+        10.66,
+        0.1499999999999999,
+        -29.759999999999998
+      ],
+      "max": [
+        10.899999999999999,
+        2.85,
+        -29.519999999999996
+      ],
+      "obb": {
+        "pos": [
+          10.78,
+          0,
+          -30.99
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          1.35,
+          1.5,
+          0
+        ],
+        "size": [
+          0.24,
+          2.7,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "gallery-w:gallery-column-plinth",
+      "group": "gallery:gallery-body",
+      "type": "box",
+      "min": [
+        -10.969999999999999,
+        0.15000000000000002,
+        -32.529999999999994
+      ],
+      "max": [
+        -10.59,
+        0.43000000000000005,
+        -32.15
+      ],
+      "obb": {
+        "pos": [
+          -10.78,
+          0,
+          -30.99
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          1.35,
+          0.29000000000000004,
+          0
+        ],
+        "size": [
+          0.38,
+          0.28,
+          0.38
+        ]
+      }
+    },
+    {
+      "name": "gallery-e:gallery-column-plinth",
+      "group": "gallery:gallery-body",
+      "type": "box",
+      "min": [
+        10.59,
+        0.15000000000000002,
+        -29.83
+      ],
+      "max": [
+        10.969999999999999,
+        0.43000000000000005,
+        -29.449999999999996
+      ],
+      "obb": {
+        "pos": [
+          10.78,
+          0,
+          -30.99
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          1.35,
+          0.29000000000000004,
+          0
+        ],
+        "size": [
+          0.38,
+          0.28,
+          0.38
+        ]
+      }
+    },
+    {
+      "name": "gallery-w:gallery-bench",
+      "group": "gallery:gallery-body",
+      "type": "box",
+      "min": [
+        -10.93,
+        0.15,
+        -32.22
+      ],
+      "max": [
+        -10.629999999999999,
+        0.6,
+        -29.759999999999998
+      ],
+      "obb": {
+        "pos": [
+          -10.78,
+          0,
+          -30.99
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          0,
+          0.375,
+          0
+        ],
+        "size": [
+          2.46,
+          0.45,
+          0.3
+        ]
+      }
+    },
+    {
+      "name": "gallery-e:gallery-bench",
+      "group": "gallery:gallery-body",
+      "type": "box",
+      "min": [
+        10.629999999999999,
+        0.15,
+        -32.22
+      ],
+      "max": [
+        10.93,
+        0.6,
+        -29.759999999999998
+      ],
+      "obb": {
+        "pos": [
+          10.78,
+          0,
+          -30.99
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          0,
+          0.375,
+          0
+        ],
+        "size": [
+          2.46,
+          0.45,
+          0.3
+        ]
+      }
+    },
+    {
+      "name": "gallery-w:gallery-back-wall",
+      "group": "gallery:gallery-body",
+      "type": "box",
+      "min": [
+        -13.179999999999998,
+        0,
+        -32.44
+      ],
+      "max": [
+        -12.94,
+        3.4,
+        -29.54
+      ],
+      "obb": {
+        "pos": [
+          -10.78,
+          0,
+          -30.99
+        ],
+        "theta": 1.5707963267948966,
+        "center": [
+          0,
+          1.7,
+          -2.28
+        ],
+        "size": [
+          2.9,
+          3.4,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "gallery-e:gallery-back-wall",
+      "group": "gallery:gallery-body",
+      "type": "box",
+      "min": [
+        12.94,
+        0,
+        -32.44
+      ],
+      "max": [
+        13.179999999999998,
+        3.4,
+        -29.54
+      ],
+      "obb": {
+        "pos": [
+          10.78,
+          0,
+          -30.99
+        ],
+        "theta": -1.5707963267948966,
+        "center": [
+          0,
+          1.7,
+          -2.28
+        ],
+        "size": [
+          2.9,
+          3.4,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "yimenstage:stage-column",
+      "group": "yimen-stage-body",
+      "type": "box",
+      "min": [
+        -3.13,
+        0,
+        -26.73
+      ],
+      "max": [
+        -2.87,
+        2.6,
+        -26.470000000000002
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          -3,
+          1.3,
+          -5.6
+        ],
+        "size": [
+          0.26,
+          2.6,
+          0.26
+        ]
+      }
+    },
+    {
+      "name": "yimenstage:stage-column",
+      "group": "yimen-stage-body",
+      "type": "box",
+      "min": [
+        2.87,
+        0,
+        -26.73
+      ],
+      "max": [
+        3.13,
+        2.6,
+        -26.470000000000002
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          3,
+          1.3,
+          -5.6
+        ],
+        "size": [
+          0.26,
+          2.6,
+          0.26
+        ]
+      }
+    },
+    {
+      "name": "yimenstage:stage-column",
+      "group": "yimen-stage-body",
+      "type": "box",
+      "min": [
+        -3.13,
+        0,
+        -29.73
+      ],
+      "max": [
+        -2.87,
+        2.6,
+        -29.470000000000002
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          -3,
+          1.3,
+          -8.6
+        ],
+        "size": [
+          0.26,
+          2.6,
+          0.26
+        ]
+      }
+    },
+    {
+      "name": "yimenstage:stage-column",
+      "group": "yimen-stage-body",
+      "type": "box",
+      "min": [
+        2.87,
+        0,
+        -29.73
+      ],
+      "max": [
+        3.13,
+        2.6,
+        -29.470000000000002
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          3,
+          1.3,
+          -8.6
+        ],
+        "size": [
+          0.26,
+          2.6,
+          0.26
+        ]
+      }
+    },
+    {
+      "name": "yimenstage:stage-front-rail",
+      "group": "yimen-stage-body",
+      "type": "box",
+      "min": [
+        -3.1,
+        2.6,
+        -29.979999999999997
+      ],
+      "max": [
+        3.1,
+        3.15,
+        -29.9
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -21
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          2.875,
+          -8.94
+        ],
+        "size": [
+          6.2,
+          0.55,
+          0.08
+        ]
+      }
+    },
+    {
+      "name": "court3:boundary-wall",
+      "group": "court3:court3-boundary",
+      "type": "box",
+      "min": [
+        -16.68,
+        0,
+        -84
+      ],
+      "max": [
+        -16.4,
+        2.9,
+        -26.200000000000003
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          -16.54,
+          1.45,
+          -55.1
+        ],
+        "size": [
+          0.28000000000000114,
+          2.9,
+          57.8
+        ]
+      }
+    },
+    {
+      "name": "court3:boundary-wall",
+      "group": "court3:court3-boundary",
+      "type": "box",
+      "min": [
+        16.4,
+        0,
+        -84
+      ],
+      "max": [
+        16.68,
+        2.9,
+        -26.200000000000003
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          16.54,
+          1.45,
+          -55.1
+        ],
+        "size": [
+          0.28000000000000114,
+          2.9,
+          57.8
+        ]
+      }
+    },
+    {
+      "name": "court3:north-closure",
+      "group": "court3:court3-boundary",
+      "type": "box",
+      "min": [
+        -16.4,
+        0,
+        -84.14
+      ],
+      "max": [
+        16.4,
+        3.4,
+        -83.86
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          1.7,
+          -84
+        ],
+        "size": [
+          32.8,
+          3.4,
+          0.28000000000000114
+        ]
+      }
+    },
+    {
+      "name": "houdian:houdian-base",
+      "group": "temple-ground",
+      "type": "box",
+      "min": [
+        -7,
+        0,
+        -82.4
+      ],
+      "max": [
+        7,
+        0.45,
+        -72
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          0.225,
+          -3.2
+        ],
+        "size": [
+          14,
+          0.45,
+          10.4
+        ]
+      }
+    },
+    {
+      "name": "houdian:houdian-step",
+      "group": "temple-ground",
+      "type": "box",
+      "min": [
+        -2.1,
+        0,
+        -72.30000000000001
+      ],
+      "max": [
+        2.1,
+        0.15,
+        -72
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          0.075,
+          1.85
+        ],
+        "size": [
+          4.2,
+          0.15,
+          0.3
+        ]
+      }
+    },
+    {
+      "name": "houdian:houdian-step",
+      "group": "temple-ground",
+      "type": "box",
+      "min": [
+        -2.1,
+        0.14999999999999997,
+        -72.60000000000001
+      ],
+      "max": [
+        2.1,
+        0.3,
+        -72.3
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          0.22499999999999998,
+          1.55
+        ],
+        "size": [
+          4.2,
+          0.15,
+          0.3
+        ]
+      }
+    },
+    {
+      "name": "houdian:houdian-step",
+      "group": "temple-ground",
+      "type": "box",
+      "min": [
+        -2.1,
+        0.29999999999999993,
+        -72.9
+      ],
+      "max": [
+        2.1,
+        0.44999999999999996,
+        -72.6
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          0.37499999999999994,
+          1.25
+        ],
+        "size": [
+          4.2,
+          0.15,
+          0.3
+        ]
+      }
+    },
+    {
+      "name": "houdian:houdian-column",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        -6.4799999999999995,
+        0.4500000000000002,
+        -72.98
+      ],
+      "max": [
+        -6.12,
+        4.8500000000000005,
+        -72.61999999999999
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          -6.3,
+          2.6500000000000004,
+          1.2
+        ],
+        "size": [
+          0.36,
+          4.4,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "houdian:houdian-column-plinth",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        -6.56,
+        0.44999999999999996,
+        -73.06
+      ],
+      "max": [
+        -6.04,
+        0.79,
+        -72.53999999999999
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          -6.3,
+          0.62,
+          1.2
+        ],
+        "size": [
+          0.52,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "houdian:houdian-column",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        -2.2800000000000002,
+        0.4500000000000002,
+        -72.98
+      ],
+      "max": [
+        -1.9200000000000002,
+        4.8500000000000005,
+        -72.61999999999999
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          -2.1,
+          2.6500000000000004,
+          1.2
+        ],
+        "size": [
+          0.36,
+          4.4,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "houdian:houdian-column-plinth",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        -2.3600000000000003,
+        0.44999999999999996,
+        -73.06
+      ],
+      "max": [
+        -1.84,
+        0.79,
+        -72.53999999999999
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          -2.1,
+          0.62,
+          1.2
+        ],
+        "size": [
+          0.52,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "houdian:houdian-column",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        1.9200000000000002,
+        0.4500000000000002,
+        -72.98
+      ],
+      "max": [
+        2.2800000000000002,
+        4.8500000000000005,
+        -72.61999999999999
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          2.1,
+          2.6500000000000004,
+          1.2
+        ],
+        "size": [
+          0.36,
+          4.4,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "houdian:houdian-column-plinth",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        1.84,
+        0.44999999999999996,
+        -73.06
+      ],
+      "max": [
+        2.3600000000000003,
+        0.79,
+        -72.53999999999999
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          2.1,
+          0.62,
+          1.2
+        ],
+        "size": [
+          0.52,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "houdian:houdian-column",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        6.12,
+        0.4500000000000002,
+        -72.98
+      ],
+      "max": [
+        6.4799999999999995,
+        4.8500000000000005,
+        -72.61999999999999
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          6.3,
+          2.6500000000000004,
+          1.2
+        ],
+        "size": [
+          0.36,
+          4.4,
+          0.36
+        ]
+      }
+    },
+    {
+      "name": "houdian:houdian-column-plinth",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        6.04,
+        0.44999999999999996,
+        -73.06
+      ],
+      "max": [
+        6.56,
+        0.79,
+        -72.53999999999999
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          6.3,
+          0.62,
+          1.2
+        ],
+        "size": [
+          0.52,
+          0.34,
+          0.52
+        ]
+      }
+    },
+    {
+      "name": "houdian:houdian-wall-plate",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        -6.4,
+        4.57,
+        -74.10000000000001
+      ],
+      "max": [
+        6.4,
+        4.870000000000001,
+        -73.86
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          4.720000000000001,
+          0.02
+        ],
+        "size": [
+          12.8,
+          0.3,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "houdian:front-wall",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        -6.15,
+        3.3500000000000005,
+        -74.18
+      ],
+      "max": [
+        -1.4500000000000002,
+        4.8500000000000005,
+        -74
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          -3.8000000000000003,
+          4.1000000000000005,
+          -0.09
+        ],
+        "size": [
+          4.7,
+          1.5000000000000004,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "houdian:front-wall",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        -6.15,
+        0,
+        -74.18
+      ],
+      "max": [
+        -1.4500000000000002,
+        1,
+        -74
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          -3.8000000000000003,
+          0.5,
+          -0.09
+        ],
+        "size": [
+          4.7,
+          1,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "houdian:door-jamb",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        -1.45,
+        0.1499999999999999,
+        -74.18
+      ],
+      "max": [
+        -1.2,
+        3.35,
+        -74
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          -1.325,
+          1.75,
+          -0.09
+        ],
+        "size": [
+          0.25,
+          3.2,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "houdian:front-wall",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        1.4500000000000002,
+        3.3500000000000005,
+        -74.18
+      ],
+      "max": [
+        6.15,
+        4.8500000000000005,
+        -74
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          3.8000000000000003,
+          4.1000000000000005,
+          -0.09
+        ],
+        "size": [
+          4.7,
+          1.5000000000000004,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "houdian:front-wall",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        1.4500000000000002,
+        0,
+        -74.18
+      ],
+      "max": [
+        6.15,
+        1,
+        -74
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          3.8000000000000003,
+          0.5,
+          -0.09
+        ],
+        "size": [
+          4.7,
+          1,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "houdian:door-jamb",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        1.2,
+        0.1499999999999999,
+        -74.18
+      ],
+      "max": [
+        1.45,
+        3.35,
+        -74
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          1.325,
+          1.75,
+          -0.09
+        ],
+        "size": [
+          0.25,
+          3.2,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "houdian:front-wall",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        -1.45,
+        3.3500000000000005,
+        -74.18
+      ],
+      "max": [
+        1.45,
+        4.8500000000000005,
+        -74
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          4.1000000000000005,
+          -0.09
+        ],
+        "size": [
+          2.9,
+          1.5000000000000004,
+          0.18
+        ]
+      }
+    },
+    {
+      "name": "houdian:door-threshold",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        -1.3,
+        0,
+        -74.08999999999999
+      ],
+      "max": [
+        1.3,
+        0.15,
+        -73.95
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          0.075,
+          -0.02
+        ],
+        "size": [
+          2.6,
+          0.15,
+          0.14
+        ]
+      }
+    },
+    {
+      "name": "houdian:door-leaf",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        -1.2,
+        0.1499999999999999,
+        -74.09
+      ],
+      "max": [
+        0,
+        3.35,
+        -74.03
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          -0.6,
+          1.75,
+          -0.06
+        ],
+        "size": [
+          1.2,
+          3.2,
+          0.06
+        ]
+      }
+    },
+    {
+      "name": "houdian:door-leaf",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        0,
+        0.1499999999999999,
+        -74.09
+      ],
+      "max": [
+        1.2,
+        3.35,
+        -74.03
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          0.6,
+          1.75,
+          -0.06
+        ],
+        "size": [
+          1.2,
+          3.2,
+          0.06
+        ]
+      }
+    },
+    {
+      "name": "houdian:bay-sill",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        -6.1,
+        1,
+        -74.21000000000001
+      ],
+      "max": [
+        -2.4000000000000004,
+        1.1,
+        -73.97
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          -4.25,
+          1.05,
+          -0.09
+        ],
+        "size": [
+          3.6999999999999997,
+          0.1,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "houdian:bay-backing",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        -6.1,
+        1,
+        -74.14
+      ],
+      "max": [
+        -2.4000000000000004,
+        3.2,
+        -74.04
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          -4.25,
+          2.1,
+          -0.09
+        ],
+        "size": [
+          3.6999999999999997,
+          2.2,
+          0.1
+        ]
+      }
+    },
+    {
+      "name": "houdian:bay-sill",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        2.4000000000000004,
+        1,
+        -74.21000000000001
+      ],
+      "max": [
+        6.1,
+        1.1,
+        -73.97
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          4.25,
+          1.05,
+          -0.09
+        ],
+        "size": [
+          3.6999999999999997,
+          0.1,
+          0.24
+        ]
+      }
+    },
+    {
+      "name": "houdian:bay-backing",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        2.4000000000000004,
+        1,
+        -74.14
+      ],
+      "max": [
+        6.1,
+        3.2,
+        -74.04
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          4.25,
+          2.1,
+          -0.09
+        ],
+        "size": [
+          3.6999999999999997,
+          2.2,
+          0.1
+        ]
+      }
+    },
+    {
+      "name": "houdian:gable-wall-lower",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        -6.45,
+        0,
+        -82.4
+      ],
+      "max": [
+        -6.1499999999999995,
+        3.2,
+        -74
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          -6.3,
+          1.6,
+          -4.2
+        ],
+        "size": [
+          0.3,
+          3.2,
+          8.4
+        ]
+      }
+    },
+    {
+      "name": "houdian:gable-wall-lower",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        6.1499999999999995,
+        0,
+        -82.4
+      ],
+      "max": [
+        6.45,
+        3.2,
+        -74
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          6.3,
+          1.6,
+          -4.2
+        ],
+        "size": [
+          0.3,
+          3.2,
+          8.4
+        ]
+      }
+    },
+    {
+      "name": "houdian:rear-wall",
+      "group": "houdian-body",
+      "type": "box",
+      "min": [
+        -6.050000000000001,
+        0,
+        -82.4
+      ],
+      "max": [
+        6.050000000000001,
+        4.8500000000000005,
+        -82.1
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          -74
+        ],
+        "theta": 0,
+        "center": [
+          0,
+          2.4250000000000003,
+          -8.25
+        ],
+        "size": [
+          12.100000000000001,
+          4.8500000000000005,
+          0.3
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "imported": true,
+  "materials": [
+    {
+      "name": "quiet-gray-asphalt.001",
+      "imageNodes": [
+        {
+          "name": "Asphalt033_Color_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "sRGB"
+        },
+        {
+          "name": "Asphalt033_Roughness_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        },
+        {
+          "name": "Asphalt033_NormalGL_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
+    },
+    {
+      "name": "recessed-old-glass.001",
+      "imageNodes": []
+    },
+    {
+      "name": "worn-stone.001",
+      "imageNodes": []
+    },
+    {
+      "name": "dark-iron.001",
+      "imageNodes": []
+    }
+  ],
+  "meshes": 4
+}

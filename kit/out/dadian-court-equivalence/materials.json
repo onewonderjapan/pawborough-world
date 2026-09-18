@@ -1,0 +1,294 @@
+{
+  "weathered-lime-plaster": {
+    "tileMeters": [
+      2.5,
+      2.5
+    ],
+    "colorSrgb": "ffffff",
+    "roughness": 0.8,
+    "textures": {
+      "color": "textures/PaintedPlaster017_2K-JPG_Color_1K.jpg",
+      "normal": "textures/PaintedPlaster017_2K-JPG_NormalGL_1K.jpg",
+      "roughness": "textures/PaintedPlaster017_2K-JPG_Roughness_1K.jpg"
+    },
+    "normalConvention": "OpenGL",
+    "source": "ambientCG CC0 project textures"
+  },
+  "blue-gray-brick": {
+    "tileMeters": [
+      1.05,
+      1.2
+    ],
+    "colorSrgb": "ffffff",
+    "roughness": 0.8,
+    "textures": {
+      "color": "textures/Bricks061_2K-JPG_Color_1K.jpg",
+      "normal": "textures/Bricks061_2K-JPG_NormalGL_1K.jpg",
+      "roughness": "textures/Bricks061_2K-JPG_Roughness_1K.jpg"
+    },
+    "normalConvention": "OpenGL",
+    "source": "ambientCG CC0 project textures"
+  },
+  "oxblood-stained-timber": {
+    "tileMeters": [
+      0.75,
+      1.5
+    ],
+    "colorSrgb": "542c25",
+    "roughness": 0.65,
+    "textures": {
+      "color": "textures/wood-stain-color.jpg",
+      "normal": "textures/Wood092_2K-JPG_NormalGL_1K.jpg"
+    },
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "deep-door-lacquer": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "252320",
+    "roughness": 0.53,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "gray-pan-tile": {
+    "tileMeters": [
+      1.44,
+      1.36
+    ],
+    "colorSrgb": "ffffff",
+    "roughness": 0.8,
+    "textures": {
+      "color": "textures/roof-color.jpg",
+      "normal": "textures/roof-normal.png"
+    },
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "worn-stone": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "9a9a8c",
+    "roughness": 0.92,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "recessed-old-glass": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "364347",
+    "roughness": 0.28,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "aged-brass": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "bb9a5b",
+    "roughness": 0.44,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "interior-warm-shadow": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "736555",
+    "roughness": 0.96,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "medicine-drawer-wood": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "71503b",
+    "roughness": 0.75,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "dark-iron": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "44453d",
+    "roughness": 0.64,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "aged-paper": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "c1b18b",
+    "roughness": 0.93,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "shop-sign-typeset-atlas": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "ffffff",
+    "roughness": 0.68,
+    "textures": {
+      "color": "textures/sign-atlas.png"
+    },
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "shop-sign-generic-atlas": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "ffffff",
+    "roughness": 0.68,
+    "textures": {
+      "color": "textures/sign-atlas-generic.png"
+    },
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "cat-wall-reference-repaint": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "ffffff",
+    "roughness": 0.98,
+    "textures": {
+      "color": "textures/catwall-mural.png"
+    },
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "wine-cotton": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "8b4346",
+    "roughness": 0.98,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "indigo-cotton": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "536b7d",
+    "roughness": 0.98,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "sage-cotton": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "899786",
+    "roughness": 0.98,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "cream-cotton": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "c9b893",
+    "roughness": 0.98,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "quiet-gray-asphalt": {
+    "tileMeters": [
+      3,
+      3
+    ],
+    "colorSrgb": "ffffff",
+    "roughness": 0.8,
+    "textures": {
+      "color": "textures/Asphalt033_Color_1K.jpg",
+      "normal": "textures/Asphalt033_NormalGL_1K.jpg",
+      "roughness": "textures/Asphalt033_Roughness_1K.jpg"
+    },
+    "normalConvention": "OpenGL",
+    "source": "ambientCG CC0 project textures"
+  },
+  "paving-frontage": {
+    "tileMeters": [
+      2.4,
+      2.4
+    ],
+    "colorSrgb": "ffffff",
+    "roughness": 0.8,
+    "textures": {
+      "color": "textures/PavingStones138_Color_1K.jpg",
+      "normal": "textures/PavingStones138_NormalGL_1K.jpg",
+      "roughness": "textures/PavingStones138_Roughness_1K.jpg"
+    },
+    "normalConvention": "OpenGL",
+    "source": "ambientCG CC0 project textures"
+  },
+  "red-silk-lantern": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "a04a42",
+    "roughness": 0.82,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "scroll-paper": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "d8cdb2",
+    "roughness": 0.9,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "bronze": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "6b4c30",
+    "roughness": 0.45,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "builder-local palette extension (DESIGN_SPEC.palette.newLocalMaterial)"
+  }
+}

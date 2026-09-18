@@ -1,0 +1,74 @@
+{
+  "moduleId": "houdian",
+  "units": "meters",
+  "surveyed": false,
+  "axis": "GLB Y-up; facade +Z; depth -Z; front-wall center bottom origin (local); single world instance at (0, 0, -74) yaw 0",
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false,
+  "targets": {
+    "houdian.glb": {
+      "groups": [
+        "houdian-body",
+        "temple-ground"
+      ],
+      "objects": 8,
+      "triangles": 16164,
+      "fileBytes": 2702268,
+      "sha256": "693a5efb758700c96c162f9c9c93e0d1b91f490cde895e9d41202b4cdcd9f615"
+    }
+  },
+  "timings": {
+    "totalSeconds": 0.6
+  },
+  "budgets": {
+    "houdianTris": {
+      "actual": 16164,
+      "limit": 22000,
+      "pass": true
+    },
+    "ridgeOrnamentsTris": {
+      "actual": 256,
+      "limit": 300,
+      "pass": true
+    },
+    "tileRibsTris": {
+      "actual": 6336,
+      "limit": 6000,
+      "pass": true
+    },
+    "newImages": {
+      "actual": 0,
+      "limit": 0,
+      "pass": true,
+      "note": "blank plaque, palette only"
+    }
+  },
+  "design": {
+    "family": "temple-axis-north-hall",
+    "reference": {
+      "imageId": "PBR-SH-0006-G07/G10/G12/G34/G35 + photo PBR-SH-0005-006",
+      "referenceEra": "GEN inference images (notHistoricalEvidence) + CC photo; form direction only. G36 reads as xieshan but the OWNER RULING for this batch is single-eave 硬山 — recorded honestly in DELIVERY",
+      "historicalAccuracyVerified": false,
+      "dimensionsAreDesign": true
+    },
+    "bays": [
+      3,
+      4.2
+    ],
+    "doorClosedM": [
+      2.4,
+      2.6
+    ],
+    "plaque": "blank board 2.2x0.7 @3.15 (no text, no texture)",
+    "gable": "硬山 strips to the roof soffit; G36 xieshan read NOT adopted this batch (owner ruling)",
+    "roofMethod": "ONE two-slope shell lofted from the section profile, full-width flat ridge (no hip), no corner lift, closed soffit, gable-edge rings, finite half-round tile ribs, plain ridge beam without 吻",
+    "placement": {
+      "originGlbWorld": [
+        0,
+        0,
+        -74
+      ],
+      "yawRad": 0
+    }
+  }
+}

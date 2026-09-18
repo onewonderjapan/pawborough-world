@@ -1,0 +1,162 @@
+{
+  "taskId": "pawborough-temple-expansion-night",
+  "batch": "pawborough-temple-expansion-night-20260917",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "visualReview": "pending_lead",
+  "packages": {
+    "package1_templeExpansion": {
+      "status": "delivered_for_lead_review",
+      "datasets": [
+        "world/temple-axis-v2/",
+        "world/fangbang-temple-v2/"
+      ],
+      "page": {
+        "file": "temple-v2.html",
+        "main": "src/templeV2Main.js",
+        "devPreview": [
+          5298,
+          5299
+        ]
+      },
+      "bridgePage": {
+        "url": "fangbang.html?ds=fangbang-temple-v2",
+        "servedOn": [
+          5300,
+          5301
+        ],
+        "note": "5296/5297 occupied by a stale previous-session server -> fallback #9 ports for this batch's serving; the ?ds= support itself is port-independent"
+      },
+      "tests": {
+        "suites": 37,
+        "pass": 37,
+        "layoutArtifacts": "resolved by R1-05 fixture fallback"
+      },
+      "webglEvidence": "artifacts/temple-expansion/webgl/ (12 temple-v2 shots incl 2 clay + 3 bridge-v2 shots; all cameraCheck dPos=0, route PASS in every record)",
+      "blenderEvidence": "artifacts/temple-expansion/blender/ (10 PBR + 2 clay + 2 compare, CPU 24spp AgX 1600x900; bridge-v2/ 2 views)",
+      "perf": "artifacts/temple-expansion/perf-v2.json (V09 label, headless swiftshader, routePass true, 3x reload stable)"
+    },
+    "package2_streetSidefaces": {
+      "status": "pending",
+      "note": "started immediately after this commit per stopPolicy"
+    }
+  },
+  "designPresetsNeedingOwnerConfirmation": [
+    "配殿硬山（不采用 GEN 的观音兜）",
+    "城隍殿单檐硬山（GEN G36 为歇山读感，本批未采用）",
+    "戏楼贴仪门背面、台面 2.6 m、不可达（无楼梯）",
+    "边界墙外扩到 x=±16.4、北端墙 z=-84.0（样段语言，非历史）",
+    "三进院宽 32.8 m",
+    "匾额全部无字素板（贴图预算 0）"
+  ],
+  "knownDeviations": [
+    "fallback #6-class: default-config rerun of build_dadian_court.py is geometry-equivalent to the delivered dadian-court.glb (identical triangle count 3984, identical unique-vertex set, identical bounds, numerically identical 17 collision records) but not byte-identical: the Blender build (git snapshot 28c0962c45ac, aarch64) welds a few bevel corners differently (+/-2..4 duplicate verts on stair/drain/cap joins). Builder/helpers/mb_lib unchanged since the delivered commits (git log empty).",
+    "stage center passage clear width is 5.74 m = 2*(3.0-0.13), exactly the spec's own 柱内侧 ±2.87; the plan text '>=5.8' is a rounded nominal of the same frozen numbers. Frozen positions kept.",
+    "negative n3b walks the column ROW line z=-26.6 (spec's z=-27.5 passes BETWEEN the two column rows and cannot be blocked by them); intent (stage column blocks eastward walking) preserved, blocker verified at x=2.5.",
+    "court3 passage mouths (x ±1.1..10.78, z -41.0..-39.1) and the north strip (z -83.86..-72.2) are paved in this batch: the frozen route legs (0,-40.2)->(6,-40.2) and the north closure negative otherwise cross ungrounded void. The opening band z -39.1..-41.0 IS in DESIGN_SPEC (sideBands); the x-extent to the stair edge and the north fall-guard strip are design_inference fills, no frozen number contradicted.",
+    "dataset route mainStreet inserts a cheek-free lane (z=-38.6) around the stair cheeks (x ±3..3.55) so the polyline walks in BOTH directions; route.spec keeps the frozen DESIGN_SPEC points verbatim.",
+    "vite.config.js (allowed file): temple-v2.html added as a rollup input; evidence-name regex widened from [a-z-]+ to [a-z0-9-]+ (superset — dataset ids contain digits; existing names unaffected).",
+    "kit/build_fangbang_v2_scene.py and tools/fangbang_v2_perf.mjs are NEW copies rather than --ds additions to the delivered scripts: the strict discipline forbids modifying delivered files beyond the four named ones, and PLAN N8's 'build_fangbang_scene.py 支持 --ds' would have violated it. Delivered scripts untouched.",
+    "PBR-SH-0006-G36 was still unreadable at N0 (root-owned; owner preflight optional step not performed). Houdian roof form follows the other references + the owner's 硬山 ruling.",
+    "bridge v2 temple block triangles are counted per INSTANCE (156,250: peidian/gallery twice) in the bridge manifest, and per unique asset (143,976) in temple-axis-v2 — both budgets hold.",
+    "playwright 1.63.0 installed with --no-save in this worktree for evidence runs (node_modules is not committed)."
+  ],
+  "budgets": {
+    "placedTriangles": {
+      "actual": 143976,
+      "limit": 180000
+    },
+    "newModulesTris": {
+      "actual": 43818,
+      "limit": 70000
+    },
+    "bridgeScopeTris": {
+      "actual": 333722,
+      "limit": 360000
+    },
+    "fullSceneTris": {
+      "actual": 376618,
+      "limit": 400000
+    },
+    "newImages": {
+      "actual": 0,
+      "limit": 0
+    },
+    "newDownloadBytes": {
+      "actual": 0,
+      "limit": 0
+    }
+  },
+  "ports": {
+    "templeV2": [
+      5298,
+      5299
+    ],
+    "bridgeV2": [
+      5300,
+      5301
+    ],
+    "note": "5296/5297 occupied by stale servers from the bridge-batch session (fallback #9)"
+  },
+  "commits": {
+    "package1": "see git log work/temple-expansion-20260917",
+    "baseline": "4031561"
+  },
+  "generatedBy": "GLM-Flash (ZCode session, owner-started night run 2026-09-17)",
+  "r1": {
+    "order": "R1-FIXES.md (2026-09-18, lead re-review of 5e59b68)",
+    "items": [
+      {
+        "id": "R1-01",
+        "commit": "821e5d2",
+        "status": "fixed",
+        "summary": "stage under-floor skirt boards removed (solid wood box, collider-less, blocked court2-pair); under-stage open-zone guard in builder + stage_contract; n3b/passage re-verified"
+      },
+      {
+        "id": "R1-02",
+        "commit": "5120ea5",
+        "status": "fixed_with_interpretation",
+        "summary": "corner plaster end caps re-capped at the LOCAL roof soffit (was: ridge soffit 6.02/7.83); C8 contract assertion uses the roof slope line at the band edge instead of the literal eave+0.15 — the frozen roof puts its edge at the wall ends ~1.2m above the eave (ridge inside the depth), so the literal bound contradicts DESIGN_SPEC; owner may veto the interpretation"
+      },
+      {
+        "id": "R1-03",
+        "commit": "cb88e03",
+        "status": "fixed",
+        "summary": "root cause: glTF importer leaves rotation_mode=QUATERNION, so euler yaw writes were ignored (peidian/gallery axis-aligned in Blender); XYZ forced in all three scene scripts; 4-keypoint instance check vs obbToWorld <= 8.5e-7 (artifacts/temple-expansion/blender/instance-check.json); compare adds peidian-west-front"
+      },
+      {
+        "id": "R1-04",
+        "commit": "c522418 + 2a4103c",
+        "status": "fixed",
+        "summary": "blank-frame guards (std<2/255 or >95% dominant) in all Blender scene scripts (exit 10 + sidecar) and all capture scripts (in-task canvas read); full evidence re-run: review 12 + compare 3 + bridge 2 + sidefaces 10 Blender frames, 12+3+10 WebGL shots, anyBlank=false everywhere"
+      },
+      {
+        "id": "R1-05",
+        "commit": "0486fef",
+        "status": "fixed",
+        "summary": "bridge-batch DESIGN_SPEC.json + CAMERAS.json copied byte-exact to tests/fixtures/fangbang-bridge-20260916 with provenance shas; the three fangbang_bridge_* tests fall back to the fixture when ../DESIGN_SPEC.json lacks templePlacement — 37/37 green in this worktree, bridge worktree behavior unchanged"
+      },
+      {
+        "id": "R1-06",
+        "commit": "6de991c + 2a4103c",
+        "status": "fixed_with_deviation",
+        "summary": "base perimeter black band = fully-occluded slot at the base skirt (probe chain: red-material isolation -> hide -> all-red -> normal-flip -> ambient-only). Skirt boxes REMOVED (deviation from 'worn-stone + outward normals': the geometry itself was the trap); base slab box carries the side collision; collider count 246->233 (13 skirt records gone); plus low-strength fill light in the evidence scenes matching the WebGL rig (shadow-side faces were crushed to black under sun+sky only)"
+      },
+      {
+        "id": "R1-07",
+        "commit": "2a4103c",
+        "status": "verified",
+        "summary": "no __pycache__/pyc staged; only the four allowed delivered files modified across the batch; git status clean at close"
+      }
+    ],
+    "tests": {
+      "suites": 37,
+      "pass": 37
+    },
+    "evidenceRerun": {
+      "blender": "artifacts/temple-expansion/blender/ (12 review + 3 compare + 2 bridge-v2, blankGuard anyBlank=false, fov verified, instance-check <=8.5e-7)",
+      "webgl": "artifacts/temple-expansion/webgl/ (12 temple-v2 + 3 bridge-v2 shots, blank-guard PASS, cameraCheck dPos=0)"
+    },
+    "head": "2a4103c"
+  }
+}

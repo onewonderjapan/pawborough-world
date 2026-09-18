@@ -1,0 +1,87 @@
+{
+  "sampleId": "peidian",
+  "family": "temple-axis-side-hall",
+  "units": "meters",
+  "axis": "GLB Y-up; facade +Z; depth -Z; front-wall center bottom origin (local); instanced at (±11.2, 0, -35.8) yaw ±π/2 by the world assembly",
+  "basedOn": "DESIGN_SPEC.json pawborough-temple-expansion-night-20260917 peidian.* (lead-frozen design values; NOT a survey)",
+  "reference": {
+    "imageId": "PBR-SH-0007-G07/G08/G09/G12 + photos PBR-SH-0005-008/009/010",
+    "referenceEra": "GEN inference images (notHistoricalEvidence) + CC photos; form direction only — no dimension, step count, gable curve (观音兜 vetoed) or ridge ornament copied from images",
+    "historicalAccuracyVerified": false,
+    "dimensionsAreDesign": true
+  },
+  "placement": {
+    "west": { "originGlb": [-11.2, 0, -35.8], "yawRad": 1.5707963 },
+    "east": { "originGlb": [11.2, 0, -35.8], "yawRad": -1.5707963 }
+  },
+  "body": {
+    "facadeWidthM": 6.6,
+    "bays": 3,
+    "bayM": 2.2,
+    "bodyDepthM": 4.6,
+    "sideWallX": 3.45,
+    "sideWallThicknessM": 0.3,
+    "rearWallZ": -4.6,
+    "rearWallThicknessM": 0.3,
+    "gableType": "硬山 single-gable (owner ruling: the GEN 观音兜 curved gable is NOT copied)"
+  },
+  "front": {
+    "wallLocalZ": 0.0,
+    "galleryColumnsLocalZ": 0.9,
+    "columnsX": [-3.3, -1.1, 1.1, 3.3],
+    "columnSizeM": [0.28, 3.7, 0.28],
+    "eaveOverhangToLocalZ": 1.5,
+    "topBeamY": [3.25, 3.7]
+  },
+  "centerBay": {
+    "door": { "leafCount": 2, "leafSizeM": [0.8, 2.6, 0.06], "leafCenterZ": -0.06, "closedCollider": true },
+    "thresholdM": [1.8, 0.12, 0.14],
+    "lintelWidthM": 2.1
+  },
+  "sideBays": {
+    "lattice": { "sillY": 0.9, "topY": 2.6, "waistRailY": 1.35, "mullionStepM": 0.24 },
+    "belowWall": "plaster 槛墙 under sill",
+    "windowSpansX": [[-3.1, -1.3], [1.3, 3.1]]
+  },
+  "plaque": {
+    "widthM": 2.2,
+    "heightM": 0.7,
+    "centerY": 3.15,
+    "build": "素木板 plain board + thin wood frame, NO characters, NO texture (new image budget 0)",
+    "faceZ": 0.075
+  },
+  "rearDesign": { "mode": "plain", "designInference": true },
+  "roof": {
+    "type": "双坡硬山 two-slope rigid-gable, single shell",
+    "widthM": 6.6,
+    "ridgeY": 6.2,
+    "eaveY": 3.9,
+    "ridgeLocalZ": -1.85,
+    "frontEaveZ": 1.5,
+    "rearEaveZ": -5.1,
+    "shellThicknessM": 0.1,
+    "profileTY": [[0, 6.2], [0.5, 5.0], [1, 3.9]],
+    "resampleSegments": 12,
+    "tileRibSpacingM": 0.26,
+    "tileRibRadiusM": 0.045,
+    "eaveFasciaH": 0.14,
+    "soffitDepthM": 0.9,
+    "ridgeBeamM": [0.24, 0.28],
+    "ridgeEnds": "plain full-length, NO 吻/ornament (DESIGN_SPEC: 两端无吻)"
+  },
+  "base": {
+    "topY": 0.3,
+    "extentLocalZ": [1.5, -4.6],
+    "extentX": [-3.75, 3.75],
+    "slabThicknessM": 0.3,
+    "steps": { "count": 2, "riserM": 0.15, "treadM": 0.3, "widthM": 2.4, "atCenterBay": true }
+  },
+  "budgets": { "peidianTrisMax": 14000 },
+  "runtime": { "capsule": { "radius": 0.35, "halfHeight": 0.6, "eyeHeight": 1.6 } },
+  "uncertaintyPolicy": {
+    "allNewBuildingsAreDesignInference": true,
+    "interior": "none modeled; door closed",
+    "plaque": "blank board by design (no evidenced text for a side hall)",
+    "roofForm": "two-slope 硬山 per owner ruling; G08/G11 观音兜 explicitly not copied"
+  }
+}

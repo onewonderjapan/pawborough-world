@@ -1,0 +1,171 @@
+{
+  "sampleId": "houdian",
+  "family": "temple-axis-north-hall",
+  "units": "meters",
+  "axis": "GLB Y-up; facade +Z; depth -Z; front-wall center bottom origin (local); single world instance at (0, 0, -74) yaw 0",
+  "basedOn": "DESIGN_SPEC.json pawborough-temple-expansion-night-20260917 court3AndHoudian.houdian.* (lead-frozen design values; NOT a survey)",
+  "reference": {
+    "imageId": "PBR-SH-0006-G07/G10/G12/G34/G35 + photo PBR-SH-0005-006",
+    "referenceEra": "GEN inference images (notHistoricalEvidence) + CC photo; form direction only. G36 reads as xieshan but the OWNER RULING for this batch is single-eave 硬山 — recorded honestly in DELIVERY",
+    "historicalAccuracyVerified": false,
+    "dimensionsAreDesign": true
+  },
+  "placement": {
+    "originGlbWorld": [
+      0,
+      0,
+      -74
+    ],
+    "yawRad": 0
+  },
+  "body": {
+    "facadeWidthM": 12.6,
+    "bays": 3,
+    "bayM": 4.2,
+    "bodyDepthM": 8.4,
+    "sideWallX": 6.45,
+    "sideWallThicknessM": 0.3,
+    "rearWallZ": -8.4,
+    "rearWallThicknessM": 0.3,
+    "gableType": "硬山 single-gable (owner ruling: G36 xieshan read NOT adopted this batch)"
+  },
+  "front": {
+    "wallLocalZ": 0.0,
+    "galleryColumnsLocalZ": 1.2,
+    "columnsX": [
+      -6.3,
+      -2.1,
+      2.1,
+      6.3
+    ],
+    "columnSizeM": [
+      0.36,
+      4.4,
+      0.36
+    ],
+    "eaveOverhangToLocalZ": 2.0,
+    "topBeamY": [
+      3.9,
+      4.4
+    ]
+  },
+  "centerBay": {
+    "door": {
+      "leafCount": 2,
+      "leafSizeM": [
+        1.2,
+        3.2,
+        0.06
+      ],
+      "leafCenterZ": -0.06,
+      "closedCollider": true
+    },
+    "thresholdM": [
+      2.6,
+      0.15,
+      0.14
+    ],
+    "lintelWidthM": 2.9
+  },
+  "sideBays": {
+    "lattice": {
+      "sillY": 1.0,
+      "topY": 3.2,
+      "waistRailY": 1.5,
+      "mullionStepM": 0.26
+    },
+    "belowWall": "plaster 槛墙 under sill",
+    "windowSpansX": [
+      [
+        -6.1,
+        -2.4
+      ],
+      [
+        2.4,
+        6.1
+      ]
+    ]
+  },
+  "plaque": {
+    "widthM": 3.0,
+    "heightM": 0.9,
+    "centerY": 3.9,
+    "build": "素木板 plain board + thin wood frame, NO characters, NO texture (new image budget 0)",
+    "faceZ": 0.075
+  },
+  "rearDesign": {
+    "mode": "plain",
+    "designInference": true
+  },
+  "roof": {
+    "type": "双坡硬山 two-slope rigid-gable single-eave, single shell (G36 xieshan read vetoed by owner for this batch)",
+    "widthM": 12.6,
+    "ridgeY": 8.0,
+    "eaveY": 4.9,
+    "ridgeLocalZ": -3.6,
+    "frontEaveZ": 2.0,
+    "rearEaveZ": -9.0,
+    "shellThicknessM": 0.1,
+    "profileTY": [
+      [
+        0,
+        8.0
+      ],
+      [
+        0.5,
+        6.4
+      ],
+      [
+        1,
+        4.9
+      ]
+    ],
+    "resampleSegments": 12,
+    "tileRibSpacingM": 0.26,
+    "tileRibRadiusM": 0.045,
+    "eaveFasciaH": 0.14,
+    "soffitDepthM": 1.0,
+    "ridgeBeamM": [
+      0.3,
+      0.36
+    ],
+    "ridgeEnds": "simplified 吻 ornaments both ends, <=300 tris total"
+  },
+  "base": {
+    "topY": 0.45,
+    "extentLocalZ": [
+      2.0,
+      -8.4
+    ],
+    "extentX": [
+      -7.0,
+      7.0
+    ],
+    "slabThicknessM": 0.45,
+    "steps": {
+      "count": 3,
+      "riserM": 0.15,
+      "treadM": 0.3,
+      "widthM": 4.2,
+      "atCenterBay": true
+    }
+  },
+  "budgets": {
+    "houdianTrisMax": 22000,
+    "ridgeOrnamentTrisMax": 300
+  },
+  "runtime": {
+    "capsule": {
+      "radius": 0.35,
+      "halfHeight": 0.6,
+      "eyeHeight": 1.6
+    }
+  },
+  "uncertaintyPolicy": {
+    "allNewBuildingsAreDesignInference": true,
+    "interior": "none modeled; door closed",
+    "plaque": "blank board by design (no evidenced text)",
+    "roofForm": "single-eave 硬山 per owner ruling; GEN G36 歇山读感 explicitly not adopted this batch"
+  },
+  "configSha256": "dd66463a6c10bedeb2f0fcfa5625edf38d0af5e5b338d593b0c8e66790fc945a"
+}

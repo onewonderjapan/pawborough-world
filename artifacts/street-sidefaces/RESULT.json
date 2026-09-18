@@ -1,0 +1,69 @@
+{
+  "taskId": "pawborough-temple-expansion-night",
+  "batch": "pawborough-temple-expansion-night-20260917 (package 2)",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "visualReview": "pending_lead",
+  "dataset": "world/street-sidefaces/",
+  "loadPath": "fangbang.html?ds=fangbang-temple-v2&skins=1 (append-only, default OFF; works on any ?ds= world)",
+  "places": [
+    "N01 west gable (west-extension road side)",
+    "lane-A west flank (N05 gable + rear first 6m)",
+    "lane-A east flank (N06 gable + rear first 6m)",
+    "lane-B west flank (S05 gable + rear first 6m)",
+    "lane-B east flank (S07 gable + rear first 6m)",
+    "east tail 133 east gable"
+  ],
+  "tests": {
+    "suites": 37,
+    "passInPlace": 34,
+    "layoutArtifacts": [
+      "fangbang_bridge_contract",
+      "fangbang_bridge_passage",
+      "fangbang_map_registry"
+    ],
+    "new": [
+      "sideface_contract",
+      "sideface_visibility"
+    ]
+  },
+  "budgets": {
+    "tris": {
+      "actual": 1080,
+      "limit": 8000
+    },
+    "perFaceTris": {
+      "actual": 180,
+      "limit": 1500
+    },
+    "newImages": {
+      "actual": 0,
+      "limit": 0
+    }
+  },
+  "evidence": {
+    "webgl": "artifacts/street-sidefaces/webgl/ (10 shots through the real page with skins=1, route PASS in every record)",
+    "blender": "artifacts/street-sidefaces/blender/ (10 calibrated poses, module GLB at instance transform + skins)"
+  },
+  "designPresetsNeedingOwnerConfirmation": [
+    "skin language: plaster face + brick base 0.9 + wood band 0.12 + gray-tile coping 0.28 (GEN 0007-G01/G02 form direction)",
+    "rear skins carry a small window 0.6x0.8 (sill 1.8) + rear door 0.9x2.0 (design_inference — no rear-opening evidence)"
+  ],
+  "knownDeviations": [
+    "M1 survey initially reported 119 visible faces: the street corridor makes every side wall technically visible from far away down the road. The delivered target set is the PLAN's five-place slice (6 places / 10 faces); the full 119-entry survey ships in kit/out/sidefaces/targets.json as evidence.",
+    "east-shop-133's foundation band (0.34 thick) protrudes 0.06 past its 0.28 wall, so that skin offsets 0.06 from the foundation face (offsetOverrideM) — the only place where the 0.05 base offset needed an override; contract test verifies >=0.04 clearance and zero intersections.",
+    "lane-mouth gables sit inside ~2 m gaps: their evidence cameras self-calibrated to 1.5-6 m so the skin slab is the FIRST ray hit (recorded per camera as calibratedDistanceM).",
+    "skin GLBs embed the shared palette textures (~0.78 MB each, ~7.9 MB total) — loaded only with ?skins=1 (default OFF).",
+    "fangbangMain gained a window.__fangbangView(pos,target,label) evidence hook + an evidence-name label override for this capture; both are inert without an explicit capture call."
+  ],
+  "ports": {
+    "serving": 5300,
+    "note": "5296/5297 occupied by stale previous-session servers (fallback #9)"
+  },
+  "commits": {
+    "baseline": "4031561",
+    "package1": "02ee0b9",
+    "package2": "this commit"
+  },
+  "generatedBy": "GLM-Flash (ZCode session, owner-started night run 2026-09-17)"
+}

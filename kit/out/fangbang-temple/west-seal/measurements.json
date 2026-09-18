@@ -1,0 +1,46 @@
+{
+  "moduleId": "westseal",
+  "triangles": 12,
+  "meshes": 1,
+  "fileBytes": 2804,
+  "sha256": "dd07c8ea5d6ded4b74391b2fe887cf0926a997c746c2c9414d8b13da454fcd1a",
+  "design": {
+    "family": "fangbang-west-extension-seal-wall",
+    "label": "样段端墙，非历史（同 lane-A/B 端墙与大殿北端墙口径）",
+    "at": [
+      -149.388,
+      0.0,
+      43.473
+    ],
+    "orientation": "perpendicular to the road tangent (long axis along the south normal)",
+    "sizeM": [
+      11.2,
+      3.4,
+      0.3
+    ],
+    "obbRecord": {
+      "pos": [
+        -149.388,
+        0.0,
+        43.473
+      ],
+      "theta": 0.16703,
+      "center": [
+        0.0,
+        1.7,
+        0.0
+      ],
+      "size": [
+        0.3,
+        3.4,
+        11.2
+      ],
+      "note": "thickness on local x, length on local z — obbToWorld maps local z to the south normal at theta=yaw"
+    },
+    "surveyed": false
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

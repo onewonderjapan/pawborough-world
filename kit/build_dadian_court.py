@@ -69,6 +69,12 @@ SCHEMA = {
     'drains': None,
     'budgets': {'courtTrisMax': None},
     'contextNotSurvey': None,
+    # expansion-batch variant switches (temple-expansion-night-20260917):
+    # strict keys with default true — defaulted into the config BEFORE
+    # validation, so delivered configs validate unchanged and any other
+    # unknown key remains a hard error
+    'buildSideWalls': None,
+    'buildNorthClosure': None,
 }
 
 
@@ -107,11 +113,21 @@ def validate(c):
     return pr
 
 
+# apply the optional flags FIRST (strict: boolean only, default true) so the
+# schema validation below sees a complete config; unknown keys stay hard errors
+FLAG_KEYS = ('buildSideWalls', 'buildNorthClosure')
+for _k in FLAG_KEYS:
+    _v = cfg.get(_k, True)
+    if not isinstance(_v, bool):
+        print('CONFIG_INVALID', [f'{_k} must be boolean, got {type(_v).__name__}'])
+        sys.exit(2)
+    cfg[_k] = _v
 problems = validate(cfg)
 if problems:
     print('CONFIG_INVALID', problems)
     sys.exit(2)
-print(f'CONFIG_OK {cfg["sampleId"]} ({time.time() - T0:.1f}s)')
+print(f'CONFIG_OK {cfg["sampleId"]} sideWalls={cfg["buildSideWalls"]} '
+      f'northClosure={cfg["buildNorthClosure"]} ({time.time() - T0:.1f}s)')
 
 L.reset_scene()
 L.build_materials()
@@ -235,25 +251,28 @@ def boundary_wall(name, x0, x1, z0, z1, h=None, cap=None):
     L.box(name + '-cap', (cx, (hh + cc) / 2, cz), (x1 - x0 + .1, cc - hh + .06, z1 - z0 + .1), 'roof', .012)
 
 
-for sgn in (-1, 1):
-    boundary_wall('court2-side-wall', sgn * sw['innerX'], sgn * (sw['innerX'] + th), z_s, z_n)
+if cfg['buildSideWalls']:
+    for sgn in (-1, 1):
+        boundary_wall('court2-side-wall', sgn * sw['innerX'], sgn * (sw['innerX'] + th), z_s, z_n)
 for sgn in (-1, 1):
     boundary_wall('court2-south-return', sgn * cfg['southReturns']['xM'][0],
                   sgn * cfg['southReturns']['xM'][1],
                   cfg['southReturns']['z'][0], cfg['southReturns']['z'][1])
-nc = cfg['northClosure']
-boundary_wall('court2-north-closure', nc['xM'][0], nc['xM'][1], nc['z'] - nc['thicknessM'] / 2,
-              nc['z'] + nc['thicknessM'] / 2, nc['heightM'], nc['capTopY'])
-for sgn in (-1, 1):
-    boundary_wall('court2-north-return', sgn * (nc['xM'][1] - nc['returnStubDepthM']),
-                  sgn * nc['xM'][1], pz0 - nc['returnStubDepthM'], nc['z'],
-                  nc['heightM'], nc['capTopY'])
+if cfg['buildNorthClosure']:
+    nc = cfg['northClosure']
+    boundary_wall('court2-north-closure', nc['xM'][0], nc['xM'][1], nc['z'] - nc['thicknessM'] / 2,
+                  nc['z'] + nc['thicknessM'] / 2, nc['heightM'], nc['capTopY'])
+    for sgn in (-1, 1):
+        boundary_wall('court2-north-return', sgn * (nc['xM'][1] - nc['returnStubDepthM']),
+                      sgn * nc['xM'][1], pz0 - nc['returnStubDepthM'], nc['z'],
+                      nc['heightM'], nc['capTopY'])
 print(f'STAGE walls ok ({time.time() - T0:.1f}s)')
 
 # ---------------------------------------------------------------------------
 # export
 
-TARGETS = [('dadian-court.glb', ('temple-ground', 'dadian-court'))]
+GLB_NAME = f'{cfg["sampleId"]}.glb'   # delivered default: dadian-court.glb
+TARGETS = [(GLB_NAME, ('temple-ground', 'dadian-court'))]
 out = a.out
 out.mkdir(parents=True, exist_ok=True)
 
@@ -316,7 +335,7 @@ for fname, groups in TARGETS:
     }
     print(f'EXPORTED {fname} objs={sel} tris={tris_of(groups)} bytes={len(data)}')
 
-cT = measure['targets']['dadian-court.glb']
+cT = measure['targets'][GLB_NAME]
 if cT['triangles'] > cfg['budgets']['courtTrisMax']:
     print('BUDGET_FAIL courtTris', cT['triangles'])
     sys.exit(5)
@@ -324,7 +343,7 @@ if cT['triangles'] > cfg['budgets']['courtTrisMax']:
 original = bpy.context.window.scene
 check = bpy.data.scenes.new('GLB_REIMPORT_CHECK')
 bpy.context.window.scene = check
-bpy.ops.import_scene.gltf(filepath=str(out / 'dadian-court.glb'))
+bpy.ops.import_scene.gltf(filepath=str(out / GLB_NAME))
 bounds = [[1e9] * 3, [-1e9] * 3]
 meshes = 0
 for o in check.objects:

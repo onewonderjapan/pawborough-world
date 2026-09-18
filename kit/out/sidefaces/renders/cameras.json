@@ -1,0 +1,126 @@
+{
+  "source": "kit/build_sidefaces_scene.py",
+  "engine": "cycles-cpu",
+  "samples": 24,
+  "resolution": [
+    1600,
+    900
+  ],
+  "views": [
+    {
+      "view": "skin-gable-skin-n01-west-0",
+      "file": "skin-gable-skin-n01-west-0-pbr.png",
+      "calibratedDistanceM": 6
+    },
+    {
+      "view": "skin-gable-skin-lane-a-w-0",
+      "file": "skin-gable-skin-lane-a-w-0-pbr.png",
+      "calibratedDistanceM": 2.5
+    },
+    {
+      "view": "skin-gable-skin-lane-a-w-1",
+      "file": "skin-gable-skin-lane-a-w-1-pbr.png",
+      "calibratedDistanceM": 6
+    },
+    {
+      "view": "skin-gable-skin-lane-a-e-0",
+      "file": "skin-gable-skin-lane-a-e-0-pbr.png",
+      "calibratedDistanceM": 3
+    },
+    {
+      "view": "skin-gable-skin-lane-a-e-1",
+      "file": "skin-gable-skin-lane-a-e-1-pbr.png",
+      "calibratedDistanceM": 6
+    },
+    {
+      "view": "skin-gable-skin-lane-b-w-0",
+      "file": "skin-gable-skin-lane-b-w-0-pbr.png",
+      "calibratedDistanceM": 2
+    },
+    {
+      "view": "skin-gable-skin-lane-b-w-1",
+      "file": "skin-gable-skin-lane-b-w-1-pbr.png",
+      "calibratedDistanceM": 6
+    },
+    {
+      "view": "skin-gable-skin-lane-b-e-0",
+      "file": "skin-gable-skin-lane-b-e-0-pbr.png",
+      "calibratedDistanceM": 2
+    },
+    {
+      "view": "skin-gable-skin-lane-b-e-1",
+      "file": "skin-gable-skin-lane-b-e-1-pbr.png",
+      "calibratedDistanceM": 6
+    },
+    {
+      "view": "skin-gable-skin-east-133-0",
+      "file": "skin-gable-skin-east-133-0-pbr.png",
+      "calibratedDistanceM": 6
+    }
+  ],
+  "blankGuard": {
+    "frames": [
+      {
+        "file": "skin-gable-skin-n01-west-0-pbr.png",
+        "lumStd255": 16.748,
+        "dominantShare": 0.0868,
+        "blank": false
+      },
+      {
+        "file": "skin-gable-skin-lane-a-w-0-pbr.png",
+        "lumStd255": 37.034,
+        "dominantShare": 0.258,
+        "blank": false
+      },
+      {
+        "file": "skin-gable-skin-lane-a-w-1-pbr.png",
+        "lumStd255": 30.14,
+        "dominantShare": 0.1711,
+        "blank": false
+      },
+      {
+        "file": "skin-gable-skin-lane-a-e-0-pbr.png",
+        "lumStd255": 46.652,
+        "dominantShare": 0.2738,
+        "blank": false
+      },
+      {
+        "file": "skin-gable-skin-lane-a-e-1-pbr.png",
+        "lumStd255": 36.178,
+        "dominantShare": 0.1588,
+        "blank": false
+      },
+      {
+        "file": "skin-gable-skin-lane-b-w-0-pbr.png",
+        "lumStd255": 39.511,
+        "dominantShare": 0.2803,
+        "blank": false
+      },
+      {
+        "file": "skin-gable-skin-lane-b-w-1-pbr.png",
+        "lumStd255": 32.783,
+        "dominantShare": 0.1343,
+        "blank": false
+      },
+      {
+        "file": "skin-gable-skin-lane-b-e-0-pbr.png",
+        "lumStd255": 36.359,
+        "dominantShare": 0.2862,
+        "blank": false
+      },
+      {
+        "file": "skin-gable-skin-lane-b-e-1-pbr.png",
+        "lumStd255": 32.931,
+        "dominantShare": 0.1109,
+        "blank": false
+      },
+      {
+        "file": "skin-gable-skin-east-133-0-pbr.png",
+        "lumStd255": 10.097,
+        "dominantShare": 0.1921,
+        "blank": false
+      }
+    ],
+    "anyBlank": false
+  }
+}

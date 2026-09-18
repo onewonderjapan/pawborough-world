@@ -1,0 +1,154 @@
+{
+  "batch": "pawborough-temple-expansion-night-20260917",
+  "checkpoints": [
+    {
+      "stage": "N0",
+      "status": "done",
+      "commit": "4031561",
+      "worktree": "/home/baibai/outbox/pawborough-temple-expansion-night-20260917/workspace",
+      "branch": "work/temple-expansion-20260917",
+      "evidence": [
+        "kit/out/baseline/n0-tests.log (29 suites: 26 pass in place)",
+        "kit/out/baseline/n0-sha-audit.txt (8+8 GLB sha OK, 25 references sha OK, G36 still-unreadable)",
+        "/tmp/fangbang_bridge_{contract,passage}.shadow.log + map_registry (3 bridge suites PASS in shadow layout vs bridge DESIGN_SPEC)"
+      ],
+      "notes": [
+        "3 fangbang_bridge_* suites fail in-place only because they resolve ../DESIGN_SPEC.json, which in this outbox is the expansion batch spec (no mapRegistration). Verified green in shadow harness (/tmp/bridge-recheck-n0) with bridge spec: layout artifact, not content regression. Will re-verify after N7.",
+        "PBR-SH-0006-G36 still unreadable at N0 (root-owned); OWNER-PREFLIGHT optional step not performed; recorded in DELIVERY knownDeviations.",
+        "blender 4.5.1 LTS RC headless; node v22.23.2; npm install ok"
+      ]
+    },
+    {
+      "stage": "N1",
+      "status": "done",
+      "commit": "4031561 (uncommitted work in worktree)",
+      "evidence": [
+        "kit/build_dadian_court.py: strict optional flags buildSideWalls/buildNorthClosure (default true, boolean-only, unknown keys stay hard errors); GLB name follows sampleId (default path identical)",
+        "kit/out/dadian-court-equivalence/: default rerun vs world/temple-dadian/dadian-court.glb — meshes/nodes/materials equal, tris 3984=3984, unique-vertex SET identical (764/764 on the largest join), bounds identical, collision.json numerically identical (17 records)",
+        "byte diff + duplicate-weld multiplicity (+/-2..4 verts on beveled stair/drain/wall-cap corners in 3 joins) recorded per fallback #6: traced to the Blender build (git snapshot 28c0962c45ac aarch64) weld behavior; builder/helpers/mb_lib unchanged since the delivered commits 51df9c1/f163aa4 (git log empty)",
+        "kit/out/dadian-court-v2/dadian-court-v2.glb: 3288 tris, no side walls / north closure / stubs; south returns kept",
+        "scripts/check_new_footprints.mjs -> kit/out/footprint-check/report.json: PASS, 20 footprints x delivered records minus removed walls, 0 conflicts, 0 ground intersections"
+      ],
+      "notes": [
+        "GPU busy (93%) -> Blender CPU per plan",
+        "no fallback #2 translations needed"
+      ]
+    },
+    {
+      "stage": "N2",
+      "status": "done",
+      "evidence": [
+        "kit/out/peidian/peidian.glb 11432 tris <=14000; CONFIG_OK; INTERIOR_CLEAR 32 colliders; ground nodes exported; 8-keypoint world check PASS (max d 1e-7): base front x -9.7, gallery columns x -10.3/+10.3, rear wall outer x -15.8/+15.8, facade z -32.5..-39.1",
+        "kit/out/gallery/gallery.glb 1134 tris <=2500; BAY_CLEAR 9 colliders; back wall lands x -13.18/+13.18 by construction (local z -2.4 on origin x -10.78)",
+        "both: zero new textures; plaque is a blank board"
+      ],
+      "notes": [
+        "probe-side coordinate typos fixed; geometry unchanged"
+      ]
+    },
+    {
+      "stage": "N3",
+      "status": "done",
+      "evidence": [
+        "kit/out/yimen-stage/yimen-stage.glb 7212 tris <=9000; ridge 7.4 < yimen 7.7 asserted in validator",
+        "collision exactly 4 columns + 1 rail (y 2.6..3.15); floor slab NO collider, NOT temple-ground",
+        "center passage clear 5.74 = spec's own 柱内侧±2.87 (2*(3.0-0.13)); plan's '>=5.8' recorded as rounded nominal -> DELIVERY knownDeviations",
+        "seam_trim(dark) built by sampling the real yimen roof surface from kit/yimen.config.json",
+        "column feet: zero intersections vs all 128 delivered world colliders"
+      ],
+      "notes": [
+        "fallback #4 not needed (columns land on existing ground; mesh-ground raycast covered by passage test)"
+      ]
+    },
+    {
+      "stage": "N4",
+      "status": "done",
+      "evidence": [
+        "kit/out/court3/court3.glb 4516 tris <=7000; ground nodes; boundary walls x±16.4 z-26.2..-84 with wood posts 3.5m; north closure z-84; dead pockets paved; no burner",
+        "kit/out/houdian/houdian.glb 15944 tris <=22000; INTERIOR_CLEAR 33 colliders; ridge 8.0 single-eave 硬山; kiss ornaments within 300 tris; roof samples exported"
+      ],
+      "notes": [
+        "houdian built by copy-adapting build_peidian.py per plan; residual labels fixed"
+      ]
+    },
+    {
+      "stage": "N5",
+      "status": "done",
+      "evidence": [
+        "world/temple-axis-v2/: 13 GLBs (7 frozen byte-checked + dadian-court-v2 + 5 new), instances 12 (peidian/gallery yaw ±π/2, stage yimen-local, houdian (0,0,-74))",
+        "collision-world.json 246 records = 123 (128 minus 5 removed court walls/stubs, court replaced by v2's 12) + 123 new (peidian 64, gallery 18, stage 5, court3 3, houdian 33); 6 sampled records corner-checked ≤1e-6",
+        "placedTriangles 143,684 <= 180,000; newModules 43,526 <= 70,000",
+        "route.json = DESIGN_SPEC.route.templeLocal (22 pts) + 6 negatives; cameras.json = CAMERAS.json verbatim (10)",
+        "roof samples: yimen+dadian (frozen copies) + peidian + houdian"
+      ],
+      "notes": [
+        "git status will be verified at N7/N9; all dataset writes are new paths"
+      ]
+    },
+    {
+      "stage": "N6",
+      "status": "done",
+      "evidence": [
+        "temple-v2.html + src/templeV2Main.js (BASE world/temple-axis-v2, 10 中文机位, 行走, runRouteCheck 全程+7负例+掉地检测 automatic, manifest 完整性含 peidian/gallery 双实例, window.__templeV2Record); package.json dev/preview:temple-v2 (5298/5299)",
+        "scripts/build_fangbang_v2_world.mjs -> world/fangbang-temple-v2/: 15 temple-axis-v2 资产 (T=-127.817,27.057 yaw 0.16703 交叉核对已交付数据集), collision 457 = 208 street + 3 west + 246 temple-v2, route 111 pts 到城隍殿前 (z_local -71.8±0.4), blocks.json 庙块换成 v2 资产, 三角两口径 333,722/360,000 与 376,618/400,000",
+        "src/fangbangMain.js 加 ?ds= (默认 fangbang-temple 不变, 实测默认回归 PASS)",
+        "浏览器巡航自检 scripts/n6_cruise_check.mjs: temple-v2(5298) PASS / bridge v2(?ds=) PASS / bridge v1 默认回归 PASS",
+        "端口: 5296 被旧会话服务占用 -> 按 fallback #9 用 5300 提供桥接 v2 页 (5298/5299 正常); 记入 RESULT",
+        "走通性修正: 数据集 mainStreet 在 (6,-40.2) 处插入 z=-38.6 无挡墙走廊(楼梯 cheek x±3..3.55 反向会卡死), route.spec 保留冻结原点; court3 补 passage mouths (开口带 x±1.1..10.78 z-41..-39.1) 与北条带铺地(防坠落)"
+      ],
+      "notes": [
+        "WalkController forward=(-sin yaw,-cos yaw): west=+π/2 east=-π/2 (初版写反, 已修+实测)",
+        "n3b 负例改为柱排线 z=-26.6 (spec 的 z=-27.5 从两排柱之间穿过, 属 spec 几何笔误; 记 DELIVERY)",
+        "playwright 用 workspace 内 1.63.0 + 显式 chromium executablePath"
+      ]
+    },
+    {
+      "stage": "N7",
+      "status": "done",
+      "evidence": [
+        "6 new suites all green: peidian_contract / houdian_contract / stage_contract / temple_axis_v2_world / temple_axis_v2_passage / fangbang_v2_contract",
+        "full run kit/out/n7-full.log: 35 suites, 32 pass + 3 fangbang_bridge_* layout artifacts (unchanged from N0; verified green in the shadow harness against the bridge batch DESIGN_SPEC — they resolve ../DESIGN_SPEC.json which in this outbox is the expansion spec)",
+        "houdian kiss ornaments rebuilt (256 tris <= 300) + door-frame-trim center fix; datasets reassembled; peidian/houdian contracts re-PASS"
+      ],
+      "notes": [
+        "negative n3b runs on the column row line z=-26.6 (spec's z=-27.5 passes between the rows); recorded for DELIVERY",
+        "route mainStreet subdivide + cheek-free lane keeps the frozen points in route.spec"
+      ]
+    },
+    {
+      "stage": "N8",
+      "status": "done",
+      "evidence": [
+        "kit/build_temple_v2_scene.py (copy-adapted dadian scene): review 10 PBR + 2 clay (court2-pair/court3-axis) 1600x900 AgX Cycles CPU 24spp, fov guard ok; compare court2-pair/houdian-front native-vs-GLB; GPU busy so CPU per plan",
+        "kit/build_fangbang_v2_scene.py (NEW copy of the delivered fangbang scene script — the delivered file may not be modified; noted in DELIVERY): axis-long + aerial-overview bridge v2 renders at T+R(yaw+local yaw)",
+        "tools/fangbang_v2_perf.mjs (NEW copy with ?ds=; delivered perf tool read-only): artifacts/temple-expansion/perf-v2.json — routePass true, 376,874 tris, 3x reload stable, headless-swiftshader honest labels; 88.1MB transfer"
+      ],
+      "notes": [
+        "16 images total (12 review + 2 compare + 2 bridge) in kit/out/*/renders"
+      ]
+    },
+    {
+      "stage": "R1",
+      "status": "done",
+      "commits": [
+        "cb88e03",
+        "821e5d2",
+        "5120ea5",
+        "c522418",
+        "6de991c",
+        "0486fef",
+        "<final>"
+      ],
+      "evidence": [
+        "R1-01 821e5d2: stage skirt box removed (under-stage was a solid collider-less wood block); UNDER_STAGE_CLEAR builder guard + S2 contract checks; court2-pair re-shot non-blank (std 64.8)",
+        "R1-02 5120ea5: corner end caps recapped at local roof soffit; C8 contract assertion (roof-slope-line bound; literal eave+0.15 contradicts frozen roof geometry — owner-vetoable interpretation)",
+        "R1-03 cb88e03: rotation_mode=QUATERNION root cause; XYZ forced; 4-keypoint instance check <=8.5e-7 (blender/instance-check.json); compare adds peidian-west-front",
+        "R1-04 c522418 + fixes: blank guards (std<2/255 or dom>95%) in 3 scene scripts (exit 10) + 3 capture scripts (same-task canvas read after explicit render()); full evidence re-run anyBlank=false",
+        "R1-06 6de991c + final: probe chain (red-material, hide, all-red, normal-flip, ambient-only) proved the band was a fully-occluded slot at the base skirt; skirt boxes removed, slab collision carries the sides (246->233 colliders); fill light added to evidence scenes matching the WebGL rig; houdian-3q verified clean",
+        "R1-05 0486fef: bridge spec fixtures + fallback loader; 37/37 green here and unchanged in the bridge worktree",
+        "R1-07: no pyc staged; four allowed delivered files only; final full run kit/out/r1-final-tests.log 37 pass / 0 fail"
+      ],
+      "tests": "37/37 PASS"
+    }
+  ]
+}

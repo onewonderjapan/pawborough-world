@@ -1,0 +1,218 @@
+{
+  "dataset": "fangbang-temple-v2",
+  "view": "shanmen-from-road",
+  "mode": "view",
+  "paused": false,
+  "clay": false,
+  "ready": true,
+  "skins": {
+    "count": 10,
+    "bytes": 7913588,
+    "triangles": 1080,
+    "colliders": 10,
+    "manifest": "street-sidefaces"
+  },
+  "resources": {
+    "meshes": 458,
+    "triangles": 377906,
+    "uniqueGeometries": 429,
+    "uniqueMaterials": 369,
+    "uniqueTextures": 299
+  },
+  "trianglesExpected": 376826,
+  "load": {
+    "bytesTotal": 62788956,
+    "bytesBase": 20571620,
+    "bytesWestSurface": 1308304,
+    "bytesEastTail": 985560,
+    "bytesSealWall": 2804,
+    "bytesTemple": 29427892,
+    "bytesShops": 10492776,
+    "extraGroundTriangles": 11436,
+    "wallColliders": 467,
+    "allAssetsReadyMs": 3027,
+    "fpsNotMeasured": true,
+    "localOnly": true,
+    "shaderCompileMs": 27
+  },
+  "render": {
+    "callsIncludingShadow": 359,
+    "trianglesIncludingShadow": 220674,
+    "cpuSubmitMs": 2.5
+  },
+  "camera": {
+    "position": [
+      -8.59,
+      2.4,
+      -6.471
+    ],
+    "target": [
+      -2.88,
+      2.6,
+      -8.316
+    ],
+    "fovDeg": 55
+  },
+  "cameraCheck": {
+    "view": "shanmen-from-road",
+    "dPos": 0,
+    "dFov": 0,
+    "pass": true
+  },
+  "routeCheck": {
+    "pass": true,
+    "automatic": true,
+    "results": {
+      "forward": {
+        "blocked": null,
+        "stuckOutside": null,
+        "feetY": 0.02,
+        "stop": [
+          -139.7,
+          -43.6
+        ],
+        "finalLocalZ": -71.63,
+        "terminusLocalZ": -71.8,
+        "maxJointStallS": 0,
+        "stallWhere": null,
+        "pass": true
+      },
+      "return": {
+        "done": true,
+        "feetY": 0.02,
+        "stop": [
+          123,
+          27.4
+        ],
+        "target": [
+          124.6,
+          27.6
+        ],
+        "pass": true
+      },
+      "sealWall": {
+        "spawn": [
+          -146.388,
+          0,
+          43.473
+        ],
+        "final": [
+          -149.03,
+          42.46
+        ],
+        "advanced": 2.83,
+        "feetY": 0.02,
+        "assert": "stopped by the seal wall; x never crosses the wall plane at westEndGlb",
+        "pass": true
+      },
+      "shopPlaceholder": {
+        "spawn": [
+          -104.732,
+          0,
+          35.125
+        ],
+        "final": [
+          -104.03,
+          29.51
+        ],
+        "advanced": 5.66,
+        "feetY": 0.11,
+        "obbGapM": 0.374,
+        "assert": "stopped by the placeholder collider (capsule may slide along the face but never enters the box)",
+        "pass": true
+      },
+      "forecourtEast": {
+        "spawn": [
+          -121.402,
+          0,
+          29.018
+        ],
+        "final": [
+          -118.64,
+          30.36
+        ],
+        "advanced": 3.08,
+        "feetY": 0.024,
+        "assert": "stopped by the R1-02 forecourt boundary wall (temple-local x=+9, h 0.9); never falls",
+        "pass": true
+      },
+      "dadianDoors": {
+        "spawn": [
+          -134.883,
+          0,
+          -14.852
+        ],
+        "final": [
+          -133.7,
+          -16.55
+        ],
+        "advanced": 2.07,
+        "feetY": 0.87,
+        "finalLocalZ": -43.978,
+        "assert": "stopped by the dadian closed doors: final temple-local z stays north of -44.0 (same assertion as temple_dadian_passage, in world coordinates)",
+        "pass": true
+      }
+    },
+    "summary": "去程至闭门前(z_local=-71.63)·返程达·端墙挡✓·占位挡✓·前院东界✓·闭门挡✓·接缝最长停滞0s",
+    "ms": 2157,
+    "waypoints": 114
+  },
+  "walking": {
+    "walkingVerified": false,
+    "manualKeyboardWalkTested": false,
+    "walkResets": 0,
+    "capsuleFeet": [
+      123.04605102539062,
+      0.020151066780090376,
+      27.356121063232422
+    ],
+    "eyeHeightM": 1.6,
+    "capsuleRadiusM": 0.35,
+    "autoPhysicsCruise": null,
+    "manualWalkClaim": false,
+    "blocks": {
+      "active": [
+        "block-review-street",
+        "block-adjacent-east",
+        "block-adjacent-west",
+        "block-east-edge-shops",
+        "block-street-completion-shops",
+        "block-temple-axis"
+      ],
+      "epoch": 0
+    }
+  },
+  "presentation": {
+    "placeholdersVisible": true,
+    "viewPreference": true,
+    "hiddenPlaceholderIds": [],
+    "loadedPlaceholderCount": 26,
+    "placeholderColliders": 26
+  },
+  "mapRegistration": {
+    "footOnCenterlineGlb": [
+      -125.722,
+      0,
+      39.482
+    ],
+    "translationGlb": [
+      -127.817,
+      0,
+      27.057
+    ],
+    "yawRad": 0.16703,
+    "ownerAdopted": false
+  },
+  "ownerAdopted": false,
+  "browserRendered": true,
+  "framebuffer": [
+    300,
+    150
+  ],
+  "lighting": {
+    "shadows": true,
+    "toneMapping": "AgX",
+    "exposure": 1,
+    "sunIntensity": 2.4
+  }
+}

@@ -1,0 +1,189 @@
+{
+  "framebuffer": [
+    1280,
+    960
+  ],
+  "cameraPolicy": "self-calibrated along the outward normal: largest distance whose ray hits the skin slab first (lane-mouth slabs sit inside ~2 m gaps)",
+  "cameras": [
+    {
+      "id": "skin-gable-skin-n01-west-0",
+      "positionGlb": [
+        -8.59,
+        2.4,
+        -6.471
+      ],
+      "targetGlb": [
+        -2.88,
+        2.6,
+        -8.316
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 6,
+      "tangentPullM": 0,
+      "labelZh": "侧背面外皮取证 · gable-skin-n01-west（N01-plain-v1-left-side）",
+      "skinCollider": "gableskin:N01-plain-v1-left-side"
+    },
+    {
+      "id": "skin-gable-skin-lane-a-w-0",
+      "positionGlb": [
+        44.474,
+        2.4,
+        -8.13
+      ],
+      "targetGlb": [
+        42.378,
+        2.6,
+        -13.312
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 2.5,
+      "tangentPullM": 5,
+      "labelZh": "侧背面外皮取证 · gable-skin-lane-a-w（N05-restaurant-a-right-side）",
+      "skinCollider": "gableskin:N05-restaurant-a-right-side"
+    },
+    {
+      "id": "skin-gable-skin-lane-a-w-1",
+      "positionGlb": [
+        39.792,
+        2.4,
+        -23.128
+      ],
+      "targetGlb": [
+        39.317,
+        2.6,
+        -17.147
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 6,
+      "tangentPullM": 0,
+      "labelZh": "侧背面外皮取证 · gable-skin-lane-a-w（N05-restaurant-a-back-wall）",
+      "skinCollider": "gableskin:N05-restaurant-a-back-wall"
+    },
+    {
+      "id": "skin-gable-skin-lane-a-e-0",
+      "positionGlb": [
+        40.563,
+        2.4,
+        -7.815
+      ],
+      "targetGlb": [
+        44.357,
+        2.6,
+        -12.244
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 3,
+      "tangentPullM": 5,
+      "labelZh": "侧背面外皮取证 · gable-skin-lane-a-e（N06-curio-a-left-side）",
+      "skinCollider": "gableskin:N06-curio-a-left-side"
+    },
+    {
+      "id": "skin-gable-skin-lane-a-e-1",
+      "positionGlb": [
+        49.115,
+        2.4,
+        -20.241
+      ],
+      "targetGlb": [
+        48.112,
+        2.6,
+        -14.325
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 6,
+      "tangentPullM": 0,
+      "labelZh": "侧背面外皮取证 · gable-skin-lane-a-e（N06-curio-a-back-wall）",
+      "skinCollider": "gableskin:N06-curio-a-back-wall"
+    },
+    {
+      "id": "skin-gable-skin-lane-b-w-0",
+      "positionGlb": [
+        57.779,
+        2.4,
+        16.288
+      ],
+      "targetGlb": [
+        58.323,
+        2.6,
+        10.93
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 2,
+      "tangentPullM": 5,
+      "labelZh": "侧背面外皮取证 · gable-skin-lane-b-w（S05-plain-v3-left-side）",
+      "skinCollider": "gableskin:S05-plain-v3-left-side"
+    },
+    {
+      "id": "skin-gable-skin-lane-b-w-1",
+      "positionGlb": [
+        51.051,
+        2.4,
+        17.6
+      ],
+      "targetGlb": [
+        53.83,
+        2.6,
+        12.283
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 6,
+      "tangentPullM": 0,
+      "labelZh": "侧背面外皮取证 · gable-skin-lane-b-w（S05-plain-v3-back-wall）",
+      "skinCollider": "gableskin:S05-plain-v3-back-wall"
+    },
+    {
+      "id": "skin-gable-skin-lane-b-e-0",
+      "positionGlb": [
+        55.445,
+        2.4,
+        15.026
+      ],
+      "targetGlb": [
+        59.708,
+        2.6,
+        11.735
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 2,
+      "tangentPullM": 5,
+      "labelZh": "侧背面外皮取证 · gable-skin-lane-b-e（S07-plain-v2-right-side）",
+      "skinCollider": "gableskin:S07-plain-v2-right-side"
+    },
+    {
+      "id": "skin-gable-skin-lane-b-e-1",
+      "positionGlb": [
+        57.883,
+        2.4,
+        21.433
+      ],
+      "targetGlb": [
+        60.931,
+        2.6,
+        16.265
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 6,
+      "tangentPullM": 0,
+      "labelZh": "侧背面外皮取证 · gable-skin-lane-b-e（S07-plain-v2-back-wall）",
+      "skinCollider": "gableskin:S07-plain-v2-back-wall"
+    },
+    {
+      "id": "skin-gable-skin-east-133-0",
+      "positionGlb": [
+        130.159,
+        2.4,
+        38.153
+      ],
+      "targetGlb": [
+        124.316,
+        2.6,
+        36.788
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 6,
+      "tangentPullM": 0,
+      "labelZh": "侧背面外皮取证 · gable-skin-east-133（east-shop-133-gable-wall-east-b0s0）",
+      "skinCollider": "gableskin:east-shop-133-gable-wall-east-b0s0"
+    }
+  ]
+}
