@@ -31,16 +31,16 @@
     "bytesTemple": 29410532,
     "bytesShops": 50781364,
     "extraGroundTriangles": 11280,
-    "wallColliders": 687,
-    "allAssetsReadyMs": 4809,
+    "wallColliders": 689,
+    "allAssetsReadyMs": 4494,
     "fpsNotMeasured": true,
     "localOnly": true,
-    "shaderCompileMs": 32
+    "shaderCompileMs": 34
   },
   "render": {
-    "callsIncludingShadow": 114,
-    "trianglesIncludingShadow": 171044,
-    "cpuSubmitMs": 1.9
+    "callsIncludingShadow": 108,
+    "trianglesIncludingShadow": 162300,
+    "cpuSubmitMs": 3.8
   },
   "camera": {
     "position": [
@@ -140,7 +140,7 @@
       }
     },
     "summary": "去程至闭门前(z_local=-71.63)·返程达·端墙挡✓·前院东界✓·闭门挡✓·接缝最长停滞0s",
-    "ms": 2569,
+    "ms": 2554,
     "waypoints": 114
   },
   "walking": {

@@ -1,6 +1,6 @@
 {
   "dataset": "fangbang-temple-v3",
-  "view": "axis-long",
+  "view": "temple-side-east",
   "mode": "view",
   "paused": false,
   "clay": false,
@@ -31,32 +31,32 @@
     "bytesTemple": 29410532,
     "bytesShops": 50781364,
     "extraGroundTriangles": 11280,
-    "wallColliders": 687,
-    "allAssetsReadyMs": 4809,
+    "wallColliders": 689,
+    "allAssetsReadyMs": 4494,
     "fpsNotMeasured": true,
     "localOnly": true,
-    "shaderCompileMs": 32
+    "shaderCompileMs": 34
   },
   "render": {
-    "callsIncludingShadow": 108,
-    "trianglesIncludingShadow": 162300,
-    "cpuSubmitMs": 1.7
+    "callsIncludingShadow": 88,
+    "trianglesIncludingShadow": 146454,
+    "cpuSubmitMs": 1.8
   },
   "camera": {
     "position": [
-      -125.822,
+      -113.702,
       1.6,
-      38.89
+      14.536
     ],
     "target": [
-      -135.465,
+      -131.308,
       6,
-      -18.303
+      6.349
     ],
-    "fovDeg": 45
+    "fovDeg": 55
   },
   "cameraCheck": {
-    "view": "axis-long",
+    "view": "temple-side-east",
     "dPos": 0,
     "dFov": 0,
     "pass": true
@@ -140,7 +140,7 @@
       }
     },
     "summary": "去程至闭门前(z_local=-71.63)·返程达·端墙挡✓·前院东界✓·闭门挡✓·接缝最长停滞0s",
-    "ms": 2569,
+    "ms": 2554,
     "waypoints": 114
   },
   "walking": {

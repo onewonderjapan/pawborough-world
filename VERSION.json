@@ -1,11 +1,11 @@
 {
   "batch": "pawborough-v1-candidate-night-20260918",
   "role": "v1.0 CANDIDATE — not adopted; every ownerAdopted stays false until the owner rules (GATE.md)",
-  "generatedAt": "2026-09-18T13:18:34.713Z",
+  "generatedAt": "2026-09-18T15:34:47.545Z",
   "git": {
-    "head": "9669909ab8147e9ccb8c68147917ae4f78c88aeb",
+    "head": "39acea77132feaa65bf8c0c45383ca94717b830e",
     "branch": "work/v1-candidate-20260918",
-    "subject": "v1-candidate C5-C6: restore_check PASS (git clone --shared + git lfs pull with GLB-magic sentinel + fresh-environment verify_all 8/8 in /tmp clone, thrown-away afterwards); v1-candidate artifacts delivered (RESULT/PROGRESS/DELIVERY with GATE.md appended verbatim, verify/restore/compressed/video-source reports, hub screenshot, scene-v1 CPU renders); video-source report records GPU-busy CUDA skip"
+    "subject": "R1-03: westShopsBlock budget re-scoped 180k -> 200k per lead (RESULT records 'lead re-scoped 2026-09-18'; actual 188,898 incl. 5 strips now passes; module swap left to GATE G4); manifest limit/pass and W4 assertion updated"
   },
   "tools": {
     "node": "v22.23.2",
@@ -74,8 +74,8 @@
       "status": null,
       "cameras": 11,
       "files": 461,
-      "totalBytes": 465761740,
-      "filesDigest": "cba4cad22bb74561d7f591a654a7e94ba9fcad3fed47f02ae5a3c821c4d37f62"
+      "totalBytes": 465763388,
+      "filesDigest": "f3c1872d58727ca9c7e6ff7fb68513e593e1dfc23727083e0ad891cff67262e6"
     },
     {
       "id": "world/east-edge",
@@ -107,8 +107,8 @@
       "status": "delivered_for_lead_review",
       "cameras": 8,
       "files": 44,
-      "totalBytes": 41327853,
-      "filesDigest": "656907967ccf0a123e4c18cc19e1cdf6194e456924d83949f13a5aefb47cfa32"
+      "totalBytes": 41329501,
+      "filesDigest": "2115eb436f2f357cf081ef6cbe470f807ca34913222335b8740e7d84fae4ebba"
     },
     {
       "id": "fangbang-temple",
@@ -557,8 +557,8 @@
     },
     {
       "path": "world/fangbang-temple-v3/blocks.json",
-      "bytes": 38018,
-      "sha256": "946864c768de0e28fad537d0c344399fe91b8e7b806fe98fe3c9ea83345ecc9b"
+      "bytes": 38139,
+      "sha256": "a3769ee6ac439fd33cef8e9719a091b9f0831d47af28a5f0c7fad2840fd40744"
     },
     {
       "path": "world/fangbang-temple-v3/cameras.json",
@@ -567,13 +567,13 @@
     },
     {
       "path": "world/fangbang-temple-v3/collision-world.json",
-      "bytes": 377008,
-      "sha256": "b23bc0bdde04cd6a21007fdf46898d40233332315e458b62343527f01c28261b"
+      "bytes": 376853,
+      "sha256": "5b4130197ad1c1c43407e98b3f0f888b81ff010c9d528a47b32b78a8be2e73ed"
     },
     {
       "path": "world/fangbang-temple-v3/instances.json",
-      "bytes": 14668,
-      "sha256": "814bfc469fb857cd002e542e202636442c44c3387e7d8b76bd546ba307bb70b4"
+      "bytes": 14639,
+      "sha256": "79b05c23a4c56ba345a863f7479bc56ce0a9bcb81921dd28451867a82b2a45f6"
     },
     {
       "path": "world/fangbang-temple-v3/review-manifest.cm.json",
@@ -582,8 +582,8 @@
     },
     {
       "path": "world/fangbang-temple-v3/review-manifest.json",
-      "bytes": 39134,
-      "sha256": "c65ce1b007bb8676dc9bfc435b387ddeb7677e263beef8897e2e7673ff757f3d"
+      "bytes": 39141,
+      "sha256": "546964f116c619daeaaaf379b5b13767e5bccbcec43db6dcdf3adfd0347233bc"
     },
     {
       "path": "world/fangbang-temple-v3/route.json",
@@ -772,8 +772,8 @@
     },
     {
       "path": "world/fangbang-temple-v3/westshops-strips.glb",
-      "bytes": 10308,
-      "sha256": "7cfab69a43be6890c2c19f3ce93f755ae2aa9ff2687cf46406b1a073ce9eafb0"
+      "bytes": 12012,
+      "sha256": "2f74208ad15b3871ed90703583803454858bfcdb0fbd0eb243ec05735b42a6c4"
     },
     {
       "path": "world/fangbang-temple/blocks.json",
