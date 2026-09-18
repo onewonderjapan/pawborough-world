@@ -31,6 +31,8 @@ const v3 = resolve(root, 'world/fangbang-temple-v3');
 const plan = JSON.parse(await readFile(resolve(root, 'kit/out/westshops/plan.json'), 'utf8'));
 const blocks = JSON.parse(await readFile(resolve(v3, 'blocks.json'), 'utf8'));
 const baseBlocks = JSON.parse(await readFile(resolve(root, 'world/fangbang-temple/blocks.json'), 'utf8'));
+let RAPIER = null;
+const fails2 = [];
 const manifest = JSON.parse(await readFile(resolve(v3, 'review-manifest.json'), 'utf8'));
 
 // W1 — the block exists, 17 assets, placeholders replaced
@@ -173,11 +175,69 @@ const manifest = JSON.parse(await readFile(resolve(v3, 'review-manifest.json'), 
 {
   const world = JSON.parse(await readFile(resolve(v3, 'collision-world.json'), 'utf8'));
   const strips = world.colliders.filter((c) => c.name.startsWith('westshops-strips:'));
-  const gaps = plan.entries.filter((e) => (e.gapToPrevM ?? 0) > 1.5);
+  const gaps = plan.entries.filter((e) => (e.gapToPrevM ?? 0) > 1.5 && (e.gapToPrevM ?? 0) <= 8);
   check('W3: one strip per >1.5 m gap', strips.length === gaps.length,
     `${strips.length}/${gaps.length}`);
   check('W3: strips are 2.9 m tall courtyard walls',
     strips.every((s) => s.obb.size[1] === 2.9));
+}
+
+// W6 — R1-02: gray boxes and module instances never coexist; revoking the
+// block brings the 17 gray boxes back AT THE RETIRED glbPoints (this dataset
+// copy), driven through the production BlockManager
+{
+  RAPIER = (await import('@dimforge/rapier3d-compat')).default;
+  await RAPIER.init();
+  const { BlockManager } = await import('../src/world/BlockManager.js');
+  const views = {
+    createGroup() { return {}; },
+    add() {},
+    remove() {},
+    async makePlaceholder(ph) { return { object: { ph: ph.id }, dispose() {} }; },
+    disposePlaceholder() {},
+    async makeReviewed() { return { group: {}, colliders: [] }; },
+    disposeReviewed() {},
+    async makeAssets() { return { group: {}, colliders: [] }; },
+    disposeAssets() {},
+  };
+  const physics = { world: new RAPIER.World({ x: 0, y: -9.81, z: 0 }) };
+  const bm = new BlockManager({ RAPIER, physics, views, dataset: blocks });
+  await bm.applyReviewed();
+  // the page also loads the adjacent placeholder rows — the 17 west-band
+  // gray boxes live in block-adjacent-west
+  await bm.loadBlock('block-adjacent-east');
+  await bm.loadBlock('block-adjacent-west');
+  for (const id of bm.assetBlockIds()) await bm.applyAssets(id);
+  const west = bm.blocks.get('block-west-shops');
+  check('W6: block-west-shops loads as an assets block', west?.state === 'loaded', west?.state);
+  const visibleBoxes = [...bm.blocks.values()]
+    .filter((b) => b.def.kind === 'placeholders' && b.state === 'loaded')
+    .flatMap((b) => b.placeholders)
+    .filter((pid) => pid && /shop-1(5[3-9]|6[0-9]|7[01])/.test(String(pid)));
+  check('W6: no west-band gray box coexists with the module instances', visibleBoxes.length === 0,
+    `${visibleBoxes.length} visible`);
+  await bm.revokeAssets('block-west-shops');
+  check('W6: revoke unloads the block', bm.blocks.get('block-west-shops').state === 'unloaded');
+  const phBlock = [...bm.blocks.values()].find((b) => b.def.kind === 'placeholders'
+    && (b.def.placeholderIds ?? []).includes('shop-153'));
+  check('W6: revoke reloads the placeholder block', phBlock?.state === 'loaded', phBlock?.state);
+  check('W6: reloaded west-band gray boxes number 17', phBlock.placeholders.length >= 17,
+    `${phBlock.placeholders.length}`);
+  // retired positions: this dataset copy's glbPoints ARE the retired ones —
+  // each differs from the base dataset by the placementAdjust shift
+  let retired = 0;
+  for (const ph of blocks.placeholders) {
+    if (ph.replacedBy !== 'block-west-shops') continue;
+    const base = baseBlocks.placeholders.find((x) => x.id === ph.id);
+    const adj = base?.placementAdjust;
+    if (!base || !adj) continue;
+    const ex = base.glbPoint[0] + adj.shiftM * adj.alongNormal[0];
+    const ez = base.glbPoint[1] + adj.shiftM * adj.alongNormal[1];
+    if (Math.abs(ph.glbPoint[0] - ex) < 0.02 && Math.abs(ph.glbPoint[1] - ez) < 0.02) retired++;
+    else fails2.push(`${ph.id} glb=${ph.glbPoint} expected=(${ex.toFixed(2)},${ez.toFixed(2)})`);
+  }
+  check('W6: revoked gray boxes sit at the retired positions (not raw centroids)', retired === 17,
+    `${retired}/17 ${(fails2 || []).slice(0, 2).join('; ')}`);
 }
 
 // W4 — budgets

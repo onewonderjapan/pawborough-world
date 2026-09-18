@@ -119,18 +119,16 @@ const STRIP_H = 2.9, STRIP_T = 0.28;
     for (let i = 1; i < list.length; i++) {
       const a = list[i - 1], b = list[i];
       const gap = b.gapToPrevM ?? 0;
-      if (gap <= 1.5) continue;
+      if (gap <= 1.5 || gap > 8) continue; // >8 m = open stretch, no wall
       // strip center = the real midpoint of the two front walls (the R1-01
       // frontline is curved, so a tangent-axis reconstruction would drift)
       const cx = (a.finalCenter[0] + b.finalCenter[0]) / 2;
       const cz = (a.finalCenter[2] + b.finalCenter[2]) / 2;
-      // Axis-aligned long axis (local Z -> world -X): the physics layer builds
-      // wall colliders from the AABB, so a rotated strip would inflate into an
-      // invisible barrier spanning the road (the 41 m gap strip's AABB covered
-      // the whole sidewalk). Frontlines are near-parallel to X here, so an
-      // axis-aligned courtyard wall reads correctly and collides exactly.
-      const theta = Math.PI / 2;
-      void a.tangent;
+      // courtyard walls only make sense for SHORT gaps (up to MAX_STRIP_M):
+      // the 41 m "gaps" are open stretches between shop GROUPS, and a wall
+      // there would lie across the road/sidewalk (and across the cruise
+      // route). Long axis along the pair's frontline tangent.
+      const theta = Math.atan2(-T[0], T[1]);
       const id = `weststrip-${side}-${i}`;
       const corners = [];
       for (const sx of [-1, 1]) for (const sz of [-1, 1])
@@ -552,9 +550,21 @@ await writeFile(resolve(OUT, 'review-manifest.json'), JSON.stringify(manifest, n
     bytes: a.bytes, sha256: a.sha256 }));
   tb.collisionSource = './world/fangbang-temple-v3/collision-world.json';
   tb.note = 'west-band upgrade: 17 placeholders replaced by frozen street modules per category map (owner-vetoable, revoke = delete block)';
+  // R1-02: a revoked gray box must reappear at the bridge-R1 RETIRED position
+  // (glbPoint + shiftM·alongNormal), not the raw map centroid — update the
+  // glbPoint of exactly the 17 west-band placeholders in THIS dataset copy
   for (const ph of base2.placeholders) {
-    if ((specB.packageB_westBandShops.placeholderIds).includes(ph.id)) ph.replacedBy = 'block-west-shops';
+    if (!(specB.packageB_westBandShops.placeholderIds).includes(ph.id)) continue;
+    ph.replacedBy = 'block-west-shops';
+    const adj = ph.placementAdjust;
+    if (adj) {
+      ph.glbPoint = [+(ph.glbPoint[0] + adj.shiftM * adj.alongNormal[0]).toFixed(4),
+                     +(ph.glbPoint[1] + adj.shiftM * adj.alongNormal[1]).toFixed(4)];
+    }
   }
+  base2.note = base2.note
+    ? base2.note + ' | west-band placeholder glbPoints retired to the bridge-R1 front line (revoke shows gray boxes there)'
+    : 'west-band placeholder glbPoints retired to the bridge-R1 front line (revoke shows gray boxes there)';
   await writeFile(resolve(OUT, 'blocks.json'), JSON.stringify(base2, null, 2) + '\n');
 }
 

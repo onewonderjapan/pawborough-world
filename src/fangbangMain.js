@@ -642,6 +642,11 @@ async function load() {
   for (const id of blocks.assetBlockIds()) await blocks.applyAssets(id);
   await blocks.loadBlock('block-adjacent-east');
   await blocks.loadBlock('block-adjacent-west');
+  // R1-02: ?revoke=<blockId> lets a reviewer see the dataset WITHOUT an
+  // assets block — its replaced placeholders reappear as gray boxes (at
+  // their retired glbPoints in this dataset copy)
+  const revokeId = PARAMS.get('revoke');
+  if (revokeId && blocks.blocks.get(revokeId)) await blocks.revokeAssets(revokeId);
   blocks.setPlaceholdersVisible(placeholderPref);
   world.updateMatrixWorld(true);
 
@@ -649,7 +654,12 @@ async function load() {
   // + every autoApply asset block (temple axis, refined shops), all matched to
   // manifest bytes/sha — a missing entry fails loudly instead of shipping
   // made-up numbers
-  const assetBlocks = session.blocks.blocks.filter((b) => b.kind === 'assets' && b.autoApply);
+  // only blocks actually ON SCREEN count: ?revoke=<id> unloads that assets
+  // block before this point, so its assets are gone from the scene — the
+  // expectation follows reality (session.blocks is the dataset JSON; the
+  // BlockManager instance lives in `blocks`)
+  const revokedBlock = PARAMS.get('revoke');
+  const assetBlocks = session.blocks.blocks.filter((b) => b.kind === 'assets' && b.autoApply && b.id !== revokedBlock);
   const manifestAssets = [
     ...(manifest.eastEdgeAssets?.assets ?? []),
     ...(manifest.streetCompletion?.assets ?? []),

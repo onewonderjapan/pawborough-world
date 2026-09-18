@@ -10,6 +10,7 @@ const BASE = process.env.BASE_URL ?? 'http://127.0.0.1:5304';
 const MODES = [
   { url: '/fangbang.html?ds=fangbang-temple-v3&skins=1', label: 'v3+skins' },
   { url: '/fangbang.html?ds=fangbang-temple-v3', label: 'v3' },
+  { url: '/fangbang.html?ds=fangbang-temple-v3&revoke=block-west-shops', label: 'v3+revoke' },
   { url: '/fangbang.html', label: 'default' },
 ];
 

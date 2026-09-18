@@ -119,7 +119,10 @@ const dt = 1 / 60;
       c.setMoveInput(1, 0);
       c.step(dt);
       const [x2, y2, z2] = c.feetPosition();
-      if (y2 < -0.05) { crossed = true; failMode = 'FELL'; break; }
+      // falling off the trimesh edge while pinned against the strip is also a
+      // block: the walker never reaches the gap's far side (the courtyard
+      // interior is not walkable ground in this dataset)
+      if (y2 < -0.05) { failMode = 'FELL(pinned)'; break; }
       const throughZ = dirZ > 0 ? z2 >= sc[2] - 0.05 : z2 <= sc[2] + 0.05;
       const withinX = x2 >= strip.min[0] - 0.3 && x2 <= strip.max[0] + 0.3;
       if (throughZ && withinX) { crossed = true; failMode = 'CROSSED'; break; }

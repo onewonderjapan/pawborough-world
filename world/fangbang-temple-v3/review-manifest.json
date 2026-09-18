@@ -358,9 +358,9 @@
     {
       "id": "westshops-strips",
       "path": "./world/fangbang-temple-v3/westshops-strips.glb",
-      "bytes": 25500,
-      "sha256": "1b49e33e92f80027ea334937c957c36ff0aa20e4762c069cce6ee8704e7e13dc",
-      "triangles": 264
+      "bytes": 12012,
+      "sha256": "2f74208ad15b3871ed90703583803454858bfcdb0fbd0eb243ec05735b42a6c4",
+      "triangles": 120
     },
     {
       "id": "westext-surface",
@@ -397,7 +397,7 @@
   "triangleAccounting": {
     "bridgeWorldTris": 333774,
     "fullSceneTris": 376670,
-    "westshopsPlacedTris": 188898,
+    "westshopsPlacedTris": 188754,
     "budget": {
       "westShopsBlockLimit": 180000,
       "fullSceneV3Limit": 600000,
@@ -409,7 +409,7 @@
       "westExtension": 5972,
       "tailShops": 41428,
       "eastTailSurface": 1468,
-      "westshopsModules": 188898
+      "westshopsModules": 188754
     }
   },
   "templeAxis": {
@@ -882,7 +882,7 @@
         "triangles": 21788
       }
     ],
-    "placedTriangles": 188898,
+    "placedTriangles": 188754,
     "lifecycle": "revoke block-west-shops in blocks.json to return the gray placeholders (placeholders carry replacedBy)"
   },
   "eastEdgeAssets": {
@@ -1250,12 +1250,12 @@
   },
   "budgets": {
     "westShopsBlock": {
-      "actual": 188898,
+      "actual": 188754,
       "limit": 180000,
       "pass": false
     },
     "fullSceneV3": {
-      "actual": 522672,
+      "actual": 522528,
       "limit": 600000,
       "pass": true
     },
