@@ -1,5 +1,9 @@
 {
   "spec": "packageB_westBandShops",
+  "frontline": {
+    "rule": "front wall center = centerline foot + normal × 5.6 (south normal on the north row, negated on the south row); yaw = atan2(nx, nz)",
+    "source": "kit/out/fangbang-temple/west-extension-spec.json samples (the BUILT west-extension centerline)"
+  },
   "moduleDims": {
     "plain-v1": {
       "facadeM": 12,
@@ -46,834 +50,465 @@
       "depthM": 5.83
     }
   },
-  "shiftLog": [
-    {
-      "side": "north",
-      "a": "shop-154",
-      "b": "shop-156",
-      "overlapM": 3.53,
-      "shifted": {
-        "shop-154": -1.77,
-        "shop-156": 1.77
-      }
-    },
-    {
-      "side": "north",
-      "a": "shop-156",
-      "b": "shop-158",
-      "overlapM": 4.68,
-      "shifted": {
-        "shop-156": -2.34,
-        "shop-158": 2.34
-      }
-    },
-    {
-      "side": "north",
-      "a": "shop-154",
-      "b": "shop-156",
-      "overlapM": 2.34,
-      "shifted": {
-        "shop-154": -2.34
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-170",
-      "b": "shop-168",
-      "overlapM": 1.12,
-      "shifted": {
-        "shop-170": -0.56,
-        "shop-168": 0.56
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-168",
-      "b": "shop-166",
-      "overlapM": 0.63,
-      "shifted": {
-        "shop-168": -0.32,
-        "shop-166": 0.32
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-170",
-      "b": "shop-168",
-      "overlapM": 0.32,
-      "shifted": {
-        "shop-170": -0.32
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-166",
-      "b": "shop-164",
-      "overlapM": 0.25,
-      "shifted": {
-        "shop-166": -0.13,
-        "shop-164": 0.13
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-162",
-      "b": "shop-161",
-      "overlapM": 3.42,
-      "shifted": {
-        "shop-162": -1.71,
-        "shop-161": 1.71
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-161",
-      "b": "shop-160",
-      "overlapM": 2.86,
-      "shifted": {
-        "shop-161": -1.43,
-        "shop-160": 1.43
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-162",
-      "b": "shop-161",
-      "overlapM": 1.43,
-      "shifted": {
-        "shop-162": -1.43
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-160",
-      "b": "shop-159",
-      "overlapM": 2.46,
-      "shifted": {
-        "shop-160": -1.23,
-        "shop-159": 1.23
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-161",
-      "b": "shop-160",
-      "overlapM": 1.23,
-      "shifted": {
-        "shop-161": -1.23
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-162",
-      "b": "shop-161",
-      "overlapM": 1.23,
-      "shifted": {
-        "shop-162": -1.23
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-159",
-      "b": "shop-157",
-      "overlapM": 3.11,
-      "shifted": {
-        "shop-159": -1.55,
-        "shop-157": 1.55
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-160",
-      "b": "shop-159",
-      "overlapM": 1.55,
-      "shifted": {
-        "shop-160": -1.55
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-161",
-      "b": "shop-160",
-      "overlapM": 1.55,
-      "shifted": {
-        "shop-161": -1.55
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-162",
-      "b": "shop-161",
-      "overlapM": 1.55,
-      "shifted": {
-        "shop-162": -1.55
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-157",
-      "b": "shop-155",
-      "overlapM": 6.83,
-      "shifted": {
-        "shop-157": -3.41,
-        "shop-155": 3.41
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-159",
-      "b": "shop-157",
-      "overlapM": 3.41,
-      "shifted": {
-        "shop-159": -3.41
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-160",
-      "b": "shop-159",
-      "overlapM": 3.41,
-      "shifted": {
-        "shop-160": -3.41
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-161",
-      "b": "shop-160",
-      "overlapM": 3.41,
-      "shifted": {
-        "shop-161": -3.41
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-162",
-      "b": "shop-161",
-      "overlapM": 3.41,
-      "shifted": {
-        "shop-162": -3.41
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-164",
-      "b": "shop-162",
-      "overlapM": 3.01,
-      "shifted": {
-        "shop-164": -3.01
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-166",
-      "b": "shop-164",
-      "overlapM": 3.01,
-      "shifted": {
-        "shop-166": -3.01
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-168",
-      "b": "shop-166",
-      "overlapM": 3.13,
-      "shifted": {
-        "shop-168": -3.13
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-170",
-      "b": "shop-168",
-      "overlapM": 3.13,
-      "shifted": {
-        "shop-170": -3.13
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-155",
-      "b": "shop-153",
-      "overlapM": 4.97,
-      "shifted": {
-        "shop-155": -2.48,
-        "shop-153": 2.48
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-157",
-      "b": "shop-155",
-      "overlapM": 2.48,
-      "shifted": {
-        "shop-157": -2.48
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-159",
-      "b": "shop-157",
-      "overlapM": 2.48,
-      "shifted": {
-        "shop-159": -2.48
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-160",
-      "b": "shop-159",
-      "overlapM": 2.48,
-      "shifted": {
-        "shop-160": -2.48
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-161",
-      "b": "shop-160",
-      "overlapM": 2.48,
-      "shifted": {
-        "shop-161": -2.48
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-162",
-      "b": "shop-161",
-      "overlapM": 2.48,
-      "shifted": {
-        "shop-162": -2.48
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-164",
-      "b": "shop-162",
-      "overlapM": 2.48,
-      "shifted": {
-        "shop-164": -2.48
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-166",
-      "b": "shop-164",
-      "overlapM": 2.48,
-      "shifted": {
-        "shop-166": -2.48
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-168",
-      "b": "shop-166",
-      "overlapM": 2.48,
-      "shifted": {
-        "shop-168": -2.48
-      }
-    },
-    {
-      "side": "south",
-      "a": "shop-170",
-      "b": "shop-168",
-      "overlapM": 2.48,
-      "shifted": {
-        "shop-170": -2.48
-      }
-    }
-  ],
-  "note": "strips computed by the v3 world builder from gapToPrevM (strip = courtyard wall h2.9 t0.28 plaster+瓦帽, design_inference)",
+  "shiftLog": [],
+  "crossShifts": [],
+  "note": "strips computed by the v3 world builder from gapToPrevM (strip = courtyard wall h2.9 t0.28 plaster+瓦帽, design_inference); strip centers use the real front-wall midpoint, not a tangent-axis reconstruction",
   "entries": [
     {
-      "id": "shop-154",
-      "category": "木器",
-      "module": "plain-v1",
-      "frontCenter": [
-        -8.297581821492251,
-        -12.931641083277272
-      ],
-      "yawRad": 0.336339,
-      "tangent": [
-        -0.33003344017209313,
-        0.9439692412193171
-      ],
-      "facadeM": 12,
-      "depthM": 6.6,
-      "placeholderWidthM": 10.7,
-      "side": "north",
-      "T": [
-        -0.28270532612497035,
-        0.9592068069924099
-      ],
-      "tCoord": -10.058347577768668,
-      "finalCenter": [
-        -8.297581821492251,
-        5.6,
-        -12.931641083277272
-      ]
-    },
-    {
-      "id": "shop-156",
-      "category": "海味",
-      "module": "plain-v3",
-      "frontCenter": [
-        -20.29584776381805,
-        -4.6351754453894145
-      ],
-      "yawRad": 0.336339,
-      "tangent": [
-        -0.33003344017209313,
-        0.9439692412193171
-      ],
-      "facadeM": 10.7,
-      "depthM": 6.6,
-      "placeholderWidthM": 10.7,
-      "side": "north",
-      "T": [
-        -0.28270532612497035,
-        0.9592068069924099
-      ],
-      "tCoord": 1.2916524222313308,
-      "gapToPrevM": 0,
-      "finalCenter": [
-        -20.29584776381805,
-        5.6,
-        -4.6351754453894145
-      ]
-    },
-    {
-      "id": "shop-158",
-      "category": "南北杂货",
-      "module": "dry_goods_shop",
-      "frontCenter": [
-        -32.769785207344846,
-        1.1754082643333443
-      ],
-      "yawRad": 0.336339,
-      "tangent": [
-        -0.33003344017209313,
-        0.9439692412193171
-      ],
-      "facadeM": 7.5,
-      "depthM": 5.24,
-      "placeholderWidthM": 10.7,
-      "side": "north",
-      "T": [
-        -0.28270532612497035,
-        0.9592068069924099
-      ],
-      "tCoord": 10.391652422231331,
-      "gapToPrevM": 0,
-      "finalCenter": [
-        -32.769785207344846,
-        5.6,
-        1.1754082643333443
-      ]
-    },
-    {
-      "id": "shop-163",
-      "category": "银楼",
-      "module": "curio-b",
-      "frontCenter": [
-        -77.592,
-        14.184
-      ],
-      "yawRad": 0.336339,
-      "tangent": [
-        -0.33003344017209313,
-        0.9439692412193171
-      ],
-      "facadeM": 6.2,
-      "depthM": 6.2,
-      "placeholderWidthM": 10.7,
-      "side": "north",
-      "T": [
-        -0.28270532612497035,
-        0.9592068069924099
-      ],
-      "tCoord": 35.54106101506904,
-      "gapToPrevM": 18.3,
-      "finalCenter": [
-        -77.592,
-        5.6,
-        14.184
-      ]
-    },
-    {
-      "id": "shop-165",
-      "category": "饭馆",
-      "module": "restaurant-b",
-      "frontCenter": [
-        -107.598,
-        24.321
-      ],
-      "yawRad": 0.233508,
-      "tangent": [
-        -0.23139173549183592,
-        0.9728606604987562
-      ],
-      "facadeM": 11.3,
-      "depthM": 7.49,
-      "placeholderWidthM": 10.7,
-      "side": "north",
-      "T": [
-        -0.28270532612497035,
-        0.9592068069924099
-      ],
-      "tCoord": 53.74739643325696,
-      "gapToPrevM": 9.46,
-      "finalCenter": [
-        -107.598,
-        5.6,
-        24.321
-      ]
-    },
-    {
-      "id": "shop-171",
+      "id": "shop-153",
       "category": "药材",
       "module": "pharmacy_shop",
+      "side": "north",
       "frontCenter": [
-        -154.872,
-        31.984
+        -3.805,
+        7.253
       ],
-      "yawRad": 0.140352,
+      "yawRad": -2.805099,
       "tangent": [
-        -0.13989166202273043,
-        0.9901668156914359
+        -0.943899,
+        0.330235
       ],
       "facadeM": 7.82,
       "depthM": 7.49,
       "placeholderWidthM": 10.7,
-      "side": "north",
-      "T": [
-        -0.28270532612497035,
-        0.9592068069924099
-      ],
-      "tCoord": 74.46240978247165,
-      "gapToPrevM": 11.16,
+      "footS": 3.987,
+      "roadDistanceM": 5.6,
+      "tCoord": 5.674,
       "finalCenter": [
-        -154.872,
-        5.6,
-        31.984
-      ]
-    },
-    {
-      "id": "shop-170",
-      "category": "参茸",
-      "module": "curio-a",
-      "frontCenter": [
-        -153.1473578382784,
-        61.67472177104361
-      ],
-      "yawRad": -3.001241,
-      "tangent": [
-        0.13989131901883084,
-        -0.9901668641512761
-      ],
-      "facadeM": 6.2,
-      "depthM": 6.2,
-      "placeholderWidthM": 10.7,
-      "side": "south",
-      "T": [
-        0.27254604372257646,
-        -0.9621427409959353
-      ],
-      "tCoord": -101.07959234034206,
-      "finalCenter": [
-        -153.1473578382784,
-        5.6,
-        61.67472177104361
-      ]
-    },
-    {
-      "id": "shop-168",
-      "category": "绣品",
-      "module": "cloth_shop",
-      "frontCenter": [
-        -141.1350937888353,
-        57.89554763996868
-      ],
-      "yawRad": -3.001241,
-      "tangent": [
-        0.13989131901883084,
-        -0.9901668641512761
-      ],
-      "facadeM": 7.62,
-      "depthM": 7.2,
-      "placeholderWidthM": 10.7,
-      "side": "south",
-      "T": [
-        0.27254604372257646,
-        -0.9621427409959353
-      ],
-      "tCoord": -94.16959234034206,
-      "gapToPrevM": 0,
-      "finalCenter": [
-        -141.1350937888353,
-        5.6,
-        57.89554763996868
-      ]
-    },
-    {
-      "id": "shop-166",
-      "category": "棉花",
-      "module": "cloth_shop",
-      "frontCenter": [
-        -121.82924831201643,
-        55.44448908691808
-      ],
-      "yawRad": -2.974559,
-      "tangent": [
-        0.1662580231842089,
-        -0.9860822834464065
-      ],
-      "facadeM": 7.62,
-      "depthM": 7.2,
-      "placeholderWidthM": 10.7,
-      "side": "south",
-      "T": [
-        0.27254604372257646,
-        -0.9621427409959353
-      ],
-      "tCoord": -86.54959234034206,
-      "gapToPrevM": 0,
-      "finalCenter": [
-        -121.82924831201643,
-        5.6,
-        55.44448908691808
-      ]
-    },
-    {
-      "id": "shop-164",
-      "category": "酒楼",
-      "module": "restaurant-a",
-      "frontCenter": [
-        -103.99130161242122,
-        50.66522089420556
-      ],
-      "yawRad": -2.908084,
-      "tangent": [
-        0.23139237134358429,
-        -0.9728605092632719
-      ],
-      "facadeM": 11.3,
-      "depthM": 7.49,
-      "placeholderWidthM": 10.7,
-      "side": "south",
-      "T": [
-        0.27254604372257646,
-        -0.9621427409959353
-      ],
-      "tCoord": -77.08959234034205,
-      "gapToPrevM": 0,
-      "finalCenter": [
-        -103.99130161242122,
-        5.6,
-        50.66522089420556
-      ]
-    },
-    {
-      "id": "shop-162",
-      "category": "烟纸店",
-      "module": "plain-v3",
-      "frontCenter": [
-        -73.00317711038527,
-        48.01040767808811
-      ],
-      "yawRad": -2.805254,
-      "tangent": [
-        0.3300331131714932,
-        -0.9439693555462129
-      ],
-      "facadeM": 10.7,
-      "depthM": 6.6,
-      "placeholderWidthM": 10.7,
-      "side": "south",
-      "T": [
-        0.27254604372257646,
-        -0.9621427409959353
-      ],
-      "tCoord": -66.08959234034205,
-      "gapToPrevM": 0,
-      "finalCenter": [
-        -73.00317711038527,
-        5.6,
-        48.01040767808811
-      ]
-    },
-    {
-      "id": "shop-161",
-      "category": "寿衣店",
-      "module": "plain-v2",
-      "frontCenter": [
-        -60.902976073808,
-        40.31701899069757
-      ],
-      "yawRad": -2.805254,
-      "tangent": [
-        0.3300331131714932,
-        -0.9439693555462129
-      ],
-      "facadeM": 10.7,
-      "depthM": 6.6,
-      "placeholderWidthM": 10.7,
-      "side": "south",
-      "T": [
-        0.27254604372257646,
-        -0.9621427409959353
-      ],
-      "tCoord": -55.38959234034205,
-      "gapToPrevM": 0,
-      "finalCenter": [
-        -60.902976073808,
-        5.6,
-        40.31701899069757
-      ]
-    },
-    {
-      "id": "shop-160",
-      "category": "字画店",
-      "module": "curio-a",
-      "frontCenter": [
-        -49.416202504103204,
-        34.78839513709582
-      ],
-      "yawRad": -2.805254,
-      "tangent": [
-        0.3300331131714932,
-        -0.9439693555462129
-      ],
-      "facadeM": 6.2,
-      "depthM": 6.2,
-      "placeholderWidthM": 10.7,
-      "side": "south",
-      "T": [
-        0.27254604372257646,
-        -0.9621427409959353
-      ],
-      "tCoord": -46.939592340342045,
-      "gapToPrevM": 0,
-      "finalCenter": [
-        -49.416202504103204,
-        5.6,
-        34.78839513709582
-      ]
-    },
-    {
-      "id": "shop-159",
-      "category": "照相店",
-      "module": "photo_shop",
-      "frontCenter": [
-        -37.3108916897839,
-        31.253841183069234
-      ],
-      "yawRad": -2.805254,
-      "tangent": [
-        0.3300331131714932,
-        -0.9439693555462129
-      ],
-      "facadeM": 7.2,
-      "depthM": 5.83,
-      "placeholderWidthM": 10.7,
-      "side": "south",
-      "T": [
-        0.27254604372257646,
-        -0.9621427409959353
-      ],
-      "tCoord": -40.23959234034204,
-      "gapToPrevM": 0,
-      "finalCenter": [
-        -37.3108916897839,
-        5.6,
-        31.253841183069234
-      ]
-    },
-    {
-      "id": "shop-157",
-      "category": "腌腊",
-      "module": "plain-v1",
-      "frontCenter": [
-        -25.79670903177532,
-        24.537732653089734
-      ],
-      "yawRad": -2.805254,
-      "tangent": [
-        0.3300331131714932,
-        -0.9439693555462129
-      ],
-      "facadeM": 12,
-      "depthM": 6.6,
-      "placeholderWidthM": 10.7,
-      "side": "south",
-      "T": [
-        0.27254604372257646,
-        -0.9621427409959353
-      ],
-      "tCoord": -30.63959234034204,
-      "gapToPrevM": 0,
-      "finalCenter": [
-        -25.79670903177532,
-        5.6,
-        24.537732653089734
+        -3.805,
+        0,
+        7.253
       ]
     },
     {
       "id": "shop-155",
       "category": "洋货",
       "module": "plain-v2",
+      "side": "north",
       "frontCenter": [
-        -12.709569359653319,
-        16.44833850491806
+        -15.109,
+        11.207
       ],
-      "yawRad": -2.805254,
+      "yawRad": -2.805099,
       "tangent": [
-        0.3300331131714932,
-        -0.9439693555462129
+        -0.943899,
+        0.330235
       ],
       "facadeM": 10.7,
       "depthM": 6.6,
       "placeholderWidthM": 10.7,
-      "side": "south",
-      "T": [
-        0.27254604372257646,
-        -0.9621427409959353
-      ],
-      "tCoord": -19.28959234034204,
-      "gapToPrevM": 0,
+      "footS": 15.962,
+      "roadDistanceM": 5.6,
+      "tCoord": 17.632,
+      "gapToPrevM": 2.7,
       "finalCenter": [
-        -12.709569359653319,
-        5.6,
-        16.44833850491806
+        -15.109,
+        0,
+        11.207
       ]
     },
     {
-      "id": "shop-153",
+      "id": "shop-157",
+      "category": "腌腊",
+      "module": "plain-v1",
+      "side": "north",
+      "frontCenter": [
+        -26.429,
+        15.167
+      ],
+      "yawRad": -2.805099,
+      "tangent": [
+        -0.943983,
+        0.329994
+      ],
+      "facadeM": 12,
+      "depthM": 6.6,
+      "placeholderWidthM": 10.7,
+      "footS": 27.955,
+      "roadDistanceM": 5.6,
+      "tCoord": 29.607,
+      "gapToPrevM": 0.62,
+      "finalCenter": [
+        -26.429,
+        0,
+        15.167
+      ]
+    },
+    {
+      "id": "shop-159",
+      "category": "照相店",
+      "module": "photo_shop",
+      "side": "north",
+      "frontCenter": [
+        -37.762,
+        19.131
+      ],
+      "yawRad": -2.805099,
+      "tangent": [
+        -0.943921,
+        0.330172
+      ],
+      "facadeM": 7.2,
+      "depthM": 5.83,
+      "placeholderWidthM": 10.7,
+      "footS": 39.961,
+      "roadDistanceM": 5.6,
+      "tCoord": 41.595,
+      "gapToPrevM": 2.39,
+      "finalCenter": [
+        -37.762,
+        0,
+        19.131
+      ]
+    },
+    {
+      "id": "shop-160",
+      "category": "字画店",
+      "module": "curio-a",
+      "side": "north",
+      "frontCenter": [
+        -49.091,
+        23.094
+      ],
+      "yawRad": -2.805099,
+      "tangent": [
+        -0.943921,
+        0.330172
+      ],
+      "facadeM": 6.2,
+      "depthM": 6.2,
+      "placeholderWidthM": 10.7,
+      "footS": 51.963,
+      "roadDistanceM": 5.6,
+      "tCoord": 53.58,
+      "gapToPrevM": 5.28,
+      "finalCenter": [
+        -49.091,
+        0,
+        23.094
+      ]
+    },
+    {
+      "id": "shop-161",
+      "category": "寿衣店",
+      "module": "plain-v2",
+      "side": "north",
+      "frontCenter": [
+        -60.421,
+        27.029
+      ],
+      "yawRad": -2.808021,
+      "tangent": [
+        -0.944898,
+        0.327365
+      ],
+      "facadeM": 10.7,
+      "depthM": 6.6,
+      "placeholderWidthM": 10.7,
+      "footS": 63.94,
+      "roadDistanceM": 5.6,
+      "tCoord": 65.558,
+      "gapToPrevM": 3.53,
+      "finalCenter": [
+        -60.421,
+        0,
+        27.029
+      ]
+    },
+    {
+      "id": "shop-162",
+      "category": "烟纸店",
+      "module": "plain-v3",
+      "side": "north",
+      "frontCenter": [
+        -71.713,
+        30.923
+      ],
+      "yawRad": -2.813012,
+      "tangent": [
+        -0.94646,
+        0.322821
+      ],
+      "facadeM": 10.7,
+      "depthM": 6.6,
+      "placeholderWidthM": 10.7,
+      "footS": 75.857,
+      "roadDistanceM": 5.599,
+      "tCoord": 77.487,
+      "gapToPrevM": 1.23,
+      "finalCenter": [
+        -71.713,
+        0,
+        30.923
+      ]
+    },
+    {
+      "id": "shop-164",
+      "category": "酒楼",
+      "module": "restaurant-a",
+      "side": "north",
+      "frontCenter": [
+        -103.788,
+        40.661
+      ],
+      "yawRad": -2.898527,
+      "tangent": [
+        -0.970914,
+        0.239428
+      ],
+      "facadeM": 11.3,
+      "depthM": 7.49,
+      "placeholderWidthM": 10.7,
+      "footS": 108.916,
+      "roadDistanceM": 5.6,
+      "tCoord": 111.005,
+      "gapToPrevM": 22.52,
+      "finalCenter": [
+        -103.788,
+        0,
+        40.661
+      ]
+    },
+    {
+      "id": "shop-166",
+      "category": "棉花",
+      "module": "cloth_shop",
+      "side": "north",
+      "frontCenter": [
+        -121.525,
+        44.437
+      ],
+      "yawRad": -2.958889,
+      "tangent": [
+        -0.983367,
+        0.181631
+      ],
+      "facadeM": 7.62,
+      "depthM": 7.2,
+      "placeholderWidthM": 10.7,
+      "footS": 126.716,
+      "roadDistanceM": 5.6,
+      "tCoord": 129.092,
+      "gapToPrevM": 8.63,
+      "finalCenter": [
+        -121.525,
+        0,
+        44.437
+      ]
+    },
+    {
+      "id": "shop-168",
+      "category": "绣品",
+      "module": "cloth_shop",
+      "side": "north",
+      "frontCenter": [
+        -140.524,
+        47.657
+      ],
+      "yawRad": -2.974486,
+      "tangent": [
+        -0.986057,
+        0.16641
+      ],
+      "facadeM": 7.62,
+      "depthM": 7.2,
+      "placeholderWidthM": 10.7,
+      "footS": 145.899,
+      "roadDistanceM": 5.6,
+      "tCoord": 148.236,
+      "gapToPrevM": 11.52,
+      "finalCenter": [
+        -140.524,
+        0,
+        47.657
+      ]
+    },
+    {
+      "id": "shop-170",
+      "category": "参茸",
+      "module": "curio-a",
+      "side": "north",
+      "frontCenter": [
+        -148.457,
+        48.995
+      ],
+      "yawRad": -2.974486,
+      "tangent": [
+        -0.986063,
+        0.166373
+      ],
+      "facadeM": 6.2,
+      "depthM": 6.2,
+      "placeholderWidthM": 10.7,
+      "footS": 153.943,
+      "roadDistanceM": 5.6,
+      "tCoord": 156.228,
+      "gapToPrevM": 1.08,
+      "finalCenter": [
+        -148.457,
+        0,
+        48.995
+      ]
+    },
+    {
+      "id": "shop-154",
+      "category": "木器",
+      "module": "plain-v1",
+      "side": "south",
+      "frontCenter": [
+        -7.478,
+        -3.328
+      ],
+      "yawRad": 0.336494,
+      "tangent": [
+        -0.943899,
+        0.330235
+      ],
+      "facadeM": 12,
+      "depthM": 6.6,
+      "placeholderWidthM": 10.7,
+      "footS": 3.96,
+      "roadDistanceM": 5.6,
+      "tCoord": 6.206,
+      "finalCenter": [
+        -7.478,
+        0,
+        -3.328
+      ]
+    },
+    {
+      "id": "shop-156",
+      "category": "海味",
+      "module": "plain-v3",
+      "side": "south",
+      "frontCenter": [
+        -18.807,
+        0.635
+      ],
+      "yawRad": 0.336494,
+      "tangent": [
+        -0.943899,
+        0.330235
+      ],
+      "facadeM": 10.7,
+      "depthM": 6.6,
+      "placeholderWidthM": 10.7,
+      "footS": 15.962,
+      "roadDistanceM": 5.6,
+      "tCoord": 18.196,
+      "gapToPrevM": 0.64,
+      "finalCenter": [
+        -18.807,
+        0,
+        0.635
+      ]
+    },
+    {
+      "id": "shop-158",
+      "category": "南北杂货",
+      "module": "dry_goods_shop",
+      "side": "south",
+      "frontCenter": [
+        -30.126,
+        4.595
+      ],
+      "yawRad": 0.336494,
+      "tangent": [
+        -0.943983,
+        0.329994
+      ],
+      "facadeM": 7.5,
+      "depthM": 5.24,
+      "placeholderWidthM": 10.7,
+      "footS": 27.954,
+      "roadDistanceM": 5.6,
+      "tCoord": 30.175,
+      "gapToPrevM": 2.88,
+      "finalCenter": [
+        -30.126,
+        0,
+        4.595
+      ]
+    },
+    {
+      "id": "shop-163",
+      "category": "银楼",
+      "module": "curio-b",
+      "side": "south",
+      "frontCenter": [
+        -75.479,
+        20.375
+      ],
+      "yawRad": 0.328581,
+      "tangent": [
+        -0.94646,
+        0.322821
+      ],
+      "facadeM": 6.2,
+      "depthM": 6.2,
+      "placeholderWidthM": 10.7,
+      "footS": 76.018,
+      "roadDistanceM": 5.6,
+      "tCoord": 78.15,
+      "gapToPrevM": 41.12,
+      "finalCenter": [
+        -75.479,
+        0,
+        20.375
+      ]
+    },
+    {
+      "id": "shop-165",
+      "category": "饭馆",
+      "module": "restaurant-b",
+      "side": "south",
+      "frontCenter": [
+        -106.278,
+        29.739
+      ],
+      "yawRad": 0.243539,
+      "tangent": [
+        -0.970377,
+        0.241594
+      ],
+      "facadeM": 11.3,
+      "depthM": 7.49,
+      "placeholderWidthM": 10.7,
+      "footS": 108.702,
+      "roadDistanceM": 5.6,
+      "tCoord": 110.341,
+      "gapToPrevM": 23.44,
+      "finalCenter": [
+        -106.278,
+        0,
+        29.739
+      ]
+    },
+    {
+      "id": "shop-171",
       "category": "药材",
       "module": "pharmacy_shop",
+      "side": "south",
       "frontCenter": [
-        -1.2981279074940326,
-        10.056504406916844
+        -150.319,
+        37.951
       ],
-      "yawRad": -2.805254,
+      "yawRad": 0.167107,
       "tangent": [
-        0.3300331131714932,
-        -0.9439693555462129
+        -0.986063,
+        0.166373
       ],
       "facadeM": 7.82,
       "depthM": 7.49,
       "placeholderWidthM": 10.7,
-      "side": "south",
-      "T": [
-        0.27254604372257646,
-        -0.9621427409959353
-      ],
-      "tCoord": -10.029592340342038,
-      "gapToPrevM": 0,
+      "footS": 153.943,
+      "roadDistanceM": 5.6,
+      "tCoord": 154.884,
+      "gapToPrevM": 34.98,
       "finalCenter": [
-        -1.2981279074940326,
-        5.6,
-        10.056504406916844
+        -150.319,
+        0,
+        37.951
       ]
     }
   ]

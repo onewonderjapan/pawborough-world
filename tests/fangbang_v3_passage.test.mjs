@@ -93,24 +93,44 @@ const dt = 1 / 60;
   check('P2: north-row facades block southbound walks', blocked >= 1,
     `${blocked}/${Math.min(3, north.length)}`);
 }
-// P3 — strip wall blocks crossing between two shops
+// P3 — strip wall (courtyard infill on the front line) blocks a walker
+// crossing the gap from the road toward the shops
 {
   const strips = collision.colliders.filter((c) => c.name.startsWith('westshops-strips:'));
   check('P3: strip colliders present for >1.5 m gaps', strips.length >= 1, `${strips.length}`);
+  // road centerline z under each strip: samples give the built centerline
+  const wspec = JSON.parse(await readFile(resolve(root,
+    'kit/out/fangbang-temple/west-extension-spec.json'), 'utf8'));
   let tested = 0, blockedCount = 0;
+  const failLog = [];
   for (const strip of strips) {
     const sc = [(strip.min[0] + strip.max[0]) / 2, 0, (strip.min[2] + strip.max[2]) / 2];
-    // approach from 2 m south of the strip center, walking north
-    const c = mk(sc[0], sc[2] + 2.0);
-    c.yaw = 0;
-    for (let i = 0; i < Math.round(1.5 / dt); i++) { c.setMoveInput(1, 0); c.step(dt); }
-    const advanced = 2.0 - (sc[2] - c.feetPosition()[2]);
-    if (advanced < 1.8) blockedCount++;
+    let near = wspec.samples[0], bd = Infinity;
+    for (const s of wspec.samples) {
+      const d = (s.x - sc[0]) ** 2 + (s.z - sc[2]) ** 2;
+      if (d < bd) { bd = d; near = s; }
+    }
+    // walk from the centerline toward the strip (perpendicular to the road)
+    const dirZ = Math.sign(sc[2] - near.z) || 1;
+    const c = mk(near.x, near.z);
+    c.yaw = dirZ > 0 ? Math.PI : 0; // forward = (−sin yaw, −cos yaw)
+    let crossed = false, failMode = 'timeout';
+    for (let i = 0; i < Math.round(7 / dt); i++) {
+      c.setMoveInput(1, 0);
+      c.step(dt);
+      const [x2, y2, z2] = c.feetPosition();
+      if (y2 < -0.05) { crossed = true; failMode = 'FELL'; break; }
+      const throughZ = dirZ > 0 ? z2 >= sc[2] - 0.05 : z2 <= sc[2] + 0.05;
+      const withinX = x2 >= strip.min[0] - 0.3 && x2 <= strip.max[0] + 0.3;
+      if (throughZ && withinX) { crossed = true; failMode = 'CROSSED'; break; }
+    }
+    if (!crossed) blockedCount++;
+    else failLog.push(`${strip.name} mode=${failMode} end=${c.feetPosition().map((v) => +v.toFixed(1)).join(',')}`);
     tested++;
     c.dispose();
   }
-  check('P3: strips block northbound walks from the road side', blockedCount === tested && tested > 0,
-    `${blockedCount}/${tested}`);
+  check('P3: strips block walks from the road into the gap (never crosses, never falls)',
+    blockedCount === tested && tested > 0, `${blockedCount}/${tested} ${failLog.join('; ')}`);
 }
 // P4 — facades block northbound walks
 {

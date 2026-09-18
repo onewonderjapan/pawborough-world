@@ -120,10 +120,17 @@ const STRIP_H = 2.9, STRIP_T = 0.28;
       const a = list[i - 1], b = list[i];
       const gap = b.gapToPrevM ?? 0;
       if (gap <= 1.5) continue;
-      const midT = (a.tCoord + a.facadeM / 2 + b.tCoord - b.facadeM / 2) / 2;
-      const T = a.T;
-      const cx = midT * T[0], cz = midT * T[1];
-      const theta = Math.atan2(T[0], -T[1]) + Math.PI / 2;
+      // strip center = the real midpoint of the two front walls (the R1-01
+      // frontline is curved, so a tangent-axis reconstruction would drift)
+      const cx = (a.finalCenter[0] + b.finalCenter[0]) / 2;
+      const cz = (a.finalCenter[2] + b.finalCenter[2]) / 2;
+      // Axis-aligned long axis (local Z -> world -X): the physics layer builds
+      // wall colliders from the AABB, so a rotated strip would inflate into an
+      // invisible barrier spanning the road (the 41 m gap strip's AABB covered
+      // the whole sidewalk). Frontlines are near-parallel to X here, so an
+      // axis-aligned courtyard wall reads correctly and collides exactly.
+      const theta = Math.PI / 2;
+      void a.tangent;
       const id = `weststrip-${side}-${i}`;
       const corners = [];
       for (const sx of [-1, 1]) for (const sz of [-1, 1])

@@ -30,6 +30,7 @@ const centersOfBox = (r) => {
 const v3 = resolve(root, 'world/fangbang-temple-v3');
 const plan = JSON.parse(await readFile(resolve(root, 'kit/out/westshops/plan.json'), 'utf8'));
 const blocks = JSON.parse(await readFile(resolve(v3, 'blocks.json'), 'utf8'));
+const baseBlocks = JSON.parse(await readFile(resolve(root, 'world/fangbang-temple/blocks.json'), 'utf8'));
 const manifest = JSON.parse(await readFile(resolve(v3, 'review-manifest.json'), 'utf8'));
 
 // W1 — the block exists, 17 assets, placeholders replaced
@@ -102,17 +103,70 @@ const manifest = JSON.parse(await readFile(resolve(v3, 'review-manifest.json'), 
   }
   check('W2: no neighbour OBB overlap after tangent shifts (exact SAT)', overlaps === 0,
     `${overlaps} ${pair}`);
-  // 5.6 line: every westshop front collider's road-distance ≈ 5.6 — verified
-  // via the plan's frontCenter + the obb pos equality in the world file
-  let posOk = 0;
-  for (const e of plan.entries) {
-    const c = col.colliders.find((x) => x.name === `westshop-${e.id}:front-wall`)
-      ?? col.colliders.find((x) => x.name.startsWith(`westshop-${e.id}:`));
-    if (c && Math.abs(c.obb.pos[0] - e.finalCenter[0]) < 0.05
-      && Math.abs(c.obb.pos[2] - e.finalCenter[2]) < 0.05) posOk++;
+  // R1-01 TRUE assertion: against the BUILT centerline samples (NOT the plan,
+  // which would be circular), every delivered shop front center sits 5.6 m
+  // (±0.05) from the centerline and its facade normal points at the road
+  // within 2°.
+  const centerline = JSON.parse(await readFile(resolve(root, 'kit/out/fangbang-temple/west-extension-spec.json'), 'utf8'));
+  const SAMPLES = centerline.samples;
+  const block17 = blocks.blocks.find((x) => x.id === 'block-west-shops');
+  const basePhs = Object.fromEntries(baseBlocks.placeholders.map((p) => [p.id, p]));
+  let distOk = 0, yawOk = 0, sideOk = 0;
+  const fails = [];
+  const footProject = (x, z) => { // same segment projection the plan builder uses
+    let best = 0, bestD = Infinity;
+    for (let i = 0; i < SAMPLES.length; i++) {
+      const d = (SAMPLES[i].x - x) ** 2 + (SAMPLES[i].z - z) ** 2;
+      if (d < bestD) { bestD = d; best = i; }
+    }
+    let bestF = null;
+    for (const j of [best - 1, best]) {
+      if (j < 0 || j + 1 >= SAMPLES.length) continue;
+      const A = SAMPLES[j], B = SAMPLES[j + 1];
+      const abx = B.x - A.x, abz = B.z - A.z;
+      const L2 = abx * abx + abz * abz;
+      if (!L2) continue;
+      let t = ((x - A.x) * abx + (z - A.z) * abz) / L2;
+      if (t < 0 || t > 1) continue;
+      const fx = A.x + t * abx, fz = A.z + t * abz;
+      const d = Math.hypot(fx - x, fz - z);
+      if (!bestF || d < bestF.d) bestF = { fx, fz, d };
+    }
+    return bestF ?? { fx: SAMPLES[best].x, fz: SAMPLES[best].z, d: Math.sqrt(bestD) };
+  };
+  for (const a of block17.assets) {
+    const [ax, , az] = a.positionGlb;
+    const fp = footProject(ax, az);
+    const bestD = fp.d;
+    const bestS = { x: fp.fx, z: fp.fz };
+    // same road side as the bridge-R1-adjusted placeholder (NOT across the road)
+    const ph = basePhs[a.id.replace('westshop-', '')];
+    const adj = ph.placementAdjust ?? { shiftM: 0, alongNormal: [0, 0] };
+    const px = ph.glbPoint[0] + adj.shiftM * adj.alongNormal[0];
+    const pz = ph.glbPoint[1] + adj.shiftM * adj.alongNormal[1];
+    let vBest = 0, vD = Infinity; // nearest-vertex normal (sign check only)
+    for (const s of SAMPLES) {
+      const d = (s.x - ax) ** 2 + (s.z - az) ** 2;
+      if (d < vD) { vD = d; vBest = s; }
+    }
+    const sDotPh = (px - vBest.x) * vBest.southNx + (pz - vBest.z) * vBest.southNz;
+    const sDotShop = (ax - vBest.x) * vBest.southNx + (az - vBest.z) * vBest.southNz;
+    if (sDotPh * sDotShop > 0) sideOk++; else fails.push(`${a.id} across-road`);
+    if (Math.abs(bestD - 5.6) <= 0.05) distOk++; else fails.push(`${a.id} dist=${bestD.toFixed(2)}`);
+    // facade +Z must point TOWARD the road: its dot with the direction from
+    // the shop to its own foot is +1 (±2°)
+    const yawN = [Math.sin(a.rotationYRad), Math.cos(a.rotationYRad)];
+    const toRoad = [(bestS.x - ax) / bestD, (bestS.z - az) / bestD];
+    const dot = yawN[0] * toRoad[0] + yawN[1] * toRoad[1];
+    const ang = Math.acos(Math.max(-1, Math.min(1, dot))) * 180 / Math.PI;
+    if (ang <= 2) yawOk++; else fails.push(`${a.id} yawDeg=${ang.toFixed(1)}`);
   }
-  check('W2: module origins sit at the plan front centers (±0.05)', posOk >= 15,
-    `${posOk}/${plan.entries.length}`);
+  check('W2: every shop stays on ITS OWN side of the road', sideOk === 17,
+    `${sideOk}/17 ${fails.filter((f) => f.includes('across')).slice(0, 3).join('; ')}`);
+  check('W2: front centers sit on the 5.6 m frontline (centerline recomputed ±0.05)', distOk === 17,
+    `${distOk}/17 ${fails.filter((f) => f.includes('dist')).slice(0, 3).join('; ')}`);
+  check('W2: facades face the road (normal within 2° of the toward-road direction)', yawOk === 17,
+    `${yawOk}/17`);
 }
 
 // W3 — strips for gaps > 1.5 m
