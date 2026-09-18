@@ -19,15 +19,16 @@
       ],
       "verticalFovDegrees": 55,
       "calibratedDistanceM": 6,
+      "tangentPullM": 0,
       "labelZh": "侧背面外皮取证 · gable-skin-n01-west（N01-plain-v1-left-side）",
       "skinCollider": "gableskin:N01-plain-v1-left-side"
     },
     {
       "id": "skin-gable-skin-lane-a-w-0",
       "positionGlb": [
-        44.371,
+        44.474,
         2.4,
-        -13.154
+        -8.13
       ],
       "targetGlb": [
         42.378,
@@ -35,7 +36,8 @@
         -13.312
       ],
       "verticalFovDegrees": 55,
-      "calibratedDistanceM": 2,
+      "calibratedDistanceM": 2.5,
+      "tangentPullM": 5,
       "labelZh": "侧背面外皮取证 · gable-skin-lane-a-w（N05-restaurant-a-right-side）",
       "skinCollider": "gableskin:N05-restaurant-a-right-side"
     },
@@ -53,15 +55,16 @@
       ],
       "verticalFovDegrees": 55,
       "calibratedDistanceM": 6,
+      "tangentPullM": 0,
       "labelZh": "侧背面外皮取证 · gable-skin-lane-a-w（N05-restaurant-a-back-wall）",
       "skinCollider": "gableskin:N05-restaurant-a-back-wall"
     },
     {
       "id": "skin-gable-skin-lane-a-e-0",
       "positionGlb": [
-        42.385,
+        40.563,
         2.4,
-        -12.578
+        -7.815
       ],
       "targetGlb": [
         44.357,
@@ -69,7 +72,8 @@
         -12.244
       ],
       "verticalFovDegrees": 55,
-      "calibratedDistanceM": 2,
+      "calibratedDistanceM": 3,
+      "tangentPullM": 5,
       "labelZh": "侧背面外皮取证 · gable-skin-lane-a-e（N06-curio-a-left-side）",
       "skinCollider": "gableskin:N06-curio-a-left-side"
     },
@@ -87,15 +91,16 @@
       ],
       "verticalFovDegrees": 55,
       "calibratedDistanceM": 6,
+      "tangentPullM": 0,
       "labelZh": "侧背面外皮取证 · gable-skin-lane-a-e（N06-curio-a-back-wall）",
       "skinCollider": "gableskin:N06-curio-a-back-wall"
     },
     {
       "id": "skin-gable-skin-lane-b-w-0",
       "positionGlb": [
-        59.652,
+        57.779,
         2.4,
-        11.625
+        16.288
       ],
       "targetGlb": [
         58.323,
@@ -103,7 +108,8 @@
         10.93
       ],
       "verticalFovDegrees": 55,
-      "calibratedDistanceM": 1.5,
+      "calibratedDistanceM": 2,
+      "tangentPullM": 5,
       "labelZh": "侧背面外皮取证 · gable-skin-lane-b-w（S05-plain-v3-left-side）",
       "skinCollider": "gableskin:S05-plain-v3-left-side"
     },
@@ -121,15 +127,16 @@
       ],
       "verticalFovDegrees": 55,
       "calibratedDistanceM": 6,
+      "tangentPullM": 0,
       "labelZh": "侧背面外皮取证 · gable-skin-lane-b-w（S05-plain-v3-back-wall）",
       "skinCollider": "gableskin:S05-plain-v3-back-wall"
     },
     {
       "id": "skin-gable-skin-lane-b-e-0",
       "positionGlb": [
-        58.416,
+        55.445,
         2.4,
-        10.973
+        15.026
       ],
       "targetGlb": [
         59.708,
@@ -137,7 +144,8 @@
         11.735
       ],
       "verticalFovDegrees": 55,
-      "calibratedDistanceM": 1.5,
+      "calibratedDistanceM": 2,
+      "tangentPullM": 5,
       "labelZh": "侧背面外皮取证 · gable-skin-lane-b-e（S07-plain-v2-right-side）",
       "skinCollider": "gableskin:S07-plain-v2-right-side"
     },
@@ -155,6 +163,7 @@
       ],
       "verticalFovDegrees": 55,
       "calibratedDistanceM": 6,
+      "tangentPullM": 0,
       "labelZh": "侧背面外皮取证 · gable-skin-lane-b-e（S07-plain-v2-back-wall）",
       "skinCollider": "gableskin:S07-plain-v2-back-wall"
     },
@@ -172,6 +181,7 @@
       ],
       "verticalFovDegrees": 55,
       "calibratedDistanceM": 6,
+      "tangentPullM": 0,
       "labelZh": "侧背面外皮取证 · gable-skin-east-133（east-shop-133-gable-wall-east-b0s0）",
       "skinCollider": "gableskin:east-shop-133-gable-wall-east-b0s0"
     }

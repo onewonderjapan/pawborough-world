@@ -41,5 +41,22 @@
       "file": "fangbang-aerial-overview-pbr.png"
     }
   ],
-  "note": "BLENDER evidence; WebGL captures are separate (kit/out/fangbang-temple-v2/web)"
+  "note": "BLENDER evidence; WebGL captures are separate (kit/out/fangbang-temple-v2/web)",
+  "blankGuard": {
+    "frames": [
+      {
+        "file": "fangbang-axis-long-pbr.png",
+        "lumStd255": 57.3,
+        "dominantShare": 0.1312,
+        "blank": false
+      },
+      {
+        "file": "fangbang-aerial-overview-pbr.png",
+        "lumStd255": 34.727,
+        "dominantShare": 0.434,
+        "blank": false
+      }
+    ],
+    "anyBlank": false
+  }
 }

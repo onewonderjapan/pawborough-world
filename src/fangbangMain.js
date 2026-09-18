@@ -649,6 +649,7 @@ async function load() {
     controls.target.set(...target);
     viewLabelOverride = label ?? null;
     controls.update();
+    render();  // R1-04: render synchronously so same-task canvas reads see the frame
   };
 }
 

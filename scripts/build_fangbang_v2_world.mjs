@@ -121,7 +121,7 @@ const instances = {
 };
 await writeFile(resolve(OUT, 'instances.json'), JSON.stringify(instances, null, 2) + '\n');
 
-// --- 4. collision-world.json: 246 temple-axis-v2 records composed with T+yaw ----
+// --- 4. collision-world.json: 233 temple-axis-v2 records composed with T+yaw ----
 const composeTemple = (record) => {
   let { pos, theta, center, size } = record.obb ?? {};
   if (!pos) {
@@ -181,7 +181,7 @@ const check = sampleIdx.map((i) => {
   return { name: rec.name, maxCornerErr: +err.toExponential(3) };
 });
 if (checkMaxErr > 1e-6) throw new Error(`temple composition self-check failed: max corner error ${checkMaxErr}`);
-if (composed.length !== 246) throw new Error(`expected 246 temple colliders (axis-v2), composed ${composed.length}`);
+if (composed.length !== 233) throw new Error(`expected 233 temple colliders (axis-v2 after R1-06 skirt removal), composed ${composed.length}`);
 
 const world = {
   axis: 'glTF Y-up; world records — obbToWorld() reproduces every box',
@@ -196,7 +196,7 @@ const world = {
   composition: {
     rule: 'obb.pos\' = T + R(yaw)·pos; theta\' = theta + yaw; min/max from the 4 rotated corners',
     templeRecords: composed.length,
-    source: 'world/temple-axis-v2/collision-world.json (246 records incl. the v2 court and all new modules)',
+    source: 'world/temple-axis-v2/collision-world.json (233 records incl. the v2 court and all new modules)',
     selfCheck: { sampled: check, maxCornerError: checkMaxErr },
   },
 };
@@ -335,7 +335,7 @@ const manifest = {
     translationGlb: T, yawRad: YAW,
     assets: templeAssets,
     placedTriangles: templeTris,
-    collision: '246 records composed into collision-world.json (self-check sampled ' + check.length + ', maxCornerError ' + checkMaxErr.toExponential(3) + ')',
+    collision: '233 records composed into collision-world.json (self-check sampled ' + check.length + ', maxCornerError ' + checkMaxErr.toExponential(3) + ')',
   },
   westExtension: {
     surface: { path: './world/fangbang-temple-v2/west-extension/surface.glb', bytes: surfaceBytes.byteLength, sha256: sha(surfaceBytes), triangles: surfaceMeasure.triangles, groundNodeNames: ['sctail__quiet-gray-asphalt', 'sctail__worn-stone'] },

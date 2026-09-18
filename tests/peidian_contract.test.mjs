@@ -147,7 +147,8 @@ const BOUNDS = boundsOf(glb);
   check('C7: 1 rear wall', count('rear-wall') === 1);
   check('C7: closed door = 2 leaves', count('door-leaf') === 2);
   check('C7: 2 lattice bay backings', count('bay-backing') === 2);
-  check('C7: 3 base skirts', count('peidian-base-skirt') === 3);
+  check('C7: base slab carries the side collision (skirts removed per R1-06)',
+    count('peidian-base') === 1);
   check('C7: interiorVerifiedEmpty recorded', !!collision.interiorVerifiedEmpty);
 }
 

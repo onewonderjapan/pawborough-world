@@ -47,6 +47,14 @@
         "Blender 10 place renders (kit/build_sidefaces_scene.py, module GLB at instance transform + skins, calibrated cameras)",
         "WebGL 10 shots (scripts/capture_sidefaces_web.mjs via __fangbangView evidence hook) SIDEFACES_WEB_PASS"
       ]
+    },
+    {
+      "stage": "R1",
+      "status": "done",
+      "evidence": [
+        "sidefaces renders re-shot with oblique/2-D-calibrated cameras + blank guards (10/10 non-blank)",
+        "webgl 10 shots re-shot after the R1-06 geometry changes (skirts removed on peidian/houdian/gallery; gallery floor-edge colliders now via slab box)"
+      ]
     }
   ]
 }

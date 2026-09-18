@@ -117,13 +117,23 @@ await writeFile(resolve(OUT, 'collision-world.json'), JSON.stringify(collision, 
       const wz = pos[2] - si * center[0] + co * center[2];
       const [nx, nz] = c.outward;
       const target = [wx, 2.6, wz];
+      // R1-04 companion: 2-D calibration — normal distance x tangent pull
+      // toward the module front (the lane mouth), so slot shots become
+      // readable 3/4 views while the FIRST-HIT-is-skin contract still holds.
+      const ox = pos[0], oz = pos[2];
+      const tx = -nz, tz = nx; // tangent in xz
+      const tSign = ((ox - wx) * tx + (oz - wz) * tz) >= 0 ? 1 : -1;
       let chosen = null;
       for (const dist of [6, 5, 4, 3, 2.5, 2, 1.5]) {
-        const eye = [wx + nx * dist, 2.4, wz + nz * dist];
-        const fh = firstHit(eye, target);
-        if (fh.name === c.name) { chosen = { dist, eye }; break; }
+        for (const pull of (dist >= 4 ? [0] : [0, 2, 3.5, 5])) {
+          const eye = [wx + nx * dist + tx * tSign * pull, 2.4,
+                       wz + nz * dist + tz * tSign * pull];
+          const fh = firstHit(eye, target);
+          if (fh.name === c.name) { chosen = { dist, pull, eye }; break; }
+        }
+        if (chosen) break;
       }
-      if (!chosen) chosen = { dist: 1.5, eye: [wx + nx * 1.5, 2.4, wz + nz * 1.5] };
+      if (!chosen) chosen = { dist: 1.5, pull: 0, eye: [wx + nx * 1.5, 2.4, wz + nz * 1.5] };
       const id = `skin-${place.id}-${faceColliders.indexOf(c)}`;
       cameras.push({
         id,
@@ -131,6 +141,7 @@ await writeFile(resolve(OUT, 'collision-world.json'), JSON.stringify(collision, 
         targetGlb: target.map((v) => +v.toFixed(3)),
         verticalFovDegrees: 55,
         calibratedDistanceM: chosen.dist,
+        tangentPullM: chosen.pull,
         labelZh: `侧背面外皮取证 · ${place.id}（${c.name.replace('gableskin:', '')}）`,
         skinCollider: c.name,
       });

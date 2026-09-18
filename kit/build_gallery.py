@@ -123,12 +123,10 @@ fx0, fx1 = fl['extentX']
 fz0, fz1 = fl['extentZ']
 L.box('gallery-floor', (0, fl['topY'] - fl['thicknessM'] / 2, (fz0 + fz1) / 2),
       (fx1 - fx0, fl['thicknessM'], abs(fz1 - fz0)), 'stone', .006, True)
-# floor skirts: front + rear faces (the ends abut neighbours along the band).
-# R1-06: inset 0.02 inside the slab extent — coplanar faces z-fight black.
-L.box('gallery-floor-skirt', (0, fl['topY'] / 2, fz0 - .07), (fx1 - fx0, fl['topY'], .1),
-      'stone', 0, True)
-L.box('gallery-floor-skirt', (0, fl['topY'] / 2, fz1 + .07), (fx1 - fx0, fl['topY'], .1),
-      'stone', 0, True)
+# R1-06: floor-edge skirt boxes REMOVED — inset or not, the narrow slot
+# between skirt and slab face rendered as an unlit black band in Cycles.
+# The slab box itself already carries the floor-edge collision.
+
 
 L.GROUP = 'gallery-body'
 cs = bd['columnSizeM']

@@ -34,11 +34,11 @@ try {
     try {
       await page.click(`button[data-view="${view}"]`);
       await page.waitForTimeout(600);
-      const before = await page.evaluate(() => window.__fangbangRecord());
-      if (!before.cameraCheck?.pass) throw new Error(`cameraCheck failed for ${view}: ${JSON.stringify(before.cameraCheck)}`);
-      const frameStats = await page.evaluate(() => {
+      // R1-04: view + pixel read in the SAME task (WebGL buffer not preserved across tasks)
+      const frameStats = await page.evaluate(([view]) => {
+        const btn = document.querySelector(`button[data-view="${view}"]`); if (btn) btn.click();
         const src = document.querySelector('#app canvas');
-        if (!src) return { blank: true, std255: 0, dominantShare: 1 };
+        if (!src) return { blank: true, std255: -1, dominantShare: 1, error: 'no canvas' };
         const w = 160, h = 100;
         const c2 = document.createElement('canvas');
         c2.width = w; c2.height = h;
@@ -54,8 +54,11 @@ try {
         for (const v of lum) { const k = Math.round(v); counts[k] = (counts[k] ?? 0) + 1; }
         const dom = Math.max(...Object.values(counts)) / lum.length;
         return { blank: std < 2 || dom > 0.95, std255: +std.toFixed(2), dominantShare: +dom.toFixed(3) };
-      });
+      }, [view]);
       if (frameStats.blank) throw new Error(`BLANK frame: std=${frameStats.std255} dom=${frameStats.dominantShare}`);
+
+      const before = await page.evaluate(() => window.__fangbangRecord());
+      if (!before.cameraCheck?.pass) throw new Error(`cameraCheck failed for ${view}: ${JSON.stringify(before.cameraCheck)}`);
       await page.click('button:has-text("保存实测图")');
       await page.waitForFunction(() => document.querySelector('#notice')?.textContent?.includes('已保存'), null, { timeout: 20000 });
       console.log(`ok  fangbangv2-${view}-pbr (dPos=${before.cameraCheck.dPos}, dFov=${before.cameraCheck.dFov})`);

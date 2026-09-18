@@ -200,15 +200,10 @@ bx0, bx1 = bs['extentX']
 bz0, bz1 = bs['extentLocalZ']
 L.box('houdian-base', (0, bs['topY'] - bs['slabThicknessM'] / 2, (bz0 + bz1) / 2),
       (bx1 - bx0, bs['slabThicknessM'], abs(bz1 - bz0)), 'stone', .008, True)
-# base skirts: 3 sides (west/east/rear); the front edge is met by the steps.
-# R1-06: the skirt outer faces used to be COPLANAR with the base slab faces
-# (z-fighting rendered them pitch black in Cycles) — inset 0.02 so the slab's
-# own worn-stone side face is the visible surface.
-for sgn in (-1, 1):
-    L.box('houdian-base-skirt', (sgn * (bx1 - bs['slabThicknessM'] / 2 - 0.01), bs['topY'] / 2, (bz0 + bz1) / 2),
-          (bs['slabThicknessM'] - 0.02, bs['topY'], abs(bz1 - bz0)), 'stone', 0, True)
-L.box('houdian-base-skirt', (0, bs['topY'] / 2, bz1 + bs['slabThicknessM'] / 2 - 0.01),
-      (bx1 - bx0 - 0.02, bs['topY'], bs['slabThicknessM'] - 0.02), 'stone', 0, True)
+# R1-06: base skirt boxes REMOVED — even inset, the slot between the skirt
+# and the slab side face was fully occluded from the sky (pure black band in
+# Cycles). The base slab box itself already carries the side collision.
+
 st = bs['steps']
 for k in range(st['count']):
     top = (k + 1) * st['riserM']

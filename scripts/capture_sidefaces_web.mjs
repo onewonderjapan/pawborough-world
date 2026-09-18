@@ -36,12 +36,11 @@ try {
   }
   for (const c of cams.cameras) {
     try {
-      await page.evaluate(([pos, target, label]) => window.__fangbangView(pos, target, label),
-        [c.positionGlb, c.targetGlb, `sideface-${c.id}`]);
-      await page.waitForTimeout(400);
-      const frameStats = await page.evaluate(() => {
+      // R1-04: view + pixel read in the SAME task (WebGL buffer not preserved across tasks)
+      const frameStats = await page.evaluate(([pos, target, label]) => {
+        window.__fangbangView(pos, target, label);
         const src = document.querySelector('#app canvas');
-        if (!src) return { blank: true, std255: 0, dominantShare: 1 };
+        if (!src) return { blank: true, std255: -1, dominantShare: 1, error: 'no canvas' };
         const w = 160, h = 100;
         const c2 = document.createElement('canvas');
         c2.width = w; c2.height = h;
@@ -57,8 +56,9 @@ try {
         for (const v of lum) { const k = Math.round(v); counts[k] = (counts[k] ?? 0) + 1; }
         const dom = Math.max(...Object.values(counts)) / lum.length;
         return { blank: std < 2 || dom > 0.95, std255: +std.toFixed(2), dominantShare: +dom.toFixed(3) };
-      });
+      }, [c.positionGlb, c.targetGlb, `sideface-${c.id}`]);
       if (frameStats.blank) throw new Error(`BLANK frame: std=${frameStats.std255} dom=${frameStats.dominantShare}`);
+
       await page.click('button:has-text("保存实测图")');
       await page.waitForFunction(() => document.querySelector('#notice')?.textContent?.includes('已保存'), null, { timeout: 15000 });
       console.log(`ok  sideface-${c.id} (calibrated ${c.calibratedDistanceM}m)`);

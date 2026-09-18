@@ -30,6 +30,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DS = ROOT / 'world' / 'street-sidefaces'
 cams = json.loads((DS / 'cameras.json').read_text(encoding='utf-8'))
 cfg = json.loads((ROOT / 'kit' / 'gable-skin.config.json').read_text(encoding='utf-8'))
+_faces_data = json.loads((ROOT / 'kit' / 'out' / 'sidefaces' / 'faces.json').read_text(encoding='utf-8'))
 
 MODULE_GLB = {
     'N01-plain-v1': ROOT / 'building/plain-v1/model.glb',
@@ -89,11 +90,17 @@ def blank_stats(png_path, name):
                          'dominantShare': round(dom, 4), 'blank': blank})
     if blank:
         print(f"BLANK_FRAME {name}")
+    return BLANK_FRAMES[-1]
 
 sun = bpy.data.objects.new('sun', bpy.data.lights.new('sun', 'SUN'))
 scene.collection.objects.link(sun)
 sun.data.energy = 2.8
 sun.rotation_euler = (math.radians(55), 0.0, math.radians(-35))
+fill = bpy.data.objects.new('fill', bpy.data.lights.new('fill', 'SUN'))
+scene.collection.objects.link(fill)
+fill.data.energy = 0.9
+fill.data.color = (0.92, 0.94, 1.0)
+fill.rotation_euler = (math.radians(35), 0.0, math.radians(145))
 world = bpy.data.worlds.new('world')
 scene.world = world
 world.use_nodes = True
@@ -105,6 +112,19 @@ scene.collection.objects.link(cam)
 scene.camera = cam
 cam.data.sensor_fit = 'VERTICAL'
 cam.data.sensor_width = 36
+
+# R1-06: recalc outward normals on imported meshes (base faces rendered
+# black in Cycles otherwise; WebGL lit both hemispheres so it never showed)
+import bmesh as _bm
+for _o in scene.objects:
+    if _o.type != 'MESH':
+        continue
+    _b = _bm.new()
+    _b.from_mesh(_o.data)
+    _bm.ops.recalc_face_normals(_b, faces=_b.faces)
+    _b.to_mesh(_o.data)
+    _b.free()
+    _o.data.update()
 
 scene.render.engine = 'CYCLES'
 scene.cycles.device = 'CPU'
@@ -133,9 +153,17 @@ for target in cfg['targets']:
     place_key = target['id'].replace('gable-skin-', '')
     place_cams = [c for c in cams['cameras']
                   if c['id'].replace('skin-gable-skin-', '').rsplit('-', 1)[0] == place_key]
+    # R1-04 companion: slot shots (calibrated distance < 3 m sit inside a ~2 m
+    # lane) read as a flat single-colour wall dead-on -> blank guard fires.
+    # Pull the camera toward the lane MOUTH along the wall tangent for an
+    # oblique 3/4 view of the same skin (the skin stays the subject).
     for c in place_cams:
-        loc = (c['positionGlb'][0], -c['positionGlb'][2], c['positionGlb'][1])
-        tar = (c['targetGlb'][0], -c['targetGlb'][2], c['targetGlb'][1])
+        # cameras.json poses are the 2-D self-calibrated ones (first-hit=skin,
+        # tangent pull toward the mouth) — use them verbatim
+        loc = list(c['positionGlb'])
+        tar = list(c['targetGlb'])
+        loc = (loc[0], -loc[2], loc[1])
+        tar = (tar[0], -tar[2], tar[1])
         d = (tar[0] - loc[0], tar[1] - loc[1], tar[2] - loc[2])
         rot_x = math.acos(max(-1.0, min(1.0, -d[2] / math.dist(loc, tar))))
         rot_z = math.atan2(d[1], d[0]) - math.pi / 2
@@ -145,7 +173,22 @@ for target in cfg['targets']:
         cam.data.lens = 36.0 / (2.0 * math.tan(fov / 2.0))
         scene.render.filepath = str(args.out / f'{c["id"]}-pbr.png')
         bpy.ops.render.render(write_still=True)
-        blank_stats(scene.render.filepath, scene.render.filepath.split('/')[-1])
+        entry = blank_stats(scene.render.filepath, scene.render.filepath.split('/')[-1])
+        # R1-04 self-heal: a blank slot shot dollies OUT along the view axis and
+        # re-renders (up to 2 retries of +3 m / +6 m)
+        _tries = 0
+        while entry['blank'] and _tries < 2:
+            _tries += 1
+            _d = 3.0 * _tries
+            _v = (loc[0] - tar[0], loc[1] - tar[1], loc[2] - tar[2])
+            _vl = math.dist(loc, tar) or 1.0
+            cam.location = (tar[0] + _v[0] / _vl * (_vl + _d),
+                            tar[1] + _v[1] / _vl * (_vl + _d),
+                            tar[2] + _v[2] / _vl * (_vl + _d))
+            bpy.ops.render.render(write_still=True)
+            entry = blank_stats(scene.render.filepath,
+                                scene.render.filepath.split('/')[-1] + f' (retry{_tries})')
+            loc = cam.location[:]
         sidecar['views'].append({'view': c['id'], 'file': scene.render.filepath.split('/')[-1],
                                  'calibratedDistanceM': c.get('calibratedDistanceM')})
         print(f'RENDERED {c["id"]}')
@@ -156,10 +199,10 @@ for target in cfg['targets']:
             o.select_set(True)
     bpy.ops.object.delete()
 
-sidecar_path = args.out / 'cameras.json'
-sidecar_path.parent.mkdir(parents=True, exist_ok=True)
-sidecar_path.write_text(json.dumps(sidecar, indent=2) + '\n', encoding='utf-8')
 sidecar['blankGuard'] = {'frames': BLANK_FRAMES, 'anyBlank': any(f['blank'] for f in BLANK_FRAMES)}
 if sidecar['blankGuard']['anyBlank']:
     print('BLANK_FRAMES_PRESENT'); sys.exit(10)
+sidecar_path = args.out / 'cameras.json'
+sidecar_path.parent.mkdir(parents=True, exist_ok=True)
+sidecar_path.write_text(json.dumps(sidecar, indent=2) + '\n', encoding='utf-8')
 print(f'SIDEFACES_SCENE_READY views={len(sidecar["views"])} out={args.out}')

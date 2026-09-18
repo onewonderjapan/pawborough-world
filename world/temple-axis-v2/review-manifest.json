@@ -86,9 +86,9 @@
     },
     "peidian": {
       "file": "./world/temple-axis-v2/peidian.glb",
-      "bytes": 2079584,
-      "sha256": "5094b6b5ccfe6a516017520f3079e426f429164aaa78975da5c82cf003910310",
-      "triangles": 11432,
+      "bytes": 2075332,
+      "sha256": "b3dba52114ed22f25e916f9d5cc72cff6ba2cf13082eae16daa099deabc1771d",
+      "triangles": 11396,
       "groups": [
         "peidian-body",
         "temple-ground"
@@ -96,9 +96,9 @@
     },
     "gallery": {
       "file": "./world/temple-axis-v2/gallery.glb",
-      "bytes": 493260,
-      "sha256": "643780215e30f779800584e2c15ffc3927034ba9831e3601cd10cd83b32294f2",
-      "triangles": 1134,
+      "bytes": 490812,
+      "sha256": "45228eb69acfd827741ac9f4a72b2d2f6bd92a1c2c4b0776efa210424ee1114d",
+      "triangles": 1110,
       "groups": [
         "gallery-body",
         "temple-ground"
@@ -125,23 +125,23 @@
     },
     "houdian": {
       "file": "./world/temple-axis-v2/houdian.glb",
-      "bytes": 2706228,
-      "sha256": "158218ec8156d7e92d7cec1f637e8f1474ed063b509056739388e6ded756bdb9",
-      "triangles": 16200,
+      "bytes": 2702268,
+      "sha256": "693a5efb758700c96c162f9c9c93e0d1b91f490cde895e9d41202b4cdcd9f615",
+      "triangles": 16164,
       "groups": [
         "houdian-body",
         "temple-ground"
       ]
     }
   },
-  "placedTriangles": 143928,
+  "placedTriangles": 143832,
   "budgets": {
     "newModulesTris": {
-      "actual": 43770,
+      "actual": 43674,
       "limit": 70000
     },
     "placedTriangles": {
-      "actual": 143928,
+      "actual": 143832,
       "limit": 180000
     }
   },

@@ -28,14 +28,9 @@
         "note": "5296/5297 occupied by a stale previous-session server -> fallback #9 ports for this batch's serving; the ?ds= support itself is port-independent"
       },
       "tests": {
-        "suites": 35,
-        "passInPlace": 32,
-        "layoutArtifacts": [
-          "fangbang_bridge_contract",
-          "fangbang_bridge_passage",
-          "fangbang_map_registry"
-        ],
-        "layoutArtifactNote": "the three delivered fangbang_bridge_* suites resolve ../DESIGN_SPEC.json, which in this outbox layout is the expansion spec (no mapRegistration). Verified green in a shadow harness with the bridge batch spec (N0 evidence); failure is outbox layout, not content."
+        "suites": 37,
+        "pass": 37,
+        "layoutArtifacts": "resolved by R1-05 fixture fallback"
       },
       "webglEvidence": "artifacts/temple-expansion/webgl/ (12 temple-v2 shots incl 2 clay + 3 bridge-v2 shots; all cameraCheck dPos=0, route PASS in every record)",
       "blenderEvidence": "artifacts/temple-expansion/blender/ (10 PBR + 2 clay + 2 compare, CPU 24spp AgX 1600x900; bridge-v2/ 2 views)",
@@ -107,5 +102,61 @@
     "package1": "see git log work/temple-expansion-20260917",
     "baseline": "4031561"
   },
-  "generatedBy": "GLM-Flash (ZCode session, owner-started night run 2026-09-17)"
+  "generatedBy": "GLM-Flash (ZCode session, owner-started night run 2026-09-17)",
+  "r1": {
+    "order": "R1-FIXES.md (2026-09-18, lead re-review of 5e59b68)",
+    "items": [
+      {
+        "id": "R1-01",
+        "commit": "821e5d2",
+        "status": "fixed",
+        "summary": "stage under-floor skirt boards removed (solid wood box, collider-less, blocked court2-pair); under-stage open-zone guard in builder + stage_contract; n3b/passage re-verified"
+      },
+      {
+        "id": "R1-02",
+        "commit": "5120ea5",
+        "status": "fixed_with_interpretation",
+        "summary": "corner plaster end caps re-capped at the LOCAL roof soffit (was: ridge soffit 6.02/7.83); C8 contract assertion uses the roof slope line at the band edge instead of the literal eave+0.15 — the frozen roof puts its edge at the wall ends ~1.2m above the eave (ridge inside the depth), so the literal bound contradicts DESIGN_SPEC; owner may veto the interpretation"
+      },
+      {
+        "id": "R1-03",
+        "commit": "cb88e03",
+        "status": "fixed",
+        "summary": "root cause: glTF importer leaves rotation_mode=QUATERNION, so euler yaw writes were ignored (peidian/gallery axis-aligned in Blender); XYZ forced in all three scene scripts; 4-keypoint instance check vs obbToWorld <= 8.5e-7 (artifacts/temple-expansion/blender/instance-check.json); compare adds peidian-west-front"
+      },
+      {
+        "id": "R1-04",
+        "commit": "c522418 + 2a4103c",
+        "status": "fixed",
+        "summary": "blank-frame guards (std<2/255 or >95% dominant) in all Blender scene scripts (exit 10 + sidecar) and all capture scripts (in-task canvas read); full evidence re-run: review 12 + compare 3 + bridge 2 + sidefaces 10 Blender frames, 12+3+10 WebGL shots, anyBlank=false everywhere"
+      },
+      {
+        "id": "R1-05",
+        "commit": "0486fef",
+        "status": "fixed",
+        "summary": "bridge-batch DESIGN_SPEC.json + CAMERAS.json copied byte-exact to tests/fixtures/fangbang-bridge-20260916 with provenance shas; the three fangbang_bridge_* tests fall back to the fixture when ../DESIGN_SPEC.json lacks templePlacement — 37/37 green in this worktree, bridge worktree behavior unchanged"
+      },
+      {
+        "id": "R1-06",
+        "commit": "6de991c + 2a4103c",
+        "status": "fixed_with_deviation",
+        "summary": "base perimeter black band = fully-occluded slot at the base skirt (probe chain: red-material isolation -> hide -> all-red -> normal-flip -> ambient-only). Skirt boxes REMOVED (deviation from 'worn-stone + outward normals': the geometry itself was the trap); base slab box carries the side collision; collider count 246->233 (13 skirt records gone); plus low-strength fill light in the evidence scenes matching the WebGL rig (shadow-side faces were crushed to black under sun+sky only)"
+      },
+      {
+        "id": "R1-07",
+        "commit": "2a4103c",
+        "status": "verified",
+        "summary": "no __pycache__/pyc staged; only the four allowed delivered files modified across the batch; git status clean at close"
+      }
+    ],
+    "tests": {
+      "suites": 37,
+      "pass": 37
+    },
+    "evidenceRerun": {
+      "blender": "artifacts/temple-expansion/blender/ (12 review + 3 compare + 2 bridge-v2, blankGuard anyBlank=false, fov verified, instance-check <=8.5e-7)",
+      "webgl": "artifacts/temple-expansion/webgl/ (12 temple-v2 + 3 bridge-v2 shots, blank-guard PASS, cameraCheck dPos=0)"
+    },
+    "head": "2a4103c"
+  }
 }

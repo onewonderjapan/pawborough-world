@@ -52,13 +52,20 @@ try {
   }
   for (const s of SHOTS) {
     try {
-      await page.click(`button[data-view="${s.view}"]`);
-      if (s.clay) await page.locator('button', { hasText: '灰模' }).click();
-      await page.waitForTimeout(500);
-      // R1-04: blank-frame guard — luminance std < 2/255 or >95% single level
-      const frameStats = await page.evaluate(() => {
+      // R1-04: blank-frame guard — the WebGL buffer is not preserved between
+      // tasks, so the view click AND the pixel read must happen in the SAME
+      // evaluate (render fires synchronously inside the click handler).
+      // luminance std < 2/255 or >95% single level = blank.
+      const frameStats = await page.evaluate(([viewId, clay]) => {
+        const btn = document.querySelector(`button[data-view="${viewId}"]`);
+        if (!btn) return { blank: true, std255: -1, dominantShare: 1, error: 'no view button' };
+        btn.click();
+        const clayBtn = [...document.querySelectorAll('#views button')].find((b) => b.textContent === '灰模');
+        const clayWasOn = clayBtn?.classList.contains('on');
+        if (clay && !clayWasOn) clayBtn.click();
+        if (!clay && clayWasOn) clayBtn.click();
         const src = document.querySelector('#app canvas');
-        if (!src) return { blank: true, std255: 0, dominantShare: 1 };
+        if (!src) return { blank: true, std255: -1, dominantShare: 1, error: 'no canvas' };
         const w = 160, h = 100;
         const c2 = document.createElement('canvas');
         c2.width = w; c2.height = h;
@@ -74,8 +81,9 @@ try {
         for (const v of lum) { const k = Math.round(v); counts[k] = (counts[k] ?? 0) + 1; }
         const dom = Math.max(...Object.values(counts)) / lum.length;
         return { blank: std < 2 || dom > 0.95, std255: +std.toFixed(2), dominantShare: +dom.toFixed(3) };
-      });
+      }, [s.view, s.clay]);
       if (frameStats.blank) throw new Error(`BLANK frame: std=${frameStats.std255} dom=${frameStats.dominantShare}`);
+      await page.waitForTimeout(200);
       const before = await page.evaluate(() => window.__templeV2Record());
       if (!before.cameraCheck?.pass) throw new Error(`cameraCheck failed for ${s.view}: ${JSON.stringify(before.cameraCheck)}`);
       await page.click('button:has-text("保存实测图")');

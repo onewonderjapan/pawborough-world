@@ -126,6 +126,29 @@
       "notes": [
         "16 images total (12 review + 2 compare + 2 bridge) in kit/out/*/renders"
       ]
+    },
+    {
+      "stage": "R1",
+      "status": "done",
+      "commits": [
+        "cb88e03",
+        "821e5d2",
+        "5120ea5",
+        "c522418",
+        "6de991c",
+        "0486fef",
+        "<final>"
+      ],
+      "evidence": [
+        "R1-01 821e5d2: stage skirt box removed (under-stage was a solid collider-less wood block); UNDER_STAGE_CLEAR builder guard + S2 contract checks; court2-pair re-shot non-blank (std 64.8)",
+        "R1-02 5120ea5: corner end caps recapped at local roof soffit; C8 contract assertion (roof-slope-line bound; literal eave+0.15 contradicts frozen roof geometry — owner-vetoable interpretation)",
+        "R1-03 cb88e03: rotation_mode=QUATERNION root cause; XYZ forced; 4-keypoint instance check <=8.5e-7 (blender/instance-check.json); compare adds peidian-west-front",
+        "R1-04 c522418 + fixes: blank guards (std<2/255 or dom>95%) in 3 scene scripts (exit 10) + 3 capture scripts (same-task canvas read after explicit render()); full evidence re-run anyBlank=false",
+        "R1-06 6de991c + final: probe chain (red-material, hide, all-red, normal-flip, ambient-only) proved the band was a fully-occluded slot at the base skirt; skirt boxes removed, slab collision carries the sides (246->233 colliders); fill light added to evidence scenes matching the WebGL rig; houdian-3q verified clean",
+        "R1-05 0486fef: bridge spec fixtures + fallback loader; 37/37 green here and unchanged in the bridge worktree",
+        "R1-07: no pyc staged; four allowed delivered files only; final full run kit/out/r1-final-tests.log 37 pass / 0 fail"
+      ],
+      "tests": "37/37 PASS"
     }
   ]
 }

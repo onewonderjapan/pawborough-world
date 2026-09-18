@@ -1,7 +1,7 @@
 {
   "source": "kit/build_temple_v2_scene.py",
   "engine": "cycles-cpu",
-  "samples": 2,
+  "samples": 24,
   "resolution": [
     1600,
     900
@@ -214,5 +214,84 @@
       "file": "axis-aerial-pbr-glb.png"
     }
   ],
-  "note": "BLENDER evidence; WebGL captures are separate (kit/out/temple-axis-v2/web)"
+  "note": "BLENDER evidence; WebGL captures are separate (kit/out/temple-axis-v2/web)",
+  "blankGuard": {
+    "thresholdStd255": 2.0,
+    "thresholdDominant": 0.95,
+    "frames": [
+      {
+        "file": "court2-pair-pbr-glb.png",
+        "lumStd255": 65.859,
+        "dominantShare": 0.1016,
+        "blank": false
+      },
+      {
+        "file": "court2-pair-clay-glb.png",
+        "lumStd255": 36.105,
+        "dominantShare": 0.1034,
+        "blank": false
+      },
+      {
+        "file": "peidian-west-front-pbr-glb.png",
+        "lumStd255": 66.478,
+        "dominantShare": 0.2591,
+        "blank": false
+      },
+      {
+        "file": "gallery-link-pbr-glb.png",
+        "lumStd255": 60.105,
+        "dominantShare": 0.1906,
+        "blank": false
+      },
+      {
+        "file": "stage-from-court-pbr-glb.png",
+        "lumStd255": 70.246,
+        "dominantShare": 0.3683,
+        "blank": false
+      },
+      {
+        "file": "stage-3q-pbr-glb.png",
+        "lumStd255": 68.004,
+        "dominantShare": 0.2467,
+        "blank": false
+      },
+      {
+        "file": "passage-east-pbr-glb.png",
+        "lumStd255": 43.809,
+        "dominantShare": 0.1168,
+        "blank": false
+      },
+      {
+        "file": "court3-axis-pbr-glb.png",
+        "lumStd255": 57.211,
+        "dominantShare": 0.3466,
+        "blank": false
+      },
+      {
+        "file": "court3-axis-clay-glb.png",
+        "lumStd255": 27.042,
+        "dominantShare": 0.3453,
+        "blank": false
+      },
+      {
+        "file": "houdian-front-pbr-glb.png",
+        "lumStd255": 62.347,
+        "dominantShare": 0.1253,
+        "blank": false
+      },
+      {
+        "file": "houdian-3q-pbr-glb.png",
+        "lumStd255": 54.154,
+        "dominantShare": 0.3462,
+        "blank": false
+      },
+      {
+        "file": "axis-aerial-pbr-glb.png",
+        "lumStd255": 42.819,
+        "dominantShare": 0.47,
+        "blank": false
+      }
+    ],
+    "anyBlank": false
+  }
 }

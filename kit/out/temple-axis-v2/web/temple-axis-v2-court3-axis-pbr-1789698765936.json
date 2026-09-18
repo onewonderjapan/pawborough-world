@@ -1,0 +1,129 @@
+{
+  "dataset": "temple-axis-v2",
+  "view": "court3-axis",
+  "mode": "view",
+  "clay": false,
+  "resources": {
+    "meshes": 103,
+    "triangles": 156494,
+    "uniqueGeometries": 103,
+    "uniqueMaterials": 85,
+    "uniqueTextures": 109
+  },
+  "loadStats": {
+    "bytesTotal": 26855048,
+    "bytesNew": 9550252,
+    "fetchParseMs": 623.7,
+    "wallColliders": 246,
+    "groundTriangles": 4368
+  },
+  "camera": {
+    "position": [
+      0,
+      1.6,
+      -59.5
+    ],
+    "target": [
+      0,
+      5,
+      -76
+    ],
+    "fovDeg": 50
+  },
+  "cameraCheck": {
+    "view": "court3-axis",
+    "dPos": 0,
+    "dFov": 0,
+    "pass": true
+  },
+  "routeCheck": {
+    "pass": true,
+    "automatic": true,
+    "results": {
+      "gates": {
+        "marks": "shanmen-mid:g court-mid:g yimen-door:g stage-passage:g court2-s:g",
+        "reachedGallery": true,
+        "pass": true
+      },
+      "platform": {
+        "climbed": true,
+        "y": 0.87,
+        "pass": true
+      },
+      "houdianApproach": {
+        "galleryLoop": true,
+        "eastPassage": true,
+        "court3": true,
+        "doorZ": -71.63,
+        "pass": true
+      },
+      "return": {
+        "reached": true,
+        "z": 3.67,
+        "pass": true
+      },
+      "n1-peidian-door": {
+        "x": -10.86,
+        "y": 0.32,
+        "z": -35.8,
+        "grounded": true,
+        "pass": true,
+        "label": "西配殿闭门/格扇挡"
+      },
+      "n2-gallery-bench": {
+        "x": -12.57,
+        "y": 0.17,
+        "z": -31,
+        "grounded": true,
+        "pass": true,
+        "label": "廊庑坐凳栏挡"
+      },
+      "n3a": {
+        "z": -33.35,
+        "pass": true,
+        "label": "x=0 从戏楼柱间穿过"
+      },
+      "n3b": {
+        "x": 2.5,
+        "pass": true,
+        "label": "东行被戏楼柱挡(z=-26.6柱排线)"
+      },
+      "n4-boundary-wall": {
+        "x": 16.03,
+        "y": 0.02,
+        "z": -45.01,
+        "grounded": true,
+        "pass": true,
+        "label": "x=16.4 边界墙挡"
+      },
+      "n5-houdian": {
+        "z": -73.66,
+        "grounded": true,
+        "pass": true,
+        "label": "城隍殿闭门/台基侧面挡"
+      },
+      "n6-north-closure": {
+        "x": 0,
+        "y": 0.02,
+        "z": -83.49,
+        "grounded": true,
+        "pass": true,
+        "label": "北端墙挡"
+      },
+      "n6": {
+        "z": -83.49,
+        "pass": true,
+        "label": "北端墙 z=-84 挡"
+      },
+      "fallCheck": {
+        "minY": 0,
+        "pass": true,
+        "label": "全程掉地检测（逐点落地采样）"
+      }
+    },
+    "summary": "门链[shanmen-mid:g court-mid:g yimen-door:g stage-passage:g court2-s:g]·配殿环✓·东通道✓·三进院✓·月台登顶y=0.87·城隍殿前z=-71.63·返程✓·负例7/7·掉地y=0",
+    "ms": 449,
+    "waypoints": 22
+  },
+  "ready": true
+}

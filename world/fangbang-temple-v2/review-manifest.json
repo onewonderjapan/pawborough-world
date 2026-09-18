@@ -190,30 +190,30 @@
     {
       "id": "temple-axis-peidian-w",
       "path": "./world/fangbang-temple-v2/temple-axis/peidian.glb",
-      "bytes": 2079584,
-      "sha256": "5094b6b5ccfe6a516017520f3079e426f429164aaa78975da5c82cf003910310",
-      "triangles": 11432
+      "bytes": 2075332,
+      "sha256": "b3dba52114ed22f25e916f9d5cc72cff6ba2cf13082eae16daa099deabc1771d",
+      "triangles": 11396
     },
     {
       "id": "temple-axis-peidian-e",
       "path": "./world/fangbang-temple-v2/temple-axis/peidian.glb",
-      "bytes": 2079584,
-      "sha256": "5094b6b5ccfe6a516017520f3079e426f429164aaa78975da5c82cf003910310",
-      "triangles": 11432
+      "bytes": 2075332,
+      "sha256": "b3dba52114ed22f25e916f9d5cc72cff6ba2cf13082eae16daa099deabc1771d",
+      "triangles": 11396
     },
     {
       "id": "temple-axis-gallery-w",
       "path": "./world/fangbang-temple-v2/temple-axis/gallery.glb",
-      "bytes": 493260,
-      "sha256": "643780215e30f779800584e2c15ffc3927034ba9831e3601cd10cd83b32294f2",
-      "triangles": 1134
+      "bytes": 490812,
+      "sha256": "45228eb69acfd827741ac9f4a72b2d2f6bd92a1c2c4b0776efa210424ee1114d",
+      "triangles": 1110
     },
     {
       "id": "temple-axis-gallery-e",
       "path": "./world/fangbang-temple-v2/temple-axis/gallery.glb",
-      "bytes": 493260,
-      "sha256": "643780215e30f779800584e2c15ffc3927034ba9831e3601cd10cd83b32294f2",
-      "triangles": 1134
+      "bytes": 490812,
+      "sha256": "45228eb69acfd827741ac9f4a72b2d2f6bd92a1c2c4b0776efa210424ee1114d",
+      "triangles": 1110
     },
     {
       "id": "temple-axis-dadian",
@@ -232,9 +232,9 @@
     {
       "id": "temple-axis-houdian",
       "path": "./world/fangbang-temple-v2/temple-axis/houdian.glb",
-      "bytes": 2706228,
-      "sha256": "158218ec8156d7e92d7cec1f637e8f1474ed063b509056739388e6ded756bdb9",
-      "triangles": 16200
+      "bytes": 2702268,
+      "sha256": "693a5efb758700c96c162f9c9c93e0d1b91f490cde895e9d41202b4cdcd9f615",
+      "triangles": 16164
     },
     {
       "id": "westext-surface",
@@ -269,8 +269,8 @@
     "allPacked": true
   },
   "triangleAccounting": {
-    "bridgeWorldTris": 333930,
-    "fullSceneTris": 376826,
+    "bridgeWorldTris": 333774,
+    "fullSceneTris": 376670,
     "budget": {
       "bridgeScopeLimit": 360000,
       "fullSceneLimit": 400000,
@@ -278,7 +278,7 @@
     },
     "breakdown": {
       "streetAssembly": 171464,
-      "templeAxisV2": 156494,
+      "templeAxisV2": 156338,
       "westExtension": 5972,
       "tailShops": 41428,
       "eastTailSurface": 1468
@@ -414,9 +414,9 @@
           -6.382718
         ],
         "rotationYRad": 1.73782633,
-        "bytes": 2079584,
-        "sha256": "5094b6b5ccfe6a516017520f3079e426f429164aaa78975da5c82cf003910310",
-        "triangles": 11432,
+        "bytes": 2075332,
+        "sha256": "b3dba52114ed22f25e916f9d5cc72cff6ba2cf13082eae16daa099deabc1771d",
+        "triangles": 11396,
         "module": "temple-axis-peidian-w"
       },
       {
@@ -428,9 +428,9 @@
           -10.106817
         ],
         "rotationYRad": -1.40376633,
-        "bytes": 2079584,
-        "sha256": "5094b6b5ccfe6a516017520f3079e426f429164aaa78975da5c82cf003910310",
-        "triangles": 11432,
+        "bytes": 2075332,
+        "sha256": "b3dba52114ed22f25e916f9d5cc72cff6ba2cf13082eae16daa099deabc1771d",
+        "triangles": 11396,
         "module": "temple-axis-peidian-e"
       },
       {
@@ -442,9 +442,9 @@
           -1.709486
         ],
         "rotationYRad": 1.73782633,
-        "bytes": 493260,
-        "sha256": "643780215e30f779800584e2c15ffc3927034ba9831e3601cd10cd83b32294f2",
-        "triangles": 1134,
+        "bytes": 490812,
+        "sha256": "45228eb69acfd827741ac9f4a72b2d2f6bd92a1c2c4b0776efa210424ee1114d",
+        "triangles": 1110,
         "module": "temple-axis-gallery-w"
       },
       {
@@ -456,9 +456,9 @@
           -5.293931
         ],
         "rotationYRad": -1.40376633,
-        "bytes": 493260,
-        "sha256": "643780215e30f779800584e2c15ffc3927034ba9831e3601cd10cd83b32294f2",
-        "triangles": 1134,
+        "bytes": 490812,
+        "sha256": "45228eb69acfd827741ac9f4a72b2d2f6bd92a1c2c4b0776efa210424ee1114d",
+        "triangles": 1110,
         "module": "temple-axis-gallery-e"
       },
       {
@@ -498,14 +498,14 @@
           -45.913134
         ],
         "rotationYRad": 0.16703,
-        "bytes": 2706228,
-        "sha256": "158218ec8156d7e92d7cec1f637e8f1474ed063b509056739388e6ded756bdb9",
-        "triangles": 16200,
+        "bytes": 2702268,
+        "sha256": "693a5efb758700c96c162f9c9c93e0d1b91f490cde895e9d41202b4cdcd9f615",
+        "triangles": 16164,
         "module": "temple-axis-houdian"
       }
     ],
-    "placedTriangles": 156494,
-    "collision": "246 records composed into collision-world.json (self-check sampled 6, maxCornerError 6.347e-7)"
+    "placedTriangles": 156338,
+    "collision": "233 records composed into collision-world.json (self-check sampled 6, maxCornerError 6.347e-7)"
   },
   "westExtension": {
     "surface": {
@@ -997,12 +997,12 @@
   },
   "budgets": {
     "bridgeScopeTris": {
-      "actual": 333930,
+      "actual": 333774,
       "limit": 360000,
       "pass": true
     },
     "fullSceneTris": {
-      "actual": 376826,
+      "actual": 376670,
       "limit": 400000,
       "pass": true
     },

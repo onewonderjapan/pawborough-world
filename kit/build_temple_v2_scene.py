@@ -168,13 +168,20 @@ if args.mode == 'review':
 
 sun = bpy.data.objects.new('sun', bpy.data.lights.new('sun', 'SUN'))
 scene.collection.objects.link(sun)
-sun.data.energy = 2.8
+sun.data.energy = 0.0 if False else 2.8
 sun.rotation_euler = (math.radians(55), 0.0, math.radians(-35))
+# R1-06 companion: low-strength fill from the opposite side — matches the
+# WebGL rig (hemisphere + fill) so north/backshadow faces stay readable
+fill = bpy.data.objects.new('fill', bpy.data.lights.new('fill', 'SUN'))
+scene.collection.objects.link(fill)
+fill.data.energy = 0.0 if False else 0.9
+fill.data.color = (0.92, 0.94, 1.0)
+fill.rotation_euler = (math.radians(35), 0.0, math.radians(145))
 world = bpy.data.worlds.new('world')
 scene.world = world
 world.use_nodes = True
 world.node_tree.nodes['Background'].inputs[0].default_value = (0.75, 0.82, 0.88, 1)
-world.node_tree.nodes['Background'].inputs[1].default_value = 0.6
+world.node_tree.nodes['Background'].inputs[1].default_value = 3.0 if False else 0.6
 
 cam = bpy.data.objects.new('cam', bpy.data.cameras.new('cam'))
 scene.collection.objects.link(cam)
@@ -241,6 +248,21 @@ else:
     PLAN = [(v, 'pbr') for v in COMPARE_VIEWS]
 
 meshes = [o for o in scene.objects if o.type == 'MESH']
+
+# R1-06: several base-level faces (base-slab sides, step risers) render black
+# in Cycles because their normals ended up inward after the GLB round trip
+# (three.js lights both hemispheres so WebGL never showed it). Recalculate
+# outward normals for every imported mesh — all temple meshes are closed
+# boxes/joins of closed boxes, so recalc is unambiguous.
+import bmesh as _bm
+import os as _os
+for _o in meshes:
+    _b = _bm.new()
+    _b.from_mesh(_o.data)
+    _bm.ops.recalc_face_normals(_b, faces=_b.faces)
+    _b.to_mesh(_o.data)
+    _b.free()
+    _o.data.update()
 
 BLANK_FRAMES = []
 

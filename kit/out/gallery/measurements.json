@@ -12,9 +12,9 @@
         "temple-ground"
       ],
       "objects": 6,
-      "triangles": 1134,
-      "fileBytes": 493260,
-      "sha256": "643780215e30f779800584e2c15ffc3927034ba9831e3601cd10cd83b32294f2"
+      "triangles": 1110,
+      "fileBytes": 490812,
+      "sha256": "45228eb69acfd827741ac9f4a72b2d2f6bd92a1c2c4b0776efa210424ee1114d"
     }
   },
   "timings": {
@@ -22,7 +22,7 @@
   },
   "budgets": {
     "galleryTris": {
-      "actual": 1134,
+      "actual": 1110,
       "limit": 2500,
       "pass": true
     },

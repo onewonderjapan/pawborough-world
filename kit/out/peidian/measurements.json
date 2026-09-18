@@ -12,17 +12,17 @@
         "temple-ground"
       ],
       "objects": 8,
-      "triangles": 11432,
-      "fileBytes": 2079584,
-      "sha256": "5094b6b5ccfe6a516017520f3079e426f429164aaa78975da5c82cf003910310"
+      "triangles": 11396,
+      "fileBytes": 2075332,
+      "sha256": "b3dba52114ed22f25e916f9d5cc72cff6ba2cf13082eae16daa099deabc1771d"
     }
   },
   "timings": {
-    "totalSeconds": 0.5
+    "totalSeconds": 0.4
   },
   "budgets": {
     "peidianTris": {
-      "actual": 11432,
+      "actual": 11396,
       "limit": 14000,
       "pass": true
     },
