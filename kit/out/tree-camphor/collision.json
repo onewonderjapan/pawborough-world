@@ -1,0 +1,38 @@
+{
+  "axis": "glTF Y-up; module centered at origin",
+  "colliders": [
+    {
+      "name": "tree-trunk-block",
+      "group": "temple-tree",
+      "type": "box",
+      "min": [
+        -0.25,
+        0.0,
+        -0.25
+      ],
+      "max": [
+        0.25,
+        2.8,
+        0.25
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0.0,
+        "center": [
+          0,
+          1.4,
+          0
+        ],
+        "size": [
+          0.5,
+          2.8,
+          0.5
+        ]
+      }
+    }
+  ]
+}

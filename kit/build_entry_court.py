@@ -24,6 +24,7 @@ Run:
 import argparse
 import hashlib
 import json
+import math
 import sys
 import time
 from pathlib import Path
@@ -42,6 +43,10 @@ sys.stdout.reconfigure(line_buffering=True)
 p = argparse.ArgumentParser()
 p.add_argument('--config', type=Path, required=True)
 p.add_argument('--out', type=Path, required=True)
+# D2 (2026-09-19 corridor batch) strict opt-in keys: DEFAULT false must rerun
+# geometrically equivalent to the delivered court GLBs (fallback #6 caliber).
+p.add_argument('--addIncenseRoad', action='store_true')
+p.add_argument('--addBurner', action='store_true')
 a = p.parse_args(argv)
 
 cfg = json.loads(a.config.read_text(encoding='utf-8'))
@@ -145,9 +150,89 @@ else:
 print(f'STAGE walls ok ({time.time() - T0:.1f}s)')
 
 # ---------------------------------------------------------------------------
+# D2 v3 additions (strict opt-in; default build above is untouched)
+
+if a.addIncenseRoad:
+    # DESIGN_SPEC packageD.forecourtIncenseRoad: bluestone incense road on the
+    # axis in FRONT of the shanmen (temple-local z 0..+7, x +/-1.5), slabs
+    # 1.5 x 0.75 with 0.02 joints, surface +0.01 (flush, no step); one whole
+    # stone 3.0 x 0.6 x 0.03 at the threshold z 0..0.6. Faces are named
+    # temple-ground__worn-stone to keep the walkable-surface contract
+    # (/^temple-ground__/ on object names, src/templeViewShared.js).
+    L.GROUP = 'temple-ground'
+    # the shared 'stone' material is Blender-named 'worn-stone' (mb_lib), so
+    # these faces join into 'temple-ground__worn-stone' — the walkable-surface
+    # contract name — with ZERO new materials/images
+    slab_t = .03
+    top = .01
+    # whole stone at the threshold (z 0..0.6)
+    L.box('incense-roadslab-threshold', (0, top - slab_t / 2, .3), (3.0, slab_t, .6),
+          'stone', .006)
+    # slab rows from z 0.62 to 7.0: two 1.5 x 0.75 slabs per row, 0.02 joints
+    z = .62
+    row = 0
+    while z + .75 <= 7.0 + 1e-9:
+        zc = z + .375
+        for sgn in (-1, 1):
+            L.box(f'incense-road-slab-r{row}', (sgn * .755, top - slab_t / 2, zc),
+                  (1.49, slab_t, .75), 'stone', .005)
+        z += .77
+        row += 1
+    print(f'STAGE incense road ok ({row} rows, top +0.01) ({time.time() - T0:.1f}s)')
+
+if a.addBurner:
+    # DESIGN_SPEC packageD.entryCourtBurner: bronze tripod ding on the court
+    # axis at (0, 0, -12), dadian burner construction x0.85, stone plinth
+    # tiers 1.4x0.22 + 1.05x0.18 (spec values override the scaled dadian
+    # tiers). Collision: ONE vessel box 1.1 x 1.3 x 1.1.
+    L.GROUP = 'entry-court'
+    L.M['bronze'] = L.mat('bronze', '6b4c30', .45, metal=.75)   # same as dadian burner
+    bn = {'vesselR': .55 * .85, 'vesselH': .75 * .85, 'legR': .09 * .85,
+          'legH': .35 * .85, 'pawBlockM': [.16 * .85, .08 * .85, .2 * .85],
+          'handleTorusR': .12 * .85, 'handleTubeR': .03 * .85,
+          'lidDiscsM': [[.5 * .85, .06 * .85], [.34 * .85, .05 * .85]],
+          'finialR': .09 * .85}
+    bx, bz, y = 0.0, -12.0, 0.0
+    for w, h in ((1.4, .22), (1.05, .18)):
+        L.box('burner-plinth', (bx, y + h / 2, bz), (w, h, w), 'stone', .01, True)
+        y += h
+    L.cyl('burner-vessel', (bx, y + .02, bz), (bx, y + .02 + bn['vesselH'], bz),
+          bn['vesselR'], 'bronze', 14)
+    leg_top = y + .02
+    for k in range(3):
+        ang = math.pi / 2 + 2 * math.pi * k / 3
+        lx, lz = bx + bn['vesselR'] * .62 * math.cos(ang), bz + bn['vesselR'] * .62 * math.sin(ang)
+        L.cyl('burner-leg', (lx, leg_top - bn['legH'], lz), (lx, leg_top, lz), bn['legR'], 'bronze', 8)
+        L.box('burner-paw', (lx, leg_top - bn['legH'] + bn['pawBlockM'][2] / 2, lz - .04),
+              (bn['pawBlockM'][0], bn['pawBlockM'][1], bn['pawBlockM'][2]), 'bronze', .008)
+    rim_y = leg_top + bn['vesselH']
+    for sgn in (-1, 1):
+        L.cyl('burner-handle', (bx + sgn * bn['vesselR'] * .92, rim_y - .05, bz),
+              (bx + sgn * bn['vesselR'] * .92, rim_y + bn['handleTorusR'] * 1.5, bz),
+              bn['handleTubeR'], 'bronze', 8)
+    ly = rim_y + .04
+    for r, h in bn['lidDiscsM']:
+        L.cyl('burner-lid-disc', (bx, ly, bz), (bx, ly + h, bz), r, 'bronze', 14)
+        ly += h + .015
+    L.cyl('burner-finial', (bx, ly, bz), (bx, ly + bn['finialR'] * 1.6, bz), bn['finialR'], 'bronze', 10)
+    # spec collision: one box 1.1 x 1.3 x 1.1 for the vessel body
+    L.COLL.append({'name': 'burner-vessel-block', 'group': 'entry-court', 'type': 'box',
+                   'center': [bx, .65, bz], 'size': [1.1, 1.3, 1.1], 'axis': 'glTF Y-up'})
+    _bt = 0
+    for _o in bpy.context.scene.objects:
+        if _o.type == 'MESH' and _o.name.startswith('burner'):
+            _o.data.calc_loop_triangles()
+            _bt += len(_o.data.loop_triangles)
+    if _bt > 900:
+        print('BURNER_BUDGET_FAIL', _bt, '> 900')
+        sys.exit(7)
+    print(f'STAGE burner ok ({_bt} tris <= 900) ({time.time() - T0:.1f}s)')
+
+# ---------------------------------------------------------------------------
 # export: join by (group, material), one GLB, reimport check, sidecars
 
-TARGETS = [('court.glb', ('temple-ground', 'entry-court'))]
+TARGETS = [('entry-court-v3.glb' if (a.addIncenseRoad or a.addBurner) else 'court.glb',
+            ('temple-ground', 'entry-court'))]
 out = a.out
 out.mkdir(parents=True, exist_ok=True)
 
@@ -210,7 +295,7 @@ for fname, groups in TARGETS:
     }
     print(f'EXPORTED {fname} objs={sel} tris={tris_of(groups)} bytes={len(data)}')
 
-cT = measure['targets']['court.glb']
+cT = measure['targets'][TARGETS[0][0]]
 if cT['triangles'] > cfg['budgets']['courtAndContextTrisMax']:
     print('BUDGET_FAIL courtTris', cT['triangles'])
     sys.exit(5)
@@ -219,7 +304,7 @@ if cT['triangles'] > cfg['budgets']['courtAndContextTrisMax']:
 original = bpy.context.window.scene
 check = bpy.data.scenes.new('GLB_REIMPORT_CHECK')
 bpy.context.window.scene = check
-bpy.ops.import_scene.gltf(filepath=str(out / 'court.glb'))
+bpy.ops.import_scene.gltf(filepath=str(out / TARGETS[0][0]))
 observed = []
 bounds = [[1e9] * 3, [-1e9] * 3]
 meshes = 0

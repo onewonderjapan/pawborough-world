@@ -1,0 +1,57 @@
+{
+  "delivered": {
+    "path": "world/temple-shanmen/ornaments.glb",
+    "meshes": 2,
+    "primitives": 2,
+    "vertices": 6032,
+    "triangles": 2304,
+    "materials": [
+      "gray-pan-tile",
+      "aged-brass"
+    ]
+  },
+  "rerun": {
+    "path": "kit/out/shanmen-v1-equivalence/ornaments.glb",
+    "meshes": 2,
+    "primitives": 2,
+    "vertices": 6028,
+    "triangles": 2304,
+    "materials": [
+      "gray-pan-tile",
+      "aged-brass"
+    ]
+  },
+  "boundsDelivered": [
+    [
+      -3.314500093460083,
+      7.0,
+      -2.0
+    ],
+    [
+      3.314500331878662,
+      8.830000877380371,
+      -1.5999999046325684
+    ]
+  ],
+  "boundsRerun": [
+    [
+      -3.314500093460083,
+      7.0,
+      -2.0
+    ],
+    [
+      3.314500331878662,
+      8.830000877380371,
+      -1.5999999046325684
+    ]
+  ],
+  "checks": {
+    "primitives_equal": true,
+    "triangles_equal": true,
+    "vertex_count_within_weld_tolerance": true,
+    "materials_equal": true,
+    "bounds_within_1e-4": true
+  },
+  "equivalent": true,
+  "caliber": "fallback #6: tris/prims/materials equal, verts +-4 (weld), bounds 1e-4"
+}

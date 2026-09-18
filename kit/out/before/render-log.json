@@ -1,0 +1,180 @@
+{
+  "renders": [
+    {
+      "camera": "bridge:junction-west",
+      "device": "CPU",
+      "samples": 24,
+      "resolution": [
+        1600,
+        900
+      ],
+      "seconds": 30.6,
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/kit/out/before/scene-v1--bridge__junction-west-cpu.png",
+      "guard": {
+        "brightnessStd255": 60.297,
+        "monoFraction": 0.1331,
+        "blank": false
+      }
+    },
+    {
+      "camera": "bridge:placeholder-band",
+      "device": "CPU",
+      "samples": 24,
+      "resolution": [
+        1600,
+        900
+      ],
+      "seconds": 19.4,
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/kit/out/before/scene-v1--bridge__placeholder-band-cpu.png",
+      "guard": {
+        "brightnessStd255": 44.955,
+        "monoFraction": 0.2182,
+        "blank": false
+      }
+    },
+    {
+      "camera": "bridge:forecourt-oblique",
+      "device": "CPU",
+      "samples": 24,
+      "resolution": [
+        1600,
+        900
+      ],
+      "seconds": 23.5,
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/kit/out/before/scene-v1--bridge__forecourt-oblique-cpu.png",
+      "guard": {
+        "brightnessStd255": 52.233,
+        "monoFraction": 0.2022,
+        "blank": false
+      }
+    },
+    {
+      "camera": "temple:stage-from-court",
+      "device": "CPU",
+      "samples": 24,
+      "resolution": [
+        1600,
+        900
+      ],
+      "seconds": 16.1,
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/kit/out/before/scene-v1--temple__stage-from-court-cpu.png",
+      "guard": {
+        "brightnessStd255": 29.835,
+        "monoFraction": 0.3197,
+        "blank": false
+      }
+    },
+    {
+      "camera": "temple:houdian-front",
+      "device": "CPU",
+      "samples": 24,
+      "resolution": [
+        1600,
+        900
+      ],
+      "seconds": 12.5,
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/kit/out/before/scene-v1--temple__houdian-front-cpu.png",
+      "guard": {
+        "brightnessStd255": 0.36,
+        "monoFraction": 0.5006,
+        "blank": true
+      }
+    },
+    {
+      "camera": "temple:axis-aerial",
+      "device": "CPU",
+      "samples": 24,
+      "resolution": [
+        1600,
+        900
+      ],
+      "seconds": 12.4,
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/kit/out/before/scene-v1--temple__axis-aerial-cpu.png",
+      "guard": {
+        "brightnessStd255": 23.101,
+        "monoFraction": 0.4657,
+        "blank": false
+      }
+    },
+    {
+      "camera": "temple:court2-pair",
+      "device": "CPU",
+      "samples": 24,
+      "resolution": [
+        1600,
+        900
+      ],
+      "seconds": 13.1,
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/kit/out/before/scene-v1--temple__court2-pair-cpu.png",
+      "guard": {
+        "brightnessStd255": 34.28,
+        "monoFraction": 0.027,
+        "blank": false
+      }
+    },
+    {
+      "camera": "temple:stage-from-court",
+      "device": "CPU",
+      "samples": 24,
+      "resolution": [
+        1600,
+        900
+      ],
+      "seconds": 4.5,
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/kit/out/before/scene-v1--temple__stage-from-court-cpu.png",
+      "guard": {
+        "brightnessStd255": 53.15,
+        "monoFraction": 0.4422,
+        "blank": false
+      }
+    },
+    {
+      "camera": "temple:houdian-front",
+      "device": "CPU",
+      "samples": 24,
+      "resolution": [
+        1600,
+        900
+      ],
+      "seconds": 10.0,
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/kit/out/before/scene-v1--temple__houdian-front-cpu.png",
+      "guard": {
+        "brightnessStd255": 28.929,
+        "monoFraction": 0.0342,
+        "blank": false
+      }
+    },
+    {
+      "camera": "temple:axis-aerial",
+      "device": "CPU",
+      "samples": 24,
+      "resolution": [
+        1600,
+        900
+      ],
+      "seconds": 4.7,
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/kit/out/before/scene-v1--temple__axis-aerial-cpu.png",
+      "guard": {
+        "brightnessStd255": 40.719,
+        "monoFraction": 0.3665,
+        "blank": false
+      }
+    },
+    {
+      "camera": "temple:court3-axis",
+      "device": "CPU",
+      "samples": 24,
+      "resolution": [
+        1600,
+        900
+      ],
+      "seconds": 9.0,
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/kit/out/before/scene-v1--temple__court3-axis-cpu.png",
+      "guard": {
+        "brightnessStd255": 26.865,
+        "monoFraction": 0.0074,
+        "blank": false
+      }
+    }
+  ]
+}

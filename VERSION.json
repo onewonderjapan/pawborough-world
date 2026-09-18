@@ -1,11 +1,11 @@
 {
   "batch": "pawborough-v1-candidate-night-20260918",
   "role": "v1.0 CANDIDATE — not adopted; every ownerAdopted stays false until the owner rules (GATE.md)",
-  "generatedAt": "2026-09-18T15:34:47.545Z",
+  "generatedAt": "2026-09-18T16:07:59.512Z",
   "git": {
-    "head": "39acea77132feaa65bf8c0c45383ca94717b830e",
-    "branch": "work/v1-candidate-20260918",
-    "subject": "R1-03: westShopsBlock budget re-scoped 180k -> 200k per lead (RESULT records 'lead re-scoped 2026-09-18'; actual 188,898 incl. 5 strips now passes; module swap left to GATE G4); manifest limit/pass and W4 assertion updated"
+    "head": "8fa1bcc4c0b487ae7da39e49cb1d843828e4a919",
+    "branch": "work/corridor-video-20260919",
+    "subject": "R1 closeout: RESULT.r1 block + PROGRESS R1 checkpoint; A-batch Blender 4 renders delivered (R1-04); westshops evidence re-shot (8 WebGL + 4 Blender, blank guards clean); VERSION.json/index-v1.html regenerated at the R1 final head; verify_all 8/8 green"
   },
   "tools": {
     "node": "v22.23.2",
