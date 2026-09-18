@@ -2,10 +2,10 @@
   "batch": "pawborough-corridor-video-night-20260919",
   "branch": "work/corridor-video-20260919",
   "baseline": "8fa1bcc",
-  "updated": "2026-09-19T03:15:06.496379+09:00",
+  "updated": "2026-09-19T03:34:06.646449+09:00",
   "packages": {
     "D": "delivered",
-    "E": "pending",
+    "E": "delivered",
     "F": "in_progress",
     "G": "pending"
   },
@@ -48,5 +48,13 @@
     "tree placement: 3 of 4 spec positions were inside the +/-1.5 route corridor (dist 0.83/1.56/0.94); fallback #2 away-shifts applied (0.968/0.238/0.858 m) and recorded in the v3 manifest placementShifts.",
     "materials: 'worn-stone' is the pre-existing shared stone material's Blender name (mb_lib), so the road required ZERO new materials/images. foliage added per spec. bronze reused from the dadian burner construction."
   ],
-  "blockers": []
+  "blockers": [],
+  "E": {
+    "E0": "kit/props.config.json + kit/build_props.py -> 5 GLBs (bicycle 684 / crate 60 / basket 216 / chair 196 / awning 48 tris; validator 0 errors; wood-crate carries the same missing-tangent WARNING as the tree - no normal map, runtime tangent, accepted per tree precedent)",
+    "E1": "scripts/plan_props.mjs -> kit/out/props/plan.json: 38 instances on 39 facades, 0.25-0.9 wall band, route corridor >=1.2, SAT vs 208 body-height world colliders, <=2/facade, awnings only plain/curio/cloth at y2.85",
+    "E2": "scripts/build_props_world.mjs -> world/street-props/ (5 GLBs + instances + 32 colliders + manifest, placedTris 11176 <= 20000)",
+    "E3": "fangbangMain.js ?props=1 (default OFF; expectedTriangles includes props only when loaded); tests props_contract + props_visibility; 46/46 green",
+    "E4": "4 WebGL views (?props=1&skins=1, propsLoaded=38 verified in-page) + 2 Blender views (scene-v2 --props)",
+    "evidenceCameras": "junction-west / west-road-mid / temple-side-east / axis-long (the page exposes only the 8 bridge views; street eye/corner have no page buttons)"
+  }
 }

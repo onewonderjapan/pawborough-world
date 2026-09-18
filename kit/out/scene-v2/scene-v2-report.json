@@ -7,7 +7,8 @@
     1600,
     900
   ],
-  "assembly": "street + surfaces + 15 temple-axis-V3 assets + 17 westshop modules + strips + skins (M 10 + A 11) + 10 grays + 4 camphor trees",
+  "assembly": "street + surfaces + 15 temple-axis-V3 assets + 17 westshop modules + strips + skins (M 10 + A 11) + 10 grays + 4 camphor trees + 38 street props",
+  "props": true,
   "axisAerialFix": {
     "old": {
       "positionGlb": [
@@ -44,8 +45,7 @@
       ],
       "specPoseNonBackground": 0.22
     },
-    "note": "pose authored axis-local, rendered through the bridge transform",
-    "nonBackgroundFraction": 0.435
+    "note": "pose authored axis-local, rendered through the bridge transform"
   },
   "cameras": [
     "street:full-west",
@@ -77,74 +77,26 @@
   ],
   "renders": [
     {
-      "view": "new-aerial",
-      "camera": "temple:axis-aerial",
+      "view": "street-junction-west",
+      "camera": "bridge:junction-west",
       "device": "CPU",
-      "seconds": 22.0,
-      "file": "temple__axis-aerial-cpu.png",
+      "seconds": 39.5,
+      "file": "bridge__junction-west-cpu.png",
       "guard": {
-        "brightnessStd255": 47.195,
-        "monoFraction": 0.265,
+        "brightnessStd255": 54.466,
+        "monoFraction": 0.063,
         "blank": false
       }
     },
     {
-      "view": "shanmen-from-road",
-      "camera": "bridge:shanmen-from-road",
+      "view": "street-placeholder-band",
+      "camera": "bridge:placeholder-band",
       "device": "CPU",
-      "seconds": 21.8,
-      "file": "bridge__shanmen-from-road-cpu.png",
+      "seconds": 19.6,
+      "file": "bridge__placeholder-band-cpu.png",
       "guard": {
-        "brightnessStd255": 52.565,
-        "monoFraction": 0.2383,
-        "blank": false
-      }
-    },
-    {
-      "view": "forecourt-oblique",
-      "camera": "bridge:forecourt-oblique",
-      "device": "CPU",
-      "seconds": 23.9,
-      "file": "bridge__forecourt-oblique-cpu.png",
-      "guard": {
-        "brightnessStd255": 50.773,
-        "monoFraction": 0.1892,
-        "blank": false
-      }
-    },
-    {
-      "view": "court2-pair",
-      "camera": "temple:court2-pair",
-      "device": "CPU",
-      "seconds": 37.0,
-      "file": "temple__court2-pair-cpu.png",
-      "guard": {
-        "brightnessStd255": 53.157,
-        "monoFraction": 0.0298,
-        "blank": false
-      }
-    },
-    {
-      "view": "court3-axis",
-      "camera": "temple:court3-axis",
-      "device": "CPU",
-      "seconds": 23.1,
-      "file": "temple__court3-axis-cpu.png",
-      "guard": {
-        "brightnessStd255": 58.854,
-        "monoFraction": 0.2334,
-        "blank": false
-      }
-    },
-    {
-      "view": "old-aerial",
-      "camera": "temple:axis-aerial",
-      "device": "CPU",
-      "seconds": 14.0,
-      "file": "camera-fix__axis-aerial-old-cpu.png",
-      "guard": {
-        "brightnessStd255": 44.46,
-        "monoFraction": 0.365,
+        "brightnessStd255": 49.499,
+        "monoFraction": 0.2126,
         "blank": false
       }
     }

@@ -1,0 +1,44 @@
+{
+  "base": "http://127.0.0.1:5310",
+  "url": "http://127.0.0.1:5310/fangbang.html?props=1&skins=1",
+  "views": [
+    {
+      "view": "temple-side-east",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 62.53,
+        "dominantShare": 0.444
+      },
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/artifacts/street-props/web/props-web--temple-side-east.png",
+      "bytes": 205303
+    },
+    {
+      "view": "axis-long",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 56.52,
+        "dominantShare": 0.218
+      },
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/artifacts/street-props/web/props-web--axis-long.png",
+      "bytes": 373401
+    }
+  ],
+  "propsStats": {
+    "count": 38,
+    "counts": {
+      "cloth-awning": 6,
+      "bicycle-28": 12,
+      "wood-crate": 10,
+      "bamboo-basket": 6,
+      "bamboo-chair": 4
+    },
+    "bytes": 174540,
+    "placedTris": 11176,
+    "colliders": 32,
+    "manifest": "street-props"
+  },
+  "pass": true,
+  "generatedBy": "tools/capture_fangbang_views.mjs"
+}

@@ -31,6 +31,8 @@ p.add_argument('--samples', type=int, default=24)
 p.add_argument('--render', type=str, default='none',
                help='comma list: aerial(old pose),new-aerial,shanmen-from-road,forecourt-oblique,court2-pair,court3-axis,street-junction-west,street-placeholder-band,stage-from-court,houdian-front,aerial-overview')
 p.add_argument('--device', type=str, default='CPU', choices=['CPU', 'GPU'])
+p.add_argument('--props', action='store_true',
+               help='instance the street-props layer (E batch, kit/out/props/plan.json)')
 args = p.parse_args(argv)
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -151,6 +153,14 @@ for tid, loc in _axis_manifest['assets']['tree']['instancesAt'].items():
     wx = T[0] + _c * loc[0] + _s * loc[2]
     wz = T[2] - _s * loc[0] + _c * loc[2]
     import_glb(V3 / 'tree-camphor.glb', loc_bl=(wx, -wz, loc[1]), rot_z=+YAW)
+
+# street props (E batch): 38 planned instances of 5 objects
+if args.props:
+    _props_dir = ROOT / 'kit/out/props'
+    for inst in json.loads((_props_dir / 'plan.json').read_text())['instances']:
+        import_glb(_props_dir / f'{inst["item"]}.glb',
+                   loc_bl=(inst['positionGlb'][0], -inst['positionGlb'][2], inst['y'] or 0),
+                   rot_z=+inst['rotationYRad'])
 
 wsb = next(x for x in blocks['blocks'] if x['id'] == 'block-west-shops')
 n_ws = 0
@@ -290,7 +300,9 @@ sidecar = {
     'source': 'kit/build_world_v2_scene.py', 'blend': str(blend_path),
     'device': args.device, 'samples': args.samples, 'resolution': [W, H],
     'assembly': (f'street + surfaces + {n_axis} temple-axis-V3 assets + {n_ws} westshop modules '
-                 f'+ strips + skins (M {n_m} + A {n_a}) + {n_boxes} grays + 4 camphor trees'),
+                 f'+ strips + skins (M {n_m} + A {n_a}) + {n_boxes} grays + 4 camphor trees'
+                 + (' + 38 street props' if args.props else '')),
+    'props': bool(args.props),
     'axisAerialFix': {'old': {'positionGlb': [-30, 42, -20], 'targetGlb': [0, 0, -50],
                               'verticalFovDegrees': 50},
                       'new': NEW_AERIAL_POSE_LOCAL, 'note': 'pose authored axis-local, rendered through the bridge transform'},

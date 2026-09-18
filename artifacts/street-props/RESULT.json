@@ -1,0 +1,20 @@
+{
+  "batch": "pawborough-corridor-video-night-20260919",
+  "package": "E",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "visualReview": "pending_lead",
+  "dataset": "world/street-props/",
+  "revocable": { "defaultLoaded": false, "loadParam": "?props=1", "note": "omit ?props=1 = layer absent; G12 can revoke the whole block" },
+  "instances": 38,
+  "counts": { "cloth-awning": 6, "bicycle-28": 12, "wood-crate": 10, "bamboo-basket": 6, "bamboo-chair": 4 },
+  "placedTriangles": 11176,
+  "collisionCount": 32,
+  "era": "1990s; no post-2000 items",
+  "tests": { "new": ["props_contract", "props_visibility"], "regression": "46/46 green" },
+  "evidence": {
+    "webgl": "artifacts/street-props/web/ (4 views, fangbang.html?props=1&skins=1, blank-guarded, propsLoaded=38)",
+    "blender": "artifacts/street-props/ (2 views from scene-v2 --props, CPU 24spp)"
+  },
+  "gatesTouched": ["G12 (props layer keep/revoke)"]
+}
