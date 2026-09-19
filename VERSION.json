@@ -1,7 +1,7 @@
 {
   "batch": "pawborough-world-closeout-night-20260919",
   "role": "v1.0 ADOPTED world engineering closeout — owner visual adoption unchanged (G1); this batch completes verified compression coverage, official release entries/build, reproducible-assembly proof, video terminal state and a restorable delivery (M-R)",
-  "generatedAt": "2026-09-19T15:35:49.807Z",
+  "generatedAt": "2026-09-19T16:44:13.297Z",
   "compressedDefault": true,
   "adoption": {
     "decidedAt": "2026-09-19T20:30+09:00",
@@ -132,9 +132,9 @@
     ]
   },
   "git": {
-    "head": "fac0844ab7b097c2b26a6dcc46657c0562519ae1",
+    "head": "1b9033ce4b7e0530bc44914c6394633ff47165d9",
     "branch": "work/world-closeout-20260919",
-    "subject": "N compression: 24 verified cm installed (v4 axis/east/props/strips), stale westshops cm replaced+retired, provenance-gated manifest regen, tolerance fallbacks pinned (lions/surface 0.32-0.49% drift), 54/54 tests; v3-street stale cm findings recorded (outside write scope)"
+    "subject": "O release entries/build/gate: temple-v3 rollup input, official dist world closure, site-relative index-v1, gate rewrite (server ownership, byte attribution, blank guard, 12 scenarios PASS) + probe-abort classification + templeV3 0.1% compressed tolerance aligned with fangbangMain"
   },
   "tools": {
     "node": "v22.23.2",
@@ -145,12 +145,13 @@
     "playwright": "1.63.0 (installed --no-save)"
   },
   "tests": {
-    "suiteFiles": 52,
+    "suiteFiles": 53,
     "list": [
       "tests/adoption_watchdog.test.mjs",
       "tests/asset_cancel.test.mjs",
       "tests/block_lifecycle.test.mjs",
       "tests/block_production.test.mjs",
+      "tests/closeout_rebuild_negatives.test.mjs",
       "tests/compressed_default.test.mjs",
       "tests/dadian_contract.test.mjs",
       "tests/dadian_roof.test.mjs",

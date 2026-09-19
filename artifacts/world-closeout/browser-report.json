@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-09-19T16:25:19.130Z",
+  "generatedAt": "2026-09-19T16:44:22.427Z",
   "servers": {
     "dev": {
       "port": 5340,
-      "pid": 144641,
+      "pid": 231263,
       "base": "http://127.0.0.1:5340",
       "attribution": {
         "method": "served temple-v3.html references /src/templeV3Main.js (vite dev injects its HMR client, so no byte equality) AND served transformed compressedState.js carries the cm-probe literal",
@@ -13,7 +13,7 @@
     },
     "preview": {
       "port": 5341,
-      "pid": 144661,
+      "pid": 231282,
       "base": "http://127.0.0.1:5341",
       "attribution": {
         "method": "served fangbang.html byte== dist/fangbang.html AND served referenced bundle byte== dist bundle",
@@ -40,7 +40,7 @@
         "dominantShare": 0.088
       },
       "cmGlbs": 80,
-      "plainGlbs": 28,
+      "plainGlbs": 2,
       "unexpectedFetches": [],
       "stateOk": true,
       "fallbackProbes": 1,
@@ -80,11 +80,11 @@
       "routeSummary": "去程至闭门前(z_local=-71.63)·返程达·端墙挡✓·前院东界✓·闭门挡✓·接缝最长停滞0s",
       "frame": {
         "blank": false,
-        "std255": 54.21,
+        "std255": 54.22,
         "dominantShare": 0.094
       },
       "cmGlbs": 42,
-      "plainGlbs": 17,
+      "plainGlbs": 0,
       "unexpectedFetches": [],
       "stateOk": true,
       "fallbackProbes": 1,
@@ -293,7 +293,7 @@
   ],
   "pass": true,
   "version": {
-    "head": "fac0844ab7b097c2b26a6dcc46657c0562519ae1",
+    "head": "1b9033ce4b7e0530bc44914c6394633ff47165d9",
     "batch": "pawborough-world-closeout-night-20260919",
     "compressedDefault": true,
     "datasets": 15

@@ -67,8 +67,14 @@ step freeze_check node -e '
         try { b = await readFile(f.path); } catch { bad.push(`${f.path}: missing`); continue; }
         const got = createHash("sha256").update(b).digest("hex");
         if (exempt(f.path)) {
+          // derived compressed artifacts (*.cm.glb / *.cm.json) inside the
+          // authorized datasets were legitimately rebuilt by this batch'"'"'s
+          // provenance-gated N chain AFTER the baseline snapshot — their
+          // integrity is pinned by cm-provenance.json + the manifest byte/sha
+          // tests, not by the frozen baseline. Non-derived files ARE locked.
+          const derived = /\.cm\.glb$|\.cm\.json$/.test(f.path);
           const locked = baseSha.get(f.path);
-          if (locked === undefined) { baselineLocked++; continue; }  // new derived asset of this batch — gated by the registry, not the baseline
+          if (locked === undefined || derived) { baselineLocked++; continue; }
           if (got !== locked) { bad.push(`${f.path}: authorized dataset drifted from the closeout baseline`); continue; }
           baselineLocked++;
         } else {
@@ -97,16 +103,12 @@ step sha_reconcile node -e '
     })().catch((e) => { console.error(e.message); process.exit(1); });
   '
 step dist_build bash -c 'npm run build && cp -r world building VERSION.json index-v1.html dist/'
-# preview ports are overridable so a restore_check clone never fights the
-# live workspace for 5306/5307 (defaults keep the standalone run predictable)
-PA="${PREVIEW_PORT_A:-5306}"; PB="${PREVIEW_PORT_B:-5307}"
-step preview_a bash -c "nohup node_modules/.bin/vite preview --host 127.0.0.1 --port $PA --strictPort >/tmp/verify_preview_$PA.log 2>&1 & sleep 2; curl -sf -o /dev/null http://127.0.0.1:$PA/fangbang.html"
-step preview_b bash -c "nohup node_modules/.bin/vite preview --host 127.0.0.1 --port $PB --strictPort >/tmp/verify_preview_$PB.log 2>&1 & sleep 2; curl -sf -o /dev/null http://127.0.0.1:$PB/temple-v2.html"
-# full browser gate (adoption batch): v4+skins+props / v3 / temple-v2 in both
-# compressed states, temple-v3 on dev, build attribution, HARD routeCheck
-step cruise bash -c "node tools/full_browser_gate.mjs --dev-port 5320 --preview-port $PA"
-pkill -f "[v]ite preview --port $PA" 2>/dev/null || true
-pkill -f "[v]ite preview --port $PB" 2>/dev/null || true
+# closeout batch: the full browser gate ORCHESTRATES ITS OWN servers
+# (ownership-verified, policy ports 5340/5341 -> 5344/5345/5346) — the old
+# preview_a/preview_b curl steps (nohup + pkill cleanup) only proved "a server
+# answered" and fought the gate for ports; they are superseded by the gate's
+# 12 owned scenarios, which include the two preview pages these steps curled.
+step cruise bash -c "node tools/full_browser_gate.mjs"
 
 python3 - "$REPORT_DIR/verify-report.json" "$STARTED_AT" "$STEPS_JSONL" <<'EOF'
 import json, sys, datetime

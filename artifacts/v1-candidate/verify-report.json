@@ -1,7 +1,7 @@
 {
   "tool": "tools/verify_all.sh",
-  "startedAt": "2026-09-19T20:48:26+09:00",
-  "finishedAt": "2026-09-19T20:51:16.898607+09:00",
+  "startedAt": "2026-09-20T01:44:02+09:00",
+  "finishedAt": "2026-09-20T01:49:09.265428+09:00",
   "pass": true,
   "steps": [
     {
@@ -12,42 +12,32 @@
     {
       "step": "tests",
       "pass": true,
-      "ms": 7908
+      "ms": 7623
     },
     {
       "step": "freeze_check",
       "pass": true,
-      "ms": 1324
+      "ms": 2025
     },
     {
       "step": "make_version",
       "pass": true,
-      "ms": 2039
+      "ms": 1450
     },
     {
       "step": "sha_reconcile",
       "pass": true,
-      "ms": 1589
+      "ms": 1501
     },
     {
       "step": "dist_build",
       "pass": true,
-      "ms": 4223
-    },
-    {
-      "step": "preview_a",
-      "pass": true,
-      "ms": 2063
-    },
-    {
-      "step": "preview_b",
-      "pass": true,
-      "ms": 2061
+      "ms": 5782
     },
     {
       "step": "cruise",
       "pass": true,
-      "ms": 148713
+      "ms": 288611
     }
   ],
   "logs": "one /tmp/verify_all_<step>.log per step (transient)"
