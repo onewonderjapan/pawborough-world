@@ -1,0 +1,69 @@
+{
+  "configId": "lanes-v2",
+  "batch": "pawborough-lanes-construction-night-20260920",
+  "axis": "GLB Y-up; module local frame: origin = portal centre on the removed seal-wall mid-plane at floor level; +Z inward (into the lane); +Y up; +X = right-handed horizontal (west side of a northward lane A)",
+  "designDisclaimer": "depths/widths/heights are design targets per DESIGN_SPEC (designValuesNotSurvey=true); anchors measured from real removed-wall triangles (see artifacts/lanes-construction/placement.json)",
+  "floorTopWorldY": 0.09,
+  "modules": {
+    "lane-a": {
+      "builder": "kit/build_lane_a.py",
+      "out": "kit/out/lanes-v2/lane-a",
+      "anchor": {
+        "portalCenterGlb": [43.545, 0.09, -16.375],
+        "rotationYRad": 3.1165,
+        "inwardUnitGlb": [0.0251, -0.9997],
+        "source": "mid-plane of the removed lane-A seal wall (world/street-reviewed.glb street-kit__weathered-lime-plaster, see placement.json)"
+      },
+      "designDepthM": 8.0,
+      "designClearWidthM": 2.2,
+      "portalClearHeightM": 2.3,
+      "portalOverallHeightM": 2.65,
+      "wallHeightM": 3.3,
+      "endWallHeightM": 3.5,
+      "westWallThicknessM": 0.1,
+      "eastWallThicknessM": 0.24,
+      "highWindowRhythms": [
+        { "side": "east(localX-1.10)", "stations": [1.8, 3.8, 5.8], "widthM": 0.9, "sillY": 2.35, "headY": 3.05 },
+        { "side": "west(localX+1.10)", "stations": [1.4, 2.73, 4.07, 5.4], "widthM": 0.6, "sillY": 2.5, "headY": 3.1 }
+      ],
+      "rearServiceDoor": { "side": "west", "sCenter": 4.9, "widthM": 1.0, "heightM": 2.05, "recessM": 0.25, "state": "closed" },
+      "budgetTris": 30000
+    },
+    "lane-b-v2": {
+      "builder": "kit/build_lane_b_v2.py",
+      "out": "kit/out/lanes-v2/lane-b-v2",
+      "derivedFrom": "kit/build_lane_b.py (N5 frozen design); kit/out/lane-b output stays byte-frozen",
+      "anchor": {
+        "portalCenterGlb": [57.418, 0.09, 14.2485],
+        "rotationYRad": -0.4818,
+        "inwardUnitGlb": [-0.4631, 0.8863],
+        "source": "scripts/build_laneb_world.mjs PORTAL_C / YAW (frozen N5 anchor)"
+      },
+      "designDepthM": 10.0,
+      "portalClearWidthM": 1.5,
+      "portalClearHeightM": 2.3,
+      "pocketWidthM": 3.6,
+      "budgetTris": 30000,
+      "reusedComponents": ["portal piers/lintel/reveals", "threshold + inset drain", "clothesline + 2 cloth", "conduit + clips", "downpipe + clamps + shoe"],
+      "changesFromV1": [
+        "depth 5.5 -> 10.0 (funnel profile extended, pocket 3.6m kept from s=4)",
+        "back facade moved s=5.56 -> s=10.06 with rear-facing wall details",
+        "side facade extended s=2.5..10 with a second high window (rhythm differs from lane A)",
+        "end corner caps + plinth junctions from the shared lanes-v2 component set"
+      ]
+    }
+  },
+  "reusableModules": [
+    { "id": "rear-service-door-panel", "file": "kit/lanes_v2_components.py::rear_service_door", "usedBy": ["lane-a.west.s4.9", "lane-b-v2.east.s7.3"] },
+    { "id": "high-window-panel", "file": "kit/lanes_v2_components.py::high_window", "usedBy": ["lane-a east x3", "lane-a west x4", "lane-b-v2 side facade x2"] },
+    { "id": "corner-cap-plinth", "file": "kit/lanes_v2_components.py::corner_cap", "usedBy": ["lane-a end corners x2", "lane-b-v2 pocket rear corners x2"] }
+  ],
+  "materials": "frozen mb_lib palette (kit/mb_lib.py build_materials), zero new textures",
+  "budgets": {
+    "laneA": 30000,
+    "laneB": 30000,
+    "interfacesCombined": 20000,
+    "totalAddedMax": 80000,
+    "capsNotQuotas": true
+  }
+}

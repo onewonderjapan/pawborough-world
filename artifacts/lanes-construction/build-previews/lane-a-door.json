@@ -1,0 +1,27 @@
+{
+  "view": "door-detail",
+  "input": "kit/out/lanes-v2/lane-a/model.glb",
+  "glbSha256": "6ddd9fd7a8f25d8dad0c668f7f43294a7502f4feae67481c8cfa26e2c404dd1e",
+  "clay": false,
+  "camera": {
+    "id": "door-detail",
+    "positionGlb": [
+      -0.3,
+      1.5,
+      3.4
+    ],
+    "targetGlb": [
+      1.2,
+      1.2,
+      4.9
+    ],
+    "lensMm": 35
+  },
+  "resolution": [
+    800,
+    540
+  ],
+  "samples": 24,
+  "engine": "cycles-cpu",
+  "viewTransform": "AgX - Medium High Contrast"
+}

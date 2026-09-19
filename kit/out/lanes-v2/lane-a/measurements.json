@@ -1,0 +1,43 @@
+{
+  "moduleId": "lane-a",
+  "triangles": 7290,
+  "meshes": 9,
+  "fileBytes": 2567564,
+  "sha256": "03aa6a0058c8bdd63039c6534cd8cd048d16cad13322f7822c9c2c6ed7099675",
+  "design": {
+    "family": "lane-a-module",
+    "sampleId": "lane-a",
+    "basedOn": "lanes-v2 batch DESIGN_SPEC.targets.laneA + placement.json (design inference, not survey)",
+    "localFrame": "origin=portal centre on removed seal wall mid-plane at floor y=0.09; +Z inward(0.0251,0,-0.9997) world north; +X west side",
+    "worldPlacement": {
+      "portalCenterGlb": [
+        43.545,
+        0.09,
+        -16.375
+      ],
+      "rotationYRad": 3.1165
+    },
+    "designDepthM": 8.0,
+    "designClearWidthM": 2.2,
+    "portalClearHeightM": 2.3,
+    "portalOverallHeightM": 2.65,
+    "wallHeightM": 3.3,
+    "endWallHeightM": 3.5,
+    "highWindowRhythms": [
+      "east 3x @2.0m w0.9",
+      "west 4x @1.33m w0.6"
+    ],
+    "rearServiceDoor": "west s=4.9, closed, recess 0.25 (reusable module)",
+    "reusableModules": [
+      "rear-service-door-panel",
+      "high-window-panel",
+      "corner-cap-plinth"
+    ],
+    "newTextures": 0,
+    "budgetTris": 30000
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}
