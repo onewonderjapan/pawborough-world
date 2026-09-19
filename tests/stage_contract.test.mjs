@@ -94,12 +94,15 @@ const glb = readGlb(bytes);
   check('S2: floorNoCollider recorded', collision.floorNoCollider === true);
 }
 
-// S3 collision set: exactly 4 columns + 1 rail; rail y 2.6..3.15; passage clear
+// S3 collision set: 4 columns + 1 rail + 2 flank walls (adoption batch:
+  // the visible timber side boards y2.40-3.21 must be collidable); passage clear
 {
   const cols = collision.colliders.filter((c) => c.name === 'stage-column');
   const rails = collision.colliders.filter((c) => c.name === 'stage-front-rail');
-  check('S3: exactly 4 columns + 1 rail', cols.length === 4 && rails.length === 1,
-    `${cols.length}+${rails.length}`);
+  const flanks = collision.colliders.filter((c) => c.name === 'stage-flank-wall');
+  check('S3: exactly 4 columns + 1 rail + 2 flank walls',
+    cols.length === 4 && rails.length === 1 && flanks.length === 2,
+    `${cols.length}+${rails.length}+${flanks.length}`);
   const xs = cols.map((c) => c.obb.center[0]).sort((a, b) => a - b);
   check('S3: columns at x ±3.0', Math.abs(xs[0] + 3) < 1e-6 && Math.abs(xs[1] + 3) < 1e-6
     && Math.abs(xs[2] - 3) < 1e-6 && Math.abs(xs[3] - 3) < 1e-6, xs.join(','));
@@ -111,8 +114,12 @@ const glb = readGlb(bytes);
     Math.abs(rail.min[1] - 2.6) < 1e-6 && Math.abs(rail.max[1] - 3.15) < 1e-6);
   check('S3: center passage clear ±2.87 (2*(3.0-0.13) = spec 柱内侧)',
     collision.centerPassageClearX.join(',') === '-2.87,2.87');
+  check('S3: flank walls cover the timber side boards (x ±3.015, y 2.40..3.21)',
+    flanks.every((f) => Math.abs(Math.abs(f.center[0]) - 3.015) < 1e-6
+      && Math.abs(f.center[1] - 2.805) < 1e-6 && Math.abs(f.size[0] - 0.37) < 1e-6),
+    JSON.stringify(flanks.map((f) => f.center)));
   check('S3: all stage records authored at yimen origin (pos 0,0,0 — translation happens at world assembly)',
-    collision.colliders.every((c) => c.obb.pos.every((v) => v === 0)));
+    collision.colliders.every((c) => (c.obb?.pos ?? [0, 0, 0]).every((v) => v === 0)));
 }
 
 // S4 the seam trim is recorded by the builder (the join loses part names);

@@ -8093,6 +8093,74 @@
      0.55
     ]
    }
+  },
+  {
+   "name": "yimenstage:stage-flank-wall",
+   "group": "yimen-stage-body",
+   "type": "box",
+   "min": [
+    -3.2,
+    2.4,
+    -30.009999999999998
+   ],
+   "max": [
+    -2.83,
+    3.21,
+    -26.2
+   ],
+   "obb": {
+    "pos": [
+     0,
+     0,
+     -21
+    ],
+    "theta": 0,
+    "center": [
+     -3.015,
+     2.805,
+     -7.105
+    ],
+    "size": [
+     0.37,
+     0.81,
+     3.81
+    ]
+   },
+   "note": "side-fence collision added in the adoption batch (GPT review re-check: visible timber side boards y2.40-3.21 had no collider — 可见即可挡)"
+  },
+  {
+   "name": "yimenstage:stage-flank-wall",
+   "group": "yimen-stage-body",
+   "type": "box",
+   "min": [
+    2.83,
+    2.4,
+    -30.009999999999998
+   ],
+   "max": [
+    3.2,
+    3.21,
+    -26.2
+   ],
+   "obb": {
+    "pos": [
+     0,
+     0,
+     -21
+    ],
+    "theta": 0,
+    "center": [
+     3.015,
+     2.805,
+     -7.105
+    ],
+    "size": [
+     0.37,
+     0.81,
+     3.81
+    ]
+   },
+   "note": "side-fence collision added in the adoption batch (GPT review re-check: visible timber side boards y2.40-3.21 had no collider — 可见即可挡)"
   }
  ]
 }

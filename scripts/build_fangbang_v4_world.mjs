@@ -318,9 +318,24 @@ const worldV4 = {
   dataset: 'fangbang-temple-v4',
   variant: 'v4: bridge v3 with temple-axis V3 variants (lions-v2, wing windows v2, entry-court-v3 '
     + 'incense road + burner, 4 camphor trees v2); props block referenced but default OFF (?props=1); '
-    + 'axis records anchored per-instance (adoption-batch composition fix)',
+    + 'axis records anchored per-instance with module-local yaw; AABB Y reconciled to obb.center ± size/2',
   colliders: [...kept, ...composedAxis, ...eastColliders],
 };
+// AABB Y reconcile (GPT review re-check): every collider's min/max Y must be
+// derived from its OWN obb center/size — the westshop records carried
+// [0, size.y] ranges that flattened upper floors (y 3.49..3.71 -> 0..0.22),
+// counters, thresholds and parapets onto the ground. Y is yaw-invariant, so
+// this is exact for every rotation.
+let yFixed = 0;
+for (const c of worldV4.colliders) {
+  if (!c.obb) continue;
+  const [cy, sy] = [c.obb.center[1], c.obb.size[1]];
+  const lo = +(cy - sy / 2).toFixed(6), hi = +(cy + sy / 2).toFixed(6);
+  if (Math.abs(c.min[1] - lo) > 1e-4 || Math.abs(c.max[1] - hi) > 1e-4) yFixed += 1;
+  c.min[1] = lo;
+  c.max[1] = hi;
+}
+console.log(`Y_RECONCILE fixed=${yFixed}/${worldV4.colliders.length}`);
 await writeFile(resolve(OUT, 'collision-world.json'), JSON.stringify(worldV4, null, 2) + '\n');
 
 // --- route: carry the burner detour into world coordinates ------------------------

@@ -1,0 +1,432 @@
+{
+  "source": "kit/build_world_v3_scene.py",
+  "blend": "kit/out/scene-v3/scene-v3.blend",
+  "device": "CPU",
+  "samples": 24,
+  "resolution": [
+    1600,
+    900
+  ],
+  "assembly": "street + surfaces(w+e) + 15 temple-axis-V3 assets + 17 westshop modules + 9 eastshop modules + strips(w+e) + skins (M 10 + A 11) + 1 grays + 4 camphor trees v2 + 38 street props (v3 default)",
+  "props": false,
+  "axisAerialFix": {
+    "old": {
+      "positionGlb": [
+        -30,
+        42,
+        -20
+      ],
+      "targetGlb": [
+        0,
+        0,
+        -50
+      ],
+      "verticalFovDegrees": 50
+    },
+    "new": {
+      "positionGlb": [
+        -36,
+        26,
+        -8
+      ],
+      "targetGlb": [
+        0,
+        0,
+        -28
+      ],
+      "verticalFovDegrees": 48,
+      "specPose": [
+        -36,
+        46,
+        -8,
+        0,
+        2,
+        -46
+      ],
+      "specPoseNonBackground": 0.22
+    },
+    "note": "pose authored axis-local, rendered through the bridge transform",
+    "nonBackgroundFraction": 0.4351
+  },
+  "cameras": [
+    "street:full-west",
+    "street:full-east",
+    "street:eye-west",
+    "street:eye-east",
+    "street:across",
+    "street:corner",
+    "street:lane",
+    "street:module-near",
+    "bridge:junction-west",
+    "bridge:west-road-mid",
+    "bridge:placeholder-band",
+    "bridge:shanmen-from-road",
+    "bridge:forecourt-oblique",
+    "bridge:axis-long",
+    "bridge:temple-side-east",
+    "bridge:aerial-overview",
+    "bridge:east-junction",
+    "bridge:east-road-mid",
+    "bridge:east-end-wall",
+    "temple:court2-pair",
+    "temple:peidian-west-front",
+    "temple:gallery-link",
+    "temple:stage-from-court",
+    "temple:stage-3q",
+    "temple:passage-east",
+    "temple:court3-axis",
+    "temple:houdian-front",
+    "temple:houdian-3q",
+    "temple:axis-aerial"
+  ],
+  "renders": [
+    {
+      "view": "aerial",
+      "camera": "bridge:aerial-overview",
+      "device": "CPU",
+      "seconds": 16.5,
+      "file": "bridge__aerial-overview-cpu.png",
+      "guard": {
+        "brightnessStd255": 40.928,
+        "monoFraction": 0.5035,
+        "blank": false
+      }
+    },
+    {
+      "view": "bridge:axis-long",
+      "camera": "bridge:axis-long",
+      "device": "CPU",
+      "seconds": 32.7,
+      "file": "bridge__axis-long-cpu.png",
+      "guard": {
+        "brightnessStd255": 51.293,
+        "monoFraction": 0.1347,
+        "blank": false
+      }
+    },
+    {
+      "view": "bridge:temple-side-east",
+      "camera": "bridge:temple-side-east",
+      "device": "CPU",
+      "seconds": 18.5,
+      "file": "bridge__temple-side-east-cpu.png",
+      "guard": {
+        "brightnessStd255": 45.374,
+        "monoFraction": 0.417,
+        "blank": false
+      }
+    },
+    {
+      "view": "bridge:west-road-mid",
+      "camera": "bridge:west-road-mid",
+      "device": "CPU",
+      "seconds": 28.7,
+      "file": "bridge__west-road-mid-cpu.png",
+      "guard": {
+        "brightnessStd255": 52.147,
+        "monoFraction": 0.2073,
+        "blank": false
+      }
+    },
+    {
+      "view": "court2-pair",
+      "camera": "temple:court2-pair",
+      "device": "CPU",
+      "seconds": 41.9,
+      "file": "temple__court2-pair-cpu.png",
+      "guard": {
+        "brightnessStd255": 58.1,
+        "monoFraction": 0.087,
+        "blank": false
+      }
+    },
+    {
+      "view": "court3-axis",
+      "camera": "temple:court3-axis",
+      "device": "CPU",
+      "seconds": 32.2,
+      "file": "temple__court3-axis-cpu.png",
+      "guard": {
+        "brightnessStd255": 53.732,
+        "monoFraction": 0.3567,
+        "blank": false
+      }
+    },
+    {
+      "view": "east-end-wall",
+      "camera": "bridge:east-end-wall",
+      "device": "CPU",
+      "seconds": 19.0,
+      "file": "eastband__east-end-wall-cpu.png",
+      "guard": {
+        "brightnessStd255": 53.508,
+        "monoFraction": 0.3572,
+        "blank": false
+      }
+    },
+    {
+      "view": "east-junction",
+      "camera": "bridge:east-junction",
+      "device": "CPU",
+      "seconds": 19.9,
+      "file": "eastband__east-junction-cpu.png",
+      "guard": {
+        "brightnessStd255": 45.723,
+        "monoFraction": 0.3895,
+        "blank": false
+      }
+    },
+    {
+      "view": "east-road-mid",
+      "camera": "bridge:east-road-mid",
+      "device": "CPU",
+      "seconds": 36.2,
+      "file": "eastband__east-road-mid-cpu.png",
+      "guard": {
+        "brightnessStd255": 54.635,
+        "monoFraction": 0.1139,
+        "blank": false
+      }
+    },
+    {
+      "view": "forecourt-oblique",
+      "camera": "bridge:forecourt-oblique",
+      "device": "CPU",
+      "seconds": 27.5,
+      "file": "bridge__forecourt-oblique-cpu.png",
+      "guard": {
+        "brightnessStd255": 46.2,
+        "monoFraction": 0.2894,
+        "blank": false
+      }
+    },
+    {
+      "view": "houdian-front",
+      "camera": "temple:houdian-front",
+      "device": "CPU",
+      "seconds": 39.7,
+      "file": "temple__houdian-front-cpu.png",
+      "guard": {
+        "brightnessStd255": 59.409,
+        "monoFraction": 0.1237,
+        "blank": false
+      }
+    },
+    {
+      "view": "new-aerial",
+      "camera": "temple:axis-aerial",
+      "device": "CPU",
+      "seconds": 22.9,
+      "file": "temple__axis-aerial-cpu.png",
+      "guard": {
+        "brightnessStd255": 44.015,
+        "monoFraction": 0.4073,
+        "blank": false
+      }
+    },
+    {
+      "view": "shanmen-from-road",
+      "camera": "bridge:shanmen-from-road",
+      "device": "CPU",
+      "seconds": 24.7,
+      "file": "bridge__shanmen-from-road-cpu.png",
+      "guard": {
+        "brightnessStd255": 47.775,
+        "monoFraction": 0.3656,
+        "blank": false
+      }
+    },
+    {
+      "view": "stage-from-court",
+      "camera": "temple:stage-from-court",
+      "device": "CPU",
+      "seconds": 34.2,
+      "file": "temple__stage-from-court-cpu.png",
+      "guard": {
+        "brightnessStd255": 68.672,
+        "monoFraction": 0.3012,
+        "blank": false
+      }
+    },
+    {
+      "view": "street-junction-west",
+      "camera": "bridge:junction-west",
+      "device": "CPU",
+      "seconds": 46.8,
+      "file": "bridge__junction-west-cpu.png",
+      "guard": {
+        "brightnessStd255": 51.453,
+        "monoFraction": 0.0937,
+        "blank": false
+      }
+    },
+    {
+      "view": "street-placeholder-band",
+      "camera": "bridge:placeholder-band",
+      "device": "CPU",
+      "seconds": 23.3,
+      "file": "bridge__placeholder-band-cpu.png",
+      "guard": {
+        "brightnessStd255": 48.461,
+        "monoFraction": 0.3271,
+        "blank": false
+      }
+    },
+    {
+      "view": "street:across",
+      "camera": "street:across",
+      "device": "CPU",
+      "seconds": 40.4,
+      "file": "street__across-cpu.png",
+      "guard": {
+        "brightnessStd255": 58.59,
+        "monoFraction": 0.1008,
+        "blank": false
+      }
+    },
+    {
+      "view": "street:corner",
+      "camera": "street:corner",
+      "device": "CPU",
+      "seconds": 29.6,
+      "file": "street__corner-cpu.png",
+      "guard": {
+        "brightnessStd255": 53.572,
+        "monoFraction": 0.2807,
+        "blank": false
+      }
+    },
+    {
+      "view": "street:eye-east",
+      "camera": "street:eye-east",
+      "device": "CPU",
+      "seconds": 39.7,
+      "file": "street__eye-east-cpu.png",
+      "guard": {
+        "brightnessStd255": 48.725,
+        "monoFraction": 0.0901,
+        "blank": false
+      }
+    },
+    {
+      "view": "street:eye-west",
+      "camera": "street:eye-west",
+      "device": "CPU",
+      "seconds": 42.6,
+      "file": "street__eye-west-cpu.png",
+      "guard": {
+        "brightnessStd255": 55.338,
+        "monoFraction": 0.1007,
+        "blank": false
+      }
+    },
+    {
+      "view": "street:full-east",
+      "camera": "street:full-east",
+      "device": "CPU",
+      "seconds": 16.9,
+      "file": "street__full-east-cpu.png",
+      "guard": {
+        "brightnessStd255": 35.64,
+        "monoFraction": 0.5671,
+        "blank": false
+      }
+    },
+    {
+      "view": "street:full-west",
+      "camera": "street:full-west",
+      "device": "CPU",
+      "seconds": 20.6,
+      "file": "street__full-west-cpu.png",
+      "guard": {
+        "brightnessStd255": 41.621,
+        "monoFraction": 0.5062,
+        "blank": false
+      }
+    },
+    {
+      "view": "street:lane",
+      "camera": "street:lane",
+      "device": "CPU",
+      "seconds": 55.6,
+      "file": "street__lane-cpu.png",
+      "guard": {
+        "brightnessStd255": 38.589,
+        "monoFraction": 0.0212,
+        "blank": false
+      }
+    },
+    {
+      "view": "street:module-near",
+      "camera": "street:module-near",
+      "device": "CPU",
+      "seconds": 47.3,
+      "file": "street__module-near-cpu.png",
+      "guard": {
+        "brightnessStd255": 54.555,
+        "monoFraction": 0.1006,
+        "blank": false
+      }
+    },
+    {
+      "view": "temple:gallery-link",
+      "camera": "temple:gallery-link",
+      "device": "CPU",
+      "seconds": 37.9,
+      "file": "temple__gallery-link-cpu.png",
+      "guard": {
+        "brightnessStd255": 59.529,
+        "monoFraction": 0.1695,
+        "blank": false
+      }
+    },
+    {
+      "view": "temple:houdian-3q",
+      "camera": "temple:houdian-3q",
+      "device": "CPU",
+      "seconds": 27.3,
+      "file": "temple__houdian-3q-cpu.png",
+      "guard": {
+        "brightnessStd255": 50.173,
+        "monoFraction": 0.3567,
+        "blank": false
+      }
+    },
+    {
+      "view": "temple:passage-east",
+      "camera": "temple:passage-east",
+      "device": "CPU",
+      "seconds": 41.3,
+      "file": "temple__passage-east-cpu.png",
+      "guard": {
+        "brightnessStd255": 43.179,
+        "monoFraction": 0.107,
+        "blank": false
+      }
+    },
+    {
+      "view": "temple:peidian-west-front",
+      "camera": "temple:peidian-west-front",
+      "device": "CPU",
+      "seconds": 37.7,
+      "file": "temple__peidian-west-front-cpu.png",
+      "guard": {
+        "brightnessStd255": 62.437,
+        "monoFraction": 0.1837,
+        "blank": false
+      }
+    },
+    {
+      "view": "temple:stage-3q",
+      "camera": "temple:stage-3q",
+      "device": "CPU",
+      "seconds": 40.6,
+      "file": "temple__stage-3q-cpu.png",
+      "guard": {
+        "brightnessStd255": 64.645,
+        "monoFraction": 0.2176,
+        "blank": false
+      }
+    }
+  ]
+}

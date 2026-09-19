@@ -197,6 +197,25 @@ const boxes = [];
     openGaps.map((g) => `${g.side}:${g.gap}`).join(', '));
 }
 
+// S5 — AABB Y reconcile (GPT review re-check): every obb-bearing collider's
+// min/max Y must equal obb.center[1] ± size[1]/2 (westshop records used to
+// flatten upper floors/counters onto the ground)
+{
+  let bad = 0;
+  for (const c of v4collision.colliders) {
+    if (!c.obb) continue;
+    const lo = c.obb.center[1] - c.obb.size[1] / 2;
+    const hi = c.obb.center[1] + c.obb.size[1] / 2;
+    if (Math.abs(c.min[1] - lo) > 1e-3 || Math.abs(c.max[1] - hi) > 1e-3) bad += 1;
+  }
+  check('S5: every obb collider Y range == center ± size/2', bad === 0, `${bad} mismatches`);
+  // the stage flank walls (adoption batch fix) composed into the v4 world
+  const flanks = v4collision.colliders.filter((c) => c.name === 'yimenstage:stage-flank-wall');
+  check('S5: stage flank walls present (2)', flanks.length === 2, `${flanks.length}`);
+  const flankOk = flanks.every((f) => Math.abs(f.min[1] - 2.40) < 1e-3 && Math.abs(f.max[1] - 3.21) < 1e-3);
+  check('S5: flank wall Y 2.40..3.21 (matches the visible timber boards)', flankOk);
+}
+
 // S4 — budgets (DESIGN_SPEC.packageJ: block <= 110k, full scene <= 700k)
 {
   const b = v4manifest.budgets ?? {};
