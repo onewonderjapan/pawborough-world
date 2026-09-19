@@ -1,0 +1,48 @@
+{
+  "batch": "pawborough-world-closeout-night-20260919",
+  "branch": "work/world-closeout-20260919",
+  "baselineCommit": "1892e61cc63bea00ec83366885657e1fcd864ef0",
+  "updatedBy": "ZCode (owner manually started)",
+  "stages": {
+    "M": {
+      "status": "done",
+      "finishedAt": "2026-09-19T23:05+08:00",
+      "checks": {
+        "filesReadBeforeStart": [
+          "START_PROMPT.txt", "AGENTS.md", "PLAN.md", "DESIGN_SPEC.json",
+          "control/EXECUTION_POLICY.json", "REPAIR_RESULT.json",
+          "skills: pawborough-game-client, pawborough-static-architecture"
+        ],
+        "sourceHeadIsFixedBaseline": true,
+        "sourceHeadNote": "源 adoption-east worktree 分支 tip 即 1892e61；工作区有活跃渲染产生的未提交帧/render-log 改动，属源任务在途状态，与本批起点无关，未触碰",
+        "worktreeCreated": "git worktree add -> /home/baibai/outbox/pawborough-world-closeout-night-20260919/workspace -b work/world-closeout-20260919 @ 1892e61",
+        "lfs": "9700 tracked files all materialized (git lfs ls-files 全部 '*'，抽查 GLB 魔数 glTF)",
+        "deps": "npm ci from package-lock (vite 7.1.5 / three 0.180.0 / rapier 0.19.0)；无版本升级",
+        "gltfpack": "/home/baibai/outbox/pawborough-lane-b-night-20260914/artifacts/N4/toolchain/src/build/gltfpack (v1.2) 实测可执行",
+        "baselineTests": {
+          "command": "node --test tests/*.test.mjs",
+          "atCommit": "1892e61cc63bea00ec83366885657e1fcd864ef0",
+          "passed": 54, "failed": 0, "suiteFiles": 52,
+          "exitCode": 0,
+          "durationMs": 5915,
+          "ranAt": "2026-09-19T22:5x+08:00 (this batch, fresh run — not inherited from REPAIR_RESULT)"
+        },
+        "baselineInventory": "artifacts/world-closeout/baseline.json (611 files: 225 original GLB 371.4MB, 199 compressed 180.2MB, route/cameras/instances/collision 分类；既有压缩件单列，本批新建压缩件待 N 追加)",
+        "liveRender": {
+          "blender": "PID 3531877 cmdline 归属 scene-v3.blend + render_walkthrough.py (与 DESIGN_SPEC rendererPidAtPreparation 一致)",
+          "watchdog": "PID 4023166 (+4025879) adoption_video_watchdog.py",
+          "statusFile": "clipA-full.status.json 尚未生成（渲染进行中）",
+          "framesOnDiskAtInventory": 1943,
+          "cutoff": "2026-09-20T08:15:00+09:00 未改变",
+          "policy": "只读核对，未接管、未停止、未竞争渲染"
+        }
+      }
+    },
+    "N": { "status": "pending" },
+    "O": { "status": "pending" },
+    "P": { "status": "pending" },
+    "Q": { "status": "pending" },
+    "R": { "status": "pending" }
+  },
+  "blockers": []
+}
