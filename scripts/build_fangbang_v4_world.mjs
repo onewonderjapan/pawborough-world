@@ -8,6 +8,7 @@
 // Run: node scripts/build_fangbang_v4_world.mjs
 import { createHash } from 'node:crypto';
 import { copyFile, cp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -46,6 +47,10 @@ const SWAPS = [
 ];
 const axisManifest = JSON.parse(await readFile(resolve(V3AXIS, 'review-manifest.json'), 'utf8'));
 const swapInfo = {};
+// east band (adoption batch package J, G5): plan + spec produced upstream
+const EAST_PLAN = JSON.parse(await readFile(resolve(root, 'kit/out/east-band/plan.json'), 'utf8'));
+const EAST_SPEC = JSON.parse(await readFile(resolve(root, 'kit/out/east-extension-spec.json'), 'utf8'));
+const EAST_IDS = EAST_PLAN.setbacks.map((s) => s.id);
 for (const [bridgeFile, axisFile] of SWAPS) {
   await copyFile(resolve(V3AXIS, axisFile), resolve(OUT, 'temple-axis', bridgeFile));
   const bytes = await readFile(resolve(OUT, 'temple-axis', bridgeFile));
@@ -67,8 +72,7 @@ await copyFile(resolve(V3AXIS, 'tree-camphor-v2.glb'), resolve(OUT, 'temple-axis
 
 // --- blocks.json: point the temple block at the swapped files + add trees -------
 const blocks = JSON.parse(await readFile(resolve(OUT, 'blocks.json'), 'utf8'));
-const templeBlock = blocks.blocks.find((b) => b.id === 'block-temple-axis');
-const swapByAssetId = {
+const templeBlock = blocks.blocks.find((b) => b.id === 'block-temple-axis');const swapByAssetId = {
   'shanmen-lions': ['lions.glb', swapInfo['lions.glb']],
   'shanmen-ornaments': ['ornaments.glb', swapInfo['ornaments.glb']],
   'entrycourt-open': ['court-open.glb', swapInfo['court-open.glb']],
@@ -117,6 +121,149 @@ for (const f of ['court-open.cm.glb', 'lions.cm.glb', 'ornaments.cm.glb']) {
 }
 await writeFile(resolve(OUT, 'blocks.json'), JSON.stringify(blocks, null, 2) + '\n');
 
+// --- east band: block-east-shops + setbacks + strips (package J, G5) ------------
+// The 9 east placeholders retire behind the 5.6m front line of the BUILT east
+// centerline (plan.json setbacks), then upgrade to frozen street modules in a
+// revocable `block-east-shops` assets block (?revoke=block-east-shops reverts
+// to the gray boxes). Strips fill 1.5-8m gaps per side; >8m stays open.
+const eastAssets = [];
+const eastColliders = [];
+{
+  const setbackBy = Object.fromEntries(EAST_PLAN.setbacks.map((s) => [s.id, s]));
+  const blocks2 = JSON.parse(await readFile(resolve(OUT, 'blocks.json'), 'utf8'));
+  for (const ph of blocks2.placeholders) {
+    const sb = setbackBy[ph.id];
+    if (!sb) continue;
+    ph.glbPoint = sb.glbPoint;                       // retreated position
+    ph.placementAdjust = sb.placementAdjust;
+    ph.replacedBy = 'block-east-shops';
+  }
+  for (const e of EAST_PLAN.entries) {
+    if (e.error) continue;
+    const bytes = await readFile(resolve(root, `building/${e.module}/model.glb`));
+    let tris = 0;
+    try {
+      const mm = JSON.parse(await readFile(resolve(root, `building/${e.module}/measurements.json`), 'utf8'));
+      tris = mm.triangles ?? 0;
+    } catch { /* missing measurements -> 0 */ }
+    eastAssets.push({
+      id: `eastshop-${e.id}`, module: e.module,
+      glb: `./building/${e.module}/model.glb`,
+      positionGlb: [+e.frontCenter[0].toFixed(4), 0, +e.frontCenter[1].toFixed(4)],
+      rotationYRad: +e.yawRad.toFixed(6),
+      bytes: bytes.byteLength, sha256: sha(bytes), triangles: tris,
+    });
+    const col = JSON.parse(await readFile(resolve(root, `building/${e.module}/collision.json`), 'utf8'));
+    const c = Math.cos(e.yawRad), s = Math.sin(e.yawRad);
+    for (const r of col.colliders) {
+      const wx = e.frontCenter[0] + c * r.center[0] + s * r.center[2];
+      const wz = e.frontCenter[1] - s * r.center[0] + c * r.center[2];
+      const corners = [[r.size[0] / 2, r.size[2] / 2], [r.size[0] / 2, -r.size[2] / 2],
+        [-r.size[0] / 2, r.size[2] / 2], [-r.size[0] / 2, -r.size[2] / 2]]
+        .map(([lx, lz]) => [c * lx + s * lz, -s * lx + c * lz]);
+      const hx = Math.max(...corners.map((p) => Math.abs(p[0])));
+      const hz = Math.max(...corners.map((p) => Math.abs(p[1])));
+      eastColliders.push({
+        name: `eastshop-${e.id}:${r.name}`, group: `eastshop-${e.id}`, type: 'box',
+        min: [+(wx - hx).toFixed(6), 0, +(wz - hz).toFixed(6)],
+        max: [+(wx + hx).toFixed(6), +r.size[1].toFixed(6), +(wz + hz).toFixed(6)],
+        obb: { pos: [+e.frontCenter[0].toFixed(6), 0, +e.frontCenter[1].toFixed(6)],
+               theta: +e.yawRad.toFixed(8), center: r.center, size: r.size },
+      });
+    }
+  }
+  // courtyard strips for 1.5-8m gaps (real geometry GLB built downstream by
+  // kit/build_eaststrips.py from these records; second pipeline run picks it up)
+  const STRIP_T = 0.28, STRIP_H = 2.9;
+  const bySide = { north: [], south: [] };
+  for (const e of EAST_PLAN.entries) {
+    if (e.error) continue;
+    (bySide[e.side] = bySide[e.side] ?? []).push(e);
+  }
+  for (const [side, list] of Object.entries(bySide)) {
+    const ordered = list.slice().sort((a, b) => a.tCoord - b.tCoord);
+    for (let i = 1; i < ordered.length; i++) {
+      const a = ordered[i - 1], b = ordered[i];
+      const gap = b.gapToPrevM ?? 0;
+      if (gap <= 1.5 || gap > 8) continue;
+      const cx = (a.finalCenter[0] + b.finalCenter[0]) / 2;
+      const cz = (a.finalCenter[2] + b.finalCenter[2]) / 2;
+      const T = a.tangent;
+      const theta = Math.atan2(-T[0], T[1]);
+      const id = `eaststrip-${side}-${i}`;
+      const cc = Math.cos(theta), ss = Math.sin(theta);
+      const wxs = [[-STRIP_T / 2, -gap / 2], [-STRIP_T / 2, gap / 2], [STRIP_T / 2, -gap / 2], [STRIP_T / 2, gap / 2]]
+        .map(([lx, lz]) => [cx + cc * lx + ss * lz, cz - ss * lx + cc * lz]);
+      eastColliders.push({
+        name: `eastshops-strips:${id}`, group: 'eastshops-strips', type: 'box',
+        min: [+Math.min(...wxs.map((p) => p[0])).toFixed(6), 0, +Math.min(...wxs.map((p) => p[1])).toFixed(6)],
+        max: [+Math.max(...wxs.map((p) => p[0])).toFixed(6), STRIP_H, +Math.max(...wxs.map((p) => p[1])).toFixed(6)],
+        obb: { pos: [+cx.toFixed(6), STRIP_H / 2, +cz.toFixed(6)], theta: +theta.toFixed(8),
+               center: [0, 0, 0], size: [STRIP_T, STRIP_H, gap] },
+      });
+    }
+  }
+  // strips GLB (second pipeline run, after kit/build_eaststrips.py)
+  const stripsGlb = resolve(root, 'kit/out/east-band/eastshops-strips.glb');
+  try {
+    const bytes = await readFile(stripsGlb);
+    await copyFile(stripsGlb, resolve(OUT, 'eastshops-strips.glb'));
+    const stripsJsonLen = bytes.readUInt32LE(12);
+    const stripsGltf = JSON.parse(bytes.subarray(20, 20 + stripsJsonLen).toString('utf8'));
+    const stripsTris = (stripsGltf.meshes ?? []).reduce((t3, mesh) => t3
+      + mesh.primitives.reduce((t4, prim) => t4 + stripsGltf.accessors[prim.indices].count / 3, 0), 0);
+    eastAssets.push({
+      id: 'eastshops-strips', module: 'eastshops-strips',
+      glb: './world/fangbang-temple-v4/eastshops-strips.glb',
+      positionGlb: [0, 0, 0], rotationYRad: 0,
+      bytes: bytes.byteLength, sha256: sha(bytes), triangles: Math.round(stripsTris),
+    });
+  } catch { /* first run: strips GLB not built yet */ }
+  // the eastshop colliders live in the dataset collision file with
+  // 'eastshop-*:' prefixes — validateWorldInputs needs matching instances
+  // (the west-band pattern: block assets are REAL instances too)
+  const inst2 = JSON.parse(await readFile(resolve(OUT, 'instances.json'), 'utf8'));
+  const haveInst = new Set(inst2.instances.map((i) => i.id));
+  for (const a of eastAssets) {
+    if (haveInst.has(a.id)) continue;
+    inst2.instances.push({
+      id: a.id, module: a.module, positionGlb: a.positionGlb, rotationYRad: a.rotationYRad,
+      bytes: a.bytes, sha256: a.sha256, group: 'east-band-shops',
+    });
+  }
+  // surface + seal-wall rows (identity placements; the GLBs are world-authored)
+  for (const row of [['eastext-surface', null], ['eastext-seal-wall', null]]) {
+    if (!haveInst.has(row[0])) {
+      inst2.instances.push({ id: row[0], module: row[0], positionGlb: [0, 0, 0], rotationYRad: 0, group: 'east-extension' });
+    }
+  }
+  await writeFile(resolve(OUT, 'instances.json'), JSON.stringify(inst2, null, 2) + '\n');
+  blocks2.blocks.push({
+    id: 'block-east-shops', kind: 'assets', autoApply: true, persistent: true,
+    collisionSource: './world/fangbang-temple-v4/collision-world.json',
+    note: 'east-band upgrade (adoption batch 20260919, G5): 9 placeholders replaced by frozen street modules per category map; revoke = ?revoke=block-east-shops',
+    assets: eastAssets,
+  });
+  await writeFile(resolve(OUT, 'blocks.json'), JSON.stringify(blocks2, null, 2) + '\n');
+}
+
+// --- east GLBs: extension surface + end wall -------------------------------------
+await mkdir(resolve(OUT, 'east-extension'), { recursive: true });
+const eastSurfaceBytes = await readFile(resolve(root, 'kit/out/east-band/east-extension/model.glb'));
+await copyFile(resolve(root, 'kit/out/east-band/east-extension/model.glb'), resolve(OUT, 'east-extension', 'surface.glb'));
+const eastWallBytes = await readFile(resolve(root, 'kit/out/east-band/east-extension/seal-wall.glb'));
+await copyFile(resolve(root, 'kit/out/east-band/east-extension/seal-wall.glb'), resolve(OUT, 'east-extension', 'seal-wall.glb'));
+const eastWallRecord = JSON.parse(await readFile(resolve(root, 'kit/out/east-band/east-extension/collision.json'), 'utf8')).colliders[0];
+eastColliders.push(eastWallRecord);
+globalThis.__eastSurfaceTris = (() => {
+  const jl2 = eastSurfaceBytes.readUInt32LE(12);
+  const g2 = JSON.parse(eastSurfaceBytes.subarray(20, 20 + jl2).toString('utf8'));
+  return Math.round((g2.meshes ?? []).reduce((t3, mesh) => t3
+    + mesh.primitives.reduce((t4, prim) => t4 + g2.accessors[prim.indices].count / 3, 0), 0));
+})();
+globalThis.__eastWallTris = 12;
+globalThis.__eastAssets = eastAssets;
+
 // --- collision-world: swap the axis-derived records ------------------------------
 // Composition rule (adoption-batch fix): every axis-v3 record carries
 // obb.pos = the INSTANCE ANCHOR in axis-local coords and obb.center = the box
@@ -151,7 +298,17 @@ const compose = (pos, theta, rec) => {
 // world instances it as 'entrycourt-open:' — rename during composition
 const renameForBridge = (name) => name.startsWith('court:') ? `entrycourt-open:${name.slice('court:'.length)}` : name;
 const composedAxis = axisCollision.colliders.map((c) => {
-  const r = compose(axisToWorld(c.obb?.pos ?? [0, 0, 0]), YAW, c);
+  const o = c.obb;
+  // the record's center is MODULE-LOCAL (yawed modules: peidian/gallery carry
+  // their own theta) — rotate it by the record's theta into the axis frame,
+  // anchor there, then place in the world frame with the summed yaw
+  const ct = Math.cos(o.theta), st = Math.sin(o.theta);
+  const anchorLocal = [o.pos[0] + ct * o.center[0] + st * o.center[2], o.pos[1],
+    o.pos[2] - st * o.center[0] + ct * o.center[2]];
+  const r = compose(axisToWorld(anchorLocal), YAW + o.theta, {
+    name: c.name, group: c.group ?? 'body', type: 'box',
+    obb: { pos: [0, 0, 0], theta: 0, center: [0, o.center[1], 0], size: o.size },
+  });
   r.name = renameForBridge(r.name);
   r.group = renameForBridge(r.group ?? 'body');
   return r;
@@ -162,7 +319,7 @@ const worldV4 = {
   variant: 'v4: bridge v3 with temple-axis V3 variants (lions-v2, wing windows v2, entry-court-v3 '
     + 'incense road + burner, 4 camphor trees v2); props block referenced but default OFF (?props=1); '
     + 'axis records anchored per-instance (adoption-batch composition fix)',
-  colliders: [...kept, ...composedAxis],
+  colliders: [...kept, ...composedAxis, ...eastColliders],
 };
 await writeFile(resolve(OUT, 'collision-world.json'), JSON.stringify(worldV4, null, 2) + '\n');
 
@@ -192,6 +349,45 @@ const route = JSON.parse(await readFile(resolve(OUT, 'route.json'), 'utf8'));
   }];
 }
 await writeFile(resolve(OUT, 'route.json'), JSON.stringify(route, null, 2) + '\n');
+
+// --- route east extension: mainStreet starts 3m before the east end wall --------
+{
+  const samples = EAST_SPEC.samples;
+  const total = samples[samples.length - 1].s;
+  const sStart = total - 3.0;                       // 3m before the end wall
+  const eastPts = samples.filter((q) => q.s >= 0.25 && q.s <= sStart)
+    .sort((a, b) => b.s - a.s)                      // east -> west (mainStreet[0] = east end)
+    .map((q) => [+q.x.toFixed(4), 0, +q.z.toFixed(4)]);
+  route.mainStreet.unshift(...eastPts);
+  route.entries.eastExtensionStart = eastPts[0];
+  route.eastExtensionNote = 'adoption batch (G5): mainStreet extended along the built east centerline '
+    + `(OSM 238219464 design reuse) to 3m before the end wall at x=${EAST_SPEC.checks.endXM}; junction preserved at [124.6, 27.65]`;
+  await writeFile(resolve(OUT, 'route.json'), JSON.stringify(route, null, 2) + '\n');
+}
+
+// --- east-band evidence cameras (J6) ----------------------------------------------
+{
+  const cams = JSON.parse(await readFile(resolve(OUT, 'cameras.json'), 'utf8'));
+  const have = new Set(cams.cameras.map((c) => c.id));
+  const S = EAST_SPEC.samples;
+  const at = (sVal, off = 0.0) => {
+    const q = S.reduce((a, b) => (Math.abs(b.s - sVal) < Math.abs(a.s - sVal) ? b : a));
+    return [+(q.x + q.southNx * off).toFixed(2), 0, +(q.z + q.southNz * off).toFixed(2)];
+  };
+  const end = S[S.length - 1];
+  const NEW_CAMS = [
+    { id: 'east-junction', positionGlb: [...at(1, -1.2).slice(0, 1), 1.6, at(1, -1.2)[2]], targetGlb: [at(22, 0)[0], 1.8, at(22, 0)[2]], verticalFovDegrees: 60,
+      labelZh: '东延伸接口：街尾接东段（G5）' },
+    { id: 'east-road-mid', positionGlb: [at(50, 1.5)[0], 1.6, at(50, 1.5)[2]], targetGlb: [at(75, 0)[0], 1.8, at(75, 0)[2]], verticalFovDegrees: 60,
+      labelZh: '东延伸中段：双侧店屋 frontline 5.6' },
+    { id: 'east-end-wall', positionGlb: [at(104, -1.0)[0], 1.6, at(104, -1.0)[2]], targetGlb: [+end.x.toFixed(2), 1.8, +end.z.toFixed(2)], verticalFovDegrees: 55,
+      labelZh: '样段端墙（非历史）' },
+  ];
+  for (const c of NEW_CAMS) {
+    if (!have.has(c.id)) cams.cameras.push(c);
+  }
+  await writeFile(resolve(OUT, 'cameras.json'), JSON.stringify(cams, null, 2) + '\n');
+}
 
 // --- manifest -----------------------------------------------------------------------
 const m = JSON.parse(await readFile(resolve(V3, 'review-manifest.json'), 'utf8'));
@@ -232,6 +428,31 @@ m.modules.push({
   sha256: swapInfo['tree-camphor-v2.glb'].sha256,
   triangles: swapInfo['tree-camphor-v2.glb'].triangles,
 });
+// the eastshops-strips instance (second run) references its own module row
+const stripsMod = eastAssets.find((a) => a.id === 'eastshops-strips');
+if (stripsMod && !m.modules.some((x) => x.id === 'eastshops-strips')) {
+  m.modules.push({
+    id: 'eastshops-strips',
+    path: stripsMod.glb,
+    bytes: stripsMod.bytes,
+    sha256: stripsMod.sha256,
+    triangles: stripsMod.triangles,
+  });
+}
+// east-extension rows (west-extension pattern: surface + seal wall instances)
+if (!m.modules.some((x) => x.id === 'eastext-surface')) {
+  m.modules.push({
+    id: 'eastext-surface', path: './world/fangbang-temple-v4/east-extension/surface.glb',
+    bytes: eastSurfaceBytes.byteLength, sha256: sha(eastSurfaceBytes),
+    triangles: globalThis.__eastSurfaceTris,
+  });
+}
+if (!m.modules.some((x) => x.id === 'eastext-seal-wall')) {
+  m.modules.push({
+    id: 'eastext-seal-wall', path: './world/fangbang-temple-v4/east-extension/seal-wall.glb',
+    bytes: eastWallBytes.byteLength, sha256: sha(eastWallBytes), triangles: 12,
+  });
+}
 // dataset-owned path rewrite (v3 -> v4), shared frozen paths untouched
 const rewrite = (node) => {
   if (typeof node === 'string') return node.replaceAll('./world/fangbang-temple-v3/', './world/fangbang-temple-v4/');
@@ -256,8 +477,46 @@ m4.propsBlock = {
   instances: 38,
   note: 'revocable street life layer (E batch, G12 gate)',
 };
+// east band (package J, G5): page-level surface + end wall, byte-checked
+m4.eastShops = {
+  note: 'block-east-shops asset inventory (adoption batch 20260919, G5); the page reconciles block assets against this section',
+  assets: eastAssets,
+};
+m4.eastExtension = {
+  surface: { path: './world/fangbang-temple-v4/east-extension/surface.glb',
+    bytes: eastSurfaceBytes.byteLength, sha256: sha(eastSurfaceBytes),
+    triangles: globalThis.__eastSurfaceTris },
+  sealWall: { path: './world/fangbang-temple-v4/east-extension/seal-wall.glb',
+    bytes: eastWallBytes.byteLength, sha256: sha(eastWallBytes), triangles: 12 },
+  spec: 'kit/out/east-extension-spec.json (OSM 238219464 design reuse, chaikin 2 + 0.5m resample)',
+  widths: EAST_SPEC.widths,
+  junction: 'measured street-tail end edge, gap 0.00 / top step 0.00 by construction',
+  endWall: { label: '样段端墙，非历史', sizeM: [11.2, 3.4, 0.3], at: EAST_SPEC.checks.endM },
+  block: 'block-east-shops (9 placeholders upgraded per the west-band R1 rules; ?revoke=block-east-shops reverts)',
+};
+// budget accounting (DESIGN_SPEC.packageJ: eastShopsBlock <= 110k, fullSceneV4 <= 700k)
+const eastBlockTris = eastAssets.reduce((s, a) => {
+  if (a.triangles) return s + a.triangles;
+  try {
+    const mm = JSON.parse(readFileSync(resolve(root, `building/${a.module}/measurements.json`), 'utf8'));
+    return s + (mm.triangles ?? 0);
+  } catch { return s; }
+}, 0);
+const fullV4Tris = (m.placedTriangles ?? 0) + (m.templeAxis?.placedTriangles ?? 0)
+  + eastBlockTris + globalThis.__eastSurfaceTris + 12
+  + (m.westExtension?.surface?.triangles ?? 0) + (m.streetCompletion?.surface?.triangles ?? 0)
+  + (m.streetCompletion?.eastTailSurface?.triangles ?? 0);
+m4.budgets = {
+  ...(m4.budgets ?? {}),
+  eastShopsBlockTris: Math.round(eastBlockTris), eastShopsBlockTrisMax: 110000,
+  eastShopsBlockPass: eastBlockTris <= 110000,
+  fullSceneV4Tris: Math.round(fullV4Tris), fullSceneV4TrisMax: 700000,
+  fullSceneV4Pass: fullV4Tris <= 700000,
+};
 m4.generatedBy = 'scripts/build_fangbang_v4_world.mjs';
 await writeFile(resolve(OUT, 'review-manifest.json'), JSON.stringify(m4, null, 2) + '\n');
 
 console.log(`V4_READY dir=world/fangbang-temple-v4 colliders=${worldV4.colliders.length} `
-  + `routePts=${route.mainStreet.length} axisAssets=${m4.templeAxis.assets.length}`);
+  + `routePts=${route.mainStreet.length} axisAssets=${m4.templeAxis.assets.length} `
+  + `eastAssets=${globalThis.__eastAssets.length} eastBlockTris=${m4.budgets.eastShopsBlockTris} `
+  + `fullV4Tris=${m4.budgets.fullSceneV4Tris} surfaceTris=${globalThis.__eastSurfaceTris}`);

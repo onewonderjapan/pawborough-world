@@ -1,0 +1,45 @@
+{
+  "moduleId": "eastseal",
+  "triangles": 12,
+  "meshes": 1,
+  "fileBytes": 2608,
+  "sha256": "5815ce8b9f413b28c51135bc732ce12054542a7fe2d45bf8268780a705be034d",
+  "design": {
+    "family": "fangbang-east-extension-end-wall",
+    "label": "样段端墙，非历史",
+    "at": [
+      236.0,
+      47.5825
+    ],
+    "orientation": "perpendicular to the road tangent at the x=236 clip (long axis along the cross-section)",
+    "sizeM": [
+      11.2,
+      3.4,
+      0.3
+    ],
+    "obbRecord": {
+      "pos": [
+        236.0,
+        0.0,
+        47.5825
+      ],
+      "theta": -3.12720221,
+      "center": [
+        0.0,
+        1.7,
+        0.0
+      ],
+      "size": [
+        0.3,
+        3.4,
+        11.2
+      ],
+      "note": "thickness on local x, length on local z — obbToWorld maps local z to the cross-section direction at theta"
+    },
+    "surveyed": false
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

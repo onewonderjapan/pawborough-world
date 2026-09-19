@@ -1,0 +1,54 @@
+{
+  "moduleId": "eastext",
+  "triangles": 4388,
+  "meshes": 4,
+  "fileBytes": 1216532,
+  "sha256": "ea8a75c35cddc5107e0fa338acecfaa55869000e3c5d2f8a1cf97e5680a4b794",
+  "design": {
+    "family": "fangbang-east-extension-surface",
+    "sampleId": "eastext",
+    "frontageM": 113.48,
+    "buildStepM": 1,
+    "band": {
+      "roadCurbToCurbStartM": 4.0,
+      "roadCurbToCurbFullM": 8.5,
+      "easeM": 8,
+      "curbW": 0.25,
+      "curbH": 0.09,
+      "sidewalkBandM": 1.35,
+      "frontLineM": 5.6,
+      "junctionMeasuredEdgeHalfWidthM": 2.0
+    },
+    "junction": {
+      "tailEdgeMidXZ": [
+        124.6,
+        27.65
+      ],
+      "tailEdgeHalfWidthM": 2.0,
+      "tailEdgeTopY": 0.0,
+      "centerOffsetM": 0.0,
+      "centerOffsetPass": true,
+      "widthVsSpecM": 0.0,
+      "widthPass": true,
+      "topStepM": 0.0,
+      "topStepPass": true,
+      "note": "start cross-section = measured tail end edge; direction blends into the spec frames over 6m"
+    },
+    "corridor": {
+      "minFreeM": 4.05,
+      "capsuleR": 0.35,
+      "rule": ">=3.6m (carriageway clear; boxes behind the 5.6m front line)"
+    },
+    "groundNodeNames": [
+      "sctail__quiet-gray-asphalt",
+      "sctail__worn-stone"
+    ],
+    "groundNodeNote": "paving/curb/drains join into sctail__worn-stone; the sctail__ prefix family is the registered GROUND_NODE_RE walkable set",
+    "physics": "visible faces ARE the walkable ground via GROUND_NODE_RE; no invisible slab",
+    "surveyed": false
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

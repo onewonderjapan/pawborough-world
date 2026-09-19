@@ -1,0 +1,53 @@
+{
+  "batch": "pawborough-adoption-east-night-20260919",
+  "package": "J",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": true,
+  "visualReview": "owner_adopted_20260919",
+  "adoptionDecision": "OWNER_DECISION-20260919.json (G5 east band: do)",
+  "deliveredAt": "2026-09-19T21:30:00+09:00",
+  "gate": "G5_east_band (OWNER_DECISION-20260919.json): east extension road + upgrade 9 placeholders (shop-134..142) with the west-band rules, so clipA does not open on gray boxes",
+  "J0": {
+    "spec": "scripts/make_east_extension_spec.mjs -> kit/out/east-extension-spec.json",
+    "centerline": "street tail end [124.6, 27.65] -> OSM way 238219464 design controls (chaikin 2 + 0.5m resample) -> clipped at x=236",
+    "checks": "monotone east PASS; endX 236.000 PASS; total 113.48m; 228 samples"
+  },
+  "J1": {
+    "surface": "kit/build_east_extension_surface.py -> kit/out/east-band/east-extension/{model.glb, seal-wall.glb, surface-spec.json, collision.json}",
+    "junction": "start cross-section measured from the BUILT street-completion surface GLB (asphalt end-edge corners): center offset 0.00m, width 4.0 +/-0.00, top step 0.00 — seamless by construction; direction blends into the spec frames over 6m",
+    "widths": "road 4.0 -> 8.5 over 8m arc; curbs/sidewalks ramp in with the same ease; frontline 5.6 at full width",
+    "furniture": "4 lamps (25m, alternating), 2 drains (40m)",
+    "endWall": "11.2 x 3.4 x 0.3 at x=236, perpendicular to the road tangent (样段端墙，非历史)",
+    "budgets": "surface 4388 tris <= 8000; validator 0 errors 0 warnings; ground contract sctail__ names (GROUND_NODE_RE walkable)",
+    "corridor": "min capsule-free carriageway 4.05m >= 3.6 against the 9 post-setback boxes"
+  },
+  "J2_J3": {
+    "plan": "scripts/build_eastshops_plan.mjs -> kit/out/east-band/plan.json",
+    "setbacks": "9/9 placeholder boxes retired behind the 5.6m front line of the BUILT centerline (placementAdjust recorded; away-from-road = foot->box direction)",
+    "placements": "front wall center = foot + 5.6 x own-side normal; yaw = atan2(nx, nz) faces the road; 5 north + 4 south; zero pairwise SAT overlap",
+    "moduleMap": "参茸->curio-a, 药材->pharmacy_shop, 木器/洋货/海味/腌腊->plain-v1/v2/v3 rotation, 南北杂货->dry_goods_shop, 照相店->photo_shop, 字画店->curio-a",
+    "strips": "3 courtyard strips (gaps 4.31/5.09/7.2m; 12.2m gaps stay open) — kit/build_eaststrips.py -> eastshops-strips.glb"
+  },
+  "J4": {
+    "pipeline": "scripts/build_fangbang_v4_world.mjs regenerated v4: block-east-shops (revocable assets block, ?revoke=block-east-shops) + placementAdjust on the 9 placeholders + east surface/wall GLBs + collision compose + route east extension",
+    "route": "mainStreet 114 -> 335 points: new start 3m before the end wall (232.5, 47.6), junction preserved; entries.eastExtensionStart recorded",
+    "budgets": "eastShopsBlockTris 107472 <= 110000 PASS; fullSceneV4Tris 453062 <= 700000 PASS",
+    "lifecycle": "block assets are REAL instances (instances.json) per the west-band pattern; eastShops manifest section added for the page's block-asset reconciliation; page loads the east surface (sctail__ -> walkable ground) + end wall page-level, byte-checked"
+  },
+  "J5": {
+    "tests": [
+      "tests/east_extension_contract.test.mjs (E1-E4: spec geometry, measured junction, surface GLB validator/ground contract/furniture, end wall geometry+perpendicularity+collider)",
+      "tests/eastshops_contract.test.mjs (S1-S4: setbacks recomputed vs the built centerline, 5.6m frontline <=0.05, yaw <=2deg, own side, zero SAT overlap, strips only for 1.5-8m gaps, budgets)",
+      "tests/fangbang_v4_passage.test.mjs (P1a forward cruise east start -> dadian doors localZ -71.63; P1b return doors -> east start 1.6m; P2 east centerline both directions; N1 end wall blocks; N2 storefronts block; N3 strips block)"
+    ],
+    "suite": "50/50 green"
+  },
+  "J6": {
+    "cameras": "east-junction / east-road-mid / east-end-wall added to the v4 camera contract (+aerial-overview already present)",
+    "webgl": "artifacts/east-band/web — 11 views, 0 blank (tools/capture_east_band_web.mjs)",
+    "blender": "artifacts/east-band/stills-blender — rig-lit Cycles stills, blank-guarded (kit/render_east_band.py)"
+  },
+  "specDeviations": [],
+  "gatesTouched": ["G5 (east band)"],
+  "notes": "composition fixes made this package possible: axis colliders are now anchored per-instance with module-local yaw folded in (the pre-adoption v4 collision displaced ~180 records); the corridor batch's cruise pass predated these fixes"
+}

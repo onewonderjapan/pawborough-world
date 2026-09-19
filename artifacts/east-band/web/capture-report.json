@@ -1,0 +1,128 @@
+{
+  "base": "http://127.0.0.1:5320",
+  "views": [
+    {
+      "view": "junction-west",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 54.03,
+        "dominantShare": 0.088
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/east-band/web/eastband-web--junction-west.png",
+      "bytes": 378504
+    },
+    {
+      "view": "west-road-mid",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 58.86,
+        "dominantShare": 0.216
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/east-band/web/eastband-web--west-road-mid.png",
+      "bytes": 289334
+    },
+    {
+      "view": "placeholder-band",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 52.24,
+        "dominantShare": 0.387
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/east-band/web/eastband-web--placeholder-band.png",
+      "bytes": 228672
+    },
+    {
+      "view": "shanmen-from-road",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 56.38,
+        "dominantShare": 0.493
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/east-band/web/eastband-web--shanmen-from-road.png",
+      "bytes": 267321
+    },
+    {
+      "view": "forecourt-oblique",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 59.44,
+        "dominantShare": 0.413
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/east-band/web/eastband-web--forecourt-oblique.png",
+      "bytes": 326458
+    },
+    {
+      "view": "axis-long",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 57.54,
+        "dominantShare": 0.253
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/east-band/web/eastband-web--axis-long.png",
+      "bytes": 321591
+    },
+    {
+      "view": "temple-side-east",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 61.44,
+        "dominantShare": 0.44
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/east-band/web/eastband-web--temple-side-east.png",
+      "bytes": 213426
+    },
+    {
+      "view": "aerial-overview",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 35.68,
+        "dominantShare": 0.579
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/east-band/web/eastband-web--aerial-overview.png",
+      "bytes": 272145
+    },
+    {
+      "view": "east-junction",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 49.32,
+        "dominantShare": 0.432
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/east-band/web/eastband-web--east-junction.png",
+      "bytes": 189241
+    },
+    {
+      "view": "east-road-mid",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 47.61,
+        "dominantShare": 0.13
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/east-band/web/eastband-web--east-road-mid.png",
+      "bytes": 293368
+    },
+    {
+      "view": "east-end-wall",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 73.35,
+        "dominantShare": 0.429
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/east-band/web/eastband-web--east-end-wall.png",
+      "bytes": 143734
+    }
+  ],
+  "pass": true,
+  "generatedBy": "tools/capture_east_band_web.mjs"
+}

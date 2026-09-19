@@ -565,6 +565,21 @@ async function load() {
   const wall = await loadGlbWithStats(wallInfo.path, 'west-seal-wall', { renderer, baseUrl: BASE });
   if (wall.bytes !== wallInfo.bytes) throw new Error(`seal wall bytes ${wall.bytes} != manifest ${wallInfo.bytes}`);
   world.add(wall.root);
+  // east band (adoption batch 20260919, G5): the east-extension surface joins
+  // the walkable ground via its sctail__ names (extraMeshes traverse below);
+  // the sample end wall renders page-level, its collider rides in the dataset
+  // collision-world.json
+  let eastSurfaceInfo = null, eastWallInfo = null, eastSurface = null, eastWall = null;
+  if (manifest.eastExtension?.surface) {
+    eastSurfaceInfo = manifest.eastExtension.surface;
+    eastSurface = await loadGlbWithStats(eastSurfaceInfo.path, 'east-extension-surface', { renderer, baseUrl: './' });
+    if (eastSurface.bytes !== eastSurfaceInfo.bytes) throw new Error(`east extension surface bytes ${eastSurface.bytes} != manifest ${eastSurfaceInfo.bytes}`);
+    world.add(eastSurface.root);
+    eastWallInfo = manifest.eastExtension.sealWall;
+    eastWall = await loadGlbWithStats(eastWallInfo.path, 'east-end-wall', { renderer, baseUrl: BASE });
+    if (eastWall.bytes !== eastWallInfo.bytes) throw new Error(`east end wall bytes ${eastWall.bytes} != manifest ${eastWallInfo.bytes}`);
+    world.add(eastWall.root);
+  }
   world.add(session.root);
 
   // ?skins=1 (expansion batch 20260917, default OFF): append the
@@ -689,6 +704,7 @@ async function load() {
     ...(manifest.streetCompletion?.assets ?? []),
     ...(manifest.templeAxis?.assets ?? []),
     ...(manifest.westShops?.assets ?? []),
+    ...(manifest.eastShops?.assets ?? []),   // east band (adoption batch G5)
   ];
   const assetInfos = assetBlocks.flatMap((b) => (b.assets ?? [])).map((a) => {
     const m = manifestAssets.find((e) => e.id === a.id);
@@ -705,6 +721,10 @@ async function load() {
     { kind: 'surface', triangles: manifest.streetCompletion.surface.triangles },   // west surface (WorldLoader-loaded)
     { kind: 'surface', triangles: eastTail.triangles },
     { kind: 'surface', triangles: wallInfo.triangles },
+    ...(eastSurfaceInfo ? [
+      { kind: 'surface', triangles: eastSurfaceInfo.triangles ?? 0 },   // east extension surface (G5)
+      { kind: 'surface', triangles: eastWallInfo.triangles ?? 0 },      // east end wall (G5)
+    ] : []),
   ]);
   const r = resources();
   // ?compressed=1: meshopt quantization may collapse a few degenerate
@@ -732,11 +752,14 @@ async function load() {
   addGroundCollider(RAPIER, session.physics.world, gt);
 
   loadStats = {
-    bytesTotal: manifest.worldAssembly.bytes + session.sceneInventory.reduce((s, a) => s + a.bytes, 0) + eastTail.bytes + wallInfo.bytes,
+    bytesTotal: manifest.worldAssembly.bytes + session.sceneInventory.reduce((s, a) => s + a.bytes, 0) + eastTail.bytes + wallInfo.bytes
+      + (eastSurfaceInfo ? eastSurfaceInfo.bytes + eastWallInfo.bytes : 0),
     bytesBase: manifest.worldAssembly.bytes,
     bytesWestSurface: manifest.streetCompletion.surface.bytes,
     bytesEastTail: eastTail.bytes,
     bytesSealWall: wallInfo.bytes,
+    bytesEastExtension: eastSurfaceInfo?.bytes ?? 0,
+    bytesEastEndWall: eastWallInfo?.bytes ?? 0,
     bytesTemple: manifest.templeAxis.assets.reduce((s, a) => s + a.bytes, 0),
     bytesShops: manifestAssets.filter((a) => /shop/.test(a.id)).reduce((s, a) => s + a.bytes, 0),
     extraGroundTriangles: gt.triangleCount,

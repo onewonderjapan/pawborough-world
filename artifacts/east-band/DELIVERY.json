@@ -1,0 +1,21 @@
+{
+  "batch": "pawborough-adoption-east-night-20260919",
+  "package": "J",
+  "dataset": "world/fangbang-temple-v4 (in place, authorized)",
+  "newFiles": [
+    "scripts/make_east_extension_spec.mjs",
+    "scripts/build_eastshops_plan.mjs",
+    "kit/build_east_extension_surface.py",
+    "kit/build_eaststrips.py",
+    "kit/render_east_band.py",
+    "kit/out/east-extension-spec.json",
+    "kit/out/east-band/{plan.json, east-extension/*, eastshops-strips.glb}",
+    "tests/east_extension_contract.test.mjs",
+    "tests/eastshops_contract.test.mjs",
+    "tests/fangbang_v4_passage.test.mjs",
+    "tools/capture_east_band_web.mjs",
+    "world/fangbang-temple-v4/{east-extension/*, eastshops-strips.glb}"
+  ],
+  "revoke": "?revoke=block-east-shops reverts the east band to the gray placeholder boxes",
+  "verification": "bash tools/verify_all.sh (PREVIEW_PORT_A=5312 PREVIEW_PORT_B=5313) + node --test tests/*.test.mjs (50/50)"
+}

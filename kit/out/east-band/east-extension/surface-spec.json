@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "kit/build_east_extension_surface.py",
+  "inputs": {
+    "centerline": "kit/out/east-extension-spec.json (OSM 238219464 design reuse)",
+    "junctionEdge": "measured from world/street-completion/surface.glb vertices near [124.6, 27.65]",
+    "postSetbackBoxes": "kit/out/east-band/plan.json setbacks"
+  },
+  "design": {
+    "family": "fangbang-east-extension-surface",
+    "sampleId": "eastext",
+    "frontageM": 113.48,
+    "buildStepM": 1,
+    "band": {
+      "roadCurbToCurbStartM": 4.0,
+      "roadCurbToCurbFullM": 8.5,
+      "easeM": 8,
+      "curbW": 0.25,
+      "curbH": 0.09,
+      "sidewalkBandM": 1.35,
+      "frontLineM": 5.6,
+      "junctionMeasuredEdgeHalfWidthM": 2.0
+    },
+    "junction": {
+      "tailEdgeMidXZ": [
+        124.6,
+        27.65
+      ],
+      "tailEdgeHalfWidthM": 2.0,
+      "tailEdgeTopY": 0.0,
+      "centerOffsetM": 0.0,
+      "centerOffsetPass": true,
+      "widthVsSpecM": 0.0,
+      "widthPass": true,
+      "topStepM": 0.0,
+      "topStepPass": true,
+      "note": "start cross-section = measured tail end edge; direction blends into the spec frames over 6m"
+    },
+    "corridor": {
+      "minFreeM": 4.05,
+      "capsuleR": 0.35,
+      "rule": ">=3.6m (carriageway clear; boxes behind the 5.6m front line)"
+    },
+    "groundNodeNames": [
+      "sctail__quiet-gray-asphalt",
+      "sctail__worn-stone"
+    ],
+    "groundNodeNote": "paving/curb/drains join into sctail__worn-stone; the sctail__ prefix family is the registered GROUND_NODE_RE walkable set",
+    "physics": "visible faces ARE the walkable ground via GROUND_NODE_RE; no invisible slab",
+    "surveyed": false
+  },
+  "lamps": [
+    {
+      "stationS": 25,
+      "side": "south",
+      "x": 149.99,
+      "z": 28.534,
+      "basis": "every 25m from the junction, alternating sides, mid-sidewalk (design)"
+    },
+    {
+      "stationS": 50,
+      "side": "north",
+      "x": 172.186,
+      "z": 44.011,
+      "basis": "every 25m from the junction, alternating sides, mid-sidewalk (design)"
+    },
+    {
+      "stationS": 75,
+      "side": "south",
+      "x": 198.853,
+      "z": 38.329,
+      "basis": "every 25m from the junction, alternating sides, mid-sidewalk (design)"
+    },
+    {
+      "stationS": 100,
+      "side": "north",
+      "x": 222.313,
+      "z": 52.674,
+      "basis": "every 25m from the junction, alternating sides, mid-sidewalk (design)"
+    }
+  ],
+  "drains": [
+    {
+      "stationS": 40,
+      "x": 164.364,
+      "z": 33.001,
+      "basis": "south kerb line, 0.35m inboard, every 40m (design)"
+    },
+    {
+      "stationS": 80,
+      "x": 203.581,
+      "z": 40.547,
+      "basis": "south kerb line, 0.35m inboard, every 40m (design)"
+    }
+  ],
+  "endWall": {
+    "startWidthM": 4,
+    "fullWidthM": 8.5,
+    "easeM": 8,
+    "sidewalkM": 1.35,
+    "frontLineM": 5.6,
+    "curbM": 0.25
+  }
+}

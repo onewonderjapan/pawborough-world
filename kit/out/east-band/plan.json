@@ -1,0 +1,474 @@
+{
+  "spec": "packageJ_east.placeholders",
+  "frontline": {
+    "rule": "front wall center = centerline foot + normal × 5.6 (own side of the road); yaw = atan2(nx, nz)",
+    "source": "kit/out/east-extension-spec.json samples (the BUILT east-extension centerline)"
+  },
+  "moduleDims": {
+    "plain-v1": {
+      "facadeM": 12,
+      "depthM": 6.6
+    },
+    "plain-v2": {
+      "facadeM": 10.7,
+      "depthM": 6.6
+    },
+    "plain-v3": {
+      "facadeM": 10.7,
+      "depthM": 6.6
+    },
+    "pharmacy_shop": {
+      "facadeM": 7.82,
+      "depthM": 7.49
+    },
+    "dry_goods_shop": {
+      "facadeM": 7.5,
+      "depthM": 5.24
+    },
+    "photo_shop": {
+      "facadeM": 7.2,
+      "depthM": 5.83
+    },
+    "curio-a": {
+      "facadeM": 6.2,
+      "depthM": 6.2
+    }
+  },
+  "setbacks": [
+    {
+      "id": "shop-134",
+      "side": "north",
+      "previousGlbPoint": [
+        152.76,
+        25.74
+      ],
+      "glbPoint": [
+        153.4266,
+        22.7115
+      ],
+      "placementAdjust": {
+        "shiftM": 3.101,
+        "alongNormal": [
+          0.21496,
+          -0.97662
+        ],
+        "rule": "box road-side corner retired to the 5.6m front line of the BUILT east centerline"
+      },
+      "minDistBeforeM": 2.499
+    },
+    {
+      "id": "shop-135",
+      "side": "south",
+      "previousGlbPoint": [
+        149.1,
+        42.34
+      ],
+      "glbPoint": [
+        148.3261,
+        45.8558
+      ],
+      "placementAdjust": {
+        "shiftM": 3.6,
+        "alongNormal": [
+          -0.21496,
+          0.97662
+        ],
+        "rule": "box road-side corner retired to the 5.6m front line of the BUILT east centerline"
+      },
+      "minDistBeforeM": 2
+    },
+    {
+      "id": "shop-136",
+      "side": "north",
+      "previousGlbPoint": [
+        173.56,
+        30.31
+      ],
+      "glbPoint": [
+        174.0133,
+        28.2442
+      ],
+      "placementAdjust": {
+        "shiftM": 2.115,
+        "alongNormal": [
+          0.21433,
+          -0.97676
+        ],
+        "rule": "box road-side corner retired to the 5.6m front line of the BUILT east centerline"
+      },
+      "minDistBeforeM": 3.485
+    },
+    {
+      "id": "shop-137",
+      "side": "south",
+      "previousGlbPoint": [
+        169.92,
+        46.92
+      ],
+      "glbPoint": [
+        169.3632,
+        49.4576
+      ],
+      "placementAdjust": {
+        "shiftM": 2.598,
+        "alongNormal": [
+          -0.21433,
+          0.97676
+        ],
+        "rule": "box road-side corner retired to the 5.6m front line of the BUILT east centerline"
+      },
+      "minDistBeforeM": 3.002
+    },
+    {
+      "id": "shop-138",
+      "side": "north",
+      "previousGlbPoint": [
+        188.8,
+        33.28
+      ],
+      "glbPoint": [
+        189.3339,
+        30.1188
+      ],
+      "placementAdjust": {
+        "shiftM": 3.206,
+        "alongNormal": [
+          0.16652,
+          -0.98604
+        ],
+        "rule": "box road-side corner retired to the 5.6m front line of the BUILT east centerline"
+      },
+      "minDistBeforeM": 2.394
+    },
+    {
+      "id": "shop-139",
+      "side": "south",
+      "previousGlbPoint": [
+        186.2,
+        50.09
+      ],
+      "glbPoint": [
+        185.6055,
+        53.6406
+      ],
+      "placementAdjust": {
+        "shiftM": 3.6,
+        "alongNormal": [
+          -0.16513,
+          0.98627
+        ],
+        "rule": "box road-side corner retired to the 5.6m front line of the BUILT east centerline"
+      },
+      "minDistBeforeM": 2
+    },
+    {
+      "id": "shop-140",
+      "side": "north",
+      "previousGlbPoint": [
+        206.29,
+        36.38
+      ],
+      "glbPoint": [
+        206.7114,
+        34.3258
+      ],
+      "placementAdjust": {
+        "shiftM": 2.097,
+        "alongNormal": [
+          0.20094,
+          -0.9796
+        ],
+        "rule": "box road-side corner retired to the 5.6m front line of the BUILT east centerline"
+      },
+      "minDistBeforeM": 3.503
+    },
+    {
+      "id": "shop-141",
+      "side": "south",
+      "previousGlbPoint": [
+        202.65,
+        52.99
+      ],
+      "glbPoint": [
+        202.1026,
+        55.6584
+      ],
+      "placementAdjust": {
+        "shiftM": 2.724,
+        "alongNormal": [
+          -0.20094,
+          0.9796
+        ],
+        "rule": "box road-side corner retired to the 5.6m front line of the BUILT east centerline"
+      },
+      "minDistBeforeM": 2.876
+    },
+    {
+      "id": "shop-142",
+      "side": "north",
+      "previousGlbPoint": [
+        224.68,
+        39.24
+      ],
+      "glbPoint": [
+        224.8131,
+        35.5714
+      ],
+      "placementAdjust": {
+        "shiftM": 3.671,
+        "alongNormal": [
+          0.03626,
+          -0.99934
+        ],
+        "rule": "box road-side corner retired to the 5.6m front line of the BUILT east centerline"
+      },
+      "minDistBeforeM": 1.929
+    }
+  ],
+  "shiftLog": [],
+  "crossShifts": [],
+  "note": "strips computed by the v4 world builder from gapToPrevM (strip = courtyard wall h2.9 t0.28 plaster+cap, design_inference)",
+  "entries": [
+    {
+      "id": "shop-134",
+      "category": "参茸",
+      "module": "curio-a",
+      "side": "north",
+      "frontCenter": [
+        152.136,
+        28.571
+      ],
+      "yawRad": -0.216651,
+      "tangent": [
+        0.976613,
+        0.215003
+      ],
+      "facadeM": 6.2,
+      "depthM": 6.2,
+      "placeholderWidthM": 10.7,
+      "footS": 27.104,
+      "roadDistanceM": 5.6,
+      "tCoord": 154.77,
+      "finalCenter": [
+        152.136,
+        0,
+        28.571
+      ]
+    },
+    {
+      "id": "shop-136",
+      "category": "木器",
+      "module": "plain-v1",
+      "side": "north",
+      "frontCenter": [
+        172.937,
+        33.144
+      ],
+      "yawRad": -0.216008,
+      "tangent": [
+        0.97679,
+        0.214198
+      ],
+      "facadeM": 12,
+      "depthM": 6.6,
+      "placeholderWidthM": 10.7,
+      "footS": 48.406,
+      "roadDistanceM": 5.6,
+      "tCoord": 176.042,
+      "gapToPrevM": 12.17,
+      "finalCenter": [
+        172.937,
+        0,
+        33.144
+      ]
+    },
+    {
+      "id": "shop-138",
+      "category": "海味",
+      "module": "plain-v3",
+      "side": "north",
+      "frontCenter": [
+        188.309,
+        36.136
+      ],
+      "yawRad": -0.167304,
+      "tangent": [
+        0.986264,
+        0.165177
+      ],
+      "facadeM": 10.7,
+      "depthM": 6.6,
+      "placeholderWidthM": 10.7,
+      "footS": 64.341,
+      "roadDistanceM": 5.599,
+      "tCoord": 191.698,
+      "gapToPrevM": 4.31,
+      "finalCenter": [
+        188.309,
+        0,
+        36.136
+      ]
+    },
+    {
+      "id": "shop-140",
+      "category": "南北杂货",
+      "module": "dry_goods_shop",
+      "side": "north",
+      "frontCenter": [
+        205.701,
+        39.246
+      ],
+      "yawRad": -0.202318,
+      "tangent": [
+        0.979592,
+        0.200998
+      ],
+      "facadeM": 7.5,
+      "depthM": 5.24,
+      "placeholderWidthM": 10.7,
+      "footS": 81.816,
+      "roadDistanceM": 5.6,
+      "tCoord": 209.365,
+      "gapToPrevM": 8.57,
+      "finalCenter": [
+        205.701,
+        0,
+        39.246
+      ]
+    },
+    {
+      "id": "shop-142",
+      "category": "字画店",
+      "module": "curio-a",
+      "side": "north",
+      "frontCenter": [
+        224.582,
+        41.974
+      ],
+      "yawRad": -0.036268,
+      "tangent": [
+        0.999344,
+        0.036205
+      ],
+      "facadeM": 6.2,
+      "depthM": 6.2,
+      "placeholderWidthM": 10.7,
+      "footS": 101.858,
+      "roadDistanceM": 5.6,
+      "tCoord": 228.437,
+      "gapToPrevM": 12.22,
+      "finalCenter": [
+        224.582,
+        0,
+        41.974
+      ]
+    },
+    {
+      "id": "shop-135",
+      "category": "药材",
+      "module": "pharmacy_shop",
+      "side": "south",
+      "frontCenter": [
+        149.724,
+        39.508
+      ],
+      "yawRad": 2.924941,
+      "tangent": [
+        0.976613,
+        0.215003
+      ],
+      "facadeM": 7.82,
+      "depthM": 7.49,
+      "placeholderWidthM": 10.7,
+      "footS": 27.099,
+      "roadDistanceM": 5.6,
+      "tCoord": 154.59,
+      "finalCenter": [
+        149.724,
+        0,
+        39.508
+      ]
+    },
+    {
+      "id": "shop-137",
+      "category": "洋货",
+      "module": "plain-v2",
+      "side": "south",
+      "frontCenter": [
+        170.543,
+        44.085
+      ],
+      "yawRad": 2.925587,
+      "tangent": [
+        0.97679,
+        0.214198
+      ],
+      "facadeM": 10.7,
+      "depthM": 6.6,
+      "placeholderWidthM": 10.7,
+      "footS": 48.412,
+      "roadDistanceM": 5.6,
+      "tCoord": 175.904,
+      "gapToPrevM": 12.05,
+      "finalCenter": [
+        170.543,
+        0,
+        44.085
+      ]
+    },
+    {
+      "id": "shop-139",
+      "category": "腌腊",
+      "module": "plain-v1",
+      "side": "south",
+      "frontCenter": [
+        186.681,
+        47.219
+      ],
+      "yawRad": 2.9757,
+      "tangent": [
+        0.986264,
+        0.165177
+      ],
+      "facadeM": 12,
+      "depthM": 6.6,
+      "placeholderWidthM": 10.7,
+      "footS": 64.574,
+      "roadDistanceM": 5.6,
+      "tCoord": 192.343,
+      "gapToPrevM": 5.09,
+      "finalCenter": [
+        186.681,
+        0,
+        47.219
+      ]
+    },
+    {
+      "id": "shop-141",
+      "category": "照相店",
+      "module": "photo_shop",
+      "side": "south",
+      "frontCenter": [
+        203.229,
+        50.172
+      ],
+      "yawRad": 2.939275,
+      "tangent": [
+        0.979592,
+        0.200998
+      ],
+      "facadeM": 7.2,
+      "depthM": 5.83,
+      "placeholderWidthM": 10.7,
+      "footS": 81.589,
+      "roadDistanceM": 5.6,
+      "tCoord": 209.148,
+      "gapToPrevM": 7.2,
+      "finalCenter": [
+        203.229,
+        0,
+        50.172
+      ]
+    }
+  ]
+}

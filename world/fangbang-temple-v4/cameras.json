@@ -125,6 +125,51 @@
       ],
       "verticalFovDegrees": 50,
       "labelZh": "高空总览：主街西端—西延伸—庙轴线"
+    },
+    {
+      "id": "east-junction",
+      "positionGlb": [
+        125.23,
+        1.6,
+        29.08
+      ],
+      "targetGlb": [
+        145.95,
+        1.8,
+        32.94
+      ],
+      "verticalFovDegrees": 60,
+      "labelZh": "东延伸接口：街尾接东段（G5）"
+    },
+    {
+      "id": "east-road-mid",
+      "positionGlb": [
+        173.62,
+        1.6,
+        37.49
+      ],
+      "targetGlb": [
+        197.89,
+        1.8,
+        43.41
+      ],
+      "verticalFovDegrees": 60,
+      "labelZh": "东延伸中段：双侧店屋 frontline 5.6"
+    },
+    {
+      "id": "east-end-wall",
+      "positionGlb": [
+        226.48,
+        1.6,
+        48.65
+      ],
+      "targetGlb": [
+        236,
+        1.8,
+        47.58
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "样段端墙（非历史）"
     }
   ],
   "generatedBy": "delivered bridge cameras copied verbatim (temple-axis unchanged at the street scale); see temple-axis-v2/cameras.json for the 10 expansion cameras"

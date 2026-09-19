@@ -721,6 +721,158 @@
       "rotationYRad": 0.16703,
       "group": "temple-axis-v2",
       "note": "D3 trees v2 (adoption batch 20260919): moved to courtyard-wall line"
+    },
+    {
+      "id": "eastshop-shop-134",
+      "module": "curio-a",
+      "positionGlb": [
+        152.136,
+        0,
+        28.571
+      ],
+      "rotationYRad": -0.216651,
+      "bytes": 1972556,
+      "sha256": "aa178b96876d22f5c598db3837b541229e852c069d18c43b5dda27dc52199747",
+      "group": "east-band-shops"
+    },
+    {
+      "id": "eastshop-shop-136",
+      "module": "plain-v1",
+      "positionGlb": [
+        172.937,
+        0,
+        33.144
+      ],
+      "rotationYRad": -0.216008,
+      "bytes": 1953264,
+      "sha256": "9567bf0e96aec885116e2ad7692e4a90f440073d6d158b8454e344119910cbad",
+      "group": "east-band-shops"
+    },
+    {
+      "id": "eastshop-shop-138",
+      "module": "plain-v3",
+      "positionGlb": [
+        188.309,
+        0,
+        36.136
+      ],
+      "rotationYRad": -0.167304,
+      "bytes": 1495532,
+      "sha256": "155809ebd42e37dd319a7cee0b5ccbaad2b2db21a15b21930608e914714112b7",
+      "group": "east-band-shops"
+    },
+    {
+      "id": "eastshop-shop-140",
+      "module": "dry_goods_shop",
+      "positionGlb": [
+        205.701,
+        0,
+        39.246
+      ],
+      "rotationYRad": -0.202318,
+      "bytes": 3562760,
+      "sha256": "052fadafda116d08356ded8544e32a71323f4adbff2ca9420dfce2f4e0bcd1c9",
+      "group": "east-band-shops"
+    },
+    {
+      "id": "eastshop-shop-142",
+      "module": "curio-a",
+      "positionGlb": [
+        224.582,
+        0,
+        41.974
+      ],
+      "rotationYRad": -0.036268,
+      "bytes": 1972556,
+      "sha256": "aa178b96876d22f5c598db3837b541229e852c069d18c43b5dda27dc52199747",
+      "group": "east-band-shops"
+    },
+    {
+      "id": "eastshop-shop-135",
+      "module": "pharmacy_shop",
+      "positionGlb": [
+        149.724,
+        0,
+        39.508
+      ],
+      "rotationYRad": 2.924941,
+      "bytes": 3679732,
+      "sha256": "f51cf055f8a86ca16bf763f43689a7a4cbe536a59f6bd420b9f50751c52b9574",
+      "group": "east-band-shops"
+    },
+    {
+      "id": "eastshop-shop-137",
+      "module": "plain-v2",
+      "positionGlb": [
+        170.543,
+        0,
+        44.085
+      ],
+      "rotationYRad": 2.925587,
+      "bytes": 1863044,
+      "sha256": "c08d816d6e144893bfcd9e6c4aacce890137d977de579fb8f6fab10cf4a04ea8",
+      "group": "east-band-shops"
+    },
+    {
+      "id": "eastshop-shop-139",
+      "module": "plain-v1",
+      "positionGlb": [
+        186.681,
+        0,
+        47.219
+      ],
+      "rotationYRad": 2.9757,
+      "bytes": 1953264,
+      "sha256": "9567bf0e96aec885116e2ad7692e4a90f440073d6d158b8454e344119910cbad",
+      "group": "east-band-shops"
+    },
+    {
+      "id": "eastshop-shop-141",
+      "module": "photo_shop",
+      "positionGlb": [
+        203.229,
+        0,
+        50.172
+      ],
+      "rotationYRad": 2.939275,
+      "bytes": 4105324,
+      "sha256": "5d885af6eb8b76ef1147a06499eed100da32593e149cd3dd6bf434d2acd84f76",
+      "group": "east-band-shops"
+    },
+    {
+      "id": "eastshops-strips",
+      "module": "eastshops-strips",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "bytes": 7528,
+      "sha256": "e8b4131a3ae635bcbf29ecb41e9e6a77d1f7f40a6db0bec7aa40b43bb63458bf",
+      "group": "east-band-shops"
+    },
+    {
+      "id": "eastext-surface",
+      "module": "eastext-surface",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "group": "east-extension"
+    },
+    {
+      "id": "eastext-seal-wall",
+      "module": "eastext-seal-wall",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "group": "east-extension"
     }
   ]
 }

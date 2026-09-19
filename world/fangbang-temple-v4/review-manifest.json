@@ -389,6 +389,27 @@
       "bytes": 233320,
       "sha256": "5219f9a3a065fd1c2d4262899fa04e49f1ed31e31b9f709b162b74223a84cb33",
       "triangles": 1936
+    },
+    {
+      "id": "eastshops-strips",
+      "path": "./world/fangbang-temple-v4/eastshops-strips.glb",
+      "bytes": 7528,
+      "sha256": "e8b4131a3ae635bcbf29ecb41e9e6a77d1f7f40a6db0bec7aa40b43bb63458bf",
+      "triangles": 72
+    },
+    {
+      "id": "eastext-surface",
+      "path": "./world/fangbang-temple-v4/east-extension/surface.glb",
+      "bytes": 1216532,
+      "sha256": "ea8a75c35cddc5107e0fa338acecfaa55869000e3c5d2f8a1cf97e5680a4b794",
+      "triangles": 4388
+    },
+    {
+      "id": "eastext-seal-wall",
+      "path": "./world/fangbang-temple-v4/east-extension/seal-wall.glb",
+      "bytes": 2608,
+      "sha256": "5815ce8b9f413b28c51135bc732ce12054542a7fe2d45bf8268780a705be034d",
+      "triangles": 12
     }
   ],
   "worldAssembly": {
@@ -1325,7 +1346,13 @@
       "limit": 600000,
       "pass": true
     },
-    "newTextures": 0
+    "newTextures": 0,
+    "eastShopsBlockTris": 107472,
+    "eastShopsBlockTrisMax": 110000,
+    "eastShopsBlockPass": true,
+    "fullSceneV4Tris": 453062,
+    "fullSceneV4TrisMax": 700000,
+    "fullSceneV4Pass": true
   },
   "generatedBy": "scripts/build_fangbang_v4_world.mjs",
   "propsBlock": {
@@ -1334,5 +1361,187 @@
     "loadParam": "?props=1",
     "instances": 38,
     "note": "revocable street life layer (E batch, G12 gate)"
+  },
+  "eastShops": {
+    "note": "block-east-shops asset inventory (adoption batch 20260919, G5); the page reconciles block assets against this section",
+    "assets": [
+      {
+        "id": "eastshop-shop-134",
+        "module": "curio-a",
+        "glb": "./building/curio-a/model.glb",
+        "positionGlb": [
+          152.136,
+          0,
+          28.571
+        ],
+        "rotationYRad": -0.216651,
+        "bytes": 1972556,
+        "sha256": "aa178b96876d22f5c598db3837b541229e852c069d18c43b5dda27dc52199747",
+        "triangles": 7748
+      },
+      {
+        "id": "eastshop-shop-136",
+        "module": "plain-v1",
+        "glb": "./building/plain-v1/model.glb",
+        "positionGlb": [
+          172.937,
+          0,
+          33.144
+        ],
+        "rotationYRad": -0.216008,
+        "bytes": 1953264,
+        "sha256": "9567bf0e96aec885116e2ad7692e4a90f440073d6d158b8454e344119910cbad",
+        "triangles": 7596
+      },
+      {
+        "id": "eastshop-shop-138",
+        "module": "plain-v3",
+        "glb": "./building/plain-v3/model.glb",
+        "positionGlb": [
+          188.309,
+          0,
+          36.136
+        ],
+        "rotationYRad": -0.167304,
+        "bytes": 1495532,
+        "sha256": "155809ebd42e37dd319a7cee0b5ccbaad2b2db21a15b21930608e914714112b7",
+        "triangles": 5960
+      },
+      {
+        "id": "eastshop-shop-140",
+        "module": "dry_goods_shop",
+        "glb": "./building/dry_goods_shop/model.glb",
+        "positionGlb": [
+          205.701,
+          0,
+          39.246
+        ],
+        "rotationYRad": -0.202318,
+        "bytes": 3562760,
+        "sha256": "052fadafda116d08356ded8544e32a71323f4adbff2ca9420dfce2f4e0bcd1c9",
+        "triangles": 22268
+      },
+      {
+        "id": "eastshop-shop-142",
+        "module": "curio-a",
+        "glb": "./building/curio-a/model.glb",
+        "positionGlb": [
+          224.582,
+          0,
+          41.974
+        ],
+        "rotationYRad": -0.036268,
+        "bytes": 1972556,
+        "sha256": "aa178b96876d22f5c598db3837b541229e852c069d18c43b5dda27dc52199747",
+        "triangles": 7748
+      },
+      {
+        "id": "eastshop-shop-135",
+        "module": "pharmacy_shop",
+        "glb": "./building/pharmacy_shop/model.glb",
+        "positionGlb": [
+          149.724,
+          0,
+          39.508
+        ],
+        "rotationYRad": 2.924941,
+        "bytes": 3679732,
+        "sha256": "f51cf055f8a86ca16bf763f43689a7a4cbe536a59f6bd420b9f50751c52b9574",
+        "triangles": 21788
+      },
+      {
+        "id": "eastshop-shop-137",
+        "module": "plain-v2",
+        "glb": "./building/plain-v2/model.glb",
+        "positionGlb": [
+          170.543,
+          0,
+          44.085
+        ],
+        "rotationYRad": 2.925587,
+        "bytes": 1863044,
+        "sha256": "c08d816d6e144893bfcd9e6c4aacce890137d977de579fb8f6fab10cf4a04ea8",
+        "triangles": 6852
+      },
+      {
+        "id": "eastshop-shop-139",
+        "module": "plain-v1",
+        "glb": "./building/plain-v1/model.glb",
+        "positionGlb": [
+          186.681,
+          0,
+          47.219
+        ],
+        "rotationYRad": 2.9757,
+        "bytes": 1953264,
+        "sha256": "9567bf0e96aec885116e2ad7692e4a90f440073d6d158b8454e344119910cbad",
+        "triangles": 7596
+      },
+      {
+        "id": "eastshop-shop-141",
+        "module": "photo_shop",
+        "glb": "./building/photo_shop/model.glb",
+        "positionGlb": [
+          203.229,
+          0,
+          50.172
+        ],
+        "rotationYRad": 2.939275,
+        "bytes": 4105324,
+        "sha256": "5d885af6eb8b76ef1147a06499eed100da32593e149cd3dd6bf434d2acd84f76",
+        "triangles": 19844
+      },
+      {
+        "id": "eastshops-strips",
+        "module": "eastshops-strips",
+        "glb": "./world/fangbang-temple-v4/eastshops-strips.glb",
+        "positionGlb": [
+          0,
+          0,
+          0
+        ],
+        "rotationYRad": 0,
+        "bytes": 7528,
+        "sha256": "e8b4131a3ae635bcbf29ecb41e9e6a77d1f7f40a6db0bec7aa40b43bb63458bf",
+        "triangles": 72
+      }
+    ]
+  },
+  "eastExtension": {
+    "surface": {
+      "path": "./world/fangbang-temple-v4/east-extension/surface.glb",
+      "bytes": 1216532,
+      "sha256": "ea8a75c35cddc5107e0fa338acecfaa55869000e3c5d2f8a1cf97e5680a4b794",
+      "triangles": 4388
+    },
+    "sealWall": {
+      "path": "./world/fangbang-temple-v4/east-extension/seal-wall.glb",
+      "bytes": 2608,
+      "sha256": "5815ce8b9f413b28c51135bc732ce12054542a7fe2d45bf8268780a705be034d",
+      "triangles": 12
+    },
+    "spec": "kit/out/east-extension-spec.json (OSM 238219464 design reuse, chaikin 2 + 0.5m resample)",
+    "widths": {
+      "startWidthM": 4,
+      "fullWidthM": 8.5,
+      "easeM": 8,
+      "sidewalkM": 1.35,
+      "frontLineM": 5.6,
+      "curbM": 0.25
+    },
+    "junction": "measured street-tail end edge, gap 0.00 / top step 0.00 by construction",
+    "endWall": {
+      "label": "样段端墙，非历史",
+      "sizeM": [
+        11.2,
+        3.4,
+        0.3
+      ],
+      "at": [
+        236,
+        47.58246710526315
+      ]
+    },
+    "block": "block-east-shops (9 placeholders upgraded per the west-band R1 rules; ?revoke=block-east-shops reverts)"
   }
 }
