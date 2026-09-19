@@ -1,0 +1,49 @@
+{
+  "views": [
+    {
+      "view": "junction-west",
+      "file": "junction-west-pbr.png"
+    },
+    {
+      "view": "west-road-mid",
+      "file": "west-road-mid-pbr.png"
+    },
+    {
+      "view": "placeholder-band",
+      "file": "placeholder-band-pbr.png"
+    },
+    {
+      "view": "aerial-overview",
+      "file": "aerial-overview-pbr.png"
+    }
+  ],
+  "blankGuard": {
+    "frames": [
+      {
+        "file": "junction-west-pbr.png",
+        "std": 7.23,
+        "dom": 0.73,
+        "blank": false
+      },
+      {
+        "file": "west-road-mid-pbr.png",
+        "std": 7.97,
+        "dom": 0.726,
+        "blank": false
+      },
+      {
+        "file": "placeholder-band-pbr.png",
+        "std": 42.39,
+        "dom": 0.545,
+        "blank": false
+      },
+      {
+        "file": "aerial-overview-pbr.png",
+        "std": 38.91,
+        "dom": 0.575,
+        "blank": false
+      }
+    ],
+    "anyBlank": false
+  }
+}

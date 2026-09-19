@@ -1,0 +1,515 @@
+{
+  "spec": "packageB_westBandShops",
+  "frontline": {
+    "rule": "front wall center = centerline foot + normal × 5.6 (south normal on the north row, negated on the south row); yaw = atan2(nx, nz)",
+    "source": "kit/out/fangbang-temple/west-extension-spec.json samples (the BUILT west-extension centerline)"
+  },
+  "moduleDims": {
+    "plain-v1": {
+      "facadeM": 12,
+      "depthM": 6.6
+    },
+    "plain-v2": {
+      "facadeM": 10.7,
+      "depthM": 6.6
+    },
+    "plain-v3": {
+      "facadeM": 10.7,
+      "depthM": 6.6
+    },
+    "pharmacy_shop": {
+      "facadeM": 7.82,
+      "depthM": 7.49
+    },
+    "cloth_shop": {
+      "facadeM": 7.62,
+      "depthM": 7.2
+    },
+    "curio-a": {
+      "facadeM": 6.2,
+      "depthM": 6.2
+    },
+    "curio-b": {
+      "facadeM": 6.2,
+      "depthM": 6.2
+    },
+    "restaurant-a": {
+      "facadeM": 11.3,
+      "depthM": 7.49
+    },
+    "restaurant-b": {
+      "facadeM": 11.3,
+      "depthM": 7.49
+    },
+    "dry_goods_shop": {
+      "facadeM": 7.5,
+      "depthM": 5.24
+    },
+    "photo_shop": {
+      "facadeM": 7.2,
+      "depthM": 5.83
+    }
+  },
+  "shiftLog": [],
+  "crossShifts": [],
+  "note": "strips computed by the v3 world builder from gapToPrevM (strip = courtyard wall h2.9 t0.28 plaster+瓦帽, design_inference); strip centers use the real front-wall midpoint, not a tangent-axis reconstruction",
+  "entries": [
+    {
+      "id": "shop-153",
+      "category": "药材",
+      "module": "pharmacy_shop",
+      "side": "north",
+      "frontCenter": [
+        -3.805,
+        7.253
+      ],
+      "yawRad": -2.805099,
+      "tangent": [
+        -0.943899,
+        0.330235
+      ],
+      "facadeM": 7.82,
+      "depthM": 7.49,
+      "placeholderWidthM": 10.7,
+      "footS": 3.987,
+      "roadDistanceM": 5.6,
+      "tCoord": 5.674,
+      "finalCenter": [
+        -3.805,
+        0,
+        7.253
+      ]
+    },
+    {
+      "id": "shop-155",
+      "category": "洋货",
+      "module": "plain-v2",
+      "side": "north",
+      "frontCenter": [
+        -15.109,
+        11.207
+      ],
+      "yawRad": -2.805099,
+      "tangent": [
+        -0.943899,
+        0.330235
+      ],
+      "facadeM": 10.7,
+      "depthM": 6.6,
+      "placeholderWidthM": 10.7,
+      "footS": 15.962,
+      "roadDistanceM": 5.6,
+      "tCoord": 17.632,
+      "gapToPrevM": 2.7,
+      "finalCenter": [
+        -15.109,
+        0,
+        11.207
+      ]
+    },
+    {
+      "id": "shop-157",
+      "category": "腌腊",
+      "module": "plain-v1",
+      "side": "north",
+      "frontCenter": [
+        -26.429,
+        15.167
+      ],
+      "yawRad": -2.805099,
+      "tangent": [
+        -0.943983,
+        0.329994
+      ],
+      "facadeM": 12,
+      "depthM": 6.6,
+      "placeholderWidthM": 10.7,
+      "footS": 27.955,
+      "roadDistanceM": 5.6,
+      "tCoord": 29.607,
+      "gapToPrevM": 0.62,
+      "finalCenter": [
+        -26.429,
+        0,
+        15.167
+      ]
+    },
+    {
+      "id": "shop-159",
+      "category": "照相店",
+      "module": "photo_shop",
+      "side": "north",
+      "frontCenter": [
+        -37.762,
+        19.131
+      ],
+      "yawRad": -2.805099,
+      "tangent": [
+        -0.943921,
+        0.330172
+      ],
+      "facadeM": 7.2,
+      "depthM": 5.83,
+      "placeholderWidthM": 10.7,
+      "footS": 39.961,
+      "roadDistanceM": 5.6,
+      "tCoord": 41.595,
+      "gapToPrevM": 2.39,
+      "finalCenter": [
+        -37.762,
+        0,
+        19.131
+      ]
+    },
+    {
+      "id": "shop-160",
+      "category": "字画店",
+      "module": "curio-a",
+      "side": "north",
+      "frontCenter": [
+        -49.091,
+        23.094
+      ],
+      "yawRad": -2.805099,
+      "tangent": [
+        -0.943921,
+        0.330172
+      ],
+      "facadeM": 6.2,
+      "depthM": 6.2,
+      "placeholderWidthM": 10.7,
+      "footS": 51.963,
+      "roadDistanceM": 5.6,
+      "tCoord": 53.58,
+      "gapToPrevM": 5.28,
+      "finalCenter": [
+        -49.091,
+        0,
+        23.094
+      ]
+    },
+    {
+      "id": "shop-161",
+      "category": "寿衣店",
+      "module": "plain-v2",
+      "side": "north",
+      "frontCenter": [
+        -60.421,
+        27.029
+      ],
+      "yawRad": -2.808021,
+      "tangent": [
+        -0.944898,
+        0.327365
+      ],
+      "facadeM": 10.7,
+      "depthM": 6.6,
+      "placeholderWidthM": 10.7,
+      "footS": 63.94,
+      "roadDistanceM": 5.6,
+      "tCoord": 65.558,
+      "gapToPrevM": 3.53,
+      "finalCenter": [
+        -60.421,
+        0,
+        27.029
+      ]
+    },
+    {
+      "id": "shop-162",
+      "category": "烟纸店",
+      "module": "plain-v3",
+      "side": "north",
+      "frontCenter": [
+        -71.713,
+        30.923
+      ],
+      "yawRad": -2.813012,
+      "tangent": [
+        -0.94646,
+        0.322821
+      ],
+      "facadeM": 10.7,
+      "depthM": 6.6,
+      "placeholderWidthM": 10.7,
+      "footS": 75.857,
+      "roadDistanceM": 5.599,
+      "tCoord": 77.487,
+      "gapToPrevM": 1.23,
+      "finalCenter": [
+        -71.713,
+        0,
+        30.923
+      ]
+    },
+    {
+      "id": "shop-164",
+      "category": "酒楼",
+      "module": "restaurant-a",
+      "side": "north",
+      "frontCenter": [
+        -103.788,
+        40.661
+      ],
+      "yawRad": -2.898527,
+      "tangent": [
+        -0.970914,
+        0.239428
+      ],
+      "facadeM": 11.3,
+      "depthM": 7.49,
+      "placeholderWidthM": 10.7,
+      "footS": 108.916,
+      "roadDistanceM": 5.6,
+      "tCoord": 111.005,
+      "gapToPrevM": 22.52,
+      "finalCenter": [
+        -103.788,
+        0,
+        40.661
+      ]
+    },
+    {
+      "id": "shop-166",
+      "category": "棉花",
+      "module": "cloth_shop",
+      "side": "north",
+      "frontCenter": [
+        -121.525,
+        44.437
+      ],
+      "yawRad": -2.958889,
+      "tangent": [
+        -0.983367,
+        0.181631
+      ],
+      "facadeM": 7.62,
+      "depthM": 7.2,
+      "placeholderWidthM": 10.7,
+      "footS": 126.716,
+      "roadDistanceM": 5.6,
+      "tCoord": 129.092,
+      "gapToPrevM": 8.63,
+      "finalCenter": [
+        -121.525,
+        0,
+        44.437
+      ]
+    },
+    {
+      "id": "shop-168",
+      "category": "绣品",
+      "module": "cloth_shop",
+      "side": "north",
+      "frontCenter": [
+        -140.524,
+        47.657
+      ],
+      "yawRad": -2.974486,
+      "tangent": [
+        -0.986057,
+        0.16641
+      ],
+      "facadeM": 7.62,
+      "depthM": 7.2,
+      "placeholderWidthM": 10.7,
+      "footS": 145.899,
+      "roadDistanceM": 5.6,
+      "tCoord": 148.236,
+      "gapToPrevM": 11.52,
+      "finalCenter": [
+        -140.524,
+        0,
+        47.657
+      ]
+    },
+    {
+      "id": "shop-170",
+      "category": "参茸",
+      "module": "curio-a",
+      "side": "north",
+      "frontCenter": [
+        -148.457,
+        48.995
+      ],
+      "yawRad": -2.974486,
+      "tangent": [
+        -0.986063,
+        0.166373
+      ],
+      "facadeM": 6.2,
+      "depthM": 6.2,
+      "placeholderWidthM": 10.7,
+      "footS": 153.943,
+      "roadDistanceM": 5.6,
+      "tCoord": 156.228,
+      "gapToPrevM": 1.08,
+      "finalCenter": [
+        -148.457,
+        0,
+        48.995
+      ]
+    },
+    {
+      "id": "shop-154",
+      "category": "木器",
+      "module": "plain-v1",
+      "side": "south",
+      "frontCenter": [
+        -7.478,
+        -3.328
+      ],
+      "yawRad": 0.336494,
+      "tangent": [
+        -0.943899,
+        0.330235
+      ],
+      "facadeM": 12,
+      "depthM": 6.6,
+      "placeholderWidthM": 10.7,
+      "footS": 3.96,
+      "roadDistanceM": 5.6,
+      "tCoord": 6.206,
+      "finalCenter": [
+        -7.478,
+        0,
+        -3.328
+      ]
+    },
+    {
+      "id": "shop-156",
+      "category": "海味",
+      "module": "plain-v3",
+      "side": "south",
+      "frontCenter": [
+        -18.807,
+        0.635
+      ],
+      "yawRad": 0.336494,
+      "tangent": [
+        -0.943899,
+        0.330235
+      ],
+      "facadeM": 10.7,
+      "depthM": 6.6,
+      "placeholderWidthM": 10.7,
+      "footS": 15.962,
+      "roadDistanceM": 5.6,
+      "tCoord": 18.196,
+      "gapToPrevM": 0.64,
+      "finalCenter": [
+        -18.807,
+        0,
+        0.635
+      ]
+    },
+    {
+      "id": "shop-158",
+      "category": "南北杂货",
+      "module": "dry_goods_shop",
+      "side": "south",
+      "frontCenter": [
+        -30.126,
+        4.595
+      ],
+      "yawRad": 0.336494,
+      "tangent": [
+        -0.943983,
+        0.329994
+      ],
+      "facadeM": 7.5,
+      "depthM": 5.24,
+      "placeholderWidthM": 10.7,
+      "footS": 27.954,
+      "roadDistanceM": 5.6,
+      "tCoord": 30.175,
+      "gapToPrevM": 2.88,
+      "finalCenter": [
+        -30.126,
+        0,
+        4.595
+      ]
+    },
+    {
+      "id": "shop-163",
+      "category": "银楼",
+      "module": "curio-b",
+      "side": "south",
+      "frontCenter": [
+        -75.479,
+        20.375
+      ],
+      "yawRad": 0.328581,
+      "tangent": [
+        -0.94646,
+        0.322821
+      ],
+      "facadeM": 6.2,
+      "depthM": 6.2,
+      "placeholderWidthM": 10.7,
+      "footS": 76.018,
+      "roadDistanceM": 5.6,
+      "tCoord": 78.15,
+      "gapToPrevM": 41.12,
+      "finalCenter": [
+        -75.479,
+        0,
+        20.375
+      ]
+    },
+    {
+      "id": "shop-165",
+      "category": "饭馆",
+      "module": "restaurant-b",
+      "side": "south",
+      "frontCenter": [
+        -106.278,
+        29.739
+      ],
+      "yawRad": 0.243539,
+      "tangent": [
+        -0.970377,
+        0.241594
+      ],
+      "facadeM": 11.3,
+      "depthM": 7.49,
+      "placeholderWidthM": 10.7,
+      "footS": 108.702,
+      "roadDistanceM": 5.6,
+      "tCoord": 110.341,
+      "gapToPrevM": 23.44,
+      "finalCenter": [
+        -106.278,
+        0,
+        29.739
+      ]
+    },
+    {
+      "id": "shop-171",
+      "category": "药材",
+      "module": "pharmacy_shop",
+      "side": "south",
+      "frontCenter": [
+        -150.319,
+        37.951
+      ],
+      "yawRad": 0.167107,
+      "tangent": [
+        -0.986063,
+        0.166373
+      ],
+      "facadeM": 7.82,
+      "depthM": 7.49,
+      "placeholderWidthM": 10.7,
+      "footS": 153.943,
+      "roadDistanceM": 5.6,
+      "tCoord": 154.884,
+      "gapToPrevM": 34.98,
+      "finalCenter": [
+        -150.319,
+        0,
+        37.951
+      ]
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "batchId": "pawborough-corridor-video-night-20260919",
+  "packageE": "street life props layer — revocable block, ?props=1 default OFF",
+  "era": "1990s Shanghai street objects; no post-2000 items (owner standing decision)",
+  "newImagesMax": 0,
+  "items": [
+    {
+      "id": "bicycle-28",
+      "count": 12,
+      "glb": "bicycle-28.glb",
+      "sizeM": [1.8, 1.05, 0.45],
+      "trisMax": 700,
+      "collision": { "size": [0.45, 1.0, 1.8], "note": "thin box along the frame axis (local z) after yaw" },
+      "build": "28-inch bicycle: two 14-spoke-ring wheels (12-sided rims + hub rods), triangle frame rods, handlebar, saddle, rear rack; materials dark-iron + dark; upright kickstand pose; leaning pose achieved by instance roll",
+      "placement": "near walls, along the facade normal, spaced >= 1.2 m"
+    },
+    {
+      "id": "wood-crate",
+      "count": 10,
+      "glb": "wood-crate.glb",
+      "sizeM": [0.6, 0.45, 0.45],
+      "trisMax": 120,
+      "collision": { "size": [0.6, 0.45, 0.45] },
+      "build": "slatted crate: bottom + 4 corner posts + 3 boards per long side; material wood; stackable (instances may stack 2 high)",
+      "placement": "against walls or beside doors, singles and one 2-stack"
+    },
+    {
+      "id": "bamboo-basket",
+      "count": 6,
+      "glb": "bamboo-basket.glb",
+      "sizeM": [0.5, 0.4, 0.5],
+      "trisMax": 260,
+      "collision": { "size": [0.5, 0.4, 0.5] },
+      "build": "truncated-cone basket (8-sided) + 8 vertical bamboo strips + rim ring; material bamboo (NEW monochrome #b8a468, 0 images)",
+      "placement": "beside doors and under awnings"
+    },
+    {
+      "id": "bamboo-chair",
+      "count": 4,
+      "glb": "bamboo-chair.glb",
+      "sizeM": [0.45, 0.85, 0.45],
+      "trisMax": 220,
+      "collision": { "size": [0.45, 0.85, 0.45] },
+      "build": "bamboo chair: 4 legs + seat frame + low backrest + 2 side rails; material bamboo",
+      "placement": "facing the street near doors"
+    },
+    {
+      "id": "cloth-awning",
+      "count": 6,
+      "glb": "cloth-awning.glb",
+      "sizeM": [3.0, 0.5, 1.2],
+      "trisMax": 160,
+      "collision": null,
+      "build": "shop awning: two slanted support rods + single bent cloth plane (double-sided), plain color #7a6a58; hung at y 2.6-3.1 above the lintel",
+      "familiesOnly": ["plain", "curio", "cloth"],
+      "placement": "on the facade lintel line, centered on the door bay"
+    }
+  ],
+  "placement": {
+    "fromWallMinM": 0.25,
+    "fromWallMaxM": 0.9,
+    "routeCorridorM": 1.2,
+    "perFacadeMax": 2,
+    "satCheck": "2D OBB vs every world collider (axis-aligned + theta), no intersection",
+    "anchorModule": "every instance records its facade id"
+  },
+  "budgets": { "uniqueTrisMax": 1500, "placedTrisMax": 20000, "newImages": 0 },
+  "reference": "design_inference only (1990s common objects, no reference photos)"
+}

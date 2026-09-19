@@ -1,0 +1,117 @@
+{
+  "base": "http://127.0.0.1:5306",
+  "views": [
+    {
+      "view": "court2-pair",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 54.72,
+        "dominantShare": 0.045
+      },
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/artifacts/corridor/web/v3-web--court2-pair.png",
+      "bytes": 519711
+    },
+    {
+      "view": "peidian-west-front",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 71.47,
+        "dominantShare": 0.222
+      },
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/artifacts/corridor/web/v3-web--peidian-west-front.png",
+      "bytes": 342170
+    },
+    {
+      "view": "gallery-link",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 58.65,
+        "dominantShare": 0.246
+      },
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/artifacts/corridor/web/v3-web--gallery-link.png",
+      "bytes": 377766
+    },
+    {
+      "view": "stage-from-court",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 75.86,
+        "dominantShare": 0.523
+      },
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/artifacts/corridor/web/v3-web--stage-from-court.png",
+      "bytes": 307017
+    },
+    {
+      "view": "stage-3q",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 74.88,
+        "dominantShare": 0.313
+      },
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/artifacts/corridor/web/v3-web--stage-3q.png",
+      "bytes": 457409
+    },
+    {
+      "view": "passage-east",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 39.61,
+        "dominantShare": 0.239
+      },
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/artifacts/corridor/web/v3-web--passage-east.png",
+      "bytes": 474948
+    },
+    {
+      "view": "court3-axis",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 55.11,
+        "dominantShare": 0.499
+      },
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/artifacts/corridor/web/v3-web--court3-axis.png",
+      "bytes": 332858
+    },
+    {
+      "view": "houdian-front",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 69.89,
+        "dominantShare": 0.17
+      },
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/artifacts/corridor/web/v3-web--houdian-front.png",
+      "bytes": 429931
+    },
+    {
+      "view": "houdian-3q",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 57.35,
+        "dominantShare": 0.466
+      },
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/artifacts/corridor/web/v3-web--houdian-3q.png",
+      "bytes": 359945
+    },
+    {
+      "view": "axis-aerial",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 50.6,
+        "dominantShare": 0.698
+      },
+      "file": "/home/baibai/outbox/pawborough-corridor-video-night-20260919/workspace/artifacts/corridor/web/v3-web--axis-aerial.png",
+      "bytes": 445562
+    }
+  ],
+  "pass": true,
+  "generatedBy": "tools/capture_temple_v3_views.mjs"
+}

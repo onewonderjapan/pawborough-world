@@ -1,0 +1,1 @@
+{"note": "temple: cameras in scene-v1 were baked raw (axis-local coords used as world). The before/after G-package set renders BOTH sides with the corrected bridge transform (T+yaw); axis-aerial additionally carries the DESIGN_SPEC pose fix on the after side only.", "contract": "world/temple-axis-v2/cameras.json"}

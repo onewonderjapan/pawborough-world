@@ -1,0 +1,55 @@
+{
+  "delivered": {
+    "path": "world/temple-shanmen/lions.glb",
+    "meshes": 1,
+    "primitives": 1,
+    "vertices": 8696,
+    "triangles": 3556,
+    "materials": [
+      "worn-stone"
+    ]
+  },
+  "rerun": {
+    "path": "kit/out/shanmen-v1-equivalence/lions.glb",
+    "meshes": 1,
+    "primitives": 1,
+    "vertices": 8700,
+    "triangles": 3556,
+    "materials": [
+      "worn-stone"
+    ]
+  },
+  "boundsDelivered": [
+    [
+      -2.4650001525878906,
+      0.0,
+      0.6499999761581421
+    ],
+    [
+      2.4650001525878906,
+      1.5550000667572021,
+      1.5250000953674316
+    ]
+  ],
+  "boundsRerun": [
+    [
+      -2.4650001525878906,
+      0.0,
+      0.6499999761581421
+    ],
+    [
+      2.4650001525878906,
+      1.5550000667572021,
+      1.5250000953674316
+    ]
+  ],
+  "checks": {
+    "primitives_equal": true,
+    "triangles_equal": true,
+    "vertex_count_within_weld_tolerance": true,
+    "materials_equal": true,
+    "bounds_within_1e-4": true
+  },
+  "equivalent": true,
+  "caliber": "fallback #6: tris/prims/materials equal, verts +-4 (weld), bounds 1e-4"
+}

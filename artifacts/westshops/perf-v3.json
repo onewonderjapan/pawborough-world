@@ -1,0 +1,76 @@
+{
+  "measuredAt": "2026-09-18T10:56:08.462Z",
+  "label": "headless 软件 GL (SwiftShader) · 非目标设备 · 仅作回归基线，不宣称 FPS 达标（V09 口径）",
+  "environment": {
+    "browser": "chrome-headless-swiftshader",
+    "viewport": [
+      960,
+      600
+    ],
+    "server": "http://127.0.0.1:5304"
+  },
+  "load": {
+    "wallMsToReady": 8448,
+    "transferBytes": 173033533,
+    "pageBytes": {
+      "bytesTotal": 103060184,
+      "bytesBase": 20571620,
+      "bytesWestSurface": 1308304,
+      "bytesEastTail": 985560,
+      "bytesSealWall": 2804,
+      "bytesTemple": 29410532,
+      "bytesShops": 50781364,
+      "extraGroundTriangles": 11280,
+      "wallColliders": 687,
+      "allAssetsReadyMs": 4631,
+      "fpsNotMeasured": true,
+      "localOnly": true,
+      "shaderCompileMs": 35
+    },
+    "integrity": {
+      "triangles": 567764,
+      "expected": 565304,
+      "pass": false
+    },
+    "resources": {
+      "meshes": 775,
+      "geometries": 686,
+      "materials": 603,
+      "textures": 558
+    }
+  },
+  "firstRender": {
+    "note": "captured via the page's first render() after ready; software GL",
+    "trianglesDrawn": 567764
+  },
+  "cruise": {
+    "automatic": true,
+    "routePass": true,
+    "frames": 4,
+    "p50Ms": 183.3,
+    "p95Ms": 183.4,
+    "meanMs": 179.15
+  },
+  "reloadLoop": {
+    "runs": 3,
+    "stable": true,
+    "runsDetail": [
+      {
+        "triangles": 567764,
+        "geometries": 686,
+        "textures": 558
+      },
+      {
+        "triangles": 567764,
+        "geometries": 686,
+        "textures": 558
+      },
+      {
+        "triangles": 567764,
+        "geometries": 686,
+        "textures": 558
+      }
+    ],
+    "note": "triangles/textures identical across 3 consecutive loads = no resource growth"
+  }
+}

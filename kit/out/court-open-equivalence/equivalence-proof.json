@@ -1,0 +1,63 @@
+{
+  "delivered": {
+    "path": "world/temple-axis-v2/court-open.glb",
+    "meshes": 6,
+    "primitives": 6,
+    "vertices": 3878,
+    "triangles": 1580,
+    "materials": [
+      "paving-frontage",
+      "worn-stone",
+      "deep-door-lacquer",
+      "dark-iron",
+      "gray-pan-tile"
+    ]
+  },
+  "rerun": {
+    "path": "kit/out/court-open-equivalence/court.glb",
+    "meshes": 6,
+    "primitives": 6,
+    "vertices": 3880,
+    "triangles": 1580,
+    "materials": [
+      "paving-frontage",
+      "worn-stone",
+      "deep-door-lacquer",
+      "dark-iron",
+      "gray-pan-tile"
+    ]
+  },
+  "boundsDelivered": [
+    [
+      -8.329999923706055,
+      -0.12399999797344208,
+      -29.200000762939453
+    ],
+    [
+      8.330000877380371,
+      3.0500001907348633,
+      -3.270000457763672
+    ]
+  ],
+  "boundsRerun": [
+    [
+      -8.329999923706055,
+      -0.12399999797344208,
+      -29.200000762939453
+    ],
+    [
+      8.330000877380371,
+      3.0500001907348633,
+      -3.270000457763672
+    ]
+  ],
+  "checks": {
+    "primitives_equal": true,
+    "triangles_equal": true,
+    "vertex_count_within_weld_tolerance": true,
+    "materials_equal": true,
+    "bounds_within_1e-4": true
+  },
+  "equivalent": true,
+  "caliber": "fallback #6: tris/prims/materials equal, verts +-4 (weld), bounds 1e-4"
+}

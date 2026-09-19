@@ -51,22 +51,28 @@ SCHEMA = {
     'skin': {'thicknessM': None, 'offsetM': None, 'brickBaseH': None, 'woodBandH': None,
              'copingH': None, 'rearWindowM': None, 'rearDoorM': None},
     'instancesSource': None,
-    'targets': [{'id': None, 'module': None,
-                 'placement': {'positionGlb': None, 'rotationYRad': None},
+    'mBatchFrozen': None,
+    'targets': [{'id': None, 'module': None, 'centered': None,
+                 'placement': {'positionGlb': None, 'rotationYRad': None, 'yawRad': None},
                  'faces': [{'kind': None, 'rec': None, 'localBox': {'center': None, 'size': None},
-                            'offsetOverrideM': None, 'note': None}],
+                            'offsetOverrideM': None, 'tSign': None, 'endShrinkM': None, 'note': None}],
                  'note': None}],
 }
 
 
-FACE_OPTIONAL_KEYS = ('note', 'offsetOverrideM')
+FACE_OPTIONAL_KEYS = ('note', 'offsetOverrideM', 'tSign', 'endShrinkM')
+PLACEMENT_OPTIONAL_KEYS = ('yawRad', 'rotationYRad')
 
 
 def check_keys(obj, spec, path):
     problems = []
     if not isinstance(obj, dict):
         return [f'{path}: expected object']
-    optional = set(FACE_OPTIONAL_KEYS) if path.endswith('.faces[0]') else set()
+    optional = set()
+    if path.endswith('.faces[0]'):
+        optional |= set(FACE_OPTIONAL_KEYS)
+    if path.endswith('.placement'):
+        optional |= set(PLACEMENT_OPTIONAL_KEYS)
     extra = sorted(set(obj) - set(spec))
     missing = sorted((set(spec) - set(obj)) - optional)
     if extra:
@@ -122,10 +128,15 @@ face_reports = []
 
 
 def build_face(target, face):
-    """Build one face's skin in world coords; return (objects, collider, outward)."""
+    """Build one face's skin; return (objects, collider, outward).
+    CENTERED mode (target.centered=true): geometry at the box-local origin —
+    the dataset script computes per-instance transforms (obbToWorld semantics)."""
     mod = target['module']
-    pos = target['placement']['positionGlb']
-    yaw = target['placement']['rotationYRad']
+    centered = bool(target.get('centered'))
+    pos = target['placement']['positionGlb'] if not centered else [0, 0, 0]
+    yaw = target['placement'].get('rotationYRad', target['placement'].get('yawRad', 0.0))
+    if centered:
+        yaw = 0.0
     c, s = math.cos(yaw), math.sin(yaw)
     lx = (c, 0.0, -s)   # world direction of module-local +X (x, y, z)
     lz = (s, 0.0, c)    # world direction of module-local +Z
@@ -135,11 +146,11 @@ def build_face(target, face):
     # thickness axis = smallest horizontal dimension; length axis = the other
     t_axis = 0 if ls[0] <= ls[2] else 2
     l_axis = 2 - t_axis
-    out_sign = 1 if lc[t_axis] >= 0 else -1
+    out_sign = (face.get('tSign', 1) if centered else (1 if lc[t_axis] >= 0 else -1))
     hw = ls[t_axis] / 2
     y0, y1 = lc[1] - ls[1] / 2, lc[1] + ls[1] / 2
     length = ls[l_axis]
-    extra = face.get('offsetOverrideM', 0.0)
+    extra = face.get('offsetOverrideM') or 0.0
     t_out = lc[t_axis] + out_sign * (hw + OFF + extra + TH / 2)
     # outward direction in world (thickness axis, signed away from the module)
     if t_axis == 0:
@@ -159,24 +170,29 @@ def build_face(target, face):
         return C.obox(L, name, pos, lx, lz, cl, sz, mat, collision=collision, bevel=0)
 
     objs = []
+    # R1-05(A): skins die into the perpendicular walls — shrink the length axis
+    # 0.05 at each end so the slab never pokes into the neighbour's corner
+    # (side wall x band vs back wall overshoot). Guard: only for length > 1.
+    end_shrink = face.get('endShrinkM', 0.05)
+    length_c = length - 2 * end_shrink
+    l_center = lc[l_axis] if not centered else 0.0
     tmid = t_out
-    l_center = lc[l_axis]
     objs.append(el('skin-brick-base', tmid, l_center, y0 + sk['brickBaseH'] / 2,
-                   TH, length, sk['brickBaseH'], 'brick'))
+                   TH, length_c, sk['brickBaseH'], 'brick'))
     panel_top = y1 - sk['copingH'] - sk['woodBandH']
     objs.append(el('skin-plaster-panel', tmid, l_center, (y0 + sk['brickBaseH'] + panel_top) / 2,
-                   TH, length, panel_top - (y0 + sk['brickBaseH']), 'plaster'))
+                   TH, length_c, panel_top - (y0 + sk['brickBaseH']), 'plaster'))
     objs.append(el('skin-wood-band', tmid, l_center, y1 - sk['copingH'] - sk['woodBandH'] / 2,
-                   TH, length + 0.04, sk['woodBandH'], 'wood'))
+                   TH, length_c + 0.04, sk['woodBandH'], 'wood'))
     objs.append(el('skin-coping', tmid, l_center, y1 - sk['copingH'] / 2,
-                   TH, length + 0.1, sk['copingH'], 'roof'))
+                   TH, length_c + 0.1, sk['copingH'], 'roof'))
     if kind == 'rear':
         ww, wh, sill = sk['rearWindowM']
         dw, dh = sk['rearDoorM']
         face_z = tmid + out_sign * (TH / 2 + 0.012)
         wy = y0 + sill + wh / 2
-        wx_l = l_center - length * 0.2
-        dx_l = l_center + length * 0.2
+        wx_l = l_center - length_c * 0.2
+        dx_l = l_center + length_c * 0.2
         objs.append(el('skin-window-recess', face_z, wx_l, wy, 0.05, ww, wh, 'dark'))
         objs.append(el('skin-door-slab', face_z, dx_l, y0 + dh / 2, 0.05, dw, dh, 'dark'))
         for dyy in (y0 + sill - 0.04, y0 + sill + wh + 0.04):
@@ -188,7 +204,7 @@ def build_face(target, face):
         objs.append(el('skin-door-frame', face_z, dx_l, y0 + dh + 0.05, 0.06, dw + 0.16, 0.07, 'wood'))
         objs.append(el('skin-door-sill', face_z, dx_l, y0 + 0.04, 0.1, dw + 0.2, 0.08, 'stone'))
     # one thin-box collider for the whole face slab
-    col = el('skin-collider', tmid, l_center, (y0 + y1) / 2, TH, length, y1 - y0, 'plaster', collision=True)
+    col = el('skin-collider', tmid, l_center, (y0 + y1) / 2, TH, length_c, y1 - y0, 'plaster', collision=True)
     objs.append(col)
     return objs, outward
 
@@ -228,7 +244,7 @@ for target in cfg['targets']:
     if a.only and target['id'] != a.only:
         continue
     for face in target['faces']:
-        face_id = f"{target['module']}-{face['rec']}"
+        face_id = face['rec'] if target.get('centered') else f"{target['module']}-{face['rec']}"
         before_objs = set(bpy.context.scene.objects)
         objs, outward = build_face(target, face)
         new_objs = [o for o in bpy.context.scene.objects if o not in before_objs]

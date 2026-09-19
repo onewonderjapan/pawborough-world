@@ -1,0 +1,282 @@
+{
+  "sampleId": "gable-skins-full",
+  "family": "street-sideface-skins-full",
+  "units": "meters",
+  "axis": "CENTERED mode: geometry at wall-box local origin (box centered), tSign picks the outward side; instance transform computed by the dataset script",
+  "basedOn": "DESIGN_SPEC.json pawborough-v1-candidate-night-20260918 packageA_sideFacesFull",
+  "reference": {
+    "imageId": "PBR-SH-0007-G01/G02/G05/G06",
+    "referenceEra": "GEN inference images (notHistoricalEvidence); form direction only",
+    "historicalAccuracyVerified": false,
+    "dimensionsAreDesign": true
+  },
+  "skin": {
+    "thicknessM": 0.06,
+    "offsetM": 0.05,
+    "brickBaseH": 0.9,
+    "woodBandH": 0.12,
+    "copingH": 0.28,
+    "rearWindowM": [
+      0.6,
+      0.8,
+      1.8
+    ],
+    "rearDoorM": [
+      0.9,
+      2.0
+    ]
+  },
+  "instancesSource": "kit/out/sidefaces/plan-full.json instances[]",
+  "mBatchFrozen": [
+    "N01-plain-v1:side-w",
+    "N05-restaurant-a:side-e",
+    "N05-restaurant-a:rear",
+    "N06-curio-a:side-w",
+    "N06-curio-a:rear",
+    "S05-plain-v3:side-w",
+    "S05-plain-v3:rear",
+    "S07-plain-v2:side-e",
+    "S07-plain-v2:rear",
+    "east-shop-133:side-e"
+  ],
+  "targets": [
+    {
+      "id": "cs-10.15x7.20x0.28|rear|t-1",
+      "module": "east-shop-128",
+      "centered": true,
+      "placement": {
+        "positionGlb": [
+          0,
+          0,
+          0
+        ]
+      },
+      "faces": [
+        {
+          "kind": "rear",
+          "rec": "cs-10.15x7.20x0.28|rear|t-1",
+          "localBox": {
+            "center": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              10.15,
+              7.2,
+              0.28
+            ]
+          },
+          "tSign": -1,
+          "endShrinkM": 0.15,
+          "offsetOverrideM": null
+        }
+      ],
+      "note": "shared by 3 instance(s)"
+    },
+    {
+      "id": "cs-0.28x6.60x10.00|side-e|t1",
+      "module": "east-shop-128",
+      "centered": true,
+      "placement": {
+        "positionGlb": [
+          0,
+          0,
+          0
+        ]
+      },
+      "faces": [
+        {
+          "kind": "gable",
+          "rec": "cs-0.28x6.60x10.00|side-e|t1",
+          "localBox": {
+            "center": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              0.28,
+              6.6,
+              10
+            ]
+          },
+          "tSign": 1,
+          "endShrinkM": 0.3,
+          "offsetOverrideM": 0.03
+        }
+      ],
+      "note": "shared by 1 instance(s)"
+    },
+    {
+      "id": "cs-10.15x6.40x0.28|rear|t-1",
+      "module": "east-shop-129",
+      "centered": true,
+      "placement": {
+        "positionGlb": [
+          0,
+          0,
+          0
+        ]
+      },
+      "faces": [
+        {
+          "kind": "rear",
+          "rec": "cs-10.15x6.40x0.28|rear|t-1",
+          "localBox": {
+            "center": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              10.15,
+              6.4,
+              0.28
+            ]
+          },
+          "tSign": -1,
+          "endShrinkM": 0.15,
+          "offsetOverrideM": null
+        }
+      ],
+      "note": "shared by 3 instance(s)"
+    },
+    {
+      "id": "cs-0.28x5.80x11.00|side-e|t-1",
+      "module": "east-shop-129",
+      "centered": true,
+      "placement": {
+        "positionGlb": [
+          0,
+          0,
+          0
+        ]
+      },
+      "faces": [
+        {
+          "kind": "gable",
+          "rec": "cs-0.28x5.80x11.00|side-e|t-1",
+          "localBox": {
+            "center": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              0.28,
+              5.8,
+              11
+            ]
+          },
+          "tSign": -1,
+          "endShrinkM": 0.3,
+          "offsetOverrideM": 0.03
+        }
+      ],
+      "note": "shared by 1 instance(s)"
+    },
+    {
+      "id": "cs-0.28x6.60x12.00|side-e|t1",
+      "module": "east-shop-130",
+      "centered": true,
+      "placement": {
+        "positionGlb": [
+          0,
+          0,
+          0
+        ]
+      },
+      "faces": [
+        {
+          "kind": "gable",
+          "rec": "cs-0.28x6.60x12.00|side-e|t1",
+          "localBox": {
+            "center": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              0.28,
+              6.6,
+              12
+            ]
+          },
+          "tSign": 1,
+          "endShrinkM": 0.3,
+          "offsetOverrideM": 0.03
+        }
+      ],
+      "note": "shared by 1 instance(s)"
+    },
+    {
+      "id": "cs-0.28x5.80x13.00|side-e|t-1",
+      "module": "east-shop-131",
+      "centered": true,
+      "placement": {
+        "positionGlb": [
+          0,
+          0,
+          0
+        ]
+      },
+      "faces": [
+        {
+          "kind": "gable",
+          "rec": "cs-0.28x5.80x13.00|side-e|t-1",
+          "localBox": {
+            "center": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              0.28,
+              5.8,
+              13
+            ]
+          },
+          "tSign": -1,
+          "endShrinkM": 0.3,
+          "offsetOverrideM": 0.03
+        }
+      ],
+      "note": "shared by 1 instance(s)"
+    },
+    {
+      "id": "cs-0.28x5.80x10.00|side-e|t1",
+      "module": "east-shop-132",
+      "centered": true,
+      "placement": {
+        "positionGlb": [
+          0,
+          0,
+          0
+        ]
+      },
+      "faces": [
+        {
+          "kind": "gable",
+          "rec": "cs-0.28x5.80x10.00|side-e|t1",
+          "localBox": {
+            "center": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              0.28,
+              5.8,
+              10
+            ]
+          },
+          "tSign": 1,
+          "endShrinkM": 0.3,
+          "offsetOverrideM": 0.03
+        }
+      ],
+      "note": "shared by 1 instance(s)"
+    }
+  ]
+}

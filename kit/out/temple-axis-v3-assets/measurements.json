@@ -1,0 +1,58 @@
+{
+  "moduleId": "temple-entry-court",
+  "units": "meters",
+  "surveyed": false,
+  "axis": "world GLB Y-up (court authored in place, no instance transform)",
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false,
+  "targets": {
+    "entry-court-v3.glb": {
+      "groups": [
+        "temple-ground",
+        "entry-court"
+      ],
+      "objects": 7,
+      "triangles": 4192,
+      "fileBytes": 1469532,
+      "sha256": "b0b4d28b6a9f12928a142efd2a597234ba13e52a7f48ed788d436175dcbbf6f3"
+    }
+  },
+  "timings": {
+    "totalSeconds": 0.3
+  },
+  "budgets": {
+    "courtTris": {
+      "actual": 4192,
+      "limit": 12000,
+      "pass": true
+    }
+  },
+  "design": {
+    "contextNotSurvey": true,
+    "interior": {
+      "x": [
+        -8,
+        8
+      ],
+      "z": [
+        -21,
+        -3.6
+      ]
+    },
+    "walls": "inner faces at x +/-8 and the z=-3.6/-21 lines; heights 2.8 + coping 3.02",
+    "drains": [
+      [
+        -6.8,
+        0,
+        -8
+      ],
+      [
+        6.8,
+        0,
+        -17
+      ]
+    ],
+    "cutoff": "sample terminal wall (非历史殿宇), center (0,1.4,-29.2) 16x2.8x0.28",
+    "groundSeams": "flush adjoining; path 4mm proud; threshold 12mm at the yimen door"
+  }
+}

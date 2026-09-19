@@ -1,0 +1,708 @@
+{
+  "source": "kit/out/sidefaces/targets.json + delivered collision records",
+  "rule": "每条 visible 记录一件实例；east-shop 分段记录按侧并成整墙 union（基础带 offsetOverride 实测）；mural 排除；M 批 10 组合冻结；外皮 GLB 按 (本地尺寸,面型,tSign) 共享、盒中心为原点，实例变换=placement+localBox；端缩搜索解决墙角交接",
+  "surveyVisibleFaces": 119,
+  "wallCount": 52,
+  "skipped": [
+    {
+      "module": "east-shop-128",
+      "faceType": "side-w",
+      "record": "gable-wall-west-b0s0+gable-wall-west-b1s0+gable-wall-west-b1s1+gable-wall-west-b1s2+gable-wall-west-b2s0",
+      "reason": "still blocked by east-shop-128:gable-wall-west-b0s0 at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "east-shop-129",
+      "faceType": "side-w",
+      "record": "gable-wall-west-b0s0+gable-wall-west-b0s1+gable-wall-west-b1s0+gable-wall-west-b2s0+gable-wall-west-b2s1+gable-wall-west-b2s2+gable-wall-west-b3s0",
+      "reason": "still blocked by east-shop-129:gable-wall-west-b0s0 at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "east-shop-130",
+      "faceType": "side-w",
+      "record": "gable-wall-west-b0s0+gable-wall-west-b1s0+gable-wall-west-b1s1+gable-wall-west-b1s2+gable-wall-west-b2s0",
+      "reason": "still blocked by east-shop-130:gable-wall-west-b0s0 at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "east-shop-131",
+      "faceType": "side-w",
+      "record": "gable-wall-west-b0s0+gable-wall-west-b0s1+gable-wall-west-b1s0+gable-wall-west-b2s0+gable-wall-west-b2s1+gable-wall-west-b2s2+gable-wall-west-b3s0",
+      "reason": "still blocked by east-shop-131:gable-wall-west-b0s0 at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "east-shop-132",
+      "faceType": "side-w",
+      "record": "gable-wall-west-b0s0+gable-wall-west-b0s1+gable-wall-west-b1s0+gable-wall-west-b2s0+gable-wall-west-b2s1+gable-wall-west-b2s2+gable-wall-west-b3s0",
+      "reason": "still blocked by east-shop-132:gable-wall-west-b0s0 at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "east-shop-133",
+      "faceType": "side-w",
+      "record": "gable-wall-west-b0s0+gable-wall-west-b1s0+gable-wall-west-b1s1+gable-wall-west-b1s2+gable-wall-west-b2s0",
+      "reason": "still blocked by east-shop-133:gable-wall-west-b0s0 at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N01-plain-v1",
+      "faceType": "rear",
+      "record": "back-wall",
+      "reason": "still blocked by N01-plain-v1:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N01-plain-v1",
+      "faceType": "side-e",
+      "record": "right-side",
+      "reason": "still blocked by N01-plain-v1:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N02-pharmacy_shop",
+      "faceType": "rear",
+      "record": "back-wall",
+      "reason": "still blocked by N02-pharmacy_shop:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N02-pharmacy_shop",
+      "faceType": "side-w",
+      "record": "left-side",
+      "reason": "still blocked by N02-pharmacy_shop:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N02-pharmacy_shop",
+      "faceType": "side-e",
+      "record": "right-side",
+      "reason": "still blocked by N02-pharmacy_shop:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N03-cloth_shop",
+      "faceType": "rear",
+      "record": "back-wall",
+      "reason": "still blocked by N03-cloth_shop:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N03-cloth_shop",
+      "faceType": "side-w",
+      "record": "left-side",
+      "reason": "still blocked by N03-cloth_shop:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N03-cloth_shop",
+      "faceType": "side-e",
+      "record": "right-side",
+      "reason": "still blocked by N03-cloth_shop:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N04-dry_goods_shop",
+      "faceType": "side-w",
+      "record": "left-side-wall",
+      "reason": "still blocked by N04-dry_goods_shop:ground-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N04-dry_goods_shop",
+      "faceType": "rear",
+      "record": "rear-wall",
+      "reason": "still blocked by N04-dry_goods_shop:ground-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N04-dry_goods_shop",
+      "faceType": "side-e",
+      "record": "right-side-wall",
+      "reason": "still blocked by N04-dry_goods_shop:ground-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N05-restaurant-a",
+      "faceType": "side-w",
+      "record": "left-side",
+      "reason": "still blocked by N05-restaurant-a:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N06-curio-a",
+      "faceType": "side-e",
+      "record": "right-side",
+      "reason": "still blocked by N06-curio-a:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N08-plain-v2",
+      "faceType": "rear",
+      "record": "back-wall",
+      "reason": "still blocked by N08-plain-v2:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N08-plain-v2",
+      "faceType": "side-w",
+      "record": "left-side",
+      "reason": "still blocked by N08-plain-v2:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N08-plain-v2",
+      "faceType": "side-e",
+      "record": "right-side",
+      "reason": "still blocked by N08-plain-v2:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N09-curio-b",
+      "faceType": "rear",
+      "record": "back-wall",
+      "reason": "still blocked by N09-curio-b:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N09-curio-b",
+      "faceType": "side-w",
+      "record": "left-side",
+      "reason": "still blocked by N09-curio-b:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N09-curio-b",
+      "faceType": "side-e",
+      "record": "right-side",
+      "reason": "still blocked by N09-curio-b:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N10-plain-v3",
+      "faceType": "rear",
+      "record": "back-wall",
+      "reason": "still blocked by N10-plain-v3:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N10-plain-v3",
+      "faceType": "side-w",
+      "record": "left-side",
+      "reason": "still blocked by N10-plain-v3:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "N10-plain-v3",
+      "faceType": "side-e",
+      "record": "right-side",
+      "reason": "still blocked by N10-plain-v3:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "S01-corner",
+      "faceType": "rear",
+      "record": "back-wall",
+      "reason": "still blocked by S01-corner:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "S01-corner",
+      "faceType": "side-w",
+      "record": "left-side",
+      "reason": "still blocked by S01-corner:branch-parapet-wall at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "S02-photo_shop",
+      "faceType": "side-w",
+      "record": "left-side-wall",
+      "reason": "still blocked by S02-photo_shop:ground-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "S02-photo_shop",
+      "faceType": "rear",
+      "record": "rear-wall",
+      "reason": "still blocked by S02-photo_shop:ground-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "S02-photo_shop",
+      "faceType": "side-e",
+      "record": "right-side-wall",
+      "reason": "still blocked by S02-photo_shop:ground-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "S03-plain-v2",
+      "faceType": "rear",
+      "record": "back-wall",
+      "reason": "still blocked by S03-plain-v2:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "S03-plain-v2",
+      "faceType": "side-w",
+      "record": "left-side",
+      "reason": "still blocked by S03-plain-v2:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "S03-plain-v2",
+      "faceType": "side-e",
+      "record": "right-side",
+      "reason": "still blocked by S02-photo_shop:left-side-wall at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "S04-restaurant-b",
+      "faceType": "rear",
+      "record": "back-wall",
+      "reason": "still blocked by S04-restaurant-b:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "S04-restaurant-b",
+      "faceType": "side-w",
+      "record": "left-side",
+      "reason": "still blocked by S04-restaurant-b:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "S04-restaurant-b",
+      "faceType": "side-e",
+      "record": "right-side",
+      "reason": "still blocked by S03-plain-v2:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "S05-plain-v3",
+      "faceType": "side-e",
+      "record": "right-side",
+      "reason": "still blocked by S04-restaurant-b:shop-floor at 0.45m/end shrink — fallback #2"
+    },
+    {
+      "module": "S07-plain-v2",
+      "faceType": "side-w",
+      "record": "left-side",
+      "reason": "still blocked by S07-plain-v2:shop-floor at 0.45m/end shrink — fallback #2"
+    }
+  ],
+  "skippedCount": 41,
+  "instanceCount": 11,
+  "mBatchFrozen": [
+    "N01-plain-v1:side-w",
+    "N05-restaurant-a:side-e",
+    "N05-restaurant-a:rear",
+    "N06-curio-a:side-w",
+    "N06-curio-a:rear",
+    "S05-plain-v3:side-w",
+    "S05-plain-v3:rear",
+    "S07-plain-v2:side-e",
+    "S07-plain-v2:rear",
+    "east-shop-133:side-e"
+  ],
+  "uniqueSkinClasses": 7,
+  "classes": [
+    {
+      "skinId": "cs-10.15x7.20x0.28|rear|t-1",
+      "dims": [
+        10.15,
+        7.2,
+        0.28
+      ],
+      "faceType": "rear",
+      "tSign": -1,
+      "offsetOverride": null,
+      "endShrinkM": 0.15,
+      "count": 3,
+      "modules": [
+        "east-shop-128",
+        "east-shop-130",
+        "east-shop-133"
+      ]
+    },
+    {
+      "skinId": "cs-0.28x6.60x10.00|side-e|t1",
+      "dims": [
+        0.28,
+        6.6,
+        10
+      ],
+      "faceType": "side-e",
+      "tSign": 1,
+      "offsetOverride": 0.03,
+      "endShrinkM": 0.3,
+      "count": 1,
+      "modules": [
+        "east-shop-128"
+      ]
+    },
+    {
+      "skinId": "cs-10.15x6.40x0.28|rear|t-1",
+      "dims": [
+        10.15,
+        6.4,
+        0.28
+      ],
+      "faceType": "rear",
+      "tSign": -1,
+      "offsetOverride": null,
+      "endShrinkM": 0.15,
+      "count": 3,
+      "modules": [
+        "east-shop-129",
+        "east-shop-131",
+        "east-shop-132"
+      ]
+    },
+    {
+      "skinId": "cs-0.28x5.80x11.00|side-e|t-1",
+      "dims": [
+        0.28,
+        5.8,
+        11
+      ],
+      "faceType": "side-e",
+      "tSign": -1,
+      "offsetOverride": 0.03,
+      "endShrinkM": 0.3,
+      "count": 1,
+      "modules": [
+        "east-shop-129"
+      ]
+    },
+    {
+      "skinId": "cs-0.28x6.60x12.00|side-e|t1",
+      "dims": [
+        0.28,
+        6.6,
+        12
+      ],
+      "faceType": "side-e",
+      "tSign": 1,
+      "offsetOverride": 0.03,
+      "endShrinkM": 0.3,
+      "count": 1,
+      "modules": [
+        "east-shop-130"
+      ]
+    },
+    {
+      "skinId": "cs-0.28x5.80x13.00|side-e|t-1",
+      "dims": [
+        0.28,
+        5.8,
+        13
+      ],
+      "faceType": "side-e",
+      "tSign": -1,
+      "offsetOverride": 0.03,
+      "endShrinkM": 0.3,
+      "count": 1,
+      "modules": [
+        "east-shop-131"
+      ]
+    },
+    {
+      "skinId": "cs-0.28x5.80x10.00|side-e|t1",
+      "dims": [
+        0.28,
+        5.8,
+        10
+      ],
+      "faceType": "side-e",
+      "tSign": 1,
+      "offsetOverride": 0.03,
+      "endShrinkM": 0.3,
+      "count": 1,
+      "modules": [
+        "east-shop-132"
+      ]
+    }
+  ],
+  "instances": [
+    {
+      "module": "east-shop-128",
+      "record": "back-wall",
+      "faceType": "rear",
+      "skinId": "cs-10.15x7.20x0.28|rear|t-1",
+      "placement": {
+        "pos": [
+          97.66450990714537,
+          0,
+          17.734234931801197
+        ],
+        "yaw": -0.301652
+      },
+      "localBox": {
+        "center": [
+          0,
+          3.6,
+          -9.86
+        ],
+        "size": [
+          10.15,
+          7.2,
+          0.28
+        ]
+      },
+      "tSign": -1,
+      "endShrinkM": 0.15,
+      "offsetOverride": null
+    },
+    {
+      "module": "east-shop-128",
+      "record": "gable-wall-east-b0s0",
+      "faceType": "side-e",
+      "skinId": "cs-0.28x6.60x10.00|side-e|t1",
+      "placement": {
+        "pos": [
+          97.66450990714537,
+          0,
+          17.734234931801197
+        ],
+        "yaw": -0.301652
+      },
+      "localBox": {
+        "center": [
+          5.21,
+          3.9,
+          -5
+        ],
+        "size": [
+          0.28,
+          6.6,
+          10
+        ]
+      },
+      "tSign": 1,
+      "endShrinkM": 0.3,
+      "offsetOverride": 0.03
+    },
+    {
+      "module": "east-shop-129",
+      "record": "back-wall",
+      "faceType": "rear",
+      "skinId": "cs-10.15x6.40x0.28|rear|t-1",
+      "placement": {
+        "pos": [
+          95.7340372829119,
+          0,
+          23.93834100897118
+        ],
+        "yaw": 2.839941
+      },
+      "localBox": {
+        "center": [
+          0,
+          3.2,
+          -10.86
+        ],
+        "size": [
+          10.15,
+          6.4,
+          0.28
+        ]
+      },
+      "tSign": -1,
+      "endShrinkM": 0.15,
+      "offsetOverride": null
+    },
+    {
+      "module": "east-shop-129",
+      "record": "gable-wall-east-b0s0",
+      "faceType": "side-e",
+      "skinId": "cs-0.28x5.80x11.00|side-e|t-1",
+      "placement": {
+        "pos": [
+          95.7340372829119,
+          0,
+          23.93834100897118
+        ],
+        "yaw": 2.839941
+      },
+      "localBox": {
+        "center": [
+          -5.21,
+          3.5,
+          -5.5
+        ],
+        "size": [
+          0.28,
+          5.8,
+          11
+        ]
+      },
+      "tSign": -1,
+      "endShrinkM": 0.3,
+      "offsetOverride": 0.03
+    },
+    {
+      "module": "east-shop-130",
+      "record": "back-wall",
+      "faceType": "rear",
+      "skinId": "cs-10.15x7.20x0.28|rear|t-1",
+      "placement": {
+        "pos": [
+          109.78575716044992,
+          0,
+          22.102845323533415
+        ],
+        "yaw": -0.22938
+      },
+      "localBox": {
+        "center": [
+          0,
+          3.6,
+          -11.86
+        ],
+        "size": [
+          10.15,
+          7.2,
+          0.28
+        ]
+      },
+      "tSign": -1,
+      "endShrinkM": 0.15,
+      "offsetOverride": null
+    },
+    {
+      "module": "east-shop-130",
+      "record": "gable-wall-east-b0s0",
+      "faceType": "side-e",
+      "skinId": "cs-0.28x6.60x12.00|side-e|t1",
+      "placement": {
+        "pos": [
+          109.78575716044992,
+          0,
+          22.102845323533415
+        ],
+        "yaw": -0.22938
+      },
+      "localBox": {
+        "center": [
+          5.21,
+          3.9,
+          -6
+        ],
+        "size": [
+          0.28,
+          6.6,
+          12
+        ]
+      },
+      "tSign": 1,
+      "endShrinkM": 0.3,
+      "offsetOverride": 0.03
+    },
+    {
+      "module": "east-shop-131",
+      "record": "back-wall",
+      "faceType": "rear",
+      "skinId": "cs-10.15x6.40x0.28|rear|t-1",
+      "placement": {
+        "pos": [
+          108.75792755015615,
+          0,
+          26.4802503875359
+        ],
+        "yaw": 2.912213
+      },
+      "localBox": {
+        "center": [
+          0,
+          3.2,
+          -12.86
+        ],
+        "size": [
+          10.15,
+          6.4,
+          0.28
+        ]
+      },
+      "tSign": -1,
+      "endShrinkM": 0.15,
+      "offsetOverride": null
+    },
+    {
+      "module": "east-shop-131",
+      "record": "gable-wall-east-b0s0",
+      "faceType": "side-e",
+      "skinId": "cs-0.28x5.80x13.00|side-e|t-1",
+      "placement": {
+        "pos": [
+          108.75792755015615,
+          0,
+          26.4802503875359
+        ],
+        "yaw": 2.912213
+      },
+      "localBox": {
+        "center": [
+          -5.21,
+          3.5,
+          -6.5
+        ],
+        "size": [
+          0.28,
+          5.8,
+          13
+        ]
+      },
+      "tSign": -1,
+      "endShrinkM": 0.3,
+      "offsetOverride": 0.03
+    },
+    {
+      "module": "east-shop-132",
+      "record": "back-wall",
+      "faceType": "rear",
+      "skinId": "cs-10.15x6.40x0.28|rear|t-1",
+      "placement": {
+        "pos": [
+          121.69313096704158,
+          0,
+          23.859037769611177
+        ],
+        "yaw": -0.22938
+      },
+      "localBox": {
+        "center": [
+          0,
+          3.2,
+          -9.86
+        ],
+        "size": [
+          10.15,
+          6.4,
+          0.28
+        ]
+      },
+      "tSign": -1,
+      "endShrinkM": 0.15,
+      "offsetOverride": null
+    },
+    {
+      "module": "east-shop-132",
+      "record": "gable-wall-east-b0s0",
+      "faceType": "side-e",
+      "skinId": "cs-0.28x5.80x10.00|side-e|t1",
+      "placement": {
+        "pos": [
+          121.69313096704158,
+          0,
+          23.859037769611177
+        ],
+        "yaw": -0.22938
+      },
+      "localBox": {
+        "center": [
+          5.21,
+          3.5,
+          -5
+        ],
+        "size": [
+          0.28,
+          5.8,
+          10
+        ]
+      },
+      "tSign": 1,
+      "endShrinkM": 0.3,
+      "offsetOverride": 0.03
+    },
+    {
+      "module": "east-shop-133",
+      "record": "back-wall",
+      "faceType": "rear",
+      "skinId": "cs-10.15x7.20x0.28|rear|t-1",
+      "placement": {
+        "pos": [
+          120.22055408090135,
+          0,
+          30.184058020222682
+        ],
+        "yaw": 2.912213
+      },
+      "localBox": {
+        "center": [
+          0,
+          3.6,
+          -10.86
+        ],
+        "size": [
+          10.15,
+          7.2,
+          0.28
+        ]
+      },
+      "tSign": -1,
+      "endShrinkM": 0.15,
+      "offsetOverride": null
+    }
+  ]
+}

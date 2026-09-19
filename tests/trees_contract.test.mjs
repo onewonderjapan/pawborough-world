@@ -1,0 +1,102 @@
+// D3 trees contract — the camphor module AND its 4 dataset instances: budgets,
+// canopy-bottom clearance, foliage material with zero images, collision
+// clearance vs every other collider, route-corridor clearance.
+//
+// Run: node tests/trees_contract.test.mjs
+import { readFile } from 'node:fs/promises';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import validator from 'gltf-validator';
+import { readGlb } from '../src/world/glbReader.js';
+
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const KIT = resolve(root, 'kit/out/tree-camphor');
+const DS = resolve(root, 'world/temple-axis-v3');
+let failures = 0;
+const check = (name, cond, detail = '') => {
+  console.log(`${cond ? 'ok  ' : 'FAIL'} ${name}${detail ? '  -- ' + detail : ''}`);
+  if (!cond) failures += 1;
+};
+
+// T1 — the module GLB
+{
+  const bytes = await readFile(resolve(KIT, 'tree-camphor.glb'));
+  const report = await validator.validateBytes(new Uint8Array(bytes), { maxIssues: 20 });
+  check('T1: tree-camphor.glb validator 0 errors', (report.issues.numErrors ?? 0) === 0,
+    `${report.issues.numErrors}e/${report.issues.numWarnings}w`);
+  const glb = readGlb(bytes);
+  check('T1: triangles within the 2600 budget', glb.totalTriangles <= 2600,
+    `${glb.totalTriangles}`);
+  const mats = glb.gltf.materials ?? [];
+  check('T1: foliage material present with no texture',
+    (glb.gltf.materials ?? []).some((m) => m.name === 'foliage')
+    && (glb.gltf.images ?? []).every((img) => /wood/i.test(img.name ?? '')),
+    `images: ${(glb.gltf.images ?? []).map((i) => i.name).join(',') || 'none'}`);
+  // canopy bottom: no foliage vertex below y 2.99 (contract >= 3.0)
+  const foliage = glb.meshes.filter((mesh) => /foliage/.test(mesh.name));
+  check('T1: foliage mesh present', foliage.length >= 1);
+  let minY = 1e9;
+  for (const mesh of foliage) minY = Math.min(minY, ...mesh.positions.filter((_, i) => i % 3 === 1));
+  check('T1: canopy bottom >= 3.0 (vertex level)', minY >= 2.99, `minY ${minY.toFixed(4)}`);
+  const trunk = JSON.parse(await readFile(resolve(KIT, 'collision.json'), 'utf8'))
+    .colliders.find((c) => c.name === 'tree-trunk-block');
+  check('T1: trunk collision box 0.5 x 2.8 x 0.5', !!trunk
+    && trunk.obb.size.every((v, i) => Math.abs(v - [0.5, 2.8, 0.5][i]) < 1e-6),
+    trunk ? JSON.stringify(trunk.obb.size) : 'missing');
+}
+
+// T2 — dataset instances + clearances (against the REAL assembled world)
+{
+  const instances = JSON.parse(await readFile(resolve(DS, 'instances.json'), 'utf8'));
+  const manifest = JSON.parse(await readFile(resolve(DS, 'review-manifest.json'), 'utf8'));
+  const collision = JSON.parse(await readFile(resolve(DS, 'collision-world.json'), 'utf8'));
+  const route = JSON.parse(await readFile(resolve(DS, 'route.json'), 'utf8'));
+  const at = manifest.assets.tree.instancesAt ?? {};
+  const ids = Object.keys(at);
+  check('T2: exactly 4 tree instances', ids.length === 4, ids.join(','));
+  for (const id of ids) {
+    const inst = instances.instances.find((i) => i.id === id);
+    check(`T2: ${id} instanced at its manifest position`, !!inst
+      && inst.positionGlb.every((v, i) => Math.abs(v - at[id][i]) < 1e-9),
+      inst ? `${inst.positionGlb}` : 'missing');
+  }
+  // trunk vs every other collider: >= 0.6 gap (2D, colliders reaching y<3)
+  let worst = { d: 1e9, pair: '' };
+  for (const id of ids) {
+    const mine = collision.colliders.find((c) => c.name === `${id}:tree-trunk-block`);
+    if (!mine) { check(`T2: ${id} trunk collider present in the world`, false); continue; }
+    for (const c of collision.colliders) {
+      if (c.name.startsWith(`${id}:`) || c.name.startsWith('court:incense-road')) continue;
+      if (c.max[1] <= 0.05 || c.min[1] >= 3.0) continue;
+      const dx = Math.max(c.min[0] - mine.max[0], mine.min[0] - c.max[0], 0);
+      const dz = Math.max(c.min[2] - mine.max[2], mine.min[2] - c.max[2], 0);
+      const d = Math.hypot(dx, dz);
+      if (d < worst.d) worst = { d, pair: `${id} <-> ${c.name}` };
+    }
+  }
+  check('T2: trunk >= 0.6 from every other collider', worst.d >= 0.6 - 1e-9,
+    `${worst.pair} d=${worst.d.toFixed(3)}`);
+  // route corridor: trunk center >= 1.75 from the polyline
+  const dist = (x, z) => {
+    let best = 1e9;
+    for (let k = 1; k < route.mainStreet.length; k++) {
+      const a = route.mainStreet[k - 1], b = route.mainStreet[k];
+      const dx = b[0] - a[0], dz = b[2] - a[2];
+      const t = Math.max(0, Math.min(1, ((x - a[0]) * dx + (z - a[2]) * dz) / (dx * dx + dz * dz)));
+      best = Math.min(best, Math.hypot(x - (a[0] + dx * t), z - (a[2] + dz * t)));
+    }
+    return best;
+  };
+  for (const id of ids) {
+    const d = dist(at[id][0], at[id][2]);
+    check(`T2: ${id} outside the route corridor (>= 1.75)`, d >= 1.75, `${d.toFixed(2)}`);
+  }
+  // placement shifts recorded (fallback #2 evidence) and within 1.0 m
+  for (const s of (manifest.placementShifts ?? [])) {
+    check(`T2: ${s.tree} fallback-#2 shift within 1.0 m`, s.shiftedBy <= 1.0,
+      `${s.shiftedBy} m, new dist ${s.newDistanceToRoute}`);
+  }
+}
+
+console.log(failures === 0 ? '\nTREES_CONTRACT PASS' : `\nTREES_CONTRACT FAIL (${failures})`);
+process.exit(failures === 0 ? 0 : 1);

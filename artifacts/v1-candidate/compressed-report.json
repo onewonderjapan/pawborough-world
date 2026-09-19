@@ -1,0 +1,1330 @@
+{
+  "tool": "tools/build_compressed_dist.mjs",
+  "codec": "gltfpack (N4 toolchain aarch64) -cc -kn: EXT_meshopt_compression + KHR_mesh_quantization; node names kept; textures untouched (N4: KTX2 no byte advantage, UASTC +188%)",
+  "glbCount": 185,
+  "failures": 0,
+  "originalBytes": 314362432,
+  "compressedBytes": 168769716,
+  "ratio": 0.537,
+  "budget": {
+    "compressedDistBytesMax": "0.6 of original",
+    "pass": true
+  },
+  "perFile": [
+    {
+      "file": "building/cat_corner/model.glb",
+      "original": 1580852,
+      "compressed": 1298936,
+      "ratio": 0.822,
+      "mode": "quantized"
+    },
+    {
+      "file": "building/cloth_shop/model.glb",
+      "original": 2222268,
+      "compressed": 1208904,
+      "ratio": 0.544,
+      "mode": "quantized"
+    },
+    {
+      "file": "building/corner/model.glb",
+      "original": 2146508,
+      "compressed": 1190916,
+      "ratio": 0.555,
+      "mode": "quantized"
+    },
+    {
+      "file": "building/curio-a/model.glb",
+      "original": 1972556,
+      "compressed": 1174568,
+      "ratio": 0.595,
+      "mode": "quantized"
+    },
+    {
+      "file": "building/curio-b/model.glb",
+      "original": 1953600,
+      "compressed": 1172216,
+      "ratio": 0.6,
+      "mode": "quantized"
+    },
+    {
+      "file": "building/dry_goods_shop/model.glb",
+      "original": 3562760,
+      "compressed": 1820968,
+      "ratio": 0.511,
+      "mode": "quantized"
+    },
+    {
+      "file": "building/pharmacy_shop/model.glb",
+      "original": 3679732,
+      "compressed": 1321304,
+      "ratio": 0.359,
+      "mode": "quantized"
+    },
+    {
+      "file": "building/photo_shop/model.glb",
+      "original": 4105324,
+      "compressed": 1788036,
+      "ratio": 0.436,
+      "mode": "quantized"
+    },
+    {
+      "file": "building/plain-v1/model.glb",
+      "original": 1953264,
+      "compressed": 1166376,
+      "ratio": 0.597,
+      "mode": "quantized"
+    },
+    {
+      "file": "building/plain-v2/model.glb",
+      "original": 1863044,
+      "compressed": 1154320,
+      "ratio": 0.62,
+      "mode": "quantized"
+    },
+    {
+      "file": "building/plain-v3/model.glb",
+      "original": 1495532,
+      "compressed": 885496,
+      "ratio": 0.592,
+      "mode": "quantized"
+    },
+    {
+      "file": "building/restaurant-a/model.glb",
+      "original": 2146768,
+      "compressed": 1199276,
+      "ratio": 0.559,
+      "mode": "quantized"
+    },
+    {
+      "file": "building/restaurant-b/model.glb",
+      "original": 2147344,
+      "compressed": 1199264,
+      "ratio": 0.558,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/east-edge/east-shop-128/model.glb",
+      "original": 1727716,
+      "compressed": 984980,
+      "ratio": 0.57,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/east-edge/east-shop-129/model.glb",
+      "original": 1722592,
+      "compressed": 983840,
+      "ratio": 0.571,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple-v2/temple-axis/court-open.glb",
+      "original": 1145928,
+      "compressed": 974328,
+      "ratio": 0.85,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/fangbang-temple-v2/temple-axis/court3.glb",
+      "original": 1634368,
+      "compressed": 1116816,
+      "ratio": 0.683,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/fangbang-temple-v2/temple-axis/dadian-court-v2.glb",
+      "original": 1353280,
+      "compressed": 991548,
+      "ratio": 0.733,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/fangbang-temple-v2/temple-axis/dadian.glb",
+      "original": 6295144,
+      "compressed": 1722548,
+      "ratio": 0.274,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple-v2/temple-axis/gallery.glb",
+      "original": 490812,
+      "compressed": 380176,
+      "ratio": 0.775,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/fangbang-temple-v2/temple-axis/ground.glb",
+      "original": 860916,
+      "compressed": 820952,
+      "ratio": 0.954,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/fangbang-temple-v2/temple-axis/houdian.glb",
+      "original": 2702268,
+      "compressed": 1086544,
+      "ratio": 0.402,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/fangbang-temple-v2/temple-axis/lions.glb",
+      "original": 440156,
+      "compressed": 46532,
+      "ratio": 0.106,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple-v2/temple-axis/ornaments.glb",
+      "original": 437144,
+      "compressed": 184656,
+      "ratio": 0.422,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple-v2/temple-axis/peidian.glb",
+      "original": 2075332,
+      "compressed": 996376,
+      "ratio": 0.48,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/fangbang-temple-v2/temple-axis/temple.glb",
+      "original": 3782256,
+      "compressed": 1371936,
+      "ratio": 0.363,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple-v2/temple-axis/yimen-stage.glb",
+      "original": 1283532,
+      "compressed": 496064,
+      "ratio": 0.386,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple-v2/temple-axis/yimen.glb",
+      "original": 4343252,
+      "compressed": 1507320,
+      "ratio": 0.347,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple-v2/west-extension/forecourt-bounds.glb",
+      "original": 4020,
+      "compressed": 2156,
+      "ratio": 0.536,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple-v2/west-extension/seal-wall.glb",
+      "original": 2804,
+      "compressed": 2064,
+      "ratio": 0.736,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple-v2/west-extension/surface.glb",
+      "original": 1308304,
+      "compressed": 917520,
+      "ratio": 0.701,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/fangbang-temple-v3/temple-axis/court-open.glb",
+      "original": 1145928,
+      "compressed": 974328,
+      "ratio": 0.85,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/fangbang-temple-v3/temple-axis/court3.glb",
+      "original": 1634368,
+      "compressed": 1116816,
+      "ratio": 0.683,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/fangbang-temple-v3/temple-axis/dadian-court-v2.glb",
+      "original": 1353280,
+      "compressed": 991548,
+      "ratio": 0.733,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/fangbang-temple-v3/temple-axis/dadian.glb",
+      "original": 6295144,
+      "compressed": 1722548,
+      "ratio": 0.274,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple-v3/temple-axis/gallery.glb",
+      "original": 490812,
+      "compressed": 380176,
+      "ratio": 0.775,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/fangbang-temple-v3/temple-axis/ground.glb",
+      "original": 860916,
+      "compressed": 820952,
+      "ratio": 0.954,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/fangbang-temple-v3/temple-axis/houdian.glb",
+      "original": 2702268,
+      "compressed": 1086544,
+      "ratio": 0.402,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/fangbang-temple-v3/temple-axis/lions.glb",
+      "original": 440156,
+      "compressed": 46532,
+      "ratio": 0.106,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple-v3/temple-axis/ornaments.glb",
+      "original": 437144,
+      "compressed": 184656,
+      "ratio": 0.422,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple-v3/temple-axis/peidian.glb",
+      "original": 2075332,
+      "compressed": 996376,
+      "ratio": 0.48,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/fangbang-temple-v3/temple-axis/temple.glb",
+      "original": 3782256,
+      "compressed": 1371936,
+      "ratio": 0.363,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple-v3/temple-axis/yimen-stage.glb",
+      "original": 1283532,
+      "compressed": 496064,
+      "ratio": 0.386,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple-v3/temple-axis/yimen.glb",
+      "original": 4343252,
+      "compressed": 1507320,
+      "ratio": 0.347,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple-v3/west-extension/forecourt-bounds.glb",
+      "original": 4020,
+      "compressed": 2156,
+      "ratio": 0.536,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple-v3/west-extension/seal-wall.glb",
+      "original": 2804,
+      "compressed": 2064,
+      "ratio": 0.736,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple-v3/west-extension/surface.glb",
+      "original": 1308304,
+      "compressed": 917520,
+      "ratio": 0.701,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/fangbang-temple-v3/westshops-strips.glb",
+      "original": 10308,
+      "compressed": 6092,
+      "ratio": 0.591,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple/temple-axis/court-open.glb",
+      "original": 1145928,
+      "compressed": 974328,
+      "ratio": 0.85,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/fangbang-temple/temple-axis/dadian-court.glb",
+      "original": 1446932,
+      "compressed": 1002196,
+      "ratio": 0.693,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/fangbang-temple/temple-axis/dadian.glb",
+      "original": 6295144,
+      "compressed": 1722548,
+      "ratio": 0.274,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple/temple-axis/ground.glb",
+      "original": 860916,
+      "compressed": 820952,
+      "ratio": 0.954,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/fangbang-temple/temple-axis/lions.glb",
+      "original": 440156,
+      "compressed": 46532,
+      "ratio": 0.106,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple/temple-axis/ornaments.glb",
+      "original": 437144,
+      "compressed": 184656,
+      "ratio": 0.422,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple/temple-axis/temple.glb",
+      "original": 3782256,
+      "compressed": 1371936,
+      "ratio": 0.363,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple/temple-axis/yimen.glb",
+      "original": 4343252,
+      "compressed": 1507320,
+      "ratio": 0.347,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple/west-extension/forecourt-bounds.glb",
+      "original": 4020,
+      "compressed": 2156,
+      "ratio": 0.536,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple/west-extension/seal-wall.glb",
+      "original": 2804,
+      "compressed": 2064,
+      "ratio": 0.736,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/fangbang-temple/west-extension/surface.glb",
+      "original": 1308304,
+      "compressed": 917520,
+      "ratio": 0.701,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/laneb/laneb.glb",
+      "original": 21060768,
+      "compressed": 5289768,
+      "ratio": 0.251,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/street-completion/east-shop-130/model.glb",
+      "original": 1751412,
+      "compressed": 987524,
+      "ratio": 0.564,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-completion/east-shop-131/model.glb",
+      "original": 1742588,
+      "compressed": 985428,
+      "ratio": 0.565,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-completion/east-shop-132/model.glb",
+      "original": 1793052,
+      "compressed": 997396,
+      "ratio": 0.556,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-completion/east-shop-133/model.glb",
+      "original": 1755416,
+      "compressed": 988824,
+      "ratio": 0.563,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-completion/surface.glb",
+      "original": 985560,
+      "compressed": 891276,
+      "ratio": 0.904,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/street-kit.glb",
+      "original": 3556168,
+      "compressed": 2439840,
+      "ratio": 0.686,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/street-reviewed.glb",
+      "original": 20571620,
+      "compressed": 5209408,
+      "ratio": 0.253,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/street-sidefaces/skins/N01-plain-v1-left-side.glb",
+      "original": 782760,
+      "compressed": 779888,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/N05-restaurant-a-back-wall.glb",
+      "original": 804260,
+      "compressed": 789996,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/N05-restaurant-a-right-side.glb",
+      "original": 782748,
+      "compressed": 779916,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/N06-curio-a-back-wall.glb",
+      "original": 804276,
+      "compressed": 790008,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/N06-curio-a-left-side.glb",
+      "original": 782840,
+      "compressed": 779904,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/S05-plain-v3-back-wall.glb",
+      "original": 804216,
+      "compressed": 789920,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/S05-plain-v3-left-side.glb",
+      "original": 782768,
+      "compressed": 779820,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/S07-plain-v2-back-wall.glb",
+      "original": 804220,
+      "compressed": 789872,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/S07-plain-v2-right-side.glb",
+      "original": 782768,
+      "compressed": 779796,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x5.20x3.70|side-e.glb",
+      "original": 782432,
+      "compressed": 779628,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x5.20x3.70|side-e|t1.glb",
+      "original": 782440,
+      "compressed": 779624,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x5.20x3.70|side-w.glb",
+      "original": 782432,
+      "compressed": 779628,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x5.20x3.70|side-w|t-1.glb",
+      "original": 782444,
+      "compressed": 779628,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x5.80x10.00|side-e.glb",
+      "original": 782236,
+      "compressed": 779536,
+      "ratio": 0.997,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x5.80x10.00|side-e|t1.glb",
+      "original": 782304,
+      "compressed": 779568,
+      "ratio": 0.997,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x5.80x10.00|side-w.glb",
+      "original": 782236,
+      "compressed": 779536,
+      "ratio": 0.997,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x5.80x10.00|side-w|t-1.glb",
+      "original": 782300,
+      "compressed": 779532,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x5.80x11.00|side-e.glb",
+      "original": 782248,
+      "compressed": 779592,
+      "ratio": 0.997,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x5.80x11.00|side-e|t-1.glb",
+      "original": 782308,
+      "compressed": 779560,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x5.80x11.00|side-w.glb",
+      "original": 782248,
+      "compressed": 779592,
+      "ratio": 0.997,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x5.80x11.00|side-w|t1.glb",
+      "original": 782300,
+      "compressed": 779548,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x5.80x13.00|side-e.glb",
+      "original": 782248,
+      "compressed": 779564,
+      "ratio": 0.997,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x5.80x13.00|side-e|t-1.glb",
+      "original": 782308,
+      "compressed": 779552,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x5.80x13.00|side-w.glb",
+      "original": 782248,
+      "compressed": 779564,
+      "ratio": 0.997,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x5.80x13.00|side-w|t1.glb",
+      "original": 782300,
+      "compressed": 779512,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.40x4.30|side-e.glb",
+      "original": 782420,
+      "compressed": 779600,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.40x4.30|side-e|t1.glb",
+      "original": 782420,
+      "compressed": 779596,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.40x4.30|side-w.glb",
+      "original": 782420,
+      "compressed": 779600,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.40x4.30|side-w|t-1.glb",
+      "original": 782424,
+      "compressed": 779604,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.60x10.00|side-e.glb",
+      "original": 782264,
+      "compressed": 779540,
+      "ratio": 0.997,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.60x10.00|side-e|t1.glb",
+      "original": 782332,
+      "compressed": 779572,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.60x10.00|side-w.glb",
+      "original": 782264,
+      "compressed": 779540,
+      "ratio": 0.997,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.60x10.00|side-w|t-1.glb",
+      "original": 782332,
+      "compressed": 779540,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.60x11.00|side-w.glb",
+      "original": 782276,
+      "compressed": 779588,
+      "ratio": 0.997,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.60x11.00|side-w|t1.glb",
+      "original": 782328,
+      "compressed": 779560,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.60x12.00|side-e.glb",
+      "original": 782264,
+      "compressed": 779556,
+      "ratio": 0.997,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.60x12.00|side-e|t1.glb",
+      "original": 782332,
+      "compressed": 779540,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.60x12.00|side-w.glb",
+      "original": 782264,
+      "compressed": 779556,
+      "ratio": 0.997,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.60x12.00|side-w|t-1.glb",
+      "original": 782332,
+      "compressed": 779552,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.60x5.20|side-e.glb",
+      "original": 782436,
+      "compressed": 779648,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.60x5.20|side-e|t1.glb",
+      "original": 782432,
+      "compressed": 779636,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.60x5.20|side-w.glb",
+      "original": 782436,
+      "compressed": 779648,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.60x5.20|side-w|t-1.glb",
+      "original": 782436,
+      "compressed": 779640,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.80x6.40|side-e.glb",
+      "original": 782376,
+      "compressed": 779596,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.80x6.40|side-e|t1.glb",
+      "original": 782408,
+      "compressed": 779588,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.80x6.40|side-w.glb",
+      "original": 782376,
+      "compressed": 779596,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x6.80x6.40|side-w|t-1.glb",
+      "original": 782412,
+      "compressed": 779592,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x7.40x7.20|side-w.glb",
+      "original": 782420,
+      "compressed": 779596,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x7.40x7.20|side-w|t-1.glb",
+      "original": 782420,
+      "compressed": 779616,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x7.70x6.70|side-e.glb",
+      "original": 782436,
+      "compressed": 779612,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x7.70x6.70|side-e|t1.glb",
+      "original": 782432,
+      "compressed": 779612,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x7.70x6.70|side-w.glb",
+      "original": 782436,
+      "compressed": 779612,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x7.70x6.70|side-w|t-1.glb",
+      "original": 782436,
+      "compressed": 779616,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x7.90x7.00|side-e.glb",
+      "original": 782328,
+      "compressed": 779632,
+      "ratio": 0.997,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x7.90x7.00|side-e|t1.glb",
+      "original": 782384,
+      "compressed": 779568,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x7.90x7.00|side-w.glb",
+      "original": 782328,
+      "compressed": 779632,
+      "ratio": 0.997,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x7.90x7.00|side-w|t-1.glb",
+      "original": 782388,
+      "compressed": 779572,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x8.00x7.00|side-e.glb",
+      "original": 782312,
+      "compressed": 779548,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x8.00x7.00|side-e|t1.glb",
+      "original": 782368,
+      "compressed": 779524,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x8.00x7.00|side-w.glb",
+      "original": 782312,
+      "compressed": 779548,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.28x8.00x7.00|side-w|t-1.glb",
+      "original": 782376,
+      "compressed": 779532,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.30x6.50x5.80|side-w.glb",
+      "original": 782416,
+      "compressed": 779604,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-0.30x6.50x5.80|side-w|t-1.glb",
+      "original": 782384,
+      "compressed": 779588,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-10.15x6.40x0.28|rear.glb",
+      "original": 803368,
+      "compressed": 789228,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-10.15x6.40x0.28|rear|t-1.glb",
+      "original": 803412,
+      "compressed": 789312,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-10.15x6.80x0.28|rear.glb",
+      "original": 803412,
+      "compressed": 789220,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-10.15x6.80x0.28|rear|t-1.glb",
+      "original": 803432,
+      "compressed": 789324,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-10.15x7.20x0.28|rear.glb",
+      "original": 803396,
+      "compressed": 789236,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-10.15x7.20x0.28|rear|t-1.glb",
+      "original": 803440,
+      "compressed": 789336,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-10.75x7.90x0.28|rear.glb",
+      "original": 803328,
+      "compressed": 789292,
+      "ratio": 0.983,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-10.75x7.90x0.28|rear|t-1.glb",
+      "original": 803384,
+      "compressed": 789244,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-11.45x6.80x0.28|rear.glb",
+      "original": 803440,
+      "compressed": 789260,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-11.45x6.80x0.28|rear|t-1.glb",
+      "original": 803452,
+      "compressed": 789296,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-5.04x6.40x0.28|rear.glb",
+      "original": 803404,
+      "compressed": 789244,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-5.04x6.40x0.28|rear|t-1.glb",
+      "original": 803420,
+      "compressed": 789268,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-5.34x5.20x0.28|rear.glb",
+      "original": 803472,
+      "compressed": 789364,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-5.34x5.20x0.28|rear|t-1.glb",
+      "original": 803484,
+      "compressed": 789416,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-5.65x6.60x0.28|rear.glb",
+      "original": 803428,
+      "compressed": 789244,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-5.65x6.60x0.28|rear|t-1.glb",
+      "original": 803472,
+      "compressed": 789388,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-7.05x7.70x0.28|rear.glb",
+      "original": 803452,
+      "compressed": 789344,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-7.05x7.70x0.28|rear|t-1.glb",
+      "original": 803488,
+      "compressed": 789328,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-7.25x8.00x0.28|rear.glb",
+      "original": 803312,
+      "compressed": 789128,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-7.25x8.00x0.28|rear|t-1.glb",
+      "original": 803376,
+      "compressed": 789120,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-9.55x7.40x0.28|rear.glb",
+      "original": 803380,
+      "compressed": 789300,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/cs-9.55x7.40x0.28|rear|t-1.glb",
+      "original": 803416,
+      "compressed": 789308,
+      "ratio": 0.982,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street-sidefaces/skins/east-shop-133-gable-wall-east-b0s0.glb",
+      "original": 782732,
+      "compressed": 779816,
+      "ratio": 0.996,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/street.glb",
+      "original": 20504868,
+      "compressed": 4680608,
+      "ratio": 0.228,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/temple-axis-v2/court-open.glb",
+      "original": 1145928,
+      "compressed": 974328,
+      "ratio": 0.85,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/temple-axis-v2/court3.glb",
+      "original": 1634368,
+      "compressed": 1116816,
+      "ratio": 0.683,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/temple-axis-v2/dadian-court-v2.glb",
+      "original": 1353280,
+      "compressed": 991548,
+      "ratio": 0.733,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/temple-axis-v2/dadian.glb",
+      "original": 6295144,
+      "compressed": 1722548,
+      "ratio": 0.274,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/temple-axis-v2/gallery.glb",
+      "original": 490812,
+      "compressed": 380176,
+      "ratio": 0.775,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/temple-axis-v2/ground.glb",
+      "original": 860916,
+      "compressed": 820952,
+      "ratio": 0.954,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/temple-axis-v2/houdian.glb",
+      "original": 2702268,
+      "compressed": 1086544,
+      "ratio": 0.402,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/temple-axis-v2/lions.glb",
+      "original": 440156,
+      "compressed": 46532,
+      "ratio": 0.106,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/temple-axis-v2/ornaments.glb",
+      "original": 437144,
+      "compressed": 184656,
+      "ratio": 0.422,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/temple-axis-v2/peidian.glb",
+      "original": 2075332,
+      "compressed": 996376,
+      "ratio": 0.48,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/temple-axis-v2/temple.glb",
+      "original": 3782256,
+      "compressed": 1371936,
+      "ratio": 0.363,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/temple-axis-v2/yimen-stage.glb",
+      "original": 1283532,
+      "compressed": 496064,
+      "ratio": 0.386,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/temple-axis-v2/yimen.glb",
+      "original": 4343252,
+      "compressed": 1507320,
+      "ratio": 0.347,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/temple-dadian/court-open.glb",
+      "original": 1145928,
+      "compressed": 974328,
+      "ratio": 0.85,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/temple-dadian/dadian-court.glb",
+      "original": 1446932,
+      "compressed": 1002196,
+      "ratio": 0.693,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/temple-dadian/dadian.glb",
+      "original": 6295144,
+      "compressed": 1722548,
+      "ratio": 0.274,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/temple-dadian/ground.glb",
+      "original": 860916,
+      "compressed": 820952,
+      "ratio": 0.954,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/temple-dadian/lions.glb",
+      "original": 440156,
+      "compressed": 46532,
+      "ratio": 0.106,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/temple-dadian/ornaments.glb",
+      "original": 437144,
+      "compressed": 184656,
+      "ratio": 0.422,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/temple-dadian/temple.glb",
+      "original": 3782256,
+      "compressed": 1371936,
+      "ratio": 0.363,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/temple-dadian/yimen.glb",
+      "original": 4343252,
+      "compressed": 1507320,
+      "ratio": 0.347,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/temple-entry/court.glb",
+      "original": 1148664,
+      "compressed": 974536,
+      "ratio": 0.848,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/temple-entry/ground.glb",
+      "original": 860916,
+      "compressed": 820952,
+      "ratio": 0.954,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/temple-entry/lions.glb",
+      "original": 440156,
+      "compressed": 46532,
+      "ratio": 0.106,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/temple-entry/ornaments.glb",
+      "original": 437144,
+      "compressed": 184656,
+      "ratio": 0.422,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/temple-entry/temple.glb",
+      "original": 3782256,
+      "compressed": 1371936,
+      "ratio": 0.363,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/temple-entry/yimen.glb",
+      "original": 4343252,
+      "compressed": 1507320,
+      "ratio": 0.347,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/temple-shanmen/ground.glb",
+      "original": 860916,
+      "compressed": 820952,
+      "ratio": 0.954,
+      "mode": "vpf-vt14 (ground names)"
+    },
+    {
+      "file": "world/temple-shanmen/lions.glb",
+      "original": 440156,
+      "compressed": 46532,
+      "ratio": 0.106,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/temple-shanmen/ornaments.glb",
+      "original": 437144,
+      "compressed": 184656,
+      "ratio": 0.422,
+      "mode": "quantized"
+    },
+    {
+      "file": "world/temple-shanmen/temple.glb",
+      "original": 3782256,
+      "compressed": 1371936,
+      "ratio": 0.363,
+      "mode": "quantized"
+    }
+  ],
+  "distCompressed": "dist-compressed/ (original dist + *.cm.glb + review-manifest.cm.json; enter with ?compressed=1)",
+  "firstFrameCompare": {
+    "tool": "tools/firstframe_compare.mjs (headless chrome swiftshader, single run, measured not claimed)",
+    "original": {
+      "url": "/fangbang.html?ds=fangbang-temple-v3&skins=1",
+      "readyMs": 6924,
+      "transferMB": 167.5,
+      "triangles": 567764,
+      "routePass": true
+    },
+    "compressed": {
+      "url": "/fangbang.html?ds=fangbang-temple-v3&skins=1&compressed=1",
+      "readyMs": 6476,
+      "transferMB": 111.3,
+      "triangles": 567736,
+      "routePass": true,
+      "note": "28 tris (0.005%) collapsed by quantization, inside the 0.1% compressed tolerance; node names preserved via -vpf on ground-critical GLBs"
+    },
+    "decoder": "EXT_meshopt_compression through the production MeshoptDecoder path (createGLTFLoader)"
+  }
+}

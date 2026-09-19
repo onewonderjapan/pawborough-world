@@ -39,6 +39,10 @@ sys.stdout.reconfigure(line_buffering=True)
 p = argparse.ArgumentParser()
 p.add_argument('--config', type=Path, required=True)
 p.add_argument('--out', type=Path, required=True)
+# D1 (2026-09-19 corridor batch) strict opt-in keys: DEFAULT v1 must rerun
+# geometrically equivalent to the delivered world/temple-shanmen GLBs.
+p.add_argument('--lionsVersion', type=str, default='v1', choices=['v1', 'v2'])
+p.add_argument('--windowsVersion', type=str, default='v1', choices=['v1', 'v2'])
 a = p.parse_args(argv)
 
 cfg = json.loads(a.config.read_text(encoding='utf-8'))
@@ -644,9 +648,124 @@ def seated_lion(cx, cz, male):
           (cx + sgn * .08, base + .62, cz - .12), .034, 'stone')
 
 
+LIONS_V2 = a.lionsVersion == 'v2'
 for cx, _, cz in lio['centers']:
-    seated_lion(cx, cz, male=cx > 0)   # right lion: ball; left lion: cub
+    if not LIONS_V2:
+        seated_lion(cx, cz, male=cx > 0)   # right lion: ball; left lion: cub
 print(f'STAGE lions ok ({time.time() - T0:.1f}s)')
+
+# D1 lions v2 (strict opt-in --lionsVersion v2; default path above untouched).
+# DESIGN_SPEC packageD.lionsV2: seated lion, faceted-sphere head, 8-10 mane
+# curls, foreleg/paw blocks, ball (LEFT) / cub (RIGHT), xumi plinth
+# 0.62 x 0.3 x 0.75, overall bounds <= 0.55 x 1.35 x 0.7, <= 3500 tris each.
+# Reference PBR-SH-0003-003/004 posture+proportion only (no pattern copying).
+if LIONS_V2:
+    L.GROUP = 'shanmen-lion'
+    _lion2_tris = {}
+
+
+    def _faceted_sphere(name, center, r, meridians=8, rings=5, m='stone'):
+        """Low-poly UV sphere authored in GLB coords via L.mesh."""
+        cx0, cy0, cz0 = center
+        verts = [(cx0, cy0 + r, cz0), (cx0, cy0 - r, cz0)]
+        for j in range(1, rings):
+            phi = math.pi * j / rings
+            y = cy0 + r * math.cos(phi)
+            rr = r * math.sin(phi)
+            for i in range(meridians):
+                th = 2 * math.pi * i / meridians
+                verts.append((cx0 + rr * math.cos(th), y, cz0 + rr * math.sin(th)))
+        faces = []
+        last_ring_start = 2 + (rings - 2) * meridians
+        for i in range(meridians):
+            faces.append((0, 2 + i, 2 + (i + 1) % meridians))
+            faces.append((1, last_ring_start + (i + 1) % meridians, last_ring_start + i))
+        for j in range(rings - 2):
+            lo = 2 + j * meridians
+            hi = lo + meridians
+            for i in range(meridians):
+                a2, b2 = lo + i, lo + (i + 1) % meridians
+                c2, d2 = hi + i, hi + (i + 1) % meridians
+                faces.append((a2, d2, c2))
+                faces.append((a2, b2, d2))
+        return L.mesh(name, verts, faces, m)
+
+
+    def seated_lion_v2(cx, cz, male):
+        sgn = 1 if cx > 0 else -1
+        side = 'w' if cx < 0 else 'e'
+        # xumi plinth: two tiers totalling 0.62 x 0.3 x 0.75
+        L.box(f'lion2-{side}-plinth-tier1', (cx, .07, cz), (.62, .14, .75), 'stone', .012)
+        L.box(f'lion2-{side}-plinth-tier2', (cx, .22, cz), (.54, .16, .66), 'stone', .01)
+        base = .30
+        # seated mass: haunches + forward-leaning chest
+        L.box(f'lion2-{side}-haunch', (cx, base + .25, cz - .10), (.46, .50, .50), 'stone', .014)
+        L.box(f'lion2-{side}-chest', (cx, base + .47, cz + .10), (.40, .66, .42), 'stone', .012)
+        # broad mane disc + rolled rim (the lion cue), kept under y=1.35
+        L.cyl(f'lion2-{side}-mane', (cx, 1.06, cz - .06), (cx, 1.06, cz + .08), .24, 'stone', 14)
+        L.cyl(f'lion2-{side}-mane-rim', (cx, 1.06, cz - .08), (cx, 1.06, cz + .06), .26, 'stone', 8)
+        # faceted-sphere head in the disc + muzzle/jaw/brow/ears
+        _faceted_sphere(f'lion2-{side}-head', (cx, 1.09, cz + .10), .145)
+        L.box(f'lion2-{side}-muzzle', (cx, 1.03, cz + .23), (.13, .10, .10), 'stone', .006)
+        L.box(f'lion2-{side}-jaw', (cx, .98, cz + .21), (.11, .05, .09), 'stone', .004)
+        L.box(f'lion2-{side}-brow', (cx, 1.14, cz + .20), (.19, .035, .05), 'stone', .004)
+        for dx in (-.09, .09):
+            L.box(f'lion2-{side}-ear', (cx + dx, 1.22, cz + .05), (.06, .07, .045), 'stone', .004)
+        # mane: 9 curl discs arched brow -> cheek -> chest (8-10 segments)
+        for k in range(9):
+            t = k / 8.0
+            ang = math.pi * (0.15 + 0.7 * t)          # from brow over cheek to chest
+            r_curl = .052 - .012 * abs(t - .45)
+            L.cyl(f'lion2-{side}-mane-curl', (cx, 1.06 + .26 * math.cos(ang) - .02,
+                                              cz + .10 + .24 * math.sin(ang) - .02),
+                  (cx, 1.06 + .26 * math.cos(ang) - .02,
+                   cz + .10 + .24 * math.sin(ang) + .02), r_curl, 'stone', 6)
+        # forelegs straight down the chest front + toe-notched paws
+        for dx in (-.12, .12):
+            L.box(f'lion2-{side}-foreleg', (cx + dx, base + .24, cz + .24), (.11, .48, .12), 'stone', .006)
+            L.box(f'lion2-{side}-paw', (cx + dx, base + .04, cz + .30), (.13, .08, .16), 'stone', .004)
+            for tdx in (-.04, 0, .04):
+                L.box(f'lion2-{side}-toe', (cx + dx + tdx, base + .035, cz + .375), (.032, .07, .03), 'stone', 0)
+        # pairing object: embroidered ball LEFT / reclining cub RIGHT (spec)
+        if male:
+            L.cyl(f'lion2-{side}-ball', (cx - sgn * .12, base + .05, cz + .38),
+                  (cx - sgn * .12, base + .05, cz + .38), .085, 'stone', 10)
+            for k in range(4):
+                th = math.pi * k / 4
+                L.rod(f'lion2-{side}-ball-band', (cx - sgn * .12 + .083 * math.cos(th), base + .05,
+                                                  cz + .38 + .083 * math.sin(th)),
+                      (cx - sgn * .12 - .083 * math.cos(th), base + .05,
+                       cz + .38 - .083 * math.sin(th)), .008, 'stone')
+        else:
+            L.box(f'lion2-{side}-cub', (cx - sgn * .14, base + .06, cz + .36), (.17, .12, .26), 'stone', .006)
+            L.box(f'lion2-{side}-cub-head', (cx - sgn * .14, base + .12, cz + .48), (.10, .09, .09), 'stone', .004)
+            L.box(f'lion2-{side}-cub-ear', (cx - sgn * .14 - .03, base + .17, cz + .45), (.04, .04, .03), 'stone', 0)
+        # curled tail arcing over the haunch
+        L.rod(f'lion2-{side}-tail', (cx + sgn * .18, base + .30, cz - .26),
+              (cx + sgn * .21, base + .52, cz - .30), .045, 'stone')
+        L.rod(f'lion2-{side}-tail', (cx + sgn * .21, base + .52, cz - .30),
+              (cx + sgn * .16, base + .64, cz - .22), .04, 'stone')
+        L.rod(f'lion2-{side}-tail-tip', (cx + sgn * .16, base + .64, cz - .22),
+              (cx + sgn * .08, base + .60, cz - .12), .034, 'stone')
+        # spec collision: one box 0.62 x 1.35 x 0.75 per lion (records only,
+        # no mesh; supersedes the v1 plinth-only record in the v3 dataset)
+        L.COLL.append({'name': f'lion2-{side}-guard', 'group': 'shanmen-lion', 'type': 'box',
+                       'center': [cx, .675, cz], 'size': [.62, 1.35, .75], 'axis': 'glTF Y-up'})
+
+
+    for cx, _, cz in lio['centers']:
+        seated_lion_v2(cx, cz, male=cx < 0)   # spec: ball LEFT / cub RIGHT
+    for _side in ('w', 'e'):
+        _t = 0
+        for _o in bpy.context.scene.objects:
+            if _o.type == 'MESH' and _o.get('part', '') == 'shanmen-lion' and f'-{_side}-' in _o.name:
+                _o.data.calc_loop_triangles()
+                _t += len(_o.data.loop_triangles)
+        _lion2_tris[_side] = _t
+        if _t > 3500:
+            print('LION_V2_BUDGET_FAIL', _side, _t, '> 3500')
+            sys.exit(7)
+    print(f"STAGE lions v2 ok (w={_lion2_tris['w']} e={_lion2_tris['e']} tris, <=3500 each)")
 
 # ---------------------------------------------------------------------------
 # S6. ridge-end ornament candidates (coarse fish-dragon silhouettes)
@@ -674,11 +793,80 @@ def ridge_ornament(sx, base_y, scale):
           (.3 * scale, .04 * scale, .12 * scale), 'roof', 0)
 
 
-for sx in orn['centerPair']['x']:
-    ridge_ornament(sx, orn['centerPair']['baseY'], 1.0)
-for sx in orn['shoulderPair']['x']:
-    ridge_ornament(sx, orn['shoulderPair']['baseY'], 0.66)
-print(f'STAGE ornaments ok ({time.time() - T0:.1f}s)')
+WINDOWS_V2 = a.windowsVersion == 'v2'
+if not WINDOWS_V2:
+    for sx in orn['centerPair']['x']:
+        ridge_ornament(sx, orn['centerPair']['baseY'], 1.0)
+    for sx in orn['shoulderPair']['x']:
+        ridge_ornament(sx, orn['shoulderPair']['baseY'], 0.66)
+    print(f'STAGE ornaments ok ({time.time() - T0:.1f}s)')
+else:
+    # D1 wing windows v2 (strict opt-in --windowsVersion v2). DESIGN_SPEC
+    # packageD.wingWindowsV2: square openwork lattice 1.1 x 1.1 (stone frame
+    # 0.12, simplified ice-crack 5-7 straight bars, thickness 0.06) at the SAME
+    # center as the v1 wing relief panel; label design_inference (owner may
+    # veto back to v1). The frozen temple.glb relief panel is covered by a
+    # stone backing plate so the old diamond pattern does not peek around.
+    _wing = cfg['wings']
+    for side in ('left', 'right'):
+        start = _wing[f'{side}Start']
+        end = _wing[f'{side}End']
+        length, lx, lz, front = C.make_oriented(start, end)
+        pw, ph = _wing['panelWH']
+        pcx = _wing['panelCenterAlongWallFrac'] * length
+        pcy = .5 + ph / 2
+        t = _wing['thicknessM']
+        front_off = front  # sign taking local u/v offsets out toward the viewer
+        base = front_off * (t / 2)         # offsets are measured from the wall
+        nf = (lz[0] * front_off, 0.0, lz[2] * front_off)  # CENTER plane on
+
+        # backing plate covering the v1 relief panel (1.8x2.15) + proud strips
+        _pl = [(pcx - .95, pcy - 1.125), (pcx + .95, pcy - 1.125),
+               (pcx + .95, pcy + 1.125), (pcx - .95, pcy + 1.125)]
+        _pts = [C.local_to_world(start, lx, lz, (u, v, base + front_off * .062)) for u, v in _pl]
+        C.quad_out(L, 'wing2-window-plate', _pts, 'stone',
+                   [(0, 0), (1.9 / 1.44, 0), (1.9 / 1.44, 2.25 / 1.44), (0, 2.25 / 1.44)], nf)
+
+        # square frame ring via oriented boxes: outer 1.34, bar 0.12, depth
+        # band +0.04..+0.10 from the wall front (thickness 0.06)
+        _o, _b = 1.34 / 2, .12
+        for (cu, cv, sw, sh) in [
+            (pcx - _o + _b / 2, pcy, _b, 2 * _o),
+            (pcx + _o - _b / 2, pcy, _b, 2 * _o),
+            (pcx, pcy - _o + _b / 2, 2 * _o - 2 * _b, _b),
+            (pcx, pcy + _o - _b / 2, 2 * _o - 2 * _b, _b),
+        ]:
+            C.obox(L, 'wing2-window-frame', start, lx, lz,
+                   (cu, cv, base + front_off * .092), (sw, sh, .06), 'stone', bevel=0.004)
+
+        # ice-crack simplified: 7 straight bars at irregular angles AND
+        # irregular offsets (not all through the center), clipped to the 1.1
+        # square, recessed at +0.077 (behind the frame front +0.122)
+        _inner = 1.1 / 2
+        _bars = [(-8, -.28, -.05), (17, .18, -.22), (36, -.10, .25), (69, .30, .08),
+                 (104, -.30, .12), (133, .05, -.30), (157, -.18, .30)]
+        for k, (_deg, _ou, _ov) in enumerate(_bars):
+            _th = math.radians(_deg)
+            _du, _dv = math.cos(_th), math.sin(_th)
+            _cu, _cv = pcx + _ou, pcy + _ov
+            _lim = _inner / abs(math.cos(_th)) if abs(math.cos(_th)) >= abs(math.sin(_th)) \
+                else _inner / abs(math.sin(_th))
+            _half = min(_lim, _inner + .06)
+            _a0 = C.local_to_world(start, lx, lz,
+                                   (_cu - _du * _half, _cv - _dv * _half, base + front_off * .077))
+            _a1 = C.local_to_world(start, lx, lz,
+                                   (_cu + _du * _half, _cv + _dv * _half, base + front_off * .077))
+            L.rod(f'wing2-window-bar-{side}-{k}', _a0, _a1, .022, 'stone')
+        print(f'STAGE wing windows v2 ({side}) ok ({time.time() - T0:.1f}s)')
+    _w2t = 0
+    for _o in bpy.context.scene.objects:
+        if _o.type == 'MESH' and _o.get('part', '') == 'shanmen-ornament':
+            _o.data.calc_loop_triangles()
+            _w2t += len(_o.data.loop_triangles)
+    if _w2t > 2400:
+        print('WINDOWS_V2_BUDGET_FAIL', _w2t, '> 2400')
+        sys.exit(7)
+    print(f'STAGE ornaments v2 (square lattice windows) ok ({_w2t} tris <= 2400)')
 
 # ---------------------------------------------------------------------------
 # collision normalization + clear-corridor assertion BEFORE any export
@@ -718,8 +906,8 @@ print(f'CORRIDOR_CLEAR through {len(adapter_coll)} colliders ({time.time() - T0:
 TARGETS = [
     ('temple.glb', ('shanmen-body', 'shanmen-plaque')),
     ('ground.glb', ('temple-ground',)),
-    ('lions.glb', ('shanmen-lion',)),
-    ('ornaments.glb', ('shanmen-ornament',)),
+    ('lions-v2.glb' if a.lionsVersion == 'v2' else 'lions.glb', ('shanmen-lion',)),
+    ('ornaments-v2.glb' if a.windowsVersion == 'v2' else 'ornaments.glb', ('shanmen-ornament',)),
 ]
 
 out = a.out
@@ -869,6 +1057,7 @@ measure['budgets'] = {
 }
 measure['design'] = {
     'family': cfg['family'],
+    'variants': {'lionsVersion': a.lionsVersion, 'windowsVersion': a.windowsVersion},
     'reference': cfg['reference'],
     'clearOpeningM': [op['clearWidthM'], op['clearHeightM']],
     'ridgeHeightsM': {'center': rc['ridgeY'], 'shoulders': rs['ridgeY'], 'wingCap': cfg['wings']['tileCapMaxY']},

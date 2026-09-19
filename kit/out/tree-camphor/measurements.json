@@ -1,0 +1,45 @@
+{
+  "moduleId": "temple-tree-camphor",
+  "units": "meters",
+  "surveyed": false,
+  "axis": "GLB Y-up; origin trunk base center; canopy ups",
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false,
+  "targets": {
+    "tree-camphor.glb": {
+      "groups": [
+        "temple-tree"
+      ],
+      "objects": 2,
+      "triangles": 568,
+      "fileBytes": 129380,
+      "sha256": "32deedf02da0d74a242bd69b43cae863125cfff3ec7e542da51037c97f42b0c8"
+    }
+  },
+  "timings": {
+    "totalSeconds": 0.1
+  },
+  "budgets": {
+    "treeTris": {
+      "actual": 568,
+      "limit": 2600,
+      "pass": true
+    },
+    "newImages": {
+      "actual": 0,
+      "limit": 0,
+      "pass": true
+    }
+  },
+  "design": {
+    "canopyBottomY": 3.0,
+    "canopyBlobs": 5,
+    "foliageColor": "#4a5d3a",
+    "trunkCollision": [
+      0.5,
+      2.8,
+      0.5
+    ],
+    "label": "design_inference (species/position are design values)"
+  }
+}

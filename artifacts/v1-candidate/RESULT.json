@@ -1,0 +1,23 @@
+{
+  "batch": "pawborough-v1-candidate-night-20260918",
+  "package": "C v1.0 候选包（C0–C6）",
+  "status": "delivered_stopped_at_owner_gate",
+  "ownerAdopted": false,
+  "deliverables": {
+    "hub": "index-v1.html — 全部页面/数据集/机位/ownerAdopted 原样（由 tools/make_version.mjs 与 VERSION.json 同源生成）",
+    "version": "VERSION.json — git head、world/** 287 文件 + building/** 62 文件逐件 sha256、12 数据集摘要、工具版本、测试清单",
+    "oneCommand": "tools/verify_all.sh — npm install → 39 测试 → make_version+sha 对账 → dist 构建 → 双 preview headless 巡航（空白帧守卫）；首跑 8/8 步全绿",
+    "videoSource": "kit/out/scene-v1/scene-v1.blend — v3 全实例+skins+打包贴图+26 机位（street:/bridge:/temple: 前缀）；重开检查缺图=0、机位=26 PASS；CPU 24spp 3 张：aerial 30.7s / shanmen-from-road 23.6s / court2-pair 8.7s",
+    "compressed": "tools/build_compressed_dist.mjs → dist-compressed/（?compressed=1 进入）；185 GLB 全压缩 0 失败，314,362,432 → 168,769,716 字节（ratio 0.537 ≤ 0.6 预算）；实测首帧传输 167.5→111.3MB（−33.6%），双态 routeCheck 全过",
+    "restore": "tools/restore_check.sh — git clone --shared + git lfs pull → 新环境跑 verify_all.sh 全绿（copy: 报告内嵌 clone 的 verify-report）"
+  },
+  "keyFinds": [
+    "git LFS：仓库 GLB 走 LFS——restore 必须先 git lfs pull（哨兵校验 building/plain-v1/model.glb 魔数）",
+    "gltfpack -kn 会把 mesh 挂到无名去量化子节点上，破坏地面节点名匹配——地面命名 GLB 改用 -vpf -vt14（mesh 直挂命名节点）",
+    "量化会塌缩极少数退化三角形（本批 28/567,764 ≈ 0.005%）——压缩态放 0.1% 容差，超限照常报错",
+    "vite preview 对缺失路径返回 SPA fallback（HTML 当 JSON）——新数据集验证用 dev server；dist/ 须由 verify_all 补齐 world/building 后再服务"
+  ],
+  "gpu": "NVIDIA GB10 检查时占用 96%（忙）→ 按 spec『GPU 空闲则再渲』跳过 CUDA 对比，CPU 计时为准",
+  "ports": "本批验证服务：v3 dev 5304（5302 被既有进程占用走 fallback）；verify preview 默认 5306/5307（可 PREVIEW_PORT_A/B 覆盖）；compressed 5308；restore clone 用 5316/5317",
+  "notInScopeRespected": "玄扈台/照壁/东延带/合并/push/ownerAdopted 变更——全部未动；GATE.md 十项决策全部留给机主"
+}

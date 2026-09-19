@@ -1,0 +1,224 @@
+{
+  "datasetId": "temple-axis-v3",
+  "title": "城隍庙庙轴线 v3 · 走廊精修变体（狮子v2/方形漏窗v2/前院香道+铜鼎/樟树×4）",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "visualReview": "pending_lead",
+  "reference": "DESIGN_SPEC.json pawborough-corridor-video-night-20260919 packageD; 狮子参照 PBR-SH-0003-003/004 只取姿态比例",
+  "axis": "GLB Y-up; +Z south toward the street; shanmen threshold at (0,0,0); north = -Z",
+  "assets": {
+    "temple": {
+      "file": "./world/temple-axis-v3/temple.glb",
+      "bytes": 3782256,
+      "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb",
+      "triangles": 22392,
+      "groups": [
+        "shanmen-body",
+        "shanmen-plaque"
+      ]
+    },
+    "ground": {
+      "file": "./world/temple-axis-v3/ground.glb",
+      "bytes": 860916,
+      "sha256": "0acf56376883f3faf823c52f8cf8478bf8d731c31606ed22e7eeadc0f7e0879d",
+      "triangles": 360,
+      "groups": [
+        "temple-ground"
+      ]
+    },
+    "yimen": {
+      "file": "./world/temple-axis-v3/yimen.glb",
+      "bytes": 4343252,
+      "sha256": "e9393cd4017c657e74d2889da812ac16eb70a04664ce8ab829ea126cb7ee48b5",
+      "triangles": 26140,
+      "groups": [
+        "yimen-body",
+        "yimen-plaque"
+      ]
+    },
+    "dadian": {
+      "file": "./world/temple-axis-v3/dadian.glb",
+      "bytes": 6295144,
+      "sha256": "8a722d9dc7663cefea0f94409a8911c65cf824756a60220ec7d1c88d4f1dabee",
+      "triangles": 43826,
+      "groups": [
+        "dadian-body",
+        "dadian-plaque"
+      ]
+    },
+    "dadianCourtV2": {
+      "file": "./world/temple-axis-v3/dadian-court-v2.glb",
+      "bytes": 1353280,
+      "sha256": "d643a1b3e0f8b9c38cafc4dd53465ff0de12f6fd38e4f81188b6735625ad79a7",
+      "triangles": 3288,
+      "groups": [
+        "temple-ground",
+        "dadian-court"
+      ]
+    },
+    "peidian": {
+      "file": "./world/temple-axis-v3/peidian.glb",
+      "bytes": 2075332,
+      "sha256": "b3dba52114ed22f25e916f9d5cc72cff6ba2cf13082eae16daa099deabc1771d",
+      "triangles": 11396,
+      "groups": [
+        "peidian-body",
+        "temple-ground"
+      ]
+    },
+    "gallery": {
+      "file": "./world/temple-axis-v3/gallery.glb",
+      "bytes": 490812,
+      "sha256": "45228eb69acfd827741ac9f4a72b2d2f6bd92a1c2c4b0776efa210424ee1114d",
+      "triangles": 1110,
+      "groups": [
+        "gallery-body",
+        "temple-ground"
+      ]
+    },
+    "yimenStage": {
+      "file": "./world/temple-axis-v3/yimen-stage.glb",
+      "bytes": 1283532,
+      "sha256": "509fd8913f90cbdce61a55ba3187030da304140216cbb4f368127dd8eb59a51d",
+      "triangles": 7164,
+      "groups": [
+        "yimen-stage-body"
+      ]
+    },
+    "court3": {
+      "file": "./world/temple-axis-v3/court3.glb",
+      "bytes": 1634368,
+      "sha256": "3921895487fb7581e4fce7e31c8534153329ab61ea186a3e961b6a1e44bb0f0c",
+      "triangles": 4552,
+      "groups": [
+        "temple-ground",
+        "court3-boundary"
+      ]
+    },
+    "houdian": {
+      "file": "./world/temple-axis-v3/houdian.glb",
+      "bytes": 2702268,
+      "sha256": "693a5efb758700c96c162f9c9c93e0d1b91f490cde895e9d41202b4cdcd9f615",
+      "triangles": 16164,
+      "groups": [
+        "houdian-body",
+        "temple-ground"
+      ]
+    },
+    "lionsV2": {
+      "file": "./world/temple-axis-v3/lions-v2.glb",
+      "bytes": 490048,
+      "sha256": "46dd10af05af07d8f9ab4ea234b6f3daf4af902184543e92f36b449019d44b7a",
+      "triangles": 4064,
+      "groups": [
+        "shanmen-lion"
+      ],
+      "variantOf": "lions",
+      "note": "v2 seated lions (ball LEFT / cub RIGHT), spec <=3500 tris each"
+    },
+    "ornamentsV2": {
+      "file": "./world/temple-axis-v3/ornaments-v2.glb",
+      "bytes": 150920,
+      "sha256": "0a894ec78c5a41df58a26d8d119a0699fbbaf1b40c847c875c6c6f5073fd7499",
+      "triangles": 1148,
+      "groups": [
+        "shanmen-ornament"
+      ],
+      "variantOf": "ornaments",
+      "note": "v2 square lattice windows 1.1x1.1 on the wing walls, design_inference"
+    },
+    "entryCourtV3": {
+      "file": "./world/temple-axis-v3/entry-court-v3.glb",
+      "bytes": 1469532,
+      "sha256": "b0b4d28b6a9f12928a142efd2a597234ba13e52a7f48ed788d436175dcbbf6f3",
+      "triangles": 4192,
+      "groups": [
+        "temple-ground",
+        "entry-court"
+      ],
+      "variantOf": "courtOpen",
+      "note": "court-open + incense road (temple-ground__worn-stone) + bronze burner"
+    },
+    "tree": {
+      "file": "./world/temple-axis-v3/tree-camphor.glb",
+      "bytes": 129380,
+      "sha256": "32deedf02da0d74a242bd69b43cae863125cfff3ec7e542da51037c97f42b0c8",
+      "triangles": 568,
+      "groups": [
+        "temple-tree"
+      ],
+      "note": "single module, 4 instances",
+      "instances": 4,
+      "instancesAt": {
+        "tree-court2-w": [
+          -7.715076715857625,
+          0,
+          -38.41944022977349
+        ],
+        "tree-court2-e": [
+          7.382798303275276,
+          0,
+          -37.44766808060394
+        ],
+        "tree-court3-w": [
+          -10.5,
+          0,
+          -64
+        ],
+        "tree-court3-e": [
+          11.077326866297437,
+          0,
+          -64.63505955292717
+        ]
+      }
+    }
+  },
+  "placedTriangles": 160574,
+  "budgets": {
+    "newModulesTris": {
+      "actual": 9972,
+      "limit": 16000
+    },
+    "placedTriangles": {
+      "actual": 160574,
+      "limit": 200000
+    },
+    "newImages": {
+      "actual": 0,
+      "limit": 0
+    }
+  },
+  "variants": {
+    "lionsV2": "seated, faceted head, 9 mane curls, ball LEFT / cub RIGHT; collision per spec 0.62x1.35x0.75 (v1 had plinth-only records — recorded in PROGRESS)",
+    "ornamentsV2": "square lattice windows 1.1x1.1 covering the v1 relief panel position (frozen temple.glb untouched); design_inference, G13 gate",
+    "entryCourtV3": "court-open + incense road (z 0..7, slabs 1.5x0.75 joint 0.02, top +0.01, faces temple-ground__worn-stone) + burner (0,0,-12) scaled 0.85 with spec plinth tiers 1.4x0.22 + 1.05x0.18; collision 1.1x1.3x1.1",
+    "trees": "4 camphor instances; trunk-collider >= 0.6, canopy bottom >= 3.0, route corridor >= 1.75; G12 gate"
+  },
+  "placementShifts": [
+    {
+      "tree": "tree-court2-w",
+      "shiftedBy": 0.968,
+      "newDistanceToRoute": 1.8,
+      "reason": "spec position inside the +/-1.5 route corridor (dist 0.83 m); fallback #2 away-shift"
+    },
+    {
+      "tree": "tree-court2-e",
+      "shiftedBy": 0.238,
+      "newDistanceToRoute": 1.8,
+      "reason": "spec position inside the +/-1.5 route corridor (dist 1.56 m); fallback #2 away-shift"
+    },
+    {
+      "tree": "tree-court3-e",
+      "shiftedBy": 0.858,
+      "newDistanceToRoute": 1.8,
+      "reason": "spec position inside the +/-1.5 route corridor (dist 0.94 m); fallback #2 away-shift"
+    }
+  ],
+  "droppedTrees": [],
+  "cameras": {
+    "count": 10,
+    "source": "frozen temple-axis-v2 camera contract"
+  },
+  "buildChain": "build_temple_shanmen.py(--lionsVersion v2 --windowsVersion v2) + build_entry_court.py(--addIncenseRoad --addBurner) + build_tree.py <- DESIGN_SPEC.json",
+  "generatedBy": "scripts/build_temple_axis_v3_world.mjs"
+}

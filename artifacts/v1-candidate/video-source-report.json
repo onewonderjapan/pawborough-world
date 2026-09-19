@@ -1,0 +1,74 @@
+{
+  "source": "kit/build_world_v1_scene.py",
+  "blend": "kit/out/scene-v1/scene-v1.blend",
+  "device": "CPU",
+  "samples": 24,
+  "resolution": [
+    1600,
+    900
+  ],
+  "assembly": "street + surfaces + 15 temple-axis-V2 + 17 westshop modules + strips + skins (M 10 baked + A 11 instanced) + 10 remaining grays",
+  "cameras": [
+    "street:full-west",
+    "street:full-east",
+    "street:eye-west",
+    "street:eye-east",
+    "street:across",
+    "street:corner",
+    "street:lane",
+    "street:module-near",
+    "bridge:junction-west",
+    "bridge:west-road-mid",
+    "bridge:placeholder-band",
+    "bridge:shanmen-from-road",
+    "bridge:forecourt-oblique",
+    "bridge:axis-long",
+    "bridge:temple-side-east",
+    "bridge:aerial-overview",
+    "temple:court2-pair",
+    "temple:peidian-west-front",
+    "temple:gallery-link",
+    "temple:stage-from-court",
+    "temple:stage-3q",
+    "temple:passage-east",
+    "temple:court3-axis",
+    "temple:houdian-front",
+    "temple:houdian-3q",
+    "temple:axis-aerial"
+  ],
+  "missingImagesAtSave": 0,
+  "renders": [
+    {
+      "view": "aerial",
+      "camera": "bridge:aerial-overview",
+      "device": "CPU",
+      "seconds": 30.7,
+      "file": "scene-v1-aerial-cpu.png"
+    },
+    {
+      "view": "shanmen-from-road",
+      "camera": "bridge:shanmen-from-road",
+      "device": "CPU",
+      "seconds": 23.6,
+      "file": "scene-v1-shanmen-from-road-cpu.png"
+    },
+    {
+      "view": "court2-pair",
+      "camera": "temple:court2-pair",
+      "device": "CPU",
+      "seconds": 8.7,
+      "file": "scene-v1-court2-pair-cpu.png"
+    }
+  ],
+  "reopenCheck": {
+    "command": "blender -b kit/out/scene-v1/scene-v1.blend -P kit/check_scene_v1.py",
+    "result": "missing_images=0 cameras=26 SCENE_V1_CHECK PASS",
+    "cameraIds": "street:* 8 + bridge:* 8 + temple:* 10 (dataset-prefixed)"
+  },
+  "gpu": {
+    "device": "NVIDIA GB10 (aarch64)",
+    "utilizationAtCheck": "96% (busy)",
+    "decision": "CUDA comparison render skipped per DESIGN_SPEC (\"GPU 空闲则再渲\") and fallback #6; CPU timings stand as the record"
+  },
+  "streetCameraRule": "street set = first 8 entries of world/cameras.json (main-street views), lensMm converted to verticalFovDegrees via the shared 36mm-vertical sensor geometry"
+}

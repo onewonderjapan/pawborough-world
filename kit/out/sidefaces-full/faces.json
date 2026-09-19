@@ -1,0 +1,352 @@
+{
+  "config": "kit/gable-skin-full.config.json",
+  "faces": [
+    {
+      "faceId": "cs-10.15x7.20x0.28|rear|t-1",
+      "target": "cs-10.15x7.20x0.28|rear|t-1",
+      "kind": "rear",
+      "module": "east-shop-128",
+      "rec": "cs-10.15x7.20x0.28|rear|t-1",
+      "tris": 180,
+      "budget": 1500,
+      "pass": true,
+      "bytes": 803440,
+      "sha256": "562e6cf46861aaa4992f6634b624c9a17eb25d7da1d5052fe6feb6ee24374d19"
+    },
+    {
+      "faceId": "cs-0.28x6.60x10.00|side-e|t1",
+      "target": "cs-0.28x6.60x10.00|side-e|t1",
+      "kind": "gable",
+      "module": "east-shop-128",
+      "rec": "cs-0.28x6.60x10.00|side-e|t1",
+      "tris": 60,
+      "budget": 1500,
+      "pass": true,
+      "bytes": 782332,
+      "sha256": "d9c54666f39ec6773a73bb4cd4dfbe8683024064fbdfe842e62774b2720fe09e"
+    },
+    {
+      "faceId": "cs-10.15x6.40x0.28|rear|t-1",
+      "target": "cs-10.15x6.40x0.28|rear|t-1",
+      "kind": "rear",
+      "module": "east-shop-129",
+      "rec": "cs-10.15x6.40x0.28|rear|t-1",
+      "tris": 180,
+      "budget": 1500,
+      "pass": true,
+      "bytes": 803412,
+      "sha256": "d9fe2a83d598e62315095b5164c266662fdc44658823dd64c5710752647ae276"
+    },
+    {
+      "faceId": "cs-0.28x5.80x11.00|side-e|t-1",
+      "target": "cs-0.28x5.80x11.00|side-e|t-1",
+      "kind": "gable",
+      "module": "east-shop-129",
+      "rec": "cs-0.28x5.80x11.00|side-e|t-1",
+      "tris": 60,
+      "budget": 1500,
+      "pass": true,
+      "bytes": 782308,
+      "sha256": "eedb03fc2e6f6a348b3d9bcbf5313df72cffc491b3a2630cac66c199a893241b"
+    },
+    {
+      "faceId": "cs-0.28x6.60x12.00|side-e|t1",
+      "target": "cs-0.28x6.60x12.00|side-e|t1",
+      "kind": "gable",
+      "module": "east-shop-130",
+      "rec": "cs-0.28x6.60x12.00|side-e|t1",
+      "tris": 60,
+      "budget": 1500,
+      "pass": true,
+      "bytes": 782332,
+      "sha256": "e88bd00df075533c202aec422005a4d6731c52df8fdf6b2d857dd4cfba819b32"
+    },
+    {
+      "faceId": "cs-0.28x5.80x13.00|side-e|t-1",
+      "target": "cs-0.28x5.80x13.00|side-e|t-1",
+      "kind": "gable",
+      "module": "east-shop-131",
+      "rec": "cs-0.28x5.80x13.00|side-e|t-1",
+      "tris": 60,
+      "budget": 1500,
+      "pass": true,
+      "bytes": 782308,
+      "sha256": "b4c4d913187fd94d945db032c1ea1d0b878f4ffe45cb939aa7413e56b24d1c91"
+    },
+    {
+      "faceId": "cs-0.28x5.80x10.00|side-e|t1",
+      "target": "cs-0.28x5.80x10.00|side-e|t1",
+      "kind": "gable",
+      "module": "east-shop-132",
+      "rec": "cs-0.28x5.80x10.00|side-e|t1",
+      "tris": 60,
+      "budget": 1500,
+      "pass": true,
+      "bytes": 782304,
+      "sha256": "31e45fef0fbc079b6b5acb98871aacd0feecf62f3ec1b9fbfdb1b734ec971b62"
+    }
+  ],
+  "totalTris": 660,
+  "colliders": [
+    {
+      "name": "gableskin:cs-10.15x7.20x0.28|rear|t-1",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        -4.925,
+        -3.6,
+        -0.25
+      ],
+      "max": [
+        4.925,
+        3.6,
+        -0.19
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0.0,
+        "center": [
+          0.0,
+          0.0,
+          -0.22
+        ],
+        "size": [
+          9.85,
+          7.2,
+          0.06
+        ]
+      },
+      "outward": [
+        -0.0,
+        -1.0
+      ]
+    },
+    {
+      "name": "gableskin:cs-0.28x6.60x10.00|side-e|t1",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        0.22,
+        -3.3,
+        -4.7
+      ],
+      "max": [
+        0.28,
+        3.3,
+        4.7
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0.0,
+        "center": [
+          0.25,
+          0.0,
+          0.0
+        ],
+        "size": [
+          0.06,
+          6.6,
+          9.4
+        ]
+      },
+      "outward": [
+        1.0,
+        -0.0
+      ]
+    },
+    {
+      "name": "gableskin:cs-10.15x6.40x0.28|rear|t-1",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        -4.925,
+        -3.2,
+        -0.25
+      ],
+      "max": [
+        4.925,
+        3.2,
+        -0.19
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0.0,
+        "center": [
+          0.0,
+          0.0,
+          -0.22
+        ],
+        "size": [
+          9.85,
+          6.4,
+          0.06
+        ]
+      },
+      "outward": [
+        -0.0,
+        -1.0
+      ]
+    },
+    {
+      "name": "gableskin:cs-0.28x5.80x11.00|side-e|t-1",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        -0.28,
+        -2.9,
+        -5.2
+      ],
+      "max": [
+        -0.22,
+        2.9,
+        5.2
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0.0,
+        "center": [
+          -0.25,
+          0.0,
+          0.0
+        ],
+        "size": [
+          0.06,
+          5.8,
+          10.4
+        ]
+      },
+      "outward": [
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "name": "gableskin:cs-0.28x6.60x12.00|side-e|t1",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        0.22,
+        -3.3,
+        -5.7
+      ],
+      "max": [
+        0.28,
+        3.3,
+        5.7
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0.0,
+        "center": [
+          0.25,
+          0.0,
+          0.0
+        ],
+        "size": [
+          0.06,
+          6.6,
+          11.4
+        ]
+      },
+      "outward": [
+        1.0,
+        -0.0
+      ]
+    },
+    {
+      "name": "gableskin:cs-0.28x5.80x13.00|side-e|t-1",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        -0.28,
+        -2.9,
+        -6.2
+      ],
+      "max": [
+        -0.22,
+        2.9,
+        6.2
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0.0,
+        "center": [
+          -0.25,
+          0.0,
+          0.0
+        ],
+        "size": [
+          0.06,
+          5.8,
+          12.4
+        ]
+      },
+      "outward": [
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "name": "gableskin:cs-0.28x5.80x10.00|side-e|t1",
+      "group": "gableskin",
+      "type": "box",
+      "min": [
+        0.22,
+        -2.9,
+        -4.7
+      ],
+      "max": [
+        0.28,
+        2.9,
+        4.7
+      ],
+      "obb": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "theta": 0.0,
+        "center": [
+          0.25,
+          0.0,
+          0.0
+        ],
+        "size": [
+          0.06,
+          5.8,
+          9.4
+        ]
+      },
+      "outward": [
+        1.0,
+        -0.0
+      ]
+    }
+  ],
+  "axis": "glTF Y-up; WORLD records (placement baked in; obbToWorld reproduces every box)"
+}

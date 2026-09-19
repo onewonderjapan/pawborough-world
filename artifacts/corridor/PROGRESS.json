@@ -1,0 +1,72 @@
+{
+  "batch": "pawborough-corridor-video-night-20260919",
+  "branch": "work/corridor-video-20260919",
+  "baseline": "8fa1bcc",
+  "updated": "2026-09-19T13:08:34.047329+09:00",
+  "packages": {
+    "D": "delivered",
+    "E": "delivered",
+    "F": "delivered",
+    "G": "pending"
+  },
+  "D0": {
+    "done": [
+      "worktree created",
+      "npm install",
+      "39/39 baseline green",
+      "verify_all 8/8 green (playwright install step is conditional on node_modules absent; installed --no-save, rerun green)",
+      "before shots: kit/out/before/ 9 views (3 copied from artifacts/v1-candidate/blender, sha recorded; 6 rendered CPU 24spp)"
+    ]
+  },
+  "D1": {
+    "strictKeys": "--lionsVersion/--windowsVersion on kit/build_temple_shanmen.py, default v1",
+    "equivalence": "kit/out/shanmen-v1-equivalence-proof/{lions,ornaments}-equivalence.json: tris equal (3556/2304), verts +-4 weld, bounds 1e-4, collision records identical (29)",
+    "v2": "kit/out/shanmen-v2-assets: lions-v2.glb 4064 tris (w 1976 / e 2088, <=3500 each), ornaments-v2.glb 1148 tris <=2400, validator 0/0"
+  },
+  "D2": {
+    "strictKeys": "--addIncenseRoad/--addBurner on kit/build_entry_court.py, default false",
+    "equivalence": "kit/out/court-open-equivalence/equivalence-proof.json (tris 1580 equal, weld caliber); temp config copy with buildCutoffWall=false used (repo config untouched)",
+    "v3": "kit/out/temple-axis-v3-assets/entry-court-v3.glb 4192 tris, burner 872 <=900, validator 0/0, road faces temple-ground__worn-stone top +0.01"
+  },
+  "D3": {
+    "built": "kit/build_tree.py -> kit/out/tree-camphor/tree-camphor.glb 568 tris <=2600, canopy bottom 3.000 vertex-level, validator 0 errors"
+  },
+  "D4": {
+    "dataset": "world/temple-axis-v3: 14 GLBs (10 frozen from v2 byte-checked + 3 variants + tree), 240 colliders, placed tris 160574 (page expectation), route with burner detour + 7 negatives",
+    "page": "temple-v3.html + src/templeV3Main.js; ports 5306/5307; headless cruise: route pass (burner detour, 7/7 negatives incl. burner stop z=-10.96), frame std 54.7",
+    "ports": "5306/5307 occupied at times by verify_all's own leaked vite preview processes (its pkill pattern never matches the actual cmdline); dev server used transiently and killed after each check"
+  },
+  "D5": {
+    "tests": "44/44 (39 baseline + shanmen_v2_contract + entry_court_v3_contract + trees_contract + temple_axis_v3_world + temple_axis_v3_passage)",
+    "evidence": "10 WebGL views (artifacts/corridor/web, blank-guarded) + 4 Blender views (artifacts/corridor/blender, from scene-v2)"
+  },
+  "notes": [
+    "INHERITED BASELINE BUG: kit/build_world_v1_scene.py used the temple: contract cameras RAW (axis-local coords as world coords), so every temple: view of scene-v1 rendered the empty area south of the street; the committed v1-candidate court2-pair evidence PNG is blank gray (verified). The first-pass review's 'axis-aerial 95% sky' finding is the visible case of this. Both sides of the G-package before/after set are rendered with the corrected bridge transform (T+yaw) so the comparison shares one camera contract; render_scene_views.py --fix-temple-cameras implements it for the before side.",
+    "temple:axis-aerial pose: DESIGN_SPEC pose ([-36,46,-8] -> [0,2,-46] fov48) fails its own >=40% non-background acceptance (measured 0.22-0.26, sky fills 74%). Adjusted pose ([-36,26,-8] -> [0,0,-28] fov48, same west-side elevated overview structure) measures 0.435. Old-vs-new comparison: kit/out/scene-v2/camera-fix__axis-aerial-*.png. Owner veto window: G14.",
+    "DESIGN_SPEC lionsV2.collision '1 box 0.62x1.35x0.75 (same as v1)' conflicts with the delivered v1 records (plinth-only 0.5x0.26x0.62). Implemented the spec size (also satisfies the visible-mesh-covering contract); lion guard boxes sit outside the +/-1.5 route corridor; recorded here for the lead.",
+    "burner negative stop: DESIGN_SPEC says blocked at z>=-10.9; capsule r=0.35 against the vessel face z=-11.45 stops at z=-10.96 measured (test band [-11.3,-10.6]); the spec figure was nearly right and is recorded in the route negative assert text.",
+    "tree placement: 3 of 4 spec positions were inside the +/-1.5 route corridor (dist 0.83/1.56/0.94); fallback #2 away-shifts applied (0.968/0.238/0.858 m) and recorded in the v3 manifest placementShifts.",
+    "materials: 'worn-stone' is the pre-existing shared stone material's Blender name (mb_lib), so the road required ZERO new materials/images. foliage added per spec. bronze reused from the dadian burner construction."
+  ],
+  "blockers": [],
+  "E": {
+    "E0": "kit/props.config.json + kit/build_props.py -> 5 GLBs (bicycle 684 / crate 60 / basket 216 / chair 196 / awning 48 tris; validator 0 errors; wood-crate carries the same missing-tangent WARNING as the tree - no normal map, runtime tangent, accepted per tree precedent)",
+    "E1": "scripts/plan_props.mjs -> kit/out/props/plan.json: 38 instances on 39 facades, 0.25-0.9 wall band, route corridor >=1.2, SAT vs 208 body-height world colliders, <=2/facade, awnings only plain/curio/cloth at y2.85",
+    "E2": "scripts/build_props_world.mjs -> world/street-props/ (5 GLBs + instances + 32 colliders + manifest, placedTris 11176 <= 20000)",
+    "E3": "fangbangMain.js ?props=1 (default OFF; expectedTriangles includes props only when loaded); tests props_contract + props_visibility; 46/46 green",
+    "E4": "4 WebGL views (?props=1&skins=1, propsLoaded=38 verified in-page) + 2 Blender views (scene-v2 --props)",
+    "evidenceCameras": "junction-west / west-road-mid / temple-side-east / axis-long (the page exposes only the 8 bridge views; street eye/corner have no page buttons)"
+  },
+  "F": {
+    "F0": "kit/light_rig.py (Sun 3.0 @(55,0,-35) 1.5deg, world gray 0.55, fill AREA 60W camera-following, AgX Base Contrast, legacy lights disabled); wired into build_world_v2_scene + render_scene_views (+ render_walkthrough/orbit). Pixel-diff check: builder vs reopen same camera = 0.000% diff (<=2% contract). Interpretation recorded: scene-v1 blend is frozen (not in allowedModifiedFiles) so the three unified paths are scene-v2 builder / reopen stills / walkthrough+orbit, all importing the same module.",
+    "F1": "world/fangbang-temple-v4 assembled (scripts/build_fangbang_v4_world.mjs): v3 bridge + axis-v3 variants swapped (681 colliders, route detour carried into world coords, 19 axis assets incl. 4 trees, propsBlock referenced default OFF). ?ds= mechanism already shipped with the expansion batch — page change is nil. scene-v2 rebuilt with unified rig + props + axis-aerial fix (nonbg 0.435 >= 0.40 acceptance; spec pose measured 0.22-0.26, deviation recorded).",
+    "F2": "26 stills re-rendered on the unified rig (1600x900 24spp OIDN CPU), 0 blank frames",
+    "F3": "preflight 5 frames verified eye-level poses; full render running (CPU ~4.4-6.4s/frame, GPU benchmark 12.2s/frame under contention = CPU stays per policy); render-log device/utilization events at start + every 200 frames",
+    "F4": "clipB orbit renderer (axis-local center/target transformed by T+yaw) running on GPU (~5s/frame, 576 frames)"
+  },
+  "F5": {
+    "clipA": "6293/6896 frames (91%), partial per fallback #11 (9h cap), 264.2s, blank 0",
+    "clipB": "576/576, 24.0s, GPU 5.08s/frame, blank 0",
+    "renderLog": "artifacts/corridor-video/render-log.json (+render-log-orbit.json): device policy events every 200 frames, mp4 meta"
+  }
+}

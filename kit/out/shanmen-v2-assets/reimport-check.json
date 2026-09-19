@@ -1,0 +1,253 @@
+{
+  "temple.glb": {
+    "imported": true,
+    "meshes": 13,
+    "boundsBlender": [
+      [
+        -8.194592475891113,
+        -2.4283556938171387,
+        0.0
+      ],
+      [
+        8.194592475891113,
+        4.150000095367432,
+        8.219999313354492
+      ]
+    ],
+    "materials": [
+      {
+        "name": "worn-stone.001",
+        "imageNodes": []
+      },
+      {
+        "name": "weathered-lime-plaster.001",
+        "imageNodes": [
+          {
+            "name": "PaintedPlaster017_2K-JPG_Color_1K",
+            "size": [
+              1024,
+              512
+            ],
+            "colorSpace": "sRGB"
+          },
+          {
+            "name": "PaintedPlaster017_2K-JPG_Roughness_1K",
+            "size": [
+              1024,
+              512
+            ],
+            "colorSpace": "Non-Color"
+          },
+          {
+            "name": "PaintedPlaster017_2K-JPG_NormalGL_1K",
+            "size": [
+              1024,
+              512
+            ],
+            "colorSpace": "Non-Color"
+          }
+        ]
+      },
+      {
+        "name": "gray-pan-tile.001",
+        "imageNodes": [
+          {
+            "name": "roof-color",
+            "size": [
+              1024,
+              1024
+            ],
+            "colorSpace": "sRGB"
+          },
+          {
+            "name": "roof-normal",
+            "size": [
+              1024,
+              1024
+            ],
+            "colorSpace": "Non-Color"
+          }
+        ]
+      },
+      {
+        "name": "temple-plaque-lacquer.001",
+        "imageNodes": [
+          {
+            "name": "temple-plaque",
+            "size": [
+              2048,
+              720
+            ],
+            "colorSpace": "sRGB"
+          }
+        ]
+      },
+      {
+        "name": "blue-gray-brick.001",
+        "imageNodes": [
+          {
+            "name": "Bricks061_2K-JPG_Color_1K",
+            "size": [
+              1024,
+              1024
+            ],
+            "colorSpace": "sRGB"
+          },
+          {
+            "name": "Bricks061_2K-JPG_Roughness_1K",
+            "size": [
+              1024,
+              1024
+            ],
+            "colorSpace": "Non-Color"
+          },
+          {
+            "name": "Bricks061_2K-JPG_NormalGL_1K",
+            "size": [
+              1024,
+              1024
+            ],
+            "colorSpace": "Non-Color"
+          }
+        ]
+      },
+      {
+        "name": "deep-door-lacquer.001",
+        "imageNodes": []
+      },
+      {
+        "name": "temple-relief-stone.001",
+        "imageNodes": [
+          {
+            "name": "temple-relief-normal",
+            "size": [
+              1024,
+              1024
+            ],
+            "colorSpace": "Non-Color"
+          }
+        ]
+      },
+      {
+        "name": "oxblood-stained-timber.001",
+        "imageNodes": [
+          {
+            "name": "wood-stain-color",
+            "size": [
+              1024,
+              1024
+            ],
+            "colorSpace": "sRGB"
+          },
+          {
+            "name": "Wood092_2K-JPG_NormalGL_1K",
+            "size": [
+              1024,
+              1024
+            ],
+            "colorSpace": "Non-Color"
+          }
+        ]
+      },
+      {
+        "name": "aged-brass.001",
+        "imageNodes": []
+      }
+    ]
+  },
+  "ground.glb": {
+    "imported": true,
+    "meshes": 2,
+    "boundsBlender": [
+      [
+        -9.0,
+        -7.0,
+        -0.12000000476837158
+      ],
+      [
+        9.0,
+        3.6050000190734863,
+        0.008000001311302185
+      ]
+    ],
+    "materials": [
+      {
+        "name": "paving-frontage.001",
+        "imageNodes": [
+          {
+            "name": "PavingStones138_Color_1K",
+            "size": [
+              1024,
+              1024
+            ],
+            "colorSpace": "sRGB"
+          },
+          {
+            "name": "PavingStones138_Roughness_1K",
+            "size": [
+              1024,
+              1024
+            ],
+            "colorSpace": "Non-Color"
+          },
+          {
+            "name": "PavingStones138_NormalGL_1K",
+            "size": [
+              1024,
+              1024
+            ],
+            "colorSpace": "Non-Color"
+          }
+        ]
+      },
+      {
+        "name": "worn-stone.002",
+        "imageNodes": []
+      }
+    ]
+  },
+  "lions-v2.glb": {
+    "imported": true,
+    "meshes": 1,
+    "boundsBlender": [
+      [
+        -2.4600000381469727,
+        -1.5250000953674316,
+        0.0
+      ],
+      [
+        2.4600000381469727,
+        -0.625,
+        1.3200000524520874
+      ]
+    ],
+    "materials": [
+      {
+        "name": "worn-stone.003",
+        "imageNodes": []
+      }
+    ]
+  },
+  "ornaments-v2.glb": {
+    "imported": true,
+    "meshes": 1,
+    "boundsBlender": [
+      [
+        -6.738986968994141,
+        -1.8492921590805054,
+        0.44999998807907104
+      ],
+      [
+        6.738986968994141,
+        -1.098581075668335,
+        2.700000047683716
+      ]
+    ],
+    "materials": [
+      {
+        "name": "worn-stone.004",
+        "imageNodes": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "source": "kit/build_world_v2_scene.py",
+  "blend": "kit/out/scene-v2/scene-v2.blend",
+  "device": "CPU",
+  "samples": 24,
+  "resolution": [
+    1600,
+    900
+  ],
+  "assembly": "street + surfaces + 15 temple-axis-V3 assets + 17 westshop modules + strips + skins (M 10 + A 11) + 10 grays + 4 camphor trees + 38 street props",
+  "props": true,
+  "axisAerialFix": {
+    "old": {
+      "positionGlb": [
+        -30,
+        42,
+        -20
+      ],
+      "targetGlb": [
+        0,
+        0,
+        -50
+      ],
+      "verticalFovDegrees": 50
+    },
+    "new": {
+      "positionGlb": [
+        -36,
+        26,
+        -8
+      ],
+      "targetGlb": [
+        0,
+        0,
+        -28
+      ],
+      "verticalFovDegrees": 48,
+      "specPose": [
+        -36,
+        46,
+        -8,
+        0,
+        2,
+        -46
+      ],
+      "specPoseNonBackground": 0.22
+    },
+    "note": "pose authored axis-local, rendered through the bridge transform"
+  },
+  "cameras": [
+    "street:full-west",
+    "street:full-east",
+    "street:eye-west",
+    "street:eye-east",
+    "street:across",
+    "street:corner",
+    "street:lane",
+    "street:module-near",
+    "bridge:junction-west",
+    "bridge:west-road-mid",
+    "bridge:placeholder-band",
+    "bridge:shanmen-from-road",
+    "bridge:forecourt-oblique",
+    "bridge:axis-long",
+    "bridge:temple-side-east",
+    "bridge:aerial-overview",
+    "temple:court2-pair",
+    "temple:peidian-west-front",
+    "temple:gallery-link",
+    "temple:stage-from-court",
+    "temple:stage-3q",
+    "temple:passage-east",
+    "temple:court3-axis",
+    "temple:houdian-front",
+    "temple:houdian-3q",
+    "temple:axis-aerial"
+  ],
+  "renders": [
+    {
+      "view": "shanmen-from-road",
+      "camera": "bridge:shanmen-from-road",
+      "device": "CPU",
+      "seconds": 24.5,
+      "file": "bridge__shanmen-from-road-cpu.png",
+      "guard": {
+        "brightnessStd255": 47.777,
+        "monoFraction": 0.3656,
+        "blank": false
+      }
+    }
+  ]
+}

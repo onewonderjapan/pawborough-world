@@ -1,0 +1,188 @@
+{
+  "moduleId": "street-props",
+  "axis": "GLB Y-up; origin at footprint center; facade-facing +Z (yaw to facade normal at plan time)",
+  "era": "1990s Shanghai street objects; no post-2000 items (owner standing decision)",
+  "items": {
+    "bicycle-28": {
+      "file": "bicycle-28.glb",
+      "triangles": 684,
+      "fileBytes": 50468,
+      "sha256": "ce93e81d077d3d1c4cb407c8ea9e0b8187223bb26562ab320dd7b46137a83c41"
+    },
+    "wood-crate": {
+      "file": "wood-crate.glb",
+      "triangles": 60,
+      "fileBytes": 89976,
+      "sha256": "3d6103b97572889c4dc4eae84af9e0eeead72c3f45feb75375d488ad48ad4850"
+    },
+    "bamboo-basket": {
+      "file": "bamboo-basket.glb",
+      "triangles": 216,
+      "fileBytes": 14824,
+      "sha256": "479581d5e78f90eb0959c94f806fc1bdc7ec43ab073a7b545f59c6a33b0b600f"
+    },
+    "bamboo-chair": {
+      "file": "bamboo-chair.glb",
+      "triangles": 196,
+      "fileBytes": 13932,
+      "sha256": "9a9b0bd3bd1979426dab09ce4e2fad2b835a563f38a2df4998b67ed7e8ea6eeb"
+    },
+    "cloth-awning": {
+      "file": "cloth-awning.glb",
+      "triangles": 48,
+      "fileBytes": 5340,
+      "sha256": "97bd49231aa29f35033a1cfb247197afb62d522138fd503e09a5519da7d84cd9"
+    }
+  },
+  "collision": {
+    "bicycle-28": [
+      {
+        "name": "bicycle-block",
+        "group": "prop",
+        "type": "box",
+        "min": [
+          -0.225,
+          0.0,
+          -0.9
+        ],
+        "max": [
+          0.225,
+          1.0,
+          0.9
+        ],
+        "obb": {
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "theta": 0.0,
+          "center": [
+            0,
+            0.5,
+            0
+          ],
+          "size": [
+            0.45,
+            1.0,
+            1.8
+          ]
+        }
+      }
+    ],
+    "wood-crate": [
+      {
+        "name": "crate-block",
+        "group": "prop",
+        "type": "box",
+        "min": [
+          -0.3,
+          0.0,
+          -0.225
+        ],
+        "max": [
+          0.3,
+          0.45,
+          0.225
+        ],
+        "obb": {
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "theta": 0.0,
+          "center": [
+            0,
+            0.225,
+            0
+          ],
+          "size": [
+            0.6,
+            0.45,
+            0.45
+          ]
+        }
+      }
+    ],
+    "bamboo-basket": [
+      {
+        "name": "basket-block",
+        "group": "prop",
+        "type": "box",
+        "min": [
+          -0.25,
+          0.0,
+          -0.25
+        ],
+        "max": [
+          0.25,
+          0.34,
+          0.25
+        ],
+        "obb": {
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "theta": 0.0,
+          "center": [
+            0,
+            0.17,
+            0
+          ],
+          "size": [
+            0.5,
+            0.34,
+            0.5
+          ]
+        }
+      }
+    ],
+    "bamboo-chair": [
+      {
+        "name": "chair-block",
+        "group": "prop",
+        "type": "box",
+        "min": [
+          -0.225,
+          0.0,
+          -0.225
+        ],
+        "max": [
+          0.225,
+          0.82,
+          0.225
+        ],
+        "obb": {
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "theta": 0.0,
+          "center": [
+            0,
+            0.41,
+            0
+          ],
+          "size": [
+            0.45,
+            0.82,
+            0.45
+          ]
+        }
+      }
+    ],
+    "cloth-awning": []
+  },
+  "budgets": {
+    "uniqueTrisMax": 1500,
+    "newImages": 0,
+    "actualMaxUniqueTris": 684
+  },
+  "timings": {
+    "totalSeconds": 0.1
+  }
+}

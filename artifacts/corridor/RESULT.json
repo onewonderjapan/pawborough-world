@@ -1,0 +1,39 @@
+{
+  "batch": "pawborough-corridor-video-night-20260919",
+  "package": "D",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "visualReview": "pending_lead",
+  "deliveredAt": "2026-09-19T03:15:06.496379+09:00",
+  "branch": "work/corridor-video-20260919",
+  "baseline": "8fa1bcc",
+  "datasets": {
+    "templeAxisV3": "world/temple-axis-v3/",
+    "placedTriangles": 160574,
+    "budgetLimit": 200000
+  },
+  "variants": [
+    "lions-v2 (G13)",
+    "wing windows v2 (G13)",
+    "entry-court-v3 incense road + burner (G12)",
+    "4 camphor trees (G12)"
+  ],
+  "tests": {
+    "total": 44,
+    "baseline": 39,
+    "new": 5,
+    "pass": true
+  },
+  "evidence": {
+    "webgl": "artifacts/corridor/web/ (10 views, blank-guarded, headless chromium swiftshader)",
+    "blender": "artifacts/corridor/blender/ (4 views from scene-v2, CPU 24spp 1600x900)"
+  },
+  "gatesTouched": [
+    "G11 (untouched: no aging added)",
+    "G12 trees",
+    "G13 lions/windows"
+  ],
+  "notes": [
+    "temple camera transform fix inherited from the v1-candidate scene builder bug; see PROGRESS.json"
+  ]
+}
