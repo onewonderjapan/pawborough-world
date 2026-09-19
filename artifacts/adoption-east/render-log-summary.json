@@ -1,0 +1,34 @@
+{
+  "batch": "pawborough-adoption-east-night-20260919",
+  "scene": "kit/out/scene-v3/scene-v3.blend (build_world_v3_scene.py: v4 full assembly + east band + trees v2 + props ON + 29 cameras + unified rig)",
+  "stills": {
+    "count": 29, "resolution": "1600x900", "samples": 24, "denoiser": "OIDN", "device": "CPU",
+    "blankFails": 0,
+    "note": "26 contract cameras + 3 new east-band cameras; axis-aerial uses the ratified H pose",
+    "log": "kit/out/scene-v3/scene-v3-report.json"
+  },
+  "clipA": {
+    "route": "world/fangbang-temple-v4/route.json (512.2m, 335 pts, east end wall -> houdian doors)",
+    "settings": "1280x720 24fps 16spp OIDN CPU 1.4m/s eye 1.6",
+    "policy": "CPU default (CUDA baseline 8.8 s/f > CPU 5.0 s/f); recheck every 200 frames, switch only if CUDA < CPU x 0.8",
+    "preflight": "5 frames std 39-54/255, pose verified (frames/frame-00000..4)",
+    "cap": "11h wall clock (tools/render_watchdog_adoption.sh: batch-scoped pkill, startup-failure detection at 10min, partial assembly at cap)",
+    "liveLog": "artifacts/adoption-east/render-log.json (written by the running render)",
+    "output": "artifacts/adoption-east/clipA-full.mp4 (assembled by the watchdog at completion or cap; partial per fallback #6)",
+    "status": "rendering in background"
+  },
+  "clipB": {
+    "settings": "1280x720 24fps 16spp orbit 55m/40m around temple local (0,0,-45), 24.0s",
+    "content": "tree v2 in frame; east band visible in the far background",
+    "status": "complete 576/576 (GPU to 456 @ ~8.7s/f, CUDA OOM while clipA held unified memory; CPU resumed 457-575 @ ~5s/f; --resume skips existing frames so no scene change across the device switch)",
+    "mp4": "artifacts/adoption-east/clipB.mp4 (libx264 crf18 yuv420p, 6.9MB)",
+    "blankSample": "7 frames across the GPU/CPU seam, 0 blank, worst std 36.4/255"
+  },
+  "contactSheets": {
+    "tool": "tools/contact_sheet_adoption.py",
+    "views": 12,
+    "before": "corridor batch stills (scene-v2 @ 8c55d6b)",
+    "after": "kit/out/scene-v3 (this batch)",
+    "out": "artifacts/adoption-east/contact-sheets/"
+  }
+}
