@@ -1,0 +1,34 @@
+{
+  "baseline": "ef6dd2b127c14c8bab8851b87b2fd88f02e226a3",
+  "status": "repaired_verified",
+  "ownerVisualDecision": "unchanged",
+  "checks": {
+    "originalCapsuleReproBothSides": "PASS",
+    "bridgeCapsuleBothSides": "PASS",
+    "centralPassage": "PASS",
+    "allV4YBounds": "PASS",
+    "eightStripBounds": [
+      0,
+      2.9
+    ],
+    "tests": {
+      "passed": 54,
+      "failed": 0,
+      "suiteFiles": 52
+    },
+    "encoderFailure": "PASS preserves existing output and emits failed",
+    "probeFailure": "PASS no publication",
+    "realVideoEncoding": "PASS 25/25 complete and 25/30 partial",
+    "versionHashes": {
+      "checked": 612,
+      "mismatches": []
+    }
+  },
+  "renderInputsChanged": false,
+  "limits": [
+    "No full Blender geometry rebuild performed during active video rendering.",
+    "Current full browser/restore reports remain from prior delivery; not relabelled as reruns.",
+    "Video remains in progress; final receipt will be clipA-full.status.json."
+  ],
+  "nextTask": "pawborough-world-closeout-night-20260919"
+}

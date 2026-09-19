@@ -227,12 +227,12 @@ L.box('stage-front-rail', (0, fl['y'] + rail['heightM'] / 2, rail['atLocalZ'] - 
 L.box('stage-front-rail-cap', (0, fl['y'] + rail['heightM'] + .03, rail['atLocalZ'] - .04),
       (fl['xM'][1] * 2 - .14, .06, .14), 'wood', .008)
 
-# short wing walls into the yimen rear (visual closure, no collider per spec)
+# Ground-height wing walls are reachable and must block the walking capsule.
 wx0, wx1 = ww['xM']
 wz0, wz1 = ww['zLocal']
 for sgn in (-1, 1):
     L.box('stage-wing-wall', (sgn * (abs(wx1) - .09), ww['topY'] / 2, (wz0 + wz1) / 2),
-          (.18, ww['topY'], abs(wz1 - wz0)), 'plaster', 0)
+          (.18, ww['topY'], abs(wz1 - wz0)), 'plaster', 0, True)
 print(f'STAGE body ok ({time.time() - T0:.1f}s)')
 
 # ---------------------------------------------------------------------------
@@ -392,14 +392,18 @@ if _offenders:
 print(f"UNDER_STAGE_CLEAR ({len(_offenders)} offenders)")
 
 # ---------------------------------------------------------------------------
-# collision: exactly 4 columns + 1 rail; the floor has NO collider
+# Collision: 4 columns, rail, 2 ground wing walls and retained upper flank guards.
 
 adapter_coll = [rec for rec in L.COLL if rec['name'] in
-                ('stage-column', 'stage-front-rail')]
-if len(adapter_coll) != 5:
-    print('COLLIDER_SET_FAIL expected 4 columns + 1 rail, got',
+                ('stage-column', 'stage-front-rail', 'stage-wing-wall')]
+if len(adapter_coll) != 7:
+    print('COLLIDER_SET_FAIL expected 4 columns + 1 rail + 2 ground wings, got',
           [r['name'] for r in adapter_coll])
     sys.exit(3)
+for side in (-1, 1):
+    adapter_coll.append({'name': 'stage-flank-wall', 'group': 'yimen-stage-body',
+                         'type': 'box', 'center': [side * 3.015, 2.805, -7.105],
+                         'size': [.37, .81, 3.81]})
 for rec in adapter_coll:
     cx, cy, cz = rec['center']
     sx, sy, sz = rec['size']

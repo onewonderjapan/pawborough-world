@@ -1,13 +1,20 @@
 {
   "batch": "pawborough-adoption-east-night-20260919",
   "role": "v1.0 ADOPTED — owner adopted all delivered visuals 2026-09-19 (G1); this batch lands the adoption records, compressed-default loading, trees v2 and the east band (G5/G6/G12/G14)",
-  "generatedAt": "2026-09-19T11:48:38.006Z",
+  "generatedAt": "2026-09-19T14:05:55.849Z",
   "compressedDefault": true,
   "adoption": {
     "decidedAt": "2026-09-19T20:30+09:00",
     "decisionFile": "OWNER_DECISION-20260919.json",
     "decision": "G1_visual_adoption=adopt_all; G5 east band, G6 compressed default, G12 trees v2, G14 video re-render executed per OWNER_DECISION-20260919.json",
     "inTreeBatches": [
+      {
+        "artifact": "adoption-east",
+        "batchId": "pawborough-adoption-east-night-20260919",
+        "ownerAdopted": true,
+        "decidedAt": "2026-09-19T20:30+09:00",
+        "decisionFile": "OWNER_DECISION-20260919.json"
+      },
       {
         "artifact": "corridor",
         "batchId": "pawborough-corridor-video-night-20260919",
@@ -125,9 +132,9 @@
     ]
   },
   "git": {
-    "head": "5830e4d62915e34055a46272f88d6f4ea1b7a064",
+    "head": "ef6dd2b127c14c8bab8851b87b2fd88f02e226a3",
     "branch": "work/adoption-east-20260919",
-    "subject": "GPT-review re-check fixes (engineering acceptance track): stage flank walls (the visible timber side boards x±3.015, y2.40..3.21 had no collider) added to temple-axis-v3 + kit sidecar + composed into v4 (stage_contract S3 now 4 columns + 1 rail + 2 flank walls); west/east shop AABB Y ranges reconciled to obb.center ± size/2 in the v4 pipeline (Y_RECONCILE: 160/790 records fixed — westshop records flattened upper floors y3.49..3.71 onto 0..0.22, counters, thresholds; Y is yaw-invariant so the reconcile is exact); persisted as eastshops_contract S5. 50/50 tests. Physics-only: no visible geometry changed, K1 render unaffected."
+    "subject": "K2/K3 complete + closeout staging: clipB 576/576 (GPU 456 frames @ ~8.7s/f then CUDA OOM while clipA held unified memory; CPU resumed with --resume semantics, 0 blank across the seam, worst std 36.4/255) -> clipB.mp4; render-log-summary.json (clipA live log kept separate as render-log.json); contact sheets 12 views. L1 verified: verify_all 9/9 (freeze_check -> make_version -> sha_reconcile -> dist -> previews -> full_browser_gate 7 scenarios with build attribution + HARD routeCheck), restore_check PASS in a fresh clone. L3 final commit on the code/data/artifact state; clipA continues in background and the watchdog assembles clipA-full.mp4 at completion or the 11h cap."
   },
   "tools": {
     "node": "v22.23.2",
@@ -138,8 +145,9 @@
     "playwright": "1.63.0 (installed --no-save)"
   },
   "tests": {
-    "suiteFiles": 50,
+    "suiteFiles": 52,
     "list": [
+      "tests/adoption_watchdog.test.mjs",
       "tests/asset_cancel.test.mjs",
       "tests/block_lifecycle.test.mjs",
       "tests/block_production.test.mjs",
@@ -164,6 +172,7 @@
       "tests/placeholder_presentation.test.mjs",
       "tests/props_contract.test.mjs",
       "tests/props_visibility.test.mjs",
+      "tests/review_repairs.test.mjs",
       "tests/sc_f1_display_collision.test.mjs",
       "tests/sc_f3_scene_assets.test.mjs",
       "tests/session_lifecycle.test.mjs",
@@ -207,8 +216,8 @@
       "status": null,
       "cameras": 11,
       "files": 537,
-      "totalBytes": 535113486,
-      "filesDigest": "46bfe976cae79af51c75191651e204c1b510fb17a6cfdc24eb96d061132fb6b3"
+      "totalBytes": 535121186,
+      "filesDigest": "cc2337f25715cbb36fd0cbfb5360b831151780450f384a03329a7d6f4904bf17"
     },
     {
       "id": "world/east-edge",
@@ -251,8 +260,8 @@
       "status": "delivered_for_lead_review",
       "cameras": 11,
       "files": 45,
-      "totalBytes": 41793573,
-      "filesDigest": "f4fe77129868bbdb1fd60a87c931cc18c15a6e84b686d6b61aa414a61be7fe78"
+      "totalBytes": 41800180,
+      "filesDigest": "02e28136491a1f4762c5241d756c29a3ec586d469420fddfe56256ecfa2bce32"
     },
     {
       "id": "fangbang-temple",
@@ -328,8 +337,8 @@
       "status": "delivered_for_lead_review",
       "cameras": 10,
       "files": 23,
-      "totalBytes": 27342498,
-      "filesDigest": "170944a2c5ce4f3b7af1eb1f94343d021f9777b6c884c6993f2dfac1100685d2"
+      "totalBytes": 27343591,
+      "filesDigest": "d751ba6812916d6e6ed1c5ba42eac530d5d50b80ba1bf0efe3f3a5032d48a89e"
     },
     {
       "id": "temple-dadian",
@@ -953,8 +962,8 @@
     },
     {
       "path": "world/fangbang-temple-v4/collision-world.json",
-      "bytes": 455741,
-      "sha256": "dbc1695a940c8b78878ee0dd8d9d2b25eb84b86f295b8fe376aa93b774075709"
+      "bytes": 462348,
+      "sha256": "2b5f4ed4f8e036c4b1669ec42a8ca2adc57007f2baad920dcf3b81140484aa5a"
     },
     {
       "path": "world/fangbang-temple-v4/east-extension/seal-wall.glb",
@@ -2673,8 +2682,8 @@
     },
     {
       "path": "world/temple-axis-v3/collision-world.json",
-      "bytes": 104974,
-      "sha256": "9e4cbd491758c5efcb15c355610f44d02c6a821d410d3e4ab55739d6b53d7dbe"
+      "bytes": 106067,
+      "sha256": "a5a9155e715dd4f5f0cdeaa4f3eb5a52c90a02204e3398d47143c0386fd4800c"
     },
     {
       "path": "world/temple-axis-v3/court3.glb",

@@ -11,6 +11,7 @@ import { copyFile, cp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { obbToWorld } from '../src/world/collisionAdapter.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = resolve(root, 'world/fangbang-temple-v4');
@@ -329,8 +330,8 @@ const worldV4 = {
 let yFixed = 0;
 for (const c of worldV4.colliders) {
   if (!c.obb) continue;
-  const [cy, sy] = [c.obb.center[1], c.obb.size[1]];
-  const lo = +(cy - sy / 2).toFixed(6), hi = +(cy + sy / 2).toFixed(6);
+  const { center, halfExtents } = obbToWorld(c);
+  const lo = +(center[1] - halfExtents[1]).toFixed(6), hi = +(center[1] + halfExtents[1]).toFixed(6);
   if (Math.abs(c.min[1] - lo) > 1e-4 || Math.abs(c.max[1] - hi) > 1e-4) yFixed += 1;
   c.min[1] = lo;
   c.max[1] = hi;

@@ -166,10 +166,16 @@ const courtV3Collision = JSON.parse(await readFile(resolve(V3_KIT, 'collision.js
 const treeCollision = JSON.parse(await readFile(resolve(TREE_KIT, 'collision.json'), 'utf8'));
 
 const worldColliders = v2Collision.colliders.filter((c) => {
+  if (c.name.startsWith('yimenstage:')) return false;           // current collision sidecar, not frozen v2
   if (c.name === 'shanmen:lion-plinth') return false;            // replaced by v2 guard boxes
   if (c.name.startsWith('court:')) return false;                 // replaced by the v3 court
   return true;
 });
+const stageCollision = JSON.parse(await readFile(resolve(root, 'kit/out/yimen-stage/collision.json'), 'utf8'));
+const stageInstance = instances.instances.find((i) => i.id === 'yimenstage');
+for (const rec of stageCollision.colliders)
+  worldColliders.push(compose(stageInstance.positionGlb, stageInstance.rotationYRad,
+    { ...rec, name: `yimenstage:${rec.name}` }));
 for (const c of shanmenV2Collision.colliders) {
   if (!c.name.startsWith('lion2-')) continue;                    // the two guard boxes
   worldColliders.push({ ...c, name: `shanmen:${c.name}`, group: `shanmen:shanmen-lion` });

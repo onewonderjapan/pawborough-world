@@ -198,17 +198,17 @@ const boxes = [];
 }
 
 // S5 — AABB Y reconcile (GPT review re-check): every obb-bearing collider's
-// min/max Y must equal obb.center[1] ± size[1]/2 (westshop records used to
+// min/max Y must equal obb.pos[1] + obb.center[1] ± size[1]/2 (westshop records used to
 // flatten upper floors/counters onto the ground)
 {
   let bad = 0;
   for (const c of v4collision.colliders) {
     if (!c.obb) continue;
-    const lo = c.obb.center[1] - c.obb.size[1] / 2;
-    const hi = c.obb.center[1] + c.obb.size[1] / 2;
+    const lo = (c.obb.pos[1] ?? 0) + c.obb.center[1] - c.obb.size[1] / 2;
+    const hi = (c.obb.pos[1] ?? 0) + c.obb.center[1] + c.obb.size[1] / 2;
     if (Math.abs(c.min[1] - lo) > 1e-3 || Math.abs(c.max[1] - hi) > 1e-3) bad += 1;
   }
-  check('S5: every obb collider Y range == center ± size/2', bad === 0, `${bad} mismatches`);
+  check('S5: every obb collider Y range == pos + center ± size/2', bad === 0, `${bad} mismatches`);
   // the stage flank walls (adoption batch fix) composed into the v4 world
   const flanks = v4collision.colliders.filter((c) => c.name === 'yimenstage:stage-flank-wall');
   check('S5: stage flank walls present (2)', flanks.length === 2, `${flanks.length}`);
