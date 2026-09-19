@@ -2,8 +2,8 @@
   "taskId": "pawborough-temple-expansion-night",
   "batch": "pawborough-temple-expansion-night-20260917",
   "status": "delivered_for_lead_review",
-  "ownerAdopted": false,
-  "visualReview": "pending_lead",
+  "ownerAdopted": true,
+  "visualReview": "owner_adopted_20260919",
   "packages": {
     "package1_templeExpansion": {
       "status": "delivered_for_lead_review",
@@ -158,5 +158,6 @@
       "webgl": "artifacts/temple-expansion/webgl/ (12 temple-v2 + 3 bridge-v2 shots, blank-guard PASS, cameraCheck dPos=0)"
     },
     "head": "2a4103c"
-  }
+  },
+  "adoptionDecision": "OWNER_DECISION-20260919.json"
 }

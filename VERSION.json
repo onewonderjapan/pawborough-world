@@ -1,11 +1,126 @@
 {
-  "batch": "pawborough-v1-candidate-night-20260918",
-  "role": "v1.0 CANDIDATE — not adopted; every ownerAdopted stays false until the owner rules (GATE.md)",
-  "generatedAt": "2026-09-19T04:10:00.008Z",
+  "batch": "pawborough-adoption-east-night-20260919",
+  "role": "v1.0 ADOPTED — owner adopted all delivered visuals 2026-09-19 (G1); this batch lands the adoption records, compressed-default loading, trees v2 and the east band (G5/G6/G12/G14)",
+  "generatedAt": "2026-09-19T07:14:15.675Z",
+  "compressedDefault": true,
+  "adoption": {
+    "decidedAt": "2026-09-19T20:30+09:00",
+    "decisionFile": "OWNER_DECISION-20260919.json",
+    "decision": "G1_visual_adoption=adopt_all; G5 east band, G6 compressed default, G12 trees v2, G14 video re-render executed per OWNER_DECISION-20260919.json",
+    "inTreeBatches": [
+      {
+        "artifact": "corridor",
+        "batchId": "pawborough-corridor-video-night-20260919",
+        "ownerAdopted": true,
+        "decidedAt": "2026-09-19T20:30+09:00",
+        "decisionFile": "OWNER_DECISION-20260919.json"
+      },
+      {
+        "artifact": "corridor-video",
+        "batchId": "pawborough-corridor-video-night-20260919",
+        "ownerAdopted": true,
+        "decidedAt": "2026-09-19T20:30+09:00",
+        "decisionFile": "OWNER_DECISION-20260919.json"
+      },
+      {
+        "artifact": "fangbang-temple",
+        "batchId": null,
+        "ownerAdopted": true,
+        "decidedAt": "2026-09-19T20:30+09:00",
+        "decisionFile": "OWNER_DECISION-20260919.json"
+      },
+      {
+        "artifact": "street-props",
+        "batchId": "pawborough-corridor-video-night-20260919",
+        "ownerAdopted": true,
+        "decidedAt": "2026-09-19T20:30+09:00",
+        "decisionFile": "OWNER_DECISION-20260919.json"
+      },
+      {
+        "artifact": "street-sidefaces",
+        "batchId": "pawborough-temple-expansion-night-20260917 (package 2)",
+        "ownerAdopted": true,
+        "decidedAt": "2026-09-19T20:30+09:00",
+        "decisionFile": "OWNER_DECISION-20260919.json"
+      },
+      {
+        "artifact": "temple-expansion",
+        "batchId": "pawborough-temple-expansion-night-20260917",
+        "ownerAdopted": true,
+        "decidedAt": "2026-09-19T20:30+09:00",
+        "decisionFile": "OWNER_DECISION-20260919.json"
+      },
+      {
+        "artifact": "temple-shanmen",
+        "batchId": null,
+        "ownerAdopted": true,
+        "decidedAt": "2026-09-19T20:30+09:00",
+        "decisionFile": "OWNER_DECISION-20260919.json"
+      },
+      {
+        "artifact": "temple-shanmen-repair",
+        "batchId": null,
+        "ownerAdopted": true,
+        "decidedAt": "2026-09-19T20:30+09:00",
+        "decisionFile": "OWNER_DECISION-20260919.json"
+      },
+      {
+        "artifact": "v1-candidate",
+        "batchId": "pawborough-v1-candidate-night-20260918",
+        "ownerAdopted": true,
+        "decidedAt": "2026-09-19T20:30+09:00",
+        "decisionFile": "OWNER_DECISION-20260919.json"
+      },
+      {
+        "artifact": "westshops",
+        "batchId": "pawborough-v1-candidate-night-20260918",
+        "ownerAdopted": true,
+        "decidedAt": "2026-09-19T20:30+09:00",
+        "decisionFile": "OWNER_DECISION-20260919.json"
+      }
+    ],
+    "historicalBatches": [
+      {
+        "batchId": "pawborough-east-edge-night-20260914",
+        "ownerAdopted": true,
+        "decidedAt": "2026-09-19T20:30+09:00",
+        "decisionFile": "OWNER_DECISION-20260919.json",
+        "note": "RESULT.json lives in the batch worktree; registered here only, never modified across trees"
+      },
+      {
+        "batchId": "pawborough-lane-b-night-20260914",
+        "ownerAdopted": true,
+        "decidedAt": "2026-09-19T20:30+09:00",
+        "decisionFile": "OWNER_DECISION-20260919.json",
+        "note": "RESULT.json lives in the batch worktree; registered here only, never modified across trees"
+      },
+      {
+        "batchId": "pawborough-street-completion-20260915",
+        "ownerAdopted": true,
+        "decidedAt": "2026-09-19T20:30+09:00",
+        "decisionFile": "OWNER_DECISION-20260919.json",
+        "note": "RESULT.json lives in the batch worktree; registered here only, never modified across trees"
+      },
+      {
+        "batchId": "pawborough-temple-dadian-night-20260915",
+        "ownerAdopted": true,
+        "decidedAt": "2026-09-19T20:30+09:00",
+        "decisionFile": "OWNER_DECISION-20260919.json",
+        "note": "RESULT.json lives in the batch worktree; registered here only, never modified across trees"
+      },
+      {
+        "batchId": "pawborough-temple-entry-court-yimen-20260915",
+        "ownerAdopted": true,
+        "decidedAt": "2026-09-19T20:30+09:00",
+        "decisionFile": "OWNER_DECISION-20260919.json",
+        "note": "RESULT.json lives in the batch worktree; registered here only, never modified across trees"
+      }
+    ]
+  },
   "git": {
-    "head": "6f32e49e72d8bc7fba698d6ef1ca5b66060405fd",
-    "branch": "work/corridor-video-20260919",
-    "subject": "F package delivered: unified light rig (pixel diff 0.000% same-camera), fangbang-temple-v4 dataset + ?ds= + scene-v2 (26 rig-lit stills 0-blank), axis-aerial pose fix (adjusted 0.435 non-bg vs spec 0.22 failing its own gate; inherited raw-camera bug fixed for both G sides), clipA walkthrough 6293/6896 partial @9h cap (264.2s, CPU per policy, 0 blanks, preflight verified) + clipB orbit 576/576 GPU (24.0s), ffmpeg libx264 crf18, G0 contact sheets rebuilt from rig-lit pair"
+    "head": "5edc10cc912bbcc04fd9a1d26b1af24acbbf2bd1",
+    "branch": "work/adoption-east-20260919",
+    "subject": "merge v1 candidate + corridor/video batches (8c55d6b) into main"
   },
   "tools": {
     "node": "v22.23.2",
@@ -81,8 +196,8 @@
       "status": null,
       "cameras": 11,
       "files": 537,
-      "totalBytes": 534812988,
-      "filesDigest": "287ab76077c8eb631e4e31a91f2d3afb5f888a57a0bdfdcb9d0b9e53c0d95313"
+      "totalBytes": 534814694,
+      "filesDigest": "f7ad5a1d45f7d8f0ad7f8c5fa98f3f1bb91664770301c1004bdede09bb69a8b7"
     },
     {
       "id": "world/east-edge",
@@ -125,8 +240,8 @@
       "status": "delivered_for_lead_review",
       "cameras": 8,
       "files": 45,
-      "totalBytes": 41566217,
-      "filesDigest": "b6b4e1c2ed59c1a367fa200b9dfbf1eb608f182db69d5133fa9437f100fcccc2"
+      "totalBytes": 41567923,
+      "filesDigest": "04497d6895db876b5e5d84fec0e3d8c2f58ca77823230140ce6c72e7dec45d5f"
     },
     {
       "id": "fangbang-temple",
@@ -837,8 +952,8 @@
     },
     {
       "path": "world/fangbang-temple-v4/review-manifest.cm.json",
-      "bytes": 40016,
-      "sha256": "f210dbbe12c4d6b21cfc48f298a7d400f9a9d06776f1fb7247080b9952c2f98f"
+      "bytes": 41722,
+      "sha256": "0285b54f4d9cab77b9917da16abe77948389922dfdb6367c83d262e29f9a7528"
     },
     {
       "path": "world/fangbang-temple-v4/review-manifest.json",

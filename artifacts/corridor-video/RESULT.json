@@ -2,8 +2,8 @@
   "batch": "pawborough-corridor-video-night-20260919",
   "package": "F",
   "status": "delivered_for_lead_review",
-  "ownerAdopted": false,
-  "visualReview": "pending_lead",
+  "ownerAdopted": true,
+  "visualReview": "owner_adopted_20260919",
   "deliveredAt": "2026-09-19T13:08:34.047329+09:00",
   "F0": {
     "rig": "kit/light_rig.py (Sun 3.0 @(55,0,-35) 1.5deg angular, world gray 0.55, fill AREA 60W camera-following, AgX Base Contrast, legacy lights disabled)",
@@ -64,5 +64,6 @@
   },
   "gatesTouched": [
     "G14 (clips as v1.0 attachments + axis-aerial adjusted pose ratification)"
-  ]
+  ],
+  "adoptionDecision": "OWNER_DECISION-20260919.json"
 }

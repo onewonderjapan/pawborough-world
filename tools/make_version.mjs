@@ -72,10 +72,52 @@ try { blender = execSync('blender --version', { encoding: 'utf8' }).split('\n')[
 const pkg = JSON.parse(await readFile(resolve(root, 'package.json'), 'utf8'));
 const tests = (await walk(resolve(root, 'tests'), (n) => n.endsWith('.test.mjs'))).sort();
 
+// H1 (adoption batch 20260919): the owner adopted every delivered batch
+// (OWNER_DECISION-20260919.json G1 adopt_all). RESULT.json files inside THIS
+// tree carry the fields directly; historical batches whose RESULT.json lives
+// in another worktree are registered here by batchId only — their files are
+// never modified across trees.
+const decisionFile = 'OWNER_DECISION-20260919.json';
+const adoptedArtifacts = [];
+for (const dir of (await readdir(resolve(root, 'artifacts'), { withFileTypes: true }))) {
+  if (!dir.isDirectory()) continue;
+  try {
+    const r = JSON.parse(await readFile(resolve(root, 'artifacts', dir.name, 'RESULT.json'), 'utf8'));
+    if (r.ownerAdopted === true) {
+      adoptedArtifacts.push({
+        artifact: dir.name,
+        batchId: r.batch ?? r.batchId ?? null,
+        ownerAdopted: true,
+        decidedAt: '2026-09-19T20:30+09:00',
+        decisionFile,
+      });
+    }
+  } catch { /* no RESULT.json in this artifact dir */ }
+}
+adoptedArtifacts.sort((a, b) => a.artifact.localeCompare(b.artifact));
+// cross-tree historical batches (RESULT.json lives in their own worktrees):
+// street-completion 130-133 + tail, temple entry, dadian, east-edge 128/129,
+// sidefaces-full (evidence-only dir in this tree)
+const historicalAdoptedBatches = [
+  'pawborough-east-edge-night-20260914',
+  'pawborough-lane-b-night-20260914',
+  'pawborough-street-completion-20260915',
+  'pawborough-temple-dadian-night-20260915',
+  'pawborough-temple-entry-court-yimen-20260915',
+];
+
 const version = {
-  batch: 'pawborough-v1-candidate-night-20260918',
-  role: 'v1.0 CANDIDATE — not adopted; every ownerAdopted stays false until the owner rules (GATE.md)',
+  batch: 'pawborough-adoption-east-night-20260919',
+  role: 'v1.0 ADOPTED — owner adopted all delivered visuals 2026-09-19 (G1); this batch lands the adoption records, compressed-default loading, trees v2 and the east band (G5/G6/G12/G14)',
   generatedAt: new Date().toISOString(),
+  compressedDefault: true,
+  adoption: {
+    decidedAt: '2026-09-19T20:30+09:00',
+    decisionFile,
+    decision: 'G1_visual_adoption=adopt_all; G5 east band, G6 compressed default, G12 trees v2, G14 video re-render executed per OWNER_DECISION-20260919.json',
+    inTreeBatches: adoptedArtifacts,
+    historicalBatches: historicalAdoptedBatches.map((b) => ({ batchId: b, ownerAdopted: true, decidedAt: '2026-09-19T20:30+09:00', decisionFile, note: 'RESULT.json lives in the batch worktree; registered here only, never modified across trees' })),
+  },
   git: {
     head: git('git rev-parse HEAD'),
     branch: git('git rev-parse --abbrev-ref HEAD'),
@@ -135,7 +177,7 @@ const html = `<!doctype html><html lang="zh-CN"><meta charset="utf-8">
  .meta{color:#666;font-size:.85rem}
 </style>
 <h1>Pawborough v1.0 候选包 — 入口（index-v1）</h1>
-<p class="note">候选状态：所有数据集 ownerAdopted = <b>false</b>，待机主在 GATE.md 决策门逐项裁决后方可封版。生成时间 ${esc(version.generatedAt)} · head <code>${esc(version.git.head ?? '?')}</code></p>
+<p class="note">采用状态：机主 2026-09-19 已裁决采用全部已交付视觉（OWNER_DECISION-20260919.json G1 adopt_all）；各批 RESULT.json 的 ownerAdopted=true，历史批在本页 VERSION.json.adoption 登记。压缩变体<b>默认加载</b>（<code>*.cm.glb</code>），URL 加 <code>?compressed=0</code> 可回原始字节。生成时间 ${esc(version.generatedAt)} · head <code>${esc(version.git.head ?? '?')}</code></p>
 <h2>页面（现役端口）</h2>
 <table>
 <tr><th>页面</th><th>URL</th><th>数据集</th><th>placedTriangles</th></tr>

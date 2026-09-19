@@ -2,8 +2,8 @@
   "taskId": "pawborough-fangbang-temple-bridge-night",
   "packageId": "pawborough-fangbang-temple-bridge-night-20260916",
   "status": "delivered_for_lead_review",
-  "ownerAdopted": false,
-  "visualReview": "pending_lead",
+  "ownerAdopted": true,
+  "visualReview": "owner_adopted_20260919",
   "branch": "work/fangbang-temple-bridge-20260916",
   "baseHead": "81a68d3",
   "date": "2026-09-16",
@@ -136,5 +136,6 @@
     ],
     "tests": "29/29 green",
     "status": "delivered_for_lead_review"
-  }
+  },
+  "adoptionDecision": "OWNER_DECISION-20260919.json"
 }

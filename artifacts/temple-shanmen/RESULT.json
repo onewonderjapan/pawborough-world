@@ -1,17 +1,29 @@
 {
   "taskId": "pawborough-temple-shanmen-main",
   "status": "delivered_for_lead_review",
-  "ownerAdopted": false,
-  "visualReview": "pending_lead",
+  "ownerAdopted": true,
+  "visualReview": "owner_adopted_20260919",
   "date": "2026-09-15",
   "executor": "GLM-5.3 (owner-started single session, continuous run)",
   "branch": "work/temple-shanmen-20260915",
   "baseline": "10df12a (street-completion closeout)",
   "commits": [
-    {"sha": "a385d8f", "scope": "S1-S4 配置校验构建器 + 剖面放样屋面 + 两翼/前场 + 候选雕饰 + 四目标导出"},
-    {"sha": "f49819c", "scope": "S5 独立样板入口5290/5291 + 数据集 + node契约/通行测试"},
-    {"sha": "1f76437", "scope": "S6 6机位Blender渲染 + 灰模 + native↔GLB同机位对照 + 性能记录"},
-    {"sha": "THIS", "scope": "S7 交付收口（RESULT/DELIVERY/PROGRESS/证据索引）"}
+    {
+      "sha": "a385d8f",
+      "scope": "S1-S4 配置校验构建器 + 剖面放样屋面 + 两翼/前场 + 候选雕饰 + 四目标导出"
+    },
+    {
+      "sha": "f49819c",
+      "scope": "S5 独立样板入口5290/5291 + 数据集 + node契约/通行测试"
+    },
+    {
+      "sha": "1f76437",
+      "scope": "S6 6机位Blender渲染 + 灰模 + native↔GLB同机位对照 + 性能记录"
+    },
+    {
+      "sha": "THIS",
+      "scope": "S7 交付收口（RESULT/DELIVERY/PROGRESS/证据索引）"
+    }
   ],
   "deliverables": {
     "building": "world/temple-shanmen/temple.glb（门楼+两翼八字墙+匾额，16,322 tris，3.05MB）",
@@ -23,16 +35,47 @@
     "webgl": "kit/out/temple-shanmen/web/（8张实测图+每张页面遥测JSON）"
   },
   "budgets": {
-    "buildingAndWallsTris": {"actual": 16322, "limit": 50000, "pass": true},
-    "fullSetTris": {"actual": 21634, "limit": 60000, "pass": true},
-    "mainGlbBytes": {"actual": 3051572, "limit": 8000000, "pass": true},
-    "groundGlbBytes": {"actual": 860724, "limit": 2000000, "pass": true},
-    "newImages": {"actual": 2, "limit": 2, "pass": true, "note": "匾额2048×720 sRGB(字体来源已记录) + 浮雕法线1024 Non-Color，本地原创"}
+    "buildingAndWallsTris": {
+      "actual": 16322,
+      "limit": 50000,
+      "pass": true
+    },
+    "fullSetTris": {
+      "actual": 21634,
+      "limit": 60000,
+      "pass": true
+    },
+    "mainGlbBytes": {
+      "actual": 3051572,
+      "limit": 8000000,
+      "pass": true
+    },
+    "groundGlbBytes": {
+      "actual": 860724,
+      "limit": 2000000,
+      "pass": true
+    },
+    "newImages": {
+      "actual": 2,
+      "limit": 2,
+      "pass": true,
+      "note": "匾额2048×720 sRGB(字体来源已记录) + 浮雕法线1024 Non-Color，本地原创"
+    }
   },
   "validation": {
-    "gltfValidator": {"errors": 0, "warnings": 0, "checked": "4 GLB"},
+    "gltfValidator": {
+      "errors": 0,
+      "warnings": 0,
+      "checked": "4 GLB"
+    },
     "tests": "15/15 套件 PASS（含新增 temple contract 33项 / passage 11项；13套既有回归全绿）",
-    "clearOpening": {"netM": [3.0, 3.1], "verifiedFrom": "配置三字段交叉 + 导出GLB顶点走廊零占用 + Rapier胶囊穿行(横向漂移1mm, 通道内落地)"},
+    "clearOpening": {
+      "netM": [
+        3.0,
+        3.1
+      ],
+      "verifiedFrom": "配置三字段交叉 + 导出GLB顶点走廊零占用 + Rapier胶囊穿行(横向漂移1mm, 通道内落地)"
+    },
     "negatives": "侧向拦停/门板拦停/越界坠落(无隐形地面)/斜墙OBB记录自洽/损坏GLB被validator拒绝",
     "cameras": "6机位逐值核对：WebGL dPos=0/dFov=0；Blender镜头经测量+牛顿校正后 degrees(angle)==合同值",
     "roundTrip": "native↔GLB同机位像素对照 mean|d|=0.057/255，max12，>8级差异像素0.003%（纹理重编码量级）"
@@ -65,5 +108,6 @@
     "buildDist": "npm run build && npm run preview:temple   # 5291",
     "webglEvidence": "node scripts/capture_temple_web.mjs",
     "renders": "blender -b --factory-startup -t 4 -P kit/build_temple_scene.py -- --mode review --out kit/out/temple-shanmen-renders && blender -b --factory-startup -t 4 -P kit/build_temple_scene.py -- --mode compare --out kit/out/temple-shanmen-renders"
-  }
+  },
+  "adoptionDecision": "OWNER_DECISION-20260919.json"
 }

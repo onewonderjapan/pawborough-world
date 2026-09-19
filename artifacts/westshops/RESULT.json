@@ -2,7 +2,7 @@
   "batch": "pawborough-v1-candidate-night-20260918",
   "package": "B 西延带 17 占位升级（B0–B5）",
   "status": "delivered_for_lead_review",
-  "ownerAdopted": false,
+  "ownerAdopted": true,
   "head": "see git log -1",
   "dataset": {
     "id": "fangbang-temple-v3",
@@ -75,5 +75,7 @@
       "verdict": "fixed — artifacts/sidefaces-full/blender/ now carries the 4 A-batch renders (junction-west/west-road-mid/placeholder-band/aerial-overview, CPU 24spp, blank guard clean)"
     },
     "route": "cruise route unchanged as a contract; it runs on the built centerline and now clears the front-line geometry (previously blocked by the mis-angled 41 m strip)"
-  }
+  },
+  "visualReview": "owner_adopted_20260919",
+  "adoptionDecision": "OWNER_DECISION-20260919.json"
 }

@@ -15,6 +15,13 @@ import { addWallCollider, addGroundCollider } from './world/physics.js';
 import { WalkController } from './player/WalkController.js';
 import { CAPSULE, createSceneRig, applyViewVerified, loadGlbWithStats, groundMeshesOf,
          saveEvidence, countResources } from './templeViewShared.js';
+import { compressedEnabled, installCompressedFetch } from './world/compressedState.js';
+
+// H2 (adoption batch 20260919): compressed variant loads by DEFAULT;
+// ?compressed=0 returns to the original bytes. The install probes for the
+// dataset's review-manifest.cm.json — temple-axis-v2 has none, so this page
+// serves the original manifest + GLBs unless a compressed manifest appears.
+const PARAMS = new URLSearchParams(location.search);
 
 const app = document.querySelector('#app'), stats = document.querySelector('#stats'),
   viewsEl = document.querySelector('#views'), noticeEl = document.querySelector('#notice');
@@ -406,6 +413,7 @@ new ResizeObserver(() => {
 
 async function load() {
   await RAPIER.init();
+  await installCompressedFetch(BASE, compressedEnabled(PARAMS));
   const camContract = await json(BASE + 'cameras.json');
   cameras = camContract.cameras;
   manifest = await json(BASE + 'review-manifest.json');

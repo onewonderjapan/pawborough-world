@@ -2,8 +2,8 @@
   "taskId": "pawborough-temple-shanmen-repair",
   "title": "山门T1-T3主控返修（匾额遮挡 / 翼墙统一变换 / 肩屋面起翘与瓦垄）",
   "status": "delivered_for_lead_review",
-  "ownerAdopted": false,
-  "visualReview": "pending_lead",
+  "ownerAdopted": true,
+  "visualReview": "owner_adopted_20260919",
   "baseHead": "fc66f69",
   "branch": "work/temple-shanmen-20260915",
   "revision": "artifacts/lead-review-20260915/DESIGN_REVISION.json (T1-T3)",
@@ -81,5 +81,6 @@
     "node scripts/capture_temple_web.mjs"
   ],
   "executorModel": "GLM-5.3 (unchanged; no model switch, no Flash/external generation)",
-  "deliveredAt": "2026-09-15"
+  "deliveredAt": "2026-09-15",
+  "adoptionDecision": "OWNER_DECISION-20260919.json"
 }

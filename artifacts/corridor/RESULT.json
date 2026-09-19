@@ -2,8 +2,8 @@
   "batch": "pawborough-corridor-video-night-20260919",
   "package": "D",
   "status": "delivered_for_lead_review",
-  "ownerAdopted": false,
-  "visualReview": "pending_lead",
+  "ownerAdopted": true,
+  "visualReview": "owner_adopted_20260919",
   "deliveredAt": "2026-09-19T03:15:06.496379+09:00",
   "branch": "work/corridor-video-20260919",
   "baseline": "8fa1bcc",
@@ -35,5 +35,6 @@
   ],
   "notes": [
     "temple camera transform fix inherited from the v1-candidate scene builder bug; see PROGRESS.json"
-  ]
+  ],
+  "adoptionDecision": "OWNER_DECISION-20260919.json"
 }

@@ -2,8 +2,8 @@
   "taskId": "pawborough-temple-expansion-night",
   "batch": "pawborough-temple-expansion-night-20260917 (package 2)",
   "status": "delivered_for_lead_review",
-  "ownerAdopted": false,
-  "visualReview": "pending_lead",
+  "ownerAdopted": true,
+  "visualReview": "owner_adopted_20260919",
   "dataset": "world/street-sidefaces/",
   "loadPath": "fangbang.html?ds=fangbang-temple-v2&skins=1 (append-only, default OFF; works on any ?ds= world)",
   "places": [
@@ -65,5 +65,6 @@
     "package1": "02ee0b9",
     "package2": "this commit"
   },
-  "generatedBy": "GLM-Flash (ZCode session, owner-started night run 2026-09-17)"
+  "generatedBy": "GLM-Flash (ZCode session, owner-started night run 2026-09-17)",
+  "adoptionDecision": "OWNER_DECISION-20260919.json"
 }

@@ -60,7 +60,8 @@ PA="${PREVIEW_PORT_A:-5306}"; PB="${PREVIEW_PORT_B:-5307}"
 step preview_a bash -c "nohup node_modules/.bin/vite preview --host 127.0.0.1 --port $PA --strictPort >/tmp/verify_preview_$PA.log 2>&1 & sleep 2; curl -sf -o /dev/null http://127.0.0.1:$PA/fangbang.html"
 step preview_b bash -c "nohup node_modules/.bin/vite preview --host 127.0.0.1 --port $PB --strictPort >/tmp/verify_preview_$PB.log 2>&1 & sleep 2; curl -sf -o /dev/null http://127.0.0.1:$PB/temple-v2.html"
 step cruise node tools/cruise_dist.mjs --base-a http://127.0.0.1:$PA --base-b http://127.0.0.1:$PB
-pkill -f "[v]ite preview --port 530[67]" 2>/dev/null || true
+pkill -f "[v]ite preview --port $PA" 2>/dev/null || true
+pkill -f "[v]ite preview --port $PB" 2>/dev/null || true
 
 python3 - "$REPORT_DIR/verify-report.json" "$STARTED_AT" "$STEPS_JSONL" <<'EOF'
 import json, sys, datetime
