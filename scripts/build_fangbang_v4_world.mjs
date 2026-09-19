@@ -14,7 +14,14 @@ import { fileURLToPath } from 'node:url';
 import { obbToWorld } from '../src/world/collisionAdapter.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const OUT = resolve(root, 'world/fangbang-temple-v4');
+// closeout batch 20260919: the output directory is EXPLICIT and never
+// overwritten. The old behavior rm -rf'ed world/fangbang-temple-v4 and
+// regenerated in place — that could silently roll the ADOPTED dataset back
+// (tree v1 paths, pre-variant swaps). Now: no --out -> the default dataset
+// path is refused because it always exists; pass --out <dir> pointing at a
+// FRESH isolated directory (rebuild harness: artifacts/world-closeout/rebuild-*).
+const outArgIdx = process.argv.indexOf('--out');
+const OUT = outArgIdx > -1 ? resolve(root, process.argv[outArgIdx + 1]) : resolve(root, 'world/fangbang-temple-v4');
 const V3 = resolve(root, 'world/fangbang-temple-v3');
 const V3AXIS = resolve(root, 'world/temple-axis-v3');
 const PROPS = resolve(root, 'world/street-props');
@@ -24,7 +31,13 @@ const YAW = 0.16703;
 const cy = Math.cos(YAW), sy = Math.sin(YAW);
 const axisToWorld = ([x, y, z]) => [T[0] + cy * x + sy * z, y, T[2] - sy * x + cy * z];
 
-await rm(OUT, { recursive: true, force: true });
+{
+  const { existsSync } = await import('node:fs');
+  if (existsSync(OUT)) {
+    throw new Error(`refusing to write into existing output dir: ${OUT}\n`
+      + 'the adopted dataset is never regenerated in place; pass --out <fresh-dir> for an isolated rebuild');
+  }
+}
 await mkdir(OUT, { recursive: true });
 
 // --- copy the v3 dataset-owned files -------------------------------------------

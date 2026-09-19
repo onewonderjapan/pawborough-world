@@ -14,7 +14,11 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const OUT = resolve(root, 'world/temple-axis-v3');
+// closeout batch 20260919: explicit --out, never overwrite. The old behavior
+// merged output INTO the live world/temple-axis-v3; the adopted dataset must
+// not be mutated by a regeneration — pass --out <fresh-dir> instead.
+const outArgIdx = process.argv.indexOf('--out');
+const OUT = outArgIdx > -1 ? resolve(root, process.argv[outArgIdx + 1]) : resolve(root, 'world/temple-axis-v3');
 const V2 = resolve(root, 'world/temple-axis-v2');
 const SHANMEN_V2_KIT = resolve(root, 'kit/out/shanmen-v2-assets');
 const V3_KIT = resolve(root, 'kit/out/temple-axis-v3-assets');
@@ -22,6 +26,13 @@ const TREE_KIT = resolve(root, 'kit/out/tree-camphor');
 const sha = (b) => createHash('sha256').update(b).digest('hex');
 const HALF_PI = 1.5707963267948966;
 
+{
+  const { existsSync } = await import('node:fs');
+  if (existsSync(OUT)) {
+    throw new Error(`refusing to write into existing output dir: ${OUT}\n`
+      + 'the adopted dataset is never regenerated in place; pass --out <fresh-dir> for an isolated rebuild');
+  }
+}
 await mkdir(OUT, { recursive: true });
 
 // --- obb -> world AABB (same math as src/world/collisionAdapter.obbToWorld) --
@@ -83,11 +94,15 @@ const distToRoute = (pts, x, z) => {
   }
   return { d: best, nx: bx, nz: bz };
 };
+// tree placements (closeout fix): the ADOPTED G12 positions (I2 moved the
+// four trees to the courtyard-wall line, court-center 60% kept clear —
+// world/temple-axis-v3/instances.json is the authority). The old hardcoded
+// pre-I2 positions would silently roll the trees back to their retired spots.
 const TREE_POS = {
-  'tree-court2-w': [-7.2, 0, -37.6],
-  'tree-court2-e': [7.2, 0, -37.6],
-  'tree-court3-w': [-10.5, 0, -64.0],
-  'tree-court3-e': [10.5, 0, -64.0],
+  'tree-court2-w': [-6.7, 0, -33.2],
+  'tree-court2-e': [8.6, 0, -33.2],
+  'tree-court3-w': [-13.0, 0, -61.0],
+  'tree-court3-e': [14.0, 0, -62.0],
 };
 const placementShifts = [];
 const droppedTrees = [];
@@ -117,7 +132,7 @@ const instances = {
       : i),
     ...Object.entries(TREE_POS).map(([id, positionGlb]) => ({
       id, module: 'temple-tree-camphor', positionGlb, rotationYRad: 0,
-      note: 'D3 camphor tree, design_inference (position/spec values)',
+      note: 'D3 trees v2 (adoption batch): moved to courtyard-wall line, court-center 60% kept clear',
     })),
   ],
 };
@@ -155,8 +170,14 @@ await copyKit('ornamentsV2', SHANMEN_V2_KIT, 'ornaments-v2.glb',
   { variantOf: 'ornaments', note: 'v2 square lattice windows 1.1x1.1 on the wing walls, design_inference' });
 await copyKit('entryCourtV3', V3_KIT, 'entry-court-v3.glb',
   { variantOf: 'courtOpen', note: 'court-open + incense road (temple-ground__worn-stone) + bronze burner' });
-await copyKit('tree', TREE_KIT, 'tree-camphor.glb',
-  { note: 'single module, 4 instances', instances: 4,
+// tree input (closeout fix): the ADOPTED dataset carries tree-camphor-V2 (I2
+// replaced the v1 module in place). The old line copied 'tree-camphor.glb' —
+// the retired v1 module — which would silently restore the old tree (the kit
+// measurements no longer carry a v1 target, so the hash guard now hard-fails
+// instead). Emit the v2 GLB, matching the adopted manifest's assets.tree.file.
+await copyKit('tree', TREE_KIT, 'tree-camphor-v2.glb',
+  { note: 'D3 trees v2 (adoption batch 20260919): multi-lobe canopy, seed 20260919, owner G12 rebuild; moved to courtyard-wall line per frame rule',
+    instances: 4,
     instancesAt: Object.fromEntries(Object.entries(TREE_POS)) });
 
 // --- collision-world: v2 records MINUS swapped sources PLUS v3 records ---------

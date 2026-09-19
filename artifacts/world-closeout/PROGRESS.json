@@ -76,7 +76,30 @@
       "tests": "tests/compressed_default.test.mjs 钉定更新（cm 数据集 +temple-axis-v3/street-props；原始态钉定 -这两者；新增 4b 容差回退负例）+ collectGlbs 豁免 previousFile 溯源字段；全套 54/54"
     },
     "O": { "status": "pending" },
-    "P": { "status": "pending" },
+    "P": {
+      "status": "done",
+      "finishedAt": "2026-09-20T00:2x+08:00",
+      "generatorChanges": {
+        "build_fangbang_v4_world.mjs": "新增 --out；默认路径因已存在直接拒绝——删除『rm -rf OUT 再原地重建』默认行为，已采用数据集不可能被重建回滚",
+        "build_temple_axis_v3_world.mjs": "新增 --out 同上；树输入修复：copyKit 由退役的 tree-camphor.glb(v1) 改为已采用的 tree-camphor-v2.glb（旧路径在 kit 哈希守卫下会硬失败——工单提示的树v1风险实锤并已修）；TREE_POS 固定为 I2/G12 已采用庭院墙沿线坐标（旧常量会把树回滚到退役位置）；树实例/清单 note 措辞对齐已采用记录"
+      },
+      "rebuild": {
+        "tool": "tools/closeout_rebuild.mjs -> rebuild-report.json",
+        "runs": "隔离目录 artifacts/world-closeout/rebuild-run1 / rebuild-run2，各跑 v3-axis + v4 生成器",
+        "stability": "两轮逐字节一致（v3 23 文件、v4 44 文件）",
+        "correspondence": "与已采用数据集逐文件对照：原始 GLB 字节全同、route/cameras/instances 一致；碰撞按规范形（pos+R(theta)·center 世界中心+尺寸+theta+AABB，1e-5 容差、顺序无关）全等——已采用 v4 碰撞里 Codex 修复工具写的『模块局部 center』分解与生成器『解析锚点』分解合成为同一物理盒（-135.314,2.8,1.295 等两侧数值吻合）；允许差异仅限历史簿记/溯源注记（treeV2 块、previousFile、I2 placedShifts、树换代前预算和）",
+        "floatNoiseNote": "v4 352 处 min/max 差异为纯浮点表示噪声（修复工具原语浮点 vs 生成器 toFixed(6)），≤1e-5 规格容差"
+      },
+      "reproOnRebuilt": {
+        "axisCapsule": "轴局部 (±2.4,1.01,-27.085) 向外 1.3m 胶囊两侧命中、中央通道畅通 ✓",
+        "bridgeCapsule": "桥接世界同位两侧命中 ✓",
+        "v4TranslatedAabbs": "重建 v4 全部 792 条 AABB Y = pos.y+center.y±size.y/2（obbToWorld）零违例 ✓",
+        "shopStrips": "八条 strips [0,2.9] ✓",
+        "yimenStageSidecar": "重建 v3 含 yimenstage: 9 件：四柱+一栏+两条高处 flank guard+两条地面灰泥 wing wall，四类构件各自独立 ✓（stage 原始 GLB 未重建）"
+      },
+      "negativeTests": "tests/closeout_rebuild_negatives.test.mjs 2/2：移除两条 wing wall 后胶囊两侧穿透（证明正例确实钉在 wing wall 上）；对 strips 丢 pos.y 后 [0,2.9] 断言必破；expected 全部取自生产 obbToWorld 公式，不复制错误公式",
+      "notDone_note": "无 blocker。stage sidecar、kit 哈希守卫、碰撞均未改生产文件；重建只写隔离目录"
+    },
     "Q": { "status": "pending" },
     "R": { "status": "pending" }
   },

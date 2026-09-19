@@ -1,0 +1,296 @@
+{
+  "batch": "pawborough-world-closeout-night-20260919",
+  "stage": "P reproducible assembly",
+  "generatedAt": "2026-09-19T15:52:09.993Z",
+  "runs": [
+    "rebuild-run1",
+    "rebuild-run2"
+  ],
+  "generatorChanges": [
+    "scripts/build_temple_axis_v3_world.mjs: --out (refuses existing dirs; no in-place merge) + tree input fixed to the ADOPTED tree-camphor-v2.glb (old line would have restored the retired v1 module; kit hash guard now hard-fails that path)",
+    "scripts/build_fangbang_v4_world.mjs: --out (replaces the rm -rf + regenerate default; the adopted dataset can never be rolled back by a rebuild)"
+  ],
+  "stability": [
+    {
+      "ds": "temple-axis-v3",
+      "pass": true,
+      "files": 23,
+      "differing": []
+    },
+    {
+      "ds": "fangbang-temple-v4",
+      "pass": true,
+      "files": 44,
+      "differing": []
+    }
+  ],
+  "correspondence": [
+    {
+      "ds": "temple-axis-v3",
+      "pass": true,
+      "rows": [
+        {
+          "file": "cameras.json",
+          "verdict": "identical"
+        },
+        {
+          "file": "collision-world.json",
+          "verdict": "colliders equal (canonical, order-insensitive, 1e-5)",
+          "count": 244,
+          "onlyRebuilt": [],
+          "onlyAdopted": []
+        },
+        {
+          "file": "court3.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "dadian-court-v2.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "dadian-roof-surface-samples.json",
+          "verdict": "identical"
+        },
+        {
+          "file": "dadian.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "entry-court-v3.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "gallery.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "ground.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "houdian-roof-surface-samples.json",
+          "verdict": "identical"
+        },
+        {
+          "file": "houdian.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "instances.json",
+          "verdict": "json-diff (provenance/bookkeeping notes only)",
+          "diffs": [],
+          "prohibited": []
+        },
+        {
+          "file": "lions-v2.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "ornaments-v2.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "peidian-roof-surface-samples.json",
+          "verdict": "identical"
+        },
+        {
+          "file": "peidian.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "review-manifest.json",
+          "verdict": "json-diff (provenance/bookkeeping notes only)",
+          "diffs": [
+            "assets.tree.placedShifts",
+            "budgets.newModulesTris.actual",
+            "budgets.placedTriangles.actual",
+            "placementShifts.0",
+            "placementShifts.1",
+            "placementShifts.2",
+            "treeV2"
+          ],
+          "prohibited": []
+        },
+        {
+          "file": "route.json",
+          "verdict": "identical"
+        },
+        {
+          "file": "temple.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "tree-camphor-v2.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "yimen-roof-surface-samples.json",
+          "verdict": "identical"
+        },
+        {
+          "file": "yimen-stage.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "yimen.glb",
+          "verdict": "identical"
+        }
+      ]
+    },
+    {
+      "ds": "fangbang-temple-v4",
+      "pass": true,
+      "rows": [
+        {
+          "file": "blocks.json",
+          "verdict": "identical"
+        },
+        {
+          "file": "cameras.json",
+          "verdict": "identical"
+        },
+        {
+          "file": "collision-world.json",
+          "verdict": "colliders equal (canonical, order-insensitive, 1e-5)",
+          "count": 792,
+          "onlyRebuilt": [],
+          "onlyAdopted": []
+        },
+        {
+          "file": "east-extension/seal-wall.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "east-extension/surface.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "eastshops-strips.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "instances.json",
+          "verdict": "identical"
+        },
+        {
+          "file": "review-manifest.json",
+          "verdict": "identical"
+        },
+        {
+          "file": "route.json",
+          "verdict": "identical"
+        },
+        {
+          "file": "temple-axis/court-open.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "temple-axis/court3.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "temple-axis/dadian-court-v2.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "temple-axis/dadian.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "temple-axis/gallery.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "temple-axis/ground.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "temple-axis/houdian.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "temple-axis/lions.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "temple-axis/ornaments.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "temple-axis/peidian.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "temple-axis/temple.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "temple-axis/tree-camphor-v2.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "temple-axis/yimen-stage.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "temple-axis/yimen.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "west-extension/collision.json",
+          "verdict": "identical"
+        },
+        {
+          "file": "west-extension/forecourt-bounds.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "west-extension/measurements.json",
+          "verdict": "identical"
+        },
+        {
+          "file": "west-extension/seal-wall.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "west-extension/surface-spec.json",
+          "verdict": "identical"
+        },
+        {
+          "file": "west-extension/surface.glb",
+          "verdict": "identical"
+        },
+        {
+          "file": "westshops-strips.glb",
+          "verdict": "identical"
+        }
+      ]
+    }
+  ],
+  "repro": {
+    "axisCapsule": {
+      "pass": true,
+      "centralOpen": true
+    },
+    "bridgeCapsule": {
+      "pass": true
+    },
+    "v4TranslatedAabbs": {
+      "pass": true,
+      "colliders": 792,
+      "violations": 0
+    },
+    "shopStrips": {
+      "pass": true,
+      "count": 8
+    },
+    "yimenStageSidecar": {
+      "pass": true,
+      "records": 9,
+      "missing": []
+    }
+  },
+  "derivedCmExcluded": "true (*.cm.glb / *.cm.json are the N chain provenance-gated output, not assembly output)",
+  "pass": true
+}
