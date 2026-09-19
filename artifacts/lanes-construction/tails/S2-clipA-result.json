@@ -1,0 +1,17 @@
+{
+  "batch": "pawborough-lanes-construction-night-20260920",
+  "stage": "S2 — clipA 收据补全（源终态已到，partial）",
+  "finishedAt": "2026-09-20",
+  "method": "复用已提交的 tools/closeout_video_receipt.mjs（输入未变，未改守望、未启动轮询、未延长 cutoff）",
+  "clipA": {
+    "terminalState": "partial（允许的终态）",
+    "status": { "status": "partial", "renderedFrames": 7040, "expectedFrames": 8781, "reason": "renderer_exited_early", "updatedAt": "2026-09-20T07:50:47+09:00" },
+    "ffprobe": { "frames": 7040, "durationSec": 293.333333, "matchesDeclared": true },
+    "copied": ["artifacts/world-closeout/video/clipA-full.mp4", "artifacts/world-closeout/video/clipA-full.status.json", "artifacts/world-closeout/video/clipA-render-log.json"],
+    "hashBeforeAfterEqual": true,
+    "note": "缺 1741 帧不补渲、不改称 full；部分原因原文记录 renderer_exited_early，交机主裁量"
+  },
+  "clipB": { "pass": true, "frames": "576/576", "unchangedFromCloseout": true },
+  "packageManifest": "交付树见 artifacts/lanes-construction/delivery-manifest.json（X 阶段生成时将包含 video/ 新增收据文件）",
+  "evidence": ["artifacts/world-closeout/video-receipt.json", "artifacts/world-closeout/video/"]
+}

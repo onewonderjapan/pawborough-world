@@ -1,0 +1,48 @@
+{
+  "batch": "pawborough-lanes-construction-night-20260920",
+  "stage": "S1 — v3 两处 cm 缺陷有限修正（本批 allowedChanges 明确开放）",
+  "finishedAt": "2026-09-20",
+  "scope": [
+    "world/fangbang-temple-v3/westshops-strips.cm.glb（过期：72 tris/位置差59.42m，建于已被替换的旧源）",
+    "world/fangbang-temple-v3/temple-axis/lions.cm.glb（超容差：triDrift 0.5624% > 0.1%）",
+    "world/fangbang-temple-v3/review-manifest.cm.json 两处引用",
+    "artifacts/world-closeout/cm-provenance.json 两条注册表项"
+  ],
+  "corrections": [
+    {
+      "asset": "westshops-strips",
+      "action": "重建并安装",
+      "sourceGlb": { "rel": "world/fangbang-temple-v3/westshops-strips.glb", "sha256": "2f74208ad15b3871ed90703583803454858bfcdb0fbd0eb243ec05735b42a6c4", "bytes": 12012, "baselineVerified": true },
+      "newCm": { "rel": "world/fangbang-temple-v3/westshops-strips.cm.glb", "sha256": "a73af952bde3d04891b5e2c359156139b8df9ae152d7c75c8ab03bd929929bfb", "bytes": null, "candidateChain": "artifacts/lanes-construction/tails/cm-candidates/ 隔离构建 → 浏览器解码验证 PASS → 安装" },
+      "decodeValidation": "tris 120→120（drift 0.0000%）、posErr 0.00097m、纹理0→0、ground名保留 —— 生产加载器（GLTFLoader+MeshoptDecoder）在 vite dev 实测",
+      "retiredVariant": "artifacts/lanes-construction/tails/retired-cm/world/fangbang-temple-v3/westshops-strips.cm.glb (sha cbf0279f…, 6092 bytes)"
+    },
+    {
+      "asset": "lions",
+      "action": "正确回退（keep-original fallback，N批同款政策）",
+      "reason": "meshopt 量化在该资产上必然丢失 20 个退化三角（drift 0.5624%），重建无解；v4 同资产已按 missingCm 保持原始态",
+      "manifestNow": { "rel": "world/fangbang-temple-v3/temple-axis/lions.glb", "sha256": "eed2009cca69b5f08a287b4c034f270d817cf1d1bd1ba6859993bcc912278c06", "bytes": 440156 },
+      "manifestUpdatedRecords": ["modules.temple-axis-shanmen-lions", "templeAxis.assets[shanmen-lions]"],
+      "retiredVariant": "artifacts/lanes-construction/tails/retired-cm/world/fangbang-temple-v3/temple-axis/lions.cm.glb (sha 962c0edc…, 46532 bytes) — 从manifest路径移出，文件未删除"
+    }
+  ],
+  "verification": {
+    "source": "两处来源SHA与 closeout baseline.json 逐一比对，原始GLB一字节未动（安装脚本内断言）",
+    "decode": "artifacts/lanes-construction/tails/s1-cm-validate.json（生产加载器浏览器解码，含空白守卫链路的同款加载函数）",
+    "defaultState": "review-manifest.cm.json 三处记录（modules×2 + templeAxis.assets×1）与磁盘真实 bytes/sha256 逐一核对 ALL CONSISTENT；registry strips verified=true 可被选用，lions verified=false 不得被选用",
+    "originalState": "?compressed=0 语义下全部指向原始GLB；两个原始GLB SHA 与 closeout baseline 一致",
+    "reconfirmOfLions": "回退前用浏览器重测旧cm：0.5624% 再次复现（非注册表笔误）"
+  },
+  "notDone": [
+    "v3 全目录视觉翻修（明确不扩）",
+    "v1 frozen lions.cm（closeout已记录，v1数据集冻结且无页面消费，仍保持只读记录）",
+    "v4/temple-axis-v3 的 lions 缺cm（N批已按 fallback 保持原始态，非本批范围）"
+  ],
+  "evidence": [
+    "tools/lanes_s1_cm_validate.mjs",
+    "tools/lanes_s1_cm_install.mjs",
+    "artifacts/lanes-construction/tails/s1-cm-validate.json",
+    "artifacts/lanes-construction/tails/s1-install.json",
+    "artifacts/lanes-construction/tails/retired-cm/"
+  ]
+}

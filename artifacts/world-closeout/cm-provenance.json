@@ -230,7 +230,8 @@
       "tool": null,
       "toolVersion": null,
       "args": null,
-      "failDetail": "triDrift=0.005624 posErrM=0.000138"
+      "failDetail": "triDrift=0.005624 posErrM=0.000138 (reconfirmed 2026-09-20) — REVERTED: manifest points to the original GLB; over-tolerance cm retired (bytes preserved), no replacement possible within meshopt quantization",
+      "s1Correction": "lanes-construction-20260920: keep-original fallback applied, defective cm removed from manifest path"
     },
     "world/fangbang-temple-v3/temple-axis/ornaments.glb": {
       "sourceSha256": "feec279340911ce646a96b203c2febaa5a812d10035d9493f06868f73302a8f9",
@@ -314,13 +315,21 @@
     },
     "world/fangbang-temple-v3/westshops-strips.glb": {
       "sourceSha256": "2f74208ad15b3871ed90703583803454858bfcdb0fbd0eb243ec05735b42a6c4",
-      "outputSha256": "cbf0279f526b63d7bb4e69cbd5b62f195b8d68bcfcdcb4e1ae57949e4325ef79",
-      "verified": false,
+      "outputSha256": "a73af952bde3d04891b5e2c359156139b8df9ae152d7c75c8ab03bd929929bfb",
+      "verified": true,
       "verifiedBy": "decode",
-      "tool": null,
+      "tool": "gltfpack (N4 toolchain)",
       "toolVersion": null,
-      "args": null,
-      "failDetail": "triDrift=0.4 posErrM=59.424499"
+      "args": [
+        "-cc",
+        "-kn",
+        "-i",
+        "world/fangbang-temple-v3/westshops-strips.glb",
+        "-o",
+        "artifacts/lanes-construction/tails/cm-candidates/world/fangbang-temple-v3/westshops-strips.cm.glb"
+      ],
+      "failDetail": null,
+      "s1Correction": "rebuilt + decode-validated in lanes-construction-20260920 (prior variant failed triDrift=0.4 posErrM=59.424499, retired)"
     },
     "world/fangbang-temple-v4/east-extension/seal-wall.glb": {
       "sourceSha256": "5815ce8b9f413b28c51135bc732ce12054542a7fe2d45bf8268780a705be034d",

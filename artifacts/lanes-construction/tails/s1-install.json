@@ -1,0 +1,41 @@
+{
+  "batch": "pawborough-lanes-construction-night-20260920",
+  "stage": "S1 install/apply of two authorized v3 cm corrections",
+  "generatedAt": "2026-09-19T23:04:20.923Z",
+  "installed": [
+    {
+      "rel": "world/fangbang-temple-v3/westshops-strips.cm.glb",
+      "sha256": "a73af952bde3d04891b5e2c359156139b8df9ae152d7c75c8ab03bd929929bfb",
+      "bytes": 8156,
+      "validation": "decode PASS (triDrift 0 posErr 0.00097m)"
+    }
+  ],
+  "reverted": [
+    {
+      "rel": "world/fangbang-temple-v3/temple-axis/lions.glb",
+      "reason": "cm over tolerance (triDrift 0.5624%), keep-original fallback"
+    }
+  ],
+  "retired": [
+    {
+      "rel": "world/fangbang-temple-v3/westshops-strips.cm.glb",
+      "sha256": "cbf0279f526b63d7bb4e69cbd5b62f195b8d68bcfcdcb4e1ae57949e4325ef79",
+      "bytes": 6092,
+      "note": "stale variant (built from superseded source, triDrift 0.4 / posErr 59.42m); bytes preserved, never deleted"
+    },
+    {
+      "rel": "world/fangbang-temple-v3/temple-axis/lions.cm.glb",
+      "sha256": "962c0edc9a8afeb8537cd8469661e35aea2b17aa20ca8a9778ede226f90d3fb9",
+      "bytes": 46532,
+      "note": "over-tolerance variant (triDrift 0.5624% > 0.1%); manifest reverted to original GLB, bytes preserved"
+    }
+  ],
+  "manifestsUpdated": [
+    "world/fangbang-temple-v3/review-manifest.cm.json"
+  ],
+  "registryUpdated": [
+    "artifacts/world-closeout/cm-provenance.json"
+  ],
+  "originalsVerifiedUnchanged": 2,
+  "note": "v3 review-manifest.cm.json triangles/asset records updated to true on-disk values; no file deleted — retired bytes under artifacts/lanes-construction/tails/retired-cm/"
+}

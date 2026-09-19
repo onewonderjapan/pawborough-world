@@ -1,7 +1,7 @@
 {
   "batch": "pawborough-world-closeout-night-20260919",
   "stage": "Q video terminal state",
-  "generatedAt": "2026-09-19T17:05:11.026Z",
+  "generatedAt": "2026-09-19T23:06:32.003Z",
   "source": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/adoption-east",
   "cutoff": "2026-09-20T08:15:00+09:00",
   "expectedFrames": 8781,
@@ -16,8 +16,36 @@
     "story": "GPU 456 frames @ ~8.7s/f then CUDA OOM while clipA held unified memory; CPU resumed 457-575 @ ~5s/f with --resume semantics; 0 blank across the seam, worst std 36.4/255 (render-log-summary.json)"
   },
   "clipA": {
-    "state": "NO_TERMINAL_STATUS",
-    "statusFileExists": false,
-    "note": "clipA-full.status.json not present — the render/watchdog still owns clipA (frames keep growing; see liveRender in baseline.json). Per policy this batch does NOT stop, restart, extend or compete with it, and does not copy a file that is still being written. Rerun this tool after the watchdog emits the terminal status to complete the receipt."
+    "state": "partial",
+    "declaredFrames": 7040,
+    "probedFrames": 7040,
+    "durationSec": 293.333333,
+    "expectedFrames": 8781,
+    "hashConsistentProbe": true,
+    "sourceSha256": "e5456d656c6b173b396efb28da2235aab2b8faf4afd27924660821b98e8b2c98",
+    "sourceBytes": 73835745,
+    "partialReason": "renderer_exited_early",
+    "status": {
+      "status": "partial",
+      "renderedFrames": 7040,
+      "expectedFrames": 8781,
+      "reason": "renderer_exited_early",
+      "updatedAt": "2026-09-20T07:50:47.959019+09:00",
+      "encodedFrames": 7040,
+      "durationSeconds": 293.333333,
+      "output": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/adoption-east/clipA-full.mp4"
+    },
+    "copied": {
+      "files": [
+        "clipA-full.mp4",
+        "clipA-full.status.json",
+        "clipA-render-log.json"
+      ],
+      "beforeSha256": "e5456d656c6b173b396efb28da2235aab2b8faf4afd27924660821b98e8b2c98",
+      "afterSha256": "e5456d656c6b173b396efb28da2235aab2b8faf4afd27924660821b98e8b2c98",
+      "hashOk": true,
+      "renderedOfExpected": "7040/8781",
+      "note": "PARTIAL at the unchanged 2026-09-20T08:15:00+09:00 cutoff — allowed terminal state; missing frames are NOT rerendered, not relabelled full"
+    }
   }
 }

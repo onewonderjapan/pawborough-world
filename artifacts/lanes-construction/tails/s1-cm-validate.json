@@ -1,0 +1,124 @@
+{
+  "batch": "pawborough-lanes-construction-night-20260920",
+  "stage": "S1 decode validation of two authorized v3 cm corrections (production loader, browser)",
+  "generatedAt": "2026-09-19T23:02:22.684Z",
+  "server": "http://127.0.0.1:5344 (vite dev, owned and stopped by this run)",
+  "tolerances": {
+    "triDrift": 0.001,
+    "posErrM": 0.002
+  },
+  "results": [
+    {
+      "originalRel": "world/fangbang-temple-v3/westshops-strips.glb",
+      "section": "staleCmRebuildCandidate",
+      "triangles": {
+        "original": 120,
+        "cm": 120,
+        "drift": 0,
+        "pass": true
+      },
+      "bounds": {
+        "original": {
+          "min": [
+            -56.58100128173828,
+            0,
+            2.4149999618530273
+          ],
+          "max": [
+            -8.04699993133545,
+            3,
+            25.261499404907227
+          ]
+        },
+        "cm": {
+          "min": [
+            -56.5810013,
+            0,
+            2.41499996
+          ],
+          "max": [
+            -8.046999296569993,
+            3.00097320573,
+            25.26150081152
+          ]
+        },
+        "positionErrorM": 0.000973,
+        "pass": true
+      },
+      "textures": {
+        "original": 0,
+        "cm": 0,
+        "pass": true
+      },
+      "groundNames": {
+        "original": [],
+        "cm": [],
+        "lost": [],
+        "pass": true
+      },
+      "provenance": {
+        "sourceSha256": "2f74208ad15b3871ed90703583803454858bfcdb0fbd0eb243ec05735b42a6c4",
+        "cmSha256": "a73af952bde3d04891b5e2c359156139b8df9ae152d7c75c8ab03bd929929bfb",
+        "sourceBytes": 12012,
+        "cmBytes": 8156
+      },
+      "pass": true
+    },
+    {
+      "originalRel": "world/fangbang-temple-v3/temple-axis/lions.glb",
+      "section": "lionsRevertReconfirm",
+      "triangles": {
+        "original": 3556,
+        "cm": 3536,
+        "drift": 0.005624,
+        "pass": false
+      },
+      "bounds": {
+        "original": {
+          "min": [
+            -2.4650001525878906,
+            0,
+            0.6499999761581421
+          ],
+          "max": [
+            2.4650001525878906,
+            1.5550000667572021,
+            1.5250000953674316
+          ]
+        },
+        "cm": {
+          "min": [
+            -2.46500015,
+            0,
+            0.649999976
+          ],
+          "max": [
+            2.465000110249,
+            1.554862439401,
+            1.5250802883240002
+          ]
+        },
+        "positionErrorM": 0.000138,
+        "pass": true
+      },
+      "textures": {
+        "original": 0,
+        "cm": 0,
+        "pass": true
+      },
+      "groundNames": {
+        "original": [],
+        "cm": [],
+        "lost": [],
+        "pass": true
+      },
+      "provenance": {
+        "sourceSha256": "eed2009cca69b5f08a287b4c034f270d817cf1d1bd1ba6859993bcc912278c06",
+        "cmSha256": "962c0edc9a8afeb8537cd8469661e35aea2b17aa20ca8a9778ede226f90d3fb9",
+        "sourceBytes": 440156,
+        "cmBytes": 46532
+      },
+      "pass": false
+    }
+  ]
+}
