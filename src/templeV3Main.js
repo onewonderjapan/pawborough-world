@@ -439,7 +439,7 @@ async function load() {
   const ornaments = await loadGlbWithStats(BASE + 'ornaments-v2.glb', 'shanmen-ornaments-v2', opts);
   const yimen = await loadGlbWithStats(BASE + 'yimen.glb', 'yimen-main', opts);
   const courtOpen = await loadGlbWithStats(BASE + 'entry-court-v3.glb', 'entry-court-v3', opts);
-  const tree = await loadGlbWithStats(BASE + 'tree-camphor.glb', 'tree-camphor', opts);
+  const tree = await loadGlbWithStats(BASE + 'tree-camphor-v2.glb', 'tree-camphor-v2', opts);
   const dadianCourt = await loadGlbWithStats(BASE + 'dadian-court-v2.glb', 'dadian-court-v2', opts);
   const peidianW = await loadGlbWithStats(BASE + 'peidian.glb', 'peidian-w', opts);
   const peidianE = await loadGlbWithStats(BASE + 'peidian.glb', 'peidian-e', opts);

@@ -150,21 +150,21 @@
       "path": "./world/fangbang-temple-v4/temple-axis/lions.glb",
       "bytes": 490048,
       "sha256": "46dd10af05af07d8f9ab4ea234b6f3daf4af902184543e92f36b449019d44b7a",
-      "triangles": 3556
+      "triangles": 4064
     },
     {
       "id": "temple-axis-shanmen-ornaments",
       "path": "./world/fangbang-temple-v4/temple-axis/ornaments.glb",
       "bytes": 150920,
       "sha256": "0a894ec78c5a41df58a26d8d119a0699fbbaf1b40c847c875c6c6f5073fd7499",
-      "triangles": 2304
+      "triangles": 1148
     },
     {
       "id": "temple-axis-entrycourt-open",
       "path": "./world/fangbang-temple-v4/temple-axis/court-open.glb",
       "bytes": 1469532,
       "sha256": "b0b4d28b6a9f12928a142efd2a597234ba13e52a7f48ed788d436175dcbbf6f3",
-      "triangles": 1580
+      "triangles": 4192
     },
     {
       "id": "temple-axis-yimen",
@@ -384,32 +384,11 @@
       "triangles": 24
     },
     {
-      "id": "temple-axis-tree-court2-w",
-      "path": "./world/fangbang-temple-v4/temple-axis/tree-camphor.glb",
-      "bytes": 129380,
-      "sha256": "32deedf02da0d74a242bd69b43cae863125cfff3ec7e542da51037c97f42b0c8",
-      "triangles": 568
-    },
-    {
-      "id": "temple-axis-tree-court2-e",
-      "path": "./world/fangbang-temple-v4/temple-axis/tree-camphor.glb",
-      "bytes": 129380,
-      "sha256": "32deedf02da0d74a242bd69b43cae863125cfff3ec7e542da51037c97f42b0c8",
-      "triangles": 568
-    },
-    {
-      "id": "temple-axis-tree-court3-w",
-      "path": "./world/fangbang-temple-v4/temple-axis/tree-camphor.glb",
-      "bytes": 129380,
-      "sha256": "32deedf02da0d74a242bd69b43cae863125cfff3ec7e542da51037c97f42b0c8",
-      "triangles": 568
-    },
-    {
-      "id": "temple-axis-tree-court3-e",
-      "path": "./world/fangbang-temple-v4/temple-axis/tree-camphor.glb",
-      "bytes": 129380,
-      "sha256": "32deedf02da0d74a242bd69b43cae863125cfff3ec7e542da51037c97f42b0c8",
-      "triangles": 568
+      "id": "temple-axis-tree-camphor",
+      "path": "./world/fangbang-temple-v4/temple-axis/tree-camphor-v2.glb",
+      "bytes": 233320,
+      "sha256": "5219f9a3a065fd1c2d4262899fa04e49f1ed31e31b9f709b162b74223a84cb33",
+      "triangles": 1936
     }
   ],
   "worldAssembly": {
@@ -665,58 +644,58 @@
       },
       {
         "id": "tree-court2-w",
-        "glb": "./world/fangbang-temple-v4/temple-axis/tree-camphor.glb",
+        "glb": "./world/fangbang-temple-v4/temple-axis/tree-camphor-v2.glb",
         "positionGlb": [
-          -141.812107,
+          -139.943402,
           0,
-          -9.545087
+          -4.567047
         ],
         "rotationYRad": 0.16703,
-        "bytes": 129380,
-        "sha256": "32deedf02da0d74a242bd69b43cae863125cfff3ec7e542da51037c97f42b0c8",
-        "triangles": 568,
+        "bytes": 233320,
+        "sha256": "5219f9a3a065fd1c2d4262899fa04e49f1ed31e31b9f709b162b74223a84cb33",
+        "triangles": 1936,
         "variant": true
       },
       {
         "id": "tree-court2-e",
-        "glb": "./world/fangbang-temple-v4/temple-axis/tree-camphor.glb",
+        "glb": "./world/fangbang-temple-v4/temple-axis/tree-camphor-v2.glb",
         "positionGlb": [
-          -126.762789,
+          -124.856334,
           0,
-          -11.096928
+          -7.11074
         ],
         "rotationYRad": 0.16703,
-        "bytes": 129380,
-        "sha256": "32deedf02da0d74a242bd69b43cae863125cfff3ec7e542da51037c97f42b0c8",
-        "triangles": 568,
+        "bytes": 233320,
+        "sha256": "5219f9a3a065fd1c2d4262899fa04e49f1ed31e31b9f709b162b74223a84cb33",
+        "triangles": 1936,
         "variant": true
       },
       {
         "id": "tree-court3-w",
-        "glb": "./world/fangbang-temple-v4/temple-axis/tree-camphor.glb",
+        "glb": "./world/fangbang-temple-v4/temple-axis/tree-camphor-v2.glb",
         "positionGlb": [
-          -148.811153,
+          -150.777597,
           0,
-          -34.306634
+          -30.932749
         ],
         "rotationYRad": 0.16703,
-        "bytes": 129380,
-        "sha256": "32deedf02da0d74a242bd69b43cae863125cfff3ec7e542da51037c97f42b0c8",
-        "triangles": 568,
+        "bytes": 233320,
+        "sha256": "5219f9a3a065fd1c2d4262899fa04e49f1ed31e31b9f709b162b74223a84cb33",
+        "triangles": 1936,
         "variant": true
       },
       {
         "id": "tree-court3-e",
-        "glb": "./world/fangbang-temple-v4/temple-axis/tree-camphor.glb",
+        "glb": "./world/fangbang-temple-v4/temple-axis/tree-camphor-v2.glb",
         "positionGlb": [
-          -127.639702,
+          -124.319614,
           0,
-          -38.520181
+          -36.407701
         ],
         "rotationYRad": 0.16703,
-        "bytes": 129380,
-        "sha256": "32deedf02da0d74a242bd69b43cae863125cfff3ec7e542da51037c97f42b0c8",
-        "triangles": 568,
+        "bytes": 233320,
+        "sha256": "5219f9a3a065fd1c2d4262899fa04e49f1ed31e31b9f709b162b74223a84cb33",
+        "triangles": 1936,
         "variant": true
       }
     ],

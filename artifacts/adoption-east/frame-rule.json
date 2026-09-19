@@ -1,0 +1,54 @@
+{
+  "generatedBy": "kit/mask_frame_rule.py",
+  "resolution": "1280x720",
+  "centralRegion": 0.6,
+  "positions": {
+    "tree-court2-w": [
+      -6.7,
+      0,
+      -33.2
+    ],
+    "tree-court2-e": [
+      8.6,
+      0,
+      -33.2
+    ],
+    "tree-court3-w": [
+      -13.0,
+      0,
+      -61.0
+    ],
+    "tree-court3-e": [
+      14.0,
+      0,
+      -62.0
+    ]
+  },
+  "shiftsFromSpec": {
+    "tree-court2-w": 1.9,
+    "tree-court2-e": 0.0,
+    "tree-court3-w": 0.0,
+    "tree-court3-e": 1.41
+  },
+  "cameras": [
+    {
+      "camera": "court2-pair",
+      "canopyCentralRatio": 0.0,
+      "canopyFullRatio": 0.018894,
+      "maskBasis": "full temple-axis-v3 scene, trees black / all else white (real occlusion)"
+    },
+    {
+      "camera": "court3-axis",
+      "canopyCentralRatio": 0.0,
+      "canopyFullRatio": 0.0,
+      "maskBasis": "full temple-axis-v3 scene, trees black / all else white (real occlusion)"
+    },
+    {
+      "camera": "houdian-front",
+      "canopyCentralRatio": 0.0,
+      "canopyFullRatio": 0.0,
+      "maskBasis": "full temple-axis-v3 scene, trees black / all else white (real occlusion)"
+    }
+  ],
+  "totalSeconds": 5.2
+}

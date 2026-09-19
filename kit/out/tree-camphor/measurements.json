@@ -6,23 +6,24 @@
   "bakedGlobalIllumination": false,
   "referencePhotoTexturesUsed": false,
   "targets": {
-    "tree-camphor.glb": {
+    "tree-camphor-v2.glb": {
       "groups": [
         "temple-tree"
       ],
-      "objects": 2,
-      "triangles": 568,
-      "fileBytes": 129380,
-      "sha256": "32deedf02da0d74a242bd69b43cae863125cfff3ec7e542da51037c97f42b0c8"
+      "objects": 3,
+      "triangles": 1936,
+      "fileBytes": 233320,
+      "sha256": "5219f9a3a065fd1c2d4262899fa04e49f1ed31e31b9f709b162b74223a84cb33"
     }
   },
   "timings": {
-    "totalSeconds": 0.1
+    "totalSeconds": 0.2
   },
   "budgets": {
     "treeTris": {
-      "actual": 568,
+      "actual": 1936,
       "limit": 2600,
+      "min": 1800,
       "pass": true
     },
     "newImages": {
@@ -32,14 +33,19 @@
     }
   },
   "design": {
-    "canopyBottomY": 3.0,
-    "canopyBlobs": 5,
-    "foliageColor": "#4a5d3a",
-    "trunkCollision": [
-      0.5,
-      2.8,
-      0.5
+    "version": "v2",
+    "canopyBottomY": 4.4995,
+    "canopyBlobs": 11,
+    "foliageColors": [
+      "#4a5d3a",
+      "#56683f"
     ],
+    "trunkCollision": [
+      0.55,
+      3.0,
+      0.55
+    ],
+    "randomSeed": 20260919,
     "label": "design_inference (species/position are design values)"
   }
 }

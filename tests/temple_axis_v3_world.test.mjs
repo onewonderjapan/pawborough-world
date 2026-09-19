@@ -31,7 +31,7 @@ const v2Manifest = JSON.parse(await readFile(resolve(V2, 'review-manifest.json')
 // W1 — the 14 assets exist, validator-clean, and match the manifest
 const FILES = ['temple.glb', 'ground.glb', 'lions-v2.glb', 'ornaments-v2.glb', 'yimen.glb',
   'entry-court-v3.glb', 'dadian.glb', 'dadian-court-v2.glb', 'peidian.glb', 'gallery.glb',
-  'yimen-stage.glb', 'court3.glb', 'houdian.glb', 'tree-camphor.glb'];
+  'yimen-stage.glb', 'court3.glb', 'houdian.glb', 'tree-camphor-v2.glb'];
 for (const file of FILES) {
   const bytes = await readFile(resolve(DS, file)).catch(() => null);
   check(`W1: ${file} present`, !!bytes);

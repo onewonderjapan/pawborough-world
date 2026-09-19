@@ -1,0 +1,117 @@
+{
+  "base": "http://127.0.0.1:5320",
+  "views": [
+    {
+      "view": "court2-pair",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 62.87,
+        "dominantShare": 0.102
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/adoption-east/stills-webgl/v3-web--court2-pair.png",
+      "bytes": 553131
+    },
+    {
+      "view": "peidian-west-front",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 74.27,
+        "dominantShare": 0.249
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/adoption-east/stills-webgl/v3-web--peidian-west-front.png",
+      "bytes": 401677
+    },
+    {
+      "view": "gallery-link",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 61.35,
+        "dominantShare": 0.236
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/adoption-east/stills-webgl/v3-web--gallery-link.png",
+      "bytes": 414253
+    },
+    {
+      "view": "stage-from-court",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 78.26,
+        "dominantShare": 0.415
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/adoption-east/stills-webgl/v3-web--stage-from-court.png",
+      "bytes": 325622
+    },
+    {
+      "view": "stage-3q",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 74.17,
+        "dominantShare": 0.281
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/adoption-east/stills-webgl/v3-web--stage-3q.png",
+      "bytes": 472984
+    },
+    {
+      "view": "passage-east",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 39.78,
+        "dominantShare": 0.239
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/adoption-east/stills-webgl/v3-web--passage-east.png",
+      "bytes": 477997
+    },
+    {
+      "view": "court3-axis",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 55.11,
+        "dominantShare": 0.499
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/adoption-east/stills-webgl/v3-web--court3-axis.png",
+      "bytes": 332706
+    },
+    {
+      "view": "houdian-front",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 69.89,
+        "dominantShare": 0.17
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/adoption-east/stills-webgl/v3-web--houdian-front.png",
+      "bytes": 429832
+    },
+    {
+      "view": "houdian-3q",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 55.51,
+        "dominantShare": 0.49
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/adoption-east/stills-webgl/v3-web--houdian-3q.png",
+      "bytes": 356191
+    },
+    {
+      "view": "axis-aerial",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 50.31,
+        "dominantShare": 0.697
+      },
+      "file": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/adoption-east/stills-webgl/v3-web--axis-aerial.png",
+      "bytes": 446640
+    }
+  ],
+  "pass": true,
+  "generatedBy": "tools/capture_temple_v3_views.mjs"
+}

@@ -15,6 +15,7 @@ import argparse
 import hashlib
 import json
 import math
+import random
 import sys
 import time
 from pathlib import Path
@@ -32,13 +33,22 @@ argv = sys.argv[sys.argv.index('--') + 1:]
 sys.stdout.reconfigure(line_buffering=True)
 p = argparse.ArgumentParser()
 p.add_argument('--out', type=Path, required=True)
+p.add_argument('--version', choices=['v1', 'v2'], default='v1',
+               help='v1 = 20260919 corridor batch tree; v2 = adoption batch rebuild '
+                    '(multi-lobe canopy, fixed seed 20260919, 1800-2600 tris)')
 a = p.parse_args(argv)
+VERSION = a.version
 
 T0 = time.time()
 L.reset_scene()
 L.build_materials()
 L.M['foliage'] = L.mat('foliage', '4a5d3a', .9)
 L.META['foliage']['source'] = 'design value (no photo); monochrome camphor canopy tone'
+if VERSION == 'v2':
+    # two-tone canopy: per-blob pick between #4a5d3a and #56683f (no new images)
+    L.M['foliage2'] = L.mat('foliage2', '56683f', .9)
+    L.META['foliage2'] = {'source': 'design value (no photo); second camphor canopy tone',
+                          'tileMeters': L.META['foliage']['tileMeters']}
 
 L.GROUP = 'temple-tree'
 
@@ -71,32 +81,64 @@ def ellipsoid(name, center, radii, meridians=10, rings=6, m='foliage'):
     return L.mesh(name, verts, faces, m)
 
 
-# trunk + two branches (GLB Y-up, origin at trunk base center)
-L.cyl('tree-trunk', (0, 0, 0), (0, 2.6, 0), .22, 'wood', 8)
-L.rod('tree-branch-w', (0, 2.4, 0), (-.55, 3.9, -.25), .13, 'wood')
-L.rod('tree-branch-e', (0, 2.5, 0), (.55, 4.1, .3), .12, 'wood')
+# trunk + branches (GLB Y-up, origin at trunk base center)
+if VERSION == 'v2':
+    # I (adoption batch): trunk r0.24 h2.8 + 3 primary branches r0.10,
+    # length 1.6-2.2, elevation 35-55 deg, deterministic geometry
+    L.cyl('tree-trunk', (0, 0, 0), (0, 2.8, 0), .24, 'wood', 8)
+    L.rod('tree-branch-1', (0, 2.55, 0), (-.85, 4.05, -.35), .10, 'wood')   # ~46 deg
+    L.rod('tree-branch-2', (0, 2.65, 0), (.80, 3.95, .55), .10, 'wood')     # ~42 deg
+    L.rod('tree-branch-3', (0, 2.75, 0), (.25, 4.35, -.80), .10, 'wood')    # ~50 deg
 
-# canopy: 1 crown + 4 shoulder ellipsoids, bottoms >= 3.0
-ellipsoid('tree-crown', (0, 5.0, 0), (2.4, 1.9, 2.4))
-ellipsoid('tree-blob-n', (-1.3, 4.2, -1.0), (1.7, 1.2, 1.7))
-ellipsoid('tree-blob-s', (1.4, 4.3, 1.0), (1.6, 1.2, 1.6))
-ellipsoid('tree-blob-e', (1.2, 4.6, -1.2), (1.6, 1.25, 1.6))
-ellipsoid('tree-blob-w', (-1.2, 4.5, 1.2), (1.8, 1.3, 1.8))
+    # canopy: 11 faceted blobs (9-12 allowed), centers scattered on a flattened
+    # spherical shell (xz radius <= 2.2, y flattened x0.55) with +-0.15 jitter;
+    # FIXED seed 20260919 so the build is reproducible
+    rng = random.Random(20260919)
+    blobs = []
+    for i in range(11):
+        az = rng.uniform(0, 2 * math.pi)
+        rho = rng.uniform(0.55, 1.0) * 2.2
+        r = rng.uniform(0.9, 1.6)
+        cx = rho * math.cos(az) + rng.uniform(-.15, .15)
+        cz = rho * math.sin(az) + rng.uniform(-.15, .15)
+        cy = 4.9 + rho * 0.55 * 0.62 + rng.uniform(-.15, .15)
+        cy = max(cy, 3.2 + r * 0.62)   # canopy bottom stays >= y 3.2
+        blobs.append((i, (cx, cy, cz), (r, r * 0.62, r)))
+    for i, center, radii in blobs:
+        mat_name = 'foliage2' if i % 3 == 2 else 'foliage'   # two-tone mix, deterministic
+        ellipsoid(f'tree-blob-{i}', center, radii, meridians=12, rings=8, m=mat_name)
+
+    CANOPY_BOTTOM = 3.2
+else:
+    # trunk + two branches
+    L.cyl('tree-trunk', (0, 0, 0), (0, 2.6, 0), .22, 'wood', 8)
+    L.rod('tree-branch-w', (0, 2.4, 0), (-.55, 3.9, -.25), .13, 'wood')
+    L.rod('tree-branch-e', (0, 2.5, 0), (.55, 4.1, .3), .12, 'wood')
+
+    # canopy: 1 crown + 4 shoulder ellipsoids, bottoms >= 3.0
+    ellipsoid('tree-crown', (0, 5.0, 0), (2.4, 1.9, 2.4))
+    ellipsoid('tree-blob-n', (-1.3, 4.2, -1.0), (1.7, 1.2, 1.7))
+    ellipsoid('tree-blob-s', (1.4, 4.3, 1.0), (1.6, 1.2, 1.6))
+    ellipsoid('tree-blob-e', (1.2, 4.6, -1.2), (1.6, 1.25, 1.6))
+    ellipsoid('tree-blob-w', (-1.2, 4.5, 1.2), (1.8, 1.3, 1.8))
+
+    CANOPY_BOTTOM = 3.0
 
 # canopy-bottom assertion (vertex level, not bbox trust): no foliage vertex
-# below GLB y=3.0 (meshes are stored Blender-side, where GLB y == Blender z)
+# below the version's floor (meshes are stored Blender-side, GLB y == Blender z)
 low = 1e9
 for o in bpy.context.scene.objects:
-    if o.type == 'MESH' and o.name.startswith('tree-blob') or o.name == 'tree-crown':
+    if o.type == 'MESH' and (o.name.startswith('tree-blob') or o.name == 'tree-crown'):
         for v in o.data.vertices:
             low = min(low, v.co.z)
-if low < 3.0 - 1e-6:
+if low < CANOPY_BOTTOM - 1e-6:
     print('CANOPY_BOTTOM_FAIL', low)
     sys.exit(3)
 
-# collision: single trunk box 0.5 x 2.8 x 0.5
+# collision: single trunk box (v2 spec 0.55 x 3.0 x 0.55)
+trunk_box = [.55, 3.0, .55] if VERSION == 'v2' else [.5, 2.8, .5]
 L.COLL.append({'name': 'tree-trunk-block', 'group': 'temple-tree', 'type': 'box',
-               'center': [0, 1.4, 0], 'size': [.5, 2.8, .5], 'axis': 'glTF Y-up'})
+               'center': [0, trunk_box[1] / 2, 0], 'size': trunk_box, 'axis': 'glTF Y-up'})
 
 # join + triangulate + export (same finalize as the court builder)
 out = a.out
@@ -124,7 +166,7 @@ for (group, material), items in parts.items():
     bm.to_mesh(o.data)
     bm.free()
 
-TARGETS = [('tree-camphor.glb', ('temple-tree',))]
+TARGETS = [('tree-camphor-v2.glb' if VERSION == 'v2' else 'tree-camphor.glb', ('temple-tree',))]
 tris_total = 0
 measure = {'moduleId': 'temple-tree-camphor', 'units': 'meters', 'surveyed': False,
            'axis': 'GLB Y-up; origin trunk base center; canopy ups',
@@ -151,15 +193,16 @@ for fname, groups in TARGETS:
                                  'sha256': hashlib.sha256(data).hexdigest()}
     print(f'EXPORTED {fname} objs={sel} tris={tris_total} bytes={len(data)}')
 
-if tris_total > 2600:
-    print('BUDGET_FAIL treeTris', tris_total, '> 2600')
+tris_min, tris_max = (1800, 2600) if VERSION == 'v2' else (0, 2600)
+if tris_total > tris_max or tris_total < tris_min:
+    print('BUDGET_FAIL treeTris', tris_total, f'outside {tris_min}-{tris_max}')
     sys.exit(5)
 
 # reimport check
 original = bpy.context.window.scene
 check = bpy.data.scenes.new('GLB_REIMPORT_CHECK')
 bpy.context.window.scene = check
-bpy.ops.import_scene.gltf(filepath=str(out / 'tree-camphor.glb'))
+bpy.ops.import_scene.gltf(filepath=str(out / TARGETS[0][0]))
 bounds = [[1e9] * 3, [-1e9] * 3]
 meshes = 0
 mats = set()
@@ -194,10 +237,13 @@ for rec in L.COLL:
     'colliders': adapter_coll}, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 (out / 'materials.json').write_text(json.dumps(L.META, ensure_ascii=False, indent=2) + '\n',
                                     encoding='utf-8')
-measure['budgets'] = {'treeTris': {'actual': tris_total, 'limit': 2600, 'pass': True},
+measure['budgets'] = {'treeTris': {'actual': tris_total, 'limit': tris_max, 'min': tris_min, 'pass': True},
                       'newImages': {'actual': 0, 'limit': 0, 'pass': True}}
-measure['design'] = {'canopyBottomY': round(low, 4), 'canopyBlobs': 5,
-                     'foliageColor': '#4a5d3a', 'trunkCollision': [.5, 2.8, .5],
+canopy_blobs = 11 if VERSION == 'v2' else 5
+trunk_collision = [.55, 3.0, .55] if VERSION == 'v2' else [.5, 2.8, .5]
+measure['design'] = {'version': VERSION, 'canopyBottomY': round(low, 4),
+                     'canopyBlobs': canopy_blobs, 'foliageColors': ['#4a5d3a', '#56683f'],
+                     'trunkCollision': trunk_collision, 'randomSeed': 20260919 if VERSION == 'v2' else None,
                      'label': 'design_inference (species/position are design values)'}
 measure['timings']['totalSeconds'] = round(time.time() - T0, 1)
 (out / 'measurements.json').write_text(json.dumps(measure, ensure_ascii=False, indent=2) + '\n',
