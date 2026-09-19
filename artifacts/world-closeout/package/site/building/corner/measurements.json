@@ -1,0 +1,31 @@
+{
+  "moduleId": "corner",
+  "triangles": 9242,
+  "meshes": 11,
+  "fileBytes": 2146508,
+  "sha256": "3e68b5833c61d6f2bfe20cf96d561c90618483a319599abcc81385ca4e8bb9a5",
+  "design": {
+    "family": "corner",
+    "variant": "branch-corner",
+    "frontageM": 10.1,
+    "depthM": 7.2,
+    "eaveM": 7.4,
+    "ridgeM": 8.6,
+    "eaveMarginM": 0.4,
+    "frontProtrusionM": 0.55,
+    "twoFacades": [
+      "+Z main street",
+      "+X branch street (parapet, plaque, side door)"
+    ],
+    "distinctFromBaseline": [
+      "two finished visible facades",
+      "corner pier",
+      "branch parapet with coping"
+    ],
+    "source": "new module for fangbang-parallel-night-20260913, derived from baseline method"
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

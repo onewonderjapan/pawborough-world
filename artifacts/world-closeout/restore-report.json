@@ -1,0 +1,11 @@
+{
+  "tool": "tools/closeout_restore_check.sh",
+  "startedAt": "2026-09-20T01:53:33+09:00",
+  "finishedAt": "2026-09-20T02:00:03.420018+09:00",
+  "restoreDir": "../restore/pawborough-world-closeout-restore-20260920-015333",
+  "releaseCommit": "e1367293a43fa3ced77f39ad5d4a010ec752c24e",
+  "pass": true,
+  "scope": "same-host fresh-directory restore; no shared alternates; assets byte-locked to the closeout baseline; full build+tests+browser gate rerun in the clone",
+  "caveat": "same-machine new-directory restore only — NOT a claim about W2 state or offline/net-new environments",
+  "preserved": "restore directory is kept for owner review (not deleted)"
+}

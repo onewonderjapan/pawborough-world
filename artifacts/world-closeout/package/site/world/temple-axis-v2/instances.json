@@ -1,0 +1,128 @@
+{
+  "axis": "GLB Y-up; +Z south toward the street; shanmen threshold at (0,0,0); north = -Z",
+  "instances": [
+    {
+      "id": "shanmen",
+      "module": "temple-shanmen",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0
+    },
+    {
+      "id": "entrycourt",
+      "module": "temple-entry-court-open",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0
+    },
+    {
+      "id": "yimen",
+      "module": "yimen-pilot",
+      "positionGlb": [
+        0,
+        0,
+        -21
+      ],
+      "rotationYRad": 0
+    },
+    {
+      "id": "yimenstage",
+      "module": "yimen-stage",
+      "positionGlb": [
+        0,
+        0,
+        -21
+      ],
+      "rotationYRad": 0,
+      "note": "yimen-LOCAL authored; hangs on the yimen rear face"
+    },
+    {
+      "id": "dadiancourt",
+      "module": "dadian-court-v2",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "note": "VARIANT: side walls + north closure + stubs removed"
+    },
+    {
+      "id": "peidian-w",
+      "module": "peidian",
+      "positionGlb": [
+        -11.2,
+        0,
+        -35.8
+      ],
+      "rotationYRad": 1.5707963267948966
+    },
+    {
+      "id": "peidian-e",
+      "module": "peidian",
+      "positionGlb": [
+        11.2,
+        0,
+        -35.8
+      ],
+      "rotationYRad": -1.5707963267948966
+    },
+    {
+      "id": "gallery-w",
+      "module": "gallery",
+      "positionGlb": [
+        -10.78,
+        0,
+        -30.99
+      ],
+      "rotationYRad": 1.5707963267948966
+    },
+    {
+      "id": "gallery-e",
+      "module": "gallery",
+      "positionGlb": [
+        10.78,
+        0,
+        -30.99
+      ],
+      "rotationYRad": -1.5707963267948966
+    },
+    {
+      "id": "dadian",
+      "module": "dadian",
+      "positionGlb": [
+        0,
+        0,
+        -44
+      ],
+      "rotationYRad": 0
+    },
+    {
+      "id": "court3",
+      "module": "court3",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "note": "authored in place (passages z -39.1..-58.2, court3 to -72.2, walls to -84)"
+    },
+    {
+      "id": "houdian",
+      "module": "houdian",
+      "positionGlb": [
+        0,
+        0,
+        -74
+      ],
+      "rotationYRad": 0
+    }
+  ]
+}

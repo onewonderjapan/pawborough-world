@@ -1,0 +1,152 @@
+{
+  "moduleId": "westext",
+  "triangles": 5960,
+  "meshes": 4,
+  "fileBytes": 1308304,
+  "sha256": "01b8f82f3e26c40e8fc8fc75c872179f90dab4b9133659377eea27b6733f4d45",
+  "design": {
+    "family": "fangbang-west-extension-surface",
+    "sampleId": "westext",
+    "frontageM": 153.94,
+    "buildStepM": 1,
+    "band": {
+      "roadCurbToCurbM": 8.5,
+      "curbW": 0.25,
+      "curbH": 0.09,
+      "sidewalkM": 1.35,
+      "frontLineM": 5.6,
+      "junctionMeasuredCutWidthM": 8.5,
+      "taperM": 0,
+      "taperNote": "measured cut width equals the 8.5m design width — no taper"
+    },
+    "forecourtJoint": {
+      "forecourtBandS": [
+        121,
+        138.5
+      ],
+      "rawFrontlineDeviationM": 0.13406122892241285,
+      "stepAtJointM": 0.08499999999999999,
+      "maxSnappedDeviationM": 0.0
+    },
+    "placeholderResiduals": {
+      "shop-153": {
+        "minCenterlineToBoxM": 5.605,
+        "class": "clear",
+        "setbackApplied": true,
+        "handling": "R1-01 setback applied (placementAdjust in blocks.json)"
+      },
+      "shop-154": {
+        "minCenterlineToBoxM": 5.599,
+        "class": "sidewalk_band",
+        "setbackApplied": true,
+        "handling": "R1-01 setback applied (placementAdjust in blocks.json)"
+      },
+      "shop-155": {
+        "minCenterlineToBoxM": 5.6,
+        "class": "sidewalk_band",
+        "setbackApplied": true,
+        "handling": "R1-01 setback applied (placementAdjust in blocks.json)"
+      },
+      "shop-156": {
+        "minCenterlineToBoxM": 5.6,
+        "class": "sidewalk_band",
+        "setbackApplied": true,
+        "handling": "R1-01 setback applied (placementAdjust in blocks.json)"
+      },
+      "shop-157": {
+        "minCenterlineToBoxM": 5.6,
+        "class": "sidewalk_band",
+        "setbackApplied": true,
+        "handling": "R1-01 setback applied (placementAdjust in blocks.json)"
+      },
+      "shop-158": {
+        "minCenterlineToBoxM": 5.6,
+        "class": "clear",
+        "setbackApplied": true,
+        "handling": "R1-01 setback applied (placementAdjust in blocks.json)"
+      },
+      "shop-159": {
+        "minCenterlineToBoxM": 5.6,
+        "class": "clear",
+        "setbackApplied": true,
+        "handling": "R1-01 setback applied (placementAdjust in blocks.json)"
+      },
+      "shop-160": {
+        "minCenterlineToBoxM": 5.598,
+        "class": "sidewalk_band",
+        "setbackApplied": true,
+        "handling": "R1-01 setback applied (placementAdjust in blocks.json)"
+      },
+      "shop-161": {
+        "minCenterlineToBoxM": 5.601,
+        "class": "clear",
+        "setbackApplied": true,
+        "handling": "R1-01 setback applied (placementAdjust in blocks.json)"
+      },
+      "shop-162": {
+        "minCenterlineToBoxM": 5.601,
+        "class": "clear",
+        "setbackApplied": true,
+        "handling": "R1-01 setback applied (placementAdjust in blocks.json)"
+      },
+      "shop-163": {
+        "minCenterlineToBoxM": 5.602,
+        "class": "clear",
+        "setbackApplied": true,
+        "handling": "R1-01 setback applied (placementAdjust in blocks.json)"
+      },
+      "shop-164": {
+        "minCenterlineToBoxM": 5.597,
+        "class": "sidewalk_band",
+        "setbackApplied": true,
+        "handling": "R1-01 setback applied (placementAdjust in blocks.json)"
+      },
+      "shop-165": {
+        "minCenterlineToBoxM": 5.603,
+        "class": "clear",
+        "setbackApplied": true,
+        "handling": "R1-01 setback applied (placementAdjust in blocks.json)"
+      },
+      "shop-166": {
+        "minCenterlineToBoxM": 5.6,
+        "class": "clear",
+        "setbackApplied": true,
+        "handling": "R1-01 setback applied (placementAdjust in blocks.json)"
+      },
+      "shop-168": {
+        "minCenterlineToBoxM": 5.601,
+        "class": "clear",
+        "setbackApplied": true,
+        "handling": "R1-01 setback applied (placementAdjust in blocks.json)"
+      },
+      "shop-170": {
+        "minCenterlineToBoxM": 5.556,
+        "class": "sidewalk_band",
+        "setbackApplied": true,
+        "handling": "R1-01 setback applied (placementAdjust in blocks.json)"
+      },
+      "shop-171": {
+        "minCenterlineToBoxM": 5.605,
+        "class": "clear",
+        "setbackApplied": true,
+        "handling": "R1-01 setback applied (placementAdjust in blocks.json)"
+      }
+    },
+    "corridor": {
+      "minFreeM": 8.55,
+      "capsuleR": 0.35,
+      "rule": ">=8.4m (R1-01: carriageway clear; boxes behind the 5.6m front line)"
+    },
+    "groundNodeNames": [
+      "sctail__quiet-gray-asphalt",
+      "sctail__worn-stone"
+    ],
+    "groundNodeNote": "paving/curb/drains join into sctail__worn-stone; the sctail__ prefix family is the registered GROUND_NODE_RE walkable set (collisionAdapter.js is frozen — no new prefix)",
+    "physics": "visible faces ARE the walkable ground via GROUND_NODE_RE; no invisible slab",
+    "surveyed": false
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

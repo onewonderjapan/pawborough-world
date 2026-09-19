@@ -1,0 +1,151 @@
+{
+  "imported": true,
+  "materials": [
+    {
+      "name": "worn-stone.001",
+      "imageNodes": []
+    },
+    {
+      "name": "shop-sign-typeset-atlas.001",
+      "imageNodes": [
+        {
+          "name": "sign-atlas",
+          "size": [
+            1024,
+            2048
+          ],
+          "colorSpace": "sRGB"
+        }
+      ]
+    },
+    {
+      "name": "aged-paper.001",
+      "imageNodes": []
+    },
+    {
+      "name": "aged-brass.001",
+      "imageNodes": []
+    },
+    {
+      "name": "deep-door-lacquer.001",
+      "imageNodes": []
+    },
+    {
+      "name": "medicine-drawer-wood.001",
+      "imageNodes": []
+    },
+    {
+      "name": "interior-warm-shadow.001",
+      "imageNodes": []
+    },
+    {
+      "name": "dark-iron.001",
+      "imageNodes": []
+    },
+    {
+      "name": "weathered-lime-plaster.001",
+      "imageNodes": [
+        {
+          "name": "PaintedPlaster017_2K-JPG_Color_1K",
+          "size": [
+            1024,
+            512
+          ],
+          "colorSpace": "sRGB"
+        },
+        {
+          "name": "PaintedPlaster017_2K-JPG_Roughness_1K",
+          "size": [
+            1024,
+            512
+          ],
+          "colorSpace": "Non-Color"
+        },
+        {
+          "name": "PaintedPlaster017_2K-JPG_NormalGL_1K",
+          "size": [
+            1024,
+            512
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
+    },
+    {
+      "name": "blue-gray-brick.001",
+      "imageNodes": [
+        {
+          "name": "Bricks061_2K-JPG_Color_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "sRGB"
+        },
+        {
+          "name": "Bricks061_2K-JPG_Roughness_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        },
+        {
+          "name": "Bricks061_2K-JPG_NormalGL_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
+    },
+    {
+      "name": "oxblood-stained-timber.001",
+      "imageNodes": [
+        {
+          "name": "wood-stain-color",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "sRGB"
+        },
+        {
+          "name": "Wood092_2K-JPG_NormalGL_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
+    },
+    {
+      "name": "gray-pan-tile.001",
+      "imageNodes": [
+        {
+          "name": "roof-color",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "sRGB"
+        },
+        {
+          "name": "roof-normal",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
+    },
+    {
+      "name": "recessed-old-glass.001",
+      "imageNodes": []
+    }
+  ],
+  "meshes": 13
+}

@@ -1,0 +1,359 @@
+{
+  "datasetId": "street-sidefaces",
+  "title": "主街可见山墙/背面外皮（M 批 10 件冻结 + A 批全量共享/实例化）",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "visualReview": "pending_lead",
+  "skins": [
+    {
+      "id": "N01-plain-v1-left-side",
+      "glb": "././world/street-sidefaces/skins/N01-plain-v1-left-side.cm.glb",
+      "bytes": 779888,
+      "sha256": "6086a9a1d0252b6823ffbaef64e10fdb9cf6bb952392aa041299ea09abfa6cc7",
+      "triangles": 60,
+      "kind": "gable",
+      "module": "N01-plain-v1",
+      "moduleRecord": "left-side",
+      "bakedPlacement": {
+        "positionGlb": [
+          3.8891,
+          0,
+          -7.1414
+        ],
+        "rotationYRad": 0.31264
+      },
+      "place": "gable-skin-n01-west",
+      "batch": "M",
+      "outward": [
+        -0.951525,
+        0.307572
+      ]
+    },
+    {
+      "id": "N05-restaurant-a-right-side",
+      "glb": "././world/street-sidefaces/skins/N05-restaurant-a-right-side.cm.glb",
+      "bytes": 779916,
+      "sha256": "f4880110f57c2d30a53f27a83f2356ae04f2e026f99f45621472e73149d7f4f1",
+      "triangles": 60,
+      "kind": "gable",
+      "module": "N05-restaurant-a",
+      "moduleRecord": "right-side",
+      "bakedPlacement": {
+        "positionGlb": [
+          36.4005,
+          0,
+          -10.4263
+        ],
+        "rotationYRad": -0.07925
+      },
+      "place": "gable-skin-lane-a-w",
+      "batch": "M",
+      "outward": [
+        0.996861,
+        0.079167
+      ]
+    },
+    {
+      "id": "N05-restaurant-a-back-wall",
+      "glb": "././world/street-sidefaces/skins/N05-restaurant-a-back-wall.cm.glb",
+      "bytes": 789996,
+      "sha256": "bf48461269cfc0a1b0f7a72eda7f1947741d75cc63098c45457f13ace8327cc4",
+      "triangles": 180,
+      "kind": "rear",
+      "module": "N05-restaurant-a",
+      "moduleRecord": "back-wall",
+      "bakedPlacement": {
+        "positionGlb": [
+          36.4005,
+          0,
+          -10.4263
+        ],
+        "rotationYRad": -0.07925
+      },
+      "place": "gable-skin-lane-a-w",
+      "batch": "M",
+      "outward": [
+        0.079167,
+        -0.996861
+      ]
+    },
+    {
+      "id": "N06-curio-a-left-side",
+      "glb": "././world/street-sidefaces/skins/N06-curio-a-left-side.cm.glb",
+      "bytes": 779904,
+      "sha256": "01ebd320edb2ee4a3306c56e8ee3b949e316ecec643c4218de99c8b7d009a885",
+      "triangles": 60,
+      "kind": "gable",
+      "module": "N06-curio-a",
+      "moduleRecord": "left-side",
+      "bakedPlacement": {
+        "positionGlb": [
+          47.0775,
+          0,
+          -9.2669
+        ],
+        "rotationYRad": -0.16793
+      },
+      "place": "gable-skin-lane-a-e",
+      "batch": "M",
+      "outward": [
+        -0.985933,
+        -0.167142
+      ]
+    },
+    {
+      "id": "N06-curio-a-back-wall",
+      "glb": "././world/street-sidefaces/skins/N06-curio-a-back-wall.cm.glb",
+      "bytes": 790008,
+      "sha256": "4ce9d51854d425b94cdecaaa1bdc998158f5a441661e566230136e8cbec4c52a",
+      "triangles": 180,
+      "kind": "rear",
+      "module": "N06-curio-a",
+      "moduleRecord": "back-wall",
+      "bakedPlacement": {
+        "positionGlb": [
+          47.0775,
+          0,
+          -9.2669
+        ],
+        "rotationYRad": -0.16793
+      },
+      "place": "gable-skin-lane-a-e",
+      "batch": "M",
+      "outward": [
+        0.167142,
+        -0.985933
+      ]
+    },
+    {
+      "id": "S05-plain-v3-left-side",
+      "glb": "././world/street-sidefaces/skins/S05-plain-v3-left-side.cm.glb",
+      "bytes": 779820,
+      "sha256": "27e2641e29b686492ba042bc120107ac28f254b38274e984348064e0a1c6bb07",
+      "triangles": 60,
+      "kind": "gable",
+      "module": "S05-plain-v3",
+      "moduleRecord": "left-side",
+      "bakedPlacement": {
+        "positionGlb": [
+          54.9927,
+          0,
+          5.5789
+        ],
+        "rotationYRad": 2.65997
+      },
+      "place": "gable-skin-lane-b-w",
+      "batch": "M",
+      "outward": [
+        0.886244,
+        0.463218
+      ]
+    },
+    {
+      "id": "S05-plain-v3-back-wall",
+      "glb": "././world/street-sidefaces/skins/S05-plain-v3-back-wall.cm.glb",
+      "bytes": 789920,
+      "sha256": "00c45affcba39dc4fee8830213507b616d0f7e699bef29726d6572f85adbf9a1",
+      "triangles": 180,
+      "kind": "rear",
+      "module": "S05-plain-v3",
+      "moduleRecord": "back-wall",
+      "bakedPlacement": {
+        "positionGlb": [
+          54.9927,
+          0,
+          5.5789
+        ],
+        "rotationYRad": 2.65997
+      },
+      "place": "gable-skin-lane-b-w",
+      "batch": "M",
+      "outward": [
+        -0.463218,
+        0.886244
+      ]
+    },
+    {
+      "id": "S07-plain-v2-right-side",
+      "glb": "././world/street-sidefaces/skins/S07-plain-v2-right-side.cm.glb",
+      "bytes": 779796,
+      "sha256": "7c2b003c259ff24f8ce408b68dbc604e97ac759fbee9465fd45a4d8489e42b2d",
+      "triangles": 60,
+      "kind": "gable",
+      "module": "S07-plain-v2",
+      "moduleRecord": "right-side",
+      "bakedPlacement": {
+        "positionGlb": [
+          66.0107,
+          0,
+          11.7373
+        ],
+        "rotationYRad": 2.6087
+      },
+      "place": "gable-skin-lane-b-e",
+      "batch": "M",
+      "outward": [
+        -0.861341,
+        -0.508027
+      ]
+    },
+    {
+      "id": "S07-plain-v2-back-wall",
+      "glb": "././world/street-sidefaces/skins/S07-plain-v2-back-wall.cm.glb",
+      "bytes": 789872,
+      "sha256": "16c2d3d1e35bd7c112785e9a1b4fe7747ccd9449f11470d6e02a3c9563047e47",
+      "triangles": 180,
+      "kind": "rear",
+      "module": "S07-plain-v2",
+      "moduleRecord": "back-wall",
+      "bakedPlacement": {
+        "positionGlb": [
+          66.0107,
+          0,
+          11.7373
+        ],
+        "rotationYRad": 2.6087
+      },
+      "place": "gable-skin-lane-b-e",
+      "batch": "M",
+      "outward": [
+        -0.508027,
+        0.861341
+      ]
+    },
+    {
+      "id": "east-shop-133-gable-wall-east-b0s0",
+      "glb": "././world/street-sidefaces/skins/east-shop-133-gable-wall-east-b0s0.cm.glb",
+      "bytes": 779816,
+      "sha256": "cbc83ae971a732c0c248fd6be01342eed954624e859217b424430cec28f3d9e5",
+      "triangles": 60,
+      "kind": "gable",
+      "module": "east-shop-133",
+      "moduleRecord": "gable-wall-east-b0s0",
+      "bakedPlacement": {
+        "positionGlb": [
+          120.22055408090135,
+          0,
+          30.184058020222682
+        ],
+        "rotationYRad": 2.912213
+      },
+      "place": "gable-skin-east-133",
+      "batch": "M",
+      "outward": [
+        0.973808,
+        0.227373
+      ]
+    },
+    {
+      "id": "cs-10.15x7.20x0.28|rear|t-1",
+      "glb": "././world/street-sidefaces/skins/cs-10.15x7.20x0.28|rear|t-1.cm.glb",
+      "bytes": 789336,
+      "sha256": "d6d013d7dc847e14c03d3004df23dd23e567d06faf98717c7f2a8b0c6f8e8245",
+      "triangles": 180,
+      "kind": "rear",
+      "batch": "A"
+    },
+    {
+      "id": "cs-0.28x6.60x10.00|side-e|t1",
+      "glb": "././world/street-sidefaces/skins/cs-0.28x6.60x10.00|side-e|t1.cm.glb",
+      "bytes": 779572,
+      "sha256": "b274b4881cb5cb102c47011d50d9617d2086b714b83b67403c29522ebbb65638",
+      "triangles": 60,
+      "kind": "gable",
+      "batch": "A"
+    },
+    {
+      "id": "cs-10.15x6.40x0.28|rear|t-1",
+      "glb": "././world/street-sidefaces/skins/cs-10.15x6.40x0.28|rear|t-1.cm.glb",
+      "bytes": 789312,
+      "sha256": "6da744d5e0ad4a8a36062ec3b39b00167f342fe495ffe8581f1a7c047e1fa308",
+      "triangles": 180,
+      "kind": "rear",
+      "batch": "A"
+    },
+    {
+      "id": "cs-0.28x5.80x11.00|side-e|t-1",
+      "glb": "././world/street-sidefaces/skins/cs-0.28x5.80x11.00|side-e|t-1.cm.glb",
+      "bytes": 779560,
+      "sha256": "e8e446b40b4bdedee08af318663fce8931d9064ad0d3733396e31a97bb106292",
+      "triangles": 60,
+      "kind": "gable",
+      "batch": "A"
+    },
+    {
+      "id": "cs-0.28x6.60x12.00|side-e|t1",
+      "glb": "././world/street-sidefaces/skins/cs-0.28x6.60x12.00|side-e|t1.cm.glb",
+      "bytes": 779540,
+      "sha256": "b9f923e8e5a5576de8f112c8f38c7d1f76d089788a86cdefd999aaf1c8211a3c",
+      "triangles": 60,
+      "kind": "gable",
+      "batch": "A"
+    },
+    {
+      "id": "cs-0.28x5.80x13.00|side-e|t-1",
+      "glb": "././world/street-sidefaces/skins/cs-0.28x5.80x13.00|side-e|t-1.cm.glb",
+      "bytes": 779552,
+      "sha256": "dd99f6fbff4cb37127f9fedeb855aaa7613f674031afd23c378e240e7509ecf3",
+      "triangles": 60,
+      "kind": "gable",
+      "batch": "A"
+    },
+    {
+      "id": "cs-0.28x5.80x10.00|side-e|t1",
+      "glb": "././world/street-sidefaces/skins/cs-0.28x5.80x10.00|side-e|t1.cm.glb",
+      "bytes": 779568,
+      "sha256": "815610ed05ca8eb2ae49d1b80c957e3eb29dc4c7915e06f4ebc445557f873c42",
+      "triangles": 60,
+      "kind": "gable",
+      "batch": "A"
+    }
+  ],
+  "counts": {
+    "mBatchSkins": 10,
+    "aBatchSharedSkins": 7,
+    "instancesTotal": 21,
+    "mBatchInstances": 10,
+    "aBatchInstances": 11,
+    "surveyVisibleFaces": 119,
+    "dedupedWalls": 52
+  },
+  "placedTriangles": 2117,
+  "triangleAccounting": {
+    "uniqueSkinsTris": {
+      "actual": 660,
+      "limit": 30000
+    },
+    "instancedPlacedTris": {
+      "actual": 1037,
+      "limit": 120000
+    },
+    "formula": "instanced = instanceCount × meanUniqueSkinTris (shared geometry, per-instance transforms)"
+  },
+  "budgets": {
+    "perFaceTrisMax": 1500,
+    "newTextures": 0
+  },
+  "mBatchFrozen": {
+    "skins": [
+      "N01-plain-v1-left-side",
+      "N05-restaurant-a-right-side",
+      "N05-restaurant-a-back-wall",
+      "N06-curio-a-left-side",
+      "N06-curio-a-back-wall",
+      "S05-plain-v3-left-side",
+      "S05-plain-v3-back-wall",
+      "S07-plain-v2-right-side",
+      "S07-plain-v2-back-wall",
+      "east-shop-133-gable-wall-east-b0s0"
+    ],
+    "note": "ids/shas unchanged from the M batch"
+  },
+  "placementContract": "M batch baked in world coords (identity instances); A batch centered skins with per-face instances (positionGlb = record-box world center via obbToWorld, rotationYRad = module yaw)",
+  "buildChain": "find_visible_side_faces.mjs -> plan-full.json -> gable-skin-full.config.json -> build_gable_skins.py (centered) -> build_sidefaces_world.mjs",
+  "generatedBy": "scripts/build_sidefaces_world.mjs",
+  "compressedVariant": {
+    "note": "auto-generated by tools/build_compressed_dist.mjs: every .glb field repointed to .cm.glb with its true bytes/sha256 (meshopt -cc -kn per N4)",
+    "gltfpack": "meshopt + KHR_mesh_quantization (-cc -kn); textures untouched"
+  }
+}

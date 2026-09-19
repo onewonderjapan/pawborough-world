@@ -1,0 +1,22 @@
+{
+  "moduleId": "pharmacy-shop",
+  "triangles": 21788,
+  "meshes": 13,
+  "fileBytes": 3679732,
+  "sha256": "f51cf055f8a86ca16bf763f43689a7a4cbe536a59f6bd420b9f50751c52b9574",
+  "design": {
+    "family": "pharmacy-shop",
+    "source": "derived from inputs/baseline 檐下三间 build.py; rebuilt in unit-local frame",
+    "frontageM": 7.8,
+    "depthM": 7.0,
+    "eaveM": 8.0,
+    "ridgeM": 9.6,
+    "eaveMarginM": 0.4,
+    "frontProtrusionM": 0.5,
+    "doors": "ground floor open bays into shallow display interior"
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

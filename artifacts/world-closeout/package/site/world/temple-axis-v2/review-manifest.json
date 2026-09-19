@@ -1,0 +1,163 @@
+{
+  "datasetId": "temple-axis-v2",
+  "title": "城隍庙庙轴线 v2 · 山门—仪门/戏楼—配殿院—大殿—三进院—城隍殿",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "visualReview": "pending_lead",
+  "reference": "DESIGN_SPEC.json pawborough-temple-expansion-night-20260917 (all new modules design inference; GEN images form-direction only)",
+  "axis": "GLB Y-up; +Z south toward the street; shanmen threshold at (0,0,0); north = -Z",
+  "assets": {
+    "temple": {
+      "file": "./world/temple-axis-v2/temple.glb",
+      "bytes": 3782256,
+      "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb",
+      "triangles": 22392,
+      "groups": [
+        "shanmen-body",
+        "shanmen-plaque"
+      ]
+    },
+    "ground": {
+      "file": "./world/temple-axis-v2/ground.glb",
+      "bytes": 860916,
+      "sha256": "0acf56376883f3faf823c52f8cf8478bf8d731c31606ed22e7eeadc0f7e0879d",
+      "triangles": 360,
+      "groups": [
+        "temple-ground"
+      ]
+    },
+    "lions": {
+      "file": "./world/temple-axis-v2/lions.glb",
+      "bytes": 440156,
+      "sha256": "eed2009cca69b5f08a287b4c034f270d817cf1d1bd1ba6859993bcc912278c06",
+      "triangles": 3556,
+      "groups": [
+        "shanmen-lion"
+      ]
+    },
+    "ornaments": {
+      "file": "./world/temple-axis-v2/ornaments.glb",
+      "bytes": 437144,
+      "sha256": "feec279340911ce646a96b203c2febaa5a812d10035d9493f06868f73302a8f9",
+      "triangles": 2304,
+      "groups": [
+        "shanmen-ornament"
+      ]
+    },
+    "yimen": {
+      "file": "./world/temple-axis-v2/yimen.glb",
+      "bytes": 4343252,
+      "sha256": "e9393cd4017c657e74d2889da812ac16eb70a04664ce8ab829ea126cb7ee48b5",
+      "triangles": 26140,
+      "groups": [
+        "yimen-body",
+        "yimen-plaque"
+      ]
+    },
+    "courtOpen": {
+      "file": "./world/temple-axis-v2/court-open.glb",
+      "bytes": 1145928,
+      "sha256": "ade97662e4be178ba0faf93ff66c48e7c6b55011c8df8edbb27bab1449d4aded",
+      "triangles": 1580,
+      "groups": [
+        "temple-ground",
+        "entry-court"
+      ]
+    },
+    "dadian": {
+      "file": "./world/temple-axis-v2/dadian.glb",
+      "bytes": 6295144,
+      "sha256": "8a722d9dc7663cefea0f94409a8911c65cf824756a60220ec7d1c88d4f1dabee",
+      "triangles": 43826,
+      "groups": [
+        "dadian-body",
+        "dadian-plaque"
+      ]
+    },
+    "dadianCourtV2": {
+      "file": "./world/temple-axis-v2/dadian-court-v2.glb",
+      "bytes": 1353280,
+      "sha256": "d643a1b3e0f8b9c38cafc4dd53465ff0de12f6fd38e4f81188b6735625ad79a7",
+      "triangles": 3288,
+      "groups": [
+        "temple-ground",
+        "dadian-court"
+      ]
+    },
+    "peidian": {
+      "file": "./world/temple-axis-v2/peidian.glb",
+      "bytes": 2075332,
+      "sha256": "b3dba52114ed22f25e916f9d5cc72cff6ba2cf13082eae16daa099deabc1771d",
+      "triangles": 11396,
+      "groups": [
+        "peidian-body",
+        "temple-ground"
+      ]
+    },
+    "gallery": {
+      "file": "./world/temple-axis-v2/gallery.glb",
+      "bytes": 490812,
+      "sha256": "45228eb69acfd827741ac9f4a72b2d2f6bd92a1c2c4b0776efa210424ee1114d",
+      "triangles": 1110,
+      "groups": [
+        "gallery-body",
+        "temple-ground"
+      ]
+    },
+    "yimenStage": {
+      "file": "./world/temple-axis-v2/yimen-stage.glb",
+      "bytes": 1283532,
+      "sha256": "509fd8913f90cbdce61a55ba3187030da304140216cbb4f368127dd8eb59a51d",
+      "triangles": 7164,
+      "groups": [
+        "yimen-stage-body"
+      ]
+    },
+    "court3": {
+      "file": "./world/temple-axis-v2/court3.glb",
+      "bytes": 1634368,
+      "sha256": "3921895487fb7581e4fce7e31c8534153329ab61ea186a3e961b6a1e44bb0f0c",
+      "triangles": 4552,
+      "groups": [
+        "temple-ground",
+        "court3-boundary"
+      ]
+    },
+    "houdian": {
+      "file": "./world/temple-axis-v2/houdian.glb",
+      "bytes": 2702268,
+      "sha256": "693a5efb758700c96c162f9c9c93e0d1b91f490cde895e9d41202b4cdcd9f615",
+      "triangles": 16164,
+      "groups": [
+        "houdian-body",
+        "temple-ground"
+      ]
+    }
+  },
+  "placedTriangles": 143832,
+  "budgets": {
+    "newModulesTris": {
+      "actual": 43674,
+      "limit": 70000
+    },
+    "placedTriangles": {
+      "actual": 143832,
+      "limit": 180000
+    }
+  },
+  "cameras": {
+    "count": 10,
+    "source": "lead designed expansion cameras (task CAMERAS.json)",
+    "contract": "positionGlb/targetGlb/verticalFovDegrees applied verbatim; page verifies pose after controls.update()"
+  },
+  "groundPolicy": "visible court/path/platform/step/base meshes ARE the physics ground (temple-ground__ nodes); no invisible plane; stage floor deliberately NOT temple-ground (unreachable)",
+  "designPresets": {
+    "peidianGable": "硬山 (owner ruling; GEN 观音兜 not copied)",
+    "houdianRoof": "single-eave 硬山 (owner ruling; GEN G36 xieshan read not adopted this batch)",
+    "stage": "attached to the yimen rear, floor 2.6 m, unreachable, ridge 7.4 < yimen 7.7",
+    "plaques": "all blank boards (new image budget 0)",
+    "boundaryWalls": "x ±16.4 + north closure z -84.0 — sample language, NOT historical"
+  },
+  "buildChain": "build_dadian_court.py(v2 keys) + build_peidian.py + build_gallery.py + build_yimen_stage.py + build_court3.py + build_houdian.py <- DESIGN_SPEC.json (lead design)",
+  "generatedBy": "scripts/build_temple_axis_v2_world.mjs"
+}

@@ -1,0 +1,3697 @@
+{
+  "batch": "pawborough-world-closeout-night-20260919",
+  "generatedAt": "2026-09-19T17:05:13.407Z",
+  "codeCommit": "e1367293a43fa3ced77f39ad5d4a010ec752c24e",
+  "assetsCommit": "e1367293a43fa3ced77f39ad5d4a010ec752c24e",
+  "note": "code and shipped assets ride the same commit tree; assets are LFS-pointer-verified in git and byte-present in package/site",
+  "video": {
+    "clipB": {
+      "state": "complete",
+      "frames": 576,
+      "durationSec": 24,
+      "sha256": "462df881e36f3f0d49b74ca4a5b7abd75010ddd9acef8692d66b7dcb7a54af0e"
+    },
+    "clipA": {
+      "state": "NO_TERMINAL_STATUS",
+      "renderedOfExpected": null,
+      "sha256": null
+    }
+  },
+  "browserGate": {
+    "pass": true,
+    "scenarios": 12
+  },
+  "serve": "cd artifacts/world-closeout/package/site && python3 -m http.server 8080  # localhost 静态服务；file:// 不作为可用网页口径",
+  "files": [
+    {
+      "path": "artifacts/world-closeout/package/START_HERE.zh-CN.md",
+      "bytes": 3537,
+      "sha256": "6f54e85ccb62f184fe4d61e1ef9329ccf3759b913fff4baa500c78523d3166cb"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/PROGRESS.json",
+      "bytes": 11462,
+      "sha256": "5867959757033e19fa4e4ff382958e0db7510d589fc0eb3aec5a14afa6395f60"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/baseline.json",
+      "bytes": 171184,
+      "sha256": "586871e0ef8c40504562ff56ca6b9f65fbc0b3adc854f1df8355746990f764d3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/browser-evidence/dev-temple-v3-cm.jpg",
+      "bytes": 92939,
+      "sha256": "f1c39a0aba91460bb2fbd4115f7ed65a3efad6aa443a835bf455b6378e88139a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/browser-evidence/dev-temple-v3-original.jpg",
+      "bytes": 92964,
+      "sha256": "9574660c21b8fcfe513c9e18947d66d622f31f07f1b02e96d2548c1a09c37021"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/browser-evidence/dev-v4-skins-props-cm.jpg",
+      "bytes": 74077,
+      "sha256": "2edec837a468f172fda5f7656cb7092a6d99dc297a6508f36bd8fef1cc5b2e13"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/browser-evidence/dev-v4-skins-props-original.jpg",
+      "bytes": 74111,
+      "sha256": "f48915d69619186b7ba3fd9afdcfeaaee2c41bbe2205ef1832cb6a139ab414e2"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/browser-evidence/preview-temple-v2-default.jpg",
+      "bytes": 91465,
+      "sha256": "6ae28970fb3767766d041cc9b57d4b01d851df868650976906935dfa3c2cb26e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/browser-evidence/preview-temple-v2-original.jpg",
+      "bytes": 91770,
+      "sha256": "05450de557a0aaf36b3e4e6f7e04df92bfd6f7788076121439e013f26013e423"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/browser-evidence/preview-temple-v3-cm.jpg",
+      "bytes": 93276,
+      "sha256": "b24a3f4b3616799099b465e334ed4ecacfea9aedb01840952da2e3a104b463d9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/browser-evidence/preview-temple-v3-original.jpg",
+      "bytes": 92959,
+      "sha256": "59494b7b60ca5d3c2e0b3c27d243ca813090e803414a4af2aa20e5f2bc0cf643"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/browser-evidence/preview-v3-street-cm.jpg",
+      "bytes": 70416,
+      "sha256": "4a7102e4be6daf18e42f8568da857761c9b4e14368d3fc0c4333e9a44facaa30"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/browser-evidence/preview-v3-street-original.jpg",
+      "bytes": 70466,
+      "sha256": "e7b15df63f204b19d0cf18a356e176664f5037397e2eda622fef78fb647e6d45"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/browser-evidence/preview-v4-skins-props-cm.jpg",
+      "bytes": 74074,
+      "sha256": "5b7cb44737f1e4f7950f3788f95b678f471a2315e8f2498d2af37d516d5191cc"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/browser-evidence/preview-v4-skins-props-original.jpg",
+      "bytes": 74111,
+      "sha256": "f48915d69619186b7ba3fd9afdcfeaaee2c41bbe2205ef1832cb6a139ab414e2"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/browser-report.json",
+      "bytes": 10513,
+      "sha256": "28b389fdaa8029cdd9db0f4a7420ce9c40b3ec6968fe448108869750889a3ea6"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/cm-provenance.json",
+      "bytes": 53089,
+      "sha256": "0441ea0e8f2cfef41a6524dd0bd9d1fd3c3c89db4d2b9242b5b3edea35d4128e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/n-candidates.json",
+      "bytes": 29369,
+      "sha256": "011c5842a5a69e483a3d801b15925198076bf519eb93406a3e7deceafeb208b6"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/n-closure.json",
+      "bytes": 60470,
+      "sha256": "e6e71f0aef20cbe889d8395016ec041afe42268d1b8bda7fc04ad8e4e2f2c70a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/n-install.json",
+      "bytes": 4332,
+      "sha256": "d6acc5672056ee1ec52879aa482b1f09a9c67f1c083e6a99b1c6da80e78c0fab"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/n-validate.json",
+      "bytes": 224595,
+      "sha256": "2f3da711ca07b0d0b2f1595fbacaba53a3cde12ee3756b97f92e0fc83109a669"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/rebuild-report.json",
+      "bytes": 7387,
+      "sha256": "2d5f2e86c518fd9d8ff7369e90bb8eca302563fd89a2502f94a1962ce0e1b16a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/reports/video-receipt.json",
+      "bytes": 1209,
+      "sha256": "a9077244ba3892692f2f9c7f969b74a99e8283df304fab909a21fc9693564da5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/VERSION.json",
+      "bytes": 129996,
+      "sha256": "3b8ee89670467b64bbc30ebd8dfb107bd90a50c10dab86febde61fb5996248f0"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/assets/compressedState-qChhPxDh.js",
+      "bytes": 957,
+      "sha256": "c43bf2d5455fa5f202f43895c0fbfae4e0fc2b90cfe1d373f9b0059d2b25cd69"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/assets/dadian-CJck3Km_.js",
+      "bytes": 10841,
+      "sha256": "8cde441369fad979b8756a27150146eb4d83fa7b222b16858e8098e93abf618f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/assets/decoders-wQWGEWnn.js",
+      "bytes": 2909092,
+      "sha256": "366d60b3a41c7d76ffdcce2fe1e199d683dbd620d3cfd2568fa0960de4eaf64b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/assets/fangbang-DSnnQ2-n.js",
+      "bytes": 20571,
+      "sha256": "7620d1ceead3213d241298fcd1a25c37e3f249635ec1fc35e4e34ea6e6621f87"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/assets/index-D3xEXQKQ.js",
+      "bytes": 15430,
+      "sha256": "09719276acfefd6a9fcb93269489beaa1c0ea3b8493985edb97d55d7bfd5b11c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/assets/sceneAssets-Debf4Tlr.js",
+      "bytes": 13953,
+      "sha256": "50ee7398bd8cc5e15ae8e9b6a422acc75d3273cacff40f10140af6e924ab9405"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/assets/temple-entry-uJ1r4COZ.js",
+      "bytes": 9340,
+      "sha256": "0aaa77a3a118e0e93d0f5ecb42d3e2731a7ad175ca2b84360acd55d31a7d5b9e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/assets/temple-qVc7aE_F.js",
+      "bytes": 8721,
+      "sha256": "8af994b77ffdcd8ab4f9b25d791cdd4e7e66edff5274ee4953d1fc142abb4961"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/assets/temple-v2-Tc2ft4gl.js",
+      "bytes": 13980,
+      "sha256": "93ba61dc58fe00944555d76f23651e141a256bd3add2e333de5c7efd678ec8fa"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/assets/temple-v3-CFYdvZBj.js",
+      "bytes": 14752,
+      "sha256": "c9c0dde13740a9545e4a01dadc121d28782716e2b30c4666160685e3ca49603a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/assets/templeViewShared-iLr_Zn6W.js",
+      "bytes": 2846,
+      "sha256": "5556a118e469b6c6eeef840fe11a76fc7ca0dd4525637331ff7b1bb78a803ff4"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/build_catwall.py",
+      "bytes": 1904,
+      "sha256": "e30994d1a7d4ee5634943642def9858d855883b080797286aaf05bcadfa101a6"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/build_legacy_unit.py",
+      "bytes": 6126,
+      "sha256": "ebc2fcd4c7117bed05771aca640e6bb1f4dc3574b9bdebc41ee5012ce504c640"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/build_new_unit.py",
+      "bytes": 22858,
+      "sha256": "92206d653f006427fcbffbebf4f39e1671df0b4f48ea61ee670a8705fa93413b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/cat_corner/collision.json",
+      "bytes": 1217,
+      "sha256": "aba499a8fb99326c9c4adc99862054b37294cc2c53e3091c9b62dd1d7a2fed75"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/cat_corner/materials.json",
+      "bytes": 6095,
+      "sha256": "c4f3b9e16889a4e2f1d444a670ee31e26edd74f8bc903e0fc3e7ae98e19efc8a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/cat_corner/measurements.json",
+      "bytes": 717,
+      "sha256": "38a35a67b145c186a50fa1f97a6585785f50a3427a4c1d272ed99fe49ceb6413"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/cat_corner/model.blend",
+      "bytes": 6517189,
+      "sha256": "7ccf19f699ed91523faca8c9595cf479efed039690da5c02c541d733fdff213d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/cat_corner/model.cm.glb",
+      "bytes": 1298936,
+      "sha256": "0ce113155f35c98e2d6cb75018860d44d70bbd0b78118fe6c4575f5ecac79581"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/cat_corner/model.glb",
+      "bytes": 1580852,
+      "sha256": "90f3d33ba782666093f2456b9890bed63bf2d45dc3019c136cbd6174eac072d3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/cat_corner/reimport-check.json",
+      "bytes": 2711,
+      "sha256": "24b4fbecb9bbb55e3767b9504db7de87ca6a8d7472f1969393c8a518feea7b84"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/cloth_shop/collision.json",
+      "bytes": 4135,
+      "sha256": "630b46d738c1e21874b037d730500294d284feb1440e2c10ab0b950a8351c53c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/cloth_shop/materials.json",
+      "bytes": 6095,
+      "sha256": "c4f3b9e16889a4e2f1d444a670ee31e26edd74f8bc903e0fc3e7ae98e19efc8a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/cloth_shop/measurements.json",
+      "bytes": 633,
+      "sha256": "8021bf6c3d5f954ae9448d8dcd89e3c91646dadb3df61db6b73e483a6b676f68"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/cloth_shop/model.blend",
+      "bytes": 7235031,
+      "sha256": "999c1e68492337a699f9d5764827450c1f9646099e85e6c880205169c1e4c589"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/cloth_shop/model.cm.glb",
+      "bytes": 1208904,
+      "sha256": "1e37002f7adba16f652570312c9a82b1a093ac099edcb1fbc295565690d4852a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/cloth_shop/model.glb",
+      "bytes": 2222268,
+      "sha256": "87c89a4620532eb351df7af21665a29c40c43fad610fe3a759aa5335ec85362d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/cloth_shop/reimport-check.json",
+      "bytes": 3036,
+      "sha256": "b16a60353378d5d15b615f2320db22b498343c1d3f61e20a2466806d5508c28b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/corner/collision.json",
+      "bytes": 5379,
+      "sha256": "9e1fd41e373b248d8c184a594dc8c0440f8a80301c5ad1e8003f5833fc60d99a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/corner/materials.json",
+      "bytes": 6095,
+      "sha256": "c4f3b9e16889a4e2f1d444a670ee31e26edd74f8bc903e0fc3e7ae98e19efc8a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/corner/measurements.json",
+      "bytes": 823,
+      "sha256": "da16aab27fdbb8672504209f6bdce1699f4b39e08720310b6d4e6a3b223ca486"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/corner/model.blend",
+      "bytes": 7065202,
+      "sha256": "060c5de40c9da20d822d07094a02296f69ab0b479dea5e89c76eea5c438574ae"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/corner/model.cm.glb",
+      "bytes": 1190916,
+      "sha256": "8541a6e6b62ea1f8c82dc0ce441bf7551c8def5b6b3f4837af296eb183438a0a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/corner/model.glb",
+      "bytes": 2146508,
+      "sha256": "3e68b5833c61d6f2bfe20cf96d561c90618483a319599abcc81385ca4e8bb9a5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/corner/reimport-check.json",
+      "bytes": 2767,
+      "sha256": "a2578eccc37fb1b448e92c29f5da0c6f191c0305e913c77db34ebe33ba9e26bc"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/curio-a/collision.json",
+      "bytes": 2926,
+      "sha256": "de5b7b72e43b3b9f791e3c0fb7f5732e638f0108febcddb936e3d9d20f7225e8"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/curio-a/materials.json",
+      "bytes": 6095,
+      "sha256": "c4f3b9e16889a4e2f1d444a670ee31e26edd74f8bc903e0fc3e7ae98e19efc8a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/curio-a/measurements.json",
+      "bytes": 736,
+      "sha256": "164546a1acf8df00e05a78565c782536b944576db3e56a1d7a43967af0b9be5a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/curio-a/model.blend",
+      "bytes": 6976037,
+      "sha256": "e4274b9dc4931e36b5ea7b028c6e429f28f23fd14426d947286946788f1294c3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/curio-a/model.cm.glb",
+      "bytes": 1174568,
+      "sha256": "193cd15f74450031ab8aa1950ef3c1e80fe0933287bc6f85aa7bb14baded7c2c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/curio-a/model.glb",
+      "bytes": 1972556,
+      "sha256": "aa178b96876d22f5c598db3837b541229e852c069d18c43b5dda27dc52199747"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/curio-a/reimport-check.json",
+      "bytes": 2835,
+      "sha256": "61a8b7a68950d2b8adc055cc531f1172362770ed4a41142eca983db3d5d2c6f2"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/curio-b/collision.json",
+      "bytes": 2677,
+      "sha256": "35605e99c6b330c595e22a61dfb15ba708bd5176a382829a4f58bd11a6615595"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/curio-b/materials.json",
+      "bytes": 6095,
+      "sha256": "c4f3b9e16889a4e2f1d444a670ee31e26edd74f8bc903e0fc3e7ae98e19efc8a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/curio-b/measurements.json",
+      "bytes": 741,
+      "sha256": "d759cd624b1c233bba63a0cc31d4578a49e312b6b76c10f6a726d81e42d36509"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/curio-b/model.blend",
+      "bytes": 6985395,
+      "sha256": "becffdd6b9e7844d2c39f17aa05730059692673840a87951b6c01d401d9fa6cc"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/curio-b/model.cm.glb",
+      "bytes": 1172216,
+      "sha256": "99c745a2ad0deda5b616b4fd16d13a819966aebb69b54a5362570254142c6c04"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/curio-b/model.glb",
+      "bytes": 1953600,
+      "sha256": "768062ada15239ba5d086a09939a4e8b593677d0ac06180357728591c426ee40"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/curio-b/reimport-check.json",
+      "bytes": 2895,
+      "sha256": "8805f88b7ac9a2d047197252edbbb7fa3de6a89ca02b497d307b659c4808e3d8"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/dry_goods_shop/collision.json",
+      "bytes": 3519,
+      "sha256": "9c198aeb0a6d190788f9fcf5638b4b7d07467a9e0dc13c088d71fbe1d87d63c6"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/dry_goods_shop/measurements.json",
+      "bytes": 611,
+      "sha256": "b8785904f6fbbbce5acc4d6b42dc4f103349311884064f7da365951cb28e8c45"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/dry_goods_shop/model.cm.glb",
+      "bytes": 1820968,
+      "sha256": "eb79f2cb5be3adbab2c2fc97371f1ee8ba9431d86e59b29dc3f0470f675bc933"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/dry_goods_shop/model.glb",
+      "bytes": 3562760,
+      "sha256": "052fadafda116d08356ded8544e32a71323f4adbff2ca9420dfce2f4e0bcd1c9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/helpers.py",
+      "bytes": 2432,
+      "sha256": "1e3d8498edeaec410286ea60e96f9848edfc5d440417a6793e24a60512ca7f9f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/make_maps.py",
+      "bytes": 3789,
+      "sha256": "17e523ce75869aaab43083b3c930f5a10f14d724a5587d1602266ce1e457e181"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/map-authoring.json",
+      "bytes": 695,
+      "sha256": "7bfeb2464f7b4c6b75b1aaeddfc29516421bc1f84b6c94ca649b2a00346c77d4"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/mb_lib.py",
+      "bytes": 17941,
+      "sha256": "f86ac38c8458cef6845faf309450e8e9966d0ae0bec6b4d1ac0301229c9c0638"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/pharmacy_shop/collision.json",
+      "bytes": 4320,
+      "sha256": "e0847a593442b40348d158db18d417eb8c3d72042133ddf8ac1415f2b5ecd586"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/pharmacy_shop/materials.json",
+      "bytes": 6095,
+      "sha256": "c4f3b9e16889a4e2f1d444a670ee31e26edd74f8bc903e0fc3e7ae98e19efc8a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/pharmacy_shop/measurements.json",
+      "bytes": 639,
+      "sha256": "1186626ec7320384d0b1a4788610dec55e9611313d24d2b6aa2320924fe311de"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/pharmacy_shop/model.blend",
+      "bytes": 8023961,
+      "sha256": "2989ed39b41bb7919e0f267b45efdc6420a8a1a2b16bb03293f7a2a010ec8bb6"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/pharmacy_shop/model.cm.glb",
+      "bytes": 1321304,
+      "sha256": "103de3ffb3c555891dc7361bfc59e0463536856f6becbace985f012fc7ee6176"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/pharmacy_shop/model.glb",
+      "bytes": 3679732,
+      "sha256": "f51cf055f8a86ca16bf763f43689a7a4cbe536a59f6bd420b9f50751c52b9574"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/pharmacy_shop/reimport-check.json",
+      "bytes": 2903,
+      "sha256": "fbe6c7e659c49f44f38314b435b2c663976ff0ce092549ba10bf124031e86e5c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/photo_shop/collision.json",
+      "bytes": 3788,
+      "sha256": "1b2a13b82706f13c4c8602fa0012cf0b41986893d26c68bbd3313c917df55d87"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/photo_shop/measurements.json",
+      "bytes": 603,
+      "sha256": "ea88f8d335c7655ef61e20ace44d9ebd3cb4eb82b35b9e3426a571b73335b456"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/photo_shop/model.cm.glb",
+      "bytes": 1788036,
+      "sha256": "221f45ed5ae4ec50abe1c5d1f19880ad69ceef89d0920cd2df9d0f58fe860b4b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/photo_shop/model.glb",
+      "bytes": 4105324,
+      "sha256": "5d885af6eb8b76ef1147a06499eed100da32593e149cd3dd6bf434d2acd84f76"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v1/collision.json",
+      "bytes": 2971,
+      "sha256": "891ba7466d08e0b3029258c4f4cc4cfd99a48ac3cae92f8db39d28f4f5fecbf5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v1/materials.json",
+      "bytes": 6095,
+      "sha256": "c4f3b9e16889a4e2f1d444a670ee31e26edd74f8bc903e0fc3e7ae98e19efc8a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v1/measurements.json",
+      "bytes": 783,
+      "sha256": "f0a0876a2c0cdd05282c1a0698c2fb96b469fffc42e0ddab083dae0f91dd2dca"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v1/model.blend",
+      "bytes": 6918329,
+      "sha256": "9c0dc5a7014dd4a717d415923de88dba5757f194d507d81ee8fda8150a20487b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v1/model.cm.glb",
+      "bytes": 1166376,
+      "sha256": "04506389b93fcb411a09299a734b2fb62b834681bfb8d461718810bfe7e93436"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v1/model.glb",
+      "bytes": 1953264,
+      "sha256": "9567bf0e96aec885116e2ad7692e4a90f440073d6d158b8454e344119910cbad"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v1/reimport-check.json",
+      "bytes": 2689,
+      "sha256": "217d4308c14419f4b28c8a1ca833ae011a9f8c93c420f797a9c974226bdf9b57"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v2/collision.json",
+      "bytes": 3083,
+      "sha256": "a04767878838f7dbf714f9d910c00ec32a1825ee292d9de64becfda0f9d15a52"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v2/materials.json",
+      "bytes": 6095,
+      "sha256": "c4f3b9e16889a4e2f1d444a670ee31e26edd74f8bc903e0fc3e7ae98e19efc8a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v2/measurements.json",
+      "bytes": 783,
+      "sha256": "74bd7a24d5a472c2b4ade0cd22f24122896c50786081b45a305fbc495db1c725"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v2/model.blend",
+      "bytes": 6861753,
+      "sha256": "0de06e0d91b23ff55d2147b97ae648cefe53a5fd59c783d1fc3e9c7dce1740e1"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v2/model.cm.glb",
+      "bytes": 1154320,
+      "sha256": "64c59c080bdc8eba7a3a22f05446cde0efc9c659849c07224b9d1ef36e0cac31"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v2/model.glb",
+      "bytes": 1863044,
+      "sha256": "c08d816d6e144893bfcd9e6c4aacce890137d977de579fb8f6fab10cf4a04ea8"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v2/reimport-check.json",
+      "bytes": 2689,
+      "sha256": "adeddb6f3c8f7bf3ed9683d8c495702703d0bbe0b0301f3a8548815d45005a3d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v3/collision.json",
+      "bytes": 3083,
+      "sha256": "14166591d57c3590d21c79aa0a88abe23afda1a22526b3d63f049664fe24ac39"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v3/materials.json",
+      "bytes": 6095,
+      "sha256": "c4f3b9e16889a4e2f1d444a670ee31e26edd74f8bc903e0fc3e7ae98e19efc8a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v3/measurements.json",
+      "bytes": 780,
+      "sha256": "2dd2434cf8c307d40526dadee8856f1025ce2b1f9d0429dd17efe6fd2de6b3cb"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v3/model.blend",
+      "bytes": 6764865,
+      "sha256": "e69ca60cda29f4ceb2247588ee062ebcdd29e1653b92c61bec821f7e7ae6e292"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v3/model.cm.glb",
+      "bytes": 885496,
+      "sha256": "5151d1deaf43590ec36d0b71ba9d95083e6b9c035ce41943bb1bb8e6f0c93968"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v3/model.glb",
+      "bytes": 1495532,
+      "sha256": "155809ebd42e37dd319a7cee0b5ccbaad2b2db21a15b21930608e914714112b7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/plain-v3/reimport-check.json",
+      "bytes": 2449,
+      "sha256": "ec2bc737a6bf743d07e1bc147a93694acaa350f8143c3cee7425a2d86249fbf6"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/restaurant-a/collision.json",
+      "bytes": 4401,
+      "sha256": "9cbc2f64d70cfa2f7832c99a58a850da367fa3b024d341792162bcde438fe9fa"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/restaurant-a/materials.json",
+      "bytes": 6095,
+      "sha256": "c4f3b9e16889a4e2f1d444a670ee31e26edd74f8bc903e0fc3e7ae98e19efc8a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/restaurant-a/measurements.json",
+      "bytes": 761,
+      "sha256": "ecce71274b35d6237533673e5d832e126cebe8ef89d1905eca8eab87259aa297"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/restaurant-a/model.blend",
+      "bytes": 7142665,
+      "sha256": "67d2ca0e2aa21983e1757cbc8816c4b9e091b09c2052ce1e0cc5893c24b7d6e0"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/restaurant-a/model.cm.glb",
+      "bytes": 1199276,
+      "sha256": "8eada0788250d6099a846839e1adb044f36dd1c732c20291e8585c9b16f76393"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/restaurant-a/model.glb",
+      "bytes": 2146768,
+      "sha256": "40b5d2ded1554565739aa9041d35f1bd2fbc4d6dd50be9888e0336faf7300b7d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/restaurant-a/reimport-check.json",
+      "bytes": 2909,
+      "sha256": "3072c23acdc67049c25ef44500bffcbb78e3267ab95673ed9e19650e5acf82f7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/restaurant-b/collision.json",
+      "bytes": 4401,
+      "sha256": "9cbc2f64d70cfa2f7832c99a58a850da367fa3b024d341792162bcde438fe9fa"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/restaurant-b/materials.json",
+      "bytes": 6095,
+      "sha256": "c4f3b9e16889a4e2f1d444a670ee31e26edd74f8bc903e0fc3e7ae98e19efc8a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/restaurant-b/measurements.json",
+      "bytes": 764,
+      "sha256": "d412078262e61e96a32b127f69c8de77fc7eb2becdc4d9a94d062ddecddaec5b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/restaurant-b/model.blend",
+      "bytes": 7142665,
+      "sha256": "e2d540548915d5c2d508bfd889cc7c7d5534d9ac608ec7a1b2b8d2eeaebf06eb"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/restaurant-b/model.cm.glb",
+      "bytes": 1199264,
+      "sha256": "56f48fc1c198f8303f8fa7db889aa623f5f24c077f1681738f819f4e21996b07"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/restaurant-b/model.glb",
+      "bytes": 2147344,
+      "sha256": "e083e811762487b415d289bbaa853bb1ad94e5283591ba3866c48b929c5fef2f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/restaurant-b/reimport-check.json",
+      "bytes": 2909,
+      "sha256": "fd220663dc5bec6b986bbad29a42c626da93b4d25b09e4b1675826bf2a11adba"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/Asphalt033_Color_1K.jpg",
+      "bytes": 227610,
+      "sha256": "a9355909b5836b22f4213492cd4fb883b6d25bcf1504aeef4b20684be235408f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/Asphalt033_NormalGL_1K.jpg",
+      "bytes": 530215,
+      "sha256": "28cf171209d54f0deda587536884e9f1aa82cf2c798e3d139271c2a160ae9a2f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/Asphalt033_Roughness_1K.jpg",
+      "bytes": 335731,
+      "sha256": "cd97d18889c990e93906e6cde284f1484a27b835fad0f9dfc8dc3928c58d11d1"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/Bricks061_2K-JPG_AmbientOcclusion_1K.jpg",
+      "bytes": 99101,
+      "sha256": "d5c6c9936478d087e50714ec988c9f1977e1887e3cfe2713bdc4b281bb765e6a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/Bricks061_2K-JPG_Color_1K.jpg",
+      "bytes": 129658,
+      "sha256": "1f3ce8173e75b187cb7ac8b097a94008e7d5cd1fecea799a593cc9743996b222"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/Bricks061_2K-JPG_NormalGL_1K.jpg",
+      "bytes": 133723,
+      "sha256": "b491bab299622fa4709bae1d939ec4674bffbaeaa9a1e10d66cffea1f70b37d5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/Bricks061_2K-JPG_Roughness_1K.jpg",
+      "bytes": 134225,
+      "sha256": "4825464954174dffb3a3aca9bef23db9881013f280eae9492a7dff5715f5ee8c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/PaintedPlaster017_2K-JPG_Color_1K.jpg",
+      "bytes": 21237,
+      "sha256": "4df6fad9c4939bc73c5a0f6fa1103c37d19ec81011c8631305500e82f524637d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/PaintedPlaster017_2K-JPG_NormalGL_1K.jpg",
+      "bytes": 92337,
+      "sha256": "3dab2be0650809f946cff08fa0bee17397eb26ef7ba13276494bbfb12fe935b7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/PaintedPlaster017_2K-JPG_Roughness_1K.jpg",
+      "bytes": 14165,
+      "sha256": "721fc5388ec4d35652c8f12257f4cb51feb089745ef0aa1344e50b00d5b4f3f8"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/PavingStones138_Color_1K.jpg",
+      "bytes": 452945,
+      "sha256": "e614db1778f98b4fdbc2451872f28197553a71962010ac31d395c291be3629e2"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/PavingStones138_NormalGL_1K.jpg",
+      "bytes": 281132,
+      "sha256": "9c8e3ed46276847207fbd8f89dca515e1aeae31e9ec42a6a1754f0f1a64bcce9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/PavingStones138_Roughness_1K.jpg",
+      "bytes": 192878,
+      "sha256": "a07554ecbe3f866fd678d78420e7ecf7788144c5cae1ab8b6fb1bbe4a4afcbfc"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/Wood092_2K-JPG_Color_1K.jpg",
+      "bytes": 61332,
+      "sha256": "0c3f60f65d946cf2d1d904f34fd90257537904ee0838f03ebdc26992d466a1b9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/Wood092_2K-JPG_NormalGL_1K.jpg",
+      "bytes": 9058,
+      "sha256": "e2048d86ad46771551aae0e693d41a130cf3903036144f189cd14112e5779616"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/Wood092_2K-JPG_Roughness_1K.jpg",
+      "bytes": 40871,
+      "sha256": "b44f8275cdde0323ece5e9709b5507b2b402d173c469ce2f35702eb8f12590e3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/catwall-mural.png",
+      "bytes": 2671520,
+      "sha256": "9caeb0b2c31ccfd570e51297af1e7c143022a53e6e9714c27e83521a4f4890fa"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/roof-color.jpg",
+      "bytes": 97139,
+      "sha256": "ed1be8f6bc86b31576c6437cc92b8dd6e969455f6730da42746d38b501e25013"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/roof-normal.png",
+      "bytes": 10447,
+      "sha256": "029c076ed01ad292245e5138a1c9b4be516ccdad1d6be90436f89deffa4c88c3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/sign-atlas.png",
+      "bytes": 174353,
+      "sha256": "b10ac0ff6974cf61f66f00b1596c9578dad158a3d89d7ad64ed17b365c7be7fe"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/building/textures/wood-stain-color.jpg",
+      "bytes": 75074,
+      "sha256": "3365006948025802c9c5f0026e091342e8226a70b765688fe889a7af6d1beda5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/dadian.html",
+      "bytes": 2400,
+      "sha256": "5babef81ff3ebb0ccbda44f3f89668e884390f5b3d7534a0fa912ecbbca82132"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/decoder/basis/basis_transcoder.js",
+      "bytes": 57529,
+      "sha256": "8478b5b6d6b74e7d3082b89f6417321d8d1dc0307f2b30d4484bb11b441696a1"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/decoder/basis/basis_transcoder.wasm",
+      "bytes": 527333,
+      "sha256": "6cf17dc889352c42e9acf8897107978d127005fe3386c36a0e3845e27967630a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/decoder/draco/draco_decoder.js",
+      "bytes": 512465,
+      "sha256": "8625489da79a805f4f2a7d511c3e52d8b4085608a9d2a4d5f4f9de5db0aea04f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/decoder/draco/draco_decoder.wasm",
+      "bytes": 192420,
+      "sha256": "a680d927bed9cb864ddbd63521868891af2bfbe755092761b4837487618df8ac"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/decoder/draco/draco_wasm_wrapper.js",
+      "bytes": 58456,
+      "sha256": "8bb2952d2ba7d67e1414f8df819410cb0434a666be53f671fff75f68843d76f6"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/fangbang.html",
+      "bytes": 2549,
+      "sha256": "8ab06abe49ef0fcd31a7d2aba6599033373d1dc7ec7b4abb4e45781a6c5f2e64"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/index-v1.html",
+      "bytes": 7316,
+      "sha256": "2ce73872045131bcf40a5be3b2e5fc7ddc609a5d67cf4410a128f57c9240f6e3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/index.html",
+      "bytes": 2185,
+      "sha256": "e8f89c97a0e009652269b489b233af9458cf2c9cc2b0ef4046143812faa51b80"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/temple-entry.html",
+      "bytes": 2299,
+      "sha256": "1bef7d32e83f120c3745b0da6dc3595ea00f1b01dc47c1ef7c7f83ef9b70a11e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/temple-v2.html",
+      "bytes": 2530,
+      "sha256": "eff1e36282db6372752ad2a452f8d1572e57fd19b1817dcaa3107b579d1f4a82"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/temple-v3.html",
+      "bytes": 2585,
+      "sha256": "87f71d8d8a486340eafec68e762c8a37b53bf7d369c5f1b94706d0d96859514c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/temple.html",
+      "bytes": 2204,
+      "sha256": "ad75e6b8be0d375639e8b65daeaf3bdf5a7f27a071135cda163cdbdcba7735c1"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/asset-catalog.json",
+      "bytes": 11253,
+      "sha256": "52022ea48967e8783120c62508a09a8997606b2993e09a9ea574f8183febf3e8"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/blocks.json",
+      "bytes": 18371,
+      "sha256": "dd0c0d388ba7bb0ab6f4e1ffdca06ab8ad58388ae1aeae615b9ff3c84a1fc738"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/cameras.json",
+      "bytes": 3642,
+      "sha256": "68bf8fde467fe15b70d71bd33a4b971a7d7beab71d0807c860fdaad1b0981208"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/collision-world.json",
+      "bytes": 106953,
+      "sha256": "8e3015269fdd3329e3ed2152b0fa9f0589a9d8af7cc2f7855a5a9a7016647b0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/DELIVERY.md",
+      "bytes": 4873,
+      "sha256": "441469b357d5806afef32b990c0365a535c4248b50fd60c90006a25acfb60acb"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/RESULT.json",
+      "bytes": 6027,
+      "sha256": "01ff6eb5b2f44962ef58930053bab81666d6a5eafa7bdb8a8a8ed9a46bfc5f4b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/blocks.json",
+      "bytes": 19380,
+      "sha256": "f8ff8dd0ca5076c4814ace9aa49294fa8d0d3c1d49437cfc29b542688f2bf204"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/cameras.json",
+      "bytes": 6135,
+      "sha256": "f3fab1e60fd5a51cebc15a5ef6da9079cf2334e5629ee79b460e2f508171d2b1"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/collision-world.json",
+      "bytes": 106953,
+      "sha256": "8e3015269fdd3329e3ed2152b0fa9f0589a9d8af7cc2f7855a5a9a7016647b0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/design-spec.snapshot.json",
+      "bytes": 6949,
+      "sha256": "90d88b6729d23f4ddd5fc9109d3265375b0faa3f6336c44de53b7d99ac5f885a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/east-shop-128/collision-local.json",
+      "bytes": 6995,
+      "sha256": "561e28321cf02189006c907085145d7600339e16674fd8ad8abd305e6375ac69"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/east-shop-128/collision.json",
+      "bytes": 13937,
+      "sha256": "9d59ad947a6726f45fcc696941e0131b24cb948982fd695c82462ee093200766"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/east-shop-128/model.cm.glb",
+      "bytes": 984980,
+      "sha256": "a33acfd217f00228695e91262c6abc058743d58e361dcc57792ad36de68c6380"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/east-shop-128/model.glb",
+      "bytes": 1727716,
+      "sha256": "acc09e566d3d1a0aa6340895d46ea9ba92903bb61f47a24800af5c9db2203567"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/east-shop-129/collision-local.json",
+      "bytes": 8969,
+      "sha256": "f650a5fb5998efcf199e3bf65851db68904820228c293a1b2cd014ac31d96dc3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/east-shop-129/collision.json",
+      "bytes": 17849,
+      "sha256": "5439aa7657c8e393c0e2a468fac75a1daf91a998d0ac8b432c3fd8e6a59429e0"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/east-shop-129/model.cm.glb",
+      "bytes": 983840,
+      "sha256": "00fa9029efef147211991765f0602a8264c8e7540433851c45ead080acc032c9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/east-shop-129/model.glb",
+      "bytes": 1722592,
+      "sha256": "57ca21b5c9605102ea7f09cb256ff23052fe8183ee1b7f0f434cf6d9fc728286"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/instances.json",
+      "bytes": 5981,
+      "sha256": "8f26796f3789c7b8ed3738564147ca15bb600fdaf201b24a2b73b77b2265aaff"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/review-manifest.json",
+      "bytes": 5101,
+      "sha256": "0cd3fb4e9dddeccec38703b11dc244691c33a5dc73e47662d9844f56286df1df"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/route.json",
+      "bytes": 2222,
+      "sha256": "8a1c919e4a8d5c7d92bd17b91f08cd925bc4fda1ebd3f519c5df78e968fb8a85"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/validation.json",
+      "bytes": 1067,
+      "sha256": "95b99d4fcf2bbaff4c9f24a0a0bf31c90cc2ca3ab04f2039455d5647388263a8"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/web-evidence/east-edge-east-cone-clay-ph-1789402831290.jpg",
+      "bytes": 81328,
+      "sha256": "71bbf87ec5dc75693615a094e7900d64a22a50d96d3ff0a89129e82a2f0c152f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/web-evidence/east-edge-east-cone-clay-ph-1789402831290.json",
+      "bytes": 7721,
+      "sha256": "1640c8418631fdfce9a708279752a99a5eb45722720bed5f8e30bc4c77b79ad9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/web-evidence/east-edge-east-cone-pbr-ph-1789402811408.jpg",
+      "bytes": 161203,
+      "sha256": "81d36c35819b8c771691531788456fde3c56ab63f991f92784ed33d02bb4b3dd"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/web-evidence/east-edge-east-cone-pbr-ph-1789402811408.json",
+      "bytes": 7725,
+      "sha256": "90b18d344454f2cd216de7dce34a597d0503c4972f6d9418e24bc9e4f9ff2ca9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/web-evidence/east-edge-east-czero-clay-ph-1789402924394.jpg",
+      "bytes": 55570,
+      "sha256": "e01b756491a7a77bee2a0dd77f8b4593b7a51f1ab4f775fb8731c13a869637e3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/web-evidence/east-edge-east-czero-clay-ph-1789402924394.json",
+      "bytes": 7769,
+      "sha256": "72eb68625dc0d8f912cc8e8ea2ac860674415d5fab4a291e92d9f15c7c505ee1"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/web-evidence/east-edge-east-czero-pbr-ph-1789402778812.jpg",
+      "bytes": 16994,
+      "sha256": "9c0da296b16d4bcedba246d7f288455bb4187672aa8ecf5d6eba448be89f4a2b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/web-evidence/east-edge-east-czero-pbr-ph-1789402778812.json",
+      "bytes": 7718,
+      "sha256": "7aeabfd1e05f98e67666ecc475f5e9bc30eb48266ff54875fa5e6d2fbfa3407b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/web-evidence/east-edge-east-czero-pbr-ph-1789402793813.jpg",
+      "bytes": 104091,
+      "sha256": "9f8691612e3dc96ff0b73b9eb305e640f6435cb68ac5c11c42308aa4f889e9ff"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/web-evidence/east-edge-east-czero-pbr-ph-1789402793813.json",
+      "bytes": 7767,
+      "sha256": "4595c2ab3cc2b687ffaeca71d853e1f65c23b2b5e6fde0b05f28a4145b2c6d1d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/web-evidence/east-edge-east-front-a-pbr-ph-1789402850103.jpg",
+      "bytes": 151790,
+      "sha256": "d636cebef2629bca186db729f8f8e57d816fbd750766363d15cf283227c0dbc6"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/web-evidence/east-edge-east-front-a-pbr-ph-1789402850103.json",
+      "bytes": 7748,
+      "sha256": "7aa1deb2833fed01a52ae8d95844e90b4e56c9239cc00fa7257db288433e6e81"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/web-evidence/east-edge-east-front-b-pbr-ph-1789402886785.jpg",
+      "bytes": 97967,
+      "sha256": "806fb3bcb6ad538dd75192c438ab4fd33c0d6f23cad52062b590c81924d6b67d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/web-evidence/east-edge-east-front-b-pbr-ph-1789402886785.json",
+      "bytes": 7737,
+      "sha256": "6eccb78e7a02467e3594d6ea421c5a18d837d34bf7dd3aac555a8f15ea86b393"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/web-evidence/east-edge-east-west-a-pbr-ph-1789402868553.jpg",
+      "bytes": 126113,
+      "sha256": "63d4da686c3ebdc200554eab41a5f94d9f53faf830163a5fd7c44c93b9814562"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/web-evidence/east-edge-east-west-a-pbr-ph-1789402868553.json",
+      "bytes": 7766,
+      "sha256": "979793248c246cbd94eda45c1568848ab7aa3f9516acd32ad0626730cba1e8aa"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/web-evidence/east-edge-east-west-b-pbr-ph-1789402905746.jpg",
+      "bytes": 132427,
+      "sha256": "7aba4618640347b6055b5d817895ae20b465f9e966fc9bcf43422b1ceeb1a6e7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/east-edge/web-evidence/east-edge-east-west-b-pbr-ph-1789402905746.json",
+      "bytes": 7759,
+      "sha256": "b263a01e806e3523ca9341d3c0e741319ca9fc16019f6d01722c0ea1eaa2daec"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/blocks.json",
+      "bytes": 31356,
+      "sha256": "eab420d4d5b54c447eb39a6c5571d3c64c0a0ecdf568839e08d76ec2ac3a4089"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/cameras.json",
+      "bytes": 2841,
+      "sha256": "0aefbeca6305b4e13a22f08f646a92849a59059b5c90600db62e95381347d533"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/collision-world.json",
+      "bytes": 247912,
+      "sha256": "29115957566cee9c3dff516f72b7ca140fdc3ed36cf80cd4e4dc52915f9905c9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/instances.json",
+      "bytes": 8923,
+      "sha256": "2bc1568289f7569d66e135591190ad3a61afb4eef6c8ca26c29c5e884c7b40dd"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/review-manifest.json",
+      "bytes": 30547,
+      "sha256": "e7f362c75eff13c3a835d1560373a26452be2eef60052416538eae0bae54ae02"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/route.json",
+      "bytes": 8961,
+      "sha256": "691b5230c86d4fe85df0fd7beab5921641b57f72a82f61cf453c59fb456d616a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/court-open.cm.glb",
+      "bytes": 974328,
+      "sha256": "3150a804567b762b505eb6b64438d14b54b13b9e8f24094087021188ab0b5e3f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/court-open.glb",
+      "bytes": 1145928,
+      "sha256": "ade97662e4be178ba0faf93ff66c48e7c6b55011c8df8edbb27bab1449d4aded"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/court3.cm.glb",
+      "bytes": 1116816,
+      "sha256": "d99a9a572fe266de9063963fa49bc7e041d3eea86a3d1e7a563b0e513fd20448"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/court3.glb",
+      "bytes": 1634368,
+      "sha256": "3921895487fb7581e4fce7e31c8534153329ab61ea186a3e961b6a1e44bb0f0c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/dadian-court-v2.cm.glb",
+      "bytes": 991548,
+      "sha256": "59f12de80a21cf165366af4348e1f68e45994d8ae3b73d14eb0e4e463bf9b728"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/dadian-court-v2.glb",
+      "bytes": 1353280,
+      "sha256": "d643a1b3e0f8b9c38cafc4dd53465ff0de12f6fd38e4f81188b6735625ad79a7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/dadian.cm.glb",
+      "bytes": 1722548,
+      "sha256": "e41071436d0f3a746a1495718d456b519b742b1e5a05440d7671a4db5fb28a0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/dadian.glb",
+      "bytes": 6295144,
+      "sha256": "8a722d9dc7663cefea0f94409a8911c65cf824756a60220ec7d1c88d4f1dabee"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/gallery.cm.glb",
+      "bytes": 380176,
+      "sha256": "0ad3b143260890f6de5c750eb09ce7cf26de2bdbe9fda672452a5f378e88d45a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/gallery.glb",
+      "bytes": 490812,
+      "sha256": "45228eb69acfd827741ac9f4a72b2d2f6bd92a1c2c4b0776efa210424ee1114d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/ground.cm.glb",
+      "bytes": 820952,
+      "sha256": "f99396c2bc95f55fa5dc8718e7b65edf4a75719d28ef1940545880e45e24c315"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/ground.glb",
+      "bytes": 860916,
+      "sha256": "0acf56376883f3faf823c52f8cf8478bf8d731c31606ed22e7eeadc0f7e0879d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/houdian.cm.glb",
+      "bytes": 1086544,
+      "sha256": "c6fb97edfb70d1017e8fd9afbded71d7288e98353e3883850e1a4c9bd8a3618b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/houdian.glb",
+      "bytes": 2702268,
+      "sha256": "693a5efb758700c96c162f9c9c93e0d1b91f490cde895e9d41202b4cdcd9f615"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/lions.cm.glb",
+      "bytes": 46532,
+      "sha256": "962c0edc9a8afeb8537cd8469661e35aea2b17aa20ca8a9778ede226f90d3fb9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/lions.glb",
+      "bytes": 440156,
+      "sha256": "eed2009cca69b5f08a287b4c034f270d817cf1d1bd1ba6859993bcc912278c06"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/ornaments.cm.glb",
+      "bytes": 184656,
+      "sha256": "b71943269dcca3fcd049e8fdfeca0c66695a1a077695eec82974cfedc32f8d0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/ornaments.glb",
+      "bytes": 437144,
+      "sha256": "feec279340911ce646a96b203c2febaa5a812d10035d9493f06868f73302a8f9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/peidian.cm.glb",
+      "bytes": 996376,
+      "sha256": "981156f83c3e8f1580dc414adf2200ca98728414f2e84b3042838cd9601f0e85"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/peidian.glb",
+      "bytes": 2075332,
+      "sha256": "b3dba52114ed22f25e916f9d5cc72cff6ba2cf13082eae16daa099deabc1771d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/temple.cm.glb",
+      "bytes": 1371936,
+      "sha256": "f9cfa6d4fad6afbab460c1f22cb5f68ca0434545a1be22c0c46dd5eba3b02924"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/temple.glb",
+      "bytes": 3782256,
+      "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/yimen-stage.cm.glb",
+      "bytes": 496064,
+      "sha256": "6372184d79a99f9a36379b8b201ec6a3e9407134a5d7ed94ca2e18bb528fc1a1"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/yimen-stage.glb",
+      "bytes": 1283532,
+      "sha256": "509fd8913f90cbdce61a55ba3187030da304140216cbb4f368127dd8eb59a51d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/yimen.cm.glb",
+      "bytes": 1507320,
+      "sha256": "cf6fcb1e7f496098dc06a3e742079de12a260e2db286675d27288227a40f5b43"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/temple-axis/yimen.glb",
+      "bytes": 4343252,
+      "sha256": "e9393cd4017c657e74d2889da812ac16eb70a04664ce8ab829ea126cb7ee48b5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/west-extension/collision.json",
+      "bytes": 2266,
+      "sha256": "cb933a6d01cd7563bb5784c235079504041626a734847cafe8c7a7cb8e83574d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/west-extension/forecourt-bounds.cm.glb",
+      "bytes": 2156,
+      "sha256": "ca4916246970ae96bad9a36ccedce4a3625609a40bfe79d3d7751081b74cf6e7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/west-extension/forecourt-bounds.glb",
+      "bytes": 4020,
+      "sha256": "e9997259ad2ebe60819c5086f4e86fafdbae9de3c76233cecaf7a609186b49ef"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/west-extension/measurements.json",
+      "bytes": 5012,
+      "sha256": "4c918ab8a3345d5d0f9fe502131c877648c10a3e81f698fb1d12ed6d8db86d80"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/west-extension/seal-wall.cm.glb",
+      "bytes": 2064,
+      "sha256": "6a03b1d461fba713072485b1b6c8c89c45d777569dd7b097065b07832995a91e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/west-extension/seal-wall.glb",
+      "bytes": 2804,
+      "sha256": "dd07c8ea5d6ded4b74391b2fe887cf0926a997c746c2c9414d8b13da454fcd1a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/west-extension/surface-spec.json",
+      "bytes": 6803,
+      "sha256": "209f36e272a3fc9117897971313c13a6273272eb094a2e5bd1a2045e4e2cf4c3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/west-extension/surface.cm.glb",
+      "bytes": 917520,
+      "sha256": "52ee38df65e2a7aa8647b8f335f92a356d60b428dc0207970f8022df28c79fb9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v2/west-extension/surface.glb",
+      "bytes": 1308304,
+      "sha256": "01b8f82f3e26c40e8fc8fc75c872179f90dab4b9133659377eea27b6733f4d45"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/blocks.json",
+      "bytes": 38139,
+      "sha256": "a3769ee6ac439fd33cef8e9719a091b9f0831d47af28a5f0c7fad2840fd40744"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/cameras.json",
+      "bytes": 2841,
+      "sha256": "0aefbeca6305b4e13a22f08f646a92849a59059b5c90600db62e95381347d533"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/collision-world.json",
+      "bytes": 376853,
+      "sha256": "5b4130197ad1c1c43407e98b3f0f888b81ff010c9d528a47b32b78a8be2e73ed"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/instances.json",
+      "bytes": 14639,
+      "sha256": "79b05c23a4c56ba345a863f7479bc56ce0a9bcb81921dd28451867a82b2a45f6"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/review-manifest.cm.json",
+      "bytes": 40016,
+      "sha256": "f210dbbe12c4d6b21cfc48f298a7d400f9a9d06776f1fb7247080b9952c2f98f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/review-manifest.json",
+      "bytes": 39141,
+      "sha256": "546964f116c619daeaaaf379b5b13767e5bccbcec43db6dcdf3adfd0347233bc"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/route.json",
+      "bytes": 8635,
+      "sha256": "8f2a47f3e18e0d6bd56074c1e718122b19bd4a01851f09f1291f248009392c22"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/court-open.cm.glb",
+      "bytes": 974328,
+      "sha256": "3150a804567b762b505eb6b64438d14b54b13b9e8f24094087021188ab0b5e3f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/court-open.glb",
+      "bytes": 1145928,
+      "sha256": "ade97662e4be178ba0faf93ff66c48e7c6b55011c8df8edbb27bab1449d4aded"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/court3.cm.glb",
+      "bytes": 1116816,
+      "sha256": "d99a9a572fe266de9063963fa49bc7e041d3eea86a3d1e7a563b0e513fd20448"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/court3.glb",
+      "bytes": 1634368,
+      "sha256": "3921895487fb7581e4fce7e31c8534153329ab61ea186a3e961b6a1e44bb0f0c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/dadian-court-v2.cm.glb",
+      "bytes": 991548,
+      "sha256": "59f12de80a21cf165366af4348e1f68e45994d8ae3b73d14eb0e4e463bf9b728"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/dadian-court-v2.glb",
+      "bytes": 1353280,
+      "sha256": "d643a1b3e0f8b9c38cafc4dd53465ff0de12f6fd38e4f81188b6735625ad79a7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/dadian.cm.glb",
+      "bytes": 1722548,
+      "sha256": "e41071436d0f3a746a1495718d456b519b742b1e5a05440d7671a4db5fb28a0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/dadian.glb",
+      "bytes": 6295144,
+      "sha256": "8a722d9dc7663cefea0f94409a8911c65cf824756a60220ec7d1c88d4f1dabee"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/gallery.cm.glb",
+      "bytes": 380176,
+      "sha256": "0ad3b143260890f6de5c750eb09ce7cf26de2bdbe9fda672452a5f378e88d45a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/gallery.glb",
+      "bytes": 490812,
+      "sha256": "45228eb69acfd827741ac9f4a72b2d2f6bd92a1c2c4b0776efa210424ee1114d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/ground.cm.glb",
+      "bytes": 820952,
+      "sha256": "f99396c2bc95f55fa5dc8718e7b65edf4a75719d28ef1940545880e45e24c315"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/ground.glb",
+      "bytes": 860916,
+      "sha256": "0acf56376883f3faf823c52f8cf8478bf8d731c31606ed22e7eeadc0f7e0879d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/houdian.cm.glb",
+      "bytes": 1086544,
+      "sha256": "c6fb97edfb70d1017e8fd9afbded71d7288e98353e3883850e1a4c9bd8a3618b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/houdian.glb",
+      "bytes": 2702268,
+      "sha256": "693a5efb758700c96c162f9c9c93e0d1b91f490cde895e9d41202b4cdcd9f615"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/lions.cm.glb",
+      "bytes": 46532,
+      "sha256": "962c0edc9a8afeb8537cd8469661e35aea2b17aa20ca8a9778ede226f90d3fb9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/lions.glb",
+      "bytes": 440156,
+      "sha256": "eed2009cca69b5f08a287b4c034f270d817cf1d1bd1ba6859993bcc912278c06"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/ornaments.cm.glb",
+      "bytes": 184656,
+      "sha256": "b71943269dcca3fcd049e8fdfeca0c66695a1a077695eec82974cfedc32f8d0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/ornaments.glb",
+      "bytes": 437144,
+      "sha256": "feec279340911ce646a96b203c2febaa5a812d10035d9493f06868f73302a8f9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/peidian.cm.glb",
+      "bytes": 996376,
+      "sha256": "981156f83c3e8f1580dc414adf2200ca98728414f2e84b3042838cd9601f0e85"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/peidian.glb",
+      "bytes": 2075332,
+      "sha256": "b3dba52114ed22f25e916f9d5cc72cff6ba2cf13082eae16daa099deabc1771d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/temple.cm.glb",
+      "bytes": 1371936,
+      "sha256": "f9cfa6d4fad6afbab460c1f22cb5f68ca0434545a1be22c0c46dd5eba3b02924"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/temple.glb",
+      "bytes": 3782256,
+      "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/yimen-stage.cm.glb",
+      "bytes": 496064,
+      "sha256": "6372184d79a99f9a36379b8b201ec6a3e9407134a5d7ed94ca2e18bb528fc1a1"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/yimen-stage.glb",
+      "bytes": 1283532,
+      "sha256": "509fd8913f90cbdce61a55ba3187030da304140216cbb4f368127dd8eb59a51d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/yimen.cm.glb",
+      "bytes": 1507320,
+      "sha256": "cf6fcb1e7f496098dc06a3e742079de12a260e2db286675d27288227a40f5b43"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/temple-axis/yimen.glb",
+      "bytes": 4343252,
+      "sha256": "e9393cd4017c657e74d2889da812ac16eb70a04664ce8ab829ea126cb7ee48b5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/west-extension/collision.json",
+      "bytes": 2266,
+      "sha256": "cb933a6d01cd7563bb5784c235079504041626a734847cafe8c7a7cb8e83574d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/west-extension/forecourt-bounds.cm.glb",
+      "bytes": 2156,
+      "sha256": "ca4916246970ae96bad9a36ccedce4a3625609a40bfe79d3d7751081b74cf6e7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/west-extension/forecourt-bounds.glb",
+      "bytes": 4020,
+      "sha256": "e9997259ad2ebe60819c5086f4e86fafdbae9de3c76233cecaf7a609186b49ef"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/west-extension/measurements.json",
+      "bytes": 5012,
+      "sha256": "4c918ab8a3345d5d0f9fe502131c877648c10a3e81f698fb1d12ed6d8db86d80"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/west-extension/seal-wall.cm.glb",
+      "bytes": 2064,
+      "sha256": "6a03b1d461fba713072485b1b6c8c89c45d777569dd7b097065b07832995a91e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/west-extension/seal-wall.glb",
+      "bytes": 2804,
+      "sha256": "dd07c8ea5d6ded4b74391b2fe887cf0926a997c746c2c9414d8b13da454fcd1a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/west-extension/surface-spec.json",
+      "bytes": 6803,
+      "sha256": "209f36e272a3fc9117897971313c13a6273272eb094a2e5bd1a2045e4e2cf4c3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/west-extension/surface.cm.glb",
+      "bytes": 917520,
+      "sha256": "52ee38df65e2a7aa8647b8f335f92a356d60b428dc0207970f8022df28c79fb9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/west-extension/surface.glb",
+      "bytes": 1308304,
+      "sha256": "01b8f82f3e26c40e8fc8fc75c872179f90dab4b9133659377eea27b6733f4d45"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/westshops-strips.cm.glb",
+      "bytes": 6092,
+      "sha256": "cbf0279f526b63d7bb4e69cbd5b62f195b8d68bcfcdcb4e1ae57949e4325ef79"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v3/westshops-strips.glb",
+      "bytes": 12012,
+      "sha256": "2f74208ad15b3871ed90703583803454858bfcdb0fbd0eb243ec05735b42a6c4"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/blocks.json",
+      "bytes": 47247,
+      "sha256": "8f967636a470ad3b0cb378dfee966d2e5676d2b42999929ad9af545f13149541"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/cameras.json",
+      "bytes": 3676,
+      "sha256": "7b20e35b8f75e9d9f5731adffaa1a9b177cc2c5dd28c7a963b28c3c0204d385c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/collision-world.json",
+      "bytes": 462348,
+      "sha256": "2b5f4ed4f8e036c4b1669ec42a8ca2adc57007f2baad920dcf3b81140484aa5a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/east-extension/seal-wall.cm.glb",
+      "bytes": 2048,
+      "sha256": "47b95782ef49ef4076672113def9da5572f7ef4572addb5bd16e683927ef2f14"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/east-extension/seal-wall.glb",
+      "bytes": 2608,
+      "sha256": "5815ce8b9f413b28c51135bc732ce12054542a7fe2d45bf8268780a705be034d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/east-extension/surface.glb",
+      "bytes": 1216532,
+      "sha256": "ea8a75c35cddc5107e0fa338acecfaa55869000e3c5d2f8a1cf97e5680a4b794"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/eastshops-strips.cm.glb",
+      "bytes": 5640,
+      "sha256": "e7b639855ead486039da39dc207ccc1fe05d2efc38ecc2effae1366dc3a31f35"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/eastshops-strips.glb",
+      "bytes": 7528,
+      "sha256": "e8b4131a3ae635bcbf29ecb41e9e6a77d1f7f40a6db0bec7aa40b43bb63458bf"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/instances.json",
+      "bytes": 19528,
+      "sha256": "cab60f6146425ce215c61081ce615f99ece09f008d30a21c9542dd399d3fdc23"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/review-manifest.cm.json",
+      "bytes": 48897,
+      "sha256": "ad50f6f2a3f2f4834bbaebac0200d3ec8b416f3cc544877d3bfe5020f5c37ea4"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/review-manifest.json",
+      "bytes": 47432,
+      "sha256": "9c766c935ee566792ac570abd31ffaba420e0b955354435d5f472d89bd2115c3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/route.json",
+      "bytes": 20812,
+      "sha256": "7c3f3d54ef9884dc9c08b65db45ab82a8f5b77b0f7d9820c107b39a10d84164b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/court-open.cm.glb",
+      "bytes": 1007944,
+      "sha256": "8f822a93731c98c1164a2bc728cf8fb5cd05a506e6e5ca76c85dd4a1dfc4b717"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/court-open.glb",
+      "bytes": 1469532,
+      "sha256": "b0b4d28b6a9f12928a142efd2a597234ba13e52a7f48ed788d436175dcbbf6f3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/court3.cm.glb",
+      "bytes": 1116816,
+      "sha256": "d99a9a572fe266de9063963fa49bc7e041d3eea86a3d1e7a563b0e513fd20448"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/court3.glb",
+      "bytes": 1634368,
+      "sha256": "3921895487fb7581e4fce7e31c8534153329ab61ea186a3e961b6a1e44bb0f0c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/dadian-court-v2.cm.glb",
+      "bytes": 991548,
+      "sha256": "59f12de80a21cf165366af4348e1f68e45994d8ae3b73d14eb0e4e463bf9b728"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/dadian-court-v2.glb",
+      "bytes": 1353280,
+      "sha256": "d643a1b3e0f8b9c38cafc4dd53465ff0de12f6fd38e4f81188b6735625ad79a7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/dadian.cm.glb",
+      "bytes": 1722548,
+      "sha256": "e41071436d0f3a746a1495718d456b519b742b1e5a05440d7671a4db5fb28a0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/dadian.glb",
+      "bytes": 6295144,
+      "sha256": "8a722d9dc7663cefea0f94409a8911c65cf824756a60220ec7d1c88d4f1dabee"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/gallery.cm.glb",
+      "bytes": 380176,
+      "sha256": "0ad3b143260890f6de5c750eb09ce7cf26de2bdbe9fda672452a5f378e88d45a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/gallery.glb",
+      "bytes": 490812,
+      "sha256": "45228eb69acfd827741ac9f4a72b2d2f6bd92a1c2c4b0776efa210424ee1114d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/ground.cm.glb",
+      "bytes": 820952,
+      "sha256": "f99396c2bc95f55fa5dc8718e7b65edf4a75719d28ef1940545880e45e24c315"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/ground.glb",
+      "bytes": 860916,
+      "sha256": "0acf56376883f3faf823c52f8cf8478bf8d731c31606ed22e7eeadc0f7e0879d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/houdian.cm.glb",
+      "bytes": 1086544,
+      "sha256": "c6fb97edfb70d1017e8fd9afbded71d7288e98353e3883850e1a4c9bd8a3618b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/houdian.glb",
+      "bytes": 2702268,
+      "sha256": "693a5efb758700c96c162f9c9c93e0d1b91f490cde895e9d41202b4cdcd9f615"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/lions.glb",
+      "bytes": 490048,
+      "sha256": "46dd10af05af07d8f9ab4ea234b6f3daf4af902184543e92f36b449019d44b7a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/ornaments.cm.glb",
+      "bytes": 14732,
+      "sha256": "5c02d4131aa3ce021bb6237729e61e0647e971548e3d1579766eae1c48a44704"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/ornaments.glb",
+      "bytes": 150920,
+      "sha256": "0a894ec78c5a41df58a26d8d119a0699fbbaf1b40c847c875c6c6f5073fd7499"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/peidian.cm.glb",
+      "bytes": 996376,
+      "sha256": "981156f83c3e8f1580dc414adf2200ca98728414f2e84b3042838cd9601f0e85"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/peidian.glb",
+      "bytes": 2075332,
+      "sha256": "b3dba52114ed22f25e916f9d5cc72cff6ba2cf13082eae16daa099deabc1771d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/temple.cm.glb",
+      "bytes": 1371936,
+      "sha256": "f9cfa6d4fad6afbab460c1f22cb5f68ca0434545a1be22c0c46dd5eba3b02924"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/temple.glb",
+      "bytes": 3782256,
+      "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/tree-camphor-v2.cm.glb",
+      "bytes": 113468,
+      "sha256": "b4a9b52c26cf60644c66758ac0f9f07656d2105841334e3ff50ef02669bc2df6"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/tree-camphor-v2.glb",
+      "bytes": 233320,
+      "sha256": "5219f9a3a065fd1c2d4262899fa04e49f1ed31e31b9f709b162b74223a84cb33"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/yimen-stage.cm.glb",
+      "bytes": 496064,
+      "sha256": "6372184d79a99f9a36379b8b201ec6a3e9407134a5d7ed94ca2e18bb528fc1a1"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/yimen-stage.glb",
+      "bytes": 1283532,
+      "sha256": "509fd8913f90cbdce61a55ba3187030da304140216cbb4f368127dd8eb59a51d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/yimen.cm.glb",
+      "bytes": 1507320,
+      "sha256": "cf6fcb1e7f496098dc06a3e742079de12a260e2db286675d27288227a40f5b43"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/temple-axis/yimen.glb",
+      "bytes": 4343252,
+      "sha256": "e9393cd4017c657e74d2889da812ac16eb70a04664ce8ab829ea126cb7ee48b5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/west-extension/collision.json",
+      "bytes": 2266,
+      "sha256": "cb933a6d01cd7563bb5784c235079504041626a734847cafe8c7a7cb8e83574d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/west-extension/forecourt-bounds.cm.glb",
+      "bytes": 2156,
+      "sha256": "ca4916246970ae96bad9a36ccedce4a3625609a40bfe79d3d7751081b74cf6e7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/west-extension/forecourt-bounds.glb",
+      "bytes": 4020,
+      "sha256": "e9997259ad2ebe60819c5086f4e86fafdbae9de3c76233cecaf7a609186b49ef"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/west-extension/measurements.json",
+      "bytes": 5012,
+      "sha256": "4c918ab8a3345d5d0f9fe502131c877648c10a3e81f698fb1d12ed6d8db86d80"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/west-extension/seal-wall.cm.glb",
+      "bytes": 2064,
+      "sha256": "6a03b1d461fba713072485b1b6c8c89c45d777569dd7b097065b07832995a91e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/west-extension/seal-wall.glb",
+      "bytes": 2804,
+      "sha256": "dd07c8ea5d6ded4b74391b2fe887cf0926a997c746c2c9414d8b13da454fcd1a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/west-extension/surface-spec.json",
+      "bytes": 6803,
+      "sha256": "209f36e272a3fc9117897971313c13a6273272eb094a2e5bd1a2045e4e2cf4c3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/west-extension/surface.cm.glb",
+      "bytes": 917520,
+      "sha256": "52ee38df65e2a7aa8647b8f335f92a356d60b428dc0207970f8022df28c79fb9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/west-extension/surface.glb",
+      "bytes": 1308304,
+      "sha256": "01b8f82f3e26c40e8fc8fc75c872179f90dab4b9133659377eea27b6733f4d45"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/westshops-strips.cm.glb",
+      "bytes": 8156,
+      "sha256": "a73af952bde3d04891b5e2c359156139b8df9ae152d7c75c8ab03bd929929bfb"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple-v4/westshops-strips.glb",
+      "bytes": 12012,
+      "sha256": "2f74208ad15b3871ed90703583803454858bfcdb0fbd0eb243ec05735b42a6c4"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/blocks.json",
+      "bytes": 29445,
+      "sha256": "eafb3b95f01324c321301db25fbf49d8682c5c526ddef9b7570b59a0a332a1bf"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/cameras.json",
+      "bytes": 2774,
+      "sha256": "f359208fc9f9c6bdcbce745c93433384aa2772892194955335967fe9ade6ecc1"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/collision-world.json",
+      "bytes": 188008,
+      "sha256": "42b025fd4eb772312160060a778a273acc8e2cd724e6005dd682c15fe8dc86f5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/instances.json",
+      "bytes": 7519,
+      "sha256": "3c7a8c4ad6166b59f1c41bec129e492329cc67a690a22aca3d8fcf3560a67947"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/map-registry.json",
+      "bytes": 7117,
+      "sha256": "17a1b964f64a8625f166731611db0ea38e34085a63e55e2218de8599c227a2d7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/review-manifest.json",
+      "bytes": 26490,
+      "sha256": "ddc1fd902c02bb964d46a28b429eda2e9a10500516904cc2a46c6ab2ce93e8b4"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/route.json",
+      "bytes": 8140,
+      "sha256": "3e45797d55bba034cf4ab08279cd87465d841210ad18df72848709ae7c18fb1d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/temple-axis/court-open.cm.glb",
+      "bytes": 974328,
+      "sha256": "3150a804567b762b505eb6b64438d14b54b13b9e8f24094087021188ab0b5e3f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/temple-axis/court-open.glb",
+      "bytes": 1145928,
+      "sha256": "ade97662e4be178ba0faf93ff66c48e7c6b55011c8df8edbb27bab1449d4aded"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/temple-axis/dadian-court.cm.glb",
+      "bytes": 1002196,
+      "sha256": "8bf34e735938fcbd02ecac0de00d4869b31aa3b842ebf9819862423452c7e91e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/temple-axis/dadian-court.glb",
+      "bytes": 1446932,
+      "sha256": "c08856597ff60fde9df17726276bddbd13ae0f5497be80ee61ea2d668fccab40"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/temple-axis/dadian.cm.glb",
+      "bytes": 1722548,
+      "sha256": "e41071436d0f3a746a1495718d456b519b742b1e5a05440d7671a4db5fb28a0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/temple-axis/dadian.glb",
+      "bytes": 6295144,
+      "sha256": "8a722d9dc7663cefea0f94409a8911c65cf824756a60220ec7d1c88d4f1dabee"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/temple-axis/ground.cm.glb",
+      "bytes": 820952,
+      "sha256": "f99396c2bc95f55fa5dc8718e7b65edf4a75719d28ef1940545880e45e24c315"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/temple-axis/ground.glb",
+      "bytes": 860916,
+      "sha256": "0acf56376883f3faf823c52f8cf8478bf8d731c31606ed22e7eeadc0f7e0879d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/temple-axis/lions.cm.glb",
+      "bytes": 46532,
+      "sha256": "962c0edc9a8afeb8537cd8469661e35aea2b17aa20ca8a9778ede226f90d3fb9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/temple-axis/lions.glb",
+      "bytes": 440156,
+      "sha256": "eed2009cca69b5f08a287b4c034f270d817cf1d1bd1ba6859993bcc912278c06"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/temple-axis/ornaments.cm.glb",
+      "bytes": 184656,
+      "sha256": "b71943269dcca3fcd049e8fdfeca0c66695a1a077695eec82974cfedc32f8d0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/temple-axis/ornaments.glb",
+      "bytes": 437144,
+      "sha256": "feec279340911ce646a96b203c2febaa5a812d10035d9493f06868f73302a8f9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/temple-axis/temple.cm.glb",
+      "bytes": 1371936,
+      "sha256": "f9cfa6d4fad6afbab460c1f22cb5f68ca0434545a1be22c0c46dd5eba3b02924"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/temple-axis/temple.glb",
+      "bytes": 3782256,
+      "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/temple-axis/yimen.cm.glb",
+      "bytes": 1507320,
+      "sha256": "cf6fcb1e7f496098dc06a3e742079de12a260e2db286675d27288227a40f5b43"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/temple-axis/yimen.glb",
+      "bytes": 4343252,
+      "sha256": "e9393cd4017c657e74d2889da812ac16eb70a04664ce8ab829ea126cb7ee48b5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/west-extension/collision.json",
+      "bytes": 2266,
+      "sha256": "cb933a6d01cd7563bb5784c235079504041626a734847cafe8c7a7cb8e83574d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/west-extension/forecourt-bounds.cm.glb",
+      "bytes": 2156,
+      "sha256": "ca4916246970ae96bad9a36ccedce4a3625609a40bfe79d3d7751081b74cf6e7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/west-extension/forecourt-bounds.glb",
+      "bytes": 4020,
+      "sha256": "e9997259ad2ebe60819c5086f4e86fafdbae9de3c76233cecaf7a609186b49ef"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/west-extension/measurements.json",
+      "bytes": 5012,
+      "sha256": "4c918ab8a3345d5d0f9fe502131c877648c10a3e81f698fb1d12ed6d8db86d80"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/west-extension/seal-wall.cm.glb",
+      "bytes": 2064,
+      "sha256": "6a03b1d461fba713072485b1b6c8c89c45d777569dd7b097065b07832995a91e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/west-extension/seal-wall.glb",
+      "bytes": 2804,
+      "sha256": "dd07c8ea5d6ded4b74391b2fe887cf0926a997c746c2c9414d8b13da454fcd1a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/west-extension/surface-spec.json",
+      "bytes": 6803,
+      "sha256": "209f36e272a3fc9117897971313c13a6273272eb094a2e5bd1a2045e4e2cf4c3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/west-extension/surface.cm.glb",
+      "bytes": 917520,
+      "sha256": "52ee38df65e2a7aa8647b8f335f92a356d60b428dc0207970f8022df28c79fb9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/fangbang-temple/west-extension/surface.glb",
+      "bytes": 1308304,
+      "sha256": "01b8f82f3e26c40e8fc8fc75c872179f90dab4b9133659377eea27b6733f4d45"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/instances.json",
+      "bytes": 5981,
+      "sha256": "8f26796f3789c7b8ed3738564147ca15bb600fdaf201b24a2b73b77b2265aaff"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/laneb/blocks.json",
+      "bytes": 18448,
+      "sha256": "15e85513685d5f887daeb6d977743507a8190195f2202e40c2764a9b1659edd9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/laneb/cameras.json",
+      "bytes": 4793,
+      "sha256": "9509a7665fd646b237fbe3128ecff7673e4475ebcf1a827ae148a5c85e8249fe"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/laneb/collision-world.json",
+      "bytes": 109255,
+      "sha256": "28a043c8e2e179c2d2780ded9b7f9645d2943fa740a93111dd8cd607526b4f4c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/laneb/instances.json",
+      "bytes": 6253,
+      "sha256": "e0658b8ec9c2462c11f6054f0562fc89eb48b0e3c4e360c801cfa6e9c9c2caaf"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/laneb/laneb.cm.glb",
+      "bytes": 5289768,
+      "sha256": "083270fb0be9352a4dfcf6289701ee3e80b48abd19d11f72dabc646fe597872e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/laneb/laneb.glb",
+      "bytes": 21060768,
+      "sha256": "b7341a1589b01b450e9929743984fe19287460aa345b6c871c5bdf1ced41fca6"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/laneb/review-manifest.json",
+      "bytes": 3693,
+      "sha256": "db19327bfc1bc7cbe48b21c15c561f41a055d205cd9751abdbebaebff1b2128a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/laneb/route.json",
+      "bytes": 2501,
+      "sha256": "a86844b48199df89f18a1f150e8dd68fd89ef088bbaf14874e83dba7698008bf"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/render-setup.json",
+      "bytes": 702,
+      "sha256": "b0fc48fb67a7f225dad1348a555feb08389e0eb70fae01241dcb68890bfb2f61"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/review-manifest.json",
+      "bytes": 3468,
+      "sha256": "888e1df02c5d5921cfec02a616d5b638a948a87fc0d3134b571b61622f88e9cf"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/route.json",
+      "bytes": 2222,
+      "sha256": "8a1c919e4a8d5c7d92bd17b91f08cd925bc4fda1ebd3f519c5df78e968fb8a85"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/scene.blend",
+      "bytes": 27541284,
+      "sha256": "c800785fffc171a4a0ae5a33c3c0b06dfc77b4d0853479292c790afa8e4d3d66"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/segment-spec.json",
+      "bytes": 4522,
+      "sha256": "cd7caa75bdccc6cbf719fa6da3f2de6e2b6eba45d0d13ac5cc42e4ef51c09e63"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/segment.json",
+      "bytes": 5910,
+      "sha256": "06bc37fcc3bae16581fd94105ab428c55a43d5b5a2b184622f830ad70abd95b3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/DELIVERY.md",
+      "bytes": 3719,
+      "sha256": "6c1b7939a65f915173da1583a98469e1e22420eaaf9209741afdfdccb9bed593"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/RESULT.json",
+      "bytes": 6179,
+      "sha256": "2ac847f6425f1f23dbefa2aff67d86507e6a8446c801304bb6d1ba8d302f0227"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/blocks.json",
+      "bytes": 21267,
+      "sha256": "70f62e1a48e29d4093568d0e478c261fe901d600074a078dcf963aba4f880337"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/cameras.json",
+      "bytes": 11982,
+      "sha256": "29dc4321880c2908d16ae72f41b7ec0bbfef5fbe73c8b2ba257597bac75f0a56"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/collision-world.json",
+      "bytes": 106953,
+      "sha256": "8e3015269fdd3329e3ed2152b0fa9f0589a9d8af7cc2f7855a5a9a7016647b0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/east-shop-130/collision-local.json",
+      "bytes": 6186,
+      "sha256": "321e3430182cd4a0bed9a1e7ee6fa983479ebb463644c7e3b2aa6f8a11de12be"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/east-shop-130/collision.json",
+      "bytes": 12363,
+      "sha256": "7336e4630403179b70b1539261bd1af5337696f3bc23702feeb485ff5268e18d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/east-shop-130/model.cm.glb",
+      "bytes": 987524,
+      "sha256": "3b5bd47614a3ab5b0cf3f9a9c84aba2486a1bc11cc7fe9f2b5c01c416d7edcd0"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/east-shop-130/model.glb",
+      "bytes": 1751412,
+      "sha256": "654022fbe6088079b287927ad9cdfb3cf5f526f4e7454209b54fb4fca1b076e3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/east-shop-131/collision-local.json",
+      "bytes": 8159,
+      "sha256": "a77463ca912c7e1625639ebfdee7204767960e80dcec980784c19110e261f950"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/east-shop-131/collision.json",
+      "bytes": 16282,
+      "sha256": "6e740386a1c9e1c5dd98f94ab49e49bd756232bf213d86c8c9e52f2fbe533f37"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/east-shop-131/model.cm.glb",
+      "bytes": 985428,
+      "sha256": "efb59769fc6fe40fdf9f54d7108466e4c4bb0dc1901c4b4dca519e0eb6a58e58"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/east-shop-131/model.glb",
+      "bytes": 1742588,
+      "sha256": "0ee8b33eacac8b9b708e5e50649a426117829fba906c1fd438152e3051da9aad"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/east-shop-132/collision-local.json",
+      "bytes": 8206,
+      "sha256": "5545998af64f55f22ee7d17d8d6fcb4dd827a3848a56d00a8c61a9096869c958"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/east-shop-132/collision.json",
+      "bytes": 16356,
+      "sha256": "0b115197cdc573ad9169c971594998513d52275bd6c93cf92332d16c2d7d8a79"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/east-shop-132/model.cm.glb",
+      "bytes": 997396,
+      "sha256": "99450790106d6bd1dec9fe7a682bdbab1956c0b01a36215eda987f06767de5a3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/east-shop-132/model.glb",
+      "bytes": 1793052,
+      "sha256": "68716bb1a5f33d0cdc0fad1172984b5021281bf7c6874bf0da0077f761d775aa"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/east-shop-133/collision-local.json",
+      "bytes": 6180,
+      "sha256": "9bdb82ef8bf6e57c0791517c895d6ab27a15992c36b204d4e791bd698cd7d12c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/east-shop-133/collision.json",
+      "bytes": 12372,
+      "sha256": "b453c09f3ff3a22c26b54de15ede1afc526c5f53ea6ad55e869fa836ab3dc7ff"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/east-shop-133/model.cm.glb",
+      "bytes": 988824,
+      "sha256": "964de598ff92e1d5af4d73caa7c48be522b296a6dc75f8bd6864745977619fa5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/east-shop-133/model.glb",
+      "bytes": 1755416,
+      "sha256": "d443aac126f8e81c14a85efcb3baafc9f54d328e726c8f52cbaa524453fb90cc"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/instances.json",
+      "bytes": 5981,
+      "sha256": "8f26796f3789c7b8ed3738564147ca15bb600fdaf201b24a2b73b77b2265aaff"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/next-four-design.snapshot.json",
+      "bytes": 5342,
+      "sha256": "535a1fb955980af74b191c2ed77f83e5f9ff8e01589647fcde566d443756288c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/review-manifest.json",
+      "bytes": 8541,
+      "sha256": "b76b0d621eeed04a51fdec59bc6f9a6975565823dbc1f2be8eb35b84c93f8525"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/route.json",
+      "bytes": 3379,
+      "sha256": "69c52eee2c4e04fe50c038f9282876034727e7b322c3ae39fe7bc0cbd249fd64"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/surface-spec.json",
+      "bytes": 4873,
+      "sha256": "05d69cdbe47d4ee61a6004aa4e332bd36a6d02414770ed51a70a708dc0cbf3b2"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/surface.cm.glb",
+      "bytes": 891276,
+      "sha256": "029067b746a9c2a6f7576c9e9a2b12c9d60ccd97f90dbe49a65b0362816aad89"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-completion/surface.glb",
+      "bytes": 985560,
+      "sha256": "4d5c352c8d80617c0b110415b260486b678f1d36a5d6235e7eb1c43faa1be128"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-kit.cm.glb",
+      "bytes": 2439840,
+      "sha256": "e47d50078a844e9e5b91e86a0e475827ecabd16de22d4aad217e8e2e6c973591"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-kit.glb",
+      "bytes": 3556168,
+      "sha256": "e1622aa2607cd1d7119ccaa5f79cf1bb057364ddc2bb37dcd93ffac5b7b33bea"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-props/bamboo-basket.cm.glb",
+      "bytes": 4380,
+      "sha256": "5fa27cebe92a3b0ab3483d573cb142f43a1184de4652e9b844cbf4debd3cdcf4"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-props/bamboo-basket.glb",
+      "bytes": 14824,
+      "sha256": "479581d5e78f90eb0959c94f806fc1bdc7ec43ab073a7b545f59c6a33b0b600f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-props/bamboo-chair.cm.glb",
+      "bytes": 3928,
+      "sha256": "e0e5fe8489da210048cb1fa5c9d850446cafe56e2ae83e9bd33bad0e78082767"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-props/bamboo-chair.glb",
+      "bytes": 13932,
+      "sha256": "9a9b0bd3bd1979426dab09ce4e2fad2b835a563f38a2df4998b67ed7e8ea6eeb"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-props/bicycle-28.cm.glb",
+      "bytes": 10544,
+      "sha256": "fac7002b09afb27a85497a84f7525c082a7b79202ad7afebfe4fc906564fb312"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-props/bicycle-28.glb",
+      "bytes": 50468,
+      "sha256": "ce93e81d077d3d1c4cb407c8ea9e0b8187223bb26562ab320dd7b46137a83c41"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-props/cloth-awning.cm.glb",
+      "bytes": 3164,
+      "sha256": "a8e1b3cd1d7d1c1eb2580016a11999c7fc98a38014f3256ff4ccee95393b3c7d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-props/cloth-awning.glb",
+      "bytes": 5340,
+      "sha256": "97bd49231aa29f35033a1cfb247197afb62d522138fd503e09a5519da7d84cd9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-props/collision.json",
+      "bytes": 18084,
+      "sha256": "add267052b455988662b272c977d328f6dc7d16ab6cbc4a24419976c17ce4a46"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-props/instances.json",
+      "bytes": 9759,
+      "sha256": "96d13695ad0eea4bd1ab12a5b8ec320a2f5059b8b428da5dade3100e8d22167e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-props/review-manifest.cm.json",
+      "bytes": 12225,
+      "sha256": "0710f9775a789b67a2402df40b25863f1c970d6583a7dd64761aef819a1174cc"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-props/review-manifest.json",
+      "bytes": 11644,
+      "sha256": "3a86d373d9a64c2cfe0e76bc2a2c4269f6084ecbb4aca217eacb23c3474896e2"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-props/wood-crate.cm.glb",
+      "bytes": 88244,
+      "sha256": "de8ffffc8ff5f4eb4d152ca3bc7409788ed589b11359a592a6e1f474efc50151"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-props/wood-crate.glb",
+      "bytes": 89976,
+      "sha256": "3d6103b97572889c4dc4eae84af9e0eeead72c3f45feb75375d488ad48ad4850"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-reviewed.cm.glb",
+      "bytes": 5209408,
+      "sha256": "8edd9a42acd310403288ae70e6a62ccff86a9e99e7d29cbc630bc8a92a8b9920"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-reviewed.glb",
+      "bytes": 20571620,
+      "sha256": "b386ff72eb990e92c21c64d7e3895ddb42c14a3de1b0a9786abce726cffd3b37"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/cameras.json",
+      "bytes": 32156,
+      "sha256": "d42aa5190c907458e250a97a17fbfaf749f563b110cdfb0a81a5b6a82572850b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/collision-world.json",
+      "bytes": 25370,
+      "sha256": "e42f1e7598c66e58ee86d724cdda094ea13de22d23a96b14f8e1ad809e2315f7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/instances.json",
+      "bytes": 11402,
+      "sha256": "64081bacd4843aa1b57c43e94a50af70424dc8bb78354b08a24b4dae70b3312c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/review-manifest.cm.json",
+      "bytes": 10492,
+      "sha256": "3289762c7cf4028eeb4a83c6673550c3784ee7055b04b957843e4396046ee59f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/review-manifest.json",
+      "bytes": 10141,
+      "sha256": "9f421f8fca993828f39a0a394031cf758aceef95199e8324e7c3ece1fafa24eb"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/N01-plain-v1-left-side.cm.glb",
+      "bytes": 779888,
+      "sha256": "6086a9a1d0252b6823ffbaef64e10fdb9cf6bb952392aa041299ea09abfa6cc7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/N01-plain-v1-left-side.glb",
+      "bytes": 782760,
+      "sha256": "20cbb99d283b78b9806600a1f9b8828691cf3b5ff7f256b67d7efff330ef113d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/N05-restaurant-a-back-wall.cm.glb",
+      "bytes": 789996,
+      "sha256": "bf48461269cfc0a1b0f7a72eda7f1947741d75cc63098c45457f13ace8327cc4"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/N05-restaurant-a-back-wall.glb",
+      "bytes": 804260,
+      "sha256": "eb2db18a13366ee1bbf33015ed27aea6cfe408409b58bf7772176cf2d7c12664"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/N05-restaurant-a-right-side.cm.glb",
+      "bytes": 779916,
+      "sha256": "f4880110f57c2d30a53f27a83f2356ae04f2e026f99f45621472e73149d7f4f1"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/N05-restaurant-a-right-side.glb",
+      "bytes": 782748,
+      "sha256": "19976e7f6df40fe2227fc496e8efdf4706d601cea03ab0d9bbc438afa73b63f4"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/N06-curio-a-back-wall.cm.glb",
+      "bytes": 790008,
+      "sha256": "4ce9d51854d425b94cdecaaa1bdc998158f5a441661e566230136e8cbec4c52a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/N06-curio-a-back-wall.glb",
+      "bytes": 804276,
+      "sha256": "e6d59c497049f63caba086a6f740d1bb8553e1da7f92e3bf53a01744a1099abb"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/N06-curio-a-left-side.cm.glb",
+      "bytes": 779904,
+      "sha256": "01ebd320edb2ee4a3306c56e8ee3b949e316ecec643c4218de99c8b7d009a885"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/N06-curio-a-left-side.glb",
+      "bytes": 782840,
+      "sha256": "2e2bbb7edfe24ed92df85a807403a33fc2e575c1a572aaa7d37d61521ca983f7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/S05-plain-v3-back-wall.cm.glb",
+      "bytes": 789920,
+      "sha256": "00c45affcba39dc4fee8830213507b616d0f7e699bef29726d6572f85adbf9a1"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/S05-plain-v3-back-wall.glb",
+      "bytes": 804216,
+      "sha256": "378e08d5106231dd41796654367b25a8dbb47318c71a261acf84588cad312ed2"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/S05-plain-v3-left-side.cm.glb",
+      "bytes": 779820,
+      "sha256": "27e2641e29b686492ba042bc120107ac28f254b38274e984348064e0a1c6bb07"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/S05-plain-v3-left-side.glb",
+      "bytes": 782768,
+      "sha256": "4db67e369bf0f05b8febaa5c3504fc598989c431c472fe96212f55f0a5a84023"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/S07-plain-v2-back-wall.cm.glb",
+      "bytes": 789872,
+      "sha256": "16c2d3d1e35bd7c112785e9a1b4fe7747ccd9449f11470d6e02a3c9563047e47"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/S07-plain-v2-back-wall.glb",
+      "bytes": 804220,
+      "sha256": "86469b1a07c5480aaef786433fd8501ef58712819730de466c379eaf955c11c4"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/S07-plain-v2-right-side.cm.glb",
+      "bytes": 779796,
+      "sha256": "7c2b003c259ff24f8ce408b68dbc604e97ac759fbee9465fd45a4d8489e42b2d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/S07-plain-v2-right-side.glb",
+      "bytes": 782768,
+      "sha256": "63b211c5fe4589311c6dd531d96af4f88eff7b0ae668adfb14b057285803b771"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.20x3.70|side-e.cm.glb",
+      "bytes": 779628,
+      "sha256": "6319ab51a6ab9e0cfaaf159eb35ff53feb80253c727e6023082ef67acd7c8aeb"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.20x3.70|side-e.glb",
+      "bytes": 782432,
+      "sha256": "981fe7abd53c77f0f77b1ce0eece32b495a956fba780f1e4b74cf1536eb28592"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.20x3.70|side-e|t1.cm.glb",
+      "bytes": 779624,
+      "sha256": "6a15d56c63ed96b3d2a9b0db486193f26c6c97d9ddfe8acec0bf0181e4a8db00"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.20x3.70|side-e|t1.glb",
+      "bytes": 782440,
+      "sha256": "67d5c06f81a4c218738e4b02a00e63d2d60357456f2c0bd28fa79fb148a0e1b5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.20x3.70|side-w.cm.glb",
+      "bytes": 779628,
+      "sha256": "6319ab51a6ab9e0cfaaf159eb35ff53feb80253c727e6023082ef67acd7c8aeb"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.20x3.70|side-w.glb",
+      "bytes": 782432,
+      "sha256": "9edd41db484d988c0769c91934636ce47e4c465452a530d3c767b410abc432f5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.20x3.70|side-w|t-1.cm.glb",
+      "bytes": 779628,
+      "sha256": "613e1efc6ea45c7c00f47f08400b65e6dccfb582f90818c9e126c71bbddb1ce5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.20x3.70|side-w|t-1.glb",
+      "bytes": 782444,
+      "sha256": "fb2615a8962ce567dcd455d9d6f74409602515fff27a3ca73a6d21fc2b386714"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x10.00|side-e.cm.glb",
+      "bytes": 779536,
+      "sha256": "1c241f9b2e9bd9c8db353de4b7b5103123b8e7c95e6f20187d63506ba477a7d5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x10.00|side-e.glb",
+      "bytes": 782236,
+      "sha256": "7149533007bbb9cf3a9b08921ceba259df7cfe03c79fd621b335f43b45f29423"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x10.00|side-e|t1.cm.glb",
+      "bytes": 779568,
+      "sha256": "815610ed05ca8eb2ae49d1b80c957e3eb29dc4c7915e06f4ebc445557f873c42"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x10.00|side-e|t1.glb",
+      "bytes": 782304,
+      "sha256": "31e45fef0fbc079b6b5acb98871aacd0feecf62f3ec1b9fbfdb1b734ec971b62"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x10.00|side-w.cm.glb",
+      "bytes": 779536,
+      "sha256": "1c241f9b2e9bd9c8db353de4b7b5103123b8e7c95e6f20187d63506ba477a7d5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x10.00|side-w.glb",
+      "bytes": 782236,
+      "sha256": "701941238cad1e69e95bf176702e96bf84ad9aa198e2ddc6c6a1d4f36f95cfdc"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x10.00|side-w|t-1.cm.glb",
+      "bytes": 779532,
+      "sha256": "d6eacf265b7be516a9280c08c64d28f99e56b85b984b85e4d143c9bbfe7266a3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x10.00|side-w|t-1.glb",
+      "bytes": 782300,
+      "sha256": "80eabd1b6ec075a6731fe41215d7b2f4590fdfae75e35d813b61f367c5e2b844"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x11.00|side-e.cm.glb",
+      "bytes": 779592,
+      "sha256": "4067bc86e0ee5d6e82748ac424b5eeaae9b6fe548b2106128f3c9a2a21db8995"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x11.00|side-e.glb",
+      "bytes": 782248,
+      "sha256": "140ca124bc76f04a7d578f9253e586b273a68a4f08dfcb52b2d8c568723c8cb0"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x11.00|side-e|t-1.cm.glb",
+      "bytes": 779560,
+      "sha256": "e8e446b40b4bdedee08af318663fce8931d9064ad0d3733396e31a97bb106292"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x11.00|side-e|t-1.glb",
+      "bytes": 782308,
+      "sha256": "eedb03fc2e6f6a348b3d9bcbf5313df72cffc491b3a2630cac66c199a893241b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x11.00|side-w.cm.glb",
+      "bytes": 779592,
+      "sha256": "4067bc86e0ee5d6e82748ac424b5eeaae9b6fe548b2106128f3c9a2a21db8995"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x11.00|side-w.glb",
+      "bytes": 782248,
+      "sha256": "e9fbcaaf180c385f599ecc831790002a3ff9c94535ebb59347ac90a31466b4a6"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x11.00|side-w|t1.cm.glb",
+      "bytes": 779548,
+      "sha256": "1793102e7fca187130e31e819c2684cd2f6f6e0e9330ec819bb5ac0b4c4a724f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x11.00|side-w|t1.glb",
+      "bytes": 782300,
+      "sha256": "37f69a25ce5559fe11fb5b47e009a1107be7f6d37cd6c51d39646cf82a0fc8cd"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x13.00|side-e.cm.glb",
+      "bytes": 779564,
+      "sha256": "c88619f3dc9b819fba55c46f076ced1a69d588395b72f4835bb0c1ef5a0b5c9c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x13.00|side-e.glb",
+      "bytes": 782248,
+      "sha256": "0e334132ab384002a7801acdc16c09212e814d3473f3bcdabdd0ec2108331f27"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x13.00|side-e|t-1.cm.glb",
+      "bytes": 779552,
+      "sha256": "dd99f6fbff4cb37127f9fedeb855aaa7613f674031afd23c378e240e7509ecf3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x13.00|side-e|t-1.glb",
+      "bytes": 782308,
+      "sha256": "b4c4d913187fd94d945db032c1ea1d0b878f4ffe45cb939aa7413e56b24d1c91"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x13.00|side-w.cm.glb",
+      "bytes": 779564,
+      "sha256": "c88619f3dc9b819fba55c46f076ced1a69d588395b72f4835bb0c1ef5a0b5c9c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x13.00|side-w.glb",
+      "bytes": 782248,
+      "sha256": "bf64f29cb6a2bc3026ba5c3e6556f3fb679e33d141991412e5d79a1006bd3535"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x13.00|side-w|t1.cm.glb",
+      "bytes": 779512,
+      "sha256": "709619af1de0045061483bacbc26b24c33d5bddd3e9c4a3c95fbf6c5d8a543ec"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x5.80x13.00|side-w|t1.glb",
+      "bytes": 782300,
+      "sha256": "8fbfd8bedc0bd7f9877593029d6d7abe00df5318d4ed143eababef3435c7045f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.40x4.30|side-e.cm.glb",
+      "bytes": 779600,
+      "sha256": "24da3e462b6028de92e4c671054053d82952baf0eb9706d5a536e78dda6a15e6"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.40x4.30|side-e.glb",
+      "bytes": 782420,
+      "sha256": "6bd11aae71df616c18092f8ca02546af8ff9ca1b5869719ec1f398171623b9b7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.40x4.30|side-e|t1.cm.glb",
+      "bytes": 779596,
+      "sha256": "5ee95d7059743ac930d3b785e2bf0a8cabd5725bb7e9fceef2f6e78472b32840"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.40x4.30|side-e|t1.glb",
+      "bytes": 782420,
+      "sha256": "20a4cc09d530224ae702d89fd8193f6c63d9559ff992832c680e433084932dc7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.40x4.30|side-w.cm.glb",
+      "bytes": 779600,
+      "sha256": "24da3e462b6028de92e4c671054053d82952baf0eb9706d5a536e78dda6a15e6"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.40x4.30|side-w.glb",
+      "bytes": 782420,
+      "sha256": "6f29e7fb79a32d0deab6c0cb72cd579a5a1b50f98f92c3106886c04436b27a2a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.40x4.30|side-w|t-1.cm.glb",
+      "bytes": 779604,
+      "sha256": "5286491fe7ca5c14704b4d385fa91b78c45b5996af4b01fab98dd3b07df4c9c1"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.40x4.30|side-w|t-1.glb",
+      "bytes": 782424,
+      "sha256": "80a0529244657a840b11362410603d5c429d89492e0e731b484b9f1e7dbd9582"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x10.00|side-e.cm.glb",
+      "bytes": 779540,
+      "sha256": "8ffcecf906a90219a27f002a3fc184606128d2c3084fa795100a89d6f9df3a14"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x10.00|side-e.glb",
+      "bytes": 782264,
+      "sha256": "dadd8405f9a9cd51309e81f4b37a655333904c7f19b09713135349b813f0dd30"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x10.00|side-e|t1.cm.glb",
+      "bytes": 779572,
+      "sha256": "b274b4881cb5cb102c47011d50d9617d2086b714b83b67403c29522ebbb65638"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x10.00|side-e|t1.glb",
+      "bytes": 782332,
+      "sha256": "d9c54666f39ec6773a73bb4cd4dfbe8683024064fbdfe842e62774b2720fe09e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x10.00|side-w.cm.glb",
+      "bytes": 779540,
+      "sha256": "8ffcecf906a90219a27f002a3fc184606128d2c3084fa795100a89d6f9df3a14"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x10.00|side-w.glb",
+      "bytes": 782264,
+      "sha256": "bf058ae477bc27f7954e3ed5362efb75f094fdac086c72d8555598d453cb5aa9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x10.00|side-w|t-1.cm.glb",
+      "bytes": 779540,
+      "sha256": "454fb73104e2f3e5a5317a3593601dfcb9a21f66ee3c27424895c4ee9b736ca3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x10.00|side-w|t-1.glb",
+      "bytes": 782332,
+      "sha256": "3775446ebf65dfc767da568ffc864b7dd739217352727197ee17b37ef18d3cde"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x11.00|side-w.cm.glb",
+      "bytes": 779588,
+      "sha256": "d63731470082a100db894ff22465c87f8ca191a53668a4873d482a1f73d10268"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x11.00|side-w.glb",
+      "bytes": 782276,
+      "sha256": "ffb8a8fb754448099ea8b39ec9988ed4edaea014247aa167e7080651c1f04178"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x11.00|side-w|t1.cm.glb",
+      "bytes": 779560,
+      "sha256": "40577aa5f937a5d6bdb894026ee457662e47271de180c55da570e84b425f842e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x11.00|side-w|t1.glb",
+      "bytes": 782328,
+      "sha256": "bae3f67d3fbbc82524df4f5140f7bb2e9b284e888fda391c26df7b3eeff0c5d9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x12.00|side-e.cm.glb",
+      "bytes": 779556,
+      "sha256": "e8fbca3e4b64934643c25fe84366a63699bfc9aa9778fd4fb02afd84e37a64c2"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x12.00|side-e.glb",
+      "bytes": 782264,
+      "sha256": "6ca685f2035f7f06ad4b32454a1ad77a2a9014544964b23ed0af060598053162"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x12.00|side-e|t1.cm.glb",
+      "bytes": 779540,
+      "sha256": "b9f923e8e5a5576de8f112c8f38c7d1f76d089788a86cdefd999aaf1c8211a3c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x12.00|side-e|t1.glb",
+      "bytes": 782332,
+      "sha256": "e88bd00df075533c202aec422005a4d6731c52df8fdf6b2d857dd4cfba819b32"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x12.00|side-w.cm.glb",
+      "bytes": 779556,
+      "sha256": "e8fbca3e4b64934643c25fe84366a63699bfc9aa9778fd4fb02afd84e37a64c2"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x12.00|side-w.glb",
+      "bytes": 782264,
+      "sha256": "dce2f3b4f7733e6e1dad29d5a7a5126c443cc937a56502e824719f224f7d692c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x12.00|side-w|t-1.cm.glb",
+      "bytes": 779552,
+      "sha256": "9da39d3cb4b2ff5d4f6c0399aaee2c0587e755c98cbc5d97237d4ebdee9583f3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x12.00|side-w|t-1.glb",
+      "bytes": 782332,
+      "sha256": "c335faba7665d1fd9871682150c6d25f5265fdc41863ec6ef57bc4566570834e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x5.20|side-e.cm.glb",
+      "bytes": 779648,
+      "sha256": "a1aee2fc97fab83cebb1aba35e02b047c51e832b7318febab756753d744ffa5b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x5.20|side-e.glb",
+      "bytes": 782436,
+      "sha256": "daa0e4e415ea80721a1220ad3bdb5af25f504563e5cc61bbde61aa5b2ba9810c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x5.20|side-e|t1.cm.glb",
+      "bytes": 779636,
+      "sha256": "431a8f696e533e61d513be5040b1313a03636d71742966c9da9b15ae1cd6b151"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x5.20|side-e|t1.glb",
+      "bytes": 782432,
+      "sha256": "8b767dcea6b1c1f705b6ad42a57cc6b534fb1679a4102d671d9eced3c69c65a4"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x5.20|side-w.cm.glb",
+      "bytes": 779648,
+      "sha256": "a1aee2fc97fab83cebb1aba35e02b047c51e832b7318febab756753d744ffa5b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x5.20|side-w.glb",
+      "bytes": 782436,
+      "sha256": "45604a10edbb87f31f340b4c6514b26eef9b37dfbb37ffcd14dd5bd52eb7ca40"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x5.20|side-w|t-1.cm.glb",
+      "bytes": 779640,
+      "sha256": "34cb12154d06ba8faab1b07107ba7aec622406dc4691fe70a94b3e8dd5499b23"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.60x5.20|side-w|t-1.glb",
+      "bytes": 782436,
+      "sha256": "6fe007bfcf6880350200041219e9d3bb1c2208081445e3abd4224e5e072e9ba7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.80x6.40|side-e.cm.glb",
+      "bytes": 779596,
+      "sha256": "4a7d0ef2f674a19c6a1e9df8e7a0d91e5d46b1deb37c5a3eea25e609281ab0e4"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.80x6.40|side-e.glb",
+      "bytes": 782376,
+      "sha256": "866fdd78ef141517cde702616a33f1e15e45d2993b4cad6f361e6d50eb4e7d89"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.80x6.40|side-e|t1.cm.glb",
+      "bytes": 779588,
+      "sha256": "da7d51dfd59ab72fe40fe1e4d59ccbdc64d50af49174ce8dfc838bd00c90f5a6"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.80x6.40|side-e|t1.glb",
+      "bytes": 782408,
+      "sha256": "817f11bb93e3df53e07567c0001af80d33e353032cd73840e0d4ece0983ad5e3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.80x6.40|side-w.cm.glb",
+      "bytes": 779596,
+      "sha256": "4a7d0ef2f674a19c6a1e9df8e7a0d91e5d46b1deb37c5a3eea25e609281ab0e4"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.80x6.40|side-w.glb",
+      "bytes": 782376,
+      "sha256": "959f5d806e62baffdda97d38de6bb73ade0f2db89e4a0f9b156be3e0f0e1351e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.80x6.40|side-w|t-1.cm.glb",
+      "bytes": 779592,
+      "sha256": "b7786e1032c228971cf419c4eb0038a74b368d32a43ca47e1a5dfc3da9d23bb8"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x6.80x6.40|side-w|t-1.glb",
+      "bytes": 782412,
+      "sha256": "a86f9073d40ce0b073ea2119496c925df958d726165e12035ce0cdd9c3545aba"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.40x7.20|side-w.cm.glb",
+      "bytes": 779596,
+      "sha256": "c5eb2d3bfe927ffaa21aab145ffc229bb56da586fad2f100ed19b0eab86f2366"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.40x7.20|side-w.glb",
+      "bytes": 782420,
+      "sha256": "6af3255053f52f6b77d5826f0aa6b594b70d0c5a5f752f31fb0ef287e55aff18"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.40x7.20|side-w|t-1.cm.glb",
+      "bytes": 779616,
+      "sha256": "5b0aca1352a602a3f98cd11868c2b24e281f3534be75debb65b43fbc4171606d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.40x7.20|side-w|t-1.glb",
+      "bytes": 782420,
+      "sha256": "501ce17eda51a91a1ad99d7d8f5636df2078ca86b713245dcfb554b5ae2db4a8"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.70x6.70|side-e.cm.glb",
+      "bytes": 779612,
+      "sha256": "1ea7fb15d5239015e336cf2cd5ee33457e86c02754901e0ed582a7c87c7400cf"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.70x6.70|side-e.glb",
+      "bytes": 782436,
+      "sha256": "4f36cd069c5f8d5687168c2ff26057505225471a0f4b20f2d44bb1e61f691935"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.70x6.70|side-e|t1.cm.glb",
+      "bytes": 779612,
+      "sha256": "65637cb7804bf9918df6b71e24f63e91f997913013ba0bde75808990579d8253"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.70x6.70|side-e|t1.glb",
+      "bytes": 782432,
+      "sha256": "78567f03c50bca1d338f9acd387387472034c00dfcc38a6406d47ef8c47bda80"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.70x6.70|side-w.cm.glb",
+      "bytes": 779612,
+      "sha256": "1ea7fb15d5239015e336cf2cd5ee33457e86c02754901e0ed582a7c87c7400cf"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.70x6.70|side-w.glb",
+      "bytes": 782436,
+      "sha256": "5c88f7c5dc986fd241d05b65605bf003715883375de5b95ef38ad37e14884eb7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.70x6.70|side-w|t-1.cm.glb",
+      "bytes": 779616,
+      "sha256": "e9928d9317d6088f62c895fd3827bee6b9b70e1db2feadbdc7be0e464d122535"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.70x6.70|side-w|t-1.glb",
+      "bytes": 782436,
+      "sha256": "01c3a2506f94c0d5deaa79021000a8956c863c4c86af82533cdff1d35dbe6241"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.90x7.00|side-e.cm.glb",
+      "bytes": 779632,
+      "sha256": "6d82594d03e75f9da6bacbe1f818d96a171dc3aff7622cdc02d29b4ce83547f0"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.90x7.00|side-e.glb",
+      "bytes": 782328,
+      "sha256": "cdc603b5ccc47758022705a2484ba8ab3f423b044f3e14af5ca679d85c1b0e6e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.90x7.00|side-e|t1.cm.glb",
+      "bytes": 779568,
+      "sha256": "d055704293dedcb28fd8aa08f2ad92b78fe8218a6754f9283de99216dfe43397"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.90x7.00|side-e|t1.glb",
+      "bytes": 782384,
+      "sha256": "fe71d0d53db502c9d4d6f4fcca5fe55df45438f7fd6273e319ae7909c68b78e2"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.90x7.00|side-w.cm.glb",
+      "bytes": 779632,
+      "sha256": "6d82594d03e75f9da6bacbe1f818d96a171dc3aff7622cdc02d29b4ce83547f0"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.90x7.00|side-w.glb",
+      "bytes": 782328,
+      "sha256": "0faad5cb1b54471d49987df7c87c6aaa38b346c39f2bbfc81582440dde3b44c5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.90x7.00|side-w|t-1.cm.glb",
+      "bytes": 779572,
+      "sha256": "00e7a530818d3ac9c93fcf8085fc0c95cf789f8fe9455f86753eca098b279488"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x7.90x7.00|side-w|t-1.glb",
+      "bytes": 782388,
+      "sha256": "3a074e707da8c4320af523c267d1e873c8a0670d5e33d5ea54efb8b25473c611"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x8.00x7.00|side-e.cm.glb",
+      "bytes": 779548,
+      "sha256": "8378447201b6a0165e5e58bc9fc2a1a51909f1aed98eb08a759b3c2aaa6f4d42"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x8.00x7.00|side-e.glb",
+      "bytes": 782312,
+      "sha256": "2221397fc41c0c69c40d9248cb44309fd3d48e766c7efdeab72d97a704109562"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x8.00x7.00|side-e|t1.cm.glb",
+      "bytes": 779524,
+      "sha256": "8c623524787b43d56f7ec3bb81cae892faca59e32113246a65e1eb5d80c41697"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x8.00x7.00|side-e|t1.glb",
+      "bytes": 782368,
+      "sha256": "4656e39141497c344b06dbe8d287b552a0b48950273418be590d2c74a045b35c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x8.00x7.00|side-w.cm.glb",
+      "bytes": 779548,
+      "sha256": "8378447201b6a0165e5e58bc9fc2a1a51909f1aed98eb08a759b3c2aaa6f4d42"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x8.00x7.00|side-w.glb",
+      "bytes": 782312,
+      "sha256": "acef441a1f03ddce2d21d9512038e37de833543582867fde5d63a79a08a3e4bc"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x8.00x7.00|side-w|t-1.cm.glb",
+      "bytes": 779532,
+      "sha256": "b4970ed9b77b3281f6dd6fb538961034063c930f5118445c7d2347516045f17e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.28x8.00x7.00|side-w|t-1.glb",
+      "bytes": 782376,
+      "sha256": "1b90fd9dd80d9280c26a6609a6af2dfaf2bbb6df4934c8310b48b9645aedce83"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.30x6.50x5.80|side-w.cm.glb",
+      "bytes": 779604,
+      "sha256": "31889bc1dfa7b6575944e348ae9a9d133d95c73402f3a26cd466b1c777634d34"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.30x6.50x5.80|side-w.glb",
+      "bytes": 782416,
+      "sha256": "d1cdb521de2c82c5eb1e0b663f261a662a2ab3df3426b458645698302ce61438"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.30x6.50x5.80|side-w|t-1.cm.glb",
+      "bytes": 779588,
+      "sha256": "cbb228029da036d568761ea90163edb4a18081b65a5a63919d91acc6a6e11fcd"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-0.30x6.50x5.80|side-w|t-1.glb",
+      "bytes": 782384,
+      "sha256": "1b86afbe821a3e54a3355d008e3a21a745b2e685dba15f86ecf8a25a7f707fe0"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-10.15x6.40x0.28|rear.cm.glb",
+      "bytes": 789228,
+      "sha256": "c21dd61473467b79d5d0bf369a9f832eff4822fbcb394209ad95ce43b3592996"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-10.15x6.40x0.28|rear.glb",
+      "bytes": 803368,
+      "sha256": "997c29d16b5490d6624123b1ed676e0d14109e60eaad18aab84182b4eab1ba3f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-10.15x6.40x0.28|rear|t-1.cm.glb",
+      "bytes": 789312,
+      "sha256": "6da744d5e0ad4a8a36062ec3b39b00167f342fe495ffe8581f1a7c047e1fa308"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-10.15x6.40x0.28|rear|t-1.glb",
+      "bytes": 803412,
+      "sha256": "d9fe2a83d598e62315095b5164c266662fdc44658823dd64c5710752647ae276"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-10.15x6.80x0.28|rear.cm.glb",
+      "bytes": 789220,
+      "sha256": "26b239dc8a016286cae2ec3b3f01efdd4da3775d7bd7a473ff4b762602488d64"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-10.15x6.80x0.28|rear.glb",
+      "bytes": 803412,
+      "sha256": "113ddd3b2043350fa0170010e77a70dee2f879d421b22edc9b37f828ff257d44"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-10.15x6.80x0.28|rear|t-1.cm.glb",
+      "bytes": 789324,
+      "sha256": "2e9159aa79944c1daa04003c42d7c7d863652607b82aeff334c391af1e3f70a3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-10.15x6.80x0.28|rear|t-1.glb",
+      "bytes": 803432,
+      "sha256": "dac3014e6187ccf5835249233c22d330a745c2c8c73cafc630b6bb106e02354c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-10.15x7.20x0.28|rear.cm.glb",
+      "bytes": 789236,
+      "sha256": "6c2f9f4180e1c6502da127e1576183092ededfc3d4b7f94082ffa060d6c19d82"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-10.15x7.20x0.28|rear.glb",
+      "bytes": 803396,
+      "sha256": "59bd4817355edf384cbbc63f5f83f571b29f081b7d2b78dcc2d1949cbf6f514c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-10.15x7.20x0.28|rear|t-1.cm.glb",
+      "bytes": 789336,
+      "sha256": "d6d013d7dc847e14c03d3004df23dd23e567d06faf98717c7f2a8b0c6f8e8245"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-10.15x7.20x0.28|rear|t-1.glb",
+      "bytes": 803440,
+      "sha256": "562e6cf46861aaa4992f6634b624c9a17eb25d7da1d5052fe6feb6ee24374d19"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-10.75x7.90x0.28|rear.cm.glb",
+      "bytes": 789292,
+      "sha256": "d733ffc9ea2074840274340718d880889a03bdd65946dac6eafc131c8b6112f4"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-10.75x7.90x0.28|rear.glb",
+      "bytes": 803328,
+      "sha256": "c24b624e87007b630d1db949bc3862746d0a0a54181f5dfa87f5eb6c3ff5bad2"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-10.75x7.90x0.28|rear|t-1.cm.glb",
+      "bytes": 789244,
+      "sha256": "a2ba7f415bee8e1423fe492b5300994ea932ea76aea6c60831e3a11d635832c0"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-10.75x7.90x0.28|rear|t-1.glb",
+      "bytes": 803384,
+      "sha256": "6cc75bc0978d542e841adc295f4439411d2ed90422b135b37b9c182d99da365d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-11.45x6.80x0.28|rear.cm.glb",
+      "bytes": 789260,
+      "sha256": "5578db32508281ed626e7a0ad825c64488c17226fbf20221f3f9211b4ae16cb0"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-11.45x6.80x0.28|rear.glb",
+      "bytes": 803440,
+      "sha256": "9e221795465269ac9c34f7250f3b4c6a16dc834ba1825312ad832d9d5e739253"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-11.45x6.80x0.28|rear|t-1.cm.glb",
+      "bytes": 789296,
+      "sha256": "aa44b78d0483fb654fcc5ec52c7c7acde7d25d9dfe41c6b6993f2cd84ff3b499"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-11.45x6.80x0.28|rear|t-1.glb",
+      "bytes": 803452,
+      "sha256": "dbcc5148265c8e976c0e5c55964eda24f2af4cfce26e60882e0e0a2808c2cb78"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-5.04x6.40x0.28|rear.cm.glb",
+      "bytes": 789244,
+      "sha256": "512757192f3ed6a3ed56c964b44bc01a9b89625f5e0e7c04703dff15a0adf2a0"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-5.04x6.40x0.28|rear.glb",
+      "bytes": 803404,
+      "sha256": "9ebbff85815b3930eab68535ebb208825137c03de08049f5cb51f832d67a1f11"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-5.04x6.40x0.28|rear|t-1.cm.glb",
+      "bytes": 789268,
+      "sha256": "3977032389a0736bf5d93520572936e0d789519b86af0422f48a617f7a2737ea"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-5.04x6.40x0.28|rear|t-1.glb",
+      "bytes": 803420,
+      "sha256": "37edcd5f742ed70ff449667b3e122960a104902d35de64d0b0b26b25e17e05b2"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-5.34x5.20x0.28|rear.cm.glb",
+      "bytes": 789364,
+      "sha256": "a7b34ea9e90a3a238ea3494f82dd6773428c8b5ee7f8fef2e0f42b63454e1fab"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-5.34x5.20x0.28|rear.glb",
+      "bytes": 803472,
+      "sha256": "b51ac5a0e553f30f241035678fafd2706793cbad9c4ed4ccaa75ac97c21b79a9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-5.34x5.20x0.28|rear|t-1.cm.glb",
+      "bytes": 789416,
+      "sha256": "d6a0a681edf04e4a0eb4a1882f03af89c76805866df1b4c3772aac5cb4f57625"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-5.34x5.20x0.28|rear|t-1.glb",
+      "bytes": 803484,
+      "sha256": "45813977a1cd4c0ca7c89d2d408e2198229bd49cc0726592f0bc81c6d59c69f8"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-5.65x6.60x0.28|rear.cm.glb",
+      "bytes": 789244,
+      "sha256": "7840354a8606aa8963bfdf6e150823f36bdb9ff666b190e41a90df8d18810a4b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-5.65x6.60x0.28|rear.glb",
+      "bytes": 803428,
+      "sha256": "1c8b962635a370cee0f807b8e4ac91fec5ec41f85357d66b0b5419328435d746"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-5.65x6.60x0.28|rear|t-1.cm.glb",
+      "bytes": 789388,
+      "sha256": "b65842c61f1588cdc40d061495ee1f4c03124f8bc9e1c82c7ec1948c425c0fff"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-5.65x6.60x0.28|rear|t-1.glb",
+      "bytes": 803472,
+      "sha256": "d5778b8d5f8cd2afa72885c7acc0d53cd3d73dc63673da18fc810122ce3aaa27"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-7.05x7.70x0.28|rear.cm.glb",
+      "bytes": 789344,
+      "sha256": "50579d6debdf029970f5ca13c760dbb3a94963c8c9e593fc31f2c18fdb000c87"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-7.05x7.70x0.28|rear.glb",
+      "bytes": 803452,
+      "sha256": "8e46619d402d25a936973484b62669e8abea44cd97b4c288d04663dab3b38439"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-7.05x7.70x0.28|rear|t-1.cm.glb",
+      "bytes": 789328,
+      "sha256": "62f85fcbe8866a0228df732f5b27b8bbfd756911f6e332197b550dcfbe968b0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-7.05x7.70x0.28|rear|t-1.glb",
+      "bytes": 803488,
+      "sha256": "a776d4032a7726b299d2879e89d2bbbca70f24412d3ebe13cb524cd8280bcab3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-7.25x8.00x0.28|rear.cm.glb",
+      "bytes": 789128,
+      "sha256": "f37dfc47ac404773abed2492513b1f48c6011909d750bd3893f0cb9ae790e136"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-7.25x8.00x0.28|rear.glb",
+      "bytes": 803312,
+      "sha256": "f1f5c435bef085630898e06e6f0e946a76a35c1c396bf02f7ee0bf5be2814575"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-7.25x8.00x0.28|rear|t-1.cm.glb",
+      "bytes": 789120,
+      "sha256": "edfc8c5e3b03dd5c46a5095e7fda238ee73d452aecd5f3f102bb25e28f5a0e95"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-7.25x8.00x0.28|rear|t-1.glb",
+      "bytes": 803376,
+      "sha256": "d9cbdc2a6a292b285831c3bf2ad128eaf70ca587b4eb7b4a7125db271bc8e817"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-9.55x7.40x0.28|rear.cm.glb",
+      "bytes": 789300,
+      "sha256": "0cd00df9a9c0f26994260faa0832a3d34aa1d451fc81ef61e1df7c6dba891bcb"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-9.55x7.40x0.28|rear.glb",
+      "bytes": 803380,
+      "sha256": "b69dace43ba2cedac871786f37662870c7012ff05291ab2a0dcc9050a35c02b7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-9.55x7.40x0.28|rear|t-1.cm.glb",
+      "bytes": 789308,
+      "sha256": "af0c405c8ebf6a6300766f22bee5be5be31bde501dbf3f8a998e36fc3a1110b8"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/cs-9.55x7.40x0.28|rear|t-1.glb",
+      "bytes": 803416,
+      "sha256": "de3646522b2f2b32a23605cc9af3a5247ceca0ed5abbf6b651a6964a9e363371"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/east-shop-133-gable-wall-east-b0s0.cm.glb",
+      "bytes": 779816,
+      "sha256": "cbc83ae971a732c0c248fd6be01342eed954624e859217b424430cec28f3d9e5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street-sidefaces/skins/east-shop-133-gable-wall-east-b0s0.glb",
+      "bytes": 782732,
+      "sha256": "ae39e33031e0f2b5d4db2b4313883ce91790bfec4b20a721d815d44be7db4616"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street.cm.glb",
+      "bytes": 4680608,
+      "sha256": "de629d3f71df84caf988510f6f5a31d2453ac283e860f2c30e0def098690c7e5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/street.glb",
+      "bytes": 20504868,
+      "sha256": "95d1cdd31eb61406c7a8b832548db515509184b8ddfe0a448c7fa0165d1aa111"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/cameras.json",
+      "bytes": 2981,
+      "sha256": "15b6033d89125e280330fb487a09ee96af8f9bbb5c32d3290e17042a9a678299"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/collision-world.json",
+      "bytes": 130231,
+      "sha256": "6476ba38de9709687a2b9bc31b9fea2839f135ef9aaa5afba4e8c5d7a6da829f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/court-open.cm.glb",
+      "bytes": 974328,
+      "sha256": "3150a804567b762b505eb6b64438d14b54b13b9e8f24094087021188ab0b5e3f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/court-open.glb",
+      "bytes": 1145928,
+      "sha256": "ade97662e4be178ba0faf93ff66c48e7c6b55011c8df8edbb27bab1449d4aded"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/court3.cm.glb",
+      "bytes": 1116816,
+      "sha256": "d99a9a572fe266de9063963fa49bc7e041d3eea86a3d1e7a563b0e513fd20448"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/court3.glb",
+      "bytes": 1634368,
+      "sha256": "3921895487fb7581e4fce7e31c8534153329ab61ea186a3e961b6a1e44bb0f0c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/dadian-court-v2.cm.glb",
+      "bytes": 991548,
+      "sha256": "59f12de80a21cf165366af4348e1f68e45994d8ae3b73d14eb0e4e463bf9b728"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/dadian-court-v2.glb",
+      "bytes": 1353280,
+      "sha256": "d643a1b3e0f8b9c38cafc4dd53465ff0de12f6fd38e4f81188b6735625ad79a7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/dadian-roof-surface-samples.json",
+      "bytes": 25490,
+      "sha256": "28e480ff6a6e07528ab18c89536c30b4defdcd0ea122a3345170c8316a937a5e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/dadian.cm.glb",
+      "bytes": 1722548,
+      "sha256": "e41071436d0f3a746a1495718d456b519b742b1e5a05440d7671a4db5fb28a0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/dadian.glb",
+      "bytes": 6295144,
+      "sha256": "8a722d9dc7663cefea0f94409a8911c65cf824756a60220ec7d1c88d4f1dabee"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/gallery.cm.glb",
+      "bytes": 380176,
+      "sha256": "0ad3b143260890f6de5c750eb09ce7cf26de2bdbe9fda672452a5f378e88d45a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/gallery.glb",
+      "bytes": 490812,
+      "sha256": "45228eb69acfd827741ac9f4a72b2d2f6bd92a1c2c4b0776efa210424ee1114d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/ground.cm.glb",
+      "bytes": 820952,
+      "sha256": "f99396c2bc95f55fa5dc8718e7b65edf4a75719d28ef1940545880e45e24c315"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/ground.glb",
+      "bytes": 860916,
+      "sha256": "0acf56376883f3faf823c52f8cf8478bf8d731c31606ed22e7eeadc0f7e0879d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/houdian-roof-surface-samples.json",
+      "bytes": 8502,
+      "sha256": "31f709391f4a74db988ee320360df42a21750c1f4785144e8969872649103db1"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/houdian.cm.glb",
+      "bytes": 1086544,
+      "sha256": "c6fb97edfb70d1017e8fd9afbded71d7288e98353e3883850e1a4c9bd8a3618b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/houdian.glb",
+      "bytes": 2702268,
+      "sha256": "693a5efb758700c96c162f9c9c93e0d1b91f490cde895e9d41202b4cdcd9f615"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/instances.json",
+      "bytes": 2320,
+      "sha256": "9439273d801557d6fc6c78e97a70edb3d69f3e4d4f109a564c4e849099ec1048"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/lions.cm.glb",
+      "bytes": 46532,
+      "sha256": "962c0edc9a8afeb8537cd8469661e35aea2b17aa20ca8a9778ede226f90d3fb9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/lions.glb",
+      "bytes": 440156,
+      "sha256": "eed2009cca69b5f08a287b4c034f270d817cf1d1bd1ba6859993bcc912278c06"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/ornaments.cm.glb",
+      "bytes": 184656,
+      "sha256": "b71943269dcca3fcd049e8fdfeca0c66695a1a077695eec82974cfedc32f8d0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/ornaments.glb",
+      "bytes": 437144,
+      "sha256": "feec279340911ce646a96b203c2febaa5a812d10035d9493f06868f73302a8f9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/peidian-roof-surface-samples.json",
+      "bytes": 8619,
+      "sha256": "6cdc32a73a40bee27a1c233bb15841314257aff4e7abf6ffcdb02ec9ed04f7c2"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/peidian.cm.glb",
+      "bytes": 996376,
+      "sha256": "981156f83c3e8f1580dc414adf2200ca98728414f2e84b3042838cd9601f0e85"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/peidian.glb",
+      "bytes": 2075332,
+      "sha256": "b3dba52114ed22f25e916f9d5cc72cff6ba2cf13082eae16daa099deabc1771d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/review-manifest.json",
+      "bytes": 5396,
+      "sha256": "28fbf744686e3197d19e828b6975519df658b9d8345cd7ef86a623f056baf7d3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/route.json",
+      "bytes": 5630,
+      "sha256": "fb010731f02f45d85d2eb784a08f6e2345edabd358d6570459944b684ff92b75"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/temple.cm.glb",
+      "bytes": 1371936,
+      "sha256": "f9cfa6d4fad6afbab460c1f22cb5f68ca0434545a1be22c0c46dd5eba3b02924"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/temple.glb",
+      "bytes": 3782256,
+      "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/yimen-roof-surface-samples.json",
+      "bytes": 10581,
+      "sha256": "ecca32c31b1998f655d0e4655e23a0c024402d4f642a722ff6afe25eb08ef8af"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/yimen-stage.cm.glb",
+      "bytes": 496064,
+      "sha256": "6372184d79a99f9a36379b8b201ec6a3e9407134a5d7ed94ca2e18bb528fc1a1"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/yimen-stage.glb",
+      "bytes": 1283532,
+      "sha256": "509fd8913f90cbdce61a55ba3187030da304140216cbb4f368127dd8eb59a51d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/yimen.cm.glb",
+      "bytes": 1507320,
+      "sha256": "cf6fcb1e7f496098dc06a3e742079de12a260e2db286675d27288227a40f5b43"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v2/yimen.glb",
+      "bytes": 4343252,
+      "sha256": "e9393cd4017c657e74d2889da812ac16eb70a04664ce8ab829ea126cb7ee48b5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/cameras.json",
+      "bytes": 2981,
+      "sha256": "15b6033d89125e280330fb487a09ee96af8f9bbb5c32d3290e17042a9a678299"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/collision-world.json",
+      "bytes": 106067,
+      "sha256": "a5a9155e715dd4f5f0cdeaa4f3eb5a52c90a02204e3398d47143c0386fd4800c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/court3.cm.glb",
+      "bytes": 1116816,
+      "sha256": "d99a9a572fe266de9063963fa49bc7e041d3eea86a3d1e7a563b0e513fd20448"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/court3.glb",
+      "bytes": 1634368,
+      "sha256": "3921895487fb7581e4fce7e31c8534153329ab61ea186a3e961b6a1e44bb0f0c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/dadian-court-v2.cm.glb",
+      "bytes": 991548,
+      "sha256": "59f12de80a21cf165366af4348e1f68e45994d8ae3b73d14eb0e4e463bf9b728"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/dadian-court-v2.glb",
+      "bytes": 1353280,
+      "sha256": "d643a1b3e0f8b9c38cafc4dd53465ff0de12f6fd38e4f81188b6735625ad79a7"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/dadian-roof-surface-samples.json",
+      "bytes": 25490,
+      "sha256": "28e480ff6a6e07528ab18c89536c30b4defdcd0ea122a3345170c8316a937a5e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/dadian.cm.glb",
+      "bytes": 1722548,
+      "sha256": "e41071436d0f3a746a1495718d456b519b742b1e5a05440d7671a4db5fb28a0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/dadian.glb",
+      "bytes": 6295144,
+      "sha256": "8a722d9dc7663cefea0f94409a8911c65cf824756a60220ec7d1c88d4f1dabee"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/entry-court-v3.cm.glb",
+      "bytes": 1007944,
+      "sha256": "8f822a93731c98c1164a2bc728cf8fb5cd05a506e6e5ca76c85dd4a1dfc4b717"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/entry-court-v3.glb",
+      "bytes": 1469532,
+      "sha256": "b0b4d28b6a9f12928a142efd2a597234ba13e52a7f48ed788d436175dcbbf6f3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/gallery.cm.glb",
+      "bytes": 380176,
+      "sha256": "0ad3b143260890f6de5c750eb09ce7cf26de2bdbe9fda672452a5f378e88d45a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/gallery.glb",
+      "bytes": 490812,
+      "sha256": "45228eb69acfd827741ac9f4a72b2d2f6bd92a1c2c4b0776efa210424ee1114d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/ground.cm.glb",
+      "bytes": 820952,
+      "sha256": "f99396c2bc95f55fa5dc8718e7b65edf4a75719d28ef1940545880e45e24c315"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/ground.glb",
+      "bytes": 860916,
+      "sha256": "0acf56376883f3faf823c52f8cf8478bf8d731c31606ed22e7eeadc0f7e0879d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/houdian-roof-surface-samples.json",
+      "bytes": 8502,
+      "sha256": "31f709391f4a74db988ee320360df42a21750c1f4785144e8969872649103db1"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/houdian.cm.glb",
+      "bytes": 1086544,
+      "sha256": "c6fb97edfb70d1017e8fd9afbded71d7288e98353e3883850e1a4c9bd8a3618b"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/houdian.glb",
+      "bytes": 2702268,
+      "sha256": "693a5efb758700c96c162f9c9c93e0d1b91f490cde895e9d41202b4cdcd9f615"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/instances.json",
+      "bytes": 2986,
+      "sha256": "77fa8ffbd0e8ad6dd2d2504b8c3bbd11ddcdc7979b12b040991a2292c17dc872"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/lions-v2.glb",
+      "bytes": 490048,
+      "sha256": "46dd10af05af07d8f9ab4ea234b6f3daf4af902184543e92f36b449019d44b7a"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/ornaments-v2.cm.glb",
+      "bytes": 14732,
+      "sha256": "5c02d4131aa3ce021bb6237729e61e0647e971548e3d1579766eae1c48a44704"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/ornaments-v2.glb",
+      "bytes": 150920,
+      "sha256": "0a894ec78c5a41df58a26d8d119a0699fbbaf1b40c847c875c6c6f5073fd7499"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/peidian-roof-surface-samples.json",
+      "bytes": 8619,
+      "sha256": "6cdc32a73a40bee27a1c233bb15841314257aff4e7abf6ffcdb02ec9ed04f7c2"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/peidian.cm.glb",
+      "bytes": 996376,
+      "sha256": "981156f83c3e8f1580dc414adf2200ca98728414f2e84b3042838cd9601f0e85"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/peidian.glb",
+      "bytes": 2075332,
+      "sha256": "b3dba52114ed22f25e916f9d5cc72cff6ba2cf13082eae16daa099deabc1771d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/review-manifest.cm.json",
+      "bytes": 8512,
+      "sha256": "7e67211a3d2e90e62c2aa6e63bdb3a037fc952eb0d595f35591a3d3f372b864f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/review-manifest.json",
+      "bytes": 7135,
+      "sha256": "30df9a0fa4ab92a896a7223aac9be66d4c15511d0d17aa1db4ca47aa389c34a3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/route.json",
+      "bytes": 6250,
+      "sha256": "805528b2e0b263e271a962c319088213320b36ef67d5d2e21c3272c3020a8a60"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/temple.cm.glb",
+      "bytes": 1371936,
+      "sha256": "f9cfa6d4fad6afbab460c1f22cb5f68ca0434545a1be22c0c46dd5eba3b02924"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/temple.glb",
+      "bytes": 3782256,
+      "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/tree-camphor-v2.cm.glb",
+      "bytes": 113468,
+      "sha256": "b4a9b52c26cf60644c66758ac0f9f07656d2105841334e3ff50ef02669bc2df6"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/tree-camphor-v2.glb",
+      "bytes": 233320,
+      "sha256": "5219f9a3a065fd1c2d4262899fa04e49f1ed31e31b9f709b162b74223a84cb33"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/yimen-roof-surface-samples.json",
+      "bytes": 10581,
+      "sha256": "ecca32c31b1998f655d0e4655e23a0c024402d4f642a722ff6afe25eb08ef8af"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/yimen-stage.cm.glb",
+      "bytes": 496064,
+      "sha256": "6372184d79a99f9a36379b8b201ec6a3e9407134a5d7ed94ca2e18bb528fc1a1"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/yimen-stage.glb",
+      "bytes": 1283532,
+      "sha256": "509fd8913f90cbdce61a55ba3187030da304140216cbb4f368127dd8eb59a51d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/yimen.cm.glb",
+      "bytes": 1507320,
+      "sha256": "cf6fcb1e7f496098dc06a3e742079de12a260e2db286675d27288227a40f5b43"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-axis-v3/yimen.glb",
+      "bytes": 4343252,
+      "sha256": "e9393cd4017c657e74d2889da812ac16eb70a04664ce8ab829ea126cb7ee48b5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/cameras.json",
+      "bytes": 2718,
+      "sha256": "fa79c2ee02a8e10191e380f713e0315dc7d4b44fe329e4cb48378487bbbd5176"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/collision-world.json",
+      "bytes": 70266,
+      "sha256": "67e642dbd9af5a1c86a8d7c77e9a1b6331668dff05e538c6a3c349c11f50e427"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/court-open.cm.glb",
+      "bytes": 974328,
+      "sha256": "3150a804567b762b505eb6b64438d14b54b13b9e8f24094087021188ab0b5e3f"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/court-open.glb",
+      "bytes": 1145928,
+      "sha256": "ade97662e4be178ba0faf93ff66c48e7c6b55011c8df8edbb27bab1449d4aded"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/dadian-court.cm.glb",
+      "bytes": 1002196,
+      "sha256": "8bf34e735938fcbd02ecac0de00d4869b31aa3b842ebf9819862423452c7e91e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/dadian-court.glb",
+      "bytes": 1446932,
+      "sha256": "c08856597ff60fde9df17726276bddbd13ae0f5497be80ee61ea2d668fccab40"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/dadian-roof-surface-samples.json",
+      "bytes": 25490,
+      "sha256": "28e480ff6a6e07528ab18c89536c30b4defdcd0ea122a3345170c8316a937a5e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/dadian.cm.glb",
+      "bytes": 1722548,
+      "sha256": "e41071436d0f3a746a1495718d456b519b742b1e5a05440d7671a4db5fb28a0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/dadian.glb",
+      "bytes": 6295144,
+      "sha256": "8a722d9dc7663cefea0f94409a8911c65cf824756a60220ec7d1c88d4f1dabee"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/ground.cm.glb",
+      "bytes": 820952,
+      "sha256": "f99396c2bc95f55fa5dc8718e7b65edf4a75719d28ef1940545880e45e24c315"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/ground.glb",
+      "bytes": 860916,
+      "sha256": "0acf56376883f3faf823c52f8cf8478bf8d731c31606ed22e7eeadc0f7e0879d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/instances.json",
+      "bytes": 1320,
+      "sha256": "371e3ca942682f906b76f2c371fcf4c1f81eb7fa030349ceb24fd1dfef4c1fac"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/lions.cm.glb",
+      "bytes": 46532,
+      "sha256": "962c0edc9a8afeb8537cd8469661e35aea2b17aa20ca8a9778ede226f90d3fb9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/lions.glb",
+      "bytes": 440156,
+      "sha256": "eed2009cca69b5f08a287b4c034f270d817cf1d1bd1ba6859993bcc912278c06"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/ornaments.cm.glb",
+      "bytes": 184656,
+      "sha256": "b71943269dcca3fcd049e8fdfeca0c66695a1a077695eec82974cfedc32f8d0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/ornaments.glb",
+      "bytes": 437144,
+      "sha256": "feec279340911ce646a96b203c2febaa5a812d10035d9493f06868f73302a8f9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/review-manifest.json",
+      "bytes": 4411,
+      "sha256": "641b02a25325bf5c61c5c7cafef28cb0555dae1058d5c215d11b2be8eb1d5de3"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/route.json",
+      "bytes": 2636,
+      "sha256": "e0ad5607968f359d6495f30c59e5fb073bc82bf28fc53150c198c6eca6380a0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/temple.cm.glb",
+      "bytes": 1371936,
+      "sha256": "f9cfa6d4fad6afbab460c1f22cb5f68ca0434545a1be22c0c46dd5eba3b02924"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/temple.glb",
+      "bytes": 3782256,
+      "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/yimen-roof-surface-samples.json",
+      "bytes": 10581,
+      "sha256": "ecca32c31b1998f655d0e4655e23a0c024402d4f642a722ff6afe25eb08ef8af"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/yimen.cm.glb",
+      "bytes": 1507320,
+      "sha256": "cf6fcb1e7f496098dc06a3e742079de12a260e2db286675d27288227a40f5b43"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-dadian/yimen.glb",
+      "bytes": 4343252,
+      "sha256": "e9393cd4017c657e74d2889da812ac16eb70a04664ce8ab829ea126cb7ee48b5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-entry/cameras.json",
+      "bytes": 1848,
+      "sha256": "02cb86cb86de8d2ab0e490bc706c98064d402320b49fb930fb35fefd680cd13c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-entry/collision-world.json",
+      "bytes": 36742,
+      "sha256": "a49f16574a0bc209be93e525f9f0a1f91147a7e101687690eb375ade1660e101"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-entry/court.cm.glb",
+      "bytes": 974536,
+      "sha256": "148035f45943c413e6b2b2e471972fffd7a0f8772f039d5109423bb741745762"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-entry/court.glb",
+      "bytes": 1148664,
+      "sha256": "c5fe9efb2f403f4cf14397d169e69ba7f8baf28a2e8582305e2be7da8629c406"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-entry/ground.cm.glb",
+      "bytes": 820952,
+      "sha256": "f99396c2bc95f55fa5dc8718e7b65edf4a75719d28ef1940545880e45e24c315"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-entry/ground.glb",
+      "bytes": 860916,
+      "sha256": "0acf56376883f3faf823c52f8cf8478bf8d731c31606ed22e7eeadc0f7e0879d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-entry/instances.json",
+      "bytes": 803,
+      "sha256": "4ffb0c9d68061f1cb78d0751e69f1c6e0baeb0c0e8d7859cf3e86546c4c775b0"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-entry/lions.cm.glb",
+      "bytes": 46532,
+      "sha256": "962c0edc9a8afeb8537cd8469661e35aea2b17aa20ca8a9778ede226f90d3fb9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-entry/lions.glb",
+      "bytes": 440156,
+      "sha256": "eed2009cca69b5f08a287b4c034f270d817cf1d1bd1ba6859993bcc912278c06"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-entry/ornaments.cm.glb",
+      "bytes": 184656,
+      "sha256": "b71943269dcca3fcd049e8fdfeca0c66695a1a077695eec82974cfedc32f8d0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-entry/ornaments.glb",
+      "bytes": 437144,
+      "sha256": "feec279340911ce646a96b203c2febaa5a812d10035d9493f06868f73302a8f9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-entry/review-manifest.json",
+      "bytes": 3211,
+      "sha256": "1cd3f29e68cbd7f348e238b6d823549873d62e95fad0beb29dc4a642317ed71c"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-entry/route.json",
+      "bytes": 1558,
+      "sha256": "a1054cae1a7beb756b810a0f8f1ee68cd818809197ee6ac4b247cde0a665ca0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-entry/temple.cm.glb",
+      "bytes": 1371936,
+      "sha256": "f9cfa6d4fad6afbab460c1f22cb5f68ca0434545a1be22c0c46dd5eba3b02924"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-entry/temple.glb",
+      "bytes": 3782256,
+      "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-entry/yimen-roof-surface-samples.json",
+      "bytes": 10581,
+      "sha256": "ecca32c31b1998f655d0e4655e23a0c024402d4f642a722ff6afe25eb08ef8af"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-entry/yimen.cm.glb",
+      "bytes": 1507320,
+      "sha256": "cf6fcb1e7f496098dc06a3e742079de12a260e2db286675d27288227a40f5b43"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-entry/yimen.glb",
+      "bytes": 4343252,
+      "sha256": "e9393cd4017c657e74d2889da812ac16eb70a04664ce8ab829ea126cb7ee48b5"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-shanmen/cameras.json",
+      "bytes": 1818,
+      "sha256": "471e1abf9708ebb0367085f205157b09d358511a13453f71d3e1cfcd027681ba"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-shanmen/collision-world.json",
+      "bytes": 15381,
+      "sha256": "fab9886160336fee16eefb217718e6ae22635ad84bcc4b91d8bd5339f7813942"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-shanmen/ground.cm.glb",
+      "bytes": 820952,
+      "sha256": "f99396c2bc95f55fa5dc8718e7b65edf4a75719d28ef1940545880e45e24c315"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-shanmen/ground.glb",
+      "bytes": 860916,
+      "sha256": "0acf56376883f3faf823c52f8cf8478bf8d731c31606ed22e7eeadc0f7e0879d"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-shanmen/lions.cm.glb",
+      "bytes": 46532,
+      "sha256": "962c0edc9a8afeb8537cd8469661e35aea2b17aa20ca8a9778ede226f90d3fb9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-shanmen/lions.glb",
+      "bytes": 440156,
+      "sha256": "eed2009cca69b5f08a287b4c034f270d817cf1d1bd1ba6859993bcc912278c06"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-shanmen/ornaments.cm.glb",
+      "bytes": 184656,
+      "sha256": "b71943269dcca3fcd049e8fdfeca0c66695a1a077695eec82974cfedc32f8d0e"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-shanmen/ornaments.glb",
+      "bytes": 437144,
+      "sha256": "feec279340911ce646a96b203c2febaa5a812d10035d9493f06868f73302a8f9"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-shanmen/perf-notes.json",
+      "bytes": 2190,
+      "sha256": "4f51844f6dee36179f1b7175a04c0b011e2a5a4a31bb24f539bef6d4bca97890"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-shanmen/review-manifest.json",
+      "bytes": 2918,
+      "sha256": "9c6aae3584a142860eac7bed41bd8579429e217fa0a776ab1cff84bd6ba00d31"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-shanmen/roof-surface-samples.json",
+      "bytes": 6218,
+      "sha256": "994a784966772b97a5b273508dca5199c59845af9ab61eec9f41236765f48041"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-shanmen/temple.cm.glb",
+      "bytes": 1371936,
+      "sha256": "f9cfa6d4fad6afbab460c1f22cb5f68ca0434545a1be22c0c46dd5eba3b02924"
+    },
+    {
+      "path": "artifacts/world-closeout/package/site/world/temple-shanmen/temple.glb",
+      "bytes": 3782256,
+      "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb"
+    }
+  ]
+}

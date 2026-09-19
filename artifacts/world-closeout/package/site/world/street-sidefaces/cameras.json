@@ -1,0 +1,1209 @@
+{
+  "framebuffer": [
+    1280,
+    960
+  ],
+  "cameraPolicy": "M-batch poses verbatim + A-batch evidence views (street-side elevated)",
+  "cameras": [
+    {
+      "id": "skin-gable-skin-n01-west-0",
+      "positionGlb": [
+        -8.59,
+        2.4,
+        -6.471
+      ],
+      "targetGlb": [
+        -2.88,
+        2.6,
+        -8.316
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 6,
+      "tangentPullM": 0,
+      "labelZh": "侧背面外皮取证 · gable-skin-n01-west（N01-plain-v1-left-side）",
+      "skinCollider": "gableskin:N01-plain-v1-left-side"
+    },
+    {
+      "id": "skin-gable-skin-lane-a-w-0",
+      "positionGlb": [
+        44.474,
+        2.4,
+        -8.13
+      ],
+      "targetGlb": [
+        42.378,
+        2.6,
+        -13.312
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 2.5,
+      "tangentPullM": 5,
+      "labelZh": "侧背面外皮取证 · gable-skin-lane-a-w（N05-restaurant-a-right-side）",
+      "skinCollider": "gableskin:N05-restaurant-a-right-side"
+    },
+    {
+      "id": "skin-gable-skin-lane-a-w-1",
+      "positionGlb": [
+        39.792,
+        2.4,
+        -23.128
+      ],
+      "targetGlb": [
+        39.317,
+        2.6,
+        -17.147
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 6,
+      "tangentPullM": 0,
+      "labelZh": "侧背面外皮取证 · gable-skin-lane-a-w（N05-restaurant-a-back-wall）",
+      "skinCollider": "gableskin:N05-restaurant-a-back-wall"
+    },
+    {
+      "id": "skin-gable-skin-lane-a-e-0",
+      "positionGlb": [
+        40.563,
+        2.4,
+        -7.815
+      ],
+      "targetGlb": [
+        44.357,
+        2.6,
+        -12.244
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 3,
+      "tangentPullM": 5,
+      "labelZh": "侧背面外皮取证 · gable-skin-lane-a-e（N06-curio-a-left-side）",
+      "skinCollider": "gableskin:N06-curio-a-left-side"
+    },
+    {
+      "id": "skin-gable-skin-lane-a-e-1",
+      "positionGlb": [
+        49.115,
+        2.4,
+        -20.241
+      ],
+      "targetGlb": [
+        48.112,
+        2.6,
+        -14.325
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 6,
+      "tangentPullM": 0,
+      "labelZh": "侧背面外皮取证 · gable-skin-lane-a-e（N06-curio-a-back-wall）",
+      "skinCollider": "gableskin:N06-curio-a-back-wall"
+    },
+    {
+      "id": "skin-gable-skin-lane-b-w-0",
+      "positionGlb": [
+        57.779,
+        2.4,
+        16.288
+      ],
+      "targetGlb": [
+        58.323,
+        2.6,
+        10.93
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 2,
+      "tangentPullM": 5,
+      "labelZh": "侧背面外皮取证 · gable-skin-lane-b-w（S05-plain-v3-left-side）",
+      "skinCollider": "gableskin:S05-plain-v3-left-side"
+    },
+    {
+      "id": "skin-gable-skin-lane-b-w-1",
+      "positionGlb": [
+        51.051,
+        2.4,
+        17.6
+      ],
+      "targetGlb": [
+        53.83,
+        2.6,
+        12.283
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 6,
+      "tangentPullM": 0,
+      "labelZh": "侧背面外皮取证 · gable-skin-lane-b-w（S05-plain-v3-back-wall）",
+      "skinCollider": "gableskin:S05-plain-v3-back-wall"
+    },
+    {
+      "id": "skin-gable-skin-lane-b-e-0",
+      "positionGlb": [
+        55.445,
+        2.4,
+        15.026
+      ],
+      "targetGlb": [
+        59.708,
+        2.6,
+        11.735
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 2,
+      "tangentPullM": 5,
+      "labelZh": "侧背面外皮取证 · gable-skin-lane-b-e（S07-plain-v2-right-side）",
+      "skinCollider": "gableskin:S07-plain-v2-right-side"
+    },
+    {
+      "id": "skin-gable-skin-lane-b-e-1",
+      "positionGlb": [
+        57.883,
+        2.4,
+        21.433
+      ],
+      "targetGlb": [
+        60.931,
+        2.6,
+        16.265
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 6,
+      "tangentPullM": 0,
+      "labelZh": "侧背面外皮取证 · gable-skin-lane-b-e（S07-plain-v2-back-wall）",
+      "skinCollider": "gableskin:S07-plain-v2-back-wall"
+    },
+    {
+      "id": "skin-gable-skin-east-133-0",
+      "positionGlb": [
+        130.159,
+        2.4,
+        38.153
+      ],
+      "targetGlb": [
+        124.316,
+        2.6,
+        36.788
+      ],
+      "verticalFovDegrees": 55,
+      "calibratedDistanceM": 6,
+      "tangentPullM": 0,
+      "labelZh": "侧背面外皮取证 · gable-skin-east-133（east-shop-133-gable-wall-east-b0s0）",
+      "skinCollider": "gableskin:east-shop-133-gable-wall-east-b0s0"
+    },
+    {
+      "id": "full-west-road-mid-S02-photo_shop-side-w",
+      "positionGlb": [
+        36.176,
+        6.5,
+        20.908
+      ],
+      "targetGlb": [
+        32.56440429874924,
+        2.6,
+        2.9176932809946985
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · S02-photo_shop side-w（west-road-mid）",
+      "skinCollider": "gableskin:S02-photo_shop:left-side-wall",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-aerial-overview-N02-pharmacy_shop-side-w",
+      "positionGlb": [
+        11.677,
+        6.5,
+        -10.174
+      ],
+      "targetGlb": [
+        9.128559754629375,
+        2.6,
+        -12.307141706252352
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N02-pharmacy_shop side-w（aerial-overview）",
+      "skinCollider": "gableskin:N02-pharmacy_shop:left-side",
+      "evidenceView": "aerial-overview"
+    },
+    {
+      "id": "full-west-road-mid-N03-cloth_shop-rear",
+      "positionGlb": [
+        24.005,
+        6.5,
+        -15.199
+      ],
+      "targetGlb": [
+        20.584209102808863,
+        2.6,
+        -17.219795549606026
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N03-cloth_shop rear（west-road-mid）",
+      "skinCollider": "gableskin:N03-cloth_shop:back-wall",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-placeholder-band-N08-plain-v2-side-w",
+      "positionGlb": [
+        66.267,
+        6.5,
+        -5.963
+      ],
+      "targetGlb": [
+        58.4789458089153,
+        2.6,
+        -8.916290042209091
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N08-plain-v2 side-w（placeholder-band）",
+      "skinCollider": "gableskin:N08-plain-v2:left-side",
+      "evidenceView": "placeholder-band"
+    },
+    {
+      "id": "full-aerial-overview-S04-restaurant-b-rear",
+      "positionGlb": [
+        47.246,
+        6.5,
+        26.585
+      ],
+      "targetGlb": [
+        45.22468236105725,
+        2.6,
+        8.833597109410384
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · S04-restaurant-b rear（aerial-overview）",
+      "skinCollider": "gableskin:S04-restaurant-b:back-wall",
+      "evidenceView": "aerial-overview"
+    },
+    {
+      "id": "full-west-road-mid-N10-plain-v3-side-e",
+      "positionGlb": [
+        90.471,
+        6.5,
+        7.899
+      ],
+      "targetGlb": [
+        82.3370703243948,
+        2.6,
+        4.7476284013888845
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N10-plain-v3 side-e（west-road-mid）",
+      "skinCollider": "gableskin:N10-plain-v3:right-side",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-west-road-mid-S02-photo_shop-side-w",
+      "positionGlb": [
+        36.176,
+        6.5,
+        20.908
+      ],
+      "targetGlb": [
+        32.56440429874924,
+        2.6,
+        2.9176932809946985
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · S02-photo_shop side-w（west-road-mid）",
+      "skinCollider": "gableskin:S02-photo_shop:left-side-wall",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-aerial-overview-N02-pharmacy_shop-side-w",
+      "positionGlb": [
+        11.677,
+        6.5,
+        -10.174
+      ],
+      "targetGlb": [
+        9.128559754629375,
+        2.6,
+        -12.307141706252352
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N02-pharmacy_shop side-w（aerial-overview）",
+      "skinCollider": "gableskin:N02-pharmacy_shop:left-side",
+      "evidenceView": "aerial-overview"
+    },
+    {
+      "id": "full-west-road-mid-N03-cloth_shop-rear",
+      "positionGlb": [
+        24.005,
+        6.5,
+        -15.199
+      ],
+      "targetGlb": [
+        20.584209102808863,
+        2.6,
+        -17.219795549606026
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N03-cloth_shop rear（west-road-mid）",
+      "skinCollider": "gableskin:N03-cloth_shop:back-wall",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-placeholder-band-N08-plain-v2-side-w",
+      "positionGlb": [
+        66.267,
+        6.5,
+        -5.963
+      ],
+      "targetGlb": [
+        58.4789458089153,
+        2.6,
+        -8.916290042209091
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N08-plain-v2 side-w（placeholder-band）",
+      "skinCollider": "gableskin:N08-plain-v2:left-side",
+      "evidenceView": "placeholder-band"
+    },
+    {
+      "id": "full-aerial-overview-S04-restaurant-b-rear",
+      "positionGlb": [
+        47.246,
+        6.5,
+        26.585
+      ],
+      "targetGlb": [
+        45.22468236105725,
+        2.6,
+        8.833597109410384
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · S04-restaurant-b rear（aerial-overview）",
+      "skinCollider": "gableskin:S04-restaurant-b:back-wall",
+      "evidenceView": "aerial-overview"
+    },
+    {
+      "id": "full-west-road-mid-N10-plain-v3-side-e",
+      "positionGlb": [
+        90.471,
+        6.5,
+        7.899
+      ],
+      "targetGlb": [
+        82.3370703243948,
+        2.6,
+        4.7476284013888845
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N10-plain-v3 side-e（west-road-mid）",
+      "skinCollider": "gableskin:N10-plain-v3:right-side",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-west-road-mid-S02-photo_shop-side-w",
+      "positionGlb": [
+        36.176,
+        6.5,
+        20.908
+      ],
+      "targetGlb": [
+        32.56440429874924,
+        2.6,
+        2.9176932809946985
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · S02-photo_shop side-w（west-road-mid）",
+      "skinCollider": "gableskin:S02-photo_shop:left-side-wall",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-aerial-overview-N02-pharmacy_shop-side-w",
+      "positionGlb": [
+        11.677,
+        6.5,
+        -10.174
+      ],
+      "targetGlb": [
+        9.128559754629375,
+        2.6,
+        -12.307141706252352
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N02-pharmacy_shop side-w（aerial-overview）",
+      "skinCollider": "gableskin:N02-pharmacy_shop:left-side",
+      "evidenceView": "aerial-overview"
+    },
+    {
+      "id": "full-west-road-mid-N03-cloth_shop-rear",
+      "positionGlb": [
+        24.005,
+        6.5,
+        -15.199
+      ],
+      "targetGlb": [
+        20.584209102808863,
+        2.6,
+        -17.219795549606026
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N03-cloth_shop rear（west-road-mid）",
+      "skinCollider": "gableskin:N03-cloth_shop:back-wall",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-placeholder-band-N08-plain-v2-side-w",
+      "positionGlb": [
+        66.267,
+        6.5,
+        -5.963
+      ],
+      "targetGlb": [
+        58.4789458089153,
+        2.6,
+        -8.916290042209091
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N08-plain-v2 side-w（placeholder-band）",
+      "skinCollider": "gableskin:N08-plain-v2:left-side",
+      "evidenceView": "placeholder-band"
+    },
+    {
+      "id": "full-aerial-overview-S04-restaurant-b-rear",
+      "positionGlb": [
+        47.246,
+        6.5,
+        26.585
+      ],
+      "targetGlb": [
+        45.22468236105725,
+        2.6,
+        8.833597109410384
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · S04-restaurant-b rear（aerial-overview）",
+      "skinCollider": "gableskin:S04-restaurant-b:back-wall",
+      "evidenceView": "aerial-overview"
+    },
+    {
+      "id": "full-west-road-mid-N10-plain-v3-side-e",
+      "positionGlb": [
+        90.471,
+        6.5,
+        7.899
+      ],
+      "targetGlb": [
+        82.3370703243948,
+        2.6,
+        4.7476284013888845
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N10-plain-v3 side-e（west-road-mid）",
+      "skinCollider": "gableskin:N10-plain-v3:right-side",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-west-road-mid-S02-photo_shop-side-w",
+      "positionGlb": [
+        36.176,
+        6.5,
+        20.908
+      ],
+      "targetGlb": [
+        32.56440429874924,
+        2.6,
+        2.9176932809946985
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · S02-photo_shop side-w（west-road-mid）",
+      "skinCollider": "gableskin:S02-photo_shop:left-side-wall",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-aerial-overview-N02-pharmacy_shop-side-w",
+      "positionGlb": [
+        11.677,
+        6.5,
+        -10.174
+      ],
+      "targetGlb": [
+        9.128559754629375,
+        2.6,
+        -12.307141706252352
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N02-pharmacy_shop side-w（aerial-overview）",
+      "skinCollider": "gableskin:N02-pharmacy_shop:left-side",
+      "evidenceView": "aerial-overview"
+    },
+    {
+      "id": "full-west-road-mid-N03-cloth_shop-rear",
+      "positionGlb": [
+        24.005,
+        6.5,
+        -15.199
+      ],
+      "targetGlb": [
+        20.584209102808863,
+        2.6,
+        -17.219795549606026
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N03-cloth_shop rear（west-road-mid）",
+      "skinCollider": "gableskin:N03-cloth_shop:back-wall",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-placeholder-band-N08-plain-v2-side-w",
+      "positionGlb": [
+        66.267,
+        6.5,
+        -5.963
+      ],
+      "targetGlb": [
+        58.4789458089153,
+        2.6,
+        -8.916290042209091
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N08-plain-v2 side-w（placeholder-band）",
+      "skinCollider": "gableskin:N08-plain-v2:left-side",
+      "evidenceView": "placeholder-band"
+    },
+    {
+      "id": "full-aerial-overview-S04-restaurant-b-rear",
+      "positionGlb": [
+        47.246,
+        6.5,
+        26.585
+      ],
+      "targetGlb": [
+        45.22468236105725,
+        2.6,
+        8.833597109410384
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · S04-restaurant-b rear（aerial-overview）",
+      "skinCollider": "gableskin:S04-restaurant-b:back-wall",
+      "evidenceView": "aerial-overview"
+    },
+    {
+      "id": "full-west-road-mid-N10-plain-v3-side-e",
+      "positionGlb": [
+        90.471,
+        6.5,
+        7.899
+      ],
+      "targetGlb": [
+        82.3370703243948,
+        2.6,
+        4.7476284013888845
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N10-plain-v3 side-e（west-road-mid）",
+      "skinCollider": "gableskin:N10-plain-v3:right-side",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-west-road-mid-S02-photo_shop-side-w",
+      "positionGlb": [
+        36.176,
+        6.5,
+        20.908
+      ],
+      "targetGlb": [
+        32.56440429874924,
+        2.6,
+        2.9176932809946985
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · S02-photo_shop side-w（west-road-mid）",
+      "skinCollider": "gableskin:S02-photo_shop:left-side-wall",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-aerial-overview-N02-pharmacy_shop-side-w",
+      "positionGlb": [
+        11.677,
+        6.5,
+        -10.174
+      ],
+      "targetGlb": [
+        9.128559754629375,
+        2.6,
+        -12.307141706252352
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N02-pharmacy_shop side-w（aerial-overview）",
+      "skinCollider": "gableskin:N02-pharmacy_shop:left-side",
+      "evidenceView": "aerial-overview"
+    },
+    {
+      "id": "full-west-road-mid-N03-cloth_shop-rear",
+      "positionGlb": [
+        24.005,
+        6.5,
+        -15.199
+      ],
+      "targetGlb": [
+        20.584209102808863,
+        2.6,
+        -17.219795549606026
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N03-cloth_shop rear（west-road-mid）",
+      "skinCollider": "gableskin:N03-cloth_shop:back-wall",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-placeholder-band-N08-plain-v2-side-w",
+      "positionGlb": [
+        66.267,
+        6.5,
+        -5.963
+      ],
+      "targetGlb": [
+        58.4789458089153,
+        2.6,
+        -8.916290042209091
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N08-plain-v2 side-w（placeholder-band）",
+      "skinCollider": "gableskin:N08-plain-v2:left-side",
+      "evidenceView": "placeholder-band"
+    },
+    {
+      "id": "full-aerial-overview-S04-restaurant-b-rear",
+      "positionGlb": [
+        47.246,
+        6.5,
+        26.585
+      ],
+      "targetGlb": [
+        45.22468236105725,
+        2.6,
+        8.833597109410384
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · S04-restaurant-b rear（aerial-overview）",
+      "skinCollider": "gableskin:S04-restaurant-b:back-wall",
+      "evidenceView": "aerial-overview"
+    },
+    {
+      "id": "full-west-road-mid-N10-plain-v3-side-e",
+      "positionGlb": [
+        90.471,
+        6.5,
+        7.899
+      ],
+      "targetGlb": [
+        82.3370703243948,
+        2.6,
+        4.7476284013888845
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N10-plain-v3 side-e（west-road-mid）",
+      "skinCollider": "gableskin:N10-plain-v3:right-side",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-west-road-mid-S02-photo_shop-side-w",
+      "positionGlb": [
+        36.176,
+        6.5,
+        20.908
+      ],
+      "targetGlb": [
+        32.56440429874924,
+        2.6,
+        2.9176932809946985
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · S02-photo_shop side-w（west-road-mid）",
+      "skinCollider": "gableskin:S02-photo_shop:left-side-wall",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-aerial-overview-N02-pharmacy_shop-side-w",
+      "positionGlb": [
+        11.677,
+        6.5,
+        -10.174
+      ],
+      "targetGlb": [
+        9.128559754629375,
+        2.6,
+        -12.307141706252352
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N02-pharmacy_shop side-w（aerial-overview）",
+      "skinCollider": "gableskin:N02-pharmacy_shop:left-side",
+      "evidenceView": "aerial-overview"
+    },
+    {
+      "id": "full-west-road-mid-N03-cloth_shop-rear",
+      "positionGlb": [
+        24.005,
+        6.5,
+        -15.199
+      ],
+      "targetGlb": [
+        20.584209102808863,
+        2.6,
+        -17.219795549606026
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N03-cloth_shop rear（west-road-mid）",
+      "skinCollider": "gableskin:N03-cloth_shop:back-wall",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-placeholder-band-N08-plain-v2-side-w",
+      "positionGlb": [
+        66.267,
+        6.5,
+        -5.963
+      ],
+      "targetGlb": [
+        58.4789458089153,
+        2.6,
+        -8.916290042209091
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N08-plain-v2 side-w（placeholder-band）",
+      "skinCollider": "gableskin:N08-plain-v2:left-side",
+      "evidenceView": "placeholder-band"
+    },
+    {
+      "id": "full-aerial-overview-S04-restaurant-b-rear",
+      "positionGlb": [
+        47.246,
+        6.5,
+        26.585
+      ],
+      "targetGlb": [
+        45.22468236105725,
+        2.6,
+        8.833597109410384
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · S04-restaurant-b rear（aerial-overview）",
+      "skinCollider": "gableskin:S04-restaurant-b:back-wall",
+      "evidenceView": "aerial-overview"
+    },
+    {
+      "id": "full-west-road-mid-N10-plain-v3-side-e",
+      "positionGlb": [
+        90.471,
+        6.5,
+        7.899
+      ],
+      "targetGlb": [
+        82.3370703243948,
+        2.6,
+        4.7476284013888845
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N10-plain-v3 side-e（west-road-mid）",
+      "skinCollider": "gableskin:N10-plain-v3:right-side",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-west-road-mid-S02-photo_shop-side-w",
+      "positionGlb": [
+        36.176,
+        6.5,
+        20.908
+      ],
+      "targetGlb": [
+        32.56440429874924,
+        2.6,
+        2.9176932809946985
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · S02-photo_shop side-w（west-road-mid）",
+      "skinCollider": "gableskin:S02-photo_shop:left-side-wall",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-aerial-overview-N02-pharmacy_shop-side-w",
+      "positionGlb": [
+        11.677,
+        6.5,
+        -10.174
+      ],
+      "targetGlb": [
+        9.128559754629375,
+        2.6,
+        -12.307141706252352
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N02-pharmacy_shop side-w（aerial-overview）",
+      "skinCollider": "gableskin:N02-pharmacy_shop:left-side",
+      "evidenceView": "aerial-overview"
+    },
+    {
+      "id": "full-west-road-mid-N03-cloth_shop-rear",
+      "positionGlb": [
+        24.005,
+        6.5,
+        -15.199
+      ],
+      "targetGlb": [
+        20.584209102808863,
+        2.6,
+        -17.219795549606026
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N03-cloth_shop rear（west-road-mid）",
+      "skinCollider": "gableskin:N03-cloth_shop:back-wall",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-placeholder-band-N08-plain-v2-side-w",
+      "positionGlb": [
+        66.267,
+        6.5,
+        -5.963
+      ],
+      "targetGlb": [
+        58.4789458089153,
+        2.6,
+        -8.916290042209091
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N08-plain-v2 side-w（placeholder-band）",
+      "skinCollider": "gableskin:N08-plain-v2:left-side",
+      "evidenceView": "placeholder-band"
+    },
+    {
+      "id": "full-aerial-overview-S04-restaurant-b-rear",
+      "positionGlb": [
+        47.246,
+        6.5,
+        26.585
+      ],
+      "targetGlb": [
+        45.22468236105725,
+        2.6,
+        8.833597109410384
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · S04-restaurant-b rear（aerial-overview）",
+      "skinCollider": "gableskin:S04-restaurant-b:back-wall",
+      "evidenceView": "aerial-overview"
+    },
+    {
+      "id": "full-west-road-mid-N10-plain-v3-side-e",
+      "positionGlb": [
+        90.471,
+        6.5,
+        7.899
+      ],
+      "targetGlb": [
+        82.3370703243948,
+        2.6,
+        4.7476284013888845
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N10-plain-v3 side-e（west-road-mid）",
+      "skinCollider": "gableskin:N10-plain-v3:right-side",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-west-road-mid-S02-photo_shop-side-w",
+      "positionGlb": [
+        36.176,
+        6.5,
+        20.908
+      ],
+      "targetGlb": [
+        32.56440429874924,
+        2.6,
+        2.9176932809946985
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · S02-photo_shop side-w（west-road-mid）",
+      "skinCollider": "gableskin:S02-photo_shop:left-side-wall",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-aerial-overview-N02-pharmacy_shop-side-w",
+      "positionGlb": [
+        11.677,
+        6.5,
+        -10.174
+      ],
+      "targetGlb": [
+        9.128559754629375,
+        2.6,
+        -12.307141706252352
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N02-pharmacy_shop side-w（aerial-overview）",
+      "skinCollider": "gableskin:N02-pharmacy_shop:left-side",
+      "evidenceView": "aerial-overview"
+    },
+    {
+      "id": "full-west-road-mid-N03-cloth_shop-rear",
+      "positionGlb": [
+        24.005,
+        6.5,
+        -15.199
+      ],
+      "targetGlb": [
+        20.584209102808863,
+        2.6,
+        -17.219795549606026
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N03-cloth_shop rear（west-road-mid）",
+      "skinCollider": "gableskin:N03-cloth_shop:back-wall",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-placeholder-band-N08-plain-v2-side-w",
+      "positionGlb": [
+        66.267,
+        6.5,
+        -5.963
+      ],
+      "targetGlb": [
+        58.4789458089153,
+        2.6,
+        -8.916290042209091
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N08-plain-v2 side-w（placeholder-band）",
+      "skinCollider": "gableskin:N08-plain-v2:left-side",
+      "evidenceView": "placeholder-band"
+    },
+    {
+      "id": "full-aerial-overview-S04-restaurant-b-rear",
+      "positionGlb": [
+        47.246,
+        6.5,
+        26.585
+      ],
+      "targetGlb": [
+        45.22468236105725,
+        2.6,
+        8.833597109410384
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · S04-restaurant-b rear（aerial-overview）",
+      "skinCollider": "gableskin:S04-restaurant-b:back-wall",
+      "evidenceView": "aerial-overview"
+    },
+    {
+      "id": "full-west-road-mid-N10-plain-v3-side-e",
+      "positionGlb": [
+        90.471,
+        6.5,
+        7.899
+      ],
+      "targetGlb": [
+        82.3370703243948,
+        2.6,
+        4.7476284013888845
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N10-plain-v3 side-e（west-road-mid）",
+      "skinCollider": "gableskin:N10-plain-v3:right-side",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-aerial-overview-N02-pharmacy_shop-side-w",
+      "positionGlb": [
+        11.677,
+        6.5,
+        -10.174
+      ],
+      "targetGlb": [
+        9.128559754629375,
+        2.6,
+        -12.307141706252352
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N02-pharmacy_shop side-w（aerial-overview）",
+      "skinCollider": "gableskin:N02-pharmacy_shop:left-side",
+      "evidenceView": "aerial-overview"
+    },
+    {
+      "id": "full-west-road-mid-N03-cloth_shop-rear",
+      "positionGlb": [
+        24.005,
+        6.5,
+        -15.199
+      ],
+      "targetGlb": [
+        20.584209102808863,
+        2.6,
+        -17.219795549606026
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N03-cloth_shop rear（west-road-mid）",
+      "skinCollider": "gableskin:N03-cloth_shop:back-wall",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-placeholder-band-N08-plain-v2-side-w",
+      "positionGlb": [
+        66.267,
+        6.5,
+        -5.963
+      ],
+      "targetGlb": [
+        58.4789458089153,
+        2.6,
+        -8.916290042209091
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N08-plain-v2 side-w（placeholder-band）",
+      "skinCollider": "gableskin:N08-plain-v2:left-side",
+      "evidenceView": "placeholder-band"
+    },
+    {
+      "id": "full-west-road-mid-N10-plain-v3-side-e",
+      "positionGlb": [
+        90.471,
+        6.5,
+        7.899
+      ],
+      "targetGlb": [
+        82.3370703243948,
+        2.6,
+        4.7476284013888845
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N10-plain-v3 side-e（west-road-mid）",
+      "skinCollider": "gableskin:N10-plain-v3:right-side",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-aerial-overview-N02-pharmacy_shop-side-w",
+      "positionGlb": [
+        11.677,
+        6.5,
+        -10.174
+      ],
+      "targetGlb": [
+        9.128559754629375,
+        2.6,
+        -12.307141706252352
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N02-pharmacy_shop side-w（aerial-overview）",
+      "skinCollider": "gableskin:N02-pharmacy_shop:left-side",
+      "evidenceView": "aerial-overview"
+    },
+    {
+      "id": "full-west-road-mid-N03-cloth_shop-rear",
+      "positionGlb": [
+        24.005,
+        6.5,
+        -15.199
+      ],
+      "targetGlb": [
+        20.584209102808863,
+        2.6,
+        -17.219795549606026
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N03-cloth_shop rear（west-road-mid）",
+      "skinCollider": "gableskin:N03-cloth_shop:back-wall",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-placeholder-band-N08-plain-v2-side-w",
+      "positionGlb": [
+        66.267,
+        6.5,
+        -5.963
+      ],
+      "targetGlb": [
+        58.4789458089153,
+        2.6,
+        -8.916290042209091
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N08-plain-v2 side-w（placeholder-band）",
+      "skinCollider": "gableskin:N08-plain-v2:left-side",
+      "evidenceView": "placeholder-band"
+    },
+    {
+      "id": "full-west-road-mid-N10-plain-v3-side-e",
+      "positionGlb": [
+        90.471,
+        6.5,
+        7.899
+      ],
+      "targetGlb": [
+        82.3370703243948,
+        2.6,
+        4.7476284013888845
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N10-plain-v3 side-e（west-road-mid）",
+      "skinCollider": "gableskin:N10-plain-v3:right-side",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-aerial-overview-N02-pharmacy_shop-side-w",
+      "positionGlb": [
+        11.677,
+        6.5,
+        -10.174
+      ],
+      "targetGlb": [
+        9.128559754629375,
+        2.6,
+        -12.307141706252352
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N02-pharmacy_shop side-w（aerial-overview）",
+      "skinCollider": "gableskin:N02-pharmacy_shop:left-side",
+      "evidenceView": "aerial-overview"
+    },
+    {
+      "id": "full-west-road-mid-N03-cloth_shop-rear",
+      "positionGlb": [
+        24.005,
+        6.5,
+        -15.199
+      ],
+      "targetGlb": [
+        20.584209102808863,
+        2.6,
+        -17.219795549606026
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N03-cloth_shop rear（west-road-mid）",
+      "skinCollider": "gableskin:N03-cloth_shop:back-wall",
+      "evidenceView": "west-road-mid"
+    },
+    {
+      "id": "full-placeholder-band-N08-plain-v2-side-w",
+      "positionGlb": [
+        66.267,
+        6.5,
+        -5.963
+      ],
+      "targetGlb": [
+        58.4789458089153,
+        2.6,
+        -8.916290042209091
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N08-plain-v2 side-w（placeholder-band）",
+      "skinCollider": "gableskin:N08-plain-v2:left-side",
+      "evidenceView": "placeholder-band"
+    },
+    {
+      "id": "full-west-road-mid-N10-plain-v3-side-e",
+      "positionGlb": [
+        90.471,
+        6.5,
+        7.899
+      ],
+      "targetGlb": [
+        82.3370703243948,
+        2.6,
+        4.7476284013888845
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "全量外皮取证 · N10-plain-v3 side-e（west-road-mid）",
+      "skinCollider": "gableskin:N10-plain-v3:right-side",
+      "evidenceView": "west-road-mid"
+    }
+  ]
+}

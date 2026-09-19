@@ -1,0 +1,199 @@
+{
+  "axis": "glTF Y-up X-east Z-south",
+  "resolution": [
+    1280,
+    720
+  ],
+  "sourceGlbSha256": "95d1cdd31eb61406c7a8b832548db515509184b8ddfe0a448c7fa0165d1aa111",
+  "reviewedWorldGlb": "street-reviewed.glb",
+  "roadWindingCorrected": true,
+  "cameras": [
+    {
+      "id": "full-west",
+      "positionGlb": [
+        -18,
+        34,
+        34
+      ],
+      "targetGlb": [
+        28,
+        0,
+        -2
+      ],
+      "lensMm": 35,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "full-east",
+      "positionGlb": [
+        108,
+        30,
+        40
+      ],
+      "targetGlb": [
+        52,
+        0,
+        6
+      ],
+      "lensMm": 38,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "eye-west",
+      "positionGlb": [
+        2.5,
+        1.6,
+        0.2
+      ],
+      "targetGlb": [
+        50,
+        1.6,
+        2.5
+      ],
+      "lensMm": 32,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "eye-east",
+      "positionGlb": [
+        80,
+        1.6,
+        13.0
+      ],
+      "targetGlb": [
+        26,
+        1.6,
+        -1.0
+      ],
+      "lensMm": 32,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "across",
+      "positionGlb": [
+        27,
+        2.0,
+        1.0
+      ],
+      "targetGlb": [
+        28,
+        3.2,
+        -6.0
+      ],
+      "lensMm": 35,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "corner",
+      "positionGlb": [
+        26.0,
+        3.0,
+        7.0
+      ],
+      "targetGlb": [
+        7.0,
+        2.2,
+        0.0
+      ],
+      "lensMm": 30,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "lane",
+      "positionGlb": [
+        61.6,
+        1.9,
+        6.4
+      ],
+      "targetGlb": [
+        59.9,
+        1.4,
+        11.6
+      ],
+      "lensMm": 30,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "module-near",
+      "positionGlb": [
+        63.0,
+        2.0,
+        -1.0
+      ],
+      "targetGlb": [
+        49.0,
+        2.8,
+        -5.0
+      ],
+      "lensMm": 30,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "catwall",
+      "positionGlb": [
+        62.5,
+        2.2,
+        6.5
+      ],
+      "targetGlb": [
+        56.5,
+        3.4,
+        -5.4
+      ],
+      "lensMm": 40,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "plaza",
+      "positionGlb": [
+        17.0,
+        3.4,
+        -4.0
+      ],
+      "targetGlb": [
+        27.0,
+        1.5,
+        6.5
+      ],
+      "lensMm": 30,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    },
+    {
+      "id": "corner-close",
+      "positionGlb": [
+        18.5,
+        1.7,
+        7.6
+      ],
+      "targetGlb": [
+        11.4,
+        1.5,
+        7.6
+      ],
+      "lensMm": 50,
+      "sensorWidthMm": 36,
+      "sensorFit": "HORIZONTAL",
+      "source": "delivered render_segment.py VIEWS"
+    }
+  ]
+}

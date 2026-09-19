@@ -1,0 +1,20 @@
+{
+  "moduleId": "photo_shop",
+  "source": "copied unchanged from inputs/neighbors (Luna repair pilot); design values from inputs/neighbors/RESULT.json",
+  "sourceSha256": "5d885af6eb8b76ef1147a06499eed100da32593e149cd3dd6bf434d2acd84f76",
+  "triangles": 19844,
+  "meshes": 12,
+  "fileBytes": 4105324,
+  "sha256": "5d885af6eb8b76ef1147a06499eed100da32593e149cd3dd6bf434d2acd84f76",
+  "design": {
+    "frontageM": 5.6,
+    "depthM": 4.3,
+    "eaveM": 6.4,
+    "ridgeM": 7.35,
+    "eaveMarginM": 0.4,
+    "frontProtrusionM": 1.62,
+    "family": "photo shop"
+  },
+  "units": "meters",
+  "surveyed": false
+}

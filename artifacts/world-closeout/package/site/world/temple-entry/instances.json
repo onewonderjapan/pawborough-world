@@ -1,0 +1,38 @@
+{
+  "axis": "GLB Y-up; +Z south toward the street; shanmen threshold at (0,0,0); north = -Z",
+  "instances": [
+    {
+      "id": "shanmen",
+      "module": "temple-shanmen",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "note": "origin at the central threshold front edge"
+    },
+    {
+      "id": "yimen",
+      "module": "yimen-pilot",
+      "positionGlb": [
+        0,
+        0,
+        -21
+      ],
+      "rotationYRad": 0,
+      "note": "local facade z=0 maps to world z=-21; yaw 0 (same facing, +Z)"
+    },
+    {
+      "id": "entrycourt",
+      "module": "temple-entry-court",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "note": "authored in place (court interior x±8, z -3.6..-21)"
+    }
+  ]
+}

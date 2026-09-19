@@ -1,0 +1,247 @@
+{
+  "axis": "glTF Y-up, facade +Z, front-wall center bottom origin",
+  "colliders": [
+    {
+      "name": "left-side",
+      "group": "cloth-shop",
+      "center": [
+        -3.6599999999999997,
+        3.85,
+        -3.35
+      ],
+      "size": [
+        0.28,
+        7.7,
+        6.7
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "right-side",
+      "group": "cloth-shop",
+      "center": [
+        3.6599999999999997,
+        3.85,
+        -3.35
+      ],
+      "size": [
+        0.28,
+        7.7,
+        6.7
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "back-wall",
+      "group": "cloth-shop",
+      "center": [
+        0.0,
+        3.85,
+        -6.5600000000000005
+      ],
+      "size": [
+        7.05,
+        7.7,
+        0.28
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "shop-floor",
+      "group": "cloth-shop",
+      "center": [
+        0.0,
+        0.07,
+        -3.35
+      ],
+      "size": [
+        7.6,
+        0.14,
+        6.7
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "upper-floor",
+      "group": "cloth-shop",
+      "center": [
+        0.0,
+        3.6,
+        -3.35
+      ],
+      "size": [
+        7.039999999999999,
+        0.22,
+        6.15
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "rear-interior",
+      "group": "cloth-shop",
+      "center": [
+        0.0,
+        1.65,
+        -3.65
+      ],
+      "size": [
+        7.1,
+        3.15,
+        0.2
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "facade-post",
+      "group": "cloth-shop",
+      "center": [
+        -3.6399999999999997,
+        3.8,
+        0.09
+      ],
+      "size": [
+        0.2,
+        7.6,
+        0.24
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "stone-post-foot",
+      "group": "cloth-shop",
+      "center": [
+        -3.6399999999999997,
+        0.35,
+        0.09
+      ],
+      "size": [
+        0.34,
+        0.7,
+        0.35
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "facade-post",
+      "group": "cloth-shop",
+      "center": [
+        -1.2666666666666666,
+        3.8,
+        0.09
+      ],
+      "size": [
+        0.2,
+        7.6,
+        0.24
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "stone-post-foot",
+      "group": "cloth-shop",
+      "center": [
+        -1.2666666666666666,
+        0.35,
+        0.09
+      ],
+      "size": [
+        0.34,
+        0.7,
+        0.35
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "facade-post",
+      "group": "cloth-shop",
+      "center": [
+        1.2666666666666666,
+        3.8,
+        0.09
+      ],
+      "size": [
+        0.2,
+        7.6,
+        0.24
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "stone-post-foot",
+      "group": "cloth-shop",
+      "center": [
+        1.2666666666666666,
+        0.35,
+        0.09
+      ],
+      "size": [
+        0.34,
+        0.7,
+        0.35
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "facade-post",
+      "group": "cloth-shop",
+      "center": [
+        3.6399999999999997,
+        3.8,
+        0.09
+      ],
+      "size": [
+        0.2,
+        7.6,
+        0.24
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "stone-post-foot",
+      "group": "cloth-shop",
+      "center": [
+        3.6399999999999997,
+        0.35,
+        0.09
+      ],
+      "size": [
+        0.34,
+        0.7,
+        0.35
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "threshold",
+      "group": "cloth-shop",
+      "center": [
+        0.0,
+        0.12,
+        0.22
+      ],
+      "size": [
+        7.25,
+        0.24,
+        0.55
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    }
+  ],
+  "doors": "ground floor open bays into shallow display interior",
+  "notIntegratedOrWalkingTested": true
+}

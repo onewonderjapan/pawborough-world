@@ -1,0 +1,27 @@
+{
+  "moduleId": "restaurant-a",
+  "triangles": 9504,
+  "meshes": 13,
+  "fileBytes": 2146768,
+  "sha256": "40b5d2ded1554565739aa9041d35f1bd2fbc4d6dd50be9888e0336faf7300b7d",
+  "design": {
+    "family": "restaurant",
+    "variant": "a-main-hall",
+    "frontageM": 11.3,
+    "depthM": 7.0,
+    "eaveM": 7.9,
+    "ridgeM": 9.3,
+    "eaveMarginM": 0.4,
+    "frontProtrusionM": 0.5,
+    "distinctFromBaseline": [
+      "bay span ~3.7m vs ~2.5m",
+      "eave 7.9m vs 7.7/8.0 with balcony panel band",
+      "openfront dining fitout + lanterns"
+    ],
+    "source": "new module for fangbang-parallel-night-20260913, derived from baseline method"
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

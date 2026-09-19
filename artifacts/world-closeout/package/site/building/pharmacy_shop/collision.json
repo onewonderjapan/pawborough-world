@@ -1,0 +1,263 @@
+{
+  "axis": "glTF Y-up, facade +Z, front-wall center bottom origin",
+  "colliders": [
+    {
+      "name": "left-side",
+      "group": "pharmacy-shop",
+      "center": [
+        -3.76,
+        4.0,
+        -3.35
+      ],
+      "size": [
+        0.28,
+        8.0,
+        7.0
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "right-side",
+      "group": "pharmacy-shop",
+      "center": [
+        3.76,
+        4.0,
+        -3.35
+      ],
+      "size": [
+        0.28,
+        8.0,
+        7.0
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "back-wall",
+      "group": "pharmacy-shop",
+      "center": [
+        0.0,
+        4.0,
+        -6.71
+      ],
+      "size": [
+        7.25,
+        8.0,
+        0.28
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "shop-floor",
+      "group": "pharmacy-shop",
+      "center": [
+        0.0,
+        0.07,
+        -3.35
+      ],
+      "size": [
+        7.8,
+        0.14,
+        7.0
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "upper-floor",
+      "group": "pharmacy-shop",
+      "center": [
+        0.0,
+        3.6,
+        -3.35
+      ],
+      "size": [
+        7.24,
+        0.22,
+        6.45
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "rear-interior",
+      "group": "pharmacy-shop",
+      "center": [
+        0.0,
+        1.65,
+        -3.5
+      ],
+      "size": [
+        7.3,
+        3.15,
+        0.2
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "facade-post",
+      "group": "pharmacy-shop",
+      "center": [
+        -3.7399999999999998,
+        3.8,
+        0.24
+      ],
+      "size": [
+        0.2,
+        7.6,
+        0.24
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "stone-post-foot",
+      "group": "pharmacy-shop",
+      "center": [
+        -3.7399999999999998,
+        0.35,
+        0.24
+      ],
+      "size": [
+        0.34,
+        0.7,
+        0.35
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "facade-post",
+      "group": "pharmacy-shop",
+      "center": [
+        -1.3,
+        3.8,
+        0.24
+      ],
+      "size": [
+        0.2,
+        7.6,
+        0.24
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "stone-post-foot",
+      "group": "pharmacy-shop",
+      "center": [
+        -1.3,
+        0.35,
+        0.24
+      ],
+      "size": [
+        0.34,
+        0.7,
+        0.35
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "facade-post",
+      "group": "pharmacy-shop",
+      "center": [
+        1.3,
+        3.8,
+        0.24
+      ],
+      "size": [
+        0.2,
+        7.6,
+        0.24
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "stone-post-foot",
+      "group": "pharmacy-shop",
+      "center": [
+        1.3,
+        0.35,
+        0.24
+      ],
+      "size": [
+        0.34,
+        0.7,
+        0.35
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "facade-post",
+      "group": "pharmacy-shop",
+      "center": [
+        3.7399999999999998,
+        3.8,
+        0.24
+      ],
+      "size": [
+        0.2,
+        7.6,
+        0.24
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "stone-post-foot",
+      "group": "pharmacy-shop",
+      "center": [
+        3.7399999999999998,
+        0.35,
+        0.24
+      ],
+      "size": [
+        0.34,
+        0.7,
+        0.35
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "threshold",
+      "group": "pharmacy-shop",
+      "center": [
+        0.0,
+        0.12,
+        0.37
+      ],
+      "size": [
+        7.45,
+        0.24,
+        0.55
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "medicine-counter",
+      "group": "pharmacy-shop",
+      "center": [
+        0.0,
+        0.97,
+        -1.25
+      ],
+      "size": [
+        5.0,
+        1.75,
+        0.65
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    }
+  ],
+  "doors": "ground floor open bays into shallow display interior",
+  "notIntegratedOrWalkingTested": true
+}

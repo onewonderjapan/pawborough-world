@@ -1,0 +1,543 @@
+{
+  "axis": "glTF Y-up. M-batch skins: baked in world coords, identity placement. A-batch centered skins: geometry at box-local origin; positionGlb = world center of the record box (obbToWorld semantics), rotationYRad = module yaw.",
+  "instances": [
+    {
+      "id": "skin-N01-plain-v1-left-side",
+      "module": "sideface-N01-plain-v1-left-side",
+      "skin": "N01-plain-v1-left-side",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "batch": "M",
+      "bakedFrom": {
+        "module": "N01-plain-v1",
+        "placement": {
+          "positionGlb": [
+            3.8891,
+            0,
+            -7.1414
+          ],
+          "rotationYRad": 0.31264
+        }
+      }
+    },
+    {
+      "id": "skin-N05-restaurant-a-right-side",
+      "module": "sideface-N05-restaurant-a-right-side",
+      "skin": "N05-restaurant-a-right-side",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "batch": "M",
+      "bakedFrom": {
+        "module": "N05-restaurant-a",
+        "placement": {
+          "positionGlb": [
+            36.4005,
+            0,
+            -10.4263
+          ],
+          "rotationYRad": -0.07925
+        }
+      }
+    },
+    {
+      "id": "skin-N05-restaurant-a-back-wall",
+      "module": "sideface-N05-restaurant-a-back-wall",
+      "skin": "N05-restaurant-a-back-wall",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "batch": "M",
+      "bakedFrom": {
+        "module": "N05-restaurant-a",
+        "placement": {
+          "positionGlb": [
+            36.4005,
+            0,
+            -10.4263
+          ],
+          "rotationYRad": -0.07925
+        }
+      }
+    },
+    {
+      "id": "skin-N06-curio-a-left-side",
+      "module": "sideface-N06-curio-a-left-side",
+      "skin": "N06-curio-a-left-side",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "batch": "M",
+      "bakedFrom": {
+        "module": "N06-curio-a",
+        "placement": {
+          "positionGlb": [
+            47.0775,
+            0,
+            -9.2669
+          ],
+          "rotationYRad": -0.16793
+        }
+      }
+    },
+    {
+      "id": "skin-N06-curio-a-back-wall",
+      "module": "sideface-N06-curio-a-back-wall",
+      "skin": "N06-curio-a-back-wall",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "batch": "M",
+      "bakedFrom": {
+        "module": "N06-curio-a",
+        "placement": {
+          "positionGlb": [
+            47.0775,
+            0,
+            -9.2669
+          ],
+          "rotationYRad": -0.16793
+        }
+      }
+    },
+    {
+      "id": "skin-S05-plain-v3-left-side",
+      "module": "sideface-S05-plain-v3-left-side",
+      "skin": "S05-plain-v3-left-side",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "batch": "M",
+      "bakedFrom": {
+        "module": "S05-plain-v3",
+        "placement": {
+          "positionGlb": [
+            54.9927,
+            0,
+            5.5789
+          ],
+          "rotationYRad": 2.65997
+        }
+      }
+    },
+    {
+      "id": "skin-S05-plain-v3-back-wall",
+      "module": "sideface-S05-plain-v3-back-wall",
+      "skin": "S05-plain-v3-back-wall",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "batch": "M",
+      "bakedFrom": {
+        "module": "S05-plain-v3",
+        "placement": {
+          "positionGlb": [
+            54.9927,
+            0,
+            5.5789
+          ],
+          "rotationYRad": 2.65997
+        }
+      }
+    },
+    {
+      "id": "skin-S07-plain-v2-right-side",
+      "module": "sideface-S07-plain-v2-right-side",
+      "skin": "S07-plain-v2-right-side",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "batch": "M",
+      "bakedFrom": {
+        "module": "S07-plain-v2",
+        "placement": {
+          "positionGlb": [
+            66.0107,
+            0,
+            11.7373
+          ],
+          "rotationYRad": 2.6087
+        }
+      }
+    },
+    {
+      "id": "skin-S07-plain-v2-back-wall",
+      "module": "sideface-S07-plain-v2-back-wall",
+      "skin": "S07-plain-v2-back-wall",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "batch": "M",
+      "bakedFrom": {
+        "module": "S07-plain-v2",
+        "placement": {
+          "positionGlb": [
+            66.0107,
+            0,
+            11.7373
+          ],
+          "rotationYRad": 2.6087
+        }
+      }
+    },
+    {
+      "id": "skin-east-shop-133-gable-wall-east-b0s0",
+      "module": "sideface-east-shop-133-gable-wall-east-b0s0",
+      "skin": "east-shop-133-gable-wall-east-b0s0",
+      "positionGlb": [
+        0,
+        0,
+        0
+      ],
+      "rotationYRad": 0,
+      "batch": "M",
+      "bakedFrom": {
+        "module": "east-shop-133",
+        "placement": {
+          "positionGlb": [
+            120.22055408090135,
+            0,
+            30.184058020222682
+          ],
+          "rotationYRad": 2.912213
+        }
+      }
+    },
+    {
+      "id": "skin-east-shop-128-rear",
+      "module": "sideface-cs-rear",
+      "skin": "cs-10.15x7.20x0.28|rear|t-1",
+      "positionGlb": [
+        100.593896,
+        3.6,
+        8.319444
+      ],
+      "rotationYRad": -0.301652,
+      "batch": "A",
+      "from": {
+        "module": "east-shop-128",
+        "record": "back-wall",
+        "localBox": {
+          "center": [
+            0,
+            3.6,
+            -9.86
+          ],
+          "size": [
+            10.15,
+            7.2,
+            0.28
+          ]
+        }
+      }
+    },
+    {
+      "id": "skin-east-shop-128-side-e",
+      "module": "sideface-cs-side-e",
+      "skin": "cs-0.28x6.60x10.00|side-e|t1",
+      "positionGlb": [
+        104.124753,
+        3.9,
+        14.507881
+      ],
+      "rotationYRad": -0.301652,
+      "batch": "A",
+      "from": {
+        "module": "east-shop-128",
+        "record": "gable-wall-east-b0s0",
+        "localBox": {
+          "center": [
+            5.21,
+            3.9,
+            -5
+          ],
+          "size": [
+            0.28,
+            6.6,
+            10
+          ]
+        }
+      }
+    },
+    {
+      "id": "skin-east-shop-129-rear",
+      "module": "sideface-cs-rear",
+      "skin": "cs-10.15x6.40x0.28|rear|t-1",
+      "positionGlb": [
+        92.507556,
+        3.2,
+        34.30798
+      ],
+      "rotationYRad": 2.839941,
+      "batch": "A",
+      "from": {
+        "module": "east-shop-129",
+        "record": "back-wall",
+        "localBox": {
+          "center": [
+            0,
+            3.2,
+            -10.86
+          ],
+          "size": [
+            10.15,
+            6.4,
+            0.28
+          ]
+        }
+      }
+    },
+    {
+      "id": "skin-east-shop-129-side-e",
+      "module": "sideface-cs-side-e",
+      "skin": "cs-0.28x5.80x11.00|side-e|t-1",
+      "positionGlb": [
+        99.074753,
+        3.5,
+        30.737879
+      ],
+      "rotationYRad": 2.839941,
+      "batch": "A",
+      "from": {
+        "module": "east-shop-129",
+        "record": "gable-wall-east-b0s0",
+        "localBox": {
+          "center": [
+            -5.21,
+            3.5,
+            -5.5
+          ],
+          "size": [
+            0.28,
+            5.8,
+            11
+          ]
+        }
+      }
+    },
+    {
+      "id": "skin-east-shop-130-rear",
+      "module": "sideface-cs-rear",
+      "skin": "cs-10.15x7.20x0.28|rear|t-1",
+      "positionGlb": [
+        112.482411,
+        3.6,
+        10.553488
+      ],
+      "rotationYRad": -0.22938,
+      "batch": "A",
+      "from": {
+        "module": "east-shop-130",
+        "record": "back-wall",
+        "localBox": {
+          "center": [
+            0,
+            3.6,
+            -11.86
+          ],
+          "size": [
+            10.15,
+            7.2,
+            0.28
+          ]
+        }
+      }
+    },
+    {
+      "id": "skin-east-shop-130-side-e",
+      "module": "sideface-cs-side-e",
+      "skin": "cs-0.28x6.60x12.00|side-e|t1",
+      "positionGlb": [
+        116.223537,
+        3.9,
+        17.444618
+      ],
+      "rotationYRad": -0.22938,
+      "batch": "A",
+      "from": {
+        "module": "east-shop-130",
+        "record": "gable-wall-east-b0s0",
+        "localBox": {
+          "center": [
+            5.21,
+            3.9,
+            -6
+          ],
+          "size": [
+            0.28,
+            6.6,
+            12
+          ]
+        }
+      }
+    },
+    {
+      "id": "skin-east-shop-131-rear",
+      "module": "sideface-cs-rear",
+      "skin": "cs-10.15x6.40x0.28|rear|t-1",
+      "positionGlb": [
+        105.833905,
+        3.2,
+        39.003417
+      ],
+      "rotationYRad": 2.912213,
+      "batch": "A",
+      "from": {
+        "module": "east-shop-131",
+        "record": "back-wall",
+        "localBox": {
+          "center": [
+            0,
+            3.2,
+            -12.86
+          ],
+          "size": [
+            10.15,
+            6.4,
+            0.28
+          ]
+        }
+      }
+    },
+    {
+      "id": "skin-east-shop-131-side-e",
+      "module": "sideface-cs-side-e",
+      "skin": "cs-0.28x5.80x13.00|side-e|t-1",
+      "positionGlb": [
+        112.353538,
+        3.5,
+        33.994616
+      ],
+      "rotationYRad": 2.912213,
+      "batch": "A",
+      "from": {
+        "module": "east-shop-131",
+        "record": "gable-wall-east-b0s0",
+        "localBox": {
+          "center": [
+            -5.21,
+            3.5,
+            -6.5
+          ],
+          "size": [
+            0.28,
+            5.8,
+            13
+          ]
+        }
+      }
+    },
+    {
+      "id": "skin-east-shop-132-rear",
+      "module": "sideface-cs-rear",
+      "skin": "cs-10.15x6.40x0.28|rear|t-1",
+      "positionGlb": [
+        123.935037,
+        3.2,
+        14.257295
+      ],
+      "rotationYRad": -0.22938,
+      "batch": "A",
+      "from": {
+        "module": "east-shop-132",
+        "record": "back-wall",
+        "localBox": {
+          "center": [
+            0,
+            3.2,
+            -9.86
+          ],
+          "size": [
+            10.15,
+            6.4,
+            0.28
+          ]
+        }
+      }
+    },
+    {
+      "id": "skin-east-shop-132-side-e",
+      "module": "sideface-cs-side-e",
+      "skin": "cs-0.28x5.80x10.00|side-e|t1",
+      "positionGlb": [
+        127.903537,
+        3.5,
+        20.174618
+      ],
+      "rotationYRad": -0.22938,
+      "batch": "A",
+      "from": {
+        "module": "east-shop-132",
+        "record": "gable-wall-east-b0s0",
+        "localBox": {
+          "center": [
+            5.21,
+            3.5,
+            -5
+          ],
+          "size": [
+            0.28,
+            5.8,
+            10
+          ]
+        }
+      }
+    },
+    {
+      "id": "skin-east-shop-133-rear",
+      "module": "sideface-cs-rear",
+      "skin": "cs-10.15x7.20x0.28|rear|t-1",
+      "positionGlb": [
+        117.751278,
+        3.6,
+        40.759609
+      ],
+      "rotationYRad": 2.912213,
+      "batch": "A",
+      "from": {
+        "module": "east-shop-133",
+        "record": "back-wall",
+        "localBox": {
+          "center": [
+            0,
+            3.6,
+            -10.86
+          ],
+          "size": [
+            10.15,
+            7.2,
+            0.28
+          ]
+        }
+      }
+    }
+  ]
+}

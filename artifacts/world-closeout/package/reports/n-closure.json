@@ -1,0 +1,1741 @@
+{
+  "batch": "pawborough-world-closeout-night-20260919",
+  "stage": "N step 1 closure",
+  "generatedAt": "2026-09-19T15:17:23.206Z",
+  "allowedCmDirs": [
+    "world/fangbang-temple-v4",
+    "world/temple-axis-v3",
+    "world/street-props"
+  ],
+  "summary": {
+    "total": 104,
+    "missingOrig": 1,
+    "hasCm": 100,
+    "missingCm": 3,
+    "missingCm_buildable": 3,
+    "missingCm_policyOriginal": []
+  },
+  "items": [
+    {
+      "ref": "./building/cat_corner/model.glb",
+      "originalRel": "building/cat_corner/model.glb",
+      "original": {
+        "bytes": 1580852,
+        "sha256": "90f3d33ba782666093f2456b9890bed63bf2d45dc3019c136cbd6174eac072d3",
+        "magicOk": true
+      },
+      "cmRel": "building/cat_corner/model.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./building/cloth_shop/model.glb",
+      "originalRel": "building/cloth_shop/model.glb",
+      "original": {
+        "bytes": 2222268,
+        "sha256": "87c89a4620532eb351df7af21665a29c40c43fad610fe3a759aa5335ec85362d",
+        "magicOk": true
+      },
+      "cmRel": "building/cloth_shop/model.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./building/corner/model.glb",
+      "originalRel": "building/corner/model.glb",
+      "original": {
+        "bytes": 2146508,
+        "sha256": "3e68b5833c61d6f2bfe20cf96d561c90618483a319599abcc81385ca4e8bb9a5",
+        "magicOk": true
+      },
+      "cmRel": "building/corner/model.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./building/curio-a/model.glb",
+      "originalRel": "building/curio-a/model.glb",
+      "original": {
+        "bytes": 1972556,
+        "sha256": "aa178b96876d22f5c598db3837b541229e852c069d18c43b5dda27dc52199747",
+        "magicOk": true
+      },
+      "cmRel": "building/curio-a/model.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./building/curio-b/model.glb",
+      "originalRel": "building/curio-b/model.glb",
+      "original": {
+        "bytes": 1953600,
+        "sha256": "768062ada15239ba5d086a09939a4e8b593677d0ac06180357728591c426ee40",
+        "magicOk": true
+      },
+      "cmRel": "building/curio-b/model.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./building/dry_goods_shop/model.glb",
+      "originalRel": "building/dry_goods_shop/model.glb",
+      "original": {
+        "bytes": 3562760,
+        "sha256": "052fadafda116d08356ded8544e32a71323f4adbff2ca9420dfce2f4e0bcd1c9",
+        "magicOk": true
+      },
+      "cmRel": "building/dry_goods_shop/model.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./building/pharmacy_shop/model.glb",
+      "originalRel": "building/pharmacy_shop/model.glb",
+      "original": {
+        "bytes": 3679732,
+        "sha256": "f51cf055f8a86ca16bf763f43689a7a4cbe536a59f6bd420b9f50751c52b9574",
+        "magicOk": true
+      },
+      "cmRel": "building/pharmacy_shop/model.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./building/photo_shop/model.glb",
+      "originalRel": "building/photo_shop/model.glb",
+      "original": {
+        "bytes": 4105324,
+        "sha256": "5d885af6eb8b76ef1147a06499eed100da32593e149cd3dd6bf434d2acd84f76",
+        "magicOk": true
+      },
+      "cmRel": "building/photo_shop/model.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./building/plain-v1/model.glb",
+      "originalRel": "building/plain-v1/model.glb",
+      "original": {
+        "bytes": 1953264,
+        "sha256": "9567bf0e96aec885116e2ad7692e4a90f440073d6d158b8454e344119910cbad",
+        "magicOk": true
+      },
+      "cmRel": "building/plain-v1/model.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./building/plain-v2/model.glb",
+      "originalRel": "building/plain-v2/model.glb",
+      "original": {
+        "bytes": 1863044,
+        "sha256": "c08d816d6e144893bfcd9e6c4aacce890137d977de579fb8f6fab10cf4a04ea8",
+        "magicOk": true
+      },
+      "cmRel": "building/plain-v2/model.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./building/plain-v3/model.glb",
+      "originalRel": "building/plain-v3/model.glb",
+      "original": {
+        "bytes": 1495532,
+        "sha256": "155809ebd42e37dd319a7cee0b5ccbaad2b2db21a15b21930608e914714112b7",
+        "magicOk": true
+      },
+      "cmRel": "building/plain-v3/model.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./building/restaurant-a/model.glb",
+      "originalRel": "building/restaurant-a/model.glb",
+      "original": {
+        "bytes": 2146768,
+        "sha256": "40b5d2ded1554565739aa9041d35f1bd2fbc4d6dd50be9888e0336faf7300b7d",
+        "magicOk": true
+      },
+      "cmRel": "building/restaurant-a/model.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./building/restaurant-b/model.glb",
+      "originalRel": "building/restaurant-b/model.glb",
+      "original": {
+        "bytes": 2147344,
+        "sha256": "e083e811762487b415d289bbaa853bb1ad94e5283591ba3866c48b929c5fef2f",
+        "magicOk": true
+      },
+      "cmRel": "building/restaurant-b/model.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/east-edge/east-shop-128/model.glb",
+      "originalRel": "world/east-edge/east-shop-128/model.glb",
+      "original": {
+        "bytes": 1727716,
+        "sha256": "acc09e566d3d1a0aa6340895d46ea9ba92903bb61f47a24800af5c9db2203567",
+        "magicOk": true
+      },
+      "cmRel": "world/east-edge/east-shop-128/model.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/east-edge/east-shop-129/model.glb",
+      "originalRel": "world/east-edge/east-shop-129/model.glb",
+      "original": {
+        "bytes": 1722592,
+        "sha256": "57ca21b5c9605102ea7f09cb256ff23052fe8183ee1b7f0f434cf6d9fc728286",
+        "magicOk": true
+      },
+      "cmRel": "world/east-edge/east-shop-129/model.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v3/temple-axis/court-open.glb",
+      "originalRel": "world/fangbang-temple-v3/temple-axis/court-open.glb",
+      "original": {
+        "bytes": 1145928,
+        "sha256": "ade97662e4be178ba0faf93ff66c48e7c6b55011c8df8edbb27bab1449d4aded",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v3/temple-axis/court-open.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v3/temple-axis/court3.glb",
+      "originalRel": "world/fangbang-temple-v3/temple-axis/court3.glb",
+      "original": {
+        "bytes": 1634368,
+        "sha256": "3921895487fb7581e4fce7e31c8534153329ab61ea186a3e961b6a1e44bb0f0c",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v3/temple-axis/court3.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v3/temple-axis/dadian-court-v2.glb",
+      "originalRel": "world/fangbang-temple-v3/temple-axis/dadian-court-v2.glb",
+      "original": {
+        "bytes": 1353280,
+        "sha256": "d643a1b3e0f8b9c38cafc4dd53465ff0de12f6fd38e4f81188b6735625ad79a7",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v3/temple-axis/dadian-court-v2.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v3/temple-axis/dadian.glb",
+      "originalRel": "world/fangbang-temple-v3/temple-axis/dadian.glb",
+      "original": {
+        "bytes": 6295144,
+        "sha256": "8a722d9dc7663cefea0f94409a8911c65cf824756a60220ec7d1c88d4f1dabee",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v3/temple-axis/dadian.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v3/temple-axis/gallery.glb",
+      "originalRel": "world/fangbang-temple-v3/temple-axis/gallery.glb",
+      "original": {
+        "bytes": 490812,
+        "sha256": "45228eb69acfd827741ac9f4a72b2d2f6bd92a1c2c4b0776efa210424ee1114d",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v3/temple-axis/gallery.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v3/temple-axis/ground.glb",
+      "originalRel": "world/fangbang-temple-v3/temple-axis/ground.glb",
+      "original": {
+        "bytes": 860916,
+        "sha256": "0acf56376883f3faf823c52f8cf8478bf8d731c31606ed22e7eeadc0f7e0879d",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v3/temple-axis/ground.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v3/temple-axis/houdian.glb",
+      "originalRel": "world/fangbang-temple-v3/temple-axis/houdian.glb",
+      "original": {
+        "bytes": 2702268,
+        "sha256": "693a5efb758700c96c162f9c9c93e0d1b91f490cde895e9d41202b4cdcd9f615",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v3/temple-axis/houdian.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v3/temple-axis/lions.glb",
+      "originalRel": "world/fangbang-temple-v3/temple-axis/lions.glb",
+      "original": {
+        "bytes": 440156,
+        "sha256": "eed2009cca69b5f08a287b4c034f270d817cf1d1bd1ba6859993bcc912278c06",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v3/temple-axis/lions.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v3/temple-axis/ornaments.glb",
+      "originalRel": "world/fangbang-temple-v3/temple-axis/ornaments.glb",
+      "original": {
+        "bytes": 437144,
+        "sha256": "feec279340911ce646a96b203c2febaa5a812d10035d9493f06868f73302a8f9",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v3/temple-axis/ornaments.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v3/temple-axis/peidian.glb",
+      "originalRel": "world/fangbang-temple-v3/temple-axis/peidian.glb",
+      "original": {
+        "bytes": 2075332,
+        "sha256": "b3dba52114ed22f25e916f9d5cc72cff6ba2cf13082eae16daa099deabc1771d",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v3/temple-axis/peidian.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v3/temple-axis/temple.glb",
+      "originalRel": "world/fangbang-temple-v3/temple-axis/temple.glb",
+      "original": {
+        "bytes": 3782256,
+        "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v3/temple-axis/temple.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v3/temple-axis/yimen-stage.glb",
+      "originalRel": "world/fangbang-temple-v3/temple-axis/yimen-stage.glb",
+      "original": {
+        "bytes": 1283532,
+        "sha256": "509fd8913f90cbdce61a55ba3187030da304140216cbb4f368127dd8eb59a51d",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v3/temple-axis/yimen-stage.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v3/temple-axis/yimen.glb",
+      "originalRel": "world/fangbang-temple-v3/temple-axis/yimen.glb",
+      "original": {
+        "bytes": 4343252,
+        "sha256": "e9393cd4017c657e74d2889da812ac16eb70a04664ce8ab829ea126cb7ee48b5",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v3/temple-axis/yimen.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v3/west-extension/forecourt-bounds.glb",
+      "originalRel": "world/fangbang-temple-v3/west-extension/forecourt-bounds.glb",
+      "original": {
+        "bytes": 4020,
+        "sha256": "e9997259ad2ebe60819c5086f4e86fafdbae9de3c76233cecaf7a609186b49ef",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v3/west-extension/forecourt-bounds.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v3/west-extension/seal-wall.glb",
+      "originalRel": "world/fangbang-temple-v3/west-extension/seal-wall.glb",
+      "original": {
+        "bytes": 2804,
+        "sha256": "dd07c8ea5d6ded4b74391b2fe887cf0926a997c746c2c9414d8b13da454fcd1a",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v3/west-extension/seal-wall.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v3/west-extension/surface.glb",
+      "originalRel": "world/fangbang-temple-v3/west-extension/surface.glb",
+      "original": {
+        "bytes": 1308304,
+        "sha256": "01b8f82f3e26c40e8fc8fc75c872179f90dab4b9133659377eea27b6733f4d45",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v3/west-extension/surface.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v3/westshops-strips.glb",
+      "originalRel": "world/fangbang-temple-v3/westshops-strips.glb",
+      "original": {
+        "bytes": 12012,
+        "sha256": "2f74208ad15b3871ed90703583803454858bfcdb0fbd0eb243ec05735b42a6c4",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v3/westshops-strips.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/east-extension/seal-wall.glb",
+      "originalRel": "world/fangbang-temple-v4/east-extension/seal-wall.glb",
+      "original": {
+        "bytes": 2608,
+        "sha256": "5815ce8b9f413b28c51135bc732ce12054542a7fe2d45bf8268780a705be034d",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/east-extension/seal-wall.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/east-extension/surface.glb",
+      "originalRel": "world/fangbang-temple-v4/east-extension/surface.glb",
+      "original": {
+        "bytes": 1216532,
+        "sha256": "ea8a75c35cddc5107e0fa338acecfaa55869000e3c5d2f8a1cf97e5680a4b794",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/east-extension/surface.cm.glb",
+      "cmValidSibling": false,
+      "state": "missingCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/eastshops-strips.glb",
+      "originalRel": "world/fangbang-temple-v4/eastshops-strips.glb",
+      "original": {
+        "bytes": 7528,
+        "sha256": "e8b4131a3ae635bcbf29ecb41e9e6a77d1f7f40a6db0bec7aa40b43bb63458bf",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/eastshops-strips.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/temple-axis/court-open.glb",
+      "originalRel": "world/fangbang-temple-v4/temple-axis/court-open.glb",
+      "original": {
+        "bytes": 1469532,
+        "sha256": "b0b4d28b6a9f12928a142efd2a597234ba13e52a7f48ed788d436175dcbbf6f3",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/temple-axis/court-open.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/temple-axis/court3.glb",
+      "originalRel": "world/fangbang-temple-v4/temple-axis/court3.glb",
+      "original": {
+        "bytes": 1634368,
+        "sha256": "3921895487fb7581e4fce7e31c8534153329ab61ea186a3e961b6a1e44bb0f0c",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/temple-axis/court3.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/temple-axis/dadian-court-v2.glb",
+      "originalRel": "world/fangbang-temple-v4/temple-axis/dadian-court-v2.glb",
+      "original": {
+        "bytes": 1353280,
+        "sha256": "d643a1b3e0f8b9c38cafc4dd53465ff0de12f6fd38e4f81188b6735625ad79a7",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/temple-axis/dadian-court-v2.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/temple-axis/dadian.glb",
+      "originalRel": "world/fangbang-temple-v4/temple-axis/dadian.glb",
+      "original": {
+        "bytes": 6295144,
+        "sha256": "8a722d9dc7663cefea0f94409a8911c65cf824756a60220ec7d1c88d4f1dabee",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/temple-axis/dadian.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/temple-axis/gallery.glb",
+      "originalRel": "world/fangbang-temple-v4/temple-axis/gallery.glb",
+      "original": {
+        "bytes": 490812,
+        "sha256": "45228eb69acfd827741ac9f4a72b2d2f6bd92a1c2c4b0776efa210424ee1114d",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/temple-axis/gallery.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/temple-axis/ground.glb",
+      "originalRel": "world/fangbang-temple-v4/temple-axis/ground.glb",
+      "original": {
+        "bytes": 860916,
+        "sha256": "0acf56376883f3faf823c52f8cf8478bf8d731c31606ed22e7eeadc0f7e0879d",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/temple-axis/ground.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/temple-axis/houdian.glb",
+      "originalRel": "world/fangbang-temple-v4/temple-axis/houdian.glb",
+      "original": {
+        "bytes": 2702268,
+        "sha256": "693a5efb758700c96c162f9c9c93e0d1b91f490cde895e9d41202b4cdcd9f615",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/temple-axis/houdian.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/temple-axis/lions.glb",
+      "originalRel": "world/fangbang-temple-v4/temple-axis/lions.glb",
+      "original": {
+        "bytes": 490048,
+        "sha256": "46dd10af05af07d8f9ab4ea234b6f3daf4af902184543e92f36b449019d44b7a",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/temple-axis/lions.cm.glb",
+      "cmValidSibling": false,
+      "state": "missingCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/temple-axis/ornaments.glb",
+      "originalRel": "world/fangbang-temple-v4/temple-axis/ornaments.glb",
+      "original": {
+        "bytes": 150920,
+        "sha256": "0a894ec78c5a41df58a26d8d119a0699fbbaf1b40c847c875c6c6f5073fd7499",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/temple-axis/ornaments.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/temple-axis/peidian.glb",
+      "originalRel": "world/fangbang-temple-v4/temple-axis/peidian.glb",
+      "original": {
+        "bytes": 2075332,
+        "sha256": "b3dba52114ed22f25e916f9d5cc72cff6ba2cf13082eae16daa099deabc1771d",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/temple-axis/peidian.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/temple-axis/temple.glb",
+      "originalRel": "world/fangbang-temple-v4/temple-axis/temple.glb",
+      "original": {
+        "bytes": 3782256,
+        "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/temple-axis/temple.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/temple-axis/tree-camphor-v2.glb",
+      "originalRel": "world/fangbang-temple-v4/temple-axis/tree-camphor-v2.glb",
+      "original": {
+        "bytes": 233320,
+        "sha256": "5219f9a3a065fd1c2d4262899fa04e49f1ed31e31b9f709b162b74223a84cb33",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/temple-axis/tree-camphor-v2.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/temple-axis/yimen-stage.glb",
+      "originalRel": "world/fangbang-temple-v4/temple-axis/yimen-stage.glb",
+      "original": {
+        "bytes": 1283532,
+        "sha256": "509fd8913f90cbdce61a55ba3187030da304140216cbb4f368127dd8eb59a51d",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/temple-axis/yimen-stage.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/temple-axis/yimen.glb",
+      "originalRel": "world/fangbang-temple-v4/temple-axis/yimen.glb",
+      "original": {
+        "bytes": 4343252,
+        "sha256": "e9393cd4017c657e74d2889da812ac16eb70a04664ce8ab829ea126cb7ee48b5",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/temple-axis/yimen.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/west-extension/forecourt-bounds.glb",
+      "originalRel": "world/fangbang-temple-v4/west-extension/forecourt-bounds.glb",
+      "original": {
+        "bytes": 4020,
+        "sha256": "e9997259ad2ebe60819c5086f4e86fafdbae9de3c76233cecaf7a609186b49ef",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/west-extension/forecourt-bounds.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/west-extension/seal-wall.glb",
+      "originalRel": "world/fangbang-temple-v4/west-extension/seal-wall.glb",
+      "original": {
+        "bytes": 2804,
+        "sha256": "dd07c8ea5d6ded4b74391b2fe887cf0926a997c746c2c9414d8b13da454fcd1a",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/west-extension/seal-wall.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/west-extension/surface.glb",
+      "originalRel": "world/fangbang-temple-v4/west-extension/surface.glb",
+      "original": {
+        "bytes": 1308304,
+        "sha256": "01b8f82f3e26c40e8fc8fc75c872179f90dab4b9133659377eea27b6733f4d45",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/west-extension/surface.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple-v4/westshops-strips.glb",
+      "originalRel": "world/fangbang-temple-v4/westshops-strips.glb",
+      "original": {
+        "bytes": 12012,
+        "sha256": "2f74208ad15b3871ed90703583803454858bfcdb0fbd0eb243ec05735b42a6c4",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple-v4/westshops-strips.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple/temple-axis/court-open.glb",
+      "originalRel": "world/fangbang-temple/temple-axis/court-open.glb",
+      "original": {
+        "bytes": 1145928,
+        "sha256": "ade97662e4be178ba0faf93ff66c48e7c6b55011c8df8edbb27bab1449d4aded",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple/temple-axis/court-open.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple/temple-axis/dadian-court.glb",
+      "originalRel": "world/fangbang-temple/temple-axis/dadian-court.glb",
+      "original": {
+        "bytes": 1446932,
+        "sha256": "c08856597ff60fde9df17726276bddbd13ae0f5497be80ee61ea2d668fccab40",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple/temple-axis/dadian-court.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple/temple-axis/dadian.glb",
+      "originalRel": "world/fangbang-temple/temple-axis/dadian.glb",
+      "original": {
+        "bytes": 6295144,
+        "sha256": "8a722d9dc7663cefea0f94409a8911c65cf824756a60220ec7d1c88d4f1dabee",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple/temple-axis/dadian.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple/temple-axis/ground.glb",
+      "originalRel": "world/fangbang-temple/temple-axis/ground.glb",
+      "original": {
+        "bytes": 860916,
+        "sha256": "0acf56376883f3faf823c52f8cf8478bf8d731c31606ed22e7eeadc0f7e0879d",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple/temple-axis/ground.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple/temple-axis/lions.glb",
+      "originalRel": "world/fangbang-temple/temple-axis/lions.glb",
+      "original": {
+        "bytes": 440156,
+        "sha256": "eed2009cca69b5f08a287b4c034f270d817cf1d1bd1ba6859993bcc912278c06",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple/temple-axis/lions.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple/temple-axis/ornaments.glb",
+      "originalRel": "world/fangbang-temple/temple-axis/ornaments.glb",
+      "original": {
+        "bytes": 437144,
+        "sha256": "feec279340911ce646a96b203c2febaa5a812d10035d9493f06868f73302a8f9",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple/temple-axis/ornaments.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple/temple-axis/temple.glb",
+      "originalRel": "world/fangbang-temple/temple-axis/temple.glb",
+      "original": {
+        "bytes": 3782256,
+        "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple/temple-axis/temple.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/fangbang-temple/temple-axis/yimen.glb",
+      "originalRel": "world/fangbang-temple/temple-axis/yimen.glb",
+      "original": {
+        "bytes": 4343252,
+        "sha256": "e9393cd4017c657e74d2889da812ac16eb70a04664ce8ab829ea126cb7ee48b5",
+        "magicOk": true
+      },
+      "cmRel": "world/fangbang-temple/temple-axis/yimen.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-completion/east-shop-130/model.glb",
+      "originalRel": "world/street-completion/east-shop-130/model.glb",
+      "original": {
+        "bytes": 1751412,
+        "sha256": "654022fbe6088079b287927ad9cdfb3cf5f526f4e7454209b54fb4fca1b076e3",
+        "magicOk": true
+      },
+      "cmRel": "world/street-completion/east-shop-130/model.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-completion/east-shop-131/model.glb",
+      "originalRel": "world/street-completion/east-shop-131/model.glb",
+      "original": {
+        "bytes": 1742588,
+        "sha256": "0ee8b33eacac8b9b708e5e50649a426117829fba906c1fd438152e3051da9aad",
+        "magicOk": true
+      },
+      "cmRel": "world/street-completion/east-shop-131/model.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-completion/east-shop-132/model.glb",
+      "originalRel": "world/street-completion/east-shop-132/model.glb",
+      "original": {
+        "bytes": 1793052,
+        "sha256": "68716bb1a5f33d0cdc0fad1172984b5021281bf7c6874bf0da0077f761d775aa",
+        "magicOk": true
+      },
+      "cmRel": "world/street-completion/east-shop-132/model.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-completion/east-shop-133/model.glb",
+      "originalRel": "world/street-completion/east-shop-133/model.glb",
+      "original": {
+        "bytes": 1755416,
+        "sha256": "d443aac126f8e81c14a85efcb3baafc9f54d328e726c8f52cbaa524453fb90cc",
+        "magicOk": true
+      },
+      "cmRel": "world/street-completion/east-shop-133/model.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v4/blocks.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-completion/surface.glb",
+      "originalRel": "world/street-completion/surface.glb",
+      "original": {
+        "bytes": 985560,
+        "sha256": "4d5c352c8d80617c0b110415b260486b678f1d36a5d6235e7eb1c43faa1be128",
+        "magicOk": true
+      },
+      "cmRel": "world/street-completion/surface.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-props/bamboo-basket.glb",
+      "originalRel": "world/street-props/bamboo-basket.glb",
+      "original": {
+        "bytes": 14824,
+        "sha256": "479581d5e78f90eb0959c94f806fc1bdc7ec43ab073a7b545f59c6a33b0b600f",
+        "magicOk": true
+      },
+      "cmRel": "world/street-props/bamboo-basket.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "street-props/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-props/bamboo-chair.glb",
+      "originalRel": "world/street-props/bamboo-chair.glb",
+      "original": {
+        "bytes": 13932,
+        "sha256": "9a9b0bd3bd1979426dab09ce4e2fad2b835a563f38a2df4998b67ed7e8ea6eeb",
+        "magicOk": true
+      },
+      "cmRel": "world/street-props/bamboo-chair.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "street-props/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-props/bicycle-28.glb",
+      "originalRel": "world/street-props/bicycle-28.glb",
+      "original": {
+        "bytes": 50468,
+        "sha256": "ce93e81d077d3d1c4cb407c8ea9e0b8187223bb26562ab320dd7b46137a83c41",
+        "magicOk": true
+      },
+      "cmRel": "world/street-props/bicycle-28.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "street-props/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-props/cloth-awning.glb",
+      "originalRel": "world/street-props/cloth-awning.glb",
+      "original": {
+        "bytes": 5340,
+        "sha256": "97bd49231aa29f35033a1cfb247197afb62d522138fd503e09a5519da7d84cd9",
+        "magicOk": true
+      },
+      "cmRel": "world/street-props/cloth-awning.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "street-props/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-props/wood-crate.glb",
+      "originalRel": "world/street-props/wood-crate.glb",
+      "original": {
+        "bytes": 89976,
+        "sha256": "3d6103b97572889c4dc4eae84af9e0eeead72c3f45feb75375d488ad48ad4850",
+        "magicOk": true
+      },
+      "cmRel": "world/street-props/wood-crate.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "street-props/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-reviewed.glb",
+      "originalRel": "world/street-reviewed.glb",
+      "original": {
+        "bytes": 20571620,
+        "sha256": "b386ff72eb990e92c21c64d7e3895ddb42c14a3de1b0a9786abce726cffd3b37",
+        "magicOk": true
+      },
+      "cmRel": "world/street-reviewed.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "fangbang-temple-v4/review-manifest.json",
+        "fangbang-temple-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-sidefaces/skins/cs-0.28x5.80x10.00|side-e|t1.glb",
+      "originalRel": "world/street-sidefaces/skins/cs-0.28x5.80x10.00|side-e|t1.glb",
+      "original": {
+        "bytes": 782304,
+        "sha256": "31e45fef0fbc079b6b5acb98871aacd0feecf62f3ec1b9fbfdb1b734ec971b62",
+        "magicOk": true
+      },
+      "cmRel": "world/street-sidefaces/skins/cs-0.28x5.80x10.00|side-e|t1.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "street-sidefaces/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-sidefaces/skins/cs-0.28x5.80x11.00|side-e|t-1.glb",
+      "originalRel": "world/street-sidefaces/skins/cs-0.28x5.80x11.00|side-e|t-1.glb",
+      "original": {
+        "bytes": 782308,
+        "sha256": "eedb03fc2e6f6a348b3d9bcbf5313df72cffc491b3a2630cac66c199a893241b",
+        "magicOk": true
+      },
+      "cmRel": "world/street-sidefaces/skins/cs-0.28x5.80x11.00|side-e|t-1.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "street-sidefaces/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-sidefaces/skins/cs-0.28x5.80x13.00|side-e|t-1.glb",
+      "originalRel": "world/street-sidefaces/skins/cs-0.28x5.80x13.00|side-e|t-1.glb",
+      "original": {
+        "bytes": 782308,
+        "sha256": "b4c4d913187fd94d945db032c1ea1d0b878f4ffe45cb939aa7413e56b24d1c91",
+        "magicOk": true
+      },
+      "cmRel": "world/street-sidefaces/skins/cs-0.28x5.80x13.00|side-e|t-1.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "street-sidefaces/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-sidefaces/skins/cs-0.28x6.60x10.00|side-e|t1.glb",
+      "originalRel": "world/street-sidefaces/skins/cs-0.28x6.60x10.00|side-e|t1.glb",
+      "original": {
+        "bytes": 782332,
+        "sha256": "d9c54666f39ec6773a73bb4cd4dfbe8683024064fbdfe842e62774b2720fe09e",
+        "magicOk": true
+      },
+      "cmRel": "world/street-sidefaces/skins/cs-0.28x6.60x10.00|side-e|t1.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "street-sidefaces/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-sidefaces/skins/cs-0.28x6.60x12.00|side-e|t1.glb",
+      "originalRel": "world/street-sidefaces/skins/cs-0.28x6.60x12.00|side-e|t1.glb",
+      "original": {
+        "bytes": 782332,
+        "sha256": "e88bd00df075533c202aec422005a4d6731c52df8fdf6b2d857dd4cfba819b32",
+        "magicOk": true
+      },
+      "cmRel": "world/street-sidefaces/skins/cs-0.28x6.60x12.00|side-e|t1.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "street-sidefaces/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-sidefaces/skins/cs-10.15x6.40x0.28|rear|t-1.glb",
+      "originalRel": "world/street-sidefaces/skins/cs-10.15x6.40x0.28|rear|t-1.glb",
+      "original": {
+        "bytes": 803412,
+        "sha256": "d9fe2a83d598e62315095b5164c266662fdc44658823dd64c5710752647ae276",
+        "magicOk": true
+      },
+      "cmRel": "world/street-sidefaces/skins/cs-10.15x6.40x0.28|rear|t-1.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "street-sidefaces/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-sidefaces/skins/cs-10.15x7.20x0.28|rear|t-1.glb",
+      "originalRel": "world/street-sidefaces/skins/cs-10.15x7.20x0.28|rear|t-1.glb",
+      "original": {
+        "bytes": 803440,
+        "sha256": "562e6cf46861aaa4992f6634b624c9a17eb25d7da1d5052fe6feb6ee24374d19",
+        "magicOk": true
+      },
+      "cmRel": "world/street-sidefaces/skins/cs-10.15x7.20x0.28|rear|t-1.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "street-sidefaces/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-sidefaces/skins/east-shop-133-gable-wall-east-b0s0.glb",
+      "originalRel": "world/street-sidefaces/skins/east-shop-133-gable-wall-east-b0s0.glb",
+      "original": {
+        "bytes": 782732,
+        "sha256": "ae39e33031e0f2b5d4db2b4313883ce91790bfec4b20a721d815d44be7db4616",
+        "magicOk": true
+      },
+      "cmRel": "world/street-sidefaces/skins/east-shop-133-gable-wall-east-b0s0.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "street-sidefaces/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-sidefaces/skins/N01-plain-v1-left-side.glb",
+      "originalRel": "world/street-sidefaces/skins/N01-plain-v1-left-side.glb",
+      "original": {
+        "bytes": 782760,
+        "sha256": "20cbb99d283b78b9806600a1f9b8828691cf3b5ff7f256b67d7efff330ef113d",
+        "magicOk": true
+      },
+      "cmRel": "world/street-sidefaces/skins/N01-plain-v1-left-side.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "street-sidefaces/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-sidefaces/skins/N05-restaurant-a-back-wall.glb",
+      "originalRel": "world/street-sidefaces/skins/N05-restaurant-a-back-wall.glb",
+      "original": {
+        "bytes": 804260,
+        "sha256": "eb2db18a13366ee1bbf33015ed27aea6cfe408409b58bf7772176cf2d7c12664",
+        "magicOk": true
+      },
+      "cmRel": "world/street-sidefaces/skins/N05-restaurant-a-back-wall.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "street-sidefaces/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-sidefaces/skins/N05-restaurant-a-right-side.glb",
+      "originalRel": "world/street-sidefaces/skins/N05-restaurant-a-right-side.glb",
+      "original": {
+        "bytes": 782748,
+        "sha256": "19976e7f6df40fe2227fc496e8efdf4706d601cea03ab0d9bbc438afa73b63f4",
+        "magicOk": true
+      },
+      "cmRel": "world/street-sidefaces/skins/N05-restaurant-a-right-side.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "street-sidefaces/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-sidefaces/skins/N06-curio-a-back-wall.glb",
+      "originalRel": "world/street-sidefaces/skins/N06-curio-a-back-wall.glb",
+      "original": {
+        "bytes": 804276,
+        "sha256": "e6d59c497049f63caba086a6f740d1bb8553e1da7f92e3bf53a01744a1099abb",
+        "magicOk": true
+      },
+      "cmRel": "world/street-sidefaces/skins/N06-curio-a-back-wall.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "street-sidefaces/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-sidefaces/skins/N06-curio-a-left-side.glb",
+      "originalRel": "world/street-sidefaces/skins/N06-curio-a-left-side.glb",
+      "original": {
+        "bytes": 782840,
+        "sha256": "2e2bbb7edfe24ed92df85a807403a33fc2e575c1a572aaa7d37d61521ca983f7",
+        "magicOk": true
+      },
+      "cmRel": "world/street-sidefaces/skins/N06-curio-a-left-side.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "street-sidefaces/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-sidefaces/skins/S05-plain-v3-back-wall.glb",
+      "originalRel": "world/street-sidefaces/skins/S05-plain-v3-back-wall.glb",
+      "original": {
+        "bytes": 804216,
+        "sha256": "378e08d5106231dd41796654367b25a8dbb47318c71a261acf84588cad312ed2",
+        "magicOk": true
+      },
+      "cmRel": "world/street-sidefaces/skins/S05-plain-v3-back-wall.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "street-sidefaces/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-sidefaces/skins/S05-plain-v3-left-side.glb",
+      "originalRel": "world/street-sidefaces/skins/S05-plain-v3-left-side.glb",
+      "original": {
+        "bytes": 782768,
+        "sha256": "4db67e369bf0f05b8febaa5c3504fc598989c431c472fe96212f55f0a5a84023",
+        "magicOk": true
+      },
+      "cmRel": "world/street-sidefaces/skins/S05-plain-v3-left-side.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "street-sidefaces/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-sidefaces/skins/S07-plain-v2-back-wall.glb",
+      "originalRel": "world/street-sidefaces/skins/S07-plain-v2-back-wall.glb",
+      "original": {
+        "bytes": 804220,
+        "sha256": "86469b1a07c5480aaef786433fd8501ef58712819730de466c379eaf955c11c4",
+        "magicOk": true
+      },
+      "cmRel": "world/street-sidefaces/skins/S07-plain-v2-back-wall.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "street-sidefaces/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/street-sidefaces/skins/S07-plain-v2-right-side.glb",
+      "originalRel": "world/street-sidefaces/skins/S07-plain-v2-right-side.glb",
+      "original": {
+        "bytes": 782768,
+        "sha256": "63b211c5fe4589311c6dd531d96af4f88eff7b0ae668adfb14b057285803b771",
+        "magicOk": true
+      },
+      "cmRel": "world/street-sidefaces/skins/S07-plain-v2-right-side.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": false,
+      "referencedBy": [
+        "street-sidefaces/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/temple-axis-v3/court3.glb",
+      "originalRel": "world/temple-axis-v3/court3.glb",
+      "original": {
+        "bytes": 1634368,
+        "sha256": "3921895487fb7581e4fce7e31c8534153329ab61ea186a3e961b6a1e44bb0f0c",
+        "magicOk": true
+      },
+      "cmRel": "world/temple-axis-v3/court3.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "temple-axis-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/temple-axis-v3/dadian-court-v2.glb",
+      "originalRel": "world/temple-axis-v3/dadian-court-v2.glb",
+      "original": {
+        "bytes": 1353280,
+        "sha256": "d643a1b3e0f8b9c38cafc4dd53465ff0de12f6fd38e4f81188b6735625ad79a7",
+        "magicOk": true
+      },
+      "cmRel": "world/temple-axis-v3/dadian-court-v2.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "temple-axis-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/temple-axis-v3/dadian.glb",
+      "originalRel": "world/temple-axis-v3/dadian.glb",
+      "original": {
+        "bytes": 6295144,
+        "sha256": "8a722d9dc7663cefea0f94409a8911c65cf824756a60220ec7d1c88d4f1dabee",
+        "magicOk": true
+      },
+      "cmRel": "world/temple-axis-v3/dadian.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "temple-axis-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/temple-axis-v3/entry-court-v3.glb",
+      "originalRel": "world/temple-axis-v3/entry-court-v3.glb",
+      "original": {
+        "bytes": 1469532,
+        "sha256": "b0b4d28b6a9f12928a142efd2a597234ba13e52a7f48ed788d436175dcbbf6f3",
+        "magicOk": true
+      },
+      "cmRel": "world/temple-axis-v3/entry-court-v3.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "temple-axis-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/temple-axis-v3/gallery.glb",
+      "originalRel": "world/temple-axis-v3/gallery.glb",
+      "original": {
+        "bytes": 490812,
+        "sha256": "45228eb69acfd827741ac9f4a72b2d2f6bd92a1c2c4b0776efa210424ee1114d",
+        "magicOk": true
+      },
+      "cmRel": "world/temple-axis-v3/gallery.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "temple-axis-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/temple-axis-v3/ground.glb",
+      "originalRel": "world/temple-axis-v3/ground.glb",
+      "original": {
+        "bytes": 860916,
+        "sha256": "0acf56376883f3faf823c52f8cf8478bf8d731c31606ed22e7eeadc0f7e0879d",
+        "magicOk": true
+      },
+      "cmRel": "world/temple-axis-v3/ground.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "temple-axis-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/temple-axis-v3/houdian.glb",
+      "originalRel": "world/temple-axis-v3/houdian.glb",
+      "original": {
+        "bytes": 2702268,
+        "sha256": "693a5efb758700c96c162f9c9c93e0d1b91f490cde895e9d41202b4cdcd9f615",
+        "magicOk": true
+      },
+      "cmRel": "world/temple-axis-v3/houdian.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "temple-axis-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/temple-axis-v3/lions-v2.glb",
+      "originalRel": "world/temple-axis-v3/lions-v2.glb",
+      "original": {
+        "bytes": 490048,
+        "sha256": "46dd10af05af07d8f9ab4ea234b6f3daf4af902184543e92f36b449019d44b7a",
+        "magicOk": true
+      },
+      "cmRel": "world/temple-axis-v3/lions-v2.cm.glb",
+      "cmValidSibling": false,
+      "state": "missingCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "temple-axis-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/temple-axis-v3/ornaments-v2.glb",
+      "originalRel": "world/temple-axis-v3/ornaments-v2.glb",
+      "original": {
+        "bytes": 150920,
+        "sha256": "0a894ec78c5a41df58a26d8d119a0699fbbaf1b40c847c875c6c6f5073fd7499",
+        "magicOk": true
+      },
+      "cmRel": "world/temple-axis-v3/ornaments-v2.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "temple-axis-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/temple-axis-v3/peidian.glb",
+      "originalRel": "world/temple-axis-v3/peidian.glb",
+      "original": {
+        "bytes": 2075332,
+        "sha256": "b3dba52114ed22f25e916f9d5cc72cff6ba2cf13082eae16daa099deabc1771d",
+        "magicOk": true
+      },
+      "cmRel": "world/temple-axis-v3/peidian.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "temple-axis-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/temple-axis-v3/temple.glb",
+      "originalRel": "world/temple-axis-v3/temple.glb",
+      "original": {
+        "bytes": 3782256,
+        "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb",
+        "magicOk": true
+      },
+      "cmRel": "world/temple-axis-v3/temple.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "temple-axis-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/temple-axis-v3/tree-camphor-v2.glb",
+      "originalRel": "world/temple-axis-v3/tree-camphor-v2.glb",
+      "original": {
+        "bytes": 233320,
+        "sha256": "5219f9a3a065fd1c2d4262899fa04e49f1ed31e31b9f709b162b74223a84cb33",
+        "magicOk": true
+      },
+      "cmRel": "world/temple-axis-v3/tree-camphor-v2.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "temple-axis-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/temple-axis-v3/tree-camphor.glb",
+      "originalRel": "world/temple-axis-v3/tree-camphor.glb",
+      "original": null,
+      "cmRel": "world/temple-axis-v3/tree-camphor.cm.glb",
+      "cmValidSibling": false,
+      "state": "missingOrig",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "temple-axis-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/temple-axis-v3/yimen-stage.glb",
+      "originalRel": "world/temple-axis-v3/yimen-stage.glb",
+      "original": {
+        "bytes": 1283532,
+        "sha256": "509fd8913f90cbdce61a55ba3187030da304140216cbb4f368127dd8eb59a51d",
+        "magicOk": true
+      },
+      "cmRel": "world/temple-axis-v3/yimen-stage.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "temple-axis-v3/review-manifest.json"
+      ]
+    },
+    {
+      "ref": "./world/temple-axis-v3/yimen.glb",
+      "originalRel": "world/temple-axis-v3/yimen.glb",
+      "original": {
+        "bytes": 4343252,
+        "sha256": "e9393cd4017c657e74d2889da812ac16eb70a04664ce8ab829ea126cb7ee48b5",
+        "magicOk": true
+      },
+      "cmRel": "world/temple-axis-v3/yimen.cm.glb",
+      "cmValidSibling": true,
+      "state": "hasCm",
+      "newCmAllowedInThisBatch": true,
+      "referencedBy": [
+        "temple-axis-v3/review-manifest.json"
+      ]
+    }
+  ]
+}

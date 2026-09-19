@@ -1,0 +1,567 @@
+{
+  "datasetId": "street-props",
+  "title": "方浜街道生活道具层（1990s，可撤销块 ?props=1 默认关）",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "visualReview": "pending_lead",
+  "reference": "DESIGN_SPEC.json packageE_props; all design_inference, 1990s common objects",
+  "axis": "GLB Y-up; world-space instance placements from kit/out/props/plan.json",
+  "assets": {
+    "bicycle-28": {
+      "file": "./world/street-props/bicycle-28.glb",
+      "bytes": 50468,
+      "sha256": "ce93e81d077d3d1c4cb407c8ea9e0b8187223bb26562ab320dd7b46137a83c41",
+      "triangles": 684
+    },
+    "wood-crate": {
+      "file": "./world/street-props/wood-crate.glb",
+      "bytes": 89976,
+      "sha256": "3d6103b97572889c4dc4eae84af9e0eeead72c3f45feb75375d488ad48ad4850",
+      "triangles": 60
+    },
+    "bamboo-basket": {
+      "file": "./world/street-props/bamboo-basket.glb",
+      "bytes": 14824,
+      "sha256": "479581d5e78f90eb0959c94f806fc1bdc7ec43ab073a7b545f59c6a33b0b600f",
+      "triangles": 216
+    },
+    "bamboo-chair": {
+      "file": "./world/street-props/bamboo-chair.glb",
+      "bytes": 13932,
+      "sha256": "9a9b0bd3bd1979426dab09ce4e2fad2b835a563f38a2df4998b67ed7e8ea6eeb",
+      "triangles": 196
+    },
+    "cloth-awning": {
+      "file": "./world/street-props/cloth-awning.glb",
+      "bytes": 5340,
+      "sha256": "97bd49231aa29f35033a1cfb247197afb62d522138fd503e09a5519da7d84cd9",
+      "triangles": 48
+    }
+  },
+  "instances": [
+    {
+      "id": "prop-001",
+      "item": "cloth-awning",
+      "facade": "N01-plain-v1",
+      "module": "plain-v1",
+      "positionGlb": [
+        4.1505,
+        2.85,
+        -6.3326
+      ],
+      "rotationYRad": 0.31264,
+      "y": 2.85
+    },
+    {
+      "id": "prop-002",
+      "item": "cloth-awning",
+      "facade": "N03-cloth_shop",
+      "module": "cloth_shop",
+      "positionGlb": [
+        21.1209,
+        2.85,
+        -9.8296
+      ],
+      "rotationYRad": 0.07244,
+      "y": 2.85
+    },
+    {
+      "id": "prop-003",
+      "item": "cloth-awning",
+      "facade": "N06-curio-a",
+      "module": "curio-a",
+      "positionGlb": [
+        46.9354,
+        2.85,
+        -8.4289
+      ],
+      "rotationYRad": -0.16793,
+      "y": 2.85
+    },
+    {
+      "id": "prop-004",
+      "item": "cloth-awning",
+      "facade": "N08-plain-v2",
+      "module": "plain-v2",
+      "positionGlb": [
+        61.1503,
+        2.85,
+        -2.882
+      ],
+      "rotationYRad": -0.4932,
+      "y": 2.85
+    },
+    {
+      "id": "prop-005",
+      "item": "cloth-awning",
+      "facade": "N09-curio-b",
+      "module": "curio-b",
+      "positionGlb": [
+        68.5251,
+        2.85,
+        1.2001
+      ],
+      "rotationYRad": -0.52685,
+      "y": 2.85
+    },
+    {
+      "id": "prop-006",
+      "item": "cloth-awning",
+      "facade": "N10-plain-v3",
+      "module": "plain-v3",
+      "positionGlb": [
+        75.7835,
+        2.85,
+        5.5225
+      ],
+      "rotationYRad": -0.54305,
+      "y": 2.85
+    },
+    {
+      "id": "prop-007",
+      "item": "bicycle-28",
+      "facade": "N04-dry_goods_shop",
+      "module": "dry_goods_shop",
+      "positionGlb": [
+        26.3868,
+        0,
+        -10.482
+      ],
+      "rotationYRad": 1.55749,
+      "y": 0
+    },
+    {
+      "id": "prop-008",
+      "item": "bicycle-28",
+      "facade": "S02-photo_shop",
+      "module": "photo_shop",
+      "positionGlb": [
+        31.3968,
+        0,
+        -0.0427
+      ],
+      "rotationYRad": 4.66379,
+      "y": 0
+    },
+    {
+      "id": "prop-009",
+      "item": "bicycle-28",
+      "facade": "east-shop-128",
+      "module": "east-shop-128",
+      "positionGlb": [
+        96.0837,
+        0,
+        17.766
+      ],
+      "rotationYRad": 1.26914,
+      "y": 0
+    },
+    {
+      "id": "prop-010",
+      "item": "bicycle-28",
+      "facade": "east-shop-129",
+      "module": "east-shop-129",
+      "positionGlb": [
+        97.3149,
+        0,
+        23.9066
+      ],
+      "rotationYRad": 4.41074,
+      "y": 0
+    },
+    {
+      "id": "prop-011",
+      "item": "bicycle-28",
+      "facade": "east-shop-130",
+      "module": "east-shop-130",
+      "positionGlb": [
+        108.2114,
+        0,
+        22.2487
+      ],
+      "rotationYRad": 1.34142,
+      "y": 0
+    },
+    {
+      "id": "prop-012",
+      "item": "bicycle-28",
+      "facade": "east-shop-131",
+      "module": "east-shop-131",
+      "positionGlb": [
+        110.3323,
+        0,
+        26.3344
+      ],
+      "rotationYRad": 4.48301,
+      "y": 0
+    },
+    {
+      "id": "prop-013",
+      "item": "bicycle-28",
+      "facade": "east-shop-132",
+      "module": "east-shop-132",
+      "positionGlb": [
+        120.1187,
+        0,
+        24.0049
+      ],
+      "rotationYRad": 1.34142,
+      "y": 0
+    },
+    {
+      "id": "prop-014",
+      "item": "bicycle-28",
+      "facade": "east-shop-133",
+      "module": "east-shop-133",
+      "positionGlb": [
+        121.795,
+        0,
+        30.0382
+      ],
+      "rotationYRad": 4.48301,
+      "y": 0
+    },
+    {
+      "id": "prop-015",
+      "item": "bicycle-28",
+      "facade": "westshop-shop-153",
+      "module": "shop",
+      "positionGlb": [
+        -2.5542,
+        0,
+        6.2858
+      ],
+      "rotationYRad": -1.2343,
+      "y": 0
+    },
+    {
+      "id": "prop-016",
+      "item": "bicycle-28",
+      "facade": "westshop-shop-155",
+      "module": "shop",
+      "positionGlb": [
+        -13.8582,
+        0,
+        10.2398
+      ],
+      "rotationYRad": -1.2343,
+      "y": 0
+    },
+    {
+      "id": "prop-017",
+      "item": "bicycle-28",
+      "facade": "westshop-shop-157",
+      "module": "shop",
+      "positionGlb": [
+        -25.1782,
+        0,
+        14.1998
+      ],
+      "rotationYRad": -1.2343,
+      "y": 0
+    },
+    {
+      "id": "prop-018",
+      "item": "bicycle-28",
+      "facade": "westshop-shop-159",
+      "module": "shop",
+      "positionGlb": [
+        -36.5112,
+        0,
+        18.1638
+      ],
+      "rotationYRad": -1.2343,
+      "y": 0
+    },
+    {
+      "id": "prop-019",
+      "item": "wood-crate",
+      "facade": "N04-dry_goods_shop",
+      "module": "dry_goods_shop",
+      "positionGlb": [
+        27.8017,
+        0,
+        -10.4632
+      ],
+      "rotationYRad": -0.01331,
+      "y": 0
+    },
+    {
+      "id": "prop-020",
+      "item": "wood-crate",
+      "facade": "S02-photo_shop",
+      "module": "photo_shop",
+      "positionGlb": [
+        30.0484,
+        0,
+        -0.1083
+      ],
+      "rotationYRad": 3.09299,
+      "y": 0
+    },
+    {
+      "id": "prop-021",
+      "item": "wood-crate",
+      "facade": "east-shop-128",
+      "module": "east-shop-128",
+      "positionGlb": [
+        97.516,
+        0,
+        18.2117
+      ],
+      "rotationYRad": -0.30165,
+      "y": 0
+    },
+    {
+      "id": "prop-022",
+      "item": "wood-crate",
+      "facade": "east-shop-129",
+      "module": "east-shop-129",
+      "positionGlb": [
+        95.8826,
+        0,
+        23.4609
+      ],
+      "rotationYRad": 2.83994,
+      "y": 0
+    },
+    {
+      "id": "prop-023",
+      "item": "wood-crate",
+      "facade": "east-shop-130",
+      "module": "east-shop-130",
+      "positionGlb": [
+        109.6721,
+        0,
+        22.5897
+      ],
+      "rotationYRad": -0.22938,
+      "y": 0
+    },
+    {
+      "id": "prop-024",
+      "item": "wood-crate",
+      "facade": "east-shop-131",
+      "module": "east-shop-131",
+      "positionGlb": [
+        108.8716,
+        0,
+        25.9933
+      ],
+      "rotationYRad": 2.91221,
+      "y": 0
+    },
+    {
+      "id": "prop-025",
+      "item": "wood-crate",
+      "facade": "east-shop-132",
+      "module": "east-shop-132",
+      "positionGlb": [
+        121.5794,
+        0,
+        24.3459
+      ],
+      "rotationYRad": -0.22938,
+      "y": 0
+    },
+    {
+      "id": "prop-026",
+      "item": "wood-crate",
+      "facade": "east-shop-133",
+      "module": "east-shop-133",
+      "positionGlb": [
+        120.3342,
+        0,
+        29.6972
+      ],
+      "rotationYRad": 2.91221,
+      "y": 0
+    },
+    {
+      "id": "prop-027",
+      "item": "wood-crate",
+      "facade": "westshop-shop-153",
+      "module": "shop",
+      "positionGlb": [
+        -3.9701,
+        0,
+        6.781
+      ],
+      "rotationYRad": -2.8051,
+      "y": 0
+    },
+    {
+      "id": "prop-028",
+      "item": "wood-crate",
+      "facade": "westshop-shop-155",
+      "module": "shop",
+      "positionGlb": [
+        27.8017,
+        0.45,
+        -10.4632
+      ],
+      "rotationYRad": -0.01331,
+      "y": 0,
+      "stackOn": "prop-019"
+    },
+    {
+      "id": "prop-029",
+      "item": "bamboo-basket",
+      "facade": "westshop-shop-157",
+      "module": "shop",
+      "positionGlb": [
+        -26.5941,
+        0,
+        14.695
+      ],
+      "rotationYRad": -2.8051,
+      "y": 0
+    },
+    {
+      "id": "prop-030",
+      "item": "bamboo-basket",
+      "facade": "westshop-shop-159",
+      "module": "shop",
+      "positionGlb": [
+        -37.9271,
+        0,
+        18.659
+      ],
+      "rotationYRad": -2.8051,
+      "y": 0
+    },
+    {
+      "id": "prop-031",
+      "item": "bamboo-basket",
+      "facade": "westshop-shop-160",
+      "module": "shop",
+      "positionGlb": [
+        -47.8402,
+        0,
+        22.1268
+      ],
+      "rotationYRad": -2.8051,
+      "y": 0
+    },
+    {
+      "id": "prop-032",
+      "item": "bamboo-basket",
+      "facade": "westshop-shop-161",
+      "module": "shop",
+      "positionGlb": [
+        -59.1674,
+        0,
+        26.0654
+      ],
+      "rotationYRad": -2.80802,
+      "y": 0
+    },
+    {
+      "id": "prop-033",
+      "item": "bamboo-basket",
+      "facade": "westshop-shop-162",
+      "module": "shop",
+      "positionGlb": [
+        -70.4546,
+        0,
+        29.9657
+      ],
+      "rotationYRad": -2.81301,
+      "y": 0
+    },
+    {
+      "id": "prop-034",
+      "item": "bamboo-basket",
+      "facade": "westshop-shop-164",
+      "module": "shop",
+      "positionGlb": [
+        -102.4524,
+        0,
+        39.8147
+      ],
+      "rotationYRad": -2.89853,
+      "y": 0
+    },
+    {
+      "id": "prop-035",
+      "item": "bamboo-chair",
+      "facade": "westshop-shop-160",
+      "module": "shop",
+      "positionGlb": [
+        -49.2561,
+        0,
+        22.622
+      ],
+      "rotationYRad": -2.8051,
+      "y": 0
+    },
+    {
+      "id": "prop-036",
+      "item": "bamboo-chair",
+      "facade": "westshop-shop-161",
+      "module": "shop",
+      "positionGlb": [
+        -60.5847,
+        0,
+        26.5566
+      ],
+      "rotationYRad": -2.80802,
+      "y": 0
+    },
+    {
+      "id": "prop-037",
+      "item": "bamboo-chair",
+      "facade": "westshop-shop-162",
+      "module": "shop",
+      "positionGlb": [
+        -71.8743,
+        0,
+        30.4497
+      ],
+      "rotationYRad": -2.81301,
+      "y": 0
+    },
+    {
+      "id": "prop-038",
+      "item": "bamboo-chair",
+      "facade": "westshop-shop-164",
+      "module": "shop",
+      "positionGlb": [
+        -103.9083,
+        0,
+        40.1757
+      ],
+      "rotationYRad": -2.89853,
+      "y": 0
+    }
+  ],
+  "counts": {
+    "cloth-awning": 6,
+    "bicycle-28": 12,
+    "wood-crate": 10,
+    "bamboo-basket": 6,
+    "bamboo-chair": 4
+  },
+  "placedTriangles": 11176,
+  "budgets": {
+    "uniqueTris": {
+      "actual": 684,
+      "limit": 1500
+    },
+    "placedTriangles": {
+      "actual": 11176,
+      "limit": 20000
+    },
+    "newImages": {
+      "actual": 0,
+      "limit": 0
+    }
+  },
+  "revocable": {
+    "defaultLoaded": false,
+    "loadParam": "?props=1",
+    "revoke": "unload the block or omit ?props=1"
+  },
+  "collisionCount": 32,
+  "generatedBy": "scripts/build_props_world.mjs"
+}

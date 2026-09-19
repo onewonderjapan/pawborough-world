@@ -1,0 +1,1567 @@
+{
+  "datasetId": "fangbang-temple-v4",
+  "title": "方浜↔庙宇桥接世界 v4（庙轴 v3 变体 + 樟树；道具块默认关）",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "visualReview": "pending_lead",
+  "reference": {
+    "dimensionDisclaimer": "all new temple modules are design inference per the expansion DESIGN_SPEC",
+    "historicalAccuracyVerified": false,
+    "dimensionsAreDesign": true
+  },
+  "axis": "GLB Y-up X east Z south; street assembly + refined shop assets + temple axis V2 (T+yaw, 15 instances incl. yawed peidian/gallery) + west extension (authored in place)",
+  "modules": [
+    {
+      "id": "plain-v1",
+      "path": "./building/plain-v1/model.cm.glb",
+      "bytes": 1166376,
+      "sha256": "04506389b93fcb411a09299a734b2fb62b834681bfb8d461718810bfe7e93436"
+    },
+    {
+      "id": "plain-v2",
+      "path": "./building/plain-v2/model.cm.glb",
+      "bytes": 1154320,
+      "sha256": "64c59c080bdc8eba7a3a22f05446cde0efc9c659849c07224b9d1ef36e0cac31"
+    },
+    {
+      "id": "plain-v3",
+      "path": "./building/plain-v3/model.cm.glb",
+      "bytes": 885496,
+      "sha256": "5151d1deaf43590ec36d0b71ba9d95083e6b9c035ce41943bb1bb8e6f0c93968"
+    },
+    {
+      "id": "pharmacy_shop",
+      "path": "./building/pharmacy_shop/model.cm.glb",
+      "bytes": 1321304,
+      "sha256": "103de3ffb3c555891dc7361bfc59e0463536856f6becbace985f012fc7ee6176"
+    },
+    {
+      "id": "cloth_shop",
+      "path": "./building/cloth_shop/model.cm.glb",
+      "bytes": 1208904,
+      "sha256": "1e37002f7adba16f652570312c9a82b1a093ac099edcb1fbc295565690d4852a"
+    },
+    {
+      "id": "curio-a",
+      "path": "./building/curio-a/model.cm.glb",
+      "bytes": 1174568,
+      "sha256": "193cd15f74450031ab8aa1950ef3c1e80fe0933287bc6f85aa7bb14baded7c2c"
+    },
+    {
+      "id": "curio-b",
+      "path": "./building/curio-b/model.cm.glb",
+      "bytes": 1172216,
+      "sha256": "99c745a2ad0deda5b616b4fd16d13a819966aebb69b54a5362570254142c6c04"
+    },
+    {
+      "id": "restaurant-a",
+      "path": "./building/restaurant-a/model.cm.glb",
+      "bytes": 1199276,
+      "sha256": "8eada0788250d6099a846839e1adb044f36dd1c732c20291e8585c9b16f76393"
+    },
+    {
+      "id": "restaurant-b",
+      "path": "./building/restaurant-b/model.cm.glb",
+      "bytes": 1199264,
+      "sha256": "56f48fc1c198f8303f8fa7db889aa623f5f24c077f1681738f819f4e21996b07"
+    },
+    {
+      "id": "cat_corner",
+      "path": "./building/cat_corner/model.cm.glb",
+      "bytes": 1298936,
+      "sha256": "0ce113155f35c98e2d6cb75018860d44d70bbd0b78118fe6c4575f5ecac79581"
+    },
+    {
+      "id": "corner",
+      "path": "./building/corner/model.cm.glb",
+      "bytes": 1190916,
+      "sha256": "8541a6e6b62ea1f8c82dc0ce441bf7551c8def5b6b3f4837af296eb183438a0a"
+    },
+    {
+      "id": "photo_shop",
+      "path": "./building/photo_shop/model.cm.glb",
+      "bytes": 1788036,
+      "sha256": "221f45ed5ae4ec50abe1c5d1f19880ad69ceef89d0920cd2df9d0f58fe860b4b"
+    },
+    {
+      "id": "dry_goods_shop",
+      "path": "./building/dry_goods_shop/model.cm.glb",
+      "bytes": 1820968,
+      "sha256": "eb79f2cb5be3adbab2c2fc97371f1ee8ba9431d86e59b29dc3f0470f675bc933"
+    },
+    {
+      "id": "east-shop-128",
+      "path": "./world/east-edge/east-shop-128/model.cm.glb",
+      "bytes": 984980,
+      "sha256": "a33acfd217f00228695e91262c6abc058743d58e361dcc57792ad36de68c6380",
+      "triangles": 6724
+    },
+    {
+      "id": "east-shop-129",
+      "path": "./world/east-edge/east-shop-129/model.cm.glb",
+      "bytes": 983840,
+      "sha256": "00fa9029efef147211991765f0602a8264c8e7540433851c45ead080acc032c9",
+      "triangles": 6716
+    },
+    {
+      "id": "east-shop-130",
+      "path": "./world/street-completion/east-shop-130/model.cm.glb",
+      "bytes": 987524,
+      "sha256": "3b5bd47614a3ab5b0cf3f9a9c84aba2486a1bc11cc7fe9f2b5c01c416d7edcd0",
+      "triangles": 6916
+    },
+    {
+      "id": "east-shop-131",
+      "path": "./world/street-completion/east-shop-131/model.cm.glb",
+      "bytes": 985428,
+      "sha256": "efb59769fc6fe40fdf9f54d7108466e4c4bb0dc1901c4b4dca519e0eb6a58e58",
+      "triangles": 6864
+    },
+    {
+      "id": "east-shop-132",
+      "path": "./world/street-completion/east-shop-132/model.cm.glb",
+      "bytes": 997396,
+      "sha256": "99450790106d6bd1dec9fe7a682bdbab1956c0b01a36215eda987f06767de5a3",
+      "triangles": 7244
+    },
+    {
+      "id": "east-shop-133",
+      "path": "./world/street-completion/east-shop-133/model.cm.glb",
+      "bytes": 988824,
+      "sha256": "964de598ff92e1d5af4d73caa7c48be522b296a6dc75f8bd6864745977619fa5",
+      "triangles": 6964
+    },
+    {
+      "id": "temple-axis-shanmen",
+      "path": "./world/fangbang-temple-v4/temple-axis/temple.cm.glb",
+      "bytes": 1371936,
+      "sha256": "f9cfa6d4fad6afbab460c1f22cb5f68ca0434545a1be22c0c46dd5eba3b02924",
+      "triangles": 22392
+    },
+    {
+      "id": "temple-axis-shanmen-ground",
+      "path": "./world/fangbang-temple-v4/temple-axis/ground.cm.glb",
+      "bytes": 820952,
+      "sha256": "f99396c2bc95f55fa5dc8718e7b65edf4a75719d28ef1940545880e45e24c315",
+      "triangles": 360
+    },
+    {
+      "id": "temple-axis-shanmen-lions",
+      "path": "./world/fangbang-temple-v4/temple-axis/lions.glb",
+      "bytes": 490048,
+      "sha256": "46dd10af05af07d8f9ab4ea234b6f3daf4af902184543e92f36b449019d44b7a",
+      "triangles": 4064
+    },
+    {
+      "id": "temple-axis-shanmen-ornaments",
+      "path": "./world/fangbang-temple-v4/temple-axis/ornaments.cm.glb",
+      "bytes": 14732,
+      "sha256": "5c02d4131aa3ce021bb6237729e61e0647e971548e3d1579766eae1c48a44704",
+      "triangles": 1148
+    },
+    {
+      "id": "temple-axis-entrycourt-open",
+      "path": "./world/fangbang-temple-v4/temple-axis/court-open.cm.glb",
+      "bytes": 1007944,
+      "sha256": "8f822a93731c98c1164a2bc728cf8fb5cd05a506e6e5ca76c85dd4a1dfc4b717",
+      "triangles": 4192
+    },
+    {
+      "id": "temple-axis-yimen",
+      "path": "./world/fangbang-temple-v4/temple-axis/yimen.cm.glb",
+      "bytes": 1507320,
+      "sha256": "cf6fcb1e7f496098dc06a3e742079de12a260e2db286675d27288227a40f5b43",
+      "triangles": 26140
+    },
+    {
+      "id": "temple-axis-yimenstage",
+      "path": "./world/fangbang-temple-v4/temple-axis/yimen-stage.cm.glb",
+      "bytes": 496064,
+      "sha256": "6372184d79a99f9a36379b8b201ec6a3e9407134a5d7ed94ca2e18bb528fc1a1",
+      "triangles": 7164
+    },
+    {
+      "id": "temple-axis-dadiancourt",
+      "path": "./world/fangbang-temple-v4/temple-axis/dadian-court-v2.cm.glb",
+      "bytes": 991548,
+      "sha256": "59f12de80a21cf165366af4348e1f68e45994d8ae3b73d14eb0e4e463bf9b728",
+      "triangles": 3288
+    },
+    {
+      "id": "temple-axis-peidian-w",
+      "path": "./world/fangbang-temple-v4/temple-axis/peidian.cm.glb",
+      "bytes": 996376,
+      "sha256": "981156f83c3e8f1580dc414adf2200ca98728414f2e84b3042838cd9601f0e85",
+      "triangles": 11396
+    },
+    {
+      "id": "temple-axis-peidian-e",
+      "path": "./world/fangbang-temple-v4/temple-axis/peidian.cm.glb",
+      "bytes": 996376,
+      "sha256": "981156f83c3e8f1580dc414adf2200ca98728414f2e84b3042838cd9601f0e85",
+      "triangles": 11396
+    },
+    {
+      "id": "temple-axis-gallery-w",
+      "path": "./world/fangbang-temple-v4/temple-axis/gallery.cm.glb",
+      "bytes": 380176,
+      "sha256": "0ad3b143260890f6de5c750eb09ce7cf26de2bdbe9fda672452a5f378e88d45a",
+      "triangles": 1110
+    },
+    {
+      "id": "temple-axis-gallery-e",
+      "path": "./world/fangbang-temple-v4/temple-axis/gallery.cm.glb",
+      "bytes": 380176,
+      "sha256": "0ad3b143260890f6de5c750eb09ce7cf26de2bdbe9fda672452a5f378e88d45a",
+      "triangles": 1110
+    },
+    {
+      "id": "temple-axis-dadian",
+      "path": "./world/fangbang-temple-v4/temple-axis/dadian.cm.glb",
+      "bytes": 1722548,
+      "sha256": "e41071436d0f3a746a1495718d456b519b742b1e5a05440d7671a4db5fb28a0e",
+      "triangles": 43826
+    },
+    {
+      "id": "temple-axis-court3",
+      "path": "./world/fangbang-temple-v4/temple-axis/court3.cm.glb",
+      "bytes": 1116816,
+      "sha256": "d99a9a572fe266de9063963fa49bc7e041d3eea86a3d1e7a563b0e513fd20448",
+      "triangles": 4552
+    },
+    {
+      "id": "temple-axis-houdian",
+      "path": "./world/fangbang-temple-v4/temple-axis/houdian.cm.glb",
+      "bytes": 1086544,
+      "sha256": "c6fb97edfb70d1017e8fd9afbded71d7288e98353e3883850e1a4c9bd8a3618b",
+      "triangles": 16164
+    },
+    {
+      "id": "westshop-shop-153",
+      "path": "./building/pharmacy_shop/model.cm.glb",
+      "bytes": 1321304,
+      "sha256": "103de3ffb3c555891dc7361bfc59e0463536856f6becbace985f012fc7ee6176",
+      "triangles": 21788
+    },
+    {
+      "id": "westshop-shop-155",
+      "path": "./building/plain-v2/model.cm.glb",
+      "bytes": 1154320,
+      "sha256": "64c59c080bdc8eba7a3a22f05446cde0efc9c659849c07224b9d1ef36e0cac31",
+      "triangles": 6852
+    },
+    {
+      "id": "westshop-shop-157",
+      "path": "./building/plain-v1/model.cm.glb",
+      "bytes": 1166376,
+      "sha256": "04506389b93fcb411a09299a734b2fb62b834681bfb8d461718810bfe7e93436",
+      "triangles": 7596
+    },
+    {
+      "id": "westshop-shop-159",
+      "path": "./building/photo_shop/model.cm.glb",
+      "bytes": 1788036,
+      "sha256": "221f45ed5ae4ec50abe1c5d1f19880ad69ceef89d0920cd2df9d0f58fe860b4b",
+      "triangles": 19844
+    },
+    {
+      "id": "westshop-shop-160",
+      "path": "./building/curio-a/model.cm.glb",
+      "bytes": 1174568,
+      "sha256": "193cd15f74450031ab8aa1950ef3c1e80fe0933287bc6f85aa7bb14baded7c2c",
+      "triangles": 7748
+    },
+    {
+      "id": "westshop-shop-161",
+      "path": "./building/plain-v2/model.cm.glb",
+      "bytes": 1154320,
+      "sha256": "64c59c080bdc8eba7a3a22f05446cde0efc9c659849c07224b9d1ef36e0cac31",
+      "triangles": 6852
+    },
+    {
+      "id": "westshop-shop-162",
+      "path": "./building/plain-v3/model.cm.glb",
+      "bytes": 885496,
+      "sha256": "5151d1deaf43590ec36d0b71ba9d95083e6b9c035ce41943bb1bb8e6f0c93968",
+      "triangles": 5960
+    },
+    {
+      "id": "westshop-shop-164",
+      "path": "./building/restaurant-a/model.cm.glb",
+      "bytes": 1199276,
+      "sha256": "8eada0788250d6099a846839e1adb044f36dd1c732c20291e8585c9b16f76393",
+      "triangles": 9504
+    },
+    {
+      "id": "westshop-shop-166",
+      "path": "./building/cloth_shop/model.cm.glb",
+      "bytes": 1208904,
+      "sha256": "1e37002f7adba16f652570312c9a82b1a093ac099edcb1fbc295565690d4852a",
+      "triangles": 10068
+    },
+    {
+      "id": "westshop-shop-168",
+      "path": "./building/cloth_shop/model.cm.glb",
+      "bytes": 1208904,
+      "sha256": "1e37002f7adba16f652570312c9a82b1a093ac099edcb1fbc295565690d4852a",
+      "triangles": 10068
+    },
+    {
+      "id": "westshop-shop-170",
+      "path": "./building/curio-a/model.cm.glb",
+      "bytes": 1174568,
+      "sha256": "193cd15f74450031ab8aa1950ef3c1e80fe0933287bc6f85aa7bb14baded7c2c",
+      "triangles": 7748
+    },
+    {
+      "id": "westshop-shop-154",
+      "path": "./building/plain-v1/model.cm.glb",
+      "bytes": 1166376,
+      "sha256": "04506389b93fcb411a09299a734b2fb62b834681bfb8d461718810bfe7e93436",
+      "triangles": 7596
+    },
+    {
+      "id": "westshop-shop-156",
+      "path": "./building/plain-v3/model.cm.glb",
+      "bytes": 885496,
+      "sha256": "5151d1deaf43590ec36d0b71ba9d95083e6b9c035ce41943bb1bb8e6f0c93968",
+      "triangles": 5960
+    },
+    {
+      "id": "westshop-shop-158",
+      "path": "./building/dry_goods_shop/model.cm.glb",
+      "bytes": 1820968,
+      "sha256": "eb79f2cb5be3adbab2c2fc97371f1ee8ba9431d86e59b29dc3f0470f675bc933",
+      "triangles": 22268
+    },
+    {
+      "id": "westshop-shop-163",
+      "path": "./building/curio-b/model.cm.glb",
+      "bytes": 1172216,
+      "sha256": "99c745a2ad0deda5b616b4fd16d13a819966aebb69b54a5362570254142c6c04",
+      "triangles": 7490
+    },
+    {
+      "id": "westshop-shop-165",
+      "path": "./building/restaurant-b/model.cm.glb",
+      "bytes": 1199264,
+      "sha256": "56f48fc1c198f8303f8fa7db889aa623f5f24c077f1681738f819f4e21996b07",
+      "triangles": 9504
+    },
+    {
+      "id": "westshop-shop-171",
+      "path": "./building/pharmacy_shop/model.cm.glb",
+      "bytes": 1321304,
+      "sha256": "103de3ffb3c555891dc7361bfc59e0463536856f6becbace985f012fc7ee6176",
+      "triangles": 21788
+    },
+    {
+      "id": "westshops-strips",
+      "path": "./world/fangbang-temple-v4/westshops-strips.cm.glb",
+      "bytes": 8156,
+      "sha256": "a73af952bde3d04891b5e2c359156139b8df9ae152d7c75c8ab03bd929929bfb",
+      "triangles": 120
+    },
+    {
+      "id": "westext-surface",
+      "path": "./world/fangbang-temple-v4/west-extension/surface.cm.glb",
+      "bytes": 917520,
+      "sha256": "52ee38df65e2a7aa8647b8f335f92a356d60b428dc0207970f8022df28c79fb9",
+      "triangles": 5960
+    },
+    {
+      "id": "westext-seal-wall",
+      "path": "./world/fangbang-temple-v4/west-extension/seal-wall.cm.glb",
+      "bytes": 2064,
+      "sha256": "6a03b1d461fba713072485b1b6c8c89c45d777569dd7b097065b07832995a91e",
+      "triangles": 12
+    },
+    {
+      "id": "temple-bounds",
+      "path": "./world/fangbang-temple-v4/west-extension/forecourt-bounds.cm.glb",
+      "bytes": 2156,
+      "sha256": "ca4916246970ae96bad9a36ccedce4a3625609a40bfe79d3d7751081b74cf6e7",
+      "triangles": 24
+    },
+    {
+      "id": "temple-axis-tree-camphor",
+      "path": "./world/fangbang-temple-v4/temple-axis/tree-camphor-v2.cm.glb",
+      "bytes": 113468,
+      "sha256": "b4a9b52c26cf60644c66758ac0f9f07656d2105841334e3ff50ef02669bc2df6",
+      "triangles": 1936
+    },
+    {
+      "id": "eastshops-strips",
+      "path": "./world/fangbang-temple-v4/eastshops-strips.cm.glb",
+      "bytes": 5640,
+      "sha256": "e7b639855ead486039da39dc207ccc1fe05d2efc38ecc2effae1366dc3a31f35",
+      "triangles": 72
+    },
+    {
+      "id": "eastext-surface",
+      "path": "./world/fangbang-temple-v4/east-extension/surface.glb",
+      "bytes": 1216532,
+      "sha256": "ea8a75c35cddc5107e0fa338acecfaa55869000e3c5d2f8a1cf97e5680a4b794",
+      "triangles": 4388
+    },
+    {
+      "id": "eastext-seal-wall",
+      "path": "./world/fangbang-temple-v4/east-extension/seal-wall.cm.glb",
+      "bytes": 2048,
+      "sha256": "47b95782ef49ef4076672113def9da5572f7ef4572addb5bd16e683927ef2f14",
+      "triangles": 12
+    }
+  ],
+  "worldAssembly": {
+    "path": "./world/street-reviewed.cm.glb",
+    "bytes": 5209408,
+    "sha256": "8edd9a42acd310403288ae70e6a62ccff86a9e99e7d29cbc630bc8a92a8b9920"
+  },
+  "placedTriangles": 171464,
+  "sceneImages": {
+    "count": 36,
+    "allPacked": true,
+    "note": "doubled for the compressed variant: gltfpack -kn expands shared texture objects (one per primitive)"
+  },
+  "triangleAccounting": {
+    "bridgeWorldTris": 333774,
+    "fullSceneTris": 376670,
+    "westshopsPlacedTris": 188754,
+    "budget": {
+      "westShopsBlockLimit": 200000,
+      "fullSceneV3Limit": 600000,
+      "scope": "v3: westShopsBlock <= 200k (lead re-scoped 2026-09-18, was 180k), fullSceneV3 <= 600k"
+    },
+    "breakdown": {
+      "streetAssembly": 171464,
+      "templeAxisV2": 156338,
+      "westExtension": 5972,
+      "tailShops": 41428,
+      "eastTailSurface": 1468,
+      "westshopsModules": 188754
+    }
+  },
+  "templeAxis": {
+    "source": "world/temple-axis-v2 (byte-exact copies, sha-verified)",
+    "translationGlb": [
+      -127.817,
+      0,
+      27.057
+    ],
+    "yawRad": 0.16703,
+    "assets": [
+      {
+        "id": "shanmen",
+        "glb": "./world/fangbang-temple-v4/temple-axis/temple.cm.glb",
+        "positionGlb": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "rotationYRad": 0.16703,
+        "bytes": 1371936,
+        "sha256": "f9cfa6d4fad6afbab460c1f22cb5f68ca0434545a1be22c0c46dd5eba3b02924",
+        "triangles": 22392,
+        "module": "temple-axis-shanmen"
+      },
+      {
+        "id": "shanmen-ground",
+        "glb": "./world/fangbang-temple-v4/temple-axis/ground.cm.glb",
+        "positionGlb": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "rotationYRad": 0.16703,
+        "bytes": 820952,
+        "sha256": "f99396c2bc95f55fa5dc8718e7b65edf4a75719d28ef1940545880e45e24c315",
+        "triangles": 360,
+        "module": "temple-axis-shanmen-ground"
+      },
+      {
+        "id": "shanmen-lions",
+        "glb": "./world/fangbang-temple-v4/temple-axis/lions.glb",
+        "positionGlb": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "rotationYRad": 0.16703,
+        "bytes": 490048,
+        "sha256": "46dd10af05af07d8f9ab4ea234b6f3daf4af902184543e92f36b449019d44b7a",
+        "triangles": 4064,
+        "module": "temple-axis-shanmen-lions",
+        "variant": true
+      },
+      {
+        "id": "shanmen-ornaments",
+        "glb": "./world/fangbang-temple-v4/temple-axis/ornaments.cm.glb",
+        "positionGlb": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "rotationYRad": 0.16703,
+        "bytes": 14732,
+        "sha256": "5c02d4131aa3ce021bb6237729e61e0647e971548e3d1579766eae1c48a44704",
+        "triangles": 1148,
+        "module": "temple-axis-shanmen-ornaments",
+        "variant": true
+      },
+      {
+        "id": "entrycourt-open",
+        "glb": "./world/fangbang-temple-v4/temple-axis/court-open.cm.glb",
+        "positionGlb": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "rotationYRad": 0.16703,
+        "bytes": 1007944,
+        "sha256": "8f822a93731c98c1164a2bc728cf8fb5cd05a506e6e5ca76c85dd4a1dfc4b717",
+        "triangles": 4192,
+        "module": "temple-axis-entrycourt-open",
+        "variant": true
+      },
+      {
+        "id": "yimen",
+        "glb": "./world/fangbang-temple-v4/temple-axis/yimen.cm.glb",
+        "positionGlb": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "rotationYRad": 0.16703,
+        "bytes": 1507320,
+        "sha256": "cf6fcb1e7f496098dc06a3e742079de12a260e2db286675d27288227a40f5b43",
+        "triangles": 26140,
+        "module": "temple-axis-yimen"
+      },
+      {
+        "id": "yimenstage",
+        "glb": "./world/fangbang-temple-v4/temple-axis/yimen-stage.cm.glb",
+        "positionGlb": [
+          -131.308343,
+          0,
+          6.349259
+        ],
+        "rotationYRad": 0.16703,
+        "bytes": 496064,
+        "sha256": "6372184d79a99f9a36379b8b201ec6a3e9407134a5d7ed94ca2e18bb528fc1a1",
+        "triangles": 7164,
+        "module": "temple-axis-yimenstage"
+      },
+      {
+        "id": "dadiancourt",
+        "glb": "./world/fangbang-temple-v4/temple-axis/dadian-court-v2.cm.glb",
+        "positionGlb": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "rotationYRad": 0.16703,
+        "bytes": 991548,
+        "sha256": "59f12de80a21cf165366af4348e1f68e45994d8ae3b73d14eb0e4e463bf9b728",
+        "triangles": 3288,
+        "module": "temple-axis-dadiancourt"
+      },
+      {
+        "id": "peidian-w",
+        "glb": "./world/fangbang-temple-v4/temple-axis/peidian.cm.glb",
+        "positionGlb": [
+          -144.813037,
+          0,
+          -6.382718
+        ],
+        "rotationYRad": 1.73782633,
+        "bytes": 996376,
+        "sha256": "981156f83c3e8f1580dc414adf2200ca98728414f2e84b3042838cd9601f0e85",
+        "triangles": 11396,
+        "module": "temple-axis-peidian-w"
+      },
+      {
+        "id": "peidian-e",
+        "glb": "./world/fangbang-temple-v4/temple-axis/peidian.cm.glb",
+        "positionGlb": [
+          -122.72478,
+          0,
+          -10.106817
+        ],
+        "rotationYRad": -1.40376633,
+        "bytes": 996376,
+        "sha256": "981156f83c3e8f1580dc414adf2200ca98728414f2e84b3042838cd9601f0e85",
+        "triangles": 11396,
+        "module": "temple-axis-peidian-e"
+      },
+      {
+        "id": "gallery-w",
+        "glb": "./world/fangbang-temple-v4/temple-axis/gallery.cm.glb",
+        "positionGlb": [
+          -143.599198,
+          0,
+          -1.709486
+        ],
+        "rotationYRad": 1.73782633,
+        "bytes": 380176,
+        "sha256": "0ad3b143260890f6de5c750eb09ce7cf26de2bdbe9fda672452a5f378e88d45a",
+        "triangles": 1110,
+        "module": "temple-axis-gallery-w"
+      },
+      {
+        "id": "gallery-e",
+        "glb": "./world/fangbang-temple-v4/temple-axis/gallery.cm.glb",
+        "positionGlb": [
+          -122.339251,
+          0,
+          -5.293931
+        ],
+        "rotationYRad": -1.40376633,
+        "bytes": 380176,
+        "sha256": "0ad3b143260890f6de5c750eb09ce7cf26de2bdbe9fda672452a5f378e88d45a",
+        "triangles": 1110,
+        "module": "temple-axis-gallery-e"
+      },
+      {
+        "id": "dadian",
+        "glb": "./world/fangbang-temple-v4/temple-axis/dadian.cm.glb",
+        "positionGlb": [
+          -135.132194,
+          0,
+          -16.330647
+        ],
+        "rotationYRad": 0.16703,
+        "bytes": 1722548,
+        "sha256": "e41071436d0f3a746a1495718d456b519b742b1e5a05440d7671a4db5fb28a0e",
+        "triangles": 43826,
+        "module": "temple-axis-dadian"
+      },
+      {
+        "id": "court3",
+        "glb": "./world/fangbang-temple-v4/temple-axis/court3.cm.glb",
+        "positionGlb": [
+          -127.817,
+          0,
+          27.057
+        ],
+        "rotationYRad": 0.16703,
+        "bytes": 1116816,
+        "sha256": "d99a9a572fe266de9063963fa49bc7e041d3eea86a3d1e7a563b0e513fd20448",
+        "triangles": 4552,
+        "module": "temple-axis-court3"
+      },
+      {
+        "id": "houdian",
+        "glb": "./world/fangbang-temple-v4/temple-axis/houdian.cm.glb",
+        "positionGlb": [
+          -140.119827,
+          0,
+          -45.913134
+        ],
+        "rotationYRad": 0.16703,
+        "bytes": 1086544,
+        "sha256": "c6fb97edfb70d1017e8fd9afbded71d7288e98353e3883850e1a4c9bd8a3618b",
+        "triangles": 16164,
+        "module": "temple-axis-houdian"
+      },
+      {
+        "id": "tree-court2-w",
+        "glb": "./world/fangbang-temple-v4/temple-axis/tree-camphor-v2.cm.glb",
+        "positionGlb": [
+          -139.943402,
+          0,
+          -4.567047
+        ],
+        "rotationYRad": 0.16703,
+        "bytes": 113468,
+        "sha256": "b4a9b52c26cf60644c66758ac0f9f07656d2105841334e3ff50ef02669bc2df6",
+        "triangles": 1936,
+        "variant": true
+      },
+      {
+        "id": "tree-court2-e",
+        "glb": "./world/fangbang-temple-v4/temple-axis/tree-camphor-v2.cm.glb",
+        "positionGlb": [
+          -124.856334,
+          0,
+          -7.11074
+        ],
+        "rotationYRad": 0.16703,
+        "bytes": 113468,
+        "sha256": "b4a9b52c26cf60644c66758ac0f9f07656d2105841334e3ff50ef02669bc2df6",
+        "triangles": 1936,
+        "variant": true
+      },
+      {
+        "id": "tree-court3-w",
+        "glb": "./world/fangbang-temple-v4/temple-axis/tree-camphor-v2.cm.glb",
+        "positionGlb": [
+          -150.777597,
+          0,
+          -30.932749
+        ],
+        "rotationYRad": 0.16703,
+        "bytes": 113468,
+        "sha256": "b4a9b52c26cf60644c66758ac0f9f07656d2105841334e3ff50ef02669bc2df6",
+        "triangles": 1936,
+        "variant": true
+      },
+      {
+        "id": "tree-court3-e",
+        "glb": "./world/fangbang-temple-v4/temple-axis/tree-camphor-v2.cm.glb",
+        "positionGlb": [
+          -124.319614,
+          0,
+          -36.407701
+        ],
+        "rotationYRad": 0.16703,
+        "bytes": 113468,
+        "sha256": "b4a9b52c26cf60644c66758ac0f9f07656d2105841334e3ff50ef02669bc2df6",
+        "triangles": 1936,
+        "variant": true
+      }
+    ],
+    "placedTriangles": 156338,
+    "collision": "233 records composed into collision-world.json (self-check sampled 6, maxCornerError 6.347e-7)"
+  },
+  "westExtension": {
+    "surface": {
+      "path": "./world/fangbang-temple-v4/west-extension/surface.cm.glb",
+      "bytes": 917520,
+      "sha256": "52ee38df65e2a7aa8647b8f335f92a356d60b428dc0207970f8022df28c79fb9",
+      "triangles": 5960,
+      "groundNodeNames": [
+        "sctail__quiet-gray-asphalt",
+        "sctail__worn-stone"
+      ]
+    },
+    "sealWall": {
+      "path": "./world/fangbang-temple-v4/west-extension/seal-wall.cm.glb",
+      "bytes": 2064,
+      "sha256": "6a03b1d461fba713072485b1b6c8c89c45d777569dd7b097065b07832995a91e",
+      "triangles": 12
+    },
+    "forecourtBounds": {
+      "path": "./world/fangbang-temple-v4/west-extension/forecourt-bounds.cm.glb",
+      "bytes": 2156,
+      "sha256": "ca4916246970ae96bad9a36ccedce4a3625609a40bfe79d3d7751081b74cf6e7",
+      "triangles": 24
+    },
+    "centerlineSpec": "kit/out/fangbang-temple/west-extension-spec.json"
+  },
+  "streetCompletion": {
+    "surface": {
+      "path": "./world/fangbang-temple-v4/west-extension/surface.cm.glb",
+      "bytes": 917520,
+      "sha256": "52ee38df65e2a7aa8647b8f335f92a356d60b428dc0207970f8022df28c79fb9",
+      "triangles": 5960,
+      "groundNodeNames": [
+        "sctail__quiet-gray-asphalt",
+        "sctail__worn-stone"
+      ],
+      "noCitywideSlab": true
+    },
+    "eastTailSurface": {
+      "path": "./world/street-completion/surface.cm.glb",
+      "bytes": 891276,
+      "sha256": "029067b746a9c2a6f7576c9e9a2b12c9d60ccd97f90dbe49a65b0362816aad89",
+      "triangles": 1468,
+      "groundNodeNames": [
+        "sctail__quiet-gray-asphalt",
+        "sctail__worn-stone"
+      ],
+      "spec": "./world/street-completion/surface-spec.json",
+      "noCitywideSlab": true
+    },
+    "assets": [
+      {
+        "id": "east-shop-130",
+        "glb": "./world/street-completion/east-shop-130/model.cm.glb",
+        "collision": "./world/street-completion/east-shop-130/collision.json",
+        "positionGlb": [
+          109.78575716044992,
+          0,
+          22.102845323533415
+        ],
+        "rotationYRad": -0.22938,
+        "replacesBaseIds": [
+          "shop-130"
+        ],
+        "designName": "棉布店",
+        "bytes": 987524,
+        "sha256": "3b5bd47614a3ab5b0cf3f9a9c84aba2486a1bc11cc7fe9f2b5c01c416d7edcd0",
+        "triangles": 6916
+      },
+      {
+        "id": "east-shop-131",
+        "glb": "./world/street-completion/east-shop-131/model.cm.glb",
+        "collision": "./world/street-completion/east-shop-131/collision.json",
+        "positionGlb": [
+          108.75792755015615,
+          0,
+          26.4802503875359
+        ],
+        "rotationYRad": 2.912213,
+        "replacesBaseIds": [
+          "shop-131"
+        ],
+        "designName": "绸缎店",
+        "bytes": 985428,
+        "sha256": "efb59769fc6fe40fdf9f54d7108466e4c4bb0dc1901c4b4dca519e0eb6a58e58",
+        "triangles": 6864
+      },
+      {
+        "id": "east-shop-132",
+        "glb": "./world/street-completion/east-shop-132/model.cm.glb",
+        "collision": "./world/street-completion/east-shop-132/collision.json",
+        "positionGlb": [
+          121.69313096704158,
+          0,
+          23.859037769611177
+        ],
+        "rotationYRad": -0.22938,
+        "replacesBaseIds": [
+          "shop-132"
+        ],
+        "designName": "绣品店",
+        "bytes": 997396,
+        "sha256": "99450790106d6bd1dec9fe7a682bdbab1956c0b01a36215eda987f06767de5a3",
+        "triangles": 7244
+      },
+      {
+        "id": "east-shop-133",
+        "glb": "./world/street-completion/east-shop-133/model.cm.glb",
+        "collision": "./world/street-completion/east-shop-133/collision.json",
+        "positionGlb": [
+          120.22055408090135,
+          0,
+          30.184058020222682
+        ],
+        "rotationYRad": 2.912213,
+        "replacesBaseIds": [
+          "shop-133"
+        ],
+        "designName": "皮货店",
+        "bytes": 988824,
+        "sha256": "964de598ff92e1d5af4d73caa7c48be522b296a6dc75f8bd6864745977619fa5",
+        "triangles": 6964
+      }
+    ]
+  },
+  "westShops": {
+    "source": "B: 17 west-band placeholders upgraded to frozen building/ module instances (only referenced, never copied); design inference per DESIGN_SPEC.packageB",
+    "assets": [
+      {
+        "id": "westshop-shop-153",
+        "path": "./building/pharmacy_shop/model.cm.glb",
+        "bytes": 1321304,
+        "sha256": "103de3ffb3c555891dc7361bfc59e0463536856f6becbace985f012fc7ee6176",
+        "triangles": 21788
+      },
+      {
+        "id": "westshop-shop-155",
+        "path": "./building/plain-v2/model.cm.glb",
+        "bytes": 1154320,
+        "sha256": "64c59c080bdc8eba7a3a22f05446cde0efc9c659849c07224b9d1ef36e0cac31",
+        "triangles": 6852
+      },
+      {
+        "id": "westshop-shop-157",
+        "path": "./building/plain-v1/model.cm.glb",
+        "bytes": 1166376,
+        "sha256": "04506389b93fcb411a09299a734b2fb62b834681bfb8d461718810bfe7e93436",
+        "triangles": 7596
+      },
+      {
+        "id": "westshop-shop-159",
+        "path": "./building/photo_shop/model.cm.glb",
+        "bytes": 1788036,
+        "sha256": "221f45ed5ae4ec50abe1c5d1f19880ad69ceef89d0920cd2df9d0f58fe860b4b",
+        "triangles": 19844
+      },
+      {
+        "id": "westshop-shop-160",
+        "path": "./building/curio-a/model.cm.glb",
+        "bytes": 1174568,
+        "sha256": "193cd15f74450031ab8aa1950ef3c1e80fe0933287bc6f85aa7bb14baded7c2c",
+        "triangles": 7748
+      },
+      {
+        "id": "westshop-shop-161",
+        "path": "./building/plain-v2/model.cm.glb",
+        "bytes": 1154320,
+        "sha256": "64c59c080bdc8eba7a3a22f05446cde0efc9c659849c07224b9d1ef36e0cac31",
+        "triangles": 6852
+      },
+      {
+        "id": "westshop-shop-162",
+        "path": "./building/plain-v3/model.cm.glb",
+        "bytes": 885496,
+        "sha256": "5151d1deaf43590ec36d0b71ba9d95083e6b9c035ce41943bb1bb8e6f0c93968",
+        "triangles": 5960
+      },
+      {
+        "id": "westshop-shop-164",
+        "path": "./building/restaurant-a/model.cm.glb",
+        "bytes": 1199276,
+        "sha256": "8eada0788250d6099a846839e1adb044f36dd1c732c20291e8585c9b16f76393",
+        "triangles": 9504
+      },
+      {
+        "id": "westshop-shop-166",
+        "path": "./building/cloth_shop/model.cm.glb",
+        "bytes": 1208904,
+        "sha256": "1e37002f7adba16f652570312c9a82b1a093ac099edcb1fbc295565690d4852a",
+        "triangles": 10068
+      },
+      {
+        "id": "westshop-shop-168",
+        "path": "./building/cloth_shop/model.cm.glb",
+        "bytes": 1208904,
+        "sha256": "1e37002f7adba16f652570312c9a82b1a093ac099edcb1fbc295565690d4852a",
+        "triangles": 10068
+      },
+      {
+        "id": "westshop-shop-170",
+        "path": "./building/curio-a/model.cm.glb",
+        "bytes": 1174568,
+        "sha256": "193cd15f74450031ab8aa1950ef3c1e80fe0933287bc6f85aa7bb14baded7c2c",
+        "triangles": 7748
+      },
+      {
+        "id": "westshop-shop-154",
+        "path": "./building/plain-v1/model.cm.glb",
+        "bytes": 1166376,
+        "sha256": "04506389b93fcb411a09299a734b2fb62b834681bfb8d461718810bfe7e93436",
+        "triangles": 7596
+      },
+      {
+        "id": "westshop-shop-156",
+        "path": "./building/plain-v3/model.cm.glb",
+        "bytes": 885496,
+        "sha256": "5151d1deaf43590ec36d0b71ba9d95083e6b9c035ce41943bb1bb8e6f0c93968",
+        "triangles": 5960
+      },
+      {
+        "id": "westshop-shop-158",
+        "path": "./building/dry_goods_shop/model.cm.glb",
+        "bytes": 1820968,
+        "sha256": "eb79f2cb5be3adbab2c2fc97371f1ee8ba9431d86e59b29dc3f0470f675bc933",
+        "triangles": 22268
+      },
+      {
+        "id": "westshop-shop-163",
+        "path": "./building/curio-b/model.cm.glb",
+        "bytes": 1172216,
+        "sha256": "99c745a2ad0deda5b616b4fd16d13a819966aebb69b54a5362570254142c6c04",
+        "triangles": 7490
+      },
+      {
+        "id": "westshop-shop-165",
+        "path": "./building/restaurant-b/model.cm.glb",
+        "bytes": 1199264,
+        "sha256": "56f48fc1c198f8303f8fa7db889aa623f5f24c077f1681738f819f4e21996b07",
+        "triangles": 9504
+      },
+      {
+        "id": "westshop-shop-171",
+        "path": "./building/pharmacy_shop/model.cm.glb",
+        "bytes": 1321304,
+        "sha256": "103de3ffb3c555891dc7361bfc59e0463536856f6becbace985f012fc7ee6176",
+        "triangles": 21788
+      }
+    ],
+    "placedTriangles": 188754,
+    "lifecycle": "revoke block-west-shops in blocks.json to return the gray placeholders (placeholders carry replacedBy)"
+  },
+  "eastEdgeAssets": {
+    "blockId": "block-east-edge-shops",
+    "assets": [
+      {
+        "id": "east-shop-128",
+        "glb": "./world/east-edge/east-shop-128/model.cm.glb",
+        "collision": "./world/east-edge/east-shop-128/collision.json",
+        "positionGlb": [
+          97.66450990714537,
+          0,
+          17.734234931801197
+        ],
+        "rotationYRad": -0.301652,
+        "replacesBaseIds": [
+          "shop-128"
+        ],
+        "bytes": 984980,
+        "sha256": "a33acfd217f00228695e91262c6abc058743d58e361dcc57792ad36de68c6380",
+        "triangles": 6724
+      },
+      {
+        "id": "east-shop-129",
+        "glb": "./world/east-edge/east-shop-129/model.cm.glb",
+        "collision": "./world/east-edge/east-shop-129/collision.json",
+        "positionGlb": [
+          95.7340372829119,
+          0,
+          23.93834100897118
+        ],
+        "rotationYRad": 2.839941,
+        "replacesBaseIds": [
+          "shop-129"
+        ],
+        "bytes": 983840,
+        "sha256": "00fa9029efef147211991765f0602a8264c8e7540433851c45ead080acc032c9",
+        "triangles": 6716
+      }
+    ],
+    "combinedDownloadBytes": 3450308,
+    "combinedTriangleCount": 13440,
+    "runtimeTextureSharing": "none claimed — standalone GLBs embed their own image copies; unique images by content sha are counted in evidence",
+    "designSpec": {
+      "path": "/home/baibai/outbox/pawborough-lane-b-night-20260914/artifacts/east-edge-design-20260914/DESIGN_SPEC.json",
+      "sha256": "90d88b6729d23f4ddd5fc9109d3265375b0faa3f6336c44de53b7d99ac5f885a",
+      "snapshot": "./design-spec.snapshot.json"
+    }
+  },
+  "mapRegistration": {
+    "schemaVersion": 1,
+    "datasetId": "fangbang-temple",
+    "batchId": "pawborough-fangbang-temple-bridge-night-20260916",
+    "registeredBy": "batch fangbang-temple-bridge-night-20260916",
+    "ownerAdopted": false,
+    "mapSource": {
+      "path": "/home/baibai/outbox/pawborough-fangbang-map-1990s-20260912/workspace/public/map-data.json",
+      "sha256": "1dee4831060a2e587769df5ad9f26455c2e1b4ac7841aacafcb9712d29a8884e",
+      "readOnly": true
+    },
+    "anchor": {
+      "worldOriginMapSpace": [
+        53.5,
+        -17.4
+      ],
+      "kind": "documented approximate anchor (map local metres -> GLB translation only)"
+    },
+    "poi": {
+      "id": "temple",
+      "name": "老城隍庙",
+      "pointMap": [
+        -82.829,
+        -40.827
+      ],
+      "pointGlb": [
+        -136.329,
+        -23.427
+      ]
+    },
+    "road": {
+      "id": "238219466",
+      "name": "方浜中路",
+      "centerlineGlbWestOfStreet": [
+        [
+          0.04,
+          -0.01
+        ],
+        [
+          -84.88,
+          29.68
+        ],
+        [
+          -99.12,
+          33.8
+        ],
+        [
+          -116.4,
+          37.91
+        ],
+        [
+          -135.32,
+          41.1
+        ],
+        [
+          -167.95,
+          45.71
+        ]
+      ]
+    },
+    "method": "庙轴线 = 总图 POI 锚点在方浜中路中线上的垂足；山门门槛 = 垂足沿北法线偏移 frontLine(5.6)+forecourtDepth(7.0)=12.6 m；偏航 = 使山门正面(+Z local)指向道路的正南法线",
+    "foot": {
+      "onCenterlineGlb": [
+        -125.722,
+        0,
+        39.482
+      ],
+      "segment": [
+        [
+          -135.32,
+          41.1
+        ],
+        [
+          -116.4,
+          37.91
+        ]
+      ],
+      "roadTangentUnit": [
+        0.9861,
+        -0.1663
+      ],
+      "northNormalUnit": [
+        -0.1663,
+        -0.9861
+      ],
+      "arcLengthFromStreetWestVertexM": 132
+    },
+    "templePlacement": {
+      "groupId": "block-temple-axis",
+      "translationGlb": [
+        -127.817,
+        0,
+        27.057
+      ],
+      "yawRad": 0.16703,
+      "yawDeg": 9.57,
+      "assets": [
+        {
+          "id": "shanmen",
+          "glb": "./world/fangbang-temple/temple-axis/temple.cm.glb",
+          "positionGlb": [
+            -127.817,
+            0,
+            27.057
+          ],
+          "rotationYRad": 0.16703
+        },
+        {
+          "id": "shanmen-ground",
+          "glb": "./world/fangbang-temple/temple-axis/ground.cm.glb",
+          "positionGlb": [
+            -127.817,
+            0,
+            27.057
+          ],
+          "rotationYRad": 0.16703
+        },
+        {
+          "id": "shanmen-lions",
+          "glb": "./world/fangbang-temple/temple-axis/lions.glb",
+          "positionGlb": [
+            -127.817,
+            0,
+            27.057
+          ],
+          "rotationYRad": 0.16703
+        },
+        {
+          "id": "shanmen-ornaments",
+          "glb": "./world/fangbang-temple/temple-axis/ornaments.cm.glb",
+          "positionGlb": [
+            -127.817,
+            0,
+            27.057
+          ],
+          "rotationYRad": 0.16703
+        },
+        {
+          "id": "entrycourt-open",
+          "glb": "./world/fangbang-temple/temple-axis/court-open.cm.glb",
+          "positionGlb": [
+            -127.817,
+            0,
+            27.057
+          ],
+          "rotationYRad": 0.16703
+        },
+        {
+          "id": "yimen",
+          "glb": "./world/fangbang-temple/temple-axis/yimen.cm.glb",
+          "positionGlb": [
+            -131.308343,
+            0,
+            6.349259
+          ],
+          "rotationYRad": 0.16703
+        },
+        {
+          "id": "dadiancourt",
+          "glb": "./world/fangbang-temple/temple-axis/dadian-court.cm.glb",
+          "positionGlb": [
+            -127.817,
+            0,
+            27.057
+          ],
+          "rotationYRad": 0.16703
+        },
+        {
+          "id": "dadian",
+          "glb": "./world/fangbang-temple/temple-axis/dadian.cm.glb",
+          "positionGlb": [
+            -135.132194,
+            0,
+            -16.330647
+          ],
+          "rotationYRad": 0.16703
+        }
+      ],
+      "worldFootprintCornersGlb": [
+        [
+          -139.9,
+          36.2
+        ],
+        [
+          -113.4,
+          31.7
+        ],
+        [
+          -124.5,
+          -34.1
+        ],
+        [
+          -151,
+          -29.7
+        ]
+      ]
+    },
+    "westEnd": {
+      "glb": [
+        -149.388,
+        0,
+        43.473
+      ],
+      "arcFromFootM": 24,
+      "sealWall": {
+        "at": "westEndGlb, 垂直于道路切线",
+        "widthM": 11.2,
+        "heightM": 3.4,
+        "thicknessM": 0.3,
+        "label": "样段端墙，非历史（同 lane-A/B 端墙与大殿北端墙口径）",
+        "material": "dark"
+      }
+    },
+    "replaced": {
+      "rule": "店铺中心的 temple-local 坐标满足 |lx| < 13.4 + max(w,d)/2 且 -59.8 - max(w,d)/2 < lz < 7 + max(w,d)/2 → replacedBy=block-temple-axis（沿用 replacedBy/restore 生命周期，不删除记录）",
+      "ids": [
+        "shop-167",
+        "shop-169"
+      ],
+      "blockId": "block-temple-axis",
+      "reversible": "replacedBy lifecycle; revoke restores the placeholders"
+    },
+    "knownDeviations": [
+      "OSM 城隍庙轮廓南缘在此 x 处约 z=31（比道路中线北 ~9m）；本批门槛 z=27.06 比轮廓南缘再北 ~4m，前院与轮廓有 ~4m 出入——轮廓是 2019 参照非测绘，记为 knownDeviation，不调整。",
+      "map shop centroids carry per-shop residuals up to ~17m (historicalPositionVerified=false); the west-band placeholders therefore intrude the 8.5m design carriageway at 17 stations (see kit/out/fangbang-temple/west-extension/surface-spec.json placeholderResiduals) — recorded, not moved (frontSetback)",
+      "positions are design locator values from the 2019 OSM snapshot, not a 1990s survey (dimensionsAreDesign)",
+      {
+        "R1": "R1-01 placeholder setback (lead fix order 2026-09-17): active west-band placeholders whose visual box crossed the 5.6m front line were shifted whole along the road normal until the nearest corner sat on the front line; mapPoint/glbPoint keep the pre-shift values, placementAdjust records each move",
+        "shifts": [
+          {
+            "id": "shop-153",
+            "shiftM": 2.597
+          },
+          {
+            "id": "shop-154",
+            "shiftM": 3.115
+          },
+          {
+            "id": "shop-155",
+            "shiftM": 3.595
+          },
+          {
+            "id": "shop-156",
+            "shiftM": 2.114
+          },
+          {
+            "id": "shop-157",
+            "shiftM": 2.595
+          },
+          {
+            "id": "shop-158",
+            "shiftM": 3.114
+          },
+          {
+            "id": "shop-159",
+            "shiftM": 3.588
+          },
+          {
+            "id": "shop-160",
+            "shiftM": 2.09
+          },
+          {
+            "id": "shop-161",
+            "shiftM": 2.582
+          },
+          {
+            "id": "shop-162",
+            "shiftM": 3.047
+          },
+          {
+            "id": "shop-163",
+            "shiftM": 3.725
+          },
+          {
+            "id": "shop-164",
+            "shiftM": 2.094
+          },
+          {
+            "id": "shop-165",
+            "shiftM": 2.686
+          },
+          {
+            "id": "shop-166",
+            "shiftM": 3.099
+          },
+          {
+            "id": "shop-168",
+            "shiftM": 2.4
+          },
+          {
+            "id": "shop-170",
+            "shiftM": 3.443
+          },
+          {
+            "id": "shop-171",
+            "shiftM": 3.261
+          }
+        ]
+      }
+    ]
+  },
+  "route": {
+    "points": 114,
+    "totalLengthM": 399.1,
+    "manualWalkClaim": false,
+    "negatives": [
+      "seal-wall",
+      "forecourt-east",
+      "dadian-doors"
+    ]
+  },
+  "cameras": {
+    "count": 8,
+    "source": "delivered bridge cameras verbatim",
+    "contract": "positionGlb/targetGlb/verticalFovDegrees applied verbatim"
+  },
+  "budgets": {
+    "westShopsBlock": {
+      "actual": 188754,
+      "limit": 200000,
+      "pass": true
+    },
+    "fullSceneV3": {
+      "actual": 522528,
+      "limit": 600000,
+      "pass": true
+    },
+    "newTextures": 0,
+    "eastShopsBlockTris": 107472,
+    "eastShopsBlockTrisMax": 110000,
+    "eastShopsBlockPass": true,
+    "fullSceneV4Tris": 453062,
+    "fullSceneV4TrisMax": 700000,
+    "fullSceneV4Pass": true
+  },
+  "generatedBy": "scripts/build_fangbang_v4_world.mjs",
+  "propsBlock": {
+    "dataset": "./world/street-props/",
+    "defaultLoaded": false,
+    "loadParam": "?props=1",
+    "instances": 38,
+    "note": "revocable street life layer (E batch, G12 gate)"
+  },
+  "eastShops": {
+    "note": "block-east-shops asset inventory (adoption batch 20260919, G5); the page reconciles block assets against this section",
+    "assets": [
+      {
+        "id": "eastshop-shop-134",
+        "module": "curio-a",
+        "glb": "./building/curio-a/model.cm.glb",
+        "positionGlb": [
+          152.136,
+          0,
+          28.571
+        ],
+        "rotationYRad": -0.216651,
+        "bytes": 1174568,
+        "sha256": "193cd15f74450031ab8aa1950ef3c1e80fe0933287bc6f85aa7bb14baded7c2c",
+        "triangles": 7748
+      },
+      {
+        "id": "eastshop-shop-136",
+        "module": "plain-v1",
+        "glb": "./building/plain-v1/model.cm.glb",
+        "positionGlb": [
+          172.937,
+          0,
+          33.144
+        ],
+        "rotationYRad": -0.216008,
+        "bytes": 1166376,
+        "sha256": "04506389b93fcb411a09299a734b2fb62b834681bfb8d461718810bfe7e93436",
+        "triangles": 7596
+      },
+      {
+        "id": "eastshop-shop-138",
+        "module": "plain-v3",
+        "glb": "./building/plain-v3/model.cm.glb",
+        "positionGlb": [
+          188.309,
+          0,
+          36.136
+        ],
+        "rotationYRad": -0.167304,
+        "bytes": 885496,
+        "sha256": "5151d1deaf43590ec36d0b71ba9d95083e6b9c035ce41943bb1bb8e6f0c93968",
+        "triangles": 5960
+      },
+      {
+        "id": "eastshop-shop-140",
+        "module": "dry_goods_shop",
+        "glb": "./building/dry_goods_shop/model.cm.glb",
+        "positionGlb": [
+          205.701,
+          0,
+          39.246
+        ],
+        "rotationYRad": -0.202318,
+        "bytes": 1820968,
+        "sha256": "eb79f2cb5be3adbab2c2fc97371f1ee8ba9431d86e59b29dc3f0470f675bc933",
+        "triangles": 22268
+      },
+      {
+        "id": "eastshop-shop-142",
+        "module": "curio-a",
+        "glb": "./building/curio-a/model.cm.glb",
+        "positionGlb": [
+          224.582,
+          0,
+          41.974
+        ],
+        "rotationYRad": -0.036268,
+        "bytes": 1174568,
+        "sha256": "193cd15f74450031ab8aa1950ef3c1e80fe0933287bc6f85aa7bb14baded7c2c",
+        "triangles": 7748
+      },
+      {
+        "id": "eastshop-shop-135",
+        "module": "pharmacy_shop",
+        "glb": "./building/pharmacy_shop/model.cm.glb",
+        "positionGlb": [
+          149.724,
+          0,
+          39.508
+        ],
+        "rotationYRad": 2.924941,
+        "bytes": 1321304,
+        "sha256": "103de3ffb3c555891dc7361bfc59e0463536856f6becbace985f012fc7ee6176",
+        "triangles": 21788
+      },
+      {
+        "id": "eastshop-shop-137",
+        "module": "plain-v2",
+        "glb": "./building/plain-v2/model.cm.glb",
+        "positionGlb": [
+          170.543,
+          0,
+          44.085
+        ],
+        "rotationYRad": 2.925587,
+        "bytes": 1154320,
+        "sha256": "64c59c080bdc8eba7a3a22f05446cde0efc9c659849c07224b9d1ef36e0cac31",
+        "triangles": 6852
+      },
+      {
+        "id": "eastshop-shop-139",
+        "module": "plain-v1",
+        "glb": "./building/plain-v1/model.cm.glb",
+        "positionGlb": [
+          186.681,
+          0,
+          47.219
+        ],
+        "rotationYRad": 2.9757,
+        "bytes": 1166376,
+        "sha256": "04506389b93fcb411a09299a734b2fb62b834681bfb8d461718810bfe7e93436",
+        "triangles": 7596
+      },
+      {
+        "id": "eastshop-shop-141",
+        "module": "photo_shop",
+        "glb": "./building/photo_shop/model.cm.glb",
+        "positionGlb": [
+          203.229,
+          0,
+          50.172
+        ],
+        "rotationYRad": 2.939275,
+        "bytes": 1788036,
+        "sha256": "221f45ed5ae4ec50abe1c5d1f19880ad69ceef89d0920cd2df9d0f58fe860b4b",
+        "triangles": 19844
+      },
+      {
+        "id": "eastshops-strips",
+        "module": "eastshops-strips",
+        "glb": "./world/fangbang-temple-v4/eastshops-strips.cm.glb",
+        "positionGlb": [
+          0,
+          0,
+          0
+        ],
+        "rotationYRad": 0,
+        "bytes": 5640,
+        "sha256": "e7b639855ead486039da39dc207ccc1fe05d2efc38ecc2effae1366dc3a31f35",
+        "triangles": 72
+      }
+    ]
+  },
+  "eastExtension": {
+    "surface": {
+      "path": "./world/fangbang-temple-v4/east-extension/surface.glb",
+      "bytes": 1216532,
+      "sha256": "ea8a75c35cddc5107e0fa338acecfaa55869000e3c5d2f8a1cf97e5680a4b794",
+      "triangles": 4388
+    },
+    "sealWall": {
+      "path": "./world/fangbang-temple-v4/east-extension/seal-wall.cm.glb",
+      "bytes": 2048,
+      "sha256": "47b95782ef49ef4076672113def9da5572f7ef4572addb5bd16e683927ef2f14",
+      "triangles": 12
+    },
+    "spec": "kit/out/east-extension-spec.json (OSM 238219464 design reuse, chaikin 2 + 0.5m resample)",
+    "widths": {
+      "startWidthM": 4,
+      "fullWidthM": 8.5,
+      "easeM": 8,
+      "sidewalkM": 1.35,
+      "frontLineM": 5.6,
+      "curbM": 0.25
+    },
+    "junction": "measured street-tail end edge, gap 0.00 / top step 0.00 by construction",
+    "endWall": {
+      "label": "样段端墙，非历史",
+      "sizeM": [
+        11.2,
+        3.4,
+        0.3
+      ],
+      "at": [
+        236,
+        47.58246710526315
+      ]
+    },
+    "block": "block-east-shops (9 placeholders upgraded per the west-band R1 rules; ?revoke=block-east-shops reverts)"
+  },
+  "compressedVariant": {
+    "note": "regenerated by tools/make_cm_manifest.mjs from the current review-manifest.json: every .glb field with an on-disk .cm.glb sibling repointed with true bytes/sha256; others stay original",
+    "selection": "a sibling is selected only when artifacts/world-closeout/cm-provenance.json records it verified against the CURRENT original sha256 (decode-equivalence or exact-source); retired/unverified variants are never selected",
+    "gltfpack": "meshopt + KHR_mesh_quantization (-cc -kn); textures untouched",
+    "fallbacks": [
+      {
+        "path": "./world/fangbang-temple-v4/temple-axis/lions.glb",
+        "reason": "no compressed sibling on disk"
+      },
+      {
+        "path": "./world/fangbang-temple-v4/east-extension/surface.glb",
+        "reason": "no compressed sibling on disk"
+      },
+      {
+        "path": "./world/fangbang-temple/temple-axis/lions.glb",
+        "reason": "registry marks cm not verified (triDrift=0.005624 posErrM=0.000138)"
+      }
+    ]
+  }
+}

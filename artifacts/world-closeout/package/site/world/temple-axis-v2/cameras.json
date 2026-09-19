@@ -1,0 +1,159 @@
+{
+  "framebuffer": [
+    1280,
+    960
+  ],
+  "cameraPolicy": "temple-local coordinates (same frame as world/temple-dadian CAMERAS); the bridge-v2 page converts with T/yaw. Verify body clearance; small pose adjustments allowed with before-after receipts",
+  "cameras": [
+    {
+      "id": "court2-pair",
+      "positionGlb": [
+        0,
+        1.6,
+        -28.5
+      ],
+      "targetGlb": [
+        0,
+        4.5,
+        -42
+      ],
+      "verticalFovDegrees": 60,
+      "labelZh": "仪门后中轴：两侧配殿夹院，远端大殿（主画面）"
+    },
+    {
+      "id": "peidian-west-front",
+      "positionGlb": [
+        -3,
+        1.6,
+        -35.8
+      ],
+      "targetGlb": [
+        -11.2,
+        3,
+        -35.8
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "正视西配殿（廊柱、格扇、素匾）"
+    },
+    {
+      "id": "gallery-link",
+      "positionGlb": [
+        -6.5,
+        1.6,
+        -27
+      ],
+      "targetGlb": [
+        -12,
+        2.4,
+        -33.5
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "廊庑与配殿交接（坐凳栏）"
+    },
+    {
+      "id": "stage-from-court",
+      "positionGlb": [
+        0,
+        1.6,
+        -38
+      ],
+      "targetGlb": [
+        0,
+        4.5,
+        -27
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "二进院回望仪门背面戏楼"
+    },
+    {
+      "id": "stage-3q",
+      "positionGlb": [
+        7.5,
+        1.6,
+        -33
+      ],
+      "targetGlb": [
+        0,
+        4.8,
+        -27.5
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "戏楼四分之三"
+    },
+    {
+      "id": "passage-east",
+      "positionGlb": [
+        13.5,
+        1.6,
+        -41.5
+      ],
+      "targetGlb": [
+        13.5,
+        2,
+        -60
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "东侧通道望三进院（月台裙面在左）"
+    },
+    {
+      "id": "court3-axis",
+      "positionGlb": [
+        0,
+        1.6,
+        -59.5
+      ],
+      "targetGlb": [
+        0,
+        5,
+        -76
+      ],
+      "verticalFovDegrees": 50,
+      "labelZh": "三进院中轴望城隍殿"
+    },
+    {
+      "id": "houdian-front",
+      "positionGlb": [
+        0,
+        1.6,
+        -69.5
+      ],
+      "targetGlb": [
+        0,
+        5,
+        -74.5
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "城隍殿正视"
+    },
+    {
+      "id": "houdian-3q",
+      "positionGlb": [
+        -10,
+        1.6,
+        -66
+      ],
+      "targetGlb": [
+        0,
+        5,
+        -76
+      ],
+      "verticalFovDegrees": 55,
+      "labelZh": "城隍殿四分之三与硬山山墙"
+    },
+    {
+      "id": "axis-aerial",
+      "positionGlb": [
+        -30,
+        42,
+        -20
+      ],
+      "targetGlb": [
+        0,
+        0,
+        -50
+      ],
+      "verticalFovDegrees": 50,
+      "labelZh": "高空总览：山门→仪门/戏楼→配殿院→大殿→三进院→城隍殿"
+    }
+  ]
+}

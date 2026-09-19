@@ -1,0 +1,263 @@
+{
+  "axis": "glTF Y-up, facade +Z, front-wall center bottom origin",
+  "colliders": [
+    {
+      "name": "left-side",
+      "group": "restaurant",
+      "center": [
+        -5.510000000000001,
+        3.95,
+        -3.35
+      ],
+      "size": [
+        0.28,
+        7.9,
+        7.0
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "right-side",
+      "group": "restaurant",
+      "center": [
+        5.510000000000001,
+        3.95,
+        -3.35
+      ],
+      "size": [
+        0.28,
+        7.9,
+        7.0
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "back-wall",
+      "group": "restaurant",
+      "center": [
+        0.0,
+        3.95,
+        -6.71
+      ],
+      "size": [
+        10.75,
+        7.9,
+        0.28
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "shop-floor",
+      "group": "restaurant",
+      "center": [
+        0.0,
+        0.07,
+        -3.35
+      ],
+      "size": [
+        11.3,
+        0.14,
+        7.0
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "upper-floor",
+      "group": "restaurant",
+      "center": [
+        0.0,
+        3.75,
+        -3.35
+      ],
+      "size": [
+        10.74,
+        0.22,
+        6.45
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "rear-interior",
+      "group": "restaurant",
+      "center": [
+        0.0,
+        1.7,
+        -3.65
+      ],
+      "size": [
+        10.8,
+        3.3,
+        0.2
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "facade-post",
+      "group": "restaurant",
+      "center": [
+        -5.470000000000001,
+        3.9,
+        0.24
+      ],
+      "size": [
+        0.22,
+        7.7,
+        0.26
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "stone-post-foot",
+      "group": "restaurant",
+      "center": [
+        -5.470000000000001,
+        0.35,
+        0.24
+      ],
+      "size": [
+        0.36,
+        0.72,
+        0.36
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "facade-post",
+      "group": "restaurant",
+      "center": [
+        -1.8833333333333335,
+        3.9,
+        0.24
+      ],
+      "size": [
+        0.22,
+        7.7,
+        0.26
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "stone-post-foot",
+      "group": "restaurant",
+      "center": [
+        -1.8833333333333335,
+        0.35,
+        0.24
+      ],
+      "size": [
+        0.36,
+        0.72,
+        0.36
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "facade-post",
+      "group": "restaurant",
+      "center": [
+        1.8833333333333335,
+        3.9,
+        0.24
+      ],
+      "size": [
+        0.22,
+        7.7,
+        0.26
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "stone-post-foot",
+      "group": "restaurant",
+      "center": [
+        1.8833333333333335,
+        0.35,
+        0.24
+      ],
+      "size": [
+        0.36,
+        0.72,
+        0.36
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "facade-post",
+      "group": "restaurant",
+      "center": [
+        5.470000000000001,
+        3.9,
+        0.24
+      ],
+      "size": [
+        0.22,
+        7.7,
+        0.26
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "stone-post-foot",
+      "group": "restaurant",
+      "center": [
+        5.470000000000001,
+        0.35,
+        0.24
+      ],
+      "size": [
+        0.36,
+        0.72,
+        0.36
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "threshold",
+      "group": "restaurant",
+      "center": [
+        0.0,
+        0.12,
+        0.37
+      ],
+      "size": [
+        10.9,
+        0.24,
+        0.55
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "restaurant-counter",
+      "group": "restaurant",
+      "center": [
+        2.938,
+        1.05,
+        -2.0500000000000003
+      ],
+      "size": [
+        1.1,
+        2.0,
+        2.5
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    }
+  ],
+  "doors": "ground-floor front open into shallow interior; rear and sides closed",
+  "notIntegratedOrWalkingTested": true
+}

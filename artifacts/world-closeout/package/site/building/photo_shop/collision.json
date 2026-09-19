@@ -1,0 +1,231 @@
+{
+  "axis": "Y-up, shopfront +Z",
+  "colliders": [
+    {
+      "name": "frontage-stone-pad",
+      "group": "photo-shop",
+      "center": [
+        0,
+        -0.04,
+        0.86
+      ],
+      "size": [
+        7.199999999999999,
+        0.12,
+        1.35
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "frontage-threshold",
+      "group": "photo-shop",
+      "center": [
+        0,
+        0.08,
+        0.27
+      ],
+      "size": [
+        5.85,
+        0.22,
+        0.18
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "left-side-wall",
+      "group": "photo-shop",
+      "center": [
+        -2.6599999999999997,
+        3.2,
+        -2.15
+      ],
+      "size": [
+        0.28,
+        6.4,
+        4.3
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "right-side-wall",
+      "group": "photo-shop",
+      "center": [
+        2.6599999999999997,
+        3.2,
+        -2.15
+      ],
+      "size": [
+        0.28,
+        6.4,
+        4.3
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "rear-wall",
+      "group": "photo-shop",
+      "center": [
+        0,
+        3.2,
+        -4.16
+      ],
+      "size": [
+        5.039999999999999,
+        6.4,
+        0.28
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "ground-floor",
+      "group": "photo-shop",
+      "center": [
+        0,
+        0.08,
+        -2.15
+      ],
+      "size": [
+        5.6,
+        0.16,
+        4.3
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "upper-floor-slab",
+      "group": "photo-shop",
+      "center": [
+        0,
+        3.22,
+        -2.15
+      ],
+      "size": [
+        5.119999999999999,
+        0.2,
+        3.86
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "front-post",
+      "group": "photo-shop",
+      "center": [
+        -2.63,
+        3.27,
+        0.13
+      ],
+      "size": [
+        0.18,
+        5.7,
+        0.25
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "stone-post-foot",
+      "group": "photo-shop",
+      "center": [
+        -2.63,
+        0.42,
+        0.13
+      ],
+      "size": [
+        0.32,
+        0.68,
+        0.34
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "front-post",
+      "group": "photo-shop",
+      "center": [
+        0.05,
+        3.27,
+        0.13
+      ],
+      "size": [
+        0.18,
+        5.7,
+        0.25
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "stone-post-foot",
+      "group": "photo-shop",
+      "center": [
+        0.05,
+        0.42,
+        0.13
+      ],
+      "size": [
+        0.32,
+        0.68,
+        0.34
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "front-post",
+      "group": "photo-shop",
+      "center": [
+        2.63,
+        3.27,
+        0.13
+      ],
+      "size": [
+        0.18,
+        5.7,
+        0.25
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "stone-post-foot",
+      "group": "photo-shop",
+      "center": [
+        2.63,
+        0.42,
+        0.13
+      ],
+      "size": [
+        0.32,
+        0.68,
+        0.34
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "photo-door-dark",
+      "group": "photo-shop",
+      "center": [
+        -1.7,
+        1.48,
+        0.02
+      ],
+      "size": [
+        1.12,
+        2.65,
+        0.12
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    }
+  ],
+  "doors": "photo door closed as a visual prop; dry-goods front remains open",
+  "notIntegratedOrWalkingTested": true
+}

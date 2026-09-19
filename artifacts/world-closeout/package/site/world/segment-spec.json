@@ -1,0 +1,209 @@
+{
+  "id": "fangbang-xuanhu-90m",
+  "generated": "2026-09-13T00:55:00+09:00",
+  "world": {
+    "axis": "GLB Y-up, X east, Z south; module facade +Z, depth -Z, origin front-wall center bottom",
+    "worldOriginMapSpace": [
+      53.5,
+      -17.4
+    ],
+    "worldOriginNote": "GLB(x,z) = map(x - 53.5, y + 17.4); map y+ is south",
+    "groundY": 0.0,
+    "mapSource": "inputs/map/map-data.json roads 238219466/238219464 (OSM snapshot 2019-01-01, design reuse)"
+  },
+  "era": [
+    1990,
+    2000
+  ],
+  "catWallException": 2023,
+  "centerlineCtrlGlb": [
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.7625000000000028,
+      -0.2624999999999993
+    ],
+    [
+      2.2874999999999943,
+      -0.7875000000000014
+    ],
+    [
+      4.574999999999996,
+      -1.5750000000000028
+    ],
+    [
+      7.625,
+      -2.6250000000000036
+    ],
+    [
+      10.75,
+      -3.506250000000005
+    ],
+    [
+      13.950000000000017,
+      -4.218750000000007
+    ],
+    [
+      17.22500000000001,
+      -4.762500000000003
+    ],
+    [
+      20.575000000000003,
+      -5.137500000000003
+    ],
+    [
+      24.043750000000003,
+      -5.343750000000007
+    ],
+    [
+      27.631249999999994,
+      -5.381250000000001
+    ],
+    [
+      31.337500000000006,
+      -5.25
+    ],
+    [
+      35.16250000000001,
+      -4.950000000000003
+    ],
+    [
+      38.54375000000002,
+      -4.668749999999999
+    ],
+    [
+      41.48125000000002,
+      -4.40625
+    ],
+    [
+      43.974999999999994,
+      -4.162500000000001
+    ],
+    [
+      46.025000000000006,
+      -3.9375
+    ],
+    [
+      48.13749999999999,
+      -3.5000000000000036
+    ],
+    [
+      50.3125,
+      -2.8500000000000014
+    ],
+    [
+      52.55,
+      -1.9875000000000043
+    ],
+    [
+      54.849999999999994,
+      -0.9125000000000014
+    ],
+    [
+      57.662499999999994,
+      0.53125
+    ],
+    [
+      60.9875,
+      2.34375
+    ],
+    [
+      64.82499999999999,
+      4.524999999999999
+    ],
+    [
+      69.17499999999998,
+      7.074999999999999
+    ],
+    [
+      73.01874999999998,
+      9.362499999999997
+    ],
+    [
+      76.35624999999999,
+      11.3875
+    ],
+    [
+      79.1875,
+      13.149999999999999
+    ],
+    [
+      81.51249999999999,
+      14.649999999999999
+    ],
+    [
+      83.25625000000002,
+      15.774999999999999
+    ],
+    [
+      84.41874999999999,
+      16.525
+    ],
+    [
+      85.0,
+      16.9
+    ]
+  ],
+  "lengthMeters": 91.2,
+  "designWidths": {
+    "roadCurbToCurb": 8.5,
+    "sidewalkEachSide": 1.35,
+    "frontLineOffset": 5.6,
+    "branchGuangqi": 5.5,
+    "lane": 2.2,
+    "basis": "design values inside the 6-9m street / 1.8-3m lane trial range; OSM 12m is 2019 current-state, not 1990s survey"
+  },
+  "anchors": {
+    "westEnd": {
+      "s": 0.0,
+      "glb": [
+        0.0,
+        0.0
+      ],
+      "connectsTo": "方浜中路 continues west toward 河南南路 (outside segment)"
+    },
+    "eastEnd": {
+      "s": 91.2,
+      "glb": [
+        85.0,
+        16.9
+      ],
+      "connectsTo": "方浜中路 continues east toward 东门路/童涵春 (outside segment)"
+    },
+    "cornerGuangqi": {
+      "s": 12.4,
+      "glb": [
+        11.816666666666672,
+        -3.7437500000000057
+      ],
+      "branchDir": "south (GLB +Z); road 39697507"
+    },
+    "theatreXuanhu": {
+      "s": 21.28,
+      "glb": [
+        21.42,
+        1.31
+      ],
+      "offsetFromCenterline": 6.5,
+      "note": "anchor sits on the SOUTH frontage band; kept as open forecourt gap in the south row (design)"
+    },
+    "catWallPoi": {
+      "s": 80.94,
+      "glb": [
+        91.42,
+        -14.69
+      ],
+      "offsetFromCenterline": 30.12,
+      "note": "map POI is set back and beyond visual check; mural node is placed ON the north frontage inside this segment as a design adjustment"
+    }
+  },
+  "designAdjustments": [
+    "centerline smoothed with two Chaikin corner-cutting passes over the 2019 OSM polyline so straight building modules can chain wall-to-wall; the raw OSM kinks are not reproducible with rigid-width shopfronts",
+    "cat mural wall moved from set-back POI marker to the north street frontage inside this segment (design; POI flagged 示意 in map data)",
+    "theatre forecourt: south row left open at the 玄扈台 anchor so the landmark anchor is not buried inside a building; theatre building itself out of scope",
+    "支弄A/支弄B positions are invented design values (no 2019 OSM lane exists in this stretch)",
+    "street width 8.5m + 1.35m sidewalks is a trial value; 1990s true section unsurveyed"
+  ]
+}

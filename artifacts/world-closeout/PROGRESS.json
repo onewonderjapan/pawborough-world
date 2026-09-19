@@ -9,8 +9,12 @@
       "finishedAt": "2026-09-19T23:05+08:00",
       "checks": {
         "filesReadBeforeStart": [
-          "START_PROMPT.txt", "AGENTS.md", "PLAN.md", "DESIGN_SPEC.json",
-          "control/EXECUTION_POLICY.json", "REPAIR_RESULT.json",
+          "START_PROMPT.txt",
+          "AGENTS.md",
+          "PLAN.md",
+          "DESIGN_SPEC.json",
+          "control/EXECUTION_POLICY.json",
+          "REPAIR_RESULT.json",
           "skills: pawborough-game-client, pawborough-static-architecture"
         ],
         "sourceHeadIsFixedBaseline": true,
@@ -22,7 +26,9 @@
         "baselineTests": {
           "command": "node --test tests/*.test.mjs",
           "atCommit": "1892e61cc63bea00ec83366885657e1fcd864ef0",
-          "passed": 54, "failed": 0, "suiteFiles": 52,
+          "passed": 54,
+          "failed": 0,
+          "suiteFiles": 52,
           "exitCode": 0,
           "durationMs": 5915,
           "ranAt": "2026-09-19T22:5x+08:00 (this batch, fresh run — not inherited from REPAIR_RESULT)"
@@ -67,7 +73,11 @@
       },
       "manifests": {
         "generator": "tools/make_cm_manifest.mjs 升级：仅当 cm-provenance.json 记录 verified 且 sourceSha256 == 当前原始 sha 才选中；过期/未验证变体永不入选，原因写入 compressedVariant.fallbacks",
-        "regenerated": ["fangbang-temple-v4 (122 repointed / 5 kept)", "temple-axis-v3 新建 (13/1)", "street-props 新建 (5/0)"]
+        "regenerated": [
+          "fangbang-temple-v4 (122 repointed / 5 kept)",
+          "temple-axis-v3 新建 (13/1)",
+          "street-props 新建 (5/0)"
+        ]
       },
       "findings_outside_write_scope": [
         "world/fangbang-temple-v3/temple-axis/lions.glb 的 cm 退化三角漂移 0.5624% > 0.1%（街道v3页在用）——allowedChanges 未授权改 fangbang-temple-v3/**，未动；修法=授权后重跑本批候选+清单链",
@@ -123,8 +133,24 @@
       "negativeTests": "tests/closeout_rebuild_negatives.test.mjs 2/2：移除两条 wing wall 后胶囊两侧穿透（证明正例确实钉在 wing wall 上）；对 strips 丢 pos.y 后 [0,2.9] 断言必破；expected 全部取自生产 obbToWorld 公式，不复制错误公式",
       "notDone_note": "无 blocker。stage sidecar、kit 哈希守卫、碰撞均未改生产文件；重建只写隔离目录"
     },
-    "Q": { "status": "pending" },
-    "R": { "status": "pending" }
+    "Q": {
+      "status": "done (clipA terminal receipt pending on source watchdog — honest blocker)",
+      "clipB": "576/576 帧 24.000s sha 前后一致；GPU→CPU 续渲说明沿用",
+      "clipA": "status 未落盘（渲染合法进行中）；收据工具 closeout_video_receipt.mjs 就绪，轮询至 cutoff 后如实转记",
+      "package": "START_HERE.zh-CN.md + delivery-manifest.json (734 files, codeCommit e136729) + package/ 656MB (site+reports+video+docs), localhost 静态服务口径",
+      "policy": "不停止/不续渲/不竞争/不改 cutoff；partial 允许且只标 partial"
+    },
+    "R": {
+      "status": "done",
+      "releaseCodeCommit": "e1367293a43fa3ced77f39ad5d4a010ec752c24e",
+      "verify_all": "8 步 PASS（tests 56/56、freeze 强化：授权目录锁本批 M 基线、version、sha_reconcile、dist、cruise 12 场景门）",
+      "restore": "closeout_restore_check.sh PASS：完整克隆（--no-hardlinks，无 --shared/alternates）@releaseCodeCommit；隔离证明（无 alternates、无源路径）；LFS 实物+哨兵+225 原始件与基线字节一致；npm ci/构建/56 测试/12 场景门克隆内全重跑；目录保留 ../restore/pawborough-world-closeout-restore-20260920-015333",
+      "scope": "同机新目录恢复；不声称 W2 已测或离线新环境",
+      "postRelease": "仅证据/交付记录提交（restore 工具日志路径修正不影响交付物字节）"
+    }
   },
-  "blockers": []
+  "blockers": [
+    "clipA terminal state not yet on disk (source watchdog owns assembly at completion or 11h cap) — receipt step pending; partial-at-cutoff is an allowed terminal state and will be labelled partial, never full",
+    "world/fangbang-temple-v3/** two pre-existing cm defects (stale westshops-strips.cm.glb 120->72 tris/59.4m; temple-axis/lions.glb cm 0.5624% degenerate-tri drift) found and recorded — outside this batch's allowedChanges; fix chain ready (candidate rebuild + registry-gated make_cm_manifest --dataset fangbang-temple-v3) pending owner authorization"
+  ]
 }

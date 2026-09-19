@@ -1,0 +1,130 @@
+{
+  "batch": "pawborough-world-closeout-night-20260919",
+  "branch": "work/world-closeout-20260919",
+  "baselineCommit": "1892e61cc63bea00ec83366885657e1fcd864ef0",
+  "updatedBy": "ZCode (owner manually started)",
+  "stages": {
+    "M": {
+      "status": "done",
+      "finishedAt": "2026-09-19T23:05+08:00",
+      "checks": {
+        "filesReadBeforeStart": [
+          "START_PROMPT.txt", "AGENTS.md", "PLAN.md", "DESIGN_SPEC.json",
+          "control/EXECUTION_POLICY.json", "REPAIR_RESULT.json",
+          "skills: pawborough-game-client, pawborough-static-architecture"
+        ],
+        "sourceHeadIsFixedBaseline": true,
+        "sourceHeadNote": "源 adoption-east worktree 分支 tip 即 1892e61；工作区有活跃渲染产生的未提交帧/render-log 改动，属源任务在途状态，与本批起点无关，未触碰",
+        "worktreeCreated": "git worktree add -> /home/baibai/outbox/pawborough-world-closeout-night-20260919/workspace -b work/world-closeout-20260919 @ 1892e61",
+        "lfs": "9700 tracked files all materialized (git lfs ls-files 全部 '*'，抽查 GLB 魔数 glTF)",
+        "deps": "npm ci from package-lock (vite 7.1.5 / three 0.180.0 / rapier 0.19.0)；无版本升级",
+        "gltfpack": "/home/baibai/outbox/pawborough-lane-b-night-20260914/artifacts/N4/toolchain/src/build/gltfpack (v1.2) 实测可执行",
+        "baselineTests": {
+          "command": "node --test tests/*.test.mjs",
+          "atCommit": "1892e61cc63bea00ec83366885657e1fcd864ef0",
+          "passed": 54, "failed": 0, "suiteFiles": 52,
+          "exitCode": 0,
+          "durationMs": 5915,
+          "ranAt": "2026-09-19T22:5x+08:00 (this batch, fresh run — not inherited from REPAIR_RESULT)"
+        },
+        "baselineInventory": "artifacts/world-closeout/baseline.json (611 files: 225 original GLB 371.4MB, 199 compressed 180.2MB, route/cameras/instances/collision 分类；既有压缩件单列，本批新建压缩件待 N 追加)",
+        "liveRender": {
+          "blender": "PID 3531877 cmdline 归属 scene-v3.blend + render_walkthrough.py (与 DESIGN_SPEC rendererPidAtPreparation 一致)",
+          "watchdog": "PID 4023166 (+4025879) adoption_video_watchdog.py",
+          "statusFile": "clipA-full.status.json 尚未生成（渲染进行中）",
+          "framesOnDiskAtInventory": 1943,
+          "cutoff": "2026-09-20T08:15:00+09:00 未改变",
+          "policy": "只读核对，未接管、未停止、未竞争渲染"
+        }
+      }
+    },
+    "N": {
+      "status": "done",
+      "finishedAt": "2026-09-19T23:5x+08:00",
+      "closure": {
+        "tool": "tools/closeout_cm_closure.mjs -> n-closure.json",
+        "scope": "v4(manifest+blocks) + 街道v3 + temple-axis-v3 + street-props + street-sidefaces 全部实际引用",
+        "result": "104 unique GLB 引用：100 有 cm 邻件、3 缺（=回退件）、1 missingOrig（temple-axis-v3/tree-camphor.glb，仅清单 treeV2.previousFile 溯源备注，页面从不加载，v2 已替代）"
+      },
+      "candidates": {
+        "tool": "tools/closeout_cm_build.mjs（隔离输出 artifacts/world-closeout/cm-candidates/，world/ 不落笔）",
+        "codec": "gltfpack 1.2 -cc -kn；ground 名件 -vpf -vt14（与既有管线一致）",
+        "built": 28,
+        "note": "26 缺失 + westshops-v4 过期替换 + v1 lions（诊断性，未安装）"
+      },
+      "validation": {
+        "tool": "tools/closeout_cm_validate.mjs + cm_validate harness（生产 createGLTFLoader/MeshoptDecoder，vite dev 5344 自持有自停止）",
+        "tolerances": "triDrift≤0.1% / posErr≤0.002m / 唯一 image 数不变 / ground 节点名不丢",
+        "newCandidates": "24/28 过（4 不过：v4 lions 0.49%、v3axis lions-v2 0.49%、v4 east-surface 0.32%、v1 lions 0.56%——全部为 meshopt 剔除退化三角形，>0.1% 上限）",
+        "existingShipped": "97/100 过——发现 westshops-v4 cm 过期（120→72 tris，59.4m 包围盒偏移，已替换）"
+      },
+      "install": {
+        "tool": "tools/closeout_cm_install.mjs -> n-install.json + cm-provenance.json 注册表",
+        "installed": "24 件新 cm（v4×5、street-props×5、temple-axis-v3×14）",
+        "replaced": "world/fangbang-temple-v4/westshops-strips.cm.glb 旧字节留档 artifacts/world-closeout/retired-cm/",
+        "fallbacks": "4 件保留原始并在清单 compressedVariant.fallbacks 注明原因；tests 补负例钉死这三条路径不得出现 cm",
+        "originals": "225 个原始 GLB 与 M baseline 逐一比对 0 变化"
+      },
+      "manifests": {
+        "generator": "tools/make_cm_manifest.mjs 升级：仅当 cm-provenance.json 记录 verified 且 sourceSha256 == 当前原始 sha 才选中；过期/未验证变体永不入选，原因写入 compressedVariant.fallbacks",
+        "regenerated": ["fangbang-temple-v4 (122 repointed / 5 kept)", "temple-axis-v3 新建 (13/1)", "street-props 新建 (5/0)"]
+      },
+      "findings_outside_write_scope": [
+        "world/fangbang-temple-v3/temple-axis/lions.glb 的 cm 退化三角漂移 0.5624% > 0.1%（街道v3页在用）——allowedChanges 未授权改 fangbang-temple-v3/**，未动；修法=授权后重跑本批候选+清单链",
+        "world/fangbang-temple-v3/westshops-strips.cm.glb 同 westshops-v4 一样过期（120→72 tris，59.4m 偏移）——同上未动，发现已实锤登记"
+      ],
+      "tests": "tests/compressed_default.test.mjs 钉定更新（cm 数据集 +temple-axis-v3/street-props；原始态钉定 -这两者；新增 4b 容差回退负例）+ collectGlbs 豁免 previousFile 溯源字段；全套 54/54"
+    },
+    "O": {
+      "status": "done",
+      "finishedAt": "2026-09-20T00:5x+08:00",
+      "entries": {
+        "viteInputs": "temple-v3.html 纳入 vite build rollupOptions（vite.config.js）——正式构建入口从 6 页变 7 页",
+        "indexV1": "tools/make_version.mjs 模板改站点相对 URL（去陈旧 dev 端口绝对链），页面清单更新为现役集（v4 现役/skins+props/v3 街道/temple-v2/temple-v3/…）；head 与数据集随再生成自洽",
+        "officialBuild": "scripts/build_review.mjs 增补官方世界闭包：14 个 world 数据集整目录复制（含 cm 变体，排除 .blend，review-manifest 在场校验）+ root cm + VERSION.json + index-v1.html + dist/temple-v3.html 在场检查——npm run build 自足，不再依赖 verify_all 的 cp -r 临时复制"
+      },
+      "gate": {
+        "tool": "tools/full_browser_gate.mjs 重写",
+        "serverOwnership": "dev/preview 均为自己 spawn（--strictPort，5340/5341→5344/5345/5346 策略回退）；归属判定=子进程存活+strictPort（占位的外来服务会让我方 vite 退出→判失败）+ preview 双字节归属（fangbang.html 与其引用 bundle 均须与 dist 字节一致）+ dev 归属（模块引用+compressedState 变换体含 cm 探针字面量）；清理只关自己的 PID，无 pkill",
+        "scenarios": "12 场景：preview v4+skins+props / 街道v3 / temple-v2 / temple-v3 各两态 8 个 + dev v4 / temple-v3 各两态 4 个",
+        "hardChecks": "routeCheck.pass===true 硬门槛（真实物理巡航，自动执行）+ 同任务空白帧守卫（渲染触发与 drawImage 同一 evaluate；std255<2 或 dominantShare>0.95 判败）+ 双态取件对账 + 网络监听（cm 回退探针与 HEAD 探针中止伪影归类为探针，其余 ≥400/请求失败=错误）",
+        "result": "BROWSER_GATE_PASS 12/12；browser-report.json + browser-evidence/ 12 张截图",
+        "incidents": [
+          "dev 归属初版用 HTML 字节比对——vite dev 注入 HMR client 必然不等，改为引用+字面量判据",
+          "复现并修复工单警告场景：被 kill 的前轮门遗留孤儿 vite 占 5340/5341，后轮门曾把它当自己服务（同仓旧服务可过 curl 归属）——bringUp 增加子进程存活判定，孤儿已清理（仅本批 PID）",
+          "temple-v3 cm 态超时定位为页面自身完整性检查口径不一致：templeV3Main 精确断言 166038!=166046（meshopt 剔除 8 个退化三角），fangbangMain/测试口径均为 0.1% 跨态容差——按工单『修脚本不移除检查』对齐 compressedActive() 时 0.1% 上限，原始态保持精确",
+          "cm-manifest HEAD 探针的 net::ERR_ABORTED 为 Chromium 对 fetch HEAD 的网络日志伪影（探针已解析、页面就绪），归类为探针而非错误"
+        ],
+        "portRecord": "最终 dev :5340 preview :5341（pid 记录于 browser-report.json servers）"
+      },
+      "tests": "node --test 全套 56/56（54 基线 + 2 新负例）"
+    },
+    "P": {
+      "status": "done",
+      "finishedAt": "2026-09-20T00:2x+08:00",
+      "generatorChanges": {
+        "build_fangbang_v4_world.mjs": "新增 --out；默认路径因已存在直接拒绝——删除『rm -rf OUT 再原地重建』默认行为，已采用数据集不可能被重建回滚",
+        "build_temple_axis_v3_world.mjs": "新增 --out 同上；树输入修复：copyKit 由退役的 tree-camphor.glb(v1) 改为已采用的 tree-camphor-v2.glb（旧路径在 kit 哈希守卫下会硬失败——工单提示的树v1风险实锤并已修）；TREE_POS 固定为 I2/G12 已采用庭院墙沿线坐标（旧常量会把树回滚到退役位置）；树实例/清单 note 措辞对齐已采用记录"
+      },
+      "rebuild": {
+        "tool": "tools/closeout_rebuild.mjs -> rebuild-report.json",
+        "runs": "隔离目录 artifacts/world-closeout/rebuild-run1 / rebuild-run2，各跑 v3-axis + v4 生成器",
+        "stability": "两轮逐字节一致（v3 23 文件、v4 44 文件）",
+        "correspondence": "与已采用数据集逐文件对照：原始 GLB 字节全同、route/cameras/instances 一致；碰撞按规范形（pos+R(theta)·center 世界中心+尺寸+theta+AABB，1e-5 容差、顺序无关）全等——已采用 v4 碰撞里 Codex 修复工具写的『模块局部 center』分解与生成器『解析锚点』分解合成为同一物理盒（-135.314,2.8,1.295 等两侧数值吻合）；允许差异仅限历史簿记/溯源注记（treeV2 块、previousFile、I2 placedShifts、树换代前预算和）",
+        "floatNoiseNote": "v4 352 处 min/max 差异为纯浮点表示噪声（修复工具原语浮点 vs 生成器 toFixed(6)），≤1e-5 规格容差"
+      },
+      "reproOnRebuilt": {
+        "axisCapsule": "轴局部 (±2.4,1.01,-27.085) 向外 1.3m 胶囊两侧命中、中央通道畅通 ✓",
+        "bridgeCapsule": "桥接世界同位两侧命中 ✓",
+        "v4TranslatedAabbs": "重建 v4 全部 792 条 AABB Y = pos.y+center.y±size.y/2（obbToWorld）零违例 ✓",
+        "shopStrips": "八条 strips [0,2.9] ✓",
+        "yimenStageSidecar": "重建 v3 含 yimenstage: 9 件：四柱+一栏+两条高处 flank guard+两条地面灰泥 wing wall，四类构件各自独立 ✓（stage 原始 GLB 未重建）"
+      },
+      "negativeTests": "tests/closeout_rebuild_negatives.test.mjs 2/2：移除两条 wing wall 后胶囊两侧穿透（证明正例确实钉在 wing wall 上）；对 strips 丢 pos.y 后 [0,2.9] 断言必破；expected 全部取自生产 obbToWorld 公式，不复制错误公式",
+      "notDone_note": "无 blocker。stage sidecar、kit 哈希守卫、碰撞均未改生产文件；重建只写隔离目录"
+    },
+    "Q": { "status": "pending" },
+    "R": { "status": "pending" }
+  },
+  "blockers": []
+}

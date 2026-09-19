@@ -27,7 +27,7 @@ DEST="../restore/pawborough-world-closeout-restore-$TS"
 mkdir -p "$(dirname "$DEST")"
 STARTED_AT=$(date -Iseconds)
 GITDIR="$(git rev-parse --git-common-dir)"; GITDIR="$(cd "$GITDIR" && pwd)"
-LOG="$DEST.log"; : >"$LOG"
+LOG="$(cd "$(dirname "$DEST")" && pwd)/$(basename "$DEST").log"; : >"$LOG"
 
 fail() { python3 - artifacts/world-closeout/restore-report.json "$STARTED_AT" "$DEST" "$RELEASE_COMMIT" "$1" <<'EOF'
 import json, sys, datetime

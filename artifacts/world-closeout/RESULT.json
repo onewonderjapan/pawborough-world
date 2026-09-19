@@ -1,0 +1,42 @@
+{
+  "batch": "pawborough-world-closeout-night-20260919",
+  "branch": "work/world-closeout-20260919",
+  "baselineCommit": "1892e61cc63bea00ec83366885657e1fcd864ef0",
+  "releaseCodeCommit": "e1367293a43fa3ced77f39ad5d4a010ec752c24e",
+  "status": "delivered_engineering_closeout",
+  "ownerVisualDecision": "unchanged (OWNER_DECISION-20260919.json G1 adopt_all; not re-litigated, not extended)",
+  "stages": {
+    "M": "done @3139366 — baseline 54/54 tests, 611-file SHA inventory, live-render /proc snapshot (read-only)",
+    "N": "done @fac0844 — closure 104 items, 24 verified cm installed, stale westshops-v4 cm replaced (retired copy kept), provenance-gated manifest regen, 4 tolerance fallbacks documented+negatively pinned, originals 225/225 unchanged vs baseline",
+    "O": "done @1b9033c — temple-v3 official entry, self-sufficient official build, gate rewrite (owned servers, byte attribution, blank guard), BROWSER_GATE_PASS 12/12",
+    "P": "done @8953636 — --out+refuse-overwrite generators, tree-v1 rollback risk closed (input+positions fixed to adopted), isolated double-rebuild stable, canonical correspondence to adopted, 5 repro checks + 2 failure negatives",
+    "Q": "done — clipB verified 576/576@24.000s sha-consistent; clipA terminal state pending (see blockers); START_HERE + delivery-manifest + package/ (localhost static serve)",
+    "R": "done @e136729+evidence commits — verify_all 8 steps PASS (freeze strengthened: authorized datasets locked to this batch's baseline), restore PASS: full clone --no-hardlinks @ releaseCodeCommit, no alternates, 225 originals byte-identical, build+56 tests+12-scenario gate rerun in clone, dir preserved"
+  },
+  "verification": {
+    "tests": { "command": "node --test tests/*.test.mjs", "pass": 56, "fail": 0, "at": "releaseCodeCommit and in restore clone" },
+    "browserGate": { "tool": "tools/full_browser_gate.mjs", "scenarios": 12, "pass": 12, "report": "artifacts/world-closeout/browser-report.json", "rerunInRestoreClone": true },
+    "rebuild": "artifacts/world-closeout/rebuild-report.json pass=true (stability+correspondence+5 repro)",
+    "restore": "artifacts/world-closeout/restore-report.json pass=true releaseCommit=e136729... scope=same-host fresh directory (no shared alternates)",
+    "originalAssets": "225 original GLBs byte-identical to M baseline at N install, at releaseCodeCommit, and in the restore clone"
+  },
+  "video": {
+    "clipB": { "state": "complete", "frames": 576, "durationSec": 24.0, "sha256Prefix": "462df881e36f3f0d49b74ca4", "story": "GPU 456 then CUDA OOM -> CPU --resume, 0 blank at seam" },
+    "clipA": {
+      "state": "NO_TERMINAL_STATUS_AT_DELIVERY",
+      "expectedFrames": 8781,
+      "cutoff": "2026-09-20T08:15:00+09:00 (unchanged)",
+      "detail": "render/watchdog alive and legitimate at delivery time; frames growing; status file absent -> per policy NOT copied, NOT rerendered, NOT stopped; receipt tool ready (node tools/closeout_video_receipt.mjs)",
+      "receipt": "artifacts/world-closeout/video-receipt.json"
+    }
+  },
+  "blockers": [
+    "clipA terminal state not yet on disk (source watchdog owns assembly at completion or 11h cap) — receipt step pending; partial-at-cutoff is an allowed terminal state and will be labelled partial, never full",
+    "world/fangbang-temple-v3/** two pre-existing cm defects (stale westshops-strips.cm.glb 120->72 tris/59.4m; temple-axis/lions.glb cm 0.5624% degenerate-tri drift) found and recorded — outside this batch's allowedChanges; fix chain ready (candidate rebuild + registry-gated make_cm_manifest --dataset fangbang-temple-v3) pending owner authorization"
+  ],
+  "notes": [
+    "delivery package: artifacts/world-closeout/package/ (site + reports + video + docs); serve via localhost static server, file:// not a supported claim",
+    "no merge, no push, no public release, no deletion (all scratch/retire copies preserved), no new automation started",
+    "post-release commits are evidence/delivery records only; shipped code+assets end at e136729"
+  ]
+}
