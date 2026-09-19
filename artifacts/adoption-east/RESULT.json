@@ -1,0 +1,49 @@
+{
+  "batch": "pawborough-adoption-east-night-20260919",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": true,
+  "visualReview": "owner_adopted_20260919_pending_lead_check",
+  "adoptionDecision": "OWNER_DECISION-20260919.json (G1 adopt_all retained; G5/G6/G12/G14 executed; engineering acceptance tracked separately)",
+  "packages": {
+    "H_adoption_records_compressed_default": {
+      "done": true,
+      "ownerAdoptedSetTrue": 10,
+      "historicalRegistered": 5,
+      "compressedDefault": "probe-based fetch shim (src/world/compressedState.js), ?compressed=0 opt-out, per-dataset consistency, HTML-fallback guard",
+      "v4Repairs": "stale court: colliders, missing tree instances, stale module sha, 3 stale compressed GLBs (would have served wrong geometry), make_cm_manifest.mjs added"
+    },
+    "I_trees_v2": {
+      "done": true,
+      "tris": 1936,
+      "budget": "1800-2600",
+      "seed": 20260919,
+      "frameRule": "central-60% canopy ratio 0 on all three frozen cameras (full-scene mask renders, artifacts/adoption-east/frame-rule.json)",
+      "specDeviations": "court2-w shifted 1.90m (spec point ON the route swing; no smaller shift clears), court3-e 1.41m"
+    },
+    "J_east_band": {
+      "done": true,
+      "road": "113.5m, measured junction (0.00 gap), 4.0->8.5 ease, 4388 tris, end wall 11.2x3.4x0.3 at x=236",
+      "shops": "9/9 setbacks + frozen modules (block-east-shops, revocable), 3 strips, eastShopsBlockTris 107472<=110k",
+      "route": "512.2m total, east start 3m before the end wall",
+      "compositionFixes": "instance anchors (obb.pos), module-local yaw (YAW+o.theta), court: rename, AABB Y reconcile (160 records)"
+    },
+    "K_video": {
+      "stills": "29 (26 contract + 3 east-band), 0 blank",
+      "clipA": "CPU full-route render, preflight 5 frames pass, 11h cap watchdog (batch-scoped), see render-log.json",
+      "clipB": "orbit 576 frames GPU",
+      "contactSheets": "12 views before/after"
+    },
+    "L_closeout": {
+      "handoff": "HANDOFF-REVIEW-20260919.md + night increment section",
+      "verifyChain": "verify_all 9 steps: freeze_check -> make_version -> sha_reconcile -> dist -> preview x2 -> full_browser_gate (7 scenarios, build attribution, HARD routeCheck)",
+      "tests": "50/50"
+    }
+  },
+  "gatesTouched": ["G1 (records only)", "G5", "G6", "G12", "G14"],
+  "notInScopeRespected": ["G2 玄扈台 / G3 照壁 untouched", "no weathering", "building/** + v1/v2 datasets read-only", "no merge, no push"],
+  "knownResiduals": [
+    "v4 swap-variant compressed GLBs not rebuilt (original bytes served honestly under default-compressed)",
+    "street-props has no compressed variants (original in both states)",
+    "clipA partial if the 11h cap lands first (fallback #6)"
+  ]
+}

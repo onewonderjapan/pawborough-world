@@ -1,7 +1,7 @@
 {
   "batch": "pawborough-adoption-east-night-20260919",
   "role": "v1.0 ADOPTED — owner adopted all delivered visuals 2026-09-19 (G1); this batch lands the adoption records, compressed-default loading, trees v2 and the east band (G5/G6/G12/G14)",
-  "generatedAt": "2026-09-19T07:14:15.675Z",
+  "generatedAt": "2026-09-19T11:48:38.006Z",
   "compressedDefault": true,
   "adoption": {
     "decidedAt": "2026-09-19T20:30+09:00",
@@ -18,6 +18,13 @@
       {
         "artifact": "corridor-video",
         "batchId": "pawborough-corridor-video-night-20260919",
+        "ownerAdopted": true,
+        "decidedAt": "2026-09-19T20:30+09:00",
+        "decisionFile": "OWNER_DECISION-20260919.json"
+      },
+      {
+        "artifact": "east-band",
+        "batchId": "pawborough-adoption-east-night-20260919",
         "ownerAdopted": true,
         "decidedAt": "2026-09-19T20:30+09:00",
         "decisionFile": "OWNER_DECISION-20260919.json"
@@ -118,9 +125,9 @@
     ]
   },
   "git": {
-    "head": "5edc10cc912bbcc04fd9a1d26b1af24acbbf2bd1",
+    "head": "5830e4d62915e34055a46272f88d6f4ea1b7a064",
     "branch": "work/adoption-east-20260919",
-    "subject": "merge v1 candidate + corridor/video batches (8c55d6b) into main"
+    "subject": "GPT-review re-check fixes (engineering acceptance track): stage flank walls (the visible timber side boards x±3.015, y2.40..3.21 had no collider) added to temple-axis-v3 + kit sidecar + composed into v4 (stage_contract S3 now 4 columns + 1 rail + 2 flank walls); west/east shop AABB Y ranges reconciled to obb.center ± size/2 in the v4 pipeline (Y_RECONCILE: 160/790 records fixed — westshop records flattened upper floors y3.49..3.71 onto 0..0.22, counters, thresholds; Y is yaw-invariant so the reconcile is exact); persisted as eastshops_contract S5. 50/50 tests. Physics-only: no visible geometry changed, K1 render unaffected."
   },
   "tools": {
     "node": "v22.23.2",
@@ -131,20 +138,24 @@
     "playwright": "1.63.0 (installed --no-save)"
   },
   "tests": {
-    "suiteFiles": 46,
+    "suiteFiles": 50,
     "list": [
       "tests/asset_cancel.test.mjs",
       "tests/block_lifecycle.test.mjs",
       "tests/block_production.test.mjs",
+      "tests/compressed_default.test.mjs",
       "tests/dadian_contract.test.mjs",
       "tests/dadian_roof.test.mjs",
+      "tests/east_extension_contract.test.mjs",
       "tests/eastedge_contract.test.mjs",
+      "tests/eastshops_contract.test.mjs",
       "tests/entry_court_v3_contract.test.mjs",
       "tests/fangbang_bridge_contract.test.mjs",
       "tests/fangbang_bridge_passage.test.mjs",
       "tests/fangbang_map_registry.test.mjs",
       "tests/fangbang_v2_contract.test.mjs",
       "tests/fangbang_v3_passage.test.mjs",
+      "tests/fangbang_v4_passage.test.mjs",
       "tests/houdian_contract.test.mjs",
       "tests/laneb_contract.test.mjs",
       "tests/laneb_texture_slots.test.mjs",
@@ -196,8 +207,8 @@
       "status": null,
       "cameras": 11,
       "files": 537,
-      "totalBytes": 534814694,
-      "filesDigest": "f7ad5a1d45f7d8f0ad7f8c5fa98f3f1bb91664770301c1004bdede09bb69a8b7"
+      "totalBytes": 535113486,
+      "filesDigest": "46bfe976cae79af51c75191651e204c1b510fb17a6cfdc24eb96d061132fb6b3"
     },
     {
       "id": "world/east-edge",
@@ -238,10 +249,10 @@
       "placedTriangles": 171464,
       "ownerAdopted": false,
       "status": "delivered_for_lead_review",
-      "cameras": 8,
+      "cameras": 11,
       "files": 45,
-      "totalBytes": 41567923,
-      "filesDigest": "04497d6895db876b5e5d84fec0e3d8c2f58ca77823230140ce6c72e7dec45d5f"
+      "totalBytes": 41793573,
+      "filesDigest": "f4fe77129868bbdb1fd60a87c931cc18c15a6e84b686d6b61aa414a61be7fe78"
     },
     {
       "id": "fangbang-temple",
@@ -312,13 +323,13 @@
     {
       "id": "temple-axis-v3",
       "path": "world/temple-axis-v3/",
-      "placedTriangles": 160574,
+      "placedTriangles": 166046,
       "ownerAdopted": false,
       "status": "delivered_for_lead_review",
       "cameras": 10,
       "files": 23,
-      "totalBytes": 27269356,
-      "filesDigest": "7bf256db4d96e65f4f9ee569394912c62429c4399a3db561b22657ff18878109"
+      "totalBytes": 27342498,
+      "filesDigest": "170944a2c5ce4f3b7af1eb1f94343d021f9777b6c884c6993f2dfac1100685d2"
     },
     {
       "id": "temple-dadian",
@@ -932,43 +943,53 @@
     },
     {
       "path": "world/fangbang-temple-v4/blocks.json",
-      "bytes": 40400,
-      "sha256": "a96855c38fe7b28df80177f30ae1d8a208c83290a0ba409e137082a7faebfcc4"
+      "bytes": 47247,
+      "sha256": "8f967636a470ad3b0cb378dfee966d2e5676d2b42999929ad9af545f13149541"
     },
     {
       "path": "world/fangbang-temple-v4/cameras.json",
-      "bytes": 2841,
-      "sha256": "0aefbeca6305b4e13a22f08f646a92849a59059b5c90600db62e95381347d533"
+      "bytes": 3676,
+      "sha256": "7b20e35b8f75e9d9f5731adffaa1a9b177cc2c5dd28c7a963b28c3c0204d385c"
     },
     {
       "path": "world/fangbang-temple-v4/collision-world.json",
-      "bytes": 392291,
-      "sha256": "46fce22afd3fee107819394986d916eb3cfa65af788f07f4db35c96fcc588ee6"
+      "bytes": 455741,
+      "sha256": "dbc1695a940c8b78878ee0dd8d9d2b25eb84b86f295b8fe376aa93b774075709"
+    },
+    {
+      "path": "world/fangbang-temple-v4/east-extension/seal-wall.glb",
+      "bytes": 2608,
+      "sha256": "5815ce8b9f413b28c51135bc732ce12054542a7fe2d45bf8268780a705be034d"
+    },
+    {
+      "path": "world/fangbang-temple-v4/east-extension/surface.glb",
+      "bytes": 1216532,
+      "sha256": "ea8a75c35cddc5107e0fa338acecfaa55869000e3c5d2f8a1cf97e5680a4b794"
+    },
+    {
+      "path": "world/fangbang-temple-v4/eastshops-strips.glb",
+      "bytes": 7528,
+      "sha256": "e8b4131a3ae635bcbf29ecb41e9e6a77d1f7f40a6db0bec7aa40b43bb63458bf"
     },
     {
       "path": "world/fangbang-temple-v4/instances.json",
-      "bytes": 14639,
-      "sha256": "79b05c23a4c56ba345a863f7479bc56ce0a9bcb81921dd28451867a82b2a45f6"
+      "bytes": 19528,
+      "sha256": "cab60f6146425ce215c61081ce615f99ece09f008d30a21c9542dd399d3fdc23"
     },
     {
       "path": "world/fangbang-temple-v4/review-manifest.cm.json",
-      "bytes": 41722,
-      "sha256": "0285b54f4d9cab77b9917da16abe77948389922dfdb6367c83d262e29f9a7528"
+      "bytes": 48156,
+      "sha256": "f685b363b1b73cd0b5b54d0694da2f4c3e5e3d744e09b6aaa478c0879569a1fe"
     },
     {
       "path": "world/fangbang-temple-v4/review-manifest.json",
-      "bytes": 41010,
-      "sha256": "c50e409226bac6d6bcdfbdc2af9afc18c8f5f989ed3987739eb2e5fa1f50b560"
+      "bytes": 47432,
+      "sha256": "9c766c935ee566792ac570abd31ffaba420e0b955354435d5f472d89bd2115c3"
     },
     {
       "path": "world/fangbang-temple-v4/route.json",
-      "bytes": 9131,
-      "sha256": "379c39a397bdd241df2369dd472afaf5bc370e959a33e2356680d88b38cd030f"
-    },
-    {
-      "path": "world/fangbang-temple-v4/temple-axis/court-open.cm.glb",
-      "bytes": 974328,
-      "sha256": "3150a804567b762b505eb6b64438d14b54b13b9e8f24094087021188ab0b5e3f"
+      "bytes": 20812,
+      "sha256": "7c3f3d54ef9884dc9c08b65db45ab82a8f5b77b0f7d9820c107b39a10d84164b"
     },
     {
       "path": "world/fangbang-temple-v4/temple-axis/court-open.glb",
@@ -1036,19 +1057,9 @@
       "sha256": "693a5efb758700c96c162f9c9c93e0d1b91f490cde895e9d41202b4cdcd9f615"
     },
     {
-      "path": "world/fangbang-temple-v4/temple-axis/lions.cm.glb",
-      "bytes": 46532,
-      "sha256": "962c0edc9a8afeb8537cd8469661e35aea2b17aa20ca8a9778ede226f90d3fb9"
-    },
-    {
       "path": "world/fangbang-temple-v4/temple-axis/lions.glb",
       "bytes": 490048,
       "sha256": "46dd10af05af07d8f9ab4ea234b6f3daf4af902184543e92f36b449019d44b7a"
-    },
-    {
-      "path": "world/fangbang-temple-v4/temple-axis/ornaments.cm.glb",
-      "bytes": 184656,
-      "sha256": "b71943269dcca3fcd049e8fdfeca0c66695a1a077695eec82974cfedc32f8d0e"
     },
     {
       "path": "world/fangbang-temple-v4/temple-axis/ornaments.glb",
@@ -1076,9 +1087,9 @@
       "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb"
     },
     {
-      "path": "world/fangbang-temple-v4/temple-axis/tree-camphor.glb",
-      "bytes": 129380,
-      "sha256": "32deedf02da0d74a242bd69b43cae863125cfff3ec7e542da51037c97f42b0c8"
+      "path": "world/fangbang-temple-v4/temple-axis/tree-camphor-v2.glb",
+      "bytes": 233320,
+      "sha256": "5219f9a3a065fd1c2d4262899fa04e49f1ed31e31b9f709b162b74223a84cb33"
     },
     {
       "path": "world/fangbang-temple-v4/temple-axis/yimen-stage.cm.glb",
@@ -2662,8 +2673,8 @@
     },
     {
       "path": "world/temple-axis-v3/collision-world.json",
-      "bytes": 135272,
-      "sha256": "4b17ead85868a5da621de1ee92cdd78c8a7a949c512bf74e438d740c1dcf7b2f"
+      "bytes": 104974,
+      "sha256": "9e4cbd491758c5efcb15c355610f44d02c6a821d410d3e4ab55739d6b53d7dbe"
     },
     {
       "path": "world/temple-axis-v3/court3.glb",
@@ -2712,8 +2723,8 @@
     },
     {
       "path": "world/temple-axis-v3/instances.json",
-      "bytes": 3465,
-      "sha256": "bf7272c965aca23f06920ea96593e5be9bb7c9e205f18aa3f014c3cb30a80355"
+      "bytes": 2986,
+      "sha256": "77fa8ffbd0e8ad6dd2d2504b8c3bbd11ddcdc7979b12b040991a2292c17dc872"
     },
     {
       "path": "world/temple-axis-v3/lions-v2.glb",
@@ -2737,8 +2748,8 @@
     },
     {
       "path": "world/temple-axis-v3/review-manifest.json",
-      "bytes": 7156,
-      "sha256": "15f017878b0eab60e9b5b3db08c0a4e13c7838da98b56dd2126f97013b593cde"
+      "bytes": 7135,
+      "sha256": "30df9a0fa4ab92a896a7223aac9be66d4c15511d0d17aa1db4ca47aa389c34a3"
     },
     {
       "path": "world/temple-axis-v3/route.json",
@@ -2751,9 +2762,9 @@
       "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb"
     },
     {
-      "path": "world/temple-axis-v3/tree-camphor.glb",
-      "bytes": 129380,
-      "sha256": "32deedf02da0d74a242bd69b43cae863125cfff3ec7e542da51037c97f42b0c8"
+      "path": "world/temple-axis-v3/tree-camphor-v2.glb",
+      "bytes": 233320,
+      "sha256": "5219f9a3a065fd1c2d4262899fa04e49f1ed31e31b9f709b162b74223a84cb33"
     },
     {
       "path": "world/temple-axis-v3/yimen-roof-surface-samples.json",

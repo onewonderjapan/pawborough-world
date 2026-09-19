@@ -1,48 +1,53 @@
 {
   "tool": "tools/verify_all.sh",
-  "startedAt": "2026-09-19T15:59:33+09:00",
-  "finishedAt": "2026-09-19T15:59:55.850469+09:00",
+  "startedAt": "2026-09-19T20:48:26+09:00",
+  "finishedAt": "2026-09-19T20:51:16.898607+09:00",
   "pass": true,
   "steps": [
     {
       "step": "npm_install",
       "pass": true,
-      "ms": 3
+      "ms": 7
     },
     {
       "step": "tests",
       "pass": true,
-      "ms": 2423
+      "ms": 7908
+    },
+    {
+      "step": "freeze_check",
+      "pass": true,
+      "ms": 1324
     },
     {
       "step": "make_version",
       "pass": true,
-      "ms": 747
+      "ms": 2039
     },
     {
       "step": "sha_reconcile",
       "pass": true,
-      "ms": 645
+      "ms": 1589
     },
     {
       "step": "dist_build",
       "pass": true,
-      "ms": 1675
+      "ms": 4223
     },
     {
       "step": "preview_a",
       "pass": true,
-      "ms": 2013
+      "ms": 2063
     },
     {
       "step": "preview_b",
       "pass": true,
-      "ms": 2013
+      "ms": 2061
     },
     {
       "step": "cruise",
       "pass": true,
-      "ms": 12853
+      "ms": 148713
     }
   ],
   "logs": "one /tmp/verify_all_<step>.log per step (transient)"

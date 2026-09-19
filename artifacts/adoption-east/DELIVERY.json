@@ -1,0 +1,13 @@
+{
+  "batch": "pawborough-adoption-east-night-20260919",
+  "branch": "work/adoption-east-20260919 (from main 5edc10c, includes 8c55d6b)",
+  "commits": ["a372484 H", "7b15243 I", "6c959b5 J", "5830e4d GPT-review fixes", "<this> K+L"],
+  "revoke": "?revoke=block-east-shops (east band); ?revoke=block-temple-axis etc. unchanged",
+  "pages": {
+    "v4": "?ds=fangbang-temple-v4&skins=1&props=1 (default-compressed; &compressed=0 for original bytes)",
+    "eastBandEvidence": "artifacts/east-band/web (11 views), artifacts/east-band/stills-blender (4)",
+    "sceneV3": "kit/out/scene-v3/scene-v3.blend + 29 stills"
+  },
+  "verification": "PREVIEW_PORT_A=5312 PREVIEW_PORT_B=5313 bash tools/verify_all.sh (9 steps) + node --test tests/*.test.mjs (50/50)",
+  "handoff": "HANDOFF-REVIEW-20260919.md (repo root) with the 2026-09-19 night increment section"
+}

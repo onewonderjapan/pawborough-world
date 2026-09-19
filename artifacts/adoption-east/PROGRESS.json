@@ -1,44 +1,20 @@
 {
   "batch": "pawborough-adoption-east-night-20260919",
-  "updatedUTC": "2026-09-19T10:30:00Z",
-  "phase": "H complete pending smoke; I starting",
-  "H": {
-    "H0": {
-      "worktree": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace",
-      "branch": "work/adoption-east-20260919",
-      "base": "main 5edc10c (main contains 8c55d6b per PLAN inputNote; 2 ahead: merges of bridge/expansion/v1-candidate, all previously reviewed)",
-      "baseline": "tests 46/46 green; verify_all 8/8 green with PREVIEW_PORT_A=5312 PREVIEW_PORT_B=5313 (5306/5307 held by the corridor workspace's live preview servers — not touched)",
-      "toolFix": "tools/verify_all.sh pkill patterns now use $PA/$PB instead of hardcoded 530[67] — the hardcoded pattern would have killed the corridor workspace's live preview servers, defeating the documented port-override design"
-    },
-    "H1": {
-      "updated": "10 in-tree artifacts/*/RESULT.json -> ownerAdopted=true, visualReview=owner_adopted_20260919, adoptionDecision=OWNER_DECISION-20260919.json",
-      "crossTree": "sidefaces-full has NO RESULT.json in this tree (evidence dirs only) -> registered in VERSION.json.adoption.historicalBatches with the other 4 cross-tree batches; no other worktree modified"
-    },
-    "H2": {
-      "design": "compressed variant DEFAULT ON via src/world/compressedState.js: ?compressed=0 opts out; ?compressed=1 accepted; installer PROBES <dataset>/review-manifest.cm.json (HEAD) and only installs the fetch rewrite when present, so datasets without a compressed manifest stay ENTIRELY original (page integrity needs manifest+GLBs from one variant; no mixed states). Per-URL 404/HTML fallback keeps stray assets honest.",
-      "htmlGuard": "vite dev answers missing paths with 200 index.html fallback -> shim only accepts repoints whose content-type is not text/html (real 404 otherwise)",
-      "pages": "fangbang.html + temple-v2.html + temple-v3.html (templeV2/V3 had no compressed path before; V3 is a dev-only page, not a rollup input)",
-      "indexPage": "banner note via tools/make_version.mjs template (regenerated file)",
-      "devServing": "no copying: world/**.cm.glb are COMMITTED repo assets (205 tracked) — dev and preview/dist both serve them natively; dist/ gets them via verify_all's cp -r world",
-      "newTest": "tests/compressed_default.test.mjs (flag logic, 3-mains install contract, both-state manifest integrity sha/bytes, <=0.1% triangle drift across states, original-state dataset pins, VERSION adoption assertions)",
-      "newTool": "tools/compressed_smoke.mjs (browser-level: default URL fetches .cm.glb, ?compressed=0 fetches originals, per-dataset manifest reconciliation incl. keptOriginal fallbacks; temple-v3 scenario runs on dev because it has no rollup input)"
-    },
-    "v4_repairs": {
-      "why": "fangbang.html?ds=fangbang-temple-v4 NEVER loaded in a browser at baseline 5edc10c (corridor batch validated the dataset + Blender renders only; its cruise covered fangbang-default + temple-v2). Compressed-default browser smoke surfaced 4 layers of pre-existing defects, all inside the inPlaceUpdatesAuthorized v4 dataset:",
-      "fixes": [
-        "collision-world.json: removed 6 stale 'court:'-prefixed entry-court wall colliders (float-precision duplicates of the 'entrycourt-open:' records); renamed the 3 'court:burner-*' records to 'entrycourt-open:burner-*' (burner must stay collidable — 可见即可挡); 681 -> 675 records",
-        "collision-world.json: removed 4 'tree-*:tree-trunk-block' records whose instance ids exist nowhere in instances.json (corridor batch composed temple+tree colliders into the dataset file but never added the instances)",
-        "instances.json 58 -> 62: added the 4 tree instances (ids/positions/yaw from manifest templeAxis.assets)",
-        "review-manifest.json modules 55 -> 59: added 4 temple-axis-tree-* modules; fixed 3 STALE module entries (shanmen-lions, shanmen-ornaments, entrycourt-open carried pre-variant-swap bytes/sha)",
-        "deleted 3 STALE compressed GLBs (court-open.cm.glb 1580 vs orig 4192, lions.cm.glb 3536 vs 4064, ornaments.cm.glb 2304 vs 1148 — corridor batch swapped variants without recompressing; compressed state would have served WRONG GEOMETRY with an honest sha). make_cm_manifest now keeps those original; 675-record collision + triangle accounting reconcile",
-        "tools/make_cm_manifest.mjs (NEW): regenerates ONE dataset's review-manifest.cm.json from its CURRENT original manifest, repointing only to on-disk .cm.glb siblings — fixes the stale v4 cm manifest that still referenced v3-era paths (would have failed page integrity under default-compressed). Re-run after J4."
-      ],
-      "verification": "tests 47/47; browser probe: v4 page READY tris=569532 (compressed default) / 569540 (?compressed=0)"
-    },
-    "H3": {
-      "make_version": "adoption block (decidedAt 2026-09-19T20:30+09:00, decisionFile, 10 inTreeBatches keyed by artifact dir + 5 historicalBatches), compressedDefault=true, batch/role updated, index-v1 banner states adoption + compressed default",
-      "commit": "after compressed smoke passes"
-    }
-  },
+  "phase": "L (closeout): clipA rendering in background; artifacts staged",
+  "timeline": [
+    "H: adoption records + compressed default + v4 dataset repairs (a372484)",
+    "I: trees v2 + frame rule 0/0 + in-place replace (7b15243)",
+    "J: east road + east band + route extension + composition fix #3 (6c959b5)",
+    "increment: stage flank walls + AABB Y reconcile (5830e4d)",
+    "K0: scene-v3.blend + 29 stills 0 blank; K2: clipB; K3: render-log + 12 contact sheets",
+    "verification chain: freeze_check + full_browser_gate (7 scenarios, HARD routeCheck) — BROWSER_GATE_PASS"
+  ],
+  "incrementDirectives": [
+    "1 K1 restart with absolute paths + batch-scoped watchdog with startup-failure detection: done",
+    "2 GPT-review re-check: stage flank wall collision + shop AABB Y ranges fixed (5830e4d); already-fixed items verified with evidence, no rework",
+    "3 verification chain: frozen inventory checked BEFORE version generation; browser gate covers v4+skins+props / temple-v3 / both compressed states; preview attributed to THIS build; missing routeCheck fails",
+    "4 physics fixes ran in parallel with rendering (collision-world is not a render input; no visible geometry changed)",
+    "5 owner visual-adoption records retained; engineering acceptance recorded separately (this file + DELIVERY.json)"
+  ],
   "blockers": []
 }

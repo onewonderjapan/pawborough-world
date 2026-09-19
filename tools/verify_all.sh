@@ -37,6 +37,35 @@ step() { # step <name> <cmd...>
 
 step npm_install bash -c '[ -d node_modules ] || npm install --no-save playwright@1.63.0'
 step tests node --test tests/*.test.mjs
+# freeze_check BEFORE make_version: the FROZEN inventory (world/**, building/**
+# as recorded by the last committed VERSION.json) must match disk byte-for-byte
+# before a new version manifest is generated — a drifted frozen asset fails the
+# run instead of being silently re-stamped by make_version.
+step freeze_check node -e '
+    const { createHash } = require("node:crypto");
+    const { readFile } = require("node:fs/promises");
+    const { execSync } = require("node:child_process");
+    (async () => {
+      let head;
+      try { head = execSync("git rev-parse --verify HEAD:VERSION.json", { encoding: "utf8" }).trim(); }
+      catch { console.log("freeze_check skipped: no committed VERSION.json yet"); return; }
+      const prev = JSON.parse(execSync("git show HEAD:VERSION.json", { encoding: "utf8" }));
+      // in-place-update exemption (DESIGN_SPEC.inPlaceUpdatesAuthorized): the
+      // datasets this batch is authorized to update in place are NOT frozen
+      const EXEMPT = ["world/temple-axis-v3/", "world/fangbang-temple-v4/"];
+      const exempt = (p) => EXEMPT.some((pre) => p.startsWith(pre));
+      let checked = 0, skipped = 0, bad = [];
+      for (const f of [...prev.worldFiles, ...prev.buildingFiles]) {
+        if (exempt(f.path)) { skipped++; continue; }
+        let b;
+        try { b = await readFile(f.path); } catch { bad.push(`${f.path}: missing`); continue; }
+        if (createHash("sha256").update(b).digest("hex") !== f.sha256) bad.push(`${f.path}: sha drift`);
+        checked++;
+      }
+      if (bad.length) { console.error("FROZEN_INVENTORY_DRIFT\n" + bad.slice(0, 10).join("\n")); process.exit(1); }
+      console.log(`freeze_check ok ${checked} frozen files match HEAD (${skipped} in authorized-update datasets skipped)`);
+    })().catch((e) => { console.error(e.message); process.exit(1); });
+  '
 step make_version node tools/make_version.mjs
 step sha_reconcile node -e '
     const { createHash } = require("node:crypto");
@@ -59,7 +88,9 @@ step dist_build bash -c 'npm run build && cp -r world building VERSION.json inde
 PA="${PREVIEW_PORT_A:-5306}"; PB="${PREVIEW_PORT_B:-5307}"
 step preview_a bash -c "nohup node_modules/.bin/vite preview --host 127.0.0.1 --port $PA --strictPort >/tmp/verify_preview_$PA.log 2>&1 & sleep 2; curl -sf -o /dev/null http://127.0.0.1:$PA/fangbang.html"
 step preview_b bash -c "nohup node_modules/.bin/vite preview --host 127.0.0.1 --port $PB --strictPort >/tmp/verify_preview_$PB.log 2>&1 & sleep 2; curl -sf -o /dev/null http://127.0.0.1:$PB/temple-v2.html"
-step cruise node tools/cruise_dist.mjs --base-a http://127.0.0.1:$PA --base-b http://127.0.0.1:$PB
+# full browser gate (adoption batch): v4+skins+props / v3 / temple-v2 in both
+# compressed states, temple-v3 on dev, build attribution, HARD routeCheck
+step cruise bash -c "node tools/full_browser_gate.mjs --dev-port 5320 --preview-port $PA"
 pkill -f "[v]ite preview --port $PA" 2>/dev/null || true
 pkill -f "[v]ite preview --port $PB" 2>/dev/null || true
 
