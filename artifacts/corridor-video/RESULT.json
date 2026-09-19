@@ -1,0 +1,68 @@
+{
+  "batch": "pawborough-corridor-video-night-20260919",
+  "package": "F",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "visualReview": "pending_lead",
+  "deliveredAt": "2026-09-19T13:08:34.047329+09:00",
+  "F0": {
+    "rig": "kit/light_rig.py (Sun 3.0 @(55,0,-35) 1.5deg angular, world gray 0.55, fill AREA 60W camera-following, AgX Base Contrast, legacy lights disabled)",
+    "unification": "same module applied on all render paths (scene-v2 build / reopen stills / walkthrough / orbit); scene-v1 blend is frozen so its renders go through render_scene_views with the rig",
+    "pixelDiffCheck": "builder vs reopen, same camera (bridge:shanmen-from-road): 0.000% pixels >8/255 different (contract <=2%)"
+  },
+  "F1": {
+    "dataset": "world/fangbang-temple-v4 (681 colliders, 19 axis assets incl. 4 trees, route detour carried to world coords, propsBlock default OFF)",
+    "pageParam": "?ds=fangbang-temple-v4 (mechanism pre-existing from the expansion batch)",
+    "scene": "kit/out/scene-v2/scene-v2.blend — full v4 assembly + props + 4 trees, 26 contract cameras",
+    "axisAerialFix": {
+      "specPose": "local [-36,46,-8] -> [0,2,-46] fov48 — measured nonBackground 0.22-0.26, FAILS its own >=0.40 acceptance",
+      "adjustedPose": "local [-36,26,-8] -> [0,0,-28] fov48 — measured 0.435, PASS",
+      "evidence": "kit/out/scene-v2/camera-fix__axis-aerial-{old,new}-cpu.png",
+      "inheritedBug": "scene-v1 builder used temple: cameras RAW (axis-local as world) — every committed v1 temple: view rendered empty street-south area; fixed transform applied to BOTH sides of the G set"
+    }
+  },
+  "F2": {
+    "stills": 26,
+    "resolution": "1600x900",
+    "samples": 24,
+    "denoiser": "OIDN",
+    "device": "CPU",
+    "blankFrames": 0,
+    "dir": "artifacts/corridor-video/stills/"
+  },
+  "F3": {
+    "clip": "clipA.mp4",
+    "route": "fangbang-temple-v4 mainStreet (street east end -> west extension -> shanmen -> forecourt burner detour -> yimen -> peidian court -> dadian -> side passage -> court3 -> houdian front)",
+    "polylineLengthM": 402.2,
+    "plannedFrames": 6896,
+    "renderedFrames": 6293,
+    "durationS": 264.2,
+    "partial": true,
+    "partialReason": "9h render wall-clock cap (fallback #11): CPU 4.5-6.3s/frame x 6896 frames ≈ 10.6h > 9h; watchdog stopped at cap and assembled 91%",
+    "resolution": "1280x720",
+    "fps": 24,
+    "samples": 16,
+    "denoiser": "OIDN",
+    "device": "CPU",
+    "devicePolicy": "nvidia-smi at start + every 200 frames (avg 4.5-6.3s/frame CPU vs 8.8-12.2s/frame GPU under load -> CPU kept, switches none)",
+    "titleCard": "2s black/white honesty card (design reconstruction, not a historical record)",
+    "preflight": "artifacts/corridor-video/preflight/ 5 probe frames verified",
+    "blankFrames": 0,
+    "guards": "per-frame std/mono guard, 3-blank abort never triggered"
+  },
+  "F4": {
+    "clip": "clipB.mp4",
+    "frames": 576,
+    "durationS": 24.0,
+    "resolution": "1280x720",
+    "fps": 24,
+    "samples": 16,
+    "device": "GPU",
+    "avgFrameSeconds": 5.08,
+    "orbit": "r55 h40 around axis-local (0,0,-45) -> (0,4,-45), T+yaw transformed",
+    "blankFrames": 0
+  },
+  "gatesTouched": [
+    "G14 (clips as v1.0 attachments + axis-aerial adjusted pose ratification)"
+  ]
+}
