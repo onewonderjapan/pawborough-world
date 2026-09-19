@@ -1,0 +1,301 @@
+{
+  "generatedAt": "2026-09-19T16:25:19.130Z",
+  "servers": {
+    "dev": {
+      "port": 5340,
+      "pid": 144641,
+      "base": "http://127.0.0.1:5340",
+      "attribution": {
+        "method": "served temple-v3.html references /src/templeV3Main.js (vite dev injects its HMR client, so no byte equality) AND served transformed compressedState.js carries the cm-probe literal",
+        "htmlReferencesEntry": true,
+        "moduleMarker": true
+      }
+    },
+    "preview": {
+      "port": 5341,
+      "pid": 144661,
+      "base": "http://127.0.0.1:5341",
+      "attribution": {
+        "method": "served fangbang.html byte== dist/fangbang.html AND served referenced bundle byte== dist bundle",
+        "htmlMatch": true,
+        "bundleUrl": "/assets/fangbang-DSnnQ2-n.js",
+        "bundleMatch": true,
+        "htmlSha": "8ab06abe49ef0fcd31a7d2aba6599033373d1dc7ec7b4abb4e45781a6c5f2e64",
+        "bundleSha": "7620d1ceead3213d241298fcd1a25c37e3f249635ec1fc35e4e34ea6e6621f87"
+      }
+    }
+  },
+  "scenarios": [
+    {
+      "label": "preview/fangbang.html?ds=fangbang-temple-v4&skins=1&props=1",
+      "url": "/fangbang.html?ds=fangbang-temple-v4&skins=1&props=1",
+      "mode": "cm",
+      "ds": "fangbang-temple-v4",
+      "ready": true,
+      "routePass": true,
+      "routeSummary": "去程至闭门前(z_local=-71.63)·返程达·端墙挡✓·前院东界✓·闭门挡✓·接缝最长停滞0s",
+      "frame": {
+        "blank": false,
+        "std255": 54.02,
+        "dominantShare": 0.088
+      },
+      "cmGlbs": 80,
+      "plainGlbs": 28,
+      "unexpectedFetches": [],
+      "stateOk": true,
+      "fallbackProbes": 1,
+      "networkErrors": [],
+      "pass": true,
+      "evidence": "artifacts/world-closeout/browser-evidence/preview-v4-skins-props-cm.jpg"
+    },
+    {
+      "label": "preview/fangbang.html?ds=fangbang-temple-v4&skins=1&props=1&compressed=0",
+      "url": "/fangbang.html?ds=fangbang-temple-v4&skins=1&props=1&compressed=0",
+      "mode": "original",
+      "ds": "fangbang-temple-v4",
+      "ready": true,
+      "routePass": true,
+      "routeSummary": "去程至闭门前(z_local=-71.63)·返程达·端墙挡✓·前院东界✓·闭门挡✓·接缝最长停滞0s",
+      "frame": {
+        "blank": false,
+        "std255": 54.02,
+        "dominantShare": 0.088
+      },
+      "cmGlbs": 0,
+      "plainGlbs": 80,
+      "unexpectedFetches": [],
+      "stateOk": true,
+      "fallbackProbes": 0,
+      "networkErrors": [],
+      "pass": true,
+      "evidence": "artifacts/world-closeout/browser-evidence/preview-v4-skins-props-original.jpg"
+    },
+    {
+      "label": "preview/fangbang.html?ds=fangbang-temple-v3",
+      "url": "/fangbang.html?ds=fangbang-temple-v3",
+      "mode": "cm",
+      "ds": "fangbang-temple-v3",
+      "ready": true,
+      "routePass": true,
+      "routeSummary": "去程至闭门前(z_local=-71.63)·返程达·端墙挡✓·前院东界✓·闭门挡✓·接缝最长停滞0s",
+      "frame": {
+        "blank": false,
+        "std255": 54.21,
+        "dominantShare": 0.094
+      },
+      "cmGlbs": 42,
+      "plainGlbs": 17,
+      "unexpectedFetches": [],
+      "stateOk": true,
+      "fallbackProbes": 1,
+      "networkErrors": [],
+      "pass": true,
+      "evidence": "artifacts/world-closeout/browser-evidence/preview-v3-street-cm.jpg"
+    },
+    {
+      "label": "preview/fangbang.html?ds=fangbang-temple-v3&compressed=0",
+      "url": "/fangbang.html?ds=fangbang-temple-v3&compressed=0",
+      "mode": "original",
+      "ds": "fangbang-temple-v3",
+      "ready": true,
+      "routePass": true,
+      "routeSummary": "去程至闭门前(z_local=-71.63)·返程达·端墙挡✓·前院东界✓·闭门挡✓·接缝最长停滞0s",
+      "frame": {
+        "blank": false,
+        "std255": 54.21,
+        "dominantShare": 0.094
+      },
+      "cmGlbs": 0,
+      "plainGlbs": 42,
+      "unexpectedFetches": [],
+      "stateOk": true,
+      "fallbackProbes": 0,
+      "networkErrors": [],
+      "pass": true,
+      "evidence": "artifacts/world-closeout/browser-evidence/preview-v3-street-original.jpg"
+    },
+    {
+      "label": "preview/temple-v2.html",
+      "url": "/temple-v2.html",
+      "mode": "original",
+      "ds": "temple-axis-v2",
+      "ready": true,
+      "routePass": true,
+      "routeSummary": "门链[shanmen-mid:g court-mid:g yimen-door:g stage-passage:g court2-s:g]·配殿环✓·东通道✓·三进院✓·月台登顶y=0.87·城隍殿前z=-71.63·返程✓·负例7/7·掉地y=0",
+      "frame": {
+        "blank": false,
+        "std255": 65.66,
+        "dominantShare": 0.133
+      },
+      "cmGlbs": 0,
+      "plainGlbs": 15,
+      "unexpectedFetches": [],
+      "stateOk": true,
+      "fallbackProbes": 1,
+      "networkErrors": [],
+      "pass": true,
+      "evidence": "artifacts/world-closeout/browser-evidence/preview-temple-v2-default.jpg"
+    },
+    {
+      "label": "preview/temple-v2.html?compressed=0",
+      "url": "/temple-v2.html?compressed=0",
+      "mode": "original",
+      "ds": "temple-axis-v2",
+      "ready": true,
+      "routePass": true,
+      "routeSummary": "门链[shanmen-mid:g court-mid:g yimen-door:g stage-passage:g court2-s:g]·配殿环✓·东通道✓·三进院✓·月台登顶y=0.87·城隍殿前z=-71.63·返程✓·负例7/7·掉地y=0",
+      "frame": {
+        "blank": false,
+        "std255": 65.66,
+        "dominantShare": 0.133
+      },
+      "cmGlbs": 0,
+      "plainGlbs": 15,
+      "unexpectedFetches": [],
+      "stateOk": true,
+      "fallbackProbes": 0,
+      "networkErrors": [],
+      "pass": true,
+      "evidence": "artifacts/world-closeout/browser-evidence/preview-temple-v2-original.jpg"
+    },
+    {
+      "label": "preview/temple-v3.html",
+      "url": "/temple-v3.html",
+      "mode": "cm",
+      "ds": "temple-axis-v3",
+      "ready": true,
+      "routePass": true,
+      "routeSummary": "门链[shanmen-mid:g court-mid:g yimen-door:g stage-passage:g court2-s:g]·配殿环✓·东通道✓·三进院✓·月台登顶y=0.87·城隍殿前z=-71.63·返程✓·负例7/7·掉地y=0",
+      "frame": {
+        "blank": false,
+        "std255": 62.9,
+        "dominantShare": 0.102
+      },
+      "cmGlbs": 16,
+      "plainGlbs": 1,
+      "unexpectedFetches": [],
+      "stateOk": true,
+      "fallbackProbes": 1,
+      "networkErrors": [],
+      "pass": true,
+      "evidence": "artifacts/world-closeout/browser-evidence/preview-temple-v3-cm.jpg"
+    },
+    {
+      "label": "preview/temple-v3.html?compressed=0",
+      "url": "/temple-v3.html?compressed=0",
+      "mode": "original",
+      "ds": "temple-axis-v3",
+      "ready": true,
+      "routePass": true,
+      "routeSummary": "门链[shanmen-mid:g court-mid:g yimen-door:g stage-passage:g court2-s:g]·配殿环✓·东通道✓·三进院✓·月台登顶y=0.87·城隍殿前z=-71.63·返程✓·负例7/7·掉地y=0",
+      "frame": {
+        "blank": false,
+        "std255": 62.87,
+        "dominantShare": 0.102
+      },
+      "cmGlbs": 0,
+      "plainGlbs": 16,
+      "unexpectedFetches": [],
+      "stateOk": true,
+      "fallbackProbes": 0,
+      "networkErrors": [],
+      "pass": true,
+      "evidence": "artifacts/world-closeout/browser-evidence/preview-temple-v3-original.jpg"
+    },
+    {
+      "label": "dev/fangbang.html?ds=fangbang-temple-v4&skins=1&props=1",
+      "url": "/fangbang.html?ds=fangbang-temple-v4&skins=1&props=1",
+      "mode": "cm",
+      "ds": "fangbang-temple-v4",
+      "ready": true,
+      "routePass": true,
+      "routeSummary": "去程至闭门前(z_local=-71.63)·返程达·端墙挡✓·前院东界✓·闭门挡✓·接缝最长停滞0s",
+      "frame": {
+        "blank": false,
+        "std255": 54.02,
+        "dominantShare": 0.088
+      },
+      "cmGlbs": 80,
+      "plainGlbs": 2,
+      "unexpectedFetches": [],
+      "stateOk": true,
+      "fallbackProbes": 1,
+      "networkErrors": [],
+      "pass": true,
+      "evidence": "artifacts/world-closeout/browser-evidence/dev-v4-skins-props-cm.jpg"
+    },
+    {
+      "label": "dev/fangbang.html?ds=fangbang-temple-v4&skins=1&props=1&compressed=0",
+      "url": "/fangbang.html?ds=fangbang-temple-v4&skins=1&props=1&compressed=0",
+      "mode": "original",
+      "ds": "fangbang-temple-v4",
+      "ready": true,
+      "routePass": true,
+      "routeSummary": "去程至闭门前(z_local=-71.63)·返程达·端墙挡✓·前院东界✓·闭门挡✓·接缝最长停滞0s",
+      "frame": {
+        "blank": false,
+        "std255": 54.02,
+        "dominantShare": 0.088
+      },
+      "cmGlbs": 0,
+      "plainGlbs": 80,
+      "unexpectedFetches": [],
+      "stateOk": true,
+      "fallbackProbes": 0,
+      "networkErrors": [],
+      "pass": true,
+      "evidence": "artifacts/world-closeout/browser-evidence/dev-v4-skins-props-original.jpg"
+    },
+    {
+      "label": "dev/temple-v3.html",
+      "url": "/temple-v3.html",
+      "mode": "cm",
+      "ds": "temple-axis-v3",
+      "ready": true,
+      "routePass": true,
+      "routeSummary": "门链[shanmen-mid:g court-mid:g yimen-door:g stage-passage:g court2-s:g]·配殿环✓·东通道✓·三进院✓·月台登顶y=0.87·城隍殿前z=-71.63·返程✓·负例7/7·掉地y=0",
+      "frame": {
+        "blank": false,
+        "std255": 62.9,
+        "dominantShare": 0.102
+      },
+      "cmGlbs": 16,
+      "plainGlbs": 1,
+      "unexpectedFetches": [],
+      "stateOk": true,
+      "fallbackProbes": 1,
+      "networkErrors": [],
+      "pass": true,
+      "evidence": "artifacts/world-closeout/browser-evidence/dev-temple-v3-cm.jpg"
+    },
+    {
+      "label": "dev/temple-v3.html?compressed=0",
+      "url": "/temple-v3.html?compressed=0",
+      "mode": "original",
+      "ds": "temple-axis-v3",
+      "ready": true,
+      "routePass": true,
+      "routeSummary": "门链[shanmen-mid:g court-mid:g yimen-door:g stage-passage:g court2-s:g]·配殿环✓·东通道✓·三进院✓·月台登顶y=0.87·城隍殿前z=-71.63·返程✓·负例7/7·掉地y=0",
+      "frame": {
+        "blank": false,
+        "std255": 62.87,
+        "dominantShare": 0.102
+      },
+      "cmGlbs": 0,
+      "plainGlbs": 16,
+      "unexpectedFetches": [],
+      "stateOk": true,
+      "fallbackProbes": 0,
+      "networkErrors": [],
+      "pass": true,
+      "evidence": "artifacts/world-closeout/browser-evidence/dev-temple-v3-original.jpg"
+    }
+  ],
+  "pass": true,
+  "version": {
+    "head": "fac0844ab7b097c2b26a6dcc46657c0562519ae1",
+    "batch": "pawborough-world-closeout-night-20260919",
+    "compressedDefault": true,
+    "datasets": 15
+  }
+}

@@ -1,0 +1,1786 @@
+{
+  "generatedBy": "scripts/build_fangbang_blocks.mjs (derived candidate; frozen world/blocks.json, world/east-edge and world/street-completion untouched; asset blocks copied verbatim)",
+  "mapSource": "/home/baibai/outbox/pawborough-fangbang-map-1990s-20260912/workspace/public/map-data.json",
+  "mapSha256Note": "input read-only; see artifacts/N6 for hashes",
+  "anchor": {
+    "worldOriginMapSpace": [
+      53.5,
+      -17.4
+    ],
+    "kind": "documented approximate anchor from world/instances.json; per-shop residuals up to ~17m are a map-data property (historicalPositionVerified=false), not calibrated"
+  },
+  "axis": "GLB Y-up X east Z south; map local equirectangular meters X east Z south",
+  "streetExtentX": [
+    0.473,
+    84.748
+  ],
+  "blocks": [
+    {
+      "id": "block-review-street",
+      "kind": "reviewed",
+      "replacesBaseIds": [
+        "shop-122",
+        "shop-123",
+        "shop-124",
+        "shop-125",
+        "shop-126"
+      ],
+      "persistent": false
+    },
+    {
+      "id": "block-adjacent-east",
+      "kind": "placeholders",
+      "placeholderIds": [
+        "shop-126",
+        "shop-128",
+        "shop-129",
+        "shop-130",
+        "shop-131",
+        "shop-132",
+        "shop-133",
+        "shop-134",
+        "shop-135",
+        "shop-136",
+        "shop-137",
+        "shop-138",
+        "shop-139",
+        "shop-140",
+        "shop-141",
+        "shop-142"
+      ]
+    },
+    {
+      "id": "block-adjacent-west",
+      "kind": "placeholders",
+      "placeholderIds": [
+        "shop-153",
+        "shop-154",
+        "shop-155",
+        "shop-156",
+        "shop-157",
+        "shop-158",
+        "shop-159",
+        "shop-160",
+        "shop-161",
+        "shop-162",
+        "shop-163",
+        "shop-164",
+        "shop-165",
+        "shop-166",
+        "shop-167",
+        "shop-168",
+        "shop-169",
+        "shop-170",
+        "shop-171"
+      ]
+    },
+    {
+      "id": "block-east-edge-shops",
+      "kind": "assets",
+      "replacesBaseIds": [
+        "shop-128",
+        "shop-129"
+      ],
+      "autoApply": true,
+      "assets": [
+        {
+          "id": "east-shop-128",
+          "glb": "./world/east-edge/east-shop-128/model.glb",
+          "collision": "./world/east-edge/east-shop-128/collision.json",
+          "positionGlb": [
+            97.66450990714537,
+            0,
+            17.734234931801197
+          ],
+          "rotationYRad": -0.301652
+        },
+        {
+          "id": "east-shop-129",
+          "glb": "./world/east-edge/east-shop-129/model.glb",
+          "collision": "./world/east-edge/east-shop-129/collision.json",
+          "positionGlb": [
+            95.7340372829119,
+            0,
+            23.93834100897118
+          ],
+          "rotationYRad": 2.839941
+        }
+      ],
+      "persistent": false
+    },
+    {
+      "id": "block-street-completion-shops",
+      "kind": "assets",
+      "replacesBaseIds": [
+        "shop-130",
+        "shop-131",
+        "shop-132",
+        "shop-133"
+      ],
+      "autoApply": true,
+      "assets": [
+        {
+          "id": "east-shop-130",
+          "glb": "./world/street-completion/east-shop-130/model.glb",
+          "collision": "./world/street-completion/east-shop-130/collision.json",
+          "positionGlb": [
+            109.78575716044992,
+            0,
+            22.102845323533415
+          ],
+          "rotationYRad": -0.22938
+        },
+        {
+          "id": "east-shop-131",
+          "glb": "./world/street-completion/east-shop-131/model.glb",
+          "collision": "./world/street-completion/east-shop-131/collision.json",
+          "positionGlb": [
+            108.75792755015615,
+            0,
+            26.4802503875359
+          ],
+          "rotationYRad": 2.912213
+        },
+        {
+          "id": "east-shop-132",
+          "glb": "./world/street-completion/east-shop-132/model.glb",
+          "collision": "./world/street-completion/east-shop-132/collision.json",
+          "positionGlb": [
+            121.69313096704158,
+            0,
+            23.859037769611177
+          ],
+          "rotationYRad": -0.22938
+        },
+        {
+          "id": "east-shop-133",
+          "glb": "./world/street-completion/east-shop-133/model.glb",
+          "collision": "./world/street-completion/east-shop-133/collision.json",
+          "positionGlb": [
+            120.22055408090135,
+            0,
+            30.184058020222682
+          ],
+          "rotationYRad": 2.912213
+        }
+      ],
+      "persistent": false
+    },
+    {
+      "id": "block-temple-axis",
+      "kind": "assets",
+      "replacesBaseIds": [
+        "shop-167",
+        "shop-169"
+      ],
+      "autoApply": true,
+      "assets": [
+        {
+          "id": "shanmen",
+          "glb": "./world/fangbang-temple-v3/temple-axis/temple.glb",
+          "positionGlb": [
+            -127.817,
+            0,
+            27.057
+          ],
+          "rotationYRad": 0.16703
+        },
+        {
+          "id": "shanmen-ground",
+          "glb": "./world/fangbang-temple-v3/temple-axis/ground.glb",
+          "positionGlb": [
+            -127.817,
+            0,
+            27.057
+          ],
+          "rotationYRad": 0.16703
+        },
+        {
+          "id": "shanmen-lions",
+          "glb": "./world/fangbang-temple-v4/temple-axis/lions.glb",
+          "positionGlb": [
+            -127.817,
+            0,
+            27.057
+          ],
+          "rotationYRad": 0.16703,
+          "bytes": 490048,
+          "sha256": "46dd10af05af07d8f9ab4ea234b6f3daf4af902184543e92f36b449019d44b7a",
+          "triangles": 4064,
+          "variant": true
+        },
+        {
+          "id": "shanmen-ornaments",
+          "glb": "./world/fangbang-temple-v4/temple-axis/ornaments.glb",
+          "positionGlb": [
+            -127.817,
+            0,
+            27.057
+          ],
+          "rotationYRad": 0.16703,
+          "bytes": 150920,
+          "sha256": "0a894ec78c5a41df58a26d8d119a0699fbbaf1b40c847c875c6c6f5073fd7499",
+          "triangles": 1148,
+          "variant": true
+        },
+        {
+          "id": "entrycourt-open",
+          "glb": "./world/fangbang-temple-v4/temple-axis/court-open.glb",
+          "positionGlb": [
+            -127.817,
+            0,
+            27.057
+          ],
+          "rotationYRad": 0.16703,
+          "bytes": 1469532,
+          "sha256": "b0b4d28b6a9f12928a142efd2a597234ba13e52a7f48ed788d436175dcbbf6f3",
+          "triangles": 4192,
+          "variant": true
+        },
+        {
+          "id": "yimen",
+          "glb": "./world/fangbang-temple-v3/temple-axis/yimen.glb",
+          "positionGlb": [
+            -131.308343,
+            0,
+            6.349259
+          ],
+          "rotationYRad": 0.16703
+        },
+        {
+          "id": "yimenstage",
+          "glb": "./world/fangbang-temple-v3/temple-axis/yimen-stage.glb",
+          "positionGlb": [
+            -131.308343,
+            0,
+            6.349259
+          ],
+          "rotationYRad": 0.16703
+        },
+        {
+          "id": "dadiancourt",
+          "glb": "./world/fangbang-temple-v3/temple-axis/dadian-court-v2.glb",
+          "positionGlb": [
+            -127.817,
+            0,
+            27.057
+          ],
+          "rotationYRad": 0.16703
+        },
+        {
+          "id": "peidian-w",
+          "glb": "./world/fangbang-temple-v3/temple-axis/peidian.glb",
+          "positionGlb": [
+            -144.813037,
+            0,
+            -6.382718
+          ],
+          "rotationYRad": 1.73782633
+        },
+        {
+          "id": "peidian-e",
+          "glb": "./world/fangbang-temple-v3/temple-axis/peidian.glb",
+          "positionGlb": [
+            -122.72478,
+            0,
+            -10.106817
+          ],
+          "rotationYRad": -1.40376633
+        },
+        {
+          "id": "gallery-w",
+          "glb": "./world/fangbang-temple-v3/temple-axis/gallery.glb",
+          "positionGlb": [
+            -143.599198,
+            0,
+            -1.709486
+          ],
+          "rotationYRad": 1.73782633
+        },
+        {
+          "id": "gallery-e",
+          "glb": "./world/fangbang-temple-v3/temple-axis/gallery.glb",
+          "positionGlb": [
+            -122.339251,
+            0,
+            -5.293931
+          ],
+          "rotationYRad": -1.40376633
+        },
+        {
+          "id": "dadian",
+          "glb": "./world/fangbang-temple-v3/temple-axis/dadian.glb",
+          "positionGlb": [
+            -135.132194,
+            0,
+            -16.330647
+          ],
+          "rotationYRad": 0.16703
+        },
+        {
+          "id": "court3",
+          "glb": "./world/fangbang-temple-v3/temple-axis/court3.glb",
+          "positionGlb": [
+            -127.817,
+            0,
+            27.057
+          ],
+          "rotationYRad": 0.16703
+        },
+        {
+          "id": "houdian",
+          "glb": "./world/fangbang-temple-v3/temple-axis/houdian.glb",
+          "positionGlb": [
+            -140.119827,
+            0,
+            -45.913134
+          ],
+          "rotationYRad": 0.16703
+        },
+        {
+          "id": "tree-court2-w",
+          "glb": "./world/fangbang-temple-v4/temple-axis/tree-camphor-v2.glb",
+          "positionGlb": [
+            -139.943402,
+            0,
+            -4.567047
+          ],
+          "rotationYRad": 0.16703,
+          "bytes": 233320,
+          "sha256": "5219f9a3a065fd1c2d4262899fa04e49f1ed31e31b9f709b162b74223a84cb33",
+          "triangles": 1936,
+          "variant": true
+        },
+        {
+          "id": "tree-court2-e",
+          "glb": "./world/fangbang-temple-v4/temple-axis/tree-camphor-v2.glb",
+          "positionGlb": [
+            -124.856334,
+            0,
+            -7.11074
+          ],
+          "rotationYRad": 0.16703,
+          "bytes": 233320,
+          "sha256": "5219f9a3a065fd1c2d4262899fa04e49f1ed31e31b9f709b162b74223a84cb33",
+          "triangles": 1936,
+          "variant": true
+        },
+        {
+          "id": "tree-court3-w",
+          "glb": "./world/fangbang-temple-v4/temple-axis/tree-camphor-v2.glb",
+          "positionGlb": [
+            -150.777597,
+            0,
+            -30.932749
+          ],
+          "rotationYRad": 0.16703,
+          "bytes": 233320,
+          "sha256": "5219f9a3a065fd1c2d4262899fa04e49f1ed31e31b9f709b162b74223a84cb33",
+          "triangles": 1936,
+          "variant": true
+        },
+        {
+          "id": "tree-court3-e",
+          "glb": "./world/fangbang-temple-v4/temple-axis/tree-camphor-v2.glb",
+          "positionGlb": [
+            -124.319614,
+            0,
+            -36.407701
+          ],
+          "rotationYRad": 0.16703,
+          "bytes": 233320,
+          "sha256": "5219f9a3a065fd1c2d4262899fa04e49f1ed31e31b9f709b162b74223a84cb33",
+          "triangles": 1936,
+          "variant": true
+        }
+      ],
+      "persistent": false,
+      "collisionSource": "./world/fangbang-temple-v3/collision-world.json",
+      "note": "temple-axis V2 (expansion batch 20260917): dadian-court-v2 + stage + peidian x2 + gallery x2 + court3 + houdian replace the v1 temple block; everything else verbatim"
+    },
+    {
+      "id": "block-west-shops",
+      "kind": "assets",
+      "autoApply": true,
+      "assets": [
+        {
+          "id": "westshop-shop-153",
+          "glb": "./building/pharmacy_shop/model.glb",
+          "positionGlb": [
+            -3.805,
+            0,
+            7.253
+          ],
+          "rotationYRad": -2.805099,
+          "bytes": 3679732,
+          "sha256": "f51cf055f8a86ca16bf763f43689a7a4cbe536a59f6bd420b9f50751c52b9574"
+        },
+        {
+          "id": "westshop-shop-155",
+          "glb": "./building/plain-v2/model.glb",
+          "positionGlb": [
+            -15.109,
+            0,
+            11.207
+          ],
+          "rotationYRad": -2.805099,
+          "bytes": 1863044,
+          "sha256": "c08d816d6e144893bfcd9e6c4aacce890137d977de579fb8f6fab10cf4a04ea8"
+        },
+        {
+          "id": "westshop-shop-157",
+          "glb": "./building/plain-v1/model.glb",
+          "positionGlb": [
+            -26.429,
+            0,
+            15.167
+          ],
+          "rotationYRad": -2.805099,
+          "bytes": 1953264,
+          "sha256": "9567bf0e96aec885116e2ad7692e4a90f440073d6d158b8454e344119910cbad"
+        },
+        {
+          "id": "westshop-shop-159",
+          "glb": "./building/photo_shop/model.glb",
+          "positionGlb": [
+            -37.762,
+            0,
+            19.131
+          ],
+          "rotationYRad": -2.805099,
+          "bytes": 4105324,
+          "sha256": "5d885af6eb8b76ef1147a06499eed100da32593e149cd3dd6bf434d2acd84f76"
+        },
+        {
+          "id": "westshop-shop-160",
+          "glb": "./building/curio-a/model.glb",
+          "positionGlb": [
+            -49.091,
+            0,
+            23.094
+          ],
+          "rotationYRad": -2.805099,
+          "bytes": 1972556,
+          "sha256": "aa178b96876d22f5c598db3837b541229e852c069d18c43b5dda27dc52199747"
+        },
+        {
+          "id": "westshop-shop-161",
+          "glb": "./building/plain-v2/model.glb",
+          "positionGlb": [
+            -60.421,
+            0,
+            27.029
+          ],
+          "rotationYRad": -2.808021,
+          "bytes": 1863044,
+          "sha256": "c08d816d6e144893bfcd9e6c4aacce890137d977de579fb8f6fab10cf4a04ea8"
+        },
+        {
+          "id": "westshop-shop-162",
+          "glb": "./building/plain-v3/model.glb",
+          "positionGlb": [
+            -71.713,
+            0,
+            30.923
+          ],
+          "rotationYRad": -2.813012,
+          "bytes": 1495532,
+          "sha256": "155809ebd42e37dd319a7cee0b5ccbaad2b2db21a15b21930608e914714112b7"
+        },
+        {
+          "id": "westshop-shop-164",
+          "glb": "./building/restaurant-a/model.glb",
+          "positionGlb": [
+            -103.788,
+            0,
+            40.661
+          ],
+          "rotationYRad": -2.898527,
+          "bytes": 2146768,
+          "sha256": "40b5d2ded1554565739aa9041d35f1bd2fbc4d6dd50be9888e0336faf7300b7d"
+        },
+        {
+          "id": "westshop-shop-166",
+          "glb": "./building/cloth_shop/model.glb",
+          "positionGlb": [
+            -121.525,
+            0,
+            44.437
+          ],
+          "rotationYRad": -2.958889,
+          "bytes": 2222268,
+          "sha256": "87c89a4620532eb351df7af21665a29c40c43fad610fe3a759aa5335ec85362d"
+        },
+        {
+          "id": "westshop-shop-168",
+          "glb": "./building/cloth_shop/model.glb",
+          "positionGlb": [
+            -140.524,
+            0,
+            47.657
+          ],
+          "rotationYRad": -2.974486,
+          "bytes": 2222268,
+          "sha256": "87c89a4620532eb351df7af21665a29c40c43fad610fe3a759aa5335ec85362d"
+        },
+        {
+          "id": "westshop-shop-170",
+          "glb": "./building/curio-a/model.glb",
+          "positionGlb": [
+            -148.457,
+            0,
+            48.995
+          ],
+          "rotationYRad": -2.974486,
+          "bytes": 1972556,
+          "sha256": "aa178b96876d22f5c598db3837b541229e852c069d18c43b5dda27dc52199747"
+        },
+        {
+          "id": "westshop-shop-154",
+          "glb": "./building/plain-v1/model.glb",
+          "positionGlb": [
+            -7.478,
+            0,
+            -3.328
+          ],
+          "rotationYRad": 0.336494,
+          "bytes": 1953264,
+          "sha256": "9567bf0e96aec885116e2ad7692e4a90f440073d6d158b8454e344119910cbad"
+        },
+        {
+          "id": "westshop-shop-156",
+          "glb": "./building/plain-v3/model.glb",
+          "positionGlb": [
+            -18.807,
+            0,
+            0.635
+          ],
+          "rotationYRad": 0.336494,
+          "bytes": 1495532,
+          "sha256": "155809ebd42e37dd319a7cee0b5ccbaad2b2db21a15b21930608e914714112b7"
+        },
+        {
+          "id": "westshop-shop-158",
+          "glb": "./building/dry_goods_shop/model.glb",
+          "positionGlb": [
+            -30.126,
+            0,
+            4.595
+          ],
+          "rotationYRad": 0.336494,
+          "bytes": 3562760,
+          "sha256": "052fadafda116d08356ded8544e32a71323f4adbff2ca9420dfce2f4e0bcd1c9"
+        },
+        {
+          "id": "westshop-shop-163",
+          "glb": "./building/curio-b/model.glb",
+          "positionGlb": [
+            -75.479,
+            0,
+            20.375
+          ],
+          "rotationYRad": 0.328581,
+          "bytes": 1953600,
+          "sha256": "768062ada15239ba5d086a09939a4e8b593677d0ac06180357728591c426ee40"
+        },
+        {
+          "id": "westshop-shop-165",
+          "glb": "./building/restaurant-b/model.glb",
+          "positionGlb": [
+            -106.278,
+            0,
+            29.739
+          ],
+          "rotationYRad": 0.243539,
+          "bytes": 2147344,
+          "sha256": "e083e811762487b415d289bbaa853bb1ad94e5283591ba3866c48b929c5fef2f"
+        },
+        {
+          "id": "westshop-shop-171",
+          "glb": "./building/pharmacy_shop/model.glb",
+          "positionGlb": [
+            -150.319,
+            0,
+            37.951
+          ],
+          "rotationYRad": 0.167107,
+          "bytes": 3679732,
+          "sha256": "f51cf055f8a86ca16bf763f43689a7a4cbe536a59f6bd420b9f50751c52b9574"
+        }
+      ],
+      "collisionSource": "./world/fangbang-temple-v3/collision-world.json",
+      "note": "west-band upgrade: 17 placeholders replaced by frozen street modules per category map (owner-vetoable, revoke = delete block)"
+    },
+    {
+      "id": "block-east-shops",
+      "kind": "assets",
+      "autoApply": true,
+      "persistent": true,
+      "collisionSource": "./world/fangbang-temple-v4/collision-world.json",
+      "note": "east-band upgrade (adoption batch 20260919, G5): 9 placeholders replaced by frozen street modules per category map; revoke = ?revoke=block-east-shops",
+      "assets": [
+        {
+          "id": "eastshop-shop-134",
+          "module": "curio-a",
+          "glb": "./building/curio-a/model.glb",
+          "positionGlb": [
+            152.136,
+            0,
+            28.571
+          ],
+          "rotationYRad": -0.216651,
+          "bytes": 1972556,
+          "sha256": "aa178b96876d22f5c598db3837b541229e852c069d18c43b5dda27dc52199747",
+          "triangles": 7748
+        },
+        {
+          "id": "eastshop-shop-136",
+          "module": "plain-v1",
+          "glb": "./building/plain-v1/model.glb",
+          "positionGlb": [
+            172.937,
+            0,
+            33.144
+          ],
+          "rotationYRad": -0.216008,
+          "bytes": 1953264,
+          "sha256": "9567bf0e96aec885116e2ad7692e4a90f440073d6d158b8454e344119910cbad",
+          "triangles": 7596
+        },
+        {
+          "id": "eastshop-shop-138",
+          "module": "plain-v3",
+          "glb": "./building/plain-v3/model.glb",
+          "positionGlb": [
+            188.309,
+            0,
+            36.136
+          ],
+          "rotationYRad": -0.167304,
+          "bytes": 1495532,
+          "sha256": "155809ebd42e37dd319a7cee0b5ccbaad2b2db21a15b21930608e914714112b7",
+          "triangles": 5960
+        },
+        {
+          "id": "eastshop-shop-140",
+          "module": "dry_goods_shop",
+          "glb": "./building/dry_goods_shop/model.glb",
+          "positionGlb": [
+            205.701,
+            0,
+            39.246
+          ],
+          "rotationYRad": -0.202318,
+          "bytes": 3562760,
+          "sha256": "052fadafda116d08356ded8544e32a71323f4adbff2ca9420dfce2f4e0bcd1c9",
+          "triangles": 22268
+        },
+        {
+          "id": "eastshop-shop-142",
+          "module": "curio-a",
+          "glb": "./building/curio-a/model.glb",
+          "positionGlb": [
+            224.582,
+            0,
+            41.974
+          ],
+          "rotationYRad": -0.036268,
+          "bytes": 1972556,
+          "sha256": "aa178b96876d22f5c598db3837b541229e852c069d18c43b5dda27dc52199747",
+          "triangles": 7748
+        },
+        {
+          "id": "eastshop-shop-135",
+          "module": "pharmacy_shop",
+          "glb": "./building/pharmacy_shop/model.glb",
+          "positionGlb": [
+            149.724,
+            0,
+            39.508
+          ],
+          "rotationYRad": 2.924941,
+          "bytes": 3679732,
+          "sha256": "f51cf055f8a86ca16bf763f43689a7a4cbe536a59f6bd420b9f50751c52b9574",
+          "triangles": 21788
+        },
+        {
+          "id": "eastshop-shop-137",
+          "module": "plain-v2",
+          "glb": "./building/plain-v2/model.glb",
+          "positionGlb": [
+            170.543,
+            0,
+            44.085
+          ],
+          "rotationYRad": 2.925587,
+          "bytes": 1863044,
+          "sha256": "c08d816d6e144893bfcd9e6c4aacce890137d977de579fb8f6fab10cf4a04ea8",
+          "triangles": 6852
+        },
+        {
+          "id": "eastshop-shop-139",
+          "module": "plain-v1",
+          "glb": "./building/plain-v1/model.glb",
+          "positionGlb": [
+            186.681,
+            0,
+            47.219
+          ],
+          "rotationYRad": 2.9757,
+          "bytes": 1953264,
+          "sha256": "9567bf0e96aec885116e2ad7692e4a90f440073d6d158b8454e344119910cbad",
+          "triangles": 7596
+        },
+        {
+          "id": "eastshop-shop-141",
+          "module": "photo_shop",
+          "glb": "./building/photo_shop/model.glb",
+          "positionGlb": [
+            203.229,
+            0,
+            50.172
+          ],
+          "rotationYRad": 2.939275,
+          "bytes": 4105324,
+          "sha256": "5d885af6eb8b76ef1147a06499eed100da32593e149cd3dd6bf434d2acd84f76",
+          "triangles": 19844
+        },
+        {
+          "id": "eastshops-strips",
+          "module": "eastshops-strips",
+          "glb": "./world/fangbang-temple-v4/eastshops-strips.glb",
+          "positionGlb": [
+            0,
+            0,
+            0
+          ],
+          "rotationYRad": 0,
+          "bytes": 7528,
+          "sha256": "e8b4131a3ae635bcbf29ecb41e9e6a77d1f7f40a6db0bec7aa40b43bb63458bf",
+          "triangles": 72
+        }
+      ]
+    }
+  ],
+  "placeholders": [
+    {
+      "id": "shop-122",
+      "baseId": "shop-122",
+      "replacedBy": "block-review-street",
+      "mapPoint": [
+        85.73,
+        -31.09
+      ],
+      "glbPoint": [
+        32.23,
+        -13.69
+      ],
+      "angleRad": -0.07957,
+      "widthM": 10.7,
+      "depthM": 12,
+      "heightM": 10.2,
+      "category": "南北杂货",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+    },
+    {
+      "id": "shop-123",
+      "baseId": "shop-123",
+      "replacedBy": "block-review-street",
+      "mapPoint": [
+        84.38,
+        -14.14
+      ],
+      "glbPoint": [
+        30.88,
+        3.26
+      ],
+      "angleRad": 3.062022,
+      "widthM": 10.7,
+      "depthM": 13,
+      "heightM": 7.4,
+      "category": "照相店",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+    },
+    {
+      "id": "shop-124",
+      "baseId": "shop-124",
+      "replacedBy": "block-review-street",
+      "mapPoint": [
+        121.22,
+        -21
+      ],
+      "glbPoint": [
+        67.72,
+        -3.6
+      ],
+      "angleRad": -0.527824,
+      "widthM": 10.7,
+      "depthM": 10,
+      "heightM": 8.8,
+      "category": "字画店",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+    },
+    {
+      "id": "shop-125",
+      "baseId": "shop-125",
+      "replacedBy": "block-review-street",
+      "mapPoint": [
+        112.66,
+        -6.31
+      ],
+      "glbPoint": [
+        59.16,
+        11.09
+      ],
+      "angleRad": 2.613768,
+      "widthM": 10.7,
+      "depthM": 11,
+      "heightM": 10.2,
+      "category": "寿衣店",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+    },
+    {
+      "id": "shop-126",
+      "baseId": "shop-126",
+      "replacedBy": "block-review-street",
+      "mapPoint": [
+        138.53,
+        -11.07
+      ],
+      "glbPoint": [
+        85.03,
+        6.33
+      ],
+      "angleRad": -0.505033,
+      "widthM": 10.7,
+      "depthM": 12,
+      "heightM": 7.4,
+      "category": "烟纸店",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+    },
+    {
+      "id": "shop-127",
+      "baseId": "shop-127",
+      "replacedBy": null,
+      "mapPoint": [
+        130.31,
+        3.81
+      ],
+      "glbPoint": [
+        76.81,
+        21.21
+      ],
+      "angleRad": 2.636559,
+      "widthM": 10.7,
+      "depthM": 13,
+      "heightM": 8.8,
+      "category": "银楼",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+    },
+    {
+      "id": "shop-128",
+      "baseId": "shop-128",
+      "replacedBy": "block-east-edge-shops",
+      "mapPoint": [
+        152.65,
+        -4.44
+      ],
+      "glbPoint": [
+        99.15,
+        12.96
+      ],
+      "angleRad": -0.301652,
+      "widthM": 10.7,
+      "depthM": 10,
+      "heightM": 10.2,
+      "category": "酒楼",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+    },
+    {
+      "id": "shop-129",
+      "baseId": "shop-129",
+      "replacedBy": "block-east-edge-shops",
+      "mapPoint": [
+        147.6,
+        11.79
+      ],
+      "glbPoint": [
+        94.1,
+        29.19
+      ],
+      "angleRad": 2.839941,
+      "widthM": 10.7,
+      "depthM": 11,
+      "heightM": 7.4,
+      "category": "饭馆",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+    },
+    {
+      "id": "shop-130",
+      "baseId": "shop-130",
+      "replacedBy": "block-street-completion-shops",
+      "mapPoint": [
+        164.65,
+        -1.14
+      ],
+      "glbPoint": [
+        111.15,
+        16.26
+      ],
+      "angleRad": -0.22938,
+      "widthM": 10.7,
+      "depthM": 12,
+      "heightM": 8.8,
+      "category": "棉花",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+    },
+    {
+      "id": "shop-131",
+      "baseId": "shop-131",
+      "replacedBy": "block-street-completion-shops",
+      "mapPoint": [
+        160.78,
+        15.41
+      ],
+      "glbPoint": [
+        107.28,
+        32.81
+      ],
+      "angleRad": 2.912213,
+      "widthM": 10.7,
+      "depthM": 13,
+      "heightM": 10.2,
+      "category": "绸缎",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+    },
+    {
+      "id": "shop-132",
+      "baseId": "shop-132",
+      "replacedBy": "block-street-completion-shops",
+      "mapPoint": [
+        176.33,
+        1.59
+      ],
+      "glbPoint": [
+        122.83,
+        18.99
+      ],
+      "angleRad": -0.22938,
+      "widthM": 10.7,
+      "depthM": 10,
+      "heightM": 7.4,
+      "category": "绣品",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+    },
+    {
+      "id": "shop-133",
+      "baseId": "shop-133",
+      "replacedBy": "block-street-completion-shops",
+      "mapPoint": [
+        172.47,
+        18.14
+      ],
+      "glbPoint": [
+        118.97,
+        35.54
+      ],
+      "angleRad": 2.912213,
+      "widthM": 10.7,
+      "depthM": 11,
+      "heightM": 8.8,
+      "category": "皮货",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+    },
+    {
+      "id": "shop-134",
+      "baseId": "shop-134",
+      "replacedBy": "block-east-shops",
+      "mapPoint": [
+        206.26,
+        8.34
+      ],
+      "glbPoint": [
+        153.4266,
+        22.7115
+      ],
+      "angleRad": -0.21665,
+      "widthM": 10.7,
+      "depthM": 12,
+      "heightM": 10.2,
+      "category": "参茸",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.101,
+        "alongNormal": [
+          0.21496,
+          -0.97662
+        ],
+        "rule": "box road-side corner retired to the 5.6m front line of the BUILT east centerline"
+      }
+    },
+    {
+      "id": "shop-135",
+      "baseId": "shop-135",
+      "replacedBy": "block-east-shops",
+      "mapPoint": [
+        202.6,
+        24.94
+      ],
+      "glbPoint": [
+        148.3261,
+        45.8558
+      ],
+      "angleRad": 2.924943,
+      "widthM": 10.7,
+      "depthM": 13,
+      "heightM": 7.4,
+      "category": "药材",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.6,
+        "alongNormal": [
+          -0.21496,
+          0.97662
+        ],
+        "rule": "box road-side corner retired to the 5.6m front line of the BUILT east centerline"
+      }
+    },
+    {
+      "id": "shop-136",
+      "baseId": "shop-136",
+      "replacedBy": "block-east-shops",
+      "mapPoint": [
+        227.06,
+        12.91
+      ],
+      "glbPoint": [
+        174.0133,
+        28.2442
+      ],
+      "angleRad": -0.215833,
+      "widthM": 10.7,
+      "depthM": 10,
+      "heightM": 8.8,
+      "category": "木器",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.115,
+        "alongNormal": [
+          0.21433,
+          -0.97676
+        ],
+        "rule": "box road-side corner retired to the 5.6m front line of the BUILT east centerline"
+      }
+    },
+    {
+      "id": "shop-137",
+      "baseId": "shop-137",
+      "replacedBy": "block-east-shops",
+      "mapPoint": [
+        223.42,
+        29.52
+      ],
+      "glbPoint": [
+        169.3632,
+        49.4576
+      ],
+      "angleRad": 2.92576,
+      "widthM": 10.7,
+      "depthM": 11,
+      "heightM": 10.2,
+      "category": "洋货",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.598,
+        "alongNormal": [
+          -0.21433,
+          0.97676
+        ],
+        "rule": "box road-side corner retired to the 5.6m front line of the BUILT east centerline"
+      }
+    },
+    {
+      "id": "shop-138",
+      "baseId": "shop-138",
+      "replacedBy": "block-east-shops",
+      "mapPoint": [
+        242.3,
+        15.88
+      ],
+      "glbPoint": [
+        189.3339,
+        30.1188
+      ],
+      "angleRad": -0.153134,
+      "widthM": 10.7,
+      "depthM": 12,
+      "heightM": 7.4,
+      "category": "海味",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.206,
+        "alongNormal": [
+          0.16652,
+          -0.98604
+        ],
+        "rule": "box road-side corner retired to the 5.6m front line of the BUILT east centerline"
+      }
+    },
+    {
+      "id": "shop-139",
+      "baseId": "shop-139",
+      "replacedBy": "block-east-shops",
+      "mapPoint": [
+        239.7,
+        32.69
+      ],
+      "glbPoint": [
+        185.6055,
+        53.6406
+      ],
+      "angleRad": 2.988458,
+      "widthM": 10.7,
+      "depthM": 13,
+      "heightM": 8.8,
+      "category": "腌腊",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.6,
+        "alongNormal": [
+          -0.16513,
+          0.98627
+        ],
+        "rule": "box road-side corner retired to the 5.6m front line of the BUILT east centerline"
+      }
+    },
+    {
+      "id": "shop-140",
+      "baseId": "shop-140",
+      "replacedBy": "block-east-shops",
+      "mapPoint": [
+        259.79,
+        18.98
+      ],
+      "glbPoint": [
+        206.7114,
+        34.3258
+      ],
+      "angleRad": -0.215993,
+      "widthM": 10.7,
+      "depthM": 10,
+      "heightM": 10.2,
+      "category": "南北杂货",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.097,
+        "alongNormal": [
+          0.20094,
+          -0.9796
+        ],
+        "rule": "box road-side corner retired to the 5.6m front line of the BUILT east centerline"
+      }
+    },
+    {
+      "id": "shop-141",
+      "baseId": "shop-141",
+      "replacedBy": "block-east-shops",
+      "mapPoint": [
+        256.15,
+        35.59
+      ],
+      "glbPoint": [
+        202.1026,
+        55.6584
+      ],
+      "angleRad": 2.9256,
+      "widthM": 10.7,
+      "depthM": 11,
+      "heightM": 7.4,
+      "category": "照相店",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.724,
+        "alongNormal": [
+          -0.20094,
+          0.9796
+        ],
+        "rule": "box road-side corner retired to the 5.6m front line of the BUILT east centerline"
+      }
+    },
+    {
+      "id": "shop-142",
+      "baseId": "shop-142",
+      "replacedBy": "block-east-shops",
+      "mapPoint": [
+        278.18,
+        21.84
+      ],
+      "glbPoint": [
+        224.8131,
+        35.5714
+      ],
+      "angleRad": 0.01439,
+      "widthM": 10.7,
+      "depthM": 12,
+      "heightM": 8.8,
+      "category": "字画店",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.671,
+        "alongNormal": [
+          0.03626,
+          -0.99934
+        ],
+        "rule": "box road-side corner retired to the 5.6m front line of the BUILT east centerline"
+      }
+    },
+    {
+      "id": "shop-153",
+      "baseId": "shop-153",
+      "replacedBy": "block-west-shops",
+      "mapPoint": [
+        50.68,
+        -7.41
+      ],
+      "glbPoint": [
+        -1.1301,
+        14.9017
+      ],
+      "angleRad": -2.805254,
+      "widthM": 10.7,
+      "depthM": 11,
+      "heightM": 7.4,
+      "category": "药材",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.597,
+        "alongNormal": [
+          0.32535,
+          0.94559
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
+    },
+    {
+      "id": "shop-154",
+      "baseId": "shop-154",
+      "replacedBy": "block-west-shops",
+      "mapPoint": [
+        45.07,
+        -23.45
+      ],
+      "glbPoint": [
+        -10.4876,
+        -11.9313
+      ],
+      "angleRad": 0.336339,
+      "widthM": 10.7,
+      "depthM": 12,
+      "heightM": 8.8,
+      "category": "木器",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.115,
+        "alongNormal": [
+          -0.3302,
+          -0.94391
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
+    },
+    {
+      "id": "shop-155",
+      "baseId": "shop-155",
+      "replacedBy": "block-west-shops",
+      "mapPoint": [
+        39.35,
+        -3.45
+      ],
+      "glbPoint": [
+        -11.7759,
+        20.7364
+      ],
+      "angleRad": -2.805254,
+      "widthM": 10.7,
+      "depthM": 13,
+      "heightM": 10.2,
+      "category": "洋货",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.595,
+        "alongNormal": [
+          0.3302,
+          0.94391
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
+    },
+    {
+      "id": "shop-156",
+      "baseId": "shop-156",
+      "replacedBy": "block-west-shops",
+      "mapPoint": [
+        33.74,
+        -19.49
+      ],
+      "glbPoint": [
+        -21.156,
+        -6.0804
+      ],
+      "angleRad": 0.336339,
+      "widthM": 10.7,
+      "depthM": 10,
+      "heightM": 7.4,
+      "category": "海味",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.114,
+        "alongNormal": [
+          -0.3302,
+          -0.94391
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
+    },
+    {
+      "id": "shop-157",
+      "baseId": "shop-157",
+      "replacedBy": "block-west-shops",
+      "mapPoint": [
+        28.03,
+        0.51
+      ],
+      "glbPoint": [
+        -23.7564,
+        22.8085
+      ],
+      "angleRad": -2.805254,
+      "widthM": 10.7,
+      "depthM": 11,
+      "heightM": 8.8,
+      "category": "腌腊",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.595,
+        "alongNormal": [
+          0.33011,
+          0.94394
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
+    },
+    {
+      "id": "shop-158",
+      "baseId": "shop-158",
+      "replacedBy": "block-west-shops",
+      "mapPoint": [
+        22.42,
+        -15.53
+      ],
+      "glbPoint": [
+        -33.136,
+        -4.0094
+      ],
+      "angleRad": 0.336339,
+      "widthM": 10.7,
+      "depthM": 12,
+      "heightM": 10.2,
+      "category": "南北杂货",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.114,
+        "alongNormal": [
+          -0.33011,
+          -0.94394
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
+    },
+    {
+      "id": "shop-159",
+      "baseId": "shop-159",
+      "replacedBy": "block-west-shops",
+      "mapPoint": [
+        16.7,
+        4.48
+      ],
+      "glbPoint": [
+        -34.4304,
+        28.6538
+      ],
+      "angleRad": -2.805254,
+      "widthM": 10.7,
+      "depthM": 13,
+      "heightM": 7.4,
+      "category": "照相店",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.588,
+        "alongNormal": [
+          0.33017,
+          0.94392
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
+    },
+    {
+      "id": "shop-160",
+      "baseId": "shop-160",
+      "replacedBy": "block-west-shops",
+      "mapPoint": [
+        5.37,
+        8.44
+      ],
+      "glbPoint": [
+        -46.7499,
+        29.7848
+      ],
+      "angleRad": -2.805254,
+      "widthM": 10.7,
+      "depthM": 10,
+      "heightM": 8.8,
+      "category": "字画店",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.09,
+        "alongNormal": [
+          0.3302,
+          0.94391
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
+    },
+    {
+      "id": "shop-161",
+      "baseId": "shop-161",
+      "replacedBy": "block-west-shops",
+      "mapPoint": [
+        -5.96,
+        12.4
+      ],
+      "glbPoint": [
+        -57.7696,
+        34.6797
+      ],
+      "angleRad": -2.805254,
+      "widthM": 10.7,
+      "depthM": 11,
+      "heightM": 10.2,
+      "category": "寿衣店",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.582,
+        "alongNormal": [
+          0.32743,
+          0.94488
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
+    },
+    {
+      "id": "shop-162",
+      "baseId": "shop-162",
+      "replacedBy": "block-west-shops",
+      "mapPoint": [
+        -17.28,
+        16.36
+      ],
+      "glbPoint": [
+        -68.7844,
+        39.5181
+      ],
+      "angleRad": -2.805254,
+      "widthM": 10.7,
+      "depthM": 12,
+      "heightM": 7.4,
+      "category": "烟纸店",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.047,
+        "alongNormal": [
+          0.3274,
+          0.94489
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
+    },
+    {
+      "id": "shop-163",
+      "baseId": "shop-163",
+      "replacedBy": "block-west-shops",
+      "mapPoint": [
+        -22.89,
+        0.31
+      ],
+      "glbPoint": [
+        -78.7941,
+        10.6583
+      ],
+      "angleRad": 0.336339,
+      "widthM": 10.7,
+      "depthM": 13,
+      "heightM": 8.8,
+      "category": "银楼",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.725,
+        "alongNormal": [
+          -0.3227,
+          -0.9465
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
+    },
+    {
+      "id": "shop-164",
+      "baseId": "shop-164",
+      "replacedBy": "block-west-shops",
+      "mapPoint": [
+        -49.49,
+        26.06
+      ],
+      "glbPoint": [
+        -102.0683,
+        47.5457
+      ],
+      "angleRad": -2.908084,
+      "widthM": 10.7,
+      "depthM": 10,
+      "heightM": 10.2,
+      "category": "酒楼",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.094,
+        "alongNormal": [
+          0.22002,
+          0.9755
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
+    },
+    {
+      "id": "shop-165",
+      "baseId": "shop-165",
+      "replacedBy": "block-west-shops",
+      "mapPoint": [
+        -53.42,
+        9.52
+      ],
+      "glbPoint": [
+        -108.2765,
+        21.7221
+      ],
+      "angleRad": 0.233508,
+      "widthM": 10.7,
+      "depthM": 11,
+      "heightM": 7.4,
+      "category": "饭馆",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.686,
+        "alongNormal": [
+          -0.25259,
+          -0.96757
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
+    },
+    {
+      "id": "shop-166",
+      "baseId": "shop-166",
+      "replacedBy": "block-west-shops",
+      "mapPoint": [
+        -67.4,
+        29.89
+      ],
+      "glbPoint": [
+        -119.8696,
+        53.4019
+      ],
+      "angleRad": -2.974559,
+      "widthM": 10.7,
+      "depthM": 12,
+      "heightM": 8.8,
+      "category": "棉花",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.099,
+        "alongNormal": [
+          0.1663,
+          0.98608
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
+    },
+    {
+      "id": "shop-167",
+      "baseId": "shop-167",
+      "replacedBy": "block-temple-axis",
+      "mapPoint": [
+        -70.23,
+        13.13
+      ],
+      "glbPoint": [
+        -123.73,
+        30.53
+      ],
+      "angleRad": 0.167034,
+      "widthM": 10.7,
+      "depthM": 13,
+      "heightM": 10.2,
+      "category": "绸缎",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+    },
+    {
+      "id": "shop-168",
+      "baseId": "shop-168",
+      "replacedBy": "block-west-shops",
+      "mapPoint": [
+        -86.57,
+        32.96
+      ],
+      "glbPoint": [
+        -139.2716,
+        55.0935
+      ],
+      "angleRad": -3.001241,
+      "widthM": 10.7,
+      "depthM": 10,
+      "heightM": 7.4,
+      "category": "绣品",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 2.4,
+        "alongNormal": [
+          0.16641,
+          0.98606
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
+    },
+    {
+      "id": "shop-169",
+      "baseId": "shop-169",
+      "replacedBy": "block-temple-axis",
+      "mapPoint": [
+        -88.95,
+        16.12
+      ],
+      "glbPoint": [
+        -142.45,
+        33.52
+      ],
+      "angleRad": 0.140352,
+      "widthM": 10.7,
+      "depthM": 11,
+      "heightM": 8.8,
+      "category": "皮货",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)"
+    },
+    {
+      "id": "shop-170",
+      "baseId": "shop-170",
+      "replacedBy": "block-west-shops",
+      "mapPoint": [
+        -98.45,
+        34.63
+      ],
+      "glbPoint": [
+        -150.8044,
+        58.8201
+      ],
+      "angleRad": -3.001241,
+      "widthM": 10.7,
+      "depthM": 12,
+      "heightM": 10.2,
+      "category": "参茸",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.443,
+        "alongNormal": [
+          0.1663,
+          0.98608
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
+    },
+    {
+      "id": "shop-171",
+      "baseId": "shop-171",
+      "replacedBy": "block-west-shops",
+      "mapPoint": [
+        -100.83,
+        17.8
+      ],
+      "glbPoint": [
+        -155.4143,
+        28.7684
+      ],
+      "angleRad": 0.140352,
+      "widthM": 10.7,
+      "depthM": 13,
+      "heightM": 7.4,
+      "category": "药材",
+      "historicalPositionVerified": false,
+      "source": "pawborough-fangbang-map-1990s (placeholder, low-poly extrusion only)",
+      "placementAdjust": {
+        "shiftM": 3.261,
+        "alongNormal": [
+          -0.1663,
+          -0.98608
+        ],
+        "reason": "map centroid residual; snapped to design front line"
+      }
+    }
+  ],
+  "bandWidening": {
+    "westFloorGlbX": -156.988,
+    "addedIds": [
+      "shop-168",
+      "shop-169",
+      "shop-170",
+      "shop-171"
+    ],
+    "rule": "build_blocks.mjs adjacency with the west floor moved to the west end (seal wall half-width + 2m margin)"
+  },
+  "note": "west-band placeholder glbPoints retired to the bridge-R1 front line (revoke shows gray boxes there)"
+}

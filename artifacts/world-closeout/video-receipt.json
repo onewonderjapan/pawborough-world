@@ -1,0 +1,23 @@
+{
+  "batch": "pawborough-world-closeout-night-20260919",
+  "stage": "Q video terminal state",
+  "generatedAt": "2026-09-19T16:02:36.587Z",
+  "source": "/home/baibai/outbox/pawborough-adoption-east-night-20260919/workspace/artifacts/adoption-east",
+  "cutoff": "2026-09-20T08:15:00+09:00",
+  "expectedFrames": 8781,
+  "clipB": {
+    "frames": 576,
+    "expectedFrames": 576,
+    "durationSec": 24,
+    "expectedDurationSec": 24,
+    "sha256": "462df881e36f3f0d49b74ca4a5b7abd75010ddd9acef8692d66b7dcb7a54af0e",
+    "bytes": 6899251,
+    "pass": true,
+    "story": "GPU 456 frames @ ~8.7s/f then CUDA OOM while clipA held unified memory; CPU resumed 457-575 @ ~5s/f with --resume semantics; 0 blank across the seam, worst std 36.4/255 (render-log-summary.json)"
+  },
+  "clipA": {
+    "state": "NO_TERMINAL_STATUS",
+    "statusFileExists": false,
+    "note": "clipA-full.status.json not present — the render/watchdog still owns clipA (frames keep growing; see liveRender in baseline.json). Per policy this batch does NOT stop, restart, extend or compete with it, and does not copy a file that is still being written. Rerun this tool after the watchdog emits the terminal status to complete the receipt."
+  }
+}

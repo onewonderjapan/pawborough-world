@@ -107,8 +107,8 @@ const historicalAdoptedBatches = [
 ];
 
 const version = {
-  batch: 'pawborough-adoption-east-night-20260919',
-  role: 'v1.0 ADOPTED — owner adopted all delivered visuals 2026-09-19 (G1); this batch lands the adoption records, compressed-default loading, trees v2 and the east band (G5/G6/G12/G14)',
+  batch: 'pawborough-world-closeout-night-20260919',
+  role: 'v1.0 ADOPTED world engineering closeout — owner visual adoption unchanged (G1); this batch completes verified compression coverage, official release entries/build, reproducible-assembly proof, video terminal state and a restorable delivery (M-R)',
   generatedAt: new Date().toISOString(),
   compressedDefault: true,
   adoption: {
@@ -144,14 +144,19 @@ const version = {
 await writeFile(resolve(root, 'VERSION.json'), JSON.stringify(version, null, 2) + '\n');
 
 // ---- hub page ------------------------------------------------------------
+// closeout batch 20260919: SITE-RELATIVE urls (each page works from any
+// localhost server / the built dist root; no stale dev-era absolute ports)
+// and the CURRENT adopted page set (v4 is the default bridge world;
+// temple-v3 is a built entry since this batch)
 const PAGES = [
-  { name: '方浜街道（街区行走）', url: 'http://127.0.0.1:5284/fangbang.html', ds: 'world/' },
-  { name: '庙轴线 v2（temple-v2）', url: 'http://127.0.0.1:5290/temple-v2.html', ds: 'world/temple-axis-v2/' },
-  { name: '庙入口组（temple-entry）', url: 'http://127.0.0.1:5292/temple-entry.html', ds: 'world/temple-shanmen/' },
-  { name: '大殿（dadian）', url: 'http://127.0.0.1:5294/dadian.html', ds: 'world/temple-axis-v2/' },
-  { name: '桥接世界 v2（现役）', url: 'http://127.0.0.1:5297/fangbang.html?ds=fangbang-temple-v2', ds: 'world/fangbang-temple-v2/' },
-  { name: '桥接世界 v3（西延带升级，本批）', url: 'http://127.0.0.1:5304/fangbang.html?ds=fangbang-temple-v3', ds: 'world/fangbang-temple-v3/' },
-  { name: 'v3 + 背面外皮全集（skins）', url: 'http://127.0.0.1:5304/fangbang.html?ds=fangbang-temple-v3&skins=1', ds: 'world/street-sidefaces/' },
+  { name: '桥接世界 v4（现役数据集）', url: 'fangbang.html?ds=fangbang-temple-v4', ds: 'world/fangbang-temple-v4/' },
+  { name: '桥接世界 v4 + 背面外皮 + 街道道具', url: 'fangbang.html?ds=fangbang-temple-v4&skins=1&props=1', ds: 'world/fangbang-temple-v4/' },
+  { name: '桥接世界 v3（街道）', url: 'fangbang.html?ds=fangbang-temple-v3', ds: 'world/fangbang-temple-v3/' },
+  { name: '庙轴线 v2（temple-v2）', url: 'temple-v2.html', ds: 'world/temple-axis-v2/' },
+  { name: '庙轴线 v3（temple-v3）', url: 'temple-v3.html', ds: 'world/temple-axis-v3/' },
+  { name: '方浜街道（街区行走）', url: 'fangbang.html', ds: 'world/' },
+  { name: '庙入口组（temple-entry）', url: 'temple-entry.html', ds: 'world/temple-shanmen/' },
+  { name: '大殿（dadian）', url: 'dadian.html', ds: 'world/temple-dadian/' },
 ];
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const dsRows = datasets.map((d) => {
@@ -178,7 +183,7 @@ const html = `<!doctype html><html lang="zh-CN"><meta charset="utf-8">
 </style>
 <h1>Pawborough v1.0 候选包 — 入口（index-v1）</h1>
 <p class="note">采用状态：机主 2026-09-19 已裁决采用全部已交付视觉（OWNER_DECISION-20260919.json G1 adopt_all）；各批 RESULT.json 的 ownerAdopted=true，历史批在本页 VERSION.json.adoption 登记。压缩变体<b>默认加载</b>（<code>*.cm.glb</code>），URL 加 <code>?compressed=0</code> 可回原始字节。生成时间 ${esc(version.generatedAt)} · head <code>${esc(version.git.head ?? '?')}</code></p>
-<h2>页面（现役端口）</h2>
+<h2>页面（站点相对 URL —— dev/preview/dist 同源直接可用）</h2>
 <table>
 <tr><th>页面</th><th>URL</th><th>数据集</th><th>placedTriangles</th></tr>
 ${pageRows}

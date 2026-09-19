@@ -50,20 +50,34 @@ step freeze_check node -e '
       try { head = execSync("git rev-parse --verify HEAD:VERSION.json", { encoding: "utf8" }).trim(); }
       catch { console.log("freeze_check skipped: no committed VERSION.json yet"); return; }
       const prev = JSON.parse(execSync("git show HEAD:VERSION.json", { encoding: "utf8" }));
-      // in-place-update exemption (DESIGN_SPEC.inPlaceUpdatesAuthorized): the
-      // datasets this batch is authorized to update in place are NOT frozen
-      const EXEMPT = ["world/temple-axis-v3/", "world/fangbang-temple-v4/"];
+      // in-place-update datasets (DESIGN_SPEC.inPlaceUpdatesAuthorized) are
+      // NOT exempt from checking since the closeout batch: they are locked
+      // against THIS batch'"'"'s approved baseline (artifacts/world-closeout/
+      // baseline.json, committed at stage M) instead of the previous VERSION —
+      // an authorized dataset may change only where the baseline authorizes it
+      const EXEMPT = ["world/temple-axis-v3/", "world/fangbang-temple-v4/", "world/street-props/"];
       const exempt = (p) => EXEMPT.some((pre) => p.startsWith(pre));
-      let checked = 0, skipped = 0, bad = [];
+      let baseline = null;
+      try { baseline = JSON.parse(await readFile("artifacts/world-closeout/baseline.json", "utf8")); }
+      catch { console.error("authorized-dataset lock missing: artifacts/world-closeout/baseline.json"); process.exit(1); }
+      const baseSha = new Map(baseline.files.map((f) => [f.path, f.sha256]));
+      let checked = 0, baselineLocked = 0, bad = [];
       for (const f of [...prev.worldFiles, ...prev.buildingFiles]) {
-        if (exempt(f.path)) { skipped++; continue; }
         let b;
         try { b = await readFile(f.path); } catch { bad.push(`${f.path}: missing`); continue; }
-        if (createHash("sha256").update(b).digest("hex") !== f.sha256) bad.push(`${f.path}: sha drift`);
-        checked++;
+        const got = createHash("sha256").update(b).digest("hex");
+        if (exempt(f.path)) {
+          const locked = baseSha.get(f.path);
+          if (locked === undefined) { baselineLocked++; continue; }  // new derived asset of this batch — gated by the registry, not the baseline
+          if (got !== locked) { bad.push(`${f.path}: authorized dataset drifted from the closeout baseline`); continue; }
+          baselineLocked++;
+        } else {
+          if (got !== f.sha256) bad.push(`${f.path}: sha drift`);
+          checked++;
+        }
       }
       if (bad.length) { console.error("FROZEN_INVENTORY_DRIFT\n" + bad.slice(0, 10).join("\n")); process.exit(1); }
-      console.log(`freeze_check ok ${checked} frozen files match HEAD (${skipped} in authorized-update datasets skipped)`);
+      console.log(`freeze_check ok ${checked} frozen files match HEAD + ${baselineLocked} authorized-dataset files locked to the closeout baseline`);
     })().catch((e) => { console.error(e.message); process.exit(1); });
   '
 step make_version node tools/make_version.mjs

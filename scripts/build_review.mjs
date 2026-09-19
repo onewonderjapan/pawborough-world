@@ -62,3 +62,42 @@ console.log(`Strict review build copied ${files.length} required files incl. ${e
 // the pilot entry must exist in dist (vite emits it as a second rollup input)
 const{existsSync}=await import('node:fs');
 if(!existsSync(resolve(root,'dist/temple.html')))throw Error('dist/temple.html missing — the standalone pilot entry never reached the build');
+
+// ---- closeout batch 20260919: the OFFICIAL build carries the full current
+// world closure. The adoption-era flow relied on verify_all.sh doing
+// `cp -r world building dist/` AFTER `npm run build`, so a plain build output
+// was NOT the deliverable page set. Now every world/ dataset is copied whole
+// (originals + *.cm.glb variants + manifests + collision/route/cameras),
+// with a per-dataset review-manifest presence check so an incomplete
+// dataset fails the build instead of 404ing at runtime. *.blend stays out —
+// no page ever fetches it and it is most of the dead weight.
+const worldDir=resolve(root,'world');
+let dsCopied=0, dsFiles=0;
+const copyTree=async(srcDir,dstDir)=>{
+  for(const f of await readdir(srcDir,{withFileTypes:true})){
+    if(f.name.endsWith('.blend'))continue;
+    const s=resolve(srcDir,f.name), d=resolve(dstDir,f.name);
+    if(f.isDirectory()){await mkdir(d,{recursive:true});await copyTree(s,d);continue;}
+    await copyFile(s,d);dsFiles++;
+  }
+};
+for(const e of await readdir(worldDir,{withFileTypes:true})){
+  if(!e.isDirectory())continue;
+  const dsAbs=resolve(worldDir,e.name);
+  if(!existsSync(resolve(dsAbs,'review-manifest.json')))
+    throw Error(`world/${e.name}/ has no review-manifest.json — not a loadable dataset; fix or remove it from the closure`);
+  await mkdir(resolve(root,'dist/world',e.name),{recursive:true});
+  await copyTree(dsAbs,resolve(root,'dist/world',e.name));dsCopied++;
+}
+// root-level world files: the compressed variants of the root GLBs
+for(const f of await readdir(worldDir,{withFileTypes:true})){
+  if(f.isFile()&&f.name.endsWith('.cm.glb')){
+    await mkdir(resolve(root,'dist/world'),{recursive:true});
+    await copyFile(resolve(worldDir,f.name),resolve(root,'dist/world',f.name));dsFiles++;
+  }
+}
+// the version manifest and the v1 hub page are part of the deliverable root
+await copyFile(resolve(root,'VERSION.json'),resolve(root,'dist/VERSION.json'));
+await copyFile(resolve(root,'index-v1.html'),resolve(root,'dist/index-v1.html'));
+if(!existsSync(resolve(root,'dist/temple-v3.html')))throw Error('dist/temple-v3.html missing — the temple-v3 entry is a rollup input since the closeout batch and must reach the build');
+console.log(`Closeout world closure: ${dsCopied} datasets / ${dsFiles} dataset files + root cm + VERSION.json + index-v1.html copied into dist (blend excluded).`);

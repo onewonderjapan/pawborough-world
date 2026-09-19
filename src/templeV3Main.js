@@ -13,7 +13,7 @@ import { addWallCollider, addGroundCollider } from './world/physics.js';
 import { WalkController } from './player/WalkController.js';
 import { CAPSULE, createSceneRig, applyViewVerified, loadGlbWithStats, groundMeshesOf,
          saveEvidence, countResources } from './templeViewShared.js';
-import { compressedEnabled, installCompressedFetch } from './world/compressedState.js';
+import { compressedEnabled, compressedActive, installCompressedFetch } from './world/compressedState.js';
 
 // H2 (adoption batch 20260919): compressed variant loads by DEFAULT;
 // ?compressed=0 returns to the original bytes. The install probes for the
@@ -519,8 +519,13 @@ async function load() {
   const trisOf = (id) => manifest.assets[id]?.triangles ?? 0;
   const expected = Object.values(manifest.assets).reduce((s, a) => s + a.triangles, 0)
     + trisOf('peidian') + trisOf('gallery') + trisOf('tree') * 3;
-  if (r.triangles !== expected)
-    throw new Error(`geometry integrity: ${r.triangles} triangles loaded != manifest ${expected}`);
+  // compressed state: meshopt quantization may collapse a few degenerate
+  // triangles per assembly — same 0.1% ceiling fangbangMain enforces (the
+  // check stays EXACT for the original state); fail loudly beyond it
+  const triTol = compressedActive() ? Math.ceil(expected * 0.001) : 0;
+  if (Math.abs(r.triangles - expected) > triTol)
+    throw new Error(`geometry integrity: ${r.triangles} triangles loaded != manifest ${expected}`
+      + (triTol ? ` (compressed-state drift ${r.triangles - expected}, ceiling ${triTol})` : ''));
 
   loadStats = {
     bytesTotal: Object.values(loaded).reduce((s, l) => s + l.bytes, 0),

@@ -75,7 +75,30 @@
       ],
       "tests": "tests/compressed_default.test.mjs 钉定更新（cm 数据集 +temple-axis-v3/street-props；原始态钉定 -这两者；新增 4b 容差回退负例）+ collectGlbs 豁免 previousFile 溯源字段；全套 54/54"
     },
-    "O": { "status": "pending" },
+    "O": {
+      "status": "done",
+      "finishedAt": "2026-09-20T00:5x+08:00",
+      "entries": {
+        "viteInputs": "temple-v3.html 纳入 vite build rollupOptions（vite.config.js）——正式构建入口从 6 页变 7 页",
+        "indexV1": "tools/make_version.mjs 模板改站点相对 URL（去陈旧 dev 端口绝对链），页面清单更新为现役集（v4 现役/skins+props/v3 街道/temple-v2/temple-v3/…）；head 与数据集随再生成自洽",
+        "officialBuild": "scripts/build_review.mjs 增补官方世界闭包：14 个 world 数据集整目录复制（含 cm 变体，排除 .blend，review-manifest 在场校验）+ root cm + VERSION.json + index-v1.html + dist/temple-v3.html 在场检查——npm run build 自足，不再依赖 verify_all 的 cp -r 临时复制"
+      },
+      "gate": {
+        "tool": "tools/full_browser_gate.mjs 重写",
+        "serverOwnership": "dev/preview 均为自己 spawn（--strictPort，5340/5341→5344/5345/5346 策略回退）；归属判定=子进程存活+strictPort（占位的外来服务会让我方 vite 退出→判失败）+ preview 双字节归属（fangbang.html 与其引用 bundle 均须与 dist 字节一致）+ dev 归属（模块引用+compressedState 变换体含 cm 探针字面量）；清理只关自己的 PID，无 pkill",
+        "scenarios": "12 场景：preview v4+skins+props / 街道v3 / temple-v2 / temple-v3 各两态 8 个 + dev v4 / temple-v3 各两态 4 个",
+        "hardChecks": "routeCheck.pass===true 硬门槛（真实物理巡航，自动执行）+ 同任务空白帧守卫（渲染触发与 drawImage 同一 evaluate；std255<2 或 dominantShare>0.95 判败）+ 双态取件对账 + 网络监听（cm 回退探针与 HEAD 探针中止伪影归类为探针，其余 ≥400/请求失败=错误）",
+        "result": "BROWSER_GATE_PASS 12/12；browser-report.json + browser-evidence/ 12 张截图",
+        "incidents": [
+          "dev 归属初版用 HTML 字节比对——vite dev 注入 HMR client 必然不等，改为引用+字面量判据",
+          "复现并修复工单警告场景：被 kill 的前轮门遗留孤儿 vite 占 5340/5341，后轮门曾把它当自己服务（同仓旧服务可过 curl 归属）——bringUp 增加子进程存活判定，孤儿已清理（仅本批 PID）",
+          "temple-v3 cm 态超时定位为页面自身完整性检查口径不一致：templeV3Main 精确断言 166038!=166046（meshopt 剔除 8 个退化三角），fangbangMain/测试口径均为 0.1% 跨态容差——按工单『修脚本不移除检查』对齐 compressedActive() 时 0.1% 上限，原始态保持精确",
+          "cm-manifest HEAD 探针的 net::ERR_ABORTED 为 Chromium 对 fetch HEAD 的网络日志伪影（探针已解析、页面就绪），归类为探针而非错误"
+        ],
+        "portRecord": "最终 dev :5340 preview :5341（pid 记录于 browser-report.json servers）"
+      },
+      "tests": "node --test 全套 56/56（54 基线 + 2 新负例）"
+    },
     "P": {
       "status": "done",
       "finishedAt": "2026-09-20T00:2x+08:00",
