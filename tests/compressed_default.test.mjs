@@ -59,8 +59,14 @@ const collectGlbs = (node, out = []) => {
     if (Array.isArray(n)) { for (const x of n) walk(x); return; }
     if (n && typeof n === 'object') {
       for (const [k, v] of Object.entries(n)) {
-        if (typeof v === 'string' && v.endsWith('.glb') && !v.endsWith('.cm.glb')) out.push({ node: n, key: k, value: v });
-        else walk(v);
+        if (typeof v === 'string' && v.endsWith('.glb') && !v.endsWith('.cm.glb')) {
+          // *previousFile fields are provenance notes pointing at RETIRED
+          // assets (e.g. temple-axis-v3 tree-camphor.glb -> superseded by
+          // tree-camphor-v2.glb) — no page ever fetches them, so they are
+          // exempt from the on-disk load-reference checks
+          if (/previousfile$/i.test(k)) continue;
+          out.push({ node: n, key: k, value: v });
+        } else walk(v);
       }
     }
   };
@@ -115,18 +121,34 @@ for (const ds of cmDatasets) {
     `orig=${t0} cm=${t1} drift=${(drift * 100).toFixed(4)}%`);
 }
 
-check('compressed-state datasets present (fangbang-temple-v3/v4, street-sidefaces)',
-  ['fangbang-temple-v3', 'fangbang-temple-v4', 'street-sidefaces'].every((d) => cmDatasets.includes(d)),
+check('compressed-state datasets present (fangbang-temple-v3/v4, street-sidefaces, temple-axis-v3, street-props)',
+  ['fangbang-temple-v3', 'fangbang-temple-v4', 'street-sidefaces', 'temple-axis-v3', 'street-props'].every((d) => cmDatasets.includes(d)),
   `cm: ${cmDatasets.join(', ')}`);
 
 // ---- 4. original-state datasets: the probe-fallback contract ---------------
-// v1/v2/v3 datasets are READ-ONLY (frozen) — they have no compressed manifest
-// and pages must serve them entirely original (no mixed states). street-props
-// and laneb likewise. If one of these grows a stale cm manifest again (the v4
-// incident), this pin fails loudly.
-for (const ds of ['fangbang-temple', 'fangbang-temple-v2', 'temple-axis-v2', 'temple-axis-v3', 'street-props', 'laneb']) {
+// v1/v2 street datasets, temple-axis-v2 and laneb are READ-ONLY (frozen) —
+// they have no compressed manifest and pages must serve them entirely original
+// (no mixed states). (temple-axis-v3 and street-props gained verified cm
+// variants in the world-closeout batch 20260919 — allowedChanges dirs.) If one
+// of the frozen datasets grows a cm manifest again (the v4 incident), this pin
+// fails loudly.
+for (const ds of ['fangbang-temple', 'fangbang-temple-v2', 'temple-axis-v2', 'laneb']) {
   const has = await exists(resolve(worldDir, ds, 'review-manifest.cm.json'));
   check(`${ds}: serves ORIGINAL state (no cm manifest)`, !has);
+}
+
+// ---- 4b. tolerance-fallback pins (closeout batch 20260919) -----------------
+// these assets have NO compressed variant by design: their cm candidates
+// failed the 0.1% decode triangle-drift ceiling (degenerate triangles removed
+// by meshopt), so the pages must keep loading the original bytes. If a cm
+// file ever appears at these paths, the tolerance policy was bypassed.
+for (const cm of [
+  'world/fangbang-temple-v4/temple-axis/lions.cm.glb',
+  'world/fangbang-temple-v4/east-extension/surface.cm.glb',
+  'world/temple-axis-v3/lions-v2.cm.glb',
+]) {
+  const has = await exists(resolve(root, cm));
+  check(`${cm}: stays ORIGINAL (cm candidate failed drift tolerance)`, !has);
 }
 
 // ---- 5. VERSION.json records the adoption + compressed default ------------

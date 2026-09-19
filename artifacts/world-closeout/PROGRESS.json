@@ -38,7 +38,43 @@
         }
       }
     },
-    "N": { "status": "pending" },
+    "N": {
+      "status": "done",
+      "finishedAt": "2026-09-19T23:5x+08:00",
+      "closure": {
+        "tool": "tools/closeout_cm_closure.mjs -> n-closure.json",
+        "scope": "v4(manifest+blocks) + 街道v3 + temple-axis-v3 + street-props + street-sidefaces 全部实际引用",
+        "result": "104 unique GLB 引用：100 有 cm 邻件、3 缺（=回退件）、1 missingOrig（temple-axis-v3/tree-camphor.glb，仅清单 treeV2.previousFile 溯源备注，页面从不加载，v2 已替代）"
+      },
+      "candidates": {
+        "tool": "tools/closeout_cm_build.mjs（隔离输出 artifacts/world-closeout/cm-candidates/，world/ 不落笔）",
+        "codec": "gltfpack 1.2 -cc -kn；ground 名件 -vpf -vt14（与既有管线一致）",
+        "built": 28,
+        "note": "26 缺失 + westshops-v4 过期替换 + v1 lions（诊断性，未安装）"
+      },
+      "validation": {
+        "tool": "tools/closeout_cm_validate.mjs + cm_validate harness（生产 createGLTFLoader/MeshoptDecoder，vite dev 5344 自持有自停止）",
+        "tolerances": "triDrift≤0.1% / posErr≤0.002m / 唯一 image 数不变 / ground 节点名不丢",
+        "newCandidates": "24/28 过（4 不过：v4 lions 0.49%、v3axis lions-v2 0.49%、v4 east-surface 0.32%、v1 lions 0.56%——全部为 meshopt 剔除退化三角形，>0.1% 上限）",
+        "existingShipped": "97/100 过——发现 westshops-v4 cm 过期（120→72 tris，59.4m 包围盒偏移，已替换）"
+      },
+      "install": {
+        "tool": "tools/closeout_cm_install.mjs -> n-install.json + cm-provenance.json 注册表",
+        "installed": "24 件新 cm（v4×5、street-props×5、temple-axis-v3×14）",
+        "replaced": "world/fangbang-temple-v4/westshops-strips.cm.glb 旧字节留档 artifacts/world-closeout/retired-cm/",
+        "fallbacks": "4 件保留原始并在清单 compressedVariant.fallbacks 注明原因；tests 补负例钉死这三条路径不得出现 cm",
+        "originals": "225 个原始 GLB 与 M baseline 逐一比对 0 变化"
+      },
+      "manifests": {
+        "generator": "tools/make_cm_manifest.mjs 升级：仅当 cm-provenance.json 记录 verified 且 sourceSha256 == 当前原始 sha 才选中；过期/未验证变体永不入选，原因写入 compressedVariant.fallbacks",
+        "regenerated": ["fangbang-temple-v4 (122 repointed / 5 kept)", "temple-axis-v3 新建 (13/1)", "street-props 新建 (5/0)"]
+      },
+      "findings_outside_write_scope": [
+        "world/fangbang-temple-v3/temple-axis/lions.glb 的 cm 退化三角漂移 0.5624% > 0.1%（街道v3页在用）——allowedChanges 未授权改 fangbang-temple-v3/**，未动；修法=授权后重跑本批候选+清单链",
+        "world/fangbang-temple-v3/westshops-strips.cm.glb 同 westshops-v4 一样过期（120→72 tris，59.4m 偏移）——同上未动，发现已实锤登记"
+      ],
+      "tests": "tests/compressed_default.test.mjs 钉定更新（cm 数据集 +temple-axis-v3/street-props；原始态钉定 -这两者；新增 4b 容差回退负例）+ collectGlbs 豁免 previousFile 溯源字段；全套 54/54"
+    },
     "O": { "status": "pending" },
     "P": { "status": "pending" },
     "Q": { "status": "pending" },

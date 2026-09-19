@@ -1,0 +1,123 @@
+{
+  "batch": "pawborough-world-closeout-night-20260919",
+  "stage": "N step 4 install + provenance registry",
+  "generatedAt": "2026-09-19T15:21:47.860Z",
+  "installed": [],
+  "alreadyInstalled": [
+    {
+      "cmRel": "world/fangbang-temple-v4/east-extension/seal-wall.cm.glb"
+    },
+    {
+      "cmRel": "world/fangbang-temple-v4/eastshops-strips.cm.glb"
+    },
+    {
+      "cmRel": "world/fangbang-temple-v4/temple-axis/court-open.cm.glb"
+    },
+    {
+      "cmRel": "world/fangbang-temple-v4/temple-axis/ornaments.cm.glb"
+    },
+    {
+      "cmRel": "world/fangbang-temple-v4/temple-axis/tree-camphor-v2.cm.glb"
+    },
+    {
+      "cmRel": "world/street-props/bamboo-basket.cm.glb"
+    },
+    {
+      "cmRel": "world/street-props/bamboo-chair.cm.glb"
+    },
+    {
+      "cmRel": "world/street-props/bicycle-28.cm.glb"
+    },
+    {
+      "cmRel": "world/street-props/cloth-awning.cm.glb"
+    },
+    {
+      "cmRel": "world/street-props/wood-crate.cm.glb"
+    },
+    {
+      "cmRel": "world/temple-axis-v3/court3.cm.glb"
+    },
+    {
+      "cmRel": "world/temple-axis-v3/dadian-court-v2.cm.glb"
+    },
+    {
+      "cmRel": "world/temple-axis-v3/dadian.cm.glb"
+    },
+    {
+      "cmRel": "world/temple-axis-v3/entry-court-v3.cm.glb"
+    },
+    {
+      "cmRel": "world/temple-axis-v3/gallery.cm.glb"
+    },
+    {
+      "cmRel": "world/temple-axis-v3/ground.cm.glb"
+    },
+    {
+      "cmRel": "world/temple-axis-v3/houdian.cm.glb"
+    },
+    {
+      "cmRel": "world/temple-axis-v3/ornaments-v2.cm.glb"
+    },
+    {
+      "cmRel": "world/temple-axis-v3/peidian.cm.glb"
+    },
+    {
+      "cmRel": "world/temple-axis-v3/temple.cm.glb"
+    },
+    {
+      "cmRel": "world/temple-axis-v3/tree-camphor-v2.cm.glb"
+    },
+    {
+      "cmRel": "world/temple-axis-v3/yimen-stage.cm.glb"
+    },
+    {
+      "cmRel": "world/temple-axis-v3/yimen.cm.glb"
+    },
+    {
+      "cmRel": "world/fangbang-temple-v4/westshops-strips.cm.glb"
+    }
+  ],
+  "replaced": [],
+  "skipped": [],
+  "fallbacks": [
+    {
+      "originalRel": "world/fangbang-temple-v4/east-extension/surface.glb",
+      "reason": "cm candidate failed decode tolerance: triangle drift 0.3191% > 0.1% (degenerate triangles removed by meshopt); kept original per spec — geometry is never edited to force a pass"
+    },
+    {
+      "originalRel": "world/fangbang-temple-v4/temple-axis/lions.glb",
+      "reason": "cm candidate failed decode tolerance: triangle drift 0.4921% > 0.1% (degenerate triangles removed by meshopt); kept original per spec — geometry is never edited to force a pass"
+    },
+    {
+      "originalRel": "world/temple-axis-v3/lions-v2.glb",
+      "reason": "cm candidate failed decode tolerance: triangle drift 0.4921% > 0.1% (degenerate triangles removed by meshopt); kept original per spec — geometry is never edited to force a pass"
+    },
+    {
+      "originalRel": "world/fangbang-temple/temple-axis/lions.glb",
+      "reason": "cm candidate failed decode tolerance: triangle drift 0.5624% > 0.1% (degenerate triangles removed by meshopt); kept original per spec — geometry is never edited to force a pass"
+    }
+  ],
+  "findings": [
+    {
+      "originalRel": "world/fangbang-temple-v3/temple-axis/lions.glb",
+      "detail": "triangle drift 0.5624% / posErr 0.000138m vs current original",
+      "disposition": "outside this batch's allowedChanges write scope (or frozen v1) — recorded, untouched; remediation = rebuild candidate + registry-gated manifest regen once authorized"
+    },
+    {
+      "originalRel": "world/fangbang-temple-v3/westshops-strips.glb",
+      "detail": "triangle drift 40.0000% / posErr 59.424499m vs current original",
+      "disposition": "outside this batch's allowedChanges write scope (or frozen v1) — recorded, untouched; remediation = rebuild candidate + registry-gated manifest regen once authorized"
+    },
+    {
+      "originalRel": "world/fangbang-temple/temple-axis/lions.glb",
+      "detail": "triangle drift 0.5624% / posErr 0.000138m vs current original",
+      "disposition": "outside this batch's allowedChanges write scope (or frozen v1) — recorded, untouched; remediation = rebuild candidate + registry-gated manifest regen once authorized"
+    }
+  ],
+  "registry": "artifacts/world-closeout/cm-provenance.json",
+  "originals": {
+    "checked": 225,
+    "changed": [],
+    "unchanged": true
+  }
+}

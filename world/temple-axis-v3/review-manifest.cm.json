@@ -1,0 +1,244 @@
+{
+  "datasetId": "temple-axis-v3",
+  "title": "城隍庙庙轴线 v3 · 走廊精修变体（狮子v2/方形漏窗v2/前院香道+铜鼎/樟树×4）",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "visualReview": "pending_lead",
+  "reference": "DESIGN_SPEC.json pawborough-corridor-video-night-20260919 packageD; 狮子参照 PBR-SH-0003-003/004 只取姿态比例",
+  "axis": "GLB Y-up; +Z south toward the street; shanmen threshold at (0,0,0); north = -Z",
+  "assets": {
+    "temple": {
+      "file": "./world/temple-axis-v3/temple.cm.glb",
+      "bytes": 1371936,
+      "sha256": "f9cfa6d4fad6afbab460c1f22cb5f68ca0434545a1be22c0c46dd5eba3b02924",
+      "triangles": 22392,
+      "groups": [
+        "shanmen-body",
+        "shanmen-plaque"
+      ]
+    },
+    "ground": {
+      "file": "./world/temple-axis-v3/ground.cm.glb",
+      "bytes": 820952,
+      "sha256": "f99396c2bc95f55fa5dc8718e7b65edf4a75719d28ef1940545880e45e24c315",
+      "triangles": 360,
+      "groups": [
+        "temple-ground"
+      ]
+    },
+    "yimen": {
+      "file": "./world/temple-axis-v3/yimen.cm.glb",
+      "bytes": 1507320,
+      "sha256": "cf6fcb1e7f496098dc06a3e742079de12a260e2db286675d27288227a40f5b43",
+      "triangles": 26140,
+      "groups": [
+        "yimen-body",
+        "yimen-plaque"
+      ]
+    },
+    "dadian": {
+      "file": "./world/temple-axis-v3/dadian.cm.glb",
+      "bytes": 1722548,
+      "sha256": "e41071436d0f3a746a1495718d456b519b742b1e5a05440d7671a4db5fb28a0e",
+      "triangles": 43826,
+      "groups": [
+        "dadian-body",
+        "dadian-plaque"
+      ]
+    },
+    "dadianCourtV2": {
+      "file": "./world/temple-axis-v3/dadian-court-v2.cm.glb",
+      "bytes": 991548,
+      "sha256": "59f12de80a21cf165366af4348e1f68e45994d8ae3b73d14eb0e4e463bf9b728",
+      "triangles": 3288,
+      "groups": [
+        "temple-ground",
+        "dadian-court"
+      ]
+    },
+    "peidian": {
+      "file": "./world/temple-axis-v3/peidian.cm.glb",
+      "bytes": 996376,
+      "sha256": "981156f83c3e8f1580dc414adf2200ca98728414f2e84b3042838cd9601f0e85",
+      "triangles": 11396,
+      "groups": [
+        "peidian-body",
+        "temple-ground"
+      ]
+    },
+    "gallery": {
+      "file": "./world/temple-axis-v3/gallery.cm.glb",
+      "bytes": 380176,
+      "sha256": "0ad3b143260890f6de5c750eb09ce7cf26de2bdbe9fda672452a5f378e88d45a",
+      "triangles": 1110,
+      "groups": [
+        "gallery-body",
+        "temple-ground"
+      ]
+    },
+    "yimenStage": {
+      "file": "./world/temple-axis-v3/yimen-stage.cm.glb",
+      "bytes": 496064,
+      "sha256": "6372184d79a99f9a36379b8b201ec6a3e9407134a5d7ed94ca2e18bb528fc1a1",
+      "triangles": 7164,
+      "groups": [
+        "yimen-stage-body"
+      ]
+    },
+    "court3": {
+      "file": "./world/temple-axis-v3/court3.cm.glb",
+      "bytes": 1116816,
+      "sha256": "d99a9a572fe266de9063963fa49bc7e041d3eea86a3d1e7a563b0e513fd20448",
+      "triangles": 4552,
+      "groups": [
+        "temple-ground",
+        "court3-boundary"
+      ]
+    },
+    "houdian": {
+      "file": "./world/temple-axis-v3/houdian.cm.glb",
+      "bytes": 1086544,
+      "sha256": "c6fb97edfb70d1017e8fd9afbded71d7288e98353e3883850e1a4c9bd8a3618b",
+      "triangles": 16164,
+      "groups": [
+        "houdian-body",
+        "temple-ground"
+      ]
+    },
+    "lionsV2": {
+      "file": "./world/temple-axis-v3/lions-v2.glb",
+      "bytes": 490048,
+      "sha256": "46dd10af05af07d8f9ab4ea234b6f3daf4af902184543e92f36b449019d44b7a",
+      "triangles": 4064,
+      "groups": [
+        "shanmen-lion"
+      ],
+      "variantOf": "lions",
+      "note": "v2 seated lions (ball LEFT / cub RIGHT), spec <=3500 tris each"
+    },
+    "ornamentsV2": {
+      "file": "./world/temple-axis-v3/ornaments-v2.cm.glb",
+      "bytes": 14732,
+      "sha256": "5c02d4131aa3ce021bb6237729e61e0647e971548e3d1579766eae1c48a44704",
+      "triangles": 1148,
+      "groups": [
+        "shanmen-ornament"
+      ],
+      "variantOf": "ornaments",
+      "note": "v2 square lattice windows 1.1x1.1 on the wing walls, design_inference"
+    },
+    "entryCourtV3": {
+      "file": "./world/temple-axis-v3/entry-court-v3.cm.glb",
+      "bytes": 1007944,
+      "sha256": "8f822a93731c98c1164a2bc728cf8fb5cd05a506e6e5ca76c85dd4a1dfc4b717",
+      "triangles": 4192,
+      "groups": [
+        "temple-ground",
+        "entry-court"
+      ],
+      "variantOf": "courtOpen",
+      "note": "court-open + incense road (temple-ground__worn-stone) + bronze burner"
+    },
+    "tree": {
+      "file": "./world/temple-axis-v3/tree-camphor-v2.cm.glb",
+      "bytes": 113468,
+      "sha256": "b4a9b52c26cf60644c66758ac0f9f07656d2105841334e3ff50ef02669bc2df6",
+      "triangles": 1936,
+      "groups": [
+        "temple-tree"
+      ],
+      "note": "D3 trees v2 (adoption batch 20260919): multi-lobe canopy, seed 20260919, owner G12 rebuild; moved to courtyard-wall line per frame rule",
+      "instances": 4,
+      "instancesAt": {
+        "tree-court2-w": [
+          -6.7,
+          0,
+          -33.2
+        ],
+        "tree-court2-e": [
+          8.6,
+          0,
+          -33.2
+        ],
+        "tree-court3-w": [
+          -13,
+          0,
+          -61
+        ],
+        "tree-court3-e": [
+          14,
+          0,
+          -62
+        ]
+      },
+      "placedShifts": {
+        "tree-court2-w": "spec (-8.6,-33.2) sits ON the route swing (x=-8.5 segment); minimal clear shift +1.90m east to (-6.7,-33.2) — exceeds the 1.5m frame-rule cap, recorded as spec deviation (no smaller shift clears the corridor)",
+        "tree-court3-e": "spec (13.0,-61.0) 0.40m from route; shifted 1.41m to (14.0,-62.0), within the 1.5m cap"
+      }
+    }
+  },
+  "placedTriangles": 166046,
+  "budgets": {
+    "newModulesTris": {
+      "actual": 9972,
+      "limit": 16000
+    },
+    "placedTriangles": {
+      "actual": 160574,
+      "limit": 200000
+    },
+    "newImages": {
+      "actual": 0,
+      "limit": 0
+    }
+  },
+  "variants": {
+    "lionsV2": "seated, faceted head, 9 mane curls, ball LEFT / cub RIGHT; collision per spec 0.62x1.35x0.75 (v1 had plinth-only records — recorded in PROGRESS)",
+    "ornamentsV2": "square lattice windows 1.1x1.1 covering the v1 relief panel position (frozen temple.glb untouched); design_inference, G13 gate",
+    "entryCourtV3": "court-open + incense road (z 0..7, slabs 1.5x0.75 joint 0.02, top +0.01, faces temple-ground__worn-stone) + burner (0,0,-12) scaled 0.85 with spec plinth tiers 1.4x0.22 + 1.05x0.18; collision 1.1x1.3x1.1",
+    "trees": "4 camphor instances; trunk-collider >= 0.6, canopy bottom >= 3.0, route corridor >= 1.75; G12 gate"
+  },
+  "placementShifts": [
+    {
+      "tree": "tree-court2-w",
+      "shiftedBy": 0.968,
+      "newDistanceToRoute": 1.8,
+      "reason": "spec position inside the +/-1.5 route corridor (dist 0.83 m); fallback #2 away-shift"
+    },
+    {
+      "tree": "tree-court2-e",
+      "shiftedBy": 0.238,
+      "newDistanceToRoute": 1.8,
+      "reason": "spec position inside the +/-1.5 route corridor (dist 1.56 m); fallback #2 away-shift"
+    },
+    {
+      "tree": "tree-court3-e",
+      "shiftedBy": 0.858,
+      "newDistanceToRoute": 1.8,
+      "reason": "spec position inside the +/-1.5 route corridor (dist 0.94 m); fallback #2 away-shift"
+    }
+  ],
+  "droppedTrees": [],
+  "cameras": {
+    "count": 10,
+    "source": "frozen temple-axis-v2 camera contract"
+  },
+  "buildChain": "build_temple_shanmen.py(--lionsVersion v2 --windowsVersion v2) + build_entry_court.py(--addIncenseRoad --addBurner) + build_tree.py <- DESIGN_SPEC.json",
+  "generatedBy": "scripts/build_temple_axis_v3_world.mjs",
+  "treeV2": {
+    "rebuild": "owner G12 (OWNER_DECISION-20260919.json): trees v2, 2600-tri budget, moved to courtyard edges",
+    "previousFile": "./world/temple-axis-v3/tree-camphor.glb",
+    "seed": 20260919
+  },
+  "compressedVariant": {
+    "note": "regenerated by tools/make_cm_manifest.mjs from the current review-manifest.json: every .glb field with an on-disk .cm.glb sibling repointed with true bytes/sha256; others stay original",
+    "selection": "a sibling is selected only when artifacts/world-closeout/cm-provenance.json records it verified against the CURRENT original sha256 (decode-equivalence or exact-source); retired/unverified variants are never selected",
+    "gltfpack": "meshopt + KHR_mesh_quantization (-cc -kn); textures untouched",
+    "fallbacks": [
+      {
+        "path": "./world/temple-axis-v3/lions-v2.glb",
+        "reason": "no compressed sibling on disk"
+      }
+    ]
+  }
+}

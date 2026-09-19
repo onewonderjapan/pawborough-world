@@ -51,12 +51,16 @@ if (!(await waitUp(DEV, 'dev server', dev)) || !(await waitUp(PREVIEW, 'preview 
 }
 
 const SCENARIOS = [
-  { base: PREVIEW, url: `/fangbang.html?ds=fangbang-temple-v4`, record: '__fangbangRecord', expect: 'cm' },
-  { base: PREVIEW, url: `/fangbang.html?ds=fangbang-temple-v4&compressed=0`, record: '__fangbangRecord', expect: 'original' },
+  { base: PREVIEW, url: `/fangbang.html?ds=fangbang-temple-v4&skins=1&props=1`, record: '__fangbangRecord', expect: 'cm' },
+  { base: PREVIEW, url: `/fangbang.html?ds=fangbang-temple-v4&skins=1&props=1&compressed=0`, record: '__fangbangRecord', expect: 'original' },
   { base: PREVIEW, url: `/fangbang.html?ds=fangbang-temple-v3`, record: '__fangbangRecord', expect: 'cm' },
   { base: PREVIEW, url: `/fangbang.html?ds=fangbang-temple-v3&compressed=0`, record: '__fangbangRecord', expect: 'original' },
   { base: PREVIEW, url: `/temple-v2.html`, record: '__templeV2Record', expect: 'original' },
-  { base: DEV, url: `/temple-v3.html`, record: '__templeV3Record', expect: 'original' },
+  // temple-axis-v3 gained a verified cm manifest in the world-closeout batch
+  // 20260919 — its default state is compressed now (lions-v2 falls back
+  // to original bytes by tolerance policy, which this scenario reconciles)
+  { base: DEV, url: `/temple-v3.html`, record: '__templeV3Record', expect: 'cm' },
+  { base: DEV, url: `/temple-v3.html?compressed=0`, record: '__templeV3Record', expect: 'original' },
 ];
 
 const browser = await chromium.launch({
