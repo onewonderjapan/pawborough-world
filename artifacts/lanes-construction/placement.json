@@ -1,0 +1,238 @@
+{
+  "batch": "pawborough-lanes-construction-night-20260920",
+  "stage": "T — placement derived from real v4 geometry",
+  "generatedAt": "2026-09-19T23:30:12.762Z",
+  "inputs": {
+    "assembly": {
+      "rel": "world/street-reviewed.glb",
+      "sha256": "b386ff72eb990e92c21c64d7e3895ddb42c14a3de1b0a9786abce726cffd3b37",
+      "bytes": 20571620
+    },
+    "collision": {
+      "rel": "world/fangbang-temple-v4/collision-world.json",
+      "colliders": 792
+    },
+    "lanebModule": {
+      "rel": "kit/out/lane-b/model.glb",
+      "sha256": "16164c1e76c8e47fae0dc080304d02f87c6325be007d03b1f5723e4e2491d566",
+      "triangles": 5284,
+      "frozen": true
+    }
+  },
+  "designDisclaimer": "depths/widths are DESIGN targets (DESIGN_SPEC.targets, designValuesNotSurvey=true); anchors are measured from the real removed-wall triangles",
+  "replacedSurfaces": {
+    "description": "placeholder lane seal walls + doors + timber lintels + paving strips inside the v5 assembly copy (45 triangles total across 4 street-kit nodes)",
+    "laneA": 26,
+    "laneB": 19,
+    "patchTriangles": {
+      "street-kit__weathered-lime-plaster": {
+        "node": 185,
+        "total": 12,
+        "laneA": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "laneB": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      "street-kit__deep-door-lacquer": {
+        "node": 186,
+        "total": 12,
+        "laneA": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "laneB": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      "street-kit__oxblood-stained-timber": {
+        "node": 187,
+        "total": 876,
+        "laneA": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "laneB": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      "street-kit__paving-frontage": {
+        "node": 182,
+        "total": 422,
+        "laneA": [
+          380,
+          381,
+          382,
+          383,
+          384,
+          385,
+          386,
+          387
+        ],
+        "laneB": [
+          395
+        ]
+      }
+    }
+  },
+  "laneA": {
+    "removedWallAABB": {
+      "min": [
+        42.446,
+        0.09,
+        -16.526
+      ],
+      "max": [
+        44.648,
+        3.09,
+        -16.232
+      ]
+    },
+    "wallLine": {
+      "lo": [
+        42.446,
+        0.09,
+        -16.406
+      ],
+      "hi": [
+        44.648,
+        0.09,
+        -16.352
+      ],
+      "dir": [
+        0.9997,
+        0.0248
+      ]
+    },
+    "portalCenterGlb": [
+      43.547,
+      0.09,
+      -16.379
+    ],
+    "inwardUnit": [
+      0.0248,
+      -0.9997
+    ],
+    "rotationYRad": 3.11683,
+    "designDepthBeyondPortalM": 8,
+    "designClearWidthM": 2.2,
+    "portalClearHeightM": 2.3,
+    "floorTopY": 0.09,
+    "corridorClearanceCapsuleR035": {
+      "label": "laneA-8m-corridor",
+      "name": "N05-restaurant-a:right-side",
+      "gapM": 0,
+      "at": [
+        42.45,
+        -16.61
+      ]
+    },
+    "centerlineClearance": {
+      "label": "laneA-centerline",
+      "name": "N05-restaurant-a:right-side",
+      "gapM": 0.982,
+      "at": [
+        43.56,
+        -16.78
+      ],
+      "capsuleFits": true
+    },
+    "neighbors": {
+      "west": "N05-restaurant-a (east wall face x≈42.575 at the street stretch; rear wall face ≤ x 42.301 north of z −16.55)",
+      "east": "N06-curio-a (north face ≈ z −15.2; nothing north of it)",
+      "behind": "empty collision world to z ≈ −34 (survey x38–50, z −28..−16.2)"
+    }
+  },
+  "laneB": {
+    "removedWallAABB": {
+      "min": [
+        56.443,
+        0.09,
+        13.633
+      ],
+      "max": [
+        58.449,
+        3.09,
+        14.758
+      ]
+    },
+    "frozenModuleAnchor": {
+      "script": "scripts/build_laneb_world.mjs",
+      "portalCenterGlb": [
+        57.418,
+        0.09,
+        14.2485
+      ],
+      "yawRad": -0.4818,
+      "moduleDepthM": 5.5,
+      "modulePocketWidthM": 3.6,
+      "portalClearWidthM": 1.5,
+      "portalClearHeightM": 2.3
+    },
+    "reuse": "frozen build script components re-run by the v2 builder (kit/build_lane_b_v2.py); kit/out/lane-b stays byte-frozen",
+    "designDepthTotalM": 10,
+    "designPocketWidthM": 3.6,
+    "portalClearHeightM": 2.3,
+    "floorTopY": 0.09,
+    "corridorClearanceCapsuleR035": {
+      "label": "laneB-10m-corridor",
+      "name": "S07-plain-v2:back-wall",
+      "gapM": 0.286,
+      "at": [
+        58.9,
+        15.3
+      ]
+    },
+    "centerlineClearance": {
+      "label": "laneB-centerline",
+      "name": "S07-plain-v2:right-side",
+      "gapM": 0.851,
+      "at": [
+        57.3,
+        14.47
+      ],
+      "capsuleFits": true
+    },
+    "neighbors": {
+      "west": "S05-plain-v3 rear (back-wall ≤ x 56.655, z ≤ 13.602 — north of the portal line)",
+      "east": "S07-plain-v2 rear (back-wall ≥ x 58.388, z 14.431..19.828)",
+      "behind": "empty collision world to z ≈ 30 (survey x48–62, z 13.5..30)"
+    }
+  },
+  "frozenProtected": {
+    "rule": "no frozen building moved or resized; only the two lane seal patches (colliders lane-A/B-end-wall) are replaced",
+    "removedColliders": [
+      "lane-A-end-wall",
+      "lane-B-end-wall"
+    ]
+  }
+}
