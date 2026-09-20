@@ -288,12 +288,17 @@ test('evidence: committed-scope build drops untracked and backup entries (UP-G1 
   await assert.rejects(
     () => buildManifest(dir, { scope: { dirs: [], files: ['assets/ghost.bin'] }, tracked }),
     /not git-tracked/);
-  // verifyManifest({tracked}) flags the UP-G1 failure class on a poisoned manifest
+  // verifyManifest({tracked}) flags the UP-G1 failure classes on a poisoned manifest:
+  // a force-tracked backup, and an entry git does not track at all
   const bad = JSON.parse(JSON.stringify(m));
   bad.files['assets/model.blend1'] = { bytes: 1, sha256: '0'.repeat(64) };
+  bad.files['assets/ghost.bin'] = { bytes: 2, sha256: '1'.repeat(64) };
   const v = await verifyManifest(dir, bad, { tracked });
-  assert.ok(!v.ok && v.errors.some((e) => e.includes('not git-tracked')), JSON.stringify(v.errors));
-  assert.ok(v.errors.some((e) => e.includes('backup')), 'backup listing must be flagged');
+  assert.ok(!v.ok, 'poisoned manifest must fail');
+  assert.ok(v.errors.some((e) => e.includes('assets/ghost.bin') && e.includes('not git-tracked')),
+    JSON.stringify(v.errors));
+  assert.ok(v.errors.some((e) => e.includes('assets/model.blend1') && e.includes('backup')),
+    'backup listing must be flagged');
 });
 
 test('evidence: the committed delivery manifest verifies against a fresh HEAD export', async () => {
