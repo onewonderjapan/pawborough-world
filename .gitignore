@@ -35,3 +35,8 @@ restore-world-playable/
 
 # world-playable-night: the ZIP stays on disk, digest receipt is committed
 artifacts/world-playable/delivery/*.zip
+
+# world-ten-hour 20260921: same convention — restore-verify dirs and ZIPs stay
+# on disk (kept, never deleted), digest receipts and smoke JSONs are committed
+restore-world-ten-hour-20260921*/
+artifacts/world-ten-hour/round-003/delivery/*.zip

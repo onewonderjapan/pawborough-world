@@ -127,14 +127,22 @@ for (const f of files) {
 if (missing.length) { console.error('PACKAGE_INCOMPLETE', missing); process.exit(1); }
 
 // ---- 4. launcher scripts + README (repair mode fills only ABSENT files) -------
+// FIX (world-ten-hour 20260921, inherited from 9e5d5c40): the old ensureFile
+// treated the launcher SOURCE PATHS as file CONTENT and wrote the path string
+// itself into the package — every package since 20260920 shipped
+// start-world-playable.py/.mjs as one line of text (SyntaxError on use).
+// Launchers now go through ensureCopy (real byte copy); ensureFile is only
+// for literal text (README).
+const ensureCopy = async (dst, srcPath) => {
+  if (REPAIR && (await stat(dst).catch(() => null))) return;
+  await copyFile(srcPath, dst);
+};
 const ensureFile = async (dst, content) => {
   if (REPAIR && (await stat(dst).catch(() => null))) return;
-  await (typeof content === 'string'
-    ? writeFile(dst, content, 'utf8')
-    : copyFile(content, dst));
+  await writeFile(dst, content, 'utf8');
 };
-await ensureFile(resolve(outDir, 'start-world-playable.py'), resolve(root, 'scripts/playable_package_serve.py'));
-await ensureFile(resolve(outDir, 'start-world-playable.mjs'), resolve(root, 'scripts/playable_package_serve.mjs'));
+await ensureCopy(resolve(outDir, 'start-world-playable.py'), resolve(root, 'scripts/playable_package_serve.py'));
+await ensureCopy(resolve(outDir, 'start-world-playable.mjs'), resolve(root, 'scripts/playable_package_serve.mjs'));
 
 const galleryManifest = JSON.parse(await readFile(resolve(root, 'src/worldPreview/galleryManifest.json'), 'utf8'));
 const readme = `# 方浜市声 · 本地试玩包（${TITLE}）

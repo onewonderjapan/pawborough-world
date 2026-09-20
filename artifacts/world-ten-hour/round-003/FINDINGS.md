@@ -87,4 +87,21 @@
 
 ## G：便携交付与源工程索引
 
-- @@GSECTION@@
+- **继承缺陷修正（真实缺陷，非文档问题）**：包生成器的 `ensureFile` 把启动器源路径当文本写入，
+  **20260920 起所有便携包的自带启动器都是坏的**（一行路径文本，执行即 SyntaxError；基线
+  9e5d5c40 原样可复核）。修正记录与保留的坏产物清单：`delivery/LAUNCHER-DEFECT-FIX.md`
+  （坏目录/坏ZIP保留未删；修正后以新目录 `-r2` 重建）。
+- **包重建与复验（全绿）**：`dist-world-ten-hour-20260921-r2/`（133文件，闭包 154,315,745 字节
+  与上游验证闭包逐字节一致，逐文件 SHA 校验 132/132——清单不含自身）→
+  `delivery/world-ten-hour-20260921-r2.zip`（165,409,394B，sha256 88784a73…，外置收据
+  `package-zip-sha256-r2.json`，标注取代坏包）→ 解包 `restore-world-ten-hour-20260921-r2/`
+  133 文件树逐字节一致 → **由包内自带启动器真实供服**（127.0.0.1:5411）：
+  游戏四入口+双预算+无WebGL fatal **26/26**、首页双宽度 **15/15**、**取景工具 27/27**
+  （保存/恢复/导出JSON/导出PNG/6预设，全部对包构建产物验证）。
+- **源工程索引**（`source-index.json`，工具 `tools/source_project_index.mjs`）：74 个 .blend 源
+  （0 个未跟踪、35 个 .blend1 单列为备份）、首页制作资料覆盖 4 个且 SHA 全符；
+  **Blender 4.5.1 无头重开实证 3/3**：world/scene.blend（203对象/162网格）、
+  world/lane-b-polish/review/scene.blend（58/52）、building/plain-v1/model.blend（10/10）。
+- **全套测试集中一次**：139 测试 138 过 1 败——唯一失败是 `lane-b-evidence` 的诚实门
+  「工作树必须干净才能等同已提交树」（G 成果未提交时运行所致，非产品缺陷）；G 提交后复跑该测试
+  通过（见提交后附记）。

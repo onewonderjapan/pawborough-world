@@ -1,0 +1,12 @@
+{
+  "artifact": "artifacts/world-ten-hour/round-003/delivery/world-ten-hour-20260921-r2.zip",
+  "sha256": "88784a73bba3016aee37a21262877ac49331138bd971e32e2395ee4b51b05cc7",
+  "bytes": 165412674,
+  "fileCount": 133,
+  "supersedes": "world-ten-hour-20260921.zip (sha256 2381cc3ef3393905d86032f75cf0edd6e318b454eaab6ee281311f649c49f984) — same site/closure bytes, but that build shipped broken launcher text files (inherited ensureFile bug, see LAUNCHER-DEFECT-FIX.md); this -r2 build carries the fixed launchers byte-copied from scripts/",
+  "generatedBy": "tools/playable_package_zip.py (deterministic order, fixed timestamp 2026-09-21)",
+  "note": "digest lives OUTSIDE the archive; in-package package-manifest.json excludes itself. No .blend sources, no videos.",
+  "builtFromHead": "c411ffca12d79650886a2551ed0fb1cef199edfd",
+  "verifyCommand": "sha256sum world-ten-hour-20260921-r2.zip -> compare; unzip to a NEW dir; python3 start-world-playable.py [port]",
+  "generatedAt": "2026-09-21T07:31:54.801908+09:00"
+}

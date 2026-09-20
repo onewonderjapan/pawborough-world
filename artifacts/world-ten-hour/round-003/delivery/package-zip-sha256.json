@@ -1,0 +1,11 @@
+{
+  "artifact": "artifacts/world-ten-hour/round-003/delivery/world-ten-hour-20260921.zip",
+  "sha256": "2381cc3ef3393905d86032f75cf0edd6e318b454eaab6ee281311f649c49f984",
+  "bytes": 165409394,
+  "fileCount": 133,
+  "generatedBy": "tools/playable_package_zip.py (deterministic order, fixed timestamp 2026-09-21)",
+  "note": "digest lives OUTSIDE the archive; in-package package-manifest.json excludes itself. Zip = built site + v7 closure + skins/props + gallery + README + launchers (framing tool, asset source cache, error panels included). No .blend sources, no videos.",
+  "builtFromHead": "c411ffca12d79650886a2551ed0fb1cef199edfd",
+  "verifyCommand": "sha256sum world-ten-hour-20260921.zip -> compare; unzip to a NEW dir; python3 start-world-playable.py [port]",
+  "generatedAt": "2026-09-21T07:29:21.402602+09:00"
+}

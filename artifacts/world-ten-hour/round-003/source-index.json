@@ -1,0 +1,673 @@
+{
+ "tool": "tools/source_project_index.mjs",
+ "generatedAt": "2026-09-20T22:34:22.590Z",
+ "scope": "read-only index of .blend sources in world/, building/, kit/; *.blend1 listed separately as backups (not deliverables)",
+ "counts": {
+  "sources": 74,
+  "backups": 35,
+  "onHomepage": 4,
+  "verified": 3
+ },
+ "untracked": [],
+ "homepageCoverage": {
+  "covered": [
+   "world/lane-a-polish/lane-a/model.blend",
+   "world/lane-b-polish/interfaces/model.blend",
+   "world/lane-b-polish/lane-b/model.blend",
+   "world/lane-b-polish/review/scene.blend"
+  ],
+  "shaMismatch": []
+ },
+ "reopenVerification": [
+  {
+   "path": "world/scene.blend",
+   "ok": true,
+   "detail": "REOPEN_OK objects=203 meshes=162"
+  },
+  {
+   "path": "world/lane-b-polish/review/scene.blend",
+   "ok": true,
+   "detail": "REOPEN_OK objects=58 meshes=52"
+  },
+  {
+   "path": "building/plain-v1/model.blend",
+   "ok": true,
+   "detail": "REOPEN_OK objects=10 meshes=10"
+  }
+ ],
+ "sources": [
+  {
+   "path": "building/cat_corner/model.blend",
+   "bytes": 6517189,
+   "sha256": "7ccf19f699ed91523faca8c9595cf479efed039690da5c02c541d733fdff213d",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "building/cloth_shop/model.blend",
+   "bytes": 7235031,
+   "sha256": "999c1e68492337a699f9d5764827450c1f9646099e85e6c880205169c1e4c589",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "building/corner/model.blend",
+   "bytes": 7065202,
+   "sha256": "060c5de40c9da20d822d07094a02296f69ab0b479dea5e89c76eea5c438574ae",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "building/curio-a/model.blend",
+   "bytes": 6976037,
+   "sha256": "e4274b9dc4931e36b5ea7b028c6e429f28f23fd14426d947286946788f1294c3",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "building/curio-b/model.blend",
+   "bytes": 6985395,
+   "sha256": "becffdd6b9e7844d2c39f17aa05730059692673840a87951b6c01d401d9fa6cc",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "building/pharmacy_shop/model.blend",
+   "bytes": 8023961,
+   "sha256": "2989ed39b41bb7919e0f267b45efdc6420a8a1a2b16bb03293f7a2a010ec8bb6",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "building/plain-v1/model.blend",
+   "bytes": 6918329,
+   "sha256": "9c0dc5a7014dd4a717d415923de88dba5757f194d507d81ee8fda8150a20487b",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "building/plain-v2/model.blend",
+   "bytes": 6861753,
+   "sha256": "0de06e0d91b23ff55d2147b97ae648cefe53a5fd59c783d1fc3e9c7dce1740e1",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "building/plain-v3/model.blend",
+   "bytes": 6764865,
+   "sha256": "e69ca60cda29f4ceb2247588ee062ebcdd29e1653b92c61bec821f7e7ae6e292",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "building/restaurant-a/model.blend",
+   "bytes": 7142665,
+   "sha256": "67d2ca0e2aa21983e1757cbc8816c4b9e091b09c2052ce1e0cc5893c24b7d6e0",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "building/restaurant-b/model.blend",
+   "bytes": 7142665,
+   "sha256": "e2d540548915d5c2d508bfd889cc7c7d5534d9ac608ec7a1b2b8d2eeaebf06eb",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/court-open-equivalence/scene.blend",
+   "bytes": 6342671,
+   "sha256": "6fea5344dc340ef8cc7e29b9f8bbcf451bf21f6b07a8aea61d01c72d05cd7e7e",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/court-open/scene.blend",
+   "bytes": 6342671,
+   "sha256": "36b724956ce3aff25eec389c378e5dd1079197b200ef5b9b2fbceb1c7ee15469",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/court3/scene.blend",
+   "bytes": 6591142,
+   "sha256": "c0d5b6c830fe2ff7dbda94abb17cd5d3014373a48a0a40cf4984f7009c6dff42",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/dadian-court-equivalence/scene.blend",
+   "bytes": 6547261,
+   "sha256": "a5fc36a640d80b4e899bd9c84c9d7adac1358b0c83c9bd38e8ed9d5282ca8d62",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/dadian-court-v2/scene.blend",
+   "bytes": 6494309,
+   "sha256": "71ada7616671c787ec239bd24070d59106ac22609859af074f29d994801b66ce",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/dadian-court/scene.blend",
+   "bytes": 6547261,
+   "sha256": "6b2099ae01c97aa65a6636770d9fc8ed39a903d91b48de64eb29d8c6399597eb",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/dadian-renders/compare-scene.blend",
+   "bytes": 17335494,
+   "sha256": "038d73acf0fcbfe2f37f499bdac8e33b77b7126a38eaab497a28ef1058484591",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/dadian-renders/scene.blend",
+   "bytes": 21039727,
+   "sha256": "75db203d304d3714de7cb2a4d7aebc53413d0fc3d8237b591de1a1ae46610973",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/dadian/scene.blend",
+   "bytes": 10424080,
+   "sha256": "9c1e5d377ecd5d7f6ca3802c26e2fdb827a8430a253418a69d4159eecacf6758",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/east-band/east-extension/model.blend",
+   "bytes": 6507827,
+   "sha256": "35c87cdd5b89a1cdf999b66875de5d95c247c7f8fbfa202ce8946dedb1a5665d",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/east-band/east-seal-wall/model.blend",
+   "bytes": 6085719,
+   "sha256": "e868f53fa63adfa4ce95b54d3fbc498c54a01c9625ae965c795f3292fe225374",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/east-shop-128/model.blend",
+   "bytes": 6853065,
+   "sha256": "aeba7ab8a3515cf1ea8d6a9f7a06ef5346934d075a0d5d689c136f2cc287653b",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/east-shop-129/model.blend",
+   "bytes": 6852637,
+   "sha256": "49568d92de532c57d92ea68cf5b07dea75574396cecb064cf222d0420b5f4814",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/east-shop-130/model.blend",
+   "bytes": 6980229,
+   "sha256": "b33dfe7bac9ccc3120994d672ece75a0ae7a483bf72067010c31b17810cfe3de",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/east-shop-131/model.blend",
+   "bytes": 6976563,
+   "sha256": "99515b2eba941becb4bbb68be1d7a31a105f4895b69c671e511ffb0c65aa9291",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/east-shop-132/model.blend",
+   "bytes": 7035156,
+   "sha256": "0414461674e8bcd685b06811f5c91bb01f3e6407c4cd68183497d364c31eb56a",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/east-shop-133/model.blend",
+   "bytes": 6897556,
+   "sha256": "59b12147fdf020b5e6e20cff053f2fe6bb08d7f4825b42074ca4c9087c08867e",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/entry-court/scene.blend",
+   "bytes": 6344475,
+   "sha256": "b8e1d379aec1697eb6ff6fb9f8442cf437f69466ec585c20912ec71008504d87",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/entry-renders/compare-scene.blend",
+   "bytes": 10560081,
+   "sha256": "b6b4c2094c34239a1a372985338fee8b88e8875eaaf14c1c6123949b27dfc1b4",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/entry-renders/scene.blend",
+   "bytes": 12424837,
+   "sha256": "dabb120d936ac1f8d6b5edeefbe0e1fddd347c4f6f2af225ec401afd552dd235",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/fangbang-temple-v2/renders/scene.blend",
+   "bytes": 62429233,
+   "sha256": "4aa391c840e5bacd0c85587839f1a9acc67ca4310063b8668decc3f77e0f5bcf",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/fangbang-temple/forecourt-bounds/model.blend",
+   "bytes": 6086623,
+   "sha256": "9f1fd1f1ed930cf6434328113b90ce6978dc2863870128c41aa43ed3a1604e49",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/fangbang-temple/renders/scene.blend",
+   "bytes": 51148830,
+   "sha256": "eaa26edd6de9af4d6dfd2d92b43251c734aa00454fc7c4144b695eafeda34e7b",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/fangbang-temple/west-extension/model.blend",
+   "bytes": 6624525,
+   "sha256": "1ef916f3579d61796d348f4af8a4078d7ed79a9dae5d53dc23c01f280f16a873",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/fangbang-temple/west-seal/model.blend",
+   "bytes": 6085719,
+   "sha256": "d813ea75b8b80e647845c7ee22b39506b0d05b1195aebf104aa26c693eec7e91",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/gallery/scene.blend",
+   "bytes": 6314623,
+   "sha256": "166a7a472dc0935b3a535d229d665814a2ef4a9c092d4a5fce16a053db2b3c32",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/houdian/scene.blend",
+   "bytes": 7516544,
+   "sha256": "20752a1791e0756ded5e25828e8ce30e2dbb289ad0a0a42a5c2e3837dcf69e88",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/lane-b/model.blend",
+   "bytes": 6788941,
+   "sha256": "f7db29b18afbf2b5d7f13689ee7ae512cef4d2a864778b06b5c31b30dc433e1d",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/lanes-v2/interfaces/model.blend",
+   "bytes": 6269834,
+   "sha256": "69cfeaaa627ea10446bb1a9e5e4da1f3aea0affed72a1566bdcf9428eb287b52",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/lanes-v2/lane-a/model.blend",
+   "bytes": 6902506,
+   "sha256": "37b2a98010f70fd0eb69bebae6829ce6a598422f91d89e61f100711ac4d339b4",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/lanes-v2/lane-b-v2/model.blend",
+   "bytes": 7041603,
+   "sha256": "fb26325fd030e38c0e4affa1b9b854d07c9c3ef840a3aae1dc88dec59f600788",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/peidian/scene.blend",
+   "bytes": 7157854,
+   "sha256": "8d8274eb5a9ddfe9263806ff1452fd62d8bdeb22c3fd08950119ae94f317d3e5",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/plain-shop-a/model.blend",
+   "bytes": 6918369,
+   "sha256": "db4006850d86a0a4a734ae528d03afc7f73314837d0ae9685a09528b853fedaa",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/plain-shop-b/model.blend",
+   "bytes": 6820085,
+   "sha256": "b074d16c59afcc9acf7c6f859bd35b4469d050f9a0f47349a4c200547c1c6223",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/scene-v1/scene-v1.blend",
+   "bytes": 131943616,
+   "sha256": "393fa9e136be3c964094cd65579033e8c59a5240a9ce951e5779a69cb9b10bee",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/scene-v2/scene-v2.blend",
+   "bytes": 136768759,
+   "sha256": "900adc2ab8158c798721a68f2304bee6b3116f4f94294f4fdd1e775efe0b7137",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/scene-v3/scene-v3.blend",
+   "bytes": 165598106,
+   "sha256": "45d1c3470a7fdb72d50da4586087928ba8a65be84dbeb674bfc66d09edc41a82",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/sctail-scene-v2/scene.blend",
+   "bytes": 37363498,
+   "sha256": "6a08afedd9549cf004058c5b687dd5030e99c92fee63b071d13e83754799d4b1",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/sctail-scene/scene.blend",
+   "bytes": 37363498,
+   "sha256": "1d754ac66cc9ad76cd265191b5d854dc91ae57660e32ceb9b788ae3199995040",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/sctail/model.blend",
+   "bytes": 6235325,
+   "sha256": "0a6ec6a3521bec2b4bb7fc7808f7484a333b1fade9b9f466edde5123891a8dfe",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/shanmen-v1-equivalence/scene.blend",
+   "bytes": 9350043,
+   "sha256": "12f765ca2fb7689afa0f1326c35d64161579966fdeb63ab77dfc595e77b7ce96",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/shanmen-v2-assets/scene.blend",
+   "bytes": 9301649,
+   "sha256": "fd465c68f515b6cad8db66722eeed026d5d5101767817e268d056cf2070f6f8f",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/temple-axis-v2/renders/compare-scene.blend",
+   "bytes": 29614334,
+   "sha256": "6e4aab2a9cdd0e69fa6ef79b490468b6a1ea95288c188e91f8594e761b972175",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/temple-axis-v2/renders/scene.blend",
+   "bytes": 32981522,
+   "sha256": "78bb5085f83ae490191c81d1b53e1207864242121012a3b0833638a82a729b52",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/temple-axis-v3-assets/scene.blend",
+   "bytes": 6562234,
+   "sha256": "92bcd38ab548f5418f5b99938eed9acc85be18c31eb8cf9dcf97c75b3d5b6d8b",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/temple-shanmen-entry/renders/compare-scene.blend",
+   "bytes": 5296718,
+   "sha256": "fadf8fa78bdde14285f2f22f406d6c01a1add359e4c2ac8a602d402591f9d758",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/temple-shanmen-entry/renders/scene.blend",
+   "bytes": 6491964,
+   "sha256": "13fe5e598da13d8279c23c76cc981ef20d8aff6af9de058cf41a2db416dd86fe",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/temple-shanmen-entry/scene.blend",
+   "bytes": 9350043,
+   "sha256": "a6134c35f92b0c9903914f53a44fc509dcaa78f9e9925230346c8ba8f1aa9c93",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/temple-shanmen-renders/compare-scene.blend",
+   "bytes": 4830499,
+   "sha256": "0978a0e0bc9309c2d9cb296c4ac2cb6ce413501a0322a038c380822fd1603384",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/temple-shanmen-renders/scene.blend",
+   "bytes": 5619919,
+   "sha256": "0785dd901f9c257087b38b1cd51bcfc09c149b9e6d3a43ed1a04104ef34f668c",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/temple-shanmen-repair/renders/compare-scene.blend",
+   "bytes": 5100678,
+   "sha256": "49b947068cfa37ee0dc9915c7739c51e091b844375d197396b0fbc08791fc021",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/temple-shanmen-repair/renders/scene.blend",
+   "bytes": 6043334,
+   "sha256": "a11e9f90ea3495757bab6c6bd20dd30aca0626f79ee2de486e738cc65c55df89",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/temple-shanmen-repair/scene.blend",
+   "bytes": 9087329,
+   "sha256": "3fd854f99a32accd8a987c729807355920c8be473a78f50974459d75854b6441",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/temple-shanmen/scene.blend",
+   "bytes": 8817150,
+   "sha256": "127244955f2a407591c77e413278db98322c994f0a065beb549e601d49ec7c38",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/yimen-stage/scene.blend",
+   "bytes": 6770531,
+   "sha256": "06ffe5d003996c73e95dec8786198216b38da8629ca72b8890547ec043cc35c6",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "kit/out/yimen/scene.blend",
+   "bytes": 9133930,
+   "sha256": "ca71eaf2dc4c234f8da57f24addccacc3bebaaa034fa1754448da592101b04cc",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "world/lane-a-polish/interfaces/model.blend",
+   "bytes": 6310339,
+   "sha256": "9d8805f2776d2edc59bd6d18269b70a8e81fd290f540992bc371cb5bc8e829e6",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": false
+  },
+  {
+   "path": "world/lane-a-polish/lane-a/model.blend",
+   "bytes": 6584182,
+   "sha256": "87c086b06d8aa0811fd46eed9d3272c4be2219df112b26c89b0f34f0816cf1cc",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": true,
+   "homepageShaMatch": true
+  },
+  {
+   "path": "world/lane-a-polish/review/scene.blend",
+   "bytes": 15675687,
+   "sha256": "c3422e376233f5364f9ffdb99e787a9cb757a777c4c8d91e4d81f7fa4eeb4c24",
+   "gitTracked": true,
+   "reopenNote": "A弄精修评审场景（lane-a-polish 批次；dist 由 scripts/build_lane_a_polish_dist.mjs 打包）",
+   "onHomepage": false
+  },
+  {
+   "path": "world/lane-b-polish/interfaces/model.blend",
+   "bytes": 6310339,
+   "sha256": "661222a6f2ec3494e4967e2647ac9cd5cd04aa7d505431fa550ba9a4eee5c43b",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": true,
+   "homepageShaMatch": true
+  },
+  {
+   "path": "world/lane-b-polish/lane-b/model.blend",
+   "bytes": 6731899,
+   "sha256": "08288e6a3321d96151a56f913e438c130f5b0a5600fd559ebaba7ee9798c4f72",
+   "gitTracked": true,
+   "reopenNote": null,
+   "onHomepage": true,
+   "homepageShaMatch": true
+  },
+  {
+   "path": "world/lane-b-polish/review/scene.blend",
+   "bytes": 16477753,
+   "sha256": "ab69c7198d53cd11bb93f4a7d60dd35ddfe886dd2473585443ce5359c93472e1",
+   "gitTracked": true,
+   "reopenNote": "B弄口修整评审场景（lane-b-polish 批次 = v7 来源；dist 由 scripts/build_lane_b_polish_dist.mjs 打包，交付清单 tools/lane_b_delivery_manifest.mjs）",
+   "onHomepage": true,
+   "homepageShaMatch": true
+  },
+  {
+   "path": "world/scene.blend",
+   "bytes": 27541284,
+   "sha256": "c800785fffc171a4a0ae5a33c3c0b06dfc77b4d0853479292c790afa8e4d3d66",
+   "gitTracked": true,
+   "reopenNote": "历史主街全景源工程（历史批次；本候选未重打统一全景）。核对方式：blender --background world/scene.blend",
+   "onHomepage": false
+  }
+ ],
+ "backups": [
+  "kit/out/court3/scene.blend1",
+  "kit/out/dadian-court/scene.blend1",
+  "kit/out/dadian-renders/compare-scene.blend1",
+  "kit/out/dadian-renders/scene.blend1",
+  "kit/out/dadian/scene.blend1",
+  "kit/out/east-band/east-extension/model.blend1",
+  "kit/out/east-band/east-seal-wall/model.blend1",
+  "kit/out/east-shop-128/model.blend1",
+  "kit/out/east-shop-129/model.blend1",
+  "kit/out/east-shop-130/model.blend1",
+  "kit/out/east-shop-131/model.blend1",
+  "kit/out/east-shop-132/model.blend1",
+  "kit/out/east-shop-133/model.blend1",
+  "kit/out/fangbang-temple-v2/renders/scene.blend1",
+  "kit/out/fangbang-temple/renders/scene.blend1",
+  "kit/out/fangbang-temple/west-extension/model.blend1",
+  "kit/out/fangbang-temple/west-seal/model.blend1",
+  "kit/out/gallery/scene.blend1",
+  "kit/out/houdian/scene.blend1",
+  "kit/out/lanes-v2/interfaces/model.blend1",
+  "kit/out/lanes-v2/lane-a/model.blend1",
+  "kit/out/peidian/scene.blend1",
+  "kit/out/plain-shop-a/model.blend1",
+  "kit/out/scene-v2/scene-v2.blend1",
+  "kit/out/scene-v3/scene-v3.blend1",
+  "kit/out/sctail/model.blend1",
+  "kit/out/shanmen-v2-assets/scene.blend1",
+  "kit/out/temple-axis-v2/renders/compare-scene.blend1",
+  "kit/out/temple-axis-v2/renders/scene.blend1",
+  "kit/out/temple-axis-v3-assets/scene.blend1",
+  "kit/out/temple-shanmen-entry/renders/compare-scene.blend1",
+  "kit/out/temple-shanmen-entry/renders/scene.blend1",
+  "kit/out/temple-shanmen-entry/scene.blend1",
+  "kit/out/temple-shanmen-repair/scene.blend1",
+  "kit/out/yimen-stage/scene.blend1"
+ ]
+}

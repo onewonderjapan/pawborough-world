@@ -1,0 +1,151 @@
+{
+ "checks": [
+  {
+   "ok": true,
+   "label": "panel visible in ready view mode",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "panel hidden while walking",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "panel visible again in framing (V)",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "exit notice still promises pose keeping",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "panel opens (collapsible details)",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "saved view appears in the list",
+   "detail": "[\"走查机位甲\",\"fov 60°\"]"
+  },
+  {
+   "ok": true,
+   "label": "store persisted in the dedicated namespace",
+   "detail": "[\"storeVersion\",\"views\"]"
+  },
+  {
+   "ok": true,
+   "label": "store carries no secret-like fields",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "preset actually moved the camera far away",
+   "detail": "d=250.6m"
+  },
+  {
+   "ok": true,
+   "label": "restore returns the exact saved pose",
+   "detail": "drift=0.0000"
+  },
+  {
+   "ok": true,
+   "label": "restore notice is explicit-framing, not walking",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "import is additive; collision suffixed, original kept",
+   "detail": "[\"走查机位甲\",\"fov 60°\",\"导入机位乙\",\"fov 50°\",\"走查机位甲（2）\",\"fov 55°\"]"
+  },
+  {
+   "ok": true,
+   "label": "foreign-dataset entry skipped with a visible reason",
+   "detail": "已导入 2 条，跳过 1 条：\n· 异世界机位：机位属于其它数据集「some-other-world」，当前为「fangbang-temple-v7」"
+  },
+  {
+   "ok": true,
+   "label": "first delete click arms a confirm, not a delete",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "confirmed click deletes exactly the target view",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "exported PNG is a real file",
+   "detail": "1428533 B"
+  },
+  {
+   "ok": true,
+   "label": "PNG resolution matches the WebGL canvas",
+   "detail": "png 1280x829 vs canvas 1280x829"
+  },
+  {
+   "ok": true,
+   "label": "saves survive a reload",
+   "detail": "[\"走查机位甲\",\"fov 60°\",\"导入机位乙\",\"fov 50°\"]"
+  },
+  {
+   "ok": true,
+   "label": "six curated presets offered",
+   "detail": "got 6"
+  },
+  {
+   "ok": true,
+   "label": "preset renders non-blank: 主街东接口望西（样段纵深起点）",
+   "detail": "colorBuckets=45"
+  },
+  {
+   "ok": true,
+   "label": "preset renders non-blank: 主街西口回望拼接处",
+   "detail": "colorBuckets=65"
+  },
+  {
+   "ok": true,
+   "label": "preset renders non-blank: A弄街口望入（窄门洞纵深）",
+   "detail": "colorBuckets=63"
+  },
+  {
+   "ok": true,
+   "label": "preset renders non-blank: B弄街口望入",
+   "detail": "colorBuckets=55"
+  },
+  {
+   "ok": true,
+   "label": "preset renders non-blank: B弄尽端回望主街",
+   "detail": "colorBuckets=74"
+  },
+  {
+   "ok": true,
+   "label": "preset renders non-blank: 方浜路中线正望山门",
+   "detail": "colorBuckets=72"
+  },
+  {
+   "ok": true,
+   "label": "no pageerrors during the whole flow",
+   "detail": "[]"
+  },
+  {
+   "ok": true,
+   "label": "JSON export carries the saved views",
+   "detail": "724 B"
+  }
+ ],
+ "shots": [
+  "fangbang-framing-走查机位甲-20260920223339.png",
+  "preset-01.png",
+  "preset-02.png",
+  "preset-03.png",
+  "preset-04.png",
+  "preset-05.png",
+  "preset-06.png",
+  "00-framing-panel.png",
+  "fangbang-framing-views-2026-09-20.json"
+ ],
+ "at": "2026-09-20T22:34:00.107Z"
+}
