@@ -232,6 +232,9 @@ function record() {
     walking: {
       walkingVerified: false, manualKeyboardWalkTested: false, walkResets: resetCount,
       capsuleFeet: controller ? controller.feetPosition() : null, eyeHeightM: 1.6, capsuleRadiusM: .35,
+      // live aim (rad) for route evidence — diagnostics only, never fed back
+      headingRad: controller ? +controller.yaw.toFixed(4) : null,
+      pitchRad: controller ? +controller.pitch.toFixed(4) : null,
       autoPhysicsCruise: lastCruiseStatus,
       manualWalkClaim: false,
       session: snap ? { mode: snap.mode, paused: snap.paused, spawnCount: snap.spawnCount,
