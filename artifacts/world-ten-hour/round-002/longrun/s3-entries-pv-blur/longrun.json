@@ -1,0 +1,495 @@
+{
+ "label": "s3-entries-pv-blur",
+ "base": "http://127.0.0.1:5420",
+ "entry": "templeFront",
+ "config": "default",
+ "track": "templeLoop",
+ "minutes": 26,
+ "gameUrl": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=templeFront",
+ "startedAt": "2026-09-20T19:00:35.119Z",
+ "env": {
+  "renderer": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+  "viewport": "1280x900",
+  "gcExposed": true,
+  "host": "linux arm64",
+  "note": "dev-server long-run; all numbers software-baseline"
+ },
+ "segments": [
+  {
+   "idx": 0,
+   "file": "segments/seg-000.json",
+   "gapStats": {
+    "count": 743,
+    "p50": 166.6,
+    "p99": 183.4,
+    "max": 6783
+   },
+   "heap": {
+    "beforeGc": 83776428,
+    "afterGc": 82655042,
+    "gcMs": 7
+   },
+   "frames": {
+    "total": 744,
+    "g250": 3,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6783
+   }
+  },
+  {
+   "idx": 1,
+   "file": "segments/seg-001.json",
+   "gapStats": {
+    "count": 736,
+    "p50": 166.6,
+    "p99": 183.4,
+    "max": 183.4
+   },
+   "heap": {
+    "beforeGc": 83882284,
+    "afterGc": 82662990,
+    "gcMs": 7.9
+   },
+   "frames": {
+    "total": 1480,
+    "g250": 3,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6783
+   }
+  },
+  {
+   "idx": 2,
+   "file": "segments/seg-002.json",
+   "gapStats": {
+    "count": 20,
+    "p50": 716.6,
+    "p99": 5249.7,
+    "max": 5249.7
+   },
+   "heap": {
+    "beforeGc": 168608400,
+    "afterGc": 136265113,
+    "gcMs": 21.2
+   },
+   "frames": {
+    "total": 21,
+    "g250": 15,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5249.7
+   }
+  },
+  {
+   "idx": 3,
+   "file": "segments/seg-003.json",
+   "gapStats": {
+    "count": 168,
+    "p50": 733.2,
+    "p99": 750,
+    "max": 750
+   },
+   "heap": {
+    "beforeGc": 90612380,
+    "afterGc": 90220631,
+    "gcMs": 7.9
+   },
+   "frames": {
+    "total": 189,
+    "g250": 183,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5249.7
+   }
+  },
+  {
+   "idx": 4,
+   "file": "segments/seg-004.json",
+   "gapStats": {
+    "count": 12,
+    "p50": 733.2,
+    "p99": 5083.1,
+    "max": 5083.1
+   },
+   "heap": {
+    "beforeGc": 147029109,
+    "afterGc": 90025267,
+    "gcMs": 9.4
+   },
+   "frames": {
+    "total": 13,
+    "g250": 8,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5083.1
+   }
+  },
+  {
+   "idx": 5,
+   "file": "segments/seg-005.json",
+   "gapStats": {
+    "count": 167,
+    "p50": 733.3,
+    "p99": 750.1,
+    "max": 766.6
+   },
+   "heap": {
+    "beforeGc": 90720336,
+    "afterGc": 89994427,
+    "gcMs": 7.2
+   },
+   "frames": {
+    "total": 180,
+    "g250": 175,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5083.1
+   }
+  },
+  {
+   "idx": 6,
+   "file": "segments/seg-006.json",
+   "gapStats": {
+    "count": 13,
+    "p50": 716.6,
+    "p99": 5449.8,
+    "max": 5449.8
+   },
+   "heap": {
+    "beforeGc": 92303156,
+    "afterGc": 90295343,
+    "gcMs": 6.9
+   },
+   "frames": {
+    "total": 14,
+    "g250": 8,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5449.8
+   }
+  },
+  {
+   "idx": 7,
+   "file": "segments/seg-007.json",
+   "gapStats": {
+    "count": 167,
+    "p50": 733.3,
+    "p99": 750.1,
+    "max": 766.6
+   },
+   "heap": {
+    "beforeGc": 90845784,
+    "afterGc": 89992027,
+    "gcMs": 7.5
+   },
+   "frames": {
+    "total": 181,
+    "g250": 175,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5449.8
+   }
+  },
+  {
+   "idx": 8,
+   "file": "segments/seg-008.json",
+   "gapStats": {
+    "count": 12,
+    "p50": 733.3,
+    "p99": 5383.2,
+    "max": 5383.2
+   },
+   "heap": {
+    "beforeGc": 141488125,
+    "afterGc": 90001711,
+    "gcMs": 12
+   },
+   "frames": {
+    "total": 13,
+    "g250": 8,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5383.2
+   }
+  },
+  {
+   "idx": 9,
+   "file": "segments/seg-009.json",
+   "gapStats": {
+    "count": 167,
+    "p50": 733.3,
+    "p99": 750,
+    "max": 750.1
+   },
+   "heap": {
+    "beforeGc": 90814360,
+    "afterGc": 89993943,
+    "gcMs": 7.8
+   },
+   "frames": {
+    "total": 180,
+    "g250": 175,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5383.2
+   }
+  },
+  {
+   "idx": "final",
+   "file": "segments/seg-final.json",
+   "frames": {
+    "total": 13,
+    "g250": 7,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5449.7
+   }
+  }
+ ],
+ "events": [
+  {
+   "t": 1789930835119,
+   "kind": "navigate",
+   "detail": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=templeFront"
+  },
+  {
+   "t": 1789930836073,
+   "kind": "console-error",
+   "detail": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  },
+  {
+   "t": 1789930844957,
+   "kind": "ready",
+   "detail": "tris=694430 feet=[230.9276123046875,0.020000028610229537,47.65022277832031]"
+  },
+  {
+   "t": 1789930846671,
+   "kind": "track",
+   "detail": "templeLoop: 2 waypoints"
+  },
+  {
+   "t": 1789930847054,
+   "kind": "waypoint",
+   "detail": "tloop-301 dist=0.0"
+  },
+  {
+   "t": 1789930848959,
+   "kind": "waypoint",
+   "detail": "tloop-302 dist=1.2 — track complete"
+  },
+  {
+   "t": 1789930967155,
+   "kind": "segment",
+   "detail": "#0 samples=57 maxGap=6783ms p99=183.4ms heapAfterGc=82655042 wp=2/2"
+  },
+  {
+   "t": 1789931087771,
+   "kind": "segment",
+   "detail": "#1 samples=57 maxGap=183.4ms p99=183.4ms heapAfterGc=82662990 wp=2/2"
+  },
+  {
+   "t": 1789931153345,
+   "kind": "slowDriverCall",
+   "detail": "pv took 6451ms"
+  },
+  {
+   "t": 1789931164690,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 9323ms"
+  },
+  {
+   "t": 1789931174260,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 9570ms"
+  },
+  {
+   "t": 1789931185072,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 10811ms"
+  },
+  {
+   "t": 1789931195170,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 10097ms"
+  },
+  {
+   "t": 1789931209788,
+   "kind": "segment",
+   "detail": "#2 samples=31 maxGap=5249.7ms p99=5249.7ms heapAfterGc=136265113 wp=2/2"
+  },
+  {
+   "t": 1789931331869,
+   "kind": "segment",
+   "detail": "#3 samples=55 maxGap=750ms p99=750ms heapAfterGc=90220631 wp=2/2"
+  },
+  {
+   "t": 1789931456891,
+   "kind": "slowDriverCall",
+   "detail": "pv took 9803ms"
+  },
+  {
+   "t": 1789931470678,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 11097ms"
+  },
+  {
+   "t": 1789931479976,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 9298ms"
+  },
+  {
+   "t": 1789931490991,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 11014ms"
+  },
+  {
+   "t": 1789931500859,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 9868ms"
+  },
+  {
+   "t": 1789931510410,
+   "kind": "segment",
+   "detail": "#4 samples=54 maxGap=5083.1ms p99=5083.1ms heapAfterGc=90025267 wp=2/2"
+  },
+  {
+   "t": 1789931632277,
+   "kind": "segment",
+   "detail": "#5 samples=55 maxGap=766.6ms p99=750.1ms heapAfterGc=89994427 wp=2/2"
+  },
+  {
+   "t": 1789931756935,
+   "kind": "slowDriverCall",
+   "detail": "pv took 9744ms"
+  },
+  {
+   "t": 1789931770001,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 10398ms"
+  },
+  {
+   "t": 1789931779581,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 9580ms"
+  },
+  {
+   "t": 1789931790961,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 11379ms"
+  },
+  {
+   "t": 1789931801195,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 10234ms"
+  },
+  {
+   "t": 1789931810721,
+   "kind": "segment",
+   "detail": "#6 samples=54 maxGap=5449.8ms p99=5449.8ms heapAfterGc=90295343 wp=2/2"
+  },
+  {
+   "t": 1789931932716,
+   "kind": "segment",
+   "detail": "#7 samples=55 maxGap=766.6ms p99=750.1ms heapAfterGc=89992027 wp=2/2"
+  },
+  {
+   "t": 1789932056815,
+   "kind": "slowDriverCall",
+   "detail": "pv took 9479ms"
+  },
+  {
+   "t": 1789932069935,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 10422ms"
+  },
+  {
+   "t": 1789932079522,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 9587ms"
+  },
+  {
+   "t": 1789932090849,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 11327ms"
+  },
+  {
+   "t": 1789932101035,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 10186ms"
+  },
+  {
+   "t": 1789932110620,
+   "kind": "segment",
+   "detail": "#8 samples=54 maxGap=5383.2ms p99=5383.2ms heapAfterGc=90001711 wp=2/2"
+  },
+  {
+   "t": 1789932232359,
+   "kind": "segment",
+   "detail": "#9 samples=55 maxGap=750.1ms p99=750ms heapAfterGc=89993943 wp=2/2"
+  },
+  {
+   "t": 1789932357501,
+   "kind": "slowDriverCall",
+   "detail": "pv took 9838ms"
+  },
+  {
+   "t": 1789932371024,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 10867ms"
+  },
+  {
+   "t": 1789932380707,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 9683ms"
+  },
+  {
+   "t": 1789932391709,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 11002ms"
+  },
+  {
+   "t": 1789932401958,
+   "kind": "slowDriverCall",
+   "detail": "entrySwitch took 10249ms"
+  }
+ ],
+ "anomalies": [],
+ "opCounts": {
+  "pause": 5,
+  "viewSwitch": 5,
+  "blur": 5,
+  "entrySwitch": 20,
+  "fatalPlanned": 0
+ },
+ "steering": {
+  "wpIdx": 2,
+  "wpHits": 2,
+  "meters": 0,
+  "lastFeet": [
+   -127.81698608398438,
+   27.056997299194336
+  ],
+  "stallS": 0,
+  "lastMoveT": 1789930847515,
+  "walkingT": 0
+ },
+ "finishedAt": "2026-09-20T19:26:53.616Z",
+ "durationS": 1578.5,
+ "exitRules": {
+  "wallDurationS": 1578.5,
+  "routeWaypointsHit": 2,
+  "routeWaypointsTotal": 2,
+  "routeCompletionFrac": 1,
+  "metersWalked": 0,
+  "transitions": {
+   "pause": 5,
+   "viewSwitch": 5,
+   "blur": 5,
+   "entrySwitch": 20,
+   "fatalPlanned": 0
+  },
+  "anomalyCount": 0,
+  "anomalies": []
+ }
+}

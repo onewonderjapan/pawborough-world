@@ -1,0 +1,2398 @@
+{
+ "label": "s2-laneA-allon-cold",
+ "base": "http://127.0.0.1:5420",
+ "entry": "laneA",
+ "config": "allOn",
+ "track": "laneALoop",
+ "minutes": 35,
+ "gameUrl": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=laneA&skins=1&props=1",
+ "startedAt": "2026-09-20T18:23:56.140Z",
+ "env": {
+  "renderer": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+  "viewport": "1280x900",
+  "gcExposed": true,
+  "host": "linux arm64",
+  "note": "dev-server long-run; all numbers software-baseline"
+ },
+ "segments": [
+  {
+   "idx": 0,
+   "file": "segments/seg-000.json",
+   "gapStats": {
+    "count": 272,
+    "p50": 516.6,
+    "p99": 2633.3,
+    "max": 4849.7
+   },
+   "heap": {
+    "beforeGc": 87036130,
+    "afterGc": 85252830,
+    "gcMs": 7.7
+   },
+   "frames": {
+    "total": 273,
+    "g250": 203,
+    "g1000": 3,
+    "g5000": 0,
+    "maxGapMs": 4849.7
+   }
+  },
+  {
+   "idx": 1,
+   "file": "segments/seg-001.json",
+   "gapStats": {
+    "count": 261,
+    "p50": 466.7,
+    "p99": 583.3,
+    "max": 583.3
+   },
+   "heap": {
+    "beforeGc": 86760186,
+    "afterGc": 85349410,
+    "gcMs": 8.9
+   },
+   "frames": {
+    "total": 534,
+    "g250": 464,
+    "g1000": 3,
+    "g5000": 0,
+    "maxGapMs": 4849.7
+   }
+  },
+  {
+   "idx": 2,
+   "file": "segments/seg-002.json",
+   "gapStats": {
+    "count": 128,
+    "p50": 183.3,
+    "p99": 3599.8,
+    "max": 4683.2
+   },
+   "heap": {
+    "beforeGc": 87471788,
+    "afterGc": 87140069,
+    "gcMs": 6.8
+   },
+   "frames": {
+    "total": 129,
+    "g250": 50,
+    "g1000": 3,
+    "g5000": 0,
+    "maxGapMs": 4683.2
+   }
+  },
+  {
+   "idx": 3,
+   "file": "segments/seg-003.json",
+   "gapStats": {
+    "count": 215,
+    "p50": 550.1,
+    "p99": 1333.2,
+    "max": 1416.6
+   },
+   "heap": {
+    "beforeGc": 88668290,
+    "afterGc": 87214377,
+    "gcMs": 9.8
+   },
+   "frames": {
+    "total": 344,
+    "g250": 265,
+    "g1000": 7,
+    "g5000": 0,
+    "maxGapMs": 4683.2
+   }
+  },
+  {
+   "idx": 4,
+   "file": "segments/seg-004.json",
+   "gapStats": {
+    "count": 17,
+    "p50": 416.7,
+    "p99": 4733.1,
+    "max": 4733.1
+   },
+   "heap": {
+    "beforeGc": 122143343,
+    "afterGc": 87811393,
+    "gcMs": 10.9
+   },
+   "frames": {
+    "total": 18,
+    "g250": 12,
+    "g1000": 1,
+    "g5000": 0,
+    "maxGapMs": 4733.1
+   }
+  },
+  {
+   "idx": 5,
+   "file": "segments/seg-005.json",
+   "gapStats": {
+    "count": 259,
+    "p50": 533.3,
+    "p99": 1900,
+    "max": 2316.6
+   },
+   "heap": {
+    "beforeGc": 88495803,
+    "afterGc": 87141453,
+    "gcMs": 7.7
+   },
+   "frames": {
+    "total": 277,
+    "g250": 213,
+    "g1000": 5,
+    "g5000": 0,
+    "maxGapMs": 4733.1
+   }
+  },
+  {
+   "idx": 6,
+   "file": "segments/seg-006.json",
+   "gapStats": {
+    "count": 264,
+    "p50": 466.6,
+    "p99": 583.3,
+    "max": 583.4
+   },
+   "heap": {
+    "beforeGc": 88251922,
+    "afterGc": 87167165,
+    "gcMs": 9.2
+   },
+   "frames": {
+    "total": 541,
+    "g250": 477,
+    "g1000": 5,
+    "g5000": 0,
+    "maxGapMs": 4733.1
+   }
+  },
+  {
+   "idx": 7,
+   "file": "segments/seg-007.json",
+   "gapStats": {
+    "count": 175,
+    "p50": 400,
+    "p99": 3666.6,
+    "max": 4666.4
+   },
+   "heap": {
+    "beforeGc": 89268270,
+    "afterGc": 88392693,
+    "gcMs": 6.5
+   },
+   "frames": {
+    "total": 176,
+    "g250": 100,
+    "g1000": 3,
+    "g5000": 0,
+    "maxGapMs": 4666.4
+   }
+  },
+  {
+   "idx": 8,
+   "file": "segments/seg-008.json",
+   "gapStats": {
+    "count": 233,
+    "p50": 533.4,
+    "p99": 616.6,
+    "max": 616.7
+   },
+   "heap": {
+    "beforeGc": 89281342,
+    "afterGc": 88429289,
+    "gcMs": 7.2
+   },
+   "frames": {
+    "total": 409,
+    "g250": 333,
+    "g1000": 3,
+    "g5000": 0,
+    "maxGapMs": 4666.4
+   }
+  },
+  {
+   "idx": 9,
+   "file": "segments/seg-009.json",
+   "gapStats": {
+    "count": 49,
+    "p50": 283.3,
+    "p99": 4633.1,
+    "max": 4633.1
+   },
+   "heap": {
+    "beforeGc": 126937355,
+    "afterGc": 87867432,
+    "gcMs": 11.7
+   },
+   "frames": {
+    "total": 50,
+    "g250": 27,
+    "g1000": 1,
+    "g5000": 0,
+    "maxGapMs": 4633.1
+   }
+  },
+  {
+   "idx": 10,
+   "file": "segments/seg-010.json",
+   "gapStats": {
+    "count": 244,
+    "p50": 550,
+    "p99": 1399.9,
+    "max": 3683.1
+   },
+   "heap": {
+    "beforeGc": 89356161,
+    "afterGc": 88446504,
+    "gcMs": 8.7
+   },
+   "frames": {
+    "total": 294,
+    "g250": 220,
+    "g1000": 4,
+    "g5000": 0,
+    "maxGapMs": 4633.1
+   }
+  },
+  {
+   "idx": 11,
+   "file": "segments/seg-011.json",
+   "gapStats": {
+    "count": 266,
+    "p50": 466.6,
+    "p99": 583.3,
+    "max": 583.4
+   },
+   "heap": {
+    "beforeGc": 89528020,
+    "afterGc": 88470304,
+    "gcMs": 8.5
+   },
+   "frames": {
+    "total": 560,
+    "g250": 486,
+    "g1000": 4,
+    "g5000": 0,
+    "maxGapMs": 4633.1
+   }
+  },
+  {
+   "idx": 12,
+   "file": "segments/seg-012.json",
+   "gapStats": {
+    "count": 196,
+    "p50": 333.3,
+    "p99": 3616.6,
+    "max": 4716.5
+   },
+   "heap": {
+    "beforeGc": 89353567,
+    "afterGc": 88430105,
+    "gcMs": 8.1
+   },
+   "frames": {
+    "total": 197,
+    "g250": 123,
+    "g1000": 3,
+    "g5000": 0,
+    "maxGapMs": 4716.5
+   }
+  },
+  {
+   "idx": 13,
+   "file": "segments/seg-013.json",
+   "gapStats": {
+    "count": 224,
+    "p50": 550,
+    "p99": 616.6,
+    "max": 616.8
+   },
+   "heap": {
+    "beforeGc": 89372553,
+    "afterGc": 88442965,
+    "gcMs": 9.9
+   },
+   "frames": {
+    "total": 421,
+    "g250": 347,
+    "g1000": 3,
+    "g5000": 0,
+    "maxGapMs": 4716.5
+   }
+  },
+  {
+   "idx": 14,
+   "file": "segments/seg-014.json",
+   "gapStats": {
+    "count": 67,
+    "p50": 233.3,
+    "p99": 4683.1,
+    "max": 4683.1
+   },
+   "heap": {
+    "beforeGc": 135728020,
+    "afterGc": 88743481,
+    "gcMs": 10.4
+   },
+   "frames": {
+    "total": 68,
+    "g250": 33,
+    "g1000": 2,
+    "g5000": 0,
+    "maxGapMs": 4683.1
+   }
+  },
+  {
+   "idx": 15,
+   "file": "segments/seg-015.json",
+   "gapStats": {
+    "count": 248,
+    "p50": 550,
+    "p99": 833.2,
+    "max": 2683.2
+   },
+   "heap": {
+    "beforeGc": 88822901,
+    "afterGc": 86678881,
+    "gcMs": 7.1
+   },
+   "frames": {
+    "total": 316,
+    "g250": 242,
+    "g1000": 3,
+    "g5000": 0,
+    "maxGapMs": 4683.1
+   }
+  },
+  {
+   "idx": "final",
+   "file": "segments/seg-final.json",
+   "frames": {
+    "total": 591,
+    "g250": 517,
+    "g1000": 3,
+    "g5000": 0,
+    "maxGapMs": 4683.1
+   }
+  }
+ ],
+ "events": [
+  {
+   "t": 1789928636140,
+   "kind": "navigate",
+   "detail": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=laneA&skins=1&props=1"
+  },
+  {
+   "t": 1789928637033,
+   "kind": "console-error",
+   "detail": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  },
+  {
+   "t": 1789928644692,
+   "kind": "ready",
+   "detail": "tris=708066 feet=[230.9276123046875,0.020000028610229537,47.65022277832031]"
+  },
+  {
+   "t": 1789928646640,
+   "kind": "track",
+   "detail": "laneALoop: 97 waypoints"
+  },
+  {
+   "t": 1789928647494,
+   "kind": "waypoint",
+   "detail": "detourA-0 dist=0.0"
+  },
+  {
+   "t": 1789928649137,
+   "kind": "waypoint",
+   "detail": "detourA-1 dist=0.9"
+  },
+  {
+   "t": 1789928651285,
+   "kind": "waypoint",
+   "detail": "detourA-2 dist=1.0"
+  },
+  {
+   "t": 1789928669999,
+   "kind": "waypoint",
+   "detail": "detourA-3 dist=1.2"
+  },
+  {
+   "t": 1789928669999,
+   "kind": "waypoint",
+   "detail": "detourA-4 dist=0.7"
+  },
+  {
+   "t": 1789928678007,
+   "kind": "waypoint",
+   "detail": "detourA-5 dist=0.9"
+  },
+  {
+   "t": 1789928679896,
+   "kind": "waypoint",
+   "detail": "detourA-6 dist=1.5"
+  },
+  {
+   "t": 1789928679896,
+   "kind": "waypoint",
+   "detail": "detourA-7 dist=0.4"
+  },
+  {
+   "t": 1789928679896,
+   "kind": "waypoint",
+   "detail": "detourAback-8 dist=1.5"
+  },
+  {
+   "t": 1789928689533,
+   "kind": "waypoint",
+   "detail": "detourAback-9 dist=0.8"
+  },
+  {
+   "t": 1789928693726,
+   "kind": "waypoint",
+   "detail": "detourAback-10 dist=0.7"
+  },
+  {
+   "t": 1789928696355,
+   "kind": "waypoint",
+   "detail": "detourAback-11 dist=1.3"
+  },
+  {
+   "t": 1789928702622,
+   "kind": "waypoint",
+   "detail": "detourAback-12 dist=1.3"
+  },
+  {
+   "t": 1789928707163,
+   "kind": "waypoint",
+   "detail": "detourAback-13 dist=0.8"
+  },
+  {
+   "t": 1789928709833,
+   "kind": "waypoint",
+   "detail": "detourAback-14 dist=1.1"
+  },
+  {
+   "t": 1789928718082,
+   "kind": "waypoint",
+   "detail": "ms-253 dist=0.3"
+  },
+  {
+   "t": 1789928724834,
+   "kind": "waypoint",
+   "detail": "ms-254 dist=1.4"
+  },
+  {
+   "t": 1789928734236,
+   "kind": "waypoint",
+   "detail": "ms-255 dist=0.5"
+  },
+  {
+   "t": 1789928740473,
+   "kind": "waypoint",
+   "detail": "ms-256 dist=1.3"
+  },
+  {
+   "t": 1789928749193,
+   "kind": "waypoint",
+   "detail": "ms-257 dist=0.6"
+  },
+  {
+   "t": 1789928755864,
+   "kind": "waypoint",
+   "detail": "ms-258 dist=1.1"
+  },
+  {
+   "t": 1789928764630,
+   "kind": "waypoint",
+   "detail": "ms-259 dist=0.4"
+  },
+  {
+   "t": 1789928769107,
+   "kind": "segment",
+   "detail": "#0 samples=54 maxGap=4849.7ms p99=2633.3ms heapAfterGc=85252830 wp=22/97"
+  },
+  {
+   "t": 1789928770223,
+   "kind": "waypoint",
+   "detail": "ms-260 dist=1.5"
+  },
+  {
+   "t": 1789928778924,
+   "kind": "waypoint",
+   "detail": "ms-261 dist=0.8"
+  },
+  {
+   "t": 1789928785654,
+   "kind": "waypoint",
+   "detail": "ms-262 dist=1.3"
+  },
+  {
+   "t": 1789928794107,
+   "kind": "waypoint",
+   "detail": "ms-263 dist=0.9"
+  },
+  {
+   "t": 1789928800595,
+   "kind": "waypoint",
+   "detail": "ms-264 dist=1.4"
+  },
+  {
+   "t": 1789928807280,
+   "kind": "waypoint",
+   "detail": "ms-265 dist=0.8"
+  },
+  {
+   "t": 1789928813638,
+   "kind": "waypoint",
+   "detail": "ms-266 dist=1.3"
+  },
+  {
+   "t": 1789928822700,
+   "kind": "waypoint",
+   "detail": "ms-267 dist=0.1"
+  },
+  {
+   "t": 1789928829197,
+   "kind": "waypoint",
+   "detail": "ms-268 dist=0.2"
+  },
+  {
+   "t": 1789928835422,
+   "kind": "waypoint",
+   "detail": "ms-269 dist=0.4"
+  },
+  {
+   "t": 1789928840039,
+   "kind": "waypoint",
+   "detail": "ms-270 dist=1.5"
+  },
+  {
+   "t": 1789928846916,
+   "kind": "waypoint",
+   "detail": "ms-271 dist=1.1"
+  },
+  {
+   "t": 1789928853220,
+   "kind": "waypoint",
+   "detail": "ms-272 dist=0.7"
+  },
+  {
+   "t": 1789928857613,
+   "kind": "waypoint",
+   "detail": "ms-273 dist=1.5"
+  },
+  {
+   "t": 1789928864030,
+   "kind": "waypoint",
+   "detail": "ms-274 dist=0.8"
+  },
+  {
+   "t": 1789928868569,
+   "kind": "waypoint",
+   "detail": "ms-275 dist=1.3"
+  },
+  {
+   "t": 1789928875279,
+   "kind": "waypoint",
+   "detail": "ms-276 dist=0.3"
+  },
+  {
+   "t": 1789928879675,
+   "kind": "waypoint",
+   "detail": "ms-277 dist=1.1"
+  },
+  {
+   "t": 1789928886423,
+   "kind": "waypoint",
+   "detail": "ms-278 dist=0.2"
+  },
+  {
+   "t": 1789928890560,
+   "kind": "segment",
+   "detail": "#1 samples=55 maxGap=583.3ms p99=583.3ms heapAfterGc=85349410 wp=41/97"
+  },
+  {
+   "t": 1789928891705,
+   "kind": "waypoint",
+   "detail": "ms-279 dist=0.3"
+  },
+  {
+   "t": 1789928896295,
+   "kind": "waypoint",
+   "detail": "ms-280 dist=0.2"
+  },
+  {
+   "t": 1789928900829,
+   "kind": "waypoint",
+   "detail": "ms-281 dist=0.6"
+  },
+  {
+   "t": 1789928905110,
+   "kind": "waypoint",
+   "detail": "ms-282 dist=1.1"
+  },
+  {
+   "t": 1789928911582,
+   "kind": "waypoint",
+   "detail": "ms-283 dist=0.7"
+  },
+  {
+   "t": 1789928913403,
+   "kind": "waypoint",
+   "detail": "ms-284 dist=1.2"
+  },
+  {
+   "t": 1789928917969,
+   "kind": "waypoint",
+   "detail": "ms-285 dist=0.4"
+  },
+  {
+   "t": 1789928920103,
+   "kind": "waypoint",
+   "detail": "ms-286 dist=1.0"
+  },
+  {
+   "t": 1789928924856,
+   "kind": "waypoint",
+   "detail": "ms-287 dist=0.6"
+  },
+  {
+   "t": 1789928926785,
+   "kind": "waypoint",
+   "detail": "ms-288 dist=1.4"
+  },
+  {
+   "t": 1789928931638,
+   "kind": "waypoint",
+   "detail": "ms-289 dist=0.7"
+  },
+  {
+   "t": 1789928936351,
+   "kind": "waypoint",
+   "detail": "ms-290 dist=0.3"
+  },
+  {
+   "t": 1789928940516,
+   "kind": "waypoint",
+   "detail": "ms-291 dist=0.2"
+  },
+  {
+   "t": 1789928945022,
+   "kind": "waypoint",
+   "detail": "ms-292 dist=1.1"
+  },
+  {
+   "t": 1789928947410,
+   "kind": "waypoint",
+   "detail": "ms-293 dist=0.0"
+  },
+  {
+   "t": 1789928954517,
+   "kind": "slowDriverCall",
+   "detail": "pv took 7107ms"
+  },
+  {
+   "t": 1789928960998,
+   "kind": "console-error",
+   "detail": "Failed to load resource: net::ERR_FAILED"
+  },
+  {
+   "t": 1789928960998,
+   "kind": "console-error",
+   "detail": "TypeError: 资源 plain-v1/model.glb 加载失败：Failed to fetch\n    at fetchImpl (http://127.0.0.1:5420/src/fangbangMain.js?t=1789923057527:1106:29)\n    at http://127.0.0.1:5420/src/assetSourceCache.js:42:25\n  "
+  },
+  {
+   "t": 1789928969789,
+   "kind": "failRecovered",
+   "detail": "ready after single retry"
+  },
+  {
+   "t": 1789928970879,
+   "kind": "trackRejoin",
+   "detail": "feet=[43.09600067138672,0.0008001208305359331,-10.696999549865723] -> wp 0 (detourA-0) dist=0.0"
+  },
+  {
+   "t": 1789928970879,
+   "kind": "slowDriverCall",
+   "detail": "failRecovery took 14187ms"
+  },
+  {
+   "t": 1789928974329,
+   "kind": "waypoint",
+   "detail": "detourA-0 dist=0.0"
+  },
+  {
+   "t": 1789928976421,
+   "kind": "waypoint",
+   "detail": "detourA-1 dist=0.6"
+  },
+  {
+   "t": 1789928978464,
+   "kind": "waypoint",
+   "detail": "detourA-2 dist=0.7"
+  },
+  {
+   "t": 1789928996895,
+   "kind": "waypoint",
+   "detail": "detourA-3 dist=1.5"
+  },
+  {
+   "t": 1789928996896,
+   "kind": "waypoint",
+   "detail": "detourA-4 dist=0.5"
+  },
+  {
+   "t": 1789929004979,
+   "kind": "waypoint",
+   "detail": "detourA-5 dist=0.7"
+  },
+  {
+   "t": 1789929012125,
+   "kind": "segment",
+   "detail": "#2 samples=42 maxGap=4683.2ms p99=3599.8ms heapAfterGc=87140069 wp=62/97"
+  },
+  {
+   "t": 1789929016151,
+   "kind": "waypoint",
+   "detail": "detourA-6 dist=1.1"
+  },
+  {
+   "t": 1789929016151,
+   "kind": "waypoint",
+   "detail": "detourA-7 dist=0.9"
+  },
+  {
+   "t": 1789929016151,
+   "kind": "waypoint",
+   "detail": "detourAback-8 dist=1.1"
+  },
+  {
+   "t": 1789929020839,
+   "kind": "waypoint",
+   "detail": "detourAback-9 dist=1.0"
+  },
+  {
+   "t": 1789929025546,
+   "kind": "waypoint",
+   "detail": "detourAback-10 dist=0.7"
+  },
+  {
+   "t": 1789929030851,
+   "kind": "waypoint",
+   "detail": "detourAback-11 dist=0.8"
+  },
+  {
+   "t": 1789929037382,
+   "kind": "waypoint",
+   "detail": "detourAback-12 dist=0.7"
+  },
+  {
+   "t": 1789929039700,
+   "kind": "waypoint",
+   "detail": "detourAback-13 dist=1.4"
+  },
+  {
+   "t": 1789929043509,
+   "kind": "waypoint",
+   "detail": "detourAback-14 dist=1.1"
+  },
+  {
+   "t": 1789929051893,
+   "kind": "waypoint",
+   "detail": "ms-253 dist=0.3"
+  },
+  {
+   "t": 1789929058752,
+   "kind": "waypoint",
+   "detail": "ms-254 dist=1.4"
+  },
+  {
+   "t": 1789929068067,
+   "kind": "waypoint",
+   "detail": "ms-255 dist=0.5"
+  },
+  {
+   "t": 1789929074346,
+   "kind": "waypoint",
+   "detail": "ms-256 dist=1.3"
+  },
+  {
+   "t": 1789929082973,
+   "kind": "waypoint",
+   "detail": "ms-257 dist=0.6"
+  },
+  {
+   "t": 1789929090171,
+   "kind": "waypoint",
+   "detail": "ms-258 dist=0.8"
+  },
+  {
+   "t": 1789929096847,
+   "kind": "waypoint",
+   "detail": "ms-259 dist=1.3"
+  },
+  {
+   "t": 1789929105212,
+   "kind": "waypoint",
+   "detail": "ms-260 dist=1.2"
+  },
+  {
+   "t": 1789929113822,
+   "kind": "waypoint",
+   "detail": "ms-261 dist=0.5"
+  },
+  {
+   "t": 1789929120819,
+   "kind": "waypoint",
+   "detail": "ms-262 dist=0.9"
+  },
+  {
+   "t": 1789929130182,
+   "kind": "waypoint",
+   "detail": "ms-263 dist=0.8"
+  },
+  {
+   "t": 1789929133982,
+   "kind": "segment",
+   "detail": "#3 samples=54 maxGap=1416.6ms p99=1333.2ms heapAfterGc=87214377 wp=82/97"
+  },
+  {
+   "t": 1789929137270,
+   "kind": "waypoint",
+   "detail": "ms-264 dist=1.0"
+  },
+  {
+   "t": 1789929144445,
+   "kind": "waypoint",
+   "detail": "ms-265 dist=0.2"
+  },
+  {
+   "t": 1789929150782,
+   "kind": "waypoint",
+   "detail": "ms-266 dist=0.7"
+  },
+  {
+   "t": 1789929156805,
+   "kind": "waypoint",
+   "detail": "ms-267 dist=1.2"
+  },
+  {
+   "t": 1789929163327,
+   "kind": "waypoint",
+   "detail": "ms-268 dist=1.4"
+  },
+  {
+   "t": 1789929171696,
+   "kind": "waypoint",
+   "detail": "ms-269 dist=0.4"
+  },
+  {
+   "t": 1789929176367,
+   "kind": "waypoint",
+   "detail": "ms-270 dist=1.5"
+  },
+  {
+   "t": 1789929183238,
+   "kind": "waypoint",
+   "detail": "ms-271 dist=1.1"
+  },
+  {
+   "t": 1789929189430,
+   "kind": "waypoint",
+   "detail": "ms-272 dist=0.7"
+  },
+  {
+   "t": 1789929195537,
+   "kind": "waypoint",
+   "detail": "ms-273 dist=0.3"
+  },
+  {
+   "t": 1789929199647,
+   "kind": "waypoint",
+   "detail": "ms-274 dist=1.3"
+  },
+  {
+   "t": 1789929206526,
+   "kind": "waypoint",
+   "detail": "ms-275 dist=0.1"
+  },
+  {
+   "t": 1789929211253,
+   "kind": "waypoint",
+   "detail": "ms-276 dist=0.5"
+  },
+  {
+   "t": 1789929217777,
+   "kind": "waypoint",
+   "detail": "ms-277 dist=0.1"
+  },
+  {
+   "t": 1789929222309,
+   "kind": "waypoint",
+   "detail": "ms-278 dist=0.3"
+  },
+  {
+   "t": 1789929226807,
+   "kind": "waypoint",
+   "detail": "ms-279 dist=0.8"
+  },
+  {
+   "t": 1789929231438,
+   "kind": "waypoint",
+   "detail": "ms-280 dist=1.3"
+  },
+  {
+   "t": 1789929238217,
+   "kind": "waypoint",
+   "detail": "ms-281 dist=0.0"
+  },
+  {
+   "t": 1789929242526,
+   "kind": "waypoint",
+   "detail": "ms-282 dist=0.5"
+  },
+  {
+   "t": 1789929246450,
+   "kind": "waypoint",
+   "detail": "ms-283 dist=1.0"
+  },
+  {
+   "t": 1789929254356,
+   "kind": "slowDriverCall",
+   "detail": "pv took 7205ms"
+  },
+  {
+   "t": 1789929260770,
+   "kind": "console-error",
+   "detail": "Failed to load resource: net::ERR_FAILED"
+  },
+  {
+   "t": 1789929260771,
+   "kind": "console-error",
+   "detail": "TypeError: 资源 plain-v1/model.glb 加载失败：Failed to fetch\n    at fetchImpl (http://127.0.0.1:5420/src/fangbangMain.js?t=1789923057527:1106:29)\n    at http://127.0.0.1:5420/src/assetSourceCache.js:42:25\n  "
+  },
+  {
+   "t": 1789929269668,
+   "kind": "failRecovered",
+   "detail": "ready after single retry"
+  },
+  {
+   "t": 1789929270772,
+   "kind": "trackRejoin",
+   "detail": "feet=[43.09600067138672,0.0008001208305359331,-10.696999549865723] -> wp 0 (detourA-0) dist=0.0"
+  },
+  {
+   "t": 1789929270773,
+   "kind": "slowDriverCall",
+   "detail": "failRecovery took 14361ms"
+  },
+  {
+   "t": 1789929274179,
+   "kind": "waypoint",
+   "detail": "detourA-0 dist=0.0"
+  },
+  {
+   "t": 1789929275874,
+   "kind": "segment",
+   "detail": "#4 samples=53 maxGap=4733.1ms p99=4733.1ms heapAfterGc=87811393 wp=103/97"
+  },
+  {
+   "t": 1789929277025,
+   "kind": "waypoint",
+   "detail": "detourA-1 dist=0.0"
+  },
+  {
+   "t": 1789929279197,
+   "kind": "waypoint",
+   "detail": "detourA-2 dist=0.2"
+  },
+  {
+   "t": 1789929281030,
+   "kind": "waypoint",
+   "detail": "detourA-3 dist=0.1"
+  },
+  {
+   "t": 1789929297620,
+   "kind": "waypoint",
+   "detail": "detourA-4 dist=0.9"
+  },
+  {
+   "t": 1789929297620,
+   "kind": "waypoint",
+   "detail": "detourA-5 dist=1.0"
+  },
+  {
+   "t": 1789929308634,
+   "kind": "waypoint",
+   "detail": "detourA-6 dist=1.4"
+  },
+  {
+   "t": 1789929308635,
+   "kind": "waypoint",
+   "detail": "detourA-7 dist=0.7"
+  },
+  {
+   "t": 1789929308635,
+   "kind": "waypoint",
+   "detail": "detourAback-8 dist=1.4"
+  },
+  {
+   "t": 1789929313767,
+   "kind": "waypoint",
+   "detail": "detourAback-9 dist=1.3"
+  },
+  {
+   "t": 1789929317823,
+   "kind": "waypoint",
+   "detail": "detourAback-10 dist=1.3"
+  },
+  {
+   "t": 1789929322484,
+   "kind": "waypoint",
+   "detail": "detourAback-11 dist=1.1"
+  },
+  {
+   "t": 1789929328733,
+   "kind": "waypoint",
+   "detail": "detourAback-12 dist=1.0"
+  },
+  {
+   "t": 1789929333306,
+   "kind": "waypoint",
+   "detail": "detourAback-13 dist=0.5"
+  },
+  {
+   "t": 1789929335452,
+   "kind": "waypoint",
+   "detail": "detourAback-14 dist=1.1"
+  },
+  {
+   "t": 1789929344459,
+   "kind": "waypoint",
+   "detail": "ms-253 dist=0.3"
+  },
+  {
+   "t": 1789929353170,
+   "kind": "waypoint",
+   "detail": "ms-254 dist=0.4"
+  },
+  {
+   "t": 1789929360781,
+   "kind": "waypoint",
+   "detail": "ms-255 dist=0.5"
+  },
+  {
+   "t": 1789929367017,
+   "kind": "waypoint",
+   "detail": "ms-256 dist=1.3"
+  },
+  {
+   "t": 1789929376229,
+   "kind": "waypoint",
+   "detail": "ms-257 dist=0.3"
+  },
+  {
+   "t": 1789929382941,
+   "kind": "waypoint",
+   "detail": "ms-258 dist=0.8"
+  },
+  {
+   "t": 1789929389535,
+   "kind": "waypoint",
+   "detail": "ms-259 dist=1.3"
+  },
+  {
+   "t": 1789929397857,
+   "kind": "segment",
+   "detail": "#5 samples=53 maxGap=2316.6ms p99=1900ms heapAfterGc=87141453 wp=124/97"
+  },
+  {
+   "t": 1789929398952,
+   "kind": "waypoint",
+   "detail": "ms-260 dist=0.3"
+  },
+  {
+   "t": 1789929405450,
+   "kind": "waypoint",
+   "detail": "ms-261 dist=0.8"
+  },
+  {
+   "t": 1789929412069,
+   "kind": "waypoint",
+   "detail": "ms-262 dist=1.3"
+  },
+  {
+   "t": 1789929420570,
+   "kind": "waypoint",
+   "detail": "ms-263 dist=0.9"
+  },
+  {
+   "t": 1789929427562,
+   "kind": "waypoint",
+   "detail": "ms-264 dist=1.1"
+  },
+  {
+   "t": 1789929434005,
+   "kind": "waypoint",
+   "detail": "ms-265 dist=0.5"
+  },
+  {
+   "t": 1789929440738,
+   "kind": "waypoint",
+   "detail": "ms-266 dist=0.7"
+  },
+  {
+   "t": 1789929447196,
+   "kind": "waypoint",
+   "detail": "ms-267 dist=0.9"
+  },
+  {
+   "t": 1789929453720,
+   "kind": "waypoint",
+   "detail": "ms-268 dist=1.1"
+  },
+  {
+   "t": 1789929460011,
+   "kind": "waypoint",
+   "detail": "ms-269 dist=1.3"
+  },
+  {
+   "t": 1789929466924,
+   "kind": "waypoint",
+   "detail": "ms-270 dist=0.9"
+  },
+  {
+   "t": 1789929473605,
+   "kind": "waypoint",
+   "detail": "ms-271 dist=0.5"
+  },
+  {
+   "t": 1789929479703,
+   "kind": "waypoint",
+   "detail": "ms-272 dist=0.1"
+  },
+  {
+   "t": 1789929483773,
+   "kind": "waypoint",
+   "detail": "ms-273 dist=1.2"
+  },
+  {
+   "t": 1789929490242,
+   "kind": "waypoint",
+   "detail": "ms-274 dist=0.5"
+  },
+  {
+   "t": 1789929494817,
+   "kind": "waypoint",
+   "detail": "ms-275 dist=1.0"
+  },
+  {
+   "t": 1789929499552,
+   "kind": "waypoint",
+   "detail": "ms-276 dist=1.5"
+  },
+  {
+   "t": 1789929505924,
+   "kind": "waypoint",
+   "detail": "ms-277 dist=0.8"
+  },
+  {
+   "t": 1789929510425,
+   "kind": "waypoint",
+   "detail": "ms-278 dist=1.2"
+  },
+  {
+   "t": 1789929517186,
+   "kind": "waypoint",
+   "detail": "ms-279 dist=0.0"
+  },
+  {
+   "t": 1789929519092,
+   "kind": "segment",
+   "detail": "#6 samples=55 maxGap=583.4ms p99=583.3ms heapAfterGc=87167165 wp=144/97"
+  },
+  {
+   "t": 1789929522499,
+   "kind": "waypoint",
+   "detail": "ms-280 dist=0.1"
+  },
+  {
+   "t": 1789929526931,
+   "kind": "waypoint",
+   "detail": "ms-281 dist=0.3"
+  },
+  {
+   "t": 1789929531259,
+   "kind": "waypoint",
+   "detail": "ms-282 dist=0.8"
+  },
+  {
+   "t": 1789929535294,
+   "kind": "waypoint",
+   "detail": "ms-283 dist=1.3"
+  },
+  {
+   "t": 1789929539896,
+   "kind": "waypoint",
+   "detail": "ms-284 dist=0.3"
+  },
+  {
+   "t": 1789929542361,
+   "kind": "waypoint",
+   "detail": "ms-285 dist=1.4"
+  },
+  {
+   "t": 1789929546767,
+   "kind": "waypoint",
+   "detail": "ms-286 dist=0.1"
+  },
+  {
+   "t": 1789929553920,
+   "kind": "slowDriverCall",
+   "detail": "pv took 6752ms"
+  },
+  {
+   "t": 1789929560184,
+   "kind": "console-error",
+   "detail": "Failed to load resource: net::ERR_FAILED"
+  },
+  {
+   "t": 1789929560185,
+   "kind": "console-error",
+   "detail": "TypeError: 资源 plain-v1/model.glb 加载失败：Failed to fetch\n    at fetchImpl (http://127.0.0.1:5420/src/fangbangMain.js?t=1789923057527:1106:29)\n    at http://127.0.0.1:5420/src/assetSourceCache.js:42:25\n  "
+  },
+  {
+   "t": 1789929569129,
+   "kind": "failRecovered",
+   "detail": "ready after single retry"
+  },
+  {
+   "t": 1789929570242,
+   "kind": "trackRejoin",
+   "detail": "feet=[43.09600067138672,0.0008921504020691362,-10.696999549865723] -> wp 0 (detourA-0) dist=0.0"
+  },
+  {
+   "t": 1789929570242,
+   "kind": "slowDriverCall",
+   "detail": "failRecovery took 14370ms"
+  },
+  {
+   "t": 1789929573729,
+   "kind": "waypoint",
+   "detail": "detourA-0 dist=0.0"
+  },
+  {
+   "t": 1789929575817,
+   "kind": "waypoint",
+   "detail": "detourA-1 dist=0.6"
+  },
+  {
+   "t": 1789929577880,
+   "kind": "waypoint",
+   "detail": "detourA-2 dist=0.7"
+  },
+  {
+   "t": 1789929597063,
+   "kind": "waypoint",
+   "detail": "detourA-3 dist=1.4"
+  },
+  {
+   "t": 1789929597063,
+   "kind": "waypoint",
+   "detail": "detourA-4 dist=0.5"
+  },
+  {
+   "t": 1789929605078,
+   "kind": "waypoint",
+   "detail": "detourA-5 dist=0.8"
+  },
+  {
+   "t": 1789929614735,
+   "kind": "waypoint",
+   "detail": "detourA-6 dist=1.1"
+  },
+  {
+   "t": 1789929614736,
+   "kind": "waypoint",
+   "detail": "detourA-7 dist=0.9"
+  },
+  {
+   "t": 1789929614736,
+   "kind": "waypoint",
+   "detail": "detourAback-8 dist=1.1"
+  },
+  {
+   "t": 1789929618939,
+   "kind": "waypoint",
+   "detail": "detourAback-9 dist=1.0"
+  },
+  {
+   "t": 1789929622975,
+   "kind": "waypoint",
+   "detail": "detourAback-10 dist=1.0"
+  },
+  {
+   "t": 1789929627654,
+   "kind": "waypoint",
+   "detail": "detourAback-11 dist=0.7"
+  },
+  {
+   "t": 1789929633843,
+   "kind": "waypoint",
+   "detail": "detourAback-12 dist=0.7"
+  },
+  {
+   "t": 1789929636170,
+   "kind": "waypoint",
+   "detail": "detourAback-13 dist=1.3"
+  },
+  {
+   "t": 1789929639965,
+   "kind": "waypoint",
+   "detail": "detourAback-14 dist=1.1"
+  },
+  {
+   "t": 1789929641644,
+   "kind": "segment",
+   "detail": "#7 samples=43 maxGap=4666.4ms p99=3666.6ms heapAfterGc=88392693 wp=166/97"
+  },
+  {
+   "t": 1789929648768,
+   "kind": "waypoint",
+   "detail": "ms-253 dist=0.0"
+  },
+  {
+   "t": 1789929657405,
+   "kind": "waypoint",
+   "detail": "ms-254 dist=0.3"
+  },
+  {
+   "t": 1789929664360,
+   "kind": "waypoint",
+   "detail": "ms-255 dist=0.7"
+  },
+  {
+   "t": 1789929671203,
+   "kind": "waypoint",
+   "detail": "ms-256 dist=1.2"
+  },
+  {
+   "t": 1789929678214,
+   "kind": "waypoint",
+   "detail": "ms-257 dist=1.4"
+  },
+  {
+   "t": 1789929687096,
+   "kind": "waypoint",
+   "detail": "ms-258 dist=0.7"
+  },
+  {
+   "t": 1789929693641,
+   "kind": "waypoint",
+   "detail": "ms-259 dist=1.2"
+  },
+  {
+   "t": 1789929702482,
+   "kind": "waypoint",
+   "detail": "ms-260 dist=0.5"
+  },
+  {
+   "t": 1789929708997,
+   "kind": "waypoint",
+   "detail": "ms-261 dist=1.0"
+  },
+  {
+   "t": 1789929715698,
+   "kind": "waypoint",
+   "detail": "ms-262 dist=1.4"
+  },
+  {
+   "t": 1789929724764,
+   "kind": "waypoint",
+   "detail": "ms-263 dist=0.7"
+  },
+  {
+   "t": 1789929731180,
+   "kind": "waypoint",
+   "detail": "ms-264 dist=1.2"
+  },
+  {
+   "t": 1789929737839,
+   "kind": "waypoint",
+   "detail": "ms-265 dist=0.7"
+  },
+  {
+   "t": 1789929744214,
+   "kind": "waypoint",
+   "detail": "ms-266 dist=1.2"
+  },
+  {
+   "t": 1789929752822,
+   "kind": "waypoint",
+   "detail": "ms-267 dist=0.2"
+  },
+  {
+   "t": 1789929758916,
+   "kind": "waypoint",
+   "detail": "ms-268 dist=0.7"
+  },
+  {
+   "t": 1789929762794,
+   "kind": "segment",
+   "detail": "#8 samples=55 maxGap=616.7ms p99=616.6ms heapAfterGc=88429289 wp=182/97"
+  },
+  {
+   "t": 1789929766093,
+   "kind": "waypoint",
+   "detail": "ms-269 dist=0.3"
+  },
+  {
+   "t": 1789929770711,
+   "kind": "waypoint",
+   "detail": "ms-270 dist=1.4"
+  },
+  {
+   "t": 1789929777547,
+   "kind": "waypoint",
+   "detail": "ms-271 dist=1.0"
+  },
+  {
+   "t": 1789929783778,
+   "kind": "waypoint",
+   "detail": "ms-272 dist=0.6"
+  },
+  {
+   "t": 1789929789932,
+   "kind": "waypoint",
+   "detail": "ms-273 dist=0.2"
+  },
+  {
+   "t": 1789929794323,
+   "kind": "waypoint",
+   "detail": "ms-274 dist=1.0"
+  },
+  {
+   "t": 1789929798829,
+   "kind": "waypoint",
+   "detail": "ms-275 dist=1.4"
+  },
+  {
+   "t": 1789929805528,
+   "kind": "waypoint",
+   "detail": "ms-276 dist=0.5"
+  },
+  {
+   "t": 1789929809953,
+   "kind": "waypoint",
+   "detail": "ms-277 dist=1.2"
+  },
+  {
+   "t": 1789929816453,
+   "kind": "waypoint",
+   "detail": "ms-278 dist=0.2"
+  },
+  {
+   "t": 1789929821040,
+   "kind": "waypoint",
+   "detail": "ms-279 dist=0.8"
+  },
+  {
+   "t": 1789929825787,
+   "kind": "waypoint",
+   "detail": "ms-280 dist=1.2"
+  },
+  {
+   "t": 1789929832563,
+   "kind": "waypoint",
+   "detail": "ms-281 dist=0.0"
+  },
+  {
+   "t": 1789929836829,
+   "kind": "waypoint",
+   "detail": "ms-282 dist=0.5"
+  },
+  {
+   "t": 1789929841350,
+   "kind": "waypoint",
+   "detail": "ms-283 dist=0.4"
+  },
+  {
+   "t": 1789929845739,
+   "kind": "waypoint",
+   "detail": "ms-284 dist=0.6"
+  },
+  {
+   "t": 1789929847693,
+   "kind": "waypoint",
+   "detail": "ms-285 dist=1.0"
+  },
+  {
+   "t": 1789929854509,
+   "kind": "slowDriverCall",
+   "detail": "pv took 6815ms"
+  },
+  {
+   "t": 1789929861177,
+   "kind": "console-error",
+   "detail": "Failed to load resource: net::ERR_FAILED"
+  },
+  {
+   "t": 1789929861177,
+   "kind": "console-error",
+   "detail": "TypeError: 资源 plain-v1/model.glb 加载失败：Failed to fetch\n    at fetchImpl (http://127.0.0.1:5420/src/fangbangMain.js?t=1789923057527:1106:29)\n    at http://127.0.0.1:5420/src/assetSourceCache.js:42:25\n  "
+  },
+  {
+   "t": 1789929869805,
+   "kind": "failRecovered",
+   "detail": "ready after single retry"
+  },
+  {
+   "t": 1789929870864,
+   "kind": "trackRejoin",
+   "detail": "feet=[43.09600067138672,0.0008921504020691362,-10.696999549865723] -> wp 0 (detourA-0) dist=0.0"
+  },
+  {
+   "t": 1789929870864,
+   "kind": "slowDriverCall",
+   "detail": "failRecovery took 14174ms"
+  },
+  {
+   "t": 1789929874237,
+   "kind": "waypoint",
+   "detail": "detourA-0 dist=0.0"
+  },
+  {
+   "t": 1789929876286,
+   "kind": "waypoint",
+   "detail": "detourA-1 dist=0.6"
+  },
+  {
+   "t": 1789929878340,
+   "kind": "waypoint",
+   "detail": "detourA-2 dist=0.7"
+  },
+  {
+   "t": 1789929883410,
+   "kind": "segment",
+   "detail": "#9 samples=44 maxGap=4633.1ms p99=4633.1ms heapAfterGc=87867432 wp=202/97"
+  },
+  {
+   "t": 1789929899109,
+   "kind": "waypoint",
+   "detail": "detourA-3 dist=1.1"
+  },
+  {
+   "t": 1789929899109,
+   "kind": "waypoint",
+   "detail": "detourA-4 dist=0.8"
+  },
+  {
+   "t": 1789929906894,
+   "kind": "waypoint",
+   "detail": "detourA-5 dist=1.3"
+  },
+  {
+   "t": 1789929908881,
+   "kind": "waypoint",
+   "detail": "detourA-6 dist=1.1"
+  },
+  {
+   "t": 1789929908881,
+   "kind": "waypoint",
+   "detail": "detourA-7 dist=0.3"
+  },
+  {
+   "t": 1789929908881,
+   "kind": "waypoint",
+   "detail": "detourAback-8 dist=1.1"
+  },
+  {
+   "t": 1789929918706,
+   "kind": "waypoint",
+   "detail": "detourAback-9 dist=0.7"
+  },
+  {
+   "t": 1789929923494,
+   "kind": "waypoint",
+   "detail": "detourAback-10 dist=0.4"
+  },
+  {
+   "t": 1789929925439,
+   "kind": "waypoint",
+   "detail": "detourAback-11 dist=1.3"
+  },
+  {
+   "t": 1789929932241,
+   "kind": "waypoint",
+   "detail": "detourAback-12 dist=1.0"
+  },
+  {
+   "t": 1789929936811,
+   "kind": "waypoint",
+   "detail": "detourAback-13 dist=0.4"
+  },
+  {
+   "t": 1789929938872,
+   "kind": "waypoint",
+   "detail": "detourAback-14 dist=1.1"
+  },
+  {
+   "t": 1789929947168,
+   "kind": "waypoint",
+   "detail": "ms-253 dist=0.3"
+  },
+  {
+   "t": 1789929953990,
+   "kind": "waypoint",
+   "detail": "ms-254 dist=1.5"
+  },
+  {
+   "t": 1789929963401,
+   "kind": "waypoint",
+   "detail": "ms-255 dist=0.5"
+  },
+  {
+   "t": 1789929969686,
+   "kind": "waypoint",
+   "detail": "ms-256 dist=1.3"
+  },
+  {
+   "t": 1789929980126,
+   "kind": "waypoint",
+   "detail": "ms-257 dist=0.6"
+  },
+  {
+   "t": 1789929987379,
+   "kind": "waypoint",
+   "detail": "ms-258 dist=0.8"
+  },
+  {
+   "t": 1789929996232,
+   "kind": "waypoint",
+   "detail": "ms-259 dist=0.1"
+  },
+  {
+   "t": 1789930002964,
+   "kind": "waypoint",
+   "detail": "ms-260 dist=0.6"
+  },
+  {
+   "t": 1789930005146,
+   "kind": "segment",
+   "detail": "#10 samples=53 maxGap=3683.1ms p99=1399.9ms heapAfterGc=88446504 wp=222/97"
+  },
+  {
+   "t": 1789930010622,
+   "kind": "waypoint",
+   "detail": "ms-261 dist=0.5"
+  },
+  {
+   "t": 1789930017391,
+   "kind": "waypoint",
+   "detail": "ms-262 dist=1.0"
+  },
+  {
+   "t": 1789930024206,
+   "kind": "waypoint",
+   "detail": "ms-263 dist=1.5"
+  },
+  {
+   "t": 1789930033337,
+   "kind": "waypoint",
+   "detail": "ms-264 dist=0.5"
+  },
+  {
+   "t": 1789930037716,
+   "kind": "waypoint",
+   "detail": "ms-265 dist=1.1"
+  },
+  {
+   "t": 1789930046010,
+   "kind": "waypoint",
+   "detail": "ms-266 dist=0.5"
+  },
+  {
+   "t": 1789930052499,
+   "kind": "waypoint",
+   "detail": "ms-267 dist=0.6"
+  },
+  {
+   "t": 1789930058978,
+   "kind": "waypoint",
+   "detail": "ms-268 dist=0.8"
+  },
+  {
+   "t": 1789930065822,
+   "kind": "waypoint",
+   "detail": "ms-269 dist=0.7"
+  },
+  {
+   "t": 1789930072877,
+   "kind": "waypoint",
+   "detail": "ms-270 dist=0.3"
+  },
+  {
+   "t": 1789930077453,
+   "kind": "waypoint",
+   "detail": "ms-271 dist=1.4"
+  },
+  {
+   "t": 1789930083837,
+   "kind": "waypoint",
+   "detail": "ms-272 dist=1.0"
+  },
+  {
+   "t": 1789930089899,
+   "kind": "waypoint",
+   "detail": "ms-273 dist=0.6"
+  },
+  {
+   "t": 1789930094286,
+   "kind": "waypoint",
+   "detail": "ms-274 dist=1.4"
+  },
+  {
+   "t": 1789930101125,
+   "kind": "waypoint",
+   "detail": "ms-275 dist=0.1"
+  },
+  {
+   "t": 1789930105502,
+   "kind": "waypoint",
+   "detail": "ms-276 dist=0.9"
+  },
+  {
+   "t": 1789930111830,
+   "kind": "waypoint",
+   "detail": "ms-277 dist=0.2"
+  },
+  {
+   "t": 1789930116237,
+   "kind": "waypoint",
+   "detail": "ms-278 dist=0.7"
+  },
+  {
+   "t": 1789930120709,
+   "kind": "waypoint",
+   "detail": "ms-279 dist=1.1"
+  },
+  {
+   "t": 1789930126842,
+   "kind": "segment",
+   "detail": "#11 samples=55 maxGap=583.4ms p99=583.3ms heapAfterGc=88470304 wp=241/97"
+  },
+  {
+   "t": 1789930127976,
+   "kind": "waypoint",
+   "detail": "ms-280 dist=0.4"
+  },
+  {
+   "t": 1789930132485,
+   "kind": "waypoint",
+   "detail": "ms-281 dist=0.1"
+  },
+  {
+   "t": 1789930136882,
+   "kind": "waypoint",
+   "detail": "ms-282 dist=0.5"
+  },
+  {
+   "t": 1789930140867,
+   "kind": "waypoint",
+   "detail": "ms-283 dist=1.0"
+  },
+  {
+   "t": 1789930145438,
+   "kind": "waypoint",
+   "detail": "ms-284 dist=0.0"
+  },
+  {
+   "t": 1789930147876,
+   "kind": "waypoint",
+   "detail": "ms-285 dist=1.1"
+  },
+  {
+   "t": 1789930154652,
+   "kind": "slowDriverCall",
+   "detail": "pv took 6776ms"
+  },
+  {
+   "t": 1789930160842,
+   "kind": "console-error",
+   "detail": "Failed to load resource: net::ERR_FAILED"
+  },
+  {
+   "t": 1789930160843,
+   "kind": "console-error",
+   "detail": "TypeError: 资源 plain-v1/model.glb 加载失败：Failed to fetch\n    at fetchImpl (http://127.0.0.1:5420/src/fangbangMain.js?t=1789923057527:1106:29)\n    at http://127.0.0.1:5420/src/assetSourceCache.js:42:25\n  "
+  },
+  {
+   "t": 1789930169747,
+   "kind": "failRecovered",
+   "detail": "ready after single retry"
+  },
+  {
+   "t": 1789930170867,
+   "kind": "trackRejoin",
+   "detail": "feet=[43.09600067138672,0.0008001208305359331,-10.696999549865723] -> wp 0 (detourA-0) dist=0.0"
+  },
+  {
+   "t": 1789930170867,
+   "kind": "slowDriverCall",
+   "detail": "failRecovery took 14256ms"
+  },
+  {
+   "t": 1789930174302,
+   "kind": "waypoint",
+   "detail": "detourA-0 dist=0.0"
+  },
+  {
+   "t": 1789930176360,
+   "kind": "waypoint",
+   "detail": "detourA-1 dist=0.6"
+  },
+  {
+   "t": 1789930178426,
+   "kind": "waypoint",
+   "detail": "detourA-2 dist=0.7"
+  },
+  {
+   "t": 1789930199849,
+   "kind": "waypoint",
+   "detail": "detourA-3 dist=1.0"
+  },
+  {
+   "t": 1789930199849,
+   "kind": "waypoint",
+   "detail": "detourA-4 dist=0.9"
+  },
+  {
+   "t": 1789930207631,
+   "kind": "waypoint",
+   "detail": "detourA-5 dist=1.4"
+  },
+  {
+   "t": 1789930209678,
+   "kind": "waypoint",
+   "detail": "detourA-6 dist=1.0"
+  },
+  {
+   "t": 1789930209678,
+   "kind": "waypoint",
+   "detail": "detourA-7 dist=0.4"
+  },
+  {
+   "t": 1789930209678,
+   "kind": "waypoint",
+   "detail": "detourAback-8 dist=1.0"
+  },
+  {
+   "t": 1789930219421,
+   "kind": "waypoint",
+   "detail": "detourAback-9 dist=0.8"
+  },
+  {
+   "t": 1789930223590,
+   "kind": "waypoint",
+   "detail": "detourAback-10 dist=0.7"
+  },
+  {
+   "t": 1789930228209,
+   "kind": "waypoint",
+   "detail": "detourAback-11 dist=0.4"
+  },
+  {
+   "t": 1789930232558,
+   "kind": "waypoint",
+   "detail": "detourAback-12 dist=1.3"
+  },
+  {
+   "t": 1789930236619,
+   "kind": "waypoint",
+   "detail": "detourAback-13 dist=1.0"
+  },
+  {
+   "t": 1789930241093,
+   "kind": "waypoint",
+   "detail": "detourAback-14 dist=0.2"
+  },
+  {
+   "t": 1789930247414,
+   "kind": "waypoint",
+   "detail": "ms-253 dist=0.9"
+  },
+  {
+   "t": 1789930249227,
+   "kind": "segment",
+   "detail": "#12 samples=43 maxGap=4716.5ms p99=3616.6ms heapAfterGc=88430105 wp=263/97"
+  },
+  {
+   "t": 1789930254856,
+   "kind": "waypoint",
+   "detail": "ms-254 dist=0.8"
+  },
+  {
+   "t": 1789930262013,
+   "kind": "waypoint",
+   "detail": "ms-255 dist=1.2"
+  },
+  {
+   "t": 1789930270598,
+   "kind": "waypoint",
+   "detail": "ms-256 dist=0.8"
+  },
+  {
+   "t": 1789930277090,
+   "kind": "waypoint",
+   "detail": "ms-257 dist=1.3"
+  },
+  {
+   "t": 1789930286029,
+   "kind": "waypoint",
+   "detail": "ms-258 dist=0.6"
+  },
+  {
+   "t": 1789930292100,
+   "kind": "waypoint",
+   "detail": "ms-259 dist=1.4"
+  },
+  {
+   "t": 1789930301603,
+   "kind": "waypoint",
+   "detail": "ms-260 dist=0.4"
+  },
+  {
+   "t": 1789930308151,
+   "kind": "waypoint",
+   "detail": "ms-261 dist=0.9"
+  },
+  {
+   "t": 1789930316629,
+   "kind": "waypoint",
+   "detail": "ms-262 dist=0.5"
+  },
+  {
+   "t": 1789930323415,
+   "kind": "waypoint",
+   "detail": "ms-263 dist=1.0"
+  },
+  {
+   "t": 1789930329924,
+   "kind": "waypoint",
+   "detail": "ms-264 dist=1.4"
+  },
+  {
+   "t": 1789930336558,
+   "kind": "waypoint",
+   "detail": "ms-265 dist=0.9"
+  },
+  {
+   "t": 1789930342833,
+   "kind": "waypoint",
+   "detail": "ms-266 dist=1.4"
+  },
+  {
+   "t": 1789930351358,
+   "kind": "waypoint",
+   "detail": "ms-267 dist=0.4"
+  },
+  {
+   "t": 1789930357841,
+   "kind": "waypoint",
+   "detail": "ms-268 dist=0.6"
+  },
+  {
+   "t": 1789930364204,
+   "kind": "waypoint",
+   "detail": "ms-269 dist=0.8"
+  },
+  {
+   "t": 1789930370234,
+   "kind": "segment",
+   "detail": "#13 samples=55 maxGap=616.8ms p99=616.6ms heapAfterGc=88442965 wp=279/97"
+  },
+  {
+   "t": 1789930371145,
+   "kind": "waypoint",
+   "detail": "ms-270 dist=0.4"
+  },
+  {
+   "t": 1789930375753,
+   "kind": "waypoint",
+   "detail": "ms-271 dist=1.5"
+  },
+  {
+   "t": 1789930382013,
+   "kind": "waypoint",
+   "detail": "ms-272 dist=1.1"
+  },
+  {
+   "t": 1789930388459,
+   "kind": "waypoint",
+   "detail": "ms-273 dist=0.4"
+  },
+  {
+   "t": 1789930392518,
+   "kind": "waypoint",
+   "detail": "ms-274 dist=1.5"
+  },
+  {
+   "t": 1789930399474,
+   "kind": "waypoint",
+   "detail": "ms-275 dist=0.2"
+  },
+  {
+   "t": 1789930404246,
+   "kind": "waypoint",
+   "detail": "ms-276 dist=0.7"
+  },
+  {
+   "t": 1789930410546,
+   "kind": "waypoint",
+   "detail": "ms-277 dist=0.0"
+  },
+  {
+   "t": 1789930415051,
+   "kind": "waypoint",
+   "detail": "ms-278 dist=0.5"
+  },
+  {
+   "t": 1789930419563,
+   "kind": "waypoint",
+   "detail": "ms-279 dist=0.9"
+  },
+  {
+   "t": 1789930424211,
+   "kind": "waypoint",
+   "detail": "ms-280 dist=1.4"
+  },
+  {
+   "t": 1789930431035,
+   "kind": "waypoint",
+   "detail": "ms-281 dist=0.1"
+  },
+  {
+   "t": 1789930435377,
+   "kind": "waypoint",
+   "detail": "ms-282 dist=0.6"
+  },
+  {
+   "t": 1789930439581,
+   "kind": "waypoint",
+   "detail": "ms-283 dist=0.8"
+  },
+  {
+   "t": 1789930443862,
+   "kind": "waypoint",
+   "detail": "ms-284 dist=0.1"
+  },
+  {
+   "t": 1789930448267,
+   "kind": "waypoint",
+   "detail": "ms-285 dist=1.1"
+  },
+  {
+   "t": 1789930455351,
+   "kind": "slowDriverCall",
+   "detail": "pv took 6832ms"
+  },
+  {
+   "t": 1789930461551,
+   "kind": "console-error",
+   "detail": "Failed to load resource: net::ERR_FAILED"
+  },
+  {
+   "t": 1789930461551,
+   "kind": "console-error",
+   "detail": "TypeError: 资源 plain-v1/model.glb 加载失败：Failed to fetch\n    at fetchImpl (http://127.0.0.1:5420/src/fangbangMain.js?t=1789923057527:1106:29)\n    at http://127.0.0.1:5420/src/assetSourceCache.js:42:25\n  "
+  },
+  {
+   "t": 1789930470383,
+   "kind": "failRecovered",
+   "detail": "ready after single retry"
+  },
+  {
+   "t": 1789930471469,
+   "kind": "trackRejoin",
+   "detail": "feet=[43.09600067138672,0.0008001208305359331,-10.696999549865723] -> wp 0 (detourA-0) dist=0.0"
+  },
+  {
+   "t": 1789930471469,
+   "kind": "slowDriverCall",
+   "detail": "failRecovery took 14158ms"
+  },
+  {
+   "t": 1789930474947,
+   "kind": "waypoint",
+   "detail": "detourA-0 dist=0.0"
+  },
+  {
+   "t": 1789930477052,
+   "kind": "waypoint",
+   "detail": "detourA-1 dist=0.6"
+  },
+  {
+   "t": 1789930479122,
+   "kind": "waypoint",
+   "detail": "detourA-2 dist=0.7"
+  },
+  {
+   "t": 1789930494186,
+   "kind": "segment",
+   "detail": "#14 samples=44 maxGap=4683.1ms p99=4683.1ms heapAfterGc=88743481 wp=298/97"
+  },
+  {
+   "t": 1789930498179,
+   "kind": "waypoint",
+   "detail": "detourA-3 dist=1.2"
+  },
+  {
+   "t": 1789930498179,
+   "kind": "waypoint",
+   "detail": "detourA-4 dist=0.7"
+  },
+  {
+   "t": 1789930506313,
+   "kind": "waypoint",
+   "detail": "detourA-5 dist=0.8"
+  },
+  {
+   "t": 1789930515921,
+   "kind": "waypoint",
+   "detail": "detourA-6 dist=1.1"
+  },
+  {
+   "t": 1789930515921,
+   "kind": "waypoint",
+   "detail": "detourA-7 dist=0.9"
+  },
+  {
+   "t": 1789930515921,
+   "kind": "waypoint",
+   "detail": "detourAback-8 dist=1.1"
+  },
+  {
+   "t": 1789930520074,
+   "kind": "waypoint",
+   "detail": "detourAback-9 dist=1.0"
+  },
+  {
+   "t": 1789930524144,
+   "kind": "waypoint",
+   "detail": "detourAback-10 dist=1.0"
+  },
+  {
+   "t": 1789930528758,
+   "kind": "waypoint",
+   "detail": "detourAback-11 dist=0.7"
+  },
+  {
+   "t": 1789930534899,
+   "kind": "waypoint",
+   "detail": "detourAback-12 dist=0.7"
+  },
+  {
+   "t": 1789930537226,
+   "kind": "waypoint",
+   "detail": "detourAback-13 dist=1.3"
+  },
+  {
+   "t": 1789930541455,
+   "kind": "waypoint",
+   "detail": "detourAback-14 dist=0.8"
+  },
+  {
+   "t": 1789930549631,
+   "kind": "waypoint",
+   "detail": "ms-253 dist=0.0"
+  },
+  {
+   "t": 1789930558723,
+   "kind": "waypoint",
+   "detail": "ms-254 dist=0.2"
+  },
+  {
+   "t": 1789930565745,
+   "kind": "waypoint",
+   "detail": "ms-255 dist=0.7"
+  },
+  {
+   "t": 1789930572003,
+   "kind": "waypoint",
+   "detail": "ms-256 dist=1.4"
+  },
+  {
+   "t": 1789930580754,
+   "kind": "waypoint",
+   "detail": "ms-257 dist=0.7"
+  },
+  {
+   "t": 1789930587451,
+   "kind": "waypoint",
+   "detail": "ms-258 dist=1.2"
+  },
+  {
+   "t": 1789930596374,
+   "kind": "waypoint",
+   "detail": "ms-259 dist=0.5"
+  },
+  {
+   "t": 1789930603076,
+   "kind": "waypoint",
+   "detail": "ms-260 dist=1.0"
+  },
+  {
+   "t": 1789930609622,
+   "kind": "waypoint",
+   "detail": "ms-261 dist=1.5"
+  },
+  {
+   "t": 1789930616295,
+   "kind": "segment",
+   "detail": "#15 samples=54 maxGap=2683.2ms p99=833.2ms heapAfterGc=86678881 wp=319/97"
+  },
+  {
+   "t": 1789930617425,
+   "kind": "waypoint",
+   "detail": "ms-262 dist=1.4"
+  },
+  {
+   "t": 1789930626508,
+   "kind": "waypoint",
+   "detail": "ms-263 dist=0.7"
+  },
+  {
+   "t": 1789930632967,
+   "kind": "waypoint",
+   "detail": "ms-264 dist=1.2"
+  },
+  {
+   "t": 1789930639538,
+   "kind": "waypoint",
+   "detail": "ms-265 dist=0.7"
+  },
+  {
+   "t": 1789930645788,
+   "kind": "waypoint",
+   "detail": "ms-266 dist=1.1"
+  },
+  {
+   "t": 1789930653834,
+   "kind": "waypoint",
+   "detail": "ms-267 dist=0.4"
+  },
+  {
+   "t": 1789930660810,
+   "kind": "waypoint",
+   "detail": "ms-268 dist=0.3"
+  },
+  {
+   "t": 1789930667134,
+   "kind": "waypoint",
+   "detail": "ms-269 dist=0.5"
+  },
+  {
+   "t": 1789930674228,
+   "kind": "waypoint",
+   "detail": "ms-270 dist=0.1"
+  },
+  {
+   "t": 1789930678765,
+   "kind": "waypoint",
+   "detail": "ms-271 dist=1.2"
+  },
+  {
+   "t": 1789930685349,
+   "kind": "waypoint",
+   "detail": "ms-272 dist=0.5"
+  },
+  {
+   "t": 1789930689736,
+   "kind": "waypoint",
+   "detail": "ms-273 dist=1.3"
+  },
+  {
+   "t": 1789930696503,
+   "kind": "waypoint",
+   "detail": "ms-274 dist=0.3"
+  },
+  {
+   "t": 1789930701045,
+   "kind": "waypoint",
+   "detail": "ms-275 dist=0.8"
+  },
+  {
+   "t": 1789930705750,
+   "kind": "waypoint",
+   "detail": "ms-276 dist=1.3"
+  },
+  {
+   "t": 1789930711794,
+   "kind": "waypoint",
+   "detail": "ms-277 dist=0.9"
+  },
+  {
+   "t": 1789930716329,
+   "kind": "waypoint",
+   "detail": "ms-278 dist=1.4"
+  },
+  {
+   "t": 1789930723043,
+   "kind": "waypoint",
+   "detail": "ms-279 dist=0.1"
+  },
+  {
+   "t": 1789930727557,
+   "kind": "waypoint",
+   "detail": "ms-280 dist=0.6"
+  },
+  {
+   "t": 1789930732044,
+   "kind": "waypoint",
+   "detail": "ms-281 dist=1.0"
+  }
+ ],
+ "anomalies": [],
+ "opCounts": {
+  "pause": 6,
+  "viewSwitch": 6,
+  "blur": 6,
+  "entrySwitch": 0,
+  "fatalPlanned": 6
+ },
+ "steering": {
+  "wpIdx": 44,
+  "wpHits": 339,
+  "meters": 1206.3265979629352,
+  "lastFeet": [
+   -65.11856079101562,
+   22.74313735961914
+  ],
+  "stallS": 0,
+  "lastMoveT": 1789930736364,
+  "walkingT": 0,
+  "lastStallLogged": 0
+ },
+ "finishedAt": "2026-09-20T18:58:59.138Z",
+ "durationS": 2103,
+ "exitRules": {
+  "wallDurationS": 2103,
+  "routeWaypointsHit": 339,
+  "routeWaypointsTotal": 97,
+  "routeCompletionFrac": 3.495,
+  "metersWalked": 1206.3,
+  "transitions": {
+   "pause": 6,
+   "viewSwitch": 6,
+   "blur": 6,
+   "entrySwitch": 0,
+   "fatalPlanned": 6
+  },
+  "anomalyCount": 0,
+  "anomalies": []
+ }
+}

@@ -1,0 +1,137 @@
+{
+ "label": "smoke-tloop3",
+ "base": "http://127.0.0.1:5420",
+ "entry": "templeFront",
+ "config": "default",
+ "track": "templeLoop",
+ "minutes": 4,
+ "gameUrl": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=templeFront",
+ "startedAt": "2026-09-20T18:18:24.650Z",
+ "env": {
+  "renderer": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+  "viewport": "1280x900",
+  "gcExposed": true,
+  "host": "linux arm64",
+  "note": "dev-server long-run; all numbers software-baseline"
+ },
+ "segments": [
+  {
+   "idx": 0,
+   "file": "segments/seg-000.json",
+   "gapStats": {
+    "count": 978,
+    "p50": 166.6,
+    "p99": 199.9,
+    "max": 6683.1
+   },
+   "heap": {
+    "beforeGc": 83854904,
+    "afterGc": 82688853,
+    "gcMs": 14
+   },
+   "frames": {
+    "total": 979,
+    "g250": 2,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6683.1
+   }
+  },
+  {
+   "idx": "final",
+   "file": "segments/seg-final.json",
+   "frames": {
+    "total": 1857,
+    "g250": 2,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6683.1
+   }
+  }
+ ],
+ "events": [
+  {
+   "t": 1789928304650,
+   "kind": "navigate",
+   "detail": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=templeFront"
+  },
+  {
+   "t": 1789928305619,
+   "kind": "console-error",
+   "detail": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  },
+  {
+   "t": 1789928314420,
+   "kind": "ready",
+   "detail": "tris=694430 feet=[230.9276123046875,0.020000028610229537,47.65022277832031]"
+  },
+  {
+   "t": 1789928316135,
+   "kind": "track",
+   "detail": "templeLoop: 2 waypoints"
+  },
+  {
+   "t": 1789928316516,
+   "kind": "waypoint",
+   "detail": "tloop-301 dist=0.0"
+  },
+  {
+   "t": 1789928318436,
+   "kind": "waypoint",
+   "detail": "tloop-302 dist=1.2 — track complete"
+  },
+  {
+   "t": 1789928412371,
+   "kind": "slowDriverCall",
+   "detail": "pv took 6182ms"
+  },
+  {
+   "t": 1789928436875,
+   "kind": "segment",
+   "detail": "#0 samples=54 maxGap=6683.1ms p99=199.9ms heapAfterGc=82688853 wp=2/2"
+  },
+  {
+   "t": 1789928501949,
+   "kind": "slowDriverCall",
+   "detail": "pv took 5744ms"
+  }
+ ],
+ "anomalies": [],
+ "opCounts": {
+  "pause": 2,
+  "viewSwitch": 2,
+  "blur": 2,
+  "entrySwitch": 0,
+  "fatalPlanned": 0
+ },
+ "steering": {
+  "wpIdx": 2,
+  "wpHits": 2,
+  "meters": 0,
+  "lastFeet": [
+   -127.81698608398438,
+   27.056997299194336
+  ],
+  "stallS": 0,
+  "lastMoveT": 1789928316974,
+  "walkingT": 0
+ },
+ "finishedAt": "2026-09-20T18:22:25.953Z",
+ "durationS": 241.3,
+ "exitRules": {
+  "wallDurationS": 241.3,
+  "routeWaypointsHit": 2,
+  "routeWaypointsTotal": 2,
+  "routeCompletionFrac": 1,
+  "metersWalked": 0,
+  "transitions": {
+   "pause": 2,
+   "viewSwitch": 2,
+   "blur": 2,
+   "entrySwitch": 0,
+   "fatalPlanned": 0
+  },
+  "anomalyCount": 0,
+  "anomalies": []
+ }
+}

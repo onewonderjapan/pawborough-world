@@ -1,0 +1,1432 @@
+{
+ "generatedAt": "2026-09-20T19:31:55.356Z",
+ "env": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+ "runs": [
+  {
+   "run": "s1-mainAB-default-cold",
+   "label": "s1-mainAB-default-cold",
+   "entry": "mainStreet",
+   "config": "default",
+   "track": "mainAB",
+   "env": {
+    "renderer": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+    "viewport": "1280x900",
+    "gcExposed": true,
+    "host": "linux arm64",
+    "note": "dev-server long-run; all numbers software-baseline"
+   },
+   "startedAt": "2026-09-20T17:17:08.815Z",
+   "durationS": 2100.1,
+   "route": {
+    "waypointsHit": 266,
+    "waypointsTotal": 267,
+    "completionFrac": 0.996,
+    "metersWalked": 2440.1
+   },
+   "transitions": {
+    "pause": 9,
+    "viewSwitch": 9,
+    "blur": 9,
+    "entrySwitch": 0,
+    "fatalPlanned": 0
+   },
+   "stalls": {
+    "totalFrames": 42732,
+    "gapsOver250ms": 2796,
+    "buckets": {
+     "16-250ms": 39936,
+     "250ms-1s": 2793,
+     "1-5s": 2,
+     ">5s": 1
+    },
+    "gapP50ms": 16.7,
+    "gapP99ms": 583.2,
+    "gapMaxMs": 5733.1,
+    "top10": [
+     {
+      "gapMs": 5733.1,
+      "at": "17:17:08",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T17:17:21.966Z"
+      },
+      "offsetIntoRunS": 9
+     },
+     {
+      "gapMs": 4283.2,
+      "at": "17:17:08",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T17:17:21.966Z"
+      },
+      "offsetIntoRunS": 13
+     },
+     {
+      "gapMs": 1366.5,
+      "at": "17:17:09",
+      "seg": 5,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T17:27:42.430Z"
+      },
+      "offsetIntoRunS": 732
+     },
+     {
+      "gapMs": 916.8,
+      "at": "17:17:09",
+      "seg": 5,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T17:27:42.430Z"
+      },
+      "offsetIntoRunS": 732
+     },
+     {
+      "gapMs": 833.4,
+      "at": "17:17:08",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T17:17:21.966Z"
+      },
+      "offsetIntoRunS": 23
+     },
+     {
+      "gapMs": 800.1,
+      "at": "17:17:09",
+      "seg": 2,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T17:21:27.036Z"
+      },
+      "offsetIntoRunS": 352
+     },
+     {
+      "gapMs": 783.4,
+      "at": "17:17:09",
+      "seg": 5,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T17:27:42.430Z"
+      },
+      "offsetIntoRunS": 735
+     },
+     {
+      "gapMs": 783.3,
+      "at": "17:17:09",
+      "seg": 4,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T17:25:40.829Z"
+      },
+      "offsetIntoRunS": 621
+     },
+     {
+      "gapMs": 783.3,
+      "at": "17:17:09",
+      "seg": 4,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T17:25:40.829Z"
+      },
+      "offsetIntoRunS": 623
+     },
+     {
+      "gapMs": 766.7,
+      "at": "17:17:08",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T17:17:21.966Z"
+      },
+      "offsetIntoRunS": 27
+     }
+    ],
+    "meanFpsSoftwareBaseline": 20.5
+   },
+   "heap": {
+    "plot": [
+     {
+      "tMin": 0.2,
+      "afterGcMB": 79.1,
+      "beforeGcMB": 80.23
+     },
+     {
+      "tMin": 2.3,
+      "afterGcMB": 79.18,
+      "beforeGcMB": 80.79
+     },
+     {
+      "tMin": 4.3,
+      "afterGcMB": 79.33,
+      "beforeGcMB": 81.03
+     },
+     {
+      "tMin": 6.3,
+      "afterGcMB": 79.36,
+      "beforeGcMB": 80.63
+     },
+     {
+      "tMin": 8.5,
+      "afterGcMB": 79.39,
+      "beforeGcMB": 80.94
+     },
+     {
+      "tMin": 10.6,
+      "afterGcMB": 79.43,
+      "beforeGcMB": 80.41
+     },
+     {
+      "tMin": 12.6,
+      "afterGcMB": 79.44,
+      "beforeGcMB": 80.8
+     },
+     {
+      "tMin": 14.6,
+      "afterGcMB": 79.47,
+      "beforeGcMB": 81.28
+     },
+     {
+      "tMin": 16.7,
+      "afterGcMB": 79.47,
+      "beforeGcMB": 81.21
+     },
+     {
+      "tMin": 18.7,
+      "afterGcMB": 79.5,
+      "beforeGcMB": 82.09
+     },
+     {
+      "tMin": 20.7,
+      "afterGcMB": 79.5,
+      "beforeGcMB": 81.52
+     },
+     {
+      "tMin": 22.8,
+      "afterGcMB": 79.55,
+      "beforeGcMB": 80.75
+     },
+     {
+      "tMin": 24.8,
+      "afterGcMB": 80.6,
+      "beforeGcMB": 80.6
+     },
+     {
+      "tMin": 26.8,
+      "afterGcMB": 81.14,
+      "beforeGcMB": 81.14
+     },
+     {
+      "tMin": 28.8,
+      "afterGcMB": 81.27,
+      "beforeGcMB": 81.27
+     },
+     {
+      "tMin": 30.8,
+      "afterGcMB": 80.54,
+      "beforeGcMB": 80.54
+     },
+     {
+      "tMin": 32.8,
+      "afterGcMB": 81.18,
+      "beforeGcMB": 81.18
+     }
+    ],
+    "slopePerHourMB": 3.745,
+    "segmentsWithoutHeap": 1,
+    "firstAfterGcMB": 79.1,
+    "lastAfterGcMB": 81.18
+   },
+   "resources": {
+    "trianglesValues": [
+     694430
+    ],
+    "trianglesExpected": 694430,
+    "trianglesLocked": true,
+    "first": {
+     "triangles": 694430,
+     "geoms": 496,
+     "mats": 476,
+     "texs": 346
+    },
+    "last": {
+     "triangles": 694430,
+     "geoms": 496,
+     "mats": 476,
+     "texs": 346
+    }
+   },
+   "anomalyCount": 7,
+   "anomalies": [
+    {
+     "t": 1789926084492,
+     "kind": "capsuleBelowFloor",
+     "detail": "feet=[133.94403076171875,-17.423459243774413,21.46315574645996] (fall or under-geometry)"
+    },
+    {
+     "t": 1789926116338,
+     "kind": "capsuleBelowFloor",
+     "detail": "feet=[97.5324935913086,-16451.530078125,11.429160118103027] (fall or under-geometry)"
+    },
+    {
+     "t": 1789926235108,
+     "kind": "capsuleBelowFloor",
+     "detail": "feet=[129.06344604492188,-109222.7078125,19.763288497924805] (fall or under-geometry)"
+    },
+    {
+     "t": 1789926356646,
+     "kind": "capsuleBelowFloor",
+     "detail": "feet=[122.40988159179688,-289473.45,26.125579833984375] (fall or under-geometry)"
+    },
+    {
+     "t": 1789926477387,
+     "kind": "capsuleBelowFloor",
+     "detail": "feet=[124.26310729980469,-385007.8875,20.127498626708984] (fall or under-geometry)"
+    },
+    {
+     "t": 1789926596899,
+     "kind": "capsuleBelowFloor",
+     "detail": "feet=[121.40119934082031,-562372.7,25.377790451049805] (fall or under-geometry)"
+    },
+    {
+     "t": 1789926717628,
+     "kind": "capsuleBelowFloor",
+     "detail": "feet=[123.6655044555664,-657884.2,19.641597747802734] (fall or under-geometry)"
+    }
+   ],
+   "segments": [
+    {
+     "idx": 0,
+     "gapStats": {
+      "count": 409,
+      "p50": 16.7,
+      "p99": 749.9,
+      "max": 5733.1
+     },
+     "heap": {
+      "beforeGc": 84123580,
+      "afterGc": 82947448,
+      "gcMs": 12.4
+     }
+    },
+    {
+     "idx": 1,
+     "gapStats": {
+      "count": 285,
+      "p50": 449.9,
+      "p99": 700,
+      "max": 700.1
+     },
+     "heap": {
+      "beforeGc": 84710778,
+      "afterGc": 83026404,
+      "gcMs": 24.4
+     }
+    },
+    {
+     "idx": 2,
+     "gapStats": {
+      "count": 512,
+      "p50": 133.3,
+      "p99": 700,
+      "max": 800.1
+     },
+     "heap": {
+      "beforeGc": 84965200,
+      "afterGc": 83184992,
+      "gcMs": 24.9
+     }
+    },
+    {
+     "idx": 3,
+     "gapStats": {
+      "count": 511,
+      "p50": 383.2,
+      "p99": 566.7,
+      "max": 566.8
+     },
+     "heap": {
+      "beforeGc": 84547287,
+      "afterGc": 83213240,
+      "gcMs": 31.7
+     }
+    },
+    {
+     "idx": 4,
+     "gapStats": {
+      "count": 385,
+      "p50": 283.3,
+      "p99": 766.6,
+      "max": 783.3
+     },
+     "heap": {
+      "beforeGc": 84868533,
+      "afterGc": 83242036,
+      "gcMs": 26.6
+     }
+    },
+    {
+     "idx": 5,
+     "gapStats": {
+      "count": 504,
+      "p50": 250,
+      "p99": 666.6,
+      "max": 1366.5
+     },
+     "heap": {
+      "beforeGc": 84313885,
+      "afterGc": 83288828,
+      "gcMs": 26.1
+     }
+    },
+    {
+     "idx": 6,
+     "gapStats": {
+      "count": 363,
+      "p50": 316.7,
+      "p99": 616.7,
+      "max": 633.3
+     },
+     "heap": {
+      "beforeGc": 84721581,
+      "afterGc": 83296916,
+      "gcMs": 28.8
+     }
+    },
+    {
+     "idx": 7,
+     "gapStats": {
+      "count": 525,
+      "p50": 233.4,
+      "p99": 683.4,
+      "max": 766.7
+     },
+     "heap": {
+      "beforeGc": 85228078,
+      "afterGc": 83331268,
+      "gcMs": 23.8
+     }
+    },
+    {
+     "idx": 8,
+     "gapStats": {
+      "count": 332,
+      "p50": 400,
+      "p99": 600,
+      "max": 633.3
+     },
+     "heap": {
+      "beforeGc": 85158701,
+      "afterGc": 83334144,
+      "gcMs": 29.8
+     }
+    },
+    {
+     "idx": 9,
+     "gapStats": {
+      "count": 468,
+      "p50": 433.3,
+      "p99": 550.1,
+      "max": 633.3
+     },
+     "heap": {
+      "beforeGc": 86077499,
+      "afterGc": 83363316,
+      "gcMs": 25.7
+     }
+    },
+    {
+     "idx": 10,
+     "gapStats": {
+      "count": 256,
+      "p50": 483.3,
+      "p99": 566.7,
+      "max": 583.4
+     },
+     "heap": {
+      "beforeGc": 85476340,
+      "afterGc": 83364928,
+      "gcMs": 29.2
+     }
+    },
+    {
+     "idx": 11,
+     "gapStats": {
+      "count": 2099,
+      "p50": 16.7,
+      "p99": 399.9,
+      "max": 416.6
+     },
+     "heap": {
+      "beforeGc": 84676755,
+      "afterGc": 83415412,
+      "gcMs": 28.5
+     }
+    },
+    {
+     "idx": 12,
+     "gapStats": {
+      "count": 7219,
+      "p50": 16.7,
+      "p99": 16.8,
+      "max": 16.8
+     },
+     "heap": {
+      "beforeGc": 84510558,
+      "afterGc": 84510558,
+      "gcMs": 35.1
+     }
+    },
+    {
+     "idx": 13,
+     "gapStats": {
+      "count": 7216,
+      "p50": 16.7,
+      "p99": 16.8,
+      "max": 66.7
+     },
+     "heap": {
+      "beforeGc": 85081553,
+      "afterGc": 85081553,
+      "gcMs": 35
+     }
+    },
+    {
+     "idx": 14,
+     "gapStats": {
+      "count": 7220,
+      "p50": 16.7,
+      "p99": 16.8,
+      "max": 33.4
+     },
+     "heap": {
+      "beforeGc": 85220907,
+      "afterGc": 85220907,
+      "gcMs": 30.7
+     }
+    },
+    {
+     "idx": 15,
+     "gapStats": {
+      "count": 7210,
+      "p50": 16.7,
+      "p99": 16.8,
+      "max": 66.7
+     },
+     "heap": {
+      "beforeGc": 84450732,
+      "afterGc": 84450732,
+      "gcMs": 31.2
+     }
+    },
+    {
+     "idx": 16,
+     "gapStats": {
+      "count": 7218,
+      "p50": 16.7,
+      "p99": 16.8,
+      "max": 33.4
+     },
+     "heap": {
+      "beforeGc": 85128528,
+      "afterGc": 85128528,
+      "gcMs": 30.8
+     }
+    },
+    {
+     "idx": "final",
+     "gapStats": null,
+     "heap": null
+    }
+   ]
+  },
+  {
+   "run": "s2-laneA-allon-cold",
+   "label": "s2-laneA-allon-cold",
+   "entry": "laneA",
+   "config": "allOn",
+   "track": "laneALoop",
+   "env": {
+    "renderer": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+    "viewport": "1280x900",
+    "gcExposed": true,
+    "host": "linux arm64",
+    "note": "dev-server long-run; all numbers software-baseline"
+   },
+   "startedAt": "2026-09-20T18:23:56.140Z",
+   "durationS": 2103,
+   "route": {
+    "waypointsHit": 339,
+    "waypointsTotal": 97,
+    "completionFrac": 3.495,
+    "metersWalked": 1206.3
+   },
+   "transitions": {
+    "pause": 6,
+    "viewSwitch": 6,
+    "blur": 6,
+    "entrySwitch": 0,
+    "fatalPlanned": 6
+   },
+   "stalls": {
+    "totalFrames": 3118,
+    "gapsOver250ms": 2614,
+    "buckets": {
+     "16-250ms": 504,
+     "250ms-1s": 2586,
+     "1-5s": 28,
+     ">5s": 0
+    },
+    "gapP50ms": 500.1,
+    "gapP99ms": 933.3,
+    "gapMaxMs": 4849.7,
+    "top10": [
+     {
+      "gapMs": 4849.7,
+      "at": "18:23:56",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T18:24:06.640Z"
+      },
+      "offsetIntoRunS": 9
+     },
+     {
+      "gapMs": 4733.1,
+      "at": "18:23:56",
+      "seg": 4,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T18:32:14.382Z"
+      },
+      "offsetIntoRunS": 9
+     },
+     {
+      "gapMs": 4716.5,
+      "at": "18:23:56",
+      "seg": 12,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T18:48:47.243Z"
+      },
+      "offsetIntoRunS": 9
+     },
+     {
+      "gapMs": 4683.2,
+      "at": "18:23:56",
+      "seg": 2,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T18:28:10.961Z"
+      },
+      "offsetIntoRunS": 8
+     },
+     {
+      "gapMs": 4683.1,
+      "at": "18:23:56",
+      "seg": 14,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T18:52:50.634Z"
+      },
+      "offsetIntoRunS": 9
+     },
+     {
+      "gapMs": 4666.4,
+      "at": "18:23:56",
+      "seg": 7,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T18:38:39.493Z"
+      },
+      "offsetIntoRunS": 9
+     },
+     {
+      "gapMs": 4633.1,
+      "at": "18:23:56",
+      "seg": 9,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T18:42:43.194Z"
+      },
+      "offsetIntoRunS": 8
+     },
+     {
+      "gapMs": 3749.9,
+      "at": "18:23:56",
+      "seg": 14,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T18:52:50.634Z"
+      },
+      "offsetIntoRunS": 27
+     },
+     {
+      "gapMs": 3699.8,
+      "at": "18:23:56",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T18:24:06.640Z"
+      },
+      "offsetIntoRunS": 25
+     },
+     {
+      "gapMs": 3683.1,
+      "at": "18:23:56",
+      "seg": 10,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T18:44:44.613Z"
+      },
+      "offsetIntoRunS": 27
+     }
+    ],
+    "meanFpsSoftwareBaseline": 2.1
+   },
+   "heap": {
+    "plot": [
+     {
+      "tMin": 0.2,
+      "afterGcMB": 81.3,
+      "beforeGcMB": 83
+     },
+     {
+      "tMin": 2.2,
+      "afterGcMB": 81.4,
+      "beforeGcMB": 82.74
+     },
+     {
+      "tMin": 4.2,
+      "afterGcMB": 83.1,
+      "beforeGcMB": 83.42
+     },
+     {
+      "tMin": 6.3,
+      "afterGcMB": 83.17,
+      "beforeGcMB": 84.56
+     },
+     {
+      "tMin": 8.3,
+      "afterGcMB": 83.74,
+      "beforeGcMB": 116.48
+     },
+     {
+      "tMin": 10.7,
+      "afterGcMB": 83.1,
+      "beforeGcMB": 84.4
+     },
+     {
+      "tMin": 12.7,
+      "afterGcMB": 83.13,
+      "beforeGcMB": 84.16
+     },
+     {
+      "tMin": 14.7,
+      "afterGcMB": 84.3,
+      "beforeGcMB": 85.13
+     },
+     {
+      "tMin": 16.8,
+      "afterGcMB": 84.33,
+      "beforeGcMB": 85.15
+     },
+     {
+      "tMin": 18.8,
+      "afterGcMB": 83.8,
+      "beforeGcMB": 121.06
+     },
+     {
+      "tMin": 20.8,
+      "afterGcMB": 84.35,
+      "beforeGcMB": 85.22
+     },
+     {
+      "tMin": 22.8,
+      "afterGcMB": 84.37,
+      "beforeGcMB": 85.38
+     },
+     {
+      "tMin": 24.8,
+      "afterGcMB": 84.33,
+      "beforeGcMB": 85.21
+     },
+     {
+      "tMin": 26.9,
+      "afterGcMB": 84.35,
+      "beforeGcMB": 85.23
+     },
+     {
+      "tMin": 28.9,
+      "afterGcMB": 84.63,
+      "beforeGcMB": 129.44
+     },
+     {
+      "tMin": 31,
+      "afterGcMB": 82.66,
+      "beforeGcMB": 84.71
+     }
+    ],
+    "slopePerHourMB": 4.268,
+    "segmentsWithoutHeap": 1,
+    "firstAfterGcMB": 81.3,
+    "lastAfterGcMB": 82.66
+   },
+   "resources": {
+    "trianglesValues": [
+     708066
+    ],
+    "trianglesExpected": 708066,
+    "trianglesLocked": true,
+    "first": {
+     "triangles": 708066,
+     "geoms": 648,
+     "mats": 563,
+     "texs": 518
+    },
+    "last": {
+     "triangles": 708066,
+     "geoms": 648,
+     "mats": 563,
+     "texs": 518
+    }
+   },
+   "anomalyCount": 0,
+   "anomalies": [],
+   "segments": [
+    {
+     "idx": 0,
+     "gapStats": {
+      "count": 272,
+      "p50": 516.6,
+      "p99": 2633.3,
+      "max": 4849.7
+     },
+     "heap": {
+      "beforeGc": 87036130,
+      "afterGc": 85252830,
+      "gcMs": 7.7
+     }
+    },
+    {
+     "idx": 1,
+     "gapStats": {
+      "count": 261,
+      "p50": 466.7,
+      "p99": 583.3,
+      "max": 583.3
+     },
+     "heap": {
+      "beforeGc": 86760186,
+      "afterGc": 85349410,
+      "gcMs": 8.9
+     }
+    },
+    {
+     "idx": 2,
+     "gapStats": {
+      "count": 128,
+      "p50": 183.3,
+      "p99": 3599.8,
+      "max": 4683.2
+     },
+     "heap": {
+      "beforeGc": 87471788,
+      "afterGc": 87140069,
+      "gcMs": 6.8
+     }
+    },
+    {
+     "idx": 3,
+     "gapStats": {
+      "count": 215,
+      "p50": 550.1,
+      "p99": 1333.2,
+      "max": 1416.6
+     },
+     "heap": {
+      "beforeGc": 88668290,
+      "afterGc": 87214377,
+      "gcMs": 9.8
+     }
+    },
+    {
+     "idx": 4,
+     "gapStats": {
+      "count": 17,
+      "p50": 416.7,
+      "p99": 4733.1,
+      "max": 4733.1
+     },
+     "heap": {
+      "beforeGc": 122143343,
+      "afterGc": 87811393,
+      "gcMs": 10.9
+     }
+    },
+    {
+     "idx": 5,
+     "gapStats": {
+      "count": 259,
+      "p50": 533.3,
+      "p99": 1900,
+      "max": 2316.6
+     },
+     "heap": {
+      "beforeGc": 88495803,
+      "afterGc": 87141453,
+      "gcMs": 7.7
+     }
+    },
+    {
+     "idx": 6,
+     "gapStats": {
+      "count": 264,
+      "p50": 466.6,
+      "p99": 583.3,
+      "max": 583.4
+     },
+     "heap": {
+      "beforeGc": 88251922,
+      "afterGc": 87167165,
+      "gcMs": 9.2
+     }
+    },
+    {
+     "idx": 7,
+     "gapStats": {
+      "count": 175,
+      "p50": 400,
+      "p99": 3666.6,
+      "max": 4666.4
+     },
+     "heap": {
+      "beforeGc": 89268270,
+      "afterGc": 88392693,
+      "gcMs": 6.5
+     }
+    },
+    {
+     "idx": 8,
+     "gapStats": {
+      "count": 233,
+      "p50": 533.4,
+      "p99": 616.6,
+      "max": 616.7
+     },
+     "heap": {
+      "beforeGc": 89281342,
+      "afterGc": 88429289,
+      "gcMs": 7.2
+     }
+    },
+    {
+     "idx": 9,
+     "gapStats": {
+      "count": 49,
+      "p50": 283.3,
+      "p99": 4633.1,
+      "max": 4633.1
+     },
+     "heap": {
+      "beforeGc": 126937355,
+      "afterGc": 87867432,
+      "gcMs": 11.7
+     }
+    },
+    {
+     "idx": 10,
+     "gapStats": {
+      "count": 244,
+      "p50": 550,
+      "p99": 1399.9,
+      "max": 3683.1
+     },
+     "heap": {
+      "beforeGc": 89356161,
+      "afterGc": 88446504,
+      "gcMs": 8.7
+     }
+    },
+    {
+     "idx": 11,
+     "gapStats": {
+      "count": 266,
+      "p50": 466.6,
+      "p99": 583.3,
+      "max": 583.4
+     },
+     "heap": {
+      "beforeGc": 89528020,
+      "afterGc": 88470304,
+      "gcMs": 8.5
+     }
+    },
+    {
+     "idx": 12,
+     "gapStats": {
+      "count": 196,
+      "p50": 333.3,
+      "p99": 3616.6,
+      "max": 4716.5
+     },
+     "heap": {
+      "beforeGc": 89353567,
+      "afterGc": 88430105,
+      "gcMs": 8.1
+     }
+    },
+    {
+     "idx": 13,
+     "gapStats": {
+      "count": 224,
+      "p50": 550,
+      "p99": 616.6,
+      "max": 616.8
+     },
+     "heap": {
+      "beforeGc": 89372553,
+      "afterGc": 88442965,
+      "gcMs": 9.9
+     }
+    },
+    {
+     "idx": 14,
+     "gapStats": {
+      "count": 67,
+      "p50": 233.3,
+      "p99": 4683.1,
+      "max": 4683.1
+     },
+     "heap": {
+      "beforeGc": 135728020,
+      "afterGc": 88743481,
+      "gcMs": 10.4
+     }
+    },
+    {
+     "idx": 15,
+     "gapStats": {
+      "count": 248,
+      "p50": 550,
+      "p99": 833.2,
+      "max": 2683.2
+     },
+     "heap": {
+      "beforeGc": 88822901,
+      "afterGc": 86678881,
+      "gcMs": 7.1
+     }
+    },
+    {
+     "idx": "final",
+     "gapStats": null,
+     "heap": null
+    }
+   ]
+  },
+  {
+   "run": "s3-entries-pv-blur",
+   "label": "s3-entries-pv-blur",
+   "entry": "templeFront",
+   "config": "default",
+   "track": "templeLoop",
+   "env": {
+    "renderer": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+    "viewport": "1280x900",
+    "gcExposed": true,
+    "host": "linux arm64",
+    "note": "dev-server long-run; all numbers software-baseline"
+   },
+   "startedAt": "2026-09-20T19:00:35.119Z",
+   "durationS": 1578.5,
+   "route": {
+    "waypointsHit": 2,
+    "waypointsTotal": 2,
+    "completionFrac": 1,
+    "metersWalked": 0
+   },
+   "transitions": {
+    "pause": 5,
+    "viewSwitch": 5,
+    "blur": 5,
+    "entrySwitch": 20,
+    "fatalPlanned": 0
+   },
+   "stalls": {
+    "totalFrames": 2205,
+    "gapsOver250ms": 711,
+    "buckets": {
+     "16-250ms": 1494,
+     "250ms-1s": 702,
+     "1-5s": 4,
+     ">5s": 5
+    },
+    "gapP50ms": 166.7,
+    "gapP99ms": 750,
+    "gapMaxMs": 6783,
+    "top10": [
+     {
+      "gapMs": 6783,
+      "at": "19:00:35",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T19:00:46.672Z"
+      },
+      "offsetIntoRunS": 10
+     },
+     {
+      "gapMs": 5449.8,
+      "at": "19:00:35",
+      "seg": 6,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T19:13:52.678Z"
+      },
+      "offsetIntoRunS": 9
+     },
+     {
+      "gapMs": 5383.2,
+      "at": "19:00:35",
+      "seg": 8,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T19:18:53.117Z"
+      },
+      "offsetIntoRunS": 8
+     },
+     {
+      "gapMs": 5249.7,
+      "at": "19:00:35",
+      "seg": 2,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T19:04:48.573Z"
+      },
+      "offsetIntoRunS": 8
+     },
+     {
+      "gapMs": 5083.1,
+      "at": "19:00:35",
+      "seg": 4,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T19:08:52.270Z"
+      },
+      "offsetIntoRunS": 8
+     },
+     {
+      "gapMs": 4183.2,
+      "at": "19:00:35",
+      "seg": 2,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T19:04:48.573Z"
+      },
+      "offsetIntoRunS": 13
+     },
+     {
+      "gapMs": 4183.2,
+      "at": "19:00:35",
+      "seg": 6,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T19:13:52.678Z"
+      },
+      "offsetIntoRunS": 13
+     },
+     {
+      "gapMs": 4166.5,
+      "at": "19:00:35",
+      "seg": 4,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T19:08:52.270Z"
+      },
+      "offsetIntoRunS": 12
+     },
+     {
+      "gapMs": 4166.5,
+      "at": "19:00:35",
+      "seg": 8,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T19:18:53.117Z"
+      },
+      "offsetIntoRunS": 13
+     },
+     {
+      "gapMs": 800,
+      "at": "19:00:35",
+      "seg": 2,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T19:04:48.573Z"
+      },
+      "offsetIntoRunS": 13
+     }
+    ],
+    "meanFpsSoftwareBaseline": 2.8
+   },
+   "heap": {
+    "plot": [
+     {
+      "tMin": 0.2,
+      "afterGcMB": 78.83,
+      "beforeGcMB": 79.9
+     },
+     {
+      "tMin": 2.2,
+      "afterGcMB": 78.83,
+      "beforeGcMB": 80
+     },
+     {
+      "tMin": 4.2,
+      "afterGcMB": 129.95,
+      "beforeGcMB": 160.8
+     },
+     {
+      "tMin": 6.2,
+      "afterGcMB": 86.04,
+      "beforeGcMB": 86.41
+     },
+     {
+      "tMin": 8.3,
+      "afterGcMB": 85.85,
+      "beforeGcMB": 140.22
+     },
+     {
+      "tMin": 11.3,
+      "afterGcMB": 85.83,
+      "beforeGcMB": 86.52
+     },
+     {
+      "tMin": 13.3,
+      "afterGcMB": 86.11,
+      "beforeGcMB": 88.03
+     },
+     {
+      "tMin": 16.3,
+      "afterGcMB": 85.82,
+      "beforeGcMB": 86.64
+     },
+     {
+      "tMin": 18.3,
+      "afterGcMB": 85.83,
+      "beforeGcMB": 134.93
+     },
+     {
+      "tMin": 21.3,
+      "afterGcMB": 85.82,
+      "beforeGcMB": 86.61
+     }
+    ],
+    "slopePerHourMB": -18.098,
+    "segmentsWithoutHeap": 1,
+    "firstAfterGcMB": 78.83,
+    "lastAfterGcMB": 85.82
+   },
+   "resources": {
+    "trianglesValues": [
+     694430
+    ],
+    "trianglesExpected": 694430,
+    "trianglesLocked": true,
+    "first": {
+     "triangles": 694430,
+     "geoms": 496,
+     "mats": 476,
+     "texs": 346
+    },
+    "last": {
+     "triangles": 694430,
+     "geoms": 496,
+     "mats": 476,
+     "texs": 346
+    }
+   },
+   "anomalyCount": 0,
+   "anomalies": [],
+   "segments": [
+    {
+     "idx": 0,
+     "gapStats": {
+      "count": 743,
+      "p50": 166.6,
+      "p99": 183.4,
+      "max": 6783
+     },
+     "heap": {
+      "beforeGc": 83776428,
+      "afterGc": 82655042,
+      "gcMs": 7
+     }
+    },
+    {
+     "idx": 1,
+     "gapStats": {
+      "count": 736,
+      "p50": 166.6,
+      "p99": 183.4,
+      "max": 183.4
+     },
+     "heap": {
+      "beforeGc": 83882284,
+      "afterGc": 82662990,
+      "gcMs": 7.9
+     }
+    },
+    {
+     "idx": 2,
+     "gapStats": {
+      "count": 20,
+      "p50": 716.6,
+      "p99": 5249.7,
+      "max": 5249.7
+     },
+     "heap": {
+      "beforeGc": 168608400,
+      "afterGc": 136265113,
+      "gcMs": 21.2
+     }
+    },
+    {
+     "idx": 3,
+     "gapStats": {
+      "count": 168,
+      "p50": 733.2,
+      "p99": 750,
+      "max": 750
+     },
+     "heap": {
+      "beforeGc": 90612380,
+      "afterGc": 90220631,
+      "gcMs": 7.9
+     }
+    },
+    {
+     "idx": 4,
+     "gapStats": {
+      "count": 12,
+      "p50": 733.2,
+      "p99": 5083.1,
+      "max": 5083.1
+     },
+     "heap": {
+      "beforeGc": 147029109,
+      "afterGc": 90025267,
+      "gcMs": 9.4
+     }
+    },
+    {
+     "idx": 5,
+     "gapStats": {
+      "count": 167,
+      "p50": 733.3,
+      "p99": 750.1,
+      "max": 766.6
+     },
+     "heap": {
+      "beforeGc": 90720336,
+      "afterGc": 89994427,
+      "gcMs": 7.2
+     }
+    },
+    {
+     "idx": 6,
+     "gapStats": {
+      "count": 13,
+      "p50": 716.6,
+      "p99": 5449.8,
+      "max": 5449.8
+     },
+     "heap": {
+      "beforeGc": 92303156,
+      "afterGc": 90295343,
+      "gcMs": 6.9
+     }
+    },
+    {
+     "idx": 7,
+     "gapStats": {
+      "count": 167,
+      "p50": 733.3,
+      "p99": 750.1,
+      "max": 766.6
+     },
+     "heap": {
+      "beforeGc": 90845784,
+      "afterGc": 89992027,
+      "gcMs": 7.5
+     }
+    },
+    {
+     "idx": 8,
+     "gapStats": {
+      "count": 12,
+      "p50": 733.3,
+      "p99": 5383.2,
+      "max": 5383.2
+     },
+     "heap": {
+      "beforeGc": 141488125,
+      "afterGc": 90001711,
+      "gcMs": 12
+     }
+    },
+    {
+     "idx": 9,
+     "gapStats": {
+      "count": 167,
+      "p50": 733.3,
+      "p99": 750,
+      "max": 750.1
+     },
+     "heap": {
+      "beforeGc": 90814360,
+      "afterGc": 89993943,
+      "gcMs": 7.8
+     }
+    },
+    {
+     "idx": "final",
+     "gapStats": null,
+     "heap": null
+    }
+   ]
+  }
+ ]
+}

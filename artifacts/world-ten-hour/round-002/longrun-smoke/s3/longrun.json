@@ -1,0 +1,263 @@
+{
+ "label": "smoke3",
+ "base": "http://127.0.0.1:5420",
+ "entry": "mainStreet",
+ "config": "default",
+ "track": "mainAB",
+ "minutes": 3,
+ "gameUrl": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=mainStreet",
+ "startedAt": "2026-09-20T17:12:48.913Z",
+ "env": {
+  "renderer": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+  "viewport": "1280x900",
+  "gcExposed": true,
+  "host": "linux arm64",
+  "note": "dev-server long-run; all numbers software-baseline"
+ },
+ "segments": [
+  {
+   "idx": 0,
+   "file": "segments/seg-0-1.json",
+   "gapStats": {
+    "count": 355,
+    "p50": 16.7,
+    "p99": 983.3,
+    "max": 5699.7
+   },
+   "heap": {
+    "beforeGc": 84821798,
+    "afterGc": 82936864,
+    "gcMs": 16.9
+   },
+   "frames": {
+    "total": 356,
+    "g250": 130,
+    "g1000": 3,
+    "g5000": 1,
+    "maxGapMs": 5699.7
+   }
+  },
+  {
+   "idx": "final",
+   "file": "segments/seg-final.json",
+   "frames": {
+    "total": 694,
+    "g250": 243,
+    "g1000": 4,
+    "g5000": 1,
+    "maxGapMs": 5699.7
+   }
+  }
+ ],
+ "events": [
+  {
+   "t": 1789924368913,
+   "kind": "navigate",
+   "detail": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=mainStreet"
+  },
+  {
+   "t": 1789924369870,
+   "kind": "console-error",
+   "detail": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  },
+  {
+   "t": 1789924377676,
+   "kind": "ready",
+   "detail": "tris=694430 feet=[230.9276123046875,0.020000028610229537,47.65022277832031]"
+  },
+  {
+   "t": 1789924381753,
+   "kind": "track",
+   "detail": "mainAB: 267 waypoints"
+  },
+  {
+   "t": 1789924383201,
+   "kind": "waypoint",
+   "detail": "ms-220 dist=0.0"
+  },
+  {
+   "t": 1789924386172,
+   "kind": "waypoint",
+   "detail": "ms-221 dist=1.0"
+  },
+  {
+   "t": 1789924396041,
+   "kind": "slowDriverCall",
+   "detail": "pv took 9869ms"
+  },
+  {
+   "t": 1789924404420,
+   "kind": "waypoint",
+   "detail": "ms-222 dist=0.7"
+  },
+  {
+   "t": 1789924408612,
+   "kind": "waypoint",
+   "detail": "ms-223 dist=0.9"
+  },
+  {
+   "t": 1789924412610,
+   "kind": "waypoint",
+   "detail": "ms-224 dist=1.2"
+  },
+  {
+   "t": 1789924417407,
+   "kind": "waypoint",
+   "detail": "ms-225 dist=1.1"
+  },
+  {
+   "t": 1789924421577,
+   "kind": "waypoint",
+   "detail": "ms-226 dist=1.4"
+  },
+  {
+   "t": 1789924428066,
+   "kind": "waypoint",
+   "detail": "ms-227 dist=0.7"
+  },
+  {
+   "t": 1789924432356,
+   "kind": "waypoint",
+   "detail": "ms-228 dist=1.0"
+  },
+  {
+   "t": 1789924436524,
+   "kind": "waypoint",
+   "detail": "ms-229 dist=1.2"
+  },
+  {
+   "t": 1789924440516,
+   "kind": "waypoint",
+   "detail": "ms-230 dist=1.4"
+  },
+  {
+   "t": 1789924444878,
+   "kind": "waypoint",
+   "detail": "ms-231 dist=1.4"
+  },
+  {
+   "t": 1789924449255,
+   "kind": "waypoint",
+   "detail": "ms-232 dist=1.3"
+  },
+  {
+   "t": 1789924453827,
+   "kind": "waypoint",
+   "detail": "ms-233 dist=1.3"
+  },
+  {
+   "t": 1789924460285,
+   "kind": "waypoint",
+   "detail": "ms-234 dist=0.4"
+  },
+  {
+   "t": 1789924462669,
+   "kind": "waypoint",
+   "detail": "ms-235 dist=1.2"
+  },
+  {
+   "t": 1789924467103,
+   "kind": "waypoint",
+   "detail": "ms-236 dist=0.8"
+  },
+  {
+   "t": 1789924471960,
+   "kind": "waypoint",
+   "detail": "ms-237 dist=0.8"
+  },
+  {
+   "t": 1789924473953,
+   "kind": "segment",
+   "detail": "#-1 samples=36 maxGap=5699.7ms p99=983.3ms heapAfterGc=82936864 wp=18/267"
+  },
+  {
+   "t": 1789924475166,
+   "kind": "waypoint",
+   "detail": "ms-238 dist=1.3"
+  },
+  {
+   "t": 1789924483845,
+   "kind": "slowDriverCall",
+   "detail": "pv took 7725ms"
+  },
+  {
+   "t": 1789924489348,
+   "kind": "waypoint",
+   "detail": "ms-239 dist=1.2"
+  },
+  {
+   "t": 1789924493688,
+   "kind": "waypoint",
+   "detail": "ms-240 dist=0.9"
+  },
+  {
+   "t": 1789924498440,
+   "kind": "waypoint",
+   "detail": "ms-241 dist=0.4"
+  },
+  {
+   "t": 1789924502187,
+   "kind": "waypoint",
+   "detail": "ms-242 dist=1.0"
+  },
+  {
+   "t": 1789924513564,
+   "kind": "waypoint",
+   "detail": "ms-243 dist=0.6"
+  },
+  {
+   "t": 1789924522300,
+   "kind": "waypoint",
+   "detail": "ms-244 dist=0.8"
+  },
+  {
+   "t": 1789924530544,
+   "kind": "waypoint",
+   "detail": "ms-245 dist=1.3"
+  },
+  {
+   "t": 1789924541493,
+   "kind": "waypoint",
+   "detail": "ms-246 dist=0.6"
+  }
+ ],
+ "anomalies": [],
+ "opCounts": {
+  "pause": 2,
+  "viewSwitch": 2,
+  "blur": 2,
+  "entrySwitch": 0,
+  "fatalPlanned": 0
+ },
+ "steering": {
+  "wpIdx": 27,
+  "wpHits": 27,
+  "meters": 62.142661824880825,
+  "lastFeet": [
+   67.14331817626953,
+   5.861385822296143
+  ],
+  "stallS": 0,
+  "lastMoveT": 1789924548072,
+  "walkingT": 0,
+  "lastStallLogged": 0
+ },
+ "finishedAt": "2026-09-20T17:15:53.390Z",
+ "durationS": 184.5,
+ "exitRules": {
+  "wallDurationS": 184.5,
+  "routeWaypointsHit": 27,
+  "routeWaypointsTotal": 267,
+  "routeCompletionFrac": 0.101,
+  "metersWalked": 62.1,
+  "transitions": {
+   "pause": 2,
+   "viewSwitch": 2,
+   "blur": 2,
+   "entrySwitch": 0,
+   "fatalPlanned": 0
+  },
+  "anomalyCount": 0,
+  "anomalies": []
+ }
+}

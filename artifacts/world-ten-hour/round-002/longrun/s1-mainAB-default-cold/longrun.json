@@ -1,0 +1,2032 @@
+{
+ "label": "s1-mainAB-default-cold",
+ "base": "http://127.0.0.1:5420",
+ "entry": "mainStreet",
+ "config": "default",
+ "track": "mainAB",
+ "minutes": 35,
+ "gameUrl": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=mainStreet",
+ "startedAt": "2026-09-20T17:17:08.815Z",
+ "env": {
+  "renderer": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+  "viewport": "1280x900",
+  "gcExposed": true,
+  "host": "linux arm64",
+  "note": "dev-server long-run; all numbers software-baseline"
+ },
+ "segments": [
+  {
+   "idx": 0,
+   "file": "segments/seg-0-1.json",
+   "gapStats": {
+    "count": 409,
+    "p50": 16.7,
+    "p99": 749.9,
+    "max": 5733.1
+   },
+   "heap": {
+    "beforeGc": 84123580,
+    "afterGc": 82947448,
+    "gcMs": 12.4
+   },
+   "frames": {
+    "total": 410,
+    "g250": 184,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5733.1
+   }
+  },
+  {
+   "idx": 1,
+   "file": "segments/seg-000.json",
+   "gapStats": {
+    "count": 285,
+    "p50": 449.9,
+    "p99": 700,
+    "max": 700.1
+   },
+   "heap": {
+    "beforeGc": 84710778,
+    "afterGc": 83026404,
+    "gcMs": 24.4
+   },
+   "frames": {
+    "total": 695,
+    "g250": 381,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5733.1
+   }
+  },
+  {
+   "idx": 2,
+   "file": "segments/seg-001.json",
+   "gapStats": {
+    "count": 512,
+    "p50": 133.3,
+    "p99": 700,
+    "max": 800.1
+   },
+   "heap": {
+    "beforeGc": 84965200,
+    "afterGc": 83184992,
+    "gcMs": 24.9
+   },
+   "frames": {
+    "total": 1207,
+    "g250": 591,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5733.1
+   }
+  },
+  {
+   "idx": 3,
+   "file": "segments/seg-002.json",
+   "gapStats": {
+    "count": 511,
+    "p50": 383.2,
+    "p99": 566.7,
+    "max": 566.8
+   },
+   "heap": {
+    "beforeGc": 84547287,
+    "afterGc": 83213240,
+    "gcMs": 31.7
+   },
+   "frames": {
+    "total": 1718,
+    "g250": 866,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5733.1
+   }
+  },
+  {
+   "idx": 4,
+   "file": "segments/seg-003.json",
+   "gapStats": {
+    "count": 385,
+    "p50": 283.3,
+    "p99": 766.6,
+    "max": 783.3
+   },
+   "heap": {
+    "beforeGc": 84868533,
+    "afterGc": 83242036,
+    "gcMs": 26.6
+   },
+   "frames": {
+    "total": 2103,
+    "g250": 1099,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5733.1
+   }
+  },
+  {
+   "idx": 5,
+   "file": "segments/seg-004.json",
+   "gapStats": {
+    "count": 504,
+    "p50": 250,
+    "p99": 666.6,
+    "max": 1366.5
+   },
+   "heap": {
+    "beforeGc": 84313885,
+    "afterGc": 83288828,
+    "gcMs": 26.1
+   },
+   "frames": {
+    "total": 2607,
+    "g250": 1349,
+    "g1000": 3,
+    "g5000": 1,
+    "maxGapMs": 5733.1
+   }
+  },
+  {
+   "idx": 6,
+   "file": "segments/seg-005.json",
+   "gapStats": {
+    "count": 363,
+    "p50": 316.7,
+    "p99": 616.7,
+    "max": 633.3
+   },
+   "heap": {
+    "beforeGc": 84721581,
+    "afterGc": 83296916,
+    "gcMs": 28.8
+   },
+   "frames": {
+    "total": 2970,
+    "g250": 1585,
+    "g1000": 3,
+    "g5000": 1,
+    "maxGapMs": 5733.1
+   }
+  },
+  {
+   "idx": 7,
+   "file": "segments/seg-006.json",
+   "gapStats": {
+    "count": 525,
+    "p50": 233.4,
+    "p99": 683.4,
+    "max": 766.7
+   },
+   "heap": {
+    "beforeGc": 85228078,
+    "afterGc": 83331268,
+    "gcMs": 23.8
+   },
+   "frames": {
+    "total": 3495,
+    "g250": 1839,
+    "g1000": 3,
+    "g5000": 1,
+    "maxGapMs": 5733.1
+   }
+  },
+  {
+   "idx": 8,
+   "file": "segments/seg-007.json",
+   "gapStats": {
+    "count": 332,
+    "p50": 400,
+    "p99": 600,
+    "max": 633.3
+   },
+   "heap": {
+    "beforeGc": 85158701,
+    "afterGc": 83334144,
+    "gcMs": 29.8
+   },
+   "frames": {
+    "total": 3827,
+    "g250": 2073,
+    "g1000": 3,
+    "g5000": 1,
+    "maxGapMs": 5733.1
+   }
+  },
+  {
+   "idx": 9,
+   "file": "segments/seg-008.json",
+   "gapStats": {
+    "count": 468,
+    "p50": 433.3,
+    "p99": 550.1,
+    "max": 633.3
+   },
+   "heap": {
+    "beforeGc": 86077499,
+    "afterGc": 83363316,
+    "gcMs": 25.7
+   },
+   "frames": {
+    "total": 4295,
+    "g250": 2314,
+    "g1000": 3,
+    "g5000": 1,
+    "maxGapMs": 5733.1
+   }
+  },
+  {
+   "idx": 10,
+   "file": "segments/seg-009.json",
+   "gapStats": {
+    "count": 256,
+    "p50": 483.3,
+    "p99": 566.7,
+    "max": 583.4
+   },
+   "heap": {
+    "beforeGc": 85476340,
+    "afterGc": 83364928,
+    "gcMs": 29.2
+   },
+   "frames": {
+    "total": 4551,
+    "g250": 2570,
+    "g1000": 3,
+    "g5000": 1,
+    "maxGapMs": 5733.1
+   }
+  },
+  {
+   "idx": 11,
+   "file": "segments/seg-010.json",
+   "gapStats": {
+    "count": 2099,
+    "p50": 16.7,
+    "p99": 399.9,
+    "max": 416.6
+   },
+   "heap": {
+    "beforeGc": 84676755,
+    "afterGc": 83415412,
+    "gcMs": 28.5
+   },
+   "frames": {
+    "total": 6650,
+    "g250": 2796,
+    "g1000": 3,
+    "g5000": 1,
+    "maxGapMs": 5733.1
+   }
+  },
+  {
+   "idx": 12,
+   "file": "segments/seg-011.json",
+   "gapStats": {
+    "count": 7219,
+    "p50": 16.7,
+    "p99": 16.8,
+    "max": 16.8
+   },
+   "heap": {
+    "beforeGc": 84510558,
+    "afterGc": 84510558,
+    "gcMs": 35.1
+   },
+   "frames": {
+    "total": 13869,
+    "g250": 2796,
+    "g1000": 3,
+    "g5000": 1,
+    "maxGapMs": 5733.1
+   }
+  },
+  {
+   "idx": 13,
+   "file": "segments/seg-012.json",
+   "gapStats": {
+    "count": 7216,
+    "p50": 16.7,
+    "p99": 16.8,
+    "max": 66.7
+   },
+   "heap": {
+    "beforeGc": 85081553,
+    "afterGc": 85081553,
+    "gcMs": 35
+   },
+   "frames": {
+    "total": 21085,
+    "g250": 2796,
+    "g1000": 3,
+    "g5000": 1,
+    "maxGapMs": 5733.1
+   }
+  },
+  {
+   "idx": 14,
+   "file": "segments/seg-013.json",
+   "gapStats": {
+    "count": 7220,
+    "p50": 16.7,
+    "p99": 16.8,
+    "max": 33.4
+   },
+   "heap": {
+    "beforeGc": 85220907,
+    "afterGc": 85220907,
+    "gcMs": 30.7
+   },
+   "frames": {
+    "total": 28305,
+    "g250": 2796,
+    "g1000": 3,
+    "g5000": 1,
+    "maxGapMs": 5733.1
+   }
+  },
+  {
+   "idx": 15,
+   "file": "segments/seg-014.json",
+   "gapStats": {
+    "count": 7210,
+    "p50": 16.7,
+    "p99": 16.8,
+    "max": 66.7
+   },
+   "heap": {
+    "beforeGc": 84450732,
+    "afterGc": 84450732,
+    "gcMs": 31.2
+   },
+   "frames": {
+    "total": 35515,
+    "g250": 2796,
+    "g1000": 3,
+    "g5000": 1,
+    "maxGapMs": 5733.1
+   }
+  },
+  {
+   "idx": 16,
+   "file": "segments/seg-015.json",
+   "gapStats": {
+    "count": 7218,
+    "p50": 16.7,
+    "p99": 16.8,
+    "max": 33.4
+   },
+   "heap": {
+    "beforeGc": 85128528,
+    "afterGc": 85128528,
+    "gcMs": 30.8
+   },
+   "frames": {
+    "total": 42733,
+    "g250": 2796,
+    "g1000": 3,
+    "g5000": 1,
+    "maxGapMs": 5733.1
+   }
+  },
+  {
+   "idx": "final",
+   "file": "segments/seg-final.json",
+   "frames": {
+    "total": 43511,
+    "g250": 2796,
+    "g1000": 3,
+    "g5000": 1,
+    "maxGapMs": 5733.1
+   }
+  }
+ ],
+ "events": [
+  {
+   "t": 1789924628816,
+   "kind": "navigate",
+   "detail": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=mainStreet"
+  },
+  {
+   "t": 1789924629737,
+   "kind": "console-error",
+   "detail": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  },
+  {
+   "t": 1789924637601,
+   "kind": "ready",
+   "detail": "tris=694430 feet=[230.9276123046875,0.020000028610229537,47.65022277832031]"
+  },
+  {
+   "t": 1789924641966,
+   "kind": "track",
+   "detail": "mainAB: 267 waypoints"
+  },
+  {
+   "t": 1789924643426,
+   "kind": "waypoint",
+   "detail": "ms-220 dist=0.0"
+  },
+  {
+   "t": 1789924646382,
+   "kind": "waypoint",
+   "detail": "ms-221 dist=1.0"
+  },
+  {
+   "t": 1789924656199,
+   "kind": "slowDriverCall",
+   "detail": "pv took 9817ms"
+  },
+  {
+   "t": 1789924664603,
+   "kind": "waypoint",
+   "detail": "ms-222 dist=0.7"
+  },
+  {
+   "t": 1789924668750,
+   "kind": "waypoint",
+   "detail": "ms-223 dist=0.9"
+  },
+  {
+   "t": 1789924673348,
+   "kind": "waypoint",
+   "detail": "ms-224 dist=0.8"
+  },
+  {
+   "t": 1789924678112,
+   "kind": "waypoint",
+   "detail": "ms-225 dist=0.8"
+  },
+  {
+   "t": 1789924682306,
+   "kind": "waypoint",
+   "detail": "ms-226 dist=1.0"
+  },
+  {
+   "t": 1789924686650,
+   "kind": "waypoint",
+   "detail": "ms-227 dist=1.3"
+  },
+  {
+   "t": 1789924692931,
+   "kind": "waypoint",
+   "detail": "ms-228 dist=0.6"
+  },
+  {
+   "t": 1789924697079,
+   "kind": "waypoint",
+   "detail": "ms-229 dist=0.9"
+  },
+  {
+   "t": 1789924700991,
+   "kind": "waypoint",
+   "detail": "ms-230 dist=1.1"
+  },
+  {
+   "t": 1789924705312,
+   "kind": "waypoint",
+   "detail": "ms-231 dist=1.1"
+  },
+  {
+   "t": 1789924709660,
+   "kind": "waypoint",
+   "detail": "ms-232 dist=1.0"
+  },
+  {
+   "t": 1789924714052,
+   "kind": "waypoint",
+   "detail": "ms-233 dist=1.0"
+  },
+  {
+   "t": 1789924718423,
+   "kind": "waypoint",
+   "detail": "ms-234 dist=0.9"
+  },
+  {
+   "t": 1789924723199,
+   "kind": "waypoint",
+   "detail": "ms-235 dist=0.6"
+  },
+  {
+   "t": 1789924725417,
+   "kind": "waypoint",
+   "detail": "ms-236 dist=1.4"
+  },
+  {
+   "t": 1789924729638,
+   "kind": "waypoint",
+   "detail": "ms-237 dist=1.0"
+  },
+  {
+   "t": 1789924733932,
+   "kind": "waypoint",
+   "detail": "ms-238 dist=0.7"
+  },
+  {
+   "t": 1789924738281,
+   "kind": "waypoint",
+   "detail": "ms-239 dist=0.4"
+  },
+  {
+   "t": 1789924740508,
+   "kind": "waypoint",
+   "detail": "ms-240 dist=1.2"
+  },
+  {
+   "t": 1789924745167,
+   "kind": "waypoint",
+   "detail": "ms-241 dist=0.7"
+  },
+  {
+   "t": 1789924748903,
+   "kind": "waypoint",
+   "detail": "ms-242 dist=1.3"
+  },
+  {
+   "t": 1789924758015,
+   "kind": "waypoint",
+   "detail": "ms-243 dist=1.2"
+  },
+  {
+   "t": 1789924764700,
+   "kind": "segment",
+   "detail": "#-1 samples=50 maxGap=5733.1ms p99=749.9ms heapAfterGc=82947448 wp=24/267"
+  },
+  {
+   "t": 1789924768083,
+   "kind": "waypoint",
+   "detail": "ms-244 dist=0.8"
+  },
+  {
+   "t": 1789924777025,
+   "kind": "waypoint",
+   "detail": "ms-245 dist=1.0"
+  },
+  {
+   "t": 1789924787340,
+   "kind": "waypoint",
+   "detail": "ms-246 dist=0.6"
+  },
+  {
+   "t": 1789924796580,
+   "kind": "waypoint",
+   "detail": "ms-247 dist=0.5"
+  },
+  {
+   "t": 1789924809228,
+   "kind": "waypoint",
+   "detail": "detour@ms248-28 dist=1.4"
+  },
+  {
+   "t": 1789924811311,
+   "kind": "waypoint",
+   "detail": "detour@ms248-29 dist=0.9"
+  },
+  {
+   "t": 1789924813129,
+   "kind": "waypoint",
+   "detail": "detour@ms248-30 dist=0.4"
+  },
+  {
+   "t": 1789924813129,
+   "kind": "waypoint",
+   "detail": "detour@ms248-31 dist=1.1"
+  },
+  {
+   "t": 1789924815242,
+   "kind": "waypoint",
+   "detail": "detour@ms248-32 dist=0.6"
+  },
+  {
+   "t": 1789924815242,
+   "kind": "waypoint",
+   "detail": "detour@ms248-33 dist=1.2"
+  },
+  {
+   "t": 1789924817247,
+   "kind": "waypoint",
+   "detail": "detour@ms248-34 dist=0.9"
+  },
+  {
+   "t": 1789924817247,
+   "kind": "waypoint",
+   "detail": "detour@ms248-35 dist=0.6"
+  },
+  {
+   "t": 1789924828904,
+   "kind": "waypoint",
+   "detail": "detour@ms248-36 dist=1.2"
+  },
+  {
+   "t": 1789924828904,
+   "kind": "waypoint",
+   "detail": "detour@ms248-37 dist=1.0"
+  },
+  {
+   "t": 1789924835260,
+   "kind": "waypoint",
+   "detail": "detour@ms248-38 dist=1.3"
+  },
+  {
+   "t": 1789924835260,
+   "kind": "waypoint",
+   "detail": "detour@ms248-39 dist=0.7"
+  },
+  {
+   "t": 1789924835260,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-40 dist=1.3"
+  },
+  {
+   "t": 1789924844530,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-41 dist=0.7"
+  },
+  {
+   "t": 1789924846703,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-42 dist=0.3"
+  },
+  {
+   "t": 1789924848812,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-43 dist=0.4"
+  },
+  {
+   "t": 1789924851096,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-44 dist=0.4"
+  },
+  {
+   "t": 1789924853559,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-45 dist=0.6"
+  },
+  {
+   "t": 1789924855283,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-46 dist=1.2"
+  },
+  {
+   "t": 1789924857513,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-47 dist=1.0"
+  },
+  {
+   "t": 1789924859426,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-48 dist=0.7"
+  },
+  {
+   "t": 1789924861574,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-49 dist=0.8"
+  },
+  {
+   "t": 1789924861574,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-50 dist=0.2"
+  },
+  {
+   "t": 1789924865895,
+   "kind": "waypoint",
+   "detail": "ms-248 dist=1.3"
+  },
+  {
+   "t": 1789924871042,
+   "kind": "waypoint",
+   "detail": "ms-249 dist=1.3"
+  },
+  {
+   "t": 1789924879476,
+   "kind": "waypoint",
+   "detail": "ms-250 dist=1.5"
+  },
+  {
+   "t": 1789924886635,
+   "kind": "segment",
+   "detail": "#0 samples=55 maxGap=700.1ms p99=700ms heapAfterGc=83026404 wp=54/267"
+  },
+  {
+   "t": 1789924896392,
+   "kind": "slowDriverCall",
+   "detail": "pv took 8449ms"
+  },
+  {
+   "t": 1789924900228,
+   "kind": "waypoint",
+   "detail": "ms-251 dist=0.8"
+  },
+  {
+   "t": 1789924909725,
+   "kind": "waypoint",
+   "detail": "ms-252 dist=0.9"
+  },
+  {
+   "t": 1789924923540,
+   "kind": "waypoint",
+   "detail": "detour@ms253-56 dist=1.0"
+  },
+  {
+   "t": 1789924923540,
+   "kind": "waypoint",
+   "detail": "detour@ms253-57 dist=1.0"
+  },
+  {
+   "t": 1789924925695,
+   "kind": "waypoint",
+   "detail": "detour@ms253-58 dist=0.5"
+  },
+  {
+   "t": 1789924927776,
+   "kind": "waypoint",
+   "detail": "detour@ms253-59 dist=1.1"
+  },
+  {
+   "t": 1789924927776,
+   "kind": "waypoint",
+   "detail": "detour@ms253-60 dist=0.7"
+  },
+  {
+   "t": 1789924929815,
+   "kind": "waypoint",
+   "detail": "detour@ms253-61 dist=1.3"
+  },
+  {
+   "t": 1789924929815,
+   "kind": "waypoint",
+   "detail": "detour@ms253-62 dist=0.5"
+  },
+  {
+   "t": 1789924932066,
+   "kind": "waypoint",
+   "detail": "detour@ms253-63 dist=0.1"
+  },
+  {
+   "t": 1789924932066,
+   "kind": "waypoint",
+   "detail": "detourBack@ms253-64 dist=1.4"
+  },
+  {
+   "t": 1789924942324,
+   "kind": "waypoint",
+   "detail": "detourBack@ms253-65 dist=0.6"
+  },
+  {
+   "t": 1789924944092,
+   "kind": "waypoint",
+   "detail": "detourBack@ms253-66 dist=1.4"
+  },
+  {
+   "t": 1789924948892,
+   "kind": "waypoint",
+   "detail": "detourBack@ms253-67 dist=0.6"
+  },
+  {
+   "t": 1789924953529,
+   "kind": "waypoint",
+   "detail": "detourBack@ms253-68 dist=0.6"
+  },
+  {
+   "t": 1789924955643,
+   "kind": "waypoint",
+   "detail": "detourBack@ms253-69 dist=0.9"
+  },
+  {
+   "t": 1789924957664,
+   "kind": "waypoint",
+   "detail": "detourBack@ms253-70 dist=1.2"
+  },
+  {
+   "t": 1789924964262,
+   "kind": "waypoint",
+   "detail": "ms-253 dist=1.3"
+  },
+  {
+   "t": 1789924971709,
+   "kind": "waypoint",
+   "detail": "ms-254 dist=0.6"
+  },
+  {
+   "t": 1789924978782,
+   "kind": "waypoint",
+   "detail": "ms-255 dist=1.0"
+  },
+  {
+   "t": 1789924987184,
+   "kind": "waypoint",
+   "detail": "ms-256 dist=0.9"
+  },
+  {
+   "t": 1789924993569,
+   "kind": "waypoint",
+   "detail": "ms-257 dist=1.4"
+  },
+  {
+   "t": 1789925002361,
+   "kind": "waypoint",
+   "detail": "ms-258 dist=0.7"
+  },
+  {
+   "t": 1789925008389,
+   "kind": "segment",
+   "detail": "#1 samples=49 maxGap=800.1ms p99=700ms heapAfterGc=83184992 wp=77/267"
+  },
+  {
+   "t": 1789925009491,
+   "kind": "waypoint",
+   "detail": "ms-259 dist=0.9"
+  },
+  {
+   "t": 1789925016120,
+   "kind": "waypoint",
+   "detail": "ms-260 dist=1.4"
+  },
+  {
+   "t": 1789925025070,
+   "kind": "waypoint",
+   "detail": "ms-261 dist=0.4"
+  },
+  {
+   "t": 1789925031682,
+   "kind": "waypoint",
+   "detail": "ms-262 dist=0.9"
+  },
+  {
+   "t": 1789925038201,
+   "kind": "waypoint",
+   "detail": "ms-263 dist=1.3"
+  },
+  {
+   "t": 1789925046913,
+   "kind": "waypoint",
+   "detail": "ms-264 dist=0.7"
+  },
+  {
+   "t": 1789925051390,
+   "kind": "waypoint",
+   "detail": "ms-265 dist=1.3"
+  },
+  {
+   "t": 1789925059759,
+   "kind": "waypoint",
+   "detail": "ms-266 dist=0.6"
+  },
+  {
+   "t": 1789925066126,
+   "kind": "waypoint",
+   "detail": "ms-267 dist=0.8"
+  },
+  {
+   "t": 1789925072667,
+   "kind": "waypoint",
+   "detail": "ms-268 dist=1.0"
+  },
+  {
+   "t": 1789925078947,
+   "kind": "waypoint",
+   "detail": "ms-269 dist=1.2"
+  },
+  {
+   "t": 1789925085891,
+   "kind": "waypoint",
+   "detail": "ms-270 dist=0.8"
+  },
+  {
+   "t": 1789925092707,
+   "kind": "waypoint",
+   "detail": "ms-271 dist=0.4"
+  },
+  {
+   "t": 1789925096901,
+   "kind": "waypoint",
+   "detail": "ms-272 dist=1.5"
+  },
+  {
+   "t": 1789925103012,
+   "kind": "waypoint",
+   "detail": "ms-273 dist=1.1"
+  },
+  {
+   "t": 1789925109462,
+   "kind": "waypoint",
+   "detail": "ms-274 dist=0.4"
+  },
+  {
+   "t": 1789925113973,
+   "kind": "waypoint",
+   "detail": "ms-275 dist=0.9"
+  },
+  {
+   "t": 1789925118665,
+   "kind": "waypoint",
+   "detail": "ms-276 dist=1.3"
+  },
+  {
+   "t": 1789925125419,
+   "kind": "waypoint",
+   "detail": "ms-277 dist=0.4"
+  },
+  {
+   "t": 1789925135366,
+   "kind": "slowDriverCall",
+   "detail": "pv took 7292ms"
+  },
+  {
+   "t": 1789925138866,
+   "kind": "waypoint",
+   "detail": "ms-278 dist=1.1"
+  },
+  {
+   "t": 1789925140427,
+   "kind": "segment",
+   "detail": "#2 samples=56 maxGap=566.8ms p99=566.7ms heapAfterGc=83213240 wp=97/267"
+  },
+  {
+   "t": 1789925146137,
+   "kind": "waypoint",
+   "detail": "ms-279 dist=0.2"
+  },
+  {
+   "t": 1789925150738,
+   "kind": "waypoint",
+   "detail": "ms-280 dist=0.3"
+  },
+  {
+   "t": 1789925155232,
+   "kind": "waypoint",
+   "detail": "ms-281 dist=0.8"
+  },
+  {
+   "t": 1789925159602,
+   "kind": "waypoint",
+   "detail": "ms-282 dist=1.3"
+  },
+  {
+   "t": 1789925166013,
+   "kind": "waypoint",
+   "detail": "ms-283 dist=0.6"
+  },
+  {
+   "t": 1789925168352,
+   "kind": "waypoint",
+   "detail": "ms-284 dist=0.8"
+  },
+  {
+   "t": 1789925173030,
+   "kind": "waypoint",
+   "detail": "ms-285 dist=0.8"
+  },
+  {
+   "t": 1789925175250,
+   "kind": "waypoint",
+   "detail": "ms-286 dist=0.6"
+  },
+  {
+   "t": 1789925179974,
+   "kind": "waypoint",
+   "detail": "ms-287 dist=1.0"
+  },
+  {
+   "t": 1789925182401,
+   "kind": "waypoint",
+   "detail": "ms-288 dist=0.4"
+  },
+  {
+   "t": 1789925186896,
+   "kind": "waypoint",
+   "detail": "ms-289 dist=0.3"
+  },
+  {
+   "t": 1789925191307,
+   "kind": "waypoint",
+   "detail": "ms-290 dist=0.2"
+  },
+  {
+   "t": 1789925195361,
+   "kind": "waypoint",
+   "detail": "ms-291 dist=0.1"
+  },
+  {
+   "t": 1789925197729,
+   "kind": "waypoint",
+   "detail": "ms-292 dist=1.4"
+  },
+  {
+   "t": 1789925201953,
+   "kind": "waypoint",
+   "detail": "ms-293 dist=0.2"
+  },
+  {
+   "t": 1789925204395,
+   "kind": "waypoint",
+   "detail": "ms-294 dist=1.2"
+  },
+  {
+   "t": 1789925208971,
+   "kind": "waypoint",
+   "detail": "ms-295 dist=0.6"
+  },
+  {
+   "t": 1789925210960,
+   "kind": "waypoint",
+   "detail": "ms-296 dist=0.1"
+  },
+  {
+   "t": 1789925213131,
+   "kind": "waypoint",
+   "detail": "ms-297 dist=0.1"
+  },
+  {
+   "t": 1789925213131,
+   "kind": "waypoint",
+   "detail": "ms-298 dist=1.5"
+  },
+  {
+   "t": 1789925218222,
+   "kind": "waypoint",
+   "detail": "ms-299 dist=1.3"
+  },
+  {
+   "t": 1789925226945,
+   "kind": "waypoint",
+   "detail": "ms-300 dist=0.2"
+  },
+  {
+   "t": 1789925231012,
+   "kind": "waypoint",
+   "detail": "ms-301 dist=1.0"
+  },
+  {
+   "t": 1789925259824,
+   "kind": "waypoint",
+   "detail": "ms-302 dist=0.3"
+  },
+  {
+   "t": 1789925262029,
+   "kind": "segment",
+   "detail": "#3 samples=53 maxGap=783.3ms p99=766.6ms heapAfterGc=83242036 wp=121/267"
+  },
+  {
+   "t": 1789925269402,
+   "kind": "waypoint",
+   "detail": "ms-303 dist=0.1"
+  },
+  {
+   "t": 1789925275705,
+   "kind": "waypoint",
+   "detail": "ms-304 dist=0.6"
+  },
+  {
+   "t": 1789925280471,
+   "kind": "waypoint",
+   "detail": "ms-305 dist=0.6"
+  },
+  {
+   "t": 1789925282421,
+   "kind": "waypoint",
+   "detail": "ms-306 dist=0.5"
+  },
+  {
+   "t": 1789925284810,
+   "kind": "waypoint",
+   "detail": "ms-307 dist=1.0"
+  },
+  {
+   "t": 1789925286855,
+   "kind": "waypoint",
+   "detail": "ms-308 dist=1.4"
+  },
+  {
+   "t": 1789925305545,
+   "kind": "waypoint",
+   "detail": "ms-309 dist=0.5"
+  },
+  {
+   "t": 1789925310030,
+   "kind": "waypoint",
+   "detail": "ms-310 dist=0.5"
+  },
+  {
+   "t": 1789925314442,
+   "kind": "waypoint",
+   "detail": "ms-311 dist=0.8"
+  },
+  {
+   "t": 1789925318908,
+   "kind": "waypoint",
+   "detail": "ms-312 dist=0.1"
+  },
+  {
+   "t": 1789925323690,
+   "kind": "waypoint",
+   "detail": "ms-313 dist=1.3"
+  },
+  {
+   "t": 1789925330100,
+   "kind": "waypoint",
+   "detail": "ms-314 dist=0.6"
+  },
+  {
+   "t": 1789925339383,
+   "kind": "waypoint",
+   "detail": "ms-315 dist=1.4"
+  },
+  {
+   "t": 1789925345766,
+   "kind": "waypoint",
+   "detail": "ms-316 dist=0.5"
+  },
+  {
+   "t": 1789925347918,
+   "kind": "waypoint",
+   "detail": "ms-317 dist=0.0"
+  },
+  {
+   "t": 1789925361989,
+   "kind": "waypoint",
+   "detail": "ms-318 dist=1.3"
+  },
+  {
+   "t": 1789925364173,
+   "kind": "waypoint",
+   "detail": "ms-319 dist=1.4"
+  },
+  {
+   "t": 1789925377433,
+   "kind": "slowDriverCall",
+   "detail": "pv took 8000ms"
+  },
+  {
+   "t": 1789925380734,
+   "kind": "waypoint",
+   "detail": "ms-320 dist=0.1"
+  },
+  {
+   "t": 1789925384583,
+   "kind": "segment",
+   "detail": "#4 samples=50 maxGap=1366.5ms p99=666.6ms heapAfterGc=83288828 wp=139/267"
+  },
+  {
+   "t": 1789925385663,
+   "kind": "waypoint",
+   "detail": "ms-321 dist=1.0"
+  },
+  {
+   "t": 1789925387269,
+   "kind": "waypoint",
+   "detail": "ms-322 dist=0.7"
+  },
+  {
+   "t": 1789925392240,
+   "kind": "waypoint",
+   "detail": "ms-323 dist=1.0"
+  },
+  {
+   "t": 1789925398473,
+   "kind": "waypoint",
+   "detail": "ms-324 dist=0.9"
+  },
+  {
+   "t": 1789925402921,
+   "kind": "waypoint",
+   "detail": "ms-325 dist=1.2"
+  },
+  {
+   "t": 1789925406723,
+   "kind": "waypoint",
+   "detail": "ms-326 dist=0.2"
+  },
+  {
+   "t": 1789925410935,
+   "kind": "waypoint",
+   "detail": "ms-327 dist=1.2"
+  },
+  {
+   "t": 1789925413207,
+   "kind": "waypoint",
+   "detail": "ms-328 dist=0.3"
+  },
+  {
+   "t": 1789925415174,
+   "kind": "waypoint",
+   "detail": "ms-329 dist=0.3"
+  },
+  {
+   "t": 1789925417385,
+   "kind": "waypoint",
+   "detail": "ms-330 dist=0.3"
+  },
+  {
+   "t": 1789925419541,
+   "kind": "waypoint",
+   "detail": "ms-331 dist=1.1"
+  },
+  {
+   "t": 1789925421603,
+   "kind": "waypoint",
+   "detail": "ms-332 dist=1.3"
+  },
+  {
+   "t": 1789925425869,
+   "kind": "waypoint",
+   "detail": "ms-333 dist=0.5"
+  },
+  {
+   "t": 1789925425869,
+   "kind": "waypoint",
+   "detail": "ms-end dist=1.3"
+  },
+  {
+   "t": 1789925425869,
+   "kind": "waypoint",
+   "detail": "back-333 dist=0.5"
+  },
+  {
+   "t": 1789925439640,
+   "kind": "waypoint",
+   "detail": "back-332 dist=0.5"
+  },
+  {
+   "t": 1789925448046,
+   "kind": "waypoint",
+   "detail": "back-331 dist=0.9"
+  },
+  {
+   "t": 1789925450637,
+   "kind": "waypoint",
+   "detail": "back-330 dist=1.3"
+  },
+  {
+   "t": 1789925457227,
+   "kind": "waypoint",
+   "detail": "back-329 dist=1.2"
+  },
+  {
+   "t": 1789925463507,
+   "kind": "waypoint",
+   "detail": "back-328 dist=1.1"
+  },
+  {
+   "t": 1789925472526,
+   "kind": "waypoint",
+   "detail": "back-327 dist=0.3"
+  },
+  {
+   "t": 1789925478965,
+   "kind": "waypoint",
+   "detail": "back-326 dist=1.2"
+  },
+  {
+   "t": 1789925487689,
+   "kind": "waypoint",
+   "detail": "back-325 dist=0.3"
+  },
+  {
+   "t": 1789925494482,
+   "kind": "waypoint",
+   "detail": "back-324 dist=1.4"
+  },
+  {
+   "t": 1789925500680,
+   "kind": "waypoint",
+   "detail": "back-323 dist=0.2"
+  },
+  {
+   "t": 1789925505128,
+   "kind": "waypoint",
+   "detail": "back-322 dist=0.2"
+  },
+  {
+   "t": 1789925506962,
+   "kind": "segment",
+   "detail": "#5 samples=56 maxGap=633.3ms p99=616.7ms heapAfterGc=83296916 wp=165/267"
+  },
+  {
+   "t": 1789925516730,
+   "kind": "waypoint",
+   "detail": "back-321 dist=0.8"
+  },
+  {
+   "t": 1789925520831,
+   "kind": "waypoint",
+   "detail": "back-320 dist=1.2"
+  },
+  {
+   "t": 1789925525396,
+   "kind": "waypoint",
+   "detail": "back-319 dist=0.7"
+  },
+  {
+   "t": 1789925532779,
+   "kind": "waypoint",
+   "detail": "back-318 dist=0.9"
+  },
+  {
+   "t": 1789925538395,
+   "kind": "waypoint",
+   "detail": "back-317 dist=0.1"
+  },
+  {
+   "t": 1789925538395,
+   "kind": "waypoint",
+   "detail": "back-316 dist=1.2"
+  },
+  {
+   "t": 1789925551606,
+   "kind": "waypoint",
+   "detail": "back-315 dist=0.6"
+  },
+  {
+   "t": 1789925556126,
+   "kind": "waypoint",
+   "detail": "back-314 dist=0.7"
+  },
+  {
+   "t": 1789925558529,
+   "kind": "waypoint",
+   "detail": "back-313 dist=1.1"
+  },
+  {
+   "t": 1789925564881,
+   "kind": "waypoint",
+   "detail": "back-312 dist=0.2"
+  },
+  {
+   "t": 1789925574287,
+   "kind": "waypoint",
+   "detail": "back-311 dist=0.7"
+  },
+  {
+   "t": 1789925585569,
+   "kind": "waypoint",
+   "detail": "back-310 dist=1.1"
+  },
+  {
+   "t": 1789925591679,
+   "kind": "waypoint",
+   "detail": "back-309 dist=0.5"
+  },
+  {
+   "t": 1789925602721,
+   "kind": "waypoint",
+   "detail": "back-308 dist=0.2"
+  },
+  {
+   "t": 1789925604961,
+   "kind": "waypoint",
+   "detail": "back-307 dist=1.4"
+  },
+  {
+   "t": 1789925607108,
+   "kind": "waypoint",
+   "detail": "back-306 dist=0.7"
+  },
+  {
+   "t": 1789925617989,
+   "kind": "slowDriverCall",
+   "detail": "pv took 7191ms"
+  },
+  {
+   "t": 1789925621630,
+   "kind": "waypoint",
+   "detail": "back-305 dist=0.9"
+  },
+  {
+   "t": 1789925628106,
+   "kind": "segment",
+   "detail": "#6 samples=49 maxGap=766.7ms p99=683.4ms heapAfterGc=83331268 wp=182/267"
+  },
+  {
+   "t": 1789925628914,
+   "kind": "waypoint",
+   "detail": "back-304 dist=0.5"
+  },
+  {
+   "t": 1789925635255,
+   "kind": "waypoint",
+   "detail": "back-303 dist=1.2"
+  },
+  {
+   "t": 1789925649126,
+   "kind": "waypoint",
+   "detail": "back-302 dist=1.1"
+  },
+  {
+   "t": 1789925653670,
+   "kind": "waypoint",
+   "detail": "back-301 dist=0.7"
+  },
+  {
+   "t": 1789925662087,
+   "kind": "waypoint",
+   "detail": "back-300 dist=0.6"
+  },
+  {
+   "t": 1789925664108,
+   "kind": "waypoint",
+   "detail": "back-299 dist=0.5"
+  },
+  {
+   "t": 1789925680044,
+   "kind": "waypoint",
+   "detail": "back-298 dist=0.3"
+  },
+  {
+   "t": 1789925680044,
+   "kind": "waypoint",
+   "detail": "back-297 dist=1.2"
+  },
+  {
+   "t": 1789925693585,
+   "kind": "waypoint",
+   "detail": "back-296 dist=0.6"
+  },
+  {
+   "t": 1789925700498,
+   "kind": "waypoint",
+   "detail": "back-295 dist=0.4"
+  },
+  {
+   "t": 1789925707100,
+   "kind": "waypoint",
+   "detail": "back-294 dist=0.6"
+  },
+  {
+   "t": 1789925713947,
+   "kind": "waypoint",
+   "detail": "back-293 dist=0.5"
+  },
+  {
+   "t": 1789925720385,
+   "kind": "waypoint",
+   "detail": "back-292 dist=0.1"
+  },
+  {
+   "t": 1789925724958,
+   "kind": "waypoint",
+   "detail": "back-291 dist=0.6"
+  },
+  {
+   "t": 1789925729654,
+   "kind": "waypoint",
+   "detail": "back-290 dist=1.1"
+  },
+  {
+   "t": 1789925735930,
+   "kind": "waypoint",
+   "detail": "back-289 dist=0.7"
+  },
+  {
+   "t": 1789925742409,
+   "kind": "waypoint",
+   "detail": "back-288 dist=0.3"
+  },
+  {
+   "t": 1789925747091,
+   "kind": "waypoint",
+   "detail": "back-287 dist=1.4"
+  },
+  {
+   "t": 1789925749636,
+   "kind": "segment",
+   "detail": "#7 samples=54 maxGap=633.3ms p99=600ms heapAfterGc=83334144 wp=200/267"
+  },
+  {
+   "t": 1789925755211,
+   "kind": "waypoint",
+   "detail": "back-286 dist=0.7"
+  },
+  {
+   "t": 1789925761346,
+   "kind": "waypoint",
+   "detail": "back-285 dist=1.2"
+  },
+  {
+   "t": 1789925767641,
+   "kind": "waypoint",
+   "detail": "back-284 dist=1.3"
+  },
+  {
+   "t": 1789925774406,
+   "kind": "waypoint",
+   "detail": "back-283 dist=0.9"
+  },
+  {
+   "t": 1789925781178,
+   "kind": "waypoint",
+   "detail": "back-282 dist=0.6"
+  },
+  {
+   "t": 1789925787759,
+   "kind": "waypoint",
+   "detail": "back-281 dist=0.2"
+  },
+  {
+   "t": 1789925792185,
+   "kind": "waypoint",
+   "detail": "back-280 dist=1.2"
+  },
+  {
+   "t": 1789925799146,
+   "kind": "waypoint",
+   "detail": "back-279 dist=0.8"
+  },
+  {
+   "t": 1789925805950,
+   "kind": "waypoint",
+   "detail": "back-278 dist=0.4"
+  },
+  {
+   "t": 1789925812567,
+   "kind": "waypoint",
+   "detail": "back-277 dist=0.3"
+  },
+  {
+   "t": 1789925819144,
+   "kind": "waypoint",
+   "detail": "back-276 dist=0.5"
+  },
+  {
+   "t": 1789925825686,
+   "kind": "waypoint",
+   "detail": "back-275 dist=0.7"
+  },
+  {
+   "t": 1789925832145,
+   "kind": "waypoint",
+   "detail": "back-274 dist=1.2"
+  },
+  {
+   "t": 1789925840889,
+   "kind": "waypoint",
+   "detail": "back-273 dist=0.5"
+  },
+  {
+   "t": 1789925847895,
+   "kind": "waypoint",
+   "detail": "back-272 dist=0.7"
+  },
+  {
+   "t": 1789925858423,
+   "kind": "slowDriverCall",
+   "detail": "pv took 7523ms"
+  },
+  {
+   "t": 1789925864279,
+   "kind": "waypoint",
+   "detail": "back-271 dist=1.2"
+  },
+  {
+   "t": 1789925872325,
+   "kind": "segment",
+   "detail": "#8 samples=50 maxGap=633.3ms p99=550.1ms heapAfterGc=83363316 wp=216/267"
+  },
+  {
+   "t": 1789925873417,
+   "kind": "waypoint",
+   "detail": "back-270 dist=0.2"
+  },
+  {
+   "t": 1789925879995,
+   "kind": "waypoint",
+   "detail": "back-269 dist=0.7"
+  },
+  {
+   "t": 1789925886895,
+   "kind": "waypoint",
+   "detail": "back-268 dist=0.9"
+  },
+  {
+   "t": 1789925893465,
+   "kind": "waypoint",
+   "detail": "back-267 dist=1.3"
+  },
+  {
+   "t": 1789925902587,
+   "kind": "waypoint",
+   "detail": "back-266 dist=0.4"
+  },
+  {
+   "t": 1789925909140,
+   "kind": "waypoint",
+   "detail": "back-265 dist=0.5"
+  },
+  {
+   "t": 1789925913640,
+   "kind": "waypoint",
+   "detail": "back-264 dist=0.9"
+  },
+  {
+   "t": 1789925919695,
+   "kind": "waypoint",
+   "detail": "back-263 dist=1.4"
+  },
+  {
+   "t": 1789925926375,
+   "kind": "waypoint",
+   "detail": "back-262 dist=1.3"
+  },
+  {
+   "t": 1789925933049,
+   "kind": "waypoint",
+   "detail": "back-261 dist=1.2"
+  },
+  {
+   "t": 1789925939668,
+   "kind": "waypoint",
+   "detail": "back-260 dist=1.1"
+  },
+  {
+   "t": 1789925945898,
+   "kind": "waypoint",
+   "detail": "back-259 dist=1.3"
+  },
+  {
+   "t": 1789925952891,
+   "kind": "waypoint",
+   "detail": "back-258 dist=1.1"
+  },
+  {
+   "t": 1789925959481,
+   "kind": "waypoint",
+   "detail": "back-257 dist=1.0"
+  },
+  {
+   "t": 1789925966163,
+   "kind": "waypoint",
+   "detail": "back-256 dist=0.6"
+  },
+  {
+   "t": 1789925972798,
+   "kind": "waypoint",
+   "detail": "back-255 dist=0.2"
+  },
+  {
+   "t": 1789925977096,
+   "kind": "waypoint",
+   "detail": "back-254 dist=1.3"
+  },
+  {
+   "t": 1789925983343,
+   "kind": "waypoint",
+   "detail": "back-253 dist=0.9"
+  },
+  {
+   "t": 1789925987991,
+   "kind": "waypoint",
+   "detail": "back-252 dist=1.4"
+  },
+  {
+   "t": 1789925993949,
+   "kind": "segment",
+   "detail": "#9 samples=55 maxGap=583.4ms p99=566.7ms heapAfterGc=83364928 wp=235/267"
+  },
+  {
+   "t": 1789925994942,
+   "kind": "waypoint",
+   "detail": "back-251 dist=0.2"
+  },
+  {
+   "t": 1789925999318,
+   "kind": "waypoint",
+   "detail": "back-250 dist=0.3"
+  },
+  {
+   "t": 1789926003622,
+   "kind": "waypoint",
+   "detail": "back-249 dist=0.8"
+  },
+  {
+   "t": 1789926007817,
+   "kind": "waypoint",
+   "detail": "back-248 dist=1.3"
+  },
+  {
+   "t": 1789926012212,
+   "kind": "waypoint",
+   "detail": "back-247 dist=1.2"
+  },
+  {
+   "t": 1789926017055,
+   "kind": "waypoint",
+   "detail": "back-246 dist=0.1"
+  },
+  {
+   "t": 1789926021227,
+   "kind": "waypoint",
+   "detail": "back-245 dist=1.1"
+  },
+  {
+   "t": 1789926023621,
+   "kind": "waypoint",
+   "detail": "back-244 dist=0.0"
+  },
+  {
+   "t": 1789926025923,
+   "kind": "waypoint",
+   "detail": "back-243 dist=1.3"
+  },
+  {
+   "t": 1789926030478,
+   "kind": "waypoint",
+   "detail": "back-242 dist=0.6"
+  },
+  {
+   "t": 1789926033143,
+   "kind": "waypoint",
+   "detail": "back-241 dist=0.7"
+  },
+  {
+   "t": 1789926035295,
+   "kind": "waypoint",
+   "detail": "back-240 dist=0.8"
+  },
+  {
+   "t": 1789926037608,
+   "kind": "waypoint",
+   "detail": "back-239 dist=1.0"
+  },
+  {
+   "t": 1789926039943,
+   "kind": "waypoint",
+   "detail": "back-238 dist=1.3"
+  },
+  {
+   "t": 1789926044537,
+   "kind": "waypoint",
+   "detail": "back-237 dist=0.3"
+  },
+  {
+   "t": 1789926046889,
+   "kind": "waypoint",
+   "detail": "back-236 dist=0.0"
+  },
+  {
+   "t": 1789926049218,
+   "kind": "waypoint",
+   "detail": "back-235 dist=0.2"
+  },
+  {
+   "t": 1789926051509,
+   "kind": "waypoint",
+   "detail": "back-234 dist=0.5"
+  },
+  {
+   "t": 1789926053713,
+   "kind": "waypoint",
+   "detail": "back-233 dist=0.7"
+  },
+  {
+   "t": 1789926055838,
+   "kind": "waypoint",
+   "detail": "back-232 dist=0.9"
+  },
+  {
+   "t": 1789926058155,
+   "kind": "waypoint",
+   "detail": "back-231 dist=1.2"
+  },
+  {
+   "t": 1789926060446,
+   "kind": "waypoint",
+   "detail": "back-230 dist=1.4"
+  },
+  {
+   "t": 1789926065116,
+   "kind": "waypoint",
+   "detail": "back-229 dist=0.1"
+  },
+  {
+   "t": 1789926067439,
+   "kind": "waypoint",
+   "detail": "back-228 dist=0.1"
+  },
+  {
+   "t": 1789926069590,
+   "kind": "waypoint",
+   "detail": "back-227 dist=0.4"
+  },
+  {
+   "t": 1789926071517,
+   "kind": "waypoint",
+   "detail": "back-226 dist=0.6"
+  },
+  {
+   "t": 1789926074025,
+   "kind": "waypoint",
+   "detail": "back-225 dist=0.0"
+  },
+  {
+   "t": 1789926076190,
+   "kind": "waypoint",
+   "detail": "back-224 dist=0.4"
+  },
+  {
+   "t": 1789926078477,
+   "kind": "waypoint",
+   "detail": "back-223 dist=1.0"
+  },
+  {
+   "t": 1789926078477,
+   "kind": "waypoint",
+   "detail": "back-222 dist=1.0"
+  },
+  {
+   "t": 1789926080635,
+   "kind": "waypoint",
+   "detail": "back-221 dist=0.1"
+  },
+  {
+   "t": 1789926084492,
+   "kind": "ANOMALY:capsuleBelowFloor",
+   "detail": "feet=[133.94403076171875,-17.423459243774413,21.46315574645996] (fall or under-geometry)"
+  },
+  {
+   "t": 1789926096078,
+   "kind": "slowDriverCall",
+   "detail": "pv took 5150ms"
+  },
+  {
+   "t": 1789926114333,
+   "kind": "segment",
+   "detail": "#10 samples=53 maxGap=416.6ms p99=399.9ms heapAfterGc=83415412 wp=266/267"
+  },
+  {
+   "t": 1789926116338,
+   "kind": "ANOMALY:capsuleBelowFloor",
+   "detail": "feet=[97.5324935913086,-16451.530078125,11.429160118103027] (fall or under-geometry)"
+  },
+  {
+   "t": 1789926234707,
+   "kind": "segment",
+   "detail": "#11 samples=59 maxGap=16.8ms p99=16.8ms heapAfterGc=84510558 wp=266/267"
+  },
+  {
+   "t": 1789926235108,
+   "kind": "ANOMALY:capsuleBelowFloor",
+   "detail": "feet=[129.06344604492188,-109222.7078125,19.763288497924805] (fall or under-geometry)"
+  },
+  {
+   "t": 1789926336353,
+   "kind": "slowDriverCall",
+   "detail": "pv took 5128ms"
+  },
+  {
+   "t": 1789926355042,
+   "kind": "segment",
+   "detail": "#12 samples=57 maxGap=66.7ms p99=16.8ms heapAfterGc=85081553 wp=266/267"
+  },
+  {
+   "t": 1789926356646,
+   "kind": "ANOMALY:capsuleBelowFloor",
+   "detail": "feet=[122.40988159179688,-289473.45,26.125579833984375] (fall or under-geometry)"
+  },
+  {
+   "t": 1789926475382,
+   "kind": "segment",
+   "detail": "#13 samples=60 maxGap=33.4ms p99=16.8ms heapAfterGc=85220907 wp=266/267"
+  },
+  {
+   "t": 1789926477387,
+   "kind": "ANOMALY:capsuleBelowFloor",
+   "detail": "feet=[124.26310729980469,-385007.8875,20.127498626708984] (fall or under-geometry)"
+  },
+  {
+   "t": 1789926576592,
+   "kind": "slowDriverCall",
+   "detail": "pv took 5147ms"
+  },
+  {
+   "t": 1789926595694,
+   "kind": "segment",
+   "detail": "#14 samples=56 maxGap=66.7ms p99=16.8ms heapAfterGc=84450732 wp=266/267"
+  },
+  {
+   "t": 1789926596899,
+   "kind": "ANOMALY:capsuleBelowFloor",
+   "detail": "feet=[121.40119934082031,-562372.7,25.377790451049805] (fall or under-geometry)"
+  },
+  {
+   "t": 1789926716020,
+   "kind": "segment",
+   "detail": "#15 samples=60 maxGap=33.4ms p99=16.8ms heapAfterGc=85128528 wp=266/267"
+  },
+  {
+   "t": 1789926717628,
+   "kind": "ANOMALY:capsuleBelowFloor",
+   "detail": "feet=[123.6655044555664,-657884.2,19.641597747802734] (fall or under-geometry)"
+  }
+ ],
+ "anomalies": [
+  {
+   "t": 1789926084492,
+   "kind": "capsuleBelowFloor",
+   "detail": "feet=[133.94403076171875,-17.423459243774413,21.46315574645996] (fall or under-geometry)"
+  },
+  {
+   "t": 1789926116338,
+   "kind": "capsuleBelowFloor",
+   "detail": "feet=[97.5324935913086,-16451.530078125,11.429160118103027] (fall or under-geometry)"
+  },
+  {
+   "t": 1789926235108,
+   "kind": "capsuleBelowFloor",
+   "detail": "feet=[129.06344604492188,-109222.7078125,19.763288497924805] (fall or under-geometry)"
+  },
+  {
+   "t": 1789926356646,
+   "kind": "capsuleBelowFloor",
+   "detail": "feet=[122.40988159179688,-289473.45,26.125579833984375] (fall or under-geometry)"
+  },
+  {
+   "t": 1789926477387,
+   "kind": "capsuleBelowFloor",
+   "detail": "feet=[124.26310729980469,-385007.8875,20.127498626708984] (fall or under-geometry)"
+  },
+  {
+   "t": 1789926596899,
+   "kind": "capsuleBelowFloor",
+   "detail": "feet=[121.40119934082031,-562372.7,25.377790451049805] (fall or under-geometry)"
+  },
+  {
+   "t": 1789926717628,
+   "kind": "capsuleBelowFloor",
+   "detail": "feet=[123.6655044555664,-657884.2,19.641597747802734] (fall or under-geometry)"
+  }
+ ],
+ "opCounts": {
+  "pause": 9,
+  "viewSwitch": 9,
+  "blur": 9,
+  "entrySwitch": 0,
+  "fatalPlanned": 0
+ },
+ "steering": {
+  "wpIdx": 266,
+  "wpHits": 266,
+  "meters": 2440.085368730116,
+  "lastFeet": [
+   130.63101196289062,
+   22.255273818969727
+  ],
+  "stallS": 0,
+  "lastMoveT": 1789926727681,
+  "walkingT": 0,
+  "lastStallLogged": 0
+ },
+ "finishedAt": "2026-09-20T17:52:08.947Z",
+ "durationS": 2100.1,
+ "exitRules": {
+  "wallDurationS": 2100.1,
+  "routeWaypointsHit": 266,
+  "routeWaypointsTotal": 267,
+  "routeCompletionFrac": 0.996,
+  "metersWalked": 2440.1,
+  "transitions": {
+   "pause": 9,
+   "viewSwitch": 9,
+   "blur": 9,
+   "entrySwitch": 0,
+   "fatalPlanned": 0
+  },
+  "anomalyCount": 7,
+  "anomalies": [
+   {
+    "t": 1789926084492,
+    "kind": "capsuleBelowFloor",
+    "detail": "feet=[133.94403076171875,-17.423459243774413,21.46315574645996] (fall or under-geometry)"
+   },
+   {
+    "t": 1789926116338,
+    "kind": "capsuleBelowFloor",
+    "detail": "feet=[97.5324935913086,-16451.530078125,11.429160118103027] (fall or under-geometry)"
+   },
+   {
+    "t": 1789926235108,
+    "kind": "capsuleBelowFloor",
+    "detail": "feet=[129.06344604492188,-109222.7078125,19.763288497924805] (fall or under-geometry)"
+   },
+   {
+    "t": 1789926356646,
+    "kind": "capsuleBelowFloor",
+    "detail": "feet=[122.40988159179688,-289473.45,26.125579833984375] (fall or under-geometry)"
+   },
+   {
+    "t": 1789926477387,
+    "kind": "capsuleBelowFloor",
+    "detail": "feet=[124.26310729980469,-385007.8875,20.127498626708984] (fall or under-geometry)"
+   },
+   {
+    "t": 1789926596899,
+    "kind": "capsuleBelowFloor",
+    "detail": "feet=[121.40119934082031,-562372.7,25.377790451049805] (fall or under-geometry)"
+   },
+   {
+    "t": 1789926717628,
+    "kind": "capsuleBelowFloor",
+    "detail": "feet=[123.6655044555664,-657884.2,19.641597747802734] (fall or under-geometry)"
+   }
+  ]
+ }
+}
