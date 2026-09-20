@@ -180,8 +180,8 @@ const readme = `# 方浜市声 · 本地试玩包（${TITLE}）
 - 三角形预算：默认 694,430（上限 700,000 达标）；全开 ${EXPECT_ALLON.toLocaleString()}，超目标 8,066。
 - 世界边界：主街桥东街面末端（x≈127–134, z≈22–28）沿街继续东行会走出可行走面并无限坠落，
   实况行走无坠落防护（长期实测留证，几何/安全网修复待机主决定）。
-- 低配体验：「全开」配置在无 GPU 机器（SwiftShader 软件渲染）下约 2fps，行走呈半速慢放；
-  有 GPU 的机器不受此限。默认配置在同机为满帧。
+- 低配体验：软件渲染（无 GPU 机器）下帧率随视角明显波动：默认配置中位约 5fps、中段近墙视角可
+  达满帧；「全开」中位约 4fps、重视图 1.5–2fps，且重帧会让行走呈半速慢放。有 GPU 的机器不受此限。
 - 上游交付清单的两个 .blend1 备份误列（UP-G1）已于 2026-09-21 修复为已提交树口径并实际核验。
 - 无帧率宣传：本包在同机 Chrome + SwiftShader 软件渲染下验证，无有效硬件实测。
 `;
@@ -225,7 +225,7 @@ const manifest = {
     'candidate pending owner adoption (ownerAdopted=false)',
     'all-on budget exceeds the 700k target by 8066 triangles',
     'world-boundary defect: walking east past the bridge-start end of the main street (x≈127-134, z≈22-28) leaves the walkable surface and free-falls with no in-page fall guard (long-run evidence 2026-09-21; geometry fix pending owner decision)',
-    'all-on display config renders ~2fps under SwiftShader software rendering (no-GPU machines); default config is unaffected',
+    'software-rendering frame rates are view-dependent: default median ~5fps (mid-street light views reach full frame rate), all-on median ~4fps with heavy vistas at 1.5-2fps and half-speed walk during heavy frames (measured 2026-09-21, headless Chrome + SwiftShader)',
     'UP-G1 fixed 2026-09-21: upstream delivery manifest was regenerated to the committed-tree scope and verified against a fresh export',
   ],
   provenance: galleryManifest,

@@ -1,0 +1,314 @@
+{
+ "generatedAt": "2026-09-20T22:06:59.361Z",
+ "env": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+ "runs": [
+  {
+   "run": "s6-mainAB-default-warm",
+   "label": "s6-mainAB-default-warm",
+   "entry": "mainStreet",
+   "config": "default",
+   "track": "mainAB",
+   "env": {
+    "renderer": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+    "viewport": "1280x900",
+    "gcExposed": true,
+    "host": "linux arm64",
+    "note": "dev-server long-run; all numbers software-baseline"
+   },
+   "startedAt": "2026-09-20T21:54:41.527Z",
+   "durationS": 722.5,
+   "route": {
+    "waypointsHit": 121,
+    "waypointsTotal": 267,
+    "completionFrac": 0.453,
+    "metersWalked": 421.6
+   },
+   "transitions": {
+    "pause": 2,
+    "viewSwitch": 2,
+    "blur": 2,
+    "entrySwitch": 0,
+    "fatalPlanned": 0
+   },
+   "stalls": {
+    "totalFrames": 1919,
+    "gapsOver250ms": 1116,
+    "buckets": {
+     "16-250ms": 803,
+     "250ms-1s": 1114,
+     "1-5s": 1,
+     ">5s": 1
+    },
+    "gapP50ms": 333.3,
+    "gapP99ms": 716.6,
+    "gapMaxMs": 5266.5,
+    "top10": [
+     {
+      "gapMs": 5266.5,
+      "at": "21:54:41",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T21:55:02.925Z"
+      },
+      "offsetIntoRunS": 8
+     },
+     {
+      "gapMs": 4116.5,
+      "at": "21:54:41",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T21:55:02.925Z"
+      },
+      "offsetIntoRunS": 13
+     },
+     {
+      "gapMs": 733.4,
+      "at": "21:54:41",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T21:55:02.925Z"
+      },
+      "offsetIntoRunS": 16
+     },
+     {
+      "gapMs": 733.3,
+      "at": "21:54:41",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T21:55:02.925Z"
+      },
+      "offsetIntoRunS": 14
+     },
+     {
+      "gapMs": 733.3,
+      "at": "21:54:41",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T21:55:02.925Z"
+      },
+      "offsetIntoRunS": 16
+     },
+     {
+      "gapMs": 733.3,
+      "at": "21:54:41",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T21:55:02.925Z"
+      },
+      "offsetIntoRunS": 18
+     },
+     {
+      "gapMs": 733.2,
+      "at": "21:54:41",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T21:55:02.925Z"
+      },
+      "offsetIntoRunS": 42
+     },
+     {
+      "gapMs": 716.8,
+      "at": "21:54:41",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T21:55:02.925Z"
+      },
+      "offsetIntoRunS": 42
+     },
+     {
+      "gapMs": 716.7,
+      "at": "21:54:41",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T21:55:02.925Z"
+      },
+      "offsetIntoRunS": 13
+     },
+     {
+      "gapMs": 716.7,
+      "at": "21:54:41",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T21:55:02.925Z"
+      },
+      "offsetIntoRunS": 43
+     }
+    ],
+    "meanFpsSoftwareBaseline": 3.1
+   },
+   "heap": {
+    "plot": [
+     {
+      "tMin": 0.4,
+      "afterGcMB": 79.43,
+      "beforeGcMB": 80.82
+     },
+     {
+      "tMin": 2.4,
+      "afterGcMB": 79.51,
+      "beforeGcMB": 79.99
+     },
+     {
+      "tMin": 4.4,
+      "afterGcMB": 79.64,
+      "beforeGcMB": 80.2
+     },
+     {
+      "tMin": 6.5,
+      "afterGcMB": 79.64,
+      "beforeGcMB": 80.12
+     },
+     {
+      "tMin": 8.5,
+      "afterGcMB": 79.68,
+      "beforeGcMB": 80.08
+     }
+    ],
+    "slopePerHourMB": 1.858,
+    "halfSlopes": null,
+    "segmentsWithoutHeap": 1,
+    "firstAfterGcMB": 79.43,
+    "lastAfterGcMB": 79.68
+   },
+   "resources": {
+    "trianglesValues": [
+     694430
+    ],
+    "trianglesExpected": 694430,
+    "trianglesLocked": true,
+    "first": {
+     "triangles": 694430,
+     "geoms": 496,
+     "mats": 476,
+     "texs": 346
+    },
+    "last": {
+     "triangles": 694430,
+     "geoms": 496,
+     "mats": 476,
+     "texs": 346
+    }
+   },
+   "anomalyCount": 4,
+   "anomalies": [
+    {
+     "t": 1789941967443,
+     "kind": "walkStall",
+     "detail": "held-W but still 10s at [-130.5,28.1] near ms-303 (attempt 1)"
+    },
+    {
+     "t": 1789941975843,
+     "kind": "walkStall",
+     "detail": "held-W but still 8s at [-130.5,28.1] near ms-303 (attempt 2)"
+    },
+    {
+     "t": 1789941984953,
+     "kind": "walkStall",
+     "detail": "held-W but still 9s at [-130.5,28.1] near ms-303 (attempt 3)"
+    },
+    {
+     "t": 1789941991805,
+     "kind": "walkStall",
+     "detail": "held-W but still 9s at [-130.5,28.1] near ms-304 (attempt 1)"
+    }
+   ],
+   "segments": [
+    {
+     "idx": 0,
+     "gapStats": {
+      "count": 195,
+      "p50": 649.9,
+      "p99": 4116.5,
+      "max": 5266.5
+     },
+     "heap": {
+      "beforeGc": 84743460,
+      "afterGc": 83290337,
+      "gcMs": 6.6
+     }
+    },
+    {
+     "idx": 1,
+     "gapStats": {
+      "count": 287,
+      "p50": 433.4,
+      "p99": 700,
+      "max": 716.6
+     },
+     "heap": {
+      "beforeGc": 83878566,
+      "afterGc": 83369513,
+      "gcMs": 8.1
+     }
+    },
+    {
+     "idx": 2,
+     "gapStats": {
+      "count": 536,
+      "p50": 133.3,
+      "p99": 633.3,
+      "max": 716.6
+     },
+     "heap": {
+      "beforeGc": 84095443,
+      "afterGc": 83510024,
+      "gcMs": 19
+     }
+    },
+    {
+     "idx": 3,
+     "gapStats": {
+      "count": 265,
+      "p50": 466.6,
+      "p99": 566.7,
+      "max": 583.3
+     },
+     "heap": {
+      "beforeGc": 84010591,
+      "afterGc": 83512148,
+      "gcMs": 27.2
+     }
+    },
+    {
+     "idx": 4,
+     "gapStats": {
+      "count": 636,
+      "p50": 233.3,
+      "p99": 533.2,
+      "max": 550
+     },
+     "heap": {
+      "beforeGc": 83970152,
+      "afterGc": 83546532,
+      "gcMs": 30.4
+     }
+    },
+    {
+     "idx": "final",
+     "gapStats": null,
+     "heap": null
+    }
+   ]
+  }
+ ]
+}

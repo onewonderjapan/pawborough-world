@@ -1,0 +1,803 @@
+{
+ "label": "s7-mainAB-default-narrow390",
+ "base": "http://127.0.0.1:5420",
+ "entry": "mainStreet",
+ "config": "default",
+ "track": "mainAB",
+ "minutes": 12,
+ "gameUrl": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=mainStreet",
+ "startedAt": "2026-09-20T22:07:10.948Z",
+ "env": {
+  "renderer": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+  "viewport": "390x844",
+  "gcExposed": true,
+  "host": "linux arm64",
+  "note": "dev-server long-run; all numbers software-baseline"
+ },
+ "segments": [
+  {
+   "idx": 0,
+   "file": "segments/seg-000.json",
+   "gapStats": {
+    "count": 41,
+    "p50": 466.6,
+    "p99": 5083.1,
+    "max": 5083.1
+   },
+   "heap": {
+    "beforeGc": 87313338,
+    "afterGc": 85004606,
+    "gcMs": 8.3
+   },
+   "frames": {
+    "total": 42,
+    "g250": 36,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5083.1
+   }
+  },
+  {
+   "idx": 1,
+   "file": "segments/seg-001.json",
+   "gapStats": {
+    "count": 169,
+    "p50": 400,
+    "p99": 3816.4,
+    "max": 5183
+   },
+   "heap": {
+    "beforeGc": 87455212,
+    "afterGc": 86334610,
+    "gcMs": 7
+   },
+   "frames": {
+    "total": 170,
+    "g250": 140,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5183
+   }
+  },
+  {
+   "idx": 2,
+   "file": "segments/seg-002.json",
+   "gapStats": {
+    "count": 1379,
+    "p50": 50,
+    "p99": 433.3,
+    "max": 466.7
+   },
+   "heap": {
+    "beforeGc": 87564989,
+    "afterGc": 86461941,
+    "gcMs": 18.2
+   },
+   "frames": {
+    "total": 1549,
+    "g250": 219,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5183
+   }
+  },
+  {
+   "idx": 3,
+   "file": "segments/seg-003.json",
+   "gapStats": {
+    "count": 1124,
+    "p50": 99.9,
+    "p99": 316.6,
+    "max": 350.1
+   },
+   "heap": {
+    "beforeGc": 87217621,
+    "afterGc": 86499349,
+    "gcMs": 26.2
+   },
+   "frames": {
+    "total": 2673,
+    "g250": 259,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5183
+   }
+  },
+  {
+   "idx": 4,
+   "file": "segments/seg-004.json",
+   "gapStats": {
+    "count": 1453,
+    "p50": 66.8,
+    "p99": 383.3,
+    "max": 433.4
+   },
+   "heap": {
+    "beforeGc": 87981011,
+    "afterGc": 86533977,
+    "gcMs": 28
+   },
+   "frames": {
+    "total": 4126,
+    "g250": 306,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5183
+   }
+  },
+  {
+   "idx": "final",
+   "file": "segments/seg-final.json",
+   "frames": {
+    "total": 4970,
+    "g250": 379,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5183
+   }
+  }
+ ],
+ "events": [
+  {
+   "t": 1789942030949,
+   "kind": "navigate",
+   "detail": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=mainStreet"
+  },
+  {
+   "t": 1789942031915,
+   "kind": "console-error",
+   "detail": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  },
+  {
+   "t": 1789942039582,
+   "kind": "ready",
+   "detail": "tris=694430 feet=[230.9276123046875,0.020000028610229537,47.65022277832031]"
+  },
+  {
+   "t": 1789942043328,
+   "kind": "track",
+   "detail": "mainAB: 267 waypoints"
+  },
+  {
+   "t": 1789942044269,
+   "kind": "waypoint",
+   "detail": "ms-220 dist=0.0"
+  },
+  {
+   "t": 1789942046116,
+   "kind": "waypoint",
+   "detail": "ms-221 dist=1.0"
+  },
+  {
+   "t": 1789942050805,
+   "kind": "waypoint",
+   "detail": "ms-222 dist=0.1"
+  },
+  {
+   "t": 1789942053119,
+   "kind": "waypoint",
+   "detail": "ms-223 dist=0.6"
+  },
+  {
+   "t": 1789942055391,
+   "kind": "waypoint",
+   "detail": "ms-224 dist=1.2"
+  },
+  {
+   "t": 1789942059961,
+   "kind": "waypoint",
+   "detail": "ms-225 dist=0.2"
+  },
+  {
+   "t": 1789942062207,
+   "kind": "waypoint",
+   "detail": "ms-226 dist=0.8"
+  },
+  {
+   "t": 1789942064448,
+   "kind": "waypoint",
+   "detail": "ms-227 dist=1.3"
+  },
+  {
+   "t": 1789942068894,
+   "kind": "waypoint",
+   "detail": "ms-228 dist=0.4"
+  },
+  {
+   "t": 1789942070995,
+   "kind": "waypoint",
+   "detail": "ms-229 dist=0.9"
+  },
+  {
+   "t": 1789942073113,
+   "kind": "waypoint",
+   "detail": "ms-230 dist=1.4"
+  },
+  {
+   "t": 1789942077550,
+   "kind": "waypoint",
+   "detail": "ms-231 dist=0.2"
+  },
+  {
+   "t": 1789942079900,
+   "kind": "waypoint",
+   "detail": "ms-232 dist=0.5"
+  },
+  {
+   "t": 1789942082180,
+   "kind": "waypoint",
+   "detail": "ms-233 dist=0.7"
+  },
+  {
+   "t": 1789942084408,
+   "kind": "waypoint",
+   "detail": "ms-234 dist=0.9"
+  },
+  {
+   "t": 1789942086686,
+   "kind": "waypoint",
+   "detail": "ms-235 dist=1.2"
+  },
+  {
+   "t": 1789942088978,
+   "kind": "waypoint",
+   "detail": "ms-236 dist=1.4"
+  },
+  {
+   "t": 1789942093549,
+   "kind": "waypoint",
+   "detail": "ms-237 dist=0.1"
+  },
+  {
+   "t": 1789942095829,
+   "kind": "waypoint",
+   "detail": "ms-238 dist=0.2"
+  },
+  {
+   "t": 1789942098117,
+   "kind": "waypoint",
+   "detail": "ms-239 dist=0.4"
+  },
+  {
+   "t": 1789942100394,
+   "kind": "waypoint",
+   "detail": "ms-240 dist=0.6"
+  },
+  {
+   "t": 1789942102195,
+   "kind": "waypoint",
+   "detail": "ms-241 dist=0.2"
+  },
+  {
+   "t": 1789942104279,
+   "kind": "waypoint",
+   "detail": "ms-242 dist=1.0"
+  },
+  {
+   "t": 1789942106330,
+   "kind": "waypoint",
+   "detail": "ms-243 dist=0.5"
+  },
+  {
+   "t": 1789942108314,
+   "kind": "waypoint",
+   "detail": "ms-244 dist=0.3"
+  },
+  {
+   "t": 1789942110554,
+   "kind": "waypoint",
+   "detail": "ms-245 dist=0.5"
+  },
+  {
+   "t": 1789942112740,
+   "kind": "waypoint",
+   "detail": "ms-246 dist=0.4"
+  },
+  {
+   "t": 1789942115102,
+   "kind": "waypoint",
+   "detail": "ms-247 dist=0.3"
+  },
+  {
+   "t": 1789942134894,
+   "kind": "ANOMALY:capsuleBelowFloor",
+   "detail": "feet=[68.40416717529297,-967.5878173828125,47.629249572753906] (fall or under-geometry)"
+  },
+  {
+   "t": 1789942134894,
+   "kind": "fallRecovery",
+   "detail": "leaving the fall to the evidence record; recovering via overview re-entry"
+  },
+  {
+   "t": 1789942144784,
+   "kind": "slowDriverCall",
+   "detail": "fallRecovery took 9889ms"
+  },
+  {
+   "t": 1789942147312,
+   "kind": "trackRejoin",
+   "detail": "feet=[124.5999984741211,-1.1920928910669204e-8,27.649999618530273] -> wp 0 (ms-220) dist=0.0"
+  },
+  {
+   "t": 1789942148254,
+   "kind": "waypoint",
+   "detail": "ms-220 dist=0.0"
+  },
+  {
+   "t": 1789942150093,
+   "kind": "waypoint",
+   "detail": "ms-221 dist=1.0"
+  },
+  {
+   "t": 1789942154837,
+   "kind": "waypoint",
+   "detail": "ms-222 dist=0.1"
+  },
+  {
+   "t": 1789942156693,
+   "kind": "waypoint",
+   "detail": "ms-223 dist=0.9"
+  },
+  {
+   "t": 1789942158965,
+   "kind": "waypoint",
+   "detail": "ms-224 dist=1.5"
+  },
+  {
+   "t": 1789942163149,
+   "kind": "waypoint",
+   "detail": "ms-225 dist=0.8"
+  },
+  {
+   "t": 1789942164536,
+   "kind": "segment",
+   "detail": "#0 samples=50 maxGap=5083.1ms p99=5083.1ms heapAfterGc=85004606 wp=34/267"
+  },
+  {
+   "t": 1789942165429,
+   "kind": "waypoint",
+   "detail": "ms-226 dist=1.4"
+  },
+  {
+   "t": 1789942169950,
+   "kind": "waypoint",
+   "detail": "ms-227 dist=0.4"
+  },
+  {
+   "t": 1789942172162,
+   "kind": "waypoint",
+   "detail": "ms-228 dist=1.0"
+  },
+  {
+   "t": 1789942174281,
+   "kind": "waypoint",
+   "detail": "ms-229 dist=1.5"
+  },
+  {
+   "t": 1789942178558,
+   "kind": "waypoint",
+   "detail": "ms-230 dist=0.6"
+  },
+  {
+   "t": 1789942180619,
+   "kind": "waypoint",
+   "detail": "ms-231 dist=1.1"
+  },
+  {
+   "t": 1789942183007,
+   "kind": "waypoint",
+   "detail": "ms-232 dist=1.3"
+  },
+  {
+   "t": 1789942187563,
+   "kind": "waypoint",
+   "detail": "ms-233 dist=0.2"
+  },
+  {
+   "t": 1789942189821,
+   "kind": "waypoint",
+   "detail": "ms-234 dist=0.1"
+  },
+  {
+   "t": 1789942192103,
+   "kind": "waypoint",
+   "detail": "ms-235 dist=0.3"
+  },
+  {
+   "t": 1789942194371,
+   "kind": "waypoint",
+   "detail": "ms-236 dist=0.5"
+  },
+  {
+   "t": 1789942196663,
+   "kind": "waypoint",
+   "detail": "ms-237 dist=0.8"
+  },
+  {
+   "t": 1789942198940,
+   "kind": "waypoint",
+   "detail": "ms-238 dist=1.0"
+  },
+  {
+   "t": 1789942201225,
+   "kind": "waypoint",
+   "detail": "ms-239 dist=1.3"
+  },
+  {
+   "t": 1789942205777,
+   "kind": "waypoint",
+   "detail": "ms-240 dist=0.3"
+  },
+  {
+   "t": 1789942209682,
+   "kind": "ANOMALY:capsuleBelowFloor",
+   "detail": "feet=[84.29285430908203,-370.9519836425781,-10.012618064880371] (fall or under-geometry)"
+  },
+  {
+   "t": 1789942209682,
+   "kind": "fallRecovery",
+   "detail": "leaving the fall to the evidence record; recovering via overview re-entry"
+  },
+  {
+   "t": 1789942219596,
+   "kind": "slowDriverCall",
+   "detail": "fallRecovery took 9912ms"
+  },
+  {
+   "t": 1789942222231,
+   "kind": "trackRejoin",
+   "detail": "feet=[124.5999984741211,0.00009201765060429246,27.649999618530273] -> wp 0 (ms-220) dist=0.0"
+  },
+  {
+   "t": 1789942223177,
+   "kind": "waypoint",
+   "detail": "ms-220 dist=0.0"
+  },
+  {
+   "t": 1789942225012,
+   "kind": "waypoint",
+   "detail": "ms-221 dist=1.0"
+  },
+  {
+   "t": 1789942229698,
+   "kind": "waypoint",
+   "detail": "ms-222 dist=0.1"
+  },
+  {
+   "t": 1789942232024,
+   "kind": "waypoint",
+   "detail": "ms-223 dist=0.6"
+  },
+  {
+   "t": 1789942234308,
+   "kind": "waypoint",
+   "detail": "ms-224 dist=1.2"
+  },
+  {
+   "t": 1789942238910,
+   "kind": "waypoint",
+   "detail": "ms-225 dist=0.2"
+  },
+  {
+   "t": 1789942241174,
+   "kind": "waypoint",
+   "detail": "ms-226 dist=0.8"
+  },
+  {
+   "t": 1789942243432,
+   "kind": "waypoint",
+   "detail": "ms-227 dist=1.3"
+  },
+  {
+   "t": 1789942247922,
+   "kind": "waypoint",
+   "detail": "ms-228 dist=0.4"
+  },
+  {
+   "t": 1789942250055,
+   "kind": "waypoint",
+   "detail": "ms-229 dist=0.9"
+  },
+  {
+   "t": 1789942252207,
+   "kind": "waypoint",
+   "detail": "ms-230 dist=1.4"
+  },
+  {
+   "t": 1789942256672,
+   "kind": "waypoint",
+   "detail": "ms-231 dist=0.2"
+  },
+  {
+   "t": 1789942259061,
+   "kind": "waypoint",
+   "detail": "ms-232 dist=0.5"
+  },
+  {
+   "t": 1789942261371,
+   "kind": "waypoint",
+   "detail": "ms-233 dist=0.7"
+  },
+  {
+   "t": 1789942263620,
+   "kind": "waypoint",
+   "detail": "ms-234 dist=0.9"
+  },
+  {
+   "t": 1789942265901,
+   "kind": "waypoint",
+   "detail": "ms-235 dist=1.2"
+  },
+  {
+   "t": 1789942268217,
+   "kind": "waypoint",
+   "detail": "ms-236 dist=1.4"
+  },
+  {
+   "t": 1789942272863,
+   "kind": "waypoint",
+   "detail": "ms-237 dist=0.1"
+  },
+  {
+   "t": 1789942275170,
+   "kind": "waypoint",
+   "detail": "ms-238 dist=0.2"
+  },
+  {
+   "t": 1789942277515,
+   "kind": "waypoint",
+   "detail": "ms-239 dist=0.4"
+  },
+  {
+   "t": 1789942279809,
+   "kind": "waypoint",
+   "detail": "ms-240 dist=0.6"
+  },
+  {
+   "t": 1789942281610,
+   "kind": "waypoint",
+   "detail": "ms-241 dist=0.2"
+  },
+  {
+   "t": 1789942283678,
+   "kind": "waypoint",
+   "detail": "ms-242 dist=1.0"
+  },
+  {
+   "t": 1789942285064,
+   "kind": "segment",
+   "detail": "#1 samples=49 maxGap=5183ms p99=3816.4ms heapAfterGc=86334610 wp=72/267"
+  },
+  {
+   "t": 1789942285744,
+   "kind": "waypoint",
+   "detail": "ms-243 dist=0.5"
+  },
+  {
+   "t": 1789942287734,
+   "kind": "waypoint",
+   "detail": "ms-244 dist=0.3"
+  },
+  {
+   "t": 1789942289984,
+   "kind": "waypoint",
+   "detail": "ms-245 dist=0.5"
+  },
+  {
+   "t": 1789942292172,
+   "kind": "waypoint",
+   "detail": "ms-246 dist=0.4"
+  },
+  {
+   "t": 1789942294536,
+   "kind": "waypoint",
+   "detail": "ms-247 dist=0.3"
+  },
+  {
+   "t": 1789942340926,
+   "kind": "waypoint",
+   "detail": "detour@ms248-28 dist=0.6"
+  },
+  {
+   "t": 1789942340926,
+   "kind": "waypoint",
+   "detail": "detour@ms248-29 dist=0.8"
+  },
+  {
+   "t": 1789942349537,
+   "kind": "slowDriverCall",
+   "detail": "pv took 5831ms"
+  },
+  {
+   "t": 1789942378622,
+   "kind": "waypoint",
+   "detail": "detour@ms248-30 dist=1.4"
+  },
+  {
+   "t": 1789942378622,
+   "kind": "waypoint",
+   "detail": "detour@ms248-31 dist=0.5"
+  },
+  {
+   "t": 1789942383253,
+   "kind": "waypoint",
+   "detail": "detour@ms248-32 dist=1.1"
+  },
+  {
+   "t": 1789942393823,
+   "kind": "waypoint",
+   "detail": "detour@ms248-33 dist=0.9"
+  },
+  {
+   "t": 1789942405762,
+   "kind": "segment",
+   "detail": "#2 samples=52 maxGap=466.7ms p99=433.3ms heapAfterGc=86461941 wp=83/267"
+  },
+  {
+   "t": 1789942409325,
+   "kind": "waypoint",
+   "detail": "detour@ms248-34 dist=1.3"
+  },
+  {
+   "t": 1789942437206,
+   "kind": "waypoint",
+   "detail": "detour@ms248-35 dist=1.4"
+  },
+  {
+   "t": 1789942478421,
+   "kind": "waypoint",
+   "detail": "detour@ms248-36 dist=1.5"
+  },
+  {
+   "t": 1789942487071,
+   "kind": "waypoint",
+   "detail": "detour@ms248-37 dist=1.4"
+  },
+  {
+   "t": 1789942487071,
+   "kind": "waypoint",
+   "detail": "detour@ms248-38 dist=0.9"
+  },
+  {
+   "t": 1789942487071,
+   "kind": "waypoint",
+   "detail": "detour@ms248-39 dist=1.5"
+  },
+  {
+   "t": 1789942487071,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-40 dist=0.9"
+  },
+  {
+   "t": 1789942487071,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-41 dist=1.4"
+  },
+  {
+   "t": 1789942505093,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-42 dist=1.4"
+  },
+  {
+   "t": 1789942526699,
+   "kind": "segment",
+   "detail": "#3 samples=55 maxGap=350.1ms p99=316.6ms heapAfterGc=86499349 wp=92/267"
+  },
+  {
+   "t": 1789942569059,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-43 dist=1.4"
+  },
+  {
+   "t": 1789942571431,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-44 dist=1.4"
+  },
+  {
+   "t": 1789942573457,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-45 dist=1.4"
+  },
+  {
+   "t": 1789942573457,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-46 dist=0.6"
+  },
+  {
+   "t": 1789942588845,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-47 dist=1.1"
+  },
+  {
+   "t": 1789942588845,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-48 dist=0.6"
+  },
+  {
+   "t": 1789942588845,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-49 dist=1.3"
+  },
+  {
+   "t": 1789942606711,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-50 dist=1.1"
+  },
+  {
+   "t": 1789942649670,
+   "kind": "slowDriverCall",
+   "detail": "pv took 5773ms"
+  },
+  {
+   "t": 1789942654525,
+   "kind": "segment",
+   "detail": "#4 samples=54 maxGap=433.4ms p99=383.3ms heapAfterGc=86533977 wp=100/267"
+  },
+  {
+   "t": 1789942744436,
+   "kind": "waypoint",
+   "detail": "ms-248 dist=0.2"
+  }
+ ],
+ "anomalies": [
+  {
+   "t": 1789942134894,
+   "kind": "capsuleBelowFloor",
+   "detail": "feet=[68.40416717529297,-967.5878173828125,47.629249572753906] (fall or under-geometry)"
+  },
+  {
+   "t": 1789942209682,
+   "kind": "capsuleBelowFloor",
+   "detail": "feet=[84.29285430908203,-370.9519836425781,-10.012618064880371] (fall or under-geometry)"
+  }
+ ],
+ "opCounts": {
+  "pause": 2,
+  "viewSwitch": 2,
+  "blur": 2,
+  "entrySwitch": 2,
+  "fatalPlanned": 0
+ },
+ "steering": {
+  "wpIdx": 52,
+  "wpHits": 101,
+  "meters": 889.2815607723854,
+  "lastFeet": [
+   53.994136810302734,
+   -6.863844394683838
+  ],
+  "stallS": 0,
+  "lastMoveT": 1789942750498,
+  "walkingT": 0,
+  "lastStallLogged": 0
+ },
+ "finishedAt": "2026-09-20T22:19:11.951Z",
+ "durationS": 721,
+ "exitRules": {
+  "wallDurationS": 721,
+  "routeWaypointsHit": 101,
+  "routeWaypointsTotal": 267,
+  "routeCompletionFrac": 0.378,
+  "metersWalked": 889.3,
+  "transitions": {
+   "pause": 2,
+   "viewSwitch": 2,
+   "blur": 2,
+   "entrySwitch": 2,
+   "fatalPlanned": 0
+  },
+  "anomalyCount": 2,
+  "anomalies": [
+   {
+    "t": 1789942134894,
+    "kind": "capsuleBelowFloor",
+    "detail": "feet=[68.40416717529297,-967.5878173828125,47.629249572753906] (fall or under-geometry)"
+   },
+   {
+    "t": 1789942209682,
+    "kind": "capsuleBelowFloor",
+    "detail": "feet=[84.29285430908203,-370.9519836425781,-10.012618064880371] (fall or under-geometry)"
+   }
+  ]
+ }
+}

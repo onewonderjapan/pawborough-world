@@ -1,0 +1,792 @@
+{
+ "generatedAt": "2026-09-20T21:54:32.833Z",
+ "env": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+ "runs": [
+  {
+   "run": "s5-laneA-allon-heap62",
+   "label": "s5-laneA-allon-heap62",
+   "entry": "laneA",
+   "config": "allOn",
+   "track": "laneALoop",
+   "env": {
+    "renderer": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+    "viewport": "1280x900",
+    "gcExposed": true,
+    "host": "linux arm64",
+    "note": "dev-server long-run; all numbers software-baseline"
+   },
+   "startedAt": "2026-09-20T20:47:02.922Z",
+   "durationS": 3721.9,
+   "route": {
+    "waypointsHit": 96,
+    "waypointsTotal": 97,
+    "completionFrac": 0.99,
+    "metersWalked": 426.4
+   },
+   "transitions": {
+    "pause": 12,
+    "viewSwitch": 12,
+    "blur": 12,
+    "entrySwitch": 0,
+    "fatalPlanned": 0
+   },
+   "stalls": {
+    "totalFrames": 16194,
+    "gapsOver250ms": 5898,
+    "buckets": {
+     "16-250ms": 10296,
+     "250ms-1s": 5893,
+     "1-5s": 5,
+     ">5s": 0
+    },
+    "gapP50ms": 250,
+    "gapP99ms": 599.9,
+    "gapMaxMs": 4849.8,
+    "top10": [
+     {
+      "gapMs": 4849.8,
+      "at": "20:47:02",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T20:47:13.108Z"
+      },
+      "offsetIntoRunS": 9
+     },
+     {
+      "gapMs": 2216.5,
+      "at": "20:47:02",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T20:47:13.108Z"
+      },
+      "offsetIntoRunS": 26
+     },
+     {
+      "gapMs": 2216.5,
+      "at": "20:47:02",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T20:47:13.108Z"
+      },
+      "offsetIntoRunS": 32
+     },
+     {
+      "gapMs": 1883.2,
+      "at": "20:47:02",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T20:47:13.108Z"
+      },
+      "offsetIntoRunS": 23
+     },
+     {
+      "gapMs": 1349.9,
+      "at": "20:47:02",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T20:47:13.108Z"
+      },
+      "offsetIntoRunS": 29
+     },
+     {
+      "gapMs": 833.3,
+      "at": "20:47:03",
+      "seg": 3,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T20:53:18.463Z"
+      },
+      "offsetIntoRunS": 392
+     },
+     {
+      "gapMs": 816.7,
+      "at": "20:47:03",
+      "seg": 3,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T20:53:18.463Z"
+      },
+      "offsetIntoRunS": 395
+     },
+     {
+      "gapMs": 816.6,
+      "at": "20:47:03",
+      "seg": 3,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T20:53:18.463Z"
+      },
+      "offsetIntoRunS": 394
+     },
+     {
+      "gapMs": 800,
+      "at": "20:47:03",
+      "seg": 3,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T20:53:18.463Z"
+      },
+      "offsetIntoRunS": 393
+     },
+     {
+      "gapMs": 783.3,
+      "at": "20:47:02",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T20:47:13.108Z"
+      },
+      "offsetIntoRunS": 29
+     }
+    ],
+    "meanFpsSoftwareBaseline": 4.4
+   },
+   "heap": {
+    "plot": [
+     {
+      "tMin": 0.2,
+      "afterGcMB": 81.3,
+      "beforeGcMB": 82.32
+     },
+     {
+      "tMin": 2.2,
+      "afterGcMB": 81.39,
+      "beforeGcMB": 83.5
+     },
+     {
+      "tMin": 4.2,
+      "afterGcMB": 81.51,
+      "beforeGcMB": 83.55
+     },
+     {
+      "tMin": 6.3,
+      "afterGcMB": 81.53,
+      "beforeGcMB": 82.83
+     },
+     {
+      "tMin": 8.3,
+      "afterGcMB": 81.58,
+      "beforeGcMB": 83.33
+     },
+     {
+      "tMin": 10.3,
+      "afterGcMB": 81.59,
+      "beforeGcMB": 82.79
+     },
+     {
+      "tMin": 12.4,
+      "afterGcMB": 81.61,
+      "beforeGcMB": 82.33
+     },
+     {
+      "tMin": 14.4,
+      "afterGcMB": 81.63,
+      "beforeGcMB": 82.3
+     },
+     {
+      "tMin": 16.4,
+      "afterGcMB": 81.64,
+      "beforeGcMB": 82.68
+     },
+     {
+      "tMin": 18.4,
+      "afterGcMB": 81.65,
+      "beforeGcMB": 82.28
+     },
+     {
+      "tMin": 20.4,
+      "afterGcMB": 81.65,
+      "beforeGcMB": 82.82
+     },
+     {
+      "tMin": 22.4,
+      "afterGcMB": 81.66,
+      "beforeGcMB": 82.3
+     },
+     {
+      "tMin": 24.5,
+      "afterGcMB": 81.67,
+      "beforeGcMB": 82.36
+     },
+     {
+      "tMin": 26.5,
+      "afterGcMB": 81.67,
+      "beforeGcMB": 82.96
+     },
+     {
+      "tMin": 28.5,
+      "afterGcMB": 81.69,
+      "beforeGcMB": 82.4
+     },
+     {
+      "tMin": 30.5,
+      "afterGcMB": 81.69,
+      "beforeGcMB": 82.34
+     },
+     {
+      "tMin": 32.5,
+      "afterGcMB": 81.7,
+      "beforeGcMB": 82.93
+     },
+     {
+      "tMin": 34.5,
+      "afterGcMB": 81.72,
+      "beforeGcMB": 82.29
+     },
+     {
+      "tMin": 36.6,
+      "afterGcMB": 81.72,
+      "beforeGcMB": 82.49
+     },
+     {
+      "tMin": 38.6,
+      "afterGcMB": 81.73,
+      "beforeGcMB": 82.77
+     },
+     {
+      "tMin": 40.6,
+      "afterGcMB": 81.73,
+      "beforeGcMB": 82.56
+     },
+     {
+      "tMin": 42.6,
+      "afterGcMB": 81.74,
+      "beforeGcMB": 82.83
+     },
+     {
+      "tMin": 44.6,
+      "afterGcMB": 81.75,
+      "beforeGcMB": 82.38
+     },
+     {
+      "tMin": 46.6,
+      "afterGcMB": 81.74,
+      "beforeGcMB": 82.94
+     },
+     {
+      "tMin": 48.7,
+      "afterGcMB": 81.75,
+      "beforeGcMB": 82.8
+     },
+     {
+      "tMin": 50.7,
+      "afterGcMB": 81.75,
+      "beforeGcMB": 82.8
+     },
+     {
+      "tMin": 52.7,
+      "afterGcMB": 81.77,
+      "beforeGcMB": 82.97
+     },
+     {
+      "tMin": 54.7,
+      "afterGcMB": 81.75,
+      "beforeGcMB": 82.5
+     },
+     {
+      "tMin": 56.7,
+      "afterGcMB": 81.75,
+      "beforeGcMB": 82.48
+     },
+     {
+      "tMin": 58.7,
+      "afterGcMB": 81.75,
+      "beforeGcMB": 82.24
+     }
+    ],
+    "slopePerHourMB": 0.321,
+    "halfSlopes": {
+     "firstHalfMBPerH": 0.646,
+     "secondHalfMBPerH": 0.124
+    },
+    "segmentsWithoutHeap": 1,
+    "firstAfterGcMB": 81.3,
+    "lastAfterGcMB": 81.75
+   },
+   "resources": {
+    "trianglesValues": [
+     708066
+    ],
+    "trianglesExpected": 708066,
+    "trianglesLocked": true,
+    "first": {
+     "triangles": 708066,
+     "geoms": 648,
+     "mats": 563,
+     "texs": 518
+    },
+    "last": {
+     "triangles": 708066,
+     "geoms": 648,
+     "mats": 563,
+     "texs": 518
+    }
+   },
+   "anomalyCount": 4,
+   "anomalies": [
+    {
+     "t": 1789937631057,
+     "kind": "walkStall",
+     "detail": "held-W but still 9s at [-130.5,28.1] near ms-303 (attempt 1)"
+    },
+    {
+     "t": 1789937639748,
+     "kind": "walkStall",
+     "detail": "held-W but still 9s at [-130.5,28.1] near ms-303 (attempt 2)"
+    },
+    {
+     "t": 1789937648460,
+     "kind": "walkStall",
+     "detail": "held-W but still 9s at [-130.5,28.1] near ms-303 (attempt 3)"
+    },
+    {
+     "t": 1789937654706,
+     "kind": "walkStall",
+     "detail": "held-W but still 8s at [-130.5,28.1] near ms-304 (attempt 1)"
+    }
+   ],
+   "segments": [
+    {
+     "idx": 0,
+     "gapStats": {
+      "count": 259,
+      "p50": 533.4,
+      "p99": 2216.5,
+      "max": 4849.8
+     },
+     "heap": {
+      "beforeGc": 86313834,
+      "afterGc": 85247626,
+      "gcMs": 6.5
+     }
+    },
+    {
+     "idx": 1,
+     "gapStats": {
+      "count": 269,
+      "p50": 433.3,
+      "p99": 583.3,
+      "max": 583.4
+     },
+     "heap": {
+      "beforeGc": 87551813,
+      "afterGc": 85347510,
+      "gcMs": 10.2
+     }
+    },
+    {
+     "idx": 2,
+     "gapStats": {
+      "count": 669,
+      "p50": 166.7,
+      "p99": 533.3,
+      "max": 566.7
+     },
+     "heap": {
+      "beforeGc": 87606299,
+      "afterGc": 85468205,
+      "gcMs": 18.5
+     }
+    },
+    {
+     "idx": 3,
+     "gapStats": {
+      "count": 281,
+      "p50": 416.6,
+      "p99": 816.6,
+      "max": 833.3
+     },
+     "heap": {
+      "beforeGc": 86854628,
+      "afterGc": 85490517,
+      "gcMs": 30.4
+     }
+    },
+    {
+     "idx": 4,
+     "gapStats": {
+      "count": 606,
+      "p50": 133.2,
+      "p99": 700,
+      "max": 766.7
+     },
+     "heap": {
+      "beforeGc": 87373406,
+      "afterGc": 85540049,
+      "gcMs": 27.4
+     }
+    },
+    {
+     "idx": 5,
+     "gapStats": {
+      "count": 462,
+      "p50": 250,
+      "p99": 600,
+      "max": 733.3
+     },
+     "heap": {
+      "beforeGc": 86808051,
+      "afterGc": 85553381,
+      "gcMs": 28.9
+     }
+    },
+    {
+     "idx": 6,
+     "gapStats": {
+      "count": 475,
+      "p50": 250,
+      "p99": 266.8,
+      "max": 283.3
+     },
+     "heap": {
+      "beforeGc": 86329644,
+      "afterGc": 85575337,
+      "gcMs": 34.8
+     }
+    },
+    {
+     "idx": 7,
+     "gapStats": {
+      "count": 701,
+      "p50": 250,
+      "p99": 283.3,
+      "max": 333.3
+     },
+     "heap": {
+      "beforeGc": 86295966,
+      "afterGc": 85593829,
+      "gcMs": 32.7
+     }
+    },
+    {
+     "idx": 8,
+     "gapStats": {
+      "count": 475,
+      "p50": 250,
+      "p99": 266.8,
+      "max": 283.4
+     },
+     "heap": {
+      "beforeGc": 86698608,
+      "afterGc": 85606313,
+      "gcMs": 29.6
+     }
+    },
+    {
+     "idx": 9,
+     "gapStats": {
+      "count": 701,
+      "p50": 250,
+      "p99": 283.3,
+      "max": 350
+     },
+     "heap": {
+      "beforeGc": 86279154,
+      "afterGc": 85620829,
+      "gcMs": 28.2
+     }
+    },
+    {
+     "idx": 10,
+     "gapStats": {
+      "count": 476,
+      "p50": 250,
+      "p99": 283.3,
+      "max": 283.4
+     },
+     "heap": {
+      "beforeGc": 86845548,
+      "afterGc": 85620769,
+      "gcMs": 34
+     }
+    },
+    {
+     "idx": 11,
+     "gapStats": {
+      "count": 474,
+      "p50": 250,
+      "p99": 283.3,
+      "max": 283.4
+     },
+     "heap": {
+      "beforeGc": 86300024,
+      "afterGc": 85630489,
+      "gcMs": 33.9
+     }
+    },
+    {
+     "idx": 12,
+     "gapStats": {
+      "count": 702,
+      "p50": 250,
+      "p99": 266.7,
+      "max": 366.6
+     },
+     "heap": {
+      "beforeGc": 86364334,
+      "afterGc": 85634993,
+      "gcMs": 33.9
+     }
+    },
+    {
+     "idx": 13,
+     "gapStats": {
+      "count": 475,
+      "p50": 250,
+      "p99": 266.8,
+      "max": 283.4
+     },
+     "heap": {
+      "beforeGc": 86988860,
+      "afterGc": 85635329,
+      "gcMs": 29.7
+     }
+    },
+    {
+     "idx": 14,
+     "gapStats": {
+      "count": 703,
+      "p50": 250,
+      "p99": 266.8,
+      "max": 350
+     },
+     "heap": {
+      "beforeGc": 86405122,
+      "afterGc": 85655533,
+      "gcMs": 34.2
+     }
+    },
+    {
+     "idx": 15,
+     "gapStats": {
+      "count": 476,
+      "p50": 250,
+      "p99": 266.8,
+      "max": 283.4
+     },
+     "heap": {
+      "beforeGc": 86339388,
+      "afterGc": 85660189,
+      "gcMs": 34
+     }
+    },
+    {
+     "idx": 16,
+     "gapStats": {
+      "count": 474,
+      "p50": 250,
+      "p99": 283.3,
+      "max": 316.7
+     },
+     "heap": {
+      "beforeGc": 86957168,
+      "afterGc": 85667373,
+      "gcMs": 30.5
+     }
+    },
+    {
+     "idx": 17,
+     "gapStats": {
+      "count": 702,
+      "p50": 250,
+      "p99": 266.8,
+      "max": 366.7
+     },
+     "heap": {
+      "beforeGc": 86285478,
+      "afterGc": 85691465,
+      "gcMs": 29.9
+     }
+    },
+    {
+     "idx": 18,
+     "gapStats": {
+      "count": 474,
+      "p50": 250,
+      "p99": 266.8,
+      "max": 283.3
+     },
+     "heap": {
+      "beforeGc": 86499252,
+      "afterGc": 85692417,
+      "gcMs": 30.6
+     }
+    },
+    {
+     "idx": 19,
+     "gapStats": {
+      "count": 699,
+      "p50": 250,
+      "p99": 283.2,
+      "max": 350
+     },
+     "heap": {
+      "beforeGc": 86795842,
+      "afterGc": 85703293,
+      "gcMs": 34.1
+     }
+    },
+    {
+     "idx": 20,
+     "gapStats": {
+      "count": 474,
+      "p50": 250,
+      "p99": 266.8,
+      "max": 316.6
+     },
+     "heap": {
+      "beforeGc": 86569964,
+      "afterGc": 85704993,
+      "gcMs": 35.2
+     }
+    },
+    {
+     "idx": 21,
+     "gapStats": {
+      "count": 473,
+      "p50": 250,
+      "p99": 283.4,
+      "max": 300.1
+     },
+     "heap": {
+      "beforeGc": 86856572,
+      "afterGc": 85714577,
+      "gcMs": 35.7
+     }
+    },
+    {
+     "idx": 22,
+     "gapStats": {
+      "count": 698,
+      "p50": 250,
+      "p99": 283.4,
+      "max": 333.3
+     },
+     "heap": {
+      "beforeGc": 86381534,
+      "afterGc": 85716193,
+      "gcMs": 33.1
+     }
+    },
+    {
+     "idx": 23,
+     "gapStats": {
+      "count": 477,
+      "p50": 250,
+      "p99": 266.8,
+      "max": 300
+     },
+     "heap": {
+      "beforeGc": 86971052,
+      "afterGc": 85714701,
+      "gcMs": 29
+     }
+    },
+    {
+     "idx": 24,
+     "gapStats": {
+      "count": 702,
+      "p50": 250,
+      "p99": 266.8,
+      "max": 350.1
+     },
+     "heap": {
+      "beforeGc": 86820382,
+      "afterGc": 85725325,
+      "gcMs": 33.4
+     }
+    },
+    {
+     "idx": 25,
+     "gapStats": {
+      "count": 472,
+      "p50": 250,
+      "p99": 283.2,
+      "max": 283.4
+     },
+     "heap": {
+      "beforeGc": 86825132,
+      "afterGc": 85725697,
+      "gcMs": 34.5
+     }
+    },
+    {
+     "idx": 26,
+     "gapStats": {
+      "count": 473,
+      "p50": 250,
+      "p99": 283.2,
+      "max": 300
+     },
+     "heap": {
+      "beforeGc": 87000508,
+      "afterGc": 85737661,
+      "gcMs": 32.9
+     }
+    },
+    {
+     "idx": 27,
+     "gapStats": {
+      "count": 700,
+      "p50": 250,
+      "p99": 283.3,
+      "max": 350
+     },
+     "heap": {
+      "beforeGc": 86505566,
+      "afterGc": 85726189,
+      "gcMs": 35.9
+     }
+    },
+    {
+     "idx": 28,
+     "gapStats": {
+      "count": 473,
+      "p50": 250,
+      "p99": 283.3,
+      "max": 300
+     },
+     "heap": {
+      "beforeGc": 86481764,
+      "afterGc": 85723821,
+      "gcMs": 29.1
+     }
+    },
+    {
+     "idx": 29,
+     "gapStats": {
+      "count": 699,
+      "p50": 250,
+      "p99": 283.3,
+      "max": 349.9
+     },
+     "heap": {
+      "beforeGc": 86236578,
+      "afterGc": 85725785,
+      "gcMs": 28.2
+     }
+    },
+    {
+     "idx": "final",
+     "gapStats": null,
+     "heap": null
+    }
+   ]
+  }
+ ]
+}

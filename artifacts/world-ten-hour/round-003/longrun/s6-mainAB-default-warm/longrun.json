@@ -1,0 +1,927 @@
+{
+ "label": "s6-mainAB-default-warm",
+ "base": "http://127.0.0.1:5420",
+ "entry": "mainStreet",
+ "config": "default",
+ "track": "mainAB",
+ "minutes": 12,
+ "gameUrl": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=mainStreet",
+ "startedAt": "2026-09-20T21:54:41.527Z",
+ "env": {
+  "renderer": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+  "viewport": "1280x900",
+  "gcExposed": true,
+  "host": "linux arm64",
+  "note": "dev-server long-run; all numbers software-baseline"
+ },
+ "segments": [
+  {
+   "idx": 0,
+   "file": "segments/seg-000.json",
+   "gapStats": {
+    "count": 195,
+    "p50": 649.9,
+    "p99": 4116.5,
+    "max": 5266.5
+   },
+   "heap": {
+    "beforeGc": 84743460,
+    "afterGc": 83290337,
+    "gcMs": 6.6
+   },
+   "frames": {
+    "total": 196,
+    "g250": 190,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5266.5
+   }
+  },
+  {
+   "idx": 1,
+   "file": "segments/seg-001.json",
+   "gapStats": {
+    "count": 287,
+    "p50": 433.4,
+    "p99": 700,
+    "max": 716.6
+   },
+   "heap": {
+    "beforeGc": 83878566,
+    "afterGc": 83369513,
+    "gcMs": 8.1
+   },
+   "frames": {
+    "total": 483,
+    "g250": 395,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5266.5
+   }
+  },
+  {
+   "idx": 2,
+   "file": "segments/seg-002.json",
+   "gapStats": {
+    "count": 536,
+    "p50": 133.3,
+    "p99": 633.3,
+    "max": 716.6
+   },
+   "heap": {
+    "beforeGc": 84095443,
+    "afterGc": 83510024,
+    "gcMs": 19
+   },
+   "frames": {
+    "total": 1019,
+    "g250": 614,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5266.5
+   }
+  },
+  {
+   "idx": 3,
+   "file": "segments/seg-003.json",
+   "gapStats": {
+    "count": 265,
+    "p50": 466.6,
+    "p99": 566.7,
+    "max": 583.3
+   },
+   "heap": {
+    "beforeGc": 84010591,
+    "afterGc": 83512148,
+    "gcMs": 27.2
+   },
+   "frames": {
+    "total": 1284,
+    "g250": 879,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5266.5
+   }
+  },
+  {
+   "idx": 4,
+   "file": "segments/seg-004.json",
+   "gapStats": {
+    "count": 636,
+    "p50": 233.3,
+    "p99": 533.2,
+    "max": 550
+   },
+   "heap": {
+    "beforeGc": 83970152,
+    "afterGc": 83546532,
+    "gcMs": 30.4
+   },
+   "frames": {
+    "total": 1920,
+    "g250": 1116,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5266.5
+   }
+  },
+  {
+   "idx": "final",
+   "file": "segments/seg-final.json",
+   "frames": {
+    "total": 2094,
+    "g250": 1254,
+    "g1000": 2,
+    "g5000": 1,
+    "maxGapMs": 5266.5
+   }
+  }
+ ],
+ "events": [
+  {
+   "t": 1789941281527,
+   "kind": "navigate",
+   "detail": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=mainStreet [warm: cold load first, measured run is the reload]"
+  },
+  {
+   "t": 1789941282481,
+   "kind": "console-error",
+   "detail": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  },
+  {
+   "t": 1789941290264,
+   "kind": "warmupColdLoad",
+   "detail": "cold load ready in 8469ms; reloading for the warm measured run"
+  },
+  {
+   "t": 1789941298727,
+   "kind": "warmStartReady",
+   "detail": "warm reload ready in 8463ms"
+  },
+  {
+   "t": 1789941298738,
+   "kind": "ready",
+   "detail": "tris=694430 feet=[230.9276123046875,0.020000028610229537,47.65022277832031]"
+  },
+  {
+   "t": 1789941302924,
+   "kind": "track",
+   "detail": "mainAB: 267 waypoints"
+  },
+  {
+   "t": 1789941304373,
+   "kind": "waypoint",
+   "detail": "ms-220 dist=0.0"
+  },
+  {
+   "t": 1789941307271,
+   "kind": "waypoint",
+   "detail": "ms-221 dist=1.0"
+  },
+  {
+   "t": 1789941311481,
+   "kind": "waypoint",
+   "detail": "ms-222 dist=1.3"
+  },
+  {
+   "t": 1789941316378,
+   "kind": "waypoint",
+   "detail": "ms-223 dist=1.2"
+  },
+  {
+   "t": 1789941320394,
+   "kind": "waypoint",
+   "detail": "ms-224 dist=1.5"
+  },
+  {
+   "t": 1789941325117,
+   "kind": "waypoint",
+   "detail": "ms-225 dist=1.4"
+  },
+  {
+   "t": 1789941331293,
+   "kind": "waypoint",
+   "detail": "ms-226 dist=0.8"
+  },
+  {
+   "t": 1789941335582,
+   "kind": "waypoint",
+   "detail": "ms-227 dist=1.0"
+  },
+  {
+   "t": 1789941339786,
+   "kind": "waypoint",
+   "detail": "ms-228 dist=1.3"
+  },
+  {
+   "t": 1789941343910,
+   "kind": "waypoint",
+   "detail": "ms-229 dist=1.5"
+  },
+  {
+   "t": 1789941350380,
+   "kind": "waypoint",
+   "detail": "ms-230 dist=0.6"
+  },
+  {
+   "t": 1789941352821,
+   "kind": "waypoint",
+   "detail": "ms-231 dist=1.4"
+  },
+  {
+   "t": 1789941357165,
+   "kind": "waypoint",
+   "detail": "ms-232 dist=1.3"
+  },
+  {
+   "t": 1789941363391,
+   "kind": "waypoint",
+   "detail": "ms-233 dist=0.4"
+  },
+  {
+   "t": 1789941367637,
+   "kind": "waypoint",
+   "detail": "ms-234 dist=0.4"
+  },
+  {
+   "t": 1789941369996,
+   "kind": "waypoint",
+   "detail": "ms-235 dist=1.2"
+  },
+  {
+   "t": 1789941374418,
+   "kind": "waypoint",
+   "detail": "ms-236 dist=0.8"
+  },
+  {
+   "t": 1789941378634,
+   "kind": "waypoint",
+   "detail": "ms-237 dist=0.5"
+  },
+  {
+   "t": 1789941380756,
+   "kind": "waypoint",
+   "detail": "ms-238 dist=1.3"
+  },
+  {
+   "t": 1789941385116,
+   "kind": "waypoint",
+   "detail": "ms-239 dist=1.0"
+  },
+  {
+   "t": 1789941389549,
+   "kind": "waypoint",
+   "detail": "ms-240 dist=0.6"
+  },
+  {
+   "t": 1789941392525,
+   "kind": "waypoint",
+   "detail": "ms-241 dist=1.0"
+  },
+  {
+   "t": 1789941398785,
+   "kind": "waypoint",
+   "detail": "ms-242 dist=0.5"
+  },
+  {
+   "t": 1789941407249,
+   "kind": "waypoint",
+   "detail": "ms-243 dist=0.7"
+  },
+  {
+   "t": 1789941416007,
+   "kind": "waypoint",
+   "detail": "ms-244 dist=0.9"
+  },
+  {
+   "t": 1789941425092,
+   "kind": "segment",
+   "detail": "#0 samples=55 maxGap=5266.5ms p99=4116.5ms heapAfterGc=83290337 wp=25/267"
+  },
+  {
+   "t": 1789941426475,
+   "kind": "waypoint",
+   "detail": "ms-245 dist=0.5"
+  },
+  {
+   "t": 1789941435279,
+   "kind": "waypoint",
+   "detail": "ms-246 dist=0.7"
+  },
+  {
+   "t": 1789941444523,
+   "kind": "waypoint",
+   "detail": "ms-247 dist=0.6"
+  },
+  {
+   "t": 1789941457252,
+   "kind": "waypoint",
+   "detail": "detour@ms248-28 dist=1.4"
+  },
+  {
+   "t": 1789941459408,
+   "kind": "waypoint",
+   "detail": "detour@ms248-29 dist=0.9"
+  },
+  {
+   "t": 1789941461249,
+   "kind": "waypoint",
+   "detail": "detour@ms248-30 dist=0.4"
+  },
+  {
+   "t": 1789941461249,
+   "kind": "waypoint",
+   "detail": "detour@ms248-31 dist=1.2"
+  },
+  {
+   "t": 1789941463340,
+   "kind": "waypoint",
+   "detail": "detour@ms248-32 dist=0.6"
+  },
+  {
+   "t": 1789941463340,
+   "kind": "waypoint",
+   "detail": "detour@ms248-33 dist=1.2"
+  },
+  {
+   "t": 1789941465345,
+   "kind": "waypoint",
+   "detail": "detour@ms248-34 dist=0.9"
+  },
+  {
+   "t": 1789941465345,
+   "kind": "waypoint",
+   "detail": "detour@ms248-35 dist=0.6"
+  },
+  {
+   "t": 1789941479206,
+   "kind": "waypoint",
+   "detail": "detour@ms248-36 dist=0.2"
+  },
+  {
+   "t": 1789941479206,
+   "kind": "waypoint",
+   "detail": "detour@ms248-37 dist=1.4"
+  },
+  {
+   "t": 1789941485206,
+   "kind": "waypoint",
+   "detail": "detour@ms248-38 dist=1.4"
+  },
+  {
+   "t": 1789941485206,
+   "kind": "waypoint",
+   "detail": "detour@ms248-39 dist=0.9"
+  },
+  {
+   "t": 1789941485207,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-40 dist=1.4"
+  },
+  {
+   "t": 1789941494432,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-41 dist=0.7"
+  },
+  {
+   "t": 1789941496549,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-42 dist=0.3"
+  },
+  {
+   "t": 1789941498693,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-43 dist=0.4"
+  },
+  {
+   "t": 1789941500937,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-44 dist=0.4"
+  },
+  {
+   "t": 1789941503350,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-45 dist=0.6"
+  },
+  {
+   "t": 1789941505052,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-46 dist=1.3"
+  },
+  {
+   "t": 1789941507298,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-47 dist=1.0"
+  },
+  {
+   "t": 1789941509224,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-48 dist=0.7"
+  },
+  {
+   "t": 1789941511599,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-49 dist=1.1"
+  },
+  {
+   "t": 1789941511599,
+   "kind": "waypoint",
+   "detail": "detourBack@ms248-50 dist=0.1"
+  },
+  {
+   "t": 1789941515972,
+   "kind": "waypoint",
+   "detail": "ms-248 dist=1.1"
+  },
+  {
+   "t": 1789941521221,
+   "kind": "waypoint",
+   "detail": "ms-249 dist=1.2"
+  },
+  {
+   "t": 1789941529771,
+   "kind": "waypoint",
+   "detail": "ms-250 dist=1.4"
+  },
+  {
+   "t": 1789941539034,
+   "kind": "waypoint",
+   "detail": "ms-251 dist=1.3"
+  },
+  {
+   "t": 1789941547976,
+   "kind": "segment",
+   "detail": "#1 samples=55 maxGap=716.6ms p99=700ms heapAfterGc=83369513 wp=55/267"
+  },
+  {
+   "t": 1789941549193,
+   "kind": "waypoint",
+   "detail": "ms-252 dist=0.6"
+  },
+  {
+   "t": 1789941562297,
+   "kind": "waypoint",
+   "detail": "detour@ms253-56 dist=1.0"
+  },
+  {
+   "t": 1789941562297,
+   "kind": "waypoint",
+   "detail": "detour@ms253-57 dist=1.0"
+  },
+  {
+   "t": 1789941564466,
+   "kind": "waypoint",
+   "detail": "detour@ms253-58 dist=0.5"
+  },
+  {
+   "t": 1789941566519,
+   "kind": "waypoint",
+   "detail": "detour@ms253-59 dist=1.1"
+  },
+  {
+   "t": 1789941566519,
+   "kind": "waypoint",
+   "detail": "detour@ms253-60 dist=0.7"
+  },
+  {
+   "t": 1789941568561,
+   "kind": "waypoint",
+   "detail": "detour@ms253-61 dist=1.3"
+  },
+  {
+   "t": 1789941568561,
+   "kind": "waypoint",
+   "detail": "detour@ms253-62 dist=0.5"
+  },
+  {
+   "t": 1789941570860,
+   "kind": "waypoint",
+   "detail": "detour@ms253-63 dist=0.1"
+  },
+  {
+   "t": 1789941570860,
+   "kind": "waypoint",
+   "detail": "detourBack@ms253-64 dist=1.4"
+  },
+  {
+   "t": 1789941580897,
+   "kind": "waypoint",
+   "detail": "detourBack@ms253-65 dist=0.6"
+  },
+  {
+   "t": 1789941582659,
+   "kind": "waypoint",
+   "detail": "detourBack@ms253-66 dist=1.4"
+  },
+  {
+   "t": 1789941587420,
+   "kind": "waypoint",
+   "detail": "detourBack@ms253-67 dist=0.6"
+  },
+  {
+   "t": 1789941592001,
+   "kind": "waypoint",
+   "detail": "detourBack@ms253-68 dist=0.5"
+  },
+  {
+   "t": 1789941594152,
+   "kind": "waypoint",
+   "detail": "detourBack@ms253-69 dist=0.9"
+  },
+  {
+   "t": 1789941596188,
+   "kind": "waypoint",
+   "detail": "detourBack@ms253-70 dist=1.2"
+  },
+  {
+   "t": 1789941602693,
+   "kind": "waypoint",
+   "detail": "ms-253 dist=1.3"
+  },
+  {
+   "t": 1789941611286,
+   "kind": "slowDriverCall",
+   "detail": "pv took 7903ms"
+  },
+  {
+   "t": 1789941622390,
+   "kind": "waypoint",
+   "detail": "ms-254 dist=1.4"
+  },
+  {
+   "t": 1789941631833,
+   "kind": "waypoint",
+   "detail": "ms-255 dist=0.7"
+  },
+  {
+   "t": 1789941638542,
+   "kind": "waypoint",
+   "detail": "ms-256 dist=1.2"
+  },
+  {
+   "t": 1789941647223,
+   "kind": "waypoint",
+   "detail": "ms-257 dist=0.5"
+  },
+  {
+   "t": 1789941653849,
+   "kind": "waypoint",
+   "detail": "ms-258 dist=1.0"
+  },
+  {
+   "t": 1789941660414,
+   "kind": "waypoint",
+   "detail": "ms-259 dist=1.5"
+  },
+  {
+   "t": 1789941669287,
+   "kind": "waypoint",
+   "detail": "ms-260 dist=0.8"
+  },
+  {
+   "t": 1789941671400,
+   "kind": "segment",
+   "detail": "#2 samples=49 maxGap=716.6ms p99=633.3ms heapAfterGc=83510024 wp=79/267"
+  },
+  {
+   "t": 1789941677154,
+   "kind": "waypoint",
+   "detail": "ms-261 dist=0.4"
+  },
+  {
+   "t": 1789941683706,
+   "kind": "waypoint",
+   "detail": "ms-262 dist=0.9"
+  },
+  {
+   "t": 1789941690364,
+   "kind": "waypoint",
+   "detail": "ms-263 dist=1.4"
+  },
+  {
+   "t": 1789941699036,
+   "kind": "waypoint",
+   "detail": "ms-264 dist=0.7"
+  },
+  {
+   "t": 1789941703481,
+   "kind": "waypoint",
+   "detail": "ms-265 dist=1.3"
+  },
+  {
+   "t": 1789941711900,
+   "kind": "waypoint",
+   "detail": "ms-266 dist=0.6"
+  },
+  {
+   "t": 1789941718389,
+   "kind": "waypoint",
+   "detail": "ms-267 dist=0.8"
+  },
+  {
+   "t": 1789941724504,
+   "kind": "waypoint",
+   "detail": "ms-268 dist=1.3"
+  },
+  {
+   "t": 1789941730995,
+   "kind": "waypoint",
+   "detail": "ms-269 dist=1.5"
+  },
+  {
+   "t": 1789941737598,
+   "kind": "waypoint",
+   "detail": "ms-270 dist=1.4"
+  },
+  {
+   "t": 1789941744415,
+   "kind": "waypoint",
+   "detail": "ms-271 dist=1.0"
+  },
+  {
+   "t": 1789941750667,
+   "kind": "waypoint",
+   "detail": "ms-272 dist=0.6"
+  },
+  {
+   "t": 1789941755083,
+   "kind": "waypoint",
+   "detail": "ms-273 dist=1.4"
+  },
+  {
+   "t": 1789941761443,
+   "kind": "waypoint",
+   "detail": "ms-274 dist=0.7"
+  },
+  {
+   "t": 1789941765969,
+   "kind": "waypoint",
+   "detail": "ms-275 dist=1.2"
+  },
+  {
+   "t": 1789941772641,
+   "kind": "waypoint",
+   "detail": "ms-276 dist=0.2"
+  },
+  {
+   "t": 1789941776680,
+   "kind": "waypoint",
+   "detail": "ms-277 dist=1.3"
+  },
+  {
+   "t": 1789941783520,
+   "kind": "waypoint",
+   "detail": "ms-278 dist=0.0"
+  },
+  {
+   "t": 1789941788104,
+   "kind": "waypoint",
+   "detail": "ms-279 dist=0.5"
+  },
+  {
+   "t": 1789941792774,
+   "kind": "segment",
+   "detail": "#3 samples=55 maxGap=583.3ms p99=566.7ms heapAfterGc=83512148 wp=98/267"
+  },
+  {
+   "t": 1789941793949,
+   "kind": "waypoint",
+   "detail": "ms-280 dist=0.1"
+  },
+  {
+   "t": 1789941798444,
+   "kind": "waypoint",
+   "detail": "ms-281 dist=0.5"
+  },
+  {
+   "t": 1789941802771,
+   "kind": "waypoint",
+   "detail": "ms-282 dist=1.0"
+  },
+  {
+   "t": 1789941809208,
+   "kind": "waypoint",
+   "detail": "ms-283 dist=0.8"
+  },
+  {
+   "t": 1789941811051,
+   "kind": "waypoint",
+   "detail": "ms-284 dist=1.1"
+  },
+  {
+   "t": 1789941815608,
+   "kind": "waypoint",
+   "detail": "ms-285 dist=0.5"
+  },
+  {
+   "t": 1789941817740,
+   "kind": "waypoint",
+   "detail": "ms-286 dist=0.9"
+  },
+  {
+   "t": 1789941822498,
+   "kind": "waypoint",
+   "detail": "ms-287 dist=0.7"
+  },
+  {
+   "t": 1789941824448,
+   "kind": "waypoint",
+   "detail": "ms-288 dist=1.3"
+  },
+  {
+   "t": 1789941829329,
+   "kind": "waypoint",
+   "detail": "ms-289 dist=0.6"
+  },
+  {
+   "t": 1789941833335,
+   "kind": "waypoint",
+   "detail": "ms-290 dist=0.8"
+  },
+  {
+   "t": 1789941837831,
+   "kind": "waypoint",
+   "detail": "ms-291 dist=0.4"
+  },
+  {
+   "t": 1789941842204,
+   "kind": "waypoint",
+   "detail": "ms-292 dist=0.6"
+  },
+  {
+   "t": 1789941844050,
+   "kind": "waypoint",
+   "detail": "ms-293 dist=1.1"
+  },
+  {
+   "t": 1789941848682,
+   "kind": "waypoint",
+   "detail": "ms-294 dist=0.5"
+  },
+  {
+   "t": 1789941850808,
+   "kind": "waypoint",
+   "detail": "ms-295 dist=0.9"
+  },
+  {
+   "t": 1789941866088,
+   "kind": "waypoint",
+   "detail": "ms-296 dist=1.0"
+  },
+  {
+   "t": 1789941880685,
+   "kind": "waypoint",
+   "detail": "ms-297 dist=0.2"
+  },
+  {
+   "t": 1789941898348,
+   "kind": "waypoint",
+   "detail": "ms-298 dist=0.4"
+  },
+  {
+   "t": 1789941909996,
+   "kind": "slowDriverCall",
+   "detail": "pv took 6554ms"
+  },
+  {
+   "t": 1789941918305,
+   "kind": "segment",
+   "detail": "#4 samples=52 maxGap=550ms p99=533.2ms heapAfterGc=83546532 wp=117/267"
+  },
+  {
+   "t": 1789941919156,
+   "kind": "waypoint",
+   "detail": "ms-299 dist=0.5"
+  },
+  {
+   "t": 1789941925735,
+   "kind": "waypoint",
+   "detail": "ms-300 dist=0.7"
+  },
+  {
+   "t": 1789941932055,
+   "kind": "waypoint",
+   "detail": "ms-301 dist=0.1"
+  },
+  {
+   "t": 1789941940513,
+   "kind": "waypoint",
+   "detail": "ms-302 dist=0.3"
+  },
+  {
+   "t": 1789941967443,
+   "kind": "ANOMALY:walkStall",
+   "detail": "held-W but still 10s at [-130.5,28.1] near ms-303 (attempt 1)"
+  },
+  {
+   "t": 1789941975843,
+   "kind": "ANOMALY:walkStall",
+   "detail": "held-W but still 8s at [-130.5,28.1] near ms-303 (attempt 2)"
+  },
+  {
+   "t": 1789941984953,
+   "kind": "ANOMALY:walkStall",
+   "detail": "held-W but still 9s at [-130.5,28.1] near ms-303 (attempt 3)"
+  },
+  {
+   "t": 1789941984953,
+   "kind": "waypointSkipped",
+   "detail": "ms-303 unreachable after 3 unstick attempts"
+  },
+  {
+   "t": 1789941991805,
+   "kind": "ANOMALY:walkStall",
+   "detail": "held-W but still 9s at [-130.5,28.1] near ms-304 (attempt 1)"
+  }
+ ],
+ "anomalies": [
+  {
+   "t": 1789941967443,
+   "kind": "walkStall",
+   "detail": "held-W but still 10s at [-130.5,28.1] near ms-303 (attempt 1)"
+  },
+  {
+   "t": 1789941975843,
+   "kind": "walkStall",
+   "detail": "held-W but still 8s at [-130.5,28.1] near ms-303 (attempt 2)"
+  },
+  {
+   "t": 1789941984953,
+   "kind": "walkStall",
+   "detail": "held-W but still 9s at [-130.5,28.1] near ms-303 (attempt 3)"
+  },
+  {
+   "t": 1789941991805,
+   "kind": "walkStall",
+   "detail": "held-W but still 9s at [-130.5,28.1] near ms-304 (attempt 1)"
+  }
+ ],
+ "opCounts": {
+  "pause": 2,
+  "viewSwitch": 2,
+  "blur": 2,
+  "entrySwitch": 0,
+  "fatalPlanned": 0
+ },
+ "steering": {
+  "wpIdx": 122,
+  "wpHits": 121,
+  "meters": 421.6020227694921,
+  "lastFeet": [
+   -127.83401489257812,
+   28.36421775817871
+  ],
+  "stallS": 0,
+  "lastMoveT": 1789942000559,
+  "walkingT": 0,
+  "lastStallLogged": 0,
+  "stallAtWp": {
+   "ms-303": 3,
+   "ms-304": 1
+  },
+  "unstickUntil": 1789941993305
+ },
+ "warmStart": {
+  "coldReadyMs": 8469,
+  "warmReadyMs": 8463
+ },
+ "finishedAt": "2026-09-20T22:06:44.073Z",
+ "durationS": 722.5,
+ "exitRules": {
+  "wallDurationS": 722.5,
+  "routeWaypointsHit": 121,
+  "routeWaypointsTotal": 267,
+  "routeCompletionFrac": 0.453,
+  "metersWalked": 421.6,
+  "transitions": {
+   "pause": 2,
+   "viewSwitch": 2,
+   "blur": 2,
+   "entrySwitch": 0,
+   "fatalPlanned": 0
+  },
+  "anomalyCount": 4,
+  "anomalies": [
+   {
+    "t": 1789941967443,
+    "kind": "walkStall",
+    "detail": "held-W but still 10s at [-130.5,28.1] near ms-303 (attempt 1)"
+   },
+   {
+    "t": 1789941975843,
+    "kind": "walkStall",
+    "detail": "held-W but still 8s at [-130.5,28.1] near ms-303 (attempt 2)"
+   },
+   {
+    "t": 1789941984953,
+    "kind": "walkStall",
+    "detail": "held-W but still 9s at [-130.5,28.1] near ms-303 (attempt 3)"
+   },
+   {
+    "t": 1789941991805,
+    "kind": "walkStall",
+    "detail": "held-W but still 9s at [-130.5,28.1] near ms-304 (attempt 1)"
+   }
+  ]
+ }
+}

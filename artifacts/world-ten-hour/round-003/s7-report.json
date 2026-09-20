@@ -1,0 +1,304 @@
+{
+ "generatedAt": "2026-09-20T22:26:19.989Z",
+ "env": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+ "runs": [
+  {
+   "run": "s7-mainAB-default-narrow390",
+   "label": "s7-mainAB-default-narrow390",
+   "entry": "mainStreet",
+   "config": "default",
+   "track": "mainAB",
+   "env": {
+    "renderer": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+    "viewport": "390x844",
+    "gcExposed": true,
+    "host": "linux arm64",
+    "note": "dev-server long-run; all numbers software-baseline"
+   },
+   "startedAt": "2026-09-20T22:07:10.948Z",
+   "durationS": 721,
+   "route": {
+    "waypointsHit": 101,
+    "waypointsTotal": 267,
+    "completionFrac": 0.378,
+    "metersWalked": 889.3
+   },
+   "transitions": {
+    "pause": 2,
+    "viewSwitch": 2,
+    "blur": 2,
+    "entrySwitch": 2,
+    "fatalPlanned": 0
+   },
+   "stalls": {
+    "totalFrames": 4166,
+    "gapsOver250ms": 342,
+    "buckets": {
+     "16-250ms": 3824,
+     "250ms-1s": 338,
+     "1-5s": 2,
+     ">5s": 2
+    },
+    "gapP50ms": 66.7,
+    "gapP99ms": 466.7,
+    "gapMaxMs": 5183,
+    "top10": [
+     {
+      "gapMs": 5183,
+      "at": "22:07:10",
+      "seg": 1,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T22:09:24.935Z"
+      },
+      "offsetIntoRunS": 8
+     },
+     {
+      "gapMs": 5083.1,
+      "at": "22:07:10",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T22:07:23.329Z"
+      },
+      "offsetIntoRunS": 8
+     },
+     {
+      "gapMs": 3816.4,
+      "at": "22:07:10",
+      "seg": 1,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T22:09:24.935Z"
+      },
+      "offsetIntoRunS": 12
+     },
+     {
+      "gapMs": 3716.5,
+      "at": "22:07:10",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T22:07:23.329Z"
+      },
+      "offsetIntoRunS": 12
+     },
+     {
+      "gapMs": 500,
+      "at": "22:07:10",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T22:07:23.329Z"
+      },
+      "offsetIntoRunS": 17
+     },
+     {
+      "gapMs": 483.4,
+      "at": "22:07:10",
+      "seg": 1,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T22:09:24.935Z"
+      },
+      "offsetIntoRunS": 16
+     },
+     {
+      "gapMs": 483.4,
+      "at": "22:07:10",
+      "seg": 1,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T22:09:24.935Z"
+      },
+      "offsetIntoRunS": 19
+     },
+     {
+      "gapMs": 483.3,
+      "at": "22:07:10",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T22:07:23.329Z"
+      },
+      "offsetIntoRunS": 13
+     },
+     {
+      "gapMs": 483.3,
+      "at": "22:07:10",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T22:07:23.329Z"
+      },
+      "offsetIntoRunS": 18
+     },
+     {
+      "gapMs": 483.3,
+      "at": "22:07:10",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-20T22:07:23.329Z"
+      },
+      "offsetIntoRunS": 19
+     }
+    ],
+    "meanFpsSoftwareBaseline": 9
+   },
+   "heap": {
+    "plot": [
+     {
+      "tMin": 0.2,
+      "afterGcMB": 81.07,
+      "beforeGcMB": 83.27
+     },
+     {
+      "tMin": 2.2,
+      "afterGcMB": 82.34,
+      "beforeGcMB": 83.4
+     },
+     {
+      "tMin": 4.2,
+      "afterGcMB": 82.46,
+      "beforeGcMB": 83.51
+     },
+     {
+      "tMin": 6.2,
+      "afterGcMB": 82.49,
+      "beforeGcMB": 83.18
+     },
+     {
+      "tMin": 8.3,
+      "afterGcMB": 82.53,
+      "beforeGcMB": 83.91
+     }
+    ],
+    "slopePerHourMB": 9.079,
+    "halfSlopes": null,
+    "segmentsWithoutHeap": 1,
+    "firstAfterGcMB": 81.07,
+    "lastAfterGcMB": 82.53
+   },
+   "resources": {
+    "trianglesValues": [
+     694430
+    ],
+    "trianglesExpected": 694430,
+    "trianglesLocked": true,
+    "first": {
+     "triangles": 694430,
+     "geoms": 496,
+     "mats": 476,
+     "texs": 346
+    },
+    "last": {
+     "triangles": 694430,
+     "geoms": 496,
+     "mats": 476,
+     "texs": 346
+    }
+   },
+   "anomalyCount": 2,
+   "anomalies": [
+    {
+     "t": 1789942134894,
+     "kind": "capsuleBelowFloor",
+     "detail": "feet=[68.40416717529297,-967.5878173828125,47.629249572753906] (fall or under-geometry)"
+    },
+    {
+     "t": 1789942209682,
+     "kind": "capsuleBelowFloor",
+     "detail": "feet=[84.29285430908203,-370.9519836425781,-10.012618064880371] (fall or under-geometry)"
+    }
+   ],
+   "segments": [
+    {
+     "idx": 0,
+     "gapStats": {
+      "count": 41,
+      "p50": 466.6,
+      "p99": 5083.1,
+      "max": 5083.1
+     },
+     "heap": {
+      "beforeGc": 87313338,
+      "afterGc": 85004606,
+      "gcMs": 8.3
+     }
+    },
+    {
+     "idx": 1,
+     "gapStats": {
+      "count": 169,
+      "p50": 400,
+      "p99": 3816.4,
+      "max": 5183
+     },
+     "heap": {
+      "beforeGc": 87455212,
+      "afterGc": 86334610,
+      "gcMs": 7
+     }
+    },
+    {
+     "idx": 2,
+     "gapStats": {
+      "count": 1379,
+      "p50": 50,
+      "p99": 433.3,
+      "max": 466.7
+     },
+     "heap": {
+      "beforeGc": 87564989,
+      "afterGc": 86461941,
+      "gcMs": 18.2
+     }
+    },
+    {
+     "idx": 3,
+     "gapStats": {
+      "count": 1124,
+      "p50": 99.9,
+      "p99": 316.6,
+      "max": 350.1
+     },
+     "heap": {
+      "beforeGc": 87217621,
+      "afterGc": 86499349,
+      "gcMs": 26.2
+     }
+    },
+    {
+     "idx": 4,
+     "gapStats": {
+      "count": 1453,
+      "p50": 66.8,
+      "p99": 383.3,
+      "max": 433.4
+     },
+     "heap": {
+      "beforeGc": 87981011,
+      "afterGc": 86533977,
+      "gcMs": 28
+     }
+    },
+    {
+     "idx": "final",
+     "gapStats": null,
+     "heap": null
+    }
+   ]
+  }
+ ]
+}
