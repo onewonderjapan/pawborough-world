@@ -96,10 +96,14 @@ function buildTrack(name, startPos) {
     return pts;
   }
   if (name === 'templeLoop') {
-    // spawn at templeFront: short east stroll + return — walking is context
-    // here, P/V transitions are the payload
+    // spawn at templeFront (shanmenThreshold): the plaza is genuinely tiny —
+    // east is the temple forecourt (0.17m risers), west the seal wall right
+    // behind ms-302 (routeCheck's seal-wall negative) — so the loop is one
+    // waypoint out and back; stalls here are real plaza tightness
     const pts2 = [];
-    for (let i = Math.max(0, startIdx - 25); i <= startIdx; i++) pts2.push({ x: ms[i][0], z: ms[i][2], label: `tloop-${i}` });
+    const wEnd = Math.min(ms.length - 1, startIdx + 1);
+    for (let i = startIdx; i <= wEnd; i++) pts2.push({ x: ms[i][0], z: ms[i][2], label: `tloop-${i}` });
+    for (let i = wEnd - 1; i >= startIdx + 1; i--) pts2.push({ x: ms[i][0], z: ms[i][2], label: `tloopBack-${i}` });
     return pts2;
   }
   throw new Error(`unknown track ${name}`);
@@ -186,12 +190,19 @@ const waitReady = (timeoutMs = 300000) => page.waitForFunction(() => {
 
 // ---- steering: real mouse deltas while pointer-locked ----------------------
 const steerState = { wpIdx: 0, wpHits: 0, meters: 0, lastFeet: null, stallS: 0, lastMoveT: Date.now(), walkingT: 0 };
+const keysDown = { w: false, a: false, d: false };
 let track = [];
 const norm = (a) => { while (a > Math.PI) a -= 2 * Math.PI; while (a < -Math.PI) a += 2 * Math.PI; return a; };
 const KEY_SENS = 0.0023; // page's mousemove multiplier
 
 async function steerTick(keysDown) {
-  if (!track.length || steerState.wpIdx >= track.length) return;
+  if (!track.length || steerState.wpIdx >= track.length) {
+    // track finished: a real player lets go of W — never overwalk past the
+    // end (S1 evidence: continuing east past bridgeStart left the walkable
+    // surface at x≈127-134 and free-fell to y=-657km with no page recovery)
+    if (keysDown.w) { await page.keyboard.up('KeyW').catch(() => {}); keysDown.w = false; }
+    return;
+  }
   if (steerState.unstickUntil && Date.now() < steerState.unstickUntil) return; // straight walk-out phase
   const r = await rec();
   if (!r || !r.ready || r.mode !== 'walk' || r.paused || !r.feet) {
@@ -204,13 +215,20 @@ async function steerTick(keysDown) {
   const [fx, , fz] = r.feet;
   let wp = track[steerState.wpIdx];
   let dist = Math.hypot(wp.x - fx, wp.z - fz);
-  // skip degenerate/too-close waypoints (spawn may sit on wp 0)
+  // skip degenerate/too-close waypoints (spawn may sit on wp 0); reaching the
+  // FINAL waypoint completes the track (W is released on the next tick)
   while (dist < 1.5 && steerState.wpIdx < track.length - 1) {
     steerState.wpHits++;
     note('waypoint', `${wp.label} dist=${dist.toFixed(1)}`);
     steerState.wpIdx++;
     wp = track[steerState.wpIdx];
     dist = Math.hypot(wp.x - fx, wp.z - fz);
+  }
+  if (steerState.wpIdx === track.length - 1 && dist < 1.5) {
+    steerState.wpHits++;
+    note('waypoint', `${wp.label} dist=${dist.toFixed(1)} — track complete`);
+    steerState.wpIdx = track.length;
+    return;
   }
   // honest terminus: the capsule cannot climb the 0.17m platform riser, so
   // "pressed against the stair foot" IS arrival (same rule as routeCheck)
@@ -246,14 +264,27 @@ async function steerTick(keysDown) {
       steerState.stallS += (now - steerState.lastMoveT) / 1000;
       if (steerState.stallS > 8 && steerState.stallS - (steerState.lastStallLogged ?? 0) > 8) {
         steerState.lastStallLogged = steerState.stallS;
-        anomaly('walkStall', `held-W but still ${steerState.stallS.toFixed(0)}s at [${fx.toFixed(1)},${fz.toFixed(1)}] near ${wp.label}`);
-        // unstick like a player: turn ~180° and walk straight briefly
-        const turn = Math.PI + (Math.random() - 0.5) * 0.6;
-        const px = -turn / KEY_SENS, steps = 8, per = px / steps;
+        steerState.stallAtWp = steerState.stallAtWp ?? {};
+        steerState.stallAtWp[wp.label] = (steerState.stallAtWp[wp.label] ?? 0) + 1;
+        anomaly('walkStall', `held-W but still ${steerState.stallS.toFixed(0)}s at [${fx.toFixed(1)},${fz.toFixed(1)}] near ${wp.label} (attempt ${steerState.stallAtWp[wp.label]})`);
+        // give up on a waypoint after 3 unstick attempts (a player would too)
+        if (steerState.stallAtWp[wp.label] >= 3) {
+          note('waypointSkipped', `${wp.label} unreachable after 3 unstick attempts`);
+          steerState.wpIdx++;
+          steerState.stallS = 0;
+          steerState.lastStallLogged = 0;
+          return;
+        }
+        // unstick like a player: turn back toward where the track came from
+        // (a blind 180° walked the capsule off the street edge in early smoke)
+        const backWp = track[Math.max(0, steerState.wpIdx - 2)];
+        const desired = Math.atan2(-(backWp.x - fx), -(backWp.z - fz));
+        const turn = norm(desired - poseYaw);
+        const px = Math.max(-1600, Math.min(1600, -turn / KEY_SENS)), steps = 8, per = px / steps;
         await page.evaluate(({ per, steps }) => {
           for (let i = 0; i < steps; i++) document.dispatchEvent(new MouseEvent('mousemove', { movementX: per, movementY: 0 }));
         }, { per, steps });
-        steerState.unstickUntil = now + 2200;
+        steerState.unstickUntil = now + 1500;
         steerState.stallS = 0;
         steerState.lastStallLogged = 0;
       }
@@ -317,23 +348,25 @@ async function doFailRecoveryCycle() {
   // at the waypoint nearest the new spawn (honest: a reload is a walk reset)
   await page.click('#btn-start');
   await page.waitForTimeout(1000);
-  const f = (await rec()).feet;
-  if (f && track.length) {
-    let bi = 0, bd = Infinity;
-    for (let i = 0; i < track.length; i++) {
-      const d = Math.hypot(track[i].x - f[0], track[i].z - f[2]);
-      if (d < bd) { bd = d; bi = i; }
-    }
-    steerState.wpIdx = bi;
-    note('failRecoveryRejoin', `respawn feet=${JSON.stringify(f)} -> wp ${bi} (${track[bi].label}) dist=${bd.toFixed(1)}`);
-  }
-  steerState.lastFeet = null;
+  await rejoinTrack(keysDown);
 }
 async function doEntrySwitch(toEntry) {
-  // player path: overview page -> pick entry -> start
+  // player path: overview page -> pick entry -> start. Button text includes a
+  // description, so match by leading label (『庙前』 also appears in the 主街
+  // description — prefix/startsWith matching failed with .first() on 主街);
+  // then assert the CTA really carries the chosen entry before clicking.
+  const labelZh = toEntry === 'mainStreet' ? '主街' : toEntry === 'laneA' ? 'A弄' : toEntry === 'laneB' ? 'B弄' : '庙前';
   await page.goto(`${base}/world-preview.html`, { waitUntil: 'domcontentloaded', timeout: 60000 });
   await page.waitForFunction(() => document.querySelector('#entries button'), null, { timeout: 30000 });
-  await page.locator('#entries button', { hasText: toEntry === 'mainStreet' ? '主街' : toEntry === 'laneA' ? 'A弄' : toEntry === 'laneB' ? 'B弄' : '庙前' }).first().click();
+  const picked = await page.evaluate((label) => {
+    const b = [...document.querySelectorAll('#entries button')].find((x) => x.textContent.trim().startsWith(label));
+    if (!b) return false;
+    b.click();
+    return true;
+  }, labelZh);
+  if (!picked) { anomaly('entryButtonNotFound', labelZh); return; }
+  const href = await page.getAttribute('#cta-explore', 'href');
+  if (!href || !href.includes(`entry=${toEntry}`)) { anomaly('entryCtaMismatch', `${toEntry} -> ${href}`); return; }
   await page.click('#cta-explore');
   await page.waitForURL(/fangbang\.html/, { timeout: 30000 });
   await waitReady();
@@ -342,6 +375,22 @@ async function doEntrySwitch(toEntry) {
   opCounts.entrySwitch++;
   await page.click('#btn-start');
   await page.waitForTimeout(1200);
+}
+
+// rejoin the track at the waypoint nearest the capsule's current feet
+async function rejoinTrack(keysDown) {
+  const f = (await rec()).feet;
+  if (f && track.length) {
+    let bi = 0, bd = Infinity;
+    for (let i = 0; i < track.length; i++) {
+      const d = Math.hypot(track[i].x - f[0], track[i].z - f[2]);
+      if (d < bd) { bd = d; bi = i; }
+    }
+    steerState.wpIdx = bi;
+    note('trackRejoin', `feet=${JSON.stringify(f)} -> wp ${bi} (${track[bi].label}) dist=${bd.toFixed(1)}`);
+  }
+  steerState.lastFeet = null;
+  keysDown.w = false;
 }
 
 // ---- main ------------------------------------------------------------------
@@ -368,8 +417,8 @@ try {
   track = buildTrack(trackName, r.feet ?? undefined);
   note('track', `${trackName}: ${track.length} waypoints`);
 
-  const keysDown = { w: false, a: false, d: false };
-  let segIdx = 0, segStart = Date.now(), segSamples = [], nextShotAt = Date.now() + 5 * 60000, nextOpsAt = Date.now() + opsEveryS, lastSampleAt = 0;
+  let segIdx = 0, segStart = Date.now(), segSamples = [], nextShotAt = Date.now() + 5 * 60000, nextOpsAt = Date.now() + opsEveryS * 1000, lastSampleAt = 0;
+  let recovering = false;
   while (Date.now() < deadline) {
     const now = Date.now();
     if (now - lastSampleAt >= 2000) {
@@ -380,6 +429,19 @@ try {
         if (s.fatal && !segSamples.some((x) => x.fatal)) anomaly('fatalPanel', s.fatalMsg ?? 'fatal shown');
         if (s.feet && s.feet[1] < -0.5 && !segSamples.some((x) => x.feet && x.feet[1] < -0.5))
           anomaly('capsuleBelowFloor', `feet=${JSON.stringify(s.feet)} (fall or under-geometry)`);
+        if (s.feet && s.feet[1] < -0.5 && !recovering) {
+          // the live walk has NO fall guard (unlike routeCheck's fallCheck) —
+          // recover the only way a player can: back to the overview, re-enter,
+          // rejoin the track at the nearest waypoint
+          recovering = true;
+          note('fallRecovery', 'leaving the fall to the evidence record; recovering via overview re-entry');
+          if (keysDown.w) { await page.keyboard.up('KeyW').catch(() => {}); keysDown.w = false; }
+          await withTimeout(() => doEntrySwitch(entry), 240000, 'fallRecovery');
+          await withTimeout(() => rejoinTrack(keysDown), 60000, 'fallRejoin');
+          recovering = false;
+          segSamples.push(s);
+          continue;
+        }
         segSamples.push(s);
       }
       await withTimeout(() => steerTick(keysDown), 30000, 'steer');
