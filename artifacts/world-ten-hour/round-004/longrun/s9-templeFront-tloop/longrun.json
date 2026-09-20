@@ -1,0 +1,503 @@
+{
+ "label": "s9",
+ "base": "http://127.0.0.1:5420",
+ "entry": "templeFront",
+ "config": "default",
+ "track": "templeLoop",
+ "minutes": 30,
+ "gameUrl": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=templeFront",
+ "startedAt": "2026-09-20T23:14:28.337Z",
+ "env": {
+  "renderer": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+  "viewport": "1280x900",
+  "gcExposed": true,
+  "host": "linux arm64",
+  "note": "dev-server long-run; all numbers software-baseline"
+ },
+ "segments": [
+  {
+   "idx": 0,
+   "file": "segments/seg-000.json",
+   "gapStats": {
+    "count": 739,
+    "p50": 166.7,
+    "p99": 200,
+    "max": 6666.4
+   },
+   "heap": {
+    "beforeGc": 84176880,
+    "afterGc": 82659626,
+    "gcMs": 7.3
+   },
+   "frames": {
+    "total": 740,
+    "g250": 3,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6666.4
+   }
+  },
+  {
+   "idx": 1,
+   "file": "segments/seg-001.json",
+   "gapStats": {
+    "count": 737,
+    "p50": 166.6,
+    "p99": 183.4,
+    "max": 200
+   },
+   "heap": {
+    "beforeGc": 84283344,
+    "afterGc": 82667822,
+    "gcMs": 8
+   },
+   "frames": {
+    "total": 1477,
+    "g250": 3,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6666.4
+   }
+  },
+  {
+   "idx": 2,
+   "file": "segments/seg-002.json",
+   "gapStats": {
+    "count": 963,
+    "p50": 166.6,
+    "p99": 216.6,
+    "max": 450.1
+   },
+   "heap": {
+    "beforeGc": 84518044,
+    "afterGc": 82746161,
+    "gcMs": 20.4
+   },
+   "frames": {
+    "total": 2440,
+    "g250": 9,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6666.4
+   }
+  },
+  {
+   "idx": 3,
+   "file": "segments/seg-003.json",
+   "gapStats": {
+    "count": 730,
+    "p50": 166.7,
+    "p99": 183.4,
+    "max": 199.9
+   },
+   "heap": {
+    "beforeGc": 83702567,
+    "afterGc": 82769013,
+    "gcMs": 30.2
+   },
+   "frames": {
+    "total": 3170,
+    "g250": 9,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6666.4
+   }
+  },
+  {
+   "idx": 4,
+   "file": "segments/seg-004.json",
+   "gapStats": {
+    "count": 997,
+    "p50": 166.6,
+    "p99": 183.4,
+    "max": 233.3
+   },
+   "heap": {
+    "beforeGc": 84471241,
+    "afterGc": 82781681,
+    "gcMs": 32.3
+   },
+   "frames": {
+    "total": 4167,
+    "g250": 9,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6666.4
+   }
+  },
+  {
+   "idx": 5,
+   "file": "segments/seg-005.json",
+   "gapStats": {
+    "count": 731,
+    "p50": 166.7,
+    "p99": 183.4,
+    "max": 200
+   },
+   "heap": {
+    "beforeGc": 84364583,
+    "afterGc": 82816701,
+    "gcMs": 31.6
+   },
+   "frames": {
+    "total": 4898,
+    "g250": 9,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6666.4
+   }
+  },
+  {
+   "idx": 6,
+   "file": "segments/seg-006.json",
+   "gapStats": {
+    "count": 729,
+    "p50": 166.7,
+    "p99": 183.4,
+    "max": 216.6
+   },
+   "heap": {
+    "beforeGc": 84551391,
+    "afterGc": 82830685,
+    "gcMs": 27.1
+   },
+   "frames": {
+    "total": 5627,
+    "g250": 9,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6666.4
+   }
+  },
+  {
+   "idx": 7,
+   "file": "segments/seg-007.json",
+   "gapStats": {
+    "count": 951,
+    "p50": 166.6,
+    "p99": 183.4,
+    "max": 333.3
+   },
+   "heap": {
+    "beforeGc": 84595793,
+    "afterGc": 82851165,
+    "gcMs": 30.9
+   },
+   "frames": {
+    "total": 6578,
+    "g250": 11,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6666.4
+   }
+  },
+  {
+   "idx": 8,
+   "file": "segments/seg-008.json",
+   "gapStats": {
+    "count": 729,
+    "p50": 166.7,
+    "p99": 183.4,
+    "max": 200
+   },
+   "heap": {
+    "beforeGc": 84135655,
+    "afterGc": 82856449,
+    "gcMs": 26.7
+   },
+   "frames": {
+    "total": 7307,
+    "g250": 11,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6666.4
+   }
+  },
+  {
+   "idx": 9,
+   "file": "segments/seg-009.json",
+   "gapStats": {
+    "count": 951,
+    "p50": 166.6,
+    "p99": 183.4,
+    "max": 250
+   },
+   "heap": {
+    "beforeGc": 84002389,
+    "afterGc": 82879481,
+    "gcMs": 30.7
+   },
+   "frames": {
+    "total": 8258,
+    "g250": 11,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6666.4
+   }
+  },
+  {
+   "idx": 10,
+   "file": "segments/seg-010.json",
+   "gapStats": {
+    "count": 729,
+    "p50": 166.7,
+    "p99": 183.4,
+    "max": 200
+   },
+   "heap": {
+    "beforeGc": 83847155,
+    "afterGc": 82869269,
+    "gcMs": 27.4
+   },
+   "frames": {
+    "total": 8987,
+    "g250": 11,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6666.4
+   }
+  },
+  {
+   "idx": 11,
+   "file": "segments/seg-011.json",
+   "gapStats": {
+    "count": 729,
+    "p50": 166.7,
+    "p99": 183.4,
+    "max": 199.9
+   },
+   "heap": {
+    "beforeGc": 83619139,
+    "afterGc": 82866609,
+    "gcMs": 27.9
+   },
+   "frames": {
+    "total": 9716,
+    "g250": 11,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6666.4
+   }
+  },
+  {
+   "idx": 12,
+   "file": "segments/seg-012.json",
+   "gapStats": {
+    "count": 951,
+    "p50": 166.6,
+    "p99": 183.4,
+    "max": 233.3
+   },
+   "heap": {
+    "beforeGc": 84336041,
+    "afterGc": 82883269,
+    "gcMs": 31.9
+   },
+   "frames": {
+    "total": 10667,
+    "g250": 11,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6666.4
+   }
+  },
+  {
+   "idx": 13,
+   "file": "segments/seg-013.json",
+   "gapStats": {
+    "count": 728,
+    "p50": 166.7,
+    "p99": 183.4,
+    "max": 199.9
+   },
+   "heap": {
+    "beforeGc": 84481583,
+    "afterGc": 82874957,
+    "gcMs": 30.9
+   },
+   "frames": {
+    "total": 11395,
+    "g250": 11,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6666.4
+   }
+  },
+  {
+   "idx": "final",
+   "file": "segments/seg-final.json",
+   "frames": {
+    "total": 11956,
+    "g250": 11,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6666.4
+   }
+  }
+ ],
+ "events": [
+  {
+   "t": 1789946068337,
+   "kind": "navigate",
+   "detail": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=templeFront"
+  },
+  {
+   "t": 1789946069340,
+   "kind": "console-error",
+   "detail": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  },
+  {
+   "t": 1789946078131,
+   "kind": "ready",
+   "detail": "tris=694430 feet=[230.9276123046875,0.020000028610229537,47.65022277832031]"
+  },
+  {
+   "t": 1789946079870,
+   "kind": "track",
+   "detail": "templeLoop: 2 waypoints"
+  },
+  {
+   "t": 1789946080255,
+   "kind": "waypoint",
+   "detail": "tloop-301 dist=0.0"
+  },
+  {
+   "t": 1789946082161,
+   "kind": "waypoint",
+   "detail": "tloop-302 dist=1.2 — track complete"
+  },
+  {
+   "t": 1789946200891,
+   "kind": "segment",
+   "detail": "#0 samples=58 maxGap=6666.4ms p99=200ms heapAfterGc=82659626 wp=2/2"
+  },
+  {
+   "t": 1789946321664,
+   "kind": "segment",
+   "detail": "#1 samples=57 maxGap=200ms p99=183.4ms heapAfterGc=82667822 wp=2/2"
+  },
+  {
+   "t": 1789946386170,
+   "kind": "slowDriverCall",
+   "detail": "pv took 6201ms"
+  },
+  {
+   "t": 1789946442194,
+   "kind": "segment",
+   "detail": "#2 samples=52 maxGap=450.1ms p99=216.6ms heapAfterGc=82746161 wp=2/2"
+  },
+  {
+   "t": 1789946562798,
+   "kind": "segment",
+   "detail": "#3 samples=58 maxGap=199.9ms p99=183.4ms heapAfterGc=82769013 wp=2/2"
+  },
+  {
+   "t": 1789946686103,
+   "kind": "slowDriverCall",
+   "detail": "pv took 5831ms"
+  },
+  {
+   "t": 1789946690082,
+   "kind": "segment",
+   "detail": "#4 samples=57 maxGap=233.3ms p99=183.4ms heapAfterGc=82781681 wp=2/2"
+  },
+  {
+   "t": 1789946811002,
+   "kind": "segment",
+   "detail": "#5 samples=57 maxGap=200ms p99=183.4ms heapAfterGc=82816701 wp=2/2"
+  },
+  {
+   "t": 1789946931582,
+   "kind": "segment",
+   "detail": "#6 samples=57 maxGap=216.6ms p99=183.4ms heapAfterGc=82830685 wp=2/2"
+  },
+  {
+   "t": 1789946986438,
+   "kind": "slowDriverCall",
+   "detail": "pv took 5863ms"
+  },
+  {
+   "t": 1789947052087,
+   "kind": "segment",
+   "detail": "#7 samples=54 maxGap=333.3ms p99=183.4ms heapAfterGc=82851165 wp=2/2"
+  },
+  {
+   "t": 1789947172754,
+   "kind": "segment",
+   "detail": "#8 samples=57 maxGap=200ms p99=183.4ms heapAfterGc=82856449 wp=2/2"
+  },
+  {
+   "t": 1789947286360,
+   "kind": "slowDriverCall",
+   "detail": "pv took 5859ms"
+  },
+  {
+   "t": 1789947293526,
+   "kind": "segment",
+   "detail": "#9 samples=53 maxGap=250ms p99=183.4ms heapAfterGc=82879481 wp=2/2"
+  },
+  {
+   "t": 1789947414139,
+   "kind": "segment",
+   "detail": "#10 samples=57 maxGap=200ms p99=183.4ms heapAfterGc=82869269 wp=2/2"
+  },
+  {
+   "t": 1789947534713,
+   "kind": "segment",
+   "detail": "#11 samples=57 maxGap=199.9ms p99=183.4ms heapAfterGc=82866609 wp=2/2"
+  },
+  {
+   "t": 1789947586289,
+   "kind": "slowDriverCall",
+   "detail": "pv took 5747ms"
+  },
+  {
+   "t": 1789947655453,
+   "kind": "segment",
+   "detail": "#12 samples=54 maxGap=233.3ms p99=183.4ms heapAfterGc=82883269 wp=2/2"
+  },
+  {
+   "t": 1789947776175,
+   "kind": "segment",
+   "detail": "#13 samples=57 maxGap=199.9ms p99=183.4ms heapAfterGc=82874957 wp=2/2"
+  }
+ ],
+ "anomalies": [],
+ "opCounts": {
+  "pause": 5,
+  "viewSwitch": 5,
+  "blur": 5,
+  "entrySwitch": 0,
+  "fatalPlanned": 0
+ },
+ "steering": {
+  "wpIdx": 2,
+  "wpHits": 2,
+  "meters": 0,
+  "lastFeet": [
+   -127.81698608398438,
+   27.056997299194336
+  ],
+  "stallS": 0,
+  "lastMoveT": 1789946080724,
+  "walkingT": 0
+ },
+ "finishedAt": "2026-09-20T23:44:29.398Z",
+ "durationS": 1801.1,
+ "exitRules": {
+  "wallDurationS": 1801.1,
+  "routeWaypointsHit": 2,
+  "routeWaypointsTotal": 2,
+  "routeCompletionFrac": 1,
+  "metersWalked": 0,
+  "transitions": {
+   "pause": 5,
+   "viewSwitch": 5,
+   "blur": 5,
+   "entrySwitch": 0,
+   "fatalPlanned": 0
+  },
+  "anomalyCount": 0,
+  "anomalies": []
+ }
+}
