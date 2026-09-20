@@ -300,6 +300,8 @@ function exitWalk() {
   hudEl.hidden = true;
   syncChips();
   syncFramingButton();
+  // accurate state: the pose is kept, only the mode changed — never claim a reset
+  notice('已切换到取景；点击「行走」从当前位置继续。');
   sun.shadow.needsUpdate = true;
   markResourcesDirty();
   invalidate();
