@@ -176,8 +176,8 @@ function refreshHud(nowMs, force = false) {
   lastHudAt = nowMs;
   if (mode === 'walk') {
     hudState.textContent = paused
-      ? '已暂停 · P 或点击画面继续 · V 返回取景'
-      : `位置 ${controller.feetPosition()[0].toFixed(1)}, ${controller.feetPosition()[2].toFixed(1)} · P 暂停 · V 返回取景`;
+      ? '已暂停 · P 或点击画面继续 · V 返回取景 · Esc 释放鼠标'
+      : `位置 ${controller.feetPosition()[0].toFixed(1)}, ${controller.feetPosition()[2].toFixed(1)} · P 暂停 · V 返回取景 · Esc 释放鼠标`;
   }
 }
 function refreshRecord(nowMs, force = false) {
@@ -287,6 +287,15 @@ function enterWalk() {
   const r = walk.beginWalk(controller, camera.position.toArray());
   if (!r) return;
   if (r.spawned === null && r.error) { notice('暂无可用的安全落脚点，请稍候重试。'); return; }
+  if (r.spawned?.reason === 'explicit-choice') {
+    // Locked-core compensation (world-ten-hour 20260921, walkthrough UP-B1):
+    // WalkSession.beginWalk's pending-anchor branch never sets everWalked, so
+    // the next 取景→行走 entry re-spawned at the anchor instead of restoring
+    // the pose — breaking the session contract ("a mode switch is not a new
+    // game") and the exitWalk notice 「从当前位置继续」. src/player is locked
+    // (protection baseline), so the page closes the gap at the call site.
+    walk.everWalked = true;
+  }
   mode = 'walk';
   paused = false;
   camera.fov = 68;

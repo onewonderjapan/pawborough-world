@@ -1,0 +1,380 @@
+{
+ "base": "http://127.0.0.1:5420",
+ "startedAt": "2026-09-20T15:38:36.686Z",
+ "stages": [
+  {
+   "stage": "homepage",
+   "entryLabels": [
+    "主街精修样段主街：沿街店铺与两处弄口，一路向西到庙前。",
+    "A弄八米窄弄：街口望进有纵深，弄内有门窗与尽端壁龛。",
+    "B弄弄身向里渐宽成口袋，走到尽端回望正对主街。",
+    "庙前山门前广场：正望「保障海隅」门额，可沿庙轴线走进前院。"
+   ],
+   "cta": "fangbang.html?ds=fangbang-temple-v7&entry=mainStreet",
+   "galleryImgs": [
+    {
+     "ok": true,
+     "src": "main-street.png"
+    },
+    {
+     "ok": true,
+     "src": "lane-a-mouth.png"
+    },
+    {
+     "ok": true,
+     "src": "lane-b-mouth.png"
+    },
+    {
+     "ok": true,
+     "src": "temple-front.png"
+    },
+    {
+     "ok": true,
+     "src": "street-mouth.png"
+    },
+    {
+     "ok": true,
+     "src": "street-mouth.png"
+    },
+    {
+     "ok": false,
+     "src": "street-mouth.png"
+    },
+    {
+     "ok": false,
+     "src": "street-mouth.png"
+    }
+   ],
+   "overflowX": 0
+  },
+  {
+   "stage": "已就绪",
+   "ready": true,
+   "mode": "view",
+   "paused": false,
+   "tris": 694430,
+   "relocations": [
+    {
+     "anchorId": "mainStreet",
+     "at": 1789918722289,
+     "explicit": true
+    }
+   ],
+   "hud": "",
+   "hudHidden": true,
+   "introHidden": false,
+   "startDisabled": false,
+   "startText": "开始探索",
+   "notice": "已就绪。「开始探索」落入街面行走，或先自由取景。",
+   "fatalVisible": false,
+   "pointerLocked": false
+  },
+  {
+   "stage": "已就绪",
+   "feet0": [
+    124.60134887695312,
+    0.005486893653869673,
+    27.65021324157715
+   ],
+   "feet1": [
+    124.0271224975586,
+    0.020002233982086226,
+    27.535438537597656
+   ],
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "tris": 694430,
+   "relocations": [
+    {
+     "anchorId": "mainStreet",
+     "at": 1789918722289,
+     "explicit": true
+    }
+   ],
+   "hud": "位置 124.0, 27.5 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "hudHidden": false,
+   "introHidden": false,
+   "startDisabled": false,
+   "startText": "开始探索",
+   "notice": "继续上一次的位置行走。",
+   "fatalVisible": false,
+   "pointerLocked": true
+  },
+  {
+   "stage": "正在装配街区与庙轴线…",
+   "url": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=mainStreet",
+   "ready": null,
+   "mode": null,
+   "paused": null,
+   "tris": null,
+   "relocations": [],
+   "hud": "",
+   "hudHidden": true,
+   "introHidden": false,
+   "startDisabled": true,
+   "startText": "正在载入…",
+   "notice": "正在载入…",
+   "fatalVisible": false,
+   "pointerLocked": false
+  },
+  {
+   "stage": "已就绪",
+   "ready": true,
+   "mode": "view",
+   "paused": false,
+   "tris": 694430,
+   "relocations": [
+    {
+     "anchorId": "mainStreet",
+     "at": 1789918761930,
+     "explicit": true
+    }
+   ],
+   "hud": "",
+   "hudHidden": true,
+   "introHidden": false,
+   "startDisabled": false,
+   "startText": "开始探索",
+   "notice": "已就绪。「开始探索」落入街面行走，或先自由取景。",
+   "fatalVisible": false,
+   "pointerLocked": false
+  },
+  {
+   "stage": "narrow-390",
+   "homeOverflowX": 0,
+   "touchNote": null
+  },
+  {
+   "stage": "wide-1920",
+   "overflowX": 0
+  }
+ ],
+ "finishedAt": "2026-09-20T15:39:38.057Z",
+ "shots": [
+  "01-home-1280.png",
+  "02-game-intro.png",
+  "03-walking.png",
+  "04-paused.png",
+  "05-framing.png",
+  "06-back-to-walk.png",
+  "07-back-home.png",
+  "08-back-into-game.png",
+  "09-invalid-entry.png",
+  "10-home-390.png",
+  "11-game-early-390.png",
+  "12-home-1920.png"
+ ],
+ "events": [
+  {
+   "t": "2026-09-20T15:38:36.875Z",
+   "kind": "console-error",
+   "label": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+   "detail": ""
+  },
+  {
+   "t": "2026-09-20T15:38:37.540Z",
+   "kind": "shot",
+   "label": "01-home-1280.png",
+   "detail": ""
+  },
+  {
+   "t": "2026-09-20T15:38:37.542Z",
+   "kind": "info",
+   "label": "homepage overflowX",
+   "detail": "0"
+  },
+  {
+   "t": "2026-09-20T15:38:37.548Z",
+   "kind": "info",
+   "label": "entry buttons",
+   "detail": "[\"主街精修样段主街：沿街店铺与两处弄口，一路向西到庙前。\",\"A弄八米窄弄：街口望进有纵深，弄内有门窗与尽端壁龛。\",\"B弄弄身向里渐宽成口袋，走到尽端回望正对主街。\",\"庙前山门前广场：正望「保障海隅」门额，可沿庙轴线走进前院。\"]"
+  },
+  {
+   "t": "2026-09-20T15:38:37.589Z",
+   "kind": "info",
+   "label": "CTA after selecting 主街",
+   "detail": "fangbang.html?ds=fangbang-temple-v7&entry=mainStreet"
+  },
+  {
+   "t": "2026-09-20T15:38:37.592Z",
+   "kind": "info",
+   "label": "gallery images",
+   "detail": "[{\"ok\":true,\"src\":\"main-street.png\"},{\"ok\":true,\"src\":\"lane-a-mouth.png\"},{\"ok\":true,\"src\":\"lane-b-mouth.png\"},{\"ok\":true,\"src\":\"temple-front.png\"},{\"ok\":true,\"src\":\"street-mouth.png\"},{\"ok\":true,\"src\":\"street-mouth.png\"},{\"ok\":false,\"src\":\"street-mouth.png\"},{\"ok\":false,\"src\":\"street-mouth.png\"}]"
+  },
+  {
+   "t": "2026-09-20T15:38:37.843Z",
+   "kind": "info",
+   "label": "navigated to game",
+   "detail": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=mainStreet"
+  },
+  {
+   "t": "2026-09-20T15:38:38.662Z",
+   "kind": "requestfailed",
+   "label": "http://127.0.0.1:5420/world/fangbang-temple-v7/review-manifest.cm.json",
+   "detail": ""
+  },
+  {
+   "t": "2026-09-20T15:38:46.831Z",
+   "kind": "info",
+   "label": "game ready",
+   "detail": "{\"ready\":true,\"mode\":\"view\",\"paused\":false,\"tris\":694430,\"relocations\":[{\"anchorId\":\"mainStreet\",\"at\":1789918722289,\"explicit\":true}],\"hud\":\"\",\"hudHidden\":true,\"introHidden\":false,\"startDisabled\":false,\"startText\":\"开始探索\",\"stage\":\"已就绪\",\"notice\":\"已就绪。「开始探索」落入街面行走，或先自由取景。\",\"fatalVisible\":false,\"pointerLocked\":false}"
+  },
+  {
+   "t": "2026-09-20T15:38:46.953Z",
+   "kind": "shot",
+   "label": "02-game-intro.png",
+   "detail": ""
+  },
+  {
+   "t": "2026-09-20T15:38:52.362Z",
+   "kind": "info",
+   "label": "after 开始探索",
+   "detail": "{\"ready\":true,\"mode\":\"walk\",\"paused\":false,\"tris\":694430,\"relocations\":[{\"anchorId\":\"mainStreet\",\"at\":1789918722289,\"explicit\":true}],\"hud\":\"位置 124.6, 27.6 · P 暂停 · V 返回取景 · Esc 释放鼠标\",\"hudHidden\":false,\"introHidden\":false,\"startDisabled\":false,\"startText\":\"开始探索\",\"stage\":\"已就绪\",\"notice\":\"从「主街」开始探索。\",\"fatalVisible\":false,\"pointerLocked\":true}"
+  },
+  {
+   "t": "2026-09-20T15:38:57.110Z",
+   "kind": "shot",
+   "label": "03-walking.png",
+   "detail": ""
+  },
+  {
+   "t": "2026-09-20T15:39:01.063Z",
+   "kind": "info",
+   "label": "feet before/after W",
+   "detail": "{\"feet0\":[124.60134887695312,0.005486893653869673,27.65021324157715],\"feet1\":[124.0271224975586,0.020002233982086226,27.535438537597656]}"
+  },
+  {
+   "t": "2026-09-20T15:39:02.939Z",
+   "kind": "info",
+   "label": "after P",
+   "detail": "{\"ready\":true,\"mode\":\"walk\",\"paused\":true,\"tris\":694430,\"relocations\":[{\"anchorId\":\"mainStreet\",\"at\":1789918722289,\"explicit\":true}],\"hud\":\"已暂停 · P 或点击画面继续 · V 返回取景 · Esc 释放鼠标\",\"hudHidden\":false,\"introHidden\":false,\"startDisabled\":false,\"startText\":\"开始探索\",\"stage\":\"已就绪\",\"notice\":\"行走已暂停（P 或点击画面继续）。\",\"fatalVisible\":false,\"pointerLocked\":true}"
+  },
+  {
+   "t": "2026-09-20T15:39:03.155Z",
+   "kind": "shot",
+   "label": "04-paused.png",
+   "detail": ""
+  },
+  {
+   "t": "2026-09-20T15:39:03.956Z",
+   "kind": "info",
+   "label": "after P resume",
+   "detail": "{\"ready\":true,\"mode\":\"walk\",\"paused\":false,\"tris\":694430,\"relocations\":[{\"anchorId\":\"mainStreet\",\"at\":1789918722289,\"explicit\":true}],\"hud\":\"位置 124.0, 27.5 · P 暂停 · V 返回取景 · Esc 释放鼠标\",\"hudHidden\":false,\"introHidden\":false,\"startDisabled\":false,\"startText\":\"开始探索\",\"stage\":\"已就绪\",\"notice\":\"继续行走。\",\"fatalVisible\":false,\"pointerLocked\":true}"
+  },
+  {
+   "t": "2026-09-20T15:39:06.847Z",
+   "kind": "info",
+   "label": "framing on (V)",
+   "detail": "{\"ready\":true,\"mode\":\"view\",\"paused\":false,\"tris\":694430,\"relocations\":[{\"anchorId\":\"mainStreet\",\"at\":1789918722289,\"explicit\":true}],\"hud\":\"位置 124.0, 27.5 · P 暂停 · V 返回取景 · Esc 释放鼠标\",\"hudHidden\":true,\"introHidden\":false,\"startDisabled\":false,\"startText\":\"开始探索\",\"stage\":\"已就绪\",\"notice\":\"已切换到取景；点击「行走」从当前位置继续。\",\"fatalVisible\":false,\"pointerLocked\":false}"
+  },
+  {
+   "t": "2026-09-20T15:39:07.022Z",
+   "kind": "shot",
+   "label": "05-framing.png",
+   "detail": ""
+  },
+  {
+   "t": "2026-09-20T15:39:07.937Z",
+   "kind": "info",
+   "label": "walk again (header button)",
+   "detail": "{\"ready\":true,\"mode\":\"walk\",\"paused\":false,\"tris\":694430,\"relocations\":[{\"anchorId\":\"mainStreet\",\"at\":1789918722289,\"explicit\":true}],\"hud\":\"位置 124.0, 27.5 · P 暂停 · V 返回取景 · Esc 释放鼠标\",\"hudHidden\":false,\"introHidden\":false,\"startDisabled\":false,\"startText\":\"开始探索\",\"stage\":\"已就绪\",\"notice\":\"继续上一次的位置行走。\",\"fatalVisible\":false,\"pointerLocked\":true}"
+  },
+  {
+   "t": "2026-09-20T15:39:12.573Z",
+   "kind": "shot",
+   "label": "06-back-to-walk.png",
+   "detail": ""
+  },
+  {
+   "t": "2026-09-20T15:39:13.321Z",
+   "kind": "PASS",
+   "label": "UP-B1: framing→walk keeps the pose",
+   "detail": "{\"feetBeforeV\":[124.02713012695312,0.02009038925170903,27.53544044494629],\"feetBack\":[124.02713012695312,0.02009980678558354,27.53544044494629],\"horizDistM\":0,\"notice\":\"继续上一次的位置行走。\"}"
+  },
+  {
+   "t": "2026-09-20T15:39:13.322Z",
+   "kind": "PASS",
+   "label": "UP-B2: walk HUD names Esc to release the mouse",
+   "detail": "位置 124.0, 27.5 · P 暂停 · V 返回取景 · Esc 释放鼠标"
+  },
+  {
+   "t": "2026-09-20T15:39:15.775Z",
+   "kind": "shot",
+   "label": "07-back-home.png",
+   "detail": ""
+  },
+  {
+   "t": "2026-09-20T15:39:15.775Z",
+   "kind": "info",
+   "label": "returned to homepage",
+   "detail": "http://127.0.0.1:5420/world-preview.html"
+  },
+  {
+   "t": "2026-09-20T15:39:16.615Z",
+   "kind": "requestfailed",
+   "label": "http://127.0.0.1:5420/world/fangbang-temple-v7/review-manifest.cm.json",
+   "detail": ""
+  },
+  {
+   "t": "2026-09-20T15:39:17.918Z",
+   "kind": "info",
+   "label": "history.back → game intro state",
+   "detail": "{\"ready\":null,\"mode\":null,\"paused\":null,\"tris\":null,\"relocations\":[],\"hud\":\"\",\"hudHidden\":true,\"introHidden\":false,\"startDisabled\":true,\"startText\":\"正在载入…\",\"stage\":\"正在装配街区与庙轴线…\",\"notice\":\"正在载入…\",\"fatalVisible\":false,\"pointerLocked\":false}"
+  },
+  {
+   "t": "2026-09-20T15:39:17.963Z",
+   "kind": "shot",
+   "label": "08-back-into-game.png",
+   "detail": ""
+  },
+  {
+   "t": "2026-09-20T15:39:18.955Z",
+   "kind": "requestfailed",
+   "label": "http://127.0.0.1:5420/world/fangbang-temple-v7/review-manifest.cm.json",
+   "detail": ""
+  },
+  {
+   "t": "2026-09-20T15:39:26.733Z",
+   "kind": "info",
+   "label": "invalid entry load",
+   "detail": "{\"ready\":true,\"mode\":\"view\",\"paused\":false,\"tris\":694430,\"relocations\":[{\"anchorId\":\"mainStreet\",\"at\":1789918761930,\"explicit\":true}],\"hud\":\"\",\"hudHidden\":true,\"introHidden\":false,\"startDisabled\":false,\"startText\":\"开始探索\",\"stage\":\"已就绪\",\"notice\":\"已就绪。「开始探索」落入街面行走，或先自由取景。\",\"fatalVisible\":false,\"pointerLocked\":false}"
+  },
+  {
+   "t": "2026-09-20T15:39:26.846Z",
+   "kind": "shot",
+   "label": "09-invalid-entry.png",
+   "detail": ""
+  },
+  {
+   "t": "2026-09-20T15:39:27.736Z",
+   "kind": "info",
+   "label": "390 homepage overflowX",
+   "detail": "0"
+  },
+  {
+   "t": "2026-09-20T15:39:27.737Z",
+   "kind": "info",
+   "label": "touch note text",
+   "detail": "(none)"
+  },
+  {
+   "t": "2026-09-20T15:39:28.706Z",
+   "kind": "requestfailed",
+   "label": "http://127.0.0.1:5420/world/fangbang-temple-v7/review-manifest.cm.json",
+   "detail": ""
+  },
+  {
+   "t": "2026-09-20T15:39:36.810Z",
+   "kind": "info",
+   "label": "390 game overflowX",
+   "detail": "0"
+  },
+  {
+   "t": "2026-09-20T15:39:38.046Z",
+   "kind": "info",
+   "label": "1920 overflowX",
+   "detail": "0"
+  }
+ ]
+}
