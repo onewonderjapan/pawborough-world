@@ -1,0 +1,92 @@
+{
+ "checks": [
+  {
+   "ok": true,
+   "label": "resource failure shows the fatal panel",
+   "detail": "载入失败"
+  },
+  {
+   "ok": true,
+   "label": "fatal names the failed resource",
+   "detail": "资源 plain-v1/model.glb 加载失败：Failed to fetch。可重试一次；若重复失败，请从场景总览查看已知问题。"
+  },
+  {
+   "ok": true,
+   "label": "exactly ONE attempt per placement — no infinite background refetch",
+   "detail": "attempts=1"
+  },
+  {
+   "ok": true,
+   "label": "no duplicate canvases",
+   "detail": "got 1"
+  },
+  {
+   "ok": true,
+   "label": "no uncaught pageerrors during failure path",
+   "detail": "[]"
+  },
+  {
+   "ok": true,
+   "label": "retry (location.reload) reaches ready",
+   "detail": "{\"ready\":true,\"canvases\":1,\"fatal\":false}"
+  },
+  {
+   "ok": true,
+   "label": "retry leaves exactly one canvas",
+   "detail": "got 1"
+  },
+  {
+   "ok": true,
+   "label": "mid-load overview return: no error storm on the abandoned page",
+   "detail": "[]"
+  },
+  {
+   "ok": true,
+   "label": "fast entry switching lands on the last choice",
+   "detail": "{\"ready\":true,\"anchor\":\"templeFront\",\"canvases\":1,\"fatal\":false}"
+  },
+  {
+   "ok": true,
+   "label": "single canvas after fast switching",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "no pageerrors across fast switching",
+   "detail": "[]"
+  },
+  {
+   "ok": true,
+   "label": "blur while walking pauses the session (synthetic event)",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "no residual movement after resume (keys were cleared)",
+   "detail": "d=0.000m (walk displacement from before the pause: 0.567m)"
+  },
+  {
+   "ok": true,
+   "label": "3s pause does not accumulate dt into a jump",
+   "detail": "d=0.000m"
+  },
+  {
+   "ok": true,
+   "label": "capsule stays put after long-pause resume",
+   "detail": "d=0.000m"
+  },
+  {
+   "ok": true,
+   "label": "no-WebGL: actionable fatal (retry + overview return), no canvas",
+   "detail": "{\"title\":\"无法启动三维画面\",\"msg\":\"当前浏览器或环境未能创建 WebGL。首页与场景图库仍可浏览；如要行走，请换用支持 WebGL 的桌面浏览器后重试。\",\"hasRetry\":true,\"hasReturn\":true,\"canvases\":0}"
+  }
+ ],
+ "shots": [
+  "01-resource-failure-fatal.png",
+  "02-after-retry-ready.png",
+  "03-fast-switch-templeFront.png",
+  "04-after-blur-pause.png",
+  "05-no-webgl-fatal.png"
+ ],
+ "at": "2026-09-20T16:27:01.972Z"
+}

@@ -150,3 +150,26 @@ three.js 在下次使用时透明重传（正确性不受影响）。
 - 保护基线 locked 0 mismatch（改动仅 fangbangMain.js 允许窗口 + 新文件）。
 - 证据：artifacts/world-ten-hour/round-001/load-measure/{before,after,before-full,after-full}/
   （逐 URL 表 + 同机位截图对）。record() 新增 load.sharedAssetSources 运行时统计。
+
+---
+
+# 任务E：错误与可恢复加载探针（2026-09-21，round 1 续）
+
+`tools/error_recovery_probe.mjs`，16/16 通过（证据 artifacts/world-ten-hour/
+round-001/error-recovery/：5 张截图 + 检查清单 JSON）：
+
+1. 资源失败：route 中断 plain-v1 GLB → fatal 面板给出来源与原因
+   （「资源 plain-v1/model.glb 加载失败：…」，本批在 assetSourceCache 层补上的
+   上下文）；**每放置只尝试一次，无无限后台重发**（attempts=1）。
+2. 单次重试：重试=location.reload（新文档，构造上不可能复用旧 canvas/RAF/物理）；
+   重试后 ready、单 canvas。
+3. 加载中途点「场景总览」：离开无错误风暴；4 秒拖住 street GLB 的慢加载被干净放弃。
+4. 快速切换入口：laneA 中途切 laneB 再切 templeFront，最终落在最后选择、单 canvas、
+   无 pageerror。
+5. 失焦清键（合成 blur 事件，已标注）：行走中失焦即暂停；暂停期按键不被记录；
+   恢复后残余移动 0.000m。
+6. 长暂停 dt：暂停 3 秒后恢复无突跳（0.000m），定时器恢复后胶囊保持不动。
+7. 无 WebGL：可操作 fatal（原因说明 + 重试 + 返回总览），0 canvas，首页不受影响。
+
+生产代码未吞错：失败路径全部通过既有 fatal 通道给出原因与单一重试；本批仅新增
+资源名上下文（assetSourceCache 错误包装）。

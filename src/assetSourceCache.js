@@ -20,6 +20,10 @@
 //     the next use of any surviving clone (correct, small hitch on revoke)
 // DOM-free and renderer-free: node tests drive it with fake fetch/parse.
 const isGlbUrl = (u) => /\.glb($|[?#])/i.test(String(u));
+const shortUrl = (u) => {
+  try { return new URL(u, location.href).pathname.split('/').slice(-2).join('/'); }
+  catch { return String(u).slice(-60); }
+};
 
 export function createAssetSourceCache({ fetchImpl, parseImpl } = {}) {
   if (typeof fetchImpl !== 'function') throw new Error('assetSourceCache: fetchImpl required');
@@ -44,9 +48,12 @@ export function createAssetSourceCache({ fetchImpl, parseImpl } = {}) {
       return e;
     })();
     // a failed load must not poison the cache: drop the entry so the next
-    // attempt really re-fetches (plan D: failures are never cached)
+    // attempt really re-fetches (plan D: failures are never cached). The
+    // rethrow names the URL — the fatal panel must be able to say WHICH
+    // resource failed (plan E: visible state carries the reason).
     return e.inflight.catch((err) => {
       if (entries.get(key(url)) === e) entries.delete(key(url));
+      err.message = `资源 ${shortUrl(url)} 加载失败：${err.message}`;
       throw err;
     });
   }
