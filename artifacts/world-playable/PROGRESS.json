@@ -1,0 +1,49 @@
+{
+  "batch": "world-playable-night-20260920",
+  "executor": "ZCode GLM-5.3-Flash",
+  "phaseMode": "continuous_self_contained_then_stop",
+  "baseline": "68f10eab15361ff3b9652f48c3260e0d96c52b38",
+  "branch": "work/world-playable-night-20260920",
+  "stages": [
+    {
+      "id": "task1 upstream inherit + protection",
+      "status": "done",
+      "what": "UPSTREAM.json/REVIEW.md/lane-b-polish receipts read; B7-R1 (runtime repair: 230m route COMPLETED both configs, raw samples in evidence-repair/raw/) and B7-R2 (manifest regenerated, digest in outer receipt) verified once with real tools; inherited gap UP-G1 recorded (manifest lists 2 gitignored .blend1 → verify fails on committed tree, 12/13 evidence tests for same cause); protection baseline generated (world/building/kit/sources + locked core = 785 files, entry minimal-change window = 3 files)"
+    },
+    {
+      "id": "task2 homepage",
+      "status": "done",
+      "what": "world-preview.html + src/worldPreview/{entryData,previewMain,loadErrorText,galleryManifest}.json — paper-white/deep-wood/grey-tile design, serif display, four start points derived from route.json by the same rules as entryAnchors.js, interactive keyboard-accessible SVG guide map computed from real coordinates, 画面选项 (default stays plain, all-on flagged 资源较多), collapsed 版本与已知问题; dev smoke 15/15 incl. 1280/390 no-overflow"
+    },
+    {
+      "id": "task3 entry wiring + failure states",
+      "status": "done",
+      "what": "?entry=<anchor> accepted only against validated safeAnchors (re-validated by pickLocation; recorded as explicit relocation, never walk evidence); invalid → 主街 fallback with plain notice; absent → legacy behavior unchanged; WebGL-create failure and load failures now surface the fatal panel (actionable text + folded technical detail + single user-driven retry + relative 返回场景总览) instead of endless 初始化; loadErrorText names resource type+path; 场景总览 nav link added; dev full-load check entry=laneA: ready, route PASS, 694430 tris, framing camera lane-a-street-look-in"
+    },
+    {
+      "id": "task4 gallery + review material",
+      "status": "done",
+      "what": "same-page gallery: four spots captured CANVAS-ONLY from the live v7 page at cameras.json poses (main-street/temple-front/lane-a-mouth/lane-b-mouth, staging-then-rename so vite HMR cannot reload the page mid-capture); upstream SAME-POSE before/after pairs reused for A (v5→v6) and B (v6→v7) labeled 上一版/当前候选; 制作资料 table with scene.blend paths+SHA-256 and honest 主街/庙 historical-source note; tools/playable_package_gallery_manifest.mjs hashes all provenance"
+    },
+    {
+      "id": "task5 portable package",
+      "status": "done",
+      "what": "scripts/build_playable_package.mjs → dist-world-playable (refuses existing dir, --emptyOutDir false; --repair is ADD-ONLY for an existing dir); v7 closure 154,315,745 bytes — byte-equal total to the verified upstream dist-lane-b-polish closure; built-entry gates + absolute-path scan + manifest WITHOUT self-hash (20260920 lesson) + full re-verify; one build defect found and fixed (eastExtension.sealWall typo skipped world/fangbang-temple-v4/east-extension/seal-wall.glb → package game smoke caught it as 404 → repaired additively); python3 launcher (127.0.0.1, clear port-conflict error, no process killing) + node fallback; README with known issues"
+    },
+    {
+      "id": "task5 verification",
+      "status": "done",
+      "what": "package served by its OWN launcher on 127.0.0.1:5411: preview smoke 15/15; four-entry game smoke 26/26 (each entry ready + automatic routeCheck PASS + explicit relocation recorded + 694430 budget; all-on ready+route PASS 708066; 场景总览 return + gallery; no-WebGL run: fatal panel + working homepage) — routeCheck is the page's synchronous fixed-step check, NOT real-time paced and NOT claimed as manual play"
+    },
+    {
+      "id": "task5 restore verification",
+      "status": "done",
+      "what": "restore-world-playable copied (133 files, sha256 tree identical), served by its own launcher on 5413; full four-entry smoke re-run from the restore dir 26/26 PASS"
+    },
+    {
+      "id": "task6 acceptance + commit",
+      "status": "done",
+      "what": "full test suite run once: 124 tests 123 pass / 1 fail = inherited UP-G1 only; protection verify locked 0 mismatch; ZIP (133 files) + external sha256 receipt (digest outside the archive); docs finalized; single local commit, working tree clean; stopped — no automation left behind"
+    }
+  ]
+}

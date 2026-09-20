@@ -40,6 +40,7 @@ import { applyViewVerified, loadGlbWithStats, saveEvidence, countResources } fro
 import { resolvePixelRatio, applyCanvasFit } from './player/canvasFit.js';
 import { deriveEntryAnchors, validateAnchor } from './player/entryAnchors.js';
 import { WalkSession } from './player/walkSession.js';
+import { describeLoadError } from './worldPreview/loadErrorText.js';
 
 const app = document.querySelector('#app'), stats = document.querySelector('#stats'),
   viewsEl = document.querySelector('#views'), noticeEl = document.querySelector('#notice'),
@@ -69,7 +70,35 @@ function engNote(text) {
   if (engLog) engLog.textContent += (engLog.textContent ? '\n' : '') + text;
 }
 
-const renderer = new T.WebGLRenderer({ antialias: true });
+// ---- understandable failure states (world-playable-night 20260920) ----------
+// A dead init must never masquerade as endless loading: the fatal panel gives
+// an actionable message, a user-driven retry (one click = one reload; there is
+// no automatic retry loop) and the relative way back to the overview page.
+// Technical detail stays folded. Without WebGL the overview and gallery pages
+// still work — they carry no 3D. Load-error wording lives in
+// src/worldPreview/loadErrorText.js (shared with the batch tests).
+function showFatal(title, userMsg, technical) {
+  const panel = document.querySelector('#fatal');
+  if (!panel) return;
+  document.querySelector('#fatal-title').textContent = title;
+  document.querySelector('#fatal-msg').textContent = userMsg;
+  document.querySelector('#fatal-detail').textContent = technical ?? userMsg;
+  document.querySelector('#fatal-retry').onclick = () => location.reload();
+  panel.hidden = false;
+  if (introEl) introEl.style.display = 'none';
+  setStage(title + '：' + userMsg);
+}
+
+const renderer = (() => {
+  try {
+    return new T.WebGLRenderer({ antialias: true });
+  } catch (e) {
+    showFatal('无法启动三维画面',
+      '当前浏览器或环境未能创建 WebGL。首页与场景图库仍可浏览；如要行走，请换用支持 WebGL 的桌面浏览器后重试。',
+      String(e?.stack ?? e));
+    throw e;
+  }
+})();
 renderer.outputColorSpace = T.SRGBColorSpace;
 renderer.toneMapping = T.AgXToneMapping;
 renderer.shadowMap.enabled = true;
@@ -940,6 +969,24 @@ async function load() {
   setupPlayerUi();
   syncPlaceholderUi();
   setView('shanmen-from-road');
+  // ?entry=<anchor id> — the overview page's explicit start-point choice. Only
+  // existing VALIDATED anchors are accepted; the value is never fed to physics
+  // directly (pickLocation re-checks validation and records an explicit
+  // relocation, never walk evidence). An invalid or empty value falls back to
+  // 主街 with a plain explanation; a MISSING value keeps the legacy behavior
+  // of this page unchanged (direct fangbang.html opens stay as they were).
+  const entryParam = PARAMS.get('entry');
+  if (entryParam !== null) {
+    const valid = safeAnchors.find((a) => a.id === entryParam && a.validation?.ok);
+    if (valid) {
+      pickLocation(valid.id);
+    } else {
+      engNote(`?entry=${entryParam} 不是已验证的入口，已回退主街。`);
+      const main = safeAnchors.find((a) => a.id === 'mainStreet' && a.validation?.ok);
+      if (main) pickLocation('mainStreet');
+      notice('入口参数未识别，已回到主街出发点。');
+    }
+  }
   setStage('正在编译着色器…');
   const compiledAt = performance.now();
   await renderer.compileAsync(scene, camera);
@@ -1022,8 +1069,10 @@ load().catch((e) => {
   stats.textContent = msg;
   startBtn.disabled = true;
   startBtn.textContent = '载入失败';
-  notice(msg + '。刷新重试；详情见审查工具。');
-  engNote(String(e?.stack ?? e));
+  notice(msg + '。详情见审查工具。');
+  const technical = String(e?.stack ?? e);
+  engNote(technical);
+  showFatal('载入失败', describeLoadError(e) + '。可重试一次；若重复失败，请从场景总览查看已知问题。', technical);
   console.error(e);
 });
 window.addEventListener('pagehide', () => {

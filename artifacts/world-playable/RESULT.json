@@ -1,0 +1,46 @@
+{
+  "batch": "world-playable-night-20260920",
+  "executor": "ZCode GLM-5.3-Flash",
+  "finishedAt": "2026-09-21T00:00:00+09:00",
+  "scope": "PLAN.md six tasks: unified playable homepage, four real entries, gallery/review material, portable local package; no world/model/route/character changes",
+  "baseline": "68f10eab15361ff3b9652f48c3260e0d96c52b38",
+  "ownerAdopted": false,
+  "deliverables": {
+    "homepage": "world-preview.html (dev path) — built into the package root as world-preview.html",
+    "gamePage": "fangbang.html?ds=fangbang-temple-v7&entry=<mainStreet|laneA|laneB|templeFront>",
+    "gallery": "homepage #gallery section (four canvas captures, upstream same-pose before/after pairs, production-sources table)",
+    "reviewGuide": "artifacts/world-playable/REVIEW.md",
+    "package": {
+      "dir": "dist-world-playable/ (133 files, closure 154,315,745 bytes — byte-equal total to upstream verified dist-lane-b-polish closure)",
+      "zip": "artifacts/world-playable/delivery/world-playable-night-20260920.zip",
+      "zipSha256": "67ab5562ced3ca2a40a47cd1c21c3ffe93d0e237383225a69623bbb1fd9dd795",
+      "receipt": "artifacts/world-playable/delivery/package-zip-sha256.json (digest OUTSIDE the zip; manifest excludes itself)",
+      "launcher": "python3 start-world-playable.py [port] (127.0.0.1, default 5411, clear port-conflict error, never kills) / node start-world-playable.mjs fallback",
+      "restoreCheck": "restore-world-playable/ (kept on disk, sha256 tree identical, served by its own launcher on 5413, full smoke re-run PASS)"
+    }
+  },
+  "verification": {
+    "env": "same-machine headless Chrome + SwiftShader software rendering, arm64 linux, node v22.23.2; NOT hardware, NOT W2; no FPS claims made",
+    "homepageSmoke": "tools/playable_package_preview_smoke.mjs — 15/15 on dev AND from the package (entries, map dots, CTA mapping incl. all-on flags, hero/gallery images, sources table, no absolute paths, 1280px+390px no overflow)",
+    "entryWiring": "dev full load entry=laneA: ready, routeCheck PASS, 694430 tris, framing camera lane-a-street-look-in; package four-entry smoke 26/26 (ready + automatic routeCheck PASS + explicit relocation recorded per entry, budgets 694430/708066, 场景总览 return, gallery reachable)",
+    "noWebgl": "browser with --disable-webgl/--disable-webgl2/--disable-3d-apis: game shows fatal panel (explanation + folded detail + retry + relative 返回场景总览); homepage and gallery fully usable",
+    "portability": "restore-world-playable (fresh directory copy) served by its own launcher: four-entry smoke 26/26 again",
+    "tests": "node --test tests/*.test.mjs — 124 tests, 123 pass, 1 fail = tests/lane-b-evidence.test.mjs 'committed delivery manifest verifies' = inherited UP-G1 only (see below)",
+    "protection": "tools/playable_package_protect.mjs verify — 788 files, locked 785 (world/building/kit/src core) 0 mismatch; 3 files in the plan's documented minimal-change window (fangbang.html, src/fangbangMain.js, vite.config.js) recorded in baseline",
+    "budgets": { "base": 694430, "ceiling": 700000, "allOn": 708066, "allOnOverBy": 8066, "claim": "all-on is a separate configuration, NOT claimed under the 700k ceiling" }
+  },
+  "routeCheckNote": "the in-page route check runs synchronously at fixed dt (not rAF-paced, seconds not minutes); it is the page's own automatic check, honestly labeled automatic — no manual-walk claim is made anywhere (manualWalkClaim:false preserved)",
+  "inheritedGaps": [
+    {
+      "id": "UP-G1",
+      "what": "upstream artifacts/lane-b-polish/delivery-manifest.json lists two gitignored *.blend1 backups; manifest verify fails against the committed tree (all real payloads byte-exact); tests/lane-b-evidence.test.mjs 12/13 for the same cause",
+      "disposition": "partial — recorded in artifacts/world-playable/UPSTREAM-INHERIT.json; NOT fixed here (rewriting upstream evidence would forge its record); blocks nothing in this batch"
+    }
+  ],
+  "knownBenign": "optional probe world/fangbang-temple-v7/review-manifest.cm.json is absent in the package → 404 on the compressed-mode probe, tolerated by the page exactly as in the verified upstream dist",
+  "notDone": [
+    "no hardware-FPS measurement (environment gives SwiftShader only); page shows no frame-rate claims",
+    "no owner adoption decision (ownerAdopted=false); nothing merged/pushed/published",
+    "W2/Unity untouched; characters/Unity remain deferred per project scope"
+  ]
+}

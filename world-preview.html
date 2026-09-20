@@ -1,0 +1,163 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>方浜市声 · 世界试玩</title>
+<meta name="description" content="方浜中路里弄与庙轴线漫游样段——本地试玩首页：选择出发点，从主街走进里弄，沿街探访庙前。">
+<style>
+:root{
+  --paper:#f7f4ec; --paper-dim:#efeadd; --ink:#2f2c26; --wood:#372f27;
+  --wood-btn:#4f4639; --wood-btn-hover:#5d5344; --wood-edge:#8a6f4d;
+  --tile:#cdc7b6; --tile-strong:#a49e8c; --muted:#6d6555; --faint:#8b8270;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font:14px/1.75 system-ui,'Noto Sans CJK SC',sans-serif}
+a{color:inherit}
+h1,h2,h3,.serif{font-family:'Noto Serif CJK SC','Songti SC',serif}
+:focus-visible{outline:2px solid var(--wood-edge);outline-offset:2px}
+.wrap{max-width:1160px;margin:0 auto;padding:0 28px}
+/* 顶栏：深木一条，与游戏页同族 */
+.top{background:var(--wood);color:#e9e4d8;border-bottom:2px solid var(--wood-edge)}
+.top .wrap{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-top:10px;padding-bottom:10px}
+.brand-name{font:500 17px/1.2 'Noto Serif CJK SC',serif;letter-spacing:.16em}
+.brand-sub{font-size:11px;color:#b7ad9c;letter-spacing:.04em}
+/* 首屏：左文右图 */
+.hero{display:grid;grid-template-columns:minmax(340px,30rem) 1fr;gap:44px;padding:44px 28px 20px;align-items:start}
+.hero h1{font-size:clamp(34px,4.5vw,46px);font-weight:500;letter-spacing:.18em;margin:0 0 10px}
+.tagline{margin:0 0 22px;color:var(--muted);font-size:15px}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 30px}
+.btn-primary{display:inline-block;background:var(--wood-btn);color:#f3efe4;border:1px solid #3f382f;border-radius:4px;padding:11px 26px;font:14px system-ui,'Noto Sans CJK SC',sans-serif;letter-spacing:.22em;text-decoration:none;cursor:pointer}
+.btn-primary:hover{background:var(--wood-btn-hover)}
+.btn-secondary{display:inline-block;background:transparent;color:var(--wood-btn);border:1px solid var(--wood-btn);border-radius:4px;padding:11px 22px;font:14px system-ui,'Noto Sans CJK SC',sans-serif;letter-spacing:.1em;text-decoration:none;cursor:pointer}
+.btn-secondary:hover{background:var(--paper-dim)}
+.entry-label{margin:0 0 8px;font-size:12px;color:var(--faint);letter-spacing:.14em}
+.entries{list-style:none;margin:0 0 24px;padding:0;border-top:1px solid var(--tile)}
+.entries li{border-bottom:1px solid var(--tile)}
+.entry-btn{display:flex;align-items:baseline;gap:14px;width:100%;text-align:left;background:transparent;border:0;border-left:3px solid transparent;padding:11px 10px;cursor:pointer;font:inherit;color:inherit}
+.entry-btn:hover{background:var(--paper-dim)}
+.entry-btn[aria-pressed="true"]{border-left-color:var(--wood-edge);background:var(--paper-dim)}
+.entry-name{font-family:'Noto Serif CJK SC',serif;font-size:16px;letter-spacing:.2em;white-space:nowrap}
+.entry-desc{font-size:12px;color:var(--muted)}
+/* 画面选项 */
+details.opts{border:1px solid var(--tile);border-radius:4px;margin:0 0 8px}
+details.opts summary,details.version summary,details.prodnotes summary{cursor:pointer;padding:8px 12px;font-size:13px;color:var(--muted);user-select:none}
+details.opts[open] summary,details.version[open] summary,details.prodnotes[open] summary{border-bottom:1px solid var(--tile)}
+details.opts .opt-body{padding:10px 14px;display:grid;gap:6px;font-size:13px}
+details.opts small{color:var(--faint)}
+/* 首屏主图 */
+.hero-media{margin:0;border:1px solid var(--tile);background:var(--paper-dim);padding:10px}
+.hero-media img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+.hero-media figcaption,#gallery figcaption{font-size:12px;color:var(--muted);padding:8px 2px 0;line-height:1.6}
+/* 分节 */
+.sec-title{font-size:20px;font-weight:500;letter-spacing:.14em;margin:0 0 6px}
+.sec-note{font-size:12px;color:var(--faint);margin:0 0 14px}
+.map-sec{padding:30px 28px 8px}
+#map{border:1px solid var(--tile);background:var(--paper-dim);padding:6px}
+#map svg{display:block;width:100%;height:auto}
+#map .map-error{padding:18px;font-size:13px;color:var(--muted)}
+/* 图库 */
+.gallery{padding:34px 28px 8px}
+.spots{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.spots figure{margin:0;border:1px solid var(--tile);background:var(--paper-dim);padding:8px}
+.spots img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+.spots a{display:block}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--tile);margin:0 0 22px}
+.pair figure{margin:0;padding:8px;background:var(--paper-dim)}
+.pair figure+figure{border-left:1px solid var(--tile)}
+.pair img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+.pair .ver{font-size:12px;color:var(--muted);padding:6px 2px 0}
+.pair .ver b{font-weight:600;color:var(--ink)}
+.pairs h3{font-size:15px;font-weight:500;letter-spacing:.12em;margin:22px 0 10px}
+/* 制作资料与版本 */
+details.prodnotes{border:1px solid var(--tile);border-radius:4px;margin:0 0 26px}
+details.prodnotes .body{padding:12px 16px;font-size:12.5px;color:var(--muted)}
+details.prodnotes code{font:12px ui-monospace,monospace;background:var(--paper-dim);padding:1px 5px;border-radius:3px}
+details.prodnotes table{border-collapse:collapse;width:100%;font-size:12px;margin:8px 0}
+details.prodnotes td,details.prodnotes th{border:1px solid var(--tile);padding:4px 8px;text-align:left;vertical-align:top}
+details.prodnotes th{color:var(--faint);font-weight:600;white-space:nowrap}
+details.version{border:1px solid var(--tile);border-radius:4px;margin:10px 28px 34px;max-width:1160px}
+@media (min-width:1216px){details.version{margin:10px auto 34px}}
+details.version .body{padding:12px 16px;font-size:12.5px;color:var(--muted);display:grid;gap:8px}
+footer{border-top:1px solid var(--tile);color:var(--faint);font-size:11px}
+footer .wrap{padding-top:12px;padding-bottom:16px}
+/* 窄屏自然堆叠 */
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr;gap:26px;padding-top:30px}
+  .spots{grid-template-columns:1fr}
+  .wrap{padding:0 18px}
+  .hero{padding-left:18px;padding-right:18px}
+  .map-sec,.gallery{padding-left:18px;padding-right:18px}
+  details.version{margin-left:18px;margin-right:18px}
+  .entry-desc{display:inline}
+}
+</style></head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="brand"><span class="brand-name">方浜市声</span> <span class="brand-sub">世界试玩 · 本地候选</span></div>
+  <span class="brand-sub">方浜中路 · 里弄与庙轴线 · 漫游样段</span>
+</div></header>
+
+<main>
+  <section class="hero">
+    <div>
+      <h1>方浜市声</h1>
+      <p class="tagline">从主街走进里弄，沿街探访庙前。</p>
+      <div class="cta-row">
+        <a id="cta-explore" class="btn-primary" href="fangbang.html?ds=fangbang-temple-v7">开始探索</a>
+        <a class="btn-secondary" href="#gallery">先看场景</a>
+      </div>
+      <p class="entry-label">出发点</p>
+      <ul id="entries" class="entries">
+        <li class="entry-btn" aria-disabled="true">正在读取路线数据…</li>
+      </ul>
+      <details class="opts">
+        <summary>画面选项</summary>
+        <div class="opt-body">
+          <label><input type="radio" name="cfg" value="default" checked> 普通配置（默认）</label>
+          <label><input type="radio" name="cfg" value="allOn"> 全开：含沿街立面换装与街面物件 <small>资源较多，加载更久</small></label>
+        </div>
+      </details>
+    </div>
+    <figure class="hero-media">
+      <img id="hero-img" alt="游戏实景：精修主街" >
+      <figcaption id="hero-cap">来自游戏实景截图。</figcaption>
+    </figure>
+  </section>
+
+  <section class="map-sec">
+    <h2 class="sec-title">导览图</h2>
+    <p class="sec-note">按实测步行路线绘制：图上左为西（庙前方向）、右为东（样段东端），A弄与B弄分列主街两侧。图中只画路线与入口，未精修街区不在此图呈现。点击图上圆点或上方出发点即可选择。</p>
+    <div id="map" aria-label="导览图"></div>
+  </section>
+
+  <section id="gallery" class="gallery">
+    <h2 class="sec-title">先看场景</h2>
+    <p class="sec-note">四处实景各一张，均来自游戏页面实拍，点击可打开原图。</p>
+    <div class="spots" id="spots"></div>
+    <div class="pairs">
+      <h3>修整前后</h3>
+      <p class="sec-note">同机位并排对照。「上一版」是修整前的历史画面，不代表当前候选。</p>
+      <div class="pair" id="pair-a"></div>
+      <div class="pair" id="pair-b"></div>
+    </div>
+    <details class="prodnotes">
+      <summary>制作资料（可重开的源工程与校验值）</summary>
+      <div class="body">
+        <p>以下 Blender 源工程保存在工作区（不随网页便携包分发），可用于重开局部场景核对几何：</p>
+        <table id="src-table"><tbody></tbody></table>
+        <p>主街与庙的源工程只有历史批次状态，本候选未重打统一全景，如实按历史版本引用；不另行重渲。</p>
+      </div>
+    </details>
+  </section>
+
+  <details class="version">
+    <summary>版本与已知问题</summary>
+    <div class="body">
+      <p>世界候选：fangbang-temple-v7（2026-09-20，B弄口修整后交付）。机主尚未采用（ownerAdopted=false），未合并、未发布。</p>
+      <p>三角形预算：默认 694,430（上限 700,000，达标）；「全开」708,066，超出目标 8,066——这是如实记录，不作为默认配置宣传。</p>
+      <p>上游未决：上游交付清单含有两个未随提交打包的 .blend1 备份条目（编号 UP-G1），不影响试玩与构建；明细见 artifacts/world-playable/UPSTREAM-INHERIT.json。</p>
+      <p>运行环境：本批验证环境为本机 Chrome 无头 + SwiftShader 软件渲染，因此页面不显示帧率宣传（无有效硬件实测数据）。</p>
+      <p>本页与游戏页只引用相对路径的本地资源，无联网请求、无自动下载、无外部统计。</p>
+    </div>
+  </details>
+</main>
+<footer><div class="wrap">方浜市声 · 本地试玩候选 · 相对路径离线可用</div></footer>
+<script type="module" src="/src/worldPreview/previewMain.js"></script>
+</body></html>

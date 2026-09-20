@@ -1,0 +1,147 @@
+{
+ "tool": "tools/playable_package_game_smoke.mjs",
+ "base": "http://127.0.0.1:5413",
+ "env": {
+  "chrome": "/usr/bin/google-chrome",
+  "headless": true,
+  "swiftshader": true,
+  "at": "2026-09-20T14:39:08.232Z"
+ },
+ "budgets": {
+  "base": 694430,
+  "allOn": 708066
+ },
+ "pass": true,
+ "checks": [
+  {
+   "ok": true,
+   "label": "homepage opens from the package",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "homepage CTA carries the entry mapping",
+   "detail": "fangbang.html?ds=fangbang-temple-v7&entry=mainStreet"
+  },
+  {
+   "ok": true,
+   "label": "mainStreet: page ready",
+   "detail": "tris=694430"
+  },
+  {
+   "ok": true,
+   "label": "mainStreet: automatic route check PASS",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "mainStreet: explicit entry relocation recorded (not walk evidence)",
+   "detail": "[{\"anchorId\":\"mainStreet\",\"at\":1789915101533,\"explicit\":true}]"
+  },
+  {
+   "ok": true,
+   "label": "mainStreet: default budget stays 694430",
+   "detail": "got 694430"
+  },
+  {
+   "ok": true,
+   "label": "场景总览 returns to the homepage from the game",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "gallery section reachable from homepage",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "laneA: page ready",
+   "detail": "tris=694430"
+  },
+  {
+   "ok": true,
+   "label": "laneA: automatic route check PASS",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "laneA: explicit entry relocation recorded (not walk evidence)",
+   "detail": "[{\"anchorId\":\"laneA\",\"at\":1789915110779,\"explicit\":true}]"
+  },
+  {
+   "ok": true,
+   "label": "laneA: default budget stays 694430",
+   "detail": "got 694430"
+  },
+  {
+   "ok": true,
+   "label": "laneB: page ready",
+   "detail": "tris=694430"
+  },
+  {
+   "ok": true,
+   "label": "laneB: automatic route check PASS",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "laneB: explicit entry relocation recorded (not walk evidence)",
+   "detail": "[{\"anchorId\":\"laneB\",\"at\":1789915120443,\"explicit\":true}]"
+  },
+  {
+   "ok": true,
+   "label": "laneB: default budget stays 694430",
+   "detail": "got 694430"
+  },
+  {
+   "ok": true,
+   "label": "templeFront: page ready",
+   "detail": "tris=694430"
+  },
+  {
+   "ok": true,
+   "label": "templeFront: automatic route check PASS",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "templeFront: explicit entry relocation recorded (not walk evidence)",
+   "detail": "[{\"anchorId\":\"templeFront\",\"at\":1789915130356,\"explicit\":true}]"
+  },
+  {
+   "ok": true,
+   "label": "templeFront: default budget stays 694430",
+   "detail": "got 694430"
+  },
+  {
+   "ok": true,
+   "label": "all-on config ready + route PASS",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "all-on budget stays 708066",
+   "detail": "got 708066"
+  },
+  {
+   "ok": true,
+   "label": "no-WebGL: fatal panel shows an explanation",
+   "detail": "当前浏览器或环境未能创建 WebGL。首页与场景图库仍可浏览；如要行走，请换用支持 WebGL 的桌面浏览器后重试。"
+  },
+  {
+   "ok": true,
+   "label": "no-WebGL: way back to overview is relative",
+   "detail": "world-preview.html"
+  },
+  {
+   "ok": true,
+   "label": "no-WebGL: user-driven retry offered",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "no-WebGL: homepage and gallery still usable",
+   "detail": ""
+  }
+ ]
+}

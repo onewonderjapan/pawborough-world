@@ -1,0 +1,52 @@
+{
+  "tool": "tools/playable_package_capture.mjs",
+  "env": {
+    "chrome": "/usr/bin/google-chrome",
+    "headless": true,
+    "swiftshader": true,
+    "viewport": [
+      1280,
+      720
+    ],
+    "dpr": 1,
+    "dataset": "fangbang-temple-v7",
+    "port": 5410,
+    "startedAt": "2026-09-20T14:26:07.079Z"
+  },
+  "captures": [
+    {
+      "id": "main-street",
+      "view": "junction-west",
+      "note": "主街西口：精修主街望西延伸拼接处",
+      "presentation": "canvas-only, entry card dismissed via the real 取景 button, header/footer/review pill hidden for the shot",
+      "bytes": 785194,
+      "file": "artifacts/world-playable/captures/main-street.png"
+    },
+    {
+      "id": "temple-front",
+      "view": "shanmen-from-road",
+      "note": "庙前：方浜路中线正望山门（页面主画面）",
+      "presentation": "canvas-only, entry card dismissed via the real 取景 button, header/footer/review pill hidden for the shot",
+      "bytes": 317989,
+      "file": "artifacts/world-playable/captures/temple-front.png"
+    },
+    {
+      "id": "lane-a-mouth",
+      "view": "lane-a-street-look-in",
+      "note": "A弄：街口望入（窄门洞纵深）",
+      "presentation": "canvas-only, entry card dismissed via the real 取景 button, header/footer/review pill hidden for the shot",
+      "bytes": 957592,
+      "file": "artifacts/world-playable/captures/lane-a-mouth.png"
+    },
+    {
+      "id": "lane-b-mouth",
+      "view": "lane-b-street-look-in",
+      "note": "B弄：街口望入",
+      "presentation": "canvas-only, entry card dismissed via the real 取景 button, header/footer/review pill hidden for the shot",
+      "bytes": 1029255,
+      "file": "artifacts/world-playable/captures/lane-b-mouth.png"
+    }
+  ],
+  "pass": true,
+  "finishedAt": "2026-09-20T14:26:24.829Z"
+}

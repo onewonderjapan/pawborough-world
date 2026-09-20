@@ -1,0 +1,10 @@
+{
+  "artifact": "artifacts/world-playable/delivery/world-playable-night-20260920.zip",
+  "sha256": "67ab5562ced3ca2a40a47cd1c21c3ffe93d0e237383225a69623bbb1fd9dd795",
+  "bytes": 165397155,
+  "fileCount": 133,
+  "generatedBy": "tools/playable_package_zip.py (deterministic order, fixed timestamp)",
+  "note": "digest lives OUTSIDE the archive; the in-package package-manifest.json excludes itself (no self-hash cycle). Zip contains the built site, v7 dependency closure (154,315,745 bytes, byte-equal total to the verified upstream dist closure), optional skins/props, gallery, README, launchers. No .blend sources, no historical videos.",
+  "verifyCommand": "sha256sum world-playable-night-20260920.zip -> compare this field; unzip and python3 start-world-playable.py [port]",
+  "generatedAt": "2026-09-20T23:39:00+09:00"
+}

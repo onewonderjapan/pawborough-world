@@ -1,0 +1,69 @@
+{
+ "generatedAt": "2026-09-20T14:26:53.484Z",
+ "images": {
+  "mainStreet": {
+   "path": "artifacts/world-playable/captures/main-street.png",
+   "bytes": 785194,
+   "sha256": "f5ac856cccad4a5147d7cd75a83df5fd19488267fecb4d2277ce25e591124ac6",
+   "from": "本批实拍：fangbang.html?ds=fangbang-temple-v7 页面 junction-west 机位（canvas原图）"
+  },
+  "templeFront": {
+   "path": "artifacts/world-playable/captures/temple-front.png",
+   "bytes": 317989,
+   "sha256": "7b099dbf055797b44eda92b5f9b5810006299624530ff2e34985ec2131f77740",
+   "from": "本批实拍：同页 shanmen-from-road 机位（canvas原图）"
+  },
+  "laneA": {
+   "path": "artifacts/world-playable/captures/lane-a-mouth.png",
+   "bytes": 957592,
+   "sha256": "b4bfd3a4a22a9b2f7e9edfc865e9b06415a77e1bb78250c6d625a68b55f76f1b",
+   "from": "本批实拍：同页 lane-a-street-look-in 机位（canvas原图）；A弄GLB自v6起逐字节沿用，经哈希核对"
+  },
+  "laneB": {
+   "path": "artifacts/world-playable/captures/lane-b-mouth.png",
+   "bytes": 1029255,
+   "sha256": "21fdba08b0c2525d3bee9a971dac6a022ca1caba17cf8c77145068d34980fe7b",
+   "from": "本批实拍：同页 lane-b-street-look-in 机位（canvas原图，v7候选资产）"
+  },
+  "laneABefore": {
+   "path": "artifacts/lane-a-polish/before/street-mouth.png",
+   "bytes": 730097,
+   "sha256": "420ce9ff9df9c863d2a4fe3d6766e72a9f3e2346a1a48b123a818d22f3df0d2d",
+   "from": "A弄精修施工前（上一版，lane-a-polish批交付图）"
+  },
+  "laneBAfterEvidence": {
+   "path": "artifacts/lane-b-polish/after/street-mouth.png",
+   "bytes": 961275,
+   "sha256": "36dfcb9abf6164360589f74bd01b65c4d545e008f798d07fdd99e36dbb32b56e",
+   "from": "B弄精修后（v7候选交付图，上游证据留档）"
+  },
+  "laneBBefore": {
+   "path": "artifacts/lane-b-polish/before/street-mouth.png",
+   "bytes": 926870,
+   "sha256": "22758b583151da97b4f609e9ae8e8bca38569c5d1c016be6a153d6c3d6664988",
+   "from": "B弄精修施工前（v6，lane-b-polish批交付图）"
+  }
+ },
+ "sources": {
+  "world/lane-b-polish/review/scene.blend": {
+   "bytes": 16477753,
+   "sha256": "ab69c7198d53cd11bb93f4a7d60dd35ddfe886dd2473585443ce5359c93472e1",
+   "note": "B弄审查场景（含S04/S05/S07 context，默认相机street-mouth）"
+  },
+  "world/lane-b-polish/lane-b/model.blend": {
+   "bytes": 6731899,
+   "sha256": "08288e6a3321d96151a56f913e438c130f5b0a5600fd559ebaba7ee9798c4f72",
+   "note": "B弄弄身源工程"
+  },
+  "world/lane-b-polish/interfaces/model.blend": {
+   "bytes": 6310339,
+   "sha256": "661222a6f2ec3494e4967e2647ac9cd5cd04aa7d505431fa550ba9a4eee5c43b",
+   "note": "两弄街口接口源工程（A段与v6逐字节相同）"
+  },
+  "world/lane-a-polish/lane-a/model.blend": {
+   "bytes": 6584182,
+   "sha256": "87c086b06d8aa0811fd46eed9d3272c4be2219df112b26c89b0f34f0816cf1cc",
+   "note": "A弄弄身源工程（v6，历史状态如实引用）"
+  }
+ }
+}

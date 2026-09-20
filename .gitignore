@@ -29,3 +29,9 @@ dist-player-exp-a/
 dist-*/
 # Blender save backups (*.blend stays tracked as the reopenable source)
 *.blend1
+
+# world-playable-night restore-verify dir (kept on disk, not committed)
+restore-world-playable/
+
+# world-playable-night: the ZIP stays on disk, digest receipt is committed
+artifacts/world-playable/delivery/*.zip
