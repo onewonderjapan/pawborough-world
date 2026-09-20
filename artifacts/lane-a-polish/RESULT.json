@@ -1,0 +1,118 @@
+{
+  "batch": "lane-a-polish construct (2026-09-20, ZCode GLM-5.3 under Codex lead)",
+  "scope": "CONSTRUCT.md frozen work order: A-lane near-range completion + P1 ground safety as world/fangbang-temple-v6 candidate; originals read-only",
+  "baseline": "96b669081206de31b075ebbd39377afb84ff970d",
+  "ownerAdopted": false,
+  "review_pending": "Codex final review",
+  "datasets": {
+    "candidate": {
+      "entry": "fangbang.html?ds=fangbang-temple-v6",
+      "assembly": "world/fangbang-temple-v6/street-reviewed-lanes.glb (byte-exact v5 copy, sha f8f90b7aacb421dd…, 20587068 bytes, 171419 tris)",
+      "assets": {
+        "lane-a-v2": "world/lane-a-polish/lane-a/model.glb (1938736 B, sha 5f33a28640652af0…, 2910 tris, ≤4000 target PASS)",
+        "lane-a-interfaces-v2": "world/lane-a-polish/interfaces/model.glb (1627976 B, sha 2d49627ac282015b…, 911 tris, ≤950 target PASS incl. new east wall)"
+      },
+      "reopenableSources": ["world/lane-a-polish/lane-a/model.blend + kit/build_lane_a_v2.py", "world/lane-a-polish/interfaces/model.blend + kit/build_lanes_interfaces_v2.py", "world/lane-a-polish/review/scene.blend + kit/build_lane_a_polish_review_scene.py (default camera street-mouth, material preview, N05/N06 context kept)"],
+      "dist": "dist-lane-a-polish (95-file dependency closure, gate DIST_RUN_OK; rebuild: node scripts/build_lane_a_polish_dist.mjs)"
+    },
+    "untouched": ["world/fangbang-temple-v5", "world/lanes-v2 (lane-b-v2 loaded verbatim)", "world/v4 and earlier", "building/*", "street-sidefaces", "street-props", "W2 canonical"]
+  },
+  "items": [
+    {
+      "id": "1 ground closure (P1)",
+      "status": "done",
+      "what": "a-floor re-closed along measured N05 east face (42.02,-9.83)→(42.57,-16.80), N06 west face (44.00,-9.67)→(44.87,-14.79), new east wall line, module floor edge (holder 43.545,0.09,-16.375 yaw 3.1165); explicit 3-triangle fan, lanes-v2__paving-frontage ground contract",
+      "floorPolygonXz": [[42.8836, -16.4516], [44.671, -16.4095], [44.8996, -14.785], [44.0772, -9.945], [42.3695, -9.95]],
+      "evidence": "walktest-v6.json: former fall-out probes (43.9,-10.6)/(43.7,-12.0)/(44.0,-15.3) now grounded y0.11-0.15; NEW P3 walk line through the former void reached; coverage grid 425 samples 0 misses; measure-v6.json: sections z-10.6/-13.4/-15.6/-16.375 reachable-corridor maxGap 0.0 (v5: 1.08-1.6 m voids)"
+    },
+    {
+      "id": "2 east mouth wall",
+      "status": "done",
+      "what": "plaster wall t=0.24 h=3.3 + grounded brick base + tile cap between N06 NW corner and module east wall",
+      "westFaceLine": {"north": [44.87, -14.79], "south": [44.6393, -16.4569], "lengthM": 1.6828, "thetaRad": -3.00407},
+      "collider": "lane-a:wall-east-mouth (world obb); push probe stops 0.374 m from the visible face (= capsule 0.35 + slope slack)"
+    },
+    {
+      "id": "3 mouth piers re-anchored",
+      "status": "done",
+      "what": "two reveal piers re-centered ON the real wall faces (west x=42.049, east x=44.090 at z-10.20), brick bases grounded y0..0.6; no street-spanning gatehouse/plaque added",
+      "colliders": ["interfaces:a-jamb-west", "interfaces:a-jamb-east (replaced records)"]
+    },
+    {
+      "id": "4 high windows real recess",
+      "status": "done",
+      "what": "walls partitioned into segments around all 7 openings (reveal faces are the segments' own faces); closed glass rear-set at recess back; timber frame + stone sill stay proud at the face; the v5 buried solid dark boxes are gone",
+      "recessDepth": {"west": 0.08, "east": 0.14},
+      "glassPlanes": {"west localX": 1.156-1.180, "east localX": -1.244..-1.220},
+      "positionsKept": {"east": [1.8, 3.8, 5.8], "west": [1.4, 2.73, 4.07, 5.4], "closed": true}
+    },
+    {
+      "id": "5 rear service door",
+      "status": "done",
+      "what": "ring-built niche kept (piers/head/backwall integrated in the wall partition); refined: timber lintel at the mouth, stone threshold, brick base returns into the niche reveals; timber fascia under the eaves on both lane walls + end wall (coping profile unchanged, no clearance impact)"
+    },
+    {
+      "id": "6 end blind niche",
+      "status": "done",
+      "what": "solid fill box removed; 0.13 m recess with four-side lining + back wall + closed timber frame ring; original size intent kept (0.7x1.0 m, centre y1.7, local s=8); no statue/text/new window types added"
+    },
+    {
+      "id": "7 material",
+      "status": "done",
+      "what": "plaster normal strength 0.65 → 0.35 on the two NEW module material instances only; zero new image textures; shared assets untouched"
+    },
+    {
+      "id": "8 budgets (two configurations, page-runtime measured)",
+      "status": "done",
+      "what": "tri diet 7290→2910 (A) and 876→911 (interfaces, incl. new wall) by dropping invisible wall-scale micro-bevels; window frames / stone sills outlines kept",
+      "baseDefault": {"tris": 698704, "ceiling": 700000, "pass": true, "v5Was": 703049},
+      "skinsAndPropsAllOn": {"tris": 712340, "note": "separate single-flag config (+2117 skins, +11176 props, none in lane A); OVER the 700k base ceiling — recorded as its own number, NOT claimed under it"},
+      "measuredBy": "real page record() in tools/lane_a_polish_capture.mjs + dist gate scripts/build_lane_a_polish_dist.mjs (both configs route-check pass)"
+    },
+    {
+      "id": "9 lane B untouched",
+      "status": "done",
+      "what": "lane-b-v2 GLB/sidecar loaded verbatim; mouth B copied verbatim incl. the known b-apron/b-drain-outlet z-collapse (quad() fed 3-tuples) — REGISTERED LEFTOVER, out of A scope"
+    },
+    {
+      "id": "lead-fix threshold (2026-09-20)",
+      "status": "done",
+      "what": "portal threshold top was +0.04 above the floor (lead ray evidence threshold-surface-before-fix.json); re-centred stone top at +0.02, street threshold strip 0.115→0.11; silhouette kept",
+      "regression": "walktest-v6.json profiles: portal axis / centreline / west-strip max adjacent step 0.020 m (0 holes); tests/lane-a_polish.test.mjs asserts the exported GLB portal-band stone top ≤ 0.11"
+    },
+    {
+      "id": "lead-fix evidence framing (2026-09-20)",
+      "status": "done",
+      "what": "all 4 before/after pairs re-shot with the page's own 取景 button dismissing the entry card (real UI click, no source change), review panel closed, same cameras/lighting; after-only end-oblique supplement added (camera 44.35,1.70,-23.10 → 43.816,1.79,-24.49), no before counterpart faked"
+    },
+    {
+      "id": "lead-fix reopenable scene + dist (2026-09-20)",
+      "status": "done",
+      "what": "review scene.blend: trim window corrected to blender y=(7.5,26.5) — N05×12/N06×10 context meshes now present (was 0), scene.camera=street-mouth non-null, material-preview camera view; dist script: no source-HTML overwrite (built fangbang.html gated against /src/ references), vite --emptyOutDir false, fail-fast page-error/404 gate with .cm.json optional-probe whitelist, both budget configs recorded"
+    }
+  ],
+  "verification": {
+    "physics": "tools/lane_a_polish_walktest.mjs → WALKTEST_V6_PASS (14 controller tests + 5 boundary gaps 0.37±0.006 vs capsule 0.35 + coverage 425/0/0 + 3 surface profiles maxStep 0.02)",
+    "sections": "tools/lane_a_polish_measure.py → MEASURE_V6_PASS (4 entrance sections, reachable-corridor ground gaps 0.0)",
+    "webgl": "tools/lane_a_polish_capture.mjs → CAPTURE_PASS; 4 same-pose before/after pairs (1280×649 drawingBuffer = CSS, SwiftShader) + end-oblique after supplement + all-on config shots",
+    "offline": "kit/build_lane_a_polish_review_scene.py → scene.blend (42 meshes, camera street-mouth, N05/N06 context) + 4 Cycles CPU stills",
+    "tests": "node --test tests/*.test.mjs → 94/94 pass (6 new: manifest/bytes/sha vs files, budgets two-config itemization, world-space sidecars incl. wall-east-mouth, threshold-surface ≤0.11, v6 blocks point only at new A assets, v5 untouched)",
+    "dist": "node scripts/build_lane_a_polish_dist.mjs → 95 files 154922680 B; DIST_RUN_OK base ready/route/tris=698704, all-on ready/route/tris=712340 (lane-a-polish-dist-run.json)"
+  },
+  "knownLeftovers": [
+    "lane-B b-apron/b-drain-outlet z-collapse (pre-existing, verbatim-kept, lead-registered)",
+    "skins+props all-on stays +12340 over the 700k base ceiling (separate single-flag config, itemized, not a base-config failure)"
+  ],
+  "protection": "git status: 0 modified tracked files; building/*, world/v4, world/v5, world/lanes-v2 byte-identical; all outputs are new files",
+  "commands": {
+    "module": "blender -b --factory-startup -t 4 -P kit/build_lane_a_v2.py -- --out world/lane-a-polish/lane-a",
+    "interfaces": "blender -b --factory-startup -t 4 -P kit/build_lanes_interfaces_v2.py -- --out world/lane-a-polish/interfaces",
+    "dataset": "node scripts/make_fangbang_v6_dataset.mjs",
+    "walktest": "node tools/lane_a_polish_walktest.mjs",
+    "sections": "python3 tools/lane_a_polish_measure.py",
+    "capture": "node tools/lane_a_polish_capture.mjs",
+    "reviewScene": "blender -b --factory-startup -t 4 -P kit/build_lane_a_polish_review_scene.py",
+    "dist": "node scripts/build_lane_a_polish_dist.mjs",
+    "tests": "node --test tests/*.test.mjs"
+  }
+}

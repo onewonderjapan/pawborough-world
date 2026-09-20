@@ -1,0 +1,40 @@
+{
+  "moduleId": "lane-a-v2",
+  "triangles": 2910,
+  "meshes": 9,
+  "fileBytes": 1938736,
+  "sha256": "5f33a28640652af00f03ee7954d7d72002e2bed163163bdb3f7c3bb0dbbf3670",
+  "design": {
+    "family": "lane-a-module-polish",
+    "sampleId": "lane-a-v2",
+    "basedOn": "kit/build_lane_a.py geometry contract + lane-a-polish construct work order (lead-frozen 2026-09-20); wall lines verified by artifacts/lane-a-polish/survey",
+    "localFrame": "origin=portal centre on removed seal wall mid-plane at floor y=0.09; +Z inward; +X west side",
+    "worldPlacement": {
+      "portalCenterGlb": [
+        43.545,
+        0.09,
+        -16.375
+      ],
+      "rotationYRad": 3.1165
+    },
+    "changesVsV5": [
+      "high windows: wall partitioned around openings, four-side reveals, rear-set closed glass (no buried solid box)",
+      "west window recess 0.08 keeps 0.02 behind (t=0.10); east recess 0.14 (t=0.24)",
+      "rear door ring-built niche kept; lintel/threshold refined, brick returns into reveals",
+      "end niche 0.13 m real recess: lining + back + frame ring (solid fill box removed)",
+      "timber fascia under the eaves on both lane walls + end wall; coping profile unchanged",
+      "plaster material instance normal strength 0.65 -> 0.35 (this module only)",
+      "no wall-scale micro-bevels; bevels kept on sills/threshold only"
+    ],
+    "groundNodeNames": [
+      "lanes-v2__paving-frontage",
+      "lanes-v2__worn-stone"
+    ],
+    "newTextures": 0,
+    "budgetTris": 4000
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

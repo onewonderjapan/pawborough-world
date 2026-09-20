@@ -1,0 +1,154 @@
+{
+ "wallRecords": 805,
+ "groundTriangles": 10487,
+ "tests": [
+  {
+   "name": "P1 laneAExcursion inward",
+   "reached": true,
+   "fell": null,
+   "feetYMin": 0.097,
+   "end": [
+    43.71,
+    0.11,
+    -23.1
+   ],
+   "stalledS": 0
+  },
+  {
+   "name": "P1 laneAExcursion outward",
+   "reached": true,
+   "fell": null,
+   "feetYMin": 0.097,
+   "end": [
+    43.16,
+    0.11,
+    -11.47
+   ],
+   "stalledS": 0
+  },
+  {
+   "name": "P2 west strip street->portal",
+   "reached": true,
+   "fell": null,
+   "feetYMin": 0.097,
+   "end": [
+    43.36,
+    0.11,
+    -15.33
+   ],
+   "stalledS": 0
+  },
+  {
+   "name": "P2 west strip portal->street",
+   "reached": true,
+   "fell": null,
+   "feetYMin": 0.097,
+   "end": [
+    42.93,
+    0.11,
+    -11.29
+   ],
+   "stalledS": 0
+  },
+  {
+   "name": "N1 push east into N06 wall @z-13.4",
+   "yaw": -1.5707963267948966,
+   "stop": [
+    49.383,
+    -41.136,
+    -13.504
+   ],
+   "grounded": false,
+   "correctedAtS": null
+  },
+  {
+   "name": "N1 push west into N05 wall @z-13.4",
+   "yaw": 1.5707963267948966,
+   "stop": [
+    42.639,
+    0.11,
+    -12.934
+   ],
+   "grounded": true,
+   "correctedAtS": 0.15
+  },
+  {
+   "name": "N2 portal pass (walk -z through portal)",
+   "yaw": 0,
+   "stop": [
+    43.6,
+    0.109,
+    -21.765
+   ],
+   "grounded": true,
+   "correctedAtS": null
+  },
+  {
+   "name": "N2 push into lane end band @-23.8",
+   "yaw": 0,
+   "stop": [
+    43.509,
+    0.11,
+    -24.008
+   ],
+   "grounded": true,
+   "correctedAtS": 0.23
+  },
+  {
+   "name": "N2 push into closed rear door",
+   "yaw": 1.5707963267948966,
+   "stop": [
+    42.685,
+    0.16,
+    -21.152
+   ],
+   "grounded": true,
+   "correctedAtS": 0.37
+  },
+  {
+   "name": "N3 void probe mouth-right (43.9,-10.6)",
+   "yaw": 0,
+   "stop": [
+    43.863,
+    -18.314,
+    -15.006
+   ],
+   "grounded": false,
+   "correctedAtS": null
+  },
+  {
+   "name": "N3 void probe east strip (43.7,-12.0)",
+   "yaw": 0,
+   "stop": [
+    43.975,
+    -16.525,
+    -16.354
+   ],
+   "grounded": false,
+   "correctedAtS": null
+  },
+  {
+   "name": "N3 void probe portal corner (44.0,-15.3)",
+   "yaw": 0,
+   "stop": [
+    43.999,
+    0.11,
+    -19.663
+   ],
+   "grounded": true,
+   "correctedAtS": null
+  },
+  {
+   "name": "N4 straddle east edge z-12.6",
+   "reached": true,
+   "fell": null,
+   "feetYMin": 1,
+   "end": [
+    43,
+    0.1,
+    -12.6
+   ],
+   "stalledS": 0
+  }
+ ]
+}

@@ -1,0 +1,67 @@
+{
+  "tool": "tools/lane_a_polish_capture.mjs",
+  "env": {
+    "chrome": "/usr/bin/google-chrome",
+    "headless": true,
+    "swiftshader": true,
+    "viewport": [
+      1280,
+      720
+    ],
+    "dpr": 1,
+    "startedAt": "2026-09-20T07:48:00.286Z"
+  },
+  "pairs": [
+    {
+      "dataset": "fangbang-temple-v5",
+      "dir": "before",
+      "routeCheck": true,
+      "triangles": 703049,
+      "framebuffer": [
+        1280,
+        649
+      ],
+      "shots": [
+        "before/street-mouth.png",
+        "before/threshold-foot.png",
+        "before/window-door.png",
+        "before/end-niche.png"
+      ]
+    },
+    {
+      "dataset": "fangbang-temple-v6",
+      "dir": "after",
+      "routeCheck": true,
+      "triangles": 698704,
+      "framebuffer": [
+        1280,
+        649
+      ],
+      "shots": [
+        "after/street-mouth.png",
+        "after/threshold-foot.png",
+        "after/window-door.png",
+        "after/end-niche.png",
+        "after/end-oblique.png"
+      ]
+    }
+  ],
+  "budgets": {
+    "base": {
+      "dataset": "fangbang-temple-v6",
+      "triangles": 698704
+    },
+    "skinsAndProps": {
+      "dataset": "fangbang-temple-v6?skins=1&props=1",
+      "triangles": 712340
+    }
+  },
+  "pass": true,
+  "allOnShots": [
+    "after-allskins/street-mouth.png",
+    "after-allskins/threshold-foot.png",
+    "after-allskins/window-door.png",
+    "after-allskins/end-niche.png",
+    "after-allskins/end-oblique.png"
+  ]
+}

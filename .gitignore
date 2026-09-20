@@ -24,3 +24,8 @@ __pycache__/
 dist-compressed/
 # player-experience batch A: verification build output (fresh outDir per run)
 dist-player-exp-a/
+
+# candidate dist build outputs (rebuildable via scripts/build_lane_a_polish_dist.mjs)
+dist-*/
+# Blender save backups (*.blend stays tracked as the reopenable source)
+*.blend1

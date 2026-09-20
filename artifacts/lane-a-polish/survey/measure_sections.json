@@ -1,0 +1,9532 @@
+{
+ "sources": {
+  "assembly": "world/fangbang-temple-v5/street-reviewed-lanes.glb",
+  "laneA": "world/lanes-v2/lane-a/model.glb placed by holder T=[43.545,0.09,-16.375] yaw=3.1165 (blocks.json block-lanes-v2)",
+  "interfaces": "world/lanes-v2/interfaces/model.glb (identity, world-authored)",
+  "collision": [
+   "world/fangbang-temple-v5/collision-world.json",
+   "world/lanes-v2/lane-a/collision.json",
+   "world/lanes-v2/interfaces/collision.json"
+  ]
+ },
+ "sections": [
+  {
+   "z": -10.6,
+   "label": "street mouth \u8857\u53e3",
+   "ground": [
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__0",
+     "x0": 41.801,
+     "x1": 41.831,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__0",
+     "x0": 41.831,
+     "x1": 42.082,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 32.847,
+     "x1": 32.957,
+     "y": 0.001
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 32.933,
+     "x1": 32.957,
+     "y": 0.236
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 30.962,
+     "x1": 32.823,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 30.962,
+     "x1": 32.823,
+     "y": 0.24
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 32.318,
+     "x1": 42.082,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 32.318,
+     "x1": 42.082,
+     "y": 0.14
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 32.823,
+     "x1": 32.847,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 32.823,
+     "x1": 32.933,
+     "y": 0.236
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__4",
+     "x0": 41.937,
+     "x1": 41.971,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__4",
+     "x0": 41.971,
+     "x1": 42.248,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__0",
+     "x0": 44.159,
+     "x1": 44.211,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__0",
+     "x0": 44.211,
+     "x1": 44.443,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 44.164,
+     "x1": 44.164,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 44.161,
+     "x1": 44.161,
+     "y": 0.139
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 44.164,
+     "x1": 45.593,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 44.164,
+     "x1": 45.593,
+     "y": 0.14
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 44.161,
+     "x1": 44.164,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 44.161,
+     "x1": 44.164,
+     "y": 0.139
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 45.593,
+     "x1": 50.443,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 45.593,
+     "x1": 50.443,
+     "y": 0.14
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__4",
+     "x0": 43.992,
+     "x1": 44.048,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__4",
+     "x0": 44.048,
+     "x1": 44.306,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__5",
+     "x0": 46.61,
+     "x1": 46.633,
+     "y": 0.05
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__5",
+     "x0": 48.766,
+     "x1": 48.771,
+     "y": 0.051
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__5",
+     "x0": 46.59,
+     "x1": 46.61,
+     "y": 0.052
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__5",
+     "x0": 48.764,
+     "x1": 48.766,
+     "y": 0.05
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__5",
+     "x0": 46.633,
+     "x1": 48.764,
+     "y": 0.05
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__paving-frontage",
+     "x0": 40.9,
+     "x1": 43.11,
+     "y": 0.09
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.45,
+     "x1": 42.454,
+     "y": 0.07
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.454,
+     "x1": 42.62,
+     "y": 0.07
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 40.137,
+     "x1": 40.138,
+     "y": 0.1
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 40.466,
+     "x1": 40.468,
+     "y": 0.102
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 40.138,
+     "x1": 40.209,
+     "y": 0.1
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 40.132,
+     "x1": 40.137,
+     "y": 0.101
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 40.462,
+     "x1": 40.466,
+     "y": 0.1
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 40.209,
+     "x1": 40.462,
+     "y": 0.1
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 40.105,
+     "x1": 40.106,
+     "y": 0.09
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 40.497,
+     "x1": 40.498,
+     "y": 0.091
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 40.106,
+     "x1": 40.203,
+     "y": 0.09
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 40.102,
+     "x1": 40.105,
+     "y": 0.09
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 40.494,
+     "x1": 40.497,
+     "y": 0.09
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 40.203,
+     "x1": 40.494,
+     "y": 0.09
+    }
+   ],
+   "walls": [
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__0",
+     "x0": 41.801,
+     "x1": 41.801,
+     "y0": 0.0,
+     "y1": 0.847
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__0",
+     "x0": 42.082,
+     "x1": 42.082,
+     "y0": 0.0,
+     "y1": 0.872
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__0",
+     "x0": 41.801,
+     "x1": 41.801,
+     "y0": 0.847,
+     "y1": 7.9
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__0",
+     "x0": 42.082,
+     "x1": 42.082,
+     "y0": 0.872,
+     "y1": 7.9
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 32.318,
+     "x1": 32.318,
+     "y0": 0.0,
+     "y1": 0.121
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 33.003,
+     "x1": 33.013,
+     "y0": 0.225,
+     "y1": 0.227
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 33.013,
+     "x1": 33.013,
+     "y0": 0.015,
+     "y1": 0.186
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 32.318,
+     "x1": 32.318,
+     "y0": 0.121,
+     "y1": 0.14
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 42.082,
+     "x1": 42.082,
+     "y0": 0.015,
+     "y1": 0.14
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 32.957,
+     "x1": 33.003,
+     "y0": 0.227,
+     "y1": 0.236
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 33.013,
+     "x1": 33.013,
+     "y0": 0.186,
+     "y1": 0.225
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__4",
+     "x0": 41.937,
+     "x1": 41.937,
+     "y0": 0.0,
+     "y1": 0.113
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__4",
+     "x0": 42.248,
+     "x1": 42.248,
+     "y0": 0.0,
+     "y1": 0.117
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__4",
+     "x0": 41.937,
+     "x1": 41.937,
+     "y0": 0.113,
+     "y1": 1.04
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__4",
+     "x0": 42.248,
+     "x1": 42.248,
+     "y0": 0.117,
+     "y1": 1.04
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__0",
+     "x0": 44.159,
+     "x1": 44.159,
+     "y0": 0.0,
+     "y1": 1.201
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__0",
+     "x0": 44.443,
+     "x1": 44.443,
+     "y0": 0.0,
+     "y1": 1.262
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__0",
+     "x0": 44.159,
+     "x1": 44.159,
+     "y0": 1.201,
+     "y1": 6.6
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__0",
+     "x0": 44.443,
+     "x1": 44.443,
+     "y0": 1.262,
+     "y1": 6.6
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 44.159,
+     "x1": 44.16,
+     "y0": 0.135,
+     "y1": 0.136
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 44.16,
+     "x1": 44.161,
+     "y0": 0.136,
+     "y1": 0.139
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 44.159,
+     "x1": 44.159,
+     "y0": 0.029,
+     "y1": 0.135
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__4",
+     "x0": 43.992,
+     "x1": 43.992,
+     "y0": 0.0,
+     "y1": 0.184
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__4",
+     "x0": 44.306,
+     "x1": 44.306,
+     "y0": 0.0,
+     "y1": 0.194
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__4",
+     "x0": 43.992,
+     "x1": 43.992,
+     "y0": 0.184,
+     "y1": 1.04
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__4",
+     "x0": 44.306,
+     "x1": 44.306,
+     "y0": 0.194,
+     "y1": 1.04
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__5",
+     "x0": 46.581,
+     "x1": 46.59,
+     "y0": 0.053,
+     "y1": 0.057
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__5",
+     "x0": 46.582,
+     "x1": 46.59,
+     "y0": 1.944,
+     "y1": 1.947
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__5",
+     "x0": 48.772,
+     "x1": 48.774,
+     "y0": 0.055,
+     "y1": 0.06
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__5",
+     "x0": 48.771,
+     "x1": 48.773,
+     "y0": 1.942,
+     "y1": 1.947
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__5",
+     "x0": 48.774,
+     "x1": 48.774,
+     "y0": 0.06,
+     "y1": 1.462
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__5",
+     "x0": 46.573,
+     "x1": 46.573,
+     "y0": 0.06,
+     "y1": 1.08
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__5",
+     "x0": 46.573,
+     "x1": 46.581,
+     "y0": 0.057,
+     "y1": 0.06
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__5",
+     "x0": 46.573,
+     "x1": 46.582,
+     "y0": 1.94,
+     "y1": 1.944
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__5",
+     "x0": 48.771,
+     "x1": 48.772,
+     "y0": 0.053,
+     "y1": 0.055
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__5",
+     "x0": 48.773,
+     "x1": 48.774,
+     "y0": 1.94,
+     "y1": 1.942
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__5",
+     "x0": 48.774,
+     "x1": 48.774,
+     "y0": 1.462,
+     "y1": 1.94
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__5",
+     "x0": 46.573,
+     "x1": 46.573,
+     "y0": 1.08,
+     "y1": 1.94
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 40.132,
+     "x1": 40.132,
+     "y0": 0.102,
+     "y1": 0.104
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 40.469,
+     "x1": 40.47,
+     "y0": 0.107,
+     "y1": 0.108
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 40.13,
+     "x1": 40.13,
+     "y0": 0.108,
+     "y1": 0.806
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 40.47,
+     "x1": 40.47,
+     "y0": 0.108,
+     "y1": 0.806
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 40.13,
+     "x1": 40.132,
+     "y0": 0.104,
+     "y1": 0.108
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 40.468,
+     "x1": 40.469,
+     "y0": 0.102,
+     "y1": 0.107
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 40.13,
+     "x1": 40.13,
+     "y0": 0.806,
+     "y1": 3.292
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 40.47,
+     "x1": 40.47,
+     "y0": 0.806,
+     "y1": 3.292
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 40.101,
+     "x1": 40.102,
+     "y0": 0.092,
+     "y1": 0.093
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 40.1,
+     "x1": 40.1,
+     "y0": 0.684,
+     "y1": 0.685
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 40.5,
+     "x1": 40.5,
+     "y0": 0.095,
+     "y1": 0.096
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 40.498,
+     "x1": 40.499,
+     "y0": 0.687,
+     "y1": 0.688
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 40.1,
+     "x1": 40.1,
+     "y0": 0.096,
+     "y1": 0.243
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 40.5,
+     "x1": 40.5,
+     "y0": 0.096,
+     "y1": 0.243
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 40.1,
+     "x1": 40.101,
+     "y0": 0.093,
+     "y1": 0.096
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 40.1,
+     "x1": 40.102,
+     "y0": 0.685,
+     "y1": 0.688
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 40.498,
+     "x1": 40.5,
+     "y0": 0.092,
+     "y1": 0.095
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 40.499,
+     "x1": 40.5,
+     "y0": 0.684,
+     "y1": 0.687
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 40.1,
+     "x1": 40.1,
+     "y0": 0.243,
+     "y1": 0.684
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 40.5,
+     "x1": 40.5,
+     "y0": 0.243,
+     "y1": 0.684
+    }
+   ],
+   "colliders": [
+    {
+     "name": "N01-plain-v1:left-side",
+     "x0": -3.535,
+     "x1": -3.24,
+     "y0": 0.0,
+     "y1": 6.8
+    },
+    {
+     "name": "N01-plain-v1:right-side",
+     "x0": 8.782,
+     "x1": 9.077,
+     "y0": 0.0,
+     "y1": 6.8
+    },
+    {
+     "name": "N01-plain-v1:shop-floor",
+     "x0": -3.535,
+     "x1": 9.077,
+     "y0": 0.0,
+     "y1": 0.14
+    },
+    {
+     "name": "N01-plain-v1:upper-floor",
+     "x0": -3.24,
+     "x1": 8.782,
+     "y0": 3.44,
+     "y1": 3.66
+    },
+    {
+     "name": "N01-plain-v1:rear-interior",
+     "x0": 2.885,
+     "x1": 3.536,
+     "y0": 0.07,
+     "y1": 3.17
+    },
+    {
+     "name": "N02-pharmacy_shop:left-side",
+     "x0": 9.301,
+     "x1": 9.586,
+     "y0": 0.0,
+     "y1": 8.0
+    },
+    {
+     "name": "N02-pharmacy_shop:right-side",
+     "x0": 16.948,
+     "x1": 17.233,
+     "y0": 0.0,
+     "y1": 8.0
+    },
+    {
+     "name": "N02-pharmacy_shop:shop-floor",
+     "x0": 9.301,
+     "x1": 17.233,
+     "y0": 0.0,
+     "y1": 0.14
+    },
+    {
+     "name": "N02-pharmacy_shop:upper-floor",
+     "x0": 9.586,
+     "x1": 16.948,
+     "y0": 3.49,
+     "y1": 3.71
+    },
+    {
+     "name": "N02-pharmacy_shop:medicine-counter",
+     "x0": 10.725,
+     "x1": 13.241,
+     "y0": 0.09,
+     "y1": 1.84
+    },
+    {
+     "name": "N03-cloth_shop:left-side",
+     "x0": 17.255,
+     "x1": 17.535,
+     "y0": 0.0,
+     "y1": 7.7
+    },
+    {
+     "name": "N03-cloth_shop:shop-floor",
+     "x0": 17.255,
+     "x1": 19.998,
+     "y0": 0.0,
+     "y1": 0.14
+    },
+    {
+     "name": "N03-cloth_shop:facade-post",
+     "x0": 19.694,
+     "x1": 19.895,
+     "y0": 0.0,
+     "y1": 7.6
+    },
+    {
+     "name": "N03-cloth_shop:stone-post-foot",
+     "x0": 19.624,
+     "x1": 19.965,
+     "y0": 0.0,
+     "y1": 0.7
+    },
+    {
+     "name": "N03-cloth_shop:facade-post",
+     "x0": 22.235,
+     "x1": 22.435,
+     "y0": 0.0,
+     "y1": 7.6
+    },
+    {
+     "name": "N03-cloth_shop:stone-post-foot",
+     "x0": 22.164,
+     "x1": 22.505,
+     "y0": 0.0,
+     "y1": 0.7
+    },
+    {
+     "name": "N03-cloth_shop:threshold",
+     "x0": 19.238,
+     "x1": 24.699,
+     "y0": 0.0,
+     "y1": 0.24
+    },
+    {
+     "name": "N04-dry_goods_shop:frontage-stone-pad",
+     "x0": 24.054,
+     "x1": 31.554,
+     "y0": -0.1,
+     "y1": 0.02
+    },
+    {
+     "name": "N05-restaurant-a:right-side",
+     "x0": 41.802,
+     "x1": 42.083,
+     "y0": 0.0,
+     "y1": 7.9
+    },
+    {
+     "name": "N05-restaurant-a:shop-floor",
+     "x0": 32.315,
+     "x1": 42.083,
+     "y0": 0.0,
+     "y1": 0.14
+    },
+    {
+     "name": "N05-restaurant-a:upper-floor",
+     "x0": 35.789,
+     "x1": 41.802,
+     "y0": 3.64,
+     "y1": 3.86
+    },
+    {
+     "name": "N05-restaurant-a:facade-post",
+     "x0": 30.817,
+     "x1": 31.038,
+     "y0": 0.05,
+     "y1": 7.75
+    },
+    {
+     "name": "N05-restaurant-a:stone-post-foot",
+     "x0": 30.747,
+     "x1": 31.108,
+     "y0": -0.01,
+     "y1": 0.71
+    },
+    {
+     "name": "N05-restaurant-a:threshold",
+     "x0": 30.948,
+     "x1": 33.01,
+     "y0": 0.0,
+     "y1": 0.24
+    },
+    {
+     "name": "N06-curio-a:left-side",
+     "x0": 44.159,
+     "x1": 44.443,
+     "y0": 0.0,
+     "y1": 6.6
+    },
+    {
+     "name": "N06-curio-a:right-side",
+     "x0": 50.163,
+     "x1": 50.447,
+     "y0": 0.0,
+     "y1": 6.6
+    },
+    {
+     "name": "N06-curio-a:shop-floor",
+     "x0": 44.159,
+     "x1": 50.447,
+     "y0": 0.0,
+     "y1": 0.14
+    },
+    {
+     "name": "N06-curio-a:upper-floor",
+     "x0": 44.443,
+     "x1": 50.163,
+     "y0": 3.49,
+     "y1": 3.71
+    },
+    {
+     "name": "N06-curio-a:counter-cabinet",
+     "x0": 46.573,
+     "x1": 48.774,
+     "y0": 0.05,
+     "y1": 1.95
+    },
+    {
+     "name": "N07-cat_corner:mural-side-left",
+     "x0": 50.837,
+     "x1": 51.158,
+     "y0": 0.0,
+     "y1": 6.5
+    },
+    {
+     "name": "N07-cat_corner:mural-side-right",
+     "x0": 58.231,
+     "x1": 58.553,
+     "y0": 0.0,
+     "y1": 6.5
+    },
+    {
+     "name": "N08-plain-v2:left-side",
+     "x0": 59.225,
+     "x1": 59.543,
+     "y0": 0.0,
+     "y1": 6.8
+    },
+    {
+     "name": "N08-plain-v2:back-wall",
+     "x0": 61.514,
+     "x1": 62.105,
+     "y0": 0.0,
+     "y1": 6.8
+    },
+    {
+     "name": "N08-plain-v2:shop-floor",
+     "x0": 59.225,
+     "x1": 62.105,
+     "y0": 0.0,
+     "y1": 0.14
+    },
+    {
+     "name": "N08-plain-v2:upper-floor",
+     "x0": 59.543,
+     "x1": 61.525,
+     "y0": 3.44,
+     "y1": 3.66
+    },
+    {
+     "name": "westshop-shop-154:right-side",
+     "x0": -3.962,
+     "x1": -3.665,
+     "y0": 0.0,
+     "y1": 6.8
+    },
+    {
+     "name": "westshop-shop-154:back-wall",
+     "x0": -6.072,
+     "x1": -5.224,
+     "y0": 0.0,
+     "y1": 6.8
+    },
+    {
+     "name": "westshop-shop-154:shop-floor",
+     "x0": -6.072,
+     "x1": -3.665,
+     "y0": 0.0,
+     "y1": 0.14
+    },
+    {
+     "name": "westshop-shop-154:upper-floor",
+     "x0": -5.239,
+     "x1": -3.962,
+     "y0": 3.44,
+     "y1": 3.66
+    },
+    {
+     "name": "peidian-e:peidian-base",
+     "x0": -124.329,
+     "x1": -118.143,
+     "y0": 0.0,
+     "y1": 0.3
+    },
+    {
+     "name": "peidian-e:peidian-step",
+     "x0": -124.329,
+     "x1": -124.025,
+     "y0": 0.0,
+     "y1": 0.15
+    },
+    {
+     "name": "peidian-e:peidian-step",
+     "x0": -124.025,
+     "x1": -123.721,
+     "y0": 0.15,
+     "y1": 0.3
+    },
+    {
+     "name": "peidian-e:peidian-wall-plate",
+     "x0": -122.95,
+     "x1": -122.707,
+     "y0": 3.57,
+     "y1": 3.87
+    },
+    {
+     "name": "peidian-e:front-wall",
+     "x0": -122.808,
+     "x1": -122.625,
+     "y0": 2.72,
+     "y1": 3.85
+    },
+    {
+     "name": "peidian-e:door-threshold",
+     "x0": -122.859,
+     "x1": -122.717,
+     "y0": 0.0,
+     "y1": 0.12
+    },
+    {
+     "name": "peidian-e:door-leaf",
+     "x0": -122.778,
+     "x1": -122.717,
+     "y0": 0.12,
+     "y1": 2.72
+    },
+    {
+     "name": "peidian-e:rear-wall",
+     "x0": -118.447,
+     "x1": -118.143,
+     "y0": 0.0,
+     "y1": 3.85
+    },
+    {
+     "name": "court3:boundary-wall",
+     "x0": -151.081,
+     "x1": -150.797,
+     "y0": 0.0,
+     "y1": 2.9
+    },
+    {
+     "name": "court3:boundary-wall",
+     "x0": -117.535,
+     "x1": -117.251,
+     "y0": 0.0,
+     "y1": 2.9
+    },
+    {
+     "name": "interfaces:a-jamb-west",
+     "x0": 40.13,
+     "x1": 40.47,
+     "y0": 0.1,
+     "y1": 3.3
+    }
+   ]
+  },
+  {
+   "z": -13.4,
+   "label": "mid connection \u8fde\u63a5\u4e2d\u6bb5",
+   "ground": [
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__0",
+     "x0": 42.024,
+     "x1": 42.167,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__0",
+     "x0": 42.167,
+     "x1": 42.304,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 30.969,
+     "x1": 35.955,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 30.969,
+     "x1": 35.955,
+     "y": 0.14
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 35.955,
+     "x1": 42.304,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 35.955,
+     "x1": 42.304,
+     "y": 0.14
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 39.036,
+     "x1": 39.044,
+     "y": 0.05
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 40.124,
+     "x1": 40.132,
+     "y": 0.05
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 39.044,
+     "x1": 40.111,
+     "y": 0.05
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 39.036,
+     "x1": 39.036,
+     "y": 0.053
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 40.124,
+     "x1": 40.124,
+     "y": 0.05
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 40.111,
+     "x1": 40.124,
+     "y": 0.05
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__4",
+     "x0": 42.159,
+     "x1": 42.318,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__4",
+     "x0": 42.318,
+     "x1": 42.47,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__0",
+     "x0": 44.634,
+     "x1": 44.843,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__0",
+     "x0": 44.843,
+     "x1": 44.918,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 44.636,
+     "x1": 44.639,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 44.635,
+     "x1": 44.638,
+     "y": 0.139
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 44.639,
+     "x1": 50.374,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 44.639,
+     "x1": 50.374,
+     "y": 0.14
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 44.635,
+     "x1": 44.636,
+     "y": 0.001
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 44.638,
+     "x1": 44.639,
+     "y": 0.14
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 50.374,
+     "x1": 50.917,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 50.374,
+     "x1": 50.917,
+     "y": 0.14
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__4",
+     "x0": 44.467,
+     "x1": 44.696,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__4",
+     "x0": 44.696,
+     "x1": 44.781,
+     "y": 0.0
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__paving-frontage",
+     "x0": 40.094,
+     "x1": 43.039,
+     "y": 0.09
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__paving-frontage",
+     "x0": 43.039,
+     "x1": 43.583,
+     "y": 0.09
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.45,
+     "x1": 42.534,
+     "y": 0.07
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.534,
+     "x1": 42.62,
+     "y": 0.07
+    }
+   ],
+   "walls": [
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__0",
+     "x0": 42.024,
+     "x1": 42.024,
+     "y0": 0.0,
+     "y1": 4.017
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__0",
+     "x0": 42.304,
+     "x1": 42.304,
+     "y0": 0.0,
+     "y1": 4.042
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 42.304,
+     "x1": 42.304,
+     "y0": 0.0,
+     "y1": 0.072
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 42.304,
+     "x1": 42.304,
+     "y0": 0.072,
+     "y1": 0.14
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 39.032,
+     "x1": 39.036,
+     "y0": 0.054,
+     "y1": 0.062
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 39.032,
+     "x1": 39.036,
+     "y0": 2.038,
+     "y1": 2.046
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 40.132,
+     "x1": 40.136,
+     "y0": 0.054,
+     "y1": 0.062
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 40.132,
+     "x1": 40.136,
+     "y0": 2.038,
+     "y1": 2.046
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 39.032,
+     "x1": 39.032,
+     "y0": 0.062,
+     "y1": 1.946
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 40.136,
+     "x1": 40.136,
+     "y0": 0.062,
+     "y1": 2.016
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 39.032,
+     "x1": 39.032,
+     "y0": 0.062,
+     "y1": 0.062
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 39.032,
+     "x1": 39.032,
+     "y0": 2.038,
+     "y1": 2.038
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 40.132,
+     "x1": 40.132,
+     "y0": 0.054,
+     "y1": 0.054
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 40.136,
+     "x1": 40.136,
+     "y0": 2.038,
+     "y1": 2.038
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 39.032,
+     "x1": 39.032,
+     "y0": 1.946,
+     "y1": 2.038
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 40.136,
+     "x1": 40.136,
+     "y0": 2.016,
+     "y1": 2.038
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__4",
+     "x0": 42.159,
+     "x1": 42.159,
+     "y0": 0.0,
+     "y1": 0.53
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__4",
+     "x0": 42.47,
+     "x1": 42.47,
+     "y0": 0.0,
+     "y1": 0.534
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__4",
+     "x0": 42.159,
+     "x1": 42.159,
+     "y0": 0.53,
+     "y1": 1.04
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__4",
+     "x0": 42.47,
+     "x1": 42.47,
+     "y0": 0.534,
+     "y1": 1.04
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__5",
+     "x0": 38.982,
+     "x1": 38.985,
+     "y0": 2.023,
+     "y1": 2.03
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__5",
+     "x0": 38.982,
+     "x1": 38.985,
+     "y0": 2.13,
+     "y1": 2.137
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__5",
+     "x0": 40.183,
+     "x1": 40.186,
+     "y0": 2.023,
+     "y1": 2.03
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__5",
+     "x0": 40.183,
+     "x1": 40.186,
+     "y0": 2.13,
+     "y1": 2.137
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__5",
+     "x0": 38.982,
+     "x1": 38.982,
+     "y0": 2.03,
+     "y1": 2.123
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__5",
+     "x0": 40.186,
+     "x1": 40.186,
+     "y0": 2.03,
+     "y1": 2.127
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__5",
+     "x0": 38.982,
+     "x1": 38.982,
+     "y0": 2.03,
+     "y1": 2.03
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__5",
+     "x0": 38.985,
+     "x1": 38.985,
+     "y0": 2.137,
+     "y1": 2.137
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__5",
+     "x0": 40.183,
+     "x1": 40.183,
+     "y0": 2.023,
+     "y1": 2.023
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__5",
+     "x0": 40.186,
+     "x1": 40.186,
+     "y0": 2.13,
+     "y1": 2.13
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__5",
+     "x0": 38.982,
+     "x1": 38.982,
+     "y0": 2.123,
+     "y1": 2.13
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__5",
+     "x0": 40.186,
+     "x1": 40.186,
+     "y0": 2.127,
+     "y1": 2.13
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__0",
+     "x0": 44.634,
+     "x1": 44.634,
+     "y0": 0.0,
+     "y1": 4.806
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__0",
+     "x0": 44.918,
+     "x1": 44.918,
+     "y0": 0.0,
+     "y1": 4.866
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 44.634,
+     "x1": 44.635,
+     "y0": 0.135,
+     "y1": 0.138
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 44.634,
+     "x1": 44.634,
+     "y0": 0.005,
+     "y1": 0.1
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 44.635,
+     "x1": 44.635,
+     "y0": 0.138,
+     "y1": 0.139
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__1",
+     "x0": 44.634,
+     "x1": 44.634,
+     "y0": 0.1,
+     "y1": 0.135
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__4",
+     "x0": 44.467,
+     "x1": 44.467,
+     "y0": 0.0,
+     "y1": 0.752
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__4",
+     "x0": 44.781,
+     "x1": 44.781,
+     "y0": 0.0,
+     "y1": 0.762
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__4",
+     "x0": 44.467,
+     "x1": 44.467,
+     "y0": 0.752,
+     "y1": 1.04
+    },
+    {
+     "src": "assembly",
+     "node": "N06-curio-a__4",
+     "x0": 44.781,
+     "x1": 44.781,
+     "y0": 0.762,
+     "y1": 1.04
+    }
+   ],
+   "colliders": [
+    {
+     "name": "N01-plain-v1:right-side",
+     "x0": 7.877,
+     "x1": 8.172,
+     "y0": 0.0,
+     "y1": 6.8
+    },
+    {
+     "name": "N01-plain-v1:back-wall",
+     "x0": 2.444,
+     "x1": 3.354,
+     "y0": 0.0,
+     "y1": 6.8
+    },
+    {
+     "name": "N01-plain-v1:shop-floor",
+     "x0": 2.444,
+     "x1": 8.172,
+     "y0": 0.0,
+     "y1": 0.14
+    },
+    {
+     "name": "N01-plain-v1:upper-floor",
+     "x0": 3.338,
+     "x1": 7.877,
+     "y0": 3.44,
+     "y1": 3.66
+    },
+    {
+     "name": "N02-pharmacy_shop:left-side",
+     "x0": 8.785,
+     "x1": 9.069,
+     "y0": 0.0,
+     "y1": 8.0
+    },
+    {
+     "name": "N02-pharmacy_shop:right-side",
+     "x0": 16.431,
+     "x1": 16.716,
+     "y0": 0.0,
+     "y1": 8.0
+    },
+    {
+     "name": "N02-pharmacy_shop:shop-floor",
+     "x0": 8.785,
+     "x1": 16.716,
+     "y0": 0.0,
+     "y1": 0.14
+    },
+    {
+     "name": "N02-pharmacy_shop:upper-floor",
+     "x0": 9.069,
+     "x1": 16.431,
+     "y0": 3.49,
+     "y1": 3.71
+    },
+    {
+     "name": "N02-pharmacy_shop:rear-interior",
+     "x0": 13.674,
+     "x1": 14.776,
+     "y0": 0.07,
+     "y1": 3.22
+    },
+    {
+     "name": "N03-cloth_shop:left-side",
+     "x0": 17.051,
+     "x1": 17.332,
+     "y0": 0.0,
+     "y1": 7.7
+    },
+    {
+     "name": "N03-cloth_shop:right-side",
+     "x0": 24.391,
+     "x1": 24.671,
+     "y0": 0.0,
+     "y1": 7.7
+    },
+    {
+     "name": "N03-cloth_shop:shop-floor",
+     "x0": 17.051,
+     "x1": 24.671,
+     "y0": 0.0,
+     "y1": 0.14
+    },
+    {
+     "name": "N03-cloth_shop:upper-floor",
+     "x0": 17.332,
+     "x1": 24.391,
+     "y0": 3.49,
+     "y1": 3.71
+    },
+    {
+     "name": "N04-dry_goods_shop:left-side-wall",
+     "x0": 24.891,
+     "x1": 25.171,
+     "y0": 0.0,
+     "y1": 5.2
+    },
+    {
+     "name": "N04-dry_goods_shop:right-side-wall",
+     "x0": 30.511,
+     "x1": 30.791,
+     "y0": 0.0,
+     "y1": 5.2
+    },
+    {
+     "name": "N04-dry_goods_shop:ground-floor",
+     "x0": 24.891,
+     "x1": 30.791,
+     "y0": 0.0,
+     "y1": 0.16
+    },
+    {
+     "name": "N05-restaurant-a:left-side",
+     "x0": 30.969,
+     "x1": 31.25,
+     "y0": 0.0,
+     "y1": 7.9
+    },
+    {
+     "name": "N05-restaurant-a:right-side",
+     "x0": 42.024,
+     "x1": 42.305,
+     "y0": 0.0,
+     "y1": 7.9
+    },
+    {
+     "name": "N05-restaurant-a:shop-floor",
+     "x0": 30.969,
+     "x1": 42.305,
+     "y0": 0.0,
+     "y1": 0.14
+    },
+    {
+     "name": "N05-restaurant-a:upper-floor",
+     "x0": 31.25,
+     "x1": 42.024,
+     "y0": 3.64,
+     "y1": 3.86
+    },
+    {
+     "name": "N05-restaurant-a:restaurant-counter",
+     "x0": 39.033,
+     "x1": 40.136,
+     "y0": 0.05,
+     "y1": 2.05
+    },
+    {
+     "name": "N06-curio-a:left-side",
+     "x0": 44.633,
+     "x1": 44.917,
+     "y0": 0.0,
+     "y1": 6.6
+    },
+    {
+     "name": "N06-curio-a:right-side",
+     "x0": 50.638,
+     "x1": 50.922,
+     "y0": 0.0,
+     "y1": 6.6
+    },
+    {
+     "name": "N06-curio-a:shop-floor",
+     "x0": 44.633,
+     "x1": 50.922,
+     "y0": 0.0,
+     "y1": 0.14
+    },
+    {
+     "name": "N06-curio-a:upper-floor",
+     "x0": 44.917,
+     "x1": 50.638,
+     "y0": 3.49,
+     "y1": 3.71
+    },
+    {
+     "name": "N07-cat_corner:mural-side-left",
+     "x0": 51.916,
+     "x1": 52.237,
+     "y0": 0.0,
+     "y1": 6.5
+    },
+    {
+     "name": "N07-cat_corner:mural-back-wall",
+     "x0": 53.357,
+     "x1": 54.191,
+     "y0": 0.0,
+     "y1": 6.5
+    },
+    {
+     "name": "dadiancourt:stair-step",
+     "x0": -132.545,
+     "x1": -131.596,
+     "y0": 0.51,
+     "y1": 0.68
+    },
+    {
+     "name": "dadiancourt:stair-step",
+     "x0": -134.47,
+     "x1": -132.545,
+     "y0": 0.68,
+     "y1": 0.85
+    },
+    {
+     "name": "dadiancourt:stair-cheek",
+     "x0": -131.596,
+     "x1": -131.038,
+     "y0": 0.0,
+     "y1": 0.85
+    },
+    {
+     "name": "peidian-e:peidian-base",
+     "x0": -124.801,
+     "x1": -118.615,
+     "y0": 0.0,
+     "y1": 0.3
+    },
+    {
+     "name": "peidian-e:peidian-column-plinth",
+     "x0": -124.365,
+     "x1": -123.97,
+     "y0": 0.3,
+     "y1": 0.64
+    },
+    {
+     "name": "peidian-e:peidian-wall-plate",
+     "x0": -123.422,
+     "x1": -123.179,
+     "y0": 3.57,
+     "y1": 3.87
+    },
+    {
+     "name": "peidian-e:gable-wall-lower",
+     "x0": -123.28,
+     "x1": -122.139,
+     "y0": 0.0,
+     "y1": 3.2
+    },
+    {
+     "name": "peidian-e:rear-wall",
+     "x0": -118.919,
+     "x1": -118.615,
+     "y0": 0.0,
+     "y1": 3.85
+    },
+    {
+     "name": "court3:boundary-wall",
+     "x0": -151.553,
+     "x1": -151.27,
+     "y0": 0.0,
+     "y1": 2.9
+    },
+    {
+     "name": "court3:boundary-wall",
+     "x0": -118.007,
+     "x1": -117.723,
+     "y0": 0.0,
+     "y1": 2.9
+    }
+   ]
+  },
+  {
+   "z": -16.375,
+   "label": "portal \u95e8\u6d1e",
+   "ground": [
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__0",
+     "x0": 42.26,
+     "x1": 42.523,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__0",
+     "x0": 42.523,
+     "x1": 42.541,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 31.205,
+     "x1": 41.735,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 31.205,
+     "x1": 41.735,
+     "y": 0.14
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 41.735,
+     "x1": 42.541,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 41.735,
+     "x1": 42.541,
+     "y": 0.14
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__4",
+     "x0": 42.395,
+     "x1": 42.688,
+     "y": 0.0
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__4",
+     "x0": 42.688,
+     "x1": 42.706,
+     "y": 0.0
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 44.639,
+     "x1": 44.641,
+     "y": 0.07
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 44.642,
+     "x1": 44.644,
+     "y": 0.128
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.446,
+     "x1": 42.45,
+     "y": 0.07
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.448,
+     "x1": 42.451,
+     "y": 0.129
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 43.259,
+     "x1": 44.639,
+     "y": 0.07
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 43.259,
+     "x1": 44.639,
+     "y": 0.13
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 44.641,
+     "x1": 44.644,
+     "y": 0.071
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 44.639,
+     "x1": 44.642,
+     "y": 0.129
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.45,
+     "x1": 42.451,
+     "y": 0.07
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.446,
+     "x1": 42.448,
+     "y": 0.128
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.451,
+     "x1": 43.259,
+     "y": 0.07
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.451,
+     "x1": 43.259,
+     "y": 0.13
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.539,
+     "x1": 42.541,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.408,
+     "x1": 42.411,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.468,
+     "x1": 42.539,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.679,
+     "x1": 44.68,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.551,
+     "x1": 44.551,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.663,
+     "x1": 44.679,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.541,
+     "x1": 42.543,
+     "y": 0.091
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.406,
+     "x1": 42.408,
+     "y": 0.091
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.411,
+     "x1": 42.468,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.68,
+     "x1": 44.684,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.547,
+     "x1": 44.551,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.551,
+     "x1": 44.663,
+     "y": 0.09
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__paving-frontage",
+     "x0": 39.9,
+     "x1": 42.478,
+     "y": 0.09
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__paving-frontage",
+     "x0": 39.862,
+     "x1": 39.9,
+     "y": 0.09
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__paving-frontage",
+     "x0": 42.478,
+     "x1": 43.562,
+     "y": 0.09
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.45,
+     "x1": 42.619,
+     "y": 0.07
+    },
+    {
+     "src": "interfaces",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.619,
+     "x1": 42.62,
+     "y": 0.07
+    }
+   ],
+   "walls": [
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__0",
+     "x0": 42.26,
+     "x1": 42.26,
+     "y0": 0.0,
+     "y1": 7.385
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__0",
+     "x0": 42.541,
+     "x1": 42.541,
+     "y0": 0.0,
+     "y1": 7.41
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 42.541,
+     "x1": 42.541,
+     "y0": 0.0,
+     "y1": 0.131
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__1",
+     "x0": 42.541,
+     "x1": 42.541,
+     "y0": 0.131,
+     "y1": 0.14
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 37.436,
+     "x1": 37.437,
+     "y0": 0.872,
+     "y1": 0.876
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 37.435,
+     "x1": 37.436,
+     "y0": 1.022,
+     "y1": 1.025
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 40.843,
+     "x1": 40.845,
+     "y0": 0.873,
+     "y1": 0.878
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 40.843,
+     "x1": 40.845,
+     "y0": 1.023,
+     "y1": 1.028
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 37.435,
+     "x1": 37.435,
+     "y0": 0.878,
+     "y1": 0.96
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 40.845,
+     "x1": 40.845,
+     "y0": 0.878,
+     "y1": 1.004
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 37.435,
+     "x1": 37.436,
+     "y0": 0.876,
+     "y1": 0.878
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 37.436,
+     "x1": 37.437,
+     "y0": 1.025,
+     "y1": 1.028
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 40.843,
+     "x1": 40.843,
+     "y0": 0.872,
+     "y1": 0.873
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 40.845,
+     "x1": 40.845,
+     "y0": 1.022,
+     "y1": 1.023
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 37.435,
+     "x1": 37.435,
+     "y0": 0.96,
+     "y1": 1.022
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__2",
+     "x0": 40.845,
+     "x1": 40.845,
+     "y0": 1.004,
+     "y1": 1.022
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__4",
+     "x0": 42.395,
+     "x1": 42.395,
+     "y0": 0.0,
+     "y1": 0.974
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__4",
+     "x0": 42.706,
+     "x1": 42.706,
+     "y0": 0.0,
+     "y1": 0.977
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__4",
+     "x0": 42.395,
+     "x1": 42.395,
+     "y0": 0.974,
+     "y1": 1.04
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__4",
+     "x0": 42.706,
+     "x1": 42.706,
+     "y0": 0.977,
+     "y1": 1.04
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__7",
+     "x0": 37.79,
+     "x1": 37.79,
+     "y0": 0.95,
+     "y1": 1.197
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__7",
+     "x0": 38.067,
+     "x1": 38.067,
+     "y0": 0.95,
+     "y1": 1.201
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__7",
+     "x0": 37.862,
+     "x1": 37.862,
+     "y0": 1.42,
+     "y1": 1.422
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__7",
+     "x0": 37.988,
+     "x1": 37.988,
+     "y0": 1.42,
+     "y1": 1.429
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__7",
+     "x0": 37.79,
+     "x1": 37.79,
+     "y0": 1.197,
+     "y1": 1.35
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__7",
+     "x0": 38.067,
+     "x1": 38.067,
+     "y0": 1.201,
+     "y1": 1.35
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__7",
+     "x0": 37.862,
+     "x1": 37.862,
+     "y0": 1.422,
+     "y1": 1.45
+    },
+    {
+     "src": "assembly",
+     "node": "N05-restaurant-a__7",
+     "x0": 37.988,
+     "x1": 37.988,
+     "y0": 1.429,
+     "y1": 1.45
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 44.645,
+     "x1": 44.645,
+     "y0": 0.074,
+     "y1": 0.076
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 44.645,
+     "x1": 44.645,
+     "y0": 0.124,
+     "y1": 0.126
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.445,
+     "x1": 42.446,
+     "y0": 0.073,
+     "y1": 0.076
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.445,
+     "x1": 42.446,
+     "y0": 0.124,
+     "y1": 0.127
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 44.645,
+     "x1": 44.645,
+     "y0": 0.076,
+     "y1": 0.098
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.445,
+     "x1": 42.445,
+     "y0": 0.076,
+     "y1": 0.111
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 44.644,
+     "x1": 44.645,
+     "y0": 0.072,
+     "y1": 0.074
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 44.644,
+     "x1": 44.645,
+     "y0": 0.126,
+     "y1": 0.128
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.446,
+     "x1": 42.446,
+     "y0": 0.072,
+     "y1": 0.073
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.446,
+     "x1": 42.446,
+     "y0": 0.127,
+     "y1": 0.128
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 44.645,
+     "x1": 44.645,
+     "y0": 0.098,
+     "y1": 0.124
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.445,
+     "x1": 42.445,
+     "y0": 0.111,
+     "y1": 0.124
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.884,
+     "x1": 44.884,
+     "y0": 2.392,
+     "y1": 2.393
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.345,
+     "x1": 42.346,
+     "y0": 2.393,
+     "y1": 2.396
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.885,
+     "x1": 44.885,
+     "y0": 2.396,
+     "y1": 2.526
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.345,
+     "x1": 42.345,
+     "y0": 2.396,
+     "y1": 2.6
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.884,
+     "x1": 44.885,
+     "y0": 2.393,
+     "y1": 2.396
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.346,
+     "x1": 42.346,
+     "y0": 2.392,
+     "y1": 2.393
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.704,
+     "x1": 44.704,
+     "y0": 2.392,
+     "y1": 2.393
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.385,
+     "x1": 42.386,
+     "y0": 2.394,
+     "y1": 2.396
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.705,
+     "x1": 44.705,
+     "y0": 2.396,
+     "y1": 2.427
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.385,
+     "x1": 42.385,
+     "y0": 2.396,
+     "y1": 2.466
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.543,
+     "x1": 42.544,
+     "y0": 0.092,
+     "y1": 0.094
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.544,
+     "x1": 42.545,
+     "y0": 2.384,
+     "y1": 2.386
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.405,
+     "x1": 42.406,
+     "y0": 0.094,
+     "y1": 0.096
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.405,
+     "x1": 42.406,
+     "y0": 2.386,
+     "y1": 2.388
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.545,
+     "x1": 42.545,
+     "y0": 0.096,
+     "y1": 1.331
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.405,
+     "x1": 42.405,
+     "y0": 0.096,
+     "y1": 1.394
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.684,
+     "x1": 44.684,
+     "y0": 0.092,
+     "y1": 0.092
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.685,
+     "x1": 44.685,
+     "y0": 2.384,
+     "y1": 2.385
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.545,
+     "x1": 44.546,
+     "y0": 0.095,
+     "y1": 0.096
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.547,
+     "x1": 44.547,
+     "y0": 2.388,
+     "y1": 2.388
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.685,
+     "x1": 44.685,
+     "y0": 0.096,
+     "y1": 0.371
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.545,
+     "x1": 44.545,
+     "y0": 0.096,
+     "y1": 0.434
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.704,
+     "x1": 44.705,
+     "y0": 2.393,
+     "y1": 2.396
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.386,
+     "x1": 42.386,
+     "y0": 2.392,
+     "y1": 2.394
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.705,
+     "x1": 44.705,
+     "y0": 2.427,
+     "y1": 2.524
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.544,
+     "x1": 42.545,
+     "y0": 0.094,
+     "y1": 0.096
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.543,
+     "x1": 42.544,
+     "y0": 2.386,
+     "y1": 2.388
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.406,
+     "x1": 42.406,
+     "y0": 0.092,
+     "y1": 0.094
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.405,
+     "x1": 42.405,
+     "y0": 2.384,
+     "y1": 2.386
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.545,
+     "x1": 42.545,
+     "y0": 1.331,
+     "y1": 2.384
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.405,
+     "x1": 42.405,
+     "y0": 1.394,
+     "y1": 2.384
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.684,
+     "x1": 44.685,
+     "y0": 0.092,
+     "y1": 0.096
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.684,
+     "x1": 44.685,
+     "y0": 2.385,
+     "y1": 2.388
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.546,
+     "x1": 44.547,
+     "y0": 0.092,
+     "y1": 0.095
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.545,
+     "x1": 44.547,
+     "y0": 2.384,
+     "y1": 2.388
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.685,
+     "x1": 44.685,
+     "y0": 0.371,
+     "y1": 2.384
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.545,
+     "x1": 44.545,
+     "y0": 0.434,
+     "y1": 2.384
+    }
+   ],
+   "colliders": [
+    {
+     "name": "N02-pharmacy_shop:right-side",
+     "x0": 15.883,
+     "x1": 16.167,
+     "y0": 0.0,
+     "y1": 8.0
+    },
+    {
+     "name": "N02-pharmacy_shop:back-wall",
+     "x0": 11.886,
+     "x1": 13.429,
+     "y0": 0.0,
+     "y1": 8.0
+    },
+    {
+     "name": "N02-pharmacy_shop:shop-floor",
+     "x0": 11.886,
+     "x1": 16.167,
+     "y0": 0.0,
+     "y1": 0.14
+    },
+    {
+     "name": "N02-pharmacy_shop:upper-floor",
+     "x0": 13.402,
+     "x1": 15.883,
+     "y0": 3.49,
+     "y1": 3.71
+    },
+    {
+     "name": "N03-cloth_shop:left-side",
+     "x0": 16.836,
+     "x1": 17.116,
+     "y0": 0.0,
+     "y1": 7.7
+    },
+    {
+     "name": "N03-cloth_shop:right-side",
+     "x0": 24.175,
+     "x1": 24.456,
+     "y0": 0.0,
+     "y1": 7.7
+    },
+    {
+     "name": "N03-cloth_shop:shop-floor",
+     "x0": 16.836,
+     "x1": 24.456,
+     "y0": 0.0,
+     "y1": 0.14
+    },
+    {
+     "name": "N03-cloth_shop:upper-floor",
+     "x0": 17.116,
+     "x1": 24.175,
+     "y0": 3.49,
+     "y1": 3.71
+    },
+    {
+     "name": "N05-restaurant-a:left-side",
+     "x0": 31.206,
+     "x1": 31.487,
+     "y0": 0.0,
+     "y1": 7.9
+    },
+    {
+     "name": "N05-restaurant-a:right-side",
+     "x0": 42.26,
+     "x1": 42.541,
+     "y0": 0.0,
+     "y1": 7.9
+    },
+    {
+     "name": "N05-restaurant-a:shop-floor",
+     "x0": 31.206,
+     "x1": 42.541,
+     "y0": 0.0,
+     "y1": 0.14
+    },
+    {
+     "name": "N05-restaurant-a:upper-floor",
+     "x0": 31.487,
+     "x1": 42.26,
+     "y0": 3.64,
+     "y1": 3.86
+    },
+    {
+     "name": "dadian:dadian-column",
+     "x0": -137.685,
+     "x1": -137.259,
+     "y0": 0.0,
+     "y1": 5.0
+    },
+    {
+     "name": "dadian:dadian-column-plinth",
+     "x0": -137.766,
+     "x1": -137.178,
+     "y0": 0.0,
+     "y1": 0.34
+    },
+    {
+     "name": "dadian:door-threshold",
+     "x0": -135.35,
+     "x1": -134.629,
+     "y0": 0.0,
+     "y1": 0.25
+    },
+    {
+     "name": "dadian:door-leaf",
+     "x0": -137.259,
+     "x1": -136.974,
+     "y0": 0.25,
+     "y1": 3.85
+    },
+    {
+     "name": "dadian:front-band-backing",
+     "x0": -136.253,
+     "x1": -134.929,
+     "y0": 4.3,
+     "y1": 5.2
+    },
+    {
+     "name": "dadian:band-front",
+     "x0": -136.674,
+     "x1": -134.869,
+     "y0": 5.95,
+     "y1": 7.0
+    },
+    {
+     "name": "dadian:band-left",
+     "x0": -146.447,
+     "x1": -146.143,
+     "y0": 5.95,
+     "y1": 7.0
+    },
+    {
+     "name": "dadian:side-wall-lower",
+     "x0": -146.143,
+     "x1": -145.839,
+     "y0": 0.0,
+     "y1": 5.3
+    },
+    {
+     "name": "court3:boundary-wall",
+     "x0": -152.055,
+     "x1": -151.771,
+     "y0": 0.0,
+     "y1": 2.9
+    },
+    {
+     "name": "court3:boundary-wall",
+     "x0": -118.508,
+     "x1": -118.224,
+     "y0": 0.0,
+     "y1": 2.9
+    }
+   ]
+  },
+  {
+   "z": -19.5,
+   "label": "inside lane \u5f04\u5185",
+   "ground": [
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__paving-frontage",
+     "x0": 43.371,
+     "x1": 44.724,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__paving-frontage",
+     "x0": 42.523,
+     "x1": 43.371,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.528,
+     "x1": 42.624,
+     "y": 0.07
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 44.624,
+     "x1": 44.719,
+     "y": 0.07
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.624,
+     "x1": 42.683,
+     "y": 0.07
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 44.564,
+     "x1": 44.624,
+     "y": 0.07
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.517,
+     "x1": 42.518,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.425,
+     "x1": 42.426,
+     "y": 0.091
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.496,
+     "x1": 42.517,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.958,
+     "x1": 44.96,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.726,
+     "x1": 44.728,
+     "y": 0.091
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.819,
+     "x1": 44.958,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.518,
+     "x1": 42.521,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.426,
+     "x1": 42.429,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.429,
+     "x1": 42.496,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.96,
+     "x1": 44.962,
+     "y": 0.091
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.728,
+     "x1": 44.73,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.73,
+     "x1": 44.819,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.556,
+     "x1": 42.568,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 44.698,
+     "x1": 44.729,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.518,
+     "x1": 42.556,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 44.679,
+     "x1": 44.698,
+     "y": 0.09
+    }
+   ],
+   "walls": [
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.521,
+     "x1": 42.522,
+     "y0": 0.092,
+     "y1": 0.093
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.423,
+     "x1": 42.423,
+     "y0": 0.095,
+     "y1": 0.096
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.523,
+     "x1": 42.523,
+     "y0": 0.096,
+     "y1": 0.878
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.423,
+     "x1": 42.423,
+     "y0": 0.096,
+     "y1": 0.88
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.962,
+     "x1": 44.963,
+     "y0": 0.092,
+     "y1": 0.094
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.724,
+     "x1": 44.725,
+     "y0": 0.093,
+     "y1": 0.096
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.964,
+     "x1": 44.964,
+     "y0": 0.096,
+     "y1": 2.101
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.724,
+     "x1": 44.724,
+     "y0": 0.096,
+     "y1": 2.103
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.522,
+     "x1": 42.523,
+     "y0": 0.093,
+     "y1": 0.096
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.423,
+     "x1": 42.425,
+     "y0": 0.092,
+     "y1": 0.095
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.523,
+     "x1": 42.523,
+     "y0": 0.878,
+     "y1": 3.384
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.423,
+     "x1": 42.423,
+     "y0": 0.88,
+     "y1": 3.384
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.963,
+     "x1": 44.964,
+     "y0": 0.094,
+     "y1": 0.096
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.725,
+     "x1": 44.726,
+     "y0": 0.092,
+     "y1": 0.093
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.964,
+     "x1": 44.964,
+     "y0": 2.101,
+     "y1": 3.384
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.724,
+     "x1": 44.724,
+     "y0": 2.103,
+     "y1": 3.384
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.558,
+     "x1": 42.558,
+     "y0": 0.87,
+     "y1": 0.906
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.518,
+     "x1": 42.518,
+     "y0": 0.87,
+     "y1": 0.906
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.729,
+     "x1": 44.729,
+     "y0": 0.87,
+     "y1": 0.962
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.689,
+     "x1": 44.689,
+     "y0": 0.87,
+     "y1": 0.962
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.558,
+     "x1": 42.558,
+     "y0": 0.906,
+     "y1": 1.02
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.518,
+     "x1": 42.518,
+     "y0": 0.906,
+     "y1": 1.02
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.729,
+     "x1": 44.729,
+     "y0": 0.962,
+     "y1": 1.02
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.689,
+     "x1": 44.689,
+     "y0": 0.962,
+     "y1": 1.02
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.568,
+     "x1": 42.568,
+     "y0": 0.09,
+     "y1": 0.233
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.518,
+     "x1": 42.518,
+     "y0": 0.09,
+     "y1": 0.233
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 44.729,
+     "x1": 44.729,
+     "y0": 0.09,
+     "y1": 0.456
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 44.679,
+     "x1": 44.679,
+     "y0": 0.09,
+     "y1": 0.456
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.568,
+     "x1": 42.568,
+     "y0": 0.233,
+     "y1": 0.69
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.518,
+     "x1": 42.518,
+     "y0": 0.233,
+     "y1": 0.69
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 44.729,
+     "x1": 44.729,
+     "y0": 0.456,
+     "y1": 0.69
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 44.679,
+     "x1": 44.679,
+     "y0": 0.456,
+     "y1": 0.69
+    }
+   ],
+   "colliders": [
+    {
+     "name": "dadian:dadian-tie-beam",
+     "x0": -135.839,
+     "x1": -135.494,
+     "y0": 4.55,
+     "y1": 5.05
+    },
+    {
+     "name": "dadian:band-left",
+     "x0": -146.974,
+     "x1": -146.67,
+     "y0": 5.95,
+     "y1": 7.0
+    },
+    {
+     "name": "dadian:band-right",
+     "x0": -124.663,
+     "x1": -124.359,
+     "y0": 5.95,
+     "y1": 7.0
+    },
+    {
+     "name": "dadian:side-wall-lower",
+     "x0": -146.67,
+     "x1": -146.365,
+     "y0": 0.0,
+     "y1": 5.3
+    },
+    {
+     "name": "dadian:side-wall-lower",
+     "x0": -124.968,
+     "x1": -124.663,
+     "y0": 0.0,
+     "y1": 5.3
+    },
+    {
+     "name": "court3:boundary-wall",
+     "x0": -152.582,
+     "x1": -152.298,
+     "y0": 0.0,
+     "y1": 2.9
+    },
+    {
+     "name": "court3:boundary-wall",
+     "x0": -119.035,
+     "x1": -118.751,
+     "y0": 0.0,
+     "y1": 2.9
+    },
+    {
+     "name": "lane-a:wall-west-s1",
+     "x0": 42.423,
+     "x1": 42.523,
+     "y0": 0.09,
+     "y1": 3.39
+    },
+    {
+     "name": "lane-a:wall-east",
+     "x0": 44.724,
+     "x1": 44.964,
+     "y0": 0.09,
+     "y1": 3.39
+    }
+   ]
+  },
+  {
+   "z": -23.0,
+   "label": "lane end vicinity \u5c3d\u7aef\u9644\u8fd1",
+   "ground": [
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__paving-frontage",
+     "x0": 44.436,
+     "x1": 44.812,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__paving-frontage",
+     "x0": 42.611,
+     "x1": 44.436,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.616,
+     "x1": 42.643,
+     "y": 0.07
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 44.78,
+     "x1": 44.807,
+     "y": 0.07
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 42.643,
+     "x1": 42.771,
+     "y": 0.07
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__worn-stone",
+     "x0": 44.652,
+     "x1": 44.78,
+     "y": 0.07
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.605,
+     "x1": 42.608,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.513,
+     "x1": 42.515,
+     "y": 0.091
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.55,
+     "x1": 42.605,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 45.046,
+     "x1": 45.046,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.813,
+     "x1": 44.814,
+     "y": 0.091
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 45.007,
+     "x1": 45.046,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.608,
+     "x1": 42.609,
+     "y": 0.091
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.515,
+     "x1": 42.517,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.517,
+     "x1": 42.55,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 45.046,
+     "x1": 45.05,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.814,
+     "x1": 44.818,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.818,
+     "x1": 45.007,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.652,
+     "x1": 42.654,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.607,
+     "x1": 42.609,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.626,
+     "x1": 42.652,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 44.808,
+     "x1": 44.817,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.654,
+     "x1": 42.655,
+     "y": 0.091
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.609,
+     "x1": 42.61,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.61,
+     "x1": 42.626,
+     "y": 0.09
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 44.767,
+     "x1": 44.808,
+     "y": 0.09
+    }
+   ],
+   "walls": [
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.609,
+     "x1": 42.61,
+     "y0": 0.092,
+     "y1": 0.094
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.511,
+     "x1": 42.512,
+     "y0": 0.093,
+     "y1": 0.096
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.611,
+     "x1": 42.611,
+     "y0": 0.096,
+     "y1": 2.145
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.511,
+     "x1": 42.511,
+     "y0": 0.096,
+     "y1": 2.148
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 45.05,
+     "x1": 45.05,
+     "y0": 0.092,
+     "y1": 0.092
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.812,
+     "x1": 44.812,
+     "y0": 0.095,
+     "y1": 0.096
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 45.052,
+     "x1": 45.052,
+     "y0": 0.096,
+     "y1": 0.649
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.812,
+     "x1": 44.812,
+     "y0": 0.096,
+     "y1": 0.651
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.61,
+     "x1": 42.611,
+     "y0": 0.094,
+     "y1": 0.096
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.512,
+     "x1": 42.513,
+     "y0": 0.092,
+     "y1": 0.093
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.611,
+     "x1": 42.611,
+     "y0": 2.145,
+     "y1": 3.384
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 42.511,
+     "x1": 42.511,
+     "y0": 2.148,
+     "y1": 3.384
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 45.05,
+     "x1": 45.052,
+     "y0": 0.092,
+     "y1": 0.096
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.812,
+     "x1": 44.813,
+     "y0": 0.092,
+     "y1": 0.095
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 45.052,
+     "x1": 45.052,
+     "y0": 0.649,
+     "y1": 3.384
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__weathered-lime-plaster",
+     "x0": 44.812,
+     "x1": 44.812,
+     "y0": 0.651,
+     "y1": 3.384
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.646,
+     "x1": 42.646,
+     "y0": 0.87,
+     "y1": 0.963
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.606,
+     "x1": 42.606,
+     "y0": 0.87,
+     "y1": 0.963
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.817,
+     "x1": 44.817,
+     "y0": 0.87,
+     "y1": 0.895
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.777,
+     "x1": 44.777,
+     "y0": 0.87,
+     "y1": 0.895
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.646,
+     "x1": 42.646,
+     "y0": 0.963,
+     "y1": 1.02
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 42.606,
+     "x1": 42.606,
+     "y0": 0.963,
+     "y1": 1.02
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.817,
+     "x1": 44.817,
+     "y0": 0.895,
+     "y1": 1.02
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__oxblood-stained-timber",
+     "x0": 44.777,
+     "x1": 44.777,
+     "y0": 0.895,
+     "y1": 1.02
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.655,
+     "x1": 42.655,
+     "y0": 0.091,
+     "y1": 0.093
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.655,
+     "x1": 42.656,
+     "y0": 0.686,
+     "y1": 0.688
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.606,
+     "x1": 42.607,
+     "y0": 0.092,
+     "y1": 0.094
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.606,
+     "x1": 42.607,
+     "y0": 0.687,
+     "y1": 0.689
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.656,
+     "x1": 42.656,
+     "y0": 0.094,
+     "y1": 0.462
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.606,
+     "x1": 42.606,
+     "y0": 0.094,
+     "y1": 0.463
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 44.817,
+     "x1": 44.817,
+     "y0": 0.09,
+     "y1": 0.192
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 44.767,
+     "x1": 44.767,
+     "y0": 0.09,
+     "y1": 0.192
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.655,
+     "x1": 42.656,
+     "y0": 0.093,
+     "y1": 0.094
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.655,
+     "x1": 42.655,
+     "y0": 0.688,
+     "y1": 0.689
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.607,
+     "x1": 42.607,
+     "y0": 0.091,
+     "y1": 0.092
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.606,
+     "x1": 42.606,
+     "y0": 0.686,
+     "y1": 0.687
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.656,
+     "x1": 42.656,
+     "y0": 0.462,
+     "y1": 0.686
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 42.606,
+     "x1": 42.606,
+     "y0": 0.463,
+     "y1": 0.686
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 44.817,
+     "x1": 44.817,
+     "y0": 0.192,
+     "y1": 0.69
+    },
+    {
+     "src": "lane-a",
+     "node": "lanes-v2__blue-gray-brick",
+     "x0": 44.767,
+     "x1": 44.767,
+     "y0": 0.192,
+     "y1": 0.69
+    }
+   ],
+   "colliders": [
+    {
+     "name": "dadian:dadian-tie-beam",
+     "x0": -136.429,
+     "x1": -136.084,
+     "y0": 4.55,
+     "y1": 5.05
+    },
+    {
+     "name": "dadian:band-left",
+     "x0": -147.564,
+     "x1": -147.26,
+     "y0": 5.95,
+     "y1": 7.0
+    },
+    {
+     "name": "dadian:band-right",
+     "x0": -125.254,
+     "x1": -124.949,
+     "y0": 5.95,
+     "y1": 7.0
+    },
+    {
+     "name": "dadian:side-wall-lower",
+     "x0": -147.26,
+     "x1": -146.956,
+     "y0": 0.0,
+     "y1": 5.3
+    },
+    {
+     "name": "dadian:side-wall-lower",
+     "x0": -125.558,
+     "x1": -125.254,
+     "y0": 0.0,
+     "y1": 5.3
+    },
+    {
+     "name": "court3:boundary-wall",
+     "x0": -153.172,
+     "x1": -152.888,
+     "y0": 0.0,
+     "y1": 2.9
+    },
+    {
+     "name": "court3:boundary-wall",
+     "x0": -119.625,
+     "x1": -119.341,
+     "y0": 0.0,
+     "y1": 2.9
+    },
+    {
+     "name": "lane-a:wall-west-s2",
+     "x0": 42.511,
+     "x1": 42.611,
+     "y0": 0.09,
+     "y1": 3.39
+    },
+    {
+     "name": "lane-a:wall-east",
+     "x0": 44.812,
+     "x1": 45.052,
+     "y0": 0.09,
+     "y1": 3.39
+    }
+   ]
+  }
+ ],
+ "faceLines": [
+  {
+   "z": -9.9,
+   "n05_vis_max_x": 42.192,
+   "n05_col_min_x": 41.746,
+   "n06_vis_min_x": 43.873,
+   "n06_col_max_x": 44.324
+  },
+  {
+   "z": -10.1,
+   "n05_vis_max_x": 42.208,
+   "n05_col_min_x": 41.762,
+   "n06_vis_min_x": 43.907,
+   "n06_col_max_x": 44.358
+  },
+  {
+   "z": -10.3,
+   "n05_vis_max_x": 42.224,
+   "n05_col_min_x": 41.778,
+   "n06_vis_min_x": 43.941,
+   "n06_col_max_x": 44.392
+  },
+  {
+   "z": -10.5,
+   "n05_vis_max_x": 42.24,
+   "n05_col_min_x": 41.794,
+   "n06_vis_min_x": 43.975,
+   "n06_col_max_x": 44.426
+  },
+  {
+   "z": -10.7,
+   "n05_vis_max_x": 42.256,
+   "n05_col_min_x": 41.81,
+   "n06_vis_min_x": 44.009,
+   "n06_col_max_x": 44.46
+  },
+  {
+   "z": -10.9,
+   "n05_vis_max_x": 42.271,
+   "n05_col_min_x": 41.826,
+   "n06_vis_min_x": 44.043,
+   "n06_col_max_x": 44.494
+  },
+  {
+   "z": -11.1,
+   "n05_vis_max_x": 42.287,
+   "n05_col_min_x": 41.841,
+   "n06_vis_min_x": 44.077,
+   "n06_col_max_x": 44.528
+  },
+  {
+   "z": -11.3,
+   "n05_vis_max_x": 42.303,
+   "n05_col_min_x": 41.857,
+   "n06_vis_min_x": 44.111,
+   "n06_col_max_x": 44.561
+  },
+  {
+   "z": -11.5,
+   "n05_vis_max_x": 42.319,
+   "n05_col_min_x": 41.873,
+   "n06_vis_min_x": 44.144,
+   "n06_col_max_x": 44.595
+  },
+  {
+   "z": -11.7,
+   "n05_vis_max_x": 42.335,
+   "n05_col_min_x": 41.889,
+   "n06_vis_min_x": 44.178,
+   "n06_col_max_x": 44.629
+  },
+  {
+   "z": -11.9,
+   "n05_vis_max_x": 42.351,
+   "n05_col_min_x": 41.905,
+   "n06_vis_min_x": 44.212,
+   "n06_col_max_x": 44.663
+  },
+  {
+   "z": -12.1,
+   "n05_vis_max_x": 42.367,
+   "n05_col_min_x": 41.921,
+   "n06_vis_min_x": 44.246,
+   "n06_col_max_x": 44.697
+  },
+  {
+   "z": -12.3,
+   "n05_vis_max_x": 42.383,
+   "n05_col_min_x": 41.937,
+   "n06_vis_min_x": 44.28,
+   "n06_col_max_x": 44.731
+  },
+  {
+   "z": -12.5,
+   "n05_vis_max_x": 42.399,
+   "n05_col_min_x": 41.953,
+   "n06_vis_min_x": 44.314,
+   "n06_col_max_x": 44.765
+  },
+  {
+   "z": -12.7,
+   "n05_vis_max_x": 42.414,
+   "n05_col_min_x": 41.969,
+   "n06_vis_min_x": 44.348,
+   "n06_col_max_x": 44.799
+  },
+  {
+   "z": -12.9,
+   "n05_vis_max_x": 42.43,
+   "n05_col_min_x": 41.984,
+   "n06_vis_min_x": 44.382,
+   "n06_col_max_x": 44.833
+  },
+  {
+   "z": -13.1,
+   "n05_vis_max_x": 42.446,
+   "n05_col_min_x": 42.0,
+   "n06_vis_min_x": 44.416,
+   "n06_col_max_x": 44.867
+  },
+  {
+   "z": -13.3,
+   "n05_vis_max_x": 42.462,
+   "n05_col_min_x": 42.016,
+   "n06_vis_min_x": 44.45,
+   "n06_col_max_x": 44.9
+  },
+  {
+   "z": -13.5,
+   "n05_vis_max_x": 42.478,
+   "n05_col_min_x": 42.032,
+   "n06_vis_min_x": 44.484,
+   "n06_col_max_x": 44.934
+  },
+  {
+   "z": -13.7,
+   "n05_vis_max_x": 42.494,
+   "n05_col_min_x": 42.048,
+   "n06_vis_min_x": 44.517,
+   "n06_col_max_x": 44.968
+  },
+  {
+   "z": -13.9,
+   "n05_vis_max_x": 42.51,
+   "n05_col_min_x": 42.064,
+   "n06_vis_min_x": 44.551,
+   "n06_col_max_x": 45.002
+  },
+  {
+   "z": -14.1,
+   "n05_vis_max_x": 42.526,
+   "n05_col_min_x": 42.08,
+   "n06_vis_min_x": 44.585,
+   "n06_col_max_x": 45.036
+  },
+  {
+   "z": -14.3,
+   "n05_vis_max_x": 42.541,
+   "n05_col_min_x": 42.096,
+   "n06_vis_min_x": 44.619,
+   "n06_col_max_x": 45.07
+  },
+  {
+   "z": -14.5,
+   "n05_vis_max_x": 42.557,
+   "n05_col_min_x": 42.111,
+   "n06_vis_min_x": 44.653,
+   "n06_col_max_x": 45.104
+  },
+  {
+   "z": -14.7,
+   "n05_vis_max_x": 42.573,
+   "n05_col_min_x": 42.127,
+   "n06_vis_min_x": 44.687,
+   "n06_col_max_x": 45.138
+  },
+  {
+   "z": -14.9,
+   "n05_vis_max_x": 42.589,
+   "n05_col_min_x": 42.143,
+   "n06_vis_min_x": null,
+   "n06_col_max_x": null
+  },
+  {
+   "z": -15.1,
+   "n05_vis_max_x": 42.605,
+   "n05_col_min_x": 42.159,
+   "n06_vis_min_x": null,
+   "n06_col_max_x": null
+  },
+  {
+   "z": -15.3,
+   "n05_vis_max_x": 42.621,
+   "n05_col_min_x": 42.175,
+   "n06_vis_min_x": null,
+   "n06_col_max_x": null
+  },
+  {
+   "z": -15.5,
+   "n05_vis_max_x": 42.637,
+   "n05_col_min_x": 42.191,
+   "n06_vis_min_x": null,
+   "n06_col_max_x": null
+  },
+  {
+   "z": -15.7,
+   "n05_vis_max_x": 42.653,
+   "n05_col_min_x": 42.207,
+   "n06_vis_min_x": null,
+   "n06_col_max_x": null
+  },
+  {
+   "z": -15.9,
+   "n05_vis_max_x": 42.669,
+   "n05_col_min_x": 42.223,
+   "n06_vis_min_x": null,
+   "n06_col_max_x": null
+  },
+  {
+   "z": -16.1,
+   "n05_vis_max_x": 42.684,
+   "n05_col_min_x": 42.239,
+   "n06_vis_min_x": null,
+   "n06_col_max_x": null
+  },
+  {
+   "z": -16.3,
+   "n05_vis_max_x": 42.7,
+   "n05_col_min_x": 42.254,
+   "n06_vis_min_x": null,
+   "n06_col_max_x": null
+  },
+  {
+   "z": -16.5,
+   "n05_vis_max_x": 42.716,
+   "n05_col_min_x": 42.27,
+   "n06_vis_min_x": null,
+   "n06_col_max_x": null
+  },
+  {
+   "z": -16.7,
+   "n05_vis_max_x": 42.732,
+   "n05_col_min_x": 42.286,
+   "n06_vis_min_x": null,
+   "n06_col_max_x": null
+  },
+  {
+   "z": -16.9,
+   "n05_vis_max_x": 41.41,
+   "n05_col_min_x": null,
+   "n06_vis_min_x": null,
+   "n06_col_max_x": null
+  }
+ ],
+ "rasterRows": [
+  {
+   "z": -25.0,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -24.9,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -24.8,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -24.7,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -24.6,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -24.5,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__oxblood-stained-timber"
+    },
+    {
+     "x0": 42.6,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -24.4,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -24.3,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 45.0,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -24.2,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -24.1,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -24.0,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -23.9,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -23.8,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -23.7,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -23.6,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -23.5,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -23.4,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -23.3,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -23.2,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -23.1,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -23.0,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -22.9,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -22.8,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -22.7,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -22.6,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -22.5,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -22.4,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -22.3,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -22.2,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -22.1,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.2,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.3,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -22.0,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.2,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.3,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -21.9,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.2,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.3,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -21.8,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.2,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.3,
+     "x1": 42.3,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -21.7,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.2,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.3,
+     "x1": 42.3,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -21.6,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.2,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.3,
+     "x1": 42.3,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -21.5,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.2,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.3,
+     "x1": 42.3,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -21.4,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.2,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.3,
+     "x1": 42.3,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -21.3,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.1,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.2,
+     "x1": 42.3,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -21.2,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.1,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.2,
+     "x1": 42.3,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -21.1,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.1,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.2,
+     "x1": 42.3,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 45.0,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -21.0,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.1,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.2,
+     "x1": 42.3,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -20.9,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.1,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.2,
+     "x1": 42.3,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -20.8,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.1,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.2,
+     "x1": 42.3,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.6,
+     "x1": 42.6,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 42.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -20.7,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.1,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.2,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -20.6,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.1,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.2,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -20.5,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.1,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.2,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -20.4,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -20.3,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -20.2,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -20.1,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -20.0,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -19.9,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -19.8,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -19.7,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -19.6,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -19.5,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -19.4,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -19.3,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -19.2,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -19.1,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -19.0,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -18.9,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -18.8,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -18.7,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -18.6,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -18.5,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.4,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -18.4,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.4,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -18.3,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.4,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -18.2,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.4,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -18.1,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.4,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -18.0,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.4,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -17.9,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.4,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -17.8,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.4,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -17.7,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.4,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -17.6,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.4,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -17.5,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.4,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -17.4,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.4,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -17.3,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.4,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -17.2,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.4,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -17.1,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.4,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.9,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 45.0,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -17.0,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 40.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 40.2,
+     "x1": 42.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.4,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.8,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 44.9,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -16.9,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 41.4,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 41.5,
+     "x1": 42.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 42.4,
+     "x1": 42.4,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.8,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 44.9,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -16.8,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.5,
+     "x1": 42.5,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.8,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 44.9,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -16.7,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.8,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 44.9,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -16.6,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.8,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 44.9,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -16.5,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.6,
+     "x1": 43.6,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 43.7,
+     "x1": 44.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.8,
+     "kind": "lanes-v2__weathered-lime-plaster"
+    },
+    {
+     "x0": 44.9,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -16.4,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.6,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 44.7,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -16.3,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.6,
+     "x1": 43.0,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.1,
+     "x1": 44.6,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 44.7,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -16.2,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.5,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.6,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -16.1,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.5,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.6,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -16.0,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.5,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.6,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -15.9,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.5,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.6,
+     "x1": 44.4,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.5,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -15.8,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.5,
+     "x1": 44.4,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.5,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -15.7,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.5,
+     "x1": 44.3,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.4,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -15.6,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.5,
+     "x1": 44.3,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.4,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -15.5,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.5,
+     "x1": 44.3,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.4,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -15.4,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.5,
+     "x1": 44.2,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.3,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -15.3,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.5,
+     "x1": 44.2,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.3,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -15.2,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.5,
+     "x1": 44.1,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.2,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -15.1,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.5,
+     "x1": 44.1,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.2,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -15.0,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.5,
+     "x1": 44.0,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -14.9,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.5,
+     "x1": 44.0,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.1,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -14.8,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.5,
+     "x1": 44.0,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.1,
+     "x1": 44.7,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.9,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -14.7,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.4,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.5,
+     "x1": 43.9,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.0,
+     "x1": 44.6,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.8,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.9,
+     "x1": 45.4,
+     "kind": "N06-curio-a__1"
+    },
+    {
+     "x0": 45.5,
+     "x1": 46.0,
+     "kind": "VOID"
+    }
+   ]
+  },
+  {
+   "z": -14.6,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.4,
+     "x1": 43.9,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 44.0,
+     "x1": 44.6,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.8,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.9,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -14.5,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.4,
+     "x1": 43.8,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.9,
+     "x1": 44.6,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.8,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.9,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -14.4,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.4,
+     "x1": 43.8,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.9,
+     "x1": 44.6,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.8,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.9,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -14.3,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.4,
+     "x1": 43.8,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.9,
+     "x1": 44.6,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.8,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -14.2,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.4,
+     "x1": 43.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.8,
+     "x1": 44.6,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.8,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -14.1,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.4,
+     "x1": 43.7,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.8,
+     "x1": 44.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.6,
+     "x1": 44.7,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.8,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -14.0,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.4,
+     "x1": 43.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.7,
+     "x1": 44.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.6,
+     "x1": 44.7,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.8,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -13.9,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.4,
+     "x1": 43.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.7,
+     "x1": 44.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.6,
+     "x1": 44.7,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.8,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -13.8,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.4,
+     "x1": 43.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.7,
+     "x1": 44.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.6,
+     "x1": 44.7,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.8,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -13.7,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.4,
+     "x1": 43.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.7,
+     "x1": 44.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.6,
+     "x1": 44.6,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.7,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -13.6,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.4,
+     "x1": 43.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.7,
+     "x1": 44.5,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.6,
+     "x1": 44.6,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.7,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -13.5,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.4,
+     "x1": 43.6,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.7,
+     "x1": 44.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.5,
+     "x1": 44.6,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.7,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -13.4,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.3,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.4,
+     "x1": 43.5,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.6,
+     "x1": 44.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.5,
+     "x1": 44.6,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.7,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -13.3,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.2,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.3,
+     "x1": 43.5,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.6,
+     "x1": 44.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.5,
+     "x1": 44.6,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.7,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -13.2,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.2,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.3,
+     "x1": 43.5,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.6,
+     "x1": 44.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.5,
+     "x1": 44.6,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.7,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -13.1,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.2,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.3,
+     "x1": 43.5,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.6,
+     "x1": 44.4,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.5,
+     "x1": 44.5,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.6,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -13.0,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.2,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.3,
+     "x1": 43.5,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.6,
+     "x1": 44.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.4,
+     "x1": 44.5,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.6,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -12.9,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.2,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.3,
+     "x1": 43.4,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.5,
+     "x1": 44.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.4,
+     "x1": 44.5,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.6,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -12.8,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 39.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 39.2,
+     "x1": 39.3,
+     "kind": "N05-restaurant-a__2"
+    },
+    {
+     "x0": 39.4,
+     "x1": 42.2,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.3,
+     "x1": 43.4,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.5,
+     "x1": 44.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.4,
+     "x1": 44.5,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.6,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -12.7,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 39.0,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 39.1,
+     "x1": 39.3,
+     "kind": "N05-restaurant-a__2"
+    },
+    {
+     "x0": 39.4,
+     "x1": 42.2,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.3,
+     "x1": 43.4,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.5,
+     "x1": 44.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.4,
+     "x1": 44.5,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.6,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -12.6,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 39.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 39.2,
+     "x1": 39.3,
+     "kind": "N05-restaurant-a__2"
+    },
+    {
+     "x0": 39.4,
+     "x1": 42.2,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.3,
+     "x1": 43.4,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.5,
+     "x1": 44.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.4,
+     "x1": 44.4,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.5,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -12.5,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.2,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.3,
+     "x1": 43.4,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.5,
+     "x1": 44.3,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.4,
+     "x1": 44.4,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.5,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -12.4,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.2,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.3,
+     "x1": 43.4,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.5,
+     "x1": 44.2,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.3,
+     "x1": 44.4,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.5,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -12.3,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.2,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.3,
+     "x1": 43.3,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.4,
+     "x1": 44.2,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.3,
+     "x1": 44.4,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.5,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -12.2,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.2,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.3,
+     "x1": 43.3,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.4,
+     "x1": 44.2,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.3,
+     "x1": 44.4,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.5,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -12.1,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.2,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.3,
+     "x1": 43.3,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.4,
+     "x1": 44.2,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.3,
+     "x1": 44.4,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.5,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -12.0,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 39.0,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 39.1,
+     "x1": 39.2,
+     "kind": "N05-restaurant-a__2"
+    },
+    {
+     "x0": 39.3,
+     "x1": 42.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.2,
+     "x1": 43.3,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.4,
+     "x1": 44.2,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.3,
+     "x1": 44.3,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.4,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -11.9,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 39.0,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 39.1,
+     "x1": 39.3,
+     "kind": "N05-restaurant-a__2"
+    },
+    {
+     "x0": 39.4,
+     "x1": 42.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.2,
+     "x1": 43.3,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.4,
+     "x1": 44.2,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.3,
+     "x1": 44.3,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.4,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -11.8,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 39.0,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 39.1,
+     "x1": 39.2,
+     "kind": "N05-restaurant-a__2"
+    },
+    {
+     "x0": 39.3,
+     "x1": 42.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.2,
+     "x1": 43.3,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.4,
+     "x1": 44.1,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.2,
+     "x1": 44.3,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.4,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -11.7,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.2,
+     "x1": 43.2,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.3,
+     "x1": 44.1,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.2,
+     "x1": 44.3,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.4,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -11.6,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.2,
+     "x1": 43.2,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.3,
+     "x1": 44.1,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.2,
+     "x1": 44.3,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.4,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -11.5,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.2,
+     "x1": 43.2,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.3,
+     "x1": 44.1,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.2,
+     "x1": 44.3,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.4,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -11.4,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.2,
+     "x1": 43.2,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.3,
+     "x1": 44.1,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.2,
+     "x1": 44.2,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.3,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -11.3,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.2,
+     "x1": 43.2,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.3,
+     "x1": 44.1,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.2,
+     "x1": 44.2,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.3,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -11.2,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.2,
+     "x1": 43.2,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.3,
+     "x1": 44.0,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.1,
+     "x1": 44.2,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.3,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -11.1,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.2,
+     "x1": 43.1,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.2,
+     "x1": 44.0,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.1,
+     "x1": 44.2,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.3,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -11.0,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 40.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 40.2,
+     "x1": 40.4,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 40.5,
+     "x1": 42.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.2,
+     "x1": 43.1,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.2,
+     "x1": 44.0,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.1,
+     "x1": 44.2,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.3,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -10.9,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 40.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 40.2,
+     "x1": 40.4,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 40.5,
+     "x1": 42.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.2,
+     "x1": 43.1,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.2,
+     "x1": 44.0,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.1,
+     "x1": 44.2,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.3,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -10.8,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 40.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 40.2,
+     "x1": 40.4,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 40.5,
+     "x1": 42.0,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.1,
+     "x1": 43.1,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.2,
+     "x1": 44.0,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.1,
+     "x1": 44.1,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.2,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -10.7,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 40.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 40.2,
+     "x1": 40.4,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 40.5,
+     "x1": 42.0,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.1,
+     "x1": 43.1,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.2,
+     "x1": 44.0,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.1,
+     "x1": 44.1,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.2,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -10.6,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 40.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 40.2,
+     "x1": 40.4,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 40.5,
+     "x1": 42.0,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.1,
+     "x1": 43.1,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.2,
+     "x1": 43.9,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.0,
+     "x1": 44.1,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.2,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -10.5,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 40.1,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 40.2,
+     "x1": 40.4,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 40.5,
+     "x1": 42.0,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.1,
+     "x1": 43.0,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.1,
+     "x1": 43.9,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.0,
+     "x1": 44.1,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.2,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -10.4,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.0,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.1,
+     "x1": 43.0,
+     "kind": "lanes-v2__paving-frontage"
+    },
+    {
+     "x0": 43.1,
+     "x1": 43.9,
+     "kind": "VOID"
+    },
+    {
+     "x0": 44.0,
+     "x1": 44.1,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.2,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -10.3,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.0,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.1,
+     "x1": 42.8,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 42.9,
+     "x1": 43.2,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 43.3,
+     "x1": 44.1,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 44.2,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -10.2,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.0,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.1,
+     "x1": 42.8,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 42.9,
+     "x1": 43.2,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 43.3,
+     "x1": 44.0,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 44.1,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -10.1,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.0,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.1,
+     "x1": 42.8,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 42.9,
+     "x1": 43.2,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 43.3,
+     "x1": 44.0,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 44.1,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -10.0,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.0,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.1,
+     "x1": 42.8,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 42.9,
+     "x1": 43.2,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 43.3,
+     "x1": 44.0,
+     "kind": "lanes-v2__worn-stone"
+    },
+    {
+     "x0": 44.1,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -9.9,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 42.0,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 42.1,
+     "x1": 42.8,
+     "kind": "street-kit__paving-frontage"
+    },
+    {
+     "x0": 42.9,
+     "x1": 43.2,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 43.3,
+     "x1": 43.8,
+     "kind": "VOID"
+    },
+    {
+     "x0": 43.9,
+     "x1": 44.0,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.1,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -9.8,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 41.8,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 41.9,
+     "x1": 42.8,
+     "kind": "street-kit__paving-frontage"
+    },
+    {
+     "x0": 42.9,
+     "x1": 43.2,
+     "kind": "lanes-v2__blue-gray-brick"
+    },
+    {
+     "x0": 43.3,
+     "x1": 43.8,
+     "kind": "street-kit__paving-frontage"
+    },
+    {
+     "x0": 43.9,
+     "x1": 44.0,
+     "kind": "N06-curio-a__4"
+    },
+    {
+     "x0": 44.1,
+     "x1": 44.5,
+     "kind": "N06-curio-a__1"
+    },
+    {
+     "x0": 44.6,
+     "x1": 44.6,
+     "kind": "N06-curio-a__5"
+    },
+    {
+     "x0": 44.7,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -9.7,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 41.8,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 41.9,
+     "x1": 44.0,
+     "kind": "street-kit__paving-frontage"
+    },
+    {
+     "x0": 44.1,
+     "x1": 44.5,
+     "kind": "N06-curio-a__1"
+    },
+    {
+     "x0": 44.6,
+     "x1": 45.2,
+     "kind": "N06-curio-a__5"
+    },
+    {
+     "x0": 45.3,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -9.6,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 41.7,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 41.8,
+     "x1": 44.0,
+     "kind": "street-kit__paving-frontage"
+    },
+    {
+     "x0": 44.1,
+     "x1": 44.1,
+     "kind": "N06-curio-a__2"
+    },
+    {
+     "x0": 44.2,
+     "x1": 44.4,
+     "kind": "N06-curio-a__1"
+    },
+    {
+     "x0": 44.5,
+     "x1": 44.6,
+     "kind": "N06-curio-a__2"
+    },
+    {
+     "x0": 44.7,
+     "x1": 44.7,
+     "kind": "N06-curio-a__1"
+    },
+    {
+     "x0": 44.8,
+     "x1": 44.8,
+     "kind": "N06-curio-a__6"
+    },
+    {
+     "x0": 44.9,
+     "x1": 44.9,
+     "kind": "N06-curio-a__1"
+    },
+    {
+     "x0": 45.0,
+     "x1": 45.8,
+     "kind": "N06-curio-a__5"
+    },
+    {
+     "x0": 45.9,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -9.5,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 39.9,
+     "kind": "street-kit__paving-frontage"
+    },
+    {
+     "x0": 40.0,
+     "x1": 41.7,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 41.8,
+     "x1": 44.0,
+     "kind": "street-kit__paving-frontage"
+    },
+    {
+     "x0": 44.1,
+     "x1": 44.1,
+     "kind": "N06-curio-a__2"
+    },
+    {
+     "x0": 44.2,
+     "x1": 44.5,
+     "kind": "N06-curio-a__1"
+    },
+    {
+     "x0": 44.6,
+     "x1": 45.1,
+     "kind": "N06-curio-a__2"
+    },
+    {
+     "x0": 45.2,
+     "x1": 45.3,
+     "kind": "N06-curio-a__1"
+    },
+    {
+     "x0": 45.4,
+     "x1": 45.4,
+     "kind": "N06-curio-a__6"
+    },
+    {
+     "x0": 45.5,
+     "x1": 45.5,
+     "kind": "N06-curio-a__1"
+    },
+    {
+     "x0": 45.6,
+     "x1": 46.0,
+     "kind": "N06-curio-a__5"
+    }
+   ]
+  },
+  {
+   "z": -9.4,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 41.2,
+     "kind": "street-kit__paving-frontage"
+    },
+    {
+     "x0": 41.3,
+     "x1": 41.7,
+     "kind": "N05-restaurant-a__1"
+    },
+    {
+     "x0": 41.8,
+     "x1": 44.1,
+     "kind": "street-kit__paving-frontage"
+    },
+    {
+     "x0": 44.2,
+     "x1": 45.1,
+     "kind": "N06-curio-a__1"
+    },
+    {
+     "x0": 45.2,
+     "x1": 45.7,
+     "kind": "N06-curio-a__2"
+    },
+    {
+     "x0": 45.8,
+     "x1": 45.9,
+     "kind": "N06-curio-a__1"
+    },
+    {
+     "x0": 46.0,
+     "x1": 46.0,
+     "kind": "N06-curio-a__6"
+    }
+   ]
+  },
+  {
+   "z": -9.3,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 44.1,
+     "kind": "street-kit__paving-frontage"
+    },
+    {
+     "x0": 44.2,
+     "x1": 45.7,
+     "kind": "N06-curio-a__1"
+    },
+    {
+     "x0": 45.8,
+     "x1": 46.0,
+     "kind": "N06-curio-a__2"
+    }
+   ]
+  },
+  {
+   "z": -9.2,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 44.1,
+     "kind": "street-kit__paving-frontage"
+    },
+    {
+     "x0": 44.2,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -9.1,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 44.1,
+     "kind": "street-kit__paving-frontage"
+    },
+    {
+     "x0": 44.2,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  },
+  {
+   "z": -9.0,
+   "runs": [
+    {
+     "x0": 39.0,
+     "x1": 44.0,
+     "kind": "street-kit__paving-frontage"
+    },
+    {
+     "x0": 44.1,
+     "x1": 46.0,
+     "kind": "N06-curio-a__1"
+    }
+   ]
+  }
+ ],
+ "laneAFloorNodeBounds": {
+  "lanes-v2__paving-frontage": [
+   42.447,
+   44.845,
+   -24.4,
+   -16.407
+  ],
+  "lanes-v2__worn-stone": [
+   42.423,
+   44.852,
+   -24.4,
+   -16.259
+  ],
+  "lanes-v2__weathered-lime-plaster": [
+   42.179,
+   45.088,
+   -24.581,
+   -16.193
+  ],
+  "lanes-v2__oxblood-stained-timber": [
+   42.384,
+   45.028,
+   -24.583,
+   -16.228
+  ],
+  "lanes-v2__blue-gray-brick": [
+   42.442,
+   45.034,
+   -24.62,
+   -16.407
+  ],
+  "lanes-v2__gray-pan-tile": [
+   42.438,
+   45.137,
+   -24.583,
+   -16.35
+  ],
+  "lanes-v2__interior-warm-shadow": [
+   42.391,
+   44.943,
+   -24.529,
+   -17.422
+  ],
+  "lanes-v2__recessed-old-glass": [
+   42.485,
+   44.79,
+   -22.526,
+   -17.571
+  ],
+  "lanes-v2__deep-door-lacquer": [
+   42.308,
+   42.384,
+   -21.805,
+   -20.808
+  ]
+ },
+ "interfacesAFloorVertices": [
+  [
+   39.86,
+   -16.4
+  ],
+  [
+   40.3,
+   -10.75
+  ],
+  [
+   42.445,
+   -16.439
+  ],
+  [
+   43.02,
+   -10.07
+  ],
+  [
+   43.69,
+   -14.03
+  ],
+  [
+   44.645,
+   -16.313
+  ],
+  [
+   55.486,
+   0.09
+  ],
+  [
+   56.079,
+   0.09
+  ],
+  [
+   58.145,
+   0.09
+  ],
+  [
+   58.738,
+   0.09
+  ]
+ ]
+}

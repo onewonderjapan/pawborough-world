@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "lane-a-polish-survey",
+  "date": "2026-09-20",
+  "baseline": "96b669081206de31b075ebbd39377afb84ff970d",
+  "executor": "ZCode GLM-5.3-Flash survey only (no construction; no browser launched)",
+  "scope": "Lane A entrance gray band, N05/N06 visual-vs-collider deviation claim, A-route walk physics, local fix proposals, refinement list, budget decomposition",
+  "sources": {
+    "renderedAssembly": "world/fangbang-temple-v5/street-reviewed-lanes.glb (nodes carry TRS instance transforms; parsed with them applied)",
+    "laneAAsset": "world/lanes-v2/lane-a/model.glb — local frame; runtime holder T=[43.545,0.09,-16.375] yaw=3.1165 per world/fangbang-temple-v5/blocks.json block-lanes-v2",
+    "interfacesAsset": "world/lanes-v2/interfaces/model.glb — world-authored, identity placement",
+    "productionCollision": [
+      "world/fangbang-temple-v5/collision-world.json (790 records)",
+      "world/lanes-v2/lane-a/collision.json (11 records, world-space obb)",
+      "world/lanes-v2/interfaces/collision.json (4 records)"
+    ],
+    "placementRecord": "artifacts/lanes-construction/placement.json",
+    "routeAndCameras": "world/fangbang-temple-v5/route.json (laneAExcursion 8 pts, x 43.096..43.733, z -10.697..-23.873)",
+    "screenshotsRead": "artifacts/lanes-construction/web/v5-lane-a-{street-look-in,forward,detail}.png (page footer: 703049 tris)",
+    "genReferences": "references/SOURCE-SUPPLEMENT.json -> PBR-SH-0006-G33 (lane-mouth), PBR-SH-0007-G05 (lane-interior), PBR-SH-0007-G06 (lane-end-return); all GEN, non-historical",
+    "measurementTools": ["tools/lane_a_survey_glb.py", "tools/lane_a_survey_report.py", "tools/lane_a_survey_walktest.mjs"],
+    "measurementOutputs": ["artifacts/lane-a-polish/survey/measure_sections.json", "artifacts/lane-a-polish/survey/sections_topview.svg", "artifacts/lane-a-polish/survey/walktest.json"]
+  },
+  "facts": {
+    "coordinateSystem": "GLB Y-up, X east, Z south; portal plane z≈-16.375..-16.44; lane interior z more negative",
+    "laneAPlacement": {"asset": "lane-a", "positionGlb": [43.545, 0.09, -16.375], "rotationYRad": 3.1165, "localBounds": {"x": [-1.39, 1.47], "y": [-0.04, 3.64], "z": [-0.15, 8.22]}},
+    "keyProductionColliders": {
+      "N05-restaurant-a:right-side": {"outerFaceLine": [[42.02, -9.83], [42.57, -16.8]], "obb": {"pos": [36.401, 0, -10.426], "theta": -0.07925, "centerLocal": [5.51, 3.95, -3.35], "size": [0.28, 7.9, 7]}},
+      "N06-curio-a:left-side": {"outerFaceLine": [[44.0, -9.67], [44.87, -14.8]], "obb": {"pos": [47.077, 0, -9.267], "theta": -0.16793, "centerLocal": [-2.96, 3.3, -2.48], "size": [0.28, 6.6, 5.2]}, "note": "exists only z -14.8..-9.6 (street stretch)"},
+      "lane-a:wall-west-s1": {"aabbX": [42.35, 42.55], "z": [-20.45, -16.46]},
+      "lane-a:wall-east": {"aabbX": [44.65, 45.09], "z": [-24.34, -16.4]},
+      "lane-a:end-band-below": {"z": [-24.56, -24.36], "y": [0.09, 1.29]},
+      "lane-a:rear-door-backwall": {"aabbX": [42.18, 42.34], "z": [-22.16, -20.46]}
+    },
+    "sections": [
+      {
+        "z": -10.6, "label": "street mouth",
+        "visibleWestWall": {"node": "N05-restaurant-a__0/__4", "x": [41.8, 42.08], "y": [0.0, 7.9], "plinthProtrudesTo": 42.25},
+        "visibleEastWall": {"node": "N06-curio-a__0/__4", "x": [44.16, 44.44], "y": [0.0, 6.6], "plinthProtrudesTo": 43.99},
+        "groundCovered": [
+          {"node": "N05-restaurant-a__1 shop floor", "x": [30.96, 42.08], "yTop": 0.14, "insideShop": true},
+          {"node": "lanes-v2__paving-frontage (interfaces a-floor)", "x": [40.2, 43.08], "yTop": 0.09},
+          {"node": "lanes-v2__worn-stone (interfaces a-drain)", "x": [42.45, 42.62], "yTop": 0.07}
+        ],
+        "groundVOID": {"x": [43.08, 44.16], "widthM": 1.08},
+        "colliders": ["N05-restaurant-a:right-side x[41.80,42.08]", "N06-curio-a:left-side x[44.16,44.44]", "interfaces:a-jamb-west x[40.13,40.47]"]
+      },
+      {
+        "z": -13.4, "label": "mid connection",
+        "visibleWestWall": {"node": "N05-restaurant-a__0", "x": [42.02, 42.3], "y": [0.0, 4.0]},
+        "visibleEastWall": {"node": "N06-curio-a__0", "x": [44.63, 44.92], "y": [0.0, 4.9]},
+        "groundCovered": [
+          {"node": "interfaces a-floor", "x": [40.09, 43.04], "yTop": 0.09},
+          {"node": "interfaces a-drain", "x": [42.45, 42.62], "yTop": 0.07}
+        ],
+        "groundVOID": {"x": [43.04, 44.63], "widthM": 1.59},
+        "colliders": ["N05-restaurant-a:right-side x[42.02,42.30]", "N06-curio-a:left-side x[44.63,44.92]"]
+      },
+      {
+        "z": -16.375, "label": "portal plane",
+        "visibleWestWall": {"node": "N05-restaurant-a__0", "x": [42.26, 42.54], "y": [0.0, 7.4], "note": "N05 wall ends z≈-16.55; module west wall collider starts z-16.46, overlap verified no gap"},
+        "groundCovered": [
+          {"node": "interfaces a-floor north quad", "x": [39.86, 43.56], "yTop": 0.09},
+          {"node": "lane-a module worn-stone threshold", "x": [42.6, 44.4], "yTop": 0.09, "z": [-16.46, -16.37]}
+        ],
+        "groundVOID": {"x": [43.56, 44.65], "widthM": 1.09, "note": "opens into unbounded void corner z -14.8..-16.44 east of a-floor diagonal"},
+        "colliders": ["N05-restaurant-a:right-side x[42.26,42.54]"]
+      },
+      {
+        "z": -19.5, "label": "inside lane (behind portal)",
+        "visibleWalls": {"west": {"collider": "lane-a:wall-west-s1", "x": [42.42, 42.52], "y": [0.09, 3.39]}, "east": {"collider": "lane-a:wall-east", "x": [44.72, 44.96], "y": [0.09, 3.39]}},
+        "groundCovered": {"node": "lane-a module floor (lanes-v2__paving-frontage, 2 tris)", "clearWidthM": 2.2},
+        "groundVOID": "outside module walls only (not visible from inside)",
+        "colliders": ["lane-a:wall-west-s1", "lane-a:wall-east"]
+      },
+      {
+        "z": -23.0, "label": "lane end vicinity",
+        "visibleWalls": {"west": {"collider": "lane-a:wall-west-s2", "x": [42.51, 42.61]}, "east": {"collider": "lane-a:wall-east", "x": [44.81, 45.05]}},
+        "endComposition": {"colliders": ["lane-a:end-band--1", "lane-a:end-band-1", "lane-a:end-band-below y0.09-1.29", "lane-a:end-band-above y2.29-3.59"], "recessedDoorSlot": {"x": [43.47, 44.17], "y": [1.29, 2.29]}},
+        "groundVOID": "beyond z -24.4 (module floor ends)"
+      }
+    ],
+    "aPtsActualVsReality": {
+      "aPtsFromGlb": [[39.86, -16.4], [42.445, -16.439], [44.645, -16.313], [43.69, -14.03], [43.02, -10.07], [40.3, -10.75]],
+      "commentInKit": "kit/build_lanes_interfaces.py lines 58-65 claims these sit on N05/N06 visual faces",
+      "measuredDeviations": [
+        {"aPtsPoint": [40.3, -10.75], "claimedMeaning": "N05 visual east face at street line", "actualFaceXAtZ": 42.1, "errorM": 1.8},
+        {"aPtsPoint": [39.86, -16.4], "claimedMeaning": "N05 east face at portal latitude", "actualFaceXAtZ": 42.54, "errorM": 2.68},
+        {"aPtsPoint": [43.02, -10.07], "claimedMeaning": "N06 visual west face at street line", "actualFaceXAtZ": 44.07, "errorM": 1.05},
+        {"aPtsPoint": [43.69, -14.03], "claimedMeaning": "N06 north-west corner", "actualCorner": [44.87, -14.79], "errorM": 1.4}
+      ],
+      "consequence": "a-floor west edge lies 1.8-2.7m INSIDE N05 under its shop floor (hidden, y 0.09 < 0.14); east edge lies 1.0-1.6m WEST of N06's real wall, leaving the void band open"
+    },
+    "grayBandArea": {"eastVoidTotalM2": 6.4, "breakdown": "z -10.4..-14.03 avg width ~1.1m (~4.0 m2) + portal corner z -14.03..-16.44 avg ~1.0m (~2.4 m2)"},
+    "walktest": {
+      "physics": "production WalkController + Rapier; walls = 805 records (790 v5 + 15 sidecars); ground = GROUND_NODE_RE faces of assembly + lane-a(holder) + interfaces = 10487 tris",
+      "excludeSelf": "every probe ran excludeColliderHandles=[livePlayerHandle]; a live player capsule stood at route.entries.bridgeStart during all probes",
+      "positives": [
+        {"name": "P1 laneAExcursion inward", "reached": true, "feetYMin": 0.097},
+        {"name": "P1 laneAExcursion outward", "reached": true, "feetYMin": 0.097},
+        {"name": "P2 west strip street->portal and back", "reached": true, "feetYMin": 0.097}
+      ],
+      "boundaryProbes": [
+        {"name": "push west into N05 wall @z-13.4", "stopX": 42.639, "expected": "face 42.29 + capsule r 0.35 = 42.64", "verdict": "blocked exactly at the VISIBLE face; collider N05-restaurant-a:right-side"},
+        {"name": "push east into N06 wall @z-13.4", "verdict": "capsule FELL into the east void band before reaching the wall (hazard intercepts the approach)"},
+        {"name": "portal pass-through", "stop": [43.6, 0.109, -21.77], "verdict": "passes; lane-A-end-wall correctly removed"},
+        {"name": "push into lane end @-23.5", "stopZ": -24.008, "verdict": "blocked by lane-a:end-band-below face -24.34 + 0.35"},
+        {"name": "push into closed rear door @z-21.3", "stopX": 42.685, "verdict": "blocked by lane-a:rear-door-backwall face 42.34 + 0.35"}
+      ],
+      "voidProbes": [
+        {"name": "mouth-right (43.9,-10.6)", "result": "FELL", "feetY": -18.31, "driftedTo": [43.86, -15.01]},
+        {"name": "east strip (43.7,-12.0)", "result": "FELL", "feetY": -16.53, "driftedTo": [43.98, -16.35]},
+        {"note": "fall passes UNDER N06-curio-a:shop-floor (thin box y0-0.14) — nothing catches the capsule; falls out of world"}
+      ]
+    },
+    "budget": {
+      "pageDefaultTriangles": 703049,
+      "decomposition": {
+        "baseAssembly_v5": 171419,
+        "assets": {"westShops": [188634, 17], "templeAxis": [166046, 19], "eastShops": [107472, 10], "streetCompletionAssets": [27988, 4], "eastEdge": [13440, 2], "lanesV2": [16210, 3]},
+        "surfacesAndWalls": {"streetCompletion.surface": 5960, "eastTailSurface": 1468, "eastExtension.surface": 4388, "sealAndEndWalls": 24}
+      },
+      "skinsConfig": {"param": "?skins=1", "placedTriangles": 2117, "uniqueSkins": 17, "nearLaneA": 0},
+      "propsConfig": {"param": "?props=1", "placedTriangles": 11176, "instances": 38, "defaultOff": true},
+      "allOnTotal": 716342,
+      "ceiling": {"baseCandidateTarget": 700000, "currentDefault": 703049, "overBy": 3049},
+      "laneAInternalTris": {
+        "lane-a module 7290": {"oxblood-stained-timber": 3924, "weathered-lime-plaster": 1416, "worn-stone": 976, "blue-gray-brick": 456, "gray-pan-tile": 228, "deep-door-lacquer": 108, "interior-warm-shadow": 96, "recessed-old-glass": 84, "paving-frontage": 2},
+        "interfaces 876": {"blue-gray-brick (6 jamb boxes w/ bevels)": 432, "worn-stone (drain+threshold)": 222, "weathered-lime-plaster (jamb piers)": 216, "paving-frontage (a-floor)": 6}
+      }
+    },
+    "sideFinding_brokenLaneBApron": {
+      "what": "interfaces b-apron and b-drain-outlet exported with z collapsed to 0.09 (all 6+ verts) — two degenerate slivers in the main street at z≈0",
+      "rootCause": "kit/build_lanes_interfaces.py quad() takes (x,z) pairs but is fed bpt() 3-element [x,y,z] vectors, so pt[1] (=FLOOR_Y 0.09) is used as z",
+      "impact": "lane B street apron + drain outlet are missing from the world (zero area, invisible); lane A unaffected",
+      "scopeNote": "out of A scope; report to lead for the lanes-v6 candidate"
+    }
+  },
+  "assessment": {
+    "grayBandCause": "MISSING GROUND COVERAGE (缺地面), not a missing face in an existing mesh, not a flipped/reversed face, not a material assignment. The interfaces a-floor mesh is complete and its 'paving-frontage' material is correct; its east EDGE simply lies 1.0-1.6m west of N06's real wall line because A_PTS used assumed face positions. Between that edge and N06's visible wall (and north of N06 to the portal) ~6.4 m2 of the entrance view has no surface at all — the page background (pale gray) shows through, reading as the 'gray band' right of the stone paving.",
+    "deviationClaimVerdict": {
+      "claim": "N05/N06 visual faces sit 1-2.3m west of their frozen colliders (kit/build_lanes_interfaces.py knownDeviation; placement.json note)",
+      "verdict": "FALSE for the v5 rendered assembly",
+      "evidence": "measured visible wall boxes EQUAL collider boxes: N05 east wall x[41.80,42.08]@z-10.6 and x[42.26,42.54]@z-16.375 == N05-restaurant-a:right-side; N06 west wall x[44.16,44.44]@z-10.6 == N06-curio-a:left-side; walk probes stop at face±0.35 within 0.02m",
+      "likelyOrigin": "the 1.05-2.68m numbers describe the offset between A_PTS and the real faces — i.e. the interfaces floor's own misalignment was mis-diagnosed as a visual-vs-collider deviation",
+      "minorRealOffset": "base plinths (stone-post-foot) protrude 0.17-0.30m beyond wall faces; normal architecture, no gameplay effect"
+    },
+    "hazards": {
+      "invisibleWalls": "NONE found in lane A. All colliders sit exactly under visible faces.",
+      "passThroughWalls": "NONE found. N05/N06 walls, lane end bands and the closed rear door all block.",
+      "invisibleHoles": "CONFIRMED — the east void band and portal void corner have no ground and no wall; capsule falls to y≈-16..-18 and out of the world. This is the actual A-entrance defect players can hit by stepping right of the stone paving.",
+      "misplacedVisibleObjects": "both mouth jamb piers (interfaces:a-jamb-west/east) stand 1.05-1.8m off the real wall lines, reading as free-standing posts in front of shopfronts; their colliders work but the placement is wrong"
+    }
+  },
+  "candidateFixes": {
+    "principle": "derive an independent v6 candidate (e.g. world/lanes-v6 assets + fangbang-temple-v6 dataset); original building modules, v4/v5 datasets and W2 canonical stay read-only; no changes outside lane A scope",
+    "groundClosure": {
+      "newAPtsProposal": [[41.7, -9.8], [42.24, -16.49], [44.69, -16.49], [44.91, -14.74], [44.0, -9.62]],
+      "why": "edges tucked 0.04-0.05 UNDER the measured real face lines (N05 outer face 42.02,-9.83 -> 42.57,-16.8; N06 outer face 44.0,-9.67 -> 44.87,-14.8; portal NE meets lane-a:wall-east inner face x≈44.65)",
+      "emitExplicitTriangles": "write the polygon as explicit tris (no ngon fan left to the exporter's retessellation); keep y=0.09 and lanes-v2__paving-frontage naming so GROUND_NODE_RE picks it up — physics ground then comes free, no new ground colliders needed",
+      "reAnchorThreshold": "a-threshold x from [40.30,44.15] to ≈[41.55,44.35]; drain re-centred along the new west wall line"
+    },
+    "newWallSegment": {
+      "what": "one brick wall segment closing the lane's east side between N06's NW corner and the module east wall: from ≈(44.87,-14.79) to ≈(44.69,-16.44), thickness ≈0.24, height to N06 eave line ≈3.3, existing blue-gray-brick/plaster materials",
+      "colliderRecord": "lane-a:wall-east-mouth (obb, world-space, matching the visual segment)",
+      "why": "closes the portal void corner visually and physically; without it the remeshed floor would end at an open edge into the void behind N06"
+    },
+    "jambReanchor": "rebuild the two mouth reveal piers AT the real wall lines (west into N05 face x≈41.9-42.1, east into N06 face x≈44.1-44.3) as part of the refinement (see refinements[0]); their existing colliders are replaced by the rebuilt records",
+    "noTouch": ["N05-restaurant-a / N06-curio-a meshes (already correct; shared by westShops/eastShops instances)", "their collision records (adding more would CREATE an invisible wall)", "lane-a module geometry (verified correct; tri diet is optional and separate)"],
+    "verificationHook": "re-run tools/lane_a_survey_walktest.mjs against the v6 dataset: the two N3 void probes must become grounded-and-blocked; all P1/P2 must stay reached; boundary stops must stay within 0.05m of face±0.35"
+  },
+  "refinements": [
+    {
+      "id": "R1-mouth-gatehouse",
+      "what": "弄口门楼化: rebuild the two reveal piers as brick-quoined gate piers tied INTO the real wall lines, plus one flat architrave band spanning pier-to-pier above the opening (per GEN ref PBR-SH-0006-G33)",
+      "payoff": "the entrance view gains a real lane gate frame; kills the free-floating-post look and visually frames the depth; replaces the 648 misplaced jamb tris with ~450 purposeful ones (budget-neutral)",
+      "materials": "existing blue-gray-brick + weathered-lime-plaster + worn-stone cap only"
+    },
+    {
+      "id": "R2-eaves-layer",
+      "what": "檐下层次: dark fascia strip + soffit receding 0.15-0.25m under the module roof edge, timber band continuing into the shadow (per GEN ref PBR-SH-0007-G05)",
+      "payoff": "near-range (1.5-3m) depth read under the eaves on both lane walls; the interior-warm-shadow planes then read as cast shadow, not paint",
+      "materials": "existing gray-pan-tile + oxblood-stained-timber + interior-warm-shadow; funded by the timber tri diet"
+    },
+    {
+      "id": "R3-end-composition",
+      "what": "尽端构图: full-height brick corner pilasters, recessed door given timber lintel + stone sill, one small high window with 0.10m reveal on the end field (per GEN ref PBR-SH-0007-G06)",
+      "payoff": "the 尽端回望 view terminates in a designed gable-wall composition instead of two plain bands + slot",
+      "materials": "existing blue-gray-brick + oxblood-stained-timber + worn-stone + recessed-old-glass"
+    }
+  ],
+  "budgetPlan": {
+    "redundancySources": [
+      {"item": "lane-a oxblood-stained-timber relief", "tris": 3924, "plan": "diet to ≈1100: keep band/lattice silhouette lines, carry detail via the existing timber texture set; drop wall-side back faces never visible", "saving": 2800},
+      {"item": "lane-a worn-stone floor relief", "tris": 976, "plan": "candidate diet to ≈250 (flat floor + threshold/recess edges; cobble read moves to texture) — LEAD must confirm near-range read before adopting", "saving": 730},
+      {"item": "interfaces jamb boxes (bevelled, 6 pcs)", "tris": 648, "plan": "rebuilt anyway in R1 at ≈250-450 tris", "saving": 200},
+      {"item": "total realistic A-local saving", "tris": null, "saving": 3730}
+    ],
+    "closure": "703049 - ≈3730 ≈ 699300 <= 700000: the base candidate CAN close inside the ceiling using A-scope redundancy only, without hiding any module and without touching N05/N06 (shared with westShops/eastShops instances) or any non-A block",
+    "honesty": [
+      "if the lead keeps the worn-stone cobble relief (the single biggest lever), the saving drops to ≈3000 and the candidate stays ≈+50 over 700k — acceptable only if the lead explicitly re-scopes",
+      "current default page is ALREADY 3049 over the 700k target before any polish; this survey did not find illegal padding (no hidden-module tricks in the accounting), the overage comes from adopted eastShops (G5) + lanesV2 additions",
+      "skins (+2117) and props (+11176) are separate single-flag configs and stay itemized separately; neither intersects lane A"
+    ]
+  },
+  "openItems": [
+    "browser re-verification deferred (no browser launched in this survey phase per work order); walk evidence here is the real production controller in Rapier, not a browser run",
+    "lane-B apron/drain z-collapse (side finding) needs its own fix in the v6 candidate",
+    "worn-stone relief diet needs a lead visual decision (near-range floor read)",
+    "exact new jamb/architrave dimensions are design values for the construct phase, to be drawn from G33 proportions, not surveyed dimensions"
+  ]
+}

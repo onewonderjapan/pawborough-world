@@ -1,0 +1,20 @@
+{
+  "batch": "lane-a-polish",
+  "executor": "ZCode GLM-5.3 (construction) under Codex lead",
+  "entries": [
+    {"t": "2026-09-20 survey (prior phase)", "what": "read-only measurements; gray band = missing ground (6.4 m2 east void), N05/N06 deviation claim FALSE, budget decomposition 703049"},
+    {"t": "2026-09-20 construct", "what": "kit/build_lane_a_v2.py + kit/build_lanes_interfaces_v2.py -> world/lane-a-polish (A 2910 tris, interfaces 911 tris after wall-scale bevel diet)"},
+    {"t": "2026-09-20 construct", "what": "scripts/make_fangbang_v6_dataset.mjs -> world/fangbang-temple-v6 (blocks repointed, manifest with true bytes/sha/tris, +4 closeup cameras)"},
+    {"t": "2026-09-20 verify", "what": "tools/lane_a_polish_walktest.mjs WALKTEST_V6_PASS (N3 grounded, P3 former-void walk, boundary gaps 0.37, coverage 425/0/0); tools/lane_a_polish_measure.py MEASURE_V6_PASS (4 sections maxGap 0)"},
+    {"t": "2026-09-20 verify", "what": "WebGL 4 before/after pairs + budgets base 698704 / all-on 712340 (page runtime)"},
+    {"t": "2026-09-20 verify", "what": "node --test 94/94 (6 new lane-a-polish tests)"},
+    {"t": "2026-09-20 lead review round 1", "what": "two bounded fixes ordered: portal threshold 4cm bump; comparison shots blocked by the intro card"},
+    {"t": "2026-09-20 lead fixes", "what": "threshold tops -> floor+0.02 with 3 surface-profile regressions (maxStep 0.020); captures re-shot via the page's real 取景 button + after-only end-oblique; assets rebuilt, v6 manifest sha updated"},
+    {"t": "2026-09-20 dist", "what": "dist-lane-a-polish closure built; first run failed runability (source HTML had overwritten the built one) — fixed, DIST_RUN_OK both configs"},
+    {"t": "2026-09-20 lead review round 2", "what": "scene.blend: scene.camera null + N05/N06 context missing (trim window sign bug) ; dist script hardening ordered"},
+    {"t": "2026-09-20 lead fixes round 2", "what": "trim window -> blender y (7.5,26.5): N05x12/N06x10 kept, camera=street-mouth, material preview; dist: --emptyOutDir false, no HTML overwrite + built-JS gate, fail-fast errors (.cm.json probe whitelisted), both configs recorded -> DIST_RUN_OK"},
+    {"t": "2026-09-20 closeout", "what": "RESULT.json/DELIVERY.md/PROGRESS.json written; commit on work/lane-a-polish-20260920; stop for Codex final review"}
+  ],
+  "ownerAdopted": false,
+  "review_pending": "Codex"
+}

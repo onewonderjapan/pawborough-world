@@ -1,0 +1,96 @@
+{
+  "moduleId": "lane-a-interfaces-v2",
+  "triangles": 911,
+  "meshes": 5,
+  "fileBytes": 1627976,
+  "sha256": "2d49627ac282015baae20c9c96bbbc8d4dc507484dd3fd0c0f5e111757bd1a89",
+  "design": {
+    "family": "lanes-v2-interfaces-polish",
+    "sampleId": "lane-a-interfaces-v2",
+    "basedOn": "measured wall lines (survey 2026-09-20): N05 east face (42.02,-9.83)->(42.57,-16.80); N06 west face (44.00,-9.67)->(44.87,-14.79); module floor edge from holder 43.545,0.09,-16.375 yaw 3.1165",
+    "localFrame": "WORLD coordinates (identity placement), GLB Y-up, floor top y=0.09",
+    "measuredAnchors": {
+      "n05EastFace": [
+        [
+          42.02,
+          -9.83
+        ],
+        [
+          42.57,
+          -16.8
+        ]
+      ],
+      "n06WestFace": [
+        [
+          44.0,
+          -9.67
+        ],
+        [
+          44.87,
+          -14.79
+        ]
+      ],
+      "moduleFloorEdge": [
+        [
+          42.4468516857518,
+          -16.462580134241946
+        ],
+        [
+          44.64615911670152,
+          -16.407382089264402
+        ]
+      ],
+      "newWallWestFace": {
+        "north": [
+          44.87,
+          -14.79
+        ],
+        "south": [
+          44.6393,
+          -16.4569
+        ],
+        "lengthM": 1.6828,
+        "thetaRad": -3.00407
+      }
+    },
+    "floorPolygonXz": [
+      [
+        42.8836,
+        -16.4516
+      ],
+      [
+        44.671,
+        -16.4095
+      ],
+      [
+        44.8996,
+        -14.785
+      ],
+      [
+        44.0772,
+        -9.945
+      ],
+      [
+        42.3695,
+        -9.95
+      ]
+    ],
+    "changesVsV5": [
+      "a-floor re-closed along real N05/N06/new-wall lines (fills the 6.4 m2 east void band)",
+      "explicit floor triangles; west edge set back 0.34 with recessed drain line",
+      "new east mouth wall N06-corner -> module east wall (t 0.24, h 3.3) + lane-a:wall-east-mouth collider",
+      "mouth piers re-anchored into the real wall lines, brick bases grounded",
+      "mouth B copied verbatim (b-apron z-collapse defect registered as leftover, out of A scope)"
+    ],
+    "groundNodeNames": [
+      "lanes-v2__paving-frontage",
+      "lanes-v2__worn-stone"
+    ],
+    "newTextures": 0,
+    "budgetTris": 950
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

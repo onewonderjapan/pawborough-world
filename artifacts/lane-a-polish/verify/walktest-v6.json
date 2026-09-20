@@ -1,0 +1,265 @@
+{
+ "wallRecords": 816,
+ "groundTriangles": 11476,
+ "tests": [
+  {
+   "name": "P1 laneAExcursion inward",
+   "reached": true,
+   "fell": null,
+   "feetYMin": 0.097,
+   "end": [
+    43.71,
+    0.11,
+    -23.09
+   ],
+   "stalledS": 0
+  },
+  {
+   "name": "P1 laneAExcursion outward",
+   "reached": true,
+   "fell": null,
+   "feetYMin": 0.097,
+   "end": [
+    43.16,
+    0.11,
+    -11.48
+   ],
+   "stalledS": 0
+  },
+  {
+   "name": "P2 west strip street->portal",
+   "reached": true,
+   "fell": null,
+   "feetYMin": 0.097,
+   "end": [
+    43.36,
+    0.11,
+    -15.33
+   ],
+   "stalledS": 0
+  },
+  {
+   "name": "P2 west strip portal->street",
+   "reached": true,
+   "fell": null,
+   "feetYMin": 0.097,
+   "end": [
+    42.93,
+    0.11,
+    -11.29
+   ],
+   "stalledS": 0
+  },
+  {
+   "name": "P3 east band street->portal (was void)",
+   "reached": true,
+   "fell": null,
+   "feetYMin": 0.097,
+   "end": [
+    44.33,
+    0.11,
+    -15.42
+   ],
+   "stalledS": 0
+  },
+  {
+   "name": "N3 void probe mouth-right (43.9,-10.6)",
+   "yaw": 0,
+   "stop": [
+    43.9,
+    0.11,
+    -15
+   ],
+   "grounded": true,
+   "correctedAtS": null
+  },
+  {
+   "name": "N3 void probe east strip (43.7,-12.0)",
+   "yaw": 0,
+   "stop": [
+    43.704,
+    0.13,
+    -16.342
+   ],
+   "grounded": true,
+   "correctedAtS": 0.62
+  },
+  {
+   "name": "N3 void probe portal corner (44.0,-15.3)",
+   "yaw": 0,
+   "stop": [
+    43.999,
+    0.11,
+    -19.689
+   ],
+   "grounded": true,
+   "correctedAtS": null
+  },
+  {
+   "name": "N1 push west into N05 wall @z-13.4",
+   "yaw": 1.5707963267948966,
+   "stop": [
+    42.641,
+    0.11,
+    -12.962
+   ],
+   "grounded": true,
+   "correctedAtS": 0.33
+  },
+  {
+   "name": "N1 push east into N06 wall @z-13.4",
+   "yaw": -1.5707963267948966,
+   "stop": [
+    44.412,
+    0.11,
+    -14.309
+   ],
+   "grounded": true,
+   "correctedAtS": 0.57
+  },
+  {
+   "name": "N1 push east into new mouth wall @z-15.6",
+   "yaw": -1.5707963267948966,
+   "stop": [
+    44.495,
+    0.11,
+    -14.799
+   ],
+   "grounded": true,
+   "correctedAtS": 0.08
+  },
+  {
+   "name": "N2 push into closed rear door",
+   "yaw": 1.5707963267948966,
+   "stop": [
+    42.685,
+    0.16,
+    -21.153
+   ],
+   "grounded": true,
+   "correctedAtS": 0.37
+  },
+  {
+   "name": "N2 push into lane end band @-23.8",
+   "yaw": 0,
+   "stop": [
+    43.511,
+    0.11,
+    -24.008
+   ],
+   "grounded": true,
+   "correctedAtS": 0.23
+  },
+  {
+   "name": "N2 portal pass (walk -z through portal)",
+   "yaw": 0,
+   "stop": [
+    43.602,
+    0.111,
+    -21.789
+   ],
+   "grounded": true,
+   "correctedAtS": null
+  }
+ ],
+ "coverage": {
+  "step": 0.15,
+  "zRange": [
+   -16.38,
+   -10.55
+  ],
+  "samples": 425,
+  "misses": 0,
+  "badY": 0,
+  "groundYRange": [
+   0.09,
+   0.11
+  ],
+  "firstHoles": []
+ },
+ "boundary": [
+  {
+   "wall": "n05West",
+   "gapM": 0.374,
+   "expect": 0.35,
+   "pass": true
+  },
+  {
+   "wall": "n06East",
+   "gapM": 0.376,
+   "expect": 0.35,
+   "pass": true
+  },
+  {
+   "wall": "newWallEast",
+   "gapM": 0.374,
+   "expect": 0.35,
+   "pass": true
+  },
+  {
+   "wall": "rearDoor",
+   "gapM": 0.37,
+   "expect": 0.35,
+   "pass": true
+  },
+  {
+   "wall": "laneEnd",
+   "gapM": 0.37,
+   "expect": 0.35,
+   "pass": true
+  }
+ ],
+ "profiles": [
+  {
+   "name": "portal axis lx=0 (ls -0.30..0.30)",
+   "samples": 31,
+   "holes": 0,
+   "maxStepM": 0.02,
+   "worst": [
+    [
+     43.548,
+     0.11
+    ],
+    [
+     43.549,
+     0.09
+    ]
+   ],
+   "pass": true
+  },
+  {
+   "name": "centreline street->lane",
+   "samples": 106,
+   "holes": 0,
+   "maxStepM": 0.02,
+   "worst": [
+    [
+     43.395,
+     0.11
+    ],
+    [
+     43.396,
+     0.09
+    ]
+   ],
+   "pass": true
+  },
+  {
+   "name": "west strip +0.45 (drain)",
+   "samples": 98,
+   "holes": 0,
+   "maxStepM": 0.02,
+   "worst": [
+    [
+     42.981,
+     0.11
+    ],
+    [
+     42.976,
+     0.09
+    ]
+   ],
+   "pass": true
+  }
+ ]
+}
