@@ -93,3 +93,60 @@
   提交树测试的 clean-tree 守卫按设计拒绝未提交改动（本提交后转绿）。
 - 保护基线：locked 0 mismatch；src/fangbangMain.js / fangbang.html 属允许最小修改
   窗口（均已在基线登记为 allowed-change）。
+
+---
+
+# 任务D：实测驱动的加载优化（2026-09-21，round 1 续）
+
+## 测量方法
+
+`tools/load_measure.mjs`：固定本机 headless Chrome + SwiftShader、1280×900、default
+配置（694430 三角全量加载），vite dev 同源服务。冷=全新浏览器上下文；暖=同上下文
+第二次加载。CDP Network 逐响应记录（URL/状态/线上字节），页面自身 ready 门 +
+首有效帧像素证明（64×64 降采样 45 色桶，两态一致）。dev 数字只用于同条件前后对比，
+不代表生产/便携包绝对值。
+
+## 实测发现（before，两次独立复测一致）
+
+- 每次加载 646 个请求；41 个唯一 GLB 被发 61 次（plain-v1 ×4、curio-a ×4、
+  pharmacy_shop ×3 等 12 个文件重复），asset 块每放置一次就 fetch+parse 一次
+  （`cache:'no-cache'`）。
+- 重复请求在 localhost 靠 HTTP 重验证近乎 0 字节，但每条都是一次串行往返；
+  冗余 GLTF 解码 20 次，并产生重复 GPU 资源。
+
+## 修复：共享资产源缓存（src/assetSourceCache.js，新文件，未动锁定区）
+
+经 blockViews.makeAssets 自身的 fetch/parse 注入点接入（fangbangMain.js，允许修改
+窗口）：每个唯一 GLB 只 fetch+decode 一次，其后按放置发 `root.clone(true)`——
+克隆共享 geometry/material/texture（同字节+同 sampler/UV/色彩空间，PLAN 允许的
+复用）。所有权与生命周期：页面级所有者、单飞并发合并、失败不缓存可重试、解析后
+释放字节缓存、dispose 清私有引用；克隆与缓存根共享 GPU 对象，块撤回的资源释放由
+three.js 在下次使用时透明重传（正确性不受影响）。
+
+## 前后对比（cold / warm 同配置两次加载取 cold 数值，warm 趋势一致）
+
+| 指标 | before | after | 变化 |
+| --- | --- | --- | --- |
+| 请求数 | 646 | 437 | **−209（−32%）** |
+| 唯一几何 | 689 | 496 | −193（−28%） |
+| 唯一材质 | 667 | 476 | −191（−29%） |
+| 唯一纹理 | 536 | 346 | −190（−35%） |
+| 资产 fetch/parse | 55/55 | 35/35 + 20 clones | −20 次解码 |
+| 资产就绪 allAssetsReadyMs | 3818 | 2918 | **−900ms（−24%）** |
+| 三角形 | 694430 | 694430 | 不变（clone 共享，无几何删减） |
+| 首帧像素（45 色桶） | 45 | 45 | 不变 |
+| 同机位截图像素差 | — | 0.005%（53/1.15M px）与 0% | 无视觉漂移 |
+
+线上的 GLB 字节总量两态相同（~94.5MB）：重复传输在 before 已被 HTTP 缓存吸收，
+本优化去掉的是 209 次串行往返（真实网络上是每次一个 RTT）+ 20 次解码 + 35% 的
+重复纹理/材质/几何 GPU 占用。dev 环境的解码收益（-900ms）在便携包/真实网络上会
+与往返收益叠加。
+
+## 验证
+
+- tests/asset_source_cache.test.mjs 6/6：唯一 fetch/parse、克隆共享几何、字节
+  释放、失败不毒化（可重试+瞬断恢复）、非 GLB 透传、单飞并发、dispose。
+- block 生命周期/生产/道具可见性/物理契约回归 10/10。
+- 保护基线 locked 0 mismatch（改动仅 fangbangMain.js 允许窗口 + 新文件）。
+- 证据：artifacts/world-ten-hour/round-001/load-measure/{before,after,before-full,after-full}/
+  （逐 URL 表 + 同机位截图对）。record() 新增 load.sharedAssetSources 运行时统计。

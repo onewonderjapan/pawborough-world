@@ -1,0 +1,6205 @@
+{
+ "base": "http://127.0.0.1:5420",
+ "tag": "after-full",
+ "config": "default",
+ "startedAt": "2026-09-20T16:21:03.861Z",
+ "env": {
+  "browser": "headless Chrome + SwiftShader (software)",
+  "viewport": "1280x900",
+  "note": "vite dev server — RELATIVE before/after comparison only, no production/absolute claims"
+ },
+ "loads": [
+  {
+   "label": "cold",
+   "config": "default",
+   "navStart": 1789921263919.5,
+   "readyAt": 1789921272674,
+   "navToReadyMs": 8757,
+   "firstValidFrame": {
+    "distinctColors": 45,
+    "canvasW": 1280,
+    "canvasH": 829
+   },
+   "tris": 694430,
+   "uniqueGeometries": 496,
+   "uniqueMaterials": 476,
+   "uniqueTextures": 346,
+   "pageLoad": {
+    "allAssetsReadyMs": 2918,
+    "shaderCompileMs": 28,
+    "sharedAssetSources": {
+     "urls": 35,
+     "fetches": 35,
+     "parses": 35,
+     "clones": 20,
+     "retainedBytes": 0
+    }
+   },
+   "requests": 437,
+   "wireBytes": 100463545,
+   "cacheBytes": 0,
+   "uniqueUrls": 436,
+   "urls": {
+    "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=mainStreet": {
+     "count": 1,
+     "bytes": 13224,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/@vite/client": {
+     "count": 1,
+     "bytes": 178353,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/@fs/home/baibai/outbox/pawborough-lanes-construction-night-20260920/workspace/node_modules/vite/dist/client/env.mjs": {
+     "count": 1,
+     "bytes": 3768,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/fangbangMain.js?t=1789921263027": {
+     "count": 1,
+     "bytes": 338691,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/.cache/vite/deps/three.js?v=36c2224b": {
+     "count": 1,
+     "bytes": 63549,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/.cache/vite/deps/three_addons_controls_OrbitControls__js.js?v=36c2224b": {
+     "count": 1,
+     "bytes": 30583,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/.cache/vite/deps/three_addons_environments_RoomEnvironment__js.js?v=36c2224b": {
+     "count": 1,
+     "bytes": 4365,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/world/WorldLoader.js": {
+     "count": 1,
+     "bytes": 34140,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/world/physics.js": {
+     "count": 1,
+     "bytes": 14645,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/world/collisionAdapter.js": {
+     "count": 1,
+     "bytes": 38634,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/world/groundExtractor.js": {
+     "count": 1,
+     "bytes": 13062,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/player/WalkController.js": {
+     "count": 1,
+     "bytes": 37003,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/player/walkCamera.js": {
+     "count": 1,
+     "bytes": 4133,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/player/cruise.js": {
+     "count": 1,
+     "bytes": 12003,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/world/blockViews.js": {
+     "count": 1,
+     "bytes": 51406,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/world/sceneAssets.js": {
+     "count": 1,
+     "bytes": 11979,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/world/BlockManager.js": {
+     "count": 1,
+     "bytes": 90678,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/world/compressedState.js": {
+     "count": 1,
+     "bytes": 15996,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/templeViewShared.js": {
+     "count": 1,
+     "bytes": 29986,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/assetSourceCache.js": {
+     "count": 1,
+     "bytes": 26786,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/world/decoders.js": {
+     "count": 1,
+     "bytes": 7334,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/player/canvasFit.js": {
+     "count": 1,
+     "bytes": 9602,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/framingTools.js": {
+     "count": 1,
+     "bytes": 30975,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/player/entryAnchors.js": {
+     "count": 1,
+     "bytes": 30716,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/player/walkSession.js": {
+     "count": 1,
+     "bytes": 33512,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/worldPreview/loadErrorText.js": {
+     "count": 1,
+     "bytes": 5339,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/.cache/vite/deps/three_addons_libs_meshopt_decoder__module__js.js?v=36c2224b": {
+     "count": 1,
+     "bytes": 25694,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/.cache/vite/deps/three_addons_loaders_DRACOLoader__js.js?v=36c2224b": {
+     "count": 1,
+     "bytes": 14603,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/.cache/vite/deps/three_addons_loaders_GLTFLoader__js.js?v=36c2224b": {
+     "count": 1,
+     "bytes": 103103,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/.cache/vite/deps/three_addons_loaders_KTX2Loader__js.js?v=36c2224b": {
+     "count": 1,
+     "bytes": 78180,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/.cache/vite/deps/@dimforge_rapier3d-compat.js?v=36c2224b": {
+     "count": 1,
+     "bytes": 2261823,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/.cache/vite/deps/chunk-4AF5TCGK.js?v=36c2224b": {
+     "count": 1,
+     "bytes": 1619342,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v7/review-manifest.cm.json": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/favicon.ico": {
+     "count": 1,
+     "bytes": 143,
+     "statuses": [
+      404
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v7/cameras.json": {
+     "count": 1,
+     "bytes": 8557,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v7/review-manifest.json": {
+     "count": 2,
+     "bytes": 52167,
+     "statuses": [
+      200,
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v7/instances.json": {
+     "count": 1,
+     "bytes": 20337,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v7/collision-world.json": {
+     "count": 1,
+     "bytes": 462337,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v7/route.json": {
+     "count": 1,
+     "bytes": 22256,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v7/blocks.json": {
+     "count": 1,
+     "bytes": 48811,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v5/street-reviewed-lanes.glb": {
+     "count": 1,
+     "bytes": 20587349,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/8eb9a2c4-9376-4132-ae83-0be7149b90c4": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ea6945ad-eebd-4d6c-abf0-ee74f42cf1bf": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0b37ffa8-857d-4380-b55f-3bff994e0f98": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/84dae948-2849-4b9a-b2fb-2e51ae320ee4": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6406f4a7-5831-4099-99b7-46d997c7e233": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4143a0ea-1bd8-4e5f-b20f-afd87f41710c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d39b7abb-711e-4567-8869-a8e9532992a7": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/644c6f27-14a6-4cd4-9cee-3b1a48ff7aa7": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0a0c0cbb-f1dc-48a8-9690-79ee3a2bed1a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/092f2b4d-d9bb-498c-8f58-c55f1629b702": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1d2191f7-f936-4f5f-9277-0ecf88603760": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/eaa12e9c-cc02-4dc8-87b0-8c0090ff4403": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/568fbf82-3e03-4be2-ab1a-68d3b82b6539": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/93db1405-c8ff-41e1-bc5a-d46705106ce2": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/7bc26953-1793-4855-9246-75961b43b448": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/25cf2531-f55b-4fb9-8134-472bfcaaee17": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d8d756bb-586b-40f3-acb4-806aa752f9de": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/10f066fa-558b-4de0-914f-b0b2ce64de5a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v4/west-extension/surface.glb": {
+     "count": 1,
+     "bytes": 1308583,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/7e9ce820-541b-434e-9784-8f52450578fc": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ba21d804-e16f-471d-9101-78b1783a664d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/41ce48d4-cc95-4db2-8952-642aa4a7d428": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/street-completion/surface.glb": {
+     "count": 1,
+     "bytes": 985837,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b60f7677-b90f-4f49-be4b-40526c59d3e7": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/53e7f64b-9b8d-468e-9f51-9b5c6b7a4a6d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0ffcedc2-fb89-4235-a831-5d9a7ba4148a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v4/west-extension/seal-wall.glb": {
+     "count": 1,
+     "bytes": 3077,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v4/east-extension/surface.glb": {
+     "count": 1,
+     "bytes": 1216811,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a3e0ea99-2597-4c2a-89e2-73e8f68ecef8": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0781a85f-22dc-4a64-baf9-30e5c3bd5370": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e7638098-a45a-411b-bef8-b9e0e1463731": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v4/east-extension/seal-wall.glb": {
+     "count": 1,
+     "bytes": 2881,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/east-edge/east-shop-128/model.glb": {
+     "count": 1,
+     "bytes": 1727995,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e6956da9-36ce-44ad-99fe-35e6bb0c28ab": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/985fe662-c100-4374-8c56-0baab5ce9fb3": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/afc2a7ec-6b4b-4b25-8bb8-fb0e28814990": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c4ba9346-9544-4c54-bb1e-dd6cc1a40e75": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/cb4ecc61-2604-44a3-97a5-cd58edf02ae9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ae0eb7f2-438e-46cf-9b62-68e11bf2f34c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4b5e916a-bee7-48ed-a534-e1cf0d222977": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/159a948c-e61e-41cd-81a8-588452e16581": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/8a590d33-07aa-4a18-a37f-18e217c5b512": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b9977fe7-7dd4-4ce3-aeea-9bd49677cce1": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6f14583f-533f-4e9a-868c-f23865e20d2d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/east-edge/east-shop-128/collision.json": {
+     "count": 1,
+     "bytes": 14211,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/east-edge/east-shop-129/model.glb": {
+     "count": 1,
+     "bytes": 1722871,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5b5f6e6f-87bf-4d9f-97c3-9846dd89c660": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/529e6e06-5899-439b-8124-488f817d2960": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2a43492f-ffb7-40bd-bedb-f9618b705f13": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/541a14c2-f9c2-4a2e-9540-338bdfd7e5bf": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f4f1e1b5-de19-4efb-8cf8-4ac5591f162d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/3b212428-95ec-434b-a108-26212ececbd3": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5f47d962-7ad5-4af6-a769-45d5d9d55766": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/53bf9109-6ba3-487d-a94a-af1bde6b6566": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/821f1e83-ca11-4e50-98ae-7ffa7c3776ac": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f47fdeaf-9049-4719-b7ca-5d27fc6d1c88": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/8b97ef8f-a851-45d7-ba84-1ad3b1d4d5fa": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/east-edge/east-shop-129/collision.json": {
+     "count": 1,
+     "bytes": 18123,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/street-completion/east-shop-130/model.glb": {
+     "count": 1,
+     "bytes": 1751691,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/24103022-50e7-485e-8936-771808d23fab": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5725fb15-2295-4463-a847-ec1347cd33e7": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/659d048b-fb8a-457c-9f61-9e2ccc4d4535": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5b81378e-2231-4195-ba7c-8de57a38abc6": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d0466476-2a13-4e47-b041-9fc573932d89": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/db25a3ac-a502-4a53-b667-1c42a49df60c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a1e1c18e-5fae-4bf8-9e93-9aef4f95e99b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/02d4ba1d-3a5e-4fb6-9faa-70b438ce2c56": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d5d6e45d-2123-46d5-8f9b-25ad03174f50": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c90599af-0e34-4f6f-9cf1-be60cc4463ec": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b5f12ad0-c321-45c5-af2c-3e68f2cf6e0c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/street-completion/east-shop-130/collision.json": {
+     "count": 1,
+     "bytes": 12637,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/street-completion/east-shop-131/model.glb": {
+     "count": 1,
+     "bytes": 1742867,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c3cfaa2a-f63b-420c-8841-9916ea49b200": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/91f8568d-ebec-4e18-ad54-4d1e154de8c0": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6ca47701-4045-41c3-937c-fd745edfd53c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d58e7909-5a9e-4fbe-bddb-3685e6de1527": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f727dcf6-13f2-4a29-b94d-5f66f52a54d3": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2779c6c6-1989-40b4-a244-a159542af7aa": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/3bcdc0a4-83ab-42a3-9617-fec9d2fc0013": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/18facce4-d5c3-4360-bcca-621c5861216a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e12041f4-9bb4-48d8-bf51-c26f7b203dd0": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/adf6e01f-d202-443e-b2d9-5e06e9f0cc8d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d1068768-74c8-4006-8754-0c6cf8928db2": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/street-completion/east-shop-131/collision.json": {
+     "count": 1,
+     "bytes": 16556,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/street-completion/east-shop-132/model.glb": {
+     "count": 1,
+     "bytes": 1793331,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/8331f9bf-7ab2-404b-b670-5d469566e143": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4033958b-453d-4f1e-a8b5-7887422b9514": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5a1ae8e4-c59a-483d-bc62-32722c775c5a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4bbe5e4a-a7fc-45e7-a9c5-d1d466fbc8e3": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/32ec500c-3f2e-4003-b808-137dfcfe2458": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1e4db999-6f7f-4362-95af-0e57985403be": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/86e90694-89ec-46de-947b-ee6109b7ffa6": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/fe003d26-0a97-4d80-836d-2fc08048bac9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/665ca819-3e2f-4839-bb2b-dbc86cb36211": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/60c5400e-35cf-47d0-9bdb-b1e04ee7c5e3": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/25ed0ade-5eba-4147-b29f-80123ca3f9b9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/street-completion/east-shop-132/collision.json": {
+     "count": 1,
+     "bytes": 16630,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/street-completion/east-shop-133/model.glb": {
+     "count": 1,
+     "bytes": 1755695,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1ed99559-e984-450e-8206-c23f4655a8a5": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/64152e91-ecc4-44e3-9b3f-bb0fd2dc60bd": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/36442150-9451-4b8c-8f7b-8644e9ee0ba6": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/88ecaecb-36ac-44b5-936a-445114142cdd": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c38e851c-7fac-4d84-b2e5-0bdca535a622": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9b87db54-19a8-4218-9f2e-894ca9a28178": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/67b92a17-c606-46aa-ad11-ac0f3ef1c2ed": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c9a417d2-9d6a-41b5-88e7-7b60eae8f371": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2ccb4a96-9fc2-43be-a262-6425544dacd4": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/3285d6fb-14b8-404e-a405-6722ed0a77d3": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/764f5857-a759-4288-923c-49963409fc7f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/street-completion/east-shop-133/collision.json": {
+     "count": 1,
+     "bytes": 12646,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/temple.glb": {
+     "count": 1,
+     "bytes": 3782535,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2e72d275-fc0e-4b30-9457-66f5395b499a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/bb68ae24-80c8-4bd5-8f39-ce0a4e8c8171": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/dc9a4831-6794-42f6-9347-c3a6f8772ba6": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ecc0c70b-827d-4534-a413-6018cfa4cd04": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/3959b500-3e8e-4abf-ac7d-2e79f3a0923e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/30dbf41e-d9f2-437f-ad55-129754af23d5": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9c9c49fb-642a-4e9a-8dbf-198596ef8fc9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b2ed3523-bc4d-4406-a303-f757fc5a1cda": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/51ceb7bb-cc40-4b34-8c1d-1e33a273b6f8": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/65dc1b37-c6a5-429b-b23b-9911dda8551d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6398be26-d80b-467d-8808-d3364cd61509": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/3185b64d-3d06-43fa-98fc-432e58340c66": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/ground.glb": {
+     "count": 1,
+     "bytes": 861193,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f4a51b8b-debf-489a-86c6-424dfe6d34e2": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1352ae65-ef81-47ab-a913-a3be5e830c95": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b4e92a85-27ec-426e-b999-53f396d0b85d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v4/temple-axis/lions.glb": {
+     "count": 1,
+     "bytes": 490325,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v4/temple-axis/ornaments.glb": {
+     "count": 1,
+     "bytes": 151197,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v4/temple-axis/court-open.glb": {
+     "count": 1,
+     "bytes": 1469811,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/cde2add7-42ae-4a92-8f20-a236937d7681": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/7020d149-636a-4b32-9521-585e1d094786": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/021ed2c5-1fb5-4225-a82d-f029789686ba": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/fd2ab899-aed0-4c0e-ac91-efe9d33315b2": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/bd0b2423-017e-429a-ae4e-8b1bb948220e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/yimen.glb": {
+     "count": 1,
+     "bytes": 4343531,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b9ec3bd8-c8ab-44c7-b34d-4621d091725d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/11d2149c-4535-4221-99e4-a9cd9540eab6": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/97a70b55-c0d0-4c06-b63c-f0f7d9077e4a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/24f334b0-96d7-42c0-96ef-032c657df06c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/fec6dc71-02b8-4b68-9a93-5360e7f3e2f7": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c3202c07-7280-4dd0-b861-12c6392a0dfd": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/19f078b1-c821-4d92-91e7-e9b46b82d766": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/db7db36a-c89c-4a10-8940-11496ab893d7": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0bc4c359-f380-447a-8277-27e2cab5a043": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/8ac5d8ac-a4fa-4564-bdb9-56e9c3c32595": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ad22c138-a895-4e7e-a2ef-ee3e377d74aa": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c6b4aa2c-edfd-4aa8-bca5-c515d64ac4be": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/yimen-stage.glb": {
+     "count": 1,
+     "bytes": 1283811,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f7013e6c-4c83-4ad0-822b-d3b35b01e70d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a11a173b-5876-492b-a24d-0aea58c499c7": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e01ddc63-15c8-4a8f-b64b-a75cd307e6f8": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/40dd10b0-1cd5-4385-b49c-30bda3992540": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/55454bea-c6ec-48c3-87d1-1c6542992eec": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/bb82d7db-5924-4885-bf39-e9c63d8b403c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6e2d5b1a-b159-4963-b517-dcbee8a1287e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/dadian-court-v2.glb": {
+     "count": 1,
+     "bytes": 1353559,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/39d36279-b93f-4320-85a9-bedc24a9a127": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1cc79b59-268d-45f7-8d42-afde90b629ef": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a3b0c45e-e9ed-49b9-a09b-a4d5d9dc4786": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b8ee2489-b278-43ed-8b66-f649aa71f123": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/867af870-6b57-485f-a36b-dd8dafe3947a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/peidian.glb": {
+     "count": 1,
+     "bytes": 2075611,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a74f706d-0253-41d9-ac58-86b9d1f38f41": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/092a40f9-aec3-44de-bfbd-98a93ff319f1": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2e161b20-c5f1-4a5c-943b-49cc6a6ba283": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/050ac476-59e3-4dae-b505-005ca21d69c5": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f742dd90-7d75-48d2-a637-64b3a62346ef": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ec71d648-85c6-4f68-a349-da4e6de5f712": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4a6981c2-5718-47a6-a66d-86ef17e9056b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6e850a96-03d5-41de-967f-9f462f447109": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4f67f465-a97e-4c65-aaa2-bec59b0e5dc6": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/40555da2-0108-46f9-a0a8-4a21ea8fdd80": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/gallery.glb": {
+     "count": 1,
+     "bytes": 491089,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/272b1330-3cec-404b-9fb7-d34507538f14": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d80bf544-fbe7-43f4-a565-63e2bba38cdf": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/aa28f0fc-16b8-41b7-8503-b50a00ed3c2d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/44f793e7-58e0-4a6a-8b11-7acb735979b9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2d03c884-a82e-4428-a6b9-20170763550c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e4035dd9-ae98-4a3b-8392-20dd95404329": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/232dc42c-87b5-4bc8-8a15-36dec3697f67": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/dadian.glb": {
+     "count": 1,
+     "bytes": 6295423,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/cb55e7cc-01e4-41d1-a704-a96427fc5c45": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/77e9cf99-7b4e-469b-856c-2c9040996394": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c1454fe1-3d4f-4d5b-acce-7cd6bd1f5a25": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0d1b30eb-c504-4baa-a7bd-43242a9b845f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f45e49a7-0e68-42c6-b867-6f32d3fd05a0": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0ea0c40d-fe58-4f7b-b0d2-c97b05f47693": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/373588f1-be04-4a43-97b3-61160471cd6f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/83557224-531c-4888-8bd6-e26ebf90ca30": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a3ac9c57-672a-4690-b5d3-a47c1fac1f2b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/346a01f2-1205-4777-a051-509f3e96d0cb": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f8daf949-79e8-4b16-8ba0-524f95f826e5": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f32bc8f3-38e4-41e0-b723-948136403598": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/court3.glb": {
+     "count": 1,
+     "bytes": 1634647,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4897a886-b42c-4391-96cc-ce70d4771963": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1f4c6364-af33-4261-b5a2-4bca4fb69de1": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ca9abc23-c882-41a7-b7f1-adeb03cf99a1": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a13b53a9-bbc5-4213-ab17-6f658b7a6756": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d4371c5f-ee06-48a7-80b3-1475ce517ab2": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/94a8a721-f13b-48cd-98ed-41ffd688be0b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6f0d602f-5816-4251-a5d7-d6aaf9c6a2a7": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/houdian.glb": {
+     "count": 1,
+     "bytes": 2702547,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/65ae60b4-af2a-4865-b64e-0ae943fd0c2c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c001a1d5-d5b2-4055-bb9d-9f71124dcd7e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/212192e3-9661-4c80-91a8-57a4971c707b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e106fe81-8acd-40e1-8bdb-d668d64627db": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/35ed5f3e-5342-4824-9f2e-b66c278fb6fc": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/99a9dd59-8c21-4441-81f2-78f7a8600e2b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d0b81fd6-3f76-4088-8a8a-37cfe100e9d1": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/36c6a440-0542-4b8c-bd29-69f2753680b8": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d4e53799-45c3-48aa-83c8-097651792fe3": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/bd5e51e3-92bd-4f38-bc11-aa7f81dd53ad": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v4/temple-axis/tree-camphor-v2.glb": {
+     "count": 1,
+     "bytes": 233597,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/02584155-6cf1-4305-a5b1-f8e9f1771bae": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d5c0fde7-8693-48e5-9205-01cec50454e4": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/pharmacy_shop/model.glb": {
+     "count": 1,
+     "bytes": 3680011,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2aec1821-fa7c-4762-b6cd-89aa750b1480": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2125b6e7-f495-411a-96af-6cd028f26be0": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/513d186c-877d-42ed-9237-0506b0e74240": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e76c9bd1-e471-45c7-ac2a-e100bab85302": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/75048226-7037-48d0-b87f-47946c3efab2": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/40a537c7-b568-4e1f-851a-a06625f59231": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b0b2ec49-631b-492e-9f39-e93d0a1cf964": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/7102b28c-aba2-4548-bb9d-1310a3bf825a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/463940af-1e9f-43ed-9dd9-7c0cdbef7d05": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/149949fb-54b0-4eeb-b741-956b2df17865": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0d5d9e6b-89a1-4389-b3cc-c2466c6bc90b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/plain-v2/model.glb": {
+     "count": 1,
+     "bytes": 1863323,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b71d96d3-6118-44fb-a2bf-71d88f428532": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/cb62e21a-8077-4b3a-ba10-f936b1378802": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/aea85bb1-a952-45c3-97a1-fc5f3aef3b56": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/26a86fd2-fd93-44d4-96fe-c2485b52764a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/de8b466f-612f-438d-9963-9650adacfa59": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c9da1bb2-5e00-4bcc-aeea-f888f4def582": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ad609077-7fc4-4e39-be1a-5ba51796e445": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/de71a759-e8c7-4162-b3c9-166e94811e0d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ad79a491-7d28-4a99-92be-d80c7da680af": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c15c9d27-d8f2-4ff3-8d33-7c9b1ec63cee": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b9b83276-99a2-4d60-86b2-49a4c5b97b6f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/plain-v1/model.glb": {
+     "count": 1,
+     "bytes": 1953543,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/bdb32832-7f88-47c5-ab3c-2c6cc08c8ecc": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f1427ce0-445c-47b7-827f-9d6928e5988e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/da69108c-dea1-4b05-a7f9-d84f7a5f439d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/927c39d1-32bb-4113-8376-f787f3837b4c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2601f87d-ccac-4a28-aa95-748bd0e8726a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/02fd1036-6c69-48ef-b31b-876309ed20b5": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2fc572b8-7a59-4e37-8874-8e610f19d79e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a5406bdc-3080-4dce-b71a-960ac78c9bd0": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c2dc6b19-460b-4142-b259-49511eab1db3": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/313955a1-ac5b-4fee-ad12-c0da41725212": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a06696de-0535-4ebb-ba87-4bc6c3d0d7f2": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/photo_shop/model.glb": {
+     "count": 1,
+     "bytes": 4105603,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/28bd8981-a277-42d1-aa8e-98fce90eecde": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/eb620969-0809-4d7b-858a-bb831ea20e71": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4c6f8077-4fd7-449d-a996-d8d7219d604e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ec716087-9021-42fe-933f-2dffa63e646f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/3e59b40c-28b0-4b42-add5-15639af3b1eb": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a21d14e5-9eeb-429d-a626-9493583133aa": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a55e18fe-1231-4335-9856-d5c7854ae634": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/3c4b0367-fa8a-4411-b8de-6caf78610a4c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4b583689-e0e4-40a2-81d6-fe47bcac1f37": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/de1eaa50-e236-42de-acff-1e5501c61231": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/77eeb961-7c82-4889-b943-3e0a117f70b9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6536b82c-e8a3-4cba-acf2-37890f1374a0": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ad694f06-74ea-4fbd-b55d-a4b4fbdfb63a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/curio-a/model.glb": {
+     "count": 1,
+     "bytes": 1972835,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0c7ec388-83b4-4f86-8080-3cdceff542d9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0fbfe144-d855-4006-8644-ede5e36df805": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b8f08bba-4238-44d5-ae3a-ee88fe206a4d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/cd7714b2-6d6c-4d5d-aecc-59f0818883ec": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/15dbd0f8-ac04-40ba-a1de-3acbf3e5b1f5": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/576b7ca2-eb9f-447f-8a32-1f37806ae32f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4824575e-28fc-419c-93aa-8d49d8ebfd10": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d1123324-7291-409d-b135-b706184c17ff": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9b6a8b2d-e608-4f3f-9823-b5c23a774217": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/53ef0fdf-a152-4f0c-879e-9cd08ecb81f8": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1261e892-3351-409c-a0e0-41394ee33ab1": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/plain-v3/model.glb": {
+     "count": 1,
+     "bytes": 1495811,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/791a566b-f65c-4239-974b-4a005398cfef": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/3dd2b959-71fc-41d2-b241-a505c24e33c2": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a35c9f4f-12ca-40ac-9275-3dd20e002dcf": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a79e7dee-13fc-40a1-ba23-b136ed4e770c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5b7e5772-bfb1-4e2d-8c6e-2e3b2b1faee8": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d6af60f1-bfe4-4d55-8cc9-91eaddc1c877": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a69d4e16-1d9a-4e23-b81f-c938a60bb82c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f9b323b0-d1f4-4978-a60f-171e289be43a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f20f4b61-3463-40a5-ae4d-d796fc3d8ff5": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/8557688a-95ea-4299-bacd-ce08810615fd": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/restaurant-a/model.glb": {
+     "count": 1,
+     "bytes": 2147047,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/55e40b32-33c1-455f-9af3-8dbfc1e22c4f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/bc19f6a0-335e-4695-bb90-1a6378c3942e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/3ba33191-a647-4cfd-a5b2-d45726c33381": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a2b5c9c2-9ceb-4b98-adc7-0e6ab48e600d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/44ff0e06-0a95-4d30-b208-098c1aa14fbe": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/14e38900-9591-4bef-97a8-2576c37ce2b8": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/fd0c1e80-cd4c-45f8-8c83-d3286437ebf9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/eedd420d-292b-425e-b3f2-b9e46b5cfb13": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/89a809ec-61e6-49e7-8d90-b2421df089ec": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/91886a58-1ec2-427b-8354-476a8c522f78": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/53ee4929-2678-4fbc-abb3-deb1a92bd8de": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/cloth_shop/model.glb": {
+     "count": 1,
+     "bytes": 2222547,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f2c5201f-14ae-45a1-a899-2764f0aa11c9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ed8cf84c-d3b0-4477-97c5-bc89a337bb89": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9585b2b3-de5a-4e50-b30e-f96adbc64097": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d4577469-4495-4db1-8184-9f6cb9ce8998": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4ba7a92d-1dea-47bf-ba3d-73c667c73f31": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/cad0abca-e176-408c-a4ec-87559cc48ac3": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/596a8825-efdc-4552-a4db-ee2c7d9fb2d2": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b7f8164f-3150-42d0-a31c-5c34d5f50a9c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/42e57630-86d7-4ce2-a132-9538bf165b0b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/76563f73-a470-4dfc-b9c8-c14fcbe9e36d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ef3e514c-480e-4cbc-9ff5-4856b8cad049": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/dry_goods_shop/model.glb": {
+     "count": 1,
+     "bytes": 3563039,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2b83b91f-566e-4d92-89c3-6c27118ba944": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/7ce5faa0-fe3c-47a7-8960-d777cecc01e8": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f81527b8-8c74-4168-9e16-015c3efc902b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9c004daa-4e31-495c-9142-ed785c0216ce": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/58fc5747-2d1b-41dc-9ab7-de6334980571": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/909ba485-5c00-4a76-9b04-5cabc3e091e9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5cf6841b-c728-48d4-9bf3-594f0c4a39f9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/581eaa6b-a5d5-4517-bb2b-40393de6e465": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d41f96dc-fce1-41dd-8d58-d5c9fc77a03a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/37032480-6f62-4bcf-971f-0d18f25d6a39": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2e7a849c-9fa0-4fa6-b236-339ef96af5cf": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/7c7ea1b5-02e4-4778-ab84-d1425396387c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/063f7f36-2091-44f9-88d0-8c21237b122e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/curio-b/model.glb": {
+     "count": 1,
+     "bytes": 1953879,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d8ac64e3-8384-484d-89f4-85bff6d10a9c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f73b7d33-ce62-4814-a39c-eadb02bc7e3a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/69a271f6-0c9d-4d0d-852e-1a67fb8ceff8": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/761fc691-da2e-4a77-930a-7f62a6b5bdd0": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/73eb00bb-5538-4270-8ecd-b3b97999db67": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/14809179-2ec8-40bd-affd-a16d8cf9685e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/128c1144-d0aa-4176-9901-3158cd49a6e0": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/25b3492a-c0d6-41c1-9c3e-53dbafdd623a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/26080d54-e6fd-40f4-931d-ee386decd1ec": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e4dcfa9c-dda3-4b87-a57c-b7bf289fcfc4": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/44ef015c-42e9-4751-ad10-21f1e6003137": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/restaurant-b/model.glb": {
+     "count": 1,
+     "bytes": 2147623,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d205da11-80d6-4d17-a870-b2de16df7db6": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b77f1925-7023-4a73-b9db-627b9cad671d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6cdfcbf9-3c15-460b-9c61-03a1abaf7551": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e88f1d49-edbf-466c-b142-b5d76085d17f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/dd2d1a79-5042-4fbb-9f1a-59420671b00d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d59322a0-c02f-4b1e-a350-41226144bcd0": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2dad397b-aa7f-4169-a5f9-1d267bd1253e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/98f9ee9a-7ade-4ed6-bb94-43ad45360861": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/fbc6e2e4-df8d-40c4-a1a1-60d1e323d5d3": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/3c1603a0-99d0-46cd-b666-e7ea24beacd7": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/356cf763-2858-4749-b218-2627c831e353": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v4/eastshops-strips.glb": {
+     "count": 1,
+     "bytes": 7801,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/lane-a-polish/lane-a/model.glb": {
+     "count": 1,
+     "bytes": 1939015,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6928fbc5-63f1-418a-842b-d2368fa61245": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ca0257fd-1406-46d8-8bf7-552330971c57": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/63b8483c-2747-4c14-91af-a1a67cf4cbc0": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a805569f-baf8-4897-9edb-6e9709387cb7": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/305d03ce-a135-41cb-a28e-4e92579bb462": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/3cac6b57-d27b-4b6e-91e5-14d064fe527d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d060674d-5dfa-46bc-a3d3-572825fdae24": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/865b0531-ddb0-43b9-8486-bc81a6dc4f18": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4cc9d8eb-63e1-42f1-a42f-d15c25f945c8": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9f698fee-3fa6-41ac-aab4-b150fe60cc59": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/af66b0f2-0967-4b3b-8ddc-0ea87c8cdf57": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4cb3c4ba-fe9e-4e25-82f0-d2129607c56a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0f9d357b-a214-479a-b434-148eccba609e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/lane-a-polish/lane-a/collision.json": {
+     "count": 1,
+     "bytes": 7370,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/lane-b-polish/lane-b/model.glb": {
+     "count": 1,
+     "bytes": 2061607,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/099166b3-8d6f-4c0a-91ca-c5f22e68490c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/64d5eb12-2a05-4b62-87de-8bb57b8c08d2": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9291640f-c281-4cb5-9dd8-8d488d72e64c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4a63594b-1954-4380-b07c-e2970259969f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/8056f1d5-f14c-4550-939e-200f40c6a96d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/731104ed-efe4-4a77-951e-794da0f07d74": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/47025a49-4c24-444f-b648-54f64ac6e91c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/988c817a-643f-455c-9a8f-c7634262f587": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ecc9ac45-49ac-43e6-9025-7efe6bb12325": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ba160a47-353f-4d01-a5a7-2e6a0940e274": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5664916d-6ad7-435d-a528-3ca2a630d307": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c6922235-d8dc-424b-97e1-cabf62a36561": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f5fc7ca0-350a-4dc0-a893-0a3ead86780c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/lane-b-polish/lane-b/collision.json": {
+     "count": 1,
+     "bytes": 4791,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/lane-b-polish/interfaces/model.glb": {
+     "count": 1,
+     "bytes": 1627863,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/92ae0252-8c4b-488c-a375-5f530b2efd37": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/bd315c5f-2bb7-4e54-96c0-b1e779b0dc56": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e9586b0c-ba81-4715-9a2b-54a47c89944f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/8db56c53-b027-4ca9-8f4f-c6bb3e616419": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a07b0fd4-13ec-4569-86b2-a60d5e8751fe": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/489baeec-2f9e-4409-9773-264be8e55677": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/aae85f5f-e40b-41dd-9d74-d364313b0c40": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e463a694-0f51-4736-95b2-387625ab49b7": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d60e0803-64e0-44f7-ac98-23cddeb0b6b4": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/7ec32438-15c6-4995-b6ce-ad30d6fbbb33": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/8e5899cc-9137-40c3-b27d-e10615587e82": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/lane-b-polish/interfaces/collision.json": {
+     "count": 1,
+     "bytes": 3355,
+     "statuses": [
+      200
+     ]
+    }
+   },
+   "duplicateFetches": [
+    {
+     "url": "http://127.0.0.1:5420/world/fangbang-temple-v7/review-manifest.json",
+     "count": 2,
+     "wireBytes": 52167,
+     "statuses": [
+      200,
+      200
+     ]
+    }
+   ],
+   "failed": 1,
+   "screenshot": "pose-cold.png"
+  },
+  {
+   "label": "warm",
+   "config": "default",
+   "navStart": 1789921272984.2,
+   "readyAt": 1789921281570,
+   "navToReadyMs": 8588,
+   "firstValidFrame": {
+    "distinctColors": 45,
+    "canvasW": 1280,
+    "canvasH": 829
+   },
+   "tris": 694430,
+   "uniqueGeometries": 496,
+   "uniqueMaterials": 476,
+   "uniqueTextures": 346,
+   "pageLoad": {
+    "allAssetsReadyMs": 3119,
+    "shaderCompileMs": 27,
+    "sharedAssetSources": {
+     "urls": 35,
+     "fetches": 35,
+     "parses": 35,
+     "clones": 20,
+     "retainedBytes": 0
+    }
+   },
+   "requests": 436,
+   "wireBytes": 96262160,
+   "cacheBytes": 0,
+   "uniqueUrls": 435,
+   "urls": {
+    "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=mainStreet": {
+     "count": 1,
+     "bytes": 13224,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/@vite/client": {
+     "count": 1,
+     "bytes": 178353,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/@fs/home/baibai/outbox/pawborough-lanes-construction-night-20260920/workspace/node_modules/vite/dist/client/env.mjs": {
+     "count": 1,
+     "bytes": 3768,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/fangbangMain.js?t=1789921263027": {
+     "count": 1,
+     "bytes": 338691,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/.cache/vite/deps/three.js?v=36c2224b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/.cache/vite/deps/three_addons_controls_OrbitControls__js.js?v=36c2224b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/.cache/vite/deps/three_addons_environments_RoomEnvironment__js.js?v=36c2224b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/.cache/vite/deps/@dimforge_rapier3d-compat.js?v=36c2224b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/.cache/vite/deps/chunk-4AF5TCGK.js?v=36c2224b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/world/WorldLoader.js": {
+     "count": 1,
+     "bytes": 34140,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/world/physics.js": {
+     "count": 1,
+     "bytes": 14645,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/world/collisionAdapter.js": {
+     "count": 1,
+     "bytes": 38634,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/player/walkCamera.js": {
+     "count": 1,
+     "bytes": 4133,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/player/WalkController.js": {
+     "count": 1,
+     "bytes": 37003,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/player/cruise.js": {
+     "count": 1,
+     "bytes": 12003,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/world/groundExtractor.js": {
+     "count": 1,
+     "bytes": 13062,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/world/sceneAssets.js": {
+     "count": 1,
+     "bytes": 11979,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/world/BlockManager.js": {
+     "count": 1,
+     "bytes": 90678,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/world/compressedState.js": {
+     "count": 1,
+     "bytes": 15996,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/templeViewShared.js": {
+     "count": 1,
+     "bytes": 29986,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/assetSourceCache.js": {
+     "count": 1,
+     "bytes": 26786,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/world/blockViews.js": {
+     "count": 1,
+     "bytes": 51406,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/world/decoders.js": {
+     "count": 1,
+     "bytes": 7334,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/.cache/vite/deps/three_addons_loaders_GLTFLoader__js.js?v=36c2224b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/.cache/vite/deps/three_addons_libs_meshopt_decoder__module__js.js?v=36c2224b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/.cache/vite/deps/three_addons_loaders_KTX2Loader__js.js?v=36c2224b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/.cache/vite/deps/three_addons_loaders_DRACOLoader__js.js?v=36c2224b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/framingTools.js": {
+     "count": 1,
+     "bytes": 30975,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/player/entryAnchors.js": {
+     "count": 1,
+     "bytes": 30716,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/player/walkSession.js": {
+     "count": 1,
+     "bytes": 33512,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/player/canvasFit.js": {
+     "count": 1,
+     "bytes": 9602,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/src/worldPreview/loadErrorText.js": {
+     "count": 1,
+     "bytes": 5339,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v7/review-manifest.cm.json": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v7/cameras.json": {
+     "count": 1,
+     "bytes": 8557,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v7/review-manifest.json": {
+     "count": 2,
+     "bytes": 52167,
+     "statuses": [
+      200,
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v7/instances.json": {
+     "count": 1,
+     "bytes": 20337,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v7/collision-world.json": {
+     "count": 1,
+     "bytes": 462337,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v7/route.json": {
+     "count": 1,
+     "bytes": 22256,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v7/blocks.json": {
+     "count": 1,
+     "bytes": 48811,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v5/street-reviewed-lanes.glb": {
+     "count": 1,
+     "bytes": 20587349,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/7b9d2a33-67eb-440e-a6bc-0ad70a2fff88": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6ff5a104-3a05-4149-9662-429dcf1f42a8": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4a5580ef-ff2a-497c-9b94-ec2dca652060": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4d772874-ade2-459f-91e5-5a148a8a69db": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/28d18f25-62f7-41b2-a8d2-215145ebf8d5": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/3ebb4f1a-615b-49c5-89cb-3ad9d1db593d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1f4f63f9-c0ca-469c-ab71-7fd3ea268f80": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5d50e61b-9d51-4005-bc64-b05e764bc254": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5b2f9636-a078-48c8-b6a5-613d51e25c44": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a54dc759-d697-4adb-a909-746496a7b522": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/aac5d7d9-7c9e-4eb4-8129-99ee19cfb7b8": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9d1ec9d3-0451-4e77-ac11-318d448ec3b5": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/72ead314-2c4d-4c0b-a0ed-66f75cd2e41a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e2a554b4-f222-4a9b-bdd5-c2dd28b87417": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/04045a93-b76d-47b4-8701-1a9cd8dc19c9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/580088a7-cf2e-445b-856a-cda11f166433": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5f4ca0f4-fbf8-4320-9b9e-66ad0c52da56": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d4b90719-77da-466d-880f-e8615813871d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v4/west-extension/surface.glb": {
+     "count": 1,
+     "bytes": 1308583,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/748f565c-ea59-4993-ba02-c217c00f039f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/208b9946-6a47-4e27-805a-69800ac4a956": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9911d22b-96c3-4c70-a985-f669e2ea2a9c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/street-completion/surface.glb": {
+     "count": 1,
+     "bytes": 985837,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4d98ee6f-76c3-4435-804e-c1b47775d0b7": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/16a4a0c1-f53c-4aeb-9d01-ba203e8f133d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4eac8894-b12e-4fd0-a39c-17b880bf881b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v4/west-extension/seal-wall.glb": {
+     "count": 1,
+     "bytes": 3077,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v4/east-extension/surface.glb": {
+     "count": 1,
+     "bytes": 1216811,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/3203c6db-4c82-4ebd-b6f0-e1c66f229b72": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b43d5417-771a-41dc-a02e-dfcc83d1a5bc": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4e12d7ab-d502-4bec-bba4-4fb125d459ac": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v4/east-extension/seal-wall.glb": {
+     "count": 1,
+     "bytes": 2881,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/east-edge/east-shop-128/model.glb": {
+     "count": 1,
+     "bytes": 1727995,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/8cebdbd2-6faa-4e13-93ff-8b93d2a1272b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9dfa4aa6-3dc5-4570-85f9-42e18d46e2af": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/db0a9a33-8e87-4931-831a-ad7c9df51e6d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/8986f605-d5bd-4957-b12a-5a5f054f504c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0b1269c7-e878-44d8-87ba-43362182ce50": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a306b56f-7104-4226-a79e-cc54048abc4f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1c1b0ff5-44b9-4f3a-8ade-3e63ff9c2084": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f3f35cf4-14f5-476e-b9b0-c35944f8c819": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/19593081-24e0-4301-b267-61cf63798da5": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e247d340-cd79-45ff-be1c-fc6da1292523": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/18aad23e-87cc-4509-abae-d254630d5ed2": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/east-edge/east-shop-128/collision.json": {
+     "count": 1,
+     "bytes": 14211,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/east-edge/east-shop-129/model.glb": {
+     "count": 1,
+     "bytes": 1722871,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c75555a9-9f7f-45f3-b8d6-f626adaf678b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/817f95c0-1d9b-4fd5-b7a4-c137f4d67814": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/64773de3-e067-4784-8d8c-0e041c207f28": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/02f48553-700f-4303-bedc-0f03a55a43c6": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f6f4c0d9-75bd-48e6-b795-061e1c603958": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/64a778ee-3457-4716-898a-2a47d0d38187": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/89206c53-7865-4249-a469-09fd66398b34": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/8bf93de2-86a8-4755-adc8-446c3f9ac14c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ef0a5105-d633-4a96-9576-527184afab58": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2b554cbf-b8f4-43e4-9222-df91c57202bc": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a4b4071b-dce5-4a4b-97b6-0ad0aac46b8b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/east-edge/east-shop-129/collision.json": {
+     "count": 1,
+     "bytes": 18123,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/street-completion/east-shop-130/model.glb": {
+     "count": 1,
+     "bytes": 1751691,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1c854c0c-fbd2-489c-af7b-a7bf00466a55": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/3cd6bc81-d6e9-4b82-a7ae-ad959aa5247c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9e111c57-7723-41f1-bbc0-52e5a95d797a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ff42b6c8-b1fa-4215-8a92-8e1fbb559da1": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/827d5710-ff51-47b1-a44b-63df760c2eb3": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c208c124-a3c6-4285-a13b-c0f940303d54": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/364e337d-58fc-4e5c-afb4-99ec1c128893": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9dcffcde-2e5b-4d90-85b7-fc176ce05d96": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6a370f95-e96a-4430-a3eb-2ed6ab294496": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/29018372-45fc-4d87-b9f3-26f47ea45119": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e11c2d73-7786-4f10-baa1-b02ec4862dc1": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/street-completion/east-shop-130/collision.json": {
+     "count": 1,
+     "bytes": 12637,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/street-completion/east-shop-131/model.glb": {
+     "count": 1,
+     "bytes": 1742867,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/23215e58-d917-413f-9191-81033078ce23": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/99d73b8f-9a71-48bc-88c0-87889cf704e9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4590705a-a24a-4ce5-b9b3-d7c132b94b0e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0a5d0b21-5663-42ff-87dd-e74136e5c23e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/cd250afd-974a-4897-95eb-c723702b7da4": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/846a065b-06e7-4244-9fe5-8df42a74e572": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e7c1a512-2f39-41b3-8fc7-1ce854306f76": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/70fd533a-db2c-4c57-8736-406eac0850d8": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/62ee9f00-b2be-483e-8ae2-a68ff5e377e3": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5c9c1980-9229-49f6-91a9-1908f9e37199": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/eb295280-7bed-4e50-9eca-784e029236fb": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/street-completion/east-shop-131/collision.json": {
+     "count": 1,
+     "bytes": 16556,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/street-completion/east-shop-132/model.glb": {
+     "count": 1,
+     "bytes": 1793331,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/7695f457-6d41-4b7d-b782-54c92c0d450b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/749680d8-072c-4815-9c0e-77cfdaeeae1e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/24fd14b8-8e7b-47c4-91ca-f6fc0a5d1a1d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c1dfa402-e495-4b2c-860f-f84883746407": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/cf48554c-6f2e-4a5f-8a31-2c6896cc0300": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/901d40f7-3b0c-4da9-9d3a-e35917282c85": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/cea12f2f-451e-4759-9cbc-46bb65183282": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6449acf5-0b6b-4aba-bf9d-09c4c43f9138": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/dbd480dc-bc44-4b8e-914e-05facedf8295": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/59896f61-5f56-4db8-861f-ed2b979306fa": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/53e8bc30-d106-4c75-a1af-aff7379b8aa9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/street-completion/east-shop-132/collision.json": {
+     "count": 1,
+     "bytes": 16630,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/street-completion/east-shop-133/model.glb": {
+     "count": 1,
+     "bytes": 1755695,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/96ef8b7d-29aa-4283-ae08-3dac79f28a29": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c425052d-8212-4eb3-afdf-5e8b22a3e1d9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/46f18a50-ba87-4e72-ad00-e7f4e64c034d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/79b744db-b4b3-4db7-962b-a9a92f218616": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6b17a169-4816-4d7a-a7c5-11ebfe0e23ee": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0383edcf-133a-4e02-879f-c4b79f72c92a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/12f03ab8-fdf1-4a42-b445-8b2709632918": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1df245ce-e8ed-4103-8aa9-04152800ef5e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/bbc052cf-8fd5-4ba7-9acf-8a0e4e5b7ad5": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/7256f77b-eb1a-434e-9b96-2444a7a3e95a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5eafee77-65d4-49c4-aa40-30ee92a97ac4": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/street-completion/east-shop-133/collision.json": {
+     "count": 1,
+     "bytes": 12646,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/temple.glb": {
+     "count": 1,
+     "bytes": 3782535,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c6d6d1ac-4db6-4bd7-b55d-434943e1a01f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/52b7fb2d-f9f7-4a4f-a83a-4cdebe89cc32": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/54ba43c3-0153-4947-9137-824ca87467ab": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/df315eb2-9d0d-4e4a-a6cc-a7b51e4fb024": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/cce15295-87f4-4451-8fa3-3d34d1aa9b80": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b9878010-81f7-4aee-ac7a-1cf80854db03": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d53613e2-979d-41c8-a84d-36228d3ca842": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e015b2d5-da06-40c7-b339-d36f1f2aff6f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/68641186-1a59-4011-91e8-8692aef7d83c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ea938d55-28a9-40fb-8f7f-1b8932b06f4c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/17bd1f51-9958-4f6d-8e87-d62477cc13d7": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2f87aa68-a3c1-4ac4-9e1f-4292b8ee3f06": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/ground.glb": {
+     "count": 1,
+     "bytes": 861193,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/36dd87ca-dbbb-45c1-a31f-62714460adc4": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/01bdb153-8536-4f0d-8a9a-12dad7b56096": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2b59a7ae-d8f9-4d9b-a9f5-e337ae44f3ac": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v4/temple-axis/lions.glb": {
+     "count": 1,
+     "bytes": 490325,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v4/temple-axis/ornaments.glb": {
+     "count": 1,
+     "bytes": 151197,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v4/temple-axis/court-open.glb": {
+     "count": 1,
+     "bytes": 1469811,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/457d05fd-8d8f-4205-a1d2-15d16fd401dd": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/229074c9-a7a3-4756-ab66-8e1eb89df3ff": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/79eac6bb-feb9-44d9-a1f5-0a0915d5d060": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0a634be0-b3fc-40f3-80b5-86691c2960f6": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/650508df-554c-4881-ade4-309b75e759f2": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/yimen.glb": {
+     "count": 1,
+     "bytes": 4343531,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4c525791-3e0a-47e2-bfa9-15d422d19b20": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0720ba61-497a-4469-b5c3-6d92d21c2eef": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1f857f6e-c25c-44cc-a2d4-99e82fba77d2": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a5da3685-0984-4b10-a5a6-e56e9f4c82b0": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1812ca04-fa8d-48e9-bb6a-29d81b53c7f1": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9d8851f8-21bc-4d1a-a819-7129e7d57907": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/8ee82077-7c08-4fe8-877d-7cc32e90c5d4": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a2deb17d-1e48-4f64-8b37-0f93e9479a89": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/21c878c1-a10a-4c14-90a0-5687e883ac00": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9d6c3d6e-ccbf-47e5-b2c3-32b6959b5c1f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/06b1223f-5bc4-427f-a1a0-e2cb08e20323": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/11380666-cb0d-458e-9328-450633eb9ec5": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/yimen-stage.glb": {
+     "count": 1,
+     "bytes": 1283811,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/56853dd3-861d-4c09-a079-b63a1083d972": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ff64c2b7-6c06-49a5-a9fb-681058263c72": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ee88b03c-fb8a-4040-b5cb-8ae30c207394": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ff5e76c7-098c-4acd-b6b7-96ff322f6671": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/96db89f6-05f9-400e-9a75-0582b524d407": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/279bb7f7-4719-493c-adba-67a9e6684901": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a3fc78cf-4c3c-4f16-9b47-0935a7f9ce88": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/dadian-court-v2.glb": {
+     "count": 1,
+     "bytes": 1353559,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/25cbb03f-2ae3-4304-ac79-b4689004c323": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/3db6d460-3adf-488c-9c38-6a9f5c3f9b9e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/505b7e74-1c19-48cd-8e77-347a7106fa51": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d10dd0a7-a14c-46b8-ba73-f70e6a05e5c8": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d82e32a0-df1e-406e-8ac2-16084e936f93": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/peidian.glb": {
+     "count": 1,
+     "bytes": 2075611,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/720a38f0-6682-4055-a74b-92b3c2ea9b57": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9d8a223b-cb75-4d33-ba7a-fc4218a1544f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e45c3b4f-e43a-430e-877a-643848675c80": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d8e663ae-43a2-4462-92b6-4901adb4bbc0": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1ddea39d-d18a-426d-9bf2-9db192b4c09e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5913c017-c269-41c1-9f02-6ca09d8b610c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d50a8d33-1b79-42f4-b00a-0d88aa599aec": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/df01075f-7743-45b8-8ef3-9995a4f95dba": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0acb577d-0ebe-4e3a-b56d-7258ef5fb038": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/29fc85ac-4fce-41be-86e2-4ecc01f33670": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/gallery.glb": {
+     "count": 1,
+     "bytes": 491089,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ca5d825d-6619-4096-9b2e-8459d3e63c23": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5b08a2b7-78b2-4e62-9ce2-0154535cc625": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1c7298da-c4fe-4790-9a41-2711f799df73": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b306659b-2017-45e9-86f0-9f9a97873b7c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/bfc89df9-4097-4cbe-a944-bb04929b84c4": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e8325a89-ea4c-4917-8dca-33b502ca5770": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/7844a8d3-639a-48a4-bd46-543c8c090319": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/dadian.glb": {
+     "count": 1,
+     "bytes": 6295423,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/dc715860-e7d4-4088-ad31-6b4a1a58138b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c632c04a-763f-4901-b2b4-9caecf13c52b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/250d0d8c-72a6-48c5-acbb-57fbb938f496": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a160d542-2b8b-41d9-b47f-9ab408e7c48b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/97b95def-d07a-4fd2-b828-09227eb667a3": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/238dfa3c-8ef1-42df-a309-8096de04fc84": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/7bdf0d79-45af-4eb9-b28d-56571880f67b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ef42e2ae-11eb-4c85-8b25-8dba121bf94e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a1a75d5d-ef5c-4e6f-be18-c91ade48ef07": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c8a166b5-b782-4bac-8711-5ae09ddea8cc": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/10f1df69-0806-4807-a9dd-ce21d3655922": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/7851a644-a9c1-4a1d-ac22-a7201ca1d4f8": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/court3.glb": {
+     "count": 1,
+     "bytes": 1634647,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/dc3278b3-b815-439e-a43d-9c7371f47763": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e24d8a28-4be4-46bb-adec-861360c7c367": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/fddbcad3-804c-4fb7-bb18-c67426bfa119": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/536e4271-8603-4bae-859f-21de01ac1072": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/471c1be4-6d6f-4d28-b00c-167cad8e7de6": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4cb6eb72-fd7d-4f7d-b60a-55784289f0af": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/3a0b2f2b-1e6e-4706-9f4b-c2787f473a47": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/houdian.glb": {
+     "count": 1,
+     "bytes": 2702547,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a591b750-21ee-46c1-a72d-67911d40dc7a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d0005b4d-2b36-4e55-bb70-7df7007c18fa": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b40511e9-efb7-455c-ac70-eb7b561889fd": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/06b5fd66-bb55-4ded-b818-b44a6817828f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e855bb6b-92ce-46ba-a92a-3f8dcbb7229f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/7dc4fe15-bae0-409a-8346-89d53dc007cb": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e993c03e-c65c-40e5-b20e-a8e9a40553d5": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/eead956b-99af-419e-9025-0191634dc88d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6a6f3628-cb2a-4bc2-bf06-1c429b322a1f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/946791a2-3602-4288-af90-0312d68c3c01": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v4/temple-axis/tree-camphor-v2.glb": {
+     "count": 1,
+     "bytes": 233597,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/60662c28-9fec-479d-b8ed-3cd4df13311c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9723a58c-de0d-406f-a638-d594b51eaac8": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/pharmacy_shop/model.glb": {
+     "count": 1,
+     "bytes": 3680011,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9a417e8d-e315-4812-bc26-9c611bdd1e05": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4a308cd3-cb08-4d2d-8e94-834ec6069206": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/fed12a9a-7a37-494a-b084-ccff07ee9f59": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/47054e5c-9b93-4f41-b893-002b1a17229e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1024e5f1-08ca-4531-b8e0-01429d4ca2a2": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b4c92184-c551-4c33-be72-dd15829ad0fd": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/96eacf30-bf8e-4f14-94ec-25dd98f8364a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/afccb870-7ff6-4bc7-ab8b-e7592479ff89": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1a0f294c-d79b-4f94-98f0-ec9c2ebe181b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0d054db8-9589-419b-b54c-047138138fd9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/46da15b7-38e7-4759-84e3-10f7ec96719f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/plain-v2/model.glb": {
+     "count": 1,
+     "bytes": 1863323,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d371c232-3060-4e78-8c14-3a18845b313b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a84989c3-6375-4e89-93fe-d773c7638248": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c0623d5d-2eb1-4689-8b77-a99919795f5a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c4522b5a-adea-4510-bd7f-35cc660814c4": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9f0aaa0c-a614-4b9d-8d93-216622c96dab": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a1fbc8d4-2cf8-4ca9-bccf-d24a3f2a4ddc": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9275c206-5581-4462-bd82-f9fa4cad9c1b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a55b2c56-19f8-47af-8b33-ed6a8f2315a2": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f5e372bc-ed10-4aeb-822b-340cb6c68ab9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ef4e0e2c-c996-4bf5-ac13-cdcca8178337": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/62ea1947-ec48-4015-ad57-10e765f9c0ea": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/plain-v1/model.glb": {
+     "count": 1,
+     "bytes": 1953543,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b55e91f6-4226-4923-90a9-1ada6e050959": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/bdd3f05b-2f29-4b85-855c-babf9c6b7323": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/67ed895e-f408-4200-bd17-b0404f5d4541": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/360616ba-7be6-4cdf-8142-c3fea376f628": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/cd965028-a42b-472c-8f6b-8527e9bf019f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/15e1c9d3-9d68-40f1-8cb4-c7cdc16d416e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c15ca0ad-c1ee-4888-9503-3f318a5489ee": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/153d5950-66ba-4ff4-bde4-aed56587d5ea": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b948c9f3-c94b-4957-9775-7fd3dfb05d6f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/633182de-2546-4c50-b973-b55693438d91": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/bc22424d-95c4-48f0-9902-b089f3fc8c19": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/photo_shop/model.glb": {
+     "count": 1,
+     "bytes": 4105603,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c16198d1-e16c-48cf-8336-454fcfc6b15e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b7f3425c-7480-4ccd-badc-38bb238e437c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/7e7f950d-63b2-4530-809a-0da426841f97": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/3beed8da-9bb9-40a5-b648-b48e33b433f9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4b94e0b1-eec3-48dd-8783-b3f0797647c6": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5afef44a-16cf-4e5d-98c2-851061d71f07": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6eee311b-2c6f-4025-8e70-17f0027ede65": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/025e567f-9d41-4053-b104-91df7068e143": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2057042a-ee7e-42f5-abb6-7677126a9dc7": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/fc533849-8a75-4d0f-9156-9c516168ea81": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/fb56c0b9-8b62-46fd-8c62-a8f578ae71ab": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/20e64064-b291-40df-b7c8-bec15de296b0": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/24077ea4-e935-4288-bc79-48a575830937": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/curio-a/model.glb": {
+     "count": 1,
+     "bytes": 1972835,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/285b6d02-3ba2-44fe-993f-0884f179bf4c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1730aa08-80f3-4145-bc0a-76283f81a1c1": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/57e0bb18-2a73-4afb-8961-67b22d3e189f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f2303849-82af-4081-bacf-2f1b640e4766": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/20cff314-7f46-44dc-9a0a-94b388c4f18b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9f9ba593-9282-418b-ae61-b48ade282cb3": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/06c7bfde-2ffa-48ca-9731-c6d56dce922a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/20b61c95-b87f-4387-9ece-62c4f96bf4c6": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/54c7f799-f387-4a66-89a1-8b6bc9c1a09f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/7c803bf6-f72b-4efe-a449-4ec9fe69a02e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a8858660-f467-45de-86a2-e29cc3ff13d6": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/plain-v3/model.glb": {
+     "count": 1,
+     "bytes": 1495811,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/bf62673a-bb19-4638-8562-eea43f723840": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5f350239-da30-4157-9eca-95dc3deac1c3": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b6acd891-e920-4b8b-8d82-b13806fdbe86": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b335fe9c-ad4d-4bdd-a0e0-62137d564d18": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/8ac6e4d9-01c3-4b3c-acf5-e9b3822cc09f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/8ff03f41-e5fc-4434-b284-3ebe81d21dd6": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5a9044b4-95ff-4104-a8ba-7cb4cdd0d726": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/28bc2e27-98a7-45c2-9ce9-f1805f0ef719": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/596822ab-406c-4428-9bb6-a3658d8f2a45": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/05a1cb51-2a78-4df7-a0ce-77ce7084539d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/restaurant-a/model.glb": {
+     "count": 1,
+     "bytes": 2147047,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c96dd782-8ca9-4262-8499-61f349ece7db": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/96f97e62-61a1-4f1f-ab43-021dce2295d9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2853317f-679c-41ee-a61d-7516e5c0d652": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5d73c0eb-b253-4bb5-abf4-aa648b9e1425": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1b09b57f-ecbd-4df3-8f62-4a8019beb949": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/95cfe4c8-7ee0-45e6-9c62-2e7b005543ed": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/39a351ff-9fcd-4496-aa65-7f9316161e6e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/476a48a9-2eda-458a-be2f-614a1568b835": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1eee6f7e-bd61-4627-b1f3-26ad06de4456": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/fbeffc00-7105-4c9a-af93-90ba07bac384": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0d3125a0-9168-4f7d-ae15-34faf88fc45f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/cloth_shop/model.glb": {
+     "count": 1,
+     "bytes": 2222547,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/eaaf642c-bc9f-402c-9226-829bbcfa1f14": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/00d707c3-e9b7-47c2-a97a-0261074c56b0": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/240fd686-6858-4d51-b23e-d4d95a8ff0d7": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a11bb916-b2e1-46ff-80bf-5a50bea9fa47": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9f882430-bf61-432c-88c9-e64b3753fb2d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/94855802-0250-4567-9c6b-052de1a6ac8c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/329aef3c-9300-444f-b228-2da9dee133b6": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/7c3dde52-6c51-45b6-a98c-dff1d4bd6ae9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/7a8f570a-87fd-45af-9f9d-f5a7573386b8": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5568e135-2a09-43ef-bde6-480dbedbe92b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6bbcaedc-0d68-4873-b63e-691df1d5b83c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/dry_goods_shop/model.glb": {
+     "count": 1,
+     "bytes": 3563039,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6d5f1278-b9f8-41b2-a872-3a7dc0bcbd63": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/275753ca-bfec-449a-8492-912cd98361a4": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e7a84125-be83-4e7b-b27a-bb1a94fd51d1": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f2050e1c-7d6a-4e7e-a079-c3eeb1088a31": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/701c9574-f1cd-4e8e-99be-42db28634e9f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ca720a5e-1793-44b2-99ed-feaf62ea93cd": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/710f66e8-2aa2-4312-ae36-180633594d5c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/bc353108-294f-4cf4-8fee-bee0710c9b30": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b6ef791f-f200-49a6-8523-d8fa820f8ac0": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/8a9ceec7-b002-4487-99ee-0b7e285abe37": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/81ea5fa9-e1d4-4c10-838d-a5f991088ab5": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a21856e8-40ce-47fe-87c7-3aa6d41a2bae": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/8ba03a56-077a-46bc-999e-795d6bdd9a1d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/curio-b/model.glb": {
+     "count": 1,
+     "bytes": 1953879,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/e29515d2-30dc-46a8-bc34-d461474df91c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5aa5251b-7a85-4f9c-8867-5e55f47bab3b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d6f7a03d-f2f4-4c55-a819-a4274513161b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c1e8e26b-7e27-4c82-9fe5-9288819846f6": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/35c33673-bfe5-48e9-9966-42914acd1c00": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6a5beedc-27af-4c90-9c58-c118c05cb9de": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2b0a7063-40dc-413a-a5a2-04f39f3ff66e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/815971ee-0721-4c3f-b8c2-badd2088df19": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1f3a2ba0-b31a-41e1-a625-85e9383befdf": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d9d8ba8e-0977-4b5e-80f5-e72741a8ad7b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/f6180b94-f65f-4acb-be31-563a6fac2b81": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/building/restaurant-b/model.glb": {
+     "count": 1,
+     "bytes": 2147623,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/bfe7f4b0-8b1d-4eea-a473-6b3b24778bbb": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c0b538c3-e077-45f7-8951-5882fb64fd3c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/9d2a1402-2a48-49b4-a25c-b3903f24f9dc": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2e99683a-6cb9-4685-9bad-a88fb5366f4c": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ea8dd6a8-b91f-408f-b725-bc69fe1b391f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/8fb69d63-2407-438a-baae-7ae484d4affc": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d81a89a4-59fe-4ca6-9b3d-deb4c53f6c0b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/104bf8b6-2207-48e8-b018-d43a9bd0242a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5d2d685b-928e-4a8a-9f21-488233ed1a87": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2d3db4c2-c210-4601-942b-a93494fe7374": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6c658aea-cf89-4999-a121-4185a4480e09": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/fangbang-temple-v4/eastshops-strips.glb": {
+     "count": 1,
+     "bytes": 7801,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/lane-a-polish/lane-a/model.glb": {
+     "count": 1,
+     "bytes": 1939015,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/05eee966-bbae-4532-a885-87887ec39cca": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/23d93f30-f590-4cdd-8b68-c4d4fee5da75": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2332a56d-a441-46c9-a0c2-de6774744a3d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/90a0f36f-ec7a-4d34-bfba-054dd4d822b2": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/ca03d9b8-fdef-4d0a-b87b-9f73e649a19f": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5d41055b-5dfa-47f6-a9c2-38707be188c0": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d5ff9958-95d1-4a37-9b7a-389e7422c3c9": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1665d13f-a399-4eff-a42d-19d6875b297a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/17aed175-160c-4076-8d25-193ff1302089": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/77312b16-7e3e-4cfb-b5b5-fce9e525b022": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5cb1ff98-8764-4930-8058-5b6e3ecde54a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0b8251e6-3a7f-44c1-ab18-1cf96bf16640": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/c9e69d85-b109-4e5d-af05-0dc230117191": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/lane-a-polish/lane-a/collision.json": {
+     "count": 1,
+     "bytes": 7370,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/lane-b-polish/lane-b/model.glb": {
+     "count": 1,
+     "bytes": 2061607,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a87e5d44-7190-4919-832d-5a225e3ed5ec": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/16915f36-a3c5-46eb-82ee-deec7235741d": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1868e1c9-7685-43c9-a76d-c0ebfa6c492b": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/2df50d9a-65fc-48a0-98d1-d319bfc69fc6": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/0137fccc-455e-4f5a-bef4-bd49383248cf": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/3d45820a-24f3-4edb-a290-ec08c53b5a20": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/6f191a7a-fcd6-451a-ad77-60ee46ea3cc1": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/fd55ba78-5e18-478e-be0d-46a0986caeaf": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/d83166e9-4a71-4662-a4f6-84c1253ecd53": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/4a6a3966-186b-4ce5-a8b6-e2bfe53253ee": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/536ce145-fc44-4a5d-a5ea-169ffa227161": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/1201c837-3aae-4a0f-8060-f8552aa4eb5a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/acdb02ef-073c-4540-b0df-90e5b78a8278": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/lane-b-polish/lane-b/collision.json": {
+     "count": 1,
+     "bytes": 4791,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/lane-b-polish/interfaces/model.glb": {
+     "count": 1,
+     "bytes": 1627863,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/a176cab9-67cf-479f-9613-6c7e612320a0": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/487edccd-fefa-4699-92ec-247f3ff72203": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/efbe03cf-9d9e-4970-bf23-d879b7d54dfb": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/98eb28b3-a7c5-410d-99d4-4618ac404c31": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/33fd0a85-e3fc-4517-aecb-7306ab4eac3a": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/571b79cf-8e61-44f5-8e1d-67faa678adef": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/cb0a3685-ecb9-4f2d-8168-8f6d4c2fc5c3": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/5deaae54-f41c-4309-bf6e-18d63e11d6eb": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/3ba9ca48-96d4-4a66-9f5d-69a6c94a1d1e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/b6fd6d1d-6079-4364-9b7e-0762f128402e": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "blob:http://127.0.0.1:5420/915edebf-7557-4d95-8328-5eb294ecf067": {
+     "count": 1,
+     "bytes": 0,
+     "statuses": [
+      200
+     ]
+    },
+    "http://127.0.0.1:5420/world/lane-b-polish/interfaces/collision.json": {
+     "count": 1,
+     "bytes": 3355,
+     "statuses": [
+      200
+     ]
+    }
+   },
+   "duplicateFetches": [
+    {
+     "url": "http://127.0.0.1:5420/world/fangbang-temple-v7/review-manifest.json",
+     "count": 2,
+     "wireBytes": 52167,
+     "statuses": [
+      200,
+      200
+     ]
+    }
+   ],
+   "failed": 1,
+   "screenshot": "pose-warm.png"
+  }
+ ],
+ "finishedAt": "2026-09-20T16:21:21.967Z"
+}

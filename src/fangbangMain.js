@@ -37,6 +37,8 @@ import { createBlockViews } from './world/blockViews.js';
 import { loadedSceneAssets, expectedTriangles } from './world/sceneAssets.js';
 import { compressedEnabled, installCompressedFetch } from './world/compressedState.js';
 import { applyViewVerified, loadGlbWithStats, saveEvidence, countResources } from './templeViewShared.js';
+import { createAssetSourceCache } from './assetSourceCache.js';
+import { createGLTFLoader } from './world/decoders.js';
 import { resolvePixelRatio, applyCanvasFit } from './player/canvasFit.js';
 import {
   STORE_KEY, SCHEMA_VERSION, FramingError,
@@ -175,6 +177,7 @@ let cameras = [], manifest = null, loadStats = {};
 let routeCheck = null, cameraCheck = null, resetCount = 0, lastCruiseStatus = null;
 let walk = null, safeAnchors = [];   // WalkSession + validated entry anchors
 let lastViewFov = 55;
+let assetSourceCache = null;   // PLAN task D: one fetch+decode per unique asset GLB
 let placeholderPref = true;   // the gray placeholder districts ARE this page's context
 const keys = { w: false, a: false, s: false, d: false };
 
@@ -1089,8 +1092,28 @@ async function load() {
   });
 
   setStage('正在装配街区与庙轴线…');
+  // PLAN task D (measured): the autoApply asset blocks list the SAME GLB once
+  // per placement (plain-v1 ×4, curio-a ×4, pharmacy_shop ×3 …) — ≈39 MB of
+  // the 95.8 MB per load was duplicate downloads plus ~10 redundant decodes.
+  // The source cache makes each unique GLB fetch+decode exactly once and hand
+  // out clones that share geometry/materials/textures (the reuse the plan
+  // allows). Injected through the factory's own fetch/parse seams — the locked
+  // src/world files are untouched. Owner/lifecycle rules live in the module.
+  assetSourceCache = createAssetSourceCache({
+    fetchImpl: (u, init) => fetch(u, init),
+    parseImpl: (buf, url) => createGLTFLoader({ renderer, baseUrl: location.href }).parseAsync(buf, url),
+  });
+  const blockViewsBase = createBlockViews(scene, session);
+  const views = {
+    ...blockViewsBase,
+    makeAssets: (def, opts = {}) => blockViewsBase.makeAssets(def, {
+      ...opts,
+      fetchImpl: (u, init) => assetSourceCache.fetch(u, init),
+      parseImpl: (buf, url) => assetSourceCache.parse(buf, url),
+    }),
+  };
   blocks = new BlockManager({
-    RAPIER, physics: session.physics, views: createBlockViews(scene, session), dataset: session.blocks,
+    RAPIER, physics: session.physics, views, dataset: session.blocks,
     physicsAlive: () => !session.disposed,
   });
   await blocks.applyReviewed();
@@ -1196,6 +1219,7 @@ async function load() {
     wallColliders: session.physics.wallCount,
     allAssetsReadyMs: +(performance.now() - t0).toFixed(0),
     fpsNotMeasured: true, localOnly: true,
+    sharedAssetSources: assetSourceCache.stats(),
   };
 
   setupButtons();

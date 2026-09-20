@@ -1,0 +1,294 @@
+{
+ "base": "http://127.0.0.1:5420",
+ "tag": "before",
+ "config": "default",
+ "startedAt": "2026-09-20T16:07:25.661Z",
+ "env": {
+  "browser": "headless Chrome + SwiftShader (software)",
+  "viewport": "1280x900",
+  "note": "vite dev server — RELATIVE before/after comparison only, no production/absolute claims"
+ },
+ "loads": [
+  {
+   "label": "cold",
+   "config": "default",
+   "navStart": 1789920445730.1,
+   "readyAt": 1789920454656,
+   "navToReadyMs": 8929,
+   "firstValidFrame": {
+    "distinctColors": 45,
+    "canvasW": 1280,
+    "canvasH": 829
+   },
+   "tris": 694430,
+   "textures": null,
+   "geometries": null,
+   "requests": 646,
+   "wireBytes": 100432604,
+   "cacheBytes": 0,
+   "uniqueUrls": 625,
+   "duplicateFetches": [
+    {
+     "url": "http://127.0.0.1:5420/world/fangbang-temple-v4/temple-axis/tree-camphor-v2.glb",
+     "count": 4,
+     "wireBytes": 233978,
+     "statuses": [
+      200,
+      200,
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/building/plain-v1/model.glb",
+     "count": 4,
+     "wireBytes": 1953924,
+     "statuses": [
+      200,
+      200,
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/building/curio-a/model.glb",
+     "count": 4,
+     "wireBytes": 1973216,
+     "statuses": [
+      200,
+      200,
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/building/pharmacy_shop/model.glb",
+     "count": 3,
+     "wireBytes": 3680265,
+     "statuses": [
+      200,
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/building/plain-v2/model.glb",
+     "count": 3,
+     "wireBytes": 1863577,
+     "statuses": [
+      200,
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/building/plain-v3/model.glb",
+     "count": 3,
+     "wireBytes": 1496065,
+     "statuses": [
+      200,
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/world/fangbang-temple-v7/review-manifest.json",
+     "count": 2,
+     "wireBytes": 52167,
+     "statuses": [
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/peidian.glb",
+     "count": 2,
+     "wireBytes": 2075738,
+     "statuses": [
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/gallery.glb",
+     "count": 2,
+     "wireBytes": 491216,
+     "statuses": [
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/building/photo_shop/model.glb",
+     "count": 2,
+     "wireBytes": 4105730,
+     "statuses": [
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/building/cloth_shop/model.glb",
+     "count": 2,
+     "wireBytes": 2222674,
+     "statuses": [
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/building/dry_goods_shop/model.glb",
+     "count": 2,
+     "wireBytes": 3563166,
+     "statuses": [
+      200,
+      200
+     ]
+    }
+   ],
+   "failed": 1,
+   "screenshot": "pose-cold.png"
+  },
+  {
+   "label": "warm",
+   "config": "default",
+   "navStart": 1789920454987,
+   "readyAt": 1789920463922,
+   "navToReadyMs": 8938,
+   "firstValidFrame": {
+    "distinctColors": 45,
+    "canvasW": 1280,
+    "canvasH": 829
+   },
+   "tris": 694430,
+   "textures": null,
+   "geometries": null,
+   "requests": 645,
+   "wireBytes": 96231219,
+   "cacheBytes": 0,
+   "uniqueUrls": 624,
+   "duplicateFetches": [
+    {
+     "url": "http://127.0.0.1:5420/world/fangbang-temple-v4/temple-axis/tree-camphor-v2.glb",
+     "count": 4,
+     "wireBytes": 233978,
+     "statuses": [
+      200,
+      200,
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/building/plain-v1/model.glb",
+     "count": 4,
+     "wireBytes": 1953924,
+     "statuses": [
+      200,
+      200,
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/building/curio-a/model.glb",
+     "count": 4,
+     "wireBytes": 1973216,
+     "statuses": [
+      200,
+      200,
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/building/pharmacy_shop/model.glb",
+     "count": 3,
+     "wireBytes": 3680265,
+     "statuses": [
+      200,
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/building/plain-v2/model.glb",
+     "count": 3,
+     "wireBytes": 1863577,
+     "statuses": [
+      200,
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/building/plain-v3/model.glb",
+     "count": 3,
+     "wireBytes": 1496065,
+     "statuses": [
+      200,
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/world/fangbang-temple-v7/review-manifest.json",
+     "count": 2,
+     "wireBytes": 52167,
+     "statuses": [
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/peidian.glb",
+     "count": 2,
+     "wireBytes": 2075738,
+     "statuses": [
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/world/fangbang-temple-v3/temple-axis/gallery.glb",
+     "count": 2,
+     "wireBytes": 491216,
+     "statuses": [
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/building/photo_shop/model.glb",
+     "count": 2,
+     "wireBytes": 4105730,
+     "statuses": [
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/building/cloth_shop/model.glb",
+     "count": 2,
+     "wireBytes": 2222674,
+     "statuses": [
+      200,
+      200
+     ]
+    },
+    {
+     "url": "http://127.0.0.1:5420/building/dry_goods_shop/model.glb",
+     "count": 2,
+     "wireBytes": 3563166,
+     "statuses": [
+      200,
+      200
+     ]
+    }
+   ],
+   "failed": 1,
+   "screenshot": "pose-warm.png"
+  }
+ ],
+ "finishedAt": "2026-09-20T16:07:44.306Z"
+}

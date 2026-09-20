@@ -1,0 +1,78 @@
+{
+ "base": "http://127.0.0.1:5420",
+ "tag": "after",
+ "config": "default",
+ "startedAt": "2026-09-20T16:13:53.676Z",
+ "env": {
+  "browser": "headless Chrome + SwiftShader (software)",
+  "viewport": "1280x900",
+  "note": "vite dev server — RELATIVE before/after comparison only, no production/absolute claims"
+ },
+ "loads": [
+  {
+   "label": "cold",
+   "config": "default",
+   "navStart": 1789920833751,
+   "readyAt": 1789920842481,
+   "navToReadyMs": 8733,
+   "firstValidFrame": {
+    "distinctColors": 45,
+    "canvasW": 1280,
+    "canvasH": 829
+   },
+   "tris": 694430,
+   "textures": null,
+   "geometries": null,
+   "requests": 437,
+   "wireBytes": 100463545,
+   "cacheBytes": 0,
+   "uniqueUrls": 436,
+   "duplicateFetches": [
+    {
+     "url": "http://127.0.0.1:5420/world/fangbang-temple-v7/review-manifest.json",
+     "count": 2,
+     "wireBytes": 52167,
+     "statuses": [
+      200,
+      200
+     ]
+    }
+   ],
+   "failed": 1,
+   "screenshot": "pose-cold.png"
+  },
+  {
+   "label": "warm",
+   "config": "default",
+   "navStart": 1789920842802.6,
+   "readyAt": 1789920851549,
+   "navToReadyMs": 8749,
+   "firstValidFrame": {
+    "distinctColors": 45,
+    "canvasW": 1280,
+    "canvasH": 829
+   },
+   "tris": 694430,
+   "textures": null,
+   "geometries": null,
+   "requests": 436,
+   "wireBytes": 96262160,
+   "cacheBytes": 0,
+   "uniqueUrls": 435,
+   "duplicateFetches": [
+    {
+     "url": "http://127.0.0.1:5420/world/fangbang-temple-v7/review-manifest.json",
+     "count": 2,
+     "wireBytes": 52167,
+     "statuses": [
+      200,
+      200
+     ]
+    }
+   ],
+   "failed": 1,
+   "screenshot": "pose-warm.png"
+  }
+ ],
+ "finishedAt": "2026-09-20T16:14:11.922Z"
+}
