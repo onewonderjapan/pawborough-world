@@ -20,7 +20,7 @@ const STEP_UP = 0.30;            // curbs (0.10 m) pass, real walls do not
 const SNAP_TO_GROUND = 0.30;
 
 export class WalkController {
-  constructor({ RAPIER, physics, capsule }) {
+  constructor({ RAPIER, physics, capsule, excludeColliderHandles = null }) {
     this.RAPIER = RAPIER;
     this.physics = physics;
     this.fixedDt = 1 / FIXED_HZ;
@@ -32,6 +32,10 @@ export class WalkController {
     const s = Array.isArray(capsule.spawn)
       ? { x: capsule.spawn[0], y: capsule.spawn[1], z: capsule.spawn[2] }
       : capsule.spawn;
+    // Collider handles this controller must IGNORE when moving (e.g. a probe
+    // validating anchors while a live player capsule exists in the same
+    // physics world). Static-scene geometry is never excluded.
+    this.excludeColliderHandles = new Set(excludeColliderHandles ?? []);
 
     this.body = physics.world.createRigidBody(
       RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(s.x, s.y + this.centerOffset, s.z));
@@ -54,6 +58,16 @@ export class WalkController {
   }
 
   // --- input -------------------------------------------------------------
+  // Explicit placement (session spawn/restore, validated anchor relocation).
+  // A teleport is NEVER walk evidence — callers record it as such. Feet land
+  // at the given point; vertical velocity and pending input reset.
+  teleport(feetXyz, yaw = this.yaw, pitch = this.pitch) {
+    this.body.setTranslation({ x: feetXyz[0], y: feetXyz[1] + this.centerOffset, z: feetXyz[2] }, true);
+    this.vy = 0;
+    this.yaw = yaw;
+    this.pitch = pitch;
+    this.clearKeys();
+  }
   setMoveInput(forward, right) {
     this.input.forward = clampInput(forward);
     this.input.right = clampInput(right);
@@ -110,7 +124,11 @@ export class WalkController {
     } else {
       this.vy -= GRAVITY * dt;
     }
-    this.controller.computeColliderMovement(this.collider, { x: dx, y: this.vy * dt, z: dz });
+    if (this.excludeColliderHandles.size)
+      this.controller.computeColliderMovement(this.collider, { x: dx, y: this.vy * dt, z: dz },
+        undefined, undefined, (c) => !this.excludeColliderHandles.has(c.handle));
+    else
+      this.controller.computeColliderMovement(this.collider, { x: dx, y: this.vy * dt, z: dz });
     const m = this.controller.computedMovement();
     this.body.setNextKinematicTranslation({ x: t.x + m.x, y: t.y + m.y, z: t.z + m.z });
     this.physics.world.step(); // applies the kinematic movement this step

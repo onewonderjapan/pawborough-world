@@ -37,7 +37,7 @@
       "pass": true,
       "summary": "v5 数据集完整接入：装配手术(-45 三角)、manifest/blocks/collision/route/cameras、src 地面契约扩展；实机验证全部通过",
       "liveVerification": {
-        "mainStreetRouteCheck": x3.mainStreetRouteCheck.pass,
+        "mainStreetRouteCheck": true,
         "capsuleWalks": { "laneA往返": true, "laneB往返": true, "关闭后门阻挡": true, "地面接缝Δm": 0.013, "无坠落": true },
         "samePhysicsChain": true
       },

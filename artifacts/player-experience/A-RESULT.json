@@ -1,0 +1,78 @@
+{
+  "batch": "player-experience phase A finish (20260920, GLM-5.3-Flash under Codex lead)",
+  "scope": "TASK_A_FINISH bounded fixes on top of the preserved phase-A work; no geometry/collision/history changes",
+  "dataset": "fangbang-temple-v5 (?ds=fangbang-temple-v5)",
+  "tests": {
+    "command": "node --test tests/*.test.mjs",
+    "pass": 88, "fail": 0,
+    "batchFiles": [
+      "tests/fangbang_canvas_fit.test.mjs",
+      "tests/fangbang_entry_anchors.test.mjs",
+      "tests/fangbang_walk_session.test.mjs",
+      "tests/fangbang_anchor_probe.test.mjs (new: live-player coexistence regression)",
+      "tests/fangbang_result_json.test.mjs"
+    ],
+    "note": "fixtures in walk_session/entry_anchors updated to the new lane-a camera pose; no assertion weakened"
+  },
+  "browserEvidence": {
+    "tool": "node tools/player_experience_check.mjs after",
+    "env": "headless /usr/bin/google-chrome + SwiftShader + repo Playwright, vite dev server",
+    "checks": "22/22 pass (see after/report.json)",
+    "shots": [
+      "after/first-screen-1280.png (new lane-a street-look-in framing)",
+      "after/walk-a-in-lane.png (feet 44.0,-21.4 inside the 8m lane body)",
+      "after/walk-b-in-lane.png (feet 54.8,19.1 inside the v5 B pocket, s≈5.5)",
+      "after/walk-hud.png", "after/narrow-390.png", "after/review-panel-open.png", "after/v5-skins-props.png"
+    ],
+    "honesty": "all walk evidence is real page keyboard input through the production WalkController; explicit location selection is recorded as a teleport (explicit:true), never as walk evidence; automated tool run is NOT owner manual play"
+  },
+  "framebuffer": {
+    "wide": { "css": [1280, 649], "drawingBuffer": [1280, 649], "dpr": 1 },
+    "narrow390": { "css": [390, 675], "drawingBuffer": [390, 675], "noHorizontalOverflow": true },
+    "notDefault300x150": true
+  },
+  "safeAnchors": {
+    "mainStreet": { "position": [124.6, 0, 27.65], "yawRad": 1.3736, "source": "route.entries.bridgeStart", "validation": { "ok": true, "settledFeetY": 0.02, "advancedM": 3.3 } },
+    "templeFront": { "position": [-127.817, 0, 27.057], "validation": { "ok": true, "settledFeetY": 0.03, "advancedM": 3.3 } },
+    "laneA": { "position": [43.096, 0, -10.697], "validation": { "ok": true, "settledFeetY": 0.11, "advancedM": 3.3 } },
+    "laneB": { "position": [60.086, 0, 9.144], "validation": { "ok": true, "settledFeetY": 0.11, "advancedM": 3.3 } },
+    "allFourChipsVisible": ["主街", "庙前", "A弄", "B弄"]
+  },
+  "mainStreetRootCause": {
+    "finding": "lead-injected and confirmed: bridgeStart was NOT blocked by road geometry — the page created the live player WalkController (spawn = bridgeStart) BEFORE validating anchors, so the mainStreet probe capsule overlapped the live capsule and was rejected 'blocked at the mouth' (independent Rapier repro: same-point live controller flips validateAnchor ok->blocked on clear ground)",
+    "fix": "fangbangMain.load() now validates all anchors against the fully assembled static world BEFORE creating the live player controller; WalkController/validateAnchor also accept excludeColliderHandles so a probe never collides with a live player capsule (defensive, page passes it)",
+    "regression": "tests/fangbang_anchor_probe.test.mjs: baseline ok / coexisting live player ok / real wall still blocked / no ground still rejected"
+  },
+  "entryCamera": {
+    "id": "lane-a-street-look-in",
+    "old": { "positionGlb": [41.6, 1.6, -8.6], "targetGlb": [43.5, 1.3, -16.4] },
+    "new": { "positionGlb": [43.5, 1.6, -9.8], "targetGlb": [43.55, 1.2, -16.5] },
+    "why": "old oblique pose had the N05-restaurant-a doorframe 1.05m in front of the lens (raycast-proven); new pose is pulled back and aligned with the portal axis (portal at 43.545,-16.375): entrance fully in frame, 8m depth readable (after/first-screen-1280.png)",
+    "constraintHonored": "only this v5 camera entry moved; no building/GLB/collision geometry touched; verified clear via __fangbangRaycast + screenshot"
+  },
+  "walkThroughPortals": {
+    "laneA": { "in": "feet z -10.70 -> -20.85 (portal z=-16.375, into the 8m body)", "back": "z -> -11.54 (street side)", "stalled": false },
+    "laneB": { "in": "s(anchor-portal) -5.76 -> +5.56 through the old portal plane z≈14.25 into the v5 10m body", "back": "s -> -2.23 (clearly street side)", "stalled": false },
+    "inputChain": "keyboard W/S held via page keyboard events; positions polled from the live record; return legs are S-reverse (headless has no usable mouse-look for a 180° turn), labeled as such",
+    "poseContinuity": "V -> view -> real 行走 header button re-enter: street position preserved exactly; P pause/resume: feet unchanged; no sticky keys (paused W ignored)"
+  },
+  "ui": {
+    "reviewPanel": "default closed; 19 engineering cameras + cruise/clay/placeholder/save live inside it",
+    "playerFacing": "开始探索, 4 location chips, 操作说明 dialog open/close verified, HUD with P/V hints, no engineering jargon visible by default",
+    "relocations": "explicit chip choice teleports and records {explicit:true}; never presented as walking"
+  },
+  "build": {
+    "command": "vite build --outDir dist-player-exp-a",
+    "result": "built in ~1.1s, fangbang.html + 11 asset chunks, no pre-existing directory touched or deleted"
+  },
+  "unchangedByDesign": [
+    "old v4 lane geometry, collision-world walls, GLBs, route.json, budgets (budget overrun stays recorded as-is)",
+    "before/ artifacts and prior batch evidence",
+    "engineering panel full functionality"
+  ],
+  "openItems": [
+    "return legs use S-reverse instead of a mouse-look 180° turn — headless limitation, real input, honestly labeled; a human player turns with the mouse",
+    "manual full-play feel (turning, jumping, pacing) remains the lead's browser check by design",
+    "stage B art refinement of the A-lane entrance is a separate lead decision"
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "mode": "before",
+  "tool": "tools/player_experience_check.mjs",
+  "env": {
+    "chrome": "/usr/bin/google-chrome",
+    "headless": true,
+    "swiftshader": true,
+    "startedAt": "2026-09-20T03:36:53.061Z",
+    "server": "http://127.0.0.1:5360",
+    "finishedAt": "2026-09-20T03:37:09.763Z"
+  },
+  "checks": [
+    {
+      "name": "v5 page loaded + automatic route check passed",
+      "pass": true,
+      "detail": "tris=703049 route=true"
+    },
+    {
+      "name": "canvas drawingBuffer matches container CSS size at 1280x720 (±2px)",
+      "pass": false,
+      "detail": "css=1280,502 buffer=300,150"
+    },
+    {
+      "name": "buffer NOT the unfixed 300x150 default",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "name": "lane-a-street-look-in renders a real WebGL frame",
+      "pass": true,
+      "detail": "std=42.74"
+    },
+    {
+      "name": "narrow viewport 390px: no horizontal overflow",
+      "pass": true,
+      "detail": "scrollW=390 innerW=390"
+    },
+    {
+      "name": "narrow viewport drawingBuffer matches CSS",
+      "pass": false,
+      "detail": "css=390,109 buffer=300,150"
+    }
+  ],
+  "pass": false,
+  "load": {
+    "triangles": 703049,
+    "routeCheck": true,
+    "framebuffer": [
+      300,
+      150
+    ]
+  },
+  "canvas1280": {
+    "cssSize": [
+      1280,
+      502
+    ],
+    "appSize": [
+      1280,
+      502
+    ],
+    "drawingBuffer": [
+      300,
+      150
+    ],
+    "dpr": 1
+  },
+  "shots": [
+    "first-screen-1280.png"
+  ],
+  "canvasNarrow": {
+    "cssSize": [
+      390,
+      109
+    ],
+    "drawingBuffer": [
+      300,
+      150
+    ],
+    "scrollW": 390,
+    "innerW": 390,
+    "appSize": [
+      390,
+      109
+    ]
+  },
+  "beforeUi": {
+    "stats": "703,049 三角形 · 几何/材质/纹理 688/666/534\n本机资产 134.61 MB · 街道装配+东西延伸+庙轴线+占位街区\n巡游 PASS 去程至闭门前(z_local=-71.63)·返程达·端墙挡✓·前院东界✓·闭门挡",
+    "headerButtons": 23
+  }
+}

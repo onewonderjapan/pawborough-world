@@ -1,0 +1,304 @@
+{
+  "mode": "after",
+  "tool": "tools/player_experience_check.mjs",
+  "env": {
+    "chrome": "/usr/bin/google-chrome",
+    "headless": true,
+    "swiftshader": true,
+    "startedAt": "2026-09-20T04:28:12.252Z",
+    "server": "http://127.0.0.1:5360",
+    "finishedAt": "2026-09-20T04:29:26.189Z"
+  },
+  "checks": [
+    {
+      "name": "v5 page loaded + automatic route check passed",
+      "pass": true,
+      "detail": "tris=703049 route=true"
+    },
+    {
+      "name": "canvas drawingBuffer matches container CSS size at 1280x720 (±2px)",
+      "pass": true,
+      "detail": "css=1280,649 buffer=1280,649"
+    },
+    {
+      "name": "buffer NOT the unfixed 300x150 default",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "lane-a-street-look-in renders a real WebGL frame",
+      "pass": true,
+      "detail": "std=26.61"
+    },
+    {
+      "name": "narrow viewport 390px: no horizontal overflow",
+      "pass": true,
+      "detail": "scrollW=390 innerW=390"
+    },
+    {
+      "name": "narrow viewport drawingBuffer matches CSS",
+      "pass": true,
+      "detail": "css=390,675 buffer=390,675"
+    },
+    {
+      "name": "review panel exists and is closed by default",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "19 engineering camera buttons live inside the review panel",
+      "pass": true,
+      "detail": "got 19"
+    },
+    {
+      "name": "no engineering jargon in the default player-facing text",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "intro entry screen with 开始探索 + location chips (主街/庙前/A弄/B弄)",
+      "pass": true,
+      "detail": "主街/庙前/A弄/B弄"
+    },
+    {
+      "name": "操作说明 dialog opens and closes",
+      "pass": true,
+      "detail": "open=true closedAfter=true"
+    },
+    {
+      "name": "walk from A-lane framing spawns NEAR THE LANE (not the east end)",
+      "pass": true,
+      "detail": "feet=43.1,0,-10.7"
+    },
+    {
+      "name": "keyboard W walks from the A anchor THROUGH the portal (z=-16.4) into the 8m lane body",
+      "pass": true,
+      "detail": "z -10.70 -> -20.85 y=0.11 stalled=false"
+    },
+    {
+      "name": "keyboard S returns from inside lane A back out through the portal to the street",
+      "pass": true,
+      "detail": "z -20.85 -> -11.54 (S-reverse, no mouse-look in headless)"
+    },
+    {
+      "name": "V -> view -> real 行走 button re-enters walk and preserves the street position (no reset)",
+      "pass": true,
+      "detail": "btn=行走 43.21,0.11,-11.54 -> 43.21,0.11,-11.54"
+    },
+    {
+      "name": "explicit B-lane chip teleports to the B anchor and is recorded as an explicit relocation",
+      "pass": true,
+      "detail": "feet=60.09,0,9.14 relocations=[{\"anchorId\":\"laneB\",\"at\":1789878519741,\"explicit\":true}]"
+    },
+    {
+      "name": "keyboard W walks from the B anchor THROUGH the old portal (z≈14.25) into the v5 lane body (s>=5m)",
+      "pass": true,
+      "detail": "s -5.76 -> 5.56 feet=54.76,0.11,19.13 stalled=false"
+    },
+    {
+      "name": "keyboard S returns from inside lane B back OUT through the portal to the street side (s<=-1.5m)",
+      "pass": true,
+      "detail": "s 5.56 -> -2.23 feet=58.2,0.11,12.14"
+    },
+    {
+      "name": "P pauses (W ignored) and P resumes without moving",
+      "pass": true,
+      "detail": "paused feet=58.2,0.11,12.14 resumed feet=58.2,0.11,12.14"
+    },
+    {
+      "name": "walk mode renders a real WebGL frame",
+      "pass": true,
+      "detail": "std=31.71"
+    },
+    {
+      "name": "skins+props state loads with correct buffer size",
+      "pass": true,
+      "detail": "skins=21 props=38 buffer=1280,649"
+    },
+    {
+      "name": "skins+props renders a real WebGL frame",
+      "pass": true,
+      "detail": "std=57.02"
+    }
+  ],
+  "pass": true,
+  "load": {
+    "triangles": 703049,
+    "routeCheck": true,
+    "framebuffer": [
+      1280,
+      649
+    ]
+  },
+  "canvas1280": {
+    "cssSize": [
+      1280,
+      649
+    ],
+    "appSize": [
+      1280,
+      649
+    ],
+    "drawingBuffer": [
+      1280,
+      649
+    ],
+    "dpr": 1
+  },
+  "shots": [
+    "first-screen-1280.png"
+  ],
+  "canvasNarrow": {
+    "cssSize": [
+      390,
+      675
+    ],
+    "drawingBuffer": [
+      390,
+      675
+    ],
+    "scrollW": 390,
+    "innerW": 390,
+    "appSize": [
+      390,
+      675
+    ]
+  },
+  "ui": {
+    "reviewOpen": false,
+    "dataViewButtons": 19,
+    "jargonVisible": [],
+    "introVisible": true,
+    "startBtn": true,
+    "locationBtns": [
+      "主街",
+      "庙前",
+      "A弄",
+      "B弄"
+    ]
+  },
+  "walkA_start": {
+    "mode": "walk",
+    "feet": [
+      43.09600067138672,
+      0.002495336532592818,
+      -10.698702812194824
+    ],
+    "paused": false
+  },
+  "walkA_in": {
+    "start": [
+      43.09600067138672,
+      0.0032954692840576616,
+      -10.699403762817383
+    ],
+    "end": [
+      43.94624328613281,
+      0.1099753856658936,
+      -20.8525447845459
+    ],
+    "ms": 5564,
+    "stalled": false,
+    "label": "A-in"
+  },
+  "walkA_back": {
+    "start": [
+      43.94624328613281,
+      0.1099753856658936,
+      -20.8525447845459
+    ],
+    "end": [
+      43.206844329833984,
+      0.11010007858276372,
+      -11.536015510559082
+    ],
+    "ms": 4993,
+    "stalled": false,
+    "label": "A-back"
+  },
+  "walkA_afterV": [
+    43.206844329833984,
+    0.11010007858276372,
+    -11.536015510559082
+  ],
+  "walkB_relocate": {
+    "feet": [
+      60.08599853515625,
+      0.0007000446319580522,
+      9.144000053405762
+    ],
+    "relocations": [
+      {
+        "anchorId": "laneB",
+        "at": 1789878519741,
+        "explicit": true
+      }
+    ]
+  },
+  "walkB_in": {
+    "start": [
+      60.08599853515625,
+      0.001500177383422896,
+      9.144000053405762
+    ],
+    "end": [
+      54.75706100463867,
+      0.10983531475067143,
+      19.133012771606445
+    ],
+    "ms": 7716,
+    "stalled": false,
+    "label": "B-in"
+  },
+  "walkB_back": {
+    "start": [
+      54.75706100463867,
+      0.11009995937347417,
+      19.133012771606445
+    ],
+    "end": [
+      58.195980072021484,
+      0.11010007858276372,
+      12.139309883117676
+    ],
+    "ms": 5148,
+    "stalled": false,
+    "label": "B-back"
+  },
+  "pauseCheck": {
+    "p1": {
+      "paused": true,
+      "feet": [
+        58.195980072021484,
+        0.11010007858276372,
+        12.139309883117676
+      ]
+    },
+    "p2": [
+      58.195980072021484,
+      0.11010007858276372,
+      12.139309883117676
+    ]
+  },
+  "skinsProps": {
+    "triangles": 716685,
+    "skins": 21,
+    "props": 38,
+    "canvas": {
+      "cssSize": [
+        1280,
+        649
+      ],
+      "appSize": [
+        1280,
+        649
+      ],
+      "drawingBuffer": [
+        1280,
+        649
+      ],
+      "dpr": 1
+    },
+    "routeCheck": true
+  }
+}

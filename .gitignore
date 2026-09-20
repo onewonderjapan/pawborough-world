@@ -22,3 +22,5 @@ __pycache__/
 # C4: dist-compressed/ is a build output — reproduce with tools/build_compressed_dist.mjs
 # (its sources: committed world/**/ *.cm.glb + *.cm.json + the dist/ baseline)
 dist-compressed/
+# player-experience batch A: verification build output (fresh outDir per run)
+dist-player-exp-a/

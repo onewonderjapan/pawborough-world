@@ -1,18 +1,24 @@
-// Fangbang ↔ temple BRIDGE viewer (fangbang.html, ports 5296/5297).
-// One walkable world assembled from the delivered datasets:
-//   street assembly (world/street-reviewed.glb, loaded by WorldLoader)
-//   + west-extension surface (dataset manifest streetCompletion.surface —
-//     the WorldLoader extension point; visible faces ARE walkable ground)
-//   + east tail surface + seal wall (page-level GLB loads, byte-checked)
-//   + temple axis 8 GLBs (assets block via blockViews — the ONE production
-//     loader path; its walkable court faces join as a second ground trimesh)
-//   + block lifecycle for the placeholder districts (gray boxes, real
-//     colliders) and the refined shop blocks
-// Physics walls come from the dataset collision-world.json (337 records:
-// street 208 + seal wall 1 + temple 128 composed with T+yaw) — the single
-// wall authority; the temple assets block carries no sidecars, so nothing
-// can double. The route cruise is AUTOMATIC and honestly labeled
-// (manualWalkClaim: false) — manual full play is the lead's browser check.
+// Fangbang ↔ temple BRIDGE viewer (fangbang.html) — player-experience batch A
+// (20260920) rebuild of the page shell around the SAME world assembly:
+//   street assembly + west/east extension surfaces + temple axis blocks +
+//   placeholder districts + lanes (v5), single wall authority from the
+//   dataset collision-world.json, integrity checks unchanged.
+// What this batch changed:
+//   1. the canvas renders at the container's REAL CSS size (drawingBuffer =
+//      CSS × pixelRatio, ratio capped [1, 1.5]) with a ResizeObserver — the
+//      old page never called setSize and shipped the 300×150 default.
+//   2. view mode renders ON DEMAND (orbit change / resize / panel events);
+//      resource stats and the record pre are recomputed only when dirty or
+//      (while walking) on a 1s tick — never per frame. Walk stays one RAF +
+//      fixed-step physics through WalkController, the single authority.
+//   3. players get a clean entry (开始探索 + explicit start points); the 19
+//      engineering cameras, clay, placeholders, auto cruise, stats and the
+//      asset record live in the default-closed 审查工具 panel.
+//   4. walk entry uses VALIDATED safe anchors derived from route.json; view
+//      ↔ walk preserves the in-world pose (a mode switch is not a new game);
+//      P/Esc/pointer-lock loss pause cleanly with no sticky keys.
+// The route cruise is AUTOMATIC and honestly labeled (manualWalkClaim:false)
+// — manual full play stays the lead's browser check.
 import * as T from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
@@ -31,39 +37,46 @@ import { createBlockViews } from './world/blockViews.js';
 import { loadedSceneAssets, expectedTriangles } from './world/sceneAssets.js';
 import { compressedEnabled, installCompressedFetch } from './world/compressedState.js';
 import { applyViewVerified, loadGlbWithStats, saveEvidence, countResources } from './templeViewShared.js';
+import { resolvePixelRatio, applyCanvasFit } from './player/canvasFit.js';
+import { deriveEntryAnchors, validateAnchor } from './player/entryAnchors.js';
+import { WalkSession } from './player/walkSession.js';
 
 const app = document.querySelector('#app'), stats = document.querySelector('#stats'),
-  viewsEl = document.querySelector('#views'), noticeEl = document.querySelector('#notice');
+  viewsEl = document.querySelector('#views'), noticeEl = document.querySelector('#notice'),
+  introEl = document.querySelector('#intro'), stageEl = document.querySelector('#stage'),
+  startBtn = document.querySelector('#btn-start'), locationsEl = document.querySelector('#locations'),
+  locationsWalkEl = document.querySelector('#locations-walk'), hudEl = document.querySelector('#hud'),
+  hudState = document.querySelector('#hud-state'), reviewEl = document.querySelector('#review'),
+  engLog = document.querySelector('#eng-log');
 
-// Expansion batch 20260917: ?ds=<dataset> selects the world dataset
-// (default 'fangbang-temple' — unchanged behavior for every existing URL).
-// ?skins=1 (second package) appends the street-sidefaces skins.
+// ?ds=<dataset> selects the world dataset (default 'fangbang-temple').
+// ?dpr=<1..1.5> render ratio (default 1). ?review=1 opens the review panel.
 const PARAMS = new URLSearchParams(location.search);
 const DATASET_ID = PARAMS.get('ds') || 'fangbang-temple';
 const WANT_SKINS = PARAMS.get('skins') === '1';
-// ?props=1 (corridor batch 20260919, default OFF): the revocable street life
-// props layer — 38 instances of five 1990s objects (world/street-props/)
 const WANT_PROPS = PARAMS.get('props') === '1';
-// H2 compressed variant (adoption batch 20260919, DEFAULT ON): every GLB
-// fetch is repointed to its `*.cm.glb` sibling and byte-checked manifests to
-// `review-manifest.cm.json` (true compressed bytes/sha) — see
-// src/world/compressedState.js. `?compressed=0` returns to the original
-// bytes; datasets without a compressed manifest stay entirely original
-// (manifest and GLBs must share one variant). The actual install (probe +
-// rewrite) happens at the top of load().
 export let COMPRESSED = compressedEnabled(PARAMS);
 const BASE = `./world/${DATASET_ID}/`;
 const DATASET_TAG = DATASET_ID === 'fangbang-temple' ? 'fangbang' : `fangbang-${DATASET_ID}`;
+const PIXEL_RATIO = resolvePixelRatio(PARAMS.get('dpr'));
+
+// ---- loading stages (#6): real stages, no invented percentages --------------
+function setStage(text) {
+  if (stageEl) stageEl.textContent = text;
+  if (stats) stats.textContent = text;
+}
+function engNote(text) {
+  if (engLog) engLog.textContent += (engLog.textContent ? '\n' : '') + text;
+}
 
 const renderer = new T.WebGLRenderer({ antialias: true });
-renderer.setPixelRatio(1);
 renderer.outputColorSpace = T.SRGBColorSpace;
 renderer.toneMapping = T.AgXToneMapping;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = T.PCFSoftShadowMap;
 renderer.info.autoReset = false;
 app.appendChild(renderer.domElement);
-renderer.domElement.setAttribute('aria-label', '方浜中路桥接世界三维街景');
+renderer.domElement.setAttribute('aria-label', '方浜中路三维街景');
 
 const scene = new T.Scene();
 scene.background = new T.Color(0xdde3df);
@@ -97,6 +110,17 @@ controls.minDistance = .5;
 controls.maxDistance = 320;
 controls.maxPolarAngle = Math.PI;
 
+// ---- #1 real canvas fit: buffer = container CSS × ratio, aspect follows ----
+let needsRender = true;
+const invalidate = () => { needsRender = true; };
+function fit() {
+  if (!applyCanvasFit(renderer, camera, app.clientWidth, app.clientHeight, PIXEL_RATIO)) return;
+  invalidate();
+}
+fit();
+new ResizeObserver(fit).observe(app);
+window.addEventListener('resize', fit);
+
 const world = new T.Group();
 world.name = 'fangbang-bridge-world';
 scene.add(world);
@@ -105,18 +129,48 @@ const clay = new T.MeshStandardMaterial({ color: 0xb8b7ae, roughness: .86 });
 let session = null, controller = null, blocks = null, cruise = null, skinsStats = null, skInstancesCount = 0, viewLabelOverride = null;
 let propsStats = null;   // ?props=1 street life layer stats (E batch)
 let mode = 'view', paused = false, ready = false, clayOn = false, selected = null;
-let cameras = [], manifest = null, lastRender = {}, loadStats = {};
+let cameras = [], manifest = null, loadStats = {};
 let routeCheck = null, cameraCheck = null, resetCount = 0, lastCruiseStatus = null;
+let walk = null, safeAnchors = [];   // WalkSession + validated entry anchors
+let lastViewFov = 55;
 let placeholderPref = true;   // the gray placeholder districts ARE this page's context
 const keys = { w: false, a: false, s: false, d: false };
 
-function resources() { return countResources(world, clay); }
+// ---- #2 on-demand rendering + throttled stats/record ------------------------
+let resCache = null, resDirty = true;
+controls.addEventListener('change', invalidate);
+const ensureResources = () => { if (resDirty || resCache === null) { resCache = countResources(world, clay); resDirty = false; } };
+const markResourcesDirty = () => { resDirty = true; };
+let lastHudAt = 0, lastRecordAt = 0;
+function refreshHud(nowMs, force = false) {
+  if (!force && nowMs - lastHudAt < 300) return;
+  lastHudAt = nowMs;
+  if (mode === 'walk') {
+    hudState.textContent = paused
+      ? '已暂停 · P 或点击画面继续 · V 返回取景'
+      : `位置 ${controller.feetPosition()[0].toFixed(1)}, ${controller.feetPosition()[2].toFixed(1)} · P 暂停 · V 返回取景`;
+  }
+}
+function refreshRecord(nowMs, force = false) {
+  if (!force && nowMs - lastRecordAt < 1000) return;
+  lastRecordAt = nowMs;
+  if (mode === 'walk') markResourcesDirty();   // block lifecycle may have swapped geometry
+  ensureResources();
+  stats.textContent = mode === 'walk'
+    ? `行走模式 · 脚底 (${controller.feetPosition().map((v) => v.toFixed(1)).join(', ')}) ${paused ? '· 已暂停' : ''}`
+    : `${resCache.triangles.toLocaleString()} 三角形 · 几何/材质/纹理 ${resCache.uniqueGeometries}/${resCache.uniqueMaterials}/${resCache.uniqueTextures}\n`
+      + `本机资产 ${((loadStats.bytesTotal || 0) / 1e6).toFixed(2)} MB · 街道装配+东西延伸+庙轴线+占位街区\n`
+      + `巡游 ${routeCheck ? (routeCheck.pass ? 'PASS ' + routeCheck.summary : 'FAIL ' + (routeCheck.summary || routeCheck.error)) : '—（自动执行，非人工试玩）'}`;
+  document.querySelector('#record').textContent = JSON.stringify(record(), null, 2);
+}
 
 function record() {
+  ensureResources();
+  const snap = walk ? walk.snapshot() : null;
   return {
     dataset: DATASET_ID, view: selected, mode, paused, clay: clayOn, ready,
     skins: skinsStats, propsStats,
-    resources: resources(),
+    resources: resCache,
     trianglesExpected: session
       ? expectedTriangles(manifest.placedTriangles, [
           ...(session.sceneInventory ?? []),
@@ -135,8 +189,13 @@ function record() {
       capsuleFeet: controller ? controller.feetPosition() : null, eyeHeightM: 1.6, capsuleRadiusM: .35,
       autoPhysicsCruise: lastCruiseStatus,
       manualWalkClaim: false,
+      session: snap ? { mode: snap.mode, paused: snap.paused, spawnCount: snap.spawnCount,
+        explicitRelocations: snap.relocations, pose: snap.pose } : null,
       blocks: blocks ? { active: blocks.activeIds(), epoch: blocks.epoch } : null,
     },
+    safeAnchors: safeAnchors.map((a) => ({ id: a.id, labelZh: a.labelZh,
+      position: a.position.map((v) => +v.toFixed(3)), yawRad: +(a.yaw ?? 0).toFixed(4),
+      source: a.source, validation: a.validation })),
     presentation: {
       placeholdersVisible: mode === 'walk' ? true : placeholderPref,
       viewPreference: placeholderPref,
@@ -149,11 +208,16 @@ function record() {
       : null,
     ownerAdopted: false,
     browserRendered: true,
-    framebuffer: renderer.getSize(new T.Vector2()).toArray(),
+    framebuffer: [renderer.domElement.width, renderer.domElement.height],
+    framebufferCss: [app.clientWidth, app.clientHeight],
+    pixelRatio: PIXEL_RATIO,
     lighting: { shadows: renderer.shadowMap.enabled, toneMapping: 'AgX', exposure: 1, sunIntensity: 2.4 },
   };
 }
+let lastRender = {};
 
+// The raw draw only: submit the scene, sample renderer.info. No traversals,
+// no DOM writes — those live in the throttled refreshers above.
 function render() {
   if (!ready) return;
   const near = mode === 'view' ? Math.max(.05, Math.min(2, camera.position.distanceTo(controls.target) * .003)) : .1;
@@ -162,66 +226,109 @@ function render() {
   const started = performance.now();
   renderer.render(scene, camera);
   lastRender = { callsIncludingShadow: renderer.info.render.calls, trianglesIncludingShadow: renderer.info.render.triangles, cpuSubmitMs: +(performance.now() - started).toFixed(2) };
-  const r = resources();
-  stats.textContent = mode === 'walk'
-    ? `行走模式 · 脚底 (${controller.feetPosition().map((v) => v.toFixed(1)).join(', ')}) ${paused ? '· 已暂停' : ''}\nWASD 移动 · 鼠标环视(点击画面锁定) · 空格跳 · P 暂停 · V 返回取景`
-    : `${r.triangles.toLocaleString()} 三角形 · 几何/材质/纹理 ${r.uniqueGeometries}/${r.uniqueMaterials}/${r.uniqueTextures}\n`
-      + `本机资产 ${((loadStats.bytesTotal || 0) / 1e6).toFixed(2)} MB · 街道装配+东西延伸+庙轴线+占位街区\n`
-      + `巡游 ${routeCheck ? (routeCheck.pass ? 'PASS ' + routeCheck.summary : 'FAIL ' + (routeCheck.summary || routeCheck.error)) : '—（自动执行，非人工试玩）'}`;
-  document.querySelector('#record').textContent = JSON.stringify(record(), null, 2);
 }
 
 function setView(id) {
   const v = cameras.find((c) => c.id === id);
   if (!v) return;
-  if (mode === 'walk') setMode('view');
+  if (mode === 'walk') exitWalk();
   selected = id;
   camera.aspect = app.clientWidth / app.clientHeight;
   cameraCheck = applyViewVerified(camera, controls, v);
+  lastViewFov = v.verticalFovDegrees;
   for (const b of viewsEl.querySelectorAll('[data-view]')) b.classList.toggle('on', b.dataset.view === id);
+  markResourcesDirty();
   render();
+  refreshRecord(performance.now(), true);
 }
 
 function notice(text) { noticeEl.textContent = text; }
 
-// ---- walk mode ---------------------------------------------------------------
+// ---- walk mode (#4): validated anchors + pose-preserving session -------------
 function resetController(countsAsReset) {
   const s = controller.spawnRef;
-  controller.body.setTranslation({ x: s.x, y: s.y + controller.centerOffset, z: s.z }, true);
-  controller.vy = 0;
-  controller.yaw = Math.PI / 2;   // face west (-X), down the bridge route
-  controller.pitch = 0;
-  controller.clearKeys();
+  controller.teleport([s.x, s.y, s.z], Math.PI / 2, 0);   // face west (-X), down the bridge route
   controller.resume();
   cruise = null;
   if (countsAsReset) resetCount++;
 }
 
-function setMode(next) {
-  if (!ready || !controller || next === mode) return;
-  if (next === 'walk') {
-    resetController(true);          // entering walk = reset to the bridge start
-    camera.fov = 68;
-    camera.updateProjectionMatrix();
-    renderer.domElement.requestPointerLock?.();
-  } else {
-    document.exitPointerLock?.();
-    keys.w = keys.a = keys.s = keys.d = false;
-    mode = 'view';
-    controls.enabled = true;
-    setView(selected);
-    syncPlaceholderUi();
-    sun.shadow.needsUpdate = true;
-    render();
-    return;
-  }
-  mode = next;
+function enterWalk() {
+  if (!ready || !controller || !walk || mode === 'walk') return;
+  const r = walk.beginWalk(controller, camera.position.toArray());
+  if (!r) return;
+  if (r.spawned === null && r.error) { notice('暂无可用的安全落脚点，请稍候重试。'); return; }
+  mode = 'walk';
   paused = false;
+  camera.fov = 68;
+  camera.updateProjectionMatrix();
   controls.enabled = false;
-  syncPlaceholderUi();
+  introEl.style.display = 'none';
+  hudEl.hidden = false;
+  renderer.domElement.requestPointerLock?.();
+  if (r.spawned) {
+    const { labelZh, displaced } = r.spawned;
+    notice(displaced
+      ? `取景位置不在可行走地面，已从最近的安全入口「${labelZh}」进入。`
+      : `从「${labelZh}」开始探索。`);
+  } else {
+    notice('继续上一次的位置行走。');
+  }
+  syncChips();
+  syncFramingButton();
   sun.shadow.needsUpdate = true;
-  render();
+  markResourcesDirty();
+  invalidate();
+  refreshHud(performance.now(), true);
+  refreshRecord(performance.now(), true);
 }
+
+function exitWalk() {
+  if (mode !== 'walk') return;
+  walk.endWalk(controller);
+  mode = 'view';
+  paused = false;
+  cruise = null;
+  keys.w = keys.a = keys.s = keys.d = false;
+  document.exitPointerLock?.();
+  controls.enabled = true;
+  // keep the player's spot: orbit continues from where they stand
+  camera.fov = lastViewFov;
+  const fwd = new T.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
+  controls.target.copy(camera.position).addScaledVector(fwd, 8);
+  controls.update();
+  hudEl.hidden = true;
+  syncChips();
+  syncFramingButton();
+  sun.shadow.needsUpdate = true;
+  markResourcesDirty();
+  invalidate();
+  refreshRecord(performance.now(), true);
+}
+
+// explicit location choice: a TELEPORT, recorded as relocation (never walk
+// evidence). While viewing it also previews the location's framing camera.
+function pickLocation(id) {
+  if (!walk || mode !== 'view' && mode !== 'walk') return;
+  const anchor = safeAnchors.find((a) => a.id === id && a.validation?.ok);
+  if (!anchor) return;
+  const r = walk.relocate(controller, id);
+  if (!r.ok) return;
+  if (mode === 'view') {
+    const previewView = LOCATION_VIEWS[id]?.find((v) => cameras.some((c) => c.id === v));
+    if (previewView) setView(previewView);
+  }
+  notice(mode === 'walk' ? `已移动到「${anchor.labelZh}」口（显式定位）。` : `出发点已设为「${anchor.labelZh}」。`);
+  resetCount++;   // explicit relocation is a spawn change, honestly counted
+  refreshHud(performance.now(), true);
+  refreshRecord(performance.now(), true);
+}
+const LOCATION_VIEWS = {
+  mainStreet: ['east-junction', 'junction-west'],
+  templeFront: ['shanmen-from-road'],
+  laneA: ['lane-a-street-look-in'],
+  laneB: ['lane-b-street-look-in'],
+};
 
 async function json(path) {
   const r = await fetch(path);
@@ -244,9 +351,7 @@ async function runRouteCheck() {
     // forecourt -> threshold -> temple axis -> STAIR FOOT. The capsule cannot
     // climb the 0.17m platform risers (temple_dadian_passage evidence:
     // blocked safely), so the honest terminus is the stair foot; the doors
-    // stay covered by the dadian-doors negative. Stall time inside the stair
-    // zone (temple-local z < -38) is the expected blocked-at-riser state and
-    // does not count as a joint stall.
+    // stay covered by the dadian-doors negative.
     const T = manifest.mapRegistration.templePlacement.translationGlb;
     const YAW = manifest.mapRegistration.templePlacement.yawRad;
     const CY = Math.cos(YAW), SY = Math.sin(YAW);
@@ -254,10 +359,6 @@ async function runRouteCheck() {
     const c = controller;
     resetController(false);
     const driver = new CruiseDriver({ controller: c, waypoints: route.mainStreet, reachRadius: 1.4, timeoutSteps: 60 * 900 });
-    // joint-stall zones (route.fallCheck: 拼接缝无 >1s 卡顿): the frozen-road/
-    // west-extension seam (x -4..1) and the frozen-road/east-tail seam (x 84..89).
-    // A normal step is ~0.023m at 1.4m/s, so standstill means < 0.008m/step;
-    // slow navigation elsewhere is legitimate and not counted.
     const jointZone = (p) => (p[0] > -4 && p[0] < 1) || (p[0] > 84 && p[0] < 89);
     let guard = 60 * 1200;
     let lastPos = c.feetPosition(), stillS = 0, jointStallS = 0;
@@ -342,8 +443,6 @@ async function runRouteCheck() {
     c.dispose();
     return out;
   };
-  // negatives matched by id (v3 replaces the shop-165 placeholder probe with
-  // westshop facade/strip probes; v2 keeps its delivered set unchanged)
   const negs = Object.fromEntries(route.negatives.map((n) => [n.id, n]));
   {
     const n = negs['seal-wall'];
@@ -353,8 +452,6 @@ async function runRouteCheck() {
     results.sealWall = r;
   }
   if (negs['shop-165-placeholder']) {
-    // stops AT the placeholder box: OBB surface distance in (0, maxObbGapM]
-    // (the capsule may slide along the rotated face — never inside it)
     const n = negs['shop-165-placeholder'];
     const r = runNeg(n, n.dir, 4);
     const b = shopOBB['shop-165'];
@@ -367,8 +464,6 @@ async function runRouteCheck() {
     results.shopPlaceholder = r;
   }
   {
-    // R1-02: the forecourt side edges carry sample-segment boundary walls
-    // (temple-local x=+/-9, h 0.9) — the capsule is stopped deterministically.
     const n = negs['forecourt-east'];
     const r = runNeg(n, n.dir, 5);
     r.assert = n.assert;
@@ -387,8 +482,6 @@ async function runRouteCheck() {
     results.dadianDoors = r;
   }
   if (negs['westshop-facade']) {
-    // v3: the upgraded storefront's front wall stops the capsule on the road
-    // side (the walker never crosses the facade line, never falls)
     const n = negs['westshop-facade'];
     const r = runNeg(n, n.dir, 4);
     r.assert = n.assert;
@@ -396,7 +489,6 @@ async function runRouteCheck() {
     results.westshopFacade = r;
   }
   if (negs['weststrip-wall']) {
-    // v3: a >1.5 m gap strip blocks crossing between two west-band shops
     const n = negs['weststrip-wall'];
     const r = runNeg(n, n.dir, 4);
     r.assert = n.assert;
@@ -423,40 +515,74 @@ async function runRouteCheck() {
     ms: +(performance.now() - t0).toFixed(0),
     waypoints: route.mainStreet.length,
   };
-  render();
-  notice(pass
-    ? `巡游路线检查：全程往返 + ${negCount} 负例全部通过（automatic，非人工试玩）。`
-    : '巡游路线检查存在失败项，详见记录。');
+  engNote(`巡游路线检查：${pass ? `全程往返 + ${negCount} 负例全部通过` : '存在失败项'}（automatic，非人工试玩）。`);
+  if (!pass) notice('路线自检发现异常，详见审查工具。');
+  markResourcesDirty();
+  invalidate();
+  refreshRecord(performance.now(), true);
   return pass;
 }
 
-// ---- input wiring (same chain as the sibling pages) ---------------------------
+// ---- input wiring --------------------------------------------------------------
 const KEYMAP = { KeyW: 'w', KeyA: 'a', KeyS: 's', KeyD: 'd' };
 window.addEventListener('keydown', (e) => {
   if (mode !== 'walk') return;
-  if (e.code === 'KeyV') { setMode('view'); return; }
-  if (e.code === 'KeyP') { paused = !paused; if (paused) controller.pause(); else controller.resume(); notice(paused ? '行走已暂停（P 继续）。' : '继续行走。'); render(); return; }
+  if (e.code === 'KeyV') { exitWalk(); return; }
+  if (e.code === 'KeyP') {
+    const r = paused ? walk.resume(controller) : walk.pause(controller, 'user');
+    if (r.changed) {
+      paused = r.paused;
+      notice(paused ? '行走已暂停（P 或点击画面继续）。' : '继续行走。');
+      refreshHud(performance.now(), true);
+      invalidate();
+    }
+    return;
+  }
   if (paused) return;
   const k = KEYMAP[e.code];
   if (k) { keys[k] = true; e.preventDefault(); }
   if (e.code === 'Space') { controller.setJump(true); e.preventDefault(); }
 });
 window.addEventListener('keyup', (e) => { const k = KEYMAP[e.code]; if (k) keys[k] = false; });
-window.addEventListener('blur', () => { keys.w = keys.a = keys.s = keys.d = false; if (mode === 'walk' && !paused) { paused = true; controller.pause(); } render(); });
-renderer.domElement.addEventListener('click', () => { if (mode === 'walk' && !paused && document.pointerLockElement !== renderer.domElement) renderer.domElement.requestPointerLock(); });
+window.addEventListener('blur', () => {
+  keys.w = keys.a = keys.s = keys.d = false;
+  if (mode === 'walk' && walk) {
+    const r = walk.blur(controller);
+    if (r.changed) { paused = true; notice('窗口失去焦点，行走已暂停（P 或点击画面继续）。'); refreshHud(performance.now(), true); invalidate(); }
+  }
+});
+// Esc releases the pointer lock -> pause here (never lose the spot, never
+// leave mouse-look half-armed)
+document.addEventListener('pointerlockchange', () => {
+  if (mode === 'walk' && !paused && document.pointerLockElement !== renderer.domElement) {
+    const r = walk.pointerLockLost(controller);
+    if (r.changed) { paused = true; notice('已释放鼠标：点击画面或按 P 继续行走。'); refreshHud(performance.now(), true); invalidate(); }
+  }
+});
+renderer.domElement.addEventListener('click', () => {
+  if (mode !== 'walk') return;
+  if (paused) {
+    const r = walk.resume(controller);
+    if (r.changed) paused = false;
+    refreshHud(performance.now(), true);
+  }
+  if (!paused && document.pointerLockElement !== renderer.domElement) renderer.domElement.requestPointerLock();
+});
 document.addEventListener('mousemove', (e) => {
   if (mode === 'walk' && !paused && document.pointerLockElement === renderer.domElement)
     controller.look(e.movementX * .0023, e.movementY * .0023);
 });
 
-// ---- frame loop -----------------------------------------------------------------
+// ---- frame loop: ONE RAF; walk = fixed-step physics + continuous draw;
+//      view = render only when something changed -----------------------------
 let lastT = null;
 function frame(t) {
   requestAnimationFrame(frame);
   if (!ready) return;
   const dt = lastT === null ? .016 : Math.min(.25, (t - lastT) / 1000);
   lastT = t;
-  if (mode === 'walk' && !paused) {
+  const walking = mode === 'walk';
+  if (walking && !paused) {
     if (cruise) {
       if (!cruise.tick(dt)) { lastCruiseStatus = cruise.status(); cruise = null; }
     } else {
@@ -464,14 +590,17 @@ function frame(t) {
       controller.setMoveInput(f, r);
     }
     controller.step(dt);
-  }
-  if (mode === 'walk') {
     const eye = controller.eyePosition();
     camera.position.set(...eye);
     applyWalkOrientation(camera, controller.pitch, controller.yaw);
     if (blocks) blocks.update(...controller.feetPosition());
+    refreshHud(t);
+    refreshRecord(t);
   }
-  render();
+  if ((walking && !paused) || needsRender) {
+    needsRender = false;
+    render();
+  }
 }
 
 function applyPlaceholderDisplay(visible) {
@@ -486,6 +615,15 @@ function syncPlaceholderUi() {
   box.disabled = mode === 'walk';
   box.parentElement.classList.toggle('on', mode === 'walk' || placeholderPref);
 }
+function syncChips() {
+  const show = mode === 'walk';
+  locationsWalkEl.style.display = show ? 'flex' : 'none';
+}
+function syncFramingButton() {
+  const b = document.querySelector('#btn-framing');
+  if (!b) return;
+  b.textContent = mode === 'walk' ? '取景' : (introEl.style.display === 'none' ? '行走' : '取景');
+}
 
 function setupButtons() {
   for (const c of cameras) {
@@ -495,17 +633,17 @@ function setupButtons() {
     b.onclick = () => setView(c.id);
     viewsEl.appendChild(b);
   }
+  const toolsEl = document.querySelector('#tools');
   const walkBtn = document.createElement('button');
   walkBtn.id = 'btn-walk';
   walkBtn.textContent = '行走模式';
-  walkBtn.onclick = () => setMode(mode === 'walk' ? 'view' : 'walk');
-  viewsEl.appendChild(walkBtn);
+  walkBtn.onclick = () => (mode === 'walk' ? exitWalk() : enterWalk());
+  toolsEl.appendChild(walkBtn);
   const cruiseBtn = document.createElement('button');
   cruiseBtn.textContent = '路线巡游检查（自动）';
   cruiseBtn.onclick = async () => { cruiseBtn.disabled = true; await runRouteCheck(); cruiseBtn.disabled = false; };
-  viewsEl.appendChild(cruiseBtn);
+  toolsEl.appendChild(cruiseBtn);
   const phLabel = document.createElement('label');
-  phLabel.style.cssText = 'display:inline-flex;align-items:center;gap:4px;padding:5px 9px;border:1px solid #c7c6b9;border-radius:3px;background:#f8f5ed;cursor:pointer;user-select:none';
   const phBox = document.createElement('input');
   phBox.type = 'checkbox';
   phBox.id = 'chk-placeholder';
@@ -514,11 +652,13 @@ function setupButtons() {
     const prev = placeholderPref;
     placeholderPref = phBox.checked;
     try { applyPlaceholderDisplay(placeholderPref); } catch (e) { placeholderPref = prev; phBox.checked = prev; notice('占位显示切换失败：' + e.message); }
-    render();
+    markResourcesDirty();
+    invalidate();
+    refreshRecord(performance.now(), true);
   };
   phLabel.appendChild(phBox);
   phLabel.appendChild(document.createTextNode('占位街区'));
-  viewsEl.appendChild(phLabel);
+  toolsEl.appendChild(phLabel);
   const clayBtn = document.createElement('button');
   clayBtn.textContent = '灰模';
   clayBtn.onclick = () => {
@@ -526,13 +666,16 @@ function setupButtons() {
     scene.overrideMaterial = clayOn ? clay : null;
     clayBtn.classList.toggle('on', clayOn);
     sun.shadow.needsUpdate = true;
-    render();
+    markResourcesDirty();
+    invalidate();
+    refreshRecord(performance.now(), true);
   };
-  viewsEl.appendChild(clayBtn);
+  toolsEl.appendChild(clayBtn);
   const save = document.createElement('button');
   save.textContent = '保存实测图';
   save.onclick = async () => {
     if (!ready) return;
+    markResourcesDirty();
     render();
     const image = renderer.domElement.toDataURL('image/jpeg', .94);
     const phHidden = mode !== 'walk' && !placeholderPref;
@@ -541,22 +684,49 @@ function setupButtons() {
       notice('当前WebGL画面与数据已保存。');
     } catch (e) { notice(e.message); }
   };
-  viewsEl.appendChild(save);
+  toolsEl.appendChild(save);
+}
+
+function setupPlayerUi() {
+  startBtn.onclick = () => enterWalk();
+  document.querySelector('#btn-framing').onclick = () => {
+    if (mode === 'walk') { exitWalk(); return; }
+    if (introEl.style.display !== 'none') { introEl.style.display = 'none'; syncFramingButton(); notice('自由取景：拖动旋转，滚轮缩放。「行走」进入街面。'); return; }
+    enterWalk();
+  };
+  document.querySelector('#btn-help').onclick = () => { document.querySelector('#help').hidden = false; };
+  document.querySelector('#help-close').onclick = () => { document.querySelector('#help').hidden = true; };
+  document.querySelector('#btn-review').onclick = () => { reviewEl.open = !reviewEl.open; fit(); };
+  reviewEl.addEventListener('toggle', () => { markResourcesDirty(); invalidate(); fit(); refreshRecord(performance.now(), true); });
+  if (PARAMS.get('review') === '1') reviewEl.open = true;
+  const mkChip = (a) => {
+    const b = document.createElement('button');
+    b.textContent = a.labelZh;
+    b.dataset.location = a.id;
+    b.onclick = () => pickLocation(a.id);
+    return b;
+  };
+  const valid = safeAnchors.filter((a) => a.validation?.ok);
+  for (const a of valid) {
+    locationsEl.appendChild(mkChip(a));
+    locationsWalkEl.appendChild(mkChip(a));
+  }
+  if (!valid.length) document.querySelector('#intro .loc-label').textContent = '出发点（载入后自动选择安全入口）';
 }
 
 // ---- load -----------------------------------------------------------------------
 async function load() {
   const t0 = performance.now();
+  setStage('正在初始化物理引擎…');
   await RAPIER.init();
   COMPRESSED = await installCompressedFetch(BASE, COMPRESSED);
+  setStage('正在读取桥接世界清单…');
   const camContract = await json(BASE + 'cameras.json');
   cameras = camContract.cameras;
   manifest = await json(BASE + 'review-manifest.json');
 
+  setStage('正在装配街道与延伸面…');
   session = await loadWorld({ RAPIER, baseUrl: BASE, renderer });
-  // manifest.streetCompletion.surface (the west extension) is already inside
-  // the session root; the east tail surface + the seal wall load here,
-  // byte-checked against the manifest
   const eastTail = manifest.streetCompletion.eastTailSurface;
   const tail = await loadGlbWithStats(eastTail.path, 'east-tail-surface', { renderer, baseUrl: './' });
   if (tail.bytes !== eastTail.bytes) throw new Error(`east tail surface bytes ${tail.bytes} != manifest ${eastTail.bytes}`);
@@ -565,10 +735,6 @@ async function load() {
   const wall = await loadGlbWithStats(wallInfo.path, 'west-seal-wall', { renderer, baseUrl: BASE });
   if (wall.bytes !== wallInfo.bytes) throw new Error(`seal wall bytes ${wall.bytes} != manifest ${wallInfo.bytes}`);
   world.add(wall.root);
-  // east band (adoption batch 20260919, G5): the east-extension surface joins
-  // the walkable ground via its sctail__ names (extraMeshes traverse below);
-  // the sample end wall renders page-level, its collider rides in the dataset
-  // collision-world.json
   let eastSurfaceInfo = null, eastWallInfo = null, eastSurface = null, eastWall = null;
   if (manifest.eastExtension?.surface) {
     eastSurfaceInfo = manifest.eastExtension.surface;
@@ -582,17 +748,13 @@ async function load() {
   }
   world.add(session.root);
 
-  // ?skins=1 (expansion batch 20260917, default OFF): append the
-  // street-sidefaces skins — world-coord GLBs at identity + their thin-box
-  // colliders into the SAME physics world
   if (WANT_SKINS) {
+    setStage('正在贴附沿街立面…');
     const skManifest = await json('./world/street-sidefaces/review-manifest.json');
     const skCollision = await json('./world/street-sidefaces/collision-world.json');
     const skInstances = await json('./world/street-sidefaces/instances.json');
     const skinGLBs = new Map();
     let skinBytes = 0;
-    // M-batch skins are baked in world coords (identity placement); A-batch
-    // centered skins are instanced per visible face (obbToWorld semantics)
     let placedTris = 0;
     const sources = new Map(); // glb -> parsed root (kept OUT of the scene)
     const loadSkinSource = async (k) => {
@@ -626,10 +788,8 @@ async function load() {
       colliders: skCollision.colliders.length, manifest: skManifest.datasetId };
   }
 
-  // ?props=1 (corridor batch 20260919, default OFF, revocable): street life
-  // props — 38 planned instances (E1 planner: wall distance, route corridor,
-  // SAT vs world colliders), thin-box collisions, awnings at 2.85m no collision
   if (WANT_PROPS) {
+    setStage('正在布置街面物件…');
     const prManifest = await json('./world/street-props/review-manifest.json');
     const prInstances = await json('./world/street-props/instances.json');
     const prCollision = await json('./world/street-props/collision.json');
@@ -664,15 +824,7 @@ async function load() {
       for (const v of Object.values(m)) if (v?.isTexture) v.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
   });
 
-  // controller + block lifecycle FIRST (asset blocks load their GLBs here),
-  // then the integrity check over the fully assembled scene
-  const start = session.route.entries.bridgeStart;
-  controller = new WalkController({
-    RAPIER, physics: session.physics,
-    capsule: { ...session.capsule, spawn: [start[0], session.spawn.y, start[2]] },
-  });
-  controller.spawnRef = { x: start[0], y: session.spawn.y, z: start[2] };
-
+  setStage('正在装配街区与庙轴线…');
   blocks = new BlockManager({
     RAPIER, physics: session.physics, views: createBlockViews(scene, session), dataset: session.blocks,
     physicsAlive: () => !session.disposed,
@@ -681,22 +833,12 @@ async function load() {
   for (const id of blocks.assetBlockIds()) await blocks.applyAssets(id);
   await blocks.loadBlock('block-adjacent-east');
   await blocks.loadBlock('block-adjacent-west');
-  // R1-02: ?revoke=<blockId> lets a reviewer see the dataset WITHOUT an
-  // assets block — its replaced placeholders reappear as gray boxes (at
-  // their retired glbPoints in this dataset copy)
   const revokeId = PARAMS.get('revoke');
   if (revokeId && blocks.blocks.get(revokeId)) await blocks.revokeAssets(revokeId);
   blocks.setPlaceholdersVisible(placeholderPref);
   world.updateMatrixWorld(true);
 
-  // honest asset inventory: base assembly + west surface (WorldLoader-checked)
-  // + every autoApply asset block (temple axis, refined shops), all matched to
-  // manifest bytes/sha — a missing entry fails loudly instead of shipping
-  // made-up numbers
-  // only blocks actually ON SCREEN count: ?revoke=<id> unloads that assets
-  // block before this point, so its assets are gone from the scene — the
-  // expectation follows reality (session.blocks is the dataset JSON; the
-  // BlockManager instance lives in `blocks`)
+  setStage('正在核对资产完整性…');
   const revokedBlock = PARAMS.get('revoke');
   const assetBlocks = session.blocks.blocks.filter((b) => b.kind === 'assets' && b.autoApply && b.id !== revokedBlock);
   const manifestAssets = [
@@ -704,8 +846,8 @@ async function load() {
     ...(manifest.streetCompletion?.assets ?? []),
     ...(manifest.templeAxis?.assets ?? []),
     ...(manifest.westShops?.assets ?? []),
-    ...(manifest.eastShops?.assets ?? []),   // east band (adoption batch G5)
-    ...(manifest.lanesV2?.assets ?? []),     // lanes-v2 candidate (20260920 batch)
+    ...(manifest.eastShops?.assets ?? []),
+    ...(manifest.lanesV2?.assets ?? []),
   ];
   const assetInfos = assetBlocks.flatMap((b) => (b.assets ?? [])).map((a) => {
     const m = manifestAssets.find((e) => e.id === a.id);
@@ -713,32 +855,24 @@ async function load() {
     return { id: a.id, glb: a.glb, bytes: m.bytes, sha256: m.sha256, triangles: m.triangles ?? 0 };
   });
   session.sceneInventory = loadedSceneAssets(manifest, assetInfos, true);
-  // manifest.placedTriangles already includes M-batch + A-batch instanced tris
-  // skinsStats.placedTris counts every instance's skin tris (the bridge
-  // manifest does not include the sidefaces dataset)
   const exp = expectedTriangles(manifest.placedTriangles + (skinsStats?.placedTris ?? 0)
     + (propsStats?.placedTris ?? 0), [
     ...session.sceneInventory.filter((e) => e.kind === 'asset'),
-    { kind: 'surface', triangles: manifest.streetCompletion.surface.triangles },   // west surface (WorldLoader-loaded)
+    { kind: 'surface', triangles: manifest.streetCompletion.surface.triangles },
     { kind: 'surface', triangles: eastTail.triangles },
     { kind: 'surface', triangles: wallInfo.triangles },
     ...(eastSurfaceInfo ? [
-      { kind: 'surface', triangles: eastSurfaceInfo.triangles ?? 0 },   // east extension surface (G5)
-      { kind: 'surface', triangles: eastWallInfo.triangles ?? 0 },      // east end wall (G5)
+      { kind: 'surface', triangles: eastSurfaceInfo.triangles ?? 0 },
+      { kind: 'surface', triangles: eastWallInfo.triangles ?? 0 },
     ] : []),
   ]);
-  const r = resources();
-  // ?compressed=1: meshopt quantization may collapse a few degenerate
-  // triangles per assembly — allow a 0.1% ceiling, still fail loudly beyond it
+  const r = countResources(world, clay);
   const triTol = COMPRESSED ? Math.ceil(exp.total * 0.001) : 0;
   if (Math.abs(r.triangles - exp.total) > triTol)
     throw new Error(`几何不完整：实际 ${r.triangles} / 预期 ${exp.total}（基础 ${manifest.placedTriangles} + 皮肤 ${skinsStats?.placedTris ?? 0} + 资产 ${session.sceneInventory.filter((e) => e.kind === 'asset').map((a) => a.id).join(' + ')} + 东西延伸面 + 端墙）`);
 
-
-  // extra walkable ground OUTSIDE the session trimesh: the east tail surface
-  // (sctail__ faces, page-level GLB) + the temple courts (temple-ground__
-  // faces inside the assets block). Same production extraction, same visible
-  // faces — never an invisible slab.
+  // extra walkable ground OUTSIDE the session trimesh (east tail, temple
+  // courts, lanes) — same production extraction, visible faces only
   const extraMeshes = [];
   world.traverse((o) => {
     if (o.isMesh && o.name.startsWith('sctail__') && GROUND_NODE_RE.test(o.name))
@@ -749,9 +883,6 @@ async function load() {
     if (o.isMesh && GROUND_NODE_RE.test(o.name))
       extraMeshes.push({ name: o.name, positions: o.geometry.attributes.position.array, indices: o.geometry.index ? o.geometry.index.array : null, matrix: o.matrixWorld.elements.slice() });
   });
-  // lanes-v2 (20260920 candidate): the lanes' stone paving + drain strips join
-  // the walkable ground through the same name contract (their asset blocks
-  // carry wall colliders via sidecars; ground comes from the visible faces)
   const lanesGroup = blocks.blocks.get('block-lanes-v2')?.reviewed?.group;
   if (lanesGroup) lanesGroup.traverse((o) => {
     if (o.isMesh && GROUND_NODE_RE.test(o.name))
@@ -760,9 +891,35 @@ async function load() {
   const gt = collectGroundTriangles(extraMeshes);
   addGroundCollider(RAPIER, session.physics.world, gt);
 
+  // ---- #4 anchors: derive from the route, validate with the real capsule --
+  // Validation runs BEFORE the live player controller exists (the 20260920
+  // root cause: a probe spawned at bridgeStart collided with the live
+  // capsule standing at the same point and was rejected as blocked — the
+  // static street there is actually clear). Defensively, any live player
+  // collider would be excluded from the probe's movement queries.
+  setStage('正在验证入口落点…');
+  safeAnchors = [];
+  for (const a of deriveEntryAnchors({ route: session.route })) {
+    const validation = await validateAnchor({
+      RAPIER, physics: session.physics, capsule: session.capsule, anchor: a,
+      excludeColliderHandles: controller && !controller.disposed ? [controller.collider.handle] : [],
+    });
+    safeAnchors.push({ ...a, validation });
+    if (!validation.ok) engNote(`入口锚点 ${a.id} 验证失败：${validation.reason}，已从出发点中移除。`);
+  }
+  walk = new WalkSession({ getAnchors: () => safeAnchors });
+
+  // live player controller LAST, on the fully assembled static world
+  const start = session.route.entries.bridgeStart;
+  controller = new WalkController({
+    RAPIER, physics: session.physics,
+    capsule: { ...session.capsule, spawn: [start[0], session.spawn.y, start[2]] },
+  });
+  controller.spawnRef = { x: start[0], y: session.spawn.y, z: start[2] };
+
   loadStats = {
     bytesTotal: manifest.worldAssembly.bytes + session.sceneInventory.reduce((s, a) => s + a.bytes, 0) + eastTail.bytes + wallInfo.bytes
-      + (eastSurfaceInfo ? eastSurfaceInfo.bytes + eastWallInfo.bytes : 0),
+    + (eastSurfaceInfo ? eastSurfaceInfo.bytes + eastWallInfo.bytes : 0),
     bytesBase: manifest.worldAssembly.bytes,
     bytesWestSurface: manifest.streetCompletion.surface.bytes,
     bytesEastTail: eastTail.bytes,
@@ -778,31 +935,46 @@ async function load() {
   };
 
   setupButtons();
+  setupPlayerUi();
   syncPlaceholderUi();
   setView('shanmen-from-road');
+  setStage('正在编译着色器…');
   const compiledAt = performance.now();
   await renderer.compileAsync(scene, camera);
   loadStats.shaderCompileMs = +(performance.now() - compiledAt).toFixed(0);
   ready = true;
-  sun.shadow.needsUpdate = true;
+  fit();   // the panel/layout may have settled since the first fit
+  startBtn.disabled = false;
+  startBtn.textContent = '开始探索';
+  setStage('已就绪');
+  markResourcesDirty();
+  invalidate();
   render();
+  refreshRecord(performance.now(), true);
   requestAnimationFrame(frame);
-  notice('桥接世界已载入 · 取景模式。「行走模式」从东尾落入街面，「路线巡游检查（自动）」走全程物理链（automatic，非人工试玩）。');
+  notice('已就绪。「开始探索」落入街面行走，或先自由取景。');
   await runRouteCheck();
   window.__fangbangRecord = record;
-  // expansion batch 20260917: evidence hook for the sideface skins capture
-  // (drives the SAME camera/controls the buttons drive; no gameplay effect)
+  window.__fangbangRenderSync = render;
+  window.__fangbangStartWalk = enterWalk;
+  window.__fangbangRelocate = pickLocation;
+  // engineering probe: first scene hit along a ray (occluder diagnosis for
+  // framing cameras; read-only, no gameplay effect)
+  window.__fangbangRaycast = (origin, dir, farM = 60) => {
+    const rc = new T.Raycaster(new T.Vector3(...origin), new T.Vector3(...dir).normalize(), 0.01, farM);
+    const hits = rc.intersectObjects(world.children, true);
+    return hits.slice(0, 6).map((h) => ({ d: +h.distance.toFixed(2), name: h.object.name || '(unnamed)',
+      parent: h.object.parent?.name || '', point: h.point.toArray().map((v) => +v.toFixed(2)) }));
+  };
   window.__fangbangView = (pos, target, label) => {
+    if (mode === 'walk') exitWalk();
     camera.position.set(...pos);
     controls.target.set(...target);
     viewLabelOverride = label ?? null;
     controls.update();
-    render();  // R1-04: render synchronously so same-task canvas reads see the frame
+    render();  // render synchronously so same-task canvas reads see the frame
+    refreshRecord(performance.now(), true);
   };
-  // lanes-v2 (20260920): walk-evidence hook. Drives the REAL WalkController
-  // (same capsule, same physics chain as walk mode — never a teleport) along
-  // a waypoint list, reporting reach/stuck/fall per leg and the seam heights
-  // crossed. Used by the batch's route evidence; harmless in normal use.
   window.__fangbangWalkRoute = async (points, opts = {}) => {
     const dt = 1 / 60;
     const reach = opts.reachRadiusM ?? 0.9;
@@ -835,7 +1007,6 @@ async function load() {
         feetY: +f[1].toFixed(3), stop: [+f[0].toFixed(2), +f[2].toFixed(2)], stuckS: +stuck.toFixed(2) });
       if (blocked) break;
     }
-    // seam probe: min/max feet height over the whole walk (ground joins)
     let yMin = 1e9, yMax = -1e9;
     for (const leg of legs) { yMin = Math.min(yMin, leg.feetY); yMax = Math.max(yMax, leg.feetY); }
     c.dispose();
@@ -844,8 +1015,13 @@ async function load() {
 }
 
 load().catch((e) => {
-  stats.textContent = '载入失败：' + e.message;
-  notice('未取得完整场景，不计为验证通过。');
+  const msg = '载入失败：' + (e?.message ?? e);
+  setStage(msg);
+  stats.textContent = msg;
+  startBtn.disabled = true;
+  startBtn.textContent = '载入失败';
+  notice(msg + '。刷新重试；详情见审查工具。');
+  engNote(String(e?.stack ?? e));
   console.error(e);
 });
 window.addEventListener('pagehide', () => {

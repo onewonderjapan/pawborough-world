@@ -1,7 +1,119 @@
-<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>方浜中路 ↔ 城隍庙轴线 · 桥接世界</title>
-<style>*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#eeeae0;color:#373a33;font:13px/1.5 system-ui,'Noto Sans CJK SC',sans-serif}body{display:flex;flex-direction:column}header{padding:10px 20px 9px;border-bottom:1px solid #cbc8bc;flex:none}h1{font:500 22px/1.3 'Noto Serif CJK SC',serif;margin:0 0 7px;letter-spacing:.09em}small{font:11px system-ui;letter-spacing:0;color:#79796e}#views{display:flex;gap:5px;flex-wrap:wrap}button{border:1px solid #c7c6b9;border-radius:3px;background:#f8f5ed;color:#3d4039;padding:5px 9px;font:12px system-ui;cursor:pointer}button:hover{background:#e0ddd1}button.on{background:#4f5647;color:#fff;border-color:#4f5647}#app{flex:1;min-height:0;position:relative}canvas{display:block;width:100%;height:100%;touch-action:none}#stats{position:absolute;bottom:12px;left:18px;white-space:pre-wrap;font:11px/1.7 system-ui;background:#f3f1e5e8;padding:7px 10px;pointer-events:none;color:#5c6256}footer{padding:6px 20px;background:#f3efe6;font-size:11px;color:#77796c;flex:none;display:flex;justify-content:space-between;gap:10px}details{position:absolute;right:14px;bottom:45px;max-width:460px;background:#f5f1e8eb;font-size:11px;padding:8px;max-height:300px;overflow:auto}summary{cursor:pointer}pre{white-space:pre-wrap;font:10px/1.4 monospace}</style>
-<header><h1>方浜中路·桥接世界 <small>主街东尾 → 西延伸道路 → 山门 → 前院 → 仪门 → 二进院 → 大殿 · 样段占位街区 · 尺寸为主控设计值（非测绘）</small></h1><div id="views"></div></header>
-<main id="app"><div id="stats">正在读取桥接世界清单…</div></main>
-<details><summary>资产与实际渲染记录</summary><pre id="record"></pre></details>
-<footer><span id="notice">桥接样板待审：最终视觉采用由机主决定。巡游检查为自动执行（automatic），非人工完整试玩。</span><span>大殿 5294/5295 · 街道 5284/5285 不受本页影响</span></footer>
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>方浜市声</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#efece3;color:#2f2c26;font:13px/1.5 system-ui,'Noto Sans CJK SC',sans-serif}body{display:flex;flex-direction:column}
+/* header — 深木色门头，克制小控件 */
+header{flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 16px;background:#372f27;color:#e9e4d8;border-bottom:2px solid #8a6f4d}
+.brand{display:flex;align-items:baseline;gap:10px;min-width:0}
+h1{font:500 19px/1.2 'Noto Serif CJK SC',serif;margin:0;letter-spacing:.14em;white-space:nowrap}
+small{font:11px system-ui;color:#b7ad9c;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+nav{display:flex;gap:6px;flex:none}
+nav button{border:1px solid #5c5347;border-radius:3px;background:transparent;color:#e9e4d8;padding:4px 10px;font:12px system-ui;cursor:pointer}
+nav button:hover{background:#4a4238}
+/* 画布区 */
+#app{flex:1;min-height:0;position:relative;background:#e7e3d6}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+/* 世界入口卡 — 画面占优：左下小卡，世界在背后可见 */
+#intro{position:absolute;left:16px;bottom:16px;z-index:5;max-width:min(400px,calc(100% - 32px))}
+#intro .panel{background:rgba(247,244,236,.95);border:1px solid #cfc8b6;border-left:3px solid #8a6f4d;border-radius:6px;padding:16px 18px;box-shadow:0 6px 24px rgba(47,44,38,.18)}
+#intro h2{font:500 20px/1.3 'Noto Serif CJK SC',serif;margin:0 0 6px;letter-spacing:.12em}
+#intro .sub{margin:0 0 12px;font-size:12px;color:#5a554a}
+button.primary{display:block;width:100%;border:1px solid #3f382f;border-radius:4px;background:#4f4639;color:#f3efe4;padding:9px 12px;font:14px system-ui;letter-spacing:.2em;cursor:pointer}
+button.primary:hover:not(:disabled){background:#5d5344}
+button.primary:disabled{opacity:.55;cursor:default}
+.loc-label{margin:12px 0 5px;font-size:11px;color:#79715f;letter-spacing:.08em}
+#locations,#locations-walk{display:flex;gap:6px;flex-wrap:wrap}
+#locations button,#locations-walk button{border:1px solid #c2b9a4;border-radius:999px;background:#fbf9f2;color:#2f2c26;padding:3px 12px;font:12px system-ui;cursor:pointer}
+#locations button:hover,#locations-walk button:hover{background:#eee9db;border-color:#8a6f4d}
+.stage{margin:12px 0 0;font-size:11px;color:#6d6555}
+.hint{margin:6px 0 0;font-size:11px;color:#8b8270}
+/* 行走 HUD — 底部居中小条 */
+#hud{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);z-index:5;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;max-width:calc(100% - 24px);background:rgba(55,47,39,.82);color:#e9e4d8;border-radius:6px;padding:6px 12px;font-size:12px}
+#hud[hidden]{display:none}
+#locations-walk button{border-color:#6a6052;background:transparent;color:#e9e4d8;padding:2px 10px}
+#locations-walk button:hover{background:#4a4238}
+/* 操作说明 */
+#help{position:absolute;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;background:rgba(47,44,38,.45)}
+#help[hidden]{display:none}
+#help .panel{background:#f7f4ec;border:1px solid #cfc8b6;border-radius:6px;padding:18px 22px;max-width:min(380px,calc(100% - 32px))}
+#help h3{margin:0 0 10px;font:500 15px 'Noto Serif CJK SC',serif;letter-spacing:.1em}
+#help dl{margin:0 0 12px;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:12px}
+#help dt{color:#6d6555}#help dd{margin:0}
+#help .note{font-size:11px;color:#8b8270;margin:0 0 12px}
+#help button{border:1px solid #3f382f;border-radius:4px;background:#4f4639;color:#f3efe4;padding:5px 14px;font:12px system-ui;cursor:pointer}
+/* 审查工具 — 默认收起，工程项全部收纳于此 */
+details#review{position:absolute;right:12px;bottom:12px;z-index:6;max-width:min(480px,calc(100% - 24px));max-height:70vh;overflow:auto;background:#f5f1e8;border:1px solid #c7c6b9;border-radius:6px;font-size:11px;color:#4a4a40}
+details#review>summary{cursor:pointer;padding:6px 10px;user-select:none;color:#5c5546}
+details#review[open]>summary{border-bottom:1px solid #d8d2c0;background:#efeadd}
+details#review section{padding:8px 10px;border-bottom:1px solid #e4dfcf}
+details#review h3{margin:0 0 6px;font-size:11px;color:#6d6555;font-weight:600}
+#views{display:flex;gap:4px;flex-wrap:wrap}
+#views button,#tools button{border:1px solid #c2b9a4;border-radius:3px;background:#f8f5ed;color:#3d4039;padding:3px 8px;font:11px system-ui;cursor:pointer}
+#views button:hover,#tools button:hover{background:#e0ddd1}
+#views button.on{background:#4f5647;color:#fff;border-color:#4f5647}
+#tools{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+#tools label{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border:1px solid #c2b9a4;border-radius:3px;background:#f8f5ed;cursor:pointer;user-select:none}
+#tools label.on{background:#e0ddd1}
+#stats{white-space:pre-wrap;font:11px/1.7 system-ui;color:#5c6256}
+pre#record{white-space:pre-wrap;font:10px/1.4 monospace;margin:0}
+#eng-notes,#eng-log{font-size:10px;color:#79796e}
+#eng-log{margin-top:6px;white-space:pre-wrap}
+/* 状态行 */
+footer{flex:none;padding:5px 16px;background:#372f27;color:#b7ad9c;font-size:11px;display:flex;justify-content:space-between;gap:10px}
+footer #notice{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:640px){
+  header{flex-wrap:wrap;padding:6px 10px}
+  .brand small{display:none}
+  #intro{left:8px;right:8px;bottom:8px;max-width:none}
+  #hud{bottom:8px;font-size:11px;padding:5px 8px}
+  details#review{left:8px;right:8px;max-width:none;max-height:60vh}
+  footer{padding:4px 10px}
+}
+</style>
+<header>
+  <div class="brand"><h1>方浜市声</h1><small>方浜中路 · 里弄与庙轴线 · 漫游样段</small></div>
+  <nav>
+    <button id="btn-framing" title="自由观察 / 行走切换">取景</button>
+    <button id="btn-help">操作说明</button>
+    <button id="btn-review">审查工具</button>
+  </nav>
+</header>
+<main id="app">
+  <div id="intro" role="region" aria-label="世界入口">
+    <div class="panel">
+      <h2>方浜市声</h2>
+      <p class="sub">走进方浜中路的样段街道：从弄口望进石库门里弄，或沿主街走向城隍庙前。</p>
+      <button id="btn-start" class="primary" disabled>正在载入…</button>
+      <div class="loc-label">出发点（也可先取景再进入）</div>
+      <div id="locations"></div>
+      <p class="stage" id="stage">正在初始化…</p>
+      <p class="hint">键盘 WASD 行走 · 鼠标环视 · P 暂停 · V 返回取景</p>
+    </div>
+  </div>
+  <div id="hud" hidden><span id="hud-state"></span><span id="locations-walk"></span></div>
+  <div id="help" hidden>
+    <div class="panel">
+      <h3>操作说明</h3>
+      <dl>
+        <dt>W A S D</dt><dd>行走移动（键盘）</dd>
+        <dt>鼠标</dt><dd>点击画面锁定后环视</dd>
+        <dt>P</dt><dd>暂停 / 继续行走</dd>
+        <dt>V</dt><dd>行走 ↔ 取景（保留所在位置）</dd>
+        <dt>Esc / 切出窗口</dt><dd>自动暂停，不会丢失位置</dd>
+        <dt>空格</dt><dd>小跳</dd>
+      </dl>
+      <p class="note">行走与取景共用同一位置：随时切换，不需要重头开始。</p>
+      <button id="help-close">知道了</button>
+    </div>
+  </div>
+  <details id="review">
+    <summary>审查工具（工程检查，默认收起）</summary>
+    <section><h3>工程机位</h3><div id="views"></div></section>
+    <section><h3>工具</h3><div id="tools"></div></section>
+    <section><h3>运行统计</h3><div id="stats">正在读取桥接世界清单…</div></section>
+    <section><h3>资产与实际渲染记录</h3><pre id="record"></pre></section>
+    <section><h3>说明</h3><div id="eng-notes">巡游检查为自动执行（automatic），非人工完整试玩。大殿 5294/5295 · 街道 5284/5285 不受本页影响。?review=1 默认展开本面板。</div><div id="eng-log"></div></section>
+  </details>
+</main>
+<footer><span id="notice">正在载入…</span><span>方浜市声 · 漫游样段</span></footer>
 <script type="module" src="/src/fangbangMain.js"></script>
+</html>
