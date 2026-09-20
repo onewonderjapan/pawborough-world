@@ -22,7 +22,8 @@
 // software-baseline numbers and say so everywhere.
 //
 // Run: node tools/longrun_driver.mjs --entry mainStreet --config default \
-//        --minutes 35 --track mainAB --label s1 --out <dir>
+//        --minutes 35 --track mainAB --label s1 --out <dir> \
+//        [--gc] [--warm] [--vw 390 --vh 844] [--ops pv,blur,failRecovery,entry:laneA]
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import os from 'node:os';
@@ -43,6 +44,9 @@ const outDir = resolve(root, arg('out', `artifacts/world-ten-hour/round-002/long
 const endOps = (arg('ops', 'pv,blur') + '').split(',').filter(Boolean); // ops interleaved during route walking
 const opsEveryS = +arg('ops-every', '300');                  // pv/blur cycle period during walking
 const useGc = has('gc');
+const vw = +arg('vw', '1280');                               // viewport width (round-3 matrix: 390 narrow)
+const vh = +arg('vh', '900');                                // viewport height
+const warm = has('warm');                                    // warm start: one cold load first, then reload = warm HTTP cache
 const qs = config === 'allOn' ? '&skins=1&props=1' : '';
 const gameUrl = `${base}/fangbang.html?ds=fangbang-temple-v7&entry=${entry}${qs}`;
 
@@ -125,7 +129,7 @@ const browser = await chromium.launch({
     ? ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage', '--js-flags=--expose-gc']
     : ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'],
 });
-const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+const ctx = await browser.newContext({ viewport: { width: vw, height: vh } });
 const page = await ctx.newPage();
 page.on('pageerror', (e) => anomaly('pageerror', String(e).slice(0, 300)));
 page.on('console', (m) => { if (m.type() === 'error') note('console-error', m.text().slice(0, 200)); });
@@ -397,16 +401,31 @@ async function rejoinTrack(keysDown) {
 const report = {
   label, base, entry, config, track: trackName, minutes, gameUrl,
   startedAt: new Date().toISOString(),
-  env: { renderer: 'headless Chrome + SwiftShader (SOFTWARE baseline)', viewport: '1280x900',
+  env: { renderer: 'headless Chrome + SwiftShader (SOFTWARE baseline)', viewport: `${vw}x${vh}`,
     gcExposed: useGc, host: 'linux arm64', note: 'dev-server long-run; all numbers software-baseline' },
   segments: [], events, anomalies, opCounts,
   steering: steerState,
 };
 const deadline = Date.now() + minutes * 60000;
 try {
-  note('navigate', gameUrl);
+  note('navigate', gameUrl + (warm ? ' [warm: cold load first, measured run is the reload]' : ''));
   await page.goto(gameUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
-  await waitReady();
+  if (warm) {
+    // warm-start condition: this same browser context does one full cold load
+    // (uncached), then the MEASURED run is the reload — HTTP cache warm. The
+    // frame sampler re-inits on navigation, so measured frames are clean.
+    const coldT0 = Date.now();
+    await waitReady(300000);
+    report.warmStart = { coldReadyMs: Date.now() - coldT0 };
+    note('warmupColdLoad', `cold load ready in ${report.warmStart.coldReadyMs}ms; reloading for the warm measured run`);
+    const warmT0 = Date.now();
+    await page.reload({ waitUntil: 'domcontentloaded', timeout: 60000 });
+    await waitReady(300000);
+    report.warmStart.warmReadyMs = Date.now() - warmT0;
+    note('warmStartReady', `warm reload ready in ${report.warmStart.warmReadyMs}ms`);
+  } else {
+    await waitReady();
+  }
   let r = await rec();
   if (!r.ready) { anomaly('initialReadyFail', r.fatalMsg ?? r.hud ?? 'not ready'); throw new Error('page not ready at start'); }
   note('ready', `tris=${r.res?.triangles} feet=${JSON.stringify(r.feet)}`);

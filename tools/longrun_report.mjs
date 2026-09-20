@@ -86,6 +86,14 @@ async function reportDir(dir) {
   const heapSlopePerHour = heapPlots.length >= 3
     ? slopePerHour(heapPlots.map((h) => h.tMin * 60), heapPlots.map((h) => h.afterGcMB))
     : null;
+  // round-3 heap question: is the ~4MB/h drift a warmup/arena effect that
+  // flattens, or linear accumulation? Split the SAME series into halves —
+  // a flat second-half slope classifies the drift as bounded growth.
+  const half = Math.floor(heapPlots.length / 2);
+  const heapHalfSlopes = heapPlots.length >= 6 ? {
+    firstHalfMBPerH: slopePerHour(heapPlots.slice(0, half).map((h) => h.tMin * 60), heapPlots.slice(0, half).map((h) => h.afterGcMB)),
+    secondHalfMBPerH: slopePerHour(heapPlots.slice(half).map((h) => h.tMin * 60), heapPlots.slice(half).map((h) => h.afterGcMB)),
+  } : null;
   const heapNullSegments = segs.length - heapPlots.length;
 
   // ---- resources ---------------------------------------------------------
@@ -119,7 +127,7 @@ async function reportDir(dir) {
       top10: topStalls.slice(0, 10),
       meanFpsSoftwareBaseline: fpsMean,
     },
-    heap: { plot: heapPlots, slopePerHourMB: heapSlopePerHour, segmentsWithoutHeap: heapNullSegments,
+    heap: { plot: heapPlots, slopePerHourMB: heapSlopePerHour, halfSlopes: heapHalfSlopes, segmentsWithoutHeap: heapNullSegments,
       firstAfterGcMB: heapPlots[0]?.afterGcMB ?? null, lastAfterGcMB: heapPlots.at(-1)?.afterGcMB ?? null },
     resources: { trianglesValues: trisValues, trianglesExpected: expectedTris,
       trianglesLocked: trisValues.length === 1 && trisValues[0] === expectedTris,
@@ -139,7 +147,7 @@ for (const r of reports) {
   console.log(`transitions: ${JSON.stringify(r.transitions)} anomalies: ${r.anomalyCount}`);
   console.log(`stalls: >250ms ${r.stalls.gapsOver250ms}/${r.stalls.totalFrames} frames; buckets ${JSON.stringify(r.stalls.buckets)}; p50=${r.stalls.gapP50ms}ms p99=${r.stalls.gapP99ms}ms max=${r.stalls.gapMaxMs}ms; meanFPS=${r.stalls.meanFpsSoftwareBaseline}`);
   for (const t of r.stalls.top10.slice(0, 5)) console.log(`  stall ${t.gapMs}ms at +${t.offsetIntoRunS}s (${t.phase?.mode}/${t.phase?.paused})`);
-  console.log(`heap: first=${r.heap.firstAfterGcMB}MB last=${r.heap.lastAfterGcMB}MB slope=${r.heap.slopePerHourMB}MB/h (post-GC, ${r.heap.segmentsWithoutHeap} segments w/o heap)`);
+  console.log(`heap: first=${r.heap.firstAfterGcMB}MB last=${r.heap.lastAfterGcMB}MB slope=${r.heap.slopePerHourMB}MB/h halves=${JSON.stringify(r.heap.halfSlopes)} (post-GC, ${r.heap.segmentsWithoutHeap} segments w/o heap)`);
   console.log(`tris: ${JSON.stringify(r.resources.trianglesValues)} locked=${r.resources.trianglesLocked} (expect ${r.resources.trianglesExpected})`);
   console.log(`res first=${JSON.stringify(r.resources.first)} last=${JSON.stringify(r.resources.last)}`);
 }

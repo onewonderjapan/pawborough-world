@@ -21,7 +21,10 @@ import { resolve, dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const OUT = 'dist-world-playable';
+const argv = process.argv.slice(2);
+const argOf = (n, d) => { const i = argv.indexOf('--' + n); return i > -1 ? argv[i + 1] : d; };
+const OUT = argOf('out', 'dist-world-playable');            // new batch => new dir (builder never deletes)
+const TITLE = argOf('title', 'world-playable-night-20260920');
 const REPAIR = process.argv.includes('--repair');
 const DATASET = 'fangbang-temple-v7';
 const EXPECT_BASE = 694430, EXPECT_ALLON = 708066;   // measured two-config budgets
@@ -134,7 +137,7 @@ await ensureFile(resolve(outDir, 'start-world-playable.py'), resolve(root, 'scri
 await ensureFile(resolve(outDir, 'start-world-playable.mjs'), resolve(root, 'scripts/playable_package_serve.mjs'));
 
 const galleryManifest = JSON.parse(await readFile(resolve(root, 'src/worldPreview/galleryManifest.json'), 'utf8'));
-const readme = `# 方浜市声 · 本地试玩包（world-playable-night 20260920）
+const readme = `# 方浜市声 · 本地试玩包（${TITLE}）
 
 这是 Pawborough「方浜市声」世界候选 **fangbang-temple-v7** 的本地便携试玩包。
 纯静态文件：无安装、无联网、无外部统计。
@@ -156,9 +159,13 @@ const readme = `# 方浜市声 · 本地试玩包（world-playable-night 2026092
 ## 试玩
 
 - 首页选择出发点 →「开始探索」进入行走；首页「先看场景」看四处实景与修整前后对照。
-- 游戏页：WASD 行走 · 鼠标环视 · P 暂停 · V 取景/行走切换 · 空格小跳 · Esc 暂停。
+- 游戏页：WASD 行走 · 鼠标环视 · P 暂停 · V 取景/行走切换 · 空格小跳 · Esc 暂停/释放鼠标。
+- 取景模式左上有可折叠「取景工具」：命名保存当前机位、恢复、删除（两步可取消）、
+  导出机位 JSON、导出当前画面 PNG；另有 6 个既有取景预设。机位保存在浏览器本地，
+  只含相机位姿与显示配置，不上传任何数据。
 - 「场景总览」随时回到首页；旧入口 fangbang.html 直接打开也保留。
 - 画面选项里的「全开」（沿街立面换装 + 街面物件）资源较多；默认普通配置。
+- 触屏/窄屏可以浏览首页、图库与取景画面；键盘行走（WASD）需要桌面键鼠，移动端未实现。
 
 ## 内容与来源
 
@@ -171,7 +178,11 @@ const readme = `# 方浜市声 · 本地试玩包（world-playable-night 2026092
 
 - v7 为候选：机主尚未采用（ownerAdopted=false）。
 - 三角形预算：默认 694,430（上限 700,000 达标）；全开 ${EXPECT_ALLON.toLocaleString()}，超目标 8,066。
-- 上游交付清单含两个未随提交的 .blend1 备份条目（UP-G1），不影响本包。
+- 世界边界：主街桥东街面末端（x≈127–134, z≈22–28）沿街继续东行会走出可行走面并无限坠落，
+  实况行走无坠落防护（长期实测留证，几何/安全网修复待机主决定）。
+- 低配体验：「全开」配置在无 GPU 机器（SwiftShader 软件渲染）下约 2fps，行走呈半速慢放；
+  有 GPU 的机器不受此限。默认配置在同机为满帧。
+- 上游交付清单的两个 .blend1 备份误列（UP-G1）已于 2026-09-21 修复为已提交树口径并实际核验。
 - 无帧率宣传：本包在同机 Chrome + SwiftShader 软件渲染下验证，无有效硬件实测。
 `;
 await ensureFile(resolve(outDir, 'README.md'), readme);
@@ -199,7 +210,7 @@ const head = await (async () => { try {
 } catch { return null; } })();
 
 const manifest = {
-  package: 'world-playable-night-20260920',
+  package: TITLE,
   generatedBy: 'scripts/build_playable_package.mjs',
   builtFromHead: head,
   dataset: DATASET,
@@ -213,7 +224,9 @@ const manifest = {
   knownIssues: [
     'candidate pending owner adoption (ownerAdopted=false)',
     'all-on budget exceeds the 700k target by 8066 triangles',
-    'upstream manifest lists two gitignored .blend1 entries (UP-G1, see workspace artifacts/world-playable/UPSTREAM-INHERIT.json)',
+    'world-boundary defect: walking east past the bridge-start end of the main street (x≈127-134, z≈22-28) leaves the walkable surface and free-falls with no in-page fall guard (long-run evidence 2026-09-21; geometry fix pending owner decision)',
+    'all-on display config renders ~2fps under SwiftShader software rendering (no-GPU machines); default config is unaffected',
+    'UP-G1 fixed 2026-09-21: upstream delivery manifest was regenerated to the committed-tree scope and verified against a fresh export',
   ],
   provenance: galleryManifest,
   closure,
