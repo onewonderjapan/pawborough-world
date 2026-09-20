@@ -194,8 +194,8 @@
    "sha256": "9ffbf7bf3a2ceecee015130ee8afc906986af7b0b19edb199a42af4e96301528"
   },
   "tests/lane-b-evidence.test.mjs": {
-   "bytes": 19540,
-   "sha256": "2fb6b3689a0d4fe6c034aa1a45eb5aaa095df7b09837d93bc8cae4118f246a6c"
+   "bytes": 19804,
+   "sha256": "7d3ca5d268ab2aefb4ed0f2553c2cff2ec65a0b6fb476bc3929167b45f7cf6f1"
   },
   "tests/lane-b-polish.test.mjs": {
    "bytes": 14576,
@@ -307,7 +307,7 @@
   }
  },
  "fileCount": 74,
- "totalBytes": 71643357,
+ "totalBytes": 71643621,
  "scopeKind": "committed-source",
  "trackedBasis": "git ls-files at generation; backups (*.blend1 etc.) always excluded",
  "excluded": {
