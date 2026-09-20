@@ -103,5 +103,14 @@
   **Blender 4.5.1 无头重开实证 3/3**：world/scene.blend（203对象/162网格）、
   world/lane-b-polish/review/scene.blend（58/52）、building/plain-v1/model.blend（10/10）。
 - **全套测试集中一次**：139 测试 138 过 1 败——唯一失败是 `lane-b-evidence` 的诚实门
-  「工作树必须干净才能等同已提交树」（G 成果未提交时运行所致，非产品缺陷）；G 提交后复跑该测试
-  通过（见提交后附记）。
+  「工作树必须干净才能等同已提交树」（G 成果未提交时运行所致，非产品缺陷）；G 提交
+  （4729f42e）后干净树复跑 **139/139 全过**（含该测试 14/14），`validate_all` PASS
+  （16 文件 0 错误）。
+
+## 收尾状态
+
+- 本轮服务已全部停止：vite dev 5420、包启动器 5411 均已退出，无遗留浏览器/渲染进程。
+- 磁盘上的构建产物（保留未删，按 .gitignore 约定不上库）：
+  `dist-world-ten-hour-20260921/`（启动器坏的废弃构建）、`dist-world-ten-hour-20260921-r2/`（交付）、
+  `restore-world-ten-hour-20260921{,-r2}/`（复验目录，-r2 为交付复验）、
+  `delivery/world-ten-hour-20260921{,-r2}.zip`（-r2 为交付，收据均提交）。
