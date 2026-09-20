@@ -15,7 +15,7 @@
       "reopenableSources": ["world/lane-a-polish/lane-a/model.blend + kit/build_lane_a_v2.py", "world/lane-a-polish/interfaces/model.blend + kit/build_lanes_interfaces_v2.py", "world/lane-a-polish/review/scene.blend + kit/build_lane_a_polish_review_scene.py (default camera street-mouth, material preview, N05/N06 context kept)"],
       "dist": "dist-lane-a-polish (95-file dependency closure, gate DIST_RUN_OK; rebuild: node scripts/build_lane_a_polish_dist.mjs)"
     },
-    "untouched": ["world/fangbang-temple-v5", "world/lanes-v2 (lane-b-v2 loaded verbatim)", "world/v4 and earlier", "building/*", "street-sidefaces", "street-props", "W2 canonical"]
+    "untouched": ["world/fangbang-temple-v5", "world/lanes-v2 (lane-b-v2 loaded verbatim)", "world/v4 and earlier", "building/*", "street-sidefaces", "street-props", "W2 canonical (not accessed/written this task; bytes not re-verified)"]
   },
   "items": [
     {
@@ -43,7 +43,7 @@
       "status": "done",
       "what": "walls partitioned into segments around all 7 openings (reveal faces are the segments' own faces); closed glass rear-set at recess back; timber frame + stone sill stay proud at the face; the v5 buried solid dark boxes are gone",
       "recessDepth": {"west": 0.08, "east": 0.14},
-      "glassPlanes": {"west localX": 1.156-1.180, "east localX": -1.244..-1.220},
+      "glassPlanes": {"west localX": [1.156, 1.180], "east localX": [-1.244, -1.220]},
       "positionsKept": {"east": [1.8, 3.8, 5.8], "west": [1.4, 2.73, 4.07, 5.4], "closed": true}
     },
     {
@@ -66,7 +66,7 @@
       "status": "done",
       "what": "tri diet 7290→2910 (A) and 876→911 (interfaces, incl. new wall) by dropping invisible wall-scale micro-bevels; window frames / stone sills outlines kept",
       "baseDefault": {"tris": 698704, "ceiling": 700000, "pass": true, "v5Was": 703049},
-      "skinsAndPropsAllOn": {"tris": 712340, "note": "separate single-flag config (+2117 skins, +11176 props, none in lane A); OVER the 700k base ceiling — recorded as its own number, NOT claimed under it"},
+      "skinsAndPropsAllOn": {"tris": 712340, "note": "separate single-flag config; measured base default 698704, all-on 712340, difference +13636 (no per-category itemization); OVER the 700k base ceiling — recorded as its own number, NOT claimed under it"},
       "measuredBy": "real page record() in tools/lane_a_polish_capture.mjs + dist gate scripts/build_lane_a_polish_dist.mjs (both configs route-check pass)"
     },
     {
@@ -101,9 +101,9 @@
   },
   "knownLeftovers": [
     "lane-B b-apron/b-drain-outlet z-collapse (pre-existing, verbatim-kept, lead-registered)",
-    "skins+props all-on stays +12340 over the 700k base ceiling (separate single-flag config, itemized, not a base-config failure)"
+    "skins+props all-on stays +12340 over the 700k base ceiling (separate single-flag config, not a base-config failure)"
   ],
-  "protection": "git status: 0 modified tracked files; building/*, world/v4, world/v5, world/lanes-v2 byte-identical; all outputs are new files",
+  "protection": "git status: 0 modified tracked files; building/*, world/v4, world/v5, world/lanes-v2 byte-identical; W2 canonical not accessed/written this task (bytes not re-verified); all outputs are new files",
   "commands": {
     "module": "blender -b --factory-startup -t 4 -P kit/build_lane_a_v2.py -- --out world/lane-a-polish/lane-a",
     "interfaces": "blender -b --factory-startup -t 4 -P kit/build_lanes_interfaces_v2.py -- --out world/lane-a-polish/interfaces",

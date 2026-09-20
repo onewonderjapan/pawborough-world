@@ -1,7 +1,7 @@
 # Lane-A polish — construct delivery (v6 candidate, ownerAdopted=false)
 
 入口：`fangbang.html?ds=fangbang-temple-v6`（上轮玩家入口/分辨率/锚点不变，参数换数据集即可）。
-基线 96b6690；一切产物均为新文件，0 个已跟踪文件被修改；v5/lanes-v2/v4/building/W2 只读未动。
+基线 96b6690；一切产物均为新文件，0 个已跟踪文件被修改；v5/lanes-v2/v4/building 只读未动；W2 本任务未访问、未写入（未做字节校验）。
 
 ## 做了什么（对照 CONSTRUCT.md 冻结单）
 
