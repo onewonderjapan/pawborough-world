@@ -1,9 +1,9 @@
 {
  "note": "outer receipt: digest of the delivery manifest; NOT listed inside the manifest (no hash cycle). Final commit hash goes to the top-level RUN_STATUS, not into the manifest or this receipt.",
  "manifestPath": "artifacts/lane-b-polish/delivery-manifest.json",
- "manifestBytes": 12537,
- "manifestSha256": "71be04c533df51e451a12e82fc6a625b06105d668fc77f4c3178355bced30acb",
- "fileCount": 74,
- "totalBytes": 71643357,
- "generatedAt": "2026-09-20T15:15:01.007Z"
+ "manifestBytes": 12080,
+ "manifestSha256": "ccc2774e0957a25c35425e8537640524a86689a7d607e618310818112aa55261",
+ "fileCount": 73,
+ "totalBytes": 84662429,
+ "generatedAt": "2026-09-20T13:52:53.592Z"
 }

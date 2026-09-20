@@ -38,3 +38,15 @@
 2. 全开预算 708,066 > 700,000 目标（维持上游结论，本批未改几何）。
 3. 主街/庙源工程只有历史批次状态，未假称统一重打；包内无 Blender 源（留在工作区）。
 4. 性能：验证环境仅 SwiftShader 软件渲染，页面不显示帧率；W2/Unity 未触及。
+
+---
+
+## 附记（2026-09-21，world-ten-hour 批）
+
+上文是 20260920 批收口时的原始记录，保留不改。其后 PLAN §A 授权本 worktree
+修复继承的 lane-b-polish 清单/生成器，**缺口 1（UP-G1）已解决**：
+
+- 修正前原版清单/收据快照保留在 `artifacts/lane-b-polish/evidence-repair/previous/upg1-manifest/`（含修正原因 README）。
+- 生成器改为 git 跟踪文件口径（`git ls-files`），备份文件一律排除；清单标明 `scopeKind: committed-source`；portable-payload（dist 闭包）保持独立构建校验口径。
+- `delivery-manifest.json` 与外层收据已按新口径重新生成；提交树验证改为把 HEAD 导出到新目录（`git worktree add`，LFS 本地 smudge）后实际核验，含篡改/缺文件负例与"修正前快照必须仍失败"的反向证据。
+- 上表"测试 123 过 1 败"为当时状态；该文件现于本 worktree 全绿（全套以最终集中跑为准）。

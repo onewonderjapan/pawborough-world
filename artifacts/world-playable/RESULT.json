@@ -37,6 +37,11 @@
       "disposition": "partial — recorded in artifacts/world-playable/UPSTREAM-INHERIT.json; NOT fixed here (rewriting upstream evidence would forge its record); blocks nothing in this batch"
     }
   ],
+  "addendum20260921": {
+    "by": "world-ten-hour-20260921 batch (PLAN §A authorizes fixing inherited artifacts/lane-b-polish manifest/generator in this worktree)",
+    "upg1": "resolved — generator now builds the committed-source manifest from git-tracked files only (backups always excluded); manifest + receipt regenerated from the preserved pre-fix snapshot (artifacts/lane-b-polish/evidence-repair/previous/upg1-manifest/); tests/lane-b-evidence.test.mjs committed-tree test now exports HEAD to a fresh worktree and verifies there (positive + tamper/missing negatives + pre-fix-snapshot negative). The 'tests 123 pass / 1 fail' line above is the historical state at this batch's finish, kept verbatim.",
+    "scopes": "committed-source = artifacts/lane-b-polish/delivery-manifest.json (git-tracked basis); portable-payload = dist closures with their own build-time verification (dist-world-playable package manifest / dist-lane-b-polish DIST_RUN_OK)"
+  },
   "knownBenign": "optional probe world/fangbang-temple-v7/review-manifest.cm.json is absent in the package → 404 on the compressed-mode probe, tolerated by the page exactly as in the verified upstream dist",
   "notDone": [
     "no hardware-FPS measurement (environment gives SwiftShader only); page shows no frame-rate claims",

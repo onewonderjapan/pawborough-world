@@ -42,7 +42,12 @@
     "id": "UP-G1",
     "what": "upstream delivery-manifest.json lists two gitignored *.blend1 backup files, so the manifest does not verify against the committed tree (payload bytes all match; only those two entries + derived totalBytes fail). tests/lane-b-evidence.test.mjs is 12/13 for the same reason.",
     "whyNotFixedHere": "artifacts/lane-b-polish/** is the upstream batch's evidence; rewriting its manifest from this batch would forge a clean record for a defect made upstream. Not blocking: the reopenable sources (model.blend, tracked via LFS) DO verify, and no portable-package dependency is a .blend1.",
-    "disposition": "partial — recorded verbatim; owner/upstream may regenerate the manifest excluding gitignored files"
+    "disposition": "partial — recorded verbatim; owner/upstream may regenerate the manifest excluding gitignored files",
+    "resolution20260921": {
+      "by": "world-ten-hour-20260921 batch, authorized by PLAN §A (fix inherited artifacts/lane-b-polish manifest/generator in THIS worktree; upstream workspace untouched)",
+      "how": "generator now builds the committed-source manifest from git ls-files only and always drops backups (*.blend1 etc.); pre-fix manifest/receipt preserved at evidence-repair/previous/upg1-manifest/ (original manifest sha256 ccc2774e0957a25c35425e8537640524a86689a7d607e618310818112aa55261); manifest+receipt regenerated; committed-tree verification now exports HEAD to a fresh git worktree (LFS smudged locally) and verifies there with tamper/missing negatives plus a must-still-fail check on the pre-fix snapshot",
+      "state": "resolved in this worktree — full test suite to be run once at final closeout"
+    }
   },
   "reusedEvidence": {
     "budgets": { "base": 694430, "ceiling": 700000, "allOn": 708066, "allOnOverBy": 8066 },

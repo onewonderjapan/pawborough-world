@@ -43,6 +43,7 @@
 1. 是否采用 fangbang-temple-v7 为当前世界候选（本批未改变任何世界几何）。
 2. 「全开」预算 708,066 超出 700,000 目标 8,066 三角形——保持如实标注即可，还是需要后续批处理减面。
 3. 上游清单 UP-G1 缺口（两个 gitignore 的 .blend1 被列入清单）由上游批重出清单还是就此归档。
+   - *2026-09-21 附记：world-ten-hour 批已按 PLAN §A 在本 worktree 修复（快照+git 跟踪口径重出清单+HEAD 导出核验），此项无需机主再决定；快照与原因见 `artifacts/lane-b-polish/evidence-repair/previous/upg1-manifest/`。*
 
 ## 已知边界
 

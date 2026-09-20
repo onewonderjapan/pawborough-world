@@ -1,5 +1,5 @@
 // Delivery manifest generator/verifier for the lane-b-polish batch
-// (evidence-repair B7-R2, 2026-09-20).
+// (evidence-repair B7-R2, 2026-09-20; UP-G1 committed-tree fix 2026-09-21).
 //
 // The previous delivery-manifest.json included ITS OWN old hash as an entry
 // (59/60 verified, the self-entry could never match after rewriting). Rules
@@ -9,17 +9,38 @@
 //   - fileCount/totalBytes are computed from the real entries, never asserted
 //   - verify() re-reads every listed file: existence, bytes, sha256, path
 //     safety and self-exclusion — tampered/missing/wrong-hash entries fail
+//   - UP-G1 (2026-09-21 fix): the upstream generator walked the filesystem and
+//     listed two gitignored *.blend1 Blender backups, so the manifest could
+//     never verify against the committed tree. Generation for the committed
+//     scope now filters to git-TRACKED files (git ls-files) and always drops
+//     backup files; verifyManifest(root, m, {tracked}) flags entries git does
+//     not track. The committed-tree guarantee is proven by exporting HEAD to a
+//     fresh directory (git worktree add, LFS smudged from the local store) and
+//     verifying there — see tests/lane-b-evidence.test.mjs
 //   - the final commit hash lives in the TOP-LEVEL RUN_STATUS (outside this
 //     workspace), never inside the manifest
 //
+// Delivery scopes (UP-G1 fix):
+//   committed-source = this manifest: exactly the git-tracked, non-backup
+//     files in MANIFEST_SCOPE; verifiable from a fresh checkout of HEAD.
+//   portable-payload = the gitignored rebuildable dist closures
+//     (dist-lane-b-polish, dist-world-playable). They are NOT part of the
+//     committed tree; each has its own build-time verification
+//     (scripts/build_lane_b_polish_dist.mjs DIST_RUN_OK, dist-world-playable
+//     133-file package manifest) and is excluded from this manifest on purpose.
+//
 // CLI:
 //   node tools/lane_b_delivery_manifest.mjs generate   # after all docs final
-//   node tools/lane_b_delivery_manifest.mjs verify
+//   node tools/lane_b_delivery_manifest.mjs verify [dir]
 //   node tools/lane_b_delivery_manifest.mjs receipt    # outer digest receipt
 import { createHash } from 'node:crypto';
 import { readFile, readdir, stat, writeFile } from 'node:fs/promises';
+import { execFile as execFileCb } from 'node:child_process';
+import { promisify } from 'node:util';
 import { resolve, dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+const execFile = promisify(execFileCb);
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const MANIFEST_REL = 'artifacts/lane-b-polish/delivery-manifest.json';
@@ -50,6 +71,25 @@ export const MANIFEST_SCOPE = {
 
 const sha256 = (buf) => createHash('sha256').update(buf).digest('hex');
 
+// Temp/backup files are never formal deliverables. UP-G1 root cause: Blender
+// writes *.blend1 next to the real *.blend on every re-save; .gitignore:31
+// excludes them, so they are absent from any committed tree.
+export function isBackupPath(rel) {
+  return /\.(blend1|blend2)$/i.test(rel) || /(~|\.(bak|tmp))$/i.test(rel);
+}
+
+// Set of paths git tracks at rootDir (the committed-tree file universe), or
+// null when rootDir is not a work tree / git is unavailable.
+export async function gitTrackedFiles(rootDir) {
+  try {
+    const out = await execFile('git', ['-C', rootDir, 'ls-files', '-z'],
+      { maxBuffer: 64 * 1024 * 1024 });
+    return new Set(out.stdout.split('\0').filter(Boolean));
+  } catch {
+    return null;
+  }
+}
+
 async function walkFiles(absDir, base, out) {
   for (const ent of await readdir(absDir, { withFileTypes: true })) {
     if (ent.name === '.DS_Store') continue;
@@ -66,7 +106,11 @@ export function safeRelPath(p) {
 }
 
 // Build (not write) a manifest for `rootDir` from a scope {dirs, files}.
-export async function buildManifest(rootDir, { scope, meta = {} }) {
+// opts.tracked (Set): when given, only git-tracked files enter the manifest
+// (committed-source scope) and backup files are always dropped — an untracked
+// scope.files entry is a hard error (a declared deliverable git does not carry).
+// When omitted (fixture/scratch trees), no filtering happens.
+export async function buildManifest(rootDir, { scope, meta = {}, tracked } = {}) {
   const rels = new Set();
   for (const d of scope.dirs ?? []) {
     if (!safeRelPath(d)) throw new Error(`unsafe scope dir ${d}`);
@@ -82,6 +126,20 @@ export async function buildManifest(rootDir, { scope, meta = {} }) {
   // the manifest NEVER lists itself or the receipt (hash-cycle prevention)
   rels.delete(MANIFEST_REL);
   rels.delete(RECEIPT_REL);
+  // UP-G1 rule: committed-source entries must be git-tracked, and backups are
+  // never deliverables even if force-added to the index.
+  const excluded = { backups: [], untracked: [] };
+  if (tracked) {
+    for (const rel of [...rels]) {
+      if (isBackupPath(rel)) { excluded.backups.push(rel); rels.delete(rel); continue; }
+      if (!tracked.has(rel)) {
+        if ((scope.files ?? []).includes(rel))
+          throw new Error(`declared scope file is not git-tracked (would repeat UP-G1): ${rel}`);
+        excluded.untracked.push(rel);
+        rels.delete(rel);
+      }
+    }
+  }
   const files = {};
   let totalBytes = 0;
   for (const rel of [...rels].sort()) {
@@ -89,7 +147,7 @@ export async function buildManifest(rootDir, { scope, meta = {} }) {
     files[rel] = { bytes: buf.byteLength, sha256: sha256(buf) };
     totalBytes += buf.byteLength;
   }
-  return {
+  const m = {
     batch: meta.batch ?? 'lane-b-polish (2026-09-20) + evidence repair (B7-R1/R2)',
     candidate: meta.candidate ?? 'fangbang-temple-v7',
     status: meta.status ?? 'delivered_for_lead_review',
@@ -100,11 +158,19 @@ export async function buildManifest(rootDir, { scope, meta = {} }) {
     fileCount: Object.keys(files).length,
     totalBytes,
   };
+  if (tracked) {
+    m.scopeKind = meta.scopeKind ?? 'committed-source';
+    m.trackedBasis = 'git ls-files at generation; backups (*.blend1 etc.) always excluded';
+    m.excluded = excluded;
+  }
+  return m;
 }
 
 // Verify a manifest object against the real tree at rootDir. Every failure is
-// collected; ok === errors.length === 0.
-export async function verifyManifest(rootDir, m) {
+// collected; ok === errors.length === 0. opts.tracked (Set, optional): entries
+// git does not track are flagged — the UP-G1 failure class (manifest listing
+// files no checkout can ever contain).
+export async function verifyManifest(rootDir, m, { tracked } = {}) {
   const errors = [];
   const push = (e) => errors.push(e);
   if (!m || typeof m !== 'object' || !m.files) { return { ok: false, errors: ['manifest: no files table'] }; }
@@ -114,6 +180,8 @@ export async function verifyManifest(rootDir, m) {
   for (const [rel, entry] of Object.entries(m.files)) {
     if (!safeRelPath(rel)) { push(`${rel}: unsafe path`); continue; }
     if (rel === MANIFEST_REL || rel === RECEIPT_REL) continue;   // already flagged
+    if (tracked && !tracked.has(rel)) push(`${rel}: not git-tracked (absent from any committed tree, UP-G1 class)`);
+    if (isBackupPath(rel)) push(`${rel}: backup file listed as a deliverable (UP-G1 class)`);
     if (!entry || !Number.isInteger(entry.bytes) || !/^[0-9a-f]{64}$/.test(entry.sha256 ?? '')) {
       push(`${rel}: malformed entry`); continue;
     }
@@ -139,14 +207,27 @@ const isMain = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(imp
 if (isMain) {
   const cmd = process.argv[2];
   if (cmd === 'generate') {
-    const m = await buildManifest(root, { scope: MANIFEST_SCOPE });
+    const tracked = await gitTrackedFiles(root);
+    if (!tracked) {
+      console.log('FAIL: committed-source generation needs git (tracked-file basis, UP-G1 rule)');
+      process.exit(1);
+    }
+    const m = await buildManifest(root, { scope: MANIFEST_SCOPE, tracked });
     await writeFile(resolve(root, MANIFEST_REL), JSON.stringify(m, null, 1) + '\n');
+    const ex = m.excluded;
     console.log(`manifest written: ${MANIFEST_REL} (${m.fileCount} files, ${m.totalBytes} bytes)`);
+    console.log(`excluded: ${ex.backups.length} backup(s), ${ex.untracked.length} untracked` +
+      (ex.backups.length + ex.untracked.length
+        ? ` -> ${[...ex.backups, ...ex.untracked].join(', ')}` : ''));
   } else if (cmd === 'verify') {
+    const dir = process.argv[3] ? resolve(process.argv[3]) : root;
     const m = JSON.parse(await readFile(resolve(root, MANIFEST_REL), 'utf8'));
-    const v = await verifyManifest(root, m);
+    const tracked = dir === root ? await gitTrackedFiles(root) : undefined;
+    const v = await verifyManifest(dir, m, { tracked });
     for (const e of v.errors) console.log(`FAIL ${e}`);
-    console.log(v.ok ? `MANIFEST_VERIFY_PASS (${m.fileCount} files, ${m.totalBytes} bytes)` : `MANIFEST_VERIFY_FAIL (${v.errors.length})`);
+    console.log(v.ok ? `MANIFEST_VERIFY_PASS (${m.fileCount} files, ${m.totalBytes} bytes` +
+      `${dir === root ? ', tracked-consistent' : ' in ' + dir})`
+      : `MANIFEST_VERIFY_FAIL (${v.errors.length})`);
     process.exit(v.ok ? 0 : 1);
   } else if (cmd === 'receipt') {
     const buf = await readFile(resolve(root, MANIFEST_REL));

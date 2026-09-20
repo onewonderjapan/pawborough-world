@@ -129,18 +129,6 @@
    "bytes": 7264,
    "sha256": "a4ac3c3a989d9fe5ed88d41e72c1f3e4ed592c67eb5b2c3afe363f6232956634"
   },
-  "artifacts/lane-b-polish/evidence-repair/previous/upg1-manifest/README.md": {
-   "bytes": 2245,
-   "sha256": "27d48531c235ec064f7f852f7a5d3e253291ec587c34e4c96f069592a3473b08"
-  },
-  "artifacts/lane-b-polish/evidence-repair/previous/upg1-manifest/delivery-manifest.pre-fix.json": {
-   "bytes": 12080,
-   "sha256": "ccc2774e0957a25c35425e8537640524a86689a7d607e618310818112aa55261"
-  },
-  "artifacts/lane-b-polish/evidence-repair/previous/upg1-manifest/delivery-receipt.pre-fix.json": {
-   "bytes": 468,
-   "sha256": "ada47e58b2a5f264b4900a9ca66f118e38506323ffafd8868ddd53322f9bdfe6"
-  },
   "artifacts/lane-b-polish/evidence-repair/raw/default-frames.json": {
    "bytes": 69384,
    "sha256": "e79956cacbf04b6ea86c1d681607e1c1c0b29d2715d10f0b4bcc05aaf9a3ad4e"
@@ -194,16 +182,16 @@
    "sha256": "9ffbf7bf3a2ceecee015130ee8afc906986af7b0b19edb199a42af4e96301528"
   },
   "tests/lane-b-evidence.test.mjs": {
-   "bytes": 19540,
-   "sha256": "2fb6b3689a0d4fe6c034aa1a45eb5aaa095df7b09837d93bc8cae4118f246a6c"
+   "bytes": 15421,
+   "sha256": "e12b638fddda105ff23742ea4417b14e3857cedc574eca9acf1fb316784cefab"
   },
   "tests/lane-b-polish.test.mjs": {
    "bytes": 14576,
    "sha256": "e7243bae04866c8fb8712606b9c83571ed247a3cfcd9d7a0c6ad71f6ac9d036a"
   },
   "tools/lane_b_delivery_manifest.mjs": {
-   "bytes": 12394,
-   "sha256": "b617d30c79809a8b87de0ef3fb45d1f353d1ec9662cadf68e69a390cd84456c4"
+   "bytes": 8140,
+   "sha256": "3de9795ee95721b05ade4fb2ee18a265ad9d81c72753288fb7d95007e33b5e9d"
   },
   "tools/lane_b_polish_capture.mjs": {
    "bytes": 7601,
@@ -269,6 +257,10 @@
    "bytes": 6310339,
    "sha256": "661222a6f2ec3494e4967e2647ac9cd5cd04aa7d505431fa550ba9a4eee5c43b"
   },
+  "world/lane-b-polish/interfaces/model.blend1": {
+   "bytes": 6310339,
+   "sha256": "55da15475892dd47c4a42731c993f4a69e52a58c58bcb612ea2d5ec6c93780e4"
+  },
   "world/lane-b-polish/interfaces/model.glb": {
    "bytes": 1627584,
    "sha256": "c9c6dbcb402e2b4c80e06fb71af891d4ba33a0271a4706b9ad93aa04035c121a"
@@ -293,6 +285,10 @@
    "bytes": 6731899,
    "sha256": "08288e6a3321d96151a56f913e438c130f5b0a5600fd559ebaba7ee9798c4f72"
   },
+  "world/lane-b-polish/lane-b/model.blend1": {
+   "bytes": 6731899,
+   "sha256": "9b3cb16a330e434e9dfcad82db7d2f8a79f373beb558533f283f53a3b55d5406"
+  },
   "world/lane-b-polish/lane-b/model.glb": {
    "bytes": 2061328,
    "sha256": "f6a7da8a05add9038ac35ecad074ca8f3ac5ed8771b715b1a4ca655cec2388a8"
@@ -306,12 +302,6 @@
    "sha256": "ab69c7198d53cd11bb93f4a7d60dd35ddfe886dd2473585443ce5359c93472e1"
   }
  },
- "fileCount": 74,
- "totalBytes": 71643357,
- "scopeKind": "committed-source",
- "trackedBasis": "git ls-files at generation; backups (*.blend1 etc.) always excluded",
- "excluded": {
-  "backups": [],
-  "untracked": []
- }
+ "fileCount": 73,
+ "totalBytes": 84662429
 }

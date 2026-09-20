@@ -8,19 +8,24 @@
 // not source-string matches — plus the committed raw artifacts.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile, writeFile, mkdir, stat } from 'node:fs/promises';
+import { readFile, writeFile, appendFile, unlink, mkdir, stat } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mkdtemp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
+import { execFile as execFileCb } from 'node:child_process';
+import { promisify } from 'node:util';
 import {
   yawError, yawTowards, steeringDx, normalizeTarget, makeWaypointer,
   evaluateWalk, frameIntervalStats, RouteTargetError, LOOK_SENSITIVITY,
 } from '../tools/lane_b_route_steer.mjs';
 import {
   buildManifest, verifyManifest, MANIFEST_REL, RECEIPT_REL, MANIFEST_SCOPE,
+  isBackupPath, gitTrackedFiles,
 } from '../tools/lane_b_delivery_manifest.mjs';
+
+const execFile = promisify(execFileCb);
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const json = async (p) => JSON.parse(await readFile(resolve(root, p), 'utf8'));
@@ -264,14 +269,78 @@ test('evidence: manifest round-trip on a fixture tree, then real failures', asyn
   assert.ok(!v.ok && v.errors.some((e) => e.includes('path')), 'escaping path must fail');
 });
 
-test('evidence: the committed delivery manifest verifies against the real tree', async () => {
+// ---- committed-scope generation: untracked/backup entries must never be listed
+
+test('evidence: committed-scope build drops untracked and backup entries (UP-G1 rule)', async () => {
+  const dir = await mkdtemp(resolve(tmpdir(), 'lane-b-tracked-'));
+  await mkdir(resolve(dir, 'assets'), { recursive: true });
+  await writeFile(resolve(dir, 'assets/keep.bin'), Buffer.from([1, 2, 3]));
+  await writeFile(resolve(dir, 'assets/model.blend'), Buffer.from([4, 5]));
+  await writeFile(resolve(dir, 'assets/model.blend1'), Buffer.from([6]));   // even if force-added
+  await writeFile(resolve(dir, 'assets/ghost.bin'), Buffer.from([7, 8]));   // never tracked
+  const tracked = new Set(['assets/keep.bin', 'assets/model.blend', 'assets/model.blend1']);
+  const m = await buildManifest(dir, { scope: { dirs: ['assets'], files: [] }, tracked });
+  assert.deepEqual(Object.keys(m.files).sort(), ['assets/keep.bin', 'assets/model.blend']);
+  assert.equal(m.scopeKind, 'committed-source');
+  assert.deepEqual(m.excluded.backups, ['assets/model.blend1']);
+  assert.deepEqual(m.excluded.untracked, ['assets/ghost.bin']);
+  // a declared scope file git does not track is a hard error, not a silent skip
+  await assert.rejects(
+    () => buildManifest(dir, { scope: { dirs: [], files: ['assets/ghost.bin'] }, tracked }),
+    /not git-tracked/);
+  // verifyManifest({tracked}) flags the UP-G1 failure class on a poisoned manifest
+  const bad = JSON.parse(JSON.stringify(m));
+  bad.files['assets/model.blend1'] = { bytes: 1, sha256: '0'.repeat(64) };
+  const v = await verifyManifest(dir, bad, { tracked });
+  assert.ok(!v.ok && v.errors.some((e) => e.includes('not git-tracked')), JSON.stringify(v.errors));
+  assert.ok(v.errors.some((e) => e.includes('backup')), 'backup listing must be flagged');
+});
+
+test('evidence: the committed delivery manifest verifies against a fresh HEAD export', async () => {
   const m = await json('artifacts/lane-b-polish/delivery-manifest.json');
+  assert.equal(m.scopeKind, 'committed-source', 'UP-G1 fix: committed-source scope declared');
   assert.ok(!m.files[MANIFEST_REL], 'manifest excludes itself');
   assert.ok(!m.files[RECEIPT_REL], 'manifest excludes the outer receipt');
   assert.equal(m.fileCount, Object.keys(m.files).length);
   assert.equal(m.totalBytes, Object.values(m.files).reduce((s, e) => s + e.bytes, 0));
-  const v = await verifyManifest(root, m);
-  assert.deepEqual(v.errors, [], `real manifest errors: ${JSON.stringify(v.errors)}`);
+  assert.ok(!Object.keys(m.files).some(isBackupPath), 'no *.blend1 backup entries');
+
+  // the listed set is exactly the tracked in-scope set (UP-G1 completeness)
+  const tracked = await gitTrackedFiles(root);
+  assert.ok(tracked, 'workspace is a git repo');
+  const regen = await buildManifest(root, { scope: MANIFEST_SCOPE, tracked });
+  assert.deepEqual(Object.keys(regen.files).sort(), Object.keys(m.files).sort());
+
+  // clean working tree -> its bytes equal HEAD bytes
+  const { stdout: dirty } = await execFile('git', ['-C', root, 'status', '--porcelain']);
+  assert.equal(dirty, '', 'working tree must be clean to equate it with the committed tree');
+
+  // fresh export of HEAD in a new directory (LFS smudged from the local store)
+  const dir = await mkdtemp(resolve(tmpdir(), 'lane-b-head-'));
+  await execFile('git', ['-C', root, 'worktree', 'add', '--detach', dir, 'HEAD']);
+  try {
+    const v = await verifyManifest(dir, m);
+    assert.deepEqual(v.errors, [], `HEAD export errors: ${JSON.stringify(v.errors)}`);
+    // negative on the same export: tampered byte, then a missing file
+    const victim = 'artifacts/lane-b-polish/evidence-repair/previous/upg1-manifest/README.md';
+    await appendFile(resolve(dir, victim), 'x');
+    let vn = await verifyManifest(dir, m);
+    assert.ok(!vn.ok && vn.errors.some((e) => e.includes('sha256')), 'tampered byte must fail');
+    await unlink(resolve(dir, victim));
+    vn = await verifyManifest(dir, m);
+    assert.ok(!vn.ok && vn.errors.some((e) => e.includes('missing')), 'missing file must fail');
+  } finally {
+    await execFile('git', ['-C', root, 'worktree', 'remove', '--force', dir]);
+    await execFile('git', ['-C', root, 'worktree', 'prune']);
+  }
+
+  // the preserved pre-fix snapshot still fails for exactly the UP-G1 reason
+  const prev = await json('artifacts/lane-b-polish/evidence-repair/previous/upg1-manifest/delivery-manifest.pre-fix.json');
+  const vp = await verifyManifest(root, prev, { tracked });
+  assert.ok(!vp.ok, 'pre-fix manifest must not verify');
+  assert.ok(vp.errors.some((e) => e.includes('model.blend1') && e.includes('not git-tracked')),
+    JSON.stringify(vp.errors));
+
   // receipt is outer and carries the manifest digest
   const receipt = await json('artifacts/lane-b-polish/evidence-repair/delivery-receipt.json');
   const manifestBytes = await readFile(resolve(root, MANIFEST_REL));
