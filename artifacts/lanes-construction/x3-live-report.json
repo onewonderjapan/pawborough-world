@@ -1,0 +1,679 @@
+{
+  "batch": "pawborough-lanes-construction-night-20260920",
+  "stage": "X3 v5 live verification + evidence capture",
+  "generatedAt": "2026-09-20T00:38:11.915Z",
+  "server": "http://127.0.0.1:5350 (vite dev, owned and stopped by this run)",
+  "dataset": "fangbang-temple-v5",
+  "mainStreetRouteCheck": {
+    "pass": true,
+    "summary": "去程至闭门前(z_local=-71.63)·返程达·端墙挡✓·前院东界✓·闭门挡✓·接缝最长停滞0s"
+  },
+  "laneWalks": {
+    "laneA": {
+      "legs": [
+        {
+          "to": [
+            43.24,
+            -12.49
+          ],
+          "reached": true,
+          "feetY": 0.114,
+          "stop": [
+            43.17,
+            -11.61
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            43.38,
+            -14.29
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            43.31,
+            -13.4
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            43.56,
+            -17.18
+          ],
+          "reached": true,
+          "feetY": 0.151,
+          "stop": [
+            43.51,
+            -16.28
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            43.61,
+            -18.97
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            43.58,
+            -18.08
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            43.66,
+            -20.77
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            43.63,
+            -19.88
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            43.7,
+            -22.57
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            43.68,
+            -21.67
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            43.73,
+            -23.87
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            43.71,
+            -22.99
+          ],
+          "stuckS": 0
+        }
+      ],
+      "blocked": null,
+      "feetYMin": 0.11,
+      "feetYMax": 0.151
+    },
+    "laneAOut": {
+      "legs": [
+        {
+          "to": [
+            43.7,
+            -22.57
+          ],
+          "reached": true,
+          "feetY": 0.82,
+          "stop": [
+            43.72,
+            -23.47
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            43.66,
+            -20.77
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            43.68,
+            -21.64
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            43.61,
+            -18.97
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            43.63,
+            -19.84
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            43.56,
+            -17.18
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            43.59,
+            -18.05
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            43.38,
+            -14.29
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            43.43,
+            -15.16
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            43.24,
+            -12.49
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            43.3,
+            -13.37
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            43.1,
+            -10.7
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            43.16,
+            -11.58
+          ],
+          "stuckS": 0
+        }
+      ],
+      "blocked": null,
+      "feetYMin": 0.11,
+      "feetYMax": 0.82
+    },
+    "laneB": {
+      "legs": [
+        {
+          "to": [
+            59.62,
+            10.03
+          ],
+          "reached": true,
+          "feetY": 0.984,
+          "stop": [
+            60.04,
+            9.24
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            59.25,
+            10.74
+          ],
+          "reached": true,
+          "feetY": 0.114,
+          "stop": [
+            59.66,
+            9.96
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            58.6,
+            12.1
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            58.99,
+            11.3
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            57.9,
+            13.4
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            58.32,
+            12.6
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            57.05,
+            14.96
+          ],
+          "reached": true,
+          "feetY": 0.17,
+          "stop": [
+            57.37,
+            14.13
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            56.26,
+            16.46
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            56.64,
+            15.66
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            55.57,
+            17.79
+          ],
+          "reached": true,
+          "feetY": 0.111,
+          "stop": [
+            55.97,
+            17
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            54.87,
+            19.12
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            55.28,
+            18.34
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            54.18,
+            20.45
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            54.58,
+            19.67
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            53.48,
+            21.78
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            53.89,
+            21
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            53.06,
+            22.58
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            53.48,
+            21.78
+          ],
+          "stuckS": 0
+        }
+      ],
+      "blocked": null,
+      "feetYMin": 0.11,
+      "feetYMax": 0.984
+    },
+    "laneBOut": {
+      "legs": [
+        {
+          "to": [
+            53.48,
+            21.78
+          ],
+          "reached": true,
+          "feetY": 0.997,
+          "stop": [
+            53.08,
+            22.55
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            54.18,
+            20.45
+          ],
+          "reached": true,
+          "feetY": 0.113,
+          "stop": [
+            53.76,
+            21.25
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            54.87,
+            19.12
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            54.46,
+            19.92
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            55.57,
+            17.79
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            55.15,
+            18.58
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            56.26,
+            16.46
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            55.85,
+            17.25
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            57.05,
+            14.96
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            56.65,
+            15.72
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            57.9,
+            13.4
+          ],
+          "reached": true,
+          "feetY": 0.17,
+          "stop": [
+            57.48,
+            14.18
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            58.6,
+            12.1
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            58.04,
+            12.79
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            59.25,
+            10.74
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            58.8,
+            11.5
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            59.62,
+            10.03
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            59.2,
+            10.79
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            60.09,
+            9.14
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            59.67,
+            9.92
+          ],
+          "stuckS": 0
+        }
+      ],
+      "blocked": null,
+      "feetYMin": 0.11,
+      "feetYMax": 0.997
+    },
+    "laneADoor": {
+      "legs": [
+        {
+          "to": [
+            42.75,
+            -20.6
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            42.93,
+            -20.26
+          ],
+          "stuckS": 0
+        }
+      ],
+      "blocked": null,
+      "feetYMin": 0.11,
+      "feetYMax": 0.11
+    },
+    "laneASeam": {
+      "legs": [
+        {
+          "to": [
+            43.55,
+            -16
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            43.51,
+            -15.4
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            43.6,
+            -17.2
+          ],
+          "reached": true,
+          "feetY": 0.123,
+          "stop": [
+            43.57,
+            -16.64
+          ],
+          "stuckS": 0
+        },
+        {
+          "to": [
+            43.7,
+            -19.5
+          ],
+          "reached": true,
+          "feetY": 0.11,
+          "stop": [
+            43.67,
+            -18.91
+          ],
+          "stuckS": 0
+        }
+      ],
+      "blocked": null,
+      "feetYMin": 0.11,
+      "feetYMax": 0.123
+    }
+  },
+  "laneWalkContract": {
+    "allLegsReached": {
+      "laneA": true,
+      "laneAOut": true,
+      "laneB": true,
+      "laneBOut": true,
+      "laneADoor": true,
+      "laneASeam": true
+    },
+    "seamHeightDeltaM": 0.013,
+    "seamWithinContract": true,
+    "noFall": true
+  },
+  "views": [
+    {
+      "view": "lane-a-street-look-in",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 43.26,
+        "dominantShare": 0.082
+      },
+      "file": "/home/baibai/outbox/pawborough-lanes-construction-night-20260920/workspace/artifacts/lanes-construction/web/v5-lane-a-street-look-in.png"
+    },
+    {
+      "view": "lane-a-forward",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 25.07,
+        "dominantShare": 0.197
+      },
+      "file": "/home/baibai/outbox/pawborough-lanes-construction-night-20260920/workspace/artifacts/lanes-construction/web/v5-lane-a-forward.png"
+    },
+    {
+      "view": "lane-a-return",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 32.87,
+        "dominantShare": 0.179
+      },
+      "file": "/home/baibai/outbox/pawborough-lanes-construction-night-20260920/workspace/artifacts/lanes-construction/web/v5-lane-a-return.png"
+    },
+    {
+      "view": "lane-a-detail",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 34.01,
+        "dominantShare": 0.106
+      },
+      "file": "/home/baibai/outbox/pawborough-lanes-construction-night-20260920/workspace/artifacts/lanes-construction/web/v5-lane-a-detail.png"
+    },
+    {
+      "view": "lane-b-street-look-in",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 22.58,
+        "dominantShare": 0.132
+      },
+      "file": "/home/baibai/outbox/pawborough-lanes-construction-night-20260920/workspace/artifacts/lanes-construction/web/v5-lane-b-street-look-in.png"
+    },
+    {
+      "view": "lane-b-forward",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 50.75,
+        "dominantShare": 0.173
+      },
+      "file": "/home/baibai/outbox/pawborough-lanes-construction-night-20260920/workspace/artifacts/lanes-construction/web/v5-lane-b-forward.png"
+    },
+    {
+      "view": "lane-b-return",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 29.76,
+        "dominantShare": 0.122
+      },
+      "file": "/home/baibai/outbox/pawborough-lanes-construction-night-20260920/workspace/artifacts/lanes-construction/web/v5-lane-b-return.png"
+    },
+    {
+      "view": "lane-b-detail",
+      "ok": true,
+      "guard": {
+        "blank": false,
+        "std255": 20.86,
+        "dominantShare": 0.126
+      },
+      "file": "/home/baibai/outbox/pawborough-lanes-construction-night-20260920/workspace/artifacts/lanes-construction/web/v5-lane-b-detail.png"
+    }
+  ],
+  "comparisonPairs": 4,
+  "resources": {
+    "meshes": 717,
+    "triangles": 703049,
+    "uniqueGeometries": 688,
+    "uniqueMaterials": 666,
+    "uniqueTextures": 534
+  },
+  "pass": true
+}

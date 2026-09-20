@@ -1,0 +1,76 @@
+{
+  "batch": "pawborough-lanes-construction-night-20260920",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "deliverable": "两处支弄精修 + 两处弄口连接：可重开 v5 候选世界（fangbang.html?ds=fangbang-temple-v5），ownerAdopted=false，等待机主实机采用",
+  "stages": {
+    "S": {
+      "pass": true,
+      "summary": "两项旧尾项有限处理：v3 westshops-strips.cm 按现源重建并安装（解码验证 PASS）；v3 lions.cm 超容差回退原始 GLB（旧字节进 retired，不删除）；clipA 终态 partial（7040/8781）如实收据",
+      "evidence": ["artifacts/lanes-construction/tails/S1-result.json", "artifacts/lanes-construction/tails/S2-clipA-result.json", "artifacts/world-closeout/video-receipt.json"]
+    },
+    "T": {
+      "pass": true,
+      "summary": "锚点全部从真实几何推导（删墙三角/碰撞世界/装配网格）；两条延长走廊碰撞勘察干净；中线胶囊净空 A 0.98m / B 0.85m",
+      "evidence": ["artifacts/lanes-construction/placement.json"]
+    },
+    "U": {
+      "pass": true,
+      "laneA": { "depthM": 8.0, "clearWidthM": 2.2, "portalClearHeightM": 2.3, "triangles": 7290, "budget": 30000, "newTextures": 0 },
+      "reusableModules": ["rear-service-door-panel", "high-window-panel", "corner-cap-plinth"]
+    },
+    "V": {
+      "pass": true,
+      "laneB": { "depthTotalM": 10.0, "moduleDepthOldM": 5.5, "pocketWidthM": 3.6, "portalClearWidthM": 1.5, "portalClearHeightM": 2.3, "triangles": 8044, "budget": 30000, "newTextures": 0 },
+      "threePartList": {
+        "旧样板": "kit/build_lane_b.py（N5 冻结设计）的全部构件法与 kit/out/lane-b 输出保持字节冻结",
+        "当前世界接入": "v5 blocks block-lanes-v2 按冻结锚点 PORTAL_C [57.418,0.09,14.2485] yaw -0.4818 接入；无重复旧封墙/黑门面/双层地板（v5 装配已删占位端墙三角）",
+        "新增部分": "延伸段 s5.5→10（口袋 3.6m）、背立面移至 s=10.06、侧立面第二窗、s=7.3 后门凹口、转角收口件"
+      }
+    },
+    "W": {
+      "pass": true,
+      "interfaces": { "triangles": 876, "budget": 20000, "pieces": ["A弄走廊石板地面(替换占位铺地)+西侧排水+街面门槛条+两个转角壁墩", "B弄街面接坡+排水口出沟+两个砖基包裹"] },
+      "knownDeviation": "N05/N06/S07 可视面与冻结碰撞面存在 1-2.3m 既有偏差（v4 已采用状态）；接口地面按可视面铺设，可走域仍由冻结碰撞界定，未动冻结碰撞"
+    },
+    "X": {
+      "pass": true,
+      "summary": "v5 数据集完整接入：装配手术(-45 三角)、manifest/blocks/collision/route/cameras、src 地面契约扩展；实机验证全部通过",
+      "liveVerification": {
+        "mainStreetRouteCheck": x3.mainStreetRouteCheck.pass,
+        "capsuleWalks": { "laneA往返": true, "laneB往返": true, "关闭后门阻挡": true, "地面接缝Δm": 0.013, "无坠落": true },
+        "samePhysicsChain": true
+      },
+      "views": { "webgl": 8, "blender": 4, "comparisonPairs": 4 },
+      "blend": "artifacts/lanes-construction/scene-lanes-v1.blend（可重开，已用其相机渲出 4 张离线图；无冻结场景文件被改）"
+    }
+  },
+  "budgets": {
+    "added": { "laneA": 7290, "laneB": 8044, "interfaces": 876, "total": 16210, "cap": 80000, "pass": true },
+    "fullSceneCandidate": { "actual": 703049, "cap": 700000, "pass": false, "overBy": 3049,
+      "note": "v4 已采用底座本身就已 686,876（v5 之前）；本批新增 16,210 后全场景 703,049，超 700k 上限 0.44%。如实记录交机主裁量：可在采用时删减本批构件（如 lane B 侧墙窗件）或调整上限口径，本批不擅自缩减已按规格建成的构件" },
+    "newTextures": 0
+  },
+  "protections": {
+    "frozenUntouched": ["world/street-reviewed.glb（字节冻结，装配手术只写 v5 副本）", "world/fangbang-temple-v4/**", "world/laneb/**、kit/out/lane-b/**", "temple-axis/**", "玄扈台/照壁保持不碰", "源视频守望未动"],
+    "v3cmCorrection": "仅本批 allowedChanges 明确开放的两处；旧字节全部保留在 artifacts/lanes-construction/tails/retired-cm/"
+  },
+  "notDone": [
+    "无 merge/push/public hosting；无新自动任务；未恢复未决建筑",
+    "clipA 缺失 1741 帧未补渲（守望终态 partial，如实转交）",
+    "全场景 700k 上限超 0.44%（见 budgets）",
+    "弄口沿街招牌按规格留空，未发明店名"
+  ],
+  "entry": { "v5Candidate": "fangbang.html?ds=fangbang-temple-v5", "v4Baseline": "fangbang.html?ds=fangbang-temple-v4", "defaultUnchanged": "fangbang.html 保持既有默认入口不变" },
+  "evidence": {
+    "live": "artifacts/lanes-construction/x3-live-report.json",
+    "webgl": "artifacts/lanes-construction/web/v5-lane-*.png (8)",
+    "blender": "artifacts/lanes-construction/blender/*.png (4) + render-report.json",
+    "comparison": "artifacts/lanes-construction/comparison/{before,after}-*.png (4对)",
+    "review": "artifacts/lanes-construction/review.html",
+    "placement": "artifacts/lanes-construction/placement.json",
+    "referenceUse": "artifacts/lanes-construction/reference-use.json",
+    "replacedSurfaces": "artifacts/lanes-construction/replaced-surfaces.json"
+  },
+  "finishedAt": "2026-09-20"
+}

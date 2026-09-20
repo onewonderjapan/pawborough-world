@@ -1,0 +1,119 @@
+{
+  "batch": "pawborough-lanes-construction-night-20260920",
+  "scope": "v5 assembly copy only (world/fangbang-temple-v5/street-reviewed-lanes.glb); the v4 original world/street-reviewed.glb is byte-frozen",
+  "sourceAssembly": {
+    "rel": "world/street-reviewed.glb",
+    "sha256Before": "b386ff72eb990e92c21c64d7e3895ddb42c14a3de1b0a9786abce726cffd3b37"
+  },
+  "resultAssembly": {
+    "rel": "world/fangbang-temple-v5/street-reviewed-lanes.glb",
+    "sha256After": "f8f90b7aacb421dd11740a3f5c7286361f050a0fd6b4841262c742ea9848d208"
+  },
+  "trianglesRemoved": 45,
+  "nodes": [
+    {
+      "node": "street-kit__weathered-lime-plaster",
+      "action": "removed from scene (12 placeholder seal-wall tris)"
+    },
+    {
+      "node": "street-kit__deep-door-lacquer",
+      "action": "removed from scene (12 placeholder door tris)"
+    },
+    {
+      "node": "street-kit__oxblood-stained-timber",
+      "action": "12 of 876 tris removed (two door lintels)"
+    },
+    {
+      "node": "street-kit__paving-frontage",
+      "action": "9 of 422 tris removed (placeholder lane paving strips)"
+    }
+  ],
+  "collidersRemoved": [
+    "lane-A-end-wall",
+    "lane-B-end-wall"
+  ],
+  "replacedBy": [
+    "world/lanes-v2/lane-a (portal + 8m lane)",
+    "world/lanes-v2/lane-b-v2 (portal + 10m lane)",
+    "world/lanes-v2/interfaces (corridor floor + mouths)"
+  ],
+  "detail": {
+    "street-kit__weathered-lime-plaster": {
+      "node": 185,
+      "total": 12,
+      "laneA": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "laneB": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    "street-kit__deep-door-lacquer": {
+      "node": 186,
+      "total": 12,
+      "laneA": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "laneB": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    "street-kit__oxblood-stained-timber": {
+      "node": 187,
+      "total": 876,
+      "laneA": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "laneB": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    "street-kit__paving-frontage": {
+      "node": 182,
+      "total": 422,
+      "laneA": [
+        380,
+        381,
+        382,
+        383,
+        384,
+        385,
+        386,
+        387
+      ],
+      "laneB": [
+        395
+      ]
+    }
+  }
+}

@@ -705,6 +705,7 @@ async function load() {
     ...(manifest.templeAxis?.assets ?? []),
     ...(manifest.westShops?.assets ?? []),
     ...(manifest.eastShops?.assets ?? []),   // east band (adoption batch G5)
+    ...(manifest.lanesV2?.assets ?? []),     // lanes-v2 candidate (20260920 batch)
   ];
   const assetInfos = assetBlocks.flatMap((b) => (b.assets ?? [])).map((a) => {
     const m = manifestAssets.find((e) => e.id === a.id);
@@ -745,6 +746,14 @@ async function load() {
   });
   const templeGroup = blocks.blocks.get('block-temple-axis')?.reviewed?.group;
   if (templeGroup) templeGroup.traverse((o) => {
+    if (o.isMesh && GROUND_NODE_RE.test(o.name))
+      extraMeshes.push({ name: o.name, positions: o.geometry.attributes.position.array, indices: o.geometry.index ? o.geometry.index.array : null, matrix: o.matrixWorld.elements.slice() });
+  });
+  // lanes-v2 (20260920 candidate): the lanes' stone paving + drain strips join
+  // the walkable ground through the same name contract (their asset blocks
+  // carry wall colliders via sidecars; ground comes from the visible faces)
+  const lanesGroup = blocks.blocks.get('block-lanes-v2')?.reviewed?.group;
+  if (lanesGroup) lanesGroup.traverse((o) => {
     if (o.isMesh && GROUND_NODE_RE.test(o.name))
       extraMeshes.push({ name: o.name, positions: o.geometry.attributes.position.array, indices: o.geometry.index ? o.geometry.index.array : null, matrix: o.matrixWorld.elements.slice() });
   });
@@ -789,6 +798,48 @@ async function load() {
     viewLabelOverride = label ?? null;
     controls.update();
     render();  // R1-04: render synchronously so same-task canvas reads see the frame
+  };
+  // lanes-v2 (20260920): walk-evidence hook. Drives the REAL WalkController
+  // (same capsule, same physics chain as walk mode — never a teleport) along
+  // a waypoint list, reporting reach/stuck/fall per leg and the seam heights
+  // crossed. Used by the batch's route evidence; harmless in normal use.
+  window.__fangbangWalkRoute = async (points, opts = {}) => {
+    const dt = 1 / 60;
+    const reach = opts.reachRadiusM ?? 0.9;
+    const timeoutS = opts.timeoutSPerLeg ?? 12;
+    const spawn = points[0];
+    const c = new WalkController({ RAPIER, physics: session.physics, capsule: { ...CAPSULE, spawn: [spawn[0], 1.0, spawn[2]] } });
+    const legs = [];
+    let blocked = null;
+    for (let i = 1; i < points.length; i++) {
+      const target = points[i];
+      c.yaw = Math.atan2(-(target[0] - c.feetPosition()[0]), -(target[2] - c.feetPosition()[2]));
+      let t = 0, stuck = 0, last = c.feetPosition(), reached = false;
+      while (t < timeoutS) {
+        const p0 = c.feetPosition();
+        c.yaw = Math.atan2(-(target[0] - p0[0]), -(target[2] - p0[2]));
+        c.setMoveInput(1, 0);
+        c.step(dt);
+        t += dt;
+        const p1 = c.feetPosition();
+        if (p1[1] < -0.05) { blocked = { reason: 'fell', at: p1.map((v) => +v.toFixed(2)) }; break; }
+        if (Math.hypot(p1[0] - last[0], p1[2] - last[2]) < 0.006) {
+          stuck += dt;
+          if (stuck > 1.2) break;
+        } else stuck = 0;
+        last = p1;
+        if (Math.hypot(p1[0] - target[0], p1[2] - target[2]) <= reach) { reached = true; break; }
+      }
+      const f = c.feetPosition();
+      legs.push({ to: [+target[0].toFixed(2), +target[2].toFixed(2)], reached,
+        feetY: +f[1].toFixed(3), stop: [+f[0].toFixed(2), +f[2].toFixed(2)], stuckS: +stuck.toFixed(2) });
+      if (blocked) break;
+    }
+    // seam probe: min/max feet height over the whole walk (ground joins)
+    let yMin = 1e9, yMax = -1e9;
+    for (const leg of legs) { yMin = Math.min(yMin, leg.feetY); yMax = Math.max(yMax, leg.feetY); }
+    c.dispose();
+    return { legs, blocked, feetYMin: legs.length ? +yMin.toFixed(3) : null, feetYMax: legs.length ? +yMax.toFixed(3) : null };
   };
 }
 

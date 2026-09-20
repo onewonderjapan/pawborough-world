@@ -1,0 +1,71 @@
+{
+  "axis": "glTF Y-up, facade +Z, front-wall center bottom origin",
+  "colliders": [
+    {
+      "name": "a-jamb-west",
+      "group": "lanes-v2",
+      "center": [
+        40.3,
+        1.7,
+        -10.75
+      ],
+      "size": [
+        0.34,
+        3.2,
+        0.55
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "a-jamb-east",
+      "group": "lanes-v2",
+      "center": [
+        43.02,
+        1.7,
+        -10.07
+      ],
+      "size": [
+        0.34,
+        3.2,
+        0.55
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "b-pier-base-w",
+      "group": "lanes-v2",
+      "center": [
+        56.505624884011134,
+        0.3,
+        14.49988943439274
+      ],
+      "size": [
+        0.44,
+        0.6,
+        0.18
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "b-pier-base-e",
+      "group": "lanes-v2",
+      "center": [
+        58.145025109005566,
+        0.3,
+        13.64264565209495
+      ],
+      "size": [
+        0.44,
+        0.6,
+        0.18
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    }
+  ],
+  "doors": "ground-floor front open into shallow interior; rear and sides closed",
+  "notIntegratedOrWalkingTested": true
+}

@@ -127,4 +127,6 @@ export function validateWorldInputs({ manifest, instances, collision, route, blo
 // lead review, plus (only in the lane-B candidate dataset) the derived lane
 // floor node emitted by scripts/build_laneb_world.mjs. Nothing else qualifies
 // — no invisible slab substitutes.
-export const GROUND_NODE_RE = /^street-kit__(quiet-gray-asphalt|paving-frontage|worn-stone)$|^laneb__floor$|^sctail__(quiet-gray-asphalt|worn-stone)$|^temple-ground__(paving-frontage|worn-stone)$/;
+// lanes-v2 (20260920 candidate): the refined lanes' stone paving and drain
+// strips are walkable ground through the same name-based extraction
+export const GROUND_NODE_RE = /^street-kit__(quiet-gray-asphalt|paving-frontage|worn-stone)$|^laneb__floor$|^sctail__(quiet-gray-asphalt|worn-stone)$|^temple-ground__(paving-frontage|worn-stone)$|^lanes-v2__(paving-frontage|worn-stone)$/;

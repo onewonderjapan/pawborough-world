@@ -1,0 +1,37 @@
+{
+  "batch": "pawborough-lanes-construction-night-20260920",
+  "sequence": [
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X"
+  ],
+  "done": {
+    "S": "两处旧尾项(cm修正+clipA收据)完成并提交",
+    "T": "placement.json 从真实几何推导",
+    "U": "lane-a 模块建成(7290 tris)并接入",
+    "V": "lane-b-v2 模块建成(8044 tris,10m)并接入",
+    "W": "interfaces 模块建成(876 tris)并接入",
+    "X": "v5集成+实机验证+8WebGL+4Blender+4对照+交付文档"
+  },
+  "live": {
+    "routeCheck": true,
+    "walks": {
+      "allLegsReached": {
+        "laneA": true,
+        "laneAOut": true,
+        "laneB": true,
+        "laneBOut": true,
+        "laneADoor": true,
+        "laneASeam": true
+      },
+      "seamHeightDeltaM": 0.013,
+      "seamWithinContract": true,
+      "noFall": true
+    },
+    "views": 8
+  },
+  "finishedAt": "2026-09-20T00:34:33.862Z"
+}

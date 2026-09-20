@@ -1,0 +1,268 @@
+{
+  "batch": "pawborough-lanes-construction-night-20260920",
+  "generatedAt": "2026-09-20T00:35:57.604Z",
+  "fileCount": 52,
+  "note": "batch delivery tree: tails + placement/reference/replaced + evidence (web/blender/comparison/previews) + docs + scene blend",
+  "files": [
+    {
+      "path": "blender/lane-a-forward.png",
+      "bytes": 680407,
+      "sha256": "77188ffbd23f49e1b1e999c1c015144887ca3286fdaf5dcb05383e0894914952"
+    },
+    {
+      "path": "blender/lane-a-return.png",
+      "bytes": 705296,
+      "sha256": "f66adea75086747719358183478cb569d4216aefa57ab0cb9c00f52a075dbdc3"
+    },
+    {
+      "path": "blender/lane-b-forward.png",
+      "bytes": 720878,
+      "sha256": "89128054bc763413ec71d50c88a4def348457eef9ce7047407f92b34735848d6"
+    },
+    {
+      "path": "blender/lane-b-return.png",
+      "bytes": 697562,
+      "sha256": "e573a7e0ef941d9bc8457556c16bb7f14da2209f4fb1f6769e79655a9fb69046"
+    },
+    {
+      "path": "blender/render-report.json",
+      "bytes": 1036,
+      "sha256": "5890d70cfe93be118c916e5e6e113e209eda5231c765d6c78208a1337aadbf80"
+    },
+    {
+      "path": "build-previews/lane-a-door.json",
+      "bytes": 488,
+      "sha256": "1b562ae06efa4baf6ebbd6e1e30eefc1aa1910993e555d8c65f2748b67266add"
+    },
+    {
+      "path": "build-previews/lane-a-door.png",
+      "bytes": 556095,
+      "sha256": "a2fd9c54bd2282c5c1fef0090ea20f50a0768fb6345de0751c30aed814f1e3ff"
+    },
+    {
+      "path": "build-previews/lane-a-lane-return.json",
+      "bytes": 484,
+      "sha256": "d52f1fb128b25b929d3f3570269e73694f04a7b5090c82c89eebff583f4d1364"
+    },
+    {
+      "path": "build-previews/lane-a-lane-return.png",
+      "bytes": 513676,
+      "sha256": "225bed71e0be16096c02ea6df2a3a88bc9a463170dd64660abe0896e174be094"
+    },
+    {
+      "path": "build-previews/lane-a-street-into-lane.json",
+      "bytes": 494,
+      "sha256": "66f725d0ea53d77fba35cfccf5abef1de92e67fa930d3478c1fd570184418eaf"
+    },
+    {
+      "path": "build-previews/lane-a-street-into-lane.png",
+      "bytes": 584785,
+      "sha256": "ae20f9d1fc95d97c1e20eaafa46b3792d6d630abb23a3c65d24f32d7659b9e22"
+    },
+    {
+      "path": "build-previews/lane-a-street-into.json",
+      "bytes": 494,
+      "sha256": "0d54abe6b13ec6529b0c7aa0150382bf8c257e2488cee7dcf319caca892d96ac"
+    },
+    {
+      "path": "build-previews/lane-a-street-into.png",
+      "bytes": 588415,
+      "sha256": "7f5b5e4b6a354424b84f11906df83d13d6c9b7618a070876dd879b7f19559e99"
+    },
+    {
+      "path": "build-previews/laneb2-b-door.json",
+      "bytes": 480,
+      "sha256": "9bda174e7e48a6a435188a3642d844d750e396e14dbbc14a019f292f2b9f6266"
+    },
+    {
+      "path": "build-previews/laneb2-b-door.png",
+      "bytes": 588871,
+      "sha256": "a05bc5e3157559589b2f57d6bc4e61e82a3ac53aa09c0a963c4f04f9556a264f"
+    },
+    {
+      "path": "build-previews/laneb2-b-into.json",
+      "bytes": 477,
+      "sha256": "0bb1391be85365cdd6e803ab2777dd7bed79ac06b1846af136e22b0131d49e03"
+    },
+    {
+      "path": "build-previews/laneb2-b-into.png",
+      "bytes": 615100,
+      "sha256": "0fab047ac90c43151caee6073cebbf3ffe4e7401546b1cc214abee15601872f3"
+    },
+    {
+      "path": "build-previews/laneb2-b-return.json",
+      "bytes": 481,
+      "sha256": "69d62451cee99a692eff7164c3d25b883596d00730b2a81d8ee46f30002c3fed"
+    },
+    {
+      "path": "build-previews/laneb2-b-return.png",
+      "bytes": 627733,
+      "sha256": "e3debf99b396789435291122f99ece9decc66cae5c04fcc0379cacb8a4b0a77e"
+    },
+    {
+      "path": "comparison/after-lane-a-mouth.png",
+      "bytes": 290597,
+      "sha256": "dca3f86328bb831f19c14bf2aeb0c2b5c586d15449fc692cb6c7ef1146ae6b77"
+    },
+    {
+      "path": "comparison/after-lane-a-return.png",
+      "bytes": 383452,
+      "sha256": "98952016903b7ab051a93db71fed45aa45087de8dd2cfa6711a64ed223ac71b9"
+    },
+    {
+      "path": "comparison/after-lane-b-mouth.png",
+      "bytes": 354231,
+      "sha256": "343459a9f8ae35572fcb65220de784894d4dc44da0f42f5c48d97d1c26f1da93"
+    },
+    {
+      "path": "comparison/after-lane-b-return.png",
+      "bytes": 371036,
+      "sha256": "edf308bfa0175bbe732d702695f4c6f068306e1c1783f9dba6cfebf2c7a267cd"
+    },
+    {
+      "path": "comparison/before-lane-a-mouth.png",
+      "bytes": 270303,
+      "sha256": "34d7b32752d63caf673600aac9fb0139972118e8a9a42447810fd52df9e67d3c"
+    },
+    {
+      "path": "comparison/before-lane-a-return.png",
+      "bytes": 158082,
+      "sha256": "d28993380d29812e901116a68c8cc771492b4c89ebe2050a22198b5cac4be989"
+    },
+    {
+      "path": "comparison/before-lane-b-mouth.png",
+      "bytes": 341292,
+      "sha256": "55b110644c4d91afc64c6450b875879efe9b3391c3efba73f584624fb59f6c97"
+    },
+    {
+      "path": "comparison/before-lane-b-return.png",
+      "bytes": 223066,
+      "sha256": "c86d3e5886cf7c86a543ad67b93dd5cf08cf1c27af5e00822356ad6c8d4c47b0"
+    },
+    {
+      "path": "DELIVERY.md",
+      "bytes": 6210,
+      "sha256": "452721618c1013da69197d4f3732ba680154fea6627e495b843b0e8db3dda316"
+    },
+    {
+      "path": "placement.json",
+      "bytes": 5400,
+      "sha256": "553dee5d373fd8c98fd61ec41ac6250953a99a79a3b5382ea02f72a51c9258bf"
+    },
+    {
+      "path": "PROGRESS.json",
+      "bytes": 899,
+      "sha256": "b68beda0cce47f83d3c2a3b3939d8a5f3a76a96596d8abfbe3c6085841ed5f2b"
+    },
+    {
+      "path": "reference-use.json",
+      "bytes": 1893,
+      "sha256": "f7bac8a81e3cc8a39ba985dda5a9ecc12bd2d64ef65d3bd1819b13da6c735657"
+    },
+    {
+      "path": "replaced-surfaces.json",
+      "bytes": 2432,
+      "sha256": "e3bcca309ba37ae28611c263273c6d7281f428feef8c5e6be4e94cdc64edff35"
+    },
+    {
+      "path": "RESULT.json",
+      "bytes": 5320,
+      "sha256": "ff36d19bdf1efe56ae361c177ea1d4ac61d2a5fc20122b3d936214e574c16463"
+    },
+    {
+      "path": "scene-lanes-v1.assets.json",
+      "bytes": 2235,
+      "sha256": "539cef062f244852bcf785734afbe3158b6fb322c8c762aa72d81e87eea1a826"
+    },
+    {
+      "path": "scene-lanes-v1.blend",
+      "bytes": 35157764,
+      "sha256": "a85c766869fd9795b9d596ee3c0a2364005d6f937ceb095f3d0165e6b3633280"
+    },
+    {
+      "path": "scene-lanes-v1.blend1",
+      "bytes": 35157764,
+      "sha256": "903f7875be6dd5de60d86f79b62d4f3f066ffdd98d4c08b41e29dec979f89ea9"
+    },
+    {
+      "path": "tails/cm-candidates/world/fangbang-temple-v3/westshops-strips.cm.glb",
+      "bytes": 8156,
+      "sha256": "a73af952bde3d04891b5e2c359156139b8df9ae152d7c75c8ab03bd929929bfb"
+    },
+    {
+      "path": "tails/retired-cm/world/fangbang-temple-v3/temple-axis/lions.cm.glb",
+      "bytes": 46532,
+      "sha256": "962c0edc9a8afeb8537cd8469661e35aea2b17aa20ca8a9778ede226f90d3fb9"
+    },
+    {
+      "path": "tails/retired-cm/world/fangbang-temple-v3/westshops-strips.cm.glb",
+      "bytes": 6092,
+      "sha256": "cbf0279f526b63d7bb4e69cbd5b62f195b8d68bcfcdcb4e1ae57949e4325ef79"
+    },
+    {
+      "path": "tails/s1-cm-validate.json",
+      "bytes": 3014,
+      "sha256": "b430e0b3350315e2f5fb7e49add884cc491babffd26524426a22451ed88e0291"
+    },
+    {
+      "path": "tails/s1-install.json",
+      "bytes": 1623,
+      "sha256": "6bc8dec83cd6790b1ddf6108c159d134cab7301e54c7200c6b5fa0fa82edd016"
+    },
+    {
+      "path": "tails/S1-result.json",
+      "bytes": 3580,
+      "sha256": "361f8c5c3730daee0d9e2c4ac4d4c7de256233f4625966e2a91524c9ec678fb7"
+    },
+    {
+      "path": "tails/S2-clipA-result.json",
+      "bytes": 1280,
+      "sha256": "e70b4a72965a1ca97a6ed05e415dcd24dad3c2a30d3e4eb596f37e437594465f"
+    },
+    {
+      "path": "web/v5-lane-a-detail.png",
+      "bytes": 459084,
+      "sha256": "6ac38128191e69cf84c08783b9fea6a3a4646d08ae75a56ff7847a2aff954f2d"
+    },
+    {
+      "path": "web/v5-lane-a-forward.png",
+      "bytes": 356805,
+      "sha256": "4326da8e7aa233a06273114c7b65a80d4a3569ecbb50d726424655c7c6076014"
+    },
+    {
+      "path": "web/v5-lane-a-return.png",
+      "bytes": 385385,
+      "sha256": "7d03b98a16d54803885779259dd66078adbde896a8be06c549464436aa3e7a96"
+    },
+    {
+      "path": "web/v5-lane-a-street-look-in.png",
+      "bytes": 318406,
+      "sha256": "86347ceccdd971f631619730a6549b6c2e3c0289889f18c15eef1cac1b1aacc0"
+    },
+    {
+      "path": "web/v5-lane-b-detail.png",
+      "bytes": 397174,
+      "sha256": "c83e70bdc0d6470dccbc58ec8ce8fcd1334a8278c44e3b18d4aaf5a3f5087c5b"
+    },
+    {
+      "path": "web/v5-lane-b-forward.png",
+      "bytes": 289672,
+      "sha256": "23deed4be56aade6979af301ba7762ee7148051c1aec542bab366e8fcbe1741e"
+    },
+    {
+      "path": "web/v5-lane-b-return.png",
+      "bytes": 366552,
+      "sha256": "3018491880e2d3f731026986f1f42227e79b549528fd5fd5a4b3d462b6522125"
+    },
+    {
+      "path": "web/v5-lane-b-street-look-in.png",
+      "bytes": 366984,
+      "sha256": "b69e8e89fe3fac8415f3ad3ec689b02c44f4447468b312476c8e89b1d994ecd8"
+    },
+    {
+      "path": "x3-live-report.json",
+      "bytes": 13546,
+      "sha256": "4a07ee066c83e4c447586d147233fbd885716db7007bca531529282106c45ae6"
+    }
+  ]
+}

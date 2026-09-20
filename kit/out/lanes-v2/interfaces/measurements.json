@@ -1,0 +1,29 @@
+{
+  "moduleId": "lanes-v2-interfaces",
+  "triangles": 876,
+  "meshes": 4,
+  "fileBytes": 1489948,
+  "sha256": "70b6837cf4b19b3ddd90b99e2c512312b117f51bd773a4b70c41f55cbeddf8a0",
+  "design": {
+    "family": "lanes-v2-interfaces",
+    "sampleId": "lanes-v2-interfaces",
+    "basedOn": "lanes-v2 DESIGN_SPEC.targets.interfaces; anchors measured from real geometry (artifacts/lanes-construction/placement.json)",
+    "localFrame": "WORLD coordinates (identity placement), GLB Y-up, floor top y=0.09",
+    "pieces": [
+      "mouth A: corridor floor street->portal (replaces removed placeholder paving)",
+      "mouth A: west edge drain + street threshold strip + two reveal corner piers",
+      "mouth B: street apron to threshold + drain outlet channel + two pier base wraps"
+    ],
+    "groundNodeNames": [
+      "lanes-v2__paving-frontage",
+      "lanes-v2__worn-stone"
+    ],
+    "newTextures": 0,
+    "knownDeviation": "N05/N06 visual faces sit 1-2.3m west of their frozen colliders (v4 adopted state); interface floor follows the visual faces, walkability still bounded by the frozen colliders",
+    "budgetTris": 20000
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

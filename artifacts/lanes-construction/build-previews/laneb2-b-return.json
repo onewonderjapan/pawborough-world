@@ -1,0 +1,27 @@
+{
+  "view": "b-return",
+  "input": "kit/out/lanes-v2/lane-b-v2/model.glb",
+  "glbSha256": "2f193af6b3004b4fef7e5138e28f38b7bc78e6689021160310b6f271201547b8",
+  "clay": false,
+  "camera": {
+    "id": "b-return",
+    "positionGlb": [
+      0,
+      1.6,
+      9.3
+    ],
+    "targetGlb": [
+      0,
+      1.4,
+      -0.5
+    ],
+    "lensMm": 30
+  },
+  "resolution": [
+    800,
+    540
+  ],
+  "samples": 24,
+  "engine": "cycles-cpu",
+  "viewTransform": "AgX - Medium High Contrast"
+}

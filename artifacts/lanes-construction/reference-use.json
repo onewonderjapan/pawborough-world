@@ -1,0 +1,61 @@
+{
+  "batch": "pawborough-lanes-construction-night-20260920",
+  "stage": "T/U/V/W reference use record (SOURCE-SUPPLEMENT.json)",
+  "verifiedAt": "2026-09-20T00:34:21.676Z",
+  "entries": [
+    {
+      "id": "PBR-SH-0006-G33",
+      "path": "generated/PBR-SH-0006-G33.jpg",
+      "sha256Verified": true,
+      "sha256": "9865a8f2690603d92f311824b4a5734c0b5bd002798c5445f2da1bdb3288b116",
+      "usedFor": [
+        "A弄/B弄街口望入视角的进深关系与邻屋比例",
+        "门套/木框读法"
+      ],
+      "notCopied": [
+        "weathering",
+        "readable signs",
+        "exact street width",
+        "shop positions"
+      ],
+      "notHistoricalEvidence": true,
+      "designInference": true
+    },
+    {
+      "id": "PBR-SH-0007-G05",
+      "path": "generated/PBR-SH-0007-G05.jpg",
+      "sha256Verified": true,
+      "sha256": "85ee19bb183e9b41a34d5256ad5a734c922234c3167ef8b14da2e45816a84278",
+      "usedFor": [
+        "弄内向前材质层：粉墙/木腰线/砖基/石板地",
+        "高窗节奏与檐下影"
+      ],
+      "notCopied": [
+        "weathering",
+        "readable signs",
+        "finial symbols",
+        "surveyed dimensions"
+      ],
+      "notHistoricalEvidence": true,
+      "designInference": true
+    },
+    {
+      "id": "PBR-SH-0007-G06",
+      "path": "generated/PBR-SH-0007-G06.jpg",
+      "sha256Verified": true,
+      "sha256": "45902e6e88674e79fb0923a82f806e1000030dff1f5b3c8db7a05e080bf17e0a",
+      "usedFor": [
+        "弄内回望的山墙收头与向街道开口层次",
+        "尽端墙/门洞视线收束"
+      ],
+      "notCopied": [
+        "weathering",
+        "finial symbols (omitted by spec)",
+        "surveyed dimensions"
+      ],
+      "notHistoricalEvidence": true,
+      "designInference": true
+    }
+  ],
+  "rule": "全部为 GEN design_inference，非史料；尺寸以 DESIGN_SPEC/placement.json 为准"
+}

@@ -1,0 +1,52 @@
+{
+  "moduleId": "lane-b-v2",
+  "triangles": 8044,
+  "meshes": 12,
+  "fileBytes": 2668592,
+  "sha256": "2f193af6b3004b4fef7e5138e28f38b7bc78e6689021160310b6f271201547b8",
+  "design": {
+    "family": "lane-b-module-v2",
+    "sampleId": "lane-b-v2",
+    "basedOn": "kit/build_lane_b.py (frozen N5 design) extended per lanes-v2 DESIGN_SPEC; design inference, not survey",
+    "localFrame": "origin=portal centre on old seal wall inner face at floor y=0.09; +X right(0.8863,0,0.4631); +Z inward(-0.4631,0,0.8863)",
+    "worldPlacement": {
+      "portalCenterGlb": [
+        57.418,
+        0.09,
+        14.2485
+      ],
+      "rotationYRad": -0.4818
+    },
+    "portalClearWidthM": 1.5,
+    "portalClearHeightM": 2.3,
+    "portalOverallHeightM": 2.65,
+    "depthM": 10.0,
+    "pocketWidthM": 3.6,
+    "facadeHeightsM": [
+      6.2,
+      4.8
+    ],
+    "changesFromV1": [
+      "depth 5.5->10",
+      "back facade s=10.06",
+      "side facade extended with second shutter window",
+      "rear service door east s=7.3 (closed, reusable module)",
+      "corner caps at pocket rear"
+    ],
+    "reusedComponents": [
+      "portal assembly",
+      "threshold + inset drain",
+      "clothesline + cloth",
+      "conduit + clips",
+      "downpipe + clamps + shoe",
+      "rear-service-door-panel",
+      "corner-cap-plinth"
+    ],
+    "newTextures": 0,
+    "budgetTris": 30000
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

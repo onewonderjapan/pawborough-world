@@ -1,0 +1,27 @@
+{
+  "view": "b-door",
+  "input": "kit/out/lanes-v2/lane-b-v2/model.glb",
+  "glbSha256": "2f193af6b3004b4fef7e5138e28f38b7bc78e6689021160310b6f271201547b8",
+  "clay": false,
+  "camera": {
+    "id": "b-door",
+    "positionGlb": [
+      0.2,
+      1.5,
+      5.9
+    ],
+    "targetGlb": [
+      1.5,
+      1.2,
+      7.3
+    ],
+    "lensMm": 35
+  },
+  "resolution": [
+    800,
+    540
+  ],
+  "samples": 24,
+  "engine": "cycles-cpu",
+  "viewTransform": "AgX - Medium High Contrast"
+}
