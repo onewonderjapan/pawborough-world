@@ -43,6 +43,27 @@ button.primary:disabled{opacity:.55;cursor:default}
 #help button{border:1px solid #3f382f;border-radius:4px;background:#4f4639;color:#f3efe4;padding:5px 14px;font:12px system-ui;cursor:pointer}
 /* 审查工具 — 默认收起，工程项全部收纳于此 */
 details#review{position:absolute;right:12px;bottom:12px;z-index:6;max-width:min(480px,calc(100% - 24px));max-height:70vh;overflow:auto;background:#f5f1e8;border:1px solid #c7c6b9;border-radius:6px;font-size:11px;color:#4a4a40}
+/* 取景工具 — 审查面板上方的小折叠卡，纸白同款；仅取景模式可见 */
+details#framing{position:absolute;right:12px;bottom:56px;z-index:6;width:min(300px,calc(100% - 24px));background:#f5f1e8;border:1px solid #c7c6b9;border-radius:6px;font-size:12px;color:#4a4a40;max-height:70vh;overflow:auto}
+details#framing>summary{cursor:pointer;padding:6px 10px;user-select:none;color:#5c5546}
+details#framing[open]>summary{border-bottom:1px solid #d8d2c0;background:#efeadd}
+details#framing section{padding:8px 10px;border-bottom:1px solid #e4dfcf}
+details#framing h3{margin:0 0 6px;font-size:11px;color:#6d6555;font-weight:600}
+details#framing[hidden]{display:none}
+#framing .ft-row{display:flex;gap:6px;padding:8px 10px;flex-wrap:wrap;border-bottom:1px solid #e4dfcf;align-items:center}
+#framing input[type=text]{flex:1;min-width:100px;border:1px solid #c2b9a4;border-radius:4px;padding:4px 8px;font:12px system-ui;background:#fbf9f2;color:#2f2c26}
+#framing button{border:1px solid #c2b9a4;border-radius:4px;background:#fbf9f2;color:#2f2c26;padding:4px 10px;font:12px system-ui;cursor:pointer}
+#framing button:hover{background:#eee9db;border-color:#8a6f4d}
+#framing button.confirm{border-color:#a05252;color:#7c2d2d}
+#ft-presets{display:flex;gap:6px;flex-wrap:wrap}
+#ft-list{list-style:none;margin:0;padding:0;max-height:180px;overflow:auto}
+#ft-list li{display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px dashed #e4dfcf}
+#ft-list li>span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#ft-list .ft-meta{color:#8b8270;font-size:10px;flex:none}
+#ft-empty{margin:2px 0;color:#8b8270;font-size:11px}
+#ft-error{margin:6px 10px;color:#7c2d2d;font-size:11px;white-space:pre-wrap}
+#framing .ft-hint{margin:6px 10px;color:#8b8270;font-size:10px}
+#ft-import-file{display:none}
 details#review>summary{cursor:pointer;padding:6px 10px;user-select:none;color:#5c5546}
 details#review[open]>summary{border-bottom:1px solid #d8d2c0;background:#efeadd}
 details#review section{padding:8px 10px;border-bottom:1px solid #e4dfcf}
@@ -131,6 +152,23 @@ footer #notice{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       <details><summary>技术明细</summary><pre id="fatal-detail"></pre></details>
     </div>
   </div>
+  <details id="framing" hidden>
+    <summary>取景工具（保存 / 恢复 / 导出）</summary>
+    <div class="ft-row">
+      <input type="text" id="ft-name" maxlength="40" placeholder="机位名（1–40 字）" aria-label="机位名">
+      <button id="ft-save" type="button">保存当前机位</button>
+    </div>
+    <section><h3>预设机位</h3><div id="ft-presets"></div></section>
+    <section><h3>已存机位</h3><ul id="ft-list"></ul><p id="ft-empty">尚无已存机位。</p></section>
+    <div class="ft-row">
+      <button id="ft-export-json" type="button">导出全部JSON</button>
+      <button id="ft-import-btn" type="button">导入JSON</button>
+      <button id="ft-png" type="button">导出当前画面PNG</button>
+      <input type="file" id="ft-import-file" accept=".json,application/json" aria-label="导入机位JSON">
+    </div>
+    <p id="ft-error" role="alert" hidden></p>
+    <p class="ft-hint">恢复机位是显式取景定位，不计入行走。机位只存本机浏览器，数据仅含相机位姿与显示配置。</p>
+  </details>
   <details id="review">
     <summary>审查工具（工程检查，默认收起）</summary>
     <section><h3>工程机位</h3><div id="views"></div></section>

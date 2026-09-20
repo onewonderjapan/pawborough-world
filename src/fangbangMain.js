@@ -38,6 +38,10 @@ import { loadedSceneAssets, expectedTriangles } from './world/sceneAssets.js';
 import { compressedEnabled, installCompressedFetch } from './world/compressedState.js';
 import { applyViewVerified, loadGlbWithStats, saveEvidence, countResources } from './templeViewShared.js';
 import { resolvePixelRatio, applyCanvasFit } from './player/canvasFit.js';
+import {
+  STORE_KEY, SCHEMA_VERSION, FramingError,
+  validateView, decodeStore, loadViews, addView, mergeViews, removeView, findView,
+} from './framingTools.js';
 import { deriveEntryAnchors, validateAnchor } from './player/entryAnchors.js';
 import { WalkSession } from './player/walkSession.js';
 import { describeLoadError } from './worldPreview/loadErrorText.js';
@@ -158,6 +162,15 @@ const clay = new T.MeshStandardMaterial({ color: 0xb8b7ae, roughness: .86 });
 let session = null, controller = null, blocks = null, cruise = null, skinsStats = null, skInstancesCount = 0, viewLabelOverride = null;
 let propsStats = null;   // ?props=1 street life layer stats (E batch)
 let mode = 'view', paused = false, ready = false, clayOn = false, selected = null;
+let clayBtnEl = null;
+function applyClay() {
+  scene.overrideMaterial = clayOn ? clay : null;
+  if (clayBtnEl) clayBtnEl.classList.toggle('on', clayOn);
+  sun.shadow.needsUpdate = true;
+  markResourcesDirty();
+  invalidate();
+  refreshRecord(performance.now(), true);
+}
 let cameras = [], manifest = null, loadStats = {};
 let routeCheck = null, cameraCheck = null, resetCount = 0, lastCruiseStatus = null;
 let walk = null, safeAnchors = [];   // WalkSession + validated entry anchors
@@ -658,6 +671,13 @@ function syncPlaceholderUi() {
 function syncChips() {
   const show = mode === 'walk';
   locationsWalkEl.style.display = show ? 'flex' : 'none';
+  syncFramingPanel();
+}
+// the framing tool exists only in view mode (restore is an explicit framing
+// act; saving mid-walk has no meaning) and only once the world is ready
+function syncFramingPanel() {
+  const el = document.querySelector('#framing');
+  if (el) el.hidden = !(ready && mode === 'view');
 }
 function syncFramingButton() {
   const b = document.querySelector('#btn-framing');
@@ -703,13 +723,9 @@ function setupButtons() {
   clayBtn.textContent = '灰模';
   clayBtn.onclick = () => {
     clayOn = !clayOn;
-    scene.overrideMaterial = clayOn ? clay : null;
-    clayBtn.classList.toggle('on', clayOn);
-    sun.shadow.needsUpdate = true;
-    markResourcesDirty();
-    invalidate();
-    refreshRecord(performance.now(), true);
+    applyClay();
   };
+  clayBtnEl = clayBtn;
   toolsEl.appendChild(clayBtn);
   const save = document.createElement('button');
   save.textContent = '保存实测图';
@@ -752,6 +768,214 @@ function setupPlayerUi() {
     locationsWalkEl.appendChild(mkChip(a));
   }
   if (!valid.length) document.querySelector('#intro .loc-label').textContent = '出发点（载入后自动选择安全入口）';
+}
+
+// ---- framing tools (world-ten-hour 20260921, PLAN task C) -----------------------
+// Save / restore / import / export of player camera poses in VIEW mode. All
+// validation lives in src/framingTools.js (node-tested); this wiring only
+// applies validated data to the camera and never feeds it to the walk physics.
+// Restoring is an explicit framing act — never recorded as walking evidence.
+const FRAMING_PRESETS = [
+  { id: 'east-junction', note: '主街东接口望西（样段纵深起点）' },
+  { id: 'junction-west', note: '主街西口回望拼接处' },
+  { id: 'lane-a-street-look-in', note: 'A弄街口望入（窄门洞纵深）' },
+  { id: 'lane-b-street-look-in', note: 'B弄街口望入' },
+  { id: 'lane-b-return', note: 'B弄尽端回望主街' },
+  { id: 'shanmen-from-road', note: '方浜路中线正望山门' },
+];
+let ftViews = [];            // validated saves for THIS dataset (session + localStorage)
+let ftStorageOk = true;
+let ftConfirmDeleteId = null;
+let ftConfirmTimer = null;
+
+function ftEls() {
+  return {
+    panel: document.querySelector('#framing'), name: document.querySelector('#ft-name'),
+    save: document.querySelector('#ft-save'), presets: document.querySelector('#ft-presets'),
+    list: document.querySelector('#ft-list'), empty: document.querySelector('#ft-empty'),
+    error: document.querySelector('#ft-error'), png: document.querySelector('#ft-png'),
+    exportJson: document.querySelector('#ft-export-json'), importBtn: document.querySelector('#ft-import-btn'),
+    importFile: document.querySelector('#ft-import-file'),
+  };
+}
+function ftError(msg) {
+  const { error } = ftEls();
+  error.textContent = msg || '';
+  error.hidden = !msg;
+  if (msg) { clearTimeout(ftError.t); ftError.t = setTimeout(() => { error.hidden = true; }, 8000); }
+}
+function ftPersist() {
+  if (!ftStorageOk) return;
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify({ storeVersion: SCHEMA_VERSION, views: ftViews }));
+  } catch {
+    ftStorageOk = false;
+    ftError('本机存储不可用（隐私模式？）：机位仅保留到页面关闭。');
+  }
+}
+function ftRefreshList() {
+  const { list, empty } = ftEls();
+  list.textContent = '';
+  empty.hidden = ftViews.length > 0;
+  for (const v of ftViews) {
+    const li = document.createElement('li');
+    const label = document.createElement('span');
+    label.textContent = v.name;
+    label.title = `pos ${v.position.map((n) => n.toFixed(1)).join(', ')} · target ${v.target.map((n) => n.toFixed(1)).join(', ')} · fov ${v.fovDeg}`;
+    const meta = document.createElement('span');
+    meta.className = 'ft-meta';
+    meta.textContent = `fov ${Math.round(v.fovDeg)}°${v.display.clay ? ' · 灰模' : ''}`;
+    const use = document.createElement('button');
+    use.type = 'button'; use.textContent = '恢复';
+    use.onclick = () => ftRestore(v.id);
+    const del = document.createElement('button');
+    del.type = 'button'; del.textContent = '删除';
+    del.onclick = () => ftDelete(v.id, del);
+    li.append(label, meta, use, del);
+    list.appendChild(li);
+  }
+}
+function ftCurrentRaw(name) {
+  return {
+    schemaVersion: SCHEMA_VERSION, dataset: DATASET_ID, name,
+    position: camera.position.toArray(), target: controls.target.toArray(),
+    fovDeg: camera.fov, display: { clay: clayOn }, createdAt: Date.now(),
+  };
+}
+function ftSanitizeName(s) {
+  return s.replace(/[^\p{L}\p{N}_-]+/gu, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'view';
+}
+async function ftPngNonBlank(dataUrl) {
+  const img = new Image();
+  await new Promise((res, rej) => { img.onload = res; img.onerror = () => rej(new Error('画面读取失败')); img.src = dataUrl; });
+  const c = document.createElement('canvas');
+  c.width = 64; c.height = 64;
+  const g = c.getContext('2d');
+  if (!g) return true;
+  g.drawImage(img, 0, 0, 64, 64);
+  const d = g.getImageData(0, 0, 64, 64).data;
+  const colors = new Set();
+  for (let i = 0; i < d.length; i += 4) colors.add(`${d[i] >> 3},${d[i + 1] >> 3},${d[i + 2] >> 3}`);
+  return colors.size >= 4;   // blank/black frames have ~1–2 buckets
+}
+function setupFramingTools() {
+  const { panel, name, save, presets, png, exportJson, importBtn, importFile } = ftEls();
+  // persisted saves (this dataset only; foreign-dataset entries are skipped visibly)
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) {
+      const { views, errors } = loadViews(decodeStore(raw), DATASET_ID);
+      ftViews = views;
+      ftRefreshList();
+      if (errors.length)
+        ftError(`已跳过 ${errors.length} 条无法识别的已存机位：\n` + errors.map((e) => `· ${e.name ?? `#${e.index}`}：${e.error}`).join('\n'));
+    }
+  } catch (e) {
+    ftStorageOk = false;
+    ftError(`已存机位读取失败：${e.message}`);
+  }
+  for (const p of FRAMING_PRESETS) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = p.note; b.title = `工程机位 ${p.id}`;
+    b.onclick = () => { setView(p.id); };
+    presets.appendChild(b);
+  }
+  save.onclick = () => {
+    if (mode !== 'view') { ftError('保存机位是取景操作：先按 V 返回取景。'); return; }
+    const chosen = name.value.trim() || `机位-${new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '')}`;
+    try {
+      const v = validateView(ftCurrentRaw(chosen), DATASET_ID);
+      const { views, view: stored } = addView(ftViews, { ...v, id: null });
+      ftViews = views;
+      ftPersist();
+      ftRefreshList();
+      ftError('');
+      notice(`机位「${stored.name}」已保存（仅本机浏览器）。`);
+    } catch (e) { ftError(e.message); }
+  };
+  png.onclick = async () => {
+    if (mode !== 'view') { ftError('导出画面是取景操作：先按 V 返回取景。'); return; }
+    try {
+      markResourcesDirty();
+      render();   // the exported pixels ARE this frame's WebGL output
+      const dataUrl = renderer.domElement.toDataURL('image/png');
+      if (!(await ftPngNonBlank(dataUrl))) { ftError('本帧画面为空（未渲染或全黑），已取消导出。'); return; }
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = `fangbang-framing-${ftSanitizeName(name.value || 'view')}-${new Date().toISOString().replace(/[-:T]/g, '').slice(0, 14)}.png`;
+      a.click();
+      notice('当前画面已导出 PNG（画布原分辨率）。');
+    } catch (e) { ftError(`导出失败：${e.message}`); }
+  };
+  exportJson.onclick = () => {
+    if (!ftViews.length) { ftError('还没有已存机位可导出。'); return; }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify({ storeVersion: SCHEMA_VERSION, views: ftViews }, null, 1) + '\n'], { type: 'application/json' }));
+    a.download = `fangbang-framing-views-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    notice(`已导出 ${ftViews.length} 个机位（JSON）。`);
+  };
+  importBtn.onclick = () => importFile.click();
+  importFile.onchange = async () => {
+    const file = importFile.files?.[0];
+    importFile.value = '';   // allow re-choosing the same file
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const { views, added, errors } = mergeViews(ftViews, decodeStore(text), DATASET_ID);
+      ftViews = views;
+      ftPersist();
+      ftRefreshList();
+      ftError(errors.length
+        ? `已导入 ${added.length} 条，跳过 ${errors.length} 条：\n` + errors.map((e) => `· ${e.name ?? `#${e.index}`}：${e.error}`).join('\n')
+        : (added.length ? `已导入 ${added.length} 条机位（重名自动加后缀，不覆盖）。` : '载荷里没有可导入的机位。'));
+      if (added.length) notice(`已导入 ${added.length} 个机位。`);
+    } catch (e) { ftError(`导入失败：${e.message}`); }
+  };
+  panel.addEventListener('toggle', () => { if (panel.open) { ftConfirmDeleteId = null; invalidate(); } });
+}
+function ftRestore(id) {
+  try {
+    if (mode !== 'view') { notice('恢复机位是取景操作：先按 V 返回取景。'); return; }
+    const v = findView(ftViews, id);
+    camera.position.set(...v.position);
+    controls.target.set(...v.target);
+    camera.fov = v.fovDeg;
+    camera.updateProjectionMatrix();
+    controls.update();
+    // honest apply check: read back what the camera actually holds
+    const drift = Math.max(
+      camera.position.distanceTo(new T.Vector3(...v.position)),
+      controls.target.distanceTo(new T.Vector3(...v.target)));
+    if (drift > 0.01) { ftError(`恢复校验未通过（偏差 ${drift.toFixed(3)}m），未应用。`); return; }
+    if (clayBtnEl && v.display.clay !== clayOn) { clayOn = v.display.clay; applyClay(); }
+    markResourcesDirty();
+    invalidate();
+    notice(`已恢复取景机位「${v.name}」（显式定位，非行走）。`);
+  } catch (e) { ftError(e.message); }
+}
+function ftDelete(id, btn) {
+  if (ftConfirmDeleteId !== id) {
+    ftConfirmDeleteId = id;
+    btn.textContent = '确认删除';
+    btn.classList.add('confirm');
+    clearTimeout(ftConfirmTimer);
+    ftConfirmTimer = setTimeout(() => {
+      ftConfirmDeleteId = null;
+      btn.textContent = '删除';
+      btn.classList.remove('confirm');
+    }, 3500);
+    return;   // first click only arms the confirm — cancelable edit
+  }
+  clearTimeout(ftConfirmTimer);
+  ftConfirmDeleteId = null;
+  try {
+    ftViews = removeView(ftViews, id);
+    ftPersist();
+    ftRefreshList();
+    notice('机位已删除。');
+  } catch (e) { ftError(e.message); }
 }
 
 // ---- load -----------------------------------------------------------------------
@@ -976,8 +1200,10 @@ async function load() {
 
   setupButtons();
   setupPlayerUi();
+  setupFramingTools();
   syncPlaceholderUi();
   setView('shanmen-from-road');
+  syncFramingPanel();
   // ?entry=<anchor id> — the overview page's explicit start-point choice. Only
   // existing VALIDATED anchors are accepted; the value is never fed to physics
   // directly (pickLocation re-checks validation and records an explicit
@@ -1002,6 +1228,7 @@ async function load() {
   loadStats.shaderCompileMs = +(performance.now() - compiledAt).toFixed(0);
   ready = true;
   fit();   // the panel/layout may have settled since the first fit
+  syncFramingPanel();
   startBtn.disabled = false;
   startBtn.textContent = '开始探索';
   setStage('已就绪');

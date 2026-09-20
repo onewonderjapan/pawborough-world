@@ -1,0 +1,47 @@
+{
+ "storeVersion": 1,
+ "views": [
+  {
+   "id": "ft-mua05qn9-xxx0",
+   "name": "走查机位甲",
+   "dataset": "fangbang-temple-v7",
+   "schemaVersion": 1,
+   "position": [
+    124.60018920898438,
+    1.6007709145545963,
+    27.650030136108395
+   ],
+   "target": [
+    116.75517685928907,
+    1.6007709145545959,
+    26.08293689283025
+   ],
+   "fovDeg": 60,
+   "display": {
+    "clay": false
+   },
+   "createdAt": 1789920009764
+  },
+  {
+   "id": "ft-mua05sjx-9yzl",
+   "name": "导入机位乙",
+   "dataset": "fangbang-temple-v7",
+   "schemaVersion": 1,
+   "position": [
+    -125.7,
+    1.6,
+    39.5
+   ],
+   "target": [
+    -127.8,
+    4.5,
+    27.1
+   ],
+   "fovDeg": 50,
+   "display": {
+    "clay": false
+   },
+   "createdAt": null
+  }
+ ]
+}

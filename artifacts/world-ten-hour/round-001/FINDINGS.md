@@ -55,3 +55,41 @@
 - 保护基线：locked 区 0 漂移（fangbang.html / src/fangbangMain.js / vite.config.js
   为计划允许的最小修改窗口，本次只动了 src/fangbangMain.js 与新工具/文档）。
 - 全套 124+ 留最终集中跑一次。
+
+---
+
+# 任务C：取景工具（2026-09-21，round 1 续）
+
+新增取景模式下的可折叠「取景工具」面板（fangbang.html + src/fangbangMain.js 接线 +
+新纯逻辑模块 src/framingTools.js），实现：保存当前机位（命名 1–40 字）、恢复、
+删除（两步确认、可取消）、导出全部JSON、导入JSON（纯增量，重名自动加后缀不覆盖，
+坏条目逐条给出中文原因并跳过）、导出当前画面PNG。
+
+## 方案与边界
+
+- 存储：专用 localStorage 命名空间 `pawborough.fangbang.framing.v1`，数据仅含
+  schemaVersion/dataset/name/position/target/fovDeg/display.clay/createdAt/id，
+  无任何用户机密；存储不可用时降级为会话内并明确提示。
+- 校验：dataset 不符 / 非有限数值 / fov 超出 20–120 / 名字超长 / schemaVersion
+  不支持 → 全部明确报错，坏数据不进相机更不进物理；恢复时读回校验（>0.01m 拒绝）。
+- 恢复=显式取景定位：仅取景模式可用，行走中请求恢复被拒绝并提示先按 V；提示文案
+  标明「显式定位，非行走」，不计入行走证据。
+- PNG：用户点击才触发下载；导出前强制同步重绘（导出像素=本帧真实 WebGL 输出），
+  分辨率与画布一致（实测 1280×829=framebuffer），带空白帧守卫（64×64 降采样
+  颜色桶 <4 判空取消）。
+- 预设：6 个，全部来自既有相机契约（cameras.json），覆盖主街（东接口望西纵深、
+  西口回望拼接）、A弄（街口望入）、B弄（街口望入、尽端回望主街）、庙前（方浜路
+  中线正望山门）；不新增建筑、不捏造名称。渲染截图逐一验证非空、无墙内/黑图。
+
+## 验证证据
+
+- 单测 tests/framing_tools.test.mjs 8/8：校验正例/全部负例类、store 解析、
+  增量合并不覆盖、精确删除、序列化不含机密字段。
+- 浏览器端 tools/framing_tool_browser.mjs 27/27（artifacts/world-ten-hour/
+  round-001/framing-browser/：面板截图、6 预设截图、导出的 PNG 与 JSON、
+  检查清单）：可见性规则（取景可见/行走隐藏）、保存→远处预设→恢复 drift=0.0000、
+  导入增量+可见跳过、两步删除、reload 持久化、PNG 分辨率=canvas、JSON 导出。
+- 相关回归：fangbang/preview/walk_session/world_inputs/evidence 共 52 过 1 败 =
+  提交树测试的 clean-tree 守卫按设计拒绝未提交改动（本提交后转绿）。
+- 保护基线：locked 0 mismatch；src/fangbangMain.js / fangbang.html 属允许最小修改
+  窗口（均已在基线登记为 allowed-change）。
