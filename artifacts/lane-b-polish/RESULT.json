@@ -1,0 +1,115 @@
+{
+  "batch": "lane-b-polish construct (2026-09-20, ZCode GLM-5.3, dispatch_only_no_monitoring)",
+  "scope": "PLAN.md frozen work order: B-lane mouth repair + close-range refinement + dual-lane runtime baseline as world/fangbang-temple-v7 candidate; originals read-only",
+  "baseline": "ec2ab2f3750af903047c32a089806443a9161e18",
+  "ownerAdopted": false,
+  "review_pending": "Codex and owner review after delivery",
+  "datasets": {
+    "candidate": {
+      "entry": "fangbang.html?ds=fangbang-temple-v7",
+      "assembly": "world/fangbang-temple-v7/street-reviewed-lanes.glb (byte-exact v6 copy, sha f8f90b7aacb421dd…, 20587068 bytes, 171419 tris)",
+      "assets": {
+        "lane-b": "world/lane-b-polish/lane-b/model.glb (2061328 B, sha f6a7da8a05add903…, 3770 tris, <=4500 target PASS)",
+        "lane-b-interfaces-v3": "world/lane-b-polish/interfaces/model.glb (1627584 B, sha c9c6dbcb402e2b4c…, 911 tris, <=1000 target PASS incl. identical A part)",
+        "lane-a": "world/lane-a-polish/lane-a/model.glb (v6 asset bytes unchanged, 1938736 B, sha 5f33a28640652af0…, 2910 tris)"
+      },
+      "reopenableSources": ["world/lane-b-polish/lane-b/model.blend + kit/build_lane_b_v3.py", "world/lane-b-polish/interfaces/model.blend + kit/build_lanes_interfaces_v3.py", "world/lane-b-polish/review/scene.blend + kit/build_lane_b_polish_review_scene.py (default camera street-mouth, S04/S05/S07 context, reopened and re-verified)"],
+      "dist": "dist-lane-b-polish (95-file dependency closure, gate DIST_RUN_OK; rebuild: node scripts/build_lane_b_polish_dist.mjs)"
+    },
+    "untouched": ["world/fangbang-temple-v6 (blocks still list lane-b-v2 verbatim)", "world/lanes-v2", "world/lane-a-polish (A module + interfaces loaded byte-identical)", "world/v5 and earlier", "building/*", "street-sidefaces", "street-props", "W2 canonical (not accessed/written this task; bytes not re-verified)"]
+  },
+  "items": [
+    {
+      "id": "1 measured defects proven before the fix",
+      "status": "done",
+      "what": "tools/lane_b_polish_measure.py --phase before: T1 production transform agreement over 3 non-collinear anchors (sidecar obb vs obbToWorld math, delta 0) while T2-T6 FAIL on v6: b-apron/b-drain-outlet collapsed to world z=0.09 (quad() fed [x,y,z] triples), pier-base bricks mirrored by the B_RIGHT +Y-sign flip (east brick INSIDE the walkway at lane-lx +0.36), 19/49 ground rays miss across the mouth, 6 cm threshold bump, cloth bottom 2.12 m",
+      "evidence": "artifacts/lane-b-polish/baseline/measure-before.json (5 failing, 1 transform-agreement pass)"
+    },
+    {
+      "id": "2 mouth B rebuilt at the measured lines",
+      "status": "done",
+      "what": "interfaces v3 B section rewritten with the PRODUCTION transform (B_RIGHT now (cos yaw, -sin yaw), quad() fed [x,z] pairs): b-apron paving y=0.088 spanning the real mouth (west tucked 1 cm into the S05 face lx -1.096, east into the S07 face line lx(ls)=1.067-0.0536*(ls+0.26), north to ls -1.50 under the ragged street paving, south under the module floor edge); b-drain-outlet recessed stone channel y=0.07 across the walkable width; b-pier-base w/e at production bpt(+-0.97,-0.20), sized 0.40x0.16 so the 1.5 m clear opening is kept",
+      "evidence": "measure-after.json T2/T3/T4 PASS: 4 interface ground tris in the mouth band; west base lane-lx [-1.182,-0.758] / east [0.758,1.182] bridging wall-to-pier"
+    },
+    {
+      "id": "3 funnel closure (reachable-gap short walls, B install domain only)",
+      "status": "done",
+      "what": "the v2 widening zone (s 0..2.5 east / 0..3.5 west) had no walls — S05/S07 stop at the portal line, so the splaying floor edge was fallable void. Two plaster funnel walls hugging the floor edge from the portal piers to the side-facade (h 3.3) / pocket-wall (h 3.6) starts, brick plinths + tile caps + foot returns into the piers; floor polygon extended to the wall faces (mouth 1.62 and pocket 3.6 preserved)",
+      "colliders": "lane-b:funnel-east / lane-b:funnel-west (world obb; module-local centers rotated -phi so the slanted boxes land on the wall lines — push probes stop 0.37 m perpendicular = capsule 0.35 + slack)"
+    },
+    {
+      "id": "4 windows/doors real recesses + ring surrounds",
+      "status": "done",
+      "what": "east facade and back facade partitioned around every opening (reveal faces are the segments' own faces); closed glass rear-set at recess back 0.07 m (0.05 back kept in the 0.12 walls); timber ring frames + stone sills proud; folded shutter pairs kept (windows stay closed); side door s=3.1 rebuilt from the v2 solid paste-box into a ring door surround (recessed dark panel at the back, jambs/lintel/threshold, brick foot returns); rear service door niche kept verbatim, window-b recess starts at the niche pier face where the wall is deep",
+      "positionsKept": {"eastWindows": [4.6, 8.3], "backWindows": [-0.9, 0.9], "sideDoor": 3.1, "svcDoor": 7.3, "closed": true}
+    },
+    {
+      "id": "5 surface contract <= 0.02 m",
+      "status": "done",
+      "what": "portal threshold top floor+0.018 (v2 was +0.06); inset drain rails top +0.02; apron 0.088 / drain channel 0.07 / floor 0.09 — every adjacent step <= 0.020 measured along the street->portal->pocket axis (maxStep exactly 0.0200)",
+      "regression": "walktest-v7.json 5 surface profiles (B portal axis, centreline, both reachable edges, A portal regression) maxStep <= 0.020, 0 holes"
+    },
+    {
+      "id": "6 clothesline clearance",
+      "status": "done",
+      "what": "v2 cloth bottoms measured 2.1225 m (intruding the 2.2 m clearance); line raised minimally +0.18 m (2.55/2.50 -> 2.73/2.68); both pieces +挂点 kept; measured bottom now 2.3025 m",
+      "recorded": "raising is the minimal up-move; cloth count/width/drop unchanged"
+    },
+    {
+      "id": "7 material + tri diet",
+      "status": "done",
+      "what": "plaster normal strength 0.65 -> 0.35 on the new B module instance only (image bytes unchanged, zero new textures); invisible wall-scale/micro-part bevels removed (window/door trim, clips, rails, copings), close-range bevels kept on sills/thresholds/piers; 8044 -> 3770 tris with funnel walls ADDED",
+      "budgets": {"laneB": {"actual": 3770, "limit": 4500}, "interfaces": {"actual": 911, "limit": 1000}}
+    },
+    {
+      "id": "8 two-config budgets (page-runtime measured)",
+      "status": "done",
+      "what": "v7 replaces v6's lane-b-v2(8044)+interfaces(911); base default 694430 <= 700000 (v6 was 698704, -4274); skins+props all-on 708066 (v6 was 712340, -4274) — recorded as its own single-flag config, never claimed under the base ceiling",
+      "measuredBy": "real page record() in tools/lane_b_polish_capture.mjs + dist gate scripts/build_lane_b_polish_dist.mjs (both configs route-check pass, triangle counts reproduced exactly)"
+    },
+    {
+      "id": "9 A untouched (semantic identity, not just SHA)",
+      "status": "done",
+      "what": "interfaces v3 A-section code copied verbatim from the v6 builder; normalized per-triangle comparison over the lane-A world region (z<-9.5): 691 triangles identical in vertices/UV/material between v6 and v7 interfaces; A collision records byte-identical; lane-a module GLB bytes unchanged (sha 5f33a286…)",
+      "regression": "walktest-v7.json A tests green: excursion both ways, former-void probes grounded, east band walk, 5 boundary pushes at original v6 coordinates, portal profile maxStep 0.020"
+    },
+    {
+      "id": "10 dual-lane runtime baseline",
+      "status": "done",
+      "what": "real page loop walk (main street + lane A + lane B excursions) driven through the page's own WASD/mousemove input path, >= 90 s per config; rAF frame intervals (NOT cpuSubmitMs inverses); visibility/focus-flagged frames excluded (0 flagged); 3 x P/V keep/clear-key + A/B entrance relocation cycles — resources flat (triangles/geometries/heap identical each cycle)",
+      "numbers": {
+        "default": {"readyMs": 7936, "firstValidFrameAfterReadyMs": 9549, "shaderCompileMs": 34, "frames": 5291, "p50Ms": 16.7, "p95Ms": 16.8},
+        "skinsAndProps": {"readyMs": 8968, "firstValidFrameAfterReadyMs": 9297, "shaderCompileMs": 44, "frames": 5285, "p50Ms": 16.7, "p95Ms": 16.8}
+      },
+      "environment": "headless Chrome + SwiftShader (ANGLE Vulkan SwiftShader device) — SOFTWARE baseline only; no machine settings touched; renderer string/hardwareConcurrency/viewport recorded in runtime-baseline.json",
+      "caveat": "this short run does not complete long-term P5 or v1.0 sign-off"
+    }
+  ],
+  "verification": {
+    "physics": "tools/lane_b_polish_walktest.mjs -> WALKTEST_V7_PASS (26 controller tests: B excursion in/out, reachable edges, centreline; 8 static probes incl. the v6 fall-through band; 10 boundary gaps ~0.37 vs capsule 0.35; coverage 1209 samples 0 misses 0 badY; 5 surface profiles maxStep <= 0.020; A regression at original coordinates)",
+    "sections": "tools/lane_b_polish_measure.py -> before FAIL(5)/after PASS(6): transform agreement, mouth occupancy, pier-base bridging, ground closure, axis steps, cloth clearance",
+    "webgl": "tools/lane_b_polish_capture.mjs -> CAPTURE_PASS; 4 same-pose before(v6)/after(v7) pairs (1280x649 drawingBuffer = CSS, SwiftShader, entry card dismissed via the page's own 取景 button) + window-oblique after supplement + all-on config",
+    "offline": "kit/build_lane_b_polish_review_scene.py -> scene.blend (52 meshes, camera street-mouth non-null, S04/S05/S07 context, textures packed, reopened+verified) + 4 Cycles CPU stills",
+    "runtime": "tools/lane_b_polish_runtime.mjs -> RUNTIME_BASELINE_PASS (two configs, load stages, >= 90 s loop walks, P50/P95, 3 P/V cycles no resource growth)",
+    "tests": "node --test tests/*.test.mjs -> 103/103 pass (9 new: v7 manifest/bytes/sha, B budgets, world-space sidecars incl. slanted funnel colliders on the wall lines, threshold <= 0.11 + portal clear 1.5 from the exported GLB, cloth >= 2.2, A-region per-triangle identity vs v6, blocks point only at new B assets + v6 untouched, evidence artifacts PASS)",
+    "dist": "node scripts/build_lane_b_polish_dist.mjs -> 95 files 154315745 B; DIST_RUN_OK base ready/route/tris=694430, all-on ready/route/tris=708066 (lane-b-polish-dist-run.json)"
+  },
+  "knownLeftovers": [
+    "skins+props all-on stays +8066 over the 700k base ceiling (separate single-flag config, not a base-config failure; reduced from v6's +12340)",
+    "east portal corner above y2.65 opens to the S07 south facade (v6 state kept; no street-facing structure added)",
+    "rear service door niche bay extends 0.25 m behind the facade outer plane into the unseen backlot (v2 component kept verbatim per SPEC)"
+  ],
+  "protection": "git status: only NEW files under world/fangbang-temple-v7, world/lane-b-polish, artifacts/lane-b-polish, kit/build_*v3*.py, kit/build_lane_b_polish_review_scene.py, scripts/make_fangbang_v7_dataset.mjs, scripts/build_lane_b_polish_dist.mjs, tools/lane_b_polish_*.mjs/py, tests/lane-b-polish.test.mjs; 0 modified tracked files; git diff --check clean; W2 canonical not accessed/written this task (bytes not re-verified)",
+  "commands": {
+    "module": "blender -b --factory-startup -t 4 -P kit/build_lane_b_v3.py -- --out world/lane-b-polish/lane-b",
+    "interfaces": "blender -b --factory-startup -t 4 -P kit/build_lanes_interfaces_v3.py -- --out world/lane-b-polish/interfaces",
+    "dataset": "node scripts/make_fangbang_v7_dataset.mjs",
+    "walktest": "node tools/lane_b_polish_walktest.mjs",
+    "sections": "python3 tools/lane_b_polish_measure.py --phase before|after",
+    "capture": "node tools/lane_b_polish_capture.mjs --phase before|after|both",
+    "runtime": "node tools/lane_b_polish_runtime.mjs",
+    "reviewScene": "blender -b --factory-startup -t 4 -P kit/build_lane_b_polish_review_scene.py",
+    "dist": "node scripts/build_lane_b_polish_dist.mjs",
+    "tests": "node --test tests/*.test.mjs"
+  }
+}

@@ -1,0 +1,252 @@
+{
+ "batch": "lane-b-polish (2026-09-20)",
+ "baseline": "ec2ab2f3750af903047c32a089806443a9161e18",
+ "candidate": "fangbang-temple-v7",
+ "status": "delivered_for_lead_review",
+ "ownerAdopted": false,
+ "note": "all NEW files (0 modified tracked files); dist-lane-b-polish is rebuildable and gitignored; committed images are the evidence stills only",
+ "files": {
+  "artifacts/lane-b-polish/DELIVERY.md": {
+   "bytes": 4586,
+   "sha256": "995097d28f8a5e74b4c1c9b9515dd8be65cc4af480d813ad3074b9a46f1e19b6"
+  },
+  "artifacts/lane-b-polish/PROGRESS.json": {
+   "bytes": 2569,
+   "sha256": "aaf0e32c1250169b48701f6eceea667a6fed10cfd66b0a08d7b0397596281542"
+  },
+  "artifacts/lane-b-polish/RESULT.json": {
+   "bytes": 11912,
+   "sha256": "0c6929f927b6e066acbc43f8a372d5783494ad8a616168be508554776aa0ee7a"
+  },
+  "artifacts/lane-b-polish/START_HERE.md": {
+   "bytes": 2010,
+   "sha256": "ee9c67731d1fbcc18ce29f6ca10ea466747793eb2dc07cc1c9bec42410d70498"
+  },
+  "artifacts/lane-b-polish/after-allskins/pocket-lookback.png": {
+   "bytes": 908794,
+   "sha256": "229885d7c51d51e1c203075b4632a6b005be0ce5422dcb56cf997f51d625c710"
+  },
+  "artifacts/lane-b-polish/after-allskins/street-mouth.png": {
+   "bytes": 910210,
+   "sha256": "552642e77243f7b0622b684fb753265e174794d5e8a1e21c2d85da4af1a069fb"
+  },
+  "artifacts/lane-b-polish/after-allskins/threshold-foot.png": {
+   "bytes": 1050171,
+   "sha256": "486e61b8226155787c16640e6fa7d8b75a1b3547b5da4cd03af8029dad613653"
+  },
+  "artifacts/lane-b-polish/after-allskins/window-door.png": {
+   "bytes": 570258,
+   "sha256": "6479fae726b15fea40cb1d5c6b05a662e24690eab457b9496fe1c8162aec0d10"
+  },
+  "artifacts/lane-b-polish/after-allskins/window-oblique.png": {
+   "bytes": 667634,
+   "sha256": "2ee28723e9ee3a4f2fe2132710bab1b8089fc554ebe8561d0655151f1ceaa837"
+  },
+  "artifacts/lane-b-polish/after/pocket-lookback.png": {
+   "bytes": 906793,
+   "sha256": "fa2f6d864b8c37b2d250ee6979cdd5cda23112b776016d94f3add6afa8d89d89"
+  },
+  "artifacts/lane-b-polish/after/street-mouth.png": {
+   "bytes": 961275,
+   "sha256": "36dfcb9abf6164360589f74bd01b65c4d545e008f798d07fdd99e36dbb32b56e"
+  },
+  "artifacts/lane-b-polish/after/threshold-foot.png": {
+   "bytes": 1050171,
+   "sha256": "486e61b8226155787c16640e6fa7d8b75a1b3547b5da4cd03af8029dad613653"
+  },
+  "artifacts/lane-b-polish/after/window-door.png": {
+   "bytes": 570258,
+   "sha256": "6479fae726b15fea40cb1d5c6b05a662e24690eab457b9496fe1c8162aec0d10"
+  },
+  "artifacts/lane-b-polish/after/window-oblique.png": {
+   "bytes": 667634,
+   "sha256": "2ee28723e9ee3a4f2fe2132710bab1b8089fc554ebe8561d0655151f1ceaa837"
+  },
+  "artifacts/lane-b-polish/baseline/measure-before.json": {
+   "bytes": 1076,
+   "sha256": "52238d10b89e07a241aa8592a1127008e0cd71df588e7913f65c9f78682bc16d"
+  },
+  "artifacts/lane-b-polish/before/pocket-lookback.png": {
+   "bytes": 995278,
+   "sha256": "aed88a12c3bbff714aa4b04f1ca2bd7d57d8a6273e2cebab6a2e327ecaef9f08"
+  },
+  "artifacts/lane-b-polish/before/street-mouth.png": {
+   "bytes": 926870,
+   "sha256": "22758b583151da97b4f609e9ae8e8bca38569c5d1c016be6a153d6c3d6664988"
+  },
+  "artifacts/lane-b-polish/before/threshold-foot.png": {
+   "bytes": 688028,
+   "sha256": "b5fe171a6d4ad21fa275388f5db804523594057d3b3334b04168cb870e099062"
+  },
+  "artifacts/lane-b-polish/before/window-door.png": {
+   "bytes": 683898,
+   "sha256": "f1ec8b5b23c18ccdab7e91e5c24c910e2eb20ca6238496cb62f76d702df057fa"
+  },
+  "artifacts/lane-b-polish/blender/pocket-lookback.png": {
+   "bytes": 1217618,
+   "sha256": "2ee2981c22392f6c907ea2b7e72245e2ffa17aa368f81d5c812b804fb4d7db8d"
+  },
+  "artifacts/lane-b-polish/blender/street-mouth.png": {
+   "bytes": 1294227,
+   "sha256": "43ef56736ead526d44fa4adff909004f9d4a8bce0ee83302adb17f8d672ef812"
+  },
+  "artifacts/lane-b-polish/blender/threshold-foot.png": {
+   "bytes": 1319054,
+   "sha256": "e2c22001e1ccd3b4a9faa91b0a4b58ad04b8128caecc799448f9fecdf5d1897f"
+  },
+  "artifacts/lane-b-polish/blender/window-door.png": {
+   "bytes": 943562,
+   "sha256": "15d2b9d437868a8bcba2b3c6b8316c0418666dc72c2516d7e9c817e91c98d4d6"
+  },
+  "artifacts/lane-b-polish/runtime-baseline.json": {
+   "bytes": 7264,
+   "sha256": "a4ac3c3a989d9fe5ed88d41e72c1f3e4ed592c67eb5b2c3afe363f6232956634"
+  },
+  "artifacts/lane-b-polish/verify/measure-after.json": {
+   "bytes": 1029,
+   "sha256": "dd13b3607e25ad1f9453ac3a15a494124e4da77dfb608ac52292a1eb27636b7c"
+  },
+  "artifacts/lane-b-polish/verify/walktest-v7.json": {
+   "bytes": 6385,
+   "sha256": "8da697bacac99954ceaf7b4da5fd6577e7b90c61ad4d3b95fa83226ad16d57c6"
+  },
+  "artifacts/lane-b-polish/web-capture.json": {
+   "bytes": 1113,
+   "sha256": "e87e6d77151ea6207d9731784b7b6f4dc0aa12138bd0702e2a7b7e13279b349a"
+  },
+  "kit/build_lane_b_polish_review_scene.py": {
+   "bytes": 7228,
+   "sha256": "03e072bca6ca2d3fc86bd1249cc325f7600ea038b7e6392fc21c96bda0c61819"
+  },
+  "kit/build_lane_b_v3.py": {
+   "bytes": 27010,
+   "sha256": "1104c9aa71fbc33b77d2d2c640f5044deff3740c12f39a48fddcad5bbdae68de"
+  },
+  "kit/build_lanes_interfaces_v3.py": {
+   "bytes": 15658,
+   "sha256": "7f30079fee2f70ae57f0d657d4944e7dce65e7bf026bc5604b555ec74ba8852d"
+  },
+  "scripts/build_lane_b_polish_dist.mjs": {
+   "bytes": 9305,
+   "sha256": "d51709413e2fe3c9a6a2a5bc5da20a64f67274afd7d2a9df6b494f82a9d73ccb"
+  },
+  "scripts/make_fangbang_v7_dataset.mjs": {
+   "bytes": 8020,
+   "sha256": "9ffbf7bf3a2ceecee015130ee8afc906986af7b0b19edb199a42af4e96301528"
+  },
+  "tests/lane-b-polish.test.mjs": {
+   "bytes": 14576,
+   "sha256": "e7243bae04866c8fb8712606b9c83571ed247a3cfcd9d7a0c6ad71f6ac9d036a"
+  },
+  "tools/lane_b_polish_capture.mjs": {
+   "bytes": 7601,
+   "sha256": "a34b2f9c7dea6d001a2471074c8eb7bf2a814b4e0a85a588cd799b3861fb17a8"
+  },
+  "tools/lane_b_polish_measure.py": {
+   "bytes": 11279,
+   "sha256": "253f71160c093397f2daa6936228b32df2800e13738fdd448c1fdf64357c89a5"
+  },
+  "tools/lane_b_polish_runtime.mjs": {
+   "bytes": 13521,
+   "sha256": "b79ea549aaa8f3226096a5915d14bad4c63912f76455093e5cf8d1fad7f036cf"
+  },
+  "tools/lane_b_polish_walktest.mjs": {
+   "bytes": 18162,
+   "sha256": "174ca3ec01f6d3b318c289a93c7966a07b744fa8055a038344a2738f1d68ed94"
+  },
+  "world/fangbang-temple-v7/blocks.json": {
+   "bytes": 48537,
+   "sha256": "75adc354ab3586446c290d1356f021358508c5d120cec5a23b80ebd3ff165e3a"
+  },
+  "world/fangbang-temple-v7/cameras.json": {
+   "bytes": 8285,
+   "sha256": "952b2ad38229e277421944ccf6a33f2e13dba3785333939f67d9c771606a905b"
+  },
+  "world/fangbang-temple-v7/collision-world.json": {
+   "bytes": 462061,
+   "sha256": "72d2ce1b39712a9015aa8427593851918e5ec6d929e2dca6c71edb9d7f108f1c"
+  },
+  "world/fangbang-temple-v7/instances.json": {
+   "bytes": 20063,
+   "sha256": "a194d9afe7a78ca2b937010d371cfdb9a55c0b0961ff8b9ad216e5acfbc302b8"
+  },
+  "world/fangbang-temple-v7/review-manifest.json": {
+   "bytes": 51766,
+   "sha256": "6b399126144de01ce0f30e448cd64e90b48ddb6c5be6e4450ebfa101f4462baf"
+  },
+  "world/fangbang-temple-v7/route.json": {
+   "bytes": 21982,
+   "sha256": "0efc1b575e1158485b547fb5ff47c91ad2f3b5fab5c3f99ce23d67bd12827f7e"
+  },
+  "world/fangbang-temple-v7/street-reviewed-lanes.glb": {
+   "bytes": 20587068,
+   "sha256": "f8f90b7aacb421dd11740a3f5c7286361f050a0fd6b4841262c742ea9848d208"
+  },
+  "world/lane-b-polish/interfaces/collision.json": {
+   "bytes": 3083,
+   "sha256": "5ee26b0bc490c4b01ecf942eea49abb1b63581b028454d1f73337fb8ee718fef"
+  },
+  "world/lane-b-polish/interfaces/materials.json": {
+   "bytes": 6386,
+   "sha256": "a2ea3a6816f4015bfad6fbe668f6ee48b8b71e7aa271591198208243f830a4e1"
+  },
+  "world/lane-b-polish/interfaces/measurements.json": {
+   "bytes": 3083,
+   "sha256": "1361b34dce099e9004f85a15152736ea7d5948b72723d32d734ffca7f9c88068"
+  },
+  "world/lane-b-polish/interfaces/model.blend": {
+   "bytes": 6310339,
+   "sha256": "661222a6f2ec3494e4967e2647ac9cd5cd04aa7d505431fa550ba9a4eee5c43b"
+  },
+  "world/lane-b-polish/interfaces/model.blend1": {
+   "bytes": 6310339,
+   "sha256": "55da15475892dd47c4a42731c993f4a69e52a58c58bcb612ea2d5ec6c93780e4"
+  },
+  "world/lane-b-polish/interfaces/model.glb": {
+   "bytes": 1627584,
+   "sha256": "c9c6dbcb402e2b4c80e06fb71af891d4ba33a0271a4706b9ad93aa04035c121a"
+  },
+  "world/lane-b-polish/interfaces/reimport-check.json": {
+   "bytes": 2330,
+   "sha256": "83543aef0d5daace421cd75700355aeb5897f0d7be6e59cd7dff0a7cb6485040"
+  },
+  "world/lane-b-polish/lane-b/collision.json": {
+   "bytes": 4519,
+   "sha256": "c923ce279f01a1bd9bfab189826a9598869cb480a856760dc4f4e259d52f4e6c"
+  },
+  "world/lane-b-polish/lane-b/materials.json": {
+   "bytes": 6386,
+   "sha256": "a2ea3a6816f4015bfad6fbe668f6ee48b8b71e7aa271591198208243f830a4e1"
+  },
+  "world/lane-b-polish/lane-b/measurements.json": {
+   "bytes": 2225,
+   "sha256": "388521653989896f1bbe7eda09d8f0a8de3c66b2d059f25c90041ff8e2bd73ed"
+  },
+  "world/lane-b-polish/lane-b/model.blend": {
+   "bytes": 6731899,
+   "sha256": "08288e6a3321d96151a56f913e438c130f5b0a5600fd559ebaba7ee9798c4f72"
+  },
+  "world/lane-b-polish/lane-b/model.blend1": {
+   "bytes": 6731899,
+   "sha256": "9b3cb16a330e434e9dfcad82db7d2f8a79f373beb558533f283f53a3b55d5406"
+  },
+  "world/lane-b-polish/lane-b/model.glb": {
+   "bytes": 2061328,
+   "sha256": "f6a7da8a05add9038ac35ecad074ca8f3ac5ed8771b715b1a4ca655cec2388a8"
+  },
+  "world/lane-b-polish/lane-b/reimport-check.json": {
+   "bytes": 3184,
+   "sha256": "29b7a6a35438e9696a75098d95e14a76069fad7ab6192a30883a22324ad1dfb1"
+  },
+  "world/lane-b-polish/review/scene.blend": {
+   "bytes": 16477753,
+   "sha256": "ab69c7198d53cd11bb93f4a7d60dd35ddfe886dd2473585443ce5359c93472e1"
+  },
+  "artifacts/lane-b-polish/delivery-manifest.json": {
+   "bytes": 9559,
+   "sha256": "21ca1ae2c225a9f73f49476a327aff2731328ecee8ee5624486f50e5ba616302"
+  }
+ },
+ "fileCount": 60,
+ "totalBytes": 83993695
+}

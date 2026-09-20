@@ -1,0 +1,444 @@
+{
+ "wallRecords": 813,
+ "groundTriangles": 11006,
+ "tests": [
+  {
+   "name": "P1 laneBExcursion inward",
+   "reached": true,
+   "fell": null,
+   "feetYMin": 0.097,
+   "end": [
+    53.43,
+    0.11,
+    21.89
+   ],
+   "stalledS": 0
+  },
+  {
+   "name": "P1 laneBExcursion outward",
+   "reached": true,
+   "fell": null,
+   "feetYMin": 0.097,
+   "end": [
+    59.73,
+    0.11,
+    9.84
+   ],
+   "stalledS": 0
+  },
+  {
+   "name": "P2 laneB east reachable edge",
+   "reached": true,
+   "fell": null,
+   "feetYMin": 0.097,
+   "end": [
+    54.81,
+    0.11,
+    22.27
+   ],
+   "stalledS": 0
+  },
+  {
+   "name": "P2 laneB west reachable edge",
+   "reached": true,
+   "fell": null,
+   "feetYMin": 0.097,
+   "end": [
+    52.31,
+    0.11,
+    20.98
+   ],
+   "stalledS": 0
+  },
+  {
+   "name": "P2 laneB centreline street->pocket",
+   "reached": true,
+   "fell": null,
+   "feetYMin": 0.097,
+   "end": [
+    53.54,
+    0.11,
+    21.66
+   ],
+   "stalledS": 0
+  },
+  {
+   "name": "N3 apron probe centre (0, -0.55)",
+   "yaw": 0,
+   "stop": [
+    59.069,
+    0.11,
+    10.129
+   ],
+   "grounded": true
+  },
+  {
+   "name": "N3 apron probe east (0.5, -1.0)",
+   "yaw": 0,
+   "stop": [
+    59.289,
+    0.11,
+    9.708
+   ],
+   "grounded": true
+  },
+  {
+   "name": "N3 apron probe west (-0.5, -0.3)",
+   "yaw": 0,
+   "stop": [
+    58.885,
+    0.11,
+    10.356
+   ],
+   "grounded": true
+  },
+  {
+   "name": "N3 apron probe mid-band (0.2, -1.25)",
+   "yaw": 0,
+   "stop": [
+    59.39,
+    0.11,
+    9.514
+   ],
+   "grounded": true
+  },
+  {
+   "name": "N2 side door (s=3.1, east facade)",
+   "yaw": -2.0525963267948963,
+   "stop": [
+    57.249,
+    0.11,
+    17.658
+   ],
+   "grounded": true
+  },
+  {
+   "name": "N2 rear service door (s=7.3)",
+   "yaw": -2.0525963267948963,
+   "stop": [
+    55.302,
+    0.11,
+    21.381
+   ],
+   "grounded": true
+  },
+  {
+   "name": "N2 back wall corner (s=10)",
+   "yaw": 2.659792653589791,
+   "stop": [
+    53.221,
+    0.11,
+    22.921
+   ],
+   "grounded": true
+  },
+  {
+   "name": "N1 funnel wall east (s=1)",
+   "yaw": -2.0525963267948955,
+   "stop": [
+    57.492,
+    0.11,
+    17.192
+   ],
+   "grounded": true
+  },
+  {
+   "name": "N1 funnel wall west (s=2)",
+   "yaw": 1.0889963267948986,
+   "stop": [
+    54.567,
+    0.11,
+    16.667
+   ],
+   "grounded": true
+  },
+  {
+   "name": "N1 portal pier from street",
+   "yaw": -2.6405989303424646,
+   "stop": [
+    57.175,
+    0.11,
+    17.799
+   ],
+   "grounded": true
+  },
+  {
+   "name": "P3 laneAExcursion inward (regression)",
+   "reached": true,
+   "fell": null,
+   "feetYMin": 0.097,
+   "end": [
+    43.71,
+    0.11,
+    -23.09
+   ],
+   "stalledS": 0
+  },
+  {
+   "name": "P3 laneAExcursion outward (regression)",
+   "reached": true,
+   "fell": null,
+   "feetYMin": 0.097,
+   "end": [
+    43.16,
+    0.11,
+    -11.48
+   ],
+   "stalledS": 0
+  },
+  {
+   "name": "P3 east band street->portal (regression, was void)",
+   "reached": true,
+   "fell": null,
+   "feetYMin": 0.097,
+   "end": [
+    44.33,
+    0.11,
+    -15.42
+   ],
+   "stalledS": 0
+  },
+  {
+   "name": "N3 void probe mouth-right (43.9,-10.6)",
+   "yaw": 0,
+   "stop": [
+    43.9,
+    0.11,
+    -15
+   ],
+   "grounded": true
+  },
+  {
+   "name": "N3 void probe east strip (43.7,-12.0)",
+   "yaw": 0,
+   "stop": [
+    43.704,
+    0.13,
+    -16.342
+   ],
+   "grounded": true
+  },
+  {
+   "name": "N3 void probe portal corner (44.0,-15.3)",
+   "yaw": 0,
+   "stop": [
+    43.999,
+    0.11,
+    -19.689
+   ],
+   "grounded": true
+  },
+  {
+   "name": "N1 push west into N05 wall @z-13.4",
+   "yaw": 1.5707963267948966,
+   "stop": [
+    42.64,
+    0.11,
+    -12.945
+   ],
+   "grounded": true
+  },
+  {
+   "name": "N1 push east into N06 wall @z-13.4",
+   "yaw": -1.5707963267948966,
+   "stop": [
+    44.414,
+    0.11,
+    -14.318
+   ],
+   "grounded": true
+  },
+  {
+   "name": "N1 push east into new mouth wall @z-15.6",
+   "yaw": -1.5707963267948966,
+   "stop": [
+    44.495,
+    0.11,
+    -14.799
+   ],
+   "grounded": true
+  },
+  {
+   "name": "N2 push into closed rear door",
+   "yaw": 1.5707963267948966,
+   "stop": [
+    42.685,
+    0.16,
+    -21.153
+   ],
+   "grounded": true
+  },
+  {
+   "name": "N2 push into lane end band @-23.8",
+   "yaw": 0,
+   "stop": [
+    43.509,
+    0.11,
+    -24.008
+   ],
+   "grounded": true
+  }
+ ],
+ "coverage": {
+  "step": 0.15,
+  "lsRange": [
+   -1.35,
+   9.45
+  ],
+  "samples": 1209,
+  "misses": 0,
+  "badY": 0,
+  "groundYRange": [
+   0.088,
+   0.11
+  ],
+  "firstHoles": []
+ },
+ "boundary": [
+  {
+   "wall": "sideDoor(s3.1)@facade1.80",
+   "gapM": 0.37,
+   "expect": 0.35,
+   "pass": true
+  },
+  {
+   "wall": "svcDoor(s7.3)@facade1.80",
+   "gapM": 0.37,
+   "expect": 0.35,
+   "pass": true
+  },
+  {
+   "wall": "backWall@s10.0",
+   "gapM": 0.37,
+   "expect": 0.35,
+   "pass": true
+  },
+  {
+   "wall": "funnelEast@s1",
+   "gapM": 0.371,
+   "expect": 0.35,
+   "pass": true
+  },
+  {
+   "wall": "funnelWest@s2",
+   "gapM": 0.369,
+   "expect": 0.35,
+   "pass": true
+  },
+  {
+   "wall": "A:n05West",
+   "gapM": 0.374,
+   "expect": 0.35,
+   "pass": true
+  },
+  {
+   "wall": "A:n06East",
+   "gapM": 0.376,
+   "expect": 0.35,
+   "pass": true
+  },
+  {
+   "wall": "A:newWallEast",
+   "gapM": 0.374,
+   "expect": 0.35,
+   "pass": true
+  },
+  {
+   "wall": "A:rearDoor",
+   "gapM": 0.37,
+   "expect": 0.35,
+   "pass": true
+  },
+  {
+   "wall": "A:laneEnd",
+   "gapM": 0.37,
+   "expect": 0.35,
+   "pass": true
+  }
+ ],
+ "profiles": [
+  {
+   "name": "B portal axis (ls -0.35..0.35)",
+   "samples": 36,
+   "holes": 0,
+   "maxStepM": 0.02,
+   "worst": [
+    [
+     0,
+     0.29,
+     0.09
+    ],
+    [
+     0,
+     0.31,
+     0.11
+    ]
+   ],
+   "pass": true
+  },
+  {
+   "name": "B centreline street->pocket",
+   "samples": 182,
+   "holes": 0,
+   "maxStepM": 0.02,
+   "worst": [
+    [
+     0,
+     0.47,
+     0.09
+    ],
+    [
+     0,
+     0.53,
+     0.11
+    ]
+   ],
+   "pass": true
+  },
+  {
+   "name": "B east reachable edge",
+   "samples": 157,
+   "holes": 0,
+   "maxStepM": 0.018,
+   "worst": [
+    [
+     0.653,
+     0,
+     0.108
+    ],
+    [
+     0.434,
+     0.06,
+     0.09
+    ]
+   ],
+   "pass": true
+  },
+  {
+   "name": "B west reachable edge",
+   "samples": 157,
+   "holes": 0,
+   "maxStepM": 0.018,
+   "worst": [
+    [
+     -0.696,
+     0,
+     0.108
+    ],
+    [
+     -0.427,
+     0.06,
+     0.09
+    ]
+   ],
+   "pass": true
+  },
+  {
+   "name": "A portal axis (regression)",
+   "samples": 31,
+   "holes": 0,
+   "maxStepM": 0.02,
+   "pass": true
+  }
+ ]
+}

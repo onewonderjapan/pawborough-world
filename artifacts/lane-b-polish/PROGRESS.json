@@ -1,0 +1,36 @@
+{
+  "batch": "lane-b-polish (2026-09-20)",
+  "phaseMode": "continuous_self_contained_then_stop",
+  "stages": [
+    {"id": "task1 measure+before", "status": "done",
+     "what": "baseline measurement on v6 (5 defects proven, production transform anchored over 3 non-collinear points), 4 before captures + two-config budgets (base 698704 / all-on 712340)"},
+    {"id": "task1 mouth repair", "status": "done",
+     "what": "kit/build_lanes_interfaces_v3.py (A verbatim, B rebuilt with production transform at the measured S05/S07 lines) + kit/build_lane_b_v3.py (funnel walls, threshold/rails +0.018/+0.02, cloth +0.18)"},
+    {"id": "task1 v7 dataset", "status": "done",
+     "what": "scripts/make_fangbang_v7_dataset.mjs — v6 copy with only block-lanes-v2 B paths replaced; base total 694430 <= 700000; lane-a bytes verified unchanged"},
+    {"id": "task2 close-range refinement", "status": "done",
+     "what": "real recesses in all 4 windows (partition + rear glass + ring frames), ring door surround at s=3.1, eaves closure + end caps, foot returns, plaster normal 0.35, bevel diet 8044 -> 3770"},
+    {"id": "task2 review scene", "status": "done",
+     "what": "scene.blend with S04/S05/S07 context + 4 Cycles CPU stills + reopen verification"},
+    {"id": "task3 dual-lane validation", "status": "done",
+     "what": "WALKTEST_V7_PASS (26 tests, coverage 1209/0/0, profiles <= 0.020, A regression at original coordinates), measure after 6/6 PASS"},
+    {"id": "task3 captures", "status": "done",
+     "what": "4 same-pose before/after pairs + window-oblique after supplement + all-on config (CAPTURE_PASS)"},
+    {"id": "task3 runtime baseline", "status": "done",
+     "what": "RUNTIME_BASELINE_PASS: two configs, load stages + first valid frame, >= 90 s loop walks P50 16.7 / P95 16.8 ms (SwiftShader software baseline), 3 P/V+A/B cycles flat resources"},
+    {"id": "task3 dist", "status": "done",
+     "what": "dist-lane-b-polish 95 files 154315745 B, DIST_RUN_OK both configs (694430 / 708066)"},
+    {"id": "task3 tests", "status": "done",
+     "what": "node --test tests/*.test.mjs 103/103 (9 new lane-b-polish tests)"}
+  ],
+  "blockedItems": [],
+  "partialItems": [],
+  "knownLeftovers": [
+    "all-on config +8066 over the 700k base ceiling (own line, not a base failure)",
+    "east portal corner above y2.65 opens to the S07 south facade (v6 look kept)",
+    "svc-door niche bay extends into the unseen backlot (v2 component verbatim)"
+  ],
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "finishedAt": "2026-09-20T21:05:00+09:00"
+}

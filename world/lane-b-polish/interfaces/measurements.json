@@ -1,0 +1,133 @@
+{
+  "moduleId": "lane-b-interfaces-v3",
+  "triangles": 911,
+  "meshes": 5,
+  "fileBytes": 1627584,
+  "sha256": "c9c6dbcb402e2b4c80e06fb71af891d4ba33a0271a4706b9ad93aa04035c121a",
+  "design": {
+    "family": "lanes-v2-interfaces-polish",
+    "sampleId": "lane-b-interfaces-v3",
+    "basedOn": "kit/build_lanes_interfaces_v2.py (mouth A verbatim) + measured B mouth lines (survey 2026-09-20): S05 face lx=-1.096, S07 face line lx(ls)=1.067-0.0536*(ls+0.26), holder 57.418,0.09,14.2485 yaw -0.4818",
+    "localFrame": "WORLD coordinates (identity placement), GLB Y-up, floor top y=0.09",
+    "measuredAnchors": {
+      "n05EastFace": [
+        [
+          42.02,
+          -9.83
+        ],
+        [
+          42.57,
+          -16.8
+        ]
+      ],
+      "n06WestFace": [
+        [
+          44.0,
+          -9.67
+        ],
+        [
+          44.87,
+          -14.79
+        ]
+      ],
+      "moduleFloorEdge": [
+        [
+          42.4468516857518,
+          -16.462580134241946
+        ],
+        [
+          44.64615911670152,
+          -16.407382089264402
+        ]
+      ],
+      "newWallWestFace": {
+        "north": [
+          44.87,
+          -14.79
+        ],
+        "south": [
+          44.6393,
+          -16.4569
+        ],
+        "lengthM": 1.6828,
+        "thetaRad": -3.00407
+      },
+      "bMouth": {
+        "s05FaceLx": -1.096,
+        "s07FaceAtMouthLx": 1.0638,
+        "s07FaceTiltPerM": -0.0536,
+        "bApronPolygonXz": [
+          [
+            57.133,
+            12.4068
+          ],
+          [
+            59.1264,
+            13.4491
+          ],
+          [
+            58.3575,
+            14.7454
+          ],
+          [
+            56.4356,
+            13.7404
+          ]
+        ],
+        "apronY": 0.088,
+        "outletY": 0.06999999999999999,
+        "pierBaseCenters": {
+          "w": [
+            56.6511,
+            0.09,
+            13.6218
+          ],
+          "e": [
+            58.3703,
+            0.09,
+            14.5207
+          ]
+        }
+      }
+    },
+    "floorPolygonXz": [
+      [
+        42.8836,
+        -16.4516
+      ],
+      [
+        44.671,
+        -16.4095
+      ],
+      [
+        44.8996,
+        -14.785
+      ],
+      [
+        44.0772,
+        -9.945
+      ],
+      [
+        42.3695,
+        -9.95
+      ]
+    ],
+    "changesVsV6": [
+      "mouth A geometry identical to v6 (a-floor/a-drain/a-threshold/east mouth wall/jambs code copied verbatim)",
+      "B_RIGHT fixed to the production +Y rotation sign; quad() fed [x,z] pairs (no z-collapse)",
+      "b-apron re-fitted to the measured S05/S07 mouth (was +-1.5 authored, collapsed to the origin)",
+      "b-drain-outlet recessed channel at the walkable width, 18 mm under the apron",
+      "b-pier-base w/e at the real corner positions (production bpt), grounded y0..0.6"
+    ],
+    "groundNodeNames": [
+      "lanes-v2__paving-frontage",
+      "lanes-v2__worn-stone"
+    ],
+    "newTextures": 0,
+    "budgetTris": 1000
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

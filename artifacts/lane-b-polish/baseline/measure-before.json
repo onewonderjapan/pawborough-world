@@ -1,0 +1,37 @@
+{
+ "phase": "before",
+ "checks": [
+  {
+   "id": "T1 transform agreement (3 anchors)",
+   "pass": true,
+   "detail": "sidecar-vs-production center delta=0.00e+00, anchor worst=0.00e+00"
+  },
+  {
+   "id": "T2 apron/drain/outlet occupy the real mouth band",
+   "pass": false,
+   "detail": "interface ground tris in mouth band=0; v6 collapsed strays near origin=[(56.77, 0.09, -12.25), (57.46, 0.09, -12.56)]"
+  },
+  {
+   "id": "T3 pier bases flank the measured S05/S07 mouth faces",
+   "pass": false,
+   "detail": "west pier-base lx [-0.926,-0.458] vs S05 face -1.096; east pier-base lx [0.129,0.598] vs S07 face 1.064"
+  },
+  {
+   "id": "T4 walkable ground across the mouth transition",
+   "pass": false,
+   "detail": "rays=49 misses=19 badY=1 first=[[58.64, 13.42], [58.3, 13.53], [58.52, 13.64], [57.79, 13.54]]"
+  },
+  {
+   "id": "T5 axis surface steps <= 0.02 m",
+   "pass": false,
+   "detail": "holes=15 maxStep=0.0600"
+  },
+  {
+   "id": "T6 cloth bottom >= 2.2 m",
+   "pass": false,
+   "detail": "cloth lowest vertex y=2.1225000286102294"
+  }
+ ],
+ "pass": 1,
+ "fail": 5
+}

@@ -1,0 +1,51 @@
+{
+  "tool": "tools/lane_b_polish_capture.mjs",
+  "env": {
+    "chrome": "/usr/bin/google-chrome",
+    "headless": true,
+    "swiftshader": true,
+    "viewport": [
+      1280,
+      720
+    ],
+    "dpr": 1,
+    "startedAt": "2026-09-20T09:28:53.981Z"
+  },
+  "pairs": [
+    {
+      "dataset": "fangbang-temple-v7",
+      "dir": "after",
+      "routeCheck": true,
+      "triangles": 694430,
+      "framebuffer": [
+        1280,
+        649
+      ],
+      "shots": [
+        "after/street-mouth.png",
+        "after/threshold-foot.png",
+        "after/window-door.png",
+        "after/pocket-lookback.png",
+        "after/window-oblique.png"
+      ]
+    }
+  ],
+  "budgets": {
+    "base": {
+      "dataset": "fangbang-temple-v7",
+      "triangles": 694430
+    },
+    "skinsAndProps": {
+      "dataset": "fangbang-temple-v7?skins=1&props=1",
+      "triangles": 708066
+    }
+  },
+  "pass": true,
+  "allOnShots": [
+    "after-allskins/street-mouth.png",
+    "after-allskins/threshold-foot.png",
+    "after-allskins/window-door.png",
+    "after-allskins/pocket-lookback.png",
+    "after-allskins/window-oblique.png"
+  ]
+}

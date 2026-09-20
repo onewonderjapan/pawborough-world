@@ -1,0 +1,58 @@
+{
+  "moduleId": "lane-b-v3",
+  "triangles": 3770,
+  "meshes": 12,
+  "fileBytes": 2061328,
+  "sha256": "f6a7da8a05add9038ac35ecad074ca8f3ac5ed8771b715b1a4ca655cec2388a8",
+  "design": {
+    "family": "lane-b-module-polish",
+    "sampleId": "lane-b-v3",
+    "basedOn": "kit/build_lane_b_v2.py geometry contract + lane-b-polish work order (SPEC 2026-09-20); mouth lines verified by tools/lane_b_polish_measure.py",
+    "localFrame": "origin=portal centre on the old seal wall inner face at floor y=0.09; +Z inward; +X right (production obbToWorld places it)",
+    "worldPlacement": {
+      "portalCenterGlb": [
+        57.418,
+        0.09,
+        14.2485
+      ],
+      "rotationYRad": -0.4818
+    },
+    "portalClearWidthM": 1.5,
+    "portalClearHeightM": 2.3,
+    "portalOverallHeightM": 2.65,
+    "depthM": 10.0,
+    "pocketWidthM": 3.6,
+    "facadeHeightsM": [
+      6.2,
+      4.8
+    ],
+    "changesVsV2": [
+      "funnel walls close the widening zone to the side-facade / pocket-wall starts; floor runs to the wall faces (mouth 1.62 kept)",
+      "windows/doors rebuilt as real recesses: wall partitioned around openings, rear-set closed glass/panel, ring frames, sills (no buried solid boxes)",
+      "side door s=3.1 ring door surround; rear service door niche kept, foot brick returns added",
+      "portal threshold + inset drain rails capped at floor+0.02 (v2 threshold was +0.06)",
+      "clothesline raised +0.18 m: cloth bottoms 2.21/2.28 m >= 2.2 m clearance (v2 measured 2.12 m)",
+      "plaster normal strength 0.65 -> 0.35 (this module instance); no wall-scale bevels",
+      "eaves closure: pent-roof fascia + end closures; local eave-height end caps at the funnel/facade and funnel/pocket joints"
+    ],
+    "reusedComponents": [
+      "portal assembly",
+      "threshold + inset drain",
+      "clothesline + cloth",
+      "conduit + clips",
+      "downpipe + clamps + shoe",
+      "rear-service-door-panel",
+      "corner-cap-plinth"
+    ],
+    "groundNodeNames": [
+      "lanes-v2__paving-frontage",
+      "lanes-v2__worn-stone"
+    ],
+    "newTextures": 0,
+    "budgetTris": 4500
+  },
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

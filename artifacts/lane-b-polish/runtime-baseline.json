@@ -1,0 +1,377 @@
+{
+ "tool": "tools/lane_b_polish_runtime.mjs",
+ "env": {
+  "chrome": "/usr/bin/google-chrome",
+  "headless": true,
+  "swiftshader": true,
+  "softwareBaselineOnly": true,
+  "viewport": [
+   1280,
+   720
+  ],
+  "dpr": 1,
+  "startedAt": "2026-09-20T09:34:38.351Z",
+  "finishedAt": "2026-09-20T09:38:37.224Z"
+ },
+ "configs": [
+  {
+   "config": "default",
+   "query": "",
+   "load": {
+    "readyAfterMs": 7936,
+    "domContentLoadedAfterMs": 233,
+    "firstValidFrameAfterReadyMs": 9548.9,
+    "pageLoadStats": {
+     "bytesTotal": 133508532,
+     "bytesBase": 20587068,
+     "bytesWestSurface": 1308304,
+     "bytesEastTail": 985560,
+     "bytesSealWall": 2804,
+     "bytesEastExtension": 1216532,
+     "bytesEastEndWall": 2608,
+     "bytesTemple": 30431084,
+     "bytesShops": 73346924,
+     "extraGroundTriangles": 18893,
+     "wallColliders": 790,
+     "allAssetsReadyMs": 3544,
+     "fpsNotMeasured": true,
+     "localOnly": true,
+     "shaderCompileMs": 34
+    }
+   },
+   "env": {
+    "navigationStartMs": 0,
+    "domContentLoadedMs": 229,
+    "rendererString": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "Google Inc. (Google)",
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "hardwareConcurrency": 20,
+    "deviceMemoryGB": 32,
+    "canvasCss": [
+     1280,
+     649
+    ],
+    "drawingBuffer": [
+     1280,
+     649
+    ]
+   },
+   "triangles": 694430,
+   "framebuffer": [
+    1280,
+    649
+   ],
+   "walkLoop": {
+    "secondsTarget": 95,
+    "waypoints": 44,
+    "stats": {
+     "frames": 5291,
+     "flaggedHiddenOrBlur": 0,
+     "p50Ms": 16.7,
+     "p95Ms": 16.8,
+     "maxMs": 3616.5
+    },
+    "rawSampleCount": 5291,
+    "rawFirst60": [
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127
+    ]
+   },
+   "pvCycles": [
+    {
+     "cycle": 1,
+     "resources": {
+      "triangles": 694430,
+      "geometries": 689,
+      "materials": 667,
+      "textures": 536,
+      "heapMB": 103.5,
+      "blocks": null,
+      "epoch": null
+     }
+    },
+    {
+     "cycle": 2,
+     "resources": {
+      "triangles": 694430,
+      "geometries": 689,
+      "materials": 667,
+      "textures": 536,
+      "heapMB": 102.4,
+      "blocks": null,
+      "epoch": null
+     }
+    },
+    {
+     "cycle": 3,
+     "resources": {
+      "triangles": 694430,
+      "geometries": 689,
+      "materials": 667,
+      "textures": 536,
+      "heapMB": 102.8,
+      "blocks": null,
+      "epoch": null
+     }
+    }
+   ],
+   "monotonic": {
+    "triangles": [
+     694430,
+     694430,
+     694430
+    ],
+    "geometries": [
+     689,
+     689,
+     689
+    ],
+    "monotonicGrowth": false
+   },
+   "final": {
+    "mode": "walk",
+    "paused": false,
+    "triangles": 694430,
+    "walkResets": 6
+   }
+  },
+  {
+   "config": "skins+props",
+   "query": "&skins=1&props=1",
+   "load": {
+    "readyAfterMs": 8968,
+    "domContentLoadedAfterMs": 200,
+    "firstValidFrameAfterReadyMs": 9296.8,
+    "pageLoadStats": {
+     "bytesTotal": 133508532,
+     "bytesBase": 20587068,
+     "bytesWestSurface": 1308304,
+     "bytesEastTail": 985560,
+     "bytesSealWall": 2804,
+     "bytesEastExtension": 1216532,
+     "bytesEastEndWall": 2608,
+     "bytesTemple": 30431084,
+     "bytesShops": 73346924,
+     "extraGroundTriangles": 18893,
+     "wallColliders": 843,
+     "allAssetsReadyMs": 4332,
+     "fpsNotMeasured": true,
+     "localOnly": true,
+     "shaderCompileMs": 44
+    }
+   },
+   "env": {
+    "navigationStartMs": 0,
+    "domContentLoadedMs": 197,
+    "rendererString": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "Google Inc. (Google)",
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "hardwareConcurrency": 20,
+    "deviceMemoryGB": 32,
+    "canvasCss": [
+     1280,
+     649
+    ],
+    "drawingBuffer": [
+     1280,
+     649
+    ]
+   },
+   "triangles": 708066,
+   "framebuffer": [
+    1280,
+    649
+   ],
+   "walkLoop": {
+    "secondsTarget": 95,
+    "waypoints": 44,
+    "stats": {
+     "frames": 5285,
+     "flaggedHiddenOrBlur": 0,
+     "p50Ms": 16.7,
+     "p95Ms": 16.8,
+     "maxMs": 4883.2
+    },
+    "rawSampleCount": 5285,
+    "rawFirst60": [
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.5,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127,
+     16.59999999999127
+    ]
+   },
+   "pvCycles": [
+    {
+     "cycle": 1,
+     "resources": {
+      "triangles": 708066,
+      "geometries": 841,
+      "materials": 754,
+      "textures": 708,
+      "heapMB": 104.4,
+      "blocks": null,
+      "epoch": null
+     }
+    },
+    {
+     "cycle": 2,
+     "resources": {
+      "triangles": 708066,
+      "geometries": 841,
+      "materials": 754,
+      "textures": 708,
+      "heapMB": 105.2,
+      "blocks": null,
+      "epoch": null
+     }
+    },
+    {
+     "cycle": 3,
+     "resources": {
+      "triangles": 708066,
+      "geometries": 841,
+      "materials": 754,
+      "textures": 708,
+      "heapMB": 104.8,
+      "blocks": null,
+      "epoch": null
+     }
+    }
+   ],
+   "monotonic": {
+    "triangles": [
+     708066,
+     708066,
+     708066
+    ],
+    "geometries": [
+     841,
+     841,
+     841
+    ],
+    "monotonicGrowth": false
+   },
+   "final": {
+    "mode": "walk",
+    "paused": false,
+    "triangles": 708066,
+    "walkResets": 6
+   }
+  }
+ ],
+ "pass": true
+}
