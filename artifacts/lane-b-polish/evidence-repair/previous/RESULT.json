@@ -1,6 +1,6 @@
 {
-  "batch": "lane-b-polish construct + evidence repair (2026-09-20, ZCode GLM-5.3, dispatch_only_no_monitoring)",
-  "scope": "PLAN.md frozen work order (B-lane mouth repair + refinement + dual-lane baseline as world/fangbang-temple-v7) + lead REVIEW.md B7-R1/R2 evidence repair; originals read-only",
+  "batch": "lane-b-polish construct (2026-09-20, ZCode GLM-5.3, dispatch_only_no_monitoring)",
+  "scope": "PLAN.md frozen work order: B-lane mouth repair + close-range refinement + dual-lane runtime baseline as world/fangbang-temple-v7 candidate; originals read-only",
   "baseline": "ec2ab2f3750af903047c32a089806443a9161e18",
   "ownerAdopted": false,
   "review_pending": "Codex and owner review after delivery",
@@ -13,23 +13,10 @@
         "lane-b-interfaces-v3": "world/lane-b-polish/interfaces/model.glb (1627584 B, sha c9c6dbcb402e2b4c…, 911 tris, <=1000 target PASS incl. identical A part)",
         "lane-a": "world/lane-a-polish/lane-a/model.glb (v6 asset bytes unchanged, 1938736 B, sha 5f33a28640652af0…, 2910 tris)"
       },
-      "reopenableSources": [
-        "world/lane-b-polish/lane-b/model.blend + kit/build_lane_b_v3.py",
-        "world/lane-b-polish/interfaces/model.blend + kit/build_lanes_interfaces_v3.py",
-        "world/lane-b-polish/review/scene.blend + kit/build_lane_b_polish_review_scene.py (default camera street-mouth, S04/S05/S07 context, reopened and re-verified)"
-      ],
+      "reopenableSources": ["world/lane-b-polish/lane-b/model.blend + kit/build_lane_b_v3.py", "world/lane-b-polish/interfaces/model.blend + kit/build_lanes_interfaces_v3.py", "world/lane-b-polish/review/scene.blend + kit/build_lane_b_polish_review_scene.py (default camera street-mouth, S04/S05/S07 context, reopened and re-verified)"],
       "dist": "dist-lane-b-polish (95-file dependency closure, gate DIST_RUN_OK; rebuild: node scripts/build_lane_b_polish_dist.mjs)"
     },
-    "untouched": [
-      "world/fangbang-temple-v6 (blocks still list lane-b-v2 verbatim)",
-      "world/lanes-v2",
-      "world/lane-a-polish (A module + interfaces loaded byte-identical)",
-      "world/v5 and earlier",
-      "building/*",
-      "street-sidefaces",
-      "street-props",
-      "W2 canonical (not accessed/written this task; bytes not re-verified)"
-    ]
+    "untouched": ["world/fangbang-temple-v6 (blocks still list lane-b-v2 verbatim)", "world/lanes-v2", "world/lane-a-polish (A module + interfaces loaded byte-identical)", "world/v5 and earlier", "building/*", "street-sidefaces", "street-props", "W2 canonical (not accessed/written this task; bytes not re-verified)"]
   },
   "items": [
     {
@@ -54,19 +41,7 @@
       "id": "4 windows/doors real recesses + ring surrounds",
       "status": "done",
       "what": "east facade and back facade partitioned around every opening (reveal faces are the segments' own faces); closed glass rear-set at recess back 0.07 m (0.05 back kept in the 0.12 walls); timber ring frames + stone sills proud; folded shutter pairs kept (windows stay closed); side door s=3.1 rebuilt from the v2 solid paste-box into a ring door surround (recessed dark panel at the back, jambs/lintel/threshold, brick foot returns); rear service door niche kept verbatim, window-b recess starts at the niche pier face where the wall is deep",
-      "positionsKept": {
-        "eastWindows": [
-          4.6,
-          8.3
-        ],
-        "backWindows": [
-          -0.9,
-          0.9
-        ],
-        "sideDoor": 3.1,
-        "svcDoor": 7.3,
-        "closed": true
-      }
+      "positionsKept": {"eastWindows": [4.6, 8.3], "backWindows": [-0.9, 0.9], "sideDoor": 3.1, "svcDoor": 7.3, "closed": true}
     },
     {
       "id": "5 surface contract <= 0.02 m",
@@ -84,16 +59,7 @@
       "id": "7 material + tri diet",
       "status": "done",
       "what": "plaster normal strength 0.65 -> 0.35 on the new B module instance only (image bytes unchanged, zero new textures); invisible wall-scale/micro-part bevels removed (window/door trim, clips, rails, copings), close-range bevels kept on sills/thresholds/piers; 8044 -> 3770 tris with funnel walls ADDED",
-      "budgets": {
-        "laneB": {
-          "actual": 3770,
-          "limit": 4500
-        },
-        "interfaces": {
-          "actual": 911,
-          "limit": 1000
-        }
-      }
+      "budgets": {"laneB": {"actual": 3770, "limit": 4500}, "interfaces": {"actual": 911, "limit": 1000}}
     },
     {
       "id": "8 two-config budgets (page-runtime measured)",
@@ -109,70 +75,14 @@
     },
     {
       "id": "10 dual-lane runtime baseline",
-      "status": "done (withdrawn 2026-09-20 B7-R1; rerun below)",
-      "what": "WITHDRAWN: the original >=90s loop claim did not prove the contracted load — steering read tgt[2] on [x,z] targets so want/d were NaN and the turn branch never fired; the walk went straight from the spawn anchor (templeFront, straight into the sealed west dead-end = an occluded view) with no completion/stuck assertions; only the 60 fastest sorted frames were kept; the first-frame field mixed clock bases and equated cpuSubmitMs>0 with a real render. Data was not fabricated but did not prove the declared load. Snapshot + retraction kept under evidence-repair/previous/.",
+      "status": "done",
+      "what": "real page loop walk (main street + lane A + lane B excursions) driven through the page's own WASD/mousemove input path, >= 90 s per config; rAF frame intervals (NOT cpuSubmitMs inverses); visibility/focus-flagged frames excluded (0 flagged); 3 x P/V keep/clear-key + A/B entrance relocation cycles — resources flat (triangles/geometries/heap identical each cycle)",
       "numbers": {
-        "default": {
-          "readyMs": 7936,
-          "firstValidFrameAfterReadyMs": 9549,
-          "shaderCompileMs": 34,
-          "frames": 5291,
-          "p50Ms": 16.7,
-          "p95Ms": 16.8
-        },
-        "skinsAndProps": {
-          "readyMs": 8968,
-          "firstValidFrameAfterReadyMs": 9297,
-          "shaderCompileMs": 44,
-          "frames": 5285,
-          "p50Ms": 16.7,
-          "p95Ms": 16.8
-        }
+        "default": {"readyMs": 7936, "firstValidFrameAfterReadyMs": 9549, "shaderCompileMs": 34, "frames": 5291, "p50Ms": 16.7, "p95Ms": 16.8},
+        "skinsAndProps": {"readyMs": 8968, "firstValidFrameAfterReadyMs": 9297, "shaderCompileMs": 44, "frames": 5285, "p50Ms": 16.7, "p95Ms": 16.8}
       },
       "environment": "headless Chrome + SwiftShader (ANGLE Vulkan SwiftShader device) — SOFTWARE baseline only; no machine settings touched; renderer string/hardwareConcurrency/viewport recorded in runtime-baseline.json",
-      "caveat": "this short run does not complete long-term P5 or v1.0 sign-off",
-      "replacement": "items 11 and 12"
-    },
-    {
-      "id": "11 runtime evidence repair (B7-R1) — real route, real completion",
-      "status": "done",
-      "what": "tools/lane_b_polish_runtime.mjs rewritten; pure steering/waypoint/verdict logic extracted to tools/lane_b_route_steer.mjs (loud RouteTargetError on missing-dimension/NaN targets — the exact line-149 shape now FAILS, proven by test). Route built only from v7 route.json production coordinates: street-west 87.9m -> laneAExcursion in/out -> street-east 20m -> laneBExcursion in/out -> street-east-home 67.9m (~230m, 107 waypoints, sequential advance, reach 1.4 street / 1.0 lanes). Only teleport is the DECLARED mainStreet anchor spawn; zero teleports during the load. Closed-loop steering: displacement heading while moving + input-accumulated yaw while stationary (same arithmetic as controller.look, 0.0023 rad/px); synthetic keyboard/mouse/pointer-lock labeled as test injection, keydown/keyup paired, manualWalkClaim=false.",
-      "results": {
-        "default": {
-          "wallS": 355.7,
-          "movingS": 338.1,
-          "distanceM": 255.2,
-          "waypoints": "107/107",
-          "pauses": 0,
-          "maxStillS": 1.4,
-          "fell": false,
-          "nonFinite": 0,
-          "triangles": 694430,
-          "routeCheck": true
-        },
-        "skinsAndProps": {
-          "wallS": 415.9,
-          "movingS": 390.8,
-          "distanceM": 254.8,
-          "waypoints": "107/107",
-          "pauses": 0,
-          "maxStillS": 1.6,
-          "fell": false,
-          "nonFinite": 0,
-          "triangles": 708066,
-          "routeCheck": true
-        }
-      },
-      "loadClock": "single navigation-timeOrigin base; navigation->ready 5092/4708ms; navigation->first VALID frame 5092/4708ms (3x32x32 pixel patches >=4 distinct colors — a real render check, not cpuSubmitMs>0); ready->firstValid difference recomputable (0.0ms, same sampled rAF tick)",
-      "frames": "full time-ordered samples kept ([t, visible, focus, phase]) and dumped raw; P50/P95/max recomputed in Node from the raw samples and rechecked by tests against the saved artifact; walk stats use ONLY the walk-loop phase (load/auto-cruise/entry/pv excluded with counted reasons). SwiftShader software baseline, open-street load: P50 350/433ms, P95 683/783ms, max 783/950ms — no hardware 60FPS claim; when rAF drops to a few Hz the page clamps dt to 0.25s so effective walking speed degrades while every step stays the full Rapier chain",
-      "pvCycles": "3x P/V + A/B explicit-entry cycles in their own phase; real mode/paused/pose/frozen-capsule/no-drift/key-clearing assertions all pass; geometry/material/texture counts reconciled per location across cycles and exactly stable (689/667/536 default, 841/754/708 all-on); blocks active 7(A)/8(B) stable, epoch 4->6 real swaps; heap reported as fluctuation only (101.1-101.8 / 105.2-105.7MB)",
-      "evidence": "artifacts/lane-b-polish/runtime-baseline.json + evidence-repair/raw/{default,skins-props}-{frames,trajectory}.json; retraction snapshot evidence-repair/previous/"
-    },
-    {
-      "id": "12 delivery manifest repair (B7-R2)",
-      "status": "done",
-      "what": "tools/lane_b_delivery_manifest.mjs: repeatable generate/verify/receipt. The manifest EXCLUDES itself and the outer receipt (no hash cycle), lists only real deliverable files + the new raw run data; fileCount/totalBytes computed from real entries; verify re-reads every file (existence/bytes/sha256/path safety/self-exclusion). Negative tests on a temp fixture (tampered byte, missing file, wrong hash, self-inclusion, escaping path, wrong totals) all genuinely fail; the committed manifest verifies against the real tree. The manifest digest lives in the OUTER receipt evidence-repair/delivery-receipt.json (not listed inside the manifest); the final commit hash goes only to the top-level RUN_STATUS.",
-      "evidence": "artifacts/lane-b-polish/delivery-manifest.json + artifacts/lane-b-polish/evidence-repair/delivery-receipt.json + tests/lane-b-evidence.test.mjs"
+      "caveat": "this short run does not complete long-term P5 or v1.0 sign-off"
     }
   ],
   "verification": {
@@ -180,16 +90,14 @@
     "sections": "tools/lane_b_polish_measure.py -> before FAIL(5)/after PASS(6): transform agreement, mouth occupancy, pier-base bridging, ground closure, axis steps, cloth clearance",
     "webgl": "tools/lane_b_polish_capture.mjs -> CAPTURE_PASS; 4 same-pose before(v6)/after(v7) pairs (1280x649 drawingBuffer = CSS, SwiftShader, entry card dismissed via the page's own 取景 button) + window-oblique after supplement + all-on config",
     "offline": "kit/build_lane_b_polish_review_scene.py -> scene.blend (52 meshes, camera street-mouth non-null, S04/S05/S07 context, textures packed, reopened+verified) + 4 Cycles CPU stills",
-    "runtime": "tools/lane_b_polish_runtime.mjs -> RUNTIME_BASELINE_PASS (evidence-repair rerun 2026-09-20): two configs COMPLETED the declared main-street+A/B loop (default 338.1s moving/255.2m, skins+props 390.8s/254.8m, 107/107 waypoints, 0 pauses), load clock on one timeOrigin base with pixel-verified first frame, frame stats recomputed from full raw samples (software baseline), 3 P/V+A/B cycles with stable resource counts; server identity-checked (served route.json sha256 == workspace)",
-    "tests": "node --test tests/*.test.mjs -> 116/116 pass (103 frozen lane-b batch incl. 9 new + 13 evidence-repair: steering negatives incl. the tgt[2] shape, waypointer no-skip, evaluator stuck/short/NaN/fell negatives, full-sample stats recomputation, manifest positive/negative round-trips, artifact self-consistency)",
-    "dist": "node scripts/build_lane_b_polish_dist.mjs -> 95 files 154315745 B; DIST_RUN_OK base ready/route/tris=694430, all-on ready/route/tris=708066 (lane-b-polish-dist-run.json)",
-    "protectedAssets": "2057 frozen files from control/EVIDENCE_REPAIR_PROTECTED.json re-hashed this batch: 0 missing, 0 mismatched"
+    "runtime": "tools/lane_b_polish_runtime.mjs -> RUNTIME_BASELINE_PASS (two configs, load stages, >= 90 s loop walks, P50/P95, 3 P/V cycles no resource growth)",
+    "tests": "node --test tests/*.test.mjs -> 103/103 pass (9 new: v7 manifest/bytes/sha, B budgets, world-space sidecars incl. slanted funnel colliders on the wall lines, threshold <= 0.11 + portal clear 1.5 from the exported GLB, cloth >= 2.2, A-region per-triangle identity vs v6, blocks point only at new B assets + v6 untouched, evidence artifacts PASS)",
+    "dist": "node scripts/build_lane_b_polish_dist.mjs -> 95 files 154315745 B; DIST_RUN_OK base ready/route/tris=694430, all-on ready/route/tris=708066 (lane-b-polish-dist-run.json)"
   },
   "knownLeftovers": [
     "skins+props all-on stays +8066 over the 700k base ceiling (separate single-flag config, not a base-config failure; reduced from v6's +12340)",
     "east portal corner above y2.65 opens to the S07 south facade (v6 state kept; no street-facing structure added)",
-    "rear service door niche bay extends 0.25 m behind the facade outer plane into the unseen backlot (v2 component kept verbatim per SPEC)",
-    "SwiftShader software frame pacing on the open street is a few Hz (P50 350-433ms): honest software baseline, no hardware FPS claim; hardware-class pacing not measured this batch"
+    "rear service door niche bay extends 0.25 m behind the facade outer plane into the unseen backlot (v2 component kept verbatim per SPEC)"
   ],
   "protection": "git status: only NEW files under world/fangbang-temple-v7, world/lane-b-polish, artifacts/lane-b-polish, kit/build_*v3*.py, kit/build_lane_b_polish_review_scene.py, scripts/make_fangbang_v7_dataset.mjs, scripts/build_lane_b_polish_dist.mjs, tools/lane_b_polish_*.mjs/py, tests/lane-b-polish.test.mjs; 0 modified tracked files; git diff --check clean; W2 canonical not accessed/written this task (bytes not re-verified)",
   "commands": {
@@ -203,6 +111,5 @@
     "reviewScene": "blender -b --factory-startup -t 4 -P kit/build_lane_b_polish_review_scene.py",
     "dist": "node scripts/build_lane_b_polish_dist.mjs",
     "tests": "node --test tests/*.test.mjs"
-  },
-  "status": "delivered_for_lead_review"
+  }
 }

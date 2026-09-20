@@ -1,29 +1,26 @@
 {
- "batch": "lane-b-polish (2026-09-20) + evidence repair (B7-R1/R2)",
+ "batch": "lane-b-polish (2026-09-20)",
+ "baseline": "ec2ab2f3750af903047c32a089806443a9161e18",
  "candidate": "fangbang-temple-v7",
  "status": "delivered_for_lead_review",
  "ownerAdopted": false,
- "note": "delivery files + evidence-repair raw run data; dist-lane-b-polish excluded (rebuildable, gitignored); commit hash recorded in the top-level RUN_STATUS outside this workspace, not here",
- "excludes": [
-  "artifacts/lane-b-polish/delivery-manifest.json",
-  "artifacts/lane-b-polish/evidence-repair/delivery-receipt.json"
- ],
+ "note": "all NEW files (0 modified tracked files); dist-lane-b-polish is rebuildable and gitignored; committed images are the evidence stills only",
  "files": {
   "artifacts/lane-b-polish/DELIVERY.md": {
-   "bytes": 9308,
-   "sha256": "cb838728d82d4efbf8f270e9fc3c50c6b3f61d3be8b8a54bd7d287a892e995f6"
+   "bytes": 4586,
+   "sha256": "995097d28f8a5e74b4c1c9b9515dd8be65cc4af480d813ad3074b9a46f1e19b6"
   },
   "artifacts/lane-b-polish/PROGRESS.json": {
-   "bytes": 3900,
-   "sha256": "0da5fc9027517c324864e62157bf5dc717e9b7d5943ceb9b193f2c226756e500"
+   "bytes": 2569,
+   "sha256": "aaf0e32c1250169b48701f6eceea667a6fed10cfd66b0a08d7b0397596281542"
   },
   "artifacts/lane-b-polish/RESULT.json": {
-   "bytes": 17339,
-   "sha256": "8d47f3aa4513594665029d7f8570255cfc36404f72a4d6991f7bb136a59b9745"
+   "bytes": 11912,
+   "sha256": "0c6929f927b6e066acbc43f8a372d5783494ad8a616168be508554776aa0ee7a"
   },
   "artifacts/lane-b-polish/START_HERE.md": {
-   "bytes": 3086,
-   "sha256": "3d0a560a04667973a9cc0a281a34af1bcea7b8cb460dd4d8d5521ef8dfffcf88"
+   "bytes": 2010,
+   "sha256": "ee9c67731d1fbcc18ce29f6ca10ea466747793eb2dc07cc1c9bec42410d70498"
   },
   "artifacts/lane-b-polish/after-allskins/pocket-lookback.png": {
    "bytes": 908794,
@@ -101,53 +98,9 @@
    "bytes": 943562,
    "sha256": "15d2b9d437868a8bcba2b3c6b8316c0418666dc72c2516d7e9c817e91c98d4d6"
   },
-  "artifacts/lane-b-polish/evidence-repair/previous/DELIVERY.md": {
-   "bytes": 4586,
-   "sha256": "995097d28f8a5e74b4c1c9b9515dd8be65cc4af480d813ad3074b9a46f1e19b6"
-  },
-  "artifacts/lane-b-polish/evidence-repair/previous/PROGRESS.json": {
-   "bytes": 2569,
-   "sha256": "aaf0e32c1250169b48701f6eceea667a6fed10cfd66b0a08d7b0397596281542"
-  },
-  "artifacts/lane-b-polish/evidence-repair/previous/README.md": {
-   "bytes": 1718,
-   "sha256": "b63ce6592665111677744a424aa9bf3b3ff02ecc8fb1ecf5a2a9a4da46d83bde"
-  },
-  "artifacts/lane-b-polish/evidence-repair/previous/RESULT.json": {
-   "bytes": 11912,
-   "sha256": "0c6929f927b6e066acbc43f8a372d5783494ad8a616168be508554776aa0ee7a"
-  },
-  "artifacts/lane-b-polish/evidence-repair/previous/START_HERE.md": {
-   "bytes": 2010,
-   "sha256": "ee9c67731d1fbcc18ce29f6ca10ea466747793eb2dc07cc1c9bec42410d70498"
-  },
-  "artifacts/lane-b-polish/evidence-repair/previous/delivery-manifest.json": {
-   "bytes": 9716,
-   "sha256": "8ca5b770b92f53d18273fc81ae196596fa5488017d0644d0ba98f636177ce0f4"
-  },
-  "artifacts/lane-b-polish/evidence-repair/previous/runtime-baseline.json": {
+  "artifacts/lane-b-polish/runtime-baseline.json": {
    "bytes": 7264,
    "sha256": "a4ac3c3a989d9fe5ed88d41e72c1f3e4ed592c67eb5b2c3afe363f6232956634"
-  },
-  "artifacts/lane-b-polish/evidence-repair/raw/default-frames.json": {
-   "bytes": 69384,
-   "sha256": "e79956cacbf04b6ea86c1d681607e1c1c0b29d2715d10f0b4bcc05aaf9a3ad4e"
-  },
-  "artifacts/lane-b-polish/evidence-repair/raw/default-trajectory.json": {
-   "bytes": 196223,
-   "sha256": "6906e0dfe8dc2ef4d9173559c0e5950b78d42011ac073287f825e1d62b62fed7"
-  },
-  "artifacts/lane-b-polish/evidence-repair/raw/skins-props-frames.json": {
-   "bytes": 67537,
-   "sha256": "8f291125df2395d21580b51718e316b798d345adcbd60efc5de8b6a057744111"
-  },
-  "artifacts/lane-b-polish/evidence-repair/raw/skins-props-trajectory.json": {
-   "bytes": 198243,
-   "sha256": "792a92166486611f5466c664c33b6e9988365634803b8f2e2aea44d65809378f"
-  },
-  "artifacts/lane-b-polish/runtime-baseline.json": {
-   "bytes": 46881,
-   "sha256": "c112b6fdbf44ac560fe3d4b7096872c94e5ba7cff6c35b77d02743cfee5f8780"
   },
   "artifacts/lane-b-polish/verify/measure-after.json": {
    "bytes": 1029,
@@ -181,17 +134,9 @@
    "bytes": 8020,
    "sha256": "9ffbf7bf3a2ceecee015130ee8afc906986af7b0b19edb199a42af4e96301528"
   },
-  "tests/lane-b-evidence.test.mjs": {
-   "bytes": 15421,
-   "sha256": "e12b638fddda105ff23742ea4417b14e3857cedc574eca9acf1fb316784cefab"
-  },
   "tests/lane-b-polish.test.mjs": {
    "bytes": 14576,
    "sha256": "e7243bae04866c8fb8712606b9c83571ed247a3cfcd9d7a0c6ad71f6ac9d036a"
-  },
-  "tools/lane_b_delivery_manifest.mjs": {
-   "bytes": 8140,
-   "sha256": "3de9795ee95721b05ade4fb2ee18a265ad9d81c72753288fb7d95007e33b5e9d"
   },
   "tools/lane_b_polish_capture.mjs": {
    "bytes": 7601,
@@ -202,16 +147,12 @@
    "sha256": "253f71160c093397f2daa6936228b32df2800e13738fdd448c1fdf64357c89a5"
   },
   "tools/lane_b_polish_runtime.mjs": {
-   "bytes": 35852,
-   "sha256": "82210f2af1a8f943d1eacefb9693af65d087fafd90d964c18e0048111b0ff4f4"
+   "bytes": 13521,
+   "sha256": "b79ea549aaa8f3226096a5915d14bad4c63912f76455093e5cf8d1fad7f036cf"
   },
   "tools/lane_b_polish_walktest.mjs": {
    "bytes": 18162,
    "sha256": "174ca3ec01f6d3b318c289a93c7966a07b744fa8055a038344a2738f1d68ed94"
-  },
-  "tools/lane_b_route_steer.mjs": {
-   "bytes": 9066,
-   "sha256": "428c4fe2643daad05400bd09182d6e31dea7bdf299386a4962b7cd90984fd028"
   },
   "world/fangbang-temple-v7/blocks.json": {
    "bytes": 48537,
@@ -300,8 +241,12 @@
   "world/lane-b-polish/review/scene.blend": {
    "bytes": 16477753,
    "sha256": "ab69c7198d53cd11bb93f4a7d60dd35ddfe886dd2473585443ce5359c93472e1"
+  },
+  "artifacts/lane-b-polish/delivery-manifest.json": {
+   "bytes": 9559,
+   "sha256": "21ca1ae2c225a9f73f49476a327aff2731328ecee8ee5624486f50e5ba616302"
   }
  },
- "fileCount": 73,
- "totalBytes": 84662429
+ "fileCount": 60,
+ "totalBytes": 83993695
 }
