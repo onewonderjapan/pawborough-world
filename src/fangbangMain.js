@@ -28,6 +28,7 @@ import { loadWorld, CAPSULE } from './world/WorldLoader.js';
 import { addWallCollider } from './world/physics.js';
 import { GROUND_NODE_RE } from './world/collisionAdapter.js';
 import { collectGroundTriangles } from './world/groundExtractor.js';
+import { createGroundSampler } from './world/groundSampler.js';
 import { addGroundCollider } from './world/physics.js';
 import { WalkController } from './player/WalkController.js';
 import { applyWalkOrientation } from './player/walkCamera.js';
@@ -162,6 +163,7 @@ scene.add(world);
 const clay = new T.MeshStandardMaterial({ color: 0xb8b7ae, roughness: .86 });
 
 let session = null, controller = null, blocks = null, cruise = null, skinsStats = null, skInstancesCount = 0, viewLabelOverride = null;
+let groundSampler = null;   // REL-01: production ground-triangle support queries
 let propsStats = null;   // ?props=1 street life layer stats (E batch)
 let mode = 'view', paused = false, ready = false, clayOn = false, selected = null;
 let clayBtnEl = null;
@@ -238,7 +240,9 @@ function record() {
       autoPhysicsCruise: lastCruiseStatus,
       manualWalkClaim: false,
       session: snap ? { mode: snap.mode, paused: snap.paused, spawnCount: snap.spawnCount,
-        explicitRelocations: snap.relocations, pose: snap.pose } : null,
+        explicitRelocations: snap.relocations, pose: snap.pose,
+        safeFall: { recoveryCount: snap.recoveryCount, recoveries: snap.recoveries, lastSafe: walk?.lastSafe ? {
+          feet: walk.lastSafe.feet.map((v) => +v.toFixed(3)) } : null } } : null,
       blocks: blocks ? { active: blocks.activeIds(), epoch: blocks.epoch } : null,
     },
     safeAnchors: safeAnchors.map((a) => ({ id: a.id, labelZh: a.labelZh,
@@ -306,15 +310,6 @@ function enterWalk() {
   const r = walk.beginWalk(controller, camera.position.toArray());
   if (!r) return;
   if (r.spawned === null && r.error) { notice('暂无可用的安全落脚点，请稍候重试。'); return; }
-  if (r.spawned?.reason === 'explicit-choice') {
-    // Locked-core compensation (world-ten-hour 20260921, walkthrough UP-B1):
-    // WalkSession.beginWalk's pending-anchor branch never sets everWalked, so
-    // the next 取景→行走 entry re-spawned at the anchor instead of restoring
-    // the pose — breaking the session contract ("a mode switch is not a new
-    // game") and the exitWalk notice 「从当前位置继续」. src/player is locked
-    // (protection baseline), so the page closes the gap at the call site.
-    walk.everWalked = true;
-  }
   mode = 'walk';
   paused = false;
   camera.fov = 68;
@@ -649,6 +644,15 @@ function frame(t) {
       controller.setMoveInput(f, r);
     }
     controller.step(dt);
+    // REL-01: safety observation inside the normal walk state chain — a fall
+    // off the walkable surface returns to the last VERIFIED safe pose here,
+    // never via re-entry/teleport shortcuts, and is recorded as recovery.
+    const rec = walk.observeWalk(controller, dt);
+    if (rec?.recovered) {
+      notice(`已回到安全位置（${rec.reason === 'below-floor' ? '越出地面' : rec.reason === 'excessive-drop' ? '跌落过深' : '长时间悬空'}，第 ${walk.recoveries.length} 次恢复）。`);
+      refreshHud(t, true);
+      refreshRecord(t, true);
+    }
     const eye = controller.eyePosition();
     camera.position.set(...eye);
     applyWalkOrientation(camera, controller.pitch, controller.yaw);
@@ -1197,7 +1201,19 @@ async function load() {
     safeAnchors.push({ ...a, validation });
     if (!validation.ok) engNote(`入口锚点 ${a.id} 验证失败：${validation.reason}，已从出发点中移除。`);
   }
-  walk = new WalkSession({ getAnchors: () => safeAnchors });
+  // REL-01 safe-fall recovery (world-reliability 20260921): the sampler reads
+  // the SAME production ground triangles the physics world was built from —
+  // support + edge margin there is the definition of a safe pose. floorY comes
+  // from the actual scene ground (never a hardcoded world y=0; the temple
+  // courts sit ~0.85 m above the street).
+  groundSampler = createGroundSampler([session.groundTriangles, gt]);
+  walk = new WalkSession({
+    getAnchors: () => safeAnchors,
+    recovery: {
+      floorY: groundSampler.minY() - 0.5,
+      validateSafe: (feet) => groundSampler.hasSupport(feet[0], feet[1], feet[2], { marginM: 0.6, tolM: 0.45 }),
+    },
+  });
 
   // live player controller LAST, on the fully assembled static world
   const start = session.route.entries.bridgeStart;
