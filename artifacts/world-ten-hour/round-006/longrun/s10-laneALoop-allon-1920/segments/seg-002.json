@@ -1,0 +1,2809 @@
+{
+ "idx": 2,
+ "tStart": "2026-09-21T00:15:17.622Z",
+ "tEnd": "2026-09-21T00:17:17.942Z",
+ "samples": [
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -17.227670669555664,
+    0.01947729587554936,
+    6.021478652954102
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 311,
+    "trianglesIncludingShadow": 334598,
+    "cpuSubmitMs": 1.5
+   },
+   "hud": "位置 -17.2, 6.0 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 83418502,
+   "heapTotal": 87320714,
+   "t": 1789949718025,
+   "wall": "2026-09-21T00:15:18.025Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -18.059663772583008,
+    0.01978688240051274,
+    6.313525199890137
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 310,
+    "trianglesIncludingShadow": 334594,
+    "cpuSubmitMs": 2
+   },
+   "hud": "位置 -18.1, 6.3 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 83232118,
+   "heapTotal": 87320794,
+   "t": 1789949720126,
+   "wall": "2026-09-21T00:15:20.126Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -19.160390853881836,
+    0.019519793987274214,
+    6.700596332550049
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 303,
+    "trianglesIncludingShadow": 328730,
+    "cpuSubmitMs": 3.3
+   },
+   "hud": "位置 -19.2, 6.7 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 83651998,
+   "heapTotal": 87320874,
+   "t": 1789949722434,
+   "wall": "2026-09-21T00:15:22.434Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -19.988971710205078,
+    0.019999134540557906,
+    6.9912872314453125
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 296,
+    "trianglesIncludingShadow": 322002,
+    "cpuSubmitMs": 1.8
+   },
+   "hud": "位置 -20.0, 7.0 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84098910,
+   "heapTotal": 87320954,
+   "t": 1789949724583,
+   "wall": "2026-09-21T00:15:24.583Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -21.095012664794922,
+    0.02002327442169194,
+    7.381230354309082
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 296,
+    "trianglesIncludingShadow": 322002,
+    "cpuSubmitMs": 1.9
+   },
+   "hud": "位置 -21.1, 7.4 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 83717478,
+   "heapTotal": 85748170,
+   "t": 1789949726916,
+   "wall": "2026-09-21T00:15:26.916Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -21.924659729003906,
+    0.02009915113449101,
+    7.67226505279541
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 295,
+    "trianglesIncludingShadow": 321906,
+    "cpuSubmitMs": 1.9
+   },
+   "hud": "位置 -21.9, 7.7 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 83651138,
+   "heapTotal": 85748250,
+   "t": 1789949729136,
+   "wall": "2026-09-21T00:15:29.136Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -22.754453659057617,
+    0.020586121082305953,
+    7.963147163391113
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 295,
+    "trianglesIncludingShadow": 321906,
+    "cpuSubmitMs": 1.8
+   },
+   "hud": "位置 -22.8, 8.0 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84097122,
+   "heapTotal": 86063722,
+   "t": 1789949731144,
+   "wall": "2026-09-21T00:15:31.144Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -23.861400604248047,
+    0.020059275627136275,
+    8.351447105407715
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 294,
+    "trianglesIncludingShadow": 321798,
+    "cpuSubmitMs": 1.7
+   },
+   "hud": "位置 -23.9, 8.4 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 83703546,
+   "heapTotal": 85748410,
+   "t": 1789949733477,
+   "wall": "2026-09-21T00:15:33.477Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -24.690364837646484,
+    0.019996273517608687,
+    8.646133422851562
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 291,
+    "trianglesIncludingShadow": 307294,
+    "cpuSubmitMs": 1.7
+   },
+   "hud": "位置 -24.7, 8.6 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 83630322,
+   "heapTotal": 85748490,
+   "t": 1789949735642,
+   "wall": "2026-09-21T00:15:35.642Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -25.79660987854004,
+    0.020100045204162642,
+    9.034602165222168
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 289,
+    "trianglesIncludingShadow": 306538,
+    "cpuSubmitMs": 1.7
+   },
+   "hud": "位置 -25.8, 9.0 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84185698,
+   "heapTotal": 86272858,
+   "t": 1789949737908,
+   "wall": "2026-09-21T00:15:37.908Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -26.903188705444336,
+    0.020092475414276167,
+    9.420320510864258
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 288,
+    "trianglesIncludingShadow": 305678,
+    "cpuSubmitMs": 1.7
+   },
+   "hud": "位置 -26.9, 9.4 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 83780730,
+   "heapTotal": 85748650,
+   "t": 1789949739926,
+   "wall": "2026-09-21T00:15:39.926Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -28.00974464416504,
+    0.019997942447662398,
+    9.808523178100586
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 284,
+    "trianglesIncludingShadow": 305194,
+    "cpuSubmitMs": 1.8
+   },
+   "hud": "位置 -28.0, 9.8 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84337274,
+   "heapTotal": 86273018,
+   "t": 1789949742214,
+   "wall": "2026-09-21T00:15:42.214Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -29.114791870117188,
+    0.02000724077224736,
+    10.198023796081543
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 280,
+    "trianglesIncludingShadow": 300574,
+    "cpuSubmitMs": 1.8
+   },
+   "hud": "位置 -29.1, 10.2 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 83925462,
+   "heapTotal": 86010954,
+   "t": 1789949744422,
+   "wall": "2026-09-21T00:15:44.422Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -30.221012115478516,
+    0.02214382886886601,
+    10.58443832397461
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 277,
+    "trianglesIncludingShadow": 298722,
+    "cpuSubmitMs": 2
+   },
+   "hud": "位置 -30.2, 10.6 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 83535672,
+   "heapTotal": 85486748,
+   "t": 1789949746609,
+   "wall": "2026-09-21T00:15:46.609Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -31.324186325073242,
+    0.019952046871185347,
+    10.9728422164917
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 272,
+    "trianglesIncludingShadow": 291842,
+    "cpuSubmitMs": 1.8
+   },
+   "hud": "位置 -31.3, 11.0 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84069206,
+   "heapTotal": 86011118,
+   "t": 1789949748756,
+   "wall": "2026-09-21T00:15:48.756Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -32.429290771484375,
+    0.01999752521514897,
+    11.36153793334961
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 270,
+    "trianglesIncludingShadow": 291238,
+    "cpuSubmitMs": 1.8
+   },
+   "hud": "位置 -32.4, 11.4 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 83646248,
+   "heapTotal": 85486912,
+   "t": 1789949750940,
+   "wall": "2026-09-21T00:15:50.940Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -33.53647232055664,
+    0.019997227191925093,
+    11.749164581298828
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 269,
+    "trianglesIncludingShadow": 291142,
+    "cpuSubmitMs": 1.7
+   },
+   "hud": "位置 -33.5, 11.7 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84174682,
+   "heapTotal": 86011282,
+   "t": 1789949753198,
+   "wall": "2026-09-21T00:15:53.198Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -34.64305114746094,
+    0.02003722190856938,
+    12.137978553771973
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 267,
+    "trianglesIncludingShadow": 291032,
+    "cpuSubmitMs": 1.8
+   },
+   "hud": "位置 -34.6, 12.1 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 83773408,
+   "heapTotal": 86797796,
+   "t": 1789949755491,
+   "wall": "2026-09-21T00:15:55.491Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -35.74961471557617,
+    0.019855964183807417,
+    12.525988578796387
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 266,
+    "trianglesIncludingShadow": 290456,
+    "cpuSubmitMs": 2.9
+   },
+   "hud": "位置 -35.7, 12.5 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84305194,
+   "heapTotal": 86273590,
+   "t": 1789949757778,
+   "wall": "2026-09-21T00:15:57.778Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -36.8570671081543,
+    0.020015585422515914,
+    12.915942192077637
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 265,
+    "trianglesIncludingShadow": 290240,
+    "cpuSubmitMs": 3
+   },
+   "hud": "位置 -36.9, 12.9 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 83880696,
+   "heapTotal": 85749384,
+   "t": 1789949760037,
+   "wall": "2026-09-21T00:16:00.037Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -37.963741302490234,
+    0.019877243041992232,
+    13.302474975585938
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 264,
+    "trianglesIncludingShadow": 290234,
+    "cpuSubmitMs": 1.7
+   },
+   "hud": "位置 -38.0, 13.3 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84410502,
+   "heapTotal": 86273754,
+   "t": 1789949762165,
+   "wall": "2026-09-21T00:16:02.165Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -39.070125579833984,
+    0.020098197460174605,
+    13.689861297607422
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 262,
+    "trianglesIncludingShadow": 276918,
+    "cpuSubmitMs": 1.6
+   },
+   "hud": "位置 -39.1, 13.7 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 83964152,
+   "heapTotal": 85749548,
+   "t": 1789949764232,
+   "wall": "2026-09-21T00:16:04.232Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -40.17721939086914,
+    0.020077931880950972,
+    14.076763153076172
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 259,
+    "trianglesIncludingShadow": 272980,
+    "cpuSubmitMs": 1.6
+   },
+   "hud": "位置 -40.2, 14.1 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84461302,
+   "heapTotal": 86273918,
+   "t": 1789949766333,
+   "wall": "2026-09-21T00:16:06.333Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -41.28363037109375,
+    0.01959447860717778,
+    14.464775085449219
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 254,
+    "trianglesIncludingShadow": 270398,
+    "cpuSubmitMs": 1.6
+   },
+   "hud": "位置 -41.3, 14.5 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 83981596,
+   "heapTotal": 85749712,
+   "t": 1789949768479,
+   "wall": "2026-09-21T00:16:08.479Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -42.39019012451172,
+    0.020027744770050093,
+    14.854150772094727
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 254,
+    "trianglesIncludingShadow": 270398,
+    "cpuSubmitMs": 1.6
+   },
+   "hud": "位置 -42.4, 14.9 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84496946,
+   "heapTotal": 86274082,
+   "t": 1789949770619,
+   "wall": "2026-09-21T00:16:10.619Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -43.49696731567383,
+    0.019757437705993697,
+    15.241937637329102
+   ],
+   "pose": {
+    "feet": [
+     43.096,
+     0,
+     -10.697
+    ],
+    "yaw": -0.07898804856904028,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 254,
+    "trianglesIncludingShadow": 270398,
+    "cpuSubmitMs": 1.5
+   },
+   "hud": "位置 -43.5, 15.2 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84040736,
+   "heapTotal": 85749876,
+   "t": 1789949772800,
+   "wall": "2026-09-21T00:16:12.800Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -44.638450622558594,
+    0.020100045204162642,
+    15.642566680908203
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 254,
+    "trianglesIncludingShadow": 270398,
+    "cpuSubmitMs": 2.9
+   },
+   "hud": "位置 -44.6, 15.6 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84857276,
+   "heapTotal": 86274712,
+   "t": 1789949789231,
+   "wall": "2026-09-21T00:16:29.231Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -45.19154739379883,
+    0.019765841960907027,
+    15.835987091064453
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 254,
+    "trianglesIncludingShadow": 270398,
+    "cpuSubmitMs": 3.1
+   },
+   "hud": "位置 -45.2, 15.8 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84362405,
+   "heapTotal": 85750429,
+   "t": 1789949791412,
+   "wall": "2026-09-21T00:16:31.412Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -46.298343658447266,
+    0.01999996900558476,
+    16.224464416503906
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 253,
+    "trianglesIncludingShadow": 270182,
+    "cpuSubmitMs": 2.8
+   },
+   "hud": "位置 -46.3, 16.2 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84863087,
+   "heapTotal": 86274799,
+   "t": 1789949793595,
+   "wall": "2026-09-21T00:16:33.595Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -47.40498352050781,
+    0.019998002052307173,
+    16.612791061401367
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 250,
+    "trianglesIncludingShadow": 269758,
+    "cpuSubmitMs": 2.8
+   },
+   "hud": "位置 -47.4, 16.6 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84406641,
+   "heapTotal": 85750593,
+   "t": 1789949795961,
+   "wall": "2026-09-21T00:16:35.961Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -48.51087188720703,
+    0.019997882843017623,
+    17.001602172851562
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 247,
+    "trianglesIncludingShadow": 268206,
+    "cpuSubmitMs": 2.9
+   },
+   "hud": "位置 -48.5, 17.0 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84930835,
+   "heapTotal": 86274963,
+   "t": 1789949798268,
+   "wall": "2026-09-21T00:16:38.268Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -49.61719512939453,
+    0.020038294792175337,
+    17.389240264892578
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 244,
+    "trianglesIncludingShadow": 267670,
+    "cpuSubmitMs": 2.8
+   },
+   "hud": "位置 -49.6, 17.4 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84447005,
+   "heapTotal": 85750757,
+   "t": 1789949800532,
+   "wall": "2026-09-21T00:16:40.532Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -50.72876739501953,
+    0.01973192691802983,
+    17.764934539794922
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.8898,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 243,
+    "trianglesIncludingShadow": 267646,
+    "cpuSubmitMs": 2.5
+   },
+   "hud": "位置 -50.7, 17.8 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84148971,
+   "heapTotal": 85488695,
+   "t": 1789949802808,
+   "wall": "2026-09-21T00:16:42.808Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -52.11984634399414,
+    0.019870865345001265,
+    18.2247257232666
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.8898,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 237,
+    "trianglesIncludingShadow": 260386,
+    "cpuSubmitMs": 2.5
+   },
+   "hud": "位置 -52.1, 18.2 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84270253,
+   "heapTotal": 85750921,
+   "t": 1789949805204,
+   "wall": "2026-09-21T00:16:45.204Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -53.23389434814453,
+    0.020100045204162642,
+    18.5916690826416
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.8898,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 235,
+    "trianglesIncludingShadow": 260266,
+    "cpuSubmitMs": 2.4
+   },
+   "hud": "位置 -53.2, 18.6 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84759087,
+   "heapTotal": 86283483,
+   "t": 1789949807513,
+   "wall": "2026-09-21T00:16:47.513Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -54.34453582763672,
+    0.020214486122131392,
+    18.969181060791016
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 229,
+    "trianglesIncludingShadow": 244138,
+    "cpuSubmitMs": 2.4
+   },
+   "hud": "位置 -54.3, 19.0 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84255501,
+   "heapTotal": 85759277,
+   "t": 1789949809881,
+   "wall": "2026-09-21T00:16:49.881Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -55.45112991333008,
+    0.020100522041320845,
+    19.357698440551758
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 229,
+    "trianglesIncludingShadow": 244138,
+    "cpuSubmitMs": 1.5
+   },
+   "hud": "位置 -55.5, 19.4 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84720191,
+   "heapTotal": 86283647,
+   "t": 1789949811956,
+   "wall": "2026-09-21T00:16:51.956Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -56.55759048461914,
+    0.019804763793945357,
+    19.747024536132812
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 229,
+    "trianglesIncludingShadow": 244138,
+    "cpuSubmitMs": 1.7
+   },
+   "hud": "位置 -56.6, 19.7 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84209321,
+   "heapTotal": 85759441,
+   "t": 1789949814244,
+   "wall": "2026-09-21T00:16:54.244Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -57.66448211669922,
+    0.020099747180938765,
+    20.132007598876953
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 228,
+    "trianglesIncludingShadow": 243922,
+    "cpuSubmitMs": 1.6
+   },
+   "hud": "位置 -57.7, 20.1 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84719539,
+   "heapTotal": 86283811,
+   "t": 1789949816568,
+   "wall": "2026-09-21T00:16:56.568Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -58.77128219604492,
+    0.020100045204162642,
+    20.520673751831055
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 228,
+    "trianglesIncludingShadow": 243922,
+    "cpuSubmitMs": 2.8
+   },
+   "hud": "位置 -58.8, 20.5 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84217105,
+   "heapTotal": 85759605,
+   "t": 1789949818928,
+   "wall": "2026-09-21T00:16:58.928Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -59.60073471069336,
+    0.019808042049408003,
+    20.813167572021484
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 227,
+    "trianglesIncludingShadow": 243726,
+    "cpuSubmitMs": 3
+   },
+   "hud": "位置 -59.6, 20.8 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 85121011,
+   "heapTotal": 86546119,
+   "t": 1789949820948,
+   "wall": "2026-09-21T00:17:00.948Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -60.430240631103516,
+    0.02156685590744023,
+    21.10564422607422
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 227,
+    "trianglesIncludingShadow": 243726,
+    "cpuSubmitMs": 2.4
+   },
+   "hud": "位置 -60.4, 21.1 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84566017,
+   "heapTotal": 86021913,
+   "t": 1789949823199,
+   "wall": "2026-09-21T00:17:03.199Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -61.537044525146484,
+    0.01985387802124028,
+    21.49372100830078
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 227,
+    "trianglesIncludingShadow": 243726,
+    "cpuSubmitMs": 2.7
+   },
+   "hud": "位置 -61.5, 21.5 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 85017439,
+   "heapTotal": 86288235,
+   "t": 1789949825464,
+   "wall": "2026-09-21T00:17:05.464Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -62.366737365722656,
+    0.020100104808807417,
+    21.784427642822266
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 226,
+    "trianglesIncludingShadow": 243714,
+    "cpuSubmitMs": 2.4
+   },
+   "hud": "位置 -62.4, 21.8 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84867833,
+   "heapTotal": 86288317,
+   "t": 1789949827559,
+   "wall": "2026-09-21T00:17:07.559Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -63.473323822021484,
+    0.019988167285919234,
+    22.172183990478516
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 225,
+    "trianglesIncludingShadow": 243710,
+    "cpuSubmitMs": 2.8
+   },
+   "hud": "位置 -63.5, 22.2 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84362091,
+   "heapTotal": 85764111,
+   "t": 1789949829791,
+   "wall": "2026-09-21T00:17:09.791Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -64.30365753173828,
+    0.01999698877334599,
+    22.4616756439209
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 223,
+    "trianglesIncludingShadow": 243326,
+    "cpuSubmitMs": 2.4
+   },
+   "hud": "位置 -64.3, 22.5 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84743521,
+   "heapTotal": 86026337,
+   "t": 1789949831806,
+   "wall": "2026-09-21T00:17:11.806Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -65.41138458251953,
+    0.02009879350662236,
+    22.84709358215332
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 218,
+    "trianglesIncludingShadow": 236970,
+    "cpuSubmitMs": 2.3
+   },
+   "hud": "位置 -65.4, 22.8 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 85219759,
+   "heapTotal": 86550707,
+   "t": 1789949834001,
+   "wall": "2026-09-21T00:17:14.001Z"
+  },
+  {
+   "ready": true,
+   "mode": "walk",
+   "paused": false,
+   "feet": [
+    -66.5186767578125,
+    0.01999907493591313,
+    23.233606338500977
+   ],
+   "pose": {
+    "feet": [
+     -44.638450622558594,
+     0.020094025135040328,
+     15.642566680908203
+    ],
+    "yaw": 1.9082119514309528,
+    "pitch": 0
+   },
+   "heading": 1.9082,
+   "res": {
+    "meshes": 979,
+    "triangles": 708066,
+    "uniqueGeometries": 648,
+    "uniqueMaterials": 563,
+    "uniqueTextures": 518
+   },
+   "render": {
+    "callsIncludingShadow": 218,
+    "trianglesIncludingShadow": 236970,
+    "cpuSubmitMs": 2.3
+   },
+   "hud": "位置 -66.5, 23.2 · P 暂停 · V 返回取景 · Esc 释放鼠标",
+   "fatal": false,
+   "fatalMsg": null,
+   "heapUsed": 84692329,
+   "heapTotal": 86026501,
+   "t": 1789949836381,
+   "wall": "2026-09-21T00:17:16.381Z"
+  }
+ ],
+ "sampleCount": 48,
+ "frames": {
+  "total": 785,
+  "g250": 523,
+  "g1000": 30,
+  "g5000": 1,
+  "maxGapMs": 5266.5,
+  "rawPairs": [
+   254086.2,
+   666.6000000000058,
+   254769.5,
+   683.2999999999884,
+   255436.1,
+   666.6000000000058,
+   256102.8,
+   666.6999999999825,
+   256752.8,
+   650,
+   257402.8,
+   650,
+   258036,
+   633.2000000000116,
+   258652.7,
+   616.7000000000116,
+   259285.9,
+   633.1999999999825,
+   259935.9,
+   650,
+   260585.9,
+   650,
+   261202.5,
+   616.6000000000058,
+   261852.5,
+   650,
+   262485.9,
+   633.4000000000233,
+   263135.9,
+   650,
+   263785.8,
+   649.8999999999651,
+   264452.5,
+   666.7000000000116,
+   265102.4,
+   649.9000000000233,
+   265752.4,
+   650,
+   266402.4,
+   650,
+   267069,
+   666.5999999999767,
+   267769,
+   700,
+   268402.3,
+   633.2999999999884,
+   269052.2,
+   649.9000000000233,
+   269702.2,
+   650,
+   270335.5,
+   633.2999999999884,
+   270985.5,
+   650,
+   271618.8,
+   633.2999999999884,
+   272268.8,
+   650,
+   272902.1,
+   633.2999999999884,
+   273518.7,
+   616.6000000000349,
+   274135.4,
+   616.7000000000116,
+   274752,
+   616.5999999999767,
+   275352,
+   600,
+   275952,
+   600,
+   276551.9,
+   599.9000000000233,
+   277151.9,
+   600,
+   277735.2,
+   583.2999999999884,
+   278285.2,
+   550,
+   278835.2,
+   550,
+   279385.1,
+   549.8999999999651,
+   279951.8,
+   566.7000000000116,
+   280485.2,
+   533.4000000000233,
+   281051.8,
+   566.5999999999767,
+   281585.1,
+   533.2999999999884,
+   282135,
+   549.9000000000233,
+   282701.7,
+   566.7000000000116,
+   283235,
+   533.2999999999884,
+   283768.3,
+   533.2999999999884,
+   284301.7,
+   533.4000000000233,
+   284835,
+   533.2999999999884,
+   285384.9,
+   549.9000000000233,
+   285918.2,
+   533.2999999999884,
+   286468.2,
+   550,
+   287001.6,
+   533.3999999999651,
+   287568.2,
+   566.6000000000349,
+   288118.2,
+   550,
+   288701.4,
+   583.2000000000116,
+   289268.1,
+   566.6999999999534,
+   289818.1,
+   550,
+   290401.4,
+   583.3000000000466,
+   290968,
+   566.5999999999767,
+   291534.7,
+   566.7000000000116,
+   292118.1,
+   583.3999999999651,
+   292684.6,
+   566.5,
+   293251.3,
+   566.7000000000116,
+   293818,
+   566.7000000000116,
+   294401.3,
+   583.2999999999884,
+   294967.9,
+   566.6000000000349,
+   295551.2,
+   583.2999999999884,
+   296101.1,
+   549.8999999999651,
+   296667.8,
+   566.7000000000116,
+   297201.1,
+   533.2999999999884,
+   297734.5,
+   533.4000000000233,
+   298267.8,
+   533.2999999999884,
+   298784.4,
+   516.6000000000349,
+   299317.7,
+   533.2999999999884,
+   299817.7,
+   500,
+   300334.4,
+   516.7000000000116,
+   300851,
+   516.5999999999767,
+   301367.6,
+   516.5999999999767,
+   301900.9,
+   533.3000000000466,
+   302434.2,
+   533.2999999999884,
+   302950.9,
+   516.7000000000116,
+   303484.2,
+   533.2999999999884,
+   304017.5,
+   533.2999999999884,
+   304550.8,
+   533.2999999999884,
+   305100.8,
+   550,
+   305634.1,
+   533.2999999999884,
+   306167.5,
+   533.4000000000233,
+   306700.8,
+   533.2999999999884,
+   307234,
+   533.2000000000116,
+   307767.4,
+   533.4000000000233,
+   308317.4,
+   550,
+   308867.3,
+   549.8999999999651,
+   309417.3,
+   550,
+   310000.6,
+   583.2999999999884,
+   310567.3,
+   566.7000000000116,
+   311150.6,
+   583.2999999999884,
+   311733.9,
+   583.3000000000466,
+   312300.6,
+   566.6999999999534,
+   312883.8,
+   583.2000000000116,
+   313467.2,
+   583.4000000000233,
+   313483.8,
+   16.599999999976717,
+   313500.5,
+   16.70000000001164,
+   313517.2,
+   16.70000000001164,
+   313533.9,
+   16.70000000001164,
+   313550.5,
+   16.599999999976717,
+   313567.1,
+   16.599999999976717,
+   313583.8,
+   16.70000000001164,
+   313600.5,
+   16.70000000001164,
+   313617.1,
+   16.599999999976717,
+   313633.8,
+   16.70000000001164,
+   313650.4,
+   16.600000000034925,
+   313667.1,
+   16.699999999953434,
+   313683.8,
+   16.70000000001164,
+   313700.5,
+   16.70000000001164,
+   313717.2,
+   16.70000000001164,
+   313733.8,
+   16.599999999976717,
+   313750.5,
+   16.70000000001164,
+   313767.2,
+   16.70000000001164,
+   313783.8,
+   16.599999999976717,
+   313800.4,
+   16.600000000034925,
+   313817.1,
+   16.699999999953434,
+   313833.8,
+   16.70000000001164,
+   313850.5,
+   16.70000000001164,
+   313867.2,
+   16.70000000001164,
+   313883.8,
+   16.599999999976717,
+   313900.5,
+   16.70000000001164,
+   313917.1,
+   16.599999999976717,
+   313933.8,
+   16.70000000001164,
+   313950.4,
+   16.600000000034925,
+   313967.2,
+   16.79999999998836,
+   313983.8,
+   16.599999999976717,
+   314000.4,
+   16.600000000034925,
+   314017.1,
+   16.699999999953434,
+   314033.8,
+   16.70000000001164,
+   314050.5,
+   16.70000000001164,
+   314067.1,
+   16.599999999976717,
+   314083.8,
+   16.70000000001164,
+   314100.4,
+   16.600000000034925,
+   314117.1,
+   16.699999999953434,
+   314133.8,
+   16.70000000001164,
+   314150.5,
+   16.70000000001164,
+   314167.1,
+   16.599999999976717,
+   314183.8,
+   16.70000000001164,
+   314200.5,
+   16.70000000001164,
+   314217.1,
+   16.599999999976717,
+   314233.8,
+   16.70000000001164,
+   314250.4,
+   16.600000000034925,
+   314267.1,
+   16.699999999953434,
+   314283.7,
+   16.600000000034925,
+   314300.4,
+   16.70000000001164,
+   314317.2,
+   16.79999999998836,
+   314333.8,
+   16.599999999976717,
+   314350.4,
+   16.600000000034925,
+   314367.2,
+   16.79999999998836,
+   314383.8,
+   16.599999999976717,
+   314400.4,
+   16.600000000034925,
+   314417.1,
+   16.699999999953434,
+   314433.8,
+   16.70000000001164,
+   314450.5,
+   16.70000000001164,
+   314467.1,
+   16.599999999976717,
+   314483.8,
+   16.70000000001164,
+   314500.4,
+   16.600000000034925,
+   314517.1,
+   16.699999999953434,
+   314533.7,
+   16.600000000034925,
+   314550.4,
+   16.70000000001164,
+   314567.1,
+   16.699999999953434,
+   314583.8,
+   16.70000000001164,
+   314600.4,
+   16.600000000034925,
+   314617.1,
+   16.699999999953434,
+   314633.8,
+   16.70000000001164,
+   314650.4,
+   16.600000000034925,
+   314667.1,
+   16.699999999953434,
+   314683.7,
+   16.600000000034925,
+   314700.5,
+   16.79999999998836,
+   314717.1,
+   16.599999999976717,
+   314733.7,
+   16.600000000034925,
+   314750.4,
+   16.70000000001164,
+   314767.1,
+   16.699999999953434,
+   314783.8,
+   16.70000000001164,
+   314800.4,
+   16.600000000034925,
+   314817,
+   16.599999999976717,
+   314833.8,
+   16.79999999998836,
+   314850.5,
+   16.70000000001164,
+   314867.1,
+   16.599999999976717,
+   314883.7,
+   16.600000000034925,
+   314900.4,
+   16.70000000001164,
+   314917.1,
+   16.699999999953434,
+   314933.8,
+   16.70000000001164,
+   314950.4,
+   16.600000000034925,
+   314967.1,
+   16.699999999953434,
+   314983.8,
+   16.70000000001164,
+   315550.4,
+   566.6000000000349,
+   316167,
+   616.5999999999767,
+   316850.4,
+   683.4000000000233,
+   316867.1,
+   16.699999999953434,
+   316883.7,
+   16.600000000034925,
+   316900.3,
+   16.599999999976717,
+   316917,
+   16.70000000001164,
+   316933.6,
+   16.599999999976717,
+   316950.3,
+   16.70000000001164,
+   316967,
+   16.70000000001164,
+   316983.7,
+   16.70000000001164,
+   317000.3,
+   16.599999999976717,
+   317017,
+   16.70000000001164,
+   317033.6,
+   16.599999999976717,
+   317050.3,
+   16.70000000001164,
+   317067,
+   16.70000000001164,
+   317083.6,
+   16.599999999976717,
+   317100.3,
+   16.70000000001164,
+   317117,
+   16.70000000001164,
+   317133.7,
+   16.70000000001164,
+   317150.3,
+   16.599999999976717,
+   317167,
+   16.70000000001164,
+   317183.7,
+   16.70000000001164,
+   317200.4,
+   16.70000000001164,
+   317217,
+   16.599999999976717,
+   317233.6,
+   16.599999999976717,
+   317250.3,
+   16.70000000001164,
+   317267,
+   16.70000000001164,
+   317283.7,
+   16.70000000001164,
+   317300.4,
+   16.70000000001164,
+   317317,
+   16.599999999976717,
+   317333.7,
+   16.70000000001164,
+   317350.4,
+   16.70000000001164,
+   317367,
+   16.599999999976717,
+   317383.7,
+   16.70000000001164,
+   317400.3,
+   16.599999999976717,
+   317417,
+   16.70000000001164,
+   317433.6,
+   16.599999999976717,
+   317450.4,
+   16.800000000046566,
+   317467,
+   16.599999999976717,
+   317483.7,
+   16.70000000001164,
+   317500.3,
+   16.599999999976717,
+   317517,
+   16.70000000001164,
+   317533.7,
+   16.70000000001164,
+   317550.3,
+   16.599999999976717,
+   317566.9,
+   16.600000000034925,
+   317583.6,
+   16.699999999953434,
+   317600.3,
+   16.70000000001164,
+   317616.9,
+   16.600000000034925,
+   317633.6,
+   16.699999999953434,
+   317650.3,
+   16.70000000001164,
+   317667,
+   16.70000000001164,
+   317683.6,
+   16.599999999976717,
+   317700.3,
+   16.70000000001164,
+   317717,
+   16.70000000001164,
+   317733.6,
+   16.599999999976717,
+   317750.3,
+   16.70000000001164,
+   317767,
+   16.70000000001164,
+   317783.6,
+   16.599999999976717,
+   317800.3,
+   16.70000000001164,
+   317817,
+   16.70000000001164,
+   317833.6,
+   16.599999999976717,
+   317850.3,
+   16.70000000001164,
+   317866.9,
+   16.600000000034925,
+   317883.6,
+   16.699999999953434,
+   317900.3,
+   16.70000000001164,
+   317917,
+   16.70000000001164,
+   317933.6,
+   16.599999999976717,
+   317950.3,
+   16.70000000001164,
+   317966.9,
+   16.600000000034925,
+   317983.7,
+   16.79999999998836,
+   318000.3,
+   16.599999999976717,
+   318017,
+   16.70000000001164,
+   318033.7,
+   16.70000000001164,
+   318050.3,
+   16.599999999976717,
+   318067,
+   16.70000000001164,
+   318083.6,
+   16.599999999976717,
+   318100.3,
+   16.70000000001164,
+   318117,
+   16.70000000001164,
+   318133.7,
+   16.70000000001164,
+   318150.3,
+   16.599999999976717,
+   318167,
+   16.70000000001164,
+   318183.7,
+   16.70000000001164,
+   318200.3,
+   16.599999999976717,
+   318216.9,
+   16.600000000034925,
+   318233.7,
+   16.79999999998836,
+   318250.3,
+   16.599999999976717,
+   318267,
+   16.70000000001164,
+   318283.6,
+   16.599999999976717,
+   318300.3,
+   16.70000000001164,
+   318316.9,
+   16.600000000034925,
+   318333.6,
+   16.699999999953434,
+   318350.3,
+   16.70000000001164,
+   318367,
+   16.70000000001164,
+   318383.6,
+   16.599999999976717,
+   318400.3,
+   16.70000000001164,
+   318417,
+   16.70000000001164,
+   319017,
+   600,
+   319033.6,
+   16.599999999976717,
+   319050.3,
+   16.70000000001164,
+   319066.9,
+   16.600000000034925,
+   319083.6,
+   16.699999999953434,
+   319100.3,
+   16.70000000001164,
+   319117,
+   16.70000000001164,
+   319133.6,
+   16.599999999976717,
+   319150.2,
+   16.600000000034925,
+   319166.9,
+   16.70000000001164,
+   319183.6,
+   16.699999999953434,
+   319200.2,
+   16.600000000034925,
+   319216.9,
+   16.70000000001164,
+   319233.6,
+   16.699999999953434,
+   319250.3,
+   16.70000000001164,
+   319266.9,
+   16.600000000034925,
+   319283.6,
+   16.699999999953434,
+   319300.2,
+   16.600000000034925,
+   319316.9,
+   16.70000000001164,
+   319333.6,
+   16.699999999953434,
+   319350.3,
+   16.70000000001164,
+   319366.9,
+   16.600000000034925,
+   319383.6,
+   16.699999999953434,
+   319400.2,
+   16.600000000034925,
+   319416.9,
+   16.70000000001164,
+   319433.6,
+   16.699999999953434,
+   319450.3,
+   16.70000000001164,
+   319466.9,
+   16.600000000034925,
+   319483.5,
+   16.599999999976717,
+   320133.6,
+   650.0999999999767,
+   320716.9,
+   583.3000000000466,
+   321333.5,
+   616.5999999999767,
+   321933.5,
+   600,
+   321950.2,
+   16.70000000001164,
+   321966.8,
+   16.599999999976717,
+   321983.5,
+   16.70000000001164,
+   322000.1,
+   16.599999999976717,
+   322016.8,
+   16.70000000001164,
+   322033.5,
+   16.70000000001164,
+   322050.2,
+   16.70000000001164,
+   322066.8,
+   16.599999999976717,
+   322083.5,
+   16.70000000001164,
+   322100.2,
+   16.70000000001164,
+   322116.8,
+   16.599999999976717,
+   322133.5,
+   16.70000000001164,
+   322150.1,
+   16.599999999976717,
+   322166.8,
+   16.70000000001164,
+   322183.5,
+   16.70000000001164,
+   322200.1,
+   16.599999999976717,
+   322216.8,
+   16.70000000001164,
+   322233.4,
+   16.600000000034925,
+   322250.1,
+   16.699999999953434,
+   322266.8,
+   16.70000000001164,
+   322283.4,
+   16.600000000034925,
+   322300.1,
+   16.699999999953434,
+   322316.8,
+   16.70000000001164,
+   322333.5,
+   16.70000000001164,
+   322350.1,
+   16.599999999976717,
+   322366.8,
+   16.70000000001164,
+   322383.4,
+   16.600000000034925,
+   322400.2,
+   16.79999999998836,
+   322416.8,
+   16.599999999976717,
+   322433.4,
+   16.600000000034925,
+   322450.1,
+   16.699999999953434,
+   322466.8,
+   16.70000000001164,
+   322483.4,
+   16.600000000034925,
+   322500.1,
+   16.699999999953434,
+   322516.8,
+   16.70000000001164,
+   322533.5,
+   16.70000000001164,
+   322550.1,
+   16.599999999976717,
+   323133.4,
+   583.3000000000466,
+   323700.1,
+   566.6999999999534,
+   324300.1,
+   600,
+   324883.4,
+   583.3000000000466,
+   325466.7,
+   583.2999999999884,
+   326050,
+   583.2999999999884,
+   326650,
+   600,
+   327233.3,
+   583.2999999999884,
+   327833.2,
+   599.9000000000233,
+   328433.2,
+   600,
+   329033.2,
+   600,
+   329633.2,
+   600,
+   330216.5,
+   583.2999999999884,
+   330816.4,
+   599.9000000000233,
+   331399.7,
+   583.2999999999884,
+   331999.8,
+   600.0999999999767,
+   332583.1,
+   583.2999999999884,
+   333166.4,
+   583.3000000000466,
+   333733,
+   566.5999999999767,
+   334316.3,
+   583.2999999999884,
+   334899.7,
+   583.4000000000233,
+   335483,
+   583.2999999999884,
+   336049.6,
+   566.5999999999767,
+   336599.6,
+   550,
+   337149.6,
+   550,
+   337699.6,
+   550,
+   338249.5,
+   549.9000000000233,
+   338782.8,
+   533.2999999999884,
+   339316.1,
+   533.2999999999884,
+   339832.7,
+   516.6000000000349,
+   340366.1,
+   533.3999999999651,
+   340899.4,
+   533.3000000000466,
+   341432.7,
+   533.2999999999884,
+   341949.4,
+   516.7000000000116,
+   342499.3,
+   549.8999999999651,
+   343032.7,
+   533.4000000000233,
+   343582.6,
+   549.8999999999651,
+   344132.6,
+   550,
+   344699.2,
+   566.6000000000349,
+   345249.2,
+   550,
+   345799.2,
+   550,
+   346349.1,
+   549.8999999999651,
+   346899.1,
+   550,
+   347465.8,
+   566.7000000000116,
+   348032.4,
+   566.6000000000349,
+   348582.4,
+   550,
+   349149.1,
+   566.6999999999534,
+   349732.4,
+   583.3000000000466,
+   350299,
+   566.5999999999767,
+   350865.6,
+   566.5999999999767,
+   351448.9,
+   583.3000000000466,
+   352032.2,
+   583.2999999999884,
+   352598.9,
+   566.7000000000116,
+   353198.9,
+   600,
+   353782.2,
+   583.2999999999884,
+   354365.5,
+   583.2999999999884,
+   354965.5,
+   600,
+   355548.8,
+   583.2999999999884,
+   356148.8,
+   600,
+   356748.7,
+   599.9000000000233,
+   357365.4,
+   616.7000000000116,
+   357965.4,
+   600,
+   358582,
+   616.5999999999767,
+   359198.7,
+   616.7000000000116,
+   359815.3,
+   616.5999999999767,
+   360432,
+   616.7000000000116,
+   361065.3,
+   633.2999999999884,
+   361681.9,
+   616.6000000000349,
+   362315.1,
+   633.1999999999534,
+   362915.2,
+   600.1000000000349,
+   363548.5,
+   633.2999999999884,
+   364181.8,
+   633.2999999999884,
+   364798.5,
+   616.7000000000116,
+   365398.4,
+   599.9000000000233,
+   366015,
+   616.5999999999767,
+   366631.7,
+   616.7000000000116,
+   367215,
+   583.2999999999884,
+   367831.6,
+   616.5999999999767,
+   368431.6,
+   600,
+   369031.6,
+   600,
+   369631.6,
+   600,
+   370214.9,
+   583.3000000000466,
+   370831.5,
+   616.5999999999767,
+   371414.8,
+   583.2999999999884,
+   372014.8,
+   600,
+   372598.1,
+   583.2999999999884,
+   373198.1,
+   600,
+   373798.1,
+   600,
+   374381.4,
+   583.3000000000466,
+   374964.7,
+   583.2999999999884,
+   375548,
+   583.2999999999884
+  ]
+ },
+ "gapStats": {
+  "count": 452,
+  "p50": 16.7,
+  "p99": 666.7,
+  "max": 700
+ },
+ "heap": {
+  "beforeGc": 85224095,
+  "afterGc": 83220377,
+  "gcMs": 18.6
+ },
+ "loadavg": [
+  15.93,
+  11.62,
+  9.21
+ ]
+}

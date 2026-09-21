@@ -1,0 +1,216 @@
+{
+ "generatedAt": "2026-09-21T00:56:04.911Z",
+ "env": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+ "runs": [
+  {
+   "run": "s11-templeFront-tloop-warm",
+   "label": "s11-templeFront-warm",
+   "entry": "templeFront",
+   "config": "default",
+   "track": "templeLoop",
+   "env": {
+    "renderer": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+    "viewport": "1280x900",
+    "gcExposed": true,
+    "host": "linux arm64",
+    "note": "dev-server long-run; all numbers software-baseline"
+   },
+   "startedAt": "2026-09-21T00:43:18.548Z",
+   "durationS": 721.2,
+   "route": {
+    "waypointsHit": 2,
+    "waypointsTotal": 2,
+    "completionFrac": 1,
+    "metersWalked": 0
+   },
+   "transitions": {
+    "pause": 2,
+    "viewSwitch": 2,
+    "blur": 2,
+    "entrySwitch": 0,
+    "fatalPlanned": 0
+   },
+   "stalls": {
+    "totalFrames": 4075,
+    "gapsOver250ms": 3,
+    "buckets": {
+     "16-250ms": 4072,
+     "250ms-1s": 2,
+     "1-5s": 0,
+     ">5s": 1
+    },
+    "gapP50ms": 166.7,
+    "gapP99ms": 216.6,
+    "gapMaxMs": 6333.1,
+    "top10": [
+     {
+      "gapMs": 6333.1,
+      "at": "00:43:18",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-21T00:43:39.613Z"
+      },
+      "offsetIntoRunS": 9
+     },
+     {
+      "gapMs": 633.3,
+      "at": "00:43:18",
+      "seg": 0,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-21T00:43:39.613Z"
+      },
+      "offsetIntoRunS": 10
+     },
+     {
+      "gapMs": 283.3,
+      "at": "00:43:19",
+      "seg": 4,
+      "phase": {
+       "mode": "walk",
+       "paused": false,
+       "wall": "2026-09-21T00:51:42.965Z"
+      },
+      "offsetIntoRunS": 507
+     }
+    ],
+    "meanFpsSoftwareBaseline": 6.6
+   },
+   "heap": {
+    "plot": [
+     {
+      "tMin": 0.4,
+      "afterGcMB": 79.2,
+      "beforeGcMB": 80.23
+     },
+     {
+      "tMin": 2.4,
+      "afterGcMB": 79.2,
+      "beforeGcMB": 79.76
+     },
+     {
+      "tMin": 4.4,
+      "afterGcMB": 79.27,
+      "beforeGcMB": 80.62
+     },
+     {
+      "tMin": 6.4,
+      "afterGcMB": 79.27,
+      "beforeGcMB": 80.31
+     },
+     {
+      "tMin": 8.4,
+      "afterGcMB": 79.29,
+      "beforeGcMB": 79.72
+     }
+    ],
+    "slopePerHourMB": 0.75,
+    "halfSlopes": null,
+    "segmentsWithoutHeap": 1,
+    "firstAfterGcMB": 79.2,
+    "lastAfterGcMB": 79.29
+   },
+   "resources": {
+    "trianglesValues": [
+     694430
+    ],
+    "trianglesExpected": 694430,
+    "trianglesLocked": true,
+    "first": {
+     "triangles": 694430,
+     "geoms": 496,
+     "mats": 476,
+     "texs": 346
+    },
+    "last": {
+     "triangles": 694430,
+     "geoms": 496,
+     "mats": 476,
+     "texs": 346
+    }
+   },
+   "anomalyCount": 0,
+   "anomalies": [],
+   "segments": [
+    {
+     "idx": 0,
+     "gapStats": {
+      "count": 738,
+      "p50": 166.7,
+      "p99": 200,
+      "max": 6333.1
+     },
+     "heap": {
+      "beforeGc": 84126040,
+      "afterGc": 83049530,
+      "gcMs": 8.5
+     }
+    },
+    {
+     "idx": 1,
+     "gapStats": {
+      "count": 733,
+      "p50": 166.6,
+      "p99": 183.4,
+      "max": 200.1
+     },
+     "heap": {
+      "beforeGc": 83630944,
+      "afterGc": 83047722,
+      "gcMs": 12.4
+     }
+    },
+    {
+     "idx": 2,
+     "gapStats": {
+      "count": 968,
+      "p50": 166.6,
+      "p99": 199.9,
+      "max": 250
+     },
+     "heap": {
+      "beforeGc": 84540388,
+      "afterGc": 83119797,
+      "gcMs": 20.3
+     }
+    },
+    {
+     "idx": 3,
+     "gapStats": {
+      "count": 717,
+      "p50": 166.7,
+      "p99": 200.1,
+      "max": 233.4
+     },
+     "heap": {
+      "beforeGc": 84211863,
+      "afterGc": 83124273,
+      "gcMs": 52.5
+     }
+    },
+    {
+     "idx": 4,
+     "gapStats": {
+      "count": 919,
+      "p50": 183.3,
+      "p99": 233.2,
+      "max": 283.3
+     },
+     "heap": {
+      "beforeGc": 83588585,
+      "afterGc": 83140921,
+      "gcMs": 95.8
+     }
+    },
+    {
+     "idx": "final",
+     "gapStats": null,
+     "heap": null
+    }
+   ]
+  }
+ ]
+}

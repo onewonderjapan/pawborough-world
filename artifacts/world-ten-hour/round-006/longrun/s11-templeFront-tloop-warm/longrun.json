@@ -1,0 +1,254 @@
+{
+ "label": "s11-templeFront-warm",
+ "base": "http://127.0.0.1:5420",
+ "entry": "templeFront",
+ "config": "default",
+ "track": "templeLoop",
+ "minutes": 12,
+ "gameUrl": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=templeFront",
+ "startedAt": "2026-09-21T00:43:18.548Z",
+ "env": {
+  "renderer": "headless Chrome + SwiftShader (SOFTWARE baseline)",
+  "viewport": "1280x900",
+  "gcExposed": true,
+  "host": "linux arm64",
+  "note": "dev-server long-run; all numbers software-baseline"
+ },
+ "segments": [
+  {
+   "idx": 0,
+   "file": "segments/seg-000.json",
+   "gapStats": {
+    "count": 738,
+    "p50": 166.7,
+    "p99": 200,
+    "max": 6333.1
+   },
+   "heap": {
+    "beforeGc": 84126040,
+    "afterGc": 83049530,
+    "gcMs": 8.5
+   },
+   "frames": {
+    "total": 739,
+    "g250": 2,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6333.1
+   }
+  },
+  {
+   "idx": 1,
+   "file": "segments/seg-001.json",
+   "gapStats": {
+    "count": 733,
+    "p50": 166.6,
+    "p99": 183.4,
+    "max": 200.1
+   },
+   "heap": {
+    "beforeGc": 83630944,
+    "afterGc": 83047722,
+    "gcMs": 12.4
+   },
+   "frames": {
+    "total": 1472,
+    "g250": 2,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6333.1
+   }
+  },
+  {
+   "idx": 2,
+   "file": "segments/seg-002.json",
+   "gapStats": {
+    "count": 968,
+    "p50": 166.6,
+    "p99": 199.9,
+    "max": 250
+   },
+   "heap": {
+    "beforeGc": 84540388,
+    "afterGc": 83119797,
+    "gcMs": 20.3
+   },
+   "frames": {
+    "total": 2440,
+    "g250": 2,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6333.1
+   }
+  },
+  {
+   "idx": 3,
+   "file": "segments/seg-003.json",
+   "gapStats": {
+    "count": 717,
+    "p50": 166.7,
+    "p99": 200.1,
+    "max": 233.4
+   },
+   "heap": {
+    "beforeGc": 84211863,
+    "afterGc": 83124273,
+    "gcMs": 52.5
+   },
+   "frames": {
+    "total": 3157,
+    "g250": 2,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6333.1
+   }
+  },
+  {
+   "idx": 4,
+   "file": "segments/seg-004.json",
+   "gapStats": {
+    "count": 919,
+    "p50": 183.3,
+    "p99": 233.2,
+    "max": 283.3
+   },
+   "heap": {
+    "beforeGc": 83588585,
+    "afterGc": 83140921,
+    "gcMs": 95.8
+   },
+   "frames": {
+    "total": 4076,
+    "g250": 3,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6333.1
+   }
+  },
+  {
+   "idx": "final",
+   "file": "segments/seg-final.json",
+   "frames": {
+    "total": 4554,
+    "g250": 5,
+    "g1000": 1,
+    "g5000": 1,
+    "maxGapMs": 6333.1
+   }
+  }
+ ],
+ "events": [
+  {
+   "t": 1789951398549,
+   "kind": "navigate",
+   "detail": "http://127.0.0.1:5420/fangbang.html?ds=fangbang-temple-v7&entry=templeFront [warm: cold load first, measured run is the reload]"
+  },
+  {
+   "t": 1789951408440,
+   "kind": "warmupColdLoad",
+   "detail": "cold load ready in 9593ms; reloading for the warm measured run"
+  },
+  {
+   "t": 1789951417930,
+   "kind": "warmStartReady",
+   "detail": "warm reload ready in 9490ms"
+  },
+  {
+   "t": 1789951417939,
+   "kind": "ready",
+   "detail": "tris=694430 feet=[230.9276123046875,0.020000028610229537,47.65022277832031]"
+  },
+  {
+   "t": 1789951419613,
+   "kind": "track",
+   "detail": "templeLoop: 2 waypoints"
+  },
+  {
+   "t": 1789951419987,
+   "kind": "waypoint",
+   "detail": "tloop-301 dist=0.0"
+  },
+  {
+   "t": 1789951421886,
+   "kind": "waypoint",
+   "detail": "tloop-302 dist=1.2 — track complete"
+  },
+  {
+   "t": 1789951540096,
+   "kind": "segment",
+   "detail": "#0 samples=57 maxGap=6333.1ms p99=200ms heapAfterGc=83049530 wp=2/2"
+  },
+  {
+   "t": 1789951660636,
+   "kind": "segment",
+   "detail": "#1 samples=57 maxGap=200.1ms p99=183.4ms heapAfterGc=83047722 wp=2/2"
+  },
+  {
+   "t": 1789951726310,
+   "kind": "slowDriverCall",
+   "detail": "pv took 6299ms"
+  },
+  {
+   "t": 1789951781448,
+   "kind": "segment",
+   "detail": "#2 samples=54 maxGap=250ms p99=199.9ms heapAfterGc=83119797 wp=2/2"
+  },
+  {
+   "t": 1789951902163,
+   "kind": "segment",
+   "detail": "#3 samples=57 maxGap=233.4ms p99=200.1ms heapAfterGc=83124273 wp=2/2"
+  },
+  {
+   "t": 1789952026120,
+   "kind": "slowDriverCall",
+   "detail": "pv took 6032ms"
+  },
+  {
+   "t": 1789952030553,
+   "kind": "segment",
+   "detail": "#4 samples=58 maxGap=283.3ms p99=233.2ms heapAfterGc=83140921 wp=2/2"
+  }
+ ],
+ "anomalies": [],
+ "opCounts": {
+  "pause": 2,
+  "viewSwitch": 2,
+  "blur": 2,
+  "entrySwitch": 0,
+  "fatalPlanned": 0
+ },
+ "steering": {
+  "wpIdx": 2,
+  "wpHits": 2,
+  "meters": 0,
+  "lastFeet": [
+   -127.81698608398438,
+   27.056997299194336
+  ],
+  "stallS": 0,
+  "lastMoveT": 1789951420432,
+  "walkingT": 0
+ },
+ "warmStart": {
+  "coldReadyMs": 9593,
+  "warmReadyMs": 9490
+ },
+ "finishedAt": "2026-09-21T00:55:19.751Z",
+ "durationS": 721.2,
+ "exitRules": {
+  "wallDurationS": 721.2,
+  "routeWaypointsHit": 2,
+  "routeWaypointsTotal": 2,
+  "routeCompletionFrac": 1,
+  "metersWalked": 0,
+  "transitions": {
+   "pause": 2,
+   "viewSwitch": 2,
+   "blur": 2,
+   "entrySwitch": 0,
+   "fatalPlanned": 0
+  },
+  "anomalyCount": 0,
+  "anomalies": []
+ }
+}
