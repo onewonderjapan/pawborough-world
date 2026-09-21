@@ -1,0 +1,38 @@
+{
+ "manifestYaw": 0.16703,
+ "productionYawRad": 0.167,
+ "legacyBeforeCapture": "temple-front-before-legacy-production.jpg (production path with entryAnchors.js temporarily reverted, yaw -3.1416)",
+ "shots": [
+  {
+   "label": "after-production",
+   "yaw": 0.167,
+   "testInjected": false,
+   "file": "temple-front-after-production.jpg"
+  },
+  {
+   "label": "legacy-test-injected",
+   "yaw": -3.141592653589793,
+   "testInjected": true,
+   "file": "temple-front-legacy-test-injected.jpg"
+  },
+  {
+   "label": "inward-test-injected",
+   "yaw": 0.16703,
+   "testInjected": true,
+   "file": "temple-front-inward-test-injected.jpg"
+  },
+  {
+   "label": "outward-test-injected",
+   "yaw": 3.308622653589793,
+   "testInjected": true,
+   "file": "temple-front-outward-test-injected.jpg"
+  },
+  {
+   "label": "reference-shanmen-from-road",
+   "view": "shanmen-from-road",
+   "testInjected": false,
+   "file": "reference-shanmen-from-road.jpg"
+  }
+ ],
+ "baseUrl": "http://127.0.0.1:5430/fangbang.html?ds=fangbang-temple-v7"
+}

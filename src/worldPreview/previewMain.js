@@ -279,7 +279,15 @@ heroCap.textContent = ENTRY_META.mainStreet.caption;
     const r = await fetch(`./world/${DATASET_ID}/route.json`);
     if (!r.ok) throw new Error(`route.json HTTP ${r.status}`);
     route = await r.json();
-    anchors = derivePreviewAnchors(route);
+    // REL-04: the temple placement yaw drives the 庙前 facing (same source the
+    // game page uses). A manifest read failure falls back to the route rule —
+    // the game page re-validates whatever it spawns with anyway.
+    let templeYawRad = null;
+    try {
+      const m = await fetch(`./world/${DATASET_ID}/review-manifest.json`);
+      if (m.ok) templeYawRad = (await m.json())?.mapRegistration?.templePlacement?.yawRad ?? null;
+    } catch { /* fall back to the route-only heading */ }
+    anchors = derivePreviewAnchors(route, templeYawRad);
   } catch (err) {
     entriesEl.textContent = '';
     const li = document.createElement('li');

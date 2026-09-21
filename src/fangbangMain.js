@@ -1193,7 +1193,12 @@ async function load() {
   // collider would be excluded from the probe's movement queries.
   setStage('正在验证入口落点…');
   safeAnchors = [];
-  for (const a of deriveEntryAnchors({ route: session.route })) {
+  for (const a of deriveEntryAnchors({
+    route: session.route,
+    // REL-04: the temple placement yaw —庙前 spawn faces the actual shanmen
+    // door axis instead of the degenerate v7 zigzag heading (yaw 0)
+    templeYawRad: session.manifest?.mapRegistration?.templePlacement?.yawRad ?? null,
+  })) {
     const validation = await validateAnchor({
       RAPIER, physics: session.physics, capsule: session.capsule, anchor: a,
       excludeColliderHandles: controller && !controller.disposed ? [controller.collider.handle] : [],
@@ -1286,6 +1291,16 @@ async function load() {
   window.__fangbangRenderSync = render;
   window.__fangbangStartWalk = enterWalk;
   window.__fangbangRelocate = pickLocation;
+  // engineering probe (test-injection only, labeled in evidence): set the walk
+  // facing directly. Never fed by real input; exists so verification tools can
+  // capture first-person evidence at a known heading (REL-04).
+  window.__fangbangSetFacing = (yaw) => {
+    if (!controller || mode !== 'walk') return false;
+    controller.yaw = +yaw;
+    applyWalkOrientation(camera, controller.pitch, controller.yaw);
+    render();
+    return true;
+  };
   // engineering probe: first scene hit along a ray (occluder diagnosis for
   // framing cameras; read-only, no gameplay effect)
   window.__fangbangRaycast = (origin, dir, farM = 60) => {

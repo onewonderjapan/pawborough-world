@@ -28,7 +28,7 @@ function routeYawAt(route, point) {
   return yawTowards([a[0], 0, a[2]], [b[0], 0, b[2]]);
 }
 
-export function deriveEntryAnchors({ route }) {
+export function deriveEntryAnchors({ route, templeYawRad = null } = {}) {
   const out = [];
   const e = route.entries ?? {};
   if (e.bridgeStart)
@@ -37,7 +37,7 @@ export function deriveEntryAnchors({ route }) {
       source: { entry: 'bridgeStart' } });
   if (e.shanmenThreshold)
     out.push({ id: 'templeFront', labelZh: '庙前',
-      position: e.shanmenThreshold.slice(), yaw: routeYawAt(route, e.shanmenThreshold),
+      position: e.shanmenThreshold.slice(), yaw: templeFrontYaw(route, e.shanmenThreshold, templeYawRad),
       source: { entry: 'shanmenThreshold' } });
   // lane mouths: the FIRST excursion point is on the street just outside the
   // portal — a real walked position, facing the second point into the lane
@@ -50,6 +50,22 @@ export function deriveEntryAnchors({ route }) {
       position: route.laneBExcursion[0].slice(), yaw: yawTowards(route.laneBExcursion[0], route.laneBExcursion[1]),
       source: { excursion: 'laneBExcursion' } });
   return out;
+}
+
+// REL-04 (world-reliability 20260921): face the ACTUAL shanmen axis. On v7+
+// the mainStreet zigzag repeats the threshold waypoint (ms-301 == ms-303, and
+// ms-300 == ms-302 behind it), so routeYawAt degenerates to atan2(-0,-0) = -π —
+// the player spawned facing OUT through the door toward 方浜路 with the whole
+// temple behind their back (「背对山门」, confirmed by first-person captures in
+// artifacts/world-reliability/temple-front/). The temple placement yaw
+// (mapRegistration.templePlacement.yawRad) is the axis the gate was assembled
+// with: the controller forward at yaw = yawRad is rotY(yawRad)·(0,0,-1) —
+// exactly gate-local -Z, through the passage INTO the temple. Callers without
+// the placement yaw keep the legacy route rule.
+function templeFrontYaw(route, point, templeYawRad) {
+  if (templeYawRad === null || templeYawRad === undefined || !Number.isFinite(templeYawRad))
+    return routeYawAt(route, point);
+  return templeYawRad;
 }
 
 export function nearestAnchor(anchors, pos) {

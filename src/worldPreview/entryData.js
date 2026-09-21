@@ -15,7 +15,7 @@ function yawTowards(from, to) {
   return Math.atan2(-(to[0] - from[0]), -(to[2] - from[2]));
 }
 
-export function derivePreviewAnchors(route) {
+export function derivePreviewAnchors(route, templeYawRad = null) {
   const out = [];
   const e = route.entries ?? {};
   if (e.bridgeStart)
@@ -31,8 +31,19 @@ export function derivePreviewAnchors(route) {
       source: 'route.laneBExcursion[0..1]' });
   if (e.shanmenThreshold)
     out.push({ id: 'templeFront', position: e.shanmenThreshold.slice(),
-      yaw: previewRouteYaw(route, e.shanmenThreshold), source: 'route.entries.shanmenThreshold' });
+      yaw: previewTempleFrontYaw(route, e.shanmenThreshold, templeYawRad),
+      source: 'route.entries.shanmenThreshold' });
   return out;
+}
+
+// REL-04 (world-reliability 20260921): same rule as entryAnchors.deriveEntry
+// Anchors — face INTO the temple along the actual gate axis (yaw = placement
+// yawRad) when it is known; the v7 zigzag degenerates the route-only rule to
+// -π (facing out through the door, back to the temple).
+function previewTempleFrontYaw(route, point, templeYawRad) {
+  if (templeYawRad === null || templeYawRad === undefined || !Number.isFinite(templeYawRad))
+    return previewRouteYaw(route, point);
+  return templeYawRad;
 }
 
 // heading of the mainStreet polyline at the closest waypoint (same rule as

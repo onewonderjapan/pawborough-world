@@ -1,0 +1,160 @@
+{
+ "groundTriangles": 21005,
+ "walls": 790,
+ "legs": {
+  "fromStall_to_ms301": {
+   "reached": false,
+   "stalledAt": [
+    -130.51,
+    0.02,
+    28.09
+   ],
+   "stallS": 1.2,
+   "start": [
+    -130.5,
+    28.1
+   ],
+   "end": [
+    -130.51,
+    28.09
+   ],
+   "feetY": 0.02,
+   "minDist": 2.87
+  },
+  "forward_299_308": {
+   "reached": true,
+   "stalledAt": null,
+   "stallS": 0,
+   "start": [
+    -126.48,
+    35
+   ],
+   "end": [
+    -130.88,
+    14.4
+   ],
+   "feetY": 0.02,
+   "minDist": 1.37
+  },
+  "backward_308_299": {
+   "reached": true,
+   "stalledAt": null,
+   "stallS": 0,
+   "start": [
+    -130.14,
+    13.25
+   ],
+   "end": [
+    -126.71,
+    33.62
+   ],
+   "feetY": 0.031,
+   "minDist": 1.36
+  },
+  "ms302_to_ms303": {
+   "reached": true,
+   "stalledAt": null,
+   "stallS": 0,
+   "start": [
+    -127.24,
+    30.51
+   ],
+   "end": [
+    -127.59,
+    28.41
+   ],
+   "feetY": 0.03,
+   "minDist": 1.37
+  },
+  "ms303_to_ms304": {
+   "reached": true,
+   "stalledAt": null,
+   "stallS": 0,
+   "start": [
+    -127.82,
+    27.06
+   ],
+   "end": [
+    -128.41,
+    23.5
+   ],
+   "feetY": 0.037,
+   "minDist": 1.4
+  },
+  "ms304_to_ms303": {
+   "reached": true,
+   "stalledAt": null,
+   "stallS": 0,
+   "start": [
+    -128.65,
+    22.13
+   ],
+   "end": [
+    -128.05,
+    25.7
+   ],
+   "feetY": 0.02,
+   "minDist": 1.38
+  },
+  "ms303_to_ms302": {
+   "reached": true,
+   "stalledAt": null,
+   "stallS": 0,
+   "start": [
+    -127.82,
+    27.06
+   ],
+   "end": [
+    -127.46,
+    29.15
+   ],
+   "feetY": 0.03,
+   "minDist": 1.37
+  },
+  "ms301_to_ms300": {
+   "reached": true,
+   "stalledAt": null,
+   "stallS": 0,
+   "start": [
+    -127.82,
+    27.06
+   ],
+   "end": [
+    -127.46,
+    29.15
+   ],
+   "feetY": 0.03,
+   "minDist": 1.37
+  },
+  "ms300_to_ms301": {
+   "reached": true,
+   "stalledAt": null,
+   "stallS": 0,
+   "start": [
+    -127.24,
+    30.51
+   ],
+   "end": [
+    -127.59,
+    28.41
+   ],
+   "feetY": 0.03,
+   "minDist": 1.37
+  },
+  "ms298_to_ms305_direct": {
+   "reached": true,
+   "stalledAt": null,
+   "stallS": 0,
+   "start": [
+    -125.72,
+    39.48
+   ],
+   "end": [
+    -129.25,
+    18.56
+   ],
+   "feetY": 0.02,
+   "minDist": 1.36
+  }
+ }
+}
