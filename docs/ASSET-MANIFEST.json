@@ -1,11 +1,16 @@
 {
   "schemaVersion": 1,
   "sourceCommit": "bb45ca6f73c9ca7648a0c979903bacf2027d86f5",
-  "assetAvailability": "not_uploaded",
+  "assetAvailability": "private_s3_archive_verified",
   "storage": {
-    "type": "pending",
-    "bucket": null,
-    "prefix": null
+    "type": "private_s3",
+    "bucket": "onewonder-pawborough-assets-566601428909-apne1",
+    "region": "ap-northeast-1",
+    "objectPrefix": "objects/sha256/",
+    "snapshotManifestKey": "snapshots/owner/bb45ca6f73c9ca7648a0c979903bacf2027d86f5/SNAPSHOT-MANIFEST.json",
+    "snapshotManifestSha256": "d31d26c816f31cfbe2a318e3f4826114e8f26f420832b1282ce40eb8162cdf84",
+    "uploader": "owner",
+    "publicRead": false
   },
   "fileCount": 10647,
   "uniqueObjectCount": 9396,

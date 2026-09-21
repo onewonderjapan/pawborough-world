@@ -1,0 +1,23 @@
+{
+  "sourceCommit": "bb45ca6f73c9ca7648a0c979903bacf2027d86f5",
+  "finishedAt": "2026-09-21T21:07:01.710853+09:00",
+  "bucket": "onewonder-pawborough-assets-566601428909-apne1",
+  "region": "ap-northeast-1",
+  "uploader": "owner",
+  "publicRead": false,
+  "lfsObjects": 9396,
+  "lfsBytes": 12540406715,
+  "snapshotManifestKey": "snapshots/owner/bb45ca6f73c9ca7648a0c979903bacf2027d86f5/SNAPSHOT-MANIFEST.json",
+  "snapshotManifestSha256": "d31d26c816f31cfbe2a318e3f4826114e8f26f420832b1282ce40eb8162cdf84",
+  "verification": {
+    "allObjectsRemoteSha256AndSize": true,
+    "restoredSampleTypes": [
+      "glb",
+      "blend",
+      "png",
+      "mp4"
+    ],
+    "restoreCliActualFileAndIdempotencyChecked": true,
+    "fullFreshCloneRestore": false
+  }
+}
