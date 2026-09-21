@@ -5,14 +5,15 @@
 
 ## 30秒开始（便携包，推荐）
 
-    解压 world-ten-hour-20260921-r2.zip 到任意新目录
+    解压 world-ten-hour-20260921-r3.zip 到任意新目录
     python3 start-world-playable.py            # http://127.0.0.1:5411
     # 无 python3 时：node start-world-playable.mjs
 
 打开 `world-preview.html` → 选出发点（主街 / A弄 / B弄 / 庙前）→「开始探索」→
 点击画面锁鼠标 → W 行走。包完全离线：无安装、无联网、无统计。
-ZIP 的 SHA-256 在 `delivery/package-zip-sha256-r2.json`（外置收据，逐文件清单在包内
-`package-manifest.json`）。
+ZIP 的 SHA-256 在 `delivery/package-zip-sha256-r3.json`（外置收据，逐文件清单在包内
+`package-manifest.json`）。-r3 取代 -r2（唯一差异：页面 favicon 一行修复，消除每页一条
+无害的 /favicon.ico 404 控制台噪音；-r2 及坏启动器初版的收据链见同目录）。
 
 工作区内等价玩法：`npm run dev` 后打开 vite 输出的 world-preview.html。
 
@@ -30,7 +31,8 @@ ZIP 的 SHA-256 在 `delivery/package-zip-sha256-r2.json`（外置收据，逐�
 2. **加载更快**：唯一资产单次解码共享（每载请求数 −32%、就绪时长 −24%），画面零漂移。
 3. 取景↔行走往返保持姿态；行走 HUD 注明「Esc 释放鼠标」。
 4. **已验证的修复**：包内启动器可用（20260920 包的启动器是坏的，见
-   `delivery/LAUNCHER-DEFECT-FIX.md`）；上游交付清单 .blend1 误列（UP-G1）已修并实际核验。
+   `delivery/LAUNCHER-DEFECT-FIX.md`）；上游交付清单 .blend1 误列（UP-G1）已修并实际核验；
+   页面 favicon 缺失导致的 404 控制台噪音已消（-r3 包，round-005 复验 0 控制台错误）。
 5. **长测证据链**：62 分钟×2 长跑 + 暖启动/窄屏，全部原始数据留档（见 FINDINGS.md）。
 
 ## 已知问题（玩家视角，详单见 REVIEW.md）

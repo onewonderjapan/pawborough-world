@@ -6,8 +6,9 @@
 
 ## 怎么验收（30秒）
 
-1. 解压 `delivery/world-ten-hour-20260921-r2.zip`（SHA 见同目录收据）到新目录，
-   `python3 start-world-playable.py` → `world-preview.html`。
+1. 解压 `delivery/world-ten-hour-20260921-r3.zip`（SHA 见同目录收据）到新目录，
+   `python3 start-world-playable.py` → `world-preview.html`。当前交付为 -r3
+   （round-005 重建：favicon 一行修复；-r2 与坏启动器初版保留在盘，收据链完整）。
 2. 或在工作区 `npm run dev` 打开首页。四入口、双配置（普通/全开）、取景工具、
    错误面板均可试。
 
@@ -40,12 +41,14 @@
 
 ## G 交付物清单
 
-- 便携包：`dist-world-ten-hour-20260921-r2/`（构建器拒绝覆盖、可 `--repair` 只增修复）；
-  ZIP + 外置 SHA 收据 `delivery/package-zip-sha256-r2.json`（取代坏启动器版本，坏产物保留
-  未删，见 `delivery/LAUNCHER-DEFECT-FIX.md`）。
-- 解包复验：`restore-world-ten-hour-20260921-r2/` 133 文件与 dist 逐字节一致，由**包内自带
-  启动器**供服，三组 smoke 全绿：游戏 26/26（四入口/预算 694430·708066 精确/无 WebGL 可操作
-  fatal）、首页 15/15（双宽度无溢出、无绝对路径泄漏）、取景 27/27（保存/恢复/导出/6预设）。
+- 便携包：`dist-world-ten-hour-20260921-r3/`（构建器拒绝覆盖、可 `--repair` 只增修复）；
+  ZIP + 外置 SHA 收据 `delivery/package-zip-sha256-r3.json`（round-005 重建，取代 -r2：
+  唯一差异为三张页面 HTML 的 favicon data-URI 一行修复，消除每页一条无害 404 控制台噪音；
+  -r2 收据与坏启动器初版产物保留未删，见 `delivery/LAUNCHER-DEFECT-FIX.md`）。
+- 解包复验：`restore-world-ten-hour-20260921-r3/` 133 文件与 dist 逐字节一致，由**包内自带
+  启动器**供服，smoke 全绿：游戏 26/26（四入口/预算 694430·708066 精确/无 WebGL 可操作
+  fatal）、首页 15/15（双宽度无溢出、无绝对路径泄漏）、取景 27/27（保存/恢复/导出/6预设）、
+  错误恢复探针 16/16（round-005 对 -r3 复跑；证据在 round-005 目录）。
 - 源工程索引：`source-index.json`——74 源 .blend（0 未跟踪）、35 .blend1 备份单列、
   首页制作资料 4 项 SHA 全符、**Blender 无头重开实证 3/3**。
 - 全套测试：139 用例，138 过；唯一失败是 evidence 测试的「工作树必须干净」诚实门在 G 成果

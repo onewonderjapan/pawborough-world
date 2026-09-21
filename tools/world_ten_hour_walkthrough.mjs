@@ -205,4 +205,13 @@ try {
   await writeFile(resolve(outDir, 'walkthrough.json'), JSON.stringify(report, null, 1) + '\n');
   await browser.close();
 }
-console.log(`WALKTHROUGH DONE — ${shots.length} shots, ${events.filter((e) => e.kind.startsWith('pageerror') || e.kind.startsWith('requestfailed')).length} hard errors`);
+// Summary classification only — recorded events stay verbatim for the
+// round-1 event-by-event baseline. The review-manifest.cm.json HEAD probe is
+// BY DESIGN (src/world/compressedState.js: vite 200-HTML fallback for a missing
+// cm variant is explicitly detected; Playwright logs ERR_ABORTED for a
+// head-only response), so it is reported separately, not as a hard error.
+const hardErrors = events.filter((e) => e.kind === 'pageerror'
+  || (e.kind === 'requestfailed' && !e.label.includes('review-manifest.cm.json'))).length;
+const cmHeadProbes = events.filter((e) => e.kind === 'requestfailed'
+  && e.label.includes('review-manifest.cm.json')).length;
+console.log(`WALKTHROUGH DONE — ${shots.length} shots, ${hardErrors} hard errors (pageerror/unexpected requestfailed), ${cmHeadProbes} by-design cm.json HEAD probes (expected)`);

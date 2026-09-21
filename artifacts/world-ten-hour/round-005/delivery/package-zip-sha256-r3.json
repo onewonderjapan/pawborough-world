@@ -1,0 +1,12 @@
+{
+  "artifact": "artifacts/world-ten-hour/round-005/delivery/world-ten-hour-20260921-r3.zip",
+  "sha256": "4bb52f161815bda09e3c462a6994454d639a84ccb6e6bdd608b8e732209f75db",
+  "bytes": 165413931,
+  "fileCount": 133,
+  "supersedes": "artifacts/world-ten-hour/round-003/delivery/world-ten-hour-20260921-r2.zip (sha256 88784a73bba3016aee37a21262877ac49331138bd971e32e2395ee4b51b05cc7) — same site/closure bytes plus the favicon data-URI link added to world-preview/fangbang/index HTML (removes the cosmetic /favicon.ico 404 console error on every page load)",
+  "generatedBy": "tools/playable_package_zip.py (deterministic order, fixed timestamp 2026-09-21)",
+  "note": "digest lives OUTSIDE the archive; in-package package-manifest.json excludes itself. No .blend sources, no videos.",
+  "builtFromHead": "33522a09c520bfad638f6c104d4e2f2fe506a4ec",
+  "verifyCommand": "sha256sum world-ten-hour-20260921-r3.zip -> compare; unzip to a NEW dir; python3 start-world-playable.py [port]",
+  "generatedAt": "2026-09-21T09:00:19.548738+09:00"
+}
