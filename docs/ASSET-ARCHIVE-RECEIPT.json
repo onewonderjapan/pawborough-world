@@ -18,6 +18,13 @@
       "mp4"
     ],
     "restoreCliActualFileAndIdempotencyChecked": true,
-    "fullFreshCloneRestore": false
+    "fullFreshCloneRestore": false,
+    "freshCloneSample": {
+      "gitCommit": "1cada683975f257092abdcbf8fe82a6c55e1a59e",
+      "restoredPath": "world/lane-b-polish/lane-b/model.glb",
+      "bytes": 2061328,
+      "sha256": "f6a7da8a05add9038ac35ecad074ca8f3ac5ed8771b715b1a4ca655cec2388a8",
+      "glbHeader": "valid v2 with matching length"
+    }
   }
 }

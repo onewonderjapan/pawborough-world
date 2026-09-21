@@ -48,3 +48,5 @@ python3 tools/restore_s3_assets.py --profile YOUR_PROFILE --all
 ## 已执行验证的边界
 
 上传时每个对象的远端SHA-256与大小均回读校验；另有GLB/Blend/PNG/MP4下载样本及恢复脚本的重复执行/拒绝覆盖检查。上述不等于已重下全部12.54GB并完整试玩，也不等于W2验证。
+
+补充验证：已从公开GitHub重新克隆源码，使用仓库内恢复脚本取回world/lane-b-polish/lane-b/model.glb，SHA、文件大小及GLB v2头部均通过。此为单模型抽查，未扩大称作全工程恢复通过。
