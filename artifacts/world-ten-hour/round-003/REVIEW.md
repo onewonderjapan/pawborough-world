@@ -74,3 +74,12 @@
   帧率宣传）。
 - 触屏未扩展为移动控制；窄屏如实标注「需要桌面键鼠」。
 - 网络场景（远程加载）的暖缓存收益未测，不宣称。
+
+## round-7 收口附记（2026-09-21T10:05+09:00，finalize 轮）
+
+最终交付前实际重做的核验，全部通过：树干净 @`02d518ff`；-r3 ZIP 重算 sha256/字节数与收据
+逐字一致（165,413,931 B）；四组包 smoke 证据复算 26/26、27/27、16/16 + 首页双宽 PNG 在位；
+世界锁定区自基线 `git diff` 为空；`lane-b-evidence` 14/14 在最终 HEAD 复跑（全套 139/139
+仍为 @`2e50daf2` 结果，其后零代码改动）。明细见 `../round-007/FINAL-VERIFICATION.md` 与
+`final-verification.json`。本批到此为 delivered_for_lead_review：**待机主采用
+（ownerAdopted=false）**，上方「尚需机主决定」各项维持不变。

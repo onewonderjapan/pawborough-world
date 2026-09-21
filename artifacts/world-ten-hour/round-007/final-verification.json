@@ -1,0 +1,69 @@
+{
+  "kind": "final-delivery-closeout-verification",
+  "round": 7,
+  "mode": "finalize",
+  "verifiedAt": "2026-09-21T10:05:59+09:00",
+  "head": "02d518ff521a39f71917d23114aac3a67cefeab5",
+  "branch": "work/world-ten-hour-20260921",
+  "baseline": "9e5d5c408c841581e95d41d8ae4f0b36e4626772",
+  "checks": {
+    "treeClean": { "pass": true, "detail": "git status --porcelain = 0 entries" },
+    "zipDigest": {
+      "pass": true,
+      "zip": "artifacts/world-ten-hour/round-005/delivery/world-ten-hour-20260921-r3.zip",
+      "recomputedSha256": "4bb52f161815bda09e3c462a6994454d639a84ccb6e6bdd608b8e732209f75db",
+      "receiptSha256": "4bb52f161815bda09e3c462a6994454d639a84ccb6e6bdd608b8e732209f75db",
+      "recomputedBytes": 165413931,
+      "receiptBytes": 165413931,
+      "receipt": "artifacts/world-ten-hour/round-005/delivery/package-zip-sha256-r3.json"
+    },
+    "smokeEvidencePresent": {
+      "pass": true,
+      "gameSmoke": { "path": "artifacts/world-ten-hour/round-005/delivery/package-game-smoke.json", "recountedChecks": "26/26 ok", "pass": true, "budgets": { "base": 694430, "allOn": 708066 } },
+      "previewSmoke": { "pngs": ["artifacts/world-ten-hour/round-005/delivery/preview-1280.png", "artifacts/world-ten-hour/round-005/delivery/preview-390.png"], "recordedResult": "15/15 (round-005, dev console output)" },
+      "framingBrowser": { "path": "artifacts/world-ten-hour/round-005/framing-package/framing-browser.json", "recountedChecks": "27/27 ok" },
+      "errorRecovery": { "path": "artifacts/world-ten-hour/round-005/error-recovery/error-recovery.json", "recountedChecks": "16/16 ok" }
+    },
+    "lockedZonesUntouchedSinceBaseline": {
+      "pass": true,
+      "command": "git diff 9e5d5c40..HEAD -- world/ building/ kit/ src/player",
+      "result": "empty diff"
+    },
+    "committedTreeVerificationAtFinalHead": {
+      "pass": true,
+      "test": "tests/lane-b-evidence.test.mjs",
+      "result": "14/14 pass at HEAD 02d518ff (duration_ms 26063.6)",
+      "note": "the only suite whose scope is the committed tree (74-file lane-b delivery manifest verified against a fresh HEAD export); re-run because rounds 6-7 added artifact commits after the round-5 full-suite run"
+    },
+    "fullSuiteReference": {
+      "result": "139/139",
+      "atCommit": "2e50daf2",
+      "treeState": "clean",
+      "round": 5,
+      "rerunThisRound": false,
+      "reason": "zero src/HTML/tool changes since 2e50daf2 (rounds 6-7 are artifacts/docs only); per no-repeat-unchanged-PASS discipline the full suite is not re-run; the one tree-sensitive suite was re-run green at final HEAD instead"
+    }
+  },
+  "triangleBudgets": { "default": 694430, "allOn": 708066, "note": "both locked exactly across all 11 long-run scenarios; allOn exceeds 700k target by 8066, honestly recorded" },
+  "executorAccounting": { "accumulatedWorkerExecutionSecondsAtRound7Start": 36106.6, "minimumSeconds": 36000, "source": "control/CURRENT_ROUND.json (executor is the clock truth; worker does not self-report time)" },
+  "ownerAdopted": false,
+  "deliveryLocations": {
+    "playableZip": "artifacts/world-ten-hour/round-005/delivery/world-ten-hour-20260921-r3.zip",
+    "zipReceipt": "artifacts/world-ten-hour/round-005/delivery/package-zip-sha256-r3.json",
+    "builtPackageDir": "dist-world-ten-hour-20260921-r3/",
+    "restoredVerifiedTree": "restore-world-ten-hour-20260921-r3/",
+    "ownerGuide": "artifacts/world-ten-hour/round-003/START_HERE.md (with round-006 addendum)",
+    "reviewChecklist": "artifacts/world-ten-hour/round-003/REVIEW.md (with round-006 addendum)",
+    "knownIssues": "artifacts/world-ten-hour/round-003/REVIEW.md known-issues + round-001..006 FINDINGS.md",
+    "longRunRawData": "artifacts/world-ten-hour/round-002..006/longrun/ (11 scenarios, per-frame gap pairs + 2s samples)",
+    "sourceIndex": "artifacts/world-ten-hour/round-003/source-index.json",
+    "supersededPackages": "round-003/delivery/ (-r2, bad-launcher v1) kept on disk with receipt chain"
+  },
+  "openForOwnerDecision": [
+    "ownerAdopted decision on fangbang-temple-v7",
+    "allOn triangle overshoot +8066 disposition",
+    "void-fall protection (bridge east end x≈127-134; mid-street north edge x≈76-84; ms-303 wedge) — geometry work out of batch scope, evidence in FINDINGS",
+    "temple-front spawn orientation (round-1 B3)",
+    "hardware-GPU verification (all long runs are SwiftShader software baseline)"
+  ]
+}
