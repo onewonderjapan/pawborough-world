@@ -90,10 +90,15 @@ SITE_ANCHORS = {
 }
 site_imported = []
 if os.environ.get('SITE_MODULES') == '1':
+    # R1#4 fallback：总装超 30MB 时 SITE_DROP_TEMPLE=1 把 temple-wall 网格从总装剔除；
+    # 锚空节点仍创建（reconcile/coverage 对账按节点名），temple-wall.glb 照常交付。
+    drop_mesh = {'temple-wall.glb'} if os.environ.get('SITE_DROP_TEMPLE') == '1' else set()
+    if drop_mesh:
+        print('SITE_DROP_TEMPLE=1 (R1#4 30MB fallback): temple-wall mesh kept out of assembly; anchor kept, GLB still delivered')
     for collname, files in SITE_FILES.items():
         for f in files:
             p = os.path.join(OUT, f)
-            if os.path.exists(p):
+            if os.path.exists(p) and f not in drop_mesh:
                 objs = import_glb(p, collname)
                 parent = None
                 for anchor_id in SITE_ANCHORS.get(f, [f[:-4]]):
@@ -111,7 +116,20 @@ if os.environ.get('SITE_MODULES') == '1':
                 site_imported.append(f)
                 print('imported site module', f, '->', collname, 'anchors', SITE_ANCHORS.get(f))
             else:
-                print('MISSING site module', p)
+                if f in drop_mesh:
+                    parent = None
+                    for anchor_id in SITE_ANCHORS.get(f, [f[:-4]]):
+                        empty = bpy.data.objects.new(anchor_id, None)
+                        empty.empty_display_size = 2
+                        empty['id'] = anchor_id
+                        empty['module'] = 'garden-kit'
+                        coll(collname).objects.link(empty)
+                        if parent is not None:
+                            empty.parent = parent
+                        parent = empty
+                    print('anchor-only site module', f, '->', collname, '(mesh dropped, 30MB fallback)')
+                else:
+                    print('MISSING site module', p)
     print('site modules imported:', site_imported)
 
 # ---------- L2 模块库（各导入一次，之后链接复制） ----------

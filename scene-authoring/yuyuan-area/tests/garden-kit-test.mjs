@@ -288,34 +288,99 @@ checkWallOnLines(temple, 'temple-wall', 'temple-wall');
   ok(`九曲桥桥面连续（${n} 点, 缺口/超差 ${misses}）`, misses === 0, `worst=${worst}`);
 }
 
-// ---------- 5) 每个折线顶点必有柱（期望位 ±0.2 m） ----------
+// ---------- 4b) R1#2：桥面中线 y=1.0 每 0.5 m 下行射线 0 命中（首中必须为桥面 0.55±0.03） ----------
 {
   const o = objById['jiuqu-bridge'];
   const pts = o.geometry.polyline;
-  const W = o.width;
-  const postOff = W / 2 - 0.08 - 0.11;
-  let worst = 0;
-  for (const v of pts) {
-    for (const side of [-1, 1]) {
-      // 最近跨法线
-      let best = null;
-      for (let i = 0; i < pts.length - 1; i++) {
-        const d = segDir(pts[i], pts[i + 1]);
-        const pd = pointDistToSeg(v, pts[i], pts[i + 1]);
-        if (best === null || pd.d < best.d) best = { d: pd.d, n: [-d[1], d[0]] };
+  const deckY = o.deckY;
+  let bad = 0, n = 0, first = '';
+  for (let i = 0; i < pts.length - 1; i++) {
+    const a = pts[i], b = pts[i + 1];
+    const L = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    const steps = Math.max(1, Math.ceil(L / 0.5));
+    for (let k = 0; k <= steps; k++) {
+      const t = k / steps;
+      if (i === 0 && t === 0) continue;
+      if (i === pts.length - 2 && t === 1) continue;
+      const px = a[0] + (b[0] - a[0]) * t, pz = a[1] + (b[1] - a[1]) * t;
+      const hit = raycast(bridge, [px, 1.0, pz], [0, -1, 0], 1.0);
+      n++;
+      if (hit === null || Math.abs((1.0 - hit) - deckY) > 0.03) {
+        bad++;
+        if (first === '') first = hit === null ? `miss@(${px.toFixed(1)},${pz.toFixed(1)})` : `hit y${(1.0 - hit).toFixed(2)}@(${px.toFixed(1)},${pz.toFixed(1)})`;
       }
-      const ex = v[0] + best.n[0] * side * postOff, ez = v[1] + best.n[1] * side * postOff;
+    }
+  }
+  ok(`桥面中线 y1.0 无栏杆侵入（${n} 点，违例 ${bad} = 0）`, bad === 0, first);
+}
+
+// ---------- 5) 每个折线顶点的内/外角点必有柱（R1#2：mitre 角点 ±0.25 m；莲蕾头带 y1.50..1.80 内寻顶点） ----------
+function bridgeDirs() {
+  const pts = objById['jiuqu-bridge'].geometry.polyline;
+  const dirs = [];
+  for (let k = 0; k < pts.length - 1; k++) dirs.push(segDir(pts[k], pts[k + 1]));
+  return { pts, dirs, nrms: dirs.map((d) => [-d[1], d[0]]) };
+}
+function mitrePoint(i, side) {
+  const { pts, nrms } = bridgeDirs();
+  const W = objById['jiuqu-bridge'].width;
+  const n = pts.length;
+  if (i <= 0) { const nn = nrms[0]; return [pts[0][0] + nn[0] * side * W / 2, pts[0][1] + nn[1] * side * W / 2]; }
+  if (i >= n - 1) { const nn = nrms[n - 2]; return [pts[n - 1][0] + nn[0] * side * W / 2, pts[n - 1][1] + nn[1] * side * W / 2]; }
+  const n0 = nrms[i - 1], n1 = nrms[i];
+  let cx = (n0[0] + n1[0]) * side, cz = (n0[1] + n1[1]) * side;
+  let cl = Math.hypot(cx, cz);
+  if (cl < 1e-6) { cx = n1[0] * side; cz = n1[1] * side; cl = 1.0; }
+  cx /= cl; cz /= cl;
+  const m = Math.min((W / 2) / Math.max(cx * n1[0] + cz * n1[1], 0.35), 1.9);
+  return [pts[i][0] + cx * m, pts[i][1] + cz * m];
+}
+function edgeBand(i, side) {
+  const { nrms } = bridgeDirs();
+  const a = mitrePoint(i, side), b = mitrePoint(i + 1, side);
+  const el = Math.hypot(b[0] - a[0], b[1] - a[1]);
+  const ed = [(b[0] - a[0]) / el, (b[1] - a[1]) / el];
+  let en = [-ed[1], ed[0]];
+  if (en[0] * nrms[i][0] + en[1] * nrms[i][1] < 0) en = [-en[0], -en[1]];
+  return { a, b, el, inn: [-en[0], -en[1]] };
+}
+{
+  const pts = objById['jiuqu-bridge'].geometry.polyline;
+  let worst = 0;
+  for (let i = 0; i < pts.length; i++) {
+    const j = Math.max(0, Math.min(i, pts.length - 2));
+    for (const side of [-1, 1]) {
+      const { inn } = edgeBand(j, side);
+      const c = mitrePoint(i, side);
+      const ex = c[0] + inn[0] * 0.19, ez = c[1] + inn[1] * 0.19;
       let bd = null;
-      for (let i = 0; i < bridge.verts.length; i += 3) {
-        const vt = bridge.verts[i];
-        if (vt[1] < 0.6 || vt[1] > 1.75) continue;
+      for (const vt of bridge.verts) {
+        if (vt[1] < 1.50 || vt[1] > 1.80) continue;   // 莲蕾柱头带（只有柱上有）
         const hd = Math.hypot(vt[0] - ex, vt[2] - ez);
         if (bd === null || hd < bd) bd = hd;
       }
       if (bd !== null) worst = Math.max(worst, bd);
     }
   }
-  ok(`九曲桥顶点柱到位（worst ${worst.toFixed(3)}m ≤ 0.2）`, worst <= 0.2);
+  ok(`九曲桥顶点内/外角柱到位（mitre 角点 worst ${worst.toFixed(3)}m ≤ 0.25）`, worst <= 0.25);
+}
+
+// ---------- 5b) R1#2：桥面边缘 0.3 m 内每跨每侧至少 1 柱 ----------
+{
+  const n = objById['jiuqu-bridge'].geometry.polyline.length;
+  const missing = [];
+  for (let i = 0; i < n - 1; i++) {
+    for (const side of [-1, 1]) {
+      const { a, b } = edgeBand(i, side);
+      let found = false;
+      for (const vt of bridge.verts) {
+        if (vt[1] < 1.50 || vt[1] > 1.80) continue;   // 莲蕾头 = 柱的标志
+        if (pointDistToSeg([vt[0], vt[2]], a, b).d <= 0.3) { found = true; break; }
+      }
+      if (!found) missing.push(`span${i}-${side}`);
+    }
+  }
+  ok(`桥边缘 0.3m 内每跨每侧有柱（缺 ${missing.length}）`, missing.length === 0, missing.join(','));
 }
 
 // ---------- 6) 预算（三角） ----------

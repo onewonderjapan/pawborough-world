@@ -347,18 +347,23 @@ def build_wall(spec_id, opts):
         if d_head > 4.0:
             ASSUMPTIONS.append(f'garden-wall dragon head is {d_head:.2f}m from nearest segment endpoint; cap rise anchored to that endpoint anyway')
         globals()['HEAD_S'] = s_head
+        globals()['HEAD_SEG'] = j
+        globals()['HEAD_WHICH'] = which
 
     def top_at_s(s):
+        # R1#1：脊线在龙头所在 run 上的 6 m 内平滑抬升到头。龙头端在 seg8 起点、面向沿 run 方向，
+        # 「龙头前 6 m」= s_head .. s_head+6（贴着下颌的那段墙脊），从正常云墙高度平滑抬到 riseTop，
+        # 云墙起伏相位在窗口内同步淡出，消掉「平脊直接撞进头盒」。其余 run（与龙头断开的 seg7 尾）不抬。
         y = H + amp * math.sin(2 * math.pi * s / lam) if amp else H
-        if head_s is None and opts.get('riseToHead') and 'HEAD_S' in globals():
-            pass
         s_head = globals().get('HEAD_S') if opts.get('riseToHead') else None
-        if s_head is not None:
-            d_head = abs(s_head - s)  # 龙头前的 6 m：沿墙向龙头
-            if s_head < 6.0:
-                d_head = s  # 链起点即龙头端：向链尾方向抬升
-            if d_head < 6.0:
-                y += 0.9 * smoothstep((6.0 - d_head) / 6.0)
+        j_head = globals().get('HEAD_SEG')
+        if s_head is not None and j_head is not None and j_head < len(segs):
+            lo, hi = cl[j_head], cl[j_head + 1]
+            if lo - 1e-6 <= s <= hi + 1e-6:
+                d = (s - lo) if globals()['HEAD_WHICH'] == 'start' else (hi - s)
+                if d < 6.0:
+                    t = smoothstep((6.0 - d) / 6.0)
+                    y = y * (1.0 - t) + opts.get('riseTop', 3.15) * t
         return y
 
     windows = []
@@ -395,7 +400,7 @@ def build_wall(spec_id, opts):
                 u0, u1 = prev, u - 0.65
                 a2 = (a[0] + (b[0] - a[0]) * u0 / L, a[1] + (b[1] - a[1]) * u0 / L)
                 b2 = (a[0] + (b[0] - a[0]) * u1 / L, a[1] + (b[1] - a[1]) * u1 / L)
-                wall_strip(mod, 'body', a2, b2, PH, (lambda t, s0=cl[i] + u0: top_at_s(s0 + t)), thick, M['whitePlaster'], ds=0.75 if amp else 8.0)
+                wall_strip(mod, 'body', a2, b2, PH, (lambda t, s0=cl[i] + u0: top_at_s(s0 + t)), thick, M['whitePlaster'], ds=1.0 if amp else 8.0)
             a2 = (a[0] + (b[0] - a[0]) * (u - 0.65) / L, a[1] + (b[1] - a[1]) * (u - 0.65) / L)
             b2 = (a[0] + (b[0] - a[0]) * (u + 0.65) / L, a[1] + (b[1] - a[1]) * (u + 0.65) / L)
             wall_strip(mod, 'win-under', a2, b2, PH, 1.0, thick, M['whitePlaster'], ds=2.0)
@@ -403,10 +408,10 @@ def build_wall(spec_id, opts):
             prev = u + 0.65
         if L - 0.05 > prev:
             a2 = (a[0] + (b[0] - a[0]) * prev / L, a[1] + (b[1] - a[1]) * prev / L)
-            wall_strip(mod, 'body', a2, b, PH, (lambda t, s0=cl[i] + prev: top_at_s(s0 + t)), thick, M['whitePlaster'], ds=0.75 if amp else 8.0)
+            wall_strip(mod, 'body', a2, b, PH, (lambda t, s0=cl[i] + prev: top_at_s(s0 + t)), thick, M['whitePlaster'], ds=1.0 if amp else 8.0)
         if amp:
             cap_top = lambda t, s0=cl[i]: top_at_s(s0 + t)
-            wall_cap(mod, 'cap', a, b, cap_top, opts['cap'], ds=0.45)
+            wall_cap(mod, 'cap', a, b, cap_top, opts['cap'], ds=opts.get('capDs', 0.9))  # R1#4 30MB fallback：0.45->0.9 采样（λ6m 仍有 6.7 采样/波长）
             wall_lips(mod, a, b, cap_top, opts['cap']['capThickness'] - 0.02, opts['cap']['tileLips']['spacing'], opts['cap']['tileLips']['radius'])
         else:
             wall_cap(mod, 'cap', a, b, lambda t, s0=cl[i]: H + opts['capThicknessPlain'], opts['cap'], ds=max(2.0, L / 2))
@@ -442,7 +447,7 @@ def build_wall(spec_id, opts):
                 box_part(mod, 'frame', (x + wd[0] * su * 0.65, 1.55, z + wd[1] * su * 0.65), (0.08, 1.26, thick + 0.06), yaw, M['greyStone'], smooth_all=True)
             for sv in (1.0 - 0.04, 2.1 + 0.04):
                 box_part(mod, 'frame', (x, sv, z), (1.46, 0.08, thick + 0.06), yaw, M['greyStone'], smooth_all=True)
-            nbars = lattice_bars(mod, (x, z), wd, 'huiwen' if k % 2 == 0 else 'haitang', M['darkGlaze'])
+            nbars = lattice_bars(mod, (x, z), wd, 'huiwen' if k % 2 == 0 else 'haitang', M['greyStone'])
             if nbars > 26:
                 raise ValueError('too many lattice bars')
     return {'total': round(total, 2), 'segments': len(segs)}
@@ -473,7 +478,9 @@ def lattice_bars(module, C, wdir, pat, matl):
             bar(su * 0.16, 1.50, su * 0.34, 1.22)   # 下斜瓣
     return cnt
 
-# ================================================================ 龙头（占位同姿态）
+# ================================================================ 龙头（R1#1：8 m 可读，预算 <=3500）
+# 局部系：lx 左右(+)、ly 上、lz 前(+z = 头朝向，沿 seg8 run 方向)；头心 (0, 3.62, 0.15)。
+# 脊线在龙头前 6 m 抬到 3.15（瓦檐顶 ~3.35），头底 3.22 坐进檐口、头顶 4.02 露出，颈部楔体衔接。
 def head_map(lx, ly, lz):
     hx, hz, r = (SI['objects']['garden-wall-dragonhead']['geometry'][k] for k in ('x', 'z', 'rotY'))
     sn, cs = math.sin(r), math.cos(r)
@@ -484,14 +491,26 @@ def build_dragon_head():
     def P(lx, ly, lz):
         mx, my, mz = head_map(lx, ly, lz)
         return bl_pt(mx, mz, my)
-    # 头体椭球：环 + 极扇闭合
-    NR, NZ = 14, 7
-    cen = P(0, 3.55, 0.55)
-    fwd = P(0, 3.55, 1.55) - cen
+
+    def wedge(name, v0, v1, v2, t, matl):
+        """扁平三棱楔：v0-v2 底边、v1 尖，厚 t 沿局部 x。"""
+        dx = P(t, 0, 0) - P(-t, 0, 0)
+        vs = [v0, v1, v2, v0 + dx, v1 + dx, v2 + dx]
+        fs = [(0, 1, 2), (5, 4, 3), (0, 3, 4), (0, 4, 1), (1, 4, 5), (1, 5, 2), (2, 5, 3), (2, 3, 0)]
+        mesh_part(mod, name, vs, fs, matl)
+
+    def lring(lz, yc, w, h):
+        """局部竖直矩形环（吻部/颈楔截面）。"""
+        return [P(-w / 2, yc - h / 2, lz), P(w / 2, yc - h / 2, lz),
+                P(w / 2, yc + h / 2, lz), P(-w / 2, yc + h / 2, lz)]
+
+    # ---- 头体椭球 1.1(前) x 0.7(宽) x 0.8(高)
+    NR, NZ = 18, 8
+    cen = P(0, 3.62, 0.15)
+    fwd = (P(0, 3.62, 1.15) - cen).normalized()
     up = Vector((0, 0, 1))
     lft = fwd.cross(up).normalized()
-    fwd = fwd.normalized()
-    ax_f, ax_w, ax_h = 0.675, 0.55, 0.425
+    ax_f, ax_w, ax_h = 0.55, 0.35, 0.40
     verts = [cen + up * ax_h]
     for j in range(1, NZ):
         phi = math.pi * j / NZ
@@ -512,42 +531,43 @@ def build_dragon_head():
     for i in range(NR):
         faces.append((bot, lb + i, lb + (i + 1) % NR))
     mesh_part(mod, 'head-body', verts, faces, M['darkGlaze'], smooth_faces=list(range(len(faces))))
-    # 上下颚（张口 0.32）+ 牙
-    box_part(mod, 'jaw-upper', head_map(0, 3.72, 0.98), (0.55, 0.26, 0.80), SI['objects']['garden-wall-dragonhead']['geometry']['rotY'], M['darkGlaze'])
-    box_part(mod, 'jaw-lower', head_map(0, 3.40, 0.95), (0.50, 0.22, 0.75), SI['objects']['garden-wall-dragonhead']['geometry']['rotY'], M['darkGlaze'])
-    hr = SI['objects']['garden-wall-dragonhead']['geometry']['rotY']
+    # ---- 张口 0.32：上颚（薄吻前伸收尖）+ 下颚（微上扬）；吻伸出球体 0.45，颅顶 4.02 仍为脸最高点
+    loft(mod, 'jaw-upper', [lring(0.42, 3.94, 0.46, 0.16), lring(1.15, 3.93, 0.24, 0.10)], M['darkGlaze'])
+    loft(mod, 'jaw-lower', [lring(0.42, 3.46, 0.42, 0.13), lring(1.05, 3.52, 0.24, 0.08)], M['darkGlaze'])
+    # ---- 每颚 6 枚楔形牙（白）
     for k in range(6):
-        u = -0.20 + k * 0.08
-        box_part(mod, 'tooth', head_map(u, 3.545, 1.32), (0.05, 0.11, 0.05), hr, M['whitePlaster'])
-        box_part(mod, 'tooth', head_map(u, 3.565, 1.30), (0.05, 0.11, 0.05), hr, M['whitePlaster'])
-    # 双角三段弯杆 / 双须
+        u = -0.15 + k * 0.06
+        zt = 0.70 + k * 0.065
+        wedge('tooth', P(u, 3.868, zt - 0.028), P(u, 3.755, zt + 0.005), P(u, 3.868, zt + 0.028), 0.024, M['whitePlaster'])
+        zl = 0.64 + k * 0.06
+        wedge('tooth', P(u * 0.85, 3.528, zl - 0.026), P(u * 0.85, 3.640, zl + 0.005), P(u * 0.85, 3.528, zl + 0.026), 0.022, M['whitePlaster'])
+    # ---- 双眼球 Ø0.08 在颅部前侧上方（颚根之后，不被吻部遮挡）+ 贴面眉弓
     for su in (-1, 1):
-        path = [(su * 0.28, 3.92, 0.10), (su * 0.36, 4.18, -0.05), (su * 0.38, 4.36, -0.28), (su * 0.34, 4.44, -0.52)]
-        for a, b in zip(path, path[1:]):
-            cyl_part(mod, 'horn', P(*a), P(*b), 0.085, 6, M['darkGlaze'])
-        wpath = [(su * 0.20, 3.46, 1.30), (su * 0.34, 3.40, 1.90), (su * 0.30, 3.30, 2.50)]
+        sph_part(mod, 'eye', P(su * 0.235, 3.83, 0.30), 0.04, M['whitePlaster'], nr=8, nz=5)
+        wedge('brow', P(su * 0.245, 3.858, 0.14), P(su * 0.250, 3.945, 0.32), P(su * 0.245, 3.858, 0.48), 0.018, M['darkGlaze'])
+    # ---- 鼻梁小脊（侧面/正面剪影的吻桥，参考 0004-020）
+    wedge('snout', P(0, 3.975, 0.34), P(0, 4.065, 0.54), P(0, 3.945, 0.68), 0.09, M['darkGlaze'])
+    # ---- 双须：细弧杆 r0.02 自吻侧向前上方扬起，末端高于头顶(4.02) 0.3
+    for su in (-1, 1):
+        wpath = [(su * 0.14, 3.82, 0.94), (su * 0.30, 4.00, 1.48), (su * 0.36, 4.21, 1.94), (su * 0.31, 4.33, 2.28)]
         for a, b in zip(wpath, wpath[1:]):
             cyl_part(mod, 'whisker', P(*a), P(*b), 0.02, 4, M['darkGlaze'])
-    # 鬃鳍 5 片（薄片棱柱）
-    for k in range(5):
-        lz = -0.35 + k * 0.18
-        h = 0.30 - abs(k - 2) * 0.05
-        v0, v1, v2 = P(0, 3.92, lz), P(0, 3.92 + h, lz - 0.12), P(0, 3.92, lz + 0.20)
-        dx = P(0.014, 0, 0) - P(-0.014, 0, 0)
-        vs = [v0, v1, v2, v0 + dx, v1 + dx, v2 + dx]
-        fs = [(0, 1, 2), (5, 4, 3), (0, 3, 4), (0, 4, 1), (1, 4, 5), (1, 5, 2), (2, 5, 3), (2, 3, 0)]
-        mesh_part(mod, 'mane', vs, fs, M['darkGlaze'])
-    # 眼 2
+    # ---- 双角：弧杆向后上方
     for su in (-1, 1):
-        sph_part(mod, 'eye', P(su * 0.22, 3.66, 0.92), 0.08, M['whitePlaster'], nr=7, nz=4)
-    # 颈鳞 3 圈（截面矩形环）
+        hpath = [(su * 0.15, 3.95, -0.10), (su * 0.26, 4.15, -0.42), (su * 0.31, 4.31, -0.82), (su * 0.30, 4.39, -1.24)]
+        for a, b in zip(hpath, hpath[1:]):
+            cyl_part(mod, 'horn', P(*a), P(*b), 0.045, 6, M['darkGlaze'])
+    # ---- 颈楔：头底 -> 抬升脊线的台座（向 -lz 延 1.3 m 作颈，+lz 融入墙脊）
+    loft(mod, 'neck', [lring(-1.30, 3.22, 0.40, 0.42), lring(0.90, 3.10, 0.62, 0.40)], M['darkGlaze'])
+    # ---- 颈鳞 3 圈阶梯环（沿颈台座）
     for k in range(3):
-        lz = -0.12 - k * 0.16
-        rr, cy = 0.44 - k * 0.06, 3.50 - k * 0.04
+        lz = 0.05 - k * 0.45
+        cy = 3.30 - k * 0.05
+        rr, ry = 0.34 - k * 0.03, 0.26
         rings = []
         for i in range(7):
             th = 2 * math.pi * i / 7
-            base = P(rr * math.cos(th), cy + rr * 0.7 * math.sin(th), lz)
+            base = P(rr * math.cos(th), cy + ry * math.sin(th), lz)
             out = (base - P(0, cy, lz))
             out.z = 0
             if out.length < 1e-6:
@@ -556,102 +576,69 @@ def build_dragon_head():
             rings.append([base, base + out * 0.05, base + out * 0.05 + Vector((0, 0, 0.07)), base + Vector((0, 0, 0.07))])
         rings.append(rings[0])
         loft(mod, 'neckscale', rings, M['darkGlaze'], cap_start=False, cap_end=False, smooth_sides=True)
+    # ---- 鬃鳍 5 片扁楔沿颈后（颅后扇形排开，尖向后上）
+    for k in range(5):
+        lz = -0.25 - k * 0.26
+        y0 = 3.55 - k * 0.08
+        h = 0.42 - k * 0.06
+        wedge('mane', P(0, y0, lz + 0.14), P(0, y0 + h, lz - 0.16), P(0, y0, lz - 0.20), 0.016, M['darkGlaze'])
 
-# ================================================================ 月洞门
+# ================================================================ 月洞门（R1#3）
 def build_moon_gate():
     o = SI['objects']['yuhuatang-moongate']
     x0, z0 = o['geometry']['position']
     rotY = o['geometry']['rotY']
     w, h, th, r = o['width'], o['height'], o['thickness'], o['openingR']
-    cyh = 1.6
+    cyh = 1.45  # R1#3 主控决定：洞心 1.6 -> 1.45（r1.05 洞顶 2.50 < 墙高 2.6，消除洞顶穿瓦帽的规格矛盾）
     mod = 'moon-gate'
     th_ = rotY - math.pi / 2
     wdir = (math.cos(th_), -math.sin(th_))
     ndir = (math.sin(th_), math.cos(th_))
     def pt(u, v, t):
         return bl_pt(x0 + wdir[0] * u + ndir[0] * t, z0 + wdir[1] * u + ndir[1] * t, v)
-    if cyh + r > h:
-        ASSUMPTIONS.append(f'moon-gate opening apex {cyh + r:.3f}m exceeds wall height {h}m by {cyh + r - h:.3f}m (spec internal): opening runs open into the top edge, stone ring crown meets the cap')
-    hu = math.sqrt(max(0.0, r * r - (h - cyh) ** 2)) if cyh + r > h else 0.0
-    outline = [(-w / 2, 0.0), (w / 2, 0.0), (w / 2, h)]
-    if cyh + r > h:
-        a0 = math.atan2(h - cyh, hu)
-        outline.append((hu, h))
-        k = 12
-        for i in range(1, k + 1):
-            ang = a0 - (a0 + (math.pi - a0)) * i / k  # 72deg -> -252deg 顺时针绕洞整圈
-            outline.append((r * math.cos(ang), cyh + r * math.sin(ang)))
-    outline += [(-w / 2, h)]
-    n_out = len(outline)
+    # ---- 墙体：方-圆分解（下带/上带/左右块 + 方-圆放射环带），不再走耳切（消除右端斜三角面）
+    s2 = r + 0.02
+    yb0, yb1 = cyh - s2, cyh + s2   # 0.38 / 2.52，均在墙高内
+    def wbox(u0, u1, v0, v1):
+        t2 = th / 2
+        corners = [pt(u0, v0, -t2), pt(u1, v0, -t2), pt(u1, v1, -t2), pt(u0, v1, -t2)]
+        verts = corners + [pt(u0, v0, t2), pt(u1, v0, t2), pt(u1, v1, t2), pt(u0, v1, t2)]
+        faces = [(0, 1, 2, 3), (7, 6, 5, 4), (0, 4, 5, 1), (1, 5, 6, 2), (2, 6, 7, 3), (3, 7, 4, 0)]
+        mesh_part(mod, 'wall', verts, faces, M['whitePlaster'], smooth_faces=list(range(6)))
+    wbox(-w / 2, w / 2, 0.0, yb0)
+    wbox(-w / 2, w / 2, yb1, h)
+    wbox(-w / 2, -s2, yb0, yb1)
+    wbox(s2, w / 2, yb0, yb1)
+    # 中带：方形边界(s2) 到洞口圆(r) 的放射四边带，挤出全墙厚（前后环带面 + 洞缘 + 方缘，闭合）
     t2 = th / 2
-    front = [pt(u, v, t2) for u, v in outline]
-    back = [pt(u, v, -t2) for u, v in outline]
-    def ear_clip(poly2):
-        """poly2: [(u,v)] 任意简单多边形 -> 原索引三角列表。"""
-        idx = list(range(len(poly2)))
-        tris = []
-        guard = 0
-        while len(idx) > 3 and guard < 10000:
-            guard += 1
-            n = len(idx)
-            done = False
-            for i in range(n):
-                ia, ib, ic = idx[(i - 1) % n], idx[i], idx[(i + 1) % n]
-                a, b, c = poly2[ia], poly2[ib], poly2[ic]
-                cross = (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
-                if cross <= 1e-9:
-                    continue
-                ok = True
-                for jj in idx:
-                    if jj in (ia, ib, ic):
-                        continue
-                    px, py = poly2[jj]
-                    d0 = (c[0] - a[0], c[1] - a[1])
-                    d1 = (b[0] - a[0], b[1] - a[1])
-                    d2 = (px - a[0], py - a[1])
-                    den = d0[0] * d1[1] - d0[1] * d1[0]
-                    if abs(den) < 1e-12:
-                        continue
-                    ss = (d1[1] * d2[0] - d1[0] * d2[1]) / den
-                    tt = (d0[0] * d2[1] - d0[1] * d2[0]) / den
-                    if ss >= -1e-9 and tt >= -1e-9 and ss + tt <= 1 + 1e-9:
-                        ok = False
-                        break
-                if ok:
-                    tris.append((ia, ib, ic))
-                    del idx[i]
-                    done = True
-                    break
-            if not done:
-                tris.append((idx[0], idx[1], idx[2]))
-                del idx[1]
-        tris.append((idx[0], idx[1], idx[2]))
-        return tris
-    # 面积定绕序，保证耳切方向一致
-    area2 = sum((outline[i][0] * outline[(i + 1) % n_out][1] - outline[(i + 1) % n_out][0] * outline[i][1]) for i in range(n_out))
-    poly_ccw = outline if area2 > 0 else list(reversed(outline))
-    cap_tris = ear_clip(poly_ccw)
-    faces = []
-    for i in range(n_out):
-        j = (i + 1) % n_out
-        faces.append((i, j, n_out + j, n_out + i))
-    for (a, b, c) in cap_tris:
-        faces.append((a, c, b))                      # 前盖
-        faces.append((n_out + a, n_out + b, n_out + c))  # 后盖
-    mesh_part(mod, 'wall', front + back, faces, M['whitePlaster'])
-    # 石环：全圆矩形截面 torus（径向 0.14，两侧出挑 0.04）
-    rw, proud, segs = 0.14, 0.04, 24
-    rt = th / 2 + proud
+    N = 28
+    verts, faces = [], []
+    def quv(ang):
+        m = max(abs(math.cos(ang)), abs(math.sin(ang)))
+        d = s2 / m
+        return (d * math.cos(ang), cyh + d * math.sin(ang))
+    for i in range(N):
+        a0, a1 = 2 * math.pi * i / N, 2 * math.pi * (i + 1) / N
+        c0 = (r * math.cos(a0), cyh + r * math.sin(a0))
+        c1 = (r * math.cos(a1), cyh + r * math.sin(a1))
+        q0, q1 = quv(a0), quv(a1)
+        b = len(verts)
+        verts += [pt(*c0, -t2), pt(*c1, -t2), pt(*q1, -t2), pt(*q0, -t2),
+                  pt(*q0, t2), pt(*q1, t2), pt(*c1, t2), pt(*c0, t2)]
+        faces += [(b + 0, b + 1, b + 2, b + 3), (b + 4, b + 5, b + 6, b + 7),
+                  (b + 0, b + 1, b + 6, b + 7), (b + 3, b + 2, b + 5, b + 4)]
+    mesh_part(mod, 'wall', verts, faces, M['whitePlaster'])
+    # ---- 石环：与墙面齐平的扁环，宽 0.14、两面凸 0.04、矩形方截面、平直着色
+    rw0, rw1 = r - 0.07, r + 0.07
+    rt = th / 2 + 0.04
     rings = []
-    for i in range(segs):
-        ang = 2 * math.pi * i / segs
+    for i in range(N):
+        ang = 2 * math.pi * i / N
         ca, sa = math.cos(ang), math.sin(ang)
-        cu, cv = r * ca, cyh + r * sa
-        rr = rw / 2
-        rings.append([pt(cu - rr * ca, cv - rr * sa, -rt), pt(cu + rr * ca, cv + rr * sa, -rt),
-                      pt(cu + rr * ca, cv + rr * sa, rt), pt(cu - rr * ca, cv - rr * sa, rt)])
+        rings.append([pt(rw0 * ca, cyh + rw0 * sa, -rt), pt(rw1 * ca, cyh + rw1 * sa, -rt),
+                      pt(rw1 * ca, cyh + rw1 * sa, rt), pt(rw0 * ca, cyh + rw0 * sa, rt)])
     rings.append(rings[0])
-    loft(mod, 'ring', rings, M['greyStone'], cap_start=False, cap_end=False, smooth_sides=True)
+    loft(mod, 'ring', rings, M['greyStone'], cap_start=False, cap_end=False)
     # 瓦帽 0.55 宽 + 两侧瓦当；端墩
     cap_w, cap_l = 0.55, w + 0.5
     yaw = math.atan2(wdir[0], wdir[1])
@@ -711,68 +698,79 @@ def build_bridge():
             f = [(e0[0], e0[1]), (e1[0], e1[1]), (e1[0] - nn[0] * side * 0.12, e1[1] - nn[1] * side * 0.12), (e0[0] - nn[0] * side * 0.12, e0[1] - nn[1] * side * 0.12)]
             verts = [bl_pt(ax, az, deckY) for ax, az in f] + [bl_pt(ax, az, deckY + 0.06) for ax, az in f]
             mesh_part(mod, 'curb', verts, [(0, 1, 2, 3), (7, 6, 5, 4), (0, 4, 5, 1), (1, 5, 6, 2), (2, 6, 7, 3), (3, 7, 4, 0)], M['greyStone'], smooth_faces=list(range(6)), uv_vertex=True)
-    # 栏杆
-    post_off = W / 2 - 0.08 - 0.11
-    seen = []
+    # ---- 栏杆（R1#2）：望柱 0.22x0.22x0.95 只在桥面两侧边缘（外侧面内缩 0.08）、间距 <=1.5 m，
+    # 每折线顶点的内/外角点（mitre 点）各一柱、不在中线；柱间实心栏板 0.72x0.06 一面凹 0.02；
+    # 柱头莲蕾 0.28 高 r0.10；扶手石梁 0.12x0.10 方截面压顶
+    edge_in = 0.08 + 0.11          # 柱心距边线内缩（外侧面内缩 0.08 + 半柱 0.11）；距中线 1.01
+    posts = []
     def add_post(q):
-        if not any(math.dist(q[:2], p[:2]) < 0.05 for p in seen):
-            seen.append(q)
+        if not any(math.dist(q, p) < 0.05 for p in posts):
+            posts.append(q)
+    span_bands = {}   # (i, side) -> (a, ed, inn, ts, el)：mitre 边线参数
     for i in range(n - 1):
-        L = math.dist(pts[i], pts[i + 1])
-        npost = max(1, int(math.ceil(L / 1.5)))
-        for k in range(npost + 1):  # 含跨端 -> 顶点必有柱
-            t = L * k / npost
-            for side in (-1, 1):
-                nn = nrms[i]
-                add_post((pts[i][0] + dirs[i][0] * t + nn[0] * side * post_off, pts[i][1] + dirs[i][1] * t + nn[1] * side * post_off))
-    for (px, pz) in seen:
+        for side in (-1, 1):
+            a, b2 = mitre(i, side), mitre(i + 1, side)
+            el = math.dist(a, b2)
+            if el < 0.05:
+                continue
+            ed = ((b2[0] - a[0]) / el, (b2[1] - a[1]) / el)
+            en = (-ed[1], ed[0])
+            if en[0] * nrms[i][0] + en[1] * nrms[i][1] < 0:
+                en = (-en[0], -en[1])
+            inn = (-en[0], -en[1])
+            npost = max(1, int(math.ceil(el / 1.5)))
+            ts = [el * k / npost for k in range(npost + 1)]
+            span_bands[(i, side)] = (a, ed, inn, ts, el)
+            for t in ts:
+                add_post((a[0] + ed[0] * t + inn[0] * edge_in, a[1] + ed[1] * t + inn[1] * edge_in))
+    for (px, pz) in posts:
         box_part(mod, 'post', (px, deckY + 0.475, pz), (0.22, 0.95, 0.22), 0.0, M['greyStone'], smooth_all=True)
-        sph_part(mod, 'postcap', bl_pt(px, pz, deckY + 1.02), 0.12, M['greyStone'], nr=6, nz=3, uv_vertex=True)
-    npost_total = len(seen)
-    # 栏板：相邻柱之间（同跨同侧），四边框 + 内嵌凹板（凹 0.03）
+        prof = [(0.100, 0.000), (0.058, 0.150), (0.006, 0.275)]  # 莲蕾柱头 0.28 x r0.10（5 棱 3 环减面，R1#4 30MB fallback）
+        rings = []
+        for rj, hj in prof:
+            rings.append([bl_pt(px + rj * math.cos(2 * math.pi * m / 5), pz + rj * math.sin(2 * math.pi * m / 5), deckY + 0.95 + hj) for m in range(5)])
+        loft(mod, 'postcap', rings, M['greyStone'], smooth_sides=True, uv_vertex=True)
+    # 实心栏板：背板 0.04（内移 0.01）+ 外圈框 0.06 -> 外面凹槽 0.02
     panels = 0
-    for i in range(n - 1):
-        L = math.dist(pts[i], pts[i + 1])
-        npost = max(1, int(math.ceil(L / 1.5)))
-        for k in range(npost):
-            t0, t1 = L * k / npost, L * (k + 1) / npost
-            for side in (-1, 1):
-                nn = nrms[i]
-                ax, az = pts[i][0] + dirs[i][0] * t0 + nn[0] * side * post_off, pts[i][1] + dirs[i][1] * t0 + nn[1] * side * post_off
-                bx, bz = pts[i][0] + dirs[i][0] * t1 + nn[0] * side * post_off, pts[i][1] + dirs[i][1] * t1 + nn[1] * side * post_off
-                if math.dist((ax, az), (bx, bz)) < 0.3:
-                    continue
-                mx, mz, ln = (ax + bx) / 2, (az + bz) / 2, math.dist((ax, az), (bx, bz))
-                yaw = math.atan2(dirs[i][0], dirs[i][1])
-                y0, hh = deckY + 0.12, 0.72
-                fb = 0.055  # 边框宽
-                # 边框：方管截面（厚 0.06 × 宽 fb）沿板面矩形路径一圈（picture-frame torus，共享顶点）
-                sn, cs = math.sin(yaw), math.cos(yaw)
-                nnx, nnz = cs, -sn  # 板面水平法向（地图系）
-                th2, wb = 0.03, fb / 2
-                rect = [(0.0, 0.0), (ln, 0.0), (ln, hh), (0.0, hh)]
-                rings = []
-                for k in range(4):
-                    a = rect[k]
-                    b = rect[(k + 1) % 4]
-                    tm = (b[0] - a[0], b[1] - a[1])
-                    tl = math.hypot(*tm)
-                    tu_, tv_ = tm[0] / tl, tm[1] / tl
-                    npx, npz = -tv_, tu_
-                    corner = a
-                    ring = []
-                    for tofs, wofs in ((th2, wb), (-th2, wb), (-th2, -wb), (th2, -wb)):
-                        ux_off = npx * wofs   # 面内 (u, v) 基下直接偏移
-                        v_off = npz * wofs
-                        ring.append(bl_pt(
-                            mx + (corner[0] + ux_off) * sn + nnx * tofs,
-                            mz + (corner[0] + ux_off) * cs + nnz * tofs,
-                            y0 + corner[1] + v_off))
-                    rings.append(ring)
-                rings.append(rings[0])
-                loft(mod, 'panel', rings, M['greyStone'], cap_start=False, cap_end=False, smooth_sides=True, uv_vertex=True)
-                box_part(mod, 'panel-recess', (mx, y0 + hh / 2, mz), (max(0.1, ln - 2 * fb), hh - 2 * fb, 0.024), yaw, M['greyStone'], smooth_all=True)
-                panels += 1
+    for (i, side), (a, ed, inn, ts, el) in span_bands.items():
+        sn, cs = ed[0], ed[1]
+        nnx, nnz = cs, -sn   # 板厚方向（与 box_part 局部 +z 一致）
+        yaw = math.atan2(ed[0], ed[1])
+        y0, hh, fb = deckY + 0.08, 0.72, 0.055
+        th2, wb = 0.03, fb / 2
+        for k in range(len(ts) - 1):
+            t0, t1 = ts[k] + 0.13, ts[k + 1] - 0.13
+            if t1 - t0 < 0.12:
+                continue
+            mx = a[0] + ed[0] * (t0 + t1) / 2 + inn[0] * edge_in
+            mz = a[1] + ed[1] * (t0 + t1) / 2 + inn[1] * edge_in
+            ln = t1 - t0
+            box_part(mod, 'panel', (mx + inn[0] * 0.01, y0 + hh / 2, mz + inn[1] * 0.01), (ln, hh, 0.04), yaw, M['greyStone'], smooth_all=True)
+            rect = [(0.0, 0.0), (ln, 0.0), (ln, hh), (0.0, hh)]
+            rings = []
+            for k2 in range(4):
+                a2 = rect[k2]
+                b3 = rect[(k2 + 1) % 4]
+                tm = (b3[0] - a2[0], b3[1] - a2[1])
+                tl = math.hypot(*tm)
+                tu_, tv_ = tm[0] / tl, tm[1] / tl
+                npx, npz = -tv_, tu_
+                ring = []
+                for tofs, wofs in ((th2, wb), (-th2, wb), (-th2, -wb), (th2, -wb)):
+                    ux_off = npx * wofs   # 面内 (u, v) 基下直接偏移
+                    v_off = npz * wofs
+                    ring.append(bl_pt(mx + (a2[0] + ux_off) * sn + nnx * tofs,
+                                      mz + (a2[0] + ux_off) * cs + nnz * tofs,
+                                      y0 + a2[1] + v_off))
+                rings.append(ring)
+            rings.append(rings[0])
+            loft(mod, 'panel', rings, M['greyStone'], cap_start=False, cap_end=False, smooth_sides=True, uv_vertex=True)
+            panels += 1
+    # 扶手石梁 0.12x0.10：压顶 0.79..0.91，沿 mitre 边线贯通到角点
+    for (i, side), (a, ed, inn, ts, el) in span_bands.items():
+        cx = a[0] + ed[0] * el / 2 + inn[0] * edge_in
+        cz = a[1] + ed[1] * el / 2 + inn[1] * edge_in
+        box_part(mod, 'rail', (cx, deckY + 0.85, cz), (el, 0.12, 0.10), math.atan2(ed[0], ed[1]), M['greyStone'], smooth_all=True)
     # 桥墩对：每 3.0 m + 每顶点
     pier_pos, acc, next_at = [pts[0]], 0.0, 3.0
     for i in range(n - 1):
@@ -798,13 +796,13 @@ def build_bridge():
         nn = best[1]
         for side in (-1, 1):
             box_part(mod, 'piercol', (px + nn[0] * side * 0.9, (botY - 0.7) / 2, pz + nn[1] * side * 0.9), (0.36, botY - (-0.7), 0.36), 0.0, M['greyStone'], smooth_all=True)
-    return {'posts': npost, 'panels': panels, 'piers': len(uniq), 'spans': n - 1}
+    return {'posts': len(posts), 'panels': panels, 'piers': len(uniq), 'spans': n - 1}
 
 # ================================================================ 执行
 print('== garden-kit build start ==')
 gw = build_wall('garden-wall', {
-    'plinthH': 0.35, 'plinthProud': 0.06, 'amp': 0.32, 'lambda': 6.0, 'riseToHead': True,
-    'cap': {'capWidth': 0.72, 'capThickness': 0.14, 'ridgeRoll': {'radius': 0.11}, 'tileLips': {'spacing': 0.6, 'radius': 0.10}},
+    'plinthH': 0.35, 'plinthProud': 0.06, 'amp': 0.32, 'lambda': 6.0, 'riseToHead': True, 'riseTop': 3.15,
+    'cap': {'capWidth': 0.72, 'capThickness': 0.14, 'ridgeRoll': {'radius': 0.11}, 'tileLips': {'spacing': 0.36, 'radius': 0.10}},
     'lattice': True})
 build_dragon_head()
 build_wall('temple-wall', {
@@ -814,7 +812,9 @@ build_wall('temple-wall', {
 ASSUMPTIONS.append('temple-wall plain variant dims borrowed from garden cap ratios: capWidth 0.60 / thickness 0.12 / roll r0.10 / piers 0.6x2.85x0.6 at every vertex (spec gives no temple cap dims)')
 mg = build_moon_gate()
 br = build_bridge()
-ASSUMPTIONS.append('bridge: panel band y deck+0.12..+0.84 (0.72 high), recess 0.03 proud each side of center; lotus-bud cap as sphere r0.12 at post top; post centers at edge inset 0.08+0.11')
+ASSUMPTIONS.append('R1#1 dragon head: ridge rises smoothly into the head over the 6 m of the head run (body top blends to 3.15 at the head, undulation fades in the window); other runs stay flat (head run seg8 starts at the head, disconnected seg7 tail ends 10.2m away). Head: ellipsoid 1.1x0.7x0.8 at ly 3.62, jaws open 0.32 with 6 wedge teeth each, eyes D0.08 + brows, whiskers r0.02 forward-up (tips +0.3 over crown), horns back-up r0.045 arcs, 5 mane wedges behind skull, 3 stepped neck rings on the neck pedestal')
+ASSUMPTIONS.append('R1#2 bridge balustrade: posts 0.22x0.95 on mitred deck edges inset 0.08 (outer face), spacing <=1.5, one post per inner/outer mitred corner (never on centerline); solid panels 0.72x0.06 (0.04 back slab + 0.06 frame = 0.02 outer recess), band deck+0.08..+0.80; lotus-bud caps 0.28 x r0.10; rail beam 0.12x0.10 at deck+0.79..+0.91')
+ASSUMPTIONS.append('R1#3 moon gate: opening centre lowered 1.6 -> 1.45 per lead decision (apex 2.50 < wall 2.6, hole no longer meets cap); stone ring flat band r 0.98..1.05+0.07, 0.14 wide, 0.04 proud each face, rectangular section, flat shaded; wall face decomposed square-around-circle (no ear-clip slivers); cap ends butt into the 0.5x2.85x0.5 end piers')
 ASSUMPTIONS.append('lattice patterns simplified analytic 回纹/十字海棠 bars 0.035, <=26 bars per window (spec allows); render from both faces via 0.06 depth centered bars')
 
 # 导出：garden-wall(含龙头) / temple-wall / moon-gate / jiuqu-bridge
@@ -822,10 +822,12 @@ BUDGET = {'garden-wall': (70000, 1800000), 'garden-wall-dragonhead': (3500, None
           'moon-gate': (4000, None), 'jiuqu-bridge': (30000, 900000)}
 GROUPS = [('garden-wall.glb', ['garden-wall', 'garden-wall-dragonhead']),
           ('temple-wall.glb', ['temple-wall']), ('moon-gate.glb', ['moon-gate']), ('jiuqu-bridge.glb', ['jiuqu-bridge'])]
-catalog = {'packageId': 'pawborough-yuyuan-garden-kit-night-20260922',
+catalog = {'packageId': 'pawborough-yuyuan-garden-kit-r1-20260923',
+           'baseRevision': 'work/yuyuan-garden-kit-20260922 @ b273f531',
            'coordinateContract': 'GLB Y-up world (x, y, z_map), origin map(0,0), no instance transform; Blender internal (x, -z_map, y); export_yup=True',
            'materials': {}, 'modules': {}, 'headInfo': HEAD_INFO, 'bridgeInfo': br, 'moonGateInfo': mg, 'assumptions': ASSUMPTIONS}
-ASSUMPTIONS.append('bridge panel recess plate 0.024 thick centered in 0.06 panel: visible recess ~0.018 per face (spec 0.03 single-sided would leave a zero-thickness plate)')
+ASSUMPTIONS.append('R1#2 bridge panel recess: 0.04 back slab (inset 0.01 toward deck) + 0.06 frame ring -> single 0.02 recess on the outer face (R1); deck-side face flush')
+ASSUMPTIONS.append('R1#4 tile lips spacing 0.6 -> 0.36 (r0.10 both sides; cap 0.72x0.14, roll r0.11 unchanged). 30MB gate exceeded after R1 growth (30,288,068B no-food / 30,160,292B with food) -> fallback: temple-wall mesh kept out of scene-areas via SITE_DROP_TEMPLE=1 (anchor node kept for reconcile; temple-wall.glb still delivered) + byte sampling coarsened (cap board/roll ds 0.45->0.9, undulating body ds 0.75->1.0, lotus bud 6->5 sides 3 rings); no spec dimension changed')
 for glb_name, mods in GROUPS:
     final, tri_by_mod = [], {}
     for mod in mods:
@@ -874,8 +876,8 @@ def boxes_for_wall(spec_id, thick, height, include_head=False):
     if include_head:
         hx, hz, r = (SI['objects']['garden-wall-dragonhead']['geometry'][k] for k in ('x', 'z', 'rotY'))
         sn, cs = math.sin(r), math.cos(r)
-        cxm, cym, czm = head_map(0, 3.6, 0.3)
-        out.append({'center': [cxm, cym, czm], 'size': [1.6, 1.5, 1.9], 'yaw': r, 'type': 'box', 'name': 'dragon-head'})
+        cxm, cym, czm = head_map(0, 3.65, 0.2)
+        out.append({'center': [cxm, cym, czm], 'size': [1.6, 1.7, 2.3], 'yaw': r, 'type': 'box', 'name': 'dragon-head'})
     return out
 COLL['modules']['garden-wall'] = {'boxes': boxes_for_wall('garden-wall', 0.45, 2.9, include_head=True)}
 COLL['modules']['temple-wall'] = {'boxes': boxes_for_wall('temple-wall', 0.4, 2.6)}
@@ -899,7 +901,7 @@ for a, b in zip(bpts, bpts[1:]):
         d = seg_dir(a, b)
         nn = (-d[1], d[0])
         off = o.get('width', 2.4) / 2 - 0.19
-        bb.append({'center': [(a[0] + b[0]) / 2 + nn[0] * side * off, 0.55 + 0.59, (a[1] + b[1]) / 2 + nn[1] * side * off], 'size': [0.24, 1.18, L], 'yaw': seg_yaw(a, b), 'type': 'box', 'name': 'balustrade'})
+        bb.append({'center': [(a[0] + b[0]) / 2 + nn[0] * side * off, 0.55 + 0.615, (a[1] + b[1]) / 2 + nn[1] * side * off], 'size': [0.24, 1.23, L], 'yaw': seg_yaw(a, b), 'type': 'box', 'name': 'balustrade'})
 COLL['modules']['jiuqu-bridge'] = {'boxes': bb}
 json.dump(COLL, open(os.path.join(OUT, 'garden-kit-collision.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 json.dump(catalog, open(os.path.join(OUT, 'garden-kit-catalog.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
