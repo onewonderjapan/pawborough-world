@@ -4,6 +4,7 @@ System python3 -X utf8. Verifies from props/catalog/*.json (recorded placements)
 AND from the raw GLBs (vertex-level vessel containment for dish/jar LOD0)."""
 import json
 import math
+import os
 import sys
 from pathlib import Path
 
@@ -11,7 +12,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'tools'))
 import glbtools  # noqa: E402
 
 WS = Path(__file__).resolve().parent.parent
-SPEC = json.loads((WS.parent / 'DESIGN_SPEC.json').read_text(encoding='utf-8'))
+PKG = WS.parent
+while not (PKG / 'DESIGN_SPEC.json').exists() and PKG != PKG.parent:
+    PKG = PKG.parent
+SPEC = json.loads((PKG / 'DESIGN_SPEC.json').read_text(encoding='utf-8'))
+PROPS = Path(os.environ.get('SNACKS_PROPS', str(WS / 'props')))
+IDS_FILTER = [s for s in os.environ.get('SNACKS_IDS', '').split(',') if s]
 MEAN_R = (0.011 * 0.0045 * 0.0075) ** (1 / 3)
 MIN_PAIR = 0.85 * MEAN_R
 
@@ -28,7 +34,9 @@ def bean_sets():
     want = {'bean-dish': 45, 'bean-packet-open': 30, 'bean-jar': 260}
     data = {}
     for id_, n in want.items():
-        cat = json.loads((WS / 'props/catalog' / (id_ + '.json')).read_text(encoding='utf-8'))
+        if IDS_FILTER and id_ not in IDS_FILTER:
+            continue
+        cat = json.loads((PROPS / 'catalog' / (id_ + '.json')).read_text(encoding='utf-8'))
         bs = cat['beanSet']
         check(bs['got'] == n == bs['expected'], '%s: bean count %s != %d' % (id_, bs['got'], n))
         pos = bs['positions']
@@ -45,20 +53,27 @@ def bean_sets():
         print(' %s: count %d, min pair dist %.4f mm (>= %.4f)' % (id_, len(pos), worst * 1000, MIN_PAIR * 1000))
 
     # packet spill: 12 within r<=0.06 of the spill centre
-    spill = data['bean-packet-open'][18:]
-    check(all(math.hypot(p[0] - .040, p[2] - .052) <= .062 for p in spill),
-          'packet: spilled bean outside r=0.06')
-    # Physical settlement retains 260 beans; do not force their centres to float up to 0.15m.
-    jy = max(p[1] for p in data['bean-jar'])
-    check(jy <= .1505 and min(p[1] for p in data['bean-jar']) < .015, 'jar: settled heap must reach the floor and stay below the lid; top %.3f' % jy)
+    if 'bean-packet-open' in data:
+        spill = data['bean-packet-open'][18:]
+        check(all(math.hypot(p[0] - .040, p[2] - .052) <= .062 for p in spill),
+              'packet: spilled bean outside r=0.06')
+    # R1 #5: jar filled to y=0.15 (spec) - top of the heap near the fill line, base on floor
+    if 'bean-jar' in data:
+        jy = max(p[1] for p in data['bean-jar'])
+        check(jy <= .1505 and jy >= .130, 'jar: fill must reach y~0.15 (top centre %.3f)' % jy)
+        check(min(p[1] for p in data['bean-jar']) < .015, 'jar: heap must start at the floor')
+        print(' jar fill: top bean centre y=%.4f (fill line 0.15)' % jy)
     # dish: 3 layers, hex jitter 15%: layers separable in y
-    dy = sorted(p[1] for p in data['bean-dish'])
-    check(dy[len(dy) // 3] - dy[0] > .004 and dy[2 * len(dy) // 3] - dy[len(dy) // 3] > .004,
-          'dish: beans not in 3 separated layers')
+    if 'bean-dish' in data:
+        dy = sorted(p[1] for p in data['bean-dish'])
+        check(dy[len(dy) // 3] - dy[0] > .004 and dy[2 * len(dy) // 3] - dy[len(dy) // 3] > .004,
+              'dish: beans not in 3 separated layers')
 
     # GLB vertex level: dish & jar LOD0 bean vertices inside vessel
     for id_, floor, rin in (('bean-dish', .0045, .0405), ('bean-jar', .0048, .0742)):
-        p = glbtools.parse(WS / 'props' / (id_ + '.glb'))
+        if IDS_FILTER and id_ not in IDS_FILTER:
+            continue
+        p = glbtools.parse(PROPS / (id_ + '.glb'))
         g = p['json']
         lod0 = next(r for r in glbtools.flat_nodes(g) if r['name'] == '%s_LOD0' % id_)
         groups = glbtools.read_positions(g, p['bin'], lod0['node']['mesh'])
@@ -79,7 +94,15 @@ def bean_sets():
               % (id_, len(pts), below, outside))
 
     # bean-single: 6 roots, per-variant tri budgets, scale within 0.9-1.1
-    p = glbtools.parse(WS / 'props' / 'bean-single.glb')
+    if IDS_FILTER and 'bean-single' not in IDS_FILTER:
+        if failures:
+            print('--- BEAN FAILURES (%d) ---' % len(failures))
+            for f in failures:
+                print(' FAIL', f)
+            sys.exit(1)
+        print('BEANS_OK (subset)')
+        return
+    p = glbtools.parse(PROPS / 'bean-single.glb')
     g = p['json']
     roots = [r for r in glbtools.flat_nodes(g) if r['depth'] == 0]
     check(len(roots) == 6, 'bean-single: %d roots' % len(roots))

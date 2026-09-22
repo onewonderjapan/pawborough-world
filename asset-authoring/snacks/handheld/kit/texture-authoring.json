@@ -1,11 +1,17 @@
 {
-  "textures": "analytic numpy/PIL food + paper surfaces; labels typeset Noto Serif CJK; bean atlas 2x3 cells (one per variant, frost 30-70%, per-variant hilum side); wrinkle normal analytic (fallback-2 route, recorded); no photo tracing",
+  "textures": "analytic numpy/PIL food + paper surfaces; labels typeset Noto Serif CJK; R1: shengjian top = white dough f1e9dc + toasted sesame + scallion; scallion-pancake = 6 scorch spots + 2x scallion density; new fried-batter (golden base, dark bubble spots, bright rims, isotropic); bean atlas base 8a6a48, frost 35-55% in 0.8-2 mm soft patches, dark hilum band; bean wrinkle normal = fine short wrinkles 9-16/cm (node strength 0.35); no photo tracing",
   "beanFrostCoverage": [
-    0.3,
-    0.38,
-    0.46,
-    0.54,
-    0.62,
-    0.7
+    0.35,
+    0.39,
+    0.43,
+    0.47,
+    0.51,
+    0.55
+  ],
+  "beanWrinkleNormalStrengthNode": 0.35,
+  "beanWrinkleCyclesPerCm": [
+    9.0,
+    12.1,
+    15.9
   ]
 }

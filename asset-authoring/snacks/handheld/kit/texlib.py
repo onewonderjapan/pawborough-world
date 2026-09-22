@@ -3,6 +3,7 @@ No photo tracing; labels typeset with system font. Outputs to kit/textures/.
 1024^2 only for the bean atlas + bean wrinkle normal; 512^2 for bread/paper maps
 (keeps total encoded texture bytes across all 27 GLBs under the 6 MB cap)."""
 from pathlib import Path
+from math import pi
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np, json
 
@@ -43,21 +44,29 @@ img[rr > .47] = [196, 140, 70]
 flecks(img, xx, yy, 150, .03, .017, [242, 232, 205], .12)
 save('sesame-top.jpg', img)
 
+# scallion-pancake top (R1 #3): 4-6 scorch spots (was 12), scallion flecks doubled to 110.
+# The folded pancake's top cap samples u .0-.96 / v 0-.48 of this map, so the scorch spots
+# are biased into that window to guarantee 4-6 visible on the top face.
 img = np.stack([222, 178, 104], 0)[:, None, None] * (1 + noise(N, 32, .07))[None]
 img = img.transpose(1, 2, 0).copy()
-for _ in range(12):
-    cx, cy = rng.uniform(.15, .85, 2)
-    m = np.hypot(xx - cx, yy - cy) < rng.uniform(.04, .08)
-    img[m] = img[m] * .72
-flecks(img, xx, yy, 55, .02, .011, [92, 138, 58], .1)
+for _ in range(6):
+    cx, cy = rng.uniform(.15, .8, 2)[0], rng.uniform(.10, .40)
+    m = np.hypot(xx - cx, yy - cy) < rng.uniform(.05, .09)
+    img[m] = img[m] * .68
+flecks(img, xx, yy, 110, .02, .011, [92, 138, 58], .0)
 save('scallion-pancake.jpg', img)
 
-# shengjian top: golden crust + sesame ovals + green scallion flecks
-img = np.stack([214, 150, 74], 0)[:, None, None] * (1 + noise(N, 32, .07))[None]
+# shengjian top (R1 #1): white dough base f1e9dc + toasted sesame + scallion
+img = np.stack([241, 233, 220], 0)[:, None, None] * (1 + noise(N, 32, .045))[None]
 img = img.transpose(1, 2, 0).copy()
-flecks(img, xx, yy, 90, .028, .016, [242, 232, 205], .12)
-flecks(img, xx, yy, 45, .018, .01, [92, 138, 58], .12)
+flecks(img, xx, yy, 110, .024, .014, [152, 112, 62], .12)   # toasted rim under each seed
+flecks(img, xx, yy, 110, .020, .011, [216, 178, 120], .12)  # sesame bodies
+flecks(img, xx, yy, 60, .016, .009, [80, 128, 52], .12)     # scallion
 save('sesame-scallion.jpg', img)
+
+# reset the shared stream: sections below keep a stable pattern independent of the
+# two edits above (osmanthus/bean-mass feed re-exported carry pieces)
+rng = np.random.default_rng(9021)
 
 # osmanthus soup + bean mass (reused for LOD1 jar bean-mass lathe)
 img = np.stack([232, 205, 150], 0)[:, None, None] * (1 + noise(N, 64, .03))[None]
@@ -72,6 +81,24 @@ for _ in range(450):
     m = np.hypot(xx - cx, yy - cy) < .025
     img[m] = img[m] * rng.uniform(.8, 1.25)
 save('bean-mass.jpg', img)
+
+# youdunzi fried-batter (R1 #2): golden base + dark brown bubble spots with bright rims.
+# Isotropic bicubic noise only - the old kron-block crust read as woodgrain direction.
+img = np.stack([216, 158, 74], 0)[:, None, None] * (1 + noise(N, 64, .02))[None]
+img = img.transpose(1, 2, 0).copy()
+w = rng.normal(0, 1, (52, 52))
+wi = np.asarray(Image.fromarray(np.uint8((w - w.min()) / (np.ptp(w) + 1e-9) * 255))
+                .resize((N, N), Image.BICUBIC), np.float32) / 255 - .5
+img *= (1 + wi[:, :, None] * .18)
+for _ in range(170):
+    cx, cy = rng.uniform(0, 1, 2)
+    r = rng.uniform(.004, .014)
+    rr = np.hypot(xx - cx, yy - cy) / r
+    spot = rr < .78                       # dark bubble hole
+    rim = (rr >= .78) & (rr < 1.0)        # bright raised edge
+    img[spot] = img[spot] * .42 + np.array([64, 38, 18]) * .58
+    img[rim] = img[rim] * .55 + np.array([248, 216, 152]) * .45
+save('fried-batter.jpg', q=92, img=img)
 
 # ---- label atlas (same 4 rows as baseline for continuity) ----------------
 font = '/usr/share/fonts/opentype/noto/NotoSerifCJK-Regular.ttc'
@@ -89,70 +116,110 @@ for i, (t, fg, bg) in enumerate(rows):
 atlas.save(OUT / 'labels-atlas.png')
 print('wrote labels-atlas.png')
 
-# ---- bean colour atlas 1024: 2 cols x 3 rows, one cell per variant -------
-# cell content: skin base + mottling, frost patches (coverage 30..70%), dark hilum band
-# hilum at u=0.25 (variants 0,2,4) or u=0.75 (variants 1,3,5) within the cell.
+# ---- bean colour atlas 1024 (R1 #4): 2 cols x 3 rows, one cell per variant ----
+# R1 rule: skin base 8a6a48, sugar-frost patches 35-55% coverage at 0.8-2 mm with soft
+# edges, strong dark hilum band. Cell u spans one azimuth revolution (~58 mm -> 8.8 px/mm),
+# cell v spans pole-to-pole (~20 mm -> 17 px/mm); blob octaves sized to 0.8-2 mm.
 SN = 1024
 cell = SN // 2
 aye, axx = np.mgrid[0:SN, 0:SN] / SN
 cu = (axx * 2) % 1.0            # u within cell (cell width = 0.5 in atlas u)
 cv = (aye * 3) % 1.0            # v within cell
 atlas_b = np.zeros((SN, SN, 3), np.float32)
-skin = np.array([122, 90, 60], np.float32)
-frost = np.array([233, 226, 211], np.float32)
-hilum = np.array([42, 28, 20], np.float32)
-coverages = [0.30, 0.38, 0.46, 0.54, 0.62, 0.70]
+skin = np.array([138, 106, 72], np.float32)      # 8a6a48 (R1)
+frost = np.array([233, 226, 211], np.float32)    # e9e2d3
+hilum = np.array([42, 28, 20], np.float32)       # 2a1c14
+coverages = [0.35, 0.39, 0.43, 0.47, 0.51, 0.55]  # R1: 35-55%
+
+def _soft_blobs(rows, cols, seed):
+    """blob field in [0,1]; cell u spans ~58 mm, cell v ~20 mm, so (rows, cols) sets the
+    mm scale of the blobs (cols drives the u extent, rows the v extent)."""
+    g = np.random.default_rng(seed).normal(0, 1, (rows, cols))
+    im = Image.fromarray(np.uint8((g - g.min()) / (np.ptp(g) + 1e-9) * 255))
+    im = im.resize((cell, cell), Image.BICUBIC)
+    b = np.asarray(im, np.float32) / 255
+    return (b - b.min()) / (np.ptp(b) + 1e-9)
+
+def _softstep(x, edge, width):
+    t = np.clip((x - edge) / max(width, 1e-9), 0, 1)
+    return t * t * (3 - 2 * t)
+
+def _pole_blend(field):
+    """kill concentric-ring artifacts at the cell's v poles (the bean's flat faces):
+    crossfade to the per-row (u-averaged) value as v approaches 0/1."""
+    rows = field.reshape(cell, cell)
+    t = np.abs(np.linspace(0, 1, cell) - .5) * 2          # 0 at equator, 1 at poles
+    blend = np.clip((t - .84) / .16, 0, 1)[:, None]
+    out = rows * (1 - blend) + rows.mean(axis=1, keepdims=True) * blend
+    return out.reshape(-1)
+
 for row in range(3):
     for col in range(2):
         k = row * 2 + col
         u0, v0 = col * .5, row / 3
         sel_u = (aye >= v0) & (aye < v0 + 1 / 3) & (axx >= u0) & (axx < u0 + .5)
-        uu = (axx[sel_u] - u0) * 2
-        vv = (aye[sel_u] - v0) * 3
+        uu = ((axx[sel_u] - u0) * 2)
+        vv = ((aye[sel_u] - v0) * 3)
         patch = np.tile(skin, (uu.size, 1))
         patch *= (1 + rng.normal(0, .05, (uu.size, 1)))
-        # fine mottle: smooth interpolated noise (no blocky kron)
-        w1 = rng.normal(0, 1, (10, 10))
-        wi = Image.fromarray(np.uint8((w1 - w1.min()) / (np.ptp(w1) + 1e-9) * 255)).resize((cell, cell), Image.BICUBIC)
-        mott = (np.asarray(wi, np.float32) / 255 - .5)
-        patch *= (1 + mott.ravel()[:uu.size][:, None] * .16)
-        # frost: blotchy coverage mask via smoothed noise threshold
-        g = rng.normal(0, 1, (14, 14))
-        gi = Image.fromarray(np.uint8((g - g.min()) / (np.ptp(g) + 1e-9) * 255)).resize((cell, cell), Image.BICUBIC)
-        g = np.asarray(gi, np.float32) / 255
-        g = g.ravel()[:uu.size]
-        thr = np.quantile(g, 1 - coverages[k])
-        fm = g >= thr
-        # frost stronger toward the flattened faces (v away from equator 0.5)
+        # fine mottle: smooth interpolated noise (no blocky kron), pole-blended
+        m1 = _pole_blend(_soft_blobs(30, 46, 400 + k))
+        patch *= (1 + m1[:uu.size][:, None] * .14)
+        # frost: two blob octaves -> 0.8-2 mm patches, smoothstep edge (soft border),
+        # pole-blended so the flat faces read as even dusting (no UV-pole rings)
+        b_coarse = _pole_blend(_soft_blobs(30, 56, 700 + k))   # ~2 mm patches
+        b_fine = _pole_blend(_soft_blobs(48, 90, 730 + k))     # ~1 mm patches
+        field = .55 * b_coarse[:uu.size] + .45 * b_fine[:uu.size]
+        thr = np.quantile(field, 1 - coverages[k] / .70)
+        fm = _softstep(field, thr, .045)
+        # frost favours the flattened faces (v away from equator 0.5); deterministic
+        # weighting keeps the coverage quantile calibration simple
         edge_w = np.abs(vv - .5) * 2
-        fm &= (rng.random(uu.size) < .25 + .75 * edge_w)
-        patch[fm] = patch[fm] * .35 + frost * .65
-        # hilum: dark band at fixed u, spanning v 0.28..0.72
+        fm *= (.55 + .45 * edge_w)
+        patch = patch * (1 - fm[:, None]) + (patch * .18 + frost * .82) * fm[:, None]
+        # hilum (R1 #4): thin dark line hugging the rim equator (v~.5, ~1.5 mm tall),
+        # ~6 mm long at the groove azimuth (u .25 / .75)
         hu = 0.25 if k % 2 == 0 else 0.75
-        hm = (np.abs(uu - hu) < .048) & (vv > .28) & (vv < .72)
-        patch[hm] = patch[hm] * .25 + hilum * .75
+        bw = 1.0 - _softstep(np.abs(uu - hu), .030, .014)   # 1 at the groove azimuth
+        bv = _softstep(.0, np.abs(vv - .5) - .04, .02)
+        hm = bw * bv
+        patch = patch * (1 - hm[:, None]) + (patch * .18 + hilum * .82) * hm[:, None]
         atlas_b[sel_u] = patch
 save('bean-colour-atlas.jpg', atlas_b, q=92)
+Image.fromarray(np.uint8(np.clip(atlas_b, 0, 255))).resize((512, 512), Image.LANCZOS).save(
+    OUT / 'bean-colour-atlas-512.jpg', quality=92)
+print('wrote bean-colour-atlas-512.jpg')
 
-# ---- bean wrinkle normal map 1024 (full bean UV, shared by all variants) --
-# broad-bean skin: fine net of elongated wrinkles along the long axis.
-u = axx * 2 * np.pi          # azimuth 0..2pi
-v = aye * np.pi              # latitude 0..pi
+# ---- bean wrinkle normal 1024 (R1 #4): fine SHORT wrinkles >= 8/cm ------------
+# full-bean UV: u 0..1 = one azimuth revolution (~58 mm), so k cycles/rev = k/5.8 per cm.
+# A fast envelope breaks the sinusoids into short dashes; node strength set to 0.35 in
+# matlib (this texture keeps full gradient range).
+u = axx                        # 0..1 across the atlas width = one revolution
+v = aye
 h = np.zeros((SN, SN), np.float32)
-for f, amp, ph in ((90, .5, 0), (137, .3, 1.7), (61, .25, .6)):
-    h += amp * np.sin(u * f * .5 + ph + 2.2 * np.sin(v * 3)) * np.cos(v * f * .33 + ph)
-h += rng.normal(0, 1, (SN // 8, SN // 8)).repeat(8, 0).repeat(8, 1)[:SN, :SN] * .35
-# gentle blur
+env = .55 + .45 * np.sin((2 * pi) * (14 * u + 9 * v) + .7)
+h += .50 * env * np.sin((2 * pi) * 52 * u + 3.0 * np.sin((2 * pi) * v * 2.3))       # 9.0 /cm
+env2 = .60 + .40 * np.sin((2 * pi) * (17 * u - 11 * v) + 2.1)
+h += .34 * env2 * np.sin((2 * pi) * 70 * u + 1.7 + 2.4 * np.sin((2 * pi) * v * 3.1))  # 12.1 /cm
+h += .20 * np.sin((2 * pi) * 92 * u + .6 + 5 * v)                                   # 15.9 /cm
+h += np.random.default_rng(5150).normal(0, 1, (SN // 8, SN // 8)).repeat(8, 0).repeat(8, 1)[:SN, :SN] * .22
 for _ in range(1):
     h = (np.roll(h, 1, 0) + np.roll(h, -1, 0) + np.roll(h, 1, 1) + np.roll(h, -1, 1) + 4 * h) / 8
 gy, gx = np.gradient(h)      # gx ~ d/du, gy ~ d/dv
-strength = 1.6
+strength = 1.35
 nx, ny, nz = -gx * strength, -gy * strength, np.ones_like(h)
 ln = np.sqrt(nx * nx + ny * ny + nz * nz)
 normal = np.stack([(nx / ln * .5 + .5), (ny / ln * .5 + .5), (nz / ln * .5 + .5)], -1)
 save('bean-wrinkle-normal.jpg', normal * 255, q=95)
 
 (OUT.parent / 'texture-authoring.json').write_text(json.dumps({
-    'textures': 'analytic numpy/PIL food + paper surfaces; labels typeset Noto Serif CJK; bean atlas 2x3 cells (one per variant, frost 30-70%, per-variant hilum side); wrinkle normal analytic (fallback-2 route, recorded); no photo tracing',
-    'beanFrostCoverage': coverages}, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    'textures': 'analytic numpy/PIL food + paper surfaces; labels typeset Noto Serif CJK; '
+                'R1: shengjian top = white dough f1e9dc + toasted sesame + scallion; '
+                'scallion-pancake = 6 scorch spots + 2x scallion density; new fried-batter '
+                '(golden base, dark bubble spots, bright rims, isotropic); bean atlas base '
+                '8a6a48, frost 35-55% in 0.8-2 mm soft patches, dark hilum band; bean wrinkle '
+                'normal = fine short wrinkles 9-16/cm (node strength 0.35); no photo tracing',
+    'beanFrostCoverage': coverages,
+    'beanWrinkleNormalStrengthNode': 0.35,
+    'beanWrinkleCyclesPerCm': [9.0, 12.1, 15.9]}, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 print('TEXLIB_DONE')

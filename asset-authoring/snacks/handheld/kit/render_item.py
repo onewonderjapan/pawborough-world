@@ -3,6 +3,7 @@ Blender: blender --background --python kit/render_item.py -- --ids a,b [--no-she
 Cycles; CUDA if available (recorded), else CPU. Blank-frame guard on every frame."""
 import bpy
 import sys
+import os
 import json
 import math
 import time
@@ -16,13 +17,22 @@ WS = KIT.parent
 sys.path.insert(0, str(WS / 'tools'))
 import glbtools  # noqa: E402
 
-REND = WS / 'renders'
-SPEC = json.loads((WS.parent / 'DESIGN_SPEC.json').read_text(encoding='utf-8'))
+REND = Path(os.environ.get('SNACKS_REND', str(WS / 'renders')))
+PROPS = Path(os.environ.get('SNACKS_PROPS', str(WS / 'props')))
+PKG = WS.parent
+while not (PKG / 'DESIGN_SPEC.json').exists() and PKG != PKG.parent:
+    PKG = PKG.parent
+SPEC = json.loads((PKG / 'DESIGN_SPEC.json').read_text(encoding='utf-8'))
 RIG = SPEC['renderSpec']
 
 
 def setup_device(log):
     prefs = bpy.context.preferences.addons['cycles'].preferences
+    if os.environ.get('SNACKS_FORCE_CPU'):
+        # R1 rule: CUDA only when GPU utilisation < 20% (it was ~96% at start)
+        prefs.compute_device_type = 'NONE'
+        log['device'] = 'CPU'
+        return 'CPU'
     for ctype in ('OPTIX', 'CUDA'):
         try:
             prefs.compute_device_type = ctype
@@ -142,18 +152,35 @@ def main():
     ap.add_argument('--ids', required=True)
     ap.add_argument('--no-sheet', action='store_true')
     ap.add_argument('--no-macro', action='store_true')
+    ap.add_argument('--views', default=None, help='comma list restricting sheet views')
+    ap.add_argument('--props', default=None, help='GLB source dir (default $SNACKS_PROPS or WS/props)')
+    ap.add_argument('--rend', default=None, help='renders output dir (default $SNACKS_REND or WS/renders)')
+    ap.add_argument('--lid-off', dest='lid_off', action='store_true', default=True,
+                    help='render an extra lid-off frame for items with a lid child (default on)')
+    ap.add_argument('--no-lid-off', dest='lid_off', action='store_false')
     args = ap.parse_args(sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else [])
+    global REND, PROPS
+    if args.props:
+        PROPS = Path(args.props)
+    if args.rend:
+        REND = Path(args.rend)
     log = {'frames': [], 'device': None}
     device = setup_device(log)
+    if device == 'CPU':
+        sc_threads = int(os.environ.get('SNACKS_THREADS', '4'))
     failed = []
     for id_ in [s.strip() for s in args.ids.split(',') if s.strip()]:
-        glb = WS / 'props' / (id_ + '.glb')
+        glb = PROPS / (id_ + '.glb')
         out = REND / id_
         out.mkdir(parents=True, exist_ok=True)
         sc = build_scene()
+        if device == 'CPU':
+            sc.render.threads_mode = 'FIXED'
+            sc.render.threads = sc_threads
         pre = set(sc.objects)
         bpy.ops.import_scene.gltf(filepath=str(glb))
         imported = [o for o in sc.objects if o not in pre]
+        lid = sc.objects.get('lid')
         for o in imported:
             if o.type == 'MESH' and (o.name.endswith('_LOD1') or o.name.endswith('_LOD2')):
                 o.hide_render = True
@@ -171,9 +198,10 @@ def main():
         # socket_grip world pos (blender) for macro focus (distance camera -> socket)
         sock = sc.objects.get('socket_grip')
         sock_pos = sock.matrix_world.translation if sock else cen
+        sheet = SPEC['renderSpec']['perItemSheet']
+        views = args.views.split(',') if args.views else list(sheet['views'])
         if not args.no_sheet:
-            sheet = SPEC['renderSpec']['perItemSheet']
-            for view in sheet['views']:
+            for view in views:
                 pos = views_for((cen.x, cen.y, cen.z), dim, view)
                 cam = add_camera(sc, 'cam-' + view, pos, (cen.x, cen.y, cen.z), fov=42)
                 sc.camera = cam
@@ -184,6 +212,21 @@ def main():
                 log['frames'].append(g)
                 if not g['ok']:
                     failed.append(str(f))
+        if args.lid_off and lid is not None:
+            # R1 #7: extra lid-off view (buns visible), same rig, lid hidden for this frame
+            lid.hide_render = True
+            pos = views_for((cen.x, cen.y, cen.z), dim, 'three-quarter')
+            cam = add_camera(sc, 'cam-lid-off', (pos[0], pos[1], cen.z + (pos[2] - cen.z) * 1.35),
+                             (cen.x, cen.y, cen.z), fov=42)
+            sc.camera = cam
+            f = out / ('%s-lid-off.jpg' % id_)
+            secs = render(sc, f, sheet['size'][0], sheet['size'][1], sheet['spp'])
+            g = blank_guard(sc, f)
+            g['seconds'] = secs
+            log['frames'].append(g)
+            if not g['ok']:
+                failed.append(str(f))
+            lid.hide_render = False
         if not args.no_macro:
             mac = SPEC['renderSpec']['perItemMacro']
             d = 1.2 * dim + .03

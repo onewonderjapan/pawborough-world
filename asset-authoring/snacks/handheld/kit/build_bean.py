@@ -32,11 +32,12 @@ def bean_surface(theta, phi, variant, flip):
     r = 1 + .045 * math.sin(3 * theta + 2.1 * variant) + .03 * math.cos(2 * phi + variant)
     x *= r
     z *= r
-    # hilum groove: dent at theta = pi/2 (+z edge) or 3pi/2 when flipped, ~6mm long
+    # hilum groove: dent at theta = pi/2 (+z edge) or 3pi/2 when flipped, ~6mm long,
+    # 1 mm deep (R1 #4)
     hc = math.pi / 2 if not flip else 3 * math.pi / 2
     dt = math.atan2(math.sin(theta - hc), math.cos(theta - hc))
     g = math.exp(-(dt / .30) ** 2) * math.exp(-((phi - math.pi / 2) / .38) ** 2)
-    depth = .00065 * g
+    depth = .001 * g
     # pull toward local center: shrink radius about the section center
     cx, cz = 0.0, -C * sc * 0.62 * xz * xz * math.sin(phi)
     x = cx + (x - cx) * (1 - depth / max(A, 1e-6))
@@ -222,7 +223,8 @@ def place_dish():
 
 
 def place_packet():
-    """30 beans: 18 visible in/above the torn-open standing packet + 12 spilled (r<=0.06)."""
+    """30 beans: 18 visible in/above the torn-open standing packet + 12 spilled
+    (within r=0.06 of the spill centre at (.040, .052))."""
     rng = random.Random(77)
     pl = Placement(77)
     tpl = _template((8, 5), 1)
@@ -242,13 +244,21 @@ def place_packet():
             n_in += 1
     n_spill = 0
     while n_spill < 12:
-        a = rng.uniform(0, math.tau)
-        rr = .058 * math.sqrt(rng.random())
-        p = (.040 + rr * math.cos(a), .006 + rng.uniform(0, .002), .058 + rr * math.sin(a))
-        o = _orient(rng)
+        if n_spill == 0:
+            # pinned front spill bean: pins the packet's spec z extent (centre .058 from
+            # the spill centre, inside the r=0.062 test disc)
+            p = (.040, .006, .108)
+            o = (rng.uniform(0, math.tau), .12)
+        else:
+            a = rng.uniform(0, math.tau)
+            rr = .060 * math.sqrt(rng.random())
+            p = (.040 + rr * math.cos(a), .006 + rng.uniform(0, .002), .052 + rr * math.sin(a))
+            o = _orient(rng)
 
         def bounds(wp):
-            return wp[1] > .0005 and math.hypot(wp[0] - .040, wp[2] - .058) < .062
+            # centres stay within the r=0.06 spill disc (test); verts may tumble a bit
+            # further so the spilled spread reaches the packet's spec z extent
+            return wp[1] > .0005 and math.hypot(wp[0] - .040, wp[2] - .052) < .069
         if pl.ok(p, tpl, o, bounds):
             pl.add(p, o)
             n_spill += 1
@@ -256,50 +266,39 @@ def place_packet():
 
 
 def place_jar():
-    """Settle 260 beans onto the floor or existing beans using sampled mesh contact.
-    0.8 mm height field; geometry-derived upper/lower surfaces, no floating volume sampling.
-    """
-    import numpy as np
-    rng=random.Random(123);pl=Placement(123)
-    step=.0008;radius=.0741;N=190;origin=-N*step/2
-    height=np.full((N,N),.00485,dtype=float)
-    def candidate(px,pz,orient,variant):
-        vv,ff,_,_=bean_mesh_data((6,4),variant,variant%2==1)
-        vv=shift_to_ground(vv)
-        vv=np.array([rot_y(rot_x(v,-orient[1]),orient[0]) for v in vv]);vv[:,0]+=px;vv[:,2]+=pz
-        if np.max(np.hypot(vv[:,0],vv[:,2]))>radius:return None
-        ix0=max(0,int((vv[:,0].min()-origin)//step));ix1=min(N-1,int((vv[:,0].max()-origin)//step)+1)
-        iz0=max(0,int((vv[:,2].min()-origin)//step));iz1=min(N-1,int((vv[:,2].max()-origin)//step)+1)
-        zz,xx=np.mgrid[iz0:iz1+1,ix0:ix1+1];x=origin+xx*step;z=origin+zz*step
-        lo=np.full(x.shape,np.inf);hi=np.full(x.shape,-np.inf)
-        for f in ff:
-            for k in range(1,len(f)-1):
-                a,b,c=vv[[f[0],f[k],f[k+1]]]
-                den=(b[2]-c[2])*(a[0]-c[0])+(c[0]-b[0])*(a[2]-c[2])
-                if abs(den)<1e-12:continue
-                u=((b[2]-c[2])*(x-c[0])+(c[0]-b[0])*(z-c[2]))/den
-                v=((c[2]-a[2])*(x-c[0])+(a[0]-c[0])*(z-c[2]))/den
-                mask=(u>=0)&(v>=0)&(u+v<=1);y=u*a[1]+v*b[1]+(1-u-v)*c[1]
-                lo=np.where(mask,np.minimum(lo,y),lo);hi=np.where(mask,np.maximum(hi,y),hi)
-        mask=np.isfinite(lo)&np.isfinite(hi)
-        if not mask.any():return None
-        patch=height[iz0:iz1+1,ix0:ix1+1]
-        py=max(float(np.max((patch-lo)[mask]))+.0001,.00485-float(vv[:,1].min()))
-        if py+float(vv[:,1].max())>.1505:return None
-        if any(math.dist((px,py,pz),q)<MIN_PAIR for q in pl.pos):return None
-        return py,(iz0,iz1,ix0,ix1),mask,hi
-    for i in range(260):
-        best=None
-        for _ in range(30):
-            angle=rng.uniform(0,math.tau);rad=.066*math.sqrt(rng.random())
-            px,pz=rad*math.cos(angle),rad*math.sin(angle);orient=(rng.uniform(0,math.tau),rng.uniform(-.45,.45))
-            c=candidate(px,pz,orient,(i+1)%6)
-            if c is not None and (best is None or c[0]<best[0]):best=(c[0],px,pz,orient,c)
-        if best is None:raise RuntimeError('No supported placement for bean '+str(i))
-        py,px,pz,orient,c=best;_,(z0,z1,x0,x1),mask,hi=c
-        patch=height[z0:z1+1,x0:x1+1];patch[mask]=np.maximum(patch[mask],hi[mask]+py)
-        pl.add((px,py,pz),orient)
-    return pl,len(pl.pos)
+    """R1 #5: fill the jar to y=0.15 (spec). 260 beans in gravity-free horizontal layers
+    (17 per full layer: centre + ring .028 x6 + ring .056 x10), rejection-sampled with the
+    shared min-pair hash; per-vertex bounds keep every vertex above the floor (.0048),
+    inside the inner radius and below the fill line (.1505)."""
+    rng = random.Random(123)
+    pl = Placement(123)
+    tpls = {v: _template((6, 4), v) for v in range(6)}
+    ring = [(0.0, 0.0)] + [(.028 * math.cos(math.tau * i / 6), .028 * math.sin(math.tau * i / 6)) for i in range(6)] \
+        + [(.056 * math.cos(math.tau * i / 10 + .31), .056 * math.sin(math.tau * i / 10 + .31)) for i in range(10)]
+    placed = 0
+    layer = 0
+    while placed < 260:
+        y = .0098 + layer * .0090
+        for (cx, cz) in ring:
+            if placed >= 260:
+                break
+            for attempt in range(120):
+                jx, jz = rng.gauss(0, .0012), rng.gauss(0, .0012)
+                p = (cx + jx, y + rng.gauss(0, .0004), cz + jz)
+                o = _orient(rng)
+                variant = (placed + 1) % 6
+
+                def bounds(wp):
+                    rad = math.hypot(wp[0], wp[2])
+                    return wp[1] > .0050 and rad < .0737 and wp[1] < .1500
+                if pl.ok(p, tpls[variant], o, bounds):
+                    pl.add(p, o)
+                    placed += 1
+                    break
+        layer += 1
+        if layer > 40:
+            raise RuntimeError('jar fill did not converge')
+    return pl, placed
 
 
 # ---------------- vessel companions ----------------------------------------
@@ -311,17 +310,47 @@ def build_dish_vessel(lod=0):
 
 
 def build_packet_torn(lod):
-    """standing kraft packet 0.09 x 0.13 x 0.032 with torn-open top."""
+    """R1 #6: standing kraft packet 0.09 x 0.13 x 0.032, torn open at the top with an
+    irregular 6-8 segment zigzag rim flared 0.8 cm outward; label/mark upright on the
+    front face (same layout as wuxiangdou-packet)."""
     objs = [box('packet-body', (0, .062, 0), (.09, .122, .032), 'paper', .003)]
     if lod == 0:
-        # torn top: two splayed flaps + crumpled lip
-        objs.append(box('flap-a', (-.014, .128, .012), (.062, .018, .004), 'paper', .001))
-        objs.append(box('flap-b', (.018, .127, -.008), (.054, .016, .004), 'paper', .001))
-        objs.append(box('lip', (0, .1255, .002), (.088, .008, .03), 'paper', .001))
+        objs.append(_torn_rim('torn-rim', (.0, .1228, 0), (.09, .032), seg=(7, 2), flare=.008))
+        # labels upright on the front (+z) face, same rows/UVs as the closed packet
         objs.append(mesh('packet-label',
-                         [(-.04, .029, .02), (.04, .029, .02), (.04, .029, .072), (-.04, .029, .072)],
-                         [(0, 3, 2, 1)], 'label', [(0, .75), (1, .75), (1, 1), (0, 1)]))
+                         [(-.04, .03, .0166), (.04, .03, .0166), (.04, .082, .0166), (-.04, .082, .0166)],
+                         [(0, 1, 2, 3)], 'label', [(0, .75), (1, .75), (1, 1), (0, 1)]))
+        objs.append(mesh('packet-mark',
+                         [(-.025, .088, .0167), (.025, .088, .0167), (.025, .114, .0167), (-.025, .114, .0167)],
+                         [(0, 1, 2, 3)], 'label', [(0, .75), (1, .75), (1, 1), (0, 1)]))
     return objs
+
+
+def _torn_rim(name, origin, size, seg=(7, 2), flare=.008, jag=.004):
+    """Irregular torn collar around a rectangular top rim: 6-8 zigzag segments per long
+    side, flared `flare` outward and torn up/down by up to `jag`. GLB Y-up design coords."""
+    import random as _r
+    rng = _r.Random(413)
+    ox, oy, oz = origin
+    hx, hy = size[0] / 2, size[1] / 2
+    pts_in, pts_out = [], []
+    corners = [(-hx, -hy), (hx, -hy), (hx, hy), (-hx, hy)]
+    for c in range(4):
+        x0, z0 = corners[c]
+        x1, z1 = corners[(c + 1) % 4]
+        long_side = abs(x1 - x0) > abs(z1 - z0)
+        n = seg[0] if long_side else seg[1]
+        nx, nz = (0.0, 1 if z0 >= 0 else -1) if long_side else (1 if x0 >= 0 else -1, 0.0)
+        for i in range(n):
+            t = i / n
+            px, pz = x0 + (x1 - x0) * t, z0 + (z1 - z0) * t
+            pts_in.append((ox + px, oy + rng.uniform(-jag, jag), oz + pz))
+            pts_out.append((ox + px + nx * flare, oy + rng.uniform(-jag * .5, jag) - .003,
+                            oz + pz + nz * flare))
+    n = len(pts_in)
+    verts = [tuple(p) for p in pts_in] + [tuple(p) for p in pts_out]
+    faces = [(i, (i + 1) % n, (i + 1) % n + n, i + n) for i in range(n)]
+    return mesh(name, verts, faces, 'paper')
 
 
 def build_jar_vessel(lod):
@@ -331,18 +360,21 @@ def build_jar_vessel(lod):
             lathe('jar-lid', (0, .213, 0), [(0, .063, 0), (.014, .063, 0), (.014, 0, 0)], 'steel',
                   32 if lod == 0 else (16 if lod == 1 else 8))]
     if lod == 0:
-        # Match the 32-sided vessel exactly, with a 0.15 mm paper offset.
-        verts,faces,uvs=[],[],[]
-        angles=[-math.pi/8+i*math.pi/32 for i in range(9)]
-        for yy in (.075,.125):
-            for k,a in enumerate(angles):
-                phi=math.pi/2-a
-                middle=(math.floor(phi/(math.tau/32))+.5)*(math.tau/32)
-                r=.078*math.cos(math.pi/32)/math.cos(phi-middle)+.00015
-                verts.append((r*math.sin(a),yy,r*math.cos(a)))
-                uvs.append((k/8,.75 if yy<.1 else 1.0))
-        for k in range(8):faces.append((k,k+1,k+10,k+9))
-        objs.append(mesh('jar-label',verts,faces,'label',uvs))
+        # R1 #5: label as a curved surface hugging the jar wall - cylinder projection at
+        # r=0.0795, 0.045 tall, 0.11 wide (arc), UV uniform in arc length (no stretch,
+        # no facet-chamfer distortion). Centred on +z (front).
+        r_lab, y0, y1, width = .0795, .075, .12, .11
+        a0, a1 = -width / (2 * r_lab), width / (2 * r_lab)
+        cols = 14
+        verts, uvs, faces = [], [], []
+        for j, yy in enumerate((y0, y1)):
+            for i in range(cols + 1):
+                a = a0 + (a1 - a0) * i / cols
+                verts.append((r_lab * math.sin(a), yy, r_lab * math.cos(a)))
+                uvs.append((i / cols, (0.75, 1.0)[j]))
+        for i in range(cols):
+            faces.append((i, i + 1, i + 1 + cols + 1, i + cols + 1))
+        objs.append(mesh('jar-label', verts, faces, 'label', uvs))
     return objs
 
 
