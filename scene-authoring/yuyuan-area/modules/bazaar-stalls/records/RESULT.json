@@ -1,0 +1,17 @@
+{
+  "packageId": "pawborough-w1-bazaar-stalls-20260922",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "partial": [],
+  "blockers": [],
+  "finishedAt": "2026-09-23",
+  "branch": "work/w1-bazaar-stalls-20260922",
+  "worktree": "/home/baibai/outbox/pawborough-w1-bazaar-stalls-20260922/workspace",
+  "artifacts": "/home/baibai/outbox/pawborough-w1-bazaar-stalls-20260922/artifacts/bazaar-stalls",
+  "deliverables": {
+    "modules": ["stall-steam.glb (364 tris)", "stall-grill.glb (416)", "stall-drink.glb (460)", "bench.glb (72)", "awnings/ 16 per-edge strips (24.3-30.6 tris/m)"],
+    "placements": ["out-bazaar-stalls/placements.json (43 stalls + 8 benches)", "out-bazaar-stalls/awning-placements.json (16 edges)"],
+    "verification": ["Khronos validator 20/20: 0 errors, 0 warnings", "reimport check 20/20 allOk (sockets at exact layout offsets, no image nodes, bounds/sha/tris match)", "tests/test_bazaar_stalls.py 18/18 PASS", "Cycles renders with blank-frame guard: 0 blank; mock-row yaw socket world check 4/4 err=0.0"]
+  },
+  "integrationNote": "No pipeline integration (per spec). Lead wires modules/bazaar-stalls outputs into area pipeline in a later step; placements.json carries the placement contract (worldFrame/localFrame/slot/collision)."
+}

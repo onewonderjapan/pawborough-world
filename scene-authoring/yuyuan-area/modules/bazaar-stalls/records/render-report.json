@@ -1,0 +1,122 @@
+{
+ "guard": {
+  "steam": {
+   "file": "stall-steam.png",
+   "lumStd": 0.06782,
+   "domShare": 0.155,
+   "blank": false
+  },
+  "grill": {
+   "file": "stall-grill.png",
+   "lumStd": 0.06196,
+   "domShare": 0.144,
+   "blank": false
+  },
+  "drink": {
+   "file": "stall-drink.png",
+   "lumStd": 0.05747,
+   "domShare": 0.146,
+   "blank": false
+  },
+  "bench": {
+   "file": "bench.png",
+   "lumStd": 0.04753,
+   "domShare": 0.321,
+   "blank": false
+  },
+  "awning": {
+   "file": "awning-strip.png",
+   "lumStd": 0.05355,
+   "domShare": 0.3,
+   "blank": false
+  },
+  "mockrow": {
+   "file": "mock-row-cluster1.png",
+   "lumStd": 0.09186,
+   "domShare": 0.301,
+   "blank": false
+  }
+ },
+ "socketChecks": [
+  {
+   "stall": "stall-1",
+   "socket": "socket_tray",
+   "want": [
+    -128.6526,
+    1.01,
+    21.8602
+   ],
+   "got": [
+    -128.6526,
+    1.01,
+    21.8602
+   ],
+   "errM": 0.0,
+   "ok": true
+  },
+  {
+   "stall": "stall-1",
+   "socket": "socket_steamer",
+   "want": [
+    -129.6471,
+    1.31,
+    21.9648
+   ],
+   "got": [
+    -129.6471,
+    1.31,
+    21.9648
+   ],
+   "errM": 0.0,
+   "ok": true
+  },
+  {
+   "stall": "stall-2",
+   "socket": "socket_tray",
+   "want": [
+    -131.3378,
+    1.01,
+    22.1427
+   ],
+   "got": [
+    -131.3378,
+    1.01,
+    22.1427
+   ],
+   "errM": 0.0,
+   "ok": true
+  },
+  {
+   "stall": "stall-2",
+   "socket": "socket_grill",
+   "want": [
+    -132.3323,
+    1.13,
+    22.2473
+   ],
+   "got": [
+    -132.3323,
+    1.13,
+    22.2473
+   ],
+   "errM": 0.0,
+   "ok": true
+  }
+ ],
+ "socketsOk": true,
+ "mockRowStalls": [
+  "stall-1",
+  "stall-2",
+  "stall-3",
+  "stall-4",
+  "stall-5",
+  "stall-6"
+ ],
+ "mockRowBench": [
+  "stall-7",
+  "stall-49",
+  "stall-50",
+  "stall-51"
+ ],
+ "elapsedS": 138.8
+}
