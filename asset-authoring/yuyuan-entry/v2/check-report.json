@@ -1,0 +1,145 @@
+{
+  "bounds": {
+    "min": [
+      -5.563,
+      -0.0,
+      -4.374
+    ],
+    "max": [
+      5.563,
+      8.26,
+      1.574
+    ]
+  },
+  "axisChecks": {
+    "groundAtY0": true,
+    "frontEaveBeyondFacade(+Z)": 1.5736122131347656,
+    "rearExtent(-Z)": -4.373611927032471,
+    "symmetricX": true,
+    "overallWidthIncludingTips": 11.125396728515625,
+    "roofPlanAtEaveDesign": [
+      10.1,
+      4.9
+    ],
+    "topY": 8.260000228881836,
+    "designRidge": 7.72
+  },
+  "passage": {
+    "exception": "none (v2)",
+    "verticesInsideClearVolume": 0,
+    "trianglesInsideClearVolume": 0,
+    "trianglesBlockingCentreCorridor": 0,
+    "clear": true
+  },
+  "doorRays(-Z from z=+1 to -2.5, hits=blocked)": {
+    "x0/y1.8": 0,
+    "x0/y2.9": 0,
+    "x-0.95/y2.65": 0,
+    "x0.95/y2.65": 0,
+    "x-0.95/y2.9": 0,
+    "x0.95/y2.9": 0,
+    "x-1.05/y2.98": 0,
+    "x1.05/y2.98": 0,
+    "x-1.05/y0.2": 0,
+    "x1.05/y0.2": 0
+  },
+  "rearClosure": {
+    "gridPoints": 888,
+    "uncovered": 0,
+    "closed": true
+  },
+  "materials": [
+    {
+      "name": "grey-brick-facade",
+      "baseColorTexture": true,
+      "baseColorFactor": [
+        0.4564110338687897,
+        0.4910208582878113,
+        0.5394794940948486,
+        1.0
+      ],
+      "normalTexture": true,
+      "metallicRoughnessTexture": true
+    },
+    {
+      "name": "pale-granite-stone",
+      "baseColorTexture": true,
+      "baseColorFactor": [
+        0.68668532371521,
+        0.6583748459815979,
+        0.577580451965332,
+        1.0
+      ],
+      "normalTexture": true,
+      "metallicRoughnessTexture": true
+    },
+    {
+      "name": "passage-plaster",
+      "baseColorTexture": true,
+      "baseColorFactor": [
+        0.48514994978904724,
+        0.4677838087081909,
+        0.41788506507873535,
+        1.0
+      ],
+      "normalTexture": true,
+      "metallicRoughnessTexture": true
+    },
+    {
+      "name": "carved-stone-ground",
+      "baseColorTexture": false,
+      "baseColorFactor": [
+        0.26635560393333435,
+        0.2541520893573761,
+        0.2158605009317398,
+        1.0
+      ],
+      "normalTexture": false,
+      "metallicRoughnessTexture": false
+    },
+    {
+      "name": "grey-pan-tile",
+      "baseColorTexture": true,
+      "baseColorFactor": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "normalTexture": true,
+      "metallicRoughnessTexture": false
+    },
+    {
+      "name": "dark-fascia-lacquer",
+      "baseColorTexture": false,
+      "baseColorFactor": [
+        0.0423114113509655,
+        0.03688944876194,
+        0.03189603239297867,
+        1.0
+      ],
+      "normalTexture": false,
+      "metallicRoughnessTexture": false
+    },
+    {
+      "name": "rafter-timber",
+      "baseColorTexture": true,
+      "baseColorFactor": [
+        0.7912979125976562,
+        0.672443151473999,
+        0.577580451965332,
+        1.0
+      ],
+      "normalTexture": true,
+      "metallicRoughnessTexture": false
+    }
+  ],
+  "images": 10,
+  "primitives": 12,
+  "normals": {
+    "count": 32059,
+    "unitLength": true,
+    "nanCount": 0
+  },
+  "triangles": 16368
+}

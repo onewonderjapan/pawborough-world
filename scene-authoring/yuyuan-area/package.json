@@ -1,0 +1,27 @@
+{
+  "name": "pawborough-yuyuan-area-authoring",
+  "private": true,
+  "type": "module",
+  "description": "全域底模批：豫园内部 + 城隍庙组团 + 小吃商业街。单一 layout.json 派生 3D/2D/分区清单。",
+  "scripts": {
+    "layout": "python3 -X utf8 scripts/repair-layout.py",
+    "scene": "node src/build-scene.mjs",
+    "assemble": "blender -b -P scripts/assemble.py",
+    "server": "PORT=${PORT:-5486} node scripts/server.mjs",
+    "views": "node scripts/render-views.mjs",
+    "validate": "node scripts/validate.mjs",
+    "build": "npm run layout && npm run scene && npm run assemble && npm run validate",
+    "test": "node tests/geo-tests.mjs && OUT_DIR=${OUT_DIR:-out} node tests/check-export.mjs && OUT_DIR=${OUT_DIR:-out} node tests/coverage-negative-test.mjs && node tests/passage-repair-test.mjs",
+    "sockets": "node scripts/audit-commerce.mjs",
+    "connectivity": "node scripts/check-connectivity.mjs",
+    "coverage": "node src/coverage.mjs",
+    "verify": "npm test && node scripts/validate.mjs && node scripts/check-food.mjs"
+  },
+  "dependencies": {
+    "three": "0.180.0",
+    "gltf-validator": "2.0.0-dev.3.10"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}

@@ -1,3 +1,4 @@
+import {worldClosure} from './world-closure.mjs';
 import {spawnSync} from 'node:child_process';
 import {readFile,mkdir,copyFile,readdir,stat} from 'node:fs/promises';
 import {resolve,dirname} from 'node:path';
@@ -72,7 +73,8 @@ if(!existsSync(resolve(root,'dist/temple.html')))throw Error('dist/temple.html m
 // dataset fails the build instead of 404ing at runtime. *.blend stays out —
 // no page ever fetches it and it is most of the dead weight.
 const worldDir=resolve(root,'world');
-let dsCopied=0, dsFiles=0;
+const closure=await worldClosure(worldDir);
+let dsCopied=0, libraryCopied=0, dsFiles=0;
 const copyTree=async(srcDir,dstDir)=>{
   for(const f of await readdir(srcDir,{withFileTypes:true})){
     if(f.name.endsWith('.blend'))continue;
@@ -84,10 +86,10 @@ const copyTree=async(srcDir,dstDir)=>{
 for(const e of await readdir(worldDir,{withFileTypes:true})){
   if(!e.isDirectory())continue;
   const dsAbs=resolve(worldDir,e.name);
-  if(!existsSync(resolve(dsAbs,'review-manifest.json')))
-    throw Error(`world/${e.name}/ has no review-manifest.json — not a loadable dataset; fix or remove it from the closure`);
+  // worldClosure already verified every library is referenced and every referenced asset exists.
   await mkdir(resolve(root,'dist/world',e.name),{recursive:true});
-  await copyTree(dsAbs,resolve(root,'dist/world',e.name));dsCopied++;
+  await copyTree(dsAbs,resolve(root,'dist/world',e.name));
+  if(closure.datasets.includes(e.name))dsCopied++;else libraryCopied++;
 }
 // root-level world files: the compressed variants of the root GLBs
 for(const f of await readdir(worldDir,{withFileTypes:true})){
@@ -100,4 +102,4 @@ for(const f of await readdir(worldDir,{withFileTypes:true})){
 await copyFile(resolve(root,'VERSION.json'),resolve(root,'dist/VERSION.json'));
 await copyFile(resolve(root,'index-v1.html'),resolve(root,'dist/index-v1.html'));
 if(!existsSync(resolve(root,'dist/temple-v3.html')))throw Error('dist/temple-v3.html missing — the temple-v3 entry is a rollup input since the closeout batch and must reach the build');
-console.log(`Closeout world closure: ${dsCopied} datasets / ${dsFiles} dataset files + root cm + VERSION.json + index-v1.html copied into dist (blend excluded).`);
+console.log(`Closeout world closure: ${dsCopied} datasets + ${libraryCopied} referenced libraries / ${dsFiles} dataset files + root cm + VERSION.json + index-v1.html copied into dist (blend excluded).`);

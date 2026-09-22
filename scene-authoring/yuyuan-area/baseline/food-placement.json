@@ -1,0 +1,2909 @@
+{
+ "generatedAt": "2026-09-22T06:14:12.351Z",
+ "outDir": "out-goal-05",
+ "lodPolicy": "手持件按用途固定单档 LOD1 接入（街视 1.5–6m 带）；bean-* 高密度件未接入（语义去重），故「高密度豆罐远景低档」由 wuxiangdou-jar 单档桌面件承担；每实例仅 1 个 LOD 节点 + 必要子件（lid/straw）",
+ "restPolicy": "食品 origin=落地中心（来源目录约定），直接置于 socket surfaceHeightM 台面；朝向取 socket worldRotY，不另加随机",
+ "budget": {
+  "note": "食品预算单列（PLAN G5：不偷换旧纯场景预算）。核心三区 placed 400k/450k 与主 GLB 27.2MB/30MB 目标仍按纯场景口径复核。",
+  "foodPlacedTriangles": 97984,
+  "foodPlacedTarget": 120000,
+  "breakdown": {
+   "purposeSlots": {
+    "count": 43,
+    "triangles": 30048
+   },
+   "traySlots": {
+    "count": 43,
+    "triangles": 67936
+   }
+  },
+  "instances": 86,
+  "uniqueItemsUsed": 13
+ },
+ "issues": [],
+ "counts": {
+  "sockets": 86,
+  "placements": 86,
+  "byPurpose": {
+   "food-tray-display": 43,
+   "steamer-basket-mount": 13,
+   "grill-mount": 11,
+   "cup-display": 9,
+   "pastry-case-display": 10
+  },
+  "byUse": {
+   "蒸煮": 26,
+   "烤制": 22,
+   "饮品": 18,
+   "点心": 20
+  }
+ },
+ "placements": [
+  {
+   "socketId": "food-socket-stall-1-tray",
+   "stall": "stall-1",
+   "zone": "bazaar",
+   "cluster": 1,
+   "foodUse": "蒸煮",
+   "purpose": "food-tray-display",
+   "item": "tangyuan-bowl",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__tangyuan-bowl",
+   "triangles": 2220,
+   "footprintM": [
+    0.162,
+    0.132
+   ],
+   "worldPosition": [
+    -128.653,
+    1.01,
+    21.86
+   ],
+   "worldRotY": 0.1048,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-1-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-1-steamer",
+   "stall": "stall-1",
+   "zone": "bazaar",
+   "cluster": 1,
+   "foodUse": "蒸煮",
+   "purpose": "steamer-basket-mount",
+   "item": "steamer-xiaolongbao-8",
+   "source": "resources/foods/handheld/steamer-xiaolongbao-8.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [
+    "lid"
+   ],
+   "node": "steamer-xiaolongbao-8_LOD1",
+   "triangles": 1872,
+   "footprintM": [
+    0.20399999618530273,
+    0.20399999618530273
+   ],
+   "worldPosition": [
+    -129.647,
+    1.31,
+    21.965
+   ],
+   "worldRotY": 0.1048,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.42,
+    0.42
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-1-steamer",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-2-tray",
+   "stall": "stall-2",
+   "zone": "bazaar",
+   "cluster": 1,
+   "foodUse": "烤制",
+   "purpose": "food-tray-display",
+   "item": "congyoubing-plate",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__congyoubing-plate",
+   "triangles": 1696,
+   "footprintM": [
+    0.22,
+    0.22
+   ],
+   "worldPosition": [
+    -131.338,
+    1.01,
+    22.143
+   ],
+   "worldRotY": 0.1048,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-2-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-2-grill",
+   "stall": "stall-2",
+   "zone": "bazaar",
+   "cluster": 1,
+   "foodUse": "烤制",
+   "purpose": "grill-mount",
+   "item": "xiekehuang",
+   "source": "resources/foods/handheld/xiekehuang.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "xiekehuang_LOD1",
+   "triangles": 272,
+   "footprintM": [
+    0.0859140008687973,
+    0.066600002348423
+   ],
+   "worldPosition": [
+    -132.332,
+    1.13,
+    22.247
+   ],
+   "worldRotY": 0.1048,
+   "surfaceHeightM": 1.13,
+   "usableSizeM": [
+    0.5,
+    0.36
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-2-grill",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-3-tray",
+   "stall": "stall-3",
+   "zone": "bazaar",
+   "cluster": 1,
+   "foodUse": "饮品",
+   "purpose": "food-tray-display",
+   "item": "teapot-cups",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__teapot-cups",
+   "triangles": 1468,
+   "footprintM": [
+    0.294,
+    0.214
+   ],
+   "worldPosition": [
+    -134.559,
+    1.01,
+    22.582
+   ],
+   "worldRotY": 0.1048,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.55,
+    0.4
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-3-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-3-cup",
+   "stall": "stall-3",
+   "zone": "bazaar",
+   "cluster": 1,
+   "foodUse": "饮品",
+   "purpose": "cup-display",
+   "item": "teacup-filled",
+   "source": "resources/foods/handheld/teacup-filled.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "teacup-filled_LOD1",
+   "triangles": 280,
+   "footprintM": [
+    0.06400000303983688,
+    0.06400000303983688
+   ],
+   "worldPosition": [
+    -135.093,
+    1.31,
+    22.286
+   ],
+   "worldRotY": 0.1048,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.3,
+    0.3
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-3-cup",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-4-tray",
+   "stall": "stall-4",
+   "zone": "bazaar",
+   "cluster": 1,
+   "foodUse": "点心",
+   "purpose": "food-tray-display",
+   "item": "chopstick-cup",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__chopstick-cup",
+   "triangles": 600,
+   "footprintM": [
+    0.072,
+    0.072
+   ],
+   "worldPosition": [
+    -136.708,
+    1.01,
+    22.708
+   ],
+   "worldRotY": 0.1048,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-4-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-4-case",
+   "stall": "stall-4",
+   "zone": "bazaar",
+   "cluster": 1,
+   "foodUse": "点心",
+   "purpose": "pastry-case-display",
+   "item": "ligaotang-piece",
+   "source": "resources/foods/handheld/ligaotang-piece.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "ligaotang-piece_LOD1",
+   "triangles": 108,
+   "footprintM": [
+    0.03200000151991844,
+    0.026000000536441803
+   ],
+   "worldPosition": [
+    -137.703,
+    1.16,
+    22.812
+   ],
+   "worldRotY": 0.1048,
+   "surfaceHeightM": 1.16,
+   "usableSizeM": [
+    0.5,
+    0.32
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-4-case",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-5-tray",
+   "stall": "stall-5",
+   "zone": "bazaar",
+   "cluster": 1,
+   "foodUse": "蒸煮",
+   "purpose": "food-tray-display",
+   "item": "tangyuan-bowl",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__tangyuan-bowl",
+   "triangles": 2220,
+   "footprintM": [
+    0.162,
+    0.132
+   ],
+   "worldPosition": [
+    -139.393,
+    1.01,
+    22.99
+   ],
+   "worldRotY": 0.1048,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-5-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-5-steamer",
+   "stall": "stall-5",
+   "zone": "bazaar",
+   "cluster": 1,
+   "foodUse": "蒸煮",
+   "purpose": "steamer-basket-mount",
+   "item": "steamer-xiaolongbao-8",
+   "source": "resources/foods/handheld/steamer-xiaolongbao-8.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [
+    "lid"
+   ],
+   "node": "steamer-xiaolongbao-8_LOD1",
+   "triangles": 1872,
+   "footprintM": [
+    0.20399999618530273,
+    0.20399999618530273
+   ],
+   "worldPosition": [
+    -140.388,
+    1.31,
+    23.095
+   ],
+   "worldRotY": 0.1048,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.42,
+    0.42
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-5-steamer",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-6-tray",
+   "stall": "stall-6",
+   "zone": "bazaar",
+   "cluster": 1,
+   "foodUse": "烤制",
+   "purpose": "food-tray-display",
+   "item": "chunjuan-plate",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__chunjuan-plate",
+   "triangles": 1152,
+   "footprintM": [
+    0.22,
+    0.22
+   ],
+   "worldPosition": [
+    -142.079,
+    1.01,
+    23.272
+   ],
+   "worldRotY": 0.1048,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-6-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-6-grill",
+   "stall": "stall-6",
+   "zone": "bazaar",
+   "cluster": 1,
+   "foodUse": "烤制",
+   "purpose": "grill-mount",
+   "item": "youtiao",
+   "source": "resources/foods/handheld/youtiao.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "youtiao_LOD1",
+   "triangles": 200,
+   "footprintM": [
+    0.03656596317887306,
+    0.25999999046325684
+   ],
+   "worldPosition": [
+    -143.073,
+    1.13,
+    23.377
+   ],
+   "worldRotY": 0.1048,
+   "surfaceHeightM": 1.13,
+   "usableSizeM": [
+    0.5,
+    0.36
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-6-grill",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-8-tray",
+   "stall": "stall-8",
+   "zone": "bazaar",
+   "cluster": 2,
+   "foodUse": "烤制",
+   "purpose": "food-tray-display",
+   "item": "youtiao-pair-plate",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__youtiao-pair-plate",
+   "triangles": 856,
+   "footprintM": [
+    0.24,
+    0.26
+   ],
+   "worldPosition": [
+    -164.624,
+    1.01,
+    25.622
+   ],
+   "worldRotY": 0.1007,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-8-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-8-grill",
+   "stall": "stall-8",
+   "zone": "bazaar",
+   "cluster": 2,
+   "foodUse": "烤制",
+   "purpose": "grill-mount",
+   "item": "youdunzi",
+   "source": "resources/foods/handheld/youdunzi.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "youdunzi_LOD1",
+   "triangles": 160,
+   "footprintM": [
+    0.0714000016450882,
+    0.07152771204710007
+   ],
+   "worldPosition": [
+    -165.619,
+    1.13,
+    25.723
+   ],
+   "worldRotY": 0.1007,
+   "surfaceHeightM": 1.13,
+   "usableSizeM": [
+    0.5,
+    0.36
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-8-grill",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-9-tray",
+   "stall": "stall-9",
+   "zone": "bazaar",
+   "cluster": 2,
+   "foodUse": "饮品",
+   "purpose": "food-tray-display",
+   "item": "teapot-cups",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__teapot-cups",
+   "triangles": 1468,
+   "footprintM": [
+    0.294,
+    0.214
+   ],
+   "worldPosition": [
+    -172.025,
+    1.01,
+    26.47
+   ],
+   "worldRotY": 0.1005,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.55,
+    0.4
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-9-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-9-cup",
+   "stall": "stall-9",
+   "zone": "bazaar",
+   "cluster": 2,
+   "foodUse": "饮品",
+   "purpose": "cup-display",
+   "item": "teacup-filled",
+   "source": "resources/foods/handheld/teacup-filled.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "teacup-filled_LOD1",
+   "triangles": 280,
+   "footprintM": [
+    0.06400000303983688,
+    0.06400000303983688
+   ],
+   "worldPosition": [
+    -172.557,
+    1.31,
+    26.172
+   ],
+   "worldRotY": 0.1005,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.3,
+    0.3
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-9-cup",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-10-tray",
+   "stall": "stall-10",
+   "zone": "bazaar",
+   "cluster": 2,
+   "foodUse": "点心",
+   "purpose": "food-tray-display",
+   "item": "chopstick-cup",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__chopstick-cup",
+   "triangles": 600,
+   "footprintM": [
+    0.072,
+    0.072
+   ],
+   "worldPosition": [
+    -174.174,
+    1.01,
+    26.586
+   ],
+   "worldRotY": 0.1005,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-10-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-10-case",
+   "stall": "stall-10",
+   "zone": "bazaar",
+   "cluster": 2,
+   "foodUse": "点心",
+   "purpose": "pastry-case-display",
+   "item": "ligaotang-piece",
+   "source": "resources/foods/handheld/ligaotang-piece.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "ligaotang-piece_LOD1",
+   "triangles": 108,
+   "footprintM": [
+    0.03200000151991844,
+    0.026000000536441803
+   ],
+   "worldPosition": [
+    -175.169,
+    1.16,
+    26.686
+   ],
+   "worldRotY": 0.1005,
+   "surfaceHeightM": 1.16,
+   "usableSizeM": [
+    0.5,
+    0.32
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-10-case",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-11-tray",
+   "stall": "stall-11",
+   "zone": "bazaar",
+   "cluster": 2,
+   "foodUse": "蒸煮",
+   "purpose": "food-tray-display",
+   "item": "tangyuan-bowl",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__tangyuan-bowl",
+   "triangles": 2220,
+   "footprintM": [
+    0.162,
+    0.132
+   ],
+   "worldPosition": [
+    -176.86,
+    1.01,
+    26.857
+   ],
+   "worldRotY": 0.1005,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-11-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-11-steamer",
+   "stall": "stall-11",
+   "zone": "bazaar",
+   "cluster": 2,
+   "foodUse": "蒸煮",
+   "purpose": "steamer-basket-mount",
+   "item": "steamer-xiaolongbao-8",
+   "source": "resources/foods/handheld/steamer-xiaolongbao-8.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [
+    "lid"
+   ],
+   "node": "steamer-xiaolongbao-8_LOD1",
+   "triangles": 1872,
+   "footprintM": [
+    0.20399999618530273,
+    0.20399999618530273
+   ],
+   "worldPosition": [
+    -177.855,
+    1.31,
+    26.957
+   ],
+   "worldRotY": 0.1005,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.42,
+    0.42
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-11-steamer",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-12-tray",
+   "stall": "stall-12",
+   "zone": "bazaar",
+   "cluster": 2,
+   "foodUse": "烤制",
+   "purpose": "food-tray-display",
+   "item": "cifangao-plate",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__cifangao-plate",
+   "triangles": 1224,
+   "footprintM": [
+    0.22,
+    0.22
+   ],
+   "worldPosition": [
+    -179.547,
+    1.01,
+    27.128
+   ],
+   "worldRotY": 0.1005,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-12-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-12-grill",
+   "stall": "stall-12",
+   "zone": "bazaar",
+   "cluster": 2,
+   "foodUse": "烤制",
+   "purpose": "grill-mount",
+   "item": "cifangao",
+   "source": "resources/foods/handheld/cifangao.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "cifangao_LOD1",
+   "triangles": 108,
+   "footprintM": [
+    0.02800000086426735,
+    0.07500000298023224
+   ],
+   "worldPosition": [
+    -180.542,
+    1.13,
+    27.228
+   ],
+   "worldRotY": 0.1005,
+   "surfaceHeightM": 1.13,
+   "usableSizeM": [
+    0.5,
+    0.36
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-12-grill",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-13-tray",
+   "stall": "stall-13",
+   "zone": "bazaar",
+   "cluster": 2,
+   "foodUse": "饮品",
+   "purpose": "food-tray-display",
+   "item": "teapot-cups",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__teapot-cups",
+   "triangles": 1468,
+   "footprintM": [
+    0.294,
+    0.214
+   ],
+   "worldPosition": [
+    -182.77,
+    1.01,
+    27.553
+   ],
+   "worldRotY": 0.1005,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.55,
+    0.4
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-13-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-13-cup",
+   "stall": "stall-13",
+   "zone": "bazaar",
+   "cluster": 2,
+   "foodUse": "饮品",
+   "purpose": "cup-display",
+   "item": "teacup-filled",
+   "source": "resources/foods/handheld/teacup-filled.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "teacup-filled_LOD1",
+   "triangles": 280,
+   "footprintM": [
+    0.06400000303983688,
+    0.06400000303983688
+   ],
+   "worldPosition": [
+    -183.303,
+    1.31,
+    27.255
+   ],
+   "worldRotY": 0.1005,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.3,
+    0.3
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-13-cup",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-15-tray",
+   "stall": "stall-15",
+   "zone": "bazaar",
+   "cluster": 3,
+   "foodUse": "饮品",
+   "purpose": "food-tray-display",
+   "item": "teapot-cups",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__teapot-cups",
+   "triangles": 1468,
+   "footprintM": [
+    0.294,
+    0.214
+   ],
+   "worldPosition": [
+    -214.708,
+    1.01,
+    30.774
+   ],
+   "worldRotY": 0.1005,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.55,
+    0.4
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-15-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-15-cup",
+   "stall": "stall-15",
+   "zone": "bazaar",
+   "cluster": 3,
+   "foodUse": "饮品",
+   "purpose": "cup-display",
+   "item": "teacup-filled",
+   "source": "resources/foods/handheld/teacup-filled.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "teacup-filled_LOD1",
+   "triangles": 280,
+   "footprintM": [
+    0.06400000303983688,
+    0.06400000303983688
+   ],
+   "worldPosition": [
+    -215.241,
+    1.31,
+    30.476
+   ],
+   "worldRotY": 0.1005,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.3,
+    0.3
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-15-cup",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-16-tray",
+   "stall": "stall-16",
+   "zone": "bazaar",
+   "cluster": 3,
+   "foodUse": "点心",
+   "purpose": "food-tray-display",
+   "item": "chopstick-cup",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__chopstick-cup",
+   "triangles": 600,
+   "footprintM": [
+    0.072,
+    0.072
+   ],
+   "worldPosition": [
+    -216.857,
+    1.01,
+    30.89
+   ],
+   "worldRotY": 0.1005,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-16-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-16-case",
+   "stall": "stall-16",
+   "zone": "bazaar",
+   "cluster": 3,
+   "foodUse": "点心",
+   "purpose": "pastry-case-display",
+   "item": "ligaotang-piece",
+   "source": "resources/foods/handheld/ligaotang-piece.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "ligaotang-piece_LOD1",
+   "triangles": 108,
+   "footprintM": [
+    0.03200000151991844,
+    0.026000000536441803
+   ],
+   "worldPosition": [
+    -217.852,
+    1.16,
+    30.991
+   ],
+   "worldRotY": 0.1005,
+   "surfaceHeightM": 1.16,
+   "usableSizeM": [
+    0.5,
+    0.32
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-16-case",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-17-tray",
+   "stall": "stall-17",
+   "zone": "bazaar",
+   "cluster": 3,
+   "foodUse": "蒸煮",
+   "purpose": "food-tray-display",
+   "item": "tangyuan-bowl",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__tangyuan-bowl",
+   "triangles": 2220,
+   "footprintM": [
+    0.162,
+    0.132
+   ],
+   "worldPosition": [
+    -211.783,
+    1.01,
+    30.379
+   ],
+   "worldRotY": 0.1005,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-17-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-17-steamer",
+   "stall": "stall-17",
+   "zone": "bazaar",
+   "cluster": 3,
+   "foodUse": "蒸煮",
+   "purpose": "steamer-basket-mount",
+   "item": "steamer-xiaolongbao-8",
+   "source": "resources/foods/handheld/steamer-xiaolongbao-8.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [
+    "lid"
+   ],
+   "node": "steamer-xiaolongbao-8_LOD1",
+   "triangles": 1872,
+   "footprintM": [
+    0.20399999618530273,
+    0.20399999618530273
+   ],
+   "worldPosition": [
+    -212.778,
+    1.31,
+    30.479
+   ],
+   "worldRotY": 0.1005,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.42,
+    0.42
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-17-steamer",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-18-tray",
+   "stall": "stall-18",
+   "zone": "bazaar",
+   "cluster": 3,
+   "foodUse": "烤制",
+   "purpose": "food-tray-display",
+   "item": "youdunzi-rack",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__youdunzi-rack",
+   "triangles": 1536,
+   "footprintM": [
+    0.32,
+    0.32
+   ],
+   "worldPosition": [
+    -219.245,
+    1.01,
+    31.131
+   ],
+   "worldRotY": 0.1005,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-18-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-18-grill",
+   "stall": "stall-18",
+   "zone": "bazaar",
+   "cluster": 3,
+   "foodUse": "烤制",
+   "purpose": "grill-mount",
+   "item": "xiekehuang",
+   "source": "resources/foods/handheld/xiekehuang.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "xiekehuang_LOD1",
+   "triangles": 272,
+   "footprintM": [
+    0.0859140008687973,
+    0.066600002348423
+   ],
+   "worldPosition": [
+    -220.24,
+    1.13,
+    31.231
+   ],
+   "worldRotY": 0.1005,
+   "surfaceHeightM": 1.13,
+   "usableSizeM": [
+    0.5,
+    0.36
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-18-grill",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-19-tray",
+   "stall": "stall-19",
+   "zone": "bazaar",
+   "cluster": 4,
+   "foodUse": "点心",
+   "purpose": "food-tray-display",
+   "item": "wuxiangdou-packet",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__wuxiangdou-packet",
+   "triangles": 220,
+   "footprintM": [
+    0.09,
+    0.032
+   ],
+   "worldPosition": [
+    -272.359,
+    1.01,
+    -249.808
+   ],
+   "worldRotY": -1.4305,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-19-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-19-case",
+   "stall": "stall-19",
+   "zone": "bazaar",
+   "cluster": 4,
+   "foodUse": "点心",
+   "purpose": "pastry-case-display",
+   "item": "guantangbao",
+   "source": "resources/foods/handheld/guantangbao.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [
+    "straw"
+   ],
+   "node": "guantangbao_LOD1",
+   "triangles": 284,
+   "footprintM": [
+    0.11126919090747833,
+    0.11021264642477036
+   ],
+   "worldPosition": [
+    -272.499,
+    1.16,
+    -250.798
+   ],
+   "worldRotY": -1.4305,
+   "surfaceHeightM": 1.16,
+   "usableSizeM": [
+    0.5,
+    0.32
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-19-case",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-20-tray",
+   "stall": "stall-20",
+   "zone": "bazaar",
+   "cluster": 4,
+   "foodUse": "蒸煮",
+   "purpose": "food-tray-display",
+   "item": "jiuniang-yuanzi-bowl",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__jiuniang-yuanzi-bowl",
+   "triangles": 2848,
+   "footprintM": [
+    0.132,
+    0.132
+   ],
+   "worldPosition": [
+    -271.981,
+    1.01,
+    -247.134
+   ],
+   "worldRotY": -1.4305,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-20-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-20-steamer",
+   "stall": "stall-20",
+   "zone": "bazaar",
+   "cluster": 4,
+   "foodUse": "蒸煮",
+   "purpose": "steamer-basket-mount",
+   "item": "steamer-xiaolongbao-8",
+   "source": "resources/foods/handheld/steamer-xiaolongbao-8.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [
+    "lid"
+   ],
+   "node": "steamer-xiaolongbao-8_LOD1",
+   "triangles": 1872,
+   "footprintM": [
+    0.20399999618530273,
+    0.20399999618530273
+   ],
+   "worldPosition": [
+    -272.121,
+    1.31,
+    -248.125
+   ],
+   "worldRotY": -1.4305,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.42,
+    0.42
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-20-steamer",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-21-tray",
+   "stall": "stall-21",
+   "zone": "bazaar",
+   "cluster": 4,
+   "foodUse": "烤制",
+   "purpose": "food-tray-display",
+   "item": "xiekehuang-tray",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__xiekehuang-tray",
+   "triangles": 3120,
+   "footprintM": [
+    0.35,
+    0.35
+   ],
+   "worldPosition": [
+    -271.604,
+    1.01,
+    -244.461
+   ],
+   "worldRotY": -1.4305,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-21-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-21-grill",
+   "stall": "stall-21",
+   "zone": "bazaar",
+   "cluster": 4,
+   "foodUse": "烤制",
+   "purpose": "grill-mount",
+   "item": "chunjuan",
+   "source": "resources/foods/handheld/chunjuan.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "chunjuan_LOD1",
+   "triangles": 96,
+   "footprintM": [
+    0.023600000888109207,
+    0.10000000149011612
+   ],
+   "worldPosition": [
+    -271.744,
+    1.13,
+    -245.451
+   ],
+   "worldRotY": -1.4305,
+   "surfaceHeightM": 1.13,
+   "usableSizeM": [
+    0.5,
+    0.36
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-21-grill",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-22-tray",
+   "stall": "stall-22",
+   "zone": "bazaar",
+   "cluster": 4,
+   "foodUse": "饮品",
+   "purpose": "food-tray-display",
+   "item": "teapot-cups",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__teapot-cups",
+   "triangles": 1468,
+   "footprintM": [
+    0.294,
+    0.214
+   ],
+   "worldPosition": [
+    -271.402,
+    1.01,
+    -242.318
+   ],
+   "worldRotY": -1.4305,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.55,
+    0.4
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-22-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-22-cup",
+   "stall": "stall-22",
+   "zone": "bazaar",
+   "cluster": 4,
+   "foodUse": "饮品",
+   "purpose": "cup-display",
+   "item": "teacup-filled",
+   "source": "resources/foods/handheld/teacup-filled.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "teacup-filled_LOD1",
+   "triangles": 280,
+   "footprintM": [
+    0.06400000303983688,
+    0.06400000303983688
+   ],
+   "worldPosition": [
+    -271.126,
+    1.31,
+    -242.862
+   ],
+   "worldRotY": -1.4305,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.3,
+    0.3
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-22-cup",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-23-tray",
+   "stall": "stall-23",
+   "zone": "bazaar",
+   "cluster": 4,
+   "foodUse": "点心",
+   "purpose": "food-tray-display",
+   "item": "vinegar-dish",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__vinegar-dish",
+   "triangles": 480,
+   "footprintM": [
+    0.076,
+    0.076
+   ],
+   "worldPosition": [
+    -270.849,
+    1.01,
+    -239.114
+   ],
+   "worldRotY": -1.4305,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-23-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-23-case",
+   "stall": "stall-23",
+   "zone": "bazaar",
+   "cluster": 4,
+   "foodUse": "点心",
+   "purpose": "pastry-case-display",
+   "item": "ligaotang-box-open",
+   "source": "resources/foods/handheld/ligaotang-box-open.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "ligaotang-box-open_LOD1",
+   "triangles": 192,
+   "footprintM": [
+    0.12399999797344208,
+    0.13599999621510506
+   ],
+   "worldPosition": [
+    -270.989,
+    1.16,
+    -240.104
+   ],
+   "worldRotY": -1.4305,
+   "surfaceHeightM": 1.16,
+   "usableSizeM": [
+    0.5,
+    0.32
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-23-case",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-24-tray",
+   "stall": "stall-24",
+   "zone": "bazaar",
+   "cluster": 4,
+   "foodUse": "蒸煮",
+   "purpose": "food-tray-display",
+   "item": "jiuniang-yuanzi-bowl",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__jiuniang-yuanzi-bowl",
+   "triangles": 2848,
+   "footprintM": [
+    0.132,
+    0.132
+   ],
+   "worldPosition": [
+    -270.471,
+    1.01,
+    -236.44
+   ],
+   "worldRotY": -1.4305,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-24-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-24-steamer",
+   "stall": "stall-24",
+   "zone": "bazaar",
+   "cluster": 4,
+   "foodUse": "蒸煮",
+   "purpose": "steamer-basket-mount",
+   "item": "steamer-xiaolongbao-8",
+   "source": "resources/foods/handheld/steamer-xiaolongbao-8.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [
+    "lid"
+   ],
+   "node": "steamer-xiaolongbao-8_LOD1",
+   "triangles": 1872,
+   "footprintM": [
+    0.20399999618530273,
+    0.20399999618530273
+   ],
+   "worldPosition": [
+    -270.611,
+    1.31,
+    -237.431
+   ],
+   "worldRotY": -1.4305,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.42,
+    0.42
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-24-steamer",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-26-tray",
+   "stall": "stall-26",
+   "zone": "bazaar",
+   "cluster": 5,
+   "foodUse": "蒸煮",
+   "purpose": "food-tray-display",
+   "item": "jiuniang-yuanzi-bowl",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__jiuniang-yuanzi-bowl",
+   "triangles": 2848,
+   "footprintM": [
+    0.132,
+    0.132
+   ],
+   "worldPosition": [
+    -264.697,
+    1.01,
+    -195.546
+   ],
+   "worldRotY": -1.4305,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-26-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-26-steamer",
+   "stall": "stall-26",
+   "zone": "bazaar",
+   "cluster": 5,
+   "foodUse": "蒸煮",
+   "purpose": "steamer-basket-mount",
+   "item": "steamer-xiaolongbao-8",
+   "source": "resources/foods/handheld/steamer-xiaolongbao-8.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [
+    "lid"
+   ],
+   "node": "steamer-xiaolongbao-8_LOD1",
+   "triangles": 1872,
+   "footprintM": [
+    0.20399999618530273,
+    0.20399999618530273
+   ],
+   "worldPosition": [
+    -264.837,
+    1.31,
+    -196.536
+   ],
+   "worldRotY": -1.4305,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.42,
+    0.42
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-26-steamer",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-27-tray",
+   "stall": "stall-27",
+   "zone": "bazaar",
+   "cluster": 5,
+   "foodUse": "烤制",
+   "purpose": "food-tray-display",
+   "item": "chunjuan-plate",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__chunjuan-plate",
+   "triangles": 1152,
+   "footprintM": [
+    0.22,
+    0.22
+   ],
+   "worldPosition": [
+    -263.704,
+    1.01,
+    -188.765
+   ],
+   "worldRotY": -1.4219,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-27-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-27-grill",
+   "stall": "stall-27",
+   "zone": "bazaar",
+   "cluster": 5,
+   "foodUse": "烤制",
+   "purpose": "grill-mount",
+   "item": "congyoubing",
+   "source": "resources/foods/handheld/congyoubing.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "congyoubing_LOD1",
+   "triangles": 42,
+   "footprintM": [
+    0.11999999731779099,
+    0.05999999865889549
+   ],
+   "worldPosition": [
+    -263.852,
+    1.13,
+    -189.754
+   ],
+   "worldRotY": -1.4219,
+   "surfaceHeightM": 1.13,
+   "usableSizeM": [
+    0.5,
+    0.36
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-27-grill",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-28-tray",
+   "stall": "stall-28",
+   "zone": "bazaar",
+   "cluster": 5,
+   "foodUse": "饮品",
+   "purpose": "food-tray-display",
+   "item": "teapot-cups",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__teapot-cups",
+   "triangles": 1468,
+   "footprintM": [
+    0.294,
+    0.214
+   ],
+   "worldPosition": [
+    -263.484,
+    1.01,
+    -186.624
+   ],
+   "worldRotY": -1.4219,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.55,
+    0.4
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-28-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-28-cup",
+   "stall": "stall-28",
+   "zone": "bazaar",
+   "cluster": 5,
+   "foodUse": "饮品",
+   "purpose": "cup-display",
+   "item": "teacup-filled",
+   "source": "resources/foods/handheld/teacup-filled.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "teacup-filled_LOD1",
+   "triangles": 280,
+   "footprintM": [
+    0.06400000303983688,
+    0.06400000303983688
+   ],
+   "worldPosition": [
+    -263.212,
+    1.31,
+    -187.171
+   ],
+   "worldRotY": -1.4219,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.3,
+    0.3
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-28-cup",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-29-tray",
+   "stall": "stall-29",
+   "zone": "bazaar",
+   "cluster": 5,
+   "foodUse": "点心",
+   "purpose": "food-tray-display",
+   "item": "vinegar-dish",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__vinegar-dish",
+   "triangles": 480,
+   "footprintM": [
+    0.076,
+    0.076
+   ],
+   "worldPosition": [
+    -262.903,
+    1.01,
+    -183.425
+   ],
+   "worldRotY": -1.4219,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-29-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-29-case",
+   "stall": "stall-29",
+   "zone": "bazaar",
+   "cluster": 5,
+   "foodUse": "点心",
+   "purpose": "pastry-case-display",
+   "item": "ligaotang-box-open",
+   "source": "resources/foods/handheld/ligaotang-box-open.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "ligaotang-box-open_LOD1",
+   "triangles": 192,
+   "footprintM": [
+    0.12399999797344208,
+    0.13599999621510506
+   ],
+   "worldPosition": [
+    -263.051,
+    1.16,
+    -184.414
+   ],
+   "worldRotY": -1.4219,
+   "surfaceHeightM": 1.16,
+   "usableSizeM": [
+    0.5,
+    0.32
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-29-case",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-30-tray",
+   "stall": "stall-30",
+   "zone": "bazaar",
+   "cluster": 5,
+   "foodUse": "蒸煮",
+   "purpose": "food-tray-display",
+   "item": "jiuniang-yuanzi-bowl",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__jiuniang-yuanzi-bowl",
+   "triangles": 2848,
+   "footprintM": [
+    0.132,
+    0.132
+   ],
+   "worldPosition": [
+    -262.502,
+    1.01,
+    -180.755
+   ],
+   "worldRotY": -1.4219,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-30-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-30-steamer",
+   "stall": "stall-30",
+   "zone": "bazaar",
+   "cluster": 5,
+   "foodUse": "蒸煮",
+   "purpose": "steamer-basket-mount",
+   "item": "steamer-xiaolongbao-8",
+   "source": "resources/foods/handheld/steamer-xiaolongbao-8.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [
+    "lid"
+   ],
+   "node": "steamer-xiaolongbao-8_LOD1",
+   "triangles": 1872,
+   "footprintM": [
+    0.20399999618530273,
+    0.20399999618530273
+   ],
+   "worldPosition": [
+    -262.65,
+    1.31,
+    -181.744
+   ],
+   "worldRotY": -1.4219,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.42,
+    0.42
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-30-steamer",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-32-tray",
+   "stall": "stall-32",
+   "zone": "bazaar",
+   "cluster": 6,
+   "foodUse": "烤制",
+   "purpose": "food-tray-display",
+   "item": "youdunzi-rack",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__youdunzi-rack",
+   "triangles": 1536,
+   "footprintM": [
+    0.32,
+    0.32
+   ],
+   "worldPosition": [
+    -259.374,
+    1.01,
+    -163.091
+   ],
+   "worldRotY": -1.3744,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-32-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-32-grill",
+   "stall": "stall-32",
+   "zone": "bazaar",
+   "cluster": 6,
+   "foodUse": "烤制",
+   "purpose": "grill-mount",
+   "item": "youdunzi",
+   "source": "resources/foods/handheld/youdunzi.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "youdunzi_LOD1",
+   "triangles": 160,
+   "footprintM": [
+    0.0714000016450882,
+    0.07152771204710007
+   ],
+   "worldPosition": [
+    -259.569,
+    1.13,
+    -164.072
+   ],
+   "worldRotY": -1.3744,
+   "surfaceHeightM": 1.13,
+   "usableSizeM": [
+    0.5,
+    0.36
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-32-grill",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-33-tray",
+   "stall": "stall-33",
+   "zone": "bazaar",
+   "cluster": 6,
+   "foodUse": "饮品",
+   "purpose": "food-tray-display",
+   "item": "teapot-cups",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__teapot-cups",
+   "triangles": 1468,
+   "footprintM": [
+    0.294,
+    0.214
+   ],
+   "worldPosition": [
+    -259.052,
+    1.01,
+    -160.963
+   ],
+   "worldRotY": -1.3744,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.55,
+    0.4
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-33-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-33-cup",
+   "stall": "stall-33",
+   "zone": "bazaar",
+   "cluster": 6,
+   "foodUse": "饮品",
+   "purpose": "cup-display",
+   "item": "teacup-filled",
+   "source": "resources/foods/handheld/teacup-filled.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "teacup-filled_LOD1",
+   "triangles": 280,
+   "footprintM": [
+    0.06400000303983688,
+    0.06400000303983688
+   ],
+   "worldPosition": [
+    -258.806,
+    1.31,
+    -161.522
+   ],
+   "worldRotY": -1.3744,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.3,
+    0.3
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-33-cup",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-34-tray",
+   "stall": "stall-34",
+   "zone": "bazaar",
+   "cluster": 6,
+   "foodUse": "点心",
+   "purpose": "food-tray-display",
+   "item": "chopstick-cup",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__chopstick-cup",
+   "triangles": 600,
+   "footprintM": [
+    0.072,
+    0.072
+   ],
+   "worldPosition": [
+    -257.177,
+    1.01,
+    -151.847
+   ],
+   "worldRotY": -1.385,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-34-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-34-case",
+   "stall": "stall-34",
+   "zone": "bazaar",
+   "cluster": 6,
+   "foodUse": "点心",
+   "purpose": "pastry-case-display",
+   "item": "ligaotang-piece",
+   "source": "resources/foods/handheld/ligaotang-piece.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "ligaotang-piece_LOD1",
+   "triangles": 108,
+   "footprintM": [
+    0.03200000151991844,
+    0.026000000536441803
+   ],
+   "worldPosition": [
+    -257.362,
+    1.16,
+    -152.83
+   ],
+   "worldRotY": -1.385,
+   "surfaceHeightM": 1.16,
+   "usableSizeM": [
+    0.5,
+    0.32
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-34-case",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-35-tray",
+   "stall": "stall-35",
+   "zone": "bazaar",
+   "cluster": 6,
+   "foodUse": "蒸煮",
+   "purpose": "food-tray-display",
+   "item": "tangyuan-bowl",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__tangyuan-bowl",
+   "triangles": 2220,
+   "footprintM": [
+    0.162,
+    0.132
+   ],
+   "worldPosition": [
+    -258.378,
+    1.01,
+    -158.089
+   ],
+   "worldRotY": -1.3744,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-35-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-35-steamer",
+   "stall": "stall-35",
+   "zone": "bazaar",
+   "cluster": 6,
+   "foodUse": "蒸煮",
+   "purpose": "steamer-basket-mount",
+   "item": "steamer-xiaolongbao-8",
+   "source": "resources/foods/handheld/steamer-xiaolongbao-8.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [
+    "lid"
+   ],
+   "node": "steamer-xiaolongbao-8_LOD1",
+   "triangles": 1872,
+   "footprintM": [
+    0.20399999618530273,
+    0.20399999618530273
+   ],
+   "worldPosition": [
+    -258.573,
+    1.31,
+    -159.07
+   ],
+   "worldRotY": -1.3744,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.42,
+    0.42
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-35-steamer",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-36-tray",
+   "stall": "stall-36",
+   "zone": "bazaar",
+   "cluster": 6,
+   "foodUse": "烤制",
+   "purpose": "food-tray-display",
+   "item": "youtiao-pair-plate",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__youtiao-pair-plate",
+   "triangles": 856,
+   "footprintM": [
+    0.24,
+    0.26
+   ],
+   "worldPosition": [
+    -256.734,
+    1.01,
+    -149.488
+   ],
+   "worldRotY": -1.385,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-36-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-36-grill",
+   "stall": "stall-36",
+   "zone": "bazaar",
+   "cluster": 6,
+   "foodUse": "烤制",
+   "purpose": "grill-mount",
+   "item": "cifangao",
+   "source": "resources/foods/handheld/cifangao.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "cifangao_LOD1",
+   "triangles": 108,
+   "footprintM": [
+    0.02800000086426735,
+    0.07500000298023224
+   ],
+   "worldPosition": [
+    -256.919,
+    1.13,
+    -150.471
+   ],
+   "worldRotY": -1.385,
+   "surfaceHeightM": 1.13,
+   "usableSizeM": [
+    0.5,
+    0.36
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-36-grill",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-38-tray",
+   "stall": "stall-38",
+   "zone": "bazaar",
+   "cluster": 7,
+   "foodUse": "饮品",
+   "purpose": "food-tray-display",
+   "item": "teapot-cups",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__teapot-cups",
+   "triangles": 1468,
+   "footprintM": [
+    0.294,
+    0.214
+   ],
+   "worldPosition": [
+    -222.123,
+    1.01,
+    26.667
+   ],
+   "worldRotY": -1.3625,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.55,
+    0.4
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-38-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-38-cup",
+   "stall": "stall-38",
+   "zone": "bazaar",
+   "cluster": 7,
+   "foodUse": "饮品",
+   "purpose": "cup-display",
+   "item": "teacup-filled",
+   "source": "resources/foods/handheld/teacup-filled.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "teacup-filled_LOD1",
+   "triangles": 280,
+   "footprintM": [
+    0.06400000303983688,
+    0.06400000303983688
+   ],
+   "worldPosition": [
+    -221.884,
+    1.31,
+    26.105
+   ],
+   "worldRotY": -1.3625,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.3,
+    0.3
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-38-cup",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-39-tray",
+   "stall": "stall-39",
+   "zone": "bazaar",
+   "cluster": 7,
+   "foodUse": "点心",
+   "purpose": "food-tray-display",
+   "item": "paigu-niangao-plate",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__paigu-niangao-plate",
+   "triangles": 1136,
+   "footprintM": [
+    0.24,
+    0.24
+   ],
+   "worldPosition": [
+    -221.353,
+    1.01,
+    29.826
+   ],
+   "worldRotY": -1.3625,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-39-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-39-case",
+   "stall": "stall-39",
+   "zone": "bazaar",
+   "cluster": 7,
+   "foodUse": "点心",
+   "purpose": "pastry-case-display",
+   "item": "tangyuan-meat",
+   "source": "resources/foods/handheld/tangyuan-meat.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "tangyuan-meat_LOD1",
+   "triangles": 140,
+   "footprintM": [
+    0.03400000184774399,
+    0.03400000184774399
+   ],
+   "worldPosition": [
+    -221.56,
+    1.16,
+    28.847
+   ],
+   "worldRotY": -1.3625,
+   "surfaceHeightM": 1.16,
+   "usableSizeM": [
+    0.5,
+    0.32
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-39-case",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-40-tray",
+   "stall": "stall-40",
+   "zone": "bazaar",
+   "cluster": 7,
+   "foodUse": "蒸煮",
+   "purpose": "food-tray-display",
+   "item": "jiuniang-yuanzi-bowl",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__jiuniang-yuanzi-bowl",
+   "triangles": 2848,
+   "footprintM": [
+    0.132,
+    0.132
+   ],
+   "worldPosition": [
+    -222.408,
+    1.01,
+    24.836
+   ],
+   "worldRotY": -1.3625,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-40-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-40-steamer",
+   "stall": "stall-40",
+   "zone": "bazaar",
+   "cluster": 7,
+   "foodUse": "蒸煮",
+   "purpose": "steamer-basket-mount",
+   "item": "steamer-xiaolongbao-8",
+   "source": "resources/foods/handheld/steamer-xiaolongbao-8.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [
+    "lid"
+   ],
+   "node": "steamer-xiaolongbao-8_LOD1",
+   "triangles": 1872,
+   "footprintM": [
+    0.20399999618530273,
+    0.20399999618530273
+   ],
+   "worldPosition": [
+    -222.615,
+    1.31,
+    23.858
+   ],
+   "worldRotY": -1.3625,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.42,
+    0.42
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-40-steamer",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-41-tray",
+   "stall": "stall-41",
+   "zone": "bazaar",
+   "cluster": 8,
+   "foodUse": "点心",
+   "purpose": "food-tray-display",
+   "item": "vinegar-dish",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__vinegar-dish",
+   "triangles": 480,
+   "footprintM": [
+    0.076,
+    0.076
+   ],
+   "worldPosition": [
+    -184.543,
+    1.01,
+    -87.861
+   ],
+   "worldRotY": 0.1879,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-41-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-41-case",
+   "stall": "stall-41",
+   "zone": "bazaar",
+   "cluster": 8,
+   "foodUse": "点心",
+   "purpose": "pastry-case-display",
+   "item": "ligaotang-box-open",
+   "source": "resources/foods/handheld/ligaotang-box-open.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "ligaotang-box-open_LOD1",
+   "triangles": 192,
+   "footprintM": [
+    0.12399999797344208,
+    0.13599999621510506
+   ],
+   "worldPosition": [
+    -185.525,
+    1.16,
+    -87.675
+   ],
+   "worldRotY": 0.1879,
+   "surfaceHeightM": 1.16,
+   "usableSizeM": [
+    0.5,
+    0.32
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-41-case",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-42-tray",
+   "stall": "stall-42",
+   "zone": "bazaar",
+   "cluster": 8,
+   "foodUse": "蒸煮",
+   "purpose": "food-tray-display",
+   "item": "jiuniang-yuanzi-bowl",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__jiuniang-yuanzi-bowl",
+   "triangles": 2848,
+   "footprintM": [
+    0.132,
+    0.132
+   ],
+   "worldPosition": [
+    -181.89,
+    1.01,
+    -88.366
+   ],
+   "worldRotY": 0.1879,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-42-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-42-steamer",
+   "stall": "stall-42",
+   "zone": "bazaar",
+   "cluster": 8,
+   "foodUse": "蒸煮",
+   "purpose": "steamer-basket-mount",
+   "item": "steamer-xiaolongbao-8",
+   "source": "resources/foods/handheld/steamer-xiaolongbao-8.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [
+    "lid"
+   ],
+   "node": "steamer-xiaolongbao-8_LOD1",
+   "triangles": 1872,
+   "footprintM": [
+    0.20399999618530273,
+    0.20399999618530273
+   ],
+   "worldPosition": [
+    -182.873,
+    1.31,
+    -88.179
+   ],
+   "worldRotY": 0.1879,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.42,
+    0.42
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-42-steamer",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-43-tray",
+   "stall": "stall-43",
+   "zone": "bazaar",
+   "cluster": 8,
+   "foodUse": "烤制",
+   "purpose": "food-tray-display",
+   "item": "youtiao-pair-plate",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__youtiao-pair-plate",
+   "triangles": 856,
+   "footprintM": [
+    0.24,
+    0.26
+   ],
+   "worldPosition": [
+    -179.238,
+    1.01,
+    -88.87
+   ],
+   "worldRotY": 0.1879,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-43-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-43-grill",
+   "stall": "stall-43",
+   "zone": "bazaar",
+   "cluster": 8,
+   "foodUse": "烤制",
+   "purpose": "grill-mount",
+   "item": "congyoubing",
+   "source": "resources/foods/handheld/congyoubing.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "congyoubing_LOD1",
+   "triangles": 42,
+   "footprintM": [
+    0.11999999731779099,
+    0.05999999865889549
+   ],
+   "worldPosition": [
+    -180.22,
+    1.13,
+    -88.683
+   ],
+   "worldRotY": 0.1879,
+   "surfaceHeightM": 1.13,
+   "usableSizeM": [
+    0.5,
+    0.36
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-43-grill",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-44-tray",
+   "stall": "stall-44",
+   "zone": "bazaar",
+   "cluster": 8,
+   "foodUse": "饮品",
+   "purpose": "food-tray-display",
+   "item": "teapot-cups",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__teapot-cups",
+   "triangles": 1468,
+   "footprintM": [
+    0.294,
+    0.214
+   ],
+   "worldPosition": [
+    -177.107,
+    1.01,
+    -89.173
+   ],
+   "worldRotY": 0.1879,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.55,
+    0.4
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-44-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-44-cup",
+   "stall": "stall-44",
+   "zone": "bazaar",
+   "cluster": 8,
+   "foodUse": "饮品",
+   "purpose": "cup-display",
+   "item": "teacup-filled",
+   "source": "resources/foods/handheld/teacup-filled.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "teacup-filled_LOD1",
+   "triangles": 280,
+   "footprintM": [
+    0.06400000303983688,
+    0.06400000303983688
+   ],
+   "worldPosition": [
+    -177.664,
+    1.31,
+    -89.424
+   ],
+   "worldRotY": 0.1879,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.3,
+    0.3
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-44-cup",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-45-tray",
+   "stall": "stall-45",
+   "zone": "bazaar",
+   "cluster": 8,
+   "foodUse": "点心",
+   "purpose": "food-tray-display",
+   "item": "paigu-niangao-plate",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__paigu-niangao-plate",
+   "triangles": 1136,
+   "footprintM": [
+    0.24,
+    0.24
+   ],
+   "worldPosition": [
+    -173.933,
+    1.01,
+    -89.879
+   ],
+   "worldRotY": 0.1879,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-45-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-45-case",
+   "stall": "stall-45",
+   "zone": "bazaar",
+   "cluster": 8,
+   "foodUse": "点心",
+   "purpose": "pastry-case-display",
+   "item": "tangyuan-meat",
+   "source": "resources/foods/handheld/tangyuan-meat.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "tangyuan-meat_LOD1",
+   "triangles": 140,
+   "footprintM": [
+    0.03400000184774399,
+    0.03400000184774399
+   ],
+   "worldPosition": [
+    -174.915,
+    1.16,
+    -89.692
+   ],
+   "worldRotY": 0.1879,
+   "surfaceHeightM": 1.16,
+   "usableSizeM": [
+    0.5,
+    0.32
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-45-case",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-46-tray",
+   "stall": "stall-46",
+   "zone": "bazaar",
+   "cluster": 8,
+   "foodUse": "蒸煮",
+   "purpose": "food-tray-display",
+   "item": "jiuniang-yuanzi-bowl",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__jiuniang-yuanzi-bowl",
+   "triangles": 2848,
+   "footprintM": [
+    0.132,
+    0.132
+   ],
+   "worldPosition": [
+    -171.28,
+    1.01,
+    -90.383
+   ],
+   "worldRotY": 0.1879,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-46-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-46-steamer",
+   "stall": "stall-46",
+   "zone": "bazaar",
+   "cluster": 8,
+   "foodUse": "蒸煮",
+   "purpose": "steamer-basket-mount",
+   "item": "steamer-xiaolongbao-8",
+   "source": "resources/foods/handheld/steamer-xiaolongbao-8.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [
+    "lid"
+   ],
+   "node": "steamer-xiaolongbao-8_LOD1",
+   "triangles": 1872,
+   "footprintM": [
+    0.20399999618530273,
+    0.20399999618530273
+   ],
+   "worldPosition": [
+    -172.263,
+    1.31,
+    -90.196
+   ],
+   "worldRotY": 0.1879,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.42,
+    0.42
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-46-steamer",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-47-tray",
+   "stall": "stall-47",
+   "zone": "bazaar",
+   "cluster": 9,
+   "foodUse": "蒸煮",
+   "purpose": "food-tray-display",
+   "item": "tangyuan-bowl",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__tangyuan-bowl",
+   "triangles": 2220,
+   "footprintM": [
+    0.162,
+    0.132
+   ],
+   "worldPosition": [
+    -171.863,
+    1.01,
+    -101.274
+   ],
+   "worldRotY": -2.9537,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-47-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-47-steamer",
+   "stall": "stall-47",
+   "zone": "bazaar",
+   "cluster": 9,
+   "foodUse": "蒸煮",
+   "purpose": "steamer-basket-mount",
+   "item": "steamer-xiaolongbao-8",
+   "source": "resources/foods/handheld/steamer-xiaolongbao-8.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [
+    "lid"
+   ],
+   "node": "steamer-xiaolongbao-8_LOD1",
+   "triangles": 1872,
+   "footprintM": [
+    0.20399999618530273,
+    0.20399999618530273
+   ],
+   "worldPosition": [
+    -170.88,
+    1.31,
+    -101.461
+   ],
+   "worldRotY": -2.9537,
+   "surfaceHeightM": 1.31,
+   "usableSizeM": [
+    0.42,
+    0.42
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-47-steamer",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  },
+  {
+   "socketId": "food-socket-stall-48-tray",
+   "stall": "stall-48",
+   "zone": "bazaar",
+   "cluster": 9,
+   "foodUse": "烤制",
+   "purpose": "food-tray-display",
+   "item": "chunjuan-plate",
+   "source": "resources/foods/tabletop/snacks-batch.glb",
+   "sourceKind": "tabletop_collection",
+   "lod": null,
+   "extras": [],
+   "node": "prop__chunjuan-plate",
+   "triangles": 1152,
+   "footprintM": [
+    0.22,
+    0.22
+   ],
+   "worldPosition": [
+    -169.21,
+    1.01,
+    -101.779
+   ],
+   "worldRotY": -2.9537,
+   "surfaceHeightM": 1.01,
+   "usableSizeM": [
+    0.5,
+    0.38
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-48-tray",
+   "rule": "桌面合集成组展示件（单档 LOD）"
+  },
+  {
+   "socketId": "food-socket-stall-48-grill",
+   "stall": "stall-48",
+   "zone": "bazaar",
+   "cluster": 9,
+   "foodUse": "烤制",
+   "purpose": "grill-mount",
+   "item": "youdunzi",
+   "source": "resources/foods/handheld/youdunzi.glb",
+   "sourceKind": "handheld_lod",
+   "lod": 1,
+   "extras": [],
+   "node": "youdunzi_LOD1",
+   "triangles": 160,
+   "footprintM": [
+    0.0714000016450882,
+    0.07152771204710007
+   ],
+   "worldPosition": [
+    -168.228,
+    1.13,
+    -101.966
+   ],
+   "worldRotY": -2.9537,
+   "surfaceHeightM": 1.13,
+   "usableSizeM": [
+    0.5,
+    0.36
+   ],
+   "fits": true,
+   "sceneNode": "food|food-socket-stall-48-grill",
+   "rule": "LOD1 单档（1.5–6m 街视带；G3/G4 实拍眼高 1.6–1.8m、机距 2–12m）"
+  }
+ ]
+}

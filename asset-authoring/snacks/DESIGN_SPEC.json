@@ -1,0 +1,152 @@
+{
+  "packageId": "pawborough-snacks-handheld-night-20260921",
+  "preparedBy": "lead (Claude), 2026-09-21",
+  "executor": "GLM-Flash in owner-started ZCode",
+  "purpose": "Hand-held Shanghai snack props with LOD + grip sockets, individually modelled 五香豆 (broad beans), detail renders. Standalone prop batch; no world integration, no repo changes.",
+  "authority": "This file is the only authority for numbers. PLAN.md gives order and fallbacks. If a number is missing here, use the nearest verified value from inputs/ and record it in PROGRESS.assumptions.",
+
+  "paths": {
+    "package": "/home/baibai/outbox/pawborough-snacks-handheld-night-20260921",
+    "workspace": "/home/baibai/outbox/pawborough-snacks-handheld-night-20260921/workspace",
+    "artifacts": "/home/baibai/outbox/pawborough-snacks-handheld-night-20260921/artifacts/snacks-handheld",
+    "inputsReadOnly": "/home/baibai/outbox/pawborough-snacks-handheld-night-20260921/inputs",
+    "baselineReadOnly": "/home/baibai/outbox/pawborough-snackshop-20260921",
+    "neverModify": [
+      "/home/baibai/pawborough-world",
+      "/home/baibai/outbox/pawborough-temple-shanmen-20260915/workspace",
+      "/home/baibai/outbox/pawborough-snackshop-20260921"
+    ],
+    "toolsReadOnly": {
+      "blender": "/home/baibai/.local/bin/blender",
+      "validator": "node /home/baibai/pawborough-world/scripts/validate_all.cjs --files <a.glb,b.glb> --root <workspace/props> --report <out.json>",
+      "inspect": "python3 -X utf8 inputs/inspect_glb.py <glb> --out <json>",
+      "systemPythonWithPIL": "python3 -X utf8 (PIL 10.2, numpy; Blender python has no PIL)",
+      "font": "/usr/share/fonts/opentype/noto/NotoSerifCJK-Regular.ttc index=2"
+    }
+  },
+
+  "coordinateContract": {
+    "glb": "Y-up, +Z = item front (side that faces the character when held), origin = item ground-centre (rest pose on a table)",
+    "blenderInternal": "Z-up; design (x,y,z) -> Blender (x,-z,y); export with export_yup=True (same as inputs/geomlib.py)",
+    "units": "metres",
+    "windingRule": "outward normals; closed convex items must reach outwardShare >= 0.97 by the catalog check"
+  },
+
+  "nodeLayout": {
+    "rootNodeName": "<id>",
+    "children": ["<id>_LOD0", "<id>_LOD1", "<id>_LOD2", "socket_grip", "socket_rest", "socket_grip_2 (carry class only)"],
+    "socketSemantics": {
+      "socket_rest": "empty at origin, +Y up: where the item sits on a surface",
+      "socket_grip": "empty at the primary hand contact point. Local frame: +X = finger closing axis (pinch/grip direction), +Y = up in rest pose, +Z = points OUT of the item toward the palm/back of the hand",
+      "socket_grip_2": "second hand contact for carry class (bowls, plates, steamer, jar, box)"
+    },
+    "extras": {
+      "class": "pinch | grip | carry",
+      "lodDistancesMeters": [0.0, 1.5, 6.0],
+      "massKg": "design value, record per item",
+      "designSizeMeters": "[x, y, z] rest-pose bounds"
+    },
+    "collision": "props/collision.json: per item a capsule or box in item-local Y-up metres; one shape per item (two for chopsticks-pair)"
+  },
+
+  "budgets": {
+    "trianglesByClass": {
+      "pinch": {"LOD0": 2500, "LOD1": 600, "LOD2": 120},
+      "grip": {"LOD0": 3000, "LOD1": 700, "LOD2": 150},
+      "carry": {"LOD0": 6000, "LOD1": 1500, "LOD2": 300},
+      "carry_steamer_with_buns": {"LOD0": 14000, "LOD1": 3500, "LOD2": 500},
+      "hero_bean_jar": {"LOD0": 45000, "LOD1": 3000, "LOD2": 400}
+    },
+    "texturesPerItem": "<= 1 colour 1024^2 (JPEG q92) + optional 1 normal 1024^2 (PNG or JPEG q95) baked from LOD0 detail; shared textures allowed and preferred",
+    "totalEncodedTextureBytesMax": 6000000,
+    "perItemGlbBytesMax": 2500000,
+    "newPhotoTexturesAllowed": 0,
+    "noWeathering": "no dirt/aging; food is fresh (owner decision 2026-09-13/19)"
+  },
+
+  "beans": {
+    "name": "奶油五香豆 (broad bean 蚕豆, sugar-frosted)",
+    "single": {
+      "sizeMeters": [0.022, 0.009, 0.015],
+      "shape": "flattened kidney ellipsoid; one long edge has a 6 mm dark hilum groove; skin has fine wrinkles (normal map baked from a displaced LOD0 or analytic wrinkle map); slight asymmetry",
+      "colourSrgb": {"skin": "7a5a3c", "frost": "e9e2d3", "hilum": "2a1c14"},
+      "roughness": 0.55,
+      "LOD0trisMax": 400, "LOD1trisMax": 120, "LOD2trisMax": 40,
+      "variants": 6,
+      "variantRule": "scale 0.9-1.1 per axis, wrinkle seed, frost coverage 30-70%, hilum side flip; all six exported inside bean-single.glb as separate root nodes wuxiangdou-bean-v1..v6"
+    },
+    "sets": {
+      "bean-dish": {"beans": 45, "vessel": "porcelain saucer r=0.045 h=0.015 (inputs vessel())", "class": "carry", "arrangement": "3 gravity-free layers, hex jitter 15%, no pair closer than 0.85 * mean radius (assert)"},
+      "bean-packet-open": {"beans": 30, "vessel": "kraft packet 0.09x0.12x0.032 torn open at top, 12 beans spilled on the ground within r=0.06", "class": "grip"},
+      "bean-jar": {"beans": 260, "vessel": "glass jar from inputs (r 0.078 h 0.215), beans fill to y=0.15", "class": "carry", "lodNote": "LOD0 = individual beans merged into one primitive per material; LOD1 = the existing bean-mass lathe"}
+    },
+    "renders": {
+      "bean-lineup": "6 variants in a row, 2048x768, camera 0.25 m, f/4 DOF focused on v3",
+      "bean-macro": "single bean v1, 2048x1536, camera 0.09 m, DOF f/2.8, three light angles (key/rim/top) as 3 frames",
+      "dish-jar-packet": "each set 1600x1200 three-quarter, beans must be individually resolvable (assert >= 60% of beans have >= 25 px projected diameter in the jar close-up; record the measurement)"
+    }
+  },
+
+  "items": [
+    {"id": "xiaolongbao", "zh": "小籠饅頭", "class": "pinch", "sizeMeters": [0.045, 0.038, 0.045], "massKg": 0.025, "detail": "18 real pleats with visible top knot, thin-skin sag between pleats; dough colour efe4d2; LOD1 = inputs 20x8 lathe; LOD2 = 8-sided"},
+    {"id": "guantangbao", "zh": "灌湯包", "class": "pinch", "sizeMeters": [0.11, 0.066, 0.11], "massKg": 0.12, "detail": "22 pleats; separate straw node inside the same GLB as child 'straw' (visible by default); socket at side"},
+    {"id": "shengjian", "zh": "生煎饅頭", "class": "pinch", "sizeMeters": [0.055, 0.042, 0.055], "massKg": 0.045, "detail": "crust bottom material split at y=0.013, sesame/scallion top texture (reuse inputs), small top pleat knot"},
+    {"id": "tangyuan", "zh": "黑洋酥湯糰", "class": "pinch", "sizeMeters": [0.035, 0.033, 0.035], "massKg": 0.02, "detail": "sphere with slight flattening; dough f3ede2"},
+    {"id": "tangyuan-meat", "zh": "鮮肉湯糰", "class": "pinch", "sizeMeters": [0.034, 0.036, 0.034], "massKg": 0.022, "detail": "pointed tip (inputs profile)"},
+    {"id": "youtiao", "zh": "油條", "class": "grip", "sizeMeters": [0.035, 0.03, 0.26], "massKg": 0.05, "detail": "two twisted lobes, ends slightly tapered, fried-crust texture; socket at mid length"},
+    {"id": "xiekehuang", "zh": "蟹殼黃", "class": "pinch", "sizeMeters": [0.08, 0.022, 0.062], "massKg": 0.04, "detail": "oval flatbread, sesame planar top, layered rim"},
+    {"id": "dabing", "zh": "大餅", "class": "grip", "sizeMeters": [0.15, 0.011, 0.15], "massKg": 0.09, "detail": "single flatbread, sesame top, one fold line"},
+    {"id": "congyoubing", "zh": "蔥油餅", "class": "grip", "sizeMeters": [0.12, 0.012, 0.12], "massKg": 0.08, "detail": "single, folded once in half for hand-held rest pose (semicircle), pancake top texture"},
+    {"id": "cifangao", "zh": "粢飯糕", "class": "grip", "sizeMeters": [0.028, 0.015, 0.075], "massKg": 0.045, "detail": "fried rectangle, crust texture, bevel 3 mm"},
+    {"id": "youdunzi", "zh": "油墩子", "class": "pinch", "sizeMeters": [0.07, 0.036, 0.07], "massKg": 0.06, "detail": "tapered puck, radish-shred top with green flecks (geometry tuft <= 300 tris)"},
+    {"id": "chunjuan", "zh": "春卷", "class": "grip", "sizeMeters": [0.024, 0.024, 0.10], "massKg": 0.035, "detail": "cylinder with folded ends, crust texture"},
+    {"id": "ligaotang-piece", "zh": "梨膏糖", "class": "pinch", "sizeMeters": [0.032, 0.012, 0.026], "massKg": 0.012, "detail": "amber block bevel 3 mm, roughness 0.15"},
+    {"id": "ligaotang-box-open", "zh": "梨膏糖盒", "class": "carry", "sizeMeters": [0.124, 0.03, 0.14], "massKg": 0.09, "detail": "box with lid open (inputs), 6 pieces"},
+    {"id": "wuxiangdou-packet", "zh": "奶油五香豆紙包", "class": "grip", "sizeMeters": [0.09, 0.13, 0.032], "massKg": 0.15, "detail": "closed packet with labels (inputs)"},
+    {"id": "teacup-filled", "zh": "茶盞", "class": "grip", "sizeMeters": [0.064, 0.04, 0.064], "massKg": 0.09, "detail": "porcelain blue rim + tea liquid disc alpha"},
+    {"id": "chopsticks-pair", "zh": "筷子", "class": "grip", "sizeMeters": [0.012, 0.008, 0.24], "massKg": 0.01, "detail": "two rods 4 mm, chopstick-wood; socket at 1/3 from top"},
+    {"id": "vinegar-dish", "zh": "醋碟", "class": "carry", "sizeMeters": [0.076, 0.015, 0.076], "massKg": 0.05, "detail": "inputs"},
+    {"id": "bowl-tangyuan", "zh": "湯糰碗", "class": "carry", "sizeMeters": [0.132, 0.06, 0.132], "massKg": 0.35, "detail": "inputs bowl + soup + 5 tangyuan + spoon; socket_grip under the base rim, socket_grip_2 at rim +Z"},
+    {"id": "bowl-jiuniang", "zh": "酒釀圓子碗", "class": "carry", "sizeMeters": [0.132, 0.06, 0.132], "massKg": 0.35, "detail": "inputs"},
+    {"id": "bowl-soymilk", "zh": "豆漿碗", "class": "carry", "sizeMeters": [0.14, 0.065, 0.14], "massKg": 0.4, "detail": "inputs"},
+    {"id": "plate-paigu-niangao", "zh": "排骨年糕盤", "class": "carry", "sizeMeters": [0.24, 0.045, 0.24], "massKg": 0.5, "detail": "inputs; rib shape improved: irregular outline (>= 8-sided silhouette), bone stub cylinder, glaze disc"},
+    {"id": "steamer-xiaolongbao-8", "zh": "小籠一籠", "class": "carry", "sizeMeters": [0.20, 0.09, 0.20], "massKg": 0.45, "detail": "R=0.10 shallow steamer with 8 LOD1 buns + lid as child node 'lid' (removable); sockets at both sides"},
+    {"id": "bean-single", "zh": "五香豆", "class": "pinch", "sizeMeters": [0.022, 0.009, 0.015], "massKg": 0.002, "detail": "see beans.single; 6 variants"},
+    {"id": "bean-dish", "zh": "五香豆碟", "class": "carry", "sizeMeters": [0.09, 0.03, 0.09], "massKg": 0.15, "detail": "see beans.sets"},
+    {"id": "bean-packet-open", "zh": "撕開的五香豆紙包", "class": "grip", "sizeMeters": [0.14, 0.13, 0.14], "massKg": 0.12, "detail": "see beans.sets"},
+    {"id": "bean-jar", "zh": "五香豆玻璃罐", "class": "carry", "sizeMeters": [0.156, 0.227, 0.156], "massKg": 1.2, "detail": "see beans.sets; hero"}
+  ],
+
+  "renderSpec": {
+    "engine": "Cycles; CPU default; CUDA only if nvidia-smi utilisation < 20% at start (record)",
+    "lightRig": {"world": "uniform grey strength 0.8", "sun": {"energy": 3.5, "angleDeg": 3, "elevationDeg": 48, "azimuthDeg": 140}, "fill": "area light 40 W, 0.6 m, opposite side, 30 deg elevation"},
+    "tableMaterial": "0.33/0.25/0.19 linear, roughness 0.6",
+    "perItemSheet": {"views": ["front", "three-quarter", "top", "back"], "size": [1024, 1024], "spp": 96, "denoise": "OIDN", "cameraDistance": "2.1 * max(dimension) + 0.05"},
+    "perItemMacro": {"size": [2048, 1536], "spp": 128, "dof": "f/2.8 focused at socket_grip", "cameraDistance": "1.2 * max(dimension) + 0.03"},
+    "groupScenes": [
+      {"id": "table-spread", "size": [1920, 1080], "content": "all items on one 1.2 x 0.8 m table, rest pose, 3 rows"},
+      {"id": "counter-integration", "size": [1920, 1080], "content": "open /home/baibai/outbox/pawborough-snackshop-20260921/building/model.blend (read-only copy into workspace), place bean-jar, bean-dish, teacup-filled, chopsticks-pair, vinegar-dish, steamer-xiaolongbao-8 on the takeaway counter; camera = takeaway-counter from inputs/render_shop.py"}
+    ],
+    "blankFrameGuard": "std of luminance < 2/255 or single colour > 95% => blank => non-zero exit, listed in RESULT.blankFrames",
+    "contactSheets": "PIL: sheet per class + one all-items sheet, labels zh/id/LOD0 tris"
+  },
+
+  "verification": {
+    "perGlb": [
+      "validator 0 errors (warnings listed)",
+      "root node <id> with LOD0/LOD1/LOD2 mesh children and socket_grip + socket_rest empties (socket_grip_2 for carry)",
+      "LOD tris <= budgets.trianglesByClass[class]",
+      "bounds within items[].sizeMeters +-10% (bean sets +-15%)",
+      "socket_grip inside bounds expanded by 0.01 m; socket_rest at origin",
+      "reimport: every image node connected; colour sRGB, data Non-Color",
+      "outwardShare >= 0.97 for closed single items (bean, buns, tangyuan, cifangao, chunjuan, ligaotang-piece)",
+      "sha256 recorded in props/manifest.json"
+    ],
+    "beanSets": ["bean count equals spec", "no bean pair closer than 0.85 * mean radius", "no bean vertex below vessel floor or outside the vessel inner radius (jar/dish)"],
+    "renders": ["every planned frame exists", "blank-frame guard passed", "jar close-up bean resolvability measurement recorded"],
+    "tests": "workspace/tests/*.py runnable with system python3 -X utf8; a single tests/run_all.sh must exit 0"
+  },
+
+  "allowedNewFiles": "anything under workspace/ and artifacts/; nothing elsewhere",
+  "stopCondition": "artifacts/snacks-handheld/RESULT.json with status delivered_for_lead_review, ownerAdopted=false; then stop"
+}

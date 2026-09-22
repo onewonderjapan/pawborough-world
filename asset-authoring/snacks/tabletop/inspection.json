@@ -1,0 +1,861 @@
+{
+  "file": "/home/baibai/outbox/pawborough-snackshop-20260921/snacks/snacks-batch.glb",
+  "sha256": "51fb685f70f772352a6aec8cb5b6d451cb139c63866a67b04aa1f2052b4048f3",
+  "fileBytes": 1337800,
+  "storedTriangles": 23168,
+  "defaultSceneTriangles": 23168,
+  "meshes": 18,
+  "gltfNativeBounds": {
+    "min": [
+      -0.17499999701976776,
+      0.0,
+      -0.17499999701976776
+    ],
+    "max": [
+      0.17499999701976776,
+      0.24018236994743347,
+      0.17499999701976776
+    ],
+    "size": [
+      0.3499999940395355,
+      0.24018236994743347,
+      0.3499999940395355
+    ],
+    "method": "glTF-native node transforms and accessor AABB corners; conservative for rotated geometry"
+  },
+  "boundsIncomplete": false,
+  "primitiveCount": 58,
+  "materials": 27,
+  "imageEncodedBytes": 186458,
+  "accessorBufferViewBytes": 1092708,
+  "images": [
+    {
+      "name": "osmanthus-soup",
+      "mime": "image/jpeg",
+      "size": [
+        512,
+        512
+      ],
+      "encodedBytes": 15117,
+      "externalUri": null
+    },
+    {
+      "name": "fried-crust",
+      "mime": "image/jpeg",
+      "size": [
+        512,
+        512
+      ],
+      "encodedBytes": 12387,
+      "externalUri": null
+    },
+    {
+      "name": "sesame-top",
+      "mime": "image/jpeg",
+      "size": [
+        512,
+        512
+      ],
+      "encodedBytes": 39711,
+      "externalUri": null
+    },
+    {
+      "name": "scallion-pancake",
+      "mime": "image/jpeg",
+      "size": [
+        512,
+        512
+      ],
+      "encodedBytes": 22235,
+      "externalUri": null
+    },
+    {
+      "name": "babaofan-top",
+      "mime": "image/jpeg",
+      "size": [
+        512,
+        512
+      ],
+      "encodedBytes": 21996,
+      "externalUri": null
+    },
+    {
+      "name": "bean-mass",
+      "mime": "image/jpeg",
+      "size": [
+        512,
+        512
+      ],
+      "encodedBytes": 30569,
+      "externalUri": null
+    },
+    {
+      "name": "labels-atlas",
+      "mime": "image/png",
+      "size": [
+        512,
+        512
+      ],
+      "encodedBytes": 44443,
+      "externalUri": null
+    }
+  ],
+  "primitives": [
+    {
+      "mesh": 0,
+      "primitive": 0,
+      "material": 0,
+      "triangles": 652,
+      "vertices": 599,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 0,
+      "primitive": 1,
+      "material": 1,
+      "triangles": 192,
+      "vertices": 136,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 0,
+      "primitive": 2,
+      "material": 2,
+      "triangles": 128,
+      "vertices": 194,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 0,
+      "primitive": 3,
+      "material": 3,
+      "triangles": 1248,
+      "vertices": 725,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 1,
+      "primitive": 0,
+      "material": 0,
+      "triangles": 448,
+      "vertices": 275,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 1,
+      "primitive": 1,
+      "material": 1,
+      "triangles": 192,
+      "vertices": 136,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 1,
+      "primitive": 2,
+      "material": 4,
+      "triangles": 128,
+      "vertices": 194,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 1,
+      "primitive": 3,
+      "material": 3,
+      "triangles": 2080,
+      "vertices": 1352,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 2,
+      "primitive": 0,
+      "material": 0,
+      "triangles": 512,
+      "vertices": 309,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 2,
+      "primitive": 1,
+      "material": 1,
+      "triangles": 128,
+      "vertices": 102,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 2,
+      "primitive": 2,
+      "material": 5,
+      "triangles": 128,
+      "vertices": 194,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 2,
+      "primitive": 3,
+      "material": 6,
+      "triangles": 96,
+      "vertices": 59,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 3,
+      "primitive": 0,
+      "material": 0,
+      "triangles": 432,
+      "vertices": 269,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 3,
+      "primitive": 1,
+      "material": 1,
+      "triangles": 144,
+      "vertices": 114,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 3,
+      "primitive": 2,
+      "material": 6,
+      "triangles": 280,
+      "vertices": 166,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 4,
+      "primitive": 0,
+      "material": 7,
+      "triangles": 240,
+      "vertices": 207,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 4,
+      "primitive": 1,
+      "material": 8,
+      "triangles": 160,
+      "vertices": 242,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 4,
+      "primitive": 2,
+      "material": 9,
+      "triangles": 2720,
+      "vertices": 1666,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 5,
+      "primitive": 0,
+      "material": 9,
+      "triangles": 576,
+      "vertices": 392,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 6,
+      "primitive": 0,
+      "material": 0,
+      "triangles": 432,
+      "vertices": 269,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 6,
+      "primitive": 1,
+      "material": 1,
+      "triangles": 144,
+      "vertices": 114,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 6,
+      "primitive": 2,
+      "material": 10,
+      "triangles": 420,
+      "vertices": 285,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 6,
+      "primitive": 3,
+      "material": 6,
+      "triangles": 700,
+      "vertices": 511,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 7,
+      "primitive": 0,
+      "material": 0,
+      "triangles": 432,
+      "vertices": 269,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 7,
+      "primitive": 1,
+      "material": 1,
+      "triangles": 144,
+      "vertices": 114,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 7,
+      "primitive": 2,
+      "material": 6,
+      "triangles": 648,
+      "vertices": 1584,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 8,
+      "primitive": 0,
+      "material": 11,
+      "triangles": 216,
+      "vertices": 294,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 8,
+      "primitive": 1,
+      "material": 6,
+      "triangles": 1080,
+      "vertices": 618,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 8,
+      "primitive": 2,
+      "material": 12,
+      "triangles": 240,
+      "vertices": 168,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 9,
+      "primitive": 0,
+      "material": 0,
+      "triangles": 540,
+      "vertices": 533,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 9,
+      "primitive": 1,
+      "material": 1,
+      "triangles": 144,
+      "vertices": 114,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 9,
+      "primitive": 2,
+      "material": 13,
+      "triangles": 128,
+      "vertices": 194,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 9,
+      "primitive": 3,
+      "material": 14,
+      "triangles": 216,
+      "vertices": 528,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 9,
+      "primitive": 4,
+      "material": 15,
+      "triangles": 108,
+      "vertices": 264,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 10,
+      "primitive": 0,
+      "material": 0,
+      "triangles": 432,
+      "vertices": 269,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 10,
+      "primitive": 1,
+      "material": 1,
+      "triangles": 144,
+      "vertices": 114,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 10,
+      "primitive": 2,
+      "material": 6,
+      "triangles": 576,
+      "vertices": 354,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 11,
+      "primitive": 0,
+      "material": 0,
+      "triangles": 432,
+      "vertices": 269,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 11,
+      "primitive": 1,
+      "material": 1,
+      "triangles": 144,
+      "vertices": 114,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 11,
+      "primitive": 2,
+      "material": 16,
+      "triangles": 576,
+      "vertices": 322,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 12,
+      "primitive": 0,
+      "material": 17,
+      "triangles": 768,
+      "vertices": 411,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 12,
+      "primitive": 1,
+      "material": 18,
+      "triangles": 256,
+      "vertices": 139,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 12,
+      "primitive": 2,
+      "material": 19,
+      "triangles": 128,
+      "vertices": 71,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 12,
+      "primitive": 3,
+      "material": 20,
+      "triangles": 2,
+      "vertices": 4,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 13,
+      "primitive": 0,
+      "material": 21,
+      "triangles": 216,
+      "vertices": 528,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 13,
+      "primitive": 1,
+      "material": 20,
+      "triangles": 4,
+      "vertices": 8,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 14,
+      "primitive": 0,
+      "material": 22,
+      "triangles": 216,
+      "vertices": 528,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 14,
+      "primitive": 1,
+      "material": 20,
+      "triangles": 2,
+      "vertices": 4,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 14,
+      "primitive": 2,
+      "material": 23,
+      "triangles": 648,
+      "vertices": 1584,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 15,
+      "primitive": 0,
+      "material": 0,
+      "triangles": 160,
+      "vertices": 113,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 15,
+      "primitive": 1,
+      "material": 1,
+      "triangles": 160,
+      "vertices": 110,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 15,
+      "primitive": 2,
+      "material": 24,
+      "triangles": 280,
+      "vertices": 536,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 16,
+      "primitive": 0,
+      "material": 0,
+      "triangles": 240,
+      "vertices": 159,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 16,
+      "primitive": 1,
+      "material": 1,
+      "triangles": 144,
+      "vertices": 104,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 16,
+      "primitive": 2,
+      "material": 25,
+      "triangles": 96,
+      "vertices": 146,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 17,
+      "primitive": 0,
+      "material": 26,
+      "triangles": 508,
+      "vertices": 357,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 17,
+      "primitive": 1,
+      "material": 0,
+      "triangles": 600,
+      "vertices": 405,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 17,
+      "primitive": 2,
+      "material": 1,
+      "triangles": 360,
+      "vertices": 264,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    }
+  ],
+  "extensionsUsed": [],
+  "limits": "Counts/storage inspection only; not full glTF validation, GPU memory, frame rate, collision or visual approval."
+}

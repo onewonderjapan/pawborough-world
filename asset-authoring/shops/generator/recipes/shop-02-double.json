@@ -1,0 +1,75 @@
+{
+  "id": "shop-02-double",
+  "name": "双店面",
+  "corner": false,
+  "dims": {
+    "width": 7.2,
+    "depth": 6.4,
+    "eave": 6.8,
+    "ridge": 8.0
+  },
+  "features": [
+    "两组独立门窗开口，中间实体分隔",
+    "二层三组窗且窗间墙明确"
+  ],
+  "front": [
+    {
+      "kind": "panel-door",
+      "u0": -3.35,
+      "u1": -1.95,
+      "y0": 0.16,
+      "y1": 2.8
+    },
+    {
+      "kind": "shop-window",
+      "u0": -1.7,
+      "u1": -0.3,
+      "y0": 0.95,
+      "y1": 2.55,
+      "cols": 2
+    },
+    {
+      "kind": "shop-window",
+      "u0": 0.3,
+      "u1": 1.7,
+      "y0": 0.95,
+      "y1": 2.55,
+      "cols": 2
+    },
+    {
+      "kind": "panel-door",
+      "u0": 1.95,
+      "u1": 3.35,
+      "y0": 0.16,
+      "y1": 2.8
+    },
+    {
+      "kind": "grid-window",
+      "u0": -2.45,
+      "u1": -1.25,
+      "y0": 4.4,
+      "y1": 6.1,
+      "cols": 2
+    },
+    {
+      "kind": "grid-window",
+      "u0": -0.6,
+      "u1": 0.6,
+      "y0": 4.4,
+      "y1": 6.1,
+      "cols": 2
+    },
+    {
+      "kind": "grid-window",
+      "u0": 1.25,
+      "u1": 2.45,
+      "y0": 4.4,
+      "y1": 6.1,
+      "cols": 2
+    }
+  ],
+  "quoins": {
+    "left": true,
+    "right": true
+  }
+}

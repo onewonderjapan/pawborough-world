@@ -1,0 +1,60 @@
+{
+  "designValues": {
+    "doorW": 2.2,
+    "doorH": 3.0,
+    "wallW": 8.0,
+    "wallH": 5.33,
+    "depth": 2.8,
+    "plinthH": 0.52,
+    "plinthOut": 0.1,
+    "frameW": 0.7,
+    "frameHeadH": 0.45,
+    "frameProud": 0.05,
+    "linerDepth": 0.4,
+    "linerT": 0.08,
+    "bandLo": [
+      3.62,
+      3.9
+    ],
+    "bandHi": [
+      4.9,
+      5.19
+    ],
+    "plaque": [
+      4.0,
+      4.71,
+      3.55
+    ],
+    "corniceY": [
+      5.19,
+      5.33
+    ],
+    "bracketRows": 9,
+    "bracketSide": 3,
+    "eaveY": 6.45,
+    "ridgeY": 7.72,
+    "eaveOut": 1.05,
+    "tipLift": 0.85,
+    "tipOut": 0.28,
+    "tipReach": 2.1,
+    "ridgeHalf": 2.75,
+    "eaveSag": 0.05
+  },
+  "inferred": [
+    "depth 2.8 m (G21/G22 oblique only)",
+    "hip-roof plan and ridge length (G20 silhouette)",
+    "rear face: same masses, plain bands, plain plaque recess, no fret, no stepped door corners (no rear reference)",
+    "bracket cluster form (3-tier stepped stone corbels, 9 front/9 back/3 per side)",
+    "passage ceiling flat stone (G23 shows flat soffit)"
+  ],
+  "scaleSource": "clear doorway 2.2 x 3.0 m frozen by owner; other values scaled from G20 (front) pixel ratios: door 205 px wide / 315 px tall, facade 755 px, roof eave 940 px, ridge 510 px, tips at ±5.4 m / 8.1 m",
+  "roof": {
+    "eavePoints": 132,
+    "rings": 9,
+    "planAtEave": [
+      10.1,
+      4.9
+    ],
+    "ridgeLength": 5.5
+  }
+}

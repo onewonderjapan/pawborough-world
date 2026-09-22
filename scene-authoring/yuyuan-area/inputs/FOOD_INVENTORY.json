@@ -1,0 +1,197 @@
+{
+ "asOf": "2026-09-22T11:44:15.637979+09:00",
+ "scope": "outbox filename and snack package inventory; no visual adoption inferred",
+ "sources": [
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/bean-dish.glb",
+   "bytes": 1373476,
+   "sha256": "3a3137329cc5d8d9ee4a6b16e88615da60e340fed9e0a37f38947c36efebfc24"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/bean-jar.glb",
+   "bytes": 2253840,
+   "sha256": "c484a526bffcf5ee3e5bddc3b4adb715fb14a439ff5438ec56f064f16d5e73f5"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/bean-packet-open.glb",
+   "bytes": 980868,
+   "sha256": "27a640bcad0e1ba24f305527107ec3ddba663c8aad5e9302e4895da825dbc07b"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/bean-single.glb",
+   "bytes": 1028184,
+   "sha256": "ffaf463e35922da6c894661cf69651954e9bd4fba0ab73e0513ae96fa2af3d92"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/bowl-jiuniang.glb",
+   "bytes": 127076,
+   "sha256": "25772c28e03b3f162489e5efd77af55847df222876cd965ead2a262177614eef"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/bowl-soymilk.glb",
+   "bytes": 68548,
+   "sha256": "9eb10ef5c75979cf443430425f3768d7686d2a99bf7b10e32dae614c9ee2d744"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/bowl-tangyuan.glb",
+   "bytes": 107460,
+   "sha256": "c3bf2e342bdb77674dfd32ac3fc04d0c6af9744a6022708d5bc5d0cf88b6bde8"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/chopsticks-pair.glb",
+   "bytes": 8456,
+   "sha256": "0e1e9ea039a94b26b71073e3e1a62f3d5a329ae42006a2e79413cd9926d2ddf8"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/chunjuan.glb",
+   "bytes": 22744,
+   "sha256": "903a0f86f6b3c8cdbcefe259dc930a21c1d8e5fbfa2a3f8185d5a7512ee21368"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/cifangao.glb",
+   "bytes": 41768,
+   "sha256": "8aa16522287ff61fe175e8375c4a5d97dcee206070770acbf1c4d4c7c5318833"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/congyoubing.glb",
+   "bytes": 37848,
+   "sha256": "6726925d88b2e7a91e25a9479b1339e375cf11d863c3fd151ae7438e67f38925"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/dabing.glb",
+   "bytes": 66792,
+   "sha256": "2975965001285c1465a376ada590fab6c0f83996109ab93f2946ca2673daad50"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/guantangbao.glb",
+   "bytes": 32420,
+   "sha256": "f417b5fb18a71940a4e84f5170593281b3e96d68fb837a1763064912857e77a0"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/ligaotang-box-open.glb",
+   "bytes": 136536,
+   "sha256": "7469d5d7632b00c7a3520e93b7ff7f7949697bfc89e9ff1365eb9e2ae52698a3"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/ligaotang-piece.glb",
+   "bytes": 29224,
+   "sha256": "21d56e7f663441b7ceee4e6904ada4aa6faf50350bbb8d02455ad2a2d8f14eaa"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/plate-paigu-niangao.glb",
+   "bytes": 105872,
+   "sha256": "1801f005aa9c87c748c84eac31d78cb3aad14974518eea8a6e27e08e84a90cfe"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/shengjian.glb",
+   "bytes": 85208,
+   "sha256": "019a143d6c9fe0226a5f5f48abe01ec1f08b1ccd9c2df51c4952062c47d31ef9"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/steamer-xiaolongbao-8.glb",
+   "bytes": 168544,
+   "sha256": "2d2cf077656187c2a0299d33f23cc33a657bf0c0d6b472bdeb3f2df1a241ff52"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/tangyuan-meat.glb",
+   "bytes": 12624,
+   "sha256": "e72f38be1968e1726e1f9e6f07af5c734416e5ffed26dfa243436b480cc46e78"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/tangyuan.glb",
+   "bytes": 18848,
+   "sha256": "c44b39fdc7715b9710ece3f602563498a0852579163e8a18367b162b8b31f48e"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/teacup-filled.glb",
+   "bytes": 33724,
+   "sha256": "51748d6771eb67c9227f5b18463952052760934869366ea73f067696fe8989d8"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/vinegar-dish.glb",
+   "bytes": 41388,
+   "sha256": "99713a30cd35beca2cac71edd8afcb3a35cf677dd68b9b6a548010c32d392850"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/wuxiangdou-packet.glb",
+   "bytes": 72260,
+   "sha256": "f7d92478148c02a5f84ee42c8c122248e7c100bc32919939aae9a8eab3204e73"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/xiaolongbao.glb",
+   "bytes": 31488,
+   "sha256": "439ff56d50780ddb669bc5388439662dff3c49100d3fbd7952677331895ccaed"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/xiekehuang.glb",
+   "bytes": 82152,
+   "sha256": "7df90fd8249f3fa7df714f08709bc4825002ebd6cc5553ad8a1f18a55f85afbb"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/youdunzi.glb",
+   "bytes": 51180,
+   "sha256": "5b67ffd36f6c0461690219384d0e51dc9a55fbb66bf237fc71906a0dd32483db"
+  },
+  {
+   "kind": "handheld_lod",
+   "path": "resources/foods/handheld/youtiao.glb",
+   "bytes": 29280,
+   "sha256": "fcab5838fc178d9610433735cf67d8474f2563940b711d62c821ea084df4c9d5"
+  },
+  {
+   "kind": "tabletop_collection",
+   "path": "resources/foods/tabletop/snacks-batch.glb",
+   "bytes": 1337800,
+   "sha256": "51fb685f70f772352a6aec8cb5b6d451cb139c63866a67b04aa1f2052b4048f3"
+  },
+  {
+   "kind": "steamer_collection",
+   "path": "resources/foods/shop-building/snacks.glb",
+   "bytes": 1130296,
+   "sha256": "5fcdbcb4ad87a53b5166f8f4cb5b2f8024ce954f869170bf468a57c0602bb165"
+  },
+  {
+   "kind": "shop_reference",
+   "path": "resources/foods/shop-building/model.glb",
+   "bytes": 4983756,
+   "sha256": "6d854230265456eb729936bdeac4602c7af536dc90fc744988c42c6179db5b61"
+  }
+ ],
+ "handheldManifestHashesVerified": 27,
+ "handheldBytes": 7047808,
+ "catalogs": [
+  "resources/foods/handheld/catalog.json",
+  "resources/foods/tabletop/catalog.json"
+ ],
+ "exclude": [
+  "pawborough-snacks-handheld-night-20260921/workspace/baseline_run is historical reproduction, not latest output; bytes differ from original",
+  "pawborough-props-snackshop-20260921 contains textures and scripts, no additional GLB"
+ ],
+ "policy": "Read-only sources. Prefer appropriate handheld LOD units; supplement tabletop and steamer arrangements. Never display all LOD levels together or all bean variants as one item. Deduplicate by semantic use; collections are not distinct food counts."
+}

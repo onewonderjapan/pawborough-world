@@ -1,0 +1,40 @@
+{
+  "gateTriangles": 16368,
+  "gateTrianglesByNode": {
+    "gate-wall__grey-brick-facade": 228,
+    "gate-wall__pale-granite-stone": 936,
+    "gate-wall__passage-plaster": 12,
+    "gate-door__pale-granite-stone": 1476,
+    "gate-relief__carved-stone-ground": 96,
+    "gate-relief__pale-granite-stone": 3528,
+    "gate-eave__pale-granite-stone": 2556,
+    "gate-eave__passage-plaster": 12,
+    "gate-eave__grey-brick-facade": 12,
+    "gate-roof__grey-pan-tile": 5708,
+    "gate-roof__dark-fascia-lacquer": 484,
+    "gate-roof__rafter-timber": 1320
+  },
+  "groundTriangles": 420,
+  "gateGlbBytes": 3399552,
+  "groundGlbBytes": 362988,
+  "designDimensions": {
+    "wallWidth": 8.0,
+    "wallHeight": 5.33,
+    "depth": 2.8,
+    "eaveHeight": 6.45,
+    "ridgeHeight": 7.72,
+    "roofPlanAtEave": [
+      10.1,
+      4.9
+    ],
+    "cornerTipTopActual": 7.61,
+    "maxYActual(ridgeEndCaps)": 8.26,
+    "clearDoor": [
+      2.2,
+      3.0
+    ]
+  },
+  "units": "metres",
+  "surveyed": false,
+  "buildSeconds": 5.3
+}

@@ -1,0 +1,17 @@
+{
+ "status": "ready",
+ "providedBy": "user",
+ "path": "resources/foods/tabletop/snacks-batch.glb",
+ "sha256": "51fb685f70f772352a6aec8cb5b6d451cb139c63866a67b04aa1f2052b4048f3",
+ "bytes": 1337800,
+ "inputType": "GLB collection; inspect hierarchy and split reusable food units without modifying source",
+ "ownerAdoption": "not automatically inferred; integration is a candidate",
+ "instructions": "核对节点/单位/来源清单，按食品类别匹配socket；不能把整份合集复制到每个摊位",
+ "inventory": "inputs/FOOD_INVENTORY.json",
+ "preferredPropsDirectory": "resources/foods/handheld",
+ "catalogs": [
+  "resources/foods/handheld/catalog.json",
+  "resources/foods/tabletop/catalog.json"
+ ],
+ "sourcesReadOnly": true
+}

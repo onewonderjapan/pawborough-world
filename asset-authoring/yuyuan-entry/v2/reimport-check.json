@@ -1,0 +1,185 @@
+{
+  "imported": true,
+  "meshes": 12,
+  "materials": [
+    {
+      "name": "passage-plaster.001",
+      "baseColorFactor": [
+        0.8,
+        0.8,
+        0.8,
+        1.0
+      ],
+      "imageNodes": [
+        {
+          "name": "PaintedPlaster017_2K-JPG_Color_1K",
+          "size": [
+            1024,
+            512
+          ],
+          "colorSpace": "sRGB"
+        },
+        {
+          "name": "PaintedPlaster017_2K-JPG_Roughness_1K",
+          "size": [
+            1024,
+            512
+          ],
+          "colorSpace": "Non-Color"
+        },
+        {
+          "name": "PaintedPlaster017_2K-JPG_NormalGL_1K",
+          "size": [
+            1024,
+            512
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
+    },
+    {
+      "name": "rafter-timber.001",
+      "baseColorFactor": [
+        0.8,
+        0.8,
+        0.8,
+        1.0
+      ],
+      "imageNodes": [
+        {
+          "name": "wood-stain-color",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "sRGB"
+        },
+        {
+          "name": "Wood092_2K-JPG_NormalGL_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
+    },
+    {
+      "name": "pale-granite-stone.001",
+      "baseColorFactor": [
+        0.8,
+        0.8,
+        0.8,
+        1.0
+      ],
+      "imageNodes": [
+        {
+          "name": "PaintedPlaster017_2K-JPG_Color_1K",
+          "size": [
+            1024,
+            512
+          ],
+          "colorSpace": "sRGB"
+        },
+        {
+          "name": "PaintedPlaster017_2K-JPG_Roughness_1K",
+          "size": [
+            1024,
+            512
+          ],
+          "colorSpace": "Non-Color"
+        },
+        {
+          "name": "PaintedPlaster017_2K-JPG_NormalGL_1K",
+          "size": [
+            1024,
+            512
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
+    },
+    {
+      "name": "dark-fascia-lacquer.001",
+      "baseColorFactor": [
+        0.042,
+        0.037,
+        0.032,
+        1.0
+      ],
+      "imageNodes": []
+    },
+    {
+      "name": "grey-brick-facade.001",
+      "baseColorFactor": [
+        0.8,
+        0.8,
+        0.8,
+        1.0
+      ],
+      "imageNodes": [
+        {
+          "name": "Bricks061_2K-JPG_Color_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "sRGB"
+        },
+        {
+          "name": "Bricks061_2K-JPG_Roughness_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        },
+        {
+          "name": "Bricks061_2K-JPG_NormalGL_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
+    },
+    {
+      "name": "carved-stone-ground.001",
+      "baseColorFactor": [
+        0.266,
+        0.254,
+        0.216,
+        1.0
+      ],
+      "imageNodes": []
+    },
+    {
+      "name": "grey-pan-tile.001",
+      "baseColorFactor": [
+        0.8,
+        0.8,
+        0.8,
+        1.0
+      ],
+      "imageNodes": [
+        {
+          "name": "roof-color",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "sRGB"
+        },
+        {
+          "name": "roof-normal",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
+    }
+  ]
+}

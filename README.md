@@ -1,3 +1,5 @@
+> 本地接续入口与资产恢复：[2026-09-22迁移说明](docs/MIGRATION-20260922.md)。全域预览：`npm run area:serve`；原客户端：`npm run preview`。
+
 # Pawborough / 方浜市声
 
 上海老城街景的 Three.js / Rapier 浏览与取景实验工程。当前已有主街、两处支弄和庙前入口，支持步行、取景、机位保存及本地便携包构建。
