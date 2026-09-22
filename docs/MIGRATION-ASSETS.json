@@ -3,7 +3,8 @@
   "storage": {
     "bucket": "onewonder-pawborough-assets-566601428909-apne1",
     "region": "ap-northeast-1",
-    "objectPrefix": "objects/sha256/"
+    "objectPrefix": "objects/sha256/",
+    "snapshotKey": "snapshots/owner/reorganization-20260922-202629/MIGRATION-MANIFEST.json"
   },
   "uniqueBytes": 370964347,
   "files": [
@@ -1790,6 +1791,7 @@
       "sourcePackage": "pawborough-review-repair-20260922"
     }
   ],
-  "state": "local-restored_cloud-increment-pending",
-  "ownerAdopted": false
+  "state": "uploaded_checksum_verified",
+  "ownerAdopted": false,
+  "cloudReceipt": "docs/migrations/20260922/CLOUD-RECEIPT.json"
 }

@@ -20,7 +20,7 @@ Pawborough 继续维护于 `onewonderjapan/pawborough-world`。相邻的 `defaul
 - 原世界的 LFS 私有对象遵循 `ASSET-MANIFEST.json` 与 `ASSET-RESTORE.md`。
 - 新迁入资源、最终全域 GLB/Blend、豆类修件和对照图列在 `MIGRATION-ASSETS.json`。二进制仍是独立资产，不混入新源码提交；迁移不自动改变采用状态。
 - `python3 -X utf8 tools/restore_migration_assets.py` 默认只显示清单。选择 `--all` 或 `--path` 后可从负责人提供的 `--cache` 恢复；显式 `--download --profile <个人已授权profile>` 才访问专用私有 S3。
-- 本机已恢复全部原基线 LFS（9396唯一对象，对应10647路径）和297项迁入资产，并在另一目录从独立缓存逐项恢复校验。云端增量仍等待有效 SSO；不能把本地恢复说成云归档完成。
+- 本机已恢复全部原基线 LFS（9396唯一对象，对应10647路径）和297项迁入资产，并在另一目录从独立缓存逐项恢复校验。云端增量已完成：257个数据对象（235新增、22复用）及独立快照清单；四类资产、当前最终GLB和Git bundle下载核验通过。回执见 `migrations/20260922/CLOUD-RECEIPT.json`。此归档覆盖当前迁入资源和源码bundle，不宣称全部历史媒体均已再上传。
 
 ## 验证与边界
 
