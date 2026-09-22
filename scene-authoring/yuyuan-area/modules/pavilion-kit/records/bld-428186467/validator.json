@@ -1,0 +1,111 @@
+{
+  "validatedAt": "2026-09-22T16:51:05.887Z",
+  "root": "/home/baibai/outbox/pawborough-w1-pavilion-kit-20260922/workspace/scene-authoring/yuyuan-area/out-pavilion-kit",
+  "results": [
+    {
+      "file": "pavilion-bld-428186467/model.glb",
+      "sha256": "d96c922f9e7f15669defa5c332976532013f32016f76dea6aa023483543a34a5",
+      "bytes": 433940,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 1,
+      "infos": 3,
+      "errorCodes": [],
+      "warningCodes": [
+        "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE:/meshes/6/primitives/0/material"
+      ],
+      "infoCodes": [
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT"
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 425044
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/1",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/2",
+            "mimeType": "image/jpeg",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/3",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/4",
+            "mimeType": "image/jpeg",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 6,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 8,
+        "totalVertexCount": 6057,
+        "totalTriangleCount": 3520,
+        "maxUVs": 2,
+        "maxInfluences": 0,
+        "maxAttributes": 4
+      }
+    }
+  ],
+  "errorFiles": 0,
+  "verdict": "PASS"
+}

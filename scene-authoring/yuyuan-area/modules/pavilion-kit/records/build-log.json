@@ -1,0 +1,38 @@
+{
+ "bld-428179924": {
+  "blenderExit": 0,
+  "ready": true,
+  "renderGuard": {
+   "front": {
+    "luminanceStd": 54.62,
+    "dominantFraction": 0.7064,
+    "quantizedColors": 3065,
+    "blank": false
+   },
+   "three-quarter": {
+    "luminanceStd": 47.27,
+    "dominantFraction": 0.6605,
+    "quantizedColors": 2713,
+    "blank": false
+   },
+   "top": {
+    "luminanceStd": 56.02,
+    "dominantFraction": 0.3494,
+    "quantizedColors": 2034,
+    "blank": false
+   },
+   "under-eave": {
+    "luminanceStd": 71.04,
+    "dominantFraction": 0.4229,
+    "quantizedColors": 3956,
+    "blank": false
+   }
+  },
+  "validator": {
+   "exit": 0,
+   "errors": 0,
+   "warnings": 0
+  },
+  "secs": 91.1
+ }
+}

@@ -1,0 +1,448 @@
+{
+ "axis": "glTF Y-up, origin platform centre at ground y=0, facade +Z",
+ "id": "bld-428179924",
+ "zh": "听鹂亭",
+ "reachableBand": [
+  0,
+  2.4
+ ],
+ "rotYDeg": "box yaw; glb local +X -> (cos th, sin th), +Z -> (-sin th, cos th), th=radians(rotYDeg)",
+ "method": "vertex-level: every GLB vertex 0<=y<=2.4 must be inside >=1 collider (+0.01 margin)",
+ "colliders": [
+  {
+   "name": "step-0",
+   "type": "box",
+   "center": [
+    -0.5205,
+    0.15,
+    1.2954
+   ],
+   "size": [
+    1.2,
+    0.3,
+    0.3
+   ],
+   "rotYDeg": -21.891,
+   "reachable": true
+  },
+  {
+   "name": "step-1",
+   "type": "box",
+   "center": [
+    -0.6324,
+    0.1,
+    1.5738
+   ],
+   "size": [
+    1.2,
+    0.2,
+    0.3
+   ],
+   "rotYDeg": -21.891,
+   "reachable": true
+  },
+  {
+   "name": "step-2",
+   "type": "box",
+   "center": [
+    -0.7442,
+    0.05,
+    1.8521
+   ],
+   "size": [
+    1.2,
+    0.1,
+    0.3
+   ],
+   "rotYDeg": -21.891,
+   "reachable": true
+  },
+  {
+   "name": "column-0",
+   "type": "box",
+   "center": [
+    -1.5863,
+    1.735,
+    -2.0358
+   ],
+   "size": [
+    0.23,
+    2.63,
+    0.23
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "base-stone-0",
+   "type": "box",
+   "center": [
+    -1.5863,
+    0.36,
+    -2.0358
+   ],
+   "size": [
+    0.36000000000000004,
+    0.12,
+    0.36000000000000004
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "column-1",
+   "type": "box",
+   "center": [
+    -2.485,
+    1.735,
+    -0.697
+   ],
+   "size": [
+    0.23,
+    2.63,
+    0.23
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "base-stone-1",
+   "type": "box",
+   "center": [
+    -2.485,
+    0.36,
+    -0.697
+   ],
+   "size": [
+    0.36000000000000004,
+    0.12,
+    0.36000000000000004
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "column-2",
+   "type": "box",
+   "center": [
+    2.485,
+    1.735,
+    0.697
+   ],
+   "size": [
+    0.23,
+    2.63,
+    0.23
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "base-stone-2",
+   "type": "box",
+   "center": [
+    2.485,
+    0.36,
+    0.697
+   ],
+   "size": [
+    0.36000000000000004,
+    0.12,
+    0.36000000000000004
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "column-3",
+   "type": "box",
+   "center": [
+    1.5863,
+    1.735,
+    2.0358
+   ],
+   "size": [
+    0.23,
+    2.63,
+    0.23
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "base-stone-3",
+   "type": "box",
+   "center": [
+    1.5863,
+    0.36,
+    2.0358
+   ],
+   "size": [
+    0.36000000000000004,
+    0.12,
+    0.36000000000000004
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "seat-s0",
+   "type": "box",
+   "center": [
+    -1.9194,
+    0.67,
+    -1.2884
+   ],
+   "size": [
+    1.2724,
+    0.1,
+    0.28
+   ],
+   "rotYDeg": -56.129,
+   "reachable": true
+  },
+  {
+   "name": "back-rail-s0",
+   "type": "obb",
+   "p0": [
+    -1.9526,
+    0.7,
+    -1.3107
+   ],
+   "p1": [
+    -2.0303,
+    1.1602,
+    -1.3628
+   ],
+   "width": 1.272,
+   "thick": 0.06,
+   "reachable": true
+  },
+  {
+   "name": "post-s0--1",
+   "type": "box",
+   "center": [
+    -2.3182,
+    0.9401,
+    -0.85
+   ],
+   "size": [
+    0.06,
+    0.4802,
+    0.06
+   ],
+   "rotYDeg": 0.0,
+   "reachable": true
+  },
+  {
+   "name": "post-s0-1",
+   "type": "box",
+   "center": [
+    -1.6647,
+    0.9401,
+    -1.8234
+   ],
+   "size": [
+    0.06,
+    0.4802,
+    0.06
+   ],
+   "rotYDeg": 0.0,
+   "reachable": true
+  },
+  {
+   "name": "top-cap-s0",
+   "type": "box",
+   "center": [
+    -1.9914,
+    1.1802,
+    -1.3367
+   ],
+   "size": [
+    1.3724,
+    0.04,
+    0.12
+   ],
+   "rotYDeg": -56.129,
+   "reachable": true
+  },
+  {
+   "name": "seat-s1",
+   "type": "box",
+   "center": [
+    0.3713,
+    0.67,
+    -0.5531
+   ],
+   "size": [
+    4.5634,
+    0.1,
+    0.28
+   ],
+   "rotYDeg": 33.871,
+   "reachable": true
+  },
+  {
+   "name": "back-rail-s1",
+   "type": "obb",
+   "p0": [
+    0.3936,
+    0.7,
+    -0.5864
+   ],
+   "p1": [
+    0.4457,
+    1.1602,
+    -0.664
+   ],
+   "width": 4.563,
+   "thick": 0.06,
+   "reachable": true
+  },
+  {
+   "name": "post-s1--1",
+   "type": "box",
+   "center": [
+    -1.4333,
+    0.9401,
+    -1.869
+   ],
+   "size": [
+    0.06,
+    0.4802,
+    0.06
+   ],
+   "rotYDeg": 0.0,
+   "reachable": true
+  },
+  {
+   "name": "post-s1-1",
+   "type": "box",
+   "center": [
+    2.2726,
+    0.9401,
+    0.6186
+   ],
+   "size": [
+    0.06,
+    0.4802,
+    0.06
+   ],
+   "rotYDeg": 0.0,
+   "reachable": true
+  },
+  {
+   "name": "top-cap-s1",
+   "type": "box",
+   "center": [
+    0.4197,
+    1.1802,
+    -0.6252
+   ],
+   "size": [
+    4.6634,
+    0.04,
+    0.12
+   ],
+   "rotYDeg": 33.871,
+   "reachable": true
+  },
+  {
+   "name": "seat-s2",
+   "type": "box",
+   "center": [
+    1.9194,
+    0.67,
+    1.2884
+   ],
+   "size": [
+    1.2724,
+    0.1,
+    0.28
+   ],
+   "rotYDeg": 123.871,
+   "reachable": true
+  },
+  {
+   "name": "back-rail-s2",
+   "type": "obb",
+   "p0": [
+    1.9526,
+    0.7,
+    1.3107
+   ],
+   "p1": [
+    2.0303,
+    1.1602,
+    1.3628
+   ],
+   "width": 1.272,
+   "thick": 0.06,
+   "reachable": true
+  },
+  {
+   "name": "post-s2--1",
+   "type": "box",
+   "center": [
+    2.3182,
+    0.9401,
+    0.85
+   ],
+   "size": [
+    0.06,
+    0.4802,
+    0.06
+   ],
+   "rotYDeg": 0.0,
+   "reachable": true
+  },
+  {
+   "name": "post-s2-1",
+   "type": "box",
+   "center": [
+    1.6647,
+    0.9401,
+    1.8234
+   ],
+   "size": [
+    0.06,
+    0.4802,
+    0.06
+   ],
+   "rotYDeg": 0.0,
+   "reachable": true
+  },
+  {
+   "name": "top-cap-s2",
+   "type": "box",
+   "center": [
+    1.9914,
+    1.1802,
+    1.3367
+   ],
+   "size": [
+    1.3724,
+    0.04,
+    0.12
+   ],
+   "rotYDeg": 123.871,
+   "reachable": true
+  },
+  {
+   "name": "platform",
+   "type": "box",
+   "center": [
+    0,
+    0.15,
+    0
+   ],
+   "size": [
+    5.603,
+    0.3,
+    2.312
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  }
+ ]
+}

@@ -1,0 +1,57 @@
+{
+ "id": "bld-428196098",
+ "zh": "耸翠亭",
+ "variant": "regular",
+ "n": 6,
+ "module": "pavilion-bld-428196098",
+ "design": {
+  "R": 2.1997,
+  "Rx": null,
+  "Rz": null,
+  "rotY": -2.171887,
+  "platformH": 0.3,
+  "columnH": 2.75,
+  "eaveY": 3.4499999999999997,
+  "rise": 1.5498,
+  "apexY": 4.9998,
+  "ridgeFallback": false,
+  "ridgeHalf": null,
+  "cornerLift": 0.55,
+  "cornerReach": 1.2,
+  "concaveSag": 0.12,
+  "finialTop": 5.84
+ },
+ "measured": {
+  "roofTopY": 5.1043,
+  "bodyTopY": 3.43,
+  "boundsGLB": {
+   "min": [
+    -3.183,
+    0.0,
+    -3.188
+   ],
+   "max": [
+    3.187,
+    5.84,
+    3.204
+   ]
+  },
+  "triangles": {
+   "body": 692,
+   "roof": 3268,
+   "rail": 300,
+   "total": 4260
+  },
+  "glbBytes": 475280,
+  "sha256": "14706eb11cbef20c43c01d7db5e03bd7e7e15406ce9ab64a1a255086746b070f"
+ },
+ "assumptions": {
+  "riseFormula": "clamp(0.5 * eaveRadius, 1.1, 1.6)",
+  "ridgeFallback": "rect aspect ~2:1 -> spec PLAN.md fallback: short ridge 40% of long side, four slopes + ridge",
+  "bevels": "none (tri budget); silhouette + materials carry edges",
+  "steps": "3 x 0.10 rise, width 1.2, tread 0.3, at entrance bay midpoint (offset from +Z recorded in site-inputs)",
+  "soffit": "flat dark soffit at y=3.28 closes under-eave view (build.py method)",
+  "finialRect": "gourd finial per spec"
+ },
+ "buildSeconds": 0.3
+}
