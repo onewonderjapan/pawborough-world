@@ -1,0 +1,25 @@
+{
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "partial": [],
+  "blockers": [],
+  "packageId": "pawborough-w1-tree-kit-20260922",
+  "finishedAt": "2026-09-23T02:12:00+08:00",
+  "branch": "work/w1-tree-kit-20260922 (worktree /home/baibai/outbox/pawborough-w1-tree-kit-20260922/workspace, based on 33a3bd72)",
+  "exitGates": {
+    "46PlacementsIdsMatchLayout": true,
+    "speciesRulesRecomputed": true,
+    "canopyTopWithin10Pct": true,
+    "triBudget2600": true,
+    "khronosValidator0Errors": true,
+    "noPlacementInsideFootprintOrWater": true,
+    "blankFrameGuards": true,
+    "ownTests": "8/8 pass"
+  },
+  "delivered": {
+    "glbs": 6,
+    "trisPerVariant": {"camphor-small": 830, "camphor-large": 954, "willow-small": 456, "willow-large": 472, "osmanthus-small": 1048, "osmanthus-large": 1052},
+    "speciesCounts": {"camphor": 23, "willow": 11, "osmanthus": 12},
+    "analyticMaps": 4
+  }
+}

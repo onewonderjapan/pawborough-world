@@ -1,0 +1,71 @@
+{
+  "packageId": "pawborough-w1-tree-kit-20260922",
+  "updated": "2026-09-23T02:10:00+08:00",
+  "stages": {
+    "S0": {
+      "status": "done",
+      "outputs": [
+        "worktree on branch work/w1-tree-kit-20260922 @ 33a3bd72",
+        "modules/tree-kit/site-inputs.json (46 trees, 7 water polygons, 16 hall/xuan footprints)",
+        "modules/tree-kit/scripts/s0_extract_site_inputs.py"
+      ],
+      "notes": [
+        "layout tree heights are 4.53-7.48 m, wider than the DESIGN_SPEC note 'height 4.5-5.7'; frozen layout kept authoritative (spec rule 'canopy top = layout height ±10%')",
+        "9 layout trees start inside a water/building footprint (gtree-0/2/10/13/22/26/27/35/36); fallback move applied in S3",
+        "accidental module-dir creation in the main repo was detected and fully removed early (empty dirs only); all work confined to the worktree"
+      ]
+    },
+    "S1": {
+      "status": "done",
+      "outputs": [
+        "out-tree-kit/textures/: bark-neutral.png, bark-oxblood.png, broadleaf_cluster.png, willow_strip.png (512^2 analytic PIL, seeded; recorded in map-authoring.json)",
+        "6 variant GLBs in out-tree-kit/glb/ + .blend in out-tree-kit/blends/ + build-report.json"
+      ],
+      "notes": [
+        "camphor style-matches resources/temple-v3/tree-camphor-v2.glb (oxblood-stained bark tint, very dark green solid foliage blobs, low-poly umbrella)",
+        "willow uses 12/14 hanging strip cards with MASK alpha (spec 10-14); osmanthus low trunk 1.2 m, dense round crown"
+      ]
+    },
+    "S2": {
+      "status": "done",
+      "outputs": [
+        "Khronos validator: 6 files, 0 errors, 0 warnings (validator-report.json)",
+        "Blender reimport check: images connected, sRGB, MASK alpha (cutoff defaults 0.5), tris, bounds, normals (reimport-check.json, ALL PASS)",
+        "manifest.json sha256 for glb/ and textures/",
+        "12 variant renders (front + three-quarter) with blank-frame guards in renders/blank-guards.json"
+      ],
+      "notes": [
+        "Blender 4.5 exporter needs Alpha->Math(ROUND) node for glTF MASK (blend_method no longer read); alphaCutoff omitted = spec default 0.5",
+        "tris: camphor 830/954, willow 456/472, osmanthus 1048/1052 (budget 2600)"
+      ]
+    },
+    "S3": {
+      "status": "done",
+      "outputs": [
+        "modules/tree-kit/tree-placements.json (46 placements: camphor 23, willow 11, osmanthus 12)",
+        "modules/tree-kit/collision.json (trunk box per species)",
+        "modules/tree-kit/tests/test_tree_kit.py — 8/8 pass"
+      ],
+      "notes": [
+        "species rule: willow <=8 m water edge, osmanthus <=6 m hall/xuan, camphor otherwise; distances recomputed in tests from site-inputs polygons",
+        "variant rule: height <=6.0 m -> small (base top 5.2), else large (6.6); per-tree scale range 0.871-1.133",
+        "rotY = md5(id)[:8] mod 360, deterministic; verified in tests"
+      ]
+    },
+    "S4": {
+      "status": "done",
+      "outputs": [
+        "renders/garden-aerial-mock.png 1500x2000 ortho, 46 placements + 10 m ground grid, blank guard pass",
+        "renders/contact-sheet.png (full) + review/contact-sheet.jpg + review/garden-aerial-mock.jpg (committed, <400 KB)",
+        "RESULT.json + DELIVERY.md; artifacts copied to package artifacts/tree-kit/"
+      ]
+    }
+  },
+  "assumptions": [
+    "design_inference: 'hall/xuan footprint' read literally as layout kinds hall+xuan (16 objects); pavilion/corridor/stage/rockery not counted for the osmanthus rule",
+    "design_inference: species variants in small/large base sizes (canopy-top base 5.2 m / 6.6 m) so per-tree scale stays 0.871-1.133 given layout heights 4.53-7.48 m; spec note 'height 4.5-5.7' does not match the frozen layout and was not used",
+    "fallback exceeded (recorded): gtree-2 sits 2.32 m inside water polygon water-428179908; the 1.0 m fallback cap cannot clear it, so it was moved the minimum exit distance 2.37 m to satisfy the hard test 'no placement inside footprint/water'; all 8 other inside-trees moved <=1.0 m",
+    "design_inference: bark shipped as two analytic tint variants of one procedural map (bark-neutral, bark-oxblood) because the camphor style-match needs the oxblood-stained tone of the temple-v3 reference",
+    "design_inference: collision boxes are square (rotY-invariant) trunk-only boxes, to be scaled by each placement's scale at integration time"
+  ]
+}

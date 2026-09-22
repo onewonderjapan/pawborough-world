@@ -1,0 +1,22 @@
+{
+ "packageId": "pawborough-w1-tree-kit-20260922",
+ "note": "trunk box only; canopy unreachable. Square boxes are rotY-invariant; multiply halfExtent and yMax by the placement scale. Coordinates are placement-local (x east, z south), y up, origin at trunk base.",
+ "species": {
+  "camphor": {
+   "halfExtentXZ": 0.35,
+   "yMin": 0.0,
+   "yMax": 2.6
+  },
+  "willow": {
+   "halfExtentXZ": 0.5,
+   "yMin": 0.0,
+   "yMax": 3.2,
+   "note": "covers leaning trunk (lean <= 8 deg spec, built 4-6 deg)"
+  },
+  "osmanthus": {
+   "halfExtentXZ": 0.3,
+   "yMin": 0.0,
+   "yMax": 1.7
+  }
+ }
+}
