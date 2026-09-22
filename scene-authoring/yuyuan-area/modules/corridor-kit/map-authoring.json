@@ -1,0 +1,22 @@
+{
+ "lattice-alpha.png": {
+  "kind": "analytic PIL",
+  "size": [
+   286,
+   234
+  ],
+  "metres": [
+   1.1,
+   0.9
+  ],
+  "use": "复廊漏窗 alpha 格栅 + 端亭格栅带",
+  "generator": "modules/corridor-kit/gen_textures.py"
+ },
+ "textures-512/": {
+  "kind": "derived (PIL LANCZOS 512px) from asset-authoring/yuyuan-entry/source-kit/textures 1K",
+  "why": "glTF 导出会把 Non-Color 图重编码为 PNG，1K 集使 4 GLB 超字节预算；512px 后总字节入 2.5MB",
+  "colorMaps": "JPEG q85",
+  "dataMaps": "PNG optimize",
+  "generator": "modules/corridor-kit/gen_textures.py"
+ }
+}

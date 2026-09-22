@@ -1,0 +1,37 @@
+{
+  "packageId": "pawborough-w1-corridor-kit-20260922",
+  "module": "corridor-kit",
+  "executor": "GLM-5.3-Flash via ZCode headless",
+  "stages": [
+    {"stage": "S0", "name": "worktree + site-inputs.json", "status": "done",
+     "notes": "worktree /home/baibai/outbox/pawborough-w1-corridor-kit-20260922/workspace 于基线提交 33a3bd72 建分支 work/w1-corridor-kit-20260922；site-inputs.json 由生成器自 baseline/layout.json 抽取（含 sha256 与 railHints 厅堂/水面质心表），out-corridor-kit/ 已被根 .gitignore 的 out-*/ 规则覆盖，无需改 ignore"},
+    {"stage": "S1", "name": "生成器 + bld-553893874 样例 + 渲染", "status": "done",
+     "notes": "build_corridor_kit.py 一次成型四模块；首轮字节 4.87MB 超预算：Non-Color 贴图被 glTF 导出重编码为 PNG + 528 个小网格的 accessor 开销；对策：gen_textures.py 派生 512/256px 贴图集（色彩 JPEG q85、数据图 PNG optimize、石面 roughness 改标量）+ 按模块合并为单网格导出。样例渲染曾抓到复廊沿廊机位落在中墙内（全黑，被空白帧守卫拦下），机位改沿折线弧长采样并偏至侧廊中线"},
+    {"stage": "S2", "name": "bld-428179906 矩形环 + bld-428186469 复廊", "status": "done",
+     "notes": "矩形/四边形环屋面连续斜接成立；复廊 4.6m 屋面在小环内缘自交：外圈保留逐顶点斜接（尖长>2.75 改戗角封盖），内圈檐线改向质心缩放 0.28 的天井式内坡；复廊地面 ±2.3 偏移线腰部自交出洞，改分段条带（错峰 1.5mm、搭接 0.15）+ 转角补丁（低 4mm）；PLAN fallback 1（戗角）与 fallback 2 路径核查（gardenRouteAudit 9 段均 ok、无 gpath 穿越复廊，不需开口）已记录"},
+    {"stage": "S3", "name": "听涛阁水廊 + 端部两层亭 massing", "status": "done",
+     "notes": "水廊自端亭南缘起建（seg0 由亭覆盖），111° 转角斜接尖长 2.69<2.75 用长尖角；端亭 10.1x6.4、柱网 6x4、两层四坡顶（一层腰檐 3.05->3.58 低于屋面射线上限 3.6，使水廊射线全程连续）、格栅带 alpha；远端三角山墙封口，亭侧端开敞"},
+    {"stage": "S4", "name": "tests/validator/collision/renders/RESULT", "status": "done",
+     "notes": "test_corridor_kit.cjs 29 项全过（自写 GLB 解析 + 竖直射线）；validator 4 GLB 0 错（3 警告均为 GENERATED_TANGENT_SPACE：未导出切线、引擎自 UV 生成，已知取舍）；12 渲染 + 接触表过空白帧守卫"}
+  ],
+  "assumptions": [
+    "美人靠侧别逐段计算：段中点 6m 内有水面取水侧，否则背向最近厅堂；环形/闭合廊只在朝环外的面设，且该面需（6m 内水面 或 无 15m 内厅堂正对）",
+    "屋顶顶点斜接尖长 >2.75 m 时该点改分段 + 小戗角封盖（PLAN fallback 1）；复廊内圈檐线改为向质心缩放 0.28 的天井式内坡",
+    "复廊地面 ±2.3 偏移线在 S 弯腰部自交出洞，改分段条带（每段错峰 1.5mm、搭接 0.15）+ 转角补丁（低 4mm 防闪烁）",
+    "瓦当行距 0.30 m、方截面 0.06；屋脊滚筒六边半径 0.06、中心 y=3.53（顶 3.59 < 3.6 射线上限）",
+    "开口折线（听涛阁）端部屋面沿方向延伸 0.35 m；亭侧端开敞接端亭，远端三角山墙封口",
+    "复廊中墙高 2.55、厚 0.2；漏窗 1.1x0.9、窗台 1.0，洞内嵌解析 alpha 格栅；开窗沿段按 >=3.0 m 间距布设、窗边距段端 >=0.9 m",
+    "听涛阁端亭 massing：10.1x6.4 台基（深为设计值）、柱网 6x4、一层腰檐 3.05->3.58、二层 6.6->7.9，格栅带 alpha",
+    "听涛阁水廊自端亭南边缘（p1 沿 seg0 反向 5.05 m）起建，seg0 段由端亭 massing 覆盖",
+    "柱距每段均分接近 2.5 m（闭合环每段柱含起点不含终点避免角柱重复）；复廊为外缘单排柱 + 中墙承重",
+    "美人靠坐面探出控制在柱列内侧 0.08 m（内缘 0.82 > 步行半宽 0.8）；转折 >50° 的角部端部家具内缩 1.4 m（急弯口不设座，避免邻段家具侵入相邻段通行带）",
+    "复廊鸟瞰屋面在 S 弯腰部呈折面：冻结布局环宽（<=8m）与 5.7m 屋面带在腰部物理性交叠，spec 屋宽 4.6 为权威值故保留；侧视/沿廊读法正确（见 renders 已知限制）",
+    "步行带测试口径：站点距顶点 <1.2m 的角区跳过（结点区：内角切角 + 邻段家具邻近），直段全 ±0.8m 带验证；中线/侧廊中线射线在全段长验证"
+  ],
+  "checks": {
+    "fallback1_mitre": "used at 复廊外圈尖超限顶点 + 920 v1 内缘（sliver）",
+    "fallback2_gpath_crossing": "gardenRouteAudit 9 段全 ok，无 gpath 穿越复廊，未开洞口",
+    "fallback3_pavilion_budget": "端亭实际计入整 GLB 5533 tri << 9000，未触发单层降级"
+  },
+  "updatedAt": "2026-09-23T02:10:00+08:00"
+}

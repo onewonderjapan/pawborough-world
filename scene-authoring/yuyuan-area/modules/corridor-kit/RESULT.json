@@ -1,0 +1,60 @@
+{
+ "packageId": "pawborough-w1-corridor-kit-20260922",
+ "status": "delivered_for_lead_review",
+ "ownerAdopted": false,
+ "visualReview": "pending_lead",
+ "partial": [],
+ "blockers": [],
+ "deliverables": {
+  "glbs": [
+   {
+    "file": "corridor-bld-553893874.glb",
+    "object": "bld-553893874",
+    "tris": 5572,
+    "bytes": 593836,
+    "sha256": "91d3309854d5cdf94ee01b4a6ca013a3606d14de7d2428b76046dc6f22904e2b"
+   },
+   {
+    "file": "ring-corridor-bld-428179906.glb",
+    "object": "bld-428179906",
+    "tris": 4732,
+    "bytes": 534848,
+    "sha256": "0904b62a15bafd73f3072a1a697ac85e4e92474b2ff60c538830dd72ba052b25"
+   },
+   {
+    "file": "double-corridor-bld-428186469.glb",
+    "object": "bld-428186469",
+    "tris": 4068,
+    "bytes": 502052,
+    "sha256": "6b80cff42adc6a4d8a17db635a886d069edea2d0c656511377921455b8538da6"
+   },
+   {
+    "file": "waterside-gallery-bld-428179920.glb",
+    "object": "bld-428179920",
+    "tris": 5533,
+    "bytes": 597168,
+    "sha256": "e179960ae98720d529d5c0f8eed8f5022665199a6fbf86087b8717429a611118"
+   }
+  ],
+  "totals": {
+   "triangles": 19904,
+   "budgetTriangles": 45000,
+   "bytes": 2227904,
+   "budgetBytes": 2500000
+  },
+  "siteModule": "GLB Y-up world (x, y, z_map), origin map(0,0), no instance transform; replaces procedural corridor boxes; pipeline integration is a later lead step (not included by design)",
+  "collision": "corridor-kit-collision.json (columns + rail boxes + floor slabs + 复廊中墙 + 端亭台基/柱)",
+  "catalog": "corridor-kit-catalog.json (柱位记录、railSides、材料、预算、假设)",
+  "tests": "29 pass / 0 fail (node modules/corridor-kit/test_corridor_kit.cjs)",
+  "validator": "4 GLB errors=0 (Khronos, warnings=3 each: GENERATED_TANGENT_SPACE, tangents generated at load — accepted trade-off)",
+  "renders": "renders/ 12 帧（每廊 沿廊/外侧3-4/俯视）+ contact-sheet.jpg，全部通过空白帧守卫"
+ },
+ "knownLimitations": [
+  "复廊（bld-428186469）鸟瞰屋面在 S 弯腰部呈折面：冻结布局环宽 <=8m 与 4.6m+2x0.55m 屋面带在腰部物理性交叠；spec 屋宽为权威值故保留，侧视/沿廊读法正确",
+  "复廊沿廊视图偏暗（中墙 + 檐下自然光），几何与格栅可读；如需提亮属 lead 集成后光照课题",
+  "屋面未导出切线（validator 警告 GENERATED_TANGENT_SPACE x3 材质）：引擎从 UV 生成切线，与 garden-kit 同口径"
+ ],
+ "workBranch": "work/w1-corridor-kit-20260922",
+ "baseCommit": "33a3bd72b633983d4649979f545e96a410934ace",
+ "finishedAt": "2026-09-23T02:12:00+08:00"
+}
