@@ -34,6 +34,10 @@ if (typeof globalThis.FileReader === 'undefined') {
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out');
+// SITE_MODULES=1：墙/龙头/月洞门/九曲桥由站点模块 GLB（modules/garden-kit）承担，占位不再程序化生成。
+// 默认（未设 flag）行为与基线逐字节一致。
+const SITE_MODULES = process.env.SITE_MODULES === '1';
+const SITE_MODULE_KINDS = new Set(['wall', 'wallHead', 'moonGateWall', 'zigzagBridge']);
 const layout = JSON.parse(fs.readFileSync(path.join(OUT, 'layout.json'), 'utf8'));
 
 // ---------- 统一材质：合并几何 + 顶点色 ----------
@@ -850,6 +854,7 @@ const deferred = [];
 
 for (const o of layout.objects) {
   if (o.skipRender) { deferred.push({ id: o.id, kind: o.kind, why: o.disposition }); continue; }
+  if (SITE_MODULES && SITE_MODULE_KINDS.has(o.kind)) { deferred.push({ id: o.id, kind: o.kind, why: 'site-module' }); continue; }
   const ud = { id: o.id, zone: o.zone, kind: o.kind, lod: o.lod };
   if (o.name) ud.name = o.name;
   if (o.trade) ud.trade = o.trade;
@@ -959,7 +964,17 @@ const exporter = new GLTFExporter();
 const procedural = {};
 const zoneFiles = { garden: 'procedural-garden.glb', temple: 'procedural-temple.glb', bazaar: 'procedural-bazaar.glb', pond: 'procedural-pond.glb', outer: 'procedural-outer.glb' };
 for (const [z, g] of Object.entries(zoneGroups)) {
-  if (!g.children.length) continue;
+  if (!g.children.length) {
+    // SITE_MODULES=1 时庙墙等占位被站点模块替代，分区可能为空——仍写出空 GLB 供 validate.mjs 清单核对
+    if (SITE_MODULES) {
+      const bytes = await new Promise((res, rej) => { exporter.parse(g, (ab) => res(Buffer.from(ab)), (e) => rej(e), { binary: true }); });
+      const f = path.join(OUT, zoneFiles[z]);
+      fs.writeFileSync(f, bytes);
+      procedural[z] = { file: 'out/' + zoneFiles[z], bytes: bytes.length, children: 0, empty: true };
+      console.log(z, bytes.length, 'bytes, empty (site modules carry this zone)');
+    }
+    continue;
+  }
   const bytes = await new Promise((res, rej) => {
     exporter.parse(g, (ab) => res(Buffer.from(ab)), (e) => rej(e), { binary: true });
   });

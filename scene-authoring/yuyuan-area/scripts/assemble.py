@@ -73,6 +73,47 @@ for z, f in proc_files.items():
         import_glb(p, 'ZONE-' + z)
         print('imported', z)
 
+# ---------- 站点模块（SITE_MODULES=1：garden-kit 的龙墙/庙墙/月洞门/九曲桥） ----------
+# 世界坐标 GLB（原点=地图0,0），直接导入，不加实例变换。
+SITE_FILES = {
+    'SITE-garden': ['garden-wall.glb', 'moon-gate.glb'],
+    'SITE-temple': ['temple-wall.glb'],
+    'SITE-pond': ['jiuqu-bridge.glb'],
+}
+# 每个 GLB 挂到以 layout 对象 id 命名的锚空节点（coverage.mjs/reconcile.mjs 按节点名对账；
+# garden-wall.glb 同时承担 garden-wall 与 garden-wall-dragonhead 两个 layout 对象）
+SITE_ANCHORS = {
+    'garden-wall.glb': ['garden-wall', 'garden-wall-dragonhead'],
+    'moon-gate.glb': ['yuhuatang-moongate'],
+    'temple-wall.glb': ['temple-wall'],
+    'jiuqu-bridge.glb': ['jiuqu-bridge'],
+}
+site_imported = []
+if os.environ.get('SITE_MODULES') == '1':
+    for collname, files in SITE_FILES.items():
+        for f in files:
+            p = os.path.join(OUT, f)
+            if os.path.exists(p):
+                objs = import_glb(p, collname)
+                parent = None
+                for anchor_id in SITE_ANCHORS.get(f, [f[:-4]]):
+                    empty = bpy.data.objects.new(anchor_id, None)
+                    empty.empty_display_size = 2
+                    empty['id'] = anchor_id
+                    empty['module'] = 'garden-kit'
+                    coll(collname).objects.link(empty)
+                    if parent is not None:
+                        empty.parent = parent
+                    parent = empty
+                for o in objs:
+                    if o.parent is None:
+                        o.parent = parent
+                site_imported.append(f)
+                print('imported site module', f, '->', collname, 'anchors', SITE_ANCHORS.get(f))
+            else:
+                print('MISSING site module', p)
+    print('site modules imported:', site_imported)
+
 # ---------- L2 模块库（各导入一次，之后链接复制） ----------
 module_cache = {}
 
@@ -122,6 +163,31 @@ for inst in LAYOUT['instances']:
 # MODLIB 收藏不导出
 modlib = bpy.data.collections.get('MODLIB')
 
+# ---------- 贴图去重（SITE_MODULES=1 时执行） ----------
+# 站点模块/门楼/店屋/庙区 GLB 内嵌图是 packed（无 filepath），来自同一 source-kit 文件；
+# 按 名称(去掉 .NNN 后缀)+尺寸 合并 image datablock，避免 GLB 导出重复嵌入（几何/材质不变，只省字节）。
+if site_imported:
+    import re
+    def img_key(img):
+        try:
+            return (re.sub(r'\.\d{3}$', '', img.name), img.size[0], img.size[1])
+        except Exception:
+            return None
+    by_key = {}
+    for img in list(bpy.data.images):
+        if img.source != 'FILE':
+            continue
+        key = img_key(img)
+        if not key or img.size[0] == 0:
+            continue
+        if key in by_key:
+            old = by_key[key]
+            img.user_remap(old)
+            bpy.data.images.remove(img)
+        else:
+            by_key[key] = img
+    print('images deduped:', len(bpy.data.images), 'datablocks remain')
+
 def select_only(objs):
     for o in bpy.context.view_layer.objects:
         o.select_set(False)
@@ -138,14 +204,16 @@ def export_glb(path, objects):
         bpy.ops.export_scene.gltf(filepath=path, export_format='GLB', export_yup=True, use_selection=True)
     print('exported', path, os.path.getsize(path), 'bytes')
 
+SITE_ALL = [o for c in ('SITE-garden', 'SITE-temple', 'SITE-pond')
+            if c in bpy.data.collections for o in bpy.data.collections[c].objects]
 all_objs = [o for c in ('ZONE-garden', 'ZONE-temple', 'ZONE-bazaar', 'ZONE-pond', 'ZONE-outer',
                         'INST-garden', 'INST-temple', 'INST-bazaar', 'INST-outer')
-            if c in bpy.data.collections for o in bpy.data.collections[c].objects]
+            if c in bpy.data.collections for o in bpy.data.collections[c].objects] + SITE_ALL
 
 def zone_objects(zones):
     sel = []
     for z in zones:
-        for c in ('ZONE-' + z, 'INST-' + z):
+        for c in ('ZONE-' + z, 'INST-' + z, 'SITE-' + z):
             if c in bpy.data.collections:
                 sel.extend(bpy.data.collections[c].objects)
     return sel
@@ -158,12 +226,16 @@ export_glb(os.path.join(OUT, 'scene-areas.glb'), all_objs)
 export_glb(os.path.join(OUT, 'garden.glb'), zone_objects(['garden']))
 export_glb(os.path.join(OUT, 'temple.glb'), zone_objects(['temple']))
 export_glb(os.path.join(OUT, 'bazaar.glb'), zone_objects(['bazaar']))
+if site_imported:
+    # SITE_MODULES 时九曲桥在 SITE-pond：补一份 pond 分区 GLB（默认路径不产出新文件）
+    export_glb(os.path.join(OUT, 'pond.glb'), zone_objects(['pond']))
 
 # 实例清单回写
 stats = {
     'instances': len(LAYOUT['instances']),
     'modules': {'gate': 1, 'shops': len(shop_objs), 'temple': len(temple_objs)},
     'sceneObjects': len(all_objs),
+    'siteModules': site_imported,
 }
 json.dump(stats, open(os.path.join(OUT, 'assemble-stats.json'), 'w'), indent=1)
 print('ASSEMBLE DONE', json.dumps(stats))
