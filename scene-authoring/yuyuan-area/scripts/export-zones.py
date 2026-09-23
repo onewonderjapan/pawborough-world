@@ -6,6 +6,15 @@ import bpy, json, os, re, hashlib
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, os.environ.get('OUT_DIR', 'out'))
 CAP = int(os.environ.get('ZONE_CAP_BYTES', '12000000'))
+ROCKERY_IDS = {'rockery-dajiashan', 'rockery-yulinglong'}
+
+def is_rockery_obj(o):
+    cur = o
+    while cur is not None:
+        if cur.name in ROCKERY_IDS or cur.get('id') in ROCKERY_IDS:
+            return True
+        cur = cur.parent
+    return False
 # (zone, part, collections, instance-module filter)。一个分区可拆成多个分件（同 zone id，查看器按 zone 切换）。
 # 庙区 v3 精修件单区 >12 MB（大殿一件 6.3 MB），按轴线拆三件：
 #   1 山门/前院/仪门/戏台/樟树 + 庙墙与程序化底面 | 2 大殿院/配殿/廊庑/大殿 | 3 三进院/后殿
@@ -62,6 +71,13 @@ for z, *_ in PARTS:
 manifest = {'schema': 2, 'capPerZoneBytes': CAP, 'order': order, 'zones': []}
 for z, part_index, colls, flt in PARTS:
     objs = objs_of(colls, flt)
+    rockery_part = []
+    # 假山网格约 3.5 MB，并进现有 zone-garden.glb（已 9.6 MB）会超过 12 MB。
+    # ROCKERY_KIT=1 时把两个锚及其子网格拆到 zone-garden-2.glb，主文件名仍是 zone-garden.glb。
+    if z == 'garden' and part_index == 1 and os.environ.get('ROCKERY_KIT') == '1':
+        rockery_part = [o for o in objs if is_rockery_obj(o)]
+        drop = {id(o) for o in rockery_part}
+        objs = [o for o in objs if id(o) not in drop]
     f = f'zone-{z}.glb' if sum(1 for p in PARTS if p[0] == z) == 1 else f'zone-{z}-{part_index}.glb'
     p = os.path.join(OUT, f)
     if not objs:
@@ -72,6 +88,16 @@ for z, part_index, colls, flt in PARTS:
                               'collections': [c for c in colls if c in bpy.data.collections],
                               'objects': len(objs), 'bounds': bounds(objs), 'withinCap': len(b) <= CAP})
     print('zone', z, part_index, len(b), 'bytes')
+    if rockery_part:
+        f2 = 'zone-garden-2.glb'
+        p2 = os.path.join(OUT, f2)
+        export(p2, rockery_part)
+        b2 = open(p2, 'rb').read()
+        manifest['zones'].append({'id': 'garden', 'part': 2, 'file': f2, 'bytes': len(b2), 'sha256': hashlib.sha256(b2).hexdigest(),
+                                  'collections': ['SITE-garden'], 'objects': len(rockery_part),
+                                  'bounds': bounds(rockery_part), 'withinCap': len(b2) <= CAP,
+                                  'note': 'ROCKERY_KIT site modules; split so zone-garden.glb stays within cap'})
+        print('zone garden 2', len(b2), 'bytes')
 manifest['totalBytes'] = sum(zz.get('bytes', 0) for zz in manifest['zones'])
 json.dump(manifest, open(os.path.join(OUT, 'zones-manifest.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 print('ZONES DONE total', manifest['totalBytes'], 'cap/zone', CAP)

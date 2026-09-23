@@ -288,6 +288,72 @@ if os.environ.get('SANSUITANG') == '1':
         print('sansuitang collision world boxes:', len(world_boxes))
     print('sansuitang placed', sst_placed)
 
+# ---------- 假山站点模块（ROCKERY_KIT=1：世界坐标 GLB，锚点按 baseline/layout.json 重算） ----------
+# 网格已在地图坐标（build-rockery：GLB x,y,z = map x,z,y）。锚 empty 放在占位盒并集的 footprint 形心，
+# rotY 使本地 +Z 指向石心主轴；子网格保持世界坐标（parent 后写回 matrix_world）。
+# 形心 / 主轴公式与 tests/rockery-test.mjs 一致，只读 layout 的 rocks[].{x,z,size}。
+# 占位盒半宽 = 0.6*size（DESIGN_SPEC：顶点须留在 x±size*0.6, z±size*0.6 内），不是从网格反推。
+def rockery_pose(rocks):
+    half = 0.6
+    x0 = min(r['x'] - r['size'] * half for r in rocks)
+    x1 = max(r['x'] + r['size'] * half for r in rocks)
+    z0 = min(r['z'] - r['size'] * half for r in rocks)
+    z1 = max(r['z'] + r['size'] * half for r in rocks)
+    mx = sum(r['x'] for r in rocks) / len(rocks)
+    mz = sum(r['z'] for r in rocks) / len(rocks)
+    cxx = sum((r['x'] - mx) ** 2 for r in rocks)
+    czz = sum((r['z'] - mz) ** 2 for r in rocks)
+    cxz = sum((r['x'] - mx) * (r['z'] - mz) for r in rocks)
+    tr = cxx + czz
+    disc = max(0.0, tr * tr / 4 - (cxx * czz - cxz * cxz))
+    lam = tr / 2 + math.sqrt(disc)
+    if abs(cxz) > 1e-9:
+        vx, vz = -cxz, cxx - lam
+    elif cxx >= czz:
+        vx, vz = 1.0, 0.0
+    else:
+        vx, vz = 0.0, 1.0
+    n = math.hypot(vx, vz) or 1.0
+    vx, vz = vx / n, vz / n
+    if abs(vx) >= abs(vz):
+        if vx < 0:
+            vx, vz = -vx, -vz
+    elif vz < 0:
+        vx, vz = -vx, -vz
+    return (x0 + x1) / 2, (z0 + z1) / 2, math.atan2(vx, vz), vx, vz
+
+rockery_placed = 0
+if os.environ.get('ROCKERY_KIT') == '1':
+    lay_obj = {o['id']: o for o in LAYOUT['objects']}
+    RK = os.path.join(ROOT, os.environ.get('ROCKERY_KIT_DIR', 'out-garden-kits'))
+    for rid in ('rockery-dajiashan', 'rockery-yulinglong'):
+        rocks = lay_obj[rid]['geometry']['rocks']
+        cx, cz, rot_y, vx, vz = rockery_pose(rocks)
+        objs = import_glb(os.path.join(RK, rid, 'model.glb'), 'SITE-garden')
+        for ob in objs:
+            if ob.name == rid or ob.name.startswith(rid):
+                ob.name = 'mesh-' + ob.name
+        empty = bpy.data.objects.new(rid, None)
+        empty.empty_display_size = 2
+        empty.rotation_mode = 'XYZ'
+        empty.location = (cx, -cz, 0)
+        empty.rotation_euler = (0, 0, rot_y)
+        empty['id'] = rid
+        empty['module'] = 'rockery-kit'
+        empty['zone'] = 'garden'
+        empty['lod'] = 'L2'
+        coll('SITE-garden').objects.link(empty)
+        bpy.context.view_layer.update()
+        for ob in objs:
+            if ob.parent is None:
+                mw = ob.matrix_world.copy()
+                ob.parent = empty
+                ob.matrix_world = mw
+        bpy.context.view_layer.update()
+        rockery_placed += 1
+        print('rockery placed', rid, 'centroid', round(cx, 3), round(cz, 3), 'rotY', round(rot_y, 4), 'axis', round(vx, 3), round(vz, 3))
+    print('rockery kit placed', rockery_placed)
+
 # MODLIB 收藏不导出
 modlib = bpy.data.collections.get('MODLIB')
 
@@ -366,6 +432,7 @@ stats = {
     'siteModules': site_imported,
     'stallKitPlaced': stall_placed,
     'sansuitangPlaced': sst_placed,
+    'rockeryKitPlaced': rockery_placed,
     'gardenKitPlaced': garden_kit_placed,
 }
 json.dump(stats, open(os.path.join(OUT, 'assemble-stats.json'), 'w'), indent=1)
