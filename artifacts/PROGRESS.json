@@ -1,14 +1,32 @@
 {
- "task": "wave1-walk-20260923 — 全域候选第一人称步行（WP4）",
- "branch": "work/wave1-walk-20260923",
- "base": "main @ 0d1ebd68",
- "updatedAt": "2026-09-23T22:30:00+08:00",
+ "task": "wave1-walkr1 — 步行模式补碰撞（园廊 3 条 + 复廊 + 听涛阁水廊 / 门楼 / 树 / 摊凳）+ 截图时机修正（WP4 R1）",
+ "branch": "work/wave1-walkr1-20260923",
+ "base": "main @ 09d11cdd",
+ "updatedAt": "2026-09-23T23:59:00+08:00",
  "queue": [
-  { "step": "W1 碰撞导出", "status": "done", "commit": "bb324d16", "evidence": "area-collision-contract 1175 pass / 0 fail（实现前 exit 2）；export-collision.mjs 已挂入 rebuild-review.sh（WALK_COLLISION=0 跳过）" },
-  { "step": "W2 浏览器步行", "status": "done", "commit": "1e5864aa", "evidence": "?walk=1&at=<anchor> 直入步行、步行/轨道切换、回到锚点；zone-browser-check 默认轨道 EXIT 0（std255 54.5）；headless 步行冒烟着地/移动/锚点切换正常" },
-  { "step": "W3 机器人巡游", "status": "done", "commit": "835a01cb", "evidence": "npm run test:walk allPass=true（5 路线：终点误差 ≤0.9m、最大横向偏离 ≤0.8m、最低离地 ≥−0.005m、无 NaN、无穿墙）；WALK-CHECK.json + shots/×15；未实现产物上 exit 1（ENOENT collision-garden.json）" },
-  { "step": "公共验收", "status": "done", "evidence": "rebuild-review.sh EXIT 0（ZONE_SPLIT=1 全套，含 export-collision）；npm test geo101/coverage4/sansuitang16/rockery28/awning49 全绿；重建后产物复跑 contract / walk-check / browser-check 仍绿" },
-  { "step": "交付物", "status": "done", "evidence": "artifacts/walk/{RESULT.json, WALK-CHECK.json, shots/, before-orbit-default.png, after-walk-eye-main.png} + artifacts/NEW-ASSETS.json" }
+  {
+   "step": "K1 园林套件碰撞",
+   "status": "done",
+   "commit": "1e7e4093",
+   "evidence": "export-collision.mjs 段9-13：corridor-kit 三廊（874:48柱+4栏 / 906:40+4 / 920:38+4+端亭25）逐柱 GLB 确认；复廊 6柱+4栏(首末跨留空)+4中墙（部署 GLB 实测 6 柱，设计记录 10 与 GLB 不符，按 GLB 出盒）；门楼 2 Pier 通道 3.26m≥2.2；46 树干 0.4×2.0×0.4；51 摊凳 GLB 包围盒；栏/墙与路线/园路 0 相交，openings 与上版一致。新测试 tests/corridor-gate-collision-test.mjs：上一版产物 7 pass/20 fail exit 1（先行证明），本单 29 pass/0 fail；契约 1451 pass/0 fail；碰撞 1216→1492"
+  },
+  {
+   "step": "K2 截图时机",
+   "status": "done",
+   "commit": "38a512bf",
+   "evidence": "中点按路线累计弧长≥半长触发、眼位=路线中点地面+1.6m、朝向=该处切线 yaw=atan2(-tx,-tz)；并修根因——轨道模式每帧 controls.update() lookAt(controls.target) 覆盖 eyeView 朝向（旧 yaw 从未上屏），截图改走 __viewAt(p,t) target=眼位+前向25m；15 张重拍，中点图全部沿路线方向（对照 artifacts/walkr1/shots-before vs shots-after）"
+  },
+  {
+   "step": "公共验收",
+   "status": "done",
+   "evidence": "rebuild-review.sh EXIT 0（全套 env）；npm test geo101/coverage4/sansuitang16/rockery28/awning49；zone-split 75、check-food 9、契约 1451、新测试 29 全绿；walk-check allPass=true（终点误差≤0.9m）；zone GLB ≤12MB（最大 9,543,004B）；browser 默认轨道 EXIT 0 std255 54.4（上版 54.5）"
+  },
+  {
+   "step": "交付物",
+   "status": "done",
+   "commit": "42dfc6d3",
+   "evidence": "artifacts/walkr1/{RESULT.json, WALK-CHECK.json, WALK-CHECK-before.json, shots-after/×15, shots-before/×15, before/after-orbit-default.png} + artifacts/SUMMARY.md + artifacts/NEW-ASSETS.json（5 个 collision JSON sha 更新为 walkr1 现值）"
+  }
  ],
- "resume": "全部队列项完成。若需续做：fallback/partial 清单见 artifacts/walk/RESULT.json 的 partial[]（园廊/树/摊位碰撞、pavilion obb 背栏带、门楼通道碰撞）。"
+ "resume": "全部队列项完成，无 blockers。partial 移交项见 artifacts/walkr1/RESULT.json：复廊部署 GLB 实测 6 柱（设计记录 10，若换 corridor-kit R1 重建复廊需重跑导出，新测试按 GLB 确认数自适应）；门楼折起门扇不建碰撞（建则通道 2.1m<2.2m）；pavilion-kit obb 背栏带维持跳过；机主 D8 亲走与 WP12 性能实测属主控/机主。"
 }
