@@ -268,6 +268,35 @@ def main():
                 sad.append({'pair': [a['seed'], b2['seed']], 'solid': pts})
     out['saddles'] = sad
 
+    # 黄石 strata (R3): per tall rock (h >= 4 m), up-facing flat faces (n.z > 0.9)
+    # inside its box column, binned by height (0.2 m); a ledge level = a bin with
+    # >= 0.15 m² of flat area, levels merged when closer than 0.4 m. Plus the share
+    # of near-vertical face area (|n.z| < 0.3) for the squared-off look.
+    tot_area = sum(f.calc_area() for f in bm.faces)
+    out['verticalFaceAreaShare'] = round(sum(f.calc_area() for f in bm.faces if abs(f.normal.z) < 0.3) / tot_area, 4)
+    out['flatUpFaceAreaShare'] = round(sum(f.calc_area() for f in bm.faces if f.normal.z > 0.9) / tot_area, 4)
+    strata = []
+    for r in rocks:
+        if r['h'] < 4.0:
+            continue
+        b = r['box']
+        bins = {}
+        for f in bm.faces:
+            if f.normal.z <= 0.9:
+                continue
+            c = f.calc_center_median()
+            if b['xMin'] <= c.x <= b['xMax'] and b['zMin'] <= -c.y <= b['zMax'] and c.z > 0.2:
+                k = int(c.z / 0.2)
+                bins[k] = bins.get(k, 0.0) + f.calc_area()
+        levels = []
+        for k in sorted(bins):
+            if bins[k] >= 0.15:
+                y = k * 0.2 + 0.1
+                if not levels or y - levels[-1] >= 0.4:
+                    levels.append(round(y, 2))
+        strata.append({'seed': r['seed'], 'h': r['h'], 'ledgeLevels': levels, 'count': len(levels)})
+    out['strata'] = strata
+
     # materials
     mat_of = [mat_names[f.material_index] if f.material_index < len(mat_names) else '' for f in bm.faces]
     n = len(bm.faces)
@@ -291,6 +320,7 @@ def main():
     print('PLATFORMS', plats)
     print('SADDLES', [s for s in sad if not all(s['solid'])])
     print('MATERIALS', out['materials'])
+    print('STRATA', out['verticalFaceAreaShare'], out['flatUpFaceAreaShare'], [(x['seed'], x['count']) for x in strata])
 
 
 if __name__ == '__main__':

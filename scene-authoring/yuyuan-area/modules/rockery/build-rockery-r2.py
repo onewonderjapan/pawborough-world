@@ -49,6 +49,17 @@ PARAMS = {
 }
 
 
+# R3 (2026-09-23, owner decision D5): 豫园大假山 is a 黄石 (yellowstone) rockery —
+# stacked flat blocks with clear horizontal strata, squared faces, few holes, warm
+# colour. The Taihu-stone language above (folds, bowls, waist, bores) stays for 玉玲珑.
+YELLOW = dict(slab_len=(0.85, 1.0), slab_wid=(0.55, 0.78), slab_round=0.06, slab_k=0.08,
+              slab_shift=0.14, slab_yaw_deg=12.0, rock_k=0.30, course_shrink=0.12,
+              bridge_w=0.45, bridge_h=(0.5, 1.6), bridge_k=0.25,
+              strata_period=0.8, strata_amp=0.20, strata_wave=0.18,
+              crag_amp=0.07, crag_freq=1.1, fine_amp=0.03, fine_freq=3.5,
+              tint='a08560')
+
+
 # ---------------------------------------------------------------- noise ----
 class Perlin:
     """Vectorised 3D gradient noise, output roughly in [-1, 1]."""
@@ -106,6 +117,16 @@ def sd_box(P, lo, hi):
     return np.linalg.norm(np.maximum(q, 0.0), axis=1) + np.minimum(q.max(axis=1), 0.0)
 
 
+def sd_round_box_yaw(P, c, half, yaw, rad):
+    """Rounded box rotated by yaw about +Y (map axes)."""
+    Q = P - c
+    cy, sy = math.cos(yaw), math.sin(yaw)
+    x = cy * Q[:, 0] + sy * Q[:, 2]
+    z = -sy * Q[:, 0] + cy * Q[:, 2]
+    q = np.abs(np.stack([x, Q[:, 1], z], axis=1)) - (half - rad)
+    return np.linalg.norm(np.maximum(q, 0.0), axis=1) + np.minimum(q.max(axis=1), 0.0) - rad
+
+
 def sd_capsule(P, a, b, r):
     pa = P - a
     ba = b - a
@@ -124,7 +145,8 @@ def smax(a, b, k):
 
 # ------------------------------------------------------------ the field ----
 class RockeryField:
-    def __init__(self, cluster, rocks, prm):
+    def __init__(self, cluster, rocks, prm, style='taihu'):
+        self.style = style
         self.cluster = cluster
         self.rocks = rocks
         self.prm = prm
@@ -144,6 +166,16 @@ class RockeryField:
         if cluster == 'rockery-yulinglong':
             self.waist_seed = max(rocks, key=lambda r: r['h'])['seed']
         self._make_lumps()
+        self.slabs = self._make_slabs() if style == 'yellow' else None
+        # 黄石 bridges: every pair whose placeholder boxes overlap at all (same rule
+        # as the box-overlap groups, so each group can close into one shell)
+        self.bridge_pairs = []
+        for i, a in enumerate(rocks):
+            for b in rocks[i + 1:]:
+                A, B = a['box'], b['box']
+                if min(A['xMax'], B['xMax']) > max(A['xMin'], B['xMin']) and \
+                   min(A['zMax'], B['zMax']) > max(A['zMin'], B['zMin']):
+                    self.bridge_pairs.append((a, b))
         self.ridge_pairs = []
         if prm.get('hill_k', 0) > 0:
             for i, a in enumerate(rocks):
@@ -187,10 +219,60 @@ class RockeryField:
                 c[1] = h - rr[1]
             self.lumps.append(lumps)
 
+    # 黄石: each rock = a stack of flat rounded boxes, each course shifted and
+    # slightly re-yawed (overhangs / 挑出), long axis roughly along the rock's
+    # longer neighbour direction; courses 0.9–1.3 m thick
+    def _make_slabs(self):
+        Y = YELLOW
+        out = []
+        for r in self.rocks:
+            rng = np.random.default_rng(r['seed'] * 4513 + 29)
+            size, h = r['size'], r['h']
+            n = max(2, int(round(h / 1.1)))
+            base_yaw = rng.uniform(0, math.pi)
+            ys = np.sort(rng.uniform(0.85, 1.15, n)); ys = ys / ys.sum() * h
+            y0 = 0.0
+            course = []
+            for i in range(n):
+                t = i / max(n - 1, 1)
+                shrink = 1.0 - Y['course_shrink'] * t        # upper courses a little narrower
+                a = 0.5 * size * rng.uniform(*Y['slab_len']) * shrink
+                b = 0.5 * size * rng.uniform(*Y['slab_wid']) * shrink
+                hh = ys[i] * 0.5
+                off = rng.uniform(-Y['slab_shift'], Y['slab_shift'], 2) * size
+                yaw = base_yaw + math.radians(rng.uniform(-Y['slab_yaw_deg'], Y['slab_yaw_deg']))
+                c = np.array([r['x'] + off[0], y0 + hh, r['z'] + off[1]])
+                course.append((c, np.array([a, hh, b]), yaw))
+                y0 += ys[i]
+            out.append(course)
+        return out
+
     def base(self, P):
         """Smooth union of rocks + folds + crags, clipped to the box union."""
         k_l, k_r = self.prm['lump_k'], self.prm['smooth_k']
         d = None
+        if self.style == 'yellow':
+            Y = YELLOW
+            for r, course in zip(self.rocks, self.slabs):
+                dr = None
+                for c, half, yaw in course:
+                    e = sd_round_box_yaw(P, c, half, yaw, Y['slab_round'])
+                    dr = e if dr is None else smin(dr, e, Y['slab_k'])
+                d = dr if d is None else smin(d, dr, Y['rock_k'])
+            # 桥石: a flat block laid across every pair of overlapping neighbours,
+            # height = half the lower rock (0.5–1.6 m) — joins the group the 黄石 way
+            for a, b in self.bridge_pairs:
+                A = np.array([a['x'], a['z']]); B = np.array([b['x'], b['z']])
+                L = float(np.linalg.norm(B - A))
+                if L < 1e-3:
+                    continue
+                H = min(max(0.5 * min(a['h'], b['h']), Y['bridge_h'][0]), Y['bridge_h'][1])
+                W = Y['bridge_w'] * min(a['size'], b['size'])
+                mid = (A + B) / 2
+                yaw = math.atan2(B[1] - A[1], B[0] - A[0])
+                e = sd_round_box_yaw(P, np.array([mid[0], H / 2, mid[1]]), np.array([L / 2, H / 2, W / 2]), yaw, Y['slab_round'])
+                d = smin(d, e, Y['bridge_k'])
+            return self._finish(P, d, yellow=True)
         for r, lumps in zip(self.rocks, self.lumps):
             Q = P
             if r['seed'] == self.waist_seed:
@@ -207,11 +289,14 @@ class RockeryField:
             if r['seed'] == self.waist_seed:
                 dr = dr * 0.8   # the pinch stretches the field; keep it conservative
             d = dr if d is None else smin(d, dr, k_r)
+        return self._finish(P, d)
+
+    def _finish(self, P, d, yellow=False):
         prm = self.prm
         # 山体基座 (大假山): a heightfield massif over the box union of each
         # overlap group — low plateau + a hill under every rock, tapering to the
         # ground near the box edges — so the peaks grow out of one mountain body
-        if prm['massif'] > 0 or prm['hill_k'] > 0:
+        if (prm['massif'] > 0 or prm['hill_k'] > 0) and not yellow:
             db2 = None
             for lo, hi in self.boxes:
                 q = np.abs(P[:, [0, 2]] - (lo[[0, 2]] + hi[[0, 2]]) * 0.5) - (hi[[0, 2]] - lo[[0, 2]]) * 0.5
@@ -240,13 +325,23 @@ class RockeryField:
                 - 0.6 * (1.0 - t2)          # sink below ground at box edges (no slab skirts)
             dm = (P[:, 1] - H) * 0.55
             d = smin(d, dm, 0.6)
-        # vertical folds: ridged noise sampled with y squashed (low freq in y)
-        F = P * np.array([prm['fold_freq'], prm['fold_freq'] * prm['fold_ysquash'], prm['fold_freq']])
-        ridged = 1.0 - np.abs(self.noise_fold(F))
-        d = d - prm['fold_amp'] * (ridged ** 3 - 0.3)
-        C = P * prm['crag_freq']
-        d = d - prm['crag_amp'] * (1.0 - np.abs(self.noise_crag(C)) - 0.5)
-        d = d + prm['fine_amp'] * self.noise_fine(P * prm['fine_freq'])
+        if yellow:
+            # 层理: thin horizontal crevices every strata_period, slightly wavy
+            Y = YELLOW
+            wav = Y['strata_wave'] * self.noise_fold(P[:, [0, 2, 1]] * np.array([0.25, 0.25, 0.0]) + 7.7)
+            sph = np.mod(P[:, 1] / Y['strata_period'] + wav, 1.0)
+            groove = np.clip((sph - 0.86) / 0.14, 0.0, 1.0)
+            d = d + Y['strata_amp'] * groove * (1.0 - groove) * 4.0
+            d = d + Y['crag_amp'] * self.noise_crag(P * np.array([Y['crag_freq'], Y['crag_freq'] * 2.2, Y['crag_freq']]))
+            d = d + Y['fine_amp'] * self.noise_fine(P * Y['fine_freq'])
+        else:
+            # vertical folds: ridged noise sampled with y squashed (low freq in y)
+            F = P * np.array([prm['fold_freq'], prm['fold_freq'] * prm['fold_ysquash'], prm['fold_freq']])
+            ridged = 1.0 - np.abs(self.noise_fold(F))
+            d = d - prm['fold_amp'] * (ridged ** 3 - 0.3)
+            C = P * prm['crag_freq']
+            d = d - prm['crag_amp'] * (1.0 - np.abs(self.noise_crag(C)) - 0.5)
+            d = d + prm['fine_amp'] * self.noise_fine(P * prm['fine_freq'])
         # soft clip to the placeholder box union and cut flat just below ground
         db = None
         for lo, hi in self.boxes:
@@ -260,7 +355,7 @@ class RockeryField:
         d = self.base(P)
         for pl in self.platforms:
             rr = np.hypot(P[:, 0] - pl['x'], P[:, 2] - pl['z'])
-            cap = np.where(rr < pl['r'], P[:, 1] - pl['y'], -1e3)
+            cap = np.where(rr < pl.get('capR', pl['r']), P[:, 1] - pl['y'], -1e3)
             d = np.maximum(d, cap)
         wob = self.prm.get('hollow_wobble', 0.0)
         for hl in self.hollows:
@@ -309,10 +404,13 @@ class RockeryField:
                     hit = np.argmax(v < 0)
                     tops.append(ys[hit] if v[hit] < 0 else -1.0)
             y = min(tops) - 0.04
-            if y < 0.6 * r['h']:
+            if y < (0.3 if self.style == 'yellow' else 0.6) * r['h']:
                 print('PLATFORM_SKIP', seed, round(y, 2))
                 continue
-            self.platforms.append({'seed': seed, 'x': r['x'], 'z': r['z'], 'r': rad, 'y': round(float(y), 3)})
+            pl = {'seed': seed, 'x': r['x'], 'z': r['z'], 'r': rad, 'y': round(float(y), 3)}
+            if self.style == 'yellow':
+                pl['capR'] = round(0.75 * r['size'], 3)   # 黄石: flatten the whole top course (a disc cap leaves a ring-walled pit)
+            self.platforms.append(pl)
 
     def place_hollows(self, per_rock, main_extra=0):
         """Non-through bowls on the outward side of each rock (away from the
@@ -489,9 +587,9 @@ def tinted_texture(src, tint_hex, dst):
     return dst
 
 
-def build_materials(site, out):
+def build_materials(site, out, tint_override=None):
     st = site['material']['stone']
-    tint = st['tintSrgbHex']
+    tint = tint_override or st['tintSrgbHex']
     os.makedirs(os.path.join(out, 'textures'), exist_ok=True)
     col = tinted_texture(st['textures']['color'], tint, os.path.join(out, 'textures', f'plaster-tint-{tint}.jpg'))
     dk = hex_scale(tint, DARK_FACTOR)
@@ -599,6 +697,8 @@ def main():
     ap.add_argument('--cluster', required=True, choices=list(PARAMS))
     ap.add_argument('--module', required=True)
     ap.add_argument('--out', required=True)
+    ap.add_argument('--style', default='taihu', choices=['taihu', 'yellow'],
+                    help='yellow = R3 黄石 (大假山); taihu = R2 (玉玲珑)')
     args = ap.parse_args(argv)
     site = json.load(open(os.path.join(args.module, 'site-inputs.json'), encoding='utf-8'))
     cl = site['clusters'][args.cluster]
@@ -607,12 +707,13 @@ def main():
     prm = PARAMS[args.cluster]
     os.makedirs(args.out, exist_ok=True)
 
-    field = RockeryField(args.cluster, rocks, prm)
+    field = RockeryField(args.cluster, rocks, prm, style=args.style)
     if args.cluster == 'rockery-dajiashan':
         # 4 ledges: the 104/114 saddle, 115, 118 shoulders, 116 top (tree slots)
         field.place_platforms([104, 115, 118, 116, 109])
         field.platforms = field.platforms[:5]
-        field.place_hollows(per_rock=4)
+        if args.style != 'yellow':          # 黄石: no bowls
+            field.place_hollows(per_rock=4)
     else:
         field.place_bores()
         field.place_hollows(per_rock=4, main_extra=3)
@@ -712,7 +813,7 @@ def main():
     fin = mesh_stats(obj)
     print('FINAL', fin, 'clamped', clamped)
 
-    mats = build_materials(site, args.out)
+    mats = build_materials(site, args.out, YELLOW['tint'] if args.style == 'yellow' else None)
     for m in mats:
         obj.data.materials.append(m)
     cube_uv(obj, site['material']['stone'].get('tileM', 2.5))
@@ -727,7 +828,7 @@ def main():
     bpy.ops.export_scene.gltf(filepath=glb, export_format='GLB', export_yup=True, use_selection=True)
     bpy.ops.wm.save_as_mainfile(filepath=os.path.join(args.out, f'{args.cluster}.blend'))
     rec = {
-        'builder': 'build-rockery-r2.py', 'cluster': args.cluster, 'params': prm,
+        'builder': 'build-rockery-r2.py', 'style': args.style, 'cluster': args.cluster, 'params': prm,
         'grid': {'shape': list(F.shape), 'voxelM': prm['voxel'], 'evalSeconds': round(t1 - t0, 1)},
         'raw': raw, 'remesh': rem, 'final': fin, 'clampedVerts': clamped, 'budget': budget,
         'glb': glb, 'glbBytes': os.path.getsize(glb), 'surfaces': surf,

@@ -15,6 +15,13 @@
 #   saddles between overlapping neighbours solid at y 0.3 / 0.6 m.
 # Replaced: R1 "REAL pairs embedded >= 30 %" — with one shell per group the rocks
 # are fused, so the saddle test is the direct measure of "连成一座山体".
+# R3 (2026-09-23, D5): when the build record says style=yellow (大假山 = 黄石), the
+# Taihu-stone gates (hollow depth/count) do not apply; instead: flat up-facing face
+# area >= 10 %, near-vertical face area >= 35 %, and every tall rock (h >= 4 m) with
+# size >= 3 m shows >= 3 separate ledge levels. Thresholds were set after measuring
+# R2 (4.6 % / 32 % / 8 levels on the big rocks) and R3 (16.7 % / 43 % / 7) — flagged
+# for independent review. Slender peak stones (size < 3 m) are exempt from the
+# level count: their course tops are too small to register as ledges.
 
 import json
 import os
@@ -31,6 +38,10 @@ MAIN_HOLLOW_MIN = 4
 WAIST_MAX = 0.75
 FLAT_MAX = 0.15
 MOSS_MAX = 0.15
+YELLOW_FLAT_MIN = 0.10
+YELLOW_VERTICAL_MIN = 0.35
+YELLOW_LEVELS_MIN = 3
+YELLOW_LEVEL_SIZE_MIN = 3.0
 
 
 def load(name):
@@ -71,6 +82,8 @@ class RockeryR2(unittest.TestCase):
 
     def test_hollows(self):
         for k, c in self.c.items():
+            if self.b[k].get('style') == 'yellow':
+                continue                       # 黄石: no bowls by design
             main = self.b[k].get('waistSeed')
             for seed, n in c['hollowsOkPerSeed'].items():
                 need = MAIN_HOLLOW_MIN if main is not None and int(seed) == main else HOLLOW_MIN_PER_ROCK
@@ -98,6 +111,18 @@ class RockeryR2(unittest.TestCase):
         for k, c in self.c.items():
             bad = [s['pair'] for s in c['saddles'] if not all(s['solid'])]
             self.assertEqual(bad, [], f'{k}: open saddles {bad}')
+
+    def test_yellowstone_strata(self):
+        for k, c in self.c.items():
+            if self.b[k].get('style') != 'yellow':
+                continue
+            self.assertGreaterEqual(c['flatUpFaceAreaShare'], YELLOW_FLAT_MIN, k)
+            self.assertGreaterEqual(c['verticalFaceAreaShare'], YELLOW_VERTICAL_MIN, k)
+            sizes = {r['seed']: r['size'] for r in json.load(open(os.path.join(
+                os.path.dirname(os.path.abspath(__file__)), 'site-inputs.json'), encoding='utf-8'))['clusters'][k]['rocks']}
+            for s in c['strata']:
+                if sizes[s['seed']] >= YELLOW_LEVEL_SIZE_MIN:
+                    self.assertGreaterEqual(s['count'], YELLOW_LEVELS_MIN, f'{k}: rock {s["seed"]} ledge levels {s["ledgeLevels"]}')
 
     def test_materials(self):
         for k, c in self.c.items():
