@@ -1,8 +1,8 @@
-// 假山站点模块测试（T1, ROCKERY_KIT=1）。
+// 假山站点模块测试（T1；默认开启，ROCKERY_KIT=0 时跳过）。
 // 位置/朝向只从 baseline/layout.json 的 rocks[].{x,z,size} 重算，与总装 garden.glb 实测对比。
 // 两组都没有 footprint / facade.dir：形心 = 占位盒并集 AABB 中心（半宽 0.6*size，DESIGN_SPEC 占位盒），
 // 朝向 = 石心平面主轴（最大特征值方向，较大分量取正）。公式与 scripts/assemble.py rockery_pose 一致。
-// 用法：ROCKERY_KIT=1 OUT_DIR=out-zone node tests/rockery-test.mjs
+// 用法：OUT_DIR=out-zone node tests/rockery-test.mjs
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -24,8 +24,8 @@ function ok(name, cond, detail = '') {
 }
 function skip(name, why) { skipped++; console.log('SKIP', name, '-', why); }
 
-if (process.env.ROCKERY_KIT !== '1' || !fs.existsSync(path.join(OUT, 'garden.glb'))) {
-  console.log(`rockery artefacts not found or ROCKERY_KIT!=1 (OUT_DIR=${OUT}) — skipping`);
+if (process.env.ROCKERY_KIT === '0' || !fs.existsSync(path.join(OUT, 'garden.glb'))) {
+  console.log(`rockery artefacts not found or ROCKERY_KIT=0 (OUT_DIR=${OUT}) — skipping`);
   process.exit(0);
 }
 

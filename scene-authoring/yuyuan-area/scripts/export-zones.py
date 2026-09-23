@@ -73,8 +73,8 @@ for z, part_index, colls, flt in PARTS:
     objs = objs_of(colls, flt)
     rockery_part = []
     # 假山网格约 3.5 MB，并进现有 zone-garden.glb（已 9.6 MB）会超过 12 MB。
-    # ROCKERY_KIT=1 时把两个锚及其子网格拆到 zone-garden-2.glb，主文件名仍是 zone-garden.glb。
-    if z == 'garden' and part_index == 1 and os.environ.get('ROCKERY_KIT') == '1':
+    # 假山站点模块（默认开启，ROCKERY_KIT=0 关闭）时把两个锚及其子网格拆到 zone-garden-2.glb，主文件名仍是 zone-garden.glb。
+    if z == 'garden' and part_index == 1 and os.environ.get('ROCKERY_KIT', '1') != '0':
         rockery_part = [o for o in objs if is_rockery_obj(o)]
         drop = {id(o) for o in rockery_part}
         objs = [o for o in objs if id(o) not in drop]

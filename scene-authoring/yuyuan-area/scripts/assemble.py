@@ -288,7 +288,7 @@ if os.environ.get('SANSUITANG') == '1':
         print('sansuitang collision world boxes:', len(world_boxes))
     print('sansuitang placed', sst_placed)
 
-# ---------- 假山站点模块（ROCKERY_KIT=1：世界坐标 GLB，锚点按 baseline/layout.json 重算） ----------
+# ---------- 假山站点模块（默认开启；ROCKERY_KIT=0 退回程序化占位。世界坐标 GLB，锚点按 baseline/layout.json 重算） ----------
 # 网格已在地图坐标（build-rockery：GLB x,y,z = map x,z,y）。锚 empty 放在占位盒并集的 footprint 形心，
 # rotY 使本地 +Z 指向石心主轴；子网格保持世界坐标（parent 后写回 matrix_world）。
 # 形心 / 主轴公式与 tests/rockery-test.mjs 一致，只读 layout 的 rocks[].{x,z,size}。
@@ -323,9 +323,15 @@ def rockery_pose(rocks):
     return (x0 + x1) / 2, (z0 + z1) / 2, math.atan2(vx, vz), vx, vz
 
 rockery_placed = 0
-if os.environ.get('ROCKERY_KIT') == '1':
+if os.environ.get('ROCKERY_KIT', '1') != '0':
     lay_obj = {o['id']: o for o in LAYOUT['objects']}
     RK = os.path.join(ROOT, os.environ.get('ROCKERY_KIT_DIR', 'out-garden-kits'))
+    missing = [rid for rid in ('rockery-dajiashan', 'rockery-yulinglong')
+               if not os.path.exists(os.path.join(RK, rid, 'model.glb'))]
+    if missing:
+        raise SystemExit(f'ROCKERY_KIT (default on): missing {missing} under {RK}; '
+                         'stage the reviewed rockery GLBs (modules/garden-kits-staging.json) '
+                         'or set ROCKERY_KIT=0 for the procedural placeholders')
     for rid in ('rockery-dajiashan', 'rockery-yulinglong'):
         rocks = lay_obj[rid]['geometry']['rocks']
         cx, cz, rot_y, vx, vz = rockery_pose(rocks)
