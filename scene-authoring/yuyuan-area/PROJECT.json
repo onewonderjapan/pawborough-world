@@ -1,0 +1,13 @@
+{
+  "projectId": "pawborough-world",
+  "phase": "area-candidate-migrated",
+  "runtime": {
+    "host": "127.0.0.1",
+    "port": 5486
+  },
+  "sourceCommit": "2cbfc878f3681a9ecd98a0160a5ef51f915e909d",
+  "assetManifest": "../../docs/MIGRATION-ASSETS.json",
+  "inputs": "inputs",
+  "frozenLayout": "baseline/layout.json",
+  "ownerAdopted": false
+}

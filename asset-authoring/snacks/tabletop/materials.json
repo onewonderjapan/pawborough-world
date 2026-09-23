@@ -1,0 +1,367 @@
+{
+  "white-porcelain": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "f2f0ea",
+    "roughness": 0.18,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "porcelain-blue-rim": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "3a5a8c",
+    "roughness": 0.2,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "glutinous-dough": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "f3ede2",
+    "roughness": 0.38,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "clear-soup": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "d9d2c0",
+    "roughness": 0.08,
+    "metallic": 0,
+    "alpha": 0.55,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "osmanthus-sweet-soup": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "ffffff",
+    "roughness": 0.08,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {
+      "color": "osmanthus-soup.jpg"
+    },
+    "normalConvention": "OpenGL",
+    "source": "make_maps.py"
+  },
+  "soy-milk": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "f1e9d6",
+    "roughness": 0.15,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "fried-crust": {
+    "tileMeters": [
+      0.12,
+      0.12
+    ],
+    "colorSrgb": "ffffff",
+    "roughness": 0.5,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {
+      "color": "fried-crust.jpg"
+    },
+    "normalConvention": "OpenGL",
+    "source": "make_maps.py"
+  },
+  "sesame-flatbread-top": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "ffffff",
+    "roughness": 0.55,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {
+      "color": "sesame-top.jpg"
+    },
+    "normalConvention": "OpenGL",
+    "source": "make_maps.py"
+  },
+  "scallion-pancake-top": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "ffffff",
+    "roughness": 0.5,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {
+      "color": "scallion-pancake.jpg"
+    },
+    "normalConvention": "OpenGL",
+    "source": "make_maps.py"
+  },
+  "babaofan-top": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "ffffff",
+    "roughness": 0.35,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {
+      "color": "babaofan-top.jpg"
+    },
+    "normalConvention": "OpenGL",
+    "source": "make_maps.py"
+  },
+  "sweet-soy-glaze": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "5a2a12",
+    "roughness": 0.12,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "braised-pork-rib": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "6b3a1e",
+    "roughness": 0.3,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "rice-cake-glazed": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "d9b98a",
+    "roughness": 0.22,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "bamboo-tray": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "c9a86a",
+    "roughness": 0.62,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "bamboo-weave": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "a88750",
+    "roughness": 0.72,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "dark-iron": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "44453d",
+    "roughness": 0.64,
+    "metallic": 0.48,
+    "alpha": null,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "brushed-steel": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "9da0a3",
+    "roughness": 0.35,
+    "metallic": 0.85,
+    "alpha": null,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "clear-glass-jar": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "f4f8f8",
+    "roughness": 0.02,
+    "metallic": 0,
+    "alpha": 0.12,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "five-spice-beans": {
+    "tileMeters": [
+      0.06,
+      0.06
+    ],
+    "colorSrgb": "ffffff",
+    "roughness": 0.6,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {
+      "color": "bean-mass.jpg"
+    },
+    "normalConvention": "OpenGL",
+    "source": "make_maps.py"
+  },
+  "kraft-paper": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "d8c39a",
+    "roughness": 0.9,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "label-atlas": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "ffffff",
+    "roughness": 0.7,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {
+      "color": "labels-atlas.png"
+    },
+    "normalConvention": "OpenGL",
+    "source": "typeset make_maps.py"
+  },
+  "pear-syrup-candy": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "c78a2a",
+    "roughness": 0.15,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "paper-box-card": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "e7dcc4",
+    "roughness": 0.85,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "chopstick-wood": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "b48a5a",
+    "roughness": 0.6,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "dark-vinegar": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "2a1810",
+    "roughness": 0.05,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "clay-teapot": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "6e3f2a",
+    "roughness": 0.45,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "scallion-greens": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "5c8a3a",
+    "roughness": 0.6,
+    "metallic": 0,
+    "alpha": null,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  }
+}

@@ -1,0 +1,286 @@
+{
+  "file": "snacks-batch.glb",
+  "axis": "glTF Y-up, each prop at its own ground-centre origin",
+  "props": {
+    "tangyuan-bowl": {
+      "triangles": 2220,
+      "materials": [
+        "white-porcelain",
+        "porcelain-blue-rim",
+        "clear-soup",
+        "glutinous-dough"
+      ],
+      "sizeMeters": {
+        "x": 0.162,
+        "y": 0.062,
+        "z": 0.132
+      },
+      "origin": "ground centre"
+    },
+    "jiuniang-yuanzi-bowl": {
+      "triangles": 2848,
+      "materials": [
+        "white-porcelain",
+        "porcelain-blue-rim",
+        "osmanthus-sweet-soup",
+        "glutinous-dough"
+      ],
+      "sizeMeters": {
+        "x": 0.132,
+        "y": 0.06,
+        "z": 0.132
+      },
+      "origin": "ground centre"
+    },
+    "soymilk-bowl": {
+      "triangles": 864,
+      "materials": [
+        "white-porcelain",
+        "porcelain-blue-rim",
+        "soy-milk",
+        "fried-crust"
+      ],
+      "sizeMeters": {
+        "x": 0.14,
+        "y": 0.067,
+        "z": 0.14
+      },
+      "origin": "ground centre"
+    },
+    "youtiao-pair-plate": {
+      "triangles": 856,
+      "materials": [
+        "white-porcelain",
+        "porcelain-blue-rim",
+        "fried-crust"
+      ],
+      "sizeMeters": {
+        "x": 0.24,
+        "y": 0.051,
+        "z": 0.26
+      },
+      "origin": "ground centre"
+    },
+    "xiekehuang-tray": {
+      "triangles": 3120,
+      "materials": [
+        "bamboo-tray",
+        "bamboo-weave",
+        "sesame-flatbread-top"
+      ],
+      "sizeMeters": {
+        "x": 0.35,
+        "y": 0.035,
+        "z": 0.35
+      },
+      "origin": "ground centre"
+    },
+    "dabing-stack": {
+      "triangles": 576,
+      "materials": [
+        "sesame-flatbread-top"
+      ],
+      "sizeMeters": {
+        "x": 0.162,
+        "y": 0.044,
+        "z": 0.159
+      },
+      "origin": "ground centre"
+    },
+    "congyoubing-plate": {
+      "triangles": 1696,
+      "materials": [
+        "white-porcelain",
+        "porcelain-blue-rim",
+        "scallion-pancake-top",
+        "fried-crust"
+      ],
+      "sizeMeters": {
+        "x": 0.22,
+        "y": 0.08,
+        "z": 0.22
+      },
+      "origin": "ground centre"
+    },
+    "cifangao-plate": {
+      "triangles": 1224,
+      "materials": [
+        "white-porcelain",
+        "porcelain-blue-rim",
+        "fried-crust"
+      ],
+      "sizeMeters": {
+        "x": 0.22,
+        "y": 0.042,
+        "z": 0.22
+      },
+      "origin": "ground centre"
+    },
+    "youdunzi-rack": {
+      "triangles": 1536,
+      "materials": [
+        "dark-iron",
+        "fried-crust",
+        "scallion-greens"
+      ],
+      "sizeMeters": {
+        "x": 0.32,
+        "y": 0.046,
+        "z": 0.32
+      },
+      "origin": "ground centre"
+    },
+    "paigu-niangao-plate": {
+      "triangles": 1136,
+      "materials": [
+        "white-porcelain",
+        "porcelain-blue-rim",
+        "sweet-soy-glaze",
+        "rice-cake-glazed",
+        "braised-pork-rib"
+      ],
+      "sizeMeters": {
+        "x": 0.24,
+        "y": 0.038,
+        "z": 0.24
+      },
+      "origin": "ground centre"
+    },
+    "chunjuan-plate": {
+      "triangles": 1152,
+      "materials": [
+        "white-porcelain",
+        "porcelain-blue-rim",
+        "fried-crust"
+      ],
+      "sizeMeters": {
+        "x": 0.22,
+        "y": 0.042,
+        "z": 0.22
+      },
+      "origin": "ground centre"
+    },
+    "babaofan-plate": {
+      "triangles": 1152,
+      "materials": [
+        "white-porcelain",
+        "porcelain-blue-rim",
+        "babaofan-top"
+      ],
+      "sizeMeters": {
+        "x": 0.2,
+        "y": 0.09,
+        "z": 0.2
+      },
+      "origin": "ground centre"
+    },
+    "wuxiangdou-jar": {
+      "triangles": 1154,
+      "materials": [
+        "clear-glass-jar",
+        "five-spice-beans",
+        "brushed-steel",
+        "label-atlas"
+      ],
+      "sizeMeters": {
+        "x": 0.156,
+        "y": 0.227,
+        "z": 0.157
+      },
+      "origin": "ground centre"
+    },
+    "wuxiangdou-packet": {
+      "triangles": 220,
+      "materials": [
+        "kraft-paper",
+        "label-atlas"
+      ],
+      "sizeMeters": {
+        "x": 0.09,
+        "y": 0.131,
+        "z": 0.032
+      },
+      "origin": "ground centre"
+    },
+    "ligaotang-box": {
+      "triangles": 866,
+      "materials": [
+        "paper-box-card",
+        "label-atlas",
+        "pear-syrup-candy"
+      ],
+      "sizeMeters": {
+        "x": 0.124,
+        "y": 0.039,
+        "z": 0.105
+      },
+      "origin": "ground centre"
+    },
+    "chopstick-cup": {
+      "triangles": 600,
+      "materials": [
+        "white-porcelain",
+        "porcelain-blue-rim",
+        "chopstick-wood"
+      ],
+      "sizeMeters": {
+        "x": 0.072,
+        "y": 0.24,
+        "z": 0.072
+      },
+      "origin": "ground centre"
+    },
+    "vinegar-dish": {
+      "triangles": 480,
+      "materials": [
+        "white-porcelain",
+        "porcelain-blue-rim",
+        "dark-vinegar"
+      ],
+      "sizeMeters": {
+        "x": 0.076,
+        "y": 0.015,
+        "z": 0.076
+      },
+      "origin": "ground centre"
+    },
+    "teapot-cups": {
+      "triangles": 1468,
+      "materials": [
+        "clay-teapot",
+        "white-porcelain",
+        "porcelain-blue-rim"
+      ],
+      "sizeMeters": {
+        "x": 0.294,
+        "y": 0.124,
+        "z": 0.214
+      },
+      "origin": "ground centre"
+    }
+  },
+  "totalTriangles": 23168,
+  "fileBytes": 1337800,
+  "layoutOrder": [
+    "tangyuan-bowl",
+    "jiuniang-yuanzi-bowl",
+    "soymilk-bowl",
+    "youtiao-pair-plate",
+    "xiekehuang-tray",
+    "dabing-stack",
+    "congyoubing-plate",
+    "cifangao-plate",
+    "youdunzi-rack",
+    "paigu-niangao-plate",
+    "chunjuan-plate",
+    "babaofan-plate",
+    "wuxiangdou-jar",
+    "wuxiangdou-packet",
+    "ligaotang-box",
+    "chopstick-cup",
+    "vinegar-dish",
+    "teapot-cups"
+  ],
+  "contactSheetPitchMeters": 0.5,
+  "columns": 6
+}

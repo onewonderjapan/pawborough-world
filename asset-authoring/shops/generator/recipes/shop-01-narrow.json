@@ -1,0 +1,70 @@
+{
+  "id": "shop-01-narrow",
+  "name": "窄单店",
+  "corner": false,
+  "dims": {
+    "width": 5.4,
+    "depth": 6.4,
+    "eave": 6.5,
+    "ridge": 7.7
+  },
+  "features": [
+    "单门居中，左右窄窗",
+    "二层两组木窗",
+    "端墙一高窗"
+  ],
+  "front": [
+    {
+      "kind": "shop-window",
+      "u0": -2.3,
+      "u1": -1.35,
+      "y0": 1.05,
+      "y1": 2.35,
+      "cols": 1
+    },
+    {
+      "kind": "door",
+      "u0": -0.55,
+      "u1": 0.55,
+      "y0": 0.16,
+      "y1": 2.3
+    },
+    {
+      "kind": "shop-window",
+      "u0": 1.35,
+      "u1": 2.3,
+      "y0": 1.05,
+      "y1": 2.35,
+      "cols": 1
+    },
+    {
+      "kind": "grid-window",
+      "u0": -1.8,
+      "u1": -0.6,
+      "y0": 4.35,
+      "y1": 5.9,
+      "cols": 2
+    },
+    {
+      "kind": "grid-window",
+      "u0": 0.6,
+      "u1": 1.8,
+      "y0": 4.35,
+      "y1": 5.9,
+      "cols": 2
+    }
+  ],
+  "right": [
+    {
+      "kind": "high-window",
+      "u0": -3.7,
+      "u1": -2.7,
+      "y0": 4.75,
+      "y1": 5.55
+    }
+  ],
+  "quoins": {
+    "left": true,
+    "right": true
+  }
+}

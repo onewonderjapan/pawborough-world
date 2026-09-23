@@ -1,0 +1,27 @@
+{
+  "preservedRefs": "refs/archive/pre-migration/{world,area,shops}/",
+  "adoptionTail": {
+    "commit": "166718f6",
+    "decision": "partial MP4 and truthful terminal receipt restored; raw frames/history preserved privately, not duplicated into public Git tree"
+  },
+  "reliabilityTail": {
+    "commits": [
+      "a747634c",
+      "1cb9a268",
+      "37819141",
+      "5e095ed0"
+    ],
+    "decision": "full history retained; launcher wording brought forward because recovery is already implemented in main; historical test outputs/tools remain in archive refs and backup",
+    "notActivated": "HTTP 200 fallback for a missing compressed-manifest resource changes serving semantics; not required for migration and not silently adopted"
+  },
+  "area": {
+    "head": "2cbfc878",
+    "target": "scene-authoring/yuyuan-area",
+    "history": "9 commits retained in archive refs and bundle; generated binaries restored through asset manifest"
+  },
+  "shops": {
+    "head": "c7c2ac44",
+    "target": "asset-authoring/shops"
+  },
+  "ownerAdopted": false
+}

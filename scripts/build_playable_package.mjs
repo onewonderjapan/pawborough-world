@@ -186,8 +186,11 @@ const readme = `# 方浜市声 · 本地试玩包（${TITLE}）
 
 - v7 为候选：机主尚未采用（ownerAdopted=false）。
 - 三角形预算：默认 694,430（上限 700,000 达标）；全开 ${EXPECT_ALLON.toLocaleString()}，超目标 8,066。
-- 世界边界：主街桥东街面末端（x≈127–134, z≈22–28）沿街继续东行会走出可行走面并无限坠落，
-  实况行走无坠落防护（长期实测留证，几何/安全网修复待机主决定）。
+- 世界边界：走出可行走面（桥东街面南缘 x≈127–134 / 中街北缘 x≈76–84 等）不再无限坠落——
+  行走会话会把玩家送回最近验证的安全落点并提示「已回到安全位置」（20260921 可靠性批）。
+  但几何缺口本身仍在（安全网不是几何修复），修复需改 GLB/碰撞数据，待机主决定。
+- 庙前楔点：山门西侧石狮与开启门扇之间的真实建筑夹角（[-130.5, 28.1] 附近）可能卡住自由行走的
+  玩家（后退/绕行即可脱出；路线本身双向可通行）。实测诊断留证，几何修待机主决定。
 - 低配体验：软件渲染（无 GPU 机器）下帧率随视角明显波动：默认配置中位约 5fps、中段近墙视角可
   达满帧；「全开」中位约 4fps、重视图 1.5–2fps，且重帧会让行走呈半速慢放。有 GPU 的机器不受此限。
 - 上游交付清单的两个 .blend1 备份误列（UP-G1）已于 2026-09-21 修复为已提交树口径并实际核验。
@@ -232,7 +235,8 @@ const manifest = {
   knownIssues: [
     'candidate pending owner adoption (ownerAdopted=false)',
     'all-on budget exceeds the 700k target by 8066 triangles',
-    'world-boundary defect: walking east past the bridge-start end of the main street (x≈127-134, z≈22-28) leaves the walkable surface and free-falls with no in-page fall guard (long-run evidence 2026-09-21; geometry fix pending owner decision)',
+    'world-boundary: walking off the walkable surface (bridge-east south edge x≈127-134, mid-street north edge x≈76-84) no longer free-falls — the walk session returns the player to the last verified safe spot with a visible notice (20260921 reliability batch); the geometric gaps themselves remain and await the owner decision (recovery is a safety net, not a geometry fix)',
+    'temple-front wedge: the real architectural corner between the west lion and the open door leaf (near [-130.5, 28.1]) can wedge a free-roaming player (backtrack to exit; the route itself passes both ways — measured 20260921, geometry fix pending owner decision)',
     'software-rendering frame rates are view-dependent: default median ~5fps (mid-street light views reach full frame rate), all-on median ~4fps with heavy vistas at 1.5-2fps and half-speed walk during heavy frames (measured 2026-09-21, headless Chrome + SwiftShader)',
     'UP-G1 fixed 2026-09-21: upstream delivery manifest was regenerated to the committed-tree scope and verified against a fresh export',
   ],

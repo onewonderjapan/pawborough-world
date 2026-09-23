@@ -5,10 +5,10 @@
   "workspaceRoot": ".",
   "convenienceLink": "/home/baibai/pawborough-world",
   "git": {
-    "branch": "work/world-foundation-20260914",
-    "baselineBranch": "main",
-    "baselineCommit": "3f6cacd",
-    "remote": null,
+    "branch": "work/reorganization-20260922",
+    "baselineBranch": "origin/main",
+    "baselineCommit": "3271494886710135c1a750f0b6cc54d6e7845bd8",
+    "remote": "https://github.com/onewonderjapan/pawborough-world.git",
     "lfs": {
       "installed": true,
       "version": "3.8.0",
@@ -19,20 +19,20 @@
     }
   },
   "canonicalRoadmap": {
-    "path": "/home/baibai/outbox/pawborough-development-history-20260913/开发过程与v1.0目标.md",
+    "path": "docs/ROADMAP.snapshot.md",
     "scope": "V01–V10/P0–P6",
     "approvedSnapshot": "docs/ROADMAP.snapshot.md",
     "snapshotSha256": "14398f2df621853baf60e06e0ecbf94981af8bcf59bfb3ee922627ba434d6770",
-    "note": "snapshot is a byte-exact copy of the source at snapshot time; source document remains the management canonical, not migrated"
+    "note": "Local approved snapshot for portability; W2 remains management authority."
   },
   "ownerDecision": {
-    "path": "/home/baibai/outbox/pawborough-repo-review-20260913/OWNER_DECISION.json",
+    "path": "docs/OWNER_DECISION.snapshot.json",
     "frozenCopy": "docs/OWNER_DECISION.snapshot.json",
     "sha256": "6ec125b4c7c543952e8b7499ec669ea728805736a8f79f7e05ef247ee9d00c53"
   },
   "runtime": {
-    "devPort": 5284,
-    "previewPort": 5285,
+    "devPort": 5487,
+    "previewPort": 5488,
     "host": "127.0.0.1"
   },
   "assets": {
@@ -45,8 +45,8 @@
     "worldGlb": "world/street-reviewed.glb"
   },
   "evidence": {
-    "root": "../artifacts",
-    "currentRun": "../artifacts/N0"
+    "migration": "docs/MIGRATION-20260922.md",
+    "assetManifest": "docs/MIGRATION-ASSETS.json"
   },
   "capabilities": {
     "characters": "deferred_G1",
@@ -55,10 +55,9 @@
   },
   "managementAuthority": "W2",
   "implementation": {
-    "executor": "zcode",
-    "model": "owner-selected model in owner-started ZCode session",
-    "executionMode": "owner_started_continuous",
-    "executionPolicy": "../control/EXECUTION_POLICY.json"
+    "executor": "Codex migration; subsequent construction as owner directs",
+    "executionMode": "explicit_task",
+    "executionPolicy": "AGENTS.md"
   },
   "skills": {
     "sourceOfTruth": "~/.codex/skills (lead-maintained)",
@@ -68,5 +67,11 @@
       "~/.claude/skills/pawborough-character"
     ],
     "repoSnapshot": "docs/skills-snapshot/ (read-only copy for reproducibility; NOT a second editable canonical)"
+  },
+  "convenienceLinkNote": "Legacy link retained at original location; this new project is the migrated working root.",
+  "modules": {
+    "explorationClient": ".",
+    "areaAuthoring": "scene-authoring/yuyuan-area",
+    "assetAuthoring": "asset-authoring"
   }
 }

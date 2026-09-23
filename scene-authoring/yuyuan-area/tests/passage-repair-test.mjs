@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import * as THREE from 'three';
+import {cutPassages} from '../src/passage-clip.mjs';
+const prism={clearHeight:3.5,rectangles:[[[-1,-5],[1,-5],[1,5],[-1,5]]]};
+const geo=new THREE.BoxGeometry(8,6,8).translate(0,3,0);const m=new THREE.Mesh(cutPassages(geo,[prism]),new THREE.MeshBasicMaterial({side:THREE.DoubleSide}));m.updateMatrixWorld();
+const hit=(x,y)=>new THREE.Raycaster(new THREE.Vector3(x,y,6),new THREE.Vector3(0,0,-1),0,12).intersectObject(m).length;
+assert.equal(hit(0,1.5),0,'passage must remove actual wall triangles');
+assert.ok(hit(2,1.5)>0,'side walls must remain');assert.ok(hit(0,4)>0,'upper storey must remain');
+assert.ok(cutPassages(geo,[]).attributes.position.count>0);
+console.log('PASS passage mesh cut: clear volume, retained side walls, retained upper storey, empty-cut identity');

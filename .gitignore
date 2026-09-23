@@ -41,3 +41,19 @@ artifacts/world-playable/delivery/*.zip
 restore-world-ten-hour-20260921*/
 artifacts/world-ten-hour/round-003/delivery/*.zip
 artifacts/world-ten-hour/round-005/delivery/*.zip
+
+# Migrated source stays in Git; runtime/generated assets use SHA manifests and private S3.
+/scene-authoring/yuyuan-area/out/
+/scene-authoring/yuyuan-area/out-*/
+/scene-authoring/yuyuan-area/resources/
+/scene-authoring/yuyuan-area/.python-deps/
+/scene-authoring/yuyuan-area/baseline/*.glb
+/scene-authoring/yuyuan-area/inputs/*.glb
+/asset-authoring/**/props/
+/asset-authoring/**/textures/
+/asset-authoring/**/*.glb
+/asset-authoring/**/*.blend
+/asset-authoring/**/shots/
+/asset-authoring/**/out/
+/.local-media/
+/scene-authoring/yuyuan-area/review-images/

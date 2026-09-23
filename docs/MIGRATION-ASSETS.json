@@ -1,0 +1,1797 @@
+{
+  "sourceCommit": "2cbfc878f3681a9ecd98a0160a5ef51f915e909d",
+  "storage": {
+    "bucket": "onewonder-pawborough-assets-566601428909-apne1",
+    "region": "ap-northeast-1",
+    "objectPrefix": "objects/sha256/",
+    "snapshotKey": "snapshots/owner/reorganization-20260922-202629/MIGRATION-MANIFEST.json"
+  },
+  "uniqueBytes": 370964347,
+  "files": [
+    {
+      "path": "scene-authoring/yuyuan-area/baseline/scene-areas.glb",
+      "sha256": "7a332eddd9db840987f170be466e482fbd205914ba861acca258d2d35410c41a",
+      "bytes": 29560280,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/inputs/yuyuan-gate-v2.glb",
+      "sha256": "0251ea21bb18673dd411d83c8537d0f995b9c4e4864bbd515b29066538f368dc",
+      "bytes": 3399552,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/roof-leak-recheck.json",
+      "sha256": "3244727c1361946306ca050f948d8864043e5640abca8fcc3d5b5c59c53e6920",
+      "bytes": 29,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/g3-shot-cams.json",
+      "sha256": "29420af1e3f7e4600c057ad42596db9e9c35eaa613c368a9ee0a1aee248170dd",
+      "bytes": 801,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/commerce-audit.json",
+      "sha256": "4370f182b4ca7d29ead79263d1f582d93fc7e7389698b5777b5b8e7eaec1f8d5",
+      "bytes": 5973,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/connectivity.json",
+      "sha256": "dd9d56d932a8a98a5e6da2915a3314874a37ab329a1a65760b7585b405f03e98",
+      "bytes": 15228,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/passage-probes.json",
+      "sha256": "71549b583f1e30c083e34bfcfb4adc26b1204291667e82470aae880bdee311fd",
+      "bytes": 1089,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/bazaar.glb",
+      "sha256": "9a99635be316eb23697e160cb0c1619601b0226b7d70a2d557627cc66107590b",
+      "bytes": 9905544,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/nav-gap.json",
+      "sha256": "22b49dd5cb085f56302db61e3845eb24d04f2701ebd5532b73fa04117c3eda16",
+      "bytes": 379,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/assemble-stats.json",
+      "sha256": "b783f51f27752f7bc381b6cf6f0e325d845b491929fce593d280ab61f4b8789c",
+      "bytes": 904,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/commercial-route.json",
+      "sha256": "8b4bb7775ddcb207937b79ecc5e21a0aa14910d026729b42813017bcc92f5e25",
+      "bytes": 3188,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/actual-body-projections.json",
+      "sha256": "93cf4a4bf16192132d828000e4d7ceba66a0fb33566304b7628bd0db8fd08afb",
+      "bytes": 29293883,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/garden.glb",
+      "sha256": "9286b11adbe43da43cd7374c0cf61ea812dba1d6d52ec6e1087631b81b4739e3",
+      "bytes": 5328248,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/temple.glb",
+      "sha256": "bc073bcd55f1db3c128df1ee9e30930b0f3934476e8410d8ca6bf34c714d9c9d",
+      "bytes": 14118796,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/scene-areas.glb",
+      "sha256": "66fa6d531cc8d43ec7266a94b8573191d1221a389680150c9b0452df3a75547f",
+      "bytes": 29712292,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/food-sockets.json",
+      "sha256": "a4d292c9716d911a7003be1b5d2222b58d2a63749e556a52673abaae9c8b8cb7",
+      "bytes": 36030,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/procedural-outer.glb",
+      "sha256": "8296a6d3f193a83fe79cd92c1dcb0309374f72b6e4fdf58dab1ee95c61ea1689",
+      "bytes": 1218580,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/normal-audit.json",
+      "sha256": "942cbb2f6f6d51873a0e529880b6a627b5e49d85b579e3e6ea386935e8bdee13",
+      "bytes": 541,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/coverage.json",
+      "sha256": "7a6fa08597717eb314baaa2bf1ae4a153df6870ff3c90f32973905e4097a0343",
+      "bytes": 14941,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/layout.json",
+      "sha256": "8236a50e59feb1347e5f4be1150af7054ea1c45ec8e5259d0c15824b116cc912",
+      "bytes": 851334,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/food-placement.json",
+      "sha256": "531923082bdcae38e04c3d908ab8f84be7e915a2cd4cbcf81eb5b99eb214cc95",
+      "bytes": 66053,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/scene.blend",
+      "sha256": "080ea99fd9ac21b024ae7540b4197eccac537d0df9bdc10a98fc4f1d8ee703ac",
+      "bytes": 66951534,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/route-glb-check.json",
+      "sha256": "1dcbe4e14dad6ddfa5399e6605334d55cc2e2f5b88ac67b43ad25b35ad1b4293",
+      "bytes": 289,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/procedural-stats.json",
+      "sha256": "c26b147692ac4181b6eaf20a5b2397def920d2e4bd75447808cb7f6bbb3fae62",
+      "bytes": 5623,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/procedural-pond.glb",
+      "sha256": "1a468b0d42141b0e26401e5b300064c961d966354016183f6d7fc376dd41fcc0",
+      "bytes": 107396,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/tour.json",
+      "sha256": "043565797f3fb2787b9a7d94fd0b7468078af4394a4ad27fdeb41c74c6151ae0",
+      "bytes": 2101,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/procedural-garden.glb",
+      "sha256": "2b951c92c8b477a0ce2230646de6e7de893857453a91adbc77c6246fa392d0f1",
+      "bytes": 2408388,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/food-check.json",
+      "sha256": "50a1f8f3b75ba71b646c06d995640f0457d13c74b0cd6bacfa1a8616f64531c5",
+      "bytes": 649,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/validation.json",
+      "sha256": "1c36523f51fa4114fa7e846644f60f6f46e103d567d32b45e82939b23823c15d",
+      "bytes": 2385,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/procedural-bazaar.glb",
+      "sha256": "7d2eb6d8b4a0c2bf1fb6acd90f05ae7b6043b84ace1f8429cb1861c0456c739f",
+      "bytes": 6684756,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/procedural-temple.glb",
+      "sha256": "1824b786bf2b152ea23331a770543fbd6ea7944e6b2f6aa07a944f47ffbbf4a7",
+      "bytes": 66320,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/food-source-index.json",
+      "sha256": "efc1b698775fd44522f4443fd1df718b92a48fdec576b855d35b02f91f5abc5b",
+      "bytes": 9023,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/overview-6units.png.layout.json",
+      "sha256": "3574d6d964075abeb0f643fb7b4204dba4f686bad20f3abdc3a80185bdcee637",
+      "bytes": 180,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/overview-6units.png",
+      "sha256": "b1261021b37657407d2bc307643fc8e1f408528b282ad7c75b79455daf71c5ae",
+      "bytes": 1105375,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-03-threebay/measurements.json",
+      "sha256": "cf5a978cd1aac1e7decbf4e74bb5c00b83cd4f8b80efea5955050aa6c00e16c7",
+      "bytes": 2078,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-03-threebay/recipe-copy.json",
+      "sha256": "49c0bfb16f0a48c55282763b8dc5ba351c8c3978649819dd32cc3ccf9eb119bc",
+      "bytes": 1177,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-03-threebay/materials.json",
+      "sha256": "8545fe0a659e748f3d96c6d4c8b222764494b91cecee619d5b68ec5dd6ad4328",
+      "bytes": 2210,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-03-threebay/model.glb",
+      "sha256": "a971d23e0d1102882fc2e3d9c96fddc15aa54dac13e6593536aff3bfbb104c99",
+      "bytes": 1310864,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-03-threebay/inspection.json",
+      "sha256": "dda93a55a8aa25a1af6d391251a86fa2810d2eac5646f08b2524a6f8b9779d62",
+      "bytes": 11574,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-03-threebay/collision.json",
+      "sha256": "7de6a78b78ef89b4aa7a59a04ebcff109861c86a23c47128fceef05fdefaa45a",
+      "bytes": 17404,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-03-threebay/reimport-check.json",
+      "sha256": "af91380e24bef1da9d611c828eec615a9ba7b793a3f590c93a597a127cc4c31f",
+      "bytes": 2293,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-03-threebay/model.blend",
+      "sha256": "722700541c12725a942268e6a6bf475b3c59c7c3dfafd106526556140605b3b7",
+      "bytes": 1882242,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-03-threebay/views/front.png",
+      "sha256": "2919c87cdb56228ea0ff2be4dd9bcf7cc498da567535c4441eac5e4ecf928997",
+      "bytes": 696405,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-03-threebay/views/side.png",
+      "sha256": "02c573ccbdeec8cc5a476d14c84dbd999572e6705150f21c769bbfb68d83dc41",
+      "bytes": 773998,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-03-threebay/views/threeq.png",
+      "sha256": "40fddb0ab020257c1179081735aa00a0cd7f396a88526a914f6469806297e8ab",
+      "bytes": 714597,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-03-threebay/views/rear.png",
+      "sha256": "4832ed7bd1bef684ce3d97618bfee69aa38f782fd83bee6f84d882d6f2b7de2c",
+      "bytes": 707441,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-04-recess/measurements.json",
+      "sha256": "f9ace2638c075cac437e29ed7f0d5c68b83e692463d0ffe9dc4343e6df4b5e5a",
+      "bytes": 2097,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-04-recess/recipe-copy.json",
+      "sha256": "28f6511a50c47bd1cd6e98a075c82f392b9fe2298a136c7a128d6566e88023fc",
+      "bytes": 1086,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-04-recess/materials.json",
+      "sha256": "8545fe0a659e748f3d96c6d4c8b222764494b91cecee619d5b68ec5dd6ad4328",
+      "bytes": 2210,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-04-recess/model.glb",
+      "sha256": "c07d5e711d7f02bda88754d64cc707e9a4c862694fc8f97ad9add5a9ee45d949",
+      "bytes": 1237492,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-04-recess/inspection.json",
+      "sha256": "8372ec7d329bd757d4363ac0cbcb0dca50d03ec0d05970e26743ab78b1d76f66",
+      "bytes": 12451,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-04-recess/collision.json",
+      "sha256": "3038af053ee02af77cf4ec0f7a219003ed2d9aab29331352d6cd608b28f6ab73",
+      "bytes": 16408,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-04-recess/reimport-check.json",
+      "sha256": "1a30685b9da5938aa5abcdec23eea4769bfe5e72a136b806558a9bcf5e5036d3",
+      "bytes": 2293,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-04-recess/model.blend",
+      "sha256": "4b25e89dfb2c0256381be499e2eaa3cada005324b4f02358b260c8d712a7aa1d",
+      "bytes": 1842339,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-04-recess/views/front.png",
+      "sha256": "4e5f398eaacde2d6d1ef34e47d23656ce6257b2687a26ad010fe4c7ac7fde36a",
+      "bytes": 718133,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-04-recess/views/side.png",
+      "sha256": "8043718fc49abfa8236fad97d8d9237d0a3f3372366ec199f85b1b4ae48ec38a",
+      "bytes": 797526,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-04-recess/views/threeq.png",
+      "sha256": "e320fa4e0640ee8538d78153bd8ca817b2d3d16d9079605b9f40ee3442f35cb4",
+      "bytes": 732574,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-04-recess/views/rear.png",
+      "sha256": "1a611410940333f0e838e53ff2b3817aa8c7522eca1bb1be3674fd1ec03a068d",
+      "bytes": 711743,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-01-narrow/measurements.json",
+      "sha256": "5d9e8a37698d2a6b524769ca608b6de91744399f940c25752244f64134ae5625",
+      "bytes": 2063,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-01-narrow/recipe-copy.json",
+      "sha256": "16d9768d9b7bb9c61f27846bdffdaaa57f3c99efcd8ebc24a0c847acea85f2f4",
+      "bytes": 1086,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-01-narrow/materials.json",
+      "sha256": "8545fe0a659e748f3d96c6d4c8b222764494b91cecee619d5b68ec5dd6ad4328",
+      "bytes": 2210,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-01-narrow/model.glb",
+      "sha256": "ff81dc4e5a7b971b927fdac441cf8e6244cd11a36198ea308d07170d17e59986",
+      "bytes": 1208088,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-01-narrow/inspection.json",
+      "sha256": "d6f1b32c908bc747377fc180ee867db854be83da5f193d1cc0d0ecd4f70ffaab",
+      "bytes": 12179,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-01-narrow/collision.json",
+      "sha256": "20cfbbfcb7e42650214724b43b5d6d2bbbf4a1fe921c2b4b1a6811517f67e780",
+      "bytes": 15848,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-01-narrow/reimport-check.json",
+      "sha256": "f81c8c39ab5f000761c8b2cef6e864b458394b602f159dec17619cb30eb57d85",
+      "bytes": 2293,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-01-narrow/model.blend",
+      "sha256": "861087a9d59ca0c1d52aa928414c912e3ad71b34bcb536834e705a37c776e727",
+      "bytes": 1818330,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-01-narrow/views/front.png",
+      "sha256": "707a3dec8b2e12b90c9f290bcd8be01d2b69227408b0fee8eb1f2ab1e924fb35",
+      "bytes": 718596,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-01-narrow/views/side.png",
+      "sha256": "1b18323ff7b399db31535b0d24c8745cd7748565d154704641fbe56d92f7f376",
+      "bytes": 794491,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-01-narrow/views/threeq.png",
+      "sha256": "cdc86f68a74c5673bea8c06e77389f06b1dee58c6c3f8e1ca8531d30fe80f890",
+      "bytes": 735184,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-01-narrow/views/rear.png",
+      "sha256": "68b57c74f023888da1c5ec9e9d1de4b25ff35e45dcca258610ca5afc0b7f198c",
+      "bytes": 712236,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-02-double/measurements.json",
+      "sha256": "051d64e6caa1494f9c61a5979bd5e5187d42f27a2bb25bc7e7f1ce86779b73c8",
+      "bytes": 2071,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-02-double/recipe-copy.json",
+      "sha256": "ddbb2341753cc2e08b3f0218223df613bda15c479849b9efa0202a7981a62510",
+      "bytes": 1211,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-02-double/materials.json",
+      "sha256": "8545fe0a659e748f3d96c6d4c8b222764494b91cecee619d5b68ec5dd6ad4328",
+      "bytes": 2210,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-02-double/model.glb",
+      "sha256": "d45ea61667e2f1fa1b44947d820b23cdfff56950cb4e8579ef2c3f5a4f0e7f1b",
+      "bytes": 1261940,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-02-double/inspection.json",
+      "sha256": "768b0697dee10ff4953d4ff3bbd37a86cab3635484dbaf08d2a4ea8731d4f18b",
+      "bytes": 11347,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-02-double/collision.json",
+      "sha256": "38abdfcda88f7560c206c171fd7febd5a706b721dff4e85c4f149933b7c44d2b",
+      "bytes": 17826,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-02-double/reimport-check.json",
+      "sha256": "26b979370293f725079b9f5b3f93df3dc1187724ae486139d82a0b06cf9f4da2",
+      "bytes": 2293,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-02-double/model.blend",
+      "sha256": "ed1d2a7f6f8c2399518221fad1d6b78d25babd53a40ecaff32c894fc8a11b716",
+      "bytes": 1839530,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-02-double/views/front.png",
+      "sha256": "ca0372eb45e4ef61a7c1a12798752a275b2c6be6da1e4380577669dde64e77e7",
+      "bytes": 723985,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-02-double/views/side.png",
+      "sha256": "4a9b9bf75011c349a5219d3211db8297c741c0187d68092243c61e3b54f1fb40",
+      "bytes": 808717,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-02-double/views/threeq.png",
+      "sha256": "92e95148c79fb03ec3f62975d3f57d86ccb0ace3a0991f5abe4315e3e643ca9c",
+      "bytes": 738672,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-02-double/views/rear.png",
+      "sha256": "d9a1d84cb599da277fe533615dda11f25b720716bcf06a195e17f1139dc246f2",
+      "bytes": 718566,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-06-endcap/measurements.json",
+      "sha256": "333cbdd728c33344506e78c15469de2dc3b6195fd5ea4183851129098636abcf",
+      "bytes": 2111,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-06-endcap/recipe-copy.json",
+      "sha256": "ba4c92726dbccd077567086ab05b08a8c0468bf2c4b5c9e2cf7fd1cae97ec846",
+      "bytes": 1111,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-06-endcap/materials.json",
+      "sha256": "8545fe0a659e748f3d96c6d4c8b222764494b91cecee619d5b68ec5dd6ad4328",
+      "bytes": 2210,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-06-endcap/model.glb",
+      "sha256": "921e3dfafea9ece0b4cab7c70e3f9aab71d46d450bdbaee4b75352b26581ab1e",
+      "bytes": 1245716,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-06-endcap/inspection.json",
+      "sha256": "85b1917708dc9128e466b45d8572e66faf9a9ada55f7a41554fdb6b3d0f2c75e",
+      "bytes": 12228,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-06-endcap/collision.json",
+      "sha256": "462c12cb96442eb51f2d45a0df0d8d5b05ffd56642e3c28787088637a752b86d",
+      "bytes": 15553,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-06-endcap/reimport-check.json",
+      "sha256": "2369fa85f1bfa3d2bdc62dd0c26a4c2cddff2600758a70ee5330866be42c71a6",
+      "bytes": 2293,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-06-endcap/model.blend",
+      "sha256": "84ecf3789b788901891d6193018ccc28e03c02afb80ba85e72310e70c60c317b",
+      "bytes": 1841258,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-06-endcap/views/front.png",
+      "sha256": "69fc083e63b55790b70d8b23dcd28f65e16fb1d0194e8149fd94a57d76e1a14a",
+      "bytes": 719653,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-06-endcap/views/side.png",
+      "sha256": "ecc2985e96d642aeeae48f313834c91ec83351324e2259764294cb06d7ab9e4a",
+      "bytes": 801641,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-06-endcap/views/threeq.png",
+      "sha256": "9ab7907e381f0d9071225c5e93e53deb94d501bacb5c811de195913a7045e90e",
+      "bytes": 736354,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-06-endcap/views/rear.png",
+      "sha256": "2165ff9c33a4aa93ae51f13525656bef362d5661f844c0e40aa4508e2bf15424",
+      "bytes": 714893,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-05-corner/measurements.json",
+      "sha256": "ee4fce16a4997d251b24b085c00208c4c43abb9ec32d41ec5eb53337694d09a7",
+      "bytes": 2119,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-05-corner/recipe-copy.json",
+      "sha256": "6254f76d57fa24e909b15acb5bfac3d24f90617843c0a58dcb93388962000c1d",
+      "bytes": 1534,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-05-corner/materials.json",
+      "sha256": "8545fe0a659e748f3d96c6d4c8b222764494b91cecee619d5b68ec5dd6ad4328",
+      "bytes": 2210,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-05-corner/model.glb",
+      "sha256": "b1b8546b3fcaf72fcb92fbe1a59fe98567981058e8304049b65793bd22d078ee",
+      "bytes": 1296160,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-05-corner/inspection.json",
+      "sha256": "d18054268aa0d4989c20fff2183e415434e523e07f4d0bb03b9235b45fc42bed",
+      "bytes": 12043,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-05-corner/collision.json",
+      "sha256": "017c93ba06be7c871362b592226020862d31741208b927ae2dad1784e65b6730",
+      "bytes": 20509,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-05-corner/reimport-check.json",
+      "sha256": "cbdc5bb896f89998f45e94ac0c7433e117ece05cff493c1f734e6a1b02048219",
+      "bytes": 2293,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-05-corner/model.blend",
+      "sha256": "219f9523096b2801a412e0caa2a774f56e77c4326b80c7e976e910c6dc54a894",
+      "bytes": 1880714,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-05-corner/views/front.png",
+      "sha256": "7ea6165562545afbb0034332842e299fcc1d87c233e91e1f8a8981499e39d0c4",
+      "bytes": 725277,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-05-corner/views/side.png",
+      "sha256": "ac980e549179cb15e18f07aa2e45be010c1effc8f15cb887019221603c80cf50",
+      "bytes": 793777,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-05-corner/views/threeq.png",
+      "sha256": "4b59954e180a5fa33c39f6848437bc9b32b37289c061a504d0b5ea1e7f8cee54",
+      "bytes": 732279,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/shop-05-corner/views/rear.png",
+      "sha256": "f7bbc3b4e21dc3d4cb9851e8c27243650a72a2fcaa1e5c89fcd2abac8d6e0067",
+      "bytes": 704463,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/temple.glb",
+      "sha256": "0e04208d48ed5581353908efb1a0c6f4c4fe0a684bdbf35b469a3485ae80c3eb",
+      "bytes": 3782256,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/entry-court-v3.glb",
+      "sha256": "b0b4d28b6a9f12928a142efd2a597234ba13e52a7f48ed788d436175dcbbf6f3",
+      "bytes": 1469532,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/yimen.glb",
+      "sha256": "e9393cd4017c657e74d2889da812ac16eb70a04664ce8ab829ea126cb7ee48b5",
+      "bytes": 4343252,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/yimen-stage.glb",
+      "sha256": "509fd8913f90cbdce61a55ba3187030da304140216cbb4f368127dd8eb59a51d",
+      "bytes": 1283532,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/dadian-court-v2.glb",
+      "sha256": "d643a1b3e0f8b9c38cafc4dd53465ff0de12f6fd38e4f81188b6735625ad79a7",
+      "bytes": 1353280,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/peidian.glb",
+      "sha256": "b3dba52114ed22f25e916f9d5cc72cff6ba2cf13082eae16daa099deabc1771d",
+      "bytes": 2075332,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/gallery.glb",
+      "sha256": "45228eb69acfd827741ac9f4a72b2d2f6bd92a1c2c4b0776efa210424ee1114d",
+      "bytes": 490812,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/dadian.glb",
+      "sha256": "8a722d9dc7663cefea0f94409a8911c65cf824756a60220ec7d1c88d4f1dabee",
+      "bytes": 6295144,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/court3.glb",
+      "sha256": "3921895487fb7581e4fce7e31c8534153329ab61ea186a3e961b6a1e44bb0f0c",
+      "bytes": 1634368,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/houdian.glb",
+      "sha256": "693a5efb758700c96c162f9c9c93e0d1b91f490cde895e9d41202b4cdcd9f615",
+      "bytes": 2702268,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/tree-camphor-v2.glb",
+      "sha256": "5219f9a3a065fd1c2d4262899fa04e49f1ed31e31b9f709b162b74223a84cb33",
+      "bytes": 233320,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/review-manifest.json",
+      "sha256": "30df9a0fa4ab92a896a7223aac9be66d4c15511d0d17aa1db4ca47aa389c34a3",
+      "bytes": 7135,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/dadian-roof-surface-samples.json",
+      "sha256": "28e480ff6a6e07528ab18c89536c30b4defdcd0ea122a3345170c8316a937a5e",
+      "bytes": 25490,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/peidian-roof-surface-samples.json",
+      "sha256": "6cdc32a73a40bee27a1c233bb15841314257aff4e7abf6ffcdb02ec9ed04f7c2",
+      "bytes": 8619,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/yimen-roof-surface-samples.json",
+      "sha256": "ecca32c31b1998f655d0e4655e23a0c024402d4f642a722ff6afe25eb08ef8af",
+      "bytes": 10581,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/houdian-roof-surface-samples.json",
+      "sha256": "31f709391f4a74db988ee320360df42a21750c1f4785144e8969872649103db1",
+      "bytes": 8502,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/cameras.json",
+      "sha256": "15b6033d89125e280330fb487a09ee96af8f9bbb5c32d3290e17042a9a678299",
+      "bytes": 2981,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/route.json",
+      "sha256": "805528b2e0b263e271a962c319088213320b36ef67d5d2e21c3272c3020a8a60",
+      "bytes": 6250,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/instances.json",
+      "sha256": "77fa8ffbd0e8ad6dd2d2504b8c3bbd11ddcdc7979b12b040991a2292c17dc872",
+      "bytes": 2986,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/collision-world.json",
+      "sha256": "a5a9155e715dd4f5f0cdeaa4f3eb5a52c90a02204e3398d47143c0386fd4800c",
+      "bytes": 106067,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/temple-v3/review-manifest.cm.json",
+      "sha256": "7e67211a3d2e90e62c2aa6e63bdb3a037fc952eb0d595f35591a3d3f372b864f",
+      "bytes": 8512,
+      "sourcePackage": "pawborough-world-ten-hour-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/plate-paigu-niangao.glb",
+      "sha256": "1801f005aa9c87c748c84eac31d78cb3aad14974518eea8a6e27e08e84a90cfe",
+      "bytes": 105872,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/youdunzi.glb",
+      "sha256": "5b67ffd36f6c0461690219384d0e51dc9a55fbb66bf237fc71906a0dd32483db",
+      "bytes": 51180,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/bean-jar.glb",
+      "sha256": "c484a526bffcf5ee3e5bddc3b4adb715fb14a439ff5438ec56f064f16d5e73f5",
+      "bytes": 2253840,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/jar-resolvability.json",
+      "sha256": "f0957e955a4036337996f15ca563f26174b3e4b8bcf3ce7bbaa4af7ea4f9188e",
+      "bytes": 134,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/bowl-soymilk.glb",
+      "sha256": "9eb10ef5c75979cf443430425f3768d7686d2a99bf7b10e32dae614c9ee2d744",
+      "bytes": 68548,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/xiaolongbao.glb",
+      "sha256": "439ff56d50780ddb669bc5388439662dff3c49100d3fbd7952677331895ccaed",
+      "bytes": 31488,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/dabing.glb",
+      "sha256": "2975965001285c1465a376ada590fab6c0f83996109ab93f2946ca2673daad50",
+      "bytes": 66792,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/manifest.json",
+      "sha256": "d3a06078c05797edecdec5d878fc475d54589054cba8a3ac33a5d8e9ca73bd29",
+      "bytes": 9487,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/ligaotang-piece.glb",
+      "sha256": "21d56e7f663441b7ceee4e6904ada4aa6faf50350bbb8d02455ad2a2d8f14eaa",
+      "bytes": 29224,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/tangyuan-meat.glb",
+      "sha256": "e72f38be1968e1726e1f9e6f07af5c734416e5ffed26dfa243436b480cc46e78",
+      "bytes": 12624,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/xiekehuang.glb",
+      "sha256": "7df90fd8249f3fa7df714f08709bc4825002ebd6cc5553ad8a1f18a55f85afbb",
+      "bytes": 82152,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/chunjuan.glb",
+      "sha256": "903a0f86f6b3c8cdbcefe259dc930a21c1d8e5fbfa2a3f8185d5a7512ee21368",
+      "bytes": 22744,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/bean-packet-open.glb",
+      "sha256": "27a640bcad0e1ba24f305527107ec3ddba663c8aad5e9302e4895da825dbc07b",
+      "bytes": 980868,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/ligaotang-box-open.glb",
+      "sha256": "7469d5d7632b00c7a3520e93b7ff7f7949697bfc89e9ff1365eb9e2ae52698a3",
+      "bytes": 136536,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/guantangbao.glb",
+      "sha256": "f417b5fb18a71940a4e84f5170593281b3e96d68fb837a1763064912857e77a0",
+      "bytes": 32420,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/bean-dish.glb",
+      "sha256": "3a3137329cc5d8d9ee4a6b16e88615da60e340fed9e0a37f38947c36efebfc24",
+      "bytes": 1373476,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/chopsticks-pair.glb",
+      "sha256": "0e1e9ea039a94b26b71073e3e1a62f3d5a329ae42006a2e79413cd9926d2ddf8",
+      "bytes": 8456,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/tangyuan.glb",
+      "sha256": "c44b39fdc7715b9710ece3f602563498a0852579163e8a18367b162b8b31f48e",
+      "bytes": 18848,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/teacup-filled.glb",
+      "sha256": "51748d6771eb67c9227f5b18463952052760934869366ea73f067696fe8989d8",
+      "bytes": 33724,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/shengjian.glb",
+      "sha256": "019a143d6c9fe0226a5f5f48abe01ec1f08b1ccd9c2df51c4952062c47d31ef9",
+      "bytes": 85208,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/bowl-jiuniang.glb",
+      "sha256": "25772c28e03b3f162489e5efd77af55847df222876cd965ead2a262177614eef",
+      "bytes": 127076,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/bowl-tangyuan.glb",
+      "sha256": "c3bf2e342bdb77674dfd32ac3fc04d0c6af9744a6022708d5bc5d0cf88b6bde8",
+      "bytes": 107460,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/bean-single.glb",
+      "sha256": "ffaf463e35922da6c894661cf69651954e9bd4fba0ab73e0513ae96fa2af3d92",
+      "bytes": 1028184,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/youtiao.glb",
+      "sha256": "fcab5838fc178d9610433735cf67d8474f2563940b711d62c821ea084df4c9d5",
+      "bytes": 29280,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/cifangao.glb",
+      "sha256": "8aa16522287ff61fe175e8375c4a5d97dcee206070770acbf1c4d4c7c5318833",
+      "bytes": 41768,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/congyoubing.glb",
+      "sha256": "6726925d88b2e7a91e25a9479b1339e375cf11d863c3fd151ae7438e67f38925",
+      "bytes": 37848,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/steamer-xiaolongbao-8.glb",
+      "sha256": "2d2cf077656187c2a0299d33f23cc33a657bf0c0d6b472bdeb3f2df1a241ff52",
+      "bytes": 168544,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/vinegar-dish.glb",
+      "sha256": "99713a30cd35beca2cac71edd8afcb3a35cf677dd68b9b6a548010c32d392850",
+      "bytes": 41388,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/catalog.json",
+      "sha256": "a983dc89f78820070510cae667c360d118958969e30c0959de5a2c28a71c5c99",
+      "bytes": 65623,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/handheld/wuxiangdou-packet.glb",
+      "sha256": "f7d92478148c02a5f84ee42c8c122248e7c100bc32919939aae9a8eab3204e73",
+      "bytes": 72260,
+      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/tabletop/snacks-batch.glb",
+      "sha256": "51fb685f70f772352a6aec8cb5b6d451cb139c63866a67b04aa1f2052b4048f3",
+      "bytes": 1337800,
+      "sourcePackage": "pawborough-snackshop-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/tabletop/materials.json",
+      "sha256": "a62b83d5c17cea2760de4d625904ffcdedb34e1859e1f53b89cba4b506c86c1d",
+      "bytes": 7305,
+      "sourcePackage": "pawborough-snackshop-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/tabletop/inspection.json",
+      "sha256": "25ecf1e6bfc4eb7fddf4beac11724914dbd9dac8100a1363332a1faec19293f8",
+      "bytes": 15513,
+      "sourcePackage": "pawborough-snackshop-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/tabletop/map-authoring.json",
+      "sha256": "0556e823ef788affbd2c2160fef1300dc44773d0030528e20dc47b8c102e9ea8",
+      "bytes": 210,
+      "sourcePackage": "pawborough-snackshop-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/tabletop/catalog.json",
+      "sha256": "1f2b09d942bda0bd3474c0f4bd5f52c1b898c869b1a65477b98171eadb996e87",
+      "bytes": 5895,
+      "sourcePackage": "pawborough-snackshop-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/shop-building/snacks.glb",
+      "sha256": "5fcdbcb4ad87a53b5166f8f4cb5b2f8024ce954f869170bf468a57c0602bb165",
+      "bytes": 1130296,
+      "sourcePackage": "pawborough-snackshop-20260921"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/foods/shop-building/model.glb",
+      "sha256": "6d854230265456eb729936bdeac4602c7af536dc90fc744988c42c6179db5b61",
+      "bytes": 4983756,
+      "sourcePackage": "pawborough-snackshop-20260921"
+    },
+    {
+      "path": "asset-authoring/shops/source-kit/textures/PaintedPlaster017_2K-JPG_Roughness_1K.jpg",
+      "sha256": "721fc5388ec4d35652c8f12257f4cb51feb089745ef0aa1344e50b00d5b4f3f8",
+      "bytes": 14165,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "asset-authoring/shops/source-kit/textures/PaintedPlaster017_2K-JPG_NormalGL_1K.jpg",
+      "sha256": "3dab2be0650809f946cff08fa0bee17397eb26ef7ba13276494bbfb12fe935b7",
+      "bytes": 92337,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "asset-authoring/shops/source-kit/textures/roof-normal.png",
+      "sha256": "029c076ed01ad292245e5138a1c9b4be516ccdad1d6be90436f89deffa4c88c3",
+      "bytes": 10447,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "asset-authoring/shops/source-kit/textures/Wood092_2K-JPG_NormalGL_1K.jpg",
+      "sha256": "e2048d86ad46771551aae0e693d41a130cf3903036144f189cd14112e5779616",
+      "bytes": 9058,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "asset-authoring/shops/source-kit/textures/Bricks061_2K-JPG_Color_1K.jpg",
+      "sha256": "1f3ce8173e75b187cb7ac8b097a94008e7d5cd1fecea799a593cc9743996b222",
+      "bytes": 129658,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "asset-authoring/shops/source-kit/textures/Bricks061_2K-JPG_NormalGL_1K.jpg",
+      "sha256": "b491bab299622fa4709bae1d939ec4674bffbaeaa9a1e10d66cffea1f70b37d5",
+      "bytes": 133723,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "asset-authoring/shops/source-kit/textures/roof-color.jpg",
+      "sha256": "ed1be8f6bc86b31576c6437cc92b8dd6e969455f6730da42746d38b501e25013",
+      "bytes": 97139,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "asset-authoring/shops/source-kit/textures/Bricks061_2K-JPG_Roughness_1K.jpg",
+      "sha256": "4825464954174dffb3a3aca9bef23db9881013f280eae9492a7dff5715f5ee8c",
+      "bytes": 134225,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "asset-authoring/shops/source-kit/textures/PaintedPlaster017_2K-JPG_Color_1K.jpg",
+      "sha256": "4df6fad9c4939bc73c5a0f6fa1103c37d19ec81011c8631305500e82f524637d",
+      "bytes": 21237,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "asset-authoring/shops/source-kit/textures/wood-stain-color.jpg",
+      "sha256": "3365006948025802c9c5f0026e091342e8226a70b765688fe889a7af6d1beda5",
+      "bytes": 75074,
+      "sourcePackage": "pawborough-shop-base-batch-20260921"
+    },
+    {
+      "path": "asset-authoring/yuyuan-entry/v2/ground.glb",
+      "sha256": "e6b377ec9aa92e2c4610c64f5a3e9163a2193614787af22c674542e6644947bc",
+      "bytes": 362988,
+      "sourcePackage": "pawborough-claude-yuyuan-entry-20260921"
+    },
+    {
+      "path": "asset-authoring/yuyuan-entry/v2/model.glb",
+      "sha256": "0251ea21bb18673dd411d83c8537d0f995b9c4e4864bbd515b29066538f368dc",
+      "bytes": 3399552,
+      "sourcePackage": "pawborough-claude-yuyuan-entry-20260921"
+    },
+    {
+      "path": "asset-authoring/yuyuan-entry/v2/model.blend",
+      "sha256": "82bea411160ccbaa47bc3088d1de0c900b898450484c0fc43215346a5a4b5584",
+      "bytes": 2797837,
+      "sourcePackage": "pawborough-claude-yuyuan-entry-20260921"
+    },
+    {
+      "path": "asset-authoring/yuyuan-entry/source-kit/textures/PaintedPlaster017_2K-JPG_Roughness_1K.jpg",
+      "sha256": "721fc5388ec4d35652c8f12257f4cb51feb089745ef0aa1344e50b00d5b4f3f8",
+      "bytes": 14165,
+      "sourcePackage": "pawborough-claude-yuyuan-entry-20260921"
+    },
+    {
+      "path": "asset-authoring/yuyuan-entry/source-kit/textures/PaintedPlaster017_2K-JPG_NormalGL_1K.jpg",
+      "sha256": "3dab2be0650809f946cff08fa0bee17397eb26ef7ba13276494bbfb12fe935b7",
+      "bytes": 92337,
+      "sourcePackage": "pawborough-claude-yuyuan-entry-20260921"
+    },
+    {
+      "path": "asset-authoring/yuyuan-entry/source-kit/textures/roof-normal.png",
+      "sha256": "029c076ed01ad292245e5138a1c9b4be516ccdad1d6be90436f89deffa4c88c3",
+      "bytes": 10447,
+      "sourcePackage": "pawborough-claude-yuyuan-entry-20260921"
+    },
+    {
+      "path": "asset-authoring/yuyuan-entry/source-kit/textures/Wood092_2K-JPG_NormalGL_1K.jpg",
+      "sha256": "e2048d86ad46771551aae0e693d41a130cf3903036144f189cd14112e5779616",
+      "bytes": 9058,
+      "sourcePackage": "pawborough-claude-yuyuan-entry-20260921"
+    },
+    {
+      "path": "asset-authoring/yuyuan-entry/source-kit/textures/Bricks061_2K-JPG_Color_1K.jpg",
+      "sha256": "1f3ce8173e75b187cb7ac8b097a94008e7d5cd1fecea799a593cc9743996b222",
+      "bytes": 129658,
+      "sourcePackage": "pawborough-claude-yuyuan-entry-20260921"
+    },
+    {
+      "path": "asset-authoring/yuyuan-entry/source-kit/textures/Bricks061_2K-JPG_NormalGL_1K.jpg",
+      "sha256": "b491bab299622fa4709bae1d939ec4674bffbaeaa9a1e10d66cffea1f70b37d5",
+      "bytes": 133723,
+      "sourcePackage": "pawborough-claude-yuyuan-entry-20260921"
+    },
+    {
+      "path": "asset-authoring/yuyuan-entry/source-kit/textures/roof-color.jpg",
+      "sha256": "ed1be8f6bc86b31576c6437cc92b8dd6e969455f6730da42746d38b501e25013",
+      "bytes": 97139,
+      "sourcePackage": "pawborough-claude-yuyuan-entry-20260921"
+    },
+    {
+      "path": "asset-authoring/yuyuan-entry/source-kit/textures/Bricks061_2K-JPG_Roughness_1K.jpg",
+      "sha256": "4825464954174dffb3a3aca9bef23db9881013f280eae9492a7dff5715f5ee8c",
+      "bytes": 134225,
+      "sourcePackage": "pawborough-claude-yuyuan-entry-20260921"
+    },
+    {
+      "path": "asset-authoring/yuyuan-entry/source-kit/textures/PaintedPlaster017_2K-JPG_Color_1K.jpg",
+      "sha256": "4df6fad9c4939bc73c5a0f6fa1103c37d19ec81011c8631305500e82f524637d",
+      "bytes": 21237,
+      "sourcePackage": "pawborough-claude-yuyuan-entry-20260921"
+    },
+    {
+      "path": "asset-authoring/yuyuan-entry/source-kit/textures/wood-stain-color.jpg",
+      "sha256": "3365006948025802c9c5f0026e091342e8226a70b765688fe889a7af6d1beda5",
+      "bytes": 75074,
+      "sourcePackage": "pawborough-claude-yuyuan-entry-20260921"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/kit/textures/sesame-top.jpg",
+      "sha256": "f7a637cfedeb1bc5fb1df5cffb2c0f2c7dd68ba5a21ec0983916149cf23776b6",
+      "bytes": 41034,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/kit/textures/fried-crust.jpg",
+      "sha256": "8cebfd123cf35d6802114d3a1ffdbfefba3ca979aef28b5e2edc57f44676de9a",
+      "bytes": 12395,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/kit/textures/bean-mass.jpg",
+      "sha256": "d029295e3ab1db930f9518fff7adbac41a11a7ed5c22b50408f9afcf2bdd0a1f",
+      "bytes": 33362,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/kit/textures/bean-colour-atlas-512.jpg",
+      "sha256": "7b1143d5ed364fcc6a056440eaeb9219f378199099368b9c9e75696570549c5c",
+      "bytes": 34362,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/kit/textures/bean-colour-atlas.jpg",
+      "sha256": "926920d8cad74cf23f9a5352a3da1976819f9f0bef28dfe67c8c685624cbd7d3",
+      "bytes": 204917,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/kit/textures/labels-atlas.png",
+      "sha256": "b22765e530a5a2e5b87baf2e4b34c70f2fff83a7baee4993c7bf0471e1ba4d09",
+      "bytes": 44443,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/kit/textures/scallion-pancake.jpg",
+      "sha256": "3d0a218c9071e9b8a540d77fc1ccbf560b484a5013da88c0d9ef23e18cdea848",
+      "bytes": 23806,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/kit/textures/osmanthus-soup.jpg",
+      "sha256": "7da801cf8b2352b56bf5c8649bd279d583135776f6e914269067a98151d6fd45",
+      "bytes": 16787,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/kit/textures/bean-wrinkle-normal.jpg",
+      "sha256": "5761dac31c3df4706ccbbaa4438a9f3f1ac8f51025562ea11ac05c7108698b92",
+      "bytes": 233749,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/kit/textures/sesame-scallion.jpg",
+      "sha256": "cc5d44fee591d5d67ef6915b873ac6f04cceb8f9161cd71a4196108b7db2c90d",
+      "bytes": 38118,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/plate-paigu-niangao.glb",
+      "sha256": "1801f005aa9c87c748c84eac31d78cb3aad14974518eea8a6e27e08e84a90cfe",
+      "bytes": 105872,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/youdunzi.glb",
+      "sha256": "5b67ffd36f6c0461690219384d0e51dc9a55fbb66bf237fc71906a0dd32483db",
+      "bytes": 51180,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/bean-jar.glb",
+      "sha256": "47cedeeaf1b7602b6ddb7dfdf2a422350a4e9d690446b9b9c920a6a1acbed4a7",
+      "bytes": 2037084,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/jar-resolvability.json",
+      "sha256": "f0957e955a4036337996f15ca563f26174b3e4b8bcf3ce7bbaa4af7ea4f9188e",
+      "bytes": 134,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/bowl-soymilk.glb",
+      "sha256": "9eb10ef5c75979cf443430425f3768d7686d2a99bf7b10e32dae614c9ee2d744",
+      "bytes": 68548,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/xiaolongbao.glb",
+      "sha256": "439ff56d50780ddb669bc5388439662dff3c49100d3fbd7952677331895ccaed",
+      "bytes": 31488,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/dabing.glb",
+      "sha256": "2975965001285c1465a376ada590fab6c0f83996109ab93f2946ca2673daad50",
+      "bytes": 66792,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/manifest.json",
+      "sha256": "163e0d09c7b4905c014a321d1b0c5b731d9a2b26f27fe74407e4bbda3ff679c0",
+      "bytes": 9675,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/ligaotang-piece.glb",
+      "sha256": "21d56e7f663441b7ceee4e6904ada4aa6faf50350bbb8d02455ad2a2d8f14eaa",
+      "bytes": 29224,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/tangyuan-meat.glb",
+      "sha256": "e72f38be1968e1726e1f9e6f07af5c734416e5ffed26dfa243436b480cc46e78",
+      "bytes": 12624,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/xiekehuang.glb",
+      "sha256": "7df90fd8249f3fa7df714f08709bc4825002ebd6cc5553ad8a1f18a55f85afbb",
+      "bytes": 82152,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/chunjuan.glb",
+      "sha256": "903a0f86f6b3c8cdbcefe259dc930a21c1d8e5fbfa2a3f8185d5a7512ee21368",
+      "bytes": 22744,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/bean-packet-open.glb",
+      "sha256": "2850215069df2a10264e473f41b0b3bbe26b35478c7c353c9e0aee8fd08bf5be",
+      "bytes": 867320,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/ligaotang-box-open.glb",
+      "sha256": "7469d5d7632b00c7a3520e93b7ff7f7949697bfc89e9ff1365eb9e2ae52698a3",
+      "bytes": 136536,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/guantangbao.glb",
+      "sha256": "f417b5fb18a71940a4e84f5170593281b3e96d68fb837a1763064912857e77a0",
+      "bytes": 32420,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/bean-dish.glb",
+      "sha256": "433c8a2f854249142584cf0bfab3f727c3750f5a61ea09966708fdf971f58e7b",
+      "bytes": 1301988,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/chopsticks-pair.glb",
+      "sha256": "0e1e9ea039a94b26b71073e3e1a62f3d5a329ae42006a2e79413cd9926d2ddf8",
+      "bytes": 8456,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/tangyuan.glb",
+      "sha256": "c44b39fdc7715b9710ece3f602563498a0852579163e8a18367b162b8b31f48e",
+      "bytes": 18848,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/teacup-filled.glb",
+      "sha256": "51748d6771eb67c9227f5b18463952052760934869366ea73f067696fe8989d8",
+      "bytes": 33724,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/shengjian.glb",
+      "sha256": "019a143d6c9fe0226a5f5f48abe01ec1f08b1ccd9c2df51c4952062c47d31ef9",
+      "bytes": 85208,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/bowl-jiuniang.glb",
+      "sha256": "25772c28e03b3f162489e5efd77af55847df222876cd965ead2a262177614eef",
+      "bytes": 127076,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/bowl-tangyuan.glb",
+      "sha256": "c3bf2e342bdb77674dfd32ac3fc04d0c6af9744a6022708d5bc5d0cf88b6bde8",
+      "bytes": 107460,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/bean-single.glb",
+      "sha256": "6a49e8a6febdd0a25d1416ea272514bbf170d17f350c10b537229ce1e8ed6bd7",
+      "bytes": 956692,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/youtiao.glb",
+      "sha256": "fcab5838fc178d9610433735cf67d8474f2563940b711d62c821ea084df4c9d5",
+      "bytes": 29280,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/cifangao.glb",
+      "sha256": "8aa16522287ff61fe175e8375c4a5d97dcee206070770acbf1c4d4c7c5318833",
+      "bytes": 41768,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/congyoubing.glb",
+      "sha256": "6726925d88b2e7a91e25a9479b1339e375cf11d863c3fd151ae7438e67f38925",
+      "bytes": 37848,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/steamer-xiaolongbao-8.glb",
+      "sha256": "2d2cf077656187c2a0299d33f23cc33a657bf0c0d6b472bdeb3f2df1a241ff52",
+      "bytes": 168544,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/vinegar-dish.glb",
+      "sha256": "99713a30cd35beca2cac71edd8afcb3a35cf677dd68b9b6a548010c32d392850",
+      "bytes": 41388,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog.json",
+      "sha256": "f3b9f0968de3c8c1cee29a521d7a7964ec02d90a948bd24fd04a3b2dd3340875",
+      "bytes": 66899,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/wuxiangdou-packet.glb",
+      "sha256": "f7d92478148c02a5f84ee42c8c122248e7c100bc32919939aae9a8eab3204e73",
+      "bytes": 72260,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/guantangbao.json",
+      "sha256": "92eef64153333f6abc21b68cb5a37dce3c842854f41128a137967d4426f1bb81",
+      "bytes": 962,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/bowl-jiuniang.json",
+      "sha256": "ed205fb15c2add75a31536eef64d5a49d895da8d2bca06a98d1dd12f9390892c",
+      "bytes": 1069,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/bean-packet-open.json",
+      "sha256": "8f49d2d650d5fc15c3de13fc136b0fdb0c5ded75d07a945bfa00ddeafba4b32a",
+      "bytes": 3376,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/vinegar-dish.json",
+      "sha256": "e4c2cc69a58e0eee74b881f551f11b8fcacc610002a6067f40effaa9e64b9cad",
+      "bytes": 956,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/congyoubing.json",
+      "sha256": "e771d51d5bbc487bd237541327f40e91417ab06762469e355e7271d4624e2990",
+      "bytes": 1105,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/steamer-xiaolongbao-8.json",
+      "sha256": "bc34bc8520868b4467bf073cb3273783fb506910d7cd877c6b32329785829e9b",
+      "bytes": 1032,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/cifangao.json",
+      "sha256": "dd59fc87cf312156e115188e951fd91f3f6ead609b61f6e635553a46ec5dc9a5",
+      "bytes": 1017,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/tangyuan-meat.json",
+      "sha256": "190d9a2e51f25fa7639be0b88151d89d83242869c4f909e5f208a4c9d99e82e9",
+      "bytes": 950,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/youtiao.json",
+      "sha256": "0b81a498908daec82e1c36c310450665b992e7a076903d2fa41abcff9b37792e",
+      "bytes": 1006,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/xiaolongbao.json",
+      "sha256": "f29cbf24b8ca248a09fd70d4308af0443524980bed84676c797dfe565b59ff35",
+      "bytes": 937,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/wuxiangdou-packet.json",
+      "sha256": "0aab52bc25716b06b8ada4d3d81a66251b56ee1e1d23f63910823659497f9450",
+      "bytes": 1066,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/bean-dish.json",
+      "sha256": "85869da0d450fcd8e037e718351d978480ac98135c1582b8bb8c9657fef82819",
+      "bytes": 4355,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/plate-paigu-niangao.json",
+      "sha256": "b10c8fdaaea5e164d6f72f8993bd6530b9a7d04d31c545d4e2649d69bd879436",
+      "bytes": 997,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/bean-jar.json",
+      "sha256": "63100f680a411009a0147f9f7a3f47018d6a960bdbd334b75dfdf56772baf38f",
+      "bytes": 19018,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/ligaotang-piece.json",
+      "sha256": "410c4d56ed47d25ddf59cd35d2664f997efeed09377e7131678af91583a35112",
+      "bytes": 957,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/bean-single.json",
+      "sha256": "1dfe8199353a340dfe6be8c0ea96b40488e4977a31b8a40351887cef2cd8b672",
+      "bytes": 2625,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/ligaotang-box-open.json",
+      "sha256": "2391fe63bcf4eacc8af565eaa1470d36256482d126e67249487c94c84d50df8b",
+      "bytes": 1083,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/youdunzi.json",
+      "sha256": "bb4788af55e940b4ed4e92229b12509e91a78b6e59f0f6b36799bdc441d88892",
+      "bytes": 1012,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/tangyuan.json",
+      "sha256": "cef4bad34e3225a33f24b0b9a17aa02b0ed7445dfe916ace7740590c6701b587",
+      "bytes": 925,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/xiekehuang.json",
+      "sha256": "24bce6cbf637026dbd8e64c57183d96f5a9afcf3bf04d726abdd08adeb1ba3f8",
+      "bytes": 1106,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/chunjuan.json",
+      "sha256": "6d59a12a644b7acb02e585b1774f2c1ffad9c03145f5c5a8254348f7605f21bf",
+      "bytes": 1012,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/chopsticks-pair.json",
+      "sha256": "9336a785fae6d90ac4dc93db22425f7db905873aef2cc860e40990e4b9c47dec",
+      "bytes": 930,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/bowl-tangyuan.json",
+      "sha256": "3aa62354dac74e8662634a1ffaa16cec056caf4306d3f808b39a9d7eea3cb2b9",
+      "bytes": 964,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/teacup-filled.json",
+      "sha256": "5e407a762221bd6465cc71320b693b3c4a134047ab3bc0611b7a60b38e3b4237",
+      "bytes": 936,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/shengjian.json",
+      "sha256": "7e0bc5a606308380604b01999ee3469fc32b2f2574eab1a36cf90cf4d2a1481a",
+      "bytes": 1117,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/dabing.json",
+      "sha256": "29519c8e5dbf585b8613ad2cb6b9c5421e35b9a58b8b7645f9ce920a8b2fbf7f",
+      "bytes": 1086,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/catalog/bowl-soymilk.json",
+      "sha256": "61bf124b634b81f14569f9c47961201ff9097db5f12e4763ed32b1d54e889308",
+      "bytes": 1051,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/guantangbao.json",
+      "sha256": "7dfd5e366df36096222bb8aebbd6a1e6f555e61dd094bcdd3d319b32965601c3",
+      "bytes": 72,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/bowl-jiuniang.json",
+      "sha256": "bea859976dbf861a863a8fd9e174a6c48379d929033c365c221834a0e7a24288",
+      "bytes": 213,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/bean-packet-open.json",
+      "sha256": "9c6988b28370ef58ea36bb12798c9375f1a2a8fa161570e0dfb24a6b1d8f235d",
+      "bytes": 492,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/vinegar-dish.json",
+      "sha256": "040f6d8ff2fffb786eb79dcb726d3c30774e3a4e5924b9106b19d0b425ff8821",
+      "bytes": 73,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/congyoubing.json",
+      "sha256": "506f4fc78b62c113506ed2589f9d072c202cb8a0fa21efe43eb7482f9bc2ef6b",
+      "bytes": 213,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/steamer-xiaolongbao-8.json",
+      "sha256": "532b731a431b95aff459647a862a3a5863b154c834e2633f8d3f76069e969a4b",
+      "bytes": 82,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/cifangao.json",
+      "sha256": "f2017838f1a423a0219758ed12c42f14400dc0fd382b30f5bb48186f8169b4f5",
+      "bytes": 196,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/tangyuan-meat.json",
+      "sha256": "2569dcd8a4cc433191b6f1c5e1e38c4bee2d6fe40779db9abeef6704e94250e3",
+      "bytes": 74,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/youtiao.json",
+      "sha256": "4a9b2b14cec86c635c9cb836351ee5631c15efa8e5e58c704a77af9893ed2d73",
+      "bytes": 195,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/xiaolongbao.json",
+      "sha256": "c6c6ec40226188e89db0bb8829af019ff1bc3db12d142700de52e54da35d0484",
+      "bytes": 72,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/wuxiangdou-packet.json",
+      "sha256": "0a0791e9d5c14e4098ef015cec5ab7b980fef053da1ebacaf1de738cf8ac8512",
+      "bytes": 206,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/bean-dish.json",
+      "sha256": "51150f4a4cba563f3a883dd97173da83c37500cf1625c26b4bd46ba3aa7f947a",
+      "bytes": 486,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/plate-paigu-niangao.json",
+      "sha256": "1e39949e23665c543bca8091ea099c5ec9f7925f8f4b159ed0b26935ed021622",
+      "bytes": 80,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/bean-jar.json",
+      "sha256": "d7aada6687d8d90ebb1e3f0cc0b375fdcdd79eb9d366d4998763409d2cf86e12",
+      "bytes": 623,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/ligaotang-piece.json",
+      "sha256": "c37027710580f593e7170ba60a622e02736703c7bcbc0f6199a802b2fb07070a",
+      "bytes": 76,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/bean-single.json",
+      "sha256": "70d90cb25d334347a53256aa7dca714cc1098641f3064ab05200653153d66727",
+      "bytes": 361,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/ligaotang-box-open.json",
+      "sha256": "d7fe3e2eeba579335087a77c63d3c4d16d38f7ef943f56592c4b34066b883cfb",
+      "bytes": 207,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/youdunzi.json",
+      "sha256": "561ea51a20b147df4db432f8518c18a56610beddf5c1ad61350a33f248f08cb5",
+      "bytes": 196,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/tangyuan.json",
+      "sha256": "32e9c510fcd9d1d760e382016edc5ff916ca5e3970e598a8a7ad8d6c92e8985d",
+      "bytes": 69,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/xiekehuang.json",
+      "sha256": "f5e5e1597ffb273b38a99e16283b2b03bda172474eca61f97f78ec7b65158033",
+      "bytes": 331,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/chunjuan.json",
+      "sha256": "f9617a98014ec4df08afbda5683d26112c326101d63521229c82902105b254dd",
+      "bytes": 196,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/chopsticks-pair.json",
+      "sha256": "2c023ceaa56dd42fcbb91843e93c06c96b0a46627f77a1801cb6af6403a37d75",
+      "bytes": 76,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/bowl-tangyuan.json",
+      "sha256": "fc3ef15624d254220cfc11310c12e8926f79a31388af2eee3597c122896f3c4c",
+      "bytes": 74,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/teacup-filled.json",
+      "sha256": "ded5457bb86c9541c04161b84e64fd5d2b8c17edacd6d455db93fa77c7c27521",
+      "bytes": 74,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/shengjian.json",
+      "sha256": "4977226788de41fb398f451ba991d1393f8b15cdc5c4e3719ea1e0342f547b8c",
+      "bytes": 334,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/dabing.json",
+      "sha256": "228476029b8e8d0bc9f74bb9a8dd30b0745f236a11b6ffe83391f444aa399c29",
+      "bytes": 327,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/handheld/props/reimport/bowl-soymilk.json",
+      "sha256": "e47d37b652e8453caae9ea364491a92e79c9dd39e63a3253556526ead8076469",
+      "bytes": 200,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/snacks/tabletop/textures/sesame-top.jpg",
+      "sha256": "65a90518fe94cf238a602ce430f82cb4ed450d609fcf01fd5c712012f57bcc3b",
+      "bytes": 39711,
+      "sourcePackage": "pawborough-snackshop-20260921"
+    },
+    {
+      "path": "asset-authoring/snacks/tabletop/textures/fried-crust.jpg",
+      "sha256": "77c0973923dcc2b7e5406b6f2e88165ac5fe5afe50a492e01441f7d2ee397090",
+      "bytes": 12387,
+      "sourcePackage": "pawborough-snackshop-20260921"
+    },
+    {
+      "path": "asset-authoring/snacks/tabletop/textures/bean-mass.jpg",
+      "sha256": "3c40502fa469f360a79a560a473562e4b57dfed6339c0e89ecb31e17e1f5b3a5",
+      "bytes": 30569,
+      "sourcePackage": "pawborough-snackshop-20260921"
+    },
+    {
+      "path": "asset-authoring/snacks/tabletop/textures/labels-atlas.png",
+      "sha256": "b22765e530a5a2e5b87baf2e4b34c70f2fff83a7baee4993c7bf0471e1ba4d09",
+      "bytes": 44443,
+      "sourcePackage": "pawborough-snackshop-20260921"
+    },
+    {
+      "path": "asset-authoring/snacks/tabletop/textures/scallion-pancake.jpg",
+      "sha256": "4b9e5745887111fe1b2f8f93c62ffe8fbac55ec24a332fcda23fe6aa2a49278f",
+      "bytes": 22235,
+      "sourcePackage": "pawborough-snackshop-20260921"
+    },
+    {
+      "path": "asset-authoring/snacks/tabletop/textures/osmanthus-soup.jpg",
+      "sha256": "4cff36e1c0a900e2084e56ecf779b295bc93b1673720bb8c6f620e84d60e8274",
+      "bytes": 15117,
+      "sourcePackage": "pawborough-snackshop-20260921"
+    },
+    {
+      "path": "asset-authoring/snacks/tabletop/textures/babaofan-top.jpg",
+      "sha256": "e303f48ec23c71662247bfb7fbea4d6368e4c95149177af8955192348edfe9a5",
+      "bytes": 21996,
+      "sourcePackage": "pawborough-snackshop-20260921"
+    },
+    {
+      "path": ".local-media/video/clipA-partial.mp4",
+      "sha256": "e5456d656c6b173b396efb28da2235aab2b8faf4afd27924660821b98e8b2c98",
+      "bytes": 73835745,
+      "sourcePackage": "pawborough-adoption-east-night-20260919"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/review-images/jiuqu-square-after.png",
+      "sha256": "3b5de3ef931d7fedd5b5fd9af6a32549e3700327b4db82c1616661afdbbb53a4",
+      "bytes": 1098810,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/review-images/bean-jar-before.png",
+      "sha256": "5c36cd57f0ee7f1b776b4bb7553d1ee56039d9d079f230ad173011abab42759f",
+      "bytes": 1300720,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/review-images/old-street-before.png",
+      "sha256": "47a335ad6c975d3ed0315c8fd8ce480cdd9936c1a389b69a1bab56744c8a8882",
+      "bytes": 989697,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/review-images/bean-single-after.png",
+      "sha256": "807ee309a0d9c8d47d0a97f907d349ea3b3e1ed1de6ebd303b3f23c60639d472",
+      "bytes": 1228981,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/review-images/bean-single-before.png",
+      "sha256": "fdd2633a4ac8913e8d128c0cb326ea37876aa96f0f6c21ec31294a22b3016b5b",
+      "bytes": 1331396,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/review-images/jiuqu-square-before.png",
+      "sha256": "196acc59eb745eb430031651efbeecd1e0a33a081f02448d24922305fe82b329",
+      "bytes": 1121977,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/review-images/bean-jar-after.png",
+      "sha256": "624a60024fc0d0aceed51eadd648db41b1aac361ac1515a8956706bb4887160c",
+      "bytes": 1250363,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/review-images/old-street-after.png",
+      "sha256": "711d1c87fd8c9eaed301eaaef2f9790089c8f69a33911d0f03eb73fe410e7851",
+      "bytes": 867190,
+      "sourcePackage": "pawborough-review-repair-20260922"
+    }
+  ],
+  "state": "uploaded_checksum_verified",
+  "ownerAdopted": false,
+  "cloudReceipt": "docs/migrations/20260922/CLOUD-RECEIPT.json"
+}

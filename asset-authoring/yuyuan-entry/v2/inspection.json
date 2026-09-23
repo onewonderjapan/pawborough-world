@@ -1,0 +1,293 @@
+{
+  "file": "/home/baibai/outbox/pawborough-claude-yuyuan-entry-20260921/workspace-v2/model.glb",
+  "sha256": "0251ea21bb18673dd411d83c8537d0f995b9c4e4864bbd515b29066538f368dc",
+  "fileBytes": 3399552,
+  "storedTriangles": 16368,
+  "defaultSceneTriangles": 16368,
+  "meshes": 12,
+  "gltfNativeBounds": {
+    "min": [
+      -5.5626983642578125,
+      -4.76837158203125e-07,
+      -4.373611927032471
+    ],
+    "max": [
+      5.5626983642578125,
+      8.260000228881836,
+      1.5736122131347656
+    ],
+    "size": [
+      11.125396728515625,
+      8.260000705718994,
+      5.947224140167236
+    ],
+    "method": "glTF-native node transforms and accessor AABB corners; conservative for rotated geometry"
+  },
+  "boundsIncomplete": false,
+  "primitiveCount": 12,
+  "materials": 7,
+  "imageEncodedBytes": 1747547,
+  "accessorBufferViewBytes": 1636896,
+  "images": [
+    {
+      "name": "Bricks061_2K-JPG_NormalGL_1K",
+      "mime": "image/jpeg",
+      "size": [
+        1024,
+        1024
+      ],
+      "encodedBytes": 133723,
+      "externalUri": null
+    },
+    {
+      "name": "Bricks061_2K-JPG_Color_1K",
+      "mime": "image/jpeg",
+      "size": [
+        1024,
+        1024
+      ],
+      "encodedBytes": 129658,
+      "externalUri": null
+    },
+    {
+      "name": "Bricks061_2K-JPG_Roughness_1K",
+      "mime": "image/png",
+      "size": [
+        1024,
+        1024
+      ],
+      "encodedBytes": 975440,
+      "externalUri": null
+    },
+    {
+      "name": "PaintedPlaster017_2K-JPG_NormalGL_1K",
+      "mime": "image/jpeg",
+      "size": [
+        1024,
+        512
+      ],
+      "encodedBytes": 92337,
+      "externalUri": null
+    },
+    {
+      "name": "PaintedPlaster017_2K-JPG_Color_1K",
+      "mime": "image/jpeg",
+      "size": [
+        1024,
+        512
+      ],
+      "encodedBytes": 21237,
+      "externalUri": null
+    },
+    {
+      "name": "PaintedPlaster017_2K-JPG_Roughness_1K",
+      "mime": "image/png",
+      "size": [
+        1024,
+        512
+      ],
+      "encodedBytes": 203434,
+      "externalUri": null
+    },
+    {
+      "name": "roof-normal",
+      "mime": "image/png",
+      "size": [
+        1024,
+        1024
+      ],
+      "encodedBytes": 10447,
+      "externalUri": null
+    },
+    {
+      "name": "roof-color",
+      "mime": "image/jpeg",
+      "size": [
+        1024,
+        1024
+      ],
+      "encodedBytes": 97139,
+      "externalUri": null
+    },
+    {
+      "name": "Wood092_2K-JPG_NormalGL_1K",
+      "mime": "image/jpeg",
+      "size": [
+        1024,
+        1024
+      ],
+      "encodedBytes": 9058,
+      "externalUri": null
+    },
+    {
+      "name": "wood-stain-color",
+      "mime": "image/jpeg",
+      "size": [
+        1024,
+        1024
+      ],
+      "encodedBytes": 75074,
+      "externalUri": null
+    }
+  ],
+  "primitives": [
+    {
+      "mesh": 0,
+      "primitive": 0,
+      "material": 0,
+      "triangles": 228,
+      "vertices": 456,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 1,
+      "primitive": 0,
+      "material": 1,
+      "triangles": 936,
+      "vertices": 2408,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 2,
+      "primitive": 0,
+      "material": 2,
+      "triangles": 12,
+      "vertices": 24,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 3,
+      "primitive": 0,
+      "material": 1,
+      "triangles": 1476,
+      "vertices": 3848,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 4,
+      "primitive": 0,
+      "material": 3,
+      "triangles": 96,
+      "vertices": 192,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 5,
+      "primitive": 0,
+      "material": 1,
+      "triangles": 3528,
+      "vertices": 7056,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 6,
+      "primitive": 0,
+      "material": 1,
+      "triangles": 2556,
+      "vertices": 5494,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 7,
+      "primitive": 0,
+      "material": 2,
+      "triangles": 12,
+      "vertices": 24,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 8,
+      "primitive": 0,
+      "material": 0,
+      "triangles": 12,
+      "vertices": 24,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 9,
+      "primitive": 0,
+      "material": 4,
+      "triangles": 5708,
+      "vertices": 8559,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 10,
+      "primitive": 0,
+      "material": 5,
+      "triangles": 484,
+      "vertices": 1130,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "mesh": 11,
+      "primitive": 0,
+      "material": 6,
+      "triangles": 1320,
+      "vertices": 2844,
+      "attributes": [
+        "NORMAL",
+        "POSITION",
+        "TANGENT",
+        "TEXCOORD_0"
+      ]
+    }
+  ],
+  "extensionsUsed": [],
+  "limits": "Counts/storage inspection only; not full glTF validation, GPU memory, frame rate, collision or visual approval."
+}

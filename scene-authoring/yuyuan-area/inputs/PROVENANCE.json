@@ -1,0 +1,37 @@
+{
+ "copiedInputs": [
+  {
+   "path": "inputs/map-data.json",
+   "source": "/home/baibai/outbox/pawborough-fangbang-map-1990s-20260912/workspace/public/map-data.json",
+   "sha256": "1dee4831060a2e587769df5ad9f26455c2e1b4ac7841aacafcb9712d29a8884e"
+  },
+  {
+   "path": "inputs/map.geojson",
+   "source": "/home/baibai/outbox/pawborough-fangbang-map-1990s-20260912/data/map.geojson",
+   "sha256": "4906cfbc654bc08f29a8b4322325bb8fec44b388df116f1d1840742d0b9e0e29"
+  },
+  {
+   "path": "inputs/overpass.json",
+   "source": "/home/baibai/outbox/pawborough-fangbang-map-1990s-20260912/data/raw/overpass.json",
+   "sha256": "b675b39a52b410ad6f56fe95e68eb33d9c88a8bdf522568bc602b66e3194f107"
+  },
+  {
+   "path": "inputs/receipt.json",
+   "source": "/home/baibai/outbox/pawborough-fangbang-map-1990s-20260912/data/raw/receipt.json",
+   "sha256": "fc7039c568a7b796e08094730dc55c555113ff565cbbc45b55d9f1821b27da94"
+  },
+  {
+   "path": "inputs/BUILD_RESULT.json",
+   "source": "/home/baibai/outbox/pawborough-fangbang-map-1990s-20260912/data/BUILD_RESULT.json",
+   "sha256": "cb3af5075d62c14a1098c3cc4cffa73c42b30a4f8e5bdfd735daa218cd1ca18a"
+  },
+  {
+   "path": "inputs/BRIEF.json",
+   "source": "/home/baibai/outbox/pawborough-fangbang-map-1990s-20260912/control/BRIEF.json",
+   "sha256": "0bae0ed93bcf247e0073d7999c8e90c2d2e2a4334a8e33870388e1cf6fa47b73"
+  }
+ ],
+ "mapData": "contemporary OSM-derived, X east/Z south in metres; not historical survey",
+ "sourceAttribution": "© OpenStreetMap contributors, ODbL; original metadata retained",
+ "approvedGateSha": "0251ea21bb18673dd411d83c8537d0f995b9c4e4864bbd515b29066538f368dc"
+}

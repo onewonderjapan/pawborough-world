@@ -1,0 +1,141 @@
+{
+  "grey-brick-facade": {
+    "tileMeters": [
+      1.05,
+      1.2
+    ],
+    "colorSrgb": "ffffff",
+    "tintSrgb": "b4bac2",
+    "roughness": 0.8,
+    "metallic": 0,
+    "textures": {
+      "color": "source-kit/textures/Bricks061_2K-JPG_Color_1K.jpg",
+      "normal": "source-kit/textures/Bricks061_2K-JPG_NormalGL_1K.jpg",
+      "roughness": "source-kit/textures/Bricks061_2K-JPG_Roughness_1K.jpg"
+    },
+    "normalConvention": "OpenGL",
+    "source": "ambientCG Bricks061, cool-grey tint"
+  },
+  "pale-granite-stone": {
+    "tileMeters": [
+      2.5,
+      2.5
+    ],
+    "colorSrgb": "ffffff",
+    "tintSrgb": "d8d4c8",
+    "roughness": 0.8,
+    "metallic": 0,
+    "textures": {
+      "color": "source-kit/textures/PaintedPlaster017_2K-JPG_Color_1K.jpg",
+      "normal": "source-kit/textures/PaintedPlaster017_2K-JPG_NormalGL_1K.jpg",
+      "roughness": "source-kit/textures/PaintedPlaster017_2K-JPG_Roughness_1K.jpg"
+    },
+    "normalConvention": "OpenGL",
+    "source": "ambientCG PaintedPlaster017 as granular stone, tinted"
+  },
+  "carved-stone-ground": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "8d8a80",
+    "tintSrgb": null,
+    "roughness": 0.9,
+    "metallic": 0,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "constant material"
+  },
+  "grey-pan-tile": {
+    "tileMeters": [
+      1.44,
+      1.36
+    ],
+    "colorSrgb": "ffffff",
+    "tintSrgb": null,
+    "roughness": 0.8,
+    "metallic": 0,
+    "textures": {
+      "color": "source-kit/textures/roof-color.jpg",
+      "normal": "source-kit/textures/roof-normal.png"
+    },
+    "normalConvention": "OpenGL",
+    "source": "project analytic roof relief (source-kit)"
+  },
+  "dark-fascia-lacquer": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "3a3632",
+    "tintSrgb": null,
+    "roughness": 0.6,
+    "metallic": 0,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "constant material"
+  },
+  "rafter-timber": {
+    "tileMeters": [
+      0.75,
+      1.5
+    ],
+    "colorSrgb": "5a3a2a",
+    "tintSrgb": "e6d6c8",
+    "roughness": 0.7,
+    "metallic": 0,
+    "textures": {
+      "color": "source-kit/textures/wood-stain-color.jpg",
+      "normal": "source-kit/textures/Wood092_2K-JPG_NormalGL_1K.jpg"
+    },
+    "normalConvention": "OpenGL",
+    "source": "project wood colour + ambientCG normal (source-kit)"
+  },
+  "passage-plaster": {
+    "tileMeters": [
+      2.5,
+      2.5
+    ],
+    "colorSrgb": "ffffff",
+    "tintSrgb": "b9b6ad",
+    "roughness": 0.8,
+    "metallic": 0,
+    "textures": {
+      "color": "source-kit/textures/PaintedPlaster017_2K-JPG_Color_1K.jpg",
+      "normal": "source-kit/textures/PaintedPlaster017_2K-JPG_NormalGL_1K.jpg",
+      "roughness": "source-kit/textures/PaintedPlaster017_2K-JPG_Roughness_1K.jpg"
+    },
+    "normalConvention": "OpenGL",
+    "source": "ambientCG CC0 via source-kit (see PROVENANCE.json)"
+  },
+  "ground-stone-slab": {
+    "tileMeters": [
+      2.5,
+      2.5
+    ],
+    "colorSrgb": "ffffff",
+    "tintSrgb": "a9a69c",
+    "roughness": 0.8,
+    "metallic": 0,
+    "textures": {
+      "color": "source-kit/textures/PaintedPlaster017_2K-JPG_Color_1K.jpg",
+      "normal": "source-kit/textures/PaintedPlaster017_2K-JPG_NormalGL_1K.jpg",
+      "roughness": "source-kit/textures/PaintedPlaster017_2K-JPG_Roughness_1K.jpg"
+    },
+    "normalConvention": "OpenGL",
+    "source": "ambientCG CC0 via source-kit (see PROVENANCE.json)"
+  },
+  "slab-joint": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "6d6a63",
+    "tintSrgb": null,
+    "roughness": 0.95,
+    "metallic": 0,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "constant material"
+  }
+}

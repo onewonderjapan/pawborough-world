@@ -1,4 +1,4 @@
-# Binary 3D assets and textures go through Git LFS (local install only, no remote).
+# Historical binary assets retain Git LFS pointers; new migrated outputs are restored by SHA manifest from private storage.
 *.glb filter=lfs diff=lfs merge=lfs -text
 *.gltf filter=lfs diff=lfs merge=lfs -text
 *.blend filter=lfs diff=lfs merge=lfs -text

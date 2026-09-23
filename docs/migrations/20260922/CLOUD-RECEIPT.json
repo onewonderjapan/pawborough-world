@@ -1,0 +1,63 @@
+{
+  "status": "complete",
+  "finishedAt": "2026-09-22T21:16:52.181431+09:00",
+  "bucket": "onewonder-pawborough-assets-566601428909-apne1",
+  "snapshotKey": "snapshots/owner/reorganization-20260922-202629/MIGRATION-MANIFEST.json",
+  "uploader": "owner",
+  "objects": 257,
+  "uploaded": 235,
+  "reused": 22,
+  "public": false,
+  "region": "ap-northeast-1",
+  "assetPaths": 297,
+  "sourceCodeCommit": "ffcd0f662502135c3e8548d97763dd2363e14215",
+  "gitBundle": {
+    "sha256": "e02cd15ce6a17b307a5b4fc6e00d19e1a4e2d6d06d804246a76e68747585e3ed",
+    "bytes": 118449897,
+    "objectKey": "objects/sha256/e0/e02cd15ce6a17b307a5b4fc6e00d19e1a4e2d6d06d804246a76e68747585e3ed"
+  },
+  "restoreSamples": [
+    {
+      "path": "scene-authoring/yuyuan-area/baseline/scene-areas.glb",
+      "sha256": "7a332eddd9db840987f170be466e482fbd205914ba861acca258d2d35410c41a",
+      "verified": true
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/scene.blend",
+      "sha256": "080ea99fd9ac21b024ae7540b4197eccac537d0df9bdc10a98fc4f1d8ee703ac",
+      "verified": true
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/shops/overview-6units.png",
+      "sha256": "b1261021b37657407d2bc307643fc8e1f408528b282ad7c75b79455daf71c5ae",
+      "verified": true
+    },
+    {
+      "path": ".local-media/video/clipA-partial.mp4",
+      "sha256": "e5456d656c6b173b396efb28da2235aab2b8faf4afd27924660821b98e8b2c98",
+      "verified": true
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out/scene-areas.glb",
+      "sha256": "66fa6d531cc8d43ec7266a94b8573191d1221a389680150c9b0452df3a75547f",
+      "bytes": 29712292,
+      "verified": true
+    },
+    {
+      "path": "migrated-current.bundle",
+      "sha256": "e02cd15ce6a17b307a5b4fc6e00d19e1a4e2d6d06d804246a76e68747585e3ed",
+      "bytes": 118449897,
+      "verified": true,
+      "bundleVerify": true
+    }
+  ],
+  "snapshotManifestSha256": "170d642f4b811ca3925e8f8a22467d0754f412540b2b03f6e28bb9a536eddd7c",
+  "publicAccessBlock": {
+    "BlockPublicAcls": true,
+    "IgnorePublicAcls": true,
+    "BlockPublicPolicy": true,
+    "RestrictPublicBuckets": true
+  },
+  "versioning": "Enabled",
+  "scope": "Active migrated workspace and current resources. Does not claim every historical archived-ref LFS blob was re-uploaded."
+}
