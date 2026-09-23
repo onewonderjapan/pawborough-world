@@ -1,0 +1,30 @@
+{
+ "packageId": "pawborough-w1-pavilion-kit-20260922",
+ "status": "delivered_for_lead_review",
+ "ownerAdopted": false,
+ "partial": [],
+ "blockers": [],
+ "branch": "work/w1-pavilion-kit-20260922",
+ "baseCommit": "33a3bd72b633983d4649979f545e96a410934ace",
+ "deliverables": {
+  "generator": "scene-authoring/yuyuan-area/modules/pavilion-kit/build_pavilion.py (+ run_all.py orchestrator)",
+  "tests": "scene-authoring/yuyuan-area/modules/pavilion-kit/test_pavilion.py -> ALL TESTS PASSED (5/5)",
+  "glbs": {
+   "听鹂亭": "scene-authoring/yuyuan-area/out-pavilion-kit/pavilion-bld-428179924/model.glb",
+   "挹秀亭": "scene-authoring/yuyuan-area/out-pavilion-kit/pavilion-bld-428186467/model.glb",
+   "流觞亭": "scene-authoring/yuyuan-area/out-pavilion-kit/pavilion-bld-428196085/model.glb",
+   "凤凰亭": "scene-authoring/yuyuan-area/out-pavilion-kit/pavilion-bld-428196091/model.glb",
+   "耸翠亭": "scene-authoring/yuyuan-area/out-pavilion-kit/pavilion-bld-428196098/model.glb"
+  },
+  "placements": "scene-authoring/yuyuan-area/out-pavilion-kit/placements.json (assemble.py instance convention)",
+  "artifacts": "artifacts/pavilion-kit/ (GLBs, blends, renders, contact sheet, validator reports)"
+ },
+ "numbers": {
+  "听鹂亭 bld-428179924": "3462 tris / 437KB / ridge-fallback rect variant",
+  "挹秀亭 bld-428186467": "3522 tris / 434KB",
+  "流觞亭 bld-428196085": "4020 tris / 458KB",
+  "凤凰亭 bld-428196091": "4308 tris / 482KB",
+  "耸翠亭 bld-428196098": "4260 tris / 475KB",
+  "budgets": "tri<=6000, bytes<=700000: all pass; validator 0 errors 0 warnings; collision leaks 0"
+ }
+}

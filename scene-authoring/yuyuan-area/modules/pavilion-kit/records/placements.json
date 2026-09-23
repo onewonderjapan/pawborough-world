@@ -1,0 +1,96 @@
+{
+ "packageId": "pawborough-w1-pavilion-kit-20260922",
+ "note": "for lead integration; pavilions are NOT yet in baseline/layout.json instances (frozen); lead step will append these to instances and re-assemble",
+ "conventions": {
+  "map": "x east, z south (layout.json)",
+  "module": "GLB Y-up, facade +Z, origin platform centre at ground y=0",
+  "rotY": "assemble.py Blender Z-yaw; derived rotY = atan2(dx, dz) so local +Z maps to facade.dir"
+ },
+ "placements": [
+  {
+   "id": "pavilion-bld-428179924",
+   "module": "pavilion-bld-428179924",
+   "zh": "听鹂亭",
+   "layoutObjectId": "bld-428179924",
+   "zone": "garden",
+   "lod": "L1",
+   "position": [
+    -43.8096,
+    -104.1118
+   ],
+   "rotY": -2.550435,
+   "sourcePath": "scene-authoring/yuyuan-area/out-pavilion-kit/pavilion-bld-428179924/model.glb",
+   "sha256": "369565c5e058484020d7547b56144e810039a69fd8d348d69dabd9360d166b89",
+   "ownerAdopted": false,
+   "axis": "GLB Y-up, facade +Z, origin platform centre at ground y=0; scale 1; rotY = atan2(dx,dz) of layout facade.dir (assemble.py Blender Z-yaw convention)"
+  },
+  {
+   "id": "pavilion-bld-428186467",
+   "module": "pavilion-bld-428186467",
+   "zh": "挹秀亭",
+   "layoutObjectId": "bld-428186467",
+   "zone": "garden",
+   "lod": "L1",
+   "position": [
+    -102.7702,
+    -139.0055
+   ],
+   "rotY": -0.899405,
+   "sourcePath": "scene-authoring/yuyuan-area/out-pavilion-kit/pavilion-bld-428186467/model.glb",
+   "sha256": "45ce4c9c1eccff7b2bb7af5a08ba505bdd3f98e84df3d0d9992e571e91eefa15",
+   "ownerAdopted": false,
+   "axis": "GLB Y-up, facade +Z, origin platform centre at ground y=0; scale 1; rotY = atan2(dx,dz) of layout facade.dir (assemble.py Blender Z-yaw convention)"
+  },
+  {
+   "id": "pavilion-bld-428196085",
+   "module": "pavilion-bld-428196085",
+   "zh": "流觞亭",
+   "layoutObjectId": "bld-428196085",
+   "zone": "garden",
+   "lod": "L1",
+   "position": [
+    -88.2464,
+    -117.2493
+   ],
+   "rotY": 0.0,
+   "sourcePath": "scene-authoring/yuyuan-area/out-pavilion-kit/pavilion-bld-428196085/model.glb",
+   "sha256": "39fc579e2f714d7aad4c1013624e6a75cee3892355ea422d381454cc7ddcf35e",
+   "ownerAdopted": false,
+   "axis": "GLB Y-up, facade +Z, origin platform centre at ground y=0; scale 1; rotY = atan2(dx,dz) of layout facade.dir (assemble.py Blender Z-yaw convention)"
+  },
+  {
+   "id": "pavilion-bld-428196091",
+   "module": "pavilion-bld-428196091",
+   "zh": "凤凰亭",
+   "layoutObjectId": "bld-428196091",
+   "zone": "garden",
+   "lod": "L1",
+   "position": [
+    -36.2297,
+    -63.0417
+   ],
+   "rotY": -1.091043,
+   "sourcePath": "scene-authoring/yuyuan-area/out-pavilion-kit/pavilion-bld-428196091/model.glb",
+   "sha256": "f06824ee7fa49798ab891600666f5e4a867b1dab45fb0600ce7c673009b89cd0",
+   "ownerAdopted": false,
+   "axis": "GLB Y-up, facade +Z, origin platform centre at ground y=0; scale 1; rotY = atan2(dx,dz) of layout facade.dir (assemble.py Blender Z-yaw convention)"
+  },
+  {
+   "id": "pavilion-bld-428196098",
+   "module": "pavilion-bld-428196098",
+   "zh": "耸翠亭",
+   "layoutObjectId": "bld-428196098",
+   "zone": "garden",
+   "lod": "L1",
+   "position": [
+    -40.9156,
+    -51.5205
+   ],
+   "rotY": -2.171887,
+   "sourcePath": "scene-authoring/yuyuan-area/out-pavilion-kit/pavilion-bld-428196098/model.glb",
+   "sha256": "89d3c4b36a5fb703d82ede429e1dd5c30f24c2ae50518b397ed6f2ef036a805f",
+   "ownerAdopted": false,
+   "axis": "GLB Y-up, facade +Z, origin platform centre at ground y=0; scale 1; rotY = atan2(dx,dz) of layout facade.dir (assemble.py Blender Z-yaw convention)"
+  }
+ ]
+}

@@ -1,0 +1,85 @@
+{
+ "pav-tile": {
+  "tileMeters": [
+   1.44,
+   1.36
+  ],
+  "colorSrgb": "ffffff",
+  "tintSrgb": null,
+  "roughness": 0.72,
+  "metallic": 0,
+  "textures": {
+   "color": "roof-color.jpg",
+   "normal": "roof-normal.png"
+  },
+  "normalConvention": "OpenGL",
+  "source": "source-kit analytic roof relief (project), 1.44x1.36 m/tile per spec"
+ },
+ "pav-timber": {
+  "tileMeters": [
+   0.6,
+   0.9
+  ],
+  "colorSrgb": "ffffff",
+  "tintSrgb": "6a2e22",
+  "roughness": 0.65,
+  "metallic": 0,
+  "textures": {
+   "color": "wood-stain-color.jpg"
+  },
+  "normalConvention": "OpenGL",
+  "source": "source-kit wood-stain; glTF factor normalized so product averages 6a2e22 per spec"
+ },
+ "pav-grey-stone": {
+  "tileMeters": [
+   1,
+   1
+  ],
+  "colorSrgb": "8f8b83",
+  "tintSrgb": null,
+  "roughness": 0.92,
+  "metallic": 0,
+  "textures": {},
+  "normalConvention": "OpenGL",
+  "source": "design_inference: constant grey stone for platform/steps/base stones"
+ },
+ "pav-dark-lacquer": {
+  "tileMeters": [
+   1,
+   1
+  ],
+  "colorSrgb": "3a3632",
+  "tintSrgb": null,
+  "roughness": 0.55,
+  "metallic": 0,
+  "textures": {},
+  "normalConvention": "OpenGL",
+  "source": "design_inference: dark eave lacquer for fascia/soffit/finial (G12 eave band)"
+ },
+ "pav-hanglo-fret": {
+  "tileMeters": [
+   1,
+   1
+  ],
+  "alpha": "lattice-fret.png",
+  "doubleSided": true,
+  "roughness": 0.6,
+  "textures": {
+   "color+alpha": "lattice-fret.png"
+  },
+  "source": "analytic PIL lattice A (万字 fret), new texture 1/2"
+ },
+ "pav-hanglo-slat": {
+  "tileMeters": [
+   1,
+   1
+  ],
+  "alpha": "lattice-slat.png",
+  "doubleSided": true,
+  "roughness": 0.6,
+  "textures": {
+   "color+alpha": "lattice-slat.png"
+  },
+  "source": "analytic PIL lattice B (直棂 slat), new texture 2/2"
+ }
+}

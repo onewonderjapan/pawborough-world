@@ -1,0 +1,114 @@
+{
+ "id": "bld-428179924",
+ "zh": "听鹂亭",
+ "variant": "rect",
+ "n": 4,
+ "module": "pavilion-bld-428179924",
+ "design": {
+  "R": null,
+  "Rx": 2.4517,
+  "Rz": 0.8062,
+  "rotY": -2.550435,
+  "platformH": 0.3,
+  "columnH": 2.75,
+  "eaveY": 3.4499999999999997,
+  "rise": 1.1,
+  "apexY": 4.55,
+  "ridgeFallback": true,
+  "ridgeHalf": 1.3407,
+  "cornerLift": 0.55,
+  "cornerReach": 1.2,
+  "concaveSag": 0.12,
+  "finialTop": null
+ },
+ "measured": {
+  "roofTopY": 4.73,
+  "bodyTopY": 3.43,
+  "boundsGLB": {
+   "min": [
+    -3.78,
+    0.0,
+    -3.36
+   ],
+   "max": [
+    3.8,
+    4.73,
+    3.34
+   ]
+  },
+  "triangles": {
+   "body": 472,
+   "roof": 2810,
+   "rail": 180,
+   "total": 3462
+  },
+  "glbBytes": 435024,
+  "sha256": "369565c5e058484020d7547b56144e810039a69fd8d348d69dabd9360d166b89"
+ },
+ "r1": {
+  "cornerKernel": "raised-cosine^2.0 along eave perimeter (gate-v2 continuous walk); LIFT at corner, 0 at cornerReach, zero slope at both ends (no corner crease)",
+  "rafterRule": "axis localEaveY-0.09 -> top eaveY-0.06 (<= eave-0.05), radial length 0.25, below tile lips; height follows lifted eave line (corner-sync)",
+  "rafterTopMarginMin": 0.01,
+  "rectFrame": "u=footprint long axis, v=short; local = rotY(rect); platform, rings, roof, ridge, soffit, rails and steps all share this frame (R1 fix1)",
+  "stepsSide": "platform edge nearest local +Z, flush outside (stepsSideNormalLocal)",
+  "stepsSideNormalLocal": [
+   -0.5573,
+   0.8303
+  ],
+  "hipRidgeFeetLocal": [
+   [
+    1.832,
+    4.0,
+    3.2846
+   ],
+   [
+    -3.7338,
+    4.0,
+    -0.4513
+   ],
+   [
+    -1.832,
+    4.0,
+    -3.2846
+   ],
+   [
+    3.7338,
+    4.0,
+    0.4513
+   ]
+  ],
+  "hipRidgeTopsLocal": [
+   [
+    1.1132,
+    4.595,
+    0.7472
+   ],
+   [
+    -1.1132,
+    4.595,
+    -0.7472
+   ],
+   [
+    -1.1132,
+    4.595,
+    -0.7472
+   ],
+   [
+    1.1132,
+    4.595,
+    0.7472
+   ]
+  ],
+  "ridgeHalf": 1.34068
+ },
+ "assumptions": {
+  "riseFormula": "clamp(0.5 * min(eaveRx,eaveRz), 1.1, 1.6) -> clamped 1.1",
+  "ridgeFallback": "rect aspect ~2:1 -> spec PLAN.md fallback: short ridge 40% of long side, four slopes + ridge",
+  "bevels": "none (tri budget); silhouette + materials carry edges",
+  "steps": "3 x 0.10 rise, width 1.2, tread 0.3, flush outside the platform edge nearest local +Z (R1 fix1)",
+  "soffit": "flat dark soffit at y=3.28 closes under-eave view (build.py method)",
+  "finialRect": "no gourd on ridge fallback roof; 正脊 box instead",
+  "r1": "master-review rework: rect single-frame rebuild / rafters under eave L0.25 / raised-cosine corner kernel (see r1 record)"
+ },
+ "buildSeconds": 0.3
+}
