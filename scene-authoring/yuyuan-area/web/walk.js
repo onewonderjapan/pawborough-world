@@ -76,9 +76,9 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
     controller.teleport([x, feetY, z], 0, 0);
   }
   function groundY(x, z) {
-    if (!physics) return null;
     const ray = new RAPIER.Ray({ x, y: 8, z }, { x: 0, y: -1, z: 0 });
-    const hit = physics.world.castRay(ray, 40, true);
+    // 排除自己的胶囊（回到锚点时旧胶囊可能高于射线起点）
+    const hit = physics.world.castRay(ray, 40, true, undefined, undefined, controller ? controller.collider : undefined);
     return hit ? 8 - hit.timeOfImpact : null;
   }
 
