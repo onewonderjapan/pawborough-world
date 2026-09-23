@@ -101,13 +101,37 @@
     "normalConvention": "OpenGL",
     "source": "locally authored / constant material"
   },
-  "dark-oil": {
+  "dark-amber-oil": {
     "tileMeters": [
       1,
       1
     ],
-    "colorSrgb": "3a2c14",
-    "roughness": 0.3,
+    "colorSrgb": "8a5a1c",
+    "roughness": 0.22,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material",
+    "alpha": 0.85,
+    "alphaMode": "BLEND"
+  },
+  "rice-batter": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "e4d39a",
+    "roughness": 0.6,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "radish-shred": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "f3efe6",
+    "roughness": 0.75,
     "textures": {},
     "normalConvention": "OpenGL",
     "source": "locally authored / constant material"
@@ -125,15 +149,12 @@
   },
   "bamboo-woven": {
     "tileMeters": [
-      0.12,
-      0.12
+      1,
+      1
     ],
     "colorSrgb": "c8a86a",
     "roughness": 0.75,
-    "textures": {
-      "color": "textures/wood-stain-color.jpg",
-      "normal": "textures/Wood092_2K-JPG_NormalGL_1K.jpg"
-    },
+    "textures": {},
     "normalConvention": "OpenGL",
     "source": "locally authored / constant material"
   },

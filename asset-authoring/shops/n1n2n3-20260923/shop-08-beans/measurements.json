@@ -2,8 +2,8 @@
   "moduleId": "shop-08-beans",
   "triangles": 12374,
   "meshes": 50,
-  "fileBytes": 2221712,
-  "sha256": "0c672e984cff83d8d7450adec5597502eacd19acefae39f34e45f8729e9293fe",
+  "fileBytes": 2222252,
+  "sha256": "707a5923526795afa12f310d057435cd87a056615478e43b9d4f8e92b8336bc0",
   "design": {
     "specId": "shop-08-beans",
     "name": "五香豆特产店（单层骑楼檐廊，商街 N2）",
@@ -157,6 +157,16 @@
     "recipe": "shop-08-beans.json"
   },
   "assertions": [
+    {
+      "assert": "gable-left-shares-wall-top",
+      "ok": true,
+      "detail": "baseY=3.3500 eave=3.3500 overlap=-0.0000 z=[-5.6000,-0.0000] wallZ=[-5.6000,0]"
+    },
+    {
+      "assert": "gable-right-shares-wall-top",
+      "ok": true,
+      "detail": "baseY=3.3500 eave=3.3500 overlap=-0.0000 z=[-5.6000,-0.0000] wallZ=[-5.6000,0]"
+    },
     {
       "assert": "instance-placed-bean-jar.glb",
       "ok": true,

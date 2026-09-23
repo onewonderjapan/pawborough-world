@@ -2,15 +2,36 @@
   "imported": true,
   "materials": [
     {
-      "name": "deep-door-lacquer.001",
+      "name": "glutinous-dough.001",
       "imageNodes": []
+    },
+    {
+      "name": "rice-batter.001",
+      "imageNodes": []
+    },
+    {
+      "name": "scallion-greens.001",
+      "imageNodes": []
+    },
+    {
+      "name": "fried-crust.001",
+      "imageNodes": [
+        {
+          "name": "fried-crust.001",
+          "size": [
+            512,
+            512
+          ],
+          "colorSpace": "sRGB"
+        }
+      ]
     },
     {
       "name": "galvanized-iron.001",
       "imageNodes": []
     },
     {
-      "name": "glutinous-dough.001",
+      "name": "deep-door-lacquer.001",
       "imageNodes": []
     },
     {
@@ -43,6 +64,14 @@
       ]
     },
     {
+      "name": "dark-amber-oil.001",
+      "imageNodes": []
+    },
+    {
+      "name": "radish-shred.001",
+      "imageNodes": []
+    },
+    {
       "name": "stained-timber.001",
       "imageNodes": [
         {
@@ -62,28 +91,7 @@
           "colorSpace": "Non-Color"
         }
       ]
-    },
-    {
-      "name": "scallion-greens.001",
-      "imageNodes": []
-    },
-    {
-      "name": "fried-crust.001",
-      "imageNodes": [
-        {
-          "name": "fried-crust.001",
-          "size": [
-            512,
-            512
-          ],
-          "colorSpace": "sRGB"
-        }
-      ]
-    },
-    {
-      "name": "dark-oil.001",
-      "imageNodes": []
     }
   ],
-  "meshes": 8
+  "meshes": 14
 }

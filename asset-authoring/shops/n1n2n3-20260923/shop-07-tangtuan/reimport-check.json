@@ -2,44 +2,11 @@
   "imported": true,
   "materials": [
     {
-      "name": "deep-door-lacquer.001",
-      "imageNodes": []
-    },
-    {
       "name": "copper-pot.001",
       "imageNodes": []
     },
     {
-      "name": "recessed-old-glass.001",
-      "imageNodes": []
-    },
-    {
-      "name": "gray-pan-tile.001",
-      "imageNodes": [
-        {
-          "name": "roof-color",
-          "size": [
-            1024,
-            1024
-          ],
-          "colorSpace": "sRGB"
-        },
-        {
-          "name": "roof-normal",
-          "size": [
-            1024,
-            1024
-          ],
-          "colorSpace": "Non-Color"
-        }
-      ]
-    },
-    {
       "name": "sign-gold-leaf.001",
-      "imageNodes": []
-    },
-    {
-      "name": "worn-stone.001",
       "imageNodes": []
     },
     {
@@ -64,7 +31,69 @@
       ]
     },
     {
+      "name": "worn-stone.001",
+      "imageNodes": []
+    },
+    {
+      "name": "gray-pan-tile.001",
+      "imageNodes": [
+        {
+          "name": "roof-color",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "sRGB"
+        },
+        {
+          "name": "roof-normal",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
+    },
+    {
+      "name": "recessed-old-glass.001",
+      "imageNodes": []
+    },
+    {
       "name": "white-porcelain.001",
+      "imageNodes": []
+    },
+    {
+      "name": "blue-gray-brick.001",
+      "imageNodes": [
+        {
+          "name": "Bricks061_2K-JPG_Color_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "sRGB"
+        },
+        {
+          "name": "Bricks061_2K-JPG_Roughness_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        },
+        {
+          "name": "Bricks061_2K-JPG_NormalGL_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
+    },
+    {
+      "name": "deep-door-lacquer.001",
       "imageNodes": []
     },
     {
@@ -91,35 +120,6 @@
           "size": [
             1024,
             512
-          ],
-          "colorSpace": "Non-Color"
-        }
-      ]
-    },
-    {
-      "name": "blue-gray-brick.001",
-      "imageNodes": [
-        {
-          "name": "Bricks061_2K-JPG_Color_1K",
-          "size": [
-            1024,
-            1024
-          ],
-          "colorSpace": "sRGB"
-        },
-        {
-          "name": "Bricks061_2K-JPG_Roughness_1K",
-          "size": [
-            1024,
-            1024
-          ],
-          "colorSpace": "Non-Color"
-        },
-        {
-          "name": "Bricks061_2K-JPG_NormalGL_1K",
-          "size": [
-            1024,
-            1024
           ],
           "colorSpace": "Non-Color"
         }

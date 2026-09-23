@@ -1,15 +1,15 @@
 {
-  "validatedAt": "2026-09-23T05:26:42.181Z",
+  "validatedAt": "2026-09-23T09:37:23.494Z",
   "root": "/home/baibai/outbox/pawborough-w1-shops-n1n2n3-20260923/workspace/out/cart-youdunzi",
   "results": [
     {
       "file": "model.glb",
-      "sha256": "2055c1f5295b2a04d5eb91346680c0b36c3ff29bbb4c61fed4497096b6cc864d",
-      "bytes": 847292,
+      "sha256": "90ad60d1fc9054bfdfa58c745818e121670f7f9cf1ece0956d0b93a738f02268",
+      "bytes": 919864,
       "validatorVersion": "2.0.0-dev.3.10",
       "errors": 0,
       "warnings": 0,
-      "infos": 18,
+      "infos": 30,
       "errorCodes": [],
       "warningCodes": [],
       "infoCodes": [
@@ -28,7 +28,7 @@
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 834328
+            "byteLength": 900652
           },
           {
             "pointer": "/images/0",
@@ -98,14 +98,14 @@
           }
         ],
         "animationCount": 0,
-        "materialCount": 8,
+        "materialCount": 10,
         "hasMorphTargets": false,
         "hasSkins": false,
         "hasTextures": true,
         "hasDefaultScene": true,
-        "drawCallCount": 10,
-        "totalVertexCount": 6235,
-        "totalTriangleCount": 2978,
+        "drawCallCount": 16,
+        "totalVertexCount": 7511,
+        "totalTriangleCount": 3824,
         "maxUVs": 1,
         "maxInfluences": 0,
         "maxAttributes": 4

@@ -242,7 +242,10 @@ def build_gable(side):
     outer = wall['outer']
     xin0 = outer + wall['in'] * T
     L.GROUP = f'gable-{side}'
-    prof = [(-0.06, EAVE - 0.02), (-DEPTH / 2, RIDGE - 0.16), (-DEPTH + 0.06, EAVE - 0.02)]
+    # Base edge is the side-wall top edge (y=EAVE, z from -DEPTH to 0). The old
+    # base sat 0.02 m below the wall top on the same outer plane (20 mm coplanar
+    # overlap) and was inset 0.06 m at each end.
+    prof = [(0.0, EAVE), (-DEPTH / 2, RIDGE - 0.16), (-DEPTH, EAVE)]
     x0, x1 = sorted((outer, xin0))
     L.mesh(f'gable-triangle-{side}', extrude_verts(prof, x0, x1),
            extrude_faces(len(prof)), 'plaster')

@@ -1,5 +1,15 @@
 {
   "id": "cart-congyoubing",
   "name": "葱油饼平锅车（商街 N3，1990s 摊车）",
-  "features": ["原点=地面中心，+Z 朝顾客", "食品复用手持库 congyoubing.glb 实例"]
+  "features": ["原点=地面中心，+Z 朝顾客", "食品复用手持库 congyoubing.glb 实例"],
+  "dimensionsM": {
+    "bodyLength": 1.25,
+    "bodyWidth": 0.60,
+    "bodyHeight": 0.82,
+    "wheelDiameter": 0.48,
+    "griddleStoveDiameter": 0.54,
+    "griddleStoveHeight": 0.22,
+    "griddleDiameter": 0.60,
+    "axis": "bodyLength=X 左右，bodyWidth=Z 前后，bodyHeight=台面高；平锅直径为锅板，炉高从台面到锅板下沿"
+  }
 }
