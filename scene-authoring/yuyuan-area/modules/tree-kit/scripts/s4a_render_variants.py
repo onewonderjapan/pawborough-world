@@ -1,6 +1,9 @@
-# Runs inside Blender:  blender -b -t 4 -P s4a_render_variants.py -- <out-tree-kit dir>
+# Runs inside Blender:  blender -b -t 4 -P s4a_render_variants.py -- <out-tree-kit dir> [cam-bounds.json]
 # Cycles CPU renders of the 6 variant GLBs: front + three-quarter views each.
 # Blank-frame guard: luminance std < 2/255 or dominant colour > 95% -> hard fail.
+# Optional cam-bounds.json: {"<tag>": {"width": m, "h": m}} — R1 before/after must
+# share identical camera positions, so after-renders reuse the PREVIOUS build's
+# bounds (from the old reimport-check) instead of framing the new geometry.
 import bpy
 import json
 import math
@@ -9,6 +12,7 @@ import sys
 
 ARGS = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 OUT = os.path.abspath(ARGS[0])
+CAM_BOUNDS = json.load(open(os.path.abspath(ARGS[1]))) if len(ARGS) > 1 else None
 GDIR = os.path.join(OUT, "glb")
 RDIR = os.path.join(OUT, "renders")
 os.makedirs(RDIR, exist_ok=True)
@@ -80,12 +84,17 @@ def main():
         bpy.ops.import_scene.gltf(filepath=os.path.join(GDIR, f"tk-{tag}.glb"))
         from mathutils import Vector
         ob = next(o for o in bpy.context.scene.objects if o.type == "MESH" and o.name.startswith("tk-"))
-        pts = [ob.matrix_world @ v.co for v in ob.data.vertices]
-        zs = [p.z for p in pts]
-        xs = [p.x for p in pts]
-        ys = [p.y for p in pts]
-        h = max(zs)
-        width = max(max(xs) - min(xs), max(ys) - min(ys))
+        if CAM_BOUNDS is not None and tag in CAM_BOUNDS:
+            # R1: fixed cameras — reuse the previous build's framing exactly
+            h = CAM_BOUNDS[tag]["h"]
+            width = CAM_BOUNDS[tag]["width"]
+        else:
+            pts = [ob.matrix_world @ v.co for v in ob.data.vertices]
+            zs = [p.z for p in pts]
+            xs = [p.x for p in pts]
+            ys = [p.y for p in pts]
+            h = max(zs)
+            width = max(max(xs) - min(xs), max(ys) - min(ys))
         d = max(width * 1.5, h * 2.4)
         mid = (0, 0, h * 0.55)
         views = {"front": (0, -d, h * 0.5), "threeq": (d * 0.62, -d * 0.82, h * 0.62)}

@@ -2,6 +2,11 @@
 # Builds 6 tree variant GLBs (camphor/willow/osmanthus x small/large), Y-up,
 # origin at trunk base centre, crown top exactly at the variant's base height B.
 # Blender is Z-up; export_yup=True maps Blender z -> glTF y.
+# R1 rework (2026-09-23, sheet pawborough-w1-tree-kit-r1-20260923):
+#   #1 osmanthus trunk reaches >=0.30 m into the crown (no floating crown);
+#   #2 willow crown = 4 umbrella clusters (small head over wider skirt, no solid
+#      core block) + strips hanging uniformly from the skirt rim down to 0.8 m,
+#      solid volume <= 50 % of the crown envelope (asserted here).
 import bmesh
 import bpy
 import json
@@ -201,6 +206,18 @@ def tri_count(ob):
     return len(ob.data.loop_triangles)
 
 
+def mesh_volume(ob):
+    """Signed volume of a closed mesh (outward normals -> positive)."""
+    me = ob.data
+    me.calc_loop_triangles()
+    vs = me.vertices
+    v = 0.0
+    for t in me.loop_triangles:
+        a, b, c = (vs[i].co for i in t.vertices)
+        v += a.dot(b.cross(c))
+    return v / 6.0
+
+
 def crown_group(objs, top_target):
     """Uniformly rescale crown objects about z=0 so their max z == top_target exactly."""
     maxz = max(v.co.z for o in objs for v in o.data.vertices)
@@ -300,37 +317,66 @@ def build_willow(tag, B, M, seed, large):
     lt = math.sin(math.radians(lean_deg)) * trunk_h
     top = Vector((math.cos(lean_az) * lt, math.sin(lean_az) * lt, trunk_h))
     parts.append(tube(f"{tag}__trunk", [(0, 0, 0), top * 0.55, top], 0.21, 0.12, 8, M["bark-neutral"], seed + 1))
-    # single tall dome canopy centred on the trunk top; no exposed arms
-    cx, cy = top.x * 0.85, top.y * 0.85
-    cz = trunk_h + 0.85
-    tr = (1.65, 1.55, 1.3) if large else (1.55, 1.45, 1.3)
-    crown = [blob(f"{tag}__canopy", (cx, cy, cz), tr, 3, M["foliage-willow-tuft"], seed + 30, noise=0.14)]
+
+    # R1 fix #2: crown = 4 umbrella clusters (small head over a wider skirt,
+    # no solid core block); strips hang from the skirt rim down to 0.8 m.
+    tx, ty = top.x * 0.85, top.y * 0.85
+    top_cz = trunk_h + (1.7 if large else 1.5)
+    skirt_cz = trunk_h + (0.8 if large else 0.7)
+    skirt_r = 1.35 if large else 1.25
+    r_head_top = (0.95, 0.95, 0.60) if large else (0.85, 0.85, 0.55)
+    r_base_top = (1.30, 1.30, 0.62) if large else (1.25, 1.25, 0.62)
+    r_head_skirt = (0.95, 0.95, 0.50) if large else (0.90, 0.90, 0.48)
+    r_base_skirt = (1.25, 1.25, 0.55) if large else (1.15, 1.15, 0.50)
+    clusters = [
+        blob(f"{tag}__uc-top-head", (tx, ty, top_cz + 0.30), r_head_top, 2, M["foliage-willow-tuft"], seed + 30),
+        blob(f"{tag}__uc-top-base", (tx, ty, top_cz - 0.05), r_base_top, 3, M["foliage-willow-tuft"], seed + 31),
+    ]
+    for k in range(3):
+        az = 2 * math.pi * k / 3 + math.pi / 6 + rnd.uniform(-0.12, 0.12)
+        cx, cy = math.cos(az) * skirt_r, math.sin(az) * skirt_r
+        clusters.append(blob(f"{tag}__uc-skirt-{k}-head", (cx, cy, skirt_cz + 0.28), r_head_skirt, 2,
+                             M["foliage-willow-tuft"], seed + 40 + 2 * k))
+        clusters.append(blob(f"{tag}__uc-skirt-{k}-base", (cx, cy, skirt_cz - 0.02), r_base_skirt, 3,
+                             M["foliage-willow-tuft"], seed + 41 + 2 * k))
+    s = crown_group(clusters, B)
+    skirt_objs = clusters[2:]
+    rim_r = max(math.hypot(v.co.x, v.co.y) for o in skirt_objs for v in o.data.vertices)
+    rim_z = min(v.co.z for o in skirt_objs for v in o.data.vertices)
+    strip_bottom = 0.8  # R1: strips hang down to 0.8 m above ground
     n_strips = 14 if large else 12  # spec: 10-14 hanging strips
+    strips = []
     for i in range(n_strips):
-        az = 2 * math.pi * i / n_strips + rnd.uniform(-0.18, 0.18)
-        r_ax = rnd.uniform(1.15, 1.5) if large else rnd.uniform(1.05, 1.4)
-        ln = rnd.uniform(2.6, 3.0) if large else rnd.uniform(2.3, 2.7)
-        za = min(ln + rnd.uniform(0.2, 0.9), trunk_h + 0.5)  # bottom never under ground, top inside canopy
-        crown.append(card(f"{tag}__strip-{i}",
-                          (cx + math.cos(az) * r_ax, cy + math.sin(az) * r_ax, za),
-                          rnd.uniform(0.55, 0.68), ln, az, M["card-willow"], seed + 60 + i,
-                          bow=rnd.uniform(0.15, 0.25), segs=4))
-    s = crown_group(crown, B)
-    parts += crown
-    return parts, {"leanDeg": round(lean_deg, 2), "crownScale": round(s, 4), "strips": n_strips}
+        az = 2 * math.pi * i / n_strips + rnd.uniform(-0.1, 0.1)
+        attach_z = rim_z + 0.15
+        strips.append(card(f"{tag}__strip-{i}",
+                           (math.cos(az) * rim_r * 0.93, math.sin(az) * rim_r * 0.93, attach_z),
+                           rnd.uniform(0.55, 0.68), attach_z - strip_bottom, az, M["card-willow"], seed + 70 + i,
+                           bow=rnd.uniform(0.20, 0.30), segs=4))
+    # solid tufts must stay <= 50 % of the crown envelope (bbox ellipsoid of foliage + strips)
+    solid_vol = sum(mesh_volume(o) for o in clusters)
+    crown_objs = clusters + strips
+    xs = [v.co.x for o in crown_objs for v in o.data.vertices]
+    ys = [v.co.y for o in crown_objs for v in o.data.vertices]
+    zs = [v.co.z for o in crown_objs for v in o.data.vertices]
+    env = math.pi / 6 * (max(xs) - min(xs)) * (max(ys) - min(ys)) * (max(zs) - min(zs))
+    ratio = solid_vol / env
+    if ratio > 0.50:
+        raise AssertionError(f"{tag}: solid/envelope volume ratio {ratio:.3f} > 0.50")
+    real_bottom = min(v.co.z for o in strips for v in o.data.vertices)
+    if abs(real_bottom - strip_bottom) > 0.03:
+        raise AssertionError(f"{tag}: strip bottom {real_bottom:.3f} != {strip_bottom}")
+    parts += clusters + strips
+    return parts, {"leanDeg": round(lean_deg, 2), "crownScale": round(s, 4), "strips": n_strips,
+                   "clusters": 4, "solidVolumeM3": round(solid_vol, 2), "crownEnvelopeM3": round(env, 2),
+                   "solidEnvelopeRatio": round(ratio, 3), "stripBottomZ": round(real_bottom, 3),
+                   "rimRadius": round(rim_r, 3), "rimZ": round(rim_z, 3)}
 
 
 def build_osmanthus(tag, B, M, seed, large):
     rnd = random.Random(seed)
     parts = []
-    trunk_h = 1.25 if large else 1.2  # spec: low trunk 1.2 m
-    top = Vector((0.02, 0.0, trunk_h))
-    parts.append(tube(f"{tag}__trunk", [(0, 0, 0), top * 0.6, top], 0.19, 0.11, 8, M["bark-neutral"], seed + 1))
-    for i in range(2):
-        az = rnd.uniform(0, 2 * math.pi)
-        p0 = Vector((top.x + rnd.uniform(-0.02, 0.02), rnd.uniform(-0.02, 0.02), trunk_h - rnd.uniform(0.1, 0.25)))
-        p1 = p0 + Vector((math.cos(az) * 0.5, math.sin(az) * 0.5, 1.0))
-        parts.append(tube(f"{tag}__fork-{i}", [p0, p1], 0.085, 0.05, 6, M["bark-neutral"], seed + 10 + i))
+    # crown first: the trunk is sized to reach into it (R1 fix #1, no floating crown)
     crown = []
     cz = 5.0 if large else 3.75
     big_r = (1.75, 1.7, 1.55) if large else (1.75, 1.65, 1.45)
@@ -352,8 +398,21 @@ def build_osmanthus(tag, B, M, seed, large):
                           1.0, 1.0, az, M["card-broadleaf"], seed + 60 + i,
                           bow=0.1, segs=1, uv_window=clump_window(rnd)))
     s = crown_group(crown, B)
+    crown_min = min(v.co.z for o in crown for v in o.data.vertices)
+    # trunk top >= crown lowest point + 0.30 m (R1 fix #1); 0.35 m penetration
+    trunk_top = crown_min + 0.35
+    top = Vector((0.02, 0.0, trunk_top))
+    parts.append(tube(f"{tag}__trunk", [(0, 0, 0), top * 0.6, top], 0.19, 0.11, 8, M["bark-neutral"], seed + 1))
+    for i in range(2):
+        az = rnd.uniform(0, 2 * math.pi)
+        p0 = Vector((top.x + rnd.uniform(-0.02, 0.02), rnd.uniform(-0.02, 0.02), trunk_top * 0.78))
+        p1 = Vector((top.x + math.cos(az) * 0.5, math.sin(az) * 0.5, crown_min + 0.85))
+        parts.append(tube(f"{tag}__fork-{i}", [p0, p1], 0.085, 0.05, 6, M["bark-neutral"], seed + 10 + i))
+    if trunk_top - crown_min < 0.30 - 1e-9:
+        raise AssertionError(f"{tag}: trunk top {trunk_top:.3f} reaches only {trunk_top - crown_min:.3f} into crown (min 0.30)")
     parts += crown
-    return parts, {"trunkTop": trunk_h, "crownScale": round(s, 4)}
+    return parts, {"trunkTop": round(trunk_top, 3), "crownBottomMin": round(crown_min, 3),
+                   "trunkPenetration": round(trunk_top - crown_min, 3), "crownScale": round(s, 4)}
 
 
 # ---------------------------------------------------------------- main

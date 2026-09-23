@@ -1,11 +1,36 @@
 {
   "status": "delivered_for_lead_review",
   "ownerAdopted": false,
-  "partial": [],
+  "partial": [
+    {
+      "id": "gtree-2",
+      "item": "fallback move exceeds the 1.0 m fallback cap",
+      "detail": "tree sits 2.32 m inside water polygon water-428179908, so the 1.0 m fallback cap cannot clear the footprint; moved the minimum exit distance 2.371 m to satisfy the hard test 'no placement inside footprint/water' (placements[gtree-2].fallbackMove: requestedExitM 2.371, appliedCapM 1.0, exceededFallbackCap true, finalMoveM 2.371)",
+      "preExisting": true,
+      "note": "introduced in the original S3 delivery (2026-09-23 02:12); unchanged by R1 — R1 fix #3 only requires it be recorded here as partial"
+    }
+  ],
   "blockers": [],
   "packageId": "pawborough-w1-tree-kit-20260922",
-  "finishedAt": "2026-09-23T02:12:00+08:00",
-  "branch": "work/w1-tree-kit-20260922 (worktree /home/baibai/outbox/pawborough-w1-tree-kit-20260922/workspace, based on 33a3bd72)",
+  "r1Sheet": "pawborough-w1-tree-kit-r1-20260923 / R1-FIXES.md",
+  "r1Fixes": {
+    "1_osmanthusFloatingCrown": {
+      "fixed": true,
+      "detail": "trunk now extends into the crown: trunk top y = crown lowest point + 0.35 m (requirement >= 0.30 m); osmanthus-small 2.325 vs 1.975, osmanthus-large 3.458 vs 3.108",
+      "newTest": "test_osmanthus_trunk_reaches_into_crown (parses GLB prims: max y of bark material >= min y of crown materials + 0.30)"
+    },
+    "2_willowSolidBlock": {
+      "fixed": true,
+      "detail": "crown rebuilt: 4 umbrella clusters (1 top + 3 skirt, each small head over wider skirt base, no solid core block); 12/14 strips hang from the measured skirt rim with equal azimuth spacing and identical attach radius/height down to 0.8 m; solid/envelope volume ratio 0.334 (small) / 0.292 (large) <= 0.50",
+      "newTest": "test_willow_crown_structure (GLB: 6-8 solid components = 3-4 clusters x 2, 10-14 strip components, strip bottoms 0.8 +/- 0.06, strips below apex, solid volume / bbox-ellipsoid envelope <= 0.50)"
+    },
+    "3_deliveryRecords": {
+      "fixed": true,
+      "detail": "RESULT.json / DELIVERY.md / PROGRESS.json / tests.log written to R1 package artifacts/tree-kit/; renders/ ships before (previous delivery, same cameras) vs after (this build, cameras pinned to previous bounds); gtree-2 fallback excess recorded in partial above"
+    }
+  },
+  "finishedAt": "2026-09-23T10:20:00+08:00",
+  "branch": "work/w1-tree-kit-20260922 (worktree /home/baibai/outbox/pawborough-w1-tree-kit-20260922/workspace, based on 33a3bd72; R1 continues on the same branch)",
   "exitGates": {
     "46PlacementsIdsMatchLayout": true,
     "speciesRulesRecomputed": true,
@@ -14,12 +39,13 @@
     "khronosValidator0Errors": true,
     "noPlacementInsideFootprintOrWater": true,
     "blankFrameGuards": true,
-    "ownTests": "8/8 pass"
+    "ownTests": "10/10 pass (8 original + 2 new R1)"
   },
   "delivered": {
     "glbs": 6,
-    "trisPerVariant": {"camphor-small": 830, "camphor-large": 954, "willow-small": 456, "willow-large": 472, "osmanthus-small": 1048, "osmanthus-large": 1052},
+    "trisPerVariant": {"camphor-small": 830, "camphor-large": 954, "willow-small": 1736, "willow-large": 1752, "osmanthus-small": 1048, "osmanthus-large": 1052},
     "speciesCounts": {"camphor": 23, "willow": 11, "osmanthus": 12},
-    "analyticMaps": 4
+    "analyticMaps": 4,
+    "renders": "12 after + 12 before (same cameras) + aerial + contact sheet + before/after sheet, all blank-guard pass"
   }
 }

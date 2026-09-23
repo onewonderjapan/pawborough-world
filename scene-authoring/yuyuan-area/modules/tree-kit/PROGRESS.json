@@ -1,6 +1,7 @@
 {
   "packageId": "pawborough-w1-tree-kit-20260922",
-  "updated": "2026-09-23T02:10:00+08:00",
+  "r1PackageId": "pawborough-w1-tree-kit-r1-20260923",
+  "updated": "2026-09-23T10:05:00+08:00",
   "stages": {
     "S0": {
       "status": "done",
@@ -23,20 +24,21 @@
       ],
       "notes": [
         "camphor style-matches resources/temple-v3/tree-camphor-v2.glb (oxblood-stained bark tint, very dark green solid foliage blobs, low-poly umbrella)",
-        "willow uses 12/14 hanging strip cards with MASK alpha (spec 10-14); osmanthus low trunk 1.2 m, dense round crown"
+        "willow uses 12/14 hanging strip cards with MASK alpha (spec 10-14); osmanthus dense round crown",
+        "R1: willow crown rebuilt as 4 umbrella clusters (R1 fix #2); osmanthus trunk sized to the crown (R1 fix #1)"
       ]
     },
     "S2": {
       "status": "done",
       "outputs": [
-        "Khronos validator: 6 files, 0 errors, 0 warnings (validator-report.json)",
-        "Blender reimport check: images connected, sRGB, MASK alpha (cutoff defaults 0.5), tris, bounds, normals (reimport-check.json, ALL PASS)",
-        "manifest.json sha256 for glb/ and textures/",
-        "12 variant renders (front + three-quarter) with blank-frame guards in renders/blank-guards.json"
+        "Khronos validator: 6 files, 0 errors, 0 warnings (validator-report.json; re-run after R1)",
+        "Blender reimport check: images connected, sRGB, MASK alpha (cutoff defaults 0.5), tris, bounds, normals (reimport-check.json, ALL PASS; re-run after R1)",
+        "manifest.json sha256 for glb/ and textures/ (refreshed after R1)",
+        "12 variant renders (front + three-quarter) with blank-frame guards in renders/blank-guards.json; R1 after-renders reuse the previous build's camera bounds for before/after same-camera comparison"
       ],
       "notes": [
         "Blender 4.5 exporter needs Alpha->Math(ROUND) node for glTF MASK (blend_method no longer read); alphaCutoff omitted = spec default 0.5",
-        "tris: camphor 830/954, willow 456/472, osmanthus 1048/1052 (budget 2600)"
+        "tris after R1: camphor 830/954, willow 1736/1752 (clustered crown, budget 2600), osmanthus 1048/1052"
       ]
     },
     "S3": {
@@ -44,20 +46,39 @@
       "outputs": [
         "modules/tree-kit/tree-placements.json (46 placements: camphor 23, willow 11, osmanthus 12)",
         "modules/tree-kit/collision.json (trunk box per species)",
-        "modules/tree-kit/tests/test_tree_kit.py — 8/8 pass"
+        "modules/tree-kit/tests/test_tree_kit.py — 8/8 pass (original), 10/10 pass after R1"
       ],
       "notes": [
         "species rule: willow <=8 m water edge, osmanthus <=6 m hall/xuan, camphor otherwise; distances recomputed in tests from site-inputs polygons",
         "variant rule: height <=6.0 m -> small (base top 5.2), else large (6.6); per-tree scale range 0.871-1.133",
-        "rotY = md5(id)[:8] mod 360, deterministic; verified in tests"
+        "rotY = md5(id)[:8] mod 360, deterministic; verified in tests",
+        "R1 placements unchanged (S3 mapping untouched); only GLB geometry changed"
       ]
     },
     "S4": {
       "status": "done",
       "outputs": [
-        "renders/garden-aerial-mock.png 1500x2000 ortho, 46 placements + 10 m ground grid, blank guard pass",
+        "renders/garden-aerial-mock.png 1500x2000 ortho, 46 placements + 10 m ground grid, blank guard pass (re-rendered after R1 with new GLBs, same ortho camera)",
         "renders/contact-sheet.png (full) + review/contact-sheet.jpg + review/garden-aerial-mock.jpg (committed, <400 KB)",
-        "RESULT.json + DELIVERY.md; artifacts copied to package artifacts/tree-kit/"
+        "RESULT.json + DELIVERY.md; artifacts copied to package artifacts/tree-kit/ (R1 package now also carries RESULT.json/DELIVERY.md/PROGRESS.json/tests.log and renders/before|after)"
+      ]
+    },
+    "S5-R1": {
+      "status": "done",
+      "sheet": "pawborough-w1-tree-kit-r1-20260923 / R1-FIXES.md",
+      "outputs": [
+        "fix #1 osmanthus: crown built first, trunk/forks sized to it; trunk top = crown min + 0.35 m (>= 0.30 m required); builder hard-asserts penetration",
+        "fix #2 willow: crown = 4 umbrella clusters (1 top + 3 skirt, each head blob over a wider base blob, no solid core); 12/14 strips hang from the measured skirt rim uniformly down to 0.8 m; solid/envelope volume ratio asserted <= 0.50 in builder and in tests (0.334 small / 0.292 large)",
+        "fix #3 records: RESULT.json + DELIVERY.md now also written to the R1 package artifacts/tree-kit/; gtree-2 fallback-cap excess recorded in RESULT.partial",
+        "new tests: test_osmanthus_trunk_reaches_into_crown, test_willow_crown_structure (GLB prim parsing: components via position-welded union-find, strip bottom height, solid volume vs bbox-ellipsoid envelope); suite 10/10",
+        "renders/before (= previous delivery renders) vs renders/after (this build) share identical camera positions: after-run pins cameras to the previous reimport bounds (r1-cam-bounds.json)"
+      ],
+      "notes": [
+        "design_inference: 'solid volume ratio' = sum of closed solid-tuft mesh volume / bbox-ellipsoid envelope (pi/6 * bbox) of all crown geometry (foliage + strip cards); builder reports both, tests recompute from the GLB",
+        "design_inference: osmanthus 'low trunk 1.2 m' (spec note) superseded by R1 fix #1: visible trunk now 2.33 m (small) / 3.46 m (large) because the crown bottom sits at 1.98 / 3.11 m; forks still branch from the trunk into the crown",
+        "willow crown width grows to 5.83 / 6.73 m (was 3.80 / 4.71) — spec fixes no willow width; weeping-willow silhouette is wider than tall",
+        "union-find fix during R1: test component counter had a stale-root merge bug (would under-connect strip quads); fixed and verified against 12-card ground truth",
+        "gtree-2 fallback excess pre-dates R1 (S3, unchanged): recorded in RESULT.partial per R1 fix #3"
       ]
     }
   },
@@ -66,6 +87,7 @@
     "design_inference: species variants in small/large base sizes (canopy-top base 5.2 m / 6.6 m) so per-tree scale stays 0.871-1.133 given layout heights 4.53-7.48 m; spec note 'height 4.5-5.7' does not match the frozen layout and was not used",
     "fallback exceeded (recorded): gtree-2 sits 2.32 m inside water polygon water-428179908; the 1.0 m fallback cap cannot clear it, so it was moved the minimum exit distance 2.37 m to satisfy the hard test 'no placement inside footprint/water'; all 8 other inside-trees moved <=1.0 m",
     "design_inference: bark shipped as two analytic tint variants of one procedural map (bark-neutral, bark-oxblood) because the camphor style-match needs the oxblood-stained tone of the temple-v3 reference",
-    "design_inference: collision boxes are square (rotY-invariant) trunk-only boxes, to be scaled by each placement's scale at integration time"
+    "design_inference: collision boxes are square (rotY-invariant) trunk-only boxes, to be scaled by each placement's scale at integration time",
+    "R1 design_inference: 'solid volume ratio <= 50%' measured as solid tuft volume / bbox-ellipsoid crown envelope (see S5-R1 notes); 'uniformly hanging' implemented as equal azimuth spacing + identical rim attach radius/height so all strip bottoms sit on the 0.8 m line"
   ]
 }
