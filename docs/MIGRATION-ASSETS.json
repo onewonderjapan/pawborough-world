@@ -6,7 +6,7 @@
     "objectPrefix": "objects/sha256/",
     "snapshotKey": "snapshots/owner/reorganization-20260922-202629/MIGRATION-MANIFEST.json"
   },
-  "uniqueBytes": 390087343,
+  "uniqueBytes": 389840475,
   "files": [
     {
       "path": "scene-authoring/yuyuan-area/baseline/scene-areas.glb",
@@ -1990,9 +1990,9 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/out-garden-kits/rockery-dajiashan/model.glb",
-      "sha256": "70119bd5a9d8782323f88c1c585957a74e76720345b93eaf52f109dddc20c983",
-      "bytes": 1187412,
-      "sourcePackage": "pawborough-rockery-r2-lead-20260923"
+      "sha256": "3b4baaf941097961fc129fd860292b4cea5d39d70cf9c2cd327e06b3888c60d4",
+      "bytes": 940544,
+      "sourcePackage": "pawborough-rockery-r3-lead-20260923"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-garden-kits/rockery-yulinglong/model.glb",
@@ -2079,6 +2079,7 @@
   "cloudReceipts": [
     "docs/migrations/20260922/CLOUD-RECEIPT.json",
     "docs/migrations/20260923/CLOUD-RECEIPT.json",
-    "docs/migrations/20260923/CLOUD-RECEIPT-wave0.json"
+    "docs/migrations/20260923/CLOUD-RECEIPT-wave0.json",
+    "docs/migrations/20260923/CLOUD-RECEIPT-r3.json"
   ]
 }

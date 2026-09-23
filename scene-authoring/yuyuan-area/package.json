@@ -19,7 +19,8 @@
     "verify": "npm test && node scripts/validate.mjs && node scripts/check-food.mjs",
     "test:sansuitang": "OUT_DIR=${OUT_DIR:-out-zone} node tests/sansuitang-test.mjs",
     "test:rockery": "OUT_DIR=${OUT_DIR:-out-zone} node tests/rockery-test.mjs",
-    "test:awning": "OUT_DIR=${OUT_DIR:-out-zone} node tests/awning-test.mjs"
+    "test:awning": "OUT_DIR=${OUT_DIR:-out-zone} node tests/awning-test.mjs",
+    "test:walk-contract": "OUT_DIR=${OUT_DIR:-out-zone} node tests/area-collision-contract.mjs"
   },
   "dependencies": {
     "three": "0.180.0",

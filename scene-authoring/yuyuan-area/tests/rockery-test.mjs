@@ -113,28 +113,46 @@ function parseGlb(file) {
     const entry = nodesByName.get(rootName);
     if (!entry) return null;
     const verts = [];
+    const tris = [];     // world-space triangles, for the area-weighted axis
     const w = (ni, pm) => {
       const n = json.nodes[ni];
       const m = pm ? mul4(pm, nodeMatrix(n)) : worldMatrixOf(ni);
       if (n.mesh !== undefined) {
         for (const p of json.meshes[n.mesh].primitives) {
+          const base = verts.length;
           for (const v of accessor(p.attributes.POSITION)) verts.push(mulVec(m, v));
+          if (p.indices !== undefined) {
+            const idx = accessor(p.indices).flat();
+            for (let k = 0; k + 2 < idx.length; k += 3) tris.push([verts[base + idx[k]], verts[base + idx[k + 1]], verts[base + idx[k + 2]]]);
+          }
         }
       }
       for (const c of n.children || []) w(c, m);
     };
     w(entry.i, null);
+    verts.tris = tris;
     return verts;
   }
   return { json, nodesByName, subtreeVerts };
 }
 
+// 主轴按三角面面积加权的面心计算（与网格密度无关）。原先用顶点均权：减面后细节多的
+// 地方顶点多，主轴会被拉偏（R3 黄石：顶点 6.86°、面积加权 1.04°），不代表朝向错。
 function vertPose(verts) {
-  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity, mx = 0, mz = 0;
-  for (const v of verts) { x0 = Math.min(x0, v[0]); x1 = Math.max(x1, v[0]); z0 = Math.min(z0, v[2]); z1 = Math.max(z1, v[2]); mx += v[0]; mz += v[2]; }
-  mx /= verts.length; mz /= verts.length;
+  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
+  for (const v of verts) { x0 = Math.min(x0, v[0]); x1 = Math.max(x1, v[0]); z0 = Math.min(z0, v[2]); z1 = Math.max(z1, v[2]); }
+  const pts = [];
+  for (const [a, b, c] of verts.tris || []) {
+    const ux = b[0] - a[0], uy = b[1] - a[1], uz = b[2] - a[2], wx = c[0] - a[0], wy = c[1] - a[1], wz = c[2] - a[2];
+    const area = 0.5 * Math.hypot(uy * wz - uz * wy, uz * wx - ux * wz, ux * wy - uy * wx);
+    pts.push([(a[0] + b[0] + c[0]) / 3, (a[2] + b[2] + c[2]) / 3, area]);
+  }
+  if (!pts.length) for (const v of verts) pts.push([v[0], v[2], 1]);
+  let W = 0, mx = 0, mz = 0;
+  for (const [x, z, a] of pts) { W += a; mx += a * x; mz += a * z; }
+  mx /= W; mz /= W;
   let cxx = 0, czz = 0, cxz = 0;
-  for (const v of verts) { cxx += (v[0] - mx) ** 2; czz += (v[2] - mz) ** 2; cxz += (v[0] - mx) * (v[2] - mz); }
+  for (const [x, z, a] of pts) { cxx += a * (x - mx) ** 2; czz += a * (z - mz) ** 2; cxz += a * (x - mx) * (z - mz); }
   const tr = cxx + czz;
   const disc = Math.max(0, tr * tr / 4 - (cxx * czz - cxz * cxz));
   const lam = tr / 2 + Math.sqrt(disc);
