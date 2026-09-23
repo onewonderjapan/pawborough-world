@@ -223,6 +223,13 @@ if line is None:
 else:
     _, errs, msgs = line.split(' ', 2)
     ok('test3c gltf-validator 0 错误', errs == '0', msgs)
+mats = {m.get('name', ''): m for m in gj.get('materials', [])}
+lat_m = next((v for k, v in mats.items() if 'lattice' in k), None)
+gl_m = next((v for k, v in mats.items() if 'glass' in k), None)
+ok('test3d 格心材质 alphaMode=MASK + cutoff 0.5', bool(lat_m) and lat_m.get('alphaMode') == 'MASK'
+   and abs((lat_m.get('alphaCutoff') or 0) - 0.5) < 1e-6, str(lat_m and lat_m.get('alphaMode')))
+ok('test3e 玻璃材质 alphaMode=BLEND', bool(gl_m) and gl_m.get('alphaMode') == 'BLEND',
+   str(gl_m and gl_m.get('alphaMode')))
 
 # ---------- test 4：无散件（连通体：碰地或相互 bbox 间距 ≤0.02） ----------
 boxes = []
