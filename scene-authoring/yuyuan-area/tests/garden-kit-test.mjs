@@ -62,10 +62,11 @@ function parseGlb(file) {
     const q = n.rotation || [0, 0, 0, 1];
     const s = n.scale || [1, 1, 1];
     const [x, y, z, w] = q;
+    // 标准 glTF 列向量旋转矩阵（与 sansuitang-test 同式；此前这里是转置版，纯 Y 旋转会反向）
     const rot = [
-      1 - 2 * (y * y + z * z), 2 * (x * y + z * w), 2 * (x * z - y * w),
-      2 * (x * y - z * w), 1 - 2 * (x * x + z * z), 2 * (y * z + x * w),
-      2 * (x * z + y * w), 2 * (y * z - x * w), 1 - 2 * (x * x + y * y)];
+      1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w),
+      2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w),
+      2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)];
     // 列主序 4x4
     return [rot[0] * s[0], rot[3] * s[0], rot[6] * s[0], 0,
             rot[1] * s[1], rot[4] * s[1], rot[7] * s[1], 0,
@@ -77,6 +78,13 @@ function parseGlb(file) {
       m[0] * v[0] + m[4] * v[1] + m[8] * v[2] + m[12],
       m[1] * v[0] + m[5] * v[1] + m[9] * v[2] + m[13],
       m[2] * v[0] + m[6] * v[1] + m[10] * v[2] + m[14]];
+  }
+  { // 自检：绕 +Y 90°（q=[0,sin45°,0,cos45°]）时 (0,0,1) → (1,0,0)
+    const h = Math.SQRT1_2;
+    const r = mulVec(nodeMatrix({ rotation: [0, h, 0, h] }), [0, 0, 1]);
+    if (Math.abs(r[0] - 1) > 1e-6 || Math.abs(r[1]) > 1e-6 || Math.abs(r[2]) > 1e-6) {
+      console.error('FAIL nodeMatrix self-check: +Y 90° maps +Z to', r); process.exit(1);
+    }
   }
   function walk(ni, pm) {
     const n = json.nodes[ni];

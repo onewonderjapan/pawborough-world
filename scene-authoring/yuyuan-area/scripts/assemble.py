@@ -245,10 +245,31 @@ if os.environ.get('STALL_KIT') == '1':
         place(stall_objs(it['module']), {'id': it['id'], 'module': 'stall-kit:' + it['module'], 'zone': 'bazaar', 'lod': 'L2',
                                          'position': it['position'], 'rotY': it['rotY']})
         stall_placed += 1
+    # 檐棚：朝向从 layout footprint 重算，不用 records 里的 dir/outward/rotY——那三项比真实墙边转了 90°
+    # （16 条全部如此，檐棚垂直立面横穿街道，2026-09-23 Fable 复验截图发现）。GLB 本地 X = 沿墙长度、
+    # +Z = 出挑方向、原点在墙面，所以 rotY 让 +Z 对准墙边的外法线（按 footprint 绕向判定）。
+    lay_by_id = {o['id']: o for o in LAYOUT['objects']}
+    awning_poses = []
     for e in (ap['edges'] if os.environ.get('STALL_AWNINGS', '1') == '1' else []):
+        fp = lay_by_id[e['blockId']]['geometry']['footprint']
+        if fp[0] == fp[-1]:
+            fp = fp[:-1]
+        area2 = sum(fp[i][0] * fp[(i + 1) % len(fp)][1] - fp[(i + 1) % len(fp)][0] * fp[i][1] for i in range(len(fp)))
+        (ax, az), (bx, bz) = e['edge']
+        ex, ez = bx - ax, bz - az
+        n = math.hypot(ex, ez)
+        # x 东 z 南：area2>0 为 x→z 方向逆时针，外法线 = (ez, -ex)；反之取反
+        ox, oz = (ez / n, -ex / n) if area2 > 0 else (-ez / n, ex / n)
+        rot_y = math.atan2(ox, oz)
+        mid = [(ax + bx) / 2, (az + bz) / 2]
         place(stall_objs(e['module']), {'id': f"awning-{e['blockId']}-{e['edgeIndex']}", 'module': 'stall-kit:awning', 'zone': 'bazaar',
-                                        'lod': 'L2', 'position': e['midpoint'], 'rotY': e['rotY']})
+                                        'lod': 'L2', 'position': mid, 'rotY': rot_y})
+        awning_poses.append({'id': f"awning-{e['blockId']}-{e['edgeIndex']}", 'edge': e['edge'], 'outward': [round(ox, 6), round(oz, 6)],
+                             'position': [round(mid[0], 3), round(mid[1], 3)], 'rotY': round(rot_y, 6),
+                             'recordRotYDeltaDeg': round(math.degrees(math.remainder(rot_y - e['rotY'], 2 * math.pi)), 1)})
         stall_placed += 1
+    json.dump({'source': 'recomputed from layout footprints (records dir/outward/rotY ignored)', 'awnings': awning_poses},
+              open(os.path.join(OUT, 'awning-poses.json'), 'w'), ensure_ascii=False, indent=1)
     print('stall kit placed', stall_placed)
 
 # ---------- 三穗堂实例模块（SANSUITANG=1：modules/sansuitang 细化件替代程序化 hall bld-428179901） ----------
