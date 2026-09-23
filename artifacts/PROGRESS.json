@@ -8,7 +8,7 @@
       "status": "done",
       "summary": "v7 连接段复验出图完成：58/77 实例装配（跳庙轴19），10 张图（6 眼高+2 斜俯+1 正俯标注+1 bonus 含庙轴），FINDINGS.md 给出空档/穿插/浮空/无 group 3 件结论与 4 项待拍板事项",
       "artifacts": ["artifacts/f1-review/FINDINGS.md", "artifacts/f1-review/RESULT.json", "artifacts/f1-review/f1-geometry.json", "artifacts/f1-review/f1-shots.json", "artifacts/f1-review/*.png", "artifacts/f1-review/f1_assemble_shoot.py"],
-      "commits": []
+      "commits": ["83278e5a"]
     },
     "F2": {
       "status": "blocked_on_lead",

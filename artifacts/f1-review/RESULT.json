@@ -10,7 +10,7 @@
     "Blender 4.5.1 RC 渲染起步偶发 segfault/MEM_freeN 崩溃，脚本已用合法几何+foreach_get 规避，F1_ONLY 单图重渲跑通"
   ],
   "blockers": [],
-  "commits": ["见 PROGRESS.json / git log（F1 单独提交）"],
+  "commits": ["83278e5a"],
   "numbers": {
     "v7InstancesTotal": 77,
     "placedNonTemple": 58,
