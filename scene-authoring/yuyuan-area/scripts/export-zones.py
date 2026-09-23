@@ -24,7 +24,9 @@ def is_rockery_obj(o):
 #                             outerBuilding 占位）+ INST-bazaar 全部实例（店屋 shop-*、摊位/长凳/檐棚 stall-kit）+
 #                             FOOD-bazaar 全部（食品车）；
 #   part 2  zone-bazaar-2.glb 大楼：ZONE-bazaar 里 kind == 'bazaarBlock' 的 16 座大楼体块
-#                             （壁柱/窗组/檐口/屋面已并进每栋单 mesh，即「及其附属」）。
+#                             （壁柱/窗组/檐口/屋面已并进每栋单 mesh，即「及其附属」）；
+#                             BAZAAR_TOWERS=1 时另含 SITE-bazaar 的华宝楼站点模块
+#                             （modules/bazaar-tower-kit，世界坐标 GLB，锚=面积形心）。
 # 判定只看内容：ZONE-* 对象读 kind（glTF extras 转的 custom prop，兜底解析节点名 zone|id|kind|lod）；
 # 实例/食品（INST-*/FOOD-*）一律属街面件，不看 kind。
 TEMPLE_FRONT = {'temple-shanmen', 'temple-entry-court-v3', 'yimen-pilot', 'yimen-stage', 'temple-tree-camphor'}
@@ -37,7 +39,7 @@ def kind_of(o):
     return p[2] if len(p) >= 4 else None
 
 def is_bazaar_block(o, mod, collname):
-    return collname == 'ZONE-bazaar' and kind_of(o) == 'bazaarBlock'
+    return collname == 'SITE-bazaar' or (collname == 'ZONE-bazaar' and kind_of(o) == 'bazaarBlock')
 
 def is_bazaar_street(o, mod, collname):
     return not is_bazaar_block(o, mod, collname)
@@ -49,7 +51,7 @@ PARTS = [
     ('temple', 2, ['INST-temple'], lambda o, m, c: c == 'INST-temple' and bool(m) and m not in TEMPLE_FRONT and m not in TEMPLE_REAR),
     ('temple', 3, ['INST-temple'], lambda o, m, c: c == 'INST-temple' and m in TEMPLE_REAR),
     ('bazaar', 1, ['ZONE-bazaar', 'INST-bazaar', 'FOOD-bazaar'], is_bazaar_street),
-    ('bazaar', 2, ['ZONE-bazaar'], is_bazaar_block),
+    ('bazaar', 2, ['ZONE-bazaar', 'SITE-bazaar'], is_bazaar_block),
     ('outer',  1, ['ZONE-outer', 'INST-outer'], None),
 ]
 # 分件文件名：单件区 zone-<z>.glb；多件区首件沿用 zone-<z>.glb（garden、bazaar：查看器/外部引用不换名），
@@ -185,7 +187,8 @@ for it in plan:
     export(p, objs, deny)
     b = open(p, 'rb').read()
     note = ({1: 'bazaar street level: procedural street objects + INST-bazaar (shops/stalls/awnings) + FOOD-bazaar',
-             2: 'bazaar bazaarBlock tower volumes (16 blocks, mesh incl. piers/windows/cornice/roof)'}
+             2: 'bazaar bazaarBlock tower volumes (16 blocks, mesh incl. piers/windows/cornice/roof)'
+                ' + bazaar-tower-kit site module when BAZAAR_TOWERS=1'}
             if z == 'bazaar' else None)
     entry = {'id': z, 'part': part_index, 'file': f, 'bytes': len(b), 'sha256': hashlib.sha256(b).hexdigest(),
              'collections': [c for c in colls if c in bpy.data.collections],

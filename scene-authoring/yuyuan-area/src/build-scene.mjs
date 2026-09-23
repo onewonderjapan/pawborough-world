@@ -52,6 +52,10 @@ const SANSUITANG_IDS = new Set(['bld-428179901']);
 // 占位不再程序化生成。ROCKERY_KIT=0 退回程序化占位。
 const ROCKERY_KIT = process.env.ROCKERY_KIT !== '0';
 const ROCKERY_IDS = new Set(['rockery-dajiashan', 'rockery-yulinglong']);
+// BAZAAR_TOWERS=1：华宝楼 bld-428202599 由 modules/bazaar-tower-kit 世界坐标 GLB 承担
+// （assemble.py 导入 SITE-bazaar，分区归 zone-bazaar-2）。默认关：未采用前保持程序化 bazaarBlock。
+const BAZAAR_TOWERS = process.env.BAZAAR_TOWERS === '1';
+const BAZAAR_TOWER_IDS = new Set(['bld-428202599']);
 const layout = JSON.parse(fs.readFileSync(path.join(OUT, 'layout.json'), 'utf8'));
 
 // ---------- 统一材质：合并几何 + 顶点色 ----------
@@ -909,6 +913,7 @@ for (const o of layout.objects) {
   if (GARDEN_KITS && (GARDEN_KIT_IDS.has(o.id) || (o.kind === 'tree' && o.zone === 'garden'))) { deferred.push({ id: o.id, kind: o.kind, why: 'garden-kit' }); continue; }
   if (SANSUITANG && SANSUITANG_IDS.has(o.id)) { deferred.push({ id: o.id, kind: o.kind, why: 'sansuitang-module' }); continue; }
   if (ROCKERY_KIT && ROCKERY_IDS.has(o.id)) { deferred.push({ id: o.id, kind: o.kind, why: 'rockery-kit' }); continue; }
+  if (BAZAAR_TOWERS && BAZAAR_TOWER_IDS.has(o.id)) { deferred.push({ id: o.id, kind: o.kind, why: 'bazaar-tower-module' }); continue; }
   const ud = { id: o.id, zone: o.zone, kind: o.kind, lod: o.lod };
   if (o.name) ud.name = o.name;
   if (o.trade) ud.trade = o.trade;
