@@ -1,0 +1,48 @@
+{
+  "packageId": "pawborough-w1-bazaar-stalls-20260922",
+  "stage": "S4 complete",
+  "updatedAt": "2026-09-23",
+  "stages": {
+    "S0": "worktree @33a3bd7 on work/w1-bazaar-stalls-20260922; layout read (43 stalls / 8 benches / 16 bazaarBlocks / 9 clusters); placement contract extracted from pipeline code; site-inputs.json written",
+    "S1": "stall-steam.glb built: counter 1.6x0.7x0.9 + display-case unit (shelf face 1.16 / cap top 1.31) + tray face 1.01 + rear shelf on poles + spare steamer baskets + cream canvas awning front 2.2 + socket empties socket_tray/socket_steamer/socket_case; 364 tris",
+    "S2": "stall-grill.glb (416 tris: steel grill box top 1.13 + hood + chimney + skewer rack + wine canvas), stall-drink.glb (460 tris: glass-front cabinet 0.9w alpha 0.25, cup shelf face 1.31, kettle stack, indigo canvas, counter 0.8 deep), bench.glb (72 tris, 1.6x0.45x0.5)",
+    "S3": "awning strip generator: 16 per-edge GLBs, wall 2.7215 -> front 2.4 @15deg, projection 1.2, scallop 0.5m, iron brackets 1.5m spacing (2 per 3m), canvas round-robin wine/indigo/cream; awning-placements.json with midpoint/dir/rotY/outward/lenM",
+    "S4": "placements.json (43 stalls + 8 benches, collision boxes, extras.slots) + tests 18/18 PASS + validator 20/20 PASS 0 errors 0 warnings + reimport 20/20 allOk + renders blank-guard 0 blank + mock-row socket world checks 4/4 err=0.0"
+  },
+  "actuals": {
+    "tris": {"stall-steam": 364, "stall-grill": 416, "stall-drink": 460, "bench": 72, "awningPerMetre": "24.3-30.6"},
+    "budget": {"stallMax": 1500, "benchMax": 300, "awningPerMetreMax": 120},
+    "glbBytes": {"stall-steam": 30836, "stall-grill": 38856, "stall-drink": 40192, "bench": 7352, "awnings": "6.4KB-40KB each"},
+    "blenderProcesses": "always 1, -t 4",
+    "validator": "20 files, 0 errors, 0 warnings (infos: UNUSED_OBJECT/NODE_EMPTY = socket empties by design)",
+    "tests": "18/18 PASS (tests/test_bazaar_stalls.py, exit 0)"
+  },
+  "contract": {
+    "worldFrame": "GLB Y-up world = (map_x, height, map_z); instance = position(map) + R_y(rotY); verified: mock-row sockets reproduce out/food-sockets.json world positions exactly (err 0.0)",
+    "stallLocalFrame": "origin center on ground, +X lateral, +Z toward foot traffic",
+    "slotSemantics": "slot ly = mount FACE height; furniture under face owned by module; food line mounts on top (confirmed against out/food-sockets.json + FOOD inventory: food props only)"
+  },
+  "assumptions": [
+    "点心 maps to steam type per DESIGN_SPEC (stallTypes.steam='蒸煮/点心') -> steam 23 / grill 11 / drink 9",
+    "steam module carries one shared display-case unit: shelf face 1.16 (点心 case slot) + cap top exactly 1.31 (蒸煮 steamer face), plinth-supported; one GLB serves both uses with slot poses exact",
+    "canvas alternation per TYPE (steam=cream c9b893, grill=wine 8b4346, drink=indigo 536b7d) since one module GLB = one material set; types interleave inside clusters; awning strips alternate wine/indigo/cream round-robin by edge order",
+    "'16 bazaarBlock front edges' = one strip per block on its LONGEST frontEdge (primary street face); layout has 96 edges, rule yields exactly 16; all lenM>=5.3 so <1.5m fallback never triggered",
+    "'one awning strip module' = one parametric builder producing 16 per-edge GLBs at exact length (no instance scaling: scallops/bracket counts would distort); lead places each with placements from awning-placements.json",
+    "awning outward = edge normal away from block footprint centroid; rotY = atan2 consistent with dir+outward",
+    "stall collision = one box 2.0x0.7 h2.2 (counter + poles + awning front drop); bench box 1.6x0.45 h0.5; awnings no collision (low edge 2.4 unreachable)",
+    "drink counter 0.8 deep (spec only fixes steam counter 1.6x0.7x0.9) so the 0.9-wide cabinet clears the front tray slot",
+    "no textures/PIL maps: constant-color PBR only -> no map-authoring.json"
+  ],
+  "fixesDuringBuild": [
+    "box rotation helper typo (cy0)",
+    "stall valance row-length mismatch",
+    "awning bracket arm rotation -75deg -> +15deg (arm axis pointed wrong) + wall plate resize",
+    "reimport sha loop iter sentinel f -> b''",
+    "render foreach_get needs float buffer",
+    "mock-row socket compare: undo row offset (+cz) and compare height vs want[1]",
+    "rear shelf was floating: moved onto pole line z-0.60 with pole cleats",
+    "steam case plinth 0.90-0.98 added (was floating 8cm)",
+    "grill chimney dropped to meet hood"
+  ],
+  "next": "stop per stopCondition"
+}

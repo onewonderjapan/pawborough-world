@@ -1,0 +1,34 @@
+{
+ "packageId": "pawborough-w1-bazaar-stalls-20260922",
+ "generatedBy": "build_bazaar_stalls.py",
+ "files": {
+  "stall-steam.glb": {
+   "tris": 364,
+   "bytes": 30836,
+   "budget": 1500,
+   "budgetOk": true,
+   "sha256": "6213d1f7440cce9ef173aec44f3e9f99aa1dfdafbf7eebd82e6da2c882e8c3b0"
+  },
+  "stall-grill.glb": {
+   "tris": 416,
+   "bytes": 38856,
+   "budget": 1500,
+   "budgetOk": true,
+   "sha256": "a83eb0171e391ad7ac921074b5064cfe0f12ea3456fe38e8d6ba492476a3bedf"
+  },
+  "stall-drink.glb": {
+   "tris": 460,
+   "bytes": 40192,
+   "budget": 1500,
+   "budgetOk": true,
+   "sha256": "665eaf7e85b690052a25a53917a99f7c69ca79d0e0fcc1655bb7a1cb087cae0b"
+  },
+  "bench.glb": {
+   "tris": 72,
+   "bytes": 7352,
+   "budget": 300,
+   "budgetOk": true,
+   "sha256": "e174de4b2cda416e0b7ce09017d86d54a73aa2f545e9e37636b45b90fcfa0a19"
+  }
+ }
+}

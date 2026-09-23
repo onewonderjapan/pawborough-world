@@ -1,0 +1,2265 @@
+{
+ "packageId": "pawborough-w1-bazaar-stalls-20260922",
+ "generatedBy": "build_bazaar_stalls.py",
+ "sourceLayout": "/home/baibai/work/onewonderjapan/pawborough-world/scene-authoring/yuyuan-area/baseline/layout.json",
+ "contract": {
+  "worldFrame": "GLB Y-up world = (map_x, height, map_z); placement = position(map) + R_y(rotY)",
+  "stallLocalFrame": "origin center on ground, +X lateral, +Z toward foot traffic",
+  "slotSemantics": "extras.slots reproduced from frozen layout; mount faces owned by module furniture; empties socket_* carry the exact local offsets",
+  "collision": "stall box + bench box; awnings unreachable"
+ },
+ "modules": {
+  "stall-steam.glb": {
+   "tris": 364,
+   "bytes": 30836,
+   "budget": 1500,
+   "budgetOk": true,
+   "sha256": "6213d1f7440cce9ef173aec44f3e9f99aa1dfdafbf7eebd82e6da2c882e8c3b0"
+  },
+  "stall-grill.glb": {
+   "tris": 416,
+   "bytes": 38856,
+   "budget": 1500,
+   "budgetOk": true,
+   "sha256": "a83eb0171e391ad7ac921074b5064cfe0f12ea3456fe38e8d6ba492476a3bedf"
+  },
+  "stall-drink.glb": {
+   "tris": 460,
+   "bytes": 40192,
+   "budget": 1500,
+   "budgetOk": true,
+   "sha256": "665eaf7e85b690052a25a53917a99f7c69ca79d0e0fcc1655bb7a1cb087cae0b"
+  },
+  "bench.glb": {
+   "tris": 72,
+   "bytes": 7352,
+   "budget": 300,
+   "budgetOk": true,
+   "sha256": "e174de4b2cda416e0b7ce09017d86d54a73aa2f545e9e37636b45b90fcfa0a19"
+  }
+ },
+ "counts": {
+  "stalls": 43,
+  "benches": 8
+ },
+ "stalls": [
+  {
+   "id": "stall-1",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -129.1995593303458,
+    21.917778198418837
+   ],
+   "rotY": 0.1047945169428108,
+   "height": 2.5,
+   "cluster": 1,
+   "foodUse": "蒸煮",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "steamer",
+      "lx": -0.45,
+      "ly": 1.31,
+      "lz": 0,
+      "sizeM": [
+       0.42,
+       0.42
+      ],
+      "purpose": "steamer-basket-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-2",
+   "kind": "stall",
+   "type": "grill",
+   "module": "stall-grill.glb",
+   "position": [
+    -131.884747340542,
+    22.20020579958175
+   ],
+   "rotY": 0.1047945169428108,
+   "height": 2.5,
+   "cluster": 1,
+   "foodUse": "烤制",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "grill",
+      "lx": -0.45,
+      "ly": 1.13,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.36
+      ],
+      "purpose": "grill-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-3",
+   "kind": "stall",
+   "type": "drink",
+   "module": "stall-drink.glb",
+   "position": [
+    -134.56993535073818,
+    22.482633400744657
+   ],
+   "rotY": 0.1047945169428108,
+   "height": 2.5,
+   "cluster": 1,
+   "foodUse": "饮品",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0,
+      "ly": 1.01,
+      "lz": 0.1,
+      "sizeM": [
+       0.55,
+       0.4
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "cup",
+      "lx": -0.5,
+      "ly": 1.31,
+      "lz": -0.25,
+      "sizeM": [
+       0.3,
+       0.3
+      ],
+      "purpose": "cup-display"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-4",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -137.25512336093436,
+    22.76506100190757
+   ],
+   "rotY": 0.1047945169428108,
+   "height": 2.5,
+   "cluster": 1,
+   "foodUse": "点心",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "case",
+      "lx": -0.45,
+      "ly": 1.16,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.32
+      ],
+      "purpose": "pastry-case-display"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-5",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -139.94031137113055,
+    23.04748860307048
+   ],
+   "rotY": 0.1047945169428108,
+   "height": 2.5,
+   "cluster": 1,
+   "foodUse": "蒸煮",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "steamer",
+      "lx": -0.45,
+      "ly": 1.31,
+      "lz": 0,
+      "sizeM": [
+       0.42,
+       0.42
+      ],
+      "purpose": "steamer-basket-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-6",
+   "kind": "stall",
+   "type": "grill",
+   "module": "stall-grill.glb",
+   "position": [
+    -142.62549938132673,
+    23.329916204233392
+   ],
+   "rotY": 0.1047945169428108,
+   "height": 2.5,
+   "cluster": 1,
+   "foodUse": "烤制",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "grill",
+      "lx": -0.45,
+      "ly": 1.13,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.36
+      ],
+      "purpose": "grill-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-8",
+   "kind": "stall",
+   "type": "grill",
+   "module": "stall-grill.glb",
+   "position": [
+    -165.17123145284012,
+    25.677701632553184
+   ],
+   "rotY": 0.10070349172162404,
+   "height": 2.5,
+   "cluster": 2,
+   "foodUse": "烤制",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "grill",
+      "lx": -0.45,
+      "ly": 1.13,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.36
+      ],
+      "purpose": "grill-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-9",
+   "kind": "stall",
+   "type": "drink",
+   "module": "stall-drink.glb",
+   "position": [
+    -172.0347474873762,
+    26.370406681076222
+   ],
+   "rotY": 0.10049885507745583,
+   "height": 2.5,
+   "cluster": 2,
+   "foodUse": "饮品",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0,
+      "ly": 1.01,
+      "lz": 0.1,
+      "sizeM": [
+       0.55,
+       0.4
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "cup",
+      "lx": -0.5,
+      "ly": 1.31,
+      "lz": -0.25,
+      "sizeM": [
+       0.3,
+       0.3
+      ],
+      "purpose": "cup-display"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-10",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -174.72112393285636,
+    26.64129705220326
+   ],
+   "rotY": 0.10049885507745583,
+   "height": 2.5,
+   "cluster": 2,
+   "foodUse": "点心",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "case",
+      "lx": -0.45,
+      "ly": 1.16,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.32
+      ],
+      "purpose": "pastry-case-display"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-11",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -177.40750037833652,
+    26.91218742333029
+   ],
+   "rotY": 0.10049885507745583,
+   "height": 2.5,
+   "cluster": 2,
+   "foodUse": "蒸煮",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "steamer",
+      "lx": -0.45,
+      "ly": 1.31,
+      "lz": 0,
+      "sizeM": [
+       0.42,
+       0.42
+      ],
+      "purpose": "steamer-basket-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-12",
+   "kind": "stall",
+   "type": "grill",
+   "module": "stall-grill.glb",
+   "position": [
+    -180.0938768238167,
+    27.18307779445733
+   ],
+   "rotY": 0.10049885507745583,
+   "height": 2.5,
+   "cluster": 2,
+   "foodUse": "烤制",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "grill",
+      "lx": -0.45,
+      "ly": 1.13,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.36
+      ],
+      "purpose": "grill-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-13",
+   "kind": "stall",
+   "type": "drink",
+   "module": "stall-drink.glb",
+   "position": [
+    -182.78025326929685,
+    27.453968165584367
+   ],
+   "rotY": 0.10049885507745583,
+   "height": 2.5,
+   "cluster": 2,
+   "foodUse": "饮品",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0,
+      "ly": 1.01,
+      "lz": 0.1,
+      "sizeM": [
+       0.55,
+       0.4
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "cup",
+      "lx": -0.5,
+      "ly": 1.31,
+      "lz": -0.25,
+      "sizeM": [
+       0.3,
+       0.3
+      ],
+      "purpose": "cup-display"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-15",
+   "kind": "stall",
+   "type": "drink",
+   "module": "stall-drink.glb",
+   "position": [
+    -214.71828434333884,
+    30.67455368898357
+   ],
+   "rotY": 0.10049885507745583,
+   "height": 2.5,
+   "cluster": 3,
+   "foodUse": "饮品",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0,
+      "ly": 1.01,
+      "lz": 0.1,
+      "sizeM": [
+       0.55,
+       0.4
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "cup",
+      "lx": -0.5,
+      "ly": 1.31,
+      "lz": -0.25,
+      "sizeM": [
+       0.3,
+       0.3
+      ],
+      "purpose": "cup-display"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-16",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -217.404478659194,
+    30.94538643422369
+   ],
+   "rotY": 0.10047518523290565,
+   "height": 2.5,
+   "cluster": 3,
+   "foodUse": "点心",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "case",
+      "lx": -0.45,
+      "ly": 1.16,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.32
+      ],
+      "purpose": "pastry-case-display"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-17",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -212.3303941695787,
+    30.433762247981765
+   ],
+   "rotY": 0.10049885507745583,
+   "height": 2.5,
+   "cluster": 3,
+   "foodUse": "蒸煮",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "steamer",
+      "lx": -0.45,
+      "ly": 1.31,
+      "lz": 0,
+      "sizeM": [
+       0.42,
+       0.42
+      ],
+      "purpose": "steamer-basket-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-18",
+   "kind": "stall",
+   "type": "grill",
+   "module": "stall-grill.glb",
+   "position": [
+    -219.7923745317812,
+    31.186121354168836
+   ],
+   "rotY": 0.10047518523290565,
+   "height": 2.5,
+   "cluster": 3,
+   "foodUse": "烤制",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "grill",
+      "lx": -0.45,
+      "ly": 1.13,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.36
+      ],
+      "purpose": "grill-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-19",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -272.4357038457625,
+    -250.3524732427818
+   ],
+   "rotY": -1.43052732826393,
+   "height": 2.5,
+   "cluster": 4,
+   "foodUse": "点心",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "case",
+      "lx": -0.45,
+      "ly": 1.16,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.32
+      ],
+      "purpose": "pastry-case-display"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-20",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -272.0582182599127,
+    -247.67899149934766
+   ],
+   "rotY": -1.43052732826393,
+   "height": 2.5,
+   "cluster": 4,
+   "foodUse": "蒸煮",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "steamer",
+      "lx": -0.45,
+      "ly": 1.31,
+      "lz": 0,
+      "sizeM": [
+       0.42,
+       0.42
+      ],
+      "purpose": "steamer-basket-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-21",
+   "kind": "stall",
+   "type": "grill",
+   "module": "stall-grill.glb",
+   "position": [
+    -271.68073267406294,
+    -245.0055097559135
+   ],
+   "rotY": -1.43052732826393,
+   "height": 2.5,
+   "cluster": 4,
+   "foodUse": "烤制",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "grill",
+      "lx": -0.45,
+      "ly": 1.13,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.36
+      ],
+      "purpose": "grill-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-22",
+   "kind": "stall",
+   "type": "drink",
+   "module": "stall-drink.glb",
+   "position": [
+    -271.30324708821314,
+    -242.33202801247936
+   ],
+   "rotY": -1.43052732826393,
+   "height": 2.5,
+   "cluster": 4,
+   "foodUse": "饮品",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0,
+      "ly": 1.01,
+      "lz": 0.1,
+      "sizeM": [
+       0.55,
+       0.4
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "cup",
+      "lx": -0.5,
+      "ly": 1.31,
+      "lz": -0.25,
+      "sizeM": [
+       0.3,
+       0.3
+      ],
+      "purpose": "cup-display"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-23",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -270.92576150236334,
+    -239.65854626904522
+   ],
+   "rotY": -1.43052732826393,
+   "height": 2.5,
+   "cluster": 4,
+   "foodUse": "点心",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "case",
+      "lx": -0.45,
+      "ly": 1.16,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.32
+      ],
+      "purpose": "pastry-case-display"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-24",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -270.54827591651355,
+    -236.98506452561108
+   ],
+   "rotY": -1.43052732826393,
+   "height": 2.5,
+   "cluster": 4,
+   "foodUse": "蒸煮",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "steamer",
+      "lx": -0.45,
+      "ly": 1.31,
+      "lz": 0,
+      "sizeM": [
+       0.42,
+       0.42
+      ],
+      "purpose": "steamer-basket-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-26",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -264.77414454777426,
+    -196.09069563530372
+   ],
+   "rotY": -1.43052732826393,
+   "height": 2.5,
+   "cluster": 5,
+   "foodUse": "蒸煮",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "steamer",
+      "lx": -0.45,
+      "ly": 1.31,
+      "lz": 0,
+      "sizeM": [
+       0.42,
+       0.42
+      ],
+      "purpose": "steamer-basket-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-27",
+   "kind": "stall",
+   "type": "grill",
+   "module": "stall-grill.glb",
+   "position": [
+    -263.78537169662064,
+    -189.3091482851921
+   ],
+   "rotY": -1.421882087294035,
+   "height": 2.5,
+   "cluster": 5,
+   "foodUse": "烤制",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "grill",
+      "lx": -0.45,
+      "ly": 1.13,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.36
+      ],
+      "purpose": "grill-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-28",
+   "kind": "stall",
+   "type": "drink",
+   "module": "stall-drink.glb",
+   "position": [
+    -263.3847876113641,
+    -186.63902986260496
+   ],
+   "rotY": -1.421882087294035,
+   "height": 2.5,
+   "cluster": 5,
+   "foodUse": "饮品",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0,
+      "ly": 1.01,
+      "lz": 0.1,
+      "sizeM": [
+       0.55,
+       0.4
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "cup",
+      "lx": -0.5,
+      "ly": 1.31,
+      "lz": -0.25,
+      "sizeM": [
+       0.3,
+       0.3
+      ],
+      "purpose": "cup-display"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-29",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -262.98420352610765,
+    -183.96891144001782
+   ],
+   "rotY": -1.421882087294035,
+   "height": 2.5,
+   "cluster": 5,
+   "foodUse": "点心",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "case",
+      "lx": -0.45,
+      "ly": 1.16,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.32
+      ],
+      "purpose": "pastry-case-display"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-30",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -262.5836194408511,
+    -181.29879301743068
+   ],
+   "rotY": -1.421882087294035,
+   "height": 2.5,
+   "cluster": 5,
+   "foodUse": "蒸煮",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "steamer",
+      "lx": -0.45,
+      "ly": 1.31,
+      "lz": 0,
+      "sizeM": [
+       0.42,
+       0.42
+      ],
+      "purpose": "steamer-basket-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-32",
+   "kind": "stall",
+   "type": "grill",
+   "module": "stall-grill.glb",
+   "position": [
+    -259.4808889922158,
+    -163.63067913730612
+   ],
+   "rotY": -1.3743962317196141,
+   "height": 2.5,
+   "cluster": 6,
+   "foodUse": "烤制",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "grill",
+      "lx": -0.45,
+      "ly": 1.13,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.36
+      ],
+      "purpose": "grill-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-33",
+   "kind": "stall",
+   "type": "drink",
+   "module": "stall-drink.glb",
+   "position": [
+    -258.9540112497757,
+    -160.9825855127299
+   ],
+   "rotY": -1.3743962317196141,
+   "height": 2.5,
+   "cluster": 6,
+   "foodUse": "饮品",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0,
+      "ly": 1.01,
+      "lz": 0.1,
+      "sizeM": [
+       0.55,
+       0.4
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "cup",
+      "lx": -0.5,
+      "ly": 1.31,
+      "lz": -0.25,
+      "sizeM": [
+       0.3,
+       0.3
+      ],
+      "purpose": "cup-display"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-34",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -257.27881118187497,
+    -152.3873772971835
+   ],
+   "rotY": -1.3849606405130954,
+   "height": 2.5,
+   "cluster": 6,
+   "foodUse": "点心",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "case",
+      "lx": -0.45,
+      "ly": 1.16,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.32
+      ],
+      "purpose": "pastry-case-display"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-35",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -258.48567547871784,
+    -158.62872451310662
+   ],
+   "rotY": -1.3743962317196141,
+   "height": 2.5,
+   "cluster": 6,
+   "foodUse": "蒸煮",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "steamer",
+      "lx": -0.45,
+      "ly": 1.31,
+      "lz": 0,
+      "sizeM": [
+       0.42,
+       0.42
+      ],
+      "purpose": "steamer-basket-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-36",
+   "kind": "stall",
+   "type": "grill",
+   "module": "stall-grill.glb",
+   "position": [
+    -256.8353682325755,
+    -150.02870005120081
+   ],
+   "rotY": -1.3849606405130954,
+   "height": 2.5,
+   "cluster": 6,
+   "foodUse": "烤制",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "grill",
+      "lx": -0.45,
+      "ly": 1.13,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.36
+      ],
+      "purpose": "grill-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-38",
+   "kind": "stall",
+   "type": "drink",
+   "module": "stall-drink.glb",
+   "position": [
+    -222.02550200588465,
+    26.64612895762158
+   ],
+   "rotY": -1.3624728777701394,
+   "height": 2.5,
+   "cluster": 7,
+   "foodUse": "饮品",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0,
+      "ly": 1.01,
+      "lz": 0.1,
+      "sizeM": [
+       0.55,
+       0.4
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "cup",
+      "lx": -0.5,
+      "ly": 1.31,
+      "lz": -0.25,
+      "sizeM": [
+       0.3,
+       0.3
+      ],
+      "purpose": "cup-display"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-39",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -221.4670883056968,
+    29.28775234853907
+   ],
+   "rotY": -1.3624728777701394,
+   "height": 2.5,
+   "cluster": 7,
+   "foodUse": "点心",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "case",
+      "lx": -0.45,
+      "ly": 1.16,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.32
+      ],
+      "purpose": "pastry-case-display"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-40",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -222.52186973938498,
+    24.298019276805984
+   ],
+   "rotY": -1.3624728777701394,
+   "height": 2.5,
+   "cluster": 7,
+   "foodUse": "蒸煮",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "steamer",
+      "lx": -0.45,
+      "ly": 1.31,
+      "lz": 0,
+      "sizeM": [
+       0.42,
+       0.42
+      ],
+      "purpose": "steamer-basket-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-41",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -185.08323247992564,
+    -87.75867312936943
+   ],
+   "rotY": 0.18788231212971668,
+   "height": 2.5,
+   "cluster": 8,
+   "foodUse": "点心",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "case",
+      "lx": -0.45,
+      "ly": 1.16,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.32
+      ],
+      "purpose": "pastry-case-display"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-42",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -182.43074714186037,
+    -88.2629761447766
+   ],
+   "rotY": 0.18788231212971668,
+   "height": 2.5,
+   "cluster": 8,
+   "foodUse": "蒸煮",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "steamer",
+      "lx": -0.45,
+      "ly": 1.31,
+      "lz": 0,
+      "sizeM": [
+       0.42,
+       0.42
+      ],
+      "purpose": "steamer-basket-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-43",
+   "kind": "stall",
+   "type": "grill",
+   "module": "stall-grill.glb",
+   "position": [
+    -179.77826180379512,
+    -88.76727916018376
+   ],
+   "rotY": 0.18788231212971668,
+   "height": 2.5,
+   "cluster": 8,
+   "foodUse": "烤制",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "grill",
+      "lx": -0.45,
+      "ly": 1.13,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.36
+      ],
+      "purpose": "grill-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-44",
+   "kind": "stall",
+   "type": "drink",
+   "module": "stall-drink.glb",
+   "position": [
+    -177.12577646572984,
+    -89.27158217559094
+   ],
+   "rotY": 0.18788231212971668,
+   "height": 2.5,
+   "cluster": 8,
+   "foodUse": "饮品",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0,
+      "ly": 1.01,
+      "lz": 0.1,
+      "sizeM": [
+       0.55,
+       0.4
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "cup",
+      "lx": -0.5,
+      "ly": 1.31,
+      "lz": -0.25,
+      "sizeM": [
+       0.3,
+       0.3
+      ],
+      "purpose": "cup-display"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-45",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -174.47329112766457,
+    -89.7758851909981
+   ],
+   "rotY": 0.18788231212971668,
+   "height": 2.5,
+   "cluster": 8,
+   "foodUse": "点心",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "case",
+      "lx": -0.45,
+      "ly": 1.16,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.32
+      ],
+      "purpose": "pastry-case-display"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-46",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -171.8208057895993,
+    -90.28018820640527
+   ],
+   "rotY": 0.18788231212971668,
+   "height": 2.5,
+   "cluster": 8,
+   "foodUse": "蒸煮",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "steamer",
+      "lx": -0.45,
+      "ly": 1.31,
+      "lz": 0,
+      "sizeM": [
+       0.42,
+       0.42
+      ],
+      "purpose": "steamer-basket-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-47",
+   "kind": "stall",
+   "type": "steam",
+   "module": "stall-steam.glb",
+   "position": [
+    -171.32247034216508,
+    -101.37702898090566
+   ],
+   "rotY": -2.9536624599073957,
+   "height": 2.5,
+   "cluster": 9,
+   "foodUse": "蒸煮",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "steamer",
+      "lx": -0.45,
+      "ly": 1.31,
+      "lz": 0,
+      "sizeM": [
+       0.42,
+       0.42
+      ],
+      "purpose": "steamer-basket-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  },
+  {
+   "id": "stall-48",
+   "kind": "stall",
+   "type": "grill",
+   "module": "stall-grill.glb",
+   "position": [
+    -168.67000915395178,
+    -101.88145900085114
+   ],
+   "rotY": -2.9536624599073957,
+   "height": 2.5,
+   "cluster": 9,
+   "foodUse": "烤制",
+   "extras": {
+    "slots": [
+     {
+      "slot": "tray",
+      "lx": 0.55,
+      "ly": 1.01,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.38
+      ],
+      "purpose": "food-tray-display"
+     },
+     {
+      "slot": "grill",
+      "lx": -0.45,
+      "ly": 1.13,
+      "lz": 0,
+      "sizeM": [
+       0.5,
+       0.36
+      ],
+      "purpose": "grill-mount"
+     }
+    ]
+   },
+   "collision": {
+    "size": [
+     2.0,
+     0.7
+    ],
+    "height": 2.2,
+    "note": "stall box: counter + poles + awning front drop; awnings unreachable above 2.2"
+   }
+  }
+ ],
+ "benches": [
+  {
+   "id": "stall-7",
+   "kind": "bench",
+   "module": "bench.glb",
+   "position": [
+    -146.90190991608364,
+    23.779708309789136
+   ],
+   "rotY": 0.1047945169428108,
+   "height": 0.5,
+   "cluster": 1,
+   "collision": {
+    "size": [
+     1.6,
+     0.45
+    ],
+    "height": 0.5
+   }
+  },
+  {
+   "id": "stall-14",
+   "kind": "bench",
+   "module": "bench.glb",
+   "position": [
+    -185.466629714777,
+    27.724858536711398
+   ],
+   "rotY": 0.10049885507745583,
+   "height": 0.5,
+   "cluster": 2,
+   "collision": {
+    "size": [
+     1.6,
+     0.45
+    ],
+    "height": 0.5
+   }
+  },
+  {
+   "id": "stall-25",
+   "kind": "bench",
+   "module": "bench.glb",
+   "position": [
+    -269.94709516867874,
+    -232.72729730458636
+   ],
+   "rotY": -1.43052732826393,
+   "height": 0.5,
+   "cluster": 4,
+   "collision": {
+    "size": [
+     1.6,
+     0.45
+    ],
+    "height": 0.5
+   }
+  },
+  {
+   "id": "stall-31",
+   "kind": "bench",
+   "module": "bench.glb",
+   "position": [
+    -262.15336246039044,
+    -178.4308880450223
+   ],
+   "rotY": -1.421882087294035,
+   "height": 0.5,
+   "cluster": 5,
+   "collision": {
+    "size": [
+     1.6,
+     0.45
+    ],
+    "height": 0.5
+   }
+  },
+  {
+   "id": "stall-37",
+   "kind": "bench",
+   "module": "bench.glb",
+   "position": [
+    -256.29954133550524,
+    -147.17863171230505
+   ],
+   "rotY": -1.3849606405130954,
+   "height": 0.5,
+   "cluster": 6,
+   "collision": {
+    "size": [
+     1.6,
+     0.45
+    ],
+    "height": 0.5
+   }
+  },
+  {
+   "id": "stall-49",
+   "kind": "bench",
+   "module": "bench.glb",
+   "position": [
+    -126.81272554350473,
+    21.666731441829583
+   ],
+   "rotY": 0.10479451694280902,
+   "height": 0.5,
+   "cluster": 1,
+   "collision": {
+    "size": [
+     1.6,
+     0.45
+    ],
+    "height": 0.5
+   }
+  },
+  {
+   "id": "stall-50",
+   "kind": "bench",
+   "module": "bench.glb",
+   "position": [
+    -126.01711428122438,
+    21.583049189633165
+   ],
+   "rotY": 0.10479451694280902,
+   "height": 0.5,
+   "cluster": 1,
+   "collision": {
+    "size": [
+     1.6,
+     0.45
+    ],
+    "height": 0.5
+   }
+  },
+  {
+   "id": "stall-51",
+   "kind": "bench",
+   "module": "bench.glb",
+   "position": [
+    -125.22150301894402,
+    21.499366937436747
+   ],
+   "rotY": 0.10479451694280902,
+   "height": 0.5,
+   "cluster": 1,
+   "collision": {
+    "size": [
+     1.6,
+     0.45
+    ],
+    "height": 0.5
+   }
+  }
+ ]
+}
