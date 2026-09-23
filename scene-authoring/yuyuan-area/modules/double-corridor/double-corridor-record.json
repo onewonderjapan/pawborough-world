@@ -1,0 +1,50 @@
+{
+ "id": "bld-428186469",
+ "glb": "double-corridor-bld-428186469.glb",
+ "bytes": 548448,
+ "sha256": "dd3203db841184832be1236796e900c9a0b20a09976f5df4097b0eb0ae137794",
+ "triangles": 3764,
+ "centreline": [
+  [
+   -136.6473414240626,
+   -225.9128080001561
+  ],
+  [
+   -132.44463844605866,
+   -226.46940800013505
+  ],
+  [
+   -131.31661964084344,
+   -228.38411200016537
+  ],
+  [
+   -127.95160151547384,
+   -228.70137400011578
+  ],
+  [
+   -127.03300392223352,
+   -230.7273980000628
+  ]
+ ],
+ "designValues": {
+  "floorY": 0.12,
+  "eaveY": 2.85,
+  "ridgeY": 3.55,
+  "overhang": 0.5,
+  "sideOffset": 1.5,
+  "colR": 0.1,
+  "colSpacing": 2.5,
+  "wallT": 0.24,
+  "wallTop": 3.3,
+  "win": [
+   1.1,
+   0.9
+  ],
+  "sill": 0.9,
+  "railH": 0.45,
+  "fascia": 0.16
+ },
+ "columns": 10,
+ "interpretation": "OSM way 428186469 is the closed building outline; centreline = midpoints of paired north/south outline vertices",
+ "coordinates": "site module, GLB (x, y, z) = (map x, height, map z)"
+}

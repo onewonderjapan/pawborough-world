@@ -4,7 +4,8 @@
 import bpy, json, math, os, sys
 GARDEN_PAVILIONS = ['bld-428179924', 'bld-428186467', 'bld-428196085', 'bld-428196091', 'bld-428196098']
 GARDEN_CORRIDORS = {'bld-553893874': 'corridor-bld-553893874.glb', 'bld-428179906': 'ring-corridor-bld-428179906.glb',
-                    'bld-428179920': 'waterside-gallery-bld-428179920.glb'}
+                    'bld-428179920': 'waterside-gallery-bld-428179920.glb',
+                    'bld-428186469': 'double-corridor-bld-428186469.glb'}   # 复廊: lead build, modules/double-corridor
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, os.environ.get('OUT_DIR', 'out'))
@@ -186,7 +187,7 @@ for inst in LAYOUT['instances']:
 # ---------- 豫园套件（GARDEN_KITS=1：攒尖亭 5 座、园廊 3 条 + 听涛阁水廊、树 46 棵） ----------
 # 亭：实例模块；位置/朝向由主控从冻结布局重算（footprint 形心 + facade.dir），不用套件自带 placements
 #（2026-09-23 复验发现其 placements.json 偏离 40–96 m）。rotY = atan2(dx, dz) 使本地 +Z 指向 facade.dir。
-# 廊：世界坐标站点模块（同 garden-kit），复廊 bld-428186469 两轮返修未过，暂不接入（保留程序化占位）。
+# 廊：世界坐标站点模块（同 garden-kit）。复廊 bld-428186469 由主控 modules/double-corridor 重建（OSM 为建筑外轮廓而非中心线）。
 # 树：tree-kit 的 tree-placements.json（含比例与 9 棵避让移位记录）。
 garden_kit_placed = 0
 if os.environ.get('GARDEN_KITS') == '1':

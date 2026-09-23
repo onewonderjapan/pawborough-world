@@ -1,8 +1,6 @@
 {
  "note": "GLBs staged into out-garden-kits/ from lead-reviewed deliveries (2026-09-23); assemble.py GARDEN_KITS=1 reads them. Pavilion positions are recomputed from the frozen layout (footprint centroid + facade.dir), NOT from modules/pavilion-kit placements.json, which is off by 40-96 m.",
- "excluded": {
-  "bld-428186469": "复廊: two rework rounds failed visual review; procedural placeholder kept"
- },
+ "excluded": {},
  "files": {
   "corridor-bld-553893874.glb": "91d3309854d5cdf94ee01b4a6ca013a3606d14de7d2428b76046dc6f22904e2b",
   "pavilion-bld-428179924/model.glb": "369565c5e058484020d7547b56144e810039a69fd8d348d69dabd9360d166b89",
@@ -17,6 +15,10 @@
   "tk-osmanthus-small.glb": "f7135f68393baf998308be6c0bf11e1433e6937c37c1a7726faec72fea609167",
   "tk-willow-large.glb": "e73d5a888c9d5804a6b90fef013c9fd29c7fcf46ba9cd4781ab28a7c56da7b09",
   "tk-willow-small.glb": "21bc1a0c5be8f0a8dcc1e0e1260dddb8198b167a173b811989043a70bc4653d4",
-  "waterside-gallery-bld-428179920.glb": "e179960ae98720d529d5c0f8eed8f5022665199a6fbf86087b8717429a611118"
+  "waterside-gallery-bld-428179920.glb": "e179960ae98720d529d5c0f8eed8f5022665199a6fbf86087b8717429a611118",
+  "double-corridor-bld-428186469.glb": "dd3203db841184832be1236796e900c9a0b20a09976f5df4097b0eb0ae137794"
+ },
+ "leadBuilt": {
+  "double-corridor-bld-428186469.glb": "modules/double-corridor/build_double_corridor.py (lead, 2026-09-23)"
  }
 }
