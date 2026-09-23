@@ -1,0 +1,37 @@
+{
+ "packageId": "pawborough-w1-corridor-kit-r1-20260923",
+ "parentPackage": "pawborough-w1-corridor-kit-20260922",
+ "title": "主控复验返修：复廊 bld-428186469 屋面重构 + along 机位修正",
+ "authority": "R1-FIXES.md（2026-09-23 09:20，唯一权威）",
+ "executor": "GLM-Flash 施工担当 via ZCode",
+ "worktree": "/home/baibai/outbox/pawborough-w1-corridor-kit-20260922/workspace（原分支 work/w1-corridor-kit-20260922 继续提交，未新开分支）",
+ "stages": [
+  {"stage": "recon", "done": true, "note": "读取 R1-FIXES/DESIGN_SPEC/原 DELIVERY；提取 469 折线（10 顶点去重，段长 1.86–5.09 m，转角 50.5°–97.4°，>60° 共 5 点：v0 90.9/v3 60.4/v4 79.2/v5 97.4/v9 89.7）；复核旧渲染确认评审所见（每顶点独立四坡帽+天井式内坡穿插、横梁穿檐、along 机位怼中墙）"},
+  {"stage": "fix1-roof", "done": true, "note": "build_corridor_kit.py 新增 build_roof_double()：逐跨闭合双坡体（檐 ±2.85 y2.85/脊=折线 y3.55/实心 0.10）；>60° 顶点两侧方切退避 1.2 m（双帽夹短跨按比例收缩）+ 过脊四坡角帽；≤60° 顶点凸侧檐线延伸 eoff·tan(θ/2)≤1.65 m 至偏移线交点斜接、凹侧方切成天沟；屋脊滚筒逐跨铺设帽区断开；瓦当沿各跨檐线；删除天井式内坡（INNER_SCALE 0.28）与逐顶点戗角帽路径"},
+  {"stage": "fix1-beam", "done": true, "note": "复廊横梁改横向：每柱位一根，长 4.6 m（2×2.2 柱列+0.2 中墙，柱外缘齐平），整体居檐口 2.85 内侧不外伸；替换原纵向枋（L+0.1 转折穿檐）。普通廊梁路径未动"},
+  {"stage": "fix1-test", "done": true, "note": "test_corridor_kit.cjs 新增断言：复廊屋脊线连续——每 0.5 m 沿折线下射（仅统计上表面，法线仰角>17°）首命中 ∈[2.85,3.9] 且 0.12 m 内命中合并后只 1 层；既有 29 断言未改"},
+  {"stage": "fix2-camera", "done": true, "note": "render_corridor_kit.py：复廊 along 机位改最长跨中部（跨内避开角帽），目标沿廊 8.5 m；机位/目标各按本站走廊法线偏 1.2 m=中墙一侧走廊中心线，机位高 y1.6；普通廊机位未动"},
+  {"stage": "iterate", "done": true, "note": "3 轮构建：r1 攒尖塔 apex 元组越界修复；r2 塔基面环序自交（两段同号檐侧在弯折处分处凸凹两侧）修复仍见 2.75 假层；r3 定性为尖塔基弦缺陷（距角点 ~1.9 m < 檐宽 2.85，弦线切入邻跨屋面下方），改为过脊四坡角帽后全绿"},
+  {"stage": "verify", "done": true, "note": "构建+重导入无 issue；Khronos validator 4×0 错；测试 30 pass/0 fail（含新增断言）；预算 19,636/45,000 tris、2,198,324/2,500,000 B"},
+  {"stage": "render", "done": true, "note": "before（上一版 GLB+本版机位）/after（本版 GLB）各 12 帧 Cycles CPU -t 4，空白帧守卫全过；接触表 + 469 前后对照条"},
+  {"stage": "deliver", "done": true, "note": "本包 artifacts/corridor-kit/ 全套；原分支提交"}
+ ],
+ "assumptions": [
+  "攒尖帽落地为过脊四坡角：返修单要求'角点加小攒尖帽只覆盖 1.2 m'；施工中发现独立尖塔式（基座四角接邻跨檐口点）基弦距角点仅 ~1.9 m，弦下三角会切入邻跨屋面下方（新断言'只命中 1 层'否决），故改为脊线以 3.55 连续过角、两侧自脊出披至两端檐口的四坡角帽，覆盖范围仍严格限于角点 1.2 m 退避区内",
+  ">60° 判定用顶点转角（两段方向夹角）：v0 90.9/v3 60.4/v4 79.2/v5 97.4/v9 89.7 共 5 处戴帽，其余 5 处（50.5–59.8°）斜接",
+  "≤60° 顶点凹侧不作真斜接：凹侧偏移线交点距角点 eoff·cot(θ/2)=4.9–6.0 m，超出相邻段长（1.86–5.09 m），几何上不可达；两坡于角点方切自然相交成天沟（天沟为中国园廊常态做法，中线射线不受影响）",
+  "双帽夹短跨（seg3 长 2.56 m）退避按比例收缩至 1.13 m，保跨中 0.3 m",
+  "新增断言的'1 层'以 0.12 m 垂直合并计：屋脊条（3.53）与屋脊（3.55）同层；只统计上表面（面法线仰角>17°）",
+  "复廊沿廊视线含 ≤2 处 ≤60° 缓弯属正常沿廊透视；before/after 同机位保证可比性",
+  "其余 3 廊（553893874/428179906/428179920）构建路径未动，GLB 与上一版逐字节相同（sha256 一致）"
+ ],
+ "artifacts": {
+  "glb": "glb/（4 只，仅 double-corridor-bld-428186469.glb 变化：3800 tris / 472,472 B）",
+  "renders": "renders/before（上一版 GLB 同机位 12 帧）/ renders/after（本版 12 帧）/ contact-sheet.jpg / contact-sheet-before.jpg / before-after-469.jpg",
+  "records": "RESULT.json, DELIVERY.md, PROGRESS.json, tests.log, corridor-kit-{catalog,collision,reimport,validator}* , manifest.json, site-inputs.json"
+ },
+ "budget": {"triangles": "19636/45000", "bytes": "2198324/2500000"},
+ "wallClock": "约 1.1h（含 3 轮构建迭代与两路渲染）",
+ "blender": "-t 4，同时 ≤2 进程（渲染 before/after 各 1）",
+ "finishedAt": "2026-09-23T11:05:00+08:00"
+}
