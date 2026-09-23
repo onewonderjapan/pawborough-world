@@ -6,7 +6,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { setupTour } from './tour.js';   // WP13：取景导览逻辑在 web/tour.js
-import { dedupeLabels } from './labels.js'; // WP13：标签去重逻辑在 web/labels.js
+import { dedupeLabels, buildLabelOccluders } from './labels.js'; // WP13：标签去重+R1遮挡剔除逻辑在 web/labels.js
 import { installWalkMode } from './walk.js';   // WP4 步行模式（默认不启用，按 ?walk=1 或「步行」按钮进入）
 
 const app = document.getElementById('app');
@@ -45,6 +45,7 @@ let allRoots = [];
 let labelsOn = true, roofsOn = true, bgOn = true, osmOn = false, resOn = false;
 let layoutData = null;
 let tourCtl = null; // WP13：取景导览控制器（web/tour.js）
+let labelOccluders = null; // WP13/R1/T2：标签遮挡剔除用碰撞盒（web/labels.js 构建），collision-* 加载后就绪
 const labelEls = new Map();
 const resMarkers = []; // {el,x,z}
 
@@ -98,6 +99,10 @@ function afterFirstPaint() {
   setZone(params.get('zone') || 'core');
   setCam(params.get('cam') || 'oblique');
   tourCtl.buildTour();
+  // WP13/R1/T2：标签遮挡剔除数据（各分区 collision 文件；与步行物理同源，懒加载失败则不剔除）
+  Promise.all(ZONES.all.map(z => fetch('/out/collision-' + z + '.json').then(r => { if (!r.ok) throw new Error('collision-' + z + ': ' + r.status); return r.json(); })))
+    .then(all => { labelOccluders = buildLabelOccluders(all.flatMap(d => d.colliders || [])); window.__labelOccluderCount = labelOccluders.length; })
+    .catch(() => { labelOccluders = null; window.__labelOccluderCount = 0; });
 }
 function loadGlb(url) { return new Promise((res, rej) => loader.load(url, g => res(g.scene), undefined, rej)); }
 async function loadZones(m) {
@@ -274,10 +279,14 @@ function drawLabels() {
     const sx = (_v.x * 0.5 + 0.5) * w, sy = (-_v.y * 0.5 + 0.5) * h;
     el.style.left = sx + 'px';
     el.style.top = sy + 'px';
-    shown.push({ el, prio: p.prio, x: sx, y: sy, dist });
+    shown.push({ el, prio: p.prio, x: sx, y: sy, dist, wpos: [p.x, 4, p.z] });
   }
-  // WP13/T2 屏幕空间去重（region > facility > note，设施标签每屏 ≤12）——逻辑在 web/labels.js
-  window.__lastLabelDedupe = dedupeLabels(shown, w, h);
+  // WP13/T2 屏幕空间去重 + R1/T2 遮挡剔除与导览机位 120m 上限 —— 逻辑在 web/labels.js
+  window.__lastLabelDedupe = dedupeLabels(shown, w, h, 12, {
+    occluders: labelOccluders,
+    cam: labelOccluders ? [camera.position.x, camera.position.y, camera.position.z] : null,
+    tourActive: !!(tourCtl && tourCtl.curTour),
+  });
   drawResiduals();
 }
 
