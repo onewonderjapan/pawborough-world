@@ -7,6 +7,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { setupTour } from './tour.js';   // WP13：取景导览逻辑在 web/tour.js
 import { dedupeLabels } from './labels.js'; // WP13：标签去重逻辑在 web/labels.js
+import { installWalkMode } from './walk.js';   // WP4 步行模式（默认不启用，按 ?walk=1 或「步行」按钮进入）
 
 const app = document.getElementById('app');
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -387,7 +388,10 @@ addEventListener('resize', () => {
   renderer.setSize(innerWidth, innerHeight);
 });
 
-renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); drawLabels(); });
+// WP4 步行模式挂钩（注入「步行/轨道」「回到锚点」控件；物理仅在进入步行时懒构建）
+const walk = installWalkMode({ scene, camera, renderer, controls, getRoots: () => allRoots, hud });
+
+renderer.setAnimationLoop(() => { controls.update(); walk?.tick(); renderer.render(scene, camera); drawLabels(); });
 
 // playwright 钩子
 window.__ready = false;

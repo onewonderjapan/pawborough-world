@@ -1,4 +1,5 @@
 > 本地接续入口与资产恢复：[2026-09-22迁移说明](docs/MIGRATION-20260922.md)。全域预览：`npm run area:serve`；原客户端：`npm run preview`。
+> v1.0 主体（2026-09-23 机主签字）：豫园区域全域候选（园、庙、商城、池带），并接上方浜中路街段及其到城隍庙山门的连接段；见 [v1.0 改账](docs/V1-REDEFINITION-20260923.md)。
 
 # Pawborough / 方浜市声
 

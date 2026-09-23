@@ -62,5 +62,29 @@ const sn = meshNames(scene).sort(), zn = [...names].sort();
 ok(`mesh-node count zones ${zn.length} == scene-areas ${sn.length}`, zn.length === sn.length);
 const dup = zn.filter((n, i) => i && n === zn[i - 1] && sn.filter(x => x === n).length < zn.filter(x => x === n).length);
 ok('no mesh node duplicated across zones', dup.length === 0, JSON.stringify([...new Set(dup)].slice(0, 5)));
+// bazaar 分件（按内容类别，非填充顺序）：zone-bazaar=街面（店屋/摊位/檐棚/面元/地面），
+// zone-bazaar-2=bazaarBlock 大楼体块。断言：恰两件、每件 ≤ cap、bazaarBlock 全在大楼件、
+// 两件无重复节点、两件 placed 三角合计 == 拆件前 bazaar.glb（assemble-food 导出的 ZONE+INST+FOOD 全量）。
+const bz = m.zones.filter(z => z.id === 'bazaar' && z.file);
+ok(`bazaar 拆成两件（现 ${bz.length} 件）`, bz.length === 2, `parts=[${bz.map(z => z.file).join(', ')}]`);
+if (bz.length === 2) {
+  const parts = bz.map(z => ({ z, buf: fs.readFileSync(path.join(OUT, z.file)), j: parseGlbJson(fs.readFileSync(path.join(OUT, z.file))) }));
+  for (const { z, buf } of parts) {
+    ok(`bazaar 分件 ${z.file} ${buf.length} ≤ cap ${m.capPerZoneBytes}`, buf.length <= m.capPerZoneBytes);
+    ok(`bazaar 分件 ${z.file} sha 与 manifest 一致`, crypto.createHash('sha256').update(buf).digest('hex') === z.sha256);
+  }
+  const kindsOf = j => new Set(meshNames(j).map(n => (n.split('|')[2] || '')));
+  const streetKinds = kindsOf(parts[0].j), towerKinds = kindsOf(parts[1].j);
+  ok(`bazaarBlock 大楼体块全在 ${parts[1].z.file}（${towerKinds.size ? '含 bazaarBlock' : '缺'}）`, towerKinds.has('bazaarBlock') && !streetKinds.has('bazaarBlock'));
+  ok(`街面件含铺装内容（facadeBay/paving/plaza）`, ['facadeBay', 'paving', 'plaza'].some(k => streetKinds.has(k)));
+  const nameCount = new Map();
+  for (const p of parts) for (const n of meshNames(p.j)) nameCount.set(n, (nameCount.get(n) || 0) + 1);
+  const dupBz = [...nameCount.entries()].filter(([, c]) => c > 1).map(([n]) => n);
+  ok('bazaar 两件无重复 mesh 节点', dupBz.length === 0, JSON.stringify(dupBz.slice(0, 5)));
+  const bzTri = parts.reduce((s, p) => s + triangleCounts(p.j).placed, 0);
+  const prePath = path.join(OUT, 'bazaar.glb');
+  const pre = fs.existsSync(prePath) ? triangleCounts(parseGlbJson(fs.readFileSync(prePath))).placed : -1;
+  ok(`bazaar 两件 placed 三角 ${bzTri} == 拆件前 bazaar.glb ${pre}`, bzTri === pre, `diff=${bzTri - pre}`);
+}
 console.log(`zone-split-test: ${pass} pass, ${fail} fail; total ${m.totalBytes} bytes in ${m.zones.filter(z => z.file).length} files`);
 process.exit(fail ? 1 : 0);

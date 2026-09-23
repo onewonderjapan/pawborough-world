@@ -1,0 +1,32 @@
+{
+  "decisionId": "v1-redefinition-20260923",
+  "decidedAt": "2026-09-23T21:00+09:00 (approx., relayed in the lead session)",
+  "owner": "机主",
+  "document": "docs/V1-REDEFINITION-20260923.md",
+  "decision": "accepted_with_amendment",
+  "ownerWords": [
+    "草案可以接受",
+    "方bang中路那边做完的街道能接过来吗？我只记得小时候住在那附近 能走到城隍庙 实际距离要看地图",
+    "我希望主体区域在城隍庙yuyuan没问题 然后需要能从方bang中路走过去那一条路也建出来"
+  ],
+  "amendment": "v1.0 includes the finished 方浜中路 street (91 m) and the 方浜中路 connecting section to the 城隍庙 gate (~128 m, existing but unreviewed in world/fangbang-temple-v7) as a fifth zone 'fangbang', walkable into the temple and on to the bazaar/garden.",
+  "measuredFacts": {
+    "mapFrame": "baseline/layout.json meta.originWgs84 [121.489, 31.2275], X east Z south",
+    "streetOriginInMap": [
+      53.5,
+      -17.4
+    ],
+    "streetMapX": [
+      54,
+      138
+    ],
+    "templeGateMap": [
+      -74.3,
+      9.7
+    ],
+    "streetWestEndToGateM": 128,
+    "bridgeWorld": "world/fangbang-temple-v7 mainStreet map x -89..286, 399 m, 62 modules, 171k tris, 790 colliders, ownerAdopted=false, manualWalkClaim=false"
+  },
+  "recordedBy": "lead (Claude)",
+  "managementAuthority": "W2 holds the master management documents; this is the repo snapshot — W2 copy to be updated by the owner / Kimi"
+}

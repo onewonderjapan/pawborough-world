@@ -73,5 +73,12 @@
     "explorationClient": ".",
     "areaAuthoring": "scene-authoring/yuyuan-area",
     "assetAuthoring": "asset-authoring"
+  },
+  "v1Scope": {
+    "decision": "docs/OWNER_DECISION-v1-redefinition.json",
+    "document": "docs/V1-REDEFINITION-20260923.md",
+    "mainBody": "scene-authoring/yuyuan-area (garden, temple, bazaar, pond; outer as L0 backdrop)",
+    "plus": "fangbang zone: 91 m 方浜中路 street + connecting section to the 城隍庙 gate (from world/fangbang-temple-v7)",
+    "areaPreview": "npm run area:serve"
   }
 }
