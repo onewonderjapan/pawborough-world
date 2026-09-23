@@ -1,0 +1,33 @@
+{
+ "stone": {
+  "family": "PaintedPlaster017",
+  "sourceColor": "/home/baibai/work/onewonderjapan/pawborough-world/asset-authoring/yuyuan-entry/source-kit/textures/PaintedPlaster017_2K-JPG_Color_1K.jpg",
+  "sourceNormal": "/home/baibai/work/onewonderjapan/pawborough-world/asset-authoring/yuyuan-entry/source-kit/textures/PaintedPlaster017_2K-JPG_NormalGL_1K.jpg",
+  "sourceNote": "imported by absolute path from MAIN repo source-kit; gitignored in worktrees",
+  "derived": [
+   {
+    "file": "out-rockery/textures/plaster-tint-7d8288.jpg",
+    "kind": "analytic tint bake",
+    "method": "linear-space multiply of sRGB source color by linear tint",
+    "tintSrgbHex": "7d8288",
+    "resolution": "1K (source)",
+    "role": "Base Color (sRGB)"
+   }
+  ],
+  "normal": {
+   "colorspace": "Non-Color",
+   "node": "NormalMap",
+   "strength": 0.6,
+   "gltf": "normalTexture.scale=0.6"
+  },
+  "roughness": 0.9,
+  "tileM": 2.5,
+  "uv": "world-space cube projection (dominant normal axis), tiles every 2.5 m",
+  "moss": {
+   "tintSrgbHex": "5c6b4a",
+   "bandAboveGroundM": 0.3,
+   "maxFaceShare": 0.2,
+   "applied": "constant-color material slot on ground band faces; share per cluster in build-<id>.record.json"
+  }
+ }
+}
