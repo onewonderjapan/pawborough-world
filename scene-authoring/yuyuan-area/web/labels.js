@@ -100,11 +100,12 @@ export function dedupeLabels(items, w, h, facilityCap = FACILITY_CAP, opts = {})
       distCapHidden++;
       continue;
     }
-    // R1：视线被碰撞盒挡住 → 隐藏；地标（prio 1）改半透明保留
+    // R1：视线被碰撞盒挡住 → 隐藏；区域级/地标（prio ≤ 1，含 GOAL fallback 受保护地标
+    // 三穗堂/老城隍庙/华宝楼——华宝楼同时是 REGION_LABELS，prio=0）改半透明保留
     if (occluders && occluders.length && cam && it.wpos) {
       const blocker = segBlockedByOccluders(occluders, cam, it.wpos);
       if (blocker) {
-        if (it.prio === 1) { it.el.style.opacity = GHOST_OPACITY; occludedGhost++; }
+        if (it.prio <= 1) { it.el.style.opacity = GHOST_OPACITY; occludedGhost++; }
         else { it.el.style.visibility = 'hidden'; it.el.style.opacity = ''; occludedHidden++; continue; }
       } else {
         it.el.style.opacity = '';
