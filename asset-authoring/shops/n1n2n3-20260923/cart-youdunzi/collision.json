@@ -1,0 +1,71 @@
+{
+  "axis": "glTF Y-up, facade +Z, front-wall center bottom origin",
+  "colliders": [
+    {
+      "name": "cart-body",
+      "group": "cart",
+      "center": [
+        0,
+        0.6599999999999999,
+        0
+      ],
+      "size": [
+        1.15,
+        0.32,
+        0.6
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "cart-leg",
+      "group": "cart",
+      "center": [
+        -0.475,
+        0.24999999999999994,
+        0.18
+      ],
+      "size": [
+        0.05,
+        0.4999999999999999,
+        0.05
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "cart-leg",
+      "group": "cart",
+      "center": [
+        0.475,
+        0.24999999999999994,
+        0.18
+      ],
+      "size": [
+        0.05,
+        0.4999999999999999,
+        0.05
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    },
+    {
+      "name": "wire-rack",
+      "group": "stove",
+      "center": [
+        0.28,
+        0.95,
+        0.1
+      ],
+      "size": [
+        0.26,
+        0.26,
+        0.2
+      ],
+      "type": "box",
+      "axis": "glTF Y-up"
+    }
+  ],
+  "doors": "all doors and windows modeled CLOSED; openings have real recesses with solid leaves",
+  "notIntegratedOrWalkingTested": true
+}

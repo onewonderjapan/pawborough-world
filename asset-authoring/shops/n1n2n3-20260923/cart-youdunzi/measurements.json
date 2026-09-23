@@ -1,0 +1,47 @@
+{
+  "moduleId": "cart-youdunzi",
+  "triangles": 2978,
+  "meshes": 8,
+  "fileBytes": 847292,
+  "sha256": "2055c1f5295b2a04d5eb91346680c0b36c3ff29bbb4c61fed4497096b6cc864d",
+  "design": {
+    "specId": "cart-youdunzi",
+    "name": "油墩子推车（煤炉+油锅）（商街 N3，1990s 摊车）",
+    "frontageM": 1.25,
+    "depthM": 1.049,
+    "ridgeM": 1.28,
+    "family": "1990s street vending cart prop, asset-only",
+    "designInference": true,
+    "notHistoricalReconstruction": true,
+    "axis": "glTF Y-up, origin = ground centre, +Z faces the customer",
+    "features": [
+      "原点=地面中心，+Z 朝顾客",
+      "食品复用手持库 youdunzi.glb 实例"
+    ],
+    "instances": null,
+    "foodSource": "handheld library (reviewed R1/R2), linked instances, non-matching LODs dropped",
+    "generator": "generator/build_carts_n3.py",
+    "recipe": "cart-youdunzi.json"
+  },
+  "assertions": [
+    {
+      "assert": "food-youdunzi.glb",
+      "ok": true,
+      "detail": "4/4"
+    },
+    {
+      "assert": "origin-ground-centre",
+      "ok": true,
+      "detail": "x-centre 0.000, y-min 0.000"
+    },
+    {
+      "assert": "glb-bounds",
+      "ok": true,
+      "detail": "y-max 1.280, z [-0.659, 0.390]"
+    }
+  ],
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

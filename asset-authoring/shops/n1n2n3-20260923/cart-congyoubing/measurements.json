@@ -1,0 +1,47 @@
+{
+  "moduleId": "cart-congyoubing",
+  "triangles": 1124,
+  "meshes": 9,
+  "fileBytes": 659264,
+  "sha256": "dec9a5e4edbcdf16b2f35697e162018e58ebee419280eb1577ad7ab106886f03",
+  "design": {
+    "specId": "cart-congyoubing",
+    "name": "葱油饼平锅车（商街 N3，1990s 摊车）",
+    "frontageM": 1.35,
+    "depthM": 1.049,
+    "ridgeM": 1.13,
+    "family": "1990s street vending cart prop, asset-only",
+    "designInference": true,
+    "notHistoricalReconstruction": true,
+    "axis": "glTF Y-up, origin = ground centre, +Z faces the customer",
+    "features": [
+      "原点=地面中心，+Z 朝顾客",
+      "食品复用手持库 congyoubing.glb 实例"
+    ],
+    "instances": null,
+    "foodSource": "handheld library (reviewed R1/R2), linked instances, non-matching LODs dropped",
+    "generator": "generator/build_carts_n3.py",
+    "recipe": "cart-congyoubing.json"
+  },
+  "assertions": [
+    {
+      "assert": "food-congyoubing.glb",
+      "ok": true,
+      "detail": "3/3"
+    },
+    {
+      "assert": "origin-ground-centre",
+      "ok": true,
+      "detail": "x-centre 0.000, y-min -0.001"
+    },
+    {
+      "assert": "glb-bounds",
+      "ok": true,
+      "detail": "y-max 1.130, z [-0.659, 0.390]"
+    }
+  ],
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

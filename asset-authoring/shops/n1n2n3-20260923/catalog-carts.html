@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>商街 N3 · 1990s 摊车道具目录（T5）</title>
+<style>
+  body { font-family: "Noto Serif CJK SC", "Noto Serif CJK", serif; background: #23211e; color: #e8e2d5; margin: 2rem; }
+  h1 { font-size: 1.4rem; } h2 { font-size: 1.1rem; margin-top: 1.6rem; }
+  table { border-collapse: collapse; margin-top: .6rem; }
+  td, th { border: 1px solid #4a453d; padding: .35rem .7rem; font-size: .9rem; text-align: left; }
+  img.overview { width: 100%; max-width: 1400px; border: 1px solid #4a453d; margin-top: .8rem; }
+  .note { color: #b5ac9a; font-size: .85rem; }
+</style>
+</head>
+<body>
+<h1>商街 N3 · 1990s 摊车道具组（T5，2026-09-23）</h1>
+<p class="note">契约：GLB Y-up，原点 = 地面中心，+Z 朝顾客。食品实例复用手持库（R1/R2 复验件）：
+油墩子推车 ← youdunzi ×4、葱油饼平锅车 ← congyoubing ×3、蟹壳黄炭炉桶+竹篮 ← xiekehuang ×5。
+非历史复原，design_inference；构建现场 <code>pawborough-w1-shops-n1n2n3-20260923/workspace</code>，交付副本
+<code>asset-authoring/shops/n1n2n3-20260923/</code>。只做资产 + 目录页，不接入布局。</p>
+
+<h2>总览</h2>
+<img class="overview" src="overview-carts.png" alt="三辆摊车总览">
+
+<h2>清单</h2>
+<table>
+  <tr><th>资产</th><th>说明</th><th>tris</th><th>GLB</th><th>validator</th><th>视图</th></tr>
+  <tr><td>cart-youdunzi</td><td>油墩子推车：木轮车 + 煤炉 + 油锅（油面）+ 沥油架 + 油瓶；youdunzi ×4</td><td>2,978</td><td>847 KB</td><td>0 错</td><td><a href="cart-youdunzi/views/front.png">front</a> / <a href="cart-youdunzi/views/side.png">side</a> / <a href="cart-youdunzi/views/rear.png">rear</a> / <a href="cart-youdunzi/views/threeq.png">3q</a></td></tr>
+  <tr><td>cart-congyoubing</td><td>葱油饼平锅车：砖炉 + 平锅（Ø0.60）+ 面团板 + 油 tin；congyoubing ×3</td><td>1,124</td><td>659 KB</td><td>0 错</td><td><a href="cart-congyoubing/views/front.png">front</a> / <a href="cart-congyoubing/views/side.png">side</a> / <a href="cart-congyoubing/views/rear.png">rear</a> / <a href="cart-congyoubing/views/threeq.png">3q</a></td></tr>
+  <tr><td>cart-xiekehuang</td><td>蟹壳黄炭炉桶：铁皮桶 + 炭膛 + 沿口贴烧位；竹篮 ×2（叠放）+ 纸袋；xiekehuang ×5</td><td>3,634</td><td>459 KB</td><td>0 错</td><td><a href="cart-xiekehuang/views/front.png">front</a> / <a href="cart-xiekehuang/views/side.png">side</a> / <a href="cart-xiekehuang/views/rear.png">rear</a> / <a href="cart-xiekehuang/views/threeq.png">3q</a></td></tr>
+</table>
+
+<h2>来源与验证</h2>
+<ul class="note">
+  <li>构建：<code>generator/build_carts_n3.py</code>（mb_lite 配方体系），Blender 4.5 CPU <code>-t 4</code></li>
+  <li>validator：Khronos glTF 2.0-dev.3.10，三件 0 错（各目录 validation.json）</li>
+  <li>重导入核对：各目录 reimport-check.json（finalize 管线内建）</li>
+  <li>origin/朝向断言：地面中心（y-min ≈ 0，x 中心对称），+Z 顾客</li>
+</ul>
+</body>
+</html>

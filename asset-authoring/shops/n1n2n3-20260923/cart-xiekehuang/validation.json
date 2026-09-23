@@ -1,0 +1,73 @@
+{
+  "validatedAt": "2026-09-23T05:31:12.093Z",
+  "root": "/home/baibai/outbox/pawborough-w1-shops-n1n2n3-20260923/workspace/out/cart-xiekehuang",
+  "results": [
+    {
+      "file": "model.glb",
+      "sha256": "396c03c7619f0ace13b679f3b8a367442a0427c8765631a16f8d2823c185d5aa",
+      "bytes": 459036,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 16,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [
+        "UNUSED_MESH_TANGENT",
+        "UNUSED_OBJECT",
+        "UNUSED_MESH_TANGENT",
+        "UNUSED_OBJECT",
+        "UNUSED_MESH_TANGENT",
+        "UNUSED_OBJECT"
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 449732
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/jpeg",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/1",
+            "mimeType": "image/jpeg",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 7,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 7,
+        "totalVertexCount": 7802,
+        "totalTriangleCount": 3634,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 4
+      }
+    }
+  ],
+  "errorFiles": 0,
+  "verdict": "PASS"
+}

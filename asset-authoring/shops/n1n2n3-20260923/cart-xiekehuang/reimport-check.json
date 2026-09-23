@@ -1,0 +1,52 @@
+{
+  "imported": true,
+  "materials": [
+    {
+      "name": "deep-door-lacquer.001",
+      "imageNodes": []
+    },
+    {
+      "name": "paper-bag.001",
+      "imageNodes": []
+    },
+    {
+      "name": "fried-crust.001",
+      "imageNodes": [
+        {
+          "name": "fried-crust.001",
+          "size": [
+            512,
+            512
+          ],
+          "colorSpace": "sRGB"
+        }
+      ]
+    },
+    {
+      "name": "bamboo-woven.001",
+      "imageNodes": []
+    },
+    {
+      "name": "charcoal.001",
+      "imageNodes": []
+    },
+    {
+      "name": "sesame-flatbread-top.001",
+      "imageNodes": [
+        {
+          "name": "sesame-top.001",
+          "size": [
+            512,
+            512
+          ],
+          "colorSpace": "sRGB"
+        }
+      ]
+    },
+    {
+      "name": "galvanized-iron.001",
+      "imageNodes": []
+    }
+  ],
+  "meshes": 6
+}

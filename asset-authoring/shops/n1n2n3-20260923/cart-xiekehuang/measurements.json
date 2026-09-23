@@ -1,0 +1,47 @@
+{
+  "moduleId": "cart-xiekehuang",
+  "triangles": 3634,
+  "meshes": 6,
+  "fileBytes": 459036,
+  "sha256": "396c03c7619f0ace13b679f3b8a367442a0427c8765631a16f8d2823c185d5aa",
+  "design": {
+    "specId": "cart-xiekehuang",
+    "name": "蟹壳黄炭炉桶+竹篮（商街 N3，1990s 摊车）",
+    "frontageM": 1.23,
+    "depthM": 0.63,
+    "ridgeM": 1.04,
+    "family": "1990s street vending cart prop, asset-only",
+    "designInference": true,
+    "notHistoricalReconstruction": true,
+    "axis": "glTF Y-up, origin = ground centre, +Z faces the customer",
+    "features": [
+      "原点=地面中心，+Z 朝顾客",
+      "食品复用手持库 xiekehuang.glb 实例"
+    ],
+    "instances": null,
+    "foodSource": "handheld library (reviewed R1/R2), linked instances, non-matching LODs dropped",
+    "generator": "generator/build_carts_n3.py",
+    "recipe": "cart-xiekehuang.json"
+  },
+  "assertions": [
+    {
+      "assert": "food-xiekehuang.glb",
+      "ok": true,
+      "detail": "5/5"
+    },
+    {
+      "assert": "origin-ground-centre",
+      "ok": true,
+      "detail": "x-centre -0.115, y-min 0.000"
+    },
+    {
+      "assert": "glb-bounds",
+      "ok": true,
+      "detail": "y-max 1.040, z [-0.310, 0.320]"
+    }
+  ],
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}
