@@ -1,0 +1,66 @@
+{
+  "id": "bld-428202599",
+  "name": "华宝楼",
+  "zone": "bazaar",
+  "source": "DESIGN_SPEC.json (wave1-huabao-20260923, frozen 2026-09-24) — numbers authoritative; footprint from baseline/layout.json",
+  "frontEdge": [0, 1],
+  "frontName": "中心广场",
+  "backName": "方浜中路",
+  "massing": {
+    "plinthHeightM": 0.45,
+    "plinthOutsetM": 0.12,
+    "wallInsetM": 0.3,
+    "storeyHeightsM": [4.8, 3.6, 3.6, 3.4],
+    "wallTopM": 15.4,
+    "setbackStoreys": [4],
+    "setbackStreetM": 2.0
+  },
+  "roof": {
+    "type": "xishan",
+    "ridgeHeightM": 19.0,
+    "breakHeightM": 17.9,
+    "eaveDropM": 0.3,
+    "ridgeRadiusM": 0.14
+  },
+  "eaves": {
+    "overhangM": 1.2,
+    "cornerLiftM": 0.9,
+    "cornerReachM": 2.6,
+    "fasciaDropM": 0.24
+  },
+  "pavilion": {
+    "corner": "uMax-vMin",
+    "planM": 7.5,
+    "tierHeightsM": [3.4, 3.2],
+    "pyramidOutsetM": 0.5,
+    "pyramidLiftM": 0.45,
+    "apexAboveLastEaveM": 1.6,
+    "finial": { "rodM": 0.55, "sphereRM": 0.2, "topM": 24.3 }
+  },
+  "facades": {
+    "bayRhythmM": [3.3, 3.6],
+    "columnSizeM": 0.32,
+    "galleryDepthM": 1.1,
+    "galleryStoreys": [2, 3],
+    "balustradeHM": 1.0,
+    "fasciaDepthM": 0.45,
+    "floor2PlaqueM": [8.0, 2.0],
+    "window": { "widthM": 1.7, "heightM": 1.9, "sillM": 0.9 },
+    "shopfront": { "glassHeadM": 3.9, "sillM": 0.9 }
+  },
+  "materials": {
+    "timberTint": "6a2e22",
+    "plasterTint": "f2efe8",
+    "plinthTint": "8b9089",
+    "gilded": "b08a3e",
+    "glass": "20252a",
+    "glassAlpha": 0.85,
+    "dark": "241d18",
+    "roofTile": [1.4, 1.2],
+    "timberTile": [0.9, 2.2],
+    "plasterTile": [2.2, 2.2],
+    "plinthTile": [2.0, 1.0]
+  },
+  "budget": { "trisMax": 40000, "glbMaxMB": 2.5 },
+  "detail": { "eaveSegM": 1.7, "bevelM": 0.01 }
+}

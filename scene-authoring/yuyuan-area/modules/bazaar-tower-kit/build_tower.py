@@ -1,0 +1,839 @@
+"""商城大楼套件生成器（WP6.2 bazaar-tower-kit，样板=华宝楼 bld-428202599）。
+
+Blender 无头参数化生成商城大楼：footprint 多边形（唯一来源 baseline/layout.json）、
+层数与层高、逐层出檐、翼角起翘、转角亭楼、立面开间节奏全部由参数驱动。华宝楼的
+数字只存在于 params/huabao-bld-428202599.json（DESIGN_SPEC 冻结值），几何代码不含
+任何具体建筑数值——后天裕楼 / 和丰楼等靠新增 params JSON 复用。
+
+坐标契约（同 rockery 站点模块）：内部先在局部正交系 (u=前街轴, v=指后街, h=高) 建模，
+to_b() 直接落到地图系 Blender (map_x, -map_z, h)；export_yup=True 导出后 GLB (x, h, z)
+即地图世界坐标。GLB 内含名为 <id> 的锚 empty（位于 footprint 面积形心），网格保持
+世界坐标挂锚下。
+
+形制（读法记录在 recipe.json）：主体逐层出檐腰檐；4 层退台 2.0 m（退台面=下层檐）；
+歇山主屋面（凹曲 profile 破环 + 上段陡坡 + 两端山花），平面在转角亭楼前收头避让；
+转角亭楼=全高角塔（随主体层节奏，上加 extraTiers + 攒尖鎏金顶）。
+
+运行：blender -b -t 4 --python-exit-code 1 modules/bazaar-tower-kit/build_tower.py -- \
+      [--params modules/bazaar-tower-kit/params/huabao-bld-428202599.json] [--out out-bazaar-towers/<id>]
+"""
+import bpy, bmesh, json, math, os, sys, time
+from mathutils import Vector
+
+T0 = time.time()
+HERE = os.path.dirname(os.path.abspath(__file__))
+ARGS = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
+def arg(flag, default):
+    return ARGS[ARGS.index(flag) + 1] if flag in ARGS else default
+
+PARAMS_REL = arg('--params', 'params/huabao-bld-428202599.json')
+P = json.load(open(os.path.join(HERE, PARAMS_REL), encoding='utf-8'))
+ROOT = os.path.abspath(os.path.join(HERE, '..', '..'))          # scene-authoring/yuyuan-area
+OUT = os.path.join(ROOT, arg('--out', os.path.join('out-bazaar-towers', P['id'])))
+os.makedirs(OUT, exist_ok=True)
+os.makedirs(os.path.join(OUT, 'renders'), exist_ok=True)
+
+# ---------- 输入：footprint 唯一来源 = baseline/layout.json ----------
+LAYOUT = json.load(open(os.path.join(ROOT, 'baseline', 'layout.json'), encoding='utf-8'))
+OBJ = next(o for o in LAYOUT['objects'] if o['id'] == P['id'])
+FP = [list(q) for q in OBJ['geometry']['footprint']]
+if FP[0] == FP[-1]:
+    FP = FP[:-1]
+
+# ---------- 材质（source-kit 纹理 + 解析色；参数只给 tint/tile） ----------
+TEX_DIR = os.path.abspath(os.path.join(ROOT, '..', '..', 'asset-authoring', 'yuyuan-entry', 'source-kit', 'textures'))
+if not os.path.isdir(TEX_DIR):
+    TEX_DIR = '/home/baibai/work/onewonderjapan/pawborough-world/asset-authoring/yuyuan-entry/source-kit/textures'
+if not os.path.isdir(TEX_DIR):
+    raise RuntimeError('source-kit textures not found')
+
+TILE = {}
+META = {}
+def lin(hx):
+    a = [int(hx[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+    return [v / 12.92 if v <= .04045 else ((v + .055) / 1.055) ** 2.4 for v in a]
+
+def mat(key, rgb=None, rough=.8, base=None, normal=None, tint=None, tile=(1, 1), metallic=0.0,
+        alpha=None, alpha_mode=None):
+    m = bpy.data.materials.new('btk-' + key)
+    m.use_nodes = True
+    nodes, links = m.node_tree.nodes, m.node_tree.links
+    p = nodes.get('Principled BSDF')
+    p.inputs['Base Color'].default_value = (*(rgb if rgb else (1, 1, 1)), 1)
+    p.inputs['Roughness'].default_value = rough
+    p.inputs['Metallic'].default_value = metallic
+    if base:
+        t = nodes.new('ShaderNodeTexImage')
+        t.extension = 'REPEAT'
+        t.image = bpy.data.images.load(os.path.join(TEX_DIR, base), check_existing=True)
+        t.image.colorspace_settings.name = 'sRGB'
+        t.image.pack()
+        if tint:
+            mix = nodes.new('ShaderNodeMix')
+            mix.data_type = 'RGBA'
+            mix.blend_type = 'MULTIPLY'
+            mix.inputs['Factor'].default_value = 1.0
+            mix.inputs[7].default_value = (*lin(tint), 1)
+            links.new(t.outputs['Color'], mix.inputs[6])
+            links.new(mix.outputs[2], p.inputs['Base Color'])
+        else:
+            links.new(t.outputs['Color'], p.inputs['Base Color'])
+    if normal:
+        t = nodes.new('ShaderNodeTexImage')
+        t.extension = 'REPEAT'
+        t.image = bpy.data.images.load(os.path.join(TEX_DIR, normal), check_existing=True)
+        t.image.colorspace_settings.name = 'Non-Color'
+        t.image.pack()
+        nm = nodes.new('ShaderNodeNormalMap')
+        nm.inputs['Strength'].default_value = .65
+        links.new(t.outputs['Color'], nm.inputs['Color'])
+        links.new(nm.outputs['Normal'], p.inputs['Normal'])
+    if alpha is not None:
+        p.inputs['Alpha'].default_value = alpha
+        if alpha_mode:
+            try:
+                m.blend_method = alpha_mode
+            except AttributeError:
+                pass
+    TILE[key] = tile
+    META['btk-' + key] = {'tintSrgb': tint, 'roughness': rough, 'metallic': metallic, 'alpha': alpha,
+                          'alphaMode': alpha_mode,
+                          'textures': {k: v for k, v in (('color', base), ('normal', normal)) if v},
+                          'tileMeters': list(tile)}
+    return m
+
+def make_lattice_image(cells_per_m=8.0, size=256):
+    """解析 alpha 格心贴图：size 像素 = 1 m，cells_per_m 格（同 sansuitang 手法）。"""
+    px = bytearray(size * size * 4)
+    cell = size / cells_per_m
+    bar = max(2.0, cell * 0.16)
+    base = (36, 29, 24)
+    for y in range(size):
+        for x in range(size):
+            dx, dy = x % cell, y % cell
+            sd = (x + y) % cell
+            on = dx < bar or dy < bar or sd < bar * 0.9
+            k = (y * size + x) * 4
+            if on:
+                px[k], px[k + 1], px[k + 2], px[k + 3] = *base, 255
+            else:
+                px[k], px[k + 1], px[k + 2], px[k + 3] = 255, 255, 255, 0
+    img = bpy.data.images.new('tower-lattice-core', size, size, alpha=True)
+    img.pixels = [v / 255.0 for v in px]
+    tex_out = os.path.join(HERE, 'textures', 'lattice-core-alpha.png')
+    os.makedirs(os.path.dirname(tex_out), exist_ok=True)
+    img.filepath_raw = tex_out
+    img.file_format = 'PNG'
+    img.save()
+    img.pack()
+    m = bpy.data.materials.new('btk-lattice')
+    m.use_nodes = True
+    nodes, links = m.node_tree.nodes, m.node_tree.links
+    p = nodes.get('Principled BSDF')
+    p.inputs['Roughness'].default_value = .7
+    p.inputs['Metallic'].default_value = 0
+    t = nodes.new('ShaderNodeTexImage')
+    t.image = img
+    t.extension = 'REPEAT'
+    links.new(t.outputs['Color'], p.inputs['Base Color'])
+    links.new(t.outputs['Alpha'], p.inputs['Alpha'])
+    try:
+        m.blend_method = 'CLIP'
+    except AttributeError:
+        pass
+    TILE['lattice'] = (1.0, 1.0)          # UV 单位=米，贴图即 1 m 格网
+    META['btk-lattice'] = {'alpha': 'modules/bazaar-tower-kit/textures/lattice-core-alpha.png',
+                           'cellM': 1.0 / cells_per_m, 'alphaMode': 'MASK', 'alphaCutoff': 0.5,
+                           'textures': {}, 'tileMeters': [1.0, 1.0]}
+    return m
+
+FM = P['materials']
+M = {
+    'wall': mat('wall', rough=.85, base='PaintedPlaster017_2K-JPG_Color_1K.jpg',
+                tint=FM['plasterTint'], tile=tuple(FM['plasterTile'])),
+    'wood': mat('wood', rough=.7, base='wood-stain-color.jpg', tint=FM['timberTint'],
+                normal='Wood092_2K-JPG_NormalGL_1K.jpg', tile=tuple(FM['timberTile'])),
+    'stone': mat('stone', rough=.92, base='Bricks061_2K-JPG_Color_1K.jpg',
+                 tint=FM['plinthTint'], tile=tuple(FM['plinthTile'])),
+    'roof': mat('roof', rough=.8, base='roof-color.jpg', normal='roof-normal.png',
+                tile=tuple(FM['roofTile'])),
+    'gild': mat('gild', lin(FM['gilded']), .38, metallic=.55),
+    'glass': mat('glass', lin(FM['glass']), .18, alpha=FM['glassAlpha'], alpha_mode='BLEND'),
+    'dark': mat('dark', lin(FM['dark']), .6),
+    'lattice': make_lattice_image(),
+}
+
+# ---------- 局部正交系：u=前街轴（footprint frontEdge 0->1），v=指后街，h=高 ----------
+i0, i1 = P['frontEdge']
+O = Vector((FP[i0][0], FP[i0][1]))
+du = Vector((FP[i1][0] - FP[i0][0], FP[i1][1] - FP[i0][1])).normalized()
+dv = Vector((-du.y, du.x))          # 前街轴旋转 +90°，指向后街一侧
+def uv_of(pt):
+    d = Vector((pt[0], pt[1])) - O
+    return (d.dot(du), d.dot(dv))
+UVP = [uv_of(q) for q in FP]
+
+def poly_area(poly):
+    s = 0.0
+    for i in range(len(poly)):
+        x0, y0 = poly[i][0], poly[i][1]
+        x1, y1 = poly[(i + 1) % len(poly)][0], poly[(i + 1) % len(poly)][1]
+        s += x0 * y1 - x1 * y0
+    return s / 2
+
+def area_centroid(poly):
+    """多边形面积形心（shoelace）。返回 (cx, cz, area)。"""
+    a = cx = cz = 0.0
+    n = len(poly)
+    for i in range(n):
+        x0, z0 = poly[i]
+        x1, z1 = poly[(i + 1) % n]
+        cr = x0 * z1 - x1 * z0
+        a += cr
+        cx += (x0 + x1) * cr
+        cz += (z0 + z1) * cr
+    a *= 0.5
+    return (cx / (6 * a), cz / (6 * a), abs(a) / 2)
+
+def intersect(p0, p1, q0, q1):
+    d1 = p1 - p0
+    d2 = q1 - q0
+    den = d1.x * d2.y - d1.y * d2.x
+    t = ((q0.x - p0.x) * d2.y - (q0.y - p0.y) * d2.x) / den
+    return p0 + d1 * t
+
+def ccw(poly):
+    return poly if poly_area(poly) > 0 else poly[::-1]
+
+def inward_offset(poly, d):
+    """闭合多边形向内偏移 d（边线交点法）。"""
+    poly = ccw(poly)
+    n = len(poly)
+    lines = []
+    for i in range(n):
+        a, b = Vector(poly[i]), Vector(poly[(i + 1) % n])
+        e = (b - a)
+        e.normalize()
+        nv = Vector((-e.y, e.x))            # CCW 左侧=内侧
+        lines.append((a + nv * d, b + nv * d))
+    return [intersect(lines[i - 1][0], lines[i - 1][1], lines[i][0], lines[i][1]) for i in range(n)]
+
+def outward_offset(poly, d):
+    return inward_offset(poly, -d)
+
+CX, CZ, AREA = area_centroid(FP)
+WP = [(p.x, p.y) for p in inward_offset([(q[0], q[1]) for q in UVP], P['massing']['wallInsetM'])]
+WU = [q[0] for q in WP]
+WV = [q[1] for q in WP]
+U0, U1 = min(WU), max(WU)
+V0, V1 = min(WV), max(WV)
+MS = P['massing']
+SB = MS['setbackStreetM']
+PL = MS['plinthHeightM']
+WT = 0.3                                     # 墙板厚（比例值，非冻结数字）
+ZT = []
+_acc = 0.0
+for h in MS['storeyHeightsM']:
+    _acc += h
+    ZT.append(_acc)                          # 逐层顶标高（自 0 起累计，台基含在第 1 层内）
+Z1, Z2, Z3, Z4 = ZT[0], ZT[1], ZT[2], ZT[3]
+
+PAV = dict(P['pavilion']) if P.get('pavilion', {}).get('corner') else None
+if PAV:
+    PU0, PU1, PV0, PV1 = U1 - PAV['planM'], U1, V0, V0 + PAV['planM']
+
+def rect_minus_pav(rect):
+    """矩形挖去亭楼角（若相交），返回 L 多边形（CCW）或原矩形（CCW）。rect=(u0,u1,v0,v1)。"""
+    a0, a1, b0, b1 = rect
+    poly = [(a0, b0), (a1, b0), (a1, b1), (a0, b1)]
+    if not PAV:
+        return ccw(poly)
+    if PU0 <= a0 or PV1 <= b0 or PU1 >= a1 or PV0 >= b1:
+        return ccw(poly)
+    return [(a0, b0), (PU0, b0), (PU0, PV1), (a1, PV1), (a1, b1), (a0, b1)]
+
+BODY_L = rect_minus_pav((U0, U1, V0, V1))                       # 1-3 层体块平面
+F4_L = rect_minus_pav((U0, U1 - SB, V0 + SB, V1 - SB))          # 4 层退台平面
+# 主屋面平面：4 层平面，前街侧从 v=PV1 起（SW 条做平屋面），东向在亭楼西缘外 1 出檐+0.1 收头
+if PAV:
+    ROOF_U1 = PU0 - P['eaves']['overhangM'] - 0.1
+    MAIN_ROOF = [(U0, PV1), (ROOF_U1, PV1), (ROOF_U1, V1 - SB), (U0, V1 - SB)]
+else:
+    ROOF_U1 = U1 - SB
+    MAIN_ROOF = [(U0, V0 + SB), (ROOF_U1, V0 + SB), (ROOF_U1, V1 - SB), (U0, V1 - SB)]
+
+# ---------- 网格工具（局部系建模，per-loop 米制 UV，按 part+材质收尾合并） ----------
+PART = 'misc'
+GROUPS = {}
+
+def to_b(u, v, h):
+    """局部系 -> Blender 地图系 (map_x, -map_z, h)。"""
+    return (O.x + u * du.x + v * dv.x, -(O.y + u * du.y + v * dv.y), h)
+
+def add_local(name, items, faces, m, part=None, smooth=False):
+    """items=[((u,v,h),(uu,vv))] 局部系；面绕序即法线方向。"""
+    me = bpy.data.meshes.new(name)
+    me.from_pydata([to_b(*p) for p, _ in items], [], faces)
+    me.update()
+    uv = me.uv_layers.new(name='UVMap')
+    for f in me.polygons:
+        for li in f.loop_indices:
+            uv.data[li].uv = items[me.loops[li].vertex_index][1]
+    me.materials.append(M[m])
+    for f in me.polygons:
+        f.use_smooth = smooth
+    o = bpy.data.objects.new(name, me)
+    bpy.context.collection.objects.link(o)
+    o['part'] = part or PART
+    GROUPS.setdefault((o['part'], m), []).append(o)
+    return o
+
+def box(name, u0, u1, v0, v1, h0, h1, m, part=None, bevel=None):
+    if u1 < u0: u0, u1 = u1, u0
+    if v1 < v0: v0, v1 = v1, v0
+    if h1 < h0: h0, h1 = h1, h0
+    corners = [(u0,v0,h0),(u1,v0,h0),(u1,v1,h0),(u0,v1,h0),(u0,v0,h1),(u1,v0,h1),(u1,v1,h1),(u0,v1,h1)]
+    faces = [(0,3,2,1),(4,5,6,7),(0,4,7,3),(1,2,6,5),(0,1,5,4),(3,7,6,2)]
+    me = bpy.data.meshes.new(name)
+    me.from_pydata([to_b(*c) for c in corners], [], faces)
+    me.update()
+    bm = bmesh.new()
+    bm.from_mesh(me)
+    bmesh.ops.recalc_face_normals(bm, faces=list(bm.faces))
+    bw = P['detail']['bevelM'] if bevel is None else bevel
+    if bw > 0:
+        bmesh.ops.bevel(bm, geom=list(bm.edges), offset=min(bw, min(u1-u0, v1-v0, h1-h0) * .3),
+                        segments=2, affect='EDGES', clamp_overlap=True)
+    bmesh.ops.triangulate(bm, faces=list(bm.faces))
+    bm.to_mesh(me)
+    bm.free()
+    t = TILE[m]
+    uv = me.uv_layers.new(name='UVMap')
+    for f in me.polygons:
+        nm = f.normal
+        axis = max(range(3), key=lambda i: abs(nm[i]))
+        for li in f.loop_indices:
+            p = me.vertices[me.loops[li].vertex_index].co
+            a, b = ((-p.y, p.z) if axis == 0 else (p.x, -p.y) if axis == 1 else (p.x, p.y))
+            uv.data[li].uv = (a / t[0], b / t[1])
+    me.materials.append(M[m])
+    o = bpy.data.objects.new(name, me)
+    bpy.context.collection.objects.link(o)
+    o['part'] = part or PART
+    GROUPS.setdefault((o['part'], m), []).append(o)
+    return o
+
+def lift_fn(dist, lift, reach):
+    """翼角起翘核：角点=lift，reach 处=0，两端零斜率（raised cosine，同 pavilion-kit）。"""
+    if lift <= 0 or reach <= 0:
+        return 0.0
+    t = min(1.0, dist / reach)
+    return lift * 0.5 * (1.0 + math.cos(math.pi * t))
+
+def ring_corner_dists(ring):
+    """方向突变 >25° 的点视为真角点；返回各点到最近角点的沿边弧长。"""
+    n = len(ring)
+    corner_idx = []
+    for i in range(n):
+        d1 = Vector(ring[i]) - Vector(ring[i - 1])
+        d2 = Vector(ring[(i + 1) % n]) - Vector(ring[i])
+        if d1.length > 1e-9 and d2.length > 1e-9 and d1.angle(d2) > math.radians(25):
+            corner_idx.append(i)
+    cum = [0.0]
+    for i in range(n):
+        cum.append(cum[-1] + (Vector(ring[(i + 1) % n]) - Vector(ring[i])).length)
+    per = cum[-1]
+    return [min(min(abs(cum[i] - cum[c]), per - abs(cum[i] - cum[c])) for c in corner_idx) for i in range(n)]
+
+def sub_ring(poly, seg_m):
+    """闭环按 seg_m 细分（保角点），CCW。"""
+    poly = ccw(poly)
+    pts = []
+    n = len(poly)
+    for i in range(n):
+        a, b = Vector(poly[i]), Vector(poly[(i + 1) % n])
+        k = max(1, int(round((b - a).length / seg_m)))
+        for j in range(k):
+            t = j / k
+            pts.append((a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t))
+    return pts
+
+def resample_ring(ring, count):
+    """按弧长参数把闭环重采样到 count 点（起点对齐原起点）。"""
+    n = len(ring)
+    cum = [0.0]
+    for i in range(n):
+        cum.append(cum[-1] + (Vector(ring[(i + 1) % n]) - Vector(ring[i])).length)
+    per = cum[-1]
+    out = []
+    for k in range(count):
+        s = per * k / count
+        i = max(j for j in range(n) if cum[j] <= s)
+        t = (s - cum[i]) / max(1e-9, cum[i + 1] - cum[i])
+        a, b = Vector(ring[i]), Vector(ring[(i + 1) % n])
+        out.append((a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t))
+    return out
+
+def eave_band(name, poly, y, m='roof', part=None, over=None, lift=None, drop=None):
+    """逐层出檐：细分外圈（y-drop，角部起翘）→ 墙圈（y+0.10）坡向环带 + 外圈封檐板。"""
+    ov = P['eaves']['overhangM'] if over is None else over
+    lf = P['eaves']['cornerLiftM'] if lift is None else lift
+    dr = P['eaves']['fasciaDropM'] if drop is None else drop
+    seg = P['detail']['eaveSegM']
+    rc = P['eaves']['cornerReachM']
+    outer = sub_ring(outward_offset(poly, ov), seg)
+    inner = resample_ring(sub_ring(poly, seg), len(outer))
+    dl = ring_corner_dists(outer)
+    n = len(outer)
+    items, faces = [], []
+    for i in range(n):
+        items.append(((outer[i][0], outer[i][1], y - dr + lift_fn(dl[i], lf, rc)), (i * ov / seg, 0.0)))
+    for i in range(n):
+        items.append(((inner[i][0], inner[i][1], y + 0.10), (i * ov / seg, dr + 0.40)))
+    for i in range(n):
+        j = (i + 1) % n
+        faces.append((i, j, n + j, n + i))       # CCW 外圈 -> 法线朝外上
+    add_local(name, items, faces, m, part=part)
+    items2, faces2 = [], []                       # 封檐板：外圈下垂竖带
+    for i in range(n):
+        items2.append(((outer[i][0], outer[i][1], y - dr + lift_fn(dl[i], lf, rc)), (i * ov / seg, 0.0)))
+        items2.append(((outer[i][0], outer[i][1], y - dr - 0.02 + lift_fn(dl[i], lf, rc)), (i * ov / seg, dr)))
+    for i in range(n):
+        j = (i + 1) % n
+        faces2.append((i, n + i, n + j, j))      # (top_i, bot_i, bot_j, top_j) -> 法线朝外
+    add_local(name + '-fascia', items2, faces2, 'dark', part=part)
+
+def roof_loft(name, poly, y_eave, break_y, half_run, part=None, rings=6, curve=1.6, m='roof'):
+    """主坡屋面（凹曲 profile）：出檐外圈（起翘）升至 break 环（多边形内缩 half-run差）。
+    poly 须为矩形；返回 (vc, y0)。上段陡坡与山花由调用方续建。"""
+    ov = P['eaves']['overhangM']
+    lf = P['eaves']['cornerLiftM']
+    rc = P['eaves']['cornerReachM']
+    dr = P['roof']['eaveDropM']
+    seg = P['detail']['eaveSegM']
+    y0 = y_eave - dr
+    us = [q[0] for q in poly]
+    vs = [q[1] for q in poly]
+    vc = (min(vs) + max(vs)) / 2
+    half = (max(vs) - min(vs)) / 2
+    inset = max(0.05, half - half_run)
+    eave = sub_ring(outward_offset(poly, ov), seg)
+    top = resample_ring(sub_ring(inward_offset(poly, inset), seg), len(eave))
+    n = len(eave)
+    dl = ring_corner_dists(eave)
+    verts, uvs = [], []
+    for j in range(rings + 1):
+        t = j / rings
+        tc = t ** curve
+        fade = (1 - t) ** 2.2
+        for i in range(n):
+            a = eave[i]
+            b = top[i]
+            lift = lift_fn(dl[i], lf, rc) * fade
+            verts.append((a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t,
+                          y0 + (break_y - y0) * tc + lift))
+            uvs.append((i * (ov + inset) / seg, tc * (break_y - y0)))
+    faces = []
+    for j in range(rings):
+        for i in range(n):
+            k = (i + 1) % n
+            faces.append((j * n + i, j * n + k, (j + 1) * n + k, (j + 1) * n + i))
+    add_local(name, list(zip(verts, uvs)), faces, m, part=part)
+    items2, faces2 = [], []                       # 封檐板
+    for i in range(n):
+        items2.append((verts[i], (i * ov / seg, 0.0)))
+        items2.append(((eave[i][0], eave[i][1], y0 - 0.02 + lift_fn(dl[i], lf, rc)), (i * ov / seg, 0.24)))
+    for i in range(n):
+        j = (i + 1) % n
+        faces2.append((i, n + i, n + j, j))
+    add_local(name + '-fascia', items2, faces2, 'dark', part=part)
+    return vc, y0
+
+def quad_panel(name, cu, cv, z0, z1, w, yaw, m, part=None):
+    """竖直面板：中心 (cu,cv)，宽 w，高 z1-z0；yaw=0 面朝 -v，法线=(sin yaw,-cos yaw)。"""
+    h = z1 - z0
+    ax, av = math.cos(yaw), math.sin(yaw)
+    items = []
+    for ux, uz in [(-w/2, 0), (w/2, 0), (w/2, h), (-w/2, h)]:
+        items.append(((cu + ux * ax, cv + ux * av, z0 + uz), (ux + w/2, uz)))
+    add_local(name, items, [(0, 1, 2, 3)], m, part=part)
+
+def cyl(name, a, b, r, m, sides=10, part=None):
+    va, vb = to_b(*a), to_b(*b)
+    d = Vector(vb) - Vector(va)
+    bpy.ops.mesh.primitive_cylinder_add(vertices=sides, radius=r, depth=d.length,
+                                        location=(Vector(va) + Vector(vb)) / 2)
+    o = bpy.context.object
+    o.name = name
+    o.rotation_mode = 'QUATERNION'
+    o.rotation_quaternion = d.to_track_quat('Z', 'Y')
+    o.data.materials.append(M[m])
+    o['part'] = part or PART
+    GROUPS.setdefault((o['part'], m), []).append(o)
+    return o
+
+# ================================================================ 几何组装
+# ---- 台基（青石） ----
+PART = 'base'
+po = MS['plinthOutsetM']
+box('plinth', U0 - po, U1 + po, V0 - po, V1 + po, 0, PL, 'stone')
+
+# ---- 层身墙（1-3 层 BODY_L；4 层 F4_L），白墙板盒（CCW 左法线=内侧） ----
+def wall_ring(poly, z0, z1, part):
+    n = len(poly)
+    for i in range(n):
+        a = Vector(poly[i])
+        b = Vector(poly[(i + 1) % n])
+        e = b - a
+        if e.length < 1e-6:
+            continue
+        e.normalize()
+        nv = Vector((-e.y, e.x)) * WT
+        if abs(e.y) < 1e-6:                       # u 向边
+            box('wall-%s-%d' % (part, i), min(a.x, b.x), max(a.x, b.x),
+                min(a.y, a.y + nv.y), max(a.y, a.y + nv.y), z0, z1, 'wall', part)
+        else:                                     # v 向边
+            box('wall-%s-%d' % (part, i), min(a.x, a.x + nv.x), max(a.x, a.x + nv.x),
+                min(a.y, b.y), max(a.y, b.y), z0, z1, 'wall', part)
+PART = 'walls'
+zprev = PL
+for si, z in enumerate((Z1, Z2, Z3)):
+    wall_ring(BODY_L, zprev, z, 's%d' % (si + 1))   # 第 1 层自台基顶起，以上逐层衔接
+    zprev = z
+wall_ring(F4_L, Z3, Z4, 's4')
+# 室内遮暗核心（玻璃/格心后不透亮）
+PART = 'core'
+box('core-main', U0 + 0.7, (PU0 - 0.7) if PAV else (U1 - 0.7), V0 + 0.7, V1 - 0.7, PL, Z3, 'dark')
+if PAV:
+    box('core-ne', PU0 + 0.7, U1 - 0.7, PV1 + 0.7, V1 - 0.7, PL, Z3, 'dark')
+box('core-s4', U0 + 0.7, U1 - SB - 0.7, V0 + SB + 0.7, V1 - SB - 0.7, Z3, Z4, 'dark')
+
+# ---- 12.0 层顶盖（4 层楼面 + 退台平屋面，青石） ----
+PART = 'terrace'
+midu = PU0 if PAV else (U0 + U1) / 2
+box('terrace-main', U0, midu, V0, V1, Z3 - 0.06, Z3 + 0.06, 'stone')
+if PAV:
+    box('terrace-ne', PU0, U1, PV1, V1, Z3 - 0.06, Z3 + 0.06, 'stone')
+
+# ---- 逐层腰檐（1-3 层，沿 BODY_L；主檐在主屋面 loft 自带） ----
+PART = 'eaves'
+for si, z in enumerate((Z1, Z2, Z3)):
+    eave_band('eave-s%d' % (si + 1), BODY_L, z, part='eaves')
+
+# ---- 主屋面（歇山）：凹曲下坡 loft 至破环，上段陡坡 + 两端山花 + 素脊 ----
+PART = 'roof-main'
+half = (max(q[1] for q in MAIN_ROOF) - min(q[1] for q in MAIN_ROOF)) / 2
+y0e = Z4 - P['roof']['eaveDropM']
+total_run = half + P['eaves']['overhangM']
+t_br = ((P['roof']['breakHeightM'] - y0e) / (P['roof']['ridgeHeightM'] - y0e)) ** (1 / 1.6)
+half_run = max(1.2, total_run * (1 - t_br))
+vc, y0 = roof_loft('roof-main', MAIN_ROOF, Z4, P['roof']['breakHeightM'], half_run, part='roof-main')
+yb = P['roof']['breakHeightM']
+ry = P['roof']['ridgeHeightM']
+ru0, ru1 = min(q[0] for q in MAIN_ROOF), max(q[0] for q in MAIN_ROOF)
+def zf(vpos):
+    return yb + (ry - yb) * (1 - abs(vpos - vc) / half_run)
+for tag, vp in (('n', vc + half_run), ('s', vc - half_run)):
+    items = [((ru0, vp, zf(vp)), (ru0 / 2, zf(vp))), ((ru1, vp, zf(vp)), (ru1 / 2, zf(vp))),
+             ((ru1, vc, ry), (ru1 / 2, ry)), ((ru0, vc, ry), (ru0 / 2, ry))]
+    add_local('gable-slope-' + tag, items, [(0, 1, 2, 3)] if tag == 'n' else [(0, 3, 2, 1)], 'roof', part='roof-main')
+for su, tag, flip in ((ru0, 'w', False), (ru1, 'e', True)):
+    items = [((su, vc - half_run, yb), (0, 0)), ((su, vc + half_run, yb), (1, 0)),
+             ((su, vc, ry), (0.5, ry - yb))]
+    add_local('shanhua-' + tag, items, [(0, 2, 1)] if flip else [(0, 1, 2)], 'wall', part='roof-main')
+cyl('main-ridge', (ru0 + 0.25, vc, ry + 0.02), (ru1 - 0.25, vc, ry + 0.02),
+    P['roof']['ridgeRadiusM'], 'roof', 10, part='roof-main')
+for sx, tag in ((ru0 + 0.25, 'w'), (ru1 - 0.25, 'e')):
+    box('ridge-cap-' + tag, sx - 0.16, sx + 0.16, vc - 0.16, vc + 0.16, ry - 0.02, ry + 0.30, 'dark', part='roof-main')
+# 4 层顶平屋面（主屋面避让留下的退台面，青石）
+if PAV:
+    box('terrace-sw', U0, PU0, V0 + SB, PV1, Z4 - 0.06, Z4 + 0.06, 'stone')
+    box('terrace-e', ROOF_U1, U1 - SB, PV1, V1 - SB, Z4 - 0.06, Z4 + 0.06, 'stone')
+
+# ---- 转角亭楼（全高角塔 + extraTiers + 攒尖鎏金顶） ----
+if PAV:
+    TI = PAV.get('tierInsetM', 0.25)
+    PART = 'pav-base'
+    po = MS['plinthOutsetM']
+    box('pav-plinth', PU0 - po, PU1 + po, PV0 - po, PV1 + po, 0, PL, 'stone')
+    PART = 'pav-body'
+    box('pav-wall-s', PU0, PU1, PV0, PV0 + WT, PL, Z4, 'wall')
+    box('pav-wall-e', PU1 - WT, PU1, PV0, PV1, PL, Z4, 'wall')
+    box('pav-wall-w', PU0, PU0 + WT, PV0, PV1, PL, Z4, 'wall')
+    box('pav-wall-n', PU0, PU1, PV1 - WT, PV1, PL, Z4, 'wall')
+    box('pav-core', PU0 + WT, PU1 - WT, PV0 + WT, PV1 - WT, PL, Z4, 'dark')
+    for cu, cv, tg in ((PU0 + 0.17, PV0 + 0.17, 'sw'), (PU1 - 0.17, PV0 + 0.17, 'se'),
+                       (PU0 + 0.17, PV1 - 0.17, 'nw'), (PU1 - 0.17, PV1 - 0.17, 'ne')):
+        box('pav-post-' + tg, cu - 0.17, cu + 0.17, cv - 0.17, cv + 0.17, PL, Z4, 'wood')
+    box('pav-cap', PU0 - 0.05, PU1 + 0.05, PV0 - 0.05, PV1 + 0.05, Z4 - 0.06, Z4 + 0.06, 'stone')
+    eave_band('pav-eave-z4', [(PU0, PV0), (PU1, PV0), (PU1, PV1), (PU0, PV1)], Z4, part='pav-body')
+    zt = Z4
+    for k, th in enumerate(PAV['tierHeightsM']):
+        inset = TI * (k + 1)
+        a0, a1, b0, b1 = PU0 + inset, PU1 - inset, PV0 + inset, PV1 - inset
+        pk = 'pav-tier%d' % (k + 1)
+        PART = pk
+        box(pk + '-wall-s', a0, a1, b0, b0 + WT, zt + 0.06, zt + th - 0.06, 'wall')
+        box(pk + '-wall-n', a0, a1, b1 - WT, b1, zt + 0.06, zt + th - 0.06, 'wall')
+        box(pk + '-wall-w', a0, a0 + WT, b0, b1, zt + 0.06, zt + th - 0.06, 'wall')
+        box(pk + '-wall-e', a1 - WT, a1, b0, b1, zt + 0.06, zt + th - 0.06, 'wall')
+        box(pk + '-cap', a0 - 0.05, a1 + 0.05, b0 - 0.05, b1 + 0.05, zt + th - 0.06, zt + th + 0.06, 'stone')
+        eave_band(pk + '-eave', [(a0, b0), (a1, b0), (a1, b1), (a0, b1)], zt + th, part=pk)
+        zt += th
+    # 攒尖顶 + 鎏金宝顶
+    PART = 'pav-roof'
+    apex = zt + PAV['apexAboveLastEaveM']
+    tin = TI * len(PAV['tierHeightsM'])
+    pr = (PU0 + tin - PAV['pyramidOutsetM'], PU1 - tin + PAV['pyramidOutsetM'],
+          PV0 + tin - PAV['pyramidOutsetM'], PV1 - tin + PAV['pyramidOutsetM'])
+    base_y = zt - 0.25
+    pcu, pcv = (pr[0] + pr[1]) / 2, (pr[2] + pr[3]) / 2
+    corners = [(pr[0], pr[2]), (pr[1], pr[2]), (pr[1], pr[3]), (pr[0], pr[3])]
+    liftc = PAV['pyramidLiftM']
+    for i in range(4):
+        a = corners[i]
+        b = corners[(i + 1) % 4]
+        items = [((a[0], a[1], base_y + liftc), (0, 0)), ((b[0], b[1], base_y + liftc), (1, 0)),
+                 ((pcu, pcv, apex), (0.5, 1))]
+        add_local('pav-pyramid-%d' % i, items, [(0, 2, 1)], 'roof')
+    fin = PAV['finial']
+    cyl('pav-finial-rod', (pcu, pcv, apex - 0.25), (pcu, pcv, fin['topM'] - fin['sphereRM']),
+        0.07, 'gild', 8, part='pav-roof')
+    bpy.ops.mesh.primitive_uv_sphere_add(radius=fin['sphereRM'], segments=12, ring_count=8,
+                                         location=to_b(pcu, pcv, fin['topM'] - fin['sphereRM']))
+    sp = bpy.context.object
+    sp.name = 'pav-finial-sphere'
+    sp.data.materials.append(M['gild'])
+    sp['part'] = 'pav-roof'
+    GROUPS.setdefault(('pav-roof', 'gild'), []).append(sp)
+
+# ---- 地面层柱廊 + 店面 + 挂落 + 匾额（两条街面） ----
+FC = P['facades']
+CS = FC['columnSizeM']
+def bay_lines(a0, a1):
+    """开间轴线：节奏交替，含两端。"""
+    lines = [a0]
+    k = 0
+    while lines[-1] + FC['bayRhythmM'][k % 2] < a1 - CS:
+        lines.append(lines[-1] + FC['bayRhythmM'][k % 2])
+        k += 1
+    lines.append(a1)
+    return lines
+PART = 'colonnade'
+front_lines = bay_lines(U0 + 0.02, U1 - 0.02)
+for face, cv in (('s', V0 + CS / 2), ('n', V1 - CS / 2)):
+    for i, lu in enumerate(front_lines):
+        box('col-%s-%d' % (face, i), lu - CS / 2, lu + CS / 2, cv - CS / 2, cv + CS / 2, PL, Z1, 'wood')
+PART = 'shopfront'
+gh = FC['shopfront']['glassHeadM']
+sh = FC['shopfront']['sillM']
+fd = FC['fasciaDepthM']
+for face, cv, sgn in (('s', V0, -1), ('n', V1, 1)):
+    for a, b in zip(front_lines[:-1], front_lines[1:]):
+        if b - a < 1.6:
+            continue
+        g0, g1 = a + 0.18, b - 0.18
+        zp = cv + sgn * 0.02                    # 玻璃面：墙皮外 0.02
+        tag = '%s-%.1f' % (face, a)
+        quad_panel('shop-glass-' + tag, (g0 + g1) / 2, zp, PL + sh, gh, g1 - g0,
+                   0 if sgn < 0 else math.pi, 'glass')
+        box('shop-riser-' + tag, g0, g1, min(cv, zp), max(cv, zp), PL, PL + sh, 'dark')
+        box('shop-head-' + tag, g0, g1, cv - 0.06, cv + 0.06, gh, Z1 - fd, 'dark')
+        box('shop-mullion-' + tag, (g0 + g1) / 2 - 0.04, (g0 + g1) / 2 + 0.04, zp - 0.02, zp + 0.02,
+            PL + sh, gh, 'dark')
+PART = 'fascia'
+for face, v0_, v1_ in (('s', V0 - 0.02, V0 + 0.10), ('n', V1 - 0.10, V1 + 0.02)):
+    box('guoluo-' + face, U0, U1, v0_, v1_, Z1 - fd, Z1, 'gild')
+    box('guoluo-trim-' + face, U0, U1, v0_ - 0.015, v1_ + 0.015, Z1 - fd - 0.05, Z1 - fd, 'gild')
+PART = 'plaques'
+for face, cv, sgn in (('s', V0, -1), ('n', V1, 1)):
+    for a, b in zip(front_lines[:-1], front_lines[1:]):
+        if b - a < 1.6:
+            continue
+        quad_panel('plaque-%s-%.1f' % (face, a), (a + b) / 2, cv + sgn * 0.14, Z1 - fd + 0.02, Z1 - 0.04,
+                   1.5, 0 if sgn < 0 else math.pi, 'dark')
+pq = FC['floor2PlaqueM']
+quad_panel('plaque-floor2', (U0 + (PU0 if PAV else U1)) / 2, V0 - 0.06, Z1 + 0.8, Z1 + 0.8 + pq[1],
+           pq[0], 0, 'dark')
+
+# ---- 腰廊（galleryStoreys 连续画廊 + 格心栏杆，两条街面） ----
+PART = 'gallery'
+gd = FC['galleryDepthM']
+bh = FC['balustradeHM']
+for st in FC['galleryStoreys']:
+    z = ZT[st - 2]                   # 楼层 st 的楼面标高（ZT[0]=第2层楼面）
+    for face, v0_, v1_, sgn in (('s', V0 - gd, V0 + 0.1, -1), ('n', V1 - 0.1, V1 + gd, 1)):
+        box('gal-slab-%s-%d' % (face, st), U0, U1, v0_, v1_, z - 0.06, z + 0.06, 'stone')
+        edge = v0_ if sgn < 0 else v1_
+        npost = int((U1 - U0) / 2.3)
+        for i in range(npost + 1):
+            pu = U0 + (U1 - U0) * i / npost
+            box('gal-post-%s-%d-%d' % (face, st, i), pu - 0.06, pu + 0.06, edge - 0.05, edge + 0.05,
+                z, z + bh, 'wood')
+        box('gal-rail-%s-%d' % (face, st), U0, U1, edge - 0.055, edge + 0.055, z + bh - 0.08, z + bh, 'wood')
+        quad_panel('gal-lattice-%s-%d' % (face, st), (U0 + U1) / 2, edge + sgn * 0.03, z + 0.12,
+                   z + bh - 0.08, U1 - U0, 0 if sgn < 0 else math.pi, 'lattice')
+
+# ---- 格心窗（2-3 层前后街面按开间、东西山墙少量；4 层退台面；亭楼） ----
+PART = 'windows'
+W = FC['window']
+def windows_on_face(tag, axis, coord, a0, a1, zfloor, ztop, centers, w, h, sill, sgn):
+    """axis='v': 竖面垂直 v（coord=v 平面，跨 u）；axis='u' 对偶。sgn=外法线方向。"""
+    for i, c in enumerate(centers):
+        if c < a0 + w / 2 + 0.1 or c > a1 - w / 2 - 0.1:
+            continue
+        z0 = zfloor + sill
+        if z0 + h > ztop - 0.25:
+            h = ztop - 0.25 - z0
+        if h < 0.8:
+            continue
+        off = 0.03 * sgn
+        yaw = (0 if sgn < 0 else math.pi) if axis == 'v' else (math.pi / 2 if sgn > 0 else -math.pi / 2)
+        cu = c if axis == 'v' else coord + off
+        cv = coord + off if axis == 'v' else c
+        quad_panel('win-' + tag + '-%d' % i, cu, cv, z0, z0 + h, w, yaw, 'lattice')
+        quad_panel('winb-' + tag + '-%d' % i, (c if axis == 'v' else coord + off * 0.4),
+                   (coord + off * 0.4 if axis == 'v' else c), z0 - 0.07, z0 + h + 0.07, w + 0.14, yaw, 'wood')
+for st in (2, 3):
+    z, ztop = ZT[st - 2], ZT[st - 1]   # 楼层 st 的层底/层顶
+    centers = [(a + b) / 2 for a, b in zip(front_lines[:-1], front_lines[1:]) if b - a >= 2.4]
+    windows_on_face('s%d' % st, 'v', V0, U0, PU0 if PAV else U1, z, ztop, centers,
+                    min(W['widthM'], 2.4), W['heightM'], W['sillM'], -1)
+    windows_on_face('n%d' % st, 'v', V1, U0, U1, z, ztop, centers,
+                    min(W['widthM'], 2.4), W['heightM'], W['sillM'], 1)
+    for coord, a0, a1, sgn, tf in ((U1, PV1 if PAV else V0, V1, 1, 'e'), (U0, V0, V1, -1, 'w')):
+        cs = [a0 + (a1 - a0) * f for f in (0.3, 0.7)]
+        windows_on_face('%s%d' % (tf, st), 'u', coord, a0, a1, z, ztop, cs,
+                        W['widthM'], W['heightM'], W['sillM'], sgn)
+z = Z3
+step4 = 4.4
+for coord, a0, a1, sgn, tf in ((V0 + SB, U0, PU0 if PAV else U1 - SB, -1, 's'),
+                               (V1 - SB, U0, U1 - SB, 1, 'n'),
+                               (U1 - SB, PV1 if PAV else V0 + SB, V1 - SB, 1, 'e'),
+                               (U0, V0 + SB, V1 - SB, -1, 'w')):
+    cnt = max(2, int((a1 - a0) / step4))
+    cs = [a0 + (a1 - a0) * (i + 0.5) / cnt for i in range(cnt)]
+    windows_on_face('%s4' % tf, 'v' if tf in 'sn' else 'u', coord, a0, a1, z, Z4, cs,
+                    W['widthM'], W['heightM'] - 0.2, W['sillM'] - 0.1, sgn)
+if PAV:
+    for st in (2, 3):
+        z, ztop = ZT[st - 2], ZT[st - 1]
+        windows_on_face('ps%d' % st, 'v', PV0, PU0 + 0.5, PU1 - 0.5, z, ztop,
+                        [PU0 + (PU1 - PU0) * f for f in (0.32, 0.68)], 1.3, 1.6, 0.9, -1)
+        windows_on_face('pe%d' % st, 'u', PU1, PV0 + 0.5, PV1 - 0.5, z, ztop,
+                        [PV0 + (PV1 - PV0) * f for f in (0.32, 0.68)], 1.3, 1.6, 0.9, 1)
+    zt = Z4
+    for k, th in enumerate(PAV['tierHeightsM']):
+        inset = TI * (k + 1)
+        a0, a1, b0, b1 = PU0 + inset, PU1 - inset, PV0 + inset, PV1 - inset
+        windows_on_face('ptS%d' % (k + 1), 'v', b0, a0 + 0.3, a1 - 0.3, zt, zt + th,
+                        [(a0 + a1) / 2 - 1.0, (a0 + a1) / 2 + 1.0], 1.3, 1.5, 0.8, -1)
+        windows_on_face('ptN%d' % (k + 1), 'v', b1, a0 + 0.3, a1 - 0.3, zt, zt + th,
+                        [(a0 + a1) / 2], 1.3, 1.5, 0.8, 1)
+        windows_on_face('ptE%d' % (k + 1), 'u', a1, b0 + 0.3, b1 - 0.3, zt, zt + th,
+                        [(b0 + b1) / 2], 1.3, 1.5, 0.8, 1)
+        windows_on_face('ptW%d' % (k + 1), 'u', a0, b0 + 0.3, b1 - 0.3, zt, zt + th,
+                        [(b0 + b1) / 2], 1.3, 1.5, 0.8, -1)
+        zt += th
+
+# ================================================================ 收尾：合并、三角化、锚、导出
+final = []
+for (part, m), items in sorted(GROUPS.items()):
+    bpy.ops.object.select_all(action='DESELECT')
+    for o in items:
+        o.select_set(True)
+    bpy.context.view_layer.objects.active = items[0]
+    if len(items) > 1:
+        bpy.ops.object.join()
+    o = bpy.context.object
+    o.name = part + '__' + m
+    bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+    bm = bmesh.new()
+    bm.from_mesh(o.data)
+    bmesh.ops.triangulate(bm, faces=list(bm.faces))
+    bm.to_mesh(o.data)
+    bm.free()
+    final.append(o)
+
+anchor = bpy.data.objects.new(P['id'], None)
+anchor.empty_display_size = 2
+anchor.location = (CX, -CZ, 0)                  # Blender 系 = (map_x, -map_z)
+anchor['id'] = P['id']
+anchor['module'] = 'bazaar-tower-kit'
+anchor['zone'] = P['zone']
+anchor['lod'] = 'L2'
+bpy.context.collection.objects.link(anchor)
+bpy.context.view_layer.update()                 # 先让 anchor.matrix_world 求值，再保世界挂父
+for o in final:
+    o.parent = anchor
+    o.matrix_parent_inverse = anchor.matrix_world.inverted()   # 网格已是世界坐标，抵消锚平移
+
+bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT, 'model.blend'))
+bpy.ops.object.select_all(action='DESELECT')
+anchor.select_set(True)
+for o in final:
+    o.select_set(True)
+glb = os.path.join(OUT, 'model.glb')
+bpy.ops.export_scene.gltf(filepath=glb, export_format='GLB', export_yup=True, export_extras=True,
+                          export_apply=True, use_selection=True, export_animations=False,
+                          export_cameras=False, export_lights=False)
+
+# alphaMode 兜底：格心=MASK+0.5、玻璃=BLEND（Blender 4.5 导出命名差异修正，同 sansuitang）
+buf = bytearray(open(glb, 'rb').read())
+jl = int.from_bytes(buf[12:16], 'little')
+assert bytes(buf[16:20]) == b'JSON'
+j = json.loads(bytes(buf[20:20 + jl]))
+bl_off = 20 + jl
+bl = int.from_bytes(buf[bl_off:bl_off + 4], 'little')
+bindata = bytes(buf[bl_off + 8:bl_off + 8 + bl])
+changed = False
+for mm in j.get('materials', []):
+    if 'lattice' in mm.get('name', '') and mm.get('alphaMode') != 'MASK':
+        mm['alphaMode'] = 'MASK'
+        mm['alphaCutoff'] = 0.5
+        changed = True
+    if 'glass' in mm.get('name', '') and mm.get('alphaMode') != 'BLEND':
+        mm['alphaMode'] = 'BLEND'
+        changed = True
+if changed:
+    nj = json.dumps(j, separators=(',', ':')).encode()
+    njp = nj + b' ' * ((-len(nj)) % 4)
+    total = 12 + 8 + len(njp) + 8 + bl
+    open(glb, 'wb').write(b'glTF' + (2).to_bytes(4, 'little') + total.to_bytes(4, 'little') +
+                          len(njp).to_bytes(4, 'little') + b'JSON' + njp +
+                          bl.to_bytes(4, 'little') + b'BIN\x00' + bindata)
+
+tris = 0
+by = {}
+for o in final:
+    o.data.calc_loop_triangles()
+    n = len(o.data.loop_triangles)
+    tris += n
+    by[o.name] = n
+maxy = max(v.co.z for o in final for v in o.data.vertices)
+minx = min(v.co.x for o in final for v in o.data.vertices)
+maxx = max(v.co.x for o in final for v in o.data.vertices)
+miny = min(v.co.y for o in final for v in o.data.vertices)
+maxy2 = max(v.co.y for o in final for v in o.data.vertices)
+texs = {}
+for nm, meta in META.items():
+    for f in meta.get('textures', {}).values():
+        texs[f] = os.path.getsize(os.path.join(TEX_DIR, f))
+json.dump({'triangles': tris, 'byNode': by, 'glbBytes': os.path.getsize(glb),
+           'maxY': round(maxy, 3), 'planBBoxBlenderX': [round(minx, 2), round(maxx, 2)],
+           'planBBoxBlenderY': [round(miny, 2), round(maxy2, 2)],
+           'anchorMap': [round(CX, 4), round(CZ, 4)], 'footprintAreaM2': round(AREA, 2),
+           'textures': texs, 'textureTotalBytes': sum(texs.values()),
+           'params': PARAMS_REL, 'buildSeconds': round(time.time() - T0, 1)},
+          open(os.path.join(OUT, 'measurements.json'), 'w'), ensure_ascii=False, indent=2)
+json.dump({'axis': 'GLB Y-up world map coords (x=layout x, z=layout z, y=height); anchor empty at footprint AREA centroid',
+           'instanceSpace': False, 'integratedIntoWorld': True,
+           'materials': META, 'params': P,
+           'textureSource': 'asset-authoring/yuyuan-entry/source-kit/textures (read-only)',
+           'notes': ['瓦垄/瓦当以 roof 材质贴图表达，无逐瓦几何；正脊素端头、无走兽。',
+                     '转角亭楼全高角塔读法：地面起随主体层节奏，上加 extraTiers + 攒尖鎏金顶。',
+                     '主屋面平面在亭楼西缘（出檐+0.1m）收头，留出的 4 层顶面做平屋面（terrace-*），构造上避开亭楼穿插。'],
+           'buildSeconds': round(time.time() - T0, 1)},
+          open(os.path.join(OUT, 'recipe.json'), 'w'), ensure_ascii=False, indent=2)
+print('BAZAAR_TOWER_BUILT', P['id'], tris, os.path.getsize(glb), round(maxy, 2),
+      'anchor', round(CX, 3), round(CZ, 3), 'secs', round(time.time() - T0, 1))
