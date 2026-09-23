@@ -6,6 +6,7 @@ bounds vs sizeMeters (+-10%, bean sets +-15%), sockets inside bounds+1cm and
 socket_rest at origin, reimport image report, outwardShare for closed items,
 sha256 in manifest, collision entries."""
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -14,15 +15,21 @@ import glbtools  # noqa: E402
 
 WS = Path(__file__).resolve().parent.parent
 PKG = WS.parent
+while not (PKG / 'DESIGN_SPEC.json').exists() and PKG != PKG.parent:
+    PKG = PKG.parent
 SPEC = json.loads((PKG / 'DESIGN_SPEC.json').read_text(encoding='utf-8'))
-PROPS = WS / 'props'
-ITEMS = {i['id']: i for i in SPEC['items']}
+# R1 mode (env): SNACKS_PROPS / SNACKS_ART / SNACKS_IDS / SNACKS_MANIFEST keep the same
+# checks pointed at the repair package instead of the adopted WS/props batch.
+PROPS = Path(os.environ.get('SNACKS_PROPS', str(WS / 'props')))
+ART = Path(os.environ.get('SNACKS_ART', str(PKG / 'artifacts/snacks-handheld')))
+IDS_FILTER = [s for s in os.environ.get('SNACKS_IDS', '').split(',') if s]
+ITEMS = {i['id']: i for i in SPEC['items'] if not IDS_FILTER or i['id'] in IDS_FILTER}
 BUDGETS = SPEC['budgets']['trianglesByClass']
 CLOSED = {'bean-single', 'xiaolongbao', 'guantangbao', 'shengjian', 'tangyuan', 'tangyuan-meat',
           'xiekehuang', 'chunjuan', 'ligaotang-piece', 'cifangao'}
 # bounds exceptions documented in PROGRESS.assumptions
 BOUND_EXC = {
-    'congyoubing': 'folded-in-half semicircle: actual ~[.12,.017,.062] vs spec z .12',
+    'congyoubing': 'folded-in-half semicircle: actual ~[.12,.027,.062] vs spec z .12 (R1 two 1.1 cm layers + laminations)',
 }
 # nodes excluded from the bounds check (protruding by design, extras on root record bun size)
 NODE_EXCLUDE = {'guantangbao': {'straw'}}
@@ -38,12 +45,13 @@ def check(cond, msg):
 
 
 def main():
-    manifest = json.loads((PROPS / 'manifest.json').read_text(encoding='utf-8')) \
-        if (PROPS / 'manifest.json').exists() else None
+    manifest_path = Path(os.environ.get('SNACKS_MANIFEST', str(PROPS / 'manifest.json')))
+    manifest = json.loads(manifest_path.read_text(encoding='utf-8')) \
+        if manifest_path.exists() else None
     coll = json.loads((PROPS / 'collision.json').read_text(encoding='utf-8')) \
         if (PROPS / 'collision.json').exists() else None
     validator = {}
-    vfile = PKG / 'artifacts/snacks-handheld/validator/report.json'
+    vfile = ART / 'validator/report.json'
     if vfile.exists():
         for r in json.loads(vfile.read_text(encoding='utf-8')).get('results', []):
             validator[r['file']] = r

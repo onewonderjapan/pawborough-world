@@ -1,12 +1,15 @@
 """Bean-specific renders (DESIGN_SPEC.beans.renders):
 - bean-lineup: 6 variants in a row, 2048x768, camera .25 m, f/4 focused on v3
-- bean-macro-{key,rim,top}: single bean v1, 2048x1536, camera .09 m, f/2.8, three light angles
-- {dish,jar,packet} close-ups 1600x1200; jar close-up records bean resolvability measurement.
-Blank guard on every frame."""
+- bean-macro-{key,rim,top}: single bean v1, 2048x1536, R2: f/4 focused ON the bean
+  surface facing the camera (R1 focused the socket tip at f/2.8 -> whole-bean blur)
+- {dish,jar,packet} close-ups 1600x1200; jar close-up records bean resolvability.
+Blank guard on every frame. --legacy-macro reproduces the R1 macro focus (before).
+"""
 import bpy
 import sys
 import json
 import math
+import argparse
 from pathlib import Path
 from mathutils import Vector
 
@@ -17,8 +20,47 @@ sys.path.insert(0, str(WS / 'tools'))
 
 import glbtools  # noqa: E402
 
-REND = WS / 'renders'
+_ap = argparse.ArgumentParser()
+_ap.add_argument('--props', default=None, help='GLB source dir (default WS/props)')
+_ap.add_argument('--rend', default=None, help='renders output dir (default WS/renders)')
+_ap.add_argument('--legacy-macro', action='store_true',
+                 help='R1 macro behaviour (f/2.8 focused on socket_grip) for before frames')
+ARGS = _ap.parse_args(sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else [])
+
+REND = Path(ARGS.rend) if ARGS.rend else WS / 'renders'
+PROPS = Path(ARGS.props) if ARGS.props else WS / 'props'
 SPEC = json.loads((WS.parent / 'DESIGN_SPEC.json').read_text(encoding='utf-8'))
+
+
+def surface_focus_point(obj, cam_pos, axis_pt):
+    """R2 #2: focus ON the bean surface facing the camera. Among the camera-facing
+    vertices, pick the one at the face's median depth near the view axis - the focal
+    plane then lies IN the face field (a single apex vertex leaves the face soft)."""
+    dg = bpy.context.evaluated_depsgraph_get()
+    me = obj.evaluated_get(dg).to_mesh()
+    mw = obj.matrix_world
+    nrm = mw.to_3x3().inverted().transposed()
+    cam = Vector(cam_pos)
+    axis = (Vector(axis_pt) - cam).normalized()
+    cand = []
+    for v in me.vertices:
+        p = mw @ v.co
+        n = (nrm @ v.normal).normalized()
+        to_cam = cam - p
+        d = to_cam.length
+        if d < 1e-6:
+            continue
+        facing = to_cam.normalized().dot(n)
+        if facing < 0.35:
+            continue
+        off = (p - cam).cross(axis).length
+        cand.append(((cam - p).length, facing, off, p.copy()))
+    obj.evaluated_get(dg).to_mesh_clear()
+    if not cand:
+        return Vector(axis_pt)
+    med = sorted(c[0] for c in cand)[len(cand) // 2]
+    best = min(cand, key=lambda t: abs(t[0] - med) + 0.3 * t[2] - 0.004 * t[1])
+    return best[3]
 
 
 def blank_guard(path):
@@ -119,7 +161,7 @@ failed = []
 # ---------- bean-lineup -----------------------------------------------------
 sc = build_scene()
 pre = set(sc.objects)
-bpy.ops.import_scene.gltf(filepath=str(WS / 'props' / 'bean-single.glb'))
+bpy.ops.import_scene.gltf(filepath=str(PROPS / 'bean-single.glb'))
 roots = [o for o in sc.objects if o not in pre and o.parent is None]
 roots.sort(key=lambda o: o.name)
 for k, r in enumerate(roots):
@@ -140,7 +182,7 @@ bpy.ops.wm.read_factory_settings(use_empty=True)
 ANGLE = {'key': (48, 140), 'rim': (30, 330), 'top': (80, 140)}
 for name, (el, az) in ANGLE.items():
     sc = build_scene(sun_pos=(el, az))
-    bpy.ops.import_scene.gltf(filepath=str(WS / 'props' / 'bean-single.glb'))
+    bpy.ops.import_scene.gltf(filepath=str(PROPS / 'bean-single.glb'))
     v1 = next(o for o in sc.objects if o.parent is None and o.name.startswith('wuxiangdou-bean-v1'))
     rest = [o for o in sc.objects if o.parent is None and o is not v1]
     for o in rest:
@@ -151,17 +193,28 @@ for name, (el, az) in ANGLE.items():
     bpy.context.view_layer.update()
     sock = sc.objects.get('socket_grip')
     sock_pos = sock.matrix_world.translation if sock else Vector((.011, 0, .0045))
-    cen = Vector((.0, .0, .0045))
     side = Vector((sock_pos.x, sock_pos.y, 0))
     if side.length < 1e-6:
         side = Vector((1, 0, 0))
     side.normalize()
     pos = sock_pos + side * .075 + Vector((0, 0, .012))
-    cam = add_camera(sc, 'cam', pos, sock_pos, 30, fstop=2.8, focus=(pos - sock_pos).length)
+    if ARGS.legacy_macro:
+        focus_pt, fstop = sock_pos, 2.8            # R1 behaviour (before frames)
+    else:
+        lod0 = next(o for o in sc.objects if o.type == 'MESH'
+                    and o.name.startswith('wuxiangdou-bean-v1_LOD0'))
+        focus_pt = surface_focus_point(lod0, pos, sock_pos)
+        fstop = 4.0                                # R2 fix: f/4 on the bean surface
+        if (focus_pt - Vector((0, 0, .0045))).length > .015:
+            print('MACRO_FOCUS_SANITY_FAIL', tuple(focus_pt))
+            sys.exit(4)
+    cam = add_camera(sc, 'cam', pos, focus_pt, 30, fstop=fstop, focus=(pos - Vector(focus_pt)).length)
     sc.camera = cam
     f = REND / ('bean-macro-%s.jpg' % name)
     render(sc, f, 2048, 1536, 128)
     g = blank_guard(f)
+    g['macro'] = {'fstop': fstop, 'focusOnSurface': not ARGS.legacy_macro,
+                  'focusPointM': [round(c, 4) for c in focus_pt]}
     log['frames'].append(g)
     if not g['ok']:
         failed.append(str(f))
@@ -170,13 +223,13 @@ for name, (el, az) in ANGLE.items():
 # ---------- dish / jar / packet close-ups -----------------------------------
 CLOSE = {'bean-dish': 'bean-dish-close.jpg', 'bean-jar': 'bean-jar-close.jpg',
          'bean-packet-open': 'bean-packet-close.jpg'}
-jar_cat = json.loads((WS / 'props/catalog/bean-jar.json').read_text(encoding='utf-8'))
+jar_cat = json.loads((PROPS / 'catalog/bean-jar.json').read_text(encoding='utf-8'))
 bean_pos = jar_cat['beanSet']['positions']
 meas = None
 for id_, out in CLOSE.items():
     sc = build_scene()
     pre = set(sc.objects)
-    bpy.ops.import_scene.gltf(filepath=str(WS / 'props' / (id_ + '.glb')))
+    bpy.ops.import_scene.gltf(filepath=str(PROPS / (id_ + '.glb')))
     new_objs = [o for o in sc.objects if o not in pre]
     for o in new_objs:
         if o.type == 'MESH' and (o.name.endswith('_LOD1') or o.name.endswith('_LOD2')):
@@ -229,7 +282,7 @@ for id_, out in CLOSE.items():
 log['jarResolvability'] = meas
 (REND / 'render-log-beans.json').write_text(json.dumps(log, indent=2) + '\n', encoding='utf-8')
 if meas:
-    (WS / 'props' / 'jar-resolvability.json').write_text(json.dumps(meas, indent=2) + '\n', encoding='utf-8')
+    (PROPS / 'jar-resolvability.json').write_text(json.dumps(meas, indent=2) + '\n', encoding='utf-8')
 if failed:
     print('BLANK_FRAMES', json.dumps(failed))
     sys.exit(3)

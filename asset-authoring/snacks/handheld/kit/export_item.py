@@ -169,6 +169,8 @@ def build_bean_set(id_):
     elif id_ == 'bean-jar':
         pl, n = build_bean.place_jar()
         info = {'expected': 260, 'got': n, 'placement': pl.pos}
+        if getattr(pl, 'stats', None):
+            info['stats'] = pl.stats
         for lod in range(3):
             ves = build_bean.build_jar_vessel(lod)
             if lod == 0:
@@ -237,9 +239,18 @@ def write_catalog_and_reimport(id_, ent, glb_path, cat_dir, reimp_dir, props_dir
     flat = glbtools.flat_nodes(g)
     by_name = {r['name']: r for r in flat}
     tri = {}
-    for lod in range(3):
-        nm = '%s_LOD%d' % (id_, lod)
-        tri['lod%d' % lod] = glbtools.mesh_tris(g, by_name[nm]['node']['mesh']) if nm in by_name and 'mesh' in by_name[nm]['node'] else 0
+    if id_ == 'bean-single':
+        # R1 #8: 6 variant roots - count each root's LODn and sum (was 0/0/0 by name lookup)
+        for lod in range(3):
+            tri['lod%d' % lod] = 0
+            for v in range(1, 7):
+                nm = 'wuxiangdou-bean-v%d_LOD%d' % (v, lod)
+                if nm in by_name and 'mesh' in by_name[nm]['node']:
+                    tri['lod%d' % lod] += glbtools.mesh_tris(g, by_name[nm]['node']['mesh'])
+    else:
+        for lod in range(3):
+            nm = '%s_LOD%d' % (id_, lod)
+            tri['lod%d' % lod] = glbtools.mesh_tris(g, by_name[nm]['node']['mesh']) if nm in by_name and 'mesh' in by_name[nm]['node'] else 0
     extra_tri = {r['name']: glbtools.mesh_tris(g, r['node']['mesh']) for r in flat
                  if 'mesh' in r['node'] and r['name'] not in ('%s_LOD0' % id_, '%s_LOD1' % id_, '%s_LOD2' % id_)}
     b = glbtools.node_bounds(g, parsed['bin'], flat)
@@ -336,11 +347,14 @@ def write_catalog_and_reimport(id_, ent, glb_path, cat_dir, reimp_dir, props_dir
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--ids', required=True)
+    ap.add_argument('--out', default=None,
+                    help='output props dir (default WS/props; R1 writes to the package artifacts dir)')
     args = ap.parse_args(sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else [])
-    props_dir = WS / 'props'
+    props_dir = Path(args.out) if args.out else WS / 'props'
     cat_dir = props_dir / 'catalog'
     reimp_dir = props_dir / 'reimport'
-    for d in (props_dir, cat_dir, reimp_dir):
+    props_dir.mkdir(parents=True, exist_ok=True)
+    for d in (cat_dir, reimp_dir):
         d.mkdir(exist_ok=True)
     failed = []
     for id_ in [s.strip() for s in args.ids.split(',') if s.strip()]:
