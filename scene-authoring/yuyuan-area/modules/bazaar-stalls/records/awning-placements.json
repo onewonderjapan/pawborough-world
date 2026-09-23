@@ -1,0 +1,725 @@
+{
+ "packageId": "pawborough-w1-bazaar-stalls-20260922",
+ "generatedBy": "build_bazaar_stalls.py",
+ "module": "awning strip (parametric, one GLB per edge)",
+ "design": {
+  "projectionM": 1.2,
+  "frontHeightM": 2.78,
+  "wallHeightM": 3.1015,
+  "slopeDeg": 15.0,
+  "scallopWidthM": 0.5,
+  "brackets": "2 per 3m (spacing 1.5m, ends included)",
+  "canvasAlternation": "wine/indigo/cream round-robin by edge order",
+  "collision": "unreachable (valance bottom 2.54m, above 2.5m body band) — no collision box"
+ },
+ "counts": {
+  "edges": 16,
+  "skipped": []
+ },
+ "edges": [
+  {
+   "blockId": "bld-165791764",
+   "edgeIndex": 6,
+   "street": "中心广场",
+   "edge": [
+    [
+     -133.03,
+     -13.54
+    ],
+    [
+     -136.53,
+     -32.04
+    ]
+   ],
+   "dir": [
+    -0.9825702456970679,
+    0.18589166810485067
+   ],
+   "lenM": 18.8,
+   "midpoint": [
+    -134.78,
+    -22.79
+   ],
+   "outward": [
+    -0.185892,
+    -0.98257
+   ],
+   "rotY": -2.9546133836708823,
+   "module": "awnings/awning-bld-165791764-6.glb",
+   "geometry": {
+    "builtLengthM": 18.8,
+    "projectionM": 1.2,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
+    "slopeDeg": 15.0,
+    "scallopWidthM": 0.5,
+    "bracketSpacingM": 1.5
+   },
+   "tris": 488,
+   "trisPerMetre": 25.96,
+   "bytes": 37868,
+   "budgetOk": true,
+   "sha256": "fd559f22fa0787a70b7576b5f23e797ec83e2d76f0586d44d806914d581dfa6d"
+  },
+  {
+   "blockId": "bld-389701812",
+   "edgeIndex": 5,
+   "street": "中心广场",
+   "edge": [
+    [
+     -138.45,
+     -40.83
+    ],
+    [
+     -189.19,
+     -31.23
+    ]
+   ],
+   "dir": [
+    0.1859017738273171,
+    0.9825683337497992
+   ],
+   "lenM": 51.6,
+   "midpoint": [
+    -163.82,
+    -36.03
+   ],
+   "outward": [
+    -0.982568,
+    0.185902
+   ],
+   "rotY": -1.3838067718787115,
+   "module": "awnings/awning-bld-389701812-5.glb",
+   "geometry": {
+    "builtLengthM": 51.6,
+    "projectionM": 1.2,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
+    "slopeDeg": 15.0,
+    "scallopWidthM": 0.5,
+    "bracketSpacingM": 1.5
+   },
+   "tris": 1254,
+   "trisPerMetre": 24.3,
+   "bytes": 92092,
+   "budgetOk": true,
+   "sha256": "bb7a2604a0a36f6938a835c5b1f9484b9b2cae01a3f3493ec473e1cc471ba7cd"
+  },
+  {
+   "blockId": "bld-389701901",
+   "edgeIndex": 2,
+   "street": "旧校场路",
+   "edge": [
+    [
+     -255.3,
+     -158.13
+    ],
+    [
+     -260.38,
+     -190.2
+    ]
+   ],
+   "dir": [
+    -0.9876854329735189,
+    0.15645282193655943
+   ],
+   "lenM": 32.5,
+   "midpoint": [
+    -257.84000000000003,
+    -174.165
+   ],
+   "outward": [
+    0.156453,
+    0.987685
+   ],
+   "rotY": 0.15709821842419647,
+   "module": "awnings/awning-bld-389701901-2.glb",
+   "geometry": {
+    "builtLengthM": 32.5,
+    "projectionM": 1.2,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
+    "slopeDeg": 15.0,
+    "scallopWidthM": 0.5,
+    "bracketSpacingM": 1.5
+   },
+   "tris": 810,
+   "trisPerMetre": 24.92,
+   "bytes": 60872,
+   "budgetOk": true,
+   "sha256": "98a2e6a078af4f07192281f187b79222971d7da14698dc8dd58ad553542886f8"
+  },
+  {
+   "blockId": "bld-389701971",
+   "edgeIndex": 0,
+   "street": "旧校场路",
+   "edge": [
+    [
+     -230.84,
+     -23.25
+    ],
+    [
+     -241.28,
+     -79.78
+    ]
+   ],
+   "dir": [
+    -0.9833707114542988,
+    0.18160959185534897
+   ],
+   "lenM": 57.5,
+   "midpoint": [
+    -236.06,
+    -51.515
+   ],
+   "outward": [
+    0.18161,
+    0.983371
+   ],
+   "rotY": 0.18262301551341312,
+   "module": "awnings/awning-bld-389701971-0.glb",
+   "geometry": {
+    "builtLengthM": 57.5,
+    "projectionM": 1.2,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
+    "slopeDeg": 15.0,
+    "scallopWidthM": 0.5,
+    "bracketSpacingM": 1.5
+   },
+   "tris": 1398,
+   "trisPerMetre": 24.31,
+   "bytes": 102908,
+   "budgetOk": true,
+   "sha256": "b76e04d5769ee1aa7db70fac58136c91d868fa1d1b8797768ebc4630192a3b02"
+  },
+  {
+   "blockId": "bld-389702030",
+   "edgeIndex": 1,
+   "street": "豫园老街",
+   "edge": [
+    [
+     -191.94,
+     -193.15
+    ],
+    [
+     -184.79,
+     -169.7
+    ]
+   ],
+   "dir": [
+    0.9565255575338183,
+    -0.2916485175422943
+   ],
+   "lenM": 24.5,
+   "midpoint": [
+    -188.365,
+    -181.425
+   ],
+   "outward": [
+    -0.291649,
+    -0.956526
+   ],
+   "rotY": -2.8456428242945755,
+   "module": "awnings/awning-bld-389702030-1.glb",
+   "geometry": {
+    "builtLengthM": 24.5,
+    "projectionM": 1.2,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
+    "slopeDeg": 15.0,
+    "scallopWidthM": 0.5,
+    "bracketSpacingM": 1.5
+   },
+   "tris": 602,
+   "trisPerMetre": 24.57,
+   "bytes": 45716,
+   "budgetOk": true,
+   "sha256": "e39be81fe3b4e0cd37d0cb7cbc5511bbb8677199f7c5be92375a6203ca1d0ac5"
+  },
+  {
+   "blockId": "bld-428202599",
+   "edgeIndex": 2,
+   "street": "方浜中路",
+   "edge": [
+    [
+     -122.61,
+     14.54
+    ],
+    [
+     -165.66,
+     22.35
+    ]
+   ],
+   "dir": [
+    0.17850327684594774,
+    0.9839393173134504
+   ],
+   "lenM": 43.8,
+   "midpoint": [
+    -144.135,
+    18.445
+   ],
+   "outward": [
+    -0.983939,
+    0.178503
+   ],
+   "rotY": -1.391331240009032,
+   "module": "awnings/awning-bld-428202599-2.glb",
+   "geometry": {
+    "builtLengthM": 43.8,
+    "projectionM": 1.2,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
+    "slopeDeg": 15.0,
+    "scallopWidthM": 0.5,
+    "bracketSpacingM": 1.5
+   },
+   "tris": 1072,
+   "trisPerMetre": 24.47,
+   "bytes": 79156,
+   "budgetOk": true,
+   "sha256": "7bdb3a5d08ff7d8be4e2b19ca01e6a6a3fdd50f01d8f66d0797f43f9a74e74c2"
+  },
+  {
+   "blockId": "bld-428202601",
+   "edgeIndex": 2,
+   "street": "方浜中路",
+   "edge": [
+    [
+     -172.29,
+     22.46
+    ],
+    [
+     -210.9,
+     27.82
+    ]
+   ],
+   "dir": [
+    0.13750544975116646,
+    0.9905010102411455
+   ],
+   "lenM": 39,
+   "midpoint": [
+    -191.595,
+    25.14
+   ],
+   "outward": [
+    0.990501,
+    -0.137505
+   ],
+   "rotY": 1.7087388252259281,
+   "module": "awnings/awning-bld-428202601-2.glb",
+   "geometry": {
+    "builtLengthM": 39,
+    "projectionM": 1.2,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
+    "slopeDeg": 15.0,
+    "scallopWidthM": 0.5,
+    "bracketSpacingM": 1.5
+   },
+   "tris": 960,
+   "trisPerMetre": 24.62,
+   "bytes": 71324,
+   "budgetOk": true,
+   "sha256": "e2c6337f7213c333d3380d88bf3d147befae0894f25e9dfd42af6d329194c6ef"
+  },
+  {
+   "blockId": "bld-428202602",
+   "edgeIndex": 2,
+   "street": "旧校场路",
+   "edge": [
+    [
+     -242.41,
+     -86.91
+    ],
+    [
+     -254.65,
+     -154.28
+    ]
+   ],
+   "dir": [
+    -0.9838932686235378,
+    0.1787569186277588
+   ],
+   "lenM": 68.5,
+   "midpoint": [
+    -248.53,
+    -120.595
+   ],
+   "outward": [
+    0.178757,
+    0.983893
+   ],
+   "rotY": 0.179722874752401,
+   "module": "awnings/awning-bld-428202602-2.glb",
+   "geometry": {
+    "builtLengthM": 68.5,
+    "projectionM": 1.2,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
+    "slopeDeg": 15.0,
+    "scallopWidthM": 0.5,
+    "bracketSpacingM": 1.5
+   },
+   "tris": 1674,
+   "trisPerMetre": 24.44,
+   "bytes": 123316,
+   "budgetOk": true,
+   "sha256": "bb2afc4e165f2dade2726761b8d4992a1d1470a5955d3c51c45448c768007679"
+  },
+  {
+   "blockId": "bld-428202603",
+   "edgeIndex": 0,
+   "street": "旧校场路",
+   "edge": [
+    [
+     -261.36,
+     -196.13
+    ],
+    [
+     -268.18,
+     -236.03
+    ]
+   ],
+   "dir": [
+    -0.9857044205427812,
+    0.16848381323563308
+   ],
+   "lenM": 40.5,
+   "midpoint": [
+    -264.77,
+    -216.07999999999998
+   ],
+   "outward": [
+    0.168484,
+    0.985704
+   ],
+   "rotY": 0.16929129038339838,
+   "module": "awnings/awning-bld-428202603-0.glb",
+   "geometry": {
+    "builtLengthM": 40.5,
+    "projectionM": 1.2,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
+    "slopeDeg": 15.0,
+    "scallopWidthM": 0.5,
+    "bracketSpacingM": 1.5
+   },
+   "tris": 994,
+   "trisPerMetre": 24.54,
+   "bytes": 73852,
+   "budgetOk": true,
+   "sha256": "8322768052bdd351fec8a999a87fb92b4a293520a3d5d54a108e1826e908e60d"
+  },
+  {
+   "blockId": "bld-428202604",
+   "edgeIndex": 0,
+   "street": "豫园老街",
+   "edge": [
+    [
+     -200.24,
+     -250.78
+    ],
+    [
+     -199.2,
+     -223.56
+    ]
+   ],
+   "dir": [
+    0.9992709030609985,
+    -0.03817934383480746
+   ],
+   "lenM": 27.2,
+   "midpoint": [
+    -199.72,
+    -237.17000000000002
+   ],
+   "outward": [
+    -0.038179,
+    -0.999271
+   ],
+   "rotY": -3.103404028233837,
+   "module": "awnings/awning-bld-428202604-0.glb",
+   "geometry": {
+    "builtLengthM": 27.2,
+    "projectionM": 1.2,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
+    "slopeDeg": 15.0,
+    "scallopWidthM": 0.5,
+    "bracketSpacingM": 1.5
+   },
+   "tris": 672,
+   "trisPerMetre": 24.71,
+   "bytes": 50804,
+   "budgetOk": true,
+   "sha256": "00f5dc6088821a4240410db608db443e9dc279300f34ceb23b838ce1a70eb1e9"
+  },
+  {
+   "blockId": "bld-428202606",
+   "edgeIndex": 10,
+   "street": "九曲桥广场",
+   "edge": [
+    [
+     -185.55,
+     -110.82
+    ],
+    [
+     -202.88,
+     -107.72
+    ]
+   ],
+   "dir": [
+    0.17608552241595174,
+    0.9843748720865957
+   ],
+   "lenM": 17.6,
+   "midpoint": [
+    -194.215,
+    -109.27
+   ],
+   "outward": [
+    -0.984375,
+    0.176086
+   ],
+   "rotY": -1.3937879140776714,
+   "module": "awnings/awning-bld-428202606-10.glb",
+   "geometry": {
+    "builtLengthM": 17.6,
+    "projectionM": 1.2,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
+    "slopeDeg": 15.0,
+    "scallopWidthM": 0.5,
+    "bracketSpacingM": 1.5
+   },
+   "tris": 454,
+   "trisPerMetre": 25.8,
+   "bytes": 35364,
+   "budgetOk": true,
+   "sha256": "99e561c0605182a1492d7771824ceb0c815d6eaa3f5afd3e7dd12c4824a814ed"
+  },
+  {
+   "blockId": "bld-428202607",
+   "edgeIndex": 1,
+   "street": "黄金广场",
+   "edge": [
+    [
+     -193.74,
+     -199.66
+    ],
+    [
+     -219.1,
+     -191.59
+    ]
+   ],
+   "dir": [
+    -0.30323467633082407,
+    -0.9529159097583272
+   ],
+   "lenM": 26.6,
+   "midpoint": [
+    -206.42000000000002,
+    -195.625
+   ],
+   "outward": [
+    -0.952916,
+    0.303235
+   ],
+   "rotY": -1.262710994217609,
+   "module": "awnings/awning-bld-428202607-1.glb",
+   "geometry": {
+    "builtLengthM": 26.6,
+    "projectionM": 1.2,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
+    "slopeDeg": 15.0,
+    "scallopWidthM": 0.5,
+    "bracketSpacingM": 1.5
+   },
+   "tris": 670,
+   "trisPerMetre": 25.19,
+   "bytes": 50768,
+   "budgetOk": true,
+   "sha256": "4790734180862477a224ad6743e400f6c65d5e81f6c6960a80a285fbff5fc6e8"
+  },
+  {
+   "blockId": "bld-553893867",
+   "edgeIndex": 2,
+   "street": "中心广场",
+   "edge": [
+    [
+     -130.75,
+     -52.33
+    ],
+    [
+     -129.29,
+     -45.22
+    ]
+   ],
+   "dir": [
+    -0.9795609566876943,
+    0.20114753822279066
+   ],
+   "lenM": 7.3,
+   "midpoint": [
+    -130.01999999999998,
+    -48.775
+   ],
+   "outward": [
+    0.201148,
+    0.979561
+   ],
+   "rotY": 0.20252926238577193,
+   "module": "awnings/awning-bld-553893867-2.glb",
+   "geometry": {
+    "builtLengthM": 7.3,
+    "projectionM": 1.2,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
+    "slopeDeg": 15.0,
+    "scallopWidthM": 0.5,
+    "bracketSpacingM": 1.5
+   },
+   "tris": 202,
+   "trisPerMetre": 27.67,
+   "bytes": 17416,
+   "budgetOk": true,
+   "sha256": "0ccbc22c5fe1125059ff255292f88e93584b907a787be2e56e1f4fd35d409cbc"
+  },
+  {
+   "blockId": "bld-553893868",
+   "edgeIndex": 0,
+   "street": "中心广场",
+   "edge": [
+    [
+     -130.75,
+     -52.33
+    ],
+    [
+     -135.96,
+     -51.29
+    ]
+   ],
+   "dir": [
+    0.19575415034452398,
+    0.9806530031682427
+   ],
+   "lenM": 5.3,
+   "midpoint": [
+    -133.35500000000002,
+    -51.81
+   ],
+   "outward": [
+    0.980653,
+    -0.195754
+   ],
+   "rotY": 1.76782274675752,
+   "module": "awnings/awning-bld-553893868-0.glb",
+   "geometry": {
+    "builtLengthM": 5.3,
+    "projectionM": 1.2,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
+    "slopeDeg": 15.0,
+    "scallopWidthM": 0.5,
+    "bracketSpacingM": 1.5
+   },
+   "tris": 162,
+   "trisPerMetre": 30.57,
+   "bytes": 14784,
+   "budgetOk": true,
+   "sha256": "2764824abd20a09136758ddff311437a360687b28603345dcbdb659c31ff9c5d"
+  },
+  {
+   "blockId": "bld-553893873",
+   "edgeIndex": 3,
+   "street": "九曲桥广场",
+   "edge": [
+    [
+     -155.26,
+     -107.58
+    ],
+    [
+     -152.63,
+     -95.64
+    ]
+   ],
+   "dir": [
+    -0.9765895119081252,
+    0.2151114251522919
+   ],
+   "lenM": 12.2,
+   "midpoint": [
+    -153.945,
+    -101.61
+   ],
+   "outward": [
+    0.215111,
+    0.97659
+   ],
+   "rotY": 0.21680592460850012,
+   "module": "awnings/awning-bld-553893873-3.glb",
+   "geometry": {
+    "builtLengthM": 12.2,
+    "projectionM": 1.2,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
+    "slopeDeg": 15.0,
+    "scallopWidthM": 0.5,
+    "bracketSpacingM": 1.5
+   },
+   "tris": 312,
+   "trisPerMetre": 25.57,
+   "bytes": 25140,
+   "budgetOk": true,
+   "sha256": "9505c09ca02a4e7c968e45310f65fdb5447443dfa6b2ce467acf8dcd0b71f483"
+  },
+  {
+   "blockId": "bld-553893884",
+   "edgeIndex": 5,
+   "street": "豫园老街",
+   "edge": [
+    [
+     -180.78,
+     -196.82
+    ],
+    [
+     -171.44,
+     -167.22
+    ]
+   ],
+   "dir": [
+    0.9536508096261742,
+    -0.3009154919563673
+   ],
+   "lenM": 31,
+   "midpoint": [
+    -176.11,
+    -182.01999999999998
+   ],
+   "outward": [
+    0.300915,
+    0.953651
+   ],
+   "rotY": 0.3056524953657725,
+   "module": "awnings/awning-bld-553893884-5.glb",
+   "geometry": {
+    "builtLengthM": 31,
+    "projectionM": 1.2,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
+    "slopeDeg": 15.0,
+    "scallopWidthM": 0.5,
+    "bracketSpacingM": 1.5
+   },
+   "tris": 776,
+   "trisPerMetre": 25.03,
+   "bytes": 58352,
+   "budgetOk": true,
+   "sha256": "b0766658571875375e73af8abe3f9b687d54395dc826ff26b1df909dbb3e8232"
+  }
+ ]
+}

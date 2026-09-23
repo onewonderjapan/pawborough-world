@@ -1,0 +1,97 @@
+{
+  "imported": true,
+  "materials": [
+    {
+      "name": "glutinous-dough.001",
+      "imageNodes": []
+    },
+    {
+      "name": "rice-batter.001",
+      "imageNodes": []
+    },
+    {
+      "name": "scallion-greens.001",
+      "imageNodes": []
+    },
+    {
+      "name": "fried-crust.001",
+      "imageNodes": [
+        {
+          "name": "fried-crust.001",
+          "size": [
+            512,
+            512
+          ],
+          "colorSpace": "sRGB"
+        }
+      ]
+    },
+    {
+      "name": "galvanized-iron.001",
+      "imageNodes": []
+    },
+    {
+      "name": "deep-door-lacquer.001",
+      "imageNodes": []
+    },
+    {
+      "name": "blue-gray-brick.001",
+      "imageNodes": [
+        {
+          "name": "Bricks061_2K-JPG_Color_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "sRGB"
+        },
+        {
+          "name": "Bricks061_2K-JPG_Roughness_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        },
+        {
+          "name": "Bricks061_2K-JPG_NormalGL_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
+    },
+    {
+      "name": "dark-amber-oil.001",
+      "imageNodes": []
+    },
+    {
+      "name": "radish-shred.001",
+      "imageNodes": []
+    },
+    {
+      "name": "stained-timber.001",
+      "imageNodes": [
+        {
+          "name": "wood-stain-color",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "sRGB"
+        },
+        {
+          "name": "Wood092_2K-JPG_NormalGL_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
+    }
+  ],
+  "meshes": 14
+}

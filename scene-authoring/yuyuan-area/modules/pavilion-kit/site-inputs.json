@@ -1,0 +1,551 @@
+{
+ "packageId": "pawborough-w1-pavilion-kit-20260922",
+ "source": "scene-authoring/yuyuan-area/baseline/layout.json (frozen, READ-ONLY)",
+ "conventions": {
+  "map": "x east, z south (layout.json)",
+  "module": "GLB Y-up, facade +Z, origin platform centre at ground y=0",
+  "rotY": "assemble.py Blender Z-yaw; derived rotY = atan2(dx, dz) so local +Z maps to facade.dir"
+ },
+ "platformHeight": 0.3,
+ "fitInset": 0.15,
+ "eaveOverhang": 0.9,
+ "pavilions": [
+  {
+   "id": "bld-428179924",
+   "zh": "听鹂亭",
+   "n": 4,
+   "variant": "rect",
+   "sample": false,
+   "footprint": [
+    [
+     -79.69,
+     -194.53
+    ],
+    [
+     -74.6,
+     -195.61
+    ],
+    [
+     -74.2,
+     -193.74
+    ],
+    [
+     -79.29,
+     -192.65
+    ]
+   ],
+   "centroid": [
+    -43.8096,
+    -104.1118
+   ],
+   "footprintAreaM2": 26.02,
+   "bboxMap": {
+    "w": 5.49,
+    "d": 2.96
+   },
+   "facadeDir": [
+    -0.5573221875168536,
+    -0.8302963201781814
+   ],
+   "facadeBasis": "nearest-garden-water",
+   "rotY": -2.550435,
+   "heightLayout": 3,
+   "eaveLayout": 3,
+   "riseLayout": 2.1,
+   "Rx": 2.4517,
+   "Rz": 0.8062,
+   "phi": -0.20908,
+   "footprintRect": {
+    "long": 5.203,
+    "short": 1.912
+   },
+   "entranceLongSideNormal": [
+    -0.20756,
+    -0.978222
+   ],
+   "note": "rect variant uses the footprint own rectangle inset 0.15, aligned to footprint axes; map-axis bbox 5.49x2.96 is the bbox of a rotated rect and is not itself buildable"
+  },
+  {
+   "id": "bld-428186467",
+   "zh": "挹秀亭",
+   "n": 4,
+   "variant": "regular",
+   "sample": false,
+   "footprint": [
+    [
+     -158.37,
+     -215.56
+    ],
+    [
+     -155.7,
+     -216.08
+    ],
+    [
+     -155.05,
+     -212.82
+    ],
+    [
+     -157.72,
+     -212.3
+    ]
+   ],
+   "centroid": [
+    -102.7702,
+    -139.0055
+   ],
+   "footprintAreaM2": 179.04,
+   "bboxMap": {
+    "w": 3.32,
+    "d": 3.78
+   },
+   "facadeDir": [
+    -0.7829571965959339,
+    0.6220755808570502
+   ],
+   "facadeBasis": "nearest-garden-water",
+   "rotY": -0.899405,
+   "heightLayout": 3,
+   "eaveLayout": 3,
+   "riseLayout": 2.1,
+   "fit": {
+    "R": 2.1976,
+    "inradius": 1.5539,
+    "eaveRadius": 3.0976,
+    "thetaDeg": 45.0,
+    "source": "largest regular n-gon in map-axis bbox minus 0.15 (free rotation)"
+   },
+   "localColumns": [
+    [
+     2.1833,
+     -0.25
+    ],
+    [
+     0.25,
+     2.1833
+    ],
+    [
+     -2.1833,
+     0.25
+    ],
+    [
+     -0.25,
+     -2.1833
+    ]
+   ],
+   "bays": [
+    {
+     "k": 0,
+     "midLocalDeg": 38.47,
+     "chord": 3.32
+    },
+    {
+     "k": 1,
+     "midLocalDeg": 128.47,
+     "chord": 3.32
+    },
+    {
+     "k": 2,
+     "midLocalDeg": 218.47,
+     "chord": 3.32
+    },
+    {
+     "k": 3,
+     "midLocalDeg": 308.47,
+     "chord": 3.32
+    }
+   ],
+   "entranceBay": 1,
+   "entranceOffAxisDeg": 38.47
+  },
+  {
+   "id": "bld-428196085",
+   "zh": "流觞亭",
+   "n": 6,
+   "variant": "regular",
+   "sample": true,
+   "footprint": [
+    [
+     -122.64,
+     -163.48
+    ],
+    [
+     -122.33,
+     -164
+    ],
+    [
+     -122.19,
+     -164.58
+    ],
+    [
+     -122.24,
+     -165.18
+    ],
+    [
+     -122.48,
+     -165.72
+    ],
+    [
+     -122.88,
+     -166.17
+    ],
+    [
+     -123.4,
+     -166.47
+    ],
+    [
+     -123.99,
+     -166.59
+    ],
+    [
+     -124.58,
+     -166.51
+    ],
+    [
+     -125.16,
+     -166.23
+    ],
+    [
+     -125.61,
+     -165.78
+    ],
+    [
+     -125.87,
+     -165.2
+    ],
+    [
+     -125.94,
+     -164.56
+    ],
+    [
+     -125.78,
+     -163.94
+    ],
+    [
+     -125.42,
+     -163.42
+    ],
+    [
+     -124.9,
+     -163.03
+    ],
+    [
+     -124.29,
+     -162.85
+    ],
+    [
+     -123.65,
+     -162.88
+    ],
+    [
+     -123.1,
+     -163.09
+    ]
+   ],
+   "centroid": [
+    -88.2464,
+    -117.2493
+   ],
+   "footprintAreaM2": 72.39,
+   "bboxMap": {
+    "w": 3.75,
+    "d": 3.74
+   },
+   "facadeDir": [
+    0,
+    1
+   ],
+   "facadeBasis": "south-default (category basis, not survey)",
+   "rotY": 0.0,
+   "heightLayout": 3,
+   "eaveLayout": 3,
+   "riseLayout": 2.1,
+   "fit": {
+    "R": 1.7883,
+    "inradius": 1.5487,
+    "eaveRadius": 2.6883,
+    "thetaDeg": 14.750000000000002,
+    "source": "largest regular n-gon in map-axis bbox minus 0.15 (free rotation)"
+   },
+   "localColumns": [
+    [
+     1.7293,
+     0.4553
+    ],
+    [
+     0.4704,
+     1.7253
+    ],
+    [
+     -1.259,
+     1.27
+    ],
+    [
+     -1.7293,
+     -0.4553
+    ],
+    [
+     -0.4704,
+     -1.7253
+    ],
+    [
+     1.259,
+     -1.27
+    ]
+   ],
+   "bays": [
+    {
+     "k": 0,
+     "midLocalDeg": 44.75,
+     "chord": 1.9383
+    },
+    {
+     "k": 1,
+     "midLocalDeg": 104.75,
+     "chord": 1.9383
+    },
+    {
+     "k": 2,
+     "midLocalDeg": 164.75,
+     "chord": 1.9383
+    },
+    {
+     "k": 3,
+     "midLocalDeg": 224.75,
+     "chord": 1.9383
+    },
+    {
+     "k": 4,
+     "midLocalDeg": 284.75,
+     "chord": 1.9383
+    },
+    {
+     "k": 5,
+     "midLocalDeg": 344.75,
+     "chord": 1.9383
+    }
+   ],
+   "entranceBay": 1,
+   "entranceOffAxisDeg": 14.75
+  },
+  {
+   "id": "bld-428196091",
+   "zh": "凤凰亭",
+   "n": 6,
+   "variant": "regular",
+   "sample": false,
+   "footprint": [
+    [
+     -61.07,
+     -109.25
+    ],
+    [
+     -57.06,
+     -109.9
+    ],
+    [
+     -56.4,
+     -105.81
+    ],
+    [
+     -60.41,
+     -105.16
+    ]
+   ],
+   "centroid": [
+    -36.2297,
+    -63.0417
+   ],
+   "footprintAreaM2": 72.01,
+   "bboxMap": {
+    "w": 4.67,
+    "d": 4.74
+   },
+   "facadeDir": [
+    -0.887109000626655,
+    0.4615599863584116
+   ],
+   "facadeBasis": "nearest-garden-water",
+   "rotY": -1.091043,
+   "heightLayout": 3,
+   "eaveLayout": 3,
+   "riseLayout": 2.1,
+   "fit": {
+    "R": 2.2853,
+    "inradius": 1.9791,
+    "eaveRadius": 3.1853,
+    "thetaDeg": 43.5,
+    "source": "largest regular n-gon in map-axis bbox minus 0.15 (free rotation)"
+   },
+   "localColumns": [
+    [
+     2.1606,
+     -0.7445
+    ],
+    [
+     1.725,
+     1.4989
+    ],
+    [
+     -0.4356,
+     2.2434
+    ],
+    [
+     -2.1606,
+     0.7445
+    ],
+    [
+     -1.725,
+     -1.4989
+    ],
+    [
+     0.4356,
+     -2.2434
+    ]
+   ],
+   "bays": [
+    {
+     "k": 0,
+     "midLocalDeg": 10.99,
+     "chord": 2.4353
+    },
+    {
+     "k": 1,
+     "midLocalDeg": 70.99,
+     "chord": 2.4353
+    },
+    {
+     "k": 2,
+     "midLocalDeg": 130.99,
+     "chord": 2.4353
+    },
+    {
+     "k": 3,
+     "midLocalDeg": 190.99,
+     "chord": 2.4353
+    },
+    {
+     "k": 4,
+     "midLocalDeg": 250.99,
+     "chord": 2.4353
+    },
+    {
+     "k": 5,
+     "midLocalDeg": 310.99,
+     "chord": 2.4353
+    }
+   ],
+   "entranceBay": 1,
+   "entranceOffAxisDeg": 19.01
+  },
+  {
+   "id": "bld-428196098",
+   "zh": "耸翠亭",
+   "n": 6,
+   "variant": "regular",
+   "sample": false,
+   "footprint": [
+    [
+     -67.41,
+     -87.2
+    ],
+    [
+     -63.48,
+     -87.92
+    ],
+    [
+     -62.8,
+     -84.19
+    ],
+    [
+     -66.74,
+     -83.47
+    ]
+   ],
+   "centroid": [
+    -40.9156,
+    -51.5205
+   ],
+   "footprintAreaM2": 81.34,
+   "bboxMap": {
+    "w": 4.61,
+    "d": 4.45
+   },
+   "facadeDir": [
+    -0.8247192057914383,
+    -0.5655424224571832
+   ],
+   "facadeBasis": "nearest-garden-water",
+   "rotY": -2.171887,
+   "heightLayout": 3,
+   "eaveLayout": 3,
+   "riseLayout": 2.1,
+   "fit": {
+    "R": 2.1997,
+    "inradius": 1.905,
+    "eaveRadius": 3.0997,
+    "thetaDeg": 11.25,
+    "source": "largest regular n-gon in map-axis bbox minus 0.15 (free rotation)"
+   },
+   "localColumns": [
+    [
+     -0.8662,
+     -2.022
+    ],
+    [
+     1.318,
+     -1.7611
+    ],
+    [
+     2.1842,
+     0.2608
+    ],
+    [
+     0.8662,
+     2.022
+    ],
+    [
+     -1.318,
+     1.7611
+    ],
+    [
+     -2.1842,
+     -0.2608
+    ]
+   ],
+   "bays": [
+    {
+     "k": 0,
+     "midLocalDeg": 276.81,
+     "chord": 2.3497
+    },
+    {
+     "k": 1,
+     "midLocalDeg": 336.81,
+     "chord": 2.3497
+    },
+    {
+     "k": 2,
+     "midLocalDeg": 36.81,
+     "chord": 2.3497
+    },
+    {
+     "k": 3,
+     "midLocalDeg": 96.81,
+     "chord": 2.3497
+    },
+    {
+     "k": 4,
+     "midLocalDeg": 156.81,
+     "chord": 2.3497
+    },
+    {
+     "k": 5,
+     "midLocalDeg": 216.81,
+     "chord": 2.3497
+    }
+   ],
+   "entranceBay": 3,
+   "entranceOffAxisDeg": 6.81
+  }
+ ]
+}

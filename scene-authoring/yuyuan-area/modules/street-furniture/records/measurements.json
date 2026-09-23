@@ -1,0 +1,938 @@
+{
+  "moduleId": "street-furniture",
+  "axis": "glTF Y-up; origin at ground footprint centre; facade-facing +Z",
+  "era": "1990s Shanghai street objects; no post-2000 items (owner standing decision)",
+  "items": {
+    "street-lamp-1990": {
+      "file": "street-lamp-1990.glb",
+      "triangles": 564,
+      "fileBytes": 42380,
+      "sha256": "c95c705161f8b9038a83b2dd8e4b1d1f6ad92d65860e2507445615efcc40b457",
+      "bounds": {
+        "min": [
+          -0.2541,
+          0.0,
+          -0.25
+        ],
+        "max": [
+          0.2541,
+          6.02,
+          0.25
+        ],
+        "size": [
+          0.5083,
+          6.02,
+          0.5
+        ]
+      },
+      "sizeSpec": [
+        0.5,
+        6.0,
+        0.5
+      ],
+      "materials": [
+        "cast-iron",
+        "concrete",
+        "enamel-white"
+      ],
+      "reimport": {
+        "imported": true,
+        "meshes": 3,
+        "materials": [
+          {
+            "name": "cast-iron.001",
+            "imageNodes": []
+          },
+          {
+            "name": "concrete.001",
+            "imageNodes": []
+          },
+          {
+            "name": "enamel-white.001",
+            "imageNodes": []
+          }
+        ],
+        "imageCount": 0
+      },
+      "buildSeconds": 0.1
+    },
+    "post-box-green": {
+      "file": "post-box-green.glb",
+      "triangles": 192,
+      "fileBytes": 15160,
+      "sha256": "1e0f53cf9e9a857a2aaf2d4a19fb9b995bcd07c3b1632792646fd839e35bf183",
+      "bounds": {
+        "min": [
+          -0.25,
+          0.0,
+          -0.25
+        ],
+        "max": [
+          0.25,
+          1.3,
+          0.25
+        ],
+        "size": [
+          0.5,
+          1.3,
+          0.5
+        ]
+      },
+      "sizeSpec": [
+        0.5,
+        1.3,
+        0.5
+      ],
+      "materials": [
+        "concrete",
+        "enamel-green",
+        "liner-dark"
+      ],
+      "reimport": {
+        "imported": true,
+        "meshes": 3,
+        "materials": [
+          {
+            "name": "concrete.002",
+            "imageNodes": []
+          },
+          {
+            "name": "enamel-green.001",
+            "imageNodes": []
+          },
+          {
+            "name": "liner-dark.001",
+            "imageNodes": []
+          }
+        ],
+        "imageCount": 0
+      },
+      "buildSeconds": 0.0
+    },
+    "phone-booth-ic": {
+      "file": "phone-booth-ic.glb",
+      "triangles": 352,
+      "fileBytes": 31620,
+      "sha256": "42a2d23d4feef3c46fa61b44aee6bed14f18adf6aede9bbb80a1464da591d9d9",
+      "bounds": {
+        "min": [
+          -0.52,
+          0.0,
+          -0.52
+        ],
+        "max": [
+          0.52,
+          2.43,
+          0.52
+        ],
+        "size": [
+          1.04,
+          2.43,
+          1.04
+        ]
+      },
+      "sizeSpec": [
+        1.0,
+        2.4,
+        1.0
+      ],
+      "materials": [
+        "booth-blue",
+        "concrete",
+        "dark-iron",
+        "glass-dark",
+        "liner-dark",
+        "porcelain"
+      ],
+      "reimport": {
+        "imported": true,
+        "meshes": 6,
+        "materials": [
+          {
+            "name": "booth-blue.001",
+            "imageNodes": []
+          },
+          {
+            "name": "concrete.003",
+            "imageNodes": []
+          },
+          {
+            "name": "dark-iron.001",
+            "imageNodes": []
+          },
+          {
+            "name": "glass-dark.001",
+            "imageNodes": []
+          },
+          {
+            "name": "liner-dark.002",
+            "imageNodes": []
+          },
+          {
+            "name": "porcelain.001",
+            "imageNodes": []
+          }
+        ],
+        "imageCount": 0
+      },
+      "buildSeconds": 0.0
+    },
+    "trash-bin-concrete": {
+      "file": "trash-bin-concrete.glb",
+      "triangles": 90,
+      "fileBytes": 7668,
+      "sha256": "87779ec373e3057c149d69d5d70da9ebd30430bc16bdb48bd4568a9a47f39e3d",
+      "bounds": {
+        "min": [
+          -0.24,
+          0.0,
+          -0.24
+        ],
+        "max": [
+          0.24,
+          0.88,
+          0.24
+        ],
+        "size": [
+          0.48,
+          0.88,
+          0.48
+        ]
+      },
+      "sizeSpec": [
+        0.5,
+        0.9,
+        0.5
+      ],
+      "materials": [
+        "concrete",
+        "liner-dark"
+      ],
+      "reimport": {
+        "imported": true,
+        "meshes": 2,
+        "materials": [
+          {
+            "name": "concrete.004",
+            "imageNodes": []
+          },
+          {
+            "name": "liner-dark.003",
+            "imageNodes": []
+          }
+        ],
+        "imageCount": 0
+      },
+      "buildSeconds": 0.0
+    },
+    "fire-hydrant": {
+      "file": "fire-hydrant.glb",
+      "triangles": 200,
+      "fileBytes": 15128,
+      "sha256": "7b0794e11e406e242c7364c2e2229c103f924426459c424bbc742fb7db089f00",
+      "bounds": {
+        "min": [
+          -0.15,
+          0.0,
+          -0.145
+        ],
+        "max": [
+          0.15,
+          0.93,
+          0.145
+        ],
+        "size": [
+          0.3,
+          0.93,
+          0.29
+        ]
+      },
+      "sizeSpec": [
+        0.3,
+        0.9,
+        0.3
+      ],
+      "materials": [
+        "hydrant-red",
+        "liner-dark"
+      ],
+      "reimport": {
+        "imported": true,
+        "meshes": 2,
+        "materials": [
+          {
+            "name": "hydrant-red.001",
+            "imageNodes": []
+          },
+          {
+            "name": "liner-dark.004",
+            "imageNodes": []
+          }
+        ],
+        "imageCount": 0
+      },
+      "buildSeconds": 0.0
+    },
+    "utility-pole": {
+      "file": "utility-pole.glb",
+      "triangles": 236,
+      "fileBytes": 20544,
+      "sha256": "e1517bfa1922e867f36c49aef752f94bb5b0ce6184f755e946c2d7513cf411a0",
+      "bounds": {
+        "min": [
+          -0.31,
+          0.0,
+          -0.26
+        ],
+        "max": [
+          0.31,
+          8.0,
+          0.3
+        ],
+        "size": [
+          0.62,
+          8.0,
+          0.56
+        ]
+      },
+      "sizeSpec": [
+        0.6,
+        8.0,
+        0.6
+      ],
+      "materials": [
+        "concrete",
+        "dark-iron",
+        "liner-dark",
+        "porcelain"
+      ],
+      "reimport": {
+        "imported": true,
+        "meshes": 4,
+        "materials": [
+          {
+            "name": "concrete.001",
+            "imageNodes": []
+          },
+          {
+            "name": "dark-iron.001",
+            "imageNodes": []
+          },
+          {
+            "name": "liner-dark.001",
+            "imageNodes": []
+          },
+          {
+            "name": "porcelain.001",
+            "imageNodes": []
+          }
+        ],
+        "imageCount": 0
+      },
+      "buildSeconds": 0.1
+    },
+    "news-kiosk": {
+      "file": "news-kiosk.glb",
+      "triangles": 420,
+      "fileBytes": 38528,
+      "sha256": "129ed3e27e02fc8a1729cba8112ed7eaea60bd9ba4dde044f16a2964d320ead7",
+      "bounds": {
+        "min": [
+          -1.02,
+          0.0,
+          -0.8125
+        ],
+        "max": [
+          1.02,
+          2.3,
+          0.8125
+        ],
+        "size": [
+          2.04,
+          2.3,
+          1.625
+        ]
+      },
+      "sizeSpec": [
+        2.0,
+        2.4,
+        1.5
+      ],
+      "materials": [
+        "concrete",
+        "cream",
+        "dark-iron",
+        "enamel-green",
+        "kiosk-wood",
+        "liner-dark"
+      ],
+      "reimport": {
+        "imported": true,
+        "meshes": 6,
+        "materials": [
+          {
+            "name": "concrete.002",
+            "imageNodes": []
+          },
+          {
+            "name": "cream.001",
+            "imageNodes": []
+          },
+          {
+            "name": "dark-iron.002",
+            "imageNodes": []
+          },
+          {
+            "name": "enamel-green.001",
+            "imageNodes": []
+          },
+          {
+            "name": "kiosk-wood.001",
+            "imageNodes": []
+          },
+          {
+            "name": "liner-dark.002",
+            "imageNodes": []
+          }
+        ],
+        "imageCount": 0
+      },
+      "buildSeconds": 0.0
+    },
+    "bus-stop-sign": {
+      "file": "bus-stop-sign.glb",
+      "triangles": 108,
+      "fileBytes": 11104,
+      "sha256": "e96001ad156e9bc89a746590982954ccc0aa63287707e086653e26fe3e197d00",
+      "bounds": {
+        "min": [
+          -0.32,
+          0.0,
+          -0.05
+        ],
+        "max": [
+          0.32,
+          2.6,
+          0.05
+        ],
+        "size": [
+          0.64,
+          2.6,
+          0.1
+        ]
+      },
+      "sizeSpec": [
+        0.6,
+        2.6,
+        0.1
+      ],
+      "materials": [
+        "concrete",
+        "dark-iron",
+        "enamel-green",
+        "enamel-white"
+      ],
+      "reimport": {
+        "imported": true,
+        "meshes": 4,
+        "materials": [
+          {
+            "name": "concrete.003",
+            "imageNodes": []
+          },
+          {
+            "name": "dark-iron.003",
+            "imageNodes": []
+          },
+          {
+            "name": "enamel-green.002",
+            "imageNodes": []
+          },
+          {
+            "name": "enamel-white.001",
+            "imageNodes": []
+          }
+        ],
+        "imageCount": 0
+      },
+      "buildSeconds": 0.0
+    },
+    "planter-box": {
+      "file": "planter-box.glb",
+      "triangles": 180,
+      "fileBytes": 17220,
+      "sha256": "aab22799afa7b75c0fe60e3049a20501b034a61a8608a09038a73996b6a09750",
+      "bounds": {
+        "min": [
+          -0.61,
+          0.0,
+          -0.26
+        ],
+        "max": [
+          0.61,
+          0.495,
+          0.26
+        ],
+        "size": [
+          1.22,
+          0.495,
+          0.52
+        ]
+      },
+      "sizeSpec": [
+        1.2,
+        0.5,
+        0.5
+      ],
+      "materials": [
+        "concrete",
+        "hedge-green",
+        "liner-dark"
+      ],
+      "reimport": {
+        "imported": true,
+        "meshes": 3,
+        "materials": [
+          {
+            "name": "concrete.004",
+            "imageNodes": []
+          },
+          {
+            "name": "hedge-green.001",
+            "imageNodes": []
+          },
+          {
+            "name": "liner-dark.003",
+            "imageNodes": []
+          }
+        ],
+        "imageCount": 0
+      },
+      "buildSeconds": 0.0
+    },
+    "bike-rack": {
+      "file": "bike-rack.glb",
+      "triangles": 400,
+      "fileBytes": 26704,
+      "sha256": "4aced6ee3f8f42a76a7c05b174305ffd89661b02162f12a9e7891dec56480b44",
+      "bounds": {
+        "min": [
+          -0.9208,
+          0.0,
+          -0.184
+        ],
+        "max": [
+          0.9208,
+          0.599,
+          0.184
+        ],
+        "size": [
+          1.8416,
+          0.599,
+          0.368
+        ]
+      },
+      "sizeSpec": [
+        2.0,
+        0.6,
+        0.4
+      ],
+      "materials": [
+        "dark-iron"
+      ],
+      "reimport": {
+        "imported": true,
+        "meshes": 1,
+        "materials": [
+          {
+            "name": "dark-iron.004",
+            "imageNodes": []
+          }
+        ],
+        "imageCount": 0
+      },
+      "buildSeconds": 0.0
+    }
+  },
+  "collision": {
+    "street-lamp-1990": [
+      {
+        "name": "street-lamp-1990-block",
+        "group": "prop",
+        "type": "box",
+        "min": [
+          -0.25,
+          0.0,
+          -0.25
+        ],
+        "max": [
+          0.25,
+          6.0,
+          0.25
+        ],
+        "obb": {
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "theta": 0.0,
+          "center": [
+            0,
+            3.0,
+            0
+          ],
+          "size": [
+            0.5,
+            6.0,
+            0.5
+          ]
+        }
+      }
+    ],
+    "post-box-green": [
+      {
+        "name": "post-box-green-block",
+        "group": "prop",
+        "type": "box",
+        "min": [
+          -0.25,
+          0.0,
+          -0.25
+        ],
+        "max": [
+          0.25,
+          1.3,
+          0.25
+        ],
+        "obb": {
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "theta": 0.0,
+          "center": [
+            0,
+            0.65,
+            0
+          ],
+          "size": [
+            0.5,
+            1.3,
+            0.5
+          ]
+        }
+      }
+    ],
+    "phone-booth-ic": [
+      {
+        "name": "phone-booth-ic-block",
+        "group": "prop",
+        "type": "box",
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          2.4,
+          0.5
+        ],
+        "obb": {
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "theta": 0.0,
+          "center": [
+            0,
+            1.2,
+            0
+          ],
+          "size": [
+            1.0,
+            2.4,
+            1.0
+          ]
+        }
+      }
+    ],
+    "trash-bin-concrete": [
+      {
+        "name": "trash-bin-concrete-block",
+        "group": "prop",
+        "type": "box",
+        "min": [
+          -0.25,
+          0.0,
+          -0.25
+        ],
+        "max": [
+          0.25,
+          0.9,
+          0.25
+        ],
+        "obb": {
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "theta": 0.0,
+          "center": [
+            0,
+            0.45,
+            0
+          ],
+          "size": [
+            0.5,
+            0.9,
+            0.5
+          ]
+        }
+      }
+    ],
+    "fire-hydrant": [
+      {
+        "name": "fire-hydrant-block",
+        "group": "prop",
+        "type": "box",
+        "min": [
+          -0.15,
+          0.0,
+          -0.15
+        ],
+        "max": [
+          0.15,
+          0.9,
+          0.15
+        ],
+        "obb": {
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "theta": 0.0,
+          "center": [
+            0,
+            0.45,
+            0
+          ],
+          "size": [
+            0.3,
+            0.9,
+            0.3
+          ]
+        }
+      }
+    ],
+    "utility-pole": [
+      {
+        "name": "utility-pole-block",
+        "group": "prop",
+        "type": "box",
+        "min": [
+          -0.3,
+          0.0,
+          -0.3
+        ],
+        "max": [
+          0.3,
+          8.0,
+          0.3
+        ],
+        "obb": {
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "theta": 0.0,
+          "center": [
+            0,
+            4.0,
+            0
+          ],
+          "size": [
+            0.6,
+            8.0,
+            0.6
+          ]
+        }
+      }
+    ],
+    "news-kiosk": [
+      {
+        "name": "news-kiosk-block",
+        "group": "prop",
+        "type": "box",
+        "min": [
+          -1.0,
+          0.0,
+          -0.75
+        ],
+        "max": [
+          1.0,
+          2.4,
+          0.75
+        ],
+        "obb": {
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "theta": 0.0,
+          "center": [
+            0,
+            1.2,
+            0
+          ],
+          "size": [
+            2.0,
+            2.4,
+            1.5
+          ]
+        }
+      }
+    ],
+    "bus-stop-sign": [
+      {
+        "name": "bus-stop-sign-block",
+        "group": "prop",
+        "type": "box",
+        "min": [
+          -0.3,
+          0.0,
+          -0.05
+        ],
+        "max": [
+          0.3,
+          2.6,
+          0.05
+        ],
+        "obb": {
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "theta": 0.0,
+          "center": [
+            0,
+            1.3,
+            0
+          ],
+          "size": [
+            0.6,
+            2.6,
+            0.1
+          ]
+        }
+      }
+    ],
+    "planter-box": [
+      {
+        "name": "planter-box-block",
+        "group": "prop",
+        "type": "box",
+        "min": [
+          -0.6,
+          0.0,
+          -0.25
+        ],
+        "max": [
+          0.6,
+          0.5,
+          0.25
+        ],
+        "obb": {
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "theta": 0.0,
+          "center": [
+            0,
+            0.25,
+            0
+          ],
+          "size": [
+            1.2,
+            0.5,
+            0.5
+          ]
+        }
+      }
+    ],
+    "bike-rack": [
+      {
+        "name": "bike-rack-block",
+        "group": "prop",
+        "type": "box",
+        "min": [
+          -1.0,
+          0.0,
+          -0.2
+        ],
+        "max": [
+          1.0,
+          0.6,
+          0.2
+        ],
+        "obb": {
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "theta": 0.0,
+          "center": [
+            0,
+            0.3,
+            0
+          ],
+          "size": [
+            2.0,
+            0.6,
+            0.4
+          ]
+        }
+      }
+    ]
+  },
+  "budgets": {
+    "uniqueTrisMaxPerItem": {
+      "street-lamp-1990": 900,
+      "post-box-green": 400,
+      "phone-booth-ic": 700,
+      "trash-bin-concrete": 300,
+      "fire-hydrant": 350,
+      "utility-pole": 600,
+      "news-kiosk": 1400,
+      "bus-stop-sign": 250,
+      "planter-box": 300,
+      "bike-rack": 500
+    },
+    "uniqueTrisMaxModule": 6000,
+    "newImages": 0
+  },
+  "totals": {
+    "items": 10,
+    "uniqueTris": 2742,
+    "bytes": 226056
+  },
+  "timings": {
+    "lastRunSeconds": 0.2,
+    "cumulativeSeconds": 0.4
+  },
+  "referencePhotoTexturesUsed": false,
+  "bakedGlobalIllumination": false,
+  "surveyed": false,
+  "units": "meters"
+}

@@ -2,7 +2,7 @@
   "name": "pawborough-yuyuan-area-authoring",
   "private": true,
   "type": "module",
-  "description": "全域底模批：豫园内部 + 城隍庙组团 + 小吃商业街。单一 layout.json 派生 3D/2D/分区清单。",
+  "description": "\u5168\u57df\u5e95\u6a21\u6279\uff1a\u8c6b\u56ed\u5185\u90e8 + \u57ce\u968d\u5e99\u7ec4\u56e2 + \u5c0f\u5403\u5546\u4e1a\u8857\u3002\u5355\u4e00 layout.json \u6d3e\u751f 3D/2D/\u5206\u533a\u6e05\u5355\u3002",
   "scripts": {
     "layout": "python3 -X utf8 scripts/repair-layout.py",
     "scene": "node src/build-scene.mjs",
@@ -11,11 +11,16 @@
     "views": "node scripts/render-views.mjs",
     "validate": "node scripts/validate.mjs",
     "build": "npm run layout && npm run scene && npm run assemble && npm run validate",
-    "test": "node tests/geo-tests.mjs && OUT_DIR=${OUT_DIR:-out} node tests/check-export.mjs && OUT_DIR=${OUT_DIR:-out} node tests/coverage-negative-test.mjs && node tests/passage-repair-test.mjs",
+    "test": "node tests/geo-tests.mjs && OUT_DIR=${OUT_DIR:-out} node tests/check-export.mjs && OUT_DIR=${OUT_DIR:-out} node tests/coverage-negative-test.mjs && node tests/passage-repair-test.mjs && OUT_DIR=${OUT_DIR:-out-zone} node tests/sansuitang-test.mjs && OUT_DIR=${OUT_DIR:-out-zone} node tests/rockery-test.mjs && OUT_DIR=${OUT_DIR:-out-zone} node tests/awning-test.mjs",
+    "test:garden-kit": "OUT_DIR=${OUT_DIR:-out-garden-kit} node tests/garden-kit-test.mjs",
     "sockets": "node scripts/audit-commerce.mjs",
     "connectivity": "node scripts/check-connectivity.mjs",
     "coverage": "node src/coverage.mjs",
-    "verify": "npm test && node scripts/validate.mjs && node scripts/check-food.mjs"
+    "verify": "npm test && node scripts/validate.mjs && node scripts/check-food.mjs",
+    "test:sansuitang": "OUT_DIR=${OUT_DIR:-out-zone} node tests/sansuitang-test.mjs",
+    "test:rockery": "OUT_DIR=${OUT_DIR:-out-zone} node tests/rockery-test.mjs",
+    "test:awning": "OUT_DIR=${OUT_DIR:-out-zone} node tests/awning-test.mjs",
+    "test:walk-contract": "OUT_DIR=${OUT_DIR:-out-zone} node tests/area-collision-contract.mjs"
   },
   "dependencies": {
     "three": "0.180.0",

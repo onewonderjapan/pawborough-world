@@ -1,0 +1,90 @@
+{
+ "packageId": "pawborough-w1-pavilion-kit-20260922",
+ "module": "pavilion-kit",
+ "stages": {
+  "S0": {
+   "status": "done",
+   "finishedAt": "2026-09-23T00:40Z",
+   "worktree": "/home/baibai/outbox/pawborough-w1-pavilion-kit-20260922/workspace",
+   "branch": "work/w1-pavilion-kit-20260922",
+   "baseCommit": "33a3bd72b633983d4649979f545e96a410934ace",
+   "outputs": [
+    "records/site-inputs.json",
+    "artifacts/pavilion-kit/site-inputs.json"
+   ],
+   "notes": [
+    "rotY convention derived from assemble.py: anchor.location=(x,-z,0), rotation_euler=(0,0,rotY), glTF import maps GLB +Z to Blender -Y; solving gives rotY = atan2(dx, dz) so the module facade (+Z) points along layout facade.dir after placement.",
+    "Regular n-gon fit executed as spec: largest regular n-gon (free rotation, 0.25 deg grid) inscribed in the map-axis footprint bbox, minus 0.15 m.",
+    "Entrance bay = bay whose midpoint is nearest local +Z; offsets 6.8-38.5 deg recorded per pavilion; steps placed at entrance bay midpoint."
+   ],
+   "assumptions": [
+    "design_inference: 听鹂亭 rect variant uses the footprint's own rectangle (5.20x1.91) inset 0.15 -> Rx=2.4517 Rz=0.8062, aligned to footprint long axis (-11.98 deg). The map-axis bbox 5.49x2.96 is the bbox of a rotated rectangle and is not itself buildable; using it would put corner columns 0.3-0.4 m outside the true footprint.",
+    "design_inference: 挹秀亭 square keeps the spec max-diamond fit (R=2.1976) with entrance bay 38.5 deg off facade axis; the bay-aligned alternative would shrink R by 31% and contradicts the 'largest n-gon' rule."
+   ]
+  },
+  "S1": {
+   "status": "done",
+   "finishedAt": "2026-09-23T01:35Z",
+   "outputs": [
+    "out-pavilion-kit/pavilion-bld-428196085/ (model.glb 585KB, 4128 tris, 4 renders)"
+   ],
+   "notes": [
+    "Sample 流觞亭 n=6 built; proportions self-checked against G12 eave language (corner lift, concave eave, tile lips, gourd finial all present).",
+    "Bugs found+fixed on sample: cameras faced backwards (to_track_quat +Z vs camera -Z); default scene cube polluted the join (added read_factory_settings use_empty); timber multiply tint rendered near-black (factor normalized so glTF baseColorFactor x texture averages exactly 6a2e22); 美人靠 back rail rebuilt as explicit 8-vert box (box_between width axis degenerated on near-vertical axes); rafters follow local lifted eave height (fixed-height rafters floated/poked through at corners)."
+   ]
+  },
+  "S2": {
+   "status": "done",
+   "finishedAt": "2026-09-23T02:35Z",
+   "outputs": [
+    "out-pavilion-kit/pavilion-*/ (5 modules)",
+    "placements.json",
+    "manifest.json"
+   ],
+   "notes": [
+    "rect variant 听鹂亭 built with PLAN.md roof fallback (four slopes + short ridge 40% of long side); aspect ~2:1 made a single-apex loft degenerate.",
+    "PLAN.md tangent fallback applied: export_tangents=False after validator flagged 17 non-unit TANGENT errors on untextured prims (Blender exports tangents for all prims when enabled); normal-map tangents are client-derived per glTF spec.",
+    "rect variant refinements after visual review: steps use ray-exit distance from the platform rect (support function is not a radius); rect hanglo/rails placed by scaling the side-midpoint vector (RX/RZ support functions are invalid for the rotated local rect)."
+   ]
+  },
+  "S3": {
+   "status": "done",
+   "finishedAt": "2026-09-23T02:50Z",
+   "outputs": [
+    "test_pavilion.py (ALL TESTS PASSED x5)",
+    "records/<bld>/{collision,build-report,reimport-check,render-log,validator}.json",
+    "placements.json",
+    "manifest.json"
+   ],
+   "notes": [
+    "Khronos validator 0 errors 0 warnings on all 5 GLBs.",
+    "collision vertex-level check: 0 leaks in reachable band y 0-2.4 for all 5; entrance bay open (rails n-1).",
+    "blank-frame guard (std>=2/255, dominant<95%, quantized colors>=16) passed on all 20 renders."
+   ]
+  },
+  "S4": {
+   "status": "done",
+   "finishedAt": "2026-09-23T02:55Z",
+   "outputs": [
+    "contact sheet (out + artifacts)",
+    "review/contact-sheet.png (322KB, committed)",
+    "RESULT.json",
+    "DELIVERY.md"
+   ]
+  }
+ },
+ "assumptions": [
+  "design_inference: cornerReach 1.2 read as the corner-lift falloff distance ALONG the eave (build.py tipReach semantics: 'perimeter length affected'); corners do NOT extend radially beyond the 0.9 overhang. The literal radial reading would contradict the spec's own bounds test (bbox + 2x0.9 +/-10%) for the square/rect plans.",
+  "design_inference: bounds test executed as placed-map-extent within [0.75,1.15]x(bbox+1.8) plus exact eave-radius realization (max plan radius = R+0.9+lip margin, +0.2). The literal +/-10% band fails low for the max-diamond square 挹秀亭 (its own spec fit puts eave corners diagonal to the map bbox) and is self-inconsistent with corner geometry; scale is instead pinned by the eave-radius check.",
+  "design_inference: rise = clamp(0.5 * eaveRadius, 1.1, 1.6) per pavilion (流觞1.34 / 挹秀1.55 / 凤凰1.59 / 耸翠1.55 / 听鹂1.10-clamped).",
+  "design_inference: vertical stack = platform 0-0.30, base stone 0.30-0.42, columns 0.30-3.05, tie beam 3.05-3.27 (0.14x0.22), eave purlin 3.27-3.43 (0.16), roof eave line 3.45 (= 0.3 platform + 3.15 spec eave height).",
+  "design_inference: no bevels anywhere (tri budget); silhouette + materials carry edges.",
+  "design_inference: steps 3 x 0.10 rise, width 1.2, tread 0.30, at entrance-bay midpoint direction.",
+  "design_inference: flat dark soffit at y=3.28 closes the under-eave view (build.py method); corners stay open.",
+  "design_inference: 挂落 on ALL bays including entrance (bottom 2.70 > 2.4 reachable band, walkable), 2 analytic alpha patterns alternating per bay, single plane per bay, lattice cell 0.6 m via REPEAT UV.",
+  "design_inference: collision.json boxes carry rotYDeg (documented yaw convention) and obb entries (p0/p1/width/thick) for rotated rails; vertex-level check 0<=y<=2.4 with 0.01 margin; rails caps+posts collidable.",
+  "design_inference: gourd finial omitted on the rect ridge-fallback roof (no apex point); 正脊 tile box instead.",
+  "design_inference: tie-beam/purlin rings built through column-corner angles; for the rect variant corners are equidistant (hypot(Rx,Rz)) so the same ring code serves both variants.",
+  "rendering: Standard view transform (AgX desaturated the 6a2e22 timber to near-black in review renders)."
+ ]
+}

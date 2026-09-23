@@ -1,0 +1,85 @@
+{
+  "base": "lead grey model (reference-greymodel-build.py), frozen section unchanged",
+  "designValues": {
+    "bays": [
+      3.2,
+      3.4,
+      3.8,
+      3.4,
+      3.2
+    ],
+    "W": 17.0,
+    "porch": 2.4,
+    "bodyDepth": 11.3,
+    "plinth": 0.55,
+    "plinthOutFront": 1.0,
+    "plinthOutSide": 0.6,
+    "colFrontD": 0.3,
+    "colH": 3.4,
+    "lowerEave": 4.35,
+    "lowerOver": 1.1,
+    "lowerTop": 5.6,
+    "upperWallIn": 0.5,
+    "upperEave": 6.6,
+    "upperOver": 1.2,
+    "ridge": 9.4,
+    "gableX": 6.2,
+    "gableBreakY": 7.9,
+    "cornerLift": 0.45,
+    "cornerReach": 1.6,
+    "eaveSag": 0.05
+  },
+  "refinements": [
+    "lattice-door-cores (analytic alpha texture x1)",
+    "side-bay rail wangzhu+lanban",
+    "eave rafters + 檐枋",
+    "wadang+dishui rows on both eaves",
+    "main-ridge chiwen / chuiji+qiangji end caps"
+  ],
+  "materials": {
+    "roofTile": {
+      "base": "roof-color.jpg",
+      "normal": "roof-normal.png",
+      "tile": [
+        1.4,
+        1.2
+      ]
+    },
+    "timber": {
+      "base": "wood-stain-color.jpg",
+      "tint": "6a2e22",
+      "normal": "Wood092_2K-JPG_NormalGL_1K.jpg",
+      "tile": [
+        0.9,
+        2.2
+      ]
+    },
+    "whiteWall": {
+      "base": "PaintedPlaster017_2K-JPG_Color_1K.jpg",
+      "tint": "f2efe8",
+      "tile": [
+        2.2,
+        2.2
+      ]
+    },
+    "blueStone": {
+      "base": "Bricks061_2K-JPG_Color_1K.jpg",
+      "tint": "8b9089",
+      "tile": [
+        2.0,
+        1.0
+      ]
+    },
+    "latticeCore": {
+      "alpha": "textures/lattice-core-alpha.png",
+      "cellM": 0.125,
+      "alphaMode": "MASK"
+    }
+  },
+  "reanchor": {
+    "from": "front colonnade centre (lead grey model)",
+    "to": "plan centre of plinth extents",
+    "shiftGlbZ": 6.65
+  },
+  "textureDir": "/home/baibai/work/onewonderjapan/pawborough-world/asset-authoring/yuyuan-entry/source-kit/textures"
+}

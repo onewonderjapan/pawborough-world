@@ -1,0 +1,137 @@
+{
+  "validatedAt": "2026-09-23T04:30:26.287Z",
+  "root": "/home/baibai/outbox/pawborough-zone-split-20260923/workspace/scene-authoring/yuyuan-area/modules/sansuitang",
+  "results": [
+    {
+      "file": "model.glb",
+      "sha256": "5a903f2e19308d167b2fd86987c2527235ff10a64d8246d5ab0eb239d3e48804",
+      "bytes": 1753156,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 6,
+      "infos": 4,
+      "errorCodes": [],
+      "warningCodes": [
+        "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE:/meshes/1/primitives/0/material",
+        "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE:/meshes/2/primitives/0/material",
+        "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE:/meshes/5/primitives/0/material",
+        "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE:/meshes/9/primitives/0/material",
+        "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE:/meshes/11/primitives/0/material",
+        "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE:/meshes/15/primitives/0/material"
+      ],
+      "infoCodes": [
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT",
+        "IMAGE_NPOT_DIMENSIONS"
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 1736340
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/jpeg",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/1",
+            "mimeType": "image/jpeg",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/2",
+            "mimeType": "image/jpeg",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/3",
+            "mimeType": "image/jpeg",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 512,
+              "format": "rgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/4",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 160,
+              "height": 160,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/5",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/6",
+            "mimeType": "image/jpeg",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 7,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 17,
+        "totalVertexCount": 39255,
+        "totalTriangleCount": 22114,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    }
+  ],
+  "errorFiles": 0,
+  "verdict": "PASS"
+}

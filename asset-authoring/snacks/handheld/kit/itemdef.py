@@ -196,31 +196,43 @@ def teacup_build(lod):
 
 
 def congyoubing_build(lod):
-    """Single scallion pancake folded in half (semicircle lying flat), fold lip toward -x.
-    Actual rest-pose bounds ~[0.12, 0.021, 0.062] (spec z=.12 unachievable for a semicircle;
-    recorded in PROGRESS.assumptions)."""
+    """R1 #3: scallion pancake folded in half, TWO visible layers of 1.1 cm each, plus
+    3 staggered 0.15 cm lamination sheets on the outer layer so the layered edges read.
+    Semicircle footprint unchanged (fold lip at x=0, rim toward +x). LOD0 <= 600."""
     seg = 14 if lod == 0 else (10 if lod == 1 else 6)
-    r = .06
-    y0, y1 = 0.0, .014
-    verts, faces, uvs = [], [], []
-    for yy, lift in ((y0, 0.0), (y1, .003)):
-        for i in range(seg + 1):
-            th = math.pi * i / seg
-            x = .06 - r * math.cos(th)
-            z = r * math.sin(th)
-            verts.append((x, yy + (lift * math.sin(th * .5) if yy > 0 else 0.0), z))
-            uvs.append((x / .125, z / .125))
-    n1 = seg + 1
-    for i in range(seg):  # outer arc wall
-        faces.append((i, i + 1, i + 1 + n1, i + n1))
-    faces.append((0, n1, 2 * n1 - 1, n1 - 1))          # crease wall (diameter edge)
-    c_top, c_bot = 2 * n1, 2 * n1 + 1
-    verts.append((.052, .011, .028)); uvs.append((.42, .22))
-    verts.append((.052, -.001, .028)); uvs.append((.42, .22))
-    for i in range(seg):  # top + bottom caps
-        faces.append((c_top, n1 + i + 1, n1 + i))
-        faces.append((c_bot, i, i + 1))
-    return [mesh('congyoubing', verts, faces, ['pancake', 'crust'], uvs, [0] * len(faces))]
+    mats = ['pancake', 'crust']
+
+    def slab(name, y0, y1, r):
+        verts, uvs, faces = [], [], []
+        n1 = seg + 1
+        for yy in (y0, y1):
+            for i in range(seg + 1):
+                th = math.pi * i / seg
+                verts.append((r - r * math.cos(th), yy, r * math.sin(th)))
+                uvs.append((verts[-1][0] / .125, verts[-1][2] / .125))
+        for i in range(seg):                      # outer arc wall -> crust
+            faces.append((i, i + 1, i + 1 + n1, i + n1))
+        faces.append((0, n1, 2 * n1 - 1, n1 - 1))  # crease wall (diameter edge)
+        c_top, c_bot = 2 * n1, 2 * n1 + 1
+        verts.append((r * .41, y1, r * .41)); uvs.append((.45, .35))
+        verts.append((r * .41, y0, r * .41)); uvs.append((.45, .35))
+        for i in range(seg):                       # caps: top -> pancake, bottom -> crust
+            faces.append((c_top, n1 + i + 1, n1 + i))
+            faces.append((c_bot, i, i + 1))
+        fm = [1] * len(faces)
+        for j in range(seg):                       # top cap faces are the ones using c_top
+            fm[1 + seg + j * 2] = 0
+        return mesh(name, verts, faces, mats, uvs, fm)
+
+    objs = [slab('layer-1', 0.0, .011, .060),
+            slab('layer-2', .011, .022, .0575)]
+    if lod == 0:                                   # staggered lamination edges on top
+        objs.append(slab('lam-1', .022, .0235, .0590))
+        objs.append(slab('lam-2', .0235, .025, .0570))
+        objs.append(slab('lam-3', .025, .0265, .0550))
+    elif lod == 1:
+        objs.append(slab('lam-1', .022, .024, .0580))
+    return objs
 
 
 # ---------- registry -------------------------------------------------------
@@ -258,14 +270,16 @@ def REG():
         extra_nodes={'straw': lambda lod=0: [cyl('straw', (.012, .058, .012), (.040, .104, .040), .004, 'porcelain', 6)]})
 
     def shengjian(lod):
+        # R1 #1: white wrapper on top/sides (sesame+scallion on a white f1e9dc base),
+        # golden crust only below y=0.013 (the sj-crust lathe); knot kept.
         sides = 54 if lod == 0 else (14 if lod == 1 else 8)
         objs = [lathe('sj-crust', (0, 0, 0), [(0, .02, 0), (.013, .0266, 0)],
                       'crust', sides, cap_bottom=True, cap_top=False, uv_top_planar=.05),
                 lathe('sj-body', (0, .013, 0),
                       [(.0, .0266, 0), (.008, .0275, .045), (.02, .0262, .045), (.028, .017, .045), (.030, .002, .07)],
-                      ['dough', 'sesame-scallion'], 54 if lod == 0 else (14 if lod == 1 else 8),
+                      'sesame-scallion', 54 if lod == 0 else (14 if lod == 1 else 8),
                       pleats=12 if lod < 2 else 0, twist=.25,
-                      cap_bottom=False, cap_top=True, mat_by_y=(.0215, 0, 1), uv_top_planar=.052)]
+                      cap_bottom=False, cap_top=True, uv_top_planar=.052)]
         if lod == 0:
             objs.append(lathe('sj-knot', (0, .0405, 0),
                               [(0, .002, 0), (.0035, .0035, 0), (.0045, .0015, 0), (.005, 0, 0)], 'dough', 10, cap_top=True, cap_bottom=False))
@@ -325,31 +339,65 @@ def REG():
 
     add('congyoubing', '蔥油餅', 'grip', [.12, .012, .12], .08, 'grip', congyoubing_build,
         grip=((.052, .009, .03), RT, FRONT), collision=[bx((.06, .0085, .03), (.12, .017, .06))],
-        note='folded-in-half semicircle; actual bounds ~[.12,.021,.062], recorded in PROGRESS.assumptions')
+        note='R1: two 1.1 cm layers + 3 lamination sheets; actual bounds ~[.12,.027,.062], recorded in PROGRESS.assumptions')
 
     add('cifangao', '粢飯糕', 'grip', [.028, .015, .075], .045, 'grip',
         lambda lod: [box('cifangao', (0, .0075, 0), (.028, .015, .075), 'crust', .003)],
         grip=((.014, .008, .037), RT, FRONT), collision=[bx((0, .0075, 0), (.028, .015, .075))])
 
     def youdunzi(lod):
-        sides = 18 if lod == 0 else (12 if lod == 1 else 8)
-        objs = [lathe('youdunzi', (0, 0, 0),
-                      [(0, .03, 0), (.008, .034, 0), (.022, .035, 0), (.03, .03, 0), (.033, .018, 0), (.034, 0, 0)],
-                      'crust', sides, cap_top=False, bumps=(7, .04) if lod < 2 else (0, 0))]
+        """R1 #2: deep-fried cup (base O5.5, rim O7, h 3.2 cm, wall 4 mm) with a radish-shred
+        dome ~0.8 cm above the rim: 25-35 thin shreds (3 x 0.8 x 12 mm, green/white, random
+        yaw) lying half-sunk ON the dome surface + 12 tiny batter bumps on the outer wall."""
+        sides = 24 if lod == 0 else (12 if lod == 1 else 8)
+        objs = [vessel('youdunzi-cup', (0, 0, 0), [(0, .0275), (.032, .035)], 'batter',
+                       None, None, sides, .004)]
+        # filling dome: equator r .0305 flush with the cup mouth (inner wall .031,
+        # rim y .032), apex .0395 -> 0.8 cm proud of the rim, no gap under the lip
+        DY0, DR, DS = .0245, .0305, .246
+        objs.append(sphere('radish-dome', (0, DY0, 0), DR, 'dough',
+                           12 if lod == 0 else (8 if lod == 1 else 6),
+                           5 if lod == 0 else 3, squash=DS))
+
+        def dome_y(d):
+            return DY0 + DR * DS * (1 + math.sqrt(max(0.0, 1 - (d / DR) ** 2)))
+
+
+        def strip(name, cx, cy, cz, yaw, tilt, matk):
+            # flat shred 12 x 0.8 x 3 mm (l x h x w), random yaw + slight tilt,
+            # ends lifted to follow the dome curvature
+            hx, hy, hz = .006, .0004, .0015
+            pts = [(sx * hx, sy * hy, sz * hz) for sy in (-1, 1) for sx in (-1, 1) for sz in (-1, 1)]
+            cyw, st = math.cos(yaw), math.sin(yaw)
+            ctl, ctp = math.cos(tilt), math.sin(tilt)
+            verts = []
+            for (x, y, z) in pts:
+                xr, zr = x * cyw - z * st, x * st + z * cyw          # yaw about +y
+                yr, zr2 = y * ctl - zr * ctp, y * ctp + zr * ctl     # tilt about +x
+                verts.append((cx + xr, min(cy + yr + .9e-3 * (xr * xr) / 3.6e-5, .03950), cz + zr2))
+            faces = [(0, 3, 2, 1), (4, 5, 6, 7), (0, 4, 7, 3), (1, 2, 6, 5), (0, 1, 5, 4), (3, 7, 6, 2)]
+            return mesh(name, verts, faces, matk)
+
+        if lod < 2:
+            n = 30 if lod == 0 else 8
+            for i in range(n):
+                a = (i * 2.39996 + .7) % math.tau
+                dd = .022 * math.sqrt(((i * 2654435761) % 97) / 97)
+                cy = dome_y(dd) - .0002 + .0006 * (((i * 40503) % 7) / 7)
+                objs.append(strip('shred-%d' % i, dd * math.cos(a), cy, dd * math.sin(a),
+                                  a + 1.1 + (i % 5) * .9, .10 * ((i % 3) - 1),
+                                  'greens' if i % 3 == 0 else 'dough'))
         if lod == 0:
-            for i in range(18):
-                a = i * 2.399
-                rr = .004 + .016 * ((i * 2654435761) % 97) / 97
-                h2 = .035 + .0025 * ((i * 40503) % 7) / 7
-                objs.append(rod('shred-%d' % i,
-                                (rr * math.cos(a), .033, rr * math.sin(a)),
-                                (rr * 1.35 * math.cos(a), h2, rr * 1.35 * math.sin(a)),
-                                .0016, 'greens' if i % 4 == 0 else 'dough'))
-        elif lod == 1:
-            objs.append(sphere('shreds', (0, .0335, 0), .016, 'greens', 10, 3, squash=.18))
+            for i in range(12):   # fried-batter bumps on the outer wall, lower half
+                a = i * math.tau / 12 + .26
+                rr = .0324 + .0004 * (i % 2)
+                yy = .008 + .011 * ((i * 31) % 5) / 5
+                objs.append(sphere('bump-%d' % i, (rr * math.cos(a), yy, rr * math.sin(a)),
+                                   .0016, 'batter', 8, 4, squash=.62))
         return objs
     add('youdunzi', '油墩子', 'pinch', [.07, .036, .07], .06, 'pinch', youdunzi,
-        grip=((.035, .018, 0), RT, FRONT), collision=[cap((0, .01, 0), (0, .03, 0), .033)])
+        grip=((.035, .018, 0), RT, FRONT), collision=[cap((0, .01, 0), (0, .03, 0), .033)],
+        note='R1: fried cup O5.5/O7 x 3.2 cm + radish dome 0.8 cm above rim (total height .0395 within +-10% of spec y)')
 
     def chunjuan(lod):
         sides = 12 if lod == 0 else (8 if lod == 1 else 6)

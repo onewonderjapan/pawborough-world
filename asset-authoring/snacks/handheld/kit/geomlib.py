@@ -8,7 +8,7 @@ M={};META={};TEX=Path('.');GROUP=['misc']
 def lin(hex):
  a=[int(hex[i:i+2],16)/255 for i in (0,2,4)]
  return [v/12.92 if v<=.04045 else ((v+.055)/1.055)**2.4 for v in a]
-def mat(key,name,color='ffffff',rough=.8,metal=0,tile=(1,1),base=None,normal=None,roughmap=None,source=None,alpha=None,clamp=False):
+def mat(key,name,color='ffffff',rough=.8,metal=0,tile=(1,1),base=None,normal=None,roughmap=None,source=None,alpha=None,clamp=False,normal_strength=.65):
  m=bpy.data.materials.new(name);m.use_nodes=True;n=m.node_tree.nodes;l=m.node_tree.links;p=n.get('Principled BSDF')
  p.inputs['Base Color'].default_value=(*lin(color),1);p.inputs['Roughness'].default_value=rough;p.inputs['Metallic'].default_value=metal
  if alpha is not None:p.inputs['Alpha'].default_value=alpha;m.blend_method='BLEND'
@@ -19,7 +19,7 @@ def mat(key,name,color='ffffff',rough=.8,metal=0,tile=(1,1),base=None,normal=Non
  for ch,path in paths.items():
   t=n.new('ShaderNodeTexImage');t.extension='EXTEND' if clamp else 'REPEAT';t.image=bpy.data.images.load(str(path),check_existing=True);t.image.colorspace_settings.name='sRGB' if ch=='color' else 'Non-Color';t.image.pack()
   if ch=='normal':
-   norm=n.new('ShaderNodeNormalMap');norm.inputs['Strength'].default_value=.65;l.new(t.outputs['Color'],norm.inputs['Color']);l.new(norm.outputs['Normal'],p.inputs['Normal'])
+   norm=n.new('ShaderNodeNormalMap');norm.inputs['Strength'].default_value=normal_strength;l.new(t.outputs['Color'],norm.inputs['Color']);l.new(norm.outputs['Normal'],p.inputs['Normal'])
   elif ch=='roughness':l.new(t.outputs['Color'],p.inputs['Roughness'])
   else:l.new(t.outputs['Color'],p.inputs['Base Color'])
  META[name]={'tileMeters':list(tile),'colorSrgb':color,'roughness':rough,'metallic':metal,'alpha':alpha,'textures':{k:path.name for k,path in paths.items()},'normalConvention':'OpenGL','source':source or 'locally authored / constant material'}

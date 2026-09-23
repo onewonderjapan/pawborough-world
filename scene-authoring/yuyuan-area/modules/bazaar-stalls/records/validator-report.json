@@ -1,0 +1,749 @@
+{
+  "validatedAt": "2026-09-23T00:45:11.557Z",
+  "root": "/home/baibai/outbox/pawborough-zone-split-20260923/workspace/scene-authoring/yuyuan-area/out-bazaar-stalls",
+  "results": [
+    {
+      "file": "awnings/awning-bld-165791764-6.glb",
+      "sha256": "fd559f22fa0787a70b7576b5f23e797ec83e2d76f0586d44d806914d581dfa6d",
+      "bytes": 37868,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 0,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 20496
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 2,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 30,
+        "totalVertexCount": 810,
+        "totalTriangleCount": 488,
+        "maxUVs": 0,
+        "maxInfluences": 0,
+        "maxAttributes": 2
+      }
+    },
+    {
+      "file": "awnings/awning-bld-389701812-5.glb",
+      "sha256": "bb7a2604a0a36f6938a835c5b1f9484b9b2cae01a3f3493ec473e1cc471ba7cd",
+      "bytes": 92092,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 0,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 51756
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 2,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 72,
+        "totalVertexCount": 2047,
+        "totalTriangleCount": 1254,
+        "maxUVs": 0,
+        "maxInfluences": 0,
+        "maxAttributes": 2
+      }
+    },
+    {
+      "file": "awnings/awning-bld-389701901-2.glb",
+      "sha256": "98a2e6a078af4f07192281f187b79222971d7da14698dc8dd58ad553542886f8",
+      "bytes": 60872,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 0,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 33732
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 2,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 48,
+        "totalVertexCount": 1335,
+        "totalTriangleCount": 810,
+        "maxUVs": 0,
+        "maxInfluences": 0,
+        "maxAttributes": 2
+      }
+    },
+    {
+      "file": "awnings/awning-bld-389701971-0.glb",
+      "sha256": "b76e04d5769ee1aa7db70fac58136c91d868fa1d1b8797768ebc4630192a3b02",
+      "bytes": 102908,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 0,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 57996
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 2,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 80,
+        "totalVertexCount": 2289,
+        "totalTriangleCount": 1398,
+        "maxUVs": 0,
+        "maxInfluences": 0,
+        "maxAttributes": 2
+      }
+    },
+    {
+      "file": "awnings/awning-bld-389702030-1.glb",
+      "sha256": "e39be81fe3b4e0cd37d0cb7cbc5511bbb8677199f7c5be92375a6203ca1d0ac5",
+      "bytes": 45716,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 0,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 25092
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 2,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 36,
+        "totalVertexCount": 991,
+        "totalTriangleCount": 602,
+        "maxUVs": 0,
+        "maxInfluences": 0,
+        "maxAttributes": 2
+      }
+    },
+    {
+      "file": "awnings/awning-bld-428202599-2.glb",
+      "sha256": "7bdb3a5d08ff7d8be4e2b19ca01e6a6a3fdd50f01d8f66d0797f43f9a74e74c2",
+      "bytes": 79156,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 0,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 44328
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 2,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 62,
+        "totalVertexCount": 1753,
+        "totalTriangleCount": 1072,
+        "maxUVs": 0,
+        "maxInfluences": 0,
+        "maxAttributes": 2
+      }
+    },
+    {
+      "file": "awnings/awning-bld-428202601-2.glb",
+      "sha256": "e2c6337f7213c333d3380d88bf3d147befae0894f25e9dfd42af6d329194c6ef",
+      "bytes": 71324,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 0,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 39792
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 2,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 56,
+        "totalVertexCount": 1574,
+        "totalTriangleCount": 960,
+        "maxUVs": 0,
+        "maxInfluences": 0,
+        "maxAttributes": 2
+      }
+    },
+    {
+      "file": "awnings/awning-bld-428202602-2.glb",
+      "sha256": "bb2afc4e165f2dade2726761b8d4992a1d1470a5955d3c51c45448c768007679",
+      "bytes": 123316,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 0,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 69516
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 2,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 96,
+        "totalVertexCount": 2745,
+        "totalTriangleCount": 1674,
+        "maxUVs": 0,
+        "maxInfluences": 0,
+        "maxAttributes": 2
+      }
+    },
+    {
+      "file": "awnings/awning-bld-428202603-0.glb",
+      "sha256": "8322768052bdd351fec8a999a87fb92b4a293520a3d5d54a108e1826e908e60d",
+      "bytes": 73852,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 0,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 41220
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 2,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 58,
+        "totalVertexCount": 1631,
+        "totalTriangleCount": 994,
+        "maxUVs": 0,
+        "maxInfluences": 0,
+        "maxAttributes": 2
+      }
+    },
+    {
+      "file": "awnings/awning-bld-428202604-0.glb",
+      "sha256": "00f5dc6088821a4240410db608db443e9dc279300f34ceb23b838ce1a70eb1e9",
+      "bytes": 50804,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 0,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 27984
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 2,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 40,
+        "totalVertexCount": 1106,
+        "totalTriangleCount": 672,
+        "maxUVs": 0,
+        "maxInfluences": 0,
+        "maxAttributes": 2
+      }
+    },
+    {
+      "file": "awnings/awning-bld-428202606-10.glb",
+      "sha256": "99e561c0605182a1492d7771824ceb0c815d6eaa3f5afd3e7dd12c4824a814ed",
+      "bytes": 35364,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 0,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 19068
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 2,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 28,
+        "totalVertexCount": 753,
+        "totalTriangleCount": 454,
+        "maxUVs": 0,
+        "maxInfluences": 0,
+        "maxAttributes": 2
+      }
+    },
+    {
+      "file": "awnings/awning-bld-428202607-1.glb",
+      "sha256": "4790734180862477a224ad6743e400f6c65d5e81f6c6960a80a285fbff5fc6e8",
+      "bytes": 50768,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 0,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 27924
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 2,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 40,
+        "totalVertexCount": 1104,
+        "totalTriangleCount": 670,
+        "maxUVs": 0,
+        "maxInfluences": 0,
+        "maxAttributes": 2
+      }
+    },
+    {
+      "file": "awnings/awning-bld-553893867-2.glb",
+      "sha256": "0ccbc22c5fe1125059ff255292f88e93584b907a787be2e56e1f4fd35d409cbc",
+      "bytes": 17416,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 0,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 8748
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 2,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 14,
+        "totalVertexCount": 344,
+        "totalTriangleCount": 202,
+        "maxUVs": 0,
+        "maxInfluences": 0,
+        "maxAttributes": 2
+      }
+    },
+    {
+      "file": "awnings/awning-bld-553893868-0.glb",
+      "sha256": "2764824abd20a09136758ddff311437a360687b28603345dcbdb659c31ff9c5d",
+      "bytes": 14784,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 0,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 7164
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 2,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 12,
+        "totalVertexCount": 282,
+        "totalTriangleCount": 162,
+        "maxUVs": 0,
+        "maxInfluences": 0,
+        "maxAttributes": 2
+      }
+    },
+    {
+      "file": "awnings/awning-bld-553893873-3.glb",
+      "sha256": "9505c09ca02a4e7c968e45310f65fdb5447443dfa6b2ce467acf8dcd0b71f483",
+      "bytes": 25140,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 0,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 13224
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 2,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 20,
+        "totalVertexCount": 521,
+        "totalTriangleCount": 312,
+        "maxUVs": 0,
+        "maxInfluences": 0,
+        "maxAttributes": 2
+      }
+    },
+    {
+      "file": "awnings/awning-bld-553893884-5.glb",
+      "sha256": "b0766658571875375e73af8abe3f9b687d54395dc826ff26b1df909dbb3e8232",
+      "bytes": 58352,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 0,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 32304
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 2,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 46,
+        "totalVertexCount": 1278,
+        "totalTriangleCount": 776,
+        "maxUVs": 0,
+        "maxInfluences": 0,
+        "maxAttributes": 2
+      }
+    },
+    {
+      "file": "bench.glb",
+      "sha256": "e174de4b2cda416e0b7ce09017d86d54a73aa2f545e9e37636b45b90fcfa0a19",
+      "bytes": 7352,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 0,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 3528
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 2,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 6,
+        "totalVertexCount": 144,
+        "totalTriangleCount": 72,
+        "maxUVs": 0,
+        "maxInfluences": 0,
+        "maxAttributes": 2
+      }
+    },
+    {
+      "file": "stall-drink.glb",
+      "sha256": "665eaf7e85b690052a25a53917a99f7c69ca79d0e0fcc1655bb7a1cb087cae0b",
+      "bytes": 40192,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 10,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT"
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 22704
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 7,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 24,
+        "totalVertexCount": 777,
+        "totalTriangleCount": 460,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "file": "stall-grill.glb",
+      "sha256": "a83eb0171e391ad7ac921074b5064cfe0f12ea3456fe38e8d6ba492476a3bedf",
+      "bytes": 38856,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 12,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT"
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 20928
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 6,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 24,
+        "totalVertexCount": 711,
+        "totalTriangleCount": 416,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "file": "stall-steam.glb",
+      "sha256": "6213d1f7440cce9ef173aec44f3e9f99aa1dfdafbf7eebd82e6da2c882e8c3b0",
+      "bytes": 30836,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 7,
+      "errorCodes": [],
+      "warningCodes": [],
+      "infoCodes": [
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT",
+        "NODE_EMPTY",
+        "NODE_EMPTY"
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 17208
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 4,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": false,
+        "hasDefaultScene": true,
+        "drawCallCount": 20,
+        "totalVertexCount": 609,
+        "totalTriangleCount": 364,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    }
+  ],
+  "errorFiles": 0,
+  "verdict": "PASS"
+}

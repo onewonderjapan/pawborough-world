@@ -1,0 +1,136 @@
+{
+ "imported": true,
+ "meshes": 8,
+ "materials": [
+  {
+   "name": "pav-timber.001",
+   "hasPrincipled": true,
+   "alphaMode": "HASHED",
+   "imageNodes": [
+    {
+     "image": "wood-stain-color",
+     "size": [
+      1024,
+      1024
+     ],
+     "colorSpace": "sRGB"
+    }
+   ]
+  },
+  {
+   "name": "pav-tile.001",
+   "hasPrincipled": true,
+   "alphaMode": "HASHED",
+   "imageNodes": [
+    {
+     "image": "roof-color",
+     "size": [
+      1024,
+      1024
+     ],
+     "colorSpace": "sRGB"
+    },
+    {
+     "image": "roof-normal",
+     "size": [
+      1024,
+      1024
+     ],
+     "colorSpace": "Non-Color"
+    }
+   ]
+  },
+  {
+   "name": "pav-hanglo-slat.001",
+   "hasPrincipled": true,
+   "alphaMode": "BLEND",
+   "imageNodes": [
+    {
+     "image": "lattice-slat",
+     "size": [
+      512,
+      512
+     ],
+     "colorSpace": "sRGB"
+    }
+   ]
+  },
+  {
+   "name": "pav-dark-lacquer.001",
+   "hasPrincipled": true,
+   "alphaMode": "HASHED",
+   "imageNodes": []
+  },
+  {
+   "name": "pav-hanglo-fret.001",
+   "hasPrincipled": true,
+   "alphaMode": "BLEND",
+   "imageNodes": [
+    {
+     "image": "lattice-fret",
+     "size": [
+      512,
+      512
+     ],
+     "colorSpace": "sRGB"
+    }
+   ]
+  },
+  {
+   "name": "pav-grey-stone.001",
+   "hasPrincipled": true,
+   "alphaMode": "HASHED",
+   "imageNodes": []
+  }
+ ],
+ "nodeTree": [
+  {
+   "name": "bld-428196085.001",
+   "parent": null
+  },
+  {
+   "name": "body.001",
+   "parent": "bld-428196085.001"
+  },
+  {
+   "name": "body__pav-grey-stone.001",
+   "parent": "body.001"
+  },
+  {
+   "name": "body__pav-hanglo-fret.001",
+   "parent": "body.001"
+  },
+  {
+   "name": "body__pav-hanglo-slat.001",
+   "parent": "body.001"
+  },
+  {
+   "name": "body__pav-timber.001",
+   "parent": "body.001"
+  },
+  {
+   "name": "rail.001",
+   "parent": "bld-428196085.001"
+  },
+  {
+   "name": "rail__pav-timber.001",
+   "parent": "rail.001"
+  },
+  {
+   "name": "roof.001",
+   "parent": "bld-428196085.001"
+  },
+  {
+   "name": "roof__pav-dark-lacquer.001",
+   "parent": "roof.001"
+  },
+  {
+   "name": "roof__pav-tile.001",
+   "parent": "roof.001"
+  },
+  {
+   "name": "roof__pav-timber.001",
+   "parent": "roof.001"
+  }
+ ]
+}

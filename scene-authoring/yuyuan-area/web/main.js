@@ -4,6 +4,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
 const app = document.getElementById('app');
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -58,33 +59,77 @@ function infoOf(node) {
 }
 
 const loader = new GLTFLoader();
+loader.setMeshoptDecoder(MeshoptDecoder);   // EXT_meshopt_compression (zone .cm.glb)
+const RAW = new URLSearchParams(location.search).get('raw') === '1';   // ?raw=1 loads uncompressed zone GLBs for comparison
 const t0 = performance.now();
-loader.load('/out/scene-areas.glb', (g) => {
-  const gltf = g.scene;
-  gltf.traverse(o => {
+const params = new URLSearchParams(location.search);
+function prepare(root) {
+  root.traverse(o => {
     if (o.isMesh) {
       o.castShadow = false; o.receiveShadow = false;
       if (o.material && o.material.map === null && o.material.vertexColors === false) o.material.side = THREE.FrontSide;
     }
   });
-  scene.add(gltf);
-  allRoots = gltf.children.length ? gltf.children : [gltf];
-  document.getElementById('loadmsg').remove();
-  fetch('/out/layout.json').then(r => r.json()).then(j => { layoutData = j; buildLabels(); });
+}
+function countTris(root) {
+  let t = 0;
+  root.traverse(o => { if (o.isMesh && o.geometry) t += (o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3; });
+  return t;
+}
+const zoneLoad = {};   // id -> {bytes, ms, tris, state}
+function hud(extra) {
   fetch('/out/assemble-stats.json').then(r => r.json()).then(j => {
-    let tris = 0;
-    gltf.traverse(o => { if (o.isMesh && o.geometry) tris += (o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3; });
+    let tris = 0; for (const r of allRoots) tris += countTris(r);
+    const zl = Object.entries(zoneLoad).map(([z, v]) => `${z} ${v.state === 'ok' ? (v.bytes / 1e6).toFixed(1) + 'MB ' + (v.ms / 1000).toFixed(1) + 's' : v.state}`).join(' · ');
     document.getElementById('hud').innerHTML =
-      `<b>scene-areas.glb</b> 已加载（${((performance.now() - t0) / 1000).toFixed(1)}s）<br>` +
+      `<b>${extra}</b>（${((performance.now() - t0) / 1000).toFixed(1)}s）<br>` +
       `tris ${(tris / 1000).toFixed(0)}k · 场景对象 ${j.sceneObjects} · 实例 ${j.instances}` +
-      `<br>模块：门楼1 · 店屋${j.modules.shops}种 · 庙区v3 ${j.modules.temple}件（L2只读嵌入）`;
-  });
-  setZone(new URLSearchParams(location.search).get('zone') || 'core');
-  setCam(new URLSearchParams(location.search).get('cam') || 'oblique');
+      (zl ? `<br>分区：${zl}` : '');
+  }).catch(() => {});
+}
+function afterFirstPaint() {
+  const lm = document.getElementById('loadmsg'); if (lm) lm.remove();
+  fetch('/out/layout.json').then(r => r.json()).then(j => { layoutData = j; buildLabels(); });
+  setZone(params.get('zone') || 'core');
+  setCam(params.get('cam') || 'oblique');
   buildTour();
+}
+function loadGlb(url) { return new Promise((res, rej) => loader.load(url, g => res(g.scene), undefined, rej)); }
+async function loadZones(m) {
+  // requested zone first, then manifest order; each zone GLB becomes a group named ZN-<zone> (setZone already understands ZN-)
+  const want = (ZONES[params.get('zone') || 'core'] || ZONES.core);
+  const order = [...m.order.filter(z => want.includes(z)), ...m.order.filter(z => !want.includes(z))];
+  let first = true;
+  const files = order.flatMap(z => m.zones.filter(x => x.id === z && x.file));
+  for (const e of files) {
+    const z = e.id, key = e.part && m.zones.filter(x => x.id === z && x.file).length > 1 ? `${z}#${e.part}` : z;
+    zoneLoad[key] = { state: '…' };
+    const ts = performance.now();
+    try {
+      const useCm = e.cm && !RAW;
+      const root = await loadGlb('/out/' + (useCm ? e.cm.file : e.file));
+      prepare(root);
+      const grp = new THREE.Group(); grp.name = 'ZN-' + z; grp.add(root); scene.add(grp);
+      allRoots.push(grp);
+      zoneLoad[key] = { state: 'ok', bytes: useCm ? e.cm.bytes : e.bytes, ms: performance.now() - ts };
+      if (first) { first = false; afterFirstPaint(); } else setZone(curZone, false);
+      hud(RAW ? '分区加载（未压缩 ?raw=1）' : '分区加载（meshopt 压缩）');
+    } catch (err) { zoneLoad[key] = { state: 'fail' }; console.error('zone load failed', key, err); }
+  }
+  window.__zonesLoaded = Object.keys(zoneLoad).filter(z => zoneLoad[z].state === 'ok');
   window.__ready = true;
-}, undefined, (e) => {
-  document.getElementById('loadmsg').textContent = 'GLB 加载失败: ' + e;
+  hud('分区加载完成');
+}
+fetch('/out/zones-manifest.json').then(r => { if (!r.ok) throw 0; return r.json(); }).then(m => {
+  document.getElementById('loadmsg').textContent = `按分区加载 ${m.zones.filter(z => z.file).length} 个 GLB …`;
+  loadZones(m);
+}).catch(() => {
+  // fallback: single-file scene-areas.glb (pre zone-split outputs)
+  loadGlb('/out/scene-areas.glb').then(root => {
+    prepare(root); scene.add(root);
+    allRoots = root.children.length ? root.children : [root];
+    afterFirstPaint(); hud('scene-areas.glb 已加载'); window.__ready = true;
+  }, e => { document.getElementById('loadmsg').textContent = 'GLB 加载失败: ' + e; });
 });
 
 // ---------- zone/cam ----------
@@ -110,7 +155,9 @@ function frame(nodes, dirName) {
   controls.update();
 }
 let curCam = 'oblique';
+let curZone = 'core';
 function setZone(z, reframe = true) {
+  curZone = z;
   curTour = null;
   document.querySelectorAll('[data-tour]').forEach(b => b.classList.toggle('active', false));
   document.querySelectorAll('[data-zone]').forEach(b => b.classList.toggle('active', b.dataset.zone === z));

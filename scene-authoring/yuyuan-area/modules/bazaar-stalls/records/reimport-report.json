@@ -1,0 +1,1072 @@
+{
+ "checkedAt": "run",
+ "results": [
+  {
+   "file": "stall-steam.glb",
+   "sha256_manifest": "6213d1f7440cce9ef173aec44f3e9f99aa1dfdafbf7eebd82e6da2c882e8c3b0",
+   "sha256_reimport": "6213d1f7440cce9ef173aec44f3e9f99aa1dfdafbf7eebd82e6da2c882e8c3b0",
+   "shaMatch": true,
+   "tris": 364,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "canvasCream",
+     "hex": "c9b893",
+     "expected": "c9b893",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "palewood",
+     "hex": "d8cdb4",
+     "expected": "d8cdb4",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "timber",
+     "hex": "6a4a32",
+     "expected": "6a4a32",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "timberDark",
+     "hex": "553a27",
+     "expected": "553a27",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {
+    "socket_case": [
+     -0.45,
+     1.16,
+     0.0
+    ],
+    "socket_steamer": [
+     -0.45,
+     1.31,
+     0.0
+    ],
+    "socket_tray": [
+     0.55,
+     1.01,
+     -0.0
+    ]
+   },
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -1.0,
+     1.0
+    ],
+    "y": [
+     0.0,
+     2.5
+    ],
+    "z": [
+     -0.77,
+     0.706
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  },
+  {
+   "file": "stall-grill.glb",
+   "sha256_manifest": "a83eb0171e391ad7ac921074b5064cfe0f12ea3456fe38e8d6ba492476a3bedf",
+   "sha256_reimport": "a83eb0171e391ad7ac921074b5064cfe0f12ea3456fe38e8d6ba492476a3bedf",
+   "shaMatch": true,
+   "tris": 416,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "canvasWine",
+     "hex": "8b4346",
+     "expected": "8b4346",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "dark-iron",
+     "hex": "44453d",
+     "expected": "44453d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "palewood",
+     "hex": "d8cdb4",
+     "expected": "d8cdb4",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "steel",
+     "hex": "9da0a3",
+     "expected": "9da0a3",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "timber",
+     "hex": "6a4a32",
+     "expected": "6a4a32",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "timberDark",
+     "hex": "553a27",
+     "expected": "553a27",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {
+    "socket_grill": [
+     -0.45,
+     1.13,
+     0.0
+    ],
+    "socket_tray": [
+     0.55,
+     1.01,
+     -0.0
+    ]
+   },
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -1.0,
+     1.0
+    ],
+    "y": [
+     0.0,
+     2.5
+    ],
+    "z": [
+     -0.73,
+     0.706
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  },
+  {
+   "file": "stall-drink.glb",
+   "sha256_manifest": "665eaf7e85b690052a25a53917a99f7c69ca79d0e0fcc1655bb7a1cb087cae0b",
+   "sha256_reimport": "665eaf7e85b690052a25a53917a99f7c69ca79d0e0fcc1655bb7a1cb087cae0b",
+   "shaMatch": true,
+   "tris": 460,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "canvasIndigo",
+     "hex": "536b7d",
+     "expected": "536b7d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "dark-iron",
+     "hex": "44453d",
+     "expected": "44453d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "glass",
+     "hex": "dfe8ea",
+     "expected": "dfe8ea",
+     "colorOk": true,
+     "alpha": 0.25,
+     "blendMethod": "BLEND"
+    },
+    {
+     "name": "palewood",
+     "hex": "d8cdb4",
+     "expected": "d8cdb4",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "steel",
+     "hex": "9da0a3",
+     "expected": "9da0a3",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "timber",
+     "hex": "6a4a32",
+     "expected": "6a4a32",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "timberDark",
+     "hex": "553a27",
+     "expected": "553a27",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {
+    "socket_cup": [
+     -0.5,
+     1.31,
+     -0.25
+    ],
+    "socket_tray": [
+     0.0,
+     1.01,
+     0.1
+    ]
+   },
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -1.0,
+     1.0
+    ],
+    "y": [
+     0.0,
+     2.5
+    ],
+    "z": [
+     -0.73,
+     0.706
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  },
+  {
+   "file": "bench.glb",
+   "sha256_manifest": "e174de4b2cda416e0b7ce09017d86d54a73aa2f545e9e37636b45b90fcfa0a19",
+   "sha256_reimport": "e174de4b2cda416e0b7ce09017d86d54a73aa2f545e9e37636b45b90fcfa0a19",
+   "shaMatch": true,
+   "tris": 72,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "timber",
+     "hex": "6a4a32",
+     "expected": "6a4a32",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "timberDark",
+     "hex": "553a27",
+     "expected": "553a27",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {},
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -0.8,
+     0.8
+    ],
+    "y": [
+     0.0,
+     0.5
+    ],
+    "z": [
+     -0.225,
+     0.225
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  },
+  {
+   "file": "awnings/awning-bld-165791764-6.glb",
+   "sha256_manifest": "fd559f22fa0787a70b7576b5f23e797ec83e2d76f0586d44d806914d581dfa6d",
+   "sha256_reimport": "fd559f22fa0787a70b7576b5f23e797ec83e2d76f0586d44d806914d581dfa6d",
+   "shaMatch": true,
+   "tris": 488,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "canvasWine",
+     "hex": "8b4346",
+     "expected": "8b4346",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "dark-iron",
+     "hex": "44453d",
+     "expected": "44453d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {},
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -9.425,
+     9.425
+    ],
+    "y": [
+     2.54,
+     3.1209
+    ],
+    "z": [
+     -0.0052,
+     1.2052
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  },
+  {
+   "file": "awnings/awning-bld-389701812-5.glb",
+   "sha256_manifest": "bb7a2604a0a36f6938a835c5b1f9484b9b2cae01a3f3493ec473e1cc471ba7cd",
+   "sha256_reimport": "bb7a2604a0a36f6938a835c5b1f9484b9b2cae01a3f3493ec473e1cc471ba7cd",
+   "shaMatch": true,
+   "tris": 1254,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "canvasIndigo",
+     "hex": "536b7d",
+     "expected": "536b7d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "dark-iron",
+     "hex": "44453d",
+     "expected": "44453d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {},
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -25.825,
+     25.825
+    ],
+    "y": [
+     2.54,
+     3.1209
+    ],
+    "z": [
+     -0.0052,
+     1.2052
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  },
+  {
+   "file": "awnings/awning-bld-389701901-2.glb",
+   "sha256_manifest": "98a2e6a078af4f07192281f187b79222971d7da14698dc8dd58ad553542886f8",
+   "sha256_reimport": "98a2e6a078af4f07192281f187b79222971d7da14698dc8dd58ad553542886f8",
+   "shaMatch": true,
+   "tris": 810,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "canvasCream",
+     "hex": "c9b893",
+     "expected": "c9b893",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "dark-iron",
+     "hex": "44453d",
+     "expected": "44453d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {},
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -16.275,
+     16.275
+    ],
+    "y": [
+     2.54,
+     3.1209
+    ],
+    "z": [
+     -0.0052,
+     1.2052
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  },
+  {
+   "file": "awnings/awning-bld-389701971-0.glb",
+   "sha256_manifest": "b76e04d5769ee1aa7db70fac58136c91d868fa1d1b8797768ebc4630192a3b02",
+   "sha256_reimport": "b76e04d5769ee1aa7db70fac58136c91d868fa1d1b8797768ebc4630192a3b02",
+   "shaMatch": true,
+   "tris": 1398,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "canvasWine",
+     "hex": "8b4346",
+     "expected": "8b4346",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "dark-iron",
+     "hex": "44453d",
+     "expected": "44453d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {},
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -28.775,
+     28.775
+    ],
+    "y": [
+     2.54,
+     3.1209
+    ],
+    "z": [
+     -0.0052,
+     1.2052
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  },
+  {
+   "file": "awnings/awning-bld-389702030-1.glb",
+   "sha256_manifest": "e39be81fe3b4e0cd37d0cb7cbc5511bbb8677199f7c5be92375a6203ca1d0ac5",
+   "sha256_reimport": "e39be81fe3b4e0cd37d0cb7cbc5511bbb8677199f7c5be92375a6203ca1d0ac5",
+   "shaMatch": true,
+   "tris": 602,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "canvasIndigo",
+     "hex": "536b7d",
+     "expected": "536b7d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "dark-iron",
+     "hex": "44453d",
+     "expected": "44453d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {},
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -12.275,
+     12.275
+    ],
+    "y": [
+     2.54,
+     3.1209
+    ],
+    "z": [
+     -0.0052,
+     1.2052
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  },
+  {
+   "file": "awnings/awning-bld-428202599-2.glb",
+   "sha256_manifest": "7bdb3a5d08ff7d8be4e2b19ca01e6a6a3fdd50f01d8f66d0797f43f9a74e74c2",
+   "sha256_reimport": "7bdb3a5d08ff7d8be4e2b19ca01e6a6a3fdd50f01d8f66d0797f43f9a74e74c2",
+   "shaMatch": true,
+   "tris": 1072,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "canvasCream",
+     "hex": "c9b893",
+     "expected": "c9b893",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "dark-iron",
+     "hex": "44453d",
+     "expected": "44453d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {},
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -21.925,
+     21.925
+    ],
+    "y": [
+     2.54,
+     3.1209
+    ],
+    "z": [
+     -0.0052,
+     1.2052
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  },
+  {
+   "file": "awnings/awning-bld-428202601-2.glb",
+   "sha256_manifest": "e2c6337f7213c333d3380d88bf3d147befae0894f25e9dfd42af6d329194c6ef",
+   "sha256_reimport": "e2c6337f7213c333d3380d88bf3d147befae0894f25e9dfd42af6d329194c6ef",
+   "shaMatch": true,
+   "tris": 960,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "canvasWine",
+     "hex": "8b4346",
+     "expected": "8b4346",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "dark-iron",
+     "hex": "44453d",
+     "expected": "44453d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {},
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -19.525,
+     19.525
+    ],
+    "y": [
+     2.54,
+     3.1209
+    ],
+    "z": [
+     -0.0052,
+     1.2052
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  },
+  {
+   "file": "awnings/awning-bld-428202602-2.glb",
+   "sha256_manifest": "bb2afc4e165f2dade2726761b8d4992a1d1470a5955d3c51c45448c768007679",
+   "sha256_reimport": "bb2afc4e165f2dade2726761b8d4992a1d1470a5955d3c51c45448c768007679",
+   "shaMatch": true,
+   "tris": 1674,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "canvasIndigo",
+     "hex": "536b7d",
+     "expected": "536b7d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "dark-iron",
+     "hex": "44453d",
+     "expected": "44453d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {},
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -34.275,
+     34.275
+    ],
+    "y": [
+     2.54,
+     3.1209
+    ],
+    "z": [
+     -0.0052,
+     1.2052
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  },
+  {
+   "file": "awnings/awning-bld-428202603-0.glb",
+   "sha256_manifest": "8322768052bdd351fec8a999a87fb92b4a293520a3d5d54a108e1826e908e60d",
+   "sha256_reimport": "8322768052bdd351fec8a999a87fb92b4a293520a3d5d54a108e1826e908e60d",
+   "shaMatch": true,
+   "tris": 994,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "canvasCream",
+     "hex": "c9b893",
+     "expected": "c9b893",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "dark-iron",
+     "hex": "44453d",
+     "expected": "44453d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {},
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -20.275,
+     20.275
+    ],
+    "y": [
+     2.54,
+     3.1209
+    ],
+    "z": [
+     -0.0052,
+     1.2052
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  },
+  {
+   "file": "awnings/awning-bld-428202604-0.glb",
+   "sha256_manifest": "00f5dc6088821a4240410db608db443e9dc279300f34ceb23b838ce1a70eb1e9",
+   "sha256_reimport": "00f5dc6088821a4240410db608db443e9dc279300f34ceb23b838ce1a70eb1e9",
+   "shaMatch": true,
+   "tris": 672,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "canvasWine",
+     "hex": "8b4346",
+     "expected": "8b4346",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "dark-iron",
+     "hex": "44453d",
+     "expected": "44453d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {},
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -13.625,
+     13.625
+    ],
+    "y": [
+     2.54,
+     3.1209
+    ],
+    "z": [
+     -0.0052,
+     1.2052
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  },
+  {
+   "file": "awnings/awning-bld-428202606-10.glb",
+   "sha256_manifest": "99e561c0605182a1492d7771824ceb0c815d6eaa3f5afd3e7dd12c4824a814ed",
+   "sha256_reimport": "99e561c0605182a1492d7771824ceb0c815d6eaa3f5afd3e7dd12c4824a814ed",
+   "shaMatch": true,
+   "tris": 454,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "canvasIndigo",
+     "hex": "536b7d",
+     "expected": "536b7d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "dark-iron",
+     "hex": "44453d",
+     "expected": "44453d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {},
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -8.825,
+     8.825
+    ],
+    "y": [
+     2.54,
+     3.1209
+    ],
+    "z": [
+     -0.0052,
+     1.2052
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  },
+  {
+   "file": "awnings/awning-bld-428202607-1.glb",
+   "sha256_manifest": "4790734180862477a224ad6743e400f6c65d5e81f6c6960a80a285fbff5fc6e8",
+   "sha256_reimport": "4790734180862477a224ad6743e400f6c65d5e81f6c6960a80a285fbff5fc6e8",
+   "shaMatch": true,
+   "tris": 670,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "canvasCream",
+     "hex": "c9b893",
+     "expected": "c9b893",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "dark-iron",
+     "hex": "44453d",
+     "expected": "44453d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {},
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -13.325,
+     13.325
+    ],
+    "y": [
+     2.54,
+     3.1209
+    ],
+    "z": [
+     -0.0052,
+     1.2052
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  },
+  {
+   "file": "awnings/awning-bld-553893867-2.glb",
+   "sha256_manifest": "0ccbc22c5fe1125059ff255292f88e93584b907a787be2e56e1f4fd35d409cbc",
+   "sha256_reimport": "0ccbc22c5fe1125059ff255292f88e93584b907a787be2e56e1f4fd35d409cbc",
+   "shaMatch": true,
+   "tris": 202,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "canvasWine",
+     "hex": "8b4346",
+     "expected": "8b4346",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "dark-iron",
+     "hex": "44453d",
+     "expected": "44453d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {},
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -3.675,
+     3.675
+    ],
+    "y": [
+     2.54,
+     3.1209
+    ],
+    "z": [
+     -0.0052,
+     1.2052
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  },
+  {
+   "file": "awnings/awning-bld-553893868-0.glb",
+   "sha256_manifest": "2764824abd20a09136758ddff311437a360687b28603345dcbdb659c31ff9c5d",
+   "sha256_reimport": "2764824abd20a09136758ddff311437a360687b28603345dcbdb659c31ff9c5d",
+   "shaMatch": true,
+   "tris": 162,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "canvasIndigo",
+     "hex": "536b7d",
+     "expected": "536b7d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "dark-iron",
+     "hex": "44453d",
+     "expected": "44453d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {},
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -2.675,
+     2.675
+    ],
+    "y": [
+     2.54,
+     3.1209
+    ],
+    "z": [
+     -0.0052,
+     1.2052
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  },
+  {
+   "file": "awnings/awning-bld-553893873-3.glb",
+   "sha256_manifest": "9505c09ca02a4e7c968e45310f65fdb5447443dfa6b2ce467acf8dcd0b71f483",
+   "sha256_reimport": "9505c09ca02a4e7c968e45310f65fdb5447443dfa6b2ce467acf8dcd0b71f483",
+   "shaMatch": true,
+   "tris": 312,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "canvasCream",
+     "hex": "c9b893",
+     "expected": "c9b893",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "dark-iron",
+     "hex": "44453d",
+     "expected": "44453d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {},
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -6.125,
+     6.125
+    ],
+    "y": [
+     2.54,
+     3.1209
+    ],
+    "z": [
+     -0.0052,
+     1.2052
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  },
+  {
+   "file": "awnings/awning-bld-553893884-5.glb",
+   "sha256_manifest": "b0766658571875375e73af8abe3f9b687d54395dc826ff26b1df909dbb3e8232",
+   "sha256_reimport": "b0766658571875375e73af8abe3f9b687d54395dc826ff26b1df909dbb3e8232",
+   "shaMatch": true,
+   "tris": 776,
+   "trisMatch": true,
+   "materials": [
+    {
+     "name": "canvasWine",
+     "hex": "8b4346",
+     "expected": "8b4346",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    },
+    {
+     "name": "dark-iron",
+     "hex": "44453d",
+     "expected": "44453d",
+     "colorOk": true,
+     "alpha": 1.0,
+     "blendMethod": "HASHED"
+    }
+   ],
+   "materialsOk": true,
+   "imageNodeCount": 0,
+   "noTextures": true,
+   "sockets": {},
+   "socketsOk": true,
+   "bounds": {
+    "x": [
+     -15.525,
+     15.525
+    ],
+    "y": [
+     2.54,
+     3.1209
+    ],
+    "z": [
+     -0.0052,
+     1.2052
+    ]
+   },
+   "boundsOk": true,
+   "ok": true
+  }
+ ],
+ "allOk": true
+}

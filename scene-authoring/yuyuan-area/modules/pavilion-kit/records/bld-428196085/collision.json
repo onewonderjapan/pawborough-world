@@ -1,0 +1,674 @@
+{
+ "axis": "glTF Y-up, origin platform centre at ground y=0, facade +Z",
+ "id": "bld-428196085",
+ "zh": "流觞亭",
+ "reachableBand": [
+  0,
+  2.4
+ ],
+ "rotYDeg": "box yaw; glb local +X -> (cos th, sin th), +Z -> (-sin th, cos th), th=radians(rotYDeg)",
+ "method": "vertex-level: every GLB vertex 0<=y<=2.4 must be inside >=1 collider (+0.01 margin)",
+ "colliders": [
+  {
+   "name": "step-0",
+   "type": "box",
+   "center": [
+    -0.5216,
+    0.15,
+    1.9812
+   ],
+   "size": [
+    1.2,
+    0.3,
+    0.3
+   ],
+   "rotYDeg": -14.75,
+   "reachable": true
+  },
+  {
+   "name": "step-1",
+   "type": "box",
+   "center": [
+    -0.598,
+    0.1,
+    2.2713
+   ],
+   "size": [
+    1.2,
+    0.2,
+    0.3
+   ],
+   "rotYDeg": -14.75,
+   "reachable": true
+  },
+  {
+   "name": "step-2",
+   "type": "box",
+   "center": [
+    -0.6744,
+    0.05,
+    2.5614
+   ],
+   "size": [
+    1.2,
+    0.1,
+    0.3
+   ],
+   "rotYDeg": -14.75,
+   "reachable": true
+  },
+  {
+   "name": "column-0",
+   "type": "box",
+   "center": [
+    1.7293,
+    1.735,
+    0.4553
+   ],
+   "size": [
+    0.23,
+    2.63,
+    0.23
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "base-stone-0",
+   "type": "box",
+   "center": [
+    1.7293,
+    0.36,
+    0.4553
+   ],
+   "size": [
+    0.36000000000000004,
+    0.12,
+    0.36000000000000004
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "column-1",
+   "type": "box",
+   "center": [
+    0.4704,
+    1.735,
+    1.7253
+   ],
+   "size": [
+    0.23,
+    2.63,
+    0.23
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "base-stone-1",
+   "type": "box",
+   "center": [
+    0.4704,
+    0.36,
+    1.7253
+   ],
+   "size": [
+    0.36000000000000004,
+    0.12,
+    0.36000000000000004
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "column-2",
+   "type": "box",
+   "center": [
+    -1.259,
+    1.735,
+    1.27
+   ],
+   "size": [
+    0.23,
+    2.63,
+    0.23
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "base-stone-2",
+   "type": "box",
+   "center": [
+    -1.259,
+    0.36,
+    1.27
+   ],
+   "size": [
+    0.36000000000000004,
+    0.12,
+    0.36000000000000004
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "column-3",
+   "type": "box",
+   "center": [
+    -1.7293,
+    1.735,
+    -0.4553
+   ],
+   "size": [
+    0.23,
+    2.63,
+    0.23
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "base-stone-3",
+   "type": "box",
+   "center": [
+    -1.7293,
+    0.36,
+    -0.4553
+   ],
+   "size": [
+    0.36000000000000004,
+    0.12,
+    0.36000000000000004
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "column-4",
+   "type": "box",
+   "center": [
+    -0.4704,
+    1.735,
+    -1.7253
+   ],
+   "size": [
+    0.23,
+    2.63,
+    0.23
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "base-stone-4",
+   "type": "box",
+   "center": [
+    -0.4704,
+    0.36,
+    -1.7253
+   ],
+   "size": [
+    0.36000000000000004,
+    0.12,
+    0.36000000000000004
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "column-5",
+   "type": "box",
+   "center": [
+    1.259,
+    1.735,
+    -1.27
+   ],
+   "size": [
+    0.23,
+    2.63,
+    0.23
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "base-stone-5",
+   "type": "box",
+   "center": [
+    1.259,
+    0.36,
+    -1.27
+   ],
+   "size": [
+    0.36000000000000004,
+    0.12,
+    0.36000000000000004
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  },
+  {
+   "name": "seat-b0",
+   "type": "box",
+   "center": [
+    1.249,
+    0.67,
+    1.2382
+   ],
+   "size": [
+    1.4482,
+    0.1,
+    0.28
+   ],
+   "rotYDeg": 134.749,
+   "reachable": true
+  },
+  {
+   "name": "back-rail-b0",
+   "type": "obb",
+   "p0": [
+    1.2774,
+    0.7,
+    1.2663
+   ],
+   "p1": [
+    1.3439,
+    1.1602,
+    1.3322
+   ],
+   "width": 1.448,
+   "thick": 0.06,
+   "reachable": true
+  },
+  {
+   "name": "post-b0--1",
+   "type": "box",
+   "center": [
+    1.7852,
+    0.9401,
+    0.8205
+   ],
+   "size": [
+    0.06,
+    0.4802,
+    0.06
+   ],
+   "rotYDeg": 0.0,
+   "reachable": true
+  },
+  {
+   "name": "post-b0-1",
+   "type": "box",
+   "center": [
+    0.8361,
+    0.9401,
+    1.778
+   ],
+   "size": [
+    0.06,
+    0.4802,
+    0.06
+   ],
+   "rotYDeg": 0.0,
+   "reachable": true
+  },
+  {
+   "name": "top-cap-b0",
+   "type": "box",
+   "center": [
+    1.3106,
+    1.1802,
+    1.2992
+   ],
+   "size": [
+    1.5482,
+    0.04,
+    0.12
+   ],
+   "rotYDeg": 134.749,
+   "reachable": true
+  },
+  {
+   "name": "seat-b2",
+   "type": "box",
+   "center": [
+    -1.6968,
+    0.67,
+    0.4626
+   ],
+   "size": [
+    1.4483,
+    0.1,
+    0.28
+   ],
+   "rotYDeg": 254.752,
+   "reachable": true
+  },
+  {
+   "name": "back-rail-b2",
+   "type": "obb",
+   "p0": [
+    -1.7354,
+    0.7,
+    0.4731
+   ],
+   "p1": [
+    -1.8256,
+    1.1602,
+    0.4977
+   ],
+   "width": 1.448,
+   "thick": 0.06,
+   "reachable": true
+  },
+  {
+   "name": "post-b2--1",
+   "type": "box",
+   "center": [
+    -1.6032,
+    0.9401,
+    1.1358
+   ],
+   "size": [
+    0.06,
+    0.4802,
+    0.06
+   ],
+   "rotYDeg": 0.0,
+   "reachable": true
+  },
+  {
+   "name": "post-b2-1",
+   "type": "box",
+   "center": [
+    -1.9578,
+    0.9401,
+    -0.165
+   ],
+   "size": [
+    0.06,
+    0.4802,
+    0.06
+   ],
+   "rotYDeg": 0.0,
+   "reachable": true
+  },
+  {
+   "name": "top-cap-b2",
+   "type": "box",
+   "center": [
+    -1.7805,
+    1.1802,
+    0.4854
+   ],
+   "size": [
+    1.5483,
+    0.04,
+    0.12
+   ],
+   "rotYDeg": 254.752,
+   "reachable": true
+  },
+  {
+   "name": "seat-b3",
+   "type": "box",
+   "center": [
+    -1.249,
+    0.67,
+    -1.2382
+   ],
+   "size": [
+    1.4482,
+    0.1,
+    0.28
+   ],
+   "rotYDeg": -45.251,
+   "reachable": true
+  },
+  {
+   "name": "back-rail-b3",
+   "type": "obb",
+   "p0": [
+    -1.2774,
+    0.7,
+    -1.2663
+   ],
+   "p1": [
+    -1.3439,
+    1.1602,
+    -1.3322
+   ],
+   "width": 1.448,
+   "thick": 0.06,
+   "reachable": true
+  },
+  {
+   "name": "post-b3--1",
+   "type": "box",
+   "center": [
+    -1.7852,
+    0.9401,
+    -0.8205
+   ],
+   "size": [
+    0.06,
+    0.4802,
+    0.06
+   ],
+   "rotYDeg": 0.0,
+   "reachable": true
+  },
+  {
+   "name": "post-b3-1",
+   "type": "box",
+   "center": [
+    -0.8361,
+    0.9401,
+    -1.778
+   ],
+   "size": [
+    0.06,
+    0.4802,
+    0.06
+   ],
+   "rotYDeg": 0.0,
+   "reachable": true
+  },
+  {
+   "name": "top-cap-b3",
+   "type": "box",
+   "center": [
+    -1.3106,
+    1.1802,
+    -1.2992
+   ],
+   "size": [
+    1.5482,
+    0.04,
+    0.12
+   ],
+   "rotYDeg": -45.251,
+   "reachable": true
+  },
+  {
+   "name": "seat-b4",
+   "type": "box",
+   "center": [
+    0.4478,
+    0.67,
+    -1.7007
+   ],
+   "size": [
+    1.4483,
+    0.1,
+    0.28
+   ],
+   "rotYDeg": 14.75,
+   "reachable": true
+  },
+  {
+   "name": "back-rail-b4",
+   "type": "obb",
+   "p0": [
+    0.458,
+    0.7,
+    -1.7394
+   ],
+   "p1": [
+    0.4818,
+    1.1602,
+    -1.8299
+   ],
+   "width": 1.448,
+   "thick": 0.06,
+   "reachable": true
+  },
+  {
+   "name": "post-b4--1",
+   "type": "box",
+   "center": [
+    -0.1821,
+    0.9401,
+    -1.9563
+   ],
+   "size": [
+    0.06,
+    0.4802,
+    0.06
+   ],
+   "rotYDeg": 0.0,
+   "reachable": true
+  },
+  {
+   "name": "post-b4-1",
+   "type": "box",
+   "center": [
+    1.1218,
+    0.9401,
+    -1.613
+   ],
+   "size": [
+    0.06,
+    0.4802,
+    0.06
+   ],
+   "rotYDeg": 0.0,
+   "reachable": true
+  },
+  {
+   "name": "top-cap-b4",
+   "type": "box",
+   "center": [
+    0.4699,
+    1.1802,
+    -1.7847
+   ],
+   "size": [
+    1.5483,
+    0.04,
+    0.12
+   ],
+   "rotYDeg": 14.75,
+   "reachable": true
+  },
+  {
+   "name": "seat-b5",
+   "type": "box",
+   "center": [
+    1.6968,
+    0.67,
+    -0.4626
+   ],
+   "size": [
+    1.4483,
+    0.1,
+    0.28
+   ],
+   "rotYDeg": 74.752,
+   "reachable": true
+  },
+  {
+   "name": "back-rail-b5",
+   "type": "obb",
+   "p0": [
+    1.7354,
+    0.7,
+    -0.4731
+   ],
+   "p1": [
+    1.8256,
+    1.1602,
+    -0.4977
+   ],
+   "width": 1.448,
+   "thick": 0.06,
+   "reachable": true
+  },
+  {
+   "name": "post-b5--1",
+   "type": "box",
+   "center": [
+    1.6032,
+    0.9401,
+    -1.1358
+   ],
+   "size": [
+    0.06,
+    0.4802,
+    0.06
+   ],
+   "rotYDeg": 0.0,
+   "reachable": true
+  },
+  {
+   "name": "post-b5-1",
+   "type": "box",
+   "center": [
+    1.9578,
+    0.9401,
+    0.165
+   ],
+   "size": [
+    0.06,
+    0.4802,
+    0.06
+   ],
+   "rotYDeg": 0.0,
+   "reachable": true
+  },
+  {
+   "name": "top-cap-b5",
+   "type": "box",
+   "center": [
+    1.7805,
+    1.1802,
+    -0.4854
+   ],
+   "size": [
+    1.5483,
+    0.04,
+    0.12
+   ],
+   "rotYDeg": 74.752,
+   "reachable": true
+  },
+  {
+   "name": "platform",
+   "type": "box",
+   "center": [
+    0,
+    0.15,
+    0
+   ],
+   "size": [
+    3.672,
+    0.3,
+    3.664
+   ],
+   "rotYDeg": 0,
+   "reachable": true
+  }
+ ]
+}

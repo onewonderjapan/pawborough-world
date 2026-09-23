@@ -1,0 +1,2256 @@
+{
+ "packageId": "pawborough-w1-bazaar-stalls-20260922",
+ "source": "/home/baibai/work/onewonderjapan/pawborough-world/scene-authoring/yuyuan-area/baseline/layout.json",
+ "layoutMeta": {
+  "note": [
+   "主街道路按当代OSM定位，历史街廓与建筑为概略",
+   "商铺类型来自机主指定的史料；逐店位置未经完整考证",
+   "猫猫墙是机主指定的跨年代保留元素",
+   "当前为地图/导览原型，不改原游戏角色、地盘或存档",
+   "layout.json 是唯一坐标源；3D 场景/2D 标注图/分区清单都从这里派生",
+   "OSM 的 wikipedia 外链未采用（源数据存在错链）；名称按本区域位置与既有记录解释",
+   "城隍庙组团对齐既有 temple-axis-v3 设计轴；OSM 庙区轮廓单列保留并标注差异",
+   "非历史测绘复原；推断字段 inferences 可查询"
+  ],
+  "projection": "local equirectangular meters; X east, Z south; do not mix GCJ02 coordinates"
+ },
+ "counts": {
+  "stalls": 43,
+  "benches": 8,
+  "bazaarBlocks": 16,
+  "clusters": 9
+ },
+ "typeMapping": {
+  "蒸煮": "steam",
+  "点心": "steam",
+  "烤制": "grill",
+  "饮品": "drink",
+  "fallback": "steam"
+ },
+ "typeCounts": {
+  "steam": 23,
+  "grill": 11,
+  "drink": 9
+ },
+ "stalls": [
+  {
+   "id": "stall-1",
+   "cluster": 1,
+   "foodUse": "蒸煮",
+   "type": "steam",
+   "position": [
+    -129.1995593303458,
+    21.917778198418837
+   ],
+   "rotY": 0.1047945169428108,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "steamer",
+     "lx": -0.45,
+     "ly": 1.31,
+     "lz": 0,
+     "sizeM": [
+      0.42,
+      0.42
+     ],
+     "purpose": "steamer-basket-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-2",
+   "cluster": 1,
+   "foodUse": "烤制",
+   "type": "grill",
+   "position": [
+    -131.884747340542,
+    22.20020579958175
+   ],
+   "rotY": 0.1047945169428108,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "grill",
+     "lx": -0.45,
+     "ly": 1.13,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.36
+     ],
+     "purpose": "grill-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-3",
+   "cluster": 1,
+   "foodUse": "饮品",
+   "type": "drink",
+   "position": [
+    -134.56993535073818,
+    22.482633400744657
+   ],
+   "rotY": 0.1047945169428108,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0,
+     "ly": 1.01,
+     "lz": 0.1,
+     "sizeM": [
+      0.55,
+      0.4
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "cup",
+     "lx": -0.5,
+     "ly": 1.31,
+     "lz": -0.25,
+     "sizeM": [
+      0.3,
+      0.3
+     ],
+     "purpose": "cup-display"
+    }
+   ]
+  },
+  {
+   "id": "stall-4",
+   "cluster": 1,
+   "foodUse": "点心",
+   "type": "steam",
+   "position": [
+    -137.25512336093436,
+    22.76506100190757
+   ],
+   "rotY": 0.1047945169428108,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "case",
+     "lx": -0.45,
+     "ly": 1.16,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.32
+     ],
+     "purpose": "pastry-case-display"
+    }
+   ]
+  },
+  {
+   "id": "stall-5",
+   "cluster": 1,
+   "foodUse": "蒸煮",
+   "type": "steam",
+   "position": [
+    -139.94031137113055,
+    23.04748860307048
+   ],
+   "rotY": 0.1047945169428108,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "steamer",
+     "lx": -0.45,
+     "ly": 1.31,
+     "lz": 0,
+     "sizeM": [
+      0.42,
+      0.42
+     ],
+     "purpose": "steamer-basket-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-6",
+   "cluster": 1,
+   "foodUse": "烤制",
+   "type": "grill",
+   "position": [
+    -142.62549938132673,
+    23.329916204233392
+   ],
+   "rotY": 0.1047945169428108,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "grill",
+     "lx": -0.45,
+     "ly": 1.13,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.36
+     ],
+     "purpose": "grill-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-8",
+   "cluster": 2,
+   "foodUse": "烤制",
+   "type": "grill",
+   "position": [
+    -165.17123145284012,
+    25.677701632553184
+   ],
+   "rotY": 0.10070349172162404,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "grill",
+     "lx": -0.45,
+     "ly": 1.13,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.36
+     ],
+     "purpose": "grill-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-9",
+   "cluster": 2,
+   "foodUse": "饮品",
+   "type": "drink",
+   "position": [
+    -172.0347474873762,
+    26.370406681076222
+   ],
+   "rotY": 0.10049885507745583,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0,
+     "ly": 1.01,
+     "lz": 0.1,
+     "sizeM": [
+      0.55,
+      0.4
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "cup",
+     "lx": -0.5,
+     "ly": 1.31,
+     "lz": -0.25,
+     "sizeM": [
+      0.3,
+      0.3
+     ],
+     "purpose": "cup-display"
+    }
+   ]
+  },
+  {
+   "id": "stall-10",
+   "cluster": 2,
+   "foodUse": "点心",
+   "type": "steam",
+   "position": [
+    -174.72112393285636,
+    26.64129705220326
+   ],
+   "rotY": 0.10049885507745583,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "case",
+     "lx": -0.45,
+     "ly": 1.16,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.32
+     ],
+     "purpose": "pastry-case-display"
+    }
+   ]
+  },
+  {
+   "id": "stall-11",
+   "cluster": 2,
+   "foodUse": "蒸煮",
+   "type": "steam",
+   "position": [
+    -177.40750037833652,
+    26.91218742333029
+   ],
+   "rotY": 0.10049885507745583,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "steamer",
+     "lx": -0.45,
+     "ly": 1.31,
+     "lz": 0,
+     "sizeM": [
+      0.42,
+      0.42
+     ],
+     "purpose": "steamer-basket-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-12",
+   "cluster": 2,
+   "foodUse": "烤制",
+   "type": "grill",
+   "position": [
+    -180.0938768238167,
+    27.18307779445733
+   ],
+   "rotY": 0.10049885507745583,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "grill",
+     "lx": -0.45,
+     "ly": 1.13,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.36
+     ],
+     "purpose": "grill-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-13",
+   "cluster": 2,
+   "foodUse": "饮品",
+   "type": "drink",
+   "position": [
+    -182.78025326929685,
+    27.453968165584367
+   ],
+   "rotY": 0.10049885507745583,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0,
+     "ly": 1.01,
+     "lz": 0.1,
+     "sizeM": [
+      0.55,
+      0.4
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "cup",
+     "lx": -0.5,
+     "ly": 1.31,
+     "lz": -0.25,
+     "sizeM": [
+      0.3,
+      0.3
+     ],
+     "purpose": "cup-display"
+    }
+   ]
+  },
+  {
+   "id": "stall-15",
+   "cluster": 3,
+   "foodUse": "饮品",
+   "type": "drink",
+   "position": [
+    -214.71828434333884,
+    30.67455368898357
+   ],
+   "rotY": 0.10049885507745583,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0,
+     "ly": 1.01,
+     "lz": 0.1,
+     "sizeM": [
+      0.55,
+      0.4
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "cup",
+     "lx": -0.5,
+     "ly": 1.31,
+     "lz": -0.25,
+     "sizeM": [
+      0.3,
+      0.3
+     ],
+     "purpose": "cup-display"
+    }
+   ]
+  },
+  {
+   "id": "stall-16",
+   "cluster": 3,
+   "foodUse": "点心",
+   "type": "steam",
+   "position": [
+    -217.404478659194,
+    30.94538643422369
+   ],
+   "rotY": 0.10047518523290565,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "case",
+     "lx": -0.45,
+     "ly": 1.16,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.32
+     ],
+     "purpose": "pastry-case-display"
+    }
+   ]
+  },
+  {
+   "id": "stall-17",
+   "cluster": 3,
+   "foodUse": "蒸煮",
+   "type": "steam",
+   "position": [
+    -212.3303941695787,
+    30.433762247981765
+   ],
+   "rotY": 0.10049885507745583,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "steamer",
+     "lx": -0.45,
+     "ly": 1.31,
+     "lz": 0,
+     "sizeM": [
+      0.42,
+      0.42
+     ],
+     "purpose": "steamer-basket-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-18",
+   "cluster": 3,
+   "foodUse": "烤制",
+   "type": "grill",
+   "position": [
+    -219.7923745317812,
+    31.186121354168836
+   ],
+   "rotY": 0.10047518523290565,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "grill",
+     "lx": -0.45,
+     "ly": 1.13,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.36
+     ],
+     "purpose": "grill-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-19",
+   "cluster": 4,
+   "foodUse": "点心",
+   "type": "steam",
+   "position": [
+    -272.4357038457625,
+    -250.3524732427818
+   ],
+   "rotY": -1.43052732826393,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "case",
+     "lx": -0.45,
+     "ly": 1.16,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.32
+     ],
+     "purpose": "pastry-case-display"
+    }
+   ]
+  },
+  {
+   "id": "stall-20",
+   "cluster": 4,
+   "foodUse": "蒸煮",
+   "type": "steam",
+   "position": [
+    -272.0582182599127,
+    -247.67899149934766
+   ],
+   "rotY": -1.43052732826393,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "steamer",
+     "lx": -0.45,
+     "ly": 1.31,
+     "lz": 0,
+     "sizeM": [
+      0.42,
+      0.42
+     ],
+     "purpose": "steamer-basket-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-21",
+   "cluster": 4,
+   "foodUse": "烤制",
+   "type": "grill",
+   "position": [
+    -271.68073267406294,
+    -245.0055097559135
+   ],
+   "rotY": -1.43052732826393,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "grill",
+     "lx": -0.45,
+     "ly": 1.13,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.36
+     ],
+     "purpose": "grill-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-22",
+   "cluster": 4,
+   "foodUse": "饮品",
+   "type": "drink",
+   "position": [
+    -271.30324708821314,
+    -242.33202801247936
+   ],
+   "rotY": -1.43052732826393,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0,
+     "ly": 1.01,
+     "lz": 0.1,
+     "sizeM": [
+      0.55,
+      0.4
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "cup",
+     "lx": -0.5,
+     "ly": 1.31,
+     "lz": -0.25,
+     "sizeM": [
+      0.3,
+      0.3
+     ],
+     "purpose": "cup-display"
+    }
+   ]
+  },
+  {
+   "id": "stall-23",
+   "cluster": 4,
+   "foodUse": "点心",
+   "type": "steam",
+   "position": [
+    -270.92576150236334,
+    -239.65854626904522
+   ],
+   "rotY": -1.43052732826393,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "case",
+     "lx": -0.45,
+     "ly": 1.16,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.32
+     ],
+     "purpose": "pastry-case-display"
+    }
+   ]
+  },
+  {
+   "id": "stall-24",
+   "cluster": 4,
+   "foodUse": "蒸煮",
+   "type": "steam",
+   "position": [
+    -270.54827591651355,
+    -236.98506452561108
+   ],
+   "rotY": -1.43052732826393,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "steamer",
+     "lx": -0.45,
+     "ly": 1.31,
+     "lz": 0,
+     "sizeM": [
+      0.42,
+      0.42
+     ],
+     "purpose": "steamer-basket-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-26",
+   "cluster": 5,
+   "foodUse": "蒸煮",
+   "type": "steam",
+   "position": [
+    -264.77414454777426,
+    -196.09069563530372
+   ],
+   "rotY": -1.43052732826393,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "steamer",
+     "lx": -0.45,
+     "ly": 1.31,
+     "lz": 0,
+     "sizeM": [
+      0.42,
+      0.42
+     ],
+     "purpose": "steamer-basket-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-27",
+   "cluster": 5,
+   "foodUse": "烤制",
+   "type": "grill",
+   "position": [
+    -263.78537169662064,
+    -189.3091482851921
+   ],
+   "rotY": -1.421882087294035,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "grill",
+     "lx": -0.45,
+     "ly": 1.13,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.36
+     ],
+     "purpose": "grill-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-28",
+   "cluster": 5,
+   "foodUse": "饮品",
+   "type": "drink",
+   "position": [
+    -263.3847876113641,
+    -186.63902986260496
+   ],
+   "rotY": -1.421882087294035,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0,
+     "ly": 1.01,
+     "lz": 0.1,
+     "sizeM": [
+      0.55,
+      0.4
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "cup",
+     "lx": -0.5,
+     "ly": 1.31,
+     "lz": -0.25,
+     "sizeM": [
+      0.3,
+      0.3
+     ],
+     "purpose": "cup-display"
+    }
+   ]
+  },
+  {
+   "id": "stall-29",
+   "cluster": 5,
+   "foodUse": "点心",
+   "type": "steam",
+   "position": [
+    -262.98420352610765,
+    -183.96891144001782
+   ],
+   "rotY": -1.421882087294035,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "case",
+     "lx": -0.45,
+     "ly": 1.16,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.32
+     ],
+     "purpose": "pastry-case-display"
+    }
+   ]
+  },
+  {
+   "id": "stall-30",
+   "cluster": 5,
+   "foodUse": "蒸煮",
+   "type": "steam",
+   "position": [
+    -262.5836194408511,
+    -181.29879301743068
+   ],
+   "rotY": -1.421882087294035,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "steamer",
+     "lx": -0.45,
+     "ly": 1.31,
+     "lz": 0,
+     "sizeM": [
+      0.42,
+      0.42
+     ],
+     "purpose": "steamer-basket-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-32",
+   "cluster": 6,
+   "foodUse": "烤制",
+   "type": "grill",
+   "position": [
+    -259.4808889922158,
+    -163.63067913730612
+   ],
+   "rotY": -1.3743962317196141,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "grill",
+     "lx": -0.45,
+     "ly": 1.13,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.36
+     ],
+     "purpose": "grill-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-33",
+   "cluster": 6,
+   "foodUse": "饮品",
+   "type": "drink",
+   "position": [
+    -258.9540112497757,
+    -160.9825855127299
+   ],
+   "rotY": -1.3743962317196141,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0,
+     "ly": 1.01,
+     "lz": 0.1,
+     "sizeM": [
+      0.55,
+      0.4
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "cup",
+     "lx": -0.5,
+     "ly": 1.31,
+     "lz": -0.25,
+     "sizeM": [
+      0.3,
+      0.3
+     ],
+     "purpose": "cup-display"
+    }
+   ]
+  },
+  {
+   "id": "stall-34",
+   "cluster": 6,
+   "foodUse": "点心",
+   "type": "steam",
+   "position": [
+    -257.27881118187497,
+    -152.3873772971835
+   ],
+   "rotY": -1.3849606405130954,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "case",
+     "lx": -0.45,
+     "ly": 1.16,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.32
+     ],
+     "purpose": "pastry-case-display"
+    }
+   ]
+  },
+  {
+   "id": "stall-35",
+   "cluster": 6,
+   "foodUse": "蒸煮",
+   "type": "steam",
+   "position": [
+    -258.48567547871784,
+    -158.62872451310662
+   ],
+   "rotY": -1.3743962317196141,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "steamer",
+     "lx": -0.45,
+     "ly": 1.31,
+     "lz": 0,
+     "sizeM": [
+      0.42,
+      0.42
+     ],
+     "purpose": "steamer-basket-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-36",
+   "cluster": 6,
+   "foodUse": "烤制",
+   "type": "grill",
+   "position": [
+    -256.8353682325755,
+    -150.02870005120081
+   ],
+   "rotY": -1.3849606405130954,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "grill",
+     "lx": -0.45,
+     "ly": 1.13,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.36
+     ],
+     "purpose": "grill-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-38",
+   "cluster": 7,
+   "foodUse": "饮品",
+   "type": "drink",
+   "position": [
+    -222.02550200588465,
+    26.64612895762158
+   ],
+   "rotY": -1.3624728777701394,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0,
+     "ly": 1.01,
+     "lz": 0.1,
+     "sizeM": [
+      0.55,
+      0.4
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "cup",
+     "lx": -0.5,
+     "ly": 1.31,
+     "lz": -0.25,
+     "sizeM": [
+      0.3,
+      0.3
+     ],
+     "purpose": "cup-display"
+    }
+   ]
+  },
+  {
+   "id": "stall-39",
+   "cluster": 7,
+   "foodUse": "点心",
+   "type": "steam",
+   "position": [
+    -221.4670883056968,
+    29.28775234853907
+   ],
+   "rotY": -1.3624728777701394,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "case",
+     "lx": -0.45,
+     "ly": 1.16,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.32
+     ],
+     "purpose": "pastry-case-display"
+    }
+   ]
+  },
+  {
+   "id": "stall-40",
+   "cluster": 7,
+   "foodUse": "蒸煮",
+   "type": "steam",
+   "position": [
+    -222.52186973938498,
+    24.298019276805984
+   ],
+   "rotY": -1.3624728777701394,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "steamer",
+     "lx": -0.45,
+     "ly": 1.31,
+     "lz": 0,
+     "sizeM": [
+      0.42,
+      0.42
+     ],
+     "purpose": "steamer-basket-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-41",
+   "cluster": 8,
+   "foodUse": "点心",
+   "type": "steam",
+   "position": [
+    -185.08323247992564,
+    -87.75867312936943
+   ],
+   "rotY": 0.18788231212971668,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "case",
+     "lx": -0.45,
+     "ly": 1.16,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.32
+     ],
+     "purpose": "pastry-case-display"
+    }
+   ]
+  },
+  {
+   "id": "stall-42",
+   "cluster": 8,
+   "foodUse": "蒸煮",
+   "type": "steam",
+   "position": [
+    -182.43074714186037,
+    -88.2629761447766
+   ],
+   "rotY": 0.18788231212971668,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "steamer",
+     "lx": -0.45,
+     "ly": 1.31,
+     "lz": 0,
+     "sizeM": [
+      0.42,
+      0.42
+     ],
+     "purpose": "steamer-basket-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-43",
+   "cluster": 8,
+   "foodUse": "烤制",
+   "type": "grill",
+   "position": [
+    -179.77826180379512,
+    -88.76727916018376
+   ],
+   "rotY": 0.18788231212971668,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "grill",
+     "lx": -0.45,
+     "ly": 1.13,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.36
+     ],
+     "purpose": "grill-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-44",
+   "cluster": 8,
+   "foodUse": "饮品",
+   "type": "drink",
+   "position": [
+    -177.12577646572984,
+    -89.27158217559094
+   ],
+   "rotY": 0.18788231212971668,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0,
+     "ly": 1.01,
+     "lz": 0.1,
+     "sizeM": [
+      0.55,
+      0.4
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "cup",
+     "lx": -0.5,
+     "ly": 1.31,
+     "lz": -0.25,
+     "sizeM": [
+      0.3,
+      0.3
+     ],
+     "purpose": "cup-display"
+    }
+   ]
+  },
+  {
+   "id": "stall-45",
+   "cluster": 8,
+   "foodUse": "点心",
+   "type": "steam",
+   "position": [
+    -174.47329112766457,
+    -89.7758851909981
+   ],
+   "rotY": 0.18788231212971668,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "case",
+     "lx": -0.45,
+     "ly": 1.16,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.32
+     ],
+     "purpose": "pastry-case-display"
+    }
+   ]
+  },
+  {
+   "id": "stall-46",
+   "cluster": 8,
+   "foodUse": "蒸煮",
+   "type": "steam",
+   "position": [
+    -171.8208057895993,
+    -90.28018820640527
+   ],
+   "rotY": 0.18788231212971668,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "steamer",
+     "lx": -0.45,
+     "ly": 1.31,
+     "lz": 0,
+     "sizeM": [
+      0.42,
+      0.42
+     ],
+     "purpose": "steamer-basket-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-47",
+   "cluster": 9,
+   "foodUse": "蒸煮",
+   "type": "steam",
+   "position": [
+    -171.32247034216508,
+    -101.37702898090566
+   ],
+   "rotY": -2.9536624599073957,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "steamer",
+     "lx": -0.45,
+     "ly": 1.31,
+     "lz": 0,
+     "sizeM": [
+      0.42,
+      0.42
+     ],
+     "purpose": "steamer-basket-mount"
+    }
+   ]
+  },
+  {
+   "id": "stall-48",
+   "cluster": 9,
+   "foodUse": "烤制",
+   "type": "grill",
+   "position": [
+    -168.67000915395178,
+    -101.88145900085114
+   ],
+   "rotY": -2.9536624599073957,
+   "height": 2.5,
+   "slots": [
+    {
+     "slot": "tray",
+     "lx": 0.55,
+     "ly": 1.01,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.38
+     ],
+     "purpose": "food-tray-display"
+    },
+    {
+     "slot": "grill",
+     "lx": -0.45,
+     "ly": 1.13,
+     "lz": 0,
+     "sizeM": [
+      0.5,
+      0.36
+     ],
+     "purpose": "grill-mount"
+    }
+   ]
+  }
+ ],
+ "benches": [
+  {
+   "id": "stall-7",
+   "cluster": 1,
+   "position": [
+    -146.90190991608364,
+    23.779708309789136
+   ],
+   "rotY": 0.1047945169428108,
+   "height": 0.5
+  },
+  {
+   "id": "stall-14",
+   "cluster": 2,
+   "position": [
+    -185.466629714777,
+    27.724858536711398
+   ],
+   "rotY": 0.10049885507745583,
+   "height": 0.5
+  },
+  {
+   "id": "stall-25",
+   "cluster": 4,
+   "position": [
+    -269.94709516867874,
+    -232.72729730458636
+   ],
+   "rotY": -1.43052732826393,
+   "height": 0.5
+  },
+  {
+   "id": "stall-31",
+   "cluster": 5,
+   "position": [
+    -262.15336246039044,
+    -178.4308880450223
+   ],
+   "rotY": -1.421882087294035,
+   "height": 0.5
+  },
+  {
+   "id": "stall-37",
+   "cluster": 6,
+   "position": [
+    -256.29954133550524,
+    -147.17863171230505
+   ],
+   "rotY": -1.3849606405130954,
+   "height": 0.5
+  },
+  {
+   "id": "stall-49",
+   "cluster": 1,
+   "position": [
+    -126.81272554350473,
+    21.666731441829583
+   ],
+   "rotY": 0.10479451694280902,
+   "height": 0.5
+  },
+  {
+   "id": "stall-50",
+   "cluster": 1,
+   "position": [
+    -126.01711428122438,
+    21.583049189633165
+   ],
+   "rotY": 0.10479451694280902,
+   "height": 0.5
+  },
+  {
+   "id": "stall-51",
+   "cluster": 1,
+   "position": [
+    -125.22150301894402,
+    21.499366937436747
+   ],
+   "rotY": 0.10479451694280902,
+   "height": 0.5
+  }
+ ],
+ "awningEdges": [
+  {
+   "blockId": "bld-165791764",
+   "edgeIndex": 6,
+   "edge": [
+    [
+     -133.03,
+     -13.54
+    ],
+    [
+     -136.53,
+     -32.04
+    ]
+   ],
+   "dir": [
+    -0.9825702456970679,
+    0.18589166810485067
+   ],
+   "lenM": 18.8,
+   "street": "中心广场",
+   "midpoint": [
+    -134.78,
+    -22.79
+   ],
+   "outward": [
+    -0.185892,
+    -0.98257
+   ],
+   "nFrontEdges": 10,
+   "selectionRule": "longest frontEdge per block = primary street face"
+  },
+  {
+   "blockId": "bld-389701812",
+   "edgeIndex": 5,
+   "edge": [
+    [
+     -138.45,
+     -40.83
+    ],
+    [
+     -189.19,
+     -31.23
+    ]
+   ],
+   "dir": [
+    0.1859017738273171,
+    0.9825683337497992
+   ],
+   "lenM": 51.6,
+   "street": "中心广场",
+   "midpoint": [
+    -163.82,
+    -36.03
+   ],
+   "outward": [
+    -0.982568,
+    0.185902
+   ],
+   "nFrontEdges": 6,
+   "selectionRule": "longest frontEdge per block = primary street face"
+  },
+  {
+   "blockId": "bld-389701901",
+   "edgeIndex": 2,
+   "edge": [
+    [
+     -255.3,
+     -158.13
+    ],
+    [
+     -260.38,
+     -190.2
+    ]
+   ],
+   "dir": [
+    -0.9876854329735189,
+    0.15645282193655943
+   ],
+   "lenM": 32.5,
+   "street": "旧校场路",
+   "midpoint": [
+    -257.84000000000003,
+    -174.165
+   ],
+   "outward": [
+    0.156453,
+    0.987685
+   ],
+   "nFrontEdges": 4,
+   "selectionRule": "longest frontEdge per block = primary street face"
+  },
+  {
+   "blockId": "bld-389701971",
+   "edgeIndex": 0,
+   "edge": [
+    [
+     -230.84,
+     -23.25
+    ],
+    [
+     -241.28,
+     -79.78
+    ]
+   ],
+   "dir": [
+    -0.9833707114542988,
+    0.18160959185534897
+   ],
+   "lenM": 57.5,
+   "street": "旧校场路",
+   "midpoint": [
+    -236.06,
+    -51.515
+   ],
+   "outward": [
+    0.18161,
+    0.983371
+   ],
+   "nFrontEdges": 2,
+   "selectionRule": "longest frontEdge per block = primary street face"
+  },
+  {
+   "blockId": "bld-389702030",
+   "edgeIndex": 1,
+   "edge": [
+    [
+     -191.94,
+     -193.15
+    ],
+    [
+     -184.79,
+     -169.7
+    ]
+   ],
+   "dir": [
+    0.9565255575338183,
+    -0.2916485175422943
+   ],
+   "lenM": 24.5,
+   "street": "豫园老街",
+   "midpoint": [
+    -188.365,
+    -181.425
+   ],
+   "outward": [
+    -0.291649,
+    -0.956526
+   ],
+   "nFrontEdges": 9,
+   "selectionRule": "longest frontEdge per block = primary street face"
+  },
+  {
+   "blockId": "bld-428202599",
+   "edgeIndex": 2,
+   "edge": [
+    [
+     -122.61,
+     14.54
+    ],
+    [
+     -165.66,
+     22.35
+    ]
+   ],
+   "dir": [
+    0.17850327684594774,
+    0.9839393173134504
+   ],
+   "lenM": 43.8,
+   "street": "方浜中路",
+   "midpoint": [
+    -144.135,
+    18.445
+   ],
+   "outward": [
+    -0.983939,
+    0.178503
+   ],
+   "nFrontEdges": 4,
+   "selectionRule": "longest frontEdge per block = primary street face"
+  },
+  {
+   "blockId": "bld-428202601",
+   "edgeIndex": 2,
+   "edge": [
+    [
+     -172.29,
+     22.46
+    ],
+    [
+     -210.9,
+     27.82
+    ]
+   ],
+   "dir": [
+    0.13750544975116646,
+    0.9905010102411455
+   ],
+   "lenM": 39,
+   "street": "方浜中路",
+   "midpoint": [
+    -191.595,
+    25.14
+   ],
+   "outward": [
+    0.990501,
+    -0.137505
+   ],
+   "nFrontEdges": 7,
+   "selectionRule": "longest frontEdge per block = primary street face"
+  },
+  {
+   "blockId": "bld-428202602",
+   "edgeIndex": 2,
+   "edge": [
+    [
+     -242.41,
+     -86.91
+    ],
+    [
+     -254.65,
+     -154.28
+    ]
+   ],
+   "dir": [
+    -0.9838932686235378,
+    0.1787569186277588
+   ],
+   "lenM": 68.5,
+   "street": "旧校场路",
+   "midpoint": [
+    -248.53,
+    -120.595
+   ],
+   "outward": [
+    0.178757,
+    0.983893
+   ],
+   "nFrontEdges": 4,
+   "selectionRule": "longest frontEdge per block = primary street face"
+  },
+  {
+   "blockId": "bld-428202603",
+   "edgeIndex": 0,
+   "edge": [
+    [
+     -261.36,
+     -196.13
+    ],
+    [
+     -268.18,
+     -236.03
+    ]
+   ],
+   "dir": [
+    -0.9857044205427812,
+    0.16848381323563308
+   ],
+   "lenM": 40.5,
+   "street": "旧校场路",
+   "midpoint": [
+    -264.77,
+    -216.07999999999998
+   ],
+   "outward": [
+    0.168484,
+    0.985704
+   ],
+   "nFrontEdges": 3,
+   "selectionRule": "longest frontEdge per block = primary street face"
+  },
+  {
+   "blockId": "bld-428202604",
+   "edgeIndex": 0,
+   "edge": [
+    [
+     -200.24,
+     -250.78
+    ],
+    [
+     -199.2,
+     -223.56
+    ]
+   ],
+   "dir": [
+    0.9992709030609985,
+    -0.03817934383480746
+   ],
+   "lenM": 27.2,
+   "street": "豫园老街",
+   "midpoint": [
+    -199.72,
+    -237.17000000000002
+   ],
+   "outward": [
+    -0.038179,
+    -0.999271
+   ],
+   "nFrontEdges": 1,
+   "selectionRule": "longest frontEdge per block = primary street face"
+  },
+  {
+   "blockId": "bld-428202606",
+   "edgeIndex": 10,
+   "edge": [
+    [
+     -185.55,
+     -110.82
+    ],
+    [
+     -202.88,
+     -107.72
+    ]
+   ],
+   "dir": [
+    0.17608552241595174,
+    0.9843748720865957
+   ],
+   "lenM": 17.6,
+   "street": "九曲桥广场",
+   "midpoint": [
+    -194.215,
+    -109.27
+   ],
+   "outward": [
+    -0.984375,
+    0.176086
+   ],
+   "nFrontEdges": 13,
+   "selectionRule": "longest frontEdge per block = primary street face"
+  },
+  {
+   "blockId": "bld-428202607",
+   "edgeIndex": 1,
+   "edge": [
+    [
+     -193.74,
+     -199.66
+    ],
+    [
+     -219.1,
+     -191.59
+    ]
+   ],
+   "dir": [
+    -0.30323467633082407,
+    -0.9529159097583272
+   ],
+   "lenM": 26.6,
+   "street": "黄金广场",
+   "midpoint": [
+    -206.42000000000002,
+    -195.625
+   ],
+   "outward": [
+    -0.952916,
+    0.303235
+   ],
+   "nFrontEdges": 3,
+   "selectionRule": "longest frontEdge per block = primary street face"
+  },
+  {
+   "blockId": "bld-553893867",
+   "edgeIndex": 2,
+   "edge": [
+    [
+     -130.75,
+     -52.33
+    ],
+    [
+     -129.29,
+     -45.22
+    ]
+   ],
+   "dir": [
+    -0.9795609566876943,
+    0.20114753822279066
+   ],
+   "lenM": 7.3,
+   "street": "中心广场",
+   "midpoint": [
+    -130.01999999999998,
+    -48.775
+   ],
+   "outward": [
+    0.201148,
+    0.979561
+   ],
+   "nFrontEdges": 4,
+   "selectionRule": "longest frontEdge per block = primary street face"
+  },
+  {
+   "blockId": "bld-553893868",
+   "edgeIndex": 0,
+   "edge": [
+    [
+     -130.75,
+     -52.33
+    ],
+    [
+     -135.96,
+     -51.29
+    ]
+   ],
+   "dir": [
+    0.19575415034452398,
+    0.9806530031682427
+   ],
+   "lenM": 5.3,
+   "street": "中心广场",
+   "midpoint": [
+    -133.35500000000002,
+    -51.81
+   ],
+   "outward": [
+    0.980653,
+    -0.195754
+   ],
+   "nFrontEdges": 4,
+   "selectionRule": "longest frontEdge per block = primary street face"
+  },
+  {
+   "blockId": "bld-553893873",
+   "edgeIndex": 3,
+   "edge": [
+    [
+     -155.26,
+     -107.58
+    ],
+    [
+     -152.63,
+     -95.64
+    ]
+   ],
+   "dir": [
+    -0.9765895119081252,
+    0.2151114251522919
+   ],
+   "lenM": 12.2,
+   "street": "九曲桥广场",
+   "midpoint": [
+    -153.945,
+    -101.61
+   ],
+   "outward": [
+    0.215111,
+    0.97659
+   ],
+   "nFrontEdges": 7,
+   "selectionRule": "longest frontEdge per block = primary street face"
+  },
+  {
+   "blockId": "bld-553893884",
+   "edgeIndex": 5,
+   "edge": [
+    [
+     -180.78,
+     -196.82
+    ],
+    [
+     -171.44,
+     -167.22
+    ]
+   ],
+   "dir": [
+    0.9536508096261742,
+    -0.3009154919563673
+   ],
+   "lenM": 31,
+   "street": "豫园老街",
+   "midpoint": [
+    -176.11,
+    -182.01999999999998
+   ],
+   "outward": [
+    0.300915,
+    0.953651
+   ],
+   "nFrontEdges": 15,
+   "selectionRule": "longest frontEdge per block = primary street face"
+  }
+ ],
+ "clusters": [
+  {
+   "cluster": 1,
+   "roadOsm": 238219462,
+   "arcM": 14,
+   "stalls": 6,
+   "foodUses": [
+    "蒸煮",
+    "烤制",
+    "饮品",
+    "点心"
+   ]
+  },
+  {
+   "cluster": 2,
+   "roadOsm": 238219462,
+   "arcM": 52,
+   "stalls": 6,
+   "foodUses": [
+    "烤制",
+    "饮品",
+    "点心",
+    "蒸煮"
+   ]
+  },
+  {
+   "cluster": 3,
+   "roadOsm": 238219462,
+   "arcM": 100,
+   "stalls": 4,
+   "foodUses": [
+    "饮品",
+    "点心",
+    "蒸煮",
+    "烤制"
+   ]
+  },
+  {
+   "cluster": 4,
+   "roadOsm": 33683251,
+   "arcM": 14,
+   "stalls": 6,
+   "foodUses": [
+    "点心",
+    "蒸煮",
+    "烤制",
+    "饮品"
+   ]
+  },
+  {
+   "cluster": 5,
+   "roadOsm": 33683251,
+   "arcM": 70,
+   "stalls": 5,
+   "foodUses": [
+    "蒸煮",
+    "烤制",
+    "饮品",
+    "点心"
+   ]
+  },
+  {
+   "cluster": 6,
+   "roadOsm": 33683251,
+   "arcM": 102,
+   "stalls": 5,
+   "foodUses": [
+    "烤制",
+    "饮品",
+    "点心",
+    "蒸煮"
+   ]
+  },
+  {
+   "cluster": 7,
+   "roadOsm": 33683251,
+   "arcM": 296,
+   "stalls": 3,
+   "foodUses": [
+    "饮品",
+    "点心",
+    "蒸煮"
+   ]
+  },
+  {
+   "cluster": 8,
+   "roadOsm": 428199195,
+   "arcM": 20,
+   "stalls": 6,
+   "foodUses": [
+    "点心",
+    "蒸煮",
+    "烤制",
+    "饮品"
+   ]
+  },
+  {
+   "cluster": 9,
+   "roadOsm": 428199195,
+   "arcM": 96,
+   "stalls": 2,
+   "foodUses": [
+    "蒸煮",
+    "烤制"
+   ]
+  }
+ ]
+}

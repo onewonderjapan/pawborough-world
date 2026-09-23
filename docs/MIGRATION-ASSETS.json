@@ -6,7 +6,7 @@
     "objectPrefix": "objects/sha256/",
     "snapshotKey": "snapshots/owner/reorganization-20260922-202629/MIGRATION-MANIFEST.json"
   },
-  "uniqueBytes": 370964347,
+  "uniqueBytes": 389840475,
   "files": [
     {
       "path": "scene-authoring/yuyuan-area/baseline/scene-areas.glb",
@@ -778,15 +778,15 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/resources/foods/handheld/youdunzi.glb",
-      "sha256": "5b67ffd36f6c0461690219384d0e51dc9a55fbb66bf237fc71906a0dd32483db",
-      "bytes": 51180,
-      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+      "sha256": "290072ecb5846a0b2c813eb87821ba9cbf874bb220893dfaa4ee18f679eb1969",
+      "bytes": 112984,
+      "sourcePackage": "pawborough-snacks-handheld-r1-20260922"
     },
     {
       "path": "scene-authoring/yuyuan-area/resources/foods/handheld/bean-jar.glb",
-      "sha256": "c484a526bffcf5ee3e5bddc3b4adb715fb14a439ff5438ec56f064f16d5e73f5",
-      "bytes": 2253840,
-      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+      "sha256": "33077d008e7a4ec7bddfa77f3772867503a65f7cfb2fa7bc761c8bbd705f9d68",
+      "bytes": 2210624,
+      "sourcePackage": "pawborough-snacks-handheld-r2-20260923"
     },
     {
       "path": "scene-authoring/yuyuan-area/resources/foods/handheld/jar-resolvability.json",
@@ -844,9 +844,9 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/resources/foods/handheld/bean-packet-open.glb",
-      "sha256": "27a640bcad0e1ba24f305527107ec3ddba663c8aad5e9302e4895da825dbc07b",
-      "bytes": 980868,
-      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+      "sha256": "5e4dc11a134f701368fcf9703dc86c10a1d8a219728edc7a1497b61408eb5c0e",
+      "bytes": 1107788,
+      "sourcePackage": "pawborough-snacks-handheld-r2-20260923"
     },
     {
       "path": "scene-authoring/yuyuan-area/resources/foods/handheld/ligaotang-box-open.glb",
@@ -862,9 +862,9 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/resources/foods/handheld/bean-dish.glb",
-      "sha256": "3a3137329cc5d8d9ee4a6b16e88615da60e340fed9e0a37f38947c36efebfc24",
-      "bytes": 1373476,
-      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+      "sha256": "8a523f70121b2970d9568a6c78bf1e0acc3584347098c05cf5d2aba46773c37f",
+      "bytes": 1540264,
+      "sourcePackage": "pawborough-snacks-handheld-r2-20260923"
     },
     {
       "path": "scene-authoring/yuyuan-area/resources/foods/handheld/chopsticks-pair.glb",
@@ -886,9 +886,9 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/resources/foods/handheld/shengjian.glb",
-      "sha256": "019a143d6c9fe0226a5f5f48abe01ec1f08b1ccd9c2df51c4952062c47d31ef9",
-      "bytes": 85208,
-      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+      "sha256": "5552cf0c664428c6dfc66528cb5ea95a5adf6d312474b70550e214007fc2683a",
+      "bytes": 97540,
+      "sourcePackage": "pawborough-snacks-handheld-r2-20260923"
     },
     {
       "path": "scene-authoring/yuyuan-area/resources/foods/handheld/bowl-jiuniang.glb",
@@ -904,9 +904,9 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/resources/foods/handheld/bean-single.glb",
-      "sha256": "ffaf463e35922da6c894661cf69651954e9bd4fba0ab73e0513ae96fa2af3d92",
-      "bytes": 1028184,
-      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+      "sha256": "87f6ed965481f7ca0ffec3c1cc0647f1536630660d443e1f5b461089534d7ba6",
+      "bytes": 1194936,
+      "sourcePackage": "pawborough-snacks-handheld-r2-20260923"
     },
     {
       "path": "scene-authoring/yuyuan-area/resources/foods/handheld/youtiao.glb",
@@ -922,9 +922,9 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/resources/foods/handheld/congyoubing.glb",
-      "sha256": "6726925d88b2e7a91e25a9479b1339e375cf11d863c3fd151ae7438e67f38925",
-      "bytes": 37848,
-      "sourcePackage": "pawborough-snacks-handheld-night-20260921"
+      "sha256": "f891634434e669c3178f133f1a5e3a67b7f0db97ee86da489e913a4d0df2b1ca",
+      "bytes": 77872,
+      "sourcePackage": "pawborough-snacks-handheld-r2-20260923"
     },
     {
       "path": "scene-authoring/yuyuan-area/resources/foods/handheld/steamer-xiaolongbao-8.glb",
@@ -1789,9 +1789,297 @@
       "sha256": "711d1c87fd8c9eaed301eaaef2f9790089c8f69a33911d0f03eb73fe410e7851",
       "bytes": 867190,
       "sourcePackage": "pawborough-review-repair-20260922"
+    },
+    {
+      "path": "asset-authoring/shops/n1n2n3-20260923/cart-congyoubing/model.glb",
+      "sha256": "dec9a5e4edbcdf16b2f35697e162018e58ebee419280eb1577ad7ab106886f03",
+      "bytes": 659264,
+      "sourcePackage": "pawborough-w1-shops-n1n2n3-20260923"
+    },
+    {
+      "path": "asset-authoring/shops/n1n2n3-20260923/cart-xiekehuang/model.glb",
+      "sha256": "396c03c7619f0ace13b679f3b8a367442a0427c8765631a16f8d2823c185d5aa",
+      "bytes": 459036,
+      "sourcePackage": "pawborough-w1-shops-n1n2n3-20260923"
+    },
+    {
+      "path": "asset-authoring/shops/n1n2n3-20260923/cart-youdunzi/model.glb",
+      "sha256": "90ad60d1fc9054bfdfa58c745818e121670f7f9cf1ece0956d0b93a738f02268",
+      "bytes": 919864,
+      "sourcePackage": "pawborough-wave0-glm-20260923"
+    },
+    {
+      "path": "asset-authoring/shops/n1n2n3-20260923/shop-07-tangtuan/model.glb",
+      "sha256": "27a6f031e81993e90caa7f318f64d6d5880babfe46e84d599026329354471d4f",
+      "bytes": 1456892,
+      "sourcePackage": "pawborough-wave0-glm-20260923"
+    },
+    {
+      "path": "asset-authoring/shops/n1n2n3-20260923/shop-08-beans/model.glb",
+      "sha256": "707a5923526795afa12f310d057435cd87a056615478e43b9d4f8e92b8336bc0",
+      "bytes": 2222252,
+      "sourcePackage": "pawborough-wave0-glm-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-165791764-6.glb",
+      "sha256": "fd559f22fa0787a70b7576b5f23e797ec83e2d76f0586d44d806914d581dfa6d",
+      "bytes": 37868,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-389701812-5.glb",
+      "sha256": "bb7a2604a0a36f6938a835c5b1f9484b9b2cae01a3f3493ec473e1cc471ba7cd",
+      "bytes": 92092,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-389701901-2.glb",
+      "sha256": "98a2e6a078af4f07192281f187b79222971d7da14698dc8dd58ad553542886f8",
+      "bytes": 60872,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-389701971-0.glb",
+      "sha256": "b76e04d5769ee1aa7db70fac58136c91d868fa1d1b8797768ebc4630192a3b02",
+      "bytes": 102908,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-389702030-1.glb",
+      "sha256": "e39be81fe3b4e0cd37d0cb7cbc5511bbb8677199f7c5be92375a6203ca1d0ac5",
+      "bytes": 45716,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202599-2.glb",
+      "sha256": "7bdb3a5d08ff7d8be4e2b19ca01e6a6a3fdd50f01d8f66d0797f43f9a74e74c2",
+      "bytes": 79156,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202601-2.glb",
+      "sha256": "e2c6337f7213c333d3380d88bf3d147befae0894f25e9dfd42af6d329194c6ef",
+      "bytes": 71324,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202602-2.glb",
+      "sha256": "bb2afc4e165f2dade2726761b8d4992a1d1470a5955d3c51c45448c768007679",
+      "bytes": 123316,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202603-0.glb",
+      "sha256": "8322768052bdd351fec8a999a87fb92b4a293520a3d5d54a108e1826e908e60d",
+      "bytes": 73852,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202604-0.glb",
+      "sha256": "00f5dc6088821a4240410db608db443e9dc279300f34ceb23b838ce1a70eb1e9",
+      "bytes": 50804,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202606-10.glb",
+      "sha256": "99e561c0605182a1492d7771824ceb0c815d6eaa3f5afd3e7dd12c4824a814ed",
+      "bytes": 35364,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202607-1.glb",
+      "sha256": "4790734180862477a224ad6743e400f6c65d5e81f6c6960a80a285fbff5fc6e8",
+      "bytes": 50768,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-553893867-2.glb",
+      "sha256": "0ccbc22c5fe1125059ff255292f88e93584b907a787be2e56e1f4fd35d409cbc",
+      "bytes": 17416,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-553893868-0.glb",
+      "sha256": "2764824abd20a09136758ddff311437a360687b28603345dcbdb659c31ff9c5d",
+      "bytes": 14784,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-553893873-3.glb",
+      "sha256": "9505c09ca02a4e7c968e45310f65fdb5447443dfa6b2ce467acf8dcd0b71f483",
+      "bytes": 25140,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-553893884-5.glb",
+      "sha256": "b0766658571875375e73af8abe3f9b687d54395dc826ff26b1df909dbb3e8232",
+      "bytes": 58352,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/bench.glb",
+      "sha256": "e174de4b2cda416e0b7ce09017d86d54a73aa2f545e9e37636b45b90fcfa0a19",
+      "bytes": 7352,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/stall-drink.glb",
+      "sha256": "665eaf7e85b690052a25a53917a99f7c69ca79d0e0fcc1655bb7a1cb087cae0b",
+      "bytes": 40192,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/stall-grill.glb",
+      "sha256": "a83eb0171e391ad7ac921074b5064cfe0f12ea3456fe38e8d6ba492476a3bedf",
+      "bytes": 38856,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/stall-steam.glb",
+      "sha256": "6213d1f7440cce9ef173aec44f3e9f99aa1dfdafbf7eebd82e6da2c882e8c3b0",
+      "bytes": 30836,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/corridor-bld-553893874.glb",
+      "sha256": "91d3309854d5cdf94ee01b4a6ca013a3606d14de7d2428b76046dc6f22904e2b",
+      "bytes": 593836,
+      "sourcePackage": "pawborough-w1-corridor-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/double-corridor-bld-428186469.glb",
+      "sha256": "dd3203db841184832be1236796e900c9a0b20a09976f5df4097b0eb0ae137794",
+      "bytes": 548448,
+      "sourcePackage": "pawborough-zone-split-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428179924/model.glb",
+      "sha256": "369565c5e058484020d7547b56144e810039a69fd8d348d69dabd9360d166b89",
+      "bytes": 435024,
+      "sourcePackage": "pawborough-w1-pavilion-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428186467/model.glb",
+      "sha256": "45ce4c9c1eccff7b2bb7af5a08ba505bdd3f98e84df3d0d9992e571e91eefa15",
+      "bytes": 432148,
+      "sourcePackage": "pawborough-w1-pavilion-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428196085/model.glb",
+      "sha256": "39fc579e2f714d7aad4c1013624e6a75cee3892355ea422d381454cc7ddcf35e",
+      "bytes": 456060,
+      "sourcePackage": "pawborough-w1-pavilion-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428196091/model.glb",
+      "sha256": "f06824ee7fa49798ab891600666f5e4a867b1dab45fb0600ce7c673009b89cd0",
+      "bytes": 480400,
+      "sourcePackage": "pawborough-w1-pavilion-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428196098/model.glb",
+      "sha256": "89d3c4b36a5fb703d82ede429e1dd5c30f24c2ae50518b397ed6f2ef036a805f",
+      "bytes": 473584,
+      "sourcePackage": "pawborough-w1-pavilion-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/ring-corridor-bld-428179906.glb",
+      "sha256": "0904b62a15bafd73f3072a1a697ac85e4e92474b2ff60c538830dd72ba052b25",
+      "bytes": 534848,
+      "sourcePackage": "pawborough-w1-corridor-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/rockery-dajiashan/model.glb",
+      "sha256": "3b4baaf941097961fc129fd860292b4cea5d39d70cf9c2cd327e06b3888c60d4",
+      "bytes": 940544,
+      "sourcePackage": "pawborough-rockery-r3-lead-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/rockery-yulinglong/model.glb",
+      "sha256": "bdfed7df37fc60412f2fa138efff9ede151cd1bdadc2822a2d92cc899bf0b01a",
+      "bytes": 492260,
+      "sourcePackage": "pawborough-rockery-r2-lead-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/sansuitang-bld-428179901/model.glb",
+      "sha256": "5a903f2e19308d167b2fd86987c2527235ff10a64d8246d5ab0eb239d3e48804",
+      "bytes": 1753156,
+      "sourcePackage": "pawborough-goal-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/tk-camphor-large.glb",
+      "sha256": "dae360d596c4d93517dd9a91b4fd753f9a076c841b3155ee4d9d2fd8b303d45d",
+      "bytes": 212296,
+      "sourcePackage": "pawborough-w1-tree-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/tk-camphor-small.glb",
+      "sha256": "ca1883152b9e8027652dc252bf17d9ef6b543ba9ffd715df7dd12fa9d8d2fec9",
+      "bytes": 200804,
+      "sourcePackage": "pawborough-w1-tree-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/tk-osmanthus-large.glb",
+      "sha256": "0fd80fc77c7396031481cece4ee4b275e8e88848d56e8f73e9533ef4e299d4d2",
+      "bytes": 225712,
+      "sourcePackage": "pawborough-w1-tree-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/tk-osmanthus-small.glb",
+      "sha256": "f7135f68393baf998308be6c0bf11e1433e6937c37c1a7726faec72fea609167",
+      "bytes": 225396,
+      "sourcePackage": "pawborough-w1-tree-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/tk-willow-large.glb",
+      "sha256": "e73d5a888c9d5804a6b90fef013c9fd29c7fcf46ba9cd4781ab28a7c56da7b09",
+      "bytes": 276300,
+      "sourcePackage": "pawborough-w1-tree-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/tk-willow-small.glb",
+      "sha256": "21bc1a0c5be8f0a8dcc1e0e1260dddb8198b167a173b811989043a70bc4653d4",
+      "bytes": 275180,
+      "sourcePackage": "pawborough-w1-tree-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/waterside-gallery-bld-428179920.glb",
+      "sha256": "e179960ae98720d529d5c0f8eed8f5022665199a6fbf86087b8717429a611118",
+      "bytes": 597168,
+      "sourcePackage": "pawborough-w1-corridor-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/garden-wall.glb",
+      "sha256": "388a9768c733bf9725eb86d4d27ea7f036c58a5b3834f0bbbc27301c4c0e63ce",
+      "bytes": 1298392,
+      "sourcePackage": "pawborough-yuyuan-garden-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/jiuqu-bridge.glb",
+      "sha256": "61499669ecf00f4f19617b0a6d42c026a062c6fc188ef78304315d09af9857b3",
+      "bytes": 492824,
+      "sourcePackage": "pawborough-yuyuan-garden-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/moon-gate.glb",
+      "sha256": "5e2074e5105b7c44a570b55b8d6c0f16dfdf4b1741ea8d9b5b433b6c93b08708",
+      "bytes": 194708,
+      "sourcePackage": "pawborough-yuyuan-garden-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/temple-wall.glb",
+      "sha256": "78cb4944e962a2838f1696f7017273f222abf5c5875e57430786a1a8aaef6438",
+      "bytes": 257124,
+      "sourcePackage": "pawborough-yuyuan-garden-kit-r1-20260923"
     }
   ],
   "state": "uploaded_checksum_verified",
   "ownerAdopted": false,
-  "cloudReceipt": "docs/migrations/20260922/CLOUD-RECEIPT.json"
+  "cloudReceipt": "docs/migrations/20260923/CLOUD-RECEIPT.json",
+  "cloudReceipts": [
+    "docs/migrations/20260922/CLOUD-RECEIPT.json",
+    "docs/migrations/20260923/CLOUD-RECEIPT.json",
+    "docs/migrations/20260923/CLOUD-RECEIPT-wave0.json",
+    "docs/migrations/20260923/CLOUD-RECEIPT-r3.json"
+  ]
 }

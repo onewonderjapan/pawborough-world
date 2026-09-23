@@ -98,7 +98,15 @@ check('food-budget-within-target', foodPlaced <= plan.budget.foodPlacedTarget,
   `placed=${foodPlaced} target=${plan.budget.foodPlacedTarget}`);
 const sceneBytes = fs.statSync(path.join(OUT, 'scene-areas.glb')).size;
 const sceneBytes04 = JSON.parse(fs.readFileSync(path.join(ROOT,'baseline','metrics.json'),'utf8')).g4PureSceneBytes;
-check('main-glb-within-30mb', sceneBytes <= 30_000_000, `bytes=${sceneBytes}`);
+const zmPath = path.join(OUT, 'zones-manifest.json');
+if (fs.existsSync(zmPath)) {
+  // ZONE_SPLIT: browser loads zone GLBs; each zone has its own cap, scene-areas.glb is an offline artifact
+  const zm = JSON.parse(fs.readFileSync(zmPath, 'utf8'));
+  const over = zm.zones.filter(z => z.file && z.bytes > zm.capPerZoneBytes).map(z => `${z.id}=${z.bytes}`);
+  check('zones-within-per-zone-cap', over.length === 0, `cap=${zm.capPerZoneBytes} over=${JSON.stringify(over)} total=${zm.totalBytes}`);
+} else {
+  check('main-glb-within-30mb', sceneBytes <= 30_000_000, `bytes=${sceneBytes}`);
+}
 
 // 6) 足迹匹配（placement 生成时已校验，此处复核记录一致性）
 const fitsBad = plan.placements.filter(p => !p.fits).map(p => p.socketId);

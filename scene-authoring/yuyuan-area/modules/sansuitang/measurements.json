@@ -1,0 +1,50 @@
+{
+  "triangles": 22114,
+  "byNode": {
+    "hall-base__sst-blue-stone": 240,
+    "hall-base__sst-timber-darkred": 192,
+    "hall-frame__sst-timber-darkred": 1360,
+    "hall-frame__sst-blue-stone": 312,
+    "hall-wall__sst-white-wall": 120,
+    "hall-wall__sst-timber-darkred": 216,
+    "hall-wall__sst-lattice-core": 36,
+    "hall-wall__sst-dark-timber": 384,
+    "hall-upper__sst-lattice-core": 8,
+    "hall-roof__sst-roof-tile": 4824,
+    "hall-roof__sst-dark-timber": 512,
+    "hall-roof__sst-timber-darkred": 6144,
+    "hall-roof__sst-eave-dark": 7456,
+    "hall-roof__sst-white-wall": 2,
+    "hall-interior__sst-blue-stone": 12,
+    "hall-interior__sst-timber-darkred": 288,
+    "hall-interior__sst-lattice-core": 8
+  },
+  "glbBytes": 1753156,
+  "maxY": 10.455,
+  "planExtentsBlenderY": [
+    -8.93,
+    8.4
+  ],
+  "planWidthX": [
+    -9.85,
+    9.85
+  ],
+  "reanchored": 6.65,
+  "eaveDressingCounts": {
+    "lower": 256,
+    "upper": 256
+  },
+  "designDimensions": {
+    "facadeWidth": 17.0,
+    "depth": 13.700000000000001,
+    "platform": 0.55,
+    "lowerEave": 4.35,
+    "upperEave": 6.6,
+    "ridge": 9.4,
+    "footprintWithPlinth": [
+      18.2,
+      15.3
+    ]
+  },
+  "buildSeconds": 7.7
+}

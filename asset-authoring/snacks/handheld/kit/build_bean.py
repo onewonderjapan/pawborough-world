@@ -6,6 +6,7 @@ meanRadius := (a*b*c)**(1/3) of the nominal bean; min pair distance = 0.85 * mea
 """
 import math
 import json
+import os
 import random
 from pathlib import Path
 from geomlib import mesh, lathe, vessel, box, disc, cyl
@@ -32,11 +33,12 @@ def bean_surface(theta, phi, variant, flip):
     r = 1 + .045 * math.sin(3 * theta + 2.1 * variant) + .03 * math.cos(2 * phi + variant)
     x *= r
     z *= r
-    # hilum groove: dent at theta = pi/2 (+z edge) or 3pi/2 when flipped, ~6mm long
+    # hilum groove: dent at theta = pi/2 (+z edge) or 3pi/2 when flipped, ~6mm long,
+    # 1 mm deep (R1 #4)
     hc = math.pi / 2 if not flip else 3 * math.pi / 2
     dt = math.atan2(math.sin(theta - hc), math.cos(theta - hc))
     g = math.exp(-(dt / .30) ** 2) * math.exp(-((phi - math.pi / 2) / .38) ** 2)
-    depth = .00065 * g
+    depth = .001 * g
     # pull toward local center: shrink radius about the section center
     cx, cz = 0.0, -C * sc * 0.62 * xz * xz * math.sin(phi)
     x = cx + (x - cx) * (1 - depth / max(A, 1e-6))
@@ -128,9 +130,15 @@ def glb_to_bl(p):
 
 # ---------------- sets ------------------------------------------------------
 
-def _template(grid, variant):
+def _template(grid, variant, pivot='centre'):
+    """Vertex cloud for placement checks. 'centre' re-centers at the centroid (dish/
+    packet layer model); 'bottom' keeps the shift_to_ground origin - the same pivot as
+    the exported mesh (origin at the bean's lowest vertex), which is what a rotated
+    instance actually swings around."""
     verts, faces, _, _ = bean_mesh_data(grid, variant, variant % 2 == 1)
     verts = shift_to_ground(verts)
+    if pivot == 'bottom':
+        return verts
     cy = sum(v[1] for v in verts) / len(verts)
     return [(v[0], v[1] - cy, v[2]) for v in verts]
 
@@ -152,13 +160,14 @@ class Placement:
         self.rng = random.Random(seed)
         self.pos = []
         self.orient = []
+        self.tops = []                  # jar piling: top-surface height per bean
         self.cell = MEAN_RADIUS
         self.hash = {}
 
     def _key(self, p):
         return (int(p[0] // self.cell), int(p[1] // self.cell), int(p[2] // self.cell))
 
-    def ok(self, p, tpl, orient, bounds):
+    def ok(self, p, tpl, orient, bounds, both_tilt=False):
         k0 = self._key(p)
         for dx in (-1, 0, 1):
             for dy in (-1, 0, 1):
@@ -166,17 +175,24 @@ class Placement:
                     for q in self.hash.get((k0[0] + dx, k0[1] + dy, k0[2] + dz), []):
                         if math.dist(p, self.pos[q]) < MIN_PAIR:
                             return False
-        for v in tpl:
-            # matches the Blender export euler XYZ (-tilt about X, then yaw about Z)
-            w = rot_y(rot_x(v, orient[1]), orient[0])
-            wp = (p[0] + w[0], p[1] + w[1], p[2] + w[2])
-            if not bounds(wp):
-                return False
+        # both_tilt: check BOTH tilt signs - the Blender export applies euler
+        # (-tilt, 0, yaw) while rot_x(+) is the mirrored attitude; the kidney's z
+        # asymmetry makes them differ by ~1 mm at the bounds (R2: surfaced when random
+        # sites reach the jar wall). Dish/packet keep the R1 single-sign streams.
+        signs = (1, -1) if both_tilt else (1,)
+        for sign in signs:
+            for v in tpl:
+                # matches the Blender export euler XYZ (-tilt about X, then yaw about Z)
+                w = rot_y(rot_x(v, sign * orient[1]), orient[0])
+                wp = (p[0] + w[0], p[1] + w[1], p[2] + w[2])
+                if not bounds(wp):
+                    return False
         return True
 
-    def add(self, p, o=(0.0, 0.0)):
+    def add(self, p, o=(0.0, 0.0), top=None):
         self.pos.append(p)
         self.orient.append(o)
+        self.tops.append(top)
         self.hash.setdefault(self._key(p), []).append(len(self.pos) - 1)
 
 
@@ -222,7 +238,8 @@ def place_dish():
 
 
 def place_packet():
-    """30 beans: 18 visible in/above the torn-open standing packet + 12 spilled (r<=0.06)."""
+    """30 beans: 18 visible in/above the torn-open standing packet + 12 spilled
+    (within r=0.06 of the spill centre at (.040, .052))."""
     rng = random.Random(77)
     pl = Placement(77)
     tpl = _template((8, 5), 1)
@@ -242,64 +259,277 @@ def place_packet():
             n_in += 1
     n_spill = 0
     while n_spill < 12:
-        a = rng.uniform(0, math.tau)
-        rr = .058 * math.sqrt(rng.random())
-        p = (.040 + rr * math.cos(a), .006 + rng.uniform(0, .002), .058 + rr * math.sin(a))
-        o = _orient(rng)
+        if n_spill == 0:
+            # pinned front spill bean: pins the packet's spec z extent (centre .058 from
+            # the spill centre, inside the r=0.062 test disc)
+            p = (.040, .006, .108)
+            o = (rng.uniform(0, math.tau), .12)
+        else:
+            a = rng.uniform(0, math.tau)
+            rr = .060 * math.sqrt(rng.random())
+            p = (.040 + rr * math.cos(a), .006 + rng.uniform(0, .002), .052 + rr * math.sin(a))
+            o = _orient(rng)
 
         def bounds(wp):
-            return wp[1] > .0005 and math.hypot(wp[0] - .040, wp[2] - .058) < .062
+            # centres stay within the r=0.06 spill disc (test); verts may tumble a bit
+            # further so the spilled spread reaches the packet's spec z extent
+            return wp[1] > .0005 and math.hypot(wp[0] - .040, wp[2] - .052) < .069
         if pl.ok(p, tpl, o, bounds):
             pl.add(p, o)
             n_spill += 1
     return pl, 30
 
 
+JAR_R_IN = 0.070        # candidate centre disc; vertex bound .0737 leaves tilt margin
+JAR_FLOOR = 0.0050      # heightmap seed = floor contact (keeps every vertex >= .0050)
+JAR_HALF = 0.0045       # half thickness: bean centre sits this far above its support
+JAR_DROP_R = 0.006      # support search radius = "所在位置最高接触点" neighbourhood
+JAR_SET_R = 0.012       # heightmap claim radius (the bean's footprint envelope)
+JAR_PER_LEVEL = 17      # ~15 levels of 17 -> heap top ~y=.145; no layer has aligned sites
+
+
 def place_jar():
-    """Settle 260 beans onto the floor or existing beans using sampled mesh contact.
-    0.8 mm height field; geometry-derived upper/lower surfaces, no floating volume sampling.
-    """
-    import numpy as np
-    rng=random.Random(123);pl=Placement(123)
-    step=.0008;radius=.0741;N=190;origin=-N*step/2
-    height=np.full((N,N),.00485,dtype=float)
-    def candidate(px,pz,orient,variant):
-        vv,ff,_,_=bean_mesh_data((6,4),variant,variant%2==1)
-        vv=shift_to_ground(vv)
-        vv=np.array([rot_y(rot_x(v,-orient[1]),orient[0]) for v in vv]);vv[:,0]+=px;vv[:,2]+=pz
-        if np.max(np.hypot(vv[:,0],vv[:,2]))>radius:return None
-        ix0=max(0,int((vv[:,0].min()-origin)//step));ix1=min(N-1,int((vv[:,0].max()-origin)//step)+1)
-        iz0=max(0,int((vv[:,2].min()-origin)//step));iz1=min(N-1,int((vv[:,2].max()-origin)//step)+1)
-        zz,xx=np.mgrid[iz0:iz1+1,ix0:ix1+1];x=origin+xx*step;z=origin+zz*step
-        lo=np.full(x.shape,np.inf);hi=np.full(x.shape,-np.inf)
-        for f in ff:
-            for k in range(1,len(f)-1):
-                a,b,c=vv[[f[0],f[k],f[k+1]]]
-                den=(b[2]-c[2])*(a[0]-c[0])+(c[0]-b[0])*(a[2]-c[2])
-                if abs(den)<1e-12:continue
-                u=((b[2]-c[2])*(x-c[0])+(c[0]-b[0])*(z-c[2]))/den
-                v=((c[2]-a[2])*(x-c[0])+(a[0]-c[0])*(z-c[2]))/den
-                mask=(u>=0)&(v>=0)&(u+v<=1);y=u*a[1]+v*b[1]+(1-u-v)*c[1]
-                lo=np.where(mask,np.minimum(lo,y),lo);hi=np.where(mask,np.maximum(hi,y),hi)
-        mask=np.isfinite(lo)&np.isfinite(hi)
-        if not mask.any():return None
-        patch=height[iz0:iz1+1,ix0:ix1+1]
-        py=max(float(np.max((patch-lo)[mask]))+.0001,.00485-float(vv[:,1].min()))
-        if py+float(vv[:,1].max())>.1505:return None
-        if any(math.dist((px,py,pz),q)<MIN_PAIR for q in pl.pos):return None
-        return py,(iz0,iz1,ix0,ix1),mask,hi
-    for i in range(260):
-        best=None
-        for _ in range(30):
-            angle=rng.uniform(0,math.tau);rad=.066*math.sqrt(rng.random())
-            px,pz=rad*math.cos(angle),rad*math.sin(angle);orient=(rng.uniform(0,math.tau),rng.uniform(-.45,.45))
-            c=candidate(px,pz,orient,(i+1)%6)
-            if c is not None and (best is None or c[0]<best[0]):best=(c[0],px,pz,orient,c)
-        if best is None:raise RuntimeError('No supported placement for bean '+str(i))
-        py,px,pz,orient,c=best;_,(z0,z1,x0,x1),mask,hi=c
-        patch=height[z0:z1+1,x0:x1+1];patch[mask]=np.maximum(patch[mask],hi[mask]+py)
-        pl.add((px,py,pz),orient)
-    return pl,len(pl.pos)
+    """R2 #1: gravity piling, bottom-up level by level (返修单简化法). The instance
+    origin IS the bean's lowest vertex (export mesh), so each bean is dropped with its
+    BOTTOM on the highest contact under it - the jar floor or the top of a placed bean
+    (heightmap; support scanned within 15 mm horizontally), yaw/tilt random. With
+    tilt <= 0.35 the bean envelope stays <= ~11.6 mm tall, so every supporter ends up
+    <= 12 mm below the bean it carries (asserted in tests/test_beans.py). FRESH RANDOM
+    sites every level (R1 reused aligned rings per layer -> suspended spiral columns).
+    Levels 0-4 cover the full disc; later levels refill the core (r<0.055) so the top
+    reads as a slightly mounded heap reaching y≈0.15 (spec fill line)."""
+    rng = random.Random(123)
+    pl = Placement(123)
+    tpls = {v: _template((6, 4), v, pivot='bottom') for v in range(6)}
+    cell = 0.004
+    n = int(round(2 * JAR_R_IN / cell)) + 1
+    H = {}
+
+    def _disc(x, z, r):
+        ci, cj = (x + JAR_R_IN) / cell, (z + JAR_R_IN) / cell
+        ri = int(math.ceil(r / cell))
+        for i in range(int(ci) - ri, int(ci) + ri + 1):
+            for j in range(int(cj) - ri, int(cj) + ri + 1):
+                if 0 <= i < n and 0 <= j < n:
+                    cx = (i + .5) * cell - JAR_R_IN
+                    cz = (j + .5) * cell - JAR_R_IN
+                    if math.hypot(cx - x, cz - z) <= r:
+                        yield (i, j)
+
+    def h_get(x, z):
+        return max((H.get(k, JAR_FLOOR) for k in _disc(x, z, JAR_DROP_R)), default=JAR_FLOOR)
+
+    def h_set(x, z, top):
+        for k in _disc(x, z, JAR_SET_R):
+            if H.get(k, JAR_FLOOR) < top:
+                H[k] = top
+
+    def support_h(x, z):
+        """highest actual contact under (x,z): the top of the nearest placed bean within
+        15 mm, else the floor. Dropping on this (not on the cell max) keeps every
+        supporter within ~17 mm horizontally of the bean it carries."""
+        t = JAR_FLOOR
+        for q, top in zip(pl.pos, pl.tops):
+            if top is not None and math.hypot(q[0] - x, q[2] - z) <= .015 and top > t:
+                t = top
+        return t
+
+    def level_sites(k, count):
+        """fresh random sites for one level: pairwise-spread. Levels 0-4 cover the full
+        disc (5 x 17 = 85 beans); later levels only refill the core (r<0.055), so the centre climbs ~7 cm
+        above the rim -> the top reads as a slightly mounded heap. Sites need vertical
+        headroom under the .1500 vertex cap; crown overflow is left to the top-up pass
+        (it settles beans at the cap on the crown skirt)."""
+        r_cap = JAR_R_IN if k < 5 else 0.055
+        need_head = 0.0140
+
+        def sample(cap):
+            for _try in range(400):
+                a = rng.uniform(0, math.tau)
+                rr = cap * math.sqrt(rng.random())
+                yield rr * math.cos(a), rr * math.sin(a)
+
+        sites = []
+        for relax in (0.024, 0.020, 0.016, 0.012):
+            for (x, z) in sample(r_cap):
+                if len(sites) >= count:
+                    break
+                if h_get(x, z) + need_head > .1495:
+                    continue
+                if all(math.hypot(x - sx, z - sz) >= relax for sx, sz in sites):
+                    sites.append((x, z))
+            if len(sites) >= count:
+                break
+        return sites
+
+    def place_at(x, z, y, variant, settle=True):
+        """try to drop one bean with its bottom at y; returns orientation or None."""
+        for attempt in range(240):
+            o = _orient(rng)
+            if settle and attempt > 120:        # settle flatter near the fill line
+                o = (o[0], o[1] * .4)
+            jx, jz = rng.gauss(0, .0008), rng.gauss(0, .0008)
+            p = (x + jx, y + rng.gauss(0, .0004), z + jz)
+
+            def bounds(wp):
+                rad = math.hypot(wp[0], wp[2])
+                return wp[1] > .0050 and rad < .0737 and wp[1] < .1500
+            if not pl.ok(p, tpls[variant], o, bounds, both_tilt=True):
+                continue
+            near, band = (0.0115, .005) if attempt < 160 else ((0.0090, .004) if attempt < 220 else (0.0, .0))
+            if near and any(abs(q[1] - p[1]) < band and math.hypot(q[0] - p[0], q[2] - p[2]) < near
+                            for q in pl.pos):
+                continue
+            return p, o
+        return None
+
+    def rotated_top(o):
+        """exported attitude (euler -tilt, then yaw): highest vertex above the origin."""
+        c, s_ = math.cos(o[0]), math.sin(o[0])
+        mx = 0.0
+        for v in tpls_cur:
+            xr = v[0] * c + v[2] * s_
+            zr = -v[0] * s_ + v[2] * c
+            c2, s2 = math.cos(-o[1]), math.sin(-o[1])
+            yr = v[1] * c2 - zr * s2
+            mx = max(mx, yr)
+        return mx
+
+    placed = 0
+    level = 0
+    while placed < 260 and level < 20:
+        _lv0 = placed
+        _rs0 = [math.hypot(q[0], q[2]) for q in pl.pos]
+        tpls_cur = None
+        for (x, z) in level_sites(level, JAR_PER_LEVEL):
+            if placed >= 260:
+                break
+            y = support_h(x, z)                 # bean BOTTOM lands on the contact
+            variant = (placed + 1) % 6
+            tpls_cur = tpls[variant]
+            res = place_at(x, z, y, variant)
+            if res is None:
+                continue
+            p, o = res
+            top = p[1] + rotated_top(o)
+            pl.add(p, o, top=top)
+            h_set(p[0], p[2], top)
+            placed += 1
+        _rn = [math.hypot(q[0], q[2]) for q in pl.pos[_lv0:]]
+        if os.environ.get('SNACKS_JAR_DEBUG'):
+            print('JAR_LEVEL', level, 'placed', placed - _lv0, 'total', placed,
+                  'meanR %.3f' % (sum(_rn) / len(_rn)) if _rn else 'none')
+        level += 1
+    # crown push: stack the core (r<0.055) up to the vertex cap so the heap top
+    # reaches the y~0.15 fill line with a rounded crown
+    if os.environ.get('SNACKS_JAR_DEBUG'):
+        print('JAR_AFTER_LEVELS placed', placed)
+    while True:
+        cands = []
+        for i in range(n):
+            for j in range(n):
+                cx = (i + .5) * cell - JAR_R_IN
+                cz = (j + .5) * cell - JAR_R_IN
+                if math.hypot(cx, cz) > 0.055:
+                    continue
+                sh = support_h(cx, cz)
+                if sh + 0.0130 <= .1495:
+                    cands.append((sh, cx, cz))
+        if not cands:
+            break
+        cands.sort(reverse=True)
+        got = 0
+        for (y, x, z) in cands[:60]:
+            if placed >= 260:
+                break
+            variant = (placed + 1) % 6
+            tpls_cur = tpls[variant]
+            res = place_at(x, z, y, variant)
+            if res is None:
+                continue
+            p, o = res
+            top = p[1] + rotated_top(o)
+            pl.add(p, o, top=top)
+            h_set(p[0], p[2], top)
+            placed += 1
+            got += 1
+        if got == 0 or placed >= 260:
+            break
+
+    # top-up: level sites exhausted -> settle the last beans at the LOWEST headroom
+    # spots (full-grid scan, lowest first, damped tilt); heightmap keeps them supported
+    dbg = {'skip_high': 0, 'ok': 0}
+    while placed < 260:
+        cands = []
+        for i in range(n):
+            for j in range(n):
+                cx = (i + .5) * cell - JAR_R_IN
+                cz = (j + .5) * cell - JAR_R_IN
+                if math.hypot(cx, cz) > JAR_R_IN:
+                    continue
+                if support_h(cx, cz) + 0.0130 <= .1495:
+                    cands.append((support_h(cx, cz), cx, cz))
+        if not cands:
+            dbg['skip_high'] += 1
+            break
+        cands.sort()
+        got = 0
+        for (y, x, z) in cands[:120]:
+            if placed >= 260:
+                break
+            variant = (placed + 1) % 6
+            tpls_cur = tpls[variant]
+            res = place_at(x, z, y, variant, settle=True)
+            if res is None:
+                continue
+            p, o = res
+            top = p[1] + rotated_top(o)
+            pl.add(p, o, top=top)
+            h_set(p[0], p[2], top)
+            placed += 1
+            got += 1
+            dbg['ok'] += 1
+        if got == 0:
+            break
+    if os.environ.get('SNACKS_JAR_DEBUG'):
+        print('JAR_DEBUG', json.dumps(dbg))
+    if placed < 260:
+        raise RuntimeError('jar piling did not converge (placed %d)' % placed)
+
+    # support bookkeeping for the catalog; test_beans re-derives it from positions
+    unsupported = 0
+    worst_gap = 0.0
+    for i, p in enumerate(pl.pos):
+        ok = (p[1] - .003) <= .012               # floor: bean bottom within 12 mm
+        if ok:
+            worst_gap = max(worst_gap, p[1] - .003)
+        for j, q in enumerate(pl.pos):
+            if j == i or q[1] >= p[1]:
+                continue
+            if math.hypot(q[0] - p[0], q[2] - p[2]) <= .017 and (p[1] - q[1]) <= .012:
+                ok = True
+                worst_gap = max(worst_gap, p[1] - q[1])
+                break
+        if not ok:
+            unsupported += 1
+    ys = [p[1] for p in pl.pos]
+    rs = [math.hypot(p[0], p[2]) for p in pl.pos]
+    core = sorted(y for y, r in zip(ys, rs) if r < .030)
+    rim = sorted(y for y, r in zip(ys, rs) if r > .060)   # outside the core-refill cap
+
+    def _p90(v):
+        return v[min(len(v) - 1, int(.9 * len(v)))]
+    pl.stats = {
+        'fill': 'R2 heightmap gravity piling (bottom lands on nearest contact, '
+                'tilt<=0.35 keeps envelopes <= 12 mm)',
+        'support': {'rule': 'floor or bean bottom within 0.012 m below',
+                    'unsupported': unsupported,
+                    'maxGapM': round(worst_gap, 5)},
+        'heap': {'topCentreY': round(max(ys), 4),
+                 'coreP90Y': round(_p90(core), 4), 'rimP90Y': round(_p90(rim), 4),
+                 'moundRiseP90M': round(_p90(core) - _p90(rim), 4)},
+    }
+    return pl, placed
 
 
 # ---------------- vessel companions ----------------------------------------
@@ -311,17 +541,47 @@ def build_dish_vessel(lod=0):
 
 
 def build_packet_torn(lod):
-    """standing kraft packet 0.09 x 0.13 x 0.032 with torn-open top."""
+    """R1 #6: standing kraft packet 0.09 x 0.13 x 0.032, torn open at the top with an
+    irregular 6-8 segment zigzag rim flared 0.8 cm outward; label/mark upright on the
+    front face (same layout as wuxiangdou-packet)."""
     objs = [box('packet-body', (0, .062, 0), (.09, .122, .032), 'paper', .003)]
     if lod == 0:
-        # torn top: two splayed flaps + crumpled lip
-        objs.append(box('flap-a', (-.014, .128, .012), (.062, .018, .004), 'paper', .001))
-        objs.append(box('flap-b', (.018, .127, -.008), (.054, .016, .004), 'paper', .001))
-        objs.append(box('lip', (0, .1255, .002), (.088, .008, .03), 'paper', .001))
+        objs.append(_torn_rim('torn-rim', (.0, .1228, 0), (.09, .032), seg=(7, 2), flare=.008))
+        # labels upright on the front (+z) face, same rows/UVs as the closed packet
         objs.append(mesh('packet-label',
-                         [(-.04, .029, .02), (.04, .029, .02), (.04, .029, .072), (-.04, .029, .072)],
-                         [(0, 3, 2, 1)], 'label', [(0, .75), (1, .75), (1, 1), (0, 1)]))
+                         [(-.04, .03, .0166), (.04, .03, .0166), (.04, .082, .0166), (-.04, .082, .0166)],
+                         [(0, 1, 2, 3)], 'label', [(0, .75), (1, .75), (1, 1), (0, 1)]))
+        objs.append(mesh('packet-mark',
+                         [(-.025, .088, .0167), (.025, .088, .0167), (.025, .114, .0167), (-.025, .114, .0167)],
+                         [(0, 1, 2, 3)], 'label', [(0, .75), (1, .75), (1, 1), (0, 1)]))
     return objs
+
+
+def _torn_rim(name, origin, size, seg=(7, 2), flare=.008, jag=.004):
+    """Irregular torn collar around a rectangular top rim: 6-8 zigzag segments per long
+    side, flared `flare` outward and torn up/down by up to `jag`. GLB Y-up design coords."""
+    import random as _r
+    rng = _r.Random(413)
+    ox, oy, oz = origin
+    hx, hy = size[0] / 2, size[1] / 2
+    pts_in, pts_out = [], []
+    corners = [(-hx, -hy), (hx, -hy), (hx, hy), (-hx, hy)]
+    for c in range(4):
+        x0, z0 = corners[c]
+        x1, z1 = corners[(c + 1) % 4]
+        long_side = abs(x1 - x0) > abs(z1 - z0)
+        n = seg[0] if long_side else seg[1]
+        nx, nz = (0.0, 1 if z0 >= 0 else -1) if long_side else (1 if x0 >= 0 else -1, 0.0)
+        for i in range(n):
+            t = i / n
+            px, pz = x0 + (x1 - x0) * t, z0 + (z1 - z0) * t
+            pts_in.append((ox + px, oy + rng.uniform(-jag, jag), oz + pz))
+            pts_out.append((ox + px + nx * flare, oy + rng.uniform(-jag * .5, jag) - .003,
+                            oz + pz + nz * flare))
+    n = len(pts_in)
+    verts = [tuple(p) for p in pts_in] + [tuple(p) for p in pts_out]
+    faces = [(i, (i + 1) % n, (i + 1) % n + n, i + n) for i in range(n)]
+    return mesh(name, verts, faces, 'paper')
 
 
 def build_jar_vessel(lod):
@@ -331,18 +591,21 @@ def build_jar_vessel(lod):
             lathe('jar-lid', (0, .213, 0), [(0, .063, 0), (.014, .063, 0), (.014, 0, 0)], 'steel',
                   32 if lod == 0 else (16 if lod == 1 else 8))]
     if lod == 0:
-        # Match the 32-sided vessel exactly, with a 0.15 mm paper offset.
-        verts,faces,uvs=[],[],[]
-        angles=[-math.pi/8+i*math.pi/32 for i in range(9)]
-        for yy in (.075,.125):
-            for k,a in enumerate(angles):
-                phi=math.pi/2-a
-                middle=(math.floor(phi/(math.tau/32))+.5)*(math.tau/32)
-                r=.078*math.cos(math.pi/32)/math.cos(phi-middle)+.00015
-                verts.append((r*math.sin(a),yy,r*math.cos(a)))
-                uvs.append((k/8,.75 if yy<.1 else 1.0))
-        for k in range(8):faces.append((k,k+1,k+10,k+9))
-        objs.append(mesh('jar-label',verts,faces,'label',uvs))
+        # R1 #5: label as a curved surface hugging the jar wall - cylinder projection at
+        # r=0.0795, 0.045 tall, 0.11 wide (arc), UV uniform in arc length (no stretch,
+        # no facet-chamfer distortion). Centred on +z (front).
+        r_lab, y0, y1, width = .0795, .075, .12, .11
+        a0, a1 = -width / (2 * r_lab), width / (2 * r_lab)
+        cols = 14
+        verts, uvs, faces = [], [], []
+        for j, yy in enumerate((y0, y1)):
+            for i in range(cols + 1):
+                a = a0 + (a1 - a0) * i / cols
+                verts.append((r_lab * math.sin(a), yy, r_lab * math.cos(a)))
+                uvs.append((i / cols, (0.75, 1.0)[j]))
+        for i in range(cols):
+            faces.append((i, i + 1, i + 1 + cols + 1, i + cols + 1))
+        objs.append(mesh('jar-label', verts, faces, 'label', uvs))
     return objs
 
 

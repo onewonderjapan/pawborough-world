@@ -1,0 +1,101 @@
+{
+  "batchId": "pawborough-w1-street-furniture-20260922",
+  "module": "street furniture layer — 10 new 1990s Shanghai street furniture props, standalone GLBs, NO placement into the world (lead integrates later)",
+  "era": "1990s Shanghai street objects; no post-2000 items (owner standing decision)",
+  "newImagesMax": 0,
+  "axisContract": "same as kit/props.config.json: GLB Y-up, origin at ground footprint centre, facade-facing +Z; builder reuses kit/mb_lib.py helpers",
+  "items": [
+    {
+      "id": "street-lamp-1990",
+      "count": 1,
+      "glb": "street-lamp-1990.glb",
+      "sizeM": [0.5, 6.0, 0.5],
+      "trisMax": 900,
+      "collision": { "size": [0.5, 6.0, 0.5] },
+      "build": "cast-iron style post Ø0.16 tapered, 2 curved arms (4-segment arcs), 2 enamel shade cones, plinth 0.5 carrying the footprint bounds"
+    },
+    {
+      "id": "post-box-green",
+      "count": 1,
+      "glb": "post-box-green.glb",
+      "sizeM": [0.5, 1.3, 0.5],
+      "trisMax": 400,
+      "collision": { "size": [0.5, 1.3, 0.5] },
+      "build": "cylindrical 邮政 post box, domed cap, slot, plinth; green 2f6b3a"
+    },
+    {
+      "id": "phone-booth-ic",
+      "count": 1,
+      "glb": "phone-booth-ic.glb",
+      "sizeM": [1.0, 2.4, 1.0],
+      "trisMax": 700,
+      "collision": { "size": [1.0, 2.4, 1.0] },
+      "build": "open IC-card booth: 3 half-height panels + hood, phone unit box, shelf, corner posts"
+    },
+    {
+      "id": "trash-bin-concrete",
+      "count": 1,
+      "glb": "trash-bin-concrete.glb",
+      "sizeM": [0.5, 0.9, 0.5],
+      "trisMax": 300,
+      "collision": { "size": [0.5, 0.9, 0.5] },
+      "build": "octagonal concrete bin with inner liner ring + centre divider (two-opening type)"
+    },
+    {
+      "id": "fire-hydrant",
+      "count": 1,
+      "glb": "fire-hydrant.glb",
+      "sizeM": [0.3, 0.9, 0.3],
+      "trisMax": 350,
+      "collision": { "size": [0.3, 0.9, 0.3] },
+      "build": "red hydrant with 2 side caps and top cap"
+    },
+    {
+      "id": "utility-pole",
+      "count": 1,
+      "glb": "utility-pole.glb",
+      "sizeM": [0.6, 8.0, 0.6],
+      "trisMax": 600,
+      "collision": { "size": [0.6, 8.0, 0.6] },
+      "build": "concrete tapered pole + crossarm + 3 insulators + transformer box 0.6x0.8x0.5 (cooling ribs widen depth to 0.56 to meet z bounds) at 5 m"
+    },
+    {
+      "id": "news-kiosk",
+      "count": 1,
+      "glb": "news-kiosk.glb",
+      "sizeM": [2.0, 2.4, 1.5],
+      "trisMax": 1400,
+      "collision": { "size": [2.0, 2.4, 1.5] },
+      "build": "small green kiosk: counter window, awning lid, magazine rack strips (side), shutter roll, corner trims"
+    },
+    {
+      "id": "bus-stop-sign",
+      "count": 1,
+      "glb": "bus-stop-sign.glb",
+      "sizeM": [0.6, 2.6, 0.1],
+      "trisMax": 250,
+      "collision": { "size": [0.6, 2.6, 0.1] },
+      "build": "pole + rectangular sign board (blank, no lettering) + small roof cap; depth held to 0.10"
+    },
+    {
+      "id": "planter-box",
+      "count": 1,
+      "glb": "planter-box.glb",
+      "sizeM": [1.2, 0.5, 0.5],
+      "trisMax": 300,
+      "collision": { "size": [1.2, 0.5, 0.5] },
+      "build": "concrete planter (0.35 body + rim) with a low green hedge block (total height 0.5)"
+    },
+    {
+      "id": "bike-rack",
+      "count": 1,
+      "glb": "bike-rack.glb",
+      "sizeM": [2.0, 0.6, 0.4],
+      "trisMax": 500,
+      "collision": { "size": [2.0, 0.6, 0.4] },
+      "build": "6-slot steel rack: 6 inverted-U hoops (right-angle corners for tri budget) + 2 longitudinal rails"
+    }
+  ],
+  "budgets": { "uniqueTrisMax": 6000, "placedTrisMax": 0, "newImages": 0, "note": "no placement in this batch: placedTrisMax n/a" },
+  "reference": "design_inference only (1990s common street objects, no reference photos); form/material follow DESIGN_SPEC.json spec.items verbatim"
+}

@@ -1,0 +1,804 @@
+{
+ "packageId": "pawborough-w1-tree-kit-20260922",
+ "source": "site-inputs.json (frozen baseline/layout.json @ 33a3bd72)",
+ "rules": {
+  "willowWithinWaterM": 8.0,
+  "osmanthusWithinBuildingM": 6.0,
+  "variantCutHeightM": 6.0,
+  "baseCrownTop": {
+   "small": 5.2,
+   "large": 6.6
+  },
+  "rotY": "md5(id)[:8] int mod 360 deg, radians"
+ },
+ "count": 46,
+ "speciesCounts": {
+  "camphor": 23,
+  "willow": 11,
+  "osmanthus": 12
+ },
+ "placements": [
+  {
+   "id": "gtree-0",
+   "species": "willow",
+   "variant": "small",
+   "scale": 1.0824,
+   "rotY": 1.7802,
+   "position": [
+    -85.1351,
+    -202.9594
+   ],
+   "layoutHeight": 5.6287,
+   "canopyTop": 5.6285,
+   "distWater": 0.05,
+   "distBuilding": 3.447,
+   "fallbackMove": {
+    "from": [
+     -85.2514,
+     -203.5935
+    ],
+    "target": "water-428179919",
+    "kind": "water",
+    "requestedExitM": 0.645,
+    "appliedCapM": 0.645
+   }
+  },
+  {
+   "id": "gtree-1",
+   "species": "camphor",
+   "variant": "small",
+   "scale": 1.0137,
+   "rotY": 6.1785,
+   "position": [
+    -116.8409,
+    -152.7668
+   ],
+   "layoutHeight": 5.2713,
+   "canopyTop": 5.2712,
+   "distWater": 33.233,
+   "distBuilding": 12.598
+  },
+  {
+   "id": "gtree-10",
+   "species": "osmanthus",
+   "variant": "large",
+   "scale": 1.1302,
+   "rotY": 3.8572,
+   "position": [
+    -162.135,
+    -241.3714
+   ],
+   "layoutHeight": 7.4596,
+   "canopyTop": 7.4593,
+   "distWater": 17.53,
+   "distBuilding": 0.05,
+   "fallbackMove": {
+    "from": [
+     -162.0842,
+     -241.3737
+    ],
+    "target": "bld-428179909",
+    "kind": "building",
+    "requestedExitM": 0.051,
+    "appliedCapM": 0.051
+   }
+  },
+  {
+   "id": "gtree-11",
+   "species": "camphor",
+   "variant": "large",
+   "scale": 1.1333,
+   "rotY": 0.0,
+   "position": [
+    -112.0595,
+    -236.7323
+   ],
+   "layoutHeight": 7.4799,
+   "canopyTop": 7.4798,
+   "distWater": 11.432,
+   "distBuilding": 13.551
+  },
+  {
+   "id": "gtree-12",
+   "species": "osmanthus",
+   "variant": "small",
+   "scale": 1.1186,
+   "rotY": 2.6005,
+   "position": [
+    -92.4953,
+    -177.7033
+   ],
+   "layoutHeight": 5.8169,
+   "canopyTop": 5.8167,
+   "distWater": 24.063,
+   "distBuilding": 0.36
+  },
+  {
+   "id": "gtree-13",
+   "species": "willow",
+   "variant": "large",
+   "scale": 1.0503,
+   "rotY": 3.8223,
+   "position": [
+    -83.4704,
+    -218.8647
+   ],
+   "layoutHeight": 6.9323,
+   "canopyTop": 6.932,
+   "distWater": 6.325,
+   "distBuilding": 0.05,
+   "fallbackMove": {
+    "from": [
+     -83.6093,
+     -219.8105
+    ],
+    "target": "bld-428179914",
+    "kind": "building",
+    "requestedExitM": 0.956,
+    "appliedCapM": 0.956
+   }
+  },
+  {
+   "id": "gtree-14",
+   "species": "osmanthus",
+   "variant": "small",
+   "scale": 1.0093,
+   "rotY": 5.428,
+   "position": [
+    -99.1255,
+    -181.3279
+   ],
+   "layoutHeight": 5.2482,
+   "canopyTop": 5.2484,
+   "distWater": 21.655,
+   "distBuilding": 3.69
+  },
+  {
+   "id": "gtree-15",
+   "species": "camphor",
+   "variant": "small",
+   "scale": 0.9251,
+   "rotY": 1.117,
+   "position": [
+    -117.6329,
+    -154.5345
+   ],
+   "layoutHeight": 4.8106,
+   "canopyTop": 4.8105,
+   "distWater": 35.115,
+   "distBuilding": 13.294
+  },
+  {
+   "id": "gtree-16",
+   "species": "willow",
+   "variant": "large",
+   "scale": 0.9847,
+   "rotY": 3.9444,
+   "position": [
+    -80.5926,
+    -203.2053
+   ],
+   "layoutHeight": 6.4993,
+   "canopyTop": 6.499,
+   "distWater": 2.758,
+   "distBuilding": 3.608
+  },
+  {
+   "id": "gtree-17",
+   "species": "camphor",
+   "variant": "large",
+   "scale": 0.9352,
+   "rotY": 1.9024,
+   "position": [
+    -66.8315,
+    -112.3952
+   ],
+   "layoutHeight": 6.1725,
+   "canopyTop": 6.1723,
+   "distWater": 11.14,
+   "distBuilding": 7.366
+  },
+  {
+   "id": "gtree-18",
+   "species": "camphor",
+   "variant": "small",
+   "scale": 1.0427,
+   "rotY": 1.3439,
+   "position": [
+    -72.3176,
+    -152.619
+   ],
+   "layoutHeight": 5.4222,
+   "canopyTop": 5.422,
+   "distWater": 41.663,
+   "distBuilding": 18.865
+  },
+  {
+   "id": "gtree-19",
+   "species": "camphor",
+   "variant": "small",
+   "scale": 1.123,
+   "rotY": 0.733,
+   "position": [
+    -140.7514,
+    -194.4572
+   ],
+   "layoutHeight": 5.8397,
+   "canopyTop": 5.8396,
+   "distWater": 10.48,
+   "distBuilding": 7.274
+  },
+  {
+   "id": "gtree-2",
+   "species": "willow",
+   "variant": "small",
+   "scale": 0.974,
+   "rotY": 4.0841,
+   "position": [
+    -152.951,
+    -208.2873
+   ],
+   "layoutHeight": 5.0648,
+   "canopyTop": 5.0648,
+   "distWater": 0.05,
+   "distBuilding": 11.861,
+   "fallbackMove": {
+    "from": [
+     -154.6354,
+     -206.6181
+    ],
+    "target": "water-428179908",
+    "kind": "water",
+    "requestedExitM": 2.371,
+    "appliedCapM": 1.0,
+    "exceededFallbackCap": true,
+    "finalMoveM": 2.371
+   }
+  },
+  {
+   "id": "gtree-20",
+   "species": "camphor",
+   "variant": "small",
+   "scale": 0.9017,
+   "rotY": 0.1047,
+   "position": [
+    -109.1315,
+    -129.5397
+   ],
+   "layoutHeight": 4.6888,
+   "canopyTop": 4.6888,
+   "distWater": 8.992,
+   "distBuilding": 19.221
+  },
+  {
+   "id": "gtree-21",
+   "species": "osmanthus",
+   "variant": "small",
+   "scale": 1.1025,
+   "rotY": 0.5061,
+   "position": [
+    -128.7382,
+    -198.0348
+   ],
+   "layoutHeight": 5.7329,
+   "canopyTop": 5.733,
+   "distWater": 17.647,
+   "distBuilding": 3.871
+  },
+  {
+   "id": "gtree-22",
+   "species": "osmanthus",
+   "variant": "large",
+   "scale": 1.0047,
+   "rotY": 0.9774,
+   "position": [
+    -154.5204,
+    -184.215
+   ],
+   "layoutHeight": 6.6307,
+   "canopyTop": 6.631,
+   "distWater": 15.306,
+   "distBuilding": 0.05,
+   "fallbackMove": {
+    "from": [
+     -154.8787,
+     -184.1188
+    ],
+    "target": "bld-428179901",
+    "kind": "building",
+    "requestedExitM": 0.371,
+    "appliedCapM": 0.371
+   }
+  },
+  {
+   "id": "gtree-23",
+   "species": "willow",
+   "variant": "small",
+   "scale": 1.0963,
+   "rotY": 5.4105,
+   "position": [
+    -113.9547,
+    -229.7204
+   ],
+   "layoutHeight": 5.701,
+   "canopyTop": 5.7008,
+   "distWater": 5.629,
+   "distBuilding": 8.174
+  },
+  {
+   "id": "gtree-24",
+   "species": "camphor",
+   "variant": "small",
+   "scale": 1.0117,
+   "rotY": 1.2915,
+   "position": [
+    -104.7618,
+    -189.637
+   ],
+   "layoutHeight": 5.2608,
+   "canopyTop": 5.2608,
+   "distWater": 17.468,
+   "distBuilding": 10.103
+  },
+  {
+   "id": "gtree-25",
+   "species": "camphor",
+   "variant": "large",
+   "scale": 0.9621,
+   "rotY": 3.7001,
+   "position": [
+    -134.6604,
+    -193.9346
+   ],
+   "layoutHeight": 6.3496,
+   "canopyTop": 6.3499,
+   "distWater": 14.617,
+   "distBuilding": 6.748
+  },
+  {
+   "id": "gtree-26",
+   "species": "willow",
+   "variant": "large",
+   "scale": 1.1314,
+   "rotY": 1.0123,
+   "position": [
+    -160.4648,
+    -198.81
+   ],
+   "layoutHeight": 7.4674,
+   "canopyTop": 7.4672,
+   "distWater": 0.05,
+   "distBuilding": 1.427,
+   "fallbackMove": {
+    "from": [
+     -160.4648,
+     -199.5678
+    ],
+    "target": "water-428179908",
+    "kind": "water",
+    "requestedExitM": 0.758,
+    "appliedCapM": 0.758
+   }
+  },
+  {
+   "id": "gtree-27",
+   "species": "osmanthus",
+   "variant": "small",
+   "scale": 0.9937,
+   "rotY": 1.0297,
+   "position": [
+    -171.389,
+    -185.6055
+   ],
+   "layoutHeight": 5.1671,
+   "canopyTop": 5.1672,
+   "distWater": 9.724,
+   "distBuilding": 0.05,
+   "fallbackMove": {
+    "from": [
+     -171.3739,
+     -185.5507
+    ],
+    "target": "bld-428179901",
+    "kind": "building",
+    "requestedExitM": 0.057,
+    "appliedCapM": 0.057
+   }
+  },
+  {
+   "id": "gtree-28",
+   "species": "willow",
+   "variant": "large",
+   "scale": 1.1166,
+   "rotY": 4.0492,
+   "position": [
+    -147.0709,
+    -221.6881
+   ],
+   "layoutHeight": 7.3693,
+   "canopyTop": 7.3696,
+   "distWater": 1.756,
+   "distBuilding": 16.491
+  },
+  {
+   "id": "gtree-29",
+   "species": "camphor",
+   "variant": "large",
+   "scale": 0.9171,
+   "rotY": 0.4887,
+   "position": [
+    -86.6218,
+    -141.5681
+   ],
+   "layoutHeight": 6.0528,
+   "canopyTop": 6.0529,
+   "distWater": 24.035,
+   "distBuilding": 9.568
+  },
+  {
+   "id": "gtree-3",
+   "species": "willow",
+   "variant": "large",
+   "scale": 1.0488,
+   "rotY": 3.2638,
+   "position": [
+    -143.6006,
+    -234.0062
+   ],
+   "layoutHeight": 6.9221,
+   "canopyTop": 6.9221,
+   "distWater": 0.671,
+   "distBuilding": 7.442
+  },
+  {
+   "id": "gtree-30",
+   "species": "camphor",
+   "variant": "small",
+   "scale": 1.0346,
+   "rotY": 6.1087,
+   "position": [
+    -120.1025,
+    -184.0556
+   ],
+   "layoutHeight": 5.3799,
+   "canopyTop": 5.3799,
+   "distWater": 32.121,
+   "distBuilding": 19.389
+  },
+  {
+   "id": "gtree-31",
+   "species": "camphor",
+   "variant": "small",
+   "scale": 1.1131,
+   "rotY": 4.3982,
+   "position": [
+    -134.1879,
+    -175.9714
+   ],
+   "layoutHeight": 5.7879,
+   "canopyTop": 5.7881,
+   "distWater": 30.049,
+   "distBuilding": 18.309
+  },
+  {
+   "id": "gtree-32",
+   "species": "camphor",
+   "variant": "small",
+   "scale": 0.9281,
+   "rotY": 5.1487,
+   "position": [
+    -143.8007,
+    -186.5935
+   ],
+   "layoutHeight": 4.8259,
+   "canopyTop": 4.8261,
+   "distWater": 17.016,
+   "distBuilding": 11.02
+  },
+  {
+   "id": "gtree-33",
+   "species": "osmanthus",
+   "variant": "small",
+   "scale": 0.8712,
+   "rotY": 1.4312,
+   "position": [
+    -86.1516,
+    -175.8063
+   ],
+   "layoutHeight": 4.5304,
+   "canopyTop": 4.5302,
+   "distWater": 26.574,
+   "distBuilding": 0.63
+  },
+  {
+   "id": "gtree-34",
+   "species": "willow",
+   "variant": "large",
+   "scale": 1.0779,
+   "rotY": 4.1015,
+   "position": [
+    -117.1807,
+    -216.1647
+   ],
+   "layoutHeight": 7.1139,
+   "canopyTop": 7.1141,
+   "distWater": 3.858,
+   "distBuilding": 8.801
+  },
+  {
+   "id": "gtree-35",
+   "species": "osmanthus",
+   "variant": "small",
+   "scale": 0.8887,
+   "rotY": 3.6826,
+   "position": [
+    -171.893,
+    -183.199
+   ],
+   "layoutHeight": 4.6213,
+   "canopyTop": 4.6212,
+   "distWater": 12.005,
+   "distBuilding": 0.029,
+   "fallbackMove": {
+    "from": [
+     -170.9273,
+     -183.4585
+    ],
+    "target": "bld-428179901",
+    "kind": "building",
+    "requestedExitM": 1.021,
+    "appliedCapM": 1.0
+   }
+  },
+  {
+   "id": "gtree-36",
+   "species": "willow",
+   "variant": "large",
+   "scale": 0.9115,
+   "rotY": 0.6283,
+   "position": [
+    -112.5215,
+    -220.3655
+   ],
+   "layoutHeight": 6.0158,
+   "canopyTop": 6.0159,
+   "distWater": 0.05,
+   "distBuilding": 9.603,
+   "fallbackMove": {
+    "from": [
+     -112.5137,
+     -220.4479
+    ],
+    "target": "water-428179904",
+    "kind": "water",
+    "requestedExitM": 0.083,
+    "appliedCapM": 0.083
+   }
+  },
+  {
+   "id": "gtree-37",
+   "species": "camphor",
+   "variant": "large",
+   "scale": 0.9715,
+   "rotY": 0.4538,
+   "position": [
+    -107.9622,
+    -167.7166
+   ],
+   "layoutHeight": 6.4119,
+   "canopyTop": 6.4119,
+   "distWater": 37.621,
+   "distBuilding": 11.931
+  },
+  {
+   "id": "gtree-38",
+   "species": "camphor",
+   "variant": "large",
+   "scale": 1.0242,
+   "rotY": 4.9044,
+   "position": [
+    -124.2329,
+    -237.4369
+   ],
+   "layoutHeight": 6.76,
+   "canopyTop": 6.7597,
+   "distWater": 14.784,
+   "distBuilding": 10.347
+  },
+  {
+   "id": "gtree-39",
+   "species": "camphor",
+   "variant": "small",
+   "scale": 1.0899,
+   "rotY": 4.5553,
+   "position": [
+    -103.5402,
+    -188.1978
+   ],
+   "layoutHeight": 5.6676,
+   "canopyTop": 5.6675,
+   "distWater": 17.769,
+   "distBuilding": 8.332
+  },
+  {
+   "id": "gtree-4",
+   "species": "willow",
+   "variant": "large",
+   "scale": 1.0739,
+   "rotY": 1.8675,
+   "position": [
+    -113.0617,
+    -228.7643
+   ],
+   "layoutHeight": 7.0876,
+   "canopyTop": 7.0877,
+   "distWater": 4.697,
+   "distBuilding": 8.818
+  },
+  {
+   "id": "gtree-40",
+   "species": "camphor",
+   "variant": "large",
+   "scale": 0.9132,
+   "rotY": 1.1868,
+   "position": [
+    -121.1869,
+    -130.1347
+   ],
+   "layoutHeight": 6.0272,
+   "canopyTop": 6.0271,
+   "distWater": 11.766,
+   "distBuilding": 25.275
+  },
+  {
+   "id": "gtree-41",
+   "species": "camphor",
+   "variant": "large",
+   "scale": 0.9755,
+   "rotY": 1.85,
+   "position": [
+    -113.5426,
+    -245.6
+   ],
+   "layoutHeight": 6.4382,
+   "canopyTop": 6.4383,
+   "distWater": 16.268,
+   "distBuilding": 20.093
+  },
+  {
+   "id": "gtree-42",
+   "species": "camphor",
+   "variant": "large",
+   "scale": 1.0663,
+   "rotY": 3.9794,
+   "position": [
+    -137.4063,
+    -181.2419
+   ],
+   "layoutHeight": 7.0375,
+   "canopyTop": 7.0376,
+   "distWater": 23.98,
+   "distBuilding": 15.808
+  },
+  {
+   "id": "gtree-43",
+   "species": "camphor",
+   "variant": "large",
+   "scale": 1.015,
+   "rotY": 0.9425,
+   "position": [
+    -111.0489,
+    -243.7312
+   ],
+   "layoutHeight": 6.699,
+   "canopyTop": 6.699,
+   "distWater": 13.152,
+   "distBuilding": 19.058
+  },
+  {
+   "id": "gtree-44",
+   "species": "camphor",
+   "variant": "small",
+   "scale": 1.0993,
+   "rotY": 1.2217,
+   "position": [
+    -121.3057,
+    -149.4143
+   ],
+   "layoutHeight": 5.7164,
+   "canopyTop": 5.7164,
+   "distWater": 30.747,
+   "distBuilding": 17.584
+  },
+  {
+   "id": "gtree-45",
+   "species": "camphor",
+   "variant": "small",
+   "scale": 0.9402,
+   "rotY": 3.8572,
+   "position": [
+    -106.7476,
+    -135.5387
+   ],
+   "layoutHeight": 4.8889,
+   "canopyTop": 4.889,
+   "distWater": 14.459,
+   "distBuilding": 12.783
+  },
+  {
+   "id": "gtree-5",
+   "species": "osmanthus",
+   "variant": "small",
+   "scale": 0.8725,
+   "rotY": 4.0841,
+   "position": [
+    -125.6638,
+    -209.2691
+   ],
+   "layoutHeight": 4.537,
+   "canopyTop": 4.537,
+   "distWater": 9.436,
+   "distBuilding": 1.698
+  },
+  {
+   "id": "gtree-6",
+   "species": "camphor",
+   "variant": "small",
+   "scale": 1.0821,
+   "rotY": 3.3161,
+   "position": [
+    -101.0887,
+    -188.1979
+   ],
+   "layoutHeight": 5.6269,
+   "canopyTop": 5.6269,
+   "distWater": 16.354,
+   "distBuilding": 6.256
+  },
+  {
+   "id": "gtree-7",
+   "species": "osmanthus",
+   "variant": "large",
+   "scale": 0.9732,
+   "rotY": 6.1261,
+   "position": [
+    -151.5596,
+    -186.7686
+   ],
+   "layoutHeight": 6.4228,
+   "canopyTop": 6.4231,
+   "distWater": 13.886,
+   "distBuilding": 3.572
+  },
+  {
+   "id": "gtree-8",
+   "species": "osmanthus",
+   "variant": "large",
+   "scale": 0.9221,
+   "rotY": 4.2586,
+   "position": [
+    -137.8724,
+    -243.6429
+   ],
+   "layoutHeight": 6.086,
+   "canopyTop": 6.0859,
+   "distWater": 9.943,
+   "distBuilding": 4.861
+  },
+  {
+   "id": "gtree-9",
+   "species": "osmanthus",
+   "variant": "small",
+   "scale": 1.0553,
+   "rotY": 1.4661,
+   "position": [
+    -167.0513,
+    -167.3465
+   ],
+   "layoutHeight": 5.4878,
+   "canopyTop": 5.4876,
+   "distWater": 28.491,
+   "distBuilding": 5.027
+  }
+ ]
+}

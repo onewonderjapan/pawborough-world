@@ -14,6 +14,7 @@ def setup(G, tex_dir):
     mat('osoup', 'osmanthus-sweet-soup', base='osmanthus-soup.jpg', rough=.08, source='texlib.py')
     mat('milk', 'soy-milk', 'f1e9d6', .15)
     mat('crust', 'fried-crust', base='fried-crust.jpg', rough=.5, tile=(.12, .12), source='texlib.py')
+    mat('batter', 'fried-batter', base='fried-batter.jpg', rough=.5, tile=(.12, .12), source='texlib.py (R1 youdunzi)')
     mat('sesame', 'sesame-flatbread-top', base='sesame-top.jpg', rough=.55, source='texlib.py')
     mat('sesame-scallion', 'sesame-scallion-top', base='sesame-scallion.jpg', rough=.55, source='texlib.py')
     mat('pancake', 'scallion-pancake-top', base='scallion-pancake.jpg', rough=.5, source='texlib.py')
@@ -35,9 +36,10 @@ def setup(G, tex_dir):
     mat('tea', 'clay-teapot', '6e3f2a', .45)
     mat('tea-liquid', 'brewed-tea', '8a5a20', .1, alpha=.5)
     mat('greens', 'scallion-greens', '5c8a3a', .6)
-    # beanskin: colour atlas on UVMap (per-variant cell) + wrinkle normal on second UV layer
+    # beanskin: colour atlas on UVMap (per-variant cell) + wrinkle normal on second UV
+    # layer; R1 #4 sets the wrinkle normal node strength to 0.35
     m = mat('beanskin', 'five-spice-bean-skin', base='bean-colour-atlas.jpg', rough=.72,
-            normal='bean-wrinkle-normal.jpg', source='texlib.py analytic atlas+normal')
+            normal='bean-wrinkle-normal.jpg', normal_strength=.35, source='texlib.py analytic atlas+normal')
     n = m.node_tree.nodes
     l = m.node_tree.links
     uvn = n.new('ShaderNodeUVMap')
@@ -48,7 +50,7 @@ def setup(G, tex_dir):
     G.META[m.name]['uvLayers'] = {'color': 'UVMap', 'normal': 'UVNorm'}
     # jar variant: same UV layout, 512px atlas (keeps the hero GLB under 2.5 MB)
     mj = mat('beanskin-jar', 'five-spice-bean-skin-jar', base='bean-colour-atlas-512.jpg', rough=.72,
-             normal='bean-wrinkle-normal.jpg', source='texlib.py analytic atlas+normal (512)')
+             normal='bean-wrinkle-normal.jpg', normal_strength=.35, source='texlib.py analytic atlas+normal (512)')
     nj = mj.node_tree.nodes
     lj = mj.node_tree.links
     uvnj = nj.new('ShaderNodeUVMap')
