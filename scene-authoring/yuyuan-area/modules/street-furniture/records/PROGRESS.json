@@ -1,0 +1,83 @@
+{
+  "packageId": "pawborough-w1-street-furniture-20260922",
+  "executor": "GLM-5.3-Flash via ZCode headless",
+  "worktree": "/home/baibai/outbox/pawborough-w1-street-furniture-20260922/workspace",
+  "branch": "work/w1-street-furniture-20260922",
+  "baseCommit": "33a3bd72b633983d4649979f545e96a410934ace",
+  "stages": {
+    "S0": {
+      "status": "done",
+      "at": "2026-09-23T00:35+09:00",
+      "worktree": "created via git worktree add -b work/w1-street-furniture-20260922 33a3bd72",
+      "read": ["DESIGN_SPEC.json", "PLAN.md", "AGENTS.md(root)", "kit/build_props.py", "kit/props.config.json", "kit/mb_lib.py", "kit/helpers.py", "scene-authoring/yuyuan-area/AGENTS.md", "scene-authoring/yuyuan-area/README.md", "baseline/layout.json(meta)", "skill:pawborough-static-architecture"],
+      "written": ["kit/props2.config.json (new file; props.config.json untouched)", "scene-authoring/yuyuan-area/modules/street-furniture/build_street_furniture.py", "scene-authoring/yuyuan-area/out-street-furniture/.gitignore (out dir ignored)"]
+    },
+    "S1": {
+      "status": "done",
+      "at": "2026-09-23T09:40+09:00",
+      "command": "blender -b --factory-startup -t 4 -P modules/street-furniture/build_street_furniture.py -- --config kit/props2.config.json --out out-street-furniture --only street-lamp-1990,post-box-green,phone-booth-ic,trash-bin-concrete,fire-hydrant",
+      "results": {
+        "street-lamp-1990": { "tris": 564, "budget": 900, "bounds": [0.5083, 6.02, 0.5] },
+        "post-box-green": { "tris": 192, "budget": 400, "bounds": [0.5, 1.3, 0.5] },
+        "phone-booth-ic": { "tris": 352, "budget": 700, "bounds": [1.04, 2.43, 1.04] },
+        "trash-bin-concrete": { "tris": 90, "budget": 300, "bounds": [0.48, 0.88, 0.48] },
+        "fire-hydrant": { "tris": 200, "budget": 350, "bounds": [0.3, 0.93, 0.29] }
+      },
+      "fixesDuringStage": [
+        "KIT path was one level short (HERE.parent x3 stopped at scene-authoring) — fixed to HERE.parents[3]; genuine mb_lib import works, so the PLAN copy-fallback was not needed.",
+        "Palette materials must be registered via L.M[name] = L.mat(...) (mb_lib.mat only fills META) — same pattern as build_props.py.",
+        "Removed bpy.data.orphans_purge() from reimport_check: it deleted palette materials that had no mesh user yet (Python dict refs are not Blender users).",
+        "Lamp shades resized r0.16->0.12 and arm ends pulled to ±0.14 after BOUNDS_FAIL (x 0.624 > 0.55): slim shades now clear the 0.5±10% footprint bound."
+      ]
+    },
+    "S2": {
+      "status": "done",
+      "at": "2026-09-23T09:26+09:00",
+      "results": {
+        "utility-pole": { "tris": 236, "budget": 600, "bounds": [0.62, 8.0, 0.56] },
+        "news-kiosk": { "tris": 420, "budget": 1400, "bounds": [2.04, 2.3, 1.625] },
+        "bus-stop-sign": { "tris": 108, "budget": 250, "bounds": [0.64, 2.6, 0.1] },
+        "planter-box": { "tris": 180, "budget": 300, "bounds": [1.22, 0.495, 0.52] },
+        "bike-rack": { "tris": 400, "budget": 500, "bounds": [1.8416, 0.599, 0.368] }
+      },
+      "fixesDuringStage": [
+        "Kiosk ORIGIN_FAIL (footprint centre z +0.1425 from awning overhang): all kiosk parts slid back by 0.1425 so the whole-item footprint centre sits on the origin; awning kept.",
+        "Restored load_json helper removed in an earlier cleanup (sidecar merge uses it)."
+      ],
+      "totals": { "items": "10/10", "uniqueTris": 2742, "moduleBudget": 6000 }
+    },
+    "S3": {
+      "status": "done",
+      "at": "2026-09-23T09:30+09:00",
+      "test": "modules/street-furniture/test_street_furniture.py (system python3, independent GLB re-parse)",
+      "result": "145 checks, 0 failures; validator 0 errors AND 0 warnings on all 10 GLBs (scripts/validate_all.cjs from main repo, report in out-street-furniture/validation-report.json)",
+      "covers": ["10 GLBs exist", "bounds sizeM ±10% per axis", "origin at ground footprint centre (y_min≈0, x/z centre ≤3cm)", "tris ≤ budget", "zero images/textures", "catalog sha256/bytes/tris match", "collision.json one box per item == sizeM on y=0", "reimport-check per item: materials survive, imageCount 0", "module uniqueTris 2742 ≤ 6000"]
+    },
+    "S4": {
+      "status": "done",
+      "at": "2026-09-23T09:35+09:00",
+      "renders": "20 views (front + three-quarter per item), Cycles CPU -t 4, 960x960, 48 samples denoised; ALL 20 pass blank-frame guard (luminance std ≥ 2/255, dominant colour ≤ 95%)",
+      "contactSheet": "1920x2630 PNG with zh/id/tris labels (Noto Sans CJK); committed review copy contact-sheet.jpg 283 KB + 10 per-item pairs, all ≤400 KB",
+      "artifacts": "10 GLBs + 21 render PNGs copied to package artifacts/street-furniture/ (untracked)"
+    }
+  },
+  "notesExtended": [
+    "No .blend saved: build_props.py (the named model to follow) ships script+GLB only; the builder re-runs deterministically from props2.config.json, so the script is the reopenable source.",
+    "Labels on the contact sheet are image metadata; no text/lettering exists on any 3D model surface (sign boards blank per spec)."
+  ],
+  "assumptions": [
+    "All palette colours are design values (monochrome constants, zero images); post-box/kiosk green = spec 2f6b3a enamel; IC booth blue 46617a (90s booths commonly blue-green enamel, design value).",
+    "Bounds contract (size ±10% per axis) drives several footprint decisions: the lamp/post-box plinths (0.5), hydrant base (0.29), bin base (0.48) carry the x/z footprint so slim upper bodies still meet the lower bound.",
+    "Utility pole: spec gives no crossarm length, so the crossarm is 0.6 m (3 insulators on it) to keep total x within 0.6±10%; transformer core stays 0.6x0.8x0.5 but cooling ribs widen effective depth to 0.56 to meet z >= 0.54.",
+    "Bus-stop sign depth is held to 0.10 total (pole Ø0.06, board 0.03, roof cap 0.10); board is blank per no-lettering rule.",
+    "Planter total height 0.5 = concrete body 0.35 + rim, with a 0.16 hedge block whose top lands at 0.495 (hedge inside the size envelope).",
+    "Bike rack hoops use right-angle corners (3 rods each) to fit the 500-tri budget; rails/legs at z ±0.16 so depth 0.368 meets the 0.36 lower bound.",
+    "Kiosk counter recess / window bars / shutter roll / side magazine strips are design inference from the 1990s kiosk type; no lettering anywhere.",
+    "Lamp arm curvature approximated with 4 straight rod segments per arm (PLAN fallback: curves <= 8 segments).",
+    "Trash bin liner is an open cup (side wall + bottom) so the two-opening centre divider reads from above."
+  ],
+  "notes": [
+    "Blender runs: one process per stage, -t 4, sequential (<=1 concurrent, limit 2).",
+    "No npm ci / npm install; node libs used from the main repo via absolute path (validator only)."
+  ]
+}

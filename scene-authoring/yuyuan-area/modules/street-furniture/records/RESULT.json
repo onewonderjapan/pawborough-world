@@ -1,0 +1,24 @@
+{
+  "packageId": "pawborough-w1-street-furniture-20260922",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "partial": [],
+  "blockers": [],
+  "finishedAt": "2026-09-23T09:40+09:00",
+  "branch": "work/w1-street-furniture-20260922",
+  "baseCommit": "33a3bd72b633983d4649979f545e96a410934ace",
+  "deliverables": {
+    "glbs": 10,
+    "uniqueTris": 2742,
+    "glbBytesTotal": 226056,
+    "images": 0,
+    "materials": 13,
+    "builder": "scene-authoring/yuyuan-area/modules/street-furniture/build_street_furniture.py",
+    "tests": "scene-authoring/yuyuan-area/modules/street-furniture/test_street_furniture.py (145 checks, 0 failures)",
+    "validator": "0 errors, 0 warnings on all 10 GLBs",
+    "renders": "20/20 pass blank-frame guard; contact sheet 1920x2630 with zh/id/tris labels",
+    "placement": "none (standalone GLBs; lead integrates later)"
+  },
+  "artifactsDir": "/home/baibai/outbox/pawborough-w1-street-furniture-20260922/artifacts/street-furniture",
+  "recordsOnBranch": "scene-authoring/yuyuan-area/modules/street-furniture/records/"
+}

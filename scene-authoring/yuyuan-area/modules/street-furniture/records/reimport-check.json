@@ -1,0 +1,208 @@
+{
+  "street-lamp-1990": {
+    "imported": true,
+    "meshes": 3,
+    "materials": [
+      {
+        "name": "cast-iron.001",
+        "imageNodes": []
+      },
+      {
+        "name": "concrete.001",
+        "imageNodes": []
+      },
+      {
+        "name": "enamel-white.001",
+        "imageNodes": []
+      }
+    ],
+    "imageCount": 0
+  },
+  "post-box-green": {
+    "imported": true,
+    "meshes": 3,
+    "materials": [
+      {
+        "name": "concrete.002",
+        "imageNodes": []
+      },
+      {
+        "name": "enamel-green.001",
+        "imageNodes": []
+      },
+      {
+        "name": "liner-dark.001",
+        "imageNodes": []
+      }
+    ],
+    "imageCount": 0
+  },
+  "phone-booth-ic": {
+    "imported": true,
+    "meshes": 6,
+    "materials": [
+      {
+        "name": "booth-blue.001",
+        "imageNodes": []
+      },
+      {
+        "name": "concrete.003",
+        "imageNodes": []
+      },
+      {
+        "name": "dark-iron.001",
+        "imageNodes": []
+      },
+      {
+        "name": "glass-dark.001",
+        "imageNodes": []
+      },
+      {
+        "name": "liner-dark.002",
+        "imageNodes": []
+      },
+      {
+        "name": "porcelain.001",
+        "imageNodes": []
+      }
+    ],
+    "imageCount": 0
+  },
+  "trash-bin-concrete": {
+    "imported": true,
+    "meshes": 2,
+    "materials": [
+      {
+        "name": "concrete.004",
+        "imageNodes": []
+      },
+      {
+        "name": "liner-dark.003",
+        "imageNodes": []
+      }
+    ],
+    "imageCount": 0
+  },
+  "fire-hydrant": {
+    "imported": true,
+    "meshes": 2,
+    "materials": [
+      {
+        "name": "hydrant-red.001",
+        "imageNodes": []
+      },
+      {
+        "name": "liner-dark.004",
+        "imageNodes": []
+      }
+    ],
+    "imageCount": 0
+  },
+  "utility-pole": {
+    "imported": true,
+    "meshes": 4,
+    "materials": [
+      {
+        "name": "concrete.001",
+        "imageNodes": []
+      },
+      {
+        "name": "dark-iron.001",
+        "imageNodes": []
+      },
+      {
+        "name": "liner-dark.001",
+        "imageNodes": []
+      },
+      {
+        "name": "porcelain.001",
+        "imageNodes": []
+      }
+    ],
+    "imageCount": 0
+  },
+  "news-kiosk": {
+    "imported": true,
+    "meshes": 6,
+    "materials": [
+      {
+        "name": "concrete.002",
+        "imageNodes": []
+      },
+      {
+        "name": "cream.001",
+        "imageNodes": []
+      },
+      {
+        "name": "dark-iron.002",
+        "imageNodes": []
+      },
+      {
+        "name": "enamel-green.001",
+        "imageNodes": []
+      },
+      {
+        "name": "kiosk-wood.001",
+        "imageNodes": []
+      },
+      {
+        "name": "liner-dark.002",
+        "imageNodes": []
+      }
+    ],
+    "imageCount": 0
+  },
+  "bus-stop-sign": {
+    "imported": true,
+    "meshes": 4,
+    "materials": [
+      {
+        "name": "concrete.003",
+        "imageNodes": []
+      },
+      {
+        "name": "dark-iron.003",
+        "imageNodes": []
+      },
+      {
+        "name": "enamel-green.002",
+        "imageNodes": []
+      },
+      {
+        "name": "enamel-white.001",
+        "imageNodes": []
+      }
+    ],
+    "imageCount": 0
+  },
+  "planter-box": {
+    "imported": true,
+    "meshes": 3,
+    "materials": [
+      {
+        "name": "concrete.004",
+        "imageNodes": []
+      },
+      {
+        "name": "hedge-green.001",
+        "imageNodes": []
+      },
+      {
+        "name": "liner-dark.003",
+        "imageNodes": []
+      }
+    ],
+    "imageCount": 0
+  },
+  "bike-rack": {
+    "imported": true,
+    "meshes": 1,
+    "materials": [
+      {
+        "name": "dark-iron.004",
+        "imageNodes": []
+      }
+    ],
+    "imageCount": 0
+  }
+}
