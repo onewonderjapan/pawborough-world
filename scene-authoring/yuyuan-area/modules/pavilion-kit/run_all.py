@@ -8,7 +8,9 @@ import json, os, subprocess, sys, shutil, hashlib, time
 HERE = os.path.dirname(os.path.abspath(__file__))
 AREA = os.path.dirname(os.path.dirname(HERE))          # scene-authoring/yuyuan-area
 OUTROOT = os.path.join(AREA, 'out-pavilion-kit')
-ART = '/home/baibai/outbox/pawborough-w1-pavilion-kit-20260922/artifacts/pavilion-kit'
+ART = os.environ.get(
+    'PAV_ARTIFACTS_DIR',
+    '/home/baibai/outbox/pawborough-w1-pavilion-kit-20260922/artifacts/pavilion-kit')
 MAIN = '/home/baibai/work/onewonderjapan/pawborough-world'
 BLENDER = os.path.expanduser('~/.local/bin/blender')
 SITE = json.load(open(os.path.join(HERE, 'site-inputs.json'), encoding='utf-8'))

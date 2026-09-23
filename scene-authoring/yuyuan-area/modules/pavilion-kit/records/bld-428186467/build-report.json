@@ -26,14 +26,14 @@
   "bodyTopY": 3.43,
   "boundsGLB": {
    "min": [
-    -3.169,
+    -3.159,
     0.0,
     -3.171
    ],
    "max": [
-    3.169,
+    3.16,
     5.839,
-    3.162
+    3.158
    ]
   },
   "triangles": {
@@ -42,8 +42,13 @@
    "rail": 180,
    "total": 3522
   },
-  "glbBytes": 433940,
-  "sha256": "d96c922f9e7f15669defa5c332976532013f32016f76dea6aa023483543a34a5"
+  "glbBytes": 432148,
+  "sha256": "45ce4c9c1eccff7b2bb7af5a08ba505bdd3f98e84df3d0d9992e571e91eefa15"
+ },
+ "r1": {
+  "cornerKernel": "raised-cosine^2.0 along eave perimeter (gate-v2 continuous walk); LIFT at corner, 0 at cornerReach, zero slope at both ends (no corner crease)",
+  "rafterRule": "axis localEaveY-0.09 -> top eaveY-0.06 (<= eave-0.05), radial length 0.25, below tile lips; height follows lifted eave line (corner-sync)",
+  "rafterTopMarginMin": 0.01
  },
  "assumptions": {
   "riseFormula": "clamp(0.5 * eaveRadius, 1.1, 1.6)",
@@ -51,7 +56,8 @@
   "bevels": "none (tri budget); silhouette + materials carry edges",
   "steps": "3 x 0.10 rise, width 1.2, tread 0.3, at entrance bay midpoint (offset from +Z recorded in site-inputs)",
   "soffit": "flat dark soffit at y=3.28 closes under-eave view (build.py method)",
-  "finialRect": "gourd finial per spec"
+  "finialRect": "gourd finial per spec",
+  "r1": "master-review rework: rect single-frame rebuild / rafters under eave L0.25 / raised-cosine corner kernel (see r1 record)"
  },
- "buildSeconds": 0.5
+ "buildSeconds": 0.2
 }

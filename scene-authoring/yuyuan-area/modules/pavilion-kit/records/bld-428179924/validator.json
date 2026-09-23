@@ -1,11 +1,11 @@
 {
-  "validatedAt": "2026-09-22T17:12:18.190Z",
+  "validatedAt": "2026-09-23T00:51:42.746Z",
   "root": "/home/baibai/outbox/pawborough-w1-pavilion-kit-20260922/workspace/scene-authoring/yuyuan-area/out-pavilion-kit",
   "results": [
     {
       "file": "pavilion-bld-428179924/model.glb",
-      "sha256": "f23e343e869e9bb1ac514506a62791ec1cdc02e85cad49d74a3dbb87266960a7",
-      "bytes": 436976,
+      "sha256": "369565c5e058484020d7547b56144e810039a69fd8d348d69dabd9360d166b89",
+      "bytes": 435024,
       "validatorVersion": "2.0.0-dev.3.10",
       "errors": 0,
       "warnings": 1,
@@ -27,7 +27,7 @@
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 428216
+            "byteLength": 426264
           },
           {
             "pointer": "/images/0",
@@ -98,7 +98,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 8,
-        "totalVertexCount": 6126,
+        "totalVertexCount": 6064,
         "totalTriangleCount": 3454,
         "maxUVs": 2,
         "maxInfluences": 0,

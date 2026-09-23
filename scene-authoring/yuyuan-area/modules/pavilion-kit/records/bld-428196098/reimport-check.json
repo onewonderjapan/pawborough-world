@@ -3,6 +3,18 @@
  "meshes": 8,
  "materials": [
   {
+   "name": "pav-dark-lacquer.001",
+   "hasPrincipled": true,
+   "alphaMode": "HASHED",
+   "imageNodes": []
+  },
+  {
+   "name": "pav-grey-stone.001",
+   "hasPrincipled": true,
+   "alphaMode": "HASHED",
+   "imageNodes": []
+  },
+  {
    "name": "pav-timber.001",
    "hasPrincipled": true,
    "alphaMode": "HASHED",
@@ -12,6 +24,21 @@
      "size": [
       1024,
       1024
+     ],
+     "colorSpace": "sRGB"
+    }
+   ]
+  },
+  {
+   "name": "pav-hanglo-slat.001",
+   "hasPrincipled": true,
+   "alphaMode": "BLEND",
+   "imageNodes": [
+    {
+     "image": "lattice-slat",
+     "size": [
+      512,
+      512
      ],
      "colorSpace": "sRGB"
     }
@@ -41,27 +68,6 @@
    ]
   },
   {
-   "name": "pav-dark-lacquer.001",
-   "hasPrincipled": true,
-   "alphaMode": "HASHED",
-   "imageNodes": []
-  },
-  {
-   "name": "pav-hanglo-slat.001",
-   "hasPrincipled": true,
-   "alphaMode": "BLEND",
-   "imageNodes": [
-    {
-     "image": "lattice-slat",
-     "size": [
-      512,
-      512
-     ],
-     "colorSpace": "sRGB"
-    }
-   ]
-  },
-  {
    "name": "pav-hanglo-fret.001",
    "hasPrincipled": true,
    "alphaMode": "BLEND",
@@ -75,12 +81,6 @@
      "colorSpace": "sRGB"
     }
    ]
-  },
-  {
-   "name": "pav-grey-stone.001",
-   "hasPrincipled": true,
-   "alphaMode": "HASHED",
-   "imageNodes": []
   }
  ],
  "nodeTree": [

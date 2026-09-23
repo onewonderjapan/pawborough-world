@@ -35,7 +35,7 @@ def check(name, ok, detail=''):
 
 
 def parse_glb(path):
-    """Minimal GLB parser: json dict + raw POSITION accessor reader."""
+    """Minimal GLB parser: json dict + raw POSITION accessor reader + triangle indices."""
     blob = open(path, 'rb').read()
     magic, ver, length = struct.unpack_from('<III', blob, 0)
     assert magic == 0x46546C67
@@ -54,7 +54,15 @@ def parse_glb(path):
         n = a['count']
         return [struct.unpack_from('<3f', binchunk, base + 12 * i) for i in range(n)]
 
-    return js, positions
+    def indices(ai):
+        a = js['accessors'][ai]
+        bv = js['bufferViews'][a['bufferView']]
+        base = (bv.get('byteOffset', 0)) + a.get('byteOffset', 0)
+        comp, sz = {5121: ('B', 1), 5123: ('H', 2), 5125: ('I', 4)}[a['componentType']]
+        n = a['count']
+        return [struct.unpack_from('<' + comp, binchunk, base + sz * i)[0] for i in range(n)]
+
+    return js, positions, indices
 
 
 def obb_contains(c, coll, p, margin=0.01):
@@ -95,11 +103,18 @@ def test_pavilion(P):
     glb = os.path.join(outdir, 'model.glb')
 
     # ---- 1. columns at radius R±0.02
-    js, positions = parse_glb(glb)
+    js, positions, indices = parse_glb(glb)
     allpos = []
+    tris = []
+    voff = 0
     for mesh in js['meshes']:
         for prim in mesh['primitives']:
-            allpos += positions(prim['attributes']['POSITION'])
+            pos = positions(prim['attributes']['POSITION'])
+            idx = indices(prim['indices'])
+            allpos += pos
+            tris += [(voff + idx[k], voff + idx[k + 1], voff + idx[k + 2])
+                     for k in range(0, len(idx), 3)]
+            voff += len(pos)
     if P['variant'] == 'rect':
         Rx, Rz, phi, rotY = P['Rx'], P['Rz'], P['phi'], P['rotY']
         exp = []
@@ -217,6 +232,82 @@ def test_pavilion(P):
     rails = [c for c in colliders if c['name'].startswith(('seat-', 'back-rail-'))]
     nrails = len({c['name'].replace('back-rail-', '').replace('seat-', '') for c in rails})
     check('rails on all bays except entrance', nrails == P['n'] - 1, f'{nrails} rail bays vs n-1={P["n"] - 1}')
+
+    # ================= R1 rework assertions (2026-09-23 master review) =================
+    r1 = rep.get('r1', {})
+
+    # R1-A (fix1, rect): envelope — every vertex above the platform inside the map bbox + 2x0.9
+    # eave envelope (0.10 tolerance = tile-lip relief protruding up to 0.08 past the eave line).
+    # Ground walkway (steps, y<=0.3) excluded, same rule as the bounds test above.
+    if P['variant'] == 'rect':
+        ew = P['bboxMap']['w'] / 2 + SPEC['roof']['eaveOverhangBeyondColumns']
+        ed = P['bboxMap']['d'] / 2 + SPEC['roof']['eaveOverhangBeyondColumns']
+        env_bad = []
+        for v in allpos:
+            if v[1] < 0.35:
+                continue
+            mx_ = v[0] * math.cos(ph) - v[2] * math.sin(ph)
+            mz_ = v[0] * math.sin(ph) + v[2] * math.cos(ph)
+            if abs(mx_) > ew + 0.10 or abs(mz_) > ed + 0.10:
+                env_bad.append((round(v[0], 2), round(v[1], 2), round(v[2], 2), round(mx_, 2), round(mz_, 2)))
+        check('R1 envelope: all verts y>=0.35 within bbox+2x0.9 (+0.10 lip relief)',
+              not env_bad, f'{len(env_bad)} outside e.g. {env_bad[:3]}')
+
+    # R1-B (fix1): interior centre region clear for y 0.3-2.4 — horizontal rays from the module
+    # centre must not hit any triangle inside the colonnade (catches beams/rails crossing rooms).
+    import numpy as np
+    V = np.array(allpos, dtype=np.float64)
+    T = np.array(tris, dtype=np.int64)
+    tv = V[T]
+    v0t, e1t, e2t = tv[:, 0], tv[:, 1] - tv[:, 0], tv[:, 2] - tv[:, 0]
+    inrad = P['Rz'] if P['variant'] == 'rect' else P['fit']['R'] * math.cos(math.pi / P['n'])
+    far = inrad - 0.12
+    hits = 0
+    for yy in (0.4, 0.75, 1.1, 1.45, 1.8, 2.15, 2.35):
+        s = np.array([0.0, yy, 0.0]) - v0t
+        for ka in range(24):
+            d = np.array([math.cos(2 * math.pi * ka / 24), 0.0, math.sin(2 * math.pi * ka / 24)])
+            h = np.cross(d, e2t)
+            a_ = np.einsum('ij,ij->i', e1t, h)
+            ok = np.abs(a_) > 1e-12
+            f_ = np.zeros_like(a_)
+            f_[ok] = 1.0 / a_[ok]
+            u_ = f_ * np.einsum('ij,ij->i', s, h)
+            q_ = np.cross(s, e1t)
+            vv_ = f_ * (q_ @ d)
+            t_ = f_ * np.einsum('ij,ij->i', e2t, q_)
+            hit = ok & (u_ >= 0) & (vv_ >= 0) & (u_ + vv_ <= 1) & (t_ > 1e-6) & (t_ < far)
+            hits += int(hit.sum())
+    check('R1 interior: y 0.3-2.4 centre region geometry-free (168 rays)', hits == 0, f'{hits} hits')
+
+    # R1-C (fix2): rafters under the eave — build-time asserted; clearance recorded in report
+    check('R1 rafters: top <= eave-0.05, len 0.25 (margin recorded)',
+          r1.get('rafterTopMarginMin', -1) >= 0.0, f"margin={r1.get('rafterTopMarginMin')}")
+
+    # R1-D (fix3): corner kernel recorded as the continuous perimeter kernel
+    check('R1 corner kernel: continuous raised-cosine perimeter kernel',
+          'raised-cosine' in r1.get('cornerKernel', ''), r1.get('cornerKernel', 'missing')[:60])
+
+    # R1-E (fix1, rect): 4 hip ridges — feet on the 4 corner-column diagonals, tops at the
+    # short-ridge ENDS (rect frame), i.e. the hips land over the corner columns
+    if P['variant'] == 'rect':
+        feet, tops = r1.get('hipRidgeFeetLocal', []), r1.get('hipRidgeTopsLocal', [])
+        okh = len(feet) == 4 and len(tops) == 4
+        col_ang = sorted(math.atan2(P['Rz'] * sz, P['Rx'] * sx) for sx in (1, -1) for sz in (1, -1))
+        for ft in feet:
+            fu = ft[0] * math.cos(ph) - ft[2] * math.sin(ph)
+            fv = ft[0] * math.sin(ph) + ft[2] * math.cos(ph)
+            ang = math.atan2(fv, fu)
+            okh &= min(abs(ang - ca) for ca in col_ang) <= 0.26   # ~15 deg: on the corner diagonal
+        rh = rep['design']['ridgeHalf']
+        okt = len(tops) == 4
+        for tp in tops:
+            tu = tp[0] * math.cos(ph) - tp[2] * math.sin(ph)
+            tvv = tp[0] * math.sin(ph) + tp[2] * math.cos(ph)
+            okt &= abs(tvv) <= 0.15 and rh - 0.25 <= abs(tu) <= rh + 0.25
+            okt &= abs(tp[1] - rep['design']['apexY']) <= 0.15
+        check('R1 rect hips: 4 rods, feet on corner-column diagonals, tops at ridge ends',
+              okh and okt, f'feet={len(feet)} tops={len(tops)}')
 
     # ---- manifest sha
     man = json.load(open(os.path.join(OUTROOT, 'manifest.json')))

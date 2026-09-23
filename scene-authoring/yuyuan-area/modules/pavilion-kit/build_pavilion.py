@@ -5,6 +5,19 @@ Internal Blender Z-up via source-kit helpers (glb_to_blender), export export_yup
 Run: blender --background -t 4 --python build_pavilion.py -- --bld bld-428196085 [--norender]
 Numerical authority: DESIGN_SPEC.json (spec.*), site-inputs.json (S0 derived), reference method:
 asset-authoring/yuyuan-entry/v2/build.py (roof loft / tile lips / tints / reimport check).
+
+R1 rework (2026-09-23, master review fixes):
+  fix1 rect variant rebuilt in ONE footprint-aligned rect frame (u=long axis, v=short; local =
+       rect rotated by +rotY, same as column placement): platform, perimeter tie/purlin rings,
+       four-slope + short-ridge roof (ridge 40% of long side), 4 hip ridges landing toward the
+       4 corner columns, 美人靠 parallel to the column bays (perpendicular inset), steps flush
+       outside the platform edge nearest local +Z.
+  fix2 rafter ends only DIRECTLY UNDER the eave (top at localEaveY-0.06 <= eave-0.05), radial
+       length 0.25 (spec-length override), never above the tile lips; height follows the lifted
+       eave line within the corner-reach zone (corner-sync, not fixed height).
+  fix3 corner lift kernel = raised-cosine^FALLOFF along the eave perimeter (gate-v2 continuous
+       walk): value LIFT at each corner, 0 at cornerReach, ZERO slope at both ends -> symmetric
+       about every corner, no crease/notch at the corner point.
 """
 import bpy, bmesh, sys, os, json, math, time, hashlib
 from mathutils import Vector, Matrix
@@ -55,18 +68,20 @@ FASCIA_H = 0.14
 RAFTER_SECTIONS = (0.06, 0.06, 0.35)
 RAFTER_SPACING = 0.28
 SEAT_H, SEAT_DEEP, BACK_H, BACK_LEAN = 0.42, 0.32, 0.45, math.radians(12)
+RAFTER_LEN = 0.25                                    # R1 fix2: radial run of the rafter end
+RAFTER_DROP = 0.09                                   # rafter axis below the local eave line
 
 if RECT:
     RX, RZ = P['Rx'], P['Rz']
     PHI = P['phi']  # footprint long axis, map angle
     # local (GLB) frame: rotate map-frame rect by +rotY -> columns sit on the footprint-aligned rect
     ROT = P['rotY']
+    CR, SR = math.cos(ROT), math.sin(ROT)
     RIN_P_X, RIN_P_Z = RX + OVER_PLATFORM, RZ + OVER_PLATFORM
     RE_X, RE_Z = RX + OVER_EAVE, RZ + OVER_EAVE
     RISE = max(1.1, min(1.6, 0.5 * min(RE_X, RE_Z)))
     RIDGE_FALLBACK = True  # aspect (2Rx+1.8)/(2Rz+1.8) ~ 2:1 -> spec fallback: short ridge 40% of long side
-    RH = 0.4 * (2 * RE_X) / 2 * 0.5 * 2  # = 0.4 * long eave side / 2
-    RH = 0.4 * (2 * RE_X) / 2
+    RH_HALF = 0.4 * RE_X          # ridge half length = 40% of the long eave side (2*RE_X) / 2
     RISE = max(1.1, min(1.6, RISE))
 else:
     R = P['fit']['R']
@@ -77,6 +92,22 @@ else:
     BAYS = P['bays']
     ENT = P['entranceBay']
     ENT_MID = math.radians(BAYS[ENT]['midLocalDeg'])
+
+# R1 fix3: corner lift kernel along the eave perimeter (gate-v2 continuous walk, d = arc distance
+# to the nearest corner). Raised-cosine^FALLOFF: LIFT at d=0, 0 at d=REACH, zero slope at both
+# ends -> symmetric about every corner, no crease at the corner point (the old (1-d/REACH)^FALLOFF
+# kernel had slope -2*LIFT/REACH at d=0 and folded the two adjacent eave segments into a notch).
+def corner_f(d):
+    x = min(d, REACH) / REACH
+    return (0.5 * (1.0 + math.cos(math.pi * x))) ** FALLOFF
+
+
+if RECT:
+    def rect_pt(uv):
+        """rect frame (u = footprint long axis, v = short axis; map frame) -> GLB local xz.
+        local = map vector rotated by +rotY (site-inputs convention, same as column placement)."""
+        u, v = uv
+        return (u * CR - v * SR, u * SR + v * CR)
 
 APEX_Y = EAVE_Y + RISE
 META = {}
@@ -298,21 +329,89 @@ def box_between(name, p0, p1, width, thick, m, part='roof', up_hint=(0, 1, 0)):
     return o
 
 
+def eave_trim(eave_loop, inner_ref):
+    """Fascia + R1-fix2 rafters + tile lips along a closed eave loop (arc-length walked).
+
+    R1 fix2: rafter ends sit DIRECTLY UNDER the eave line (axis RAFTER_DROP below the local
+    lifted eave height -> top at eave-0.06 <= eave-0.05), radial run RAFTER_LEN, never above
+    the tile lips; within the corner-reach zone the height follows the lifted eave (corner-sync).
+    Returns the min clearance (rafter top vs eave-0.05) for the build report."""
+    NE = len(eave_loop)
+    margins = []
+    next_lip = LIP_SPACING / 2
+    next_raf = 0.0
+    for i in range(NE):
+        a = eave_loop[i]
+        b = eave_loop[(i + 1) % NE]
+        seg = math.hypot(b[0] - a[0], b[2] - a[2])
+        tx, tz = (b[0] - a[0]) / seg, (b[2] - a[2]) / seg
+        nx_, nz_ = -tz, tx
+        # fascia 0.14 hanging from the eave line
+        mesh('eave-fascia', [a, b, (b[0], b[1] - FASCIA_H, b[2]), (a[0], a[1] - FASCIA_H, a[2])],
+             [(0, 3, 2, 1)], 'dark', 'roof')
+        inner_pt = inner_ref[i]
+        # rafters every 0.28
+        pos = next_raf
+        while pos < seg:
+            t = pos / seg
+            px, pz = a[0] + (b[0] - a[0]) * t, a[2] + (b[2] - a[2]) * t
+            ey = a[1] + (b[1] - a[1]) * t   # lifted eave height at the rafter position
+            dxi, dzi = inner_pt[0] - px, inner_pt[2] - pz
+            dl = math.hypot(dxi, dzi) or 1.0
+            ytip = ey - RAFTER_DROP         # axis; cross-section 0.06 -> top at ey-0.06
+            tip = (px, ytip, pz)
+            st = (px + dxi / dl * RAFTER_LEN, ytip, pz + dzi / dl * RAFTER_LEN)
+            box_between(f'rafter-{i}-{int(pos * 100)}', st, tip,
+                        RAFTER_SECTIONS[0], RAFTER_SECTIONS[1], 'timber', 'roof')
+            margins.append((ey - 0.05) - (ytip + RAFTER_SECTIONS[1] / 2))
+            assert margins[-1] >= -1e-9, 'R1 fix2 violated: rafter above eave-0.05'
+            pos += RAFTER_SPACING
+        next_raf = pos - seg
+        # tile lips every 0.24
+        pos = next_lip
+        while pos < seg:
+            t = pos / seg
+            mx, my, mz = a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t
+            prof = []
+            for rs in (-0.08, 0.08):
+                for kk in range(7):
+                    ang = kk * math.pi / 6
+                    prof.append((mx + tx * (LIP_R * math.cos(ang)) + nx_ * rs,
+                                 my + LIP_R * math.sin(ang) - 0.02,
+                                 mz + tz * (LIP_R * math.cos(ang)) + nz_ * rs))
+            mesh(f'tile-lip-{i}-{int(pos * 100)}', prof, [(kk, kk + 7, kk + 8, kk + 1) for kk in range(6)],
+                 'tile', 'roof')
+            pos += LIP_SPACING
+        next_lip = pos - seg
+    return margins
+
+
 # ================================================================== platform + steps
 GROUP = 'body'
 if RECT:
-    corners = [(RIN_P_X, PLATFORM_H, RIN_P_Z), (-RIN_P_X, PLATFORM_H, RIN_P_Z),
-               (-RIN_P_X, PLATFORM_H, -RIN_P_Z), (RIN_P_X, PLATFORM_H, -RIN_P_Z)]
-    lo = [(c[0], 0, c[2]) for c in corners]
+    # R1 fix1: platform rect in the SAME footprint-aligned frame as the columns/roof
+    # (the old build placed it axis-aligned in the local frame -> rotated vs the whole building)
+    rc = [rect_pt((RIN_P_X, RIN_P_Z)), rect_pt((-RIN_P_X, RIN_P_Z)),
+          rect_pt((-RIN_P_X, -RIN_P_Z)), rect_pt((RIN_P_X, -RIN_P_Z))]
+    corners = [(x, PLATFORM_H, z) for x, z in rc]
+    lo = [(x, 0, z) for x, z in rc]
     mesh('platform', lo + corners,
          [(0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7), (4, 5, 6, 7), (3, 2, 1, 0)],
          'stone', 'body')
-    # steps on the entrance long side (the side whose outward normal is nearest facade.dir)
-    n_side = P['entranceLongSideNormal']  # map frame; rotate into local
-    g = P['rotY']
-    ex = n_side[0] * math.cos(g) - n_side[1] * math.sin(g)
-    ez = n_side[0] * math.sin(g) + n_side[1] * math.cos(g)
-    STEP_DIR = math.atan2(ez, ex)  # local plane angle of the entrance side outward normal
+    # steps flush OUTSIDE the platform edge whose outward normal is nearest local +Z (facade)
+    side_rect = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+    best, STEP_SIDE = -2.0, 0
+    for si, (nu, nv) in enumerate(side_rect):
+        lz = nu * SR + nv * CR
+        if lz > best:
+            best, STEP_SIDE = lz, si
+    nu, nv = side_rect[STEP_SIDE]
+    line_d = RIN_P_X if nu else RIN_P_Z            # centre->edge-line distance of this side
+    ml = rect_pt((nu * line_d, nv * line_d))       # edge midpoint, local xz
+    nl = rect_pt((nu, nv))                         # outward normal, unit, local xz
+    STEP_NL = (nl[0], nl[1])                       # kept for the report (rail loop reuses nl)
+    tr = rect_pt((-nv, nu))                        # tangent along the edge, unit
+    STEP_YAW = round(math.degrees(math.atan2(tr[1], tr[0])), 3)
 else:
     # platform prism: vertices at the column angles so flats parallel the bays
     col_ang = [math.atan2(c[1], c[0]) for c in COLS_XZ]
@@ -327,19 +426,22 @@ else:
     plat_loop = top
     STEP_DIR = ENT_MID  # local plane angle of entrance bay midpoint
 
-# 3 steps, 0.10 rise, width 1.2, tread 0.3 (design_inference), at the entrance direction
-pr, pz = math.cos(STEP_DIR), math.sin(STEP_DIR)
+# 3 steps, 0.10 rise, width 1.2, tread 0.3 (design_inference)
 if RECT:
-    # ray-exit distance from centre through the platform rectangle (support fn is not a radius)
-    edge = min(RIN_P_X / max(abs(pr), 1e-6), RIN_P_Z / max(abs(pz), 1e-6))
+    for k in range(3):
+        h = PLATFORM_H - 0.10 * k
+        cd = 0.15 + 0.30 * k
+        box(f'step-{k}', (ml[0] + nl[0] * cd, h / 2, ml[1] + nl[1] * cd),
+            (1.2, h, 0.3), 'stone', 'body', collision=True, rot_y_deg=STEP_YAW, reachable=True)
 else:
+    pr, pz = math.cos(STEP_DIR), math.sin(STEP_DIR)
     edge = RIN + OVER_PLATFORM
-STEP_YAW = round(90 - math.degrees(STEP_DIR), 3)
-for k in range(3):
-    h = PLATFORM_H - 0.10 * k
-    cdist = edge + 0.15 + 0.30 * k
-    box(f'step-{k}', (pr * cdist, h / 2, pz * cdist), (1.2, h, 0.3), 'stone', 'body',
-        collision=True, rot_y_deg=STEP_YAW, reachable=True)
+    STEP_YAW = round(90 - math.degrees(STEP_DIR), 3)
+    for k in range(3):
+        h = PLATFORM_H - 0.10 * k
+        cdist = edge + 0.15 + 0.30 * k
+        box(f'step-{k}', (pr * cdist, h / 2, pz * cdist), (1.2, h, 0.3), 'stone', 'body',
+            collision=True, rot_y_deg=STEP_YAW, reachable=True)
 
 # ================================================================== columns + base stones
 if RECT:
@@ -380,35 +482,44 @@ def ring_loop(rad, y):
         pts.append((rad * math.cos(th), y, rad * math.sin(th)))
     return pts
 
-RAD_RING = R if not RECT else math.hypot(RX, RZ)   # rect corners are equidistant from centre
-for name, y0, hh, half_w in (('tie-beam', PLATFORM_H + COL_H, BEAM_H, BEAM_W / 2),
-                             ('eave-purlin', PLATFORM_H + COL_H + BEAM_H, PURLIN, PURLIN / 2)):
-    outer = ring_loop(RAD_RING + half_w, y0)
-    inner = ring_loop(RAD_RING - half_w, y0)
-    tube(name, outer, inner, 'timber', 'body', y_top=y0 + hh)
+RING_JOBS = (('tie-beam', PLATFORM_H + COL_H, BEAM_H, BEAM_W / 2),
+             ('eave-purlin', PLATFORM_H + COL_H + BEAM_H, PURLIN, PURLIN / 2))
+if RECT:
+    # R1 fix1: beams follow the RECT PERIMETER. The old ring walked the 4 corner angles at the
+    # corner radius, which strung diagonal chords across the pavilion interior.
+    def rect_ring(half_u, half_v, y):
+        pts = []
+        for u_, v_ in ((half_u, half_v), (-half_u, half_v), (-half_u, -half_v), (half_u, -half_v)):
+            px, pz = rect_pt((u_, v_))
+            pts.append((px, y, pz))                # tube() point order is (x, y, z)
+        return pts
+    for name, y0, hh, half_w in RING_JOBS:
+        tube(name, rect_ring(RX + half_w, RZ + half_w, y0),
+             rect_ring(max(RX - half_w, 0.01), max(RZ - half_w, 0.01), y0),
+             'timber', 'body', y_top=y0 + hh)
+else:
+    RAD_RING = R
+    for name, y0, hh, half_w in RING_JOBS:
+        outer = ring_loop(RAD_RING + half_w, y0)
+        inner = ring_loop(RAD_RING - half_w, y0)
+        tube(name, outer, inner, 'timber', 'body', y_top=y0 + hh)
 
 # ================================================================== 挂落 hanglo (alpha lattice plane per bay, incl. entrance: hangs at 2.70-3.05, above reach)
 if RECT:
-    gx = P['rotY']
-    rect_cols = []
-    for sx in (1, -1):
-        for sz in (1, -1):
-            amap = math.atan2(RZ * sz, RX * sx)
-            al = amap + gx
-            rect_cols.append((math.hypot(RX * sx, RZ * sz) * math.cos(al), math.hypot(RX * sx, RZ * sz) * math.sin(al)))
-    # order corners CCW: (+,+), (+,-), (-,-), (-,+)
-    rect_cols = sorted(rect_cols, key=lambda c: math.atan2(c[1], c[0]))
-    rect_rin = [RIN_P_X, RIN_P_Z, RIN_P_X, RIN_P_Z]
+    # R1 fix1: panel inset PERPENDICULAR to the column side (rect frame); the old midpoint-vector
+    # scaling moved panels radially, i.e. diagonally off the rotated rect sides.
+    rect_cc = [(RX, RZ), (-RX, RZ), (-RX, -RZ), (RX, -RZ)]     # CCW column rect corners
     for k in range(4):
-        a, b = rect_cols[k], rect_cols[(k + 1) % 4]
-        L = math.hypot(b[0] - a[0], b[1] - a[1])
-        mx, mz = (a[0] + b[0]) / 2, (a[1] + b[1]) / 2
-        tx, tz = (b[0] - a[0]) / L, (b[1] - a[1]) / L
-        # inset from the side line itself: scale the midpoint vector (rect is rotated in local frame)
-        mid_r = math.hypot(mx, mz)
-        rr = mid_r - 0.06
+        a_r, b_r = rect_cc[k], rect_cc[(k + 1) % 4]
+        A, B = rect_pt(a_r), rect_pt(b_r)
+        L = math.hypot(B[0] - A[0], B[1] - A[1])
+        tx, tz = (B[0] - A[0]) / L, (B[1] - A[1]) / L
+        d_r = (b_r[0] - a_r[0], b_r[1] - a_r[1])
+        dl = math.hypot(*d_r)
+        nx_r, nz_r = d_r[1] / dl, -d_r[0] / dl                 # outward normal, rect frame
+        cx, cz = rect_pt(((a_r[0] + b_r[0]) / 2 - nx_r * 0.06,
+                          (a_r[1] + b_r[1]) / 2 - nz_r * 0.06))
         w = L - 0.24
-        cx, cz = mx / mid_r * rr, mz / mid_r * rr
         v0 = (cx + tx * w / 2, PLATFORM_H + COL_H - 0.35, cz + tz * w / 2)
         v1 = (cx - tx * w / 2, PLATFORM_H + COL_H - 0.35, cz - tz * w / 2)
         v2 = (v1[0], v1[1] + 0.35, v1[2])
@@ -452,7 +563,7 @@ if not RECT:
         c1 = (RE * math.cos(a1), RE * math.sin(a1))
         seg = math.hypot(c1[0] - c0[0], c1[1] - c0[1])
         d = min(t, 1 - t) * seg
-        f = max(0.0, 1.0 - d / REACH) ** FALLOFF
+        f = corner_f(d)   # R1 fix3: continuous perimeter kernel, symmetric at the corner
         y = EAVE_Y - SAG * math.sin(math.pi * t) + LIFT * f
         return (RE * math.cos(th), y, RE * math.sin(th), LIFT * f)
 
@@ -499,12 +610,7 @@ if not RECT:
     roof = mesh('roof-surface', verts, faces, 'tile', 'roof', uvs=uvs, smooth=True)
     eave_loop = [(e[0], e[1], e[2]) for e in E]
 
-    # ---- fascia 0.14 + soffit + tile lips + rafters (along the loop, arc-length walked)
-    for i in range(NE):
-        a = eave_loop[i]
-        b = eave_loop[(i + 1) % NE]
-        mesh('eave-fascia', [a, b, (b[0], b[1] - FASCIA_H, b[2]), (a[0], a[1] - FASCIA_H, a[2])],
-             [(0, 3, 2, 1)], 'dark', 'roof')
+    # ---- soffit (flat, bay-mid polygon) + R1 trim: fascia / rafters / lips along the loop
     soff = []
     for k in range(N):
         # soffit vertices at bay-mid angles so the flat covers the bays; corners stay open
@@ -519,43 +625,7 @@ if not RECT:
     nf = [tuple(reversed((0, k + 1, k + 2))) for k in range(N - 2)]
     mesh('eave-soffit', [ctr] + soff, nf, 'dark', 'roof')
 
-    lips_done = 0.0
-    next_lip = LIP_SPACING / 2
-    next_raf = 0.0
-    for i in range(NE):
-        a = eave_loop[i]
-        b = eave_loop[(i + 1) % NE]
-        seg = math.hypot(b[0] - a[0], b[2] - a[2])
-        tx, tz = (b[0] - a[0]) / seg, (b[2] - a[2]) / seg
-        nx_, nz_ = -tz, tx
-        inner_pt = rings[2][i]
-        # rafters every 0.28
-        pos = next_raf
-        while pos < seg:
-            t = pos / seg
-            px, pz = a[0] + (b[0] - a[0]) * t, a[2] + (b[2] - a[2]) * t
-            ey = a[1] + (b[1] - a[1]) * t   # follow the local (lifted) eave height
-            st = (px + (inner_pt[0] - px) * 0.42, ey + 0.09, pz + (inner_pt[2] - pz) * 0.42)
-            tip = (px + (px - inner_pt[0]) * 0.10, ey - 0.055, pz + (pz - inner_pt[2]) * 0.10)
-            box_between(f'rafter-{i}-{int(pos * 100)}', st, tip, RAFTER_SECTIONS[0], RAFTER_SECTIONS[1], 'timber', 'roof')
-            pos += RAFTER_SPACING
-        next_raf = pos - seg
-        # tile lips every 0.24
-        pos = next_lip
-        while pos < seg:
-            t = pos / seg
-            mx, my, mz = a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t
-            prof = []
-            for rs in (-0.08, 0.08):
-                for kk in range(7):
-                    ang = kk * math.pi / 6
-                    prof.append((mx + tx * (LIP_R * math.cos(ang)) + nx_ * rs,
-                                 my + LIP_R * math.sin(ang) - 0.02,
-                                 mz + tz * (LIP_R * math.cos(ang)) + nz_ * rs))
-            mesh(f'tile-lip-{i}-{int(pos * 100)}', prof, [(kk, kk + 7, kk + 8, kk + 1) for kk in range(6)],
-                 'tile', 'roof')
-            pos += LIP_SPACING
-        next_lip = pos - seg
+    RAFTER_MARGINS = eave_trim(eave_loop, rings[2])
 
     # ---- hip ridges: n rods (r 0.07) from corners to apex, tile; sampled on rings 2/5/8 (tri budget)
     vtx_idx = [fi * SEGS_PER_FACET for fi in range(N)]
@@ -585,46 +655,46 @@ if not RECT:
             ff.append((pi_ * sides_n + kk, pi_ * sides_n + k2, (pi_ + 1) * sides_n + k2, (pi_ + 1) * sides_n + kk))
     mesh('baoding-finial', fv, ff, 'dark', 'roof', smooth=True)
 else:
-    # ---- rect variant: four slopes + short ridge (spec fallback), build.py loft method
+    # ---- rect variant (R1 fix1 rebuild): four slopes + short ridge, ALL in the footprint-aligned
+    # rect frame (u=long, v=short), transformed to local by rect_pt. The old build rotated only
+    # the eave loop and left ridge/soffit/loft targets on the local axes -> twisted surfaces,
+    # floating soffit planes and a diagonal ridge.
     def eave_loop_rect():
-        corn = [(-RE_X, -RE_Z), (RE_X, -RE_Z), (RE_X, RE_Z), (-RE_X, RE_Z)]
-        # rotate by PHI? No: rect axes already footprint-aligned in MAP; local = map rotated by rotY.
-        pts = []
+        corn = [(-RE_X, -RE_Z), (RE_X, -RE_Z), (RE_X, RE_Z), (-RE_X, RE_Z)]   # rect frame
         nseg = (10, 6, 10, 6)
+        pts = []
         for k in range(4):
             a = corn[k]
             b = corn[(k + 1) % 4]
             for i in range(nseg[k]):
                 t = i / nseg[k]
-                x = a[0] + (b[0] - a[0]) * t
-                z = a[1] + (b[1] - a[1]) * t
+                u = a[0] + (b[0] - a[0]) * t
+                v = a[1] + (b[1] - a[1]) * t
                 seglen = math.hypot(b[0] - a[0], b[1] - a[1])
                 d = min(t, 1 - t) * seglen
-                f = max(0.0, 1.0 - d / REACH) ** FALLOFF
+                f = corner_f(d)            # R1 fix3: continuous perimeter kernel
                 sag = SAG * math.sin(math.pi * t)
-                px, pz = x, z
-                # map->local: rotate by +rotY
-                gx = P['rotY']
-                lx = px * math.cos(gx) - pz * math.sin(gx)
-                lz = px * math.sin(gx) + pz * math.cos(gx)
-                pts.append((lx, EAVE_Y - sag + LIFT * f, lz, LIFT * f))
+                lx, lz = rect_pt((u, v))
+                pts.append((lx, EAVE_Y - sag + LIFT * f, lz, LIFT * f, u, v))
         return pts
-    E = [list(p) for p in eave_loop_rect()]
+    ER = eave_loop_rect()
+    E = [list(p[:4]) for p in ER]
+    EU = [p[4:] for p in ER]                   # rect-frame (u,v) of each eave point
     NE = len(E)
-    RH_HALF = 0.4 * (2 * RE_X) / 2
     RY = APEX_Y
 
-    def ridge_target(p):
-        return (max(-RH_HALF, min(RH_HALF, p[0])), RY, 0.0)
+    def ridge_target_uv(u, v):
+        return (max(-RH_HALF, min(RH_HALF, u)), 0.0)
 
     def ring_rect(t):
         out = []
-        for e in E:
-            r = ridge_target(e)
+        for e, (u, v) in zip(E, EU):
+            ru, rv = ridge_target_uv(u, v)
             tt = t ** 1.5
             base = e[1] - e[3]
-            out.append((e[0] + (r[0] - e[0]) * t, base + (r[1] - base) * tt + e[3] * (1 - t) ** 2.2,
-                        e[2] + (r[2] - e[2]) * t))
+            uu, vv = u + (ru - u) * t, v + (rv - v) * t
+            lx, lz = rect_pt((uu, vv))
+            out.append((lx, base + (RY - base) * tt + e[3] * (1 - t) ** 2.2, lz))
         return out
     rings = [ring_rect(j / RINGS) for j in range(RINGS + 1)]
     verts, uvs, faces = [], [], []
@@ -646,81 +716,60 @@ else:
             faces.append((a, a + NE, b + NE, b))  # winding: normal outward+up
     roof = mesh('roof-surface', verts, faces, 'tile', 'roof', uvs=uvs, smooth=True)
     eave_loop = [(e[0], e[1], e[2]) for e in E]
-    for i in range(NE):
-        a = eave_loop[i]
-        b = eave_loop[(i + 1) % NE]
-        mesh('eave-fascia', [a, b, (b[0], b[1] - FASCIA_H, b[2]), (a[0], a[1] - FASCIA_H, a[2])],
-             [(0, 3, 2, 1)], 'dark', 'roof')
-    # flat soffit under the rect roof
+
+    # flat soffit under the rect roof, in the same rect frame (was axis-aligned local = floated off)
     sy = EAVE_Y - SAG - 0.05
-    sc = [(-RE_X * 0.98, sy, -RE_Z * 0.98), (RE_X * 0.98, sy, -RE_Z * 0.98),
-          (RE_X * 0.98, sy, RE_Z * 0.98), (-RE_X * 0.98, sy, RE_Z * 0.98)]
+    sc_uv = [(-RE_X * 0.98, -RE_Z * 0.98), (RE_X * 0.98, -RE_Z * 0.98),
+             (RE_X * 0.98, RE_Z * 0.98), (-RE_X * 0.98, RE_Z * 0.98)]
+    sc = [(rect_pt(p)[0], sy, rect_pt(p)[1]) for p in sc_uv]
     mesh('eave-soffit', sc, [(2, 1, 0, 3)], 'dark', 'roof')
-    lips_done = 0.0
-    next_lip = LIP_SPACING / 2
-    next_raf = 0.0
-    for i in range(NE):
-        a = eave_loop[i]
-        b = eave_loop[(i + 1) % NE]
-        seg = math.hypot(b[0] - a[0], b[2] - a[2])
-        tx, tz = (b[0] - a[0]) / seg, (b[2] - a[2]) / seg
-        nx_, nz_ = -tz, tx
-        inner_pt = rings[2][i]
-        pos = next_raf
-        while pos < seg:
-            t = pos / seg
-            px, pz = a[0] + (b[0] - a[0]) * t, a[2] + (b[2] - a[2]) * t
-            ey = a[1] + (b[1] - a[1]) * t   # follow the local (lifted) eave height
-            st = (px + (inner_pt[0] - px) * 0.42, ey + 0.09, pz + (inner_pt[2] - pz) * 0.42)
-            tip = (px + (px - inner_pt[0]) * 0.10, ey - 0.055, pz + (pz - inner_pt[2]) * 0.10)
-            box_between(f'rafter-{i}-{int(pos * 100)}', st, tip, 0.06, 0.06, 'timber', 'roof')
-            pos += RAFTER_SPACING
-        next_raf = pos - seg
-        pos = next_lip
-        while pos < seg:
-            t = pos / seg
-            mx, my, mz = a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t
-            prof = []
-            for rs in (-0.08, 0.08):
-                for kk in range(7):
-                    ang = kk * math.pi / 6
-                    prof.append((mx + tx * (LIP_R * math.cos(ang)) + nx_ * rs,
-                                 my + LIP_R * math.sin(ang) - 0.02,
-                                 mz + tz * (LIP_R * math.cos(ang)) + nz_ * rs))
-            mesh(f'tile-lip-{i}-{int(pos * 100)}', prof, [(kk, kk + 7, kk + 8, kk + 1) for kk in range(6)],
-                 'tile', 'roof')
-            pos += LIP_SPACING
-        next_lip = pos - seg
-    # hip rods corner->ridge end (sampled rings 2/5/8) + 正脊 ridge box
+
+    RAFTER_MARGINS = eave_trim(eave_loop, rings[2])
+
+    # hip rods: 4, from the eave corners (on the corner-column diagonals) up to the short-ridge
+    # ENDS (sampled rings 2/5/RINGS like gate v2), tile
     corner_idx = [0, 10, 16, 26]
+    HIP_FEET, HIP_TOPS = [], []
     for ci in corner_idx:
+        HIP_FEET.append([round(eave_loop[ci][0], 4), round(eave_loop[ci][1], 4), round(eave_loop[ci][2], 4)])
         prev = (eave_loop[ci][0], eave_loop[ci][1] + 0.04, eave_loop[ci][2])
         for j in (2, 5, RINGS):
             q = rings[j][ci]
             q = (q[0], q[1] + 0.045, q[2])
             cyl_to(f'hip-ridge-{ci}-{j}', prev, q, 0.07, 'tile', 'roof', 8)
             prev = q
-    box('main-ridge', (0, RY + 0.10, 0), (2 * RH_HALF + 0.3, 0.16, 0.14), 'tile', 'roof')
+        HIP_TOPS.append([round(prev[0], 4), round(prev[1], 4), round(prev[2], 4)])
+    # 正脊 ridge box along the rect u axis (rotated with the building)
+    box('main-ridge', (0, RY + 0.10, 0), (2 * RH_HALF + 0.3, 0.16, 0.14), 'tile', 'roof',
+        rot_y_deg=round(math.degrees(ROT), 3))
 
 # ================================================================== 美人靠 rails (skip entrance bay)
-def rail_bay(p0, p1, support, tagname):
+def rail_bay(p0, p1, support, tagname, nx_=None, nz_=None):
     """Seat + leaning back rail + 2 posts + top cap between column-line points p0,p1 (GLB xz).
-    support = platform-edge distance from centre along the bay outward normal."""
+    support = platform-edge distance from centre along the bay outward normal.
+    (nx_,nz_) = outward normal of the bay in local xz; default = radial midpoint direction
+    (identical for regular polygons; the rect variant passes the true side normal, R1 fix1)."""
     mx, mz = (p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2
     L = math.hypot(p1[0] - p0[0], p1[1] - p0[1])
     tx, tz = (p1[0] - p0[0]) / L, (p1[1] - p0[1]) / L
-    rad = math.hypot(mx, mz)
-    nx_, nz_ = mx / rad, mz / rad          # outward
+    if nx_ is None:
+        rad = math.hypot(mx, mz)
+        nx_, nz_ = mx / rad, mz / rad          # outward
     inset = support
     yawb = round(90 - math.degrees(math.atan2(tx, tz)), 3)
-    # seat board (top at platform + 0.42)
+    # seat board (top at platform + 0.42). Placement target = perpendicular distance `inset-...`
+    # from the ORIGIN along the outward normal, realised from the bay midpoint:
+    # offset = target - d_col (d_col = perpendicular distance of the column side line).
+    # For regular bays d_col == R and this equals the old radial placement exactly.
+    d_col = mx * nx_ + mz * nz_
     sl = L - 0.34
-    seat_c = (nx_ * (inset - SEAT_DEEP / 2 + 0.02), PLATFORM_H + SEAT_H - 0.05, nz_ * (inset - SEAT_DEEP / 2 + 0.02))
+    off_s = inset - SEAT_DEEP / 2 + 0.02 - d_col
+    seat_c = (mx + nx_ * off_s, PLATFORM_H + SEAT_H - 0.05, mz + nz_ * off_s)
     box(f'seat-{tagname}', seat_c, (sl, 0.10, SEAT_DEEP - 0.04), 'timber', 'rail',
         collision=True, rot_y_deg=yawb)
     # back rail: bottom at the seat OUTER edge, leaning 12 deg outward
-    b0r = inset - 0.10
-    bx0, bz0 = nx_ * b0r, nz_ * b0r
+    b0r = inset - 0.10 - d_col
+    bx0, bz0 = mx + nx_ * b0r, mz + nz_ * b0r
     lean = BACK_H * math.sin(BACK_LEAN)
     wp0 = (bx0, PLATFORM_H + SEAT_H - 0.02, bz0)
     wp1 = (bx0 + nx_ * lean, PLATFORM_H + SEAT_H + BACK_H * math.cos(BACK_LEAN), bz0 + nz_ * lean)
@@ -768,32 +817,29 @@ def rail_bay(p0, p1, support, tagname):
         (sl + 0.1, 0.04, 0.12), 'timber', 'rail', rot_y_deg=yawb, collision=True)
 
 if RECT:
-    # 4 sides in local frame (rect aligned to footprint; local = footprint + rotY)
-    gx = P['rotY']
-    rect_local = []
-    for sx, sz in ((1, 1), (-1, 1), (-1, -1), (1, -1)):
-        mx = RX * sx
-        mz = RZ * sz
-        al = math.atan2(mz, mx) + gx
-        rect_local.append((math.hypot(mx, mz) * math.cos(al), math.hypot(mx, mz) * math.sin(al)))
-    rect_local = sorted(rect_local, key=lambda c: math.atan2(c[1], c[0]))
-    # entrance side: side whose midpoint is nearest local +Z
-    best, ent_i = 1e9, 0
-    for i in range(4):
-        a = rect_local[i]
-        b = rect_local[(i + 1) % 4]
-        mxx, mzz = (a[0] + b[0]) / 2, (a[1] + b[1]) / 2
-        ang = math.degrees(math.atan2(mzz, mxx))
-        dd = abs((ang - 90 + 180) % 360 - 180)
-        if dd < best:
-            best, ent_i = dd, i
-    for i in range(4):
-        if i == ent_i:
+    # R1 fix1: rails PARALLEL to the column bays, perpendicular-inset from each side line.
+    # The old build scaled the side-midpoint vector radially -> rails ran diagonally across
+    # the interior. Entrance side = side whose outward normal is nearest local +Z (steps side).
+    cc = [(RX, RZ), (-RX, RZ), (-RX, -RZ), (RX, -RZ)]          # CCW column rect corners
+    ent_best, ENT_SIDE = -2.0, 0
+    for k in range(4):
+        a_r, b_r = cc[k], cc[(k + 1) % 4]
+        d_r = (b_r[0] - a_r[0], b_r[1] - a_r[1])
+        dl = math.hypot(*d_r)
+        nlx, nlz = rect_pt((d_r[1] / dl, -d_r[0] / dl))        # outward normal, local
+        if nlz > ent_best:
+            ent_best, ENT_SIDE = nlz, k
+    for k in range(4):
+        if k == ENT_SIDE:
             continue
-        a = rect_local[i]
-        b = rect_local[(i + 1) % 4]
-        support = math.hypot((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)   # side distance of the platform rect
-        rail_bay(a, b, support, f's{i}')
+        a_r, b_r = cc[k], cc[(k + 1) % 4]
+        d_r = (b_r[0] - a_r[0], b_r[1] - a_r[1])
+        dl = math.hypot(*d_r)
+        nx_r, nz_r = d_r[1] / dl, -d_r[0] / dl
+        nl = rect_pt((nx_r, nz_r))
+        A, B = rect_pt(a_r), rect_pt(b_r)
+        support = RIN_P_X if abs(nl[0]) >= abs(nl[1]) else RIN_P_Z   # platform side-line distance
+        rail_bay(A, B, support, f's{k}', nl[0], nl[1])
 else:
     for k in range(N):
         if k == ENT:
@@ -810,9 +856,11 @@ if not RECT:
                  'size': [round(max(plat_xs) - min(plat_xs), 3), PLATFORM_H, round(max(plat_zs) - min(plat_zs), 3)],
                  'rotYDeg': 0, 'reachable': True})
 else:
+    # R1 fix1: platform is the footprint-aligned rect rotated by rotY -> collider yaw matches
+    # (obb convention: local +X -> (cos th, sin th) = rect u axis when th = rotY)
     COLL.append({'name': 'platform', 'type': 'box', 'center': [0, PLATFORM_H / 2, 0],
                  'size': [round(2 * RIN_P_X, 3), PLATFORM_H, round(2 * RIN_P_Z, 3)],
-                 'rotYDeg': 0, 'reachable': True})
+                 'rotYDeg': round(math.degrees(ROT), 3), 'reachable': True})
 
 # ================================================================== finalize: join per (part, material), triangulate
 bpy.ops.object.select_all(action='DESELECT')
@@ -905,6 +953,24 @@ body_top = max(max(v.co.z for v in o.data.vertices) for o in final if o.name.sta
 bounds = {'min': [round(min(xs), 3), round(min(ys), 3), round(min(zs), 3)],
           'max': [round(max(xs), 3), round(max(ys), 3), round(max(zs), 3)]}
 
+r1_record = {
+    'cornerKernel': 'raised-cosine^2.0 along eave perimeter (gate-v2 continuous walk); '
+                    'LIFT at corner, 0 at cornerReach, zero slope at both ends (no corner crease)',
+    'rafterRule': 'axis localEaveY-0.09 -> top eaveY-0.06 (<= eave-0.05), radial length 0.25, '
+                  'below tile lips; height follows lifted eave line (corner-sync)',
+    'rafterTopMarginMin': round(min(RAFTER_MARGINS), 4),
+}
+if RECT:
+    r1_record.update({
+        'rectFrame': 'u=footprint long axis, v=short; local = rotY(rect); platform, rings, roof, '
+                     'ridge, soffit, rails and steps all share this frame (R1 fix1)',
+        'stepsSide': 'platform edge nearest local +Z, flush outside (stepsSideNormalLocal)',
+        'stepsSideNormalLocal': [round(STEP_NL[0], 4), round(STEP_NL[1], 4)],
+        'hipRidgeFeetLocal': HIP_FEET,
+        'hipRidgeTopsLocal': HIP_TOPS,
+        'ridgeHalf': RH_HALF,
+    })
+
 report = {
     'id': BLD, 'zh': P['zh'], 'variant': P['variant'], 'n': N,
     'module': 'pavilion-' + BLD,
@@ -918,13 +984,18 @@ report = {
     'measured': {'roofTopY': round(roof_top, 4), 'bodyTopY': round(body_top, 4),
                  'boundsGLB': bounds,
                  'triangles': tri, 'glbBytes': glb_bytes, 'sha256': sha},
+    'r1': r1_record,
     'assumptions': {
         'riseFormula': 'clamp(0.5 * eaveRadius, 1.1, 1.6)' if not RECT else 'clamp(0.5 * min(eaveRx,eaveRz), 1.1, 1.6) -> clamped 1.1',
         'ridgeFallback': 'rect aspect ~2:1 -> spec PLAN.md fallback: short ridge 40% of long side, four slopes + ridge',
         'bevels': 'none (tri budget); silhouette + materials carry edges',
-        'steps': '3 x 0.10 rise, width 1.2, tread 0.3, at entrance bay midpoint (offset from +Z recorded in site-inputs)',
+        'steps': ('3 x 0.10 rise, width 1.2, tread 0.3, flush outside the platform edge nearest '
+                  'local +Z (R1 fix1)') if RECT else
+                 '3 x 0.10 rise, width 1.2, tread 0.3, at entrance bay midpoint (offset from +Z recorded in site-inputs)',
         'soffit': 'flat dark soffit at y=3.28 closes under-eave view (build.py method)',
-        'finialRect': 'no gourd on ridge fallback roof; 正脊 box instead' if RECT else 'gourd finial per spec'
+        'finialRect': 'no gourd on ridge fallback roof; 正脊 box instead' if RECT else 'gourd finial per spec',
+        'r1': 'master-review rework: rect single-frame rebuild / rafters under eave L0.25 / '
+              'raised-cosine corner kernel (see r1 record)',
     },
     'buildSeconds': round(time.time() - T0, 1),
 }
