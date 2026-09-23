@@ -1,0 +1,137 @@
+{
+  "light-lime-plaster": {
+    "tileMeters": [
+      2.5,
+      2.5
+    ],
+    "colorSrgb": "ffffff",
+    "roughness": 0.8,
+    "textures": {
+      "color": "textures/PaintedPlaster017_2K-JPG_Color_1K.jpg",
+      "normal": "textures/PaintedPlaster017_2K-JPG_NormalGL_1K.jpg",
+      "roughness": "textures/PaintedPlaster017_2K-JPG_Roughness_1K.jpg"
+    },
+    "normalConvention": "OpenGL",
+    "source": "ambientCG CC0 project textures"
+  },
+  "blue-gray-brick": {
+    "tileMeters": [
+      1.05,
+      1.2
+    ],
+    "colorSrgb": "ffffff",
+    "roughness": 0.8,
+    "textures": {
+      "color": "textures/Bricks061_2K-JPG_Color_1K.jpg",
+      "normal": "textures/Bricks061_2K-JPG_NormalGL_1K.jpg",
+      "roughness": "textures/Bricks061_2K-JPG_Roughness_1K.jpg"
+    },
+    "normalConvention": "OpenGL",
+    "source": "ambientCG CC0 project textures"
+  },
+  "stained-timber": {
+    "tileMeters": [
+      0.75,
+      1.5
+    ],
+    "colorSrgb": "542c25",
+    "roughness": 0.65,
+    "textures": {
+      "color": "textures/wood-stain-color.jpg",
+      "normal": "textures/Wood092_2K-JPG_NormalGL_1K.jpg"
+    },
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "deep-door-lacquer": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "252320",
+    "roughness": 0.53,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "gray-pan-tile": {
+    "tileMeters": [
+      1.44,
+      1.36
+    ],
+    "colorSrgb": "ffffff",
+    "roughness": 0.8,
+    "textures": {
+      "color": "textures/roof-color.jpg",
+      "normal": "textures/roof-normal.png"
+    },
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "worn-stone": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "9a9a8c",
+    "roughness": 0.92,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "recessed-old-glass": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "364347",
+    "roughness": 0.28,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "copper-pot": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "b8743a",
+    "roughness": 0.35,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "white-porcelain": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "f2f0ea",
+    "roughness": 0.18,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "brass-weight": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "a8903c",
+    "roughness": 0.4,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  },
+  "sign-gold-leaf": {
+    "tileMeters": [
+      1,
+      1
+    ],
+    "colorSrgb": "d8b45a",
+    "roughness": 0.45,
+    "textures": {},
+    "normalConvention": "OpenGL",
+    "source": "locally authored / constant material"
+  }
+}

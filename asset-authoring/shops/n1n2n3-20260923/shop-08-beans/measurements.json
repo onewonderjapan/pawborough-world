@@ -1,0 +1,210 @@
+{
+  "moduleId": "shop-08-beans",
+  "triangles": 12374,
+  "meshes": 50,
+  "fileBytes": 2221712,
+  "sha256": "0c672e984cff83d8d7450adec5597502eacd19acefae39f34e45f8729e9293fe",
+  "design": {
+    "specId": "shop-08-beans",
+    "name": "五香豆特产店（单层骑楼檐廊，商街 N2）",
+    "family": "fangbang ordinary shop-house, closed base model (+instanced handheld props)",
+    "designInference": true,
+    "notHistoricalReconstruction": true,
+    "references": [
+      "PBR-SH-0007-G01",
+      "PBR-SH-0007-G02"
+    ],
+    "frontageM": 5.0,
+    "depthM": 5.6,
+    "eaveM": 3.35,
+    "ridgeM": 4.7,
+    "eaveOverhangFrontM": 1.5,
+    "eaveOverhangSideM": 0.3,
+    "wallThicknessM": 0.24,
+    "singleStorey": true,
+    "features": [
+      "单层 + 骑楼式檐廊：屋面外挑 1.5 m，3 根木柱撑檐，柱下石础",
+      "廊下开放式货架排架，玻璃罐排架用 bean-jar.glb LOD1 实例 ×6",
+      "外卖柜台：纸包（wuxiangdou-packet LOD0 ×3）+ 梨膏糖木匣（ligaotang-box-open LOD0）",
+      "木杆秤挂廊下；侧挂垂直招「奶油五香豆」排字体双面刻字（Noto Serif CJK）"
+    ],
+    "sign": {
+      "text": "奶油五香豆",
+      "x": 0.3,
+      "y": 2.03,
+      "hanging": {
+        "z": 1.15
+      },
+      "block": [
+        0.4,
+        0.45,
+        0.045
+      ],
+      "gap": 0.05,
+      "size": 0.3,
+      "extrude": 0.014,
+      "resolution": 1
+    },
+    "props": [
+      {
+        "kind": "shelf-rack",
+        "at": [
+          -2.05,
+          -0.45,
+          -1.15
+        ],
+        "topY": 1.62,
+        "shelves": [
+          0.62,
+          1.12,
+          1.62
+        ]
+      },
+      {
+        "kind": "steelyard",
+        "at": [
+          0.45,
+          1.55,
+          -1.32
+        ],
+        "scale": 1.0
+      }
+    ],
+    "instances": [
+      {
+        "file": "bean-jar.glb",
+        "lod": "LOD1",
+        "at": [
+          [
+            -1.85,
+            0.64,
+            -1.15
+          ],
+          [
+            -1.5,
+            0.64,
+            -1.15
+          ],
+          [
+            -1.15,
+            0.64,
+            -1.15
+          ],
+          [
+            -0.8,
+            0.64,
+            -1.15
+          ],
+          [
+            -1.67,
+            1.14,
+            -1.15
+          ],
+          [
+            -1.32,
+            1.14,
+            -1.15
+          ],
+          [
+            -0.97,
+            1.14,
+            -1.15
+          ]
+        ]
+      },
+      {
+        "file": "wuxiangdou-packet.glb",
+        "lod": "LOD0",
+        "at": [
+          [
+            0.78,
+            0.99,
+            -1.22,
+            0.4
+          ],
+          [
+            1.1,
+            0.99,
+            -1.2,
+            -0.3
+          ],
+          [
+            1.5,
+            0.99,
+            -1.23,
+            0.15
+          ]
+        ]
+      },
+      {
+        "file": "ligaotang-box-open.glb",
+        "lod": "LOD0",
+        "at": [
+          [
+            1.85,
+            0.99,
+            -1.24,
+            -0.2
+          ]
+        ]
+      }
+    ],
+    "signFont": "Noto Serif CJK Bold (local system font, typeset per-character blocks, no calligraphy tracing)",
+    "doors": "all doors and windows modeled CLOSED with real recessed leaves; no interior",
+    "trisTarget": 12000,
+    "axis": "glTF Y-up, facade +Z, depth -Z, origin front-wall center bottom",
+    "generator": "generator/build_shops_n1.py (derived from generator/build_shophouse.py)",
+    "recipe": "shop-08-beans.json"
+  },
+  "assertions": [
+    {
+      "assert": "instance-placed-bean-jar.glb",
+      "ok": true,
+      "detail": "7/7 placed"
+    },
+    {
+      "assert": "instance-placed-wuxiangdou-packet.glb",
+      "ok": true,
+      "detail": "3/3 placed"
+    },
+    {
+      "assert": "instance-placed-ligaotang-box-open.glb",
+      "ok": true,
+      "detail": "1/1 placed"
+    },
+    {
+      "assert": "glb-bounds-x",
+      "ok": true,
+      "detail": "x [-2.800, 2.800] vs ±2.800"
+    },
+    {
+      "assert": "glb-bounds-y",
+      "ok": true,
+      "detail": "y [0.000, 5.000] vs [0, 5.020]"
+    },
+    {
+      "assert": "glb-bounds-z",
+      "ok": true,
+      "detail": "z [-7.110, 1.510] vs [-7.100, 1.600]"
+    },
+    {
+      "assert": "ridge-height",
+      "ok": true,
+      "detail": "max y 5.000 vs ridge 4.7 + cap"
+    },
+    {
+      "assert": "all-openings-filled",
+      "ok": true,
+      "detail": "5 openings filled with closed leaves"
+    },
+    {
+      "assert": "sign-glyphs-mesh",
+      "ok": true,
+      "detail": "10 glyph meshes, expected 10"
+    }
+  ],
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}

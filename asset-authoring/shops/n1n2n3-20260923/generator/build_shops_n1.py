@@ -410,6 +410,17 @@ def add_bowl_spoon(x, y, z, scale=1.0):
             (0, 1, 2, 3, 4, 5), (11, 10, 9, 8, 7, 6)], 'porcelain')
 
 
+def add_shelf_rack(x0, x1, z, top_y=1.62, shelves=(0.62, 1.12, 1.62), scale=1.0):
+    """开放式货架排架（骑楼廊下摆罐用）。"""
+    L.GROUP = 'prop-rack'
+    w = x1 - x0
+    for sx in (x0 + 0.03, x1 - 0.03):
+        L.box('rack-post', (sx, top_y / 2, z), (0.05, top_y, 0.05), 'wood', 0, True)
+    for yy in shelves:
+        L.box('rack-shelf', ((x0 + x1) / 2, yy, z), (w, 0.035, 0.42), 'wood', 0.004)
+    L.box('rack-top', ((x0 + x1) / 2, top_y + 0.02, z), (w + 0.06, 0.04, 0.46), 'wood', 0.004)
+
+
 def add_steelyard(x, y, z, scale=1.0):
     """木杆秤：细杆 + 秤盘 + 秤砣，挂在柜台沿。"""
     L.GROUP = 'prop-scale'
@@ -420,14 +431,59 @@ def add_steelyard(x, y, z, scale=1.0):
     L.cyl('scale-weight', (x - 0.16 * scale, y + 0.40 * scale, z), (x - 0.16 * scale, y + 0.355 * scale, z), 0.035 * scale, 'brass', 8)
 
 
+def _glyph_mesh(ch, size, extrude, resolution, pos_glb, yaw=0.0):
+    """单个 Noto Serif CJK 字转网格，面向 local +Z，再绕 GLB +Y 转 yaw。"""
+    import bpy
+    from mathutils import Matrix, Euler
+    bpy.ops.object.text_add()
+    t = bpy.context.object
+    t.data.body = ch
+    t.data.size = size
+    t.data.extrude = extrude
+    t.data.align_x = 'CENTER'
+    t.data.align_y = 'CENTER'
+    t.data.resolution_u = resolution
+    t.data.font = bpy.data.fonts.load(FONT, check_existing=True)
+    t.location = glb_to_blender(pos_glb)
+    t.rotation_mode = 'QUATERNION'
+    # 文字面从 Blender 平面立起朝 +Z（GLB），再叠加 yaw
+    q_stand = Euler((math.radians(90), 0, 0), 'XYZ').to_quaternion()
+    q_yaw = Euler((0, yaw, 0), 'XYZ').to_quaternion()
+    t.rotation_quaternion = q_yaw @ q_stand
+    bpy.ops.object.convert(target='MESH')
+    t.name = 'sign-glyph'
+    t.data.materials.append(L.M['sign-gold'])
+    L.tag(t)
+    return t
+
+
 def add_sign(spec):
-    """排字招牌：逐字木block + Noto Serif CJK 浮字，不临摹书法。"""
+    """排字招牌：逐字木block + Noto Serif CJK 浮字，不临摹书法。
+    spec['hanging'] 时为骑楼侧挂垂直招（双面刻字）。"""
     import bpy
     L.GROUP = 'sign'
     text = spec['text']
     n = len(text)
     bs = spec.get('block', [0.44, 0.44, 0.05])
     gap = spec.get('gap', 0.07)
+    hang = spec.get('hanging')
+    if hang:
+        # 骑楼侧挂垂直招：板垂直于立面（薄向 x），字沿进深排列，双面各刻一套，朝 ±X
+        step = bs[0] + gap
+        board_l = step * (n - 1) + bs[0] + 0.12
+        z0 = hang['z']                 # 第一个字（最靠街）中心 z
+        z_mid = z0 - step * (n - 1) / 2
+        y = spec['y']
+        bx = spec['x']
+        L.box('sign-board', (bx, y + bs[1] / 2, z_mid), (0.045, bs[1], board_l), 'wood', 0.006, True)
+        for k, ch in enumerate(text):
+            z_k = z0 - k * step
+            for face_yaw, xo in ((math.pi / 2, 0.0225 + 0.002), (-math.pi / 2, -0.0225 - 0.002)):
+                _glyph_mesh(ch, spec.get('size', bs[0] * 0.78), spec.get('extrude', 0.014),
+                            spec.get('resolution', 1), (bx + xo, y, z_k), face_yaw)
+        for ze in (z_mid - board_l / 2 + 0.10, z_mid + board_l / 2 - 0.10):
+            L.cyl('sign-hanger', (bx, y + bs[1], ze), (bx, y + bs[1] + 0.14, ze), 0.014, 'dark', 6)
+        return
     total = n * bs[0] + (n - 1) * gap
     x0 = spec['x'] - total / 2 + bs[0] / 2
     y = spec['y']
@@ -435,25 +491,8 @@ def add_sign(spec):
     for k, ch in enumerate(text):
         cx = x0 + k * (bs[0] + gap)
         L.box('sign-block', (cx, y, z), (bs[0], bs[1], bs[2]), 'wood', 0.006)
-        bpy.ops.object.text_add()
-        t = bpy.context.object
-        t.data.body = ch
-        t.data.size = spec.get('size', bs[0] * 0.78)
-        t.data.extrude = spec.get('extrude', 0.014)
-        t.data.align_x = 'CENTER'
-        t.data.align_y = 'CENTER'
-        t.data.resolution_u = spec.get('resolution', 1)
-        if 'font' not in bpy.data.fonts:
-            bpy.data.fonts.load(FONT)
-        t.data.font = bpy.data.fonts['Font'] if 'Font' in bpy.data.fonts else t.data.font
-        t.location = glb_to_blender((cx, y, z + bs[2] / 2 + 0.001))
-        # 文字面向 +Z（GLB），Blender 内绕 X 转 -90° 使文字立起
-        t.rotation_mode = 'QUATERNION'
-        t.rotation_quaternion = (math.sqrt(0.5), math.sqrt(0.5), 0, 0)
-        bpy.ops.object.convert(target='MESH')
-        t.name = 'sign-glyph'
-        t.data.materials.append(L.M['sign-gold'])
-        L.tag(t)
+        _glyph_mesh(ch, spec.get('size', bs[0] * 0.78), spec.get('extrude', 0.014),
+                    spec.get('resolution', 1), (cx, y, z + bs[2] / 2 + 0.001), 0.0)
 
 
 def add_instances(specs):
@@ -487,9 +526,17 @@ def add_instances(specs):
         root.hide_viewport = True
         roots = [root]
         L.tag(root)
+
+        def dup_tree(obj):
+            c = obj.copy()
+            bpy.context.collection.objects.link(c)
+            for ch in obj.children:
+                cc = dup_tree(ch)
+                cc.parent = c
+            return c
+
         for p in spec['at'][1:]:
-            r2 = root.copy()
-            bpy.context.collection.objects.link(r2)
+            r2 = dup_tree(root)
             r2.location = glb_to_blender((p[0], p[1], p[2]))
             if len(p) > 3:
                 r2.rotation_mode = 'QUATERNION'
@@ -497,6 +544,7 @@ def add_instances(specs):
                 r2.rotation_quaternion = mathutils.Euler((0, p[3], 0)).to_quaternion()
             if len(p) > 4:
                 r2.scale = (p[4],) * 3
+            L.tag(r2)
             roots.append(r2)
         first = spec['at'][0]
         root.location = glb_to_blender((first[0], first[1], first[2]))
@@ -563,6 +611,7 @@ def main():
         if kind == 'copper-stove': add_copper_stove(x, y, z, p.get('scale', 1.0))
         elif kind == 'bowl-spoon': add_bowl_spoon(x, y, z, p.get('scale', 1.0))
         elif kind == 'steelyard': add_steelyard(x, y, z, p.get('scale', 1.0))
+        elif kind == 'shelf-rack': add_shelf_rack(p['at'][0], p['at'][1], p['at'][2], p.get('topY', 1.62), tuple(p.get('shelves', (0.62, 1.12, 1.62))), p.get('scale', 1.0))
         else: L.assert_true('prop-kind', False, f'unknown prop kind {kind}')
     add_instances(R.get('instances', []))
     if R.get('sign'):
@@ -583,8 +632,9 @@ def main():
     L.assert_true('all-openings-filled', True, f'{len(FILLED)} openings filled with closed leaves')
     if R.get('sign'):
         glyphs = [o for o in bpy.context.scene.objects if o.type == 'MESH' and o.get('part') == 'sign' and 'glyph' in o.name]
-        L.assert_true('sign-glyphs-mesh', len(glyphs) == len(R['sign']['text']),
-                      f'{len(glyphs)} glyph meshes for {len(R["sign"]["text"])} chars')
+        expect = len(R['sign']['text']) * (2 if R['sign'].get('hanging') else 1)
+        L.assert_true('sign-glyphs-mesh', len(glyphs) == expect,
+                      f'{len(glyphs)} glyph meshes, expected {expect}')
 
     design = {
         'specId': R['id'], 'name': R['name'],

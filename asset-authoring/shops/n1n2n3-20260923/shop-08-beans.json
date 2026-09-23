@@ -1,0 +1,183 @@
+{
+  "id": "shop-08-beans",
+  "name": "五香豆特产店（单层骑楼檐廊，商街 N2）",
+  "corner": false,
+  "singleStorey": true,
+  "roofOverFront": 1.5,
+  "dims": {
+    "width": 5.0,
+    "depth": 5.6,
+    "eave": 3.35,
+    "ridge": 4.7
+  },
+  "features": [
+    "单层 + 骑楼式檐廊：屋面外挑 1.5 m，3 根木柱撑檐，柱下石础",
+    "廊下开放式货架排架，玻璃罐排架用 bean-jar.glb LOD1 实例 ×6",
+    "外卖柜台：纸包（wuxiangdou-packet LOD0 ×3）+ 梨膏糖木匣（ligaotang-box-open LOD0）",
+    "木杆秤挂廊下；侧挂垂直招「奶油五香豆」排字体双面刻字（Noto Serif CJK）"
+  ],
+  "porch": {
+    "u0": -2.26,
+    "u1": 2.26,
+    "depth": 1.5,
+    "head": 2.5,
+    "columns": 3,
+    "door": {
+      "kind": "door",
+      "u0": -0.75,
+      "u1": 0.25,
+      "y0": 0.16,
+      "y1": 2.5
+    },
+    "extras": [
+      {
+        "kind": "takeaway-window",
+        "u0": 0.55,
+        "u1": 2.1,
+        "y0": 0.95,
+        "y1": 2.25,
+        "depth": 0.45
+      }
+    ]
+  },
+  "front": [
+    {
+      "kind": "grid-window",
+      "u0": 1.2,
+      "u1": 2.1,
+      "y0": 2.62,
+      "y1": 3.08,
+      "cols": 2,
+      "rows": 1
+    }
+  ],
+  "props": [
+    {
+      "kind": "shelf-rack",
+      "at": [
+        -2.05,
+        -0.45,
+        -1.15
+      ],
+      "topY": 1.62,
+      "shelves": [
+        0.62,
+        1.12,
+        1.62
+      ]
+    },
+    {
+      "kind": "steelyard",
+      "at": [
+        0.45,
+        1.55,
+        -1.32
+      ],
+      "scale": 1.0
+    }
+  ],
+  "instances": [
+    {
+      "file": "bean-jar.glb",
+      "lod": "LOD1",
+      "at": [
+        [
+          -1.85,
+          0.64,
+          -1.15
+        ],
+        [
+          -1.5,
+          0.64,
+          -1.15
+        ],
+        [
+          -1.15,
+          0.64,
+          -1.15
+        ],
+        [
+          -0.8,
+          0.64,
+          -1.15
+        ],
+        [
+          -1.67,
+          1.14,
+          -1.15
+        ],
+        [
+          -1.32,
+          1.14,
+          -1.15
+        ],
+        [
+          -0.97,
+          1.14,
+          -1.15
+        ]
+      ]
+    },
+    {
+      "file": "wuxiangdou-packet.glb",
+      "lod": "LOD0",
+      "at": [
+        [
+          0.78,
+          0.99,
+          -1.22,
+          0.4
+        ],
+        [
+          1.1,
+          0.99,
+          -1.2,
+          -0.3
+        ],
+        [
+          1.5,
+          0.99,
+          -1.23,
+          0.15
+        ]
+      ]
+    },
+    {
+      "file": "ligaotang-box-open.glb",
+      "lod": "LOD0",
+      "at": [
+        [
+          1.85,
+          0.99,
+          -1.24,
+          -0.2
+        ]
+      ]
+    }
+  ],
+  "sign": {
+    "text": "奶油五香豆",
+    "x": 0.3,
+    "y": 2.03,
+    "hanging": {
+      "z": 1.15
+    },
+    "block": [
+      0.4,
+      0.45,
+      0.045
+    ],
+    "gap": 0.05,
+    "size": 0.3,
+    "extrude": 0.014,
+    "resolution": 1
+  },
+  "quoins": {
+    "left": true,
+    "right": true
+  },
+  "references": [
+    "PBR-SH-0007-G01",
+    "PBR-SH-0007-G02"
+  ]
+}
