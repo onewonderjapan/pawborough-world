@@ -123,6 +123,58 @@ for z, part_index, colls, flt in PARTS:
 by_zone = {}
 for it in plan:
     by_zone.setdefault(it['zone'], []).extend(it['objs'] + it['rockery'])
+
+# ---------- P2 地面铺装材质（wave1-paving）：按 build-scene 写入的 slot custom prop 绑定程序化贴图 ----------
+# 贴图 1024² JPEG（resources/textures/paving/），scripts/bake-paving-textures.py 纯 numpy 生成，
+# 无外部素材；UV 已在 build-scene.mjs 按世界坐标平铺（1 单位 = 1 m）。只换材质，不改几何。
+PAVING_TEX_DIR = os.path.join(ROOT, 'resources', 'textures', 'paving')
+paving_mats = {}
+def paving_material(slot):
+    if slot in paving_mats: return paving_mats[slot]
+    jpg = os.path.join(PAVING_TEX_DIR, slot + '.jpg')
+    if not os.path.exists(jpg):
+        raise SystemExit(f'paving texture missing: {jpg} (run: blender -b -P scripts/bake-paving-textures.py)')
+    img = bpy.data.images.load(jpg, check_existing=True)
+    m = bpy.data.materials.new('paving-' + slot)
+    m.use_nodes = True
+    bsdf = next(n for n in m.node_tree.nodes if n.type == 'BSDF_PRINCIPLED')
+    bsdf.inputs['Roughness'].default_value = 0.93
+    bsdf.inputs['Metallic'].default_value = 0.0
+    tex = m.node_tree.nodes.new('ShaderNodeTexImage')
+    tex.image = img
+    tex.interpolation = 'Linear'
+    tex.extension = 'REPEAT'
+    m.node_tree.links.new(tex.outputs['Color'], bsdf.inputs['Base Color'])
+    paving_mats[slot] = m
+    return m
+
+def apply_paving(objs):
+    n, seen = 0, set()
+    for o in objs:
+        for ob in [o] + list(o.children_recursive):
+            if ob.type != 'MESH' or id(ob.data) in seen: continue
+            seen.add(id(ob.data))
+            slot = ob.get('slot')
+            if not slot: continue
+            slot = str(slot)
+            if not ob.data.uv_layers:
+                print('WARN paving slot without UV layer, skipped', ob.name)
+                continue
+            mat = paving_material(slot)
+            if ob.data.materials: ob.data.materials[0] = mat
+            else: ob.data.materials.append(mat)
+            ob.data.uv_layers[0].active = True
+            ob.data.uv_layers[0].active_render = True
+            # 顶点色随贴图材质一并弃用：COLOR+UV 并存的网格经 Blender glTF 导出会多写一个 COLOR_1，
+            # gltfpack 量化后过不了 validator（MESH_PRIMITIVE_INDEXED_SEMANTIC_CONTINUITY）。
+            for ca in list(ob.data.color_attributes):
+                ob.data.color_attributes.remove(ca)
+            n += 1
+    return n
+
+paving_applied = apply_paving([o for it in plan for o in it['objs'] + it['rockery']])
+print('paving materials applied:', paving_applied)
+
 for it in plan:
     z, part_index, colls, f, objs, rockery_part = it['zone'], it['part'], it['colls'], it['file'], it['objs'], it['rockery']
     own = set(id(o) for o in objs + rockery_part)

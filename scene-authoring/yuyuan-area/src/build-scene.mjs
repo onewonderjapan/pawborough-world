@@ -58,6 +58,42 @@ const layout = JSON.parse(fs.readFileSync(path.join(OUT, 'layout.json'), 'utf8')
 // 单面材质：法线/绕序已按面向修正（tests/geo-tests.mjs 把关），不再 DoubleSide 兜底
 const MAT_VERTEX = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.93, metalness: 0, flatShading: true, side: THREE.FrontSide });
 
+// ---------- P2 地面铺装（wave1-paving）：分区 × 类型 → 材质槽 ----------
+// 槽名只在这里声明；贴图绑定在 scripts/export-zones.py（贴图由 scripts/bake-paving-textures.py
+// 程序化生成，1024² JPEG，resources/textures/paving/）。庙前青石板：庙区无程序化地面
+// （temple 内铺装在 temple-v3 模块 GLB 内，本次不动模块件），青石板槽落在台阶与池畔石面。
+const PAVING_SLOTS = {
+  'bazaar|paving': 'paving-fine-cobble',   // 商城街面：弹格路小方石
+  'bazaar|plaza':  'paving-fine-cobble',   // 广场：同街面
+  'garden|path':   'paving-grey-brick',    // 园路主径：青砖
+  'pond|road':     'paving-fine-cobble',   // 园内街巷（池带小路-62072384，宽 3.5m）：同街面小方石
+  'pond|path':     'paving-pebble',        // 池畔径：卵石
+  'pond|steps':    'paving-blue-stone',    // 台阶（九曲桥两端）：青石板，几何不动
+  'outer|road':    'paving-asphalt',       // 外围道路：沥青灰
+};
+// 园路支径走卵石（卵石镶边语言的支路），其余 garden path（门楼—三穗堂主径与东区主园路）走青砖
+const PEBBLE_PATH_IDS = new Set(['gpath-4', 'gpath-5', 'gpath-6', 'gpath-7']);
+function pavingSlot(o) {
+  const s = PAVING_SLOTS[`${o.zone}|${o.kind}`];
+  if (!s) return null;
+  return (o.kind === 'path' && PEBBLE_PATH_IDS.has(o.id)) ? 'paving-pebble' : s;
+}
+// 世界坐标盒式投影 UV，1 单位 = 1 m（贴图平铺周期 1 m）：水平面投 (x,z)，
+// 竖直面按主导法线轴投 (z,y) 或 (x,y)。只写 uv 属性，不新增三角面。
+function worldUV(geo) {
+  const pos = geo.attributes.position, nor = geo.attributes.normal;
+  const uv = new Float32Array(pos.count * 2);
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
+    const nx = Math.abs(nor.getX(i)), ny = Math.abs(nor.getY(i)), nz = Math.abs(nor.getZ(i));
+    if (ny >= nx && ny >= nz) { uv[2 * i] = x; uv[2 * i + 1] = z; }
+    else if (nx >= nz)        { uv[2 * i] = z; uv[2 * i + 1] = y; }
+    else                      { uv[2 * i] = x; uv[2 * i + 1] = y; }
+  }
+  geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+  return geo;
+}
+
 function colorize(geoIn, hex) {
   // 统一非索引：硬边法线生效 + mergeGeometries 属性一致性（索引/非索引不能混并）
   const geo = geoIn.index ? geoIn.toNonIndexed() : geoIn;
@@ -950,6 +986,8 @@ for (const o of layout.objects) {
     default: deferred.push({ id: o.id, kind: o.kind }); continue;
   }
   if (!mesh) { deferred.push({ id: o.id, kind: o.kind, why: 'null mesh' }); continue; }
+  const slot = pavingSlot(o);
+  if (slot) { ud.slot = slot; worldUV(mesh.geometry); }   // mesh.userData 即 ud；贴图由 export-zones.py 按 slot 绑定
   const passages=layout.reviewRepair?.passages||[];
   if(['outerBuilding','bazaarBlock','facadeBay'].includes(o.kind)&&passages.length){
     mesh.updateMatrix();
