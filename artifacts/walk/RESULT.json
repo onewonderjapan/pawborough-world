@@ -1,0 +1,75 @@
+{
+ "task": "wave1-walk-20260923 — 全域候选第一人称步行（WP4.1 碰撞导出 / WP4.2 浏览器步行 / WP4.3 机器人巡游）",
+ "status": "delivered_for_lead_review",
+ "ownerAdopted": false,
+ "date": "2026-09-23",
+ "worktree": "/home/baibai/outbox/pawborough-wave1-walk-20260923/workspace",
+ "branch": "work/wave1-walk-20260923",
+ "commits": [
+  { "sha": "bb324d16", "what": "WP4.1 scripts/export-collision.mjs + rebuild-review.sh 挂钩：按冻结格式写 collision-{garden,pond,temple,bazaar,outer}.json；契约测试 1175 pass / 0 fail" },
+  { "sha": "1e5864aa", "what": "WP4.2 web/walk.js + main.js 最小挂钩 + server /vendor,/vendor-src 路由 + src/walkGround.js：默认轨道不变，?walk=1&at=<锚点> 直入步行，步行/轨道切换 + 回到锚点" },
+  { "sha": "835a01cb", "what": "WP4.3 tests/zone-walk-check.mjs + package.json test:walk：CruiseDriver 全 5 条商业路线走通，WALK-CHECK.json + 15 张眼高截图" }
+ ],
+ "deliverables": {
+  "pipeline": "scene-authoring/yuyuan-area/scripts/export-collision.mjs（rebuild-review.sh 在 connectivity/route 产物之后调用，WALK_COLLISION=0 跳过）",
+  "collisionFiles": "out-zone/collision-{garden,pond,temple,bazaar,outer}.json（冻结格式 docs/AREA-COLLISION-FORMAT.md，记录 = collisionAdapter 形式 (a)，每条导出时过 obbToWorld 自检）",
+  "browser": "web/walk.js + web/main.js 挂钩 + web/index.html importmap（rapier）+ scripts/server.mjs 只读路由 /vendor/（仓库根 node_modules）与 /vendor-src/（仓库根 src/ 可复用件）",
+  "sharedGroundLayer": "src/walkGround.js（DOM-free，浏览器与节点测试共用：按各分区 groundNodeRe/extraGroundNodes 选网 → 别名 → 仓库根 collectGroundTriangles，可复用件零改动）",
+  "test": "tests/zone-walk-check.mjs + npm run test:walk / test:walk-contract",
+  "artifacts": "artifacts/walk/{WALK-CHECK.json, shots/×15, before-orbit-default.png, after-walk-eye-main.png}, artifacts/NEW-ASSETS.json"
+ },
+ "numbers": {
+  "colliders": 1039,
+  "wallsAtRuntime": 1216,
+  "groundTriangles": 34606,
+  "groundMeshes": 194,
+  "contractTest": "1175 pass / 0 fail（先于实现为退出码 2）",
+  "routes": {
+   "main→jiuqu": { "simSeconds": 104.4, "endErrorM": 0.9, "maxLateralDeviationM": 0.79, "minGroundClearanceM": -0.005 },
+   "main→gold": { "simSeconds": 131, "endErrorM": 0.88, "maxLateralDeviationM": 0.8, "minGroundClearanceM": -0.005 },
+   "main→center": { "simSeconds": 36.7, "endErrorM": 0.88, "maxLateralDeviationM": 0.79, "minGroundClearanceM": -0.005 },
+   "old-south→old-north": { "simSeconds": 43.8, "endErrorM": 0.87, "maxLateralDeviationM": 0.16, "minGroundClearanceM": 0 },
+   "gold→jiuqu": { "simSeconds": 48.8, "endErrorM": 0.89, "maxLateralDeviationM": 0.78, "minGroundClearanceM": 0.015 }
+  },
+  "streetMouthEdgesSkipped": 14,
+  "waterOpenings": 2,
+  "zoneSplitGlbCap": "PASS 全部 ≤ 12 MB（重建日志）"
+ },
+ "templeMapping": {
+  "note": "GOAL 要求先核一次『记录名与实例 id 的对应关系』。核实结论：根仓 world/collision-world.json 是街铺模块（N01–S07 + 封口墙），不含庙区记录；庙区 11+5 模块的碰撞实际在 resources/temple-v3/collision-world.json（244 条，名前缀=temple-v3 内部实例 id），模块 GLB 与 layout 锚点经 sources.sha256 与 resources/temple-v3/*.glb 一一对上。导出按『记录已烘焙 temple-v3 内部位姿 → 再叠加 layout 实例位姿（pos'=A+R(rotA)·pos, theta'=theta+rotA）』变换，改名 <实例id>:<原记录名>。",
+  "recordPrefixToLayoutInstanceId": {
+   "shanmen": "temple-shanmen", "court": "temple-entrycourt", "yimen": "temple-yimen", "yimenstage": "temple-yimenstage",
+   "dadiancourt": "temple-dadiancourt", "peidian-w": "temple-peidian-w", "peidian-e": "temple-peidian-e",
+   "gallery-w": "temple-gallery-w", "gallery-e": "temple-gallery-e", "dadian": "temple-dadian",
+   "court3": "temple-court3", "houdian": "temple-houdian",
+   "tree-court2-w": "temple-tree-court2-w", "tree-court2-e": "temple-tree-court2-e",
+   "tree-court3-w": "temple-tree-court3-w", "tree-court3-e": "temple-tree-court3-e"
+  }
+ },
+ "decisions": [
+  "老街三块非凸 bazaarBlock（bld-389702030 / bld-428202606 / bld-553893884）的 14 条 footprint 边与商业路线中心线距离 <0.55m —— 它们是绕街块的街口边，真实墙在店前线。该边不留墙、记入 openings（street mouth on commercial route）；纯数据推导（layout footprint + commercial-route.json），未删任何真实墙面。",
+  "九曲桥跨 water-62072388 的边 14、33 不放 1.2m 挡墙，记 openings（jiuqu-bridge crossing）——否则桥梯被隐形墙封死。",
+  "spawns 六锚点按 layout.zones 多边形最近归属（六点均落 bazaar 多边形，含 fallback=最近多边形；契约合并各文件 spawns，归属只影响写入哪个文件）。y 运行时向下射线取地。",
+  "groundNodeRe 按分区给值（garden/pond 用冻结示例原文；bazaar/outer 同构换区名；temple 因模块节点无管道命名，用 ^temple-ground__ + 逐一列名的 *-body__worn-stone* 前缀）；extraGroundNodes 五区同用冻结示例三件套（jiuqu-bridge* 在 pond GLB 命中桥面板）。",
+  "浏览器物理不用渲染用 cm.glb：gltfpack -cc 同材质合并 + 网格改名 mesh_N，无法可靠对名。步行时按 zones-manifest 拉原始 zone-*.glb（约 42MB，本地一次性）用 glbReader 解析，与节点测试完全同路径。",
+  "新依赖链不 npm install：仓库根 node_modules 在迁移时被裁，@dimforge/rapier3d-compat@0.19.0 以符号链接指回参考仓同名包（node_modules 被 gitignore；/vendor/ 只读路由随链接可达）。"
+ ],
+ "partial": [
+  "园廊 3 条 + 复廊 + 听涛阁水廊（bld-553893874/428179906/428179920/428186469）无碰撞记录文件，本批未建碰撞（胶囊可穿过廊柱）——格式要求的『套件件用各自碰撞记录』在这些件上无源可引，留待补 collision.json。",
+  "pavilion-kit 记录里的 obb 型背栏带（每亭 3–5 条，p0/p1/width/thick 带 2.3m 径向容差）不能直译成薄盒，跳过并计数；开敞面已由 seat-*/post-* box 记录挡住。",
+  "树（tree-kit 46 棵）、摊位/长凳/檐棚（bazaar-stalls）、street-furniture 未建碰撞（步行可穿过；不在 GOAL 碰撞清单内）。",
+  "豫园门楼（gateAnchor garden-gate，inputs/yuyuan-gate-v2.glb）无碰撞 sidecar 且必须留通道，本批未建墙；假山 OBB 为粗代理盒（可挡人、不可攀爬细部）。",
+  "outer 分区仅建筑 footprint 薄墙 + 6 处水面挡墙（契约不检查 outer；路线 0 冲突已验证）。",
+  "机主亲手走一遍（决策 D8）与 WP12 性能实测属主控/机主后续动作，不在本工单内。"
+ ],
+ "blockers": [],
+ "verification": {
+  "rebuild": "OUT_DIR=out-zone PYTHONPATH=$PWD/.python-deps SITE_MODULES=1 STALL_KIT=1 GARDEN_KITS=1 SANSUITANG=1 ZONE_SPLIT=1 bash scripts/rebuild-review.sh → EXIT 0（管线内含 export-collision 与全部既有测试）",
+  "npmTest": "geo 101 / coverage-negative 4 / sansuitang 16 / rockery 28 / awning 49 全绿（重建日志内）",
+  "contract": "OUT_DIR=out-zone node tests/area-collision-contract.mjs → 1175 pass / 0 fail（实现前退出码 2；重建后产物复跑仍绿）",
+  "walkCheck": "BASE=http://127.0.0.1:5494/ node tests/zone-walk-check.mjs → allPass=true（5 路线，exit 0；未实现产物上以 ENOENT collision-garden.json 失败 exit 1，证明测试先于实现有效）",
+  "browser": "BASE=… QS='?zone=core&cam=oblique' SHOT=… node tests/zone-browser-check.mjs → EXIT 0，std255=54.5（默认轨道行为不变；重建后复跑）",
+  "browserWalkSmoke": "headless chromium ?walk=1&at=main：物理就绪（墙1216·地面34606三角）、脚点贴路面 y0.02 着地、WASD 前进、spawnAt('gold') 贴地 y0.04"
+ },
+ "visualVerdict": "默认斜俯瞰与改造前逐像素同机位无差（std255 54.5）；进入步行后眼高视角站在北门街道上，砖墙店面与街景比例正确，截图像真实第一人称街景而非俯瞰模型。"
+}

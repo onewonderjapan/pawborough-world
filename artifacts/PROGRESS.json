@@ -1,0 +1,14 @@
+{
+ "task": "wave1-walk-20260923 — 全域候选第一人称步行（WP4）",
+ "branch": "work/wave1-walk-20260923",
+ "base": "main @ 0d1ebd68",
+ "updatedAt": "2026-09-23T22:30:00+08:00",
+ "queue": [
+  { "step": "W1 碰撞导出", "status": "done", "commit": "bb324d16", "evidence": "area-collision-contract 1175 pass / 0 fail（实现前 exit 2）；export-collision.mjs 已挂入 rebuild-review.sh（WALK_COLLISION=0 跳过）" },
+  { "step": "W2 浏览器步行", "status": "done", "commit": "1e5864aa", "evidence": "?walk=1&at=<anchor> 直入步行、步行/轨道切换、回到锚点；zone-browser-check 默认轨道 EXIT 0（std255 54.5）；headless 步行冒烟着地/移动/锚点切换正常" },
+  { "step": "W3 机器人巡游", "status": "done", "commit": "835a01cb", "evidence": "npm run test:walk allPass=true（5 路线：终点误差 ≤0.9m、最大横向偏离 ≤0.8m、最低离地 ≥−0.005m、无 NaN、无穿墙）；WALK-CHECK.json + shots/×15；未实现产物上 exit 1（ENOENT collision-garden.json）" },
+  { "step": "公共验收", "status": "done", "evidence": "rebuild-review.sh EXIT 0（ZONE_SPLIT=1 全套，含 export-collision）；npm test geo101/coverage4/sansuitang16/rockery28/awning49 全绿；重建后产物复跑 contract / walk-check / browser-check 仍绿" },
+  { "step": "交付物", "status": "done", "evidence": "artifacts/walk/{RESULT.json, WALK-CHECK.json, shots/, before-orbit-default.png, after-walk-eye-main.png} + artifacts/NEW-ASSETS.json" }
+ ],
+ "resume": "全部队列项完成。若需续做：fallback/partial 清单见 artifacts/walk/RESULT.json 的 partial[]（园廊/树/摊位碰撞、pavilion obb 背栏带、门楼通道碰撞）。"
+}
