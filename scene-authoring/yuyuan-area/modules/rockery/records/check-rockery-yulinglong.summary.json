@@ -1,0 +1,258 @@
+{
+ "cluster": "rockery-yulinglong",
+ "glb": "out-rockery/rockery-yulinglong.glb",
+ "sha256": "2790c0147db0f852057fb2f53bd6295fba6945349755f668d0b86fb4ac98fcf4",
+ "bytes": 888020,
+ "meshObjects": [
+  "rockery-yulinglong"
+ ],
+ "imageCount": 2,
+ "triCount": 5972,
+ "vertexCount": 17914,
+ "boundsMap": {
+  "xMin": -92.2323,
+  "xMax": -83.7388,
+  "zMinMap": -131.1305,
+  "zMaxMap": -127.2079,
+  "yMin": -0.029,
+  "yMax": 4.8268
+ },
+ "outwardNormalRate": 0.8804,
+ "windingInconsistentFaces": 0,
+ "materials": [
+  {
+   "name": "rockery-moss",
+   "images": [],
+   "roughness": 0.95,
+   "baseColorLinked": false,
+   "normalLinkedViaNormalMap": false
+  },
+  {
+   "name": "rockery-stone",
+   "images": [
+    {
+     "image": "plaster-tint-7d8288",
+     "filepath": "",
+     "colorspace": "sRGB",
+     "packed": true,
+     "size": [
+      1024,
+      512
+     ]
+    },
+    {
+     "image": "PaintedPlaster017_2K-JPG_NormalGL_1K",
+     "filepath": "",
+     "colorspace": "Non-Color",
+     "packed": true,
+     "size": [
+      1024,
+      512
+     ]
+    }
+   ],
+   "roughness": 0.9,
+   "baseColorLinked": true,
+   "normalLinkedViaNormalMap": true,
+   "normalStrength": 0.6
+  }
+ ],
+ "holeRays": [
+  {
+   "holeIndex": 0,
+   "radiusM": 0.25,
+   "rayBoundM": 1.772,
+   "fwd": null,
+   "bwd": null
+  },
+  {
+   "holeIndex": 1,
+   "radiusM": 0.3,
+   "rayBoundM": 1.772,
+   "fwd": null,
+   "bwd": null
+  },
+  {
+   "holeIndex": 2,
+   "radiusM": 0.35,
+   "rayBoundM": 1.772,
+   "fwd": null,
+   "bwd": null
+  }
+ ],
+ "componentSignedVolumes": [
+  6.35,
+  6.41,
+  7.21,
+  7.37,
+  8.67
+ ],
+ "componentCount": 5,
+ "layoutPaths": [
+  {
+   "id": "path-gate-sansuitang",
+   "polyline": [
+    [
+     -155.13,
+     -160.29000000000002
+    ],
+    [
+     -156.88,
+     -161.69
+    ],
+    [
+     -157.93,
+     -163.09
+    ],
+    [
+     -162.48,
+     -180.94
+    ]
+   ]
+  },
+  {
+   "id": "gpath-0",
+   "polyline": [
+    [
+     -162.48,
+     -180.94
+    ],
+    [
+     -164.93,
+     -192.49
+    ]
+   ]
+  },
+  {
+   "id": "gpath-1",
+   "polyline": [
+    [
+     -164.93,
+     -192.49
+    ],
+    [
+     -124.68,
+     -201.59
+    ],
+    [
+     -105.78,
+     -220.14
+    ],
+    [
+     -106.13,
+     -222.24
+    ],
+    [
+     -118.03,
+     -239.39
+    ]
+   ]
+  },
+  {
+   "id": "gpath-2",
+   "polyline": [
+    [
+     -118.03,
+     -239.39
+    ],
+    [
+     -130.63,
+     -248.14
+    ],
+    [
+     -152.68,
+     -246.04
+    ]
+   ]
+  },
+  {
+   "id": "gpath-3",
+   "polyline": [
+    [
+     -152.68,
+     -246.04
+    ],
+    [
+     -129.93,
+     -248.14
+    ],
+    [
+     -110.68,
+     -245.34
+    ],
+    [
+     -102.28,
+     -234.14
+    ],
+    [
+     -99.83,
+     -230.29
+    ],
+    [
+     -89.33,
+     -223.99
+    ]
+   ]
+  },
+  {
+   "id": "gpath-4",
+   "polyline": [
+    [
+     -89.33,
+     -223.99
+    ],
+    [
+     -90.73,
+     -211.04
+    ]
+   ]
+  },
+  {
+   "id": "gpath-5",
+   "polyline": [
+    [
+     -90.73,
+     -211.04
+    ],
+    [
+     -95.63,
+     -207.54
+    ],
+    [
+     -97.38,
+     -193.19
+    ],
+    [
+     -97.73,
+     -152.94
+    ]
+   ]
+  },
+  {
+   "id": "gpath-6",
+   "polyline": [
+    [
+     -97.73,
+     -152.94
+    ],
+    [
+     -111.03,
+     -191.44
+    ]
+   ]
+  },
+  {
+   "id": "gpath-7",
+   "polyline": [
+    [
+     -111.03,
+     -191.44
+    ],
+    [
+     -118.73,
+     -143.49
+    ]
+   ]
+  }
+ ]
+}

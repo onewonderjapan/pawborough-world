@@ -1,0 +1,24 @@
+{
+ "glbs": {
+  "rockery-dajiashan": {
+   "path": "out-rockery/rockery-dajiashan.glb",
+   "sha256": "f17ba7ba8478c0991112e11089de873a237b658ddad597ef61ab6178f6da55fd",
+   "bytes": 2715644,
+   "validatorSha256": "f17ba7ba8478c0991112e11089de873a237b658ddad597ef61ab6178f6da55fd",
+   "validatorErrors": 0,
+   "validatorWarnings": 1,
+   "tris": 20480,
+   "shaMatch": true
+  },
+  "rockery-yulinglong": {
+   "path": "out-rockery/rockery-yulinglong.glb",
+   "sha256": "2790c0147db0f852057fb2f53bd6295fba6945349755f668d0b86fb4ac98fcf4",
+   "bytes": 888020,
+   "validatorSha256": "2790c0147db0f852057fb2f53bd6295fba6945349755f668d0b86fb4ac98fcf4",
+   "validatorErrors": 0,
+   "validatorWarnings": 1,
+   "tris": 5972,
+   "shaMatch": true
+  }
+ }
+}

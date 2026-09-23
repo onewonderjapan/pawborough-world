@@ -1,0 +1,159 @@
+{
+ "cluster": "rockery-dajiashan",
+ "holeRockSeed": null,
+ "rocks": [
+  {
+   "seed": 100,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": []
+  },
+  {
+   "seed": 102,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": []
+  },
+  {
+   "seed": 103,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": []
+  },
+  {
+   "seed": 104,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": []
+  },
+  {
+   "seed": 106,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": []
+  },
+  {
+   "seed": 109,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": []
+  },
+  {
+   "seed": 110,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": []
+  },
+  {
+   "seed": 111,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": []
+  },
+  {
+   "seed": 112,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": []
+  },
+  {
+   "seed": 113,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": []
+  },
+  {
+   "seed": 114,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": []
+  },
+  {
+   "seed": 115,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 4,
+   "hardClampedVerts": 3,
+   "holes": []
+  },
+  {
+   "seed": 116,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": []
+  },
+  {
+   "seed": 118,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": []
+  },
+  {
+   "seed": 120,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": []
+  },
+  {
+   "seed": 121,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": []
+  }
+ ],
+ "clampedTotal": 3,
+ "softFittedTotal": 4,
+ "tunnelDampedTotal": 0,
+ "trisAfterClean": 20480,
+ "budget": 25000,
+ "moss": {
+  "mossFaces": 2241,
+  "totalFaces": 20480,
+  "share": 0.1094,
+  "bandRequestedM": 0.3,
+  "bandEffectiveM": 0.3,
+  "shareCapped": false
+ },
+ "holes": [],
+ "glb": "out-rockery/rockery-dajiashan.glb",
+ "glbBytes": 2715644,
+ "boundsMap": {
+  "xMin": -174.744,
+  "xMax": -148.043,
+  "zMinMap": -244.076,
+  "zMaxMap": -223.237,
+  "yMin": -0.3,
+  "yMax": 7.518
+ },
+ "layoutHeight": 9.5
+}

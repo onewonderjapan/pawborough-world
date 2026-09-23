@@ -1,0 +1,136 @@
+{
+  "validatedAt": "2026-09-23T01:41:33.246Z",
+  "root": "/home/baibai/outbox/pawborough-w1-rockery-20260922/workspace/scene-authoring/yuyuan-area",
+  "results": [
+    {
+      "file": "out-rockery/rockery-yulinglong.glb",
+      "sha256": "2790c0147db0f852057fb2f53bd6295fba6945349755f668d0b86fb4ac98fcf4",
+      "bytes": 888020,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 1,
+      "infos": 3,
+      "errorCodes": [],
+      "warningCodes": [
+        "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE:/meshes/0/primitives/0/material"
+      ],
+      "infoCodes": [
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT"
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 885108
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/jpeg",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 512,
+              "format": "rgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/1",
+            "mimeType": "image/jpeg",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 512,
+              "format": "rgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 2,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 2,
+        "totalVertexCount": 17914,
+        "totalTriangleCount": 5972,
+        "maxUVs": 2,
+        "maxInfluences": 0,
+        "maxAttributes": 4
+      }
+    },
+    {
+      "file": "out-rockery/rockery-dajiashan.glb",
+      "sha256": "f17ba7ba8478c0991112e11089de873a237b658ddad597ef61ab6178f6da55fd",
+      "bytes": 2715644,
+      "validatorVersion": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 1,
+      "infos": 3,
+      "errorCodes": [],
+      "warningCodes": [
+        "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE:/meshes/0/primitives/0/material"
+      ],
+      "infoCodes": [
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT",
+        "UNUSED_OBJECT"
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.47",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 2712716
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/jpeg",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 512,
+              "format": "rgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/1",
+            "mimeType": "image/jpeg",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 512,
+              "format": "rgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 2,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 2,
+        "totalVertexCount": 61428,
+        "totalTriangleCount": 20480,
+        "maxUVs": 2,
+        "maxInfluences": 0,
+        "maxAttributes": 4
+      }
+    }
+  ],
+  "errorFiles": 0,
+  "verdict": "PASS"
+}

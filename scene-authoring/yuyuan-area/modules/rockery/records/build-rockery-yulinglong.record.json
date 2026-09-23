@@ -1,0 +1,155 @@
+{
+ "cluster": "rockery-yulinglong",
+ "holeRockSeed": 103,
+ "rocks": [
+  {
+   "seed": 100,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": []
+  },
+  {
+   "seed": 101,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": []
+  },
+  {
+   "seed": 102,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": []
+  },
+  {
+   "seed": 103,
+   "verts": 937,
+   "tunnelDampedVerts": 350,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": [
+    {
+     "radiusM": 0.25,
+     "centerMap": [
+      -87.8,
+      -128.34,
+      2.0034
+     ],
+     "axisMap": [
+      1.0,
+      -0.0,
+      0.0
+     ]
+    },
+    {
+     "radiusM": 0.3,
+     "centerMap": [
+      -87.8,
+      -128.34,
+      2.862
+     ],
+     "axisMap": [
+      0.0,
+      -1.0,
+      0.0
+     ]
+    },
+    {
+     "radiusM": 0.35,
+     "centerMap": [
+      -87.8,
+      -128.34,
+      1.431
+     ],
+     "axisMap": [
+      0.70014,
+      -0.70014,
+      0.140028
+     ]
+    }
+   ]
+  },
+  {
+   "seed": 104,
+   "verts": 642,
+   "tunnelDampedVerts": 0,
+   "softFittedVerts": 0,
+   "hardClampedVerts": 0,
+   "holes": []
+  }
+ ],
+ "clampedTotal": 0,
+ "softFittedTotal": 0,
+ "tunnelDampedTotal": 350,
+ "trisAfterClean": 6475,
+ "budget": 6000,
+ "decimateRatios": [
+  0.8525
+ ],
+ "trisAfterDecimate": 5972,
+ "moss": {
+  "mossFaces": 549,
+  "totalFaces": 5972,
+  "share": 0.0919,
+  "bandRequestedM": 0.3,
+  "bandEffectiveM": 0.3,
+  "shareCapped": false
+ },
+ "holes": [
+  {
+   "radiusM": 0.25,
+   "centerMap": [
+    -87.8,
+    -128.34,
+    2.0034
+   ],
+   "axisMap": [
+    1.0,
+    -0.0,
+    0.0
+   ]
+  },
+  {
+   "radiusM": 0.3,
+   "centerMap": [
+    -87.8,
+    -128.34,
+    2.862
+   ],
+   "axisMap": [
+    0.0,
+    -1.0,
+    0.0
+   ]
+  },
+  {
+   "radiusM": 0.35,
+   "centerMap": [
+    -87.8,
+    -128.34,
+    1.431
+   ],
+   "axisMap": [
+    0.70014,
+    -0.70014,
+    0.140028
+   ]
+  }
+ ],
+ "glb": "out-rockery/rockery-yulinglong.glb",
+ "glbBytes": 888020,
+ "boundsMap": {
+  "xMin": -92.232,
+  "xMax": -83.739,
+  "zMinMap": -131.131,
+  "zMaxMap": -127.208,
+  "yMin": -0.029,
+  "yMax": 4.827
+ },
+ "layoutHeight": 4.6
+}
