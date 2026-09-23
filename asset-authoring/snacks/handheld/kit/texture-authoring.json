@@ -1,13 +1,115 @@
 {
-  "textures": "analytic numpy/PIL food + paper surfaces; labels typeset Noto Serif CJK; R1: shengjian top = white dough f1e9dc + toasted sesame + scallion; scallion-pancake = 6 scorch spots + 2x scallion density; new fried-batter (golden base, dark bubble spots, bright rims, isotropic); bean atlas base 8a6a48, frost 35-55% in 0.8-2 mm soft patches, dark hilum band; bean wrinkle normal = fine short wrinkles 9-16/cm (node strength 0.35); no photo tracing",
+  "textures": "analytic numpy/PIL food + paper surfaces; labels typeset Noto Serif CJK; R2: bean atlas base 8a6a48 dominant (>= 55%), sugar frost 30-40% in 0.8-2 mm soft patches concentrated on the convex broad faces (convexRatio >= 2 vs rim equator); bean wrinkle normal = fine short wrinkles 9-16/cm (node strength 0.35); no photo tracing",
   "beanFrostCoverage": [
-    0.35,
-    0.39,
-    0.43,
-    0.47,
-    0.51,
-    0.55
+    0.315,
+    0.318,
+    0.32,
+    0.322,
+    0.325,
+    0.328
   ],
+  "beanAtlasMeasured": {
+    "atlas1024": [
+      {
+        "variant": 1,
+        "baseFrac": 0.5742,
+        "frostFrac": 0.3239,
+        "frostPolar": 0.3239,
+        "frostEquator": 0.0,
+        "convexRatio": null
+      },
+      {
+        "variant": 2,
+        "baseFrac": 0.5823,
+        "frostFrac": 0.327,
+        "frostPolar": 0.327,
+        "frostEquator": 0.0,
+        "convexRatio": null
+      },
+      {
+        "variant": 3,
+        "baseFrac": 0.5871,
+        "frostFrac": 0.3201,
+        "frostPolar": 0.5909,
+        "frostEquator": 0.0217,
+        "convexRatio": 27.19
+      },
+      {
+        "variant": 4,
+        "baseFrac": 0.577,
+        "frostFrac": 0.322,
+        "frostPolar": 0.5826,
+        "frostEquator": 0.0308,
+        "convexRatio": 18.95
+      },
+      {
+        "variant": 5,
+        "baseFrac": 0.5788,
+        "frostFrac": 0.3134,
+        "frostPolar": 0.3134,
+        "frostEquator": 0.0,
+        "convexRatio": null
+      },
+      {
+        "variant": 6,
+        "baseFrac": 0.5837,
+        "frostFrac": 0.3162,
+        "frostPolar": 0.3162,
+        "frostEquator": 0.0,
+        "convexRatio": null
+      }
+    ],
+    "atlas512": [
+      {
+        "variant": 1,
+        "baseFrac": 0.5676,
+        "frostFrac": 0.3158,
+        "frostPolar": 0.3158,
+        "frostEquator": 0.0,
+        "convexRatio": null
+      },
+      {
+        "variant": 2,
+        "baseFrac": 0.5764,
+        "frostFrac": 0.3192,
+        "frostPolar": 0.3192,
+        "frostEquator": 0.0,
+        "convexRatio": null
+      },
+      {
+        "variant": 3,
+        "baseFrac": 0.581,
+        "frostFrac": 0.3148,
+        "frostPolar": 0.5899,
+        "frostEquator": 0.0183,
+        "convexRatio": 32.32
+      },
+      {
+        "variant": 4,
+        "baseFrac": 0.5699,
+        "frostFrac": 0.316,
+        "frostPolar": 0.5816,
+        "frostEquator": 0.0273,
+        "convexRatio": 21.27
+      },
+      {
+        "variant": 5,
+        "baseFrac": 0.5717,
+        "frostFrac": 0.3085,
+        "frostPolar": 0.3085,
+        "frostEquator": 0.0,
+        "convexRatio": null
+      },
+      {
+        "variant": 6,
+        "baseFrac": 0.5773,
+        "frostFrac": 0.3094,
+        "frostPolar": 0.3094,
+        "frostEquator": 0.0,
+        "convexRatio": null
+      }
+    ]
+  },
   "beanWrinkleNormalStrengthNode": 0.35,
   "beanWrinkleCyclesPerCm": [
     9.0,

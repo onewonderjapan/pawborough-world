@@ -96,7 +96,8 @@ def main():
         report[id_] = {'ok': not diffs, 'diffs': diffs}
         bad = bad or bool(diffs)
         print('DIFF', id_, 'OK' if not diffs else diffs)
-    out = PKG / 'artifacts/r1/structure-diff.json'
+    out = Path(args[args.index('--out') + 1]) if '--out' in args \
+        else PKG / 'artifacts/r1/structure-diff.json'
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     if bad:

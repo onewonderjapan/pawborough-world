@@ -116,20 +116,21 @@ for i, (t, fg, bg) in enumerate(rows):
 atlas.save(OUT / 'labels-atlas.png')
 print('wrote labels-atlas.png')
 
-# ---- bean colour atlas 1024 (R1 #4): 2 cols x 3 rows, one cell per variant ----
-# R1 rule: skin base 8a6a48, sugar-frost patches 35-55% coverage at 0.8-2 mm with soft
-# edges, strong dark hilum band. Cell u spans one azimuth revolution (~58 mm -> 8.8 px/mm),
-# cell v spans pole-to-pole (~20 mm -> 17 px/mm); blob octaves sized to 0.8-2 mm.
+# ---- bean colour atlas 1024 (R2 #2): 2 cols x 3 rows, one cell per variant ----
+# R2 rule (lead re-review): skin base 8a6a48 dominates (>= 55% of the cell), sugar
+# frost covers 30-40% in 0.8-2 mm soft patches and CONCENTRATES on the convex broad
+# faces (cell v near 0/1 = the bean's flat faces), sparse on the rim/groove equator
+# - R1's uniform dusting read as a pale marbled chip at macro. Cell u spans one
+# azimuth revolution (~58 mm -> 8.8 px/mm), cell v spans pole-to-pole (~20 mm).
 SN = 1024
 cell = SN // 2
 aye, axx = np.mgrid[0:SN, 0:SN] / SN
-cu = (axx * 2) % 1.0            # u within cell (cell width = 0.5 in atlas u)
-cv = (aye * 3) % 1.0            # v within cell
 atlas_b = np.zeros((SN, SN, 3), np.float32)
-skin = np.array([138, 106, 72], np.float32)      # 8a6a48 (R1)
+skin = np.array([138, 106, 72], np.float32)      # 8a6a48
 frost = np.array([233, 226, 211], np.float32)    # e9e2d3
 hilum = np.array([42, 28, 20], np.float32)       # 2a1c14
-coverages = [0.35, 0.39, 0.43, 0.47, 0.51, 0.55]  # R1: 35-55%
+coverages = [0.315, 0.318, 0.32, 0.322, 0.325, 0.328]  # R2: measured frost 30-40%/variant
+_lum_w = np.array([.2126, .7152, .0722], np.float32)
 
 def _soft_blobs(rows, cols, seed):
     """blob field in [0,1]; cell u spans ~58 mm, cell v ~20 mm, so (rows, cols) sets the
@@ -161,21 +162,49 @@ for row in range(3):
         uu = ((axx[sel_u] - u0) * 2)
         vv = ((aye[sel_u] - v0) * 3)
         patch = np.tile(skin, (uu.size, 1))
-        patch *= (1 + rng.normal(0, .05, (uu.size, 1)))
-        # fine mottle: smooth interpolated noise (no blocky kron), pole-blended
+        patch *= (1 + rng.normal(0, .04, (uu.size, 1)))
+        # fine mottle: smooth interpolated noise, kept subtle so the base reads 8a6a48
         m1 = _pole_blend(_soft_blobs(30, 46, 400 + k))
-        patch *= (1 + m1[:uu.size][:, None] * .14)
-        # frost: two blob octaves -> 0.8-2 mm patches, smoothstep edge (soft border),
-        # pole-blended so the flat faces read as even dusting (no UV-pole rings)
-        b_coarse = _pole_blend(_soft_blobs(30, 56, 700 + k))   # ~2 mm patches
-        b_fine = _pole_blend(_soft_blobs(48, 90, 730 + k))     # ~1 mm patches
-        field = .55 * b_coarse[:uu.size] + .45 * b_fine[:uu.size]
-        thr = np.quantile(field, 1 - coverages[k] / .70)
-        fm = _softstep(field, thr, .045)
-        # frost favours the flattened faces (v away from equator 0.5); deterministic
-        # weighting keeps the coverage quantile calibration simple
-        edge_w = np.abs(vv - .5) * 2
-        fm *= (.55 + .45 * edge_w)
+        patch *= (1 + m1[:uu.size][:, None] * .10)
+        # frost R2: EXPLICIT soft blobs (0.8-2 mm) splatted in UV with polar weighting
+        # and u-wrap - a plain noise field bands into horizontal stripes at the UV
+        # poles. Intensity scale is bisected against the same luminance classifier the
+        # tests use, so the measured white share hits the per-variant target.
+        brs = np.random.default_rng(900 + k)
+        cand_v = brs.random(1600)
+        cand_u = brs.random(1600)
+        w_acc = 0.08 + 0.92 * _softstep(np.abs(cand_v - .5) * 2, 0.25, 0.55)
+        keep = brs.random(1600) < w_acc
+        bu, bv = cand_u[keep], cand_v[keep]
+        phi = bv * np.pi
+        rad_mm = brs.uniform(0.4, 1.0, bu.size)              # 0.8-2 mm patches
+        ru = np.clip(rad_mm / (58.0 * (np.sin(phi) + .15)), .004, .06)  # u shrink at poles
+        rv = rad_mm / 20.0                                   # cell v = ~20 mm
+        yy_c, xx_c = np.mgrid[0:cell, 0:cell] / cell
+        fm_raw = np.zeros((cell, cell), np.float32)
+        for uj, vj, rij, rji in zip(bu, bv, ru, rv):
+            du = np.abs(xx_c - uj)
+            du = np.minimum(du, 1 - du)                      # u wraps around the bean
+            dv = yy_c - vj
+            fm_raw += np.exp(-((du / rij) ** 2 + (dv / rji) ** 2) * 9.0).astype(np.float32)
+
+        def _frost_frac(s):
+            fmx = np.clip(s * fm_raw, 0, 1)[
+                np.clip((vv * (cell - 1)).astype(int), 0, cell - 1),
+                np.clip((uu * (cell - 1)).astype(int), 0, cell - 1)]
+            px = patch * (1 - fmx[:, None]) + (patch * .18 + frost * .82) * fmx[:, None]
+            return float((px @ _lum_w >= 185).mean())
+
+        lo_s, hi_s = 0.05, 6.0
+        for _ in range(18):
+            mid = (lo_s + hi_s) / 2
+            if _frost_frac(mid) > coverages[k]:
+                hi_s = mid
+            else:
+                lo_s = mid
+        fm = np.clip(((lo_s + hi_s) / 2) * fm_raw, 0, 1)[
+            np.clip((vv * (cell - 1)).astype(int), 0, cell - 1),
+            np.clip((uu * (cell - 1)).astype(int), 0, cell - 1)]
         patch = patch * (1 - fm[:, None]) + (patch * .18 + frost * .82) * fm[:, None]
         # hilum (R1 #4): thin dark line hugging the rim equator (v~.5, ~1.5 mm tall),
         # ~6 mm long at the groove azimuth (u .25 / .75)
@@ -186,9 +215,16 @@ for row in range(3):
         patch = patch * (1 - hm[:, None]) + (patch * .18 + hilum * .82) * hm[:, None]
         atlas_b[sel_u] = patch
 save('bean-colour-atlas.jpg', atlas_b, q=92)
+atlas_img = Image.open(OUT / 'bean-colour-atlas.jpg')
 Image.fromarray(np.uint8(np.clip(atlas_b, 0, 255))).resize((512, 512), Image.LANCZOS).save(
     OUT / 'bean-colour-atlas-512.jpg', quality=92)
+atlas512_img = Image.open(OUT / 'bean-colour-atlas-512.jpg')
+import bean_tex_stats
+_bean_stats_1024 = bean_tex_stats.measure(atlas_img)
+_bean_stats_512 = bean_tex_stats.measure(atlas512_img)
 print('wrote bean-colour-atlas-512.jpg')
+print('BEAN_ATLAS_1024', json.dumps(_bean_stats_1024))
+print('BEAN_ATLAS_512', json.dumps(_bean_stats_512))
 
 # ---- bean wrinkle normal 1024 (R1 #4): fine SHORT wrinkles >= 8/cm ------------
 # full-bean UV: u 0..1 = one azimuth revolution (~58 mm), so k cycles/rev = k/5.8 per cm.
@@ -214,12 +250,12 @@ save('bean-wrinkle-normal.jpg', normal * 255, q=95)
 
 (OUT.parent / 'texture-authoring.json').write_text(json.dumps({
     'textures': 'analytic numpy/PIL food + paper surfaces; labels typeset Noto Serif CJK; '
-                'R1: shengjian top = white dough f1e9dc + toasted sesame + scallion; '
-                'scallion-pancake = 6 scorch spots + 2x scallion density; new fried-batter '
-                '(golden base, dark bubble spots, bright rims, isotropic); bean atlas base '
-                '8a6a48, frost 35-55% in 0.8-2 mm soft patches, dark hilum band; bean wrinkle '
-                'normal = fine short wrinkles 9-16/cm (node strength 0.35); no photo tracing',
+                'R2: bean atlas base 8a6a48 dominant (>= 55%), sugar frost 30-40% in '
+                '0.8-2 mm soft patches concentrated on the convex broad faces '
+                '(convexRatio >= 2 vs rim equator); bean wrinkle normal = fine short '
+                'wrinkles 9-16/cm (node strength 0.35); no photo tracing',
     'beanFrostCoverage': coverages,
+    'beanAtlasMeasured': {'atlas1024': _bean_stats_1024, 'atlas512': _bean_stats_512},
     'beanWrinkleNormalStrengthNode': 0.35,
     'beanWrinkleCyclesPerCm': [9.0, 12.1, 15.9]}, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 print('TEXLIB_DONE')

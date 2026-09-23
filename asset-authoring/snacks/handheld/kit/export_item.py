@@ -169,6 +169,8 @@ def build_bean_set(id_):
     elif id_ == 'bean-jar':
         pl, n = build_bean.place_jar()
         info = {'expected': 260, 'got': n, 'placement': pl.pos}
+        if getattr(pl, 'stats', None):
+            info['stats'] = pl.stats
         for lod in range(3):
             ves = build_bean.build_jar_vessel(lod)
             if lod == 0:

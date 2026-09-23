@@ -147,12 +147,45 @@ def views_for(bounds_center, dim, view):
     return (cx + d * .65, cy - d * .65, cz + d * .5)  # three-quarter
 
 
+def surface_focus_point(obj, cam_pos, axis_pt):
+    """R2 #2: focus ON the bean surface facing the camera. Among the camera-facing
+    vertices, pick the one at the face's median depth near the view axis - the focal
+    plane then lies IN the face field (a single apex vertex leaves the face soft)."""
+    dg = bpy.context.evaluated_depsgraph_get()
+    me = obj.evaluated_get(dg).to_mesh()
+    mw = obj.matrix_world
+    nrm = mw.to_3x3().inverted().transposed()
+    cam = Vector(cam_pos)
+    axis = (Vector(axis_pt) - cam).normalized()
+    cand = []
+    for v in me.vertices:
+        p = mw @ v.co
+        n = (nrm @ v.normal).normalized()
+        to_cam = cam - p
+        d = to_cam.length
+        if d < 1e-6:
+            continue
+        facing = to_cam.normalized().dot(n)
+        if facing < 0.35:
+            continue
+        off = (p - cam).cross(axis).length
+        cand.append(((cam - p).length, facing, off, p.copy()))
+    obj.evaluated_get(dg).to_mesh_clear()
+    if not cand:
+        return Vector(axis_pt)
+    med = sorted(c[0] for c in cand)[len(cand) // 2]
+    best = min(cand, key=lambda t: abs(t[0] - med) + 0.3 * t[2] - 0.004 * t[1])
+    return best[3]
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--ids', required=True)
     ap.add_argument('--no-sheet', action='store_true')
     ap.add_argument('--no-macro', action='store_true')
     ap.add_argument('--views', default=None, help='comma list restricting sheet views')
+    ap.add_argument('--legacy-macro', action='store_true',
+                    help='R1 macro behaviour (f/2.8 at socket_grip) for before frames')
     ap.add_argument('--props', default=None, help='GLB source dir (default $SNACKS_PROPS or WS/props)')
     ap.add_argument('--rend', default=None, help='renders output dir (default $SNACKS_REND or WS/renders)')
     ap.add_argument('--lid-off', dest='lid_off', action='store_true', default=True,
@@ -236,8 +269,18 @@ def main():
                 sd = Vector((1, 0, 0))
             sd.normalize()
             pos = Vector((cen.x, cen.y, cen.z)) + sd * d + Vector((0, 0, .35 * d))
-            cam = add_camera(sc, 'cam-macro', pos, sock_pos, fov=35,
-                             dof_mm=2.8, focus=(Vector(sock_pos) - pos).length)
+            focus_pt, fstop = sock_pos, 2.8
+            # R2 #2: bean items focus ON the camera-facing bean surface at f/4 (the R1
+            # socket focus at f/2.8 left the whole bean soft at macro distance)
+            if id_ in ('bean-single', 'bean-dish', 'bean-jar', 'bean-packet-open') \
+                    and not args.legacy_macro:
+                lod0 = next((o for o in imported
+                             if o.type == 'MESH' and o.name == '%s_LOD0' % id_), None)
+                if lod0 is not None:
+                    focus_pt = surface_focus_point(lod0, pos, sock_pos)
+                    fstop = 4.0
+            cam = add_camera(sc, 'cam-macro', pos, focus_pt, fov=35,
+                             dof_mm=fstop, focus=(Vector(focus_pt) - pos).length)
             sc.camera = cam
             f = out / ('%s-macro.jpg' % id_)
             secs = render(sc, f, mac['size'][0], mac['size'][1], mac['spp'])
