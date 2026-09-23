@@ -1,0 +1,36 @@
+{
+ "triangles": 22114,
+ "materials": [
+  {
+   "material": "sst-lattice-core",
+   "inputs": [
+    "Base Color"
+   ],
+   "colorspace": [
+    "sRGB"
+   ]
+  },
+  {
+   "material": "sst-roof-tile",
+   "inputs": [
+    "Base Color"
+   ],
+   "colorspace": [
+    "sRGB"
+   ]
+  }
+ ],
+ "issues": [],
+ "boundsYup": {
+  "min": [
+   -9.85,
+   -8.93,
+   0.0
+  ],
+  "max": [
+   9.85,
+   8.4,
+   10.45
+  ]
+ }
+}

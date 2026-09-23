@@ -1,5 +1,5 @@
 {
- "note": "GLBs staged into out-garden-kits/ from lead-reviewed deliveries (2026-09-23); assemble.py GARDEN_KITS=1 reads them. Pavilion positions are recomputed from the frozen layout (footprint centroid + facade.dir), NOT from modules/pavilion-kit placements.json, which is off by 40-96 m.",
+ "note": "GLBs staged into out-garden-kits/ from lead-reviewed deliveries (2026-09-23); assemble.py GARDEN_KITS=1 reads them. Pavilion positions are recomputed from the frozen layout (footprint centroid + facade.dir), NOT from modules/pavilion-kit placements.json, which is off by 40-96 m. sansuitang-bld-428179901: T2 refined module (2026-09-23), placed from footprint centroid + facade.dir (same rule as pavilions).",
  "excluded": {},
  "files": {
   "corridor-bld-553893874.glb": "91d3309854d5cdf94ee01b4a6ca013a3606d14de7d2428b76046dc6f22904e2b",
@@ -16,7 +16,8 @@
   "tk-willow-large.glb": "e73d5a888c9d5804a6b90fef013c9fd29c7fcf46ba9cd4781ab28a7c56da7b09",
   "tk-willow-small.glb": "21bc1a0c5be8f0a8dcc1e0e1260dddb8198b167a173b811989043a70bc4653d4",
   "waterside-gallery-bld-428179920.glb": "e179960ae98720d529d5c0f8eed8f5022665199a6fbf86087b8717429a611118",
-  "double-corridor-bld-428186469.glb": "dd3203db841184832be1236796e900c9a0b20a09976f5df4097b0eb0ae137794"
+  "double-corridor-bld-428186469.glb": "dd3203db841184832be1236796e900c9a0b20a09976f5df4097b0eb0ae137794",
+  "sansuitang-bld-428179901/model.glb": "5a903f2e19308d167b2fd86987c2527235ff10a64d8246d5ab0eb239d3e48804"
  },
  "leadBuilt": {
   "double-corridor-bld-428186469.glb": "modules/double-corridor/build_double_corridor.py (lead, 2026-09-23)"

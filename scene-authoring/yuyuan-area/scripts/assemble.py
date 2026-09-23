@@ -251,6 +251,43 @@ if os.environ.get('STALL_KIT') == '1':
         stall_placed += 1
     print('stall kit placed', stall_placed)
 
+# ---------- 三穗堂实例模块（SANSUITANG=1：modules/sansuitang 细化件替代程序化 hall bld-428179901） ----------
+# 位置 = footprint 形心（顶点均值，与 pavilion 同式），rotY = atan2(facade.dir.x, facade.dir.z)。
+# 模块原点已重锚到台基外包平面中心（modules/sansuitang/README.md），故锚点即放在形心；
+# collision.json（实例坐标）同步变换出世界记录写 OUT，供后续物理对账。
+sst_placed = 0
+if os.environ.get('SANSUITANG') == '1':
+    lay_obj = {o['id']: o for o in LAYOUT['objects']}
+    o = lay_obj['bld-428179901']
+    fp = o['geometry']['footprint'][:-1] if o['geometry']['footprint'][0] == o['geometry']['footprint'][-1] else o['geometry']['footprint']
+    cx = sum(q[0] for q in fp) / len(fp); cz = sum(q[1] for q in fp) / len(fp)
+    d = o['facade']['dir']
+    rot_y = math.atan2(d[0], d[1])
+    SST_DIR = os.path.join(ROOT, os.environ.get('SANSUITANG_DIR', 'out-garden-kits/sansuitang-bld-428179901'))
+    sst_objs = import_glb(os.path.join(SST_DIR, 'model.glb'), 'MODLIB')
+    for oo in sst_objs:
+        oo.hide_render = True
+        oo.hide_viewport = True
+    place(sst_objs, {'id': 'bld-428179901', 'module': 'sansuitang', 'zone': 'garden', 'lod': 'L2',
+                     'position': [cx, cz], 'rotY': rot_y})
+    sst_placed += 1
+    coll_path = os.path.join(SST_DIR, 'collision.json')
+    if os.path.exists(coll_path):
+        cc = json.load(open(coll_path, encoding='utf-8'))
+        ct, st = math.cos(rot_y), math.sin(rot_y)
+        world_boxes = []
+        for b in cc.get('colliders', []):
+            lx, ly, lz = b['center']
+            wx = cx + lx * ct + lz * st      # 地图系：local(x,z) -> world(x,z)
+            wz = cz - lx * st + lz * ct
+            world_boxes.append({'name': b['name'], 'center': [round(wx, 3), round(ly, 3), round(wz, 3)],
+                                'size': b['size'], 'type': b.get('type', 'box'), 'rotY': round(rot_y, 6)})
+        json.dump({'source': 'modules/sansuitang/collision.json (instance space)', 'instance': {'id': 'bld-428179901',
+                   'position': [round(cx, 3), round(cz, 3)], 'rotY': round(rot_y, 6)}, 'colliders': world_boxes},
+                  open(os.path.join(OUT, 'sansuitang-collision-world.json'), 'w'), ensure_ascii=False, indent=1)
+        print('sansuitang collision world boxes:', len(world_boxes))
+    print('sansuitang placed', sst_placed)
+
 # MODLIB 收藏不导出
 modlib = bpy.data.collections.get('MODLIB')
 
@@ -328,6 +365,7 @@ stats = {
     'sceneObjects': len(all_objs),
     'siteModules': site_imported,
     'stallKitPlaced': stall_placed,
+    'sansuitangPlaced': sst_placed,
     'gardenKitPlaced': garden_kit_placed,
 }
 json.dump(stats, open(os.path.join(OUT, 'assemble-stats.json'), 'w'), indent=1)

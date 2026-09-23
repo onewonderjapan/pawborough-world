@@ -45,6 +45,9 @@ const STALL_KIT_KINDS = new Set(['stall', 'bench']);
 const GARDEN_KITS = process.env.GARDEN_KITS === '1';
 const GARDEN_KIT_IDS = new Set(['bld-428179924', 'bld-428186467', 'bld-428196085', 'bld-428196091', 'bld-428196098',
   'bld-553893874', 'bld-428179906', 'bld-428179920', 'bld-428186469']);
+// SANSUITANG=1：三穗堂 bld-428179901 由 modules/sansuitang 细化实例模块承担（assemble 按 footprint 形心放置），占位不再程序化生成。
+const SANSUITANG = process.env.SANSUITANG === '1';
+const SANSUITANG_IDS = new Set(['bld-428179901']);
 const layout = JSON.parse(fs.readFileSync(path.join(OUT, 'layout.json'), 'utf8'));
 
 // ---------- 统一材质：合并几何 + 顶点色 ----------
@@ -864,6 +867,7 @@ for (const o of layout.objects) {
   if (SITE_MODULES && SITE_MODULE_KINDS.has(o.kind)) { deferred.push({ id: o.id, kind: o.kind, why: 'site-module' }); continue; }
   if (STALL_KIT && STALL_KIT_KINDS.has(o.kind)) { deferred.push({ id: o.id, kind: o.kind, why: 'stall-kit' }); continue; }
   if (GARDEN_KITS && (GARDEN_KIT_IDS.has(o.id) || (o.kind === 'tree' && o.zone === 'garden'))) { deferred.push({ id: o.id, kind: o.kind, why: 'garden-kit' }); continue; }
+  if (SANSUITANG && SANSUITANG_IDS.has(o.id)) { deferred.push({ id: o.id, kind: o.kind, why: 'sansuitang-module' }); continue; }
   const ud = { id: o.id, zone: o.zone, kind: o.kind, lod: o.lod };
   if (o.name) ud.name = o.name;
   if (o.trade) ud.trade = o.trade;
