@@ -1,9 +1,9 @@
 {
   "moduleId": "shop-07-tangtuan",
-  "triangles": 5888,
+  "triangles": 6256,
   "meshes": 47,
-  "fileBytes": 1430092,
-  "sha256": "33e5bae5d90edfa4b11b468a6bac8dc2c14021bda5d4f0970efccfdb12eab308",
+  "fileBytes": 1456892,
+  "sha256": "27a6f031e81993e90caa7f318f64d6d5880babfe46e84d599026329354471d4f",
   "design": {
     "specId": "shop-07-tangtuan",
     "name": "汤团店（两开间，商街 N1）",
@@ -84,6 +84,16 @@
   },
   "assertions": [
     {
+      "assert": "gable-left-shares-wall-top",
+      "ok": true,
+      "detail": "baseY=6.3000 eave=6.3000 overlap=0.0000 z=[-6.4000,-0.0000] wallZ=[-6.4000,0]"
+    },
+    {
+      "assert": "gable-right-shares-wall-top",
+      "ok": true,
+      "detail": "baseY=6.3000 eave=6.3000 overlap=0.0000 z=[-6.4000,-0.0000] wallZ=[-6.4000,0]"
+    },
+    {
       "assert": "glb-bounds-x",
       "ok": true,
       "detail": "x [-3.000, 3.000] vs ±3.000"
@@ -111,7 +121,7 @@
     {
       "assert": "sign-glyphs-mesh",
       "ok": true,
-      "detail": "4 glyph meshes for 4 chars"
+      "detail": "4 glyph meshes, expected 4"
     }
   ],
   "units": "meters",

@@ -1,11 +1,11 @@
 {
-  "validatedAt": "2026-09-23T05:22:29.994Z",
+  "validatedAt": "2026-09-23T09:46:01.585Z",
   "root": "/home/baibai/outbox/pawborough-w1-shops-n1n2n3-20260923/workspace/out/shop-08-beans",
   "results": [
     {
       "file": "model.glb",
-      "sha256": "0c672e984cff83d8d7450adec5597502eacd19acefae39f34e45f8729e9293fe",
-      "bytes": 2221712,
+      "sha256": "707a5923526795afa12f310d057435cd87a056615478e43b9d4f8e92b8336bc0",
+      "bytes": 2222252,
       "validatorVersion": "2.0.0-dev.3.10",
       "errors": 0,
       "warnings": 0,
@@ -28,7 +28,7 @@
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 2163412
+            "byteLength": 2163988
           },
           {
             "pointer": "/images/0",
@@ -170,7 +170,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 55,
-        "totalVertexCount": 25977,
+        "totalVertexCount": 25989,
         "totalTriangleCount": 12374,
         "maxUVs": 1,
         "maxInfluences": 0,

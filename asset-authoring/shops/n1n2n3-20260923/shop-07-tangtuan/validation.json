@@ -1,11 +1,11 @@
 {
-  "validatedAt": "2026-09-23T05:12:22.762Z",
+  "validatedAt": "2026-09-23T09:46:01.519Z",
   "root": "/home/baibai/outbox/pawborough-w1-shops-n1n2n3-20260923/workspace/out/shop-07-tangtuan",
   "results": [
     {
       "file": "model.glb",
-      "sha256": "33e5bae5d90edfa4b11b468a6bac8dc2c14021bda5d4f0970efccfdb12eab308",
-      "bytes": 1430092,
+      "sha256": "27a6f031e81993e90caa7f318f64d6d5880babfe46e84d599026329354471d4f",
+      "bytes": 1456892,
       "validatorVersion": "2.0.0-dev.3.10",
       "errors": 0,
       "warnings": 0,
@@ -28,7 +28,7 @@
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 1382708
+            "byteLength": 1409540
           },
           {
             "pointer": "/images/0",
@@ -148,8 +148,8 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 47,
-        "totalVertexCount": 12081,
-        "totalTriangleCount": 5888,
+        "totalVertexCount": 12594,
+        "totalTriangleCount": 6256,
         "maxUVs": 1,
         "maxInfluences": 0,
         "maxAttributes": 4

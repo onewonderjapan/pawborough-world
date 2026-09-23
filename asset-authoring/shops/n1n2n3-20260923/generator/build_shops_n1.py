@@ -302,12 +302,38 @@ def verge_verts(xc, z_a, z_b):
     return verts, faces
 
 
+def assert_gable_shares_wall_top():
+    """Outer-face base of each gable triangle sits on y=EAVE across the full side wall."""
+    import bpy
+    for side in ('left', 'right'):
+        outer = WALLS[side]['outer']
+        objs = [o for o in bpy.context.scene.objects
+                if o.type == 'MESH' and o.name.startswith(f'gable-triangle-{side}')]
+        base = []
+        for o in objs:
+            for v in o.data.vertices:
+                p = blender_to_glb(o.matrix_world @ v.co)
+                if abs(p[0] - outer) < 1e-4:
+                    base.append(p)
+        ys = [p[1] for p in base]
+        zs = [p[2] for p in base]
+        ymin = min(ys)
+        z0, z1 = min(zs), max(zs)
+        L.assert_true(
+            f'gable-{side}-shares-wall-top',
+            abs(ymin - EAVE) < 1e-4 and abs(z0 - (-DEPTH)) < 1e-4 and abs(z1 - 0.0) < 1e-4
+            and all(y >= EAVE - 1e-4 for y in ys),
+            f'baseY={ymin:.4f} eave={EAVE:.4f} overlap={ymin - EAVE:.4f} z=[{z0:.4f},{z1:.4f}] wallZ=[{-DEPTH:.4f},0]',
+        )
+
+
 def build_gable(side):
     wall = WALLS[side]
     outer = wall['outer']
     xin0 = outer + wall['in'] * T
     L.GROUP = f'gable-{side}'
-    prof = [(-0.06, EAVE - 0.02), (-DEPTH / 2, RIDGE - 0.16), (-DEPTH + 0.06, EAVE - 0.02)]
+    # Share the side-wall top edge. See build_shophouse.build_gable.
+    prof = [(0.0, EAVE), (-DEPTH / 2, RIDGE - 0.16), (-DEPTH, EAVE)]
     x0, x1 = sorted((outer, xin0))
     L.mesh(f'gable-triangle-{side}', extrude_verts(prof, x0, x1), extrude_faces(len(prof)), 'plaster')
     xvc = outer - wall['in'] * 0.11
@@ -603,6 +629,7 @@ def main():
         corner_pier()
     build_gable('left')
     build_gable('right')
+    assert_gable_shares_wall_top()
     build_roof()
     # 道具 / 实例 / 招牌（柜台与柜内 staging 在前，实例在后，最后招牌）
     for p in R.get('props', []):
