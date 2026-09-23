@@ -6,7 +6,7 @@
     "objectPrefix": "objects/sha256/",
     "snapshotKey": "snapshots/owner/reorganization-20260922-202629/MIGRATION-MANIFEST.json"
   },
-  "uniqueBytes": 389840475,
+  "uniqueBytes": 389905121,
   "files": [
     {
       "path": "scene-authoring/yuyuan-area/baseline/scene-areas.glb",
@@ -2071,6 +2071,42 @@
       "sha256": "78cb4944e962a2838f1696f7017273f222abf5c5875e57430786a1a8aaef6438",
       "bytes": 257124,
       "sourcePackage": "pawborough-yuyuan-garden-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/garden-kit-catalog.json",
+      "sha256": "4954d1cfdf786fd35fa2b4925fd86891b39028b6683925e9f5ec4ae2f3a320e2",
+      "bytes": 5596,
+      "sourcePackage": "pawborough-yuyuan-garden-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/garden-kit-collision.json",
+      "sha256": "757016dd542393f0adba515621a3896b9a614ea6518214ef981c5c1b9e906c02",
+      "bytes": 23138,
+      "sourcePackage": "pawborough-yuyuan-garden-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/garden-kit-reimport.json",
+      "sha256": "69982fc533c9ea5640a2335027210e10e34121f2d8256f7b21f665f56e514e3a",
+      "bytes": 1995,
+      "sourcePackage": "pawborough-yuyuan-garden-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/site-inputs.json",
+      "sha256": "7bdb8bcf5eae7082b055888a2a2133179d6e9c481d805156fe0da8c5a61de26c",
+      "bytes": 16191,
+      "sourcePackage": "pawborough-yuyuan-garden-kit-r1-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/sansuitang-bld-428179901/collision.json",
+      "sha256": "00a91a69f48303cbdbadb4f23172a78aab58296770cb06e8c49869e6038c5277",
+      "bytes": 15842,
+      "sourcePackage": "pawborough-goal-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/sansuitang-bld-428179901/recipe.json",
+      "sha256": "07135bebd11b4989800ead4b65e711943d2b103eaa9cb41b470ebf2aba759ff6",
+      "bytes": 1884,
+      "sourcePackage": "pawborough-goal-20260923"
     }
   ],
   "state": "uploaded_checksum_verified",
@@ -2080,6 +2116,7 @@
     "docs/migrations/20260922/CLOUD-RECEIPT.json",
     "docs/migrations/20260923/CLOUD-RECEIPT.json",
     "docs/migrations/20260923/CLOUD-RECEIPT-wave0.json",
-    "docs/migrations/20260923/CLOUD-RECEIPT-r3.json"
+    "docs/migrations/20260923/CLOUD-RECEIPT-r3.json",
+    "docs/migrations/20260923/CLOUD-RECEIPT-sidecars.json"
   ]
 }
