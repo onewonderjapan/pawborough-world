@@ -11,7 +11,7 @@
     "新增测试的「先在未修改产物上跑一次证明会失败」：fangbang-test 在无 fangbang 产物的 OUT_DIR 上以退出码 2 报 NOT BUILT（设计即失败路径），已在 out-zone-standard 上复现"
   ],
   "blockers": [],
-  "commits": ["<F2-COMMIT>"],
+  "commits": ["98416134"],
   "numbers": {
     "leadDecisions": {
       "1_sealWallAndWestShops": "westext-seal-wall 剔除（方浜中路向西延续为外围 L0）；168/170/171 逐件与 layout 实体 footprint 多边形 + v7 庙轴碰撞盒（=全域庙区包围盒）对账：168/170 零相交保留，171 与 bazaarBlock bld-165791764 相交（corner-in-poly）剔除；判定在 assemble.py 程序化执行，逐件记录在 out-zone/assemble-stats.json fangbangExcluded",

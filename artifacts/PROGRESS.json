@@ -13,7 +13,7 @@
       "status": "done",
       "summary": "按放行口径接入第五分区 fangbang（FANGBANG=1 默认关）：剔除封墙与 171（与 bld-165791764 相交）、保留 168/170、南断带补 4 件（北断带为安仁街路口保留）、街缝碰撞以街段为准去重 7 条、山门缝庙区为准去重 1 条、路线山门接点 0.00m；6 分件 ≤12MB validator 0 错；fangbang-test 18/18、默认管线全绿（zone-split 59/garden-kit 44 基线复现）、浏览器 ?zone=core 含 fangbang 全加载 EXIT 0；before/after 6 机位出图",
       "artifacts": ["artifacts/f2-integrate/RESULT.json", "artifacts/f2-integrate/{before,after}-eye-*.png", "artifacts/f2-integrate/browser-zone-*.png", "artifacts/NEW-ASSETS.json", "collision/route/infill 产物在 out-zone（构建再生成）"],
-      "commits": ["<F2-COMMIT>"],
+      "commits": ["98416134"],
       "deviationsForLead": [
         "北断带 0 件：安仁街汇入 + 余量 < 最小模块 AABB，见 RESULT partial",
         "南断带节奏 6.2/7.5m 两档（模块只有这两档窄门面）",
