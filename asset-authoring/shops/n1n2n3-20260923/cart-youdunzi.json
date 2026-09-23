@@ -1,5 +1,21 @@
 {
   "id": "cart-youdunzi",
   "name": "油墩子推车（煤炉+油锅）（商街 N3，1990s 摊车）",
-  "features": ["原点=地面中心，+Z 朝顾客", "食品复用手持库 youdunzi.glb 实例"]
+  "features": [
+    "原点=地面中心，+Z 朝顾客",
+    "食品复用手持库 youdunzi.glb 实例",
+    "煤炉上厚壁铁油锅，油面深琥珀 BLEND",
+    "两轮在顾客端、两支腿在把手端"
+  ],
+  "dimensionsM": {
+    "bodyLength": 1.15,
+    "bodyWidth": 0.60,
+    "bodyHeight": 0.82,
+    "wheelDiameter": 0.48,
+    "stoveDiameter": 0.34,
+    "stoveHeight": 0.32,
+    "potDiameter": 0.48,
+    "potDepth": 0.12,
+    "axis": "bodyLength=X 左右，bodyWidth=Z 前后，bodyHeight=台面高；炉高从台面起算到炉沿"
+  }
 }

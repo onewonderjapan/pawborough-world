@@ -1,33 +1,91 @@
 {
   "moduleId": "cart-youdunzi",
-  "triangles": 2978,
-  "meshes": 8,
-  "fileBytes": 847292,
-  "sha256": "2055c1f5295b2a04d5eb91346680c0b36c3ff29bbb4c61fed4497096b6cc864d",
+  "triangles": 3824,
+  "meshes": 14,
+  "fileBytes": 919864,
+  "sha256": "90ad60d1fc9054bfdfa58c745818e121670f7f9cf1ece0956d0b93a738f02268",
   "design": {
     "specId": "cart-youdunzi",
     "name": "油墩子推车（煤炉+油锅）（商街 N3，1990s 摊车）",
     "frontageM": 1.25,
-    "depthM": 1.049,
-    "ridgeM": 1.28,
+    "depthM": 1.099,
+    "ridgeM": 1.279,
     "family": "1990s street vending cart prop, asset-only",
     "designInference": true,
     "notHistoricalReconstruction": true,
     "axis": "glTF Y-up, origin = ground centre, +Z faces the customer",
     "features": [
       "原点=地面中心，+Z 朝顾客",
-      "食品复用手持库 youdunzi.glb 实例"
+      "食品复用手持库 youdunzi.glb 实例",
+      "煤炉上厚壁铁油锅，油面深琥珀 BLEND",
+      "两轮在顾客端、两支腿在把手端"
     ],
     "instances": null,
     "foodSource": "handheld library (reviewed R1/R2), linked instances, non-matching LODs dropped",
     "generator": "generator/build_carts_n3.py",
-    "recipe": "cart-youdunzi.json"
+    "recipe": "cart-youdunzi.json",
+    "dimensionsM": {
+      "bodyLength": 1.15,
+      "bodyWidth": 0.6,
+      "bodyHeight": 0.82,
+      "wheelDiameter": 0.48,
+      "stoveDiameter": 0.34,
+      "stoveHeight": 0.32,
+      "potDiameter": 0.48,
+      "potDepth": 0.12,
+      "axis": "bodyLength=X 左右，bodyWidth=Z 前后，bodyHeight=台面高；炉高从台面起算到炉沿"
+    }
   },
   "assertions": [
+    {
+      "assert": "wheel-leg-bbox-disjoint",
+      "ok": true,
+      "detail": "wheels=4 legs=2 overlaps=0 minGapM=0.135"
+    },
+    {
+      "assert": "pot-diameter",
+      "ok": true,
+      "detail": "diameter=0.480 depth=0.120 wall=0.014"
+    },
+    {
+      "assert": "batter-bucket-diameter",
+      "ok": true,
+      "detail": "diameter=0.250"
+    },
+    {
+      "assert": "mold-0",
+      "ok": true,
+      "detail": "bowlZ=0.160 handleEndZ=-0.190 diameter=0.090"
+    },
+    {
+      "assert": "mold-1",
+      "ok": true,
+      "detail": "bowlZ=0.160 handleEndZ=-0.190 diameter=0.090"
+    },
     {
       "assert": "food-youdunzi.glb",
       "ok": true,
       "detail": "4/4"
+    },
+    {
+      "assert": "youdunzi-in-oil",
+      "ok": true,
+      "detail": "at=[-0.15000000000000002, 1.2309999999999999, -0.06] oilY=1.248 innerR=0.226"
+    },
+    {
+      "assert": "youdunzi-in-oil",
+      "ok": true,
+      "detail": "at=[-0.05, 1.2309999999999999, 0.06] oilY=1.248 innerR=0.226"
+    },
+    {
+      "assert": "youdunzi-on-rack",
+      "ok": true,
+      "detail": "at=[0.24, 1.2559999999999998, -0.055] rackY=1.256"
+    },
+    {
+      "assert": "youdunzi-on-rack",
+      "ok": true,
+      "detail": "at=[0.3, 1.2559999999999998, 0.055] rackY=1.256"
     },
     {
       "assert": "origin-ground-centre",
@@ -37,7 +95,7 @@
     {
       "assert": "glb-bounds",
       "ok": true,
-      "detail": "y-max 1.280, z [-0.659, 0.390]"
+      "detail": "y-max 1.279, z [-0.659, 0.440]"
     }
   ],
   "units": "meters",
