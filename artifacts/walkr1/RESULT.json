@@ -7,11 +7,11 @@
  "branch": "work/wave1-walkr1-20260923（起点 main @ 09d11cdd）",
  "commits": [
   {
-   "sha": "SEE-GIT-LOG",
+   "sha": "1e7e4093",
    "what": "K1 scripts/export-collision.mjs：新增第 9–13 段 —— corridor-kit 三廊（柱/美人靠/端亭 massing，逐根柱经 out-garden-kits GLB 几何确认后才出盒）、复廊 bld-428186469（记录 sha256 对部署 GLB 校验；柱/栏杆首末跨留空/中墙，GLB 确认过滤后 6 柱）、门楼 garden-gate（gate-wall 网格两面 Pier，门洞净宽 3.26 m ≥ 2.2 m）、garden 46 棵树干 0.4×2.0×0.4、bazaar 51 件摊/凳 GLB 包围盒；栏/墙段与商业路线或园路相交时不建并记 openings（本次实测 0 处相交，openings 与上一版一致）。新增 tests/corridor-gate-collision-test.mjs（先在上一版产物上跑：7 pass / 20 fail，exit 1，证明先于实现有效；实现后 29 pass / 0 fail）"
   },
   {
-   "sha": "SEE-GIT-LOG",
+   "sha": "38a512bf",
    "what": "K2 tests/zone-walk-check.mjs：中点改按路线长度（累计弧长 ≥ 半长触发，眼位=路线中点地面+1.6m）、朝向=该处路线切线（yaw=atan2(-tx,-tz)）；并修复截图朝向被覆盖的根因 —— 预览页轨道模式每帧 controls.update() 强制 camera.lookAt(controls.target)，旧 eyeView 只设位置/四元数、yaw 从未生效（旧中点图对墙的真正机制），改用页面既有 __viewAt(p,t) 钩子以 target=眼位+前向25m 落朝向，起点/中点/终点 15 张全部按步行方向取景"
   }
  ],
