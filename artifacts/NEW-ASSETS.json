@@ -1,0 +1,31 @@
+{
+ "task": "wave1-walk-20260923",
+ "note": "管线可再生的碰撞导出（rebuild-review.sh 内 export-collision.mjs 生成，OUT_DIR 决定目录）；无新 GLB/贴图。",
+ "files": [
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/collision-garden.json",
+   "sha256": "b17fd4fc3245187f73f4e13c3e13dbed40e3355d9d429fb48645eb55c45585ff",
+   "bytes": 182736
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/collision-pond.json",
+   "sha256": "eab6e13cdf41e0e016061825b1da84c3dee1fe8e476192be71d44d67528b838f",
+   "bytes": 1877
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/collision-temple.json",
+   "sha256": "b8d057ad406b39a19b9a08114572540fdeb8372b341552e0ac9b267dc7d01ad1",
+   "bytes": 86475
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/collision-bazaar.json",
+   "sha256": "6709856cd3e18b22992752cfb508f04b04dd3c3cf2796c338d93519096a3a51e",
+   "bytes": 54940
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/collision-outer.json",
+   "sha256": "72616b8b8e9cf15010877d588de6346570a536011342cd5cf07ff90288b2a869",
+   "bytes": 54132
+  }
+ ]
+}

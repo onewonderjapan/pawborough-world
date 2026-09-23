@@ -268,7 +268,12 @@ const GROUND_RE = {
 const EXTRA_GROUND = {
   garden: FROZEN_EXTRA_GROUND,
   pond: FROZEN_EXTRA_GROUND,
-  temple: [...FROZEN_EXTRA_GROUND, '*__worn-stone*'],
+  // 庙区模块地坪逐一列名（节点名取自分区 GLB：*-body__worn-stone 等不用通配防跨件误配）
+  temple: [...FROZEN_EXTRA_GROUND,
+    'shanmen-body__worn-stone*', 'entry-court__worn-stone*', 'yimen-body__worn-stone*',
+    'yimen-stage-body__worn-stone*', 'dadian-court__worn-stone*', 'peidian-body__worn-stone*',
+    'gallery-body__worn-stone*', 'dadian-body__worn-stone*', 'court3-boundary__worn-stone*',
+    'houdian-body__worn-stone*'],
   bazaar: FROZEN_EXTRA_GROUND,
   outer: FROZEN_EXTRA_GROUND,
 };
