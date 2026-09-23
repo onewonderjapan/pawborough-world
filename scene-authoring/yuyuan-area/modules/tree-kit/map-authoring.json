@@ -1,0 +1,56 @@
+{
+ "packageId": "pawborough-w1-tree-kit-20260922",
+ "method": "procedural PIL draw, seeded (20260923..+3); no photos, no tracing",
+ "colorSpace": {
+  "bark-neutral.png": "sRGB",
+  "bark-oxblood.png": "sRGB",
+  "broadleaf_cluster.png": "sRGB",
+  "willow_strip.png": "sRGB"
+ },
+ "maps": [
+  {
+   "file": "bark-neutral.png",
+   "size": [
+    512,
+    512
+   ],
+   "channels": "RGB",
+   "use": "willow/osmanthus trunk bark (neutral warm grey-brown)",
+   "tile": "~2.2 m vertical repeat over trunk height, ~1.4 m around circumference"
+  },
+  {
+   "file": "bark-oxblood.png",
+   "size": [
+    512,
+    512
+   ],
+   "channels": "RGB",
+   "use": "camphor trunk bark, oxblood-stained tint (same procedural pixels as bark-neutral, style match to temple-v3 tree-camphor-v2)",
+   "tile": "~2.2 m vertical repeat over trunk height, ~1.4 m around circumference"
+  },
+  {
+   "file": "broadleaf_cluster.png",
+   "size": [
+    512,
+    512
+   ],
+   "channels": "RGBA",
+   "use": "camphor/osmanthus crown edge foliage cards",
+   "alphaMode": "MASK",
+   "alphaCutoff": 0.5,
+   "tile": "one card face ≈ 1.1 x 1.1 m (UV 0-1 per card)"
+  },
+  {
+   "file": "willow_strip.png",
+   "size": [
+    512,
+    512
+   ],
+   "channels": "RGBA",
+   "use": "willow hanging strip cards",
+   "alphaMode": "MASK",
+   "alphaCutoff": 0.5,
+   "tile": "one card face ≈ 0.38 x 2.2 m (UV 0-1 per card)"
+  }
+ ]
+}
