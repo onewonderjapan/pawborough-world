@@ -1,46 +1,54 @@
-# DELIVERY — 园廊套件（3 廊 + 听涛阁水廊）· corridor-kit
+# DELIVERY — R1 返修：复廊屋面重构 + along 机位 · corridor-kit r1
 
-包 `pawborough-w1-corridor-kit-20260922` · GLM-Flash wave-1 · 2026-09-23 完工
-分支 `work/w1-corridor-kit-20260922`（基线 33a3bd72）· 状态 `delivered_for_lead_review`，ownerAdopted=false
+包 `pawborough-w1-corridor-kit-r1-20260923` · 返修单 R1-FIXES.md（2026-09-23 09:20）· 同日完工
+原 worktree `pawborough-w1-corridor-kit-20260922/workspace` · 原分支 `work/w1-corridor-kit-20260922` 继续提交
+状态 `delivered_for_lead_review`，ownerAdopted=false
 
-## 交付了什么
+## 返修了什么（只动 R1-FIXES 两项，其余 3 廊 GLB 与上一版逐字节相同）
 
-冻结 G5 布局地图系下的站点模块 GLB（原点=地图(0,0)，Y-up 世界坐标，无实例变换），替换程序化廊子盒体。**不含管线集成**（build-scene.mjs / assemble.py 未动，集成是 lead 后续步骤）。
+### 件 1：复廊 bld-428186469 屋面 + 横梁
 
-| 模块 | 对象 | GLB | tris | bytes |
+**屋面**（build_corridor_kit.py 新增 `build_roof_double()`，替换原"逐顶点戗角帽 + 天井式内坡"路径）：
+- **逐跨连续双坡**：每跨一片闭合双坡体（檐 ±2.85 m y2.85 / 脊=折线 y3.55 / 实心 0.10），脊线全程 3.55 连续。
+- **>60° 顶点（5 处：90.9°/60.4°/79.2°/97.4°/89.7°）**：相邻跨各退 1.2 m 方切，角上加**过脊四坡角帽**——脊线以 3.55 连续过角、两侧自脊出披至两端檐口，覆盖严格限于角点 1.2 m 退避区内（双帽夹短跨 seg3 时按比例收缩至 1.13 m）。
+- **≤60° 顶点（5 处：50.5°–59.8°）**：与 bld-553893874 同法——凸侧檐线延伸 eoff·tan(θ/2)≤1.65 m 至偏移线交点**斜接**；凹侧檐线方切于角点，两坡自然相交成**天沟**。
+- 屋脊滚筒逐跨铺设、角帽区断开；瓦当行沿各跨檐线。
+- 删除旧天井式内坡（INNER_SCALE 0.28）与逐顶点独立戗角帽——正是旧版"每个顶点独立四坡帽、屋面互相穿插"的来源。
+
+**横梁**：复廊改**横向梁**，每柱位一根，长 **4.6 m**（2×2.2 柱列+0.2 中墙，两端与柱外缘齐平不外伸），整体居檐口 2.85 m 内侧。原纵向枋（L+0.1，转折处穿出屋檐）删除。
+
+**新增测试**（test_corridor_kit.cjs，既有 29 断言未动）：复廊**屋脊线连续**——每 0.5 m 沿折线向下射线（仅统计上表面）首命中 ∈ [2.85, 3.9] 且 0.12 m 内命中合并后**只命中 1 层屋面**。该断言在迭代中实际否决了两版不合格屋面（尖塔基弦切入邻跨），是本轮的验收核心。
+
+**中墙漏窗保留**：墙体、1.1×0.9 漏窗与解析格栅路径未动。
+
+### 件 2：复廊 along 机位
+
+render_corridor_kit.py：机位移出中墙——放最长跨中部（跨内避开角帽），目标沿廊 8.5 m；**机位/目标各按本站走廊法线偏 1.2 m = 中墙一侧走廊中心线，机位高 y1.6**。原机位/目标共用机位端法线，折弯后目标点横移错误、视线穿墙。普通廊机位未动。
+
+## 验证（30 pass / 0 fail）
+
+- 既有 29 断言全过：柱位 ±0.05（worst 0.001 m）、中线 y1.6 可通行（复廊 170 射线 0 阻挡）、屋面连续 2.85–3.6（64 点 0 失手）、预算、包围盒 ±10%、validator、重导入、材质
+- **新增：屋脊线连续 64 点，高度失手 0，多层失手 0**
+- Khronos validator 4×0 错；预算 **19,636/45,000 tris · 2,198,324/2,500,000 B**
+
+## 交付物
+
+| 模块 | GLB | tris | bytes | 状态 |
 |---|---|---|---|---|
-| 园廊 | bld-553893874 | corridor-bld-553893874.glb | 5,572 | 593,836 |
-| 环形园廊（out-and-back） | bld-428179906 | ring-corridor-bld-428179906.glb | 4,732 | 534,848 |
-| 复廊（双廊+中墙漏窗） | bld-428186469 | double-corridor-bld-428186469.glb | 4,068 | 502,052 |
-| 听涛阁水廊+端亭 massing | bld-428179920 | waterside-gallery-bld-428179920.glb | 5,533 | 597,168 |
-| **合计** | | | **19,904 / 45,000** | **2,227,904 / 2,500,000** |
+| 复廊 bld-428186469 | double-corridor-bld-428186469.glb | 3,800（原 4,068） | 472,472 | **本版重做** |
+| 园廊 bld-553893874 | corridor-bld-553893874.glb | 5,572 | 593,836 | 与上一版相同（sha 一致） |
+| 环廊 bld-428179906 | ring-corridor-bld-428179906.glb | 4,732 | 534,848 | 同上 |
+| 听涛阁 bld-428179920 | waterside-gallery-bld-428179920.glb | 5,532 | 597,168 | 同上 |
 
-构件口径（spec 权威值）：柱 Ø0.20 高 2.55 到枋（每段均分 ≈2.5m）；石板地面 0.12 厚；檐口 2.85、屋脊 3.55、出挑 0.55（瓦面+木望实心 0.10、瓦当行 0.30 间距、屋脊滚筒顶 3.59）；美人靠（坐面 0.42+背扶手 0.95，逐段水侧/背厅面）；复廊整幅屋面 4.6m、中墙 0.2m 厚带 1.1×0.9 漏窗（解析 alpha 格栅，≥3.0m 间距）；端亭 10.1×6.4 两层四坡顶 massing（柱网 6×4，≤9k 预算实际约 1.5k）。材质：瓦 roof-color+normal、木 wood-stain 染 6a2e22、石 PaintedPlaster017 染 9d9a92（source-kit 512/256px 派生集，见 map-authoring.json）。
+渲染：`renders/before/`（**上一版 GLB** + 本版机位，12 帧）与 `renders/after/`（本版 GLB，12 帧）**同机位**对照；`contact-sheet.jpg`（after 接触表）、`contact-sheet-before.jpg`、`before-after-469.jpg`（复廊三项机位前后对照）。全部帧过空白帧守卫。
 
-## 验证（29 pass / 0 fail）
+## 施工判断记录（lead 审查关注点）
 
-- 柱位贴线 ±0.05（对自己段，worst 0.001m，漏柱 0，且 GLB 顶点在场）
-- 中线 y1.6 步进 0.5m 可通行（±0.8m 带 5 射线/站；复廊验 ±1.2 双廊；角区 1.2m 结点区跳过并注明）
-- 屋面连续：y3.72 下射全段命中 2.85–3.6（含穿端亭段，命中其 3.05–3.58 腰檐）
-- 预算（总量+单体）、包围盒 ±10%、Khronos validator 4×0 错、Blender 重导入无 issue、贴图色彩空间 sRGB/Non-Color、格栅材质在场、manifest.json sha256
+1. **攒尖帽落地为"过脊四坡角"而非独立尖塔**：返修单要求"角点加小攒尖帽只覆盖 1.2 m"。施工中尖塔式（基座四角接邻跨檐口点）被新断言否决——檐宽 2.85 下其基弦距角点仅 ~1.9 m，弦下三角切入邻跨屋面下方形成第二层。改为脊线 3.55 连续过角、两侧出披的角帽，覆盖仍限于 1.2 m 退避区。若 lead 坚持"可见尖塔"读法，需放宽"只命中 1 层"或加大退避（会突破 1.2 m 覆盖限），请复核取舍。
+2. **≤60° 凹侧未做真斜接**：凹侧偏移线交点距角点 4.9–6.0 m，超出相邻段长（1.86–5.09 m），几何上不可达；两坡方切相交成天沟（园廊常态做法）。
+3. 复廊鸟瞰 S 弯腰部旧"折面"随内坡删除而消失；屋面全程单层。复廊沿廊亮度较上一版改善（视线在走廊中心线、不再穿墙），檐下自然光仍偏柔和，提亮属集成后光照课题。
+4. before/after 同机位：before 为上一版 GLB 套本版相机脚本，相机位置与 after 逐帧一致，差异全部来自几何。
 
-## Fallback 使用记录（PLAN）
+## 耗时与产物
 
-- fallback 1（尖角→戗角）：复廊外圈尖长>2.75m 顶点使用；920 v1 内缘为细条戗角
-- fallback 2（gpath 穿越开口）：gardenRouteAudit 9 段全 ok，无 gpath 穿越复廊，**未触发**
-- fallback 3（端亭降级）：未触发（远低于预算）
-
-## 已知限制（lead 审查关注点）
-
-1. **复廊鸟瞰屋面在 S 弯腰部呈折面**：环宽 ≤8m 与 5.7m 屋面带物理性交叠；spec 屋宽 4.6 为权威值故保留。侧视/沿廊正确。
-2. 复廊沿廊视图偏暗（中墙+檐下光），几何可读；提亮属集成后光照课题。
-3. 法线贴图未导出切线（validator 3 警告 GENERATED_TANGENT_SPACE 同款）：引擎由 UV 生成，与 garden-kit 同口径。
-4. 屋面为 L1 低模读法（连续、不漏水、轮廓正确），无滴水斗拱等细作。
-
-## 耗时与产物位置
-
-墙钟约 1.5h（含等待并发批 CPU：负载曾 22/20，Blender 全程 -t 4、同时 ≤1 进程；渲染 3 轮，前两轮为迭代）。产物：`artifacts/corridor-kit/{glb/,validator/,renders/,contact-sheet.jpg,PROGRESS.json,RESULT.json,DELIVERY.md,tests.log,catalog,collision,reimport,manifest,site-inputs}`；源码+测试+记录+小图已提交至工作分支 `modules/corridor-kit/`。生成物 out-corridor-kit/ 按 out-* 规则不提交。
-
-## 假设（全部 design_inference，详见 PROGRESS.json / catalog.assumptions）
-
-美人靠侧别规则（6m 内水面取水侧，否则背向最近厅堂；环廊取朝环外面）；复廊内圈天井式内坡（缩放 0.28）；复廊地面分段条带+转角补丁；瓦当间距 0.30；听涛阁端部延伸 0.35m、远端山墙封口、亭侧开敞；柱距均分规则；家具角部内缩 1.4m（转折>50°）。
+墙钟约 1.1 h（3 轮构建迭代 + 两路渲染并行，Blender 全程 -t 4、同时 ≤2 进程）。产物：本包 `artifacts/corridor-kit/`（glb/ validator/ renders/ RESULT DELIVERY PROGRESS tests.log catalog collision reimport manifest site-inputs）；源码+测试+记录在原分支 `modules/corridor-kit/`。不 push，ownerAdopted=false。

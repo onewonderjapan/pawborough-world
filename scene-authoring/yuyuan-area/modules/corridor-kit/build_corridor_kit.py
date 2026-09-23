@@ -42,8 +42,9 @@ FLOOR_T = 0.12                     # 石板厚，顶面 y=0.12（spec）
 ROOF_T = 0.10                      # 屋面实心厚（设计值）
 OVER = 0.55                        # 檐口每侧出挑（spec）
 EXT = 0.35                         # 开口折线端部屋面延伸（设计值，保证端点射线命中）
-MAX_SPIKE = 2.75                    # 斜接尖长上限（111° 转角尖长 2.69 可斜接；超过才用小戗角封盖，PLAN fallback 1）
-INNER_SCALE = 0.28                  # 复廊内圈檐线：向质心缩放系数（小环内缘偏移 2.85 会自交，改天井式内坡）
+MAX_SPIKE = 2.75                    # 斜接尖长上限（普通廊；超过改戗角，PLAN fallback 1）
+CAP_ANGLE = 60.0                    # R1 复廊：顶点转角 >60° 加小攒尖帽
+CAP_REACH = 1.2                     # R1 复廊：攒尖帽只覆盖角点 1.2 m（相邻跨同量方切退避）
 LIP_STEP = 0.30                    # 瓦当间距（设计值）
 COL_R = 0.10                       # 柱半径 Ø0.20（spec）
 SEAT_T, SEAT_H = 0.10, 0.42        # 美人靠坐面厚 / 座面高（spec 0.42）
@@ -93,7 +94,7 @@ if not os.path.exists(SITE_INPUTS):
 SI = json.load(open(SITE_INPUTS, encoding='utf-8'))
 ASSUMPTIONS = [
     '美人靠侧别逐段计算：段中点 6m 内有水面取水侧，否则背向最近厅堂；环形/闭合廊只在朝环外的面设，且该面需（6m 内水面 或 无 15m 内厅堂正对）',
-    '屋顶顶点斜接尖长 >%.1f m 时该点改分段 + 小戗角封盖（PLAN fallback 1）；复廊 4.6m 宽屋面在小环内缘无法斜接，内圈檐线改为向质心缩放 %.2f 的天井式内坡，外圈仍逐顶点斜接/戗角' % (MAX_SPIKE, INNER_SCALE),
+    'R1 复廊屋面：逐跨连续双坡（每跨一片，脊=折线 y%.2f 全程连续）；顶点转角>%.0f° 两侧各退 %.1f m 方切、角上加小攒尖帽——落地为过脊四坡角（脊线连续过角，两侧自脊出披至两端檐口，只覆盖角点 ≤%.1f m，双帽夹短跨按比例收缩退避）；不作独立尖塔式：檐宽 2.85 下基弦距角点仅 ~1.9 m，会切入邻跨屋面下方形成第二层；≤60° 顶点与 bld-553893874 同法——凸侧檐口延伸 eoff·tan(θ/2)≤1.65 m 至偏移线交点斜接，凹侧檐线方切于角点、两坡自然相交成天沟（凹侧偏移线交点距角点 eoff·cot(θ/2)=4.9–6.0 m 超出相邻段长，几何上不可斜接）；屋脊滚筒在角帽区断开' % (RIDGE, CAP_ANGLE, CAP_REACH, CAP_REACH),
     '瓦当行距 %.2f m、方截面 0.06（spec 未给间距）；屋脊滚筒六边半径 0.06、中心 y=3.53（顶 3.59 < 3.6 射线上限）' % LIP_STEP,
     '开口折线（听涛阁）端部屋面沿方向延伸 %.2f m；亭侧端开敞接端亭，远端三角山墙封口' % EXT,
     '复廊中墙高 %.2f、厚 %.1f；漏窗 %.1fx%.1f、窗台 %.1f，洞内嵌解析 alpha 格栅；开窗沿段按 ≥%.1f m 间距布设、窗边距段端 ≥0.9 m' % (WALL_TOP, WALL_T, WIN_W, WIN_H, WIN_SILL, WIN_STEP),
@@ -102,6 +103,7 @@ ASSUMPTIONS = [
     '柱距每段均分接近 2.5 m（闭合环每段柱含起点不含终点避免角柱重复）；复廊为外缘单排柱 + 中墙承重',
     '复廊地面 ±2.3 偏移线在 S 弯腰部自交出洞，改分段条带（每段错峰 1.5mm、搭接 0.15）+ 转角补丁（低 4mm 防闪烁）',
     '美人靠坐面探出控制在柱列内侧 0.08 m（内缘 0.82 > 步行半宽 0.8），保证 1.6 m 通行带；转折 >50° 的角部端部家具内缩 1.4 m（急弯口不设座，避免邻段家具侵入相邻段通行带）',
+    'R1 复廊横梁：改横向梁，长=廊宽 %.1f m（2x2.2 柱列 + %.1f 中墙，两端与柱外缘齐平不外伸，整体居檐口 %.2f 内侧），每柱位一根；替换原纵向沿段枋（长 L+0.1，转折处从檐下穿出）' % (2 * 2.2 + WALL_T, WALL_T, EAVE),
 ]
 
 # ---------------------------------------------------------------- 坐标：地图(x,z,y) <-> Blender(x,-z,y)
@@ -381,6 +383,147 @@ def rail_side_for(oid, pts, closed):
         sides.append(side)
     return sides
 
+# ---------------------------------------------------------------- 复廊屋面（R1：逐跨连续双坡 + 斜接 + 攒尖帽）
+def build_roof_double(mod, pts, n, nseg, eoff):
+    """复廊屋面 R1 重做。返回逐顶点连接方式列表（'cap'|'mitre'）。
+
+    每跨一片闭合双坡体（檐 ±eoff y2.85 / 脊=折线 y3.55 / 实心 0.10）；
+    顶点转角 >60°：相邻跨方切退避 1.2 m，角上加过脊四坡角帽（脊线 3.55 连续过角，只覆盖角点 ≤1.2 m）；
+    ≤60°：与 bld-553893874 同法——凸侧檐线延伸 eoff·tan(θ/2) 至偏移线交点斜接，
+    凹侧檐线方切于角点、两坡相交成天沟（凹侧交点距角 eoff·cot(θ/2) 4.9–6.0 m 超段长不可斜接）。
+    屋脊滚筒逐跨铺设、攒尖帽区断开；瓦当行沿各跨檐线。"""
+    joints = ['cap' if turn_deg(pts, n, i) > CAP_ANGLE else 'mitre' for i in range(n)]
+    convex_s = []                       # 每顶点凸侧（转弯外侧）：cr>0 右转凸侧=左(+1)
+    for i in range(n):
+        a2, b2, c2 = pts[(i - 1) % n], pts[i], pts[(i + 1) % n]
+        cr = (b2[0] - a2[0]) * (c2[1] - b2[1]) - (b2[1] - a2[1]) * (c2[0] - b2[0])
+        convex_s.append(1 if cr > 0 else -1)
+
+    spans = []
+    for i in range(nseg):
+        a, b = pts[i], pts[(i + 1) % n]
+        L = math.dist(a, b)
+        u = seg_dir(a, b)
+        nl = left_normal(u)
+        j0, j1 = joints[i], joints[(i + 1) % n]
+        c0 = cap_trim(L) if j0 == 'cap' else 0.0
+        c1 = cap_trim(L) if j1 == 'cap' else 0.0
+        if c0 and c1 and c0 + c1 > L - 0.3:           # 双帽夹短跨：退避按比例收缩
+            k = (L - 0.3) / (c0 + c1)
+            c0, c1 = c0 * k, c1 * k
+        r0 = eoff * math.tan(math.radians(turn_deg(pts, n, i) / 2)) if j0 == 'mitre' else 0.0
+        r1 = eoff * math.tan(math.radians(turn_deg(pts, n, (i + 1) % n) / 2)) if j1 == 'mitre' else 0.0
+        sp = dict(a=a, b=b, L=L, u=u, nl=nl, c0=c0, c1=c1, r0=r0, r1=r1,
+                  s0=convex_s[i], s1=convex_s[(i + 1) % n], ts={})
+        t0, t1 = c0, L - c1
+        for s in (1, -1):                              # 各侧檐线参数范围（凸侧斜接端外伸 r）
+            sp['ts'][s] = (t0 + (r0 if sp['s0'] == s else 0.0),
+                           t1 + (r1 if sp['s1'] == s else 0.0))
+        spans.append(sp)
+
+    def pat(sp, t, s, eave):
+        """跨内参数点（地图系 x,y 高,z）：t 沿跨轴，s=±1 檐侧。"""
+        w = eoff if eave else 0.0
+        return (sp['a'][0] + sp['u'][0] * t + s * w * sp['nl'][0],
+                EAVE if eave else RIDGE,
+                sp['a'][1] + sp['u'][1] * t + s * w * sp['nl'][1])
+
+    # --- 逐跨双坡体
+    for si, sp in enumerate(spans):
+        t0, t1 = sp['c0'], sp['L'] - sp['c1']
+        vt = [pat(sp, sp['ts'][1][0], 1, True), pat(sp, t0, 0, False), pat(sp, sp['ts'][-1][0], -1, True),
+              pat(sp, sp['ts'][1][1], 1, True), pat(sp, t1, 0, False), pat(sp, sp['ts'][-1][1], -1, True)]
+        verts = vt + [(p[0], p[1] - ROOF_T, p[2]) for p in vt]
+        e10, r00, em0, e11, r01, em1 = range(6)
+        e10b, r00b, em0b, e11b, r01b, em1b = range(6, 12)
+        faces, fm = [], []
+        faces.append((e10, e11, r01, r00)); fm.append(0)     # +侧坡
+        faces.append((r00, r01, em1, em0)); fm.append(0)     # -侧坡
+        faces.append((e10b, r00b, r01b, e11b)); fm.append(1)
+        faces.append((r00b, em0b, em1b, r01b)); fm.append(1)
+        faces.append((e10, e11, e11b, e10b)); fm.append(1)   # 檐缘竖板
+        faces.append((em0, em1, em1b, em0b)); fm.append(1)
+        for end in (0, 1):                                   # 端部封口
+            cap = sp['c0'] if end == 0 else sp['c1']
+            eA, rA, emA = (e10, r00, em0) if end == 0 else (e11, r01, em1)
+            eAb, rAb, emAb = (e10b, r00b, em0b) if end == 0 else (e11b, r01b, em1b)
+            if cap > 0.0:                                    # 帽端：整切面六边形
+                faces.append((eA, rA, emA, emAb, rAb, eAb)); fm.append(1)
+            else:                                            # 斜接端：凸侧折面墙 + 凹侧方切墙
+                faces.append((eA, rA, rAb, eAb)); fm.append(1)
+                faces.append((rA, emA, emAb, rAb)); fm.append(1)
+        mesh_part(mod, f'roof-span-{si}', verts, faces, [M_TILE, M_TIMBER], face_mats=fm)
+
+    # --- 角帽（>60° 角点）：脊线以 3.55 连续过角，两侧自脊出披至两端檐口，只覆盖角点 ≤1.2 m。
+    #     不用独立尖塔式攒尖帽：檐宽 2.85 下其基弦距角点仅 ~1.9 m，会切入邻跨屋面下方形成第二层。
+    for i in range(n):
+        if joints[i] != 'cap':
+            continue
+        spin, spout = spans[(i - 1) % nseg], spans[i]
+        tin, tout = spin['L'] - spin['c1'], spout['c0']
+        rin = pat(spin, tin, 0, False)
+        rout = pat(spout, tout, 0, False)
+        for s in (1, -1):
+            aline = [pat(spin, tin, s, True), pat(spout, tout, s, True)]
+            solid_strip(mod, f'roof-cap-{i}-{s}', aline, [rin, rout], ROOF_T, M_TILE, M_TIMBER,
+                        loop=False, fas_a=True, fas_b=True)
+
+    # --- 屋脊滚筒（逐跨，帽区断开；六边环带中心 y3.53）
+    for si, sp in enumerate(spans):
+        t0, t1 = sp['c0'], sp['L'] - sp['c1']
+        k = max(1, int(math.ceil((t1 - t0) / 1.0)))
+        chain = [(sp['a'][0] + sp['u'][0] * (t0 + (t1 - t0) * j / k),
+                  sp['a'][1] + sp['u'][1] * (t0 + (t1 - t0) * j / k)) for j in range(k + 1)]
+        nr = len(chain)
+        rv = []
+        for p in chain:
+            rv += [(p[0] + 0.06 * math.cos(k2 / 6 * 2 * math.pi), 3.53,
+                    p[1] + 0.06 * math.sin(k2 / 6 * 2 * math.pi)) for k2 in range(6)]
+        rf = []
+        for ri in range(nr - 1):
+            for k2 in range(6):
+                k2b = (k2 + 1) % 6
+                rf.append((ri * 6 + k2, ri * 6 + k2b, (ri + 1) * 6 + k2b, (ri + 1) * 6 + k2))
+        for base_i in (0, (nr - 1) * 6):
+            rf.append(tuple(range(base_i, base_i + 6)))
+        mesh_part(mod, f'ridge-roll-{si}', rv, rf, M_TILE, tile=(0.4, 1.2))
+
+    # --- 瓦当行（沿各跨各侧檐线；开管手工外向绕向，不 recalc）
+    for sp in spans:
+        for s in (1, -1):
+            ta, tb = sp['ts'][s]
+            ax = sp['a'][0] + sp['u'][0] * ta + s * eoff * sp['nl'][0]
+            az = sp['a'][1] + sp['u'][1] * ta + s * eoff * sp['nl'][1]
+            bx = sp['a'][0] + sp['u'][0] * tb + s * eoff * sp['nl'][0]
+            bz = sp['a'][1] + sp['u'][1] * tb + s * eoff * sp['nl'][1]
+            Lseg = math.hypot(bx - ax, bz - az)
+            if Lseg < 0.05:
+                continue
+            nlx, nlz = (bz - az) / Lseg, -(bx - ax) / Lseg
+            k2 = max(1, int(round(Lseg / LIP_STEP)))
+            for j in range(k2):
+                t = (j + 0.5) / k2
+                x = ax + (bx - ax) * t + s * nlx * 0.03
+                z = az + (bz - az) * t + s * nlz * 0.03
+                ring = [(x + 0.042 * math.cos(an), z + 0.042 * math.sin(an))
+                        for an in (math.pi / 4, 3 * math.pi / 4, 5 * math.pi / 4, 7 * math.pi / 4)]
+                prism(mod, 'lips', ring, 2.71, 2.83, M_TILE, tile=(0.3, 0.3), capped=False, no_recalc=True)
+    return joints
+
+
+def turn_deg(pts, n, i):
+    """闭合折线顶点 i 的转角（度）。"""
+    a, b, c = pts[(i - 1) % n], pts[i], pts[(i + 1) % n]
+    v1, v2 = seg_dir(a, b), seg_dir(b, c)
+    dot = max(-1.0, min(1.0, v1[0] * v2[0] + v1[1] * v2[1]))
+    return math.degrees(math.acos(dot))
+
+
+def cap_trim(L):
+    """攒尖帽单侧方切退避量：默认 1.2 m；双帽夹短跨时收缩保 0.3 m 跨中。"""
+    return CAP_REACH if 2 * CAP_REACH <= L - 0.3 else max(0.05, (L - 0.3) / 2)
+
+
 # ---------------------------------------------------------------- 走廊构建
 def ring_area(pts):
     s = 0.0
@@ -462,17 +605,29 @@ def build_corridor(oid, pts):
         lineR = [(offR[i]['pt'][0], FLOOR_T, offR[i]['pt'][1]) for i in range(n)]
         solid_strip(mod, 'floor', lineL, lineR, FLOOR_T, M_STONE, M_STONE, loop=closed, fas_a=True, fas_b=True)
 
-    # --- 枋（沿柱列窄木条，按段）
-    for i in range(nseg):
-        a, b = pts[i], pts[(i + 1) % n]
-        u = seg_dir(a, b)
-        yaw = math.atan2(u[0], u[1])
-        L = math.dist(a, b)
-        for side in (-1, 1):
-            nl = left_normal(u)
-            mx = (a[0] + b[0]) / 2 + side * nl[0] * coloff
-            mz = (a[1] + b[1]) / 2 + side * nl[1] * coloff
-            box_part(mod, f'beam-{i}-{side}', (mx, COL_H, mz), (L + 0.1, 0.16, 0.14), yaw, M_TIMBER)
+    # --- 枋/梁（R1：复廊改横向梁，长=廊宽不外伸；其余沿柱列纵向枋）
+    if double:
+        for i in range(nseg):
+            a, b = pts[i], pts[(i + 1) % n]
+            u = seg_dir(a, b)
+            yaw = math.atan2(u[0], u[1])
+            ns = max(1, round(math.dist(a, b) / 2.5))
+            ts = [k / ns for k in range(ns)] if closed else [k / ns for k in range(ns + 1)]
+            for k, t in enumerate(ts):
+                mx = a[0] + (b[0] - a[0]) * t
+                mz = a[1] + (b[1] - a[1]) * t
+                box_part(mod, f'beam-{i}-{k}', (mx, COL_H, mz), (2 * coloff + WALL_T, 0.16, 0.14), yaw, M_TIMBER)
+    else:
+        for i in range(nseg):
+            a, b = pts[i], pts[(i + 1) % n]
+            u = seg_dir(a, b)
+            yaw = math.atan2(u[0], u[1])
+            L = math.dist(a, b)
+            for side in (-1, 1):
+                nl = left_normal(u)
+                mx = (a[0] + b[0]) / 2 + side * nl[0] * coloff
+                mz = (a[1] + b[1]) / 2 + side * nl[1] * coloff
+                box_part(mod, f'beam-{i}-{side}', (mx, COL_H, mz), (L + 0.1, 0.16, 0.14), yaw, M_TIMBER)
 
     # --- 美人靠
     rail_sides = rail_side_for(oid, pts, closed)
@@ -527,19 +682,16 @@ def build_corridor(oid, pts):
             {'center': [round(bx, 3), RAIL_TOP - 0.045, round(bz, 3)], 'size': [round(run, 3), 0.09, 0.07],
              'yaw': round(yaw, 4), 'type': 'box', 'name': 'rail'}]
 
-    # --- 屋面（脊=折线 y3.55；檐=顶点斜接 ±eoff y2.85；尖超限顶点戗角封盖）
-    voL = vertex_offsets(pts, closed, eoff, MAX_SPIKE)
-    voR = vertex_offsets(pts, closed, -eoff, MAX_SPIKE)
-    inner_side = None
+    # --- 屋面（R1：复廊走逐跨双坡+攒尖帽；其余仍整环斜接带）
+    roof_joints = None
     if double and closed:
-        # 小环内缘偏移 eoff 会自交：内圈改为向质心缩放的天井式内坡（ASSUMPTIONS）
-        inner_side = 'L' if abs(ring_area([voL[i]['pt'] for i in range(n)])) < \
-            abs(ring_area([voR[i]['pt'] for i in range(n)])) else 'R'
-    eave_full = {}
-    for side, vo, sd in (('L', voL, 1), ('R', voR, -1)):
-        if side == inner_side:
-            eave = scaled_ring(pts, INNER_SCALE)
-        else:
+        roof_joints = build_roof_double(mod, pts, n, nseg, eoff)
+    if roof_joints is None:
+        # 普通廊：脊=折线 y3.55；檐=顶点斜接 ±eoff y2.85；尖超限顶点戗角封盖
+        voL = vertex_offsets(pts, closed, eoff, MAX_SPIKE)
+        voR = vertex_offsets(pts, closed, -eoff, MAX_SPIKE)
+        eave_full = {}
+        for side, vo, sd in (('L', voL, 1), ('R', voR, -1)):
             eave = []
             if not closed:
                 u0 = seg_dir(pts[0], pts[1])
@@ -550,73 +702,74 @@ def build_corridor(oid, pts):
                 uE = seg_dir(pts[-2], pts[-1])
                 nlE = left_normal(uE)
                 eave.append((pts[-1][0] + uE[0] * EXT + sd * nlE[0] * eoff, pts[-1][1] + uE[1] * EXT + sd * nlE[1] * eoff))
-        m = len(eave)
-        ridge = []
-        for j in range(m):
-            if not closed and j == 0:
-                u0 = seg_dir(pts[0], pts[1])
-                ridge.append((pts[0][0] - u0[0] * EXT, pts[0][1] - u0[1] * EXT))
-            elif not closed and j == m - 1:
-                uE = seg_dir(pts[-2], pts[-1])
-                ridge.append((pts[-1][0] + uE[0] * EXT, pts[-1][1] + uE[1] * EXT))
-            else:
-                vi = j if closed else j - 1
-                ridge.append(pts[vi % n])
-        aline = [(p[0], EAVE, p[1]) for p in eave]
-        bline = [(p[0], RIDGE, p[1]) for p in ridge]
-        solid_strip(mod, f'roof-{side}', aline, bline, ROOF_T, M_TILE, M_TIMBER, loop=closed)
-        eave_full[side] = eave + [eave[0]] if closed else eave
+            m = len(eave)
+            ridge = []
+            for j in range(m):
+                if not closed and j == 0:
+                    u0 = seg_dir(pts[0], pts[1])
+                    ridge.append((pts[0][0] - u0[0] * EXT, pts[0][1] - u0[1] * EXT))
+                elif not closed and j == m - 1:
+                    uE = seg_dir(pts[-2], pts[-1])
+                    ridge.append((pts[-1][0] + uE[0] * EXT, pts[-1][1] + uE[1] * EXT))
+                else:
+                    vi = j if closed else j - 1
+                    ridge.append(pts[vi % n])
+            aline = [(p[0], EAVE, p[1]) for p in eave]
+            bline = [(p[0], RIDGE, p[1]) for p in ridge]
+            solid_strip(mod, f'roof-{side}', aline, bline, ROOF_T, M_TILE, M_TIMBER, loop=closed)
+            eave_full[side] = eave + [eave[0]] if closed else eave
 
-    # --- 屋脊滚筒（六边环带，中心 y3.53）
-    if closed:
-        base = pts + [pts[0]]
-    else:
-        u0 = seg_dir(pts[0], pts[1])
-        uE = seg_dir(pts[-2], pts[-1])
-        base = ([(pts[0][0] - u0[0] * EXT, pts[0][1] - u0[1] * EXT)] + pts +
-                [(pts[-1][0] + uE[0] * EXT, pts[-1][1] + uE[1] * EXT)])
-    dense = [base[0]]
-    for a, b in zip(base, base[1:]):
-        L = math.dist(a, b)
-        k = max(1, int(L / 2.5))
-        for s in range(1, k + 1):
-            dense.append((a[0] + (b[0] - a[0]) * s / k, a[1] + (b[1] - a[1]) * s / k))
-    nr = len(dense)
-    rverts = []
-    for p in dense:
-        rverts += [(p[0] + 0.06 * math.cos(k / 6 * 2 * math.pi), 3.53, p[1] + 0.06 * math.sin(k / 6 * 2 * math.pi))
-                   for k in range(6)]
-    rfaces = []
-    lim = nr if closed else nr - 1
-    for ri in range(lim):
-        ri2 = (ri + 1) % nr
-        for k in range(6):
-            k2 = (k + 1) % 6
-            rfaces.append((ri * 6 + k, ri * 6 + k2, ri2 * 6 + k2, ri2 * 6 + k))
-    if not closed:
-        for base_i in (0, (nr - 1) * 6):
-            rfaces.append(tuple(range(base_i, base_i + 6))[::-1] if base_i == 0 else tuple(range(base_i, base_i + 6)))
-    mesh_part(mod, 'ridge-roll', rverts, rfaces, M_TILE, tile=(0.4, 1.2))
+    if roof_joints is None:
+        # --- 屋脊滚筒（六边环带，中心 y3.53；复廊已在 build_roof_double 内逐跨铺设）
+        if closed:
+            base = pts + [pts[0]]
+        else:
+            u0 = seg_dir(pts[0], pts[1])
+            uE = seg_dir(pts[-2], pts[-1])
+            base = ([(pts[0][0] - u0[0] * EXT, pts[0][1] - u0[1] * EXT)] + pts +
+                    [(pts[-1][0] + uE[0] * EXT, pts[-1][1] + uE[1] * EXT)])
+        dense = [base[0]]
+        for a, b in zip(base, base[1:]):
+            L = math.dist(a, b)
+            k = max(1, int(L / 2.5))
+            for s in range(1, k + 1):
+                dense.append((a[0] + (b[0] - a[0]) * s / k, a[1] + (b[1] - a[1]) * s / k))
+        nr = len(dense)
+        rverts = []
+        for p in dense:
+            rverts += [(p[0] + 0.06 * math.cos(k / 6 * 2 * math.pi), 3.53, p[1] + 0.06 * math.sin(k / 6 * 2 * math.pi))
+                       for k in range(6)]
+        rfaces = []
+        lim = nr if closed else nr - 1
+        for ri in range(lim):
+            ri2 = (ri + 1) % nr
+            for k in range(6):
+                k2 = (k + 1) % 6
+                rfaces.append((ri * 6 + k, ri * 6 + k2, ri2 * 6 + k2, ri2 * 6 + k))
+        if not closed:
+            for base_i in (0, (nr - 1) * 6):
+                rfaces.append(tuple(range(base_i, base_i + 6))[::-1] if base_i == 0 else tuple(range(base_i, base_i + 6)))
+        mesh_part(mod, 'ridge-roll', rverts, rfaces, M_TILE, tile=(0.4, 1.2))
 
-    # --- 瓦当行（檐口线下小方齿；开管手工外向绕向，不 recalc）
-    for side in ('L', 'R'):
-        eave = eave_full[side]
-        sd = 1 if side == 'L' else -1
-        segs = list(zip(eave, eave[1:])) + ([(eave[-1], eave[0])] if closed else [])
-        for a, b in segs:
-            L = math.hypot(b[0] - a[0], b[1] - a[1])
-            if L < 0.05:
-                continue
-            u = unit(b[0] - a[0], b[1] - a[1])
-            nl = left_normal(u)
-            k = max(1, int(round(L / LIP_STEP)))
-            for s in range(k):
-                t = (s + 0.5) / k
-                x = a[0] + (b[0] - a[0]) * t + sd * nl[0] * 0.03
-                z = a[1] + (b[1] - a[1]) * t + sd * nl[1] * 0.03
-                ring = [(x + 0.042 * math.cos(an), z + 0.042 * math.sin(an))
-                        for an in (math.pi / 4, 3 * math.pi / 4, 5 * math.pi / 4, 7 * math.pi / 4)]
-                prism(mod, 'lips', ring, 2.71, 2.83, M_TILE, tile=(0.3, 0.3), capped=False, no_recalc=True)
+        # --- 瓦当行（檐口线下小方齿；开管手工外向绕向，不 recalc；复廊已在 build_roof_double 内沿跨铺设）
+        for side in ('L', 'R'):
+            eave = eave_full[side]
+            sd = 1 if side == 'L' else -1
+            segs = list(zip(eave, eave[1:])) + ([(eave[-1], eave[0])] if closed else [])
+            for a, b in segs:
+                L = math.hypot(b[0] - a[0], b[1] - a[1])
+                if L < 0.05:
+                    continue
+                u = unit(b[0] - a[0], b[1] - a[1])
+                nl = left_normal(u)
+                k = max(1, int(round(L / LIP_STEP)))
+                for s in range(k):
+                    t = (s + 0.5) / k
+                    x = a[0] + (b[0] - a[0]) * t + sd * nl[0] * 0.03
+                    z = a[1] + (b[1] - a[1]) * t + sd * nl[1] * 0.03
+                    ring = [(x + 0.042 * math.cos(an), z + 0.042 * math.sin(an))
+                            for an in (math.pi / 4, 3 * math.pi / 4, 5 * math.pi / 4, 7 * math.pi / 4)]
+                    prism(mod, 'lips', ring, 2.71, 2.83, M_TILE, tile=(0.3, 0.3), capped=False, no_recalc=True)
 
     # --- 开口折线远端山墙（实心三棱柱，石）
     if not closed:
@@ -675,31 +828,30 @@ def build_corridor(oid, pts):
                              (wx + u[0] * sgn * (WIN_W / 2 + 0.04), WIN_SILL + WIN_H / 2, wz + u[1] * sgn * (WIN_W / 2 + 0.04)),
                              (0.08, WIN_H, WALL_T + 0.04), yaw, M_TIMBER)
 
-    # --- 戗角封盖（檐点标记为 hip 的顶点；缩放内圈无 hip）
-    for side, vo, sd in (('L', voL, 1), ('R', voR, -1)):
-        if side == inner_side:
-            continue
-        m = len(eave_full[side])
-        idxs = range(n) if closed else range(1, m - 1)
-        for j in idxs:
-            if not vo[j if closed else j - 1]['hip']:
-                continue
-            p1 = eave_full[side][j]
-            p0 = eave_full[side][j - 1]
-            p2 = eave_full[side][j + 1]
-            v = pts[j if closed else j - 1]
-            verts = [(p0[0], EAVE, p0[1]), (p1[0], EAVE, p1[1]), (p2[0], EAVE, p2[1]),
-                     (v[0], RIDGE - ROOF_T, v[1]), (v[0], RIDGE, v[1]),
-                     (p0[0], EAVE - ROOF_T, p0[1]), (p1[0], EAVE - ROOF_T, p1[1]), (p2[0], EAVE - ROOF_T, p2[1])]
-            faces = [(0, 1, 4), (1, 2, 4),                      # 上面两三角
-                     (5, 6, 3), (6, 7, 3),                      # 下面
-                     (0, 5, 6, 1), (1, 6, 7, 2),                # 檐缘竖板
-                     (4, 3, 5, 0), (4, 3, 7, 2)]                # 脊侧封板
-            mesh_part(mod, f'hip-{side}-{j}', verts, faces, [M_TILE, M_TIMBER],
-                      face_mats=[0, 0, 1, 1, 1, 1, 1, 1])
+    # --- 戗角封盖（普通廊：檐点标记为 hip 的顶点；复廊屋面无此件）
+    if roof_joints is None:
+        for side, vo, sd in (('L', voL, 1), ('R', voR, -1)):
+            m = len(eave_full[side])
+            idxs = range(n) if closed else range(1, m - 1)
+            for j in idxs:
+                if not vo[j if closed else j - 1]['hip']:
+                    continue
+                p1 = eave_full[side][j]
+                p0 = eave_full[side][j - 1]
+                p2 = eave_full[side][j + 1]
+                v = pts[j if closed else j - 1]
+                verts = [(p0[0], EAVE, p0[1]), (p1[0], EAVE, p1[1]), (p2[0], EAVE, p2[1]),
+                         (v[0], RIDGE - ROOF_T, v[1]), (v[0], RIDGE, v[1]),
+                         (p0[0], EAVE - ROOF_T, p0[1]), (p1[0], EAVE - ROOF_T, p1[1]), (p2[0], EAVE - ROOF_T, p2[1])]
+                faces = [(0, 1, 4), (1, 2, 4),                      # 上面两三角
+                         (5, 6, 3), (6, 7, 3),                      # 下面
+                         (0, 5, 6, 1), (1, 6, 7, 2),                # 檐缘竖板
+                         (4, 3, 5, 0), (4, 3, 7, 2)]                # 脊侧封板
+                mesh_part(mod, f'hip-{side}-{j}', verts, faces, [M_TILE, M_TIMBER],
+                          face_mats=[0, 0, 1, 1, 1, 1, 1, 1])
 
     return {'columns': columns, 'railSides': rail_sides, 'halfRoof': eoff, 'colOffset': coloff,
-            'closed': closed, 'double': double, 'coll': coll}
+            'closed': closed, 'double': double, 'roofJoints': roof_joints, 'coll': coll}
 
 # ---------------------------------------------------------------- 听涛阁端亭 massing
 def build_pavilion(oid, c, u):
@@ -771,7 +923,8 @@ CATALOG = {'packageId': 'pawborough-w1-corridor-kit-20260922',
            'coordinateContract': 'GLB Y-up world (x, y, z_map), origin map(0,0), no instance transform; Blender internal (x, -z_map, y); export_yup=True',
            'frozen': {'EAVE': EAVE, 'RIDGE': RIDGE, 'COL_H': COL_H, 'FLOOR_T': FLOOR_T, 'ROOF_T': ROOF_T,
                       'OVER': OVER, 'COL_R': COL_R, 'SEAT_H': SEAT_H, 'RAIL_TOP': RAIL_TOP,
-                      'WIN': [WIN_W, WIN_H, WIN_SILL], 'WALL_T': WALL_T, 'WALL_TOP': WALL_TOP},
+                      'WIN': [WIN_W, WIN_H, WIN_SILL], 'WALL_T': WALL_T, 'WALL_TOP': WALL_TOP,
+                      'CAP_ANGLE': CAP_ANGLE, 'CAP_REACH': CAP_REACH},
            'materials': META, 'modules': {}, 'assumptions': ASSUMPTIONS}
 COLL = {'axis': 'glTF Y-up; map coords (x east, z south), y height',
         'note': 'coarse proxies: column boxes + rail boxes + floor slabs (+ double-corridor centre wall, pavilion base/columns)',
@@ -819,6 +972,7 @@ for oid in CFG:
                                'polyline': o['geometry']['polyline'],
                                'columns': info['columns'], 'railSides': info['railSides'],
                                'halfRoof': info['halfRoof'], 'colOffset': info['colOffset'],
+                               'roofJoints': info.get('roofJoints'),
                                'galleryStart': info.get('galleryStart'), 'pavilion': info['pavilion'],
                                'budgetTriangles': cfg['triBudget'], 'budgetBytes': cfg['bytesBudget']}
 

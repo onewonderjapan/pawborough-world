@@ -137,6 +137,29 @@ function rayDown(tris, x, z, yFrom) {
   }
   return best;
 }
+function rayDownAll(tris, x, z, yFrom, yMin) {
+  // R1：全部命中 y（降序）。仅统计向上朝向面（屋面上表面）；竖板/底面/悬挑底不计。
+  const ys = [];
+  for (const t of tris) {
+    const [A, B, C] = t;
+    const x1 = B[0] - A[0], z1 = B[2] - A[2], x2 = C[0] - A[0], z2 = C[2] - A[2];
+    const det = x1 * z2 - x2 * z1;
+    if (Math.abs(det) < 1e-12) continue;
+    const px = x - A[0], pz = z - A[2];
+    const b1 = (px * z2 - x2 * pz) / det;
+    const b2 = (x1 * pz - px * z1) / det;
+    if (b1 < -1e-6 || b2 < -1e-6 || b1 + b2 > 1 + 1e-6) continue;
+    const ux = B[0] - A[0], uy = B[1] - A[1], uz = B[2] - A[2];
+    const vx = C[0] - A[0], vy = C[1] - A[1], vz = C[2] - A[2];
+    const ny = uz * vx - ux * vz;
+    const nl = Math.hypot(uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx);
+    if (nl < 1e-9 || ny / nl <= 0.3) continue;   // 面法线仰角 >~17° 才算屋面上表面
+    const y = A[1] + b1 * (B[1] - A[1]) + b2 * (C[1] - A[1]);
+    if (y > yFrom + 1e-6 || y < yMin) continue;
+    ys.push(y);
+  }
+  return ys.sort((a, b) => b - a);
+}
 function nearestOnPoly(pt, poly) { // -> {dist, arc}
   let best = { dist: 1e9, arc: 0 };
   let acc = 0;
@@ -258,6 +281,31 @@ for (const [oid, m] of Object.entries(CAT.modules)) {
     if (hit === null || hit < 2.85 || hit > 3.6) { bad++; if (!worst) worst = hit; }
   }
   check(`${oid} 屋面连续（命中 2.85–3.6）`, bad === 0, `${stations.length} 点 失手 ${bad}`);
+}
+
+// ---------------------------------------------------------------- 3b) R1 新增：复廊屋脊线连续（2.85–3.9 且只命中 1 层屋面）
+for (const [oid, m] of Object.entries(CAT.modules)) {
+  if (!m.double) continue;
+  const poly = centreline(m);
+  const tri = GLBS[oid].tris;
+  const stations = stationPts(poly, 0.5);
+  let badN = 0, badL = 0, worst = '';
+  for (const st of stations) {
+    const ys = rayDownAll(tri, st.x, st.z, 4.2, 2.7);
+    // 0.12 m 内的命中合并为一层（屋脊条 3.53 与屋脊 3.55 同层；叠铺屋面会算作多层）
+    let bands = 0, last = null;
+    for (const y of ys) { if (last === null || last - y > 0.12) bands++; last = y; }
+    if (ys.length === 0 || ys[0] < 2.85 || ys[0] > 3.9) {
+      badN++;
+      if (!worst) worst = `arc ${st.arc.toFixed(1)} 首命中 ${ys.length ? ys[0].toFixed(2) : '无'}`;
+    }
+    if (bands !== 1) {
+      badL++;
+      if (!worst) worst = `arc ${st.arc.toFixed(1)} 层数 ${bands} [${ys.slice(0, 4).map(v => v.toFixed(2)).join(',')}]`;
+    }
+  }
+  check(`${oid} 屋脊线连续（2.85–3.9 且只命中 1 层）`, badN === 0 && badL === 0,
+    `${stations.length} 点 高度失手 ${badN} 多层失手 ${badL}${worst ? ' 首失手: ' + worst : ''}`);
 }
 
 // ---------------------------------------------------------------- 4) 预算

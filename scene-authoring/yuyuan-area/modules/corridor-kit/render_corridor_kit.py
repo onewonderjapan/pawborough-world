@@ -108,18 +108,41 @@ for oid, m in CAT['modules'].items():
 
     total = sum(math.dist(P[i], P[i + 1]) for i in range(len(P) - 1))
     s_cam, s_tgt = min(0.5, total * 0.05), min(8.5, total * 0.7)
-    p_cam = poly_pt(P, s_cam)
-    p_tgt = poly_pt(P, s_tgt)
-    if m['double']:
-        # 复廊中线即中墙：机位/目标偏到侧廊中线（+1.2 左侧）
-        d = (poly_pt(P, s_cam + 0.2) - p_cam).normalized()
-        n = mathutils.Vector((-d.y, d.x, 0.0)) * 1.2
-        p_cam, p_tgt = p_cam + n, p_tgt + n
-    cam = bpy.data.cameras.new('c1')
-    co = bpy.data.objects.new('cam-along', cam)
-    sc.collection.objects.link(co)
-    look_at(co, mathutils.Vector((p_cam.x, p_cam.y, 1.55)), mathutils.Vector((p_tgt.x, p_tgt.y, 1.45)))
-    cam.lens = 28
+    if m.get('double'):
+        # R1 返修：along 机位移出中墙——放最长跨中部（跨内避开攒尖帽端屏），目标沿廊 8.5 m；
+        # 机位/目标各按本站走廊法线偏 1.2 m = 中墙一侧走廊中心线，高 y1.6。
+        acc, arcs = 0.0, []
+        for i in range(len(P) - 1):
+            arcs.append(acc)
+            acc += math.dist(P[i], P[i + 1])
+        Lbest = max(math.dist(P[i], P[i + 1]) for i in range(len(P) - 1))
+        ibest = [i for i in range(len(P) - 1) if abs(math.dist(P[i], P[i + 1]) - Lbest) < 1e-6][0]
+        s_cam = arcs[ibest] + min(max(1.5, Lbest * 0.25), Lbest * 0.5)
+        s_tgt = min(total - 0.5, s_cam + 8.5)
+
+        def station(s, h):
+            p = poly_pt(P, s)
+            d = poly_pt(P, min(s + 0.25, total)) - p
+            d = d.normalized() if d.length > 1e-6 else mathutils.Vector((1.0, 0.0, 0.0))
+            n = mathutils.Vector((-d.y, d.x, 0.0)) * 1.2
+            q = p + n
+            return mathutils.Vector((q.x, q.y, h))
+
+        cam_pos = station(s_cam, 1.6)
+        cam_tgt = station(s_tgt, 1.45)
+        cam = bpy.data.cameras.new('c1')
+        co = bpy.data.objects.new('cam-along', cam)
+        sc.collection.objects.link(co)
+        look_at(co, cam_pos, cam_tgt)
+        cam.lens = 28
+    else:
+        p_cam = poly_pt(P, s_cam)
+        p_tgt = poly_pt(P, s_tgt)
+        cam = bpy.data.cameras.new('c1')
+        co = bpy.data.objects.new('cam-along', cam)
+        sc.collection.objects.link(co)
+        look_at(co, mathutils.Vector((p_cam.x, p_cam.y, 1.55)), mathutils.Vector((p_tgt.x, p_tgt.y, 1.45)))
+        cam.lens = 28
     # 外侧四分之三：取最长段中点外法线
     best = None
     for i in range(len(pts) - 1):
