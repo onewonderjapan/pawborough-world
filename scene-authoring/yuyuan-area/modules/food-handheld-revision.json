@@ -1,0 +1,41 @@
+{
+ "date": "2026-09-23",
+ "decision": "owner: switch area food to the lead-reviewed handheld R1/R2 repairs",
+ "source": "/home/baibai/outbox/pawborough-snacks-handheld-r2-20260923/artifacts/r2/props (branch work/snacks-handheld-r1-20260922 @ 9ceeadc1)",
+ "worktreeLayout": "resources/ is gitignored; in this worktree resources/foods/handheld is a local copy (27 GLBs: 19 migrated + 8 from R2) while shops/, temple-v3/, foods/tabletop, foods/shop-building link to the main repo. On merge, docs/MIGRATION-ASSETS.json / the private asset archive must be updated with these hashes.",
+ "files": {
+  "bean-dish.glb": "8a523f70121b2970d9568a6c78bf1e0acc3584347098c05cf5d2aba46773c37f",
+  "bean-jar.glb": "33077d008e7a4ec7bddfa77f3772867503a65f7cfb2fa7bc761c8bbd705f9d68",
+  "bean-packet-open.glb": "5e4dc11a134f701368fcf9703dc86c10a1d8a219728edc7a1497b61408eb5c0e",
+  "bean-single.glb": "87f6ed965481f7ca0ffec3c1cc0647f1536630660d443e1f5b461089534d7ba6",
+  "bowl-jiuniang.glb": "25772c28e03b3f162489e5efd77af55847df222876cd965ead2a262177614eef",
+  "bowl-soymilk.glb": "9eb10ef5c75979cf443430425f3768d7686d2a99bf7b10e32dae614c9ee2d744",
+  "bowl-tangyuan.glb": "c3bf2e342bdb77674dfd32ac3fc04d0c6af9744a6022708d5bc5d0cf88b6bde8",
+  "chopsticks-pair.glb": "0e1e9ea039a94b26b71073e3e1a62f3d5a329ae42006a2e79413cd9926d2ddf8",
+  "chunjuan.glb": "903a0f86f6b3c8cdbcefe259dc930a21c1d8e5fbfa2a3f8185d5a7512ee21368",
+  "cifangao.glb": "8aa16522287ff61fe175e8375c4a5d97dcee206070770acbf1c4d4c7c5318833",
+  "congyoubing.glb": "f891634434e669c3178f133f1a5e3a67b7f0db97ee86da489e913a4d0df2b1ca",
+  "dabing.glb": "2975965001285c1465a376ada590fab6c0f83996109ab93f2946ca2673daad50",
+  "guantangbao.glb": "f417b5fb18a71940a4e84f5170593281b3e96d68fb837a1763064912857e77a0",
+  "ligaotang-box-open.glb": "7469d5d7632b00c7a3520e93b7ff7f7949697bfc89e9ff1365eb9e2ae52698a3",
+  "ligaotang-piece.glb": "21d56e7f663441b7ceee4e6904ada4aa6faf50350bbb8d02455ad2a2d8f14eaa",
+  "plate-paigu-niangao.glb": "1801f005aa9c87c748c84eac31d78cb3aad14974518eea8a6e27e08e84a90cfe",
+  "shengjian.glb": "5552cf0c664428c6dfc66528cb5ea95a5adf6d312474b70550e214007fc2683a",
+  "steamer-xiaolongbao-8.glb": "2d2cf077656187c2a0299d33f23cc33a657bf0c0d6b472bdeb3f2df1a241ff52",
+  "tangyuan-meat.glb": "e72f38be1968e1726e1f9e6f07af5c734416e5ffed26dfa243436b480cc46e78",
+  "tangyuan.glb": "c44b39fdc7715b9710ece3f602563498a0852579163e8a18367b162b8b31f48e",
+  "teacup-filled.glb": "51748d6771eb67c9227f5b18463952052760934869366ea73f067696fe8989d8",
+  "vinegar-dish.glb": "99713a30cd35beca2cac71edd8afcb3a35cf677dd68b9b6a548010c32d392850",
+  "wuxiangdou-packet.glb": "f7d92478148c02a5f84ee42c8c122248e7c100bc32919939aae9a8eab3204e73",
+  "xiaolongbao.glb": "439ff56d50780ddb669bc5388439662dff3c49100d3fbd7952677331895ccaed",
+  "xiekehuang.glb": "7df90fd8249f3fa7df714f08709bc4825002ebd6cc5553ad8a1f18a55f85afbb",
+  "youdunzi.glb": "290072ecb5846a0b2c813eb87821ba9cbf874bb220893dfaa4ee18f679eb1969",
+  "youtiao.glb": "fcab5838fc178d9610433735cf67d8474f2563940b711d62c821ea084df4c9d5"
+ },
+ "placedInArea": [
+  "congyoubing (R1/R2 layered fold)",
+  "youdunzi (R1/R2 fry cup)",
+  "steamer-xiaolongbao-8 (bytes unchanged)"
+ ],
+ "notPlacedInArea": "shengjian and bean-* are in the handheld library but not selected by the current food plan"
+}

@@ -5,26 +5,26 @@
   {
    "kind": "handheld_lod",
    "path": "resources/foods/handheld/bean-dish.glb",
-   "bytes": 1373476,
-   "sha256": "3a3137329cc5d8d9ee4a6b16e88615da60e340fed9e0a37f38947c36efebfc24"
+   "bytes": 1540264,
+   "sha256": "8a523f70121b2970d9568a6c78bf1e0acc3584347098c05cf5d2aba46773c37f"
   },
   {
    "kind": "handheld_lod",
    "path": "resources/foods/handheld/bean-jar.glb",
-   "bytes": 2253840,
-   "sha256": "c484a526bffcf5ee3e5bddc3b4adb715fb14a439ff5438ec56f064f16d5e73f5"
+   "bytes": 2210624,
+   "sha256": "33077d008e7a4ec7bddfa77f3772867503a65f7cfb2fa7bc761c8bbd705f9d68"
   },
   {
    "kind": "handheld_lod",
    "path": "resources/foods/handheld/bean-packet-open.glb",
-   "bytes": 980868,
-   "sha256": "27a640bcad0e1ba24f305527107ec3ddba663c8aad5e9302e4895da825dbc07b"
+   "bytes": 1107788,
+   "sha256": "5e4dc11a134f701368fcf9703dc86c10a1d8a219728edc7a1497b61408eb5c0e"
   },
   {
    "kind": "handheld_lod",
    "path": "resources/foods/handheld/bean-single.glb",
-   "bytes": 1028184,
-   "sha256": "ffaf463e35922da6c894661cf69651954e9bd4fba0ab73e0513ae96fa2af3d92"
+   "bytes": 1194936,
+   "sha256": "87f6ed965481f7ca0ffec3c1cc0647f1536630660d443e1f5b461089534d7ba6"
   },
   {
    "kind": "handheld_lod",
@@ -65,8 +65,8 @@
   {
    "kind": "handheld_lod",
    "path": "resources/foods/handheld/congyoubing.glb",
-   "bytes": 37848,
-   "sha256": "6726925d88b2e7a91e25a9479b1339e375cf11d863c3fd151ae7438e67f38925"
+   "bytes": 77872,
+   "sha256": "f891634434e669c3178f133f1a5e3a67b7f0db97ee86da489e913a4d0df2b1ca"
   },
   {
    "kind": "handheld_lod",
@@ -101,8 +101,8 @@
   {
    "kind": "handheld_lod",
    "path": "resources/foods/handheld/shengjian.glb",
-   "bytes": 85208,
-   "sha256": "019a143d6c9fe0226a5f5f48abe01ec1f08b1ccd9c2df51c4952062c47d31ef9"
+   "bytes": 97540,
+   "sha256": "5552cf0c664428c6dfc66528cb5ea95a5adf6d312474b70550e214007fc2683a"
   },
   {
    "kind": "handheld_lod",
@@ -155,8 +155,8 @@
   {
    "kind": "handheld_lod",
    "path": "resources/foods/handheld/youdunzi.glb",
-   "bytes": 51180,
-   "sha256": "5b67ffd36f6c0461690219384d0e51dc9a55fbb66bf237fc71906a0dd32483db"
+   "bytes": 112984,
+   "sha256": "290072ecb5846a0b2c813eb87821ba9cbf874bb220893dfaa4ee18f679eb1969"
   },
   {
    "kind": "handheld_lod",
@@ -184,7 +184,7 @@
   }
  ],
  "handheldManifestHashesVerified": 27,
- "handheldBytes": 7047808,
+ "handheldBytes": 7579212,
  "catalogs": [
   "resources/foods/handheld/catalog.json",
   "resources/foods/tabletop/catalog.json"
@@ -193,5 +193,62 @@
   "pawborough-snacks-handheld-night-20260921/workspace/baseline_run is historical reproduction, not latest output; bytes differ from original",
   "pawborough-props-snackshop-20260921 contains textures and scripts, no additional GLB"
  ],
- "policy": "Read-only sources. Prefer appropriate handheld LOD units; supplement tabletop and steamer arrangements. Never display all LOD levels together or all bean variants as one item. Deduplicate by semantic use; collections are not distinct food counts."
+ "policy": "Read-only sources. Prefer appropriate handheld LOD units; supplement tabletop and steamer arrangements. Never display all LOD levels together or all bean variants as one item. Deduplicate by semantic use; collections are not distinct food counts.",
+ "revisions": [
+  {
+   "date": "2026-09-23",
+   "reason": "owner decision: use lead-reviewed handheld R1/R2 repairs",
+   "changed": [
+    {
+     "path": "resources/foods/handheld/bean-dish.glb",
+     "oldSha256": "3a3137329cc5d8d9ee4a6b16e88615da60e340fed9e0a37f38947c36efebfc24",
+     "newSha256": "8a523f70121b2970d9568a6c78bf1e0acc3584347098c05cf5d2aba46773c37f",
+     "oldBytes": 1373476,
+     "newBytes": 1540264
+    },
+    {
+     "path": "resources/foods/handheld/bean-jar.glb",
+     "oldSha256": "c484a526bffcf5ee3e5bddc3b4adb715fb14a439ff5438ec56f064f16d5e73f5",
+     "newSha256": "33077d008e7a4ec7bddfa77f3772867503a65f7cfb2fa7bc761c8bbd705f9d68",
+     "oldBytes": 2253840,
+     "newBytes": 2210624
+    },
+    {
+     "path": "resources/foods/handheld/bean-packet-open.glb",
+     "oldSha256": "27a640bcad0e1ba24f305527107ec3ddba663c8aad5e9302e4895da825dbc07b",
+     "newSha256": "5e4dc11a134f701368fcf9703dc86c10a1d8a219728edc7a1497b61408eb5c0e",
+     "oldBytes": 980868,
+     "newBytes": 1107788
+    },
+    {
+     "path": "resources/foods/handheld/bean-single.glb",
+     "oldSha256": "ffaf463e35922da6c894661cf69651954e9bd4fba0ab73e0513ae96fa2af3d92",
+     "newSha256": "87f6ed965481f7ca0ffec3c1cc0647f1536630660d443e1f5b461089534d7ba6",
+     "oldBytes": 1028184,
+     "newBytes": 1194936
+    },
+    {
+     "path": "resources/foods/handheld/congyoubing.glb",
+     "oldSha256": "6726925d88b2e7a91e25a9479b1339e375cf11d863c3fd151ae7438e67f38925",
+     "newSha256": "f891634434e669c3178f133f1a5e3a67b7f0db97ee86da489e913a4d0df2b1ca",
+     "oldBytes": 37848,
+     "newBytes": 77872
+    },
+    {
+     "path": "resources/foods/handheld/shengjian.glb",
+     "oldSha256": "019a143d6c9fe0226a5f5f48abe01ec1f08b1ccd9c2df51c4952062c47d31ef9",
+     "newSha256": "5552cf0c664428c6dfc66528cb5ea95a5adf6d312474b70550e214007fc2683a",
+     "oldBytes": 85208,
+     "newBytes": 97540
+    },
+    {
+     "path": "resources/foods/handheld/youdunzi.glb",
+     "oldSha256": "5b67ffd36f6c0461690219384d0e51dc9a55fbb66bf237fc71906a0dd32483db",
+     "newSha256": "290072ecb5846a0b2c813eb87821ba9cbf874bb220893dfaa4ee18f679eb1969",
+     "oldBytes": 51180,
+     "newBytes": 112984
+    }
+   ]
+  }
+ ]
 }
