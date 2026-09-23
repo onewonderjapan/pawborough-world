@@ -12,6 +12,9 @@ const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out');
 const FILES = ['scene-areas.glb', 'garden.glb', 'temple.glb', 'bazaar.glb',
   'procedural-garden.glb', 'procedural-temple.glb', 'procedural-bazaar.glb', 'procedural-pond.glb', 'procedural-outer.glb'];
 
+if (fs.existsSync(path.join(OUT, 'zones-manifest.json'))) {
+  for (const z of JSON.parse(fs.readFileSync(path.join(OUT, 'zones-manifest.json'), 'utf8')).zones) if (z.file) FILES.push(z.file);
+}
 const report = { validator: {}, stats: [], issues: [] };
 for (const f of FILES) {
   const p = path.join(OUT, f);

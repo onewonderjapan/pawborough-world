@@ -433,7 +433,11 @@ for (const f of ['garden-wall.glb', 'temple-wall.glb', 'moon-gate.glb', 'jiuqu-b
 // ---------- 9) scene-areas ≤ 30 MB + gardenRouteAudit 全 ok ----------
 {
   const sa = path.join(OUT, 'scene-areas.glb');
-  if (fs.existsSync(sa)) {
+  const zm = path.join(OUT, 'zones-manifest.json');
+  if (fs.existsSync(zm)) {
+    const m = JSON.parse(fs.readFileSync(zm, 'utf8'));
+    for (const z of m.zones.filter(z => z.file)) ok(`zone-${z.id}.glb ${z.bytes} ≤ ${m.capPerZoneBytes}`, z.bytes <= m.capPerZoneBytes);
+  } else if (fs.existsSync(sa)) {
     const bytes = fs.statSync(sa).size;
     ok(`scene-areas.glb ${bytes} ≤ 30000000`, bytes <= 30000000);
   } else {
