@@ -1,5 +1,5 @@
 {
- "note": "GLBs staged into out-garden-kits/ from lead-reviewed deliveries (2026-09-23); assemble.py GARDEN_KITS=1 reads them. Pavilion positions are recomputed from the frozen layout (footprint centroid + facade.dir), NOT from modules/pavilion-kit placements.json, which is off by 40-96 m. sansuitang-bld-428179901: T2 refined module (2026-09-23), placed from footprint centroid + facade.dir (same rule as pavilions). rockery-dajiashan / rockery-yulinglong: T1 site modules (ROCKERY_KIT=1), world-space GLBs; anchor = placeholder-box AABB centroid and rock-centre principal axis recomputed from baseline/layout.json.",
+ "note": "GLBs staged into out-garden-kits/ from lead-reviewed deliveries (2026-09-23); assemble.py GARDEN_KITS=1 reads them. Pavilion positions are recomputed from the frozen layout (footprint centroid + facade.dir), NOT from modules/pavilion-kit placements.json, which is off by 40-96 m. sansuitang-bld-428179901: T2 refined module (2026-09-23), placed from footprint centroid + facade.dir (same rule as pavilions). rockery-dajiashan / rockery-yulinglong: T1 site modules (ROCKERY_KIT=1), world-space GLBs, R2 lead rebuild (pawborough-world work/w1-rockery-20260922 @ 0ab63078, one SDF shell per box group) replacing R1 e256c997; anchor = placeholder-box AABB centroid and rock-centre principal axis recomputed from baseline/layout.json.",
  "excluded": {},
  "files": {
   "corridor-bld-553893874.glb": "91d3309854d5cdf94ee01b4a6ca013a3606d14de7d2428b76046dc6f22904e2b",
@@ -18,8 +18,8 @@
   "waterside-gallery-bld-428179920.glb": "e179960ae98720d529d5c0f8eed8f5022665199a6fbf86087b8717429a611118",
   "double-corridor-bld-428186469.glb": "dd3203db841184832be1236796e900c9a0b20a09976f5df4097b0eb0ae137794",
   "sansuitang-bld-428179901/model.glb": "5a903f2e19308d167b2fd86987c2527235ff10a64d8246d5ab0eb239d3e48804",
-  "rockery-dajiashan/model.glb": "be5425e56dbbdd4b2fe2255a3dfdb5d88ebf86290794721c78fc72b97b71c9f3",
-  "rockery-yulinglong/model.glb": "d6dae6888e7ec3b2209c10bcd8f3a8ca1551dfc58fd4a8dcc2a3c3d24163ff5e"
+  "rockery-dajiashan/model.glb": "70119bd5a9d8782323f88c1c585957a74e76720345b93eaf52f109dddc20c983",
+  "rockery-yulinglong/model.glb": "bdfed7df37fc60412f2fa138efff9ede151cd1bdadc2822a2d92cc899bf0b01a"
  },
  "leadBuilt": {
   "double-corridor-bld-428186469.glb": "modules/double-corridor/build_double_corridor.py (lead, 2026-09-23)"
