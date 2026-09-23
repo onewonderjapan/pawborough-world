@@ -41,6 +41,10 @@ const SITE_MODULE_KINDS = new Set(['wall', 'wallHead', 'moonGateWall', 'zigzagBr
 // STALL_KIT=1：摊位/长凳由 modules/bazaar-stalls 实例模块承担（assemble.py 按 records/placements.json 放置），占位不再程序化生成。
 const STALL_KIT = process.env.STALL_KIT === '1';
 const STALL_KIT_KINDS = new Set(['stall', 'bench']);
+// GARDEN_KITS=1：亭 5 座 / 廊 3 条 + 听涛阁水廊 / 全部园树由 modules/{pavilion,corridor,tree}-kit 承担（复廊 bld-428186469 保留占位）。
+const GARDEN_KITS = process.env.GARDEN_KITS === '1';
+const GARDEN_KIT_IDS = new Set(['bld-428179924', 'bld-428186467', 'bld-428196085', 'bld-428196091', 'bld-428196098',
+  'bld-553893874', 'bld-428179906', 'bld-428179920']);
 const layout = JSON.parse(fs.readFileSync(path.join(OUT, 'layout.json'), 'utf8'));
 
 // ---------- 统一材质：合并几何 + 顶点色 ----------
@@ -859,6 +863,7 @@ for (const o of layout.objects) {
   if (o.skipRender) { deferred.push({ id: o.id, kind: o.kind, why: o.disposition }); continue; }
   if (SITE_MODULES && SITE_MODULE_KINDS.has(o.kind)) { deferred.push({ id: o.id, kind: o.kind, why: 'site-module' }); continue; }
   if (STALL_KIT && STALL_KIT_KINDS.has(o.kind)) { deferred.push({ id: o.id, kind: o.kind, why: 'stall-kit' }); continue; }
+  if (GARDEN_KITS && (GARDEN_KIT_IDS.has(o.id) || (o.kind === 'tree' && o.zone === 'garden'))) { deferred.push({ id: o.id, kind: o.kind, why: 'garden-kit' }); continue; }
   const ud = { id: o.id, zone: o.zone, kind: o.kind, lod: o.lod };
   if (o.name) ud.name = o.name;
   if (o.trade) ud.trade = o.trade;

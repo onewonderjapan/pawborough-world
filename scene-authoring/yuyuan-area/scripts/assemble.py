@@ -2,6 +2,9 @@
 # 坐标契约：layout.json 的 (x, z) 地图系 -> Blender (x, -z, z-up)；导出 GLB 时转回 Y-up。
 # 所有 L2 模块只读导入 + 链接复制实例，不修改源文件。
 import bpy, json, math, os, sys
+GARDEN_PAVILIONS = ['bld-428179924', 'bld-428186467', 'bld-428196085', 'bld-428196091', 'bld-428196098']
+GARDEN_CORRIDORS = {'bld-553893874': 'corridor-bld-553893874.glb', 'bld-428179906': 'ring-corridor-bld-428179906.glb',
+                    'bld-428179920': 'waterside-gallery-bld-428179920.glb'}
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, os.environ.get('OUT_DIR', 'out'))
@@ -46,6 +49,8 @@ def place(objs, inst):
     anchor.empty_display_size = 2
     anchor.location = (x, -z, 0)
     anchor.rotation_euler = (0, 0, inst['rotY'])
+    if inst.get('scale'):
+        anchor.scale = (inst['scale'],) * 3
     anchor['id'] = inst['id']
     anchor['module'] = inst['module']
     anchor['zone'] = inst['zone']
@@ -178,6 +183,46 @@ for inst in LAYOUT['instances']:
     else:
         print('SKIP unknown module', inst['module'])
 
+# ---------- 豫园套件（GARDEN_KITS=1：攒尖亭 5 座、园廊 3 条 + 听涛阁水廊、树 46 棵） ----------
+# 亭：实例模块；位置/朝向由主控从冻结布局重算（footprint 形心 + facade.dir），不用套件自带 placements
+#（2026-09-23 复验发现其 placements.json 偏离 40–96 m）。rotY = atan2(dx, dz) 使本地 +Z 指向 facade.dir。
+# 廊：世界坐标站点模块（同 garden-kit），复廊 bld-428186469 两轮返修未过，暂不接入（保留程序化占位）。
+# 树：tree-kit 的 tree-placements.json（含比例与 9 棵避让移位记录）。
+garden_kit_placed = 0
+if os.environ.get('GARDEN_KITS') == '1':
+    KIT = lambda sub: os.path.join(ROOT, os.environ.get('GARDEN_KIT_DIR', 'out-garden-kits'), sub)
+    lay_obj = {o['id']: o for o in LAYOUT['objects']}
+    lib = {}
+    def lib_objs(path):
+        if path not in lib:
+            objs = import_glb(path, 'MODLIB')
+            for o in objs:
+                o.hide_render = True
+                o.hide_viewport = True
+            lib[path] = objs
+        return lib[path]
+    for pid in GARDEN_PAVILIONS:
+        o = lay_obj[pid]
+        fp = o['geometry']['footprint'][:-1] if o['geometry']['footprint'][0] == o['geometry']['footprint'][-1] else o['geometry']['footprint']
+        cx = sum(q[0] for q in fp) / len(fp); cz = sum(q[1] for q in fp) / len(fp)
+        d = o['facade']['dir']
+        place(lib_objs(KIT(f'pavilion-{pid}/model.glb')), {'id': pid, 'module': 'pavilion-kit', 'zone': 'garden', 'lod': 'L2',
+                                                           'position': [cx, cz], 'rotY': math.atan2(d[0], d[1])})
+        garden_kit_placed += 1
+    for oid, f in GARDEN_CORRIDORS.items():
+        objs = import_glb(KIT(f), 'SITE-garden')
+        empty = bpy.data.objects.new(oid, None); empty['id'] = oid; empty['module'] = 'corridor-kit'
+        coll('SITE-garden').objects.link(empty)
+        for ob in objs:
+            if ob.parent is None: ob.parent = empty
+        garden_kit_placed += 1
+    tp = json.load(open(os.path.join(ROOT, 'modules', 'tree-kit', 'tree-placements.json'), encoding='utf-8'))
+    for t in tp['placements']:
+        place(lib_objs(KIT(f"tk-{t['species']}-{t['variant']}.glb")), {'id': t['id'], 'module': 'tree-kit', 'zone': 'garden', 'lod': 'L2',
+                                                                        'position': t['position'], 'rotY': t['rotY'], 'scale': t['scale']})
+        garden_kit_placed += 1
+    print('garden kits placed', garden_kit_placed)
+
 # ---------- 摊位套件（STALL_KIT=1：modules/bazaar-stalls 的 3 种摊位 + 长凳 + 16 条街块檐棚） ----------
 # 实例模块（原点=地面中心，+Z 朝人流），按 records/placements.json 的地图位置与 rotY 放置，锚点名 = layout 对象 id（coverage 按名对账）。
 stall_placed = 0
@@ -282,6 +327,7 @@ stats = {
     'sceneObjects': len(all_objs),
     'siteModules': site_imported,
     'stallKitPlaced': stall_placed,
+    'gardenKitPlaced': garden_kit_placed,
 }
 json.dump(stats, open(os.path.join(OUT, 'assemble-stats.json'), 'w'), indent=1)
 print('ASSEMBLE DONE', json.dumps(stats))
