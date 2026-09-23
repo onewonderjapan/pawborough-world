@@ -110,6 +110,10 @@ def main():
     }
 
     sc = setup_scene()
+    # R2 fix: the 180 m ground plane was centred on the world origin while the
+    # rockeries sit ~160–240 m away in map coordinates, so every R0/R1 render
+    # showed the rocks floating in the sky. Centre the ground on the cluster.
+    bpy.data.objects['ground'].location = (cbl.x, cbl.y, 0.0)
     if args.src_glb:
         glb = args.src_glb
         isolate = False       # R0 site-module GLB: rockery-only already
