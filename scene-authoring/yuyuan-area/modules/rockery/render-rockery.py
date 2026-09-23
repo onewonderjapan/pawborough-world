@@ -85,6 +85,9 @@ def main():
     ap.add_argument('--out', required=True)
     ap.add_argument('--module', required=True)
     ap.add_argument('--main', required=True)
+    ap.add_argument('--src-glb', default=None,
+                    help='override the source GLB (R1: before = the R0 delivery '
+                         'GLB at 26a63b85, same cameras)')
     args = ap.parse_args(argv)
 
     site = json.load(open(os.path.join(args.module, 'site-inputs.json')))
@@ -107,13 +110,18 @@ def main():
     }
 
     sc = setup_scene()
-    if args.mode == 'after':
+    if args.src_glb:
+        glb = args.src_glb
+        isolate = False       # R0 site-module GLB: rockery-only already
+    elif args.mode == 'after':
         glb = os.path.join(args.out, f'{args.cluster}.glb')
+        isolate = False
     else:
         glb = os.path.join(args.main, 'scene-authoring', 'yuyuan-area', 'out',
                            'procedural-garden.glb')
+        isolate = True
     bpy.ops.import_scene.gltf(filepath=glb)
-    if args.mode == 'before':
+    if isolate:
         # spec: render the procedural-garden.glb ROCKS with the same camera —
         # the module's water/buildings occlude the rocks, so keep rockery only
         removed = 0
