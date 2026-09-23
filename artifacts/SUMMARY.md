@@ -1,32 +1,51 @@
-# wave1-walk-20260923 · 全域候选第一人称步行（WP4）总结
+# wave1-walkr1 SUMMARY — 步行模式补碰撞 + 截图时机修正（2026-09-23）
 
-分支 `work/wave1-walk-20260923`（起点 main @ 0d1ebd68），三个独立提交，全部队列项 done，无 blocked。
+worktree `/home/baibai/outbox/pawborough-wave1-walkr1-20260923/workspace`，分支 `work/wave1-walkr1-20260923`（起点 main @ 09d11cdd）。状态：**K1 done / K2 done**，无 blocked。（上一单 walk 的总结见 git 历史，其交付物在 `artifacts/walk/`。）
 
-## 各项结果
+## 提交
+| sha | 内容 |
+|---|---|
+| 1e7e4093 | K1 园林套件碰撞导出 + 新契约测试 |
+| 38a512bf | K2 walk-check 中点时机/朝向修正 + 15 张截图重拍 + artifacts/walkr1 交付物 |
+| 2acddf0e | walkr1: RESULT.json 回填提交号（K1=1e7e4093, K2=38a512bf） |
 
-### W1 碰撞导出 — done（bb324d16）
-新 `scripts/export-collision.mjs`，挂入 `rebuild-review.sh`（connectivity/route 产物之后，`WALK_COLLISION=0` 跳过），按冻结格式 `docs/AREA-COLLISION-FORMAT.md` 生成 `out-zone/collision-{garden,pond,temple,bazaar,outer}.json`。位置一律从 `baseline/layout.json` 重算：建筑 footprint 每边薄墙（厚 0.3）、园墙/庙墙 16+25 段（厚 0.45、高 2.9/2.6）、五亭（pavilion-kit 局部记录 + layout 形心/facade 位姿）、三穗堂（与 assemble 输出逐条复核 maxDelta<0.05m）、假山世界盒、月洞墙（garden-kit 3 盒）、庙区 244 条 temple-v3 记录按 layout 实例位姿叠加、水面每边 1.2m 挡墙、六锚点 spawns。
-- **庙区对应关系核实**（GOAL 指定写进 RESULT）：根仓 `world/collision-world.json` 是街铺模块，不含庙区；庙区碰撞实际在 `resources/temple-v3/collision-world.json`，16 组记录名前缀↔layout 实例 id（`court`↔`temple-entrycourt` 等）已逐一对上，见 `artifacts/walk/RESULT.json` templeMapping。
-- 老街三块非凸块的 14 条街口边（路线 0.55m 内）不留墙、记 openings；九曲桥跨水面 2 边记 openings。纯数据推导，未删真实墙。
-- 出口：`area-collision-contract` 实现前 exit 2 → **1175 pass / 0 fail（1039 colliders）**。
+## K1 园林套件碰撞 — done
+`scripts/export-collision.mjs` 新增段 9–13；`module` 记来源。全部从 `baseline/layout.json`（复廊用 `modules/double-corridor/double-corridor-record.json` 的 centreline，其 sha256 与部署 GLB 一致）重算，柱位逐根经 `out-garden-kits/*.glb` 实际几何确认（±0.12 m、y 0.1–2.6 有顶点）后才出盒：
 
-### W2 浏览器步行 — done（1e5864aa）
-`web/walk.js`（`main.js` 仅一行 import + install + 循环里 `walk.tick()` 三处挂钩）：`?walk=1&at=<锚点>` 直入第一人称 WASD + 指针锁定；工具栏「步行/轨道」切换、锚点下拉、「回到锚点」；默认轨道模式完全不变。物理懒构建：collision-<zone>.json → `buildPhysicsWorld`（Rapier）；地面按 zones-manifest 拉原始分区 GLB，经 `src/walkGround.js`（按各分区 groundNodeRe/extraGroundNodes 选网 → 别名 → 仓库根 `collectGroundTriangles`，可复用件零改动，浏览器与节点测试共用同一层）。`server.mjs` 加只读路由 `/vendor/`（仓库根 node_modules，Rapier 0.19.0 以符号链接回参考仓，未 npm install）与 `/vendor-src/`（仓库根 src/ 可复用件）。
-- 回归：`zone-browser-check` EXIT 0（std255 54.5，重建后复跑仍绿）。
+- **园廊 3 条**：bld-553893874 48 柱 + 4 美人靠；bld-428179906（环形）40 柱 + 4；bld-428179920（听涛阁水廊）38 柱 + 4 + 端亭台基 1 盒 + 底层柱 24 根（module `corridor-kit`）。
+- **复廊 bld-428186469**（module `double-corridor`）：部署 GLB 实测 **6 柱** + 4 栏（首末跨留空=入口）+ 4 中墙段。设计记录写 `columns: 10`，与 GLB 不符——按 GOAL『用各自 GLB 的实际几何』弃 4 个无柱候选位，避免隐形墙（见 RESULT partial）。
+- **门楼 garden-gate**（module `yuyuan-gate-v2`）：`inputs/yuyuan-gate-v2.glb` 的 gate-wall 实体两面 Pier（2.3×5.33×3.0），**门洞净宽 3.26 m ≥ 2.2 m**（新测试在通道深度 3 站位两侧射线测）。折起门扇/脊饰/檐/瓦不建（身体带以上同理檐棚）。
+- **树** 46 棵（module `tree-kit`）：0.4×2.0×0.4 树干盒，位置=tree-placements（含 9 棵避让移位）。
+- **摊位/长凳** 51 件（module `bazaar-stalls`）：每件一个 GLB 包围盒盒；16 条街块檐棚不建（身体带以上）。
+- **openings**：廊栏/墙与商业路线或园路相交时不建并记 openings——数据核验 0 相交，openings 与上一版逐条一致（bazaar 16 / pond 2 / garden 0）。
+- 碰撞总数 **1216 → 1492**。
 
-### W3 机器人巡游 — done（835a01cb）
-`tests/zone-walk-check.mjs`（`npm run test:walk`）：CruiseDriver 只经 WalkController 输入链走完 `commercial-route.json` **全部 5 条**路线（GOAL 说三条，文件实有五条，全绿）。断言：每采样帧脚点 ≥ 支撑面−0.05m、胶囊不与任何建筑 OBB 相交、终点误差 ≤1.0m、全程无 NaN。**allPass=true**：终点误差 0.87–0.90m，最大横向偏离 ≤0.8m，最低离地 ≥−0.005m。产物 `artifacts/walk/WALK-CHECK.json` + 每条路线起点/中点/终点眼高截图 15 张。新测试先在未实现产物上跑过：ENOENT `collision-garden.json`，exit 1（先于实现有效）。
+## K2 截图时机 — done
+`tests/zone-walk-check.mjs`：
+1. 中点按**路线长度**取（累计弧长 ≥ 半长触发；旧代码是『中点 waypoint 索引』），眼位=路线中点地面+1.6 m，朝向=该处**路线切线**（yaw=atan2(−tx,−tz)）。5 条路线的 midStation 全部记入 WALK-CHECK.json。
+2. **根因修复（超出 GOAL 字面、为满足『中点图不再对墙』验收所必需）**：预览页轨道模式渲染循环每帧 `controls.update()` 强制 `camera.lookAt(controls.target)`，旧 `eyeView` 只设位置/四元数——**任何 yaw 从未生效**，截图永远从眼位盯住轨道目标点（这才是旧中点图整帧怼墙的机制；GOAL 归因的『上一段航向』实际也从未上屏）。截图改走页面既有 `__viewAt(p,t)`，target=眼位+前向 25 m，15 张全部按步行方向取景。
+
+## 新测试（先行证明）
+`tests/corridor-gate-collision-test.mjs`（`npm run test:corridor-gate`）：每条廊 ≥N 个柱盒（N=GLB 实际几何确认数）且逐柱对位 ±0.2 m；门楼 Pier 对上 GLB 实体、通道中线两侧射线净宽 ≥2.2 m 且两侧必有命中；46 树干、51 摊凳逐件对位。
+- 上一版产物（walk 单的 out-zone）上跑：**7 pass / 20 fail，exit 1** ✓ 先行有效。
+- 本单产物：**29 pass / 0 fail**。
 
 ## 公共验收
-- `OUT_DIR=out-zone PYTHONPATH=… SITE_MODULES=1 STALL_KIT=1 GARDEN_KITS=1 SANSUITANG=1 ZONE_SPLIT=1 bash scripts/rebuild-review.sh` → **EXIT 0**（管线内含 export-collision 与全部既有测试）。
-- `npm test`：geo 101 / coverage-negative 4 / sansuitang 16 / rockery 28 / awning 49 全绿；`test:garden-kit`（44）与 `check-food`（9）此前已绿且未触及。
-- 分区 GLB 上限 PASS 全部 ≤12MB；无新 GLB。
-- 交付：`artifacts/walk/{RESULT.json, WALK-CHECK.json, shots/, before-orbit-default.png, after-walk-eye-main.png}`、`artifacts/NEW-ASSETS.json`（5 个 collision JSON 的 sha256/bytes，可由管线再生）、`artifacts/PROGRESS.json`。
+| 项 | 结果 |
+|---|---|
+| 全流程重建 | `OUT_DIR=out-zone PYTHONPATH=$PWD/.python-deps SITE_MODULES=1 STALL_KIT=1 GARDEN_KITS=1 SANSUITANG=1 ZONE_SPLIT=1 bash scripts/rebuild-review.sh` → **EXIT 0** |
+| npm test | geo 101 / coverage-negative 4 / sansuitang 16 / rockery 28 / awning 49 全绿 |
+| zone-split | 75 pass / 0 fail（COMMON 写 59 为旧计数，现版检查更多；拆件三角对账 PASS） |
+| check-food | 9 pass / 0 fail |
+| 契约测试 | 1451 pass / 0 fail（上版 1175；三条商业路线+六锚点在新碰撞下全可走） |
+| zone-walk-check | allPass=true，5 路线 exit 0：终点误差 0.87–0.9 m、横向偏差 ≤0.8 m、贴地 −0.005 m、不穿新墙 |
+| 分区 GLB ≤12 MB | PASS（最大 zone-garden.glb 9,543,004 B） |
+| headless 浏览器 | 默认轨道 `?zone=core&cam=oblique` EXIT 0，std255 54.4（上一版 54.5，无回归）；服务用 5491，已关 |
 
-## Partial / 待主控决策
-- 园廊 3 条 + 复廊 + 听涛阁水廊无碰撞源文件，未建碰撞（可穿廊柱）；树、摊位/长凳/檐棚、street-furniture 未建；门楼（yuyuan-gate-v2）无 sidecar、须留通道，未建墙——均记入 RESULT.json partial[]。
-- pavilion-kit 的 obb 背栏带（2.3m 径向容差标记）不能直译薄盒，跳过（seat/post 盒已挡开敞面）。
-- 机主 W2 亲手走一遍（决策 D8）与 WP12 性能实测待主控安排。
+## 交付物
+`artifacts/walkr1/`：RESULT.json、WALK-CHECK.json（新）+ WALK-CHECK-before.json（旧）、shots-after/×15、shots-before/×15（上一单同机位）、before/after-orbit-default.png。`artifacts/NEW-ASSETS.json` 碰撞文件 sha 已更新为 walkr1 重建后现值（无新 GLB/贴图）。
 
-## 关键数字
-1039 导出 colliders / 运行时墙 1216 · 地面 34606 三角（194 网格）· 契约 1175 pass · 5 路线全通 · 街口边 14 · 水面 openings 2 · 提交 3 个（bb324d16 / 1e5864aa / 835a01cb）。
+## 备注 / 移交主控
+- 复廊 6 柱与设计记录 10 柱的差异见 RESULT.json partial；若后续换 corridor-kit R1 重建复廊，重跑导出即可，新测试按 GLB 确认数自适应。
+- 门楼折起门扇不建碰撞（建则通道 2.1 m < 2.2 m），现按墙体实体 3.26 m。
+- 机主亲手走一遍（D8）与 WP12 性能实测仍属主控/机主动作。
