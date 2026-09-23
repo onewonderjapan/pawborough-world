@@ -8,7 +8,7 @@ R=Path(__file__).resolve().parents[1]; O=R/os.environ.get('OUT_DIR','out')
 O.mkdir(exist_ok=True,parents=True)
 BASE=R/os.environ.get('BASE_LAYOUT','baseline/layout.json')
 d=json.loads(BASE.read_text(encoding='utf-8'))
-ov=json.loads((R.parent/'inputs/overpass.json').read_text(encoding='utf-8'))
+ov=json.loads((R/'inputs/overpass.json').read_text(encoding='utf-8'))
 tags={o['id']:o.get('tags',{}) for o in ov['elements'] if o['type']=='way'}
 fixes=[]
 for o in d['objects']:
