@@ -1,0 +1,33 @@
+{
+  "task": "wave1-fangbang F1 — 方浜中路连接段复验出图（不接入）",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "waitingForLead": true,
+  "date": "2026-09-23",
+  "method": "Blender 4.5.1 CPU 装配 v7 instances.json（除 temple-axis-v2 19 件外全部 58 件，模块 GLB 逐件来自 review-manifest 登记，worktree 内全部存在）；91m 街段地面取 v7 street-reviewed-lanes.glb 的 street-kit__* 9 节点（该 GLB 店屋节点剔除后按实例重放）；Cycles 48spp 1280x720，空白帧守卫按 COMMON",
+  "partial": [
+    "eye-6 空白守卫判 blank（庙轴按工单剔除后画面大部为天空+空旷庙前铺装），同机位看山门用 bonus 图补证",
+    "Blender 4.5.1 RC 渲染起步偶发 segfault/MEM_freeN 崩溃，脚本已用合法几何+foreach_get 规避，F1_ONLY 单图重渲跑通"
+  ],
+  "blockers": [],
+  "commits": ["见 PROGRESS.json / git log（F1 单独提交）"],
+  "numbers": {
+    "v7InstancesTotal": 77,
+    "placedNonTemple": 58,
+    "skippedTempleAxis": 19,
+    "moduleGlbsPresent": "62/62",
+    "anchorCheck": "v7+（53.5,-17.4）-> layout：山门 (−74.317,9.657)、仪门 (−77.808,−11.051) 逐位一致",
+    "connectionWalkM": 142.0,
+    "eyeShots": 6,
+    "obliqueShots": 2,
+    "topShots": 1,
+    "bonusShots": 1,
+    "blankGuard": "9/10 非空白；eye-6 预期内 blank（见 partial）",
+    "capsulePreview": "r0.35 每0.5m×264采样 × 790碰撞盒 = 0 违例",
+    "streetSeamMeshOverlaps": { "N01-plain-v1_x_westshop-shop-154": 15690, "S01-corner_x_westshop-shop-153": 14072 },
+    "gaps": ["南侧 x −35…−81 约45m 无店屋", "北侧 x −64…−104 约40m 无店屋"],
+    "floating": 0,
+    "noGroup3": "lane-a=A支弄精修、lane-b-v2=B支弄精修（20260920 实测弄口线）、interfaces=弄口接口件（GLB 本身世界坐标）——均在91m街段，不在连接段"
+  },
+  "visualVerdict": "连接段路面全程连续、无浮空，山门锚与全域逐位对齐，路线碰撞预检零违例；两条 40+ m 店面断带与街段接缝两处排房互穿需要主控拍板后再进 F2。"
+}

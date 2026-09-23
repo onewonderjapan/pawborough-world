@@ -1,0 +1,24 @@
+{
+  "task": "wave1-fangbang（WP14 方浜中路街段+连接段）",
+  "updatedAt": "2026-09-23",
+  "worker": "GLM-Flash 施工担当",
+  "waitingForLead": true,
+  "queue": {
+    "F1": {
+      "status": "done",
+      "summary": "v7 连接段复验出图完成：58/77 实例装配（跳庙轴19），10 张图（6 眼高+2 斜俯+1 正俯标注+1 bonus 含庙轴），FINDINGS.md 给出空档/穿插/浮空/无 group 3 件结论与 4 项待拍板事项",
+      "artifacts": ["artifacts/f1-review/FINDINGS.md", "artifacts/f1-review/RESULT.json", "artifacts/f1-review/f1-geometry.json", "artifacts/f1-review/f1-shots.json", "artifacts/f1-review/*.png", "artifacts/f1-review/f1_assemble_shoot.py"],
+      "commits": []
+    },
+    "F2": {
+      "status": "blocked_on_lead",
+      "note": "主控放行后新会话执行：FANGBANG=1 接入 assemble.py/export-zones.py、碰撞/路线导出、tests/fangbang-test.mjs、公共验收。放行口径见 GOAL.md；待拍板 4 项见 f1-review/FINDINGS.md §8"
+    }
+  },
+  "handoffNotes": [
+    "worktree=/home/baibai/outbox/pawborough-wave1-fangbang-20260923/workspace 分支 work/wave1-fangbang-20260923",
+    "v7 数据在 world/fangbang-temple-v7/；62 个模块 GLB 全部在 worktree 内（building/、world/lanes-v2/、world/fangbang-temple-v4/、world/street-completion/、world/east-edge/）",
+    "坐标契约：地图 = v7 + (53.5, −17.4)，山门 v7 (−127.817,27.057) → 地图 (−74.317,9.657) 与 baseline/layout.json 逐位一致",
+    "Blender 4.5.1 RC 渲染起步偶发崩溃；f1_assemble_shoot.py 支持 F1_ONLY=<name>[,<name>] 单图重渲"
+  ]
+}

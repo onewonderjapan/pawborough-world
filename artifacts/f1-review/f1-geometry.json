@@ -1,0 +1,837 @@
+{
+ "placed": [
+  {
+   "id": "N01-plain-v1",
+   "module": "plain-v1",
+   "group": "street"
+  },
+  {
+   "id": "N02-pharmacy_shop",
+   "module": "pharmacy_shop",
+   "group": "street"
+  },
+  {
+   "id": "N03-cloth_shop",
+   "module": "cloth_shop",
+   "group": "street"
+  },
+  {
+   "id": "N04-dry_goods_shop",
+   "module": "dry_goods_shop",
+   "group": "street"
+  },
+  {
+   "id": "N05-restaurant-a",
+   "module": "restaurant-a",
+   "group": "street"
+  },
+  {
+   "id": "N06-curio-a",
+   "module": "curio-a",
+   "group": "street"
+  },
+  {
+   "id": "N07-cat_corner",
+   "module": "cat_corner",
+   "group": "street"
+  },
+  {
+   "id": "N08-plain-v2",
+   "module": "plain-v2",
+   "group": "street"
+  },
+  {
+   "id": "N09-curio-b",
+   "module": "curio-b",
+   "group": "street"
+  },
+  {
+   "id": "N10-plain-v3",
+   "module": "plain-v3",
+   "group": "street"
+  },
+  {
+   "id": "S01-corner",
+   "module": "corner",
+   "group": "street"
+  },
+  {
+   "id": "S02-photo_shop",
+   "module": "photo_shop",
+   "group": "street"
+  },
+  {
+   "id": "S03-plain-v2",
+   "module": "plain-v2",
+   "group": "street"
+  },
+  {
+   "id": "S04-restaurant-b",
+   "module": "restaurant-b",
+   "group": "street"
+  },
+  {
+   "id": "S05-plain-v3",
+   "module": "plain-v3",
+   "group": "street"
+  },
+  {
+   "id": "S07-plain-v2",
+   "module": "plain-v2",
+   "group": "street"
+  },
+  {
+   "id": "east-shop-128",
+   "module": "east-shop-128",
+   "group": "street-tail-shops"
+  },
+  {
+   "id": "east-shop-129",
+   "module": "east-shop-129",
+   "group": "street-tail-shops"
+  },
+  {
+   "id": "east-shop-130",
+   "module": "east-shop-130",
+   "group": "street-tail-shops"
+  },
+  {
+   "id": "east-shop-131",
+   "module": "east-shop-131",
+   "group": "street-tail-shops"
+  },
+  {
+   "id": "east-shop-132",
+   "module": "east-shop-132",
+   "group": "street-tail-shops"
+  },
+  {
+   "id": "east-shop-133",
+   "module": "east-shop-133",
+   "group": "street-tail-shops"
+  },
+  {
+   "id": "westshop-shop-153",
+   "module": "pharmacy_shop",
+   "group": "west-band-shops"
+  },
+  {
+   "id": "westshop-shop-155",
+   "module": "plain-v2",
+   "group": "west-band-shops"
+  },
+  {
+   "id": "westshop-shop-157",
+   "module": "plain-v1",
+   "group": "west-band-shops"
+  },
+  {
+   "id": "westshop-shop-159",
+   "module": "photo_shop",
+   "group": "west-band-shops"
+  },
+  {
+   "id": "westshop-shop-160",
+   "module": "curio-a",
+   "group": "west-band-shops"
+  },
+  {
+   "id": "westshop-shop-161",
+   "module": "plain-v2",
+   "group": "west-band-shops"
+  },
+  {
+   "id": "westshop-shop-162",
+   "module": "plain-v3",
+   "group": "west-band-shops"
+  },
+  {
+   "id": "westshop-shop-164",
+   "module": "restaurant-a",
+   "group": "west-band-shops"
+  },
+  {
+   "id": "westshop-shop-166",
+   "module": "cloth_shop",
+   "group": "west-band-shops"
+  },
+  {
+   "id": "westshop-shop-168",
+   "module": "cloth_shop",
+   "group": "west-band-shops"
+  },
+  {
+   "id": "westshop-shop-170",
+   "module": "curio-a",
+   "group": "west-band-shops"
+  },
+  {
+   "id": "westshop-shop-154",
+   "module": "plain-v1",
+   "group": "west-band-shops"
+  },
+  {
+   "id": "westshop-shop-156",
+   "module": "plain-v3",
+   "group": "west-band-shops"
+  },
+  {
+   "id": "westshop-shop-158",
+   "module": "dry_goods_shop",
+   "group": "west-band-shops"
+  },
+  {
+   "id": "westshop-shop-163",
+   "module": "curio-b",
+   "group": "west-band-shops"
+  },
+  {
+   "id": "westshop-shop-165",
+   "module": "restaurant-b",
+   "group": "west-band-shops"
+  },
+  {
+   "id": "westshop-shop-171",
+   "module": "pharmacy_shop",
+   "group": "west-band-shops"
+  },
+  {
+   "id": "westshops-strips",
+   "module": "westshops-strips",
+   "group": "west-band-shops"
+  },
+  {
+   "id": "westext-surface",
+   "module": "westext-surface",
+   "group": "west-extension"
+  },
+  {
+   "id": "westext-seal-wall",
+   "module": "westext-seal-wall",
+   "group": "west-extension"
+  },
+  {
+   "id": "temple-bounds",
+   "module": "temple-bounds",
+   "group": "west-extension"
+  },
+  {
+   "id": "eastshop-shop-134",
+   "module": "curio-a",
+   "group": "east-band-shops"
+  },
+  {
+   "id": "eastshop-shop-136",
+   "module": "plain-v1",
+   "group": "east-band-shops"
+  },
+  {
+   "id": "eastshop-shop-138",
+   "module": "plain-v3",
+   "group": "east-band-shops"
+  },
+  {
+   "id": "eastshop-shop-140",
+   "module": "dry_goods_shop",
+   "group": "east-band-shops"
+  },
+  {
+   "id": "eastshop-shop-142",
+   "module": "curio-a",
+   "group": "east-band-shops"
+  },
+  {
+   "id": "eastshop-shop-135",
+   "module": "pharmacy_shop",
+   "group": "east-band-shops"
+  },
+  {
+   "id": "eastshop-shop-137",
+   "module": "plain-v2",
+   "group": "east-band-shops"
+  },
+  {
+   "id": "eastshop-shop-139",
+   "module": "plain-v1",
+   "group": "east-band-shops"
+  },
+  {
+   "id": "eastshop-shop-141",
+   "module": "photo_shop",
+   "group": "east-band-shops"
+  },
+  {
+   "id": "eastshops-strips",
+   "module": "eastshops-strips",
+   "group": "east-band-shops"
+  },
+  {
+   "id": "eastext-surface",
+   "module": "eastext-surface",
+   "group": "east-extension"
+  },
+  {
+   "id": "eastext-seal-wall",
+   "module": "eastext-seal-wall",
+   "group": "east-extension"
+  },
+  {
+   "id": "lane-a",
+   "module": "lane-a",
+   "group": ""
+  },
+  {
+   "id": "lane-b-v2",
+   "module": "lane-b-v2",
+   "group": ""
+  },
+  {
+   "id": "interfaces",
+   "module": "interfaces",
+   "group": ""
+  }
+ ],
+ "streetGroundNodes": [
+  "street-kit__aged-brass",
+  "street-kit__blue-gray-brick",
+  "street-kit__dark-iron",
+  "street-kit__deep-door-lacquer",
+  "street-kit__oxblood-stained-timber",
+  "street-kit__paving-frontage",
+  "street-kit__quiet-gray-asphalt",
+  "street-kit__weathered-lime-plaster",
+  "street-kit__worn-stone"
+ ],
+ "skippedTempleAxis": 19,
+ "overlaps": [
+  {
+   "a": "westshops-strips",
+   "b": "westext-surface",
+   "aabbOverlapM3": 3326.73,
+   "meshOverlapPairs": 146
+  },
+  {
+   "a": "eastshops-strips",
+   "b": "eastext-surface",
+   "aabbOverlapM3": 1052.0,
+   "meshOverlapPairs": 124
+  },
+  {
+   "a": "westshop-shop-157",
+   "b": "westext-surface",
+   "aabbOverlapM3": 615.54,
+   "meshOverlapPairs": 194
+  },
+  {
+   "a": "westshop-shop-165",
+   "b": "westext-surface",
+   "aabbOverlapM3": 554.73,
+   "meshOverlapPairs": 209
+  },
+  {
+   "a": "westshop-shop-155",
+   "b": "westext-surface",
+   "aabbOverlapM3": 544.63,
+   "meshOverlapPairs": 200
+  },
+  {
+   "a": "westshop-shop-161",
+   "b": "westext-surface",
+   "aabbOverlapM3": 542.82,
+   "meshOverlapPairs": 200
+  },
+  {
+   "a": "westshop-shop-162",
+   "b": "westext-surface",
+   "aabbOverlapM3": 540.15,
+   "meshOverlapPairs": 200
+  },
+  {
+   "a": "westshop-shop-157",
+   "b": "westshops-strips",
+   "aabbOverlapM3": 538.38,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "eastshop-shop-136",
+   "b": "eastext-surface",
+   "aabbOverlapM3": 532.45,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "westshop-shop-164",
+   "b": "westext-surface",
+   "aabbOverlapM3": 521.08,
+   "meshOverlapPairs": 209
+  },
+  {
+   "a": "S04-restaurant-b",
+   "b": "interfaces",
+   "aabbOverlapM3": 519.92,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "S05-plain-v3",
+   "b": "interfaces",
+   "aabbOverlapM3": 518.13,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "S04-restaurant-b",
+   "b": "S05-plain-v3",
+   "aabbOverlapM3": 511.08,
+   "meshOverlapPairs": 5266
+  },
+  {
+   "a": "eastshop-shop-137",
+   "b": "eastext-surface",
+   "aabbOverlapM3": 472.88,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "westshop-shop-155",
+   "b": "westshops-strips",
+   "aabbOverlapM3": 446.79,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "eastshop-shop-138",
+   "b": "eastext-surface",
+   "aabbOverlapM3": 441.64,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "eastshop-shop-139",
+   "b": "eastext-surface",
+   "aabbOverlapM3": 401.01,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "eastshop-shop-135",
+   "b": "eastext-surface",
+   "aabbOverlapM3": 388.41,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "westshop-shop-156",
+   "b": "westext-surface",
+   "aabbOverlapM3": 378.28,
+   "meshOverlapPairs": 200
+  },
+  {
+   "a": "S03-plain-v2",
+   "b": "S04-restaurant-b",
+   "aabbOverlapM3": 352.12,
+   "meshOverlapPairs": 5803
+  },
+  {
+   "a": "westshop-shop-153",
+   "b": "westext-surface",
+   "aabbOverlapM3": 326.9,
+   "meshOverlapPairs": 147
+  },
+  {
+   "a": "N07-cat_corner",
+   "b": "interfaces",
+   "aabbOverlapM3": 316.74,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "westshop-shop-160",
+   "b": "westext-surface",
+   "aabbOverlapM3": 291.58,
+   "meshOverlapPairs": 10
+  },
+  {
+   "a": "westshop-shop-163",
+   "b": "westext-surface",
+   "aabbOverlapM3": 290.0,
+   "meshOverlapPairs": 10
+  },
+  {
+   "a": "westshop-shop-159",
+   "b": "westext-surface",
+   "aabbOverlapM3": 268.86,
+   "meshOverlapPairs": 128
+  },
+  {
+   "a": "N09-curio-b",
+   "b": "N10-plain-v3",
+   "aabbOverlapM3": 267.58,
+   "meshOverlapPairs": 5749
+  },
+  {
+   "a": "westshop-shop-158",
+   "b": "westext-surface",
+   "aabbOverlapM3": 257.65,
+   "meshOverlapPairs": 132
+  },
+  {
+   "a": "N08-plain-v2",
+   "b": "N09-curio-b",
+   "aabbOverlapM3": 250.81,
+   "meshOverlapPairs": 6465
+  },
+  {
+   "a": "N06-curio-a",
+   "b": "interfaces",
+   "aabbOverlapM3": 238.07,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "westshop-shop-159",
+   "b": "westshops-strips",
+   "aabbOverlapM3": 231.78,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "N01-plain-v1",
+   "b": "westshop-shop-154",
+   "aabbOverlapM3": 229.14,
+   "meshOverlapPairs": 15690
+  },
+  {
+   "a": "N07-cat_corner",
+   "b": "N08-plain-v2",
+   "aabbOverlapM3": 224.44,
+   "meshOverlapPairs": 3148
+  },
+  {
+   "a": "eastshop-shop-140",
+   "b": "eastext-surface",
+   "aabbOverlapM3": 223.14,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "westshop-shop-166",
+   "b": "westext-surface",
+   "aabbOverlapM3": 221.53,
+   "meshOverlapPairs": 160
+  },
+  {
+   "a": "westshop-shop-154",
+   "b": "westext-surface",
+   "aabbOverlapM3": 220.2,
+   "meshOverlapPairs": 194
+  },
+  {
+   "a": "east-shop-131",
+   "b": "east-shop-133",
+   "aabbOverlapM3": 202.9,
+   "meshOverlapPairs": 17342
+  },
+  {
+   "a": "eastshop-shop-142",
+   "b": "eastext-surface",
+   "aabbOverlapM3": 198.64,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "eastshop-shop-134",
+   "b": "eastext-surface",
+   "aabbOverlapM3": 193.37,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "westshop-shop-155",
+   "b": "westshop-shop-157",
+   "aabbOverlapM3": 192.92,
+   "meshOverlapPairs": 13315
+  },
+  {
+   "a": "westshop-shop-154",
+   "b": "westshop-shop-156",
+   "aabbOverlapM3": 192.92,
+   "meshOverlapPairs": 12081
+  },
+  {
+   "a": "east-shop-128",
+   "b": "east-shop-130",
+   "aabbOverlapM3": 187.77,
+   "meshOverlapPairs": 14760
+  },
+  {
+   "a": "N01-plain-v1",
+   "b": "N02-pharmacy_shop",
+   "aabbOverlapM3": 187.04,
+   "meshOverlapPairs": 6836
+  },
+  {
+   "a": "S05-plain-v3",
+   "b": "S07-plain-v2",
+   "aabbOverlapM3": 182.21,
+   "meshOverlapPairs": 12496
+  },
+  {
+   "a": "eastshop-shop-139",
+   "b": "eastshops-strips",
+   "aabbOverlapM3": 179.61,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "S01-corner",
+   "b": "westshop-shop-153",
+   "aabbOverlapM3": 174.5,
+   "meshOverlapPairs": 14072
+  },
+  {
+   "a": "westext-surface",
+   "b": "temple-bounds",
+   "aabbOverlapM3": 171.41,
+   "meshOverlapPairs": 13
+  },
+  {
+   "a": "eastshop-shop-141",
+   "b": "eastext-surface",
+   "aabbOverlapM3": 171.19,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "east-shop-130",
+   "b": "east-shop-132",
+   "aabbOverlapM3": 167.42,
+   "meshOverlapPairs": 16546
+  },
+  {
+   "a": "N02-pharmacy_shop",
+   "b": "N03-cloth_shop",
+   "aabbOverlapM3": 163.52,
+   "meshOverlapPairs": 11376
+  },
+  {
+   "a": "westshop-shop-171",
+   "b": "westext-surface",
+   "aabbOverlapM3": 163.03,
+   "meshOverlapPairs": 147
+  },
+  {
+   "a": "eastshop-shop-138",
+   "b": "eastshops-strips",
+   "aabbOverlapM3": 154.97,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "westshop-shop-161",
+   "b": "westshop-shop-162",
+   "aabbOverlapM3": 149.02,
+   "meshOverlapPairs": 12496
+  },
+  {
+   "a": "N06-curio-a",
+   "b": "N07-cat_corner",
+   "aabbOverlapM3": 144.12,
+   "meshOverlapPairs": 2470
+  },
+  {
+   "a": "westshop-shop-158",
+   "b": "westshops-strips",
+   "aabbOverlapM3": 138.85,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "westshop-shop-160",
+   "b": "westshops-strips",
+   "aabbOverlapM3": 125.3,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "S03-plain-v2",
+   "b": "interfaces",
+   "aabbOverlapM3": 120.96,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "N08-plain-v2",
+   "b": "interfaces",
+   "aabbOverlapM3": 117.64,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "S02-photo_shop",
+   "b": "S03-plain-v2",
+   "aabbOverlapM3": 111.87,
+   "meshOverlapPairs": 6108
+  },
+  {
+   "a": "S07-plain-v2",
+   "b": "lane-b-v2",
+   "aabbOverlapM3": 111.46,
+   "meshOverlapPairs": 964
+  },
+  {
+   "a": "westshop-shop-168",
+   "b": "westext-surface",
+   "aabbOverlapM3": 108.71,
+   "meshOverlapPairs": 160
+  },
+  {
+   "a": "S05-plain-v3",
+   "b": "lane-b-v2",
+   "aabbOverlapM3": 93.46,
+   "meshOverlapPairs": 890
+  },
+  {
+   "a": "N05-restaurant-a",
+   "b": "interfaces",
+   "aabbOverlapM3": 85.24,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "east-shop-129",
+   "b": "east-shop-131",
+   "aabbOverlapM3": 85.07,
+   "meshOverlapPairs": 15161
+  },
+  {
+   "a": "westshop-shop-153",
+   "b": "westshop-shop-155",
+   "aabbOverlapM3": 77.81,
+   "meshOverlapPairs": 6694
+  },
+  {
+   "a": "westshop-shop-168",
+   "b": "westshop-shop-170",
+   "aabbOverlapM3": 75.26,
+   "meshOverlapPairs": 12001
+  },
+  {
+   "a": "westext-surface",
+   "b": "westext-seal-wall",
+   "aabbOverlapM3": 75.14,
+   "meshOverlapPairs": 50
+  },
+  {
+   "a": "east-shop-133",
+   "b": "eastext-surface",
+   "aabbOverlapM3": 74.01,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "N04-dry_goods_shop",
+   "b": "N05-restaurant-a",
+   "aabbOverlapM3": 64.15,
+   "meshOverlapPairs": 6050
+  },
+  {
+   "a": "N03-cloth_shop",
+   "b": "N04-dry_goods_shop",
+   "aabbOverlapM3": 62.16,
+   "meshOverlapPairs": 9400
+  },
+  {
+   "a": "westshop-shop-170",
+   "b": "westext-surface",
+   "aabbOverlapM3": 42.39,
+   "meshOverlapPairs": 10
+  },
+  {
+   "a": "westshop-shop-156",
+   "b": "westshops-strips",
+   "aabbOverlapM3": 41.1,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "lane-b-v2",
+   "b": "interfaces",
+   "aabbOverlapM3": 37.93,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "S07-plain-v2",
+   "b": "interfaces",
+   "aabbOverlapM3": 32.2,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "east-shop-132",
+   "b": "eastext-surface",
+   "aabbOverlapM3": 24.39,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "westshop-shop-156",
+   "b": "westshop-shop-158",
+   "aabbOverlapM3": 21.64,
+   "meshOverlapPairs": 3234
+  },
+  {
+   "a": "eastshop-shop-136",
+   "b": "eastshops-strips",
+   "aabbOverlapM3": 20.74,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "westshop-shop-160",
+   "b": "westshop-shop-161",
+   "aabbOverlapM3": 15.82,
+   "meshOverlapPairs": 6540
+  },
+  {
+   "a": "westshop-shop-171",
+   "b": "westext-seal-wall",
+   "aabbOverlapM3": 15.28,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "westshop-shop-170",
+   "b": "westext-seal-wall",
+   "aabbOverlapM3": 14.25,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "westshop-shop-153",
+   "b": "westshops-strips",
+   "aabbOverlapM3": 13.8,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "westshop-shop-161",
+   "b": "westshops-strips",
+   "aabbOverlapM3": 12.03,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "eastext-surface",
+   "b": "eastext-seal-wall",
+   "aabbOverlapM3": 11.74,
+   "meshOverlapPairs": 51
+  },
+  {
+   "a": "N05-restaurant-a",
+   "b": "lane-a",
+   "aabbOverlapM3": 10.28,
+   "meshOverlapPairs": 458
+  },
+  {
+   "a": "eastshop-shop-137",
+   "b": "eastshops-strips",
+   "aabbOverlapM3": 9.05,
+   "meshOverlapPairs": 0
+  },
+  {
+   "a": "N01-plain-v1",
+   "b": "westext-surface",
+   "aabbOverlapM3": 5.38,
+   "meshOverlapPairs": 194
+  },
+  {
+   "a": "westshop-shop-157",
+   "b": "westshop-shop-159",
+   "aabbOverlapM3": 4.15,
+   "meshOverlapPairs": 6320
+  },
+  {
+   "a": "N10-plain-v3",
+   "b": "S07-plain-v2",
+   "aabbOverlapM3": 3.33,
+   "meshOverlapPairs": 12496
+  },
+  {
+   "a": "lane-a",
+   "b": "interfaces",
+   "aabbOverlapM3": 2.55,
+   "meshOverlapPairs": 0
+  }
+ ],
+ "lowY": []
+}
