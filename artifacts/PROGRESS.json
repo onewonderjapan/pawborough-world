@@ -2,23 +2,29 @@
   "task": "wave1-fangbang（WP14 方浜中路街段+连接段）",
   "updatedAt": "2026-09-23",
   "worker": "GLM-Flash 施工担当",
-  "waitingForLead": true,
+  "waitingForLead": false,
   "queue": {
     "F1": {
       "status": "done",
-      "summary": "v7 连接段复验出图完成：58/77 实例装配（跳庙轴19），10 张图（6 眼高+2 斜俯+1 正俯标注+1 bonus 含庙轴），FINDINGS.md 给出空档/穿插/浮空/无 group 3 件结论与 4 项待拍板事项",
-      "artifacts": ["artifacts/f1-review/FINDINGS.md", "artifacts/f1-review/RESULT.json", "artifacts/f1-review/f1-geometry.json", "artifacts/f1-review/f1-shots.json", "artifacts/f1-review/*.png", "artifacts/f1-review/f1_assemble_shoot.py"],
-      "commits": ["83278e5a"]
+      "summary": "v7 连接段复验出图完成并经主控复验通过（83278e5a + 96fdab29）",
+      "commits": ["83278e5a", "96fdab29"]
     },
     "F2": {
-      "status": "blocked_on_lead",
-      "note": "主控放行后新会话执行：FANGBANG=1 接入 assemble.py/export-zones.py、碰撞/路线导出、tests/fangbang-test.mjs、公共验收。放行口径见 GOAL.md；待拍板 4 项见 f1-review/FINDINGS.md §8"
+      "status": "done",
+      "summary": "按放行口径接入第五分区 fangbang（FANGBANG=1 默认关）：剔除封墙与 171（与 bld-165791764 相交）、保留 168/170、南断带补 4 件（北断带为安仁街路口保留）、街缝碰撞以街段为准去重 7 条、山门缝庙区为准去重 1 条、路线山门接点 0.00m；6 分件 ≤12MB validator 0 错；fangbang-test 18/18、默认管线全绿（zone-split 59/garden-kit 44 基线复现）、浏览器 ?zone=core 含 fangbang 全加载 EXIT 0；before/after 6 机位出图",
+      "artifacts": ["artifacts/f2-integrate/RESULT.json", "artifacts/f2-integrate/{before,after}-eye-*.png", "artifacts/f2-integrate/browser-zone-*.png", "artifacts/NEW-ASSETS.json", "collision/route/infill 产物在 out-zone（构建再生成）"],
+      "commits": ["<F2-COMMIT>"],
+      "deviationsForLead": [
+        "北断带 0 件：安仁街汇入 + 余量 < 最小模块 AABB，见 RESULT partial",
+        "南断带节奏 6.2/7.5m 两档（模块只有这两档窄门面）",
+        "山门缝删 fangbang-temple-bounds:forecourt-bound-west 1 条（庙区为准）"
+      ]
     }
   },
   "handoffNotes": [
-    "worktree=/home/baibai/outbox/pawborough-wave1-fangbang-20260923/workspace 分支 work/wave1-fangbang-20260923",
-    "v7 数据在 world/fangbang-temple-v7/；62 个模块 GLB 全部在 worktree 内（building/、world/lanes-v2/、world/fangbang-temple-v4/、world/street-completion/、world/east-edge/）",
-    "坐标契约：地图 = v7 + (53.5, −17.4)，山门 v7 (−127.817,27.057) → 地图 (−74.317,9.657) 与 baseline/layout.json 逐位一致",
-    "Blender 4.5.1 RC 渲染起步偶发崩溃；f1_assemble_shoot.py 支持 F1_ONLY=<name>[,<name>] 单图重渲"
+    "FANGBANG=1 全流程：OUT_DIR=out-zone PYTHONPATH=$PWD/.python-deps SITE_MODULES=1 STALL_KIT=1 GARDEN_KITS=1 SANSUITANG=1 ZONE_SPLIT=1 FANGBANG=1 bash scripts/rebuild-review.sh",
+    "out-zone-standard（before 基线）需手工补拷 OUT_DIR 输入件：garden-wall/moon-gate/temple-wall/jiuqu-bridge.glb、garden-kit-catalog/garden-kit-collision/garden-kit-reimport.json、site-inputs.json（管线不生成，setup 时放进 out-zone 的）",
+    "排布器与测试的几何口径：断带=东侧店西缘…西侧店东缘；冲突逐碰撞记录比对（散件实例不联合）；补齐件位姿存模块原点（非 AABB 中心）",
+    "主控合并时可复核：assemble-stats.json fangbangExcluded、collision-fangbang.json streetSeamDedup/seamDedup、fangbang-infill.json northGap.reason"
   ]
 }

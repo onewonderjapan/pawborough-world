@@ -121,7 +121,7 @@ print('saved scene.blend (with food)')
 
 allc = ['ZONE-garden', 'ZONE-temple', 'ZONE-bazaar', 'ZONE-pond', 'ZONE-outer',
         'INST-garden', 'INST-temple', 'INST-bazaar', 'INST-outer', 'FOOD-bazaar',
-        'SITE-garden', 'SITE-temple', 'SITE-pond']  # SITE_MODULES=1 时 assemble.py 已建（garden-kit 站点模块）；缺省不存在即跳过
+        'SITE-garden', 'SITE-temple', 'SITE-pond', 'SITE-fangbang']  # SITE_MODULES=1 时 assemble.py 已建（garden-kit 站点模块）；FANGBANG=1 时含方浜中路；缺省不存在即跳过
 export_glb(os.path.join(OUT, 'scene-areas.glb'), allc)
 export_glb(os.path.join(OUT, 'bazaar.glb'), ['ZONE-bazaar', 'INST-bazaar', 'FOOD-bazaar'])
 

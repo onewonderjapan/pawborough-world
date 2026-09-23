@@ -54,12 +54,53 @@ const ROCKERY_KIT = process.env.ROCKERY_KIT !== '0';
 const ROCKERY_IDS = new Set(['rockery-dajiashan', 'rockery-yulinglong']);
 const layout = JSON.parse(fs.readFileSync(path.join(OUT, 'layout.json'), 'utf8'));
 
+// ---------- FANGBANG=1：方浜中路沿线路面片让位（V1-REDEFINITION：连接段 x -96.8..54、街段 54..138 精修归 fangbang） ----------
+// 外围 L0 方浜中路路面片（y=0.02）会盖住 fangbang 沥青（y≈0）：466 裁到 v7 西端铺装西缘（v7 x=-150.3 →
+// 地图 -96.8）以西，与 westext-surface 平接——裁到 -114 会在路的自身西端(-114.5)与 -96.8 间留 17.7m 裸地；
+// 464 裁到街段以东（x>=138）；横穿的支路路面片保留（路口衔接，含安仁街）。默认关（无 FANGBANG 时管线不变）。
+const FANGBANG_ROAD_CLIP = process.env.FANGBANG === '1' ? {
+  'road-238219466': [-Infinity, -96.8],
+  'road-238219464': [138, Infinity],
+  'road-33683439': [138, Infinity],
+} : null;
+function clipPolyX(pts, xmin, xmax) {
+  const side = (poly, keep, x) => {   // keep='min' 保留 x>=x，'max' 保留 x<=x
+    const out = [];
+    for (let i = 0; i < poly.length; i++) {
+      const a = poly[i], b = poly[(i + 1) % poly.length];
+      const ain = keep === 'min' ? a[0] >= x : a[0] <= x;
+      const bin = keep === 'min' ? b[0] >= x : b[0] <= x;
+      if (ain) out.push(a);
+      if (ain !== bin) out.push([x, a[1] + (b[1] - a[1]) * ((x - a[0]) / (b[0] - a[0]))]);
+    }
+    return out;
+  };
+  let p = pts;
+  if (Number.isFinite(xmin)) p = side(p, 'min', xmin);
+  if (Number.isFinite(xmax)) p = side(p, 'max', xmax);
+  return p;
+}
+function clipPolylineX(pts, xmin, xmax) {   // 开放折线：越界点剔除，边界处插值补点（ribbon 用）
+  const out = [];
+  const push = (q) => { const l = out[out.length - 1]; if (!l || l[0] !== q[0] || l[1] !== q[1]) out.push(q); };
+  const inside = (q) => (!Number.isFinite(xmin) || q[0] >= xmin) && (!Number.isFinite(xmax) || q[0] <= xmax);
+  for (let i = 0; i < pts.length; i++) {
+    const p = pts[i];
+    if (inside(p)) { push(p); continue; }
+    for (const q of [pts[i - 1], pts[i + 1]]) {
+      if (!q || !inside(q)) continue;
+      const x = (!Number.isFinite(xmin) || p[0] < xmin) ? xmin : xmax;   // p 违反哪条边界就夹到哪条
+      push([x, q[1] + (p[1] - q[1]) * ((x - q[0]) / (p[0] - q[0]))]);
+    }
+  }
+  return out;
+}
+
 // ---------- 统一材质：合并几何 + 顶点色 ----------
 // 单面材质：法线/绕序已按面向修正（tests/geo-tests.mjs 把关），不再 DoubleSide 兜底
 const MAT_VERTEX = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.93, metalness: 0, flatShading: true, side: THREE.FrontSide });
 
-function colorize(geoIn, hex) {
-  // 统一非索引：硬边法线生效 + mergeGeometries 属性一致性（索引/非索引不能混并）
+function colorize(geoIn, hex) {  // 统一非索引：硬边法线生效 + mergeGeometries 属性一致性（索引/非索引不能混并）
   const geo = geoIn.index ? geoIn.toNonIndexed() : geoIn;
   const c = new THREE.Color(hex);
   const n = geo.attributes.position.count;
@@ -894,7 +935,16 @@ for (const o of layout.objects) {
     }
     case 'road': {
       const cols = { 2: 0x8f8a83, 1: 0x9c968d, 0: 0xb0a99d };
-      const g = o.geometry.surfaceFootprint ? shapeGeo(o.geometry.surfaceFootprint,o.height) : ribbon(o.geometry.polyline, o.geometry.width, o.height, cols[o.geometry.priority] ?? 0xb0a99d, key).geometry;
+      let fp = o.geometry.surfaceFootprint, poly = o.geometry.polyline;
+      if (FANGBANG_ROAD_CLIP && FANGBANG_ROAD_CLIP[o.id]) {
+        const [xmin, xmax] = FANGBANG_ROAD_CLIP[o.id];
+        if (fp) fp = clipPolyX(fp, xmin, xmax);
+        if (poly) poly = clipPolylineX(poly, xmin, xmax);
+        if ((!fp || !fp.length) && (!poly || poly.length < 2)) continue;   // 整段让位
+      }
+      const g = fp ? shapeGeo(fp, o.height)
+        : (poly && poly.length > 1 ? ribbon(poly, o.geometry.width, o.height, cols[o.geometry.priority] ?? 0xb0a99d, key).geometry : null);
+      if (!g) continue;
       mesh = mergedMesh([colorize(g, cols[o.geometry.priority] ?? 0xb0a99d)], key, ud);
       break;
     }

@@ -27,9 +27,9 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 
 const ZONES = {
-  core: ['garden', 'temple', 'bazaar', 'pond'],
-  all: ['garden', 'temple', 'bazaar', 'pond', 'outer'],
-  garden: ['garden'], temple: ['temple'], bazaar: ['bazaar'], pond: ['pond'],
+  core: ['garden', 'temple', 'bazaar', 'pond', 'fangbang'],
+  all: ['garden', 'temple', 'bazaar', 'pond', 'fangbang', 'outer'],
+  garden: ['garden'], temple: ['temple'], bazaar: ['bazaar'], pond: ['pond'], fangbang: ['fangbang'],
 };
 // 标签距离阈值（按距离+层级展示）：区域级不限距；设施名 380m；OSM 注记 240m
 const LABEL_DIST = { region: Infinity, facility: 300, note: 240 };

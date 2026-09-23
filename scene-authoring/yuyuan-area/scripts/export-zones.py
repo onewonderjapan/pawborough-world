@@ -98,6 +98,66 @@ for z, part_index, colls, flt in PARTS:
                                   'bounds': bounds(rockery_part), 'withinCap': len(b2) <= CAP,
                                   'note': 'ROCKERY_KIT site modules; split so zone-garden.glb stays within cap'})
         print('zone garden 2', len(b2), 'bytes')
+# ---------- 方浜中路分区（FANGBANG=1 总装时存在 SITE-fangbang；按连接段/街段/东段拆件） ----------
+# fangbang 实例全部在 SITE-fangbang（anchor 自定义属性 v7id / group=v7 组名；子对象经 parent 链解析）。
+# street-kit 地面节点挂 fangbang-street-ground 锚（group=street-ground）。拆 6 件让每份原始 GLB ≤
+# ZONE_CAP_BYTES（纹理/网格占比实测：网格为主，纹理约 2.7MB/份固定开销；v7 段语义为第一优先）。
+# 每个锚必须恰好归入一件：覆盖不全直接报错退出，不许静默丢网格（zone-split-test 会兜底对账）。
+if 'SITE-fangbang' in bpy.data.collections:
+    def fb_anchor_props(o):
+        cur = o
+        while cur is not None:
+            if cur.get('v7id') or cur.get('group'):
+                return cur.get('v7id') or '', cur.get('group') or ''
+            cur = cur.parent
+        return '', ''
+    FB_PARTS = [
+        # 1 连接段东北排+条墙 | 2 连接段西南排+西端 168/170+庙前+南断带补齐 | 3 街段北排+地面+弄口件
+        # 4 街段南排+西北角N10+两支弄+弄口件 | 5 东段街尾+东端面 | 6 东段店排
+        # （放行口径：westext-seal-wall 剔除；171 与 bld-165791764 相交剔除——锚不存在即自然不归件）
+        (1, {'westshop-shop-153', 'westshop-shop-155', 'westshop-shop-157', 'westshop-shop-159',
+             'westshop-shop-160', 'westshop-shop-161', 'westshop-shop-162', 'westshops-strips'}, set()),
+        (2, {'westshop-shop-164', 'westshop-shop-166', 'westshop-shop-168', 'westshop-shop-170',
+             'westshop-shop-154', 'westshop-shop-156', 'westshop-shop-158', 'westshop-shop-163', 'westshop-shop-165',
+             'westext-surface', 'temple-bounds'}, {'infill-south'}),
+        (3, {'N01-plain-v1', 'N02-pharmacy_shop', 'N03-cloth_shop', 'N04-dry_goods_shop', 'N05-restaurant-a',
+             'N06-curio-a', 'N07-cat_corner', 'N08-plain-v2', 'N09-curio-b'},
+            {'street-ground'}),
+        (4, {'S01-corner', 'S02-photo_shop', 'S03-plain-v2', 'S04-restaurant-b', 'S05-plain-v3', 'S07-plain-v2',
+             'N10-plain-v3', 'lane-a', 'lane-b-v2', 'interfaces'}, set()),
+        (5, {'east-shop-128', 'east-shop-129', 'east-shop-130', 'east-shop-131', 'east-shop-132', 'east-shop-133',
+             'eastext-surface', 'eastext-seal-wall'}, set()),
+        (6, {'eastshop-shop-134', 'eastshop-shop-135', 'eastshop-shop-136', 'eastshop-shop-137', 'eastshop-shop-138',
+             'eastshop-shop-139', 'eastshop-shop-140', 'eastshop-shop-141', 'eastshop-shop-142', 'eastshops-strips'}, set()),
+    ]
+    fb_all = [o for o in bpy.data.collections['SITE-fangbang'].objects if o.type == 'EMPTY' and str(o.get('id') or '').startswith('fangbang-')]
+    fb_claimed = set()
+    for fb_part, fb_ids, fb_groups in FB_PARTS:
+        fb_objs = []
+        for o in bpy.data.collections['SITE-fangbang'].objects:
+            v7id, grp = fb_anchor_props(o)
+            if not (v7id or grp):
+                continue
+            if v7id in fb_ids or grp in fb_groups:
+                fb_claimed.add(o.name)
+                fb_objs.append(o)
+        f = f'zone-fangbang-{fb_part}.glb'
+        p = os.path.join(OUT, f)
+        if not fb_objs:
+            manifest['zones'].append({'id': 'fangbang', 'part': fb_part, 'file': None, 'empty': True})
+            continue
+        export(p, fb_objs)
+        b = open(p, 'rb').read()
+        manifest['zones'].append({'id': 'fangbang', 'part': fb_part, 'file': f, 'bytes': len(b),
+                                  'sha256': hashlib.sha256(b).hexdigest(), 'collections': ['SITE-fangbang'],
+                                  'objects': len(fb_objs), 'bounds': bounds(fb_objs), 'withinCap': len(b) <= CAP,
+                                  'note': 'v7 fangbang-temple-v7 non-temple-axis instances; map = v7 + (53.5, -17.4)'})
+        print('zone fangbang', fb_part, len(b), 'bytes', 'withinCap' if len(b) <= CAP else 'OVER CAP')
+    fb_unclaimed = [o.name for o in fb_all if o.name not in fb_claimed]
+    if fb_unclaimed:
+        raise SystemExit(f'FANGBANG split: {len(fb_unclaimed)} anchors not claimed by any part: {fb_unclaimed[:8]}')
+    if 'fangbang' not in manifest['order']:   # 浏览器按 order 逐区加载
+        manifest['order'].append('fangbang')
 manifest['totalBytes'] = sum(zz.get('bytes', 0) for zz in manifest['zones'])
 json.dump(manifest, open(os.path.join(OUT, 'zones-manifest.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 print('ZONES DONE total', manifest['totalBytes'], 'cap/zone', CAP)

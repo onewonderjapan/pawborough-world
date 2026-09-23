@@ -381,6 +381,299 @@ if os.environ.get('ROCKERY_KIT', '1') != '0':
         print('rockery placed', rid, 'centroid', round(cx, 3), round(cz, 3), 'rotY', round(rot_y, 4), 'axis', round(vx, 3), round(vz, 3))
     print('rockery kit placed', rockery_placed)
 
+# ---------- 方浜中路分区（FANGBANG=1：v7 world/fangbang-temple-v7 非庙轴实例并入第五分区，默认关） ----------
+# 数据源：仓库根 world/fangbang-temple-v7/instances.json（77 实例）。坐标契约：地图 = v7 + (53.5, -17.4)
+# （v7 blocks.json anchor；山门 v7 (-127.817,27.057) -> 地图 (-74.317,9.657) 与 baseline/layout.json
+# temple-shanmen 逐位一致，只有平移，2026-09-23 F1 复验）。跳过 temple-axis-v2 组（全域庙区已有，不重复放）。
+# 91m 街段地面用 v7 street-reviewed-lanes.glb 的 street-kit__* 节点（该 GLB 的店屋节点与 instances.json
+# 重复，剔除，店屋按实例从模块 GLB 重放，位置可对账）。锚点名 = v7 实例 id 加前缀 fangbang-；
+# 模块 GLB 来源 = v7 review-manifest.json 登记路径（仓库根相对），未跟踪文件登记 artifacts/NEW-ASSETS.json。
+fangbang_placed = 0
+fangbang_excluded = []
+fangbang_infill = []
+if os.environ.get('FANGBANG') == '1':
+    REPO = os.path.dirname(os.path.dirname(ROOT))   # 仓库根
+    FB7 = os.path.join(REPO, 'world', 'fangbang-temple-v7')
+    fb_inst = json.load(open(os.path.join(FB7, 'instances.json'), encoding='utf-8'))['instances']
+    fb_man = json.load(open(os.path.join(FB7, 'review-manifest.json'), encoding='utf-8'))
+    fb_path = {m['id']: os.path.join(REPO, m['path'][2:]) for m in fb_man['modules']}
+    missing_fb = sorted({i['module'] for i in fb_inst if i.get('group') != 'temple-axis-v2' and i['module'] not in fb_path})
+    if missing_fb:
+        raise SystemExit(f'FANGBANG=1: v7 review-manifest missing modules {missing_fb}')
+    # ---------- 主控放行口径（GOAL「主控复验 F1 → 放行 F2」决定 1/2，2026-09-23） ----------
+    # 决定 1：westext-seal-wall 一律剔除（方浜中路向西南外围 L0 继续延伸，封墙堵路）；
+    #   山门以西 3 店（168/170/171）只在与全域任何对象（layout 实体 footprint、庙轴模块碰撞盒）都
+    #   不相交时才放，相交则剔除并逐件记录。庙轴记录同平移即全域庙区包围盒（山门锚逐位一致）。
+    FB_EXCLUDE_ALWAYS = {'westext-seal-wall'}
+    FB_CHECK_IDS = ['westshop-shop-168', 'westshop-shop-170', 'westshop-shop-171']
+    SOLID_KINDS = {'outerBuilding', 'bazaarBlock', 'tower', 'hall', 'xuan', 'pavilion', 'waterside',
+                   'stage', 'wall', 'corridor', 'watersideGallery', 'moonGateWall', 'wallHead'}
+    fb_col = json.load(open(os.path.join(FB7, 'collision-world.json'), encoding='utf-8'))['colliders']
+    fb_by_id = {}
+    for r in fb_col:
+        fb_by_id.setdefault(r['name'].split(':')[0], []).append(r)
+    def obb_aabb(rec):
+        """obbToWorld（形式 a/b）-> 世界 AABB（v7 坐标）。"""
+        o = rec.get('obb')
+        if o:
+            c, s = math.cos(o['theta']), math.sin(o['theta'])
+            wx = o['pos'][0] + c * o['center'][0] + s * o['center'][2]
+            wz = o['pos'][2] - s * o['center'][0] + c * o['center'][2]
+            wy = o['center'][1] + (o['pos'][1] or 0)
+            hx, hy, hz = o['size'][0] / 2, o['size'][1] / 2, o['size'][2] / 2
+            ex = [abs(c) * hx + abs(s) * hz, hy, abs(s) * hx + abs(c) * hz]
+            return [wx - ex[0], wy - ex[1], wz - ex[2]], [wx + ex[0], wy + ex[1], wz + ex[2]]
+        return list(rec['min']), list(rec['max'])
+    def inst_aabb(sid, base_only=False):
+        lo, hi = [1e9] * 3, [-1e9] * 3
+        for r in fb_by_id.get(sid, []):
+            if base_only:   # 只取墙体/地面（量门面用），剔除檐口以上
+                o = r.get('obb')
+                if o and o['center'][1] - o['size'][1] / 2 > 1.0:
+                    continue
+            a, b = obb_aabb(r)
+            for i in range(3):
+                lo[i] = min(lo[i], a[i]); hi[i] = max(hi[i], b[i])
+        return lo, hi
+    def aabb_overlap_vol(a, b):
+        return math.prod(max(0.0, min(a[1][i], b[1][i]) - max(a[0][i], b[0][i])) for i in range(3))
+    def poly_overlaps_aabb(poly, lo, hi):
+        """2D footprint 多边形（地图坐标）与 AABB（已转地图坐标）相交判定。"""
+        xs = [p[0] for p in poly]; zs = [p[1] for p in poly]
+        if max(xs) < lo[0] or min(xs) > hi[0] or max(zs) < lo[2] or min(zs) > hi[2]:
+            return None
+        corners = [(lo[0], lo[2]), (hi[0], lo[2]), (hi[0], hi[2]), (lo[0], hi[2])]
+        def inside(px, pz):
+            cin = False
+            n = len(poly)
+            for i in range(n):
+                x1, z1 = poly[i]; x2, z2 = poly[(i + 1) % n]
+                if (z1 > pz) != (z2 > pz) and px < (x2 - x1) * (pz - z1) / (z2 - z1) + x1:
+                    cin = not cin
+            return cin
+        for cx, cz in corners:
+            if inside(cx, cz):
+                return 'corner-in-poly'
+        for px, pz in poly:
+            if lo[0] <= px <= hi[0] and lo[2] <= pz <= hi[2]:
+                return 'poly-vertex-in-box'
+        n = len(poly)
+        for i in range(n):
+            x1, z1 = poly[i]; x2, z2 = poly[(i + 1) % n]
+            for (ax, az), (bx, bz) in zip(corners, corners[1:] + corners[:1]):
+                d1 = (x2 - x1) * (az - z1) - (z2 - z1) * (ax - x1)
+                d2 = (x2 - x1) * (bz - z1) - (z2 - z1) * (bx - x1)
+                d3 = (bx - ax) * (z1 - az) - (bz - az) * (x1 - ax)
+                d4 = (bx - ax) * (z2 - az) - (bz - az) * (x2 - ax)
+                if ((d1 > 0) != (d2 > 0)) and ((d3 > 0) != (d4 > 0)):
+                    return 'edge-cross'
+        return None
+    fb_layout = json.load(open(os.path.join(ROOT, 'baseline', 'layout.json'), encoding='utf-8'))
+    fb_solids = [(o['id'], o['geometry']['footprint']) for o in fb_layout['objects']
+                 if o.get('kind') in SOLID_KINDS and (o.get('geometry') or {}).get('footprint')]
+    fb_temple_ids = {i['id'] for i in fb_inst if i.get('group') == 'temple-axis-v2'}
+    fb_temple_boxes = [obb_aabb(r) for r in fb_col if r['name'].split(':')[0] in fb_temple_ids]
+    OFF_MAP = (53.5, -17.4)
+    fb_excluded_ids = set(FB_EXCLUDE_ALWAYS)
+    for eid in FB_EXCLUDE_ALWAYS:
+        fangbang_excluded.append({'id': eid, 'decision': 'lead-1', 'reason': 'west seal wall removed: 方浜中路 continues west as L0 outer road; a seal wall would block it'})
+    for sid in FB_CHECK_IDS:
+        lo, hi = inst_aabb(sid)
+        hits = []
+        mlo = [lo[0] + OFF_MAP[0], lo[1], lo[2] + OFF_MAP[1]]; mhi = [hi[0] + OFF_MAP[0], hi[1], hi[2] + OFF_MAP[1]]
+        for solid_id, poly in fb_solids:
+            how = poly_overlaps_aabb(poly, mlo, mhi)
+            if how:
+                hits.append({'object': solid_id, 'how': how})
+        for tlo, thi in fb_temple_boxes:
+            if aabb_overlap_vol([lo, hi], [tlo, thi]) > 1e-6:
+                hits.append({'object': 'v7-temple-axis', 'how': 'aabb'})
+        if hits:
+            fb_excluded_ids.add(sid)
+            fangbang_excluded.append({'id': sid, 'decision': 'lead-1', 'reason': 'intersects global objects', 'intersecting': hits})
+        else:
+            fangbang_excluded.append({'id': sid, 'decision': 'lead-1', 'reason': 'kept: no intersection with layout solids or temple-axis bounds', 'kept': True})
+    # ---------- 决定 2：南侧店面断带（v7 x −35…−81）补齐，复用 west-band 窄店模块（局部门面 6.2–7.5m，
+    # 门脸朝路，rotY 沿 158→163 插值），北断带是安仁街（road-495101845）路口，留开口不放（逐条记录在
+    # fangbang-infill.json）。新增件 id=fangbang-infill-*、designInference=true；碰撞由
+    # export-collision-fangbang.mjs 按 donor 记录克隆。 ----------
+    def fb_pack_infill(prefix, east_id, west_id, donors, reserve_x=None, margin=0.55, edge_margin=0.8):
+        """沿 east→west 排线按 AABB 贴排 donors 循环；reserve_x=(x0,x1) 为保留带（路口），整体跳到其西侧。
+        冲突即停（保守排法）；返回 [(id, cx, cz, rot, donor, lo, hi)]。"""
+        e = next(i for i in fb_inst if i['id'] == east_id)
+        w = next(i for i in fb_inst if i['id'] == west_id)
+        ex, ez, ery = e['positionGlb'][0], e['positionGlb'][2], e['rotationYRad']
+        wxp, wzp, wry = w['positionGlb'][0], w['positionGlb'][2], w['rotationYRad']
+        elo, ehi = inst_aabb(east_id, base_only=True)
+        wlo, whi = inst_aabb(west_id, base_only=True)
+        gap_e, gap_w = elo[0], whi[0] + edge_margin   # 断带 = 东侧店的西缘 … 西侧店的东缘
+        slope = (wzp - ez) / (wxp - ex)
+        rot_slope = (wry - ery) / (wxp - ex)
+        # 逐碰撞记录比对（一实例多散件时实例级联合 AABB 会误判，如 westshops-strips 五段条墙）；
+        # 邻居店（east/west）的全部记录也在冲突候选里（背墙/檐口会外凸出联合 AABB 之外）
+        others = sorted({r['name'].split(':')[0] for r in fb_col} - fb_excluded_ids - fb_temple_ids)
+        other_boxes = [(r['name'].split(':')[0], *obb_aabb(r))
+                       for oid in others for r in fb_by_id.get(oid, [])]
+        placed, cursor, di = [], gap_e - margin, 0
+        while cursor > gap_w:
+            if reserve_x and cursor > reserve_x[1] + margin:
+                cursor = reserve_x[0] - margin   # 跳过保留带，从其西侧继续
+                continue
+            donor = donors[di % len(donors)]; di += 1
+            drecs = [r for r in fb_by_id.get(donor, [])
+                     if not (r.get('obb') and r['obb']['center'][1] - r['obb']['size'][1] / 2 > 1.0)]
+            if not drecs:
+                break
+            frac = (cursor - ex) / (wxp - ex)
+            rot = ery + rot_slope * frac
+
+            def box_at(cx):
+                lo = [1e9] * 3; hi = [-1e9] * 3
+                cz0 = ez + slope * (cx - ex)
+                c, s = math.cos(rot), math.sin(rot)
+                for r in drecs:
+                    o = r['obb']
+                    lx = c * o['center'][0] + s * o['center'][2]
+                    lz = -s * o['center'][0] + c * o['center'][2]
+                    hx, hy, hz = o['size'][0] / 2, o['size'][1] / 2, o['size'][2] / 2
+                    cc, ss = abs(c), abs(s)
+                    exx = cc * hx + ss * hz; ezz = ss * hx + cc * hz
+                    lo = [min(lo[0], cx + lx - exx), min(lo[1], o['center'][1] - hy), min(lo[2], cz0 + lz - ezz)]
+                    hi = [max(hi[0], cx + lx + exx), max(hi[1], o['center'][1] + hy), max(hi[2], cz0 + lz + ezz)]
+                return lo, hi
+
+            # 模块局部 AABB 的 x 偏移（世界系）：令 AABB 东缘贴 cursor 反解模块原点 x——
+            # 锚摆放的是模块原点，位姿必须存原点，测试端按原位姿重算才能逐位对上
+            c, s = math.cos(rot), math.sin(rot)
+            offs = []
+            for r in drecs:
+                o = r['obb']
+                hx, hz = o['size'][0] / 2, o['size'][2] / 2
+                lx = c * o['center'][0] + s * o['center'][2]
+                exx = abs(c) * hx + abs(s) * hz
+                offs.append((lx - exx, lx + exx))
+            L, H = min(a for a, _ in offs), max(b for _, b in offs)
+            width = H - L
+            if cursor - width < gap_w or (reserve_x and cursor - width < reserve_x[1]):
+                break   # 当前空位放不下（贴到西界或压保留带）
+            origin_x = cursor - H
+            lo, hi = box_at(origin_x)
+            clash = [pid for (pid, *_rest, plo, phi) in placed if aabb_overlap_vol([lo, hi], [plo, phi]) > 1e-6]
+            clash += [oid for (oid, olo, ohi) in other_boxes if aabb_overlap_vol([lo, hi], [olo, ohi]) > 1e-6]
+            for solid_id, poly in fb_solids:
+                mlo = [lo[0] + OFF_MAP[0], lo[1], lo[2] + OFF_MAP[1]]
+                mhi = [hi[0] + OFF_MAP[0], hi[1], hi[2] + OFF_MAP[1]]
+                if poly_overlaps_aabb(poly, mlo, mhi):
+                    clash.append(solid_id)
+            if clash:
+                break
+            iid = f'fangbang-infill-{prefix}{len(placed) + 1}'
+            placed.append((iid, origin_x, ez + slope * (origin_x - ex), rot, donor, lo, hi))
+            cursor = lo[0] - margin
+        return placed
+    # 南断带（决定 2）：158(−34.1 西缘)…163(−80.1 东缘)；donor 循环 dry_goods(7.5m)/curio-b(6.2m)
+    fb_infill_s = fb_pack_infill('s', 'westshop-shop-158', 'westshop-shop-163',
+                                 ['westshop-shop-158', 'westshop-shop-163', 'westshop-shop-163', 'westshop-shop-158', 'westshop-shop-163'])
+    # 北断带：安仁街（map road-495101845，宽 7m）正汇入（v7 x≈−84.9），路口保留带宽 ±6.5m；实测余量
+    # < 窄模块 AABB 7.7m，预期 0 件 —— 路口优先，记录进 fangbang-infill.json 供复验。
+    fb_infill_n = fb_pack_infill('n', 'westshop-shop-162', 'westshop-shop-164',
+                                 ['westshop-shop-160', 'westshop-shop-159'], reserve_x=(-84.9 - 6.5, -84.9 + 6.5))
+    print('fangbang infill north placed', len(fb_infill_n), '(安仁街 junction kept open)')
+    fb_cache = {}
+    def fb_objs(module):
+        if module not in fb_cache:
+            objs = import_glb(fb_path[module], 'MODLIB')
+            for o in objs:
+                o.hide_render = True
+                o.hide_viewport = True
+            fb_cache[module] = objs
+        return fb_cache[module]
+    # 街段地面：street-kit__* 世界坐标节点（v7 坐标）挂 fangbang-street-ground 锚（group=street-ground，
+    # 分区拆件归街段件）；锚位姿 = 地图平移 (53.5, -17.4) -> Blender (53.5, +17.4, 0)，与实例同一坐标契约
+    sg_objs = import_glb(os.path.join(FB7, 'street-reviewed-lanes.glb'), 'SITE-fangbang')
+    sg_keep = [o for o in sg_objs if o.name.startswith('street-kit__')]
+    sg_anchor = bpy.data.objects.new('fangbang-street-ground', None)
+    sg_anchor.location = (53.5, 17.4, 0)
+    sg_anchor.rotation_euler = (0, 0, 0)
+    sg_anchor['id'] = 'fangbang-street-ground'
+    sg_anchor['module'] = 'fangbang-street-kit'
+    sg_anchor['zone'] = 'fangbang'
+    sg_anchor['group'] = 'street-ground'
+    coll('SITE-fangbang').objects.link(sg_anchor)
+    for o in sg_keep:
+        if o.parent is None:
+            o.parent = sg_anchor
+    for o in sg_objs:
+        if o not in sg_keep:
+            bpy.data.objects.remove(o, do_unlink=True)
+    print('fangbang street ground nodes kept:', len(sg_keep))
+    fb_skipped_temple = 0
+    for inst in fb_inst:
+        if inst.get('group') == 'temple-axis-v2':
+            fb_skipped_temple += 1
+            continue
+        if inst['id'] in fb_excluded_ids:
+            continue
+        x, y, z = inst['positionGlb']
+        anchor = bpy.data.objects.new('fangbang-' + inst['id'], None)
+        anchor.empty_display_size = 2
+        anchor.location = (x + 53.5, -(z - 17.4), y)      # 地图 = v7+(53.5,-17.4)；Blender (x, -z, y-up)
+        anchor.rotation_euler = (0, 0, inst['rotationYRad'])
+        anchor['id'] = 'fangbang-' + inst['id']
+        anchor['v7id'] = inst['id']
+        anchor['module'] = inst['module']
+        anchor['zone'] = 'fangbang'
+        anchor['lod'] = 'L2'
+        anchor['group'] = inst.get('group', '')
+        coll('SITE-fangbang').objects.link(anchor)
+        for o in fb_objs(inst['module']):
+            dup = o.copy()   # 链接复制共享网格/材质；库本体隐藏，副本恢复可见
+            dup.hide_render = False
+            dup.hide_viewport = False
+            coll('SITE-fangbang').objects.link(dup)
+            dup.parent = anchor
+        fangbang_placed += 1
+    print('fangbang placed', fangbang_placed, 'skipped temple-axis', fb_skipped_temple,
+          'excluded', [e['id'] for e in fangbang_excluded if not e.get('kept')])
+    # 补齐件锚（决定 2）：donor 模块重放，位姿 = 排线插值；碰撞记录由 export-collision-fangbang.mjs 克隆
+    for iid, cx, cz, rot, donor, _lo, _hi in fb_infill_s:
+        module = next(i['module'] for i in fb_inst if i['id'] == donor)
+        anchor = bpy.data.objects.new(iid, None)
+        anchor.empty_display_size = 2
+        anchor.location = (cx + 53.5, -(cz - 17.4), 0)
+        anchor.rotation_euler = (0, 0, rot)
+        anchor['id'] = iid
+        anchor['module'] = module
+        anchor['donor'] = donor
+        anchor['zone'] = 'fangbang'
+        anchor['lod'] = 'L2'
+        anchor['group'] = 'infill-south'
+        anchor['designInference'] = True
+        anchor['rotY'] = round(rot, 5)
+        coll('SITE-fangbang').objects.link(anchor)
+        for o in fb_objs(module):
+            dup = o.copy()
+            dup.hide_render = False
+            dup.hide_viewport = False
+            coll('SITE-fangbang').objects.link(dup)
+            dup.parent = anchor
+        fangbang_infill.append({'id': iid, 'module': module, 'donor': donor,
+                                'positionGlb': [round(cx, 4), 0, round(cz, 4)],
+                                'positionMap': [round(cx + 53.5, 4), 0, round(cz - 17.4, 4)],
+                                'rotY': round(rot, 5), 'designInference': True, 'gap': 'south'})
+    fb_infill_doc = {
+        'axis': 'v7 glTF Y-up coords; map = v7 + (53.5, -17.4)',
+        'decision': 'GOAL wave1-fangbang lead decisions 2026-09-23 #2: fill storefront gaps with west-band narrow modules (local facade 6.2-7.5m), facades to street; deterministic AABB packing, clash = stop',
+        'southGap': {'between': ['westshop-shop-158', 'westshop-shop-163'],
+                     'fillRule': 'AABB edge-to-edge, 0.55m gap, rotY lerped 158->163',
+                     'placed': fangbang_infill},
+        'northGap': {'between': ['westshop-shop-162', 'westshop-shop-164'],
+                     'placed': [],
+                     'reason': '安仁街 (layout road-495101845, w=7m) joins 方浜中路 inside this gap at v7 x≈-84.9; reserved mouth ±6.5m leaves <7.7m clear — narrower than the smallest module AABB (curio-a 7.7m). Placing anything would block the junction or clip shops 162/164; mouth kept open (lead constraint: infill must not intersect global objects).'},
+    }
+    json.dump(fb_infill_doc, open(os.path.join(OUT, 'fangbang-infill.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+    print('fangbang infill placed', len(fangbang_infill), [i['id'] for i in fangbang_infill])
+
 # MODLIB 收藏不导出
 modlib = bpy.data.collections.get('MODLIB')
 
@@ -425,7 +718,7 @@ def export_glb(path, objects):
         bpy.ops.export_scene.gltf(filepath=path, export_format='GLB', export_yup=True, use_selection=True)
     print('exported', path, os.path.getsize(path), 'bytes')
 
-SITE_ALL = [o for c in ('SITE-garden', 'SITE-temple', 'SITE-pond')
+SITE_ALL = [o for c in ('SITE-garden', 'SITE-temple', 'SITE-pond', 'SITE-fangbang')
             if c in bpy.data.collections for o in bpy.data.collections[c].objects]
 all_objs = [o for c in ('ZONE-garden', 'ZONE-temple', 'ZONE-bazaar', 'ZONE-pond', 'ZONE-outer',
                         'INST-garden', 'INST-temple', 'INST-bazaar', 'INST-outer')
@@ -461,6 +754,9 @@ stats = {
     'sansuitangPlaced': sst_placed,
     'rockeryKitPlaced': rockery_placed,
     'gardenKitPlaced': garden_kit_placed,
+    'fangbangPlaced': fangbang_placed,
+    'fangbangExcluded': fangbang_excluded,
+    'fangbangInfillIds': [i['id'] for i in fangbang_infill],
 }
 json.dump(stats, open(os.path.join(OUT, 'assemble-stats.json'), 'w'), indent=1)
 print('ASSEMBLE DONE', json.dumps(stats))
