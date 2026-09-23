@@ -1,0 +1,121 @@
+{
+  "moduleId": "shop-07-tangtuan",
+  "triangles": 5888,
+  "meshes": 47,
+  "fileBytes": 1430092,
+  "sha256": "33e5bae5d90edfa4b11b468a6bac8dc2c14021bda5d4f0970efccfdb12eab308",
+  "design": {
+    "specId": "shop-07-tangtuan",
+    "name": "汤团店（两开间，商街 N1）",
+    "family": "fangbang ordinary shop-house, closed base model",
+    "designInference": true,
+    "notHistoricalReconstruction": true,
+    "references": [
+      "PBR-SH-0007-G01",
+      "PBR-SH-0007-G02",
+      "PBR-SH-0007-G03",
+      "PBR-SH-0007-G04"
+    ],
+    "frontageM": 5.4,
+    "depthM": 6.4,
+    "eaveM": 6.3,
+    "ridgeM": 7.5,
+    "eaveOverhangFrontM": 0.34,
+    "eaveOverhangSideM": 0.3,
+    "wallThicknessM": 0.24,
+    "singleStorey": false,
+    "features": [
+      "两开间 5.4 m（2×2.7），檐口 6.3 m 双层店型",
+      "外卖窗：外挑木柜 + 掀起翻板，柜面铜锅灶 Ø0.7 + 白瓷碗瓷勺可见",
+      "上层方格窗（横竖芯条分格）",
+      "排字招牌「寧波湯糰」：逐字木 block + Noto Serif CJK 本地字体浮雕，不临摹书法"
+    ],
+    "sign": {
+      "text": "寧波湯糰",
+      "x": 0.25,
+      "y": 3.95,
+      "z": 0.028,
+      "block": [
+        0.44,
+        0.44,
+        0.05
+      ],
+      "gap": 0.07,
+      "size": 0.34,
+      "extrude": 0.014,
+      "resolution": 1
+    },
+    "props": [
+      {
+        "kind": "copper-stove",
+        "at": [
+          0.25,
+          0.95,
+          -0.45
+        ],
+        "scale": 0.9
+      },
+      {
+        "kind": "bowl-spoon",
+        "at": [
+          0.62,
+          0.95,
+          -0.28
+        ],
+        "scale": 1.0
+      },
+      {
+        "kind": "bowl-spoon",
+        "at": [
+          0.34,
+          0.95,
+          -0.22
+        ],
+        "scale": 1.0
+      }
+    ],
+    "instances": null,
+    "signFont": "Noto Serif CJK Bold (local system font, typeset per-character blocks, no calligraphy tracing)",
+    "doors": "all doors and windows modeled CLOSED with real recessed leaves; no interior",
+    "trisTarget": 8000,
+    "axis": "glTF Y-up, facade +Z, depth -Z, origin front-wall center bottom",
+    "generator": "generator/build_shops_n1.py (derived from generator/build_shophouse.py)",
+    "recipe": "shop-07-tangtuan.json"
+  },
+  "assertions": [
+    {
+      "assert": "glb-bounds-x",
+      "ok": true,
+      "detail": "x [-3.000, 3.000] vs ±3.000"
+    },
+    {
+      "assert": "glb-bounds-y",
+      "ok": true,
+      "detail": "y [0.000, 7.800] vs [0, 7.820]"
+    },
+    {
+      "assert": "glb-bounds-z",
+      "ok": true,
+      "detail": "z [-6.750, 0.870] vs [-7.000, 0.950]"
+    },
+    {
+      "assert": "ridge-height",
+      "ok": true,
+      "detail": "max y 7.800 vs ridge 7.5 + cap"
+    },
+    {
+      "assert": "all-openings-filled",
+      "ok": true,
+      "detail": "9 openings filled with closed leaves"
+    },
+    {
+      "assert": "sign-glyphs-mesh",
+      "ok": true,
+      "detail": "4 glyph meshes for 4 chars"
+    }
+  ],
+  "units": "meters",
+  "surveyed": false,
+  "bakedGlobalIllumination": false,
+  "referencePhotoTexturesUsed": false
+}
