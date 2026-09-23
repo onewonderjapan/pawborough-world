@@ -4,6 +4,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
 const app = document.getElementById('app');
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -58,6 +59,8 @@ function infoOf(node) {
 }
 
 const loader = new GLTFLoader();
+loader.setMeshoptDecoder(MeshoptDecoder);   // EXT_meshopt_compression (zone .cm.glb)
+const RAW = new URLSearchParams(location.search).get('raw') === '1';   // ?raw=1 loads uncompressed zone GLBs for comparison
 const t0 = performance.now();
 const params = new URLSearchParams(location.search);
 function prepare(root) {
@@ -103,13 +106,14 @@ async function loadZones(m) {
     zoneLoad[key] = { state: '…' };
     const ts = performance.now();
     try {
-      const root = await loadGlb('/out/' + e.file);
+      const useCm = e.cm && !RAW;
+      const root = await loadGlb('/out/' + (useCm ? e.cm.file : e.file));
       prepare(root);
       const grp = new THREE.Group(); grp.name = 'ZN-' + z; grp.add(root); scene.add(grp);
       allRoots.push(grp);
-      zoneLoad[key] = { state: 'ok', bytes: e.bytes, ms: performance.now() - ts };
+      zoneLoad[key] = { state: 'ok', bytes: useCm ? e.cm.bytes : e.bytes, ms: performance.now() - ts };
       if (first) { first = false; afterFirstPaint(); } else setZone(curZone, false);
-      hud('分区加载 zones-manifest.json');
+      hud(RAW ? '分区加载（未压缩 ?raw=1）' : '分区加载（meshopt 压缩）');
     } catch (err) { zoneLoad[key] = { state: 'fail' }; console.error('zone load failed', key, err); }
   }
   window.__zonesLoaded = Object.keys(zoneLoad).filter(z => zoneLoad[z].state === 'ok');

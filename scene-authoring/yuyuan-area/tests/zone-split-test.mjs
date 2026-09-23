@@ -16,6 +16,21 @@ for (const z of m.zones.filter(z => z.file)) {
   ok(`${z.file} ${buf.length} ≤ cap ${m.capPerZoneBytes}`, buf.length <= m.capPerZoneBytes);
   const j = parseGlbJson(buf); placed += triangleCounts(j).placed; names.push(...meshNames(j));
 }
+// meshopt runtime copies: same placed triangles and same named mesh nodes as the raw zone file, validator 0 errors recorded
+for (const z of m.zones.filter(z => z.file && z.cm)) {
+  const raw = parseGlbJson(fs.readFileSync(path.join(OUT, z.file)));
+  const cmBuf = fs.readFileSync(path.join(OUT, z.cm.file));
+  const cm = parseGlbJson(cmBuf);
+  ok(`${z.cm.file} sha matches manifest`, crypto.createHash('sha256').update(cmBuf).digest('hex') === z.cm.sha256);
+  // gltfpack removes zero-area (degenerate) triangles; 2026-09-23 lead check: the 4 dropped in temple-1/-2 were exactly the 4 zero-area ones.
+  const rt = triangleCounts(raw).placed, ct = triangleCounts(cm).placed;
+  ok(`${z.cm.file} placed triangles ${ct} vs raw ${rt} (only degenerate removal, ≤0.01%)`, ct <= rt && rt - ct <= Math.max(8, rt * 1e-4), `diff=${rt - ct}`);
+  const rn = new Set(meshNames(raw)), cn = new Set((cm.nodes || []).map(n => n.name));
+  const lost = [...rn].filter(n => !cn.has(n));
+  ok(`${z.cm.file} keeps every named mesh node`, lost.length === 0, JSON.stringify(lost.slice(0, 5)));
+  ok(`${z.cm.file} validator 0 errors`, z.cm.validatorErrors === 0);
+  ok(`${z.cm.file} uses EXT_meshopt_compression`, (cm.extensionsUsed || []).includes('EXT_meshopt_compression'));
+}
 const sceneTri = triangleCounts(scene).placed;
 ok(`placed triangles zones ${placed} == scene-areas ${sceneTri}`, placed === sceneTri, `diff=${placed - sceneTri}`);
 const sn = meshNames(scene).sort(), zn = [...names].sort();
