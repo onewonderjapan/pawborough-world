@@ -178,6 +178,33 @@ for inst in LAYOUT['instances']:
     else:
         print('SKIP unknown module', inst['module'])
 
+# ---------- 摊位套件（STALL_KIT=1：modules/bazaar-stalls 的 3 种摊位 + 长凳 + 16 条街块檐棚） ----------
+# 实例模块（原点=地面中心，+Z 朝人流），按 records/placements.json 的地图位置与 rotY 放置，锚点名 = layout 对象 id（coverage 按名对账）。
+stall_placed = 0
+if os.environ.get('STALL_KIT') == '1':
+    SK_REC = os.path.join(ROOT, 'modules', 'bazaar-stalls', 'records')
+    SK_GLB = os.path.join(ROOT, os.environ.get('STALL_DIR', 'out-bazaar-stalls'))
+    sp = json.load(open(os.path.join(SK_REC, 'placements.json'), encoding='utf-8'))
+    ap = json.load(open(os.path.join(SK_REC, 'awning-placements.json'), encoding='utf-8'))
+    stall_lib = {}
+    def stall_objs(mod):
+        if mod not in stall_lib:
+            objs = import_glb(os.path.join(SK_GLB, mod), 'MODLIB')
+            for o in objs:
+                o.hide_render = True
+                o.hide_viewport = True
+            stall_lib[mod] = objs
+        return stall_lib[mod]
+    for it in sp['stalls'] + sp['benches']:
+        place(stall_objs(it['module']), {'id': it['id'], 'module': 'stall-kit:' + it['module'], 'zone': 'bazaar', 'lod': 'L2',
+                                         'position': it['position'], 'rotY': it['rotY']})
+        stall_placed += 1
+    for e in (ap['edges'] if os.environ.get('STALL_AWNINGS', '1') == '1' else []):
+        place(stall_objs(e['module']), {'id': f"awning-{e['blockId']}-{e['edgeIndex']}", 'module': 'stall-kit:awning', 'zone': 'bazaar',
+                                        'lod': 'L2', 'position': e['midpoint'], 'rotY': e['rotY']})
+        stall_placed += 1
+    print('stall kit placed', stall_placed)
+
 # MODLIB 收藏不导出
 modlib = bpy.data.collections.get('MODLIB')
 
@@ -254,6 +281,7 @@ stats = {
     'modules': {'gate': 1, 'shops': len(shop_objs), 'temple': len(temple_objs)},
     'sceneObjects': len(all_objs),
     'siteModules': site_imported,
+    'stallKitPlaced': stall_placed,
 }
 json.dump(stats, open(os.path.join(OUT, 'assemble-stats.json'), 'w'), indent=1)
 print('ASSEMBLE DONE', json.dumps(stats))

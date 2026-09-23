@@ -4,13 +4,13 @@
  "module": "awning strip (parametric, one GLB per edge)",
  "design": {
   "projectionM": 1.2,
-  "frontHeightM": 2.4,
-  "wallHeightM": 2.7215,
+  "frontHeightM": 2.78,
+  "wallHeightM": 3.1015,
   "slopeDeg": 15.0,
   "scallopWidthM": 0.5,
   "brackets": "2 per 3m (spacing 1.5m, ends included)",
   "canvasAlternation": "wine/indigo/cream round-robin by edge order",
-  "collision": "unreachable (low edge 2.4m) — no collision box"
+  "collision": "unreachable (valance bottom 2.54m, above 2.5m body band) — no collision box"
  },
  "counts": {
   "edges": 16,
@@ -49,17 +49,17 @@
    "geometry": {
     "builtLengthM": 18.8,
     "projectionM": 1.2,
-    "frontHeightM": 2.4,
-    "wallHeightM": 2.7215,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
     "slopeDeg": 15.0,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 488,
    "trisPerMetre": 25.96,
-   "bytes": 37880,
+   "bytes": 37868,
    "budgetOk": true,
-   "sha256": "fa1ba4ab82b2a5c2bfc0fca50fbd8b0006b7d8f12111fc6652ab85ff09d9528f"
+   "sha256": "fd559f22fa0787a70b7576b5f23e797ec83e2d76f0586d44d806914d581dfa6d"
   },
   {
    "blockId": "bld-389701812",
@@ -93,17 +93,17 @@
    "geometry": {
     "builtLengthM": 51.6,
     "projectionM": 1.2,
-    "frontHeightM": 2.4,
-    "wallHeightM": 2.7215,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
     "slopeDeg": 15.0,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 1254,
    "trisPerMetre": 24.3,
-   "bytes": 92124,
+   "bytes": 92092,
    "budgetOk": true,
-   "sha256": "ce41889c54938671213528595756133f06b5e43cecbf4707399a601e9bf9a83d"
+   "sha256": "bb7a2604a0a36f6938a835c5b1f9484b9b2cae01a3f3493ec473e1cc471ba7cd"
   },
   {
    "blockId": "bld-389701901",
@@ -137,17 +137,17 @@
    "geometry": {
     "builtLengthM": 32.5,
     "projectionM": 1.2,
-    "frontHeightM": 2.4,
-    "wallHeightM": 2.7215,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
     "slopeDeg": 15.0,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 810,
    "trisPerMetre": 24.92,
-   "bytes": 60892,
+   "bytes": 60872,
    "budgetOk": true,
-   "sha256": "0056302c534f7d533aae5c4209fd6313afec8cbb8f0ad47b83c5ac4c13df01c3"
+   "sha256": "98a2e6a078af4f07192281f187b79222971d7da14698dc8dd58ad553542886f8"
   },
   {
    "blockId": "bld-389701971",
@@ -181,17 +181,17 @@
    "geometry": {
     "builtLengthM": 57.5,
     "projectionM": 1.2,
-    "frontHeightM": 2.4,
-    "wallHeightM": 2.7215,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
     "slopeDeg": 15.0,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 1398,
    "trisPerMetre": 24.31,
-   "bytes": 102944,
+   "bytes": 102908,
    "budgetOk": true,
-   "sha256": "0fe6f8a7bc23fca2e1c5b2b8f10a938b5af4023578ef770132935893945e8f9f"
+   "sha256": "b76e04d5769ee1aa7db70fac58136c91d868fa1d1b8797768ebc4630192a3b02"
   },
   {
    "blockId": "bld-389702030",
@@ -225,17 +225,17 @@
    "geometry": {
     "builtLengthM": 24.5,
     "projectionM": 1.2,
-    "frontHeightM": 2.4,
-    "wallHeightM": 2.7215,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
     "slopeDeg": 15.0,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 602,
    "trisPerMetre": 24.57,
-   "bytes": 45728,
+   "bytes": 45716,
    "budgetOk": true,
-   "sha256": "39207801dacf9abad44abc0d7d14f2c12faf3004d0f7e0a7ed240f1db9e9ad41"
+   "sha256": "e39be81fe3b4e0cd37d0cb7cbc5511bbb8677199f7c5be92375a6203ca1d0ac5"
   },
   {
    "blockId": "bld-428202599",
@@ -269,17 +269,17 @@
    "geometry": {
     "builtLengthM": 43.8,
     "projectionM": 1.2,
-    "frontHeightM": 2.4,
-    "wallHeightM": 2.7215,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
     "slopeDeg": 15.0,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 1072,
    "trisPerMetre": 24.47,
-   "bytes": 79184,
+   "bytes": 79156,
    "budgetOk": true,
-   "sha256": "f3250c976ffb3d5f0121ce9de215a982ddbe6f31da46aa3ef07c799defe46dce"
+   "sha256": "7bdb3a5d08ff7d8be4e2b19ca01e6a6a3fdd50f01d8f66d0797f43f9a74e74c2"
   },
   {
    "blockId": "bld-428202601",
@@ -313,17 +313,17 @@
    "geometry": {
     "builtLengthM": 39,
     "projectionM": 1.2,
-    "frontHeightM": 2.4,
-    "wallHeightM": 2.7215,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
     "slopeDeg": 15.0,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 960,
    "trisPerMetre": 24.62,
-   "bytes": 71352,
+   "bytes": 71324,
    "budgetOk": true,
-   "sha256": "274009e12acca6920915f208de03e33ea82d135ae3213d92feb75de33f686851"
+   "sha256": "e2c6337f7213c333d3380d88bf3d147befae0894f25e9dfd42af6d329194c6ef"
   },
   {
    "blockId": "bld-428202602",
@@ -357,17 +357,17 @@
    "geometry": {
     "builtLengthM": 68.5,
     "projectionM": 1.2,
-    "frontHeightM": 2.4,
-    "wallHeightM": 2.7215,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
     "slopeDeg": 15.0,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 1674,
    "trisPerMetre": 24.44,
-   "bytes": 123160,
+   "bytes": 123316,
    "budgetOk": true,
-   "sha256": "e4ccfcf598af3125e2f1f5bfafb3345a7e5f00d5549dbd950a34f4c9c89097b9"
+   "sha256": "bb2afc4e165f2dade2726761b8d4992a1d1470a5955d3c51c45448c768007679"
   },
   {
    "blockId": "bld-428202603",
@@ -401,17 +401,17 @@
    "geometry": {
     "builtLengthM": 40.5,
     "projectionM": 1.2,
-    "frontHeightM": 2.4,
-    "wallHeightM": 2.7215,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
     "slopeDeg": 15.0,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 994,
    "trisPerMetre": 24.54,
-   "bytes": 73880,
+   "bytes": 73852,
    "budgetOk": true,
-   "sha256": "dc20a71e220eb66ac55cc718ecf890c6f04ac4e81fe6c02da12a8540b9d48083"
+   "sha256": "8322768052bdd351fec8a999a87fb92b4a293520a3d5d54a108e1826e908e60d"
   },
   {
    "blockId": "bld-428202604",
@@ -445,17 +445,17 @@
    "geometry": {
     "builtLengthM": 27.2,
     "projectionM": 1.2,
-    "frontHeightM": 2.4,
-    "wallHeightM": 2.7215,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
     "slopeDeg": 15.0,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 672,
    "trisPerMetre": 24.71,
-   "bytes": 50820,
+   "bytes": 50804,
    "budgetOk": true,
-   "sha256": "560ac2f5476247ce89864e4e661b6fe09d2b3f0f6dd05d0832cf9569cb099c66"
+   "sha256": "00f5dc6088821a4240410db608db443e9dc279300f34ceb23b838ce1a70eb1e9"
   },
   {
    "blockId": "bld-428202606",
@@ -489,17 +489,17 @@
    "geometry": {
     "builtLengthM": 17.6,
     "projectionM": 1.2,
-    "frontHeightM": 2.4,
-    "wallHeightM": 2.7215,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
     "slopeDeg": 15.0,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 454,
    "trisPerMetre": 25.8,
-   "bytes": 35376,
+   "bytes": 35364,
    "budgetOk": true,
-   "sha256": "93b692f8ab9476556d0bc6a01ef9bb39aa8c19114a84cf4c5240e87e350885af"
+   "sha256": "99e561c0605182a1492d7771824ceb0c815d6eaa3f5afd3e7dd12c4824a814ed"
   },
   {
    "blockId": "bld-428202607",
@@ -533,17 +533,17 @@
    "geometry": {
     "builtLengthM": 26.6,
     "projectionM": 1.2,
-    "frontHeightM": 2.4,
-    "wallHeightM": 2.7215,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
     "slopeDeg": 15.0,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 670,
    "trisPerMetre": 25.19,
-   "bytes": 50784,
+   "bytes": 50768,
    "budgetOk": true,
-   "sha256": "6d8869d06db37d66cfd20bbc837ffc48ed51ac3887e5d99e869c328842a67ea1"
+   "sha256": "4790734180862477a224ad6743e400f6c65d5e81f6c6960a80a285fbff5fc6e8"
   },
   {
    "blockId": "bld-553893867",
@@ -577,17 +577,17 @@
    "geometry": {
     "builtLengthM": 7.3,
     "projectionM": 1.2,
-    "frontHeightM": 2.4,
-    "wallHeightM": 2.7215,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
     "slopeDeg": 15.0,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 202,
    "trisPerMetre": 27.67,
-   "bytes": 17420,
+   "bytes": 17416,
    "budgetOk": true,
-   "sha256": "1f6de3e4cb1f6b42bf0e5143168a35f22eee9919ee398fa3d0fc8fb935a621b0"
+   "sha256": "0ccbc22c5fe1125059ff255292f88e93584b907a787be2e56e1f4fd35d409cbc"
   },
   {
    "blockId": "bld-553893868",
@@ -621,17 +621,17 @@
    "geometry": {
     "builtLengthM": 5.3,
     "projectionM": 1.2,
-    "frontHeightM": 2.4,
-    "wallHeightM": 2.7215,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
     "slopeDeg": 15.0,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 162,
    "trisPerMetre": 30.57,
-   "bytes": 14788,
+   "bytes": 14784,
    "budgetOk": true,
-   "sha256": "d4d8424a4fa8f8f0895d28bd4b98adf7d52c471fd5792cfacaac22829875b5fd"
+   "sha256": "2764824abd20a09136758ddff311437a360687b28603345dcbdb659c31ff9c5d"
   },
   {
    "blockId": "bld-553893873",
@@ -665,17 +665,17 @@
    "geometry": {
     "builtLengthM": 12.2,
     "projectionM": 1.2,
-    "frontHeightM": 2.4,
-    "wallHeightM": 2.7215,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
     "slopeDeg": 15.0,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 312,
    "trisPerMetre": 25.57,
-   "bytes": 25148,
+   "bytes": 25140,
    "budgetOk": true,
-   "sha256": "269d710bb77410505b078116cc9144449892047d257f4d09d863615bb98c0d83"
+   "sha256": "9505c09ca02a4e7c968e45310f65fdb5447443dfa6b2ce467acf8dcd0b71f483"
   },
   {
    "blockId": "bld-553893884",
@@ -709,17 +709,17 @@
    "geometry": {
     "builtLengthM": 31,
     "projectionM": 1.2,
-    "frontHeightM": 2.4,
-    "wallHeightM": 2.7215,
+    "frontHeightM": 2.78,
+    "wallHeightM": 3.1015,
     "slopeDeg": 15.0,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 776,
    "trisPerMetre": 25.03,
-   "bytes": 58372,
+   "bytes": 58352,
    "budgetOk": true,
-   "sha256": "05ee61d7f3841f1ded00418193f7e9b155723484cc34ed502a94f924b68c49f3"
+   "sha256": "b0766658571875375e73af8abe3f9b687d54395dc826ff26b1df909dbb3e8232"
   }
  ]
 }

@@ -313,7 +313,7 @@ def build_bench(m):
 # projection 1.2, scalloped valance, iron brackets spacing 1.5m (2 per 3m)
 def build_awning_strip(m, tag, length, canvas_idx=0):
     L = length
-    proj, front_y = 1.2, 2.4
+    proj, front_y = 1.2, 2.78   # lead 2026-09-23: valance bottom (front_y-0.24) must clear the 2.5 m walking-body band (was 2.4 → narrowed 3 commercial routes)
     wall_y = front_y + proj * math.tan(math.radians(15))
     canvas = ('canvasWine', 'canvasIndigo', 'canvasCream')[canvas_idx % 3]
     obs = []
@@ -331,9 +331,9 @@ def build_awning_strip(m, tag, length, canvas_idx=0):
     bot = []
     for i in range(ns + 1):
         x = -L / 2 + L * i / ns
-        drop = 0.24
+        drop = 0.16
         if i % 2 == 1:
-            drop = 0.34
+            drop = 0.24
         bot.append((x, front_y - drop, proj + 0.004))
     obs.append(cloth_glb(f'{tag}_valance', [top, bot], m[canvas]))
     # iron brackets, spacing 1.5 m, ends included
@@ -341,7 +341,7 @@ def build_awning_strip(m, tag, length, canvas_idx=0):
     ang = math.degrees(math.atan2(wall_y - front_y, proj))  # ~15deg: arm axis mostly along +Z
     for k in range(nb):
         x = -L / 2 + L * k / (nb - 1)
-        obs.append(box_glb(f'{tag}_bracketPlate', (x, 2.54, 0.03), (0.05, 0.48, 0.06), m['iron']))
+        obs.append(box_glb(f'{tag}_bracketPlate', (x, wall_y - 0.24, 0.03), (0.05, 0.48, 0.06), m['iron']))
         arm = math.hypot(proj, wall_y - front_y)
         obs.append(box_glb(f'{tag}_bracketArm', (x, (wall_y + front_y) / 2, proj / 2), (0.04, 0.04, arm), m['iron'], rot_x_deg=ang))
     return obs
@@ -396,7 +396,7 @@ def build_all():
                     'midpoint': e['midpoint'], 'outward': e['outward'],
                     'rotY': rotY, 'module': f'awnings/{name}',
                     'geometry': {'builtLengthM': e['lenM'], 'projectionM': 1.2,
-                                 'frontHeightM': 2.4, 'wallHeightM': 2.7215, 'slopeDeg': 15.0,
+                                 'frontHeightM': 2.78, 'wallHeightM': 3.1015, 'slopeDeg': 15.0,
                                  'scallopWidthM': 0.5, 'bracketSpacingM': 1.5},
                     'tris': tris, 'trisPerMetre': round(per_m, 2), 'bytes': size,
                     'budgetOk': ok, 'sha256': sha256(path)})
@@ -436,10 +436,10 @@ def build_all():
         json.dump(placements, f, ensure_ascii=False, indent=1)
     awp = {'packageId': site['packageId'], 'generatedBy': 'build_bazaar_stalls.py',
            'module': 'awning strip (parametric, one GLB per edge)',
-           'design': {'projectionM': 1.2, 'frontHeightM': 2.4, 'wallHeightM': 2.7215,
+           'design': {'projectionM': 1.2, 'frontHeightM': 2.78, 'wallHeightM': 3.1015,
                       'slopeDeg': 15.0, 'scallopWidthM': 0.5, 'brackets': '2 per 3m (spacing 1.5m, ends included)',
                       'canvasAlternation': 'wine/indigo/cream round-robin by edge order',
-                      'collision': 'unreachable (low edge 2.4m) — no collision box'},
+                      'collision': 'unreachable (valance bottom 2.54m, above 2.5m body band) — no collision box'},
            'counts': {'edges': len(awn), 'skipped': [e for e in [] ]},
            'edges': awn}
     with open(os.path.join(OUT, 'awning-placements.json'), 'w', encoding='utf-8') as f:

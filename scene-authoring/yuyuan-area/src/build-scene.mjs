@@ -38,6 +38,9 @@ const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out');
 // 默认（未设 flag）行为与基线逐字节一致。
 const SITE_MODULES = process.env.SITE_MODULES === '1';
 const SITE_MODULE_KINDS = new Set(['wall', 'wallHead', 'moonGateWall', 'zigzagBridge']);
+// STALL_KIT=1：摊位/长凳由 modules/bazaar-stalls 实例模块承担（assemble.py 按 records/placements.json 放置），占位不再程序化生成。
+const STALL_KIT = process.env.STALL_KIT === '1';
+const STALL_KIT_KINDS = new Set(['stall', 'bench']);
 const layout = JSON.parse(fs.readFileSync(path.join(OUT, 'layout.json'), 'utf8'));
 
 // ---------- 统一材质：合并几何 + 顶点色 ----------
@@ -855,6 +858,7 @@ const deferred = [];
 for (const o of layout.objects) {
   if (o.skipRender) { deferred.push({ id: o.id, kind: o.kind, why: o.disposition }); continue; }
   if (SITE_MODULES && SITE_MODULE_KINDS.has(o.kind)) { deferred.push({ id: o.id, kind: o.kind, why: 'site-module' }); continue; }
+  if (STALL_KIT && STALL_KIT_KINDS.has(o.kind)) { deferred.push({ id: o.id, kind: o.kind, why: 'stall-kit' }); continue; }
   const ud = { id: o.id, zone: o.zone, kind: o.kind, lod: o.lod };
   if (o.name) ud.name = o.name;
   if (o.trade) ud.trade = o.trade;

@@ -120,7 +120,8 @@ def check(path, rel, manifest_entry):
         rep['boundsOk'] = (near(max(map(abs, xs)), xh, xh * 0.10) and near(ymax, bb['y'][1], ymax * 0.10)
                            and bb['y'][0] > -0.02 and near(zmin, bb['z'][0], 0.06) and near(zmax, bb['z'][1], 0.06))
     else:  # awning: length vs lenM checked in tests; here just sanity
-        rep['boundsOk'] = bb['y'][0] > -0.02 and bb['y'][1] < 2.8 and bb['z'][0] > -0.02 and bb['z'][1] < 1.3
+        # awning strip: whole strip above the 2.5 m walking-body band (lead 2026-09-23 raise), wall edge ≤ 3.2 m
+        rep['boundsOk'] = bb['y'][0] >= 2.5 and bb['y'][1] < 3.2 and bb['z'][0] > -0.02 and bb['z'][1] < 1.3
     rep['ok'] = all(rep[k] for k in ('shaMatch', 'trisMatch', 'materialsOk', 'noTextures', 'socketsOk', 'boundsOk'))
     return rep
 
