@@ -58,5 +58,5 @@
 
 层数与高度：`baseline/layout.json` 里五座楼都写 13.6 m，是占位值；按照片层数，天裕楼更接近 5 层（约 18–20 m，**设计推定，未核实**）。冻结 DESIGN_SPEC 时以照片层数为准，高度写 design_inference。
 
-## 补充：开放授权候选（待机主同意下载入库）
+## 补充：开放授权实拍（机主 2026-09-23 同意，已入库为 PBR-SH-0009-001）
 - Commons `File:2016-05-23 Shanghai Yuyuan Tourist Mart Panorama anagoria.JPG`（CC BY 3.0 / GFDL，Anagoria，6256×1920）：荷花池边平视全景，湖心亭、九曲桥清楚，背景是池周一圈多层仿古楼的**朝池立面**——可补各楼「非沿街面」的形制。湖心亭（WP9）也用得上。
