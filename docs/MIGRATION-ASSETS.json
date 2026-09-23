@@ -6,7 +6,7 @@
     "objectPrefix": "objects/sha256/",
     "snapshotKey": "snapshots/owner/reorganization-20260922-202629/MIGRATION-MANIFEST.json"
   },
-  "uniqueBytes": 389987431,
+  "uniqueBytes": 390087343,
   "files": [
     {
       "path": "scene-authoring/yuyuan-area/baseline/scene-areas.glb",
@@ -1804,21 +1804,21 @@
     },
     {
       "path": "asset-authoring/shops/n1n2n3-20260923/cart-youdunzi/model.glb",
-      "sha256": "2055c1f5295b2a04d5eb91346680c0b36c3ff29bbb4c61fed4497096b6cc864d",
-      "bytes": 847292,
-      "sourcePackage": "pawborough-w1-shops-n1n2n3-20260923"
+      "sha256": "90ad60d1fc9054bfdfa58c745818e121670f7f9cf1ece0956d0b93a738f02268",
+      "bytes": 919864,
+      "sourcePackage": "pawborough-wave0-glm-20260923"
     },
     {
       "path": "asset-authoring/shops/n1n2n3-20260923/shop-07-tangtuan/model.glb",
-      "sha256": "33e5bae5d90edfa4b11b468a6bac8dc2c14021bda5d4f0970efccfdb12eab308",
-      "bytes": 1430092,
-      "sourcePackage": "pawborough-w1-shops-n1n2n3-20260923"
+      "sha256": "27a6f031e81993e90caa7f318f64d6d5880babfe46e84d599026329354471d4f",
+      "bytes": 1456892,
+      "sourcePackage": "pawborough-wave0-glm-20260923"
     },
     {
       "path": "asset-authoring/shops/n1n2n3-20260923/shop-08-beans/model.glb",
-      "sha256": "0c672e984cff83d8d7450adec5597502eacd19acefae39f34e45f8729e9293fe",
-      "bytes": 2221712,
-      "sourcePackage": "pawborough-w1-shops-n1n2n3-20260923"
+      "sha256": "707a5923526795afa12f310d057435cd87a056615478e43b9d4f8e92b8336bc0",
+      "bytes": 2222252,
+      "sourcePackage": "pawborough-wave0-glm-20260923"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-165791764-6.glb",
@@ -2078,6 +2078,7 @@
   "cloudReceipt": "docs/migrations/20260923/CLOUD-RECEIPT.json",
   "cloudReceipts": [
     "docs/migrations/20260922/CLOUD-RECEIPT.json",
-    "docs/migrations/20260923/CLOUD-RECEIPT.json"
+    "docs/migrations/20260923/CLOUD-RECEIPT.json",
+    "docs/migrations/20260923/CLOUD-RECEIPT-wave0.json"
   ]
 }

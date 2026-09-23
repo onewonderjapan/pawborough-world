@@ -1,0 +1,33 @@
+{
+ "status": "complete",
+ "finishedAt": "2026-09-23T19:17:10.594322+09:00",
+ "bucket": "onewonder-pawborough-assets-566601428909-apne1",
+ "region": "ap-northeast-1",
+ "public": false,
+ "objects": 3,
+ "uploaded": 3,
+ "reused": 0,
+ "results": [
+  {
+   "path": "asset-authoring/shops/n1n2n3-20260923/cart-youdunzi/model.glb",
+   "sha256": "90ad60d1fc9054bfdfa58c745818e121670f7f9cf1ece0956d0b93a738f02268",
+   "bytes": 919864,
+   "key": "objects/sha256/90/90ad60d1fc9054bfdfa58c745818e121670f7f9cf1ece0956d0b93a738f02268",
+   "result": "uploaded"
+  },
+  {
+   "path": "asset-authoring/shops/n1n2n3-20260923/shop-07-tangtuan/model.glb",
+   "sha256": "27a6f031e81993e90caa7f318f64d6d5880babfe46e84d599026329354471d4f",
+   "bytes": 1456892,
+   "key": "objects/sha256/27/27a6f031e81993e90caa7f318f64d6d5880babfe46e84d599026329354471d4f",
+   "result": "uploaded"
+  },
+  {
+   "path": "asset-authoring/shops/n1n2n3-20260923/shop-08-beans/model.glb",
+   "sha256": "707a5923526795afa12f310d057435cd87a056615478e43b9d4f8e92b8336bc0",
+   "bytes": 2222252,
+   "key": "objects/sha256/70/707a5923526795afa12f310d057435cd87a056615478e43b9d4f8e92b8336bc0",
+   "result": "uploaded"
+  }
+ ]
+}
