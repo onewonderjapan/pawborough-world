@@ -1,0 +1,108 @@
+{
+ "task": "wave1-walkr1 — 步行模式补碰撞（园廊 3 条 + 复廊 + 听涛阁水廊 / 豫园门楼 / 树 / 摊位长凳）+ 截图时机修正（WP4 R1）",
+ "status": "delivered_for_lead_review",
+ "ownerAdopted": false,
+ "date": "2026-09-23",
+ "worktree": "/home/baibai/outbox/pawborough-wave1-walkr1-20260923/workspace",
+ "branch": "work/wave1-walkr1-20260923（起点 main @ 09d11cdd）",
+ "commits": [
+  {
+   "sha": "1e7e4093",
+   "what": "K1 scripts/export-collision.mjs：新增第 9–13 段 —— corridor-kit 三廊（柱/美人靠/端亭 massing，逐根柱经 out-garden-kits GLB 几何确认后才出盒）、复廊 bld-428186469（记录 sha256 对部署 GLB 校验；柱/栏杆首末跨留空/中墙，GLB 确认过滤后 6 柱）、门楼 garden-gate（gate-wall 网格两面 Pier，门洞净宽 3.26 m ≥ 2.2 m）、garden 46 棵树干 0.4×2.0×0.4、bazaar 51 件摊/凳 GLB 包围盒；栏/墙段与商业路线或园路相交时不建并记 openings（本次实测 0 处相交，openings 与上一版一致）。新增 tests/corridor-gate-collision-test.mjs（先在上一版产物上跑：7 pass / 20 fail，exit 1，证明先于实现有效；实现后 29 pass / 0 fail）"
+  },
+  {
+   "sha": "38a512bf",
+   "what": "K2 tests/zone-walk-check.mjs：中点改按路线长度（累计弧长 ≥ 半长触发，眼位=路线中点地面+1.6m）、朝向=该处路线切线（yaw=atan2(-tx,-tz)）；并修复截图朝向被覆盖的根因 —— 预览页轨道模式每帧 controls.update() 强制 camera.lookAt(controls.target)，旧 eyeView 只设位置/四元数、yaw 从未生效（旧中点图对墙的真正机制），改用页面既有 __viewAt(p,t) 钩子以 target=眼位+前向25m 落朝向，起点/中点/终点 15 张全部按步行方向取景"
+  }
+ ],
+ "deliverables": {
+  "pipeline": "scene-authoring/yuyuan-area/scripts/export-collision.mjs（rebuild-review.sh 原挂钩不变；新增段 9 园林套件 / 10 复廊 / 11 门楼 / 12 树 / 13 摊凳）",
+  "collisionDelta": "collision-garden.json +673 条（812 总：corridor-kit 163、double-corridor 14、yuyuan-gate-v2 2、tree-kit 46、其余为既有记录）；collision-bazaar.json +51 条（bazaar-stalls 51，总 229）；全域 1216 → 1492 条",
+  "test": "scene-authoring/yuyuan-area/tests/corridor-gate-collision-test.mjs + npm run test:corridor-gate",
+  "artifacts": "artifacts/walkr1/{RESULT.json, WALK-CHECK.json, WALK-CHECK-before.json, shots-before/×15（上一单同机位）, shots-after/×15（本单重拍）, before-orbit-default.png, after-orbit-default.png}"
+ },
+ "numbers": {
+  "corridorPillarBoxes": {
+   "bld-553893874": "48 col（GLB 确认 N=48）+ 4 rail",
+   "bld-428179906": "40 col（N=40）+ 4 rail",
+   "bld-428179920": "38 col（N=38）+ 4 rail + 端亭 base+24 col",
+   "bld-428186469": "6 col（部署 GLB 实测 6 根；设计记录 columns=10 与 GLB 不符，按 GLB 实际几何出盒，4 个无柱候选位未出，避免隐形墙）+ 4 rail（首末跨留空=入口）+ 4 中墙段"
+  },
+  "gatePassageM": 3.26,
+  "gatePiers": "两面 2.3×5.33×3.0，来源 inputs/yuyuan-gate-v2.glb gate-wall 网格实体；折起门扇/脊饰/檐/瓦不建（檐棚在身体带以上同理）",
+  "trees": 46,
+  "stallsBenches": 51,
+  "colliders": {
+   "before": 1216,
+   "after": 1492
+  },
+  "openings": "garden 0 / bazaar 16 / pond 2 —— 与上一版逐条一致（数据核验：园路/商业路线与四廊栏墙 0 相交；廊入口=开放端无墙 + 复廊首末跨留空 + 门楼门洞按构造留洞）",
+  "contractTest": "1451 pass / 0 fail（上版 1175；重建后产物复跑仍绿）",
+  "newTest": "29 pass / 0 fail（上一版产物上 7 pass / 20 fail、exit 1 —— 先行证明）",
+  "routes": {
+   "main→jiuqu": {
+    "simSeconds": 104.4,
+    "endErrorM": 0.9,
+    "maxLateralDeviationM": 0.79,
+    "minGroundClearanceM": -0.005,
+    "routeLengthM": 232.9,
+    "mid": "[-207.54,-25.39] 切线yaw -1.342"
+   },
+   "main→gold": {
+    "simSeconds": 131,
+    "endErrorM": 0.88,
+    "maxLateralDeviationM": 0.8,
+    "minGroundClearanceM": -0.005,
+    "routeLengthM": 292.3,
+    "mid": "[-195.91,-45.59] 切线yaw 0.025"
+   },
+   "main→center": {
+    "simSeconds": 36.7,
+    "endErrorM": 0.88,
+    "maxLateralDeviationM": 0.79,
+    "minGroundClearanceM": -0.005,
+    "routeLengthM": 82.4,
+    "mid": "[-170.24,12.15] 切线yaw 0.104"
+   },
+   "old-south→old-north": {
+    "simSeconds": 43.8,
+    "endErrorM": 0.87,
+    "maxLateralDeviationM": 0.16,
+    "minGroundClearanceM": 0,
+    "routeLengthM": 96.9,
+    "mid": "[-188.69,-202.93] 切线yaw -3.001"
+   },
+   "gold→jiuqu": {
+    "simSeconds": 48.8,
+    "endErrorM": 0.89,
+    "maxLateralDeviationM": 0.78,
+    "minGroundClearanceM": 0.015,
+    "routeLengthM": 110.7,
+    "mid": "[-190.96,-135.42] 切线yaw -2.927"
+   }
+  },
+  "zoneSplitGlbCap": "PASS 全部 ≤ 12 MB（重建日志：最大 zone-garden.glb 9,543,004 B）",
+  "browserOrbit": "默认斜俯瞰 std255=54.4（上一版 54.5，同机位逐像素无差级）"
+ },
+ "verification": {
+  "rebuild": "OUT_DIR=out-zone PYTHONPATH=$PWD/.python-deps SITE_MODULES=1 STALL_KIT=1 GARDEN_KITS=1 SANSUITANG=1 ZONE_SPLIT=1 bash scripts/rebuild-review.sh → EXIT 0（含 export-collision 与全部既有测试）",
+  "npmTest": "geo 101 / coverage-negative 4 / sansuitang 16 / rockery 28 / awning 49 全绿（重建日志内）",
+  "zoneSplit": "OUT_DIR=out-zone node tests/zone-split-test.mjs → 75 pass / 0 fail（COMMON 写 59 为旧计数，现版检查更多且全绿；拆件三角数对账 PASS）",
+  "food": "OUT_DIR=out-zone node scripts/check-food.mjs → 9 pass / 0 fail",
+  "contract": "OUT_DIR=out-zone node tests/area-collision-contract.mjs → 1451 pass / 0 fail（三条商业路线 + 六锚点在新碰撞下全可走）",
+  "walkCheck": "BASE=http://127.0.0.1:5491/ OUT_DIR=out-zone node tests/zone-walk-check.mjs → allPass=true，5 路线 exit 0，15 张眼高截图重拍（终点误差 ≤0.9 m、贴地 −0.005 m、不穿墙）",
+  "newTestOnOld": "OUT_DIR=<上一单 out-zone> node tests/corridor-gate-collision-test.mjs → 7 pass / 20 fail，EXIT 1（实现前跑，证明测试有效）",
+  "browser": "BASE=… QS='?zone=core&cam=oblique' SHOT=artifacts/walkr1/after-orbit-default.png node tests/zone-browser-check.mjs → EXIT 0，std255=54.4，默认轨道行为不变"
+ },
+ "k2RootCause": "GOAL 判断的『朝向还是上一段方向』只是表象：eyeView 设的 yaw 被预览页渲染循环里 controls.update() 的 camera.lookAt(controls.target) 每帧覆盖，任何朝向（含旧代码继承的上一段航向）都从未真正生效，截图永远从眼位盯住轨道目标点。修复 = 中点按路线长度 + 切线朝向（GOAL 要求）＋ 截图改走 __viewAt 同时设位置与 target（使朝向真正落地，起点/终点图同样受益）。",
+ "partial": [
+  "复廊 bld-428186469 部署 GLB（sha dd3203db…，与 modules/double-corridor 记录一致）实际只有 6 根柱，设计记录 columns=10 —— 按本单『用 GLB 实际几何』原则出 6 柱、弃 4 个无柱候选位；若主控换用 corridor-kit R1 重建复廊，需同步重跑导出与新测试（测试按 GLB 确认数自适应）。",
+  "复廊中墙按每段一个实体盒导出（漏窗窗台 0.9 m、胶囊本不可穿越）；漏窗洞不建开口。",
+  "听涛阁水廊（bld-428179920）廊体按端亭南边缘起建的 4 段折线出柱/栏，端亭 massing 出台基 1 盒 + 底层柱 24 根（GLB 确认）；二层柱网与屋面在身体带以上未建。",
+  "pavilion-kit 上一版跳过的 obb 型背栏带维持跳过（不在本单 K1 清单）。",
+  "门楼折起的门扇（视觉 x≈±1.05–1.86）不建碰撞：若建则通道净宽 2.1 m < GOAL 的 2.2 m；现按墙体实体出 Pier，通道 3.26 m。",
+  "机主亲手走一遍（D8）与 WP12 性能实测仍属主控/机主动作。"
+ ],
+ "blockers": [],
+ "visualVerdict": "15 张眼高图重拍后中点图全部沿路线方向取景：main→gold 是巷道透视、gold→jiuqu 是带摊位的骑楼街、old-south→old-north 是老街街景、main→jiuqu 正对庙前大院，不再有旧版『整帧怼墙』；默认轨道图与改造前同机位无差（std255 54.4 vs 54.5）。"
+}

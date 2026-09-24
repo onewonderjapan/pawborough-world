@@ -1,0 +1,122 @@
+{
+ "generatedAt": "2026-09-23T13:26:35.186Z",
+ "outDir": "out-zone",
+ "inputs": {
+  "zones": [
+   "garden",
+   "pond",
+   "temple",
+   "bazaar",
+   "outer"
+  ],
+  "layoutSha256": "836a6975cfabd9590c8e95e0153a8c71ba1dc7f9bac4a1ff4ea28fb4bb2a8c63"
+ },
+ "physics": {
+  "walls": 1216,
+  "groundMeshes": 194
+ },
+ "method": "CruiseDriver -> WalkController fixed-step input chain against real Rapier world; ground = raw zone GLB meshes filtered by per-zone groundNodeRe/extraGroundNodes",
+ "routes": [
+  {
+   "route": "main→jiuqu",
+   "pass": true,
+   "simSeconds": 104.4,
+   "wallClockSeconds": 0.8,
+   "steps": 6263,
+   "reachedWaypoints": 15,
+   "totalWaypoints": 15,
+   "minGroundClearanceM": -0.005,
+   "minFeetY": 0.015,
+   "maxLateralDeviationM": 0.79,
+   "endErrorM": 0.9,
+   "endFeet": [
+    -160.57,
+    0.06,
+    -100.4
+   ],
+   "blocked": null,
+   "error": null
+  },
+  {
+   "route": "main→gold",
+   "pass": true,
+   "simSeconds": 131,
+   "wallClockSeconds": 0.9,
+   "steps": 7860,
+   "reachedWaypoints": 21,
+   "totalWaypoints": 21,
+   "minGroundClearanceM": -0.005,
+   "minFeetY": 0.015,
+   "maxLateralDeviationM": 0.8,
+   "endErrorM": 0.88,
+   "endFeet": [
+    -205.89,
+    0.06,
+    -180.19
+   ],
+   "blocked": null,
+   "error": null
+  },
+  {
+   "route": "main→center",
+   "pass": true,
+   "simSeconds": 36.7,
+   "wallClockSeconds": 0.3,
+   "steps": 2200,
+   "reachedWaypoints": 6,
+   "totalWaypoints": 6,
+   "minGroundClearanceM": -0.005,
+   "minFeetY": 0.024,
+   "maxLateralDeviationM": 0.79,
+   "endErrorM": 0.88,
+   "endFeet": [
+    -158.38,
+    0.05,
+    -21.63
+   ],
+   "blocked": null,
+   "error": null
+  },
+  {
+   "route": "old-south→old-north",
+   "pass": true,
+   "simSeconds": 43.8,
+   "wallClockSeconds": 0.3,
+   "steps": 2627,
+   "reachedWaypoints": 4,
+   "totalWaypoints": 4,
+   "minGroundClearanceM": 0,
+   "minFeetY": 0.02,
+   "maxLateralDeviationM": 0.16,
+   "endErrorM": 0.87,
+   "endFeet": [
+    -175.11,
+    0.04,
+    -157.55
+   ],
+   "blocked": null,
+   "error": null
+  },
+  {
+   "route": "gold→jiuqu",
+   "pass": true,
+   "simSeconds": 48.8,
+   "wallClockSeconds": 0.3,
+   "steps": 2930,
+   "reachedWaypoints": 11,
+   "totalWaypoints": 11,
+   "minGroundClearanceM": 0.015,
+   "minFeetY": 0.037,
+   "maxLateralDeviationM": 0.78,
+   "endErrorM": 0.89,
+   "endFeet": [
+    -160.63,
+    0.06,
+    -100.65
+   ],
+   "blocked": null,
+   "error": null
+  }
+ ],
+ "allPass": true
+}

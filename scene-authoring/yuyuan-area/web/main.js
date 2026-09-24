@@ -5,6 +5,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { setupTour } from './tour.js';   // WP13：取景导览逻辑在 web/tour.js
+import { dedupeLabels, buildLabelOccluders } from './labels.js'; // WP13：标签去重+R1遮挡剔除逻辑在 web/labels.js
+import { installWalkMode } from './walk.js';   // WP4 步行模式（默认不启用，按 ?walk=1 或「步行」按钮进入）
 
 const app = document.getElementById('app');
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -35,11 +38,14 @@ const ZONES = {
 const LABEL_DIST = { region: Infinity, facility: 300, note: 240 };
 // 区域级标签（全域/核心视图只显示这些）
 const REGION_LABELS = new Set(['豫园门楼', '城隍庙', '山门', '大殿', '后殿', '和丰楼', '华宝楼', '九曲桥', '湖心亭', '大假山（示意）', '豫园商城', '中心广场']);
+// WP13/T2 地标固定高优先级（仅次于区域级，不落入普通设施 12 上限之外）
+const LANDMARK_LABELS = new Set(['三穗堂', '老城隍庙', '华宝楼']); // layout 实际文本为「老城隍庙」(poi-temple)
 let zoneRoots = [];
 let allRoots = [];
 let labelsOn = true, roofsOn = true, bgOn = true, osmOn = false, resOn = false;
 let layoutData = null;
-let tourData = null, curTour = null;
+let tourCtl = null; // WP13：取景导览控制器（web/tour.js）
+let labelOccluders = null; // WP13/R1/T2：标签遮挡剔除用碰撞盒（web/labels.js 构建），collision-* 加载后就绪
 const labelEls = new Map();
 const resMarkers = []; // {el,x,z}
 
@@ -92,7 +98,11 @@ function afterFirstPaint() {
   fetch('/out/layout.json').then(r => r.json()).then(j => { layoutData = j; buildLabels(); });
   setZone(params.get('zone') || 'core');
   setCam(params.get('cam') || 'oblique');
-  buildTour();
+  tourCtl.buildTour();
+  // WP13/R1/T2：标签遮挡剔除数据（各分区 collision 文件；与步行物理同源，懒加载失败则不剔除）
+  Promise.all(ZONES.all.map(z => fetch('/out/collision-' + z + '.json').then(r => { if (!r.ok) throw new Error('collision-' + z + ': ' + r.status); return r.json(); })))
+    .then(all => { labelOccluders = buildLabelOccluders(all.flatMap(d => d.colliders || [])); window.__labelOccluderCount = labelOccluders.length; })
+    .catch(() => { labelOccluders = null; window.__labelOccluderCount = 0; });
 }
 function loadGlb(url) { return new Promise((res, rej) => loader.load(url, g => res(g.scene), undefined, rej)); }
 async function loadZones(m) {
@@ -158,7 +168,7 @@ let curCam = 'oblique';
 let curZone = 'core';
 function setZone(z, reframe = true) {
   curZone = z;
-  curTour = null;
+  if (tourCtl) tourCtl.clear();
   document.querySelectorAll('[data-tour]').forEach(b => b.classList.toggle('active', false));
   document.querySelectorAll('[data-zone]').forEach(b => b.classList.toggle('active', b.dataset.zone === z));
   const zs = ZONES[z] || ZONES.core;
@@ -174,47 +184,23 @@ function setZone(z, reframe = true) {
 }
 function setCam(c) {
   curCam = c;
-  curTour = null;
+  if (tourCtl) tourCtl.clear();
   document.querySelectorAll('[data-tour]').forEach(b => b.classList.toggle('active', false));
   document.querySelectorAll('[data-cam]').forEach(b => b.classList.toggle('active', b.dataset.cam === c));
   frame(zoneRoots, c);
 }
 
-// ---------- 取景导览（固定机位，明确非行走） ----------
-function buildTour() {
-  fetch('/out/tour.json').then(r => { if (!r.ok) throw 0; return r.json(); }).then(t => {
-    tourData = t;
-    const holder = document.getElementById('tourbtns');
-    for (const [key, v] of Object.entries(t)) {
-      const b = document.createElement('button');
-      b.dataset.tour = key;
-      b.textContent = v.label || key;
-      b.title = '固定取景机位（非行走）· ' + (v.source || '');
-      holder.appendChild(b);
-    }
-    holder.addEventListener('click', (e) => {
-      const b = e.target.closest('button[data-tour]');
-      if (b) setTour(b.dataset.tour);
-    });
-    const want = new URLSearchParams(location.search).get('tour');
-    if (want && t[want]) setTour(want);
-  }).catch(() => { document.getElementById('tourcap').textContent = '取景导览（本目录无 tour.json）'; });
-}
-function setTour(key) {
-  const v = tourData && tourData[key];
-  if (!v) return;
-  setZone(v.zone || 'core', false);
-  curTour = key;
-  camera.position.set(v.p[0], v.p[1], v.p[2]);
-  controls.target.set(v.t[0], v.t[1], v.t[2]);
-  controls.update();
-  document.querySelectorAll('[data-tour]').forEach(b => b.classList.toggle('active', b.dataset.tour === key));
-  document.querySelectorAll('[data-cam]').forEach(b => b.classList.toggle('active', false));
-  const hud = document.getElementById('hud');
-  if (!hud.dataset.base) hud.dataset.base = hud.innerHTML;
-  hud.innerHTML = `<b>取景导览 · ${v.label}</b>（固定机位，非行走）<br><span style="font-size:11px">${v.source || ''}</span>`;
-  updateLabelVis();
-}
+// ---------- 取景导览（固定机位，明确非行走）——逻辑在 web/tour.js ----------
+tourCtl = setupTour({
+  camera, controls,
+  setZone,
+  updateLabelVis,
+  setHud: (html) => {
+    const hud = document.getElementById('hud');
+    if (!hud.dataset.base) hud.dataset.base = hud.innerHTML;
+    hud.innerHTML = html;
+  },
+});
 
 document.getElementById('bar').addEventListener('click', (e) => {
   const b = e.target.closest('button');
@@ -249,7 +235,9 @@ function buildLabels() {
     el.className = 'lbl' + (isNote ? ' note' : '') + (region ? ' region' : '');
     el.textContent = l.text;
     holder.appendChild(el);
-    labelEls.set(el, { x: l.x, z: l.z, zone: zoneOfLabel(l), note: isNote, region, maxDist: isNote ? LABEL_DIST.note : region ? LABEL_DIST.region : LABEL_DIST.facility });
+    el.dataset.labelText = l.text;
+    const prio = region ? 0 : LANDMARK_LABELS.has(l.text) && !isNote ? 1 : isNote ? 3 : 2;
+    labelEls.set(el, { x: l.x, z: l.z, zone: zoneOfLabel(l), note: isNote, region, prio, maxDist: isNote ? LABEL_DIST.note : region || prio === 1 ? LABEL_DIST.region : LABEL_DIST.facility });
   }
   buildResiduals(holder);
   updateLabelVis();
@@ -279,16 +267,26 @@ const _w = new THREE.Vector3();
 function drawLabels() {
   if (!layoutData) return;
   const w = innerWidth, h = innerHeight;
+  const shown = [];
   for (const [el, p] of labelEls) {
     if (el.style.display === 'none') continue;
     _v.set(p.x, 4, p.z).project(camera);
     if (_v.z > 1) { el.style.visibility = 'hidden'; continue; }
     // 按距离：超出层级阈值的标签不展示
-    if (camera.position.distanceTo(_w.set(p.x, 4, p.z)) > p.maxDist) { el.style.visibility = 'hidden'; continue; }
+    const dist = camera.position.distanceTo(_w.set(p.x, 4, p.z));
+    if (dist > p.maxDist) { el.style.visibility = 'hidden'; continue; }
     el.style.visibility = 'visible';
-    el.style.left = ((_v.x * 0.5 + 0.5) * w) + 'px';
-    el.style.top = ((-_v.y * 0.5 + 0.5) * h) + 'px';
+    const sx = (_v.x * 0.5 + 0.5) * w, sy = (-_v.y * 0.5 + 0.5) * h;
+    el.style.left = sx + 'px';
+    el.style.top = sy + 'px';
+    shown.push({ el, prio: p.prio, x: sx, y: sy, dist, wpos: [p.x, 4, p.z] });
   }
+  // WP13/T2 屏幕空间去重 + R1/T2 遮挡剔除与导览机位 120m 上限 —— 逻辑在 web/labels.js
+  window.__lastLabelDedupe = dedupeLabels(shown, w, h, 12, {
+    occluders: labelOccluders,
+    cam: labelOccluders ? [camera.position.x, camera.position.y, camera.position.z] : null,
+    tourActive: !!(tourCtl && tourCtl.curTour),
+  });
   drawResiduals();
 }
 
@@ -399,7 +397,10 @@ addEventListener('resize', () => {
   renderer.setSize(innerWidth, innerHeight);
 });
 
-renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); drawLabels(); });
+// WP4 步行模式挂钩（注入「步行/轨道」「回到锚点」控件；物理仅在进入步行时懒构建）
+const walk = installWalkMode({ scene, camera, renderer, controls, getRoots: () => allRoots, hud });
+
+renderer.setAnimationLoop(() => { controls.update(); walk?.tick(); renderer.render(scene, camera); drawLabels(); });
 
 // playwright 钩子
 window.__ready = false;
@@ -432,7 +433,7 @@ window.__pixelStats = () => {
   return { mean, std: Math.sqrt(Math.max(0, sum2 / n - mean * mean)), uniq: uniq.size, w, h };
 };
 window.__goto = (zone, cam) => { setZone(zone); setCam(cam); };
-window.__tour = (key) => { setTour(key); return curTour; };
+window.__tour = (key) => { tourCtl.setTour(key); return tourCtl.curTour; };
 window.__res = (on) => { resOn = !!on; document.getElementById('t-res').classList.toggle('active', resOn); updateResVis(); return resMarkers.length; };
 window.__resMarkers = () => resMarkers.map(m => ({ text: m.el.textContent, x: +m.x.toFixed(1), z: +m.z.toFixed(1) }));
 window.__labelStats = () => {
