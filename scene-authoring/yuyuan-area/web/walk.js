@@ -15,7 +15,7 @@ const ZONE_FILES = ['garden', 'pond', 'temple', 'bazaar', 'outer'];
 const CAPSULE = { radius: 0.35, halfHeight: 0.6, eyeHeight: 1.6 };
 const MOUSE_SENS = 0.0022;
 
-export function installWalkMode({ scene, camera, renderer, controls, getRoots, hud }) {
+export function installWalkMode({ scene, camera, renderer, controls, getRoots, hud, extraCollisionZones = () => [], onFeet = null }) {
   // ---------- 界面 ----------
   const bar = document.getElementById('bar');
   const sel = document.createElement('select');
@@ -91,7 +91,8 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
   async function buildPhysics() {
     if (hud) hud('步行：构建碰撞世界 …');
     await RAPIER.init();
-    const files = await Promise.all(ZONE_FILES.map(z =>
+    const zoneIds = [...ZONE_FILES, ...extraCollisionZones().filter(z => !ZONE_FILES.includes(z))];
+    const files = await Promise.all(zoneIds.map(z =>
       fetch(`/out/collision-${z}.json`).then(r => { if (!r.ok) throw new Error(`collision-${z}.json: ${r.status}`); return r.json(); })));
     const colliders = files.flatMap(f => f.colliders);
     anchors = {};
@@ -107,6 +108,7 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
     const partsOf = z => manifest.zones.filter(e => e.id === z && e.file).map(e => e.file);
     const groundMeshes = [];
     for (const f of files) {
+      if (!f.groundNodeRe) continue; // 没有地面选网规则的分区只贡献墙体碰撞
       for (const part of partsOf(f.zone)) {
         const buf = await fetch(`/out/${part}`).then(r => {
           if (!r.ok) throw new Error(`${part}: ${r.status}`);
@@ -166,6 +168,7 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
     const dt = Math.min(0.25, (now - lastTick) / 1000); // 真实帧长；固定步整形在 WalkController 内部
     lastTick = now;
     controller.step(dt);
+    if (onFeet) onFeet(controller.feetPosition());
     const eye = controller.eyePosition();
     camera.position.set(eye[0], eye[1], eye[2]);
     applyWalkOrientation(camera, controller.pitch, controller.yaw);
@@ -202,6 +205,11 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
     },
     async enter() { setMode('walk'); await ensurePhysics(); return status(); },
     exit() { setMode('orbit'); return status(); },
+    teleport(x, y, z) {
+      if (!controller) return status();
+      controller.teleport([x, y, z], 0, 0);
+      return status();
+    },
     // 截图支持：把相机直接摆到任意眼高位姿（不依赖物理构建完成）
     eyeView(x, y, z, yaw = 0, pitch = 0) {
       camera.position.set(x, y, z);
@@ -217,5 +225,12 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
     }, 200);
   }
 
-  return { tick };
+  return {
+    tick,
+    mode: () => mode,
+    async rebuildPhysics() {
+      physics = null; physicsPromise = null; controller = null;
+      if (mode === 'walk') await enterWalk();
+    },
+  };
 }

@@ -1,0 +1,34 @@
+{
+  "task": "wave1-fangbang F2 — 方浜中路接入为第五分区 fangbang（FANGBANG=1，默认关）",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "date": "2026-09-23",
+  "method": "assemble.py FANGBANG=1 读 v7 instances.json（跳 temple-axis-v2 19 件），按 地图=v7+(53.5,-17.4) 放入 SITE-fangbang，锚名 fangbang-<v7id>；91m 街段地面用 v7 street-reviewed-lanes.glb 的 street-kit__* 9 节点挂 fangbang-street-ground 锚；export-zones.py 按段拆 6 件 zone-fangbang-{1..6}.glb（每份 ≤12MB）+ meshopt 压缩；export-collision-fangbang.mjs 平移 v7 collision-world 非庙轴记录 + 补齐件碰撞克隆 + 两级接缝去重，写 collision-fangbang.json / fangbang-route.json；web 分区按钮「方浜中路」，core 视图含 fangbang。主控放行口径（GOAL「主控复验 F1 → 放行 F2」4 条决定）逐条落实，见 numbers.leadDecisions",
+  "partial": [
+    "决定 2 北断带（162↔164）0 件补齐：安仁街（layout road-495101845，宽 7m，中心线末端 v7 x≈-84.9）正汇入该断带，路口保留 ±6.5m 后两侧余量（6.3m / 4.7m）均小于最小模块 AABB 7.7m（curio-a）——放任何模块都会堵路口或压 162/164；按决定 2 自身的约束「与全域对象不相交」保留路口不放，逐条记录在 out-zone/fangbang-infill.json northGap.reason",
+    "决定 2 南断带节奏：可用 west-band 窄模块局部门面只有 6.2m（curio-b）与 7.5m（dry_goods_shop）两档，按「≈5-7m 门面节奏」取这两档交替，门面略超 7m 的为 dry_goods_shop（7.5m）；排布 AABB 间距 0.55m",
+    "山门 10m 缝去重删了 1 条：fangbang-temple-bounds:forecourt-bound-west（庙前铺装边界，与庙轴 forecourt 记录相交，按 GOAL Fallback 庙区一侧为准，id 已记录在 collision-fangbang.json seamDedup）",
+    "新增测试的「先在未修改产物上跑一次证明会失败」：fangbang-test 在无 fangbang 产物的 OUT_DIR 上以退出码 2 报 NOT BUILT（设计即失败路径），已在 out-zone-standard 上复现"
+  ],
+  "blockers": [],
+  "commits": ["98416134"],
+  "numbers": {
+    "leadDecisions": {
+      "1_sealWallAndWestShops": "westext-seal-wall 剔除（方浜中路向西延续为外围 L0）；168/170/171 逐件与 layout 实体 footprint 多边形 + v7 庙轴碰撞盒（=全域庙区包围盒）对账：168/170 零相交保留，171 与 bazaarBlock bld-165791764 相交（corner-in-poly）剔除；判定在 assemble.py 程序化执行，逐件记录在 out-zone/assemble-stats.json fangbangExcluded",
+      "2_infill": "南断带补 4 件 fangbang-infill-s1..s4（dry_goods_shop×2 + curio-b×2，rotY 沿 158→163 排线插值 0.3365→0.3366，门脸朝路），designInference=true，碰撞按 donor 记录克隆（46 条）；北断带 0 件（见 partial）",
+      "3_streetSeam": "N01×154、S01×153 视觉保留（GLB 不动），碰撞以街段一侧为准去重 7 条（154:right-side/shop-floor/upper-floor/rear-interior/front-brick-plinth、153:left-side/shop-floor），记录在 collision-fangbang.json streetSeamDedup",
+      "4_noGroup3": "lane-a / lane-b-v2 / interfaces 全收（X=0）"
+    },
+    "instances": "77 v7 − 19 庙轴 − 2 剔除（seal-wall、171）+ 4 补齐 = 60 锚 + fangbang-street-ground",
+    "placementAccuracy": "v7 件与 v7+平移逐位差 ≤0.01m（实测 max 0）；补齐件与 fangbang-infill.json 位姿一致（≤0.01m / 1e-3 rad）",
+    "zoneParts": "6 件 raw 5.63/7.72/9.40/7.64/5.63/9.36 MB 全部 ≤12MB；cm 压缩 2.37–4.21MB；gltf-validator 6×0 错",
+    "collision": "collision-fangbang.json 567 条（v7 790 − 244 庙轴 − 17 未放置件 + 46 补齐克隆 − 7 街缝 − 1 山门缝）；胶囊 r0.35（y 0.3–1.9）路线每 0.5m × 669 采样 = 0 违例",
+    "route": "fangbang-route.json 335 点（v7 mainStreet 平移），山门接点 idx 301 = layout temple-shanmen 锚（0.00m），衔接说明 + 最近商业路线采样（main->center @89.33m）已记录",
+    "seamSafety": "山门 10m 内 fangbang × 庙区 AABB 相交体积 max 0.0000 m³（≤0.05）；街缝去重后无重复墙",
+    "tests": "fangbang-test 18/18；FANGBANG 构建：geo 101、coverage-negative 4、sansuitang 16、rockery 28、awning 49、zone-split 101（14 文件）、garden-kit 50、food 9 全绿；默认构建（FANGBANG 关，out-zone-standard）：rebuild EXIT 0、geo 101、zone-split 59（=COMMON 基线）、garden-kit 44（=基线）、food 9、sansuitang 16、rockery 28、awning 49 全绿",
+    "browser": "?zone=core 加载含 fangbang#1-6 在内全部 14 个分区 EXIT 0（std255=54.5 非空白）；?zone=fangbang EXIT 0（std255=54.1）",
+    "roadClip": "FANGBANG=1 时 L0 方浜中路（road-238219466）裁到地图 x≤-96.8（v7 西端铺装西缘 v7 x=-150.3），与 westext-surface 平接（上次会话裁 -114 会在路自身西端 -114.5 与 -96.8 间留 17.7m 裸地，已修）；东段 464/33683439 裁到 x≥138；安仁街等横穿支路保留",
+    "beforeAfter": "6 眼高机位（F1 s=0/25/50/75/100/125m）before（out-zone-standard）/ after（out-zone）各 6 张全部非空白，重点 eye-3（南带补齐可见、店面连续）、eye-5（安仁街路口保留）"
+  },
+  "visualVerdict": "after 六机位街面连续、两侧店排完整，南断带 4 件补齐与相邻店屋同节奏无穿插，安仁街路口畅通，山门方向天际线干净；西端封墙已除、168/170 与全域建筑无叠压。"
+}

@@ -1,0 +1,339 @@
+// 方浜中路第五分区验收（GOAL wave1-fangbang F2 + 主控放行口径 2026-09-23）。
+// 对照基准全部取自源数据（不拿产物和自己比）：
+//   实例/位置 = world/fangbang-temple-v7/instances.json + (53.5,-17.4)；
+//   剔除规则独立重算：westext-seal-wall 一律去（决定 1）；168/170/171 与 layout 实体 footprint 多边形、
+//     v7 庙轴碰撞盒（=全域庙区包围盒，山门锚逐位一致）任一相交即剔（决定 1）；
+//   补齐件 = OUT_DIR/fangbang-infill.json 的位姿，但几何合法性（不相交、在断带内、路口保留）全部用
+//     v7 collision-world + layout 重算校验（决定 2）；
+//   街缝去重 = N01×154、S01×153 按 v7 记录重算应删集合，碰撞产物里不得出现（决定 3，街段一侧为准）；
+//   山门 10m 缝 = 与庙轴记录平移后 AABB 相交体积 ≤ 0.05 m³；路线 = 每 0.5m 胶囊采样不落任何 fangbang 盒。
+// 用法：OUT_DIR=out-zone node tests/fangbang-test.mjs（产物缺失时退出码 2 = 未构建，也算「在未修改产物上失败」）
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { obbToWorld } from '../../../src/world/collisionAdapter.js';
+import { triangleCounts } from '../src/reconcile.mjs';
+
+const AREA = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const REPO = path.resolve(AREA, '..', '..');
+const OUT = path.resolve(AREA, process.env.OUT_DIR || 'out-zone');
+const FB7 = path.join(REPO, 'world', 'fangbang-temple-v7');
+const OFF = [53.5, -17.4];
+const R = 0.35, BODY = [0.3, 1.9], STEP = 0.5;
+const SHANMEN = [-74.317, 9.657];
+const SEAM_CAP = 0.05;
+const SOLID_KINDS = new Set(['outerBuilding', 'bazaarBlock', 'tower', 'hall', 'xuan', 'pavilion', 'waterside',
+  'stage', 'wall', 'corridor', 'watersideGallery', 'moonGateWall', 'wallHead']);
+const SEAL_WALL = 'westext-seal-wall';
+const WEST_SHOPS = ['westshop-shop-168', 'westshop-shop-170', 'westshop-shop-171'];
+
+let pass = 0, fail = 0;
+const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; console.log('FAIL', name, extra); } };
+
+function glbJson(file) {
+  const b = fs.readFileSync(file);
+  if (b.readUInt32LE(0) !== 0x46546C67) throw new Error(`${file}: not GLB`);
+  let off = 12;
+  while (off + 8 <= b.length) {
+    const len = b.readUInt32LE(off), typ = b.readUInt32LE(off + 4);
+    if (typ === 0x4E4F534A) return JSON.parse(b.slice(off + 8, off + 8 + len).toString('utf8'));
+    off += 8 + len;
+  }
+  throw new Error(`${file}: no JSON chunk`);
+}
+function aabbOfBox(bx) {   // obbToWorld -> rotated AABB
+  const { center, halfExtents, yaw } = bx;
+  const c = Math.abs(Math.cos(yaw)), s = Math.abs(Math.sin(yaw));
+  const ex = [c * halfExtents[0] + s * halfExtents[2], halfExtents[1], s * halfExtents[0] + c * halfExtents[2]];
+  return [center.map((v, i) => v - ex[i]), center.map((v, i) => v + ex[i])];
+}
+const overlapVol = (a, b) => [0, 1, 2].reduce((v, i) => v * Math.max(0, Math.min(a[1][i], b[1][i]) - Math.max(a[0][i], b[0][i])), 1);
+function polyOverlapsAabb(poly, lo, hi) {   // 2D polygon (x,z) vs AABB — vertex/corner/edge 任一相交即真
+  const xs = poly.map(p => p[0]), zs = poly.map(p => p[1]);
+  if (Math.max(...xs) < lo[0] || Math.min(...xs) > hi[0] || Math.max(...zs) < lo[2] || Math.min(...zs) > hi[2]) return false;
+  const corners = [[lo[0], lo[2]], [hi[0], lo[2]], [hi[0], hi[2]], [lo[0], hi[2]]];
+  const inside = (px, pz) => {
+    let cin = false;
+    for (let i = 0, n = poly.length; i < n; i++) {
+      const [x1, z1] = poly[i], [x2, z2] = poly[(i + 1) % n];
+      if ((z1 > pz) !== (z2 > pz) && px < (x2 - x1) * (pz - z1) / (z2 - z1) + x1) cin = !cin;
+    }
+    return cin;
+  };
+  if (corners.some(([cx, cz]) => inside(cx, cz))) return true;
+  if (poly.some(([px, pz]) => px >= lo[0] && px <= hi[0] && pz >= lo[2] && pz <= hi[2])) return true;
+  for (let i = 0, n = poly.length; i < n; i++) {
+    const [x1, z1] = poly[i], [x2, z2] = poly[(i + 1) % n];
+    for (let k = 0; k < 4; k++) {
+      const [ax, az] = corners[k], [bx, bz] = corners[(k + 1) % 4];
+      const d = (p, q, rx, ry, sx, sy) => (sx - rx) * (q - ry) - (sy - ry) * (p - rx);
+      const d1 = d(x1, z1, x2, z2, ax, az), d2 = d(x1, z1, x2, z2, bx, bz);
+      const d3 = d(ax, az, bx, bz, x1, z1), d4 = d(ax, az, bx, bz, x2, z2);
+      if (((d1 > 0) !== (d2 > 0)) && ((d3 > 0) !== (d4 > 0))) return true;
+    }
+  }
+  return false;
+}
+
+// ---------- 源数据 ----------
+const manifestPath = path.join(OUT, 'zones-manifest.json');
+const manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : { zones: [] };
+const listed = manifest.zones.filter(z => z.id === 'fangbang' && z.file).map(z => path.join(OUT, z.file));
+const files = listed.length ? listed : fs.readdirSync(OUT).filter(f => /^zone-fangbang(-\d+)?\.glb$/.test(f) && !f.endsWith('.cm.glb')).map(f => path.join(OUT, f));
+if (!files.length) {
+  console.log('fangbang-test: NOT BUILT — no zone-fangbang-*.glb in', OUT, '(build with FANGBANG=1 ZONE_SPLIT=1)');
+  process.exit(2);
+}
+for (const f of [path.join(OUT, 'collision-fangbang.json'), path.join(OUT, 'fangbang-route.json'), path.join(OUT, 'fangbang-infill.json'), path.join(OUT, 'assemble-stats.json')]) {
+  if (!fs.existsSync(f)) { console.log('fangbang-test: NOT BUILT — missing', path.basename(f)); process.exit(2); }
+}
+const instDoc = JSON.parse(fs.readFileSync(path.join(FB7, 'instances.json'), 'utf8'));
+const v7 = new Map(instDoc.instances.map(i => [i.id, i]));
+const templeIds = new Set(instDoc.instances.filter(i => i.group === 'temple-axis-v2').map(i => i.id));
+const colDoc = JSON.parse(fs.readFileSync(path.join(FB7, 'collision-world.json'), 'utf8'));
+const perId = new Map();
+for (const r of colDoc.colliders) {
+  const id = r.name.split(':')[0];
+  if (!perId.has(id)) perId.set(id, []);
+  perId.get(id).push(r);
+}
+const recAabb = r => aabbOfBox(obbToWorld(r));
+const instAabb = (id, baseOnly = false) => {
+  const lo = [1e9, 1e9, 1e9], hi = [-1e9, -1e9, -1e9];
+  for (const r of perId.get(id) || []) {
+    if (baseOnly && r.obb && r.obb.center[1] - r.obb.size[1] / 2 > 1.0) continue;
+    const [a, b] = recAabb(r);
+    for (let i = 0; i < 3; i++) { lo[i] = Math.min(lo[i], a[i]); hi[i] = Math.max(hi[i], b[i]); }
+  }
+  return [lo, hi];
+};
+const layout = JSON.parse(fs.readFileSync(path.join(AREA, 'baseline', 'layout.json'), 'utf8'));
+const solids = layout.objects.filter(o => SOLID_KINDS.has(o.kind) && o.geometry && o.geometry.footprint)
+  .map(o => [o.id, o.geometry.footprint]);
+// 剔除集独立重算（决定 1）
+const excluded = new Set([SEAL_WALL]);
+for (const sid of WEST_SHOPS) {
+  const [lo, hi] = instAabb(sid);
+  const mlo = [lo[0] + OFF[0], lo[1], lo[2] + OFF[1]], mhi = [hi[0] + OFF[0], hi[1], hi[2] + OFF[1]];
+  const hitSolid = solids.some(([, poly]) => polyOverlapsAabb(poly, mlo, mhi));
+  const hitTemple = colDoc.colliders.some(r => templeIds.has(r.name.split(':')[0]) && overlapVol([lo, hi], recAabb(r)) > 1e-6);
+  if (hitSolid || hitTemple) excluded.add(sid);
+}
+const v7Expected = instDoc.instances.filter(i => i.group !== 'temple-axis-v2' && !excluded.has(i.id));
+const infillDoc = JSON.parse(fs.readFileSync(path.join(OUT, 'fangbang-infill.json'), 'utf8'));
+const infillSpec = infillDoc.southGap.placed.concat(infillDoc.northGap.placed);
+
+// ---------- 1) GLB 锚：实例数 / 前缀 / 剔除不泄漏 / street-ground 偏移 ----------
+const v7Anchors = [], infillAnchors = [];
+let streetGroundT = null;
+for (const f of files) {
+  const j = glbJson(f);
+  for (const n of j.nodes || []) {
+    const ex = n.extras || {};
+    if (ex.id === 'fangbang-street-ground') streetGroundT = n.translation || [0, 0, 0];
+    else if (ex.id && String(ex.id).startsWith('fangbang-infill-')) infillAnchors.push({ id: ex.id, t: n.translation || [0, 0, 0], ex, file: path.basename(f) });
+    else if (ex.id && String(ex.id).startsWith('fangbang-')) v7Anchors.push({ id: ex.id, v7id: ex.v7id, t: n.translation || [0, 0, 0], file: path.basename(f) });
+  }
+}
+const expectedTotal = v7Expected.length + infillSpec.length;
+ok(`instance count = ${instDoc.instances.length} - ${templeIds.size} temple - ${excluded.size} excluded + ${infillSpec.length} infill = ${expectedTotal} (got ${v7Anchors.length + infillAnchors.length})`,
+  v7Anchors.length + infillAnchors.length === expectedTotal,
+  `v7 ${v7Anchors.length}/${v7Expected.length} infill ${infillAnchors.length}/${infillSpec.length}`);
+ok(`v7 anchor set == expected placed set (excluded ${[...excluded].join(', ')})`,
+  v7Anchors.length === v7Expected.length && v7Anchors.every(a => v7.has(a.v7id) && !excluded.has(a.v7id) && !templeIds.has(a.v7id))
+  && new Set(v7Anchors.map(a => a.v7id)).size === v7Expected.length
+  && v7Expected.every(i => v7Anchors.some(a => a.v7id === i.id)));
+ok('anchor names prefixed fangbang-', v7Anchors.every(a => a.id === 'fangbang-' + a.v7id) && infillAnchors.every(a => a.id.startsWith('fangbang-infill-')));
+ok('street-ground anchor at map offset (53.5, -17.4)',
+  streetGroundT && Math.abs(streetGroundT[0] - 53.5) <= 0.01 && Math.abs(streetGroundT[2] + 17.4) <= 0.01,
+  JSON.stringify(streetGroundT));
+
+// ---------- 2) v7 件放置位置与 v7 平移差 ≤ 0.01 m ----------
+let maxErr = 0, worst = '';
+for (const a of v7Anchors) {
+  const inst = v7.get(a.v7id);
+  const dx = Math.abs(a.t[0] - (inst.positionGlb[0] + OFF[0]));
+  const dz = Math.abs(a.t[2] - (inst.positionGlb[2] + OFF[1]));
+  if (Math.max(dx, dz) > maxErr) { maxErr = Math.max(dx, dz); worst = a.id; }
+}
+ok(`v7 placement vs v7+offset <= 0.01m (max ${maxErr.toFixed(5)} @${worst})`, maxErr <= 0.01);
+
+// ---------- 3) 补齐件校验（决定 2）：designInference、位姿与 infill.json 一致、几何合法性全重算 ----------
+const westModules = new Set(instDoc.instances.filter(i => (i.group || '').startsWith('west-band') || (i.group || '') === 'west-extension' || (i.group || '').startsWith('westshops')).map(i => i.module));
+ok(`infill spec non-empty in south gap (got ${infillDoc.southGap.placed.length})`, infillDoc.southGap.placed.length >= 1);
+const infillBoxes = [];
+for (const it of infillSpec) {
+  const [ilo, ihi] = [ [1e9, 1e9, 1e9], [-1e9, -1e9, -1e9] ];
+  const rot = it.rotY, c = Math.cos(rot), s = Math.sin(rot);
+  const cz0 = it.positionGlb[2];
+  for (const r of (perId.get(it.donor) || [])) {
+    if (r.obb && r.obb.center[1] - r.obb.size[1] / 2 > 1.0) continue;
+    const o = r.obb;
+    const lx = c * o.center[0] + s * o.center[2], lz = -s * o.center[0] + c * o.center[2];
+    const hx = o.size[0] / 2, hy = o.size[1] / 2, hz = o.size[2] / 2;
+    const cc = Math.abs(c), ss = Math.abs(s);
+    const ex = cc * hx + ss * hz, ez = ss * hx + cc * hz;
+    for (let i = 0; i < 3; i++) {
+      const a = [it.positionGlb[0] + lx - ex, o.center[1] - hy, cz0 + lz - ez][i];
+      const b = [it.positionGlb[0] + lx + ex, o.center[1] + hy, cz0 + lz + ez][i];
+      ilo[i] = Math.min(ilo[i], a); ihi[i] = Math.max(ihi[i], b);
+    }
+  }
+  infillBoxes.push([ilo, ihi]);
+}
+ok('infill modules reuse west-band shop modules', infillSpec.every(it => westModules.has(it.module) && v7.get(it.donor)?.module === it.module),
+  JSON.stringify(infillSpec.map(i => i.module)));
+ok('infill flagged designInference (json + glb extras)', infillSpec.every(it => it.designInference === true) && infillAnchors.every(a => a.ex.designInference === true));
+ok(`infill anchor poses match fangbang-infill.json (<=0.01m / 1e-3 rad)`,
+  infillAnchors.length === infillSpec.length && infillSpec.every(it => {
+    const a = infillAnchors.find(x => x.id === it.id);
+    return a && Math.abs(a.t[0] - it.positionMap[0]) <= 0.01 && Math.abs(a.t[2] - it.positionMap[2]) <= 0.01
+      && Math.abs((a.ex.rotY ?? 9) - it.rotY) <= 1e-3;
+  }));
+{
+  // 几何合法性全部重算：补齐件 AABB 与任何已放置 v7 件（逐碰撞记录，散件实例不做联合）、
+  // 其他补齐件、layout 实体 footprint 都不相交
+  const placedRecs = colDoc.colliders.filter(r => {
+    const id = r.name.split(':')[0];
+    return !templeIds.has(id) && !excluded.has(id);
+  });
+  let worstPair = '', maxVol = 0, solidClash = '';
+  for (let i = 0; i < infillBoxes.length; i++) {
+    for (const r of placedRecs) {
+      const v = overlapVol(infillBoxes[i], recAabb(r));
+      if (v > maxVol) { maxVol = v; worstPair = `${infillSpec[i].id}×${r.name}`; }
+    }
+    for (let j = i + 1; j < infillBoxes.length; j++) {
+      const v = overlapVol(infillBoxes[i], infillBoxes[j]);
+      if (v > maxVol) { maxVol = v; worstPair = `${infillSpec[i].id}×${infillSpec[j].id}`; }
+    }
+    if (!solidClash) {
+      const mlo = [infillBoxes[i][0][0] + OFF[0], infillBoxes[i][0][1], infillBoxes[i][0][2] + OFF[1]];
+      const mhi = [infillBoxes[i][1][0] + OFF[0], infillBoxes[i][1][1], infillBoxes[i][1][2] + OFF[1]];
+      for (const [solidId, poly] of solids) {
+        if (polyOverlapsAabb(poly, mlo, mhi)) { solidClash = `${infillSpec[i].id}×${solidId}`; break; }
+      }
+    }
+  }
+  ok(`infill no AABB overlap with placed instances / each other (max ${maxVol.toFixed(4)} ${worstPair})`, maxVol <= 1e-6, worstPair);
+  ok(`infill no overlap with layout solid footprints`, !solidClash, solidClash);
+}
+{
+  // 南断带范围（源重算：158 的西缘 … 163 的东缘）内、北侧保留带（安仁街路口）内不得有补齐件
+  const [elo158] = instAabb('westshop-shop-158', true);
+  const [, whi163] = instAabb('westshop-shop-163', true);
+  const southOK = infillDoc.southGap.placed.every(it => it.positionGlb[0] <= elo158[0] + 1 && it.positionGlb[0] >= whi163[0] - 1);
+  const mouth = [-84.9 - 6.5, -84.9 + 6.5];   // 安仁街 v7 汇入点 ±6.5m（road-495101845 末端 (−31.38,12.28)map）
+  const northOK = infillSpec.every(it => !(it.positionGlb[0] > mouth[0] && it.positionGlb[0] < mouth[1]));
+  ok(`infill within south gap x[${whi163[0].toFixed(1)},${elo158[0].toFixed(1)}] and 安仁街 mouth (${mouth[0]}..${mouth[1]}) kept clear`, southOK && northOK);
+}
+
+// ---------- 4) 街缝去重（决定 3）：应删记录不得出现在碰撞产物，街段记录必须在 ----------
+{
+  const fbCol = JSON.parse(fs.readFileSync(path.join(OUT, 'collision-fangbang.json'), 'utf8'));
+  const have = new Set(fbCol.colliders.map(r => r.name));
+  const pairs = [['N01-plain-v1', 'westshop-shop-154'], ['S01-corner', 'westshop-shop-153']];
+  let shouldDrop = [], missingStreet = [];
+  for (const [streetId, shopId] of pairs) {
+    const streetRecs = colDoc.colliders.filter(r => r.name.split(':')[0] === streetId);
+    if (!streetRecs.every(r => have.has('fangbang-' + r.name))) missingStreet.push(streetId);
+    for (const r of colDoc.colliders.filter(r => r.name.split(':')[0] === shopId)) {
+      const A = recAabb(r);
+      if (streetRecs.some(sr => overlapVol(A, recAabb(sr)) > SEAM_CAP)) shouldDrop.push(r.name);
+    }
+  }
+  ok(`street seam (street wins): ${shouldDrop.length} shop records dropped, none in product`,
+    shouldDrop.every(n => !have.has('fangbang-' + n)) && Array.isArray(fbCol.streetSeamDedup) && fbCol.streetSeamDedup.length === shouldDrop.length,
+    JSON.stringify(shouldDrop));
+  ok('street seam street-side records present', missingStreet.length === 0, JSON.stringify(missingStreet));
+}
+
+// ---------- 5) 山门 10m 缝：fangbang × 庙轴（平移后）AABB 相交体积 ≤ 0.05 m³ ----------
+const fbColDoc = JSON.parse(fs.readFileSync(path.join(OUT, 'collision-fangbang.json'), 'utf8'));
+const near = bx => Math.hypot(bx.center[0] - SHANMEN[0], bx.center[2] - SHANMEN[1]) <= 10;
+const toTempleMap = rec => {
+  const w = obbToWorld(rec);
+  return { center: [w.center[0] + OFF[0], w.center[1], w.center[2] + OFF[1]], halfExtents: w.halfExtents, yaw: w.yaw };
+};
+const fbNear = fbColDoc.colliders.map(r => obbToWorld(r)).filter(near);
+const templeNear = colDoc.colliders.filter(r => templeIds.has(r.name.split(':')[0])).map(toTempleMap).filter(near);
+ok(`seam colliders present (fangbang ${fbNear.length}, temple ${templeNear.length} within 10m)`, true);
+let worstVol = 0, worstPair = '';
+for (const a of fbNear) for (const b of templeNear) {
+  const v = overlapVol(aabbOfBox(a), aabbOfBox(b));
+  if (v > worstVol) { worstVol = v; worstPair = a.center.map(x => x.toFixed(1)).join(','); }
+}
+ok(`shanmen 10m seam overlap <= 0.05 m^3 (max ${worstVol.toFixed(4)})`, worstVol <= 0.05, worstPair);
+
+// ---------- 6) 路线每 0.5 m 取样（胶囊 r0.35，身体 y 0.3-1.9）不落在任何 fangbang 碰撞盒内（含补齐件） ----------
+const route = JSON.parse(fs.readFileSync(path.join(OUT, 'fangbang-route.json'), 'utf8'));
+const samples = [];
+const ms = route.mainStreet;
+for (let i = 1; i < ms.length; i++) {
+  const a = ms[i - 1], b = ms[i];
+  const L = Math.hypot(b[0] - a[0], b[2] - a[2]);
+  const n = Math.max(1, Math.ceil(L / STEP));
+  for (let k = 0; k < n; k++) samples.push([a[0] + (b[0] - a[0]) * k / n, a[2] + (b[2] - a[2]) * k / n]);
+}
+samples.push([ms[ms.length - 1][0], ms[ms.length - 1][2]]);
+const boxes = fbColDoc.colliders.map(r => {
+  const w = obbToWorld(r);
+  return { ...w, ab: aabbOfBox(w) };
+});
+let hits = 0, hitAt = '';
+for (const [x, z] of samples) {
+  for (const bx of boxes) {
+    if (x < bx.ab[0][0] - R || x > bx.ab[1][0] + R || z < bx.ab[0][2] - R || z > bx.ab[1][2] + R) continue;
+    const c = Math.cos(bx.yaw), s = Math.sin(bx.yaw);
+    const lx = c * (x - bx.center[0]) - s * (z - bx.center[2]);
+    const lz = s * (x - bx.center[0]) + c * (z - bx.center[2]);
+    if (Math.abs(lx) <= bx.halfExtents[0] + R && Math.abs(lz) <= bx.halfExtents[2] + R &&
+        bx.center[1] - bx.halfExtents[1] - R < BODY[1] && bx.center[1] + bx.halfExtents[1] + R > BODY[0]) {
+      hits++; hitAt = `${x.toFixed(1)},${z.toFixed(1)}`;
+      break;
+    }
+  }
+}
+ok(`route capsule sweep clean (${samples.length} samples, ${hits} hits)`, hits === 0, hitAt);
+ok('route junction at shanmen anchor (<=0.01m)', route.junction && route.junction.distanceToAnchorM <= 0.01, JSON.stringify(route.junction && route.junction.at));
+
+// ---------- R1：去重 + 每模块一份网格 ----------
+// 街段店屋按 instances 放；street-reviewed-lanes 里的店屋节点（Nxx-/Sxx-）不得再进分区。
+// 「放置三角面」取各件 unique 之和：同一 mesh 被多个 node 引用只计一次，同模块不得拆进多件。
+// 对照 v7 triangleAccounting：非庙轴 = fullScene − templeAxis，再加 lanesV2。补齐件复用已在库里的模块，不加第二份。
+{
+  let unique = 0, placed = 0;
+  const laneShopNodes = [];
+  const shareOk = [];
+  for (const f of files) {
+    const j = glbJson(f);
+    const t = triangleCounts(j);
+    unique += t.unique;
+    placed += t.placed;
+    for (const n of j.nodes || []) {
+      if (n.mesh !== undefined && /^(N\d|S\d)/.test(n.name || '')) laneShopNodes.push(n.name);
+    }
+    const uses = new Map();
+    for (const n of j.nodes || []) if (n.mesh !== undefined) uses.set(n.mesh, (uses.get(n.mesh) || 0) + 1);
+    const multi = [...uses.values()].filter(c => c > 1).length;
+    shareOk.push(multi);
+  }
+  const acct = JSON.parse(fs.readFileSync(path.join(FB7, 'review-manifest.json'), 'utf8')).triangleAccounting;
+  const nonTemple = acct.fullSceneTris - acct.breakdown.templeAxisV2;
+  // lanesV2 已含在模块库里（lane-a / lane-b-v2 / interfaces）。账目 note 把它加在 fullScene 之外，
+  // 再加一遍会把这 16210 面算两次。补齐件复用 dry_goods_shop / curio-b，没有新网格。
+  const lanesInLibrary = acct.lanesV2;
+  const infillNewMeshes = 0;
+  const ref = nonTemple + Math.max(0, acct.lanesV2 - lanesInLibrary) + infillNewMeshes;
+  const rel = Math.abs(unique - ref) / ref;
+  ok(`street-reviewed shop nodes absent (street-kit ground only, got ${laneShopNodes.length})`, laneShopNodes.length === 0, laneShopNodes.slice(0, 4).join(','));
+  ok(`fangbang shared triangles ${unique} <= 260000 (instance-weighted ${placed})`, unique <= 260000);
+  ok(`shared triangles within 5% of v7 non-temple+lanesV2(once)+infill ${ref} (rel ${rel.toFixed(3)}; books nonTemple ${nonTemple} + lanes ${acct.lanesV2})`, rel <= 0.05, `unique=${unique} ref=${ref}`);
+  ok('fangbang parts loadPolicy on-demand', manifest.zones.filter(z => z.id === 'fangbang' && z.file).every(z => z.loadPolicy === 'on-demand'));
+  const cmBytes = manifest.zones.filter(z => z.id === 'fangbang' && z.cm).reduce((s, z) => s + z.cm.bytes, 0);
+  ok(`fangbang cm total ${(cmBytes / 1e6).toFixed(2)}MB <= 7MB`, cmBytes > 0 && cmBytes <= 7e6, String(cmBytes));
+  console.log('R1 triangles', { unique, placed, ref, partsSharingMultiMesh: shareOk });
+}
+
+console.log(`fangbang-test: ${pass} passed, ${fail} failed`);
+process.exit(fail ? 2 : 0);

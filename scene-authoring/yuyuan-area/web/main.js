@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
 import { setupTour } from './tour.js';   // WP13：取景导览逻辑在 web/tour.js
 import { dedupeLabels, buildLabelOccluders } from './labels.js'; // WP13：标签去重+R1遮挡剔除逻辑在 web/labels.js
 import { installWalkMode } from './walk.js';   // WP4 步行模式（默认不启用，按 ?walk=1 或「步行」按钮进入）
@@ -32,7 +33,7 @@ controls.enableDamping = true;
 const ZONES = {
   core: ['garden', 'temple', 'bazaar', 'pond'],
   all: ['garden', 'temple', 'bazaar', 'pond', 'outer'],
-  garden: ['garden'], temple: ['temple'], bazaar: ['bazaar'], pond: ['pond'],
+  garden: ['garden'], temple: ['temple'], bazaar: ['bazaar'], pond: ['pond'], fangbang: ['fangbang'],
 };
 // 标签距离阈值（按距离+层级展示）：区域级不限距；设施名 380m；OSM 注记 240m
 const LABEL_DIST = { region: Infinity, facility: 300, note: 240 };
@@ -66,6 +67,9 @@ function infoOf(node) {
 
 const loader = new GLTFLoader();
 loader.setMeshoptDecoder(MeshoptDecoder);   // EXT_meshopt_compression (zone .cm.glb)
+const ktx2 = new KTX2Loader().setTranscoderPath('/node_modules/three/examples/jsm/libs/basis/');
+ktx2.detectSupport(renderer);
+loader.setKTX2Loader(ktx2);   // fangbang cm 使用 KHR_texture_basisu（-tc），其它分区仍是原贴图
 const RAW = new URLSearchParams(location.search).get('raw') === '1';   // ?raw=1 loads uncompressed zone GLBs for comparison
 const t0 = performance.now();
 const params = new URLSearchParams(location.search);
@@ -83,6 +87,9 @@ function countTris(root) {
   return t;
 }
 const zoneLoad = {};   // id -> {bytes, ms, tris, state}
+let zoneManifest = null;
+let fangbangReady = false;
+const fangbangLoading = new Map();
 function hud(extra) {
   fetch('/out/assemble-stats.json').then(r => r.json()).then(j => {
     let tris = 0; for (const r of allRoots) tris += countTris(r);
@@ -93,26 +100,40 @@ function hud(extra) {
       (zl ? `<br>分区：${zl}` : '');
   }).catch(() => {});
 }
+function collisionZones() {
+  const ids = [...ZONES.all];
+  if (fangbangReady) ids.push('fangbang');
+  return ids;
+}
+function refreshOccluders() {
+  return Promise.all(collisionZones().map(z => fetch('/out/collision-' + z + '.json').then(r => { if (!r.ok) throw new Error('collision-' + z + ': ' + r.status); return r.json(); })))
+    .then(all => { labelOccluders = buildLabelOccluders(all.flatMap(d => d.colliders || [])); window.__labelOccluderCount = labelOccluders.length; })
+    .catch(() => { labelOccluders = null; window.__labelOccluderCount = 0; });
+}
 function afterFirstPaint() {
   const lm = document.getElementById('loadmsg'); if (lm) lm.remove();
   fetch('/out/layout.json').then(r => r.json()).then(j => { layoutData = j; buildLabels(); });
   setZone(params.get('zone') || 'core');
   setCam(params.get('cam') || 'oblique');
   tourCtl.buildTour();
-  // WP13/R1/T2：标签遮挡剔除数据（各分区 collision 文件；与步行物理同源，懒加载失败则不剔除）
-  Promise.all(ZONES.all.map(z => fetch('/out/collision-' + z + '.json').then(r => { if (!r.ok) throw new Error('collision-' + z + ': ' + r.status); return r.json(); })))
-    .then(all => { labelOccluders = buildLabelOccluders(all.flatMap(d => d.colliders || [])); window.__labelOccluderCount = labelOccluders.length; })
-    .catch(() => { labelOccluders = null; window.__labelOccluderCount = 0; });
+  // 标签遮挡：已加载分区的 collision。fangbang 只在该区加载后并入。
+  refreshOccluders();
 }
 function loadGlb(url) { return new Promise((res, rej) => loader.load(url, g => res(g.scene), undefined, rej)); }
-async function loadZones(m) {
-  // requested zone first, then manifest order; each zone GLB becomes a group named ZN-<zone> (setZone already understands ZN-)
-  const want = (ZONES[params.get('zone') || 'core'] || ZONES.core);
-  const order = [...m.order.filter(z => want.includes(z)), ...m.order.filter(z => !want.includes(z))];
-  let first = true;
-  const files = order.flatMap(z => m.zones.filter(x => x.id === z && x.file));
+function onDemandIds(m) {
+  return new Set(m.zones.filter(z => z.loadPolicy === 'on-demand').map(z => z.id));
+}
+function publishZones() {
+  window.__zonesLoaded = Object.keys(zoneLoad).filter(z => zoneLoad[z].state === 'ok');
+  const bytes = Object.values(zoneLoad).filter(v => v.state === 'ok').reduce((s, v) => s + (v.bytes || 0), 0);
+  window.__loadedBytes = bytes;
+}
+async function loadZoneFiles(m, ids, { firstPaint = false } = {}) {
+  const files = ids.flatMap(z => m.zones.filter(x => x.id === z && x.file));
+  let first = firstPaint;
   for (const e of files) {
     const z = e.id, key = e.part && m.zones.filter(x => x.id === z && x.file).length > 1 ? `${z}#${e.part}` : z;
+    if (zoneLoad[key] && zoneLoad[key].state === 'ok') continue;
     zoneLoad[key] = { state: '…' };
     const ts = performance.now();
     try {
@@ -126,12 +147,50 @@ async function loadZones(m) {
       hud(RAW ? '分区加载（未压缩 ?raw=1）' : '分区加载（meshopt 压缩）');
     } catch (err) { zoneLoad[key] = { state: 'fail' }; console.error('zone load failed', key, err); }
   }
-  window.__zonesLoaded = Object.keys(zoneLoad).filter(z => zoneLoad[z].state === 'ok');
+  publishZones();
+  return first;
+}
+function fangbangAabb(m) {
+  const parts = m.zones.filter(z => z.id === 'fangbang' && z.bounds);
+  if (!parts.length) return null;
+  const lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity];
+  for (const p of parts) for (let i = 0; i < 3; i++) { lo[i] = Math.min(lo[i], p.bounds[0][i]); hi[i] = Math.max(hi[i], p.bounds[1][i]); }
+  return [lo, hi];
+}
+function distToAabb(x, z, box) {
+  const dx = x < box[0][0] ? box[0][0] - x : x > box[1][0] ? x - box[1][0] : 0;
+  const dz = z < box[0][2] ? box[0][2] - z : z > box[1][2] ? z - box[1][2] : 0;
+  return Math.hypot(dx, dz);
+}
+async function ensureZone(z) {
+  if (!zoneManifest) return;
+  if (z === 'fangbang' && fangbangReady) return;
+  if (fangbangLoading.has(z)) return fangbangLoading.get(z);
+  const job = loadZoneFiles(zoneManifest, [z]).then(() => {
+    if (z === 'fangbang') {
+      fangbangReady = true;
+      refreshOccluders();
+      if (walk && walk.mode && walk.mode() === 'walk') walk.rebuildPhysics();
+    }
+  });
+  fangbangLoading.set(z, job);
+  try { await job; } finally { fangbangLoading.delete(z); }
+}
+async function loadZones(m) {
+  zoneManifest = m;
+  window.__fangbangAabb = fangbangAabb(m);
+  const view = params.get('zone') || 'core';
+  const skip = onDemandIds(m);
+  const want = (ZONES[view] || ZONES.core).filter(z => !skip.has(z) || view === z);
+  const order = [...m.order.filter(z => want.includes(z)), ...m.order.filter(z => !want.includes(z) && !skip.has(z))];
+  await loadZoneFiles(m, order, { firstPaint: true });
   window.__ready = true;
   hud('分区加载完成');
 }
 fetch('/out/zones-manifest.json').then(r => { if (!r.ok) throw 0; return r.json(); }).then(m => {
-  document.getElementById('loadmsg').textContent = `按分区加载 ${m.zones.filter(z => z.file).length} 个 GLB …`;
+  const skip = onDemandIds(m);
+  const n = m.zones.filter(z => z.file && !skip.has(z.id)).length;
+  document.getElementById('loadmsg').textContent = `按分区加载 ${n} 个 GLB …`;
   loadZones(m);
 }).catch(() => {
   // fallback: single-file scene-areas.glb (pre zone-split outputs)
@@ -205,7 +264,12 @@ tourCtl = setupTour({
 document.getElementById('bar').addEventListener('click', (e) => {
   const b = e.target.closest('button');
   if (!b) return;
-  if (b.dataset.zone) { setZone(b.dataset.zone); restoreHud(); }
+  if (b.dataset.zone) {
+    const z = b.dataset.zone;
+    const go = () => { setZone(z); restoreHud(); };
+    if (z === 'fangbang') ensureZone('fangbang').then(go);
+    else go();
+  }
   if (b.dataset.cam) { setCam(b.dataset.cam); restoreHud(); }
   if (b.id === 't-labels') { labelsOn = !labelsOn; b.classList.toggle('active', labelsOn); updateLabelVis(); }
   if (b.id === 't-osm') { osmOn = !osmOn; b.classList.toggle('active', osmOn); updateLabelVis(); }
@@ -398,7 +462,15 @@ addEventListener('resize', () => {
 });
 
 // WP4 步行模式挂钩（注入「步行/轨道」「回到锚点」控件；物理仅在进入步行时懒构建）
-const walk = installWalkMode({ scene, camera, renderer, controls, getRoots: () => allRoots, hud });
+const walk = installWalkMode({
+  scene, camera, renderer, controls, getRoots: () => allRoots, hud,
+  extraCollisionZones: () => (fangbangReady ? ['fangbang'] : []),
+  onFeet: (f) => {
+    const box = window.__fangbangAabb;
+    if (!box || fangbangReady || !f) return;
+    if (distToAabb(f[0], f[2], box) <= 60) ensureZone('fangbang');
+  },
+});
 
 renderer.setAnimationLoop(() => { controls.update(); walk?.tick(); renderer.render(scene, camera); drawLabels(); });
 

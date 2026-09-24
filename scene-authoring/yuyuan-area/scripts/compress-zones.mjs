@@ -15,7 +15,8 @@ try { tool = execFileSync(GLTFPACK, ['-v'], { encoding: 'utf8' }).split('\n')[0]
 let bad = 0;
 for (const z of m.zones.filter(z => z.file)) {
   const src = path.join(OUT, z.file), dst = src.replace(/\.glb$/, '.cm.glb');
-  execFileSync(GLTFPACK, [...ARGS, '-i', src, '-o', dst], { stdio: 'pipe' });
+  const args = z.file.includes('fangbang') ? [...ARGS, '-tc'] : ARGS;
+  execFileSync(GLTFPACK, [...args, '-i', src, '-o', dst], { stdio: 'pipe' });
   const b = fs.readFileSync(dst);
   const res = await validateBytes(new Uint8Array(b));
   z.cm = { file: path.basename(dst), bytes: b.length, sha256: crypto.createHash('sha256').update(b).digest('hex'),

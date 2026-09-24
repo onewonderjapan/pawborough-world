@@ -1,36 +1,155 @@
 {
- "task": "wave1-walk-20260923 + wave1-walkr1-20260923",
- "note": "管线可再生的碰撞导出（rebuild-review.sh 内 export-collision.mjs 生成，OUT_DIR 决定目录）；无新 GLB/贴图。walkr1 起含园林套件碰撞（廊/门楼/树/摊凳），sha256 为 walkr1 重建后现值。",
- "files": [
+ "note": "FANGBANG=1 管线读取的 v7 未跟踪资产：street-reviewed-lanes.glb 街段地面 + 非庙轴实例用到的全部模块 GLB（放行口径：77-19 庙轴-2 剔除=56 件，补齐件 fangbang-infill-s1..s5 复用其中 dry_goods_shop/curio-b 模块，无新增资产）。主控合并时登记上传",
+ "assets": [
   {
-   "path": "scene-authoring/yuyuan-area/out-zone/collision-garden.json",
-   "sha256": "ad38e9cb49dad79edd9d81f51b1fde208b4fdb912eddd73b1bad89c5cbfd8743",
-   "bytes": 252507,
-   "updatedBy": "wave1-walkr1-20260923"
+   "path": "./world/fangbang-temple-v7/street-reviewed-lanes.glb",
+   "sha256": "f8f90b7aacb421dd11740a3f5c7286361f050a0fd6b4841262c742ea9848d208",
+   "bytes": 20587068
   },
   {
-   "path": "scene-authoring/yuyuan-area/out-zone/collision-pond.json",
-   "sha256": "eab6e13cdf41e0e016061825b1da84c3dee1fe8e476192be71d44d67528b838f",
-   "bytes": 1877,
-   "updatedBy": "wave1-walkr1-20260923"
+   "path": "./building/cat_corner/model.glb",
+   "sha256": "90f3d33ba782666093f2456b9890bed63bf2d45dc3019c136cbd6174eac072d3",
+   "bytes": 1580852
   },
   {
-   "path": "scene-authoring/yuyuan-area/out-zone/collision-temple.json",
-   "sha256": "b8d057ad406b39a19b9a08114572540fdeb8372b341552e0ac9b267dc7d01ad1",
-   "bytes": 86475,
-   "updatedBy": "wave1-walkr1-20260923"
+   "path": "./building/cloth_shop/model.glb",
+   "sha256": "87c89a4620532eb351df7af21665a29c40c43fad610fe3a759aa5335ec85362d",
+   "bytes": 2222268
   },
   {
-   "path": "scene-authoring/yuyuan-area/out-zone/collision-bazaar.json",
-   "sha256": "5099935da38c662aad9f5ad6cc534e2d1aca4b634a5f58265d69a2c409c12d2b",
-   "bytes": 72543,
-   "updatedBy": "wave1-walkr1-20260923"
+   "path": "./building/corner/model.glb",
+   "sha256": "3e68b5833c61d6f2bfe20cf96d561c90618483a319599abcc81385ca4e8bb9a5",
+   "bytes": 2146508
   },
   {
-   "path": "scene-authoring/yuyuan-area/out-zone/collision-outer.json",
-   "sha256": "72616b8b8e9cf15010877d588de6346570a536011342cd5cf07ff90288b2a869",
-   "bytes": 54132,
-   "updatedBy": "wave1-walkr1-20260923"
+   "path": "./building/curio-a/model.glb",
+   "sha256": "aa178b96876d22f5c598db3837b541229e852c069d18c43b5dda27dc52199747",
+   "bytes": 1972556
+  },
+  {
+   "path": "./building/curio-b/model.glb",
+   "sha256": "768062ada15239ba5d086a09939a4e8b593677d0ac06180357728591c426ee40",
+   "bytes": 1953600
+  },
+  {
+   "path": "./building/dry_goods_shop/model.glb",
+   "sha256": "052fadafda116d08356ded8544e32a71323f4adbff2ca9420dfce2f4e0bcd1c9",
+   "bytes": 3562760
+  },
+  {
+   "path": "./building/pharmacy_shop/model.glb",
+   "sha256": "f51cf055f8a86ca16bf763f43689a7a4cbe536a59f6bd420b9f50751c52b9574",
+   "bytes": 3679732
+  },
+  {
+   "path": "./building/photo_shop/model.glb",
+   "sha256": "5d885af6eb8b76ef1147a06499eed100da32593e149cd3dd6bf434d2acd84f76",
+   "bytes": 4105324
+  },
+  {
+   "path": "./building/plain-v1/model.glb",
+   "sha256": "9567bf0e96aec885116e2ad7692e4a90f440073d6d158b8454e344119910cbad",
+   "bytes": 1953264
+  },
+  {
+   "path": "./building/plain-v2/model.glb",
+   "sha256": "c08d816d6e144893bfcd9e6c4aacce890137d977de579fb8f6fab10cf4a04ea8",
+   "bytes": 1863044
+  },
+  {
+   "path": "./building/plain-v3/model.glb",
+   "sha256": "155809ebd42e37dd319a7cee0b5ccbaad2b2db21a15b21930608e914714112b7",
+   "bytes": 1495532
+  },
+  {
+   "path": "./building/restaurant-a/model.glb",
+   "sha256": "40b5d2ded1554565739aa9041d35f1bd2fbc4d6dd50be9888e0336faf7300b7d",
+   "bytes": 2146768
+  },
+  {
+   "path": "./building/restaurant-b/model.glb",
+   "sha256": "e083e811762487b415d289bbaa853bb1ad94e5283591ba3866c48b929c5fef2f",
+   "bytes": 2147344
+  },
+  {
+   "path": "./world/east-edge/east-shop-128/model.glb",
+   "sha256": "acc09e566d3d1a0aa6340895d46ea9ba92903bb61f47a24800af5c9db2203567",
+   "bytes": 1727716
+  },
+  {
+   "path": "./world/east-edge/east-shop-129/model.glb",
+   "sha256": "57ca21b5c9605102ea7f09cb256ff23052fe8183ee1b7f0f434cf6d9fc728286",
+   "bytes": 1722592
+  },
+  {
+   "path": "./world/fangbang-temple-v4/east-extension/seal-wall.glb",
+   "sha256": "5815ce8b9f413b28c51135bc732ce12054542a7fe2d45bf8268780a705be034d",
+   "bytes": 2608
+  },
+  {
+   "path": "./world/fangbang-temple-v4/east-extension/surface.glb",
+   "sha256": "ea8a75c35cddc5107e0fa338acecfaa55869000e3c5d2f8a1cf97e5680a4b794",
+   "bytes": 1216532
+  },
+  {
+   "path": "./world/fangbang-temple-v4/eastshops-strips.glb",
+   "sha256": "e8b4131a3ae635bcbf29ecb41e9e6a77d1f7f40a6db0bec7aa40b43bb63458bf",
+   "bytes": 7528
+  },
+  {
+   "path": "./world/fangbang-temple-v4/west-extension/forecourt-bounds.glb",
+   "sha256": "e9997259ad2ebe60819c5086f4e86fafdbae9de3c76233cecaf7a609186b49ef",
+   "bytes": 4020
+  },
+  {
+   "path": "./world/fangbang-temple-v4/west-extension/seal-wall.glb",
+   "sha256": "dd07c8ea5d6ded4b74391b2fe887cf0926a997c746c2c9414d8b13da454fcd1a",
+   "bytes": 2804
+  },
+  {
+   "path": "./world/fangbang-temple-v4/west-extension/surface.glb",
+   "sha256": "01b8f82f3e26c40e8fc8fc75c872179f90dab4b9133659377eea27b6733f4d45",
+   "bytes": 1308304
+  },
+  {
+   "path": "./world/fangbang-temple-v4/westshops-strips.glb",
+   "sha256": "2f74208ad15b3871ed90703583803454858bfcdb0fbd0eb243ec05735b42a6c4",
+   "bytes": 12012
+  },
+  {
+   "path": "./world/lanes-v2/interfaces/model.glb",
+   "sha256": "70b6837cf4b19b3ddd90b99e2c512312b117f51bd773a4b70c41f55cbeddf8a0",
+   "bytes": 1489948
+  },
+  {
+   "path": "./world/lanes-v2/lane-a/model.glb",
+   "sha256": "03aa6a0058c8bdd63039c6534cd8cd048d16cad13322f7822c9c2c6ed7099675",
+   "bytes": 2567564
+  },
+  {
+   "path": "./world/lanes-v2/lane-b-v2/model.glb",
+   "sha256": "2f193af6b3004b4fef7e5138e28f38b7bc78e6689021160310b6f271201547b8",
+   "bytes": 2668592
+  },
+  {
+   "path": "./world/street-completion/east-shop-130/model.glb",
+   "sha256": "654022fbe6088079b287927ad9cdfb3cf5f526f4e7454209b54fb4fca1b076e3",
+   "bytes": 1751412
+  },
+  {
+   "path": "./world/street-completion/east-shop-131/model.glb",
+   "sha256": "0ee8b33eacac8b9b708e5e50649a426117829fba906c1fd438152e3051da9aad",
+   "bytes": 1742588
+  },
+  {
+   "path": "./world/street-completion/east-shop-132/model.glb",
+   "sha256": "68716bb1a5f33d0cdc0fad1172984b5021281bf7c6874bf0da0077f761d775aa",
+   "bytes": 1793052
+  },
+  {
+   "path": "./world/street-completion/east-shop-133/model.glb",
+   "sha256": "d443aac126f8e81c14a85efcb3baafc9f54d328e726c8f52cbaa524453fb90cc",
+   "bytes": 1755416
   }
  ]
 }

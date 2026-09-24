@@ -203,6 +203,139 @@ for it in plan:
                                   'bounds': bounds(rockery_part), 'withinCap': len(b2) <= CAP,
                                   'note': 'ROCKERY_KIT site modules; split so zone-garden.glb stays within cap'})
         print('zone garden 2', len(b2), 'bytes')
+# ---------- 方浜中路分区（FANGBANG=1）----------
+# R1：同一模块的全部实例进同一件，导出时多节点引用同一 mesh（Blender 链接复制）。
+# 按模块装箱，超 ZONE_CAP_BYTES 再对半拆；不再按街段把同一模块拆进多件（那会把网格再存一份）。
+# 街段地面只留 street-kit__*（总装已剔除 street-reviewed-lanes 的店屋节点）。
+# loadPolicy=on-demand：核心三区 / 全域含外围默认不拉这几件。
+if 'SITE-fangbang' in bpy.data.collections:
+    fb_coll = bpy.data.collections['SITE-fangbang']
+    fb_all = [o for o in fb_coll.objects if o.type == 'EMPTY' and str(o.get('id') or '').startswith('fangbang-')]
+    def fb_top(o):
+        cur = o
+        while cur is not None:
+            if str(cur.get('id') or '').startswith('fangbang-'):
+                return cur
+            cur = cur.parent
+        return None
+    def fb_stem(nm):
+        return re.sub(r'\.\d{3}$', '', nm or '')
+    # 同一模块强制共享网格数据块（链接复制偶发被材质槽拆开时收回来）
+    fb_by_mod = {}
+    for a in fb_all:
+        fb_by_mod.setdefault(str(a.get('module') or a.get('id')), []).append(a)
+    for ans in fb_by_mod.values():
+        canon = {}
+        for ch in ans[0].children_recursive:
+            if ch.type == 'MESH' and ch.data:
+                canon.setdefault(fb_stem(ch.name), ch.data)
+        for a in ans[1:]:
+            for ch in a.children_recursive:
+                src = canon.get(fb_stem(ch.name)) if ch.type == 'MESH' else None
+                if src is not None and ch.data != src:
+                    ch.data = src
+    # 方浜贴图像素去重（只动 SITE-fangbang 引用的图，别的分区 GLB 已经写完）
+    fb_imgs = set()
+    for a in fb_all:
+        for ob in [a] + list(a.children_recursive):
+            if ob.type != 'MESH' or not ob.data:
+                continue
+            for mat in ob.data.materials:
+                if not mat or not mat.node_tree:
+                    continue
+                for n in mat.node_tree.nodes:
+                    if n.type == 'TEX_IMAGE' and getattr(n, 'image', None):
+                        fb_imgs.add(n.image)
+    fb_img_kept = {}
+    for img in list(fb_imgs):
+        packed = getattr(img, 'packed_file', None)
+        raw = packed.data if packed else None
+        if not raw:
+            continue
+        key = (img.size[0], img.size[1], hashlib.sha256(raw).hexdigest())
+        if key in fb_img_kept:
+            img.user_remap(fb_img_kept[key])
+            bpy.data.images.remove(img)
+        else:
+            fb_img_kept[key] = img
+    # 招牌图保持 1K。其余贴图长边收到 512，两件才放得进 12MB，cm 合计才 ≤ 7MB。
+    scaled = 0
+    for img in list(fb_img_kept.values()):
+        if 'sign' in img.name.lower():
+            continue
+        w, h = img.size
+        m = max(w, h)
+        if m > 512:
+            s = 512 / m
+            img.scale(max(1, int(round(w * s))), max(1, int(round(h * s))))
+            scaled += 1
+    print('fangbang images after hash dedupe', len(fb_img_kept), 'scaledTo512', scaled)
+    def fb_mod_tris(ans):
+        seen, t = set(), 0
+        for ch in ans[0].children_recursive:
+            if ch.type == 'MESH' and ch.data and id(ch.data) not in seen:
+                seen.add(id(ch.data))
+                ch.data.calc_loop_triangles()
+                t += len(ch.data.loop_triangles)
+        return t
+    fb_groups = sorted(((fb_mod_tris(ans), ans) for ans in fb_by_mod.values()), key=lambda it: -it[0])
+    def fb_objs_of(ans_lists):
+        want = set()
+        for ans in ans_lists:
+            for a in ans:
+                want.add(id(a))
+        out = []
+        for o in fb_coll.objects:
+            top = fb_top(o)
+            if top is not None and id(top) in want:
+                out.append(o)
+        return out
+    def fb_write(part_index, ans_lists):
+        objs = fb_objs_of(ans_lists)
+        f = f'zone-fangbang-{part_index}.glb'
+        pth = os.path.join(OUT, f)
+        export(pth, objs)
+        b = open(pth, 'rb').read()
+        entry = {'id': 'fangbang', 'part': part_index, 'file': f, 'bytes': len(b),
+                 'sha256': hashlib.sha256(b).hexdigest(), 'collections': ['SITE-fangbang'],
+                 'objects': len(objs), 'bounds': bounds(objs), 'withinCap': len(b) <= CAP,
+                 'loadPolicy': 'on-demand',
+                 'note': 'v7 non-temple-axis; one mesh per module; map = v7 + (53.5, -17.4); loadPolicy on-demand'}
+        print('zone fangbang', part_index, len(b), 'bytes', 'modules', len(ans_lists), 'withinCap' if len(b) <= CAP else 'OVER CAP')
+        return entry
+    # 两件装箱（纹理每件一份，件数多会把 cm 顶过 7MB）。超 cap 时把三角最少的模块挪到另一件。
+    left, right, sl, sr = [], [], 0, 0
+    for item in fb_groups:
+        if sl <= sr:
+            left.append(item); sl += item[0]
+        else:
+            right.append(item); sr += item[0]
+    if not right:
+        right = [left.pop()]
+    packed = None
+    for _ in range(len(fb_groups)):
+        e1 = fb_write(1, [ans for _, ans in left])
+        e2 = fb_write(2, [ans for _, ans in right])
+        if e1['bytes'] <= CAP and e2['bytes'] <= CAP:
+            packed = (e1, e2)
+            break
+        over, under = (left, right) if e1['bytes'] > e2['bytes'] else (right, left)
+        if len(over) <= 1:
+            raise SystemExit(f'FANGBANG split: cannot fit under cap ({e1["bytes"]}, {e2["bytes"]})')
+        over.sort(key=lambda it: it[0])
+        under.append(over.pop(0))
+    if not packed:
+        raise SystemExit('FANGBANG split: gave up packing into 2 parts')
+    manifest['zones'].extend(packed)
+    claimed = set()
+    for _, ans in fb_groups:
+        for a in ans:
+            claimed.add(a.name)
+    missing = [a.name for a in fb_all if a.name not in claimed]
+    if missing:
+        raise SystemExit(f'FANGBANG split: {len(missing)} anchors not claimed: {missing[:8]}')
+    if 'fangbang' not in manifest['order']:
+        manifest['order'].append('fangbang')
 manifest['totalBytes'] = sum(zz.get('bytes', 0) for zz in manifest['zones'])
 json.dump(manifest, open(os.path.join(OUT, 'zones-manifest.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 print('ZONES DONE total', manifest['totalBytes'], 'cap/zone', CAP)

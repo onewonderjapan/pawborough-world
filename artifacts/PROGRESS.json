@@ -1,32 +1,40 @@
 {
- "task": "wave1-walkr1 — 步行模式补碰撞（园廊 3 条 + 复廊 + 听涛阁水廊 / 门楼 / 树 / 摊凳）+ 截图时机修正（WP4 R1）",
- "branch": "work/wave1-walkr1-20260923",
- "base": "main @ 09d11cdd",
- "updatedAt": "2026-09-23T23:59:00+08:00",
- "queue": [
-  {
-   "step": "K1 园林套件碰撞",
-   "status": "done",
-   "commit": "1e7e4093",
-   "evidence": "export-collision.mjs 段9-13：corridor-kit 三廊（874:48柱+4栏 / 906:40+4 / 920:38+4+端亭25）逐柱 GLB 确认；复廊 6柱+4栏(首末跨留空)+4中墙（部署 GLB 实测 6 柱，设计记录 10 与 GLB 不符，按 GLB 出盒）；门楼 2 Pier 通道 3.26m≥2.2；46 树干 0.4×2.0×0.4；51 摊凳 GLB 包围盒；栏/墙与路线/园路 0 相交，openings 与上版一致。新测试 tests/corridor-gate-collision-test.mjs：上一版产物 7 pass/20 fail exit 1（先行证明），本单 29 pass/0 fail；契约 1451 pass/0 fail；碰撞 1216→1492"
+  "task": "wave1-fangbang（WP14 方浜中路街段+连接段）",
+  "updatedAt": "2026-09-24",
+  "worker": "Cursor CLI 施工担当",
+  "waitingForLead": false,
+  "queue": {
+    "F1": {
+      "status": "done",
+      "summary": "v7 连接段复验出图完成并经主控复验通过（83278e5a + 96fdab29）",
+      "commits": ["83278e5a", "96fdab29"]
+    },
+    "F2": {
+      "status": "done",
+      "summary": "按放行口径接入第五分区 fangbang（FANGBANG=1 默认关）：剔除封墙与 171（与 bld-165791764 相交）、保留 168/170、南断带补 4 件（北断带为安仁街路口保留）、街缝碰撞以街段为准去重 7 条、山门缝庙区为准去重 1 条、路线山门接点 0.00m；6 分件 ≤12MB validator 0 错；fangbang-test 18/18、默认管线全绿（zone-split 59/garden-kit 44 基线复现）、浏览器 ?zone=core 含 fangbang 全加载 EXIT 0；before/after 6 机位出图",
+      "artifacts": ["artifacts/f2-integrate/RESULT.json", "artifacts/f2-integrate/{before,after}-eye-*.png", "artifacts/f2-integrate/browser-zone-*.png", "artifacts/NEW-ASSETS.json", "collision/route/infill 产物在 out-zone（构建再生成）"],
+      "commits": ["98416134"],
+      "deviationsForLead": [
+        "北断带 0 件：安仁街汇入 + 余量 < 最小模块 AABB，见 RESULT partial",
+        "南断带节奏 6.2/7.5m 两档（模块只有这两档窄门面）",
+        "山门缝删 fangbang-temple-bounds:forecourt-bound-west 1 条（庙区为准）"
+      ]
+    },
+    "R1": {
+      "status": "done",
+      "summary": "街段仍只留 street-kit；同模块实例共享网格，唯一三角 219993（对上 v7 非庙轴 220332）。2 件 cm 合计 4.29MB。核心三区首次 15.9MB，不加载 fangbang；点按钮或步行进入 60m 才加载，随后标签与步行读 collision-fangbang。fangbang-test 23/23。FANGBANG=1 与默认全流程 rebuild 均 EXIT 0。",
+      "artifacts": ["artifacts/r1/RESULT.json", "artifacts/r1/core-hud.png", "artifacts/r1/after-eye-3-s050m.png", "artifacts/r1/after-eye-5-s100m.png"],
+      "commits": ["2e5436a0"],
+      "deviationsForLead": [
+        "实例加权放置三角仍是 573419；≤260000 的断言落在共享后的唯一三角上，见 RESULT partial",
+        "非招牌贴图 512 + fangbang cm ETC1S，Cycles 同机位不差于 F2，运行时墙面更软"
+      ]
+    }
   },
-  {
-   "step": "K2 截图时机",
-   "status": "done",
-   "commit": "38a512bf",
-   "evidence": "中点按路线累计弧长≥半长触发、眼位=路线中点地面+1.6m、朝向=该处切线 yaw=atan2(-tx,-tz)；并修根因——轨道模式每帧 controls.update() lookAt(controls.target) 覆盖 eyeView 朝向（旧 yaw 从未上屏），截图改走 __viewAt(p,t) target=眼位+前向25m；15 张重拍，中点图全部沿路线方向（对照 artifacts/walkr1/shots-before vs shots-after）"
-  },
-  {
-   "step": "公共验收",
-   "status": "done",
-   "evidence": "rebuild-review.sh EXIT 0（全套 env）；npm test geo101/coverage4/sansuitang16/rockery28/awning49；zone-split 75、check-food 9、契约 1451、新测试 29 全绿；walk-check allPass=true（终点误差≤0.9m）；zone GLB ≤12MB（最大 9,543,004B）；browser 默认轨道 EXIT 0 std255 54.4（上版 54.5）"
-  },
-  {
-   "step": "交付物",
-   "status": "done",
-   "commit": "42dfc6d3",
-   "evidence": "artifacts/walkr1/{RESULT.json, WALK-CHECK.json, WALK-CHECK-before.json, shots-after/×15, shots-before/×15, before/after-orbit-default.png} + artifacts/SUMMARY.md + artifacts/NEW-ASSETS.json（5 个 collision JSON sha 更新为 walkr1 现值）"
-  }
- ],
- "resume": "全部队列项完成，无 blockers。partial 移交项见 artifacts/walkr1/RESULT.json：复廊部署 GLB 实测 6 柱（设计记录 10，若换 corridor-kit R1 重建复廊需重跑导出，新测试按 GLB 确认数自适应）；门楼折起门扇不建碰撞（建则通道 2.1m<2.2m）；pavilion-kit obb 背栏带维持跳过；机主 D8 亲走与 WP12 性能实测属主控/机主。"
+  "handoffNotes": [
+    "FANGBANG=1 全流程：OUT_DIR=out-zone PYTHONPATH=$PWD/.python-deps SITE_MODULES=1 STALL_KIT=1 GARDEN_KITS=1 SANSUITANG=1 ZONE_SPLIT=1 FANGBANG=1 bash scripts/rebuild-review.sh",
+    "out-zone-standard（before 基线）需手工补拷 OUT_DIR 输入件：garden-wall/moon-gate/temple-wall/jiuqu-bridge.glb、garden-kit-catalog/garden-kit-collision/garden-kit-reimport.json、site-inputs.json（管线不生成，setup 时放进 out-zone 的）",
+    "排布器与测试的几何口径：断带=东侧店西缘…西侧店东缘；冲突逐碰撞记录比对（散件实例不联合）；补齐件位姿存模块原点（非 AABB 中心）",
+    "主控合并时可复核：assemble-stats.json fangbangExcluded、collision-fangbang.json streetSeamDedup/seamDedup、fangbang-infill.json northGap.reason"
+  ]
 }
