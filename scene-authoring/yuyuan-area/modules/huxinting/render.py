@@ -104,16 +104,16 @@ poly = BR['geometry']['polyline']
 B10 = poly[9]
 B9 = poly[8]
 # 眼高机位：桥南侧水面外（局部 v≈9.5，与桥面同视高 0.55+1.55），桥栏作前景望临桥立面
-_lx, _lz = 0.0, 9.5
+_lx, _lz = 0.0, 19.0
 ex = CX + _lx * UX + _lz * VX
 ez = CZ + _lx * UZ + _lz * VZ
 c = bpy.data.cameras.new('from-bridge')
 c.lens_unit = 'FOV'
-c.angle = math.radians(50)
+c.angle = math.radians(46)
 o = bpy.data.objects.new('from-bridge', c)
 SC.collection.objects.link(o)
 p = Vector((ex, -ez, 0.55 + 1.55))
-t3 = Vector(W(0, 0, 2.5))
+t3 = Vector(W(0, 0, 3.6))
 o.location = p
 o.rotation_mode = 'QUATERNION'
 o.rotation_quaternion = (t3 - p).to_track_quat('-Z', 'Y')
