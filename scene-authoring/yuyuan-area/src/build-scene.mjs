@@ -58,7 +58,7 @@ const layout = JSON.parse(fs.readFileSync(path.join(OUT, 'layout.json'), 'utf8')
 // 外围 L0 方浜中路路面片（y=0.02）会盖住 fangbang 沥青（y≈0）：466 裁到 v7 西端铺装西缘（v7 x=-150.3 →
 // 地图 -96.8）以西，与 westext-surface 平接——裁到 -114 会在路的自身西端(-114.5)与 -96.8 间留 17.7m 裸地；
 // 464 裁到街段以东（x>=138）；横穿的支路路面片保留（路口衔接，含安仁街）。默认关（无 FANGBANG 时管线不变）。
-const FANGBANG_ROAD_CLIP = process.env.FANGBANG === '1' ? {
+const FANGBANG_ROAD_CLIP = process.env.FANGBANG !== '0' ? {   // 默认开启（2026-09-24），FANGBANG=0 关闭
   'road-238219466': [-Infinity, -96.8],
   'road-238219464': [138, Infinity],
   'road-33683439': [138, Infinity],

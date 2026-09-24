@@ -15,8 +15,8 @@ if [ "${ZONE_SPLIT:-0}" = "1" ]; then
   # meshopt runtime copies (G6 compressed default); ZONE_CM=0 skips
   if [ "${ZONE_CM:-1}" = "1" ]; then node scripts/compress-zones.mjs; fi
 fi
-# FANGBANG=1: fifth zone from world/fangbang-temple-v7 (placement gated in assemble.py) -> zone collision + route
-if [ "${FANGBANG:-0}" = "1" ] && [ "${ZONE_SPLIT:-0}" = "1" ]; then
+# 方浜中路 fifth zone (default on since 2026-09-24; FANGBANG=0 turns it off) -> zone collision + route
+if [ "${FANGBANG:-1}" != "0" ] && [ "${ZONE_SPLIT:-0}" = "1" ]; then
   node scripts/export-collision-fangbang.mjs
 fi
 # First generate projections from final geometry; routes are calculated after this step.

@@ -381,7 +381,7 @@ if os.environ.get('ROCKERY_KIT', '1') != '0':
         print('rockery placed', rid, 'centroid', round(cx, 3), round(cz, 3), 'rotY', round(rot_y, 4), 'axis', round(vx, 3), round(vz, 3))
     print('rockery kit placed', rockery_placed)
 
-# ---------- 方浜中路分区（FANGBANG=1：v7 world/fangbang-temple-v7 非庙轴实例并入第五分区，默认关） ----------
+# ---------- 方浜中路分区（默认开启，2026-09-24 机主定；FANGBANG=0 关闭。v7 world/fangbang-temple-v7 非庙轴实例并入第五分区） ----------
 # 数据源：仓库根 world/fangbang-temple-v7/instances.json（77 实例）。坐标契约：地图 = v7 + (53.5, -17.4)
 # （v7 blocks.json anchor；山门 v7 (-127.817,27.057) -> 地图 (-74.317,9.657) 与 baseline/layout.json
 # temple-shanmen 逐位一致，只有平移，2026-09-23 F1 复验）。跳过 temple-axis-v2 组（全域庙区已有，不重复放）。
@@ -391,7 +391,7 @@ if os.environ.get('ROCKERY_KIT', '1') != '0':
 fangbang_placed = 0
 fangbang_excluded = []
 fangbang_infill = []
-if os.environ.get('FANGBANG') == '1':
+if os.environ.get('FANGBANG', '1') != '0':
     REPO = os.path.dirname(os.path.dirname(ROOT))   # 仓库根
     FB7 = os.path.join(REPO, 'world', 'fangbang-temple-v7')
     fb_inst = json.load(open(os.path.join(FB7, 'instances.json'), encoding='utf-8'))['instances']

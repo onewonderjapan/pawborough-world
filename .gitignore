@@ -57,3 +57,14 @@ artifacts/world-ten-hour/round-005/delivery/*.zip
 /asset-authoring/**/out/
 /.local-media/
 /scene-authoring/yuyuan-area/review-images/
+
+# Review screenshots / renders stay out of the repo (owner decision 2026-09-24: the repo is public).
+# Keep them in the work-order package under /home/baibai/outbox/<package>/artifacts/ instead.
+/artifacts/**/*.png
+/artifacts/**/*.jpg
+/artifacts/**/*.jpeg
+/artifacts/**/*.webp
+/scene-authoring/**/review/*.png
+/scene-authoring/**/review/*.jpg
+/scene-authoring/**/renders/*.png
+/scene-authoring/**/renders/*.jpg
