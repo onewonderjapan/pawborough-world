@@ -179,12 +179,27 @@ print('GLB：%d 节点（%d 网格）%d tris，%.2f MB' % (len(nodes), len(meshe
 # ---------- test 1：顶点包含（全部 ≤ footprint+1.4；墙体件 ≤ footprint−0.3+ε） ----------
 all_w = []
 exceed = []
+# 2026-09-24 主控修订：出檐按「各边法线方向」量（= 斜接外偏移多边形，footprint 为凸多边形），
+# 直段 ≤ 1.4 m；离角点 3 m 内再许 0.35 m 出翘。上一版按「到多边形的距离」量，等于把转角做成圆角，
+# 不允许翼角沿角平分线伸出——而那正是江南翼角的形态。
+def _edge_excess(pt):
+    worst, near_corner = -1e9, min(math.hypot(pt[0] - q[0], pt[1] - q[1]) for q in FP) <= 3.0
+    sa = sum(FP[i][0] * FP[(i + 1) % len(FP)][1] - FP[(i + 1) % len(FP)][0] * FP[i][1] for i in range(len(FP)))
+    for i in range(len(FP)):
+        (x0, z0), (x1, z1) = FP[i], FP[(i + 1) % len(FP)]
+        ex, ez = x1 - x0, z1 - z0
+        L = math.hypot(ex, ez)
+        if L < 1e-9:
+            continue
+        nx, nz = (ez / L, -ex / L) if sa > 0 else (-ez / L, ex / L)   # 外法线
+        worst = max(worst, (pt[0] - x0) * nx + (pt[1] - z0) * nz)
+    return worst - (1.4 + (0.35 if near_corner else 0.0))
 for n in meshes:
     for v in world_verts(n):
         all_w.append(v)
-        if not point_in_poly((v[0], v[2]), FP, tol=1.401):
+        if _edge_excess((v[0], v[2])) > 0.001:
             exceed.append((n['name'], [round(q, 2) for q in v]))
-ok('test1a 全部顶点位于 footprint+1.4 m 内（%d 顶点）' % len(all_w), len(exceed) == 0,
+ok('test1a 全部顶点在各边外 ≤1.4 m（角部 3 m 内 +0.35 出翘）（%d 顶点）' % len(all_w), len(exceed) == 0,
    '越界 %d 个，例 %s' % (len(exceed), exceed[:3]))
 wall_out = []
 for n in meshes:

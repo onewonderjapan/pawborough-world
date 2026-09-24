@@ -515,36 +515,42 @@ box('terrace-main', U0, midu, V0, V1, Z3 - 0.06, Z3 + 0.06, 'stone')
 if PAV:
     box('terrace-ne', PU0, U1, PV1, V1, Z3 - 0.06, Z3 + 0.06, 'stone')
 
-# ---- 逐层腰檐（1-3 层，沿 BODY_L；主檐在主屋面 loft 自带） ----
+# ---- 檐口 / 屋面构件（主控 eave_kit，2026-09-24 替换 eave_band / roof_loft / 平面攒尖） ----
+sys.path.insert(0, HERE)
+import eave_kit as EK
+EK.init(lambda n, it, f, m, part: add_local(n, it, f, m, part=part))
+EKP = dict(P['eaveKit'])
+
+def bracket_points(poly, step):
+    """沿直角多边形各边按 step 取柱位（含两端内收 0.4 m），返回 (u, v, 外法线 u, 外法线 v)。"""
+    poly = ccw([tuple(q) for q in poly])
+    out = []
+    for i in range(len(poly)):
+        a, b = poly[i], poly[(i + 1) % len(poly)]
+        L = math.hypot(b[0] - a[0], b[1] - a[1])
+        if L < 1.2:
+            continue
+        du, dv = (b[0] - a[0]) / L, (b[1] - a[1]) / L
+        k = max(1, int(round((L - 0.8) / step)))
+        for j in range(k + 1):
+            s = 0.4 + (L - 0.8) * j / k
+            out.append((a[0] + du * s, a[1] + dv * s, dv, -du))
+    return out
+
+# ---- 逐层腰檐（1-3 层，沿 BODY_L）+ 柱位斗拱 ----
 PART = 'eaves'
 for si, z in enumerate((Z1, Z2, Z3)):
-    eave_band('eave-s%d' % (si + 1), BODY_L, z, part='eaves')
+    EK.eave_skirt('eave-s%d' % (si + 1), BODY_L, z, EKP, 'eaves')
+    EK.brackets('dougong-s%d' % (si + 1), bracket_points(BODY_L, EKP['bracketStepM']), z + EKP['soffitRise'], 'eaves')
 
-# ---- 主屋面（歇山）：凹曲下坡 loft 至破环，上段陡坡 + 两端山花 + 素脊 ----
+# ---- 主屋面（歇山，eave_kit）：下檐四坡放样至折线环（与檐口环逐边对齐）+ 上段两坡 + 收山山花 / 博风 + 戗脊 + 正脊与吻 ----
 PART = 'roof-main'
-half = (max(q[1] for q in MAIN_ROOF) - min(q[1] for q in MAIN_ROOF)) / 2
-y0e = Z4 - P['roof']['eaveDropM']
-total_run = half + P['eaves']['overhangM']
-t_br = ((P['roof']['breakHeightM'] - y0e) / (P['roof']['ridgeHeightM'] - y0e)) ** (1 / 1.6)
-half_run = max(1.2, total_run * (1 - t_br))
-vc, y0 = roof_loft('roof-main', MAIN_ROOF, Z4, P['roof']['breakHeightM'], half_run, part='roof-main')
-yb = P['roof']['breakHeightM']
-ry = P['roof']['ridgeHeightM']
-ru0, ru1 = min(q[0] for q in MAIN_ROOF), max(q[0] for q in MAIN_ROOF)
-def zf(vpos):
-    return yb + (ry - yb) * (1 - abs(vpos - vc) / half_run)
-for tag, vp in (('n', vc + half_run), ('s', vc - half_run)):
-    items = [((ru0, vp, zf(vp)), (ru0 / 2, zf(vp))), ((ru1, vp, zf(vp)), (ru1 / 2, zf(vp))),
-             ((ru1, vc, ry), (ru1 / 2, ry)), ((ru0, vc, ry), (ru0 / 2, ry))]
-    add_local('gable-slope-' + tag, items, [(0, 1, 2, 3)] if tag == 'n' else [(0, 3, 2, 1)], 'roof', part='roof-main')
-for su, tag, flip in ((ru0, 'w', False), (ru1, 'e', True)):
-    items = [((su, vc - half_run, yb), (0, 0)), ((su, vc + half_run, yb), (1, 0)),
-             ((su, vc, ry), (0.5, ry - yb))]
-    add_local('shanhua-' + tag, items, [(0, 2, 1)] if flip else [(0, 1, 2)], 'wall', part='roof-main')
-cyl('main-ridge', (ru0 + 0.25, vc, ry + 0.02), (ru1 - 0.25, vc, ry + 0.02),
-    P['roof']['ridgeRadiusM'], 'roof', 10, part='roof-main')
-for sx, tag in ((ru0 + 0.25, 'w'), (ru1 - 0.25, 'e')):
-    box('ridge-cap-' + tag, sx - 0.16, sx + 0.16, vc - 0.16, vc + 0.16, ry - 0.02, ry + 0.30, 'dark', part='roof-main')
+_ru = [q[0] for q in MAIN_ROOF]; _rv = [q[1] for q in MAIN_ROOF]
+MR = (min(_ru), max(_ru), min(_rv), max(_rv))
+RP = dict(EKP); RP.update(P['roof'].get('eaveKit', {}))
+RP.update(breakZ=P['roof']['breakHeightM'], ridgeZ=P['roof']['ridgeHeightM'],
+          breakInset=(MR[3] - MR[2]) / 2 * P['roof']['breakInsetFrac'], gableInset=P['roof']['gableInsetM'])
+EK.xieshan_roof('roof-main', MR, Z4, RP, 'roof-main')
 # 4 层顶平屋面（主屋面避让留下的退台面，青石）
 if PAV:
     box('terrace-sw', U0, PU0, V0 + SB, PV1, Z4 - 0.06, Z4 + 0.06, 'stone')
@@ -566,7 +572,8 @@ if PAV:
                        (PU0 + 0.17, PV1 - 0.17, 'nw'), (PU1 - 0.17, PV1 - 0.17, 'ne')):
         box('pav-post-' + tg, cu - 0.17, cu + 0.17, cv - 0.17, cv + 0.17, PL, Z4, 'wood')
     box('pav-cap', PU0 - 0.05, PU1 + 0.05, PV0 - 0.05, PV1 + 0.05, Z4 - 0.06, Z4 + 0.06, 'stone')
-    eave_band('pav-eave-z4', [(PU0, PV0), (PU1, PV0), (PU1, PV1), (PU0, PV1)], Z4, part='pav-body')
+    PEKP = dict(EKP); PEKP.update(PAV.get('eaveKit', {}))       # 角亭檐比主楼浅（小体量 + 南立面中段的阳角不越界）
+    EK.eave_skirt('pav-eave-z4', [(PU0, PV0), (PU1, PV0), (PU1, PV1), (PU0, PV1)], Z4, PEKP, 'pav-body')
     zt = Z4
     for k, th in enumerate(PAV['tierHeightsM']):
         inset = TI * (k + 1)
@@ -578,7 +585,7 @@ if PAV:
         box(pk + '-wall-w', a0, a0 + WT, b0, b1, zt + 0.06, zt + th - 0.06, 'wall')
         box(pk + '-wall-e', a1 - WT, a1, b0, b1, zt + 0.06, zt + th - 0.06, 'wall')
         box(pk + '-cap', a0 - 0.05, a1 + 0.05, b0 - 0.05, b1 + 0.05, zt + th - 0.06, zt + th + 0.06, 'stone')
-        eave_band(pk + '-eave', [(a0, b0), (a1, b0), (a1, b1), (a0, b1)], zt + th, part=pk)
+        EK.eave_skirt(pk + '-eave', [(a0, b0), (a1, b0), (a1, b1), (a0, b1)], zt + th, PEKP, pk)
         zt += th
     # 攒尖顶 + 鎏金宝顶
     PART = 'pav-roof'
@@ -589,13 +596,8 @@ if PAV:
     base_y = zt - 0.25
     pcu, pcv = (pr[0] + pr[1]) / 2, (pr[2] + pr[3]) / 2
     corners = [(pr[0], pr[2]), (pr[1], pr[2]), (pr[1], pr[3]), (pr[0], pr[3])]
-    liftc = PAV['pyramidLiftM']
-    for i in range(4):
-        a = corners[i]
-        b = corners[(i + 1) % 4]
-        items = [((a[0], a[1], base_y + liftc), (0, 0)), ((b[0], b[1], base_y + liftc), (1, 0)),
-                 ((pcu, pcv, apex), (0.5, 1))]
-        add_local('pav-pyramid-%d' % i, items, [(0, 2, 1)], 'roof')
+    ZP = dict(EKP); ZP.update(PAV.get('zanjian', {}))
+    EK.zanjian_roof('pav-roof', (pr[0], pr[1], pr[2], pr[3]), zt, apex, ZP, 'pav-roof')
     fin = PAV['finial']
     cyl('pav-finial-rod', (pcu, pcv, apex - 0.25), (pcu, pcv, fin['topM'] - fin['sphereRM']),
         0.07, 'gild', 8, part='pav-roof')
