@@ -20,7 +20,8 @@ const layoutSha = crypto.createHash('sha256').update(layoutBuf).digest('hex');
 const layout = JSON.parse(layoutBuf.toString('utf8'));
 const nav = JSON.parse(fs.readFileSync(path.join(OUT, 'nav-gap.json'), 'utf8'));
 const routes = JSON.parse(fs.readFileSync(path.join(OUT, 'commercial-route.json'), 'utf8')).routes;
-const gardenKitCollision = JSON.parse(fs.readFileSync(path.join(OUT, 'garden-kit-collision.json'), 'utf8'));
+// M1：garden-kit 附属 JSON 是输入，从固定暂存目录读（不再依赖 OUT_DIR 里恰好有它）
+const gardenKitCollision = JSON.parse(fs.readFileSync(path.join(AREA, 'staged', 'site-modules', 'garden-kit-collision.json'), 'utf8'));
 const rockeryCollision = JSON.parse(fs.readFileSync(path.join(AREA, 'modules', 'rockery', 'collision.json'), 'utf8'));
 const sansuitangLocal = JSON.parse(fs.readFileSync(path.join(AREA, 'modules', 'sansuitang', 'collision.json'), 'utf8'));
 const templeV3 = JSON.parse(fs.readFileSync(path.join(AREA, 'resources', 'temple-v3', 'collision-world.json'), 'utf8'));

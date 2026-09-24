@@ -1,14 +1,15 @@
 // garden-kit 站点模块测试：DESIGN_SPEC.tests.asserts 逐条。
 // 纯 Node：解析 GLB（JSON+BIN）取三角/顶点/材质/图片，Möller–Trumbore 射线。
-// 缺 out-garden-kit 时跳过（不进默认 npm test；test:garden-kit 单独跑）。
-// 用法：OUT_DIR=out-garden-kit node tests/garden-kit-test.mjs
+// 缺 staged/site-modules（站点模块输入，M1 起与 OUT_DIR 解耦）时跳过（不进默认 npm test；test:garden-kit 单独跑）。
+// 用法：OUT_DIR=out-zone node tests/garden-kit-test.mjs（OUT_DIR 只影响第 9 节的总装产物核对）
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateBytes } from 'gltf-validator';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-garden-kit');
+const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
+const STAGED = path.resolve(ROOT, 'staged', 'site-modules');
 const LAYOUT = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline', 'layout.json'), 'utf8'));
 
 let pass = 0, fail = 0, skipped = 0;
@@ -19,8 +20,8 @@ function ok(name, cond, detail = '') {
 }
 function skip(name, why) { skipped++; console.log('SKIP', name, '-', why); }
 
-if (!fs.existsSync(path.join(OUT, 'garden-wall.glb'))) {
-  console.log(`garden-kit artefacts not found in ${OUT} (OUT_DIR) — skipping (build with SITE_MODULES=1 first)`);
+if (!fs.existsSync(path.join(STAGED, 'garden-wall.glb'))) {
+  console.log(`garden-kit 站点模块输入 not found in ${STAGED} (staged/site-modules) — skipping`);
   process.exit(0);
 }
 
@@ -176,10 +177,10 @@ function pointDistToSeg(p, a, b) {
   return { d: Math.hypot(p[0] - (a[0] + dx * t), p[1] - (a[1] + dz * t)), t };
 }
 
-const garden = parseGlb(path.join(OUT, 'garden-wall.glb'));
-const temple = parseGlb(path.join(OUT, 'temple-wall.glb'));
-const moon = parseGlb(path.join(OUT, 'moon-gate.glb'));
-const bridge = parseGlb(path.join(OUT, 'jiuqu-bridge.glb'));
+const garden = parseGlb(path.join(STAGED, 'garden-wall.glb'));
+const temple = parseGlb(path.join(STAGED, 'temple-wall.glb'));
+const moon = parseGlb(path.join(STAGED, 'moon-gate.glb'));
+const bridge = parseGlb(path.join(STAGED, 'jiuqu-bridge.glb'));
 
 // ---------- 1) 两道墙贴线（每 1 m 沿段法线射线打墙面：墙面平面应在 thick/2 ± 0.05；
 // 关节点由 0.6 角墩包住，容差放宽到 0.1，skip 说明见 DELIVERY） ----------
@@ -405,18 +406,18 @@ function edgeBand(i, side) {
   ok(`moon-gate 三角 ${triCount(moon)} ≤ 4000`, triCount(moon) <= 4000);
   ok(`jiuqu-bridge 三角 ${triCount(bridge)} ≤ 30000`, triCount(bridge) <= 30000);
   // 龙头单独计：garden-wall GLB 里 matIdx 以 meshName 不分部件——用 catalog 记录核对
-  const catalog = JSON.parse(fs.readFileSync(path.join(OUT, 'garden-kit-catalog.json'), 'utf8'));
+  const catalog = JSON.parse(fs.readFileSync(path.join(STAGED, 'garden-kit-catalog.json'), 'utf8'));
   const headTris = catalog.modules['garden-wall']['garden-wall-dragonhead'].triangles;
   ok(`龙头三角 ${headTris} ≤ 3500（catalog 记录，构建时分子部件合计）`, headTris <= 3500);
   // 字节预算
-  const b = (f) => fs.statSync(path.join(OUT, f)).size;
+  const b = (f) => fs.statSync(path.join(STAGED, f)).size;
   ok(`garden-wall.glb ${b('garden-wall.glb')} ≤ 1800000`, b('garden-wall.glb') <= 1800000);
   ok(`jiuqu-bridge.glb ${b('jiuqu-bridge.glb')} ≤ 900000`, b('jiuqu-bridge.glb') <= 900000);
 }
 
 // ---------- 7) validator 0 错误 ----------
 for (const f of ['garden-wall.glb', 'temple-wall.glb', 'moon-gate.glb', 'jiuqu-bridge.glb']) {
-  const res = await validateBytes(new Uint8Array(fs.readFileSync(path.join(OUT, f))));
+  const res = await validateBytes(new Uint8Array(fs.readFileSync(path.join(STAGED, f))));
   ok(`validator 0 错误 ${f}（warn=${res.issues.numWarnings}）`, res.issues.numErrors === 0,
     JSON.stringify(res.issues.messages?.slice(0, 3) || []));
 }
@@ -431,7 +432,7 @@ for (const f of ['garden-wall.glb', 'temple-wall.glb', 'moon-gate.glb', 'jiuqu-b
     const capOk = g.mats.filter((m) => /cap/.test(m.name)).every((m) => m.baseTex && m.normalTex);
     ok(`${name} 瓦帽材质挂基色+法线`, capOk);
   }
-  const reimport = JSON.parse(fs.readFileSync(path.join(OUT, 'garden-kit-reimport.json'), 'utf8'));
+  const reimport = JSON.parse(fs.readFileSync(path.join(STAGED, 'garden-kit-reimport.json'), 'utf8'));
   ok('Blender 侧重导入核对无 issue', reimport.issues.length === 0, JSON.stringify(reimport.issues.slice(0, 3)));
   const csOk = reimport.checked.every((c) => Object.values(c.materials).every((m) =>
     m.colorspace.every((cs) => cs === 'sRGB' || cs === 'Non-Color')));
