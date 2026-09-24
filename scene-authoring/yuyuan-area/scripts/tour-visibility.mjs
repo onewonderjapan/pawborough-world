@@ -114,27 +114,40 @@ export const boxPoints = (box) => {
     [cx - hx, cy - hy, cz + hz], [cx + hx, cy - hy, cz + hz], [cx - hx, cy + hy, cz + hz], [cx + hx, cy + hy, cz + hz] ];
 };
 
-// ---------- 锚点街景目标走廊盒（只依赖冻结源：nav-gap 锚点 + commercial-route 出发方向，确定性重算） ----------
-// 锚点机位的「目标」是沿行进方向的街景本身：锚点前方 6–36 m、沿街走廊盒（OBB，长轴 = 出发方向）。
+// ---------- 锚点街景目标走廊盒（只依赖冻结源：nav-gap 锚点 + commercial-route 出发路线，确定性重算） ----------
+// 锚点机位的「目标」是沿行进方向的街景本身：锚点前方沿街走廊盒（OBB，长轴 = 出发方向）。
+// 长度 = 出发路线第一段的拐点前长度，夹在 [S0, S1]（路线长直时即原 6–36 m；首段短/拐弯时
+// 截到拐点前，避免直线走廊越过拐角落进街旁建筑、被碰撞薄墙误判遮挡）。终点延伸型
+// （street:cont:，锚点是路线终点）没有前向折线 → 传 null，保持全长 S1。
 // 半宽 1.4 m：商业路线宽 3 m（commercial-route.json widthM），走廊必须贴在街内，
 // 否则两角落进侧旁山墙、被碰撞薄墙误判遮挡。围合式老街块（街道在 footprint 多边形内部）
 // 套任何单一建筑的 bbox 都会把相机罩进去 —— 街廊盒才是「街景」的可验证几何。
 // 生成器与测试共用本函数。
 export const CORRIDOR = { S0: 6, S1: 36, HALF_W: 1.4, H: 2.2, AIM_S: 21 };
-export function streetCorridorBox(anchor2, dir) {
-  const { S0, S1, HALF_W, H } = CORRIDOR;
-  const mid = [anchor2[0] + dir[0] * (S0 + S1) / 2, anchor2[1] + dir[1] * (S0 + S1) / 2];
+// 出发路线第一段（拐点前）长度；无折线/退化时返回全长 S1
+export function streetCorridorLen(routePts) {
+  if (!Array.isArray(routePts) || routePts.length < 2) return CORRIDOR.S1;
+  const l = Math.hypot(routePts[1][0] - routePts[0][0], routePts[1][1] - routePts[0][1]);
+  if (!l) return CORRIDOR.S1;
+  return Math.max(CORRIDOR.S0 + 2, Math.min(CORRIDOR.S1, l));
+}
+export function streetCorridorBox(anchor2, dir, routePts = null) {
+  const { S0, HALF_W, H } = CORRIDOR;
+  const s1 = routePts ? streetCorridorLen(routePts) : CORRIDOR.S1;
+  const mid = [anchor2[0] + dir[0] * (S0 + s1) / 2, anchor2[1] + dir[1] * (S0 + s1) / 2];
   return {
     id: 'street-corridor',
     center: [mid[0], H / 2, mid[1]],
     // obbToWorld 约定：局部 +Z 轴 = (sin yaw, cos yaw) = 出发方向 —— 长度在 Z 半轴，宽度在 X 半轴
-    half: [HALF_W, H / 2, (S1 - S0) / 2],
+    half: [HALF_W, H / 2, (s1 - S0) / 2],
     yaw: Math.atan2(dir[0], dir[1]),
   };
 }
-export function streetCorridorAim(anchor2, dir) {
-  const { AIM_S } = CORRIDOR;
-  return [anchor2[0] + dir[0] * AIM_S, 1.8, anchor2[1] + dir[1] * AIM_S];
+export function streetCorridorAim(anchor2, dir, routePts = null) {
+  const { AIM_S, S0 } = CORRIDOR;
+  const s1 = routePts ? streetCorridorLen(routePts) : CORRIDOR.S1;
+  const s = Math.min(AIM_S, (S0 + s1) / 2);   // 注视点 = 走廊中点（全长时即原 AIM_S=21）
+  return [anchor2[0] + dir[0] * s, 1.8, anchor2[1] + dir[1] * s];
 }
 // 长折线对象（九曲桥）的锚点局部包围盒：折线中距锚点 R 半径内的点取 AABB。
 // 九曲桥全长 zigzag ~60 m，全域 AABB 会罩住机位、远端被湖心亭遮挡 —— 眼高机位的

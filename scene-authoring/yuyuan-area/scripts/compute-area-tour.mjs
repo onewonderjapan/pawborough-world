@@ -101,11 +101,12 @@ function anchorCamCandidates(a, maxR = 8) {
 }
 // 锚点出发方向组：from=锚点 的路线取第一段方向；to=锚点（终点型锚点）取末段顺势延伸
 // （行进方向 = 人沿路线走到锚点后继续前行的方向，回头望是来路门洞/山墙，不是街景）。
+// pts = 出发路线折线（供街廊截到第一段拐点前；cont 型无前向折线 → null，保持全长）。
 // 逐条试（file 顺序），第一条能让机位过可见性检查的胜出。
 function departingDirs(key) {
   const out = [];
-  for (const r of routes.filter(r => r.from === key)) { const [a, b] = r.points; const l = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1; out.push({ route: `${r.from}->${r.to}`, dir: [(b[0] - a[0]) / l, (b[1] - a[1]) / l] }); }
-  for (const r of routes.filter(r => r.to === key)) { const pts = r.points, a = pts[pts.length - 2], b = pts[pts.length - 1]; const l = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1; out.push({ route: `cont:${r.from}->${r.to}`, dir: [(b[0] - a[0]) / l, (b[1] - a[1]) / l] }); }
+  for (const r of routes.filter(r => r.from === key)) { const [a, b] = r.points; const l = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1; out.push({ route: `${r.from}->${r.to}`, dir: [(b[0] - a[0]) / l, (b[1] - a[1]) / l], pts: r.points }); }
+  for (const r of routes.filter(r => r.to === key)) { const pts = r.points, a = pts[pts.length - 2], b = pts[pts.length - 1]; const l = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1; out.push({ route: `cont:${r.from}->${r.to}`, dir: [(b[0] - a[0]) / l, (b[1] - a[1]) / l], pts: null }); }
   return out;
 }
 
@@ -140,7 +141,7 @@ const tour = {};
 const fail = (k, why) => { console.error('NO-CAM-FOUND:', k, why || ''); process.exitCode = 1; };
 
 // ---------- 六锚点：眼高 1.6 m 站立机位，朝向行进方向街景 ----------
-// 目标 = 锚点街廊（tour-visibility.streetCorridorBox，沿出发方向 6–36 m），
+// 目标 = 锚点街廊（tour-visibility.streetCorridorBox，沿出发路线第一段拐点前，6–36 m 夹取），
 // targetObject 记为 'street:<route>' 供测试按同一冻结源重算同一走廊盒。
 // anchor-jiuqu 例外：R1 指定朝九曲桥，targetObject = 'jiuqu-bridge'。
 for (const key of ['main', 'gold', 'center', 'jiuqu', 'old-south', 'old-north']) {
@@ -166,14 +167,14 @@ for (const key of ['main', 'gold', 'center', 'jiuqu', 'old-south', 'old-north'])
     if (!dirs.length) { fail('anchor-' + key, 'commercial-route.json 无出发路线'); continue; }
     outer:
     for (const c of cands) {
-      for (const { route, dir } of dirs) {
-        const look = streetCorridorAim(a, dir);
+      for (const { route, dir, pts } of dirs) {
+        const look = streetCorridorAim(a, dir, pts);
         const hd = [look[0] - c[0], look[2] - c[1]];
         const hl = Math.hypot(...hd) || 1;
         const dot = (hd[0] / hl) * dir[0] + (hd[1] / hl) * dir[1];
         if (dot < Math.cos(20 * Math.PI / 180)) continue; // 留 5° 余量于测试的 25°
-        const v = passVisibility([c[0], EYE, c[1]], look, streetCorridorBox(a, dir));
-        if (v.ok) { done = { cam: c, look, target: 'street:' + route, how: `沿出发方向（${route} 第一段）望街景走廊` }; break outer; }
+        const v = passVisibility([c[0], EYE, c[1]], look, streetCorridorBox(a, dir, pts));
+        if (v.ok) { done = { cam: c, look, target: 'street:' + route, how: `沿出发方向（${route} 第一段，拐点前走廊）望街景` }; break outer; }
       }
     }
   }
