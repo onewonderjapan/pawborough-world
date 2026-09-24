@@ -7,7 +7,7 @@ export OUT_DIR="${OUT_DIR:-out-rebuilt-review}"
 # 让交付清单 / validator / 产物检查继续把站点模块 GLB 当作 OUT_DIR 产物看待（下游不变）。
 if [ -d staged/site-modules ]; then
   mkdir -p "$OUT_DIR"
-  cp -p staged/site-modules/. "$OUT_DIR"/
+  cp -pr staged/site-modules/. "$OUT_DIR"/
 fi
 # The input snapshot and accepted source modules remain read-only.
 python3 -X utf8 scripts/repair-layout.py
