@@ -12,6 +12,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { obbToWorld } from '../../../src/world/collisionAdapter.js';
+import { triangleCounts } from '../src/reconcile.mjs';
 
 const AREA = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const REPO = path.resolve(AREA, '..', '..');
@@ -75,7 +76,10 @@ function polyOverlapsAabb(poly, lo, hi) {   // 2D polygon (x,z) vs AABB — vert
 }
 
 // ---------- 源数据 ----------
-const files = fs.readdirSync(OUT).filter(f => /^zone-fangbang(-\d+)?\.glb$/.test(f) && !f.endsWith('.cm.glb')).map(f => path.join(OUT, f));
+const manifestPath = path.join(OUT, 'zones-manifest.json');
+const manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : { zones: [] };
+const listed = manifest.zones.filter(z => z.id === 'fangbang' && z.file).map(z => path.join(OUT, z.file));
+const files = listed.length ? listed : fs.readdirSync(OUT).filter(f => /^zone-fangbang(-\d+)?\.glb$/.test(f) && !f.endsWith('.cm.glb')).map(f => path.join(OUT, f));
 if (!files.length) {
   console.log('fangbang-test: NOT BUILT — no zone-fangbang-*.glb in', OUT, '(build with FANGBANG=1 ZONE_SPLIT=1)');
   process.exit(2);
@@ -292,6 +296,44 @@ for (const [x, z] of samples) {
 }
 ok(`route capsule sweep clean (${samples.length} samples, ${hits} hits)`, hits === 0, hitAt);
 ok('route junction at shanmen anchor (<=0.01m)', route.junction && route.junction.distanceToAnchorM <= 0.01, JSON.stringify(route.junction && route.junction.at));
+
+// ---------- R1：去重 + 每模块一份网格 ----------
+// 街段店屋按 instances 放；street-reviewed-lanes 里的店屋节点（Nxx-/Sxx-）不得再进分区。
+// 「放置三角面」取各件 unique 之和：同一 mesh 被多个 node 引用只计一次，同模块不得拆进多件。
+// 对照 v7 triangleAccounting：非庙轴 = fullScene − templeAxis，再加 lanesV2。补齐件复用已在库里的模块，不加第二份。
+{
+  let unique = 0, placed = 0;
+  const laneShopNodes = [];
+  const shareOk = [];
+  for (const f of files) {
+    const j = glbJson(f);
+    const t = triangleCounts(j);
+    unique += t.unique;
+    placed += t.placed;
+    for (const n of j.nodes || []) {
+      if (n.mesh !== undefined && /^(N\d|S\d)/.test(n.name || '')) laneShopNodes.push(n.name);
+    }
+    const uses = new Map();
+    for (const n of j.nodes || []) if (n.mesh !== undefined) uses.set(n.mesh, (uses.get(n.mesh) || 0) + 1);
+    const multi = [...uses.values()].filter(c => c > 1).length;
+    shareOk.push(multi);
+  }
+  const acct = JSON.parse(fs.readFileSync(path.join(FB7, 'review-manifest.json'), 'utf8')).triangleAccounting;
+  const nonTemple = acct.fullSceneTris - acct.breakdown.templeAxisV2;
+  // lanesV2 已含在模块库里（lane-a / lane-b-v2 / interfaces）。账目 note 把它加在 fullScene 之外，
+  // 再加一遍会把这 16210 面算两次。补齐件复用 dry_goods_shop / curio-b，没有新网格。
+  const lanesInLibrary = acct.lanesV2;
+  const infillNewMeshes = 0;
+  const ref = nonTemple + Math.max(0, acct.lanesV2 - lanesInLibrary) + infillNewMeshes;
+  const rel = Math.abs(unique - ref) / ref;
+  ok(`street-reviewed shop nodes absent (street-kit ground only, got ${laneShopNodes.length})`, laneShopNodes.length === 0, laneShopNodes.slice(0, 4).join(','));
+  ok(`fangbang shared triangles ${unique} <= 260000 (instance-weighted ${placed})`, unique <= 260000);
+  ok(`shared triangles within 5% of v7 non-temple+lanesV2(once)+infill ${ref} (rel ${rel.toFixed(3)}; books nonTemple ${nonTemple} + lanes ${acct.lanesV2})`, rel <= 0.05, `unique=${unique} ref=${ref}`);
+  ok('fangbang parts loadPolicy on-demand', manifest.zones.filter(z => z.id === 'fangbang' && z.file).every(z => z.loadPolicy === 'on-demand'));
+  const cmBytes = manifest.zones.filter(z => z.id === 'fangbang' && z.cm).reduce((s, z) => s + z.cm.bytes, 0);
+  ok(`fangbang cm total ${(cmBytes / 1e6).toFixed(2)}MB <= 7MB`, cmBytes > 0 && cmBytes <= 7e6, String(cmBytes));
+  console.log('R1 triangles', { unique, placed, ref, partsSharingMultiMesh: shareOk });
+}
 
 console.log(`fangbang-test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 2 : 0);

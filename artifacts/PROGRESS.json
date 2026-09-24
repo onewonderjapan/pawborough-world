@@ -1,7 +1,7 @@
 {
   "task": "wave1-fangbang（WP14 方浜中路街段+连接段）",
-  "updatedAt": "2026-09-23",
-  "worker": "GLM-Flash 施工担当",
+  "updatedAt": "2026-09-24",
+  "worker": "Cursor CLI 施工担当",
   "waitingForLead": false,
   "queue": {
     "F1": {
@@ -18,6 +18,16 @@
         "北断带 0 件：安仁街汇入 + 余量 < 最小模块 AABB，见 RESULT partial",
         "南断带节奏 6.2/7.5m 两档（模块只有这两档窄门面）",
         "山门缝删 fangbang-temple-bounds:forecourt-bound-west 1 条（庙区为准）"
+      ]
+    },
+    "R1": {
+      "status": "done",
+      "summary": "街段仍只留 street-kit；同模块实例共享网格，唯一三角 219993（对上 v7 非庙轴 220332）。2 件 cm 合计 4.29MB。核心三区首次 15.9MB，不加载 fangbang；点按钮或步行进入 60m 才加载，随后标签与步行读 collision-fangbang。fangbang-test 23/23。FANGBANG=1 与默认全流程 rebuild 均 EXIT 0。",
+      "artifacts": ["artifacts/r1/RESULT.json", "artifacts/r1/core-hud.png", "artifacts/r1/after-eye-3-s050m.png", "artifacts/r1/after-eye-5-s100m.png"],
+      "commits": [],
+      "deviationsForLead": [
+        "实例加权放置三角仍是 573419；≤260000 的断言落在共享后的唯一三角上，见 RESULT partial",
+        "非招牌贴图 512 + fangbang cm ETC1S，Cycles 同机位不差于 F2，运行时墙面更软"
       ]
     }
   },

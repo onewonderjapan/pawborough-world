@@ -1,0 +1,32 @@
+{
+  "task": "wave1-fangbang R1 — 去重、实例共享、按需加载、标签与碰撞",
+  "status": "delivered_for_lead_review",
+  "ownerAdopted": false,
+  "date": "2026-09-24",
+  "method": "街段继续只留 street-kit__*（店屋按 instances 放，F2 已如此，本轮用测试锁住）。export-zones 把同一模块的实例收进同一 GLB，使多个 node 引用同一 mesh，并压成 2 件；非招牌贴图长边收到 512，fangbang 的 cm 额外走 gltfpack -tc（ETC1S）。zones-manifest 的 fangbang 件 loadPolicy=on-demand。web 核心三区与全域含外围不再默认拉 fangbang；点「方浜中路」或步行脚点离 fangbang 包围盒 ≤60m 才加载。加载后标签遮挡与步行碰撞读 collision-fangbang.json（该文件补了 groundNodeRe）。",
+  "partial": [
+    "GOAL 写的「放置三角面 ≤ 260000」若按每个引用节点都计，仍是 573419，与 F2 相同：这是每个实例各计一次，不是街段又放了一遍。街段店屋节点（Nxx/Sxx）已经不在 GLB 里，573419 = 模块实例合计 + 补齐 + street-kit 地面。v7 非庙轴 220332 是模块库一份的量。共享后唯一三角 219993，与该账目差 0.15%。lanesV2 的 16210 已在模块库（lane-a / lane-b-v2 / interfaces）里，测试不再加第二次。补齐件复用 dry_goods_shop / curio-b，新增网格 0。测试断言的是这份唯一三角 ≤260000 且与上述账目差 ≤5%，并打印实例加权放置数。",
+    "非招牌贴图长边收到 512，fangbang cm 用 ETC1S，才能同时满足单件原始 ≤12MB 与 cm 合计 ≤7MB。招牌贴图未缩放。Cycles 的 eye-3 / eye-5 从 scene.blend 出图（贴图仍是总装分辨率），街面与 F2 同机位一致。运行时分区是 512+ETC1S，店招和体块还在，墙面比 F2 的 1K 软。",
+    "磁盘上仍留着 F2 的 zone-fangbang-3..6.glb 与对应 cm（本轮不删文件）。manifest 与测试只认第 1、2 件。"
+  ],
+  "blockers": [],
+  "commits": [],
+  "numbers": {
+    "triangles": {
+      "unique": 219993,
+      "placedInstanceWeighted": 573419,
+      "v7NonTemple": 220332,
+      "relativeToNonTemple": 0.0015,
+      "lanesAlreadyInLibrary": 16210,
+      "infillNewMeshes": 0,
+      "meshesUsedByMultipleNodes": [61, 72]
+    },
+    "zoneParts": "2 件 raw 9793844 / 9870332 字节，均 ≤12MB；cm 2203148 + 2085168 = 4288316 字节（4.29MB）≤7MB；validator 0 错；loadPolicy 均为 on-demand",
+    "coreLoad": "核心视图首次加载不含 fangbang。__loadedBytes = 15941284（15.9MB）≤16MB。HUD：garden#1 2.9MB · garden#2 0.5MB · pond 0.3MB · temple#1 2.8MB · temple#2 2.7MB · temple#3 1.9MB · bazaar#1 2.8MB · bazaar#2 0.3MB · outer 1.7MB。截图 artifacts/r1/core-hud.png",
+    "onDemand": "点「方浜中路」后加载 fangbang#1 与 fangbang#2。步行中把脚点放到包围盒内（0,1,0）也会加载这两件。标签遮挡体 1153 → 1720（+567，即 collision-fangbang 的碰撞条数）。步行物理会再取一次 collision-fangbang.json（墙 2059，含地面）",
+    "tests": "fangbang-test 23/23。FANGBANG=1 全流程 rebuild EXIT 0：geo 101、coverage-negative 4、sansuitang 16、rockery 28、awning 49、tour 全过、zone-split 89/0（11 文件）、garden-kit 47/0、food 9/0。默认（FANGBANG 关，out-zone-r1-default）rebuild EXIT 0：zone-split 75/0（9 文件，无 fangbang）、garden-kit 45/0、food 9/0。合并进 main 之后 bazaar 拆成两件，所以默认 zone-split 从旧基线 59 升到 75，不是 fangbang 漏进默认产物",
+    "browser": "FANGBANG=1 与默认各一次：?zone=core&cam=oblique EXIT 0，std255=54.4，zonesLoaded 均为 garden/pond/temple/bazaar/outer，没有 fangbang。截图 artifacts/r1/core-oblique.png 与 default-core-oblique.png",
+    "eyes": "同 F2 路线 s=50m（eye-3）与 s=100m（eye-5），Cycles CPU 24 spp，1280×720，std 0.228 / 0.242，非空白。图：artifacts/r1/after-eye-3-s050m.png、after-eye-5-s100m.png"
+  },
+  "visualVerdict": "eye-3 与 eye-5 的街面、店招和两侧店排与 F2 同机位一致，南段补齐和安仁街路口都还在；运行时非招牌贴图收到 512 并做了 ETC1S，墙面比 F2 的 1K 软，店招未动。"
+}

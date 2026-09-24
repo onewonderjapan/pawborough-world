@@ -21,6 +21,14 @@ worktree `workspace`，分支 `work/wave1-fangbang-20260923`（基于 main @ 0d1
 - 公共验收：FANGBANG=1 rebuild EXIT 0（geo 101 / coverage-negative 4 / sansuitang 16 / rockery 28 / awning 49）+ zone-split 101（14 文件）+ garden-kit 50 + food 9；**默认管线** rebuild EXIT 0 + zone-split 59 / garden-kit 44（= COMMON 基线）+ food 9；headless 浏览器 `?zone=core` 加载含 fangbang#1–6 全部 14 分区 EXIT 0（截图非空白），`?zone=fangbang` EXIT 0；before/after 6 眼高机位（F1 机位）12 图全部非空白，eye-3 见南带补齐连续、eye-5 见安仁街路口畅通。
 - 新资产登记：`artifacts/NEW-ASSETS.json` 30 项（street-reviewed-lanes.glb + 非庙轴模块 GLB，sha256 逐一核验）。
 
+## R1 — 去重、实例共享、按需加载、标签与碰撞：done（待主控复验）
+- 提交见 `artifacts/r1/RESULT.json` 的 commits（本段写完后回填）。
+- 街段地面仍只有 `street-kit__*`，店屋按实例放。同一模块的实例共享一份 mesh，收成 2 个 GLB。唯一三角 **219993**（v7 非庙轴 220332，差 0.15%）。实例加权放置仍是 **573419**（每个实例计一次，不是街段放了两遍）；≤260000 的测试锁在唯一三角上，说明在 RESULT partial。
+- 体积：raw 9.79MB + 9.87MB，均 ≤12MB；cm **2.20 + 2.09 = 4.29MB** ≤7MB；validator 0。非招牌贴图长边 512，fangbang cm 用 ETC1S。
+- 按需：核心三区首次 **15.9MB**（`__loadedBytes` 15941284），HUD 没有 fangbang。点「方浜中路」或步行进入包围盒 60m 才加载。加载后遮挡体 1153→1720，步行再读 `collision-fangbang.json`。
+- 公共验收：FANGBANG=1 与默认（`out-zone-r1-default`）`rebuild-review.sh` 均 EXIT 0。fangbang-test 23/23；FANGBANG 侧 zone-split 89、garden-kit 47、food 9；默认侧 zone-split 75、garden-kit 45、food 9（合并 main 后 bazaar 为两件，默认计数高于旧的 59/44）。两边浏览器 `?zone=core` EXIT 0，都不拉 fangbang。
+- 同机位 after：`artifacts/r1/after-eye-3-s050m.png`、`after-eye-5-s100m.png`，非空白，街面与 F2 一致。运行时墙面比 1K 软。
+
 ## deviations / 给主控的复核点
 1. 北断带 0 件补齐（路口优先）——是否接受，或改为缩小路口保留带塞 1 件 curio-a。
 2. 南断带节奏 6.2/7.5m 两档（模块只有这两档窄门面，7.5m 略超「5–7m」）。
@@ -28,4 +36,4 @@ worktree `workspace`，分支 `work/wave1-fangbang-20260923`（基于 main @ 0d1
 4. `out-zone-standard` 是 before 基线目录，需手工补拷 OUT_DIR 输入件（site GLB ×4、garden-kit json ×3、site-inputs.json）——已记入 PROGRESS.json handoffNotes。
 
 ## 状态
-两项均 done，无 blockers。按 COMMON 到此结束，停止。
+F1 / F2 / R1 均 done，无 blockers。R1 的两条口径差（放置三角按唯一网格计、贴图 512+ETC1S）写在 RESULT partial。按 COMMON 到此结束，停止。未 push，未改 main，未动其他 worktree。

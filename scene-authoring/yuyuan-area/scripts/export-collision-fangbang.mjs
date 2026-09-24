@@ -141,6 +141,7 @@ const collision = {
   infillColliders: infillDoc.southGap.placed.concat(infillDoc.northGap.placed).length ? infillDoc.southGap.placed.map(i => i.id) : 'none',
   seamDedup: seamDedup.length ? seamDedup : 'none',
   streetSeamDedup: streetSeamDedup.length ? streetSeamDedup : 'none',
+  groundNodeRe: 'street-kit__(quiet-gray-asphalt|paving-frontage|worn-stone)|sctail__(quiet-gray-asphalt|worn-stone)|westbounds__worn-stone',
   colliders: kept3,
 };
 fs.writeFileSync(path.join(OUT, 'collision-fangbang.json'), JSON.stringify(collision, null, 1) + '\n');
