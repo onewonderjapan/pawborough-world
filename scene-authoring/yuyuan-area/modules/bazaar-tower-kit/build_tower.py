@@ -102,31 +102,37 @@ def mat(key, rgb=None, rough=.8, base=None, normal=None, tint=None, tile=(1, 1),
                           'tileMeters': list(tile)}
     return m
 
-def make_lattice_image(cells_per_m=8.0, size=256):
-    """解析 alpha 格心贴图：size 像素 = 1 m，cells_per_m 格（同 sansuitang 手法）。"""
+def make_lattice_image(cells_per_m=8.0, size=256, base=(36, 29, 24), key='lattice',
+                       png='lattice-core-alpha.png', slats=False, slat_spacing=0.12, slat_w=0.045):
+    """解析 alpha 格心/直棂贴图：size 像素 = 1 m（同 sansuitang 手法）。slats=True 画直棂竖条。"""
     px = bytearray(size * size * 4)
-    cell = size / cells_per_m
-    bar = max(2.0, cell * 0.16)
-    base = (36, 29, 24)
-    for y in range(size):
-        for x in range(size):
+    if slats:
+        period, bar = size * slat_spacing, size * slat_w
+        def _on(x, y):
+            return (x % period) < bar
+    else:
+        cell = size / cells_per_m
+        bar = max(2.0, cell * 0.16)
+        def _on(x, y):
             dx, dy = x % cell, y % cell
             sd = (x + y) % cell
-            on = dx < bar or dy < bar or sd < bar * 0.9
+            return dx < bar or dy < bar or sd < bar * 0.9
+    for y in range(size):
+        for x in range(size):
             k = (y * size + x) * 4
-            if on:
+            if _on(x, y):
                 px[k], px[k + 1], px[k + 2], px[k + 3] = *base, 255
             else:
                 px[k], px[k + 1], px[k + 2], px[k + 3] = 255, 255, 255, 0
-    img = bpy.data.images.new('tower-lattice-core', size, size, alpha=True)
+    img = bpy.data.images.new('tower-' + key, size, size, alpha=True)
     img.pixels = [v / 255.0 for v in px]
-    tex_out = os.path.join(HERE, 'textures', 'lattice-core-alpha.png')
+    tex_out = os.path.join(HERE, 'textures', png)
     os.makedirs(os.path.dirname(tex_out), exist_ok=True)
     img.filepath_raw = tex_out
     img.file_format = 'PNG'
     img.save()
     img.pack()
-    m = bpy.data.materials.new('btk-lattice')
+    m = bpy.data.materials.new('btk-' + key)
     m.use_nodes = True
     nodes, links = m.node_tree.nodes, m.node_tree.links
     p = nodes.get('Principled BSDF')
@@ -141,13 +147,17 @@ def make_lattice_image(cells_per_m=8.0, size=256):
         m.blend_method = 'CLIP'
     except AttributeError:
         pass
-    TILE['lattice'] = (1.0, 1.0)          # UV 单位=米，贴图即 1 m 格网
-    META['btk-lattice'] = {'alpha': 'modules/bazaar-tower-kit/textures/lattice-core-alpha.png',
-                           'cellM': 1.0 / cells_per_m, 'alphaMode': 'MASK', 'alphaCutoff': 0.5,
-                           'textures': {}, 'tileMeters': [1.0, 1.0]}
+    TILE[key] = (1.0, 1.0)          # UV 单位=米，贴图即 1 m 格网
+    META['btk-' + key] = {'alpha': 'modules/bazaar-tower-kit/textures/' + png,
+                          **({} if slats else {'cellM': 1.0 / cells_per_m}),
+                          'alphaMode': 'MASK', 'alphaCutoff': 0.5,
+                          'textures': {}, 'tileMeters': [1.0, 1.0]}
     return m
 
 FM = P['materials']
+WOOD_RGB = tuple(bytes.fromhex(FM['timberTint']))       # 深红木（格心/直棂条同色，读作木不是金属网格）
+GILD_RGB = tuple(bytes.fromhex(FM['gilded']))
+FCP = P['facades']
 M = {
     'wall': mat('wall', rough=.85, base='PaintedPlaster017_2K-JPG_Color_1K.jpg',
                 tint=FM['plasterTint'], tile=tuple(FM['plasterTile'])),
@@ -160,7 +170,12 @@ M = {
     'gild': mat('gild', lin(FM['gilded']), .38, metallic=.55),
     'glass': mat('glass', lin(FM['glass']), .18, alpha=FM['glassAlpha'], alpha_mode='BLEND'),
     'dark': mat('dark', lin(FM['dark']), .6),
-    'lattice': make_lattice_image(),
+    'lattice': make_lattice_image(base=WOOD_RGB),
+    'slats': make_lattice_image(key='slats', png='slats-alpha.png', base=WOOD_RGB, slats=True,
+                                slat_spacing=FCP.get('balustradeSlatPitchM', .12),
+                                slat_w=FCP.get('balustradeSlatBarM', .045)),
+    'guoluo': make_lattice_image(key='guoluo', png='guoluo-alpha.png', base=GILD_RGB,
+                                 cells_per_m=FCP.get('guoluoCellsPerM', 8.0)),
 }
 
 # ---------- 局部正交系：u=前街轴（footprint frontEdge 0->1），v=指后街，h=高 ----------
@@ -623,30 +638,87 @@ def bay_lines(a0, a1):
     return lines
 PART = 'colonnade'
 front_lines = bay_lines(U0 + 0.02, U1 - 0.02)
+lines_s = bay_lines(U0 + 0.02, (PU0 - 0.02) if PAV else (U1 - 0.02))   # 前街主楼段开间（亭楼底另行）
+BAS = FC.get('columnBaseM', 0.06)
 for face, cv in (('s', V0 + CS / 2), ('n', V1 - CS / 2)):
     for i, lu in enumerate(front_lines):
+        box('colbase-%s-%d' % (face, i), lu - CS / 2 - 0.06, lu + CS / 2 + 0.06,
+            cv - CS / 2 - 0.06, cv + CS / 2 + 0.06, 0, PL + BAS, 'stone', part='colbase', bevel=0)
         box('col-%s-%d' % (face, i), lu - CS / 2, lu + CS / 2, cv - CS / 2, cv + CS / 2, PL, Z1, 'wood')
+
+# ---- 二三层木构框架立面（R2：深红木柱 0.32 + 上下额枋 0.25 围合每开间，白墙退为窗间小块） ----
+PART = 'frame'
+LH = FC['frameLintelHM']
+FPR = FC['frameProjectM']
+FDP = FC['frameDepthM']
+def architrave(tag, axis, coord, sgn, a0, a1, z0, z1):
+    """额枋条：axis='v' 竖面朝 ±v（跨 a0..a1 于 u），axis='u' 朝 ±u（跨 a0..a1 于 v）。"""
+    o0, o1 = coord + sgn * FPR, coord + sgn * (FPR - FDP)
+    if axis == 'v':
+        box('frame-' + tag, a0, a1, min(o0, o1), max(o0, o1), z0, z1, 'wood')
+    else:
+        box('frame-' + tag, min(o0, o1), max(o0, o1), a0, a1, z0, z1, 'wood')
+for st in FC['galleryStoreys']:
+    z, ztop = ZT[st - 2], ZT[st - 1]
+    for face, v0, lines, xu1 in (('s', V0, lines_s, PU0 if PAV else U1), ('n', V1, front_lines, U1)):
+        sgn = -1.0 if face == 's' else 1.0
+        co0, co1 = v0 + sgn * FPR, v0 + sgn * (FPR - CS)          # 柱：外皮随枋出挑，深 0.32
+        for i, lu in enumerate(lines):
+            box('frame-col-%s%d-%d' % (face, st, i), lu - CS / 2, lu + CS / 2,
+                min(co0, co1), max(co0, co1), z, ztop, 'wood', part='framecol', bevel=0)
+        architrave('xia-%s%d' % (face, st), 'v', v0, sgn, U0, xu1, z + 0.06, z + 0.06 + LH)
+        architrave('shang-%s%d' % (face, st), 'v', v0, sgn, U0, xu1, ztop - 0.06 - LH, ztop - 0.06)
+    for coord, a0, a1, sgn, tf in ((U1, PV1 if PAV else V0, V1, 1, 'e'), (U0, V0, V1, -1, 'w')):
+        architrave('xia-%s%d' % (tf, st), 'u', coord, sgn, a0, a1, z + 0.06, z + 0.06 + LH)
+        architrave('shang-%s%d' % (tf, st), 'u', coord, sgn, a0, a1, ztop - 0.06 - LH, ztop - 0.06)
+
 PART = 'shopfront'
-gh = FC['shopfront']['glassHeadM']
-sh = FC['shopfront']['sillM']
+sf = FC['shopfront']
+gh = sf['glassHeadM']
+sh = sf['sillM']
 fd = FC['fasciaDepthM']
+sfm = sf.get('frameM', 0.12)                # 边枋宽
+smm = sf.get('mullionM', 0.08)              # 中枋宽
+smp = sf.get('mullionPitchM', 1.05)         # 玻璃分扇节奏
 for face, cv, sgn in (('s', V0, -1), ('n', V1, 1)):
     for a, b in zip(front_lines[:-1], front_lines[1:]):
         if b - a < 1.6:
             continue
         g0, g1 = a + 0.18, b - 0.18
         zp = cv + sgn * 0.02                    # 玻璃面：墙皮外 0.02
+        yaw = 0 if sgn < 0 else math.pi
         tag = '%s-%.1f' % (face, a)
-        quad_panel('shop-glass-' + tag, (g0 + g1) / 2, zp, PL + sh, gh, g1 - g0,
-                   0 if sgn < 0 else math.pi, 'glass')
-        box('shop-riser-' + tag, g0, g1, min(cv, zp), max(cv, zp), PL, PL + sh, 'dark')
-        box('shop-head-' + tag, g0, g1, cv - 0.06, cv + 0.06, gh, Z1 - fd, 'dark')
-        box('shop-mullion-' + tag, (g0 + g1) / 2 - 0.04, (g0 + g1) / 2 + 0.04, zp - 0.02, zp + 0.02,
-            PL + sh, gh, 'dark')
+        # 深红木框：两边立枋通高 + 上槛；下段木裙板（不再是整面玻璃幕墙）
+        box('shop-post-' + tag, g0 - sfm, g0, cv - 0.06, cv + 0.06, PL, Z1 - fd, 'wood', bevel=0)
+        box('shop-post-' + tag + 'r', g1, g1 + sfm, cv - 0.06, cv + 0.06, PL, Z1 - fd, 'wood', bevel=0)
+        box('shop-riser-' + tag, g0, g1, min(cv, zp) - 0.04, max(cv, zp), PL, PL + sh, 'wood')
+        box('shop-head-' + tag, g0, g1, cv - 0.06, cv + 0.06, gh, gh + 0.08, 'wood', bevel=0)
+        box('shop-headtop-' + tag, g0, g1, cv - 0.06, cv + 0.06, Z1 - fd - 0.04, Z1 - fd, 'wood', bevel=0)
+        # 横披（格心）：上槛与檐下挂落之间
+        quad_panel('shop-fan-' + tag, (g0 + g1) / 2, zp, gh + 0.08, Z1 - fd - 0.04, g1 - g0, yaw, 'lattice')
+        # 玻璃分扇 + 木中枋（枋凸出玻璃面 5 cm，读作木框）
+        n_leaf = max(1, int(round((g1 - g0) / smp)))
+        if n_leaf == 1 and g1 - g0 > smp:       # 窄开间别用超宽单扇，拆两扇
+            n_leaf = 2
+        lw = (g1 - g0) / n_leaf
+        vo0, vo1 = (zp - 0.05, zp + 0.01) if sgn < 0 else (zp - 0.01, zp + 0.05)
+        for k in range(n_leaf):
+            quad_panel('shop-glass-' + tag + '-%d' % k, g0 + lw * (k + 0.5), zp, PL + sh, gh,
+                       lw - smm + 0.01, yaw, 'glass')
+        for k in range(1, n_leaf):
+            mu = g0 + lw * k
+            box('shop-mullion-' + tag + '-%d' % k, mu - smm / 2, mu + smm / 2, vo0, vo1,
+                PL + sh, gh, 'wood', bevel=0)
 PART = 'fascia'
-for face, v0_, v1_ in (('s', V0 - 0.02, V0 + 0.10), ('n', V1 - 0.10, V1 + 0.02)):
-    box('guoluo-' + face, U0, U1, v0_, v1_, Z1 - fd, Z1, 'gild')
-    box('guoluo-trim-' + face, U0, U1, v0_ - 0.015, v1_ + 0.015, Z1 - fd - 0.05, Z1 - fd, 'gild')
+# 檐下挂落：金漆雕花感 = 鎏金格心 alpha 带（高 0.45 m = fasciaDepthM，沿两条街面连续）+ 深色衬底 + 下缘金条
+gz0, gz1 = Z1 - fd + 0.02, Z1 - 0.02
+for face, wv, sgn in (('s', V0, -1), ('n', V1, 1)):
+    quad_panel('guoluo-back-' + face, (U0 + U1) / 2, wv + sgn * 0.008, gz0, gz1, U1 - U0,
+               0 if sgn < 0 else math.pi, 'dark')
+    quad_panel('guoluo-' + face, (U0 + U1) / 2, wv + sgn * 0.04, gz0, gz1, U1 - U0,
+               0 if sgn < 0 else math.pi, 'guoluo')
+    box('guoluo-trim-' + face, U0, U1, wv - 0.055 if sgn < 0 else wv - 0.01,
+        wv + 0.01 if sgn < 0 else wv + 0.055, Z1 - fd - 0.05, Z1 - fd, 'gild')
 PART = 'plaques'
 for face, cv, sgn in (('s', V0, -1), ('n', V1, 1)):
     for a, b in zip(front_lines[:-1], front_lines[1:]):
@@ -655,32 +727,40 @@ for face, cv, sgn in (('s', V0, -1), ('n', V1, 1)):
         quad_panel('plaque-%s-%.1f' % (face, a), (a + b) / 2, cv + sgn * 0.14, Z1 - fd + 0.02, Z1 - 0.04,
                    1.5, 0 if sgn < 0 else math.pi, 'dark')
 pq = FC['floor2PlaqueM']
-quad_panel('plaque-floor2', (U0 + (PU0 if PAV else U1)) / 2, V0 - 0.06, Z1 + 0.8, Z1 + 0.8 + pq[1],
-           pq[0], 0, 'dark')
+pqb = FC.get('floor2PlaqueBorderM', 0.09)
+pc2 = (U0 + (PU0 if PAV else U1)) / 2
+quad_panel('plaque-floor2-frame', pc2, V0 - 0.054, Z1 + 0.8 - pqb, Z1 + 0.8 + pq[1] + pqb,
+           pq[0] + 2 * pqb, 0, 'gild')
+quad_panel('plaque-floor2', pc2, V0 - 0.06, Z1 + 0.8, Z1 + 0.8 + pq[1], pq[0], 0, 'dark')
 
-# ---- 腰廊（galleryStoreys 连续画廊 + 格心栏杆，两条街面） ----
+# ---- 腰廊（galleryStoreys 连续画廊 + 直棂木栏杆，两条街面） ----
 PART = 'gallery'
 gd = FC['galleryDepthM']
 bh = FC['balustradeHM']
+bpp = FC.get('balustradePostPitchM', 2.3)
 for st in FC['galleryStoreys']:
     z = ZT[st - 2]                   # 楼层 st 的楼面标高（ZT[0]=第2层楼面）
     for face, v0_, v1_, sgn in (('s', V0 - gd, V0 + 0.1, -1), ('n', V1 - 0.1, V1 + gd, 1)):
         box('gal-slab-%s-%d' % (face, st), U0, U1, v0_, v1_, z - 0.06, z + 0.06, 'stone')
         edge = v0_ if sgn < 0 else v1_
-        npost = int((U1 - U0) / 2.3)
+        npost = max(1, int((U1 - U0) / bpp))
         for i in range(npost + 1):
             pu = U0 + (U1 - U0) * i / npost
             box('gal-post-%s-%d-%d' % (face, st, i), pu - 0.06, pu + 0.06, edge - 0.05, edge + 0.05,
-                z, z + bh, 'wood')
-        box('gal-rail-%s-%d' % (face, st), U0, U1, edge - 0.055, edge + 0.055, z + bh - 0.08, z + bh, 'wood')
-        quad_panel('gal-lattice-%s-%d' % (face, st), (U0 + U1) / 2, edge + sgn * 0.03, z + 0.12,
-                   z + bh - 0.08, U1 - U0, 0 if sgn < 0 else math.pi, 'lattice')
+                z, z + bh, 'wood', bevel=0)
+        box('gal-rail-%s-%d' % (face, st), U0, U1, edge - 0.055, edge + 0.055, z + bh - 0.08, z + bh, 'wood', bevel=0)
+        box('gal-sill-%s-%d' % (face, st), U0, U1, edge - 0.045, edge + 0.045, z + 0.08, z + 0.16, 'wood', bevel=0)
+        quad_panel('gal-lattice-%s-%d' % (face, st), (U0 + U1) / 2, edge + sgn * 0.03, z + 0.16,
+                   z + bh - 0.08, U1 - U0, 0 if sgn < 0 else math.pi, 'slats')
 
-# ---- 格心窗（2-3 层前后街面按开间、东西山墙少量；4 层退台面；亭楼） ----
+# ---- 格心窗（R2：长窗/半窗——深红木整樘背板=窗框+裙板，上部格心；不再白墙开黑方洞） ----
 PART = 'windows'
 W = FC['window']
-def windows_on_face(tag, axis, coord, a0, a1, zfloor, ztop, centers, w, h, sill, sgn):
-    """axis='v': 竖面垂直 v（coord=v 平面，跨 u）；axis='u' 对偶。sgn=外法线方向。"""
+def windows_on_face(tag, axis, coord, a0, a1, zfloor, ztop, centers, w, h, sill, sgn, lf=None):
+    """axis='v': 竖面垂直 v（coord=v 平面，跨 u）；axis='u' 对偶。sgn=外法线方向。
+    lf=格心占樘高的比：长窗 0.62，半窗 0.5（下段露木裙板）。"""
+    if lf is None:
+        lf = FC['longWindowLatticeFrac']
     for i, c in enumerate(centers):
         if c < a0 + w / 2 + 0.1 or c > a1 - w / 2 - 0.1:
             continue
@@ -693,30 +773,55 @@ def windows_on_face(tag, axis, coord, a0, a1, zfloor, ztop, centers, w, h, sill,
         yaw = (0 if sgn < 0 else math.pi) if axis == 'v' else (math.pi / 2 if sgn > 0 else -math.pi / 2)
         cu = c if axis == 'v' else coord + off
         cv = coord + off if axis == 'v' else c
-        quad_panel('win-' + tag + '-%d' % i, cu, cv, z0, z0 + h, w, yaw, 'lattice')
-        quad_panel('winb-' + tag + '-%d' % i, (c if axis == 'v' else coord + off * 0.4),
-                   (coord + off * 0.4 if axis == 'v' else c), z0 - 0.07, z0 + h + 0.07, w + 0.14, yaw, 'wood')
+        quad_panel('winb-' + tag + '-%d' % i, cu, cv, z0 - 0.07, z0 + h + 0.07, w + 0.14, yaw, 'wood')
+        zl0 = z0 - 0.07 + (1.0 - lf) * (h + 0.14)
+        quad_panel('win-' + tag + '-%d' % i, cu, cv + off * 0.8, zl0, z0 + h + 0.03, w - 0.02, yaw, 'lattice')
+def bay_long_windows(face, v0, lines, amax, sgn, z, ztop):
+    """二三层街面每开间长窗屏：柱枋之间整樘木背板 + 每开间数扇格心长窗（落到腰檐下）。"""
+    yaw = 0 if sgn < 0 else math.pi
+    zp = v0 + sgn * 0.02                       # 背板面（微凸墙面）
+    zl0, zl1 = z + 0.06 + LH + 0.02, ztop - 0.06 - LH - 0.02
+    nlv, gap, lf = FC['longWindowLeaves'], FC['leafGapM'], FC['longWindowLatticeFrac']
+    zw0 = zl0 + (1.0 - lf) * (zl1 - zl0)       # 格心下缘，以下为木裙板
+    for bi, (a, b) in enumerate(zip(lines[:-1], lines[1:])):
+        g0, g1 = a + CS / 2, min(b, amax) - CS / 2
+        if g1 - g0 < 1.8:
+            continue
+        quad_panel('winbay-%s%d-%d' % (face, z, bi), (g0 + g1) / 2, zp, zl0, zl1, g1 - g0, yaw, 'wood')
+        pitch = (g1 - g0) / nlv
+        for k in range(nlv):
+            lc = g0 + pitch * (k + 0.5)
+            quad_panel('winleaf-%s%d-%d-%d' % (face, z, bi, k), lc, zp + sgn * 0.025,
+                       zw0, zl1 - 0.03, pitch - gap, yaw, 'lattice')
 for st in (2, 3):
     z, ztop = ZT[st - 2], ZT[st - 1]   # 楼层 st 的层底/层顶
-    centers = [(a + b) / 2 for a, b in zip(front_lines[:-1], front_lines[1:]) if b - a >= 2.4]
-    windows_on_face('s%d' % st, 'v', V0, U0, PU0 if PAV else U1, z, ztop, centers,
-                    min(W['widthM'], 2.4), W['heightM'], W['sillM'], -1)
-    windows_on_face('n%d' % st, 'v', V1, U0, U1, z, ztop, centers,
-                    min(W['widthM'], 2.4), W['heightM'], W['sillM'], 1)
+    bay_long_windows('s', V0, lines_s, PU0 if PAV else U1, -1, z, ztop)
+    bay_long_windows('n', V1, front_lines, U1, 1, z, ztop)
     for coord, a0, a1, sgn, tf in ((U1, PV1 if PAV else V0, V1, 1, 'e'), (U0, V0, V1, -1, 'w')):
         cs = [a0 + (a1 - a0) * f for f in (0.3, 0.7)]
         windows_on_face('%s%d' % (tf, st), 'u', coord, a0, a1, z, ztop, cs,
                         W['widthM'], W['heightM'], W['sillM'], sgn)
+# ---- 四层半窗 + 木裙板（退台面，R2：上半格心，下段裙板，开间与下方对齐） ----
 z = Z3
-step4 = 4.4
-for coord, a0, a1, sgn, tf in ((V0 + SB, U0, PU0 if PAV else U1 - SB, -1, 's'),
-                               (V1 - SB, U0, U1 - SB, 1, 'n'),
-                               (U1 - SB, PV1 if PAV else V0 + SB, V1 - SB, 1, 'e'),
+L4S = bay_lines(U0 + 0.02, (PU0 - 0.02) if PAV else (U1 - SB - 0.02))
+L4N = bay_lines(U0 + 0.02, U1 - SB - 0.02)
+PART = 'frame'
+for tf, v0, lines, sgn, a1f in (('s4', V0 + SB, L4S, -1, PU0 if PAV else U1 - SB),
+                                ('n4', V1 - SB, L4N, 1, U1 - SB)):
+    architrave('xia-' + tf, 'v', v0, sgn, U0, a1f, z + 0.06, z + 0.06 + LH)
+    architrave('shang-' + tf, 'v', v0, sgn, U0, a1f, Z4 - 0.06 - LH, Z4 - 0.06)
+PART = 'windows'
+for tf, v0, lines, sgn, a1f in (('s', V0 + SB, L4S, -1, PU0 if PAV else U1 - SB),
+                                ('n', V1 - SB, L4N, 1, U1 - SB)):
+    cs = [(a + b) / 2 for a, b in zip(lines[:-1], lines[1:]) if b - a >= 2.0]
+    windows_on_face('%s4' % tf, 'v', v0, U0, a1f, z, Z4, cs,
+                    min(W['widthM'], 2.2), 1.3, 1.45, sgn, lf=FC['halfWindowLatticeFrac'])
+for coord, a0, a1, sgn, tf in ((U1 - SB, PV1 if PAV else V0 + SB, V1 - SB, 1, 'e'),
                                (U0, V0 + SB, V1 - SB, -1, 'w')):
-    cnt = max(2, int((a1 - a0) / step4))
+    cnt = max(2, int((a1 - a0) / 4.4))
     cs = [a0 + (a1 - a0) * (i + 0.5) / cnt for i in range(cnt)]
-    windows_on_face('%s4' % tf, 'v' if tf in 'sn' else 'u', coord, a0, a1, z, Z4, cs,
-                    W['widthM'], W['heightM'] - 0.2, W['sillM'] - 0.1, sgn)
+    windows_on_face('%s4' % tf, 'u', coord, a0, a1, z, Z4, cs,
+                    W['widthM'], 1.3, 1.45, sgn, lf=FC['halfWindowLatticeFrac'])
 if PAV:
     for st in (2, 3):
         z, ztop = ZT[st - 2], ZT[st - 1]
@@ -780,7 +885,7 @@ bpy.ops.export_scene.gltf(filepath=glb, export_format='GLB', export_yup=True, ex
                           export_apply=True, use_selection=True, export_animations=False,
                           export_cameras=False, export_lights=False)
 
-# alphaMode 兜底：格心=MASK+0.5、玻璃=BLEND（Blender 4.5 导出命名差异修正，同 sansuitang）
+# alphaMode 兜底：格心/直棂/挂落=MASK+0.5、玻璃=BLEND（Blender 4.5 导出命名差异修正，同 sansuitang）
 buf = bytearray(open(glb, 'rb').read())
 jl = int.from_bytes(buf[12:16], 'little')
 assert bytes(buf[16:20]) == b'JSON'
@@ -790,7 +895,8 @@ bl = int.from_bytes(buf[bl_off:bl_off + 4], 'little')
 bindata = bytes(buf[bl_off + 8:bl_off + 8 + bl])
 changed = False
 for mm in j.get('materials', []):
-    if 'lattice' in mm.get('name', '') and mm.get('alphaMode') != 'MASK':
+    nm_ = mm.get('name', '')
+    if any(k in nm_ for k in ('lattice', 'slats', 'guoluo')) and mm.get('alphaMode') != 'MASK':
         mm['alphaMode'] = 'MASK'
         mm['alphaCutoff'] = 0.5
         changed = True
@@ -834,7 +940,8 @@ json.dump({'axis': 'GLB Y-up world map coords (x=layout x, z=layout z, y=height)
            'textureSource': 'asset-authoring/yuyuan-entry/source-kit/textures (read-only)',
            'notes': ['瓦垄/瓦当以 roof 材质贴图表达，无逐瓦几何；正脊素端头、无走兽。',
                      '转角亭楼全高角塔读法：地面起随主体层节奏，上加 extraTiers + 攒尖鎏金顶。',
-                     '主屋面平面在亭楼西缘（出檐+0.1m）收头，留出的 4 层顶面做平屋面（terrace-*），构造上避开亭楼穿插。'],
+                     '主屋面平面在亭楼西缘（出檐+0.1m）收头，留出的 4 层顶面做平屋面（terrace-*），构造上避开亭楼穿插。',
+                     'R2 立面（2026-09-25）：木构框架柱+额枋围合开间，二三层长窗/四层半窗格心，腰廊直棂木栏杆（望柱+扶手+底枋），底层木框玻璃店面+横披格心+檐下鎏金格心挂落带+柱脚石础；lattice/slats/guoluo 均程序化 alpha 贴图（深红木/鎏金色）。'],
            'buildSeconds': round(time.time() - T0, 1)},
           open(os.path.join(OUT, 'recipe.json'), 'w'), ensure_ascii=False, indent=2)
 print('BAZAAR_TOWER_BUILT', P['id'], tris, os.path.getsize(glb), round(maxy, 2),

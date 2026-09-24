@@ -148,8 +148,14 @@ def parse_glb(path):
             pos = accessor(p['attributes']['POSITION'])
             tris += accessor_count(j, p['indices'])
             verts.extend(pos)
+        mats = [j['materials'][p['material']].get('name', '')
+                for p in j['meshes'][n['mesh']]['primitives'] if p.get('material') is not None]
+        idx_tris = []
+        for p in j['meshes'][n['mesh']]['primitives']:
+            ii = [t[0] for t in accessor(p['indices'])]
+            idx_tris += [(ii[k], ii[k + 1], ii[k + 2]) for k in range(0, len(ii), 3)]
         nodes.append({'name': n.get('name', 'node%d' % i), 'mesh': True, 'translation': n.get('translation', [0, 0, 0]),
-                      'verts': verts, 'tris': tris, 'matrix': world_of(i)})
+                      'verts': verts, 'tris': tris, 'matrix': world_of(i), 'mats': mats, 'idxTris': idx_tris})
     return j, nodes
 
 def accessor_count(j, ai):
@@ -322,6 +328,147 @@ if os.path.exists(os.path.join(ROOT, OUT_DIR, 'collision-bazaar.json')):
         ok('test7 %s EXIT 0' % script, rr.returncode == 0, (rr.stdout + rr.stderr).strip()[-300:])
 else:
     skip('test7 walk 检查', 'OUT_DIR 无 collision-bazaar.json（未跑分区/碰撞导出）')
+
+# ---------- test 8：R2 立面（2026-09-24 主控复验项：木构框架/长窗半窗/直棂栏杆/木框店面/挂落/石础/金匾边） ----------
+PRM = json.load(open(os.path.join(HERE, 'params', 'huabao-%s.json' % ID), encoding='utf-8'))
+FM_ = PRM['massing']
+_FC = PRM['facades']
+ZT_ = [0.0]
+for h in FM_['storeyHeightsM']:
+    ZT_.append(ZT_[-1] + h)
+PL_ = FM_['plinthHeightM']
+# layout 重算局部系（同 build_tower：u=frontEdge 0->1，v=指后街）
+i0_, i1_ = PRM['frontEdge']
+O_ = [FP[i0_][0], FP[i0_][1]]
+_du = [FP[i1_][0] - FP[i0_][0], FP[i1_][1] - FP[i0_][1]]
+_dul = math.hypot(*_du)
+du_ = [_du[0] / _dul, _du[1] / _dul]
+dv_ = [-du_[1], du_[0]]
+def uv_of(vtx):
+    """GLB 顶点 (x, h, z)（Y-up：= 地图 x, 高, 地图 z）-> 局部 (u, v, h)。"""
+    dx, dz = vtx[0] - O_[0], vtx[2] - O_[1]
+    return (dx * du_[0] + dz * du_[1], dx * dv_[0] + dz * dv_[1], vtx[1])
+def u_v_h_of(node):
+    return [uv_of(v) for v in world_verts(node)]
+
+def node_prim_mat(n):
+    return n['mats'][0] if n.get('mats') else ''
+
+def node_by_name(sub):
+    return [n for n in meshes if sub in n['name']]
+def components(node):
+    """按三角形索引邻接求连通分量（= 收尾合并 join 前的原始件，join 不焊顶点）。"""
+    vs = world_verts(node)
+    par = list(range(len(vs)))
+    def find(a):
+        while par[a] != a:
+            par[a] = par[par[a]]
+            a = par[a]
+        return a
+    for a, b, c in node['idxTris']:
+        for x, y in ((a, b), (b, c), (a, c)):
+            ra, rb = find(x), find(y)
+            if ra != rb:
+                par[ra] = rb
+    pos = {}
+    for i, v in enumerate(vs):                    # 同位置焊回（导出按面法线拆顶点）
+        k = tuple(round(q, 3) for q in v)
+        if k in pos:
+            ra, rb = find(i), find(pos[k])
+            if ra != rb:
+                par[ra] = rb
+        else:
+            pos[k] = i
+    groups = {}
+    for i in range(len(vs)):
+        groups.setdefault(find(i), []).append(vs[i])
+    return list(groups.values())
+
+# test8a 直棂/挂落 alpha 材质存在且 MASK
+mats_by_name = {m.get('name', ''): m for m in gj.get('materials', [])}
+def mask_ok(sub):
+    m = next((v for k, v in mats_by_name.items() if sub in k), None)
+    return bool(m) and m.get('alphaMode') == 'MASK' and abs((m.get('alphaCutoff') or 0) - 0.5) < 1e-6
+ok('test8a 直棂(slats)/挂落(guoluo) alpha 材质 MASK+0.5', mask_ok('slats') and mask_ok('guoluo'),
+   str({k: v.get('alphaMode') for k, v in mats_by_name.items() if 'slats' in k or 'guoluo' in k}))
+
+# test8b 无整面玻璃幕墙：shopfront__glass 连通分量（分扇）≥8，每扇 u 宽 ≤ mullionPitch+0.2
+smp_ = _FC['shopfront'].get('mullionPitchM', 1.05)
+sgl_nodes = node_by_name('shopfront__glass')
+leaves = [c for n in sgl_nodes for c in components(n)]
+worst_w = 0.0
+for c in leaves:
+    us = [p[0] for p in c]
+    worst_w = max(worst_w, (max(us) - min(us)) if len(us) > 1 else 0.0)
+ok('test8b 店面玻璃分扇 %d 块（≥8），最宽 %.2f ≤ %.2f m' % (len(leaves), worst_w, smp_ + 0.2),
+   len(leaves) >= 8 and worst_w <= smp_ + 0.2 + 1e-6)
+
+# test8c 二三层木构框架柱（framecol__wood）：≥12 根，贴前/后街墙带，z 跨 2-3 层
+fc_nodes = node_by_name('framecol__wood')
+fcols = [c for n in fc_nodes for c in components(n)]
+_UVP = [uv_of((q[0], 0.0, q[1])) for q in FP]     # footprint -> 局部 (u, v)
+U0e = min(p[0] for p in _UVP) + FM_['wallInsetM']
+U1e = max(p[0] for p in _UVP) - FM_['wallInsetM']
+V0e = min(p[1] for p in _UVP) + FM_['wallInsetM']
+V1e = max(p[1] for p in _UVP) - FM_['wallInsetM']
+band = 0.45
+in_band = all((v - band <= V0e <= v + band) or (v - band <= V1e <= v + band)
+              for c in fcols for _, v, _ in (uv_of(q) for q in c))
+zok = all(ZT_[1] - 0.01 <= h <= ZT_[3] + 0.01 for c in fcols for _, _, h in (uv_of(q) for q in c))
+ok('test8c 木构框架柱 %d 根（≥12），沿前/后街墙带 ±%.2f m，z 在 2-3 层' % (len(fcols), band),
+   len(fcols) >= 12 and bool(fcols) and in_band and zok,
+   'in_band=%s zok=%s' % (in_band, zok))
+
+# test8d 腰廊栏杆=直棂木栏板（gallery__slats，两街面 × galleryStoreys，材质 slats）
+sl_nodes = node_by_name('gallery__slats')
+sl_ok = len(sl_nodes) == 1 and all('slats' in node_prim_mat(n) for n in sl_nodes)
+if sl_nodes:
+    hh = [uv_of(v)[2] for n in sl_nodes for v in world_verts(n)]
+    uu = [uv_of(v)[0] for n in sl_nodes for v in world_verts(n)]
+    ncomp = len(components(sl_nodes[0]))
+    sl_ok = (ncomp >= 2 * len(_FC['galleryStoreys'])
+             and ZT_[1] + 0.1 <= min(hh) and max(hh) <= ZT_[2] + _FC['balustradeHM'] + 0.01
+             and max(uu) - min(uu) >= 0.85 * (U1e - U0e))
+ok('test8d 直棂栏杆板（gallery__slats 材质 slats，两街面两层通长）', bool(sl_ok),
+   str([(n['name'], node_prim_mat(n)) for n in sl_nodes]))
+
+# test8e 檐下挂落：fascia__guoluo 金色 alpha 带沿街面通长，z 在檐下 0.45 m 带内
+fd_ = _FC['fasciaDepthM']
+glo_nodes = node_by_name('fascia__guoluo')
+ok('test8e 挂落 alpha 带（fascia__guoluo，材质含 guoluo）', len(glo_nodes) == 1
+   and all('guoluo' in node_prim_mat(n) for n in glo_nodes),
+   str([(n['name'], node_prim_mat(n)) for n in glo_nodes]))
+for n in glo_nodes:
+    uu = [uv_of(v)[0] for v in world_verts(n)]
+    hh = [uv_of(v)[2] for v in world_verts(n)]
+    span = max(uu) - min(uu)
+    ok('test8e %s 通长 %.1f m、z 在檐下 0.45 m 带内' % (n['name'], span),
+       span >= 0.85 * (U1e - U0e)
+       and ZT_[1] - fd_ - 0.15 <= min(hh) and max(hh) <= ZT_[1] + 0.01,
+       'span=%.1f z=[%.2f,%.2f]' % (span, min(hh), max(hh)))
+
+# test8f 柱脚石础（colbase__stone）：≥12 个分量，落地、顶 ≤ 台基顶+0.12
+cb_nodes = node_by_name('colbase__stone')
+cbases = [c for n in cb_nodes for c in components(n)]
+bmax = max((max(p[1] for p in c) for c in cbases), default=0)
+bmin = min((min(p[1] for p in c) for c in cbases), default=1)
+ok('test8f 柱脚石础 %d 个（stone，z %.2f..%.2f ≤ %.2f）' % (len(cbases), bmin, bmax, PL_ + 0.12),
+   len(cbases) >= 12 and all('stone' in node_prim_mat(n) for n in cb_nodes)
+   and bmin <= 0.01 and bmax <= PL_ + 0.12)
+
+# test8g 二层大匾金色边框（plaques__gild，8×2 m + 边框 0.09）
+pqb = _FC.get('floor2PlaqueBorderM', 0.09)
+pf = next((n for n in meshes if n['name'] == 'plaques__gild'), None)
+if pf:
+    uu = [uv_of(v)[0] for v in world_verts(pf)]
+    hh = [uv_of(v)[2] for v in world_verts(pf)]
+    w_, h_ = max(uu) - min(uu), max(hh) - min(hh)
+    exp_w, exp_h = _FC['floor2PlaqueM'][0] + 2 * pqb, _FC['floor2PlaqueM'][1] + 2 * pqb
+    ok('test8g 二层大匾金边 %.2f×%.2f ≈ %.2f×%.2f（gild）' % (w_, h_, exp_w, exp_h),
+       'gild' in node_prim_mat(pf) and abs(w_ - exp_w) < 0.06 and abs(h_ - exp_h) < 0.06,
+       'mat=%s' % node_prim_mat(pf))
+else:
+    ok('test8g 二层大匾金色边框', False, '无 plaques__gild')
 
 print('\ntest_tower: %d pass, %d fail, %d skip' % (pass_n, fail_n, skip_n))
 if fail_n:

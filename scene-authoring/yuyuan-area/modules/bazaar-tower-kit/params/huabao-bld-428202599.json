@@ -80,6 +80,18 @@
       3.6
     ],
     "columnSizeM": 0.32,
+    "columnBaseM": 0.06,
+    "frameLintelHM": 0.25,
+    "frameProjectM": 0.05,
+    "frameDepthM": 0.18,
+    "longWindowLeaves": 5,
+    "longWindowLatticeFrac": 0.62,
+    "leafGapM": 0.05,
+    "halfWindowLatticeFrac": 0.5,
+    "balustradePostPitchM": 2.3,
+    "balustradeSlatPitchM": 0.12,
+    "balustradeSlatBarM": 0.045,
+    "guoluoCellsPerM": 8.0,
     "galleryDepthM": 1.1,
     "galleryStoreys": [
       2,
@@ -91,6 +103,7 @@
       8.0,
       2.0
     ],
+    "floor2PlaqueBorderM": 0.09,
     "window": {
       "widthM": 1.7,
       "heightM": 1.9,
@@ -98,7 +111,10 @@
     },
     "shopfront": {
       "glassHeadM": 3.9,
-      "sillM": 0.9
+      "sillM": 0.9,
+      "frameM": 0.12,
+      "mullionM": 0.08,
+      "mullionPitchM": 1.05
     }
   },
   "materials": {
