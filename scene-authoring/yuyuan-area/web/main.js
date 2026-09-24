@@ -9,6 +9,7 @@ import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
 import { setupTour } from './tour.js';   // WP13：取景导览逻辑在 web/tour.js
 import { dedupeLabels, buildLabelOccluders } from './labels.js'; // WP13：标签去重+R1遮挡剔除逻辑在 web/labels.js
 import { installWalkMode } from './walk.js';   // WP4 步行模式（默认不启用，按 ?walk=1 或「步行」按钮进入）
+import { setupPerf } from './perf.js';         // M4 性能采样（仅 ?perf=1 时激活；方法见 docs/PERF-W2.md）
 
 const app = document.getElementById('app');
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -185,6 +186,7 @@ async function loadZones(m) {
   const order = [...m.order.filter(z => want.includes(z)), ...m.order.filter(z => !want.includes(z) && !skip.has(z))];
   await loadZoneFiles(m, order, { firstPaint: true });
   window.__ready = true;
+  perf?.markLoaded(); perf?.start();
   hud('分区加载完成');
 }
 fetch('/out/zones-manifest.json').then(r => { if (!r.ok) throw 0; return r.json(); }).then(m => {
@@ -194,11 +196,12 @@ fetch('/out/zones-manifest.json').then(r => { if (!r.ok) throw 0; return r.json(
   loadZones(m);
 }).catch(() => {
   // fallback: single-file scene-areas.glb (pre zone-split outputs)
-  loadGlb('/out/scene-areas.glb').then(root => {
-    prepare(root); scene.add(root);
-    allRoots = root.children.length ? root.children : [root];
-    afterFirstPaint(); hud('scene-areas.glb 已加载'); window.__ready = true;
-  }, e => { document.getElementById('loadmsg').textContent = 'GLB 加载失败: ' + e; });
+    loadGlb('/out/scene-areas.glb').then(root => {
+      prepare(root); scene.add(root);
+      allRoots = root.children.length ? root.children : [root];
+      afterFirstPaint(); hud('scene-areas.glb 已加载'); window.__ready = true;
+      perf?.markLoaded(); perf?.start();
+    }, e => { document.getElementById('loadmsg').textContent = 'GLB 加载失败: ' + e; });
 });
 
 // ---------- zone/cam ----------
@@ -472,7 +475,10 @@ const walk = installWalkMode({
   },
 });
 
-renderer.setAnimationLoop(() => { controls.update(); walk?.tick(); renderer.render(scene, camera); drawLabels(); });
+// M4：?perf=1 时挂性能采样（60s 轨道 + 60s 巡游步行帧时采样在 perf.tick 内完成，
+// 顺序必须在 walk.tick 之前 —— CruiseDriver 要先于控制器步进设置输入）
+const perf = setupPerf({ renderer, camera, controls, walk, hud });
+renderer.setAnimationLoop(() => { perf?.tick(); controls.update(); walk?.tick(); renderer.render(scene, camera); drawLabels(); });
 
 // playwright 钩子
 window.__ready = false;
