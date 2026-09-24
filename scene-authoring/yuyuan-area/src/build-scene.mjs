@@ -48,6 +48,9 @@ const GARDEN_KIT_IDS = new Set(['bld-428179924', 'bld-428186467', 'bld-428196085
 // SANSUITANG=1：三穗堂 bld-428179901 由 modules/sansuitang 细化实例模块承担（assemble 按 footprint 形心放置），占位不再程序化生成。
 const SANSUITANG = process.env.SANSUITANG === '1';
 const SANSUITANG_IDS = new Set(['bld-428179901']);
+// HALL_KIT=1（默认关）：园区厅堂由 modules/hall-kit 统一生成器承担（WP8 样板：仰山堂），assemble 按 footprint 面积形心放置。
+const HALL_KIT = process.env.HALL_KIT === '1';
+const HALL_KIT_IDS = new Set(['bld-428179902']);
 // 假山站点模块默认开启（2026-09-23 机主定）：大假山 / 玉玲珑由 out-garden-kits 站点模块承担（assemble 导入 SITE-garden），
 // 占位不再程序化生成。ROCKERY_KIT=0 退回程序化占位。
 const ROCKERY_KIT = process.env.ROCKERY_KIT !== '0';
@@ -950,6 +953,7 @@ for (const o of layout.objects) {
   if (STALL_KIT && STALL_KIT_KINDS.has(o.kind)) { deferred.push({ id: o.id, kind: o.kind, why: 'stall-kit' }); continue; }
   if (GARDEN_KITS && (GARDEN_KIT_IDS.has(o.id) || (o.kind === 'tree' && o.zone === 'garden'))) { deferred.push({ id: o.id, kind: o.kind, why: 'garden-kit' }); continue; }
   if (SANSUITANG && SANSUITANG_IDS.has(o.id)) { deferred.push({ id: o.id, kind: o.kind, why: 'sansuitang-module' }); continue; }
+  if (HALL_KIT && HALL_KIT_IDS.has(o.id)) { deferred.push({ id: o.id, kind: o.kind, why: 'hall-kit' }); continue; }
   if (ROCKERY_KIT && ROCKERY_IDS.has(o.id)) { deferred.push({ id: o.id, kind: o.kind, why: 'rockery-kit' }); continue; }
   const ud = { id: o.id, zone: o.zone, kind: o.kind, lod: o.lod };
   if (o.name) ud.name = o.name;
