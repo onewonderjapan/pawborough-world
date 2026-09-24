@@ -11,6 +11,7 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { obbToWorld } from '../../../src/world/collisionAdapter.js';
 import { readGlb } from '../../../src/world/glbReader.js';
+import { dropFloatingSegments } from '../src/lib.mjs';
 
 const AREA = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(AREA, process.env.OUT_DIR || 'out');
@@ -143,11 +144,18 @@ for (const o of layout.objects) {
 }
 
 // ---------- 2) 园墙 / 庙墙：layout 段重算（高/厚取 garden-kit 记录值） ----------
+// M3：temple-wall 两端悬空的孤立段（第 19 段空地薄板）不建碰撞，与 garden-kit 重建同步过滤；
+// 记录名保留冻结 layout 的原段索引（seg-20 不因剔除而重编号）。
+const FLOATING_DROP_WALLS = new Set(['temple-wall']);
 const WALL_HEIGHT = { 'garden-wall': 2.9, 'temple-wall': 2.6 };
 for (const o of layout.objects) {
   if (o.kind !== 'wall' || !Array.isArray((o.geometry || {}).segments)) continue;
   const h = WALL_HEIGHT[o.id] ?? 2.9;
-  o.geometry.segments.forEach((s, i) => edgeWall(o.zone, `${o.id}:seg-${i}`, 'wall-segment', s[0], s[1], h, WALL_THICK));
+  const keep = FLOATING_DROP_WALLS.has(o.id) ? new Set(dropFloatingSegments(o.geometry.segments)) : null;
+  o.geometry.segments.forEach((s, i) => {
+    if (keep && !keep.has(s)) return;
+    edgeWall(o.zone, `${o.id}:seg-${i}`, 'wall-segment', s[0], s[1], h, WALL_THICK);
+  });
 }
 
 // ---------- 3) 月洞墙（yuhuatang-moongate）：garden-kit 三条代理盒，世界坐标 ----------

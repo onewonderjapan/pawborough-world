@@ -6,6 +6,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { obbToWorld } from '../../../src/world/collisionAdapter.js';
+import { dropFloatingSegments } from '../src/lib.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
@@ -57,8 +58,13 @@ for (const o of layout.objects) {
   const g = o.geometry || {};
   if ((BUILDING_KINDS.has(o.kind) || (o.kind === 'outerBuilding' && o.zone === 'bazaar')) && g.footprint)
     ok(`cover ${o.zone}/${o.kind} ${o.id}`, has(`${o.id}:`));
-  if (o.kind === 'wall' && Array.isArray(g.segments))
-    g.segments.forEach((_, i) => ok(`cover wall ${o.id}:seg-${i}`, has(`${o.id}:seg-${i}`)));
+  if (o.kind === 'wall' && Array.isArray(g.segments)) {
+    // M3：temple-wall 两端悬空的孤立段（第 19 段）不建碰撞，导出侧同一规则过滤，
+    // 记录名保留原段索引 —— 契约按同一过滤后的集合核对。
+    const segs = o.id === 'temple-wall' ? dropFloatingSegments(g.segments) : g.segments;
+    const kept = new Set(segs);
+    g.segments.forEach((s, i) => { if (kept.has(s)) ok(`cover wall ${o.id}:seg-${i}`, has(`${o.id}:seg-${i}`)); });
+  }
   if (o.kind === 'water' && g.footprint) {
     let fp = g.footprint;
     if (fp[0][0] === fp.at(-1)[0] && fp[0][1] === fp.at(-1)[1]) fp = fp.slice(0, -1);

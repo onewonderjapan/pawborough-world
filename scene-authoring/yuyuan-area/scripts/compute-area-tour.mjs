@@ -95,7 +95,9 @@ function anchorCamCandidates(a, maxR = 8) {
       if (nearestColliderDist(boxes, [p[0], EYE, p[1]]).dist < 1.5) continue;
       out.push(p);
     }
-    if (out.length >= 40) break; // 近处够用就不再外扩
+    // M3：不再在 40 个候选处提前收网 —— 旧上限会在路线方向变化（如 gold 广场口的
+    // 蚀刻栅格边界抖动）时把 5–8 m 处唯一能过可见性检查的候选挡在列表外。
+    // 迭代顺序仍是按环由近到远，第一个过检者优先，成本只是几毫秒的射线检查。
   }
   return out;
 }

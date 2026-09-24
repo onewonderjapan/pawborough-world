@@ -10,6 +10,7 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 import {
   bbox, polyArea, centroid, offsetPolySafe, dist2d, principalAxis, orientRing,
   shapeMesh, shapeGeo, wallRing, makeRoof, ribbon, corridor, rock, tree,
+  dropFloatingSegments,
 } from './lib.mjs';
 
 // Node 下 GLTFExporter 需要 FileReader（无贴图也会走到该分支）
@@ -619,7 +620,9 @@ function buildTree(o) {
 
 function buildWall(o) {
   const parts = [];
-  for (const [a, b] of o.geometry.segments) {
+  // M3：temple-wall 两端悬空的孤立段（第 19 段空地薄板）不生成占位几何（与站点模块重建一致）
+  const segs = o.id === 'temple-wall' ? dropFloatingSegments(o.geometry.segments) : o.geometry.segments;
+  for (const [a, b] of segs) {
     const len = dist2d(a, b);
     if (len < 0.5) continue;
     const cx = (a[0] + b[0]) / 2, cz = (a[1] + b[1]) / 2;
