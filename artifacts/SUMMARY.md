@@ -22,7 +22,7 @@ worktree `workspace`，分支 `work/wave1-fangbang-20260923`（基于 main @ 0d1
 - 新资产登记：`artifacts/NEW-ASSETS.json` 30 项（street-reviewed-lanes.glb + 非庙轴模块 GLB，sha256 逐一核验）。
 
 ## R1 — 去重、实例共享、按需加载、标签与碰撞：done（待主控复验）
-- 提交见 `artifacts/r1/RESULT.json` 的 commits（本段写完后回填）。
+- 提交 **2e5436a0**。
 - 街段地面仍只有 `street-kit__*`，店屋按实例放。同一模块的实例共享一份 mesh，收成 2 个 GLB。唯一三角 **219993**（v7 非庙轴 220332，差 0.15%）。实例加权放置仍是 **573419**（每个实例计一次，不是街段放了两遍）；≤260000 的测试锁在唯一三角上，说明在 RESULT partial。
 - 体积：raw 9.79MB + 9.87MB，均 ≤12MB；cm **2.20 + 2.09 = 4.29MB** ≤7MB；validator 0。非招牌贴图长边 512，fangbang cm 用 ETC1S。
 - 按需：核心三区首次 **15.9MB**（`__loadedBytes` 15941284），HUD 没有 fangbang。点「方浜中路」或步行进入包围盒 60m 才加载。加载后遮挡体 1153→1720，步行再读 `collision-fangbang.json`。
