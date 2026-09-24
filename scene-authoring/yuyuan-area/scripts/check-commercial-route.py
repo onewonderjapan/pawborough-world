@@ -86,10 +86,30 @@ centerpart=next(g for g in parts if g.covers(Point(point(anchors['center']))))
 pa,pb=nearest_points(mainpart,centerpart)
 (O/'nav-gap.json').write_text(json.dumps({'main':[pa.x,pa.y],'center':[pb.x,pb.y],'gap':pa.distance(pb),'anchors':{k:point(v) for k,v in anchors.items()}},indent=1),encoding='utf-8')
 routes=[]
+# 路线稳定性（wave1-huxinting 2026-09-25）：网格 free 对投影输入的字节级变化存在浮点敏感，
+# 等价走廊会被无谓重排并连带导览机位翻转。规则：上一份 commercial-route.json 里 pass 的路线，
+# 只要其 3m swept ribbon 在当前几何（最新 walk）上仍逐点有效，就原样保留（keptFromPrevious），
+# 只有失效的路线才走重新寻优。有效性以当前几何重验为准，与来源 GLB 无关。
+prevmap={}
+prevfile=O/'commercial-route.json'
+if prevfile.exists():
+ try:
+  prev=json.loads(prevfile.read_text(encoding='utf-8'))
+  if prev.get('pass'):
+   for r in prev.get('routes',[]):
+    if r.get('pass') and r.get('points'):
+     ribbon=LineString(r['points']).buffer(1.5,cap_style=2,join_style=2)
+     if walk.covers(ribbon):prevmap[(r['from'],r['to'])]=r
+ except Exception:prevmap={}
 for a,b in [('main','jiuqu'),('main','gold'),('main','center'),('old-south','old-north'),('gold','jiuqu')]:
+ if (a,b) in prevmap:
+  pr=prevmap[(a,b)]
+  routes.append({'from':a,'to':b,'pass':True,'widthM':3,'points':pr['points'],'lengthM':pr.get('lengthM'),
+                 'routeSource':'kept-previous (3m swept ribbon revalidated on current geometry)'})
+  continue
  pts=search(anchors[a],anchors[b]) if a in anchors and b in anchors else None
  passed=bool(pts) and walk.covers(LineString(pts).buffer(1.5,cap_style=2,join_style=2))
  if not passed:errors.append(a+' -> '+b+': no verified 3m corridor')
  routes.append({'from':a,'to':b,'pass':passed,'widthM':3,'points':pts,'lengthM':round(LineString(pts).length,2) if pts else None})
-report={'sourceGlbSha256':expected if actual.exists() else None,'method':'3m swept ribbon on rendered surfaces minus ground footprints/walls/water; 0.25m search, exact polygon swept validation','pass':not errors,'routes':routes,'errors':errors,'notPhysicsPlaytest':True}
+report={'sourceGlbSha256':expected if actual.exists() else None,'method':'3m swept ribbon on rendered surfaces minus ground footprints/walls/water; 0.25m search, exact polygon swept validation; previous pass routes kept while still sweep-valid on current geometry','pass':not errors,'routes':routes,'errors':errors,'notPhysicsPlaytest':True}
 (O/'commercial-route.json').write_text(json.dumps(report,ensure_ascii=False,indent=1)+'\n',encoding='utf-8');print(json.dumps({k:v for k,v in report.items() if k!='routes'},ensure_ascii=False));print([(r['from'],r['to'],r['pass'],r['lengthM']) for r in routes]);sys.exit(bool(errors))

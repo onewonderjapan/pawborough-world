@@ -326,16 +326,19 @@ if (HUXINTING && fs.existsSync(path.join(OUT, 'pond.glb'))) {
   ok('pond.glb 含 huxin-ting 锚节点', !!anchor);
   if (anchor) {
     const t = anchor.translation || [0, 0, 0];
-    const rotY = Math.atan2(UX, UZ);
-    ok(`锚点位置 = footprint 面积形心（实测 (${t[0].toFixed(2)}, ${t[1].toFixed(2)}) 期望 (${CX.toFixed(2)}, ${(-CZ).toFixed(2)})）`,
-      Math.abs(t[0] - CX) <= 0.02 && Math.abs(t[1] + CZ) <= 0.02 && Math.abs(t[2]) <= 0.01);
-    let rz = null;
+    // glTF 惯例（同 jiuqu-bridge 等站点件）：translation = (地图 x, 高度, 地图 z)
+    ok(`锚点位置 = footprint 面积形心（实测 (${t[0].toFixed(2)}, ${t[2].toFixed(2)}) 期望 (${CX.toFixed(2)}, ${CZ.toFixed(2)})，高度 ${t[1].toFixed(2)} = 0）`,
+      Math.abs(t[0] - CX) <= 0.02 && Math.abs(t[2] - CZ) <= 0.02 && Math.abs(t[1]) <= 0.01);
+    // Blender rotZ θ 经 yup 导出 = glTF 绕 +Y 旋 θ（纯 Y 四元数）
+    let yawY = null, pureY = false;
     if (anchor.rotation) {
       const [x, y, z, w] = anchor.rotation;
-      rz = Math.atan2(2 * (w * z + x * y), 1 - 2 * (y * y + z * z));
+      pureY = Math.abs(x) <= 0.001 && Math.abs(z) <= 0.001;
+      yawY = 2 * Math.atan2(y, w);
     }
-    ok(`锚点朝向 = 主轴 yaw（实测 ${rz === null ? '无旋转' : rz.toFixed(4)} 期望 ${rotY.toFixed(4)}）`,
-      rz === null ? true : Math.abs(Math.sin(rz - rotY)) <= 0.01);
+    const rotY = Math.atan2(UX, UZ);
+    ok(`锚点朝向 = 主轴 yaw（实测 glTF-Y ${yawY === null ? '无旋转' : yawY.toFixed(4)} 期望 ${rotY.toFixed(4)}）`,
+      yawY === null ? true : pureY && Math.abs(Math.sin(yawY - rotY)) <= 0.01);
     ok('huxin-ting.glb sha256 与 NEW-ASSETS 登记一致（登记文件若存在）', (() => {
       const naPath = path.resolve(ROOT, '..', '..', 'artifacts', 'NEW-ASSETS.json');
       if (!fs.existsSync(naPath)) return true;
