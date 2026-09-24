@@ -24,4 +24,6 @@ blender -b --python-exit-code 1 -P scripts/check-route-glb.py
 if [ "${WALK_COLLISION:-1}" = "1" ]; then node scripts/export-collision.mjs; fi
 node scripts/validate.mjs
 node src/coverage.mjs
+# WP13: 导览机位 tour.json（依赖 check-connectivity 产出的 nav-gap.json；web 端取景导览按钮读取）
+node scripts/compute-area-tour.mjs
 npm test

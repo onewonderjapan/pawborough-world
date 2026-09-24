@@ -10,6 +10,30 @@
 </style>
 <h1>Pawborough v1.0 候选包 — 入口（index-v1）</h1>
 <p class="note">采用状态：机主 2026-09-19 已裁决采用全部已交付视觉（OWNER_DECISION-20260919.json G1 adopt_all）；各批 RESULT.json 的 ownerAdopted=true，历史批在本页 VERSION.json.adoption 登记。压缩变体<b>默认加载</b>（<code>*.cm.glb</code>），URL 加 <code>?compressed=0</code> 可回原始字节。生成时间 2026-09-19T16:44:13.297Z · head <code>1b9033ce4b7e0530bc44914c6394633ff47165d9</code></p>
+<h2 id="yuyuan-area-entry">豫园区域（全域候选）</h2>
+<p>分区流式加载的全域候选场景（豫园 + 城隍庙 + 豫园商城 + 池带），带固定取景导览机位（<code>tour.json</code>，非行走）。预览服务由区域模块提供，端口<b>不写死</b>：在下面输入实际端口（记住选择），或改用 <code>PORT=… npm run world</code> 指定。</p>
+<p>启动预览：<code>cd scene-authoring/yuyuan-area &amp;&amp; npm run world</code>（默认 <code>OUT_DIR=out-zone</code>、端口 5486，服务会打印实际地址）。</p>
+<p style="display:flex;gap:.5rem;align-items:center">
+  <label for="area-port">预览端口</label>
+  <input id="area-port" type="text" size="8" value="5486" style="font:inherit;padding:.2rem .4rem">
+  <button id="area-open" type="button" style="font:inherit;padding:.3rem .8rem">打开豫园区域预览 →</button>
+  <a id="area-direct" href="http://127.0.0.1:5486/?zone=core">或直接打开 http://127.0.0.1:5486/?zone=core</a>
+</p>
+<script>
+(function () {
+  var input = document.getElementById('area-port');
+  var link = document.getElementById('area-direct');
+  try { var saved = localStorage.getItem('pawborough-area-port'); if (saved) input.value = saved; } catch (e) {}
+  function href() { return 'http://127.0.0.1:' + (input.value.trim() || '5486') + '/?zone=core'; }
+  function refresh() { link.href = href(); link.textContent = '或直接打开 ' + href(); }
+  input.addEventListener('input', refresh);
+  refresh();
+  document.getElementById('area-open').addEventListener('click', function () {
+    try { localStorage.setItem('pawborough-area-port', input.value.trim()); } catch (e) {}
+    location.href = href();
+  });
+})();
+</script>
 <h2>页面（站点相对 URL —— dev/preview/dist 同源直接可用）</h2>
 <table>
 <tr><th>页面</th><th>URL</th><th>数据集</th><th>placedTriangles</th></tr>
