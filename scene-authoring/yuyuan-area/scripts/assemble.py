@@ -674,6 +674,54 @@ if os.environ.get('FANGBANG', '1') != '0':
     json.dump(fb_infill_doc, open(os.path.join(OUT, 'fangbang-infill.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     print('fangbang infill placed', len(fangbang_infill), [i['id'] for i in fangbang_infill])
 
+# ---------- 湖心亭站点模块（HUXINTING=1，默认关。世界坐标 GLB，同假山做法，assemble 导入 SITE-pond） ----------
+# 位置全部从 baseline/layout.json 重算：锚 empty = footprint 面积形心（鞋带公式），
+# rotY 使本地朝向主轴（footprint 最长边方向，+u 远离九曲桥）；子网格保持世界坐标（parent 后写回 matrix_world）。
+# 公式与 modules/huxinting/build.py、tests/huxinting-test.mjs 一致。
+huxinting_placed = 0
+if os.environ.get('HUXINTING') == '1':
+    lay_obj = {o['id']: o for o in LAYOUT['objects']}
+    ht = lay_obj['huxin-ting']
+    fp = ht['geometry']['footprint']
+    if fp[0] == fp[-1]:
+        fp = fp[:-1]
+    area2 = sum(fp[i][0] * fp[(i + 1) % len(fp)][1] - fp[(i + 1) % len(fp)][0] * fp[i][1] for i in range(len(fp)))
+    hx = sum((fp[i][0] + fp[(i + 1) % len(fp)][0]) * (fp[i][0] * fp[(i + 1) % len(fp)][1] - fp[(i + 1) % len(fp)][0] * fp[i][1])
+             for i in range(len(fp))) / (3 * area2)
+    hz = sum((fp[i][1] + fp[(i + 1) % len(fp)][1]) * (fp[i][0] * fp[(i + 1) % len(fp)][1] - fp[(i + 1) % len(fp)][0] * fp[i][1])
+             for i in range(len(fp))) / (3 * area2)
+    hl, ha, hb = max((math.hypot(fp[(i + 1) % len(fp)][0] - fp[i][0], fp[(i + 1) % len(fp)][1] - fp[i][1]), fp[i], fp[(i + 1) % len(fp)])
+                     for i in range(len(fp)))
+    ux, uz = (hb[0] - ha[0]) / hl, (hb[1] - ha[1]) / hl
+    if ux < 0:
+        ux, uz = -ux, -uz
+    ht_glb = os.path.join(OUT, 'huxin-ting.glb')
+    if not os.path.exists(ht_glb):
+        raise SystemExit('HUXINTING=1: missing %s; build with blender -b -t 4 --python modules/huxinting/build.py' % ht_glb)
+    objs = import_glb(ht_glb, 'SITE-pond')
+    for ob in objs:
+        if ob.name.startswith('huxin-ting__'):
+            ob.name = 'mesh-' + ob.name
+    empty = bpy.data.objects.new('huxin-ting', None)
+    empty.empty_display_size = 2
+    empty.rotation_mode = 'XYZ'
+    empty.location = (hx, -hz, 0)
+    empty.rotation_euler = (0, 0, math.atan2(ux, uz))
+    empty['id'] = 'huxin-ting'
+    empty['module'] = 'huxinting'
+    empty['zone'] = 'pond'
+    empty['lod'] = 'L2'
+    coll('SITE-pond').objects.link(empty)
+    bpy.context.view_layer.update()
+    for ob in objs:
+        if ob.parent is None:
+            mw = ob.matrix_world.copy()
+            ob.parent = empty
+            ob.matrix_world = mw
+    bpy.context.view_layer.update()
+    huxinting_placed += 1
+    print('huxinting placed huxin-ting centroid', round(hx, 3), round(hz, 3), 'rotY', round(math.atan2(ux, uz), 4))
+
 # MODLIB 收藏不导出
 modlib = bpy.data.collections.get('MODLIB')
 
@@ -753,6 +801,7 @@ stats = {
     'stallKitPlaced': stall_placed,
     'sansuitangPlaced': sst_placed,
     'rockeryKitPlaced': rockery_placed,
+    'huxintingPlaced': huxinting_placed,
     'gardenKitPlaced': garden_kit_placed,
     'fangbangPlaced': fangbang_placed,
     'fangbangExcluded': fangbang_excluded,

@@ -52,6 +52,9 @@ const SANSUITANG_IDS = new Set(['bld-428179901']);
 // 占位不再程序化生成。ROCKERY_KIT=0 退回程序化占位。
 const ROCKERY_KIT = process.env.ROCKERY_KIT !== '0';
 const ROCKERY_IDS = new Set(['rockery-dajiashan', 'rockery-yulinglong']);
+// HUXINTING=1：湖心亭由 modules/huxinting 站点模块 GLB 承担（assemble 导入 SITE-pond），占位不再程序化生成。默认关。
+const HUXINTING = process.env.HUXINTING === '1';
+const HUXINTING_IDS = new Set(['huxin-ting']);
 const layout = JSON.parse(fs.readFileSync(path.join(OUT, 'layout.json'), 'utf8'));
 
 // ---------- FANGBANG=1：方浜中路沿线路面片让位（V1-REDEFINITION：连接段 x -96.8..54、街段 54..138 精修归 fangbang） ----------
@@ -951,6 +954,7 @@ for (const o of layout.objects) {
   if (GARDEN_KITS && (GARDEN_KIT_IDS.has(o.id) || (o.kind === 'tree' && o.zone === 'garden'))) { deferred.push({ id: o.id, kind: o.kind, why: 'garden-kit' }); continue; }
   if (SANSUITANG && SANSUITANG_IDS.has(o.id)) { deferred.push({ id: o.id, kind: o.kind, why: 'sansuitang-module' }); continue; }
   if (ROCKERY_KIT && ROCKERY_IDS.has(o.id)) { deferred.push({ id: o.id, kind: o.kind, why: 'rockery-kit' }); continue; }
+  if (HUXINTING && HUXINTING_IDS.has(o.id)) { deferred.push({ id: o.id, kind: o.kind, why: 'huxinting-module' }); continue; }
   const ud = { id: o.id, zone: o.zone, kind: o.kind, lod: o.lod };
   if (o.name) ud.name = o.name;
   if (o.trade) ud.trade = o.trade;
