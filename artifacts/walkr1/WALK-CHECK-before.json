@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-23T16:17:59.336Z",
+ "generatedAt": "2026-09-23T13:26:35.186Z",
  "outDir": "out-zone",
  "inputs": {
   "zones": [
@@ -12,7 +12,7 @@
   "layoutSha256": "836a6975cfabd9590c8e95e0153a8c71ba1dc7f9bac4a1ff4ea28fb4bb2a8c63"
  },
  "physics": {
-  "walls": 1492,
+  "walls": 1216,
   "groundMeshes": 194
  },
  "method": "CruiseDriver -> WalkController fixed-step input chain against real Rapier world; ground = raw zone GLB meshes filtered by per-zone groundNodeRe/extraGroundNodes",
@@ -21,18 +21,8 @@
    "route": "main→jiuqu",
    "pass": true,
    "simSeconds": 104.4,
-   "wallClockSeconds": 1.2,
+   "wallClockSeconds": 0.8,
    "steps": 6263,
-   "routeLengthM": 232.9,
-   "midStation": {
-    "at": [
-     -207.54,
-     -25.39
-    ],
-    "seg": 6,
-    "tangentYaw": -1.342,
-    "recorded": true
-   },
    "reachedWaypoints": 15,
    "totalWaypoints": 15,
    "minGroundClearanceM": -0.005,
@@ -51,18 +41,8 @@
    "route": "main→gold",
    "pass": true,
    "simSeconds": 131,
-   "wallClockSeconds": 1.4,
+   "wallClockSeconds": 0.9,
    "steps": 7860,
-   "routeLengthM": 292.3,
-   "midStation": {
-    "at": [
-     -195.91,
-     -45.59
-    ],
-    "seg": 9,
-    "tangentYaw": 0.025,
-    "recorded": true
-   },
    "reachedWaypoints": 21,
    "totalWaypoints": 21,
    "minGroundClearanceM": -0.005,
@@ -83,16 +63,6 @@
    "simSeconds": 36.7,
    "wallClockSeconds": 0.3,
    "steps": 2200,
-   "routeLengthM": 82.4,
-   "midStation": {
-    "at": [
-     -170.24,
-     12.15
-    ],
-    "seg": 2,
-    "tangentYaw": 0.104,
-    "recorded": true
-   },
    "reachedWaypoints": 6,
    "totalWaypoints": 6,
    "minGroundClearanceM": -0.005,
@@ -111,18 +81,8 @@
    "route": "old-south→old-north",
    "pass": true,
    "simSeconds": 43.8,
-   "wallClockSeconds": 0.6,
+   "wallClockSeconds": 0.3,
    "steps": 2627,
-   "routeLengthM": 96.9,
-   "midStation": {
-    "at": [
-     -188.69,
-     -202.93
-    ],
-    "seg": 1,
-    "tangentYaw": -3.001,
-    "recorded": true
-   },
    "reachedWaypoints": 4,
    "totalWaypoints": 4,
    "minGroundClearanceM": 0,
@@ -141,18 +101,8 @@
    "route": "gold→jiuqu",
    "pass": true,
    "simSeconds": 48.8,
-   "wallClockSeconds": 0.5,
+   "wallClockSeconds": 0.3,
    "steps": 2930,
-   "routeLengthM": 110.7,
-   "midStation": {
-    "at": [
-     -190.96,
-     -135.42
-    ],
-    "seg": 5,
-    "tangentYaw": -2.927,
-    "recorded": true
-   },
    "reachedWaypoints": 11,
    "totalWaypoints": 11,
    "minGroundClearanceM": 0.015,

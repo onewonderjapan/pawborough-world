@@ -6,8 +6,10 @@
 //   3) 终点误差 ≤ 1.0 m；
 //   4) 全程无 NaN。
 // 产物：artifacts/walk/WALK-CHECK.json + 每条路线起点/中点/终点眼高截图 artifacts/walk/shots/。
-// 截图经 playwright 打开预览页（BASE，默认 http://127.0.0.1:5494/，先自行起服务），
-// 用 window.__walk.eyeView 摆相机 —— 与物理无关，不依赖指针锁定。
+// 截图经 playwright 打开预览页（BASE，默认 http://127.0.0.1:5494/，先自行起服务）：
+// wave1-walkr1 K2 起中点按路线长度取（不再按中点 waypoint 索引）、朝向取该处路线切线；
+// 相机用 window.__viewAt 同时设位置与 target —— 轨道模式每帧 controls.update() 会
+// lookAt(controls.target)，只调 eyeView 的朝向会被覆盖（这就是旧中点图正对墙的根因）。
 // 用法：OUT_DIR=out-zone BASE=http://127.0.0.1:5494/ node tests/zone-walk-check.mjs
 import fs from 'node:fs';
 import path from 'node:path';
@@ -111,6 +113,23 @@ function distToPolyline(x, z, pts) {
   }
   return m;
 }
+// 路线弧长剖面：cum[i] = 到第 i 个点的累计长度；arcAt/project 覆盖返回 [弧长, 段号, t]
+function arcProfile(pts) {
+  const cum = [0];
+  for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  return cum;
+}
+function projectArc(x, z, pts, cum) {
+  let best = 0, bd = Infinity;
+  for (let i = 0; i + 1 < pts.length; i++) {
+    const [ax, az] = pts[i], [bx, bz] = pts[i + 1];
+    const dx = bx - ax, dz = bz - az, L2 = dx * dx + dz * dz;
+    const t = L2 === 0 ? 0 : Math.max(0, Math.min(1, ((x - ax) * dx + (z - az) * dz) / L2));
+    const d = Math.hypot(x - (ax + t * dx), z - (az + t * dz));
+    if (d < bd) { bd = d; best = cum[i] + t * Math.sqrt(L2); }
+  }
+  return best;
+}
 
 // ---------- 每条路线巡游 ----------
 const routeResults = [];
@@ -118,6 +137,18 @@ const eyeStations = [];       // {route, station, eye:[x,y,z], yaw}
 for (const r of routes) {
   const name = `${r.from}→${r.to}`;
   const pts3 = r.points.map(([x, z]) => [x, 0, z]);
+  // K2 修正：中点按路线长度取（不是中点 waypoint 索引），朝向取该处路线切线方向。
+  // 旧法在机器人刚到中间拐点时拍，yaw 还是上一段方向 → 正对拐角墙。
+  const cum = arcProfile(r.points);
+  const halfLen = cum.at(-1) / 2;
+  let midSeg = 0;
+  while (midSeg + 2 < r.points.length && cum[midSeg + 1] < halfLen) midSeg += 1;
+  const segLen = (cum[midSeg + 1] - cum[midSeg]) || 1;
+  const mt = (halfLen - cum[midSeg]) / segLen;
+  const [ax, az] = r.points[midSeg], [bx, bz] = r.points[midSeg + 1];
+  const mid = { at: [+(ax + mt * (bx - ax)).toFixed(2), +(az + mt * (bz - az)).toFixed(2)], seg: midSeg };
+  const [tx, tz] = [bx - ax, bz - az];
+  const midYaw = Math.atan2(-tx, -tz);   // forward = (-sin yaw, -cos yaw)，与 CruiseDriver 同式
   const [sx, sz] = r.points[0];
   const gy0 = groundY(sx, sz, 6);
   if (gy0 === null) { fail(`route ${name} spawn support`, 'no ground below spawn'); routeResults.push({ route: name, pass: false, blocked: 'no ground' }); continue; }
@@ -144,9 +175,16 @@ for (const r of routes) {
     wallHit = capsuleHitsObb(feet);
     if (wallHit) { bad = `capsule inside OBB ${wallHit} at step ${steps}`; break; }
     maxDev = Math.max(maxDev, distToPolyline(feet[0], feet[2], r.points));
-    if (!midRecorded && steps > 8 && driver.i >= Math.floor(pts3.length / 2)) {
+    if (!midRecorded && steps > 8 && projectArc(feet[0], feet[2], r.points, cum) >= halfLen) {
       midRecorded = true;
-      eyeStations.push({ route: name, station: 'mid', eye, yaw: controller.yaw });
+      // 眼位取路线长度中点（确定性，不随机器人横向偏差漂移），高度取中点地面 + 眼高；
+      // 朝向取该处路线切线（GOAL K2）。
+      const gyMid = groundY(mid.at[0], mid.at[1], 6);
+      eyeStations.push({
+        route: name, station: 'mid',
+        eye: [mid.at[0], (gyMid ?? feet[1]) + EYE, mid.at[1]],
+        yaw: midYaw,
+      });
     }
   }
   const wallSeconds = (Date.now() - t0) / 1000;
@@ -159,6 +197,8 @@ for (const r of routes) {
     simSeconds: +(steps / 60).toFixed(1),
     wallClockSeconds: +wallSeconds.toFixed(1),
     steps,
+    routeLengthM: +cum.at(-1).toFixed(1),
+    midStation: { at: mid.at, seg: mid.seg, tangentYaw: +midYaw.toFixed(3), recorded: midRecorded },
     reachedWaypoints: driver.status().reached,
     totalWaypoints: driver.status().total,
     minGroundClearanceM: Number.isFinite(minClear) ? +minClear.toFixed(3) : null,
@@ -200,7 +240,12 @@ if (process.env.WALK_SHOTS !== '0') {
   for (const st of eyeStations) {
     if (!st.eye || !Number.isFinite(st.eye[0])) continue;
     const slug = st.route.replace(/[^\w]+/g, '-');
-    await page.evaluate(([x, y, z, yaw]) => window.__walk.eyeView(x, y, z, yaw), [st.eye[0], st.eye[1], st.eye[2], st.yaw]);
+    // 预览页在轨道模式下每帧 controls.update() 都会 camera.lookAt(controls.target)，
+    // eyeView 只设位置/四元数、朝向下一帧即被覆盖 —— 必须用 __viewAt 同时设 target =
+    // 眼位 + 步行前向 25 m，相机才真正朝向路线方向（yaw 约定 forward=(-sin,-cos)）。
+    const fx = -Math.sin(st.yaw ?? 0), fz = -Math.cos(st.yaw ?? 0);
+    const target = [st.eye[0] + fx * 25, st.eye[1], st.eye[2] + fz * 25];
+    await page.evaluate(([p, t]) => window.__viewAt(p, t), [st.eye, target]);
     await page.waitForTimeout(120);
     await page.screenshot({ path: path.join(SHOTS, `${slug}-${st.station}.png`) });
   }
