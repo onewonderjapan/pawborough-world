@@ -2,7 +2,10 @@
 // footprint 只从 baseline/layout.json 取；默认构建（仰山堂 = 程序化占位）与 HALL_KIT=1（仰山堂 = hall-kit 模块）都适用。
 //   G1 三穗堂任何网格件的任何三角形都不越过「共用边线」北侧 0.02 m 以上
 //      （共用边 = 三穗堂 footprint 上两端点都落在仰山堂 footprint 边界上的边；线 = 过其两端点的直线，不截断）；
-//   G2 自由三边外伸 ≤ 2.0 m：三穗堂全部顶点到 footprint 的外侧距离 ≤ 2.0 m；
+//   G2 自由边外伸按边分上限（主控 2026-09-25）：立面一侧 ≤ 2.7 m（踏步、前檐），其余两条自由边 ≤ 2.0 m。
+//      「边」= footprint 相邻边按方向（≤12°）合并成的直边链；立面边 = 外法线与 facade.dir 最接近的那条边所在的链。
+//      footprint 外的每个顶点归属于它越出最多的那条链（到该链所在直线的外侧有向距离最大），
+//      外伸量 = 顶点到 footprint 的距离，按所属链的上限判；不对踏步单独开例外。
 //   R  与仰山堂网格的剩余三角形相交只报告不判失败（仰山堂一侧由 hall-kit 工单处理），
 //      另报仰山堂网格越过共用边线进入三穗堂一侧的深度（程序化占位台基外扩 0.45 m 为已知项）。
 // 用法：OUT_DIR=out-zone [HALL_KIT=1] node tests/sansuitang-fit-test.mjs（REPORT=<json> 另写报告）
@@ -15,7 +18,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
 const LAYOUT = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline', 'layout.json'), 'utf8'));
 const SST_ID = 'bld-428179901', YS_ID = 'bld-428179902';
-const EDGE_TOL = 0.02, FREE_CAP = 2.0;
+const EDGE_TOL = 0.02, FREE_CAP = 2.0, FACADE_CAP = 2.7;
 
 let pass = 0, fail = 0;
 const failures = [];
@@ -23,8 +26,8 @@ function ok(name, cond, detail = '') {
   if (cond) { pass++; console.log('PASS', name); }
   else { fail++; failures.push(`${name}: ${detail}`); console.log('FAIL', name, detail); }
 }
-if (!fs.existsSync(path.join(OUT, 'garden.glb'))) {
-  console.log(`no garden.glb in ${OUT} — skipping`);
+if (process.env.SANSUITANG !== '1' || !fs.existsSync(path.join(OUT, 'garden.glb'))) {
+  console.log(`SANSUITANG!=1 or no garden.glb in ${OUT} — skipping (same gate as sansuitang-test)`);
   process.exit(0);
 }
 
@@ -177,8 +180,31 @@ console.log(`共用边线 (${E0}) → (${E1})，指向三穗堂的法线 (${nrm.
 
 // ---------- G1 / G2 ----------
 const closed = [...sfp, sfp[0]];
+// 直边链（相邻边方向差 ≤ 12° 合并）+ 各链外法线；立面链 = 含「外法线与 facade.dir 最接近的边」的链
+const nE = sfp.length;
+const eDir = (i) => { const a = sfp[i % nE], b = sfp[(i + 1) % nE], l = Math.hypot(b[0] - a[0], b[1] - a[1]); return [(b[0] - a[0]) / l, (b[1] - a[1]) / l]; };
+const aDeg = (u, w) => Math.acos(Math.max(-1, Math.min(1, u[0] * w[0] + u[1] * w[1]))) * 180 / Math.PI;
+const cMean = [sfp.reduce((t, q) => t + q[0], 0) / nE, sfp.reduce((t, q) => t + q[1], 0) / nE];
+const outN = (a, b) => { const l = Math.hypot(b[0] - a[0], b[1] - a[1]); let q = [-(b[1] - a[1]) / l, (b[0] - a[0]) / l];
+  if ((cMean[0] - (a[0] + b[0]) / 2) * q[0] + (cMean[1] - (a[1] + b[1]) / 2) * q[1] > 0) q = [-q[0], -q[1]]; return q; };
+let cStart = 0;
+for (let i = 0; i < nE; i++) if (aDeg(eDir(i + nE - 1), eDir(i)) > 12) { cStart = i; break; }
+const chains = [];
+for (let k = 0; k < nE; k++) {
+  const i = cStart + k, last = chains[chains.length - 1];
+  if (last && aDeg(eDir(i - 1), eDir(i)) <= 12) last.edges.push(i % nE);
+  else chains.push({ edges: [i % nE] });
+}
+const fdl = Math.hypot(...sObj.facade.dir), fdir = [sObj.facade.dir[0] / fdl, sObj.facade.dir[1] / fdl];
+let facadeEdge = 0, bestDot = -Infinity;
+for (let i = 0; i < nE; i++) { const q = outN(sfp[i], sfp[(i + 1) % nE]); const d = q[0] * fdir[0] + q[1] * fdir[1]; if (d > bestDot) { bestDot = d; facadeEdge = i; } }
+for (const c of chains) {
+  c.a = sfp[c.edges[0]]; c.b = sfp[(c.edges[c.edges.length - 1] + 1) % nE]; c.n = outN(c.a, c.b);
+  c.facade = c.edges.includes(facadeEdge); c.cap = c.facade ? FACADE_CAP : FREE_CAP; c.maxOut = 0;
+}
+console.log(`直边链 ${chains.length} 条；立面边 = 第 ${facadeEdge} 条边（外法线·facade.dir = ${bestDot.toFixed(4)}），所在链上限 ${FACADE_CAP} m，其余 ${FREE_CAP} m`);
 const perPart = [];
-let g1Max = -Infinity, g1Where = null, g2Max = 0, g2Where = null;
+let g1Max = -Infinity, g1Where = null, g2Max = 0, g2Where = null, g2Worst = -Infinity;
 for (const p of sParts) {
   let pn = -Infinity, pf = 0, nOver = 0;
   for (const v of p.verts) {
@@ -188,16 +214,20 @@ for (const p of sParts) {
     if (d > g1Max) { g1Max = d; g1Where = { part: p.name, v }; }
     const out = pointInPoly([v[0], v[2]], sfp) ? 0 : distToPolyline([v[0], v[2]], closed);
     if (out > pf) pf = out;
-    if (out > g2Max) { g2Max = out; g2Where = { part: p.name, v }; }
+    if (out > 0) {
+      let ch = chains[0], sd = -Infinity;
+      for (const c of chains) { const t = (v[0] - c.a[0]) * c.n[0] + (v[2] - c.a[1]) * c.n[1]; if (t > sd) { sd = t; ch = c; } }
+      if (out > ch.maxOut) ch.maxOut = out;
+      if (out - ch.cap > g2Worst) { g2Worst = out - ch.cap; g2Max = out; g2Where = { part: p.name, v, cap: ch.cap, facadeSide: ch.facade }; }
+    }
   }
   perPart.push({ part: p.name, maxNorthOfSharedEdgeM: +pn.toFixed(3), vertsBeyondTol: nOver, maxOutsideFootprintM: +pf.toFixed(3) });
 }
 for (const r of perPart) if (r.vertsBeyondTol) console.log('  G1 越线件', JSON.stringify(r));
 ok(`G1 三穗堂全部三角形不越过共用边线北侧 ${EDGE_TOL} m（最大 ${g1Max.toFixed(3)} m）`, g1Max <= EDGE_TOL,
   g1Where ? `${g1Where.part} @ (${g1Where.v.map((t) => t.toFixed(2))})` : '');
-const overCap = perPart.filter((r) => r.maxOutsideFootprintM > FREE_CAP);
-for (const r of overCap) console.log('  G2 超 2.0 m 件', JSON.stringify(r));
-ok(`G2 自由边外伸 ≤ ${FREE_CAP} m（最大 ${g2Max.toFixed(2)} m）`, g2Max <= FREE_CAP,
+for (const c of chains) console.log(`  G2 链 (${c.a}) → (${c.b})${c.facade ? ' [立面]' : ''}：最大外伸 ${c.maxOut.toFixed(3)} m / 上限 ${c.cap} m`);
+ok(`G2 自由边外伸按边分上限（立面 ≤ ${FACADE_CAP} m，其余 ≤ ${FREE_CAP} m；最紧处 ${g2Max.toFixed(2)} m / ${g2Where ? g2Where.cap : '-'} m）`, g2Worst <= 0,
   g2Where ? `${g2Where.part} @ (${g2Where.v.map((t) => t.toFixed(2))})` : '');
 // 仰山堂网格越过共用边线进入三穗堂一侧的深度（报告项）
 const ysIntrusion = yParts.map((p) => {
@@ -282,7 +312,9 @@ if (process.env.REPORT) {
   fs.writeFileSync(process.env.REPORT, JSON.stringify({ out: OUT, yangshantang: ysMode, pass, fail, failures,
     sharedEdgeLine: { from: E0, to: E1, normalIntoSansuitang: nrm },
     G1: { maxNorthM: +g1Max.toFixed(4), where: g1Where && { part: g1Where.part, v: g1Where.v.map((t) => +t.toFixed(3)) }, tol: EDGE_TOL },
-    G2: { maxOutsideFootprintM: +g2Max.toFixed(3), where: g2Where && { part: g2Where.part, v: g2Where.v.map((t) => +t.toFixed(3)) }, cap: FREE_CAP },
+    G2: { rule: `facade-side chain <= ${FACADE_CAP} m, other free sides <= ${FREE_CAP} m`, facadeEdgeIndex: facadeEdge,
+      chains: chains.map((c) => ({ from: c.a, to: c.b, facade: c.facade, cap: c.cap, maxOutsideM: +c.maxOut.toFixed(3) })),
+      tightest: g2Where && { part: g2Where.part, v: g2Where.v.map((t) => +t.toFixed(3)), outsideM: +g2Max.toFixed(3), cap: g2Where.cap, marginM: +(-g2Worst).toFixed(3) } },
     perPart, reportOnly: { bodyIntersections: bodyHits, roofIntersections: roofHits, yangshantangIntrusion: ysIntrusion,
       roofYAtSharedEdge: { sansuitang: rng('sansuitangRoofY'), yangshantang: rng('yangshantangRoofY') } } }, null, 1));
 }
