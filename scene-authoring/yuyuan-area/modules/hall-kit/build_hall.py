@@ -925,7 +925,15 @@ else:
     if XS_REACH > 0.28 * min_edge:
         k_ = (0.28 * min_edge / XS_REACH) ** 0.5
         XS_QIAO, XS_CHU, XS_REACH = QIAO * k_, xi['chu'] * k_, 0.28 * min_edge
-    XIESHAN_SCALED = {'reach': round(XS_REACH, 3), 'qiao': round(XS_QIAO, 3), 'chu': round(XS_CHU, 3)}
+    # 小歇山翼角起翘封顶（wave3 W0）：外接矩形短边 < 5 m 时檐口角点比檐口直段高出的量 ≤ wingLiftCapM
+    #（GLB 实测起翘 = qiao，见 tests/hallkit-test.mjs 3c），否则小轩翼角翘得比屋脊还抢眼。
+    WING_CAP = xi.get('wingLiftCapM')
+    XIESHAN_WING_CAPPED = False
+    if 2 * min(HU, HV) < 5.0 and WING_CAP is not None and XS_QIAO > WING_CAP:
+        XS_QIAO = WING_CAP
+        XIESHAN_WING_CAPPED = True
+    XIESHAN_SCALED = {'reach': round(XS_REACH, 3), 'qiao': round(XS_QIAO, 3), 'chu': round(XS_CHU, 3),
+                      **({'wingLiftCapM': WING_CAP, 'capped': True} if XIESHAN_WING_CAPPED else {})}
     prm = {'over': OVER, 'qiao': XS_QIAO, 'chu': XS_CHU, 'reach': XS_REACH,
            'breakZ': EAVE_Z + RISE * xi['breakFrac'], 'ridgeZ': RIDGE_Z,
            'breakInset': min(2 * HUW, 2 * HVW) * xi['breakInsetFrac'],
@@ -935,9 +943,17 @@ else:
            'ornamentScale': DEFAULTS.get('ornamentScale', 'auto')}      # 小屋面正脊/吻/戗脊按进深缩（eave_kit.ornament_scale）
     eave_kit.xieshan_roof('hall-roof', (-HUW, HUW, -HVW, HVW), EAVE_Z, prm, 'hall-roof')
 
-# ---- 斗拱简化（eave_kit.brackets）：前后檐柱柱顶。叠块顶须低于墙线处坡面
-#（坡面在墙线处 = eave_z + rise·(over/eave_v)^curve ≈ +0.20），否则穿出屋面。
-# 出挑深度不超过该侧出檐（共享边一侧出檐截短时斗拱跟着缩，不越边线）
+# ---- 斗拱简化（eave_kit.brackets）：前后檐柱柱顶。叠块顶须压在其正上方檐底之下（wave3 W0：
+# 檐底从墙线（+soffitRise，歇山 kit 内定 +0.10）斜下到檐口外缘（−drop−tileH−boardH）；旧版顶 = 檐高 −0.02，
+# 外挑端顶高出檐底 ~0.16 m，斜俯图檐线上露小红块。顶 = soffit(外挑深度) − 0.03 余量，出挑越深顶越低。
+# part 记 hall-bracket（独立成组，hallkit-test 3b 按名取斗拱顶点核对不穿屋面）。
+BRACKET_WALL_Z = (EAVE_Z + SOFFIT_RISE) if XS_MODE else (EAVE_Z + 0.10)
+BRACKET_LIP_BOT = (EAVE_Z - DROP) - TILE_H - BOARD_H
+
+def bracket_z(dd, over_side):
+    """外挑 dd（≤ over_side）处的檐底高 − 0.03 余量 = 斗拱叠块顶（brackets 顶 = z）。"""
+    return BRACKET_WALL_Z - (BRACKET_WALL_Z - BRACKET_LIP_BOT) * min(1.0, dd / max(1e-6, over_side)) - 0.03
+
 for sgn, ov in ((1.0, OVER_F if XS_MODE else OVER), (-1.0, OVER_B if XS_MODE else OVER)):
     sd = 'front' if sgn > 0 else 'back'
     if sd in SEG:
@@ -946,16 +962,16 @@ for sgn, ov in ((1.0, OVER_F if XS_MODE else OVER), (-1.0, OVER_B if XS_MODE els
         for x in XS:
             for d in ds_at(sd, x):
                 e_lo = min(v for x0, x1, v in EAVE_PIECES[sd] if x1 > x - 0.21 and x0 < x + 0.21)
-                groups.setdefault(round(min(0.42, e_lo - d), 4), []).append((x, sgn * d, 0.0, sgn))
-        for gi, (dd, pts) in enumerate(sorted(groups.items(), reverse=True)):
+                groups.setdefault((round(min(0.42, e_lo - d), 4), round(e_lo - d, 4)), []).append((x, sgn * d, 0.0, sgn))
+        for gi, ((dd, os_), pts) in enumerate(sorted(groups.items(), reverse=True)):
             if dd >= 0.12:
                 eave_kit.brackets('hall-bracket-%s%s' % ('f' if sgn > 0 else 'b', '' if gi == 0 else str(gi)), pts,
-                                  EAVE_Z - 0.02, 'hall-frame', w=0.42, d=dd, h=0.22)
+                                  bracket_z(dd, os_), 'hall-bracket', w=0.42, d=dd, h=0.22)
         continue
     dd = min(0.42, ov)
     if dd >= 0.12:
         eave_kit.brackets('hall-bracket-%s' % ('f' if sgn > 0 else 'b'), [(x, sgn * HVW, 0.0, sgn) for x in XS],
-                          EAVE_Z - 0.02, 'hall-frame', w=0.42, d=dd, h=0.22)
+                          bracket_z(dd, ov), 'hall-bracket', w=0.42, d=dd, h=0.22)
 
 # --------------------------------------- join per (part, material) + 重锚 ----
 def finalize(items, name):

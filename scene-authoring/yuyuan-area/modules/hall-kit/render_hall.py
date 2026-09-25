@@ -13,7 +13,7 @@ before = HALL_KIT=0 的总装 scene-areas.glb（程序化体块），after = HAL
       （对已有渲染图按同机位重投影检色，用于在旧样板渲染上先跑出不合格）
 机位从 layout 重算：面积形心 + 模块朝向（frame.py：footprint 外接矩形上与 facade.dir 最近的一边）推四视角。
 格扇立面检色（GOAL wave2 冻结）：园内眼高图里格扇立面区域（measurements.json facadeRegionLocal 四角经同一
-放置变换投影到像面）平均色 R>G 且 R>B，HSV 明度 max(R,G,B) ≥ 0.18（显示空间 sRGB）。不合格 → exit 3。
+放置变换投影到像面）平均色 R>G 且 R>B，HSV 明度 max(R,G,B) ≥ 0.22（显示空间 sRGB；wave3 W0 从 0.18 提高，格扇偏暗整改后全数达标）。不合格 → exit 3。
 """
 import argparse
 import json
@@ -171,7 +171,7 @@ def region_world(hid, rot_y=None, meas_path=''):
 
 
 def facade_check(sc, cam, path, hid, rot_y=None, meas_path=''):
-    """格扇立面区域平均色（显示空间 sRGB 0..1）：R>G、R>B、HSV 明度 max(R,G,B) ≥ 0.18。"""
+    """格扇立面区域平均色（显示空间 sRGB 0..1）：R>G、R>B、HSV 明度 max(R,G,B) ≥ 0.22（wave3 W0）。"""
     W, H = sc.render.resolution_x, sc.render.resolution_y
     poly = []
     reg = region_world(hid, rot_y, meas_path)
@@ -220,7 +220,7 @@ def facade_check(sc, cam, path, hid, rot_y=None, meas_path=''):
     v = max(r, g, b)
     res = {'meanSrgb255': [round(r * 255, 1), round(g * 255, 1), round(b * 255, 1)], 'hsvV': round(v, 3),
            'samples': cnt, 'polyPx': [[round(p[0]), round(p[1])] for p in poly],
-           'rule': 'R>G and R>B and V>=0.18', 'ok': bool(r > g and r > b and v >= 0.18)}
+           'rule': 'R>G and R>B and V>=0.22', 'ok': bool(r > g and r > b and v >= 0.22)}
     print('FACADE_COLOR', os.path.basename(path), json.dumps(res), flush=True)
     return res
 

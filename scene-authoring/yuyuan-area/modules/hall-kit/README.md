@@ -73,7 +73,8 @@ wave2 B4 起按两层剖面生成（见下「wave2 批量」）。
 - **kind 组合**（defaults.kinds）：hall/xuan 正面格扇；waterside 临水开敞 + 落地栏杆、陆侧格扇；stage 台基 1.2 m
   （designInference）三面开敞；tower storeys≥2 走 build_storey 两次 + 腰檐（eave_kit.eave_skirt）+ 平座栏杆 + 二层格扇后退。
 - **designInference 规则**：屋面坡度夹 17.5°–33°、面宽 < 6.5 m 时檐高上限、小歇山起翘范围按最短边封顶，均记 recipe。
-- 配色：框料底色 = sRGB `timberSrgb`（#6a2e22），不乘贴图；格心图 `lattice-core-alpha` 160×160 全部共享。
+- 配色：框料底色 = sRGB `timberSrgb`（wave3 W0 起 #8a4030，原 #6a2e22——格扇立面偏暗，同色相提亮），不乘贴图；
+  格心背衬 `latticeBackSrgb`（#55483c）、格心棂条同框料色，图 `lattice-core-alpha` 160×160 全部共享。
 - 渲染：`render_hall.py --compare --ids …` 在 after 总装里按射线可见度挑机位；`contact_sheet.py` 出联系表（图只进工单包）。
 
 ## wave3 K1：共享边按段限位（2026-09-25，wave3-towerkit）
@@ -101,3 +102,17 @@ wave2 B4 起按两层剖面生成（见下「wave2 批量」）。
   ```
 - 薄楼（designInference）：墙线进深 − upperSetback < `minUpperFloorDepthM`(2.0) 时，二层后退缩为 max(`minUpperSetbackM` 0.3, 进深 − 2.0)，
   记 recipe.upperSetback / measurements.section.upperSetbackInferred（观涛楼 / 延清楼）。已接入 20 栋不受影响。
+
+## wave3 W0：20 栋微调（2026-09-25，wave3-towers）
+
+- **格扇提亮**（W0-1）：园内眼高渲染里格扇立面平均 HSV 明度验收线从 0.18 提到 0.22（`render_hall.py` facade_check，
+  不合格 exit 3）。改 hall-kit 材质参数：框料 / 棂条底色 `timberSrgb` #6a2e22 → **#8a4030**（色相保持深红），
+  格心背衬 `latticeBackSrgb` #2a2522 → **#55483c**；灯光不动。整改后 20 栋实测 0.240–0.418。
+- **小歇山翼角封顶**（W0-2）：外接矩形短边 < 5 m 的歇山，翼角起翘（檐口角点比檐口直段高出的量 = qiao，GLB 实测）
+  ≤ `xieshan.wingLiftCapM`(0.33)，验收线 ≤ 0.35（hallkit-test 3c）。起翘由 0.60 按 √比例缩后仍 0.38–0.49 的小轩
+  （两宜轩 / 可以观 / 洞天福地 / 别有天 / 古戏台）统一压到 0.33，记 recipe.xieshanScaled.capped。
+- **斗拱不穿屋面**（W0-3）：斗拱叠块顶原为檐高 −0.02，外挑端顶高出檐底斜面 ~0.16 m（斜俯图檐线上露小红块）。
+  现顶 = 檐底（墙线 +soffitRise → 檐口 −drop−tileH−boardH 线性斜面）在外挑深度处 −0.03，随出挑分组各自下压；
+  斗拱 part 由 hall-frame 改名 **hall-bracket**（独立成组，测试按名取顶点）。验收：任何斗拱顶点不高于其正上方
+  屋面 / 檐底 +0.01 m（hallkit-test 3b，GLB 竖直射线实测，20 栋全数 −0.03）。
+- 断言先在未修改产物上跑出失败（3c 五栋 0.379–0.491 / 3b 旧产物无独立节点，part 改名后按旧 z 复现）再修。

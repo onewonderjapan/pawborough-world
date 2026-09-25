@@ -450,6 +450,79 @@ for (const HK_ID of IDS) {
     const darkParts = (g.json.nodes || []).map((n) => n.name || '').filter((n) => n.endsWith('__hk-dark-timber')).map((n) => n.split('__')[0]);
     ok(`${tag} hk-dark-timber 只用于额枋 / 檐下阴影件（hall-frame、hall-roof；实得 ${darkParts.join(',')}）`,
       darkParts.every((p) => p === 'hall-frame' || p === 'hall-roof'));
+
+    // ---------- 3b) 斗拱不穿屋面（wave3 W0）：任何斗拱顶点不高于其正上方的屋面 / 檐口底面（容差 0.01 m）。
+    //   屋面 / 檐底三角取 hall-roof* 节点、面法线 |ny| ≥ 0.2（近水平面；斗拱只在檐下，正上方是檐底斜面 / 屋面坡）。
+    //   竖直射线无交点的顶点（不在任何屋面之下）不适用，跳过。
+    {
+      const bVerts = [], roofTris = [];
+      for (const n of g.json.nodes || []) {
+        const nm = n.name || '';
+        if (nm.startsWith('hall-bracket')) for (const p of g.subtreeVerts(nm)) bVerts.push(p);
+        else if (nm.startsWith('hall-roof')) for (const t of g.subtreeTris(nm)) roofTris.push(t);
+      }
+      if (!bVerts.length || !roofTris.length) {
+        skip(`${tag} 斗拱不穿屋面`, `斗拱顶点 ${bVerts.length} / 屋面三角 ${roofTris.length}`);
+      } else {
+        let worst = -Infinity, worstAt = null, checked = 0;
+        for (const p of bVerts) {
+          let bestY = Infinity;
+          for (const t of roofTris) {
+            const [A, B, C] = t;
+            const e1 = [B[0] - A[0], B[1] - A[1], B[2] - A[2]], e2 = [C[0] - A[0], C[1] - A[1], C[2] - A[2]];
+            const nyv = e1[2] * e2[0] - e1[0] * e2[2];                 // 法线 y 分量
+            if (Math.abs(nyv) < 0.2 * Math.hypot(e1[1] * e2[2] - e1[2] * e2[1], nyv, e1[0] * e2[1] - e1[1] * e2[0])) continue;
+            const den = (B[2] - C[2]) * (A[0] - C[0]) + (C[0] - B[0]) * (A[2] - C[2]);
+            if (Math.abs(den) < 1e-12) continue;
+            const l1 = ((B[2] - C[2]) * (p[0] - C[0]) + (C[0] - B[0]) * (p[2] - C[2])) / den;
+            const l2 = ((C[2] - A[2]) * (p[0] - C[0]) + (A[0] - C[0]) * (p[2] - C[2])) / den;
+            const l3 = 1 - l1 - l2;
+            if (l1 < -1e-9 || l2 < -1e-9 || l3 < -1e-9) continue;
+            const yAt = l1 * A[1] + l2 * B[1] + l3 * C[1];
+            if (yAt < p[1] - 0.02) continue;
+            bestY = Math.min(bestY, yAt);
+          }
+          if (bestY === Infinity) continue;                            // 正上方没有屋面 / 檐底的顶点不适用
+          checked++;
+          const v = p[1] - bestY;
+          if (v > worst) { worst = v; worstAt = [p[0], p[1], p[2]]; }
+        }
+        ok(`${tag} 斗拱顶点不高于正上方屋面 / 檐底（最高超出 ${worst.toFixed(3)} m ≤ 0.01，有遮挡顶点 ${checked}/${bVerts.length}）`,
+          checked > 0 && worst <= 0.01, `worst=${worst.toFixed(3)} at (${(worstAt || []).map((c) => c.toFixed(2)).join(',')})`);
+        row.bracketAboveRoofM = +worst.toFixed(3);
+      }
+    }
+    // ---------- 3c) 小歇山翼角起翘（wave3 W0）：外接矩形短边 < 5 m 的歇山，檐口角点比檐口直段高出 ≤ 0.35 m（GLB 实测）。
+    //   封檐板环（hall-roof__hk-timber-darkred 节点；博风板同材质但在屋脊区、水平上离四角 > 1 m）顶边 = 檐口 lip − tileH；
+    //   角部 lip = 檐高 − drop + 起翘，直段 lip = 檐高 − drop（起翘 0）。取四角邻域内板环最高点反推起翘。
+    if ((obj.roofMode ?? DEF.roofMode) !== 'gabled' && 2 * Math.min(E.hu, E.hv) < 5.0) {
+      const shortSide = 2 * Math.min(E.hu, E.hv);
+      const eaveUsed = Math.min(obj.eave ?? DEF.eave, Math.max(DEF.smallEaveMin, DEF.smallEaveK * 2 * E.hu + DEF.smallEaveC));
+      const eaveZ = platformY + eaveUsed;
+      const ct2 = Math.cos(E.rotY), st2 = Math.sin(E.rotY);
+      const dx2 = E.cx - E.rcx, dz2 = E.cz - E.rcz;
+      const ACU = dx2 * ct2 - dz2 * st2, ACV = dx2 * st2 + dz2 * ct2;   // 面积形心的矩形系偏移（模块本地 = 矩形系 − AC）
+      const boardNode = [...g.nodesByName.keys()].find((k) => k === 'hall-roof__hk-timber-darkred');
+      const verts = boardNode ? g.subtreeVerts(boardNode) : null;
+      if (!verts) {
+        skip(`${tag} 小歇山翼角起翘`, '模块无封檐板环节点 hall-roof__hk-timber-darkred');
+      } else {
+        const over = DEF.eaveOver, chu = (DEF.xieshan || {}).chu ?? 0.25;
+        let top = -Infinity, at = null;
+        for (const su of [-1, 1]) for (const sv of [-1, 1]) {
+          const lu = su * (E.hu + over + chu * 0.707) - ACU, lv = sv * (E.hv + over + chu * 0.707) - ACV;
+          for (const v of verts) {
+            if (v[1] > eaveZ + 0.75) continue;                       // 屋脊区（博风板）不入
+            if (Math.hypot(v[0] - lu, v[2] - lv) > 0.55) continue;
+            if (v[1] > top) { top = v[1]; at = [v[0] + ACU, v[2] + ACV]; }
+          }
+        }
+        const lift = top + DEF.tileH - (eaveZ - DEF.eaveDrop);
+        ok(`${tag} 小歇山（短边 ${shortSide.toFixed(2)} m）翼角起翘 ${lift.toFixed(3)} m ≤ 0.35`,
+          top > -1e8 && lift <= 0.35 + 0.01, `top=${top.toFixed(3)} at rect(${(at || []).map((c) => c.toFixed(2)).join(',')})`);
+        row.wingLiftM = top > -1e8 ? +lift.toFixed(3) : null;
+      }
+    }
   }
 
   // ---------- 4) 程序化让位 + 碰撞世界记录 ----------
