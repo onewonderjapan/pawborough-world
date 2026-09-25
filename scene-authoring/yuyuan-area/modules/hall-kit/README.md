@@ -121,3 +121,20 @@ wave2 B4 起按两层剖面生成（见下「wave2 批量」）。
   外扩矩形、6 轴向贴墙检测、阳光直射可达、立面投影面积 ≥15000 px²（正面贴邻栋的观涛 / 延清 / 还云，
   可见度单指标会把机位挤进楼缝拍成黑框）。这三栋正面在固定光位下背阳，场景级格扇检色低于 0.22 属场地光照
   条件（不许改灯），材质门以模块级同光照实测为准（0.374 / 0.413 / 0.407）。
+
+## wave4-roofclip：墙 / 窗 / 格扇穿出屋面（2026-09-25）
+
+- **检测**：`tests/hallkit-roofclip.mjs`（可 import，也可单独普查：`node tests/hallkit-roofclip.mjs <gen-dir> [--json out.json]`）。
+  非屋面部件（按 part×material 分类：台基 / 柱·平座 / 额枋 / 墙 / 勒脚 / 半窗·栏杆 / 格扇 / 斗拱）任何顶点不高于正上方
+  屋面瓦面 / 檐底 0.01 m 以上；覆盖面 = hall-roof 非白墙件的非竖直三角；低于构件底的下层屋面（腰檐）不算；坡面「上沿」
+  （腰檐根线、檐底回墙线）0.2 m 内该片不算（插墙构造），同处其他片照常算。hallkit-test 3d 逐栋调用。
+- **半窗竖向**（R2a）：窗顶 ≤ 额枋底（层顶 − 0.42）− `window.topGapM`，窗台 ≥ 楼面 + `window.minSillM`，净高 < `window.minH`
+  不开窗。层高被小体量檐高上限压矮的楼（还云楼 / 会景楼 / 延清楼二层）半窗下移或变矮；层高够的层不变。
+- **硬山檐口断面闭合**（R2b）：屋面剖面、檐口、屋脊不动；层顶 `wallTopZ` = min(EAVE_Z, 网格瓦面(墙线 + 柱半径) − `eaveBodyClearM`)，
+  檐底根部 = min(EAVE_Z + soffitRise, 檐底斜面全程低于瓦面 − clear)。原先大进深厅墙线处瓦面低于檐底根部与柱顶
+  （斜俯图檐口内侧深色带 + 带上小红块）。measurements `wallTopZ` / `wallTopLoweredM`、recipe `eaveBody` 记实际值。
+- **K1 腰檐逐边出檐**（主控决定方案 a）：`eave_kit.eave_path / eave_skirt` 增补逐边 over（序列 / 可调用，标量路径逐字节不变）。
+  K1 分段侧腰檐环线 = 底层墙线分块（根部始终在墙上）；共享段出檐 = min(0.8, lim − 墙线 − 0.01)（得月楼 0.255 / 0.21、藏书楼 0.21 / 0.21），
+  与共享段相邻、短于 `waistEave.minPieceM` 的墙段并入；凹口回墙出檐让到朝向一侧共享段端前 0.01（外侧墙段檐口高于限位线时）。
+  recipe `sharedSegments.waistEdgeOvers` 记逐边值。旧版环线内收到 lim − over，落进墙线以内 0.55–0.59 m。
+- **楼不受小体量檐高上限**（主控决定）：storeys ≥ 2 时檐高取 layout eave，层高 = height / storeys（还云楼 / 会景楼 / 延清楼天际线升高）。
