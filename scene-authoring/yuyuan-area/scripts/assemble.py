@@ -514,6 +514,7 @@ if os.environ.get('ROCKERY_KIT', '1') != '0':
 fangbang_placed = 0
 fangbang_excluded = []
 fangbang_infill = []
+fangbang_gapfill_placed = []
 if os.environ.get('FANGBANG', '1') != '0':
     REPO = os.path.dirname(os.path.dirname(ROOT))   # 仓库根
     FB7 = os.path.join(REPO, 'world', 'fangbang-temple-v7')
@@ -527,7 +528,13 @@ if os.environ.get('FANGBANG', '1') != '0':
     # 决定 1：westext-seal-wall 一律剔除（方浜中路向西南外围 L0 继续延伸，封墙堵路）；
     #   山门以西 3 店（168/170/171）只在与全域任何对象（layout 实体 footprint、庙轴模块碰撞盒）都
     #   不相交时才放，相交则剔除并逐件记录。庙轴记录同平移即全域庙区包围盒（山门锚逐位一致）。
-    FB_EXCLUDE_ALWAYS = {'westext-seal-wall'}
+    FB_EXCLUDE_ALWAYS = {'westext-seal-wall', 'eastext-seal-wall'}
+    FB_EXCLUDE_REASON = {
+        'westext-seal-wall': 'west seal wall removed: 方浜中路 continues west as L0 outer road; a seal wall would block it',
+        # wave5-fangbangqa F-03：东端「样段端墙，非历史」（v7 review-manifest eastExtension.endWall），11.2×3.4 m 近黑平板；
+        # layout 方浜中路 road-238219464 越过它继续向东到 x≈362 —— 与决定 1 同一情形
+        'eastext-seal-wall': 'east end wall removed (wave5 F-03, same rule as lead decision 1): v7 sample end wall, not historical; layout 方浜中路 road-238219464 continues east past it to x≈362',
+    }
     FB_CHECK_IDS = ['westshop-shop-168', 'westshop-shop-170', 'westshop-shop-171']
     SOLID_KINDS = {'outerBuilding', 'bazaarBlock', 'tower', 'hall', 'xuan', 'pavilion', 'waterside',
                    'stage', 'wall', 'corridor', 'watersideGallery', 'moonGateWall', 'wallHead'}
@@ -598,8 +605,8 @@ if os.environ.get('FANGBANG', '1') != '0':
     fb_temple_boxes = [obb_aabb(r) for r in fb_col if r['name'].split(':')[0] in fb_temple_ids]
     OFF_MAP = (53.5, -17.4)
     fb_excluded_ids = set(FB_EXCLUDE_ALWAYS)
-    for eid in FB_EXCLUDE_ALWAYS:
-        fangbang_excluded.append({'id': eid, 'decision': 'lead-1', 'reason': 'west seal wall removed: 方浜中路 continues west as L0 outer road; a seal wall would block it'})
+    for eid in sorted(FB_EXCLUDE_ALWAYS):
+        fangbang_excluded.append({'id': eid, 'decision': 'lead-1' if eid == 'westext-seal-wall' else 'wave5-F03', 'reason': FB_EXCLUDE_REASON[eid]})
     for sid in FB_CHECK_IDS:
         lo, hi = inst_aabb(sid)
         hits = []
@@ -730,6 +737,24 @@ if os.environ.get('FANGBANG', '1') != '0':
         if o not in sg_keep:
             bpy.data.objects.remove(o, do_unlink=True)
     print('fangbang street ground nodes kept:', len(sg_keep))
+    # wave5-fangbangqa F-05：尾段路面（v7 review-manifest streetCompletion.eastTailSurface = world/street-completion/surface.glb，
+    # v7 世界坐标，1468 面，v7 三角账目里有）原先没放，x 140–177 的尾段店直接站在外围 L0 路面上。与街地面同一契约挂锚
+    # （地图平移，group=street-ground，模块 fangbang-east-tail-surface）；节点 sctail__* 已在 walk groundNodeRe 里。
+    ets = fb_man['streetCompletion']['eastTailSurface']
+    ets_objs = import_glb(os.path.join(REPO, ets['path'][2:]), 'SITE-fangbang')
+    ets_anchor = bpy.data.objects.new('fangbang-east-tail-surface', None)
+    ets_anchor.location = (53.5, 17.4, 0)
+    ets_anchor.rotation_euler = (0, 0, 0)
+    ets_anchor['id'] = 'fangbang-east-tail-surface'
+    ets_anchor['module'] = 'fangbang-east-tail-surface'
+    ets_anchor['zone'] = 'fangbang'
+    ets_anchor['group'] = 'street-ground'
+    ets_anchor['source'] = ets['path']
+    coll('SITE-fangbang').objects.link(ets_anchor)
+    for o in ets_objs:
+        if o.parent is None:
+            o.parent = ets_anchor
+    print('fangbang east tail surface nodes:', [o.name for o in ets_objs])
     fb_skipped_temple = 0
     for inst in fb_inst:
         if inst.get('group') == 'temple-axis-v2':
@@ -784,6 +809,44 @@ if os.environ.get('FANGBANG', '1') != '0':
                                 'positionGlb': [round(cx, 4), 0, round(cz, 4)],
                                 'positionMap': [round(cx + 53.5, 4), 0, round(cz - 17.4, 4)],
                                 'rotY': round(rot, 5), 'designInference': True, 'gap': 'south'})
+    # ---------- wave5-fangbangqa F-07：临街面空档补齐（主控 2026-09-26 选项 1，沿用决定 2 的规则；计划在
+    # scripts/fangbang_gapfill.py，纯 Python、只读源数据；新增件 id=fangbang-infill-g{r|l}N、designInference=true） ----------
+    sys.path.insert(0, os.path.join(ROOT, 'scripts'))
+    import fangbang_gapfill
+    fb_shop_dims = {}
+    shops_dir = os.path.join(ROOT, 'resources', 'shops')
+    for m in sorted(os.listdir(shops_dir)):
+        mf = os.path.join(shops_dir, m, 'measurements.json')
+        if os.path.exists(mf):
+            dsg = json.load(open(mf, encoding='utf-8')).get('design') or {}
+            if dsg.get('frontageM'):
+                fb_shop_dims[m] = (dsg['frontageM'], dsg['depthM'])
+    fb_gap = fangbang_gapfill.plan(REPO, os.path.join(ROOT, 'baseline', 'layout.json'), fb_excluded_ids,
+                                   [{'id': iid, 'donor': donor, 'positionGlb': [cx, 0, cz], 'rotY': rot} for iid, cx, cz, rot, donor, _lo, _hi in fb_infill_s],
+                                   fb_shop_dims)
+    fangbang_gapfill_placed = fb_gap['placed']
+    for it in fangbang_gapfill_placed:
+        cx, cz = it['positionGlb'][0], it['positionGlb'][2]
+        anchor = bpy.data.objects.new(it['id'], None)
+        anchor.empty_display_size = 2
+        anchor.location = (cx + 53.5, -(cz - 17.4), 0)
+        anchor.rotation_euler = (0, 0, it['rotY'])
+        anchor['id'] = it['id']
+        anchor['module'] = it['module']
+        anchor['donor'] = it['donor']
+        anchor['zone'] = 'fangbang'
+        anchor['lod'] = 'L2'
+        anchor['group'] = 'infill-frontage'
+        anchor['designInference'] = True
+        anchor['rotY'] = it['rotY']
+        coll('SITE-fangbang').objects.link(anchor)
+        for o in fb_objs(it['module']):
+            dup = o.copy()
+            dup.hide_render = False
+            dup.hide_viewport = False
+            coll('SITE-fangbang').objects.link(dup)
+            dup.parent = anchor
+    print('fangbang frontage gap fill placed', len(fangbang_gapfill_placed), [(i['id'], i['module'], i['positionMap'][0]) for i in fangbang_gapfill_placed], 'skips', fb_gap['skipReasons'])
     fb_infill_doc = {
         'axis': 'v7 glTF Y-up coords; map = v7 + (53.5, -17.4)',
         'decision': 'GOAL wave1-fangbang lead decisions 2026-09-23 #2: fill storefront gaps with west-band narrow modules (local facade 6.2-7.5m), facades to street; deterministic AABB packing, clash = stop',
@@ -793,8 +856,29 @@ if os.environ.get('FANGBANG', '1') != '0':
         'northGap': {'between': ['westshop-shop-162', 'westshop-shop-164'],
                      'placed': [],
                      'reason': '安仁街 (layout road-495101845, w=7m) joins 方浜中路 inside this gap at v7 x≈-84.9; reserved mouth ±6.5m leaves <7.7m clear — narrower than the smallest module AABB (curio-a 7.7m). Placing anything would block the junction or clip shops 162/164; mouth kept open (lead constraint: infill must not intersect global objects).'},
+        'frontageGaps': {'decision': 'wave5-fangbangqa F-07, lead 2026-09-26 option 1: fill frontage gaps with west-band modules, 5-7 m frontage, facing the street, no intersection with neighbours / pavement / global objects, 安仁街 mouth open',
+                         'rules': fb_gap['rules'], 'donors': fb_gap['donors'], 'skipReasons': fb_gap['skipReasons'],
+                         'placed': fangbang_gapfill_placed},
     }
     json.dump(fb_infill_doc, open(os.path.join(OUT, 'fangbang-infill.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+    # ---------- wave5-fangbangqa F-01：外围占位店让位 ----------
+    # layout.mjs 按共用底图提案点 shop-<N> 在外围放 L2 占位店 shoprow-p<N>；v7 westshop-shop-<N> 是同一提案点的精修版。
+    # 两套同时画会互穿 1.4–4.2 m（Q1 FINDINGS F-01）。外围分区默认加载、方浜按需加载，所以不在构建期删外围件，
+    # 只登记让位表：web/main.js 在方浜分区加载后把这些外围件设为不可见（未加载方浜时外围视图不变）。
+    # 外围没有建筑碰撞（collision-outer.json 只有水边），不涉及步行。
+    import re
+    fb_placed_ids = {i['id'] for i in fb_inst if i.get('group') != 'temple-axis-v2' and i['id'] not in fb_excluded_ids}
+    fb_supersede = []
+    for o in fb_layout['objects']:
+        m = re.match(r'^shoprow-p(\d+)$', o['id']) if o.get('kind') == 'shopAnchor' else None
+        if m and f'westshop-shop-{m.group(1)}' in fb_placed_ids:
+            fb_supersede.append({'outer': o['id'], 'fangbang': f'fangbang-westshop-shop-{m.group(1)}', 'proposal': f'shop-{m.group(1)}',
+                                 'reason': 'same shared-base-map proposal point; fangbang v7 westshop realises it'})
+    json.dump({'zone': 'fangbang', 'hideWhenLoaded': 'outer',
+               'rule': 'layout shopAnchor shoprow-p<N> is superseded when v7 westshop-shop-<N> is placed (wave5-fangbangqa F-01)',
+               'supersedes': sorted(fb_supersede, key=lambda e: e['outer'])},
+              open(os.path.join(OUT, 'fangbang-supersede.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+    print('fangbang supersedes outer', [e['outer'] for e in fb_supersede])
     print('fangbang infill placed', len(fangbang_infill), [i['id'] for i in fangbang_infill])
 
 # ---------- 湖心亭站点模块（默认开启，2026-09-25 机主定；HUXINTING=0 退回程序化占位。世界坐标 GLB，同假山做法，assemble 导入 SITE-pond） ----------
@@ -962,7 +1046,7 @@ stats = {
     'gardenKitPlaced': garden_kit_placed,
     'fangbangPlaced': fangbang_placed,
     'fangbangExcluded': fangbang_excluded,
-    'fangbangInfillIds': [i['id'] for i in fangbang_infill],
+    'fangbangInfillIds': [i['id'] for i in fangbang_infill] + [i['id'] for i in fangbang_gapfill_placed],
 }
 json.dump(stats, open(os.path.join(OUT, 'assemble-stats.json'), 'w'), indent=1)
 print('ASSEMBLE DONE', json.dumps(stats))

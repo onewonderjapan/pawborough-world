@@ -139,6 +139,23 @@ function publishZones() {
   const bytes = Object.values(zoneLoad).filter(v => v.state === 'ok').reduce((s, v) => s + (v.bytes || 0), 0);
   window.__loadedBytes = bytes;
 }
+// wave5-fangbangqa F-01：方浜分区加载后，外围同一提案点的 L2 占位店（out/fangbang-supersede.json，assemble 按源数据生成）
+// 设为不可见；方浜未加载时外围视图不变。外围件与方浜件加载先后不定，两者都到齐后才执行，重复调用无副作用。
+let fangbangSupersede = null;
+function applyFangbangSupersede() {
+  const loaded = Object.keys(zoneLoad).filter(k => zoneLoad[k].state === 'ok');
+  if (!loaded.some(k => k.startsWith('fangbang')) || !loaded.includes('outer')) return;
+  if (!fangbangSupersede) {
+    fangbangSupersede = fetch('/out/fangbang-supersede.json').then(r => (r.ok ? r.json() : { supersedes: [] }))
+      .then(j => new Set((j.supersedes || []).map(e => e.outer))).catch(() => new Set());
+  }
+  fangbangSupersede.then(ids => {
+    let n = 0;
+    scene.traverse(o => { if (o.userData && ids.has(o.userData.id) && o.visible) { o.visible = false; n++; } });
+    if (n) batcher.syncVisibility();
+    window.__fangbangSuperseded = (window.__fangbangSuperseded || 0) + n;
+  });
+}
 async function loadZoneFiles(m, ids, { firstPaint = false } = {}) {
   const files = ids.flatMap(z => m.zones.filter(x => x.id === z && x.file));
   let first = firstPaint;
@@ -162,6 +179,7 @@ async function loadZoneFiles(m, ids, { firstPaint = false } = {}) {
     } catch (err) { zoneLoad[key] = { state: 'fail' }; console.error('zone load failed', key, err); }
   }
   publishZones();
+  applyFangbangSupersede();
   return first;
 }
 function fangbangAabb(m) {
