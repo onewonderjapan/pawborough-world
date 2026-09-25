@@ -1,4 +1,4 @@
-// 湖心亭站点模块测试（WP9；HUXINTING=1 时随全流程交付，模块 GLB 常驻 out-zone）。
+// 湖心亭站点模块测试（WP9；默认开启，2026-09-25 机主定；HUXINTING=0 时跳过。模块 GLB 由 rebuild-review.sh 生成到 OUT_DIR）。
 // 位置/桥接口一律从 baseline/layout.json 重算（面积形心、最长边主轴、承台外伸常量），与
 // out-zone/huxin-ting.glb 实测对比；不拿产物和自己比（records.json 只用于展示，不进断言）。
 // 桥接口口径：桥折线（layout jiuqu-bridge.polyline）到承台多边形边的最近距离 ≤ 0.3 m
@@ -15,7 +15,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
 const LAYOUT = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline', 'layout.json'), 'utf8'));
 const GLB_PATH = path.join(OUT, 'huxin-ting.glb');
-const HUXINTING = process.env.HUXINTING === '1';
+const HUXINTING = process.env.HUXINTING !== '0';   // 默认开启，同 ROCKERY_KIT / FANGBANG
 const BUDGET = { tris: 30000, bytes: 2.5 * 1024 * 1024 };
 
 let pass = 0, fail = 0, skipped = 0;
@@ -30,14 +30,10 @@ if (process.env.HUXINTING === '0') {
   process.exit(0);
 }
 if (!fs.existsSync(GLB_PATH)) {
-  if (HUXINTING) {
-    fail++; failures.push('huxin-ting.glb missing');
-    console.log(`FAIL huxin-ting.glb 不存在于 ${OUT}（HUXINTING=1 要求模块已构建：blender -b -t 4 --python modules/huxinting/build.py）`);
-    console.log(`RESULT pass=${pass} fail=${fail}`);
-    process.exit(1);
-  }
-  console.log(`huxin-ting.glb 不存在于 ${OUT} 且 HUXINTING 未开 — 跳过`);
-  process.exit(0);
+  fail++; failures.push('huxin-ting.glb missing');
+  console.log(`FAIL huxin-ting.glb 不存在于 ${OUT}（湖心亭模块默认开启，要求已构建：OUT_DIR=<同> blender -b -t 4 --python modules/huxinting/build.py；或 HUXINTING=0）`);
+  console.log(`RESULT pass=${pass} fail=${fail}`);
+  process.exit(1);
 }
 
 // ---------------- layout 重算：面积形心 / 主轴 / 承台 / 桥折线 ----------------
@@ -318,7 +314,7 @@ ok('GLB 节点名全部为 huxin-ting__*（无游离散件节点）', prefixOk, 
   ok('GLB 单一 scene', gltf.scenes.length === 1);
 }
 
-// ---------------- 5) HUXINTING=1 时：总装 pond.glb 有 huxin-ting 锚且位姿=重算值 ----------------
+// ---------------- 5) 模块开启时：总装 pond.glb 有 huxin-ting 锚且位姿=重算值 ----------------
 if (HUXINTING && fs.existsSync(path.join(OUT, 'pond.glb'))) {
   const pbuf = fs.readFileSync(path.join(OUT, 'pond.glb'));
   const pj = JSON.parse(pbuf.subarray(20, 20 + pbuf.readUInt32LE(12)).toString('utf8'));
@@ -495,7 +491,7 @@ const isWood = (m) => !m.pbrMetallicRoughness.baseColorTexture &&
   ok(`无竖条窗残留（竖棂件 ${strips.length}、旧暗色窗底件 ${darkWin.length}）`, strips.length === 0 && darkWin.length === 0);
 }
 
-// ---------------- 9) HUXINTING=1：没有别的已渲染对象与湖心亭 footprint 重合 ----------------
+// ---------------- 9) 模块开启时：没有别的已渲染对象与湖心亭 footprint 重合 ----------------
 // 口径：对称差面积 ≤ 5% 湖心亭 footprint 面积即「重合」。这里用 0.05 m 网格采样独立估算
 // （build-scene 用凸分解 + 多边形裁剪精确求，两套方法互不引用）。
 // 例：bld-228035340（outerBuilding，同一 OSM way 228035340）若照常渲染，会在浏览器里把湖心亭一层包成 5 m 米色体块。
@@ -534,7 +530,7 @@ if (HUXINTING) {
     const names = (JSON.parse(b.subarray(20, 20 + b.readUInt32LE(12)).toString('utf8')).nodes || []).map((n) => n.name || '');
     for (const c of coincide) for (const nm of names) if (nm.includes(`|${c.id}|`) || nm === c.id) rendered.push(`${f}:${nm}`);
   }
-  ok(`HUXINTING=1：没有别的已渲染对象与湖心亭 footprint 重合（重合 ${coincide.length} 件，在 ${glbs.length} 个 GLB 中渲染 ${rendered.length} 处）`,
+  ok(`湖心亭模块开启：没有别的已渲染对象与湖心亭 footprint 重合（重合 ${coincide.length} 件，在 ${glbs.length} 个 GLB 中渲染 ${rendered.length} 处）`,
     rendered.length === 0, rendered.slice(0, 4).join(','));
   const ps = fs.existsSync(path.join(OUT, 'procedural-stats.json')) ? JSON.parse(fs.readFileSync(path.join(OUT, 'procedural-stats.json'), 'utf8')) : { deferred: [] };
   const dup = new Set(ps.deferred.filter((d) => d.why === 'duplicate-footprint-of-huxin-ting').map((d) => d.id));

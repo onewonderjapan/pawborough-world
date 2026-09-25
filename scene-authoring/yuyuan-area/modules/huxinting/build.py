@@ -22,7 +22,7 @@ AREA = ROOT.parent.parent                      # scene-authoring/yuyuan-area
 sys.path.insert(0, str(AREA / 'modules' / 'shared'))
 import eave_kit
 
-OUT_GLB = AREA / 'out-zone' / 'huxin-ting.glb'
+OUT_GLB = AREA / os.environ.get('OUT_DIR', 'out-zone') / 'huxin-ting.glb'   # 随管线 OUT_DIR（rebuild-review.sh 默认开启时调用）
 OUT_GLB.parent.mkdir(parents=True, exist_ok=True)
 LAYOUT = json.load(open(AREA / 'baseline' / 'layout.json', encoding='utf-8'))
 HT = next(o for o in LAYOUT['objects'] if o['id'] == 'huxin-ting')
@@ -514,7 +514,7 @@ print('exported', OUT_GLB, os.path.getsize(OUT_GLB), 'bytes')
 
 tris = sum(PART_STATS.values())
 rec = dict(
-    id='huxin-ting', glb='out-zone/huxin-ting.glb', bytes=os.path.getsize(OUT_GLB), tris=tris,
+    id='huxin-ting', glb='<OUT_DIR>/huxin-ting.glb', bytes=os.path.getsize(OUT_GLB), tris=tris,
     partTriCounts=PART_STATS, partObjectCounts=NGON,
     frame=dict(centroid=[round(CX, 6), round(CZ, 6)], axis=[round(UX, 6), round(UZ, 6)], normal=[round(VX, 6), round(VZ, 6)],
                rectHalfU=round(U0, 4), rectHalfV=round(V0, 4),

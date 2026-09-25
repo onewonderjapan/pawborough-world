@@ -56,8 +56,9 @@ const HALL_KIT_IDS = new Set(['bld-428179902']);
 // 占位不再程序化生成。ROCKERY_KIT=0 退回程序化占位。
 const ROCKERY_KIT = process.env.ROCKERY_KIT !== '0';
 const ROCKERY_IDS = new Set(['rockery-dajiashan', 'rockery-yulinglong']);
-// HUXINTING=1：湖心亭由 modules/huxinting 站点模块 GLB 承担（assemble 导入 SITE-pond），占位不再程序化生成。默认关。
-const HUXINTING = process.env.HUXINTING === '1';
+// 湖心亭由 modules/huxinting 站点模块 GLB 承担（assemble 导入 SITE-pond），占位不再程序化生成。
+// 默认开启（2026-09-25 机主定「湖心亭默认开启吧」）；HUXINTING=0 退回程序化占位。
+const HUXINTING = process.env.HUXINTING !== '0';
 const HUXINTING_IDS = new Set(['huxin-ting']);
 // BAZAAR_TOWERS=1：华宝楼 bld-428202599 由 modules/bazaar-tower-kit 世界坐标 GLB 承担
 // （assemble.py 导入 SITE-bazaar，分区归 zone-bazaar-2）。默认关：未采用前保持程序化 bazaarBlock。

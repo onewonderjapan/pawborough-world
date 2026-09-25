@@ -721,12 +721,12 @@ if os.environ.get('FANGBANG', '1') != '0':
     json.dump(fb_infill_doc, open(os.path.join(OUT, 'fangbang-infill.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     print('fangbang infill placed', len(fangbang_infill), [i['id'] for i in fangbang_infill])
 
-# ---------- 湖心亭站点模块（HUXINTING=1，默认关。世界坐标 GLB，同假山做法，assemble 导入 SITE-pond） ----------
+# ---------- 湖心亭站点模块（默认开启，2026-09-25 机主定；HUXINTING=0 退回程序化占位。世界坐标 GLB，同假山做法，assemble 导入 SITE-pond） ----------
 # 位置全部从 baseline/layout.json 重算：锚 empty = footprint 面积形心（鞋带公式），
 # rotY 使本地朝向主轴（footprint 最长边方向，+u 远离九曲桥）；子网格保持世界坐标（parent 后写回 matrix_world）。
 # 公式与 modules/huxinting/build.py、tests/huxinting-test.mjs 一致。
 huxinting_placed = 0
-if os.environ.get('HUXINTING') == '1':
+if os.environ.get('HUXINTING', '1') != '0':
     lay_obj = {o['id']: o for o in LAYOUT['objects']}
     ht = lay_obj['huxin-ting']
     fp = ht['geometry']['footprint']
@@ -744,7 +744,8 @@ if os.environ.get('HUXINTING') == '1':
         ux, uz = -ux, -uz
     ht_glb = os.path.join(OUT, 'huxin-ting.glb')
     if not os.path.exists(ht_glb):
-        raise SystemExit('HUXINTING=1: missing %s; build with blender -b -t 4 --python modules/huxinting/build.py' % ht_glb)
+        raise SystemExit('HUXINTING (default on): missing %s; build with OUT_DIR=<same> blender -b -t 4 --python modules/huxinting/build.py, '
+                         'or set HUXINTING=0 for the procedural placeholder' % ht_glb)
     objs = import_glb(ht_glb, 'SITE-pond')
     for ob in objs:
         if ob.name.startswith('huxin-ting__'):
