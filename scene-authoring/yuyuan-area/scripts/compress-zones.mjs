@@ -15,17 +15,19 @@ try { tool = execFileSync(GLTFPACK, ['-v'], { encoding: 'utf8' }).split('\n')[0]
 let bad = 0;
 for (const z of m.zones.filter(z => z.file)) {
   const src = path.join(OUT, z.file), dst = src.replace(/\.glb$/, '.cm.glb');
-  const args = z.file.includes('fangbang') ? [...ARGS, '-tc'] : ARGS;
+  let args = z.file.includes('fangbang') ? [...ARGS, '-tc'] : [...ARGS];
+  // 件级位置量化位数（export-zones 写 manifest cmPositionBits；目前只有 garden-halls 件 = 13，理由见 export-zones.py HALLS_CM_POSITION_BITS）
+  if (z.cmPositionBits) args[args.indexOf('-vp') + 1] = String(z.cmPositionBits);
   execFileSync(GLTFPACK, [...args, '-i', src, '-o', dst], { stdio: 'pipe' });
   const b = fs.readFileSync(dst);
   const res = await validateBytes(new Uint8Array(b));
   z.cm = { file: path.basename(dst), bytes: b.length, sha256: crypto.createHash('sha256').update(b).digest('hex'),
-           ratio: +(b.length / z.bytes).toFixed(3), validatorErrors: res.issues.numErrors, validatorWarnings: res.issues.numWarnings,
+           ratio: +(b.length / z.bytes).toFixed(3), positionBits: +args[args.indexOf('-vp') + 1], validatorErrors: res.issues.numErrors, validatorWarnings: res.issues.numWarnings,
            withinCap: b.length <= m.capPerZoneBytes };
   if (res.issues.numErrors) { bad++; console.error('validator errors', z.file, JSON.stringify(res.issues.messages.slice(0, 3))); }
   console.log(`${z.file} ${(z.bytes / 1e6).toFixed(2)}MB -> ${z.cm.file} ${(b.length / 1e6).toFixed(2)}MB (x${z.cm.ratio}) err=${res.issues.numErrors} warn=${res.issues.numWarnings}`);
 }
-m.compression = { tool, codec: 'gltfpack ' + ARGS.join(' ') + ' (EXT_meshopt_compression + KHR_mesh_quantization; textures untouched)',
+m.compression = { tool, codec: 'gltfpack ' + ARGS.join(' ') + ' (EXT_meshopt_compression + KHR_mesh_quantization; textures untouched; per-part -vp from manifest cmPositionBits)',
                   runtimeDefault: 'cm', totalCmBytes: m.zones.reduce((s, z) => s + (z.cm?.bytes || 0), 0) };
 fs.writeFileSync(mp, JSON.stringify(m, null, 1));
 console.log(`COMPRESS DONE total ${(m.totalBytes / 1e6).toFixed(1)}MB -> ${(m.compression.totalCmBytes / 1e6).toFixed(1)}MB`);

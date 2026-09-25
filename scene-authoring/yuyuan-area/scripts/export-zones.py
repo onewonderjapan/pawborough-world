@@ -15,6 +15,34 @@ def is_rockery_obj(o):
             return True
         cur = cur.parent
     return False
+
+def is_hall_kit_obj(o):
+    # 厅堂套件实例（assemble.py place(module='hall-kit')）：锚 empty 带 module，子网格经 parent 链解析
+    cur = o
+    while cur is not None:
+        if cur.get('module') == 'hall-kit':
+            return True
+        cur = cur.parent
+    return False
+
+# garden 分件（按内容类别拆，与导入顺序无关；不命中的一律留在 part 1 = zone-garden.glb）：
+#   part 2 zone-garden-2.glb 假山站点模块（ROCKERY_KIT=0 关闭时不拆）
+#   part 3 zone-garden-3.glb 厅堂套件实例（module == 'hall-kit'，id 列表 modules/hall-kit/ids.json；HALL_KIT=0 时为空不出文件）
+#     wave3-zonesplit（2026-09-25）：20 栋厅堂默认开后 zone-garden.glb 11.46 MB，离 12 MB 上限不到 0.6 MB；
+#     厅堂按 hall-kit 生成器（得月楼样板）后续还要加两层楼，拆成独立件后园区各件都留 ≥ 3 MB 余量，
+#     新增 hall-kit id 自动落进这一件（谓词只看 module）。
+# 厅堂件的 meshopt 位置量化位数（compress-zones.mjs 读 manifest cmPositionBits）：gltfpack 按「件内最大网格尺寸 / 2^bits」
+# 定量化步长。拆件前厅堂与园区大网格（约 260 m）同件，步长 ≈ 4.0 mm；单独成件后最大网格只是一栋厅堂（约 20 m），
+# 16 位步长变成 0.3 mm，meshopt 件因此大 ~60 KB，把核心三区首载推到 +2.35%。13 位 → 约 2.5 mm，仍比拆件前细。
+HALLS_CM_POSITION_BITS = 13
+GARDEN_SUBPARTS = [
+    # (part, file, predicate, enabled, collections label, note, extra manifest fields)
+    (2, 'zone-garden-2.glb', is_rockery_obj, os.environ.get('ROCKERY_KIT', '1') != '0', ['SITE-garden'],
+     'ROCKERY_KIT site modules; split so zone-garden.glb stays within cap', {}),
+    (3, 'zone-garden-3.glb', is_hall_kit_obj, True, ['INST-garden'],
+     'garden-halls: hall-kit instances (module=hall-kit, ids from modules/hall-kit/ids.json); split so every garden part keeps >= 3 MB headroom under cap',
+     {'role': 'garden-halls', 'cmPositionBits': HALLS_CM_POSITION_BITS}),
+]
 # (zone, part, collections, instance-module filter)。一个分区可拆成多个分件（同 zone id，查看器按 zone 切换）。
 # 庙区 v3 精修件单区 >12 MB（大殿一件 6.3 MB），按轴线拆三件：
 #   1 山门/前院/仪门/戏台/樟树 + 庙墙与程序化底面 | 2 大殿院/配殿/廊庑/大殿 | 3 三进院/后殿
@@ -112,19 +140,22 @@ manifest = {'schema': 2, 'capPerZoneBytes': CAP, 'order': order, 'zones': []}
 plan = []
 for z, part_index, colls, flt in PARTS:
     objs = objs_of(colls, flt)
-    rockery_part = []
-    # 假山网格约 3.5 MB，并进现有 zone-garden.glb（已 9.6 MB）会超过 12 MB。
-    # 假山站点模块（默认开启，ROCKERY_KIT=0 关闭）时把两个锚及其子网格拆到 zone-garden-2.glb，主文件名仍是 zone-garden.glb。
-    if z == 'garden' and part_index == 1 and os.environ.get('ROCKERY_KIT', '1') != '0':
-        rockery_part = [o for o in objs if is_rockery_obj(o)]
-        drop = {id(o) for o in rockery_part}
-        objs = [o for o in objs if id(o) not in drop]
+    subparts = []
+    # 假山站点模块（默认开启，ROCKERY_KIT=0 关闭）拆到 zone-garden-2.glb；厅堂套件实例拆到 zone-garden-3.glb；
+    # 主文件名仍是 zone-garden.glb。先匹配的子件先认领（一个对象只进一件）。
+    if z == 'garden' and part_index == 1:
+        for sp_part, sp_file, pred, enabled, sp_colls, sp_note, sp_extra in GARDEN_SUBPARTS:
+            if not enabled: continue
+            mine = [o for o in objs if pred(o)]
+            drop = {id(o) for o in mine}
+            objs = [o for o in objs if id(o) not in drop]
+            subparts.append({'part': sp_part, 'file': sp_file, 'objs': mine, 'colls': sp_colls, 'note': sp_note, 'extra': sp_extra})
     f = (f'zone-{z}.glb' if (n_parts[z] == 1 or (part_index == 1 and z in BASE_NAME_ZONES))
          else f'zone-{z}-{part_index}.glb')
-    plan.append({'zone': z, 'part': part_index, 'colls': colls, 'file': f, 'objs': objs, 'rockery': rockery_part})
+    plan.append({'zone': z, 'part': part_index, 'colls': colls, 'file': f, 'objs': objs, 'subparts': subparts})
 by_zone = {}
 for it in plan:
-    by_zone.setdefault(it['zone'], []).extend(it['objs'] + it['rockery'])
+    by_zone.setdefault(it['zone'], []).extend(it['objs'] + [o for sp in it['subparts'] for o in sp['objs']])
 
 # ---------- P2 地面铺装材质（wave1-paving）：按 build-scene 写入的 slot custom prop 绑定程序化贴图 ----------
 # 贴图 1024² JPEG（resources/textures/paving/），scripts/bake-paving-textures.py 纯 numpy 生成，
@@ -174,12 +205,12 @@ def apply_paving(objs):
             n += 1
     return n
 
-paving_applied = apply_paving([o for it in plan for o in it['objs'] + it['rockery']])
+paving_applied = apply_paving([o for it in plan for o in it['objs'] + [x for sp in it['subparts'] for x in sp['objs']]])
 print('paving materials applied:', paving_applied)
 
 for it in plan:
-    z, part_index, colls, f, objs, rockery_part = it['zone'], it['part'], it['colls'], it['file'], it['objs'], it['rockery']
-    own = set(id(o) for o in objs + rockery_part)
+    z, part_index, colls, f, objs = it['zone'], it['part'], it['colls'], it['file'], it['objs']
+    own = set(id(o) for o in objs)
     deny = [o for o in by_zone[z] if id(o) not in own]
     p = os.path.join(OUT, f)
     if not objs:
@@ -196,16 +227,17 @@ for it in plan:
     if note: entry['note'] = note[part_index]
     manifest['zones'].append(entry)
     print('zone', z, part_index, len(b), 'bytes')
-    if rockery_part:
-        f2 = 'zone-garden-2.glb'
-        p2 = os.path.join(OUT, f2)
-        export(p2, rockery_part, [o for o in by_zone[z] if id(o) not in set(id(o) for o in rockery_part)])
+    for sp in it['subparts']:
+        if not sp['objs']: continue   # 例：HALL_KIT=0 时无厅堂实例，不出空文件
+        p2 = os.path.join(OUT, sp['file'])
+        sp_own = set(id(o) for o in sp['objs'])
+        export(p2, sp['objs'], [o for o in by_zone[z] if id(o) not in sp_own])
         b2 = open(p2, 'rb').read()
-        manifest['zones'].append({'id': 'garden', 'part': 2, 'file': f2, 'bytes': len(b2), 'sha256': hashlib.sha256(b2).hexdigest(),
-                                  'collections': ['SITE-garden'], 'objects': len(rockery_part),
-                                  'bounds': bounds(rockery_part), 'withinCap': len(b2) <= CAP,
-                                  'note': 'ROCKERY_KIT site modules; split so zone-garden.glb stays within cap'})
-        print('zone garden 2', len(b2), 'bytes')
+        manifest['zones'].append({'id': z, 'part': sp['part'], 'file': sp['file'], 'bytes': len(b2), 'sha256': hashlib.sha256(b2).hexdigest(),
+                                  'collections': sp['colls'], 'objects': len(sp['objs']),
+                                  'bounds': bounds(sp['objs']), 'withinCap': len(b2) <= CAP,
+                                  'note': sp['note'], **sp['extra']})
+        print('zone', z, sp['part'], len(b2), 'bytes')
 # ---------- 方浜中路分区（FANGBANG=1）----------
 # R1：同一模块的全部实例进同一件，导出时多节点引用同一 mesh（Blender 链接复制）。
 # 按模块装箱，超 ZONE_CAP_BYTES 再对半拆；不再按街段把同一模块拆进多件（那会把网格再存一份）。
