@@ -37,7 +37,8 @@
     "eaveKit": {
       "over": 1.3,
       "note": "lead 2026-09-24: main-roof corners sit mid-façade on the west side; 1.3 m keeps them within the per-edge overhang rule"
-    }
+    },
+    "rect": "legacy-pav"
   },
   "eaves": {
     "overhangM": 1.2,
@@ -72,7 +73,13 @@
       "over": 1.2,
       "rootRise": 0.8,
       "note": "lead 2026-09-24: pavilion eaves shallower than the 1.5 m storey eaves"
-    }
+    },
+    "bodyWindowAt": [
+      0.32,
+      0.68
+    ],
+    "notchBody": false,
+    "notchNote": "R2 实际形体：体块为整矩形，角亭与之重叠（旧 rect_minus_pav 的判据在角点处恒不挖），腰檐沿整矩形绕过亭楼外立面"
   },
   "facades": {
     "bayRhythmM": [
@@ -167,5 +174,22 @@
     "bracketStepM": 5.2,
     "rings": 7,
     "note": "lead eave_kit 2026-09-24: over 1.2→1.5 so the storey eaves clear the 1.1 m galleries by 0.4 m and read as tiled slopes from the street (PBR-SH-0003-006 shows deep, heavy eaves); rootRise 0.95 (≈32°); chu 0.35, tile/board heights and bracket step are lead design inference"
+  },
+  "sharedEdgeRule": false,
+  "eaveClipHidden": false,
+  "sharedEdgeNote": "样板保持主控 2026-09-24 复验过的形体：东端 v2→v3 与 bld-165791764 共享（layout 检出），样板未按 hall-kit 共享边规则收檐；wave4 起新楼默认开启该规则",
+  "features": {
+    "plaques": [
+      {
+        "storey": 2,
+        "at": 0.5,
+        "z0": 0.8,
+        "wM": 8.0,
+        "hM": 2.0,
+        "borderM": 0.09,
+        "o": 0.06,
+        "note": "DESIGN_SPEC floor2Plaque：中心广场面居中 8×2 m 空匾 + 金边"
+      }
+    ]
   }
 }

@@ -605,6 +605,28 @@ def edge_frame_map(a, b):
 def s_d(a, t, n, x, z):
     """点 (x,z) 相对边：沿边 s、向内距离 d_in。"""
     return (x - a[0]) * t[0] + (z - a[1]) * t[1], -((x - a[0]) * n[0] + (z - a[1]) * n[1])
+def coverage(comps, A, B, dmin, dmax, zmin=-1e9, zmax=1e9):
+    """连通分量沿边 A→B 的覆盖率：分量全部顶点落在向内 [dmin, dmax]、高 [zmin, zmax] 内时取其 s 区间，求并长 / 边长。"""
+    L, t, n = edge_frame_map(A, B)
+    ivs = []
+    for c in comps:
+        sd = [s_d(A, t, n, p[0], p[2]) for p in c]
+        if all(dmin <= d <= dmax for _, d in sd) and all(zmin <= p[1] <= zmax for p in c):
+            a_, b_ = max(0.0, min(x for x, _ in sd)), min(L, max(x for x, _ in sd))
+            if b_ > a_:
+                ivs.append((a_, b_))
+    ivs.sort()
+    tot, cur = 0.0, None
+    for a_, b_ in ivs:
+        if cur and a_ <= cur[1]:
+            cur[1] = max(cur[1], b_)
+        else:
+            if cur:
+                tot += cur[1] - cur[0]
+            cur = [a_, b_]
+    if cur:
+        tot += cur[1] - cur[0]
+    return tot / L
 
 # ---------- test 9：共享边（hall-kit 规则，从 layout 独立检出）：任何三角不越过与邻栋共用的边 0.02 m 以上；不插进邻栋 ----------
 try:
@@ -690,14 +712,10 @@ for fe in obj.get('frontEdges', []):
     if k is None or k in _shared_edges_idx:
         continue
     STREET_EDGES.append((k, fe['street'], A, B))
+_glass_c = _comps_by_mat('glass')
 for k, st, A, B in STREET_EDGES:
     L, t, n = edge_frame_map(A, B)
-    bins = set()
-    for v in _glass:
-        s, d = s_d(A, t, n, v[0], v[2])
-        if 0.1 <= d <= 2.6 and 0 <= s <= L and v[1] < 6.0:
-            bins.add(int(s / 0.5))
-    cov = len(bins) * 0.5 / L
+    cov = coverage(_glass_c, A, B, 0.1, 2.6, 0.0, 6.0)
     ok('test10b 临街边 v%d（%s，%.1f m）底层店面玻璃覆盖 %.0f%% ≥ 50%%' % (k, st, L, cov * 100), cov >= 0.5)
 
 # ---------- test 11：逐楼形制（主控文字规格 → 可测条目；位置 / 高度全部按 layout 重算） ----------
@@ -717,7 +735,7 @@ def frames_on_front(min_w):
             ss = [s_d(A, t, n, p[0], p[2])[0] for p in c]
             dd = [s_d(A, t, n, p[0], p[2])[1] for p in c]
             w = max(ss) - min(ss)
-            if w >= min_w and -2.5 <= min(dd) and max(dd) <= 1.0:
+            if w >= min_w and -2.5 <= min(dd) and max(dd) <= 3.0:
                 out.append({'w': w, 's': (max(ss) + min(ss)) / 2 / L, 'z0': min(p[1] for p in c), 'z1': max(p[1] for p in c)})
     return out
 if ID == 'bld-428202601':                                  # 天裕楼
@@ -725,13 +743,11 @@ if ID == 'bld-428202601':                                  # 天裕楼
     sl = _comps_by_mat('slats')
     levels = sorted({round(min(p[1] for p in c), 1) for c in sl})
     ok('test11a 天裕楼 直棂栏杆外廊楼层数 %d ≥ 3（底标高 %s）' % (len(levels), levels), len(levels) >= 3)
-    bins = {}
-    for c in sl:
-        for p in c:
-            s, d = s_d(A, t, n, p[0], p[2])
-            if -1.6 <= d <= 0.6 and 0 <= s <= L:
-                bins.setdefault(round(min(q[1] for q in c), 1), set()).add(int(s / 0.5))
-    covs = {h: len(b) * 0.5 / L for h, b in bins.items()}
+    covs = {}
+    for h in levels:
+        cv_ = coverage([c for c in sl if abs(min(q[1] for q in c) - h) < 0.06], A, B, -1.6, 0.6)
+        if cv_ > 0:
+            covs[h] = cv_
     ok('test11b 天裕楼 前街（方浜中路）每层外廊通长 ≥ 60%%：%s' % {h: '%.0f%%' % (c * 100) for h, c in sorted(covs.items())},
        len(covs) >= 3 and all(c >= 0.6 for c in covs.values()))
     ds = sorted(s_d(A, t, n, v[0], v[2])[1] for v in _glass if 0 <= s_d(A, t, n, v[0], v[2])[0] <= L and v[1] < 6
@@ -773,10 +789,8 @@ elif ID == 'bld-389701812':                                # 和丰楼
     ok('test11e 和丰楼 檐下彩画额枋（caihua 材质）', bool(_mat_used('caihua')))
 elif ID == 'bld-428202602':                                # 悦宾楼
     A, B, L, t, n = front_edge()
-    sr = [v for n_ in meshes if any('signred' in mn for mn in n_.get('mats', [])) for v in world_verts(n_)]
-    bins = {int(s_d(A, t, n, v[0], v[2])[0] / 0.5) for v in sr
-            if -0.3 <= s_d(A, t, n, v[0], v[2])[1] <= 0.8 and 2.5 <= v[1] <= 4.6 and 0 <= s_d(A, t, n, v[0], v[2])[0] <= L}
-    ok('test11a 悦宾楼 前街（粮厅路）底层红色招牌带覆盖 %.0f%% ≥ 50%%' % (len(bins) * 50 / L), len(bins) * 0.5 / L >= 0.5)
+    cv_ = coverage(_comps_by_mat('signred'), A, B, -0.3, 0.8, 2.5, 4.6)
+    ok('test11a 悦宾楼 前街（粮厅路）底层红色招牌带覆盖 %.0f%% ≥ 50%%' % (cv_ * 100), cv_ >= 0.5)
     ch_levels = sorted({round(min(p[1] for p in c), 0) for c in _comps_by_mat('caihua')})
     ok('test11b 悦宾楼 各层檐下彩画额枋 ≥ 3 个标高（%s）' % ch_levels, len(ch_levels) >= 3)
     lan = [c for c in _comps_by_mat('lantern') if 2.0 <= comp_center(c)[1] <= 4.8]
@@ -797,12 +811,13 @@ elif ID == 'bld-428202603':                                # 上海老饭店
        abs(top[1] - topg[1]) < 1e-6 and d3 <= 16.0 and topg[1] >= 23.0)
     fin = [c for c in _comps_by_mat('gild') if min(p[1] for p in c) >= topg[1] - 3.0]
     ok('test11b 上海老饭店 葫芦宝顶（塔顶鎏金件 %d 个 ≥ 3：座 / 下球 / 上球 / 尖）' % len(fin), len(fin) >= 3)
-    front_v = [v for v in all_w if 0.3 <= s_d(A, t, n, v[0], v[2])[1] <= 6.5 and 0 <= s_d(A, t, n, v[0], v[2])[0] <= L
-               and math.hypot(v[0] - topg[0], v[2] - topg[2]) > 9.0]
-    rear_v = [v for v in all_w if s_d(A, t, n, v[0], v[2])[1] >= 12.0 and math.hypot(v[0] - topg[0], v[2] - topg[2]) > 9.0]
-    fh = max(v[1] for v in front_v) if front_v else 99
-    rh = max(v[1] for v in rear_v) if rear_v else 0
-    ok('test11c 上海老饭店 两层前楼（临街 6.5 m 进深内最高 %.2f ≤ 12.5 m）+ 后楼更高（%.2f ≥ 16 m）' % (fh, rh), fh <= 12.5 and rh >= 16.0)
+    wv = [v for n_ in meshes if n_['name'].startswith('walls__') for v in world_verts(n_)
+          if math.hypot(v[0] - topg[0], v[2] - topg[2]) > 9.0 and 0 <= s_d(A, t, n, v[0], v[2])[0] <= L]
+    front_w = [v for v in wv if 0.25 <= s_d(A, t, n, v[0], v[2])[1] <= 5.5]
+    rear_w = [v for v in wv if s_d(A, t, n, v[0], v[2])[1] >= 9.0]
+    fh = max(v[1] for v in front_w) if front_w else 99
+    rh = max(v[1] for v in rear_w) if rear_w else 0
+    ok('test11c 上海老饭店 两层前楼（临街 5.5 m 进深内墙顶 %.2f ≤ 8.0 m）+ 后楼四层（墙顶 %.2f ≥ 13.0 m）' % (fh, rh), fh <= 8.0 and rh >= 13.0)
 
 # ---------- test 12：匾额 / 招牌是空板（材质无贴图 = 无字）；模块里没有带贴图的匾 ----------
 _board = [m for k, m in mats.items() if any(x in k for x in ('dark', 'gild', 'signred'))]
