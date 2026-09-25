@@ -63,28 +63,52 @@ ok(`mesh-node count zones ${zn.length} == scene-areas ${sn.length}`, zn.length =
 const dup = zn.filter((n, i) => i && n === zn[i - 1] && sn.filter(x => x === n).length < zn.filter(x => x === n).length);
 ok('no mesh node duplicated across zones', dup.length === 0, JSON.stringify([...new Set(dup)].slice(0, 5)));
 // bazaar 分件（按内容类别，非填充顺序）：zone-bazaar=街面（店屋/摊位/檐棚/面元/地面），
-// zone-bazaar-2=bazaarBlock 大楼体块。断言：恰两件、每件 ≤ cap、bazaarBlock 全在大楼件、
-// 两件无重复节点、两件 placed 三角合计 == 拆件前 bazaar.glb（assemble-food 导出的 ZONE+INST+FOOD 全量）。
+// zone-bazaar-2=程序化 bazaarBlock 大楼体块，zone-bazaar-3…=商城大楼套件（BAZAAR_TOWERS=1，件号 = modules/bazaar-tower-kit/ids.json zonePart；
+// wave4 Z0：套件楼不再与程序化体块同件）。断言：件号集合 = {1,2} ∪ 在场套件楼的 zonePart；每座套件楼锚节点恰在其 zonePart 件、
+// 别的件一个都没有；套件件只装套件楼子树；bazaarBlock 全在大楼件；各件无重复节点；各件 placed 三角合计 == 拆件前 bazaar.glb；
+// 每件原始 GLB ≤ cap − 2 MB 余量（GOAL wave4-bazaar4 Z0「每件留 ≥ 2 MB 余量」）。
+const TOWER_REG = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, '..', 'modules', 'bazaar-tower-kit', 'ids.json'), 'utf8'));
+const TOWER_PART = TOWER_REG.zonePart, BAZAAR_HEADROOM_BYTES = 2000000;
 const bz = m.zones.filter(z => z.id === 'bazaar' && z.file);
-ok(`bazaar 拆成两件（现 ${bz.length} 件）`, bz.length === 2, `parts=[${bz.map(z => z.file).join(', ')}]`);
-if (bz.length === 2) {
+{
   const parts = bz.map(z => ({ z, buf: fs.readFileSync(path.join(OUT, z.file)), j: parseGlbJson(fs.readFileSync(path.join(OUT, z.file))) }));
+  const towerIdsIn = j => (j.nodes || []).map(n => n.name).filter(n => Object.hasOwn(TOWER_PART, n));
+  const present = [...new Set(parts.flatMap(p => towerIdsIn(p.j)))].sort();
+  const wantParts = [...new Set([1, 2, ...present.map(id => TOWER_PART[id])])].sort((a, b) => a - b);
+  const haveParts = parts.map(p => p.z.part).sort((a, b) => a - b);
+  ok(`bazaar 件号 [${haveParts}] == {1,2} ∪ 在场套件楼 zonePart [${wantParts}]（在场套件楼 ${present.length} 座）`,
+     JSON.stringify(haveParts) === JSON.stringify(wantParts));
+  for (const id of present) {
+    const holders = parts.filter(p => towerIdsIn(p.j).includes(id)).map(p => p.z.part);
+    ok(`套件楼 ${id} 锚节点只在 zone-bazaar 第 ${TOWER_PART[id]} 件（现在 ${holders.join(',')}）`, holders.length === 1 && holders[0] === TOWER_PART[id]);
+  }
   for (const { z, buf } of parts) {
-    ok(`bazaar 分件 ${z.file} ${buf.length} ≤ cap ${m.capPerZoneBytes}`, buf.length <= m.capPerZoneBytes);
+    ok(`bazaar 分件 ${z.file} ${buf.length} ≤ cap ${m.capPerZoneBytes} − ${BAZAAR_HEADROOM_BYTES} 余量（余 ${((m.capPerZoneBytes - buf.length) / 1e6).toFixed(2)} MB）`,
+       buf.length <= m.capPerZoneBytes - BAZAAR_HEADROOM_BYTES);
     ok(`bazaar 分件 ${z.file} sha 与 manifest 一致`, crypto.createHash('sha256').update(buf).digest('hex') === z.sha256);
   }
+  const p1 = parts.find(p => p.z.part === 1), p2 = parts.find(p => p.z.part === 2);
   const kindsOf = j => new Set(meshNames(j).map(n => (n.split('|')[2] || '')));
-  const streetKinds = kindsOf(parts[0].j), towerKinds = kindsOf(parts[1].j);
-  ok(`bazaarBlock 大楼体块全在 ${parts[1].z.file}（${towerKinds.size ? '含 bazaarBlock' : '缺'}）`, towerKinds.has('bazaarBlock') && !streetKinds.has('bazaarBlock'));
-  ok(`街面件含铺装内容（facadeBay/paving/plaza）`, ['facadeBay', 'paving', 'plaza'].some(k => streetKinds.has(k)));
+  if (p1 && p2) {
+    const streetKinds = kindsOf(p1.j), blockKinds = kindsOf(p2.j);
+    ok(`bazaarBlock 大楼体块全在 ${p2.z.file}（${blockKinds.has('bazaarBlock') ? '含 bazaarBlock' : '缺'}）`, blockKinds.has('bazaarBlock') && !streetKinds.has('bazaarBlock'));
+    ok(`街面件含铺装内容（facadeBay/paving/plaza）`, ['facadeBay', 'paving', 'plaza'].some(k => streetKinds.has(k)));
+    ok(`${p2.z.file} 不含套件楼（套件楼 ${towerIdsIn(p2.j).join(',') || '无'}）`, towerIdsIn(p2.j).length === 0);
+  } else ok('bazaar 街面件与大楼件都在', false, `parts=[${bz.map(z => z.file).join(', ')}]`);
+  for (const p of parts.filter(p => p.z.part >= 3)) {
+    const ids = new Set(towerIdsIn(p.j)), t = triangleCounts(p.j).placed, st = subtreeTris(p.j, ids);
+    ok(`${p.z.file} 只装套件楼（${[...ids].join(',')}）：件内 placed 三角 ${t} == 套件楼锚子树 ${st}`, ids.size > 0 && t === st, `diff=${t - st}`);
+  }
   const nameCount = new Map();
   for (const p of parts) for (const n of meshNames(p.j)) nameCount.set(n, (nameCount.get(n) || 0) + 1);
-  const dupBz = [...nameCount.entries()].filter(([, c]) => c > 1).map(([n]) => n);
-  ok('bazaar 两件无重复 mesh 节点', dupBz.length === 0, JSON.stringify(dupBz.slice(0, 5)));
+  // 套件楼网格节点名按「部件__材质」命名，各楼之间同名是预期（节点在各自锚下）；只对非套件节点查重
+  const towerMeshNames = new Set(parts.filter(p => p.z.part >= 3).flatMap(p => meshNames(p.j)));
+  const dupBz = [...nameCount.entries()].filter(([n, c]) => c > 1 && !towerMeshNames.has(n)).map(([n]) => n);
+  ok(`bazaar ${parts.length} 件无重复 mesh 节点`, dupBz.length === 0, JSON.stringify(dupBz.slice(0, 5)));
   const bzTri = parts.reduce((s, p) => s + triangleCounts(p.j).placed, 0);
   const prePath = path.join(OUT, 'bazaar.glb');
   const pre = fs.existsSync(prePath) ? triangleCounts(parseGlbJson(fs.readFileSync(prePath))).placed : -1;
-  ok(`bazaar 两件 placed 三角 ${bzTri} == 拆件前 bazaar.glb ${pre}`, bzTri === pre, `diff=${bzTri - pre}`);
+  ok(`bazaar ${parts.length} 件 placed 三角 ${bzTri} == 拆件前 bazaar.glb ${pre}`, bzTri === pre, `diff=${bzTri - pre}`);
 }
 // garden 分件（wave3-zonesplit，2026-09-25）：厅堂套件实例（module=hall-kit，id 表 modules/hall-kit/ids.json）单独成一件。
 // 断言照 bazaar 分件写法：厅堂 id 锚节点全在同一件、别的 garden 件一个都没有；该件只装厅堂；

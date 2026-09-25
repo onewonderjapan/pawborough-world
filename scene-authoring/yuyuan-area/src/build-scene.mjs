@@ -61,10 +61,10 @@ const ROCKERY_IDS = new Set(['rockery-dajiashan', 'rockery-yulinglong']);
 // 默认开启（2026-09-25 机主定「湖心亭默认开启吧」）；HUXINTING=0 退回程序化占位。
 const HUXINTING = process.env.HUXINTING !== '0';
 const HUXINTING_IDS = new Set(['huxin-ting']);
-// BAZAAR_TOWERS=1：华宝楼 bld-428202599 由 modules/bazaar-tower-kit 世界坐标 GLB 承担
-// （assemble.py 导入 SITE-bazaar，分区归 zone-bazaar-2）。默认关：未采用前保持程序化 bazaarBlock。
+// BAZAAR_TOWERS=1：商城命名大楼由 modules/bazaar-tower-kit 世界坐标 GLB 承担（id 表 modules/bazaar-tower-kit/ids.json；
+// assemble.py 导入 SITE-bazaar，分区按 ids.json zonePart 归 zone-bazaar-3…）。默认关：未采用前保持程序化 bazaarBlock。
 const BAZAAR_TOWERS = process.env.BAZAAR_TOWERS === '1';
-const BAZAAR_TOWER_IDS = new Set(['bld-428202599']);
+const BAZAAR_TOWER_IDS = new Set(JSON.parse(fs.readFileSync(new URL('../modules/bazaar-tower-kit/ids.json', import.meta.url), 'utf8')).ids);
 const layout = JSON.parse(fs.readFileSync(path.join(OUT, 'layout.json'), 'utf8'));
 
 // ---------- FANGBANG=1：方浜中路沿线路面片让位（V1-REDEFINITION：连接段 x -96.8..54、街段 54..138 精修归 fangbang） ----------
