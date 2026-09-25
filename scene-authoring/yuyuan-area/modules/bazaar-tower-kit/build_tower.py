@@ -14,8 +14,8 @@ to_b() 直接落到地图系 Blender (map_x, -map_z, h)；export_yup=True 导出
 歇山主屋面（凹曲 profile 破环 + 上段陡坡 + 两端山花），平面在转角亭楼前收头避让；
 转角亭楼=全高角塔（随主体层节奏，上加 extraTiers + 攒尖鎏金顶）。
 
-运行：blender -b -t 4 --python-exit-code 1 modules/bazaar-tower-kit/build_tower.py -- \
-      [--params modules/bazaar-tower-kit/params/huabao-bld-428202599.json] [--out out-bazaar-towers/<id>]
+运行：blender -b -t 4 --python-exit-code 1 -P modules/bazaar-tower-kit/build_tower.py -- \
+      [--params params/huabao-bld-428202599.json（相对本目录）] [--out out-bazaar-towers/<id>]
 """
 import bpy, bmesh, json, math, os, sys, time
 from mathutils import Vector
@@ -531,7 +531,7 @@ if PAV:
     box('terrace-ne', PU0, U1, PV1, V1, Z3 - 0.06, Z3 + 0.06, 'stone')
 
 # ---- 檐口 / 屋面构件（主控 eave_kit，2026-09-24 替换 eave_band / roof_loft / 平面攒尖） ----
-sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(os.path.dirname(HERE), 'shared'))   # modules/shared —— 主控构件唯一正本
 import eave_kit as EK
 EK.init(lambda n, it, f, m, part: add_local(n, it, f, m, part=part))
 EKP = dict(P['eaveKit'])

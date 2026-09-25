@@ -2137,6 +2137,36 @@
       "sha256": "8ae04e331b62a61a9c216161af0c254944df296fbc313976bc23bfb364bceb37",
       "bytes": 96996,
       "sourcePackage": "pawborough-wave1-paving-20260923"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/hallkit-bld-428179902/model.glb",
+      "sha256": "284c8ba3ba928599e3be5c1774481bb5781a07a69609ffac23e4982fd57b79f1",
+      "bytes": 486748,
+      "sourcePackage": "pawborough-wave1-hallkit-20260925"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/hallkit-bld-428179902/collision.json",
+      "sha256": "fc45c8dde966a5992f914727b3008798ff5cad164f61f4f5beeb27a944030ec2",
+      "bytes": 9427,
+      "sourcePackage": "pawborough-wave1-hallkit-20260925"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/hallkit-bld-428179902/measurements.json",
+      "sha256": "d5be5b22a6f9940c7ad1fd102761dcc38d290e76493c65025c454940a581c98c",
+      "bytes": 985,
+      "sourcePackage": "pawborough-wave1-hallkit-20260925"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-garden-kits/hallkit-bld-428179902/recipe.json",
+      "sha256": "b48b1d41ed0e04f52ebfdde4fa7d4e158322c0ed8f63185facecd815f7001a5e",
+      "bytes": 1606,
+      "sourcePackage": "pawborough-wave1-hallkit-20260925"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202599/model.glb",
+      "sha256": "550dc8a22cb710c8793619a7c01b2003f203111e4ce9d66844f4bd96a2406c8a",
+      "bytes": 2195416,
+      "sourcePackage": "pawborough-wave1-huabao-20260923"
     }
   ],
   "state": "uploaded_checksum_verified",

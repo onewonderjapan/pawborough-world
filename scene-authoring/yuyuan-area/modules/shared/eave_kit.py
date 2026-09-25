@@ -210,6 +210,7 @@ def xieshan_roof(name, rect, z_eave, prm, part):
     zb, zr, inset, shou = prm['breakZ'], prm['ridgeZ'], prm['breakInset'], prm['gableInset']
     drop = prm['drop']
     Lu, Lv = u1 - u0, v1 - v0
+    osc = ornament_scale(prm, Lv)
     nu = max(8, int(Lu / 1.2))
     nv = max(6, int(Lv / 1.2))
     ring_e = _rect_ring(u0 - over, u1 + over, v0 - over, v1 + over, nu, nv)
@@ -262,7 +263,8 @@ def xieshan_roof(name, rect, z_eave, prm, part):
     bu0, bu1, bv0, bv1 = u0 + inset, u1 - inset, v0 + inset, v1 - inset
     vc = (bv0 + bv1) / 2
     gu0, gu1 = bu0 + shou, bu1 - shou
-    ridge_lift = prm.get('ridgeEndLift', 0.35)
+    ridge_lift = prm.get('ridgeEndLift', 0.35) * osc
+    wen_reach = 2.5 * osc
     nr = max(6, int((bu1 - bu0) / 1.5))
     for tag, vb_side, sgn in (('s', bv0, -1), ('n', bv1, 1)):
         it, fc = [], []
@@ -275,7 +277,7 @@ def xieshan_roof(name, rect, z_eave, prm, part):
                 ur = gu0 + (gu1 - gu0) * s
                 u = ua + (ur - ua) * t
                 v = vb_side + (vc - vb_side) * t
-                end = smooth_kernel(min(s, 1 - s) * (gu1 - gu0), 2.5)
+                end = smooth_kernel(min(s, 1 - s) * (gu1 - gu0), wen_reach)
                 h = zb + (zr - zb) * (t ** 0.8) + ridge_lift * end * t
                 it.append(((u, v, h), (u, h)))
         for r in range(rows):
@@ -298,13 +300,13 @@ def xieshan_roof(name, rect, z_eave, prm, part):
     # 正脊：沿 u 的方截面长条，两端起翘成吻
     ridge_items, ridge_faces = [], []
     ns = nr
-    wr, hr = 0.28, 0.42
+    wr, hr, wen = 0.28 * osc, 0.42 * osc, 0.9 * osc
     for c in range(ns + 1):
         s = c / ns
         u = gu0 + (gu1 - gu0) * s
-        end = smooth_kernel(min(s, 1 - s) * (gu1 - gu0), 2.5)
+        end = smooth_kernel(min(s, 1 - s) * (gu1 - gu0), wen_reach)
         z0 = zr - 0.05 + ridge_lift * end
-        z1 = z0 + hr + 0.9 * end ** 3          # 两端吻起翘
+        z1 = z0 + hr + wen * end ** 3          # 两端吻起翘
         for dv, zz in ((-wr, z0), (-wr, z1), (wr, z1), (wr, z0)):
             ridge_items.append(((u, vc + dv, zz), (u, zz)))
     for c in range(ns):
@@ -326,14 +328,24 @@ def xieshan_roof(name, rect, z_eave, prm, part):
             v = cv_b + (cv_e - cv_b) * t
             h = zb + ((z_eave - drop) - zb) * ((1 - t) ** 0 * t ** (1 / prm.get('curve', 1.6))) + qiao * t ** 2.2 + 0.12
             d = _norm((cu_e - cu_b, cv_e - cv_b))
-            px, py = -d[1] * 0.16, d[0] * 0.16
-            for sx, zz in ((-1, h), (-1, h + 0.3 + 0.35 * t ** 3), (1, h + 0.3 + 0.35 * t ** 3), (1, h)):
+            px, py = -d[1] * 0.16 * osc, d[0] * 0.16 * osc
+            top = h + (0.3 + 0.35 * t ** 3) * osc
+            for sx, zz in ((-1, h), (-1, top), (1, top), (1, h)):
                 it.append(((u + px * sx, v + py * sx, zz), (t, zz)))
         for c in range(segs):
             for k in range(4):
                 a, b = c * 4 + k, c * 4 + (k + 1) % 4
                 fc.append((a, b, b + 4, a + 4))
         _ADD(name + '-qiangji-%d%d' % (int(cu_b), int(cv_b)), it, fc, 'dark', part)
+
+
+def ornament_scale(prm, depth):
+    """正脊 / 吻 / 戗脊截面与起翘的比例。默认 1.0（华宝楼大屋面的原尺寸）；
+    'auto' = 按屋面进深 depth 线性缩放，12 m 进深为 1.0，夹在 [0.35, 1.0]（小亭不长角）。"""
+    v = prm.get('ornamentScale', 1.0)
+    if v == 'auto':
+        return max(0.35, min(1.0, depth / 12.0))
+    return float(v)
 
 
 # ------------------------------------------------------------ 攒尖 ----
