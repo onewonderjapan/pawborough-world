@@ -57,7 +57,22 @@ SC = bpy.context.scene
 # 场景：湖心亭 GLB + 九曲桥 GLB（上下文）+ 水面
 bpy.ops.import_scene.gltf(filepath=str(GLB))
 bpy.ops.import_scene.gltf(filepath=str(AREA / 'out-zone' / 'jiuqu-bridge.glb'))
-bpy.ops.mesh.primitive_plane_add(size=260, location=(CX, -(CZ + 6), 0.04))
+# R2：水面高度取运行时同值——layout 中覆盖湖心亭形心的 water 对象的 height（water-62072388 = -0.14；
+# build-scene 按此高度出水面）。R1 及以前固定 0.04，比运行时高 0.18 m，把台面下的桩淹掉一半。
+def _in_poly(x, z, poly):
+    c = False
+    for i in range(len(poly)):
+        (xi, zi), (xj, zj) = poly[i], poly[i - 1]
+        if (zi > z) != (zj > z) and x < (xj - xi) * (z - zi) / (zj - zi) + xi:
+            c = not c
+    return c
+WATER_Y = next((o['height'] for o in LAYOUT['objects'] if o.get('kind') == 'water'
+                and _in_poly(CX, CZ, o['geometry']['footprint'])), None)
+if WATER_Y is None:
+    raise SystemExit('no layout water object under huxin-ting centroid')
+if '--water-y' in ARGV:                        # 仅供复现 R1 旧图（0.04）
+    WATER_Y = float(arg('--water-y'))
+bpy.ops.mesh.primitive_plane_add(size=260, location=(CX, -(CZ + 6), WATER_Y))
 water = bpy.context.object
 wm = bpy.data.materials.new('water')
 wm.use_nodes = True
@@ -120,6 +135,9 @@ CAMS = {
 _ex = CX + 0.0 * UX + 19.0 * VX
 _ez = CZ + 0.0 * UZ + 19.0 * VZ
 CAMS['from-bridge'] = (Vector((_ex, -_ez, 0.55 + 1.55)), Vector(W(0, 0, 3.6)), 46)
+# R2 自查用近景（不进四图对照）：主楼南坡瓦面 / 西南角台面下桩列
+CAMS['roof-close'] = (Vector(W(-9.5, -12.0, 11.5)), Vector(W(-2.0, -3.0, 7.6)), 34)
+CAMS['piles-close'] = (Vector(W(-14.0, -12.5, 1.1)), Vector(W(-5.5, -4.5, 0.25)), 40)
 
 
 def wood_colour(cam, jpg):
@@ -164,7 +182,7 @@ def wood_colour(cam, jpg):
                 hueDeg=round(h * 360, 1), sat=round(s, 3), val=round(v, 3))
 
 
-report = dict(glb=str(GLB), lighting=LIGHTING, light=LIGHT, measureOnly=MEASURE_ONLY,
+report = dict(glb=str(GLB), lighting=LIGHTING, light=LIGHT, measureOnly=MEASURE_ONLY, waterY=WATER_Y,
               target=dict(srgb='#6a2e22', hueDeg=10.0, sat=0.679, val=0.416), views={})
 for name in VIEWS:
     p, t, fov = CAMS[name]

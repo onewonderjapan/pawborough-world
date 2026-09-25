@@ -1,8 +1,8 @@
 {
  "id": "huxin-ting",
  "glb": "<OUT_DIR>/huxin-ting.glb",
- "bytes": 760192,
- "tris": 11252,
+ "bytes": 1344336,
+ "tris": 21556,
  "partTriCounts": {
   "deck": 12,
   "piles": 240,
@@ -10,10 +10,10 @@
   "gallery1": 264,
   "railing": 1920,
   "body2": 24,
-  "porch": 1360,
-  "tower": 3828,
+  "porch": 3880,
+  "tower": 6260,
   "finial": 260,
-  "roof": 890,
+  "roof": 6242,
   "windows": 2418
  },
  "partObjectCounts": {
@@ -23,10 +23,75 @@
   "gallery1": 22,
   "railing": 160,
   "body2": 2,
-  "porch": 35,
-  "tower": 18,
-  "roof": 19,
+  "porch": 38,
+  "tower": 21,
+  "roof": 22,
   "windows": 3
+ },
+ "tileRidges": {
+  "towerskirt0-tile": {
+   "ribs": 60,
+   "ribLengthM": 73.34,
+   "rows": 3,
+   "cols": 44,
+   "closed": true
+  },
+  "towerskirt1-tile": {
+   "ribs": 60,
+   "ribLengthM": 73.34,
+   "rows": 3,
+   "cols": 44,
+   "closed": true
+  },
+  "towerroof-cone": {
+   "ribs": 88,
+   "ribLengthM": 185.38,
+   "rows": 7,
+   "cols": 20,
+   "closed": true
+  },
+  "mainroof-lower": {
+   "ribs": 156,
+   "ribLengthM": 425.72,
+   "rows": 8,
+   "cols": 28,
+   "closed": true
+  },
+  "mainroof-upper-s": {
+   "ribs": 24,
+   "ribLengthM": 86.82,
+   "rows": 4,
+   "cols": 7,
+   "closed": false
+  },
+  "mainroof-upper-n": {
+   "ribs": 24,
+   "ribLengthM": 86.82,
+   "rows": 4,
+   "cols": 7,
+   "closed": false
+  },
+  "porchroof-lower": {
+   "ribs": 84,
+   "ribLengthM": 155.53,
+   "rows": 7,
+   "cols": 28,
+   "closed": true
+  },
+  "porchroof-upper-s": {
+   "ribs": 12,
+   "ribLengthM": 16.38,
+   "rows": 4,
+   "cols": 7,
+   "closed": false
+  },
+  "porchroof-upper-n": {
+   "ribs": 12,
+   "ribLengthM": 16.38,
+   "rows": 4,
+   "cols": 7,
+   "closed": false
+  }
  },
  "frame": {
   "centroid": [
@@ -67,6 +132,13 @@
    4.8,
    6.2
   ],
+  "wa": {
+   "pitch": 0.33,
+   "halfW": 0.08,
+   "h": 0.07,
+   "sink": 0.012,
+   "stopRatio": 0.3
+  },
   "gallery": 1.1,
   "railH": 1.05,
   "picketGap": 0.55,

@@ -14,7 +14,8 @@ import { validateBytes } from 'gltf-validator';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
 const LAYOUT = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline', 'layout.json'), 'utf8'));
-const GLB_PATH = path.join(OUT, 'huxin-ting.glb');
+// HUXINTING_GLB：只换被测模块 GLB（在旧产物上先跑出失败用），总装 / 分区产物仍读 OUT_DIR
+const GLB_PATH = process.env.HUXINTING_GLB ? path.resolve(process.env.HUXINTING_GLB) : path.join(OUT, 'huxin-ting.glb');
 const HUXINTING = process.env.HUXINTING !== '0';   // 默认开启，同 ROCKERY_KIT / FANGBANG
 const BUDGET = { tris: 30000, bytes: 2.5 * 1024 * 1024 };
 
@@ -537,6 +538,88 @@ if (HUXINTING) {
   const want = new Set(coincide.map((c) => c.id));
   ok(`build-scene deferred[] 以 'duplicate-footprint-of-huxin-ting' 记下的 = layout 重算的重合件（记 ${[...dup].join(',') || '无'}；应 ${[...want].join(',') || '无'}）`,
     dup.size === want.size && [...want].every((id) => dup.has(id)));
+}
+
+// ---------------- 10) R2-1 瓦垄（主控 R2 2026-09-25：「瓦面是平的」，GLB 实测） ----------------
+// 瓦面 = 灰瓦材质、名以 -lower / -upper-s|n / -cone / -tile 结尾的 eave_kit 屋面件（主楼、抱厦、塔亭攒尖与两道腰檐）。
+// 每块瓦面必须有同名 -wa 垄条件，材质 = 同一灰瓦；按位置焊接（1e-4 m）分连通块 = 一条垄。
+//   垄距估算 = 瓦面面积 / Σ 垄长（垄长取连通块最远两点距离，弦长 ≤ 弧长，估算偏大 = 偏严）≤ 0.45 m；
+//   垄高 = 连通块顶点到瓦面三角网的最大距离：全部垄的中位数 0.04–0.12 m，且任何垄顶点离瓦面 ≤ 0.12 m（不漂浮）。
+function ptTriDist(p, a, b, c) {
+  const sub = (x, y) => [x[0] - y[0], x[1] - y[1], x[2] - y[2]];
+  const dot = (x, y) => x[0] * y[0] + x[1] * y[1] + x[2] * y[2];
+  const ab = sub(b, a), ac = sub(c, a), ap = sub(p, a);
+  const d1 = dot(ab, ap), d2 = dot(ac, ap);
+  if (d1 <= 0 && d2 <= 0) return Math.hypot(...ap);
+  const bp = sub(p, b), d3 = dot(ab, bp), d4 = dot(ac, bp);
+  if (d3 >= 0 && d4 <= d3) return Math.hypot(...bp);
+  const vc = d1 * d4 - d3 * d2;
+  if (vc <= 0 && d1 >= 0 && d3 <= 0) { const v = d1 / (d1 - d3); return Math.hypot(...sub(p, [a[0] + ab[0] * v, a[1] + ab[1] * v, a[2] + ab[2] * v])); }
+  const cp = sub(p, c), d5 = dot(ab, cp), d6 = dot(ac, cp);
+  if (d6 >= 0 && d5 <= d6) return Math.hypot(...cp);
+  const vb = d5 * d2 - d1 * d6;
+  if (vb <= 0 && d2 >= 0 && d6 <= 0) { const w = d2 / (d2 - d6); return Math.hypot(...sub(p, [a[0] + ac[0] * w, a[1] + ac[1] * w, a[2] + ac[2] * w])); }
+  const va = d3 * d6 - d5 * d4;
+  if (va <= 0 && d4 - d3 >= 0 && d5 - d6 >= 0) {
+    const w = (d4 - d3) / ((d4 - d3) + (d5 - d6));
+    return Math.hypot(...sub(p, [b[0] + (c[0] - b[0]) * w, b[1] + (c[1] - b[1]) * w, b[2] + (c[2] - b[2]) * w]));
+  }
+  const den = 1 / (va + vb + vc), v = vb * den, w = vc * den;
+  return Math.hypot(...sub(p, [a[0] + ab[0] * v + ac[0] * w, a[1] + ab[1] * v + ac[1] * w, a[2] + ab[2] * v + ac[2] * w]));
+}
+const triArea = (A, B, C) => {
+  const u = [B[0] - A[0], B[1] - A[1], B[2] - A[2]], w = [C[0] - A[0], C[1] - A[1], C[2] - A[2]];
+  return 0.5 * Math.hypot(u[1] * w[2] - u[2] * w[1], u[2] * w[0] - u[0] * w[2], u[0] * w[1] - u[1] * w[0]);
+};
+function components(p) {
+  // 按位置焊接后的连通块（flat 着色导出会按面拆顶点，索引不能直接用）
+  const key = (v) => v.map((x) => Math.round(x * 1e4)).join(',');
+  const id = new Map(), parent = [];
+  const vid = p.verts.map((v) => { const k = key(v); if (!id.has(k)) { id.set(k, parent.length); parent.push(parent.length); } return id.get(k); });
+  const find = (x) => { while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; };
+  for (const [a, b, c] of p.tris) { const ra = find(vid[a]); parent[find(vid[b])] = ra; parent[find(vid[c])] = ra; }
+  const groups = new Map();
+  p.verts.forEach((v, i) => { const r = find(vid[i]); if (!groups.has(r)) groups.set(r, []); groups.get(r).push(v); });
+  return [...groups.values()];
+}
+{
+  const tileMat = gltf.materials.find((m) => m.name === 'ht-tile-grey');
+  const surfaces = allParts.filter((n) => /-(lower|upper-[sn]|cone|tile)$/.test(n) && matsOfPart(n).every((m) => m === tileMat));
+  ok(`瓦面件 ${surfaces.length} 块（主楼下檐 + 上段两坡、抱厦下檐 + 上段两坡、塔亭攒尖 + 两道腰檐 = 9）`, surfaces.length === 9, surfaces.join(','));
+  const heights = [];
+  let floatMax = 0;
+  const wrongMat = [];
+  for (const s of surfaces) {
+    const S = parts.get(s);
+    const area = S.tris.reduce((acc, [a, b, c]) => acc + triArea(S.verts[a], S.verts[b], S.verts[c]), 0);
+    const tag = s.replace('huxin-ting__', '');
+    const rp = parts.get(`${s}-wa`);
+    if (!rp) { ok(`${tag} 有瓦垄件 -wa（瓦面 ${area.toFixed(1)} m²）`, false, '无 -wa 件：瓦面是平的'); continue; }
+    if (!matsOfPart(`${s}-wa`).every((m) => m === tileMat)) wrongMat.push(tag);
+    const comps = components(rp);
+    const STris = S.tris.map(([a, b, c]) => [S.verts[a], S.verts[b], S.verts[c]]);
+    let len = 0;
+    for (const vs of comps) {
+      let far = 0;
+      for (let i = 0; i < vs.length; i += 3) for (let j = i + 1; j < vs.length; j += 3) far = Math.max(far, Math.hypot(vs[i][0] - vs[j][0], vs[i][1] - vs[j][1], vs[i][2] - vs[j][2]));
+      len += far;
+      let hMax = 0;
+      for (const v of vs) {
+        let d = Infinity;
+        for (const [A, B, C] of STris) { d = Math.min(d, ptTriDist(v, A, B, C)); if (d < 1e-3) break; }
+        hMax = Math.max(hMax, d);
+      }
+      heights.push(hMax);
+      floatMax = Math.max(floatMax, hMax);
+    }
+    const pitch = len > 0 ? area / len : Infinity;
+    ok(`${tag} 瓦垄 ${comps.length} 条，垄距估算 ${pitch.toFixed(3)} m ≤ 0.45（瓦面 ${area.toFixed(1)} m² / 垄长 ${len.toFixed(1)} m）`, pitch <= 0.45);
+  }
+  heights.sort((x, y) => x - y);
+  const med = heights.length ? heights[heights.length >> 1] : 0;
+  ok(`瓦垄高中位数 ${med.toFixed(3)} m ∈ [0.04, 0.12]（${heights.length} 条）`, heights.length > 0 && med >= 0.04 && med <= 0.12);
+  ok(`瓦垄顶点离瓦面最大 ${floatMax.toFixed(3)} m ≤ 0.12（垄贴瓦面、不漂浮）`, heights.length > 0 && floatMax <= 0.12);
+  ok(`瓦垄材质 = 同一灰瓦 ht-tile-grey（不符 ${wrongMat.length}）`, heights.length > 0 && wrongMat.length === 0, wrongMat.join(','));
 }
 
 console.log(`RESULT pass=${pass} fail=${fail} skipped=${skipped}`);
