@@ -715,5 +715,89 @@ function components(p) {
   }
 }
 
+// ---------------- 12) R2-3 水中立柱（主控 R2：「整座亭子架在水里的石柱上，台面下能看到柱列和水面」，GLB 实测） ----------------
+// 水面 = layout 中覆盖湖心亭形心的 water 对象 height（运行时 build-scene 同值出水面）。承台顶冻结 0.55，与水面之间共 0.69 m。
+//   ① 板下净空（承台网格最低点 − 水面）≥ 0.50 m：参照 0010-G01 目测净空约 0.6 m、板厚约 0.3 m，两者在 0.69 m 内放不下，
+//      优先净空（阈值为本工单自定，R1 为 0.44）；
+//   ② 桩顶顶住板底（|桩顶 − 板底| ≤ 0.02）、桩脚入水（桩底 < 水面）；
+//   ③ 承台四边各有一排边桩：离该边最近的桩外皮到板边 ≤ 0.25 m（从外面看得到，不缩在板下阴影里）；
+//      该排沿边中距 ≤ 3.0 m，两端桩中心离角 ≤ 0.6 m；
+//   ④ 台面下水平射线（净空中高，四边外 3 m 垂直射入，每 0.25 m 一条）：首命中为桩的 ≥ 10%，射入板下 ≥ 1.0 m 仍未命中的 ≥ 50%
+//      （柱列之间看得到水面）。
+{
+  const inPolyXZ = (x, z, poly) => {
+    let c = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const [xi, zi] = poly[i], [xj, zj] = poly[j];
+      if ((zi > z) !== (zj > z) && x < ((xj - xi) * (z - zi)) / (zj - zi) + xi) c = !c;
+    }
+    return c;
+  };
+  const water = LAYOUT.objects.find((o) => o.kind === 'water' && o.geometry?.footprint && inPolyXZ(CX, CZ, o.geometry.footprint));
+  ok(`湖心亭形心落在 layout 水面对象内（${water ? `${water.id} height ${water.height}` : '无'}）`, !!water);
+  const WY = water ? water.height : NaN;
+  const deck = partVertsLocal('huxin-ting__deck');
+  const deckBot = Math.min(...deck.map((q) => q[2]));
+  ok(`板下净空 ${(deckBot - WY).toFixed(3)} m ≥ 0.50（承台底 ${deckBot.toFixed(3)} / 水面 ${WY}）`, deckBot - WY >= 0.5);
+  const piles = allParts.filter((n) => n.includes('__pile-')).map((n) => {
+    const L = partVertsLocal(n);
+    const us = L.map((q) => q[0]), vs = L.map((q) => q[1]), hs = L.map((q) => q[2]);
+    return { n, u0: Math.min(...us), u1: Math.max(...us), v0: Math.min(...vs), v1: Math.max(...vs), top: Math.max(...hs), bot: Math.min(...hs),
+      cu: (Math.min(...us) + Math.max(...us)) / 2, cv: (Math.min(...vs) + Math.max(...vs)) / 2 };
+  });
+  const topErr = Math.max(...piles.map((p) => Math.abs(p.top - deckBot)));
+  ok(`桩 ${piles.length} 根，桩顶顶住板底（最大偏差 ${topErr.toFixed(3)} m ≤ 0.02），桩脚入水（最高桩底 ${Math.max(...piles.map((p) => p.bot)).toFixed(2)} < ${WY}）`,
+    piles.length >= 8 && topErr <= 0.02 && piles.every((p) => p.bot < WY));
+  const du0 = -(U0 + DECK_SIDE), du1 = U0 + DECK_SIDE, dv0 = -(V0 + DECK_SIDE), dv1 = V0 + DECK_BRIDGE;
+  const sides = [
+    { tag: '西', edge: (p) => p.u0 - du0, along: (p) => p.cv, a: dv0, b: dv1 },
+    { tag: '东', edge: (p) => du1 - p.u1, along: (p) => p.cv, a: dv0, b: dv1 },
+    { tag: '南', edge: (p) => p.v0 - dv0, along: (p) => p.cu, a: du0, b: du1 },
+    { tag: '北（临桥）', edge: (p) => dv1 - p.v1, along: (p) => p.cu, a: du0, b: du1 },
+  ];
+  for (const sd of sides) {
+    const dmin = Math.min(...piles.map(sd.edge));
+    const row = piles.filter((p) => sd.edge(p) <= dmin + 0.05).map(sd.along).sort((x, y) => x - y);
+    let gap = 0;
+    for (let i = 1; i < row.length; i++) gap = Math.max(gap, row[i] - row[i - 1]);
+    const endOff = row.length ? Math.max(row[0] - sd.a, sd.b - row[row.length - 1]) : Infinity;
+    ok(`承台${sd.tag}边桩排：外皮距板边 ${dmin.toFixed(3)} m ≤ 0.25，${row.length} 根中距最大 ${gap.toFixed(2)} m ≤ 3.0，端桩离角 ${endOff.toFixed(2)} m ≤ 0.6`,
+      dmin <= 0.25 && row.length >= 2 && gap <= 3.0 && endOff <= 0.6);
+  }
+  // ④ 板下水平射线：只对桩与承台求交（其余构件都在台面以上）
+  const T = [];
+  for (const n of [...piles.map((p) => p.n), 'huxin-ting__deck']) {
+    const p = parts.get(n), L = p.verts.map(toLocal);
+    for (const [a, b, c] of p.tris) T.push({ A: L[a], B: L[b], C: L[c], pile: n !== 'huxin-ting__deck' });
+  }
+  const hMid = (deckBot + WY) / 2;
+  let nRay = 0, nPile = 0, nDeep = 0;
+  const rays = [];
+  for (let v = dv0 + 0.1; v <= dv1 - 0.1; v += 0.25) { rays.push([[du0 - 3, v, hMid], [1, 0, 0], 3]); rays.push([[du1 + 3, v, hMid], [-1, 0, 0], 3]); }
+  for (let u = du0 + 0.1; u <= du1 - 0.1; u += 0.25) { rays.push([[u, dv0 - 3, hMid], [0, 1, 0], 3]); rays.push([[u, dv1 + 3, hMid], [0, -1, 0], 3]); }
+  for (const [o, d, off] of rays) {
+    let bt = Infinity, bp = false;
+    for (const t of T) {
+      const e1 = [t.B[0] - t.A[0], t.B[1] - t.A[1], t.B[2] - t.A[2]], e2 = [t.C[0] - t.A[0], t.C[1] - t.A[1], t.C[2] - t.A[2]];
+      const pv = [d[1] * e2[2] - d[2] * e2[1], d[2] * e2[0] - d[0] * e2[2], d[0] * e2[1] - d[1] * e2[0]];
+      const det = e1[0] * pv[0] + e1[1] * pv[1] + e1[2] * pv[2];
+      if (Math.abs(det) < 1e-12) continue;
+      const tv = [o[0] - t.A[0], o[1] - t.A[1], o[2] - t.A[2]];
+      const uu = (tv[0] * pv[0] + tv[1] * pv[1] + tv[2] * pv[2]) / det;
+      if (uu < 0 || uu > 1) continue;
+      const qv = [tv[1] * e1[2] - tv[2] * e1[1], tv[2] * e1[0] - tv[0] * e1[2], tv[0] * e1[1] - tv[1] * e1[0]];
+      const vv = (d[0] * qv[0] + d[1] * qv[1] + d[2] * qv[2]) / det;
+      if (vv < 0 || uu + vv > 1) continue;
+      const tt = (e2[0] * qv[0] + e2[1] * qv[1] + e2[2] * qv[2]) / det;
+      if (tt > 1e-6 && tt < bt) { bt = tt; bp = t.pile; }
+    }
+    nRay++;
+    if (bt < Infinity && bp) nPile++;
+    if (bt - off >= 1.0) nDeep++;
+  }
+  ok(`板下射线（h ${hMid.toFixed(2)}，${nRay} 条）：首命中为桩 ${(100 * nPile / nRay).toFixed(0)}% ≥ 10%，射入板下 ≥ 1 m 未命中 ${(100 * nDeep / nRay).toFixed(0)}% ≥ 50%`,
+    nPile / nRay >= 0.1 && nDeep / nRay >= 0.5);
+}
+
 console.log(`RESULT pass=${pass} fail=${fail} skipped=${skipped}`);
 if (fail) { console.log('FAILURES:', failures.join(' | ')); process.exit(1); }

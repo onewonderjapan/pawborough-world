@@ -2,7 +2,7 @@
 glTF (x,y,z) = 地图 (x, 高度, z)，锚点 = footprint 面积形心（锚 empty 由 assemble.py 创建，模块网格不带变换）。
 
 冻结规格（GOAL 2026-09-25）：位置 = baseline/layout.json 对象 huxin-ting 的 6 点 footprint（pond 区）；
-台基灰色石承台顶 y=0.55（layout platformY）、石桩 0.4 m 方间距 ≈3 m 入水到 y=-0.6；主体两层
+台基灰色石承台顶 y=0.55（layout platformY）、石桩 0.4 m 方间距 ≈3 m 入水到 y=-0.6（R2：板厚 0.17、桩列贴板边）；主体两层
 （一层 3.4 / 二层 3.0）歇山主楼 + 每层外廊深红木栏杆 + 格心长窗（全木构立面、少量白墙）；
 一端（远离九曲桥）接方形攒尖塔亭（平面 4.2 m，比主楼高一层，鎏金宝顶 ≈12.0）；
 临九曲桥一侧单层抱厦（歇山小顶）；匾额空板。屋面必须用 modules/shared/eave_kit.py（只读），
@@ -56,7 +56,11 @@ V0 = (max(q[1] for q in LOC) - min(q[1] for q in LOC)) / 2
 # ---------------------------------------------------------------- 设计值 ----
 D = dict(
     deckSide=1.3, deckBridge=2.3,              # 承台外伸（临桥侧 2.3 接九曲桥，接口 ≤0.3 m）
-    deckBot=0.30, pileSize=0.4, pileTop=PLATFORM_Y - 0.25, pileBot=-0.6, pileSpacing=3.0,
+    # R2 水中立柱：台面顶 0.55（layout platformY）与运行时池水面 -0.14（layout water-62072388.height）之间只有 0.69 m。
+    # R1 承台板厚 0.25、桩列中心距板边 0.8（桩外皮在板边内 0.6 m），板下阴影里看不到桩，读成「台面落在水里」。
+    # R2：板厚 0.17（板底 0.38），桩列中心距板边 0.35（外皮在板边内 0.15），周边桩中距 ≤ 3.0 m
+    # → 板下净空 0.52 m 露出桩列与水面。桩顶伸进板底 0.01（不留缝）。
+    deckBot=0.38, pileSize=0.4, pileTop=0.39, pileBot=-0.6, pileSpacing=3.0, pileInset=0.35,
     st1=3.4, st2=3.0, st3=2.8,                 # 一层/二层/塔亭三层 层高（塔亭比主楼高一层）
     dadoH=0.95,                                # R1 白墙裙板高（R2 起不用：裙墙顶 = 该面一层窗下沿，见 skirt）
     win1=(1.60, 3.50), win2=(4.80, 6.20),      # 格心长窗带（一层 / 二层）
@@ -306,10 +310,12 @@ def box_uv(name, u0, v0, u1, v1, z0, z1, mat, part):
 DECK = [(-(U0 + D['deckSide']), -(V0 + D['deckSide'])), (U0 + D['deckSide'], -(V0 + D['deckSide'])),
         (U0 + D['deckSide'], V0 + D['deckBridge']), (-(U0 + D['deckSide']), V0 + D['deckBridge'])]
 prism('deck', DECK, D['deckBot'], PLATFORM_Y, 'ht-stone-deck', 'deck')
-nu = max(2, math.ceil((DECK[1][0] - DECK[0][0]) / D['pileSpacing']))
-nv = max(2, math.ceil((DECK[2][1] - DECK[1][1]) / D['pileSpacing']))
-us = [DECK[0][0] + 0.8 + i * (DECK[1][0] - DECK[0][0] - 1.6) / (nu - 1) for i in range(nu)]
-vs = [DECK[0][1] + 0.8 + i * (DECK[2][1] - DECK[0][1] - 1.6) / (nv - 1) for i in range(nv)]
+# R2：桩列中心距板边 pileInset（R1 为 0.8），列数取使中距 ≤ pileSpacing 的最小值（R1 为 ceil(边长/3)，中距 3.09 / 2.95）
+PI = D['pileInset']
+nu = max(2, math.ceil((DECK[1][0] - DECK[0][0] - 2 * PI) / D['pileSpacing']) + 1)
+nv = max(2, math.ceil((DECK[2][1] - DECK[0][1] - 2 * PI) / D['pileSpacing']) + 1)
+us = [DECK[0][0] + PI + i * (DECK[1][0] - DECK[0][0] - 2 * PI) / (nu - 1) for i in range(nu)]
+vs = [DECK[0][1] + PI + i * (DECK[2][1] - DECK[0][1] - 2 * PI) / (nv - 1) for i in range(nv)]
 for i, u in enumerate(us):
     for j, v in enumerate(vs):
         if 0 < i < nu - 1 and 0 < j < nv - 1 and (i + j) % 2 == 1:

@@ -1,11 +1,11 @@
 {
  "id": "huxin-ting",
  "glb": "<OUT_DIR>/huxin-ting.glb",
- "bytes": 1354500,
- "tris": 21664,
+ "bytes": 1363568,
+ "tris": 21760,
  "partTriCounts": {
   "deck": 12,
-  "piles": 240,
+  "piles": 336,
   "body1": 84,
   "gallery1": 264,
   "railing": 1920,
@@ -18,7 +18,7 @@
  },
  "partObjectCounts": {
   "deck": 1,
-  "piles": 20,
+  "piles": 28,
   "body1": 7,
   "gallery1": 22,
   "railing": 160,
@@ -115,11 +115,12 @@
  "designValues": {
   "deckSide": 1.3,
   "deckBridge": 2.3,
-  "deckBot": 0.3,
+  "deckBot": 0.38,
   "pileSize": 0.4,
-  "pileTop": 0.30000000000000004,
+  "pileTop": 0.39,
   "pileBot": -0.6,
   "pileSpacing": 3.0,
+  "pileInset": 0.35,
   "st1": 3.4,
   "st2": 3.0,
   "st3": 2.8,
