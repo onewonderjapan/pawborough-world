@@ -44,6 +44,14 @@ function anchorRouteDir(tag, allRoutes) {
   const l = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1;
   return [(b[0] - a[0]) / l, (b[1] - a[1]) / l];
 }
+// 出发路线折线（from 型；cont 型无前向折线 → null，走廊保持全长）。与生成器同一冻结源。
+function anchorRoutePts(tag, allRoutes) {
+  const spec = String(tag).slice('street:'.length);
+  if (spec.startsWith('cont:')) return null;
+  const [from, to] = spec.split('->');
+  const r = allRoutes.find(x => x.from === from && x.to === to);
+  return r ? r.points : null;
+}
 
 // 区域距离（<0 或 0 = 区域内）：footprint / 折线(半宽) / 岩石圆盘
 function regionOf(id) {
@@ -95,7 +103,7 @@ for (const [key, v] of Object.entries(tour)) {
   check(!cc.inFp, `${key} 机位落在建筑 ${cc.inFp} footprint 内 (${cam2.map(x => x.toFixed(1))})`);
   check(cc.d >= 0.8, `${key} 机位距建筑边 ${cc.d.toFixed(2)} m < 0.8 m`);
   // 3) 目标点在目标区域 3 m 缓冲内 —— 对象机位 = layout 对象区域；
-  //    锚点街景机位（targetObject = 'street:<route>'）= 锚点街廊（沿出发方向 6–36 m，冻结源重算）；
+  //    锚点街景机位（targetObject = 'street:<route>'）= 锚点街廊（沿出发路线第一段拐点前，6–36 m 夹取，冻结源重算）；
   //    anchor-jiuqu = 九曲桥锚点近段盒（折线 30 m 内点，冻结源重算）
   if (key === 'anchor-jiuqu' && v.targetObject === 'jiuqu-bridge') {
     const box = polylineNearBox(layoutObj('jiuqu-bridge'), nav.anchors.jiuqu);
@@ -106,7 +114,7 @@ for (const [key, v] of Object.entries(tour)) {
     const a = nav.anchors && nav.anchors[aKey];
     check(!!a, `${key} nav-gap 无锚点 ${aKey}`);
     if (a) {
-      const box = streetCorridorBox(a, anchorRouteDir(v.targetObject, routes));
+      const box = streetCorridorBox(a, anchorRouteDir(v.targetObject, routes), anchorRoutePts(v.targetObject, routes));
       const d = boxDist2d(box, t2);
       check(d <= 3, `${key} 目标点距锚点街廊 ${d.toFixed(1)} m > 3 m`);
     }
@@ -145,7 +153,7 @@ for (const [key, v] of Object.entries(tour)) {
   const box = key === 'anchor-jiuqu' && v.targetObject === 'jiuqu-bridge'
     ? polylineNearBox(layoutObj('jiuqu-bridge'), nav.anchors.jiuqu)
     : isStreet
-      ? streetCorridorBox(nav.anchors[key.slice('anchor-'.length)], anchorRouteDir(v.targetObject, routes))
+      ? streetCorridorBox(nav.anchors[key.slice('anchor-'.length)], anchorRouteDir(v.targetObject, routes), anchorRoutePts(v.targetObject, routes))
       : targetBox(layoutObj(v.targetObject));
   check(!!box && !!(box.min || box.center), `${key} 目标盒无法从冻结源重算（${v.targetObject}）`);
   if (!box || !(box.min || box.center)) continue;

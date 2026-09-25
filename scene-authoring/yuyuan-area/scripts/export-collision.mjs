@@ -11,6 +11,7 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { obbToWorld } from '../../../src/world/collisionAdapter.js';
 import { readGlb } from '../../../src/world/glbReader.js';
+import { dropFloatingSegments } from '../src/lib.mjs';
 
 const AREA = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(AREA, process.env.OUT_DIR || 'out');
@@ -20,11 +21,17 @@ const layoutSha = crypto.createHash('sha256').update(layoutBuf).digest('hex');
 const layout = JSON.parse(layoutBuf.toString('utf8'));
 const nav = JSON.parse(fs.readFileSync(path.join(OUT, 'nav-gap.json'), 'utf8'));
 const routes = JSON.parse(fs.readFileSync(path.join(OUT, 'commercial-route.json'), 'utf8')).routes;
-const gardenKitCollision = JSON.parse(fs.readFileSync(path.join(OUT, 'garden-kit-collision.json'), 'utf8'));
+// M1：garden-kit 附属 JSON 是输入，从固定暂存目录读（不再依赖 OUT_DIR 里恰好有它）
+const gardenKitCollision = JSON.parse(fs.readFileSync(path.join(AREA, 'staged', 'site-modules', 'garden-kit-collision.json'), 'utf8'));
 const rockeryCollision = JSON.parse(fs.readFileSync(path.join(AREA, 'modules', 'rockery', 'collision.json'), 'utf8'));
 const sansuitangLocal = JSON.parse(fs.readFileSync(path.join(AREA, 'modules', 'sansuitang', 'collision.json'), 'utf8'));
 const templeV3 = JSON.parse(fs.readFileSync(path.join(AREA, 'resources', 'temple-v3', 'collision-world.json'), 'utf8'));
 const sansuitangWorld = JSON.parse(fs.readFileSync(path.join(OUT, 'sansuitang-collision-world.json'), 'utf8'));
+// HALL_KIT=1（默认关）：厅堂套件样板仰山堂走模块碰撞记录（与 assemble 的世界记录互核）
+const HALL_KIT = process.env.HALL_KIT === '1';
+const HALLKIT_ID = 'bld-428179902';
+const hallkitLocal = HALL_KIT ? JSON.parse(fs.readFileSync(path.join(AREA, 'out-garden-kits', 'hallkit-' + HALLKIT_ID, 'collision.json'), 'utf8')) : null;
+const hallkitWorld = HALL_KIT ? JSON.parse(fs.readFileSync(path.join(OUT, 'hallkit-collision-world.json'), 'utf8')) : null;
 
 const AXIS = 'glTF Y-up; X east, Z south; heights from ground y=0';
 const EDGE_THICK = 0.3, EDGE_H_DEFAULT = 6;   // 建筑 footprint 薄墙（冻结格式）
@@ -128,7 +135,7 @@ for (const o of layout.objects) {
   const g = o.geometry || {};
   const isBuilding = ['hall', 'tower', 'xuan', 'stage', 'waterside', 'pavilion', 'bazaarBlock'].includes(o.kind)
     || (o.kind === 'outerBuilding' && o.zone === 'bazaar');
-  if (!isBuilding || !g.footprint || o.id === SANSUITANG_ID || PAV.has(o.id)) continue;
+  if (!isBuilding || !g.footprint || o.id === SANSUITANG_ID || (HALL_KIT && o.id === HALLKIT_ID) || PAV.has(o.id)) continue;
   const h = o.height || EDGE_H_DEFAULT;
   ringEdges(g.footprint).forEach(([a, b], i) => {
     // 非凸老街块（旧校场路沿线）的「街口边」：路线中心线 0.55 m 内的是街口，真实墙在店前不含这条边
@@ -142,11 +149,18 @@ for (const o of layout.objects) {
 }
 
 // ---------- 2) 园墙 / 庙墙：layout 段重算（高/厚取 garden-kit 记录值） ----------
+// M3：temple-wall 两端悬空的孤立段（第 19 段空地薄板）不建碰撞，与 garden-kit 重建同步过滤；
+// 记录名保留冻结 layout 的原段索引（seg-20 不因剔除而重编号）。
+const FLOATING_DROP_WALLS = new Set(['temple-wall']);
 const WALL_HEIGHT = { 'garden-wall': 2.9, 'temple-wall': 2.6 };
 for (const o of layout.objects) {
   if (o.kind !== 'wall' || !Array.isArray((o.geometry || {}).segments)) continue;
   const h = WALL_HEIGHT[o.id] ?? 2.9;
-  o.geometry.segments.forEach((s, i) => edgeWall(o.zone, `${o.id}:seg-${i}`, 'wall-segment', s[0], s[1], h, WALL_THICK));
+  const keep = FLOATING_DROP_WALLS.has(o.id) ? new Set(dropFloatingSegments(o.geometry.segments)) : null;
+  o.geometry.segments.forEach((s, i) => {
+    if (keep && !keep.has(s)) return;
+    edgeWall(o.zone, `${o.id}:seg-${i}`, 'wall-segment', s[0], s[1], h, WALL_THICK);
+  });
 }
 
 // ---------- 3) 月洞墙（yuhuatang-moongate）：garden-kit 三条代理盒，世界坐标 ----------
@@ -201,6 +215,37 @@ for (const pid of PAVILIONS) {
   });
   if (maxDelta > 0.05) throw new Error(`sansuitang recompute diverges from assemble output by ${maxDelta.toFixed(3)} m`);
   stats.modulesRecomputed[SANSUITANG_ID] = { pos: [cx, cz], rotY, maxDeltaVsAssemble: +maxDelta.toFixed(4) };
+}
+
+// ---------- 5b) 厅堂套件（HALL_KIT=1：hallkit-<id> 局部记录 + layout 面积形心/facade 位姿，复核 OUT 世界记录） ----------
+if (HALL_KIT) {
+  const o = layout.objects.find(x => x.id === HALLKIT_ID);
+  const fp = ring(o.geometry.footprint);
+  // 位置公式 = footprint 多边形面积形心（GOAL 冻结；与 assemble.py / build_hall.py 同式）
+  const n = fp.length;
+  const a2 = fp.reduce((s, p, i) => s + p[0] * fp[(i + 1) % n][1] - fp[(i + 1) % n][0] * p[1], 0) / 2;
+  const cx = Math.abs(a2) < 1e-6
+    ? fp.reduce((s, q) => s + q[0], 0) / n
+    : fp.reduce((s, p, i) => s + (p[0] + fp[(i + 1) % n][0]) * (p[0] * fp[(i + 1) % n][1] - fp[(i + 1) % n][0] * p[1]), 0) / (6 * a2);
+  const cz = Math.abs(a2) < 1e-6
+    ? fp.reduce((s, q) => s + q[1], 0) / n
+    : fp.reduce((s, p, i) => s + (p[1] + fp[(i + 1) % n][1]) * (p[0] * fp[(i + 1) % n][1] - fp[(i + 1) % n][0] * p[1]), 0) / (6 * a2);
+  const d = o.facade.dir;
+  const rotY = Math.atan2(d[0], d[1]);
+  const c = Math.cos(rotY), s = Math.sin(rotY);
+  let maxDelta = 0;
+  const world = hallkitWorld.colliders;
+  if (world.length !== hallkitLocal.colliders.length) throw new Error('hallkit: assemble record count mismatch');
+  hallkitLocal.colliders.forEach((b, bi) => {
+    const [lx, ly, lz] = b.center;
+    const wx = cx + lx * c + lz * s, wz = cz - lx * s + lz * c; // 与 assemble.py 同式
+    add(o.zone, `${HALLKIT_ID}:${b.name}`, 'hall-kit', rotY, [cx, 0, cz], [lx, ly, lz], b.size);
+    const ref = world[bi];
+    if (ref.name !== b.name) throw new Error(`hallkit: record order mismatch at ${bi} (${ref.name} vs ${b.name})`);
+    maxDelta = Math.max(maxDelta, Math.hypot(ref.center[0] - wx, ref.center[2] - wz));
+  });
+  if (maxDelta > 0.05) throw new Error(`hallkit recompute diverges from assemble output by ${maxDelta.toFixed(3)} m`);
+  stats.modulesRecomputed[HALLKIT_ID] = { pos: [cx, cz], rotY, maxDeltaVsAssemble: +maxDelta.toFixed(4) };
 }
 
 // ---------- 6) 假山（modules/rockery 世界坐标盒） ----------

@@ -81,6 +81,7 @@ for z, f in proc_files.items():
 
 # ---------- 站点模块（SITE_MODULES=1：garden-kit 的龙墙/庙墙/月洞门/九曲桥） ----------
 # 世界坐标 GLB（原点=地图0,0），直接导入，不加实例变换。
+# 输入在固定暂存目录 staged/site-modules/（M1：与 OUT_DIR 产物解耦；rebuild-review.sh 开头另复制进 OUT_DIR 供交付/下游）。
 SITE_FILES = {
     'SITE-garden': ['garden-wall.glb', 'moon-gate.glb'],
     'SITE-temple': ['temple-wall.glb'],
@@ -96,6 +97,7 @@ SITE_ANCHORS = {
 }
 site_imported = []
 if os.environ.get('SITE_MODULES') == '1':
+    STAGED_SITE = os.path.join(ROOT, 'staged', 'site-modules')
     # R1#4 fallback：总装超 30MB 时 SITE_DROP_TEMPLE=1 把 temple-wall 网格从总装剔除；
     # 锚空节点仍创建（reconcile/coverage 对账按节点名），temple-wall.glb 照常交付。
     drop_mesh = {'temple-wall.glb'} if os.environ.get('SITE_DROP_TEMPLE') == '1' else set()
@@ -103,7 +105,7 @@ if os.environ.get('SITE_MODULES') == '1':
         print('SITE_DROP_TEMPLE=1 (R1#4 30MB fallback): temple-wall mesh kept out of assembly; anchor kept, GLB still delivered')
     for collname, files in SITE_FILES.items():
         for f in files:
-            p = os.path.join(OUT, f)
+            p = os.path.join(STAGED_SITE, f)
             if os.path.exists(p) and f not in drop_mesh:
                 objs = import_glb(p, collname)
                 parent = None
@@ -308,6 +310,51 @@ if os.environ.get('SANSUITANG') == '1':
                   open(os.path.join(OUT, 'sansuitang-collision-world.json'), 'w'), ensure_ascii=False, indent=1)
         print('sansuitang collision world boxes:', len(world_boxes))
     print('sansuitang placed', sst_placed)
+
+# ---------- 厅堂套件（HALL_KIT=1，默认关：modules/hall-kit 生成器件替代程序化 hall bld-428179902，WP8 样板仰山堂） ----------
+# 位置 = footprint 多边形面积形心（GOAL 冻结公式，与顶点均值形心不同；模块原点即面积形心，生成器重锚），
+# rotY = atan2(facade.dir.x, facade.dir.z)。collision.json（实例坐标）同 sansuitang 契约变换出世界记录。
+hall_placed = 0
+if os.environ.get('HALL_KIT') == '1':
+    lay_obj = {o['id']: o for o in LAYOUT['objects']}
+    for hall_id in ('bld-428179902',):
+        o = lay_obj[hall_id]
+        fp = o['geometry']['footprint']
+        fp = fp[:-1] if fp[0] == fp[-1] else fp
+        n = len(fp)
+        a2 = sum(fp[i][0] * fp[(i + 1) % n][1] - fp[(i + 1) % n][0] * fp[i][1] for i in range(n)) / 2
+        if abs(a2) < 1e-6:
+            cx = sum(q[0] for q in fp) / n; cz = sum(q[1] for q in fp) / n
+        else:
+            cx = sum((fp[i][0] + fp[(i + 1) % n][0]) * (fp[i][0] * fp[(i + 1) % n][1] - fp[(i + 1) % n][0] * fp[i][1]) for i in range(n)) / (6 * a2)
+            cz = sum((fp[i][1] + fp[(i + 1) % n][1]) * (fp[i][0] * fp[(i + 1) % n][1] - fp[(i + 1) % n][0] * fp[i][1]) for i in range(n)) / (6 * a2)
+        d = o['facade']['dir']
+        rot_y = math.atan2(d[0], d[1])
+        HALL_DIR = os.path.join(ROOT, 'out-garden-kits', 'hallkit-' + hall_id)
+        hall_objs = import_glb(os.path.join(HALL_DIR, 'model.glb'), 'MODLIB')
+        for oo in hall_objs:
+            oo.hide_render = True
+            oo.hide_viewport = True
+        place(hall_objs, {'id': hall_id, 'module': 'hall-kit', 'zone': o.get('zone', 'garden'), 'lod': 'L2',
+                          'position': [cx, cz], 'rotY': rot_y})
+        hall_placed += 1
+        coll_path = os.path.join(HALL_DIR, 'collision.json')
+        if os.path.exists(coll_path):
+            cc = json.load(open(coll_path, encoding='utf-8'))
+            ct, st = math.cos(rot_y), math.sin(rot_y)
+            world_boxes = []
+            for b in cc.get('colliders', []):
+                lx, ly, lz = b['center']
+                wx = cx + lx * ct + lz * st      # 地图系：local(x,z) -> world(x,z)
+                wz = cz - lx * st + lz * ct
+                world_boxes.append({'name': b['name'], 'center': [round(wx, 3), round(ly, 3), round(wz, 3)],
+                                    'size': b['size'], 'type': b.get('type', 'box'), 'rotY': round(rot_y, 6)})
+            json.dump({'source': 'out-garden-kits/hallkit-%s/collision.json (instance space)' % hall_id,
+                       'instance': {'id': hall_id, 'position': [round(cx, 3), round(cz, 3)], 'rotY': round(rot_y, 6)},
+                       'colliders': world_boxes},
+                      open(os.path.join(OUT, 'hallkit-collision-world.json'), 'w'), ensure_ascii=False, indent=1)
+            print('hall-kit collision world boxes:', len(world_boxes))
+    print('hall kit placed', hall_placed)
 
 # ---------- 假山站点模块（默认开启；ROCKERY_KIT=0 退回程序化占位。世界坐标 GLB，锚点按 baseline/layout.json 重算） ----------
 # 网格已在地图坐标（build-rockery：GLB x,y,z = map x,z,y）。锚 empty 放在占位盒并集的 footprint 形心，
@@ -721,6 +768,37 @@ if os.environ.get('HUXINTING') == '1':
     bpy.context.view_layer.update()
     huxinting_placed += 1
     print('huxinting placed huxin-ting centroid', round(hx, 3), round(hz, 3), 'rotY', round(math.atan2(ux, uz), 4))
+# ---------- 华宝楼站点模块（BAZAAR_TOWERS=1：modules/bazaar-tower-kit 世界坐标 GLB 替代程序化 bazaarBlock） ----------
+# GLB 已在地图坐标（build_tower：export_yup 后 GLB x,z = layout 地图系），锚 empty 名 bld-428202599
+# 位于 footprint 面积形心（GLB 自带；此处按 layout 重算校验）。分区归属 zone-bazaar-2（export-zones）。
+bazaar_tower_placed = 0
+if os.environ.get('BAZAAR_TOWERS') == '1':
+    TW_DIR = os.path.join(ROOT, os.environ.get('BAZAAR_TOWER_DIR', 'out-bazaar-towers/bld-428202599'))
+    tw_glb = os.path.join(TW_DIR, 'model.glb')
+    if not os.path.exists(tw_glb):
+        raise SystemExit('BAZAAR_TOWERS=1 but tower GLB missing: %s (run modules/bazaar-tower-kit/build_tower.py)' % tw_glb)
+    _obj = next(o for o in LAYOUT['objects'] if o['id'] == 'bld-428202599')
+    _fp = _obj['geometry']['footprint']
+    if _fp[0] == _fp[-1]:
+        _fp = _fp[:-1]
+    _a = _cx = _cz = 0.0
+    for _i in range(len(_fp)):
+        _x0, _z0 = _fp[_i]
+        _x1, _z1 = _fp[(_i + 1) % len(_fp)]
+        _cr = _x0 * _z1 - _x1 * _z0
+        _a += _cr
+        _cx += (_x0 + _x1) * _cr
+        _cz += (_z0 + _z1) * _cr
+    _a *= 0.5
+    _acx, _acz = _cx / (6 * _a), _cz / (6 * _a)
+    tw_objs = import_glb(tw_glb, 'SITE-bazaar')
+    tw_anchor = next(o for o in tw_objs if o.type == 'EMPTY' and o.name == 'bld-428202599')
+    _d = math.hypot(tw_anchor.location.x - _acx, tw_anchor.location.y - (-_acz))
+    if _d > 0.1:
+        raise SystemExit('tower anchor off area centroid by %.3f m (layout recompute)' % _d)
+    tw_anchor['module'] = 'bazaar-tower-kit'
+    print('bazaar tower placed', tw_anchor.name, 'centroid', round(_acx, 3), round(_acz, 3), 'anchorDev %.4f' % _d)
+    bazaar_tower_placed = 1
 
 # MODLIB 收藏不导出
 modlib = bpy.data.collections.get('MODLIB')
@@ -766,7 +844,7 @@ def export_glb(path, objects):
         bpy.ops.export_scene.gltf(filepath=path, export_format='GLB', export_yup=True, use_selection=True)
     print('exported', path, os.path.getsize(path), 'bytes')
 
-SITE_ALL = [o for c in ('SITE-garden', 'SITE-temple', 'SITE-pond', 'SITE-fangbang')
+SITE_ALL = [o for c in ('SITE-garden', 'SITE-temple', 'SITE-pond', 'SITE-fangbang', 'SITE-bazaar')
             if c in bpy.data.collections for o in bpy.data.collections[c].objects]
 all_objs = [o for c in ('ZONE-garden', 'ZONE-temple', 'ZONE-bazaar', 'ZONE-pond', 'ZONE-outer',
                         'INST-garden', 'INST-temple', 'INST-bazaar', 'INST-outer')
@@ -800,8 +878,10 @@ stats = {
     'siteModules': site_imported,
     'stallKitPlaced': stall_placed,
     'sansuitangPlaced': sst_placed,
+    'hallKitPlaced': hall_placed,
     'rockeryKitPlaced': rockery_placed,
     'huxintingPlaced': huxinting_placed,
+    'bazaarTowerPlaced': bazaar_tower_placed,
     'gardenKitPlaced': garden_kit_placed,
     'fangbangPlaced': fangbang_placed,
     'fangbangExcluded': fangbang_excluded,

@@ -47,6 +47,9 @@ artifacts/world-ten-hour/round-005/delivery/*.zip
 /scene-authoring/yuyuan-area/out-*/
 /scene-authoring/yuyuan-area/resources/
 /scene-authoring/yuyuan-area/.python-deps/
+# M1: fixed staging dir for pipeline inputs (garden-kit site modules) — binaries via
+# docs/MIGRATION-ASSETS.json, never in the repo.
+/scene-authoring/yuyuan-area/staged/
 /scene-authoring/yuyuan-area/baseline/*.glb
 /scene-authoring/yuyuan-area/inputs/*.glb
 /asset-authoring/**/props/

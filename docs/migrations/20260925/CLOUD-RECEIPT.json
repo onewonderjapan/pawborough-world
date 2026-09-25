@@ -1,0 +1,103 @@
+{
+ "status": "complete",
+ "finishedAt": "2026-09-25T09:43:34.697500+09:00",
+ "bucket": "onewonder-pawborough-assets-566601428909-apne1",
+ "region": "ap-northeast-1",
+ "public": false,
+ "objects": 13,
+ "uploaded": 9,
+ "reused": 4,
+ "results": [
+  {
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202599/model.glb",
+   "sha256": "550dc8a22cb710c8793619a7c01b2003f203111e4ce9d66844f4bd96a2406c8a",
+   "bytes": 2195416,
+   "key": "objects/sha256/55/550dc8a22cb710c8793619a7c01b2003f203111e4ce9d66844f4bd96a2406c8a",
+   "result": "uploaded"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-garden-kits/hallkit-bld-428179902/collision.json",
+   "sha256": "fc45c8dde966a5992f914727b3008798ff5cad164f61f4f5beeb27a944030ec2",
+   "bytes": 9427,
+   "key": "objects/sha256/fc/fc45c8dde966a5992f914727b3008798ff5cad164f61f4f5beeb27a944030ec2",
+   "result": "uploaded"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-garden-kits/hallkit-bld-428179902/measurements.json",
+   "sha256": "d5be5b22a6f9940c7ad1fd102761dcc38d290e76493c65025c454940a581c98c",
+   "bytes": 985,
+   "key": "objects/sha256/d5/d5be5b22a6f9940c7ad1fd102761dcc38d290e76493c65025c454940a581c98c",
+   "result": "uploaded"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-garden-kits/hallkit-bld-428179902/model.glb",
+   "sha256": "284c8ba3ba928599e3be5c1774481bb5781a07a69609ffac23e4982fd57b79f1",
+   "bytes": 486748,
+   "key": "objects/sha256/28/284c8ba3ba928599e3be5c1774481bb5781a07a69609ffac23e4982fd57b79f1",
+   "result": "uploaded"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-garden-kits/hallkit-bld-428179902/recipe.json",
+   "sha256": "b48b1d41ed0e04f52ebfdde4fa7d4e158322c0ed8f63185facecd815f7001a5e",
+   "bytes": 1606,
+   "key": "objects/sha256/b4/b48b1d41ed0e04f52ebfdde4fa7d4e158322c0ed8f63185facecd815f7001a5e",
+   "result": "uploaded"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/staged/site-modules/garden-kit-catalog.json",
+   "sha256": "f952deddbd65e0bd012839da2c76b3198551f44d3af1b39efcebe39c17852815",
+   "bytes": 5777,
+   "key": "objects/sha256/f9/f952deddbd65e0bd012839da2c76b3198551f44d3af1b39efcebe39c17852815",
+   "result": "uploaded"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/staged/site-modules/garden-kit-collision.json",
+   "sha256": "d3396c04740ba6dc24d0a6d9818b409bf2b3d7f19ee9ac40244d410c835b2eaa",
+   "bytes": 22916,
+   "key": "objects/sha256/d3/d3396c04740ba6dc24d0a6d9818b409bf2b3d7f19ee9ac40244d410c835b2eaa",
+   "result": "uploaded"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/staged/site-modules/garden-kit-reimport.json",
+   "sha256": "cfce710ff4591b769be5f8a091d8f269aeaa0d72b5e33e9bdae5ece19f814a2a",
+   "bytes": 1995,
+   "key": "objects/sha256/cf/cfce710ff4591b769be5f8a091d8f269aeaa0d72b5e33e9bdae5ece19f814a2a",
+   "result": "uploaded"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/staged/site-modules/garden-wall.glb",
+   "sha256": "388a9768c733bf9725eb86d4d27ea7f036c58a5b3834f0bbbc27301c4c0e63ce",
+   "bytes": 1298392,
+   "key": "objects/sha256/38/388a9768c733bf9725eb86d4d27ea7f036c58a5b3834f0bbbc27301c4c0e63ce",
+   "result": "reused"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/staged/site-modules/jiuqu-bridge.glb",
+   "sha256": "61499669ecf00f4f19617b0a6d42c026a062c6fc188ef78304315d09af9857b3",
+   "bytes": 492824,
+   "key": "objects/sha256/61/61499669ecf00f4f19617b0a6d42c026a062c6fc188ef78304315d09af9857b3",
+   "result": "reused"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/staged/site-modules/moon-gate.glb",
+   "sha256": "5e2074e5105b7c44a570b55b8d6c0f16dfdf4b1741ea8d9b5b433b6c93b08708",
+   "bytes": 194708,
+   "key": "objects/sha256/5e/5e2074e5105b7c44a570b55b8d6c0f16dfdf4b1741ea8d9b5b433b6c93b08708",
+   "result": "reused"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/staged/site-modules/site-inputs.json",
+   "sha256": "7bdb8bcf5eae7082b055888a2a2133179d6e9c481d805156fe0da8c5a61de26c",
+   "bytes": 16191,
+   "key": "objects/sha256/7b/7bdb8bcf5eae7082b055888a2a2133179d6e9c481d805156fe0da8c5a61de26c",
+   "result": "reused"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/staged/site-modules/temple-wall.glb",
+   "sha256": "f0755ea3f9af7d64f252b73f2dd1777f2a20d4c0848dd6b89ba04f37d08ed456",
+   "bytes": 251192,
+   "key": "objects/sha256/f0/f0755ea3f9af7d64f252b73f2dd1777f2a20d4c0848dd6b89ba04f37d08ed456",
+   "result": "uploaded"
+  }
+ ]
+}

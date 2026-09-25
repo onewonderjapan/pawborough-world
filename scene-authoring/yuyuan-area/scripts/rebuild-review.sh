@@ -2,8 +2,19 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 export OUT_DIR="${OUT_DIR:-out-rebuilt-review}"
+# M1: garden-kit 站点模块是预生成输入（记录在 docs/MIGRATION-ASSETS.json，sha 定账）。
+# 权威副本在固定暂存目录 staged/site-modules/；管线从那里读，这里另复制一份进 OUT_DIR，
+# 让交付清单 / validator / 产物检查继续把站点模块 GLB 当作 OUT_DIR 产物看待（下游不变）。
+if [ -d staged/site-modules ]; then
+  mkdir -p "$OUT_DIR"
+  cp -pr staged/site-modules/. "$OUT_DIR"/
+fi
 # The input snapshot and accepted source modules remain read-only.
 python3 -X utf8 scripts/repair-layout.py
+# HALL_KIT=1: 厅堂套件（WP8 样板仰山堂）从 layout 字段重生成，再由 assemble 实例放置
+if [ "${HALL_KIT:-0}" = "1" ]; then
+  blender -b -t 4 --python-exit-code 1 -P modules/hall-kit/build_hall.py -- --id bld-428179902
+fi
 node src/build-scene.mjs
 blender -b --python-exit-code 1 -P scripts/assemble.py
 node scripts/audit-commerce.mjs

@@ -1,0 +1,171 @@
+{
+  "id": "bld-428202599",
+  "name": "华宝楼",
+  "zone": "bazaar",
+  "source": "DESIGN_SPEC.json (wave1-huabao-20260923, frozen 2026-09-24) — numbers authoritative; footprint from baseline/layout.json",
+  "frontEdge": [
+    0,
+    1
+  ],
+  "frontName": "中心广场",
+  "backName": "方浜中路",
+  "massing": {
+    "plinthHeightM": 0.45,
+    "plinthOutsetM": 0.12,
+    "wallInsetM": 0.3,
+    "storeyHeightsM": [
+      4.8,
+      3.6,
+      3.6,
+      3.4
+    ],
+    "wallTopM": 15.4,
+    "setbackStoreys": [
+      4
+    ],
+    "setbackStreetM": 2.0
+  },
+  "roof": {
+    "type": "xishan",
+    "ridgeHeightM": 20.8,
+    "breakHeightM": 17.9,
+    "eaveDropM": 0.3,
+    "ridgeRadiusM": 0.14,
+    "breakInsetFrac": 0.42,
+    "gableInsetM": 1.2,
+    "ridgeNote": "lead 2026-09-24: 19.0 gave an 11° upper pitch (reads flat); raised to 20.8 (~30°); DESIGN_SPEC says ridge ≈ 19.0 and max ≤ 24.5 — within the max, logged as design inference",
+    "eaveKit": {
+      "over": 1.3,
+      "note": "lead 2026-09-24: main-roof corners sit mid-façade on the west side; 1.3 m keeps them within the per-edge overhang rule"
+    }
+  },
+  "eaves": {
+    "overhangM": 1.2,
+    "cornerLiftM": 0.9,
+    "cornerReachM": 2.6,
+    "fasciaDropM": 0.24
+  },
+  "pavilion": {
+    "corner": "uMax-vMin",
+    "planM": 7.5,
+    "tierHeightsM": [
+      3.4,
+      3.2
+    ],
+    "pyramidOutsetM": 0.5,
+    "pyramidLiftM": 0.45,
+    "apexAboveLastEaveM": 1.6,
+    "finial": {
+      "rodM": 0.55,
+      "sphereRM": 0.2,
+      "topM": 24.3
+    },
+    "zanjian": {
+      "over": 0.9,
+      "chu": 0.3,
+      "qiao": 0.7,
+      "reach": 1.8,
+      "rings": 6,
+      "curve": 1.5
+    },
+    "eaveKit": {
+      "over": 1.2,
+      "rootRise": 0.8,
+      "note": "lead 2026-09-24: pavilion eaves shallower than the 1.5 m storey eaves"
+    }
+  },
+  "facades": {
+    "bayRhythmM": [
+      3.3,
+      3.6
+    ],
+    "columnSizeM": 0.32,
+    "columnBaseM": 0.06,
+    "frameLintelHM": 0.25,
+    "frameProjectM": 0.05,
+    "frameDepthM": 0.18,
+    "longWindowLeaves": 5,
+    "longWindowLatticeFrac": 0.62,
+    "leafGapM": 0.05,
+    "halfWindowLatticeFrac": 0.5,
+    "balustradePostPitchM": 2.3,
+    "balustradeSlatPitchM": 0.12,
+    "balustradeSlatBarM": 0.045,
+    "guoluoCellsPerM": 8.0,
+    "galleryDepthM": 1.1,
+    "galleryStoreys": [
+      2,
+      3
+    ],
+    "balustradeHM": 1.0,
+    "fasciaDepthM": 0.45,
+    "floor2PlaqueM": [
+      8.0,
+      2.0
+    ],
+    "floor2PlaqueBorderM": 0.09,
+    "window": {
+      "widthM": 1.7,
+      "heightM": 1.9,
+      "sillM": 0.9
+    },
+    "shopfront": {
+      "glassHeadM": 3.9,
+      "sillM": 0.9,
+      "frameM": 0.12,
+      "mullionM": 0.08,
+      "mullionPitchM": 1.05
+    }
+  },
+  "materials": {
+    "timberTint": "6a2e22",
+    "plasterTint": "f2efe8",
+    "plinthTint": "8b9089",
+    "gilded": "b08a3e",
+    "glass": "20252a",
+    "glassAlpha": 0.85,
+    "dark": "241d18",
+    "roofTile": [
+      1.4,
+      1.2
+    ],
+    "timberTile": [
+      0.9,
+      2.2
+    ],
+    "plasterTile": [
+      2.2,
+      2.2
+    ],
+    "plinthTile": [
+      2.0,
+      1.0
+    ]
+  },
+  "budget": {
+    "trisMax": 40000,
+    "glbMaxMB": 2.5
+  },
+  "detail": {
+    "eaveSegM": 1.7,
+    "bevelM": 0.01
+  },
+  "eaveKit": {
+    "over": 1.5,
+    "chu": 0.35,
+    "qiao": 0.9,
+    "reach": 2.6,
+    "drop": 0.3,
+    "tileH": 0.14,
+    "boardH": 0.26,
+    "rootRise": 0.95,
+    "curve": 1.7,
+    "soffitRise": 0.15,
+    "straightStep": 3.0,
+    "cornerStep": 0.25,
+    "cornerSteps": 6,
+    "bracketStepM": 5.2,
+    "rings": 7,
+    "note": "lead eave_kit 2026-09-24: over 1.2→1.5 so the storey eaves clear the 1.1 m galleries by 0.4 m and read as tiled slopes from the street (PBR-SH-0003-006 shows deep, heavy eaves); rootRise 0.95 (≈32°); chu 0.35, tile/board heights and bracket step are lead design inference"
+  }
+}

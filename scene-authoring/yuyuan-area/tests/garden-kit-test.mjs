@@ -1,14 +1,16 @@
 // garden-kit 站点模块测试：DESIGN_SPEC.tests.asserts 逐条。
 // 纯 Node：解析 GLB（JSON+BIN）取三角/顶点/材质/图片，Möller–Trumbore 射线。
-// 缺 out-garden-kit 时跳过（不进默认 npm test；test:garden-kit 单独跑）。
-// 用法：OUT_DIR=out-garden-kit node tests/garden-kit-test.mjs
+// 缺 staged/site-modules（站点模块输入，M1 起与 OUT_DIR 解耦）时跳过（不进默认 npm test；test:garden-kit 单独跑）。
+// 用法：OUT_DIR=out-zone node tests/garden-kit-test.mjs（OUT_DIR 只影响第 9 节的总装产物核对）
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateBytes } from 'gltf-validator';
+import { dropFloatingSegments, distToSeg } from '../src/lib.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-garden-kit');
+const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
+const STAGED = path.resolve(ROOT, 'staged', 'site-modules');
 const LAYOUT = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline', 'layout.json'), 'utf8'));
 
 let pass = 0, fail = 0, skipped = 0;
@@ -19,8 +21,8 @@ function ok(name, cond, detail = '') {
 }
 function skip(name, why) { skipped++; console.log('SKIP', name, '-', why); }
 
-if (!fs.existsSync(path.join(OUT, 'garden-wall.glb'))) {
-  console.log(`garden-kit artefacts not found in ${OUT} (OUT_DIR) — skipping (build with SITE_MODULES=1 first)`);
+if (!fs.existsSync(path.join(STAGED, 'garden-wall.glb'))) {
+  console.log(`garden-kit 站点模块输入 not found in ${STAGED} (staged/site-modules) — skipping`);
   process.exit(0);
 }
 
@@ -176,17 +178,18 @@ function pointDistToSeg(p, a, b) {
   return { d: Math.hypot(p[0] - (a[0] + dx * t), p[1] - (a[1] + dz * t)), t };
 }
 
-const garden = parseGlb(path.join(OUT, 'garden-wall.glb'));
-const temple = parseGlb(path.join(OUT, 'temple-wall.glb'));
-const moon = parseGlb(path.join(OUT, 'moon-gate.glb'));
-const bridge = parseGlb(path.join(OUT, 'jiuqu-bridge.glb'));
+const garden = parseGlb(path.join(STAGED, 'garden-wall.glb'));
+const temple = parseGlb(path.join(STAGED, 'temple-wall.glb'));
+const moon = parseGlb(path.join(STAGED, 'moon-gate.glb'));
+const bridge = parseGlb(path.join(STAGED, 'jiuqu-bridge.glb'));
 
 // ---------- 1) 两道墙贴线（每 1 m 沿段法线射线打墙面：墙面平面应在 thick/2 ± 0.05；
 // 关节点由 0.6 角墩包住，容差放宽到 0.1，skip 说明见 DELIVERY） ----------
 function checkWallOnLines(g, wallId, name) {
   const o = objById[wallId];
   const thick = o.thickness;
-  const segs = o.geometry.segments;
+  // M3：与重建同一过滤 —— temple-wall 的悬空段（第 19 段）无几何，射线漏打是预期
+  const segs = wallId === 'temple-wall' ? dropFloatingSegments(o.geometry.segments) : o.geometry.segments;
   const joints = [];
   for (const [a, b] of segs) { joints.push(a, b); }
   const windows = o.geometry.lattice || [];
@@ -405,18 +408,18 @@ function edgeBand(i, side) {
   ok(`moon-gate 三角 ${triCount(moon)} ≤ 4000`, triCount(moon) <= 4000);
   ok(`jiuqu-bridge 三角 ${triCount(bridge)} ≤ 30000`, triCount(bridge) <= 30000);
   // 龙头单独计：garden-wall GLB 里 matIdx 以 meshName 不分部件——用 catalog 记录核对
-  const catalog = JSON.parse(fs.readFileSync(path.join(OUT, 'garden-kit-catalog.json'), 'utf8'));
+  const catalog = JSON.parse(fs.readFileSync(path.join(STAGED, 'garden-kit-catalog.json'), 'utf8'));
   const headTris = catalog.modules['garden-wall']['garden-wall-dragonhead'].triangles;
   ok(`龙头三角 ${headTris} ≤ 3500（catalog 记录，构建时分子部件合计）`, headTris <= 3500);
   // 字节预算
-  const b = (f) => fs.statSync(path.join(OUT, f)).size;
+  const b = (f) => fs.statSync(path.join(STAGED, f)).size;
   ok(`garden-wall.glb ${b('garden-wall.glb')} ≤ 1800000`, b('garden-wall.glb') <= 1800000);
   ok(`jiuqu-bridge.glb ${b('jiuqu-bridge.glb')} ≤ 900000`, b('jiuqu-bridge.glb') <= 900000);
 }
 
 // ---------- 7) validator 0 错误 ----------
 for (const f of ['garden-wall.glb', 'temple-wall.glb', 'moon-gate.glb', 'jiuqu-bridge.glb']) {
-  const res = await validateBytes(new Uint8Array(fs.readFileSync(path.join(OUT, f))));
+  const res = await validateBytes(new Uint8Array(fs.readFileSync(path.join(STAGED, f))));
   ok(`validator 0 错误 ${f}（warn=${res.issues.numWarnings}）`, res.issues.numErrors === 0,
     JSON.stringify(res.issues.messages?.slice(0, 3) || []));
 }
@@ -431,11 +434,53 @@ for (const f of ['garden-wall.glb', 'temple-wall.glb', 'moon-gate.glb', 'jiuqu-b
     const capOk = g.mats.filter((m) => /cap/.test(m.name)).every((m) => m.baseTex && m.normalTex);
     ok(`${name} 瓦帽材质挂基色+法线`, capOk);
   }
-  const reimport = JSON.parse(fs.readFileSync(path.join(OUT, 'garden-kit-reimport.json'), 'utf8'));
+  const reimport = JSON.parse(fs.readFileSync(path.join(STAGED, 'garden-kit-reimport.json'), 'utf8'));
   ok('Blender 侧重导入核对无 issue', reimport.issues.length === 0, JSON.stringify(reimport.issues.slice(0, 3)));
   const csOk = reimport.checked.every((c) => Object.values(c.materials).every((m) =>
     m.colorspace.every((cs) => cs === 'sRGB' || cs === 'Non-Color')));
   ok('贴图色彩空间仅 sRGB/Non-Color', csOk);
+}
+
+// ---------- 8.5) M3：庙墙孤立段剔除（冻结 layout 重算，不拿产物自比） ----------
+{
+  const tw = LAYOUT.objects.find((o) => o.id === 'temple-wall');
+  const segs = tw.geometry.segments;
+  const kept = dropFloatingSegments(segs);
+  const dropped = segs.filter((s) => !kept.includes(s));
+  ok(`temple-wall 悬空段剔除：25 -> ${kept.length} 段（剔除 ${dropped.length}）`, segs.length === 25 && kept.length === 24 && dropped.length === 1);
+  if (dropped.length === 1) {
+    const [a, b] = dropped[0];
+    // FINDINGS：第 19 段 (-50.470,-38.793) -> (-48.412,-27.927)，两端 0.5 m 内无邻段端点
+    ok(`剔的是第 19 段：(${a[0].toFixed(3)},${a[1].toFixed(3)}) -> (${b[0].toFixed(3)},${b[1].toFixed(3)})`,
+      Math.abs(a[0] + 50.469532) < 1e-3 && Math.abs(a[1] + 38.793096) < 1e-3
+      && Math.abs(b[0] + 48.412426) < 1e-3 && Math.abs(b[1] + 27.926552) < 1e-3);
+    ok('剔除段水平长度 11.06 m', Math.abs(Math.hypot(b[0] - a[0], b[1] - a[1]) - 11.06) < 0.01);
+  }
+  // garden-wall 不在过滤范围（自由端是龙墙设计特征，sha 已冻结）
+  const gw = LAYOUT.objects.find((o) => o.id === 'garden-wall');
+  ok(`garden-wall 全 ${gw.geometry.segments.length} 段不在过滤范围（龙墙自由端为设计特征）`, gw.geometry.segments.length === 16);
+  // 重出的 GLB 不含第 19 段几何：顶点到该段中线 2D 距离 ≥ 0.8 m（墙厚 0.4 + 瓦帽余量）
+  const seg = dropped[0];
+  const near = (g, a, b, r) => g.verts.filter((v) => distToSeg([v[0], v[2]], a, b) < r).length;
+  const droppedVerts = near(temple, seg[0], seg[1], 0.8);
+  ok(`temple-wall.glb 无第 19 段几何（0.8 m 内顶点 ${droppedVerts} = 0）`, droppedVerts === 0);
+  // 对照：保留段（第 18 段）几何仍在
+  const keep18 = near(temple, segs[18][0], segs[18][1], 0.8);
+  ok(`第 18 段几何仍在（0.8 m 内顶点 ${keep18} > 0）`, keep18 > 0);
+  // 碰撞记录同步：staged garden-kit-collision.json 的 temple-wall 盒不含第 19 段中线附近者
+  const coll = JSON.parse(fs.readFileSync(path.join(STAGED, 'garden-kit-collision.json'), 'utf8'));
+  const twBoxes = coll.modules['temple-wall'].boxes;
+  const droppedBoxes = twBoxes.filter((bx) => distToSeg([bx.center[0], bx.center[2]], seg[0], seg[1]) < 0.8).length;
+  ok(`garden-kit-collision.json temple-wall 盒 ${twBoxes.length} 个且无第 19 段盒`, twBoxes.length === 24 && droppedBoxes === 0);
+  // 管线 collision-temple.json：名字带原索引，seg-19 缺席、seg-18/20 在
+  const ctPath = path.join(OUT, 'collision-temple.json');
+  if (fs.existsSync(ctPath)) {
+    const names = new Set(JSON.parse(fs.readFileSync(ctPath, 'utf8')).colliders.map((c) => c.name));
+    ok('collision-temple.json 无 temple-wall:seg-19', !names.has('temple-wall:seg-19'));
+    ok('collision-temple.json 保留 temple-wall:seg-18 / seg-20（原索引不重编）', names.has('temple-wall:seg-18') && names.has('temple-wall:seg-20'));
+  } else {
+    skip('collision-temple.json seg-19 剔除', 'OUT_DIR 无 collision-temple.json');
+  }
 }
 
 // ---------- 9) scene-areas ≤ 30 MB + gardenRouteAudit 全 ok ----------

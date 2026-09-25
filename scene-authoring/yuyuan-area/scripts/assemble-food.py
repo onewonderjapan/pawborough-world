@@ -121,9 +121,9 @@ print('saved scene.blend (with food)')
 
 allc = ['ZONE-garden', 'ZONE-temple', 'ZONE-bazaar', 'ZONE-pond', 'ZONE-outer',
         'INST-garden', 'INST-temple', 'INST-bazaar', 'INST-outer', 'FOOD-bazaar',
-        'SITE-garden', 'SITE-temple', 'SITE-pond', 'SITE-fangbang']  # SITE_MODULES=1 时 assemble.py 已建（garden-kit 站点模块）；FANGBANG=1 时含方浜中路；缺省不存在即跳过
+        'SITE-garden', 'SITE-temple', 'SITE-pond', 'SITE-fangbang', 'SITE-bazaar']  # SITE_MODULES=1 时 assemble.py 已建（garden-kit 站点模块）；FANGBANG 默认开时含方浜中路；BAZAAR_TOWERS=1 时 SITE-bazaar=华宝楼站点模块；缺省不存在即跳过
 export_glb(os.path.join(OUT, 'scene-areas.glb'), allc)
-export_glb(os.path.join(OUT, 'bazaar.glb'), ['ZONE-bazaar', 'INST-bazaar', 'FOOD-bazaar'])
+export_glb(os.path.join(OUT, 'bazaar.glb'), ['ZONE-bazaar', 'INST-bazaar', 'FOOD-bazaar', 'SITE-bazaar'])
 
 # assemble-stats.json 增量刷新（viewer HUD 数据源）：对象数按本次导出集合实数
 scene_objects = sum(len(bpy.data.collections[c].objects) for c in allc if c in bpy.data.collections)
