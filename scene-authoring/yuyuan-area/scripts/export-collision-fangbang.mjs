@@ -83,7 +83,7 @@ for (const inst of instDoc.instances) {
   }
   sidecarAdded.push({ id: inst.id, source: path.relative(REPO, side), records: own.length });
 }
-for (const it of infillDoc.southGap.placed.concat(infillDoc.northGap.placed)) {
+for (const it of infillDoc.southGap.placed.concat(infillDoc.northGap.placed, (infillDoc.frontageGaps || {}).placed || [])) {
   for (const rec of colDoc.colliders.filter(r => r.name.split(':')[0] === it.donor)) {
     if (!rec.obb) throw new Error(`infill donor record ${rec.name} not obb form`);
     kept.push({
@@ -164,7 +164,7 @@ const collision = {
   notPlacedInstances: [...notPlaced].sort(),
   notPlacedRecordsDropped: skippedNotPlaced.length,
   sidecarColliders: sidecarAdded,
-  infillColliders: infillDoc.southGap.placed.concat(infillDoc.northGap.placed).length ? infillDoc.southGap.placed.map(i => i.id) : 'none',
+  infillColliders: infillDoc.southGap.placed.concat(infillDoc.northGap.placed, (infillDoc.frontageGaps || {}).placed || []).map(i => i.id),
   seamDedup: seamDedup.length ? seamDedup : 'none',
   streetSeamDedup: streetSeamDedup.length ? streetSeamDedup : 'none',
   groundNodeRe: 'street-kit__(quiet-gray-asphalt|paving-frontage|worn-stone)|sctail__(quiet-gray-asphalt|worn-stone)|westbounds__worn-stone',

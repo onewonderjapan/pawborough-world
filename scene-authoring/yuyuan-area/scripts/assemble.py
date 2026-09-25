@@ -514,6 +514,7 @@ if os.environ.get('ROCKERY_KIT', '1') != '0':
 fangbang_placed = 0
 fangbang_excluded = []
 fangbang_infill = []
+fangbang_gapfill_placed = []
 if os.environ.get('FANGBANG', '1') != '0':
     REPO = os.path.dirname(os.path.dirname(ROOT))   # 仓库根
     FB7 = os.path.join(REPO, 'world', 'fangbang-temple-v7')
@@ -808,6 +809,44 @@ if os.environ.get('FANGBANG', '1') != '0':
                                 'positionGlb': [round(cx, 4), 0, round(cz, 4)],
                                 'positionMap': [round(cx + 53.5, 4), 0, round(cz - 17.4, 4)],
                                 'rotY': round(rot, 5), 'designInference': True, 'gap': 'south'})
+    # ---------- wave5-fangbangqa F-07：临街面空档补齐（主控 2026-09-26 选项 1，沿用决定 2 的规则；计划在
+    # scripts/fangbang_gapfill.py，纯 Python、只读源数据；新增件 id=fangbang-infill-g{r|l}N、designInference=true） ----------
+    sys.path.insert(0, os.path.join(ROOT, 'scripts'))
+    import fangbang_gapfill
+    fb_shop_dims = {}
+    shops_dir = os.path.join(ROOT, 'resources', 'shops')
+    for m in sorted(os.listdir(shops_dir)):
+        mf = os.path.join(shops_dir, m, 'measurements.json')
+        if os.path.exists(mf):
+            dsg = json.load(open(mf, encoding='utf-8')).get('design') or {}
+            if dsg.get('frontageM'):
+                fb_shop_dims[m] = (dsg['frontageM'], dsg['depthM'])
+    fb_gap = fangbang_gapfill.plan(REPO, os.path.join(ROOT, 'baseline', 'layout.json'), fb_excluded_ids,
+                                   [{'id': iid, 'donor': donor, 'positionGlb': [cx, 0, cz], 'rotY': rot} for iid, cx, cz, rot, donor, _lo, _hi in fb_infill_s],
+                                   fb_shop_dims)
+    fangbang_gapfill_placed = fb_gap['placed']
+    for it in fangbang_gapfill_placed:
+        cx, cz = it['positionGlb'][0], it['positionGlb'][2]
+        anchor = bpy.data.objects.new(it['id'], None)
+        anchor.empty_display_size = 2
+        anchor.location = (cx + 53.5, -(cz - 17.4), 0)
+        anchor.rotation_euler = (0, 0, it['rotY'])
+        anchor['id'] = it['id']
+        anchor['module'] = it['module']
+        anchor['donor'] = it['donor']
+        anchor['zone'] = 'fangbang'
+        anchor['lod'] = 'L2'
+        anchor['group'] = 'infill-frontage'
+        anchor['designInference'] = True
+        anchor['rotY'] = it['rotY']
+        coll('SITE-fangbang').objects.link(anchor)
+        for o in fb_objs(it['module']):
+            dup = o.copy()
+            dup.hide_render = False
+            dup.hide_viewport = False
+            coll('SITE-fangbang').objects.link(dup)
+            dup.parent = anchor
+    print('fangbang frontage gap fill placed', len(fangbang_gapfill_placed), [(i['id'], i['module'], i['positionMap'][0]) for i in fangbang_gapfill_placed], 'skips', fb_gap['skipReasons'])
     fb_infill_doc = {
         'axis': 'v7 glTF Y-up coords; map = v7 + (53.5, -17.4)',
         'decision': 'GOAL wave1-fangbang lead decisions 2026-09-23 #2: fill storefront gaps with west-band narrow modules (local facade 6.2-7.5m), facades to street; deterministic AABB packing, clash = stop',
@@ -817,6 +856,9 @@ if os.environ.get('FANGBANG', '1') != '0':
         'northGap': {'between': ['westshop-shop-162', 'westshop-shop-164'],
                      'placed': [],
                      'reason': '安仁街 (layout road-495101845, w=7m) joins 方浜中路 inside this gap at v7 x≈-84.9; reserved mouth ±6.5m leaves <7.7m clear — narrower than the smallest module AABB (curio-a 7.7m). Placing anything would block the junction or clip shops 162/164; mouth kept open (lead constraint: infill must not intersect global objects).'},
+        'frontageGaps': {'decision': 'wave5-fangbangqa F-07, lead 2026-09-26 option 1: fill frontage gaps with west-band modules, 5-7 m frontage, facing the street, no intersection with neighbours / pavement / global objects, 安仁街 mouth open',
+                         'rules': fb_gap['rules'], 'donors': fb_gap['donors'], 'skipReasons': fb_gap['skipReasons'],
+                         'placed': fangbang_gapfill_placed},
     }
     json.dump(fb_infill_doc, open(os.path.join(OUT, 'fangbang-infill.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     # ---------- wave5-fangbangqa F-01：外围占位店让位 ----------
@@ -1004,7 +1046,7 @@ stats = {
     'gardenKitPlaced': garden_kit_placed,
     'fangbangPlaced': fangbang_placed,
     'fangbangExcluded': fangbang_excluded,
-    'fangbangInfillIds': [i['id'] for i in fangbang_infill],
+    'fangbangInfillIds': [i['id'] for i in fangbang_infill] + [i['id'] for i in fangbang_gapfill_placed],
 }
 json.dump(stats, open(os.path.join(OUT, 'assemble-stats.json'), 'w'), indent=1)
 print('ASSEMBLE DONE', json.dumps(stats))
