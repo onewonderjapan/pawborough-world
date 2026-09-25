@@ -421,5 +421,24 @@ const isWood = (m) => !m.pbrMetallicRoughness.baseColorTexture &&
   ok(`瓦面 ${tileParts.length} 件全部用同一中性灰瓦材质（${tileMats.map((m) => m.name).join(',')}）`, tileParts.length >= 8 && grey);
 }
 
+// ---------------- 7b) 拉伸体封顶（R1 施工中发现：round-0 prism() 两个端面都建在底环上，顶面缺失） ----------------
+// 承台 / 石桩 / 柱 / 枋 / 楼板 / 墙体 / 栏杆：最高处必须有朝上的面（glTF 逆时针为正面）。
+{
+  const solids = allParts.filter((n) => /__(deck|pile-|gcol-|pcol-|lintel-|floor2|body\d|tower\d|porch-floor|pwall-|pframe-|plaque|dado-|.*-rail-|.*-pick-)/.test(n));
+  const open = [];
+  for (const nm of solids) {
+    const p = parts.get(nm);
+    const yMax = Math.max(...p.verts.map((v) => v[1]));
+    const capped = p.tris.some(([a, b, c]) => {
+      const A = p.verts[a], B = p.verts[b], C = p.verts[c];
+      if (![A, B, C].every((v) => Math.abs(v[1] - yMax) <= 1e-4)) return false;
+      const ny = (B[2] - A[2]) * (C[0] - A[0]) - (B[0] - A[0]) * (C[2] - A[2]);   // (B-A)x(C-A) 的 y 分量
+      return ny > 0;
+    });
+    if (!capped) open.push(nm);
+  }
+  ok(`拉伸体 ${solids.length} 件全部有朝上顶面（缺顶 ${open.length}）`, solids.length > 100 && open.length === 0, open.slice(0, 4).join(','));
+}
+
 console.log(`RESULT pass=${pass} fail=${fail} skipped=${skipped}`);
 if (fail) { console.log('FAILURES:', failures.join(' | ')); process.exit(1); }

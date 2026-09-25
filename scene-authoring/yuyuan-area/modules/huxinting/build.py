@@ -151,11 +151,14 @@ def prism(name, poly_uv, z0, z1, mat, part):
     for i in range(n):
         k = (i + 1) % n
         faces.append([i, k, n + k, n + i])
-    faces.append(list(range(n)))
-    faces.append(list(range(n - 1, -1, -1)))
+    faces.append([n + i for i in range(n)])            # 顶面（高环，CCW -> 朝上）
+    faces.append(list(range(n - 1, -1, -1)))           # 底面（低环，反序 -> 朝下）
+    # round-0 两个端面都建在低环上（一正一反），顶面缺失：承台顶看上去落在 0.30 的底面上。R1 修正。
     return mesh_obj(name, lo + hi, faces, mat, part)
 
 def box_uv(name, u0, v0, u1, v1, z0, z1, mat, part):
+    u0, u1 = min(u0, u1), max(u0, u1)                  # 保证 CCW（round-0 dado-s 传入 v0>v1，整个盒子法线朝内）
+    v0, v1 = min(v0, v1), max(v0, v1)
     return prism(name, [(u0, v0), (u1, v0), (u1, v1), (u0, v1)], z0, z1, mat, part)
 
 # ---------------------------------------------------------------- 承台 + 石桩 ----
