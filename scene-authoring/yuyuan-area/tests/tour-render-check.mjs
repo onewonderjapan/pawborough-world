@@ -7,13 +7,23 @@
 //   - 锚点街景机位（targetObject = street:<route>，无对应 layout 对象）：体积目标 = tour-test 同一街廊盒
 //     （tour-visibility.streetCorridorBox，nav-gap 锚点 + commercial-route 出发段），片元世界坐标落在盒内
 //     （各半轴 +0.25 m 容差，接住地面/铺装厚度）即算——即走廊里露出来的街面与街边立面。
+// wave4-touranchor 锚点街景新口径（anchor-* 六机位，常数 = tour-visibility.STREET_VIEW）：
+//   目标 = 街廊盒里的街面 + 走廊盒两侧各 6 m 内的建筑立面像素（近竖直面，立面带盒 streetFacadeBand）；
+//   断言：目标 ≥ 25%、天空（无几何像素）≤ 35%、画面下 1/3 近景墙（近竖直面、距相机 < 6 m）最大 4-连通区 < 40%；
+//   锚点机位的 targetObject 必须是 street:<route>（非街景目标的锚点照样按其锚点首条路线的走廊量一遍，再判失败）。
+//   其余五个地标机位口径不变（≥ 3%）。
+//   桥头锚点规则（主控 D1 定，2026-09-25）：anchor-jiuqu 锚点就在九曲桥桥头，目标保持九曲桥（targetObject = jiuqu-bridge）——
+//     目标像素按 layout id 掩膜（同地标机位）≥ 3%；另加与街景锚点同一组画面门槛：天空 ≤ 35%、画面下 1/3 近景墙最大连通区 < 40%
+//     （画面统计用 street 掩膜的 G/B 通道，不设走廊）。只有这一个锚点、这一个目标适用；其余锚点仍必须是 street:<route>。
+//   「顶棚」soffit（朝下面占比）只报告不判（主控 D2 定）：old-south→old-north 老街全程在过街楼通道下（reviewRepair
+//     通道 road-428199190，净高 3.5 m），暗顶棚是这条老街的真实特征，不是机位问题；任何机位都拍得到它，判它等于判这条街不合格。
 // 机位取自 TOUR（缺省 OUT_DIR/tour.json），用 window.__viewAt(p, t) 摆相机（与导览按钮同参：fov46，视口 1400×900）。
 // 用法：BASE=http://127.0.0.1:<port>/ OUT_DIR=out-zone [TOUR=<tour.json>] [SHOT_DIR=<目录>] [REPORT=<json>] node tests/tour-render-check.mjs
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { streetCorridorBox } from '../scripts/tour-visibility.mjs';
+import { streetCorridorBox, streetFacadeBand, facadeIds, STREET_VIEW } from '../scripts/tour-visibility.mjs';
 
 const require = createRequire('/home/baibai/pawborough-world/node_modules/');
 const { chromium } = require('playwright');
@@ -34,6 +44,9 @@ const bays = {};
 for (const o of layout.objects) if (o.parentBuilding) (bays[o.parentBuilding] ||= []).push(o.id);
 
 // street:A->B = 路线 A→B 第一段（折线供街廊截到拐点前）；street:cont:A->B = 末段顺势延伸（全长）—— 同 tour-test
+const FACADE_IDS = facadeIds(layout);
+const BRIDGE_ANCHORS = { 'anchor-jiuqu': 'jiuqu-bridge' }; // 桥头锚点规则（见文件头，D1）
+const FRAME_ONLY = { obb: null, band: null, facadeIds: [], idSet: [], nearM: STREET_VIEW.NEAR_M, verticalNy: STREET_VIEW.VERTICAL_NY };
 function streetSpec(key, tag) {
   const spec = String(tag).slice('street:'.length), cont = spec.startsWith('cont:');
   const [from, to] = (cont ? spec.slice(5) : spec).split('->');
@@ -41,10 +54,30 @@ function streetSpec(key, tag) {
   if (!r) throw new Error(`${key}: 路线 ${spec} 不在 commercial-route.json`);
   const [a, b] = cont ? r.points.slice(-2) : r.points.slice(0, 2);
   const l = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1;
-  return { obb: streetCorridorBox(nav.anchors[key.slice('anchor-'.length)], [(b[0] - a[0]) / l, (b[1] - a[1]) / l], cont ? null : r.points), pad: STREET_PAD_M };
+  const anchor = nav.anchors[key.slice('anchor-'.length)], dir = [(b[0] - a[0]) / l, (b[1] - a[1]) / l], pts = cont ? null : r.points;
+  return {
+    street: {
+      obb: streetCorridorBox(anchor, dir, pts), pad: STREET_PAD_M, band: streetFacadeBand(anchor, dir, pts),
+      facadeIds: FACADE_IDS, idSet, nearM: STREET_VIEW.NEAR_M, verticalNy: STREET_VIEW.VERTICAL_NY,
+    },
+  };
+}
+// 锚点机位若不是街景目标（旧 anchor-jiuqu = 九曲桥），按该锚点在 commercial-route.json 的首条路线（出发优先，其次终点延伸）取走廊量一遍
+function fallbackStreetTag(aKey) {
+  const r = routes.find(x => x.from === aKey);
+  if (r) return `street:${r.from}->${r.to}`;
+  const e = routes.find(x => x.to === aKey);
+  return e ? `street:cont:${e.from}->${e.to}` : null;
 }
 function targetSpec(key, v) {
-  if (String(v.targetObject).startsWith('street:')) return { kind: 'street-corridor-volume', ...streetSpec(key, v.targetObject) };
+  if (String(v.targetObject).startsWith('street:')) return { kind: 'street-view', tag: v.targetObject, ...streetSpec(key, v.targetObject) };
+  if (BRIDGE_ANCHORS[key] && BRIDGE_ANCHORS[key] === v.targetObject)
+    return { kind: 'bridge-anchor', ids: [v.targetObject, ...(bays[v.targetObject] || [])], idSet, frame: FRAME_ONLY };
+  if (key.startsWith('anchor-')) {
+    const tag = fallbackStreetTag(key.slice('anchor-'.length));
+    if (!tag) throw new Error(`${key}: 锚点无路线，无法按街景口径量`);
+    return { kind: 'street-view', tag, notStreetTarget: v.targetObject, ...streetSpec(key, tag) };
+  }
   if (!layout.objects.some(o => o.id === v.targetObject)) throw new Error(`${key}: targetObject ${v.targetObject} 不在 layout`);
   return { kind: 'layout-id', ids: [v.targetObject, ...(bays[v.targetObject] || [])], idSet };
 }
@@ -63,7 +96,8 @@ for (const [key, v] of Object.entries(tour)) {
   const r = await page.evaluate(async ({ p, t, spec, png }) => {
     window.__viewAt(p, t);
     await new Promise(res => requestAnimationFrame(() => requestAnimationFrame(res)));
-    const m = window.__targetMask({ ...spec, png });
+    const m = window.__targetMask({ ids: spec.ids, idSet: spec.idSet, obb: spec.obb, pad: spec.pad, street: spec.street, png });
+    if (spec.frame) { const fm = window.__targetMask({ street: spec.frame }); m.sky = fm.sky; m.soffit = fm.soffit; m.nearMax = fm.nearMax; }
     let overlay = null;
     if (png) { // 截图 + 目标掩膜红色叠加（便于人工核对掩膜是否落在目标上）
       const src = document.querySelector('canvas');
@@ -74,23 +108,37 @@ for (const [key, v] of Object.entries(tour)) {
       const mc = document.createElement('canvas'); mc.width = m.w; mc.height = m.h;
       const mctx = mc.getContext('2d'); mctx.drawImage(img, 0, 0);
       const md = mctx.getImageData(0, 0, m.w, m.h).data, od = ctx.getImageData(0, 0, m.w, m.h);
-      for (let i = 0; i < md.length; i += 4) if (md[i] > 127) { od.data[i] = Math.round(od.data[i] * 0.45 + 255 * 0.55); od.data[i + 1] = Math.round(od.data[i + 1] * 0.45); od.data[i + 2] = Math.round(od.data[i + 2] * 0.45); }
+      for (let i = 0; i < md.length; i += 4) {
+        if (md[i] > 127) { od.data[i] = Math.round(od.data[i] * 0.45 + 255 * 0.55); od.data[i + 1] = Math.round(od.data[i + 1] * 0.45); od.data[i + 2] = Math.round(od.data[i + 2] * 0.45); }
+        else if (spec.street && md[i + 2] > 127) { od.data[i] = Math.round(od.data[i] * 0.45); od.data[i + 1] = Math.round(od.data[i + 1] * 0.45); od.data[i + 2] = Math.round(od.data[i + 2] * 0.45 + 255 * 0.55); }
+      }
       ctx.putImageData(od, 0, 0);
+      if (spec.street || spec.frame) { ctx.strokeStyle = '#ffd400'; ctx.lineWidth = 2; ctx.setLineDash([12, 8]); ctx.beginPath(); ctx.moveTo(0, m.h * 2 / 3); ctx.lineTo(m.w, m.h * 2 / 3); ctx.stroke(); }
       overlay = c.toDataURL('image/png');
     }
     return { ...m, overlay, cam: window.__cam() };
   }, { p: v.p, t: v.t, spec, png: !!shotDir });
-  const ok = r.share >= MIN_SHARE;
+  const why = [];
+  if (spec.street) {
+    if (spec.notStreetTarget) why.push(`锚点目标 ${spec.notStreetTarget} 非街景（应为 street:<route>，桥头锚点规则只认 ${JSON.stringify(BRIDGE_ANCHORS)}）`);
+    if (r.share < STREET_VIEW.MIN_TARGET) why.push(`目标 ${(r.share * 100).toFixed(1)}% < ${STREET_VIEW.MIN_TARGET * 100}%`);
+  } else if (r.share < MIN_SHARE) why.push(`目标 ${(r.share * 100).toFixed(2)}% < ${MIN_SHARE * 100}%`);
+  if (spec.street || spec.frame) { // 街景锚点与桥头锚点共用的画面门槛
+    if (r.sky > STREET_VIEW.MAX_SKY) why.push(`天空 ${(r.sky * 100).toFixed(1)}% > ${STREET_VIEW.MAX_SKY * 100}%`);
+    if (r.nearMax >= STREET_VIEW.MAX_NEAR_COMPONENT) why.push(`下1/3近景墙连通区 ${(r.nearMax * 100).toFixed(1)}% ≥ ${STREET_VIEW.MAX_NEAR_COMPONENT * 100}%`);
+  }
+  const ok = !why.length;
   if (!ok) fails++;
-  report[key] = { targetObject: v.targetObject, method: spec.kind, targetIds: spec.ids || null, share: +r.share.toFixed(4), pixels: r.pixels, size: [r.w, r.h], meshesMatched: r.meshesMatched, cam: r.cam, pass: ok };
+  report[key] = { targetObject: v.targetObject, method: spec.kind, streetTag: spec.tag || null, targetIds: spec.ids || null, share: +r.share.toFixed(4), sky: r.sky != null ? +r.sky.toFixed(4) : null, soffit: r.soffit != null ? +r.soffit.toFixed(4) : null, nearMax: r.nearMax != null ? +r.nearMax.toFixed(4) : null, pixels: r.pixels, size: [r.w, r.h], meshesMatched: r.meshesMatched, cam: r.cam, pass: ok, fail: why };
   if (shotDir) {
     await page.screenshot({ path: path.join(shotDir, `${key}.png`) });
     fs.writeFileSync(path.join(shotDir, `${key}.mask.png`), Buffer.from(r.png.split(',')[1], 'base64'));
     fs.writeFileSync(path.join(shotDir, `${key}.overlay.png`), Buffer.from(r.overlay.split(',')[1], 'base64'));
   }
-  console.log(`${key.padEnd(18)} ${String(v.targetObject).padEnd(34)} ${spec.kind.padEnd(22)} target ${(r.share * 100).toFixed(2).padStart(6)}% ${ok ? 'OK' : 'FAIL(<3%)'} meshes ${JSON.stringify(r.meshesMatched)}`);
+  const extra = (spec.street || spec.frame) ? ` sky ${(r.sky * 100).toFixed(1).padStart(5)}% soffit ${(r.soffit * 100).toFixed(1).padStart(5)}% near1/3 ${(r.nearMax * 100).toFixed(1).padStart(5)}%` : '';
+  console.log(`${key.padEnd(18)} ${String(v.targetObject).padEnd(34)} ${spec.kind.padEnd(14)} target ${(r.share * 100).toFixed(2).padStart(6)}%${extra} ${ok ? 'OK' : 'FAIL: ' + why.join('; ')} meshes ${JSON.stringify(r.meshesMatched)}`);
 }
 await browser.close();
-if (process.env.REPORT) fs.writeFileSync(process.env.REPORT, JSON.stringify({ minShare: MIN_SHARE, streetPadM: STREET_PAD_M, tour: process.env.TOUR || path.join(OUT, 'tour.json'), views: report }, null, 1) + '\n');
-if (fails) { console.error(`tour-render-check: ${fails}/${Object.keys(tour).length} views below ${MIN_SHARE * 100}% target pixels`); process.exit(1); }
-console.log(`tour-render-check: all ${Object.keys(tour).length} views ≥ ${MIN_SHARE * 100}% target pixels`);
+if (process.env.REPORT) fs.writeFileSync(process.env.REPORT, JSON.stringify({ minShare: MIN_SHARE, streetView: STREET_VIEW, streetPadM: STREET_PAD_M, tour: process.env.TOUR || path.join(OUT, 'tour.json'), views: report }, null, 1) + '\n');
+if (fails) { console.error(`tour-render-check: ${fails}/${Object.keys(tour).length} views fail (landmarks < ${MIN_SHARE * 100}% target, or anchor street-view / bridge-anchor gates)`); process.exit(1); }
+console.log(`tour-render-check: all ${Object.keys(tour).length} views pass (landmarks ≥ ${MIN_SHARE * 100}%; bridge anchor ≥ ${MIN_SHARE * 100}% + sky/near gates; street anchors target ≥ ${STREET_VIEW.MIN_TARGET * 100}%, sky ≤ ${STREET_VIEW.MAX_SKY * 100}%, near-wall < ${STREET_VIEW.MAX_NEAR_COMPONENT * 100}%)`);
