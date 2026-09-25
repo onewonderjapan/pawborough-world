@@ -1,7 +1,7 @@
 {
  "id": "huxin-ting",
  "glb": "<OUT_DIR>/huxin-ting.glb",
- "bytes": 1363568,
+ "bytes": 1363472,
  "tris": 21760,
  "partTriCounts": {
   "deck": 12,
@@ -92,15 +92,6 @@
    "cols": 7,
    "closed": false
   }
- },
- "facingFixed": {
-  "towerskirt0-tile": 88,
-  "towerskirt0-soffit": 44,
-  "towerskirt1-tile": 88,
-  "towerskirt1-soffit": 44,
-  "towerroof-soffit": 20,
-  "mainroof-soffit": 28,
-  "porchroof-soffit": 28
  },
  "frame": {
   "centroid": [

@@ -53,6 +53,9 @@ PL = MS['plinthHeightM']
 WT = 0.3                                     # 墙板厚（比例值）
 SHARED_RULE = P.get('sharedEdgeRule', True)      # 华宝楼样板 = False（保持主控已复验的形体）
 CLIP_HIDDEN = P.get('eaveClipHidden', True)
+# 共享 / 内收段檐口的收法：缺省 = 环线内收 + 直角回折（原行为）；'endcap'（wave6-eavekit E3，华宝楼）= 环线不动、
+# 内收段整段不出檐，由 eave_kit endCaps 在断开处做端头收口（端面 ⟂ 本段墙线、过墙线角点，端部不起翘）
+EAVE_END_CAP = P.get('sharedEdgeEaveEnd', 'return') == 'endcap'
 
 # ================================================================ 材质（source-kit 纹理 + 解析色；按需创建）
 TEX_DIR = os.path.abspath(os.path.join(ROOT, '..', '..', 'asset-authoring', 'yuyuan-entry', 'source-kit', 'textures'))
@@ -810,16 +813,33 @@ def architrave(name, r, s0, s1, z0, z1, timber='wood'):
 # ================================================================ 几何组装
 sys.path.insert(0, os.path.join(os.path.dirname(HERE), 'shared'))   # modules/shared —— eave_kit 主控正本，只读
 EK = __import__('eave_kit')
-EK.init(lambda n, it, f, m, part: add_local(n, it, f, m, part=part))
+
+def _ek_mirrored(conv=None):
+    """kit 局部 (u,v,h)（右手，面绕序即朝外法线）→ Blender 的换算是否镜像（水平行列式 < 0）。
+    本套件主局部系 v = 前街边 +90°（地图 x,z 里），to_b 再把地图 z 取负落到 Blender y，整体行列式 = −1：
+    kit 的面要倒序才能在 Blender / GLB 里保持朝外（同 hall-kit 注入口 v→-v 时倒序）。conv 为旋转系时一并计入。"""
+    c = conv or (lambda a, b: (a, b))
+    o, x, y = to_b(*c(0.0, 0.0), 0.0), to_b(*c(1.0, 0.0), 0.0), to_b(*c(0.0, 1.0), 0.0)
+    return (x[0] - o[0]) * (y[1] - o[1]) - (x[1] - o[1]) * (y[0] - o[0]) < 0
+
+def _ek_add(conv=None):
+    flip = _ek_mirrored(conv)
+    def _add(n, it, f, m, part):
+        if flip:                                      # 倒序但保留首顶点（四边形对角线不变）
+            f = [(q[0],) + tuple(reversed(q[1:])) for q in f]
+        if conv is not None:
+            it = [((*conv(p[0], p[1]), p[2]), uv) for p, uv in it]
+        add_local(n, it, f, m, part=part)
+    return _add
+
+EK.init(_ek_add())
 
 def ek_frame(conv):
     """eave_kit 在旋转系里出网格（角塔 / 纵向屋面）：items 的 (u,v) 经 conv 转回主局部系。"""
-    def _add(n, it, f, m, part):
-        add_local(n, [((*conv(p[0], p[1]), p[2]), uv) for p, uv in it], f, m, part=part)
-    EK.init(_add)
+    EK.init(_ek_add(conv))
 
 def ek_reset():
-    EK.init(lambda n, it, f, m, part: add_local(n, it, f, m, part=part))
+    EK.init(_ek_add())
 
 def ekp_for(storey):
     e = dict(EKP0)
@@ -837,7 +857,8 @@ def ring_with_pulls(poly, z, over_total, owner):
         L, t, nn = G.edge_frame(a, b)
         pulls = []
         if SHARED_RULE:
-            for s0, s1, role, st in classify(a, b, near_max=0.8, shared_margin=over_total + WALLI + 0.5):
+            # 内收做法要给翼角出翘让位（外扩 over+chu+墙厚+0.5）；端头收口在段端不起翘不出翘，只让 0.05 m，端面贴着邻栋侧墙
+            for s0, s1, role, st in classify(a, b, near_max=0.8, shared_margin=0.05 if EAVE_END_CAP else over_total + WALLI + 0.5):
                 if role == 'shared':
                     pulls.append((s0, s1))
         if CLIP_HIDDEN:
@@ -875,6 +896,16 @@ def ring_with_pulls(poly, z, over_total, owner):
             print('RINGDBG', owner, round(z, 2), i, [round(x, 2) for x in a], [round(x, 2) for x in b], 'pulls', [[round(x, 2) for x in m_] for m_ in merged])
     if not any_pull:
         return poly, False
+    if EAVE_END_CAP:
+        # 端头收口：环 = 墙线本身，子段分界处插点；内收子段对应的环边整段交给 eave_kit endCaps（不出檐、两端补端面）
+        ring, caps = [], []
+        for i in range(n):
+            a = poly[i]
+            L, t, nn = G.edge_frame(a, poly[(i + 1) % n])
+            for s0, s1, d in subs[i]:
+                ring.append((a[0] + t[0] * s0, a[1] + t[1] * s0))
+                caps.append(d > 0)
+        return ring, caps
     lines = []                                  # 逐子段的偏移线（点 + 方向），按环序
     for i in range(n):
         a, b = poly[i], poly[(i + 1) % n]
@@ -1010,8 +1041,13 @@ for b in BLOCKS:
         # 内收量 = over + chu + 0.05：檐口外缘（含翼角出翘）整段收进墙线以内，共享边一侧是干净的山墙，不留檐头残桩
         ring, pulled = ring_with_pulls(b['plansN'][k - 1], ZT[k], ek['over'] + ek['chu'] + 0.05, bn)
         # 内收的环：自身体积判定要排除本块本层
-        EK.eave_skirt('eave-%s-s%d' % (bn, k), ring, ZT[k], ek, 'eaves')
-        EAVE_LOG.append({'block': bn, 'storey': k, 'z': ZT[k], 'pulled': pulled, 'ringVerts': len(ring)})
+        if isinstance(pulled, list):                   # EAVE_END_CAP：pulled = 逐环边「断开 + 端头收口」标记
+            EK.eave_skirt('eave-%s-s%d' % (bn, k), ring, ZT[k], dict(ek, endCaps=pulled), 'eaves')
+            EAVE_LOG.append({'block': bn, 'storey': k, 'z': ZT[k], 'pulled': True, 'ringVerts': len(ring),
+                             'endCapEdges': sum(pulled)})
+        else:
+            EK.eave_skirt('eave-%s-s%d' % (bn, k), ring, ZT[k], ek, 'eaves')
+            EAVE_LOG.append({'block': bn, 'storey': k, 'z': ZT[k], 'pulled': pulled, 'ringVerts': len(ring)})
         pts = []
         for r in runs_of(b['plansN'][k - 1], ZT[k] - 0.5, bn):
             if r.role == 'shared':
