@@ -15,7 +15,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { centroid, distToPolyline, pointInPoly, dist2d, anchorBehindSharedEdge, rearWallFace } from '../src/lib.mjs';
 import { makeShotTools } from './shot-lib.mjs';
-import { loadColliders, targetBox, visiblePointCount, screenAreaFrac, nearestColliderDist, streetCorridorBox, streetCorridorAim, polylineNearBox, VIEW } from './tour-visibility.mjs';
+import { loadColliders, targetBox, visiblePointCount, screenAreaFrac, nearestColliderDist, streetCorridorBox, streetCorridorAim, polylineNearBox, VIEW,
+  streetFacadeBand, makeStreetViewScene, passageCeilings, passageMasses, streetViewProxy, STREET_VIEW } from './tour-visibility.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out');
@@ -24,6 +25,11 @@ const nav = JSON.parse(fs.readFileSync(path.join(OUT, 'nav-gap.json'), 'utf8'));
 const routes = JSON.parse(fs.readFileSync(path.join(OUT, 'commercial-route.json'), 'utf8')).routes;
 const tools = makeShotTools(layout);
 const boxes = loadColliders(ROOT, path.basename(OUT));
+// wave4-touranchor：锚点街景画面几何代理的场景（碰撞盒 + 无碰撞建筑棱柱 + 店屋实例 + 通道顶棚/楼身；管线产物 OUT/layout.json 提供通道）
+const outLayout = JSON.parse(fs.readFileSync(path.join(OUT, 'layout.json'), 'utf8'));
+const svScene = makeStreetViewScene(boxes, layout, { areaRoot: ROOT, ceilings: passageCeilings(outLayout), masses: passageMasses(outLayout) });
+// 生成器选位门槛 = 渲染门槛再留余量（代理与渲染的差：目标 p5 −3.9 点、天空 p95 +0.9 点，见 wave4-touranchor RESULT）
+const SV_GEN = { minTarget: STREET_VIEW.MIN_TARGET + 0.05, maxSky: STREET_VIEW.MAX_SKY - 0.05, maxNear: STREET_VIEW.MAX_NEAR_COMPONENT - 0.05 };
 const obj = (id) => layout.objects.find(o => o.id === id);
 const closed = (fp) => [...fp, fp[0]];
 const EYE = 1.6;
@@ -198,6 +204,9 @@ for (const key of ['main', 'gold', 'center', 'jiuqu', 'old-south', 'old-north'])
   } else {
     const dirs = departingDirs(key);
     if (!dirs.length) { fail('anchor-' + key, 'commercial-route.json 无出发路线'); continue; }
+    // wave4-touranchor：R1 三条硬检查之外，再过街景画面代理（街面 + 两侧 6 m 立面 ≥ 30%、天空 ≤ 30%、下 1/3 近景墙 < 35%）；
+    // 候选顺序不变（由近到远、路线按文件顺序），第一个全过者胜出。全部不过时取代理最好的一个并 WARN（tour-render-check 会判）。
+    let best = null;
     outer:
     for (const c of cands) {
       for (const { route, dir, pts } of dirs) {
@@ -206,9 +215,19 @@ for (const key of ['main', 'gold', 'center', 'jiuqu', 'old-south', 'old-north'])
         const hl = Math.hypot(...hd) || 1;
         const dot = (hd[0] / hl) * dir[0] + (hd[1] / hl) * dir[1];
         if (dot < Math.cos(20 * Math.PI / 180)) continue; // 留 5° 余量于测试的 25°
-        const v = passVisibility([c[0], EYE, c[1]], look, streetCorridorBox(a, dir, pts));
-        if (v.ok) { done = { cam: c, look, target: 'street:' + route, how: `沿出发方向（${route} 第一段，拐点前走廊）望街景` }; break outer; }
+        const corr = streetCorridorBox(a, dir, pts);
+        const v = passVisibility([c[0], EYE, c[1]], look, corr);
+        if (!v.ok) continue;
+        const sv = streetViewProxy(svScene, [c[0], EYE, c[1]], look, corr, streetFacadeBand(a, dir, pts));
+        const cand = { cam: c, look, target: 'street:' + route, sv, how: `沿出发方向（${route} 第一段，拐点前走廊）望街景` };
+        if (sv.target >= SV_GEN.minTarget && sv.sky <= SV_GEN.maxSky && sv.nearMax < SV_GEN.maxNear) { done = cand; break outer; }
+        const score = Math.min(sv.target - SV_GEN.minTarget, SV_GEN.maxSky - sv.sky, SV_GEN.maxNear - sv.nearMax);
+        if (!best || score > best.score) best = { ...cand, score };
       }
+    }
+    if (!done && best) {
+      console.warn(`WARN anchor-${key}: 没有候选同时过街景代理门槛，取代理最好的一个（目标 ${(best.sv.target * 100).toFixed(1)}%、天空 ${(best.sv.sky * 100).toFixed(1)}%、近景 ${(best.sv.nearMax * 100).toFixed(1)}%）`);
+      done = best;
     }
   }
   if (!done) { fail('anchor-' + key, '所有候选机位过不了可见性检查'); continue; }
@@ -219,8 +238,9 @@ for (const key of ['main', 'gold', 'center', 'jiuqu', 'old-south', 'old-north'])
     p: [+done.cam[0].toFixed(1), EYE, +done.cam[1].toFixed(1)],
     t: [+done.look[0].toFixed(1), +done.look[1].toFixed(1), +done.look[2].toFixed(1)],
     targetObject: done.target,
-    source: `computed(R1): nav-gap 锚点眼高 1.6 m 站立机位${nudged ? '（外移至净空点）' : ''}，${done.how}（baseline/layout.json + collision-* 重算）`,
+    source: `computed(R1${done.sv ? '+wave4 街景代理' : ''}): nav-gap 锚点眼高 1.6 m 站立机位${nudged ? '（外移至净空点）' : ''}，${done.how}（baseline/layout.json + collision-* 重算）`,
   };
+  if (done.sv) tour['anchor-' + key].streetViewProxy = { target: +done.sv.target.toFixed(3), sky: +done.sv.sky.toFixed(3), soffit: +done.sv.soffit.toFixed(3), nearMax: +done.sv.nearMax.toFixed(3) };
 }
 
 // ---------- 五对象取景机位 ----------
