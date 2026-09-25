@@ -1144,9 +1144,10 @@ for b in BLOCKS:
                 architrave('shang-' + tag, r, r.s0, r.s1, ztop - 0.06 - LH, ztop - 0.06, tim)
             if stl.get('caihua'):
                 ch = stl.get('caihuaHM', 0.5)
+                zc1 = ztop - 0.06 - stl.get('caihuaDropM', 0.0)      # 深檐下压低，街道眼高不被檐口挡住
                 PART = 'frame'
-                obox('caihua-b-' + tag, r, r.s0, r.s1, FPR - FDP, FPR, ztop - 0.06 - ch, ztop - 0.06, tim, 'frame', bevel=0)
-                rpanel('caihua-' + tag, r, (r.s0 + r.s1) / 2, FPR + 0.006, ztop - 0.06 - ch + 0.02, ztop - 0.08, r.length, 'caihua',
+                obox('caihua-b-' + tag, r, r.s0, r.s1, FPR - FDP, FPR, zc1 - ch, zc1, tim, 'frame', bevel=0)
+                rpanel('caihua-' + tag, r, (r.s0 + r.s1) / 2, FPR + 0.006, zc1 - ch + 0.02, zc1 - 0.02, r.length, 'caihua',
                        'frame', uscale=2.0, vnorm=True)
             if sty in ('screen', 'band'):
                 lines = bays(r, r.s0 + 0.02, r.s1 - 0.02)
