@@ -11,6 +11,7 @@ import { dedupeLabels, buildLabelOccluders } from './labels.js'; // WP13：标�
 import { installWalkMode } from './walk.js';   // WP4 步行模式（默认不启用，按 ?walk=1 或「步行」按钮进入）
 import { setupPerf } from './perf.js';         // M4 性能采样（仅 ?perf=1 时激活；方法见 docs/PERF-W2.md）
 import { installTargetMask } from './target-mask.js'; // wave3-tourfix T2：导览机位渲染后目标像素复核钩子 window.__targetMask
+import { installBatching } from './batching.js';     // wave4-drawcalls：运行时按材质合批（?batch=0 关闭；原网格保留身份，见 web/batching.js）
 
 const app = document.getElementById('app');
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -75,6 +76,7 @@ loader.setKTX2Loader(ktx2);   // fangbang cm 使用 KHR_texture_basisu（-tc）�
 const RAW = new URLSearchParams(location.search).get('raw') === '1';   // ?raw=1 loads uncompressed zone GLBs for comparison
 const t0 = performance.now();
 const params = new URLSearchParams(location.search);
+const batcher = installBatching({ camera, enabled: params.get('batch') !== '0' });
 function prepare(root) {
   root.traverse(o => {
     if (o.isMesh) {
@@ -85,7 +87,7 @@ function prepare(root) {
 }
 function countTris(root) {
   let t = 0;
-  root.traverse(o => { if (o.isMesh && o.geometry) t += (o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3; });
+  root.traverse(o => { if (o.isMesh && !o.isBatchedMesh && o.geometry) t += (o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3; });
   return t;
 }
 const zoneLoad = {};   // id -> {bytes, ms, tris, state}
@@ -142,7 +144,9 @@ async function loadZoneFiles(m, ids, { firstPaint = false } = {}) {
       const useCm = e.cm && !RAW;
       const root = await loadGlb('/out/' + (useCm ? e.cm.file : e.file));
       prepare(root);
-      const grp = new THREE.Group(); grp.name = 'ZN-' + z; grp.add(root); scene.add(grp);
+      const grp = new THREE.Group(); grp.name = 'ZN-' + z; grp.add(root);
+      batcher.batchGroup(grp);   // wave4-drawcalls：件内按材质合批（节点树与身份不动）
+      scene.add(grp);
       allRoots.push(grp);
       zoneLoad[key] = { state: 'ok', bytes: useCm ? e.cm.bytes : e.bytes, ms: performance.now() - ts };
       if (first) { first = false; afterFirstPaint(); } else setZone(curZone, false);
@@ -281,6 +285,7 @@ document.getElementById('bar').addEventListener('click', (e) => {
   if (b.id === 't-roofs') {
     roofsOn = !roofsOn; b.classList.toggle('active', roofsOn);
     scene.traverse(o => { const i = infoOf(o); if (i && (i.roof || o.userData?.roof)) o.visible = roofsOn; });
+    batcher.syncVisibility();   // wave4-drawcalls：原网格可见性 → 合批实例
   }
   if (b.id === 't-bg') {
     bgOn = !bgOn; b.classList.toggle('active', bgOn);
@@ -438,6 +443,7 @@ function drawResiduals() {
 
 // ---------- 点选 ----------
 const ray = new THREE.Raycaster();
+ray.layers.enableAll();   // wave4-drawcalls：已合批的原网格挪到 ORIGINAL_LAYER，点选仍命中原网格（合批网格不参与 raycast）
 renderer.domElement.addEventListener('click', (e) => {
   ray.setFromCamera(new THREE.Vector2((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1), camera);
   const hits = ray.intersectObjects(scene.children, true);
@@ -485,10 +491,11 @@ renderer.setAnimationLoop(() => { perf?.tick(); controls.update(); walk?.tick();
 window.__ready = false;
 window.__scene = scene;
 installTargetMask({ renderer, scene, camera });
+batcher.wrapTargetMask();   // wave4-drawcalls：掩膜那一次按原网格着色
 window.__bigMeshes = () => {
   const list = [];
   scene.traverse(o => {
-    if (!o.isMesh || !o.geometry) return;
+    if (!o.isMesh || o.isBatchedMesh || !o.geometry) return;
     o.geometry.computeBoundingBox();
     const b = o.geometry.boundingBox;
     const s = new THREE.Vector3(); b.getSize(s);
