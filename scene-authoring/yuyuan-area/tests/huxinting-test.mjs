@@ -352,5 +352,44 @@ if (HUXINTING && fs.existsSync(path.join(OUT, 'pond.glb'))) {
   }
 }
 
+// ---------------- 6) R1-1 屋脊 / 吻 / 戗脊尺度（GLB 实测，主控 R1 2026-09-25） ----------------
+// 口径（写进工单包 artifacts/r1/PROGRESS.json assumptions）：
+//   正脊顶 = 正脊网格在脊长中段 20% 内的最高点；最高瓦面 = 同一中段内上段两坡（-upper-s/-upper-n）瓦面最高点；
+//   吻端起翘 = 正脊网格全长最高点 - 正脊顶；戗脊截面高 = 同一水平位置上戗脊顶底高差的最大值（主控未给阈值，
+//   自定与正脊同口径 ≤ 0.35）。攒尖（塔亭）无正脊，宝顶另有断言。
+{
+  const ridgeNames = allParts.filter((n) => /-ridge$/.test(n));
+  ok(`歇山正脊网格 ≥ 2（主楼 + 抱厦；实测 ${ridgeNames.join(',')}）`, ridgeNames.length >= 2);
+  for (const rn of ridgeNames) {
+    const roof = rn.replace(/^huxin-ting__/, '').replace(/-ridge$/, '');
+    const R = partVertsLocal(rn);
+    const tiles = [`huxin-ting__${roof}-upper-s`, `huxin-ting__${roof}-upper-n`].map(partVertsLocal).filter(Boolean).flat();
+    const uMin = Math.min(...R.map((q) => q[0])), uMax = Math.max(...R.map((q) => q[0]));
+    const uMid = (uMin + uMax) / 2, band = 0.1 * (uMax - uMin);
+    const mid = (q) => Math.abs(q[0] - uMid) <= band;
+    const crest = Math.max(...R.filter(mid).map((q) => q[2]));
+    const midTiles = tiles.filter(mid);
+    const tileTop = midTiles.length ? Math.max(...midTiles.map((q) => q[2])) : NaN;
+    const ridgeMax = Math.max(...R.map((q) => q[2]));
+    const above = crest - tileTop, wen = ridgeMax - crest;
+    ok(`${roof} 正脊顶高出最高瓦面 ${above.toFixed(3)} m ≤ 0.35（脊顶 ${crest.toFixed(3)} / 瓦面 ${tileTop.toFixed(3)}）`,
+      midTiles.length > 0 && above <= 0.35, `above=${above}`);
+    ok(`${roof} 吻端起翘 ${wen.toFixed(3)} m ≤ 0.5（脊最高 ${ridgeMax.toFixed(3)}）`, wen <= 0.5, `wen=${wen}`);
+  }
+  const qj = allParts.filter((n) => /-qiangji-/.test(n));
+  let qjMax = 0;
+  for (const nm of qj) {
+    const groups = new Map();
+    for (const q of partVertsLocal(nm)) {
+      const k = `${q[0].toFixed(2)},${q[1].toFixed(2)}`;
+      const g = groups.get(k) || [Infinity, -Infinity];
+      g[0] = Math.min(g[0], q[2]); g[1] = Math.max(g[1], q[2]);
+      groups.set(k, g);
+    }
+    for (const [lo, hi] of groups.values()) qjMax = Math.max(qjMax, hi - lo);
+  }
+  ok(`戗脊 ${qj.length} 条，最大截面高 ${qjMax.toFixed(3)} m ≤ 0.35`, qj.length >= 8 && qjMax <= 0.35, `qjMax=${qjMax}`);
+}
+
 console.log(`RESULT pass=${pass} fail=${fail} skipped=${skipped}`);
 if (fail) { console.log('FAILURES:', failures.join(' | ')); process.exit(1); }

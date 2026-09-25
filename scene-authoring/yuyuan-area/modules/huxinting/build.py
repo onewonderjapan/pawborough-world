@@ -62,10 +62,13 @@ D = dict(
     win1=(1.60, 3.50), win2=(4.80, 6.20),      # 格心长窗带（一层 / 二层）
     gallery=1.1, railH=1.05, picketGap=0.55,   # 外廊进深 = 主楼出檐（冻结 1.1）
     roof=dict(over=1.1, chu=0.3, qiao=0.8, reach=2.0, zEave=6.90, breakZ=7.90, ridgeZ=9.6,
-              breakInset=0.8, gableInset=1.0, drop=0.55, tileH=0.18, boardH=0.30, curve=1.6, rings=7, ridgeEndLift=0.18),
+              breakInset=0.8, gableInset=1.0, drop=0.55, tileH=0.18, boardH=0.30, curve=1.6, rings=7, ridgeEndLift=0.18,
+              # R1：正脊 / 吻 / 戗脊按 eave_kit ornamentScale 缩放。'auto' 按进深 7.82/12 = 0.65 时吻端起翘
+              # (0.18+0.9)*0.65 = 0.70 > 0.5 m 仍超限，故给实测定值 0.42：脊顶高出瓦面 0.13、吻起翘 0.45、戗脊截面 ≤0.25。
+              ornamentScale=0.42),
     porch=dict(uHalf=2.2, depth=2.2, wallTop=3.05, zEave=3.00, breakZ=3.60, ridgeZ=4.60, drop=0.45,
                over=0.8, chu=0.18, qiao=0.45, reach=1.2, breakInset=0.5, gableInset=0.9,
-               tileH=0.15, boardH=0.25, rings=6, ridgeEndLift=0.2),
+               tileH=0.15, boardH=0.25, rings=6, ridgeEndLift=0.2, ornamentScale='auto'),   # auto: 进深 2.45 → 夹到 0.35
     tower=dict(half=2.1, over=0.9, zEave=9.65, apex=11.40, finialTop=12.0, drop=0.55, tileH=0.16, boardH=0.26,
                chu=0.2, qiao=0.6, reach=1.4, curve=1.5, rings=6,
                skirt1=dict(z=3.85, over=0.7), skirt2=dict(z=6.75, over=0.7)),
@@ -321,7 +324,8 @@ for si, sk in enumerate((tw['skirt1'], tw['skirt2'])):
                                       tileH=tw['tileH'], boardH=tw['boardH'], curve=tw['curve'], rootRise=0.55), 'tower')
 eave_kit.zanjian_roof('towerroof', (TU0, TU1, TV0, TV1), tw['zEave'], tw['apex'],
                       dict(over=tw['over'], chu=tw['chu'], qiao=tw['qiao'], reach=tw['reach'], drop=tw['drop'],
-                           tileH=tw['tileH'], boardH=tw['boardH'], curve=tw['curve'], rings=tw['rings']), 'tower')
+                           tileH=tw['tileH'], boardH=tw['boardH'], curve=tw['curve'], rings=tw['rings'],
+                           ornamentScale='auto'), 'tower')   # 攒尖无正脊 / 吻，eave_kit 不读该参数；统一传入备查
 cu, cv = (TU0 + TU1) / 2, (TV0 + TV1) / 2
 bx, by, _ = world(cu, cv, 0)
 bpy.ops.mesh.primitive_cone_add(vertices=10, radius1=0.34, radius2=0.12, depth=0.42, location=(bx, by, tw['apex'] + 0.16))
@@ -338,7 +342,7 @@ eave_kit.xieshan_roof('porchroof', (-PU, PU, V0 - 0.25, V0 + PD), po['zEave'],
                       dict(over=po['over'], chu=po['chu'], qiao=po['qiao'], reach=po['reach'], zEave=po['zEave'],
                            breakZ=po['breakZ'], ridgeZ=po['ridgeZ'], breakInset=po['breakInset'], gableInset=po['gableInset'],
                            drop=po['drop'], tileH=po['tileH'], boardH=po['boardH'], curve=1.6, rings=po['rings'],
-                           ridgeEndLift=po['ridgeEndLift']), 'porch')
+                           ridgeEndLift=po['ridgeEndLift'], ornamentScale=po['ornamentScale']), 'porch')
 
 # ---------------------------------------------------------------- 导出 + 记录 ----
 for ob in bpy.data.objects:

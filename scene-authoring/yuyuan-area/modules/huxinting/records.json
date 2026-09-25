@@ -1,7 +1,7 @@
 {
  "id": "huxin-ting",
  "glb": "out-zone/huxin-ting.glb",
- "bytes": 658940,
+ "bytes": 659240,
  "tris": 8528,
  "partTriCounts": {
   "deck": 12,
@@ -85,7 +85,8 @@
    "boardH": 0.3,
    "curve": 1.6,
    "rings": 7,
-   "ridgeEndLift": 0.18
+   "ridgeEndLift": 0.18,
+   "ornamentScale": 0.42
   },
   "porch": {
    "uHalf": 2.2,
@@ -104,7 +105,8 @@
    "tileH": 0.15,
    "boardH": 0.25,
    "rings": 6,
-   "ridgeEndLift": 0.2
+   "ridgeEndLift": 0.2,
+   "ornamentScale": "auto"
   },
   "tower": {
    "half": 2.1,
