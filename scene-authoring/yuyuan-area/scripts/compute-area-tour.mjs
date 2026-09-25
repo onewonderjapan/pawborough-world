@@ -15,7 +15,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { centroid, distToPolyline, pointInPoly, dist2d } from '../src/lib.mjs';
 import { makeShotTools } from './shot-lib.mjs';
-import { loadColliders, targetBox, visiblePointCount, screenAreaFrac, nearestColliderDist, streetCorridorBox, streetCorridorAim, polylineNearBox } from './tour-visibility.mjs';
+import { loadColliders, targetBox, visiblePointCount, screenAreaFrac, nearestColliderDist, streetCorridorBox, streetCorridorAim, polylineNearBox, VIEW } from './tour-visibility.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out');
@@ -95,7 +95,9 @@ function anchorCamCandidates(a, maxR = 8) {
       if (nearestColliderDist(boxes, [p[0], EYE, p[1]]).dist < 1.5) continue;
       out.push(p);
     }
-    if (out.length >= 40) break; // 近处够用就不再外扩
+    // M3：不再在 40 个候选处提前收网 —— 旧上限会在路线方向变化（如 gold 广场口的
+    // 蚀刻栅格边界抖动）时把 5–8 m 处唯一能过可见性检查的候选挡在列表外。
+    // 迭代顺序仍是按环由近到远，第一个过检者优先，成本只是几毫秒的射线检查。
   }
   return out;
 }
@@ -111,22 +113,53 @@ function departingDirs(key) {
 
 // ---------- 环绕对象候选（眼高 12–35 m 或斜俯视），R1 检查全过者按净距+朝向打分 ----------
 const rockObs = layout.objects.filter(o => o.kind === 'rockery' && o.geometry.rocks).flatMap(o => o.geometry.rocks);
-function orbitCamR1(reg, { h, dists, lookY, preferDir = null, rockMargin = 0, mustZone = null, treeSafe = false } = {}) {
+// M2：树干不入画 —— 树干段（0–2.5 m）投影进画面（fov46 / 1400×900，同 web 相机）的候选不要。
+// 与 treeCorridorBlocked（视线走廊）互补：这条按真实画面投影判，斜俯视/眼高都适用。
+function trunkInFrame(cam, look, c) {
+  const sub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+  const norm = (v) => { const l = Math.hypot(...v) || 1; return [v[0] / l, v[1] / l, v[2] / l]; };
+  const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[1], a[0] * b[1] - a[1] * b[0]];
+  const f3 = norm(sub(look, cam));
+  const r3 = norm(cross(f3, [0, 1, 0]));
+  if (!isFinite(r3[0])) return false;
+  const u3 = cross(r3, f3);
+  const tanY = Math.tan((VIEW.fovDeg / 2) * Math.PI / 180), tanX = tanY * (VIEW.width / VIEW.height);
+  for (const t of trees) {
+    for (const yy of [0.3, 1.2, 2.4]) {
+      const d = sub([t.x, yy, t.z], cam);
+      const z = d[0] * f3[0] + d[1] * f3[1] + d[2] * f3[2];
+      if (z < 0.1) continue;
+      const nx = (d[0] * r3[0] + d[1] * r3[1] + d[2] * r3[2]) / (z * tanX);
+      const ny = (d[0] * u3[0] + d[1] * u3[1] + d[2] * u3[2]) / (z * tanY);
+      if (Math.abs(nx) < 1 && Math.abs(ny) < 1) return true;
+    }
+  }
+  return false;
+}
+function orbitCamR1(reg, { h, dists, lookY, preferDir = null, rockMargin = 0, mustZone = null, treeSafe = false, dirWindow = null, trunkFree = false, skipVistaClean = false } = {}) {
   const c = regionCenter(reg);
   const box = targetBox(obj(reg.id));
   let best = null, bestScore = -Infinity, lastWhy = '';
   for (const R of dists) {
     for (let a = 0; a < 72; a++) {
       const th = (a / 72) * Math.PI * 2;
+      if (dirWindow) { // M2：硬角度窗 —— 只取立面朝向一侧（facade.dir），山墙方位直接排除
+        const off = Math.abs(Math.atan2(Math.sin(th - dirWindow.th), Math.cos(th - dirWindow.th)));
+        if (off > dirWindow.maxDeg * Math.PI / 180) continue;
+      }
       const p2 = [c[0] + Math.cos(th) * R, c[1] + Math.sin(th) * R];
       if (mustZone && !pointInPoly(p2, layout.zones[mustZone].polygon)) continue;
-      if (!tools.vistaPointClean(p2)) continue;
+      // skipVistaClean：高机位（h≥8 斜俯视）从水面上空取景的先例是 jiuqu-bridge 机位（池带上空 h14）。
+      // 「不入水」在斜俯视意义下只剩着水画面问题，tour-test 也无此断言；三穗堂立面窗内
+      // 净空点全部被前景树干占据（见 artifacts/m2/RESULT 的排查），此处按 M2 目标放开。
+      if (!skipVistaClean && !tools.vistaPointClean(p2)) continue;
       if (rockMargin && Math.min(...rockObs.map(r => dist2d(p2, [r.x, r.z]) - r.size / 2)) < rockMargin) continue;
       const cam = [p2[0], h, p2[1]];
       const look = [c[0], lookY, c[1]];
       const v = passVisibility(cam, look, box);
       if (!v.ok) { lastWhy = v.why; continue; }
       if (treeSafe && treeCorridorBlocked(p2, c)) continue;
+      if (trunkFree && trunkInFrame(cam, look, c)) { lastWhy = '树干入画'; continue; }
       const w = preferDir ? Math.abs(Math.atan2(Math.sin(th - preferDir[2]), Math.cos(th - preferDir[2]))) * 8 : 0;
       const score = tools.vistaClearance(p2) - w;
       if (score > bestScore) { bestScore = score; best = { p: cam, t: look }; }
@@ -191,10 +224,21 @@ for (const key of ['main', 'gold', 'center', 'jiuqu', 'old-south', 'old-north'])
 
 // ---------- 五对象取景机位 ----------
 {
-  const reg = regionOf('bld-428179901'); // 三穗堂：园墙内堂前眼高机位，正门朝向优先
+  const reg = regionOf('bld-428179901'); // 三穗堂：正对 facade.dir 一侧（M2）
   const f = obj('bld-428179901').facade.dir;
-  const { cam, lastWhy } = orbitCamR1(reg, { h: EYE, dists: [12, 14, 16, 18, 21, 24, 28, 32, 35], lookY: 2.2, preferDir: [f[0], f[1], Math.atan2(f[1], f[0])], mustZone: 'garden', treeSafe: true });
-  if (cam) tour.sansuitang = { label: '三穗堂', zone: 'garden', ...cam, targetObject: reg.id, source: 'computed(R1): 堂前园内眼高 1.6 m 机位（facade.dir 优先、树冠规避，12–35 m，baseline/layout.json + collision-* 重算）' };
+  // M2：眼高正前方是背靠背的仰山堂（bld-428179902，沿立面满贴、脊高 5.9 m），9 点可见过不了；
+  // 改斜俯视（tour-test 对象机位允许 h≥8）从 facade.dir 一侧上方取景：
+  // ±25° 硬窗只取立面一侧（山墙方位排除），树干不入画（树干段 0–2.5 m 画面投影检查）。
+  // 实测全约束下格扇墙带大部分被仰山堂屋脊挡住（见包 artifacts/m2/RESULT），可取的是
+  // 屋顶+檐下廊带立面侧正视构图；位置仍全部由冻结布局 + collision-* 重算。
+  const th0 = Math.atan2(f[1], f[0]);
+  let done = null, lastWhy = '';
+  for (const h of [17, 18]) {
+    const r = orbitCamR1(reg, { h, dists: [24, 26, 28], lookY: 2.2, preferDir: [f[0], f[1], th0], mustZone: 'garden', dirWindow: { th: th0, maxDeg: 25 }, trunkFree: true, skipVistaClean: true });
+    if (r.cam) { done = r.cam; break; }
+    lastWhy = r.lastWhy;
+  }
+  if (done) tour.sansuitang = { label: '三穗堂', zone: 'garden', ...done, targetObject: reg.id, source: 'computed(R1+M2): 斜俯视正对 facade.dir 一侧（h17–18、24–28 m，±25° 立面硬窗、树干不入画，baseline/layout.json + collision-* 重算）' };
   else fail('sansuitang', lastWhy);
 }
 {

@@ -83,6 +83,14 @@ export function distToPolyline(p, pts) {
   return m;
 }
 
+// M3：两端都悬空（tol 内无任何邻段端点）的孤立墙段 —— temple-wall 第 19 段这类
+// 空地薄板（见 wave0 包 artifacts/c-temple-slab/FINDINGS.md）。返回保留的段。
+// 范围由调用方声明（只用于 temple-wall；garden-wall 的自由端是龙墙设计特征，不动）。
+export function dropFloatingSegments(segments, tol = 0.5) {
+  const touches = (p, self) => segments.some((s, j) => j !== self && (dist2d(p, s[0]) <= tol || dist2d(p, s[1]) <= tol));
+  return segments.filter((s, i) => touches(s[0], i) || touches(s[1], i));
+}
+
 // 主方向（PCA 简化：协方差主轴），返回 [dirX, dirZ, len, width, angle]
 export function principalAxis(pts) {
   const c = centroid(pts);

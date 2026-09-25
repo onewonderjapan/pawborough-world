@@ -81,6 +81,7 @@ for z, f in proc_files.items():
 
 # ---------- 站点模块（SITE_MODULES=1：garden-kit 的龙墙/庙墙/月洞门/九曲桥） ----------
 # 世界坐标 GLB（原点=地图0,0），直接导入，不加实例变换。
+# 输入在固定暂存目录 staged/site-modules/（M1：与 OUT_DIR 产物解耦；rebuild-review.sh 开头另复制进 OUT_DIR 供交付/下游）。
 SITE_FILES = {
     'SITE-garden': ['garden-wall.glb', 'moon-gate.glb'],
     'SITE-temple': ['temple-wall.glb'],
@@ -96,6 +97,7 @@ SITE_ANCHORS = {
 }
 site_imported = []
 if os.environ.get('SITE_MODULES') == '1':
+    STAGED_SITE = os.path.join(ROOT, 'staged', 'site-modules')
     # R1#4 fallback：总装超 30MB 时 SITE_DROP_TEMPLE=1 把 temple-wall 网格从总装剔除；
     # 锚空节点仍创建（reconcile/coverage 对账按节点名），temple-wall.glb 照常交付。
     drop_mesh = {'temple-wall.glb'} if os.environ.get('SITE_DROP_TEMPLE') == '1' else set()
@@ -103,7 +105,7 @@ if os.environ.get('SITE_MODULES') == '1':
         print('SITE_DROP_TEMPLE=1 (R1#4 30MB fallback): temple-wall mesh kept out of assembly; anchor kept, GLB still delivered')
     for collname, files in SITE_FILES.items():
         for f in files:
-            p = os.path.join(OUT, f)
+            p = os.path.join(STAGED_SITE, f)
             if os.path.exists(p) and f not in drop_mesh:
                 objs = import_glb(p, collname)
                 parent = None

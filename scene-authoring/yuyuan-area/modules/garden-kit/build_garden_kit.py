@@ -320,9 +320,27 @@ def wall_lips(module, a, b, topfn, top_offset, spacing, radius):
                      bl_pt(x2 + nx * (off + radius), z2 + nz * (off + radius), ty)]
             loft(module, 'lip', [ring0, ring1], M['tileCap'], tile=(1.44, 1.36), smooth_sides=True, uv_vertex=True)
 
+def drop_floating_segments(segs, tol=0.5):
+    """M3：两端都悬空（tol 内无任何邻段端点）的孤立段 —— temple-wall 第 19 段这类空地薄板
+    （wave0 包 artifacts/c-temple-slab/FINDINGS.md）。与 src/lib.mjs dropFloatingSegments 同一规则；
+    garden-wall 的自由端是龙墙设计特征，不适用。"""
+    def touches(p, self_idx):
+        for j, (a, b) in enumerate(segs):
+            if j == self_idx:
+                continue
+            if math.dist(p, a) <= tol or math.dist(p, b) <= tol:
+                return True
+        return False
+    return [s for i, s in enumerate(segs) if touches(s[0], i) or touches(s[1], i)]
+
 def build_wall(spec_id, opts):
     o = SI['objects'][spec_id]
     segs = [tuple(map(tuple, s)) for s in o['geometry']['segments']]
+    if opts.get('dropFloatingSegments'):
+        n0 = len(segs)
+        segs = drop_floating_segments(segs)
+        if len(segs) != n0:
+            ASSUMPTIONS.append(f'{spec_id}: dropped {n0 - len(segs)} floating segment(s) (both endpoints dangling >=0.5m from any neighbour; M3 temple-wall slab)')
     cl = cumlen_segs(segs)
     total = cl[-1]
     thick = o.get('thickness', 0.45)
@@ -808,7 +826,7 @@ build_dragon_head()
 build_wall('temple-wall', {
     'plinthH': 0.35, 'plinthProud': 0.06, 'amp': 0.0,
     'cap': {'capWidth': 0.60, 'capThickness': 0.12, 'ridgeRoll': {'radius': 0.10}},
-    'capThicknessPlain': 0.12, 'piersAtAllVertices': True})
+    'capThicknessPlain': 0.12, 'piersAtAllVertices': True, 'dropFloatingSegments': True})
 ASSUMPTIONS.append('temple-wall plain variant dims borrowed from garden cap ratios: capWidth 0.60 / thickness 0.12 / roll r0.10 / piers 0.6x2.85x0.6 at every vertex (spec gives no temple cap dims)')
 mg = build_moon_gate()
 br = build_bridge()
@@ -865,10 +883,13 @@ catalog['materials'] = META
 
 # ---------------------------------------------------------------- 碰撞代理（地图系盒子）
 COLL = {'axis': 'glTF Y-up; map coords (x east, z south), y height', 'note': 'coarse proxies generated from frozen layout lines', 'modules': {}}
-def boxes_for_wall(spec_id, thick, height, include_head=False):
+def boxes_for_wall(spec_id, thick, height, include_head=False, drop_floating=False):
     o = SI['objects'][spec_id]
     out = []
-    for a, b in o['geometry']['segments']:
+    segs = o['geometry']['segments']
+    if drop_floating:
+        segs = drop_floating_segments([tuple(map(tuple, x)) for x in segs])
+    for a, b in segs:
         L = math.dist(a, b)
         if L < 0.5:
             continue
@@ -880,7 +901,7 @@ def boxes_for_wall(spec_id, thick, height, include_head=False):
         out.append({'center': [cxm, cym, czm], 'size': [1.6, 1.7, 2.3], 'yaw': r, 'type': 'box', 'name': 'dragon-head'})
     return out
 COLL['modules']['garden-wall'] = {'boxes': boxes_for_wall('garden-wall', 0.45, 2.9, include_head=True)}
-COLL['modules']['temple-wall'] = {'boxes': boxes_for_wall('temple-wall', 0.4, 2.6)}
+COLL['modules']['temple-wall'] = {'boxes': boxes_for_wall('temple-wall', 0.4, 2.6, drop_floating=True)}
 mgc = SI['objects']['yuhuatang-moongate']
 mgx, mgz = mgc['geometry']['position']
 th_ = mgc['geometry']['rotY'] - math.pi / 2

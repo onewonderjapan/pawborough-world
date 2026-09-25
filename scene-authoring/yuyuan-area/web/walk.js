@@ -196,6 +196,7 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
   }
   window.__walk = {
     status,
+    get controller() { return controller; },   // M4：?perf=1 的 CruiseDriver 需要挂同一控制器
     async spawnAt(name) {
       anchor = name; sel.value = name;
       if (mode !== 'walk') setMode('walk');
