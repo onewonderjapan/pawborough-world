@@ -2,10 +2,30 @@
  "comment": "HALL_KIT_IDS 唯一来源（build-scene.mjs / assemble.py / export-collision.mjs / rebuild-review.sh / tests/hallkit-test.mjs 都读这里）。ids = HALL_KIT=1 时默认接入、已过检的 id；batches 记录每批范围；skipped 记录按 Fallback 跳过的 id 与原因。sample = 模块目录 collision.json 对应的样板 id。",
  "sample": "bld-428179902",
  "ids": [
-  "bld-428179902"
+  "bld-428179902",
+  "bld-228035335",
+  "bld-428179909",
+  "bld-428179914",
+  "bld-428179916",
+  "bld-428179921",
+  "bld-428179922",
+  "bld-428196072",
+  "bld-428196108"
  ],
  "batches": {
-  "b0": ["bld-428179902"]
+  "b0": [
+   "bld-428179902"
+  ],
+  "b1": [
+   "bld-228035335",
+   "bld-428179909",
+   "bld-428179914",
+   "bld-428179916",
+   "bld-428179921",
+   "bld-428179922",
+   "bld-428196072",
+   "bld-428196108"
+  ]
  },
  "skipped": []
 }

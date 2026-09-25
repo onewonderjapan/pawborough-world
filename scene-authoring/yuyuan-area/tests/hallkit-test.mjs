@@ -27,10 +27,13 @@ function ok(name, cond, detail = '') {
 }
 function skip(name, why) { skipped++; console.log('SKIP', name, '-', why); }
 
-if (process.env.HALL_KIT !== '1' || !fs.existsSync(path.join(OUT, 'garden.glb')) || !IDS.every((id) => fs.existsSync(glbOf(id)))) {
+if (process.env.HALL_KIT !== '1' || !fs.existsSync(path.join(OUT, 'garden.glb'))) {
   console.log(`hallkit artefacts not found or HALL_KIT!=1 (OUT_DIR=${OUT}) — skipping`);
   process.exit(0);
 }
+// 开关开着却缺某栋模块 GLB = 失败（不静默跳过）
+const missingGlb = IDS.filter((id) => !fs.existsSync(glbOf(id)));
+if (missingGlb.length) { console.log('FAIL 模块 GLB 缺失:', missingGlb.join(', ')); process.exit(1); }
 
 // ---------- GLB 解析（节点世界矩阵 + 子树顶点收集，与 sansuitang-test 同实现） ----------
 function parseGlb(file) {

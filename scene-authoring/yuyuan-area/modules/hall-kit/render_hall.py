@@ -271,23 +271,101 @@ if a.module:
         g = render_cam(sc, pos, tgt, lens, os.path.join(a.out, '%s-%s.png' % (a.tag, name)),
                        check=(a.id, ry, a.meas) if name == 'garden-eye' else None)
         results.append({'shot': 'module-' + name, 'id': a.id, **g})
+def hall_objects(hid):
+    """总装里某栋的全部网格对象（锚空节点 = id 的子孙）。"""
+    root = bpy.data.objects.get(hid)
+    if root is None:
+        return set()
+    return {o.name for o in root.children_recursive if o.type == 'MESH'}
+
+
+def visible_frac(sc, pos, pts, names):
+    """从机位向各采样点投射射线，第一个命中属于本栋（且在采样点附近）的比例；机位落在别的网格里时自然为 0。"""
+    dg = bpy.context.evaluated_depsgraph_get()
+    o = Vector((pos[0], -pos[2], pos[1]))
+    hit_n = 0
+    for p in pts:
+        t = Vector((p[0], -p[2], p[1]))
+        d = t - o
+        L = d.length
+        ok_, loc, _n, _i, ob, _m = sc.ray_cast(dg, o, d.normalized(), distance=L + 0.5)
+        if ok_ and ob is not None and ob.name in names and (loc - o).length >= L - 1.5:
+            hit_n += 1
+    return hit_n / max(1, len(pts))
+
+
+def choose_cams(sc, hid):
+    """在「after」总装里为每个机位挑一个不被邻栋 / 树挡住的位置：候选 = 缺省机位绕正立面转 ±角度、远近缩放；
+    打分 = 射向本栋采样点（正立面格扇区 / 屋面外廓）的可见比例，取最高（并列取缺省）。before 复用同一机位。"""
+    names = hall_objects(hid)
+    base = cams(hid)
+    _, fr = pose(hid)
+    cx, cz = fr['centroid']
+    dx, dz = fr['front']
+    px, pz = -dz, dx
+    k = max(0.65, min(1.0, max(2 * fr['hu'], 2 * fr['hv']) / 15.4))
+    try:
+        reg = region_world(hid, None, os.path.join(AREA, 'out-garden-kits', 'hallkit-' + hid, 'measurements.json'))
+    except Exception:
+        reg = None
+    if reg:
+        eye_pts = []
+        for fu in (0.1, 0.3, 0.5, 0.7, 0.9):
+            for fy in (0.25, 0.75):
+                a0 = [reg[0][c] + (reg[1][c] - reg[0][c]) * fu for c in range(3)]
+                a1 = [reg[3][c] + (reg[2][c] - reg[3][c]) * fu for c in range(3)]
+                eye_pts.append([a0[c] + (a1[c] - a0[c]) * fy for c in range(3)])
+    else:
+        eye_pts = [(cx + dx * fr['hv'], 1.8, cz + dz * fr['hv'])]
+    roof_pts = []
+    for su in (-0.8, 0.0, 0.8):
+        for sv in (-0.6, 0.0, 0.6):
+            roof_pts.append((cx + px * su * fr['hu'] + dx * sv * fr['hv'], 5.0, cz + pz * su * fr['hu'] + dz * sv * fr['hv']))
+    out, info = {}, {}
+    for name, (pos0, tgt0, lens) in base.items():
+        pts = eye_pts if name in ('garden-eye', 'front') else roof_pts
+        best = (visible_frac(sc, pos0, pts, names), 0, pos0, tgt0)
+        rel = [pos0[0] - cx, pos0[1], pos0[2] - cz]
+        for ang in (25, -25, 45, -45, 65, -65):
+            for sc_d in (1.0, 0.75, 1.3, 0.55):
+                ca, sa = math.cos(math.radians(ang)), math.sin(math.radians(ang))
+                rx, rz = rel[0] * ca - rel[2] * sa, rel[0] * sa + rel[2] * ca
+                pos = (cx + rx * sc_d, rel[1] if name in ('garden-eye', 'front', 'back') else rel[1] * sc_d, cz + rz * sc_d)
+                if name == 'garden-eye':
+                    tgt = tgt0
+                else:
+                    tgt = tgt0
+                v = visible_frac(sc, pos, pts, names)
+                if v > best[0] + 1e-9:
+                    best = (v, ang, pos, tgt)
+            if best[0] >= 0.9:
+                break
+        out[name] = (best[2], best[3], lens)
+        info[name] = {'visibleFrac': round(best[0], 2), 'rotDeg': best[1], 'pos': [round(c, 2) for c in best[2]]}
+    print('CAMS', hid, json.dumps(info), flush=True)
+    return out, info
+
+
 if a.compare:
     shots = [s for s in (a.shots or 'oblique,garden-eye').split(',') if s]
     ids = [i for i in (a.ids or a.id).split(',') if i]
-    pairs = [(v, s) for v, s in (('before', a.before), ('after', a.after)) if s and os.path.exists(s)]
+    pairs = [(v, s) for v, s in (('after', a.after), ('before', a.before)) if s and os.path.exists(s)]
+    chosen = {}
     for ver, src in pairs:
         sc, _ = setup_scene(RX, RY, a.spp)
         bpy.ops.import_scene.gltf(filepath=src)
         for hid in ids:
+            if hid not in chosen:
+                chosen[hid] = choose_cams(sc, hid) if ver == 'after' else (cams(hid), {})
+            cs, info = chosen[hid]
             fl = add_fill(sc, fill_pos(hid))
-            cs = cams(hid)
             for name in shots:
                 pos, tgt, lens = cs[name]
                 chk = None
                 if name == 'garden-eye' and ver == 'after':
                     chk = (hid, None, os.path.join(AREA, 'out-garden-kits', 'hallkit-' + hid, 'measurements.json'))
                 g = render_cam(sc, pos, tgt, lens, os.path.join(a.out, '%s-%s-%s.png' % (hid, name, ver)), check=chk)
-                results.append({'shot': 'scene-%s-%s' % (name, ver), 'id': hid, **g})
+                results.append({'shot': 'scene-%s-%s' % (name, ver), 'id': hid, 'cam': info.get(name), **g})
             bpy.data.objects.remove(fl)
 if a.check_image:
     sc, _ = setup_scene(RX, RY, 1)
