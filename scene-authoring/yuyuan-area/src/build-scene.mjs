@@ -49,9 +49,10 @@ const GARDEN_KIT_IDS = new Set(['bld-428179924', 'bld-428186467', 'bld-428196085
 // SANSUITANG=1：三穗堂 bld-428179901 由 modules/sansuitang 细化实例模块承担（assemble 按 footprint 形心放置），占位不再程序化生成。
 const SANSUITANG = process.env.SANSUITANG === '1';
 const SANSUITANG_IDS = new Set(['bld-428179901']);
-// HALL_KIT=1（默认关）：园区厅堂由 modules/hall-kit 统一生成器承担（WP8 样板：仰山堂），assemble 按 footprint 面积形心放置。
+// HALL_KIT=1（默认关）：园区厅/轩/榭/台/楼由 modules/hall-kit 统一生成器承担，assemble 按 footprint 面积形心放置。
+// id 列表唯一来源 modules/hall-kit/ids.json（ids = 已过检、默认接入的全部 id）。
 const HALL_KIT = process.env.HALL_KIT === '1';
-const HALL_KIT_IDS = new Set(['bld-428179902']);
+const HALL_KIT_IDS = new Set(JSON.parse(fs.readFileSync(new URL('../modules/hall-kit/ids.json', import.meta.url), 'utf8')).ids);
 // 假山站点模块默认开启（2026-09-23 机主定）：大假山 / 玉玲珑由 out-garden-kits 站点模块承担（assemble 导入 SITE-garden），
 // 占位不再程序化生成。ROCKERY_KIT=0 退回程序化占位。
 const ROCKERY_KIT = process.env.ROCKERY_KIT !== '0';

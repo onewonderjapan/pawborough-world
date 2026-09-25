@@ -45,6 +45,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 AREA = os.path.dirname(os.path.dirname(HERE))          # scene-authoring/yuyuan-area
 sys.path.insert(0, os.path.join(os.path.dirname(HERE), 'shared'))   # modules/shared —— eave_kit（主控构件，只读）
 import eave_kit                                         # noqa: E402  主控构件，只读
+sys.path.insert(0, HERE)
+import frame as hk_frame                                # noqa: E402  放置/朝向公式（build/assemble/render 共用）
 
 DEFAULTS = json.load(open(os.path.join(HERE, 'defaults.json'), encoding='utf-8'))
 
@@ -87,9 +89,6 @@ HEIGHT, EAVE, RISE = float(dval('height')), float(dval('eave')), float(dval('ris
 ROOF_MODE = str(dval('roofMode'))
 STOREYS = int(dval('storeys'))
 PLATFORM_Y = float(dval('platformY'))
-FDIR = OBJ.get('facade', {}).get('dir') or DEFAULTS['facadeDir']
-fd = math.hypot(FDIR[0], FDIR[1]) or 1.0
-FDX, FDZ = FDIR[0] / fd, FDIR[1] / fd
 
 WALL_T = DEFAULTS['wallThickness']
 INSET = DEFAULTS['wallInset']
@@ -100,68 +99,15 @@ ROOT_RISE, SOFFIT_RISE = DEFAULTS['rootRise'], DEFAULTS['soffitRise']
 CURVE = DEFAULTS['roofCurve']
 XS_MODE = ROOF_MODE == 'gabled'          # 硬山；其余（hip/未知）一律歇山
 
-# ------------------------------------------- 最小面积外接矩形（旋转卡壳） ----
-def convex_hull(pts):
-    pts = sorted(set(pts))
-    def cr(o, a, b):
-        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
-    lo = []
-    for p in pts:
-        while len(lo) >= 2 and cr(lo[-2], lo[-1], p) <= 0:
-            lo.pop()
-        lo.append(p)
-    up = []
-    for p in reversed(pts):
-        while len(up) >= 2 and cr(up[-2], up[-1], p) <= 0:
-            up.pop()
-        up.append(p)
-    return lo[:-1] + up[:-1]
-
-HULL = convex_hull(FP)
-best = None
-m = len(HULL)
-for i in range(m):
-    x1, y1 = HULL[i]
-    x2, y2 = HULL[(i + 1) % m]
-    dx, dy = x2 - x1, y2 - y1
-    L = math.hypot(dx, dy)
-    if L < 1e-9:
-        continue
-    ux, uy = dx / L, dy / L
-    us = [(p[0] - x1) * ux + (p[1] - y1) * uy for p in HULL]
-    vs = [-(p[0] - x1) * uy + (p[1] - y1) * ux for p in HULL]
-    a = (max(us) - min(us)) * (max(vs) - min(vs))
-    if best is None or a < best[0]:
-        best = (a, (ux, uy), (min(us), max(us), min(vs), max(vs)), (x1, y1))
-_area, (ux, uy), (u0, u1, v0, v1), (px, py) = best
-# u 取长轴；v 轴 = u 转 90°，翻转让 +v 指向 facade.dir
-if u1 - u0 < v1 - v0:
-    ux, uy = -uy, ux
-    u0, u1, v0, v1 = v0, v1, -u1, -u0
-if (-uy) * FDX + ux * FDZ < 0:            # v 轴 (−uy, ux) 与 facade.dir 同向为正
-    ux, uy = -ux, -uy
-    u0, u1, v0, v1 = -u1, -u0, -v1, -v0
-HU, HV = (u1 - u0) / 2, (v1 - v0) / 2
+# ------------------------------------ 平面 / 朝向（frame.py，与 assemble / render 同一份公式） ----
+# 外接矩形 = footprint 最小面积外接矩形；正立面 = 矩形上外法线与 facade.dir 最近的一边（defaults.orient，
+# 见 frame.py 说明）；模块 +Z = 正立面外法线，+X = 沿正立面。建面以矩形中心为原点，最后重锚到面积形心。
+FR = hk_frame.hall_frame(OBJ, DEFAULTS)
+HU, HV = FR['hu'], FR['hv']
 HUW, HVW = HU - INSET, HV - INSET
-
-def to_local(wx, wz):
-    du, dz = wx - px, wz - py
-    return du * ux + dz * uy, -du * uy + dz * ux
-
-# 多边形面积形心（GOAL 冻结的放置公式；与 tests/assemble 同式）
-nFP = len(FP)
-A2 = sum(FP[i][0] * FP[(i + 1) % nFP][1] - FP[(i + 1) % nFP][0] * FP[i][1] for i in range(nFP)) / 2
-if abs(A2) < 1e-6:
-    CXX = sum(p[0] for p in FP) / nFP
-    CZZ = sum(p[1] for p in FP) / nFP
-else:
-    CXX = sum((FP[i][0] + FP[(i + 1) % nFP][0]) * (FP[i][0] * FP[(i + 1) % nFP][1] - FP[(i + 1) % nFP][0] * FP[i][1])
-              for i in range(nFP)) / (6 * A2)
-    CZZ = sum((FP[i][1] + FP[(i + 1) % nFP][1]) * (FP[i][0] * FP[(i + 1) % nFP][1] - FP[(i + 1) % nFP][0] * FP[i][1])
-              for i in range(nFP)) / (6 * A2)
-ACU, ACV = to_local(CXX, CZZ)              # 面积形心在矩形系里的坐标
-ACU -= (u0 + u1) / 2                        # 建面以矩形中心为原点：再减矩形中心，
-ACV -= (v0 + v1) / 2                        # 得「形心 − 矩形中心」偏移（重锚 = −ACU, −ACV）
+CXX, CZZ = FR['centroid']
+ACU, ACV = hk_frame.to_local(FR, CXX, CZZ)   # 面积形心在矩形系里的坐标（重锚 = −ACU, −ACV）
+COVERAGE = FR['coverage']
 
 # ------------------------------------------------------------- 柱网 ----
 bay_n = max(2, round(2 * HUW / DEFAULTS['bayTarget']))
@@ -230,21 +176,27 @@ def mat(name, rgb=None, rough=.8, base=None, normal=None, tint=None, tile=(1, 1)
     TILE_OF[name] = tile
     return m
 
+# 框料深红木：底色直接 = sRGB timberSrgb（#6a2e22），不再乘 wood-stain 贴图（旧版贴图均值 sRGB(68,38,28)
+# 再乘 #6a2e22 线性值 → 有效底色约 sRGB(26,5,3)，格扇整面读成黑色）；木纹只走法线图。
+# hk-dark-timber 只留给额枋 / 檐下阴影件（檐底、瓦头、脊）；格心背衬另用 hk-lattice-back（室内暗部）。
 M = {'wall': mat('hk-white-wall', rough=.85, base='PaintedPlaster017_2K-JPG_Color_1K.jpg', tint='f2efe8', tile=(2.2, 2.2)),
      'stone': mat('hk-platform-stone', rough=.92, base='Bricks061_2K-JPG_Color_1K.jpg', tint='9a968c', tile=(2.0, 1.0)),
      'brick': mat('hk-plinth-brick', rough=.9, base='Bricks061_2K-JPG_Color_1K.jpg', tint='6b7370', tile=(0.9, 0.9)),
-     'wood': mat('hk-timber-darkred', rough=.7, base='wood-stain-color.jpg', tint='6a2e22', normal='Wood092_2K-JPG_NormalGL_1K.jpg', tile=(0.9, 2.2)),
+     'wood': mat('hk-timber-darkred', lin(DEFAULTS['timberSrgb']), rough=.62, normal='Wood092_2K-JPG_NormalGL_1K.jpg', tile=(0.9, 2.2)),
      'roof': mat('hk-roof-tile', rough=.8, base='roof-color.jpg', normal='roof-normal.png', tile=(1.4, 1.2)),
-     'dark': mat('hk-dark-timber', lin('241d18'), .6)}
+     'dark': mat('hk-dark-timber', lin(DEFAULTS['darkTimberSrgb']), .6),
+     'latback': mat('hk-lattice-back', lin(DEFAULTS['latticeBackSrgb']), .35)}
+META['hk-timber-darkred']['baseColorSrgb'] = DEFAULTS['timberSrgb']
 MAT_OF = {'wall': M['wall'], 'stone': M['stone'], 'brick': M['brick'], 'wood': M['wood'],
-          'roof': M['roof'], 'dark': M['dark']}
+          'roof': M['roof'], 'dark': M['dark'], 'latback': M['latback']}
 
 def make_lattice_image():
     """格心解析 alpha 贴图（1 m 见方 = 8x8 格，方格 + 斜格），生成到模块 textures/ 并 pack。"""
     W = H = 160
     cell, bar = 20, 3
     px = bytearray(W * H * 4)
-    base = (36, 29, 24)
+    tc = DEFAULTS['timberSrgb']
+    base = tuple(int(tc[i:i + 2], 16) for i in (0, 2, 4))     # 格心棂条 = 框料同色深红木（sRGB 字节）
     for y in range(H):
         for x in range(W):
             dxx, dyy = x % cell, y % cell
@@ -279,7 +231,8 @@ def make_lattice_image():
         m.blend_method = 'CLIP'
     except AttributeError:
         pass
-    META['hk-lattice-core'] = {'alpha': 'textures/lattice-core-alpha.png', 'cellM': 0.125, 'alphaMode': 'MASK', 'alphaCutoff': 0.5}
+    META['hk-lattice-core'] = {'alpha': 'textures/lattice-core-alpha.png', 'cellM': 0.125, 'alphaMode': 'MASK', 'alphaCutoff': 0.5,
+                               'barSrgb': tc, 'sharedImage': 'lattice-core-alpha 160x160（所有厅同名同尺寸，总装按名+尺寸去重）'}
     TILE_OF['hk-lattice-core'] = (1.0, 1.0)
     return m
 
@@ -391,10 +344,10 @@ for x in XS:
     column('rear-column-%.2f' % x, x, -HVW, COL_R, PLATFORM_Y, EAVE_Z)
 arch_h = DEFAULTS['architraveH']
 az = EAVE_Z - 0.42
-box('architrave-front', (0, az + arch_h / 2, HVW), (2 * HUW + 0.3, arch_h, 0.16), 'wood')
-box('architrave-back', (0, az + arch_h / 2, -HVW), (2 * HUW + 0.3, arch_h, 0.16), 'wood')
-box('architrave-l', (-HUW, az + arch_h / 2, 0), (0.16, arch_h, 2 * HVW + 0.3), 'wood')
-box('architrave-r', (HUW, az + arch_h / 2, 0), (0.16, arch_h, 2 * HVW + 0.3), 'wood')
+box('architrave-front', (0, az + arch_h / 2, HVW), (2 * HUW + 0.3, arch_h, 0.16), 'dark')
+box('architrave-back', (0, az + arch_h / 2, -HVW), (2 * HUW + 0.3, arch_h, 0.16), 'dark')
+box('architrave-l', (-HUW, az + arch_h / 2, 0), (0.16, arch_h, 2 * HVW + 0.3), 'dark')
+box('architrave-r', (HUW, az + arch_h / 2, 0), (0.16, arch_h, 2 * HVW + 0.3), 'dark')
 
 # ---- 墙身 / 勒脚 / 半窗（hall-wall）
 PART = 'hall-wall'
@@ -412,21 +365,30 @@ box('wall-front-lintel', (0, (lintel0 + EAVE_Z) / 2, HVW), (2 * HUW, EAVE_Z - li
 # 半窗：背墙每开间一樘 + 两山墙各一樘（格心 alpha）
 win = DEFAULTS['window']
 wz0, wz1 = PLATFORM_Y + win['sill'], PLATFORM_Y + win['sill'] + win['h']
+# 窗框盒外皮在墙外 4 cm；背衬（暗）贴框面外 0.5 cm、格心再外 1 cm——旧版格心埋在框盒里（外皮 −0.04 vs 格心 −0.03），
+# 从外面只看到实心木块。框面露出 6 cm 一圈作窗框。
 for i in range(bay_n):
     x = (XS[i] + XS[i + 1]) / 2
     box('backwin-frame-%d' % i, (x, (wz0 + wz1) / 2, -HVW), (win['w'], win['h'], wt + 0.08), 'wood')
-    panel('backwin-core-%d' % i, (x, (wz0 + wz1) / 2, -HVW - wt / 2 - 0.03), win['w'] - 0.12, win['h'] - 0.12, 'lattice')
+    zf = -HVW - (wt + 0.08) / 2
+    for nm, dz_, mm in (('back', 0.005, 'latback'), ('core', 0.012, 'lattice')):
+        # 面朝 -Z：顶点顺序反向
+        w_, h_ = win['w'] - 0.12, win['h'] - 0.12
+        mesh_glb('backwin-%s-%d' % (nm, i),
+                 [((x + a, (wz0 + wz1) / 2 + b, zf - dz_), (a + w_ / 2, b + h_ / 2))
+                  for a, b in ((w_ / 2, -h_ / 2), (-w_ / 2, -h_ / 2), (-w_ / 2, h_ / 2), (w_ / 2, h_ / 2))],
+                 [(0, 1, 2, 3)], mm)
     COLL.append({'name': 'backwin-%d' % i, 'center': [x, (wz0 + wz1) / 2, -HVW], 'size': [win['w'], win['h'], wt], 'type': 'box'})
 for sx in (-1, 1):
     box('gablewin-frame-%d' % sx, (sx * HUW, (wz0 + wz1) / 2, HVW * 0.35), (wt + 0.08, win['h'], win['w']), 'wood')
-    # 山墙半窗格心：面板朝 ±X（GLB x 固定在山墙外皮外 3 cm，z 向展宽、y 向展高）
+    # 山墙半窗：背衬 + 格心面板朝 ±X，贴在框盒外皮外（框盒外皮 = HUW + (wt+0.08)/2）
     gw = win['w'] - 0.12
     gh = win['h'] - 0.12
-    xg = sx * (HUW + wt / 2 + 0.03)
-    mesh_glb('gablewin-core-%d' % sx,
-             [((xg, wz0 + 0.06 + b, HVW * 0.35 + a), (a + gw / 2, b + gh / 2))
-              for a, b in ((-gw / 2, 0), (gw / 2, 0), (gw / 2, gh), (-gw / 2, gh))],
-             [(0, 1, 2, 3)], 'lattice')
+    for nm, dx_, mm in (('back', 0.005, 'latback'), ('core', 0.012, 'lattice')):
+        xg = sx * (HUW + (wt + 0.08) / 2 + dx_)
+        quad = [((xg, wz0 + 0.06 + b, HVW * 0.35 + a), (a + gw / 2, b + gh / 2))
+                for a, b in ((-gw / 2, 0), (gw / 2, 0), (gw / 2, gh), (-gw / 2, gh))]
+        mesh_glb('gablewin-%s-%d' % (nm, sx), quad, [(3, 2, 1, 0) if sx > 0 else (0, 1, 2, 3)], mm)   # 法线朝外 ±X
 
 # ---- 正立面格扇（hall-facade）：每开间 LEAVES 扇，深红木框 + 格心 alpha + 裙板
 PART = 'hall-facade'
@@ -437,10 +399,12 @@ for i in range(bay_n):
     for k in range(LEAVES):
         x0 = a + lw * k
         xc = x0 + lw / 2
+        # 扇框（深红木）；格心区：暗背衬（室内暗部）+ 同色棂条 alpha；裙板凸出框面 2.4 cm 同色木
         box('door-frame-%d-%d' % (i, k), (xc, PLATFORM_Y + DOOR_H / 2, HVW), (lw - 0.03, DOOR_H, 0.1), 'wood')
         core_h = DOOR_H - 1.02 - 0.12
-        panel('door-core-%d-%d' % (i, k), (xc, PLATFORM_Y + 1.02 + core_h / 2, HVW + 0.055), lw - 0.16, core_h, 'lattice')
-        box('door-panel-%d-%d' % (i, k), (xc, PLATFORM_Y + 0.12 + (0.9 - 0.12) / 2, HVW + 0.02), (lw - 0.14, 0.78, 0.05), 'dark')
+        panel('door-back-%d-%d' % (i, k), (xc, PLATFORM_Y + 1.02 + core_h / 2, HVW + 0.053), lw - 0.16, core_h, 'latback')
+        panel('door-core-%d-%d' % (i, k), (xc, PLATFORM_Y + 1.02 + core_h / 2, HVW + 0.058), lw - 0.16, core_h, 'lattice')
+        box('door-panel-%d-%d' % (i, k), (xc, PLATFORM_Y + 0.14 + 0.62 / 2, HVW + 0.062), (lw - 0.18, 0.62, 0.024), 'wood')
         COLL.append({'name': 'door-%d-%d' % (i, k), 'center': [xc, PLATFORM_Y + DOOR_H / 2, HVW], 'size': [lw, DOOR_H, 0.1], 'type': 'box'})
         leaf_w_all.append(lw)
 
@@ -544,7 +508,8 @@ else:
            'breakInset': min(2 * HUW, 2 * HVW) * xi['breakInsetFrac'],
            'gableInset': (2 * HUW) * xi['gableInsetFrac'],
            'drop': DROP, 'tileH': TILE_H, 'boardH': BOARD_H, 'curve': 1.6,
-           'ridgeEndLift': xi['ridgeEndLift']}
+           'ridgeEndLift': xi['ridgeEndLift'],
+           'ornamentScale': DEFAULTS.get('ornamentScale', 'auto')}      # 小屋面正脊/吻/戗脊按进深缩（eave_kit.ornament_scale）
     eave_kit.xieshan_roof('hall-roof', (-HUW, HUW, -HVW, HVW), EAVE_Z, prm, 'hall-roof')
 
 # ---- 斗拱简化（eave_kit.brackets）：前后檐柱柱顶。叠块顶须低于墙线处坡面
@@ -630,17 +595,25 @@ for c in COLL:
 json.dump({'axis': 'Y-up +Z facade', 'origin': 'area centroid of layout footprint (GOAL frozen placement)',
            'instanceSpace': True, 'integratedIntoWorld': False, 'colliders': COLL},
           open(os.path.join(OUT_DIR, 'collision.json'), 'w'), ensure_ascii=False, indent=1)
-json.dump({'axis': 'Y-up +Z facade', 'origin': 'area centroid of layout footprint (GOAL frozen placement)',
-           'instanceSpace': True, 'integratedIntoWorld': False, 'colliders': COLL},
-          open(os.path.join(HERE, 'collision.json'), 'w'), ensure_ascii=False, indent=1)
+# 模块目录的 collision.json（已跟踪）只对应样板 id（ids.json sample），批量生成其他栋不覆盖它
+if HALL_ID == json.load(open(os.path.join(HERE, 'ids.json'), encoding='utf-8')).get('sample'):
+    json.dump({'axis': 'Y-up +Z facade', 'origin': 'area centroid of layout footprint (GOAL frozen placement)',
+               'instanceSpace': True, 'integratedIntoWorld': False, 'colliders': COLL},
+              open(os.path.join(HERE, 'collision.json'), 'w'), ensure_ascii=False, indent=1)
 
 MEAS = {'id': HALL_ID, 'triangles': tris, 'byNode': by_node, 'glbBytes': os.path.getsize(glb_path),
         'maxY': round(maxy, 3), 'roofMode': ROOF_MODE, 'builtAs': 'yingshan' if XS_MODE else 'xieshan',
-        'rect': {'u': round(2 * HU, 3), 'v': round(2 * HV, 3), 'angleDeg': round(math.degrees(math.atan2(uy, ux)), 3)},
+        'rect': {'u': round(2 * HU, 3), 'v': round(2 * HV, 3), 'coverage': round(COVERAGE, 3)},
+        'orient': FR['orient'], 'rotY': round(FR['rotY'], 6), 'front': [round(FR['front'][0], 6), round(FR['front'][1], 6)],
+        'facadeDeltaDeg': round(FR['facadeDeltaDeg'], 2),
         'wallLine': {'u': round(2 * HUW, 3), 'v': round(2 * HVW, 3)},
         'bays': bay_n, 'bayWidth': round(BAY, 3), 'leavesPerBay': LEAVES,
         'eaveZ': round(EAVE_Z, 3), 'ridgeZ': round(RIDGE_Z, 3), 'platformY': PLATFORM_Y,
         'areaCentroid': [round(CXX, 4), round(CZZ, 4)],
+        # 格扇立面检色区（模块本地 GLB 坐标，已重锚）：正立面格扇带 u∈±(HUW-0.06)、y∈[台基+0.14, 台基+门高]
+        'facadeRegionLocal': [[round(x - ACU, 4), round(y, 4), round(HVW + 0.06 - ACV, 4)]
+                              for x, y in ((-HUW + 0.06, PLATFORM_Y + 0.14), (HUW - 0.06, PLATFORM_Y + 0.14),
+                                           (HUW - 0.06, PLATFORM_Y + DOOR_H), (-HUW + 0.06, PLATFORM_Y + DOOR_H))],
         'reanchorLocalUV': [round(ACU, 4), round(ACV, 4)],
         'storeysIgnored': STOREYS != 1, 'buildSeconds': round(time.time() - T0, 1)}
 json.dump(MEAS, open(os.path.join(OUT_DIR, 'measurements.json'), 'w'), ensure_ascii=False, indent=1)
@@ -650,7 +623,11 @@ json.dump({'layoutSource': os.path.relpath(LAYOUT_PATH, AREA),
                             'facadeDir': OBJ.get('facade', {}).get('dir')},
            'defaultsUsed': {k: DEFAULTS[k] for k in ('platformY',) if 'platformY' not in OBJ},
            'roofPlan': 'eave_kit.xieshan_roof' if not XS_MODE else 'build_hall yingshan (kit section params + brackets + smooth_kernel)',
-           'materials': META, 'budgetTris': DEFAULTS['budgetTris']},
+           'materials': META, 'budgetTris': DEFAULTS['budgetTris'],
+           'ornamentScale': {'param': DEFAULTS.get('ornamentScale', 'auto'),
+                             'applied': None if XS_MODE else round(eave_kit.ornament_scale(
+                                 {'ornamentScale': DEFAULTS.get('ornamentScale', 'auto')}, 2 * HVW), 3),
+                             'note': '歇山传给 eave_kit.xieshan_roof；硬山正脊为本文件小截面，不经 kit'}},
           open(os.path.join(OUT_DIR, 'recipe.json'), 'w'), ensure_ascii=False, indent=1)
 print('HALLKIT_BUILD', HALL_ID, tris, os.path.getsize(glb_path), 'ridge', round(maxy, 2),
       'rect %.2fx%.2f bays %d@%.2f leaves %d' % (2 * HU, 2 * HV, bay_n, BAY, LEAVES))

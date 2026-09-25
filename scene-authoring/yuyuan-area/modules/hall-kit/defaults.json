@@ -32,5 +32,12 @@
   "stepTread": 0.3,
   "stepWidth": 2.4,
   "xieshan": { "breakFrac": 0.45, "breakInsetFrac": 0.14, "gableInsetFrac": 0.12, "chu": 0.25, "reach": 1.8, "ridgeEndLift": 0.35 },
-  "budgetTris": 10000
+  "ornamentScale": "auto",
+  "orient": "footprint-side",
+  "frontMinSideM": 3.2,
+  "frontShortPenalty": 0.6,
+  "timberSrgb": "6a2e22",
+  "latticeBackSrgb": "2a2522",
+  "darkTimberSrgb": "241d18",
+  "budgetTris": 6000
 }
