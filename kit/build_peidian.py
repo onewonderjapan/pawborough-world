@@ -267,24 +267,26 @@ for sgn in (-1, 1):
     x0, x1 = sorted(sb['windowSpansX'][0 if sgn < 0 else 1])
     xc, wb = (x0 + x1) / 2, x1 - x0
     L.box('bay-sill', (xc, lat['sillY'] + .05, -dz / 2), (wb, .1, dz + .06), 'stone', .008, True)
+    # wave5-templeqa: lattice members sat on the INTERIOR side of the backing (z offsets had the wrong sign; the
+    # module front is +Z), so from the court the bays read as flat backing slabs. They now stand in front of it.
     L.box('bay-backing', (xc, (lat['sillY'] + lat['topY']) / 2, -dz / 2),
-          (wb, lat['topY'] - lat['sillY'], .1), 'dark', 0, True)
+          (wb, lat['topY'] - lat['sillY'], .1), 'lattice', 0, True)
     n = max(2, round(wb / lat['mullionStepM']))
     for k in range(n + 1):
-        L.box('bay-mullion', (x0 + wb * k / n, (lat['sillY'] + lat['topY']) / 2, -dz / 2 - .05),
+        L.box('bay-mullion', (x0 + wb * k / n, (lat['sillY'] + lat['topY']) / 2, -dz / 2 + .05),
               (.07, lat['topY'] - lat['sillY'], .11), 'wood', .005)
     for yy in (lat['sillY'] + .08, lat['waistRailY'], lat['topY'] - .08):
-        L.box('bay-rail', (xc, yy, -dz / 2 - .045), (wb - .02, .09, .12), 'wood', .005)
+        L.box('bay-rail', (xc, yy, -dz / 2 + .045), (wb - .02, .09, .12), 'wood', .005)
     k = 0
     while True:
         x = x0 + (.1 + lat['mullionStepM'] / 2) + lat['mullionStepM'] * k
         if x > x1 - .1:
             break
-        L.box('bay-lattice-bar', (x, (lat['waistRailY'] + lat['topY']) / 2, -dz / 2 - .065),
+        L.box('bay-lattice-bar', (x, (lat['waistRailY'] + lat['topY']) / 2, -dz / 2 + .065),
               (.032, lat['topY'] - lat['waistRailY'] - .12, .045), 'wood', 0)
         k += 1
-    L.box('bay-lower-panel', (xc, (lat['sillY'] + lat['waistRailY']) / 2, -dz / 2 - .04),
-          (wb - .12, lat['waistRailY'] - lat['sillY'] - .12, .045), 'dark', 0)
+    L.box('bay-lower-panel', (xc, (lat['sillY'] + lat['waistRailY']) / 2, -dz / 2 + .04),
+          (wb - .12, lat['waistRailY'] - lat['sillY'] - .12, .045), 'lattice', 0)  # wave5-templeqa: 裙板 same board colour as the 格心 backing
 print(f'STAGE front ok ({time.time() - T0:.1f}s)')
 
 # gable (硬山) walls: lower box + strips following the roof soffit at the wall

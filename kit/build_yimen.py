@@ -347,14 +347,16 @@ for sgn in (-1, 1):
     xc = (x_in + x_out) / 2
     wb = abs(x_out - x_in)
     zb = -0.18
+    # wave5-templeqa: lattice members sat on the INTERIOR side of the backing (z offsets had the wrong sign; the
+    # module front is +Z), so from the court the bays read as flat backing slabs. They now stand in front of it.
     L.box('bay-backing', (xc, dw['heightM'] / 2 + .1, zb), (wb, dw['heightM'] + .2, .1),
           bays['backingMaterial'], 0, True)
     n = bays['subDoorCount']
     for k in range(n + 1):
-        L.box('bay-mullion', (x_in + sgn * wb * k / n, dw['heightM'] / 2 + .1, zb - .05),
+        L.box('bay-mullion', (x_in + sgn * wb * k / n, dw['heightM'] / 2 + .1, zb + .05),
               (.09, dw['heightM'] + .2, .12), 'wood', .005)
     for yy in (0.06, bays['waistRailY'], dw['heightM'] - .06):
-        L.box('bay-rail', (xc, yy + .08, zb - .045), (wb - .02, .11, .13), 'wood', .005)
+        L.box('bay-rail', (xc, yy + .08, zb + .045), (wb - .02, .11, .13), 'wood', .005)
     # lattice bars in the upper field only; the lower field gets inset panels
     step = bays['latticeBarStepM']
     k = 0
@@ -362,13 +364,13 @@ for sgn in (-1, 1):
         x = x_in + sgn * (0.14 + step / 2) + sgn * step * k
         if abs(x - x_in) > wb - .16:
             break
-        L.box('bay-lattice-bar', (x, (bays['waistRailY'] + dw['heightM']) / 2 + .1, zb - .07),
+        L.box('bay-lattice-bar', (x, (bays['waistRailY'] + dw['heightM']) / 2 + .1, zb + .07),
               (.04, dw['heightM'] - bays['waistRailY'] - .2, .05), 'wood', 0)
         k += 1
     for k2 in range(n):
         pcx = x_in + sgn * wb * (k2 + .5) / n
-        L.box('bay-lower-panel', (pcx, bays['waistRailY'] / 2 + .08, zb - .04),
-              (wb / n - .12, bays['waistRailY'] - .12, .05), 'dark', 0)
+        L.box('bay-lower-panel', (pcx, bays['waistRailY'] / 2 + .08, zb + .04),
+              (wb / n - .12, bays['waistRailY'] - .12, .05), 'lattice', 0)  # wave5-templeqa: 裙板 same board colour as the 格心 backing
     # solid wall ends beyond the outer columns (plaster piers with corner post)
     x_end_in = sgn * (bays['outerEdgeX'] + .02)
     x_end_out = sgn * (bd['sideWallX'] - bd['sideWallThicknessM'] / 2)
