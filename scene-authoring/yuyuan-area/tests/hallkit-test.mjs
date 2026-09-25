@@ -451,9 +451,11 @@ for (const HK_ID of IDS) {
     ok(`${tag} hk-dark-timber 只用于额枋 / 檐下阴影件（hall-frame、hall-roof；实得 ${darkParts.join(',')}）`,
       darkParts.every((p) => p === 'hall-frame' || p === 'hall-roof'));
 
-    // ---------- 3b) 斗拱不穿屋面（wave3 W0）：任何斗拱顶点不高于其正上方的屋面 / 檐口底面（容差 0.01 m）。
-    //   屋面 / 檐底三角取 hall-roof* 节点、面法线 |ny| ≥ 0.2（近水平面；斗拱只在檐下，正上方是檐底斜面 / 屋面坡）。
-    //   竖直射线无交点的顶点（不在任何屋面之下）不适用，跳过。
+    // ---------- 3b) 斗拱不穿屋面（wave3 W0）：任何斗拱顶点都不高于其正上方的屋面 / 檐口底面（容差 0.01 m）。
+    //   对每个斗拱顶点取 hall-roof* 节点里水平投影包含它、面法线近水平（|ny| ≥ 0.2|n|）且不低于顶点 1.0 m 的三角
+    //   （1.0 m 窗口排除两层楼腰檐——那是下方另一层构件，不是「正上方」），取其最低面 = 檐底 / 屋面下包络：
+    //   顶点超出包络即穿出。旧版斗拱顶 = 檐高 −0.02 而檐底斜面在柱位外挑处 ≈ 檐高 −0.18（外挑端穿出，
+    //   斜俯图檐线上露小红块）；修复后顶 = 檐底线性斜面在外挑深度处 −0.03。
     {
       const bVerts = [], roofTris = [];
       for (const n of g.json.nodes || []) {
@@ -466,7 +468,7 @@ for (const HK_ID of IDS) {
       } else {
         let worst = -Infinity, worstAt = null, checked = 0;
         for (const p of bVerts) {
-          let bestY = Infinity;
+          let low = Infinity;
           for (const t of roofTris) {
             const [A, B, C] = t;
             const e1 = [B[0] - A[0], B[1] - A[1], B[2] - A[2]], e2 = [C[0] - A[0], C[1] - A[1], C[2] - A[2]];
@@ -479,15 +481,15 @@ for (const HK_ID of IDS) {
             const l3 = 1 - l1 - l2;
             if (l1 < -1e-9 || l2 < -1e-9 || l3 < -1e-9) continue;
             const yAt = l1 * A[1] + l2 * B[1] + l3 * C[1];
-            if (yAt < p[1] - 0.02) continue;
-            bestY = Math.min(bestY, yAt);
+            if (yAt < p[1] - 1.0) continue;                            // 1.0 m 窗口：排除下方另一层构件（腰檐）
+            low = Math.min(low, yAt);
           }
-          if (bestY === Infinity) continue;                            // 正上方没有屋面 / 檐底的顶点不适用
+          if (low === Infinity) continue;                              // 该 (x,z) 处没有屋面 / 檐底的顶点不适用
           checked++;
-          const v = p[1] - bestY;
+          const v = p[1] - low;                                        // >0 = 顶点穿出檐底 / 屋面下包络
           if (v > worst) { worst = v; worstAt = [p[0], p[1], p[2]]; }
         }
-        ok(`${tag} 斗拱顶点不高于正上方屋面 / 檐底（最高超出 ${worst.toFixed(3)} m ≤ 0.01，有遮挡顶点 ${checked}/${bVerts.length}）`,
+        ok(`${tag} 斗拱顶点不高于正上方屋面 / 檐底（最大超出 ${worst.toFixed(3)} m ≤ 0.01，有遮挡顶点 ${checked}/${bVerts.length}）`,
           checked > 0 && worst <= 0.01, `worst=${worst.toFixed(3)} at (${(worstAt || []).map((c) => c.toFixed(2)).join(',')})`);
         row.bracketAboveRoofM = +worst.toFixed(3);
       }
