@@ -1347,6 +1347,54 @@ const TEMPLE_V3 = path.join(ROOT, 'resources/temple-v3');
       ...(moved ? ['wall ring unchanged (zone boundary is source data); opening anchor follows the rigid-fit-adjusted shanmen axis'] : []),
     ],
   });
+  // ---------- 山门前广场净空（wave5-fangbangqa F-02，主控 2026-09-26 决定：选项 1） ----------
+  // 规则：任何外围店屋（shopAnchor，zone=outer）平面轮廓都不得与山门前广场相交；相交的提案店整件不生成。
+  // 前广场全部取自本 layout：山门锚（temple-shanmen 位置 + rotY，门脸 +Z）；庙墙南开口 = 山门轴两侧各取离山门锚
+  // 最近的院墙段端点 A / B；自 A、B 沿门脸方向到「方浜中路」路面近边（中线交点距离 − 路宽/2）为纵深。
+  // 店屋轮廓 = 单元 w × d（原点前墙中点，门脸 +Z、进深 −Z，按 rotY 转）。
+  {
+    const sm = instances.find(i => i.id === 'temple-shanmen');
+    const f = [Math.sin(sm.rotY), Math.cos(sm.rotY)], nrm = [f[1], -f[0]];
+    const side = q => (q[0] - sm.position[0]) * nrm[0] + (q[1] - sm.position[1]) * nrm[1];
+    const ends = segs.flat();
+    const near = sgn => ends.filter(e => sgn * side(e) > 0).reduce((b, e) => (!b || dist2d(e, sm.position) < dist2d(b, sm.position) ? e : b), null);
+    const A = near(1), B = near(-1);
+    const fbRoads = map.roads.filter(r => r.name === '方浜中路');
+    const depthTo = (q) => {
+      let best = Infinity;
+      for (const r of fbRoads) for (let i = 1; i < r.points.length; i++) {
+        const a = r.points[i - 1], b = r.points[i];
+        const ex = b[0] - a[0], ez = b[1] - a[1];
+        const den = f[0] * ez - f[1] * ex;
+        if (Math.abs(den) < 1e-9) continue;
+        const t = ((a[0] - q[0]) * ez - (a[1] - q[1]) * ex) / den;
+        const u = ((a[0] - q[0]) * f[1] - (a[1] - q[1]) * f[0]) / den;
+        if (t > 0 && u >= 0 && u <= 1) best = Math.min(best, t - r.width / 2);
+      }
+      return best;
+    };
+    const dA = depthTo(A), dB = depthTo(B);
+    const forecourt = [A, B, [B[0] + f[0] * dB, B[1] + f[1] * dB], [A[0] + f[0] * dA, A[1] + f[1] * dA]].map(p => [+p[0].toFixed(3), +p[1].toFixed(3)]);
+    const unitOf = Object.fromEntries(SHOP_UNITS.map(u => [u.module, u]));
+    const removed = [];
+    for (const inst of instances.filter(i => i.zone === 'outer' && unitOf[i.module])) {
+      const u = unitOf[inst.module], c = Math.cos(inst.rotY), sn = Math.sin(inst.rotY);
+      const [x, z] = inst.position;
+      const fp = [[-u.w / 2, 0], [u.w / 2, 0], [u.w / 2, -u.d], [-u.w / 2, -u.d]].map(([lx, lz]) => [x + c * lx + sn * lz, z - sn * lx + c * lz]);
+      if (polyIntersectsPoly(fp, forecourt)) removed.push({ id: inst.id, module: inst.module, proposal: inst.proposal || null });
+    }
+    const gone = new Set(removed.map(r => r.id));
+    for (let i = objects.length - 1; i >= 0; i--) if (gone.has(objects[i].id)) objects.splice(i, 1);
+    for (let i = instances.length - 1; i >= 0; i--) if (gone.has(instances[i].id)) instances.splice(i, 1);
+    for (let i = labels.length - 1; i >= 0; i--) if (gone.has(labels[i].id)) labels.splice(i, 1);
+    if (facadeStats.proposalRows) facadeStats.proposalRows.total -= removed.filter(r => r.id.startsWith('shoprow-')).length;
+    layoutExtras.shanmenForecourt = {
+      rule: 'no outer shopAnchor footprint (unit w x d, origin front-wall centre, facade +Z) may intersect the shanmen forecourt (wave5-fangbangqa F-02, lead decision 2026-09-26 option 1)',
+      polygon: forecourt,
+      derivedFrom: 'temple-shanmen anchor facing; nearest temple-wall segment end on each side of the axis = south opening; depth along facing to the 方浜中路 road near edge (centreline hit - width/2)',
+      removed,
+    };
+  }
   // 模块外包络 vs 邻区公共道路/庙墙净距（采用后位姿；墙净距含树模块仅作记录，门槛只看建筑）
   const moduleRoadCheck = [];
   for (const mci of moduleCorners()) {

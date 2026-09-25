@@ -768,13 +768,13 @@
   "sourceWaters": 14,
   "sourceShopProposals": 171,
   "sourceZones": 3,
-  "objects": 877,
-  "instances": 47,
+  "objects": 876,
+  "instances": 46,
   "labels": 73,
   "disposition": {
    "rendered": 822,
    "merged-into-bridge": 1,
-   "reused": 47,
+   "reused": 46,
    "replaced-by-design": 7
   },
   "zoneBuildings": {
@@ -795,7 +795,7 @@
    "facadeBays": 175,
    "facadeSegments": 65,
    "shophouseFootprintUnits": 1,
-   "proposalRowUnits": 20,
+   "proposalRowUnits": 19,
    "perimeterReplacedUnits": 6,
    "perimeterByStreet": [
     {
@@ -818,7 +818,7 @@
     }
    ],
    "stallsAndBenches": 51,
-   "distinctSourceBuildings": 46
+   "distinctSourceBuildings": 45
   }
  },
  "objects": [
@@ -9953,30 +9953,6 @@
    "trade": "棉花",
    "sources": {
     "mapDataShops": "shop-166"
-   },
-   "confidence": "shop proposal point from shared base map; historicalPositionVerified=false",
-   "inferences": [
-    "unit fitted to proposal point (design proposal positions along 方浜中路/东门路); no historic shop addresses claimed"
-   ]
-  },
-  {
-   "id": "shoprow-p167",
-   "zone": "outer",
-   "kind": "shopAnchor",
-   "name": null,
-   "lod": "L2",
-   "disposition": "reused",
-   "geometry": {
-    "position": [
-     -70.23,
-     13.13
-    ],
-    "rotY": 0.167034
-   },
-   "proposal": "shop-167",
-   "trade": "绸缎",
-   "sources": {
-    "mapDataShops": "shop-167"
    },
    "confidence": "shop proposal point from shared base map; historicalPositionVerified=false",
    "inferences": [
@@ -40104,23 +40080,6 @@
    "axis": "GLB Y-up, facade +Z, depth -Z, origin front-wall center bottom; scale 1"
   },
   {
-   "id": "shoprow-p167",
-   "module": "shop-03-threebay",
-   "zone": "outer",
-   "lod": "L2",
-   "position": [
-    -70.23,
-    13.13
-   ],
-   "rotY": 0.167034,
-   "proposal": "shop-167",
-   "proposalCategory": "绸缎",
-   "sourcePath": "pawborough-shop-base-batch-20260921/workspace/out/shop-03-threebay/model.glb",
-   "sha256": "a971d23e0d1102882fc2e3d9c96fddc15aa54dac13e6593536aff3bfbb104c99",
-   "ownerAdopted": false,
-   "axis": "GLB Y-up, facade +Z, depth -Z, origin front-wall center bottom; scale 1"
-  },
-  {
    "id": "shoprow-p169",
    "module": "shop-03-threebay",
    "zone": "outer",
@@ -41455,6 +41414,35 @@
     "clearToPublicRoadM": 17.6,
     "clearToTempleWallM": 6.5,
     "intrusion": false
+   }
+  ]
+ },
+ "shanmenForecourt": {
+  "rule": "no outer shopAnchor footprint (unit w x d, origin front-wall centre, facade +Z) may intersect the shanmen forecourt (wave5-fangbangqa F-02, lead decision 2026-09-26 option 1)",
+  "polygon": [
+   [
+    -72.842,
+    9.583
+   ],
+   [
+    -84.07,
+    11.746
+   ],
+   [
+    -83.046,
+    17.816
+   ],
+   [
+    -71.773,
+    15.921
+   ]
+  ],
+  "derivedFrom": "temple-shanmen anchor facing; nearest temple-wall segment end on each side of the axis = south opening; depth along facing to the 方浜中路 road near edge (centreline hit - width/2)",
+  "removed": [
+   {
+    "id": "shoprow-p167",
+    "module": "shop-03-threebay",
+    "proposal": "shop-167"
    }
   ]
  },
