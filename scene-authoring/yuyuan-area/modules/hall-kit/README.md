@@ -89,3 +89,15 @@ wave2 B4 起按两层剖面生成（见下「wave2 批量」）。
 - 区间或凹口盖满整侧时退回 wave2 整侧规则（仰山堂 / 三穗堂：三穗堂的边在共享段外偏出 0.05 容差继续贴着仰山堂背面）。歇山、两山侧仍整侧。
 - 测试（hallkit-test 2c）：同侧非共享段（离共享段两端 ≥ 1.2 m）台基外扩 ≥ 0.15、正檐 ≥ 0.97、两层楼腰檐 ≥ 0.795（墙线 = 矩形边 − wallInset，
   腰檐带 = 二层楼面 platformY + height/storeys 下 0.05–1.0 m，全从 layout 重算、GLB 实测）；共享边所连邻栋 footprint 内无构件（> 0.05 m）。
+
+## wave3 K2：楼阁批量准备（只出诊断，未接入）
+
+- 其余 9 座两层楼逐栋跑生成器（`--out out-tower-prep/hallkit-<id>`，不改 `ids.json`），`tower_prep.py` 出 `tower-batch-prep.json`：
+  覆盖率 / 凹角 / 共享边段与处理方式 / 正立面边与 facade.dir 夹角 / 层高（layout height / storeys）/ 三角面 / 与会渲染建筑 footprint 互穿 /
+  台基压园路、水面（阈值 = 已接入 20 栋同一诊断的最大值，`--calib`）/ 正立面前净空（机位）/ 建议 direct·special·skip。
+  ```bash
+  python3 -X utf8 modules/hall-kit/tower_prep.py --ids <20 栋> --gen-dir out-garden-kits --out <calib.json>
+  python3 -X utf8 modules/hall-kit/tower_prep.py --ids <9 栋> --calib <calib.json>
+  ```
+- 薄楼（designInference）：墙线进深 − upperSetback < `minUpperFloorDepthM`(2.0) 时，二层后退缩为 max(`minUpperSetbackM` 0.3, 进深 − 2.0)，
+  记 recipe.upperSetback / measurements.section.upperSetbackInferred（观涛楼 / 延清楼）。已接入 20 栋不受影响。

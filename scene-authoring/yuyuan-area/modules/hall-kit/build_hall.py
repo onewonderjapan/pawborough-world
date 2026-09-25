@@ -289,6 +289,12 @@ STOREY_H = HEIGHT / STOREYS if MULTI else EAVE
 SLAB_T = DEFAULTS['floorSlabT']
 Z1 = PLATFORM_Y + STOREY_H                            # 二层楼面（平座）标高
 SETBACK = DEFAULTS['upperSetback'] if MULTI else 0.0
+# 薄楼（designInference，wave3 K2）：墙线进深 − 后退 < minUpperFloorDepthM 时后退缩到只留该进深（至少 minUpperSetbackM，平座仍读得出），
+# 否则观涛楼 / 延清楼（进深 2.4 m）二层只剩 1.4 m。得月楼等常规进深不受影响。
+SETBACK_LAYOUT = SETBACK
+if MULTI and 2 * HVW - SETBACK < DEFAULTS['minUpperFloorDepthM']:
+    SETBACK = max(DEFAULTS['minUpperSetbackM'], min(SETBACK, 2 * HVW - DEFAULTS['minUpperFloorDepthM']))
+SETBACK_INFERRED = abs(SETBACK - SETBACK_LAYOUT) > 1e-9
 DOOR_H1 = min(DEFAULTS['doorH'], STOREY_H - 0.55) if MULTI else DOOR_H
 DOOR_H2 = min(DEFAULTS['doorH'], EAVE_Z - (Z1 + SLAB_T) - 0.5) if MULTI else None
 
@@ -1061,7 +1067,7 @@ MEAS = {'id': HALL_ID, 'triangles': tris, 'byNode': by_node, 'glbBytes': os.path
                         'back': [[round(x0, 3), round(x1, 3), round(d, 3)] for x0, x1, d in BB]} if NOTCHED else None),
         'storeys': STOREYS, 'storeysIgnored': False,
         'section': ({'storeyH': round(STOREY_H, 3), 'storeyHSource': 'layout height / storeys', 'floor2Z': round(Z1 + SLAB_T, 3),
-                     'upperSetback': SETBACK, 'doorH1': round(DOOR_H1, 3), 'doorH2': round(DOOR_H2, 3),
+                     'upperSetback': round(SETBACK, 3), 'upperSetbackInferred': SETBACK_INFERRED, 'doorH1': round(DOOR_H1, 3), 'doorH2': round(DOOR_H2, 3),
                      'waistEave': 'eave_kit.eave_skirt', 'balconyRailing': True} if MULTI else None), 'buildSeconds': round(time.time() - T0, 1)}
 json.dump(MEAS, open(os.path.join(OUT_DIR, 'measurements.json'), 'w'), ensure_ascii=False, indent=1)
 json.dump({'layoutSource': os.path.relpath(LAYOUT_PATH, AREA),
@@ -1088,6 +1094,8 @@ json.dump({'layoutSource': os.path.relpath(LAYOUT_PATH, AREA),
                     'rule': 'min(layout eave, max(%s, %s*frontWidth+%s))' % (DEFAULTS['smallEaveMin'], DEFAULTS['smallEaveK'], DEFAULTS['smallEaveC'])},
            'rise': {'layout': RISE_LAYOUT, 'used': round(RISE, 3), 'designInference': RISE_INFERRED,
                     'rule': 'clamp(layout rise, (HVW+eaveOver)*tan(%s°), (HVW+eaveOver)*tan(%s°))' % (DEFAULTS['minRoofPitchDeg'], DEFAULTS['maxRoofPitchDeg'])},
+           'upperSetback': ({'default': SETBACK_LAYOUT, 'used': round(SETBACK, 3), 'designInference': SETBACK_INFERRED,
+                             'rule': 'max(minUpperSetbackM, min(upperSetback, 墙线进深 − minUpperFloorDepthM))，仅进深不足时'} if MULTI else None),
            'xieshanScaled': None if XS_MODE else XIESHAN_SCALED,
            'ornamentScale': {'param': DEFAULTS.get('ornamentScale', 'auto'),
                              'applied': None if XS_MODE else round(eave_kit.ornament_scale(

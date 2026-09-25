@@ -1,0 +1,567 @@
+{
+ "comment": "wave3 K2 楼阁批量准备诊断（只出诊断，未接入；ids.json 未改）。由 modules/hall-kit/tower_prep.py 生成；verdict: direct = 直接放 / special = 需特殊处理 / skip = 跳过。位置全部从 baseline/layout.json 重算。",
+ "generator": "build_hall.py @ wave3 K1（共享边按段限位）",
+ "genDir": "out-tower-prep",
+ "summary": {
+  "direct": [
+   "bld-228035331",
+   "bld-428179905",
+   "bld-428179912",
+   "bld-428179913",
+   "bld-428179918"
+  ],
+  "special": [
+   "bld-428179926",
+   "bld-428196075",
+   "bld-428196079",
+   "bld-428196106"
+  ],
+  "skip": [],
+  "trianglesTotal": 31374,
+  "glbBytesTotal": 4558828,
+  "geomBytesTotal": 1969404,
+  "calibration": {
+   "road": 1.749,
+   "water": 0.963,
+   "source": "已接入 20 栋同一诊断的最大值"
+  }
+ },
+ "towers": [
+  {
+   "id": "bld-228035331",
+   "name": "会景楼",
+   "kind": "tower",
+   "zone": "garden",
+   "rect": {
+    "u": 8.389,
+    "v": 13.383,
+    "coverage": 0.999,
+    "footprintPts": 5,
+    "reflexCorners": 0,
+    "overbuildM2": 0.12
+   },
+   "sharedEdges": [],
+   "sharedSideMode": {},
+   "wallNotches": null,
+   "facadeDeltaDeg": 17.81,
+   "storey": {
+    "storeys": 2,
+    "storeysSource": "osm building:levels",
+    "height": 5.6,
+    "storeyH": 2.8,
+    "rule": "layout height / storeys（同 B4）",
+    "floor2Z": 3.37
+   },
+   "roof": {
+    "roofMode": "gabled",
+    "eaveZ": 5.464,
+    "ridgeZ": 7.794,
+    "riseUsed": 2.331,
+    "riseInferred": true
+   },
+   "bays": 2,
+   "bayWidth": 3.894,
+   "triangles": 2512,
+   "glbBytes": 441584,
+   "penetration": [],
+   "platformIntoWaterM": 0.0,
+   "platformIntoRoadM": 1.501,
+   "frontClearBuildings": {
+    "m": 12.46,
+    "hit": "bld-428179922",
+    "kind": "hall",
+    "name": "和煦堂"
+   },
+   "frontClearWaterM": 568.51,
+   "upperFloorDepthM": 11.783,
+   "geomBytes": 153872,
+   "issues": [
+    "正立面边与 facade.dir 夹角 17.8°（>15°：朝最近水面的方向不垂直于任何边，正立面按最近边取）"
+   ],
+   "verdict": "direct",
+   "verdictWhy": "按 B4 两层剖面直接放"
+  },
+  {
+   "id": "bld-428179905",
+   "name": "涵碧楼",
+   "kind": "tower",
+   "zone": "garden",
+   "rect": {
+    "u": 10.965,
+    "v": 6.553,
+    "coverage": 0.822,
+    "footprintPts": 14,
+    "reflexCorners": 4,
+    "overbuildM2": 12.79
+   },
+   "sharedEdges": [],
+   "sharedSideMode": {},
+   "wallNotches": null,
+   "facadeDeltaDeg": 0.06,
+   "storey": {
+    "storeys": 2,
+    "storeysSource": "osm building:levels",
+    "height": 5.6,
+    "storeyH": 2.8,
+    "rule": "layout height / storeys（同 B4）",
+    "floor2Z": 3.37
+   },
+   "roof": {
+    "roofMode": "gabled",
+    "eaveZ": 6.05,
+    "ridgeZ": 7.95,
+    "riseUsed": 1.9,
+    "riseInferred": false
+   },
+   "bays": 3,
+   "bayWidth": 3.455,
+   "triangles": 3114,
+   "glbBytes": 482832,
+   "penetration": [],
+   "platformIntoWaterM": 0.0,
+   "platformIntoRoadM": 1.744,
+   "frontClearBuildings": {
+    "m": 35.25,
+    "hit": "bld-428196106",
+    "kind": "tower",
+    "name": "延清楼"
+   },
+   "frontClearWaterM": 12.65,
+   "upperFloorDepthM": 4.953,
+   "geomBytes": 195108,
+   "issues": [
+    "不规则 footprint：覆盖率 0.82、凹角 4 个，外接矩形把 12.8 m² 非本栋地面盖成楼身"
+   ],
+   "verdict": "direct",
+   "verdictWhy": "按 B4 两层剖面直接放（不规则 footprint 覆盖率 0.82，同得月楼按外接矩形）"
+  },
+  {
+   "id": "bld-428179912",
+   "name": "万花楼",
+   "kind": "tower",
+   "zone": "garden",
+   "rect": {
+    "u": 13.62,
+    "v": 8.699,
+    "coverage": 0.999,
+    "footprintPts": 4,
+    "reflexCorners": 0,
+    "overbuildM2": 0.07
+   },
+   "sharedEdges": [],
+   "sharedSideMode": {},
+   "wallNotches": null,
+   "facadeDeltaDeg": 1.54,
+   "storey": {
+    "storeys": 2,
+    "storeysSource": "osm building:levels",
+    "height": 5.6,
+    "storeyH": 2.8,
+    "rule": "layout height / storeys（同 B4）",
+    "floor2Z": 3.37
+   },
+   "roof": {
+    "roofMode": "gabled",
+    "eaveZ": 6.05,
+    "ridgeZ": 7.95,
+    "riseUsed": 1.9,
+    "riseInferred": false
+   },
+   "bays": 4,
+   "bayWidth": 3.255,
+   "triangles": 3592,
+   "glbBytes": 513364,
+   "penetration": [],
+   "platformIntoWaterM": 0.0,
+   "platformIntoRoadM": 1.66,
+   "frontClearBuildings": {
+    "m": 40.35,
+    "hit": "bld-228035331",
+    "kind": "tower",
+    "name": "会景楼"
+   },
+   "frontClearWaterM": 11.29,
+   "upperFloorDepthM": 7.099,
+   "geomBytes": 225648,
+   "issues": [],
+   "verdict": "direct",
+   "verdictWhy": "按 B4 两层剖面直接放"
+  },
+  {
+   "id": "bld-428179913",
+   "name": "藏宝楼",
+   "kind": "tower",
+   "zone": "garden",
+   "rect": {
+    "u": 20.718,
+    "v": 9.34,
+    "coverage": 0.78,
+    "footprintPts": 12,
+    "reflexCorners": 4,
+    "overbuildM2": 42.6
+   },
+   "sharedEdges": [],
+   "sharedSideMode": {},
+   "wallNotches": null,
+   "facadeDeltaDeg": 1.26,
+   "storey": {
+    "storeys": 2,
+    "storeysSource": "osm building:levels",
+    "height": 5.6,
+    "storeyH": 2.8,
+    "rule": "layout height / storeys（同 B4）",
+    "floor2Z": 3.37
+   },
+   "roof": {
+    "roofMode": "gabled",
+    "eaveZ": 6.05,
+    "ridgeZ": 7.95,
+    "riseUsed": 1.9,
+    "riseInferred": false
+   },
+   "bays": 6,
+   "bayWidth": 3.353,
+   "triangles": 4844,
+   "glbBytes": 595172,
+   "penetration": [],
+   "platformIntoWaterM": 0.0,
+   "platformIntoRoadM": 1.748,
+   "frontClearBuildings": {
+    "m": 11.68,
+    "hit": "bld-428179914",
+    "kind": "hall",
+    "name": "点春堂"
+   },
+   "frontClearWaterM": 2.43,
+   "upperFloorDepthM": 7.74,
+   "geomBytes": 307432,
+   "issues": [
+    "不规则 footprint：覆盖率 0.78、凹角 4 个，外接矩形把 42.6 m² 非本栋地面盖成楼身",
+    "正立面前 2.4 m 即水面（临水，眼高机位只能从对岸或斜向取）"
+   ],
+   "verdict": "direct",
+   "verdictWhy": "按 B4 两层剖面直接放（不规则 footprint 覆盖率 0.78，同得月楼按外接矩形）"
+  },
+  {
+   "id": "bld-428179918",
+   "name": "快楼",
+   "kind": "tower",
+   "zone": "garden",
+   "rect": {
+    "u": 9.573,
+    "v": 6.229,
+    "coverage": 1.0,
+    "footprintPts": 4,
+    "reflexCorners": 0,
+    "overbuildM2": 0.03
+   },
+   "sharedEdges": [],
+   "sharedSideMode": {},
+   "wallNotches": null,
+   "facadeDeltaDeg": 1.98,
+   "storey": {
+    "storeys": 2,
+    "storeysSource": "osm building:levels",
+    "height": 5.6,
+    "storeyH": 2.8,
+    "rule": "layout height / storeys（同 B4）",
+    "floor2Z": 3.37
+   },
+   "roof": {
+    "roofMode": "gabled",
+    "eaveZ": 6.05,
+    "ridgeZ": 7.95,
+    "riseUsed": 1.9,
+    "riseInferred": false
+   },
+   "bays": 2,
+   "bayWidth": 4.486,
+   "triangles": 2564,
+   "glbBytes": 446784,
+   "penetration": [],
+   "platformIntoWaterM": 0.104,
+   "platformIntoRoadM": 0.269,
+   "frontClearBuildings": {
+    "m": 77.31,
+    "hit": "bld-428179902",
+    "kind": "hall",
+    "name": "仰山堂"
+   },
+   "frontClearWaterM": 0.93,
+   "upperFloorDepthM": 4.629,
+   "geomBytes": 159064,
+   "issues": [
+    "台基压进水面 0.10 m（已接入 20 栋最大 0.96，同量级，提示）",
+    "正立面前 0.9 m 即水面（临水，眼高机位只能从对岸或斜向取）"
+   ],
+   "verdict": "direct",
+   "verdictWhy": "按 B4 两层剖面直接放"
+  },
+  {
+   "id": "bld-428179926",
+   "name": "藏书楼",
+   "kind": "tower",
+   "zone": "garden",
+   "rect": {
+    "u": 19.602,
+    "v": 11.969,
+    "coverage": 0.721,
+    "footprintPts": 10,
+    "reflexCorners": 3,
+    "overbuildM2": 65.34
+   },
+   "sharedEdges": [
+    {
+     "other": "bld-428179925",
+     "overlapM": 4.86,
+     "side": "back",
+     "a": [
+      -124.76,
+      -132.01
+     ],
+     "b": [
+      -120.0,
+      -132.99
+     ]
+    },
+    {
+     "other": "bld-428179925",
+     "overlapM": 3.037,
+     "side": "back",
+     "a": [
+      -111.9,
+      -135.99
+     ],
+     "b": [
+      -108.97,
+      -136.79
+     ]
+    }
+   ],
+   "sharedSideMode": {
+    "back": "segments"
+   },
+   "wallNotches": {
+    "front": [],
+    "back": [
+     [
+      -9.501,
+      -4.181,
+      4.291
+     ],
+     [
+      3.575,
+      7.319,
+      5.57
+     ]
+    ]
+   },
+   "facadeDeltaDeg": 1.29,
+   "storey": {
+    "storeys": 2,
+    "storeysSource": "osm building:levels",
+    "height": 5.6,
+    "storeyH": 2.8,
+    "rule": "layout height / storeys（同 B4）",
+    "floor2Z": 3.37
+   },
+   "roof": {
+    "roofMode": "gabled",
+    "eaveZ": 6.05,
+    "ridgeZ": 8.158,
+    "riseUsed": 2.108,
+    "riseInferred": true
+   },
+   "bays": 5,
+   "bayWidth": 3.8,
+   "triangles": 5274,
+   "glbBytes": 623192,
+   "penetration": [],
+   "platformIntoWaterM": 0.0,
+   "platformIntoRoadM": 0.0,
+   "frontClearBuildings": {
+    "m": 201.97,
+    "hit": "bld-505641175",
+    "kind": "outerBuilding",
+    "name": null
+   },
+   "frontClearWaterM": 3.97,
+   "upperFloorDepthM": 10.369,
+   "geomBytes": 335588,
+   "issues": [
+    "不规则 footprint：覆盖率 0.72、凹角 3 个，外接矩形把 65.3 m² 非本栋地面盖成楼身",
+    "共享边 2 段（bld-428179925）：back 侧按段限位",
+    "墙线凹口：back 侧 ['u[-9.50,-4.18] 内收到 4.29', 'u[3.58,7.32] 内收到 5.57']"
+   ],
+   "verdict": "special",
+   "verdictWhy": "共享边按段限位 / 墙线凹口，需与邻栋同看"
+  },
+  {
+   "id": "bld-428196075",
+   "name": "观涛楼",
+   "kind": "tower",
+   "zone": "garden",
+   "rect": {
+    "u": 19.783,
+    "v": 2.968,
+    "coverage": 0.998,
+    "footprintPts": 4,
+    "reflexCorners": 0,
+    "overbuildM2": 0.1
+   },
+   "sharedEdges": [],
+   "sharedSideMode": {},
+   "wallNotches": null,
+   "facadeDeltaDeg": 23.93,
+   "storey": {
+    "storeys": 2,
+    "storeysSource": "osm building:levels",
+    "height": 5.6,
+    "storeyH": 2.8,
+    "rule": "layout height / storeys（同 B4）",
+    "floor2Z": 3.37
+   },
+   "roof": {
+    "roofMode": "gabled",
+    "eaveZ": 6.05,
+    "ridgeZ": 7.468,
+    "riseUsed": 1.418,
+    "riseInferred": true
+   },
+   "bays": 5,
+   "bayWidth": 3.837,
+   "triangles": 4458,
+   "glbBytes": 570868,
+   "penetration": [],
+   "platformIntoWaterM": 0.0,
+   "platformIntoRoadM": 1.397,
+   "frontClearBuildings": {
+    "m": 2.31,
+    "hit": "bld-428196079",
+    "kind": "tower",
+    "name": "还云楼"
+   },
+   "frontClearWaterM": 654.37,
+   "upperFloorDepthM": 2.0,
+   "geomBytes": 283124,
+   "issues": [
+    "正立面边与 facade.dir 夹角 23.9°（>15°：朝最近水面的方向不垂直于任何边，正立面按最近边取）",
+    "机位难拍：正立面中点前 2.3 m 就是 tower 还云楼（< 6 m，园内眼高看不全正面）",
+    "薄楼：墙线进深 2.37 m，二层后退按 designInference 从 1.0 缩到 0.37 m（二层留 2.00 m，平座窄）"
+   ],
+   "verdict": "special",
+   "verdictWhy": "薄楼二层后退按 designInference 缩窄，需主控看剖面"
+  },
+  {
+   "id": "bld-428196079",
+   "name": "还云楼",
+   "kind": "tower",
+   "zone": "garden",
+   "rect": {
+    "u": 7.439,
+    "v": 8.967,
+    "coverage": 0.72,
+    "footprintPts": 12,
+    "reflexCorners": 4,
+    "overbuildM2": 18.7
+   },
+   "sharedEdges": [],
+   "sharedSideMode": {},
+   "wallNotches": null,
+   "facadeDeltaDeg": 36.18,
+   "storey": {
+    "storeys": 2,
+    "storeysSource": "osm building:levels",
+    "height": 5.6,
+    "storeyH": 2.8,
+    "rule": "layout height / storeys（同 B4）",
+    "floor2Z": 3.37
+   },
+   "roof": {
+    "roofMode": "gabled",
+    "eaveZ": 4.941,
+    "ridgeZ": 6.841,
+    "riseUsed": 1.9,
+    "riseInferred": false
+   },
+   "bays": 2,
+   "bayWidth": 3.419,
+   "triangles": 2472,
+   "glbBytes": 439628,
+   "penetration": [],
+   "platformIntoWaterM": 0.0,
+   "platformIntoRoadM": 1.328,
+   "frontClearBuildings": {
+    "m": 5.92,
+    "hit": "bld-428196098",
+    "kind": "pavilion",
+    "name": "耸翠亭"
+   },
+   "frontClearWaterM": 653.36,
+   "upperFloorDepthM": 7.367,
+   "geomBytes": 151904,
+   "issues": [
+    "不规则 footprint：覆盖率 0.72、凹角 4 个，外接矩形把 18.7 m² 非本栋地面盖成楼身",
+    "正立面边与 facade.dir 夹角 36.2°（>15°：朝最近水面的方向不垂直于任何边，正立面按最近边取）",
+    "机位难拍：正立面中点前 5.9 m 就是 pavilion 耸翠亭（< 6 m，园内眼高看不全正面）"
+   ],
+   "verdict": "special",
+   "verdictWhy": "正立面与 facade.dir 夹角 > 30°，正立面取哪边需主控定"
+  },
+  {
+   "id": "bld-428196106",
+   "name": "延清楼",
+   "kind": "tower",
+   "zone": "garden",
+   "rect": {
+    "u": 9.14,
+    "v": 3.026,
+    "coverage": 1.0,
+    "footprintPts": 4,
+    "reflexCorners": 0,
+    "overbuildM2": 0.0
+   },
+   "sharedEdges": [],
+   "sharedSideMode": {},
+   "wallNotches": null,
+   "facadeDeltaDeg": 12.36,
+   "storey": {
+    "storeys": 2,
+    "storeysSource": "osm building:levels",
+    "height": 5.6,
+    "storeyH": 2.8,
+    "rule": "layout height / storeys（同 B4）",
+    "floor2Z": 3.37
+   },
+   "roof": {
+    "roofMode": "gabled",
+    "eaveZ": 5.877,
+    "ridgeZ": 7.314,
+    "riseUsed": 1.437,
+    "riseInferred": true
+   },
+   "bays": 2,
+   "bayWidth": 4.27,
+   "triangles": 2544,
+   "glbBytes": 445404,
+   "penetration": [],
+   "platformIntoWaterM": 0.0,
+   "platformIntoRoadM": 0.798,
+   "frontClearBuildings": {
+    "m": 3.01,
+    "hit": "bld-428196098",
+    "kind": "pavilion",
+    "name": "耸翠亭"
+   },
+   "frontClearWaterM": 123.91,
+   "upperFloorDepthM": 2.0,
+   "geomBytes": 157664,
+   "issues": [
+    "机位难拍：正立面中点前 3.0 m 就是 pavilion 耸翠亭（< 6 m，园内眼高看不全正面）",
+    "薄楼：墙线进深 2.43 m，二层后退按 designInference 从 1.0 缩到 0.43 m（二层留 2.00 m，平座窄）"
+   ],
+   "verdict": "special",
+   "verdictWhy": "薄楼二层后退按 designInference 缩窄，需主控看剖面"
+  }
+ ]
+}
