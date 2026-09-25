@@ -24,7 +24,7 @@
   ② habao-plaza-pan      商城华宝楼前中心广场沿弧线环视（R1：绕楼包围盒中心 R=40 m、30° 弧、18 mm 逐帧整楼入画；
                          BAZAAR_TOWERS=1 时目标高取华宝楼套件参数 24.3 m，注视点随之上移；弧线机位两变体相同）
   ③ jiuqu-to-huxinting   九曲桥上走向湖心亭（R1：layout jiuqu-bridge 中线滑动平均切角、机位高 4.0 m、35 mm、
-                         注视锁定 huxin-ting 形心，停步离亭形心 22 m）
+                         注视锁定 huxin-ting 形心，停步离亭形心 22 m；wave3：注视高 3.8→6.3 m 线性抬升）
   每个镜头带 targetId（取景目标）与可选 lensMm（焦距，缺省 50 mm）；可见性断言见 tests/control-shots-test.mjs R1-2。
 
 用法：python3 scripts/build-control-shots.py [--out-zone out-zone] [--frames 24]
@@ -51,7 +51,11 @@ HB_ARC_A1 = -24.0         # 终止方位角（西南，30° 弧）
 JQ_CAM_Y = 4.0            # 机位绝对高（桥面 0.55 + 3.45 m）
 JQ_LENS_MM = 35.0
 JQ_END_DIST = 22.0        # 停步点离湖心亭形心（GOAL 15–25 m）
-JQ_AIM_Y = 3.5            # 注视湖心亭形心高度
+# wave3-tourfix T3 返修：注视高度沿镜头线性抬升 3.8 → 6.3 m（匀速仰摇，机位不变）。湖心亭模块宝顶 12.0 m、
+# 主脊 10.2 m，R1 固定 3.5 m 时第 9 帧起宝顶/屋脊出画；按模块顶部顶点逐帧反解「顶部上方留 6% 画高」所需注视高
+# （3.43 → 6.04 m，近似线性、末段略陡），取包住它的直线。渲染侧断言：check-control-passes TOP_SKY_MARGIN_BY_SHOT。
+JQ_AIM_Y0 = 3.8          # 首帧注视湖心亭形心高度
+JQ_AIM_Y1 = 6.3          # 终帧注视湖心亭形心高度
 JQ_SMOOTH_M = 2.5         # 中线滑动平均半窗（弧长，m）
 JQ_MAX_OFF = 0.8          # 离中线上限（桥栏内侧 0.89 m）
 
@@ -275,7 +279,7 @@ def main():
     wacc = polyline_arc(walk)
     jw = resample(walk, N, 0.0, wacc[-1])
     jq_eye = [[p[0], JQ_CAM_Y, p[1]] for p in jw]
-    jq_tgt = [[hxc[0], JQ_AIM_Y, hxc[1]] for _ in jw]
+    jq_tgt = [[hxc[0], JQ_AIM_Y0 + (JQ_AIM_Y1 - JQ_AIM_Y0) * k / (N - 1), hxc[1]] for k in range(len(jw))]
     d_end = math.dist(jw[-1], hxc)
     if not 15.0 <= d_end <= 25.0:
         errors.append('镜头③终点离湖心亭形心 %.1f m 不在 15–25' % d_end)
@@ -308,7 +312,7 @@ def main():
              'lensMm': HB_LENS_MM,
              'frames': N, 'eye': hb_eye, 'target': hb_tgt},
             {'id': 'jiuqu-to-huxinting',
-             'description': '九曲桥上走向湖心亭：桥中线 ±%.1f m 滑动平均切角（离中线 ≤%.1f m），机位高 %.1f m（桥面 0.55 + %.2f），注视锁定湖心亭形心 %.1f m 高，%.0f mm，停步离亭形心 %.1f m' % (JQ_SMOOTH_M, JQ_MAX_OFF, JQ_CAM_Y, JQ_CAM_Y - DECK, JQ_AIM_Y, JQ_LENS_MM, d_end),
+             'description': '九曲桥上走向湖心亭：桥中线 ±%.1f m 滑动平均切角（离中线 ≤%.1f m），机位高 %.1f m（桥面 0.55 + %.2f），注视锁定湖心亭形心、高度 %.1f→%.1f m 线性抬升（宝顶/屋脊上方留天），%.0f mm，停步离亭形心 %.1f m' % (JQ_SMOOTH_M, JQ_MAX_OFF, JQ_CAM_Y, JQ_CAM_Y - DECK, JQ_AIM_Y0, JQ_AIM_Y1, JQ_LENS_MM, d_end),
              'targetId': 'huxin-ting', 'targetName': '湖心亭',
              'lensMm': JQ_LENS_MM,
              'frames': N, 'eye': jq_eye, 'target': jq_tgt},

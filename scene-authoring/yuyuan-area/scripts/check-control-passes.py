@@ -15,6 +15,8 @@
      终点帧 ≥ 5% 否则报错；另记画面下 1/3 的九曲桥栏像素占比（分割=jiuqu-bridge 且世界法线 |n_y|<0.5
      即竖直面，桥面不算）。碰撞盒可见性（tests/control-shots-test.mjs）是渲染前的几何代理，这里是渲染后真值。
      终点帧门槛可按镜头加严（TARGET_END_MIN_BY_SHOT；wave3-tourfix T3：③湖心亭 ≥ 10%）。
+  7. 顶部天空余量（wave3-tourfix T3 返修，TOP_SKY_MARGIN_BY_SHOT；③ ≥ 3%）：终点帧目标分割掩膜的最高像素（湖心亭即宝顶 / 屋脊）
+     正上方连续天空（深度 = far，65535）行数 / 画高 ≥ 门槛，且目标最高像素不贴画面上沿——整座亭的顶部轮廓在画内、上方留天。
   6. 重复件（wave3-tourfix T3）：layout 里 footprint 覆盖目标 footprint ≥ 50%、且有正高度的其他对象
      （例：bld-228035340 与湖心亭同一 OSM way，R1 时把亭下层包成 5 m 体块）在任何帧的分割图上像素占比
      必须 < 0.1%——目标不能被重合的替身包住。
@@ -33,6 +35,7 @@ W, H = 1280, 720
 CHANNELS = ('beauty', 'depth', 'normal', 'segmentation')
 TARGET_END_MIN = 0.05   # R1：终点帧里取景目标（cameras json targetId）在分割图上至少占 5% 像素
 TARGET_END_MIN_BY_SHOT = {'jiuqu-to-huxinting': 0.10}   # wave3-tourfix T3：湖心亭终帧 ≥ 10%
+TOP_SKY_MARGIN_BY_SHOT = {'jiuqu-to-huxinting': 0.03}   # wave3-tourfix T3 返修：终帧宝顶/屋脊上方天空 ≥ 3% 画高
 DUP_COVER_MIN = 0.5     # footprint 覆盖目标 footprint 的比例 ≥ 此值 = 重复件
 DUP_PIXEL_MAX = 0.001   # 重复件每帧像素占比上限
 
@@ -216,6 +219,15 @@ def main():
                         if iid in i2r:
                             m |= np.abs(sai - np.array(i2r[iid])).max(axis=2) <= 2
                     fr['targetPixelShare'] = round(float(m.mean()), 4)
+                    rows = np.where(m.any(axis=1))[0]
+                    if rows.size:   # 目标最高像素 + 其正上方连续天空（depth = far）行数
+                        r0 = int(rows[0]); cols = np.where(m[r0])[0]; c0 = int(cols[len(cols) // 2])
+                        sky = 0
+                        while r0 - 1 - sky >= 0 and dep[r0 - 1 - sky, c0] >= 65535:
+                            sky += 1
+                        fr['targetTop'] = {'row': r0, 'col': c0, 'topFrac': round(r0 / H, 4), 'skyAbovePx': sky,
+                                           'skyAboveFrac': round(sky / H, 4),
+                                           'touchesLeft': bool(m[:, 0].any()), 'touchesRight': bool(m[:, -1].any())}
                     for did in duplicate_footprints(lay_objects, tid, set([tid] + bays.get(tid, []))):
                         # 不在 LUT = 场景里没有这件几何 = 0 像素（照记，便于核对）
                         dshare = float((np.abs(sai - np.array(i2r[did])).max(axis=2) <= 2).mean()) if did in i2r else 0.0
@@ -232,6 +244,16 @@ def main():
         last = frame_report.get(sid, {}).get('frame-%03d' % (n - 1), {}) if n else {}
         if 'targetPixelShare' in last:
             shares = [frame_report[sid]['frame-%03d' % k].get('targetPixelShare', 0) for k in range(n)]
+            if sid in TOP_SKY_MARGIN_BY_SHOT:
+                need = TOP_SKY_MARGIN_BY_SHOT[sid]
+                tt_ = last.get('targetTop') or {}
+                okm = tt_.get('skyAboveFrac', 0) >= need and tt_.get('row', 0) > 0
+                checks.append({'check': 'target-top-sky-margin', 'shot': sid, 'need': need, 'endFrame': tt_,
+                               'perFrameSkyAboveFrac': [frame_report[sid]['frame-%03d' % k].get('targetTop', {}).get('skyAboveFrac') for k in range(n)],
+                               'pass': bool(okm)})
+                if not okm:
+                    errors.append('%s 终点帧目标顶部上方天空 %.1f%% < %.0f%%（目标最高像素行 %s，宝顶/屋脊出画或贴边）'
+                                  % (sid, tt_.get('skyAboveFrac', 0) * 100, need * 100, tt_.get('row')))
             end_min = TARGET_END_MIN_BY_SHOT.get(sid, TARGET_END_MIN)
             checks.append({'check': 'target-pixels', 'shot': sid, 'endShare': last['targetPixelShare'],
                            'endMin': end_min, 'minShare': min(shares), 'framesWithTarget': sum(1 for v in shares if v > 0),
