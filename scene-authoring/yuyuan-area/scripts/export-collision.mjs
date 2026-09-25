@@ -261,12 +261,21 @@ for (const rec of templeV3.colliders) {
   if (!instId) throw new Error(`temple-v3 record ${rec.name}: no instance mapping`);
   const inst = layout.instances.find(x => x.id === instId);
   if (!inst) throw new Error(`temple-v3 record ${rec.name}: layout instance ${instId} missing`);
-  // 记录已烘焙 temple-v3 内部位姿 (pos, theta)；再叠加区域锚点位姿：pos' = A + R(rotA)·pos，theta' = theta + rotA
+  // 记录是 temple-axis-v3 数据集世界坐标：obb.pos 已含所属数据集实例的 positionGlb g / rotationYRad r0。
+  // assemble 按 layout 实例 (A, rotA) 摆放模块本地系，所以先退回模块本地 R(−r0)·(pos − g)，再叠 layout 位姿：
+  //   pos' = A + R(rotA)·R(−r0)·(pos − g)，theta' = theta − r0 + rotA。
+  // （wave5-shots2 修复：旧式 A + R(rotA)·pos 把 g 叠了两次，仪门/大殿/后殿等碰撞离渲染几何 21–74 m；
+  //   g = 0 的山门/前院/大殿院/后院穿廊不变。测试 tests/temple-collision-placement-test.mjs。）
+  const ds = (templeV3.instances || []).find(x => x.id === (prefix === 'court' ? 'entrycourt' : prefix));
+  if (!ds) throw new Error(`temple-v3 record ${rec.name}: no dataset instance`);
+  const g = ds.positionGlb || [0, 0, 0], r0 = ds.rotationYRad || 0;
+  const c0 = Math.cos(-r0), s0 = Math.sin(-r0);
+  const dx = rec.obb.pos[0] - g[0], dz = rec.obb.pos[2] - g[2];
+  const px = c0 * dx + s0 * dz, pz = -s0 * dx + c0 * dz;
   const [ax, az] = inst.position, rotA = inst.rotY;
   const c = Math.cos(rotA), s = Math.sin(rotA);
-  const px = rec.obb.pos[0], pz = rec.obb.pos[2];
   const pos = [+(ax + c * px + s * pz).toFixed(4), 0, +(az - s * px + c * pz).toFixed(4)];
-  add('temple', `${instId}:${rec.name}`, 'temple-v3', rec.obb.theta + rotA, pos, rec.obb.center, rec.obb.size);
+  add('temple', `${instId}:${rec.name}`, 'temple-v3', rec.obb.theta - r0 + rotA, pos, rec.obb.center, rec.obb.size);
 }
 
 // ---------- 8) 水面隐形挡墙：每边一条，路线 / 九曲桥跨过的边记 openings ----------

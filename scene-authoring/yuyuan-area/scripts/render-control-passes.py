@@ -468,7 +468,13 @@ def main():
             log('%s frame-%03d normal+depth %.1fs' % (sid, k, ft['normal_depth_s']))
         os.rmdir(tmp)
 
-    with open(os.path.join(args.out, 'timings.json'), 'w', encoding='utf-8') as f:
+    # --shots 分批渲染时保留同目录里其他镜头的耗时记录（wave5-shots2：11 镜头分两批出，不能互相覆盖）
+    tpath = os.path.join(args.out, 'timings.json')
+    if os.path.exists(tpath):
+        merged = json.load(open(tpath, encoding='utf-8'))
+        merged.update(timings)
+        timings = merged
+    with open(tpath, 'w', encoding='utf-8') as f:
         json.dump(timings, f, ensure_ascii=False, indent=1)
         f.write('\n')
     log('done: %d shots, %d frames total' % (len(want), sum(len(s['eye']) if 'eye' in s else 1 for s in want)))
