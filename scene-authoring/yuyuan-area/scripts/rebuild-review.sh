@@ -11,6 +11,10 @@ if [ -d staged/site-modules ]; then
 fi
 # The input snapshot and accepted source modules remain read-only.
 python3 -X utf8 scripts/repair-layout.py
+# HALL_KIT=1: 厅堂套件（WP8 样板仰山堂）从 layout 字段重生成，再由 assemble 实例放置
+if [ "${HALL_KIT:-0}" = "1" ]; then
+  blender -b -t 4 --python-exit-code 1 -P modules/hall-kit/build_hall.py -- --id bld-428179902
+fi
 node src/build-scene.mjs
 blender -b --python-exit-code 1 -P scripts/assemble.py
 node scripts/audit-commerce.mjs

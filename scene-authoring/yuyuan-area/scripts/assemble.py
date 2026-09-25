@@ -311,6 +311,51 @@ if os.environ.get('SANSUITANG') == '1':
         print('sansuitang collision world boxes:', len(world_boxes))
     print('sansuitang placed', sst_placed)
 
+# ---------- 厅堂套件（HALL_KIT=1，默认关：modules/hall-kit 生成器件替代程序化 hall bld-428179902，WP8 样板仰山堂） ----------
+# 位置 = footprint 多边形面积形心（GOAL 冻结公式，与顶点均值形心不同；模块原点即面积形心，生成器重锚），
+# rotY = atan2(facade.dir.x, facade.dir.z)。collision.json（实例坐标）同 sansuitang 契约变换出世界记录。
+hall_placed = 0
+if os.environ.get('HALL_KIT') == '1':
+    lay_obj = {o['id']: o for o in LAYOUT['objects']}
+    for hall_id in ('bld-428179902',):
+        o = lay_obj[hall_id]
+        fp = o['geometry']['footprint']
+        fp = fp[:-1] if fp[0] == fp[-1] else fp
+        n = len(fp)
+        a2 = sum(fp[i][0] * fp[(i + 1) % n][1] - fp[(i + 1) % n][0] * fp[i][1] for i in range(n)) / 2
+        if abs(a2) < 1e-6:
+            cx = sum(q[0] for q in fp) / n; cz = sum(q[1] for q in fp) / n
+        else:
+            cx = sum((fp[i][0] + fp[(i + 1) % n][0]) * (fp[i][0] * fp[(i + 1) % n][1] - fp[(i + 1) % n][0] * fp[i][1]) for i in range(n)) / (6 * a2)
+            cz = sum((fp[i][1] + fp[(i + 1) % n][1]) * (fp[i][0] * fp[(i + 1) % n][1] - fp[(i + 1) % n][0] * fp[i][1]) for i in range(n)) / (6 * a2)
+        d = o['facade']['dir']
+        rot_y = math.atan2(d[0], d[1])
+        HALL_DIR = os.path.join(ROOT, 'out-garden-kits', 'hallkit-' + hall_id)
+        hall_objs = import_glb(os.path.join(HALL_DIR, 'model.glb'), 'MODLIB')
+        for oo in hall_objs:
+            oo.hide_render = True
+            oo.hide_viewport = True
+        place(hall_objs, {'id': hall_id, 'module': 'hall-kit', 'zone': o.get('zone', 'garden'), 'lod': 'L2',
+                          'position': [cx, cz], 'rotY': rot_y})
+        hall_placed += 1
+        coll_path = os.path.join(HALL_DIR, 'collision.json')
+        if os.path.exists(coll_path):
+            cc = json.load(open(coll_path, encoding='utf-8'))
+            ct, st = math.cos(rot_y), math.sin(rot_y)
+            world_boxes = []
+            for b in cc.get('colliders', []):
+                lx, ly, lz = b['center']
+                wx = cx + lx * ct + lz * st      # 地图系：local(x,z) -> world(x,z)
+                wz = cz - lx * st + lz * ct
+                world_boxes.append({'name': b['name'], 'center': [round(wx, 3), round(ly, 3), round(wz, 3)],
+                                    'size': b['size'], 'type': b.get('type', 'box'), 'rotY': round(rot_y, 6)})
+            json.dump({'source': 'out-garden-kits/hallkit-%s/collision.json (instance space)' % hall_id,
+                       'instance': {'id': hall_id, 'position': [round(cx, 3), round(cz, 3)], 'rotY': round(rot_y, 6)},
+                       'colliders': world_boxes},
+                      open(os.path.join(OUT, 'hallkit-collision-world.json'), 'w'), ensure_ascii=False, indent=1)
+            print('hall-kit collision world boxes:', len(world_boxes))
+    print('hall kit placed', hall_placed)
+
 # ---------- 假山站点模块（默认开启；ROCKERY_KIT=0 退回程序化占位。世界坐标 GLB，锚点按 baseline/layout.json 重算） ----------
 # 网格已在地图坐标（build-rockery：GLB x,y,z = map x,z,y）。锚 empty 放在占位盒并集的 footprint 形心，
 # rotY 使本地 +Z 指向石心主轴；子网格保持世界坐标（parent 后写回 matrix_world）。
@@ -754,6 +799,7 @@ stats = {
     'siteModules': site_imported,
     'stallKitPlaced': stall_placed,
     'sansuitangPlaced': sst_placed,
+    'hallKitPlaced': hall_placed,
     'rockeryKitPlaced': rockery_placed,
     'gardenKitPlaced': garden_kit_placed,
     'fangbangPlaced': fangbang_placed,
