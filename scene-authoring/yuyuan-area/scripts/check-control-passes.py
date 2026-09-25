@@ -7,8 +7,14 @@
      depth 16-bit 换算到 0-65535 同阈值），另查尺寸 1280x720、深度位深 16-bit、帧数齐全。
   2. LUT 双向对得上：每帧随机抽 200 像素，反查 layout id（精确或 ±2 内最近邻；
      Workbench FLAT 抖动有 ±1 LSB 偏差）；再验证 LUT 本身 id->rgb->id 可逆。
-  3. 深度单调性抽查：每帧中列竖带自下而上（近 -> 远）取带内中位深度，
-     相邻步倒置数 <= 总步数的 10%（斜坡/桥面/遮挡允许少量倒置）。
+  3. 深度单调性抽查：每帧中列竖带（±40 px）自下而上（近 -> 远）每 12 行取带内中位深度，相邻两步变近 > 1%（3 m）记一次倒置。
+     wave5-shots2 起（主控定，选项 2，全局）只计「同一物体内」的倒置：两取样行在中列的分割色相同（±2）才算；
+     跨物体的倒置是遮挡边界（门洞看穿、檐层交错、前景树），几何正确，只记数不报错（depthInversionsAll）。
+     同物体倒置 > DEPTH_SAME_OBJ_INV_MAX 报错。门槛 2 的依据：wave5 全部 12 组渲染（11 镜头 + ⑨塔楼变体）实测
+     同物体倒置最大 = 2（⑧大殿重檐：下檐挡住上檐屋面，同一 id），其余 ≤ 1；深度真坏（翻转 / 错位）时同一物体内
+     会连续倒置（tests/control-depth-check-test.py：合成平地透视取样带翻转 4 次、真实街景帧 ①f000 / ⑪f005 翻转 3 / 6 次，
+     都报错）。灵敏度限制（与旧口径相同）：单步变近要 > 3 m 才计，近景墙面 / 池面翻转后单步都小于 3 m，抓不到。
+     旧口径（全部倒置 ≤ 10% 步数）在⑦门洞与⑨塔楼多层檐上误报 1 + 14 帧。
   4. 每帧 cameras json 存在且字段齐全（fov/K/worldToCamera/near/far）。
   5. R1 渲染侧取景（cameras json 带 targetId 时）：每帧取景目标（本体 + layout facadeBay.parentBuilding
      指向它的立面开间）在分割图上的像素占比（±2 容差），
@@ -53,6 +59,8 @@ TOP_SKY_MARGIN_BY_SHOT = {
     'garden-entry-sansuitang': 0.03, 'dajiashan-across-pond': 0.03, 'temple-axis-push': 0.03,
     'temple-dadian-rise': 0.03, 'huxinting-across-pond': 0.03, 'fangbang-eastbound': 0.03,
 }
+DEPTH_SAME_OBJ_INV_MAX = 2   # 同一分割物体内的深度倒置上限（见头注释 3）
+DEPTH_INV_STEP = 655.35      # 1% 深度（3 m）以内的变近不算倒置
 DUP_COVER_MIN = 0.5     # footprint 覆盖目标 footprint 的比例 ≥ 此值 = 重复件
 DUP_PIXEL_MAX = 0.001   # 重复件每帧像素占比上限
 
@@ -90,6 +98,21 @@ def duplicate_footprints(objects, tid, exclude, n=24):
 def load_json(p):
     with open(p, encoding='utf-8') as f:
         return json.load(f)
+
+
+def depth_inversions(dep, seg, w=W, h=H):
+    """中列竖带深度单调性。dep: 2D 16-bit 深度数组；seg: HxWx3 分割图（int）。
+    返回 (全部倒置数, 同一物体内倒置数, 步数)。"""
+    import numpy as np
+    med = np.median(dep[:, w // 2 - 40: w // 2 + 40], axis=1)
+    rows = list(range(h - 20, int(h * 0.55), -12))
+    inv_all = inv_same = 0
+    for r0, r1 in zip(rows, rows[1:]):
+        if med[r1] < med[r0] - DEPTH_INV_STEP:
+            inv_all += 1
+            if int(np.abs(seg[r0, w // 2].astype(int) - seg[r1, w // 2].astype(int)).max()) <= 2:
+                inv_same += 1
+    return inv_all, inv_same, len(rows) - 1
 
 
 def blank_stats_gray(gray):
@@ -207,15 +230,12 @@ def main():
                 errors.append('%s/%s LUT 反查失败 %d/200' % (sid, tag, miss))
             # ---- 深度单调性（中列竖带，下 -> 上 = 近 -> 远）----
             dep = np.asarray(Image.open(os.path.join(sdir, 'depth', tag + '.png'))).astype(float)
-            band = dep[:, W // 2 - 40: W // 2 + 40]
-            med = np.median(band, axis=1)
-            rows = list(range(H - 20, int(H * 0.55), -12))
-            seq = [med[r] for r in rows]
-            inv = sum(1 for a, b in zip(seq, seq[1:]) if b < a - 655.35)  # 允 1% 深度噪声
-            fr['depthInversions'] = inv
+            inv_all, inv, steps = depth_inversions(dep, sa)
+            fr['depthInversions'] = inv          # 同一物体内（判据）
+            fr['depthInversionsAll'] = inv_all   # 含遮挡边界（只记录）
             fr['skyShare'] = round(float((dep >= 65535).mean()), 4)
-            if inv > 0.1 * (len(seq) - 1):
-                errors.append('%s/%s 深度单调性倒置 %d/%d' % (sid, tag, inv, len(seq) - 1))
+            if inv > DEPTH_SAME_OBJ_INV_MAX:
+                errors.append('%s/%s 深度单调性：同一物体内倒置 %d/%d > %d' % (sid, tag, inv, steps, DEPTH_SAME_OBJ_INV_MAX))
             # ---- cameras json ----
             cp = os.path.join(sdir, 'cameras', tag + '.json')
             cj = load_json(cp) if os.path.exists(cp) else None
