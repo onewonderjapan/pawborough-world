@@ -23,8 +23,12 @@ const check = (name, cond, detail = '') => {
 const base = reconcile(buildExpectations(layout, procStats), names);
 check('正例: 完整导出对账通过', base.missing.length === 0, `missing=${JSON.stringify(base.missing.slice(0, 5))}`);
 
-// 负例1：抽掉一个对象节点（带屋面的园建 body 节点）
-const victimObj = layout.objects.find(o => o.zone === 'garden' && o.kind === 'tower');
+// 负例1：抽掉一个对象节点（带屋面的园建 body 节点）。
+// hall-kit 接入的楼（modules/hall-kit/ids.json）body 由模块件替代、只剩锚点，抽 body 名抽不掉——
+// 选样必须挑真实存在 body 节点的对象：优先 garden tower（本测试原意），园建楼全被套件承担时退到任意有 body 的对象。
+const bodyExists = (o) => { for (const n of names) if (n.includes(`${o.zone}|${o.id}|`)) return true; return false; };
+const gardenTowers = layout.objects.filter(o => o.zone === 'garden' && o.kind === 'tower');
+const victimObj = gardenTowers.find(bodyExists) || layout.objects.find(bodyExists);
 const victimName = `${victimObj.zone}|${victimObj.id}|`;
 const namesMinusObj = new Set([...names].filter(n => !n.includes(victimName)));
 const neg1 = reconcile(buildExpectations(layout, procStats), namesMinusObj);

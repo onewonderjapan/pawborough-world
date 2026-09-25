@@ -1,5 +1,5 @@
 {
- "comment": "HALL_KIT_IDS 唯一来源（build-scene.mjs / assemble.py / export-collision.mjs / rebuild-review.sh / tests/hallkit-test.mjs 都读这里）。ids = HALL_KIT=1 时默认接入、已过检的 id；batches 记录每批范围；skipped 记录按 Fallback 跳过的 id 与原因。sample = 模块目录 collision.json 对应的样板 id。",
+ "comment": "HALL_KIT_IDS 唯一来源（build-scene.mjs / assemble.py / export-collision.mjs / rebuild-review.sh / tests/hallkit-test.mjs 都读这里）。ids = HALL_KIT=1 时默认接入、已过检的 id；batches 记录每批范围（b0–b4 已接入厅堂，w1/w2/w3 = wave3 楼阁三批）；skipped 记录按 Fallback 跳过的 id 与原因。sample = 模块目录 collision.json 对应的样板 id。",
  "sample": "bld-428179902",
  "ids": [
   "bld-428179902",
@@ -21,7 +21,10 @@
   "bld-428196109",
   "bld-428179917",
   "bld-428196078",
-  "bld-428179925"
+  "bld-428179925",
+  "bld-228035331",
+  "bld-428179912",
+  "bld-428179926"
  ],
  "batches": {
   "b0": [
@@ -53,6 +56,11 @@
   ],
   "b4": [
    "bld-428179925"
+  ],
+  "w1": [
+   "bld-228035331",
+   "bld-428179912",
+   "bld-428179926"
   ]
  },
  "skipped": []
