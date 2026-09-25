@@ -819,6 +819,24 @@ if os.environ.get('FANGBANG', '1') != '0':
                      'reason': '安仁街 (layout road-495101845, w=7m) joins 方浜中路 inside this gap at v7 x≈-84.9; reserved mouth ±6.5m leaves <7.7m clear — narrower than the smallest module AABB (curio-a 7.7m). Placing anything would block the junction or clip shops 162/164; mouth kept open (lead constraint: infill must not intersect global objects).'},
     }
     json.dump(fb_infill_doc, open(os.path.join(OUT, 'fangbang-infill.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+    # ---------- wave5-fangbangqa F-01：外围占位店让位 ----------
+    # layout.mjs 按共用底图提案点 shop-<N> 在外围放 L2 占位店 shoprow-p<N>；v7 westshop-shop-<N> 是同一提案点的精修版。
+    # 两套同时画会互穿 1.4–4.2 m（Q1 FINDINGS F-01）。外围分区默认加载、方浜按需加载，所以不在构建期删外围件，
+    # 只登记让位表：web/main.js 在方浜分区加载后把这些外围件设为不可见（未加载方浜时外围视图不变）。
+    # 外围没有建筑碰撞（collision-outer.json 只有水边），不涉及步行。
+    import re
+    fb_placed_ids = {i['id'] for i in fb_inst if i.get('group') != 'temple-axis-v2' and i['id'] not in fb_excluded_ids}
+    fb_supersede = []
+    for o in fb_layout['objects']:
+        m = re.match(r'^shoprow-p(\d+)$', o['id']) if o.get('kind') == 'shopAnchor' else None
+        if m and f'westshop-shop-{m.group(1)}' in fb_placed_ids:
+            fb_supersede.append({'outer': o['id'], 'fangbang': f'fangbang-westshop-shop-{m.group(1)}', 'proposal': f'shop-{m.group(1)}',
+                                 'reason': 'same shared-base-map proposal point; fangbang v7 westshop realises it'})
+    json.dump({'zone': 'fangbang', 'hideWhenLoaded': 'outer',
+               'rule': 'layout shopAnchor shoprow-p<N> is superseded when v7 westshop-shop-<N> is placed (wave5-fangbangqa F-01)',
+               'supersedes': sorted(fb_supersede, key=lambda e: e['outer'])},
+              open(os.path.join(OUT, 'fangbang-supersede.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+    print('fangbang supersedes outer', [e['outer'] for e in fb_supersede])
     print('fangbang infill placed', len(fangbang_infill), [i['id'] for i in fangbang_infill])
 
 # ---------- 湖心亭站点模块（默认开启，2026-09-25 机主定；HUXINTING=0 退回程序化占位。世界坐标 GLB，同假山做法，assemble 导入 SITE-pond） ----------
