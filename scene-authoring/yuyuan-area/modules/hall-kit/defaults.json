@@ -6,7 +6,10 @@
   "rise": 1.9,
   "roofMode": "hip",
   "storeys": 1,
-  "facadeDir": [0, 1],
+  "facadeDir": [
+    0,
+    1
+  ],
   "wallInset": 0.3,
   "platformOut": 0.2,
   "eaveOver": 1.0,
@@ -29,7 +32,11 @@
   "smallEaveC": 0.4,
   "leafPitch": 0.52,
   "doorH": 2.6,
-  "window": { "w": 1.1, "h": 1.0, "sill": 1.15 },
+  "window": {
+    "w": 1.1,
+    "h": 1.0,
+    "sill": 1.15
+  },
   "plinthH": 0.75,
   "architraveH": 0.32,
   "wallThickness": 0.24,
@@ -37,17 +44,74 @@
   "roofCurve": 1.35,
   "stepTread": 0.3,
   "stepWidth": 2.4,
-  "xieshan": { "breakFrac": 0.45, "breakInsetFrac": 0.14, "gableInsetFrac": 0.12, "chu": 0.25, "reach": 1.8, "ridgeEndLift": 0.35 },
+  "xieshan": {
+    "breakFrac": 0.45,
+    "breakInsetFrac": 0.14,
+    "gableInsetFrac": 0.12,
+    "chu": 0.25,
+    "reach": 1.8,
+    "ridgeEndLift": 0.35
+  },
   "ornamentScale": "auto",
   "orient": "footprint-side",
   "frontMinSideM": 3.2,
   "frontShortPenalty": 0.6,
-  "sharedEdgeKinds": ["hall", "tower", "xuan", "stage", "waterside", "pavilion", "bazaarBlock", "outerBuilding"],
+  "sharedEdgeKinds": [
+    "hall",
+    "tower",
+    "xuan",
+    "stage",
+    "waterside",
+    "pavilion",
+    "bazaarBlock",
+    "outerBuilding"
+  ],
   "sharedEdgeTolM": 0.05,
   "sharedEdgeMinLenM": 0.3,
   "sharedEdgeClearM": 0.0,
   "timberSrgb": "6a2e22",
   "latticeBackSrgb": "2a2522",
   "darkTimberSrgb": "241d18",
-  "budgetTris": 6000
+  "budgetTris": 6000,
+  "kinds": {
+    "comment": "按 layout kind 的立面组合：front/back = lattice（整面格扇）| wall（白墙+半窗）| railing（开敞+落地栏杆）| open（开敞只留柱）；sides = 两山 wall|open|railing；steps = 踏步所在侧。",
+    "hall": {
+      "front": "lattice",
+      "back": "wall",
+      "sides": "wall",
+      "steps": "front"
+    },
+    "xuan": {
+      "front": "lattice",
+      "back": "wall",
+      "sides": "wall",
+      "steps": "front"
+    },
+    "waterside": {
+      "front": "railing",
+      "back": "lattice",
+      "sides": "wall",
+      "steps": "back",
+      "note": "水榭：临水一侧（正立面，facade.dir 即最近水面方向）开敞 + 落地栏杆；陆侧格扇为入口，踏步在陆侧"
+    },
+    "stage": {
+      "front": "open",
+      "back": "wall",
+      "sides": "open",
+      "steps": "left",
+      "backWindows": false,
+      "platformY": 1.2,
+      "designInference": [
+        "platformY"
+      ],
+      "note": "戏台：台面抬高 1.2 m（≥1.0，designInference），面向观众一侧三面开敞，背墙为后台隔墙，踏步在左山侧靠后"
+    },
+    "tower": {
+      "front": "lattice",
+      "back": "wall",
+      "sides": "wall",
+      "steps": "front"
+    }
+  },
+  "railingH": 0.9
 }

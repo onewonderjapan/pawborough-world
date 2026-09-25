@@ -292,10 +292,22 @@ for (const HK_ID of IDS) {
         }
       }
       const eR = Math.min(E.hu + po, lim.right), eL = Math.min(E.hu + po, lim.left), eB = Math.min(E.hv + po, lim.back);
-      const dU = Math.max(Math.abs(-uu0 - eL), Math.abs(uu1 - eR));
-      const dBack = Math.abs(-vv0 - eB);
+      // 踏步所在侧（defaults.kinds.<kind>.steps，输入参数）台基层会伸出踏步：该侧只要求不小于台基边
+      const stepsSide = (DEF.kinds?.[obj.kind] || DEF.kinds?.hall || {}).steps || 'front';
+      const dL = stepsSide === 'left' ? Math.max(0, eL - -uu0) : Math.abs(-uu0 - eL);
+      const dR = stepsSide === 'right' ? Math.max(0, eR - uu1) : Math.abs(uu1 - eR);
+      const dU = Math.max(dL, dR);
+      const dBack = stepsSide === 'back' ? Math.max(0, eB - -vv0) : Math.abs(-vv0 - eB);
       ok(`${tag} 台基外廓对齐 footprint 外接矩形（两山 -${eL.toFixed(2)}/+${eR.toFixed(2)} 偏差 ${dU.toFixed(3)}、背面 -${eB.toFixed(2)} 偏差 ${dBack.toFixed(3)} ≤ ${tol}）`,
         dU <= tol + 0.04 && dBack <= tol + 0.04, `u=[${uu0.toFixed(2)}, ${uu1.toFixed(2)}] vBack=${vv0.toFixed(2)}`);
+      // 戏台：台面（背面台基边线处台基顶）实测高 ≥ 1.0 m（GOAL B3）
+      if (obj.kind === 'stage') {
+        const allUV = verts.map((v) => [...toUV(v), v[1]]);
+        const edgeY = allUV.filter(([u, v, y]) => -v >= eB - 0.06 && y < 3).map((q) => q[2]);
+        const top = edgeY.length ? Math.max(...edgeY) : 0;
+        ok(`${tag} 戏台台面实测高 ${top.toFixed(2)} m ≥ 1.0`, top >= 1.0);
+        row.stagePlatformM = +top.toFixed(3);
+      }
       const eF = Math.min(E.hv + po, lim.front);
       ok(`${tag} 正立面在 +Z（台基前沿 ${vv1.toFixed(2)} ≥ ${(eF - tol).toFixed(2)}）`, vv1 >= eF - tol);
       row.platformAlignErrM = +Math.max(dU, dBack).toFixed(3);
@@ -325,13 +337,21 @@ for (const HK_ID of IDS) {
     ok(`${tag} 模块字节 ${bytes} ≤ 1500000`, bytes <= 1500000);
     const g = parseGlb(file);
     ok(`${tag} 无散件：模块节点数 ${g.nodeCount} ≤ 24`, g.nodeCount <= 24, `nodes=${g.nodeCount}`);
+    // 有格心的 kind（任一侧格扇 / 半窗 / 花格栏杆）才核格心；戏台（三面开敞 + 无窗背墙）没有格心
+    const kc = DEF.kinds?.[obj.kind] || DEF.kinds?.hall || {};
+    const hasLattice = [kc.front, kc.back].includes('lattice') || [kc.front, kc.back, kc.sides].includes('railing')
+      || kc.sides === 'wall' || ([kc.front, kc.back].includes('wall') && kc.backWindows !== false);
     const lat = g.materials.find((m) => /lattice-core/.test(m.name));
-    ok(`${tag} 格心材质 alphaMode=MASK`, !!lat && lat.alphaMode === 'MASK', lat && lat.alphaMode);
     const latImgs = (g.json.images || []).filter((i) => /lattice/.test(i.name || ''));
-    const dims = latImgs.length === 1 ? g.imageDims(latImgs[0]) : null;
-    ok(`${tag} 格心图唯一且共享规格（名 lattice-core-alpha、160×160）`,
-      latImgs.length === 1 && latImgs[0].name === 'lattice-core-alpha' && dims && dims[0] === 160 && dims[1] === 160,
-      JSON.stringify(latImgs.map((i) => i.name)) + ' ' + JSON.stringify(dims));
+    if (hasLattice) {
+      ok(`${tag} 格心材质 alphaMode=MASK`, !!lat && lat.alphaMode === 'MASK', lat && lat.alphaMode);
+      const dims = latImgs.length === 1 ? g.imageDims(latImgs[0]) : null;
+      ok(`${tag} 格心图唯一且共享规格（名 lattice-core-alpha、160×160）`,
+        latImgs.length === 1 && latImgs[0].name === 'lattice-core-alpha' && dims && dims[0] === 160 && dims[1] === 160,
+        JSON.stringify(latImgs.map((i) => i.name)) + ' ' + JSON.stringify(dims));
+    } else {
+      ok(`${tag} 无格心构件的 kind（${obj.kind}）不嵌格心图（${latImgs.length}）`, latImgs.length === 0);
+    }
     const wood = g.materials.find((m) => m.name === 'hk-timber-darkred');
     const bcf = wood?.pbrMetallicRoughness?.baseColorFactor;
     const want = lin(DEF.timberSrgb);

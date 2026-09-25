@@ -161,6 +161,8 @@ def region_world(hid, rot_y=None, meas_path=''):
     mp = meas_path or os.path.join(os.path.dirname(a.glb) if a.glb else os.path.join(AREA, 'out-garden-kits', 'hallkit-' + hid),
                                    'measurements.json')
     meas = json.load(open(mp, encoding='utf-8'))
+    if not meas.get('facadeRegionLocal'):
+        return None                                   # 正立面无格扇（水榭 / 戏台）
     _, fr = pose(hid)
     cx, cz = fr['centroid']
     ry = fr['rotY'] if rot_y is None else rot_y
@@ -172,7 +174,10 @@ def facade_check(sc, cam, path, hid, rot_y=None, meas_path=''):
     """格扇立面区域平均色（显示空间 sRGB 0..1）：R>G、R>B、HSV 明度 max(R,G,B) ≥ 0.18。"""
     W, H = sc.render.resolution_x, sc.render.resolution_y
     poly = []
-    for x, y, z in region_world(hid, rot_y, meas_path):
+    reg = region_world(hid, rot_y, meas_path)
+    if reg is None:
+        return {'ok': None, 'reason': 'no front lattice (kind without 格扇 facade) — not applicable'}
+    for x, y, z in reg:
         v = world_to_camera_view(sc, cam, Vector((x, -z, y)))
         poly.append((v.x * W, (1 - v.y) * H, v.z))
     if any(p[2] <= 0 for p in poly):
@@ -280,7 +285,8 @@ def hall_objects(hid):
 
 
 def visible_frac(sc, pos, pts, names):
-    """从机位向各采样点投射射线，第一个命中属于本栋（且在采样点附近）的比例；机位落在别的网格里时自然为 0。"""
+    """从机位向各采样点投射射线：到采样点前 0.3 m 之内没有被「别的」网格挡住就算可见（先撞到本栋自身构件也算，
+    开敞戏台 / 水榭的采样点在台内，射线可能穿过去不撞任何东西）。机位落在别的封闭网格里时自然为 0。"""
     dg = bpy.context.evaluated_depsgraph_get()
     o = Vector((pos[0], -pos[2], pos[1]))
     hit_n = 0
@@ -288,10 +294,18 @@ def visible_frac(sc, pos, pts, names):
         t = Vector((p[0], -p[2], p[1]))
         d = t - o
         L = d.length
-        ok_, loc, _n, _i, ob, _m = sc.ray_cast(dg, o, d.normalized(), distance=L + 0.5)
-        if ok_ and ob is not None and ob.name in names and (loc - o).length >= L - 1.5:
+        ok_, loc, _n, _i, ob, _m = sc.ray_cast(dg, o, d.normalized(), distance=max(0.01, L - 0.3))
+        if not ok_ or (ob is not None and ob.name in names):
             hit_n += 1
     return hit_n / max(1, len(pts))
+
+
+def outside(fr, pos, margin=1.5):
+    """机位不落在本栋外接矩形外扩 margin 以内（开敞戏台 / 水榭里射线可见度会误把「站在台内」当最佳）。"""
+    dx_, dz_ = pos[0] - fr['rectCenter'][0], pos[2] - fr['rectCenter'][1]
+    u = dx_ * fr['uAxis'][0] + dz_ * fr['uAxis'][1]
+    v = dx_ * fr['front'][0] + dz_ * fr['front'][1]
+    return abs(u) > fr['hu'] + margin or abs(v) > fr['hv'] + margin
 
 
 def choose_cams(sc, hid):
@@ -316,7 +330,9 @@ def choose_cams(sc, hid):
                 a1 = [reg[3][c] + (reg[2][c] - reg[3][c]) * fu for c in range(3)]
                 eye_pts.append([a0[c] + (a1[c] - a0[c]) * fy for c in range(3)])
     else:
-        eye_pts = [(cx + dx * fr['hv'], 1.8, cz + dz * fr['hv'])]
+        # 正立面无格扇（水榭 / 戏台）：取正立面柱线内侧一排点（眼高 ~2.2 m）
+        eye_pts = [(cx + dx * (fr['hv'] - 0.5) + px * su * fr['hu'], 2.2, cz + dz * (fr['hv'] - 0.5) + pz * su * fr['hu'])
+                   for su in (-0.7, -0.35, 0.0, 0.35, 0.7)]
     roof_pts = []
     for su in (-0.8, 0.0, 0.8):
         for sv in (-0.6, 0.0, 0.6):
@@ -324,7 +340,8 @@ def choose_cams(sc, hid):
     out, info = {}, {}
     for name, (pos0, tgt0, lens) in base.items():
         pts = eye_pts if name in ('garden-eye', 'front') else roof_pts
-        best = (visible_frac(sc, pos0, pts, names), 0, pos0, tgt0)
+        v0 = visible_frac(sc, pos0, pts, names)
+        best = (v0 + 0.01, 0, pos0, tgt0, v0)
         rel = [pos0[0] - cx, pos0[1], pos0[2] - cz]
         for ang in (25, -25, 45, -45, 65, -65):
             for sc_d in (1.0, 0.75, 1.3, 0.55):
@@ -335,22 +352,25 @@ def choose_cams(sc, hid):
                     tgt = tgt0
                 else:
                     tgt = tgt0
-                v = visible_frac(sc, pos, pts, names)
+                if not outside(fr, pos):
+                    continue
+                vis = visible_frac(sc, pos, pts, names)
+                v = vis + 0.01 * sc_d     # 可见度相同取更远（构图完整）
                 if v > best[0] + 1e-9:
-                    best = (v, ang, pos, tgt)
-            if best[0] >= 0.9:
+                    best = (v, ang, pos, tgt, vis)
+            if best[4] >= 0.9:
                 break
         # 斜俯仍被挡（密集园区）：再试更陡的高位机位（高 ×1.6、水平距 ×0.6）
-        if name == 'oblique' and best[0] < 0.6:
+        if name == 'oblique' and best[4] < 0.6:
             for ang in (0, 25, -25, 45, -45, 65, -65, 90, -90):
                 ca, sa = math.cos(math.radians(ang)), math.sin(math.radians(ang))
                 rx, rz = rel[0] * ca - rel[2] * sa, rel[0] * sa + rel[2] * ca
                 pos = (cx + rx * 0.6, rel[1] * 1.6, cz + rz * 0.6)
-                v = visible_frac(sc, pos, pts, names)
-                if v > best[0] + 1e-9:
-                    best = (v, 'steep%+d' % ang, pos, tgt0)
+                vis = visible_frac(sc, pos, pts, names)
+                if vis + 0.006 > best[0] + 1e-9:
+                    best = (vis + 0.006, 'steep%+d' % ang, pos, tgt0, vis)
         out[name] = (best[2], best[3], lens)
-        info[name] = {'visibleFrac': round(best[0], 2), 'rotDeg': best[1], 'pos': [round(c, 2) for c in best[2]]}
+        info[name] = {'visibleFrac': round(best[4], 2), 'rotDeg': best[1], 'pos': [round(c, 2) for c in best[2]]}
     print('CAMS', hid, json.dumps(info), flush=True)
     return out, info
 
@@ -387,7 +407,7 @@ bad = [r for r in results if r.get('blank')]
 gname = ('hallkit-render-guards-%s.json' % a.tag) if a.module else 'hallkit-render-guards-compare.json' if a.compare \
     else 'hallkit-facade-check-%s.json' % os.path.splitext(os.path.basename(a.check_image))[0]
 json.dump(results, open(os.path.join(a.out, gname), 'w'), indent=1, ensure_ascii=False)
-colour_bad = [r for r in results if r.get('facadeColor') and not r['facadeColor'].get('ok')]
+colour_bad = [r for r in results if r.get('facadeColor') and r['facadeColor'].get('ok') is False]
 print('RENDER_DONE', len(results), 'blank', len(bad), 'facadeColorFail', len(colour_bad))
 if bad:
     sys.exit(1)
