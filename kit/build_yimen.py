@@ -515,26 +515,35 @@ for sgn in (-1, 1):
     L.box('side-wall-lower', (sgn * (sw_x - bd['sideWallThicknessM'] / 2), low_top / 2,
           -bd['depthM'] / 2),
           (bd['sideWallThicknessM'], low_top, bd['depthM']), 'plaster', 0, True)
+    # wave5-templeqa: strip tops follow the roof soffit EXACTLY at both strip ends (sloped top quad),
+    # sampled at the lower of the inner / outer wall faces (the hip end falls toward the gable, so the
+    # outer face sees the lower roof). The old flat-topped strips (top = max of the two ends) and the
+    # trapezoids that always put the high end at z2 poked through the rear slope and near the gable.
+    def soffit_at(z):
+        return min(roof_y(x_in, z), roof_y(x_out, z)) - THICK - .02
     strips = []
     for k in range(math.ceil(bd['depthM'] / 0.35 - 1e-9)):
         z1 = -0.35 * k
         z2 = max(-bd['depthM'], z1 - 0.35)
-        ya = roof_y(sw_x - bd['sideWallThicknessM'] / 2, z1) - THICK - .02
-        yb = roof_y(sw_x - bd['sideWallThicknessM'] / 2, z2) - THICK - .02
-        strips.append((z1, z2, min(ya, yb), max(ya, yb)))
-    for z1, z2, ylo, yhi in strips:
-        y0 = min(low_top - .02, ylo)
-        C.quad_out(L, 'side-wall-upper-inner', [(x_in, y0, z1), (x_in, y0, z2), (x_in, yhi, z2), (x_in, ylo, z1)],
+        strips.append((z1, z2, soffit_at(z1), soffit_at(z2)))
+    for z1, z2, ya, yb in strips:
+        y0 = min(low_top - .02, ya, yb)
+        C.quad_out(L, 'side-wall-upper-inner', [(x_in, y0, z1), (x_in, y0, z2), (x_in, yb, z2), (x_in, ya, z1)],
                    'plaster', [(z1 / 2.5, y0 / 2.5), (z2 / 2.5, y0 / 2.5),
-                               (z2 / 2.5, yhi / 2.5), (z1 / 2.5, yhi / 2.5)], (-sgn, 0, 0))
-        C.quad_out(L, 'side-wall-upper-outer', [(x_out, y0, z1), (x_out, y0, z2), (x_out, yhi, z2), (x_out, ylo, z1)],
+                               (z2 / 2.5, yb / 2.5), (z1 / 2.5, ya / 2.5)], (-sgn, 0, 0))
+        C.quad_out(L, 'side-wall-upper-outer', [(x_out, y0, z1), (x_out, y0, z2), (x_out, yb, z2), (x_out, ya, z1)],
                    'plaster', [(z1 / 2.5, y0 / 2.5), (z2 / 2.5, y0 / 2.5),
-                               (z2 / 2.5, yhi / 2.5), (z1 / 2.5, yhi / 2.5)], (sgn, 0, 0))
-        C.quad_out(L, 'side-wall-upper-top', [(x_in, yhi, z1), (x_in, yhi, z2), (x_out, yhi, z2), (x_out, yhi, z1)],
+                               (z2 / 2.5, yb / 2.5), (z1 / 2.5, ya / 2.5)], (sgn, 0, 0))
+        C.quad_out(L, 'side-wall-upper-top', [(x_in, ya, z1), (x_in, yb, z2), (x_out, yb, z2), (x_out, ya, z1)],
                    'plaster', [(z1 / 2.5, 0), (z2 / 2.5, 0), (z2 / 2.5, .13), (z1 / 2.5, .13)], (0, 1, 0))
+    # R1-02 port (peidian/houdian carried it, the yimen did not): the corner end caps used to run up to
+    # the max strip height (near the ridge) at both wall ends and stood 1.2 m out of the eave corners.
+    # They close at the LOCAL soffit height at their own z.
     for zend, hint in ((0.0, (0, 0, 1)), (-bd['depthM'], (0, 0, -1))):
-        yt = max(s[3] for s in strips)
-        yb0 = min(low_top - .02, min(s[2] for s in strips))
+        yt = soffit_at(zend)
+        yb0 = min(low_top - .02, yt)
+        if yt <= yb0 + 0.01:
+            continue
         C.quad_out(L, 'side-wall-upper-end', [(x_in, yb0, zend), (x_out, yb0, zend),
                                               (x_out, yt, zend), (x_in, yt, zend)],
                    'plaster', [(x_in / 2.5, yb0 / 2.5), (x_out / 2.5, yb0 / 2.5),
@@ -543,14 +552,29 @@ for sgn in (-1, 1):
           (bd['sideWallThicknessM'] + .06, .8, bd['depthM'] - .1), 'brick', 0)
 
 # rear wall: plaster with the through-opening kept clear; dark frame posts
+# wave5-templeqa: the rear wall sits at z -5.06, 0.9 m inside the rear eave, where the roof top is only
+# ~5.3 (t 0.78 of the rear slope) and falls further toward the hip ends. The old wall (top 5.75) and the
+# rear beam on it (5.73..5.93) therefore stood 0.3-0.5 m out of the rear slope along the whole width
+# (white band + red beam across the tiles). Beam top now = the lowest roof soffit over the beam's
+# footprint, wall top 0.02 inside the beam, both capped at the old heights.
 rz = bd['rearWallZ']
 rh_in = dw['widthM'] / 2 + .12
+rear_cap = fb['yRange'][1] + .9
+
+
+def _soffit_min(x_to, z_list, n=16):
+    return min(roof_y(x_to * k / n, z) - THICK - .02 for k in range(n + 1) for z in z_list)
+
+
+beam_top = min(fb['yRange'][1] + .98 + .1, _soffit_min(sw_x - .15, (rz + .17, rz - .17)))
+rear_top = min(rear_cap, beam_top - .18,
+               _soffit_min(sw_x, (rz + bd['rearWallThicknessM'] / 2, rz - bd['rearWallThicknessM'] / 2)))
 for sgn in (-1, 1):
-    L.box('rear-wall-side', (sgn * (rh_in + sw_x) / 2, fb['yRange'][1] / 2 + .45, rz),
-          (sw_x - rh_in, fb['yRange'][1] + .9, bd['rearWallThicknessM']), 'plaster', 0, True)
-L.box('rear-wall-header', (0, (dw['heightM'] + fb['yRange'][1] + .9) / 2, rz),
-      (2 * rh_in, fb['yRange'][1] + .9 - dw['heightM'], bd['rearWallThicknessM']), 'plaster', 0, True)
-L.box('rear-beam', (0, fb['yRange'][1] + .98, rz), (2 * sw_x - .3, .2, .34), 'wood', .01)
+    L.box('rear-wall-side', (sgn * (rh_in + sw_x) / 2, rear_top / 2, rz),
+          (sw_x - rh_in, rear_top, bd['rearWallThicknessM']), 'plaster', 0, True)
+L.box('rear-wall-header', (0, (dw['heightM'] + rear_top) / 2, rz),
+      (2 * rh_in, rear_top - dw['heightM'], bd['rearWallThicknessM']), 'plaster', 0, True)
+L.box('rear-beam', (0, beam_top - .1, rz), (2 * sw_x - .3, .2, .34), 'wood', .01)
 for sx in cols_cfg['frontX']:
     L.box('rear-frame-post', (sx, dw['heightM'] / 2 + .3, rz - .06),
           (.22, dw['heightM'] + .6, .22), 'dark', .008)

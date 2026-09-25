@@ -298,25 +298,30 @@ for sgn in (-1, 1):
     low_top = 3.2
     L.box('gable-wall-lower', (sgn * sw_x, low_top / 2, -bd['bodyDepthM'] / 2),
           (bd['sideWallThicknessM'], low_top, bd['bodyDepthM']), 'plaster', 0, True)
+    # wave5-templeqa: strip tops follow the roof soffit EXACTLY at both strip ends (sloped top quad),
+    # sampled at the lower of the inner / outer wall faces. The old strips were flat-topped at the
+    # higher end and their side trapezoids always put the high end at z2, so on the rear slope (roof
+    # falling from z1 to z2) and at every step the plaster stood up to 0.27 m (peidian) / 0.22 m
+    # (houdian) out of the tile surface — the white "teeth" along both gable verges.
+    def soffit_at(z):
+        return min(roof_y(x_in, z), roof_y(x_out, z)) - THICK - .02
     strips = []
     for k in range(math.ceil(bd['bodyDepthM'] / 0.35 - 1e-9)):
         z1 = -0.35 * k
         z2 = max(-bd['bodyDepthM'], z1 - 0.35)
-        ya = roof_y(sgn * (bd['sideWallX'] - bd['sideWallThicknessM']), z1) - THICK - .02
-        yb = roof_y(sgn * (bd['sideWallX'] - bd['sideWallThicknessM']), z2) - THICK - .02
-        strips.append((z1, z2, min(ya, yb), max(ya, yb)))
-    for z1, z2, ylo, yhi in strips:
-        y0 = min(low_top - .02, ylo)
+        strips.append((z1, z2, soffit_at(z1), soffit_at(z2)))
+    for z1, z2, ya, yb in strips:
+        y0 = min(low_top - .02, ya, yb)
         C.quad_out(L, 'gable-wall-upper-inner',
-                   [(x_in, y0, z1), (x_in, y0, z2), (x_in, yhi, z2), (x_in, ylo, z1)],
+                   [(x_in, y0, z1), (x_in, y0, z2), (x_in, yb, z2), (x_in, ya, z1)],
                    'plaster', [(z1 / 2.5, y0 / 2.5), (z2 / 2.5, y0 / 2.5),
-                               (z2 / 2.5, yhi / 2.5), (z1 / 2.5, yhi / 2.5)], (-sgn, 0, 0))
+                               (z2 / 2.5, yb / 2.5), (z1 / 2.5, ya / 2.5)], (-sgn, 0, 0))
         C.quad_out(L, 'gable-wall-upper-outer',
-                   [(x_out, y0, z1), (x_out, y0, z2), (x_out, yhi, z2), (x_out, ylo, z1)],
+                   [(x_out, y0, z1), (x_out, y0, z2), (x_out, yb, z2), (x_out, ya, z1)],
                    'plaster', [(z1 / 2.5, y0 / 2.5), (z2 / 2.5, y0 / 2.5),
-                               (z2 / 2.5, yhi / 2.5), (z1 / 2.5, yhi / 2.5)], (sgn, 0, 0))
+                               (z2 / 2.5, yb / 2.5), (z1 / 2.5, ya / 2.5)], (sgn, 0, 0))
         C.quad_out(L, 'gable-wall-upper-top',
-                   [(x_in, yhi, z1), (x_in, yhi, z2), (x_out, yhi, z2), (x_out, yhi, z1)],
+                   [(x_in, ya, z1), (x_in, yb, z2), (x_out, yb, z2), (x_out, ya, z1)],
                    'plaster', [(z1 / 2.5, 0), (z2 / 2.5, 0), (z2 / 2.5, .13), (z1 / 2.5, .13)], (0, 1, 0))
     # R1-02: the corner end caps used to run up to the RIDGE-height max of the
     # strips (a full-height plaster slab at each wall corner, poking 2-3 m past
@@ -324,7 +329,7 @@ for sgn in (-1, 1):
     for zend, hint in ((0.0, (0, 0, 1)), (-bd['bodyDepthM'], (0, 0, -1))):
         zq = zend - (0.01 if zend > 0 else -0.01) * -1  # sample just inside the wall
         zq = 0.0 if zend > 0 else -bd['bodyDepthM']
-        ytop = roof_y(sgn * sw_x, zq) - THICK - .02
+        ytop = soffit_at(zq)   # wave5-templeqa: same soffit sampling as the strips
         yb0 = low_top - .02
         if ytop <= yb0 + 0.01:
             continue  # the gable strip band already closes this corner
