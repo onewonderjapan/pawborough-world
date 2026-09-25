@@ -47,8 +47,7 @@ export-collision 复核（差 > 0.05 m 即 fail）。
 
 ## storeys ≠ 1
 
-本版按单层生成并在 `recipe.json` 记 `storeysIgnored`；多层剖面（腰檐/平座）待主控定剖面后
-在批量阶段扩展。
+wave2 B4 起按两层剖面生成（见下「wave2 批量」）。
 
 ## 依赖
 
@@ -61,3 +60,18 @@ export-collision 复核（差 > 0.05 m 即 fail）。
 `tests/hallkit-test.mjs`（`npm test` 链内；HALL_KIT=1 时启用，否则跳过）：锚点位置/朝向、
 几何平面中心 vs 外接矩形中心、本地系尺寸、validator 0 错、预算、节点数、格心 MASK、
 程序化让位、碰撞世界记录、zone-garden ≤ 12MB——全部从 baseline/layout.json 重算对账。
+
+## wave2 批量（2026-09-25，wave2-hallbatch）
+
+- **id 列表**唯一来源 `ids.json`（`ids` = HALL_KIT=1 默认接入的 20 栋，`batches` 记 b0–b4）；build-scene / assemble /
+  export-collision / rebuild-review / hallkit-test 都读它。
+- **放置 / 朝向**公式在 `frame.py`（JS 版 `frame.mjs`）：位置 = footprint 面积形心；正立面 = 外接矩形上外法线最接近
+  facade.dir 的一边（同 build-scene pickEdge），几何与 footprint 对齐。facade.dir 是「形心→最近水面」方向，
+  与所选边的夹角记在 measurements.facadeDeltaDeg（本单 12 栋 >5°，最大 45°）。`defaults.orient = "facade-dir"` 可退回旧行为。
+- **共享边**：与其他会渲染建筑 footprint 重合的边（≤0.05 m、重叠 ≥0.3 m，从 layout 检出）所在一侧，台基齐边、
+  檐口截到边线、墙线按需内收（recipe.sides）；hallkit-test 断言任何三角越界 ≤ 0.02 m。
+- **kind 组合**（defaults.kinds）：hall/xuan 正面格扇；waterside 临水开敞 + 落地栏杆、陆侧格扇；stage 台基 1.2 m
+  （designInference）三面开敞；tower storeys≥2 走 build_storey 两次 + 腰檐（eave_kit.eave_skirt）+ 平座栏杆 + 二层格扇后退。
+- **designInference 规则**：屋面坡度夹 17.5°–33°、面宽 < 6.5 m 时檐高上限、小歇山起翘范围按最短边封顶，均记 recipe。
+- 配色：框料底色 = sRGB `timberSrgb`（#6a2e22），不乘贴图；格心图 `lattice-core-alpha` 160×160 全部共享。
+- 渲染：`render_hall.py --compare --ids …` 在 after 总装里按射线可见度挑机位；`contact_sheet.py` 出联系表（图只进工单包）。
