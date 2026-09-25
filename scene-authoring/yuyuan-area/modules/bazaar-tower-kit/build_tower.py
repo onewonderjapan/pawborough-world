@@ -1068,6 +1068,10 @@ for b in BLOCKS:
     # ================= 立面：底层店面 =================
     sf = FA['shopfront']
     fd = FA['fasciaDepthM']
+    # 挂落 / 彩画带挂到一层檐口下缘以下（wave4 B5）：一层檐口外缘下沿 = Z1 − drop − tileH − boardH，
+    # 街道眼高的视线擦着它进来，墙面上高于这条线的东西从街上永远看不见（华宝楼 R2 的挂落带整条落在这里面）
+    _ek1 = ekp_for(1)
+    ZF = Z1 - ((_ek1['drop'] + _ek1['tileH'] + _ek1['boardH'] + 0.02) if FA.get('fasciaBelowEave') else 0.0)
     for i, r in enumerate(ground_runs):
         stl = r.style
         if stl.get('style') != 'shop':
@@ -1075,7 +1079,7 @@ for b in BLOCKS:
         rc = r.recess
         tim = stl.get('timber', 'wood')
         coltim = stl.get('columnTimber', 'wood')
-        gh = stl.get('glassHeadM', sf['glassHeadM'])
+        gh = min(stl.get('glassHeadM', sf['glassHeadM']), ZF - fd - 0.2)
         sh = stl.get('sillM', sf['sillM'])
         sfm, smm, smp = sf.get('frameM', 0.12), sf.get('mullionM', 0.08), sf.get('mullionPitchM', 1.05)
         lines = bays(r, r.s0 + 0.02, r.s1 - 0.02)
@@ -1092,15 +1096,15 @@ for b in BLOCKS:
                 continue
             g0, g1 = a_ + 0.18, b_ - 0.18
             bt = '%s-%.1f' % (tag, a_)
-            obox('shop-post-' + bt, r, g0 - sfm, g0, op - 0.06, op + 0.06, PL, Z1 - fd, tim, 'shopfront')
-            obox('shop-post-' + bt + 'r', r, g1, g1 + sfm, op - 0.06, op + 0.06, PL, Z1 - fd, tim, 'shopfront')
+            obox('shop-post-' + bt, r, g0 - sfm, g0, op - 0.06, op + 0.06, PL, ZF - fd, tim, 'shopfront')
+            obox('shop-post-' + bt + 'r', r, g1, g1 + sfm, op - 0.06, op + 0.06, PL, ZF - fd, tim, 'shopfront')
             obox('shop-riser-' + bt, r, g0, g1, op - 0.04, op + 0.02, PL, PL + sh, tim, 'shopfront', bevel=None)
             obox('shop-head-' + bt, r, g0, g1, op - 0.06, op + 0.06, gh, gh + 0.08, tim, 'shopfront')
-            obox('shop-headtop-' + bt, r, g0, g1, op - 0.06, op + 0.06, Z1 - fd - 0.04, Z1 - fd, tim, 'shopfront')
+            obox('shop-headtop-' + bt, r, g0, g1, op - 0.06, op + 0.06, ZF - fd - 0.04, ZF - fd, tim, 'shopfront')
             if stl.get('signBand'):                               # 红招牌带（空板，不写字）
-                rpanel('shop-sign-' + bt, r, (g0 + g1) / 2, op + 0.03, gh + 0.08, Z1 - fd - 0.04, g1 - g0, 'signred', 'shopfront')
-            else:
-                rpanel('shop-fan-' + bt, r, (g0 + g1) / 2, op + 0.02, gh + 0.08, Z1 - fd - 0.04, g1 - g0,
+                rpanel('shop-sign-' + bt, r, (g0 + g1) / 2, op + 0.03, gh + 0.08, ZF - fd - 0.04, g1 - g0, 'signred', 'shopfront')
+            elif ZF - fd - 0.04 - (gh + 0.08) >= 0.1:          # 横披格心（挂落带下移后可能没空间，则不做）
+                rpanel('shop-fan-' + bt, r, (g0 + g1) / 2, op + 0.02, gh + 0.08, ZF - fd - 0.04, g1 - g0,
                        'lattice' if tim == 'wood' else 'lattice2', 'shopfront')
             if FM.get('shopInterior'):                           # 店内暖色衬底（玻璃后不再是一片黑）
                 rpanel('shop-back-' + bt, r, (g0 + g1) / 2, op - 0.08, PL + sh, gh, g1 - g0, 'shopback', 'shopfront')
@@ -1115,21 +1119,23 @@ for b in BLOCKS:
                 obox('shop-mullion-%s-%d' % (bt, kk), r, mu - smm / 2, mu + smm / 2, op + 0.01, op + 0.07, PL + sh, gh, tim, 'shopfront')
         # 檐下挂落（鎏金格心带）或彩画额枋
         PART = 'fascia'
-        gz0, gz1 = Z1 - fd + 0.02, Z1 - 0.02
+        if ZF < Z1 - 0.1:                                   # 挂落带上方到楼面：一道额枋（木），挡住带与檐底之间的空当
+            obox('fascia-beam-' + tag, r, r.s0, r.s1, -0.25, 0.03, ZF, Z1 - 0.05, 'wood', 'fascia', bevel=0)
+        gz0, gz1 = ZF - fd + 0.02, ZF - 0.02
         sc, w_ = (r.s0 + r.s1) / 2, r.length
         if stl.get('fascia', 'guoluo') == 'caihua':
-            obox('caihua-g-' + tag, r, r.s0, r.s1, -0.02, 0.05, Z1 - fd, Z1, 'wood', 'fascia', bevel=0)
-            rpanel('caihua-' + tag, r, sc, 0.056, Z1 - fd + 0.01, Z1 - 0.01, w_, 'caihua', 'fascia', uscale=2.0, vnorm=True)
+            obox('caihua-g-' + tag, r, r.s0, r.s1, -0.02, 0.05, ZF - fd, ZF, 'wood', 'fascia', bevel=0)
+            rpanel('caihua-' + tag, r, sc, 0.056, ZF - fd + 0.01, ZF - 0.01, w_, 'caihua', 'fascia', uscale=2.0, vnorm=True)
         else:
             rpanel('guoluo-back-' + tag, r, sc, 0.008, gz0, gz1, w_, stl.get('guoluoBack', FA.get('guoluoBackKey', 'dark')), 'fascia')
             rpanel('guoluo-' + tag, r, sc, 0.04, gz0, gz1, w_, 'guoluo', 'fascia')
-            obox('guoluo-trim-' + tag, r, r.s0, r.s1, -0.01, 0.055, Z1 - fd - 0.05, Z1 - fd, 'gild', 'fascia', bevel=None)
+            obox('guoluo-trim-' + tag, r, r.s0, r.s1, -0.01, 0.055, ZF - fd - 0.05, ZF - fd, 'gild', 'fascia', bevel=None)
         if stl.get('bayPlaques', True):
             PART = 'plaques'
             for a_, b_ in zip(lines[:-1], lines[1:]):
                 if b_ - a_ < 1.6:
                     continue
-                rpanel('plaque-%s-%.1f' % (tag, a_), r, (a_ + b_) / 2, 0.14, Z1 - fd + 0.02, Z1 - 0.04, 1.5, 'dark', 'plaques')
+                rpanel('plaque-%s-%.1f' % (tag, a_), r, (a_ + b_) / 2, 0.14, ZF - fd + 0.02, ZF - 0.04, 1.5, 'dark', 'plaques')
 
     # ================= 立面：二层以上 =================
     for k in range(2, N + 1):

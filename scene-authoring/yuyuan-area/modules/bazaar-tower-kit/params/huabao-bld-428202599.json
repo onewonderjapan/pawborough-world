@@ -122,15 +122,18 @@
       "frameM": 0.12,
       "mullionM": 0.08,
       "mullionPitchM": 1.05
-    }
+    },
+    "guoluoBarFrac": 0.3,
+    "guoluoBackKey": "wood",
+    "fasciaBelowEave": true
   },
   "materials": {
     "timberTint": "6a2e22",
     "plasterTint": "f2efe8",
     "plinthTint": "8b9089",
     "gilded": "b08a3e",
-    "glass": "20252a",
-    "glassAlpha": 0.85,
+    "glass": "46525a",
+    "glassAlpha": 0.5,
     "dark": "241d18",
     "roofTile": [
       1.4,
@@ -147,7 +150,12 @@
     "plinthTile": [
       2.0,
       1.0
-    ]
+    ],
+    "shopInterior": "b08a60",
+    "shopEmission": "7a5a3a",
+    "guoluoGold": "d6ab4a",
+    "gildMetallic": 0.25,
+    "gildRough": 0.45
   },
   "budget": {
     "trisMax": 40000,
@@ -191,5 +199,12 @@
         "note": "DESIGN_SPEC floor2Plaque：中心广场面居中 8×2 m 空匾 + 金边"
       }
     ]
-  }
+  },
+  "revisions": [
+    {
+      "date": "2026-09-25",
+      "by": "wave4 B5",
+      "what": "主控复验：挂落描金看不出、底层玻璃偏暗。挂落棂条 0.16→0.30、金 b08a3e→d6ab4a（贴图改白条 × 材质色）、衬底 dark→深红木；鎏金件金属度 0.55→0.25、粗糙度 0.38→0.45（灰天下不再发黑）；店面玻璃 20252a α0.85 → 46525a α0.5，玻璃后加暖色店内衬底 b08a60 + 微自发光 7a5a3a。几何不动。"
+    }
+  ]
 }

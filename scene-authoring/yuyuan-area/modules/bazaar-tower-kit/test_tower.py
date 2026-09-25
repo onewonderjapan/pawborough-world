@@ -527,9 +527,11 @@ def huabao_r2_tests():
         uu = [uv_of(v)[0] for v in world_verts(n)]
         hh = [uv_of(v)[2] for v in world_verts(n)]
         span = max(uu) - min(uu)
-        ok('test8e %s 通长 %.1f m、z 在檐下 0.45 m 带内' % (n['name'], span),
+        _e = PRM['eaveKit']
+        _zf = ZT_[1] - ((_e['drop'] + _e['tileH'] + _e['boardH'] + 0.02) if _FC.get('fasciaBelowEave') else 0.0)
+        ok('test8e %s 通长 %.1f m、z 在挂落带（顶 %.2f）0.45 m 内' % (n['name'], span, _zf),
            span >= 0.85 * (U1e - U0e)
-           and ZT_[1] - fd_ - 0.15 <= min(hh) and max(hh) <= ZT_[1] + 0.01,
+           and _zf - fd_ - 0.15 <= min(hh) and max(hh) <= _zf + 0.01,
            'span=%.1f z=[%.2f,%.2f]' % (span, min(hh), max(hh)))
 
     # test8f 柱脚石础（colbase__stone）：≥12 个分量，落地、顶 ≤ 台基顶+0.12
@@ -827,6 +829,70 @@ if _pl_nodes or _mat_used('signred'):
     ok('test12 匾额 / 招牌材质无贴图（空板，不写字）：%d 种材质' % len(_board), not _tex_board, str(_tex_board))
 else:
     ok('test12 匾额 / 招牌存在', False, '无 plaques__* 节点与 signred 材质')
+# ---------- test 13：挂落描金、底层玻璃「看得出」（wave4 B5：主控复验华宝楼 R2——描金在渲染里看不出、底层玻璃偏暗） ----------
+# 等效反照率（线性）：挂落带 = 棂条覆盖率 × 金色亮度 + (1 − 覆盖率) × 衬底亮度；店面玻璃 = α × 玻璃亮度 + (1 − α) × 玻璃后衬底（亮度 + 自发光）。
+# 覆盖率从 GLB 里内嵌的 alpha 贴图实测（PIL 解码），颜色取 GLB 材质 baseColorFactor / emissiveFactor——不读模块自报数字。
+def _img_of_material(m):
+    ti = m.get('pbrMetallicRoughness', {}).get('baseColorTexture', {}).get('index')
+    if ti is None:
+        return None
+    src = gj['textures'][ti]['source']
+    im = gj['images'][src]
+    bv = gj['bufferViews'][im['bufferView']]
+    raw = open(GLB, 'rb').read()
+    jl_ = struct.unpack_from('<I', raw, 12)[0]
+    off = 20 + jl_ + 8 + bv.get('byteOffset', 0)
+    import io
+    from PIL import Image
+    return Image.open(io.BytesIO(raw[off:off + bv['byteLength']]))
+def _fac(m):
+    return m.get('pbrMetallicRoughness', {}).get('baseColorFactor', [1, 1, 1, 1])
+_gm = next((m for k, m in mats.items() if 'guoluo' in k), None)
+_fascia_mats = [mn for n_ in meshes if n_['name'].startswith('fascia__') for mn in n_.get('mats', [])]
+if _gm is None:
+    skip('test13a 挂落', '无挂落材质')
+else:
+    img = _img_of_material(_gm).convert('RGBA')
+    px = [q for q in img.getdata() if q[3] >= 128]
+    fill = len(px) / (img.width * img.height)
+    def _l(c):
+        c = c / 255.0
+        return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+    texel = [sum(_l(q[i]) for q in px) / max(1, len(px)) for i in range(3)]     # 棂条贴图本身的颜色（R2 把金色烘在贴图里）
+    back_name = next((mn for mn in _fascia_mats if 'guoluo' not in mn and 'gild' not in mn and 'caihua' not in mn), None)
+    bm_ = mats.get(back_name, {}) if back_name else {}
+    back_l = _lum(_fac(bm_)) * (0.35 if 'baseColorTexture' in bm_.get('pbrMetallicRoughness', {}) else 1.0)   # 木纹贴图均值约 0.35
+    gold = _lum([f * t for f, t in zip(_fac(_gm), texel)])
+    eff = fill * gold + (1 - fill) * back_l
+    ok('test13a 挂落描金带等效反照率 %.3f ≥ 0.15（棂条覆盖 %.2f、金 %.3f、衬底 %s %.3f）' % (eff, fill, gold, back_name, back_l),
+       eff >= 0.15)
+# test13c 挂落 / 彩画带整条在一层檐口外缘下沿以下（高于这条线的墙面从街道眼高永远被檐口挡住）：
+# 檐口下沿 = 一层层顶 − (drop + tileH + boardH)，一层层高与檐口参数取 params（输入），带的标高取 GLB 实测
+_h1 = PRM['massing']['storeyHeightsM'][0]
+_ek = dict(PRM['eaveKit']); _ek.update((PRM.get('eaveKitByStorey') or {}).get('1', {}))
+_lip = _h1 - (_ek['drop'] + _ek['tileH'] + _ek['boardH'])
+_bands = [v[1] for n_ in meshes if n_['name'].startswith('fascia__') and any(k in mn for mn in n_.get('mats', []) for k in ('guoluo', 'caihua'))
+          for v in world_verts(n_)]
+if _bands:
+    ok('test13c 挂落 / 彩画带顶 %.2f m ≤ 一层檐口下沿 %.2f m（街道眼高看得见）' % (max(_bands), _lip), max(_bands) <= _lip + 0.005)
+else:
+    skip('test13c 挂落 / 彩画带', '无 fascia 挂落 / 彩画带')
+_glm = next((m for k, m in mats.items() if 'glass' in k), None)
+if _glm is None:
+    skip('test13b 店面玻璃', '无玻璃材质')
+else:
+    al = _fac(_glm)[3]
+    sb = next((m for k, m in mats.items() if 'shopback' in k), None)
+    if sb:
+        behind = _lum(_fac(sb)) + _lum(sb.get('emissiveFactor', [0, 0, 0]))
+        what = 'shopback'
+    else:
+        wm_ = next((m for k, m in mats.items() if k.startswith('btk-wall')), {})
+        behind = _lum(_fac(wm_)) * 0.8 if wm_ else 0.0            # 抹灰贴图均值约 0.8
+        what = 'wall'
+    eff = al * _lum(_fac(_glm)) + (1 - al) * behind
+    ok('test13b 底层玻璃等效亮度 %.3f ≥ 0.20（α %.2f、玻璃 %.3f、后衬 %s %.3f）' % (eff, al, _lum(_fac(_glm)), what, behind), eff >= 0.20)
+
 print('\ntest_tower: %d pass, %d fail, %d skip' % (pass_n, fail_n, skip_n))
 if fail_n:
     for f in failures:
