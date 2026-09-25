@@ -1,10 +1,10 @@
-// 三穗堂 × 仰山堂 贴合闸门（wave2-sansuitang S2，主控 2026-09-25 定）。只量总装产物 OUT_DIR/garden.glb 的实际几何，
+// 三穗堂 × 仰山堂 贴合闸门（wave2-sansuitang S2，主控 2026-09-25 第三版定义）。只量总装产物 OUT_DIR/garden.glb 的实际几何，
 // footprint 只从 baseline/layout.json 取；默认构建（仰山堂 = 程序化占位）与 HALL_KIT=1（仰山堂 = hall-kit 模块）都适用。
-//   (a) 三穗堂墙体 / 台基 / 柱枋（网格件前缀 hall-wall / hall-base / hall-frame）全部顶点在 footprint 外扩 0.3 m 内；
-//   (b) 两座楼的墙体 / 台基 / 柱 / 体块（非屋面件）之间 0 对三角形相交；
-//   (c) 牵涉屋面 / 檐口件（三穗堂 hall-roof*、hall-kit hall-roof*、程序化 |roofpart）的三角形相交逐对报告（数量 + 位置），目标 0；
-//       若 >0，另报共用边上两座楼屋面的实测高度（竖直射线命中的最低 / 最高屋面 y）。
-// 分件规则只看网格件名，不看模块自报尺寸。
+//   G1 三穗堂任何网格件的任何三角形都不越过「共用边线」北侧 0.02 m 以上
+//      （共用边 = 三穗堂 footprint 上两端点都落在仰山堂 footprint 边界上的边；线 = 过其两端点的直线，不截断）；
+//   G2 自由三边外伸 ≤ 2.0 m：三穗堂全部顶点到 footprint 的外侧距离 ≤ 2.0 m；
+//   R  与仰山堂网格的剩余三角形相交只报告不判失败（仰山堂一侧由 hall-kit 工单处理），
+//      另报仰山堂网格越过共用边线进入三穗堂一侧的深度（程序化占位台基外扩 0.45 m 为已知项）。
 // 用法：OUT_DIR=out-zone [HALL_KIT=1] node tests/sansuitang-fit-test.mjs（REPORT=<json> 另写报告）
 import fs from 'node:fs';
 import path from 'node:path';
@@ -15,7 +15,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
 const LAYOUT = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline', 'layout.json'), 'utf8'));
 const SST_ID = 'bld-428179901', YS_ID = 'bld-428179902';
-const MARGIN = 0.3;
+const EDGE_TOL = 0.02, FREE_CAP = 2.0;
 
 let pass = 0, fail = 0;
 const failures = [];
@@ -157,19 +157,54 @@ const isRoof = (name) => /^hall-roof/.test(name) || /^roofpart:/.test(name);
 const partClass = (name) => (isRoof(name) ? 'roof' : 'body');
 console.log(`仰山堂 = ${ysMode}；三穗堂 ${sParts.length} 件（屋面 ${sParts.filter((p) => isRoof(p.name)).length}），仰山堂 ${yParts.length} 件（屋面 ${yParts.filter((p) => isRoof(p.name)).length}）`);
 
-// ---------- (a) 三穗堂墙体 / 台基 / 柱枋 在 footprint + 0.3 m 内 ----------
-const closed = [...sfp, sfp[0]];
-const fitParts = [];
-for (const p of sParts.filter((q) => /^hall-(wall|base|frame)/.test(q.name))) {
-  let maxEx = 0, n = 0, where = null;
-  for (const v of p.verts) {
-    if (pointInPoly([v[0], v[2]], sfp)) continue;
-    const e = distToPolyline([v[0], v[2]], closed) - MARGIN;
-    if (e > 1e-3) { n++; if (e > maxEx) { maxEx = e; where = v; } }
-  }
-  fitParts.push({ part: p.name, vertsOutside: n, maxBeyondM: +maxEx.toFixed(3), worst: where && where.map((x) => +x.toFixed(2)) });
-  ok(`(a) ${p.name} 在 footprint+${MARGIN} m 内（超出 ${maxEx.toFixed(2)} m，${n} 顶点）`, n === 0, where ? `worst=(${where.map((x) => x.toFixed(2))})` : '');
+// ---------- 共用边线（layout 重算） ----------
+const yClosed = [...yfp, yfp[0]];
+const shared = [];
+for (let i = 0; i < sfp.length; i++) {
+  const a = sfp[i], b = sfp[(i + 1) % sfp.length];
+  if (distToPolyline(a, yClosed) < 0.05 && distToPolyline(b, yClosed) < 0.05) shared.push([a, b]);
 }
+ok(`layout 有三穗堂/仰山堂共用边（${shared.length} 段）`, shared.length > 0);
+const E0 = shared[0][0], E1 = shared[shared.length - 1][1];
+const eL = Math.hypot(E1[0] - E0[0], E1[1] - E0[1]);
+let nrm = [-(E1[1] - E0[1]) / eL, (E1[0] - E0[0]) / eL];
+{ // 法线指向三穗堂一侧（footprint 顶点均值）
+  const mx = sfp.reduce((t, q) => t + q[0], 0) / sfp.length, mz = sfp.reduce((t, q) => t + q[1], 0) / sfp.length;
+  if ((mx - E0[0]) * nrm[0] + (mz - E0[1]) * nrm[1] < 0) nrm = [-nrm[0], -nrm[1]];
+}
+const north = (x, z) => -((x - E0[0]) * nrm[0] + (z - E0[1]) * nrm[1]); // >0 = 越过共用边线进入仰山堂一侧
+console.log(`共用边线 (${E0}) → (${E1})，指向三穗堂的法线 (${nrm.map((t) => t.toFixed(4))})`);
+
+// ---------- G1 / G2 ----------
+const closed = [...sfp, sfp[0]];
+const perPart = [];
+let g1Max = -Infinity, g1Where = null, g2Max = 0, g2Where = null;
+for (const p of sParts) {
+  let pn = -Infinity, pf = 0, nOver = 0;
+  for (const v of p.verts) {
+    const d = north(v[0], v[2]);
+    if (d > pn) pn = d;
+    if (d > EDGE_TOL) nOver++;
+    if (d > g1Max) { g1Max = d; g1Where = { part: p.name, v }; }
+    const out = pointInPoly([v[0], v[2]], sfp) ? 0 : distToPolyline([v[0], v[2]], closed);
+    if (out > pf) pf = out;
+    if (out > g2Max) { g2Max = out; g2Where = { part: p.name, v }; }
+  }
+  perPart.push({ part: p.name, maxNorthOfSharedEdgeM: +pn.toFixed(3), vertsBeyondTol: nOver, maxOutsideFootprintM: +pf.toFixed(3) });
+}
+for (const r of perPart) if (r.vertsBeyondTol) console.log('  G1 越线件', JSON.stringify(r));
+ok(`G1 三穗堂全部三角形不越过共用边线北侧 ${EDGE_TOL} m（最大 ${g1Max.toFixed(3)} m）`, g1Max <= EDGE_TOL,
+  g1Where ? `${g1Where.part} @ (${g1Where.v.map((t) => t.toFixed(2))})` : '');
+const overCap = perPart.filter((r) => r.maxOutsideFootprintM > FREE_CAP);
+for (const r of overCap) console.log('  G2 超 2.0 m 件', JSON.stringify(r));
+ok(`G2 自由边外伸 ≤ ${FREE_CAP} m（最大 ${g2Max.toFixed(2)} m）`, g2Max <= FREE_CAP,
+  g2Where ? `${g2Where.part} @ (${g2Where.v.map((t) => t.toFixed(2))})` : '');
+// 仰山堂网格越过共用边线进入三穗堂一侧的深度（报告项）
+const ysIntrusion = yParts.map((p) => {
+  let m = -Infinity, y = null;
+  for (const v of p.verts) { const d = -north(v[0], v[2]); if (d > m) { m = d; y = v[1]; } }
+  return { part: p.name, maxIntoSansuitangM: +m.toFixed(3), atY: y == null ? null : +y.toFixed(2) };
+}).filter((r) => r.maxIntoSansuitangM > EDGE_TOL);
 
 // ---------- 三角形相交（双向：边对三角形） ----------
 function segTri(p0, p1, a, b, c) {
@@ -211,19 +246,10 @@ function summarize(list) {
 const bodyHits = summarize(hits.body), roofHits = summarize(hits.roof);
 console.log('(b) body×body', JSON.stringify(bodyHits));
 console.log('(c) roof/eave', JSON.stringify(roofHits));
-ok(`(b) 墙体/台基/柱/体块 0 对三角形相交（${bodyHits.pairs}）`, bodyHits.pairs === 0, JSON.stringify(bodyHits.byPair));
-ok(`(c) 屋面/檐口 0 对三角形相交（${roofHits.pairs}）`, roofHits.pairs === 0, JSON.stringify(roofHits.byPair));
+console.log(`R 与仰山堂剩余相交（只报告）：非屋面件 ${bodyHits.pairs} 对，涉及屋面/檐口 ${roofHits.pairs} 对`);
+console.log('R 仰山堂越线进入三穗堂一侧：', JSON.stringify(ysIntrusion));
 
-// ---------- (c) 附：共用边上两座楼屋面实测高度 ----------
-function sharedEdges() {
-  const yc = [...yfp, yfp[0]];
-  const out = [];
-  for (let i = 0; i < sfp.length; i++) {
-    const a = sfp[i], b = sfp[(i + 1) % sfp.length];
-    if (distToPolyline(a, yc) < 0.05 && distToPolyline(b, yc) < 0.05) out.push([a, b]);
-  }
-  return out;
-}
+// ---------- 附：共用边上两座楼屋面实测高度（报告项） ----------
 function rayY(tris, x, z) { // 竖直线 (x, z) 与三角形的全部交点 y
   const ys = [];
   for (const T of tris) {
@@ -239,7 +265,7 @@ function rayY(tris, x, z) { // 竖直线 (x, z) 与三角形的全部交点 y
   }
   return ys;
 }
-const edges = sharedEdges();
+const edges = shared;
 const eaveAtShared = [];
 for (const [a, b] of edges) {
   const L = Math.hypot(b[0] - a[0], b[1] - a[1]);
@@ -254,8 +280,11 @@ console.log(`共用边 ${edges.length} 段；屋面在共用边上的实测 y：
 
 if (process.env.REPORT) {
   fs.writeFileSync(process.env.REPORT, JSON.stringify({ out: OUT, yangshantang: ysMode, pass, fail, failures,
-    a_footprintFit: fitParts, b_bodyIntersections: bodyHits, c_roofIntersections: roofHits,
-    sharedEdges: edges, roofYAtSharedEdge: { sansuitang: rng('sansuitangRoofY'), yangshantang: rng('yangshantangRoofY'), samples: eaveAtShared } }, null, 1));
+    sharedEdgeLine: { from: E0, to: E1, normalIntoSansuitang: nrm },
+    G1: { maxNorthM: +g1Max.toFixed(4), where: g1Where && { part: g1Where.part, v: g1Where.v.map((t) => +t.toFixed(3)) }, tol: EDGE_TOL },
+    G2: { maxOutsideFootprintM: +g2Max.toFixed(3), where: g2Where && { part: g2Where.part, v: g2Where.v.map((t) => +t.toFixed(3)) }, cap: FREE_CAP },
+    perPart, reportOnly: { bodyIntersections: bodyHits, roofIntersections: roofHits, yangshantangIntrusion: ysIntrusion,
+      roofYAtSharedEdge: { sansuitang: rng('sansuitangRoofY'), yangshantang: rng('yangshantangRoofY') } } }, null, 1));
 }
 console.log(`\nsansuitang-fit-test: ${pass} pass, ${fail} fail (仰山堂=${ysMode}, OUT=${path.basename(OUT)})`);
 if (fail > 0) { for (const f of failures) console.log('  FAIL:', f); process.exit(1); }

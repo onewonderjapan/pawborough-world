@@ -120,6 +120,54 @@ export function minAreaRect(ptsIn) {
   return { center: [x1 + cu * ux - cv * uy, y1 + cu * uy + cv * ux], axis: [ux, uy], lenU: u1 - u0, lenV: v1 - v0, area: best.area };
 }
 
+// 两个 footprint 的共用边线：A 上两端点都落在 B 边界（tol 内）的边，取首段起点→末段终点；
+// n = 指向 A 一侧的单位法线。无共用边返回 null。
+export function sharedEdgeLine(fpA, fpB, tol = 0.05) {
+  const ring = (f) => (f.length > 1 && f[0][0] === f[f.length - 1][0] && f[0][1] === f[f.length - 1][1] ? f.slice(0, -1) : f);
+  const A = ring(fpA), B = ring(fpB);
+  const Bc = [...B, B[0]];
+  const segs = [];
+  for (let i = 0; i < A.length; i++) {
+    const a = A[i], b = A[(i + 1) % A.length];
+    if (distToPolyline(a, Bc) < tol && distToPolyline(b, Bc) < tol) segs.push([a, b]);
+  }
+  if (!segs.length) return null;
+  const a = segs[0][0], b = segs[segs.length - 1][1];
+  const L = Math.hypot(b[0] - a[0], b[1] - a[1]);
+  let n = [-(b[1] - a[1]) / L, (b[0] - a[0]) / L];
+  const mx = A.reduce((s, q) => s + q[0], 0) / A.length, mz = A.reduce((s, q) => s + q[1], 0) / A.length;
+  if ((mx - a[0]) * n[0] + (mz - a[1]) * n[1] < 0) n = [-n[0], -n[1]];
+  return { a, b, n, segments: segs };
+}
+
+// 实例模块放置锚点（三穗堂，wave2-sansuitang 主控 2026-09-25）：
+// 先取 footprint 最小面积外接矩形中心，再沿 facade.dir 平移最小量 shift ≥ 0，使模块后墙外皮
+// （本地 z = backZ，本地 x ∈ ±backHalfX；取自模块 collision.json 的 rear-wall 盒）落在与邻楼共用边线上或其内侧。
+// 本地→世界与 assemble.py 同式：rotY = atan2(fx, fz)，本地 +X → (fz, −fx)，本地 +Z → (fx, fz)。
+// Python 侧同式见 scripts/assemble.py sansuitang_anchor。
+export function anchorBehindSharedEdge(fp, neighbourFp, facadeDir, backZ, backHalfX) {
+  const rect = minAreaRect(fp);
+  const l = Math.hypot(facadeDir[0], facadeDir[1]);
+  const f = [facadeDir[0] / l, facadeDir[1] / l], r = [f[1], -f[0]];
+  const edge = neighbourFp ? sharedEdgeLine(fp, neighbourFp) : null;
+  let shift = 0;
+  if (edge) {
+    const fn = f[0] * edge.n[0] + f[1] * edge.n[1];
+    for (const u of [-backHalfX, backHalfX]) {
+      const P = [rect.center[0] + u * r[0] + backZ * f[0], rect.center[1] + u * r[1] + backZ * f[1]];
+      const d = (P[0] - edge.a[0]) * edge.n[0] + (P[1] - edge.a[1]) * edge.n[1]; // <0 = 越线
+      if (d < 0 && fn > 1e-6) shift = Math.max(shift, -d / fn);
+    }
+  }
+  return { rectCentre: rect.center, shift, anchor: [rect.center[0] + shift * f[0], rect.center[1] + shift * f[1]], edge };
+}
+// 模块 collision.json → 后墙外皮（本地 z 最小面）与半宽
+export function rearWallFace(collision) {
+  const w = collision.colliders.filter((c) => c.name === 'rear-wall');
+  if (!w.length) throw new Error('module collision has no rear-wall collider');
+  return { backZ: Math.min(...w.map((c) => c.center[2] - c.size[2] / 2)), backHalfX: Math.max(...w.map((c) => Math.abs(c.center[0]) + c.size[0] / 2)) };
+}
+
 // 主方向（PCA 简化：协方差主轴），返回 [dirX, dirZ, len, width, angle]
 export function principalAxis(pts) {
   const c = centroid(pts);

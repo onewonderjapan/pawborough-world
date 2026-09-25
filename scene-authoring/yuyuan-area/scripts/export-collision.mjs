@@ -11,7 +11,7 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { obbToWorld } from '../../../src/world/collisionAdapter.js';
 import { readGlb } from '../../../src/world/glbReader.js';
-import { dropFloatingSegments, minAreaRect } from '../src/lib.mjs';
+import { dropFloatingSegments, anchorBehindSharedEdge, rearWallFace } from '../src/lib.mjs';
 
 const AREA = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(AREA, process.env.OUT_DIR || 'out');
@@ -193,11 +193,14 @@ for (const pid of PAVILIONS) {
   stats.modulesRecomputed[pid] = { pos: [cx, cz], rotY };
 }
 
-// ---------- 5) 三穗堂（modules/sansuitang 局部记录 + layout 最小面积外接矩形中心/facade 位姿，复核 OUT 世界记录） ----------
-// 锚点 = footprint 最小面积外接矩形中心（wave2-sansuitang，与 assemble.py 同式；此前为顶点均值形心）。
+// ---------- 5) 三穗堂（modules/sansuitang 局部记录 + layout 锚点/facade 位姿，复核 OUT 世界记录） ----------
+// 锚点 = footprint 最小面积外接矩形中心 + 沿 facade.dir 使后墙外皮不越过与仰山堂共用边线的最小平移
+//（wave2-sansuitang，与 assemble.py 同式；此前为顶点均值形心）。
 {
   const o = layout.objects.find(x => x.id === SANSUITANG_ID);
-  const [cx, cz] = minAreaRect(ring(o.geometry.footprint)).center;
+  const nb = layout.objects.find(x => x.id === 'bld-428179902');
+  const { backZ, backHalfX } = rearWallFace(sansuitangLocal);
+  const [cx, cz] = anchorBehindSharedEdge(o.geometry.footprint, nb && nb.geometry.footprint, o.facade.dir, backZ, backHalfX).anchor;
   const d = o.facade.dir;
   const rotY = Math.atan2(d[0], d[1]);
   const c = Math.cos(rotY), s = Math.sin(rotY);

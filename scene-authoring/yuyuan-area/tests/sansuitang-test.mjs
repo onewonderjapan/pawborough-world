@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateBytes } from 'gltf-validator';
-import { minAreaRect } from '../src/lib.mjs';
+import { minAreaRect, anchorBehindSharedEdge, rearWallFace } from '../src/lib.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
@@ -169,11 +169,15 @@ const obj = LAYOUT.objects.find((o) => o.id === SST_ID);
 if (!obj) { console.log('FAIL layout has no', SST_ID); process.exit(1); }
 const fpRaw = obj.geometry.footprint;
 const fp = fpRaw[0][0] === fpRaw[fpRaw.length - 1][0] && fpRaw[0][1] === fpRaw[fpRaw.length - 1][1] ? fpRaw.slice(0, -1) : fpRaw;
-// 锚点 = footprint 最小面积外接矩形中心（wave2-sansuitang 主控 2026-09-25；此前为顶点均值形心）
-const [cx, cz] = minAreaRect(fp).center;
+// 锚点（wave2-sansuitang 主控 2026-09-25；此前为顶点均值形心）= footprint 最小面积外接矩形中心
+// + 沿 facade.dir 使模块后墙外皮不越过与仰山堂共用边线的最小平移（后墙外皮取自 modules/sansuitang/collision.json rear-wall）
+const SST_COLL = JSON.parse(fs.readFileSync(path.join(ROOT, 'modules', 'sansuitang', 'collision.json'), 'utf8'));
+const { backZ, backHalfX } = rearWallFace(SST_COLL);
+const anc = anchorBehindSharedEdge(fp, LAYOUT.objects.find((o) => o.id === 'bld-428179902').geometry.footprint, obj.facade.dir, backZ, backHalfX);
+const [cx, cz] = anc.anchor;
 const [dx, dz] = obj.facade.dir;
 const wantRotY = Math.atan2(dx, dz);
-console.log(`layout 重算：minAreaRect centre=(${cx.toFixed(3)}, ${cz.toFixed(3)})  rotY=${wantRotY.toFixed(4)}  facade.dir=(${dx.toFixed(4)},${dz.toFixed(4)})`);
+console.log(`layout 重算：矩形中心 (${anc.rectCentre.map((t) => t.toFixed(3))}) + ${anc.shift.toFixed(3)} m → 锚点 (${cx.toFixed(3)}, ${cz.toFixed(3)})  rotY=${wantRotY.toFixed(4)}  facade.dir=(${dx.toFixed(4)},${dz.toFixed(4)})`);
 
 // ---------- 1) 总装 garden.glb 锚点实测 ----------
 const garden = parseGlb(path.join(OUT, 'garden.glb'));
@@ -185,28 +189,18 @@ if (testOk) {
   const t = n.translation || [0, 0, 0];
   const q = n.rotation || [0, 0, 0, 1];
   const dist = Math.hypot(t[0] - cx, t[2] - cz);
-  ok(`锚点位置 = footprint 最小面积外接矩形中心（偏差 ${dist.toFixed(3)} m ≤ 0.5）`, dist <= 0.5, `got (${t[0].toFixed(2)}, ${t[2].toFixed(2)})`);
+  ok(`锚点位置 = 矩形中心+共用边平移（偏差 ${dist.toFixed(3)} m ≤ 0.5）`, dist <= 0.5, `got (${t[0].toFixed(2)}, ${t[2].toFixed(2)})`);
   // glTF 四元数绕 +Y：θ = 2*atan2(qy, qw)；R(θ)·(0,0,1) = (sinθ, 0, cosθ)
   const yaw = 2 * Math.atan2(q[1], q[3]);
   const fx = Math.sin(yaw), fz = Math.cos(yaw);
   const ang = Math.acos(Math.max(-1, Math.min(1, (fx * dx + fz * dz) / Math.hypot(dx, dz)))) * 180 / Math.PI;
   ok(`锚点朝向 vs facade.dir（夹角 ${ang.toFixed(2)}° ≤ 5）`, ang <= 5, `yaw=${yaw.toFixed(4)}`);
 
-  // 2) 子树几何实测：世界坐标平面包围盒中心 vs 矩形中心；尺寸量级核对
+  // 2) 子树几何实测：逆旋转回模块本地系（相对 layout 重算锚点）量范围 —— 横向居中、后缘 = 后墙外皮、尺寸量级
+  //    （wave2 背面收齐后模块前后不对称：前缘到踏步 ~+8.93，后缘 = 后墙外皮 rear-wall 盒 z 最小面 ~−7.23）
   const verts = garden.subtreeVerts(SST_ID);
   ok('bld-428179901 子树有几何', !!verts && verts.length > 1000, `verts=${verts ? verts.length : 0}`);
-  if (process.env.SST_DEBUG) {
-    let wx0 = 1e9, wx1 = -1e9, wz0 = 1e9, wz1 = -1e9;
-    for (const v of verts) { wx0 = Math.min(wx0, v[0]); wx1 = Math.max(wx1, v[0]); wz0 = Math.min(wz0, v[2]); wz1 = Math.max(wz1, v[2]); }
-    console.log('DEBUG verts', verts.length, 'world x', wx0.toFixed(2), wx1.toFixed(2), 'z', wz0.toFixed(2), wz1.toFixed(2), 'wantRotY', wantRotY.toFixed(4), 'c', cx.toFixed(3), cz.toFixed(3));
-  }
   if (verts && verts.length) {
-    let x0 = 1e9, x1 = -1e9, z0 = 1e9, z1 = -1e9;
-    for (const v of verts) { x0 = Math.min(x0, v[0]); x1 = Math.max(x1, v[0]); z0 = Math.min(z0, v[2]); z1 = Math.max(z1, v[2]); }
-    const bcx = (x0 + x1) / 2, bcz = (z0 + z1) / 2;
-    const d = Math.hypot(bcx - cx, bcz - cz);
-    ok(`实际几何平面中心 vs 矩形中心（偏差 ${d.toFixed(3)} m ≤ 0.5）`, d <= 0.5, `bbox=(${bcx.toFixed(2)}, ${bcz.toFixed(2)})`);
-    // 逆旋转回模块本地系再量尺寸（世界 AABB 会随朝向变大，不能直接比）
     let u0 = 1e9, u1 = -1e9, v0 = 1e9, v1 = -1e9;
     const ct = Math.cos(-wantRotY), st = Math.sin(-wantRotY);
     for (const v of verts) {
@@ -214,8 +208,11 @@ if (testOk) {
       const ux = rx * ct + rz * st, vz = -rx * st + rz * ct;
       u0 = Math.min(u0, ux); u1 = Math.max(u1, ux); v0 = Math.min(v0, vz); v1 = Math.max(v1, vz);
     }
+    if (process.env.SST_DEBUG) console.log('DEBUG local u', u0.toFixed(3), u1.toFixed(3), 'v', v0.toFixed(3), v1.toFixed(3));
+    ok(`实际几何横向居中于锚点（偏差 ${((u0 + u1) / 2).toFixed(3)} m ≤ 0.1）`, Math.abs((u0 + u1) / 2) <= 0.1);
+    ok(`实际几何后缘 = 后墙外皮（${v0.toFixed(3)} vs ${backZ.toFixed(3)}，≤ 0.05）`, Math.abs(v0 - backZ) <= 0.05);
     const w = u1 - u0, dep = v1 - v0;
-    ok(`实际几何本地系尺寸（${w.toFixed(1)} × ${dep.toFixed(1)} m，预期 ~19.7 × ~17.3 ±1.2）`, w > 18.5 && w < 20.9 && dep > 16.1 && dep < 18.5);
+    ok(`实际几何本地系尺寸（${w.toFixed(1)} × ${dep.toFixed(1)} m，预期 ~19.7 ±1.2 × ~16.2 ±0.6）`, w > 18.5 && w < 20.9 && dep > 15.6 && dep < 16.8);
   }
 }
 

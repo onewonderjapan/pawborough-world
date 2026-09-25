@@ -31,3 +31,13 @@
 
 ## 已知取舍
 山花仍为平三角面（无博风板/悬鱼，灰模冻结取舍）；吻为四段递进体块（非雕件）；门为关闭状态（实心背板 + alpha 格心，不透室内）；椽头在翘角区随檐口起翘、角部有交叠。
+
+## wave2-sansuitang 背面收齐（2026-09-25，主控决定）
+三穗堂改为坐北朝南（layout 覆盖，常识判断，**未核实**）后，后墙背靠与仰山堂的共用边。主控定：只改背面，前面与两侧不动。
+- `plinthOutBack=0.18`：台基（及台基压顶）后缘与后墙外皮齐平（原同侧面外挑 0.6 m）；背面下檐檐枋收到后墙外皮以内。
+- `lowerOverBack=0.0`（从 ZB 量）、`upperOverBack=0.2`（从 UZB 量）：上下檐背面檐口线收进墙厚以内，背面封檐板 / 椽头 / 瓦当滴水不做；
+  檐口环在原点横截面后第一个采样点以后按比例压缩，此前的所有点不动。
+- 前半（GLB 本地 z ≥ 0）11,405 个三角形的位置、法线、UV 与 2026-09-23 版逐一相同（证明见工单包 `artifacts/s2/module-new/front-half-proof.json`）；
+  原点（REANCHOR 6.65）不变。三角 22,114 → 18,226，validator 0 错。
+- 放置：`assemble.py` 锚点 = footprint 最小面积外接矩形中心 + 沿 facade.dir 的最小平移，使后墙外皮（`collision.json` rear-wall）不越过共用边线（`src/lib.mjs anchorBehindSharedEdge`）。
+- 管线输入 = `out-garden-kits/sansuitang-bld-428179901/`（`build.py -- --out <该目录>` 生成，按 sha 清单登记）。本目录的 `model.glb` / `model.blend` / `shots/` / `validation.json` / `reimport.json` 仍是 2026-09-23 版（LFS 历史件，未重出）；`collision.json` / `measurements.json` / `recipe.json` 已同步为新版。

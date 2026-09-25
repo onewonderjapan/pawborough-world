@@ -3,13 +3,21 @@
 檐下椽头与檐枋、瓦当滴水、正脊吻/垂脊/戗脊收头。材质走 source-kit：灰瓦 / 深红栗木 tint 6a2e22 / 白墙 / 青石。
 坐标契约：GLB Y-up，立面 +Z 朝园水。灰模原点 = 前廊柱列中心；本模块导出前整体 +Z 平移 REANCHOR，
 使原点 = 台基外包平面中心（assemble 直接把原点放在 layout footprint 形心）。碰撞 JSON 同步平移（实例/本地坐标）。
-预算 ≤32k tris。运行：blender -b -t 4 --python-exit-code 1 modules/sansuitang/build.py
+预算 ≤32k tris。运行：blender -b -t 4 --python-exit-code 1 -P modules/sansuitang/build.py [-- --out <dir>]
+（--out 缺省 = 本目录；管线输入是 out-garden-kits/sansuitang-bld-428179901/，按 sha 清单登记，不进 LFS。）
+wave2-sansuitang（主控 2026-09-25）：只改背面——三穗堂背靠仰山堂共用边，背面任何构件不得越过后墙外皮。
+  plinthOutBack：台基后缘与后墙外皮齐平（原同侧面 0.6 m）；lowerOverBack / upperOverBack：上下檐背面出檐
+  （从 ZB / UZB 量；背面檐口线收进墙厚内，背面檐口饰件与封檐板不做）。背面檐口环点在 z < PIVOT（= 原点所在横截面，
+  GLB 本地 z<0）的一段按比例压缩，前半（本地 z ≥ 0）所有顶点不变；REANCHOR 保持 6.65 不变（原点不动，前半逐顶点不变）。
 """
 import bpy,bmesh,sys,math,json,time,os
 from pathlib import Path
 from mathutils import Vector,Matrix
 T0=time.time();ROOT=Path(__file__).resolve().parent;sys.path.insert(0,str(ROOT))
-from helpers import box_glb,glb_to_blender
+_argv=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
+OUTD=Path(_argv[_argv.index('--out')+1]).resolve() if '--out' in _argv else ROOT
+OUTD.mkdir(parents=True,exist_ok=True)
+from helpers import box_glb,glb_to_blender,blender_to_glb
 
 TEX_DIRS=[os.path.abspath(os.path.join(ROOT,'..','..','..','..','..','asset-authoring','yuyuan-entry','source-kit','textures')),
           '/home/baibai/work/onewonderjapan/pawborough-world/asset-authoring/yuyuan-entry/source-kit/textures']
@@ -19,8 +27,11 @@ if not TEX_DIR:raise RuntimeError('source-kit textures not found')
 bpy.ops.wm.read_factory_settings(use_empty=True);sc=bpy.context.scene
 D=dict(bays=[3.2,3.4,3.8,3.4,3.2],W=17.0,porch=2.4,bodyDepth=11.3,plinth=0.55,plinthOutFront=1.0,plinthOutSide=0.6,
  colFrontD=0.30,colH=3.4,lowerEave=4.35,lowerOver=1.1,lowerTop=5.6,upperWallIn=0.5,upperEave=6.6,upperOver=1.2,ridge=9.4,
- gableX=6.2,gableBreakY=7.9,cornerLift=0.45,cornerReach=1.6,eaveSag=0.05)
-REANCHOR=6.65   # 灰模原点(前廊柱列) -> 台基外包平面中心: 前缘 +1.0, 后缘 -13.7-0.6=-14.3, 中心 (1.0-14.3)/2=-6.65
+ gableX=6.2,gableBreakY=7.9,cornerLift=0.45,cornerReach=1.6,eaveSag=0.05,
+ plinthOutBack=0.18,lowerOverBack=0.0,upperOverBack=0.2)
+REANCHOR=6.65   # 灰模原点(前廊柱列) -> 原台基外包平面中心: 前缘 +1.0, 后缘 -13.7-0.6=-14.3, 中心 (1.0-14.3)/2=-6.65
+                # （wave2 背面收齐后台基后缘改为 -13.88，原点仍保持此值：前半几何逐顶点不变）
+PIVOT=-REANCHOR # 背面檐口环压缩的支点（灰模 z；前半 z>=PIVOT 不动）
 RECIPE={'base':'lead grey model (reference-greymodel-build.py), frozen section unchanged',
  'designValues':D,
  'refinements':['lattice-door-cores (analytic alpha texture x1)','side-bay rail wangzhu+lanban','eave rafters + 檐枋',
@@ -30,7 +41,8 @@ RECIPE={'base':'lead grey model (reference-greymodel-build.py), frozen section u
               'whiteWall':{'base':'PaintedPlaster017_2K-JPG_Color_1K.jpg','tint':'f2efe8','tile':[2.2,2.2]},
               'blueStone':{'base':'Bricks061_2K-JPG_Color_1K.jpg','tint':'8b9089','tile':[2.0,1.0]},
               'latticeCore':{'alpha':'textures/lattice-core-alpha.png','cellM':0.125,'alphaMode':'MASK'}},
- 'reanchor':{'from':'front colonnade centre (lead grey model)','to':'plan centre of plinth extents','shiftGlbZ':REANCHOR},
+ 'reanchor':{'from':'front colonnade centre (lead grey model)','to':'plan centre of the pre-wave2 plinth extents (kept fixed)','shiftGlbZ':REANCHOR},
+ 'backSide':{'decision':'wave2-sansuitang lead 2026-09-25: back only; nothing may cross the shared edge with 仰山堂','plinthOutBack':'flush with rear wall outer face','lowerOverBack':'from ZB','upperOverBack':'from UZB','backEaveDressing':False,'frontHalfUnchanged':'every triangle lying entirely at local z>=0 (position, normal, UV) identical to the 2026-09-23 build'},
  'textureDir':TEX_DIR}
 META={};COLL=[];GROUP='hall'
 MAT_TILE={}
@@ -85,7 +97,7 @@ def make_lattice_image():
    else:px[k],px[k+1],px[k+2],px[k+3]=255,255,255,0
  img=bpy.data.images.new('lattice-core-alpha',W,H,alpha=True)
  img.pixels=[v/255.0 for v in px]
- out=ROOT/'textures'/'lattice-core-alpha.png';out.parent.mkdir(exist_ok=True)
+ out=OUTD/'textures'/'lattice-core-alpha.png';out.parent.mkdir(exist_ok=True)
  img.filepath_raw=str(out);img.file_format='PNG';img.save()
  img.pack()
  m=bpy.data.materials.new('sst-lattice-core');m.use_nodes=True
@@ -108,6 +120,22 @@ def box(name,c,s,m='wall',bevel=0,collision=False,tile=None):
  if collision:COLL.append({'name':name,'center':list(c),'size':list(s),'type':'box'})
  return o
 def rng(name,x0,x1,y0,y1,z0,z1,m='wall',bevel=0,collision=False):return box(name,((x0+x1)/2,(y0+y1)/2,(z0+z1)/2),(abs(x1-x0),abs(y1-y0),abs(z1-z0)),m,bevel,collision)
+def trim_back(o,z_old,z_new):
+ """wave2 背面收齐：盒按原尺寸建（对象原点不变 → 合并时其余顶点的浮点运算与旧构建逐位相同），
+ 再只把 GLB z==z_old 的背面顶点移到 z_new，并按 box_glb 同式重算这些顶点所在 loop 的 UV。"""
+ me=o.data;loc=o.location;c=Vector(o['design_glb_center']);tile=o['uv_tile_m'];moved=set()
+ for vv in me.vertices:
+  if abs(-(loc.y+vv.co.y)-z_old)<1e-6:vv.co.y=-z_new-loc.y;moved.add(vv.index)
+ me.update();uv=me.uv_layers['UVMap']
+ for f in me.polygons:
+  n=blender_to_glb(f.normal);axis=max(range(3),key=lambda i:abs(n[i]))
+  for li in f.loop_indices:
+   vi=me.loops[li].vertex_index
+   if vi not in moved:continue
+   q=blender_to_glb(me.vertices[vi].co)+c
+   u,v=((-q.z,q.y) if axis==0 else (q.x,-q.z) if axis==1 else (q.x,q.y))
+   uv.data[li].uv=(u/tile[0],v/tile[1])
+ return o
 
 def mesh_uv(name,items,faces,m,smooth=False):
  """items=[(glb_vert,(u,v))]; Blender 坐标转换后建 mesh。"""
@@ -159,8 +187,9 @@ W=D['W'];hw=W/2;P0=D['plinth'];ZF=0.0;ZW=-D['porch'];ZB=-(D['porch']+D['bodyDept
 xs=[-hw];[xs.append(xs[-1]+b) for b in D['bays']]   # 6 column lines
 # ---------------- platform, steps, rail（台基/踏步/望柱栏板栏杆）
 GROUP='hall-base'
-rng('platform',-hw-D['plinthOutSide'],hw+D['plinthOutSide'],0,P0,ZB-D['plinthOutSide'],ZF+D['plinthOutFront'],'stone',0,True)
-rng('platform-cap',-hw-D['plinthOutSide']-.04,hw+D['plinthOutSide']+.04,P0-.08,P0,ZB-D['plinthOutSide']-.04,ZF+D['plinthOutFront']+.04,'stone')
+trim_back(rng('platform',-hw-D['plinthOutSide'],hw+D['plinthOutSide'],0,P0,ZB-D['plinthOutSide'],ZF+D['plinthOutFront'],'stone'),ZB-D['plinthOutSide'],ZB-D['plinthOutBack'])
+COLL.append({'name':'platform','center':[0.0,P0/2,(ZB-D['plinthOutBack']+ZF+D['plinthOutFront'])/2],'size':[W+2*D['plinthOutSide'],P0,ZF+D['plinthOutFront']-(ZB-D['plinthOutBack'])],'type':'box'})
+trim_back(rng('platform-cap',-hw-D['plinthOutSide']-.04,hw+D['plinthOutSide']+.04,P0-.08,P0,ZB-D['plinthOutSide']-.04,ZF+D['plinthOutFront']+.04,'stone'),ZB-D['plinthOutSide']-.04,ZB-D['plinthOutBack'])  # 背面与后墙外皮齐
 def steps(xc,w,z0):
  n=4;rise=P0/n;tread=.32
  for k in range(n):
@@ -198,8 +227,11 @@ rng('side-architrave-l',-hw-.2,-hw+.14,P0+D['colH'],P0+D['colH']+.38,ZB,ZF,'wood
 rng('side-architrave-r',hw-.14,hw+.2,P0+D['colH'],P0+D['colH']+.38,ZB,ZF,'wood')
 for x in xs:rng('porch-tie',x-.1,x+.1,P0+D['colH'],P0+D['colH']+.3,ZW,ZF,'wood')
 eo=.55
-for x0,x1,z0,z1 in ((-hw-eo,hw+eo,ZF+eo-.2,ZF+eo),(-hw-eo,hw+eo,ZB-eo,ZB-eo+.2),(-hw-eo,-hw-eo+.2,ZB-eo+.2,ZF+eo-.2),(hw+eo-.2,hw+eo,ZB-eo+.2,ZF+eo-.2)):
- rng('lower-eave-beam',x0,x1,D['lowerEave']-.32,D['lowerEave']-.12,z0,z1,'wood')
+eoB=min(eo,D['plinthOutBack'])   # 背面檐枋收到后墙外皮以内（wave2）；两侧檐枋按原尺寸建后只移背端顶点
+rng('lower-eave-beam',-hw-eo,hw+eo,D['lowerEave']-.32,D['lowerEave']-.12,ZF+eo-.2,ZF+eo,'wood')
+rng('lower-eave-beam',-hw-eo,hw+eo,D['lowerEave']-.32,D['lowerEave']-.12,ZB-eoB,ZB-eoB+.2,'wood')
+for x0,x1 in ((-hw-eo,-hw-eo+.2),(hw+eo-.2,hw+eo)):
+ trim_back(rng('lower-eave-beam',x0,x1,D['lowerEave']-.32,D['lowerEave']-.12,ZB-eo+.2,ZF+eo-.2,'wood'),ZB-eo+.2,ZB-eoB+.2)
 # 上层檐枋（上檐下皮）
 ui=D['upperWallIn'];UX=hw-ui;UZF=ZF-.6;UZB=ZB+.2
 rng('upper-eave-fascia',-UX-.1,UX+.1,D['upperEave']-.5,D['upperEave']-.24,UZF+.1,UZF+.24,'wood')
@@ -259,14 +291,23 @@ def loft(name,lo,hi,rings=8,m='roof',lift_fade=2.2):
   for i in range(N):
    A=j*N+i;B=j*N+(i+1)%N;faces.append((A,B,B+N,A+N))
  return mesh(name,verts,faces,m,True),verts,N,rings
-def eave_fascia(lo,name):
+def back_compress(pts,z_old,z_new):
+ """背面收檐：以原点横截面（PIVOT）后的第一个环采样点 zp 为支点，z<zp 的环点按比例压缩到 [z_new, zp]；
+ z>=zp 的点原样（前半及跨 PIVOT 的那一段檐口饰件都不变）。"""
+ zp=max(p[2] for p in pts if p[2]<PIVOT)
+ k=(zp-z_new)/(zp-z_old)
+ return [[p[0],p[1],(zp+(p[2]-zp)*k) if p[2]<zp else p[2],p[3]] for p in pts]
+BACK_SEGS=set(range(64,100))   # loop() 顺序：前 0-35 / 右 36-63 / 后 64-99 / 左 100-127
+def eave_fascia(lo,name,skip=()):
  N=len(lo)
  for i in range(N):
+  if i in skip:continue
   a=lo[i][:3];b=lo[(i+1)%N][:3];mesh(name+'-fascia',[a,b,(b[0],b[1]-.16,b[2]),(a[0],a[1]-.16,a[2])],[(0,3,2,1)],'dark')
-def eave_dressing(lo,name):
+def eave_dressing(lo,name,skip=()):
  """椽头（方椽，外法线向）+ 瓦当（8 边盘）+ 滴水（三角盘）。外法线 n=(-dz,dx)。"""
  N=len(lo);count=0
  for i in range(N):
+  if i in skip:continue
   a=lo[i][:3];b=lo[(i+1)%N][:3]
   L=math.hypot(b[0]-a[0],b[2]-a[2])
   if L<1e-6:continue
@@ -294,15 +335,17 @@ def hip_rods(verts,N,rings,idxs,name):
    a=verts[j*N+ci];b=verts[(j+1)*N+ci];cyl(name,(a[0],a[1]+.05,a[2]),(b[0],b[1]+.05,b[2]),.08,'roof',8)
 # lower skirt roof
 lo=loop(-hw-D['lowerOver'],hw+D['lowerOver'],ZB-D['lowerOver'],ZF+D['lowerOver'],D['lowerEave'],D['cornerLift'],D['cornerReach'],D['eaveSag'])
+lo=back_compress(lo,ZB-D['lowerOver'],ZB-D['lowerOverBack'])
 hi=loop(-UX+.02,UX-.02,UZB+.02,UZF-.02,D['lowerTop'],0,0,0)
-o,v,N,R=loft('lower-roof',lo,hi,6);eave_fascia(lo,'lower');hip_rods(v,N,R,[0,36,64,100],'lower-hip')
-nlower=eave_dressing(lo,'lower')
+o,v,N,R=loft('lower-roof',lo,hi,6);eave_fascia(lo,'lower',BACK_SEGS);hip_rods(v,N,R,[0,36,64,100],'lower-hip')
+nlower=eave_dressing(lo,'lower',BACK_SEGS)
 # upper roof
 UO=D['upperOver'];lo2=loop(-UX-UO,UX+UO,UZB-UO,UZF+UO,D['upperEave'],D['cornerLift']+.15,D['cornerReach'],D['eaveSag'])
+lo2=back_compress(lo2,UZB-UO,UZB-D['upperOverBack'])
 zc=(UZF+UZB)/2;half=(UZF-UZB)/2;yb=D['gableBreakY'];fr=(yb-D['upperEave'])/(D['ridge']-D['upperEave']);zin=(half+UO)*(1-fr)
 hi2=loop(-D['gableX'],D['gableX'],zc-zin,zc+zin,yb,0,0,0)
-o2,v2,N2,R2=loft('upper-roof-skirt',lo2,hi2,7);eave_fascia(lo2,'upper');hip_rods(v2,N2,R2,[0,36,64,100],'upper-hip')
-nupper=eave_dressing(lo2,'upper')
+o2,v2,N2,R2=loft('upper-roof-skirt',lo2,hi2,7);eave_fascia(lo2,'upper',BACK_SEGS);hip_rods(v2,N2,R2,[0,36,64,100],'upper-hip')
+nupper=eave_dressing(lo2,'upper',BACK_SEGS)
 # gable slopes + 山花（平三角面，冻结取舍）
 gx=D['gableX'];RY=D['ridge']
 for side,(z0,z1) in enumerate(((zc+zin,zc),(zc-zin,zc))):
@@ -364,12 +407,12 @@ for o in list(sc.objects):
 final=[finalize(items,g+'__'+m) for (g,m),items in parts.items()]
 # 重锚：整体 +REANCHOR (GLB z) = Blender y 平移 -REANCHOR（网格数据级，不依赖对象变换）
 for o in final:o.data.transform(Matrix.Translation((0,-REANCHOR,0)))
-bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'model.blend'))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUTD/'model.blend'))
 bpy.ops.object.select_all(action='DESELECT')
 for o in final:o.select_set(True)
-bpy.ops.export_scene.gltf(filepath=str(ROOT/'model.glb'),export_format='GLB',export_yup=True,export_apply=True,use_selection=True,export_animations=False,export_cameras=False,export_lights=False)
+bpy.ops.export_scene.gltf(filepath=str(OUTD/'model.glb'),export_format='GLB',export_yup=True,export_apply=True,use_selection=True,export_animations=False,export_cameras=False,export_lights=False)
 # alphaMode 兜底：确保格心材质 = MASK + cutoff（Blender 4.5 导出为 BLEND）
-glb=ROOT/'model.glb';buf=bytearray(glb.read_bytes())
+glb=OUTD/'model.glb';buf=bytearray(glb.read_bytes())
 jl=int.from_bytes(buf[12:16],'little')
 assert bytes(buf[16:20])==b'JSON'
 j=json.loads(bytes(buf[20:20+jl]))
@@ -395,8 +438,8 @@ miny=min(v.co.y for o in final for v in o.data.vertices);maxy2=max(v.co.y for o 
 json.dump({'triangles':tris,'byNode':by,'glbBytes':glb.stat().st_size,'maxY':round(maxy,3),
  'planExtentsBlenderY':[round(miny,2),round(maxy2,2)],'planWidthX':[round(minx,2),round(maxx,2)],
  'reanchored':REANCHOR,'eaveDressingCounts':{'lower':nlower,'upper':nupper},
- 'designDimensions':{'facadeWidth':W,'depth':D['porch']+D['bodyDepth'],'platform':P0,'lowerEave':D['lowerEave'],'upperEave':D['upperEave'],'ridge':D['ridge'],'footprintWithPlinth':[W+2*D['plinthOutSide'],D['porch']+D['bodyDepth']+D['plinthOutFront']+D['plinthOutSide']]},'buildSeconds':round(time.time()-T0,1)},open(ROOT/'measurements.json','w'),ensure_ascii=False,indent=2)
+ 'designDimensions':{'facadeWidth':W,'depth':D['porch']+D['bodyDepth'],'platform':P0,'lowerEave':D['lowerEave'],'upperEave':D['upperEave'],'ridge':D['ridge'],'footprintWithPlinth':[W+2*D['plinthOutSide'],D['porch']+D['bodyDepth']+D['plinthOutFront']+D['plinthOutBack']]},'buildSeconds':round(time.time()-T0,1)},open(OUTD/'measurements.json','w'),ensure_ascii=False,indent=2)
 for c in COLL:c['center'][2]+=REANCHOR   # 碰撞同步重锚（实例/本地坐标，z= facade 轴）
-json.dump({'axis':'Y-up +Z facade','origin':'plan centre of plinth extents (reanchored from front colonnade by +%.2f GLB z)'%REANCHOR,'instanceSpace':True,'integratedIntoWorld':False,'colliders':COLL},open(ROOT/'collision.json','w'),ensure_ascii=False,indent=2)
-json.dump(RECIPE,open(ROOT/'recipe.json','w'),ensure_ascii=False,indent=2)
+json.dump({'axis':'Y-up +Z facade','origin':'plan centre of the pre-wave2 plinth extents (reanchored from front colonnade by +%.2f GLB z; kept fixed after the wave2 back-side trim)'%REANCHOR,'instanceSpace':True,'integratedIntoWorld':False,'colliders':COLL},open(OUTD/'collision.json','w'),ensure_ascii=False,indent=2)
+json.dump(RECIPE,open(OUTD/'recipe.json','w'),ensure_ascii=False,indent=2)
 print('SANSUITANG_REFINED',tris,glb.stat().st_size,round(maxy,2),'eaveDressing',nlower+nupper)
