@@ -140,7 +140,8 @@ for (const sid of WEST_SHOPS) {
 }
 const v7Expected = instDoc.instances.filter(i => i.group !== 'temple-axis-v2' && !excluded.has(i.id));
 const infillDoc = JSON.parse(fs.readFileSync(path.join(OUT, 'fangbang-infill.json'), 'utf8'));
-const infillSpec = infillDoc.southGap.placed.concat(infillDoc.northGap.placed);
+const gapSpec = (infillDoc.frontageGaps && infillDoc.frontageGaps.placed) || [];   // wave5 F-07 临街面补齐
+const infillSpec = infillDoc.southGap.placed.concat(infillDoc.northGap.placed, gapSpec);
 
 // ---------- 1) GLB 锚：实例数 / 前缀 / 剔除不泄漏 / street-ground 偏移 ----------
 const v7Anchors = [], infillAnchors = [];
@@ -253,8 +254,25 @@ ok(`infill anchor poses match fangbang-infill.json (<=0.01m / 1e-3 rad)`,
   const [, whi163] = instAabb('westshop-shop-163', true);
   const southOK = infillDoc.southGap.placed.every(it => it.positionGlb[0] <= elo158[0] + 1 && it.positionGlb[0] >= whi163[0] - 1);
   const mouth = [-84.9 - 6.5, -84.9 + 6.5];   // 安仁街 v7 汇入点 ±6.5m（road-495101845 末端 (−31.38,12.28)map）
-  const northOK = infillSpec.every(it => !(it.positionGlb[0] > mouth[0] && it.positionGlb[0] < mouth[1]));
-  ok(`infill within south gap x[${whi163[0].toFixed(1)},${elo158[0].toFixed(1)}] and 安仁街 mouth (${mouth[0]}..${mouth[1]}) kept clear`, southOK && northOK);
+  // 路口保留带在安仁街一侧（北侧，路线左手 = 庙一侧）；wave5 F-07 起对街（南侧）允许补齐——T 字路口对面不是路口。
+  // 侧别从源重算：件位置相对 v7 主路线最近段的叉积，与安仁街末端点同号 = 同侧。
+  const v7ms = JSON.parse(fs.readFileSync(path.join(FB7, 'route.json'), 'utf8')).mainStreet.map(p => [p[0], p[2]]);
+  const sideOf = (x, z) => {
+    let best = null;
+    for (let i = 1; i < v7ms.length; i++) {
+      const [ax, az] = v7ms[i - 1], [bx, bz] = v7ms[i];
+      const vx = bx - ax, vz = bz - az, l2 = vx * vx + vz * vz || 1;
+      const t = Math.max(0, Math.min(1, ((x - ax) * vx + (z - az) * vz) / l2));
+      const d = Math.hypot(x - ax - t * vx, z - az - t * vz);
+      if (!best || d < best[0]) best = [d, Math.sign(vx * (z - az) - vz * (x - ax))];
+    }
+    return best[1];
+  };
+  const anrenEnd = layout.objects.find(o => o.id === 'road-495101845').geometry.polyline;
+  const anrenMid = anrenEnd[anrenEnd.length - 2];   // 末端前一点（在街北侧），末端点本身落在路中线上
+  const anrenSide = sideOf(anrenMid[0] - OFF[0], anrenMid[1] - OFF[1]);
+  const northOK = infillSpec.every(it => !(it.positionGlb[0] > mouth[0] && it.positionGlb[0] < mouth[1] && sideOf(it.positionGlb[0], it.positionGlb[2]) === anrenSide));
+  ok(`infill within south gap x[${whi163[0].toFixed(1)},${elo158[0].toFixed(1)}] and 安仁街 mouth (${mouth[0]}..${mouth[1]}, 安仁街 side) kept clear`, southOK && northOK);
 }
 
 // ---------- 4) 街缝去重（决定 3）：应删记录不得出现在碰撞产物，街段记录必须在 ----------
@@ -599,6 +617,137 @@ const KNOWN_WALL_EXCEPTIONS = { 'fangbang-westshop-shop-165': { maxDepthM: 1.1, 
     const d = depthBy.get(id);
     ok(`known exception ${id}: through temple wall ${d?.toFixed(2)} m <= ${ex.maxDepthM} m (${ex.decision})`, d !== undefined && d <= ex.maxDepthM);
   }
+}
+
+// ---------- W6（F-07）临街面补齐：主控 2026-09-26 选项 1，按 wave1 决定 2 的规则逐条从源重算 ----------
+// 取样口径：donor 底层碰撞记录（底 ≤ 1 m）按补齐位姿重放的矩形，内部与边上每 0.2 m 取点。
+{
+  ok(`frontage gap infill placed (${gapSpec.length})`, gapSpec.length >= 1);
+  const man6 = JSON.parse(fs.readFileSync(path.join(FB7, 'review-manifest.json'), 'utf8'));
+  const modPath6 = new Map(man6.modules.map(m => [m.id, path.join(REPO, m.path.replace(/^\.\//, ''))]));
+  const isBase = r => r.obb && r.obb.center[1] - r.obb.size[1] / 2 <= 1.0;
+  const rectAt = (r, px, pz, rot) => {
+    const c = Math.cos(rot), sn = Math.sin(rot), o = r.obb, hx = o.size[0] / 2, hz = o.size[2] / 2;
+    return [[-hx, -hz], [hx, -hz], [hx, hz], [-hx, hz]].map(([a, b]) => {
+      const lx = o.center[0] + a, lz = o.center[2] + b;
+      return [px + c * lx + sn * lz, pz - sn * lx + c * lz];
+    });
+  };
+  const samples = (rect) => {   // 矩形内网格 + 边 0.2 m
+    const out = [];
+    const [p0, p1, , p3] = rect;
+    const ux = [p1[0] - p0[0], p1[1] - p0[1]], uz = [p3[0] - p0[0], p3[1] - p0[1]];
+    const nx = Math.max(1, Math.ceil(Math.hypot(...ux) / 0.2)), nz = Math.max(1, Math.ceil(Math.hypot(...uz) / 0.2));
+    for (let i = 0; i <= nx; i++) for (let j = 0; j <= nz; j++) out.push([p0[0] + ux[0] * i / nx + uz[0] * j / nz, p0[1] + ux[1] * i / nx + uz[1] * j / nz]);
+    return out;
+  };
+  const inPoly6 = (pt, poly) => { let c = false; for (let i = 0, n = poly.length; i < n; i++) { const [x1, z1] = poly[i], [x2, z2] = poly[(i + 1) % n]; if ((z1 > pt[1]) !== (z2 > pt[1]) && pt[0] < (x2 - x1) * (pt[1] - z1) / (z2 - z1) + x1) c = !c; } return c; };
+  const inTri = (p, [a, b, c]) => {
+    const d = (p1, p2, p3) => (p1[0] - p3[0]) * (p2[1] - p3[1]) - (p2[0] - p3[0]) * (p1[1] - p3[1]);
+    const d1 = d(p, a, b), d2 = d(p, b, c), d3 = d(p, c, a);
+    return !(((d1 < -1e-9) || (d2 < -1e-9) || (d3 < -1e-9)) && ((d1 > 1e-9) || (d2 > 1e-9) || (d3 > 1e-9)));
+  };
+  // 路面：fangbang 沥青三角形（源 GLB，v7 坐标 -> 地图）
+  const asphaltSrc = [[path.join(FB7, 'street-reviewed-lanes.glb'), /^street-kit__quiet-gray-asphalt/],
+    [modPath6.get('westext-surface'), /^sctail__quiet-gray-asphalt/], [modPath6.get('eastext-surface'), /^sctail__quiet-gray-asphalt/],
+    [path.join(REPO, man6.streetCompletion.eastTailSurface.path.replace(/^\.\//, '')), /^sctail__quiet-gray-asphalt/]];
+  const tris = [];
+  for (const [f, re] of asphaltSrc) {
+    for (const m of readGlb(fs.readFileSync(f)).meshes) {
+      if (!re.test(m.name)) continue;
+      const W = []; for (let i = 0; i < m.positions.length; i += 3) { const w = transformPoint(m.matrix, [m.positions[i], m.positions[i + 1], m.positions[i + 2]]); W.push([w[0] + OFF[0], w[2] + OFF[1]]); }
+      for (let t = 0; t < m.indices.length; t += 3) tris.push([W[m.indices[t]], W[m.indices[t + 1]], W[m.indices[t + 2]]]);
+    }
+  }
+  const triBox = tris.map(t => [Math.min(...t.map(p => p[0])), Math.min(...t.map(p => p[1])), Math.max(...t.map(p => p[0])), Math.max(...t.map(p => p[1]))]);
+  // 路线（地图）：主路线到山门接点 + 支弄出入线
+  const rt = JSON.parse(fs.readFileSync(path.join(FB7, 'route.json'), 'utf8'));
+  const toMap = p => [p[0] + OFF[0], p[2] + OFF[1]];
+  const main = route.mainStreet.slice(0, route.junction.pointIndex + 1).map(p => [p[0], p[2]]);
+  const walkLines = [main, rt.laneAExcursion.map(toMap), rt.laneBExcursion.map(toMap)];
+  const dSeg = (p, a, b) => { const vx = b[0] - a[0], vz = b[1] - a[1], l2 = vx * vx + vz * vz || 1; const t = Math.max(0, Math.min(1, ((p[0] - a[0]) * vx + (p[1] - a[1]) * vz) / l2)); return Math.hypot(p[0] - a[0] - t * vx, p[1] - a[1] - t * vz); };
+  const dLine = (p, l) => { let d = Infinity; for (let i = 1; i < l.length; i++) d = Math.min(d, dSeg(p, l[i - 1], l[i])); return d; };
+  // 全域：前广场（layout）、仍可见的外围店屋、非方浜道路（平头路面带 + 3.0 m）
+  const fc = layout.shanmenForecourt ? layout.shanmenForecourt.polygon : null;
+  const placedV7Ids = new Set(v7Anchors.map(a => a.v7id));
+  const linst = new Map(layout.instances.map(i => [i.id, i]));
+  const outerPolys = [];
+  for (const o of layout.objects.filter(o => o.kind === 'shopAnchor' && o.zone === 'outer')) {
+    const m = /^shoprow-p(\d+)$/.exec(o.id);
+    if (m && placedV7Ids.has('westshop-shop-' + m[1])) continue;
+    const li = linst.get(o.id), mf = li && path.join(AREA, 'resources', 'shops', li.module, 'measurements.json');
+    if (!mf || !fs.existsSync(mf)) continue;
+    const dsg = JSON.parse(fs.readFileSync(mf, 'utf8')).design;
+    const c = Math.cos(o.geometry.rotY), sn = Math.sin(o.geometry.rotY), [x, z] = o.geometry.position;
+    outerPolys.push([o.id, [[-dsg.frontageM / 2, 0], [dsg.frontageM / 2, 0], [dsg.frontageM / 2, -dsg.depthM], [-dsg.frontageM / 2, -dsg.depthM]].map(([a, b]) => [x + c * a + sn * b, z - sn * a + c * b])]);
+  }
+  const sideRoads = layout.objects.filter(o => o.kind === 'road' && o.name !== '方浜中路' && o.geometry && o.geometry.polyline);
+  const flatD = (p, a, b) => { const vx = b[0] - a[0], vz = b[1] - a[1], L = Math.hypot(vx, vz) || 1; const t = ((p[0] - a[0]) * vx + (p[1] - a[1]) * vz) / L; if (t < 0 || t > L) return Infinity; return Math.abs(((p[0] - a[0]) * vz - (p[1] - a[1]) * vx) / L); };
+  // 邻居：源碰撞（v7 world 非庙轴非剔除 + sidecar）+ 其它补齐件 donor 克隆，全高记录 AABB
+  const srcRecs = [];
+  for (const a of v7Anchors) {
+    let recs = perId.get(a.v7id) || [];
+    if (!recs.length) {
+      const mp = modPath6.get(v7.get(a.v7id).module), side = mp && path.join(path.dirname(mp), 'collision.json');
+      if (side && fs.existsSync(side)) recs = (JSON.parse(fs.readFileSync(side, 'utf8')).colliders || []).filter(r => r.name.split(':')[0] === a.v7id);
+    }
+    for (const r of recs) srcRecs.push([a.v7id, aabbOfBox(obbToWorld(r)).map(v => [v[0] + OFF[0], v[1], v[2] + OFF[1]])]);
+  }
+  for (const it of infillSpec) for (const r of perId.get(it.donor) || []) {
+    const rr = rectAt(r, it.positionMap[0], it.positionMap[2], it.rotY);
+    srcRecs.push([it.id, [[Math.min(...rr.map(p => p[0])), 0, Math.min(...rr.map(p => p[1]))], [Math.max(...rr.map(p => p[0])), 9, Math.max(...rr.map(p => p[1]))]]]);
+  }
+  const bad = { frontage: [], facing: [], asphalt: [], walk: [], forecourt: [], outer: [], mouth: [], neighbour: [] };
+  for (const it of gapSpec) {
+    const recs = perId.get(it.donor) || [];
+    const base = recs.filter(isBase);
+    const lo = Math.min(...base.map(r => r.obb.center[0] - r.obb.size[0] / 2)), hi = Math.max(...base.map(r => r.obb.center[0] + r.obb.size[0] / 2));
+    if (!(hi - lo >= 5 && hi - lo <= 7)) bad.frontage.push(`${it.id} ${(hi - lo).toFixed(2)}`);
+    // 门脸朝街：门脸方向与「门面中点 -> 主路线最近点」夹角 ≤ 30°
+    const px = it.positionMap[0], pz = it.positionMap[2], f = [Math.sin(it.rotY), Math.cos(it.rotY)];
+    let q = null, qd = Infinity;
+    for (let i = 1; i < main.length; i++) { const a = main[i - 1], b = main[i]; const vx = b[0] - a[0], vz = b[1] - a[1], l2 = vx * vx + vz * vz || 1; const t = Math.max(0, Math.min(1, ((px - a[0]) * vx + (pz - a[1]) * vz) / l2)); const c = [a[0] + t * vx, a[1] + t * vz]; const d = Math.hypot(px - c[0], pz - c[1]); if (d < qd) { qd = d; q = c; } }
+    const ang = Math.acos(Math.max(-1, Math.min(1, (f[0] * (q[0] - px) + f[1] * (q[1] - pz)) / (qd || 1)))) * 180 / Math.PI;
+    if (ang > 30) bad.facing.push(`${it.id} ${ang.toFixed(1)}°`);
+    const baseRects = base.map(r => rectAt(r, px, pz, it.rotY));
+    const allRects = recs.map(r => rectAt(r, px, pz, it.rotY));
+    for (const rc of baseRects) for (const sp of samples(rc)) {
+      if (tris.some((t, k) => sp[0] >= triBox[k][0] && sp[0] <= triBox[k][2] && sp[1] >= triBox[k][1] && sp[1] <= triBox[k][3] && inTri(sp, t))) { bad.asphalt.push(it.id); break; }
+    }
+    for (const rc of baseRects) if (samples(rc).some(sp => walkLines.some(l => dLine(sp, l) < 2.0))) { bad.walk.push(it.id); break; }
+    for (const rc of allRects) {
+      const sp = samples(rc);
+      if (fc && (sp.some(p => inPoly6(p, fc)) || fc.some(p => inPoly6(p, rc)))) bad.forecourt.push(it.id);
+      for (const [oid, poly] of outerPolys) if (sp.some(p => inPoly6(p, poly)) || poly.some(p => inPoly6(p, rc))) bad.outer.push(`${it.id}×${oid}`);
+      for (const r of sideRoads) { const pl = r.geometry.polyline, w = r.geometry.width || 6; if (sp.some(p => pl.some((a, i) => i > 0 && flatD(p, pl[i - 1], a) < w / 2 + 3.0 - 0.05))) bad.mouth.push(`${it.id}×${r.id}`); }
+      const bb = [[Math.min(...rc.map(p => p[0])), 0, Math.min(...rc.map(p => p[1]))], [Math.max(...rc.map(p => p[0])), 9, Math.max(...rc.map(p => p[1]))]];
+      for (const [oid, box] of srcRecs) if (oid !== it.id && bb[0][0] < box[1][0] && box[0][0] < bb[1][0] && bb[0][2] < box[1][2] && box[0][2] < bb[1][2]) bad.neighbour.push(`${it.id}×${oid}`);
+    }
+  }
+  ok(`gap infill frontage 5-7 m (donor base records) ${gapSpec.length ? 'ok' : ''}`, bad.frontage.length === 0, bad.frontage.join(','));
+  ok('gap infill faces the street (<= 30° to nearest route point)', bad.facing.length === 0, bad.facing.join(','));
+  ok('gap infill base clear of fangbang asphalt (source GLB triangles, 0.2 m samples)', bad.asphalt.length === 0, [...new Set(bad.asphalt)].join(','));
+  ok('gap infill base >= 2.0 m from main route and lane excursion lines', bad.walk.length === 0, bad.walk.join(','));
+  ok('gap infill clear of the shanmen forecourt (layout)', bad.forecourt.length === 0, [...new Set(bad.forecourt)].join(','));
+  ok('gap infill clear of visible outer shops', bad.outer.length === 0, [...new Set(bad.outer)].join(','));
+  ok('gap infill keeps side-road mouths open (flat-capped road width/2 + 3.0 m)', bad.mouth.length === 0, [...new Set(bad.mouth)].join(','));
+  ok('gap infill no AABB overlap with any source collider or other infill (full height)', bad.neighbour.length === 0, [...new Set(bad.neighbour)].slice(0, 6).join(','));
+  // 临街覆盖率（报告，不设门槛）：collision-fangbang 1.6 m 高 OBB，每 2 m 两侧 12 m 水平射线
+  const fbc = JSON.parse(fs.readFileSync(path.join(OUT, 'collision-fangbang.json'), 'utf8')).colliders.map(r => obbToWorld(r)).filter(w => Math.abs(1.6 - w.center[1]) < w.halfExtents[1] && w.halfExtents[1] * 2 >= 1.2);
+  const rayHit = (o, d) => fbc.some(w => { const c = Math.cos(w.yaw), sn = Math.sin(w.yaw); for (let t = 0; t <= 12; t += 0.1) { const x = o[0] + d[0] * t - w.center[0], z = o[1] + d[1] * t - w.center[2]; if (Math.abs(c * x - sn * z) <= w.halfExtents[0] && Math.abs(sn * x + c * z) <= w.halfExtents[2]) return true; } return false; });
+  const cov = { L: [0, 0], R: [0, 0] };
+  let acc = 0;
+  for (let i = 1; i < main.length; i++) {
+    const a = main[i - 1], b = main[i], Ls = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    if (Ls < 1e-6) continue;
+    const t = [(b[0] - a[0]) / Ls, (b[1] - a[1]) / Ls];
+    for (let u = (2 - acc % 2) % 2; u < Ls; u += 2) {
+      const o = [a[0] + t[0] * u, a[1] + t[1] * u];
+      for (const [k, n] of [['L', [t[1], -t[0]]], ['R', [-t[1], t[0]]]]) { cov[k][1]++; if (rayHit(o, n)) cov[k][0]++; }
+    }
+    acc += Ls;
+  }
+  console.log(`frontage coverage (collision OBB @1.6 m, 12 m rays every 2 m): L ${(cov.L[0] / cov.L[1] * 100).toFixed(1)}% R ${(cov.R[0] / cov.R[1] * 100).toFixed(1)}%`);
 }
 
 console.log(`fangbang-test: ${pass} passed, ${fail} failed`);
