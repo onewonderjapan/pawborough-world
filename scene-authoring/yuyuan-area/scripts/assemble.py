@@ -736,6 +736,24 @@ if os.environ.get('FANGBANG', '1') != '0':
         if o not in sg_keep:
             bpy.data.objects.remove(o, do_unlink=True)
     print('fangbang street ground nodes kept:', len(sg_keep))
+    # wave5-fangbangqa F-05：尾段路面（v7 review-manifest streetCompletion.eastTailSurface = world/street-completion/surface.glb，
+    # v7 世界坐标，1468 面，v7 三角账目里有）原先没放，x 140–177 的尾段店直接站在外围 L0 路面上。与街地面同一契约挂锚
+    # （地图平移，group=street-ground，模块 fangbang-east-tail-surface）；节点 sctail__* 已在 walk groundNodeRe 里。
+    ets = fb_man['streetCompletion']['eastTailSurface']
+    ets_objs = import_glb(os.path.join(REPO, ets['path'][2:]), 'SITE-fangbang')
+    ets_anchor = bpy.data.objects.new('fangbang-east-tail-surface', None)
+    ets_anchor.location = (53.5, 17.4, 0)
+    ets_anchor.rotation_euler = (0, 0, 0)
+    ets_anchor['id'] = 'fangbang-east-tail-surface'
+    ets_anchor['module'] = 'fangbang-east-tail-surface'
+    ets_anchor['zone'] = 'fangbang'
+    ets_anchor['group'] = 'street-ground'
+    ets_anchor['source'] = ets['path']
+    coll('SITE-fangbang').objects.link(ets_anchor)
+    for o in ets_objs:
+        if o.parent is None:
+            o.parent = ets_anchor
+    print('fangbang east tail surface nodes:', [o.name for o in ets_objs])
     fb_skipped_temple = 0
     for inst in fb_inst:
         if inst.get('group') == 'temple-axis-v2':

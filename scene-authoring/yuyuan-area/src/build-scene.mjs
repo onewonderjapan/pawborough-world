@@ -71,11 +71,61 @@ const layout = JSON.parse(fs.readFileSync(path.join(OUT, 'layout.json'), 'utf8')
 // 外围 L0 方浜中路路面片（y=0.02）会盖住 fangbang 沥青（y≈0）：466 裁到 v7 西端铺装西缘（v7 x=-150.3 →
 // 地图 -96.8）以西，与 westext-surface 平接——裁到 -114 会在路的自身西端(-114.5)与 -96.8 间留 17.7m 裸地；
 // 464 裁到街段以东（x>=138）；横穿的支路路面片保留（路口衔接，含安仁街）。默认关（无 FANGBANG 时管线不变）。
+// wave5-fangbangqa F-05：fangbang 已放东延段路面（v7 eastext-asphalt 到 v7 x 236.06 → 地图 289.56）与尾段路面
+// （world/street-completion/surface.glb，地图 138.6–178.5），464 原先只裁到 138，外围 L0 路面（y 0.018）整段压在
+// fangbang 沥青（y 0）上 152 m。改裁到 fangbang 东延段路面东缘以东，与西端 466 同一做法。
+const FANGBANG_EAST_EDGE_X = 236.06 + 53.5;
 const FANGBANG_ROAD_CLIP = process.env.FANGBANG !== '0' ? {   // 默认开启（2026-09-24），FANGBANG=0 关闭
   'road-238219466': [-Infinity, -96.8],
-  'road-238219464': [138, Infinity],
+  'road-238219464': [FANGBANG_EAST_EDGE_X, Infinity],
   'road-33683439': [138, Infinity],
 } : null;
+// wave5-fangbangqa F-06：横穿 / 汇入方浜中路的支路路面片（光启路、安仁街、四牌楼路…）保留作路口衔接，但整条下沉到
+// fangbang 路面之下（顶面 0.018 → −0.042；fangbang 沥青顶 0、板底 −0.1，外围底板 −0.4），方浜分区加载时由 fangbang
+// 沥青 / 人行道盖住，未加载时照常可见。选路按源数据：v7 主路线（world/fangbang-temple-v7/route.json 平移
+// (53.5,-17.4)，到山门接点）6 m 走廊内有路面点（多边形边每 0.5 m 取样 / 折线按宽度外扩）的非裁剪路段。
+const FANGBANG_ROAD_SINK_M = 0.06;
+const FANGBANG_ROAD_SINK = (() => {
+  if (process.env.FANGBANG === '0') return null;
+  const rdoc = JSON.parse(fs.readFileSync(path.resolve(ROOT, '..', '..', 'world', 'fangbang-temple-v7', 'route.json'), 'utf8'));
+  const SHANMEN_V7 = rdoc.entries.shanmenThreshold;
+  let end = rdoc.mainStreet.findIndex(p => Math.hypot(p[0] - SHANMEN_V7[0], p[2] - SHANMEN_V7[2]) < 0.02);
+  if (end < 0) end = rdoc.mainStreet.length - 1;
+  const segs = [];
+  for (let i = 1; i <= end; i++) {
+    const a = rdoc.mainStreet[i - 1], b = rdoc.mainStreet[i];
+    segs.push([a[0] + 53.5, a[2] - 17.4, b[0] + 53.5, b[2] - 17.4]);
+  }
+  const dist = (x, z) => {
+    let d = Infinity;
+    for (const [ax, az, bx, bz] of segs) {
+      const vx = bx - ax, vz = bz - az, L2 = vx * vx + vz * vz || 1;
+      const t = Math.max(0, Math.min(1, ((x - ax) * vx + (z - az) * vz) / L2));
+      d = Math.min(d, Math.hypot(x - ax - t * vx, z - az - t * vz));
+    }
+    return d;
+  };
+  const densify = (pts, closed) => {
+    const out = [];
+    const n = closed ? pts.length : pts.length - 1;
+    for (let i = 0; i < n; i++) {
+      const a = pts[i], b = pts[(i + 1) % pts.length];
+      const k = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / 0.5));
+      for (let j = 0; j < k; j++) out.push([a[0] + (b[0] - a[0]) * j / k, a[1] + (b[1] - a[1]) * j / k]);
+    }
+    return out;
+  };
+  const ids = new Set();
+  for (const o of layout.objects) {
+    if (o.kind !== 'road' || (FANGBANG_ROAD_CLIP && FANGBANG_ROAD_CLIP[o.id])) continue;
+    const g = o.geometry || {};
+    const hit = g.surfaceFootprint ? densify(g.surfaceFootprint, true).some(([x, z]) => dist(x, z) <= 6)
+      : (g.polyline && g.polyline.length > 1 ? densify(g.polyline, false).some(([x, z]) => dist(x, z) <= 6 + (g.width || 0) / 2) : false);
+    if (hit) ids.add(o.id);
+  }
+  console.log('FANGBANG road sink', FANGBANG_ROAD_SINK_M, 'm:', [...ids].join(', ') || 'none');
+  return ids;
+})();
 function clipPolyX(pts, xmin, xmax) {
   const side = (poly, keep, x) => {   // keep='min' 保留 x>=x，'max' 保留 x<=x
     const out = [];
@@ -1026,6 +1076,7 @@ for (const o of layout.objects) {
       const g = fp ? shapeGeo(fp, o.height)
         : (poly && poly.length > 1 ? ribbon(poly, o.geometry.width, o.height, cols[o.geometry.priority] ?? 0xb0a99d, key).geometry : null);
       if (!g) continue;
+      if (FANGBANG_ROAD_SINK && FANGBANG_ROAD_SINK.has(o.id)) { g.translate(0, -FANGBANG_ROAD_SINK_M, 0); ud.fangbangSinkM = FANGBANG_ROAD_SINK_M; }
       mesh = mergedMesh([colorize(g, cols[o.geometry.priority] ?? 0xb0a99d)], key, ud);
       break;
     }

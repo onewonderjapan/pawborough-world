@@ -145,11 +145,13 @@ const infillSpec = infillDoc.southGap.placed.concat(infillDoc.northGap.placed);
 // ---------- 1) GLB 锚：实例数 / 前缀 / 剔除不泄漏 / street-ground 偏移 ----------
 const v7Anchors = [], infillAnchors = [];
 let streetGroundT = null;
+const groundAnchors = [];   // wave5 F-05：其余街地面件（尾段路面），不计入 v7 实例数
 for (const f of files) {
   const j = glbJson(f);
   for (const n of j.nodes || []) {
     const ex = n.extras || {};
     if (ex.id === 'fangbang-street-ground') streetGroundT = n.translation || [0, 0, 0];
+    else if (ex.group === 'street-ground') groundAnchors.push({ id: ex.id, t: n.translation || [0, 0, 0], ex });
     else if (ex.id && String(ex.id).startsWith('fangbang-infill-')) infillAnchors.push({ id: ex.id, t: n.translation || [0, 0, 0], ex, file: path.basename(f) });
     else if (ex.id && String(ex.id).startsWith('fangbang-')) v7Anchors.push({ id: ex.id, v7id: ex.v7id, t: n.translation || [0, 0, 0], file: path.basename(f) });
   }
@@ -166,6 +168,14 @@ ok('anchor names prefixed fangbang-', v7Anchors.every(a => a.id === 'fangbang-' 
 ok('street-ground anchor at map offset (53.5, -17.4)',
   streetGroundT && Math.abs(streetGroundT[0] - 53.5) <= 0.01 && Math.abs(streetGroundT[2] + 17.4) <= 0.01,
   JSON.stringify(streetGroundT));
+{
+  // wave5 F-05：v7 尾段路面（review-manifest streetCompletion.eastTailSurface）按同一坐标契约放置
+  const ets = JSON.parse(fs.readFileSync(path.join(FB7, 'review-manifest.json'), 'utf8')).streetCompletion.eastTailSurface;
+  const g = groundAnchors.find(a => a.id === 'fangbang-east-tail-surface');
+  ok(`east tail surface (${ets.path}) placed at map offset (53.5, -17.4)`,
+    !!g && g.ex.source === ets.path && Math.abs(g.t[0] - 53.5) <= 0.01 && Math.abs(g.t[2] + 17.4) <= 0.01, JSON.stringify(g && g.t));
+  ok(`only known street-ground anchors (${groundAnchors.map(a => a.id).join(',')})`, groundAnchors.every(a => a.id === 'fangbang-east-tail-surface'));
+}
 
 // ---------- 2) v7 件放置位置与 v7 平移差 ≤ 0.01 m ----------
 let maxErr = 0, worst = '';
