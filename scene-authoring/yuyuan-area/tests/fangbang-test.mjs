@@ -13,6 +13,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { obbToWorld } from '../../../src/world/collisionAdapter.js';
 import { triangleCounts } from '../src/reconcile.mjs';
+import { readGlb, transformPoint } from '../../../src/world/glbReader.js';
 
 const AREA = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const REPO = path.resolve(AREA, '..', '..');
@@ -24,7 +25,6 @@ const SHANMEN = [-74.317, 9.657];
 const SEAM_CAP = 0.05;
 const SOLID_KINDS = new Set(['outerBuilding', 'bazaarBlock', 'tower', 'hall', 'xuan', 'pavilion', 'waterside',
   'stage', 'wall', 'corridor', 'watersideGallery', 'moonGateWall', 'wallHead']);
-const SEAL_WALL = 'westext-seal-wall';
 const WEST_SHOPS = ['westshop-shop-168', 'westshop-shop-170', 'westshop-shop-171'];
 
 let pass = 0, fail = 0;
@@ -111,7 +111,26 @@ const layout = JSON.parse(fs.readFileSync(path.join(AREA, 'baseline', 'layout.js
 const solids = layout.objects.filter(o => SOLID_KINDS.has(o.kind) && o.geometry && o.geometry.footprint)
   .map(o => [o.id, o.geometry.footprint]);
 // 剔除集独立重算（决定 1）
-const excluded = new Set([SEAL_WALL]);
+// 封墙规则（主控决定 1 的同一口径，wave5 F-03 推广到两端）：v7 *-seal-wall 件若挡住 layout 里继续延伸的方浜中路，
+// 一律不放。判定全部取源：墙 = v7 collision-world 记录平移；路 = baseline/layout.json 名为「方浜中路」的 road 折线；
+// 墙法线 = 记录 theta 的局部 x 轴；fangbang 主路线（v7 route.json 平移）质心所在一侧为「内」，另一侧有路点离墙 ≥ 10 m、
+// 且该路有点离墙中心 ≤ 15 m（同一条路）= 路继续延伸，墙挡路。
+const fbRoads = layout.objects.filter(o => o.kind === 'road' && o.name === '方浜中路' && o.geometry && o.geometry.polyline).map(o => o.geometry.polyline);
+const v7Route = JSON.parse(fs.readFileSync(path.join(FB7, 'route.json'), 'utf8')).mainStreet.map(p => [p[0] + OFF[0], p[2] + OFF[1]]);
+const routeC = v7Route.reduce((a, p) => [a[0] + p[0] / v7Route.length, a[1] + p[1] / v7Route.length], [0, 0]);
+const sealWallIds = instDoc.instances.filter(i => /seal-wall$/.test(i.module)).map(i => i.id);
+const sealBlocks = {};
+for (const wid of sealWallIds) {
+  const rec = (perId.get(wid) || [])[0];
+  if (!rec) continue;
+  const w = obbToWorld(rec);
+  const wc = [w.center[0] + OFF[0], w.center[2] + OFF[1]];
+  const n = [Math.cos(w.yaw), -Math.sin(w.yaw)];
+  const side = Math.sign((routeC[0] - wc[0]) * n[0] + (routeC[1] - wc[1]) * n[1]) || 1;
+  sealBlocks[wid] = fbRoads.some(pl => pl.some(q => Math.hypot(q[0] - wc[0], q[1] - wc[1]) <= 15)
+    && pl.some(q => -side * ((q[0] - wc[0]) * n[0] + (q[1] - wc[1]) * n[1]) >= 10));
+}
+const excluded = new Set(Object.entries(sealBlocks).filter(([, b]) => b).map(([id]) => id));
 for (const sid of WEST_SHOPS) {
   const [lo, hi] = instAabb(sid);
   const mlo = [lo[0] + OFF[0], lo[1], lo[2] + OFF[1]], mhi = [hi[0] + OFF[0], hi[1], hi[2] + OFF[1]];
@@ -333,6 +352,180 @@ ok('route junction at shanmen anchor (<=0.01m)', route.junction && route.junctio
   const cmBytes = manifest.zones.filter(z => z.id === 'fangbang' && z.cm).reduce((s, z) => s + z.cm.bytes, 0);
   ok(`fangbang cm total ${(cmBytes / 1e6).toFixed(2)}MB <= 7MB`, cmBytes > 0 && cmBytes <= 7e6, String(cmBytes));
   console.log('R1 triangles', { unique, placed, ref, partsSharingMultiMesh: shareOk });
+}
+
+// ================= wave5-fangbangqa（Q2）新增：眼高普查 F-01 / F-03 / F-04 / F-05 / F-06 =================
+// 全部对照源数据（v7 instances / collision sidecar / review-manifest、baseline/layout.json）或另一分区的产物，不拿产物和自己比。
+
+// ---------- W1（F-03）封墙：挡住继续延伸的方浜中路的 *-seal-wall 不得放置 ----------
+ok(`seal walls blocking a continuing 方浜中路 not placed (${JSON.stringify(sealBlocks)})`,
+  sealWallIds.length >= 2 && Object.entries(sealBlocks).every(([id, blocks]) => !blocks || !v7Anchors.some(a => a.v7id === id)),
+  v7Anchors.filter(a => sealBlocks[a.v7id]).map(a => a.id).join(','));
+
+// ---------- W2（F-04）碰撞完整：每个已放置实例的源碰撞记录都在 collision-fangbang.json ----------
+// 源 = v7 collision-world.json 的同名记录；collision-world 没有该实例时，取 review-manifest 模块路径同目录的 collision.json
+// （east-edge / street-completion / lanes-v2 的 sidecar，v7 世界坐标，obb.pos = 实例位姿）。允许的缺口只有有记录的去重
+// （seamDedup / streetSeamDedup）。位置 = 源 + (53.5,-17.4)，≤ 0.01 m。
+{
+  const fbColW = JSON.parse(fs.readFileSync(path.join(OUT, 'collision-fangbang.json'), 'utf8'));
+  const have = new Map();   // 同一实例里记录名可重名（facade-post ×4），按名分组后逐条配对
+  for (const r of fbColW.colliders) { if (!have.has(r.name)) have.set(r.name, []); have.get(r.name).push(r); }
+  const dropped = new Set([...(Array.isArray(fbColW.seamDedup) ? fbColW.seamDedup : []), ...(Array.isArray(fbColW.streetSeamDedup) ? fbColW.streetSeamDedup : [])].map(d => d.dropped));
+  const man = JSON.parse(fs.readFileSync(path.join(FB7, 'review-manifest.json'), 'utf8'));
+  const modPath = new Map(man.modules.map(m => [m.id, path.join(REPO, m.path.replace(/^\.\//, ''))]));
+  const missing = [], moved = [], noSource = [];
+  let expectedN = 0;
+  for (const a of v7Anchors) {
+    let recs = perId.get(a.v7id) || [];
+    if (!recs.length) {
+      const mp = modPath.get(v7.get(a.v7id).module);
+      const side = mp && path.join(path.dirname(mp), 'collision.json');
+      if (side && fs.existsSync(side)) recs = (JSON.parse(fs.readFileSync(side, 'utf8')).colliders || []).filter(r => r.name.split(':')[0] === a.v7id);
+    }
+    if (!recs.length) { noSource.push(a.v7id); continue; }
+    for (const r of recs) {
+      const nm = 'fangbang-' + r.name;
+      if (dropped.has(nm)) continue;
+      expectedN++;
+      const cands = have.get(nm);
+      if (!cands || !cands.length) { missing.push(nm); continue; }
+      const B = obbToWorld(r);
+      const k = cands.findIndex(c => { const A = obbToWorld(c); return Math.hypot(A.center[0] - (B.center[0] + OFF[0]), A.center[2] - (B.center[2] + OFF[1])) <= 0.01 && Math.abs(A.center[1] - B.center[1]) <= 0.01; });
+      if (k < 0) moved.push(nm); else cands.splice(k, 1);
+    }
+  }
+  ok(`every placed instance's source colliders present (${expectedN} expected, ${missing.length} missing; no-source ${noSource.join(',')})`,
+    missing.length === 0, missing.slice(0, 6).join(', '));
+  ok(`sidecar/v7 colliders translated by map offset (<=0.01 m, ${moved.length} off)`, moved.length === 0, moved.slice(0, 4).join(', '));
+  // 无源碰撞的只允许是纯地面件（路面 / 街地面），不许是建筑
+  ok(`instances without any collision source are ground-only (${noSource.join(',')})`,
+    noSource.every(id => /surface$/.test(v7.get(id).module)));
+}
+
+// ---------- W3（F-05 / F-06）路面叠放：沿方浜主路线，fangbang 路面在顶，外围路面不得压在上面 ----------
+// 路线每 0.5 m（到山门接点，山门 12 m 内归庙区不查），中线与 ±2.5 m 各一点竖直探测：
+//   a) 中线点下必须有 fangbang 路面（街地面 street-kit / 路面 sctail / 围界 westbounds 网格）；
+//   b) 外围 zone-outer.glb 的 road 网格顶面不得高于该点 fangbang 路面顶面 − 0.005 m（盖住或 z-fighting）。
+{
+  const FB_GROUND_RE = /^(street-kit__(quiet-gray-asphalt|paving-frontage|worn-stone)|sctail__(quiet-gray-asphalt|worn-stone)|westbounds__worn-stone)/;
+  const CELL = 4;
+  const binTris = (meshes, pick) => {
+    const grid = new Map();
+    for (const m of meshes) {
+      if (!pick(m.name || '')) continue;
+      const P = m.positions, I = m.indices;
+      const wp = i => transformPoint(m.matrix, [P[i * 3], P[i * 3 + 1], P[i * 3 + 2]]);
+      for (let t = 0; t < I.length; t += 3) {
+        const a = wp(I[t]), b = wp(I[t + 1]), c = wp(I[t + 2]);
+        const tri = [a, b, c];
+        const x0 = Math.floor(Math.min(a[0], b[0], c[0]) / CELL), x1 = Math.floor(Math.max(a[0], b[0], c[0]) / CELL);
+        const z0 = Math.floor(Math.min(a[2], b[2], c[2]) / CELL), z1 = Math.floor(Math.max(a[2], b[2], c[2]) / CELL);
+        for (let gx = x0; gx <= x1; gx++) for (let gz = z0; gz <= z1; gz++) {
+          const k = gx + ',' + gz;
+          if (!grid.has(k)) grid.set(k, []);
+          grid.get(k).push(tri);
+        }
+      }
+    }
+    return grid;
+  };
+  const topAt = (grid, x, z) => {
+    let best = null;
+    for (const [a, b, c] of grid.get(Math.floor(x / CELL) + ',' + Math.floor(z / CELL)) || []) {
+      const d = (b[2] - c[2]) * (a[0] - c[0]) + (c[0] - b[0]) * (a[2] - c[2]);
+      if (Math.abs(d) < 1e-12) continue;
+      const l1 = ((b[2] - c[2]) * (x - c[0]) + (c[0] - b[0]) * (z - c[2])) / d;
+      const l2 = ((c[2] - a[2]) * (x - c[0]) + (a[0] - c[0]) * (z - c[2])) / d;
+      const l3 = 1 - l1 - l2;
+      if (l1 < -1e-6 || l2 < -1e-6 || l3 < -1e-6) continue;
+      const y = l1 * a[1] + l2 * b[1] + l3 * c[1];
+      if (y < -0.6 || y > 0.6) continue;
+      if (best === null || y > best) best = y;
+    }
+    return best;
+  };
+  const fbMeshes = files.flatMap(f => readGlb(fs.readFileSync(f)).meshes);
+  const fbGrid = binTris(fbMeshes, n => FB_GROUND_RE.test(n));
+  const outerFile = path.join(OUT, 'zone-outer.glb');
+  const outerGrid = fs.existsSync(outerFile) ? binTris(readGlb(fs.readFileSync(outerFile)).meshes, n => /^outer\|road-/.test(n)) : new Map();
+  const rj = route.junction.pointIndex;
+  const line = ms.slice(0, rj + 1);
+  let n = 0, noGround = 0, covered = 0, firstNoGround = '', firstCovered = '';
+  const coveredBy = {};
+  for (let i = 1; i < line.length; i++) {
+    const a = line[i - 1], b = line[i];
+    const L = Math.hypot(b[0] - a[0], b[2] - a[2]);
+    if (L < 1e-6) continue;
+    const t = [(b[0] - a[0]) / L, (b[2] - a[2]) / L], nv = [-t[1], t[0]];
+    const k = Math.max(1, Math.ceil(L / 0.5));
+    for (let j = 0; j < k; j++) {
+      const cx = a[0] + (b[0] - a[0]) * j / k, cz = a[2] + (b[2] - a[2]) * j / k;
+      if (Math.hypot(cx - SHANMEN[0], cz - SHANMEN[1]) <= 12) continue;
+      for (const off of [0, -2.5, 2.5]) {
+        const x = cx + nv[0] * off, z = cz + nv[1] * off;
+        const fy = topAt(fbGrid, x, z);
+        n++;
+        if (fy === null) {
+          if (off === 0) { noGround++; if (!firstNoGround) firstNoGround = `${x.toFixed(1)},${z.toFixed(1)}`; }
+          continue;
+        }
+        const oy = topAt(outerGrid, x, z);
+        if (oy !== null && oy > fy - 0.005) {
+          covered++;
+          if (!firstCovered) firstCovered = `${x.toFixed(1)},${z.toFixed(1)} outer ${oy.toFixed(3)} >= fb ${fy.toFixed(3)}`;
+        }
+      }
+    }
+  }
+  ok(`fangbang ground under every route centerline sample (${noGround} of ${n} samples without; first ${firstNoGround || '-'})`, noGround === 0);
+  ok(`no outer road surface on/above fangbang ground along the route (${covered} covered samples; first ${firstCovered || '-'})`, covered === 0);
+}
+
+// ---------- W4（F-01）外围占位店让位：同一提案点的外围 shoprow 在方浜分区加载后隐藏 ----------
+// 源重算：baseline/layout.json 的 shopAnchor「shoprow-p<N>」（提案点 shop-<N>）与已放置的 v7「westshop-shop-<N>」是同一提案点的
+// 两个版本；后者放置了 → 前者必须列入 OUT_DIR/fangbang-supersede.json（web/main.js 在方浜分区加载后隐藏）。
+// 反向：列表里不许有 fangbang 没有对应件的外围件（山门前 p167 等不是本分区能决定的）。
+{
+  const supFile = path.join(OUT, 'fangbang-supersede.json');
+  const sup = fs.existsSync(supFile) ? JSON.parse(fs.readFileSync(supFile, 'utf8')) : null;
+  const placedV7 = new Set(v7Anchors.map(a => a.v7id));
+  const expected = layout.objects.filter(o => o.kind === 'shopAnchor' && /^shoprow-p\d+$/.test(o.id))
+    .filter(o => placedV7.has('westshop-shop-' + o.id.slice('shoprow-p'.length)))
+    .map(o => o.id).sort();
+  const got = sup ? (sup.supersedes || []).map(e => e.outer).sort() : null;
+  ok(`fangbang-supersede.json lists exactly the outer shoprows realised by placed westshops (${expected.length}: ${expected.join(',')})`,
+    !!sup && JSON.stringify(got) === JSON.stringify(expected), sup ? JSON.stringify(got) : 'missing file');
+  ok('supersede entries name their fangbang counterpart', !!sup && (sup.supersedes || []).every(e => e.fangbang === 'fangbang-westshop-shop-' + e.outer.slice('shoprow-p'.length) && placedV7.has(e.fangbang.slice('fangbang-'.length))));
+  // 浏览器侧（给 FANGBANG_BASE 时跑）：核心三区加载后外围件可见；点「方浜中路」加载后被让位件全部不可见，其余 shoprow 仍可见
+  if (process.env.FANGBANG_BASE && sup) {
+    const { createRequire } = await import('node:module');
+    const req = createRequire('/home/baibai/pawborough-world/node_modules/');
+    const { chromium } = req('playwright');
+    const browser = await chromium.launch({ executablePath: '/home/baibai/.cache/ms-playwright/chromium-1234/chrome-linux/chrome', args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
+    const page = await browser.newPage({ viewport: { width: 800, height: 500 } });
+    await page.goto(process.env.FANGBANG_BASE + '?zone=core', { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => window.__ready === true && (window.__zonesLoaded || []).includes('outer'), null, { timeout: 900000 });
+    const vis = (ids) => page.evaluate((ids) => {
+      const out = {};
+      window.__scene.traverse(o => {
+        const id = o.userData && o.userData.id;
+        if (!ids.includes(id)) return;
+        let v = true; for (let n = o; n; n = n.parent) if (n.visible === false) v = false;
+        out[id] = (out[id] === undefined ? v : out[id] || v);
+      });
+      return out;
+    }, ids);
+    const supIds = got;
+    const others = layout.objects.filter(o => o.kind === 'shopAnchor' && /^shoprow-p\d+$/.test(o.id) && !supIds.includes(o.id)).map(o => o.id);
+    const before = await vis(supIds);
+    await page.click('[data-zone="fangbang"]');
+    await page.waitForFunction(() => (window.__zonesLoaded || []).filter(z => z.startsWith('fangbang')).length >= 2 && window.__fangbangSuperseded !== undefined, null, { timeout: 900000 });
+    const after = await vis(supIds), afterOthers = await vis(others);
+    await browser.close();
+    ok(`browser: superseded shoprows visible before fangbang loads (${Object.values(before).filter(Boolean).length}/${supIds.length})`, supIds.every(id => before[id] === true));
+    ok(`browser: superseded shoprows hidden after fangbang loads (${Object.values(after).filter(v => !v).length}/${supIds.length})`, supIds.every(id => after[id] === false));
+    ok(`browser: other shoprows untouched (${Object.values(afterOthers).filter(Boolean).length}/${others.length} visible)`, others.every(id => afterOthers[id] === true));
+  }
 }
 
 console.log(`fangbang-test: ${pass} passed, ${fail} failed`);
