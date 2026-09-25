@@ -381,5 +381,7 @@ if os.path.exists(gp):
         r.get('image') == n.get('image') and r.get('mask') == n.get('mask') and r.get('view') == n.get('view') and r.get('inst') == n.get('inst') for n in results)]
 json.dump(old + results, open(gp, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 bad = [r for r in results if r.get('guard', {}).get('blank')]
-print('TEMPLEQA_RENDER done', len(results), 'blank', len(bad), flush=True)
-sys.exit(1 if bad else 0)
+dark = [r for r in results if r.get('facadeColor', {}).get('ok') is False]
+print('TEMPLEQA_RENDER done', len(results), 'blank', len(bad), 'facadeFail', len(dark), flush=True)
+# 同 hall-kit render_hall.py：空白帧 exit 1；格扇立面检色不合格 exit 3
+sys.exit(1 if bad else 3 if dark else 0)
