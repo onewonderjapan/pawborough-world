@@ -2140,9 +2140,27 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202599/model.glb",
-      "sha256": "550dc8a22cb710c8793619a7c01b2003f203111e4ce9d66844f4bd96a2406c8a",
-      "bytes": 2195416,
-      "sourcePackage": "pawborough-wave1-huabao-20260923"
+      "sha256": "3b0b82805227ff97640e8c5c3f35e8d77d9b3406f9793a042b46bba4cfdbf40b",
+      "bytes": 1883156,
+      "sourcePackage": "pawborough-wave4-bazaar4-20260925"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202601/model.glb",
+      "sha256": "b9f08c5d13675bd6532baf13b70978bd7dc9f9f2eff897c46cf563b08e0f8b41",
+      "bytes": 2206400,
+      "sourcePackage": "pawborough-wave4-bazaar4-20260925"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701812/model.glb",
+      "sha256": "065b20dcfb6822c2b1ec13630d12817024dcc2aea0bbaf1bff94e45eeaee5190",
+      "bytes": 2031364,
+      "sourcePackage": "pawborough-wave4-bazaar4-20260925"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202602/model.glb",
+      "sha256": "d615424212f90c59a2fb70071158ee3c402b08b9d44c4ec5a3134ee46241416b",
+      "bytes": 2286012,
+      "sourcePackage": "pawborough-wave4-bazaar4-20260925"
     }
   ],
   "state": "uploaded_checksum_verified",
@@ -2158,6 +2176,7 @@
     "docs/migrations/20260925/CLOUD-RECEIPT.json",
     "docs/migrations/20260925/CLOUD-RECEIPT-wave2.json",
     "docs/migrations/20260925/CLOUD-RECEIPT-wave4.json",
-    "docs/migrations/20260926/CLOUD-RECEIPT-templeqa.json"
+    "docs/migrations/20260926/CLOUD-RECEIPT-templeqa.json",
+    "docs/migrations/20260926/CLOUD-RECEIPT-bazaar4.json"
   ]
 }
