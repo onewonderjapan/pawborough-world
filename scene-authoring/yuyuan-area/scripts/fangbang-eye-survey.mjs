@@ -93,12 +93,15 @@ await page.evaluate(async () => {
   const meshes = [];
   scene.traverse(o => { if (o.isMesh && !o.isBatchedMesh && o.visible) meshes.push(o); });
   scene.updateMatrixWorld(true);
+  // 只算画面上真正可见的网格：父链任一节点 visible=false（如方浜加载后被让位的外围占位店）即排除
+  const shown = (o) => { for (let n = o; n; n = n.parent) if (n.visible === false) return false; return true; };
+  const live = () => meshes.filter(shown);
   const rc = new THREE.Raycaster();
   rc.layers.enableAll();
   window.__probe = (origin, dir, far = 60) => {
     rc.set(new THREE.Vector3(...origin), new THREE.Vector3(...dir).normalize());
     rc.far = far;
-    const h = rc.intersectObjects(meshes, false)[0];
+    const h = rc.intersectObjects(live(), false)[0];
     if (!h) return null;
     const inf = infoOf(h.object);
     return { d: +h.distance.toFixed(2), id: inf.id, zone: zoneOf(h.object), mesh: h.object.name, y: +h.point.y.toFixed(3) };
@@ -106,7 +109,7 @@ await page.evaluate(async () => {
   window.__probeDown = (x, z) => {
     rc.set(new THREE.Vector3(x, 6, z), new THREE.Vector3(0, -1, 0));
     rc.far = 12;
-    return rc.intersectObjects(meshes, false).filter(h => h.point.y > -1 && h.point.y < 0.6).slice(0, 6).map(h => ({ y: +h.point.y.toFixed(4), id: infoOf(h.object).id, zone: zoneOf(h.object), mesh: h.object.name }));
+    return rc.intersectObjects(live(), false).filter(h => h.point.y > -1 && h.point.y < 0.6).slice(0, 6).map(h => ({ y: +h.point.y.toFixed(4), id: infoOf(h.object).id, zone: zoneOf(h.object), mesh: h.object.name }));
   };
   window.__shotStats = () => {
     const c = document.querySelector('canvas'); const gl = c.getContext('webgl2') || c.getContext('webgl');
@@ -159,7 +162,7 @@ await page.evaluate(async () => {
   window.__otherVerts = (box) => {
     const B = new THREE.Box3(new THREE.Vector3(...box[0]), new THREE.Vector3(...box[1]));
     const res = [];
-    for (const m of meshes) {
+    for (const m of live()) {
       const z = zoneOf(m);
       if (z.startsWith('fangbang')) continue;
       const bb = new THREE.Box3().setFromObject(m);
