@@ -20,6 +20,8 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { centroid, distToPolyline, pointInPoly, dist2d } from '../src/lib.mjs';
+import { loadColliders, viewFromLens, inFrame } from '../scripts/tour-visibility.mjs';
+import { evaluateShot } from '../scripts/control-shot-visibility.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
@@ -177,6 +179,70 @@ for (const s of doc.shots) {
     check(dEnd < 2, `③末帧注视点距湖心亭形心 ${dEnd.toFixed(1)} m > 2`);
   }
 }
+
+// ---------- R1-2 逐关键帧可见性（与 tour-test R1 同一套：scripts/tour-visibility.mjs 的碰撞集 / 目标盒 / 遮挡判定） ----------
+// 每帧三条：目标包围盒 9 采样点 ≥5 点视线不被碰撞盒挡；目标投影（裁到 1280×720 画面、按镜头 lensMm 的真实 fov）≥ 8%；
+// 相机距最近可遮挡碰撞盒（顶 ≥1.6 m）≥ 1.5 m。终点帧三条全满足；每连续 6 帧至少 3 帧三条全满足（中间帧允许目标暂时出画）。
+// 例外（明示）：①方浜中路西行是行进揭示镜头，GOAL R1 定「①不变」——山门在庙前转角后才露出，190 m 行进前段
+// 山门投影 < 8% 是镜头设计本身；窗口规则对①只查末 6 帧（揭示段），终点帧规则照常。②③无例外。
+// ② 另查：沿弧线移动（非原地转头）、整座楼（footprint 棱柱，高 = 变体目标高）逐帧全部在画面内。
+// ③ 另查：终点在桥面上（距中线 ≤0.85 m，桥栏内侧 0.89 m）、离湖心亭形心 15–25 m；画面下 1/3 被 10 m 内桥栏挡住的射线 ≤15%（逐帧）。
+const R1 = { minPts: 5, minArea: 0.08, minClr: 1.5, win: 6, winMin: 3, railNearM: 10, railMax: 0.15 };
+const WINDOW_FROM = { 'fangbang-westbound': (n) => n - R1.win };
+const boxes = loadColliders(ROOT, path.relative(ROOT, OUT));
+const BAZAAR_TOWERS = process.env.BAZAAR_TOWERS === '1';
+const habaoObj = layout.objects.find(o => o.name === '华宝楼' && o.kind === 'bazaarBlock');
+// 华宝楼目标高：程序化体块 = layout height；BAZAAR_TOWERS=1 = 套件冻结参数最高点（角亭宝顶 finial.topM 与主脊 ridgeHeightM 取大）
+const towerP = JSON.parse(fs.readFileSync(path.join(ROOT, 'modules', 'bazaar-tower-kit', 'params', `huabao-${habaoObj.id}.json`), 'utf8'));
+const habaoH = BAZAAR_TOWERS ? Math.max(towerP.roof.ridgeHeightM, towerP.pavilion.finial.topM) : habaoObj.height;
+const r1Summary = {};
+for (const s of doc.shots) {
+  const ev = evaluateShot({ ...s, targetHeightM: s.id === 'habao-plaza-pan' ? habaoH : undefined, railCheck: s.id === 'jiuqu-to-huxinting' }, layout, boxes);
+  const n = ev.frames.length;
+  const ok = ev.frames.map(f => f.vis >= R1.minPts && f.area >= R1.minArea && f.clearance >= R1.minClr);
+  const e = ev.frames[n - 1];
+  check(e.vis >= R1.minPts, `${s.id} 终点帧目标 9 点仅 ${e.vis} 点可见（<5）`);
+  check(e.area >= R1.minArea, `${s.id} 终点帧目标投影 ${(e.area * 100).toFixed(1)}% < 8%`);
+  check(e.clearance >= R1.minClr, `${s.id} 终点帧相机距碰撞盒 ${e.clearanceName} ${e.clearance.toFixed(2)} m < 1.5`);
+  const from = WINDOW_FROM[s.id] ? WINDOW_FROM[s.id](n) : 0;
+  for (let i = from; i + R1.win <= n; i++) {
+    const c = ok.slice(i, i + R1.win).filter(Boolean).length;
+    check(c >= R1.winMin, `${s.id} 帧 ${i}–${i + R1.win - 1} 仅 ${c}/6 帧满足可见性三条（需 ≥3）`);
+  }
+  r1Summary[s.id] = { lensMm: ev.lensMm, okFrames: ok.filter(Boolean).length, end: { vis: e.vis, area: +e.area.toFixed(3), clearance: +e.clearance.toFixed(2), distM: +e.dist.toFixed(1) } };
+  if (s.id === 'habao-plaza-pan') {
+    check(Math.abs((s.targetHeightM ?? habaoObj.height) - habaoH) < 1e-6, `②目标高 targetHeightM=${s.targetHeightM} != ${habaoH}（BAZAAR_TOWERS=${BAZAAR_TOWERS ? 1 : 0}）`);
+    let pathLen = 0;
+    for (let k = 1; k < n; k++) pathLen += dist2d([s.eye[k][0], s.eye[k][2]], [s.eye[k - 1][0], s.eye[k - 1][2]]);
+    check(pathLen >= 10, `②机位移动 ${pathLen.toFixed(1)} m < 10（原地转头，不是沿弧线）`);
+    const c2 = [(ev.box.min[0] + ev.box.max[0]) / 2, (ev.box.min[2] + ev.box.max[2]) / 2];
+    const rs = s.eye.map(p => dist2d([p[0], p[2]], c2));
+    check(Math.max(...rs) - Math.min(...rs) <= 1.0, `②机位到华宝楼中心半径变化 ${(Math.max(...rs) - Math.min(...rs)).toFixed(2)} m > 1（不是弧线）`);
+    const az = s.eye.map(p => Math.atan2(p[0] - c2[0], p[2] - c2[1]));
+    let sweep = 0;
+    for (let k = 1; k < n; k++) { let d = az[k] - az[k - 1]; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; sweep += d; }
+    check(Math.abs(sweep) >= 20 * Math.PI / 180, `②弧线扫角 ${(Math.abs(sweep) * 180 / Math.PI).toFixed(1)}° < 20°`);
+    const fp = habaoObj.geometry.footprint.slice(0, -1);
+    const prism = fp.flatMap(p => [[p[0], 0, p[1]], [p[0], habaoH, p[1]]]);
+    const view = viewFromLens(s.lensMm ?? 50);
+    const whole = s.eye.map((cam, k) => prism.filter(q => inFrame(q, cam, s.target[k], view)).length);
+    whole.forEach((w, k) => check(w === prism.length, `②第 ${k} 帧整座楼（footprint 棱柱 ${prism.length} 角，高 ${habaoH} m）仅 ${w} 角在画面内`));
+    Object.assign(r1Summary[s.id], { pathLenM: +pathLen.toFixed(1), sweepDeg: +(Math.abs(sweep) * 180 / Math.PI).toFixed(1), wholeFrames: whole.filter(w => w === prism.length).length, targetHeightM: habaoH });
+  }
+  if (s.id === 'jiuqu-to-huxinting') {
+    const pl = objById('jiuqu-bridge').geometry.polyline;
+    const hc = centroid(objById('huxin-ting').geometry.footprint);
+    const offs = s.eye.map(p => distToPolyline([p[0], p[2]], pl));
+    check(Math.max(...offs) <= 0.85, `③机位离桥中线 ${Math.max(...offs).toFixed(2)} m > 0.85（出了桥栏内侧）`);
+    const last = s.eye[n - 1], dEnd = dist2d([last[0], last[2]], hc);
+    check(dEnd >= 15 && dEnd <= 25, `③终点离湖心亭形心 ${dEnd.toFixed(1)} m 不在 15–25`);
+    const rail = s.eye.map((cam, k) => ev.frames[k].railLowerThird);
+    ev.frames.forEach((f, k) => check(f.railNear <= R1.railMax, `③第 ${k} 帧画面下 1/3 被 ${R1.railNearM} m 内桥栏挡住 ${(f.railNear * 100).toFixed(0)}% > ${R1.railMax * 100}%`));
+    Object.assign(r1Summary[s.id], { endDistM: +dEnd.toFixed(1), maxDeckOffsetM: +Math.max(...offs).toFixed(2),
+      railNearMaxPct: Math.round(Math.max(...ev.frames.map(f => f.railNear)) * 100), railAllMaxPct: Math.round(Math.max(...rail) * 100), eyeY: last[1] });
+  }
+}
+console.log('control-shots-test R1:', JSON.stringify(r1Summary));
 
 // ⑦ 场景范围
 const g = layout.objects.find(o => o.id === 'ground').geometry.bounds;
