@@ -45,6 +45,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 AREA = os.path.dirname(os.path.dirname(HERE))          # scene-authoring/yuyuan-area
 sys.path.insert(0, os.path.join(os.path.dirname(HERE), 'shared'))   # modules/shared —— eave_kit（主控构件，只读）
 import eave_kit                                         # noqa: E402  主控构件，只读
+sys.path.insert(0, HERE)
+import frame as hk_frame                                # noqa: E402  放置/朝向公式（build/assemble/render 共用）
 
 DEFAULTS = json.load(open(os.path.join(HERE, 'defaults.json'), encoding='utf-8'))
 
@@ -86,10 +88,12 @@ FP = [tuple(p) for p in (fp_raw[:-1] if fp_raw[0] == fp_raw[-1] else fp_raw)]
 HEIGHT, EAVE, RISE = float(dval('height')), float(dval('eave')), float(dval('rise'))
 ROOF_MODE = str(dval('roofMode'))
 STOREYS = int(dval('storeys'))
-PLATFORM_Y = float(dval('platformY'))
-FDIR = OBJ.get('facade', {}).get('dir') or DEFAULTS['facadeDir']
-fd = math.hypot(FDIR[0], FDIR[1]) or 1.0
-FDX, FDZ = FDIR[0] / fd, FDIR[1] / fd
+KIND = OBJ.get('kind', 'hall')
+KCFG = DEFAULTS['kinds'].get(KIND, DEFAULTS['kinds']['hall'])
+# 台基高：layout 字段 > kinds.<kind>.platformY（戏台 1.2，designInference）> defaults.platformY
+PLATFORM_Y = float(OBJ['platformY']) if OBJ.get('platformY') is not None else float(KCFG.get('platformY', DEFAULTS['platformY']))
+PLATFORM_INFERRED = OBJ.get('platformY') is None and 'platformY' in KCFG
+MODE = {'front': KCFG['front'], 'back': KCFG['back'], 'left': KCFG['sides'], 'right': KCFG['sides']}
 
 WALL_T = DEFAULTS['wallThickness']
 INSET = DEFAULTS['wallInset']
@@ -100,68 +104,48 @@ ROOT_RISE, SOFFIT_RISE = DEFAULTS['rootRise'], DEFAULTS['soffitRise']
 CURVE = DEFAULTS['roofCurve']
 XS_MODE = ROOF_MODE == 'gabled'          # 硬山；其余（hip/未知）一律歇山
 
-# ------------------------------------------- 最小面积外接矩形（旋转卡壳） ----
-def convex_hull(pts):
-    pts = sorted(set(pts))
-    def cr(o, a, b):
-        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
-    lo = []
-    for p in pts:
-        while len(lo) >= 2 and cr(lo[-2], lo[-1], p) <= 0:
-            lo.pop()
-        lo.append(p)
-    up = []
-    for p in reversed(pts):
-        while len(up) >= 2 and cr(up[-2], up[-1], p) <= 0:
-            up.pop()
-        up.append(p)
-    return lo[:-1] + up[:-1]
+# ------------------------------------ 平面 / 朝向（frame.py，与 assemble / render 同一份公式） ----
+# 外接矩形 = footprint 最小面积外接矩形；正立面 = 矩形上外法线与 facade.dir 最近的一边（defaults.orient，
+# 见 frame.py 说明）；模块 +Z = 正立面外法线，+X = 沿正立面。建面以矩形中心为原点，最后重锚到面积形心。
+FR = hk_frame.hall_frame(OBJ, DEFAULTS)
+HU, HV = FR['hu'], FR['hv']
+CXX, CZZ = FR['centroid']
+ACU, ACV = hk_frame.to_local(FR, CXX, CZZ)   # 面积形心在矩形系里的坐标（重锚 = −ACU, −ACV）
+COVERAGE = FR['coverage']
 
-HULL = convex_hull(FP)
-best = None
-m = len(HULL)
-for i in range(m):
-    x1, y1 = HULL[i]
-    x2, y2 = HULL[(i + 1) % m]
-    dx, dy = x2 - x1, y2 - y1
-    L = math.hypot(dx, dy)
-    if L < 1e-9:
-        continue
-    ux, uy = dx / L, dy / L
-    us = [(p[0] - x1) * ux + (p[1] - y1) * uy for p in HULL]
-    vs = [-(p[0] - x1) * uy + (p[1] - y1) * ux for p in HULL]
-    a = (max(us) - min(us)) * (max(vs) - min(vs))
-    if best is None or a < best[0]:
-        best = (a, (ux, uy), (min(us), max(us), min(vs), max(vs)), (x1, y1))
-_area, (ux, uy), (u0, u1, v0, v1), (px, py) = best
-# u 取长轴；v 轴 = u 转 90°，翻转让 +v 指向 facade.dir
-if u1 - u0 < v1 - v0:
-    ux, uy = -uy, ux
-    u0, u1, v0, v1 = v0, v1, -u1, -u0
-if (-uy) * FDX + ux * FDZ < 0:            # v 轴 (−uy, ux) 与 facade.dir 同向为正
-    ux, uy = -ux, -uy
-    u0, u1, v0, v1 = -u1, -u0, -v1, -v0
-HU, HV = (u1 - u0) / 2, (v1 - v0) / 2
-HUW, HVW = HU - INSET, HV - INSET
-
-def to_local(wx, wz):
-    du, dz = wx - px, wz - py
-    return du * ux + dz * uy, -du * uy + dz * ux
-
-# 多边形面积形心（GOAL 冻结的放置公式；与 tests/assemble 同式）
-nFP = len(FP)
-A2 = sum(FP[i][0] * FP[(i + 1) % nFP][1] - FP[(i + 1) % nFP][0] * FP[i][1] for i in range(nFP)) / 2
-if abs(A2) < 1e-6:
-    CXX = sum(p[0] for p in FP) / nFP
-    CZZ = sum(p[1] for p in FP) / nFP
-else:
-    CXX = sum((FP[i][0] + FP[(i + 1) % nFP][0]) * (FP[i][0] * FP[(i + 1) % nFP][1] - FP[(i + 1) % nFP][0] * FP[i][1])
-              for i in range(nFP)) / (6 * A2)
-    CZZ = sum((FP[i][1] + FP[(i + 1) % nFP][1]) * (FP[i][0] * FP[(i + 1) % nFP][1] - FP[(i + 1) % nFP][0] * FP[i][1])
-              for i in range(nFP)) / (6 * A2)
-ACU, ACV = to_local(CXX, CZZ)              # 面积形心在矩形系里的坐标
-ACU -= (u0 + u1) / 2                        # 建面以矩形中心为原点：再减矩形中心，
-ACV -= (v0 + v1) / 2                        # 得「形心 − 矩形中心」偏移（重锚 = −ACU, −ACV）
+# ---- 共享边（与邻栋 footprint 重合的边，从 layout 检出）：该侧任何构件不越过边线 ----
+# 每侧参数 inset / platformOut / eaveOver，缺省取 defaults；有共享边的一侧：台基齐边、檐口出挑截到边线、
+# 墙线按需内收（歇山出檐在 kit 里四面同值，所以歇山靠内收墙线让出 over+chu）。记进 recipe.sides。
+SHARED = hk_frame.shared_edges(OBJ, LAYOUT['objects'], DEFAULTS)
+LIMITS = hk_frame.side_limits(FR, SHARED)
+XI = DEFAULTS['xieshan']
+# 墙线外最远构件：窗框+格心 0.172 / 柱 0.17 / 勒脚 0.15 / 角柱斗拱半宽 0.21 / 额枋端头 0.15 → 取 0.22
+WALL_OUTER = max(DEFAULTS['columnR'], (WALL_T + 0.08) / 2 + 0.012, WALL_T / 2 + 0.03, 0.21) + 0.01
+SIDE_H = {'front': HV, 'back': HV, 'right': HU, 'left': HU}
+SIDES = {}
+for sd, hh in SIDE_H.items():
+    prm_s = {'inset': INSET, 'platformOut': P_OUT, 'eaveOver': OVER, 'shared': False}
+    if sd in LIMITS:
+        lim = LIMITS[sd] - DEFAULTS.get('sharedEdgeClearM', 0.0)
+        prm_s['shared'] = True
+        prm_s['limitFromRectCenter'] = round(lim, 4)
+        prm_s['platformOut'] = min(P_OUT, lim - hh)
+        need = hh - lim + WALL_OUTER
+        if not XS_MODE or sd in ('front', 'back'):
+            need_roof = hh - lim + (OVER + XI['chu'] + 0.15 if not XS_MODE else 0.0)   # 歇山：出檐+出翘+戗脊截面余量
+            need = max(need, need_roof)
+        prm_s['inset'] = max(INSET, need)
+        if XS_MODE and sd in ('front', 'back'):
+            prm_s['eaveOver'] = max(0.0, lim - (hh - prm_s['inset']))
+    SIDES[sd] = prm_s
+WF, WB = HV - SIDES['front']['inset'], HV - SIDES['back']['inset']
+WR, WL = HU - SIDES['right']['inset'], HU - SIDES['left']['inset']
+HVW, VOFF = (WF + WB) / 2, (WF - WB) / 2        # 建面系 = 墙线中心；矩形系 v = 建面系 v + VOFF
+HUW, UOFF = (WR + WL) / 2, (WR - WL) / 2
+OVER_F, OVER_B = SIDES['front']['eaveOver'], SIDES['back']['eaveOver']
+PF, PB = HV + SIDES['front']['platformOut'] - VOFF, HV + SIDES['back']['platformOut'] + VOFF   # 台基前/后沿（建面系）
+PR, PL = HU + SIDES['right']['platformOut'] - UOFF, HU + SIDES['left']['platformOut'] + UOFF
+SH_U, SH_V = UOFF - ACU, VOFF - ACV             # 建面系 → 模块本地（原点 = 面积形心）
 
 # ------------------------------------------------------------- 柱网 ----
 bay_n = max(2, round(2 * HUW / DEFAULTS['bayTarget']))
@@ -171,11 +155,34 @@ if 2 * HUW / bay_n < DEFAULTS['bayMin'] and bay_n > 2:
     bay_n -= 1
 BAY = 2 * HUW / bay_n
 XS = [-HUW + BAY * i for i in range(bay_n + 1)]
-LEAVES = min(DEFAULTS['leafPerBayMax'], max(DEFAULTS['leafPerBayMin'], round(BAY / DEFAULTS['leafPitch'])))
+# 每开间扇数：按扇宽 leafPitch 自适应，常规开间（3.2–3.8 m）落在 6–7 扇；窄开间（小厅 / 小轩）不强塞 6 扇，最少 2 扇
+LEAVES = min(DEFAULTS['leafPerBayMax'], max(DEFAULTS['leafPerBayMinNarrow'] if BAY < DEFAULTS['leafPerBayMin'] * DEFAULTS['leafPitch']
+                                             else DEFAULTS['leafPerBayMin'], round(BAY / DEFAULTS['leafPitch'])))
+# 小体量檐高上限（designInference）：layout 檐高是类别缺省 4.0 m，面宽 4–5 m 的小厅/小轩按它建会成细高塔状；
+# 檐高 = min(layout eave, max(smallEaveMin, smallEaveK·面宽 + smallEaveC))，常规面宽（≥ 6.5 m）不受影响。
+EAVE_LAYOUT = EAVE
+EAVE = min(EAVE, max(DEFAULTS['smallEaveMin'], DEFAULTS['smallEaveK'] * 2 * HU + DEFAULTS['smallEaveC']))
+EAVE_INFERRED = EAVE < EAVE_LAYOUT - 1e-6
 EAVE_Z = PLATFORM_Y + EAVE
+# 屋面坡度下限（designInference）：layout rise 是类别缺省 1.9 m，大进深厅会比已放行的仰山堂样板（檐口→正脊约 17.7°）更平；
+# 取 rise = max(layout rise, (墙线半进深 + 出檐) · tan(minRoofPitchDeg))，样板本身不受影响。
+RISE_LAYOUT = RISE
+RISE = max(RISE, (HVW + OVER) * math.tan(math.radians(DEFAULTS['minRoofPitchDeg'])))   # 按缺省出檐的全坡长计
+# 坡度上限（designInference）：进深 2–3 m 的小屋面按 1.9 m 举高会到 44°，压到 maxRoofPitchDeg
+RISE = min(RISE, (HVW + OVER) * math.tan(math.radians(DEFAULTS['maxRoofPitchDeg'])))
+RISE_INFERRED = abs(RISE - RISE_LAYOUT) > 1e-6
 RIDGE_Z = EAVE_Z + RISE
-DOOR_H = DEFAULTS['doorH']
+DOOR_H = min(DEFAULTS['doorH'], EAVE - 0.5)          # 檐高压低时门高让出额枋
 COL_R = DEFAULTS['columnR']
+# 多层（storeys ≥ 2，B4 楼）：层高 = layout height / storeys；底层顶 = 腰檐 + 二层平座楼面；二层正立面格扇后退 upperSetback
+# 形成平座（前檐柱、栏杆留在底层墙线上）。storeys 1 时整栋单层（与 wave1 样板同）。
+MULTI = STOREYS >= 2
+STOREY_H = HEIGHT / STOREYS if MULTI else EAVE
+SLAB_T = DEFAULTS['floorSlabT']
+Z1 = PLATFORM_Y + STOREY_H                            # 二层楼面（平座）标高
+SETBACK = DEFAULTS['upperSetback'] if MULTI else 0.0
+DOOR_H1 = min(DEFAULTS['doorH'], STOREY_H - 0.55) if MULTI else DOOR_H
+DOOR_H2 = min(DEFAULTS['doorH'], EAVE_Z - (Z1 + SLAB_T) - 0.5) if MULTI else None
 
 # ------------------------------------------------------------- 材质 ----
 TEX_DIRS = [os.path.abspath(os.path.join(AREA, '..', '..', '..', '..', '..', 'asset-authoring', 'yuyuan-entry', 'source-kit', 'textures')),
@@ -230,21 +237,27 @@ def mat(name, rgb=None, rough=.8, base=None, normal=None, tint=None, tile=(1, 1)
     TILE_OF[name] = tile
     return m
 
+# 框料深红木：底色直接 = sRGB timberSrgb（#6a2e22），不再乘 wood-stain 贴图（旧版贴图均值 sRGB(68,38,28)
+# 再乘 #6a2e22 线性值 → 有效底色约 sRGB(26,5,3)，格扇整面读成黑色）；木纹只走法线图。
+# hk-dark-timber 只留给额枋 / 檐下阴影件（檐底、瓦头、脊）；格心背衬另用 hk-lattice-back（室内暗部）。
 M = {'wall': mat('hk-white-wall', rough=.85, base='PaintedPlaster017_2K-JPG_Color_1K.jpg', tint='f2efe8', tile=(2.2, 2.2)),
      'stone': mat('hk-platform-stone', rough=.92, base='Bricks061_2K-JPG_Color_1K.jpg', tint='9a968c', tile=(2.0, 1.0)),
      'brick': mat('hk-plinth-brick', rough=.9, base='Bricks061_2K-JPG_Color_1K.jpg', tint='6b7370', tile=(0.9, 0.9)),
-     'wood': mat('hk-timber-darkred', rough=.7, base='wood-stain-color.jpg', tint='6a2e22', normal='Wood092_2K-JPG_NormalGL_1K.jpg', tile=(0.9, 2.2)),
+     'wood': mat('hk-timber-darkred', lin(DEFAULTS['timberSrgb']), rough=.62, normal='Wood092_2K-JPG_NormalGL_1K.jpg', tile=(0.9, 2.2)),
      'roof': mat('hk-roof-tile', rough=.8, base='roof-color.jpg', normal='roof-normal.png', tile=(1.4, 1.2)),
-     'dark': mat('hk-dark-timber', lin('241d18'), .6)}
+     'dark': mat('hk-dark-timber', lin(DEFAULTS['darkTimberSrgb']), .6),
+     'latback': mat('hk-lattice-back', lin(DEFAULTS['latticeBackSrgb']), .35)}
+META['hk-timber-darkred']['baseColorSrgb'] = DEFAULTS['timberSrgb']
 MAT_OF = {'wall': M['wall'], 'stone': M['stone'], 'brick': M['brick'], 'wood': M['wood'],
-          'roof': M['roof'], 'dark': M['dark']}
+          'roof': M['roof'], 'dark': M['dark'], 'latback': M['latback']}
 
 def make_lattice_image():
     """格心解析 alpha 贴图（1 m 见方 = 8x8 格，方格 + 斜格），生成到模块 textures/ 并 pack。"""
     W = H = 160
     cell, bar = 20, 3
     px = bytearray(W * H * 4)
-    base = (36, 29, 24)
+    tc = DEFAULTS['timberSrgb']
+    base = tuple(int(tc[i:i + 2], 16) for i in (0, 2, 4))     # 格心棂条 = 框料同色深红木（sRGB 字节）
     for y in range(H):
         for x in range(W):
             dxx, dyy = x % cell, y % cell
@@ -279,7 +292,8 @@ def make_lattice_image():
         m.blend_method = 'CLIP'
     except AttributeError:
         pass
-    META['hk-lattice-core'] = {'alpha': 'textures/lattice-core-alpha.png', 'cellM': 0.125, 'alphaMode': 'MASK', 'alphaCutoff': 0.5}
+    META['hk-lattice-core'] = {'alpha': 'textures/lattice-core-alpha.png', 'cellM': 0.125, 'alphaMode': 'MASK', 'alphaCutoff': 0.5,
+                               'barSrgb': tc, 'sharedImage': 'lattice-core-alpha 160x160（所有厅同名同尺寸，总装按名+尺寸去重）'}
     TILE_OF['hk-lattice-core'] = (1.0, 1.0)
     return m
 
@@ -375,87 +389,183 @@ eave_kit.init(_add_local)
 # --------------------------------------------------------------- 建造 ----
 # ---- 台基 / 地面 / 踏步（hall-base）
 PART = 'hall-base'
-box('platform', (0, PLATFORM_Y / 2, 0), (2 * HU + 2 * P_OUT, PLATFORM_Y, 2 * HV + 2 * P_OUT), 'stone', collision=True)
-box('platform-cap', (0, PLATFORM_Y - 0.04, 0), (2 * HU + 2 * P_OUT + 0.08, 0.08, 2 * HV + 2 * P_OUT + 0.08), 'stone')
+box('platform', ((PR - PL) / 2, PLATFORM_Y / 2, (PF - PB) / 2), (PR + PL, PLATFORM_Y, PF + PB), 'stone', collision=True)
+# 压顶石外挑 4 cm；共享边一侧不外挑（齐边）
+cap_o = {k: (0.0 if SIDES[k]['shared'] else 0.04) for k in SIDES}
+box('platform-cap', ((PR + cap_o['right'] - PL - cap_o['left']) / 2, PLATFORM_Y - 0.04, (PF + cap_o['front'] - PB - cap_o['back']) / 2),
+    (PR + PL + cap_o['right'] + cap_o['left'], 0.08, PF + PB + cap_o['front'] + cap_o['back']), 'stone')
 box('floor', (0, PLATFORM_Y + 0.01, 0), (2 * HUW - 0.4, 0.04, 2 * HVW - 0.4), 'stone')
-step_w = min(DEFAULTS['stepWidth'], 2 * HUW * 0.5)
-for k in range(3):
-    zf = HV + P_OUT + DEFAULTS['stepTread'] * (3 - k)
-    box('step-%d' % k, (0, PLATFORM_Y * (k + 1) / 3 / 2, zf - DEFAULTS['stepTread'] / 2),
-        (step_w, PLATFORM_Y * (k + 1) / 3, DEFAULTS['stepTread']), 'stone', collision=True)
+# 踏步：级数按台基高（每级 ≤ 0.18 m，至少 3 级），放在 kinds.<kind>.steps 一侧
+n_steps = max(3, math.ceil(PLATFORM_Y / 0.18))
+tread = DEFAULTS['stepTread']
+STEPS_SIDE = KCFG.get('steps', 'front')
+for k in range(n_steps):
+    hk = PLATFORM_Y * (k + 1) / n_steps
+    off = tread * (n_steps - k) - tread / 2           # 离台基边的距离（最低一级最远）
+    if STEPS_SIDE in ('front', 'back'):
+        sg = 1 if STEPS_SIDE == 'front' else -1
+        edge = PF if sg > 0 else PB
+        sw = min(DEFAULTS['stepWidth'], 2 * HUW * 0.5)
+        box('step-%d' % k, (0, hk / 2, sg * (edge + off)), (sw, hk, tread), 'stone', collision=True)
+    else:
+        sg = 1 if STEPS_SIDE == 'right' else -1
+        edge = PR if sg > 0 else PL
+        sw = min(1.4, 2 * HVW * 0.4)
+        box('step-%d' % k, (sg * (edge + off), hk / 2, -HVW * 0.45), (tread, hk, sw), 'stone', collision=True)
 
-# ---- 柱网 / 额枋（hall-frame）
-PART = 'hall-frame'
-for x in XS:
-    column('front-column-%.2f' % x, x, HVW, COL_R, PLATFORM_Y, EAVE_Z)
-    column('rear-column-%.2f' % x, x, -HVW, COL_R, PLATFORM_Y, EAVE_Z)
-arch_h = DEFAULTS['architraveH']
-az = EAVE_Z - 0.42
-box('architrave-front', (0, az + arch_h / 2, HVW), (2 * HUW + 0.3, arch_h, 0.16), 'wood')
-box('architrave-back', (0, az + arch_h / 2, -HVW), (2 * HUW + 0.3, arch_h, 0.16), 'wood')
-box('architrave-l', (-HUW, az + arch_h / 2, 0), (0.16, arch_h, 2 * HVW + 0.3), 'wood')
-box('architrave-r', (HUW, az + arch_h / 2, 0), (0.16, arch_h, 2 * HVW + 0.3), 'wood')
-
-# ---- 墙身 / 勒脚 / 半窗（hall-wall）
-PART = 'hall-wall'
 wt = WALL_T
-box('wall-back', (0, PLATFORM_Y + (EAVE_Z - PLATFORM_Y) / 2, -HVW), (2 * HUW, EAVE_Z - PLATFORM_Y, wt), 'wall', collision=True)
-box('wall-gable-l', (-HUW, PLATFORM_Y + (EAVE_Z - PLATFORM_Y) / 2, 0), (wt, EAVE_Z - PLATFORM_Y, 2 * HVW), 'wall', collision=True)
-box('wall-gable-r', (HUW, PLATFORM_Y + (EAVE_Z - PLATFORM_Y) / 2, 0), (wt, EAVE_Z - PLATFORM_Y, 2 * HVW), 'wall', collision=True)
 ph = DEFAULTS['plinthH']
-box('plinth-back', (0, PLATFORM_Y + ph / 2, -HVW), (2 * HUW + 0.06, ph, wt + 0.06), 'brick')
-box('plinth-gable-l', (-HUW, PLATFORM_Y + ph / 2, 0), (wt + 0.06, ph, 2 * HVW + 0.06), 'brick')
-box('plinth-gable-r', (HUW, PLATFORM_Y + ph / 2, 0), (wt + 0.06, ph, 2 * HVW + 0.06), 'brick')
-# 前墙只有门楣墙（整面格扇落地）；门上过梁分开间
-lintel0 = PLATFORM_Y + DOOR_H
-box('wall-front-lintel', (0, (lintel0 + EAVE_Z) / 2, HVW), (2 * HUW, EAVE_Z - lintel0, wt), 'wall', collision=True)
-# 半窗：背墙每开间一樘 + 两山墙各一樘（格心 alpha）
 win = DEFAULTS['window']
-wz0, wz1 = PLATFORM_Y + win['sill'], PLATFORM_Y + win['sill'] + win['h']
-for i in range(bay_n):
-    x = (XS[i] + XS[i + 1]) / 2
-    box('backwin-frame-%d' % i, (x, (wz0 + wz1) / 2, -HVW), (win['w'], win['h'], wt + 0.08), 'wood')
-    panel('backwin-core-%d' % i, (x, (wz0 + wz1) / 2, -HVW - wt / 2 - 0.03), win['w'] - 0.12, win['h'] - 0.12, 'lattice')
-    COLL.append({'name': 'backwin-%d' % i, 'center': [x, (wz0 + wz1) / 2, -HVW], 'size': [win['w'], win['h'], wt], 'type': 'box'})
-for sx in (-1, 1):
-    box('gablewin-frame-%d' % sx, (sx * HUW, (wz0 + wz1) / 2, HVW * 0.35), (wt + 0.08, win['h'], win['w']), 'wood')
-    # 山墙半窗格心：面板朝 ±X（GLB x 固定在山墙外皮外 3 cm，z 向展宽、y 向展高）
-    gw = win['w'] - 0.12
-    gh = win['h'] - 0.12
-    xg = sx * (HUW + wt / 2 + 0.03)
-    mesh_glb('gablewin-core-%d' % sx,
-             [((xg, wz0 + 0.06 + b, HVW * 0.35 + a), (a + gw / 2, b + gh / 2))
-              for a, b in ((-gw / 2, 0), (gw / 2, 0), (gw / 2, gh), (-gw / 2, gh))],
-             [(0, 1, 2, 3)], 'lattice')
+RAIL_H = DEFAULTS['railingH']
+arch_h = DEFAULTS['architraveH']
 
-# ---- 正立面格扇（hall-facade）：每开间 LEAVES 扇，深红木框 + 格心 alpha + 裙板
-PART = 'hall-facade'
-leaf_w_all = []
-for i in range(bay_n):
-    a, b = XS[i] + 0.06, XS[i + 1] - 0.06
-    lw = (b - a) / LEAVES
-    for k in range(LEAVES):
-        x0 = a + lw * k
-        xc = x0 + lw / 2
-        box('door-frame-%d-%d' % (i, k), (xc, PLATFORM_Y + DOOR_H / 2, HVW), (lw - 0.03, DOOR_H, 0.1), 'wood')
-        core_h = DOOR_H - 1.02 - 0.12
-        panel('door-core-%d-%d' % (i, k), (xc, PLATFORM_Y + 1.02 + core_h / 2, HVW + 0.055), lw - 0.16, core_h, 'lattice')
-        box('door-panel-%d-%d' % (i, k), (xc, PLATFORM_Y + 0.12 + (0.9 - 0.12) / 2, HVW + 0.02), (lw - 0.14, 0.78, 0.05), 'dark')
-        COLL.append({'name': 'door-%d-%d' % (i, k), 'center': [xc, PLATFORM_Y + DOOR_H / 2, HVW], 'size': [lw, DOOR_H, 0.1], 'type': 'box'})
-        leaf_w_all.append(lw)
+
+def quad_z(name, xc, yc, z, w, h, sg, m):
+    """竖直面板（GLB x 宽 w、y 高 h）在 z 处，法线朝 sg·Z。"""
+    pts = ((-w / 2, -h / 2), (w / 2, -h / 2), (w / 2, h / 2), (-w / 2, h / 2)) if sg > 0 else \
+          ((w / 2, -h / 2), (-w / 2, -h / 2), (-w / 2, h / 2), (w / 2, h / 2))
+    return mesh_glb(name, [((xc + a, yc + b, z), (a + w / 2, b + h / 2)) for a, b in pts], [(0, 1, 2, 3)], m)
+
+
+def quad_x(name, x, yc, zc, w, h, sg, m):
+    """竖直面板（GLB z 宽 w、y 高 h）在 x 处，法线朝 sg·X。"""
+    pts = [((x, yc + b, zc + a), (a + w / 2, b + h / 2)) for a, b in ((-w / 2, -h / 2), (w / 2, -h / 2), (w / 2, h / 2), (-w / 2, h / 2))]
+    return mesh_glb(name, pts, [(3, 2, 1, 0) if sg > 0 else (0, 1, 2, 3)], m)
+
+
+def railing_z(tag, zl, sg, y0):
+    """沿 u 的落地栏杆（每开间：上下槛 + 花格 alpha 心板），碰撞高 RAIL_H。"""
+    for i in range(bay_n):
+        a_, b_ = XS[i] + COL_R, XS[i + 1] - COL_R
+        xc, L_ = (a_ + b_) / 2, b_ - a_
+        box('%s-top-%d' % (tag, i), (xc, y0 + RAIL_H - 0.04, zl), (L_, 0.08, 0.1), 'wood')
+        box('%s-bot-%d' % (tag, i), (xc, y0 + 0.08, zl), (L_, 0.08, 0.1), 'wood')
+        quad_z('%s-core-%d' % (tag, i), xc, y0 + (0.12 + RAIL_H - 0.08) / 2, zl + sg * 0.01, L_, RAIL_H - 0.2, sg, 'lattice')
+        COLL.append({'name': '%s-%d' % (tag, i), 'center': [xc, y0 + RAIL_H / 2, zl], 'size': [L_, RAIL_H, 0.12], 'type': 'box'})
+
+
+def build_storey(tg, y0, y1, door_h, vf_lat, windows=True):
+    """一层的柱 / 额枋 / 墙 / 半窗 / 格扇 / 栏杆。tg = 名字前缀（'' 底层，'s2-' 二层）；
+    y0 = 楼面、y1 = 该层檐下；vf_lat = 正立面格扇线（二层后退）；前后檐柱始终在 ±HVW。"""
+    global PART
+    wz0, wz1 = y0 + win['sill'], y0 + win['sill'] + win['h']
+    lintel0 = y0 + door_h
+    # ---- 柱网 / 额枋（hall-frame）
+    PART = 'hall-frame'
+    for x in XS:
+        column('%sfront-column-%.2f' % (tg, x), x, HVW, COL_R, y0, y1)
+        column('%srear-column-%.2f' % (tg, x), x, -HVW, COL_R, y0, y1)
+    for z in ZS_SIDE[2:]:
+        for sx in (-1, 1):
+            column('%sside-column-%d' % (tg, sx), sx * HUW, z, COL_R, y0, y1)
+    az = y1 - 0.42
+    box(tg + 'architrave-front', (0, az + arch_h / 2, HVW), (2 * HUW + 0.3, arch_h, 0.16), 'dark')
+    box(tg + 'architrave-back', (0, az + arch_h / 2, -HVW), (2 * HUW + 0.3, arch_h, 0.16), 'dark')
+    box(tg + 'architrave-l', (-HUW, az + arch_h / 2, 0), (0.16, arch_h, 2 * HVW + 0.3), 'dark')
+    box(tg + 'architrave-r', (HUW, az + arch_h / 2, 0), (0.16, arch_h, 2 * HVW + 0.3), 'dark')
+    # ---- 墙身 / 勒脚 / 半窗（hall-wall）：按 MODE 逐侧
+    PART = 'hall-wall'
+    for sd, sg in (('front', 1), ('back', -1)):
+        zl = sg * (vf_lat if sd == 'front' else HVW)
+        if MODE[sd] == 'wall':
+            box(tg + 'wall-%s' % sd, (0, y0 + (y1 - y0) / 2, zl), (2 * HUW, y1 - y0, wt), 'wall', collision=True)
+            if not tg:
+                box('plinth-%s' % sd, (0, y0 + ph / 2, zl), (2 * HUW + 0.06, ph, wt + 0.06), 'brick')
+            if windows and KCFG.get('backWindows', True):
+                for i in range(bay_n):
+                    x = (XS[i] + XS[i + 1]) / 2
+                    box(tg + '%swin-frame-%d' % (sd, i), (x, (wz0 + wz1) / 2, zl), (win['w'], win['h'], wt + 0.08), 'wood')
+                    zf = zl + sg * (wt + 0.08) / 2
+                    for nm, dz_, mm in (('back', 0.005, 'latback'), ('core', 0.012, 'lattice')):
+                        quad_z(tg + '%swin-%s-%d' % (sd, nm, i), x, (wz0 + wz1) / 2, zf + sg * dz_, win['w'] - 0.12, win['h'] - 0.12, sg, mm)
+                    COLL.append({'name': tg + '%swin-%d' % (sd, i), 'center': [x, (wz0 + wz1) / 2, zl], 'size': [win['w'], win['h'], wt], 'type': 'box'})
+        elif MODE[sd] == 'lattice':
+            # 门楣墙（整面格扇落地）；格扇在 hall-facade
+            box(tg + 'wall-%s-lintel' % sd, (0, (lintel0 + y1) / 2, zl), (2 * HUW, y1 - lintel0, wt), 'wall', collision=True)
+        elif MODE[sd] == 'railing':
+            railing_z(tg + 'rail-%s' % sd, zl, sg, y0)
+    for sd, sx in (('left', -1), ('right', 1)):
+        xl = sx * HUW
+        if MODE[sd] == 'wall':
+            box(tg + 'wall-gable-%s' % sd[0], (xl, y0 + (y1 - y0) / 2, 0), (wt, y1 - y0, 2 * HVW), 'wall', collision=True)
+            if not tg:
+                box('plinth-gable-%s' % sd[0], (xl, y0 + ph / 2, 0), (wt + 0.06, ph, 2 * HVW + 0.06), 'brick')
+            if windows:
+                box(tg + 'gablewin-frame-%d' % sx, (xl, (wz0 + wz1) / 2, HVW * 0.35 - SETBACK / 2), (wt + 0.08, win['h'], win['w']), 'wood')
+                for nm, dx_, mm in (('back', 0.005, 'latback'), ('core', 0.012, 'lattice')):
+                    quad_x(tg + 'gablewin-%s-%d' % (nm, sx), sx * (HUW + (wt + 0.08) / 2 + dx_), (wz0 + wz1) / 2, HVW * 0.35 - SETBACK / 2,
+                           win['w'] - 0.12, win['h'] - 0.12, sx, mm)
+        elif MODE[sd] == 'railing':
+            zs = sorted(ZS_SIDE)
+            for i in range(len(zs) - 1):
+                a_, b_ = zs[i] + COL_R, zs[i + 1] - COL_R
+                zc, L_ = (a_ + b_) / 2, b_ - a_
+                box(tg + 'rail-%s-top-%d' % (sd, i), (xl, y0 + RAIL_H - 0.04, zc), (0.1, 0.08, L_), 'wood')
+                box(tg + 'rail-%s-bot-%d' % (sd, i), (xl, y0 + 0.08, zc), (0.1, 0.08, L_), 'wood')
+                quad_x(tg + 'rail-%s-core-%d' % (sd, i), xl + sx * 0.01, y0 + (0.12 + RAIL_H - 0.08) / 2, zc, L_, RAIL_H - 0.2, sx, 'lattice')
+                COLL.append({'name': tg + 'rail-%s-%d' % (sd, i), 'center': [xl, y0 + RAIL_H / 2, zc], 'size': [0.12, RAIL_H, L_], 'type': 'box'})
+    # ---- 格扇（hall-facade）：lattice 侧每开间 LEAVES 扇，深红木框 + 暗背衬 + 同色棂条 alpha + 裙板凸出
+    PART = 'hall-facade'
+    for sd, sg in (('front', 1), ('back', -1)):
+        if MODE[sd] != 'lattice':
+            continue
+        zl = sg * (vf_lat if sd == 'front' else HVW)
+        for i in range(bay_n):
+            a, b = XS[i] + 0.06, XS[i + 1] - 0.06
+            lw = (b - a) / LEAVES
+            for k in range(LEAVES):
+                xc = a + lw * k + lw / 2
+                t2 = tg + ('' if sd == 'front' else 'b')
+                box('door%s-frame-%d-%d' % (t2, i, k), (xc, y0 + door_h / 2, zl), (lw - 0.03, door_h, 0.1), 'wood')
+                core_h = door_h - 1.02 - 0.12
+                quad_z('door%s-back-%d-%d' % (t2, i, k), xc, y0 + 1.02 + core_h / 2, zl + sg * 0.053, lw - 0.16, core_h, sg, 'latback')
+                quad_z('door%s-core-%d-%d' % (t2, i, k), xc, y0 + 1.02 + core_h / 2, zl + sg * 0.058, lw - 0.16, core_h, sg, 'lattice')
+                box('door%s-panel-%d-%d' % (t2, i, k), (xc, y0 + 0.14 + 0.62 / 2, zl + sg * 0.062), (lw - 0.18, 0.62, 0.024), 'wood')
+                COLL.append({'name': 'door%s-%d-%d' % (t2, i, k), 'center': [xc, y0 + door_h / 2, zl], 'size': [lw, door_h, 0.1], 'type': 'box'})
+
+
+# 两山开敞 / 栏杆且进深 > 5 m 时山面加中柱
+ZS_SIDE = [-HVW, HVW] + ([0.0] if (2 * HVW > 5.0 and MODE['left'] != 'wall') else [])
+if not MULTI:
+    build_storey('', PLATFORM_Y, EAVE_Z, DOOR_H, HVW)
+else:
+    # 底层：格扇在前檐柱线
+    build_storey('', PLATFORM_Y, Z1, DOOR_H1, HVW)
+    # 平座楼面（整层楼板，前沿到底层墙线）+ 平座栏杆（前檐柱线上）
+    PART = 'hall-frame'
+    box('floor-slab', (0, Z1 + SLAB_T / 2, 0), (2 * HUW + 0.1, SLAB_T, 2 * HVW + 0.1), 'wood')
+    PART = 'hall-wall'
+    railing_z('s2-balcony-rail', HVW, 1, Z1 + SLAB_T)
+    # 腰檐（eave_kit.eave_skirt）：绕底层墙线一圈，根部在平座楼板下；正立面若有共享边限位，环线前沿内收让檐口不越边线
+    sk = DEFAULTS['waistEave']
+    sk_over = sk['over']
+    allow_f = (OVER_F if XS_MODE else OVER)             # 屋面正立面允许出挑（共享边时已截短）
+    vf_sk = HVW - max(0.0, sk_over - allow_f)
+    prm_sk = {'over': sk_over, 'chu': 0.0, 'qiao': 0.0, 'reach': 0.0, 'drop': sk['drop'], 'tileH': TILE_H * 0.8,
+              'boardH': BOARD_H * 0.8, 'curve': 1.7, 'soffitRise': 0.1, 'rootRise': sk['rootRise']}
+    eave_kit.eave_skirt('waist-eave', [(-HUW, -HVW), (HUW, -HVW), (HUW, vf_sk), (-HUW, vf_sk)],
+                        Z1 - sk['rootRise'] - 0.02, prm_sk, 'hall-roof')
+    # 二层：格扇后退 SETBACK，前檐柱仍在 ±HVW
+    build_storey('s2-', Z1 + SLAB_T, EAVE_Z, DOOR_H2, HVW - SETBACK)
 
 # ---- 山墙封顶三角（硬山）/ 屋面（hall-roof）
 PART = 'hall-roof'
 if XS_MODE:
     # 两坡凹曲屋面：檐口线 v=±(HVW+OVER)、z=EAVE_Z-DROP → 正脊 v=0、z=RIDGE_Z，u 到 ±HUW（与山墙齐平）
-    eave_v, eave_z = HVW + OVER, EAVE_Z - DROP
+    # 两坡同一条剖面（缺省出檐 OVER 时的凹曲线）；共享边一侧出檐截短 = 在同一剖面上截断，檐口抬高、不改屋脊
+    E_FULL, eave_z0 = HVW + OVER, EAVE_Z - DROP
     nu, nv = 10, 6
+
+    def prof(av):
+        return eave_z0 + (RIDGE_Z - eave_z0) * (max(0.0, 1 - av / E_FULL) ** CURVE)
     for sgn, tagp in ((1, 's'), (-1, 'n')):
+        eave_v = HVW + (OVER_F if sgn > 0 else OVER_B)
+        eave_z = prof(eave_v)
         items, faces = [], []
         for j in range(nv + 1):
             t = j / nv
             v = sgn * eave_v * (1 - t)               # 檐口 v=±eave_v → 正脊 v=0
-            z = eave_z + (RIDGE_Z - eave_z) * (t ** CURVE)
+            z = prof(abs(v))
             for c in range(nu + 1):
                 u = -HUW + 2 * HUW * c / nu
                 items.append(((u, z, v), (u + v, z)))
@@ -484,7 +594,7 @@ if XS_MODE:
         for c in range(nu + 1):
             u = -HUW + 2 * HUW * c / nu
             it.append(((u, eave_z - TILE_H - BOARD_H, eave_v * sgn), (u, 0)))
-            it.append(((u, EAVE_Z + SOFFIT_RISE, HVW * sgn), (u, OVER)))
+            it.append(((u, max(EAVE_Z + SOFFIT_RISE, eave_z - TILE_H - BOARD_H), HVW * sgn), (u, eave_v - HVW)))
         for c in range(nu):
             a0 = 2 * c
             # 2c=檐口外缘点, 2c+1=墙线点；不交叉的四边形，背面坡反向
@@ -539,18 +649,31 @@ if XS_MODE:
 else:
     # 歇山：主控构件全套（下檐腰檐 + 上段两坡 + 山花博风 + 正脊戗脊）
     xi = DEFAULTS['xieshan']
-    prm = {'over': OVER, 'qiao': QIAO, 'chu': xi['chu'], 'reach': xi['reach'],
+    # 小屋面起翘 / 出翘范围按最短墙线封顶（同 eave_kit.eave_path 的规则：reach ≤ 0.28·最短边，qiao/chu 按 √比例缩），
+    # 否则 3–4 m 的小轩整条檐都在翼角核里、翘成波浪。记 recipe.xieshanScaled。
+    XS_REACH, XS_QIAO, XS_CHU = xi['reach'], QIAO, xi['chu']
+    min_edge = min(2 * HUW, 2 * HVW)
+    if XS_REACH > 0.28 * min_edge:
+        k_ = (0.28 * min_edge / XS_REACH) ** 0.5
+        XS_QIAO, XS_CHU, XS_REACH = QIAO * k_, xi['chu'] * k_, 0.28 * min_edge
+    XIESHAN_SCALED = {'reach': round(XS_REACH, 3), 'qiao': round(XS_QIAO, 3), 'chu': round(XS_CHU, 3)}
+    prm = {'over': OVER, 'qiao': XS_QIAO, 'chu': XS_CHU, 'reach': XS_REACH,
            'breakZ': EAVE_Z + RISE * xi['breakFrac'], 'ridgeZ': RIDGE_Z,
            'breakInset': min(2 * HUW, 2 * HVW) * xi['breakInsetFrac'],
            'gableInset': (2 * HUW) * xi['gableInsetFrac'],
            'drop': DROP, 'tileH': TILE_H, 'boardH': BOARD_H, 'curve': 1.6,
-           'ridgeEndLift': xi['ridgeEndLift']}
+           'ridgeEndLift': xi['ridgeEndLift'],
+           'ornamentScale': DEFAULTS.get('ornamentScale', 'auto')}      # 小屋面正脊/吻/戗脊按进深缩（eave_kit.ornament_scale）
     eave_kit.xieshan_roof('hall-roof', (-HUW, HUW, -HVW, HVW), EAVE_Z, prm, 'hall-roof')
 
 # ---- 斗拱简化（eave_kit.brackets）：前后檐柱柱顶。叠块顶须低于墙线处坡面
 #（坡面在墙线处 = eave_z + rise·(over/eave_v)^curve ≈ +0.20），否则穿出屋面。
-pts = [(x, HVW, 0.0, 1.0) for x in XS] + [(x, -HVW, 0.0, -1.0) for x in XS]
-eave_kit.brackets('hall-bracket', pts, EAVE_Z - 0.02, 'hall-frame', w=0.42, d=0.42, h=0.22)
+# 出挑深度不超过该侧出檐（共享边一侧出檐截短时斗拱跟着缩，不越边线）
+for sgn, ov in ((1.0, OVER_F if XS_MODE else OVER), (-1.0, OVER_B if XS_MODE else OVER)):
+    dd = min(0.42, ov)
+    if dd >= 0.12:
+        eave_kit.brackets('hall-bracket-%s' % ('f' if sgn > 0 else 'b'), [(x, sgn * HVW, 0.0, sgn) for x in XS],
+                          EAVE_Z - 0.02, 'hall-frame', w=0.42, d=dd, h=0.22)
 
 # --------------------------------------- join per (part, material) + 重锚 ----
 def finalize(items, name):
@@ -580,7 +703,7 @@ final = [finalize(it, g + '__' + mname) for (g, mname), it in sorted(parts.items
 
 # 重锚：模块原点 = footprint 面积形心（矩形系 (ACU,ACV)；blender y = -glb z）
 for o in final:
-    o.data.transform(Matrix.Translation((-ACU, ACV, 0)))
+    o.data.transform(Matrix.Translation((SH_U, -SH_V, 0)))
 
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT_DIR, 'model.blend'))
 bpy.ops.object.select_all(action='DESELECT')
@@ -625,32 +748,62 @@ for o in final:
 maxy = max(v.co.z for o in final for v in o.data.vertices)
 # 碰撞记录同步重锚（实例 GLB 坐标 x=u-ACU, z=v-ACV）
 for c in COLL:
-    c['center'][0] -= ACU
-    c['center'][2] -= ACV
+    c['center'][0] += SH_U
+    c['center'][2] += SH_V
 json.dump({'axis': 'Y-up +Z facade', 'origin': 'area centroid of layout footprint (GOAL frozen placement)',
            'instanceSpace': True, 'integratedIntoWorld': False, 'colliders': COLL},
           open(os.path.join(OUT_DIR, 'collision.json'), 'w'), ensure_ascii=False, indent=1)
-json.dump({'axis': 'Y-up +Z facade', 'origin': 'area centroid of layout footprint (GOAL frozen placement)',
-           'instanceSpace': True, 'integratedIntoWorld': False, 'colliders': COLL},
-          open(os.path.join(HERE, 'collision.json'), 'w'), ensure_ascii=False, indent=1)
+# 模块目录的 collision.json（已跟踪）只对应样板 id（ids.json sample），批量生成其他栋不覆盖它
+if HALL_ID == json.load(open(os.path.join(HERE, 'ids.json'), encoding='utf-8')).get('sample'):
+    json.dump({'axis': 'Y-up +Z facade', 'origin': 'area centroid of layout footprint (GOAL frozen placement)',
+               'instanceSpace': True, 'integratedIntoWorld': False, 'colliders': COLL},
+              open(os.path.join(HERE, 'collision.json'), 'w'), ensure_ascii=False, indent=1)
 
 MEAS = {'id': HALL_ID, 'triangles': tris, 'byNode': by_node, 'glbBytes': os.path.getsize(glb_path),
         'maxY': round(maxy, 3), 'roofMode': ROOF_MODE, 'builtAs': 'yingshan' if XS_MODE else 'xieshan',
-        'rect': {'u': round(2 * HU, 3), 'v': round(2 * HV, 3), 'angleDeg': round(math.degrees(math.atan2(uy, ux)), 3)},
+        'rect': {'u': round(2 * HU, 3), 'v': round(2 * HV, 3), 'coverage': round(COVERAGE, 3)},
+        'orient': FR['orient'], 'rotY': round(FR['rotY'], 6), 'front': [round(FR['front'][0], 6), round(FR['front'][1], 6)],
+        'facadeDeltaDeg': round(FR['facadeDeltaDeg'], 2),
         'wallLine': {'u': round(2 * HUW, 3), 'v': round(2 * HVW, 3)},
         'bays': bay_n, 'bayWidth': round(BAY, 3), 'leavesPerBay': LEAVES,
         'eaveZ': round(EAVE_Z, 3), 'ridgeZ': round(RIDGE_Z, 3), 'platformY': PLATFORM_Y,
         'areaCentroid': [round(CXX, 4), round(CZZ, 4)],
+        # 格扇立面检色区（模块本地 GLB 坐标，已重锚）：正立面格扇带 u∈±(HUW-0.06)、y∈[台基+0.14, 台基+门高]
+        'facadeRegionLocal': ([[round(x + SH_U, 4), round(y, 4), round(HVW + 0.06 + SH_V, 4)]
+                               for x, y in ((-HUW + 0.06, PLATFORM_Y + 0.14), (HUW - 0.06, PLATFORM_Y + 0.14),
+                                            (HUW - 0.06, PLATFORM_Y + DOOR_H1), (-HUW + 0.06, PLATFORM_Y + DOOR_H1))]
+                              if MODE['front'] == 'lattice' else None),   # 正立面无格扇（水榭/戏台）不检色
+        'kind': KIND, 'sideModes': MODE, 'steps': {'side': STEPS_SIDE, 'count': n_steps},
         'reanchorLocalUV': [round(ACU, 4), round(ACV, 4)],
-        'storeysIgnored': STOREYS != 1, 'buildSeconds': round(time.time() - T0, 1)}
+        'wallCenterOffsetUV': [round(UOFF, 4), round(VOFF, 4)],
+        'sharedEdges': [{'other': e['other'], 'overlapM': round(e['overlapM'], 3)} for e in SHARED],
+        'storeys': STOREYS, 'storeysIgnored': False,
+        'section': ({'storeyH': round(STOREY_H, 3), 'storeyHSource': 'layout height / storeys', 'floor2Z': round(Z1 + SLAB_T, 3),
+                     'upperSetback': SETBACK, 'doorH1': round(DOOR_H1, 3), 'doorH2': round(DOOR_H2, 3),
+                     'waistEave': 'eave_kit.eave_skirt', 'balconyRailing': True} if MULTI else None), 'buildSeconds': round(time.time() - T0, 1)}
 json.dump(MEAS, open(os.path.join(OUT_DIR, 'measurements.json'), 'w'), ensure_ascii=False, indent=1)
 json.dump({'layoutSource': os.path.relpath(LAYOUT_PATH, AREA),
            'layoutFields': {'footprintPts': len(FP), 'height': OBJ.get('height'), 'eave': OBJ.get('eave'),
                             'rise': OBJ.get('rise'), 'roofMode': OBJ.get('roofMode'), 'storeys': OBJ.get('storeys'),
                             'facadeDir': OBJ.get('facade', {}).get('dir')},
-           'defaultsUsed': {k: DEFAULTS[k] for k in ('platformY',) if 'platformY' not in OBJ},
+           'defaultsUsed': {k: DEFAULTS[k] for k in ('platformY',) if 'platformY' not in OBJ and not PLATFORM_INFERRED},
+           'platform': {'y': PLATFORM_Y, 'designInference': PLATFORM_INFERRED,
+                        'source': 'layout' if OBJ.get('platformY') is not None else ('kinds.%s.platformY' % KIND if PLATFORM_INFERRED else 'defaults.platformY')},
+           'kind': KIND, 'sideModes': MODE, 'kindNote': KCFG.get('note'),
            'roofPlan': 'eave_kit.xieshan_roof' if not XS_MODE else 'build_hall yingshan (kit section params + brackets + smooth_kernel)',
-           'materials': META, 'budgetTris': DEFAULTS['budgetTris']},
+           'materials': META, 'budgetTris': DEFAULTS['budgetTris'],
+           'sides': {k: {kk: (round(vv, 4) if isinstance(vv, float) else vv) for kk, vv in v.items()} for k, v in SIDES.items()},
+           'sharedEdges': [{'other': e['other'], 'overlapM': round(e['overlapM'], 3),
+                            'a': [round(c, 3) for c in e['a']], 'b': [round(c, 3) for c in e['b']]} for e in SHARED],
+           'eave': {'layout': EAVE_LAYOUT, 'used': round(EAVE, 3), 'designInference': EAVE_INFERRED,
+                    'rule': 'min(layout eave, max(%s, %s*frontWidth+%s))' % (DEFAULTS['smallEaveMin'], DEFAULTS['smallEaveK'], DEFAULTS['smallEaveC'])},
+           'rise': {'layout': RISE_LAYOUT, 'used': round(RISE, 3), 'designInference': RISE_INFERRED,
+                    'rule': 'clamp(layout rise, (HVW+eaveOver)*tan(%s°), (HVW+eaveOver)*tan(%s°))' % (DEFAULTS['minRoofPitchDeg'], DEFAULTS['maxRoofPitchDeg'])},
+           'xieshanScaled': None if XS_MODE else XIESHAN_SCALED,
+           'ornamentScale': {'param': DEFAULTS.get('ornamentScale', 'auto'),
+                             'applied': None if XS_MODE else round(eave_kit.ornament_scale(
+                                 {'ornamentScale': DEFAULTS.get('ornamentScale', 'auto')}, 2 * HVW), 3),
+                             'note': '歇山传给 eave_kit.xieshan_roof；硬山正脊为本文件小截面，不经 kit'}},
           open(os.path.join(OUT_DIR, 'recipe.json'), 'w'), ensure_ascii=False, indent=1)
 print('HALLKIT_BUILD', HALL_ID, tris, os.path.getsize(glb_path), 'ridge', round(maxy, 2),
       'rect %.2fx%.2f bays %d@%.2f leaves %d' % (2 * HU, 2 * HV, bay_n, BAY, LEAVES))
