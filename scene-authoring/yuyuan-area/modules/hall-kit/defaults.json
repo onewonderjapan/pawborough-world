@@ -1,132 +1,135 @@
 {
-  "comment": "hall-kit 缺省值：layout 对象缺字段时按此取值。平面/屋面构造常数也在此，供 30 栋批量共用；仰山堂的数字不写死在生成器里。",
-  "platformY": 0.45,
-  "height": 4.0,
-  "eave": 4.0,
-  "rise": 1.9,
-  "roofMode": "hip",
-  "storeys": 1,
-  "facadeDir": [
-    0,
-    1
-  ],
-  "wallInset": 0.3,
-  "platformOut": 0.2,
-  "eaveOver": 1.0,
-  "eaveRise": 0.6,
-  "eaveDrop": 0.25,
-  "tileH": 0.16,
-  "boardH": 0.22,
-  "rootRise": 0.55,
-  "soffitRise": 0.15,
-  "bayMin": 3.2,
-  "bayMax": 3.8,
-  "bayTarget": 3.5,
-  "leafPerBayMin": 6,
-  "leafPerBayMax": 8,
-  "leafPerBayMinNarrow": 2,
-  "minRoofPitchDeg": 17.5,
-  "maxRoofPitchDeg": 33,
-  "smallEaveMin": 2.8,
-  "smallEaveK": 0.55,
-  "smallEaveC": 0.4,
-  "leafPitch": 0.52,
-  "doorH": 2.6,
-  "window": {
-    "w": 1.1,
-    "h": 1.0,
-    "sill": 1.15
+ "comment": "hall-kit 缺省值：layout 对象缺字段时按此取值。平面/屋面构造常数也在此，供 30 栋批量共用；仰山堂的数字不写死在生成器里。",
+ "platformY": 0.45,
+ "height": 4.0,
+ "eave": 4.0,
+ "rise": 1.9,
+ "roofMode": "hip",
+ "storeys": 1,
+ "facadeDir": [
+  0,
+  1
+ ],
+ "wallInset": 0.3,
+ "platformOut": 0.2,
+ "eaveOver": 1.0,
+ "eaveRise": 0.6,
+ "eaveDrop": 0.25,
+ "tileH": 0.16,
+ "boardH": 0.22,
+ "rootRise": 0.55,
+ "soffitRise": 0.15,
+ "bayMin": 3.2,
+ "bayMax": 3.8,
+ "bayTarget": 3.5,
+ "leafPerBayMin": 6,
+ "leafPerBayMax": 8,
+ "leafPerBayMinNarrow": 2,
+ "minRoofPitchDeg": 17.5,
+ "maxRoofPitchDeg": 33,
+ "smallEaveMin": 2.8,
+ "smallEaveK": 0.55,
+ "smallEaveC": 0.4,
+ "leafPitch": 0.52,
+ "doorH": 2.6,
+ "window": {
+  "w": 1.1,
+  "h": 1.0,
+  "sill": 1.15
+ },
+ "plinthH": 0.75,
+ "architraveH": 0.32,
+ "wallThickness": 0.24,
+ "columnR": 0.17,
+ "roofCurve": 1.35,
+ "stepTread": 0.3,
+ "stepWidth": 2.4,
+ "xieshan": {
+  "breakFrac": 0.45,
+  "breakInsetFrac": 0.14,
+  "gableInsetFrac": 0.12,
+  "chu": 0.25,
+  "reach": 1.8,
+  "ridgeEndLift": 0.35,
+  "wingLiftCapM": 0.33,
+  "wingLiftCapNote": "wave3 W0：外接矩形短边 < 5 m 的歇山，翼角起翘（檐口角点比檐口直段高出的量，= qiao）封顶 0.33，验收线 ≤ 0.35（hallkit-test 3c 从 GLB 实测）"
+ },
+ "ornamentScale": "auto",
+ "orient": "footprint-side",
+ "frontMinSideM": 3.2,
+ "frontShortPenalty": 0.6,
+ "sharedEdgeKinds": [
+  "hall",
+  "tower",
+  "xuan",
+  "stage",
+  "waterside",
+  "pavilion",
+  "bazaarBlock",
+  "outerBuilding"
+ ],
+ "sharedEdgeTolM": 0.05,
+ "sharedEdgeMinLenM": 0.3,
+ "sharedEdgeClearM": 0.0,
+ "sharedSegments": "wave3 K1：硬山前后侧共享边按段限位（frame.side_intervals）。scanStep 邻栋占位扫描格宽；stripReach 条带沿外法线外推（斜边时罩住条带）；segMargin 区间外扩；snap 离端点 / 间隔小于此值并掉",
+ "sharedScanStepM": 0.05,
+ "sharedStripReachM": 2.0,
+ "sharedSegMarginM": 0.05,
+ "sharedSnapM": 1.5,
+ "timberSrgb": "8a4030",
+ "latticeBackSrgb": "55483c",
+ "darkTimberSrgb": "241d18",
+ "budgetTris": 6000,
+ "kinds": {
+  "comment": "按 layout kind 的立面组合：front/back = lattice（整面格扇）| wall（白墙+半窗）| railing（开敞+落地栏杆）| open（开敞只留柱）；sides = 两山 wall|open|railing；steps = 踏步所在侧。",
+  "hall": {
+   "front": "lattice",
+   "back": "wall",
+   "sides": "wall",
+   "steps": "front"
   },
-  "plinthH": 0.75,
-  "architraveH": 0.32,
-  "wallThickness": 0.24,
-  "columnR": 0.17,
-  "roofCurve": 1.35,
-  "stepTread": 0.3,
-  "stepWidth": 2.4,
-  "xieshan": {
-    "breakFrac": 0.45,
-    "breakInsetFrac": 0.14,
-    "gableInsetFrac": 0.12,
-    "chu": 0.25,
-    "reach": 1.8,
-    "ridgeEndLift": 0.35
+  "xuan": {
+   "front": "lattice",
+   "back": "wall",
+   "sides": "wall",
+   "steps": "front"
   },
-  "ornamentScale": "auto",
-  "orient": "footprint-side",
-  "frontMinSideM": 3.2,
-  "frontShortPenalty": 0.6,
-  "sharedEdgeKinds": [
-    "hall",
-    "tower",
-    "xuan",
-    "stage",
-    "waterside",
-    "pavilion",
-    "bazaarBlock",
-    "outerBuilding"
-  ],
-  "sharedEdgeTolM": 0.05,
-  "sharedEdgeMinLenM": 0.3,
-  "sharedEdgeClearM": 0.0,
-  "sharedSegments": "wave3 K1：硬山前后侧共享边按段限位（frame.side_intervals）。scanStep 邻栋占位扫描格宽；stripReach 条带沿外法线外推（斜边时罩住条带）；segMargin 区间外扩；snap 离端点 / 间隔小于此值并掉",
-  "sharedScanStepM": 0.05,
-  "sharedStripReachM": 2.0,
-  "sharedSegMarginM": 0.05,
-  "sharedSnapM": 1.5,
-  "timberSrgb": "6a2e22",
-  "latticeBackSrgb": "2a2522",
-  "darkTimberSrgb": "241d18",
-  "budgetTris": 6000,
-  "kinds": {
-    "comment": "按 layout kind 的立面组合：front/back = lattice（整面格扇）| wall（白墙+半窗）| railing（开敞+落地栏杆）| open（开敞只留柱）；sides = 两山 wall|open|railing；steps = 踏步所在侧。",
-    "hall": {
-      "front": "lattice",
-      "back": "wall",
-      "sides": "wall",
-      "steps": "front"
-    },
-    "xuan": {
-      "front": "lattice",
-      "back": "wall",
-      "sides": "wall",
-      "steps": "front"
-    },
-    "waterside": {
-      "front": "railing",
-      "back": "lattice",
-      "sides": "wall",
-      "steps": "back",
-      "note": "水榭：临水一侧（正立面，facade.dir 即最近水面方向）开敞 + 落地栏杆；陆侧格扇为入口，踏步在陆侧"
-    },
-    "stage": {
-      "front": "open",
-      "back": "wall",
-      "sides": "open",
-      "steps": "left",
-      "backWindows": false,
-      "platformY": 1.2,
-      "designInference": [
-        "platformY"
-      ],
-      "note": "戏台：台面抬高 1.2 m（≥1.0，designInference），面向观众一侧三面开敞，背墙为后台隔墙，踏步在左山侧靠后"
-    },
-    "tower": {
-      "front": "lattice",
-      "back": "wall",
-      "sides": "wall",
-      "steps": "front"
-    }
+  "waterside": {
+   "front": "railing",
+   "back": "lattice",
+   "sides": "wall",
+   "steps": "back",
+   "note": "水榭：临水一侧（正立面，facade.dir 即最近水面方向）开敞 + 落地栏杆；陆侧格扇为入口，踏步在陆侧"
   },
-  "railingH": 0.9,
-  "floorSlabT": 0.12,
-  "upperSetback": 1.0,
-  "minUpperFloorDepthM": 2.0,
-  "minUpperSetbackM": 0.3,
-  "waistEave": {
-    "over": 0.8,
-    "drop": 0.2,
-    "rootRise": 0.45,
-    "note": "楼的腰檐（eave_kit.eave_skirt），不起翘"
+  "stage": {
+   "front": "open",
+   "back": "wall",
+   "sides": "open",
+   "steps": "left",
+   "backWindows": false,
+   "platformY": 1.2,
+   "designInference": [
+    "platformY"
+   ],
+   "note": "戏台：台面抬高 1.2 m（≥1.0，designInference），面向观众一侧三面开敞，背墙为后台隔墙，踏步在左山侧靠后"
+  },
+  "tower": {
+   "front": "lattice",
+   "back": "wall",
+   "sides": "wall",
+   "steps": "front"
   }
+ },
+ "railingH": 0.9,
+ "floorSlabT": 0.12,
+ "upperSetback": 1.0,
+ "minUpperFloorDepthM": 2.0,
+ "minUpperSetbackM": 0.3,
+ "waistEave": {
+  "over": 0.8,
+  "drop": 0.2,
+  "rootRise": 0.45,
+  "note": "楼的腰檐（eave_kit.eave_skirt），不起翘"
+ },
+ "timberNote": "wave3 W0：格扇立面偏暗，框料/棂条底色同色相提亮 #6a2e22→#8a4030（色相保持深红），格心背衬 #2a2522→#55483c"
 }

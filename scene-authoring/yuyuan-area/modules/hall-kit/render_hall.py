@@ -13,7 +13,7 @@ before = HALL_KIT=0 的总装 scene-areas.glb（程序化体块），after = HAL
       （对已有渲染图按同机位重投影检色，用于在旧样板渲染上先跑出不合格）
 机位从 layout 重算：面积形心 + 模块朝向（frame.py：footprint 外接矩形上与 facade.dir 最近的一边）推四视角。
 格扇立面检色（GOAL wave2 冻结）：园内眼高图里格扇立面区域（measurements.json facadeRegionLocal 四角经同一
-放置变换投影到像面）平均色 R>G 且 R>B，HSV 明度 max(R,G,B) ≥ 0.18（显示空间 sRGB）。不合格 → exit 3。
+放置变换投影到像面）平均色 R>G 且 R>B，HSV 明度 max(R,G,B) ≥ 0.22（显示空间 sRGB；wave3 W0 从 0.18 提高，格扇偏暗整改后全数达标）。不合格 → exit 3。
 """
 import argparse
 import json
@@ -171,7 +171,7 @@ def region_world(hid, rot_y=None, meas_path=''):
 
 
 def facade_check(sc, cam, path, hid, rot_y=None, meas_path=''):
-    """格扇立面区域平均色（显示空间 sRGB 0..1）：R>G、R>B、HSV 明度 max(R,G,B) ≥ 0.18。"""
+    """格扇立面区域平均色（显示空间 sRGB 0..1）：R>G、R>B、HSV 明度 max(R,G,B) ≥ 0.22（wave3 W0）。"""
     W, H = sc.render.resolution_x, sc.render.resolution_y
     poly = []
     reg = region_world(hid, rot_y, meas_path)
@@ -220,7 +220,7 @@ def facade_check(sc, cam, path, hid, rot_y=None, meas_path=''):
     v = max(r, g, b)
     res = {'meanSrgb255': [round(r * 255, 1), round(g * 255, 1), round(b * 255, 1)], 'hsvV': round(v, 3),
            'samples': cnt, 'polyPx': [[round(p[0]), round(p[1])] for p in poly],
-           'rule': 'R>G and R>B and V>=0.18', 'ok': bool(r > g and r > b and v >= 0.18)}
+           'rule': 'R>G and R>B and V>=0.22', 'ok': bool(r > g and r > b and v >= 0.22)}
     print('FACADE_COLOR', os.path.basename(path), json.dumps(res), flush=True)
     return res
 
@@ -308,6 +308,47 @@ def outside(fr, pos, margin=1.5):
     return abs(u) > fr['hu'] + margin or abs(v) > fr['hv'] + margin
 
 
+_RECT_CACHE = {}
+
+
+def rect_of(oid):
+    if oid not in _RECT_CACHE:
+        o = next(x for x in LAYOUT['objects'] if x['id'] == oid)
+        f = hk_frame.hall_frame(o, DEFAULTS)
+        _RECT_CACHE[oid] = (f['rectCenter'], f['uAxis'], f['front'], f['hu'], f['hv'])
+    return _RECT_CACHE[oid]
+
+
+def clear_of_others(hid, pos, margin=1.25):
+    """眼高机位不落进「别的建筑」外接矩形外扩 margin 以内：正面贴邻栋的楼（观涛楼 / 延清楼，正面 2–3 m 即
+    邻栋 / 亭子），可见度选位会挤进楼缝拍成黑框 / 死影。只约束低机位（眼高）。"""
+    px, pz = pos[0], pos[2]
+    for o in LAYOUT['objects']:
+        oid = o.get('id')
+        if oid == hid or oid is None or o.get('skipRender') or not (o.get('geometry') or {}).get('footprint'):
+            continue
+        rc, ua, frn, hu, hv = rect_of(oid)
+        dx_, dz_ = px - rc[0], pz - rc[1]
+        u = dx_ * ua[0] + dz_ * ua[1]
+        v = dx_ * frn[0] + dz_ * frn[1]
+        if abs(u) < hu + margin and abs(v) < hv + margin:
+            return False
+    return True
+
+
+def enclosure_hits(sc, pos, reach=1.5):
+    """机位贴墙 / 楼缝检测：6 轴向射线 reach 内命中数。≥2 = 处于缝隙 / 围合空间
+    （眼高机位挤进 2–3 m 楼缝时可见度满分但画面全黑），弃用该机位。"""
+    dg = bpy.context.evaluated_depsgraph_get()
+    o = Vector((pos[0], -pos[2], pos[1]))
+    hits = 0
+    for d in ((1, 0, 0), (-1, 0, 0), (0, 0, 1), (0, 0, -1), (0, 1, 0), (0, -1, 0)):
+        ok_, _loc, _n, _i, _ob, _m = sc.ray_cast(dg, o, Vector(d), distance=reach)
+        if ok_:
+            hits += 1
+    return hits
+
+
 def choose_cams(sc, hid):
     """在「after」总装里为每个机位挑一个不被邻栋 / 树挡住的位置：候选 = 缺省机位绕正立面转 ±角度、远近缩放；
     打分 = 射向本栋采样点（正立面格扇区 / 屋面外廓）的可见比例，取最高（并列取缺省）。before 复用同一机位。"""
@@ -338,10 +379,43 @@ def choose_cams(sc, hid):
         for sv in (-0.6, 0.0, 0.6):
             roof_pts.append((cx + px * su * fr['hu'] + dx * sv * fr['hv'], 5.0, cz + pz * su * fr['hu'] + dz * sv * fr['hv']))
     out, info = {}, {}
+    # 眼高机位光 / 构图闸：直射阳光可达（檐下院落会拍成黑框）+ 格扇立面投影 ≥ 15000 px²（立面在画面里过小不可用）。
+    sun_ob = sc.objects.get('sun')
+    sun_dir = -(sun_ob.matrix_world.to_quaternion() @ Vector((0, 0, -1))).normalized() if sun_ob else None  # 指向太阳
+
+    def in_sun(pos):
+        if not sun_dir:
+            return True
+        dg = bpy.context.evaluated_depsgraph_get()
+        ok, *_r = sc.ray_cast(dg, Vector((pos[0], -pos[2], pos[1])), sun_dir, distance=500)
+        return not ok
+
+    tmp_data = bpy.data.cameras.new('cam-probe')
+    tmp_data.lens, tmp_data.clip_end = 45, 2500
+    tmp_cam = bpy.data.objects.new('cam-probe', tmp_data)
+    sc.collection.objects.link(tmp_cam)
+    sc.camera = tmp_cam                       # 仅投影用，choose_cams 内不渲染
+
+    def screen_area(pos, tgt):
+        if not reg:
+            return 1e9
+        tmp_cam.location = (pos[0], -pos[2], pos[1])
+        look = Vector((tgt[0], -tgt[2], tgt[1]))
+        tmp_cam.rotation_euler = (look - tmp_cam.location).to_track_quat('-Z', 'Y').to_euler()
+        bpy.context.view_layer.update()
+        pts = [world_to_camera_view(sc, tmp_cam, Vector((x, -z, y))) for x, y, z in reg]
+        if any(p.z <= 0 for p in pts):
+            return 0.0
+        xs = [p.x * RX for p in pts]
+        ys = [(1 - p.y) * RY for p in pts]
+        return max(0.0, max(xs) - min(xs)) * max(0.0, max(ys) - min(ys))
+
     for name, (pos0, tgt0, lens) in base.items():
         pts = eye_pts if name in ('garden-eye', 'front') else roof_pts
         v0 = visible_frac(sc, pos0, pts, names)
-        best = (v0 + 0.01, 0, pos0, tgt0, v0)
+        pen = 0.5 if (name == 'garden-eye' and (enclosure_hits(sc, pos0) >= 2 or not in_sun(pos0)
+                                                or screen_area(pos0, tgt0) < 15000)) else 0.0
+        best = (v0 + 0.01 - pen, 0, pos0, tgt0, v0)
         rel = [pos0[0] - cx, pos0[1], pos0[2] - cz]
         for ang in (25, -25, 45, -45, 65, -65):
             for sc_d in (1.0, 0.75, 1.3, 0.55):
@@ -353,6 +427,9 @@ def choose_cams(sc, hid):
                 else:
                     tgt = tgt0
                 if not outside(fr, pos):
+                    continue
+                if name == 'garden-eye' and (not clear_of_others(hid, pos) or enclosure_hits(sc, pos) >= 2
+                                             or not in_sun(pos) or screen_area(pos, tgt) < 15000):
                     continue
                 vis = visible_frac(sc, pos, pts, names)
                 v = vis + 0.01 * sc_d     # 可见度相同取更远（构图完整）
