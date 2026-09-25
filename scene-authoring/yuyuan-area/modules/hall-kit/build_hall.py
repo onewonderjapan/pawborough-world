@@ -280,7 +280,55 @@ RISE = max(RISE, (HVW + OVER) * math.tan(math.radians(DEFAULTS['minRoofPitchDeg'
 RISE = min(RISE, (HVW + OVER) * math.tan(math.radians(DEFAULTS['maxRoofPitchDeg'])))
 RISE_INFERRED = abs(RISE - RISE_LAYOUT) > 1e-6
 RIDGE_Z = EAVE_Z + RISE
-DOOR_H = min(DEFAULTS['doorH'], EAVE - 0.5)          # 檐高压低时门高让出额枋
+
+# ---- 硬山檐口断面闭合（wave4-roofclip）：两坡凹曲剖面在出檐段很平（大进深厅墙线处瓦面只比檐口高 0.1–0.3 m），
+# 而檐口外缘在 EAVE_Z − drop、檐底根部在 EAVE_Z + soffitRise、墙 / 柱顶在 EAVE_Z——17 栋在墙线处瓦面低于檐底根部
+# （斜俯图檐口内侧一条深色带 = 檐底穿出瓦面），12 栋的柱顶 / 墙顶也高出瓦面（带上的红块 = 柱顶）。
+# 屋面剖面、檐口、屋脊一律不动（天际线、机位不变）；按网格实际瓦面（ROOF_NV 行折线）反推：
+#   层顶 Y_TOP = min(EAVE_Z, 每块正檐下各墙线分块 瓦面(墙线 + 柱半径) − eaveBodyClearM)——柱 / 墙 / 额枋 / 斗拱随层顶；
+#   每块正檐的檐底根部 = min(EAVE_Z + soffitRise, 使檐底斜面全程低于瓦面 − eaveBodyClearM 的最高值)。
+# 不缺的楼 Y_TOP = EAVE_Z、根部 = EAVE_Z + soffitRise，几何不变。歇山走 eave_kit（kit 断面自带 rootRise），不经此。
+EAVE_CLEAR = DEFAULTS['eaveBodyClearM']
+ROOF_NV = 6
+E_FULL, EAVE_Z0 = HVW + OVER, EAVE_Z - DROP
+
+
+def prof(av):
+    """硬山两坡剖面（缺省出檐 OVER 时的凹曲线）；共享边截短的檐在同一剖面上截断。"""
+    return EAVE_Z0 + (RIDGE_Z - EAVE_Z0) * (max(0.0, 1 - av / E_FULL) ** CURVE)
+
+
+def tile_at(av, eave_v):
+    """网格实际瓦面高：檐口 eave_v → 正脊 0 按 ROOF_NV 行取剖面点、行间直线（同 roof-slope 建面）。"""
+    f = (1 - min(max(av, 0.0), eave_v) / eave_v) * ROOF_NV
+    j = min(int(f), ROOF_NV - 1)
+    za, zb = prof(eave_v * (1 - j / ROOF_NV)), prof(eave_v * (1 - (j + 1) / ROOF_NV))
+    return za + (zb - za) * (f - j)
+
+
+Y_TOP = EAVE_Z
+EAVE_PIECES = {}
+SOFFIT_ROOT = {}
+if XS_MODE:
+    for sd, ov in (('front', OVER_F), ('back', OVER_B)):
+        EP = pieces(SEG[sd]['eave'] if sd in SEG else [], -HUW, HUW, HVW + ov)
+        EAVE_PIECES[sd] = EP
+        for x0, x1, eave_v in EP:
+            for bx0, bx1, d in (FB if sd == 'front' else BB):
+                if bx1 > x0 + 1e-9 and bx0 < x1 - 1e-9 and d + DEFAULTS['columnR'] <= eave_v:
+                    Y_TOP = min(Y_TOP, tile_at(d + DEFAULTS['columnR'], eave_v) - EAVE_CLEAR)
+    for sd in ('front', 'back'):
+        for kp, (x0, x1, eave_v) in enumerate(EAVE_PIECES[sd]):
+            wall_v = val_at(FB if sd == 'front' else BB, (x0 + x1) / 2)
+            lip_bot = prof(eave_v) - TILE_H - BOARD_H
+            zs = EAVE_Z + SOFFIT_RISE
+            for k in range(40):
+                f = k / 40
+                v = wall_v + (eave_v - wall_v) * f
+                zs = min(zs, (tile_at(v, eave_v) - EAVE_CLEAR - lip_bot * f) / (1 - f))
+            SOFFIT_ROOT[(sd, kp)] = max(lip_bot, zs)
+Y_TOP_LOWERED = EAVE_Z - Y_TOP
+DOOR_H = min(DEFAULTS['doorH'], Y_TOP - PLATFORM_Y - 0.5)          # 檐高压低时门高让出额枋
 COL_R = DEFAULTS['columnR']
 # 多层（storeys ≥ 2，B4 楼）：层高 = layout height / storeys；底层顶 = 腰檐 + 二层平座楼面；二层正立面格扇后退 upperSetback
 # 形成平座（前檐柱、栏杆留在底层墙线上）。storeys 1 时整栋单层（与 wave1 样板同）。
@@ -296,7 +344,7 @@ if MULTI and 2 * HVW - SETBACK < DEFAULTS['minUpperFloorDepthM']:
     SETBACK = max(DEFAULTS['minUpperSetbackM'], min(SETBACK, 2 * HVW - DEFAULTS['minUpperFloorDepthM']))
 SETBACK_INFERRED = abs(SETBACK - SETBACK_LAYOUT) > 1e-9
 DOOR_H1 = min(DEFAULTS['doorH'], STOREY_H - 0.55) if MULTI else DOOR_H
-DOOR_H2 = min(DEFAULTS['doorH'], EAVE_Z - (Z1 + SLAB_T) - 0.5) if MULTI else None
+DOOR_H2 = min(DEFAULTS['doorH'], Y_TOP - (Z1 + SLAB_T) - 0.5) if MULTI else None
 
 # ------------------------------------------------------------- 材质 ----
 TEX_DIRS = [os.path.abspath(os.path.join(AREA, '..', '..', '..', '..', '..', 'asset-authoring', 'yuyuan-entry', 'source-kit', 'textures')),
@@ -725,7 +773,7 @@ def build_storey(tg, y0, y1, door_h, off):
 # 两山开敞 / 栏杆且进深 > 5 m 时山面加中柱
 ZS_SIDE = [-HVW, HVW] + ([0.0] if (2 * HVW > 5.0 and MODE['left'] != 'wall') else [])
 if not MULTI:
-    build_storey('', PLATFORM_Y, EAVE_Z, DOOR_H, 0.0)
+    build_storey('', PLATFORM_Y, Y_TOP, DOOR_H, 0.0)
 else:
     # 底层：格扇在前檐柱线
     build_storey('', PLATFORM_Y, Z1, DOOR_H1, 0.0)
@@ -773,18 +821,16 @@ else:
         WAIST_RING = [(-HUW, -HVW), (HUW, -HVW), (HUW, vf_sk), (-HUW, vf_sk)]
     eave_kit.eave_skirt('waist-eave', WAIST_RING, Z1 - sk['rootRise'] - 0.02, prm_sk, 'hall-roof')
     # 二层：格扇后退 SETBACK，前檐柱仍在墙线
-    build_storey('s2-', Z1 + SLAB_T, EAVE_Z, DOOR_H2, SETBACK)
+    build_storey('s2-', Z1 + SLAB_T, Y_TOP, DOOR_H2, SETBACK)
 
 # ---- 山墙封顶三角（硬山）/ 屋面（hall-roof）
 PART = 'hall-roof'
 if XS_MODE:
     # 两坡凹曲屋面：檐口线 v=±(HVW+OVER)、z=EAVE_Z-DROP → 正脊 v=0、z=RIDGE_Z，u 到 ±HUW（与山墙齐平）
     # 两坡同一条剖面（缺省出檐 OVER 时的凹曲线）；共享边一侧出檐截短 = 在同一剖面上截断，檐口抬高、不改屋脊
-    E_FULL, eave_z0 = HVW + OVER, EAVE_Z - DROP
-    nu, nv = 10, 6
+    # 剖面 prof / 网格行数 ROOF_NV 在前面（檐口断面闭合）定义，建面与层顶反推用同一份
+    nu, nv = 10, ROOF_NV
 
-    def prof(av):
-        return eave_z0 + (RIDGE_Z - eave_z0) * (max(0.0, 1 - av / E_FULL) ** CURVE)
     def prism_x(name, poly_vz, ua, ub, sgn, m='wall', part='hall-roof'):
         """(v, z) 多边形沿 u 从 ua 挤到 ub 的闭合棱柱（v 按 sgn 镜像）；n 边形面由 finalize 三角化（凹多边形可）。
         UV 按面主轴平面映射（米 / 贴图 tile），满足 validator 的 TEXCOORD 要求。"""
@@ -811,12 +857,10 @@ if XS_MODE:
         bpy.context.collection.objects.link(o)
         return tag(o, part)
 
-    EAVE_PIECES = {}
     for sgn, tagp in ((1, 's'), (-1, 'n')):
         sd = 'front' if sgn > 0 else 'back'
         # 按段限位（K1）：该侧正檐按段截到限位线（同一剖面上截断，檐口抬高、不改屋脊）；无共享段时整坡一块（同 wave2）
-        EP = pieces(SEG[sd]['eave'] if sd in SEG else [], -HUW, HUW, HVW + (OVER_F if sgn > 0 else OVER_B))
-        EAVE_PIECES[sd] = EP
+        EP = EAVE_PIECES[sd]
         for kp, (x0, x1, eave_v) in enumerate(EP):
             sfx = '' if kp == 0 else '-%d' % kp
             nu_k = nu if len(EP) == 1 else max(2, round(nu * (x1 - x0) / (2 * HUW)))
@@ -855,7 +899,7 @@ if XS_MODE:
             for c in range(nu_k + 1):
                 u = x0 + (x1 - x0) * c / nu_k
                 it.append(((u, eave_z - TILE_H - BOARD_H, eave_v * sgn), (u, 0)))
-                it.append(((u, max(EAVE_Z + SOFFIT_RISE, eave_z - TILE_H - BOARD_H), wall_v * sgn), (u, eave_v - wall_v)))
+                it.append(((u, SOFFIT_ROOT[(sd, kp)], wall_v * sgn), (u, eave_v - wall_v)))
             for c in range(nu_k):
                 a0 = 2 * c
                 # 2c=檐口外缘点, 2c+1=墙线点；不交叉的四边形，背面坡反向
@@ -875,8 +919,8 @@ if XS_MODE:
             dB_ = val_at(blocks(sd), x + 1e-3 if left_long else x - 1e-3)
             v0 = min(dA, dB_)
             bb = prof(eA) - TILE_H - BOARD_H
-            pv = [(v0, EAVE_Z)] + ([(dA, EAVE_Z)] if dA - v0 > 1e-6 else []) + \
-                 [(dA, max(EAVE_Z + SOFFIT_RISE, bb)), (eA, bb)]
+            pv = [(v0, Y_TOP)] + ([(dA, Y_TOP)] if dA - v0 > 1e-6 else []) + \
+                 [(dA, SOFFIT_ROOT[(sd, kp if left_long else kp + 1)]), (eA, bb)]
             pv += [(eA - (eA - v0) * j / 8, prof(eA - (eA - v0) * j / 8) - 0.02) for j in range(9)]
             prism_x('roof-endcap-%s-%d' % (tagp, kp), pv, ua, ub, sgn)
     # 山墙封顶：三角棱柱（白墙，厚同墙）从檐高起到屋面线；两山端前 / 后墙线取分块端值（凹口并到端点时随墙线内收）
@@ -884,8 +928,8 @@ if XS_MODE:
     for sx in (-1, 1):
         x = sx * HUW
         dF_, dB_ = (dF_L, dB_L) if sx < 0 else (dF_R, dB_R)
-        vs = [(x - gt / 2, EAVE_Z, dF_), (x + gt / 2, EAVE_Z, dF_), (x + gt / 2, EAVE_Z, -dB_),
-              (x - gt / 2, EAVE_Z, -dB_), (x - gt / 2, RIDGE_Z - 0.02, 0), (x + gt / 2, RIDGE_Z - 0.02, 0)]
+        vs = [(x - gt / 2, Y_TOP, dF_), (x + gt / 2, Y_TOP, dF_), (x + gt / 2, Y_TOP, -dB_),
+              (x - gt / 2, Y_TOP, -dB_), (x - gt / 2, RIDGE_Z - 0.02, 0), (x + gt / 2, RIDGE_Z - 0.02, 0)]
         fs = [(0, 1, 5), (0, 5, 4), (3, 4, 5), (3, 5, 2), (0, 4, 3), (1, 2, 5)]
         me = bpy.data.meshes.new('gable-top-%d_mesh' % sx)
         me.from_pydata([glb_to_blender(v) for v in vs], [], fs)
@@ -958,7 +1002,7 @@ else:
 # 檐底从墙线（+soffitRise，歇山 kit 内定 +0.10）斜下到檐口外缘（−drop−tileH−boardH）；旧版顶 = 檐高 −0.02，
 # 外挑端顶高出檐底 ~0.16 m，斜俯图檐线上露小红块。顶 = soffit(外挑深度) − 0.03 余量，出挑越深顶越低。
 # part 记 hall-bracket（独立成组，hallkit-test 3b 按名取斗拱顶点核对不穿屋面）。
-BRACKET_WALL_Z = (EAVE_Z + SOFFIT_RISE) if XS_MODE else (EAVE_Z + 0.10)
+BRACKET_WALL_Z = min([EAVE_Z + SOFFIT_RISE] + list(SOFFIT_ROOT.values())) if XS_MODE else (EAVE_Z + 0.10)   # 檐底根部（断面闭合后）
 BRACKET_LIP_BOT = (EAVE_Z - DROP) - TILE_H - BOARD_H
 
 def bracket_z(dd, over_side):
@@ -1079,6 +1123,7 @@ MEAS = {'id': HALL_ID, 'triangles': tris, 'byNode': by_node, 'glbBytes': os.path
         'wallLine': {'u': round(2 * HUW, 3), 'v': round(2 * HVW, 3)},
         'bays': bay_n, 'bayWidth': round(BAY, 3), 'leavesPerBay': LEAVES,
         'eaveZ': round(EAVE_Z, 3), 'ridgeZ': round(RIDGE_Z, 3), 'platformY': PLATFORM_Y,
+        'wallTopZ': round(Y_TOP, 3), 'wallTopLoweredM': round(Y_TOP_LOWERED, 3),
         'areaCentroid': [round(CXX, 4), round(CZZ, 4)],
         # 格扇立面检色区（模块本地 GLB 坐标，已重锚）：正立面格扇带 u∈±(HUW-0.06)、y∈[台基+0.14, 台基+门高]
         'facadeRegionLocal': ([[round(x + SH_U, 4), round(y, 4), round(HVW + 0.06 + SH_V, 4)]
@@ -1124,6 +1169,10 @@ json.dump({'layoutSource': os.path.relpath(LAYOUT_PATH, AREA),
                     'rule': 'clamp(layout rise, (HVW+eaveOver)*tan(%s°), (HVW+eaveOver)*tan(%s°))' % (DEFAULTS['minRoofPitchDeg'], DEFAULTS['maxRoofPitchDeg'])},
            'upperSetback': ({'default': SETBACK_LAYOUT, 'used': round(SETBACK, 3), 'designInference': SETBACK_INFERRED,
                              'rule': 'max(minUpperSetbackM, min(upperSetback, 墙线进深 − minUpperFloorDepthM))，仅进深不足时'} if MULTI else None),
+           'eaveBody': ({'rule': 'wave4-roofclip 硬山檐口断面闭合：层顶 = min(EAVE_Z, 瓦面(墙线+柱半径) − clear)；檐底根部 = min(EAVE_Z+soffitRise, 檐底斜面全程低于瓦面 − clear)',
+                         'clearM': EAVE_CLEAR, 'wallTopZ': round(Y_TOP, 3), 'wallTopLoweredM': round(Y_TOP_LOWERED, 3),
+                         'soffitRoot': {'%s-%d' % k: round(v, 3) for k, v in SOFFIT_ROOT.items()},
+                         'soffitRootDefault': round(EAVE_Z + SOFFIT_RISE, 3)} if XS_MODE else None),
            'xieshanScaled': None if XS_MODE else XIESHAN_SCALED,
            'ornamentScale': {'param': DEFAULTS.get('ornamentScale', 'auto'),
                              'applied': None if XS_MODE else round(eave_kit.ornament_scale(

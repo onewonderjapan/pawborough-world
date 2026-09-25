@@ -19,6 +19,8 @@
  "boardH": 0.22,
  "rootRise": 0.55,
  "soffitRise": 0.15,
+ "eaveBodyClearM": 0.03,
+ "eaveBodyNote": "wave4-roofclip：硬山檐口断面闭合余量——层顶（柱/墙/额枋/斗拱）≤ 瓦面(墙线+柱半径) − 此值，檐底斜面全程 ≤ 瓦面 − 此值；屋面剖面不动",
  "bayMin": 3.2,
  "bayMax": 3.8,
  "bayTarget": 3.5,
