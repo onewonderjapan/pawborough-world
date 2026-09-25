@@ -31,6 +31,8 @@ E2（wave6-eavekit）：zanjian_roof 的 prm['sides'] = n 出正 n 边形攒尖�
 E3（wave6-eavekit）：eave_path / eave_skirt 的 noLift（这些角不起翘不出翘，只斜接）与 endCaps（这些边不出檐，
 檐口在两端断开，段端补端头收口面 <name>-endcap：断面 = 瓦面各环 → 瓦头 → 封檐板 → 檐底回墙，⟂ 本段墙线、过墙线角点，
 段端不起翘）。按角 / 按边参数口径同逐边 over：下标集合 / 等长布尔序列 / 可调用，按调用方 poly 顺序。
+E4（wave6-eavekit）：封檐板（-board）材质键 prm['boardMaterial']，缺省 'wood'（原输出不变）；eave_skirt / xieshan_roof /
+zanjian_roof（含 n 边形）一致。只换 -board 的材质键，几何与其他件不变（博风板仍是 'wood'）。
 """
 import math
 
@@ -484,7 +486,7 @@ def _eave_skirt_runs(name, poly, z, prm, part, rr, top_rings, with_soffit):
             for q, q2 in zip(sec, P2):
                 it.append((q, q2))
             fc.extend((b0 + a, b0 + b, b0 + c) for a, b, c in tris)
-    for tag, mt in (('tile', 'roof'), ('tileend', 'dark'), ('board', 'wood'), ('soffit', 'dark'), ('endcap', 'dark')):
+    for tag, mt in (('tile', 'roof'), ('tileend', 'dark'), ('board', prm.get('boardMaterial', 'wood')), ('soffit', 'dark'), ('endcap', 'dark')):
         it, fc = T[tag]
         if fc:
             _ADD(name + '-' + tag, it, fc, mt, part)
@@ -527,7 +529,7 @@ def eave_skirt(name, poly, z, prm, part, root_rise=None, top_rings=2, with_soffi
     _ADD(name + '-tile', items, faces, 'roof', part)
 
     # 檐口立面：上段瓦头（深灰）、下段封檐板（深红木）
-    for tag, h0, h1, mt in (('tileend', 0.0, tH, 'dark'), ('board', tH, tH + bH, 'wood')):
+    for tag, h0, h1, mt in (('tileend', 0.0, tH, 'dark'), ('board', tH, tH + bH, prm.get('boardMaterial', 'wood'))):
         it, fc = [], []
         for sm in S:
             x, y, zt = lip_top(sm)
@@ -622,7 +624,7 @@ def xieshan_roof(name, rect, z_eave, prm, part):
     _ADD(name + '-lower', items, faces, 'roof', part)
     # 下檐檐口立面 + 檐底（取 j=0 环）
     lip = items[:mm]
-    for tag, h0, h1, mt in (('tileend', 0.0, prm['tileH'], 'dark'), ('board', prm['tileH'], prm['tileH'] + prm['boardH'], 'wood')):
+    for tag, h0, h1, mt in (('tileend', 0.0, prm['tileH'], 'dark'), ('board', prm['tileH'], prm['tileH'] + prm['boardH'], prm.get('boardMaterial', 'wood'))):
         it, fc = [], []
         for (p, _uv) in lip:
             it.append(((p[0], p[1], p[2] - h0), (p[0] + p[1], 0)))
@@ -761,7 +763,7 @@ def zanjian_roof(name, rect, z_eave, apex_z, prm, part):
             faces.append((j * mm + i, j * mm + k2, (j + 1) * mm + k2, (j + 1) * mm + i))
     _ADD(name + '-cone', items, faces, 'roof', part)
     lip = items[:mm]
-    for tag, h0, h1, mt in (('tileend', 0.0, prm['tileH'], 'dark'), ('board', prm['tileH'], prm['tileH'] + prm['boardH'], 'wood')):
+    for tag, h0, h1, mt in (('tileend', 0.0, prm['tileH'], 'dark'), ('board', prm['tileH'], prm['tileH'] + prm['boardH'], prm.get('boardMaterial', 'wood'))):
         it, fc = [], []
         for (p, _uv) in lip:
             it.append(((p[0], p[1], p[2] - h0), (0, 0)))
@@ -838,7 +840,7 @@ def _zanjian_ngon(name, rect, z_eave, apex_z, prm, part, sides):
             faces.append((j * mm + i, j * mm + k2, (j + 1) * mm + k2, (j + 1) * mm + i))
     _ADD(name + '-cone', items, faces, 'roof', part)
     lip = items[:mm]
-    for tag, h0, h1, mt in (('tileend', 0.0, prm['tileH'], 'dark'), ('board', prm['tileH'], prm['tileH'] + prm['boardH'], 'wood')):
+    for tag, h0, h1, mt in (('tileend', 0.0, prm['tileH'], 'dark'), ('board', prm['tileH'], prm['tileH'] + prm['boardH'], prm.get('boardMaterial', 'wood'))):
         it, fc = [], []
         for (p, _uv) in lip:
             it.append(((p[0], p[1], p[2] - h0), (0, 0)))

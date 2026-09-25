@@ -6,6 +6,7 @@ E1 面朝向：kit 在右手局部系 (u, v, h) 里出的每个网格，每个�
 brackets）。另验检测本身不空转：同一批网格镜像后（不翻面）必须被判为反面。
 E2 攒尖 n 边形（prm['sides']，n=4 逐字节同 E1）；另：新参数缺省时全部现有调用输出与 E1 逐字节相同（金值）。
 E3 按角不起翘（noLift）+ 按边断开端头收口（endCaps）：朝向、断面封死（开口边只剩贴墙一圈）、端面位置、端部不起翘。
+E4 封檐板材质键（boardMaterial）：缺省不变；给了只换 -board 的材质，其余逐字节不变。
 """
 import hashlib
 import math
@@ -285,6 +286,36 @@ class NoLiftEndCapTest(unittest.TestCase):
             self.skirt(endCaps=[0, 1, 2, 3, 4])
         with self.assertRaises(ValueError):
             self.skirt(endCaps=[True, False])
+
+
+# ---------------------------------------------------------------- E4 封檐板材质可配 ----
+class BoardMaterialTest(unittest.TestCase):
+    def calls(self, **kw):
+        def run():
+            EK.eave_skirt('sk', RECT, 4.0, dict(PRM, **kw), 'p')
+            EK.eave_skirt('sk-cap', RECT, 4.0, dict(PRM, endCaps=[1], **kw), 'p')
+            EK.xieshan_roof('xs', (0, 12, 0, 8), 5.0, dict(PRM, breakZ=6.0, ridgeZ=8.0, breakInset=2.0, gableInset=1.0, **kw), 'p')
+            EK.zanjian_roof('zj', (0, 4, 0, 4), 5.0, 9.0, dict(PRM, **kw), 'p')
+            EK.zanjian_roof('z8', (-3, 3, -3, 3), 5.0, 11.0, dict(PRM, sides=8, **kw), 'p')
+        return capture(run)
+
+    def test_default_is_wood_and_unchanged(self):
+        self.assertEqual(digest(self.calls()), digest(self.calls(boardMaterial='wood')))
+        self.assertEqual(digest(all_calls()), ALL_GOLDEN_E1)
+        self.assertEqual({m['material'] for m in self.calls() if m['name'].endswith('-board')}, {'wood'})
+
+    def test_board_material_key(self):
+        a, b = self.calls(), self.calls(boardMaterial='lacquer-red')
+        self.assertEqual(len(a), len(b))
+        boards = 0
+        for ma, mb in zip(a, b):
+            self.assertEqual((ma['name'], ma['items'], ma['faces'], ma['part']), (mb['name'], mb['items'], mb['faces'], mb['part']))
+            if ma['name'].endswith('-board'):
+                boards += 1
+                self.assertEqual((ma['material'], mb['material']), ('wood', 'lacquer-red'))
+            else:
+                self.assertEqual(ma['material'], mb['material'], ma['name'])      # 博风板 / 斗拱等其余件不跟着变
+        self.assertEqual(boards, 5)
 
 
 if __name__ == '__main__':
