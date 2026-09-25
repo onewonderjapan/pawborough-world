@@ -1,0 +1,61 @@
+{
+ "status": "complete",
+ "finishedAt": "2026-09-26T01:26:17.823885+09:00",
+ "bucket": "onewonder-pawborough-assets-566601428909-apne1",
+ "region": "ap-northeast-1",
+ "public": false,
+ "objects": 7,
+ "uploaded": 7,
+ "reused": 0,
+ "results": [
+  {
+   "path": "scene-authoring/yuyuan-area/resources/temple-v3/dadian.glb",
+   "sha256": "2c1a2f7cb4cfa4bd25c971179157fe2c9eab616f33fefa7ebf644c1358ba6835",
+   "bytes": 6286756,
+   "key": "objects/sha256/2c/2c1a2f7cb4cfa4bd25c971179157fe2c9eab616f33fefa7ebf644c1358ba6835",
+   "result": "uploaded"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/resources/temple-v3/gallery.glb",
+   "sha256": "785dc6ea2387675978d68f34e3841b434bdea1688f9a1a68fcfd2788f3f6b642",
+   "bytes": 491868,
+   "key": "objects/sha256/78/785dc6ea2387675978d68f34e3841b434bdea1688f9a1a68fcfd2788f3f6b642",
+   "result": "uploaded"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/resources/temple-v3/houdian.glb",
+   "sha256": "7074445fd1e5c5c4685dd8ca75d4100f1cee386d95455fc5f1d872bfff2f2fca",
+   "bytes": 2695588,
+   "key": "objects/sha256/70/7074445fd1e5c5c4685dd8ca75d4100f1cee386d95455fc5f1d872bfff2f2fca",
+   "result": "uploaded"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/resources/temple-v3/peidian.glb",
+   "sha256": "8533bd485f3051735c56f7540398b87f9deb8a491fd940cf583c82472e4bc6c4",
+   "bytes": 2074600,
+   "key": "objects/sha256/85/8533bd485f3051735c56f7540398b87f9deb8a491fd940cf583c82472e4bc6c4",
+   "result": "uploaded"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/resources/temple-v3/temple.glb",
+   "sha256": "5b74921ba3a5effa6adccf0d6a3d1085db52427f3ce659119e75590844d74ba1",
+   "bytes": 3778996,
+   "key": "objects/sha256/5b/5b74921ba3a5effa6adccf0d6a3d1085db52427f3ce659119e75590844d74ba1",
+   "result": "uploaded"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/resources/temple-v3/tree-camphor-v2.glb",
+   "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85",
+   "bytes": 233320,
+   "key": "objects/sha256/ea/eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85",
+   "result": "uploaded"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/resources/temple-v3/yimen.glb",
+   "sha256": "40f4bd2ab345a398587a4d07fa0841d0b03eea7f3ba6fc4663a7c17060f85dcf",
+   "bytes": 4343184,
+   "key": "objects/sha256/40/40f4bd2ab345a398587a4d07fa0841d0b03eea7f3ba6fc4663a7c17060f85dcf",
+   "result": "uploaded"
+  }
+ ]
+}
