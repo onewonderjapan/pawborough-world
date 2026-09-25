@@ -208,11 +208,24 @@ fetch('/out/zones-manifest.json').then(r => { if (!r.ok) throw 0; return r.json(
 // ---------- zone/cam ----------
 const zoneBox = new THREE.Box3();
 let zoneMaxY = 0;
+// wave4-touranchor：取景包围盒 = 当前视图各分区在 zones-manifest.json 里的 bounds 并集（核心视图 = garden/temple/bazaar/pond 全部分件），
+// 与分区文件的加载顺序、加载进度无关（旧做法按已加载节点取景，首屏只含第一个加载完的分件）。
+// 任一分件缺 bounds 或无清单（单文件 scene-areas.glb 回退）时仍按已加载节点取景。
+function manifestBox(zs) {
+  if (!zoneManifest) return null;
+  const files = zoneManifest.zones.filter(z => zs.includes(z.id) && z.file);
+  if (!files.length || files.some(z => !z.bounds)) return null;
+  const b = new THREE.Box3();
+  for (const z of files) b.union(new THREE.Box3(new THREE.Vector3(...z.bounds[0]), new THREE.Vector3(...z.bounds[1])));
+  return b;
+}
 function frame(nodes, dirName) {
   zoneBox.makeEmpty();
   const box = new THREE.Box3();
   zoneMaxY = 0;
-  for (const n of nodes) {
+  const mb = manifestBox(ZONES[curZone] || ZONES.core);
+  if (mb) { zoneBox.copy(mb); zoneMaxY = mb.max.y; }
+  else for (const n of nodes) {
     box.setFromObject(n);
     if (!box.isEmpty()) { zoneBox.union(box); zoneMaxY = Math.max(zoneMaxY, box.max.y); }
   }
