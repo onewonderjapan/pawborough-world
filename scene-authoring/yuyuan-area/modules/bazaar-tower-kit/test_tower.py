@@ -670,7 +670,7 @@ def _clip_s(poly, lo, hi):
     if pts:
         pts = clip(pts, lambda s, v: s <= v, hi)
     return pts
-if ID != HUABAO:
+if True:                       # lead 2026-09-26：华宝楼也按共享边规则（各模块一致）
     if not SHARED_L:
         print('INFO test9 %s 无共享边（layout 检出）' % ID)
     for e in SHARED_L:

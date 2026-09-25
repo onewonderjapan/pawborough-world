@@ -585,6 +585,9 @@ if TWP and TWP.get('corner'):
         su, sv = spec.split('-')
         cu = max(us) if su == 'uMax' else min(us)
         cvv = min(vs) if sv == 'vMin' else max(vs)
+        ci = TWP.get('cornerInsetM', 0.0)                 # 角塔离墙线内收（共享边一侧：塔檐外缘不越 footprint 边线）
+        cu += -ci if su == 'uMax' else ci
+        cvv += ci if sv == 'vMin' else -ci
         a0, a1 = (cu - pw, cu) if su == 'uMax' else (cu, cu + pw)
         b0, b1 = (cvv, cvv + pdp) if sv == 'vMin' else (cvv - pdp, cvv)
         TOWER = {'C': (0.0, 0.0), 'ta': (1.0, 0.0), 'tb': (0.0, 1.0), 'rect': (a0, a1, b0, b1), 'mode': 'bbox-corner'}
@@ -1004,7 +1007,8 @@ for b in BLOCKS:
     PART = 'eaves'
     for k in range(1, N):
         ek = ekp_for(k)
-        ring, pulled = ring_with_pulls(b['plansN'][k - 1], ZT[k], ek['over'] + ek['chu'] - WALLI + 0.08, bn)
+        # 内收量 = over + chu + 0.05：檐口外缘（含翼角出翘）整段收进墙线以内，共享边一侧是干净的山墙，不留檐头残桩
+        ring, pulled = ring_with_pulls(b['plansN'][k - 1], ZT[k], ek['over'] + ek['chu'] + 0.05, bn)
         # 内收的环：自身体积判定要排除本块本层
         EK.eave_skirt('eave-%s-s%d' % (bn, k), ring, ZT[k], ek, 'eaves')
         EAVE_LOG.append({'block': bn, 'storey': k, 'z': ZT[k], 'pulled': pulled, 'ringVerts': len(ring)})

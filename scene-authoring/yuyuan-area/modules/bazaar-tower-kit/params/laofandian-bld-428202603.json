@@ -256,5 +256,15 @@
   ],
   "notes": [
     "wave4 B5 同口径：挂落描金（棂条 0.30、金 d6ab4a、衬底深红木）与底层玻璃（alpha 0.5 + 店内暖色衬底 b08a60 + 微光 7a5a3a）调到看得出"
-  ]
+  ],
+  "referenceDisputed": true,
+  "referenceDispute": {
+    "decision": "lead 2026-09-26：选 ③——不进 ids.json 启用表；params 与生成器代码保留，等真正的上海老饭店参照（需补实拍）",
+    "evidence": [
+      "图库 PBR-SH-0002-037 的 Commons 源文件名 City_God_Temple_Tourism_Area_-_Laomiao_Huangjin_Yinlou.jpg（CATALOG.jsonl download_url）",
+      "画面正中大金匾读作「老庙黄金银楼」，塔身匾非「上海老饭店」",
+      "参照需求表（WP6.0）曾把 0002-037 登记为「上海老饭店确认实拍」，已按本条改为「存疑，疑为老庙黄金银楼」"
+    ],
+    "consequence": "本 params 的形制（两层深木前楼 + 后楼 + 转角塔葫芦宝顶）来自该存疑照片，不代表上海老饭店"
+  }
 }

@@ -69,6 +69,16 @@ ok('no mesh node duplicated across zones', dup.length === 0, JSON.stringify([...
 // 每件原始 GLB ≤ cap − 2 MB 余量（GOAL wave4-bazaar4 Z0「每件留 ≥ 2 MB 余量」）。
 const TOWER_REG = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, '..', 'modules', 'bazaar-tower-kit', 'ids.json'), 'utf8'));
 const TOWER_PART = TOWER_REG.zonePart, BAZAAR_HEADROOM_BYTES = 2000000;
+// 参照存疑的楼不得启用（lead 2026-09-26：0002-037 疑为老庙黄金银楼而非上海老饭店）：params 带 referenceDisputed=true 的 id
+// 不能出现在 ids.json 启用表里（不看产物，只看注册表与 params，开关两态都判）。
+{
+  const pdir = path.resolve(import.meta.dirname, '..', 'modules', 'bazaar-tower-kit', 'params');
+  const disputed = fs.readdirSync(pdir).filter(f => f.endsWith('.json')).map(f => JSON.parse(fs.readFileSync(path.join(pdir, f), 'utf8')))
+    .filter(p => p.referenceDisputed === true).map(p => p.id);
+  const enabled = new Set(TOWER_REG.ids);
+  const bad = disputed.filter(id => enabled.has(id) || Object.hasOwn(TOWER_REG.zonePart, id));
+  ok(`参照存疑的套件楼（${disputed.join(',') || '无'}）不在 ids.json 启用表 / zonePart 里`, bad.length === 0, JSON.stringify(bad));
+}
 const bz = m.zones.filter(z => z.id === 'bazaar' && z.file);
 {
   const parts = bz.map(z => ({ z, buf: fs.readFileSync(path.join(OUT, z.file)), j: parseGlbJson(fs.readFileSync(path.join(OUT, z.file))) }));
