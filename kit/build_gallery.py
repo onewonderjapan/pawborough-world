@@ -130,9 +130,26 @@ L.box('gallery-floor', (0, fl['topY'] - fl['thicknessM'] / 2, (fz0 + fz1) / 2),
 
 L.GROUP = 'gallery-body'
 cs = bd['columnSizeM']
+# wave5-templeqa: the 2.7 m column (top 2.85) stood 0.056 m out of the single-slope roof at its front
+# face (roof top 2.79 there) — red squares on the tiles. Column top now stops 0.02 under the roof
+# SOFFIT at the column's front face (same slab equation as the roof below); config height is the cap.
+_rf0 = cfg['roof']
+_sl = ((_rf0['frontEaveZ'] - _rf0['rearEaveZ']) ** 2 + (_rf0['highY'] - _rf0['lowY']) ** 2) ** .5
+_ny, _nz = (_rf0['frontEaveZ'] - _rf0['rearEaveZ']) / _sl, (_rf0['highY'] - _rf0['lowY']) / _sl
+
+
+def _roof_top(z):
+    return _rf0['lowY'] + (_rf0['highY'] - _rf0['lowY']) * (_rf0['frontEaveZ'] - z) / (_rf0['frontEaveZ'] - _rf0['rearEaveZ'])
+
+
+def _roof_soffit(z):
+    return _roof_top(z - _rf0['thicknessM'] * _nz) - _rf0['thicknessM'] * _ny
+
+
+col_h = min(cs[1], _roof_soffit(bd['columnLocalZ'] + cs[2] / 2) - .02 - fl['topY'])
 for x in bd['columnsLocalX']:
-    L.box('gallery-column', (x, fl['topY'] + cs[1] / 2, bd['columnLocalZ']),
-          (cs[0], cs[1], cs[2]), 'wood', .01, True)
+    L.box('gallery-column', (x, fl['topY'] + col_h / 2, bd['columnLocalZ']),
+          (cs[0], col_h, cs[2]), 'wood', .01, True)
     L.box('gallery-column-plinth', (x, fl['topY'] + .14, bd['columnLocalZ']),
           (cs[0] + .14, .28, cs[2] + .14), 'stone', .012, True)
 
@@ -159,7 +176,9 @@ slope_len = ((zf - zr) ** 2 + (rf['highY'] - rf['lowY']) ** 2) ** .5
 nz = (rf['highY'] - rf['lowY']) / slope_len
 ny = (zf - zr) / slope_len
 bot = [(v[0], v[1] - th * ny, v[2] + th * nz) for v in verts]
-faces = [(0, 1, 2, 3), (4, 5, 6, 7), (0, 3, 7, 4), (1, 5, 6, 2), (0, 4, 5, 1), (2, 6, 7, 3)]
+# wave5-templeqa: the soffit quad (4, 5, 6, 7) repeated the top face's winding, so the closed underside
+# faced UP into the slab (8.95 m² back face seen from the walkway). Wound downward now.
+faces = [(0, 1, 2, 3), (4, 7, 6, 5), (0, 3, 7, 4), (1, 5, 6, 2), (0, 4, 5, 1), (2, 6, 7, 3)]
 import temple_components as C  # noqa: E402
 C.quad_out = C.quad_out  # keep the import meaningful for the fascia below
 L.mesh('gallery-roof-slab', verts + bot, faces, 'roof',

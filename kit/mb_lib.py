@@ -86,6 +86,10 @@ def build_materials():
     M['drawer'] = mat('medicine-drawer-wood', '71503b', .75)
     M['iron'] = mat('dark-iron', '44453d', .64, .48)
     M['paper'] = mat('aged-paper', 'c1b18b', .93)
+    # wave5-templeqa: 格扇 / 格窗 backing behind the lattice bars (temple dadian / yimen / peidian / houdian).
+    # The bays used 'dark' (#252320) and read as black slabs (eye-level facade value 0.176–0.217 < 0.22,
+    # hall-kit caliber). Same backing colour the hall-kit adopted in wave3 W0 (latticeBackSrgb #55483c).
+    M['lattice'] = mat('lattice-backing', '55483c', .85)
     M['sign'] = mat('shop-sign-typeset-atlas', base='sign-atlas.png', rough=.68)
     M['signGeneric'] = mat('shop-sign-generic-atlas', base='sign-atlas-generic.png', rough=.68)
     M['cat'] = mat('cat-wall-reference-repaint', base='catwall-mural.png', rough=.98, extend=True)

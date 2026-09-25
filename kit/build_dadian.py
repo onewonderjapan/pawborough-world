@@ -272,6 +272,10 @@ L.M['plaque'] = L.mat('dadian-plaque-lacquer', '141416', .38, base='dadian-plaqu
 L.M['relief'] = L.mat('temple-relief-stone', '9a9a8c', .92,
                       normal='temple-relief-normal.png', tile=(1.8, 2.15))
 L.M['bronze'] = L.mat('bronze', '6b4c30', .45, metal=.75)
+# wave5-templeqa F (lead decision): the dadian lattice bays sit deepest in shade (double eave, 0.18 m
+# recess) and measured 0.2195 < 0.22 with the shared lattice-backing #55483c. The dadian backing board and
+# 裙板 get a slightly lighter board of the same hue; the other three buildings keep #55483c.
+L.M['latticeDadian'] = L.mat('lattice-backing-dadian', '615145', .85)
 L.META['dadian-plaque-lacquer']['source'] = (
     'locally authored (kit/make_dadian_textures.py; Noto Serif CJK Bold glyphs; '
     'text 城隍廟 evidenced by PBR-SH-0005-004 batch-005)')
@@ -426,31 +430,33 @@ for sgn in (-1, 1):
             x0, x1 = x1, x0
         xc, wb = (x0 + x1) / 2, x1 - x0
         L.box('bay-sill', (xc, bays['sillY'][1] / 2, zb), (wb, bays['sillY'][1], .18), 'stone', .008, True)
-        L.box('bay-backing', (xc, (lat_y0 + lat_y1) / 2, zb), (wb, lat_y1 - lat_y0, .1), 'dark', 0, True)
+        # wave5-templeqa: lattice members sat on the INTERIOR side of the backing (z offsets had the wrong sign; the
+        # module front is +Z), so from the court the bays read as flat backing slabs. They now stand in front of it.
+        L.box('bay-backing', (xc, (lat_y0 + lat_y1) / 2, zb), (wb, lat_y1 - lat_y0, .1), 'latticeDadian', 0, True)
         n = max(2, round(wb / bays['mullionSpacingM']))
         for k in range(n + 1):
-            L.box('bay-mullion', (x0 + wb * k / n, (lat_y0 + lat_y1) / 2, zb - .05),
+            L.box('bay-mullion', (x0 + wb * k / n, (lat_y0 + lat_y1) / 2, zb + .05),
                   (.08, lat_y1 - lat_y0, .12), 'wood', .005)
         for yy in (lat_y0 + .06, bays['waistRailY'], lat_y1 - .06):
-            L.box('bay-rail', (xc, yy + .05, zb - .045), (wb - .02, .1, .13), 'wood', .005)
+            L.box('bay-rail', (xc, yy + .05, zb + .045), (wb - .02, .1, .13), 'wood', .005)
         step = bays['mullionSpacingM']
         k = 0
         while True:
             x = x0 + (0.12 + step / 2) + step * k
             if x > x1 - .14:
                 break
-            L.box('bay-lattice-bar', (x, (bays['waistRailY'] + lat_y1) / 2, zb - .07),
+            L.box('bay-lattice-bar', (x, (bays['waistRailY'] + lat_y1) / 2, zb + .07),
                   (.035, lat_y1 - bays['waistRailY'] - .16, .05), 'wood', 0)
             k += 1
-        L.box('bay-lower-panel', (xc, (lat_y0 + bays['waistRailY']) / 2, zb - .04),
-              (wb - .14, bays['waistRailY'] - lat_y0 - .1, .05), 'dark', 0)
+        L.box('bay-lower-panel', (xc, (lat_y0 + bays['waistRailY']) / 2, zb + .04),
+              (wb - .14, bays['waistRailY'] - lat_y0 - .1, .05), 'latticeDadian', 0)  # wave5-templeqa: 裙板 same board colour as the 格心 backing
         # transom relief panel above the bay
         L.box('bay-transom-frame', (xc, (tr_y0 + tr_y1) / 2, zb), (wb, tr_y1 - tr_y0, .1), 'wood', .008)
         C.quad_out(L, 'bay-transom-face',
-                   [(x0 + .06, tr_y0 + .04, zb - .06), (x1 - .06, tr_y0 + .04, zb - .06),
-                    (x1 - .06, tr_y1 - .04, zb - .06), (x0 + .06, tr_y1 - .04, zb - .06)],
+                   [(x0 + .06, tr_y0 + .04, zb + .06), (x1 - .06, tr_y0 + .04, zb + .06),
+                    (x1 - .06, tr_y1 - .04, zb + .06), (x0 + .06, tr_y1 - .04, zb + .06)],
                    'relief', [(0, 0), (wb / 2.2, 0), (wb / 2.2, (tr_y1 - tr_y0) / 2.2), (0, (tr_y1 - tr_y0) / 2.2)],
-                   (0, 0, -1))
+                   (0, 0, 1))
         # plaster pier beyond the outermost bay up to the side wall
 for sgn in (-1, 1):
     x_in = sgn * bays['baySpansX'][1][1]

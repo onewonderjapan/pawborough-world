@@ -348,34 +348,39 @@ for sgn in (-1, 1):
     L.box('side-wall-lower', (sgn * (sw_in + sw_out) / 2, sw_low_top / 2, -fr['depthM'] / 2),
           (fr['sideWallThicknessM'], sw_low_top, fr['depthM']), 'plaster', 0, True)
     # fixed strip count (a while-loop with a max() clamp can stall at the boundary)
+    # wave5-templeqa: strip tops follow the shoulder soffit EXACTLY at both strip ends (sloped top quad),
+    # sampled at the lower of the inner / outer wall faces. The old strips were flat-topped at the higher
+    # end and their trapezoids always put the high end at z2, so every step stood up to 0.16 m out of the
+    # shoulder tiles — the row of white blocks on both shoulder roofs.
+    x_in, x_out = sgn * sw_in, sgn * sw_out
+
+    def soffit_at(z):
+        return min(C.shoulder_surface_y(rs, profile, sw_in, z), C.shoulder_surface_y(rs, profile, sw_out, z)) \
+            - rs['shellThicknessM'] - .03
     strips = []
     for k in range(math.ceil(fr['depthM'] / 0.3 - 1e-9)):
         z1 = -0.3 * k
         z2 = max(-fr['depthM'], z1 - 0.3)
-        x_mid = sgn * (sw_in + sw_out) / 2
-        ya = C.shoulder_surface_y(rs, profile, abs(x_mid), z1) - rs['shellThicknessM'] - .03
-        yb = C.shoulder_surface_y(rs, profile, abs(x_mid), z2) - rs['shellThicknessM'] - .03
-        strips.append((z1, z2, min(ya, yb), max(ya, yb)))
-    x_in, x_out = sgn * sw_in, sgn * sw_out
-    for z1, z2, ylo, yhi in strips:
+        strips.append((z1, z2, soffit_at(z1), soffit_at(z2)))
+    for z1, z2, ya, yb in strips:
         # start 0.02 inside the lower box: the seam is hidden geometry, the
         # visible surfaces are never coplanar with the box faces
-        y0 = min(sw_low_top - .02, ylo)
+        y0 = min(sw_low_top - .02, ya, yb)
         # inner face (normal toward the passage center), outer face (normal
         # away from it) — the hint sign is the FACE's own outward direction
-        C.quad_out(L, 'side-wall-upper-inner', [(x_in, y0, z1), (x_in, y0, z2), (x_in, yhi, z2), (x_in, ylo, z1)],
+        C.quad_out(L, 'side-wall-upper-inner', [(x_in, y0, z1), (x_in, y0, z2), (x_in, yb, z2), (x_in, ya, z1)],
                    'plaster', [(z1 / 2.5, y0 / 2.5), (z2 / 2.5, y0 / 2.5),
-                               (z2 / 2.5, yhi / 2.5), (z1 / 2.5, yhi / 2.5)], (-sgn, 0, 0))
-        C.quad_out(L, 'side-wall-upper-outer', [(x_out, y0, z1), (x_out, y0, z2), (x_out, yhi, z2), (x_out, ylo, z1)],
+                               (z2 / 2.5, yb / 2.5), (z1 / 2.5, ya / 2.5)], (-sgn, 0, 0))
+        C.quad_out(L, 'side-wall-upper-outer', [(x_out, y0, z1), (x_out, y0, z2), (x_out, yb, z2), (x_out, ya, z1)],
                    'plaster', [(z1 / 2.5, y0 / 2.5), (z2 / 2.5, y0 / 2.5),
-                               (z2 / 2.5, yhi / 2.5), (z1 / 2.5, yhi / 2.5)], (sgn, 0, 0))
-        C.quad_out(L, 'side-wall-upper-top', [(x_in, yhi, z1), (x_in, yhi, z2), (x_out, yhi, z2), (x_out, yhi, z1)],
+                               (z2 / 2.5, yb / 2.5), (z1 / 2.5, ya / 2.5)], (sgn, 0, 0))
+        C.quad_out(L, 'side-wall-upper-top', [(x_in, ya, z1), (x_in, yb, z2), (x_out, yb, z2), (x_out, ya, z1)],
                    'plaster', [(z1 / 2.5, 0), (z2 / 2.5, 0), (z2 / 2.5, .13), (z1 / 2.5, .13)], (0, 1, 0))
     # band end closures at the facade and rear planes (the staircase used to be
     # open at z=0 and z=-depth, leaving a see-through slot at each corner)
     for zend, hint in ((0.0, (0, 0, 1)), (-fr['depthM'], (0, 0, -1))):
-        yt = max(s[3] for s in strips if abs(s[0] - zend) < 1e-6 or abs(s[1] - zend) < 1e-6)
-        yb0 = min(sw_low_top - .02, min(s[2] for s in strips))
+        yt = soffit_at(zend)          # wave5-templeqa: the band end closes at its own soffit height
+        yb0 = min(sw_low_top - .02, min(min(s[2], s[3]) for s in strips))
         C.quad_out(L, 'side-wall-upper-end', [(x_in, yb0, zend), (x_out, yb0, zend),
                                               (x_out, yt, zend), (x_in, yt, zend)],
                    'plaster', [(x_in / 2.5, yb0 / 2.5), (x_out / 2.5, yb0 / 2.5),
@@ -390,8 +395,15 @@ rear_z = -fr['depthM'] + .14
 rear_half_in = op['clearWidthM'] / 2 + .12
 rear_half_out = sw_out
 for sgn in (-1, 1):
-    L.box('rear-wall-side', (sgn * (rear_half_in + rear_half_out) / 2, 2.95, rear_z),
-          (rear_half_out - rear_half_in, 5.9, .28), 'plaster', 0, True)
+    # wave5-templeqa: from |x| 2.05 (shoulder xSpans inner edge) outward the rear wall sits under the shoulder
+    # shell, whose rear slope at the wall faces is below 5.9 + shell; the wall corners stood 0.11 m out of the
+    # shoulder tiles. The side piece now stops under the lowest shoulder soffit over its shoulder part
+    # (same sampling as the side-wall strips); the header under the centre roof keeps 5.9.
+    _xs0 = abs(rs['xSpans'][1][0])
+    _rt = min(5.9, *(C.shoulder_surface_y(rs, profile, _xs0 + (rear_half_out - _xs0) * k / 12, zz)
+                     - rs['shellThicknessM'] - .03 for k in range(13) for zz in (rear_z + .14, rear_z - .14)))
+    L.box('rear-wall-side', (sgn * (rear_half_in + rear_half_out) / 2, _rt / 2, rear_z),
+          (rear_half_out - rear_half_in, _rt, .28), 'plaster', 0, True)
 L.box('rear-wall-header', (0, (3.1 + 5.9) / 2, rear_z), (2 * rear_half_in, 5.9 - 3.1, .28),
       'plaster', 0, True)
 L.box('rear-beam', (0, 4.98, rear_z + .05), (2 * sw_out - .3, .2, .34), 'wood', .01)
