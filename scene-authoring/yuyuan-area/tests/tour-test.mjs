@@ -9,19 +9,23 @@
 //  7) R1：相机到最近可遮挡碰撞盒（顶 ≥1.6 m）≥1.5 m，不贴墙；
 //  8) R1：眼高对象机位距目标区域中心 12–35 m 且与目标同分区（不得隔墙外拍园内景）；
 //  9) R1：锚点机位朝向 = commercial-route.json 从该锚点出发第一段方向（≤25°）；anchor-jiuqu 目标为九曲桥。
+// 11) wave4-touranchor：街景锚点（targetObject = street:<route>）过街景画面几何代理（tour-visibility.streetViewProxy，
+//     碰撞盒 + 无碰撞建筑棱柱 + 店屋实例 + 通道顶棚/楼身，网格视线）——目标（街面 + 走廊两侧 6 m 立面）≥ 25%、天空 ≤ 35%、
+//     画面下 1/3 近景墙最大连通区 < 40%（门槛同 tests/tour-render-check.mjs 的渲染复核，常数 STREET_VIEW）。
 // 用法：OUT_DIR=out-zone node tests/tour-test.mjs
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { centroid, distToPolyline, pointInPoly, dist2d, anchorBehindSharedEdge, rearWallFace } from '../src/lib.mjs';
-import { loadColliders, targetBox, visiblePointCount, screenAreaFrac, nearestColliderDist, streetCorridorBox, boxDist2d, polylineNearBox } from '../scripts/tour-visibility.mjs';
+import { loadColliders, targetBox, visiblePointCount, screenAreaFrac, nearestColliderDist, streetCorridorBox, boxDist2d, polylineNearBox,
+  streetFacadeBand, makeStreetViewScene, passageCeilings, passageMasses, streetViewProxy, STREET_VIEW } from '../scripts/tour-visibility.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
 const layout = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline', 'layout.json'), 'utf8'));
 const layoutObj = (id) => layout.objects.find(x => x.id === id);
 const navPath = path.join(OUT, 'nav-gap.json');
-const tourPath = path.join(OUT, 'tour.json');
+const tourPath = process.env.TOUR || path.join(OUT, 'tour.json'); // TOUR：只用于在旧 tour.json 上复现（红测）
 const closed = (fp) => [...fp, fp[0]];
 let fails = 0;
 const check = (ok, msg) => { if (!ok) { console.error('FAIL:', msg); fails++; } };
@@ -215,6 +219,21 @@ if (tour.sansuitang) {
   const faceOff = Math.acos(Math.max(-1, Math.min(1, -(lk[0] * o.facade.dir[0] + lk[1] * o.facade.dir[1]) / (ll * fl)))) * 180 / Math.PI;
   r1check(faceOff <= 30, `sansuitang 视线与立面法线反向夹角 ${faceOff.toFixed(1)}° > 30°（没有正对立面）`);
   console.log(`tour-test(sansuitang): 偏立面轴 ${off.toFixed(1)}°，距锚点 ${R.toFixed(1)} m，h ${v.p[1]}，视线对立面法线 ${faceOff.toFixed(1)}°`);
+}
+// 11) wave4-touranchor 街景画面代理（街景锚点）
+{
+  const outLayout = JSON.parse(fs.readFileSync(path.join(OUT, 'layout.json'), 'utf8'));
+  const sv = makeStreetViewScene(boxes, layout, { areaRoot: ROOT, ceilings: passageCeilings(outLayout), masses: passageMasses(outLayout) });
+  for (const [key, v] of Object.entries(tour)) {
+    if (!key.startsWith('anchor-') || !String(v.targetObject).startsWith('street:')) continue;
+    const a = nav.anchors[key.slice('anchor-'.length)], dir = anchorRouteDir(v.targetObject, routes), pts = anchorRoutePts(v.targetObject, routes);
+    if (!a || !dir) continue; // 已在上面判过
+    const r = streetViewProxy(sv, v.p, v.t, streetCorridorBox(a, dir, pts), streetFacadeBand(a, dir, pts));
+    console.log(`tour-test(street-view proxy): ${key} 目标 ${(r.target * 100).toFixed(1)}% 天空 ${(r.sky * 100).toFixed(1)}% 顶棚 ${(r.soffit * 100).toFixed(1)}% 下1/3近景墙 ${(r.nearMax * 100).toFixed(1)}%`);
+    r1check(r.target >= STREET_VIEW.MIN_TARGET, `${key} 街景代理目标 ${(r.target * 100).toFixed(1)}% < ${STREET_VIEW.MIN_TARGET * 100}%`);
+    r1check(r.sky <= STREET_VIEW.MAX_SKY, `${key} 街景代理天空 ${(r.sky * 100).toFixed(1)}% > ${STREET_VIEW.MAX_SKY * 100}%`);
+    r1check(r.nearMax < STREET_VIEW.MAX_NEAR_COMPONENT, `${key} 下 1/3 近景墙连通区 ${(r.nearMax * 100).toFixed(1)}% ≥ ${STREET_VIEW.MAX_NEAR_COMPONENT * 100}%`);
+  }
 }
 console.log(`tour-test(R1): visibility/projection/clearance checked on ${Object.keys(tour).length} views`);
 if (r1fails) { console.error(`tour-test(R1): ${r1fails} fail`); process.exit(1); }

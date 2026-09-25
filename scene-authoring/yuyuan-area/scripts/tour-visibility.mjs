@@ -144,6 +144,29 @@ export function streetCorridorBox(anchor2, dir, routePts = null) {
     yaw: Math.atan2(dir[0], dir[1]),
   };
 }
+// ---------- wave4-touranchor：锚点街景新口径（街面 + 两侧立面；渲染复核 tests/tour-render-check.mjs 用同一组常数） ----------
+// 目标 = 街廊盒里的街面（streetCorridorBox）+ 走廊盒两侧各 FACADE_BAND_M 内的建筑立面像素
+//   （立面 = 建筑类 layout 对象的近竖直面 |n_y| < VERTICAL_NY，落在「走廊盒横向外扩 FACADE_BAND_M、高 FACADE_H」的带盒里）。
+// 画面门槛：目标 ≥ MIN_TARGET；天空（没有任何几何的像素）≤ MAX_SKY；
+// 画面下 1/3 的「近景墙」（近竖直面且距相机 < NEAR_M）最大 4-连通区 < MAX_NEAR_COMPONENT（占下 1/3 面积）。
+export const STREET_VIEW = {
+  FACADE_BAND_M: 6, FACADE_H: 30, VERTICAL_NY: 0.5,
+  MIN_TARGET: 0.25, MAX_SKY: 0.35, NEAR_M: 6, MAX_NEAR_COMPONENT: 0.40,
+};
+// 「建筑立面」归属的 layout 类别（建筑体、立面开间、商铺/庙宇锚、园墙类）；树/摊位/道路/水/岩石不算立面
+export const FACADE_KINDS = new Set([
+  'outerBuilding', 'bazaarBlock', 'tower', 'hall', 'xuan', 'pavilion', 'corridor', 'waterside', 'stage', 'watersideGallery',
+  'facadeBay', 'shopAnchor', 'templeAnchor', 'wall', 'wallHead', 'moonGateWall', 'gateAnchor',
+]);
+export function facadeIds(layout) {
+  return layout.objects.filter(o => FACADE_KINDS.has(o.kind)).map(o => o.id);
+}
+// 立面带盒：与街廊盒同中心线/同长度，横向半宽 = HALF_W + FACADE_BAND_M，高 0–FACADE_H
+export function streetFacadeBand(anchor2, dir, routePts = null) {
+  const c = streetCorridorBox(anchor2, dir, routePts);
+  const { FACADE_BAND_M, FACADE_H } = STREET_VIEW;
+  return { id: 'street-facade-band', center: [c.center[0], FACADE_H / 2, c.center[2]], half: [c.half[0] + FACADE_BAND_M, FACADE_H / 2, c.half[2]], yaw: c.yaw };
+}
 export function streetCorridorAim(anchor2, dir, routePts = null) {
   const { AIM_S, S0 } = CORRIDOR;
   const s1 = routePts ? streetCorridorLen(routePts) : CORRIDOR.S1;
@@ -306,4 +329,192 @@ export function nearestColliderDist(boxes, p, { eyeY = 1.6, ignoreIds = [] } = {
     if (d < best.dist) best = { dist: d, name: bx.name };
   }
   return best;
+}
+
+// ---------- wave4-touranchor：锚点街景画面几何代理（生成器选位 + tour-test 断言共用；真值在 tests/tour-render-check.mjs 渲染复核） ----------
+// 碰撞盒只有墙体（无屋面/檐），所以代理的天空偏多、目标偏少——是渲染口径的保守近似。
+// 场景：碰撞盒（loadColliders，按 id 归属 layout 对象）+ 没有碰撞记录的建筑类 layout footprint 竖直棱柱（外围建筑等，高 = layout height）+ 地面 y=0。
+// 画面按 GRID 网格发射视线（同 VIEW 相机式），每条视线取最近命中：
+//   无命中 → 天空；地面 → 落在街廊盒（2D + pad）内为目标；
+//   竖直面 → 建筑类（facadeSet）且落在立面带盒内为目标；命中点落在街廊盒体积内（街上的摊位等）也算目标；距相机 < NEAR_M 为近景墙；
+// 近景墙在画面下 1/3 行内取 4-连通最大区。返回 {target, sky, nearMax}（均为占比）。
+export const PROXY_GRID = { nx: 70, ny: 45, farM: 400 };
+// 店屋实例（layout.instances 里 module = shop-*，锚 = shopAnchor）没有碰撞记录：按 resources/shops/<module>/measurements.json
+// 的 frontageM × depthM × eaveM 做竖直棱柱（原点 = 前墙中点地面，立面朝局部 +Z，进深 −Z；与 GLB axis 声明一致）。
+// 过街楼/骑楼式通道顶棚：管线产物 OUT/layout.json 的 reviewRepair.passages（repair-layout.py 从冻结源生成）——
+// 每段通道矩形在 clearHeight 高度有顶棚（build-scene cutPassages + passageHeight 顶面）。视线向上穿过该高度且落在矩形内 = 命中顶棚（朝下面，非目标）。
+export function passageCeilings(outLayout) {
+  const out = [];
+  for (const p of outLayout?.reviewRepair?.passages || []) for (const r of p.rectangles || []) out.push({ poly: r, y: p.clearHeight ?? 3.5 });
+  return out;
+}
+// 被通道穿过的建筑：通道高度（passageHeight）以上仍是实体楼身——竖直棱柱 y ∈ [passageHeight, height]（碰撞盒只到地面层墙体）
+export function passageMasses(outLayout) {
+  return (outLayout?.objects || []).filter(o => o.geometry?.passageHeight && o.geometry.footprint)
+    .map(o => ({ id: o.id, fp: o.geometry.footprint, y0: o.geometry.passageHeight, h: o.height || 6 }));
+}
+export function makeStreetViewScene(boxes, layout, { zones = null, areaRoot = null, ceilings = [], masses = [] } = {}) {
+  const fac = new Set(facadeIds(layout));
+  const haveColl = new Set(boxes.map(b => b.id));
+  const prisms = [];
+  for (const m of masses) {
+    const xs = m.fp.map(q => q[0]), zs = m.fp.map(q => q[1]);
+    prisms.push({ id: m.id, fp: m.fp, y0: m.y0, h: m.h, aabb: { x0: Math.min(...xs), x1: Math.max(...xs), z0: Math.min(...zs), z1: Math.max(...zs) } });
+  }
+  if (areaRoot) {
+    for (const inst of layout.instances || []) {
+      if (!/^shop-/.test(inst.module || '') || haveColl.has(inst.id)) continue;
+      const mf = path.join(areaRoot, 'resources', 'shops', inst.module, 'measurements.json');
+      if (!fs.existsSync(mf)) continue;
+      const d = JSON.parse(fs.readFileSync(mf, 'utf8')).design || {};
+      if (!d.frontageM || !d.depthM) continue;
+      const ry = inst.rotY || 0, zx = Math.sin(ry), zz = Math.cos(ry), xx = Math.cos(ry), xz = -Math.sin(ry);
+      const [ox, oz] = inst.position, hw = d.frontageM / 2, dp = d.depthM;
+      const fp = [[-hw, 0], [hw, 0], [hw, -dp], [-hw, -dp]].map(([lx, lz]) => [ox + xx * lx + zx * lz, oz + xz * lx + zz * lz]);
+      const xs = fp.map(q => q[0]), zs = fp.map(q => q[1]);
+      prisms.push({ id: inst.id, fp, h: d.eaveM || 6.8, aabb: { x0: Math.min(...xs), x1: Math.max(...xs), z0: Math.min(...zs), z1: Math.max(...zs) } });
+    }
+  }
+  for (const o of layout.objects) {
+    if (!FACADE_KINDS.has(o.kind) || !o.geometry?.footprint || haveColl.has(o.id)) continue;
+    if (zones && !zones.includes(o.zone)) continue;
+    const fp = o.geometry.footprint, h = o.height || 6;
+    const xs = fp.map(p => p[0]), zs = fp.map(p => p[1]);
+    prisms.push({ id: o.id, fp, h, aabb: { x0: Math.min(...xs), x1: Math.max(...xs), z0: Math.min(...zs), z1: Math.max(...zs) } });
+  }
+  return { boxes, prisms, fac, ceilings };
+}
+// 视线与 OBB 的进入距离（在盒外起点）；返回 {t, vertical} 或 null
+function rayBox(o, d, bx) {
+  const wx = o[0] - bx.center[0], wy = o[1] - bx.center[1], wz = o[2] - bx.center[2];
+  const ox = bx.cos * wx - bx.sin * wz, oy = wy, oz = bx.sin * wx + bx.cos * wz;
+  const rx = bx.cos * d[0] - bx.sin * d[2], ry = d[1], rz = bx.sin * d[0] + bx.cos * d[2];
+  let t0 = -Infinity, t1 = Infinity, ax = -1;
+  const sl = [[ox, rx, bx.half[0]], [oy, ry, bx.half[1]], [oz, rz, bx.half[2]]];
+  for (let i = 0; i < 3; i++) {
+    const [p, r, h] = sl[i];
+    if (Math.abs(r) < 1e-12) { if (Math.abs(p) > h) return null; continue; }
+    let u0 = (-h - p) / r, u1 = (h - p) / r;
+    if (u0 > u1) { const t = u0; u0 = u1; u1 = t; }
+    if (u0 > t0) { t0 = u0; ax = i; }
+    t1 = Math.min(t1, u1);
+    if (t0 > t1) return null;
+  }
+  if (t1 < 0) return null;
+  if (t0 < 0) return { t: 0, vertical: true }; // 起点在盒内
+  return { t: t0, vertical: ax !== 1 };
+}
+function rayPrism(o, d, pr) {
+  let best = Infinity;
+  const fp = pr.fp, n = fp.length;
+  for (let i = 0; i < n; i++) {
+    const a = fp[i], b = fp[(i + 1) % n];
+    const ex = b[0] - a[0], ez = b[1] - a[1];
+    const den = d[0] * ez - d[2] * ex;
+    if (Math.abs(den) < 1e-12) continue;
+    const qx = a[0] - o[0], qz = a[1] - o[2];
+    const t = (qx * ez - qz * ex) / den, u = (qx * d[2] - qz * d[0]) / den;
+    if (t <= 1e-6 || u < 0 || u > 1 || t >= best) continue;
+    const y = o[1] + d[1] * t;
+    if (y >= (pr.y0 || 0) && y <= pr.h) best = t;
+  }
+  return best;
+}
+function pointInPoly2(p, poly) {
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const [xi, zi] = poly[i], [xj, zj] = poly[j];
+    if ((zi > p[1]) !== (zj > p[1]) && p[0] < (xj - xi) * (p[1] - zi) / (zj - zi) + xi) inside = !inside;
+  }
+  return inside;
+}
+const inObb2 = (box, p, pad = 0) => {
+  const dx = p[0] - box.center[0], dy = p[1] - box.center[1], dz = p[2] - box.center[2];
+  const c = Math.cos(box.yaw || 0), s = Math.sin(box.yaw || 0);
+  const lx = c * dx - s * dz, lz = s * dx + c * dz;
+  return Math.abs(lx) <= box.half[0] + pad && Math.abs(dy) <= box.half[1] + pad && Math.abs(lz) <= box.half[2] + pad;
+};
+export function streetViewProxy(scene, cam, look, corridor, band, { grid = PROXY_GRID, view = VIEW, pad = 0.25, debug = false } = {}) {
+  const f = norm3(sub3(look, cam)), r = norm3(cross(f, [0, 1, 0])), u = cross(r, f);
+  const tanY = Math.tan((view.fovDeg / 2) * Math.PI / 180), tanX = tanY * (view.width / view.height);
+  const R = grid.farM;
+  // 方位角分桶加速（1° 一桶，相对视轴水平方位）：每个盒/棱柱按其 2D 角点相对相机的方位区间入桶，视线只查所在桶
+  const yaw0 = Math.atan2(f[2], f[0]);
+  const relAz = (x, z) => { let a = Math.atan2(z - cam[2], x - cam[0]) - yaw0; while (a > Math.PI) a -= 2 * Math.PI; while (a < -Math.PI) a += 2 * Math.PI; return a; };
+  const NB = 360, bucket = Array.from({ length: NB }, () => ({ b: [], p: [] }));
+  const binOf = (a) => Math.min(NB - 1, Math.max(0, Math.floor((a + Math.PI) / (2 * Math.PI) * NB)));
+  const insert = (corners, item, key) => {
+    let lo = Infinity, hi = -Infinity;
+    for (const [x, z] of corners) { const a = relAz(x, z); lo = Math.min(lo, a); hi = Math.max(hi, a); }
+    if (hi - lo > Math.PI) { for (const bk of bucket) bk[key].push(item); return; } // 跨背后/包住相机：全桶
+    for (let k = binOf(lo); k <= binOf(hi); k++) bucket[k][key].push(item);
+  };
+  for (const b of scene.boxes) {
+    if (b.aabb.x1 < cam[0] - R || b.aabb.x0 > cam[0] + R || b.aabb.z1 < cam[2] - R || b.aabb.z0 > cam[2] + R) continue;
+    const [hx, , hz] = b.half, c = b.cos, sn = b.sin;
+    const cn = [[-hx, -hz], [hx, -hz], [hx, hz], [-hx, hz]].map(([lx, lz]) => [b.center[0] + c * lx + sn * lz, b.center[2] - sn * lx + c * lz]);
+    const inside = Math.abs(c * (cam[0] - b.center[0]) - sn * (cam[2] - b.center[2])) <= hx && Math.abs(sn * (cam[0] - b.center[0]) + c * (cam[2] - b.center[2])) <= hz;
+    if (inside) { for (const bk of bucket) bk.b.push(b); continue; }
+    insert(cn, b, 'b');
+  }
+  for (const p of scene.prisms) {
+    if (p.aabb.x1 < cam[0] - R || p.aabb.x0 > cam[0] + R || p.aabb.z1 < cam[2] - R || p.aabb.z0 > cam[2] + R) continue;
+    insert(p.fp, p, 'p');
+  }
+  const { nx, ny } = grid;
+  let tgt = 0, sky = 0, soffit = 0;
+  const near = new Uint8Array(nx * ny);
+  const cls = debug ? new Array(nx * ny).fill('') : null; // 调试：逐格分类
+  for (let j = 0; j < ny; j++) {
+    const sy = 1 - (2 * (j + 0.5)) / ny; // j=0 画面顶
+    for (let i = 0; i < nx; i++) {
+      const sx = (2 * (i + 0.5)) / nx - 1;
+      const d = norm3([f[0] + r[0] * sx * tanX + u[0] * sy * tanY, f[1] + r[1] * sx * tanX + u[1] * sy * tanY, f[2] + r[2] * sx * tanX + u[2] * sy * tanY]);
+      let bestT = d[1] < -1e-9 ? cam[1] / -d[1] : Infinity, kind = bestT < Infinity ? 'ground' : 'sky', hitId = null, vertical = false;
+      const bk = bucket[binOf(relAz(cam[0] + d[0], cam[2] + d[2]))];
+      const boxes = bk.b, prisms = bk.p;
+      for (const bx of boxes) {
+        const h = rayBox(cam, d, bx);
+        if (h && h.t < bestT) { bestT = h.t; kind = 'box'; hitId = bx.id; vertical = h.vertical; }
+      }
+      for (const pr of prisms) {
+        const t = rayPrism(cam, d, pr);
+        if (t < bestT) { bestT = t; kind = 'prism'; hitId = pr.id; vertical = true; }
+      }
+      if (d[1] > 1e-9) for (const cl of scene.ceilings) { // 通道顶棚（朝下面）
+        const t = (cl.y - cam[1]) / d[1];
+        if (t <= 0 || t >= bestT) continue;
+        if (pointInPoly2([cam[0] + d[0] * t, cam[2] + d[2] * t], cl.poly)) { bestT = t; kind = 'ceiling'; hitId = null; vertical = false; }
+      }
+      if (kind === 'ceiling') { soffit++; if (cls) cls[j * nx + i] = 'C'; continue; }
+      if (kind === 'sky' || bestT > R) { if (d[1] >= 0) { sky++; if (cls) cls[j * nx + i] = ' '; continue; } }
+      const p = [cam[0] + d[0] * bestT, cam[1] + d[1] * bestT, cam[2] + d[2] * bestT];
+      let isT = inObb2(corridor, p, pad);
+      if (!isT && vertical && hitId && scene.fac.has(hitId) && inObb2(band, p)) isT = true;
+      if (isT) tgt++;
+      if (kind !== 'ground' && vertical && bestT < STREET_VIEW.NEAR_M) near[j * nx + i] = 1;
+      if (cls) cls[j * nx + i] = isT ? 'T' : kind === 'ground' ? '.' : vertical ? 'w' : 'h';
+    }
+  }
+  // 画面下 1/3 行的近景墙 4-连通最大区
+  const j0 = ny - Math.floor(ny / 3), rows = ny - j0, seen = new Uint8Array(nx * ny);
+  let best = 0;
+  for (let j = j0; j < ny; j++) for (let i = 0; i < nx; i++) {
+    const k0 = j * nx + i;
+    if (!near[k0] || seen[k0]) continue;
+    const st = [k0]; seen[k0] = 1; let n = 0;
+    while (st.length) {
+      const k = st.pop(); n++;
+      const x = k % nx, y = (k - x) / nx;
+      for (const [xx, yy] of [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]) {
+        if (xx < 0 || xx >= nx || yy < j0 || yy >= ny) continue;
+        const q = yy * nx + xx;
+        if (near[q] && !seen[q]) { seen[q] = 1; st.push(q); }
+      }
+    }
+    best = Math.max(best, n);
+  }
+  const out = { target: tgt / (nx * ny), sky: sky / (nx * ny), soffit: soffit / (nx * ny), nearMax: best / (nx * rows) };
+  if (cls) out.grid = Array.from({ length: ny }, (_, j) => cls.slice(j * nx, (j + 1) * nx).join(''));
+  return out;
 }
