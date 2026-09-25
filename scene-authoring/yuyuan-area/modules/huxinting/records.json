@@ -1,13 +1,13 @@
 {
  "id": "huxin-ting",
  "glb": "out-zone/huxin-ting.glb",
- "bytes": 659240,
- "tris": 8528,
+ "bytes": 662360,
+ "tris": 8564,
  "partTriCounts": {
   "deck": 12,
   "piles": 240,
   "body1": 36,
-  "gallery1": 228,
+  "gallery1": 264,
   "railing": 1920,
   "windows": 2640,
   "body2": 24,
@@ -20,7 +20,7 @@
   "deck": 1,
   "piles": 20,
   "body1": 3,
-  "gallery1": 19,
+  "gallery1": 22,
   "railing": 160,
   "windows": 220,
   "body2": 2,
@@ -153,9 +153,9 @@
  },
  "materials": {
   "ht-tile-grey": [
-   0.155,
-   0.158,
-   0.165
+   0.1559264637078274,
+   0.1589608350608804,
+   0.1651321945016676
   ],
   "ht-ridge-dark": [
    0.045,
@@ -163,9 +163,9 @@
    0.05
   ],
   "ht-wood-red": [
-   0.145,
-   0.027,
-   0.016
+   0.14412847085805777,
+   0.027320891639074894,
+   0.01599629336550963
   ],
   "ht-plaster-white": [
    0.8,

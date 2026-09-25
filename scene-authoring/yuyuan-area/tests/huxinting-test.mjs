@@ -391,5 +391,35 @@ if (HUXINTING && fs.existsSync(path.join(OUT, 'pond.glb'))) {
   ok(`戗脊 ${qj.length} 条，最大截面高 ${qjMax.toFixed(3)} m ≤ 0.35`, qj.length >= 8 && qjMax <= 0.35, `qjMax=${qjMax}`);
 }
 
+// ---------------- 7) R1-2 木色 / 瓦色（材质值 + 部件归属，GLB 实测） ----------------
+const srgbToLin = (c) => (c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
+const WOOD_LIN = [0x6a, 0x2e, 0x22].map((v) => srgbToLin(v / 255));
+const matsOfPart = (nm) => {
+  const n = gltf.nodes.find((x) => x.name === nm);
+  return [...new Set(gltf.meshes[n.mesh].primitives.map((p) => gltf.materials[p.material]))];
+};
+const isWood = (m) => !m.pbrMetallicRoughness.baseColorTexture &&
+  m.pbrMetallicRoughness.baseColorFactor.slice(0, 3).every((v, i) => Math.abs(v - WOOD_LIN[i]) <= 0.002);
+{
+  const woodGroups = {
+    '柱（外廊 / 抱厦）': /__(gcol|pcol)-/, '枋（外廊额枋）': /__lintel-/, '栏杆': /-(rail|pick)-/,
+    '封檐板 / 博风': /-(board|bofeng-[we][ab])$/,
+  };
+  for (const [label, re] of Object.entries(woodGroups)) {
+    const names = allParts.filter((n) => re.test(n));
+    const mats = [...new Set(names.flatMap(matsOfPart))];
+    ok(`${label} ${names.length} 件，材质全部 = sRGB #6a2e22（${mats.map((m) => m.name).join(',') || '无'}）`,
+      names.length > 0 && mats.length > 0 && mats.every(isWood));
+  }
+  const tileRe = /-(lower|upper-[sn]|tile|cone|satou-[we])$/;
+  const tileParts = allParts.filter((n) => tileRe.test(n));
+  const tileMats = [...new Set(tileParts.flatMap(matsOfPart))];
+  const grey = tileMats.length === 1 && (() => {
+    const c = tileMats[0].pbrMetallicRoughness.baseColorFactor;
+    return Math.abs(c[0] - c[1]) <= 0.03 && Math.abs(c[1] - c[2]) <= 0.03 && !tileMats[0].pbrMetallicRoughness.baseColorTexture;
+  })();
+  ok(`瓦面 ${tileParts.length} 件全部用同一中性灰瓦材质（${tileMats.map((m) => m.name).join(',')}）`, tileParts.length >= 8 && grey);
+}
+
 console.log(`RESULT pass=${pass} fail=${fail} skipped=${skipped}`);
 if (fail) { console.log('FAILURES:', failures.join(' | ')); process.exit(1); }

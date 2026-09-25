@@ -75,11 +75,21 @@ D = dict(
     plaque=dict(w=2.4, h=0.55, z0=2.35),       # 匾额空板（无文字），抱厦前檐下
 )
 MATS = {'roof': 'ht-tile-grey', 'dark': 'ht-ridge-dark', 'wood': 'ht-wood-red', 'wall': 'ht-plaster-white'}
+def srgb(hexstr):
+    """sRGB 十六进制 -> Base Color 线性值（IEC 61966-2-1），glTF baseColorFactor 同为线性。"""
+    out = []
+    for i in (0, 2, 4):
+        c = int(hexstr[i:i + 2], 16) / 255.0
+        out.append(c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4)
+    return tuple(out)
+
+WOOD_SRGB = '6a2e22'     # R1 冻结：柱、枋、栏杆、格扇框、封檐板、博风统一深红木 sRGB #6a2e22
+TILE_SRGB = '6e6f71'     # 灰瓦（0010 lead QC：湖心亭必须灰瓦，推理图偏蓝不照抄）
 PALETTE = {
-    # Base Color 输入为线性值；深红栗木 = sansuitang tint 6a2e22 的线性值
-    'ht-tile-grey':     dict(rgb=(0.155, 0.158, 0.165), rough=0.85),  # 灰瓦（0010 lead QC：不照抄推理图的蓝瓦）
+    # Base Color 输入为线性值；从 sRGB 十六进制换算（round-0 手填的线性近似值与此相差 < 0.001）
+    'ht-tile-grey':     dict(rgb=srgb(TILE_SRGB), rough=0.85),
     'ht-ridge-dark':    dict(rgb=(0.045, 0.045, 0.050), rough=0.90),
-    'ht-wood-red':      dict(rgb=(0.145, 0.027, 0.016), rough=0.72),  # 深红栗木（6a2e22 线性）
+    'ht-wood-red':      dict(rgb=srgb(WOOD_SRGB), rough=0.72),
     'ht-plaster-white': dict(rgb=(0.800, 0.780, 0.740), rough=0.90),
     'ht-stone-deck':    dict(rgb=(0.230, 0.225, 0.210), rough=0.90),
     'ht-stone-pile':    dict(rgb=(0.150, 0.147, 0.140), rough=0.92),
@@ -187,6 +197,14 @@ for j in range(1, n_v):
 for i, (u, v) in enumerate(col_xy):
     box_uv('huxin-ting__gcol-%d' % i, u - 0.11, v - 0.11, u + 0.11, v + 0.11,
            PLATFORM_Y, PLATFORM_Y + 3.0, 'ht-wood-red', 'gallery1')
+# 额枋（R1）：外廊柱头一圈木枋，把柱列连成框（-v 面全长、西端面全长；+v 面只到抱厦屋面以西的柱；
+# 东端柱列落在塔亭墙内，不做）。西端两角无角柱，枋延到西侧柱列线相交。截面 0.16 × 0.28，顶面 = 柱顶。
+LT0, LT1 = PLATFORM_Y + 2.72, PLATFORM_Y + 3.0
+u_cols_b = sorted(u for (u, v) in col_xy if abs(v - gv1) < 1e-6 and u < 0)
+box_uv('huxin-ting__lintel-s', gu0 - 0.08, gv0 - 0.08, UE + 0.11, gv0 + 0.08, LT0, LT1, 'ht-wood-red', 'gallery1')
+box_uv('huxin-ting__lintel-w', gu0 - 0.08, gv0 + 0.08, gu0 + 0.08, gv1 - 0.08, LT0, LT1, 'ht-wood-red', 'gallery1')
+if len(u_cols_b) >= 2:
+    box_uv('huxin-ting__lintel-n', gu0 - 0.08, gv1 - 0.08, u_cols_b[-1] + 0.11, gv1 + 0.08, LT0, LT1, 'ht-wood-red', 'gallery1')
 
 def railing(prefix, u0, v0, u1, v1, z0, z1, skip=None):
     """矩形栏杆圈；skip=(side, s_lo, s_hi) 让段。side: 0=-v 1=+u 2=+v 3=-u，s 沿边方向。"""
