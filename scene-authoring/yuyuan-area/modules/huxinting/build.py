@@ -195,7 +195,29 @@ def add_local(name, items, faces, material, part):
 
 ROOF_SURF = []                                 # R2：eave_kit 出的瓦面网格（局部系），屋面建完后逐块铺瓦垄
 
+def _face_up(items, f):
+    """面 f 的法线竖直分量（局部系右手 (b-a)×(c-a)；局部 -> Blender 行列式 +1，与 glTF 正面一致）。"""
+    a, b, c = items[f[0]][0], items[f[1]][0], items[f[2]][0]
+    e1 = (b[0] - a[0], b[1] - a[1], b[2] - a[2])
+    e2 = (c[0] - a[0], c[1] - a[1], c[2] - a[2])
+    return e1[0] * e2[1] - e1[1] * e2[0]
+
+FACING_FIX = {}
+
 def add_local_rec(name, items, faces, material, part):
+    # R2 朝向校正（只在本模块注入口做，eave_kit 未改）：运行时 web/main.js 对无贴图材质强制 FrontSide（背面剔除），
+    # 而 eave_kit 出的檐底 -soffit 全部朝上、腰檐瓦面 -tile 全部朝下：从下往上看檐底被剔掉、瓦面背面也被剔掉，
+    # 屋面从下面是透的（R1 浏览器里塔亭翼角下就是天空）；R2 加了瓦垄后还会从下面透出垄条侧面（一簇细「须」）。
+    # 瓦面类件（-lower / -upper-s|n / -cone / -tile / -satou-*）一律翻成朝上，-soffit 翻成朝下，逐面判定。
+    want = -1 if name.endswith('-soffit') else (1 if re.search(r'-(lower|upper-[sn]|cone|tile|satou-[we])$', name) else 0)
+    if want:
+        fixed = []
+        for f in faces:
+            if _face_up(items, f) * want < 0:
+                f = tuple(reversed(f))
+                FACING_FIX[name] = FACING_FIX.get(name, 0) + 1
+            fixed.append(f)
+        faces = fixed
     add_local(name, items, faces, material, part)
     if material == 'roof' and re.search(r'-(lower|upper-[sn]|cone|tile)$', name):
         ROOF_SURF.append((name, [tuple(it[0]) for it in items], [tuple(f) for f in faces], part))
@@ -643,6 +665,7 @@ rec = dict(
     id='huxin-ting', glb='<OUT_DIR>/huxin-ting.glb', bytes=os.path.getsize(OUT_GLB), tris=tris,
     partTriCounts=PART_STATS, partObjectCounts=NGON,
     tileRidges=WA_STATS,
+    facingFixed=FACING_FIX,
     frame=dict(centroid=[round(CX, 6), round(CZ, 6)], axis=[round(UX, 6), round(UZ, 6)], normal=[round(VX, 6), round(VZ, 6)],
                rectHalfU=round(U0, 4), rectHalfV=round(V0, 4),
                centroidRule='footprint area centroid (shoelace)', axisRule='longest footprint edge, +u away from bridge',

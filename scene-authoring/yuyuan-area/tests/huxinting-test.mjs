@@ -799,5 +799,23 @@ function components(p) {
     nPile / nRay >= 0.1 && nDeep / nRay >= 0.5);
 }
 
+// ---------------- 13) R2-1b 屋面正反面（运行时 web/main.js 对无贴图材质强制 FrontSide，背面被剔除） ----------------
+// 瓦面类件（-lower / -upper-s|n / -cone / -tile / -satou-*）的三角面几何法线（glTF 逆时针为正面）竖直分量必须 ≥ 0，
+// 檐底 -soffit 必须 ≤ 0：否则从下往上看檐底被剔掉、从上往下看腰檐瓦面被剔掉，屋面透空并透出瓦垄侧面。
+{
+  const bad = {};
+  for (const [nm, p] of parts) {
+    const want = /-soffit$/.test(nm) ? -1 : (/-(lower|upper-[sn]|cone|tile|satou-[we])$/.test(nm) ? 1 : 0);
+    if (!want) continue;
+    for (const [a, b, c] of p.tris) {
+      const A = p.verts[a], B = p.verts[b], C = p.verts[c];
+      const ny = (B[2] - A[2]) * (C[0] - A[0]) - (B[0] - A[0]) * (C[2] - A[2]);
+      if (ny * want < -1e-9) bad[nm] = (bad[nm] || 0) + 1;
+    }
+  }
+  const n = Object.values(bad).reduce((s, x) => s + x, 0);
+  ok(`瓦面朝上 / 檐底朝下（反向三角 ${n}：${Object.entries(bad).map(([k, v]) => `${k.replace('huxin-ting__', '')} ${v}`).join(', ') || '无'}）`, n === 0);
+}
+
 console.log(`RESULT pass=${pass} fail=${fail} skipped=${skipped}`);
 if (fail) { console.log('FAILURES:', failures.join(' | ')); process.exit(1); }
