@@ -11,7 +11,8 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
 const LAYOUT = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline', 'layout.json'), 'utf8'));
 const SST_ID = 'bld-428179901';
-const SST_GLB = path.join(ROOT, 'out-garden-kits', 'sansuitang-bld-428179901', 'model.glb');
+// SANSUITANG_GLB：只换被测模块 GLB（在旧产物上先跑出失败用）
+const SST_GLB = process.env.SANSUITANG_GLB ? path.resolve(process.env.SANSUITANG_GLB) : path.join(ROOT, 'out-garden-kits', 'sansuitang-bld-428179901', 'model.glb');
 
 let pass = 0, fail = 0, skipped = 0;
 const failures = [];
@@ -234,6 +235,44 @@ if (testOk) {
   ok('格心材质 alphaMode=MASK', !!lat && lat.alphaMode === 'MASK', lat && lat.alphaMode);
   const alphaImg = (g.json.images || []).some((i) => /lattice/.test(i.name || ''));
   ok('解析 alpha 贴图已内嵌', alphaImg);
+}
+
+// ---------- 3b) wave4-huxinting2 格扇配色（主控：格扇偏暗，与厅堂套件统一配色，框料 = hall-kit timberSrgb（主控定 #8a4030，与背靠背仰山堂一致）；三穗堂几何不变，只改材质） ----------
+// 模块 GLB 实测：
+//   框料材质 sst-timber-darkred 底色 = modules/hall-kit/defaults.json timberSrgb（现 #8a4030）、不再乘 wood-stain 贴图（hall-kit hk-timber-darkred 同做法；
+//   旧版贴图 × 色 = 有效底色约 sRGB(26,5,3)，格扇整面读成黑）；
+//   格心贴图 lattice-core-alpha 字节 = modules/hall-kit/textures/lattice-core-alpha.png（总装按「名 + 尺寸」去重，
+//   不同字节的同名图会互相覆盖——旧版三穗堂 #241d18 图先导入，运行时把全部厅堂和湖心亭的格心压成 #241d18）。
+// 总装产物实测：OUT_DIR 里含 lattice-core-alpha 的 GLB（garden / pond / zone-*）该图字节同 hall-kit 源图。
+// 立面明度（V ≥ 0.22）是渲染口径，见 modules/sansuitang/render_facade.py（exit 3 = 不合格），不在本测试里渲染。
+{
+  const imgBytes = (file, re) => {
+    const b = fs.readFileSync(file), jl = b.readUInt32LE(12), j = JSON.parse(b.subarray(20, 20 + jl));
+    const bin = b.subarray(28 + jl, 28 + jl + b.readUInt32LE(20 + jl));
+    return (j.images || []).filter((im) => re.test(im.name || '')).map((im) => {
+      const bv = j.bufferViews[im.bufferView];
+      return { name: im.name, bytes: bin.subarray(bv.byteOffset || 0, (bv.byteOffset || 0) + bv.byteLength) };
+    });
+  };
+  const crypto = await import('node:crypto');
+  const sha = (x) => crypto.createHash('sha256').update(x).digest('hex');
+  const HK_LAT = fs.readFileSync(path.join(ROOT, 'modules', 'hall-kit', 'textures', 'lattice-core-alpha.png'));
+  const g = parseGlb(SST_GLB);
+  const lin = (h) => [0, 2, 4].map((i) => { const c = parseInt(h.slice(i, i + 2), 16) / 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; });
+  const HK_TIMBER = JSON.parse(fs.readFileSync(path.join(ROOT, 'modules', 'hall-kit', 'defaults.json'), 'utf8')).timberSrgb;
+  const want = lin(HK_TIMBER);
+  const tm = g.materials.find((m) => m.name === 'sst-timber-darkred');
+  const bc = tm?.pbrMetallicRoughness?.baseColorFactor || [];
+  ok(`框料 sst-timber-darkred 底色 = hall-kit timberSrgb #${HK_TIMBER} 且无底色贴图（实测 ${bc.slice(0, 3).map((v) => v.toFixed(3)).join(',')}，贴图 ${tm?.pbrMetallicRoughness?.baseColorTexture ? '有' : '无'}）`,
+    !!tm && want.every((v, i) => Math.abs(bc[i] - v) <= 0.002) && !tm.pbrMetallicRoughness.baseColorTexture);
+  const lat = imgBytes(SST_GLB, /^lattice-core-alpha/);
+  ok(`格心贴图 lattice-core-alpha 字节 = hall-kit 源图（${lat.map((x) => sha(x.bytes).slice(0, 12)).join(',') || '无'} vs ${sha(HK_LAT).slice(0, 12)}）`,
+    lat.length === 1 && sha(lat[0].bytes) === sha(HK_LAT));
+  const runtime = fs.readdirSync(OUT).filter((f) => /^(garden|pond|zone-[a-z0-9-]+)\.glb$/.test(f));
+  const bad = [], seen = [];
+  for (const f of runtime) for (const im of imgBytes(path.join(OUT, f), /^lattice-core-alpha/)) { seen.push(f); if (sha(im.bytes) !== sha(HK_LAT)) bad.push(f); }
+  if (seen.length) ok(`总装 / 分区 GLB 的 lattice-core-alpha 全部 = hall-kit 源图（含该图 ${seen.length} 个，不符 ${bad.length}：${bad.join(',')}）`, bad.length === 0);
+  else skip('总装 lattice-core-alpha', `${OUT} 无含该图的 GLB`);
 }
 
 // ---------- 4) 程序化 hall 确实让位 + 碰撞世界记录 ----------

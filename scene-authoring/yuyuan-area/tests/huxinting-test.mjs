@@ -14,7 +14,8 @@ import { validateBytes } from 'gltf-validator';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
 const LAYOUT = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline', 'layout.json'), 'utf8'));
-const GLB_PATH = path.join(OUT, 'huxin-ting.glb');
+// HUXINTING_GLB：只换被测模块 GLB（在旧产物上先跑出失败用），总装 / 分区产物仍读 OUT_DIR
+const GLB_PATH = process.env.HUXINTING_GLB ? path.resolve(process.env.HUXINTING_GLB) : path.join(OUT, 'huxin-ting.glb');
 const HUXINTING = process.env.HUXINTING !== '0';   // 默认开启，同 ROCKERY_KIT / FANGBANG
 const BUDGET = { tris: 30000, bytes: 2.5 * 1024 * 1024 };
 
@@ -537,6 +538,283 @@ if (HUXINTING) {
   const want = new Set(coincide.map((c) => c.id));
   ok(`build-scene deferred[] 以 'duplicate-footprint-of-huxin-ting' 记下的 = layout 重算的重合件（记 ${[...dup].join(',') || '无'}；应 ${[...want].join(',') || '无'}）`,
     dup.size === want.size && [...want].every((id) => dup.has(id)));
+}
+
+// ---------------- 10) R2-1 瓦垄（主控 R2 2026-09-25：「瓦面是平的」，GLB 实测） ----------------
+// 瓦面 = 灰瓦材质、名以 -lower / -upper-s|n / -cone / -tile 结尾的 eave_kit 屋面件（主楼、抱厦、塔亭攒尖与两道腰檐）。
+// 每块瓦面必须有同名 -wa 垄条件，材质 = 同一灰瓦；按位置焊接（1e-4 m）分连通块 = 一条垄。
+//   垄距估算 = 瓦面面积 / Σ 垄长（垄长取连通块最远两点距离，弦长 ≤ 弧长，估算偏大 = 偏严）≤ 0.45 m；
+//   垄高 = 连通块顶点到瓦面三角网的最大距离：全部垄的中位数 0.04–0.12 m，且任何垄顶点离瓦面 ≤ 0.12 m（不漂浮）。
+function ptTriDist(p, a, b, c) {
+  const sub = (x, y) => [x[0] - y[0], x[1] - y[1], x[2] - y[2]];
+  const dot = (x, y) => x[0] * y[0] + x[1] * y[1] + x[2] * y[2];
+  const ab = sub(b, a), ac = sub(c, a), ap = sub(p, a);
+  const d1 = dot(ab, ap), d2 = dot(ac, ap);
+  if (d1 <= 0 && d2 <= 0) return Math.hypot(...ap);
+  const bp = sub(p, b), d3 = dot(ab, bp), d4 = dot(ac, bp);
+  if (d3 >= 0 && d4 <= d3) return Math.hypot(...bp);
+  const vc = d1 * d4 - d3 * d2;
+  if (vc <= 0 && d1 >= 0 && d3 <= 0) { const v = d1 / (d1 - d3); return Math.hypot(...sub(p, [a[0] + ab[0] * v, a[1] + ab[1] * v, a[2] + ab[2] * v])); }
+  const cp = sub(p, c), d5 = dot(ab, cp), d6 = dot(ac, cp);
+  if (d6 >= 0 && d5 <= d6) return Math.hypot(...cp);
+  const vb = d5 * d2 - d1 * d6;
+  if (vb <= 0 && d2 >= 0 && d6 <= 0) { const w = d2 / (d2 - d6); return Math.hypot(...sub(p, [a[0] + ac[0] * w, a[1] + ac[1] * w, a[2] + ac[2] * w])); }
+  const va = d3 * d6 - d5 * d4;
+  if (va <= 0 && d4 - d3 >= 0 && d5 - d6 >= 0) {
+    const w = (d4 - d3) / ((d4 - d3) + (d5 - d6));
+    return Math.hypot(...sub(p, [b[0] + (c[0] - b[0]) * w, b[1] + (c[1] - b[1]) * w, b[2] + (c[2] - b[2]) * w]));
+  }
+  const den = 1 / (va + vb + vc), v = vb * den, w = vc * den;
+  return Math.hypot(...sub(p, [a[0] + ab[0] * v + ac[0] * w, a[1] + ab[1] * v + ac[1] * w, a[2] + ab[2] * v + ac[2] * w]));
+}
+const triArea = (A, B, C) => {
+  const u = [B[0] - A[0], B[1] - A[1], B[2] - A[2]], w = [C[0] - A[0], C[1] - A[1], C[2] - A[2]];
+  return 0.5 * Math.hypot(u[1] * w[2] - u[2] * w[1], u[2] * w[0] - u[0] * w[2], u[0] * w[1] - u[1] * w[0]);
+};
+function components(p) {
+  // 按位置焊接后的连通块（flat 着色导出会按面拆顶点，索引不能直接用）
+  const key = (v) => v.map((x) => Math.round(x * 1e4)).join(',');
+  const id = new Map(), parent = [];
+  const vid = p.verts.map((v) => { const k = key(v); if (!id.has(k)) { id.set(k, parent.length); parent.push(parent.length); } return id.get(k); });
+  const find = (x) => { while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; };
+  for (const [a, b, c] of p.tris) { const ra = find(vid[a]); parent[find(vid[b])] = ra; parent[find(vid[c])] = ra; }
+  const groups = new Map();
+  p.verts.forEach((v, i) => { const r = find(vid[i]); if (!groups.has(r)) groups.set(r, []); groups.get(r).push(v); });
+  return [...groups.values()];
+}
+{
+  const tileMat = gltf.materials.find((m) => m.name === 'ht-tile-grey');
+  const surfaces = allParts.filter((n) => /-(lower|upper-[sn]|cone|tile)$/.test(n) && matsOfPart(n).every((m) => m === tileMat));
+  ok(`瓦面件 ${surfaces.length} 块（主楼下檐 + 上段两坡、抱厦下檐 + 上段两坡、塔亭攒尖 + 两道腰檐 = 9）`, surfaces.length === 9, surfaces.join(','));
+  const heights = [];
+  let floatMax = 0;
+  const wrongMat = [];
+  for (const s of surfaces) {
+    const S = parts.get(s);
+    const area = S.tris.reduce((acc, [a, b, c]) => acc + triArea(S.verts[a], S.verts[b], S.verts[c]), 0);
+    const tag = s.replace('huxin-ting__', '');
+    const rp = parts.get(`${s}-wa`);
+    if (!rp) { ok(`${tag} 有瓦垄件 -wa（瓦面 ${area.toFixed(1)} m²）`, false, '无 -wa 件：瓦面是平的'); continue; }
+    if (!matsOfPart(`${s}-wa`).every((m) => m === tileMat)) wrongMat.push(tag);
+    const comps = components(rp);
+    const STris = S.tris.map(([a, b, c]) => [S.verts[a], S.verts[b], S.verts[c]]);
+    let len = 0;
+    for (const vs of comps) {
+      let far = 0;
+      for (let i = 0; i < vs.length; i += 3) for (let j = i + 1; j < vs.length; j += 3) far = Math.max(far, Math.hypot(vs[i][0] - vs[j][0], vs[i][1] - vs[j][1], vs[i][2] - vs[j][2]));
+      len += far;
+      let hMax = 0;
+      for (const v of vs) {
+        let d = Infinity;
+        for (const [A, B, C] of STris) { d = Math.min(d, ptTriDist(v, A, B, C)); if (d < 1e-3) break; }
+        hMax = Math.max(hMax, d);
+      }
+      heights.push(hMax);
+      floatMax = Math.max(floatMax, hMax);
+    }
+    const pitch = len > 0 ? area / len : Infinity;
+    ok(`${tag} 瓦垄 ${comps.length} 条，垄距估算 ${pitch.toFixed(3)} m ≤ 0.45（瓦面 ${area.toFixed(1)} m² / 垄长 ${len.toFixed(1)} m）`, pitch <= 0.45);
+  }
+  heights.sort((x, y) => x - y);
+  const med = heights.length ? heights[heights.length >> 1] : 0;
+  ok(`瓦垄高中位数 ${med.toFixed(3)} m ∈ [0.04, 0.12]（${heights.length} 条）`, heights.length > 0 && med >= 0.04 && med <= 0.12);
+  ok(`瓦垄顶点离瓦面最大 ${floatMax.toFixed(3)} m ≤ 0.12（垄贴瓦面、不漂浮）`, heights.length > 0 && floatMax <= 0.12);
+  ok(`瓦垄材质 = 同一灰瓦 ht-tile-grey（不符 ${wrongMat.length}）`, heights.length > 0 && wrongMat.length === 0, wrongMat.join(','));
+}
+
+// ---------------- 11) R2-2 白色裙墙（主控 R2：「一层窗下缺白色槛墙 / 裙板」，GLB 实测） ----------------
+// 一层外露立面逐面水平射线（本地系，从立面外 4 m 射向墙）：外廊栏杆 / 望柱 / 廊柱 / 额枋在墙前，不计入（射线穿过）。
+//   ① 覆盖：台面上 0.30 与 0.80 m 两个高度，每 0.25 m 一条，首个命中面材质 = ht-plaster-white 的比例 ≥ 0.9；
+//   ② 贴窗：首命中为白墙的采样列向上每 0.01 m 扫，白墙顶 = 最后一个命中白墙的高度；该面一层窗下沿 = 同一立面
+//      （白墙外皮 ±0.35 m 内、采样段横向 ±0.3 m 内）窗框件（__win-*-frame）顶点最低高度；窗下沿 − 白墙顶的中位数 ≤ 0.03 m（窗直接坐在裙墙上）。
+// 立面划分（本地系，U0/V0 由 layout 重算）：主楼南 / 北（抱厦让位）/ 西；塔亭一层东 / 南 / 北；抱厦前檐窗下（中间入口让开）。
+// 塔亭宽 4.2 / 抱厦半宽 2.2 / 进深 2.2 与 build.py 一致的设计值（同承台外伸常量的重算口径）。
+{
+  const TOWER_W = 4.2, TOWER_HALF = 2.1, PORCH_HALF = 2.2, PORCH_DEPTH = 2.2;
+  const UE = U0 - TOWER_W;
+  const skip = /-(rail|pick)-|__gcol-|__pcol-|__lintel-/;
+  const T = [];
+  for (const [nm, p] of parts) {
+    if (skip.test(nm)) continue;
+    const L = p.verts.map(toLocal);
+    for (const [a, b, c, prim] of p.tris) T.push({ A: L[a], B: L[b], C: L[c], mat: gltf.materials[prim.material]?.name, nm });
+  }
+  const white = (h) => h && h.mat === 'ht-plaster-white';
+  // 射线：axis 0 = 沿 u，1 = 沿 v；sgn = ±1
+  function cast(tris, o, axis, sgn) {
+    const d = axis === 0 ? [sgn, 0, 0] : [0, sgn, 0];
+    let best = null, bt = Infinity;
+    for (const t of tris) {
+      const e1 = [t.B[0] - t.A[0], t.B[1] - t.A[1], t.B[2] - t.A[2]], e2 = [t.C[0] - t.A[0], t.C[1] - t.A[1], t.C[2] - t.A[2]];
+      const pv = [d[1] * e2[2] - d[2] * e2[1], d[2] * e2[0] - d[0] * e2[2], d[0] * e2[1] - d[1] * e2[0]];
+      const det = e1[0] * pv[0] + e1[1] * pv[1] + e1[2] * pv[2];
+      if (Math.abs(det) < 1e-12) continue;
+      const tv = [o[0] - t.A[0], o[1] - t.A[1], o[2] - t.A[2]];
+      const uu = (tv[0] * pv[0] + tv[1] * pv[1] + tv[2] * pv[2]) / det;
+      if (uu < 0 || uu > 1) continue;
+      const qv = [tv[1] * e1[2] - tv[2] * e1[1], tv[2] * e1[0] - tv[0] * e1[2], tv[0] * e1[1] - tv[1] * e1[0]];
+      const vv = (d[0] * qv[0] + d[1] * qv[1] + d[2] * qv[2]) / det;
+      if (vv < 0 || uu + vv > 1) continue;
+      const tt = (e2[0] * qv[0] + e2[1] * qv[1] + e2[2] * qv[2]) / det;
+      if (tt > 1e-6 && tt < bt) { bt = tt; best = t; }
+    }
+    return best ? { ...best, t: bt, at: axis === 0 ? o[0] + sgn * bt : o[1] + sgn * bt } : null;
+  }
+  const P = PLATFORM_Y;
+  const facades = [
+    { tag: '主楼南', axis: 1, sgn: 1, from: -(V0 + 4), spans: [[-U0 + 0.4, UE - 0.3]] },
+    { tag: '主楼北（抱厦让位）', axis: 1, sgn: -1, from: V0 + 4, spans: [[-U0 + 0.4, -PORCH_HALF - 0.2], [PORCH_HALF + 0.2, UE - 0.3]] },
+    { tag: '主楼西', axis: 0, sgn: 1, from: -(U0 + 4), spans: [[-V0 + 0.4, V0 - 0.4]] },
+    { tag: '塔亭东', axis: 0, sgn: -1, from: U0 + 4, spans: [[-TOWER_HALF + 0.3, TOWER_HALF - 0.3]] },
+    { tag: '塔亭南', axis: 1, sgn: 1, from: -(V0 + 4), spans: [[UE + 0.5, U0 - 0.3]] },
+    { tag: '塔亭北', axis: 1, sgn: -1, from: V0 + 4, spans: [[UE + 0.5, U0 - 0.3]] },
+    { tag: '抱厦前檐窗下', axis: 1, sgn: -1, from: V0 + PORCH_DEPTH + 4, spans: [[-1.9, -0.45], [0.45, 1.9]] },
+  ];
+  const frameVerts = [...parts.keys()].filter((n) => /__win-(main|tower|porch)-frame$/.test(n)).flatMap((n) => parts.get(n).verts.map(toLocal));
+  for (const f of facades) {
+    const lat = f.axis === 0 ? 1 : 0;              // 沿立面的横向坐标
+    const ss = [];
+    for (const [s0, s1] of f.spans) for (let s = s0; s <= s1 + 1e-9; s += 0.25) ss.push(s);
+    const lo = Math.min(...f.spans.flat()) - 0.3, hi = Math.max(...f.spans.flat()) + 0.3;
+    const tris = T.filter((t) => {
+      const l = [t.A[lat], t.B[lat], t.C[lat]], h = [t.A[2], t.B[2], t.C[2]];
+      return Math.max(...l) >= lo && Math.min(...l) <= hi && Math.max(...h) >= P + 0.2 && Math.min(...h) <= P + 1.6;
+    });
+    const O = (s, h) => (f.axis === 0 ? [f.from, s, h] : [s, f.from, h]);
+    let hitW = 0, n = 0;
+    const faceAt = [];
+    const tops = [];
+    for (const s of ss) {
+      for (const dh of [0.30, 0.80]) {
+        const r = cast(tris, O(s, P + dh), f.axis, f.sgn);
+        n++;
+        if (white(r)) { hitW++; if (dh === 0.30) faceAt.push(r.at); }
+      }
+      const r0 = cast(tris, O(s, P + 0.30), f.axis, f.sgn);
+      if (!white(r0)) continue;
+      let top = P + 0.30;
+      for (let h = P + 0.31; h <= P + 1.6; h += 0.01) {
+        if (!white(cast(tris, O(s, h), f.axis, f.sgn))) break;
+        top = h;
+      }
+      tops.push(top);
+    }
+    const frac = n ? hitW / n : 0;
+    ok(`白色裙墙 ${f.tag}：台面上 0.30 / 0.80 m 射线首命中白墙 ${hitW}/${n} = ${(frac * 100).toFixed(0)}% ≥ 90%`, frac >= 0.9);
+    let sill = NaN, gap = NaN;
+    if (faceAt.length && tops.length) {
+      faceAt.sort((a, b) => a - b);
+      const plane = faceAt[faceAt.length >> 1];
+      const cand = frameVerts.filter((q) => Math.abs(q[f.axis] - plane) <= 0.35 && f.spans.some(([s0, s1]) => q[lat] >= s0 - 0.3 && q[lat] <= s1 + 0.3) && q[2] >= P + 0.5 && q[2] <= P + 2.0);
+      if (cand.length) sill = Math.min(...cand.map((q) => q[2]));
+      const gaps = tops.map((t) => sill - t).sort((a, b) => a - b);
+      gap = gaps[gaps.length >> 1];
+    }
+    ok(`白色裙墙 ${f.tag}：裙墙顶贴一层窗下沿（窗下沿 ${Number.isFinite(sill) ? sill.toFixed(3) : '无'}，差值中位数 ${Number.isFinite(gap) ? gap.toFixed(3) : '无'} m ≤ 0.03）`,
+      Number.isFinite(gap) && gap <= 0.03 && gap >= -0.03);
+  }
+}
+
+// ---------------- 12) R2-3 水中立柱（主控 R2：「整座亭子架在水里的石柱上，台面下能看到柱列和水面」，GLB 实测） ----------------
+// 水面 = layout 中覆盖湖心亭形心的 water 对象 height（运行时 build-scene 同值出水面）。承台顶冻结 0.55，与水面之间共 0.69 m。
+//   ① 板下净空（承台网格最低点 − 水面）≥ 0.50 m：参照 0010-G01 目测净空约 0.6 m、板厚约 0.3 m，两者在 0.69 m 内放不下，
+//      优先净空（阈值为本工单自定，R1 为 0.44）；
+//   ② 桩顶顶住板底（|桩顶 − 板底| ≤ 0.02）、桩脚入水（桩底 < 水面）；
+//   ③ 承台四边各有一排边桩：离该边最近的桩外皮到板边 ≤ 0.25 m（从外面看得到，不缩在板下阴影里）；
+//      该排沿边中距 ≤ 3.0 m，两端桩中心离角 ≤ 0.6 m；
+//   ④ 台面下水平射线（净空中高，四边外 3 m 垂直射入，每 0.25 m 一条）：首命中为桩的 ≥ 10%，射入板下 ≥ 1.0 m 仍未命中的 ≥ 50%
+//      （柱列之间看得到水面）。
+{
+  const inPolyXZ = (x, z, poly) => {
+    let c = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const [xi, zi] = poly[i], [xj, zj] = poly[j];
+      if ((zi > z) !== (zj > z) && x < ((xj - xi) * (z - zi)) / (zj - zi) + xi) c = !c;
+    }
+    return c;
+  };
+  const water = LAYOUT.objects.find((o) => o.kind === 'water' && o.geometry?.footprint && inPolyXZ(CX, CZ, o.geometry.footprint));
+  ok(`湖心亭形心落在 layout 水面对象内（${water ? `${water.id} height ${water.height}` : '无'}）`, !!water);
+  const WY = water ? water.height : NaN;
+  const deck = partVertsLocal('huxin-ting__deck');
+  const deckBot = Math.min(...deck.map((q) => q[2]));
+  ok(`板下净空 ${(deckBot - WY).toFixed(3)} m ≥ 0.50（承台底 ${deckBot.toFixed(3)} / 水面 ${WY}）`, deckBot - WY >= 0.5);
+  const piles = allParts.filter((n) => n.includes('__pile-')).map((n) => {
+    const L = partVertsLocal(n);
+    const us = L.map((q) => q[0]), vs = L.map((q) => q[1]), hs = L.map((q) => q[2]);
+    return { n, u0: Math.min(...us), u1: Math.max(...us), v0: Math.min(...vs), v1: Math.max(...vs), top: Math.max(...hs), bot: Math.min(...hs),
+      cu: (Math.min(...us) + Math.max(...us)) / 2, cv: (Math.min(...vs) + Math.max(...vs)) / 2 };
+  });
+  const topErr = Math.max(...piles.map((p) => Math.abs(p.top - deckBot)));
+  ok(`桩 ${piles.length} 根，桩顶顶住板底（最大偏差 ${topErr.toFixed(3)} m ≤ 0.02），桩脚入水（最高桩底 ${Math.max(...piles.map((p) => p.bot)).toFixed(2)} < ${WY}）`,
+    piles.length >= 8 && topErr <= 0.02 && piles.every((p) => p.bot < WY));
+  const du0 = -(U0 + DECK_SIDE), du1 = U0 + DECK_SIDE, dv0 = -(V0 + DECK_SIDE), dv1 = V0 + DECK_BRIDGE;
+  const sides = [
+    { tag: '西', edge: (p) => p.u0 - du0, along: (p) => p.cv, a: dv0, b: dv1 },
+    { tag: '东', edge: (p) => du1 - p.u1, along: (p) => p.cv, a: dv0, b: dv1 },
+    { tag: '南', edge: (p) => p.v0 - dv0, along: (p) => p.cu, a: du0, b: du1 },
+    { tag: '北（临桥）', edge: (p) => dv1 - p.v1, along: (p) => p.cu, a: du0, b: du1 },
+  ];
+  for (const sd of sides) {
+    const dmin = Math.min(...piles.map(sd.edge));
+    const row = piles.filter((p) => sd.edge(p) <= dmin + 0.05).map(sd.along).sort((x, y) => x - y);
+    let gap = 0;
+    for (let i = 1; i < row.length; i++) gap = Math.max(gap, row[i] - row[i - 1]);
+    const endOff = row.length ? Math.max(row[0] - sd.a, sd.b - row[row.length - 1]) : Infinity;
+    ok(`承台${sd.tag}边桩排：外皮距板边 ${dmin.toFixed(3)} m ≤ 0.25，${row.length} 根中距最大 ${gap.toFixed(2)} m ≤ 3.0，端桩离角 ${endOff.toFixed(2)} m ≤ 0.6`,
+      dmin <= 0.25 && row.length >= 2 && gap <= 3.0 && endOff <= 0.6);
+  }
+  // ④ 板下水平射线：只对桩与承台求交（其余构件都在台面以上）
+  const T = [];
+  for (const n of [...piles.map((p) => p.n), 'huxin-ting__deck']) {
+    const p = parts.get(n), L = p.verts.map(toLocal);
+    for (const [a, b, c] of p.tris) T.push({ A: L[a], B: L[b], C: L[c], pile: n !== 'huxin-ting__deck' });
+  }
+  const hMid = (deckBot + WY) / 2;
+  let nRay = 0, nPile = 0, nDeep = 0;
+  const rays = [];
+  for (let v = dv0 + 0.1; v <= dv1 - 0.1; v += 0.25) { rays.push([[du0 - 3, v, hMid], [1, 0, 0], 3]); rays.push([[du1 + 3, v, hMid], [-1, 0, 0], 3]); }
+  for (let u = du0 + 0.1; u <= du1 - 0.1; u += 0.25) { rays.push([[u, dv0 - 3, hMid], [0, 1, 0], 3]); rays.push([[u, dv1 + 3, hMid], [0, -1, 0], 3]); }
+  for (const [o, d, off] of rays) {
+    let bt = Infinity, bp = false;
+    for (const t of T) {
+      const e1 = [t.B[0] - t.A[0], t.B[1] - t.A[1], t.B[2] - t.A[2]], e2 = [t.C[0] - t.A[0], t.C[1] - t.A[1], t.C[2] - t.A[2]];
+      const pv = [d[1] * e2[2] - d[2] * e2[1], d[2] * e2[0] - d[0] * e2[2], d[0] * e2[1] - d[1] * e2[0]];
+      const det = e1[0] * pv[0] + e1[1] * pv[1] + e1[2] * pv[2];
+      if (Math.abs(det) < 1e-12) continue;
+      const tv = [o[0] - t.A[0], o[1] - t.A[1], o[2] - t.A[2]];
+      const uu = (tv[0] * pv[0] + tv[1] * pv[1] + tv[2] * pv[2]) / det;
+      if (uu < 0 || uu > 1) continue;
+      const qv = [tv[1] * e1[2] - tv[2] * e1[1], tv[2] * e1[0] - tv[0] * e1[2], tv[0] * e1[1] - tv[1] * e1[0]];
+      const vv = (d[0] * qv[0] + d[1] * qv[1] + d[2] * qv[2]) / det;
+      if (vv < 0 || uu + vv > 1) continue;
+      const tt = (e2[0] * qv[0] + e2[1] * qv[1] + e2[2] * qv[2]) / det;
+      if (tt > 1e-6 && tt < bt) { bt = tt; bp = t.pile; }
+    }
+    nRay++;
+    if (bt < Infinity && bp) nPile++;
+    if (bt - off >= 1.0) nDeep++;
+  }
+  ok(`板下射线（h ${hMid.toFixed(2)}，${nRay} 条）：首命中为桩 ${(100 * nPile / nRay).toFixed(0)}% ≥ 10%，射入板下 ≥ 1 m 未命中 ${(100 * nDeep / nRay).toFixed(0)}% ≥ 50%`,
+    nPile / nRay >= 0.1 && nDeep / nRay >= 0.5);
+}
+
+// ---------------- 13) R2-1b 屋面正反面（运行时 web/main.js 对无贴图材质强制 FrontSide，背面被剔除） ----------------
+// 瓦面类件（-lower / -upper-s|n / -cone / -tile / -satou-*）的三角面几何法线（glTF 逆时针为正面）竖直分量必须 ≥ 0，
+// 檐底 -soffit 必须 ≤ 0：否则从下往上看檐底被剔掉、从上往下看腰檐瓦面被剔掉，屋面透空并透出瓦垄侧面。
+{
+  const bad = {};
+  for (const [nm, p] of parts) {
+    const want = /-soffit$/.test(nm) ? -1 : (/-(lower|upper-[sn]|cone|tile|satou-[we])$/.test(nm) ? 1 : 0);
+    if (!want) continue;
+    for (const [a, b, c] of p.tris) {
+      const A = p.verts[a], B = p.verts[b], C = p.verts[c];
+      const ny = (B[2] - A[2]) * (C[0] - A[0]) - (B[0] - A[0]) * (C[2] - A[2]);
+      if (ny * want < -1e-9) bad[nm] = (bad[nm] || 0) + 1;
+    }
+  }
+  const n = Object.values(bad).reduce((s, x) => s + x, 0);
+  ok(`瓦面朝上 / 檐底朝下（反向三角 ${n}：${Object.entries(bad).map(([k, v]) => `${k.replace('huxin-ting__', '')} ${v}`).join(', ') || '无'}）`, n === 0);
 }
 
 console.log(`RESULT pass=${pass} fail=${fail} skipped=${skipped}`);

@@ -2,7 +2,7 @@
 glTF (x,y,z) = 地图 (x, 高度, z)，锚点 = footprint 面积形心（锚 empty 由 assemble.py 创建，模块网格不带变换）。
 
 冻结规格（GOAL 2026-09-25）：位置 = baseline/layout.json 对象 huxin-ting 的 6 点 footprint（pond 区）；
-台基灰色石承台顶 y=0.55（layout platformY）、石桩 0.4 m 方间距 ≈3 m 入水到 y=-0.6；主体两层
+台基灰色石承台顶 y=0.55（layout platformY）、石桩 0.4 m 方间距 ≈3 m 入水到 y=-0.6（R2：板厚 0.17、桩列贴板边）；主体两层
 （一层 3.4 / 二层 3.0）歇山主楼 + 每层外廊深红木栏杆 + 格心长窗（全木构立面、少量白墙）；
 一端（远离九曲桥）接方形攒尖塔亭（平面 4.2 m，比主楼高一层，鎏金宝顶 ≈12.0）；
 临九曲桥一侧单层抱厦（歇山小顶）；匾额空板。屋面必须用 modules/shared/eave_kit.py（只读），
@@ -14,7 +14,7 @@ glTF (x,y,z) = 地图 (x, 高度, z)，锚点 = footprint 面积形心（锚 emp
 (u,v,h) -> Blender (x,-z,h) 行列式 +1，保 eave_kit 面绕序/法线。
 运行：blender -b -t 4 --python-exit-code 1 modules/huxinting/build.py   预算 ≤30k tris / ≤2.5 MB。
 """
-import bpy, json, math, os, sys
+import bpy, json, math, os, re, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -56,10 +56,21 @@ V0 = (max(q[1] for q in LOC) - min(q[1] for q in LOC)) / 2
 # ---------------------------------------------------------------- 设计值 ----
 D = dict(
     deckSide=1.3, deckBridge=2.3,              # 承台外伸（临桥侧 2.3 接九曲桥，接口 ≤0.3 m）
-    deckBot=0.30, pileSize=0.4, pileTop=PLATFORM_Y - 0.25, pileBot=-0.6, pileSpacing=3.0,
+    # R2 水中立柱：台面顶 0.55（layout platformY）与运行时池水面 -0.14（layout water-62072388.height）之间只有 0.69 m。
+    # R1 承台板厚 0.25、桩列中心距板边 0.8（桩外皮在板边内 0.6 m），板下阴影里看不到桩，读成「台面落在水里」。
+    # R2：板厚 0.17（板底 0.38），桩列中心距板边 0.35（外皮在板边内 0.15），周边桩中距 ≤ 3.0 m
+    # → 板下净空 0.52 m 露出桩列与水面。桩顶伸进板底 0.01（不留缝）。
+    deckBot=0.38, pileSize=0.4, pileTop=0.39, pileBot=-0.6, pileSpacing=3.0, pileInset=0.35,
     st1=3.4, st2=3.0, st3=2.8,                 # 一层/二层/塔亭三层 层高（塔亭比主楼高一层）
-    dadoH=0.95,                                # 一层白墙裙板高（少量白墙）
+    dadoH=0.95,                                # R1 白墙裙板高（R2 起不用：裙墙顶 = 该面一层窗下沿，见 skirt）
     win1=(1.60, 3.50), win2=(4.80, 6.20),      # 格心长窗带（一层 / 二层）
+    # R2 白色裙墙（槛墙，0010-G01/G05 一层窗下的白墙）：一层所有外露立面都做——主楼南、北（抱厦让位）、西、东端露出段，
+    # 塔亭一层南 / 北 / 东，抱厦前檐窗下。顶 = 该面一层窗下沿（窗直接坐在裙墙上，中间不露木色），
+    # 外皮 = 墙线外 out（与窗框外皮齐）。R1 只有主楼南北两段、顶 1.50 比窗下沿低 0.10、西面 / 塔亭 / 抱厦没有。
+    skirt=dict(out=0.16),
+    # R2 瓦垄（几何）：沿每块瓦面（主楼 / 抱厦下檐四坡与上段两坡、塔亭攒尖与两道腰檐）顺坡做三角截面垄条，
+    # 垄距 ≤0.33 m、垄宽 0.16、垄高 0.07（攒尖向宝顶收拢处随间距等比压低，间距 < 0.3 倍檐口间距处停）。
+    wa=dict(pitch=0.33, halfW=0.08, h=0.07, sink=0.012, stopRatio=0.3),
     gallery=1.1, railH=1.05, picketGap=0.55,   # 外廊进深 = 主楼出檐（冻结 1.1）
     roof=dict(over=1.1, chu=0.3, qiao=0.8, reach=2.0, zEave=6.90, breakZ=7.90, ridgeZ=9.6,
               breakInset=0.8, gableInset=1.0, drop=0.55, tileH=0.18, boardH=0.30, curve=1.6, rings=7, ridgeEndLift=0.18,
@@ -182,7 +193,121 @@ def add_local(name, items, faces, material, part):
     verts = [world(it[0][0], it[0][1], it[0][2]) for it in items]
     mesh_obj('huxin-ting__' + name, verts, [list(f) for f in faces], MATS[material], part)
 
-eave_kit.init(add_local)
+ROOF_SURF = []                                 # R2：eave_kit 出的瓦面网格（局部系），屋面建完后逐块铺瓦垄
+
+def _face_up(items, f):
+    """面 f 的法线竖直分量（局部系右手 (b-a)×(c-a)；局部 -> Blender 行列式 +1，与 glTF 正面一致）。"""
+    a, b, c = items[f[0]][0], items[f[1]][0], items[f[2]][0]
+    e1 = (b[0] - a[0], b[1] - a[1], b[2] - a[2])
+    e2 = (c[0] - a[0], c[1] - a[1], c[2] - a[2])
+    return e1[0] * e2[1] - e1[1] * e2[0]
+
+FACING_FIX = {}
+
+def add_local_rec(name, items, faces, material, part):
+    # R2 朝向校正（只在本模块注入口做，eave_kit 未改）：运行时 web/main.js 对无贴图材质强制 FrontSide（背面剔除），
+    # 而 eave_kit 出的檐底 -soffit 全部朝上、腰檐瓦面 -tile 全部朝下：从下往上看檐底被剔掉、瓦面背面也被剔掉，
+    # 屋面从下面是透的（R1 浏览器里塔亭翼角下就是天空）；R2 加了瓦垄后还会从下面透出垄条侧面（一簇细「须」）。
+    # 瓦面类件（-lower / -upper-s|n / -cone / -tile / -satou-*）一律翻成朝上，-soffit 翻成朝下，逐面判定。
+    want = -1 if name.endswith('-soffit') else (1 if re.search(r'-(lower|upper-[sn]|cone|tile|satou-[we])$', name) else 0)
+    if want:
+        fixed = []
+        for f in faces:
+            if _face_up(items, f) * want < 0:
+                f = tuple(reversed(f))
+                FACING_FIX[name] = FACING_FIX.get(name, 0) + 1
+            fixed.append(f)
+        faces = fixed
+    add_local(name, items, faces, material, part)
+    if material == 'roof' and re.search(r'-(lower|upper-[sn]|cone|tile)$', name):
+        ROOF_SURF.append((name, [tuple(it[0]) for it in items], [tuple(f) for f in faces], part))
+
+eave_kit.init(add_local_rec)
+
+
+# ---------------------------------------------------------------- 瓦垄（R2）----
+# eave_kit（主控只读）的瓦面都是规则网格：行 = 顺坡方向（檐口 / 折线 / 根部 → 脊 / 宝顶 / 檐口），列 = 沿檐方向。
+# 行宽 S 从第一个面读（S = max(face0) - 1，环形与开口网格同式）；下檐四坡 / 攒尖 / 腰檐为环形（列首尾相接），上段两坡开口。
+# 每个列间隔按檐口一行的宽度均分 n = round(宽 / pitch) 条垄，垄在参数空间里走（随瓦面曲率、翼角扇开、攒尖收拢）：
+# 每行取左脚 / 垄顶 / 右脚三点，脚点沿瓦面法线下沉 sink（贴死瓦面不留缝），垄顶沿法线抬 h × min(1, 本行间距 / 檐口间距)。
+# 截面为三角（两个斜面，一明一暗读出瓦垄 / 瓦沟），两端各一个三角封口（檐口端即瓦头）。同一瓦面的垄合成一个网格
+# <瓦面名>-wa，材质同瓦面（ht-tile-grey）。
+def _v3sub(a, b): return (a[0] - b[0], a[1] - b[1], a[2] - b[2])
+def _v3add(a, b, k=1.0): return (a[0] + b[0] * k, a[1] + b[1] * k, a[2] + b[2] * k)
+def _v3lerp(a, b, t): return (a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t)
+def _v3len(a): return math.sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2])
+def _v3cross(a, b): return (a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0])
+def _v3dot(a, b): return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
+def _v3norm(a):
+    L = _v3len(a) or 1.0
+    return (a[0] / L, a[1] / L, a[2] / L)
+
+WA_STATS = {}
+
+def tile_ridges(name, pts, faces, part):
+    W = D['wa']
+    S = max(faces[0]) - 1
+    R = len(pts) // S
+    closed = not re.search(r'-upper-[sn]$', name)
+    eave_row = R - 1 if name.endswith('-tile') else 0          # 腰檐：行 0 = 墙根，末行 = 檐口
+    P = [[pts[r * S + c] for c in range(S)] for r in range(R)]
+    verts, fcs, nrib, length = [], [], 0, 0.0
+
+    def tri(a, b, c, want):
+        n = _v3cross(_v3sub(verts[b], verts[a]), _v3sub(verts[c], verts[a]))
+        fcs.append([a, b, c] if _v3dot(n, want) >= 0 else [a, c, b])
+
+    def quad(a, b, c, d, want):
+        n = _v3cross(_v3sub(verts[b], verts[a]), _v3sub(verts[c], verts[a]))
+        fcs.append([a, b, c, d] if _v3dot(n, want) >= 0 else [d, c, b, a])
+
+    for c in range(S if closed else S - 1):
+        c2 = (c + 1) % S
+        w_e = _v3len(_v3sub(P[eave_row][c2], P[eave_row][c]))
+        if w_e < 0.05:
+            continue
+        n = max(1, math.ceil(w_e / W['pitch'] - 0.05))            # 垄距 ≤ pitch（留 5% 取整余量）
+        hw = min(W['halfW'] / w_e, 0.45 / n)                      # 参数半宽（檐口处 = halfW 米）
+        for k in range(n):
+            f = (k + 0.5) / n
+            rows = []
+            for r in range(R):
+                a, b = P[r][c], P[r][c2]
+                w_r = _v3len(_v3sub(b, a))
+                ratio = w_r / w_e
+                if ratio < W['stopRatio']:
+                    break                                         # 攒尖向宝顶收拢：间距过密处停
+                ra, rb = (r - 1 if r > 0 else r), (r + 1 if r < R - 1 else r)
+                ts = _v3sub(_v3lerp(P[rb][c], P[rb][c2], f), _v3lerp(P[ra][c], P[ra][c2], f))
+                nn = _v3norm(_v3cross(_v3sub(b, a), ts))
+                if nn[2] < 0:
+                    nn = (-nn[0], -nn[1], -nn[2])
+                m = _v3lerp(a, b, f)
+                la = _v3add(_v3lerp(a, b, f - hw), nn, -W['sink'])
+                lb = _v3add(_v3lerp(a, b, f + hw), nn, -W['sink'])
+                top = _v3add(m, nn, W['h'] * min(1.0, ratio))
+                rows.append((la, top, lb, nn, ts))
+            if len(rows) < 2:
+                continue
+            base = len(verts)
+            for la, top, lb, _nn, _ts in rows:
+                verts.extend((la, top, lb))
+            for i in range(len(rows) - 1):
+                i0, i1 = base + 3 * i, base + 3 * (i + 1)
+                la, top, lb, nn, _ = rows[i]
+                wa_ = _v3add(_v3norm(_v3sub(la, top)), nn, 0.3)
+                wb_ = _v3add(_v3norm(_v3sub(lb, top)), nn, 0.3)
+                quad(i0, i1, i1 + 1, i0 + 1, wa_)
+                quad(i0 + 1, i1 + 1, i1 + 2, i0 + 2, wb_)
+                length += _v3len(_v3sub(rows[i + 1][1], top))
+            e0 = base
+            e1 = base + 3 * (len(rows) - 1)
+            tri(e0, e0 + 1, e0 + 2, tuple(-x for x in rows[0][4]))
+            tri(e1, e1 + 1, e1 + 2, rows[-1][4])
+            nrib += 1
+    if fcs:
+        add_local(name + '-wa', [(v, (0.0, 0.0)) for v in verts], fcs, 'roof', part)
+    WA_STATS[name] = dict(ribs=nrib, ribLengthM=round(length, 2), rows=R, cols=S, closed=closed)
 
 def prism(name, poly_uv, z0, z1, mat, part):
     """CCW 多边形拉伸；侧面 [a0,b0,b1,a1] 外法线 = 边右向（CCW 时朝外）。"""
@@ -207,10 +332,12 @@ def box_uv(name, u0, v0, u1, v1, z0, z1, mat, part):
 DECK = [(-(U0 + D['deckSide']), -(V0 + D['deckSide'])), (U0 + D['deckSide'], -(V0 + D['deckSide'])),
         (U0 + D['deckSide'], V0 + D['deckBridge']), (-(U0 + D['deckSide']), V0 + D['deckBridge'])]
 prism('deck', DECK, D['deckBot'], PLATFORM_Y, 'ht-stone-deck', 'deck')
-nu = max(2, math.ceil((DECK[1][0] - DECK[0][0]) / D['pileSpacing']))
-nv = max(2, math.ceil((DECK[2][1] - DECK[1][1]) / D['pileSpacing']))
-us = [DECK[0][0] + 0.8 + i * (DECK[1][0] - DECK[0][0] - 1.6) / (nu - 1) for i in range(nu)]
-vs = [DECK[0][1] + 0.8 + i * (DECK[2][1] - DECK[0][1] - 1.6) / (nv - 1) for i in range(nv)]
+# R2：桩列中心距板边 pileInset（R1 为 0.8），列数取使中距 ≤ pileSpacing 的最小值（R1 为 ceil(边长/3)，中距 3.09 / 2.95）
+PI = D['pileInset']
+nu = max(2, math.ceil((DECK[1][0] - DECK[0][0] - 2 * PI) / D['pileSpacing']) + 1)
+nv = max(2, math.ceil((DECK[2][1] - DECK[0][1] - 2 * PI) / D['pileSpacing']) + 1)
+us = [DECK[0][0] + PI + i * (DECK[1][0] - DECK[0][0] - 2 * PI) / (nu - 1) for i in range(nu)]
+vs = [DECK[0][1] + PI + i * (DECK[2][1] - DECK[0][1] - 2 * PI) / (nv - 1) for i in range(nv)]
 for i, u in enumerate(us):
     for j, v in enumerate(vs):
         if 0 < i < nu - 1 and 0 < j < nv - 1 and (i + j) % 2 == 1:
@@ -224,8 +351,17 @@ GAL = D['gallery']
 gu0, gu1, gv0, gv1 = UW - GAL, UE + GAL, -V0 - GAL, V0 + GAL
 prism('body1', [(UW + 0.12, -V0 + 0.12), (UE + 0.2, -V0 + 0.12), (UE + 0.2, V0 - 0.12), (UW + 0.12, V0 - 0.12)],
       PLATFORM_Y, PLATFORM_Y + D['st1'], 'ht-wood-red', 'body1')
-box_uv('ht__dado-s', UW + 0.12, -V0 + 0.12, UE - 0.12, -V0 - 0.02, PLATFORM_Y, PLATFORM_Y + D['dadoH'], 'ht-plaster-white', 'body1')
-box_uv('ht__dado-n', UW + 0.12, V0 - 0.12, UE - 0.12, V0 + 0.02, PLATFORM_Y, PLATFORM_Y + D['dadoH'], 'ht-plaster-white', 'body1')
+# R2 白色裙墙（主楼）：墙面（±(V0-0.12) / UW+0.12）向外 skirt.out，顶 = 一层窗下沿 W1A；
+# 西段包住两个西角，南北段顶头抵西段内皮，不留共面重叠（防 z-fight）。东端：主楼东山墙在塔亭两侧露出的段落。
+SKO = D['skirt']['out']
+SK1 = D['win1'][0]
+box_uv('ht__dado-w', UW + 0.12 - SKO, -V0 + 0.12 - SKO, UW + 0.12, V0 - 0.12 + SKO, PLATFORM_Y, SK1, 'ht-plaster-white', 'body1')
+box_uv('ht__dado-s', UW + 0.12, -V0 + 0.12 - SKO, UE + 0.2, -V0 + 0.12, PLATFORM_Y, SK1, 'ht-plaster-white', 'body1')
+box_uv('ht__dado-n-w', UW + 0.12, V0 - 0.12, -D['porch']['uHalf'], V0 - 0.12 + SKO, PLATFORM_Y, SK1, 'ht-plaster-white', 'body1')
+box_uv('ht__dado-n-e', D['porch']['uHalf'], V0 - 0.12, UE + 0.2, V0 - 0.12 + SKO, PLATFORM_Y, SK1, 'ht-plaster-white', 'body1')
+_tv = D['tower']['half'] - 0.12 + SKO          # 塔亭裙墙外皮（塔亭墙线 ±(half-0.12) 外 SKO）
+box_uv('ht__dado-es', UE + 0.2, -V0 + 0.12 - SKO, UE + 0.2 + SKO, -_tv, PLATFORM_Y, SK1, 'ht-plaster-white', 'body1')
+box_uv('ht__dado-en', UE + 0.2, _tv, UE + 0.2 + SKO, V0 - 0.12 + SKO, PLATFORM_Y, SK1, 'ht-plaster-white', 'body1')
 
 # 一层外廊柱列（出檐线上；抱厦占用段跳过）
 col_xy = []
@@ -440,6 +576,9 @@ box_uv('ht__pframe-t', -1.35, V0 - 0.12, 1.35, V0 + 0.16, PLATFORM_Y + 2.25, PLA
 # 抱厦前檐窗：前面无墙，窗扇悬在柱间，做双面（从抱厦里看也有框、格心、玻璃）
 win_row('ht__pwin-w', -PU + 0.30, V0 + PD - 0.05, -0.30, V0 + PD - 0.05, PLATFORM_Y + 0.95, PLATFORM_Y + 2.40, group='porch', two_sided=True)
 win_row('ht__pwin-e', 0.30, V0 + PD - 0.05, PU - 0.30, V0 + PD - 0.05, PLATFORM_Y + 0.95, PLATFORM_Y + 2.40, group='porch', two_sided=True)
+# R2 抱厦前檐窗下白色裙墙（R1 窗下是空的）：角柱内皮到中间入口两侧，顶 = 前檐窗下沿，厚同窗框（双面可见）
+for _k, (_a, _b) in enumerate(((-PU + 0.19, -0.30), (0.30, PU - 0.19))):
+    box_uv('ht__dado-p%d' % _k, _a, V0 + PD - 0.10, _b, V0 + PD + 0.04, PLATFORM_Y, PLATFORM_Y + 0.95, 'ht-plaster-white', 'porch')
 PQ = D['plaque']
 box_uv('ht__plaque', -PQ['w'] / 2, V0 + PD - 0.34, PQ['w'] / 2, V0 + PD - 0.28, PQ['z0'], PQ['z0'] + PQ['h'], 'ht-win-dark', 'porch')
 box_uv('ht__plaque-t', -PQ['w'] / 2 - 0.06, V0 + PD - 0.35, PQ['w'] / 2 + 0.06, V0 + PD - 0.27, PQ['z0'] + PQ['h'], PQ['z0'] + PQ['h'] + 0.06, 'ht-wood-red', 'porch')
@@ -460,6 +599,11 @@ for ti, (z0, z1) in enumerate(tiers):
     win_row('ht__tw%d-e' % ti, TU1 - 0.06, TV1 - 0.2, TU1 - 0.06, TV0 + 0.2, wa, wb, group='tower')
     if ti > 0:
         win_row('ht__tw%d-w' % ti, TU0 + 0.06, TV0 + 0.2, TU0 + 0.06, TV1 - 0.2, wa, wb, group='tower')
+# R2 塔亭一层白色裙墙：南 / 北（主楼东山墙以东）、东；顶 = 塔亭一层窗下沿（tiers[0] 起 +1.0）
+_t1 = tiers[0][0] + 1.0
+box_uv('ht__dado-te', TU1 - 0.12, TV0 + 0.12 - SKO, TU1 - 0.12 + SKO, TV1 - 0.12 + SKO, PLATFORM_Y, _t1, 'ht-plaster-white', 'tower')
+box_uv('ht__dado-ts', UE + 0.2, TV0 + 0.12 - SKO, TU1 - 0.12, TV0 + 0.12, PLATFORM_Y, _t1, 'ht-plaster-white', 'tower')
+box_uv('ht__dado-tn', UE + 0.2, TV1 - 0.12, TU1 - 0.12, TV1 - 0.12 + SKO, PLATFORM_Y, _t1, 'ht-plaster-white', 'tower')
 for si, sk in enumerate((tw['skirt1'], tw['skirt2'])):
     eave_kit.eave_skirt('towerskirt%d' % si,
                         [(TU0 - 0.05, TV0 - 0.05), (TU1 + 0.05, TV0 - 0.05), (TU1 + 0.05, TV1 + 0.05), (TU0 - 0.05, TV1 + 0.05)],
@@ -486,6 +630,10 @@ eave_kit.xieshan_roof('porchroof', (-PU, PU, V0 - 0.25, V0 + PD), po['zEave'],
                            breakZ=po['breakZ'], ridgeZ=po['ridgeZ'], breakInset=po['breakInset'], gableInset=po['gableInset'],
                            drop=po['drop'], tileH=po['tileH'], boardH=po['boardH'], curve=1.6, rings=po['rings'],
                            ridgeEndLift=po['ridgeEndLift'], ornamentScale=po['ornamentScale']), 'porch')
+
+# R2 瓦垄：全部 eave_kit 屋面建完后逐块铺
+for _nm, _pts, _fcs, _part in ROOF_SURF:
+    tile_ridges(_nm, _pts, _fcs, _part)
 
 flush_windows()
 
@@ -516,6 +664,8 @@ tris = sum(PART_STATS.values())
 rec = dict(
     id='huxin-ting', glb='<OUT_DIR>/huxin-ting.glb', bytes=os.path.getsize(OUT_GLB), tris=tris,
     partTriCounts=PART_STATS, partObjectCounts=NGON,
+    tileRidges=WA_STATS,
+    facingFixed=FACING_FIX,
     frame=dict(centroid=[round(CX, 6), round(CZ, 6)], axis=[round(UX, 6), round(UZ, 6)], normal=[round(VX, 6), round(VZ, 6)],
                rectHalfU=round(U0, 4), rectHalfV=round(V0, 4),
                centroidRule='footprint area centroid (shoelace)', axisRule='longest footprint edge, +u away from bridge',

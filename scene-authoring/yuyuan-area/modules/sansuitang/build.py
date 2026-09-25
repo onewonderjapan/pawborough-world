@@ -29,6 +29,8 @@ D=dict(bays=[3.2,3.4,3.8,3.4,3.2],W=17.0,porch=2.4,bodyDepth=11.3,plinth=0.55,pl
  colFrontD=0.30,colH=3.4,lowerEave=4.35,lowerOver=1.1,lowerTop=5.6,upperWallIn=0.5,upperEave=6.6,upperOver=1.2,ridge=9.4,
  gableX=6.2,gableBreakY=7.9,cornerLift=0.45,cornerReach=1.6,eaveSag=0.05,
  plinthOutBack=0.18,lowerOverBack=0.0,upperOverBack=0.2)
+# 框料底色（主控 2026-09-25 定：与背靠背的 hall-kit 仰山堂一致，取 hall-kit 现行 timberSrgb #8a4030，非 GOAL 初稿的 #6a2e22）
+SST_TIMBER='8a4030'
 REANCHOR=6.65   # 灰模原点(前廊柱列) -> 原台基外包平面中心: 前缘 +1.0, 后缘 -13.7-0.6=-14.3, 中心 (1.0-14.3)/2=-6.65
                 # （wave2 背面收齐后台基后缘改为 -13.88，原点仍保持此值：前半几何逐顶点不变）
 PIVOT=-REANCHOR # 背面檐口环压缩的支点（灰模 z；前半 z>=PIVOT 不动）
@@ -37,10 +39,12 @@ RECIPE={'base':'lead grey model (reference-greymodel-build.py), frozen section u
  'refinements':['lattice-door-cores (analytic alpha texture x1)','side-bay rail wangzhu+lanban','eave rafters + 檐枋',
                 'wadang+dishui rows on both eaves','main-ridge chiwen / chuiji+qiangji end caps'],
  'materials':{'roofTile':{'base':'roof-color.jpg','normal':'roof-normal.png','tile':[1.4,1.2]},
-              'timber':{'base':'wood-stain-color.jpg','tint':'6a2e22','normal':'Wood092_2K-JPG_NormalGL_1K.jpg','tile':[0.9,2.2]},
+              'timber':{'baseColorSrgb':SST_TIMBER,'normal':'Wood092_2K-JPG_NormalGL_1K.jpg','tile':[0.9,2.2],
+                        'note':'wave4-huxinting2: flat base colour like hall-kit hk-timber-darkred (wood-stain multiply removed)'},
               'whiteWall':{'base':'PaintedPlaster017_2K-JPG_Color_1K.jpg','tint':'f2efe8','tile':[2.2,2.2]},
               'blueStone':{'base':'Bricks061_2K-JPG_Color_1K.jpg','tint':'8b9089','tile':[2.0,1.0]},
-              'latticeCore':{'alpha':'textures/lattice-core-alpha.png','cellM':0.125,'alphaMode':'MASK'}},
+              'latticeCore':{'alpha':'textures/lattice-core-alpha.png','cellM':0.125,'alphaMode':'MASK',
+                             'image':'modules/hall-kit/textures/lattice-core-alpha.png (same bytes, wave4-huxinting2)'}},
  'reanchor':{'from':'front colonnade centre (lead grey model)','to':'plan centre of the pre-wave2 plinth extents (kept fixed)','shiftGlbZ':REANCHOR},
  'backSide':{'decision':'wave2-sansuitang lead 2026-09-25: back only; nothing may cross the shared edge with 仰山堂','plinthOutBack':'flush with rear wall outer face','lowerOverBack':'from ZB','upperOverBack':'from UZB','backEaveDressing':False,'frontHalfUnchanged':'every triangle lying entirely at local z>=0 (position, normal, UV) identical to the 2026-09-23 build'},
  'textureDir':TEX_DIR}
@@ -78,27 +82,24 @@ def mat(name,rgb=None,rough=.8,base=None,normal=None,tint=None,tile=(1,1)):
 
 M={'wall':mat('sst-white-wall',rough=.85,base='PaintedPlaster017_2K-JPG_Color_1K.jpg',tint='f2efe8',tile=(2.2,2.2)),
    'stone':mat('sst-blue-stone',rough=.92,base='Bricks061_2K-JPG_Color_1K.jpg',tint='8b9089',tile=(2.0,1.0)),
-   'wood':mat('sst-timber-darkred',rough=.7,base='wood-stain-color.jpg',tint='6a2e22',normal='Wood092_2K-JPG_NormalGL_1K.jpg',tile=(0.9,2.2)),
+   # wave4-huxinting2（主控：格扇偏暗，与厅堂套件统一配色）：同 hall-kit hk-timber-darkred 做法，
+   # 底色直接 = sRGB SST_TIMBER，不再乘 wood-stain 贴图（贴图均值 sRGB(68,38,28) × #6a2e22 线性值 → 有效底色约 sRGB(26,5,3)，
+   # 格扇整面读成黑色）；木纹只走法线图。几何与 UV 不变。
+   'wood':mat('sst-timber-darkred',lin(SST_TIMBER),rough=.7,normal='Wood092_2K-JPG_NormalGL_1K.jpg',tile=(0.9,2.2)),
    'roof':mat('sst-roof-tile',rough=.8,base='roof-color.jpg',normal='roof-normal.png',tile=(1.4,1.2)),
    'dark':mat('sst-dark-timber',lin('241d18'),.6),
    'eave':mat('sst-eave-dark',lin('2f2c28'),.75)}
 
-# ---------- 格心解析 alpha 贴图（1 张，1 m 见方 = 8x8 格，方格+斜格） ----------
+# ---------- 格心 alpha 贴图：复用 hall-kit 同一张（wave4-huxinting2） ----------
+# 原先本模块自画 160×160「lattice-core-alpha」（棂条 #241d18），与 hall-kit / 湖心亭的同名同尺寸图（棂条 = hall-kit timberSrgb）
+# 在 assemble 贴图去重（名称 + 尺寸）时合并成一张，先导入的三穗堂版胜出——运行时所有厅堂和湖心亭的格心都变成 #241d18。
+# 现在直接读 modules/hall-kit/textures/lattice-core-alpha.png（字节不变），去重前后颜色一致；格网（1 m = 8 格、方格 + 斜格）相同。
+HK_LATTICE=ROOT.parent/'hall-kit'/'textures'/'lattice-core-alpha.png'
 def make_lattice_image():
- W=H=160;cell=20;bar=3
- px=bytearray(W*H*4)
- base=(36,29,24)
- for y in range(H):
-  for x in range(W):
-   dx,dy=x%cell,y%cell;sd=(x+y)%cell;dd=(x-y)%cell
-   on=dx<bar or dy<bar or sd<bar or dd<bar
-   k=(y*W+x)*4
-   if on:px[k],px[k+1],px[k+2],px[k+3]=*base,255
-   else:px[k],px[k+1],px[k+2],px[k+3]=255,255,255,0
- img=bpy.data.images.new('lattice-core-alpha',W,H,alpha=True)
- img.pixels=[v/255.0 for v in px]
+ img=bpy.data.images.load(str(HK_LATTICE),check_existing=False)
+ img.name='lattice-core-alpha'
  out=OUTD/'textures'/'lattice-core-alpha.png';out.parent.mkdir(exist_ok=True)
- img.filepath_raw=str(out);img.file_format='PNG';img.save()
+ out.write_bytes(HK_LATTICE.read_bytes())
  img.pack()
  m=bpy.data.materials.new('sst-lattice-core');m.use_nodes=True
  nodes,links=m.node_tree.nodes,m.node_tree.links
@@ -107,7 +108,8 @@ def make_lattice_image():
  links.new(t.outputs['Color'],p.inputs['Base Color']);links.new(t.outputs['Alpha'],p.inputs['Alpha'])
  try:m.blend_method='CLIP'
  except AttributeError:pass
- META['sst-lattice-core']={'alpha':'textures/lattice-core-alpha.png','cellM':0.125,'alphaMode':'MASK','alphaCutoff':0.5}
+ META['sst-lattice-core']={'alpha':'textures/lattice-core-alpha.png','cellM':0.125,'alphaMode':'MASK','alphaCutoff':0.5,
+  'sharedImage':'modules/hall-kit/textures/lattice-core-alpha.png（字节相同；总装按名 + 尺寸去重）'}
  MAT_TILE['sst-lattice-core']=(1.0,1.0)  # UV 单位=米，纹理即 1m 格网
  return m
 M['lattice']=make_lattice_image()

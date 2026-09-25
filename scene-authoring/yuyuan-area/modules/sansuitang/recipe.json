@@ -49,13 +49,13 @@
       ]
     },
     "timber": {
-      "base": "wood-stain-color.jpg",
-      "tint": "6a2e22",
+      "baseColorSrgb": "8a4030",
       "normal": "Wood092_2K-JPG_NormalGL_1K.jpg",
       "tile": [
         0.9,
         2.2
-      ]
+      ],
+      "note": "wave4-huxinting2: flat base colour like hall-kit hk-timber-darkred (wood-stain multiply removed)"
     },
     "whiteWall": {
       "base": "PaintedPlaster017_2K-JPG_Color_1K.jpg",
@@ -76,7 +76,8 @@
     "latticeCore": {
       "alpha": "textures/lattice-core-alpha.png",
       "cellM": 0.125,
-      "alphaMode": "MASK"
+      "alphaMode": "MASK",
+      "image": "modules/hall-kit/textures/lattice-core-alpha.png (same bytes, wave4-huxinting2)"
     }
   },
   "reanchor": {
