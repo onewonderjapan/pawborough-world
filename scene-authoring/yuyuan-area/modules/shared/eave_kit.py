@@ -451,7 +451,11 @@ def ornament_scale(prm, depth):
 
 # ------------------------------------------------------------ 攒尖 ----
 def zanjian_roof(name, rect, z_eave, apex_z, prm, part):
-    """方形攒尖：檐口环（外伸 over，四角起翘 / 出翘）放样到宝顶，四面凹曲。"""
+    """方形攒尖：檐口环（外伸 over，四角起翘 / 出翘）放样到宝顶，四面凹曲。
+    prm['sides'] = n（缺省 4）：n ≠ 4 时出正 n 边形攒尖（八角塔等，见 _zanjian_ngon）；n = 4 走原方形代码，输出逐字节不变。"""
+    sides = int(prm.get('sides', 4))
+    if sides != 4:
+        return _zanjian_ngon(name, rect, z_eave, apex_z, prm, part, sides)
     u0, u1, v0, v1 = rect
     over, qiao, chu, reach = prm['over'], prm['qiao'], prm['chu'], prm['reach']
     n = max(4, int((u1 - u0) / 0.8))
@@ -493,4 +497,81 @@ def zanjian_roof(name, rect, z_eave, apex_z, prm, part):
     for i in range(mm):
         k2 = (i + 1) % mm
         fc.append((2 * i, 2 * i + 1, 2 * k2 + 1, 2 * k2))                            # 正面朝下（E1）
+    _ADD(name + '-soffit', it, fc, 'dark', part)
+
+
+def _ngon(cu, cv, apothem, n, rot):
+    """正 n 边形顶点（CCW）：边心距 apothem；rot=0 时第 0 条边的外法线朝 -v（与方形攒尖第 0 条边同向）。"""
+    R = apothem / math.cos(math.pi / n)
+    a0 = -math.pi / 2 - math.pi / n + rot
+    return [(cu + R * math.cos(a0 + 2 * math.pi * k / n), cv + R * math.sin(a0 + 2 * math.pi * k / n)) for k in range(n)]
+
+
+def _zanjian_ngon(name, rect, z_eave, apex_z, prm, part, sides):
+    """正 n 边形攒尖（E2，wave6-eavekit）：墙身 = 内切于 rect 短边正方形的正 n 边形（边心距 a = 短边 / 2，
+    rotDeg 旋转，缺省第 0 条边朝 -v）；檐口环 = 边心距 a + over 的同心正 n 边形，每个角点起翘 qiao、沿径向出翘 chu
+    （方形时径向出翘 = 两轴各 chu，这里按 chu / cos(π/n) 沿角点径向，n = 4 时两者相同），按「边 + 边参数」取样，
+    起翘范围 reach 按檐口环边长封顶（reach ≤ 0.28·边长，qiao 按 √比例缩，同 eave_path），
+    放样到宝顶（中心）；瓦头 / 封檐板 / 檐底断面同方形。网格名、材质、UV 口径同方形。"""
+    if sides < 3:
+        raise ValueError('eave_kit.zanjian_roof: sides must be >= 3, got %d' % sides)
+    u0, u1, v0, v1 = rect
+    over, qiao, chu, reach = prm['over'], prm['qiao'], prm['chu'], prm['reach']
+    cu, cv = (u0 + u1) / 2, (v0 + v1) / 2
+    a = min(u1 - u0, v1 - v0) / 2
+    rot = math.radians(prm.get('rotDeg', 0.0))
+    cosn = math.cos(math.pi / sides)
+    wall = _ngon(cu, cv, a, sides, rot)
+    eave = _ngon(cu, cv, a + over, sides, rot)
+    ns = max(4, int(2 * a * math.tan(math.pi / sides) / 0.8))      # 每边取样数（方形同式：墙边长 / 0.8）
+    L = 2 * (a + over) * math.tan(math.pi / sides)                  # 檐口环边长（起翘核按沿边距离）
+    if reach > 0.28 * L:                                            # 同 eave_path：起翘范围按边长封顶（八角塔边短，否则整边翘成波浪）
+        qiao = qiao * (0.28 * L / reach) ** 0.5
+        reach = 0.28 * L
+
+    def ring(poly):
+        pts = []
+        for k in range(sides):
+            p, q = poly[k], poly[(k + 1) % sides]
+            for j in range(ns):
+                t = j / ns
+                pts.append((p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t, k, t))
+        return pts
+    ring_e, ring_w = ring(eave), ring(wall)
+    rings = prm.get('rings', 6)
+    items, faces = [], []
+    mm = len(ring_e)
+    for j in range(rings + 1):
+        t = j / rings
+        for (ue, ve, side, te) in ring_e:
+            k = smooth_kernel(min(te, 1 - te) * L, reach)
+            cvx = eave[side] if te < 0.5 else eave[(side + 1) % sides]     # 最近角点，沿其径向出翘
+            rl = math.hypot(cvx[0] - cu, cvx[1] - cv) or 1.0
+            push = chu * k * (1 - t) / cosn
+            u = ue + (cu - ue) * (t ** 0.85) + (cvx[0] - cu) / rl * push
+            v = ve + (cv - ve) * (t ** 0.85) + (cvx[1] - cv) / rl * push
+            h = (z_eave - prm['drop']) + (apex_z - (z_eave - prm['drop'])) * (t ** prm.get('curve', 1.5)) + qiao * k * (1 - t) ** 2
+            items.append(((u, v, h), (u + v, h)))
+    for j in range(rings):
+        for i in range(mm):
+            k2 = (i + 1) % mm
+            faces.append((j * mm + i, j * mm + k2, (j + 1) * mm + k2, (j + 1) * mm + i))
+    _ADD(name + '-cone', items, faces, 'roof', part)
+    lip = items[:mm]
+    for tag, h0, h1, mt in (('tileend', 0.0, prm['tileH'], 'dark'), ('board', prm['tileH'], prm['tileH'] + prm['boardH'], 'wood')):
+        it, fc = [], []
+        for (p, _uv) in lip:
+            it.append(((p[0], p[1], p[2] - h0), (0, 0)))
+            it.append(((p[0], p[1], p[2] - h1), (0, 1)))
+        for i in range(mm):
+            k2 = (i + 1) % mm
+            fc.append((2 * i, 2 * i + 1, 2 * k2 + 1, 2 * k2))
+        _ADD(name + '-' + tag, it, fc, mt, part)
+    it, fc = [], []
+    for (p, _uv), (ub, vb, _s, _t) in zip(lip, ring_w):
+        it.append(((p[0], p[1], p[2] - prm['tileH'] - prm['boardH']), (0, 0)))
+        it.append(((ub, vb, z_eave + 0.1), (0, 1)))
+    for i in range(mm):
+        k2 = (i + 1) % mm
+        fc.append((2 * i, 2 * i + 1, 2 * k2 + 1, 2 * k2))
     _ADD(name + '-soffit', it, fc, 'dark', part)
