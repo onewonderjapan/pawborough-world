@@ -165,7 +165,7 @@ if (want('I3')) {
   else if (dOff.share >= PIX_MAX) fail(`I3b 隐藏屋面后合批对 batch=0 非边缘差异 ${(dOff.share * 100).toFixed(3)}% ≥ 1%`);
   else if (dToggle.rawShare <= 0.005) fail(`I3b 隐藏屋面前后合批页画面几乎没变（${(dToggle.rawShare * 100).toFixed(3)}%）——合批实例没跟随原网格隐藏`);
   else if (dBack.share >= PIX_MAX) fail(`I3b 恢复后与原图差异 ${(dBack.share * 100).toFixed(3)}% ≥ 1%`);
-  else ok(`I3b 隐藏 ${nB} 个屋面网格：合批对 batch=0 ${(dOff.share * 100).toFixed(3)}%，画面改变 ${(dToggle.rawShare * 100).toFixed(1)}% 像素，恢复 ${(dBack.share * 100).toFixed(3)}%`);
+  else ok(`I3b 隐藏 ${nB} 个屋面节点：合批对 batch=0 ${(dOff.share * 100).toFixed(3)}%，画面改变 ${(dToggle.rawShare * 100).toFixed(1)}% 像素，恢复 ${(dBack.share * 100).toFixed(3)}%`);
 }
 
 // ---------- I4 标签遮挡剔除 ----------
