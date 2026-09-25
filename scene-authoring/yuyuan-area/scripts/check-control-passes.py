@@ -14,6 +14,12 @@
      指向它的立面开间）在分割图上的像素占比（±2 容差），
      终点帧 ≥ 5% 否则报错；另记画面下 1/3 的九曲桥栏像素占比（分割=jiuqu-bridge 且世界法线 |n_y|<0.5
      即竖直面，桥面不算）。碰撞盒可见性（tests/control-shots-test.mjs）是渲染前的几何代理，这里是渲染后真值。
+     终点帧门槛可按镜头加严（TARGET_END_MIN_BY_SHOT；wave3-tourfix T3：③湖心亭 ≥ 10%）。
+  7. 顶部天空余量（wave3-tourfix T3 返修，TOP_SKY_MARGIN_BY_SHOT；③ ≥ 3%）：终点帧目标分割掩膜的最高像素（湖心亭即宝顶 / 屋脊）
+     正上方连续天空（深度 = far，65535）行数 / 画高 ≥ 门槛，且目标最高像素不贴画面上沿——整座亭的顶部轮廓在画内、上方留天。
+  6. 重复件（wave3-tourfix T3）：layout 里 footprint 覆盖目标 footprint ≥ 50%、且有正高度的其他对象
+     （例：bld-228035340 与湖心亭同一 OSM way，R1 时把亭下层包成 5 m 体块）在任何帧的分割图上像素占比
+     必须 < 0.1%——目标不能被重合的替身包住。
 
 用法：python3 scripts/check-control-passes.py --control <control目录> --report <RESULT.json路径>
 """
@@ -28,6 +34,40 @@ import sys
 W, H = 1280, 720
 CHANNELS = ('beauty', 'depth', 'normal', 'segmentation')
 TARGET_END_MIN = 0.05   # R1：终点帧里取景目标（cameras json targetId）在分割图上至少占 5% 像素
+TARGET_END_MIN_BY_SHOT = {'jiuqu-to-huxinting': 0.10}   # wave3-tourfix T3：湖心亭终帧 ≥ 10%
+TOP_SKY_MARGIN_BY_SHOT = {'jiuqu-to-huxinting': 0.03}   # wave3-tourfix T3 返修：终帧宝顶/屋脊上方天空 ≥ 3% 画高
+DUP_COVER_MIN = 0.5     # footprint 覆盖目标 footprint 的比例 ≥ 此值 = 重复件
+DUP_PIXEL_MAX = 0.001   # 重复件每帧像素占比上限
+
+
+def point_in_poly(p, poly):
+    x, z = p
+    ins = False
+    for i in range(len(poly)):
+        a, b = poly[i], poly[(i + 1) % len(poly)]
+        if (a[1] > z) != (b[1] > z) and x < (b[0] - a[0]) * (z - a[1]) / (b[1] - a[1]) + a[0]:
+            ins = not ins
+    return ins
+
+
+def duplicate_footprints(objects, tid, exclude, n=24):
+    """footprint 覆盖目标 footprint（n×n 网格采样）≥ DUP_COVER_MIN、高度 > 0 的其他对象 id。"""
+    tgt = next((o for o in objects if o['id'] == tid), None)
+    fp = (tgt or {}).get('geometry', {}).get('footprint')
+    if not fp:
+        return []
+    xs, zs = [p[0] for p in fp], [p[1] for p in fp]
+    pts = [(min(xs) + (max(xs) - min(xs)) * (i + .5) / n, min(zs) + (max(zs) - min(zs)) * (j + .5) / n)
+           for i in range(n) for j in range(n)]
+    pts = [p for p in pts if point_in_poly(p, fp)]
+    out = []
+    for o in objects:
+        ofp = o.get('geometry', {}).get('footprint')
+        if not ofp or o['id'] in exclude or not ((o.get('height') or 0) > 0):
+            continue
+        if pts and sum(point_in_poly(p, ofp) for p in pts) / len(pts) >= DUP_COVER_MIN:
+            out.append(o['id'])
+    return out
 
 
 def load_json(p):
@@ -88,8 +128,9 @@ def main():
     i2r_items = [(k, v) for k, v in i2r.items()]
     # 取景目标的像素 = 目标本体 + 其立面开间（layout facadeBay.parentBuilding == 目标，分割里是独立 id）
     bays = {}
-    if os.path.exists(args.layout):
-        for o in load_json(args.layout)['objects']:
+    lay_objects = load_json(args.layout)['objects'] if os.path.exists(args.layout) else []
+    if lay_objects:
+        for o in lay_objects:
             if o.get('parentBuilding'):
                 bays.setdefault(o['parentBuilding'], []).append(o['id'])
     unassigned = lut['unassigned']
@@ -178,6 +219,22 @@ def main():
                         if iid in i2r:
                             m |= np.abs(sai - np.array(i2r[iid])).max(axis=2) <= 2
                     fr['targetPixelShare'] = round(float(m.mean()), 4)
+                    rows = np.where(m.any(axis=1))[0]
+                    if rows.size:   # 目标最高像素 + 其正上方连续天空（depth = far）行数
+                        r0 = int(rows[0]); cols = np.where(m[r0])[0]; c0 = int(cols[len(cols) // 2])
+                        sky = 0
+                        while r0 - 1 - sky >= 0 and dep[r0 - 1 - sky, c0] >= 65535:
+                            sky += 1
+                        fr['targetTop'] = {'row': r0, 'col': c0, 'topFrac': round(r0 / H, 4), 'skyAbovePx': sky,
+                                           'skyAboveFrac': round(sky / H, 4),
+                                           'touchesLeft': bool(m[:, 0].any()), 'touchesRight': bool(m[:, -1].any())}
+                    for did in duplicate_footprints(lay_objects, tid, set([tid] + bays.get(tid, []))):
+                        # 不在 LUT = 场景里没有这件几何 = 0 像素（照记，便于核对）
+                        dshare = float((np.abs(sai - np.array(i2r[did])).max(axis=2) <= 2).mean()) if did in i2r else 0.0
+                        fr.setdefault('duplicatePixelShare', {})[did] = round(dshare, 4)
+                        if dshare >= DUP_PIXEL_MAX:
+                            errors.append('%s/%s 与目标 %s footprint 重合的 %s 露出 %.2f%% 像素（≥ %.1f%%，目标被替身包住）'
+                                          % (sid, tag, tid, did, dshare * 100, DUP_PIXEL_MAX * 100))
                     brc = i2r.get('jiuqu-bridge')
                     if brc is not None:
                         lo = sai[2 * H // 3:]
@@ -187,11 +244,22 @@ def main():
         last = frame_report.get(sid, {}).get('frame-%03d' % (n - 1), {}) if n else {}
         if 'targetPixelShare' in last:
             shares = [frame_report[sid]['frame-%03d' % k].get('targetPixelShare', 0) for k in range(n)]
+            if sid in TOP_SKY_MARGIN_BY_SHOT:
+                need = TOP_SKY_MARGIN_BY_SHOT[sid]
+                tt_ = last.get('targetTop') or {}
+                okm = tt_.get('skyAboveFrac', 0) >= need and tt_.get('row', 0) > 0
+                checks.append({'check': 'target-top-sky-margin', 'shot': sid, 'need': need, 'endFrame': tt_,
+                               'perFrameSkyAboveFrac': [frame_report[sid]['frame-%03d' % k].get('targetTop', {}).get('skyAboveFrac') for k in range(n)],
+                               'pass': bool(okm)})
+                if not okm:
+                    errors.append('%s 终点帧目标顶部上方天空 %.1f%% < %.0f%%（目标最高像素行 %s，宝顶/屋脊出画或贴边）'
+                                  % (sid, tt_.get('skyAboveFrac', 0) * 100, need * 100, tt_.get('row')))
+            end_min = TARGET_END_MIN_BY_SHOT.get(sid, TARGET_END_MIN)
             checks.append({'check': 'target-pixels', 'shot': sid, 'endShare': last['targetPixelShare'],
-                           'minShare': min(shares), 'framesWithTarget': sum(1 for v in shares if v > 0),
-                           'pass': last['targetPixelShare'] >= TARGET_END_MIN})
-            if last['targetPixelShare'] < TARGET_END_MIN:
-                errors.append('%s 终点帧取景目标像素占比 %.1f%% < %.0f%%' % (sid, last['targetPixelShare'] * 100, TARGET_END_MIN * 100))
+                           'endMin': end_min, 'minShare': min(shares), 'framesWithTarget': sum(1 for v in shares if v > 0),
+                           'perFrame': shares, 'pass': last['targetPixelShare'] >= end_min})
+            if last['targetPixelShare'] < end_min:
+                errors.append('%s 终点帧取景目标像素占比 %.1f%% < %.0f%%' % (sid, last['targetPixelShare'] * 100, end_min * 100))
 
         # 耗时
         tt = timings.get(sid, {})

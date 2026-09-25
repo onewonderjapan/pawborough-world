@@ -10,6 +10,7 @@ import { setupTour } from './tour.js';   // WP13：取景导览逻辑在 web/tou
 import { dedupeLabels, buildLabelOccluders } from './labels.js'; // WP13：标签去重+R1遮挡剔除逻辑在 web/labels.js
 import { installWalkMode } from './walk.js';   // WP4 步行模式（默认不启用，按 ?walk=1 或「步行」按钮进入）
 import { setupPerf } from './perf.js';         // M4 性能采样（仅 ?perf=1 时激活；方法见 docs/PERF-W2.md）
+import { installTargetMask } from './target-mask.js'; // wave3-tourfix T2：导览机位渲染后目标像素复核钩子 window.__targetMask
 
 const app = document.getElementById('app');
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -483,6 +484,7 @@ renderer.setAnimationLoop(() => { perf?.tick(); controls.update(); walk?.tick();
 // playwright 钩子
 window.__ready = false;
 window.__scene = scene;
+installTargetMask({ renderer, scene, camera });
 window.__bigMeshes = () => {
   const list = [];
   scene.traverse(o => {
