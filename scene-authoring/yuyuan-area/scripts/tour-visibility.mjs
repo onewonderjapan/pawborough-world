@@ -3,7 +3,8 @@
 //   - segBlocked：三维线段是否穿过某 OBB（滑块法）；
 //   - targetBox：baseline/layout.json 对象 → 目标包围盒（footprint / rocks / polyline 三种）；
 //   - visiblePointCount：相机→目标包围盒 9 采样点（中心 + 8 角）被碰撞盒遮挡计数；
-//   - screenAreaFrac：目标包围盒 8 角投到画面的凸包面积占比（与 web/main.js 相机同参 fov46 / 视口 1400×900）；
+//   - screenAreaFrac：目标包围盒投到画面的凸包、再裁到画框后的面积占比（与 web/main.js 相机同参 fov46 / 视口 1400×900；
+//     导览 tour-test / compute-area-tour 与控制层 control-shot-visibility 共用这一个函数，只有一种口径）；
 //   - nearestColliderDist：点到最近可遮挡碰撞盒（顶 ≥ eyeY）的 3D 距离。
 // 数值只从冻结源（baseline/layout.json）与管线产物（collision-*.json）重算，不依赖 tour.json。
 import fs from 'node:fs';
@@ -187,9 +188,9 @@ export function visiblePointCount(boxes, cam, box) {
 // 包围盒 12 条棱投到画面取凸包；棱与近平面（z=0.05）求交裁剪 ——
 // 相机落在目标 bbox 水平范围内时（围合大院、长桥折线），部分角点在相机背后，
 // 直接返回 0 会漏判，必须裁剪后投影。
-// opts.clipToFrame（WP11/R1 控制层镜头用，默认 false = 导览原口径不变）：凸包再裁到画面矩形
-// [0,W]×[0,H]，得到「画面内」面积占比——不裁时目标在画外也会算出大面积（投影点落在画外）。
-export function screenAreaFrac(box, cam, look, view = VIEW, opts = {}) {
+// 凸包再裁到画面矩形 [0,W]×[0,H]，得到「画面内」面积占比（wave3-tourfix T1 起导览也用此口径；
+// 旧导览口径不裁，目标整体在画外时投影点落在画外也会算出大面积——见 tests/tour-visibility-test.mjs 用例 1）。
+export function screenAreaFrac(box, cam, look, view = VIEW) {
   const f = norm3(sub3(look, cam));
   const r = norm3(cross(f, [0, 1, 0]));
   if (!isFinite(r[0])) return 0; // 望天/望地退化
@@ -214,13 +215,12 @@ export function screenAreaFrac(box, cam, look, view = VIEW, opts = {}) {
     pts.push([(b[0] / (b[2] * tanX) * 0.5 + 0.5) * view.width, (-b[1] / (b[2] * tanY) * 0.5 + 0.5) * view.height]);
   }
   if (pts.length < 3) return 0; // 整盒在相机背后
-  let hull = convexHull(pts);
-  if (opts.clipToFrame) hull = clipToRect(hull, view.width, view.height);
+  const hull = clipToRect(convexHull(pts), view.width, view.height);
   if (hull.length < 3) return 0;
   return Math.abs(shoelace(hull)) / (view.width * view.height);
 }
 
-// ---------- WP11/R1 控制层镜头：画面内判定（导览 tour-test 不用，口径见 docs/CONTROL-PASSES.md） ----------
+// ---------- WP11/R1 控制层镜头：视图参数与画面内判定（口径见 docs/CONTROL-PASSES.md） ----------
 // Blender 相机（sensor_fit AUTO、横幅 → 水平传感器宽）焦距 → three.js 口径的竖直 fov 视图参数。
 // 与 render-control-passes.py write_camera_json 同式：fovY = 2·atan(sensorW·H/W / 2f)。
 export function viewFromLens(lensMm = 50, width = 1280, height = 720, sensorWMm = 36) {

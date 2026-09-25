@@ -3,7 +3,7 @@
 // 另加两条控制层专用口径（导览不用）：
 //   - 画面 = 渲染相机（1280×720，Blender 焦距 lensMm，36 mm 横幅传感器，与 render-control-passes.py 同式）；
 //   - 9 采样点「可见」沿用 tour-test R1 口径（视线不被碰撞盒挡）；另记「画面内且未挡」点数 inFrameVis；
-//   - 投影占比 = 凸包裁到画面矩形后的面积（目标出画 → 0；tour-test 的不裁口径目标在画外也会得大面积）。
+//   - 投影占比 = 凸包裁到画面矩形后的面积（目标出画 → 0；与 tour-test 共用 screenAreaFrac，同一口径）。
 // 目标盒：layout 对象有 footprint/rocks/polyline 时用 targetBox；锚点型（城隍庙山门 temple-shanmen 是
 // templeAnchor，只有 position）用管线碰撞记录里同 id 的盒并集 AABB（collision-temple.json，模块实际几何）。
 // 九曲桥栏遮挡（碰撞集里没有桥栏）：按 layout jiuqu-bridge 折线 + garden-kit 桥栏尺寸重建两侧栏带
@@ -101,7 +101,7 @@ export function evaluateShot(shot, layout, boxes) {
     const cam = shot.eye[k], look = shot.target[k];
     const vis = visiblePointCount(boxes, cam, box);                       // tour-test R1 同口径：未被碰撞盒挡
     const inFrameVis = framedVisiblePointCount(boxes, cam, look, box, view); // 另记：画面内且未挡
-    const area = screenAreaFrac(box, cam, look, view, { clipToFrame: true });
+    const area = screenAreaFrac(box, cam, look, view);
     const near = nearestColliderDist(boxes, cam);
     const fr = { k, vis, inFrameVis, area, clearance: near.dist, clearanceName: near.name };
     if (panels) {
