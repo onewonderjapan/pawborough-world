@@ -135,6 +135,8 @@
   "over": 0.8,
   "drop": 0.2,
   "rootRise": 0.45,
+  "minPieceM": 0.5,
+  "perEdgeNote": "wave4-roofclip：K1 共享段腰檐环线留在墙线上，逐边出檐 = min(over, lim − 墙线 − 0.01)；与共享段相邻、短于 minPieceM 的墙段并入共享段取值",
   "note": "楼的腰檐（eave_kit.eave_skirt），不起翘"
  },
  "timberNote": "wave3 W0：格扇立面偏暗，框料/棂条底色同色相提亮 #6a2e22→#8a4030（色相保持深红），格心背衬 #2a2522→#55483c"

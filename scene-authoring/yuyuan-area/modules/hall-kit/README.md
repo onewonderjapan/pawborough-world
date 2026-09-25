@@ -133,5 +133,8 @@ wave2 B4 起按两层剖面生成（见下「wave2 批量」）。
 - **硬山檐口断面闭合**（R2b）：屋面剖面、檐口、屋脊不动；层顶 `wallTopZ` = min(EAVE_Z, 网格瓦面(墙线 + 柱半径) − `eaveBodyClearM`)，
   檐底根部 = min(EAVE_Z + soffitRise, 檐底斜面全程低于瓦面 − clear)。原先大进深厅墙线处瓦面低于檐底根部与柱顶
   （斜俯图檐口内侧深色带 + 带上小红块）。measurements `wallTopZ` / `wallTopLoweredM`、recipe `eaveBody` 记实际值。
-- **未决**：得月楼 / 藏书楼 K1 共享段腰檐环线内收到墙线以内（`eave_kit.eave_skirt` 整圈同一 over），底层柱 / 墙 / 格扇
-  穿过窄腰檐，3d 对这两栋保持失败，方案待主控定。
+- **K1 腰檐逐边出檐**（主控决定方案 a）：`eave_kit.eave_path / eave_skirt` 增补逐边 over（序列 / 可调用，标量路径逐字节不变）。
+  K1 分段侧腰檐环线 = 底层墙线分块（根部始终在墙上）；共享段出檐 = min(0.8, lim − 墙线 − 0.01)（得月楼 0.255 / 0.21、藏书楼 0.21 / 0.21），
+  与共享段相邻、短于 `waistEave.minPieceM` 的墙段并入；凹口回墙出檐让到朝向一侧共享段端前 0.01（外侧墙段檐口高于限位线时）。
+  recipe `sharedSegments.waistEdgeOvers` 记逐边值。旧版环线内收到 lim − over，落进墙线以内 0.55–0.59 m。
+- **楼不受小体量檐高上限**（主控决定）：storeys ≥ 2 时檐高取 layout eave，层高 = height / storeys（还云楼 / 会景楼 / 延清楼天际线升高）。
