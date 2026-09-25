@@ -29,6 +29,8 @@ D=dict(bays=[3.2,3.4,3.8,3.4,3.2],W=17.0,porch=2.4,bodyDepth=11.3,plinth=0.55,pl
  colFrontD=0.30,colH=3.4,lowerEave=4.35,lowerOver=1.1,lowerTop=5.6,upperWallIn=0.5,upperEave=6.6,upperOver=1.2,ridge=9.4,
  gableX=6.2,gableBreakY=7.9,cornerLift=0.45,cornerReach=1.6,eaveSag=0.05,
  plinthOutBack=0.18,lowerOverBack=0.0,upperOverBack=0.2)
+# 框料底色（主控 2026-09-25 定：与背靠背的 hall-kit 仰山堂一致，取 hall-kit 现行 timberSrgb #8a4030，非 GOAL 初稿的 #6a2e22）
+SST_TIMBER='8a4030'
 REANCHOR=6.65   # 灰模原点(前廊柱列) -> 原台基外包平面中心: 前缘 +1.0, 后缘 -13.7-0.6=-14.3, 中心 (1.0-14.3)/2=-6.65
                 # （wave2 背面收齐后台基后缘改为 -13.88，原点仍保持此值：前半几何逐顶点不变）
 PIVOT=-REANCHOR # 背面檐口环压缩的支点（灰模 z；前半 z>=PIVOT 不动）
@@ -37,7 +39,7 @@ RECIPE={'base':'lead grey model (reference-greymodel-build.py), frozen section u
  'refinements':['lattice-door-cores (analytic alpha texture x1)','side-bay rail wangzhu+lanban','eave rafters + 檐枋',
                 'wadang+dishui rows on both eaves','main-ridge chiwen / chuiji+qiangji end caps'],
  'materials':{'roofTile':{'base':'roof-color.jpg','normal':'roof-normal.png','tile':[1.4,1.2]},
-              'timber':{'baseColorSrgb':'6a2e22','normal':'Wood092_2K-JPG_NormalGL_1K.jpg','tile':[0.9,2.2],
+              'timber':{'baseColorSrgb':SST_TIMBER,'normal':'Wood092_2K-JPG_NormalGL_1K.jpg','tile':[0.9,2.2],
                         'note':'wave4-huxinting2: flat base colour like hall-kit hk-timber-darkred (wood-stain multiply removed)'},
               'whiteWall':{'base':'PaintedPlaster017_2K-JPG_Color_1K.jpg','tint':'f2efe8','tile':[2.2,2.2]},
               'blueStone':{'base':'Bricks061_2K-JPG_Color_1K.jpg','tint':'8b9089','tile':[2.0,1.0]},
@@ -80,10 +82,10 @@ def mat(name,rgb=None,rough=.8,base=None,normal=None,tint=None,tile=(1,1)):
 
 M={'wall':mat('sst-white-wall',rough=.85,base='PaintedPlaster017_2K-JPG_Color_1K.jpg',tint='f2efe8',tile=(2.2,2.2)),
    'stone':mat('sst-blue-stone',rough=.92,base='Bricks061_2K-JPG_Color_1K.jpg',tint='8b9089',tile=(2.0,1.0)),
-   # wave4-huxinting2（主控：格扇偏暗，与厅堂套件统一配色，框料 #6a2e22）：同 hall-kit hk-timber-darkred 做法，
-   # 底色直接 = sRGB #6a2e22，不再乘 wood-stain 贴图（贴图均值 sRGB(68,38,28) × #6a2e22 线性值 → 有效底色约 sRGB(26,5,3)，
+   # wave4-huxinting2（主控：格扇偏暗，与厅堂套件统一配色）：同 hall-kit hk-timber-darkred 做法，
+   # 底色直接 = sRGB SST_TIMBER，不再乘 wood-stain 贴图（贴图均值 sRGB(68,38,28) × #6a2e22 线性值 → 有效底色约 sRGB(26,5,3)，
    # 格扇整面读成黑色）；木纹只走法线图。几何与 UV 不变。
-   'wood':mat('sst-timber-darkred',lin('6a2e22'),rough=.7,normal='Wood092_2K-JPG_NormalGL_1K.jpg',tile=(0.9,2.2)),
+   'wood':mat('sst-timber-darkred',lin(SST_TIMBER),rough=.7,normal='Wood092_2K-JPG_NormalGL_1K.jpg',tile=(0.9,2.2)),
    'roof':mat('sst-roof-tile',rough=.8,base='roof-color.jpg',normal='roof-normal.png',tile=(1.4,1.2)),
    'dark':mat('sst-dark-timber',lin('241d18'),.6),
    'eave':mat('sst-eave-dark',lin('2f2c28'),.75)}

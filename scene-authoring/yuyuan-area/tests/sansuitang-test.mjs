@@ -237,9 +237,9 @@ if (testOk) {
   ok('解析 alpha 贴图已内嵌', alphaImg);
 }
 
-// ---------- 3b) wave4-huxinting2 格扇配色（主控：格扇偏暗，与厅堂套件统一配色，框料 #6a2e22；三穗堂几何不变，只改材质） ----------
+// ---------- 3b) wave4-huxinting2 格扇配色（主控：格扇偏暗，与厅堂套件统一配色，框料 = hall-kit timberSrgb（主控定 #8a4030，与背靠背仰山堂一致）；三穗堂几何不变，只改材质） ----------
 // 模块 GLB 实测：
-//   框料材质 sst-timber-darkred 底色 = sRGB #6a2e22、不再乘 wood-stain 贴图（hall-kit hk-timber-darkred 同做法；
+//   框料材质 sst-timber-darkred 底色 = modules/hall-kit/defaults.json timberSrgb（现 #8a4030）、不再乘 wood-stain 贴图（hall-kit hk-timber-darkred 同做法；
 //   旧版贴图 × 色 = 有效底色约 sRGB(26,5,3)，格扇整面读成黑）；
 //   格心贴图 lattice-core-alpha 字节 = modules/hall-kit/textures/lattice-core-alpha.png（总装按「名 + 尺寸」去重，
 //   不同字节的同名图会互相覆盖——旧版三穗堂 #241d18 图先导入，运行时把全部厅堂和湖心亭的格心压成 #241d18）。
@@ -259,10 +259,11 @@ if (testOk) {
   const HK_LAT = fs.readFileSync(path.join(ROOT, 'modules', 'hall-kit', 'textures', 'lattice-core-alpha.png'));
   const g = parseGlb(SST_GLB);
   const lin = (h) => [0, 2, 4].map((i) => { const c = parseInt(h.slice(i, i + 2), 16) / 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; });
-  const want = lin('6a2e22');
+  const HK_TIMBER = JSON.parse(fs.readFileSync(path.join(ROOT, 'modules', 'hall-kit', 'defaults.json'), 'utf8')).timberSrgb;
+  const want = lin(HK_TIMBER);
   const tm = g.materials.find((m) => m.name === 'sst-timber-darkred');
   const bc = tm?.pbrMetallicRoughness?.baseColorFactor || [];
-  ok(`框料 sst-timber-darkred 底色 = sRGB #6a2e22 且无底色贴图（实测 ${bc.slice(0, 3).map((v) => v.toFixed(3)).join(',')}，贴图 ${tm?.pbrMetallicRoughness?.baseColorTexture ? '有' : '无'}）`,
+  ok(`框料 sst-timber-darkred 底色 = hall-kit timberSrgb #${HK_TIMBER} 且无底色贴图（实测 ${bc.slice(0, 3).map((v) => v.toFixed(3)).join(',')}，贴图 ${tm?.pbrMetallicRoughness?.baseColorTexture ? '有' : '无'}）`,
     !!tm && want.every((v, i) => Math.abs(bc[i] - v) <= 0.002) && !tm.pbrMetallicRoughness.baseColorTexture);
   const lat = imgBytes(SST_GLB, /^lattice-core-alpha/);
   ok(`格心贴图 lattice-core-alpha 字节 = hall-kit 源图（${lat.map((x) => sha(x.bytes).slice(0, 12)).join(',') || '无'} vs ${sha(HK_LAT).slice(0, 12)}）`,
