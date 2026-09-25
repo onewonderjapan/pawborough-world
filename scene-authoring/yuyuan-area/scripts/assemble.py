@@ -527,7 +527,13 @@ if os.environ.get('FANGBANG', '1') != '0':
     # 决定 1：westext-seal-wall 一律剔除（方浜中路向西南外围 L0 继续延伸，封墙堵路）；
     #   山门以西 3 店（168/170/171）只在与全域任何对象（layout 实体 footprint、庙轴模块碰撞盒）都
     #   不相交时才放，相交则剔除并逐件记录。庙轴记录同平移即全域庙区包围盒（山门锚逐位一致）。
-    FB_EXCLUDE_ALWAYS = {'westext-seal-wall'}
+    FB_EXCLUDE_ALWAYS = {'westext-seal-wall', 'eastext-seal-wall'}
+    FB_EXCLUDE_REASON = {
+        'westext-seal-wall': 'west seal wall removed: 方浜中路 continues west as L0 outer road; a seal wall would block it',
+        # wave5-fangbangqa F-03：东端「样段端墙，非历史」（v7 review-manifest eastExtension.endWall），11.2×3.4 m 近黑平板；
+        # layout 方浜中路 road-238219464 越过它继续向东到 x≈362 —— 与决定 1 同一情形
+        'eastext-seal-wall': 'east end wall removed (wave5 F-03, same rule as lead decision 1): v7 sample end wall, not historical; layout 方浜中路 road-238219464 continues east past it to x≈362',
+    }
     FB_CHECK_IDS = ['westshop-shop-168', 'westshop-shop-170', 'westshop-shop-171']
     SOLID_KINDS = {'outerBuilding', 'bazaarBlock', 'tower', 'hall', 'xuan', 'pavilion', 'waterside',
                    'stage', 'wall', 'corridor', 'watersideGallery', 'moonGateWall', 'wallHead'}
@@ -598,8 +604,8 @@ if os.environ.get('FANGBANG', '1') != '0':
     fb_temple_boxes = [obb_aabb(r) for r in fb_col if r['name'].split(':')[0] in fb_temple_ids]
     OFF_MAP = (53.5, -17.4)
     fb_excluded_ids = set(FB_EXCLUDE_ALWAYS)
-    for eid in FB_EXCLUDE_ALWAYS:
-        fangbang_excluded.append({'id': eid, 'decision': 'lead-1', 'reason': 'west seal wall removed: 方浜中路 continues west as L0 outer road; a seal wall would block it'})
+    for eid in sorted(FB_EXCLUDE_ALWAYS):
+        fangbang_excluded.append({'id': eid, 'decision': 'lead-1' if eid == 'westext-seal-wall' else 'wave5-F03', 'reason': FB_EXCLUDE_REASON[eid]})
     for sid in FB_CHECK_IDS:
         lo, hi = inst_aabb(sid)
         hits = []
