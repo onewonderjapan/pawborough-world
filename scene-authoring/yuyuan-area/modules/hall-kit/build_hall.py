@@ -559,7 +559,15 @@ if XS_MODE:
 else:
     # 歇山：主控构件全套（下檐腰檐 + 上段两坡 + 山花博风 + 正脊戗脊）
     xi = DEFAULTS['xieshan']
-    prm = {'over': OVER, 'qiao': QIAO, 'chu': xi['chu'], 'reach': xi['reach'],
+    # 小屋面起翘 / 出翘范围按最短墙线封顶（同 eave_kit.eave_path 的规则：reach ≤ 0.28·最短边，qiao/chu 按 √比例缩），
+    # 否则 3–4 m 的小轩整条檐都在翼角核里、翘成波浪。记 recipe.xieshanScaled。
+    XS_REACH, XS_QIAO, XS_CHU = xi['reach'], QIAO, xi['chu']
+    min_edge = min(2 * HUW, 2 * HVW)
+    if XS_REACH > 0.28 * min_edge:
+        k_ = (0.28 * min_edge / XS_REACH) ** 0.5
+        XS_QIAO, XS_CHU, XS_REACH = QIAO * k_, xi['chu'] * k_, 0.28 * min_edge
+    XIESHAN_SCALED = {'reach': round(XS_REACH, 3), 'qiao': round(XS_QIAO, 3), 'chu': round(XS_CHU, 3)}
+    prm = {'over': OVER, 'qiao': XS_QIAO, 'chu': XS_CHU, 'reach': XS_REACH,
            'breakZ': EAVE_Z + RISE * xi['breakFrac'], 'ridgeZ': RIDGE_Z,
            'breakInset': min(2 * HUW, 2 * HVW) * xi['breakInsetFrac'],
            'gableInset': (2 * HUW) * xi['gableInsetFrac'],
@@ -693,6 +701,7 @@ json.dump({'layoutSource': os.path.relpath(LAYOUT_PATH, AREA),
                     'rule': 'min(layout eave, max(%s, %s*frontWidth+%s))' % (DEFAULTS['smallEaveMin'], DEFAULTS['smallEaveK'], DEFAULTS['smallEaveC'])},
            'rise': {'layout': RISE_LAYOUT, 'used': round(RISE, 3), 'designInference': RISE_INFERRED,
                     'rule': 'clamp(layout rise, (HVW+eaveOver)*tan(%s°), (HVW+eaveOver)*tan(%s°))' % (DEFAULTS['minRoofPitchDeg'], DEFAULTS['maxRoofPitchDeg'])},
+           'xieshanScaled': None if XS_MODE else XIESHAN_SCALED,
            'ornamentScale': {'param': DEFAULTS.get('ornamentScale', 'auto'),
                              'applied': None if XS_MODE else round(eave_kit.ornament_scale(
                                  {'ornamentScale': DEFAULTS.get('ornamentScale', 'auto')}, 2 * HVW), 3),

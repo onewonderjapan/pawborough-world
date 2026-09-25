@@ -340,6 +340,15 @@ def choose_cams(sc, hid):
                     best = (v, ang, pos, tgt)
             if best[0] >= 0.9:
                 break
+        # 斜俯仍被挡（密集园区）：再试更陡的高位机位（高 ×1.6、水平距 ×0.6）
+        if name == 'oblique' and best[0] < 0.6:
+            for ang in (0, 25, -25, 45, -45, 65, -65, 90, -90):
+                ca, sa = math.cos(math.radians(ang)), math.sin(math.radians(ang))
+                rx, rz = rel[0] * ca - rel[2] * sa, rel[0] * sa + rel[2] * ca
+                pos = (cx + rx * 0.6, rel[1] * 1.6, cz + rz * 0.6)
+                v = visible_frac(sc, pos, pts, names)
+                if v > best[0] + 1e-9:
+                    best = (v, 'steep%+d' % ang, pos, tgt0)
         out[name] = (best[2], best[3], lens)
         info[name] = {'visibleFrac': round(best[0], 2), 'rotDeg': best[1], 'pos': [round(c, 2) for c in best[2]]}
     print('CAMS', hid, json.dumps(info), flush=True)
