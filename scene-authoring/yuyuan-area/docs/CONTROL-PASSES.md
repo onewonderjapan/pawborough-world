@@ -151,3 +151,14 @@ cameras json 带 `targetId` 时，逐帧统计取景目标（本体 + `facadeBay
   派生的 `bld-228035340`（outerBuilding，5 m）与它 footprint 重合、包住下层——镜头能看到目标，但目标本身读不出亭。
   这是场景/布局问题，不在本工单范围。
 - ②超广角（18 mm）边缘透视拉伸明显；若要常规焦距，需要机位出广场（越过南侧建筑）或接受只拍局部立面。
+
+## wave3-tourfix（2026-09-25）按默认场景（湖心亭模块 + 20 栋厅堂）重出
+
+- 相机路径未变：`build-control-shots.py` 在新场景上的输出与 R1 `control-shots.json` 逐字节相同（路径只依赖
+  layout / fangbang-route 冻结源）；变的是场景——湖心亭换成站点模块，与它同 footprint 的 `bld-228035340` 不再渲染。
+- `check-control-passes.py` 新增两条：
+  - 终点帧目标像素门槛按镜头加严：`TARGET_END_MIN_BY_SHOT`，③ `jiuqu-to-huxinting` ≥ 10%（其余仍 5%）；
+  - 重复件：layout 里 footprint 覆盖目标 footprint ≥ 50%、高度 > 0 的其他对象，逐帧分割像素占比必须 < 0.1%
+    （R1 渲染上 ③ 24 帧全部报错：`bld-228035340` 露出 7–15%；新场景 0%）。
+- 投影占比：wave3 T1 起 tour-test 与控制层共用裁画框的 `screenAreaFrac`（无选项，只有一种口径）。
+- 已知：③终帧机位离亭形心 22 m、注视 3.5 m 高、35 mm，新模块屋顶高于旧体块，终帧屋脊与宝顶出画（亭身与檐口完整）。
