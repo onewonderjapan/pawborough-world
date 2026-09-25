@@ -41,3 +41,9 @@
   原点（REANCHOR 6.65）不变。三角 22,114 → 18,226，validator 0 错。
 - 放置：`assemble.py` 锚点 = footprint 最小面积外接矩形中心 + 沿 facade.dir 的最小平移，使后墙外皮（`collision.json` rear-wall）不越过共用边线（`src/lib.mjs anchorBehindSharedEdge`）。
 - 管线输入 = `out-garden-kits/sansuitang-bld-428179901/`（`build.py -- --out <该目录>` 生成，按 sha 清单登记）。本目录的 `model.glb` / `model.blend` / `shots/` / `validation.json` / `reimport.json` 仍是 2026-09-23 版（LFS 历史件，未重出）；`collision.json` / `measurements.json` / `recipe.json` 已同步为新版。
+
+## wave4-huxinting2 格扇配色（2026-09-25，主控：格扇偏暗，与厅堂套件统一配色，框料 #6a2e22；几何不变，只改材质）
+- `sst-timber-darkred`：底色直接 = sRGB #6a2e22，不再乘 `wood-stain-color.jpg`（同 hall-kit `hk-timber-darkred` 做法；旧版贴图 × 色的有效底色约 sRGB(26,5,3)，格扇整面读成黑），木纹只走 Wood092 法线图。
+- 格心贴图改为直接读 `modules/hall-kit/textures/lattice-core-alpha.png`（字节相同）。原先本模块自画的同名同尺寸图（棂条 #241d18）在 assemble 按「名 + 尺寸」去重时先导入、胜出，运行时所有厅堂和湖心亭的格心都被压成 #241d18。
+- 17 个图元的位置 / 法线 / UV / 索引与旧版逐一相同（工单包 `artifacts/sansuitang/geom-diff-final.json`）；三角 18,226 不变，GLB 1,479,512 → 1,404,260 B（少一张 wood-stain 贴图）。
+- 检色：`render_facade.py`（hall-kit render_hall.py 同口径：同光照、格扇墙区平均 sRGB，R>G、R>B、V ≥ 0.22，不合格 exit 3），园内眼高 / 导览机位 / 入口眼高。
