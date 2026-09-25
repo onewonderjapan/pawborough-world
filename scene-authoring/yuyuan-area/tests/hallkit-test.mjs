@@ -10,6 +10,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateBytes } from 'gltf-validator';
+import { roofClip } from './hallkit-roofclip.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
@@ -493,6 +494,20 @@ for (const HK_ID of IDS) {
           checked > 0 && worst <= 0.01, `worst=${worst.toFixed(3)} at (${(worstAt || []).map((c) => c.toFixed(2)).join(',')})`);
         row.bracketAboveRoofM = +worst.toFixed(3);
       }
+    }
+    // ---------- 3d) 非屋面构件不穿出屋面（wave4-roofclip）：墙 / 勒脚 / 半窗 / 栏杆 / 格扇 / 柱 / 平座 / 额枋 / 斗拱 / 台基
+    //   任何顶点不高于其正上方屋面瓦面 / 檐底 0.01 m 以上（不在屋面投影下不检）。实现与判定规则见 tests/hallkit-roofclip.mjs
+    //   （只读模块 GLB：覆盖面 = hall-roof 非白墙件的非竖直三角；低于构件底的下层屋面不算；坡面根线 0.2 m 内该片不算）。
+    //   a5c71030 模块产物上失败 13 栋（还云楼二层背墙半窗 +0.643、硬山墙线处柱顶高出瓦面 ≤ +0.095、K1 腰檐环线内收进墙线 +0.944）。
+//   得月楼 / 藏书楼（K1 腰檐）待主控定方案，本断言对这两栋保持失败。
+    {
+      const rc = roofClip(file);
+      const v = rc.violations;
+      ok(`${tag} 非屋面构件不穿出屋面（最大超出 ${rc.worst.toFixed(3)} m ≤ 0.01，受遮挡顶点 ${rc.checked}/${rc.total}）`,
+        rc.checked > 0 && v.length === 0,
+        v.map((r) => `${r.node}(${r.class}) +${r.worst.toFixed(3)} ×${r.count} at (${r.at.map((c) => c.toFixed(2)).join(',')})`).join('; '));
+      row.roofClipWorstM = +rc.worst.toFixed(3);
+      row.roofClipViolations = v.map((r) => ({ node: r.node, class: r.class, maxExcessM: +r.worst.toFixed(3) }));
     }
     // ---------- 3c) 小歇山翼角起翘（wave3 W0）：外接矩形短边 < 5 m 的歇山，檐口角点比檐口直段高出 ≤ 0.35 m（GLB 实测）。
     //   封檐板环（hall-roof__hk-timber-darkred 节点；博风板同材质但在屋脊区、水平上离四角 > 1 m）顶边 = 檐口 lip − tileH；
