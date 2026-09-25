@@ -721,6 +721,38 @@ if os.environ.get('FANGBANG', '1') != '0':
     json.dump(fb_infill_doc, open(os.path.join(OUT, 'fangbang-infill.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     print('fangbang infill placed', len(fangbang_infill), [i['id'] for i in fangbang_infill])
 
+# ---------- 华宝楼站点模块（BAZAAR_TOWERS=1：modules/bazaar-tower-kit 世界坐标 GLB 替代程序化 bazaarBlock） ----------
+# GLB 已在地图坐标（build_tower：export_yup 后 GLB x,z = layout 地图系），锚 empty 名 bld-428202599
+# 位于 footprint 面积形心（GLB 自带；此处按 layout 重算校验）。分区归属 zone-bazaar-2（export-zones）。
+bazaar_tower_placed = 0
+if os.environ.get('BAZAAR_TOWERS') == '1':
+    TW_DIR = os.path.join(ROOT, os.environ.get('BAZAAR_TOWER_DIR', 'out-bazaar-towers/bld-428202599'))
+    tw_glb = os.path.join(TW_DIR, 'model.glb')
+    if not os.path.exists(tw_glb):
+        raise SystemExit('BAZAAR_TOWERS=1 but tower GLB missing: %s (run modules/bazaar-tower-kit/build_tower.py)' % tw_glb)
+    _obj = next(o for o in LAYOUT['objects'] if o['id'] == 'bld-428202599')
+    _fp = _obj['geometry']['footprint']
+    if _fp[0] == _fp[-1]:
+        _fp = _fp[:-1]
+    _a = _cx = _cz = 0.0
+    for _i in range(len(_fp)):
+        _x0, _z0 = _fp[_i]
+        _x1, _z1 = _fp[(_i + 1) % len(_fp)]
+        _cr = _x0 * _z1 - _x1 * _z0
+        _a += _cr
+        _cx += (_x0 + _x1) * _cr
+        _cz += (_z0 + _z1) * _cr
+    _a *= 0.5
+    _acx, _acz = _cx / (6 * _a), _cz / (6 * _a)
+    tw_objs = import_glb(tw_glb, 'SITE-bazaar')
+    tw_anchor = next(o for o in tw_objs if o.type == 'EMPTY' and o.name == 'bld-428202599')
+    _d = math.hypot(tw_anchor.location.x - _acx, tw_anchor.location.y - (-_acz))
+    if _d > 0.1:
+        raise SystemExit('tower anchor off area centroid by %.3f m (layout recompute)' % _d)
+    tw_anchor['module'] = 'bazaar-tower-kit'
+    print('bazaar tower placed', tw_anchor.name, 'centroid', round(_acx, 3), round(_acz, 3), 'anchorDev %.4f' % _d)
+    bazaar_tower_placed = 1
+
 # MODLIB 收藏不导出
 modlib = bpy.data.collections.get('MODLIB')
 
@@ -765,7 +797,7 @@ def export_glb(path, objects):
         bpy.ops.export_scene.gltf(filepath=path, export_format='GLB', export_yup=True, use_selection=True)
     print('exported', path, os.path.getsize(path), 'bytes')
 
-SITE_ALL = [o for c in ('SITE-garden', 'SITE-temple', 'SITE-pond', 'SITE-fangbang')
+SITE_ALL = [o for c in ('SITE-garden', 'SITE-temple', 'SITE-pond', 'SITE-fangbang', 'SITE-bazaar')
             if c in bpy.data.collections for o in bpy.data.collections[c].objects]
 all_objs = [o for c in ('ZONE-garden', 'ZONE-temple', 'ZONE-bazaar', 'ZONE-pond', 'ZONE-outer',
                         'INST-garden', 'INST-temple', 'INST-bazaar', 'INST-outer')
@@ -801,6 +833,7 @@ stats = {
     'sansuitangPlaced': sst_placed,
     'hallKitPlaced': hall_placed,
     'rockeryKitPlaced': rockery_placed,
+    'bazaarTowerPlaced': bazaar_tower_placed,
     'gardenKitPlaced': garden_kit_placed,
     'fangbangPlaced': fangbang_placed,
     'fangbangExcluded': fangbang_excluded,
