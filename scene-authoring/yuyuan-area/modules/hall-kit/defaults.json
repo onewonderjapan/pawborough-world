@@ -113,5 +113,13 @@
       "steps": "front"
     }
   },
-  "railingH": 0.9
+  "railingH": 0.9,
+  "floorSlabT": 0.12,
+  "upperSetback": 1.0,
+  "waistEave": {
+    "over": 0.8,
+    "drop": 0.2,
+    "rootRise": 0.45,
+    "note": "楼的腰檐（eave_kit.eave_skirt），不起翘"
+  }
 }
