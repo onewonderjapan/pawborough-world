@@ -598,12 +598,24 @@ def bays_in(x0, x1):
     return [i for i in range(bay_n) if XS[i] >= x0 - 1e-6 and XS[i + 1] <= x1 + 1e-6]
 
 
+WIN_BAND = {}
+
+
 def build_storey(tg, y0, y1, door_h, off):
     """一层的柱 / 额枋 / 墙 / 半窗 / 格扇 / 栏杆。tg = 名字前缀（'' 底层，'s2-' 二层）；
     y0 = 楼面、y1 = 该层檐下；off = 正立面格扇线后退（二层平座 SETBACK）；前后檐柱始终在墙线分块上。
     墙线分块 FB / BB（共享段凹口，K1）：凹口块为隔墙；块边界加回墙（两层通高，同时封住平座端头）。"""
     global PART
-    wz0, wz1 = y0 + win['sill'], y0 + win['sill'] + win['h']
+    az = y1 - 0.42
+    # 半窗竖向位置按本层墙板定（wave4-roofclip）：窗顶不高于额枋底 − topGapM，窗台不低于楼面 + minSillM，
+    # 放不下 minH 就不开窗。旧版窗台/窗高是离楼面的固定值，层高被小体量檐高上限压矮的楼（还云楼二层净高 1.57 m）
+    # 窗顶高出本层檐高、穿出背坡屋面。层高够的层不受影响。
+    wz1 = min(y0 + win['sill'] + win['h'], az - win['topGapM'])
+    wz0 = max(y0 + win['minSillM'], wz1 - win['h'])
+    WIN_BAND[tg or 'ground'] = [round(wz0, 3), round(wz1, 3)]
+    if wz1 - wz0 < win['minH']:
+        wz0 = wz1 = None
+    wh = (wz1 - wz0) if wz0 is not None else 0.0
     lintel0 = y0 + door_h
     # ---- 柱网 / 额枋（hall-frame）
     PART = 'hall-frame'
@@ -615,7 +627,6 @@ def build_storey(tg, y0, y1, door_h, off):
     for z in ZS_SIDE[2:]:
         for sx in (-1, 1):
             column('%sside-column-%d' % (tg, sx), sx * HUW, z, COL_R, y0, y1)
-    az = y1 - 0.42
     for sd, sg in (('front', 1), ('back', -1)):
         B = blocks(sd)
         for k, (x0, x1, d) in enumerate(B):
@@ -643,14 +654,14 @@ def build_storey(tg, y0, y1, door_h, off):
                 box(tg + 'wall-%s%s' % (sd, sfx), (xc, y0 + (y1 - y0) / 2, zl), (w_, y1 - y0, wt), 'wall', collision=True)
                 if not tg:
                     box('plinth-%s%s' % (sd, sfx), (xc, y0 + ph / 2, zl), (w_ + 0.06, ph, wt + 0.06), 'brick')
-                if md == 'wall' and KCFG.get('backWindows', True):
+                if md == 'wall' and KCFG.get('backWindows', True) and wz0 is not None:
                     for i in bays_in(x0, x1):
                         x = (XS[i] + XS[i + 1]) / 2
-                        box(tg + '%swin-frame-%d' % (sd, i), (x, (wz0 + wz1) / 2, zl), (win['w'], win['h'], wt + 0.08), 'wood')
+                        box(tg + '%swin-frame-%d' % (sd, i), (x, (wz0 + wz1) / 2, zl), (win['w'], wh, wt + 0.08), 'wood')
                         zf = zl + sg * (wt + 0.08) / 2
                         for nm, dz_, mm in (('back', 0.005, 'latback'), ('core', 0.012, 'lattice')):
-                            quad_z(tg + '%swin-%s-%d' % (sd, nm, i), x, (wz0 + wz1) / 2, zf + sg * dz_, win['w'] - 0.12, win['h'] - 0.12, sg, mm)
-                        COLL.append({'name': tg + '%swin-%d' % (sd, i), 'center': [x, (wz0 + wz1) / 2, zl], 'size': [win['w'], win['h'], wt], 'type': 'box'})
+                            quad_z(tg + '%swin-%s-%d' % (sd, nm, i), x, (wz0 + wz1) / 2, zf + sg * dz_, win['w'] - 0.12, wh - 0.12, sg, mm)
+                        COLL.append({'name': tg + '%swin-%d' % (sd, i), 'center': [x, (wz0 + wz1) / 2, zl], 'size': [win['w'], wh, wt], 'type': 'box'})
             elif md == 'lattice':
                 # 门楣墙（整面格扇落地）；格扇在 hall-facade
                 box(tg + 'wall-%s-lintel%s' % (sd, sfx), (xc, (lintel0 + y1) / 2, zl), (w_, y1 - lintel0, wt), 'wall', collision=True)
@@ -672,12 +683,12 @@ def build_storey(tg, y0, y1, door_h, off):
             box(tg + 'wall-gable-%s' % sd[0], (xl, y0 + (y1 - y0) / 2, zc), (wt, y1 - y0, span), 'wall', collision=True)
             if not tg:
                 box('plinth-gable-%s' % sd[0], (xl, y0 + ph / 2, zc), (wt + 0.06, ph, span + 0.06), 'brick')
-            if True:
+            if wz0 is not None:
                 zw = zc + span / 2 * 0.35 - SETBACK / 2
-                box(tg + 'gablewin-frame-%d' % sx, (xl, (wz0 + wz1) / 2, zw), (wt + 0.08, win['h'], win['w']), 'wood')
+                box(tg + 'gablewin-frame-%d' % sx, (xl, (wz0 + wz1) / 2, zw), (wt + 0.08, wh, win['w']), 'wood')
                 for nm, dx_, mm in (('back', 0.005, 'latback'), ('core', 0.012, 'lattice')):
                     quad_x(tg + 'gablewin-%s-%d' % (nm, sx), sx * (HUW + (wt + 0.08) / 2 + dx_), (wz0 + wz1) / 2, zw,
-                           win['w'] - 0.12, win['h'] - 0.12, sx, mm)
+                           win['w'] - 0.12, wh - 0.12, sx, mm)
         elif MODE[sd] == 'railing':
             zs = sorted(ZS_SIDE)
             for i in range(len(zs) - 1):
@@ -1081,6 +1092,7 @@ MEAS = {'id': HALL_ID, 'triangles': tris, 'byNode': by_node, 'glbBytes': os.path
         'sharedSideMode': SEG_MODE,
         'wallBlocks': ({'front': [[round(x0, 3), round(x1, 3), round(d, 3)] for x0, x1, d in FB],
                         'back': [[round(x0, 3), round(x1, 3), round(d, 3)] for x0, x1, d in BB]} if NOTCHED else None),
+        'windowBand': WIN_BAND,
         'storeys': STOREYS, 'storeysIgnored': False,
         'section': ({'storeyH': round(STOREY_H, 3), 'storeyHSource': 'layout height / storeys', 'floor2Z': round(Z1 + SLAB_T, 3),
                      'upperSetback': round(SETBACK, 3), 'upperSetbackInferred': SETBACK_INFERRED, 'doorH1': round(DOOR_H1, 3), 'doorH2': round(DOOR_H2, 3),

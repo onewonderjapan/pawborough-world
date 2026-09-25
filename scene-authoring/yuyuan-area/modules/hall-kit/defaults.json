@@ -35,7 +35,11 @@
  "window": {
   "w": 1.1,
   "h": 1.0,
-  "sill": 1.15
+  "sill": 1.15,
+  "topGapM": 0.06,
+  "minSillM": 0.45,
+  "minH": 0.4,
+  "note": "wave4-roofclip：半窗竖向按本层墙板定——窗顶 ≤ 额枋底（层顶 − 0.42）− topGapM，窗台 ≥ 楼面 + minSillM，净高 < minH 不开窗；层高够时仍是 sill/h 原值"
  },
  "plinthH": 0.75,
  "architraveH": 0.32,
