@@ -12,7 +12,7 @@ blender -b -t 4 --python-exit-code 1 -P modules/hall-kit/build_hall.py -- --id b
 OUT_DIR=out-zone SITE_MODULES=1 STALL_KIT=1 GARDEN_KITS=1 SANSUITANG=1 HALL_KIT=1 ZONE_SPLIT=1 bash scripts/rebuild-review.sh
 ```
 
-接入开关 `HALL_KIT`（**默认关**）：`build-scene.mjs` 让位占位（why=`hall-kit`）、
+接入开关 `HALL_KIT`（**默认开**，2026-09-25 机主「厅堂套件默认开启吧」；`HALL_KIT=0` 关闭）：`build-scene.mjs` 让位占位（why=`hall-kit`）、
 `assemble.py` 实例放置、`export-collision.mjs` 换用模块碰撞记录。只挂了
 `bld-428179902`（`HALL_KIT_IDS`）；批量放行后往该集合加 id 即可。
 
@@ -57,7 +57,7 @@ wave2 B4 起按两层剖面生成（见下「wave2 批量」）。
 
 ## 测试
 
-`tests/hallkit-test.mjs`（`npm test` 链内；HALL_KIT=1 时启用，否则跳过）：锚点位置/朝向、
+`tests/hallkit-test.mjs`（`npm test` 链内；默认启用，HALL_KIT=0 时跳过）：锚点位置/朝向、
 几何平面中心 vs 外接矩形中心、本地系尺寸、validator 0 错、预算、节点数、格心 MASK、
 程序化让位、碰撞世界记录、zone-garden ≤ 12MB——全部从 baseline/layout.json 重算对账。
 

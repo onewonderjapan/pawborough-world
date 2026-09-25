@@ -27,8 +27,8 @@ function ok(name, cond, detail = '') {
 }
 function skip(name, why) { skipped++; console.log('SKIP', name, '-', why); }
 
-if (process.env.HALL_KIT !== '1' || !fs.existsSync(path.join(OUT, 'garden.glb'))) {
-  console.log(`hallkit artefacts not found or HALL_KIT!=1 (OUT_DIR=${OUT}) — skipping`);
+if (process.env.HALL_KIT === '0' || !fs.existsSync(path.join(OUT, 'garden.glb'))) {
+  console.log(`hallkit artefacts not found or HALL_KIT=0 (OUT_DIR=${OUT}) — skipping`);
   process.exit(0);
 }
 // 开关开着却缺某栋模块 GLB = 失败（不静默跳过）

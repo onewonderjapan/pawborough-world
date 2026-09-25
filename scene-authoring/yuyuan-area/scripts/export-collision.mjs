@@ -28,8 +28,8 @@ const rockeryCollision = JSON.parse(fs.readFileSync(path.join(AREA, 'modules', '
 const sansuitangLocal = JSON.parse(fs.readFileSync(path.join(AREA, 'modules', 'sansuitang', 'collision.json'), 'utf8'));
 const templeV3 = JSON.parse(fs.readFileSync(path.join(AREA, 'resources', 'temple-v3', 'collision-world.json'), 'utf8'));
 const sansuitangWorld = JSON.parse(fs.readFileSync(path.join(OUT, 'sansuitang-collision-world.json'), 'utf8'));
-// HALL_KIT=1（默认关）：厅堂套件各栋走模块碰撞记录（与 assemble 的世界记录逐栋互核）；id 列表唯一来源 modules/hall-kit/ids.json
-const HALL_KIT = process.env.HALL_KIT === '1';
+// 厅堂套件（默认开，HALL_KIT=0 关闭）：厅堂套件各栋走模块碰撞记录（与 assemble 的世界记录逐栋互核）；id 列表唯一来源 modules/hall-kit/ids.json
+const HALL_KIT = process.env.HALL_KIT !== '0';
 const HALLKIT_IDS = HALL_KIT ? JSON.parse(fs.readFileSync(path.join(AREA, 'modules', 'hall-kit', 'ids.json'), 'utf8')).ids : [];
 const HALLKIT_SET = new Set(HALLKIT_IDS);
 const HALLKIT_DEFAULTS = JSON.parse(fs.readFileSync(path.join(AREA, 'modules', 'hall-kit', 'defaults.json'), 'utf8'));

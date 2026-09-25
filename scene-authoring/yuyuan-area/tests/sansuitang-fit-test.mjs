@@ -1,5 +1,5 @@
 // 三穗堂 × 仰山堂 贴合闸门（wave2-sansuitang S2，主控 2026-09-25 第三版定义）。只量总装产物 OUT_DIR/garden.glb 的实际几何，
-// footprint 只从 baseline/layout.json 取；默认构建（仰山堂 = 程序化占位）与 HALL_KIT=1（仰山堂 = hall-kit 模块）都适用。
+// footprint 只从 baseline/layout.json 取；默认构建（仰山堂 = hall-kit 模块）与 HALL_KIT=0（仰山堂 = 程序化占位）都适用。
 //   G1 三穗堂任何网格件的任何三角形都不越过「共用边线」北侧 0.02 m 以上
 //      （共用边 = 三穗堂 footprint 上两端点都落在仰山堂 footprint 边界上的边；线 = 过其两端点的直线，不截断）；
 //   G2 自由边外伸按边分上限（主控 2026-09-25）：立面一侧 ≤ 2.7 m（踏步、前檐），其余两条自由边 ≤ 2.0 m。
@@ -8,7 +8,7 @@
 //      外伸量 = 顶点到 footprint 的距离，按所属链的上限判；不对踏步单独开例外。
 //   R  与仰山堂网格的剩余三角形相交只报告不判失败（仰山堂一侧由 hall-kit 工单处理），
 //      另报仰山堂网格越过共用边线进入三穗堂一侧的深度（程序化占位台基外扩 0.45 m 为已知项）。
-// 用法：OUT_DIR=out-zone [HALL_KIT=1] node tests/sansuitang-fit-test.mjs（REPORT=<json> 另写报告）
+// 用法：OUT_DIR=out-zone [HALL_KIT=0] node tests/sansuitang-fit-test.mjs（REPORT=<json> 另写报告）
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';

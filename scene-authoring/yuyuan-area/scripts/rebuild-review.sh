@@ -11,8 +11,8 @@ if [ -d staged/site-modules ]; then
 fi
 # The input snapshot and accepted source modules remain read-only.
 python3 -X utf8 scripts/repair-layout.py
-# HALL_KIT=1: 厅堂套件逐栋从 layout 字段重生成（id 列表唯一来源 modules/hall-kit/ids.json），再由 assemble 实例放置
-if [ "${HALL_KIT:-0}" = "1" ]; then
+# 厅堂套件（默认开，HALL_KIT=0 关闭）：逐栋从 layout 字段重生成（id 列表唯一来源 modules/hall-kit/ids.json），再由 assemble 实例放置
+if [ "${HALL_KIT:-1}" != "0" ]; then
   for hk_id in $(node -e "console.log(JSON.parse(require('fs').readFileSync('modules/hall-kit/ids.json','utf8')).ids.join(' '))"); do
     blender -b -t 4 --python-exit-code 1 -P modules/hall-kit/build_hall.py -- --id "$hk_id"
   done

@@ -388,12 +388,12 @@ if os.environ.get('SANSUITANG') == '1':
         print('sansuitang collision world boxes:', len(world_boxes))
     print('sansuitang placed', sst_placed)
 
-# ---------- 厅堂套件（HALL_KIT=1，默认关：modules/hall-kit 生成器件替代程序化厅/轩/榭/台/楼；id 列表唯一来源 modules/hall-kit/ids.json） ----------
+# ---------- 厅堂套件（默认开，2026-09-25 机主定；HALL_KIT=0 关闭：modules/hall-kit 生成器件替代程序化厅/轩/榭/台/楼；id 列表唯一来源 modules/hall-kit/ids.json） ----------
 # 位置 = footprint 多边形面积形心（GOAL 冻结公式），朝向 = modules/hall-kit/frame.py（与生成器同一份：
 # footprint 外接矩形上外法线最接近 facade.dir 的一边）。collision.json（实例坐标）同 sansuitang 契约变换出世界记录。
 hall_placed = 0
 hall_world_records = []
-if os.environ.get('HALL_KIT') == '1':
+if os.environ.get('HALL_KIT', '1') != '0':
     sys.path.insert(0, os.path.join(ROOT, 'modules', 'hall-kit'))
     import frame as hk_frame
     HK_DEFAULTS = json.load(open(os.path.join(ROOT, 'modules', 'hall-kit', 'defaults.json'), encoding='utf-8'))
