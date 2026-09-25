@@ -68,7 +68,10 @@ D = dict(
               ornamentScale=0.42),
     porch=dict(uHalf=2.2, depth=2.2, wallTop=3.05, zEave=3.00, breakZ=3.60, ridgeZ=4.60, drop=0.45,
                over=0.8, chu=0.18, qiao=0.45, reach=1.2, breakInset=0.5, gableInset=0.9,
-               tileH=0.15, boardH=0.25, rings=6, ridgeEndLift=0.2, ornamentScale='auto'),   # auto: 进深 2.45 → 夹到 0.35
+               tileH=0.15, boardH=0.25, rings=6, ridgeEndLift=0.2,
+               # 'auto'（进深 2.45 -> 夹到 0.35）过线，但正脊只有 1.6 m 长，吻起翘 0.38 占满全长，
+               # 九曲桥眼高看仍是两只「猫耳」；给实测定值 0.25：吻起翘 0.27、中段约 0.35 m 平脊。
+               ornamentScale=0.25),
     tower=dict(half=2.1, over=0.9, zEave=9.65, apex=11.40, finialTop=12.0, drop=0.55, tileH=0.16, boardH=0.26,
                chu=0.2, qiao=0.6, reach=1.4, curve=1.5, rings=6,
                skirt1=dict(z=3.85, over=0.7), skirt2=dict(z=6.75, over=0.7)),
@@ -94,7 +97,8 @@ PALETTE = {
     'ht-stone-deck':    dict(rgb=(0.230, 0.225, 0.210), rough=0.90),
     'ht-stone-pile':    dict(rgb=(0.150, 0.147, 0.140), rough=0.92),
     'ht-gold':          dict(rgb=(0.820, 0.620, 0.230), rough=0.35, metal=0.9),
-    'ht-win-dark':      dict(rgb=(0.020, 0.012, 0.010), rough=0.80),  # 格心长窗底 + 匾额空板
+    'ht-win-dark':      dict(rgb=(0.020, 0.012, 0.010), rough=0.80),  # 匾额空板
+    'ht-win-glass':     dict(rgb=srgb('8e9396'), rough=0.40),          # R1 格心后的窗玻璃（浅灰，衬出深色格心）
 }
 
 # ---------------------------------------------------------------- 场景/材质 ----
@@ -115,6 +119,34 @@ def mat_new(name):
 
 MATS_ALL = {k: mat_new(k) for k in PALETTE}
 
+# R1 格心：复用 hall-kit 的格心 alpha 贴图（同名同尺寸 160×160，assemble / export-zones 按「名称+尺寸」去重合并），
+# 不另画。材质做法同 hall-kit hk-lattice-core：贴图 Color->Base Color、Alpha->Alpha，导出后改 MASK / cutoff 0.5。
+LATTICE_PNG = AREA / 'modules' / 'hall-kit' / 'textures' / 'lattice-core-alpha.png'
+LATTICE_CELL_M = 0.125                         # hall-kit cellM：1 UV = 1 m = 8 格
+
+def lattice_material():
+    img = bpy.data.images.load(str(LATTICE_PNG), check_existing=False)
+    img.name = 'lattice-core-alpha'
+    img.pack()
+    m = bpy.data.materials.new('ht-lattice-core')
+    m.use_nodes = True
+    nodes, links = m.node_tree.nodes, m.node_tree.links
+    p = nodes.get('Principled BSDF')
+    p.inputs['Roughness'].default_value = 0.7
+    p.inputs['Metallic'].default_value = 0
+    t = nodes.new('ShaderNodeTexImage')
+    t.image = img
+    t.extension = 'REPEAT'
+    links.new(t.outputs['Color'], p.inputs['Base Color'])
+    links.new(t.outputs['Alpha'], p.inputs['Alpha'])
+    try:
+        m.blend_method = 'CLIP'
+    except AttributeError:
+        pass
+    return m
+
+MATS_ALL['ht-lattice-core'] = lattice_material()
+
 def world(u, v, h):
     """本地 (u,v,h) -> 地图 (x,z) -> Blender (x,-z,h)。"""
     return (CX + u * UX + v * VX, -(CZ + u * UZ + v * VZ), h)
@@ -133,6 +165,16 @@ def mesh_obj(name, verts, faces, mat, part):
     SC.collection.objects.link(ob)
     PART_STATS[part] = PART_STATS.get(part, 0) + sum(max(0, len(f) - 2) for f in faces)
     NGON[part] = NGON.get(part, 0) + 1
+    return ob
+
+def mesh_obj_uv(name, verts, faces, uvs, mat, part):
+    """同 mesh_obj，另按顶点写 UV（uvs 与 verts 一一对应）。"""
+    ob = mesh_obj(name, verts, faces, mat, part)
+    me = ob.data
+    uv = me.uv_layers.new(name='UVMap')
+    for poly in me.polygons:
+        for li in poly.loop_indices:
+            uv.data[li].uv = uvs[me.loops[li].vertex_index]
     return ob
 
 def add_local(name, items, faces, material, part):
@@ -248,11 +290,92 @@ def railing(prefix, u0, v0, u1, v1, z0, z1, skip=None):
 railing('ht__r1', gu0, gv0, gu1, gv1, PLATFORM_Y + 0.05, PLATFORM_Y + D['railH'],
         skip=(2, gu1 - 3.2, gu1 + 3.2))          # 抱厦占用段（|u|≤3.2）
 
-def win_row(prefix, ua, va, ub, vb, z0, z1, skip=None):
-    """沿 (ua,va)->(ub,vb) 带的格心长窗（外法线 = 带方向左法线 (-dv,dx)，调用方向已按外向排）。
-    skip=(s0,s1) 让段（沿带参数，米）。"""
-    L = math.hypot(ub - ua, vb - va)
-    dx, dv = (ub - ua) / L, (vb - va) / L
+# ---------------------------------------------------------------- 格心窗（R1）----
+# round-0 是「暗色窗底 + 3 根竖棂」，远看一根根竖条。R1：每开间分 2 扇格扇，每扇 = 边梃 2 + 上下抹头 + 中抹头
+# （框料几何，深红木）+ 格心面（hall-kit 格心 alpha 贴图，UV 以米计）+ 下段夹堂 / 裙板（木板）；格心后衬浅灰窗玻璃。
+# 同组全部窗合并成 frame / lattice / glass 三个网格（少节点、少 draw call）。
+WIN = dict(frame=0.06, depth=0.09, latO=0.045, glassO=0.01, panelO=0.03, leafW=0.62)
+WINBUF = {}
+
+def _wbuf(group, kind):
+    return WINBUF.setdefault((group, kind), dict(verts=[], faces=[], uvs=[]))
+
+def _quad(buf, pts, want, uvs=None):
+    """局部 (u,v,h) 四点面；按期望法线 want 自动定绕序（局部 -> Blender 行列式 +1，朝向保持）。"""
+    a, b, c = pts[0], pts[1], pts[2]
+    e1 = (b[0] - a[0], b[1] - a[1], b[2] - a[2])
+    e2 = (c[0] - b[0], c[1] - b[1], c[2] - b[2])
+    n = (e1[1] * e2[2] - e1[2] * e2[1], e1[2] * e2[0] - e1[0] * e2[2], e1[0] * e2[1] - e1[1] * e2[0])
+    uvs = list(uvs) if uvs else [(0.0, 0.0)] * 4
+    if n[0] * want[0] + n[1] * want[1] + n[2] * want[2] < 0:
+        pts, uvs = pts[::-1], uvs[::-1]
+    base = len(buf['verts'])
+    buf['verts'].extend(world(*q) for q in pts)
+    buf['uvs'].extend(uvs)
+    buf['faces'].append([base, base + 1, base + 2, base + 3])
+
+class Band:
+    """窗带局部系：原点 (ua,va)，d = 带方向，n = 外法线（d 的左法线，同 round-0 约定）。"""
+    def __init__(self, ua, va, ub, vb):
+        self.L = math.hypot(ub - ua, vb - va)
+        self.o = (ua, va)
+        self.d = ((ub - ua) / self.L, (vb - va) / self.L)
+        self.n = (-self.d[1], self.d[0])
+
+    def P(self, s, o, z):
+        return (self.o[0] + self.d[0] * s + self.n[0] * o, self.o[1] + self.d[1] * s + self.n[1] * o, z)
+
+    def box(self, buf, s0, s1, o0, o1, z0, z1, sides):
+        P, d, n = self.P, self.d, self.n
+        F = {'front': ([P(s0, o1, z0), P(s1, o1, z0), P(s1, o1, z1), P(s0, o1, z1)], (n[0], n[1], 0)),
+             'back': ([P(s0, o0, z0), P(s1, o0, z0), P(s1, o0, z1), P(s0, o0, z1)], (-n[0], -n[1], 0)),
+             'top': ([P(s0, o0, z1), P(s1, o0, z1), P(s1, o1, z1), P(s0, o1, z1)], (0, 0, 1)),
+             'bottom': ([P(s0, o0, z0), P(s1, o0, z0), P(s1, o1, z0), P(s0, o1, z0)], (0, 0, -1)),
+             'left': ([P(s0, o0, z0), P(s0, o1, z0), P(s0, o1, z1), P(s0, o0, z1)], (-d[0], -d[1], 0)),
+             'right': ([P(s1, o0, z0), P(s1, o1, z0), P(s1, o1, z1), P(s1, o0, z1)], (d[0], d[1], 0))}
+        for k in sides:
+            _quad(buf, *F[k])
+
+    def plane(self, buf, s0, s1, o, z0, z1, facing, uv_m=False):
+        pts = [self.P(s0, o, z0), self.P(s1, o, z0), self.P(s1, o, z1), self.P(s0, o, z1)]
+        uvs = [(s0, z0), (s1, z0), (s1, z1), (s0, z1)] if uv_m else None     # 1 UV = 1 m（格心 8 格 / 米）
+        want = (self.n[0] * facing, self.n[1] * facing, 0)
+        _quad(buf, pts, want, uvs)
+
+def leaf(band, group, s0, s1, z0, z1, kind='half', two_sided=False):
+    """一扇格扇。kind='half'：半窗（下段矮夹堂板 0.16）；'door'：长窗 / 门（下 40% 裙板）。"""
+    fb, D_, lo = WIN['frame'], WIN['depth'], WIN['latO']
+    fr, lat = _wbuf(group, 'frame'), _wbuf(group, 'lattice')
+    side3 = ('front', 'left', 'right') + (('back',) if two_sided else ())
+    band.box(fr, s0, s0 + fb, 0, D_, z0, z1, side3 + ('top',))                  # 边梃
+    band.box(fr, s1 - fb, s1, 0, D_, z0, z1, side3 + ('top',))
+    rail = ('front', 'top', 'bottom') + (('back',) if two_sided else ())
+    band.box(fr, s0 + fb, s1 - fb, 0, D_, z1 - fb, z1, rail)                    # 上抹头
+    band.box(fr, s0 + fb, s1 - fb, 0, D_, z0, z0 + fb, rail)                    # 下抹头
+    zm = z0 + fb + (0.16 if kind == 'half' else 0.40 * (z1 - z0 - 2 * fb))
+    band.box(fr, s0 + fb, s1 - fb, 0, D_, zm, zm + fb * 0.8, rail)              # 中抹头
+    band.plane(fr, s0 + fb, s1 - fb, WIN['panelO'], z0 + fb, zm, +1)            # 夹堂 / 裙板
+    if two_sided:
+        band.plane(fr, s0 + fb, s1 - fb, WIN['panelO'], z0 + fb, zm, -1)
+    band.plane(lat, s0 + fb, s1 - fb, lo, zm + fb * 0.8, z1 - fb, +1, uv_m=True)  # 格心
+    if two_sided:
+        band.plane(lat, s0 + fb, s1 - fb, lo - 0.002, zm + fb * 0.8, z1 - fb, -1, uv_m=True)
+
+def lattice_bay(band, group, a0, a1, z0, z1, kind='half', two_sided=False):
+    """一个开间 [a0,a1]：分若干扇 + 一块窗玻璃衬底。"""
+    n = max(1, int(round((a1 - a0) / WIN['leafW'])))
+    for k in range(n):
+        leaf(band, group, a0 + (a1 - a0) * k / n, a0 + (a1 - a0) * (k + 1) / n, z0, z1, kind, two_sided)
+    gl = _wbuf(group, 'glass')
+    band.plane(gl, a0, a1, WIN['glassO'], z0, z1, +1)
+    if two_sided:
+        band.plane(gl, a0, a1, WIN['glassO'] - 0.002, z0, z1, -1)
+
+def win_row(prefix, ua, va, ub, vb, z0, z1, skip=None, group='main', two_sided=False):
+    """沿 (ua,va)->(ub,vb) 带的格心窗（外法线 = 带方向左法线 (-dv,dx)，调用方向已按外向排）。
+    skip=(s0,s1) 让段（沿带参数，米）。开间划分同 round-0（≈1.55 m 一间，两侧各留 0.14）。"""
+    band = Band(ua, va, ub, vb)
+    L = band.L
     if skip:
         if skip[0] <= 0.1 and skip[1] >= L - 0.1:
             return
@@ -260,7 +383,6 @@ def win_row(prefix, ua, va, ub, vb, z0, z1, skip=None):
                 ([(skip[1], L)] if skip[0] <= 0.1 else [(0.0, skip[0])])
     else:
         spans = [(0.0, L)]
-    idx = 0
     for s0, s1 in spans:
         if s1 - s0 < 0.6:
             continue
@@ -270,21 +392,19 @@ def win_row(prefix, ua, va, ub, vb, z0, z1, skip=None):
             a1 = s0 + (s1 - s0) * (k + 1) / nb - 0.14
             if a1 - a0 < 0.35:
                 continue
-            wu0, wv0 = ua + dx * a0, va + dv * a0
-            wu1, wv1 = ua + dx * a1, va + dv * a1
-            ou, ov = -dv, dx                  # 外法线
-            wu1o, wv1o = wu1 + ou * 0.09, wv1 + ov * 0.09
-            if abs(dx) > abs(dv):
-                box_uv('%s-%d-%d' % (prefix, idx, k), min(wu0, wu1), min(wv0, wv1o), max(wu0, wu1), max(wv0, wv1o), z0, z1, 'ht-win-dark', 'windows')
-                for m in range(3):
-                    mu = wu0 + (wu1 - wu0) * (m + 1) / 4
-                    box_uv('%s-m%d-%d-%d' % (prefix, idx, k, m), mu - 0.025, min(wv0, wv1o) - 0.02, mu + 0.025, max(wv0, wv1o) + 0.02, z0, z1, 'ht-wood-red', 'windows')
-            else:
-                box_uv('%s-%d-%d' % (prefix, idx, k), min(wu0, wu1o), min(wv0, wv1), max(wu0, wu1o), max(wv0, wv1), z0, z1, 'ht-win-dark', 'windows')
-                for m in range(3):
-                    mv = wv0 + (wv1 - wv0) * (m + 1) / 4
-                    box_uv('%s-m%d-%d-%d' % (prefix, idx, k, m), min(wu0, wu1o) - 0.02, mv - 0.025, max(wu0, wu1o) + 0.02, mv + 0.025, z0, z1, 'ht-wood-red', 'windows')
-        idx += 1
+            lattice_bay(band, group, a0, a1, z0, z1, 'half', two_sided)
+
+def flush_windows():
+    part_of = {'main': 'windows', 'tower': 'tower', 'porch': 'porch'}
+    mat_of = {'frame': 'ht-wood-red', 'lattice': 'ht-lattice-core', 'glass': 'ht-win-glass'}
+    for (group, kind), buf in sorted(WINBUF.items()):
+        if not buf['faces']:
+            continue
+        name = 'huxin-ting__win-%s-%s' % (group, kind)
+        if kind == 'lattice':                  # 只有格心面带 UV（框料 / 玻璃无贴图，不导出多余 TEXCOORD）
+            mesh_obj_uv(name, buf['verts'], buf['faces'], buf['uvs'], mat_of[kind], part_of[group])
+        else:
+            mesh_obj(name, buf['verts'], buf['faces'], mat_of[kind], part_of[group])
 
 W1A, W1B = D['win1']
 W2A, W2B = D['win2']
@@ -312,12 +432,14 @@ for i, u in enumerate((-PU + 0.1, -0.75, 0.75, PU - 0.1)):
 box_uv('ht__pwall-w', -PU, V0, -PU + 0.18, V0 + PD, PLATFORM_Y, PT, 'ht-wood-red', 'porch')
 box_uv('ht__pwall-e', PU - 0.18, V0, PU, V0 + PD, PLATFORM_Y, PT, 'ht-wood-red', 'porch')
 # 门开在主楼 +v 墙面（抱厦正后方），暗色门扇 + 木框
-box_uv('ht__pdoor', -1.15, V0 - 0.10, 1.15, V0 + 0.14, PLATFORM_Y + 0.08, PLATFORM_Y + 2.25, 'ht-win-dark', 'porch')
+# 门：4 扇长窗（下 40% 裙板、上格心），门框 pframe 不变
+lattice_bay(Band(-1.15, V0 + 0.03, 1.15, V0 + 0.03), 'porch', 0.0, 2.30, PLATFORM_Y + 0.02, PLATFORM_Y + 2.25, 'door')
 box_uv('ht__pframe-l', -1.35, V0 - 0.12, -1.15, V0 + 0.16, PLATFORM_Y, PLATFORM_Y + 2.45, 'ht-wood-red', 'porch')
 box_uv('ht__pframe-r', 1.15, V0 - 0.12, 1.35, V0 + 0.16, PLATFORM_Y, PLATFORM_Y + 2.45, 'ht-wood-red', 'porch')
 box_uv('ht__pframe-t', -1.35, V0 - 0.12, 1.35, V0 + 0.16, PLATFORM_Y + 2.25, PLATFORM_Y + 2.45, 'ht-wood-red', 'porch')
-win_row('ht__pwin-w', -PU + 0.30, V0 + PD - 0.05, -0.30, V0 + PD - 0.05, PLATFORM_Y + 0.95, PLATFORM_Y + 2.40)
-win_row('ht__pwin-e', 0.30, V0 + PD - 0.05, PU - 0.30, V0 + PD - 0.05, PLATFORM_Y + 0.95, PLATFORM_Y + 2.40)
+# 抱厦前檐窗：前面无墙，窗扇悬在柱间，做双面（从抱厦里看也有框、格心、玻璃）
+win_row('ht__pwin-w', -PU + 0.30, V0 + PD - 0.05, -0.30, V0 + PD - 0.05, PLATFORM_Y + 0.95, PLATFORM_Y + 2.40, group='porch', two_sided=True)
+win_row('ht__pwin-e', 0.30, V0 + PD - 0.05, PU - 0.30, V0 + PD - 0.05, PLATFORM_Y + 0.95, PLATFORM_Y + 2.40, group='porch', two_sided=True)
 PQ = D['plaque']
 box_uv('ht__plaque', -PQ['w'] / 2, V0 + PD - 0.34, PQ['w'] / 2, V0 + PD - 0.28, PQ['z0'], PQ['z0'] + PQ['h'], 'ht-win-dark', 'porch')
 box_uv('ht__plaque-t', -PQ['w'] / 2 - 0.06, V0 + PD - 0.35, PQ['w'] / 2 + 0.06, V0 + PD - 0.27, PQ['z0'] + PQ['h'], PQ['z0'] + PQ['h'] + 0.06, 'ht-wood-red', 'porch')
@@ -333,11 +455,11 @@ for ti, (z0, z1) in enumerate(tiers):
     prism('tower%d' % ti, [(TU0 + 0.12, TV0 + 0.12), (TU1 - 0.12, TV0 + 0.12), (TU1 - 0.12, TV1 - 0.12), (TU0 + 0.12, TV1 - 0.12)],
           z0, z1, 'ht-wood-red', 'tower')
     wa, wb = z0 + 1.0, z1 - 0.55
-    win_row('ht__tw%d-s' % ti, TU1 - 0.2, TV0 + 0.06, TU0 + 0.2, TV0 + 0.06, wa, wb)
-    win_row('ht__tw%d-n' % ti, TU0 + 0.2, TV1 - 0.06, TU1 - 0.2, TV1 - 0.06, wa, wb)
-    win_row('ht__tw%d-e' % ti, TU1 - 0.06, TV1 - 0.2, TU1 - 0.06, TV0 + 0.2, wa, wb)
+    win_row('ht__tw%d-s' % ti, TU1 - 0.2, TV0 + 0.06, TU0 + 0.2, TV0 + 0.06, wa, wb, group='tower')
+    win_row('ht__tw%d-n' % ti, TU0 + 0.2, TV1 - 0.06, TU1 - 0.2, TV1 - 0.06, wa, wb, group='tower')
+    win_row('ht__tw%d-e' % ti, TU1 - 0.06, TV1 - 0.2, TU1 - 0.06, TV0 + 0.2, wa, wb, group='tower')
     if ti > 0:
-        win_row('ht__tw%d-w' % ti, TU0 + 0.06, TV0 + 0.2, TU0 + 0.06, TV1 - 0.2, wa, wb)
+        win_row('ht__tw%d-w' % ti, TU0 + 0.06, TV0 + 0.2, TU0 + 0.06, TV1 - 0.2, wa, wb, group='tower')
 for si, sk in enumerate((tw['skirt1'], tw['skirt2'])):
     eave_kit.eave_skirt('towerskirt%d' % si,
                         [(TU0 - 0.05, TV0 - 0.05), (TU1 + 0.05, TV0 - 0.05), (TU1 + 0.05, TV1 + 0.05), (TU0 - 0.05, TV1 + 0.05)],
@@ -365,10 +487,29 @@ eave_kit.xieshan_roof('porchroof', (-PU, PU, V0 - 0.25, V0 + PD), po['zEave'],
                            drop=po['drop'], tileH=po['tileH'], boardH=po['boardH'], curve=1.6, rings=po['rings'],
                            ridgeEndLift=po['ridgeEndLift'], ornamentScale=po['ornamentScale']), 'porch')
 
+flush_windows()
+
 # ---------------------------------------------------------------- 导出 + 记录 ----
 for ob in bpy.data.objects:
     ob.select_set(ob.name.startswith('huxin-ting__'))
 bpy.ops.export_scene.gltf(filepath=str(OUT_GLB), export_format='GLB', export_yup=True, use_selection=True)
+
+# 格心材质导出兜底为 MASK + cutoff 0.5（Blender 4.5 会写成 BLEND；同 hall-kit build_hall.py）
+buf = bytearray(open(OUT_GLB, 'rb').read())
+jl = int.from_bytes(buf[12:16], 'little')
+gj = json.loads(bytes(buf[20:20 + jl]))
+bl_off = 20 + jl
+bl = int.from_bytes(buf[bl_off:bl_off + 4], 'little')
+bindata = bytes(buf[bl_off + 8:bl_off + 8 + bl])
+for mm in gj.get('materials', []):
+    if mm.get('name') == 'ht-lattice-core':
+        mm['alphaMode'] = 'MASK'
+        mm['alphaCutoff'] = 0.5
+nj = json.dumps(gj, separators=(',', ':')).encode()
+nj += b' ' * ((-len(nj)) % 4)
+open(OUT_GLB, 'wb').write(b'glTF' + (2).to_bytes(4, 'little') + (12 + 8 + len(nj) + 8 + bl).to_bytes(4, 'little')
+                          + len(nj).to_bytes(4, 'little') + b'JSON' + nj
+                          + bl.to_bytes(4, 'little') + b'BIN\x00' + bindata)
 print('exported', OUT_GLB, os.path.getsize(OUT_GLB), 'bytes')
 
 tris = sum(PART_STATS.values())

@@ -440,5 +440,60 @@ const isWood = (m) => !m.pbrMetallicRoughness.baseColorTexture &&
   ok(`拉伸体 ${solids.length} 件全部有朝上顶面（缺顶 ${open.length}）`, solids.length > 100 && open.length === 0, open.slice(0, 4).join(','));
 }
 
+// ---------------- 8) R1-3 格心窗：框料几何 + 复用 hall-kit 格心 alpha 贴图 ----------------
+{
+  const LAT_SRC = path.join(ROOT, 'modules', 'hall-kit', 'textures', 'lattice-core-alpha.png');
+  const srcBuf = fs.readFileSync(LAT_SRC);
+  const pngSize = (b) => [b.readUInt32BE(16), b.readUInt32BE(20)];
+  const texMats = gltf.materials.filter((m) => m.pbrMetallicRoughness?.baseColorTexture);
+  const latMat = texMats.find((m) => /lattice/.test(m.name));
+  ok(`格心材质存在（带贴图材质：${texMats.map((m) => m.name).join(',') || '无'}）`, !!latMat);
+  if (latMat) {
+    ok(`格心材质 alphaMode MASK / cutoff 0.5（实测 ${latMat.alphaMode}/${latMat.alphaCutoff}）`, latMat.alphaMode === 'MASK' && latMat.alphaCutoff === 0.5);
+    const img = gltf.images[gltf.textures[latMat.pbrMetallicRoughness.baseColorTexture.index].source];
+    const bv = gltf.bufferViews[img.bufferView];
+    const ib = bin.subarray(bv.byteOffset || 0, (bv.byteOffset || 0) + bv.byteLength);
+    const [w, h] = pngSize(ib), [sw, sh] = pngSize(srcBuf);
+    // assemble / export-zones 按「名称去 .NNN + 尺寸」合并贴图：同名同尺寸才能与仰山堂 / 三穗堂的格心图合并
+    ok(`格心贴图与 hall-kit 同名同尺寸（name ${img.name} ${img.mimeType} ${w}×${h}，源 lattice-core-alpha ${sw}×${sh}）`,
+      img.name === 'lattice-core-alpha' && img.mimeType === 'image/png' && w === sw && h === sh);
+    const sha = (b) => crypto.createHash('sha256').update(b).digest('hex');
+    ok('格心贴图字节 = modules/hall-kit/textures/lattice-core-alpha.png（复用，不另画）', sha(ib) === sha(srcBuf));
+    ok(`GLB 只含这 1 张贴图（实测 ${(gltf.images || []).length}）`, (gltf.images || []).length === 1);
+    // 格心面：有 UV，1 UV = 1 m（hall-kit cellM 0.125 = 8 格 / 米）
+    let area = 0, worst = 0, noUv = 0, prims = 0;
+    for (const n of gltf.nodes) {
+      if (n.mesh === undefined) continue;
+      for (const prim of gltf.meshes[n.mesh].primitives) {
+        if (gltf.materials[prim.material] !== latMat) continue;
+        prims++;
+        if (prim.attributes.TEXCOORD_0 === undefined) { noUv++; continue; }
+        const P = accessor(prim.attributes.POSITION), T = accessor(prim.attributes.TEXCOORD_0), I = accessor(prim.indices);
+        for (let i = 0; i < I.length; i += 3) {
+          const [a, b, c] = [I[i], I[i + 1], I[i + 2]];
+          for (const [x, y] of [[a, b], [b, c], [c, a]]) {
+            const dw = Math.hypot(P[x][0] - P[y][0], P[x][1] - P[y][1], P[x][2] - P[y][2]);
+            const du = Math.hypot(T[x][0] - T[y][0], T[x][1] - T[y][1]);
+            if (dw > 0.05) worst = Math.max(worst, Math.abs(du / dw - 1));
+          }
+          const e1 = P[b].map((v, k) => v - P[a][k]), e2 = P[c].map((v, k) => v - P[a][k]);
+          area += 0.5 * Math.hypot(e1[1] * e2[2] - e1[2] * e2[1], e1[2] * e2[0] - e1[0] * e2[2], e1[0] * e2[1] - e1[1] * e2[0]);
+        }
+      }
+    }
+    ok(`格心面 UV 每米 1 周期（8 格 / 米），最大偏差 ${(worst * 100).toFixed(1)}% ≤ 2%（图元 ${prims}，无 UV ${noUv}）`, prims > 0 && noUv === 0 && worst <= 0.02);
+    ok(`格心总面积 ${area.toFixed(1)} m² ≥ 40（主楼两层 + 塔亭三层 + 抱厦窗门）`, area >= 40);
+  }
+  const frames = allParts.filter((n) => /__win-.*-frame$/.test(n));
+  const frameTris = frames.reduce((s, n) => s + parts.get(n).tris.length, 0);
+  const frameMats = [...new Set(frames.flatMap(matsOfPart))];
+  ok(`格扇框料几何 ${frames.length} 件 / ${frameTris} 三角，材质 = sRGB #6a2e22（${frameMats.map((m) => m.name).join(',') || '无'}）`,
+    frames.length >= 3 && frameTris >= 1000 && frameMats.length > 0 && frameMats.every(isWood));
+  // round-0 做法「暗色窗底 + 3 根竖棂」不得残留
+  const strips = allParts.filter((n) => /-m\d+-\d+-\d+$/.test(n));
+  const darkWin = allParts.filter((n) => /__(w1|w2|tw\d|pwin|pdoor)/.test(n));
+  ok(`无竖条窗残留（竖棂件 ${strips.length}、旧暗色窗底件 ${darkWin.length}）`, strips.length === 0 && darkWin.length === 0);
+}
+
 console.log(`RESULT pass=${pass} fail=${fail} skipped=${skipped}`);
 if (fail) { console.log('FAILURES:', failures.join(' | ')); process.exit(1); }

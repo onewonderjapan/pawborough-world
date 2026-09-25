@@ -1,20 +1,20 @@
 {
  "id": "huxin-ting",
  "glb": "out-zone/huxin-ting.glb",
- "bytes": 704976,
- "tris": 8564,
+ "bytes": 760192,
+ "tris": 11252,
  "partTriCounts": {
   "deck": 12,
   "piles": 240,
   "body1": 36,
   "gallery1": 264,
   "railing": 1920,
-  "windows": 2640,
   "body2": 24,
-  "porch": 1002,
-  "tower": 1276,
+  "porch": 1360,
+  "tower": 3828,
   "finial": 260,
-  "roof": 890
+  "roof": 890,
+  "windows": 2418
  },
  "partObjectCounts": {
   "deck": 1,
@@ -22,11 +22,11 @@
   "body1": 3,
   "gallery1": 22,
   "railing": 160,
-  "windows": 220,
   "body2": 2,
-  "porch": 33,
-  "tower": 15,
-  "roof": 19
+  "porch": 35,
+  "tower": 18,
+  "roof": 19,
+  "windows": 3
  },
  "frame": {
   "centroid": [
@@ -106,7 +106,7 @@
    "boardH": 0.25,
    "rings": 6,
    "ridgeEndLift": 0.2,
-   "ornamentScale": "auto"
+   "ornamentScale": 0.25
   },
   "tower": {
    "half": 2.1,
@@ -191,6 +191,11 @@
    0.02,
    0.012,
    0.01
+  ],
+  "ht-win-glass": [
+   0.2704977910130658,
+   0.29177064981753587,
+   0.3049873140698863
   ]
  },
  "eaveKit": "modules/shared/eave_kit.py (lead-owned, read-only)"
