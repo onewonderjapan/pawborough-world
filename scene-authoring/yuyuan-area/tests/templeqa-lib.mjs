@@ -430,7 +430,7 @@ export function triTri(t, u) {
 }
 
 // 两组世界三角（已按实例放置）互穿统计：3D 网格加速
-export function crossIntersect(TA, TB, cell = 1.0) {
+export function crossIntersect(TA, TB, cell = 1.0, { minY = -Infinity } = {}) {
   const g = new Map();
   for (const [i, t] of TB.entries()) {
     for (let x = Math.floor(t.min[0] / cell); x <= Math.floor(t.max[0] / cell); x++)
@@ -455,6 +455,8 @@ export function crossIntersect(TA, TB, cell = 1.0) {
       if (t.max[0] < u.min[0] || u.max[0] < t.min[0] || t.max[1] < u.min[1] || u.max[1] < t.min[1] || t.max[2] < u.min[2] || u.max[2] < t.min[2]) continue;
       const r = triTri(t, u);
       if (!r) continue;
+      if (!r.coplanar && r.p[1] < minY) continue;       // 地面以下 / 贴地的交线（台基、地坪入土）不计
+      if (r.coplanar && Math.max(t.max[1], u.max[1]) < minY) continue;
       const k = t.node + ' × ' + u.node;
       const rec = pairs.get(k) || { pair: k, crossings: 0, lenM: 0, coplanarTris: 0, min: [Infinity, Infinity, Infinity], max: [-Infinity, -Infinity, -Infinity] };
       if (r.coplanar) { rec.coplanarTris++; cop++; }
