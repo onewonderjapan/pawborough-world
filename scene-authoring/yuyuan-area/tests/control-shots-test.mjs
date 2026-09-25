@@ -4,16 +4,16 @@
 // 在 scripts/check-control-passes.py —— 它依赖渲染输出，渲染前运行即失败（missing shots 已验证）。
 // 断言：
 //  1) 三个镜头、每镜头 24 帧，eye/target 数组长度一致；
-//  2) 眼高：①②=1.6 m（GOAL 规定），③=桥面 0.55+1.6=2.15 m；
+//  2) ①眼高 1.6 m；②眼高 1.6 m；③机位 ≥ 桥面 0.55 + 1.6 m（R1 升高机位）；
 //  3) ①机位逐帧落在 fangbang-route mainStreet 折线上（≤0.05 m），末点=山门接点（layout instance
-//     temple-shanmen 锚），行进方向整体向西（x 单调不增）；
+//     temple-shanmen 锚），行进方向整体向西（x 单调不增）；①路径 R1 不变；
 //  4) ①注视点不与机位重合（无退化朝向），且末帧注视点沿行进方向外推（在山门以西）；
-//  5) ②机位在中心广场（plaza-428199199）footprint 内、距华宝楼（bld-428202599）形心 22–34 m，
-//     注视点半径 20 m、注视高度 4 m，24 帧环绕 360°（首末注视方位角差 ≈ 360°）；
-//  6) ③机位逐帧落在 jiuqu-bridge polyline 上，末点为折线上最靠近湖心亭（huxin-ting）形心的点，
-//     末 1/3 帧注视点收敛到湖心亭形心方向；
+//  5) ②机位逐帧在中心广场（plaza-428199199）footprint 内，镜头 json 带 lensMm；
+//  6) ③从桥头起步、一路走近湖心亭（≥5 m，逐帧离亭距离不回升），注视点锁定 huxin-ting 形心；
 //  7) 全部坐标在场景地面范围内；
-//  R1-1) 每个镜头声明取景目标 targetId（①山门 temple-shanmen、②华宝楼 bld-428202599、③湖心亭 huxin-ting）。
+//  R1-1) 每个镜头声明取景目标 targetId（①山门 temple-shanmen、②华宝楼 bld-428202599、③湖心亭 huxin-ting）；
+//  R1-2) 逐关键帧可见性（tour-test R1 同一套）+ ②弧线/整楼入画 + ③桥面/15–25 m/桥栏不挡画面下 1/3（详见该段注释）。
+// 华宝楼塔楼变体：BAZAAR_TOWERS=1 OUT_DIR=out-zone-towers node tests/control-shots-test.mjs（目标高取套件参数）。
 // 用法：OUT_DIR=out-zone node tests/control-shots-test.mjs
 import fs from 'node:fs';
 import path from 'node:path';
@@ -102,44 +102,23 @@ for (const s of doc.shots) {
   }
 }
 
-// ② 华宝楼前广场环视
+// ② 华宝楼前广场弧线环视（R1 契约：几何部分；可见性 / 弧线 / 整楼入画在下方 R1-2）
 {
   const s = byId['habao-plaza-pan'];
   const plaza = objById('plaza-428199199');
-  const habao = layout.objects.find(o => o.name === '华宝楼' && o.kind === 'bazaarBlock');
-  check(!!s && !!plaza && !!habao, '缺 habao-plaza-pan 或 layout 对象（中心广场/华宝楼）');
-  if (s && plaza && habao) {
-    const fp = habao.geometry.footprint;
-    const closed_fp = fp[0][0] === fp[fp.length - 1][0] && fp[0][1] === fp[fp.length - 1][1] ? fp : [...fp, fp[0]];
-    const c = centroid(closed_fp);
-    // 与推导同构：前街边（street=中心广场 最长边）中点
-    const front = habao.frontEdges.filter(e => e.street === '中心广场').reduce((a, b) => (b.lenM > (a?.lenM ?? 0) ? b : a), null);
-    check(!!front, '②华宝楼缺中心广场 frontEdge');
-    const m = front ? [(front.edge[0][0] + front.edge[1][0]) / 2, (front.edge[0][1] + front.edge[1][1]) / 2] : c;
-    const pos = s.eye[0];
-    check(pointInPoly([pos[0], pos[2]], plaza.geometry.footprint), '②机位不在中心广场 footprint 内');
-    const pf = plaza.geometry.footprint;
-    const plazaC = [pf.reduce((a, q) => a + q[0], 0) / pf.length, pf.reduce((a, q) => a + q[1], 0) / pf.length];  // 与脚本同：算术平均
-    check(dist2d([pos[0], pos[2]], plazaC) <= 2, `②机位不在中心广场形心 2 m 内（偏差 ${dist2d([pos[0], pos[2]], plazaC).toFixed(1)} m）`);
-    check(s.eye.every(p => dist2d([p[0], p[2]], [pos[0], pos[2]]) < 1e-6), '②环视机位应定点');
+  check(!!s && !!plaza, '缺 habao-plaza-pan 或 layout 中心广场');
+  if (s && plaza) {
+    s.eye.forEach((p, k) => check(pointInPoly([p[0], p[2]], plaza.geometry.footprint), `②第 ${k} 帧机位不在中心广场 footprint 内`));
     check(s.eye.every(p => Math.abs(p[1] - 1.6) < 1e-9), '②眼高 != 1.6 m');
-    check(s.target.every(t => Math.abs(t[1] - 1.6) < 1e-9), '②注视高度 != 眼高 1.6 m（水平注视）');
-    const panR = dist2d([s.target[0][0], s.target[0][2]], [pos[0], pos[2]]);
-    check(Math.abs(panR - 20) < 0.5, `②注视半径 ${panR.toFixed(1)} m != 20`);
-    const yaw = (t) => Math.atan2(t[0] - pos[0], t[2] - pos[2]);
-    const y0 = yaw(s.target[0]);
-    const sweep = s.target.slice(1).reduce((acc, t) => {
-      let dy = yaw(t) - acc.prev;
-      while (dy > Math.PI) dy -= 2 * Math.PI;
-      while (dy < -Math.PI) dy += 2 * Math.PI;
-      return { prev: acc.prev + dy, total: acc.total + dy };
-    }, { prev: y0, total: 0 }).total;
-    check(Math.abs(Math.abs(sweep) - 2 * Math.PI * 23 / 24) < 0.05, `②环视总转角 ${Math.abs(sweep).toFixed(2)} rad 偏离 23×15°`);
-    check(dist2d([s.target[0][0], s.target[0][2]], m) < 4, '②首帧注视点未朝向前街边中点方向');
+    for (let k = 0; k < s.frames; k++) {
+      const d = dist2d([s.eye[k][0], s.eye[k][2]], [s.target[k][0], s.target[k][2]]);
+      check(d > 1, `②第 ${k} 帧注视点距机位 ${d.toFixed(2)} m ≤ 1（退化朝向）`);
+    }
+    check(typeof s.lensMm === 'number' && s.lensMm > 0, '②缺 lensMm（弧线整楼取景的焦距必须写进镜头 json）');
   }
 }
 
-// ③ 九曲桥走向湖心亭
+// ③ 九曲桥走向湖心亭（R1 契约：几何部分；桥面 / 终点距离 / 桥栏遮挡在下方 R1-2）
 {
   const s = byId['jiuqu-to-huxinting'];
   const bridge = objById('jiuqu-bridge');
@@ -148,35 +127,19 @@ for (const s of doc.shots) {
   if (s && bridge && huxin) {
     const pl = bridge.geometry.polyline;
     const c = centroid(huxin.geometry.footprint);
-    check(s.eye.every(p => Math.abs(p[1] - 2.15) < 1e-9), '③眼高 != 桥面0.55+1.6=2.15 m');
-    let maxOff = 0;
-    for (const p of s.eye) maxOff = Math.max(maxOff, distToPolyline([p[0], p[2]], pl));
-    check(maxOff <= 0.05, `③机位偏离九曲桥折线 ${maxOff.toFixed(3)} m > 0.05`);
-    const last = s.eye[s.eye.length - 1];
-    let best = 0, bd = Infinity;
-    const edgeDist = (p, poly) => {
-      let best = Infinity;
-      for (let i = 0; i < poly.length; i++) {
-        const a = poly[i], b = poly[(i + 1) % poly.length];
-        const abx = b[0] - a[0], abz = b[1] - a[1];
-        const t = Math.max(0, Math.min(1, ((p[0] - a[0]) * abx + (p[1] - a[1]) * abz) / (abx * abx + abz * abz + 1e-12)));
-        best = Math.min(best, Math.hypot(p[0] - a[0] - abx * t, p[1] - a[1] - abz * t));
-      }
-      return best;
-    };
-    pl.forEach((p, i) => { const d = edgeDist(p, huxin.geometry.footprint); if (d < bd) { bd = d; best = i; } });
-    while (best > 0 && edgeDist(pl[best], huxin.geometry.footprint) < 16) best--;   // 同推导：停步点离轮廓 ≥16 m
-    check(dist2d([last[0], last[2]], pl[best]) < 1e-6, '③末点不是折线上最靠近湖心亭轮廓的点');
-    check(edgeDist([last[0], last[2]], huxin.geometry.footprint) >= 16, '③停步点离湖心亭轮廓 < 16 m（怼脸/进亭）');
+    const deck = bridge.deckY ?? 0.55;
+    check(s.eye.every(p => p[1] >= deck + 1.6), `③机位低于桥面眼高 ${deck + 1.6} m`);
+    check(dist2d([s.eye[0][0], s.eye[0][2]], pl[0]) <= 3, `③起点离桥头 ${dist2d([s.eye[0][0], s.eye[0][2]], pl[0]).toFixed(1)} m > 3（应从桥头起步）`);
+    const dists = s.eye.map(p => dist2d([p[0], p[2]], c));
+    let rise = 0;
+    for (let k = 1; k < dists.length; k++) rise = Math.max(rise, dists[k] - dists[k - 1]);
+    check(dists[0] - dists[dists.length - 1] >= 5, `③走近湖心亭仅 ${(dists[0] - dists[dists.length - 1]).toFixed(1)} m < 5`);
+    check(rise <= 0.3, `③逐帧离亭距离回升 ${rise.toFixed(2)} m > 0.3（应一路走近）`);
     for (let k = 0; k < s.frames; k++) {
       const d = dist2d([s.eye[k][0], s.eye[k][2]], [s.target[k][0], s.target[k][2]]);
       check(d > 1, `③第 ${k} 帧注视点距机位 ${d.toFixed(2)} m ≤ 1（退化朝向）`);
+      check(dist2d([s.target[k][0], s.target[k][2]], c) <= 0.5, `③第 ${k} 帧注视点离湖心亭形心 ${dist2d([s.target[k][0], s.target[k][2]], c).toFixed(2)} m > 0.5（未锁定目标）`);
     }
-    const mid = s.target[15], end = s.target[s.frames - 1];
-    const dEnd = dist2d([end[0], end[2]], c);
-    const dMid = dist2d([mid[0], mid[2]], c);
-    check(dEnd < dMid, '③末段注视点未向湖心亭形心收敛');
-    check(dEnd < 2, `③末帧注视点距湖心亭形心 ${dEnd.toFixed(1)} m > 2`);
   }
 }
 

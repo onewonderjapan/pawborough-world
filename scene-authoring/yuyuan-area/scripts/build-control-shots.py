@@ -21,10 +21,14 @@
 
 镜头：
   ① fangbang-westbound   方浜中路沿街西行到城隍庙山门（fangbang-route mainStreet，山门锚 = layout instance temple-shanmen）
-  ② habao-plaza-pan      商城华宝楼前广场（中心广场）定点 360° 环视（华宝楼 = layout 华宝楼 bazaarBlock）
-  ③ jiuqu-to-huxinting   九曲桥上走向湖心亭（layout jiuqu-bridge polyline -> huxin-ting 形心，桥面 0.55 m + 眼高 1.6 m）
+  ② habao-plaza-pan      商城华宝楼前中心广场沿弧线环视（R1：绕楼包围盒中心 R=40 m、30° 弧、18 mm 逐帧整楼入画；
+                         BAZAAR_TOWERS=1 时目标高取华宝楼套件参数 24.3 m，注视点随之上移；弧线机位两变体相同）
+  ③ jiuqu-to-huxinting   九曲桥上走向湖心亭（R1：layout jiuqu-bridge 中线滑动平均切角、机位高 4.0 m、35 mm、
+                         注视锁定 huxin-ting 形心，停步离亭形心 22 m）
+  每个镜头带 targetId（取景目标）与可选 lensMm（焦距，缺省 50 mm）；可见性断言见 tests/control-shots-test.mjs R1-2。
 
 用法：python3 scripts/build-control-shots.py [--out-zone out-zone] [--frames 24]
+      BAZAAR_TOWERS=1 python3 scripts/build-control-shots.py --out-zone out-zone-towers   # 华宝楼塔楼变体
 """
 import argparse
 import json
@@ -38,9 +42,18 @@ EYE = 1.6            # GOAL 规定眼高
 DECK = 0.55          # 九曲桥 deckY（build-scene buildZigzagBridge 默认 0.55，site kit 同值）
 FANGBANG_WALK_M = 190.0   # 镜头① 行走弧长（24 帧 x ~8 m/帧）
 LOOK_AHEAD_M = 8.0        # 行走镜头注视点前视距离（九曲桥 6 m）
-PAN_DIST_M = 20.0         # 环视注视点半径
-PAN_TARGET_H = 5.0        # 环视注视点高度（13.6 m 四层楼的下半段）
-HUXIN_LOOK_H = 5.0        # 结尾看向湖心亭的注视高度（两层楼，楼下水上各留余量）
+# 镜头② R1：沿弧线环视（取值依据见 main() 镜头②注释；可见性由 tests/control-shots-test.mjs R1-2 断言）
+HB_LENS_MM = 18.0         # 焦距（36 mm 横幅传感器）：水平 fov 90°
+HB_ARC_R = 40.0           # 弧半径（圆心 = 华宝楼 footprint 包围盒中心）
+HB_ARC_A0 = 6.0           # 起始方位角（度；0 = 正南 -z，正 = 东）
+HB_ARC_A1 = -24.0         # 终止方位角（西南，30° 弧）
+# 镜头③ R1：升高机位 + 切角横移
+JQ_CAM_Y = 4.0            # 机位绝对高（桥面 0.55 + 3.45 m）
+JQ_LENS_MM = 35.0
+JQ_END_DIST = 22.0        # 停步点离湖心亭形心（GOAL 15–25 m）
+JQ_AIM_Y = 3.5            # 注视湖心亭形心高度
+JQ_SMOOTH_M = 2.5         # 中线滑动平均半窗（弧长，m）
+JQ_MAX_OFF = 0.8          # 离中线上限（桥栏内侧 0.89 m）
 
 
 def load_json(path):
@@ -105,6 +118,45 @@ def centroid(poly):
     return [sum(p[0] for p in poly) / n, sum(p[1] for p in poly) / n]
 
 
+def poly_centroid(poly):
+    """面积形心（与 src/lib.mjs centroid 同式；闭合重复点先去掉）。"""
+    if poly[0] == poly[-1]:
+        poly = poly[:-1]
+    a = cx = cz = 0.0
+    for i in range(len(poly)):
+        x1, z1 = poly[i]
+        x2, z2 = poly[(i + 1) % len(poly)]
+        f = x1 * z2 - x2 * z1
+        a += f
+        cx += (x1 + x2) * f
+        cz += (z1 + z2) * f
+    a *= 0.5
+    return [cx / (6 * a), cz / (6 * a)]
+
+
+def nearest_on_polyline(p, pts):
+    best, bd = None, 1e18
+    for a, b in zip(pts, pts[1:]):
+        abx, abz = b[0] - a[0], b[1] - a[1]
+        t = max(0.0, min(1.0, ((p[0] - a[0]) * abx + (p[1] - a[1]) * abz) / (abx * abx + abz * abz + 1e-12)))
+        q = [a[0] + abx * t, a[1] + abz * t]
+        d = math.dist(p, q)
+        if d < bd:
+            best, bd = q, d
+    return best, bd
+
+
+def frame_aim(eye, pts, dist):
+    """注视点 = 目标角点的方位角中点 + 仰角中点方向上、距离 dist 处（让整组角点居中入画）。"""
+    az = [math.atan2(q[0] - eye[0], q[2] - eye[2]) for q in pts]
+    az0 = az[0]
+    az = [az0 + math.atan2(math.sin(v - az0), math.cos(v - az0)) for v in az]   # 以首点为基准展开，防 ±π 跳变
+    el = [math.atan2(q[1] - eye[1], math.hypot(q[0] - eye[0], q[2] - eye[2])) for q in pts]
+    ya = (min(az) + max(az)) / 2
+    ea = (min(el) + max(el)) / 2
+    return [eye[0] + math.sin(ya) * dist, eye[1] + math.tan(ea) * dist, eye[2] + math.cos(ya) * dist]
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--out-zone', default=os.environ.get('OUT_DIR', 'out-zone'))
@@ -163,84 +215,70 @@ def main():
     if math.dist(walk[-1], shanmen) > 15:
         errors.append('镜头①末点离山门锚 %.1f m > 12' % math.dist(walk[-1], shanmen))
 
-    # ---------- 镜头② 华宝楼前广场环视 ----------
+    # ---------- 镜头② 华宝楼前广场弧线环视（R1） ----------
+    # 中心广场是围合院落：楼前进深只有 ~25 m，而华宝楼临广场立面 44 m 宽（塔楼变体角亭宝顶 24.3 m）。
+    # 眼高 1.6 m 在广场内要「整座楼入画」只能用超广角：实测 24 mm 只有 R=43 m、16° 的弧能整楼（塔楼变体 0 帧），
+    # 18 mm 在 R=40 m、30° 弧上两个变体逐帧整楼入画且离碰撞盒 ≥2.3 m。机位沿以楼包围盒中心为圆心的弧线
+    # 从东南（方位 +6°）移到西南（-24°），逐帧注视点 = 楼 footprint 棱柱角点的角度中点（整楼居中）。
     habao = next(o for o in layout['objects'] if o.get('name') == '华宝楼' and o['kind'] == 'bazaarBlock')
     hb_fp = habao['geometry']['footprint']
     if hb_fp[0] == hb_fp[-1]:
         hb_fp = hb_fp[:-1]
-    hc = centroid(hb_fp)
     plaza = objs['plaza-428199199']['geometry']['footprint']   # 中心广场（贴华宝楼南立面）
-    pc = centroid(plaza)
-    # 机位 = 前街边（frontEdges 中 street=中心广场的最长边）中点沿外法线外推 D m（广场内）；
-    # 注视半径 = D - 3（注视点悬在立面前 3 m），注视高度 5 m。避免"机位贴立面、注视点穿楼"。
-    front = None
-    for e in habao.get('frontEdges', []):
-        if e.get('street') == '中心广场' and (front is None or e['lenM'] > front['lenM']):
-            front = e
-    if front is not None:
-        (ax, az), (bx, bz) = front['edge'][0], front['edge'][1]
-        mx, mz = (ax + bx) / 2, (az + bz) / 2
-    else:
-        mx, mz = hc[0], hc[1]
-    # 机位 = 中心广场形心（围合院落中心，环视各向距离最均衡；形心落在多边形外则回退到
-    # 前街边法线搜索），起始正对华宝楼前街边中点，360° 水平环视。
-    pos = pc if point_in_poly(pc, plaza) else None
-    if pos is None:
-        nd = math.hypot(*front['dir'])
-        nx, nz = front['dir'][0] / nd, front['dir'][1] / nd
-        for D in range(26, 13, -1):
-            p = [mx + nx * D, mz + nz * D]
-            if point_in_poly(p, plaza):
-                pos = p
-                break
-    if pos is None:
-        errors.append('镜头②未能在中心广场内找到环视机位')
-        pos = pc
-    pan_r = PAN_DIST_M
-    yaw0 = math.atan2(mx - pos[0], mz - pos[1])                # 起始正对华宝楼前街边中点
+    hb_h = habao['height']
+    hb_variant = 'procedural bazaarBlock (layout height)'
+    if os.environ.get('BAZAAR_TOWERS') == '1':
+        tp = load_json(os.path.join(ROOT, 'modules', 'bazaar-tower-kit', 'params', 'huabao-%s.json' % habao['id']))
+        hb_h = max(tp['roof']['ridgeHeightM'], tp['pavilion']['finial']['topM'])
+        hb_variant = 'BAZAAR_TOWERS=1 bazaar-tower-kit（max(roof.ridgeHeightM, pavilion.finial.topM)）'
+    xs = [q[0] for q in hb_fp]
+    zs = [q[1] for q in hb_fp]
+    pivot = [(min(xs) + max(xs)) / 2, (min(zs) + max(zs)) / 2]   # 与可见性测试的目标包围盒中心同
+    prism = [[q[0], y, q[1]] for q in hb_fp for y in (0.0, hb_h)]
     hb_eye, hb_tgt = [], []
     for k in range(N):
-        yaw = yaw0 + 2 * math.pi * k / N                        # 360° 环视
-        t = [pos[0] + pan_r * math.sin(yaw), pos[1] + pan_r * math.cos(yaw)]
-        hb_eye.append([pos[0], EYE, pos[1]])
-        hb_tgt.append([t[0], EYE, t[1]])   # 水平注视：环视半圈是广场/街景，仰视会扫成天空
+        a = math.radians(HB_ARC_A0 + (HB_ARC_A1 - HB_ARC_A0) * k / (N - 1))
+        p = [pivot[0] + HB_ARC_R * math.sin(a), pivot[1] - HB_ARC_R * math.cos(a)]
+        if not point_in_poly(p, plaza):
+            errors.append('镜头②第 %d 帧机位 (%.1f, %.1f) 出了中心广场' % (k, p[0], p[1]))
+        eye = [p[0], EYE, p[1]]
+        hb_eye.append(eye)
+        hb_tgt.append(frame_aim(eye, prism, math.dist(p, pivot)))
 
-    # ---------- 镜头③ 九曲桥走向湖心亭 ----------
+    # ---------- 镜头③ 九曲桥走向湖心亭（R1） ----------
+    # 升高机位 + 切角横移：机位高 4.0 m（桥面 0.55 + 3.45，升降杆/云台高举），桥栏柱头尖顶 1.78 m
+    # 落在视线下方、不再占住画面下 1/3；路径 = 桥中线按弧长 ±2.5 m 滑动平均（折角处自然切到内侧，
+    # 离中线 ≤0.8 m，桥栏内侧 0.89 m），从桥头走到离湖心亭形心 22 m 处停（GOAL 15–25 m）；
+    # 注视点全程锁定湖心亭形心、高 3.5 m（亭身中部），35 mm。
     jp = objs['jiuqu-bridge']['geometry']['polyline']
     hx = objs['huxin-ting']['geometry']['footprint']
-    hxc = centroid(hx)
+    hxc = poly_centroid(hx)
     jacc = polyline_arc(jp)
-
-    def edge_dist(p):
-        """点到 footprint 轮廓边的最近距离（走向亭子边缘，不走进亭子里）。"""
-        best = 1e9
-        for a, b in zip(hx, hx[1:]):
-            ax, az = a[0], a[1]
-            bx, bz = b[0], b[1]
-            abx, abz = bx - ax, bz - az
-            t = max(0.0, min(1.0, ((p[0] - ax) * abx + (p[1] - az) * abz) / (abx * abx + abz * abz + 1e-12)))
-            best = min(best, math.dist(p, [ax + abx * t, az + abz * t]))
-        return best
-
-    end_i = min(range(len(jp)), key=lambda i: edge_dist(jp[i]))
-    while end_i > 0 and edge_dist(jp[end_i]) < 16.0:         # 停步点离亭子轮廓 ≥16 m（15 m 宽的亭子要全亭入画）
-        end_i -= 1
-    s_end = jacc[end_i]
-    jw = resample(jp, N, 0.0, s_end)
-    jq_eye, jq_tgt = [], []
-    eye_h = DECK + EYE
-    for k, p in enumerate(jw):
-        s = s_end * k / (N - 1)
-        la = point_at(jp, jacc, s + 6.0)             # 末端沿桥向外推
-        w = max(0.0, (k - (N - 7)) / 6.0)                       # 末 6 帧注视点平滑转向湖心亭
-        w = w * w * (3 - 2 * w)
-        tx = la[0] * (1 - w) + hxc[0] * w
-        tz = la[1] * (1 - w) + hxc[1] * w
-        th = eye_h * (1 - w) + HUXIN_LOOK_H * w
-        jq_eye.append([p[0], eye_h, p[1]])
-        jq_tgt.append([tx, th, tz])
-    if math.dist(jw[-1], hxc) > 25:
-        errors.append('镜头③末点离湖心亭形心 %.1f m > 25' % math.dist(jw[-1], hxc))
+    step = 0.1
+    dense_s = [i * step for i in range(int(jacc[-1] / step) + 1)]
+    dense = [point_at(jp, jacc, t) for t in dense_s]
+    win = int(JQ_SMOOTH_M / step)
+    smooth = []
+    for i in range(len(dense)):
+        lo, hi = max(0, i - win), min(len(dense), i + win + 1)
+        q = [sum(d[0] for d in dense[lo:hi]) / (hi - lo), sum(d[1] for d in dense[lo:hi]) / (hi - lo)]
+        # 夹回桥面：离中线 > JQ_MAX_OFF 时沿最近点方向拉回
+        near, nd = nearest_on_polyline(q, jp)
+        if nd > JQ_MAX_OFF:
+            q = [near[0] + (q[0] - near[0]) * JQ_MAX_OFF / nd, near[1] + (q[1] - near[1]) * JQ_MAX_OFF / nd]
+        smooth.append(q)
+    end_i = next((i for i, q in enumerate(smooth) if math.dist(q, hxc) <= JQ_END_DIST), None)
+    if end_i is None:
+        errors.append('镜头③桥上找不到离湖心亭形心 %.0f m 的停步点' % JQ_END_DIST)
+        end_i = len(smooth) - 1
+    walk = smooth[:end_i + 1]
+    wacc = polyline_arc(walk)
+    jw = resample(walk, N, 0.0, wacc[-1])
+    jq_eye = [[p[0], JQ_CAM_Y, p[1]] for p in jw]
+    jq_tgt = [[hxc[0], JQ_AIM_Y, hxc[1]] for _ in jw]
+    d_end = math.dist(jw[-1], hxc)
+    if not 15.0 <= d_end <= 25.0:
+        errors.append('镜头③终点离湖心亭形心 %.1f m 不在 15–25' % d_end)
 
     if not any(r.get('pass') for r in commercial.get('routes', [])):
         errors.append('commercial-route.json 无 pass 路线（校验源数据异常）')
@@ -256,7 +294,8 @@ def main():
             'fangbangRoute': os.path.relpath(os.path.join(oz, 'fangbang-route.json'), ROOT),
             'commercialRoute': os.path.relpath(os.path.join(oz, 'commercial-route.json'), ROOT),
             'shanmenJunctionIdx': sj,
-            'jiuquEndIdx': end_i,
+            'jiuquEndCentrelineArcM': round(dense_s[end_i], 2),
+            'habaoTargetHeight': hb_variant,
         },
         'shots': [
             {'id': 'fangbang-westbound',
@@ -264,12 +303,14 @@ def main():
              'targetId': shanmen_id, 'targetName': '城隍庙山门',
              'frames': N, 'eye': fb_eye, 'target': fb_tgt},
             {'id': 'habao-plaza-pan',
-             'description': '商城华宝楼前中心广场定点 360° 环视（起始正对华宝楼，注视半径 %.0f m 高 %.0f m）' % (PAN_DIST_M, PAN_TARGET_H),
-             'targetId': habao['id'], 'targetName': '华宝楼',
+             'description': '商城华宝楼前中心广场沿弧线环视：机位绕楼包围盒中心 R=%.0f m、方位 %+.0f°→%+.0f°（东南→西南，%.0f° 弧），眼高 1.6 m，%.0f mm 超广角逐帧整楼居中（目标高 %.1f m：%s）' % (HB_ARC_R, HB_ARC_A0, HB_ARC_A1, abs(HB_ARC_A1 - HB_ARC_A0), HB_LENS_MM, hb_h, hb_variant),
+             'targetId': habao['id'], 'targetName': '华宝楼', 'targetHeightM': hb_h,
+             'lensMm': HB_LENS_MM,
              'frames': N, 'eye': hb_eye, 'target': hb_tgt},
             {'id': 'jiuqu-to-huxinting',
-             'description': '九曲桥上走向湖心亭（桥面 0.55 m + 眼高 1.6 m，停步亭轮廓 16 m 外全亭入画，末 6 帧注视点转向湖心亭）',
+             'description': '九曲桥上走向湖心亭：桥中线 ±%.1f m 滑动平均切角（离中线 ≤%.1f m），机位高 %.1f m（桥面 0.55 + %.2f），注视锁定湖心亭形心 %.1f m 高，%.0f mm，停步离亭形心 %.1f m' % (JQ_SMOOTH_M, JQ_MAX_OFF, JQ_CAM_Y, JQ_CAM_Y - DECK, JQ_AIM_Y, JQ_LENS_MM, d_end),
              'targetId': 'huxin-ting', 'targetName': '湖心亭',
+             'lensMm': JQ_LENS_MM,
              'frames': N, 'eye': jq_eye, 'target': jq_tgt},
         ],
     }
@@ -284,9 +325,10 @@ def main():
     print('control-shots.json:', ', '.join('%s x%d' % (s['id'], s['frames']) for s in doc['shots']))
     print('  shanmen junction idx', sj, '(%0.1f, %0.1f)' % (ms[sj][0], ms[sj][1]),
           '| E-W corner idx', corner, '| walk %.0f m' % (s_stop - s0))
-    print('  habao cam (%0.2f, %0.2f) pan-r %.1f m inside-plaza %s'
-          % (pos[0], pos[1], pan_r, point_in_poly(pos, plaza)))
-    print('  jiuqu end idx', end_i, 'arc %.1f m -> huxin (%0.2f, %0.2f)' % (s_end, hxc[0], hxc[1]))
+    print('  habao arc R %.1f m az %+.0f..%+.0f deg lens %.0f mm, target height %.1f m (%s), eye0 (%0.2f, %0.2f) eye23 (%0.2f, %0.2f)'
+          % (HB_ARC_R, HB_ARC_A0, HB_ARC_A1, HB_LENS_MM, hb_h, hb_variant, hb_eye[0][0], hb_eye[0][2], hb_eye[-1][0], hb_eye[-1][2]))
+    print('  jiuqu walk %.1f m (centreline arc %.1f m) cam y %.2f lens %.0f mm -> end %.1f m from huxin (%0.2f, %0.2f)'
+          % (wacc[-1], dense_s[end_i], JQ_CAM_Y, JQ_LENS_MM, d_end, hxc[0], hxc[1]))
 
 
 if __name__ == '__main__':

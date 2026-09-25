@@ -15,7 +15,8 @@
     "shots": [ { "id": "...", "frames": 24,
                  "eye":   [[x,y,z] ...],   # 每帧相机位置（地图系）
                  "target": [[x,y,z] ...], # 每帧注视点（地图系）
-                 "targetId": "<layout id>" } # 可选：取景目标，原样写进 cameras json
+                 "targetId": "<layout id>",  # 可选：取景目标，原样写进 cameras json
+                 "lensMm": 50 }              # 可选：焦距（36 mm 横幅传感器），缺省 50
                ] }
   也接受 out-zone/tour.json 风格的固定机位：shot 带 "p":[x,y,z],"t":[x,y,z]（单一机位）。
 
@@ -413,6 +414,9 @@ def main():
         eyes = [shot['p']] * n_frames if fixed else shot['eye']
         tgts = [shot['t']] * n_frames if fixed else shot['target']
         st = timings.setdefault(sid, {})
+        # R1：每镜头可选焦距 lensMm（36 mm 横幅传感器，AUTO 适配=水平）；缺省 50 mm（Blender 默认，①与 round 0 一致）
+        cam_data.sensor_width = 36.0
+        cam_data.lens = float(shot.get('lensMm', 50.0))
 
         def pose(k):
             eye_b, tgt_b = to_blender(eyes[k]), to_blender(tgts[k])
