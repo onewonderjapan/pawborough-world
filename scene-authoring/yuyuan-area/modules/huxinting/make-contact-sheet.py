@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """湖心亭交付对照联系表：4 张实机渲染（本模块）× 0010 推理图（主控复验 pass）。
 推理图只作参照（lead QC：瓦色按灰瓦做，推理图偏蓝不照抄；生成图非史料）。
-用法：python3 make-contact-sheet.py <rendersDir> <outJpg> [--before <beforeDir>] [--title <text>]
+用法：python3 make-contact-sheet.py <rendersDir> <outJpg> [--before <beforeDir>] [--title <text>] [--row-names R1,R2]
   给 --before 时出三行：before（同机位）/ after / 0010 推理图。
 每张渲染先过空白帧守卫（亮度 std < 2/255 或主色占比 > 95% 判空白，退出码 2），结果写 <outJpg>.guard.json。
 """
@@ -33,7 +33,9 @@ def guard(path):
     return dict(file=str(path), lumaStd255=round(std, 2), dominantShare=round(dom, 4), blank=bool(std < 2 or dom > 0.95))
 
 
-rows = ([('before', before_dir)] if before_dir else []) + [('after' if before_dir else 'render', renders_dir)]
+# --row-names A,B：两行对照时的行名（缺省 before,after；R2 用 R1,R2）
+row_names = args[args.index('--row-names') + 1].split(',') if '--row-names' in args else ['before', 'after']
+rows = ([(row_names[0], before_dir)] if before_dir else []) + [(row_names[1] if before_dir else 'render', renders_dir)]
 guards = [guard(d / f'{r}.jpg') for _, d in rows for r in RENDERS]
 json.dump(guards, open(str(out) + '.guard.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 if any(g['blank'] for g in guards):
