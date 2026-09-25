@@ -233,7 +233,7 @@ def main():
     plaza = objs['plaza-428199199']['geometry']['footprint']   # 中心广场（贴华宝楼南立面）
     hb_h = habao['height']
     hb_variant = 'procedural bazaarBlock (layout height)'
-    if os.environ.get('BAZAAR_TOWERS') == '1':
+    if os.environ.get('BAZAAR_TOWERS', '1') != '0':
         tp = load_json(os.path.join(ROOT, 'modules', 'bazaar-tower-kit', 'params', 'huabao-%s.json' % habao['id']))
         hb_h = max(tp['roof']['ridgeHeightM'], tp['pavilion']['finial']['topM'])
         hb_variant = 'BAZAAR_TOWERS=1 bazaar-tower-kit（max(roof.ridgeHeightM, pavilion.finial.topM)）'

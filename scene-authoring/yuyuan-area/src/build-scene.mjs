@@ -62,8 +62,8 @@ const ROCKERY_IDS = new Set(['rockery-dajiashan', 'rockery-yulinglong']);
 const HUXINTING = process.env.HUXINTING !== '0';
 const HUXINTING_IDS = new Set(['huxin-ting']);
 // BAZAAR_TOWERS=1：商城命名大楼由 modules/bazaar-tower-kit 世界坐标 GLB 承担（id 表 modules/bazaar-tower-kit/ids.json；
-// assemble.py 导入 SITE-bazaar，分区按 ids.json zonePart 归 zone-bazaar-3…）。默认关：未采用前保持程序化 bazaarBlock。
-const BAZAAR_TOWERS = process.env.BAZAAR_TOWERS === '1';
+// assemble.py 导入 SITE-bazaar，分区按 ids.json zonePart 归 zone-bazaar-3…）。默认开（2026-09-26 机主「商城楼套件默认开启吧」）；BAZAAR_TOWERS=0 回到程序化 bazaarBlock。
+const BAZAAR_TOWERS = process.env.BAZAAR_TOWERS !== '0';  // 默认开（2026-09-26 机主定），BAZAAR_TOWERS=0 关
 const BAZAAR_TOWER_IDS = new Set(JSON.parse(fs.readFileSync(new URL('../modules/bazaar-tower-kit/ids.json', import.meta.url), 'utf8')).ids);
 const layout = JSON.parse(fs.readFileSync(path.join(OUT, 'layout.json'), 'utf8'));
 

@@ -161,7 +161,7 @@ const R1 = { minPts: 5, minArea: 0.08, minClr: 1.5, win: 6, winMin: 3, railNearM
 // wave5：⑪方浜中路东行是①的镜像（同一条街从西端走向山门），山门在庙前街角店屋（shoprow-p169/p171）之后才露出，同①只查末 6 帧窗口。
 const WINDOW_FROM = { 'fangbang-westbound': (n) => n - R1.win, 'fangbang-eastbound': (n) => n - R1.win };
 const boxes = loadColliders(ROOT, path.relative(ROOT, OUT));
-const BAZAAR_TOWERS = process.env.BAZAAR_TOWERS === '1';
+const BAZAAR_TOWERS = process.env.BAZAAR_TOWERS !== '0';
 const habaoObj = layout.objects.find(o => o.name === '华宝楼' && o.kind === 'bazaarBlock');
 // 华宝楼目标高：程序化体块 = layout height；BAZAAR_TOWERS=1 = 套件冻结参数最高点（角亭宝顶 finial.topM 与主脊 ridgeHeightM 取大）
 const towerP = JSON.parse(fs.readFileSync(path.join(ROOT, 'modules', 'bazaar-tower-kit', 'params', `huabao-${habaoObj.id}.json`), 'utf8'));

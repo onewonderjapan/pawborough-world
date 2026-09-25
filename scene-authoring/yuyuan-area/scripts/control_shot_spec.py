@@ -129,7 +129,7 @@ class SpecContext:
 
     def target_height(self, tid):
         o = self.objs.get(tid)
-        if os.environ.get('BAZAAR_TOWERS') == '1':
+        if os.environ.get('BAZAAR_TOWERS', '1') != '0':
             ps = glob.glob(os.path.join(self.root, 'modules', 'bazaar-tower-kit', 'params', '*-%s.json' % tid))
             if ps:
                 tp = _load(ps[0])

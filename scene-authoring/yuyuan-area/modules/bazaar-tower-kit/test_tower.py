@@ -388,7 +388,7 @@ if ZP is None:
 elif os.path.exists(man_path):
     man = json.load(open(man_path, encoding='utf-8'))
     bp = next((z for z in man['zones'] if z['id'] == 'bazaar' and z.get('part') == ZP and z.get('file')), None)
-    if os.environ.get('BAZAAR_TOWERS') == '1':
+    if os.environ.get('BAZAAR_TOWERS', '1') != '0':
         ok('test6a BAZAAR_TOWERS=1：zone-bazaar 第 %d 件存在' % ZP, bp is not None)
         if bp:
             raw = os.path.getsize(os.path.join(ROOT, OUT_DIR, bp['file']))

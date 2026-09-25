@@ -2161,6 +2161,12 @@
       "sha256": "a613b4ab9d737e503d0b0eff2441b3d142145a05f7707fe52d256f031f7cd1a2",
       "bytes": 2285884,
       "sourcePackage": "pawborough-wave6-eavekit-20260926"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202603/model.glb",
+      "sha256": "5bb1ecf048f1f3e26b1934e3eb7ecbc1e3533bca041178069c3c5d582ef3e671",
+      "bytes": 1646168,
+      "sourcePackage": "lead-2026-09-26-owner-enable-laofandian"
     }
   ],
   "state": "uploaded_checksum_verified",
@@ -2178,6 +2184,7 @@
     "docs/migrations/20260925/CLOUD-RECEIPT-wave4.json",
     "docs/migrations/20260926/CLOUD-RECEIPT-templeqa.json",
     "docs/migrations/20260926/CLOUD-RECEIPT-bazaar4.json",
-    "docs/migrations/20260926/CLOUD-RECEIPT-eavekit.json"
+    "docs/migrations/20260926/CLOUD-RECEIPT-eavekit.json",
+    "docs/migrations/20260926/CLOUD-RECEIPT-laofandian.json"
   ]
 }

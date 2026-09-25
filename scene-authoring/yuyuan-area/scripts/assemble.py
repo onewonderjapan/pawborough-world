@@ -933,7 +933,7 @@ if os.environ.get('HUXINTING', '1') != '0':
 # id 表唯一来源 modules/bazaar-tower-kit/ids.json；GLB 已在地图坐标（build_tower：export_yup 后 GLB x,z = layout 地图系），
 # 锚 empty 名 = id，位于 footprint 面积形心（GLB 自带；此处按 layout 重算校验）。分区归属按 ids.json zonePart（export-zones）。
 bazaar_tower_placed = 0
-if os.environ.get('BAZAAR_TOWERS') == '1':
+if os.environ.get('BAZAAR_TOWERS', '1') != '0':  # 默认开（2026-09-26 机主「商城楼套件默认开启吧」），BAZAAR_TOWERS=0 关
     _tw_reg = json.load(open(os.path.join(ROOT, 'modules', 'bazaar-tower-kit', 'ids.json'), encoding='utf-8'))
     _tw_root = os.environ.get('BAZAAR_TOWER_ROOT', 'out-bazaar-towers')
     for _tw_id in _tw_reg['ids']:

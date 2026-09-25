@@ -70,3 +70,9 @@
 - 处置：`modules/bazaar-tower-kit/params/laofandian-bld-428202603.json` 标 `referenceDisputed: true`（附依据），不进 `ids.json` 启用表；
   `tests/zone-split-test.mjs` 断言参照存疑的楼不在启用表里。
 
+
+
+## 机主决定（2026-09-26）
+
+- 上海老饭店（bld-428202603）：机主「按图库先做」——先按 PBR-SH-0002-037 建模并启用（`params/laofandian-bld-428202603.json` 的 `ownerOverride`）。该图是否为上海老饭店仍存疑（疑为老庙黄金银楼，见上），**需补实拍**的结论不变，有实拍后复核。
+- 和丰楼（bld-389701812）：正门朝中心广场，机主确认。

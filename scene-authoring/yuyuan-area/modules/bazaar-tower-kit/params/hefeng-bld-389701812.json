@@ -1,253 +1,258 @@
 {
-  "id": "bld-389701812",
-  "name": "和丰楼",
-  "zone": "bazaar",
-  "source": "wave4 口径（GOAL wave4-bazaar4）：1990 年代商城改建的多层仿古楼；层数与墙顶高照 layout（4 层 / 13.6 m = 墙顶，屋面另加）；所有匾额 / 招牌为空板，不写字；不发明照片以外的独特构件；形制读法来自主控文字规格（机主私有照片不经执行者）。",
-  "frontEdge": [
-    8,
-    9
+ "id": "bld-389701812",
+ "name": "和丰楼",
+ "zone": "bazaar",
+ "source": "wave4 口径（GOAL wave4-bazaar4）：1990 年代商城改建的多层仿古楼；层数与墙顶高照 layout（4 层 / 13.6 m = 墙顶，屋面另加）；所有匾额 / 招牌为空板，不写字；不发明照片以外的独特构件；形制读法来自主控文字规格（机主私有照片不经执行者）。",
+ "frontEdge": [
+  8,
+  9
+ ],
+ "frontName": "中心广场",
+ "sharedEdgeRule": true,
+ "eaveClipHidden": true,
+ "budget": {
+  "trisMax": 60000,
+  "glbMaxMB": 3.0,
+  "maxHeightM": 27.0
+ },
+ "detail": {
+  "eaveSegM": 1.7,
+  "bevelM": 0.0,
+  "kinkDeg": 5.0
+ },
+ "eaves": {
+  "overhangM": 1.2,
+  "cornerLiftM": 0.9,
+  "cornerReachM": 2.6,
+  "fasciaDropM": 0.24
+ },
+ "massing": {
+  "plinthHeightM": 0.45,
+  "plinthOutsetM": 0.12,
+  "wallInsetM": 0.3,
+  "storeyHeightsM": [
+   4.2,
+   3.4,
+   3.1,
+   2.9
   ],
-  "frontName": "中心广场",
-  "sharedEdgeRule": true,
-  "eaveClipHidden": true,
-  "budget": {
-    "trisMax": 60000,
-    "glbMaxMB": 3.0,
-    "maxHeightM": 27.0
-  },
-  "detail": {
-    "eaveSegM": 1.7,
-    "bevelM": 0.0,
-    "kinkDeg": 5.0
-  },
-  "eaves": {
-    "overhangM": 1.2,
-    "cornerLiftM": 0.9,
-    "cornerReachM": 2.6,
-    "fasciaDropM": 0.24
-  },
-  "massing": {
-    "plinthHeightM": 0.45,
-    "plinthOutsetM": 0.12,
-    "wallInsetM": 0.3,
-    "storeyHeightsM": [
-      4.2,
-      3.4,
-      3.1,
-      2.9
-    ],
-    "wallTopM": 13.6,
-    "setbackStoreys": [
-      4
-    ],
-    "setbackStreetM": 1.6,
-    "topPlan": "rect"
-  },
-  "roof": {
-    "type": "xishan",
-    "breakAboveM": 2.6,
-    "ridgeAboveM": 6.4,
-    "breakInsetFrac": 0.38,
-    "gableInsetM": 1.4,
-    "eaveKit": {
-      "over": 1.3,
-      "qiao": 1.0,
-      "chu": 0.4,
-      "reach": 2.8
-    },
-    "ridgeAxis": "u"
-  },
-  "facades": {
-    "bayRhythmM": [
-      3.3,
-      3.6
-    ],
-    "columnSizeM": 0.32,
-    "columnBaseM": 0.06,
-    "frameLintelHM": 0.25,
-    "frameProjectM": 0.05,
-    "frameDepthM": 0.18,
-    "longWindowLeaves": 5,
-    "longWindowLatticeFrac": 0.62,
-    "leafGapM": 0.05,
-    "halfWindowLatticeFrac": 0.5,
-    "balustradePostPitchM": 2.3,
-    "balustradeSlatPitchM": 0.12,
-    "balustradeSlatBarM": 0.045,
-    "guoluoCellsPerM": 8.0,
-    "galleryDepthM": 1.1,
-    "balustradeHM": 1.0,
-    "fasciaDepthM": 0.45,
-    "window": {
-      "widthM": 1.7,
-      "heightM": 1.9,
-      "sillM": 0.9
-    },
-    "shopfront": {
-      "glassHeadM": 3.9,
-      "sillM": 0.9,
-      "frameM": 0.12,
-      "mullionM": 0.08,
-      "mullionPitchM": 1.05
-    },
-    "galleryStoreys": [
-      3
-    ],
-    "galleryTimberKey": "wood",
-    "styles": {
-      "street": {
-        "1": {
-          "style": "shop",
-          "recessM": 1.8,
-          "timber": "lacquer",
-          "columnTimber": "lacquer",
-          "fascia": "guoluo",
-          "bayPlaques": true
-        },
-        "2": {
-          "style": "band",
-          "timber": "wood2",
-          "caihua": true,
-          "caihuaHM": 0.55,
-          "bandHM": 1.2,
-          "bandSillM": 0.8,
-          "caihuaDropM": 0.45
-        },
-        "3": {
-          "style": "screen"
-        },
-        "4": {
-          "style": "screen"
-        }
-      },
-      "plain": {
-        "1": {
-          "style": "blank"
-        },
-        "2": {
-          "style": "band",
-          "timber": "wood2"
-        },
-        "3": {
-          "style": "ends",
-          "pitchM": 4.6
-        },
-        "4": {
-          "style": "ends4"
-        }
-      }
-    },
-    "guoluoBarFrac": 0.3,
-    "guoluoBackKey": "wood",
-    "fasciaBelowEave": true
-  },
-  "materials": {
-    "timberTint": "9a2f22",
-    "plasterTint": "f2efe8",
-    "plinthTint": "8b9089",
-    "gilded": "b08a3e",
-    "glass": "46525a",
-    "glassAlpha": 0.5,
-    "dark": "241d18",
-    "shopInterior": "b08a60",
-    "roofTile": [
-      1.4,
-      1.2
-    ],
-    "timberTile": [
-      0.9,
-      2.2
-    ],
-    "plasterTile": [
-      2.2,
-      2.2
-    ],
-    "plinthTile": [
-      2.0,
-      1.0
-    ],
-    "timber2Tint": "3a2519",
-    "lacquerTint": "14100e",
-    "roofTint": "a8abae",
-    "shopEmission": "7a5a3a",
-    "guoluoGold": "d6ab4a",
-    "gildMetallic": 0.25,
-    "gildRough": 0.45
-  },
+  "wallTopM": 13.6,
+  "setbackStoreys": [
+   4
+  ],
+  "setbackStreetM": 1.6,
+  "topPlan": "rect"
+ },
+ "roof": {
+  "type": "xishan",
+  "breakAboveM": 2.6,
+  "ridgeAboveM": 6.4,
+  "breakInsetFrac": 0.38,
+  "gableInsetM": 1.4,
   "eaveKit": {
-    "over": 1.5,
-    "chu": 0.35,
-    "qiao": 0.9,
-    "reach": 2.6,
-    "drop": 0.3,
-    "tileH": 0.14,
-    "boardH": 0.26,
-    "rootRise": 0.95,
-    "curve": 1.7,
-    "soffitRise": 0.15,
-    "straightStep": 3.0,
-    "cornerStep": 0.25,
-    "cornerSteps": 6,
-    "bracketStepM": 5.2,
-    "rings": 7,
-    "bracketStepPlainM": 5.2
+   "over": 1.3,
+   "qiao": 1.0,
+   "chu": 0.4,
+   "reach": 2.8
   },
-  "eaveKitByStorey": {
-    "2": {
-      "over": 1.65,
-      "tileH": 0.2,
-      "boardH": 0.36,
-      "rootRise": 1.1,
-      "qiao": 1.05,
-      "bracketStepM": 1.15,
-      "note": "二层「厚重的深瓦檐」：出檐更深、瓦头与封檐板更厚，檐下斗拱密排"
-    }
-  },
-  "features": {
-    "plaques": [
-      {
-        "storey": 1,
-        "at": 0.5,
-        "z0": 2.5,
-        "wM": 7.5,
-        "hM": 1.5,
-        "borderM": 0.14,
-        "o": 0.35,
-        "note": "入口上方很大的横向黑底金框匾（空板）"
-      },
-      {
-        "storey": 4,
-        "at": 0.5,
-        "z0": 0.55,
-        "wM": 4.8,
-        "hM": 1.5,
-        "borderM": 0.12,
-        "o": 0.1,
-        "note": "高处另一块黑底金框匾（空板）"
-      }
-    ],
-    "lanterns": {
-      "runs": "front",
-      "pitchM": 3.4,
-      "o": 0.55,
-      "zBelowEaveM": 1.0,
-      "rM": 0.3
-    },
-    "lions": {
-      "at": 0.5,
-      "gapM": 6.2,
-      "o": -0.9
-    }
-  },
-  "designInference": [
-    "正立面取中心广场边（最长临街边 51.6 m）：主控规格未写正门朝哪条街，按最长临街面推断。",
-    "底层黑漆店面退进 1.8 m 成店面廊（柱列也用黑漆）；入口上方 7.5×1.5 m 黑底金框空匾外挑；门前一对石狮放在廊内（不越 footprint），为简化体块，不雕刻。",
-    "红灯笼沿正立面檐下一排（节距 3.4 m），球形简化。",
-    "二层白墙 + 深色木格窗带，檐下彩画额枋色块 + 密排斗拱，上压加厚加深的深瓦檐（eaveKitByStorey.2）。",
-    "三层朱红栏杆外廊 + 格扇（screen 样式），四层临街退 1.6 m、红柱格扇、正中一块黑底金框空匾；顶为歇山。",
-    "东侧与 bld-553893868 共享边：该段不出檐、不出店面（hall-kit 共享边规则），檐口外缘收在边线内。"
+  "ridgeAxis": "u"
+ },
+ "facades": {
+  "bayRhythmM": [
+   3.3,
+   3.6
   ],
-  "notes": [
-    "wave4 B5 同口径：挂落描金（棂条 0.30、金 d6ab4a、衬底深红木）与底层玻璃（alpha 0.5 + 店内暖色衬底 b08a60 + 微光 7a5a3a）调到看得出"
-  ]
+  "columnSizeM": 0.32,
+  "columnBaseM": 0.06,
+  "frameLintelHM": 0.25,
+  "frameProjectM": 0.05,
+  "frameDepthM": 0.18,
+  "longWindowLeaves": 5,
+  "longWindowLatticeFrac": 0.62,
+  "leafGapM": 0.05,
+  "halfWindowLatticeFrac": 0.5,
+  "balustradePostPitchM": 2.3,
+  "balustradeSlatPitchM": 0.12,
+  "balustradeSlatBarM": 0.045,
+  "guoluoCellsPerM": 8.0,
+  "galleryDepthM": 1.1,
+  "balustradeHM": 1.0,
+  "fasciaDepthM": 0.45,
+  "window": {
+   "widthM": 1.7,
+   "heightM": 1.9,
+   "sillM": 0.9
+  },
+  "shopfront": {
+   "glassHeadM": 3.9,
+   "sillM": 0.9,
+   "frameM": 0.12,
+   "mullionM": 0.08,
+   "mullionPitchM": 1.05
+  },
+  "galleryStoreys": [
+   3
+  ],
+  "galleryTimberKey": "wood",
+  "styles": {
+   "street": {
+    "1": {
+     "style": "shop",
+     "recessM": 1.8,
+     "timber": "lacquer",
+     "columnTimber": "lacquer",
+     "fascia": "guoluo",
+     "bayPlaques": true
+    },
+    "2": {
+     "style": "band",
+     "timber": "wood2",
+     "caihua": true,
+     "caihuaHM": 0.55,
+     "bandHM": 1.2,
+     "bandSillM": 0.8,
+     "caihuaDropM": 0.45
+    },
+    "3": {
+     "style": "screen"
+    },
+    "4": {
+     "style": "screen"
+    }
+   },
+   "plain": {
+    "1": {
+     "style": "blank"
+    },
+    "2": {
+     "style": "band",
+     "timber": "wood2"
+    },
+    "3": {
+     "style": "ends",
+     "pitchM": 4.6
+    },
+    "4": {
+     "style": "ends4"
+    }
+   }
+  },
+  "guoluoBarFrac": 0.3,
+  "guoluoBackKey": "wood",
+  "fasciaBelowEave": true
+ },
+ "materials": {
+  "timberTint": "9a2f22",
+  "plasterTint": "f2efe8",
+  "plinthTint": "8b9089",
+  "gilded": "b08a3e",
+  "glass": "46525a",
+  "glassAlpha": 0.5,
+  "dark": "241d18",
+  "shopInterior": "b08a60",
+  "roofTile": [
+   1.4,
+   1.2
+  ],
+  "timberTile": [
+   0.9,
+   2.2
+  ],
+  "plasterTile": [
+   2.2,
+   2.2
+  ],
+  "plinthTile": [
+   2.0,
+   1.0
+  ],
+  "timber2Tint": "3a2519",
+  "lacquerTint": "14100e",
+  "roofTint": "a8abae",
+  "shopEmission": "7a5a3a",
+  "guoluoGold": "d6ab4a",
+  "gildMetallic": 0.25,
+  "gildRough": 0.45
+ },
+ "eaveKit": {
+  "over": 1.5,
+  "chu": 0.35,
+  "qiao": 0.9,
+  "reach": 2.6,
+  "drop": 0.3,
+  "tileH": 0.14,
+  "boardH": 0.26,
+  "rootRise": 0.95,
+  "curve": 1.7,
+  "soffitRise": 0.15,
+  "straightStep": 3.0,
+  "cornerStep": 0.25,
+  "cornerSteps": 6,
+  "bracketStepM": 5.2,
+  "rings": 7,
+  "bracketStepPlainM": 5.2
+ },
+ "eaveKitByStorey": {
+  "2": {
+   "over": 1.65,
+   "tileH": 0.2,
+   "boardH": 0.36,
+   "rootRise": 1.1,
+   "qiao": 1.05,
+   "bracketStepM": 1.15,
+   "note": "二层「厚重的深瓦檐」：出檐更深、瓦头与封檐板更厚，檐下斗拱密排"
+  }
+ },
+ "features": {
+  "plaques": [
+   {
+    "storey": 1,
+    "at": 0.5,
+    "z0": 2.5,
+    "wM": 7.5,
+    "hM": 1.5,
+    "borderM": 0.14,
+    "o": 0.35,
+    "note": "入口上方很大的横向黑底金框匾（空板）"
+   },
+   {
+    "storey": 4,
+    "at": 0.5,
+    "z0": 0.55,
+    "wM": 4.8,
+    "hM": 1.5,
+    "borderM": 0.12,
+    "o": 0.1,
+    "note": "高处另一块黑底金框匾（空板）"
+   }
+  ],
+  "lanterns": {
+   "runs": "front",
+   "pitchM": 3.4,
+   "o": 0.55,
+   "zBelowEaveM": 1.0,
+   "rM": 0.3
+  },
+  "lions": {
+   "at": 0.5,
+   "gapM": 6.2,
+   "o": -0.9
+  }
+ },
+ "designInference": [
+  "正立面取中心广场边（最长临街边 51.6 m）：主控规格未写正门朝哪条街，按最长临街面推断。",
+  "底层黑漆店面退进 1.8 m 成店面廊（柱列也用黑漆）；入口上方 7.5×1.5 m 黑底金框空匾外挑；门前一对石狮放在廊内（不越 footprint），为简化体块，不雕刻。",
+  "红灯笼沿正立面檐下一排（节距 3.4 m），球形简化。",
+  "二层白墙 + 深色木格窗带，檐下彩画额枋色块 + 密排斗拱，上压加厚加深的深瓦檐（eaveKitByStorey.2）。",
+  "三层朱红栏杆外廊 + 格扇（screen 样式），四层临街退 1.6 m、红柱格扇、正中一块黑底金框空匾；顶为歇山。",
+  "东侧与 bld-553893868 共享边：该段不出檐、不出店面（hall-kit 共享边规则），檐口外缘收在边线内。"
+ ],
+ "notes": [
+  "wave4 B5 同口径：挂落描金（棂条 0.30、金 d6ab4a、衬底深红木）与底层玻璃（alpha 0.5 + 店内暖色衬底 b08a60 + 微光 7a5a3a）调到看得出"
+ ],
+ "facadeOwnerConfirmed": {
+  "date": "2026-09-26",
+  "front": "中心广场",
+  "note": "机主确认正门朝中心广场"
+ }
 }
