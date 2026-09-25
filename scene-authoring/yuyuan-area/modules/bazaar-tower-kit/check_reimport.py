@@ -56,7 +56,7 @@ if anchor:
           'loc=(%.3f, %.3f, %.3f)' % (anchor.location.x, anchor.location.y, anchor.location.z))
 
 meshes = [o for o in imported if o.type == 'MESH']
-check('网格节点数 %d ≥ 30' % len(meshes), len(meshes) >= 30)
+check('网格节点数 %d ≥ 20（部件×材质合并后的节点；华宝楼 48、无外廊的悦宾楼 29）' % len(meshes), len(meshes) >= 20)
 tris = 0
 mn = Vector((1e9, 1e9, 1e9))
 mx = Vector((-1e9, -1e9, -1e9))
@@ -71,8 +71,9 @@ for o in meshes:
             mx[i] = max(mx[i], w[i])
 check('重导入三角 %d 与 measurements %s 一致（±1）' % (tris, P['triangles']), abs(tris - P['triangles']) <= 1)
 check('重导入高度 %.2f == %.2f' % (mx.z, P['maxY']), abs(mx.z - P['maxY']) < 0.02)
-check('重导入平面范围落在地图区（x %.0f..%.0f, y %.0f..%.0f）' % (mn.x, mx.x, mn.y, mx.y),
-      -200 < mn.x < 0 and -60 < mn.y < 40)
+_fx = [q[0] for q in FP]; _fz = [q[1] for q in FP]
+check('重导入平面范围落在该楼 footprint 包围盒 ±3 m 内（x %.1f..%.1f, y %.1f..%.1f）' % (mn.x, mx.x, mn.y, mx.y),
+      min(_fx) - 3 < mn.x and mx.x < max(_fx) + 3 and -max(_fz) - 3 < mn.y and mx.y < -min(_fz) + 3)
 
 # 材质槽与贴图连接
 bad_mat, imgs, alpha = [], [], {}
@@ -91,7 +92,7 @@ for o in meshes:
     linked = base.is_linked if base else False
     if not linked:
         # 允许解析色材质（gild/glass/dark），其余须有贴图
-        if not any(k in m.name for k in ('gild', 'glass', 'dark')):
+        if not any(k in m.name for k in ('gild', 'glass', 'dark', 'shopback', 'lacquer', 'signred', 'lantern')):
             bad_mat.append(o.name + ':base-color-not-textured')
     for n in m.node_tree.nodes:
         if n.type == 'TEX_IMAGE' and n.image:
@@ -110,7 +111,9 @@ gls = [k for k in alpha if 'glass' in k]
 # Blender 4.5 将 glTF MASK 导入为 HASHED；判断标准=Alpha 输入已连接到贴图 + 混合模式为遮罩类
 check('格心材质 Alpha 已连接、混合模式为遮罩类', bool(lat) and alpha[lat[0]][0] in ('CLIP', 'MASK', 'HASHED')
       and alpha[lat[0]][1] == 'linked', str(alpha.get(lat[0]) if lat else None))
-check('玻璃材质为 BLEND 且 alpha≈0.85', bool(gls) and alpha[gls[0]][0] == 'BLEND' and abs(alpha[gls[0]][1] - 0.85) < 0.02,
+_PP = json.load(open(os.path.join(HERE, P['params']), encoding='utf-8'))
+_GA = _PP['materials']['glassAlpha']
+check('玻璃材质为 BLEND 且 alpha≈%.2f（params）' % _GA, bool(gls) and alpha[gls[0]][0] == 'BLEND' and abs(alpha[gls[0]][1] - _GA) < 0.02,
       str(alpha.get(gls[0]) if gls else None))
 report['materials'] = {k: str(v) for k, v in alpha.items()}
 report['images'] = [{'material': i[0], 'image': i[1], 'size': i[2]} for i in sorted(set(imgs))]

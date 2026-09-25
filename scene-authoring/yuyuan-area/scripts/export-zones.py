@@ -51,10 +51,12 @@ GARDEN_SUBPARTS = [
 #   part 1  zone-bazaar.glb   街面：程序化街面对象（facadeBay 面元、paving/plaza 铺装地面、water、shopAnchor、
 #                             outerBuilding 占位）+ INST-bazaar 全部实例（店屋 shop-*、摊位/长凳/檐棚 stall-kit）+
 #                             FOOD-bazaar 全部（食品车）；
-#   part 2  zone-bazaar-2.glb 大楼：ZONE-bazaar 里 kind == 'bazaarBlock' 的 16 座大楼体块
+#   part 2  zone-bazaar-2.glb 大楼：ZONE-bazaar 里 kind == 'bazaarBlock' 的程序化大楼体块
 #                             （壁柱/窗组/檐口/屋面已并进每栋单 mesh，即「及其附属」）；
-#                             BAZAAR_TOWERS=1 时另含 SITE-bazaar 的华宝楼站点模块
-#                             （modules/bazaar-tower-kit，世界坐标 GLB，锚=面积形心）。
+#   part 3… zone-bazaar-3.glb… 商城大楼套件（BAZAAR_TOWERS=1：SITE-bazaar 的 modules/bazaar-tower-kit 站点模块，
+#                             世界坐标 GLB，锚=面积形心）。件号按 modules/bazaar-tower-kit/ids.json zonePart
+#                             （wave4 Z0，2026-09-25：五座命名楼套件合计会让 bazaar-2 超 12 MB，按 bazaar-2 的办法拆出，
+#                             每件留 ≥ 2 MB 余量；开关关闭或该件无楼时不出文件、不进 manifest）。
 # 判定只看内容：ZONE-* 对象读 kind（glTF extras 转的 custom prop，兜底解析节点名 zone|id|kind|lod）；
 # 实例/食品（INST-*/FOOD-*）一律属街面件，不看 kind。
 TEMPLE_FRONT = {'temple-shanmen', 'temple-entry-court-v3', 'yimen-pilot', 'yimen-stage', 'temple-tree-camphor'}
@@ -67,10 +69,25 @@ def kind_of(o):
     return p[2] if len(p) >= 4 else None
 
 def is_bazaar_block(o, mod, collname):
-    return collname == 'SITE-bazaar' or (collname == 'ZONE-bazaar' and kind_of(o) == 'bazaarBlock')
+    return collname == 'ZONE-bazaar' and kind_of(o) == 'bazaarBlock'
 
 def is_bazaar_street(o, mod, collname):
     return not is_bazaar_block(o, mod, collname)
+
+TOWER_REG = json.load(open(os.path.join(ROOT, 'modules', 'bazaar-tower-kit', 'ids.json'), encoding='utf-8'))
+TOWER_PARTS = sorted({int(v) for v in TOWER_REG['zonePart'].values()})
+
+def tower_part_of(o):
+    # 套件楼：沿 parent 链找锚 empty（name = id 表里的 id），件号取 ids.json zonePart
+    cur = o
+    while cur is not None:
+        if cur.name in TOWER_REG['zonePart']:
+            return int(TOWER_REG['zonePart'][cur.name])
+        cur = cur.parent
+    return None
+
+def tower_pred(n):
+    return lambda o, mod, collname: collname == 'SITE-bazaar' and tower_part_of(o) == n
 
 PARTS = [
     ('garden', 1, ['ZONE-garden', 'INST-garden', 'SITE-garden'], None),
@@ -79,9 +96,11 @@ PARTS = [
     ('temple', 2, ['INST-temple'], lambda o, m, c: c == 'INST-temple' and bool(m) and m not in TEMPLE_FRONT and m not in TEMPLE_REAR),
     ('temple', 3, ['INST-temple'], lambda o, m, c: c == 'INST-temple' and m in TEMPLE_REAR),
     ('bazaar', 1, ['ZONE-bazaar', 'INST-bazaar', 'FOOD-bazaar'], is_bazaar_street),
-    ('bazaar', 2, ['ZONE-bazaar', 'SITE-bazaar'], is_bazaar_block),
+    ('bazaar', 2, ['ZONE-bazaar'], is_bazaar_block),
+    *[('bazaar', n, ['SITE-bazaar'], tower_pred(n)) for n in TOWER_PARTS],
     ('outer',  1, ['ZONE-outer', 'INST-outer'], None),
 ]
+OPTIONAL_PARTS = {('bazaar', n) for n in TOWER_PARTS}   # 套件件：无楼（开关关）时不出文件、不进 manifest
 # 分件文件名：单件区 zone-<z>.glb；多件区首件沿用 zone-<z>.glb（garden、bazaar：查看器/外部引用不换名），
 # 后续件 zone-<z>-<n>.glb；庙区沿用历史命名 zone-temple-1/2/3.glb。
 BASE_NAME_ZONES = {'garden', 'bazaar'}
@@ -214,17 +233,23 @@ for it in plan:
     deny = [o for o in by_zone[z] if id(o) not in own]
     p = os.path.join(OUT, f)
     if not objs:
+        if (z, part_index) in OPTIONAL_PARTS:
+            continue
         manifest['zones'].append({'id': z, 'part': part_index, 'file': None, 'empty': True}); continue
     export(p, objs, deny)
     b = open(p, 'rb').read()
     note = ({1: 'bazaar street level: procedural street objects + INST-bazaar (shops/stalls/awnings) + FOOD-bazaar',
-             2: 'bazaar bazaarBlock tower volumes (16 blocks, mesh incl. piers/windows/cornice/roof)'
-                ' + bazaar-tower-kit site module when BAZAAR_TOWERS=1'}
+             2: 'bazaar procedural bazaarBlock volumes (mesh incl. piers/windows/cornice/roof; blocks replaced by the tower kit are deferred)',
+             **{n: 'bazaar-tower-kit site modules (BAZAAR_TOWERS=1), ids with zonePart=%d in modules/bazaar-tower-kit/ids.json' % n
+                for n in TOWER_PARTS}}
             if z == 'bazaar' else None)
     entry = {'id': z, 'part': part_index, 'file': f, 'bytes': len(b), 'sha256': hashlib.sha256(b).hexdigest(),
              'collections': [c for c in colls if c in bpy.data.collections],
              'objects': len(objs), 'bounds': bounds(objs), 'withinCap': len(b) <= CAP}
     if note: entry['note'] = note[part_index]
+    if z == 'bazaar' and part_index in TOWER_PARTS:
+        entry['role'] = 'bazaar-towers'
+        entry['towerIds'] = sorted(o.name for o in objs if o.name in TOWER_REG['zonePart'])
     manifest['zones'].append(entry)
     print('zone', z, part_index, len(b), 'bytes')
     for sp in it['subparts']:
