@@ -67,12 +67,13 @@ export function setupPerf({ renderer, camera, controls, walk, hud }) {
     report.loadCompleteMs = +(performance.now()).toFixed(0); // 自导航起的首次加载完成耗时
     report.memory = memory();
     report.gpu = gpuInfo(renderer);
-    renderer.info.autoReset = false;
-    // 一帧后取 drawCalls/triangles（autoReset 关闭时为累计值，先 reset 再渲染一帧）
-    renderer.info.reset();
-    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
-    report.renderer = { drawCalls: renderer.info.render.calls, triangles: renderer.info.render.triangles, programs: renderer.info.programs?.length ?? null };
+    // 每帧口径：renderer.info 保持 autoReset（每次 render() 开头清零），等两帧后读到的就是「最后一次 render」
+    // 一帧的量。wave4-drawcalls 修：旧写法关掉 autoReset 再等两个 rAF，读到的是两帧之和（报告值 = 2 × 每帧）。
+    // 检查：tests/perf-drawcalls-check.mjs P1（与页面内独立的 WebGL 调用计数逐帧核对）。
     renderer.info.autoReset = true;
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    report.renderer = { drawCalls: renderer.info.render.calls, triangles: renderer.info.render.triangles, programs: renderer.info.programs?.length ?? null, perFrame: true };
+    if (window.__batchStats) report.batching = window.__batchStats();
     setPhase('orbit', ORBIT_SECONDS);
     orbitBase = { target: controls.target.clone(), pos: camera.position.clone() };
     orbitAngle = Math.atan2(orbitBase.pos.z - orbitBase.target.z, orbitBase.pos.x - orbitBase.target.x);
