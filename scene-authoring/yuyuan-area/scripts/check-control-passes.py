@@ -17,6 +17,8 @@
      终点帧门槛可按镜头加严（TARGET_END_MIN_BY_SHOT；wave3-tourfix T3：③湖心亭 ≥ 10%）。
   7. 顶部天空余量（wave3-tourfix T3 返修，TOP_SKY_MARGIN_BY_SHOT；③ ≥ 3%）：终点帧目标分割掩膜的最高像素（湖心亭即宝顶 / 屋脊）
      正上方连续天空（深度 = far，65535）行数 / 画高 ≥ 门槛，且目标最高像素不贴画面上沿——整座亭的顶部轮廓在画内、上方留天。
+  8. wave5-shots2（④–⑪）：终帧门槛与顶部天空余量按镜头表扩到新镜头（见 TARGET_END_MIN_BY_SHOT / TOP_SKY_MARGIN_BY_SHOT
+     注释）；另逐帧记天空占比 skyShare（depth = far 的像素比），镜头汇总 shotSummary 给出终帧目标占比 / 终帧天空占比 / 耗时。
   6. 重复件（wave3-tourfix T3）：layout 里 footprint 覆盖目标 footprint ≥ 50%、且有正高度的其他对象
      （例：bld-228035340 与湖心亭同一 OSM way，R1 时把亭下层包成 5 m 体块）在任何帧的分割图上像素占比
      必须 < 0.1%——目标不能被重合的替身包住。
@@ -34,8 +36,23 @@ import sys
 W, H = 1280, 720
 CHANNELS = ('beauty', 'depth', 'normal', 'segmentation')
 TARGET_END_MIN = 0.05   # R1：终点帧里取景目标（cameras json targetId）在分割图上至少占 5% 像素
-TARGET_END_MIN_BY_SHOT = {'jiuqu-to-huxinting': 0.10}   # wave3-tourfix T3：湖心亭终帧 ≥ 10%
-TOP_SKY_MARGIN_BY_SHOT = {'jiuqu-to-huxinting': 0.03}   # wave3-tourfix T3 返修：终帧宝顶/屋脊上方天空 ≥ 3% 画高
+TARGET_END_MIN_BY_SHOT = {
+    'jiuqu-to-huxinting': 0.10,        # wave3-tourfix T3：湖心亭终帧 ≥ 10%
+    # wave5-shots2：主体镜头按构图意图加严（正对立面 / 殿前仰视 = 主体占画面大头；中轴推进 = 仪门居中；湖心亭同③）
+    'garden-entry-sansuitang': 0.25,   # ④终帧正对格扇立面
+    'temple-dadian-rise': 0.25,        # ⑧殿前仰视
+    'temple-axis-push': 0.15,          # ⑦中轴推进到仪门前
+    'huxinting-across-pond': 0.10,     # ⑩与③同一目标同一门槛
+    'dajiashan-across-pond': 0.08,     # ⑤隔池望山：假山要是画面主体之一，不能只是岸树 / 亭后的一角
+}
+TOP_SKY_MARGIN_BY_SHOT = {
+    'jiuqu-to-huxinting': 0.03,        # wave3-tourfix T3 返修：终帧宝顶/屋脊上方天空 ≥ 3% 画高
+    # wave5-shots2：目标顶部轮廓应落在天空前的镜头同样要求 ≥ 3%。不列入的两个：
+    #   ⑥ garden-corridor-walk —— 目标是机位所在的廊（廊顶罩在机位上方，目标天然贴画面上沿）；
+    #   ⑨ bazaar-plaza-orbit —— 18 m 斜俯视，目标最高像素是屋面边线，其上方是远处街区而不是天空。
+    'garden-entry-sansuitang': 0.03, 'dajiashan-across-pond': 0.03, 'temple-axis-push': 0.03,
+    'temple-dadian-rise': 0.03, 'huxinting-across-pond': 0.03, 'fangbang-eastbound': 0.03,
+}
 DUP_COVER_MIN = 0.5     # footprint 覆盖目标 footprint 的比例 ≥ 此值 = 重复件
 DUP_PIXEL_MAX = 0.001   # 重复件每帧像素占比上限
 
@@ -115,6 +132,7 @@ def main():
     if not shots:
         errors.append('control 目录无镜头子目录（产物未渲染？）')
     frame_report = {}
+    shot_summary = {}
 
     # LUT 双向可逆
     i2r = lut['idToRgb']
@@ -195,6 +213,7 @@ def main():
             seq = [med[r] for r in rows]
             inv = sum(1 for a, b in zip(seq, seq[1:]) if b < a - 655.35)  # 允 1% 深度噪声
             fr['depthInversions'] = inv
+            fr['skyShare'] = round(float((dep >= 65535).mean()), 4)
             if inv > 0.1 * (len(seq) - 1):
                 errors.append('%s/%s 深度单调性倒置 %d/%d' % (sid, tag, inv, len(seq) - 1))
             # ---- cameras json ----
@@ -273,10 +292,22 @@ def main():
             }
             frame_report.setdefault(sid, {})['timing'] = fr_t
             checks.append({'check': 'timing', 'shot': sid, **fr_t})
+        if n:
+            lastf = frame_report[sid]['frame-%03d' % (n - 1)]
+            cj0 = load_json(os.path.join(sdir, 'cameras', 'frame-%03d.json' % (n - 1)))
+            shot_summary[sid] = {
+                'targetId': cj0.get('targetId'), 'frames': n,
+                'endTargetShare': lastf.get('targetPixelShare'), 'endSkyShare': lastf.get('skyShare'),
+                'minTargetShare': min(frame_report[sid]['frame-%03d' % k].get('targetPixelShare', 0) for k in range(n)),
+                'skyShareRange': [min(frame_report[sid]['frame-%03d' % k]['skyShare'] for k in range(n)),
+                                  max(frame_report[sid]['frame-%03d' % k]['skyShare'] for k in range(n))],
+                'endTopSkyAboveFrac': (lastf.get('targetTop') or {}).get('skyAboveFrac'),
+                'renderTotalS': (frame_report[sid].get('timing') or {}).get('totalS'),
+            }
 
     status = 'delivered_for_lead_review' if not errors else 'blocked'
     result = {
-        'item': 'WP11 C1-C3 AI 视频控制层导出（wave1-controlpass-20260925）',
+        'item': 'AI 视频控制层导出校验（WP11 C3；wave5-shots2 起含 ④–⑪）',
         'status': status,
         'ownerAdopted': False,
         'checkedAt': '2026-09-25',
@@ -293,6 +324,7 @@ def main():
         'blockers': errors,
         'commits': [],
         'visualVerdict': '',
+        'shotSummary': shot_summary,
     }
     # 每帧明细（去掉过大的字段后直接记录）
     result['frameDetail'] = frame_report

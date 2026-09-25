@@ -1,0 +1,178 @@
+{
+ "version": 1,
+ "comment": "wave5-shots2 第二批 8 镜头（④–⑪）。点写法与求值见 scripts/control_shot_spec.py 头注释；全部相对冻结源对象（layout / 模块实例 / 碰撞盒）重算，没有绝对坐标。镜头语义断言在 tests/control-shots-test.mjs W5 段，渲染侧门槛在 scripts/check-control-passes.py。",
+ "shots": [
+  {
+   "id": "garden-entry-sansuitang",
+   "no": 4,
+   "title": "豫园入口 → 三穗堂",
+   "description": "豫园门楼内侧起步（门楼屋檐下、三穗堂立面轴上），在南院眼高沿立面轴推进 3.7 m，从离格扇墙 14.2 m 到 10.5 m，终帧正对格扇立面、双檐上方留天（立面锚 = 三穗堂模块实例，格扇墙在锚前 4.2 m）",
+   "targetId": "bld-428179901",
+   "lensMm": 20,
+   "eye": {
+    "path": [
+     {"ref": "bld-428179901", "at": "instance", "local": [0, 18.4], "y": 1.6},
+     {"ref": "bld-428179901", "at": "instance", "local": [0, 14.7], "y": 1.6}
+    ],
+    "ease": "smooth"
+   },
+   "look": {
+    "path": [
+     {"ref": "bld-428179901", "at": "instance", "local": [0, 4.2], "y": 4.6}
+    ]
+   }
+  },
+  {
+   "id": "dajiashan-across-pond",
+   "no": 5,
+   "title": "大假山（隔池横移）",
+   "description": "仰山堂西北、园墙内西岸眼高，隔池（西池湾）望大假山，垂直视线缓慢横移 2.6 m（仰山堂东北角岸边被 gtree-26 / gtree-2 树冠正挡，改走西岸）",
+   "targetId": "rockery-dajiashan",
+   "lensMm": 35,
+   "eye": {
+    "path": [
+     {"ref": "rockery-dajiashan", "at": "centroid", "local": [16.05, 25.3], "y": 1.6},
+     {"ref": "rockery-dajiashan", "at": "centroid", "local": [13.85, 26.6], "y": 1.6}
+    ],
+    "ease": "smooth"
+   },
+   "look": {
+    "path": [
+     {"ref": "rockery-dajiashan", "at": "centroid", "local": [0, 0], "y": 3.8}
+    ]
+   }
+  },
+  {
+   "id": "garden-corridor-walk",
+   "no": 6,
+   "title": "园内曲廊行走",
+   "description": "沿积玉水廊（听涛阁 bld-428179920 南段廊身，宽 2.6 m）中线眼高北行 7 m、走向听涛阁楼身（廊转角柱之后、楼内柱网之前的净段），视线沿廊前视；左侧老君殿、前方听鹂亭 / 静宜轩入画",
+   "targetId": "bld-428179920",
+   "lensMm": 24,
+   "eye": {
+    "path": [
+     {"ref": "bld-428179920", "at": "polyline", "s": 23.6, "y": 1.6},
+     {"ref": "bld-428179920", "at": "polyline", "s": 16.6, "y": 1.6}
+    ],
+    "ease": "linear"
+   },
+   "look": {
+    "keys": [
+     [0, {"ahead": 12, "y": 2.2}],
+     [1, {"ahead": 12, "y": 2.2}]
+    ]
+   }
+  },
+  {
+   "id": "temple-axis-push",
+   "no": 7,
+   "title": "城隍庙 山门 → 仪门",
+   "description": "进山门后沿庙中轴眼高推进（沿轴 5.3 → 10.0 m，止于前院宝鼎前），注视仪门中轴 5.4 m 高（屋脊上方留天）",
+   "targetId": "temple-yimen",
+   "lensMm": 24,
+   "eye": {
+    "path": [
+     {"ref": "temple-shanmen", "at": "instance", "local": [0, -5.3], "y": 1.6},
+     {"ref": "temple-shanmen", "at": "instance", "local": [0, -10.0], "y": 1.6}
+    ],
+    "ease": "smooth"
+   },
+   "look": {
+    "path": [
+     {"ref": "temple-shanmen", "at": "instance", "local": [0, -23.5], "y": 5.4}
+    ]
+   }
+  },
+  {
+   "id": "temple-dadian-rise",
+   "no": 8,
+   "title": "城隍庙大殿（殿前院落仰视升高）",
+   "description": "仪门戏台之后、殿前宝鼎之前的中轴机位（沿轴 32.7 m），从眼高 1.6 m 原地缓慢升到 6.0 m，全程仰视大殿",
+   "targetId": "temple-dadian",
+   "lensMm": 20,
+   "eye": {
+    "path": [
+     {"ref": "temple-shanmen", "at": "instance", "local": [0, -32.7], "y": 1.6},
+     {"ref": "temple-shanmen", "at": "instance", "local": [0, -32.7], "y": 6.0}
+    ],
+    "ease": "smooth"
+   },
+   "look": {
+    "path": [
+     {"ref": "temple-shanmen", "at": "instance", "local": [0, -45.0], "y": 6.4},
+     {"ref": "temple-shanmen", "at": "instance", "local": [0, -45.0], "y": 8.2}
+    ],
+    "ease": "smooth"
+   }
+  },
+  {
+   "id": "bazaar-plaza-orbit",
+   "no": 9,
+   "title": "商城中心广场低空环绕",
+   "description": "中心广场上空 18 m、以华宝楼与天裕楼交角为圆心 R=26 m 环绕 45°（东北 → 东北东），注视交角 13 m 高（天际线入画），华宝楼与天裕楼同框（BAZAAR_TOWERS=1 与默认各出一版，机位相同）",
+   "targetId": "bld-428202599",
+   "lensMm": 24,
+   "variants": [
+    "default",
+    "BAZAAR_TOWERS=1"
+   ],
+   "eye": {
+    "orbit": {
+     "center": {"ref": "bld-428202599", "at": "centroid", "local": [24.5, -11.1]},
+     "r": 26,
+     "az": [200, 245],
+     "y": 18
+    },
+    "ease": "smooth"
+   },
+   "look": {
+    "path": [
+     {"ref": "bld-428202599", "at": "centroid", "local": [24.5, -11.1], "y": 13.0}
+    ]
+   }
+  },
+  {
+   "id": "huxinting-across-pond",
+   "no": 10,
+   "title": "湖心亭（池对岸定机位微推）",
+   "description": "园门前北岸眼高定机位，朝湖心亭微推 2.7 m、朝向不变；前景九曲桥东段与湖心亭同框",
+   "targetId": "huxin-ting",
+   "lensMm": 35,
+   "eye": {
+    "path": [
+     {"ref": "huxin-ting", "at": "centroid", "local": [-1.3, -28.6], "y": 1.6},
+     {"ref": "huxin-ting", "at": "centroid", "local": [-1.3, -25.9], "y": 1.6}
+    ],
+    "ease": "smooth"
+   },
+   "look": {
+    "path": [
+     {"ref": "huxin-ting", "at": "centroid", "local": [0, 0], "y": 5.4}
+    ]
+   }
+  },
+  {
+   "id": "fangbang-eastbound",
+   "no": 11,
+   "title": "方浜中路东行（向城隍庙）",
+   "description": "方浜中路西段街中眼高东行（华宝楼南侧 → 庙前），视线沿街前视，末 30% 转向城隍庙山门",
+   "targetId": "temple-shanmen",
+   "lensMm": 35,
+   "eye": {
+    "path": [
+     {"ref": "road-238219462", "at": "polyline", "s": 45, "y": 1.6},
+     {"ref": "road-238219462", "at": "polyline", "s": 0, "y": 1.6},
+     {"ref": "road-238219466", "at": "polyline", "s": -28, "y": 1.6}
+    ],
+    "ease": "linear"
+   },
+   "look": {
+    "keys": [
+     [0, {"ahead": 12, "y": 2.0}],
+     [0.7, {"ahead": 12, "y": 2.0}],
+     [1, {"ref": "temple-shanmen", "at": "instance", "y": 4.0}]
+    ]
+   }
+  }
+ ]
+}

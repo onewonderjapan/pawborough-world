@@ -165,6 +165,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--out-zone', default=os.environ.get('OUT_DIR', 'out-zone'))
     ap.add_argument('--frames', type=int, default=24)
+    ap.add_argument('--spec', default=os.path.join(ROOT, 'scripts', 'control-shots-spec.json'),
+                    help='wave5 声明式镜头文件（④–⑪）；--spec none 只出①②③')
     args = ap.parse_args()
     oz = args.out_zone if os.path.isabs(args.out_zone) else os.path.join(ROOT, args.out_zone)
 
@@ -318,6 +320,15 @@ def main():
              'frames': N, 'eye': jq_eye, 'target': jq_tgt},
         ],
     }
+    # ---------- wave5-shots2：声明式镜头 ④–⑪（scripts/control-shots-spec.json，通用求值，无按镜头特例） ----------
+    if args.spec and args.spec != 'none':
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        from control_shot_spec import SpecContext, build_spec_shots
+        spec = load_json(args.spec)
+        extra, spec_err = build_spec_shots(spec, SpecContext(ROOT, oz, layout), N)
+        errors += spec_err
+        doc['shots'] += extra
+        doc['sources']['spec'] = os.path.relpath(os.path.abspath(args.spec), ROOT)
     if errors:
         for e in errors:
             print('FAIL', e)
@@ -327,6 +338,9 @@ def main():
         json.dump(doc, f, ensure_ascii=False, indent=1)
         f.write('\n')
     print('control-shots.json:', ', '.join('%s x%d' % (s['id'], s['frames']) for s in doc['shots']))
+    for s in doc['shots'][3:]:
+        print('  %s -> %s lens %.0f mm eye path %.1f m, eye0 (%.1f, %.1f, %.1f) eye%d (%.1f, %.1f, %.1f)'
+              % (s['id'], s['targetId'], s['lensMm'], s['eyePathM'], *s['eye'][0], s['frames'] - 1, *s['eye'][-1]))
     print('  shanmen junction idx', sj, '(%0.1f, %0.1f)' % (ms[sj][0], ms[sj][1]),
           '| E-W corner idx', corner, '| walk %.0f m' % (s_stop - s0))
     print('  habao arc R %.1f m az %+.0f..%+.0f deg lens %.0f mm, target height %.1f m (%s), eye0 (%0.2f, %0.2f) eye23 (%0.2f, %0.2f)'
