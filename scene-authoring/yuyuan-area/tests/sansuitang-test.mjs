@@ -268,11 +268,28 @@ if (testOk) {
   const lat = imgBytes(SST_GLB, /^lattice-core-alpha/);
   ok(`格心贴图 lattice-core-alpha 字节 = hall-kit 源图（${lat.map((x) => sha(x.bytes).slice(0, 12)).join(',') || '无'} vs ${sha(HK_LAT).slice(0, 12)}）`,
     lat.length === 1 && sha(lat[0].bytes) === sha(HK_LAT));
+  // 口径与真实去重规则一致（主控 2026-09-26）：去重键 = 名（去 .NNN 后缀）+ 尺寸。
+  // 同键的图在所有运行时 GLB 里必须字节一致，否则会互相覆盖；同名不同尺寸（如商城楼套件 256² 的
+  // lattice-core-alpha）是不同的键，不冲突。hall-kit 的 160² 格心另须 = 源图。
+  const pngDims = (b) => (b.length > 24 && b.readUInt32BE(12) === 0x49484452) ? `${b.readUInt32BE(16)}x${b.readUInt32BE(20)}` : `len${b.length}`;
+  const HK_KEY = `lattice-core-alpha|${pngDims(HK_LAT)}`;
   const runtime = fs.readdirSync(OUT).filter((f) => /^(garden|pond|zone-[a-z0-9-]+)\.glb$/.test(f));
-  const bad = [], seen = [];
-  for (const f of runtime) for (const im of imgBytes(path.join(OUT, f), /^lattice-core-alpha/)) { seen.push(f); if (sha(im.bytes) !== sha(HK_LAT)) bad.push(f); }
-  if (seen.length) ok(`总装 / 分区 GLB 的 lattice-core-alpha 全部 = hall-kit 源图（含该图 ${seen.length} 个，不符 ${bad.length}：${bad.join(',')}）`, bad.length === 0);
-  else skip('总装 lattice-core-alpha', `${OUT} 无含该图的 GLB`);
+  const byKey = new Map(), hkSeen = [], hkBad = [];
+  for (const f of runtime) for (const im of imgBytes(path.join(OUT, f), /./)) {
+    const key = `${String(im.name).replace(/\.\d{3}$/, '')}|${pngDims(im.bytes)}`;
+    if (!byKey.has(key)) byKey.set(key, new Map());
+    const h = sha(im.bytes); if (!byKey.get(key).has(h)) byKey.get(key).set(h, []); byKey.get(key).get(h).push(f);
+    if (key === HK_KEY) { hkSeen.push(f); if (h !== sha(HK_LAT)) hkBad.push(f); }
+  }
+  // 已知并由主控接受的例外（有据可查，不许静默扩大）：
+  //   roof-normal|512x512 —— 庙区 / 方浜中路两套瓦面法线贴图同名同尺寸、字节不同，平均差 0.86/255（wave5-templeqa 发现 A，主控 2026-09-26 接受）。
+  const KNOWN_CLASH = new Set(['roof-normal|512x512']);
+  const clashes = [...byKey].filter(([, hs]) => hs.size > 1);
+  const clash = clashes.filter(([k]) => !KNOWN_CLASH.has(k)).map(([k, hs]) => `${k}: ${[...hs.values()].map((fs_) => fs_.join('+')).join(' vs ')}`);
+  const known = clashes.filter(([k]) => KNOWN_CLASH.has(k)).map(([k]) => k);
+  ok(`运行时 GLB 同「名 + 尺寸」贴图字节一致（${byKey.size} 个键，新冲突 ${clash.length}${clash.length ? '：' + clash.join('; ') : ''}；已接受例外 ${known.join(',') || '无'}）`, clash.length === 0);
+  if (hkSeen.length) ok(`总装 / 分区 GLB 的 hall-kit 格心（${HK_KEY}）全部 = hall-kit 源图（含该图 ${hkSeen.length} 个，不符 ${hkBad.length}：${hkBad.join(',')}）`, hkBad.length === 0);
+  else skip('总装 hall-kit 格心', `${OUT} 无含该图的 GLB`);
 }
 
 // ---------- 4) 程序化 hall 确实让位 + 碰撞世界记录 ----------
