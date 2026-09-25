@@ -229,6 +229,44 @@ export function convexDecompose(ringIn) {
   return polys;
 }
 
+// 两个简单多边形（可凹、无洞）的交集面积：各自凸分解后，逐对凸块做 Sutherland–Hodgman 裁剪求面积再求和
+//（凸分解块互不重叠，所以求和是精确值）。用于判定「两份 footprint 是否是同一栋」。
+function clipConvex(subject, clip) {
+  // clip 须为 CCW 凸环；subject 为凸环
+  let out = subject;
+  for (let i = 0; i < clip.length && out.length; i++) {
+    const a = clip[i], b = clip[(i + 1) % clip.length];
+    const side = (p) => (b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0]);
+    const inp = out;
+    out = [];
+    for (let k = 0; k < inp.length; k++) {
+      const P = inp[k], Q = inp[(k + 1) % inp.length];
+      const sp = side(P), sq = side(Q);
+      if (sp >= 0) out.push(P);
+      if ((sp >= 0) !== (sq >= 0)) {
+        const t = sp / (sp - sq);
+        out.push([P[0] + (Q[0] - P[0]) * t, P[1] + (Q[1] - P[1]) * t]);
+      }
+    }
+  }
+  return out;
+}
+
+export function polyIntersectionArea(polyA, polyB) {
+  const pa = convexDecompose(polyA).map(orientRing), pb = convexDecompose(polyB).map(orientRing);
+  let area = 0;
+  for (const a of pa) for (const b of pb) {
+    const c = clipConvex(a, b);
+    if (c.length >= 3) area += Math.abs(polyArea(c));
+  }
+  return area;
+}
+
+// 对称差面积 = |A| + |B| - 2|A∩B|
+export function polySymDiffArea(polyA, polyB) {
+  return Math.abs(polyArea(orientRing(polyA))) + Math.abs(polyArea(orientRing(polyB))) - 2 * polyIntersectionArea(polyA, polyB);
+}
+
 // 自交检测（忽略相邻边共享端点）
 function ringSelfIntersects(pts) {
   const n = pts.length;

@@ -45,5 +45,16 @@ const neg3 = reconcile(buildExpectations(layout, procStats), namesPlusSkipped);
 check('负例3: 应缺席对象在场被点名', neg3.unexpectedPresent.length === 1 && neg3.unexpectedPresent[0].id === skipped.id,
   JSON.stringify(neg3.unexpectedPresent));
 
+// 负例4（湖心亭模块路径）：与湖心亭 footprint 重合而让位的重复件若被渲染，必须报 unexpectedPresent
+const dup = (procStats.deferred || []).find(d => d.why === 'duplicate-footprint-of-huxin-ting');
+if (dup) {
+  const dupObj = layout.objects.find(o => o.id === dup.id);
+  const namesPlusDup = new Set([...names, `${dupObj.zone}|${dupObj.id}|${dupObj.kind}|${dupObj.lod}`]);
+  const neg4 = reconcile(buildExpectations(layout, procStats), namesPlusDup);
+  check(`负例4: 湖心亭重复 footprint 件 ${dup.id} 在场被点名`, neg4.unexpectedPresent.some(u => u.id === dup.id), JSON.stringify(neg4.unexpectedPresent));
+} else {
+  console.log('负例4: 本次构建无湖心亭重复 footprint 件（湖心亭模块未接入）— 不适用');
+}
+
 console.log(`\ncoverage-negative-test: ${pass} pass, ${fail} fail`);
 process.exit(fail ? 1 : 0);
