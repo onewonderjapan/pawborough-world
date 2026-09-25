@@ -1,17 +1,17 @@
 {
  "id": "huxin-ting",
  "glb": "<OUT_DIR>/huxin-ting.glb",
- "bytes": 1344336,
- "tris": 21556,
+ "bytes": 1354500,
+ "tris": 21664,
  "partTriCounts": {
   "deck": 12,
   "piles": 240,
-  "body1": 36,
+  "body1": 84,
   "gallery1": 264,
   "railing": 1920,
   "body2": 24,
-  "porch": 3880,
-  "tower": 6260,
+  "porch": 3904,
+  "tower": 6296,
   "finial": 260,
   "roof": 6242,
   "windows": 2418
@@ -19,12 +19,12 @@
  "partObjectCounts": {
   "deck": 1,
   "piles": 20,
-  "body1": 3,
+  "body1": 7,
   "gallery1": 22,
   "railing": 160,
   "body2": 2,
-  "porch": 38,
-  "tower": 21,
+  "porch": 40,
+  "tower": 24,
   "roof": 22,
   "windows": 3
  },
@@ -132,6 +132,9 @@
    4.8,
    6.2
   ],
+  "skirt": {
+   "out": 0.16
+  },
   "wa": {
    "pitch": 0.33,
    "halfW": 0.08,

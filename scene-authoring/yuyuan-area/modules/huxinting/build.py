@@ -58,8 +58,12 @@ D = dict(
     deckSide=1.3, deckBridge=2.3,              # 承台外伸（临桥侧 2.3 接九曲桥，接口 ≤0.3 m）
     deckBot=0.30, pileSize=0.4, pileTop=PLATFORM_Y - 0.25, pileBot=-0.6, pileSpacing=3.0,
     st1=3.4, st2=3.0, st3=2.8,                 # 一层/二层/塔亭三层 层高（塔亭比主楼高一层）
-    dadoH=0.95,                                # 一层白墙裙板高（少量白墙）
+    dadoH=0.95,                                # R1 白墙裙板高（R2 起不用：裙墙顶 = 该面一层窗下沿，见 skirt）
     win1=(1.60, 3.50), win2=(4.80, 6.20),      # 格心长窗带（一层 / 二层）
+    # R2 白色裙墙（槛墙，0010-G01/G05 一层窗下的白墙）：一层所有外露立面都做——主楼南、北（抱厦让位）、西、东端露出段，
+    # 塔亭一层南 / 北 / 东，抱厦前檐窗下。顶 = 该面一层窗下沿（窗直接坐在裙墙上，中间不露木色），
+    # 外皮 = 墙线外 out（与窗框外皮齐）。R1 只有主楼南北两段、顶 1.50 比窗下沿低 0.10、西面 / 塔亭 / 抱厦没有。
+    skirt=dict(out=0.16),
     # R2 瓦垄（几何）：沿每块瓦面（主楼 / 抱厦下檐四坡与上段两坡、塔亭攒尖与两道腰檐）顺坡做三角截面垄条，
     # 垄距 ≤0.33 m、垄宽 0.16、垄高 0.07（攒尖向宝顶收拢处随间距等比压低，间距 < 0.3 倍檐口间距处停）。
     wa=dict(pitch=0.33, halfW=0.08, h=0.07, sink=0.012, stopRatio=0.3),
@@ -319,8 +323,17 @@ GAL = D['gallery']
 gu0, gu1, gv0, gv1 = UW - GAL, UE + GAL, -V0 - GAL, V0 + GAL
 prism('body1', [(UW + 0.12, -V0 + 0.12), (UE + 0.2, -V0 + 0.12), (UE + 0.2, V0 - 0.12), (UW + 0.12, V0 - 0.12)],
       PLATFORM_Y, PLATFORM_Y + D['st1'], 'ht-wood-red', 'body1')
-box_uv('ht__dado-s', UW + 0.12, -V0 + 0.12, UE - 0.12, -V0 - 0.02, PLATFORM_Y, PLATFORM_Y + D['dadoH'], 'ht-plaster-white', 'body1')
-box_uv('ht__dado-n', UW + 0.12, V0 - 0.12, UE - 0.12, V0 + 0.02, PLATFORM_Y, PLATFORM_Y + D['dadoH'], 'ht-plaster-white', 'body1')
+# R2 白色裙墙（主楼）：墙面（±(V0-0.12) / UW+0.12）向外 skirt.out，顶 = 一层窗下沿 W1A；
+# 西段包住两个西角，南北段顶头抵西段内皮，不留共面重叠（防 z-fight）。东端：主楼东山墙在塔亭两侧露出的段落。
+SKO = D['skirt']['out']
+SK1 = D['win1'][0]
+box_uv('ht__dado-w', UW + 0.12 - SKO, -V0 + 0.12 - SKO, UW + 0.12, V0 - 0.12 + SKO, PLATFORM_Y, SK1, 'ht-plaster-white', 'body1')
+box_uv('ht__dado-s', UW + 0.12, -V0 + 0.12 - SKO, UE + 0.2, -V0 + 0.12, PLATFORM_Y, SK1, 'ht-plaster-white', 'body1')
+box_uv('ht__dado-n-w', UW + 0.12, V0 - 0.12, -D['porch']['uHalf'], V0 - 0.12 + SKO, PLATFORM_Y, SK1, 'ht-plaster-white', 'body1')
+box_uv('ht__dado-n-e', D['porch']['uHalf'], V0 - 0.12, UE + 0.2, V0 - 0.12 + SKO, PLATFORM_Y, SK1, 'ht-plaster-white', 'body1')
+_tv = D['tower']['half'] - 0.12 + SKO          # 塔亭裙墙外皮（塔亭墙线 ±(half-0.12) 外 SKO）
+box_uv('ht__dado-es', UE + 0.2, -V0 + 0.12 - SKO, UE + 0.2 + SKO, -_tv, PLATFORM_Y, SK1, 'ht-plaster-white', 'body1')
+box_uv('ht__dado-en', UE + 0.2, _tv, UE + 0.2 + SKO, V0 - 0.12 + SKO, PLATFORM_Y, SK1, 'ht-plaster-white', 'body1')
 
 # 一层外廊柱列（出檐线上；抱厦占用段跳过）
 col_xy = []
@@ -535,6 +548,9 @@ box_uv('ht__pframe-t', -1.35, V0 - 0.12, 1.35, V0 + 0.16, PLATFORM_Y + 2.25, PLA
 # 抱厦前檐窗：前面无墙，窗扇悬在柱间，做双面（从抱厦里看也有框、格心、玻璃）
 win_row('ht__pwin-w', -PU + 0.30, V0 + PD - 0.05, -0.30, V0 + PD - 0.05, PLATFORM_Y + 0.95, PLATFORM_Y + 2.40, group='porch', two_sided=True)
 win_row('ht__pwin-e', 0.30, V0 + PD - 0.05, PU - 0.30, V0 + PD - 0.05, PLATFORM_Y + 0.95, PLATFORM_Y + 2.40, group='porch', two_sided=True)
+# R2 抱厦前檐窗下白色裙墙（R1 窗下是空的）：角柱内皮到中间入口两侧，顶 = 前檐窗下沿，厚同窗框（双面可见）
+for _k, (_a, _b) in enumerate(((-PU + 0.19, -0.30), (0.30, PU - 0.19))):
+    box_uv('ht__dado-p%d' % _k, _a, V0 + PD - 0.10, _b, V0 + PD + 0.04, PLATFORM_Y, PLATFORM_Y + 0.95, 'ht-plaster-white', 'porch')
 PQ = D['plaque']
 box_uv('ht__plaque', -PQ['w'] / 2, V0 + PD - 0.34, PQ['w'] / 2, V0 + PD - 0.28, PQ['z0'], PQ['z0'] + PQ['h'], 'ht-win-dark', 'porch')
 box_uv('ht__plaque-t', -PQ['w'] / 2 - 0.06, V0 + PD - 0.35, PQ['w'] / 2 + 0.06, V0 + PD - 0.27, PQ['z0'] + PQ['h'], PQ['z0'] + PQ['h'] + 0.06, 'ht-wood-red', 'porch')
@@ -555,6 +571,11 @@ for ti, (z0, z1) in enumerate(tiers):
     win_row('ht__tw%d-e' % ti, TU1 - 0.06, TV1 - 0.2, TU1 - 0.06, TV0 + 0.2, wa, wb, group='tower')
     if ti > 0:
         win_row('ht__tw%d-w' % ti, TU0 + 0.06, TV0 + 0.2, TU0 + 0.06, TV1 - 0.2, wa, wb, group='tower')
+# R2 塔亭一层白色裙墙：南 / 北（主楼东山墙以东）、东；顶 = 塔亭一层窗下沿（tiers[0] 起 +1.0）
+_t1 = tiers[0][0] + 1.0
+box_uv('ht__dado-te', TU1 - 0.12, TV0 + 0.12 - SKO, TU1 - 0.12 + SKO, TV1 - 0.12 + SKO, PLATFORM_Y, _t1, 'ht-plaster-white', 'tower')
+box_uv('ht__dado-ts', UE + 0.2, TV0 + 0.12 - SKO, TU1 - 0.12, TV0 + 0.12, PLATFORM_Y, _t1, 'ht-plaster-white', 'tower')
+box_uv('ht__dado-tn', UE + 0.2, TV1 - 0.12, TU1 - 0.12, TV1 - 0.12 + SKO, PLATFORM_Y, _t1, 'ht-plaster-white', 'tower')
 for si, sk in enumerate((tw['skirt1'], tw['skirt2'])):
     eave_kit.eave_skirt('towerskirt%d' % si,
                         [(TU0 - 0.05, TV0 - 0.05), (TU1 + 0.05, TV0 - 0.05), (TU1 + 0.05, TV1 + 0.05), (TU0 - 0.05, TV1 + 0.05)],

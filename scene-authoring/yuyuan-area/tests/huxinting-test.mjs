@@ -622,5 +622,98 @@ function components(p) {
   ok(`瓦垄材质 = 同一灰瓦 ht-tile-grey（不符 ${wrongMat.length}）`, heights.length > 0 && wrongMat.length === 0, wrongMat.join(','));
 }
 
+// ---------------- 11) R2-2 白色裙墙（主控 R2：「一层窗下缺白色槛墙 / 裙板」，GLB 实测） ----------------
+// 一层外露立面逐面水平射线（本地系，从立面外 4 m 射向墙）：外廊栏杆 / 望柱 / 廊柱 / 额枋在墙前，不计入（射线穿过）。
+//   ① 覆盖：台面上 0.30 与 0.80 m 两个高度，每 0.25 m 一条，首个命中面材质 = ht-plaster-white 的比例 ≥ 0.9；
+//   ② 贴窗：首命中为白墙的采样列向上每 0.01 m 扫，白墙顶 = 最后一个命中白墙的高度；该面一层窗下沿 = 同一立面
+//      （白墙外皮 ±0.35 m 内、采样段横向 ±0.3 m 内）窗框件（__win-*-frame）顶点最低高度；窗下沿 − 白墙顶的中位数 ≤ 0.03 m（窗直接坐在裙墙上）。
+// 立面划分（本地系，U0/V0 由 layout 重算）：主楼南 / 北（抱厦让位）/ 西；塔亭一层东 / 南 / 北；抱厦前檐窗下（中间入口让开）。
+// 塔亭宽 4.2 / 抱厦半宽 2.2 / 进深 2.2 与 build.py 一致的设计值（同承台外伸常量的重算口径）。
+{
+  const TOWER_W = 4.2, TOWER_HALF = 2.1, PORCH_HALF = 2.2, PORCH_DEPTH = 2.2;
+  const UE = U0 - TOWER_W;
+  const skip = /-(rail|pick)-|__gcol-|__pcol-|__lintel-/;
+  const T = [];
+  for (const [nm, p] of parts) {
+    if (skip.test(nm)) continue;
+    const L = p.verts.map(toLocal);
+    for (const [a, b, c, prim] of p.tris) T.push({ A: L[a], B: L[b], C: L[c], mat: gltf.materials[prim.material]?.name, nm });
+  }
+  const white = (h) => h && h.mat === 'ht-plaster-white';
+  // 射线：axis 0 = 沿 u，1 = 沿 v；sgn = ±1
+  function cast(tris, o, axis, sgn) {
+    const d = axis === 0 ? [sgn, 0, 0] : [0, sgn, 0];
+    let best = null, bt = Infinity;
+    for (const t of tris) {
+      const e1 = [t.B[0] - t.A[0], t.B[1] - t.A[1], t.B[2] - t.A[2]], e2 = [t.C[0] - t.A[0], t.C[1] - t.A[1], t.C[2] - t.A[2]];
+      const pv = [d[1] * e2[2] - d[2] * e2[1], d[2] * e2[0] - d[0] * e2[2], d[0] * e2[1] - d[1] * e2[0]];
+      const det = e1[0] * pv[0] + e1[1] * pv[1] + e1[2] * pv[2];
+      if (Math.abs(det) < 1e-12) continue;
+      const tv = [o[0] - t.A[0], o[1] - t.A[1], o[2] - t.A[2]];
+      const uu = (tv[0] * pv[0] + tv[1] * pv[1] + tv[2] * pv[2]) / det;
+      if (uu < 0 || uu > 1) continue;
+      const qv = [tv[1] * e1[2] - tv[2] * e1[1], tv[2] * e1[0] - tv[0] * e1[2], tv[0] * e1[1] - tv[1] * e1[0]];
+      const vv = (d[0] * qv[0] + d[1] * qv[1] + d[2] * qv[2]) / det;
+      if (vv < 0 || uu + vv > 1) continue;
+      const tt = (e2[0] * qv[0] + e2[1] * qv[1] + e2[2] * qv[2]) / det;
+      if (tt > 1e-6 && tt < bt) { bt = tt; best = t; }
+    }
+    return best ? { ...best, t: bt, at: axis === 0 ? o[0] + sgn * bt : o[1] + sgn * bt } : null;
+  }
+  const P = PLATFORM_Y;
+  const facades = [
+    { tag: '主楼南', axis: 1, sgn: 1, from: -(V0 + 4), spans: [[-U0 + 0.4, UE - 0.3]] },
+    { tag: '主楼北（抱厦让位）', axis: 1, sgn: -1, from: V0 + 4, spans: [[-U0 + 0.4, -PORCH_HALF - 0.2], [PORCH_HALF + 0.2, UE - 0.3]] },
+    { tag: '主楼西', axis: 0, sgn: 1, from: -(U0 + 4), spans: [[-V0 + 0.4, V0 - 0.4]] },
+    { tag: '塔亭东', axis: 0, sgn: -1, from: U0 + 4, spans: [[-TOWER_HALF + 0.3, TOWER_HALF - 0.3]] },
+    { tag: '塔亭南', axis: 1, sgn: 1, from: -(V0 + 4), spans: [[UE + 0.5, U0 - 0.3]] },
+    { tag: '塔亭北', axis: 1, sgn: -1, from: V0 + 4, spans: [[UE + 0.5, U0 - 0.3]] },
+    { tag: '抱厦前檐窗下', axis: 1, sgn: -1, from: V0 + PORCH_DEPTH + 4, spans: [[-1.9, -0.45], [0.45, 1.9]] },
+  ];
+  const frameVerts = [...parts.keys()].filter((n) => /__win-(main|tower|porch)-frame$/.test(n)).flatMap((n) => parts.get(n).verts.map(toLocal));
+  for (const f of facades) {
+    const lat = f.axis === 0 ? 1 : 0;              // 沿立面的横向坐标
+    const ss = [];
+    for (const [s0, s1] of f.spans) for (let s = s0; s <= s1 + 1e-9; s += 0.25) ss.push(s);
+    const lo = Math.min(...f.spans.flat()) - 0.3, hi = Math.max(...f.spans.flat()) + 0.3;
+    const tris = T.filter((t) => {
+      const l = [t.A[lat], t.B[lat], t.C[lat]], h = [t.A[2], t.B[2], t.C[2]];
+      return Math.max(...l) >= lo && Math.min(...l) <= hi && Math.max(...h) >= P + 0.2 && Math.min(...h) <= P + 1.6;
+    });
+    const O = (s, h) => (f.axis === 0 ? [f.from, s, h] : [s, f.from, h]);
+    let hitW = 0, n = 0;
+    const faceAt = [];
+    const tops = [];
+    for (const s of ss) {
+      for (const dh of [0.30, 0.80]) {
+        const r = cast(tris, O(s, P + dh), f.axis, f.sgn);
+        n++;
+        if (white(r)) { hitW++; if (dh === 0.30) faceAt.push(r.at); }
+      }
+      const r0 = cast(tris, O(s, P + 0.30), f.axis, f.sgn);
+      if (!white(r0)) continue;
+      let top = P + 0.30;
+      for (let h = P + 0.31; h <= P + 1.6; h += 0.01) {
+        if (!white(cast(tris, O(s, h), f.axis, f.sgn))) break;
+        top = h;
+      }
+      tops.push(top);
+    }
+    const frac = n ? hitW / n : 0;
+    ok(`白色裙墙 ${f.tag}：台面上 0.30 / 0.80 m 射线首命中白墙 ${hitW}/${n} = ${(frac * 100).toFixed(0)}% ≥ 90%`, frac >= 0.9);
+    let sill = NaN, gap = NaN;
+    if (faceAt.length && tops.length) {
+      faceAt.sort((a, b) => a - b);
+      const plane = faceAt[faceAt.length >> 1];
+      const cand = frameVerts.filter((q) => Math.abs(q[f.axis] - plane) <= 0.35 && f.spans.some(([s0, s1]) => q[lat] >= s0 - 0.3 && q[lat] <= s1 + 0.3) && q[2] >= P + 0.5 && q[2] <= P + 2.0);
+      if (cand.length) sill = Math.min(...cand.map((q) => q[2]));
+      const gaps = tops.map((t) => sill - t).sort((a, b) => a - b);
+      gap = gaps[gaps.length >> 1];
+    }
+    ok(`白色裙墙 ${f.tag}：裙墙顶贴一层窗下沿（窗下沿 ${Number.isFinite(sill) ? sill.toFixed(3) : '无'}，差值中位数 ${Number.isFinite(gap) ? gap.toFixed(3) : '无'} m ≤ 0.03）`,
+      Number.isFinite(gap) && gap <= 0.03 && gap >= -0.03);
+  }
+}
+
 console.log(`RESULT pass=${pass} fail=${fail} skipped=${skipped}`);
 if (fail) { console.log('FAILURES:', failures.join(' | ')); process.exit(1); }
