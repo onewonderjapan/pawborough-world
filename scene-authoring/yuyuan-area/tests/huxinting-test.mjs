@@ -495,5 +495,53 @@ const isWood = (m) => !m.pbrMetallicRoughness.baseColorTexture &&
   ok(`无竖条窗残留（竖棂件 ${strips.length}、旧暗色窗底件 ${darkWin.length}）`, strips.length === 0 && darkWin.length === 0);
 }
 
+// ---------------- 9) HUXINTING=1：没有别的已渲染对象与湖心亭 footprint 重合 ----------------
+// 口径：对称差面积 ≤ 5% 湖心亭 footprint 面积即「重合」。这里用 0.05 m 网格采样独立估算
+// （build-scene 用凸分解 + 多边形裁剪精确求，两套方法互不引用）。
+// 例：bld-228035340（outerBuilding，同一 OSM way 228035340）若照常渲染，会在浏览器里把湖心亭一层包成 5 m 米色体块。
+if (HUXINTING) {
+  const inPoly = (x, z, poly) => {
+    let c = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const [xi, zi] = poly[i], [xj, zj] = poly[j];
+      if ((zi > z) !== (zj > z) && x < ((xj - xi) * (z - zi)) / (zj - zi) + xi) c = !c;
+    }
+    return c;
+  };
+  const H = HT.geometry.footprint;
+  const hx = H.map((p) => p[0]), hz = H.map((p) => p[1]);
+  const STEP = 0.05, cell = STEP * STEP;
+  let hArea = 0;
+  for (let x = Math.min(...hx) + STEP / 2; x < Math.max(...hx); x += STEP)
+    for (let z = Math.min(...hz) + STEP / 2; z < Math.max(...hz); z += STEP) if (inPoly(x, z, H)) hArea += cell;
+  const coincide = [];
+  for (const o of LAYOUT.objects) {
+    const fp = o.geometry && o.geometry.footprint;
+    if (o.id === 'huxin-ting' || o.skipRender || !fp || fp.length < 3) continue;
+    const ox = fp.map((p) => p[0]), oz = fp.map((p) => p[1]);
+    if (Math.max(...ox) < Math.min(...hx) || Math.min(...ox) > Math.max(...hx) || Math.max(...oz) < Math.min(...hz) || Math.min(...oz) > Math.max(...hz)) continue;
+    let sym = 0;
+    for (let x = Math.min(...hx, ...ox) + STEP / 2; x < Math.max(...hx, ...ox); x += STEP)
+      for (let z = Math.min(...hz, ...oz) + STEP / 2; z < Math.max(...hz, ...oz); z += STEP) if (inPoly(x, z, H) !== inPoly(x, z, fp)) sym += cell;
+    if (sym <= 0.05 * hArea) coincide.push({ id: o.id, kind: o.kind, ratio: sym / hArea });
+  }
+  console.log(`  footprint 重合（layout，网格估算，湖心亭 ${hArea.toFixed(1)} m²）：${JSON.stringify(coincide.map((c) => [c.id, c.kind, +c.ratio.toFixed(4)]))}`);
+  // 这些对象不得出现在任何导出 GLB（程序化分区 / 总装 / 运行时分区）里
+  const glbs = fs.readdirSync(OUT).filter((f) => /^(procedural-.*|scene-areas|zone-[a-z0-9-]+)\.glb$/.test(f));
+  const rendered = [];
+  for (const f of glbs) {
+    const b = fs.readFileSync(path.join(OUT, f));
+    const names = (JSON.parse(b.subarray(20, 20 + b.readUInt32LE(12)).toString('utf8')).nodes || []).map((n) => n.name || '');
+    for (const c of coincide) for (const nm of names) if (nm.includes(`|${c.id}|`) || nm === c.id) rendered.push(`${f}:${nm}`);
+  }
+  ok(`HUXINTING=1：没有别的已渲染对象与湖心亭 footprint 重合（重合 ${coincide.length} 件，在 ${glbs.length} 个 GLB 中渲染 ${rendered.length} 处）`,
+    rendered.length === 0, rendered.slice(0, 4).join(','));
+  const ps = fs.existsSync(path.join(OUT, 'procedural-stats.json')) ? JSON.parse(fs.readFileSync(path.join(OUT, 'procedural-stats.json'), 'utf8')) : { deferred: [] };
+  const dup = new Set(ps.deferred.filter((d) => d.why === 'duplicate-footprint-of-huxin-ting').map((d) => d.id));
+  const want = new Set(coincide.map((c) => c.id));
+  ok(`build-scene deferred[] 以 'duplicate-footprint-of-huxin-ting' 记下的 = layout 重算的重合件（记 ${[...dup].join(',') || '无'}；应 ${[...want].join(',') || '无'}）`,
+    dup.size === want.size && [...want].every((id) => dup.has(id)));
+}
+
 console.log(`RESULT pass=${pass} fail=${fail} skipped=${skipped}`);
 if (fail) { console.log('FAILURES:', failures.join(' | ')); process.exit(1); }

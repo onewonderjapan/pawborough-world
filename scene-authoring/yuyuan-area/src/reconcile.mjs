@@ -43,6 +43,11 @@ export function buildExpectations(layout, proceduralStats) {
       expectations.push({ id: o.id, expect: 'present', match: (nm) => nm === o.id || nm.startsWith(o.id + '.'), note: '店屋实例锚（店面基面=连续铺装+模型自身，无独立垫座节点）' });
       continue;
     }
+    // 与湖心亭站点模块 footprint 重合的重复件（build-scene HUXINTING 路径让位）：必须缺席，在场即报 unexpectedPresent
+    if (deferredMap.get(o.id)?.why === 'duplicate-footprint-of-huxin-ting') {
+      expectations.push({ id: o.id, expect: 'absent', reason: `duplicate footprint of ${deferredMap.get(o.id).duplicateOf} (represented by the huxinting site module)` });
+      continue;
+    }
     // 其余（含 shopunit-* plinth / gateAnchor / facadeBay / 植物等）：按 zone|id| 节点匹配
     expectations.push({
       id: o.id, expect: 'present',

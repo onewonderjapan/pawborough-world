@@ -10,7 +10,7 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 import {
   bbox, polyArea, centroid, offsetPolySafe, dist2d, principalAxis, orientRing,
   shapeMesh, shapeGeo, wallRing, makeRoof, ribbon, corridor, rock, tree,
-  dropFloatingSegments,
+  dropFloatingSegments, polySymDiffArea,
 } from './lib.mjs';
 
 // Node 下 GLTFExporter 需要 FileReader（无贴图也会走到该分支）
@@ -957,6 +957,28 @@ for (const [z, g] of Object.entries(zoneGroups)) { g.name = 'ZN-' + z; }
 const stats = { meshes: 0, byZone: {}, byKind: {} };
 const deferred = [];
 
+// HUXINTING：与湖心亭 footprint 重合的其他已渲染对象（对称差面积 ≤ 5% 湖心亭面积）一并让位。
+// 例：bld-228035340（outerBuilding）与 huxin-ting 同为 OSM way 228035340，照常渲染会把湖心亭一层包成 5 m 米色体块。
+// 规则从 layout 几何算，不写死 id；reconcile 对这些 id 期望「缺席」并检查确实缺席。
+const HUXINTING_DUP = new Map();
+if (HUXINTING) {
+  const ht = layout.objects.find(o => o.id === 'huxin-ting');
+  const H = ht && ht.geometry && ht.geometry.footprint;
+  if (H && H.length >= 3) {
+    const hArea = Math.abs(polyArea(orientRing(H)));
+    const hb = bbox(H);
+    for (const o of layout.objects) {
+      const fp = o.geometry && o.geometry.footprint;
+      if (o.id === 'huxin-ting' || o.skipRender || !fp || fp.length < 3) continue;
+      const b = bbox(fp);
+      if (b.x1 < hb.x0 || b.x0 > hb.x1 || b.z1 < hb.z0 || b.z0 > hb.z1) continue;
+      const ratio = polySymDiffArea(H, fp) / hArea;
+      if (ratio <= 0.05) HUXINTING_DUP.set(o.id, ratio);
+    }
+  }
+  console.log('HUXINTING duplicate footprints of huxin-ting:', JSON.stringify([...HUXINTING_DUP].map(([id, r]) => [id, +r.toFixed(4)])));
+}
+
 for (const o of layout.objects) {
   if (o.skipRender) { deferred.push({ id: o.id, kind: o.kind, why: o.disposition }); continue; }
   if (SITE_MODULES && SITE_MODULE_KINDS.has(o.kind)) { deferred.push({ id: o.id, kind: o.kind, why: 'site-module' }); continue; }
@@ -966,6 +988,10 @@ for (const o of layout.objects) {
   if (HALL_KIT && HALL_KIT_IDS.has(o.id)) { deferred.push({ id: o.id, kind: o.kind, why: 'hall-kit' }); continue; }
   if (ROCKERY_KIT && ROCKERY_IDS.has(o.id)) { deferred.push({ id: o.id, kind: o.kind, why: 'rockery-kit' }); continue; }
   if (HUXINTING && HUXINTING_IDS.has(o.id)) { deferred.push({ id: o.id, kind: o.kind, why: 'huxinting-module' }); continue; }
+  if (HUXINTING && HUXINTING_DUP.has(o.id)) {
+    deferred.push({ id: o.id, kind: o.kind, why: 'duplicate-footprint-of-huxin-ting', duplicateOf: 'huxin-ting', symDiffRatio: +HUXINTING_DUP.get(o.id).toFixed(4) });
+    continue;
+  }
   if (BAZAAR_TOWERS && BAZAAR_TOWER_IDS.has(o.id)) { deferred.push({ id: o.id, kind: o.kind, why: 'bazaar-tower-module' }); continue; }
   const ud = { id: o.id, zone: o.zone, kind: o.kind, lod: o.lod };
   if (o.name) ud.name = o.name;
