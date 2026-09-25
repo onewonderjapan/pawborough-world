@@ -20,6 +20,12 @@
 逐边时檐口外缘 = 各边外移 over_i 的偏移多边形：角点取相邻两边偏移线交点（阳角另加出翘 chu），两条共线边出檐不同
 处在同一墙线点放两个取样（前一边 / 后一边的出檐），檐口在此成直端台阶，eave_skirt 的瓦面 / 瓦头 / 封檐板 / 檐底
 在该竖面上连成收头。标量 over 走原代码路径，输出逐字节不变。xieshan_roof / zanjian_roof 仍只收标量。
+
+面朝向（2026-09-26 wave6-eavekit E1）：kit 在右手局部系 (u, v, h) 里出网格，面的顶点序按右手 (b-a)×(c-a) 即朝外法线——
+瓦面（-tile / -lower / -upper / -cone / -satou）朝上、檐底（-soffit）朝下、瓦头 / 封檐板朝外、山花博风朝外、
+正脊 / 戗脊 / 斗拱块朝体外（此前 -tile、-soffit、-ridge 侧面、-qiangji、斗拱块是反的）。只翻了面序（保留首顶点，
+四边形对角线不变），顶点、UV、面数不变。使用者的局部 → 世界换算若是镜像（行列式 < 0，如 hall-kit 的 (u,h,v)、
+bazaar-tower-kit 的 to_b），须在注入口把面序倒过来；检测见 eave_facing.py / test_eave_kit.py。
 """
 import math
 
@@ -237,7 +243,7 @@ def eave_skirt(name, poly, z, prm, part, root_rise=None, top_rings=2, with_soffi
     for j in range(top_rings):
         for i in range(m):
             k = (i + 1) % m
-            faces.append((j * m + i, j * m + k, (j + 1) * m + k, (j + 1) * m + i))
+            faces.append((j * m + i, (j + 1) * m + i, (j + 1) * m + k, j * m + k))     # 正面朝上（E1）
     _ADD(name + '-tile', items, faces, 'roof', part)
 
     # 檐口立面：上段瓦头（深灰）、下段封檐板（深红木）
@@ -262,7 +268,7 @@ def eave_skirt(name, poly, z, prm, part, root_rise=None, top_rings=2, with_soffi
             it.append(((p[0], p[1], z + prm.get('soffitRise', 0.15)), (p[0] + p[1], over if 'ov' not in sm else sm['ov'])))
         for i in range(m):
             k = (i + 1) % m
-            fc.append((2 * i, 2 * k, 2 * k + 1, 2 * i + 1))
+            fc.append((2 * i, 2 * i + 1, 2 * k + 1, 2 * k))                       # 正面朝下（E1）
         _ADD(name + '-soffit', it, fc, 'dark', part)
     return S
 
@@ -278,7 +284,7 @@ def brackets(name, points, z, part, w=0.5, d=0.55, h=0.32, box=None):
                 corners.append((cu + tu * ww * 0.5 * a + nu * dd * 0.5 * b, cv + tv * ww * 0.5 * a + nv * dd * 0.5 * b))
             z0, z1 = z - h + off, z - h + off + hh
             it = [((c[0], c[1], z0), (0, 0)) for c in corners] + [((c[0], c[1], z1), (0, 0)) for c in corners]
-            fc = [(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]
+            fc = [(0, 1, 2, 3), (4, 7, 6, 5), (0, 4, 5, 1), (1, 5, 6, 2), (2, 6, 7, 3), (3, 7, 4, 0)]   # 朝体外（E1）
             _ADD('%s-%d-%d' % (name, i, lvl), it, fc, 'wood', part)
 
 
@@ -351,7 +357,7 @@ def xieshan_roof(name, rect, z_eave, prm, part):
         it.append(((ub, vb, z_eave + 0.1), (0, 1)))
     for i in range(mm):
         k2 = (i + 1) % mm
-        fc.append((2 * i, 2 * k2, 2 * k2 + 1, 2 * i + 1))
+        fc.append((2 * i, 2 * i + 1, 2 * k2 + 1, 2 * k2))                            # 正面朝下（E1）
     _ADD(name + '-soffit', it, fc, 'dark', part)
 
     # 上段：两坡（沿 u 方向的长边），山花在 u 两端内收 shou
@@ -407,7 +413,7 @@ def xieshan_roof(name, rect, z_eave, prm, part):
     for c in range(ns):
         for k in range(4):
             a, b = c * 4 + k, c * 4 + (k + 1) % 4
-            ridge_faces.append((a, b, b + 4, a + 4))
+            ridge_faces.append((a, a + 4, b + 4, b))                                 # 朝体外（E1）
     ridge_faces.append((0, 1, 2, 3))
     last = ns * 4
     ridge_faces.append((last + 3, last + 2, last + 1, last))
@@ -430,7 +436,7 @@ def xieshan_roof(name, rect, z_eave, prm, part):
         for c in range(segs):
             for k in range(4):
                 a, b = c * 4 + k, c * 4 + (k + 1) % 4
-                fc.append((a, b, b + 4, a + 4))
+                fc.append((a, a + 4, b + 4, b))                                      # 朝体外（E1）
         _ADD(name + '-qiangji-%d%d' % (int(cu_b), int(cv_b)), it, fc, 'dark', part)
 
 
@@ -486,5 +492,5 @@ def zanjian_roof(name, rect, z_eave, apex_z, prm, part):
         it.append(((ub, vb, z_eave + 0.1), (0, 1)))
     for i in range(mm):
         k2 = (i + 1) % mm
-        fc.append((2 * i, 2 * k2, 2 * k2 + 1, 2 * i + 1))
+        fc.append((2 * i, 2 * i + 1, 2 * k2 + 1, 2 * k2))                            # 正面朝下（E1）
     _ADD(name + '-soffit', it, fc, 'dark', part)

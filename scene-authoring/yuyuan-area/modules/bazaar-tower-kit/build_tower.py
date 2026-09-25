@@ -810,16 +810,33 @@ def architrave(name, r, s0, s1, z0, z1, timber='wood'):
 # ================================================================ 几何组装
 sys.path.insert(0, os.path.join(os.path.dirname(HERE), 'shared'))   # modules/shared —— eave_kit 主控正本，只读
 EK = __import__('eave_kit')
-EK.init(lambda n, it, f, m, part: add_local(n, it, f, m, part=part))
+
+def _ek_mirrored(conv=None):
+    """kit 局部 (u,v,h)（右手，面绕序即朝外法线）→ Blender 的换算是否镜像（水平行列式 < 0）。
+    本套件主局部系 v = 前街边 +90°（地图 x,z 里），to_b 再把地图 z 取负落到 Blender y，整体行列式 = −1：
+    kit 的面要倒序才能在 Blender / GLB 里保持朝外（同 hall-kit 注入口 v→-v 时倒序）。conv 为旋转系时一并计入。"""
+    c = conv or (lambda a, b: (a, b))
+    o, x, y = to_b(*c(0.0, 0.0), 0.0), to_b(*c(1.0, 0.0), 0.0), to_b(*c(0.0, 1.0), 0.0)
+    return (x[0] - o[0]) * (y[1] - o[1]) - (x[1] - o[1]) * (y[0] - o[0]) < 0
+
+def _ek_add(conv=None):
+    flip = _ek_mirrored(conv)
+    def _add(n, it, f, m, part):
+        if flip:                                      # 倒序但保留首顶点（四边形对角线不变）
+            f = [(q[0],) + tuple(reversed(q[1:])) for q in f]
+        if conv is not None:
+            it = [((*conv(p[0], p[1]), p[2]), uv) for p, uv in it]
+        add_local(n, it, f, m, part=part)
+    return _add
+
+EK.init(_ek_add())
 
 def ek_frame(conv):
     """eave_kit 在旋转系里出网格（角塔 / 纵向屋面）：items 的 (u,v) 经 conv 转回主局部系。"""
-    def _add(n, it, f, m, part):
-        add_local(n, [((*conv(p[0], p[1]), p[2]), uv) for p, uv in it], f, m, part=part)
-    EK.init(_add)
+    EK.init(_ek_add(conv))
 
 def ek_reset():
-    EK.init(lambda n, it, f, m, part: add_local(n, it, f, m, part=part))
+    EK.init(_ek_add())
 
 def ekp_for(storey):
     e = dict(EKP0)
