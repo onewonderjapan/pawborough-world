@@ -1,0 +1,217 @@
+{
+  "id": "bld-428202602",
+  "name": "悦宾楼",
+  "zone": "bazaar",
+  "source": "wave4 口径（GOAL wave4-bazaar4）：1990 年代商城改建的多层仿古楼；层数与墙顶高照 layout（4 层 / 13.6 m = 墙顶，屋面另加）；所有匾额 / 招牌为空板，不写字；不发明照片以外的独特构件；形制读法来自主控文字规格（机主私有照片不经执行者）。",
+  "frontEdge": [
+    1,
+    2
+  ],
+  "frontName": "粮厅路",
+  "sharedEdgeRule": true,
+  "eaveClipHidden": true,
+  "budget": {
+    "trisMax": 60000,
+    "glbMaxMB": 3.0,
+    "maxHeightM": 27.0
+  },
+  "detail": {
+    "eaveSegM": 1.7,
+    "bevelM": 0.0,
+    "kinkDeg": 5.0
+  },
+  "eaves": {
+    "overhangM": 1.2,
+    "cornerLiftM": 0.9,
+    "cornerReachM": 2.6,
+    "fasciaDropM": 0.24
+  },
+  "massing": {
+    "plinthHeightM": 0.45,
+    "plinthOutsetM": 0.12,
+    "wallInsetM": 0.3,
+    "storeyHeightsM": [
+      4.4,
+      3.1,
+      3.1,
+      3.0
+    ],
+    "wallTopM": 13.6,
+    "setbackStoreys": [],
+    "setbackStreetM": 0.0,
+    "topPlan": "rect"
+  },
+  "roof": {
+    "type": "xishan",
+    "breakAboveM": 2.6,
+    "ridgeAboveM": 6.2,
+    "breakInsetFrac": 0.36,
+    "gableInsetM": 1.4,
+    "eaveKit": {
+      "over": 1.3,
+      "qiao": 0.95,
+      "chu": 0.4,
+      "reach": 2.8
+    },
+    "ridgeAxis": "u"
+  },
+  "facades": {
+    "bayRhythmM": [
+      3.3,
+      3.6
+    ],
+    "columnSizeM": 0.32,
+    "columnBaseM": 0.06,
+    "frameLintelHM": 0.25,
+    "frameProjectM": 0.05,
+    "frameDepthM": 0.18,
+    "longWindowLeaves": 5,
+    "longWindowLatticeFrac": 0.62,
+    "leafGapM": 0.05,
+    "halfWindowLatticeFrac": 0.5,
+    "balustradePostPitchM": 2.3,
+    "balustradeSlatPitchM": 0.12,
+    "balustradeSlatBarM": 0.045,
+    "guoluoCellsPerM": 8.0,
+    "galleryDepthM": 1.1,
+    "balustradeHM": 1.0,
+    "fasciaDepthM": 0.45,
+    "window": {
+      "widthM": 1.7,
+      "heightM": 1.9,
+      "sillM": 0.9
+    },
+    "shopfront": {
+      "glassHeadM": 3.9,
+      "sillM": 0.9,
+      "frameM": 0.12,
+      "mullionM": 0.08,
+      "mullionPitchM": 1.05
+    },
+    "galleryStoreys": [],
+    "styles": {
+      "street": {
+        "1": {
+          "style": "shop",
+          "signBand": true,
+          "fascia": "caihua",
+          "bayPlaques": false,
+          "glassHeadM": 3.0,
+          "sillM": 0.7
+        },
+        "2": {
+          "style": "screen",
+          "caihua": true
+        },
+        "3": {
+          "style": "screen",
+          "caihua": true
+        },
+        "4": {
+          "style": "screen",
+          "caihua": true
+        }
+      },
+      "plain": {
+        "1": {
+          "style": "blank"
+        },
+        "2": {
+          "style": "ends",
+          "caihua": true,
+          "pitchM": 4.6
+        },
+        "3": {
+          "style": "ends",
+          "caihua": true,
+          "pitchM": 4.6
+        },
+        "4": {
+          "style": "ends4"
+        }
+      }
+    },
+    "guoluoBarFrac": 0.3,
+    "guoluoBackKey": "wood"
+  },
+  "materials": {
+    "timberTint": "7a2c20",
+    "plasterTint": "f2efe8",
+    "plinthTint": "8b9089",
+    "gilded": "b08a3e",
+    "glass": "46525a",
+    "glassAlpha": 0.5,
+    "dark": "241d18",
+    "shopInterior": "b08a60",
+    "roofTile": [
+      1.4,
+      1.2
+    ],
+    "timberTile": [
+      0.9,
+      2.2
+    ],
+    "plasterTile": [
+      2.2,
+      2.2
+    ],
+    "plinthTile": [
+      2.0,
+      1.0
+    ],
+    "roofTint": "a8abae",
+    "signRed": "a8261c",
+    "shopEmission": "7a5a3a",
+    "guoluoGold": "d6ab4a",
+    "gildMetallic": 0.25,
+    "gildRough": 0.45
+  },
+  "eaveKit": {
+    "over": 1.5,
+    "chu": 0.35,
+    "qiao": 0.9,
+    "reach": 2.6,
+    "drop": 0.3,
+    "tileH": 0.16,
+    "boardH": 0.26,
+    "rootRise": 0.95,
+    "curve": 1.7,
+    "soffitRise": 0.15,
+    "straightStep": 3.0,
+    "cornerStep": 0.25,
+    "cornerSteps": 6,
+    "bracketStepM": 1.3,
+    "rings": 7,
+    "bracketStepPlainM": 5.2
+  },
+  "features": {
+    "plaques": [
+      {
+        "storey": 2,
+        "at": 0.5,
+        "z0": 0.7,
+        "wM": 5.0,
+        "hM": 1.4,
+        "borderM": 0.12,
+        "o": 0.1,
+        "note": "入口上方黑底金框横匾（空板）"
+      }
+    ],
+    "lanterns": {
+      "runs": "street",
+      "pitchM": 3.6,
+      "o": 0.6,
+      "zBelowEaveM": 1.0,
+      "rM": 0.28
+    }
+  },
+  "designInference": [
+    "正立面取粮厅路边（26.7 m，与主控「立面较窄」一致）；旧校场路长边同样按临街处理。",
+    "底层一条红色招牌带（空板，不写字）替代横披格心；檐下额枋为青绿彩画色块（无图案），斗拱节距 1.3 m 密排。",
+    "入口上方黑底金框横匾（空板）挂在二层窗屏前；红灯笼沿两条临街面檐下一排。照片里的红色横幅属临时装饰，不建。",
+    "二至四层木构长窗屏 + 每层檐下彩画额枋；主控规格未提外廊 → 不做外廊（不发明构件）；顶为歇山。"
+  ],
+  "notes": [
+    "wave4 B5 同口径：挂落描金（棂条 0.30、金 d6ab4a、衬底深红木）与底层玻璃（alpha 0.5 + 店内暖色衬底 b08a60 + 微光 7a5a3a）调到看得出"
+  ]
+}

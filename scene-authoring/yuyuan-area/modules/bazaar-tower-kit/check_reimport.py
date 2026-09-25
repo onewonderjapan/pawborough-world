@@ -56,7 +56,7 @@ if anchor:
           'loc=(%.3f, %.3f, %.3f)' % (anchor.location.x, anchor.location.y, anchor.location.z))
 
 meshes = [o for o in imported if o.type == 'MESH']
-check('网格节点数 %d ≥ 30' % len(meshes), len(meshes) >= 30)
+check('网格节点数 %d ≥ 20（部件×材质合并后的节点；华宝楼 48、无外廊的悦宾楼 29）' % len(meshes), len(meshes) >= 20)
 tris = 0
 mn = Vector((1e9, 1e9, 1e9))
 mx = Vector((-1e9, -1e9, -1e9))
