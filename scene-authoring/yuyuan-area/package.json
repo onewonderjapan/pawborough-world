@@ -11,7 +11,7 @@
     "views": "node scripts/render-views.mjs",
     "validate": "node scripts/validate.mjs",
     "build": "npm run layout && npm run scene && npm run assemble && npm run validate",
-    "test": "node tests/geo-tests.mjs && OUT_DIR=${OUT_DIR:-out} node tests/check-export.mjs && OUT_DIR=${OUT_DIR:-out} node tests/coverage-negative-test.mjs && node tests/passage-repair-test.mjs && OUT_DIR=${OUT_DIR:-out-zone} node tests/sansuitang-test.mjs && OUT_DIR=${OUT_DIR:-out-zone} node tests/rockery-test.mjs && OUT_DIR=${OUT_DIR:-out-zone} node tests/awning-test.mjs && OUT_DIR=${OUT_DIR:-out-zone} node tests/tour-test.mjs && OUT_DIR=${OUT_DIR:-out-zone} node tests/hallkit-test.mjs",
+    "test": "node tests/geo-tests.mjs && OUT_DIR=${OUT_DIR:-out} node tests/check-export.mjs && OUT_DIR=${OUT_DIR:-out} node tests/coverage-negative-test.mjs && node tests/passage-repair-test.mjs && OUT_DIR=${OUT_DIR:-out-zone} node tests/sansuitang-test.mjs && OUT_DIR=${OUT_DIR:-out-zone} node tests/rockery-test.mjs && OUT_DIR=${OUT_DIR:-out-zone} node tests/awning-test.mjs && OUT_DIR=${OUT_DIR:-out-zone} node tests/tour-test.mjs && OUT_DIR=${OUT_DIR:-out-zone} node tests/hallkit-test.mjs && OUT_DIR=${OUT_DIR:-out-zone} node tests/control-shots-test.mjs",
     "test:garden-kit": "OUT_DIR=${OUT_DIR:-out-garden-kit} node tests/garden-kit-test.mjs",
     "sockets": "node scripts/audit-commerce.mjs",
     "connectivity": "node scripts/check-connectivity.mjs",
@@ -23,7 +23,7 @@
     "test:awning": "OUT_DIR=${OUT_DIR:-out-zone} node tests/awning-test.mjs",
     "test:walk-contract": "OUT_DIR=${OUT_DIR:-out-zone} node tests/area-collision-contract.mjs",
     "test:corridor-gate": "OUT_DIR=${OUT_DIR:-out-zone} node tests/corridor-gate-collision-test.mjs",
-    "test:tour": "OUT_DIR=${OUT_DIR:-out-zone} node tests/tour-test.mjs",
+    "test:tour": "OUT_DIR=${OUT_DIR:-out-zone} node tests/tour-test.mjs && OUT_DIR=${OUT_DIR:-out-zone} node tests/control-shots-test.mjs",
     "tour": "OUT_DIR=${OUT_DIR:-out-zone} node scripts/compute-area-tour.mjs",
     "world": "OUT_DIR=${OUT_DIR:-out-zone} PORT=${PORT:-5486} node scripts/server.mjs",
     "test:walk": "OUT_DIR=${OUT_DIR:-out-zone} node tests/zone-walk-check.mjs"
