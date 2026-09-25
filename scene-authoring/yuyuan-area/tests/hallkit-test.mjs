@@ -291,13 +291,15 @@ for (const HK_ID of IDS) {
           lim[side] = Math.min(lim[side], d);
         }
       }
-      const eR = Math.min(E.hu + po, lim.right), eL = Math.min(E.hu + po, lim.left), eB = Math.min(E.hv + po, lim.back);
+      // 共享边只占该侧一段时（wave3 K1 按段限位），台基外廓最远处 = 正常外扩；整侧被邻栋占住时 = 共享边限位。两者都接受。
+      const near = (x, normal, l) => Math.min(Math.abs(x - normal), Math.abs(x - Math.min(normal, l)));
+      const eR = E.hu + po, eL = E.hu + po, eB = E.hv + po;
       // 踏步所在侧（defaults.kinds.<kind>.steps，输入参数）台基层会伸出踏步：该侧只要求不小于台基边
       const stepsSide = (DEF.kinds?.[obj.kind] || DEF.kinds?.hall || {}).steps || 'front';
-      const dL = stepsSide === 'left' ? Math.max(0, eL - -uu0) : Math.abs(-uu0 - eL);
-      const dR = stepsSide === 'right' ? Math.max(0, eR - uu1) : Math.abs(uu1 - eR);
+      const dL = stepsSide === 'left' ? Math.max(0, Math.min(eL, lim.left) - -uu0) : near(-uu0, eL, lim.left);
+      const dR = stepsSide === 'right' ? Math.max(0, Math.min(eR, lim.right) - uu1) : near(uu1, eR, lim.right);
       const dU = Math.max(dL, dR);
-      const dBack = stepsSide === 'back' ? Math.max(0, eB - -vv0) : Math.abs(-vv0 - eB);
+      const dBack = stepsSide === 'back' ? Math.max(0, Math.min(eB, lim.back) - -vv0) : near(-vv0, eB, lim.back);
       ok(`${tag} 台基外廓对齐 footprint 外接矩形（两山 -${eL.toFixed(2)}/+${eR.toFixed(2)} 偏差 ${dU.toFixed(3)}、背面 -${eB.toFixed(2)} 偏差 ${dBack.toFixed(3)} ≤ ${tol}）`,
         dU <= tol + 0.04 && dBack <= tol + 0.04, `u=[${uu0.toFixed(2)}, ${uu1.toFixed(2)}] vBack=${vv0.toFixed(2)}`);
       // 戏台：台面（背面台基边线处台基顶）实测高 ≥ 1.0 m（GOAL B3）
@@ -321,6 +323,92 @@ for (const HK_ID of IDS) {
         const mb = maxBeyond(tris, e);
         ok(`${tag} 不越过与 ${e.other} 的共享边（重叠 ${(e.hi - e.lo).toFixed(2)} m，最大越界 ${mb.toFixed(3)} m ≤ 0.02）`, mb <= 0.02);
         row.sharedEdgeMaxBeyondM = Math.max(row.sharedEdgeMaxBeyondM ?? -Infinity, +mb.toFixed(3));
+      }
+      // 2c) 按段限位（wave3 K1）：共享边只管真正重合的那一段；同侧非共享段照常出檐、照常放台基，两层楼腰檐照常外伸。
+      //   期望值全从 layout + defaults 输入参数重算：墙线 = 外接矩形边 − wallInset；台基 = 矩形边 + platformOut；
+      //   正檐 = 墙线 + eaveOver；腰檐 = 墙线 + waistEave.over，腰檐高度带 = 二层楼面 platformY + height/storeys 以下 0.05–1.0 m。
+      //   只查硬山（歇山出檐由 eave_kit 四面同值，仍按整侧处理）。窗口：该侧 ±(半长 − 0.6) 内、离共享段两端 ≥ 1.2 m（收头区）。
+      if (obj.roofMode === 'gabled') {
+        const tris = garden.subtreeTris(HK_ID);
+        const ct = Math.cos(E.rotY), st = Math.sin(E.rotY);
+        const toUV = (x, z) => { const rx = x - E.rcx, rz = z - E.rcz; return [rx * ct - rz * st, rx * st + rz * ct]; };
+        // 侧 → [切向, 外向] 取法
+        const SIDE = {
+          front: { half: E.hu, out: E.hv, tf: (u, v) => [u, v] }, back: { half: E.hu, out: E.hv, tf: (u, v) => [u, -v] },
+          right: { half: E.hv, out: E.hu, tf: (u, v) => [v, u] }, left: { half: E.hv, out: E.hu, tf: (u, v) => [v, -u] } };
+        const sideOf = (e) => { const nl = [e.n[0] * ct - e.n[1] * st, e.n[0] * st + e.n[1] * ct];
+          return Math.abs(nl[0]) > Math.abs(nl[1]) ? (nl[0] > 0 ? 'right' : 'left') : (nl[1] > 0 ? 'front' : 'back'); };
+        // 三角 → (切向 t, 外向 d, 高 y)；按 t∈[t0,t1]、y∈[y0,y1] 裁剪后取 d 最大
+        const maxOut = (sd, t0, t1, y0, y1) => {
+          let worst = -Infinity;
+          for (const tr of tris) {
+            let poly = tr.map((p) => { const [u, v] = toUV(p[0], p[2]); const [t, d] = SIDE[sd].tf(u, v); return [t, p[1], d]; });
+            for (const [k, lim, sg] of [[0, t0, 1], [0, t1, -1], [1, y0, 1], [1, y1, -1]]) {
+              const res = [];
+              for (let i = 0; i < poly.length; i++) {
+                const P = poly[i], Q = poly[(i + 1) % poly.length];
+                const inP = sg * (P[k] - lim) >= 0, inQ = sg * (Q[k] - lim) >= 0;
+                if (inP) res.push(P);
+                if (inP !== inQ) { const f = (lim - P[k]) / (Q[k] - P[k]); res.push(P.map((c, j) => c + f * (Q[j] - c))); }
+              }
+              poly = res;
+              if (!poly.length) break;
+            }
+            for (const p of poly) worst = Math.max(worst, p[2]);
+          }
+          return worst;
+        };
+        const bySide = {};
+        for (const e of shared) {
+          const sd = sideOf(e);
+          const ts = [e.lo, e.hi].map((t) => { const [u, v] = toUV(e.a[0] + e.ux * t, e.a[1] + e.uz * t); return SIDE[sd].tf(u, v)[0]; });
+          (bySide[sd] ||= []).push([Math.min(...ts), Math.max(...ts)]);
+        }
+        const wIn = DEF.wallInset, over = DEF.eaveOver, wo = DEF.waistEave?.over ?? 0.8;
+        const storeys = obj.storeys ?? DEF.storeys;
+        const z1 = platformY + (obj.height ?? DEF.height) / storeys;
+        for (const [sd, ivs] of Object.entries(bySide)) {
+          const S = SIDE[sd];
+          const cuts = ivs.map(([a, b]) => [a - 1.2, b + 1.2]).sort((p, q) => p[0] - q[0]);
+          const gaps = [];
+          let cur = -S.half + 0.6;
+          for (const [a, b] of cuts) { if (a > cur) gaps.push([cur, Math.min(a, S.half - 0.6)]); cur = Math.max(cur, b); }
+          if (cur < S.half - 0.6) gaps.push([cur, S.half - 0.6]);
+          const wins = [];
+          for (const [a, b] of gaps.filter(([a, b]) => b - a >= 0.5)) for (let c = a + 0.1; c <= b - 0.1 + 1e-9; c += 0.5) wins.push(c);
+          if (!wins.length) { console.log(`INFO ${tag} ${sd} 侧共享边外无 ≥0.5 m 的非共享段（共享段 ${ivs.map(([a, b]) => `[${a.toFixed(2)},${b.toFixed(2)}]`).join(' ')}），按段限位不适用`); continue; }
+          const wall = S.out - wIn;
+          const minOver = (y0, y1) => Math.min(...wins.map((c) => maxOut(sd, c - 0.1, c + 0.1, y0, y1))) - wall;
+          const plat = minOver(-1, platformY + 1e-3) - wIn;   // 相对矩形边
+          const eave = minOver(platformY + 0.3, 1e3);
+          ok(`${tag} ${sd} 侧非共享段台基照常外扩（${wins.length} 窗最小 ${plat.toFixed(3)} m ≥ platformOut ${DEF.platformOut} − 0.05）`, plat >= DEF.platformOut - 0.05);
+          ok(`${tag} ${sd} 侧非共享段正檐照常出挑（最小 ${eave.toFixed(3)} m ≥ eaveOver ${over} − 0.03）`, eave >= over - 0.03);
+          row.segmentLimit = { ...(row.segmentLimit || {}), [sd]: { windows: wins.length, platformOutMin: +plat.toFixed(3), eaveOverMin: +eave.toFixed(3) } };
+          if (storeys >= 2) {
+            const waist = minOver(z1 - 1.0, z1 - 0.05);
+            ok(`${tag} ${sd} 侧非共享段腰檐外伸（GLB 实测最小 ${waist.toFixed(3)} m ≥ ${wo}，墙线 = 矩形边 − ${wIn}）`, waist >= wo - 0.005);
+            row.segmentLimit[sd].waistOverMin = +waist.toFixed(3);
+          }
+        }
+        // 不穿插：本栋顶点（y > 0.05）不进入共享边邻栋的 footprint 超过 0.05 m
+        const inPoly = (pt, poly) => { let c = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+          const [xi, zi] = poly[i], [xj, zj] = poly[j];
+          if ((zi > pt[1]) !== (zj > pt[1]) && pt[0] < (xj - xi) * (pt[1] - zi) / (zj - zi) + xi) c = !c; } return c; };
+        const segDist = (p, a, b) => { const dx = b[0] - a[0], dz = b[1] - a[1]; const L2 = dx * dx + dz * dz;
+          const k = L2 ? Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dz) / L2)) : 0;
+          return Math.hypot(p[0] - a[0] - k * dx, p[1] - a[1] - k * dz); };
+        for (const oid of [...new Set(shared.map((e) => e.other))]) {
+          const qf = ringOf(LAYOUT.objects.find((q) => q.id === oid).geometry.footprint);
+          let deep = 0, worst = 0;
+          for (const tr of tris) for (const p of [...tr, tr.reduce((s, q) => s.map((c, j) => c + q[j] / 3), [0, 0, 0])]) {
+            if (p[1] <= 0.05 || !inPoly([p[0], p[2]], qf)) continue;
+            const d = Math.min(...qf.map((a, i) => segDist([p[0], p[2]], a, qf[(i + 1) % qf.length])));
+            if (d > 0.05) deep++;
+            worst = Math.max(worst, d);
+          }
+          ok(`${tag} 不穿插 ${oid}：进入其 footprint > 0.05 m 的顶点 / 三角形心 ${deep} 个（最深 ${worst.toFixed(3)} m）`, deep === 0);
+          row.neighbourPenetrationM = Math.max(row.neighbourPenetrationM ?? 0, +worst.toFixed(3));
+        }
       }
     }
   }

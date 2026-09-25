@@ -75,3 +75,29 @@ wave2 B4 起按两层剖面生成（见下「wave2 批量」）。
 - **designInference 规则**：屋面坡度夹 17.5°–33°、面宽 < 6.5 m 时檐高上限、小歇山起翘范围按最短边封顶，均记 recipe。
 - 配色：框料底色 = sRGB `timberSrgb`（#6a2e22），不乘贴图；格心图 `lattice-core-alpha` 160×160 全部共享。
 - 渲染：`render_hall.py --compare --ids …` 在 after 总装里按射线可见度挑机位；`contact_sheet.py` 出联系表（图只进工单包）。
+
+## wave3 K1：共享边按段限位（2026-09-25，wave3-towerkit）
+
+- wave2 把有共享边的一侧**整侧**限位（得月楼正立面整体内收 1.835 m、腰檐只剩檐线）。现在硬山的前 / 后侧改为**按段**：
+  `frame.side_intervals` 给出该侧的限位区间 = 共享边条带（重叠段沿外法线外推 `sharedStripReachM`，斜边也罩住）∪ 邻栋占位
+  （共享边所连邻栋 footprint 在切向每 `sharedScanStepM` 一格、离矩形中心的最小外向距离 < 该侧正常最远构件的格），外扩
+  `sharedSegMarginM`，离端点 / 间隔 < `sharedSnapM` 并掉。
+- 区间内：檐口截到限位线（同一剖面截断），台基齐边不外挑；墙线越界才**局部凹口**（墙线 = lim − 0.22，凹口块为白墙隔墙、无窗无格扇无平座，
+  块边界加两层通高回墙并封住平座端头；柱网按分块各自排开间，回墙落在柱线上）。区间外：照常出檐 1.0、台基外扩 0.2、腰檐外伸 0.8。
+- 段端收头：正檐两块出檐不同处在长檐一侧放白墙端板（墀头式，封住屋面上皮 / 瓦头 / 封檐板 / 檐底断面）；腰檐环线在段外让出 over，
+  凸角翼角斜切落在条带外（eave_kit.eave_skirt 支持凹多边形）。斗拱出挑按每柱所在处的檐口外缘分组。
+- 区间或凹口盖满整侧时退回 wave2 整侧规则（仰山堂 / 三穗堂：三穗堂的边在共享段外偏出 0.05 容差继续贴着仰山堂背面）。歇山、两山侧仍整侧。
+- 测试（hallkit-test 2c）：同侧非共享段（离共享段两端 ≥ 1.2 m）台基外扩 ≥ 0.15、正檐 ≥ 0.97、两层楼腰檐 ≥ 0.795（墙线 = 矩形边 − wallInset，
+  腰檐带 = 二层楼面 platformY + height/storeys 下 0.05–1.0 m，全从 layout 重算、GLB 实测）；共享边所连邻栋 footprint 内无构件（> 0.05 m）。
+
+## wave3 K2：楼阁批量准备（只出诊断，未接入）
+
+- 其余 9 座两层楼逐栋跑生成器（`--out out-tower-prep/hallkit-<id>`，不改 `ids.json`），`tower_prep.py` 出 `tower-batch-prep.json`：
+  覆盖率 / 凹角 / 共享边段与处理方式 / 正立面边与 facade.dir 夹角 / 层高（layout height / storeys）/ 三角面 / 与会渲染建筑 footprint 互穿 /
+  台基压园路、水面（阈值 = 已接入 20 栋同一诊断的最大值，`--calib`）/ 正立面前净空（机位）/ 建议 direct·special·skip。
+  ```bash
+  python3 -X utf8 modules/hall-kit/tower_prep.py --ids <20 栋> --gen-dir out-garden-kits --out <calib.json>
+  python3 -X utf8 modules/hall-kit/tower_prep.py --ids <9 栋> --calib <calib.json>
+  ```
+- 薄楼（designInference）：墙线进深 − upperSetback < `minUpperFloorDepthM`(2.0) 时，二层后退缩为 max(`minUpperSetbackM` 0.3, 进深 − 2.0)，
+  记 recipe.upperSetback / measurements.section.upperSetbackInferred（观涛楼 / 延清楼）。已接入 20 栋不受影响。

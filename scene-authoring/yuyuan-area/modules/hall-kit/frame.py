@@ -180,3 +180,88 @@ def side_limits(fr, edges):
             d = u * sv[0] + v * sv[1]
             lim[name] = min(lim.get(name, 1e9), d)
     return lim
+
+
+# ------------------------------------------------ 共享边按段限位（wave3 K1） ----
+SIDE_VEC = {'front': (0.0, 1.0), 'back': (0.0, -1.0), 'right': (1.0, 0.0), 'left': (-1.0, 0.0)}
+
+
+def side_of_edge(fr, e):
+    """共享边归属的外接矩形侧（与 side_limits 同规则：外法线夹角 ≤ 30°），否则 None。"""
+    ln = (e['n'][0] * fr['uAxis'][0] + e['n'][1] * fr['uAxis'][1], e['n'][0] * fr['front'][0] + e['n'][1] * fr['front'][1])
+    name, sv = max(SIDE_VEC.items(), key=lambda kv: kv[1][0] * ln[0] + kv[1][1] * ln[1])
+    return name if sv[0] * ln[0] + sv[1] * ln[1] >= math.cos(math.radians(30)) else None
+
+
+def _td(name, u, v):
+    """矩形系 (u, v) → 该侧 (切向 t, 外向距离 d)。front/back 的切向 = u，left/right 的切向 = v。"""
+    sv = SIDE_VEC[name]
+    return (u, v * sv[1]) if name in ('front', 'back') else (v, u * sv[0])
+
+
+def _band_min_d(poly_td, lo, hi):
+    """多边形（已转到 (t, d)）与竖带 lo ≤ t ≤ hi 的交集里，d > 0 部分的最小 d；无交集 None。"""
+    cand = [d for t, d in poly_td if lo <= t <= hi]
+    n = len(poly_td)
+    for i in range(n):
+        (t1, d1), (t2, d2) = poly_td[i], poly_td[(i + 1) % n]
+        for x in (lo, hi):
+            if (t1 - x) * (t2 - x) < 0:
+                cand.append(d1 + (d2 - d1) * (x - t1) / (t2 - t1))
+    cand = [d for d in cand if d > 0]
+    return min(cand) if cand else None
+
+
+def side_intervals(fr, objects, edges, name, thresh, defaults):
+    """某侧的限位区间（矩形系切向坐标），供生成器按段处理（K1：共享边只管真正重合的那一段）。
+    区间来源（取并）：
+      a) 共享边条带：重叠段两端点及其沿外法线外推 reach 的四点在切向上的范围（条带斜时也罩住），
+         限位 = 边线在该范围两端的外向距离取小；
+      b) 邻栋占位：共享边所连邻栋 footprint 在该侧切向每 step 一格的最小外向距离 < thresh（本栋该侧正常最远构件）
+         的格——邻栋边在共享段外稍偏出 0.05 容差继续延伸（仰山堂 / 三穗堂）时也算，避免段外照常出檐伸进邻栋。
+    区间外扩 marginM；离该侧端点 < snapM 的并到端点；间隔 < snapM 的合并。
+    返回 [{'t0','t1','lim','others'}]（切向升序，lim = 距矩形中心的外向距离；并到端点的一侧用 ±(半长 + 5)）。"""
+    step = defaults.get('sharedScanStepM', 0.05)
+    reach = defaults.get('sharedStripReachM', 2.0)
+    marg = defaults.get('sharedSegMarginM', 0.05)
+    snap = defaults.get('sharedSnapM', 1.5)
+    half = fr['hu'] if name in ('front', 'back') else fr['hv']
+    es = [e for e in edges if side_of_edge(fr, e) == name]
+    if not es:
+        return []
+    raw = []
+    for e in es:
+        a, b = to_local(fr, *e['a']), to_local(fr, *e['b'])
+        n = (e['n'][0] * fr['uAxis'][0] + e['n'][1] * fr['uAxis'][1], e['n'][0] * fr['front'][0] + e['n'][1] * fr['front'][1])
+        pts = [_td(name, *p) for p in (a, b, (a[0] + n[0] * reach, a[1] + n[1] * reach), (b[0] + n[0] * reach, b[1] + n[1] * reach))]
+        t0, t1 = min(p[0] for p in pts), max(p[0] for p in pts)
+        (ta, da), (tb, db) = pts[0], pts[1]
+        k = (db - da) / (tb - ta) if abs(tb - ta) > 1e-9 else 0.0     # 边线 d(t)
+        lim = min(da + k * (t0 - ta), da + k * (t1 - ta))
+        raw.append([t0, t1, lim, {e['other']}])
+    byid = {q['id']: q for q in objects}
+    for oid in sorted({e['other'] for e in es}):
+        poly = [_td(name, *to_local(fr, *p)) for p in ring(byid[oid]['geometry']['footprint'])]
+        t = -half - 1.0
+        while t < half + 1.0:
+            d = _band_min_d(poly, t, t + step)
+            if d is not None and d < thresh:
+                raw.append([t, t + step, d, {oid}])
+            t += step
+    raw = [[r[0] - marg, r[1] + marg, r[2], r[3]] for r in raw]
+    raw.sort(key=lambda r: r[0])
+    merged = []
+    for r in raw:
+        if merged and r[0] <= merged[-1][1] + snap:
+            m = merged[-1]
+            m[1], m[2], m[3] = max(m[1], r[1]), min(m[2], r[2]), m[3] | r[3]
+        else:
+            merged.append(list(r))
+    out = []
+    for t0, t1, lim, oth in merged:
+        if t0 < -half + snap:
+            t0 = -half - 5.0
+        if t1 > half - snap:
+            t1 = half + 5.0
+        out.append({'t0': t0, 't1': t1, 'lim': lim, 'others': sorted(oth)})
+    return out
