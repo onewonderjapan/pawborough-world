@@ -58,6 +58,31 @@ for (const rec of colDoc.colliders) {
   }
   kept.push(out);
 }
+// ---------- wave5 F-04：collision-world.json 没有记录的已放置实例，取模块旁的 collision.json sidecar ----------
+// east-edge（128/129）、street-completion（130–133）、lanes-v2（lane-a / lane-b-v2 / interfaces）的碰撞在 v7 里是按件
+// sidecar 交付的（v7 世界坐标，obb.pos = 实例位姿），collision-world.json 没合进来 —— 这 9 件原先在方浜分区里没有墙。
+// 模块路径取 v7 review-manifest（与 assemble 放置同源）；同样平移 (53.5,-17.4)，名字加 fangbang- 前缀。
+const manifestFb = JSON.parse(fs.readFileSync(path.join(FB7, 'review-manifest.json'), 'utf8'));
+const modPathFb = new Map(manifestFb.modules.map(m => [m.id, path.join(REPO, m.path.replace(/^\.\//, ''))]));
+const haveWorldRecs = new Set(colDoc.colliders.map(r => r.name.split(':')[0]));
+const sidecarAdded = [];
+for (const inst of instDoc.instances) {
+  if (templeIds.has(inst.id) || notPlaced.has(inst.id) || haveWorldRecs.has(inst.id)) continue;
+  const mp = modPathFb.get(inst.module);
+  const side = mp && path.join(path.dirname(mp), 'collision.json');
+  if (!side || !fs.existsSync(side)) continue;
+  // 目录级 sidecar 可能装着别的件（west-extension/collision.json 里是封墙和围界），只取记录名前缀 = 本实例 id 的
+  const own = (JSON.parse(fs.readFileSync(side, 'utf8')).colliders || []).filter(r => r.name.split(':')[0] === inst.id);
+  if (!own.length) continue;
+  for (const rec of own) {
+    if (!rec.obb) throw new Error(`sidecar record ${rec.name} (${side}) not obb form`);
+    kept.push({
+      name: 'fangbang-' + rec.name, module: rec.module ?? inst.module, type: rec.type || 'box',
+      obb: { pos: [+(rec.obb.pos[0] + OFF[0]).toFixed(4), rec.obb.pos[1] ?? 0, +(rec.obb.pos[2] + OFF[1]).toFixed(4)], theta: rec.obb.theta, center: rec.obb.center, size: rec.obb.size },
+    });
+  }
+  sidecarAdded.push({ id: inst.id, source: path.relative(REPO, side), records: own.length });
+}
 for (const it of infillDoc.southGap.placed.concat(infillDoc.northGap.placed)) {
   for (const rec of colDoc.colliders.filter(r => r.name.split(':')[0] === it.donor)) {
     if (!rec.obb) throw new Error(`infill donor record ${rec.name} not obb form`);
@@ -138,6 +163,7 @@ const collision = {
   excludedTempleAxisRecords: skipped.length,
   notPlacedInstances: [...notPlaced].sort(),
   notPlacedRecordsDropped: skippedNotPlaced.length,
+  sidecarColliders: sidecarAdded,
   infillColliders: infillDoc.southGap.placed.concat(infillDoc.northGap.placed).length ? infillDoc.southGap.placed.map(i => i.id) : 'none',
   seamDedup: seamDedup.length ? seamDedup : 'none',
   streetSeamDedup: streetSeamDedup.length ? streetSeamDedup : 'none',
@@ -145,6 +171,7 @@ const collision = {
   colliders: kept3,
 };
 fs.writeFileSync(path.join(OUT, 'collision-fangbang.json'), JSON.stringify(collision, null, 1) + '\n');
+console.log(`sidecar colliders: ${sidecarAdded.map(a => a.id + ' ' + a.records).join(', ') || 'none'}`);
 console.log(`collision-fangbang.json: ${kept3.length} colliders (excluded ${skipped.length} temple-axis records; dropped ${skippedNotPlaced.length} not-placed records for ${[...notPlaced].join(', ') || 'none'}; v7 total ${colDoc.colliders.length}); seamDedup dropped ${seamDedup.length}: ${seamDedup.map(d => d.dropped).join(', ') || 'none'}; streetSeamDedup dropped ${streetSeamDedup.length}: ${streetSeamDedup.map(d => d.dropped).join(', ') || 'none'}`);
 
 // ---------- 路线（平移到地图坐标 + 山门接点） ----------
