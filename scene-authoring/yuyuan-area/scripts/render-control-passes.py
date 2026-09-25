@@ -14,7 +14,8 @@
     "coordinateNote": "坐标为地图系 [x, y高度, z]（同 tour.json）",
     "shots": [ { "id": "...", "frames": 24,
                  "eye":   [[x,y,z] ...],   # 每帧相机位置（地图系）
-                 "target": [[x,y,z] ...] } # 每帧注视点（地图系）
+                 "target": [[x,y,z] ...], # 每帧注视点（地图系）
+                 "targetId": "<layout id>" } # 可选：取景目标，原样写进 cameras json
                ] }
   也接受 out-zone/tour.json 风格的固定机位：shot 带 "p":[x,y,z],"t":[x,y,z]（单一机位）。
 
@@ -287,7 +288,7 @@ def mat_from_blender(m):
     return [[m[i][j] for j in range(4)] for i in range(4)]
 
 
-def write_camera_json(path, shot_id, k, cam, cam_ob, w, h, near, far, eye_m, tgt_m):
+def write_camera_json(path, shot_id, k, cam, cam_ob, w, h, near, far, eye_m, tgt_m, target_id=None):
     from mathutils import Matrix
     mw = cam_ob.matrix_world
     cb = mw.inverted()                                  # Blender world -> camera
@@ -313,6 +314,7 @@ def write_camera_json(path, shot_id, k, cam, cam_ob, w, h, near, far, eye_m, tgt
         'projectionNote': 'OpenCV 式投影：p=worldToCameraOpenCV@[x,y,z,1]，u=fx*x/z+cx，v=fy*y/z+cy（z>0 在前方）。',
         'cameraPositionWorld': [eye_m[0], eye_m[1], eye_m[2]],
         'targetWorld': [tgt_m[0], tgt_m[1], tgt_m[2]],
+        'targetId': target_id,                          # R1：镜头声明的取景目标 layout id（分割 LUT 可反查其像素）
         'depthNearM': near, 'depthFarM': far,
         'depthEncoding': 'BW 16-bit PNG：gray=round(65535*clamp((z-near)/(far-near),0,1))；z=Cycles Depth pass 视轴 z 深度（米，沿相机 -Z 轴的平面距离，非欧氏线距）；背景=clip_end=far -> 65535',
         'normalEncoding': 'RGB 8-bit PNG：rgb=round(255*((n+1)/2))；n=glTF Y-up 世界系单位法线（+Y=地面向上->(128,255,128)）；背景/负向溢出=(0,0,0)',
@@ -418,7 +420,7 @@ def main():
             aim(cam_ob, eye_b, tgt_b)
             scene.frame_set(k)
             write_camera_json(os.path.join(sdir, 'cameras', 'frame-%03d.json' % k),
-                              sid, k, cam_data, cam_ob, w, h, near, far, eyes[k], tgts[k])
+                              sid, k, cam_data, cam_ob, w, h, near, far, eyes[k], tgts[k], shot.get('targetId'))
 
         # 每镜头三段连续渲染：beauty(WB) -> seg(WB) -> normal+depth(Cycles)，
         # 引擎各只切换一次，Cycles BVH 借 use_persistent_data 跨帧复用。

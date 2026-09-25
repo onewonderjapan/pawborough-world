@@ -14,8 +14,10 @@
     "coordinateNote": "全部坐标为地图系 [x, y高度, z]（与 out-zone/tour.json 同约定）；Blender 世界 = (x, -z, y)，glTF Y-up 世界 = 本文件坐标",
     "sources": {"fangbangRoute": "...", "layout": "baseline/layout.json"},
     "shots": [ { "id": ..., "description": ..., "frames": 24,
+                 "targetId": <layout id>, "targetName": ...,   # R1：镜头声明的取景目标（可见性断言的对象）
                  "eye": [[x,y,z] x frames], "target": [[x,y,z] x frames] } ]
   }
+  （"target" 是逐帧注视点；取景目标对象是 "targetId"。）
 
 镜头：
   ① fangbang-westbound   方浜中路沿街西行到城隍庙山门（fangbang-route mainStreet，山门锚 = layout instance temple-shanmen）
@@ -120,7 +122,8 @@ def main():
 
     # ---------- 镜头① 方浜中路西行到山门 ----------
     ms = [[p[0], p[2]] for p in fb_route['mainStreet']]     # 路线点是 [x, y(=0), z]
-    shanmen = insts['temple-shanmen']['position']            # layout 重算：山门锚 [x, z]
+    shanmen_id = 'temple-shanmen'
+    shanmen = insts[shanmen_id]['position']                  # layout 重算：山门锚 [x, z]
     # mainStreet 的 E-W 段在庙前转角（idx 297 附近）折向南；山门在转角西南、被街角店块遮挡，
     # 但物理街道与山门视廊在折线终点以西仍在（实测 (-78, 22) 处山门可见）。
     # 取 E-W 段 + 沿末段方向 12 m 外推作为行走折线，停步点在转角后 8 m（与山门齐平偏西），末 6 帧转向山门。
@@ -258,12 +261,15 @@ def main():
         'shots': [
             {'id': 'fangbang-westbound',
              'description': '方浜中路沿街西行过庙前转角 8 m（与山门齐平），末 6 帧注视点转向城隍庙山门（路线 mainStreet 重采样 %.0f m，眼高 1.6 m，注视点前视 %.0f m）' % (FANGBANG_WALK_M, LOOK_AHEAD_M),
+             'targetId': shanmen_id, 'targetName': '城隍庙山门',
              'frames': N, 'eye': fb_eye, 'target': fb_tgt},
             {'id': 'habao-plaza-pan',
              'description': '商城华宝楼前中心广场定点 360° 环视（起始正对华宝楼，注视半径 %.0f m 高 %.0f m）' % (PAN_DIST_M, PAN_TARGET_H),
+             'targetId': habao['id'], 'targetName': '华宝楼',
              'frames': N, 'eye': hb_eye, 'target': hb_tgt},
             {'id': 'jiuqu-to-huxinting',
              'description': '九曲桥上走向湖心亭（桥面 0.55 m + 眼高 1.6 m，停步亭轮廓 16 m 外全亭入画，末 6 帧注视点转向湖心亭）',
+             'targetId': 'huxin-ting', 'targetName': '湖心亭',
              'frames': N, 'eye': jq_eye, 'target': jq_tgt},
         ],
     }

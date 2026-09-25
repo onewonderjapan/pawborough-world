@@ -12,7 +12,8 @@
 //     注视点半径 20 m、注视高度 4 m，24 帧环绕 360°（首末注视方位角差 ≈ 360°）；
 //  6) ③机位逐帧落在 jiuqu-bridge polyline 上，末点为折线上最靠近湖心亭（huxin-ting）形心的点，
 //     末 1/3 帧注视点收敛到湖心亭形心方向；
-//  7) 全部坐标在场景地面范围内。
+//  7) 全部坐标在场景地面范围内；
+//  R1-1) 每个镜头声明取景目标 targetId（①山门 temple-shanmen、②华宝楼 bld-428202599、③湖心亭 huxin-ting）。
 // 用法：OUT_DIR=out-zone node tests/control-shots-test.mjs
 import fs from 'node:fs';
 import path from 'node:path';
@@ -45,6 +46,19 @@ const byId = Object.fromEntries(doc.shots.map(s => [s.id, s]));
 for (const s of doc.shots) {
   check(s.frames === 24, `${s.id} 帧数 ${s.frames} != 24`);
   check(s.eye.length === s.frames && s.target.length === s.frames, `${s.id} eye/target 长度与 frames 不一致`);
+}
+
+// R1-1 每个镜头声明取景目标（targetId = layout 对象 id；期望值从 layout 按名重查，不抄生成器）
+{
+  const expected = {
+    'fangbang-westbound': layout.objects.find(o => o.kind === 'templeAnchor' && o.name === '山门')?.id,
+    'habao-plaza-pan': layout.objects.find(o => o.name === '华宝楼' && o.kind === 'bazaarBlock')?.id,
+    'jiuqu-to-huxinting': layout.objects.find(o => o.name === '湖心亭')?.id,
+  };
+  for (const s of doc.shots) {
+    check(!!expected[s.id] && s.targetId === expected[s.id], `${s.id} 取景目标 targetId=${s.targetId} != ${expected[s.id]}`);
+    check(layoutIds.has(s.targetId), `${s.id} targetId ${s.targetId} 不在 layout objects 里`);
+  }
 }
 
 // ① 方浜中路西行
