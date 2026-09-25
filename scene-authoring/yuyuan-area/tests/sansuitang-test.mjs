@@ -20,8 +20,49 @@ function ok(name, cond, detail = '') {
 }
 function skip(name, why) { skipped++; console.log('SKIP', name, '-', why); }
 
+// ---------- 0) layout 朝向（wave2-sansuitang S1；只读 baseline/layout.json，不需要产物） ----------
+// 三穗堂坐北朝南（主控 2026-09-25 覆盖；常识判断，未核实）：facade.dir 应为「南侧长边」外法线。
+// 南侧长边的识别不复用 layout.mjs 覆盖表：footprint 相邻边按方向（≤12°）合并成直边链，
+// 最长的两条链为两条长边，其中外法线 z 分量较大者（地图 Z 向南）为南侧长边；外法线 = 链弦外法线。
+{
+  const sObj = LAYOUT.objects.find((o) => o.id === SST_ID);
+  const ySObj = LAYOUT.objects.find((o) => o.id === 'bld-428179902'); // 仰山堂（北侧共边）
+  const ring = (f) => (f[0][0] === f[f.length - 1][0] && f[0][1] === f[f.length - 1][1] ? f.slice(0, -1) : f);
+  const p = ring(sObj.geometry.footprint);
+  const n = p.length;
+  const mx = p.reduce((s, q) => s + q[0], 0) / n, mz = p.reduce((s, q) => s + q[1], 0) / n;
+  const edgeDir = (i) => { const a = p[i % n], b = p[(i + 1) % n]; const l = Math.hypot(b[0] - a[0], b[1] - a[1]); return [(b[0] - a[0]) / l, (b[1] - a[1]) / l]; };
+  const angDeg = (u, v) => Math.acos(Math.max(-1, Math.min(1, (u[0] * v[0] + u[1] * v[1]) / (Math.hypot(...u) * Math.hypot(...v))))) * 180 / Math.PI;
+  let start = 0; // 从一个转角顶点起合并，链不跨起点
+  for (let i = 0; i < n; i++) if (angDeg(edgeDir(i + n - 1), edgeDir(i)) > 12) { start = i; break; }
+  const chains = [];
+  for (let k = 0; k < n; k++) {
+    const i = start + k;
+    const last = chains[chains.length - 1];
+    if (last && angDeg(edgeDir(i - 1), edgeDir(i)) <= 12) last.end = (i + 1) % n;
+    else chains.push({ begin: i % n, end: (i + 1) % n });
+  }
+  for (const c of chains) {
+    const a = p[c.begin], b = p[c.end];
+    c.len = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    let nn = [-(b[1] - a[1]) / c.len, (b[0] - a[0]) / c.len];
+    const m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+    if (nn[0] * (mx - m[0]) + nn[1] * (mz - m[1]) > 0) nn = [-nn[0], -nn[1]];
+    c.normal = nn;
+  }
+  const longSides = [...chains].sort((a, b) => b.len - a.len).slice(0, 2);
+  const south = longSides.sort((a, b) => b.normal[1] - a.normal[1])[0];
+  const fd = sObj.facade.dir;
+  const aS = angDeg(fd, south.normal);
+  console.log(`layout 直边链 ${chains.length} 条；南侧长边 (${p[south.begin]}) → (${p[south.end]})，${south.len.toFixed(2)} m，外法线 (${south.normal.map(x => x.toFixed(4))})`);
+  ok(`三穗堂 facade.dir 与南侧长边外法线夹角 ${aS.toFixed(2)}° ≤ 5（坐北朝南，常识未核实）`, aS <= 5, `facade.dir=(${fd.map(x => x.toFixed(4))})`);
+  const aY = angDeg(fd, ySObj.facade.dir);
+  ok(`三穗堂 facade.dir 与仰山堂 facade.dir 夹角 ${aY.toFixed(1)}° ≥ 150`, aY >= 150, `仰山堂=(${ySObj.facade.dir.map(x => x.toFixed(4))})`);
+}
+
 if (process.env.SANSUITANG !== '1' || !fs.existsSync(path.join(OUT, 'garden.glb')) || !fs.existsSync(SST_GLB)) {
-  console.log(`sansuitang artefacts not found or SANSUITANG!=1 (OUT_DIR=${OUT}) — skipping`);
+  console.log(`sansuitang artefacts not found or SANSUITANG!=1 (OUT_DIR=${OUT}) — skipping artefact checks (layout checks: ${pass} pass, ${fail} fail)`);
+  if (fail > 0) { for (const f of failures) console.log('  FAIL:', f); process.exit(1); }
   process.exit(0);
 }
 

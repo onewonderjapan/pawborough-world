@@ -23012,10 +23012,27 @@
    "storeySource": "osm building:levels",
    "facade": {
     "dir": [
-     -0.5153879620861148,
-     -0.8569569700613453
+     0.2594236808189144,
+     0.9657636117758663
     ],
-    "basis": "nearest-garden-water"
+    "basis": "lead-override 2026-09-25: 入园第一厅坐北朝南（常识，未核实）",
+    "edge": [
+     [
+      -168.87,
+      -172.06
+     ],
+     [
+      -152.49,
+      -176.46
+     ]
+    ],
+    "inferred": {
+     "dir": [
+      -0.5153879620861148,
+      -0.8569569700613453
+     ],
+     "basis": "nearest-garden-water"
+    }
    },
    "nodeFocus": {
     "doubleEave": true,
@@ -23041,7 +23058,7 @@
    "confidence": "footprint contemporary OSM; form is category inference, not survey",
    "inferences": [
     "roof mode from category; OSM roof:shape=gabled not survey-verified",
-    "facade dir basis: nearest-garden-water"
+    "facade dir basis: lead-override 2026-09-25: 入园第一厅坐北朝南（常识，未核实）"
    ],
    "category": "hall",
    "classSource": "osm-name-keyword"
@@ -41570,10 +41587,27 @@
    "present": true,
    "facade": {
     "dir": [
-     -0.5153879620861148,
-     -0.8569569700613453
+     0.2594236808189144,
+     0.9657636117758663
     ],
-    "basis": "nearest-garden-water"
+    "basis": "lead-override 2026-09-25: 入园第一厅坐北朝南（常识，未核实）",
+    "edge": [
+     [
+      -168.87,
+      -172.06
+     ],
+     [
+      -152.49,
+      -176.46
+     ]
+    ],
+    "inferred": {
+     "dir": [
+      -0.5153879620861148,
+      -0.8569569700613453
+     ],
+     "basis": "nearest-garden-water"
+    }
    },
    "evidence": {
     "refs": {
