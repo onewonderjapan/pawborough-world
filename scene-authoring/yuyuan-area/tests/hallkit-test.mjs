@@ -109,13 +109,33 @@ function parseGlb(file) {
     w(entry.i, null);
     return verts;
   }
+  // 子树全部三角（世界坐标）：共享边越界检查用
+  function subtreeTris(rootName) {
+    const entry = nodesByName.get(rootName);
+    if (!entry) return null;
+    const tris = [];
+    const w = (ni, pm) => {
+      const n = json.nodes[ni];
+      const m = pm ? mul4(pm, nodeMatrix(n)) : worldMatrixOf(ni);
+      if (n.mesh !== undefined) {
+        for (const p of json.meshes[n.mesh].primitives) {
+          const P = accessor(p.attributes.POSITION).map((v) => mulVec(m, v));
+          const I = p.indices !== undefined ? accessor(p.indices).map((x) => x[0]) : P.map((_, i) => i);
+          for (let k = 0; k + 2 < I.length; k += 3) tris.push([P[I[k]], P[I[k + 1]], P[I[k + 2]]]);
+        }
+      }
+      for (const c of n.children || []) w(c, m);
+    };
+    w(entry.i, null);
+    return tris;
+  }
   function imageDims(img) {
     const bv = json.bufferViews[img.bufferView];
     const b = bin.subarray(bv.byteOffset || 0, (bv.byteOffset || 0) + bv.byteLength);
     if (b[0] === 0x89 && b[1] === 0x50) return [b.readUInt32BE(16), b.readUInt32BE(20)];
     return null;
   }
-  return { json, nodesByName, subtreeVerts, imageDims, nodeCount: (json.nodes || []).length, materials: json.materials || [] };
+  return { json, nodesByName, subtreeVerts, subtreeTris, imageDims, nodeCount: (json.nodes || []).length, materials: json.materials || [] };
 }
 
 // ---------- layout 重算（唯一权威来源）：面积形心 + 最小面积外接矩形 + 正立面边 ----------
@@ -166,6 +186,55 @@ function expectFrame(obj) {
   return { cx, cz, rcx, rcz, nrm, hu, hv, rotY: Math.atan2(nrm[0], nrm[1]), facadeDelta, coverage };
 }
 
+// 共享边（独立实现）：本栋 footprint 边与其他会渲染建筑的 footprint 边重合（对方两端点到本边直线 ≤ 0.05 m、重叠 ≥ 0.3 m）。
+const SHARED_KINDS = new Set(['hall', 'tower', 'xuan', 'stage', 'waterside', 'pavilion', 'bazaarBlock', 'outerBuilding']);
+const ringOf = (fpRaw) => (fpRaw[0][0] === fpRaw.at(-1)[0] && fpRaw[0][1] === fpRaw.at(-1)[1] ? fpRaw.slice(0, -1) : fpRaw);
+function sharedEdgesOf(obj) {
+  const fp = ringOf(obj.geometry.footprint);
+  const a2 = fp.reduce((s, p, i) => s + p[0] * fp[(i + 1) % fp.length][1] - fp[(i + 1) % fp.length][0] * p[1], 0);
+  const out = [];
+  fp.forEach((a, i) => {
+    const b = fp[(i + 1) % fp.length];
+    const L = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    if (L < 0.3) return;
+    const ux = (b[0] - a[0]) / L, uz = (b[1] - a[1]) / L;
+    const n = a2 > 0 ? [uz, -ux] : [-uz, ux];
+    for (const q of LAYOUT.objects) {
+      if (q.id === obj.id || q.skipRender || !SHARED_KINDS.has(q.kind) || !q.geometry?.footprint) continue;
+      const qf = ringOf(q.geometry.footprint);
+      qf.forEach((c, j) => {
+        const d = qf[(j + 1) % qf.length];
+        const off = (p) => Math.abs(-(p[0] - a[0]) * uz + (p[1] - a[1]) * ux);
+        if (off(c) > 0.05 || off(d) > 0.05) return;
+        const tc = (c[0] - a[0]) * ux + (c[1] - a[1]) * uz, td = (d[0] - a[0]) * ux + (d[1] - a[1]) * uz;
+        const lo = Math.max(0, Math.min(tc, td)), hi = Math.min(L, Math.max(tc, td));
+        if (hi - lo >= 0.3) out.push({ a, ux, uz, n, lo, hi, other: q.id });
+      });
+    }
+  });
+  return out;
+}
+// 三角落在共享边「条带」（沿边投影在重叠段内）里越过边线的最大距离：三角按条带两端裁剪后取外法向最大值
+function maxBeyond(tris, e) {
+  let worst = -Infinity;
+  for (const t of tris) {
+    let poly = t.map((p) => { const dx = p[0] - e.a[0], dz = p[2] - e.a[1]; return [dx * e.ux + dz * e.uz, dx * e.n[0] + dz * e.n[1]]; });
+    for (const [lim, sg] of [[e.lo, 1], [e.hi, -1]]) {
+      const res = [];
+      for (let i = 0; i < poly.length; i++) {
+        const P = poly[i], Q = poly[(i + 1) % poly.length];
+        const inP = sg * (P[0] - lim) >= 0, inQ = sg * (Q[0] - lim) >= 0;
+        if (inP) res.push(P);
+        if (inP !== inQ) { const k = (lim - P[0]) / (Q[0] - P[0]); res.push([lim, P[1] + k * (Q[1] - P[1])]); }
+      }
+      poly = res;
+      if (!poly.length) break;
+    }
+    for (const p of poly) worst = Math.max(worst, p[1]);
+  }
+  return worst;
+}
+
 const garden = parseGlb(path.join(OUT, 'garden.glb'));
 const ps = JSON.parse(fs.readFileSync(path.join(OUT, 'procedural-stats.json'), 'utf8'));
 const cwPath = path.join(OUT, 'hallkit-collision-world.json');
@@ -208,13 +277,36 @@ for (const HK_ID of IDS) {
       for (const [u, v] of low) { uu0 = Math.min(uu0, u); uu1 = Math.max(uu1, u); vv0 = Math.min(vv0, v); vv1 = Math.max(vv1, v); }
       const po = DEF.platformOut;
       const tol = 0.15;
-      const eU = E.hu + po;
-      const dU = Math.max(Math.abs(-uu0 - eU), Math.abs(uu1 - eU));
-      const dBack = Math.abs(-vv0 - (E.hv + po));
-      ok(`${tag} 台基外廓对齐 footprint 外接矩形（两山 ±${eU.toFixed(2)} 偏差 ${dU.toFixed(3)}、背面 偏差 ${dBack.toFixed(3)} ≤ ${tol}）`,
+      // 各侧期望外廓 = 矩形半长 + platformOut；有共享边的一侧不超过共享边（台基齐边）
+      const lim = { right: Infinity, left: Infinity, back: Infinity, front: Infinity };
+      for (const e of sharedEdgesOf(obj)) {
+        const nl = [e.n[0] * ct - e.n[1] * st, e.n[0] * st + e.n[1] * ct];
+        const side = Math.abs(nl[0]) > Math.abs(nl[1]) ? (nl[0] > 0 ? 'right' : 'left') : (nl[1] > 0 ? 'front' : 'back');
+        for (const t of [e.lo, e.hi]) {
+          const [u, v] = toUV([e.a[0] + e.ux * t, 0, e.a[1] + e.uz * t]);
+          const d = side === 'right' ? u : side === 'left' ? -u : side === 'front' ? v : -v;
+          lim[side] = Math.min(lim[side], d);
+        }
+      }
+      const eR = Math.min(E.hu + po, lim.right), eL = Math.min(E.hu + po, lim.left), eB = Math.min(E.hv + po, lim.back);
+      const dU = Math.max(Math.abs(-uu0 - eL), Math.abs(uu1 - eR));
+      const dBack = Math.abs(-vv0 - eB);
+      ok(`${tag} 台基外廓对齐 footprint 外接矩形（两山 -${eL.toFixed(2)}/+${eR.toFixed(2)} 偏差 ${dU.toFixed(3)}、背面 -${eB.toFixed(2)} 偏差 ${dBack.toFixed(3)} ≤ ${tol}）`,
         dU <= tol + 0.04 && dBack <= tol + 0.04, `u=[${uu0.toFixed(2)}, ${uu1.toFixed(2)}] vBack=${vv0.toFixed(2)}`);
-      ok(`${tag} 正立面在 +Z（台基前沿 ${vv1.toFixed(2)} ≥ ${(E.hv + po - tol).toFixed(2)}）`, vv1 >= E.hv + po - tol);
+      const eF = Math.min(E.hv + po, lim.front);
+      ok(`${tag} 正立面在 +Z（台基前沿 ${vv1.toFixed(2)} ≥ ${(eF - tol).toFixed(2)}）`, vv1 >= eF - tol);
       row.platformAlignErrM = +Math.max(dU, dBack).toFixed(3);
+    }
+    // 2b) 共享边：任何三角不越过与邻栋共用的 footprint 边 0.02 m 以上（台基/墙/额枋/斗拱/檐口一律）
+    const shared = sharedEdgesOf(obj);
+    row.sharedEdges = shared.map((e) => e.other);
+    if (shared.length) {
+      const tris = garden.subtreeTris(HK_ID);
+      for (const e of shared) {
+        const mb = maxBeyond(tris, e);
+        ok(`${tag} 不越过与 ${e.other} 的共享边（重叠 ${(e.hi - e.lo).toFixed(2)} m，最大越界 ${mb.toFixed(3)} m ≤ 0.02）`, mb <= 0.02);
+        row.sharedEdgeMaxBeyondM = Math.max(row.sharedEdgeMaxBeyondM ?? -Infinity, +mb.toFixed(3));
+      }
     }
   }
 

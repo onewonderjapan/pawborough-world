@@ -119,3 +119,64 @@ def to_local(fr, wx, wz):
     """世界 (x,z) → 以外接矩形中心为原点的 (u, v)。"""
     dx, dz = wx - fr['rectCenter'][0], wz - fr['rectCenter'][1]
     return dx * fr['uAxis'][0] + dz * fr['uAxis'][1], dx * fr['front'][0] + dz * fr['front'][1]
+
+
+# ------------------------------------------------------------ 共享边 ----
+def _signed_area2(fp):
+    n = len(fp)
+    return sum(fp[i][0] * fp[(i + 1) % n][1] - fp[(i + 1) % n][0] * fp[i][1] for i in range(n))
+
+
+def shared_edges(obj, objects, defaults):
+    """本栋 footprint 与其他「会渲染的建筑」footprint 重合（两端点到本边直线 ≤ sharedEdgeTolM、重叠长 ≥ sharedEdgeMinLenM）的边段。
+    返回 [{a, b（重叠段世界端点）, n（本栋外法线）, other}]。从 layout 检出，不写死 id。"""
+    tol = defaults.get('sharedEdgeTolM', 0.05)
+    min_len = defaults.get('sharedEdgeMinLenM', 0.3)
+    kinds = set(defaults.get('sharedEdgeKinds', []))
+    fp = ring(obj['geometry']['footprint'])
+    sgn = 1.0 if _signed_area2(fp) > 0 else -1.0
+    out = []
+    for i in range(len(fp)):
+        a, b = fp[i], fp[(i + 1) % len(fp)]
+        L = math.hypot(b[0] - a[0], b[1] - a[1])
+        if L < min_len:
+            continue
+        ux, uz = (b[0] - a[0]) / L, (b[1] - a[1]) / L
+        nx, nz = (uz * sgn, -ux * sgn)          # CCW（面积>0）内侧在左 → 外法线在右
+        for q in objects:
+            if q['id'] == obj['id'] or q.get('skipRender') or q.get('kind') not in kinds:
+                continue
+            g = q.get('geometry') or {}
+            if not g.get('footprint'):
+                continue
+            qf = ring(g['footprint'])
+            for j in range(len(qf)):
+                c, d = qf[j], qf[(j + 1) % len(qf)]
+                dc = abs(-(c[0] - a[0]) * uz + (c[1] - a[1]) * ux)
+                dd = abs(-(d[0] - a[0]) * uz + (d[1] - a[1]) * ux)
+                if dc > tol or dd > tol:
+                    continue
+                tc = (c[0] - a[0]) * ux + (c[1] - a[1]) * uz
+                td = (d[0] - a[0]) * ux + (d[1] - a[1]) * uz
+                lo, hi = max(0.0, min(tc, td)), min(L, max(tc, td))
+                if hi - lo >= min_len:
+                    out.append({'a': (a[0] + ux * lo, a[1] + uz * lo), 'b': (a[0] + ux * hi, a[1] + uz * hi),
+                                'n': (nx, nz), 'other': q['id'], 'overlapM': hi - lo})
+    return out
+
+
+def side_limits(fr, edges):
+    """共享边 → 外接矩形四侧的限位（矩形中心起沿该侧外法线的最大允许距离）。
+    侧名：front(+v) back(-v) right(+u) left(-u)；边外法线与侧法线夹角 ≤ 30° 才归到该侧。"""
+    sides = {'front': (0.0, 1.0), 'back': (0.0, -1.0), 'right': (1.0, 0.0), 'left': (-1.0, 0.0)}
+    lim = {}
+    for e in edges:
+        ln = (e['n'][0] * fr['uAxis'][0] + e['n'][1] * fr['uAxis'][1], e['n'][0] * fr['front'][0] + e['n'][1] * fr['front'][1])
+        name, sv = max(sides.items(), key=lambda kv: kv[1][0] * ln[0] + kv[1][1] * ln[1])
+        if sv[0] * ln[0] + sv[1] * ln[1] < math.cos(math.radians(30)):
+            continue
+        for p in (e['a'], e['b']):
+            u, v = to_local(fr, *p)
+            d = u * sv[0] + v * sv[1]
+            lim[name] = min(lim.get(name, 1e9), d)
+    return lim

@@ -64,12 +64,12 @@ def pose(hid):
 
 def cams(hid):
     """四张：正面（模块朝向）、背面、斜俯、园内眼高（正面偏 30° 走近）。
-    距离按外接矩形最长边缩放（仰山堂 15.4 m 为 1.0，机位与 wave1 样板一致；小轩拉近，最小 0.5）。"""
+    距离按外接矩形最长边缩放（仰山堂 15.4 m 为 1.0，机位与 wave1 样板一致；小轩拉近，最小 0.65）。"""
     _, fr = pose(hid)
     cx, cz = fr['centroid']
     dx, dz = fr['facadeDir'] if a.legacy_cam else fr['front']
     px, pz = -dz, dx                                  # 垂直方向（右手）
-    k = 1.0 if a.legacy_cam else max(0.5, min(1.0, max(2 * fr['hu'], 2 * fr['hv']) / 15.4))
+    k = 1.0 if a.legacy_cam else max(0.65, min(1.0, max(2 * fr['hu'], 2 * fr['hv']) / 15.4))
     hc = (cx, 2.6, cz)
     return {
         'front': ((cx + dx * 24 * k, 5.0, cz + dz * 24 * k), hc, 40),
