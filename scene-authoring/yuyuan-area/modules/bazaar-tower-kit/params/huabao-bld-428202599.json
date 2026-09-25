@@ -186,6 +186,7 @@
     "note": "lead eave_kit 2026-09-24: over 1.2→1.5 so the storey eaves clear the 1.1 m galleries by 0.4 m and read as tiled slopes from the street (PBR-SH-0003-006 shows deep, heavy eaves); rootRise 0.95 (≈32°); chu 0.35, tile/board heights and bracket step are lead design inference"
   },
   "sharedEdgeRule": true,
+  "sharedEdgeEaveEnd": "endcap",
   "eaveClipHidden": false,
   "sharedEdgeNote": "lead 2026-09-26 选 ②：东端 v1→v3 与 bld-165791764 共享（layout 检出，重叠 5.24 + 29.49 m），各模块一致按 hall-kit 共享边规则——该段不出店面 / 外廊 / 斗拱，腰檐环内收（檐口外缘不越边线），角亭离墙线内收 cornerInsetM（塔檐 over+chu=1.55 m 收在边线内）",
   "features": {
@@ -212,6 +213,11 @@
       "date": "2026-09-26",
       "by": "wave4 lead decision 4",
       "what": "华宝楼开 sharedEdgeRule：东端与 bld-165791764 的共享边不再被腰檐 / 角亭檐越过；角亭从东南角向内收 1.35 m"
+    },
+    {
+      "date": "2026-09-26",
+      "by": "wave6-eavekit E3",
+      "what": "共享端腰檐改用 eave_kit 端头收口（sharedEdgeEaveEnd=endcap）：南立面腰檐在共享段起点（前街边 s≈35.5 m）处直接收口，端部不起翘，不再向墙内直角回折（原来回折处是带起翘的阳角，航拍看到方形截断）；东边共享段整段不出檐，北檐在东北角同样收口。其余几何不动。"
     }
   ]
 }

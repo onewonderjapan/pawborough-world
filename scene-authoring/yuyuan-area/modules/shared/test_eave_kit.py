@@ -5,6 +5,7 @@ E1 面朝向：kit 在右手局部系 (u, v, h) 里出的每个网格，每个�
 （eave_skirt 标量 / 逐边序列 / 可调用 / 凹多边形 / 共线台阶 / 小亭起翘封顶 / 无檐底，xieshan_roof，zanjian_roof，
 brackets）。另验检测本身不空转：同一批网格镜像后（不翻面）必须被判为反面。
 E2 攒尖 n 边形（prm['sides']，n=4 逐字节同 E1）；另：新参数缺省时全部现有调用输出与 E1 逐字节相同（金值）。
+E3 按角不起翘（noLift）+ 按边断开端头收口（endCaps）：朝向、断面封死（开口边只剩贴墙一圈）、端面位置、端部不起翘。
 """
 import hashlib
 import math
@@ -173,6 +174,117 @@ class ZanjianNgonTest(unittest.TestCase):
         self.assertNotEqual(digest(a), digest(b))
         with self.assertRaises(ValueError):
             capture(lambda: EK.zanjian_roof('z2', (-1, 1, -1, 1), 3.0, 5.0, dict(PRM, sides=2), 'p'))
+
+
+# ---------------------------------------------------------------- E3 按角不起翘 + 端头收口 ----
+def _plan_dist_to_poly(p, poly):
+    best = 1e9
+    for i in range(len(poly)):
+        a, b = poly[i], poly[(i + 1) % len(poly)]
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        t = max(0.0, min(1.0, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / (dx * dx + dy * dy)))
+        best = min(best, math.hypot(p[0] - a[0] - dx * t, p[1] - a[1] - dy * t))
+    return best
+
+
+def _boundary_edges(meshes, q=1e-6):
+    """焊接后只被一个三角用到的边（开口边）。"""
+    cnt = {}
+    for m in meshes:
+        V = m['verts']
+        for f in m['faces']:
+            for a, b, c in [(f[0], f[k], f[k + 1]) for k in range(1, len(f) - 1)]:
+                P = [tuple(round(x / q) for x in V[i]) for i in (a, b, c)]
+                if len(set(P)) < 3:
+                    continue
+                for e in range(3):
+                    k = tuple(sorted((P[e], P[(e + 1) % 3])))
+                    cnt[k] = cnt.get(k, 0) + 1
+    return [tuple(tuple(x * q for x in p) for p in k) for k, n in cnt.items() if n == 1]
+
+
+class NoLiftEndCapTest(unittest.TestCase):
+    RING = [(0, 0), (6, 0), (12, 0), (12, 7), (0, 7)]      # 南边在 (6,0) 分两段；东边 = 共享边
+
+    def skirt(self, **kw):
+        return {m['name']: m for m in capture(lambda: EK.eave_skirt('e', self.RING, 4.0, dict(PRM, **kw), 'p'))}
+
+    def test_defaults_unchanged_when_keys_absent(self):
+        a = capture(lambda: EK.eave_skirt('e', self.RING, 4.0, PRM, 'p'))
+        b = capture(lambda: EK.eave_skirt('e', self.RING, 4.0, dict(PRM, noLift=None, endCaps=None), 'p'))
+        self.assertEqual(digest(a), digest(b))
+
+    def test_facing_with_caps_and_nolift(self):
+        cases = [dict(endCaps=[2]), dict(endCaps=[1, 2]), dict(noLift=[3]), dict(noLift=lambda p: p[0] > 11, endCaps=[2]),
+                 dict(endCaps=[True, False, True, False, False], over=[1.1, 0.6, 1.1, 1.1, 1.1])]
+        for kw in cases:
+            ms = list(self.skirt(**kw).values())
+            res = EF.audit(ms)
+            self.assertEqual((res['wrongTris'], res['unjudged'], res['conflicts'], res['unknownMeshes']), (0, 0, 0, []),
+                             '%r %s' % (kw, EF.summary(res)))
+        L = [(0, 0), (10, 0), (10, 4), (5, 4), (5, 8), (0, 8)]
+        res = EF.audit(capture(lambda: EK.eave_skirt('l', list(reversed(L)), 4.0, dict(PRM, endCaps=[0], noLift=[2]), 'p')))
+        self.assertEqual((res['wrongTris'], res['unjudged']), (0, 0), EF.summary(res))
+
+    def test_end_cap_closes_section(self):
+        """断开处端面把断面封死：瓦面 + 瓦头 + 封檐板 + 檐底 + 端面焊接后，开口边只剩贴墙的一圈（墙线上）。"""
+        ms = self.skirt(endCaps=[2])
+        self.assertIn('e-endcap', ms)
+        open_edges = _boundary_edges(ms.values())
+        self.assertTrue(open_edges)
+        off = [e for e in open_edges if max(_plan_dist_to_poly(p, self.RING) for p in e) > 1e-6]
+        self.assertEqual(off, [], '端头 / 檐口有不贴墙的开口边（方形截断没封死）')
+        # 不加端头的同一断开：开口边离墙 → 说明本检测会失败
+        no_cap = {k: v for k, v in ms.items() if k != 'e-endcap'}
+        self.assertTrue([e for e in _boundary_edges(no_cap.values()) if max(_plan_dist_to_poly(p, self.RING) for p in e) > 1e-6])
+
+    def test_end_cap_position_and_no_lift(self):
+        """东边断开：南檐止于东墙线 x = 12 的竖面（不越共享边）、端部不起翘不出翘、外伸 = over；北檐同理。"""
+        ms = self.skirt(endCaps=[2])
+        allv = [p for m in ms.values() for p in m['verts']]
+        self.assertLessEqual(max(p[0] for p in allv), 12.0 + 1e-9)
+        cap = ms['e-endcap']['verts']
+        self.assertTrue(all(abs(p[0] - 12.0) < 1e-9 for p in cap))
+        lips = ms['e-tileend']['verts'][0::2]
+        z_lip = 4.0 - PRM['drop']
+        south_end = [p for p in lips if abs(p[0] - 12.0) < 1e-9 and p[1] < 0]
+        north_end = [p for p in lips if abs(p[0] - 12.0) < 1e-9 and p[1] > 7]
+        self.assertEqual(len(south_end), 1)
+        self.assertEqual(len(north_end), 1)
+        for p, y in ((south_end[0], -PRM['over']), (north_end[0], 7 + PRM['over'])):
+            self.assertAlmostEqual(p[1], y, places=9)
+            self.assertAlmostEqual(p[2], z_lip, places=9)
+        # 西侧两个阳角照常起翘
+        west = [p for p in lips if p[0] < 0]
+        self.assertAlmostEqual(max(p[2] for p in west), z_lip + PRM['qiao'] * (0.28 * 6.0 / PRM['reach']) ** 0.5, places=9)
+
+    def test_no_lift_corner(self):
+        """noLift 的阳角：外缘 = 两边偏移线交点（斜接、无出翘），起翘 0；另三个角不受影响。"""
+        base = self.skirt()
+        nl = self.skirt(noLift=[3])                         # 顶点 3 = (12, 7)
+        lips_b = base['e-tileend']['verts'][0::2]
+        lips_n = nl['e-tileend']['verts'][0::2]
+        z_lip = 4.0 - PRM['drop']
+        c = [p for p in lips_n if abs(p[0] - (12 + PRM['over'])) < 1e-9 and abs(p[1] - (7 + PRM['over'])) < 1e-9]
+        self.assertEqual(len(c), 1)
+        self.assertAlmostEqual(c[0][2], z_lip, places=9)
+        near = [p for p in lips_n if p[0] > 11 and p[1] > 6]
+        self.assertTrue(all(abs(p[2] - z_lip) < 1e-9 for p in near))
+        # 西南角（顶点 0）在两版里一样
+        sw_b = sorted(p for p in lips_b if p[0] < 1 and p[1] < 1)
+        sw_n = sorted(p for p in lips_n if p[0] < 1 and p[1] < 1)
+        self.assertEqual([tuple(round(x, 9) for x in p) for p in sw_b], [tuple(round(x, 9) for x in p) for p in sw_n])
+
+    def test_flag_specs_and_errors(self):
+        a = self.skirt(endCaps=[2])
+        b = self.skirt(endCaps=[False, False, True, False, False])
+        c = self.skirt(endCaps=lambda p, q: p[0] == q[0] == 12)
+        self.assertEqual(digest(list(a.values())), digest(list(b.values())))
+        self.assertEqual(digest(list(a.values())), digest(list(c.values())))
+        with self.assertRaises(ValueError):
+            self.skirt(endCaps=[0, 1, 2, 3, 4])
+        with self.assertRaises(ValueError):
+            self.skirt(endCaps=[True, False])
 
 
 if __name__ == '__main__':

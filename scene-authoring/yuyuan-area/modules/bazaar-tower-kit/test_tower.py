@@ -893,6 +893,35 @@ else:
     eff = al * _lum(_fac(_glm)) + (1 - al) * behind
     ok('test13b 底层玻璃等效亮度 %.3f ≥ 0.20（α %.2f、玻璃 %.3f、后衬 %s %.3f）' % (eff, al, _lum(_fac(_glm)), what, behind), eff >= 0.20)
 
+# ---------- test 14：共享端腰檐端头收口（wave6-eavekit E3；params sharedEdgeEaveEnd=endcap 的楼，现为华宝楼） ----------
+# 收口 = 檐口在共享段起点直接收住，不再沿墙内侧回折 / 内收（旧做法：环线内收 over+chu+0.05，檐在墙内走一圈，
+# 回折处是带起翘的阳角，航拍看到方形截断）。判据（layout 重算）：瓦面（eaves__* 节点的 roof 材质件）三角形心
+# 都不在墙线以内（footprint 内缩 wallInsetM + 0.05）；并且每条共享边上都没有腰檐瓦面（形心离共享段 ≤ 出檐 + 0.5 m 的
+# 投影不落在共享段 [lo+0.05, hi-0.05] 内）。
+if PRM.get('sharedEdgeEaveEnd') == 'endcap':
+    _inset = PRM['massing']['wallInsetM'] + 0.05
+    _over = PRM['eaveKit']['over']
+    _tile_nodes = [nd for nd in meshes if nd['name'].startswith('eaves__') and any('roof' in mn for mn in nd.get('mats', []))]
+    _inside = _near_shared = _ntri = 0
+    for nd in _tile_nodes:
+        wv = world_verts(nd)
+        for (ia, ib, ic) in nd['idxTris']:
+            _ntri += 1
+            cx = (wv[ia][0] + wv[ib][0] + wv[ic][0]) / 3
+            cz = (wv[ia][2] + wv[ib][2] + wv[ic][2]) / 3
+            if point_in_poly((cx, cz), FP, tol=-_inset):
+                _inside += 1
+            for e in SHARED_L:
+                s_ = (cx - e['a'][0]) * e['t'][0] + (cz - e['a'][1]) * e['t'][1]
+                d_ = (cx - e['a'][0]) * e['n'][0] + (cz - e['a'][1]) * e['n'][1]
+                if e['lo'] + 0.05 < s_ < e['hi'] - 0.05 and abs(d_) <= _over + 0.5:
+                    _near_shared += 1
+                    break
+    ok('test14a 共享端腰檐收口：腰檐瓦面三角 %d 个里在墙线以内（内收 / 回折）的 %d 个 = 0' % (_ntri, _inside), _ntri > 0 and _inside == 0)
+    ok('test14b 共享段（%d 段）上不出腰檐瓦面（贴着共享段的瓦面三角 %d 个 = 0）' % (len(SHARED_L), _near_shared), SHARED_L and _near_shared == 0)
+else:
+    skip('test14 共享端腰檐收口', 'params 未设 sharedEdgeEaveEnd=endcap')
+
 print('\ntest_tower: %d pass, %d fail, %d skip' % (pass_n, fail_n, skip_n))
 if fail_n:
     for f in failures:

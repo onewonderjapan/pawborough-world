@@ -26,6 +26,11 @@
 正脊 / 戗脊 / 斗拱块朝体外（此前 -tile、-soffit、-ridge 侧面、-qiangji、斗拱块是反的）。只翻了面序（保留首顶点，
 四边形对角线不变），顶点、UV、面数不变。使用者的局部 → 世界换算若是镜像（行列式 < 0，如 hall-kit 的 (u,h,v)、
 bazaar-tower-kit 的 to_b），须在注入口把面序倒过来；检测见 eave_facing.py / test_eave_kit.py。
+
+E2（wave6-eavekit）：zanjian_roof 的 prm['sides'] = n 出正 n 边形攒尖（缺省 4 = 原方形代码）。
+E3（wave6-eavekit）：eave_path / eave_skirt 的 noLift（这些角不起翘不出翘，只斜接）与 endCaps（这些边不出檐，
+檐口在两端断开，段端补端头收口面 <name>-endcap：断面 = 瓦面各环 → 瓦头 → 封檐板 → 檐底回墙，⟂ 本段墙线、过墙线角点，
+段端不起翘）。按角 / 按边参数口径同逐边 over：下标集合 / 等长布尔序列 / 可调用，按调用方 poly 顺序。
 """
 import math
 
@@ -81,12 +86,18 @@ def _edge_overs(poly_in, over):
     return [vals[(m - 2 - k) % m] for k in range(m)]
 
 
-def eave_path(poly, over, chu, qiao, reach, straight_step=2.0, corner_step=0.25, corner_steps=6):
+def eave_path(poly, over, chu, qiao, reach, straight_step=2.0, corner_step=0.25, corner_steps=6, no_lift=None,
+              end_caps=None):
     """沿直角多边形 poly（局部 u,v）生成檐口取样点。
     返回列表：每项 dict(p=墙线点, n=外法线, lip=檐口外缘平面点, lift=起翘高, s=累计长度)。
     阳角：墙线在角点不动，法线在 corner_steps 步内从前一边转到后一边，外缘沿角平分线外伸 over*√2 + chu；
     阴角：单点斜接，不起翘。
-    over 可为逐边序列 / 可调用（见模块说明），此时每个取样另带 ov = 所在边出檐。"""
+    over 可为逐边序列 / 可调用（见模块说明），此时每个取样另带 ov = 所在边出檐。
+    no_lift / end_caps（E3，见 _eave_runs）：给了任一个就走分段通路，每个取样另带 run（段号）与 cap（0 段首 / 1 段尾）；
+    都不给时走原代码，输出逐字节不变。"""
+    if no_lift is not None or end_caps is not None:
+        runs, _closed = _eave_runs(poly, over, chu, qiao, reach, straight_step, corner_step, no_lift, end_caps)
+        return [dict(sm, run=r) for r, run in enumerate(runs) for sm in run]
     ovs = _edge_overs(poly, over)
     if ovs is not None:
         return _eave_path_edges(poly, ovs, chu, qiao, reach, straight_step, corner_step)
@@ -215,13 +226,282 @@ def _eave_path_edges(poly, ovs, chu, qiao, reach, straight_step, corner_step):
     return samples
 
 
+def _vertex_flags(poly_in, spec):
+    """按角参数（调用方 poly 的顶点序）→ _ccw 之后的顶点序布尔表。
+    spec：None / 顶点下标的集合或列表（可负，按 Python 下标）/ 与顶点等长的布尔序列 / 可调用 f(pt) -> bool。"""
+    pts = [tuple(p) for p in poly_in]
+    m = len(pts)
+    if spec is None:
+        vals = [False] * m
+    elif callable(spec):
+        vals = [bool(spec(p)) for p in pts]
+    else:
+        spec = list(spec)
+        if spec and all(isinstance(x, bool) for x in spec):
+            if len(spec) != m:
+                raise ValueError('eave_kit: per-vertex flags need %d values, got %d' % (m, len(spec)))
+            vals = list(spec)
+        else:
+            idx = {int(x) % m for x in spec}
+            vals = [i in idx for i in range(m)]
+    return vals if _ccw(pts) is pts else [vals[m - 1 - k] for k in range(m)]
+
+
+def _edge_flags(poly_in, spec):
+    """按边参数（边 i = poly[i] → poly[i+1]，调用方序）→ _ccw 之后的边序布尔表。
+    spec：None / 边下标的集合或列表 / 与边等长的布尔序列 / 可调用 f(a, b) -> bool（a、b 为边端点，与方向无关）。"""
+    pts = [tuple(p) for p in poly_in]
+    m = len(pts)
+    if spec is None:
+        vals = [False] * m
+    elif callable(spec):
+        vals = [bool(spec(pts[i], pts[(i + 1) % m])) for i in range(m)]
+    else:
+        spec = list(spec)
+        if spec and all(isinstance(x, bool) for x in spec):
+            if len(spec) != m:
+                raise ValueError('eave_kit: per-edge flags need %d values, got %d' % (m, len(spec)))
+            vals = list(spec)
+        else:
+            idx = {int(x) % m for x in spec}
+            vals = [i in idx for i in range(m)]
+    return vals if _ccw(pts) is pts else [vals[(m - 2 - k) % m] for k in range(m)]
+
+
+def _eave_runs(poly_in, over, chu, qiao, reach, straight_step, corner_step, no_lift, end_caps):
+    """E3（wave6-eavekit）分段檐口路径：
+    - no_lift：这些角不起翘、不出翘（阳角也只做斜接，外缘 = 两边偏移线交点），两侧取样的起翘核不再朝它爬升；
+    - end_caps：这些边不出檐。檐口在该边两端断开成「段」，段首 / 段尾取样落在断开处的墙线角点上、法线取本段那条边的
+      法线、外伸 = 本边出檐（不斜接、不起翘），eave_skirt 在段端补端头收口面（端面 ⟂ 本段边，过墙线角点）。
+    over 同 eave_path（标量 / 逐边序列 / 可调用）。返回 (runs, closed)：runs = [[取样…]…]，closed = 无断开的单一闭环。
+    取样 dict 同 eave_path，另带 cap = 0（段首）/ 1（段尾）。起翘核只在本段内沿檐计距离（闭环时首尾相接）。"""
+    pts = [tuple(p) for p in poly_in]
+    ovs = _edge_overs(pts, over)
+    nl = _vertex_flags(pts, no_lift)
+    gap = _edge_flags(pts, end_caps)
+    poly = _ccw(pts)
+    n = len(poly)
+    if ovs is None:
+        ovs = [float(over)] * n
+    if all(gap):
+        raise ValueError('eave_kit: end_caps covers every edge, nothing to build')
+    lens = [math.hypot(poly[(i + 1) % n][0] - poly[i][0], poly[(i + 1) % n][1] - poly[i][1]) for i in range(n)]
+    long_edges = [L for i, L in enumerate(lens) if L > 1.0 and not gap[i]]
+    if long_edges and reach > 0.28 * min(long_edges):
+        qiao = qiao * (0.28 * min(long_edges) / reach) ** 0.5
+        reach = 0.28 * min(long_edges)
+    convex = []
+    for i in range(n):
+        a, b, c = poly[i - 1], poly[i], poly[(i + 1) % n]
+        convex.append(_cross(_sub(b, a), _sub(c, b)) > 1e-9)
+    edge_n = []
+    for i in range(n):
+        d = _norm(_sub(poly[(i + 1) % n], poly[i]))
+        edge_n.append((d[1], -d[0]))
+    seq = []
+    for i in range(n):
+        a, b = poly[i], poly[(i + 1) % n]
+        L = lens[i]
+        dvec = _norm(_sub(b, a))
+        nrm, npv = edge_n[i], edge_n[i - 1]
+        o, op = ovs[i], ovs[i - 1]
+        gin, gout = gap[i - 1], gap[i]
+        if gin and gout:
+            pass
+        elif gout:                                    # 段尾：前一边止于 a
+            seq.append(dict(p=a, n=npv, ext=op, ov=op, corner=False, cap=1, t=0))
+        elif gin:                                     # 段首：本边起于 a
+            seq.append(dict(p=a, n=nrm, ext=o, ov=o, corner=False, cap=0, t=0))
+        else:
+            det = _cross(npv, nrm)
+            if abs(det) < 1e-9:
+                if abs(o - op) > 1e-9:
+                    seq.append(dict(p=a, n=npv, ext=op, ov=op, corner=False, step=True, t=0))
+                seq.append(dict(p=a, n=nrm, ext=o, ov=o, corner=False, t=0))
+            else:
+                qx = (op * nrm[1] - o * npv[1]) / det
+                qy = (o * npv[0] - op * nrm[0]) / det
+                ext = math.hypot(qx, qy)
+                nb = (qx / ext, qy / ext) if ext > 1e-12 else _norm((npv[0] + nrm[0], npv[1] + nrm[1]))
+                cosh = max(0.5, nb[0] * nrm[0] + nb[1] * nrm[1])
+                lifted = convex[i] and not nl[i]
+                seq.append(dict(p=a, n=nb, ext=ext + (chu / cosh if lifted else 0.0), ov=max(o, op), corner=lifted, t=0))
+        if gout:
+            continue
+        s = 0.0
+        pts_s = []
+        while True:
+            near = min(s, L - s)
+            step = corner_step if near < reach else straight_step
+            s += step
+            if s >= L - 1e-6:
+                break
+            pts_s.append(s)
+        for s in pts_s:
+            seq.append(dict(p=(a[0] + dvec[0] * s, a[1] + dvec[1] * s), n=nrm, ext=o, ov=o, corner=False, t=0))
+    closed = not any(gap)
+    if closed:
+        runs = [seq]
+    else:
+        k0 = next(i for i, sm in enumerate(seq) if sm.get('cap') == 0)
+        seq = seq[k0:] + seq[:k0]
+        runs, cur = [], []
+        for sm in seq:
+            cur.append(sm)
+            if sm.get('cap') == 1:
+                runs.append(cur)
+                cur = []
+    for run in runs:
+        cum = [0.0]
+        for i in range(1, len(run)):
+            pa, pb = run[i - 1]['p'], run[i]['p']
+            cum.append(cum[-1] + math.hypot(pb[0] - pa[0], pb[1] - pa[1]))
+        per = cum[-1] + math.hypot(run[0]['p'][0] - run[-1]['p'][0], run[0]['p'][1] - run[-1]['p'][1])
+        corner_s = sorted(set(round(cum[i], 4) for i, sm in enumerate(run) if sm['corner']))
+        for i, sm in enumerate(run):
+            if closed:
+                d = min((min(abs(cum[i] - c), per - abs(cum[i] - c)) for c in corner_s), default=1e9)
+            else:
+                d = min((abs(cum[i] - c) for c in corner_s), default=1e9)
+            k = smooth_kernel(d, reach)
+            sm['lift'] = qiao * k
+            if not sm['corner']:
+                sm['ext'] = sm['ext'] + chu * k * k
+            p, nn = sm['p'], sm['n']
+            sm['lip'] = (p[0] + nn[0] * sm['ext'], p[1] + nn[1] * sm['ext'])
+    return runs, closed
+
+
+def _ear_clip(P2):
+    """简单多边形（2D，任意绕向）耳切三角化 → [(i, j, k)]，三角绕向与多边形一致。"""
+    n = len(P2)
+    area = sum(P2[i][0] * P2[(i + 1) % n][1] - P2[(i + 1) % n][0] * P2[i][1] for i in range(n))
+    sgn = 1.0 if area >= 0 else -1.0
+    idx = list(range(n))
+    out = []
+
+    def cr(o, a, b):
+        return ((a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])) * sgn
+
+    guard = 0
+    while len(idx) > 3 and guard < 10 * n * n:
+        guard += 1
+        m = len(idx)
+        for q in range(m):
+            i0, i1, i2 = idx[q - 1], idx[q], idx[(q + 1) % m]
+            A, B, C = P2[i0], P2[i1], P2[i2]
+            if cr(A, B, C) <= 1e-12:
+                continue
+            if any(cr(A, B, P2[j]) >= -1e-12 and cr(B, C, P2[j]) >= -1e-12 and cr(C, A, P2[j]) >= -1e-12
+                   for j in idx if j not in (i0, i1, i2)):
+                continue
+            out.append((i0, i1, i2))
+            idx.pop(q)
+            break
+        else:
+            break                                     # 退化：剩下的按扇形收尾
+    for q in range(1, len(idx) - 1):
+        out.append((idx[0], idx[q], idx[q + 1]))
+    return out
+
+
+def _eave_skirt_runs(name, poly, z, prm, part, rr, top_rings, with_soffit):
+    """eave_skirt 的分段通路（prm 带 noLift / endCaps 时）：各段独立出瓦面 / 瓦头 / 封檐板 / 檐底（开段不首尾相接），
+    开段两端补端头收口面 <name>-endcap（断面：瓦面各环 → 瓦头 → 封檐板 → 檐底回墙，⟂ 本段边，材质 dark）。
+    面朝向口径同 E1：瓦面朝上、檐底朝下、立面与端面朝外。"""
+    over, chu, qiao, reach = prm['over'], prm['chu'], prm['qiao'], prm['reach']
+    runs, closed = _eave_runs(poly, over, chu, qiao, reach, prm.get('straightStep', 2.0), prm.get('cornerStep', 0.25),
+                              prm.get('noLift'), prm.get('endCaps'))
+    drop, tH, bH, curve = prm['drop'], prm['tileH'], prm['boardH'], prm.get('curve', 1.7)
+    srise = prm.get('soffitRise', 0.15)
+
+    def tile_pt(sm, t):
+        p, lp = sm['p'], sm['lip']
+        u = p[0] + (lp[0] - p[0]) * t
+        v = p[1] + (lp[1] - p[1]) * t
+        h = (z + rr) + ((z - drop) - (z + rr)) * (t ** (1.0 / curve)) + sm['lift'] * (t ** 2.2)
+        return (u, v, h)
+
+    def lip_top(sm):
+        return (sm['lip'][0], sm['lip'][1], z - drop + sm['lift'])
+
+    T = dict(tile=([], []), tileend=([], []), board=([], []), soffit=([], []), endcap=([], []))
+    for run in runs:
+        m = len(run)
+        nseg = m if closed else m - 1
+        it, fc = T['tile']
+        b0 = len(it)
+        for j in range(top_rings + 1):
+            t = j / top_rings
+            for sm in run:
+                u, v, h = tile_pt(sm, t)
+                it.append(((u, v, h), (u + v, t * (sm['ov'] + rr))))
+        for j in range(top_rings):
+            for i in range(nseg):
+                k = (i + 1) % m
+                fc.append((b0 + j * m + i, b0 + (j + 1) * m + i, b0 + (j + 1) * m + k, b0 + j * m + k))
+        for tag, h0, h1 in (('tileend', 0.0, tH), ('board', tH, tH + bH)):
+            it, fc = T[tag]
+            b0 = len(it)
+            for sm in run:
+                x, y, zt = lip_top(sm)
+                it.append(((x, y, zt - h0), (x + y, 0.0)))
+                it.append(((x, y, zt - h1), (x + y, h1 - h0)))
+            for i in range(nseg):
+                k = (i + 1) % m
+                fc.append((b0 + 2 * i, b0 + 2 * i + 1, b0 + 2 * k + 1, b0 + 2 * k))
+        if with_soffit:
+            it, fc = T['soffit']
+            b0 = len(it)
+            for sm in run:
+                x, y, zt = lip_top(sm)
+                it.append(((x, y, zt - tH - bH), (x + y, 0.0)))
+                p = sm['p']
+                it.append(((p[0], p[1], z + srise), (p[0] + p[1], sm['ov'])))
+            for i in range(nseg):
+                k = (i + 1) % m
+                fc.append((b0 + 2 * i, b0 + 2 * i + 1, b0 + 2 * k + 1, b0 + 2 * k))
+        if closed:
+            continue
+        # 端头收口：段首朝 -本边方向、段尾朝 +本边方向
+        for sm, sgn in ((run[0], -1.0), (run[-1], 1.0)):
+            p, nn = sm['p'], sm['n']
+            sec = [tile_pt(sm, j / top_rings) for j in range(top_rings + 1)]
+            x, y, zt = lip_top(sm)
+            sec += [(x, y, zt - tH), (x, y, zt - tH - bH)]
+            if with_soffit:
+                sec.append((p[0], p[1], z + srise))
+            P2 = [((q[0] - p[0]) * nn[0] + (q[1] - p[1]) * nn[1], q[2]) for q in sec]
+            tris = _ear_clip(P2)
+            dirv = (-nn[1] * sgn, nn[0] * sgn)          # 本边方向 d = (-n.y, n.x)（CCW 外法线右手），段首朝 -d、段尾朝 +d
+            A, B, C = sec[tris[0][0]], sec[tris[0][1]], sec[tris[0][2]]
+            nx = (B[1] - A[1]) * (C[2] - A[2]) - (B[2] - A[2]) * (C[1] - A[1])
+            ny = (B[2] - A[2]) * (C[0] - A[0]) - (B[0] - A[0]) * (C[2] - A[2])
+            if nx * dirv[0] + ny * dirv[1] < 0:
+                tris = [(a, c, b) for a, b, c in tris]
+            it, fc = T['endcap']
+            b0 = len(it)
+            for q, q2 in zip(sec, P2):
+                it.append((q, q2))
+            fc.extend((b0 + a, b0 + b, b0 + c) for a, b, c in tris)
+    for tag, mt in (('tile', 'roof'), ('tileend', 'dark'), ('board', 'wood'), ('soffit', 'dark'), ('endcap', 'dark')):
+        it, fc = T[tag]
+        if fc:
+            _ADD(name + '-' + tag, it, fc, mt, part)
+    return [sm for run in runs for sm in run]
+
+
 # ------------------------------------------------------------ 檐口构件 ----
 def eave_skirt(name, poly, z, prm, part, root_rise=None, top_rings=2, with_soffit=True):
     """一圈腰檐：墙线上方 root_rise 处起坡 → 檐口外缘（起翘）→ 立面（瓦头 + 封檐板）→ 檐底回墙。
     prm: over, chu, qiao, reach, drop(檐口外缘比 z 低多少), tileH, boardH, curve, soffitRise。
-    prm['over'] 可为逐边序列 / 可调用（见模块说明）；标量时输出与原版逐字节一致。"""
+    prm['over'] 可为逐边序列 / 可调用（见模块说明）；标量时输出与原版逐字节一致。
+    prm['noLift']（按角不起翘）/ prm['endCaps']（按边断开 + 端头收口）见 _eave_runs / _eave_skirt_runs（E3）；
+    两个键都不给时走原代码，输出逐字节不变。"""
     over, chu, qiao, reach = prm['over'], prm['chu'], prm['qiao'], prm['reach']
     rr = prm.get('rootRise', 0.55) if root_rise is None else root_rise
+    if prm.get('noLift') is not None or prm.get('endCaps') is not None:
+        return _eave_skirt_runs(name, poly, z, prm, part, rr, top_rings, with_soffit)
     S = eave_path(poly, over, chu, qiao, reach, prm.get('straightStep', 2.0), prm.get('cornerStep', 0.25),
                   prm.get('cornerSteps', 6))
     m = len(S)
