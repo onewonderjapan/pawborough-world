@@ -1,6 +1,6 @@
 {
   "axis": "Y-up +Z facade",
-  "origin": "plan centre of plinth extents (reanchored from front colonnade by +6.65 GLB z)",
+  "origin": "plan centre of the pre-wave2 plinth extents (reanchored from front colonnade by +6.65 GLB z; kept fixed after the wave2 back-side trim)",
   "instanceSpace": true,
   "integratedIntoWorld": false,
   "colliders": [
@@ -9,12 +9,12 @@
       "center": [
         0.0,
         0.275,
-        0.0
+        0.20999999999999996
       ],
       "size": [
         18.2,
         0.55,
-        15.3
+        14.88
       ],
       "type": "box"
     },

@@ -13,7 +13,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { centroid, distToPolyline, pointInPoly, dist2d } from '../src/lib.mjs';
+import { centroid, distToPolyline, pointInPoly, dist2d, anchorBehindSharedEdge, rearWallFace } from '../src/lib.mjs';
 import { loadColliders, targetBox, visiblePointCount, screenAreaFrac, nearestColliderDist, streetCorridorBox, boxDist2d, polylineNearBox } from '../scripts/tour-visibility.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -197,6 +197,24 @@ for (const [key, v] of Object.entries(tour)) {
       }
     }
   }
+}
+// 10) 三穗堂机位（wave2-sansuitang S3）：南侧院落眼高 1.6 m 正对格扇立面 —— 机位在 facade.dir 一侧、
+//     偏立面轴 ≤ 20°、距模块锚点 12–25 m（锚点从冻结源 + 模块 collision.json 按 assemble 同一规则重算）。
+//     立面朝南是主控覆盖（常识判断，未核实）；本断言只核对机位与 layout facade.dir 的几何关系。
+if (tour.sansuitang) {
+  const o = layoutObj('bld-428179901');
+  const { backZ, backHalfX } = rearWallFace(JSON.parse(fs.readFileSync(path.join(ROOT, 'modules', 'sansuitang', 'collision.json'), 'utf8')));
+  const anc = anchorBehindSharedEdge(o.geometry.footprint, layoutObj('bld-428179902').geometry.footprint, o.facade.dir, backZ, backHalfX).anchor;
+  const v = tour.sansuitang, d = [v.p[0] - anc[0], v.p[2] - anc[1]], R = Math.hypot(...d);
+  const fl = Math.hypot(...o.facade.dir);
+  const off = Math.acos(Math.max(-1, Math.min(1, (d[0] * o.facade.dir[0] + d[1] * o.facade.dir[1]) / (R * fl)))) * 180 / Math.PI;
+  r1check(Math.abs(v.p[1] - 1.6) < 0.01, `sansuitang 机位高 ${v.p[1]} ≠ 眼高 1.6`);
+  r1check(off <= 20, `sansuitang 机位偏立面轴 ${off.toFixed(1)}° > 20°`);
+  r1check(R >= 12 && R <= 25, `sansuitang 机位距锚点 ${R.toFixed(1)} m 不在 12–25 m`);
+  const lk = [v.t[0] - v.p[0], v.t[2] - v.p[2]], ll = Math.hypot(...lk);
+  const faceOff = Math.acos(Math.max(-1, Math.min(1, -(lk[0] * o.facade.dir[0] + lk[1] * o.facade.dir[1]) / (ll * fl)))) * 180 / Math.PI;
+  r1check(faceOff <= 30, `sansuitang 视线与立面法线反向夹角 ${faceOff.toFixed(1)}° > 30°（没有正对立面）`);
+  console.log(`tour-test(sansuitang): 偏立面轴 ${off.toFixed(1)}°，距锚点 ${R.toFixed(1)} m，h ${v.p[1]}，视线对立面法线 ${faceOff.toFixed(1)}°`);
 }
 console.log(`tour-test(R1): visibility/projection/clearance checked on ${Object.keys(tour).length} views`);
 if (r1fails) { console.error(`tour-test(R1): ${r1fails} fail`); process.exit(1); }

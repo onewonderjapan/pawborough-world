@@ -275,18 +275,95 @@ if os.environ.get('STALL_KIT') == '1':
     print('stall kit placed', stall_placed)
 
 # ---------- 三穗堂实例模块（SANSUITANG=1：modules/sansuitang 细化件替代程序化 hall bld-428179901） ----------
-# 位置 = footprint 形心（顶点均值，与 pavilion 同式），rotY = atan2(facade.dir.x, facade.dir.z)。
-# 模块原点已重锚到台基外包平面中心（modules/sansuitang/README.md），故锚点即放在形心；
+# 位置（wave2-sansuitang 主控 2026-09-25 定）= footprint 最小面积外接矩形中心，再沿 facade.dir 平移最小量，
+# 使模块后墙外皮（collision.json rear-wall 盒的本地 z 最小面，本地 x ±半宽）落在与仰山堂的共用边线上或其内侧；
+# 此前是顶点均值形心（偏向共用边，模块后墙伸进仰山堂）。rotY = atan2(facade.dir.x, facade.dir.z)。
+# 矩形算法逐步同 modules/hall-kit/build_hall.py；JS 侧 src/lib.mjs anchorBehindSharedEdge（export-collision / tour / 测试共用）。
 # collision.json（实例坐标）同步变换出世界记录写 OUT，供后续物理对账。
+def min_area_rect_center(fp):
+    pts = sorted(set(tuple(p) for p in fp))
+    def cr(o, a, b):
+        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+    lo, up = [], []
+    for p in pts:
+        while len(lo) >= 2 and cr(lo[-2], lo[-1], p) <= 0:
+            lo.pop()
+        lo.append(p)
+    for p in reversed(pts):
+        while len(up) >= 2 and cr(up[-2], up[-1], p) <= 0:
+            up.pop()
+        up.append(p)
+    hull = lo[:-1] + up[:-1]
+    best = None
+    for i in range(len(hull)):
+        x1, y1 = hull[i]
+        x2, y2 = hull[(i + 1) % len(hull)]
+        L = math.hypot(x2 - x1, y2 - y1)
+        if L < 1e-9:
+            continue
+        ux, uy = (x2 - x1) / L, (y2 - y1) / L
+        us = [(p[0] - x1) * ux + (p[1] - y1) * uy for p in hull]
+        vs = [-(p[0] - x1) * uy + (p[1] - y1) * ux for p in hull]
+        a = (max(us) - min(us)) * (max(vs) - min(vs))
+        if best is None or a < best[0]:
+            best = (a, ux, uy, (min(us) + max(us)) / 2, (min(vs) + max(vs)) / 2, x1, y1)
+    _a, ux, uy, cu, cv, x1, y1 = best
+    return x1 + cu * ux - cv * uy, y1 + cu * uy + cv * ux
+
+def shared_edge_line(fp_a, fp_b, tol=0.05):
+    ring_b = list(fp_b) + [fp_b[0]]
+    def d_poly(p):
+        best = float('inf')
+        for i in range(len(ring_b) - 1):
+            a, b = ring_b[i], ring_b[i + 1]
+            dx, dz = b[0] - a[0], b[1] - a[1]
+            L2 = dx * dx + dz * dz
+            t = 0 if L2 == 0 else max(0, min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dz) / L2))
+            best = min(best, math.hypot(p[0] - a[0] - dx * t, p[1] - a[1] - dz * t))
+        return best
+    segs = [(fp_a[i], fp_a[(i + 1) % len(fp_a)]) for i in range(len(fp_a))
+            if d_poly(fp_a[i]) < tol and d_poly(fp_a[(i + 1) % len(fp_a)]) < tol]
+    if not segs:
+        return None
+    a, b = segs[0][0], segs[-1][1]
+    L = math.hypot(b[0] - a[0], b[1] - a[1])
+    n = (-(b[1] - a[1]) / L, (b[0] - a[0]) / L)
+    mx = sum(q[0] for q in fp_a) / len(fp_a); mz = sum(q[1] for q in fp_a) / len(fp_a)
+    if (mx - a[0]) * n[0] + (mz - a[1]) * n[1] < 0:
+        n = (-n[0], -n[1])
+    return a, n
+
+def sansuitang_anchor(fp, nfp, fdir, back_z, back_half_x):
+    cx, cz = min_area_rect_center(fp)
+    l = math.hypot(fdir[0], fdir[1]); f = (fdir[0] / l, fdir[1] / l); r = (f[1], -f[0])
+    edge = shared_edge_line(fp, nfp) if nfp else None
+    shift = 0.0
+    if edge:
+        a, n = edge
+        fn = f[0] * n[0] + f[1] * n[1]
+        for u in (-back_half_x, back_half_x):
+            P = (cx + u * r[0] + back_z * f[0], cz + u * r[1] + back_z * f[1])
+            d = (P[0] - a[0]) * n[0] + (P[1] - a[1]) * n[1]
+            if d < 0 and fn > 1e-6:
+                shift = max(shift, -d / fn)
+    return cx + shift * f[0], cz + shift * f[1], shift
+
+def ring_open(fp):
+    return fp[:-1] if fp[0] == fp[-1] else fp
+
 sst_placed = 0
 if os.environ.get('SANSUITANG') == '1':
     lay_obj = {o['id']: o for o in LAYOUT['objects']}
     o = lay_obj['bld-428179901']
-    fp = o['geometry']['footprint'][:-1] if o['geometry']['footprint'][0] == o['geometry']['footprint'][-1] else o['geometry']['footprint']
-    cx = sum(q[0] for q in fp) / len(fp); cz = sum(q[1] for q in fp) / len(fp)
+    fp = ring_open(o['geometry']['footprint'])
     d = o['facade']['dir']
     rot_y = math.atan2(d[0], d[1])
     SST_DIR = os.path.join(ROOT, os.environ.get('SANSUITANG_DIR', 'out-garden-kits/sansuitang-bld-428179901'))
+    rear = [b for b in json.load(open(os.path.join(SST_DIR, 'collision.json'), encoding='utf-8'))['colliders'] if b['name'] == 'rear-wall']
+    back_z = min(b['center'][2] - b['size'][2] / 2 for b in rear)
+    back_half_x = max(abs(b['center'][0]) + b['size'][0] / 2 for b in rear)
+    cx, cz, sst_shift = sansuitang_anchor(fp, ring_open(lay_obj['bld-428179902']['geometry']['footprint']), d, back_z, back_half_x)
+    print('sansuitang anchor: rect centre + %.4f m along facade.dir -> (%.4f, %.4f)' % (sst_shift, cx, cz))
     sst_objs = import_glb(os.path.join(SST_DIR, 'model.glb'), 'MODLIB')
     for oo in sst_objs:
         oo.hide_render = True

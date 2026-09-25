@@ -27,7 +27,10 @@
     "gableBreakY": 7.9,
     "cornerLift": 0.45,
     "cornerReach": 1.6,
-    "eaveSag": 0.05
+    "eaveSag": 0.05,
+    "plinthOutBack": 0.18,
+    "lowerOverBack": 0.0,
+    "upperOverBack": 0.2
   },
   "refinements": [
     "lattice-door-cores (analytic alpha texture x1)",
@@ -78,8 +81,16 @@
   },
   "reanchor": {
     "from": "front colonnade centre (lead grey model)",
-    "to": "plan centre of plinth extents",
+    "to": "plan centre of the pre-wave2 plinth extents (kept fixed)",
     "shiftGlbZ": 6.65
+  },
+  "backSide": {
+    "decision": "wave2-sansuitang lead 2026-09-25: back only; nothing may cross the shared edge with 仰山堂",
+    "plinthOutBack": "flush with rear wall outer face",
+    "lowerOverBack": "from ZB",
+    "upperOverBack": "from UZB",
+    "backEaveDressing": false,
+    "frontHalfUnchanged": "every triangle lying entirely at local z>=0 (position, normal, UV) identical to the 2026-09-23 build"
   },
   "textureDir": "/home/baibai/work/onewonderjapan/pawborough-world/asset-authoring/yuyuan-entry/source-kit/textures"
 }

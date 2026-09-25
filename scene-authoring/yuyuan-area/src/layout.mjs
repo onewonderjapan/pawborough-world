@@ -337,6 +337,35 @@ function gardenFacadeDir(fp, zone, objectsSoFar) {
   return best || { dir: [0, 1], basis: 'south-default (category basis, not survey)' };
 }
 
+// 入口朝向显式覆盖表（主控决定；推断规则 gardenFacadeDir 不变，覆盖只在这一处集中登记）。
+// 每条用 footprint 上的一段边（起止顶点坐标，可跨中间顶点）定义朝向：
+// facade.dir = 该段边弦（起点→终点）的外法线，运行时从 footprint 重算，不写死方向值。
+// 被覆盖的推断值留在 facade.inferred 备查。
+const FACADE_OVERRIDES = {
+  // 三穗堂：入园第一厅坐北朝南，格扇立面朝南侧入口院落。推断规则（最近园池水面）得朝北，
+  // 与北侧共边的仰山堂背靠背（wave1-maint M2 排查）。依据为常识判断，库内无可定向照片，未核实。
+  'bld-428179901': {
+    edge: [[-168.87, -172.06], [-152.49, -176.46]], // 南侧长边（经中间顶点 -160.24,-174.44）
+    basis: 'lead-override 2026-09-25: 入园第一厅坐北朝南（常识，未核实）',
+  },
+};
+function facadeOverride(id, fpIn, inferred) {
+  const ov = FACADE_OVERRIDES[id];
+  if (!ov) return null;
+  const closedRing = fpIn.length > 1 && fpIn[0][0] === fpIn[fpIn.length - 1][0] && fpIn[0][1] === fpIn[fpIn.length - 1][1];
+  const fp = closedRing ? fpIn.slice(0, -1) : fpIn;
+  const idx = (q) => fp.findIndex(p => Math.abs(p[0] - q[0]) < 1e-6 && Math.abs(p[1] - q[1]) < 1e-6);
+  const i0 = idx(ov.edge[0]), i1 = idx(ov.edge[1]);
+  if (i0 < 0 || i1 < 0 || i0 === i1) throw new Error(`facade override ${id}: edge vertices not on footprint`);
+  const A = fp[i0], B = fp[i1];
+  const l = Math.hypot(B[0] - A[0], B[1] - A[1]);
+  let n = [-(B[1] - A[1]) / l, (B[0] - A[0]) / l];
+  // 外法线 = 背离 footprint 形心的一侧
+  const c = centroid(fp), m = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2];
+  if (n[0] * (c[0] - m[0]) + n[1] * (c[1] - m[1]) > 0) n = [-n[0], -n[1]];
+  return { dir: n, basis: ov.basis, edge: ov.edge, inferred };
+}
+
 const GARDEN_CLASSES = [
   [/堂$|殿$|静观|学圃/, 'hall', 'gabled', 1],
   [/楼$|阁$|快楼/, 'tower', 'gabled', 2],
@@ -448,7 +477,8 @@ for (const { b, t } of byZone.garden) {
   const eave = kind === 'tower' ? 5.6 : kind === 'stage' ? 3.2 : kind === 'pavilion' ? 3.0 : 4.0;
   const rise = kind === 'pavilion' ? 2.1 : kind === 'stage' ? 2.4 : 1.9;
   // G2：入口朝向 + 七节点特征（证据见 GARDEN_NODE_EVIDENCE）
-  const facade = gardenFacadeDir(b.points, 'garden', objects);
+  const facadeInferred = gardenFacadeDir(b.points, 'garden', objects);
+  const facade = facadeOverride(`bld-${b.id}`, b.points, facadeInferred) || facadeInferred;
   const nodeEv = name ? GARDEN_NODE_EVIDENCE[name] : null;
   const emitB = {
     id: `bld-${b.id}`, zone: 'garden', kind, name, lod: 'L1', disposition: 'rendered',

@@ -1,5 +1,5 @@
 {
-  "triangles": 22114,
+  "triangles": 18226,
   "byNode": {
     "hall-base__sst-blue-stone": 240,
     "hall-base__sst-timber-darkred": 192,
@@ -11,28 +11,28 @@
     "hall-wall__sst-dark-timber": 384,
     "hall-upper__sst-lattice-core": 8,
     "hall-roof__sst-roof-tile": 4824,
-    "hall-roof__sst-dark-timber": 512,
-    "hall-roof__sst-timber-darkred": 6144,
-    "hall-roof__sst-eave-dark": 7456,
+    "hall-roof__sst-dark-timber": 368,
+    "hall-roof__sst-timber-darkred": 4416,
+    "hall-roof__sst-eave-dark": 5440,
     "hall-roof__sst-white-wall": 2,
     "hall-interior__sst-blue-stone": 12,
     "hall-interior__sst-timber-darkred": 288,
     "hall-interior__sst-lattice-core": 8
   },
-  "glbBytes": 1753156,
+  "glbBytes": 1479512,
   "maxY": 10.455,
   "planExtentsBlenderY": [
     -8.93,
-    8.4
+    7.23
   ],
   "planWidthX": [
-    -9.85,
-    9.85
+    -9.86,
+    9.86
   ],
   "reanchored": 6.65,
   "eaveDressingCounts": {
-    "lower": 256,
-    "upper": 256
+    "lower": 184,
+    "upper": 184
   },
   "designDimensions": {
     "facadeWidth": 17.0,
@@ -43,8 +43,8 @@
     "ridge": 9.4,
     "footprintWithPlinth": [
       18.2,
-      15.3
+      14.88
     ]
   },
-  "buildSeconds": 7.7
+  "buildSeconds": 3.8
 }

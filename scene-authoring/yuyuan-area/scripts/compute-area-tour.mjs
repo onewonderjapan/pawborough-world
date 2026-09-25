@@ -13,7 +13,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { centroid, distToPolyline, pointInPoly, dist2d } from '../src/lib.mjs';
+import { centroid, distToPolyline, pointInPoly, dist2d, anchorBehindSharedEdge, rearWallFace } from '../src/lib.mjs';
 import { makeShotTools } from './shot-lib.mjs';
 import { loadColliders, targetBox, visiblePointCount, screenAreaFrac, nearestColliderDist, streetCorridorBox, streetCorridorAim, polylineNearBox, VIEW } from './tour-visibility.mjs';
 
@@ -225,22 +225,62 @@ for (const key of ['main', 'gold', 'center', 'jiuqu', 'old-south', 'old-north'])
 
 // ---------- 五对象取景机位 ----------
 {
-  const reg = regionOf('bld-428179901'); // 三穗堂：正对 facade.dir 一侧（M2）
-  const f = obj('bld-428179901').facade.dir;
-  // M2：眼高正前方是背靠背的仰山堂（bld-428179902，沿立面满贴、脊高 5.9 m），9 点可见过不了；
-  // 改斜俯视（tour-test 对象机位允许 h≥8）从 facade.dir 一侧上方取景：
-  // ±25° 硬窗只取立面一侧（山墙方位排除），树干不入画（树干段 0–2.5 m 画面投影检查）。
-  // 实测全约束下格扇墙带大部分被仰山堂屋脊挡住（见包 artifacts/m2/RESULT），可取的是
-  // 屋顶+檐下廊带立面侧正视构图；位置仍全部由冻结布局 + collision-* 重算。
-  const th0 = Math.atan2(f[1], f[0]);
-  let done = null, lastWhy = '';
-  for (const h of [17, 18]) {
-    const r = orbitCamR1(reg, { h, dists: [24, 26, 28], lookY: 2.2, preferDir: [f[0], f[1], th0], mustZone: 'garden', dirWindow: { th: th0, maxDeg: 25 }, trunkFree: true, skipVistaClean: true });
-    if (r.cam) { done = r.cam; break; }
-    lastWhy = r.lastWhy;
+  // 三穗堂（wave2-sansuitang S3）：南侧入口院落眼高 1.6 m 正对格扇立面（立面朝南为主控覆盖，常识判断未核实）。
+  // 机位中心 = 模块锚点（与 assemble / export-collision 同一规则：footprint 最小面积外接矩形中心 + 沿 facade.dir
+  // 使后墙外皮不越过与仰山堂共用边线的最小平移）；机位在 facade.dir 一侧、偏立面轴 ≤ 20°、距锚点 12–25 m，
+  // 园墙内（garden 分区）、不入水、不入建筑 footprint 且离边 ≥ 0.8 m、R1 三条硬检查全过，
+  // 且没有树挡在格扇立面前：树（≥3.5 m）干到「机位—格扇墙两端」三角形的平面距离 ≥ 2.5 m（树冠余量）。
+  // （院里的树可以在画面边上；M2 的「树干整幅不入画」在南院眼高下无解——gtree-9 就在院子西侧。）
+  // 注视点 = 锚点沿 facade.dir 前移到格扇墙带（本地 z = 格扇墙 hall-wall 线 ~+4.3 m）、y = 2.4 m。
+  // 眼高无解才退斜俯视（h 8–12，同一角度/距离窗）。
+  const o = obj('bld-428179901');
+  const reg = regionOf(o.id);
+  const box = targetBox(o);
+  const sstColl = JSON.parse(fs.readFileSync(path.join(ROOT, 'modules', 'sansuitang', 'collision.json'), 'utf8'));
+  const { backZ, backHalfX } = rearWallFace(sstColl);
+  const anc = anchorBehindSharedEdge(o.geometry.footprint, obj('bld-428179902').geometry.footprint, o.facade.dir, backZ, backHalfX).anchor;
+  const fl = Math.hypot(...o.facade.dir), f = [o.facade.dir[0] / fl, o.facade.dir[1] / fl];
+  const doorLine = Math.max(...sstColl.colliders.filter(c => c.name === 'door-leaf').map(c => c.center[2]));
+  const look = [anc[0] + f[0] * doorLine, 2.4, anc[1] + f[1] * doorLine];
+  const bldsNear = bldFps;
+  const rgt = [f[1], -f[0]], halfW = backHalfX;
+  const FA = [look[0] + rgt[0] * halfW, look[2] + rgt[1] * halfW], FB = [look[0] - rgt[0] * halfW, look[2] - rgt[1] * halfW];
+  const triDist = (q, a, b, c) => {
+    const sg = (p1, p2, p3) => (p1[0] - p3[0]) * (p2[1] - p3[1]) - (p2[0] - p3[0]) * (p1[1] - p3[1]);
+    const d1 = sg(q, a, b), d2 = sg(q, b, c), d3 = sg(q, c, a);
+    if (!((d1 < 0 || d2 < 0 || d3 < 0) && (d1 > 0 || d2 > 0 || d3 > 0))) return 0;
+    return Math.min(distToPolyline(q, [a, b]), distToPolyline(q, [b, c]), distToPolyline(q, [c, a]));
+  };
+  const treeBeforeFacade = (p2) => trees.some(t => triDist([t.x, t.z], p2, FA, FB) < 2.5);
+  const cands = [];
+  for (const h of [EYE, 8, 10, 12]) {
+    for (let R = 12; R <= 25; R += 0.5) {
+      for (let offDeg = -20; offDeg <= 20; offDeg += 2) {
+        const th = offDeg * Math.PI / 180;
+        const dir = [f[0] * Math.cos(th) - f[1] * Math.sin(th), f[0] * Math.sin(th) + f[1] * Math.cos(th)];
+        const p2 = [anc[0] + dir[0] * R, anc[1] + dir[1] * R];
+        if (!pointInPoly(p2, layout.zones.garden.polygon)) continue;
+        if (waters.some(w => pointInPoly(p2, w))) continue;
+        if (bldsNear.some(b => pointInPoly(p2, b.fp) || distToPolyline(p2, closed(b.fp)) < 0.8)) continue;
+        if (Math.min(...rockObs.map(r => dist2d(p2, [r.x, r.z]) - r.size / 2)) < 1.2) continue;
+        const cam = [p2[0], h, p2[1]];
+        const v = passVisibility(cam, look, box);
+        if (!v.ok) continue;
+        if (treeBeforeFacade(p2)) continue;
+        // 打分：偏轴越小越好，距离靠近 16 m 越好；眼高优先（h 分层遍历，眼高有解即停）
+        cands.push({ p: cam, off: Math.abs(offDeg), R, score: -Math.abs(offDeg) * 0.5 - Math.abs(R - 16) });
+      }
+    }
+    if (cands.length) break;
   }
-  if (done) tour.sansuitang = { label: '三穗堂', zone: 'garden', ...done, targetObject: reg.id, source: 'computed(R1+M2): 斜俯视正对 facade.dir 一侧（h17–18、24–28 m，±25° 立面硬窗、树干不入画，baseline/layout.json + collision-* 重算）' };
-  else fail('sansuitang', lastWhy);
+  if (cands.length) {
+    cands.sort((a2, b2) => b2.score - a2.score);
+    const c = cands[0];
+    const form = c.p[1] === EYE ? '眼高 1.6 m' : `斜俯视 h${c.p[1]}（眼高无解，退）`;
+    tour.sansuitang = { label: '三穗堂', zone: 'garden', p: c.p.map(x => +x.toFixed(1)), t: look.map(x => +x.toFixed(1)), targetObject: reg.id,
+      source: `computed(R1+wave2 S3): 南侧院落${form}正对格扇立面（偏立面轴 ${c.off}°、距锚点 ${c.R} m；锚点=外接矩形中心+共用边平移；立面朝南为常识判断未核实；baseline/layout.json + collision-* 重算）` };
+    console.log(`sansuitang candidates ${cands.length}, chosen off=${c.off}° R=${c.R} h=${c.p[1]}`);
+  } else fail('sansuitang', '南院 12–25 m、±20° 窗内无机位过 R1 + 立面前无树');
 }
 {
   const reg = regionOf('jiuqu-bridge'); // 九曲桥：池带上空斜俯视望全桥
