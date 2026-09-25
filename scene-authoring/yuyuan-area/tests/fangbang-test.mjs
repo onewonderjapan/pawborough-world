@@ -28,7 +28,7 @@ const SOLID_KINDS = new Set(['outerBuilding', 'bazaarBlock', 'tower', 'hall', 'x
 const WEST_SHOPS = ['westshop-shop-168', 'westshop-shop-170', 'westshop-shop-171'];
 
 let pass = 0, fail = 0;
-const ok = (name, cond, extra = '') => { if (cond) pass++; else { fail++; console.log('FAIL', name, extra); } };
+const ok = (name, cond, extra = '') => { if (cond) { pass++; if (process.env.VERBOSE) console.log('PASS', name); } else { fail++; console.log('FAIL', name, extra); } };
 
 function glbJson(file) {
   const b = fs.readFileSync(file);
@@ -535,6 +535,69 @@ ok(`seal walls blocking a continuing 方浜中路 not placed (${JSON.stringify(s
     ok(`browser: superseded shoprows visible before fangbang loads (${Object.values(before).filter(Boolean).length}/${supIds.length})`, supIds.every(id => before[id] === true));
     ok(`browser: superseded shoprows hidden after fangbang loads (${Object.values(after).filter(v => !v).length}/${supIds.length})`, supIds.every(id => after[id] === false));
     ok(`browser: other shoprows untouched (${Object.values(afterOthers).filter(Boolean).length}/${others.length} visible)`, others.every(id => afterOthers[id] === true));
+  }
+}
+
+// ---------- W5（F-08 已知例外 + 庙墙净空）：fangbang 网格不得越过庙区院墙 ----------
+// 源：baseline/layout.json temple-wall 段 + 厚度、temple 分区多边形（判庙内侧）。fangbang 网格（原始分区 GLB，按锚分组）
+// 离墙中线 3 m 内、在段投影范围内、高 ≥ 0.05 m 的三角形顶点（任何高度：墙头以上的楼层 / 檐口越墙从庙内同样看得见），
+// 越过墙中线朝庙内的距离 = 越墙深度。除已知例外外，任何件都不得碰到墙体（深度 > −厚度/2）。
+// 已知例外（主控 2026-09-26 F-08 选项 3 接受）：westshop-shop-165 东后角的二层与屋檐越过院墙（墙高以内只贴到墙面），
+// 只在庙内可见；上限 1.1 m 防扩大。
+const KNOWN_WALL_EXCEPTIONS = { 'fangbang-westshop-shop-165': { maxDepthM: 1.1, decision: 'lead 2026-09-26 F-08 option 3: accepted, only visible from inside the temple' } };
+{
+  const wall = layout.objects.find(o => o.id === 'temple-wall');
+  const half = (wall.thickness || 0.4) / 2;
+  const tz = layout.zones.temple.polygon;
+  const inPoly = (pt, poly) => { let c = false; for (let i = 0, n = poly.length; i < n; i++) { const [x1, z1] = poly[i], [x2, z2] = poly[(i + 1) % n]; if ((z1 > pt[1]) !== (z2 > pt[1]) && pt[0] < (x2 - x1) * (pt[1] - z1) / (z2 - z1) + x1) c = !c; } return c; };
+  const segs = wall.geometry.segments.map(([a, b]) => {
+    const L = Math.hypot(b[0] - a[0], b[1] - a[1]), u = [(b[0] - a[0]) / L, (b[1] - a[1]) / L];
+    let n = [-u[1], u[0]];
+    const mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+    if (!inPoly([mid[0] + n[0] * 0.5, mid[1] + n[1] * 0.5], tz)) n = [-n[0], -n[1]];   // n 指向庙内
+    return { a, u, n, L };
+  });
+  const depthBy = new Map();
+  for (const f of files) {
+    const g = readGlb(fs.readFileSync(f));
+    const J = g.gltf, anc = [];
+    const walk = (ni, id) => {
+      const nd = J.nodes[ni];
+      const my = (nd.extras && typeof nd.extras.id === 'string' && nd.extras.id.startsWith('fangbang-')) ? nd.extras.id : id;
+      for (const ci of nd.children ?? []) walk(ci, my);
+      if (nd.mesh !== undefined) for (const _ of J.meshes[nd.mesh].primitives) anc.push(my);   // 与 readGlb 的遍历次序一致
+    };
+    for (const r of J.scenes[J.scene ?? 0].nodes) walk(r, null);
+    g.meshes.forEach((m, k) => {
+      const id = anc[k];
+      if (!id) return;
+      const P = m.positions, I = m.indices;
+      const W = [];
+      for (let i = 0; i < P.length; i += 3) W.push(transformPoint(m.matrix, [P[i], P[i + 1], P[i + 2]]));
+      // 按三角形取（大面片只有角点，不能按顶点高度筛）：最高点 ≥ 0.05 m 的三角形，其顶点平面位置参与
+      const use = new Set();
+      for (let t = 0; t < I.length; t += 3) {
+        const ys = [W[I[t]][1], W[I[t + 1]][1], W[I[t + 2]][1]];
+        if (Math.max(...ys) >= 0.05) { use.add(I[t]); use.add(I[t + 1]); use.add(I[t + 2]); }
+      }
+      for (const vi of use) {
+        const w = W[vi];
+        for (const sg of segs) {
+          const dx = w[0] - sg.a[0], dz = w[2] - sg.a[1];
+          const t = dx * sg.u[0] + dz * sg.u[1];
+          if (t < 0 || t > sg.L) continue;
+          const d = dx * sg.n[0] + dz * sg.n[1];
+          if (d < -3 || d > 3) continue;
+          if (!depthBy.has(id) || d > depthBy.get(id)) depthBy.set(id, d);
+        }
+      }
+    });
+  }
+  const offenders = [...depthBy].filter(([id, d]) => d > -half && !KNOWN_WALL_EXCEPTIONS[id]).map(([id, d]) => `${id} ${d.toFixed(2)}`);
+  ok(`no fangbang mesh reaches the temple wall except known exceptions (${offenders.length} offenders)`, offenders.length === 0, offenders.join(', '));
+  for (const [id, ex] of Object.entries(KNOWN_WALL_EXCEPTIONS)) {
+    const d = depthBy.get(id);
+    ok(`known exception ${id}: through temple wall ${d?.toFixed(2)} m <= ${ex.maxDepthM} m (${ex.decision})`, d !== undefined && d <= ex.maxDepthM);
   }
 }
 
