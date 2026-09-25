@@ -10,6 +10,10 @@
   3. 深度单调性抽查：每帧中列竖带自下而上（近 -> 远）取带内中位深度，
      相邻步倒置数 <= 总步数的 10%（斜坡/桥面/遮挡允许少量倒置）。
   4. 每帧 cameras json 存在且字段齐全（fov/K/worldToCamera/near/far）。
+  5. R1 渲染侧取景（cameras json 带 targetId 时）：每帧取景目标（本体 + layout facadeBay.parentBuilding
+     指向它的立面开间）在分割图上的像素占比（±2 容差），
+     终点帧 ≥ 5% 否则报错；另记画面下 1/3 的九曲桥栏像素占比（分割=jiuqu-bridge 且世界法线 |n_y|<0.5
+     即竖直面，桥面不算）。碰撞盒可见性（tests/control-shots-test.mjs）是渲染前的几何代理，这里是渲染后真值。
 
 用法：python3 scripts/check-control-passes.py --control <control目录> --report <RESULT.json路径>
 """
@@ -23,6 +27,7 @@ import sys
 
 W, H = 1280, 720
 CHANNELS = ('beauty', 'depth', 'normal', 'segmentation')
+TARGET_END_MIN = 0.05   # R1：终点帧里取景目标（cameras json targetId）在分割图上至少占 5% 像素
 
 
 def load_json(p):
@@ -56,6 +61,7 @@ def main():
     ap.add_argument('--control', required=True)
     ap.add_argument('--report', required=True)
     ap.add_argument('--seed', type=int, default=20260925)
+    ap.add_argument('--layout', default=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'baseline', 'layout.json'))
     args = ap.parse_args()
     import numpy as np
     from PIL import Image
@@ -80,6 +86,12 @@ def main():
     if not bidir:
         errors.append('LUT 双向映射不一致')
     i2r_items = [(k, v) for k, v in i2r.items()]
+    # 取景目标的像素 = 目标本体 + 其立面开间（layout facadeBay.parentBuilding == 目标，分割里是独立 id）
+    bays = {}
+    if os.path.exists(args.layout):
+        for o in load_json(args.layout)['objects']:
+            if o.get('parentBuilding'):
+                bays.setdefault(o['parentBuilding'], []).append(o['id'])
     unassigned = lut['unassigned']
 
     for sid in shots:
@@ -153,7 +165,33 @@ def main():
             fr['cameraJson'] = bool(okc)
             if not okc:
                 errors.append('%s/%s cameras json 缺失或字段不全' % (sid, tag))
+            # ---- R1 渲染侧取景（真实几何，补碰撞盒代理的盲区）：取景目标像素占比、画面下 1/3 桥栏占比 ----
+            tid = (cj or {}).get('targetId')
+            if tid:
+                tc = i2r.get(tid)
+                if tc is None:
+                    errors.append('%s/%s targetId %s 不在 LUT' % (sid, tag, tid))
+                else:
+                    sai = sa.astype(int)
+                    m = np.zeros(sai.shape[:2], dtype=bool)
+                    for iid in [tid] + bays.get(tid, []):
+                        if iid in i2r:
+                            m |= np.abs(sai - np.array(i2r[iid])).max(axis=2) <= 2
+                    fr['targetPixelShare'] = round(float(m.mean()), 4)
+                    brc = i2r.get('jiuqu-bridge')
+                    if brc is not None:
+                        lo = sai[2 * H // 3:]
+                        ny = np.asarray(Image.open(os.path.join(sdir, 'normal', tag + '.png')).convert('RGB'))[2 * H // 3:, :, 1] / 255.0 * 2 - 1
+                        fr['railLowerThirdShare'] = round(float(((np.abs(lo - np.array(brc)).max(axis=2) <= 2) & (np.abs(ny) < 0.5)).mean()), 4)
             st[tag] = fr
+        last = frame_report.get(sid, {}).get('frame-%03d' % (n - 1), {}) if n else {}
+        if 'targetPixelShare' in last:
+            shares = [frame_report[sid]['frame-%03d' % k].get('targetPixelShare', 0) for k in range(n)]
+            checks.append({'check': 'target-pixels', 'shot': sid, 'endShare': last['targetPixelShare'],
+                           'minShare': min(shares), 'framesWithTarget': sum(1 for v in shares if v > 0),
+                           'pass': last['targetPixelShare'] >= TARGET_END_MIN})
+            if last['targetPixelShare'] < TARGET_END_MIN:
+                errors.append('%s 终点帧取景目标像素占比 %.1f%% < %.0f%%' % (sid, last['targetPixelShare'] * 100, TARGET_END_MIN * 100))
 
         # 耗时
         tt = timings.get(sid, {})

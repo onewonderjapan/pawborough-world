@@ -187,7 +187,9 @@ export function visiblePointCount(boxes, cam, box) {
 // 包围盒 12 条棱投到画面取凸包；棱与近平面（z=0.05）求交裁剪 ——
 // 相机落在目标 bbox 水平范围内时（围合大院、长桥折线），部分角点在相机背后，
 // 直接返回 0 会漏判，必须裁剪后投影。
-export function screenAreaFrac(box, cam, look, view = VIEW) {
+// opts.clipToFrame（WP11/R1 控制层镜头用，默认 false = 导览原口径不变）：凸包再裁到画面矩形
+// [0,W]×[0,H]，得到「画面内」面积占比——不裁时目标在画外也会算出大面积（投影点落在画外）。
+export function screenAreaFrac(box, cam, look, view = VIEW, opts = {}) {
   const f = norm3(sub3(look, cam));
   const r = norm3(cross(f, [0, 1, 0]));
   if (!isFinite(r[0])) return 0; // 望天/望地退化
@@ -212,8 +214,59 @@ export function screenAreaFrac(box, cam, look, view = VIEW) {
     pts.push([(b[0] / (b[2] * tanX) * 0.5 + 0.5) * view.width, (-b[1] / (b[2] * tanY) * 0.5 + 0.5) * view.height]);
   }
   if (pts.length < 3) return 0; // 整盒在相机背后
-  const hull = convexHull(pts);
+  let hull = convexHull(pts);
+  if (opts.clipToFrame) hull = clipToRect(hull, view.width, view.height);
+  if (hull.length < 3) return 0;
   return Math.abs(shoelace(hull)) / (view.width * view.height);
+}
+
+// ---------- WP11/R1 控制层镜头：画面内判定（导览 tour-test 不用，口径见 docs/CONTROL-PASSES.md） ----------
+// Blender 相机（sensor_fit AUTO、横幅 → 水平传感器宽）焦距 → three.js 口径的竖直 fov 视图参数。
+// 与 render-control-passes.py write_camera_json 同式：fovY = 2·atan(sensorW·H/W / 2f)。
+export function viewFromLens(lensMm = 50, width = 1280, height = 720, sensorWMm = 36) {
+  const fovY = 2 * Math.atan(sensorWMm * height / width / (2 * lensMm));
+  return { fovDeg: fovY * 180 / Math.PI, width, height, lensMm };
+}
+// 世界点 → 画面像素 [px, py, 视轴深度]；在相机背后（深度 ≤ 0.05）返回 null
+export function projectPoint(p, cam, look, view = VIEW) {
+  const f = norm3(sub3(look, cam));
+  const r = norm3(cross(f, [0, 1, 0]));
+  const u = cross(r, f);
+  const d = sub3(p, cam);
+  const x = d[0] * r[0] + d[1] * r[1] + d[2] * r[2], y = d[0] * u[0] + d[1] * u[1] + d[2] * u[2], z = d[0] * f[0] + d[1] * f[1] + d[2] * f[2];
+  if (z <= 0.05) return null;
+  const tanY = Math.tan((view.fovDeg / 2) * Math.PI / 180), tanX = tanY * (view.width / view.height);
+  return [(x / (z * tanX) * 0.5 + 0.5) * view.width, (-y / (z * tanY) * 0.5 + 0.5) * view.height, z];
+}
+export function inFrame(p, cam, look, view = VIEW) {
+  const q = projectPoint(p, cam, look, view);
+  return !!q && q[0] >= 0 && q[0] <= view.width && q[1] >= 0 && q[1] <= view.height;
+}
+// 9 采样点里「在画面内且视线不被碰撞盒挡」的点数（visiblePointCount 只查遮挡，画外的点也算可见）
+export function framedVisiblePointCount(boxes, cam, look, box, view = VIEW) {
+  let vis = 0;
+  for (const p of boxPoints(box)) if (inFrame(p, cam, look, view) && !segBlocked(boxes, cam, p, [box.id])) vis++;
+  return vis;
+}
+// 凸多边形裁到 [0,W]×[0,H]（Sutherland–Hodgman，四条轴对齐边）
+function clipToRect(poly, W, H) {
+  const edges = [[0, 0, 1], [0, W, -1], [1, 0, 1], [1, H, -1]]; // [轴, 界, 保留侧符号]
+  let out = poly;
+  for (const [ax, lim, sg] of edges) {
+    const src = out; out = [];
+    if (!src.length) break;
+    const inside = (q) => sg * (q[ax] - lim) >= 0;
+    for (let i = 0; i < src.length; i++) {
+      const a = src[i], b = src[(i + 1) % src.length];
+      const ia = inside(a), ib = inside(b);
+      if (ia) out.push(a);
+      if (ia !== ib) {
+        const t = (lim - a[ax]) / (b[ax] - a[ax]);
+        out.push([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]);
+      }
+    }
+  }
+  return out;
 }
 const sub3 = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
 const norm3 = (v) => { const l = Math.hypot(...v) || 1; return [v[0] / l, v[1] / l, v[2] / l]; };
