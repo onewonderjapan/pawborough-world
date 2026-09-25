@@ -12,9 +12,11 @@
 //   断言：目标 ≥ 25%、天空（无几何像素）≤ 35%、画面下 1/3 近景墙（近竖直面、距相机 < 6 m）最大 4-连通区 < 40%；
 //   锚点机位的 targetObject 必须是 street:<route>（非街景目标的锚点照样按其锚点首条路线的走廊量一遍，再判失败）。
 //   其余五个地标机位口径不变（≥ 3%）。
-//   待主控决定（PENDING_LEAD）：anchor-jiuqu 仍是 R1 指定的九曲桥目标——该锚点的路线终点延伸方向 6 m 后即进 bld-553893873、
-//   反向回望街景最好只有 13%（见 wave4-touranchor RESULT 的 D1）；在主控定之前按其桥目标判 ≥ 3%，街景口径照量、打 WARN，不判失败。
-//   另报「顶棚」soffit（朝下面占比，如 old-south 的通道顶棚），只报告不判。
+//   桥头锚点规则（主控 D1 定，2026-09-25）：anchor-jiuqu 锚点就在九曲桥桥头，目标保持九曲桥（targetObject = jiuqu-bridge）——
+//     目标像素按 layout id 掩膜（同地标机位）≥ 3%；另加与街景锚点同一组画面门槛：天空 ≤ 35%、画面下 1/3 近景墙最大连通区 < 40%
+//     （画面统计用 street 掩膜的 G/B 通道，不设走廊）。只有这一个锚点、这一个目标适用；其余锚点仍必须是 street:<route>。
+//   「顶棚」soffit（朝下面占比）只报告不判（主控 D2 定）：old-south→old-north 老街全程在过街楼通道下（reviewRepair
+//     通道 road-428199190，净高 3.5 m），暗顶棚是这条老街的真实特征，不是机位问题；任何机位都拍得到它，判它等于判这条街不合格。
 // 机位取自 TOUR（缺省 OUT_DIR/tour.json），用 window.__viewAt(p, t) 摆相机（与导览按钮同参：fov46，视口 1400×900）。
 // 用法：BASE=http://127.0.0.1:<port>/ OUT_DIR=out-zone [TOUR=<tour.json>] [SHOT_DIR=<目录>] [REPORT=<json>] node tests/tour-render-check.mjs
 import { createRequire } from 'node:module';
@@ -43,7 +45,8 @@ for (const o of layout.objects) if (o.parentBuilding) (bays[o.parentBuilding] ||
 
 // street:A->B = 路线 A→B 第一段（折线供街廊截到拐点前）；street:cont:A->B = 末段顺势延伸（全长）—— 同 tour-test
 const FACADE_IDS = facadeIds(layout);
-const PENDING_LEAD = { 'anchor-jiuqu': { targetObject: 'jiuqu-bridge', decision: 'D1（wave4-touranchor RESULT）：锚点 jiuqu 的街景方向无解，待主控定' } };
+const BRIDGE_ANCHORS = { 'anchor-jiuqu': 'jiuqu-bridge' }; // 桥头锚点规则（见文件头，D1）
+const FRAME_ONLY = { obb: null, band: null, facadeIds: [], idSet: [], nearM: STREET_VIEW.NEAR_M, verticalNy: STREET_VIEW.VERTICAL_NY };
 function streetSpec(key, tag) {
   const spec = String(tag).slice('street:'.length), cont = spec.startsWith('cont:');
   const [from, to] = (cont ? spec.slice(5) : spec).split('->');
@@ -68,6 +71,8 @@ function fallbackStreetTag(aKey) {
 }
 function targetSpec(key, v) {
   if (String(v.targetObject).startsWith('street:')) return { kind: 'street-view', tag: v.targetObject, ...streetSpec(key, v.targetObject) };
+  if (BRIDGE_ANCHORS[key] && BRIDGE_ANCHORS[key] === v.targetObject)
+    return { kind: 'bridge-anchor', ids: [v.targetObject, ...(bays[v.targetObject] || [])], idSet, frame: FRAME_ONLY };
   if (key.startsWith('anchor-')) {
     const tag = fallbackStreetTag(key.slice('anchor-'.length));
     if (!tag) throw new Error(`${key}: 锚点无路线，无法按街景口径量`);
@@ -91,7 +96,8 @@ for (const [key, v] of Object.entries(tour)) {
   const r = await page.evaluate(async ({ p, t, spec, png }) => {
     window.__viewAt(p, t);
     await new Promise(res => requestAnimationFrame(() => requestAnimationFrame(res)));
-    const m = window.__targetMask({ ...spec, png });
+    const m = window.__targetMask({ ids: spec.ids, idSet: spec.idSet, obb: spec.obb, pad: spec.pad, street: spec.street, png });
+    if (spec.frame) { const fm = window.__targetMask({ street: spec.frame }); m.sky = fm.sky; m.soffit = fm.soffit; m.nearMax = fm.nearMax; }
     let overlay = null;
     if (png) { // 截图 + 目标掩膜红色叠加（便于人工核对掩膜是否落在目标上）
       const src = document.querySelector('canvas');
@@ -107,38 +113,32 @@ for (const [key, v] of Object.entries(tour)) {
         else if (spec.street && md[i + 2] > 127) { od.data[i] = Math.round(od.data[i] * 0.45); od.data[i + 1] = Math.round(od.data[i + 1] * 0.45); od.data[i + 2] = Math.round(od.data[i + 2] * 0.45 + 255 * 0.55); }
       }
       ctx.putImageData(od, 0, 0);
-      if (spec.street) { ctx.strokeStyle = '#ffd400'; ctx.lineWidth = 2; ctx.setLineDash([12, 8]); ctx.beginPath(); ctx.moveTo(0, m.h * 2 / 3); ctx.lineTo(m.w, m.h * 2 / 3); ctx.stroke(); }
+      if (spec.street || spec.frame) { ctx.strokeStyle = '#ffd400'; ctx.lineWidth = 2; ctx.setLineDash([12, 8]); ctx.beginPath(); ctx.moveTo(0, m.h * 2 / 3); ctx.lineTo(m.w, m.h * 2 / 3); ctx.stroke(); }
       overlay = c.toDataURL('image/png');
     }
     return { ...m, overlay, cam: window.__cam() };
   }, { p: v.p, t: v.t, spec, png: !!shotDir });
   const why = [];
-  const pend = spec.notStreetTarget && PENDING_LEAD[key] && PENDING_LEAD[key].targetObject === spec.notStreetTarget ? PENDING_LEAD[key] : null;
-  let pendShare = null;
-  if (pend) { // 按原桥目标判 ≥ 3%（同一相机再渲一遍 layout-id 掩膜），街景口径只报告
-    const bs = { ids: [v.targetObject, ...(bays[v.targetObject] || [])], idSet };
-    pendShare = await page.evaluate(({ p, t, bs }) => { window.__viewAt(p, t); return window.__targetMask(bs).share; }, { p: v.p, t: v.t, bs });
-    if (pendShare < MIN_SHARE) why.push(`待定锚点按原目标 ${v.targetObject} ${(pendShare * 100).toFixed(2)}% < ${MIN_SHARE * 100}%`);
-  } else if (spec.street) {
-    if (spec.notStreetTarget) why.push(`锚点目标 ${spec.notStreetTarget} 非街景（应为 street:<route>）`);
+  if (spec.street) {
+    if (spec.notStreetTarget) why.push(`锚点目标 ${spec.notStreetTarget} 非街景（应为 street:<route>，桥头锚点规则只认 ${JSON.stringify(BRIDGE_ANCHORS)}）`);
     if (r.share < STREET_VIEW.MIN_TARGET) why.push(`目标 ${(r.share * 100).toFixed(1)}% < ${STREET_VIEW.MIN_TARGET * 100}%`);
+  } else if (r.share < MIN_SHARE) why.push(`目标 ${(r.share * 100).toFixed(2)}% < ${MIN_SHARE * 100}%`);
+  if (spec.street || spec.frame) { // 街景锚点与桥头锚点共用的画面门槛
     if (r.sky > STREET_VIEW.MAX_SKY) why.push(`天空 ${(r.sky * 100).toFixed(1)}% > ${STREET_VIEW.MAX_SKY * 100}%`);
     if (r.nearMax >= STREET_VIEW.MAX_NEAR_COMPONENT) why.push(`下1/3近景墙连通区 ${(r.nearMax * 100).toFixed(1)}% ≥ ${STREET_VIEW.MAX_NEAR_COMPONENT * 100}%`);
-  } else if (r.share < MIN_SHARE) why.push(`目标 ${(r.share * 100).toFixed(2)}% < ${MIN_SHARE * 100}%`);
+  }
   const ok = !why.length;
   if (!ok) fails++;
-  report[key] = { targetObject: v.targetObject, method: spec.kind, streetTag: spec.tag || null, targetIds: spec.ids || null, share: +r.share.toFixed(4), sky: r.sky != null ? +r.sky.toFixed(4) : null, soffit: r.soffit != null ? +r.soffit.toFixed(4) : null, nearMax: r.nearMax != null ? +r.nearMax.toFixed(4) : null, pixels: r.pixels, size: [r.w, r.h], meshesMatched: r.meshesMatched, cam: r.cam, pass: ok, fail: why,
-    ...(pend ? { pendingLead: pend.decision, ownTargetShare: +pendShare.toFixed(4), streetViewGatesWouldFail: [r.share < STREET_VIEW.MIN_TARGET && 'target', r.sky > STREET_VIEW.MAX_SKY && 'sky', r.nearMax >= STREET_VIEW.MAX_NEAR_COMPONENT && 'near', 'not-street-target'].filter(Boolean) } : {}) };
+  report[key] = { targetObject: v.targetObject, method: spec.kind, streetTag: spec.tag || null, targetIds: spec.ids || null, share: +r.share.toFixed(4), sky: r.sky != null ? +r.sky.toFixed(4) : null, soffit: r.soffit != null ? +r.soffit.toFixed(4) : null, nearMax: r.nearMax != null ? +r.nearMax.toFixed(4) : null, pixels: r.pixels, size: [r.w, r.h], meshesMatched: r.meshesMatched, cam: r.cam, pass: ok, fail: why };
   if (shotDir) {
     await page.screenshot({ path: path.join(shotDir, `${key}.png`) });
     fs.writeFileSync(path.join(shotDir, `${key}.mask.png`), Buffer.from(r.png.split(',')[1], 'base64'));
     fs.writeFileSync(path.join(shotDir, `${key}.overlay.png`), Buffer.from(r.overlay.split(',')[1], 'base64'));
   }
-  const extra = spec.street ? ` sky ${(r.sky * 100).toFixed(1).padStart(5)}% soffit ${(r.soffit * 100).toFixed(1).padStart(5)}% near1/3 ${(r.nearMax * 100).toFixed(1).padStart(5)}%` : '';
-  const warn = pend ? ` WARN(${pend.decision}; 街景口径不过，按原目标 ${v.targetObject} ${(pendShare * 100).toFixed(2)}% 判)` : '';
-  console.log(`${key.padEnd(18)} ${String(v.targetObject).padEnd(34)} ${spec.kind.padEnd(14)} target ${(r.share * 100).toFixed(2).padStart(6)}%${extra} ${ok ? 'OK' : 'FAIL: ' + why.join('; ')}${warn} meshes ${JSON.stringify(r.meshesMatched)}`);
+  const extra = (spec.street || spec.frame) ? ` sky ${(r.sky * 100).toFixed(1).padStart(5)}% soffit ${(r.soffit * 100).toFixed(1).padStart(5)}% near1/3 ${(r.nearMax * 100).toFixed(1).padStart(5)}%` : '';
+  console.log(`${key.padEnd(18)} ${String(v.targetObject).padEnd(34)} ${spec.kind.padEnd(14)} target ${(r.share * 100).toFixed(2).padStart(6)}%${extra} ${ok ? 'OK' : 'FAIL: ' + why.join('; ')} meshes ${JSON.stringify(r.meshesMatched)}`);
 }
 await browser.close();
 if (process.env.REPORT) fs.writeFileSync(process.env.REPORT, JSON.stringify({ minShare: MIN_SHARE, streetView: STREET_VIEW, streetPadM: STREET_PAD_M, tour: process.env.TOUR || path.join(OUT, 'tour.json'), views: report }, null, 1) + '\n');
-if (fails) { console.error(`tour-render-check: ${fails}/${Object.keys(tour).length} views fail (landmarks < ${MIN_SHARE * 100}% target, or anchor street-view gates)`); process.exit(1); }
-console.log(`tour-render-check: all ${Object.keys(tour).length} views pass (landmarks ≥ ${MIN_SHARE * 100}%; anchors target ≥ ${STREET_VIEW.MIN_TARGET * 100}%, sky ≤ ${STREET_VIEW.MAX_SKY * 100}%, near-wall < ${STREET_VIEW.MAX_NEAR_COMPONENT * 100}%)`);
+if (fails) { console.error(`tour-render-check: ${fails}/${Object.keys(tour).length} views fail (landmarks < ${MIN_SHARE * 100}% target, or anchor street-view / bridge-anchor gates)`); process.exit(1); }
+console.log(`tour-render-check: all ${Object.keys(tour).length} views pass (landmarks ≥ ${MIN_SHARE * 100}%; bridge anchor ≥ ${MIN_SHARE * 100}% + sky/near gates; street anchors target ≥ ${STREET_VIEW.MIN_TARGET * 100}%, sky ≤ ${STREET_VIEW.MAX_SKY * 100}%, near-wall < ${STREET_VIEW.MAX_NEAR_COMPONENT * 100}%)`);

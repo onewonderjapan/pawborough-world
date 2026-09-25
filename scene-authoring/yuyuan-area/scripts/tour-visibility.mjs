@@ -339,6 +339,9 @@ export function nearestColliderDist(boxes, p, { eyeY = 1.6, ignoreIds = [] } = {
 //   竖直面 → 建筑类（facadeSet）且落在立面带盒内为目标；命中点落在街廊盒体积内（街上的摊位等）也算目标；距相机 < NEAR_M 为近景墙；
 // 近景墙在画面下 1/3 行内取 4-连通最大区。返回 {target, sky, nearMax}（均为占比）。
 export const PROXY_GRID = { nx: 70, ny: 45, farM: 400 };
+// 不设目标的空盒：streetViewProxy(scene, cam, look, NO_TARGET_BOX, NO_TARGET_BOX) 只出画面统计（天空/顶棚/近景墙）——
+// 桥头锚点（anchor-jiuqu，目标 = 九曲桥，主控 D1）用它判天空与近景墙。
+export const NO_TARGET_BOX = { center: [0, -1e9, 0], half: [0, 0, 0], yaw: 0 };
 // 店屋实例（layout.instances 里 module = shop-*，锚 = shopAnchor）没有碰撞记录：按 resources/shops/<module>/measurements.json
 // 的 frontageM × depthM × eaveM 做竖直棱柱（原点 = 前墙中点地面，立面朝局部 +Z，进深 −Z；与 GLB axis 声明一致）。
 // 过街楼/骑楼式通道顶棚：管线产物 OUT/layout.json 的 reviewRepair.passages（repair-layout.py 从冻结源生成）——

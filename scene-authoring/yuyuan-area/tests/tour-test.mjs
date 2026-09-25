@@ -12,13 +12,15 @@
 // 11) wave4-touranchor：街景锚点（targetObject = street:<route>）过街景画面几何代理（tour-visibility.streetViewProxy，
 //     碰撞盒 + 无碰撞建筑棱柱 + 店屋实例 + 通道顶棚/楼身，网格视线）——目标（街面 + 走廊两侧 6 m 立面）≥ 25%、天空 ≤ 35%、
 //     画面下 1/3 近景墙最大连通区 < 40%（门槛同 tests/tour-render-check.mjs 的渲染复核，常数 STREET_VIEW）。
+//     桥头锚点规则（主控 D1）：anchor-jiuqu 目标保持九曲桥，不判街景目标占比，但天空 ≤ 35%、近景墙 < 40% 同样要过。
+//     顶棚（soffit）只报告不判（主控 D2：old-south 老街全程在过街楼通道下，是真实特征）。
 // 用法：OUT_DIR=out-zone node tests/tour-test.mjs
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { centroid, distToPolyline, pointInPoly, dist2d, anchorBehindSharedEdge, rearWallFace } from '../src/lib.mjs';
 import { loadColliders, targetBox, visiblePointCount, screenAreaFrac, nearestColliderDist, streetCorridorBox, boxDist2d, polylineNearBox,
-  streetFacadeBand, makeStreetViewScene, passageCeilings, passageMasses, streetViewProxy, STREET_VIEW } from '../scripts/tour-visibility.mjs';
+  streetFacadeBand, makeStreetViewScene, passageCeilings, passageMasses, streetViewProxy, STREET_VIEW, NO_TARGET_BOX } from '../scripts/tour-visibility.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
@@ -224,7 +226,15 @@ if (tour.sansuitang) {
 {
   const outLayout = JSON.parse(fs.readFileSync(path.join(OUT, 'layout.json'), 'utf8'));
   const sv = makeStreetViewScene(boxes, layout, { areaRoot: ROOT, ceilings: passageCeilings(outLayout), masses: passageMasses(outLayout) });
+  const BRIDGE_ANCHORS = { 'anchor-jiuqu': 'jiuqu-bridge' };
   for (const [key, v] of Object.entries(tour)) {
+    if (BRIDGE_ANCHORS[key] && v.targetObject === BRIDGE_ANCHORS[key]) {
+      const r = streetViewProxy(sv, v.p, v.t, NO_TARGET_BOX, NO_TARGET_BOX);
+      console.log(`tour-test(bridge-anchor proxy): ${key} 天空 ${(r.sky * 100).toFixed(1)}% 顶棚 ${(r.soffit * 100).toFixed(1)}% 下1/3近景墙 ${(r.nearMax * 100).toFixed(1)}%`);
+      r1check(r.sky <= STREET_VIEW.MAX_SKY, `${key} 桥头代理天空 ${(r.sky * 100).toFixed(1)}% > ${STREET_VIEW.MAX_SKY * 100}%`);
+      r1check(r.nearMax < STREET_VIEW.MAX_NEAR_COMPONENT, `${key} 桥头下 1/3 近景墙连通区 ${(r.nearMax * 100).toFixed(1)}% ≥ ${STREET_VIEW.MAX_NEAR_COMPONENT * 100}%`);
+      continue;
+    }
     if (!key.startsWith('anchor-') || !String(v.targetObject).startsWith('street:')) continue;
     const a = nav.anchors[key.slice('anchor-'.length)], dir = anchorRouteDir(v.targetObject, routes), pts = anchorRoutePts(v.targetObject, routes);
     if (!a || !dir) continue; // 已在上面判过

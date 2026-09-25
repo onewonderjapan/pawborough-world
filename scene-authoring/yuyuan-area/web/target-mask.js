@@ -11,6 +11,7 @@
 //     G = 有几何（G=0 即天空/背景；G≈0.5 = 朝下的面：檐底/顶棚），B = 近景墙（近竖直面且距相机 < nearM）。
 //     返回 share（目标占比）、sky（天空占比）、soffit（朝下面占比）、nearMax（画面下 1/3 近景墙最大 4-连通区 / 下 1/3 面积）。
 //     法线用屏幕导数（dFdx/dFdy 世界坐标）求，不依赖网格法线属性，合批/实例化后同样成立。
+//     obb/band 传 null 时只出画面统计（sky/soffit/nearMax），share 恒 0——桥头锚点（目标是桥）用它判天空与近景墙。
 // 透明/镂空材质按不透明处理（alphaTest 贴图除外：沿用原贴图与阈值）。
 import * as THREE from 'three';
 
@@ -114,16 +115,19 @@ export function installTargetMask({ renderer, scene, camera }) {
     let vol = null, stFac = null, stOther = null;
     const st = spec.street || null;
     if (st) {
-      const pad = st.pad ?? 0;
+      // obb/band 为 null = 只要画面统计（天空/顶棚/近景墙），不算目标（桥头锚点等非街景目标用）
+      const NONE = { center: [0, -1e9, 0], half: [0, 0, 0], yaw: 0 };
+      const pad = st.obb ? (st.pad ?? 0) : 0;
+      const sObb = st.obb || NONE, sBand = st.band || NONE;
       const mk = (fac) => new THREE.ShaderMaterial({
         vertexShader: VOL_VS, fragmentShader: STREET_FS,
         uniforms: {
-          uCenter: { value: new THREE.Vector3(...st.obb.center) },
-          uHalf: { value: new THREE.Vector3(st.obb.half[0] + pad, st.obb.half[1] + pad, st.obb.half[2] + pad) },
-          uYaw: { value: st.obb.yaw || 0 },
-          uBCenter: { value: new THREE.Vector3(...st.band.center) },
-          uBHalf: { value: new THREE.Vector3(...st.band.half) },
-          uBYaw: { value: st.band.yaw || 0 },
+          uCenter: { value: new THREE.Vector3(...sObb.center) },
+          uHalf: { value: new THREE.Vector3(sObb.half[0] + pad, sObb.half[1] + pad, sObb.half[2] + pad) },
+          uYaw: { value: sObb.yaw || 0 },
+          uBCenter: { value: new THREE.Vector3(...sBand.center) },
+          uBHalf: { value: new THREE.Vector3(...sBand.half) },
+          uBYaw: { value: sBand.yaw || 0 },
           uFacade: { value: fac ? 1 : 0 },
           uNear: { value: st.nearM },
           uVertNy: { value: st.verticalNy },

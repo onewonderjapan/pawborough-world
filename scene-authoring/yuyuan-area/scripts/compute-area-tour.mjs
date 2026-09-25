@@ -16,7 +16,7 @@ import { fileURLToPath } from 'node:url';
 import { centroid, distToPolyline, pointInPoly, dist2d, anchorBehindSharedEdge, rearWallFace } from '../src/lib.mjs';
 import { makeShotTools } from './shot-lib.mjs';
 import { loadColliders, targetBox, visiblePointCount, screenAreaFrac, nearestColliderDist, streetCorridorBox, streetCorridorAim, polylineNearBox, VIEW,
-  streetFacadeBand, makeStreetViewScene, passageCeilings, passageMasses, streetViewProxy, STREET_VIEW } from './tour-visibility.mjs';
+  streetFacadeBand, makeStreetViewScene, passageCeilings, passageMasses, streetViewProxy, STREET_VIEW, NO_TARGET_BOX } from './tour-visibility.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out');
@@ -197,7 +197,10 @@ for (const key of ['main', 'gold', 'center', 'jiuqu', 'old-south', 'old-north'])
         if (!box || dist2d(pt, a) > 30) continue;
         const look = [pt[0], 1.5, pt[1]];
         const v = passVisibility([c[0], EYE, c[1]], look, box);
-        if (v.ok) { done = { cam: c, look, target: 'jiuqu-bridge', how: '望九曲桥近段（R1 指定朝向）' }; break; }
+        if (!v.ok) continue;
+        // 桥头锚点规则（主控 D1）：目标保持九曲桥，画面另过天空/近景墙门槛（代理，留 5 点余量）
+        const sv = streetViewProxy(svScene, [c[0], EYE, c[1]], look, NO_TARGET_BOX, NO_TARGET_BOX);
+        if (sv.sky <= SV_GEN.maxSky && sv.nearMax < SV_GEN.maxNear) { done = { cam: c, look, target: 'jiuqu-bridge', sv, how: '望九曲桥近段（桥头锚点：目标九曲桥 + 天空/近景墙门槛）' }; break; }
       }
       if (done) break;
     }
