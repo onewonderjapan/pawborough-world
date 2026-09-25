@@ -176,7 +176,9 @@ slope_len = ((zf - zr) ** 2 + (rf['highY'] - rf['lowY']) ** 2) ** .5
 nz = (rf['highY'] - rf['lowY']) / slope_len
 ny = (zf - zr) / slope_len
 bot = [(v[0], v[1] - th * ny, v[2] + th * nz) for v in verts]
-faces = [(0, 1, 2, 3), (4, 5, 6, 7), (0, 3, 7, 4), (1, 5, 6, 2), (0, 4, 5, 1), (2, 6, 7, 3)]
+# wave5-templeqa: the soffit quad (4, 5, 6, 7) repeated the top face's winding, so the closed underside
+# faced UP into the slab (8.95 m² back face seen from the walkway). Wound downward now.
+faces = [(0, 1, 2, 3), (4, 7, 6, 5), (0, 3, 7, 4), (1, 5, 6, 2), (0, 4, 5, 1), (2, 6, 7, 3)]
 import temple_components as C  # noqa: E402
 C.quad_out = C.quad_out  # keep the import meaningful for the fascia below
 L.mesh('gallery-roof-slab', verts + bot, faces, 'roof',

@@ -68,8 +68,10 @@ def ellipsoid(name, center, radii, meridians=10, rings=6, m='foliage'):
     faces = []
     last = 2 + (rings - 2) * meridians
     for i in range(meridians):
-        faces.append((0, 2 + i, 2 + (i + 1) % meridians))
-        faces.append((1, last + (i + 1) % meridians, last + i))
+        # wave5-templeqa: both pole fans were wound inward (normal toward the blob centre, 24 tris per blob —
+        # the canopy's under-side discs showed as back faces from eye level). Wound outward like the bands now.
+        faces.append((0, 2 + (i + 1) % meridians, 2 + i))
+        faces.append((1, last + i, last + (i + 1) % meridians))
     for j in range(rings - 2):
         lo = 2 + j * meridians
         hi = lo + meridians
