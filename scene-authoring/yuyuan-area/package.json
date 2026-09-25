@@ -18,6 +18,7 @@
     "coverage": "node src/coverage.mjs",
     "verify": "npm test && node scripts/validate.mjs && node scripts/check-food.mjs",
     "test:sansuitang": "OUT_DIR=${OUT_DIR:-out-zone} node tests/sansuitang-test.mjs",
+    "test:sansuitang-fit": "OUT_DIR=${OUT_DIR:-out-zone} node tests/sansuitang-fit-test.mjs",
     "test:hallkit": "OUT_DIR=${OUT_DIR:-out-zone} node tests/hallkit-test.mjs",
     "test:rockery": "OUT_DIR=${OUT_DIR:-out-zone} node tests/rockery-test.mjs",
     "test:awning": "OUT_DIR=${OUT_DIR:-out-zone} node tests/awning-test.mjs",

@@ -275,15 +275,47 @@ if os.environ.get('STALL_KIT') == '1':
     print('stall kit placed', stall_placed)
 
 # ---------- 三穗堂实例模块（SANSUITANG=1：modules/sansuitang 细化件替代程序化 hall bld-428179901） ----------
-# 位置 = footprint 形心（顶点均值，与 pavilion 同式），rotY = atan2(facade.dir.x, facade.dir.z)。
-# 模块原点已重锚到台基外包平面中心（modules/sansuitang/README.md），故锚点即放在形心；
+# 位置 = footprint 最小面积外接矩形中心（wave2-sansuitang 主控 2026-09-25 定；此前是顶点均值形心，
+# 北侧顶点多、形心偏向与仰山堂的共用边，模块后墙伸进仰山堂），rotY = atan2(facade.dir.x, facade.dir.z)。
+# 矩形算法逐步同 modules/hall-kit/build_hall.py；JS 侧 src/lib.mjs minAreaRect（export-collision / tour / 测试共用）。
+# 模块原点已重锚到台基外包平面中心（modules/sansuitang/README.md），故锚点即放在矩形中心；
 # collision.json（实例坐标）同步变换出世界记录写 OUT，供后续物理对账。
+def min_area_rect_center(fp):
+    pts = sorted(set(tuple(p) for p in fp))
+    def cr(o, a, b):
+        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+    lo, up = [], []
+    for p in pts:
+        while len(lo) >= 2 and cr(lo[-2], lo[-1], p) <= 0:
+            lo.pop()
+        lo.append(p)
+    for p in reversed(pts):
+        while len(up) >= 2 and cr(up[-2], up[-1], p) <= 0:
+            up.pop()
+        up.append(p)
+    hull = lo[:-1] + up[:-1]
+    best = None
+    for i in range(len(hull)):
+        x1, y1 = hull[i]
+        x2, y2 = hull[(i + 1) % len(hull)]
+        L = math.hypot(x2 - x1, y2 - y1)
+        if L < 1e-9:
+            continue
+        ux, uy = (x2 - x1) / L, (y2 - y1) / L
+        us = [(p[0] - x1) * ux + (p[1] - y1) * uy for p in hull]
+        vs = [-(p[0] - x1) * uy + (p[1] - y1) * ux for p in hull]
+        a = (max(us) - min(us)) * (max(vs) - min(vs))
+        if best is None or a < best[0]:
+            best = (a, ux, uy, (min(us) + max(us)) / 2, (min(vs) + max(vs)) / 2, x1, y1)
+    _a, ux, uy, cu, cv, x1, y1 = best
+    return x1 + cu * ux - cv * uy, y1 + cu * uy + cv * ux
+
 sst_placed = 0
 if os.environ.get('SANSUITANG') == '1':
     lay_obj = {o['id']: o for o in LAYOUT['objects']}
     o = lay_obj['bld-428179901']
     fp = o['geometry']['footprint'][:-1] if o['geometry']['footprint'][0] == o['geometry']['footprint'][-1] else o['geometry']['footprint']
-    cx = sum(q[0] for q in fp) / len(fp); cz = sum(q[1] for q in fp) / len(fp)
+    cx, cz = min_area_rect_center(fp)
     d = o['facade']['dir']
     rot_y = math.atan2(d[0], d[1])
     SST_DIR = os.path.join(ROOT, os.environ.get('SANSUITANG_DIR', 'out-garden-kits/sansuitang-bld-428179901'))

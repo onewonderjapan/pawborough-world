@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateBytes } from 'gltf-validator';
+import { minAreaRect } from '../src/lib.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
@@ -58,6 +59,17 @@ function skip(name, why) { skipped++; console.log('SKIP', name, '-', why); }
   ok(`三穗堂 facade.dir 与南侧长边外法线夹角 ${aS.toFixed(2)}° ≤ 5（坐北朝南，常识未核实）`, aS <= 5, `facade.dir=(${fd.map(x => x.toFixed(4))})`);
   const aY = angDeg(fd, ySObj.facade.dir);
   ok(`三穗堂 facade.dir 与仰山堂 facade.dir 夹角 ${aY.toFixed(1)}° ≥ 150`, aY >= 150, `仰山堂=(${ySObj.facade.dir.map(x => x.toFixed(4))})`);
+}
+
+// minAreaRect 与 hall-kit 生成器同法：对仰山堂 footprint 重算，应复现 build_hall.py 写出的矩形边长（±0.01 m）
+{
+  const hm = path.join(ROOT, 'out-garden-kits', 'hallkit-bld-428179902', 'measurements.json');
+  if (fs.existsSync(hm)) {
+    const m = JSON.parse(fs.readFileSync(hm, 'utf8')).rect;
+    const r = minAreaRect(LAYOUT.objects.find((o) => o.id === 'bld-428179902').geometry.footprint);
+    const [a, b] = [Math.max(r.lenU, r.lenV), Math.min(r.lenU, r.lenV)];
+    ok(`minAreaRect 复现 hall-kit 矩形（${a.toFixed(3)}×${b.toFixed(3)} vs ${m.u}×${m.v}）`, Math.abs(a - m.u) <= 0.01 && Math.abs(b - m.v) <= 0.01);
+  } else skip('minAreaRect vs hall-kit 矩形', '无 hallkit measurements.json');
 }
 
 if (process.env.SANSUITANG !== '1' || !fs.existsSync(path.join(OUT, 'garden.glb')) || !fs.existsSync(SST_GLB)) {
@@ -157,11 +169,11 @@ const obj = LAYOUT.objects.find((o) => o.id === SST_ID);
 if (!obj) { console.log('FAIL layout has no', SST_ID); process.exit(1); }
 const fpRaw = obj.geometry.footprint;
 const fp = fpRaw[0][0] === fpRaw[fpRaw.length - 1][0] && fpRaw[0][1] === fpRaw[fpRaw.length - 1][1] ? fpRaw.slice(0, -1) : fpRaw;
-const cx = fp.reduce((s, q) => s + q[0], 0) / fp.length;
-const cz = fp.reduce((s, q) => s + q[1], 0) / fp.length;
+// 锚点 = footprint 最小面积外接矩形中心（wave2-sansuitang 主控 2026-09-25；此前为顶点均值形心）
+const [cx, cz] = minAreaRect(fp).center;
 const [dx, dz] = obj.facade.dir;
 const wantRotY = Math.atan2(dx, dz);
-console.log(`layout 重算：centroid=(${cx.toFixed(3)}, ${cz.toFixed(3)})  rotY=${wantRotY.toFixed(4)}  facade.dir=(${dx.toFixed(4)},${dz.toFixed(4)})`);
+console.log(`layout 重算：minAreaRect centre=(${cx.toFixed(3)}, ${cz.toFixed(3)})  rotY=${wantRotY.toFixed(4)}  facade.dir=(${dx.toFixed(4)},${dz.toFixed(4)})`);
 
 // ---------- 1) 总装 garden.glb 锚点实测 ----------
 const garden = parseGlb(path.join(OUT, 'garden.glb'));
@@ -173,14 +185,14 @@ if (testOk) {
   const t = n.translation || [0, 0, 0];
   const q = n.rotation || [0, 0, 0, 1];
   const dist = Math.hypot(t[0] - cx, t[2] - cz);
-  ok(`锚点位置 = footprint 形心（偏差 ${dist.toFixed(3)} m ≤ 0.5）`, dist <= 0.5, `got (${t[0].toFixed(2)}, ${t[2].toFixed(2)})`);
+  ok(`锚点位置 = footprint 最小面积外接矩形中心（偏差 ${dist.toFixed(3)} m ≤ 0.5）`, dist <= 0.5, `got (${t[0].toFixed(2)}, ${t[2].toFixed(2)})`);
   // glTF 四元数绕 +Y：θ = 2*atan2(qy, qw)；R(θ)·(0,0,1) = (sinθ, 0, cosθ)
   const yaw = 2 * Math.atan2(q[1], q[3]);
   const fx = Math.sin(yaw), fz = Math.cos(yaw);
   const ang = Math.acos(Math.max(-1, Math.min(1, (fx * dx + fz * dz) / Math.hypot(dx, dz)))) * 180 / Math.PI;
   ok(`锚点朝向 vs facade.dir（夹角 ${ang.toFixed(2)}° ≤ 5）`, ang <= 5, `yaw=${yaw.toFixed(4)}`);
 
-  // 2) 子树几何实测：世界坐标平面包围盒中心 vs 形心；尺寸量级核对
+  // 2) 子树几何实测：世界坐标平面包围盒中心 vs 矩形中心；尺寸量级核对
   const verts = garden.subtreeVerts(SST_ID);
   ok('bld-428179901 子树有几何', !!verts && verts.length > 1000, `verts=${verts ? verts.length : 0}`);
   if (process.env.SST_DEBUG) {
@@ -193,7 +205,7 @@ if (testOk) {
     for (const v of verts) { x0 = Math.min(x0, v[0]); x1 = Math.max(x1, v[0]); z0 = Math.min(z0, v[2]); z1 = Math.max(z1, v[2]); }
     const bcx = (x0 + x1) / 2, bcz = (z0 + z1) / 2;
     const d = Math.hypot(bcx - cx, bcz - cz);
-    ok(`实际几何平面中心 vs 形心（偏差 ${d.toFixed(3)} m ≤ 0.5）`, d <= 0.5, `bbox=(${bcx.toFixed(2)}, ${bcz.toFixed(2)})`);
+    ok(`实际几何平面中心 vs 矩形中心（偏差 ${d.toFixed(3)} m ≤ 0.5）`, d <= 0.5, `bbox=(${bcx.toFixed(2)}, ${bcz.toFixed(2)})`);
     // 逆旋转回模块本地系再量尺寸（世界 AABB 会随朝向变大，不能直接比）
     let u0 = 1e9, u1 = -1e9, v0 = 1e9, v1 = -1e9;
     const ct = Math.cos(-wantRotY), st = Math.sin(-wantRotY);

@@ -91,6 +91,35 @@ export function dropFloatingSegments(segments, tol = 0.5) {
   return segments.filter((s, i) => touches(s[0], i) || touches(s[1], i));
 }
 
+// footprint 最小面积外接矩形（凸包 + 旋转卡壳，逐步同 modules/hall-kit/build_hall.py，
+// 同面积取先遇到的边）。返回矩形中心 center、所沿凸包边方向 axis、沿 axis / 垂直 axis 的边长 lenU / lenV。
+// 三穗堂实例模块的放置锚点 = center（wave2-sansuitang，主控 2026-09-25）；Python 侧见 scripts/assemble.py。
+export function minAreaRect(ptsIn) {
+  const pts = ptsIn.length > 1 && ptsIn[0][0] === ptsIn[ptsIn.length - 1][0] && ptsIn[0][1] === ptsIn[ptsIn.length - 1][1] ? ptsIn.slice(0, -1) : ptsIn;
+  const uniq = [...new Map(pts.map((p) => [`${p[0]},${p[1]}`, [p[0], p[1]]])).values()]
+    .sort((a, b) => (a[0] - b[0]) || (a[1] - b[1]));
+  const cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  const lo = [], up = [];
+  for (const p of uniq) { while (lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], p) <= 0) lo.pop(); lo.push(p); }
+  for (const p of [...uniq].reverse()) { while (up.length >= 2 && cr(up[up.length - 2], up[up.length - 1], p) <= 0) up.pop(); up.push(p); }
+  const hull = [...lo.slice(0, -1), ...up.slice(0, -1)];
+  let best = null;
+  for (let i = 0; i < hull.length; i++) {
+    const [x1, y1] = hull[i], [x2, y2] = hull[(i + 1) % hull.length];
+    const L = Math.hypot(x2 - x1, y2 - y1);
+    if (L < 1e-9) continue;
+    const ux = (x2 - x1) / L, uy = (y2 - y1) / L;
+    const us = hull.map((p) => (p[0] - x1) * ux + (p[1] - y1) * uy);
+    const vs = hull.map((p) => -(p[0] - x1) * uy + (p[1] - y1) * ux);
+    const u0 = Math.min(...us), u1 = Math.max(...us), v0 = Math.min(...vs), v1 = Math.max(...vs);
+    const a = (u1 - u0) * (v1 - v0);
+    if (!best || a < best.area) best = { area: a, ux, uy, u0, u1, v0, v1, x1, y1 };
+  }
+  const { ux, uy, u0, u1, v0, v1, x1, y1 } = best;
+  const cu = (u0 + u1) / 2, cv = (v0 + v1) / 2;
+  return { center: [x1 + cu * ux - cv * uy, y1 + cu * uy + cv * ux], axis: [ux, uy], lenU: u1 - u0, lenV: v1 - v0, area: best.area };
+}
+
 // 主方向（PCA 简化：协方差主轴），返回 [dirX, dirZ, len, width, angle]
 export function principalAxis(pts) {
   const c = centroid(pts);

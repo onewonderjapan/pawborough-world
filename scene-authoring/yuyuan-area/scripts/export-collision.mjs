@@ -11,7 +11,7 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { obbToWorld } from '../../../src/world/collisionAdapter.js';
 import { readGlb } from '../../../src/world/glbReader.js';
-import { dropFloatingSegments } from '../src/lib.mjs';
+import { dropFloatingSegments, minAreaRect } from '../src/lib.mjs';
 
 const AREA = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(AREA, process.env.OUT_DIR || 'out');
@@ -193,12 +193,11 @@ for (const pid of PAVILIONS) {
   stats.modulesRecomputed[pid] = { pos: [cx, cz], rotY };
 }
 
-// ---------- 5) 三穗堂（modules/sansuitang 局部记录 + layout 形心/facade 位姿，复核 OUT 世界记录） ----------
+// ---------- 5) 三穗堂（modules/sansuitang 局部记录 + layout 最小面积外接矩形中心/facade 位姿，复核 OUT 世界记录） ----------
+// 锚点 = footprint 最小面积外接矩形中心（wave2-sansuitang，与 assemble.py 同式；此前为顶点均值形心）。
 {
   const o = layout.objects.find(x => x.id === SANSUITANG_ID);
-  const fp = ring(o.geometry.footprint);
-  const cx = fp.reduce((s, q) => s + q[0], 0) / fp.length;
-  const cz = fp.reduce((s, q) => s + q[1], 0) / fp.length;
+  const [cx, cz] = minAreaRect(ring(o.geometry.footprint)).center;
   const d = o.facade.dir;
   const rotY = Math.atan2(d[0], d[1]);
   const c = Math.cos(rotY), s = Math.sin(rotY);
