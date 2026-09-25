@@ -12,6 +12,7 @@ import { installWalkMode } from './walk.js';   // WP4 步行模式（默认不�
 import { setupPerf } from './perf.js';         // M4 性能采样（仅 ?perf=1 时激活；方法见 docs/PERF-W2.md）
 import { installTargetMask } from './target-mask.js'; // wave3-tourfix T2：导览机位渲染后目标像素复核钩子 window.__targetMask
 import { installBatching } from './batching.js';     // wave4-drawcalls：运行时按材质合批（?batch=0 关闭；原网格保留身份，见 web/batching.js）
+import { isRoofNodeSelf } from './roofs.js';        // wave5-rooftoggle：屋面命名判定唯一正本（厅堂/湖心亭/商城大楼/三穗堂/庙区/瓦面/程序化，见 web/roofs.js）
 
 const app = document.getElementById('app');
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -77,6 +78,12 @@ const RAW = new URLSearchParams(location.search).get('raw') === '1';   // ?raw=1
 const t0 = performance.now();
 const params = new URLSearchParams(location.search);
 const batcher = installBatching({ camera, enabled: params.get('batch') !== '0' });
+// wave5-rooftoggle：屋顶开关 = 按命名规则置 visible（规则见 web/roofs.js），再同步到合批实例。
+// 后加载的分区（如步行逼近才拉的方浜中路）在 loadZoneFiles 里补吃当前开关状态。
+function applyRoofs(on, root = scene) {
+  root.traverse(o => { if (isRoofNodeSelf(o)) o.visible = on; });
+  batcher.syncVisibility();   // wave4-drawcalls：原网格可见性 → 合批实例
+}
 function prepare(root) {
   root.traverse(o => {
     if (o.isMesh) {
@@ -146,6 +153,7 @@ async function loadZoneFiles(m, ids, { firstPaint = false } = {}) {
       prepare(root);
       const grp = new THREE.Group(); grp.name = 'ZN-' + z; grp.add(root);
       batcher.batchGroup(grp);   // wave4-drawcalls：件内按材质合批（节点树与身份不动）
+      if (!roofsOn) applyRoofs(false, grp);   // wave5-rooftoggle：后加载分区补吃当前屋顶开关状态
       scene.add(grp);
       allRoots.push(grp);
       zoneLoad[key] = { state: 'ok', bytes: useCm ? e.cm.bytes : e.bytes, ms: performance.now() - ts };
@@ -297,8 +305,7 @@ document.getElementById('bar').addEventListener('click', (e) => {
   if (b.id === 't-res') { resOn = !resOn; b.classList.toggle('active', resOn); updateResVis(); }
   if (b.id === 't-roofs') {
     roofsOn = !roofsOn; b.classList.toggle('active', roofsOn);
-    scene.traverse(o => { const i = infoOf(o); if (i && (i.roof || o.userData?.roof)) o.visible = roofsOn; });
-    batcher.syncVisibility();   // wave4-drawcalls：原网格可见性 → 合批实例
+    applyRoofs(roofsOn);   // wave5-rooftoggle：命名规则判定（原实现只认 |roofpart 管道名，模块化构建下无节点命中）
   }
   if (b.id === 't-bg') {
     bgOn = !bgOn; b.classList.toggle('active', bgOn);

@@ -174,6 +174,15 @@ export function installBatching({ camera, enabled = true }) {
   }
 
   window.__batchSync = syncVisibility;   // 测试 / 外部改原网格 visible 后同步用
+  // 测试钩子：每个合批成员的原网格名 + 祖先名链（glTF 节点名在包装节点上）+ 合批实例当前可见性
+  window.__batchMembers = () => batches.flatMap(b => b.members.map(m => {
+    const chain = [];
+    for (let n = m.obj; n; n = n.parent) {
+      if (n.name) chain.push(n.name);
+      if (n.userData && n.userData.name) chain.push(n.userData.name);
+    }
+    return { mesh: b.mesh.name, name: m.obj.name, chain, visible: b.mesh.getVisibleAt(m.instanceId) };
+  }));
   window.__batchStats = () => ({ ...stats, buildMs: +stats.buildMs.toFixed(1), float32MB: +(stats.float32Bytes / 1048576).toFixed(1), perZone: { ...stats.perZone } });
   return { batchGroup, syncVisibility, wrapTargetMask, get batches() { return batches; } };
 }
