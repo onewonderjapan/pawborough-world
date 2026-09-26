@@ -2558,5 +2558,58 @@
       "before": 18574796,
       "after": 12815599
     }
+  },
+  "solBridgePendingLeadArchive": {
+    "task": "pawborough-sol-bridge-20260927",
+    "baseCommit": "0499f95d",
+    "ownerAdopted": false,
+    "pendingLeadArchive": true,
+    "outputDirectory": "scene-authoring/yuyuan-area/out-sol-bridge",
+    "changedBridgeAssets": [
+      {
+        "path": "scene-authoring/yuyuan-area/out-sol-bridge/procedural-pond.glb",
+        "bytes": 18456,
+        "sha256": "8a16e495449761e95260058c449abd4b4a863fa1a2b807131997edc96bebde4f",
+        "pendingLeadArchive": true
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-sol-bridge/zone-pond.glb",
+        "bytes": 2128904,
+        "sha256": "8f4c6e7b4e51fd9ea5d9a321bc1ba6f16c1e2546aa016502edbaa883b26c7d8d",
+        "pendingLeadArchive": true
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-sol-bridge/zone-pond.cm.glb",
+        "bytes": 592132,
+        "sha256": "796ac20b1b86b78df69e1bc12ca8ab730c973b15b9e20ad19c7327412a320fff",
+        "pendingLeadArchive": true
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-sol-bridge/collision-pond.json",
+        "bytes": 1877,
+        "sha256": "3bb9a82b9438e8d7ab91907edb41f3c90154db9b40233b7b136c97e52c95496c",
+        "pendingLeadArchive": true
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-sol-bridge/zones-manifest.json",
+        "bytes": 31190,
+        "sha256": "3f98d46ad519ab5af4fe2045037c674c14be4ca4330e365793810dd500ff51f0",
+        "pendingLeadArchive": true
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-sol-bridge/scene-areas.glb",
+        "bytes": 78028936,
+        "sha256": "24d97ade2a7d6e66688898f64ee5bb7b678534792d8672653053c839954338ac",
+        "pendingLeadArchive": true
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-sol-bridge/scene.blend",
+        "bytes": 175719550,
+        "sha256": "64571b24be0fbd61a7b371151ecd4795cee3a70dbec9ae39fa512b1514657310",
+        "pendingLeadArchive": true
+      }
+    ],
+    "newDesignedTextures": 0,
+    "scope": "Only shore-end top tread connection and bridge-step box yaw; existing garden-kit bridge unchanged. Full candidate runtime closure hashes in task artifacts/NEW-ASSETS.json. Original storage and cloud receipts remain unchanged."
   }
 }
