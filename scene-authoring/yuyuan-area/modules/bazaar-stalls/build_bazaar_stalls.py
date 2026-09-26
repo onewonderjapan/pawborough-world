@@ -386,6 +386,49 @@ def build_awning_strip(m, tag, length, canvas_idx=0):
 def reset():
     bpy.ops.wm.read_factory_settings(use_empty=True)
 
+BENCH_LEN, BENCH_GAP = 1.6, 0.10   # wave8-smallqa Q2① 规则：同排凳距 = 模块长 + 0.10 m 缝
+
+def repair_bench_rows(benches):
+    """同 (cluster, rotY) 且 |横向偏差|≤0.3 m 的成排长凳，相邻沿轴间距 < 凳长+0.05 的连续段
+    按 1.70 m 等距重排（首凳为锚）。修 wave8 发现3：stall-49/50/51 同排半叠 0.80 m。
+    外部 site-inputs 是冻结输入，规则在此重放，避免重生成 placements 时回退。"""
+    rows = {}
+    for b in benches:
+        rows.setdefault((b['cluster'], round(b['rotY'], 3)), []).append(b)
+    moved = {}
+    for (cluster, rot), row in rows.items():
+        if len(row) < 2:
+            continue
+        ax, az = math.cos(rot), -math.sin(rot)   # local X → map（同 tests/smallqa-test 口径）
+        for b in row:
+            b['_along'] = b['position'][0] * ax + b['position'][1] * az
+        row.sort(key=lambda x: x['_along'])
+        # 同 smallqa-test：成对判横向偏差（相邻两凳连线垂直分量 ≤0.3 m 才算同排）
+        lat = lambda p, q: abs(-(q['position'][0] - p['position'][0]) * math.sin(rot)
+                               + (q['position'][1] - p['position'][1]) * math.cos(rot))
+        run = [row[0]]
+        runs = []
+        for prev, cur in zip(row, row[1:]):
+            if lat(prev, cur) <= 0.3 and cur['_along'] - prev['_along'] < BENCH_LEN + 0.05:
+                run.append(cur)
+            else:
+                if len(run) >= 2:
+                    runs.append(run)
+                run = [cur]
+        if len(run) >= 2:
+            runs.append(run)
+        for r in runs:
+            anchor = r[0]
+            for k, b in enumerate(r):
+                moved[b['id']] = [anchor['position'][0] + k * (BENCH_LEN + BENCH_GAP) * ax,
+                                  anchor['position'][1] + k * (BENCH_LEN + BENCH_GAP) * az]
+    for b in benches:
+        b.pop('_along', None)
+        b.pop('_lat', None)
+        if b['id'] in moved:
+            b['position'] = moved[b['id']]
+    return sorted(moved)
+
 def build_all():
     site = json.load(open(SITE, encoding='utf-8'))
     manifest = {'packageId': site['packageId'], 'generatedBy': 'build_bazaar_stalls.py', 'files': {}}
@@ -501,9 +544,18 @@ def build_all():
                        'extras': {'slots': s['slots']},
                        'collision': coll})
     benches = [{'id': b['id'], 'kind': 'bench', 'module': 'bench.glb',
-                'position': b['position'], 'rotY': b['rotY'], 'height': b['height'],
+                'position': list(b['position']), 'rotY': b['rotY'], 'height': b['height'],
                 'cluster': b['cluster'],
                 'collision': {'size': [1.6, 0.45], 'height': 0.5}} for b in site['benches']]
+    # wave8-smallqa Q2①：同排半叠长凳 1.70 m 等距重排（规则在生成器重放，见 repair_bench_rows）
+    bench_moved = repair_bench_rows([b for b in benches])
+    bench_repairs = []
+    if bench_moved:
+        bench_repairs.append({'date': '2026-09-26', 'id': 'bench-cluster-1', 'moved': bench_moved,
+                              'finding': 'stall-49/50/51 同排长凳间距 0.80 m < 凳长 1.60 m，两两半叠（互穿 46 交线/5.06 m 每对）',
+                              'fix': '保持首凳基准与 rotY，后续沿凳轴 1.70 m 等距（凳长 1.60 + 0.10 缝）',
+                              'rule': '同排长凳沿轴间距 = 模块长 + 0.10 m 缝；tests/smallqa-test.mjs bench-row-spacing 守恒',
+                              'by': 'wave8-smallqa Q2① (1d7a3eac)；生成器重放 night-smallfix-20260926'})
     placements = {
         'packageId': site['packageId'], 'generatedBy': 'build_bazaar_stalls.py',
         'sourceLayout': site['source'],
@@ -515,6 +567,7 @@ def build_all():
         },
         'modules': manifest['files'],
         'counts': {'stalls': len(stalls), 'benches': len(benches)},
+        'repairs': bench_repairs,
         'stalls': stalls, 'benches': benches,
     }
     with open(os.path.join(OUT, 'placements.json'), 'w', encoding='utf-8') as f:
