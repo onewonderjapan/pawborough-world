@@ -8,10 +8,16 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 shotdir, outdir, tags = sys.argv[1], sys.argv[2], sys.argv[3].split(',')
 REG = json.load(open(os.path.join(ROOT, 'modules', 'outer-kit', 'ids.json'), encoding='utf-8'))
 # IDS=review12 → wave8 全铺开复查代表点（ids.json review12，行标签带选取理由）；缺省 = wave7 样板 ids
-ids = [r['id'] for r in REG['review12']] if os.environ.get('IDS') == 'review12' else REG['ids']
-WHY = {r['id']: r['why'] for r in REG.get('review12', [])} if os.environ.get('IDS') == 'review12' else {}
+# IDS=review12w9（wave9 互穿 / 墙色 / 长立面复查点）同理
+LIST = os.environ.get('IDS')
+ids = [r['id'] for r in REG[LIST]] if LIST in REG and isinstance(REG[LIST], list) else REG['ids']
+WHY = {r['id']: r['why'] for r in REG[LIST]} if LIST in REG and isinstance(REG[LIST], list) else {}
 W, H, LBL = 480, 300, 22
-TITLES = {'before': 'before: beige box (OUTER_KIT off)', 'tex': 'tex: geometry + shared atlas', 'after': 'after: 301-building kit rollout (default)', 'geo': 'geo: pure geometry', 'proc': 'proc: runtime shader'}
+TITLES = {'before': 'before: beige box (OUTER_KIT off)', 'tex': 'tex: geometry + shared atlas', 'after': 'after: 301-building kit rollout (default)', 'geo': 'geo: pure geometry', 'proc': 'proc: runtime shader',
+          'p2': 'P2 only: tones, no facade segments'}
+# 列标题可用环境变量改（wave9：TITLE_BEFORE / TITLE_AFTER）
+if os.environ.get('TITLE_BEFORE'): TITLES['before'] = os.environ['TITLE_BEFORE']
+if os.environ.get('TITLE_AFTER'): TITLES['after'] = os.environ['TITLE_AFTER']
 try:
     font = ImageFont.load_default(size=16)
 except TypeError:

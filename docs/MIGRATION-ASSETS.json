@@ -2172,7 +2172,8 @@
       "path": "scene-authoring/yuyuan-area/resources/textures/outer-kit/outerkit-atlas.jpg",
       "sha256": "c104a2a7d7c1b6e2b5e144f0498d498948d01e99dd9142e946a442501ef6e1bb",
       "bytes": 42350,
-      "sourcePackage": "pawborough-wave7-outerkit-20260926"
+      "sourcePackage": "pawborough-wave7-outerkit-20260926",
+      "note": "v1 atlas, kept on disk but no longer read by the pipeline (superseded by outerkit-atlas-v2.jpg, wave9)."
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701901/model.glb",
@@ -2221,7 +2222,8 @@
       "sha256": "63de67acd51e44304a067ea8698c47bca96e102d4ee12e4923aafcaf3d24bec0",
       "bytes": 217709,
       "sourcePackage": "pawborough-wave9-outerpolish-20260926",
-      "archiveState": "pending_lead_archive"
+      "archiveState": "pending_lead_archive",
+      "note": "wave9 v2 atlas (512x4096, 4 wall tones x A/B rows), baked by modules/outer-kit/bake_atlas.py; read by scripts/export-zones.py OUTER_KIT_TEX. Pending lead archiving (not uploaded)."
     }
   ],
   "state": "uploaded_checksum_verified",

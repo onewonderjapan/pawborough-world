@@ -1,5 +1,5 @@
 {
- "comment": "wave7-outerkit 样板 10 栋（ids）+ wave8-outerlazy 全铺开复查代表点（review12）。2026-09-26 机主定「外围 301 栋全部铺开」后，替换范围 = 外围区全部 outerBuilding（除与湖心亭 footprint 重合的占位），由 build-scene.mjs 按 layout 现算，本文件不再决定范围；ids 只用于 tests/outer-kit-test.mjs 的样板选取检查与 wave7 联系表延续，review12 用于 modules/outer-kit/contact-shots.mjs IDS=review12 前后对照。生成器 src/outer-kit.mjs，测试 tests/outer-kit-test.mjs。",
+ "comment": "wave7-outerkit 样板 10 栋（ids）+ wave8-outerlazy 全铺开复查代表点（review12）。2026-09-26 机主定「外围 301 栋全部铺开」后，替换范围 = 外围区全部 outerBuilding（除与湖心亭 footprint 重合的占位），由 build-scene.mjs 按 layout 现算，本文件不再决定范围；ids 只用于 tests/outer-kit-test.mjs 的样板选取检查与 wave7 联系表延续，review12 用于 modules/outer-kit/contact-shots.mjs IDS=review12 前后对照。生成器 src/outer-kit.mjs，测试 tests/outer-kit-test.mjs。 review12w9（wave9-outerpolish）：互穿 / 墙色 / 长立面复查点，contact-shots.mjs / contact-sheet.py 用 IDS=review12w9。",
  "ids": [
   "bld-858807443",
   "bld-408450722",
@@ -68,6 +68,56 @@
   {
    "id": "bld-389701874",
    "why": "narrow shed-roof house"
+  },
+  {
+   "id": "bld-505661358",
+   "why": "far west 12.8 m apt row"
+  }
+ ],
+ "review12w9": [
+  {
+   "id": "bld-858807474",
+   "why": "Anren St cluster 472/473/474/475 (roof clash)"
+  },
+  {
+   "id": "bld-858807472",
+   "why": "Anren St cluster, clash with 473 and 474"
+  },
+  {
+   "id": "bld-408450722",
+   "why": "Anren St 46 m shophouse row (long facade, awnings)"
+  },
+  {
+   "id": "bld-858824310",
+   "why": "worst roof clash pair 858824310/311 (128 m)"
+  },
+  {
+   "id": "bld-858807482",
+   "why": "shared-edge row 482/483/484"
+  },
+  {
+   "id": "bld-858807442",
+   "why": "Renmin Rd shophouse row 440-444"
+  },
+  {
+   "id": "bld-520214798",
+   "why": "contains bld-1557232624 -> courtyard hole"
+  },
+  {
+   "id": "bld-520214805",
+   "why": "largest lilong block, long facades"
+  },
+  {
+   "id": "bld-300480894",
+   "why": "far west 16 m apt, 3 ridges, long facade"
+  },
+  {
+   "id": "bld-858807409",
+   "why": "wave7 sample, Sipailou Rd gable end"
+  },
+  {
+   "id": "bld-701981165",
+   "why": "wave7 sample 9.6 m, tone variety"
   },
   {
    "id": "bld-505661358",
