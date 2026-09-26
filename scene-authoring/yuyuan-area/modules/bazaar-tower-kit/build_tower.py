@@ -144,8 +144,9 @@ def passage_cut_bm(bm):
                     if len(rem) < 3:
                         lost = True
                         break
-                if cut_any or lost or len(rem) != len(poly):
-                    touched = True                       # 只在真有面积被切时才重排，贴平面面保持原样
+                # 条带内剩余（含整面都在条带内的情形）必须丢弃——cutPassages 同口径
+                if cut_any or lost or len(rem) >= 3:
+                    touched = True
             polys = nxt
             if not polys:
                 break
