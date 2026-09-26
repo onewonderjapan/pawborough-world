@@ -13,7 +13,7 @@
   "collision": "unreachable (valance bottom 2.54m, above 2.5m body band) — no collision box"
  },
  "counts": {
-  "edges": 16,
+  "edges": 15,
   "skipped": []
  },
  "edges": [
@@ -60,50 +60,6 @@
    "bytes": 37868,
    "budgetOk": true,
    "sha256": "fd559f22fa0787a70b7576b5f23e797ec83e2d76f0586d44d806914d581dfa6d"
-  },
-  {
-   "blockId": "bld-389701812",
-   "edgeIndex": 5,
-   "street": "中心广场",
-   "edge": [
-    [
-     -138.45,
-     -40.83
-    ],
-    [
-     -189.19,
-     -31.23
-    ]
-   ],
-   "dir": [
-    0.1859017738273171,
-    0.9825683337497992
-   ],
-   "lenM": 51.6,
-   "midpoint": [
-    -163.82,
-    -36.03
-   ],
-   "outward": [
-    -0.982568,
-    0.185902
-   ],
-   "rotY": -1.3838067718787115,
-   "module": "awnings/awning-bld-389701812-5.glb",
-   "geometry": {
-    "builtLengthM": 51.6,
-    "projectionM": 1.2,
-    "frontHeightM": 2.78,
-    "wallHeightM": 3.1015,
-    "slopeDeg": 15.0,
-    "scallopWidthM": 0.5,
-    "bracketSpacingM": 1.5
-   },
-   "tris": 1254,
-   "trisPerMetre": 24.3,
-   "bytes": 92092,
-   "budgetOk": true,
-   "sha256": "bb7a2604a0a36f6938a835c5b1f9484b9b2cae01a3f3493ec473e1cc471ba7cd"
   },
   {
    "blockId": "bld-389701901",
@@ -720,6 +676,16 @@
    "bytes": 58352,
    "budgetOk": true,
    "sha256": "b0766658571875375e73af8abe3f9b687d54395dc826ff26b1df909dbb3e8232"
+  }
+ ],
+ "repairs": [
+  {
+   "date": "2026-09-26",
+   "id": "awning-bld-389701812-5",
+   "finding": "布面×塔楼构件交线 308 条/35.65 m（灯笼串 274/20.37 m、牌匾 34/15.3 m，吞没率 1%）——2026-09-26 BAZAAR_TOWERS 默认开启后，塔楼灯笼/牌匾挂带（y 2.9–3.1 m）与檐棚安装带同高",
+   "fix": "剔除该 edge（16→15 条）",
+   "rule": "檐棚布面 × 塔楼/邻块构件 交线 >5 m 或布面吞没率 >10% → 剔除；安装带与立面线脚的全长度交叉归 needsGenerator（发现1），不在剔除规则内",
+   "guard": "tests/smallqa-test.mjs awning-tower-clearance"
   }
  ]
 }

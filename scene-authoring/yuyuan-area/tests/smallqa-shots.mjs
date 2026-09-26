@@ -49,14 +49,17 @@ const placeFn = (position, rotY) => {
 for (const it of insts) {
   const { mn, mx } = bboxOf(it.file);
   const W = mx[0] - mn[0], H = mx[1] - mn[1], D = mx[2] - mn[2];
+  // 取景宽封顶 8 m：檐棚最长 57 m，按全长取景在 960px 里只剩几像素高的细线（空白守卫必炸）。
+  // 封顶后 front/eye/oblique 展示中段代表区段（檐棚花边 0.5 m 一循环，区段即全貌），首尾出框在 FINDINGS 里注明。
+  const Weff = Math.min(W, 8);
   const cx = (mn[0] + mx[0]) / 2, cz = (mn[2] + mx[2]) / 2;
-  const d = Math.max(1.3 * W, 2.0 * (mn[1] + H), 3.0);
-  const R = Math.hypot(W, D, mn[1] + H);
+  const d = Math.max(1.3 * Weff, 2.0 * (mn[1] + H), 3.0);
+  const R = Math.hypot(Weff, D, mn[1] + H);
   const loc = {
     front: [[cx, 0.4 * (mn[1] + H) + 0.4, mx[2] + d], [cx, 0.45 * (mn[1] + H), cz], 40],
     oblique: [[cx + 0.62 * R * 1.25, 0.25 * (mn[1] + H) + 0.75 * R, mx[2] + 0.62 * R * 1.25], [cx, 0.4 * (mn[1] + H), cz], 36],
     back: [[cx, 0.4 * (mn[1] + H) + 0.4, mn[2] - d], [cx, 0.45 * (mn[1] + H), cz], 40],
-    eye: [[cx + 0.28 * W, 1.6, mx[2] + Math.max(2.2, 0.55 * W)], [cx - 0.05 * W, 0.4 * (mn[1] + H), cz], 28],
+    eye: [[cx + 0.28 * Weff, Math.min(1.6, (mn[1] + mx[1]) / 2 + 0.4), mx[2] + Math.max(1.8, 0.5 * Weff)], [cx - 0.05 * Weff, (mn[1] + mx[1]) / 2, cz], 28],
   };
   for (const [view, [p, t, lens]] of Object.entries(loc)) {
     shots.push({ name: `${it.family}-${it.id}-${view}-${TAG}`, glbs: [it.file], pos: p.map((v) => +v.toFixed(3)), tgt: t.map((v) => +v.toFixed(3)), lens });
@@ -71,7 +74,7 @@ if (WANT_CONTEXT) {
     // 塔楼灯笼/牌匾穿檐棚（389701812）：沿街看檐棚与塔楼墙交线
     { name: `ctx-awning-389701812-${TAG}`, glbs: [path.join(OUTZ, 'zone-bazaar-3.glb'), path.join(OUTZ, 'zone-bazaar-2.glb'), path.join(OUTZ, 'zone-bazaar.glb')], pos: [-146, 6.5, -24], tgt: [-140.5, 3.0, -35.5], lens: 35 },
     // outerBuilding 穿檐棚（428202606）
-    { name: `ctx-awning-428202606-${TAG}`, glbs: [path.join(OUTZ, 'zone-bazaar-2.glb'), path.join(OUTZ, 'zone-bazaar.glb'), path.join(OUTZ, 'zone-outer.glb')], pos: [-196, 5.5, -101], tgt: [-194, 3.0, -109], lens: 35 },
+    { name: `ctx-awning-428202606-${TAG}`, glbs: [path.join(OUTZ, 'zone-bazaar-2.glb'), path.join(OUTZ, 'zone-bazaar.glb'), path.join(OUTZ, 'zone-outer.glb')], pos: [-192.1, 4.0, -97.5], tgt: [-194.2, 2.9, -109.3], lens: 35 },
     // 邻块互穿（553893868/553893867）
     { name: `ctx-awning-553893868-${TAG}`, glbs: [path.join(OUTZ, 'zone-bazaar-2.glb'), path.join(OUTZ, 'zone-bazaar.glb')], pos: [-138, 5.0, -46], tgt: [-132.5, 3.0, -51.5], lens: 35 },
     // 对照：仅贴墙嵌入的普通檐棚（165791764）
@@ -91,8 +94,8 @@ if (WANT_CLOSEUPS) {
   {
     const f = path.join(ROOT, 'out-garden-kits', 'pavilion-bld-428196085', 'model.glb');
     for (const [nm, lp, lt] of [
-      [`closeup-pav-corner-428196085-a-${TAG}`, [-1.147, 3.655, -2.431], [-2.6, 4.4, -4.6]],
-      [`closeup-pav-corner-428196085-b-${TAG}`, [2.4, 3.6, 1.8], [4.2, 4.6, 3.6]],
+      [`closeup-pav-corner-428196085-a-${TAG}`, [-3.35, 4.35, -4.63], [-1.147, 3.75, -2.431]],
+      [`closeup-pav-corner-428196085-b-${TAG}`, [4.4, 4.5, 4.0], [2.4, 3.7, 1.9]],
     ]) {
       shots.push({ name: nm, glbs: [f], pos: lp, tgt: lt, lens: 50 });
     }

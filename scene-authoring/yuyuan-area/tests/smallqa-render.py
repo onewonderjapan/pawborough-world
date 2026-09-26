@@ -19,6 +19,7 @@ ap.add_argument('--shots', required=True)
 ap.add_argument('--out', required=True)
 ap.add_argument('--res', default='960x600')
 ap.add_argument('--spp', type=int, default=24)
+ap.add_argument('--filter', default='')
 a = ap.parse_args(argv)
 os.makedirs(a.out, exist_ok=True)
 RX, RY = (int(v) for v in a.res.split('x'))
@@ -48,21 +49,13 @@ so = bpy.data.objects.new('sun', lt)
 sc.collection.objects.link(so)
 so.rotation_euler = (math.radians(28), math.radians(-25), math.radians(-35))
 
-_loaded = {}
-
-
 def load_glbs(files):
-    """导入 GLB（缓存按文件集合），返回导入对象列表。"""
-    key = tuple(files)
-    if key in _loaded:
-        return _loaded[key]
+    """导入 GLB，返回导入对象列表。每镜用完即删（不同模块都导在世界原点，留着会互相污染画面）。"""
     before = set(bpy.data.objects)
     for f in files:
         bpy.ops.import_scene.gltf(filepath=f)
     bpy.context.view_layer.update()
-    new = [o for o in bpy.data.objects if o not in before]
-    _loaded[key] = new
-    return new
+    return [o for o in bpy.data.objects if o not in before]
 
 
 def guard(path):
@@ -88,9 +81,13 @@ def guard(path):
     return {'std255': round(std * 255, 2), 'dominant': round(dom, 3), 'blank': std < 2 / 255 or dom > 0.95}
 
 
+import re
+pat = re.compile(a.filter) if a.filter else None
 fails = []
 report = []
 for shot in SHOTS:
+    if pat and not pat.search(shot['name']):
+        continue
     objs = load_glbs(shot['glbs'])
     camd = bpy.data.cameras.new('cam')
     camd.lens = shot.get('lens', 40)
@@ -114,6 +111,11 @@ for shot in SHOTS:
     if g['blank']:
         fails.append(shot['name'])
     bpy.data.objects.remove(cam)
+    for o in objs:
+        try:
+            bpy.data.objects.remove(o)
+        except ReferenceError:
+            pass
 
 json.dump(report, open(os.path.join(a.out, 'render-report.json'), 'w'), ensure_ascii=False, indent=1)
 if fails:
