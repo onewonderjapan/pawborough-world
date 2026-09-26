@@ -377,7 +377,9 @@ ok('route junction at shanmen anchor (<=0.01m)', route.junction && route.junctio
   ok(`fangbang shared triangles ${unique} <= 260000 (instance-weighted ${placed})`, unique <= 260000);
   ok(`shared triangles within 5% of v7 non-temple+lanesV2(once)+infill ${ref} (rel ${rel.toFixed(3)}; books nonTemple ${nonTemple} + lanes ${acct.lanesV2})`, rel <= 0.05, `unique=${unique} ref=${ref}`);
   ok('fangbang parts loadPolicy on-demand', manifest.zones.filter(z => z.id === 'fangbang' && z.file).every(z => z.loadPolicy === 'on-demand'));
-  const cmBytes = manifest.zones.filter(z => z.id === 'fangbang' && z.cm).reduce((s, z) => s + z.cm.bytes, 0);
+  // wave9-sharedtex：含方浜件引用的外置贴图并集（manifest textures{}）
+  const fbCm = manifest.zones.filter(z => z.id === 'fangbang' && z.cm), fbTex = new Set(fbCm.flatMap(z => z.cm.textures || []));
+  const cmBytes = fbCm.reduce((s, z) => s + z.cm.bytes, 0) + [...fbTex].reduce((s, u) => s + manifest.textures[u].bytes, 0);
   ok(`fangbang cm total ${(cmBytes / 1e6).toFixed(2)}MB <= 7MB`, cmBytes > 0 && cmBytes <= 7e6, String(cmBytes));
   console.log('R1 triangles', { unique, placed, ref, partsSharingMultiMesh: shareOk });
 }

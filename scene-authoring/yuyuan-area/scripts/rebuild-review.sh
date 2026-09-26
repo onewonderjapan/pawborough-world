@@ -31,6 +31,8 @@ if [ "${ZONE_SPLIT:-0}" = "1" ]; then
   blender -b --python-exit-code 1 -P scripts/export-zones.py
   # meshopt runtime copies (G6 compressed default); ZONE_CM=0 skips
   if [ "${ZONE_CM:-1}" = "1" ]; then node scripts/compress-zones.mjs; fi
+  # wave9-sharedtex：多个 cm 件共有的贴图外置到 $OUT_DIR/tex/<内容哈希>.<ext>，查看器同 URL 只下载一次（SHARED_TEX=0 保持内嵌）
+  if [ "${ZONE_CM:-1}" = "1" ] && [ "${SHARED_TEX:-1}" = "1" ]; then node scripts/share-textures.mjs; fi
 fi
 # 方浜中路 fifth zone (default on since 2026-09-24; FANGBANG=0 turns it off) -> zone collision + route
 if [ "${FANGBANG:-1}" != "0" ] && [ "${ZONE_SPLIT:-0}" = "1" ]; then

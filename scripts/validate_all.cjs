@@ -54,7 +54,22 @@ const TARGETS = filesArg
     const data = new Uint8Array(fs.readFileSync(full));
     const sha256 = crypto.createHash('sha256').update(data).digest('hex');
     try {
-      const r = await validator.validateBytes(data, { maxIssues: 200 });
+      // External resources (e.g. yuyuan-area zone-*.cm.glb shared textures tex/<hash>.jpg, wave9-sharedtex) are
+      // resolved relative to the GLB and must stay inside ROOT. Containment is checked on real paths
+      // (fs.realpathSync) so symlinked textures pointing outside ROOT are rejected too; a missing /
+      // escaping / badly encoded URI rejects the promise, which the validator reports as IO_ERROR.
+      const r = await validator.validateBytes(data, {
+        maxIssues: 200,
+        uri: rel,
+        externalResourceFunction: (uri) => new Promise((resolve, reject) => {
+          let p, real;
+          try { p = path.resolve(path.dirname(full), decodeURIComponent(uri)); } catch { return reject(`bad uri encoding: ${uri}`); }
+          try { real = fs.realpathSync(p); } catch (e) { return reject(String(e.message)); }
+          const rootReal = fs.realpathSync(ROOT);
+          if (real !== rootReal && !real.startsWith(rootReal + path.sep)) return reject(`outside root: ${uri}`);
+          fs.readFile(real, (err, buf) => (err ? reject(String(err.message)) : resolve(new Uint8Array(buf))));
+        }),
+      });
       const entry = {
         file: rel,
         sha256,
