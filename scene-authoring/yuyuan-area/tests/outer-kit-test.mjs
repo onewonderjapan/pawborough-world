@@ -1,11 +1,14 @@
-// wave7-outerkit：外围老城厢套件样板测试。读最终运行时件 OUT_DIR/zone-outer.glb（Blender 导出的原始件），
-// 期望值一律从 baseline/layout.json 现算（footprint、height、levels、道路），不拿产物和产物比。
-//   OUTER_KIT_EXPECT=1（默认）：OUTER_KIT=1 产物 —— 样板 10 栋是套件网格、其余 outerBuilding 仍是方块；
-//   OUTER_KIT_EXPECT=0：默认产物 —— 没有任何套件网格，304 栋全是方块。
-// 用法：OUT_DIR=out-zone-kit node tests/outer-kit-test.mjs ；OUT_DIR=out-zone OUTER_KIT_EXPECT=0 node tests/outer-kit-test.mjs
+// 外围老城厢套件测试（wave7-outerkit 样板 → wave8-outerlazy 全铺开，2026-09-26 机主「外围 301 栋全部铺开」）。
+// 读最终运行时件 OUT_DIR/zone-outer.glb（Blender 导出的原始件），期望值一律从 baseline/layout.json 现算
+// （footprint、height、levels、道路、与湖心亭 footprint 的重合），不拿产物和产物比。
+//   OUTER_KIT_EXPECT=1（默认，对应 OUTER_KIT 默认开）：外围区全部 outerBuilding（除与湖心亭 footprint 重合的占位，
+//     HUXINTING=0 时它仍是方块）都是套件网格，逐栋查三角上限 / 选型 / 墙脚落在 footprint 上 / 外挑 / 屋脊高 / 屋面无洞 / 绕序；
+//   OUTER_KIT_EXPECT=0：OUTER_KIT=0 产物 —— 没有任何套件网格，外围 outerBuilding 全是方块。
+// 用法：OUT_DIR=out-zone node tests/outer-kit-test.mjs ；OUT_DIR=out-zone-kit0 OUTER_KIT_EXPECT=0 node tests/outer-kit-test.mjs
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { polySymDiffArea, polyArea as libPolyArea } from '../src/lib.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out');
@@ -17,9 +20,15 @@ const ok = (msg, cond) => { if (cond) pass++; else { fail++; console.log('FAIL',
 // ---------- 期望：baseline/layout.json ----------
 const layout = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline', 'layout.json'), 'utf8'));
 const reg = JSON.parse(fs.readFileSync(path.join(ROOT, 'modules', 'outer-kit', 'ids.json'), 'utf8'));
-const SAMPLES = reg.ids;
+const SAMPLES = reg.ids;   // wave7 样板 10 栋（选取检查 + 联系表延续）；全铺开后套件范围 = 外围区全部 outerBuilding
 const byId = new Map(layout.objects.map(o => [o.id, o]));
 const outerIds = layout.objects.filter(o => o.kind === 'outerBuilding' && o.zone === 'outer').map(o => o.id);
+// 与湖心亭 footprint 重合的占位（对称差 ≤ 5% 湖心亭面积；同 build-scene 的 HUXINTING 让位口径，从 layout 几何现算）
+const huxin = byId.get('huxin-ting');
+const hArea = huxin ? Math.abs(libPolyArea(huxin.geometry.footprint)) : 0;
+const dupIds = new Set(huxin ? outerIds.filter(id => polySymDiffArea(huxin.geometry.footprint, byId.get(id).geometry.footprint) / hArea <= 0.05) : []);
+const KIT_IDS = outerIds.filter(id => !dupIds.has(id));
+const OWNER_COUNT = 301;   // GOAL wave8：304 栋 − bazaar 区 2 栋 − 湖心亭重合 1 栋
 const ringOf = (fp) => {
   const r = fp.map(p => [p[0], p[1]]);
   if (r.length > 1 && r[0][0] === r[r.length - 1][0] && r[0][1] === r[r.length - 1][1]) r.pop();
@@ -104,8 +113,12 @@ const obEntries = entries.filter(e => e.extras.kind === 'outerBuilding' || Strin
 // ---------- 共同：外围 outerBuilding 身份齐全 ----------
 const seen = new Map();
 for (const e of obEntries) seen.set(e.id, (seen.get(e.id) || 0) + 1);
-const expectedIds = outerIds.filter(id => id !== 'bld-228035340');   // 湖心亭重合占位由 HUXINTING 让位（build-scene HUXINTING_DUP），不在外围件
-ok(`外围件 outerBuilding 节点 ${seen.size} 个 = layout outer 区 ${expectedIds.length} 个（湖心亭重合占位除外）`, expectedIds.every(id => seen.get(id) === 1) && seen.size === expectedIds.length);
+// 湖心亭重合占位：HUXINTING 开时让位（不在外围件），HUXINTING=0 时照常出方块 —— 按内容判定在不在
+const dupPresent = [...dupIds].filter(id => seen.has(id));
+const expectedIds = [...KIT_IDS, ...dupPresent];
+ok(`外围件 outerBuilding 节点 ${seen.size} 个 = layout outer 区 ${KIT_IDS.length} 个 + 在场的湖心亭重合占位 ${dupPresent.length} 个`, expectedIds.every(id => seen.get(id) === 1) && seen.size === expectedIds.length);
+ok(`套件范围 ${KIT_IDS.length} 栋 = 机主口径 ${OWNER_COUNT}（layout 外围区 ${outerIds.length} − 湖心亭重合 ${[...dupIds].join(',')}）`, KIT_IDS.length === OWNER_COUNT);
+ok(`湖心亭重合占位在场时仍是方块（${dupPresent.join(',') || '不在场'}）`, entries.filter(e => dupIds.has(e.id)).every(e => !e.extras.outerKit));
 
 if (!EXPECT) {
   ok(`默认产物无套件网格（实得 ${kitEntries.length}）`, kitEntries.length === 0);
@@ -126,7 +139,11 @@ if (!EXPECT) {
 }
 
 // ---------- 套件网格 ----------
-ok(`套件网格恰为样板 10 栋（实得 ${kitEntries.length}）`, kitEntries.length === SAMPLES.length && SAMPLES.every(id => kitEntries.some(e => e.id === id)));
+{
+  const kitSet = new Set(kitEntries.map(e => e.id));
+  const missing = KIT_IDS.filter(id => !kitSet.has(id));
+  ok(`套件网格 ${kitEntries.length} 个恰为外围 ${KIT_IDS.length} 栋各一（缺 ${missing.length}：${missing.slice(0, 5).join(',')}）`, kitEntries.length === KIT_IDS.length && missing.length === 0);
+}
 const kitMats = new Set(kitEntries.flatMap(e => [...e.materials]));
 ok(`套件共用 1 个材质（实得 ${kitMats.size}）`, kitMats.size === 1);
 const modes = new Set(kitEntries.map(e => e.extras.outerKit));
@@ -145,12 +162,15 @@ const mode = [...modes][0];
     ok('tex 网格带 UV、不带顶点色', kitEntries.every(e => e.attrs.has('TEXCOORD_0') && !e.attrs.has('COLOR_0')));
   }
 }
-for (const id of SAMPLES) {
+const typeCount = {}, stats = { tris: 0, maxTris: 0, maxOut: 0, maxRidgeOver: 0 };
+for (const id of KIT_IDS) {
   const o = byId.get(id), es = kitEntries.filter(e => e.id === id);
   if (es.length !== 1) { ok(`${id} 恰一个套件节点`, false); continue; }
   const e = es[0], r = ringOf(o.geometry.footprint), A = Math.abs(area(r));
   const h = o.height, levels = o.levels || Math.round(h / 3.2);
   ok(`${id} 三角 ${e.tris.length} ≤ ${TRI_CAP}`, e.tris.length <= TRI_CAP && e.tris.length > 0);
+  typeCount[e.extras.kitType] = (typeCount[e.extras.kitType] || 0) + 1;
+  stats.tris += e.tris.length; stats.maxTris = Math.max(stats.maxTris, e.tris.length);
   // 选型：levels ≥ 4 → apartment；临街 → shophouse；否则 lilong
   const wantType = levels >= 4 ? 'apartment' : fronting(r) ? 'shophouse' : 'lilong';
   ok(`${id} 选型 ${e.extras.kitType} = layout 推出的 ${wantType}`, e.extras.kitType === wantType);
@@ -164,9 +184,11 @@ for (const id of SAMPLES) {
   // 外扩上限：屋檐 0.35 + 披檐 0.9 → 所有顶点距 footprint ≤ 1.3 m（在外时）
   const outMax = Math.max(0, ...all.filter(p => !inside([p[0], p[2]], r)).map(p => boundaryDist([p[0], p[2]], r)));
   ok(`${id} 外挑 ≤ 1.3 m（实得 ${outMax.toFixed(2)}）`, outMax <= 1.3);
+  stats.maxOut = Math.max(stats.maxOut, outMax);
   // 高度：屋脊在 layout height 之上、不超 1.6 m；无地下顶点
   const ymax = Math.max(...all.map(p => p[1])), ymin = Math.min(...all.map(p => p[1]));
   ok(`${id} 屋脊 ${ymax.toFixed(2)} ∈ [h=${h}, h+1.6]，底 ${ymin.toFixed(2)} ≥ 0`, ymax >= h && ymax <= h + 1.6 && ymin >= -1e-3);
+  stats.maxRidgeOver = Math.max(stats.maxRidgeOver, ymax - h);
   // 屋面覆盖：footprint 内 0.5 m 网格采样点，每点正上方（高于 h/2）都要有朝上的三角（无洞）；顺带查绕序与法线一致
   let wind = 0;
   const upTris = [];
@@ -192,8 +214,9 @@ for (const id of SAMPLES) {
   ok(`${id} 屋面覆盖 footprint 采样点 ${nCov}/${nIn}（无洞）`, nIn > 0 && nCov === nIn);
   ok(`${id} 三角绕序与法线一致（反向 ${wind}）`, wind === 0);
 }
-// 非样板 outerBuilding 仍是方块（无 outerKit extras）
-ok('非样板外围楼无套件标记', obEntries.filter(e => !SAMPLES.includes(e.id)).every(e => !e.extras.outerKit));
+// 套件范围外的 outerBuilding（湖心亭重合占位）无套件标记
+ok('套件范围外的外围楼无套件标记', obEntries.filter(e => !KIT_IDS.includes(e.id)).every(e => !e.extras.outerKit));
+console.log(`REPORT 选型 ${JSON.stringify(typeCount)}；套件三角合计 ${stats.tris}，单栋最多 ${stats.maxTris}；最大外挑 ${stats.maxOut.toFixed(2)} m；屋脊最多高出 layout height ${stats.maxRidgeOver.toFixed(2)} m`);
 // cm 件 validator 0 错
 const man = JSON.parse(fs.readFileSync(path.join(OUT, 'zones-manifest.json'), 'utf8'));
 const zo = man.zones.find(z => z.id === 'outer');

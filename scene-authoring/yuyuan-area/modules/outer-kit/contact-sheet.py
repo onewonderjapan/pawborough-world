@@ -6,9 +6,12 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 shotdir, outdir, tags = sys.argv[1], sys.argv[2], sys.argv[3].split(',')
-ids = json.load(open(os.path.join(ROOT, 'modules', 'outer-kit', 'ids.json'), encoding='utf-8'))['ids']
+REG = json.load(open(os.path.join(ROOT, 'modules', 'outer-kit', 'ids.json'), encoding='utf-8'))
+# IDS=review12 → wave8 全铺开复查代表点（ids.json review12，行标签带选取理由）；缺省 = wave7 样板 ids
+ids = [r['id'] for r in REG['review12']] if os.environ.get('IDS') == 'review12' else REG['ids']
+WHY = {r['id']: r['why'] for r in REG.get('review12', [])} if os.environ.get('IDS') == 'review12' else {}
 W, H, LBL = 480, 300, 22
-TITLES = {'before': 'before: beige box (OUTER_KIT off)', 'tex': 'tex: geometry + shared atlas', 'geo': 'geo: pure geometry', 'proc': 'proc: runtime shader'}
+TITLES = {'before': 'before: beige box (OUTER_KIT off)', 'tex': 'tex: geometry + shared atlas', 'after': 'after: 301-building kit rollout (default)', 'geo': 'geo: pure geometry', 'proc': 'proc: runtime shader'}
 try:
     font = ImageFont.load_default(size=16)
 except TypeError:
@@ -33,6 +36,7 @@ def sheet(kind, rows, name):
     print(out, img.size)
 
 os.makedirs(outdir, exist_ok=True)
-suffix = '' if tags == ['before', 'tex'] else '-' + '-'.join(tags)
-sheet('aerial', [(i + '  aerial', f'{i}-aerial') for i in ids] + [('overview A', 'overview-a'), ('overview B', 'overview-b')], f'contact-aerial{suffix}.jpg')
-sheet('street', [(i + '  street eye 1.6 m', f'{i}-street') for i in ids], f'contact-street{suffix}.jpg')
+suffix = '' if tags in (['before', 'tex'], ['before', 'after']) else '-' + '-'.join(tags)
+lab = lambda i: (i + '  ' + WHY[i]) if i in WHY else i
+sheet('aerial', [(lab(i) + '  aerial', f'{i}-aerial') for i in ids] + [('overview A', 'overview-a'), ('overview B', 'overview-b')], f'contact-aerial{suffix}.jpg')
+sheet('street', [(lab(i) + '  street eye 1.6 m', f'{i}-street') for i in ids], f'contact-street{suffix}.jpg')

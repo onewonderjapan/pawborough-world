@@ -187,5 +187,25 @@ if (baseOut && fs.existsSync(path.join(baseOut, 'zones-manifest.json'))) {
   const a = firstLoad(bm), b = firstLoad(m), r = (b - a) / a;
   ok(`核心三区首次加载 ${a} → ${b}（${(r * 100).toFixed(2)}%）在 ±${FIRST_LOAD_TOL * 100}% 内`, Math.abs(r) <= FIRST_LOAD_TOL);
 } else console.log('SKIP 首次加载 ±2%（未给 ZONE_SPLIT_BASE_OUT）');
+// wave8-outerlazy（2026-09-26 机主「外围改后台懒加载」）：加载策略与首载预算。
+//   首载 = web/main.js 进页即拉的件 = loadPolicy 既不是 deferred 也不是 on-demand 的件（meshopt 件，无 cm 时原始件），合计 ≤ 20 MB；
+//   外围（id outer）每件 loadPolicy = deferred（首帧后自动排队，与方浜 on-demand 区分）；核心四区的件都不带 loadPolicy（首载）；
+//   loadPolicy 只许 deferred / on-demand 两个值。总运行时体积（全部件 cm 合计，含 deferred 与 on-demand）只报告。
+{
+  const FIRST_LOAD_CAP = 20000000, POLICIES = new Set(['deferred', 'on-demand']);
+  const files = m.zones.filter(z => z.file);
+  const rt = z => (z.cm ? z.cm.bytes : z.bytes);
+  const firstLoadFiles = files.filter(z => !POLICIES.has(z.loadPolicy));
+  const firstBytes = firstLoadFiles.reduce((s, z) => s + rt(z), 0);
+  const sumOf = pol => files.filter(z => z.loadPolicy === pol).reduce((s, z) => s + rt(z), 0);
+  const totalRt = files.reduce((s, z) => s + rt(z), 0);
+  ok(`loadPolicy 取值只有 deferred / on-demand（实得 ${[...new Set(files.map(z => z.loadPolicy).filter(Boolean))].join(',') || '无'}）`, files.every(z => z.loadPolicy === undefined || POLICIES.has(z.loadPolicy)));
+  const outerParts = files.filter(z => z.id === 'outer');
+  ok(`外围 ${outerParts.length} 件 loadPolicy 全为 deferred（${outerParts.map(z => `${z.file}:${z.loadPolicy || '首载'}`).join(', ')}）`, outerParts.length > 0 && outerParts.every(z => z.loadPolicy === 'deferred'));
+  const coreDeferred = files.filter(z => CORE_ZONES.has(z.id) && z.loadPolicy);
+  ok(`核心四区件都在首载（带 loadPolicy 的 ${coreDeferred.map(z => z.file).join(',') || '无'}）`, coreDeferred.length === 0);
+  ok(`首载 ${firstLoadFiles.length} 件 ${firstBytes} B（${(firstBytes / 1e6).toFixed(2)} MB）≤ ${FIRST_LOAD_CAP / 1e6} MB`, firstBytes <= FIRST_LOAD_CAP);
+  console.log(`REPORT 运行时体积：首载 ${firstBytes} B（${firstLoadFiles.map(z => z.id + (z.part ? '#' + z.part : '')).join(' ')}）+ deferred ${sumOf('deferred')} B + on-demand ${sumOf('on-demand')} B = 总计 ${totalRt} B（${(totalRt / 1e6).toFixed(2)} MB，${files.length} 件）`);
+}
 console.log(`zone-split-test: ${pass} pass, ${fail} fail; total ${m.totalBytes} bytes in ${m.zones.filter(z => z.file).length} files`);
 process.exit(fail ? 1 : 0);

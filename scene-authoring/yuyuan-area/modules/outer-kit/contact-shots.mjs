@@ -15,7 +15,9 @@ const SHOTDIR = process.env.SHOTDIR; const TAG = process.env.TAG || 'shot';
 if (!SHOTDIR) throw new Error('SHOTDIR required');
 fs.mkdirSync(SHOTDIR, { recursive: true });
 const layout = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline', 'layout.json'), 'utf8'));
-const ids = JSON.parse(fs.readFileSync(path.join(ROOT, 'modules', 'outer-kit', 'ids.json'), 'utf8')).ids;
+// IDS=<id,id,…>（wave8 全铺开复查用代表点，见 ids.json review12）；缺省 = ids.json 的 wave7 样板 ids
+const reg = JSON.parse(fs.readFileSync(path.join(ROOT, 'modules', 'outer-kit', 'ids.json'), 'utf8'));
+const ids = process.env.IDS ? (process.env.IDS === 'review12' ? reg.review12.map(r => r.id) : process.env.IDS.split(',')) : reg.ids;
 const SOLID = new Set(['outerBuilding', 'bazaarBlock', 'tower', 'hall', 'xuan', 'pavilion', 'waterside', 'stage']);
 const ring = (fp) => { const r = fp.map(p => [p[0], p[1]]); if (r.length > 1 && r[0][0] === r[r.length - 1][0] && r[0][1] === r[r.length - 1][1]) r.pop(); return r; };
 const solids = layout.objects.filter(o => SOLID.has(o.kind) && o.geometry && o.geometry.footprint).map(o => ({ id: o.id, r: ring(o.geometry.footprint) }));

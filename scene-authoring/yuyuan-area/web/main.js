@@ -133,9 +133,20 @@ function afterFirstPaint() {
   refreshOccluders();
 }
 function loadGlb(url) { return new Promise((res, rej) => loader.load(url, g => res(g.scene), undefined, rej)); }
-function onDemandIds(m) {
-  return new Set(m.zones.filter(z => z.loadPolicy === 'on-demand').map(z => z.id));
+// 分区加载策略（zones-manifest.json loadPolicy，由 scripts/export-zones.py 写）：
+//   缺省   首载：进页即拉，全部到齐 = 首载完成（window.__firstLoadReady）；
+//   deferred 首载完成、首帧渲染之后自动排队拉（外围，wave8-outerlazy）；拉完 = window.__ready；
+//   on-demand 不自动拉：切到该区或步行逼近才拉（方浜中路）。
+function policyIds(m, policy) {
+  return new Set(m.zones.filter(z => z.loadPolicy === policy).map(z => z.id));
 }
+function onDemandIds(m) { return policyIds(m, 'on-demand'); }
+function deferredIds(m) { return policyIds(m, 'deferred'); }
+// 加载时刻（ms，自导航起；?perf=1 报告读它）：firstLoadMs 首载件全部加入场景；firstFrameMs 其后首帧渲染完成；
+// deferredLoadedMs 延后件全部加入场景并渲染一帧（无延后件时 = firstFrameMs）。
+const loadTimes = { firstLoadMs: null, firstFrameMs: null, deferredLoadedMs: null, firstLoadZones: [], deferredZones: [], firstLoadBytes: 0, deferredBytes: 0 };
+window.__loadTimes = loadTimes;
+const nextFrame = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 function publishZones() {
   window.__zonesLoaded = Object.keys(zoneLoad).filter(z => zoneLoad[z].state === 'ok');
   const bytes = Object.values(zoneLoad).filter(v => v.state === 'ok').reduce((s, v) => s + (v.bytes || 0), 0);
@@ -214,16 +225,32 @@ async function loadZones(m) {
   zoneManifest = m;
   window.__fangbangAabb = fangbangAabb(m);
   const view = params.get('zone') || 'core';
-  const skip = onDemandIds(m);
-  const want = (ZONES[view] || ZONES.core).filter(z => !skip.has(z) || view === z);
-  const order = [...m.order.filter(z => want.includes(z)), ...m.order.filter(z => !want.includes(z) && !skip.has(z))];
-  await loadZoneFiles(m, order, { firstPaint: true });
+  const skip = onDemandIds(m), later = deferredIds(m);
+  // 首载 = 当前视图各区（on-demand 区只在视图就是它时算）+ 其余非 on-demand 区，一律除去 deferred 区；
+  // deferred 区（外围）在首载到齐、首帧渲染之后自动排队，不管当前视图是什么（?zone=all 取景用 manifest bounds，不等外围 GLB）。
+  const want = (ZONES[view] || ZONES.core).filter(z => (!skip.has(z) || view === z) && !later.has(z));
+  const order = [...m.order.filter(z => want.includes(z)), ...m.order.filter(z => !want.includes(z) && !skip.has(z) && !later.has(z))];
+  const bytesOf = zs => m.zones.filter(e => zs.includes(e.id) && e.file).reduce((s, e) => s + (e.cm && !RAW ? e.cm.bytes : e.bytes), 0);
+  loadTimes.firstLoadZones = order; loadTimes.firstLoadBytes = bytesOf(order);
+  const stillFirst = await loadZoneFiles(m, order, { firstPaint: true });
+  loadTimes.firstLoadMs = +performance.now().toFixed(0);
+  window.__firstLoadReady = true;
+  await nextFrame();
+  loadTimes.firstFrameMs = +performance.now().toFixed(0);
+  const deferred = m.order.filter(z => later.has(z) && !skip.has(z) && !order.includes(z));
+  loadTimes.deferredZones = deferred; loadTimes.deferredBytes = bytesOf(deferred);
+  if (deferred.length) {
+    hud('首载完成，后台加载外围 …');
+    await loadZoneFiles(m, deferred, { firstPaint: stillFirst });
+    await nextFrame();
+  }
+  loadTimes.deferredLoadedMs = +performance.now().toFixed(0);
   window.__ready = true;
   perf?.markLoaded(); perf?.start();
   hud('分区加载完成');
 }
 fetch('/out/zones-manifest.json').then(r => { if (!r.ok) throw 0; return r.json(); }).then(m => {
-  const skip = onDemandIds(m);
+  const skip = new Set([...onDemandIds(m), ...deferredIds(m)]);
   const n = m.zones.filter(z => z.file && !skip.has(z.id)).length;
   document.getElementById('loadmsg').textContent = `按分区加载 ${n} 个 GLB …`;
   loadZones(m);
@@ -232,7 +259,8 @@ fetch('/out/zones-manifest.json').then(r => { if (!r.ok) throw 0; return r.json(
     loadGlb('/out/scene-areas.glb').then(root => {
       prepare(root); scene.add(root);
       allRoots = root.children.length ? root.children : [root];
-      afterFirstPaint(); hud('scene-areas.glb 已加载'); window.__ready = true;
+      afterFirstPaint(); hud('scene-areas.glb 已加载'); window.__firstLoadReady = true; window.__ready = true;
+      loadTimes.firstLoadMs = loadTimes.firstFrameMs = loadTimes.deferredLoadedMs = +performance.now().toFixed(0);
       perf?.markLoaded(); perf?.start();
     }, e => { document.getElementById('loadmsg').textContent = 'GLB 加载失败: ' + e; });
 });
@@ -528,7 +556,8 @@ const perf = setupPerf({ renderer, camera, controls, walk, hud });
 renderer.setAnimationLoop(() => { perf?.tick(); controls.update(); walk?.tick(); renderer.render(scene, camera); drawLabels(); });
 
 // playwright 钩子
-window.__ready = false;
+window.__ready = false;             // 自动加载的分区（首载 + deferred 外围）全部到齐
+window.__firstLoadReady = false;    // 首载分区到齐（外围仍在后台加载）
 window.__scene = scene;
 installTargetMask({ renderer, scene, camera });
 batcher.wrapTargetMask();   // wave4-drawcalls：掩膜那一次按原网格着色

@@ -101,6 +101,10 @@ PARTS = [
     ('outer',  1, ['ZONE-outer', 'INST-outer'], None),
 ]
 OPTIONAL_PARTS = {('bazaar', n) for n in TOWER_PARTS}   # 套件件：无楼（开关关）时不出文件、不进 manifest
+# 分区加载策略（manifest loadPolicy；缺省 = 首载，web/main.js 进页即拉、计入首载体积）：
+#   deferred  首载（核心四区）全部到齐、首帧渲染之后自动排队加载，不需要用户操作，不计入首载体积（wave8-outerlazy，2026-09-26 机主定「外围改后台懒加载」）；
+#   on-demand 默认不拉，用户切到该区或步行逼近才拉（方浜中路，见下方 FANGBANG 段）。
+DEFERRED_ZONES = {'outer'}
 # 分件文件名：单件区 zone-<z>.glb；多件区首件沿用 zone-<z>.glb（garden、bazaar：查看器/外部引用不换名），
 # 后续件 zone-<z>-<n>.glb；庙区沿用历史命名 zone-temple-1/2/3.glb。
 BASE_NAME_ZONES = {'garden', 'bazaar'}
@@ -181,7 +185,7 @@ for it in plan:
 # 无外部素材；UV 已在 build-scene.mjs 按世界坐标平铺（1 单位 = 1 m）。只换材质，不改几何。
 PAVING_TEX_DIR = os.path.join(ROOT, 'resources', 'textures', 'paving')
 paving_mats = {}
-# wave7-outerkit（OUTER_KIT=1 时 build-scene 才写这两个 slot；关时不出现，本段不生效）：
+# wave7-outerkit / wave8 全铺开（OUTER_KIT 默认开时 build-scene 给外围 301 栋写 outerkit-atlas slot；OUTER_KIT=0 时不出现，本段不生效）：
 #   outerkit-atlas 外围套件共享立面图集（modules/outer-kit/bake_atlas.py 生成），UV 已由 src/outer-kit.mjs 落到图集横条；
 #   outerkit-proc  程序化 shader 方案（方案对比用）：无贴图白底材质，窗 / 瓦由 web/outer-kit-proc.js 按 UV 编码现画。
 OUTER_KIT_TEX = {'outerkit-atlas': os.path.join(ROOT, 'resources', 'textures', 'outer-kit', 'outerkit-atlas.jpg'), 'outerkit-proc': None}
@@ -270,6 +274,7 @@ for it in plan:
              'collections': [c for c in colls if c in bpy.data.collections],
              'objects': len(objs), 'bounds': bounds(objs), 'withinCap': len(b) <= CAP}
     if note: entry['note'] = note[part_index]
+    if z in DEFERRED_ZONES: entry['loadPolicy'] = 'deferred'
     if z == 'bazaar' and part_index in TOWER_PARTS:
         entry['role'] = 'bazaar-towers'
         entry['towerIds'] = sorted(o.name for o in objs if o.name in TOWER_REG['zonePart'])
@@ -284,7 +289,7 @@ for it in plan:
         manifest['zones'].append({'id': z, 'part': sp['part'], 'file': sp['file'], 'bytes': len(b2), 'sha256': hashlib.sha256(b2).hexdigest(),
                                   'collections': sp['colls'], 'objects': len(sp['objs']),
                                   'bounds': bounds(sp['objs']), 'withinCap': len(b2) <= CAP,
-                                  'note': sp['note'], **sp['extra']})
+                                  'note': sp['note'], **sp['extra'], **({'loadPolicy': 'deferred'} if z in DEFERRED_ZONES else {})})
         print('zone', z, sp['part'], len(b2), 'bytes')
 # ---------- 方浜中路分区（FANGBANG=1）----------
 # R1：同一模块的全部实例进同一件，导出时多节点引用同一 mesh（Blender 链接复制）。

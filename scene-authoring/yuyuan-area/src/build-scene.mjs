@@ -66,13 +66,15 @@ const HUXINTING_IDS = new Set(['huxin-ting']);
 // assemble.py 导入 SITE-bazaar，分区按 ids.json zonePart 归 zone-bazaar-3…）。默认开（2026-09-26 机主「商城楼套件默认开启吧」）；BAZAAR_TOWERS=0 回到程序化 bazaarBlock。
 const BAZAAR_TOWERS = process.env.BAZAAR_TOWERS !== '0';  // 默认开（2026-09-26 机主定），BAZAAR_TOWERS=0 关
 const BAZAAR_TOWER_IDS = new Set(JSON.parse(fs.readFileSync(new URL('../modules/bazaar-tower-kit/ids.json', import.meta.url), 'utf8')).ids);
-// OUTER_KIT=1（wave7-outerkit 样板，默认关）：modules/outer-kit/ids.json 的 10 栋 outerBuilding 换成老城厢套件体块（src/outer-kit.mjs），
-// 其余 294 栋照旧是程序化方块；关时产物逐字节不变。OUTER_KIT_MODE = tex（默认，几何 + 共享立面图集）| geo | proc，
-// 后两者只供方案对比测量（见工单包 artifacts/RESULT.json approaches）。tex / proc 的材质由 export-zones.py 按 slot 绑定。
-const OUTER_KIT = process.env.OUTER_KIT === '1';
+// OUTER_KIT（默认开，OUTER_KIT=0 关；2026-09-26 机主「外围 301 栋全部铺开」，wave8-outerlazy）：外围区（zone == 'outer'）
+// 全部 outerBuilding 换成老城厢套件体块（src/outer-kit.mjs，wave7 样板定的 tex 方案）；与湖心亭 footprint 重合的占位不换
+// （HUXINTING 开时它让位不出，HUXINTING=0 时照旧是方块；判定同下方 HUXINTING_DUP，从 layout 几何算）。bazaar 区的 outerBuilding 不在范围。
+// 关时产物与 wave7 之前逐字节相同。OUTER_KIT_MODE = tex（默认，几何 + 共享立面图集）| geo | proc，后两者只供方案对比测量
+// （wave7 工单包 artifacts/RESULT.json approaches）。tex / proc 的材质由 export-zones.py 按 slot 绑定。
+// modules/outer-kit/ids.json 的 ids 现只是 wave7 样板 10 栋（测试的样板选取检查 + 联系表延续），不再决定替换范围。
+const OUTER_KIT = process.env.OUTER_KIT !== '0';
 const OUTER_KIT_MODE = process.env.OUTER_KIT_MODE || 'tex';
 if (OUTER_KIT && !OUTER_KIT_MODES.includes(OUTER_KIT_MODE)) throw new Error('OUTER_KIT_MODE must be one of ' + OUTER_KIT_MODES.join('/'));
-const OUTER_KIT_IDS = new Set(JSON.parse(fs.readFileSync(new URL('../modules/outer-kit/ids.json', import.meta.url), 'utf8')).ids);
 const layout = JSON.parse(fs.readFileSync(path.join(OUT, 'layout.json'), 'utf8'));
 
 // ---------- FANGBANG=1：方浜中路沿线路面片让位（V1-REDEFINITION：连接段 x -96.8..54、街段 54..138 精修归 fangbang） ----------
@@ -1037,8 +1039,9 @@ const deferred = [];
 // HUXINTING：与湖心亭 footprint 重合的其他已渲染对象（对称差面积 ≤ 5% 湖心亭面积）一并让位。
 // 例：bld-228035340（outerBuilding）与 huxin-ting 同为 OSM way 228035340，照常渲染会把湖心亭一层包成 5 m 米色体块。
 // 规则从 layout 几何算，不写死 id；reconcile 对这些 id 期望「缺席」并检查确实缺席。
+// wave8：重合判定不再只在 HUXINTING 开时算 —— OUTER_KIT 也要用它把占位排除在套件之外；让位（跳过渲染）仍只在 HUXINTING 开时生效。
 const HUXINTING_DUP = new Map();
-if (HUXINTING) {
+{
   const ht = layout.objects.find(o => o.id === 'huxin-ting');
   const H = ht && ht.geometry && ht.geometry.footprint;
   if (H && H.length >= 3) {
@@ -1053,7 +1056,7 @@ if (HUXINTING) {
       if (ratio <= 0.05) HUXINTING_DUP.set(o.id, ratio);
     }
   }
-  console.log('HUXINTING duplicate footprints of huxin-ting:', JSON.stringify([...HUXINTING_DUP].map(([id, r]) => [id, +r.toFixed(4)])));
+  if (HUXINTING) console.log('HUXINTING duplicate footprints of huxin-ting:', JSON.stringify([...HUXINTING_DUP].map(([id, r]) => [id, +r.toFixed(4)])));
 }
 
 for (const o of layout.objects) {
@@ -1111,7 +1114,7 @@ for (const o of layout.objects) {
       mesh = shapeMesh(o.geometry.footprint, o.height, col, key); mesh.userData = ud;
       break;
     }
-    case 'outerBuilding': mesh = (OUTER_KIT && OUTER_KIT_IDS.has(o.id)) ? buildOuterKit({ ...o, key, ud }) : buildOuterBuilding({ ...o, key, ud }); break;
+    case 'outerBuilding': mesh = (OUTER_KIT && o.zone === 'outer' && !HUXINTING_DUP.has(o.id)) ? buildOuterKit({ ...o, key, ud }) : buildOuterBuilding({ ...o, key, ud }); break;
     case 'bazaarBlock': mesh = buildBazaarBlock({ ...o, key, ud }); break;
     case 'hall': case 'tower': case 'pavilion': case 'xuan': case 'waterside': case 'stage': {
       const [body, roof] = buildGardenBuilding({ ...o, key, ud });
