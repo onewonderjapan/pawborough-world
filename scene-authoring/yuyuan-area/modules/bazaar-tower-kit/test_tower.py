@@ -780,11 +780,47 @@ _INSET = PRM.get('massing', {}).get('wallInsetM', 0.3)
 for k, st, A, B in STREET_EDGES:
     L, t, n = edge_frame_map(A, B)
     exc = _strip_ivs(A, B, L, t, n, _INSET)
-    free = L - sum(b - a for a, b in exc)
-    cov = coverage(_glass_c, A, B, 0.1, 2.6, 0.0, 6.0)
-    cov_free = cov * L / free if free > 0.5 else (1.0 if cov >= 0.5 else 0.0)
-    ok('test10b 临街边 v%d（%s，%.1f m，其中通行通道段 %.1f m）底层店面玻璃覆盖 %.0f%% ≥ 50%%'
-       % (k, st, L, L - free, cov_free * 100), free <= 0.5 or cov_free >= 0.5)
+    # 自由段 = 全边扣除通道条带后的 s 区间（分母口径，A2 2026-09-26）
+    free_ivs, _cur = [], 0.0
+    for a_, b_ in sorted(exc):
+        if a_ - _cur > 1e-9:
+            free_ivs.append((_cur, a_))
+        _cur = max(_cur, b_)
+    if L - _cur > 1e-9:
+        free_ivs.append((_cur, L))
+    free = sum(b_ - a_ for a_, b_ in free_ivs)
+    # 分子同样只计自由段：玻璃连通分量 s 区间（与 coverage() 同一筛选：分量全顶点向内 0.1–2.6 m、高 0–6 m）
+    # 与自由段逐段求交后取并长——通道条带里的玻璃不计入分子（主控 2026-09-27 口径核对：不许用整边玻璃
+    # 长度除自由段长度把通道内玻璃算进分子）。
+    givs = []
+    for c in _glass_c:
+        sd = [s_d(A, t, n, p[0], p[2]) for p in c]
+        if all(0.1 <= d <= 2.6 for _, d in sd) and all(0.0 <= p[1] <= 6.0 for p in c):
+            a_, b_ = max(0.0, min(x for x, _ in sd)), min(L, max(x for x, _ in sd))
+            if b_ > a_:
+                givs.append((a_, b_))
+    num_ivs = sorted((max(ga, fa), min(gb, fb)) for ga, gb in givs for fa, fb in free_ivs if min(gb, fb) > max(ga, fa))
+    num, _cp = 0.0, None
+    for a_, b_ in num_ivs:
+        if _cp and a_ <= _cp[1]:
+            _cp[1] = max(_cp[1], b_)
+        else:
+            if _cp:
+                num += _cp[1] - _cp[0]
+            _cp = [a_, b_]
+    if _cp:
+        num += _cp[1] - _cp[0]
+    if os.environ.get('T10B_DEBUG'):
+        print('T10B_DEBUG v%d %s: L=%.2f 通道=%s 自由段=%s 玻璃区间=%s 分子=%.2f'
+              % (k, st, L, ['%.2f-%.2f' % r for r in exc], ['%.2f-%.2f' % r for r in free_ivs],
+                 ['%.2f-%.2f' % r for r in givs], num))
+    if free <= 0.5:      # 自由段不足一开间（< 0.5 m），物理上放不下任何店面构件——本边无店面要求，非跳过检查
+        ok('test10b 临街边 v%d（%s，%.1f m，通道段 %.1f m）自由段 %.2f m < 0.5 m 不足以设店面'
+           % (k, st, L, L - free, free), True)
+    else:
+        cov_free = num / free
+        ok('test10b 临街边 v%d（%s，%.1f m，其中通行通道段 %.1f m）底层店面玻璃覆盖 %.0f%% ≥ 50%%（分子=自由段玻璃 %.2f m / 自由段 %.2f m）'
+           % (k, st, L, L - free, cov_free * 100, num, free), cov_free >= 0.5)
 
 # ---------- test 11：逐楼形制（主控文字规格 → 可测条目；位置 / 高度全部按 layout 重算） ----------
 def front_edge():

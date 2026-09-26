@@ -1,1 +1,3 @@
-{"id": "bld-553893868", "preset": "shophouse", "frontEdge": "auto", "source": "wave8 批量：预设 shophouse，层数与墙顶照 layout，正面 auto"}
+{"id": "bld-553893868", "preset": "shophouse", "frontEdge": "auto",
+ "facades": {"passageAwareBays": true},
+ "source": "wave8 批量：预设 shophouse，层数与墙顶照 layout，正面 auto；passageAwareBays = 主控 2026-09-27 定向返修：临街 run 被通行老街条带穿过（九曲桥广场侧 v5 自由段玻璃覆盖实测 39% < 50%），开间改按 layout+overpass 条带重算自由区间后排布，仅此楼启用"}

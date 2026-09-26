@@ -550,6 +550,32 @@ class Run:
     def length(self):
         return self.s1 - self.s0
 
+def _run_passage_ivs(r, a0, a1):
+    """[a0,a1]（run s 坐标）被通行老街条带覆盖的 s 区间。采样口径与 test_tower 的 _strip_ivs 一致：
+    同一批 PASSAGE_RECTS（map 系多边形）、同两条采样线（run 墙线 o=0 与 layout 边线 o=+WALLI，对应
+    test 的 off=inset / off=0）、0.05 步长、区间两端 ±step/2 外扩。"""
+    if not PASSAGE_RECTS:
+        return []
+    step = 0.05
+    ivs, cur = [], None
+    for j in range(int((a1 - a0) / step) + 2):
+        s = min(a1, a0 + j * step)
+        inr = False
+        for off in (0.0, WALLI):
+            u, v = r.p(s, off)                    # 局部系 → map 系（uv_of 的逆变换），与 PASSAGE_RECTS 同系
+            mx, mz = O.x + u * du.x + v * dv.x, O.y + u * du.y + v * dv.y
+            if any(G.point_in(rect, (mx, mz)) for rect in PASSAGE_RECTS):
+                inr = True
+                break
+        if inr:
+            cur = [s, s] if cur is None else [cur[0], s]
+        elif cur is not None:
+            ivs.append(tuple(cur))
+            cur = None
+    if cur is not None:
+        ivs.append(tuple(cur))
+    return [(max(a0, a - step / 2), min(a1, b + step / 2)) for a, b in ivs]
+
 def obox(name, r, s0, s1, o0, o1, h0, h1, m, part=None, bevel=0):
     if s1 < s0: s0, s1 = s1, s0
     if o1 < o0: o0, o1 = o1, o0
@@ -1940,7 +1966,29 @@ for b in BLOCKS:
         gh = min(stl.get('glassHeadM', sf['glassHeadM']), ZF - fd - 0.2)
         sh = stl.get('sillM', sf['sillM'])
         sfm, smm, smp = sf.get('frameM', 0.12), sf.get('mullionM', 0.08), sf.get('mullionPitchM', 1.05)
-        lines = bays(r, r.s0 + 0.02, r.s1 - 0.02)
+        # 开间规划。passageAwareBays（主控 2026-09-27 定向返修）：临街 run 被通行老街条带穿过时，按
+        # layout+overpass 条带重算自由区间，把开间（柱线 / 店面玻璃 / 木框）排进自由段，而不是整段均排后
+        # 靠 passage_cut_bm 切掉条带内玻璃（那样自由段玻璃覆盖不足 50%——bld-553893868 v5 实测 39%）。
+        # 仅 params 显式开启的楼启用；其余楼走原路径，产物逐字节不变。
+        _a0, _a1 = r.s0 + 0.02, r.s1 - 0.02
+        _exc = ()
+        if FA.get('passageAwareBays'):
+            _exc = _run_passage_ivs(r, _a0, _a1)
+            _free, _cur = [], _a0
+            for _e0, _e1 in _exc:
+                if _e0 - _cur > 0.6:                       # 每段自由区两侧各收 0.1 m：面板落在自由段内部，不骑在条带分类边界上
+                    _free.append((_cur + 0.1, _e0 - 0.1))
+                _cur = max(_cur, _e1)
+            if _a1 - _cur > 0.6:
+                _free.append((_cur + 0.1, _a1 - 0.1))
+            lines = []
+            for _f0, _f1 in _free:
+                lines.extend(_l for _l in bays(r, _f0, _f1) if not lines or _l > lines[-1] + 1e-6)
+            if os.environ.get('BTK_DEBUG'):
+                print('PASSAGE-AWARE', bn, i, 'exc', [('%.2f' % a, '%.2f' % b) for a, b in _exc],
+                      'free', [('%.2f' % a, '%.2f' % b) for a, b in _free], 'lines', ['%.2f' % x for x in lines])
+        else:
+            lines = bays(r, _a0, _a1)
         tag = '%s-%d' % (bn, i)
         PART = 'colonnade'
         for j, lu in enumerate(lines):
@@ -1952,6 +2000,8 @@ for b in BLOCKS:
         for a_, b_ in zip(lines[:-1], lines[1:]):
             if b_ - a_ < 1.6:
                 continue
+            if _exc and any(a_ < _e1 - 1e-9 and b_ > _e0 + 1e-9 for _e0, _e1 in _exc):
+                continue                                    # 跨通道条带的假开间不建：条带内是设计开口，不做店面
             g0, g1 = a_ + 0.18, b_ - 0.18
             bt = '%s-%.1f' % (tag, a_)
             obox('shop-post-' + bt, r, g0 - sfm, g0, op - 0.06, op + 0.06, PL, ZF - fd, tim, 'shopfront')
