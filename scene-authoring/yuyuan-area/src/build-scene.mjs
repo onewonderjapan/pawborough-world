@@ -843,11 +843,21 @@ function buildSteps(o) {
   const rise = (topY - botY) / n, tread = 0.32;
   const ang = o.geometry.rotY || 0;
   const parts = [];
+  // The frozen landing anchor sits 0.75 m shoreward of the bridge end.
+  // Extend only its top tread to that end; the lower treads and deck height stay fixed.
+  const bridgeEnd = o.id === 'jiuqu-bridge-step-w' || o.id === 'jiuqu-bridge-step-e'
+    ? layout.objects.find(obj => obj.id === 'jiuqu-bridge')?.geometry.polyline : null;
+  const endpoint = bridgeEnd && (o.id.endsWith('-w') ? bridgeEnd[0] : bridgeEnd.at(-1));
+  const landingFront = endpoint
+    ? Math.max(-0.02, (endpoint[0] - x) * Math.sin(ang) + (endpoint[1] - z) * Math.cos(ang) + 0.02)
+    : -0.02;
   for (let i = 0; i < n; i++) {
-    const st = new THREE.BoxGeometry(w, rise, tread);
-    const lz = -(0.18 + i * tread);
+    const topLanding = i === 0 && endpoint;
+    const st = new THREE.BoxGeometry(w, rise, topLanding ? landingFront + 0.34 : tread);
+    const lz = topLanding ? (landingFront - 0.34) / 2 : -(0.18 + i * tread);
     const wx = x + lz * Math.sin(ang);
     const wz = z + lz * Math.cos(ang);
+    if (endpoint) st.rotateY(ang);
     st.translate(wx, topY - rise * (i + 0.5), wz);
     parts.push(colorize(st, 0x9b917f));
   }
