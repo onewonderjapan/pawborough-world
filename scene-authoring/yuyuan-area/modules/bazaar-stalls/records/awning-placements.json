@@ -5,23 +5,110 @@
  "design": {
   "projectionM": 1.2,
   "frontHeightM": 2.78,
-  "wallHeightM": 3.1015,
-  "slopeDeg": 15.0,
+  "wallHeightM": 2.85,
+  "slopeDeg": 3.34,
   "scallopWidthM": 0.5,
   "brackets": "2 per 3m (spacing 1.5m, ends included)",
   "canvasAlternation": "wine/indigo/cream round-robin by edge order",
   "collision": "unreachable (valance bottom 2.54m, above 2.5m body band) — no collision box"
  },
  "counts": {
-  "edges": 15,
-  "skipped": []
+  "edges": 12,
+  "skipped": [
+   "bld-389701812-5",
+   "bld-389702030-1",
+   "bld-428202604-0",
+   "bld-428202606-10"
+  ]
  },
+ "repairs": [
+  {
+   "date": "2026-09-26",
+   "id": "awning-bld-389701812-5",
+   "finding": "布面×塔楼构件交线 308 条/35.65 m（灯笼串 274/20.37 m、牌匾 34/15.3 m，吞没率 1%）——2026-09-26 BAZAAR_TOWERS 默认开启后，塔楼灯笼/牌匾挂带（y 2.9–3.1 m）与檐棚安装带同高",
+   "fix": "剔除该 edge（16→15 条）",
+   "rule": "檐棚布面 × 塔楼/邻块构件 交线 >5 m 或布面吞没率 >10% → 剔除",
+   "guard": "tests/smallqa-test.mjs awning-tower-clearance",
+   "by": "wave8-smallqa Q2② (1af8aa28)"
+  },
+  {
+   "date": "2026-09-26",
+   "id": "ALL (发现1/9)",
+   "finding": "布面安装带 3.1015 m 与立面披檐构件带 y 2.915–3.08 全长度互穿；邻块/outer 交叉实测全部集中在 y 2.83–3.05（out-fixbase procedural 实体 × 旧布面，6.4 s 复算）",
+   "fix": "上安装带 3.1015→2.85 m（前沿 2.78、出挑 1.2 不变，坡度 15°→3.34°）；端部裁剪 4 条（每条 0.5 m）",
+   "rule": "安装带 ≤2.85 m 避开线脚带；端部按 baseline/layout 邻块贴角段裁剪，留 0.4–0.5 m 余量；不靠删檐棚",
+   "guard": "tests/smallfix-test.mjs awning-facade-band + awning-neighbor-clearance",
+   "by": "night-smallfix-20260926 B2#1/#9"
+  },
+  {
+   "date": "2026-09-26",
+   "id": [
+    "bld-389702030-1",
+    "bld-428202604-0",
+    "bld-428202606-10"
+   ],
+   "kind": "exclude",
+   "finding": "贴面共边 3 条（×bld-553893884 / ×outer bld-553893872，footprint 零间距）：邻块侧为步行通道口（净高 3.5 m）。2.85 安装带切邻块线脚带 y2.81–2.90（54.7/48.7/19.6 m）；降 2.78 平铺仍切通道侧壁（27.1/18.0/16.6 m），≤2.85 无解",
+   "fix": "按 wave8 既定规则剔除（16→12 条）；其余 12 条 2.85 安装带 + 4 条端部 0.5 m 裁剪",
+   "rule": "布面×邻块构件交线 >5 m（裁剪/降带后仍超）→ 剔除；不靠删掉全部檐棚",
+   "guard": "tests/smallfix-test.mjs awning-neighbor-clearance",
+   "by": "night-smallfix-20260926 B2#9"
+  },
+  {
+   "date": "2026-09-26",
+   "id": [
+    "bld-165791764-6",
+    "bld-428202607-1",
+    "bld-553893867-2",
+    "bld-553893868-0"
+   ],
+   "kind": "end-trim",
+   "detail": {
+    "bld-165791764-6": {
+     "trimStartM": 0.5,
+     "trimEndM": 0.0,
+     "sourceLenM": 18.83,
+     "builtLenM": 18.33
+    },
+    "bld-428202607-1": {
+     "trimStartM": 0.5,
+     "trimEndM": 0.0,
+     "sourceLenM": 26.61,
+     "builtLenM": 26.11
+    },
+    "bld-553893867-2": {
+     "trimStartM": 0.5,
+     "trimEndM": 0.0,
+     "sourceLenM": 7.26,
+     "builtLenM": 6.76
+    },
+    "bld-553893868-0": {
+     "trimStartM": 0.5,
+     "trimEndM": 0.0,
+     "sourceLenM": 5.31,
+     "builtLenM": 4.81
+    }
+   },
+   "rule": "端部 0.5 m 裁剪：edge 端点落在邻块贴角段（baseline/layout footprint 采样 + 旧产物交叉实测），中段摆位/通路不动",
+   "by": "night-smallfix-20260926 B2#9"
+  }
+ ],
  "edges": [
   {
    "blockId": "bld-165791764",
    "edgeIndex": 6,
    "street": "中心广场",
    "edge": [
+    [
+     -133.123,
+     -14.031
+    ],
+    [
+     -136.53,
+     -32.04
+    ]
+   ],
+   "sourceEdge": [
     [
      -133.03,
      -13.54
@@ -35,10 +122,10 @@
     -0.9825702456970679,
     0.18589166810485067
    ],
-   "lenM": 18.8,
+   "lenM": 18.33,
    "midpoint": [
-    -134.78,
-    -22.79
+    -134.8265,
+    -23.0355
    ],
    "outward": [
     -0.185892,
@@ -47,19 +134,19 @@
    "rotY": -2.9546133836708823,
    "module": "awnings/awning-bld-165791764-6.glb",
    "geometry": {
-    "builtLengthM": 18.8,
+    "builtLengthM": 18.33,
     "projectionM": 1.2,
     "frontHeightM": 2.78,
-    "wallHeightM": 3.1015,
-    "slopeDeg": 15.0,
+    "wallHeightM": 2.85,
+    "slopeDeg": 3.34,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
-   "tris": 488,
-   "trisPerMetre": 25.96,
-   "bytes": 37868,
+   "tris": 458,
+   "trisPerMetre": 24.99,
+   "bytes": 35516,
    "budgetOk": true,
-   "sha256": "fd559f22fa0787a70b7576b5f23e797ec83e2d76f0586d44d806914d581dfa6d"
+   "sha256": "e9a75109021ef32507a96a8d359797758b28775bb7c019d9cb13bd4d62bbcd98"
   },
   {
    "blockId": "bld-389701901",
@@ -75,11 +162,21 @@
      -190.2
     ]
    ],
+   "sourceEdge": [
+    [
+     -255.3,
+     -158.13
+    ],
+    [
+     -260.38,
+     -190.2
+    ]
+   ],
    "dir": [
     -0.9876854329735189,
     0.15645282193655943
    ],
-   "lenM": 32.5,
+   "lenM": 32.47,
    "midpoint": [
     -257.84000000000003,
     -174.165
@@ -91,19 +188,19 @@
    "rotY": 0.15709821842419647,
    "module": "awnings/awning-bld-389701901-2.glb",
    "geometry": {
-    "builtLengthM": 32.5,
+    "builtLengthM": 32.47,
     "projectionM": 1.2,
     "frontHeightM": 2.78,
-    "wallHeightM": 3.1015,
-    "slopeDeg": 15.0,
+    "wallHeightM": 2.85,
+    "slopeDeg": 3.34,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 810,
-   "trisPerMetre": 24.92,
-   "bytes": 60872,
+   "trisPerMetre": 24.95,
+   "bytes": 60940,
    "budgetOk": true,
-   "sha256": "98a2e6a078af4f07192281f187b79222971d7da14698dc8dd58ad553542886f8"
+   "sha256": "e8cbfbb0e52d3ab5aefc61346ba620c0dedd0d650d25f7f5adbf782b7275e550"
   },
   {
    "blockId": "bld-389701971",
@@ -119,11 +216,21 @@
      -79.78
     ]
    ],
+   "sourceEdge": [
+    [
+     -230.84,
+     -23.25
+    ],
+    [
+     -241.28,
+     -79.78
+    ]
+   ],
    "dir": [
     -0.9833707114542988,
     0.18160959185534897
    ],
-   "lenM": 57.5,
+   "lenM": 57.49,
    "midpoint": [
     -236.06,
     -51.515
@@ -135,63 +242,19 @@
    "rotY": 0.18262301551341312,
    "module": "awnings/awning-bld-389701971-0.glb",
    "geometry": {
-    "builtLengthM": 57.5,
+    "builtLengthM": 57.49,
     "projectionM": 1.2,
     "frontHeightM": 2.78,
-    "wallHeightM": 3.1015,
-    "slopeDeg": 15.0,
+    "wallHeightM": 2.85,
+    "slopeDeg": 3.34,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
-   "tris": 1398,
-   "trisPerMetre": 24.31,
-   "bytes": 102908,
+   "tris": 1394,
+   "trisPerMetre": 24.25,
+   "bytes": 102312,
    "budgetOk": true,
-   "sha256": "b76e04d5769ee1aa7db70fac58136c91d868fa1d1b8797768ebc4630192a3b02"
-  },
-  {
-   "blockId": "bld-389702030",
-   "edgeIndex": 1,
-   "street": "豫园老街",
-   "edge": [
-    [
-     -191.94,
-     -193.15
-    ],
-    [
-     -184.79,
-     -169.7
-    ]
-   ],
-   "dir": [
-    0.9565255575338183,
-    -0.2916485175422943
-   ],
-   "lenM": 24.5,
-   "midpoint": [
-    -188.365,
-    -181.425
-   ],
-   "outward": [
-    -0.291649,
-    -0.956526
-   ],
-   "rotY": -2.8456428242945755,
-   "module": "awnings/awning-bld-389702030-1.glb",
-   "geometry": {
-    "builtLengthM": 24.5,
-    "projectionM": 1.2,
-    "frontHeightM": 2.78,
-    "wallHeightM": 3.1015,
-    "slopeDeg": 15.0,
-    "scallopWidthM": 0.5,
-    "bracketSpacingM": 1.5
-   },
-   "tris": 602,
-   "trisPerMetre": 24.57,
-   "bytes": 45716,
-   "budgetOk": true,
-   "sha256": "e39be81fe3b4e0cd37d0cb7cbc5511bbb8677199f7c5be92375a6203ca1d0ac5"
+   "sha256": "72bd945d4c0ea900a860d63f21b6a45f8198a1ca366dbc0c5c4788150e207e6a"
   },
   {
    "blockId": "bld-428202599",
@@ -207,11 +270,21 @@
      22.35
     ]
    ],
+   "sourceEdge": [
+    [
+     -122.61,
+     14.54
+    ],
+    [
+     -165.66,
+     22.35
+    ]
+   ],
    "dir": [
     0.17850327684594774,
     0.9839393173134504
    ],
-   "lenM": 43.8,
+   "lenM": 43.75,
    "midpoint": [
     -144.135,
     18.445
@@ -223,19 +296,19 @@
    "rotY": -1.391331240009032,
    "module": "awnings/awning-bld-428202599-2.glb",
    "geometry": {
-    "builtLengthM": 43.8,
+    "builtLengthM": 43.75,
     "projectionM": 1.2,
     "frontHeightM": 2.78,
-    "wallHeightM": 3.1015,
-    "slopeDeg": 15.0,
+    "wallHeightM": 2.85,
+    "slopeDeg": 3.34,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 1072,
-   "trisPerMetre": 24.47,
-   "bytes": 79156,
+   "trisPerMetre": 24.5,
+   "bytes": 79196,
    "budgetOk": true,
-   "sha256": "7bdb3a5d08ff7d8be4e2b19ca01e6a6a3fdd50f01d8f66d0797f43f9a74e74c2"
+   "sha256": "f9fac85e67a23464037fe546a9eba3eec8152bf6ed2632c3828def3e4f2567f3"
   },
   {
    "blockId": "bld-428202601",
@@ -251,11 +324,21 @@
      27.82
     ]
    ],
+   "sourceEdge": [
+    [
+     -172.29,
+     22.46
+    ],
+    [
+     -210.9,
+     27.82
+    ]
+   ],
    "dir": [
     0.13750544975116646,
     0.9905010102411455
    ],
-   "lenM": 39,
+   "lenM": 38.98,
    "midpoint": [
     -191.595,
     25.14
@@ -267,19 +350,19 @@
    "rotY": 1.7087388252259281,
    "module": "awnings/awning-bld-428202601-2.glb",
    "geometry": {
-    "builtLengthM": 39,
+    "builtLengthM": 38.98,
     "projectionM": 1.2,
     "frontHeightM": 2.78,
-    "wallHeightM": 3.1015,
-    "slopeDeg": 15.0,
+    "wallHeightM": 2.85,
+    "slopeDeg": 3.34,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 960,
-   "trisPerMetre": 24.62,
-   "bytes": 71324,
+   "trisPerMetre": 24.63,
+   "bytes": 71368,
    "budgetOk": true,
-   "sha256": "e2c6337f7213c333d3380d88bf3d147befae0894f25e9dfd42af6d329194c6ef"
+   "sha256": "7a78d8cb6a0c4fe0aa235fd439a6a088a4705a162fd9aa54b36dc3407fc261f1"
   },
   {
    "blockId": "bld-428202602",
@@ -295,11 +378,21 @@
      -154.28
     ]
    ],
+   "sourceEdge": [
+    [
+     -242.41,
+     -86.91
+    ],
+    [
+     -254.65,
+     -154.28
+    ]
+   ],
    "dir": [
     -0.9838932686235378,
     0.1787569186277588
    ],
-   "lenM": 68.5,
+   "lenM": 68.47,
    "midpoint": [
     -248.53,
     -120.595
@@ -311,19 +404,19 @@
    "rotY": 0.179722874752401,
    "module": "awnings/awning-bld-428202602-2.glb",
    "geometry": {
-    "builtLengthM": 68.5,
+    "builtLengthM": 68.47,
     "projectionM": 1.2,
     "frontHeightM": 2.78,
-    "wallHeightM": 3.1015,
-    "slopeDeg": 15.0,
+    "wallHeightM": 2.85,
+    "slopeDeg": 3.34,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 1674,
-   "trisPerMetre": 24.44,
-   "bytes": 123316,
+   "trisPerMetre": 24.45,
+   "bytes": 122636,
    "budgetOk": true,
-   "sha256": "bb2afc4e165f2dade2726761b8d4992a1d1470a5955d3c51c45448c768007679"
+   "sha256": "ae3e85803d313944e5e4ebda35d08b9a4c17d9300312750d50986e9af22bd7d6"
   },
   {
    "blockId": "bld-428202603",
@@ -339,11 +432,21 @@
      -236.03
     ]
    ],
+   "sourceEdge": [
+    [
+     -261.36,
+     -196.13
+    ],
+    [
+     -268.18,
+     -236.03
+    ]
+   ],
    "dir": [
     -0.9857044205427812,
     0.16848381323563308
    ],
-   "lenM": 40.5,
+   "lenM": 40.48,
    "midpoint": [
     -264.77,
     -216.07999999999998
@@ -355,113 +458,35 @@
    "rotY": 0.16929129038339838,
    "module": "awnings/awning-bld-428202603-0.glb",
    "geometry": {
-    "builtLengthM": 40.5,
+    "builtLengthM": 40.48,
     "projectionM": 1.2,
     "frontHeightM": 2.78,
-    "wallHeightM": 3.1015,
-    "slopeDeg": 15.0,
+    "wallHeightM": 2.85,
+    "slopeDeg": 3.34,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 994,
-   "trisPerMetre": 24.54,
-   "bytes": 73852,
+   "trisPerMetre": 24.56,
+   "bytes": 73896,
    "budgetOk": true,
-   "sha256": "8322768052bdd351fec8a999a87fb92b4a293520a3d5d54a108e1826e908e60d"
-  },
-  {
-   "blockId": "bld-428202604",
-   "edgeIndex": 0,
-   "street": "豫园老街",
-   "edge": [
-    [
-     -200.24,
-     -250.78
-    ],
-    [
-     -199.2,
-     -223.56
-    ]
-   ],
-   "dir": [
-    0.9992709030609985,
-    -0.03817934383480746
-   ],
-   "lenM": 27.2,
-   "midpoint": [
-    -199.72,
-    -237.17000000000002
-   ],
-   "outward": [
-    -0.038179,
-    -0.999271
-   ],
-   "rotY": -3.103404028233837,
-   "module": "awnings/awning-bld-428202604-0.glb",
-   "geometry": {
-    "builtLengthM": 27.2,
-    "projectionM": 1.2,
-    "frontHeightM": 2.78,
-    "wallHeightM": 3.1015,
-    "slopeDeg": 15.0,
-    "scallopWidthM": 0.5,
-    "bracketSpacingM": 1.5
-   },
-   "tris": 672,
-   "trisPerMetre": 24.71,
-   "bytes": 50804,
-   "budgetOk": true,
-   "sha256": "00f5dc6088821a4240410db608db443e9dc279300f34ceb23b838ce1a70eb1e9"
-  },
-  {
-   "blockId": "bld-428202606",
-   "edgeIndex": 10,
-   "street": "九曲桥广场",
-   "edge": [
-    [
-     -185.55,
-     -110.82
-    ],
-    [
-     -202.88,
-     -107.72
-    ]
-   ],
-   "dir": [
-    0.17608552241595174,
-    0.9843748720865957
-   ],
-   "lenM": 17.6,
-   "midpoint": [
-    -194.215,
-    -109.27
-   ],
-   "outward": [
-    -0.984375,
-    0.176086
-   ],
-   "rotY": -1.3937879140776714,
-   "module": "awnings/awning-bld-428202606-10.glb",
-   "geometry": {
-    "builtLengthM": 17.6,
-    "projectionM": 1.2,
-    "frontHeightM": 2.78,
-    "wallHeightM": 3.1015,
-    "slopeDeg": 15.0,
-    "scallopWidthM": 0.5,
-    "bracketSpacingM": 1.5
-   },
-   "tris": 454,
-   "trisPerMetre": 25.8,
-   "bytes": 35364,
-   "budgetOk": true,
-   "sha256": "99e561c0605182a1492d7771824ceb0c815d6eaa3f5afd3e7dd12c4824a814ed"
+   "sha256": "6d72ff98634900242541150ff9c912342537495215b30ffdfa2e2a5249ba97e5"
   },
   {
    "blockId": "bld-428202607",
    "edgeIndex": 1,
    "street": "黄金广场",
    "edge": [
+    [
+     -194.216,
+     -199.508
+    ],
+    [
+     -219.1,
+     -191.59
+    ]
+   ],
+   "sourceEdge": [
     [
      -193.74,
      -199.66
@@ -475,10 +500,10 @@
     -0.30323467633082407,
     -0.9529159097583272
    ],
-   "lenM": 26.6,
+   "lenM": 26.11,
    "midpoint": [
-    -206.42000000000002,
-    -195.625
+    -206.65800000000002,
+    -195.549
    ],
    "outward": [
     -0.952916,
@@ -487,25 +512,35 @@
    "rotY": -1.262710994217609,
    "module": "awnings/awning-bld-428202607-1.glb",
    "geometry": {
-    "builtLengthM": 26.6,
+    "builtLengthM": 26.11,
     "projectionM": 1.2,
     "frontHeightM": 2.78,
-    "wallHeightM": 3.1015,
-    "slopeDeg": 15.0,
+    "wallHeightM": 2.85,
+    "slopeDeg": 3.34,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
-   "tris": 670,
-   "trisPerMetre": 25.19,
-   "bytes": 50768,
+   "tris": 640,
+   "trisPerMetre": 24.51,
+   "bytes": 48372,
    "budgetOk": true,
-   "sha256": "4790734180862477a224ad6743e400f6c65d5e81f6c6960a80a285fbff5fc6e8"
+   "sha256": "7d940574de5c59b427775ac6f3bfeb3534c740e948c6dd9fe78bdb482cc4d955"
   },
   {
    "blockId": "bld-553893867",
    "edgeIndex": 2,
    "street": "中心广场",
    "edge": [
+    [
+     -130.649,
+     -51.84
+    ],
+    [
+     -129.29,
+     -45.22
+    ]
+   ],
+   "sourceEdge": [
     [
      -130.75,
      -52.33
@@ -519,10 +554,10 @@
     -0.9795609566876943,
     0.20114753822279066
    ],
-   "lenM": 7.3,
+   "lenM": 6.76,
    "midpoint": [
-    -130.01999999999998,
-    -48.775
+    -129.96949999999998,
+    -48.53
    ],
    "outward": [
     0.201148,
@@ -531,25 +566,35 @@
    "rotY": 0.20252926238577193,
    "module": "awnings/awning-bld-553893867-2.glb",
    "geometry": {
-    "builtLengthM": 7.3,
+    "builtLengthM": 6.76,
     "projectionM": 1.2,
     "frontHeightM": 2.78,
-    "wallHeightM": 3.1015,
-    "slopeDeg": 15.0,
+    "wallHeightM": 2.85,
+    "slopeDeg": 3.34,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
-   "tris": 202,
-   "trisPerMetre": 27.67,
-   "bytes": 17416,
+   "tris": 200,
+   "trisPerMetre": 29.59,
+   "bytes": 17408,
    "budgetOk": true,
-   "sha256": "0ccbc22c5fe1125059ff255292f88e93584b907a787be2e56e1f4fd35d409cbc"
+   "sha256": "0213646b836537fc78c4fc2abc219ccd13531ebfe5714682500a6b5b3d9d6a86"
   },
   {
    "blockId": "bld-553893868",
    "edgeIndex": 0,
    "street": "中心广场",
    "edge": [
+    [
+     -131.24,
+     -52.232
+    ],
+    [
+     -135.96,
+     -51.29
+    ]
+   ],
+   "sourceEdge": [
     [
      -130.75,
      -52.33
@@ -563,10 +608,10 @@
     0.19575415034452398,
     0.9806530031682427
    ],
-   "lenM": 5.3,
+   "lenM": 4.81,
    "midpoint": [
-    -133.35500000000002,
-    -51.81
+    -133.60000000000002,
+    -51.760999999999996
    ],
    "outward": [
     0.980653,
@@ -575,19 +620,19 @@
    "rotY": 1.76782274675752,
    "module": "awnings/awning-bld-553893868-0.glb",
    "geometry": {
-    "builtLengthM": 5.3,
+    "builtLengthM": 4.81,
     "projectionM": 1.2,
     "frontHeightM": 2.78,
-    "wallHeightM": 3.1015,
-    "slopeDeg": 15.0,
+    "wallHeightM": 2.85,
+    "slopeDeg": 3.34,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
-   "tris": 162,
-   "trisPerMetre": 30.57,
-   "bytes": 14784,
+   "tris": 136,
+   "trisPerMetre": 28.26,
+   "bytes": 12512,
    "budgetOk": true,
-   "sha256": "2764824abd20a09136758ddff311437a360687b28603345dcbdb659c31ff9c5d"
+   "sha256": "e23c0b73d9d0ea70cab4001ca6c3a5a895d6d8fd7bd563f43876555606ea553b"
   },
   {
    "blockId": "bld-553893873",
@@ -603,11 +648,21 @@
      -95.64
     ]
    ],
+   "sourceEdge": [
+    [
+     -155.26,
+     -107.58
+    ],
+    [
+     -152.63,
+     -95.64
+    ]
+   ],
    "dir": [
     -0.9765895119081252,
     0.2151114251522919
    ],
-   "lenM": 12.2,
+   "lenM": 12.23,
    "midpoint": [
     -153.945,
     -101.61
@@ -619,19 +674,19 @@
    "rotY": 0.21680592460850012,
    "module": "awnings/awning-bld-553893873-3.glb",
    "geometry": {
-    "builtLengthM": 12.2,
+    "builtLengthM": 12.23,
     "projectionM": 1.2,
     "frontHeightM": 2.78,
-    "wallHeightM": 3.1015,
-    "slopeDeg": 15.0,
+    "wallHeightM": 2.85,
+    "slopeDeg": 3.34,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 312,
-   "trisPerMetre": 25.57,
-   "bytes": 25140,
+   "trisPerMetre": 25.52,
+   "bytes": 25204,
    "budgetOk": true,
-   "sha256": "9505c09ca02a4e7c968e45310f65fdb5447443dfa6b2ce467acf8dcd0b71f483"
+   "sha256": "1af0abb7fda72aefaf24d2d2e1d203f2fbb2be492354535c31c4449ec2100cab"
   },
   {
    "blockId": "bld-553893884",
@@ -647,11 +702,21 @@
      -167.22
     ]
    ],
+   "sourceEdge": [
+    [
+     -180.78,
+     -196.82
+    ],
+    [
+     -171.44,
+     -167.22
+    ]
+   ],
    "dir": [
     0.9536508096261742,
     -0.3009154919563673
    ],
-   "lenM": 31,
+   "lenM": 31.04,
    "midpoint": [
     -176.11,
     -182.01999999999998
@@ -663,29 +728,19 @@
    "rotY": 0.3056524953657725,
    "module": "awnings/awning-bld-553893884-5.glb",
    "geometry": {
-    "builtLengthM": 31,
+    "builtLengthM": 31.04,
     "projectionM": 1.2,
     "frontHeightM": 2.78,
-    "wallHeightM": 3.1015,
-    "slopeDeg": 15.0,
+    "wallHeightM": 2.85,
+    "slopeDeg": 3.34,
     "scallopWidthM": 0.5,
     "bracketSpacingM": 1.5
    },
    "tris": 776,
-   "trisPerMetre": 25.03,
-   "bytes": 58352,
+   "trisPerMetre": 25.0,
+   "bytes": 58432,
    "budgetOk": true,
-   "sha256": "b0766658571875375e73af8abe3f9b687d54395dc826ff26b1df909dbb3e8232"
-  }
- ],
- "repairs": [
-  {
-   "date": "2026-09-26",
-   "id": "awning-bld-389701812-5",
-   "finding": "布面×塔楼构件交线 308 条/35.65 m（灯笼串 274/20.37 m、牌匾 34/15.3 m，吞没率 1%）——2026-09-26 BAZAAR_TOWERS 默认开启后，塔楼灯笼/牌匾挂带（y 2.9–3.1 m）与檐棚安装带同高",
-   "fix": "剔除该 edge（16→15 条）",
-   "rule": "檐棚布面 × 塔楼/邻块构件 交线 >5 m 或布面吞没率 >10% → 剔除；安装带与立面线脚的全长度交叉归 needsGenerator（发现1），不在剔除规则内",
-   "guard": "tests/smallqa-test.mjs awning-tower-clearance"
+   "sha256": "17d4f142e5ef7e596ce969c2a8654d89c95c7c962b08044cb142f7c197131cfc"
   }
  ]
 }

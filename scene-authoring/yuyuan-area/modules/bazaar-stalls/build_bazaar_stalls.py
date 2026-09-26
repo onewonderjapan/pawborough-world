@@ -103,7 +103,7 @@ def box_glb(name, center, size, mat, rot_x_deg=0.0):
     return mesh_from_tris(name, v, tris, mat)
 
 def cyl_glb(name, center, radius, depth, mat, verts=10, axis='y'):
-    "cylinder in GLB frame; axis 'y' = vertical (GLB up), 'x' = along lateral"
+    "cylinder in GLB frame; axis 'y' = vertical (GLB up), 'x' = along lateral, 'z' = toward foot traffic"
     ob = None
     if axis == 'y':
         # Blender Z-cyl == GLB vertical
@@ -113,6 +113,10 @@ def cyl_glb(name, center, radius, depth, mat, verts=10, axis='y'):
         bpy.ops.mesh.primitive_cylinder_add(vertices=verts, radius=radius, depth=depth,
                                             location=bl(*center),
                                             rotation=(0, math.radians(90), 0))
+    elif axis == 'z':
+        bpy.ops.mesh.primitive_cylinder_add(vertices=verts, radius=radius, depth=depth,
+                                            location=bl(*center),
+                                            rotation=(math.radians(90), 0, 0))
     ob = bpy.context.active_object
     ob.name = name
     me = ob.data
@@ -261,10 +265,13 @@ def build_grill(m):
     # skewer rack on counter right
     for sz in (-0.24, 0.24):
         obs.append(cyl_glb(f'{tag}_rackPost', (0.58, 1.20, sz), 0.018, 0.60, m['iron'], verts=6))
-    for k, hy in enumerate((1.16, 1.32, 1.48)):
-        obs.append(cyl_glb(f'{tag}_rackBar', (0.58, hy, 0), 0.012, 0.50, m['steel'], verts=6, axis='x'))
+    # smallqa 发现7修复：横杆原来躺在 z=0 平面，与 z=±0.24 的立柱错位 0.22–0.26 m 整根悬空。
+    # 横杆改为跨在两立柱之间（沿 +Z，长度仍 0.50，端头包住柱心 ±0.25），三根高度不变；
+    # 串扦仍沿 +X，落在中杆（y1.32）顶面上（杆顶 1.332，扦心 1.337 → 相切搭接），z 三档不变。
+    for hy in (1.16, 1.32, 1.48):
+        obs.append(cyl_glb(f'{tag}_rackBar', (0.58, hy, 0), 0.012, 0.50, m['steel'], verts=6, axis='z'))
     for k in range(3):
-        obs.append(cyl_glb(f'{tag}_skewer', (0.58, 1.30 + 0.02 * k, -0.16 + 0.16 * k), 0.006, 0.34, m['steel'], verts=5, axis='x'))
+        obs.append(cyl_glb(f'{tag}_skewer', (0.58, 1.337, -0.16 + 0.16 * k), 0.006, 0.34, m['steel'], verts=5, axis='x'))
     build_shelf(m, tag, obs)
     obs += build_awning(m, tag, 'canvasWine')
     obs.append(empty_glb('socket_tray', (TRAY_X, TRAY_Y, 0)))
@@ -280,7 +287,9 @@ def build_drink(m):
     czf, czb = -0.125, -0.425     # front/back z (0.3 deep), cup face lz -0.25 inside
     obs.append(box_glb(f'{tag}_cabBase', (-0.35, 0.92, (czf + czb) / 2), (0.9, 0.04, 0.30), m['timberDark']))
     obs.append(box_glb(f'{tag}_cabTop', (-0.35, 1.29, (czf + czb) / 2), (0.9, 0.04, 0.30), m['timberDark']))  # top = 1.31
-    obs.append(box_glb(f'{tag}_cabBack', (-0.35, 1.105, czb + 0.015), (0.9, 0.37, 0.03), m['pale']))
+    # smallqa 发现8修复：背板顶边原到 1.29，高出柜顶板底（棚面 1.27）0.02 m 露黑边；
+    # 降到顶 1.26 = 棚面下 0.01 m 净距，底 0.92 仍插在 cabBase（0.90–0.94）内。
+    obs.append(box_glb(f'{tag}_cabBack', (-0.35, 1.09, czb + 0.015), (0.9, 0.34, 0.03), m['pale']))
     for sx in (cbl + 0.015, cbr - 0.015):
         obs.append(box_glb(f'{tag}_cabSide', (sx, 1.105, (czf + czb) / 2), (0.03, 0.37, 0.30), m['pale']))
     obs.append(box_glb(f'{tag}_cabShelf', (-0.35, 1.155, (czf + czb) / 2 - 0.02), (0.84, 0.02, 0.26), m['pale']))
@@ -309,12 +318,39 @@ def build_bench(m):
     return obs
 
 # ---------------------------------------------------------------- awning strip
-# per bazaarBlock front edge; wall-attach edge 2.72, street front edge 2.40, slope 15deg,
+# per bazaarBlock front edge; wall-attach edge 2.85, street front edge 2.78, slope ~3.3deg,
 # projection 1.2, scalloped valance, iron brackets spacing 1.5m (2 per 3m)
+# smallqa 发现1/9修复（2026-09-26）：安装带原 3.1015 m（front 2.78 + proj*tan15°），与街面立面
+# 披檐构件带 y 2.915–3.08（出墙皮）全长度互穿（16/16 条，合计交线 1895.6 m）。上安装带降为
+# 2.85 m（线脚带下方 0.065 m），前沿 2.78 与出挑 1.2 不变 → 坡度 15°→3.34°，坡面连续；
+# 挂帘下沿 2.54 m 仍在 2.5 m 人体带之上。交叉实测（out-fixbase procedural 块实体 × 旧布面）：
+# 邻块/outer 交线全部集中在 y 2.83–3.05，降带后自然消除；仅端部角落还需端部裁剪（见下表）。
+AWNING_WALL_Y = 2.85
+# 剔除表（wave8-smallqa Q2 已定规则：布面×塔楼/邻块构件交线 >5 m 或吞没率 >10% → 剔除该 edge）。
+# 2026-09-26 复测补充 3 条贴面共边 edge：与邻块 footprint 零间距（共享墙线），邻块侧是步行通道口
+# （road-428199190/760475727 穿 553893884、road-760475693 穿 outer 553893872，净高 3.5 m）——布面
+# 降到 2.78 平铺仍切进通道侧壁/墙皮（修后实测 27.1 / 18.0 / 16.6 m，修前 50.3 / 43.8 / 17.6 m，
+# 高度带 0.06–3.5），任何 ≤2.85 安装带都无解 → 按规则剔除。16 → 12 条。
+AWNING_EXCLUDED = {
+    'bld-389701812-5': '布面×塔楼灯笼串/牌匾 308 交线/35.65 m（wave8-smallqa Q2②）',
+    'bld-389702030-1': '贴面共边×bld-553893884 步行通道口：修后 2.78 平铺仍 29 交线/27.1 m（0.06–3.5 m），≤2.85 无解 → 剔除',
+    'bld-428202604-0': '贴面共边×bld-553893884 步行通道口：修后 2.78 平铺仍 18 交线/18.0 m → 剔除',
+    'bld-428202606-10': '贴面共边×outer bld-553893872 步行通道口（road-760475693）：修后 2.78 平铺仍 35 交线/16.6 m → 剔除',
+}
+# 端部裁剪表（blockId, edgeIndex）-> (起点裁剪 m, 终点裁剪 m)。s 从 edge[0] 沿 edge[1] 方向量。
+# 依据：baseline/layout.json footprint 采样（出挑带 0.02–1.18 m、步长 0.1）+ 旧产物实测交叉，
+# 裁掉与邻块贴角段的布面，留 0.4–0.5 m 余量；中段与前沿净高不受影响。
+AWNING_END_TRIM_M = {
+    ('bld-165791764', 6): (0.5, 0.0),   # s=0 端贴 bld-428202599 角（实测 0.5 m 交叉带）
+    ('bld-428202607', 1): (0.5, 0.0),   # s=0 端贴 bld-553893884 角（2.6 m）
+    ('bld-553893867', 2): (0.5, 0.0),   # s=0 端贴 bld-553893868 角（3.5 m）
+    ('bld-553893868', 0): (0.5, 0.0),   # s=0 端贴 bld-553893867 角（0.5 m）
+}
+
 def build_awning_strip(m, tag, length, canvas_idx=0):
     L = length
     proj, front_y = 1.2, 2.78   # lead 2026-09-23: valance bottom (front_y-0.24) must clear the 2.5 m walking-body band (was 2.4 → narrowed 3 commercial routes)
-    wall_y = front_y + proj * math.tan(math.radians(15))
+    wall_y = AWNING_WALL_Y      # 2026-09-26: ≤2.85 clears the 2.915–3.08 facade trim band (smallqa finding 1/9)
     canvas = ('canvasWine', 'canvasIndigo', 'canvasCream')[canvas_idx % 3]
     obs = []
     nseg = max(2, int(round(L / 1.0)))
@@ -376,33 +412,82 @@ def build_all():
     do('stall-drink.glb', build_drink, BUDGET['stallMax'])
     do('bench.glb', build_bench, BUDGET['benchMax'])
 
-    # 16 awning strips
+    # 12 active awning strips (16 site edges − 4 excluded: 1 tower clash + 3 passage-mouth flush edges)
     awn = []
+    repairs = [{
+        'date': '2026-09-26',
+        'id': 'awning-bld-389701812-5',
+        'finding': '布面×塔楼构件交线 308 条/35.65 m（灯笼串 274/20.37 m、牌匾 34/15.3 m，吞没率 1%）——2026-09-26 BAZAAR_TOWERS 默认开启后，塔楼灯笼/牌匾挂带（y 2.9–3.1 m）与檐棚安装带同高',
+        'fix': '剔除该 edge（16→15 条）',
+        'rule': '檐棚布面 × 塔楼/邻块构件 交线 >5 m 或布面吞没率 >10% → 剔除',
+        'guard': 'tests/smallqa-test.mjs awning-tower-clearance',
+        'by': 'wave8-smallqa Q2② (1af8aa28)',
+    }, {
+        'date': '2026-09-26',
+        'id': 'ALL (发现1/9)',
+        'finding': '布面安装带 3.1015 m 与立面披檐构件带 y 2.915–3.08 全长度互穿；邻块/outer 交叉实测全部集中在 y 2.83–3.05（out-fixbase procedural 实体 × 旧布面，6.4 s 复算）',
+        'fix': '上安装带 3.1015→2.85 m（前沿 2.78、出挑 1.2 不变，坡度 15°→3.34°）；端部裁剪 4 条（每条 0.5 m）',
+        'rule': '安装带 ≤2.85 m 避开线脚带；端部按 baseline/layout 邻块贴角段裁剪，留 0.4–0.5 m 余量；不靠删檐棚',
+        'guard': 'tests/smallfix-test.mjs awning-facade-band + awning-neighbor-clearance',
+        'by': 'night-smallfix-20260926 B2#1/#9',
+    }, {
+        'date': '2026-09-26',
+        'id': ['bld-389702030-1', 'bld-428202604-0', 'bld-428202606-10'], 'kind': 'exclude',
+        'finding': '贴面共边 3 条（×bld-553893884 / ×outer bld-553893872，footprint 零间距）：邻块侧为步行通道口（净高 3.5 m）。2.85 安装带切邻块线脚带 y2.81–2.90（54.7/48.7/19.6 m）；降 2.78 平铺仍切通道侧壁（27.1/18.0/16.6 m），≤2.85 无解',
+        'fix': '按 wave8 既定规则剔除（16→12 条）；其余 12 条 2.85 安装带 + 4 条端部 0.5 m 裁剪',
+        'rule': '布面×邻块构件交线 >5 m（裁剪/降带后仍超）→ 剔除；不靠删掉全部檐棚',
+        'guard': 'tests/smallfix-test.mjs awning-neighbor-clearance',
+        'by': 'night-smallfix-20260926 B2#9',
+    }]
+    trims_applied = {}
     for i, e in enumerate(site['awningEdges']):
-        name = f"awning-{e['blockId']}-{e['edgeIndex']}.glb"
+        key = f"{e['blockId']}-{e['edgeIndex']}"
+        if key in AWNING_EXCLUDED:
+            print(f"[awning] {key}: EXCLUDED — {AWNING_EXCLUDED[key]}")
+            continue
+        name = f"awning-{key}.glb"
+        (ax, az), (bx, bz) = e['edge']
+        elen = math.hypot(bx - ax, bz - az)
+        ux, uz = (bx - ax) / elen, (bz - az) / elen
+        t0, t1 = AWNING_END_TRIM_M.get((e['blockId'], e['edgeIndex']), (0.0, 0.0))
+        built_len = elen - t0 - t1
+        if built_len <= 0:
+            sys.exit(f'AWNING TRIM FAIL {key}: built_len {built_len}')
+        if t0 or t1:
+            trims_applied[key] = {'trimStartM': t0, 'trimEndM': t1, 'sourceLenM': round(elen, 2), 'builtLenM': round(built_len, 2)}
         reset()
         m = make_mats(['canvasWine', 'canvasIndigo', 'canvasCream', 'iron'])
-        obs = build_awning_strip(m, 'awning', e['lenM'], i)
+        obs = build_awning_strip(m, 'awning', built_len, i)
         tris = sum(tris_of(o) for o in obs)
-        per_m = tris / e['lenM']
+        per_m = tris / built_len
         ok = per_m <= BUDGET['awningPerMetreMax']
         path = os.path.join(OUT, 'awnings', name)
         size = export_glb(path, obs)
         dx, dz = e['dir']
         ox, oz = e['outward']
         rotY = math.atan2(-dz, dx) if (abs(ox - (-dz)) < 1e-4 and abs(oz - dx) < 1e-4) else math.atan2(dz, -dx)
+        slope = math.degrees(math.atan2(AWNING_WALL_Y - 2.78, 1.2))
+        # 裁剪后的真实墙边（assemble/测试按此中点与朝向放置）；sourceEdge 保留原始冻结边备查
+        edge_trimmed = [[round(ax + ux * t0, 3), round(az + uz * t0, 3)],
+                        [round(bx - ux * t1, 3), round(bz - uz * t1, 3)]]
         awn.append({'blockId': e['blockId'], 'edgeIndex': e['edgeIndex'], 'street': e['street'],
-                    'edge': e['edge'], 'dir': e['dir'], 'lenM': e['lenM'],
-                    'midpoint': e['midpoint'], 'outward': e['outward'],
+                    'edge': edge_trimmed, 'sourceEdge': e['edge'], 'dir': e['dir'], 'lenM': round(built_len, 2),
+                    'midpoint': [(edge_trimmed[0][0] + edge_trimmed[1][0]) / 2, (edge_trimmed[0][1] + edge_trimmed[1][1]) / 2],
+                    'outward': e['outward'],
                     'rotY': rotY, 'module': f'awnings/{name}',
-                    'geometry': {'builtLengthM': e['lenM'], 'projectionM': 1.2,
-                                 'frontHeightM': 2.78, 'wallHeightM': 3.1015, 'slopeDeg': 15.0,
+                    'geometry': {'builtLengthM': round(built_len, 2), 'projectionM': 1.2,
+                                 'frontHeightM': 2.78, 'wallHeightM': AWNING_WALL_Y, 'slopeDeg': round(slope, 2),
                                  'scallopWidthM': 0.5, 'bracketSpacingM': 1.5},
                     'tris': tris, 'trisPerMetre': round(per_m, 2), 'bytes': size,
                     'budgetOk': ok, 'sha256': sha256(path)})
-        print(f"[awning] {name}: L={e['lenM']} tris={tris} per_m={per_m:.1f} ok={ok}")
+        print(f"[awning] {name}: L={built_len:.1f} (trim {t0}+{t1}) tris={tris} per_m={per_m:.1f} ok={ok}")
         if not ok:
             sys.exit(f'BUDGET FAIL {name}')
+    if trims_applied:
+        repairs.append({'date': '2026-09-26', 'id': sorted(trims_applied), 'kind': 'end-trim',
+                        'detail': trims_applied,
+                        'rule': '端部 0.5 m 裁剪：edge 端点落在邻块贴角段（baseline/layout footprint 采样 + 旧产物交叉实测），中段摆位/通路不动',
+                        'by': 'night-smallfix-20260926 B2#9'})
 
     # placements.json
     mod_files = {k: v for k, v in manifest['files'].items() if k != 'bench.glb'}
@@ -436,11 +521,13 @@ def build_all():
         json.dump(placements, f, ensure_ascii=False, indent=1)
     awp = {'packageId': site['packageId'], 'generatedBy': 'build_bazaar_stalls.py',
            'module': 'awning strip (parametric, one GLB per edge)',
-           'design': {'projectionM': 1.2, 'frontHeightM': 2.78, 'wallHeightM': 3.1015,
-                      'slopeDeg': 15.0, 'scallopWidthM': 0.5, 'brackets': '2 per 3m (spacing 1.5m, ends included)',
+           'design': {'projectionM': 1.2, 'frontHeightM': 2.78, 'wallHeightM': AWNING_WALL_Y,
+                      'slopeDeg': round(math.degrees(math.atan2(AWNING_WALL_Y - 2.78, 1.2)), 2),
+                      'scallopWidthM': 0.5, 'brackets': '2 per 3m (spacing 1.5m, ends included)',
                       'canvasAlternation': 'wine/indigo/cream round-robin by edge order',
                       'collision': 'unreachable (valance bottom 2.54m, above 2.5m body band) — no collision box'},
-           'counts': {'edges': len(awn), 'skipped': [e for e in [] ]},
+           'counts': {'edges': len(awn), 'skipped': sorted(AWNING_EXCLUDED)},
+           'repairs': repairs,
            'edges': awn}
     with open(os.path.join(OUT, 'awning-placements.json'), 'w', encoding='utf-8') as f:
         json.dump(awp, f, ensure_ascii=False, indent=1)

@@ -209,7 +209,12 @@ if os.environ.get('GARDEN_KITS') == '1':
         fp = o['geometry']['footprint'][:-1] if o['geometry']['footprint'][0] == o['geometry']['footprint'][-1] else o['geometry']['footprint']
         cx = sum(q[0] for q in fp) / len(fp); cz = sum(q[1] for q in fp) / len(fp)
         d = o['facade']['dir']
-        place(lib_objs(KIT(f'pavilion-{pid}/model.glb')), {'id': pid, 'module': 'pavilion-kit', 'zone': 'garden', 'lod': 'L2',
+        # #10（smallqa 发现10）：GLB 根空节点名 = bld-<id>，与锚同名；place() 浅复制把它一并复制成
+        # bld-<id>.00x 空锚挂到锚下（0 子节点），zone-garden 里 5 亭各出一个空锚。根节点无变换，
+        # 复制时剔除即可（body/roof/rail 与网格副本照旧拍平挂锚）；不手工删产物。
+        kit_objs = [ob for ob in lib_objs(KIT(f'pavilion-{pid}/model.glb'))
+                    if not (ob.type == 'EMPTY' and ob.name == pid)]
+        place(kit_objs, {'id': pid, 'module': 'pavilion-kit', 'zone': 'garden', 'lod': 'L2',
                                                            'position': [cx, cz], 'rotY': math.atan2(d[0], d[1])})
         garden_kit_placed += 1
     for oid, f in GARDEN_CORRIDORS.items():
