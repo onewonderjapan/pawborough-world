@@ -12,6 +12,7 @@ import {
   shapeMesh, shapeGeo, wallRing, makeRoof, ribbon, corridor, rock, tree,
   dropFloatingSegments, polySymDiffArea,
 } from './lib.mjs';
+import { buildOuterKitGeometry, roadSegments, neighbourRings, SLOT_ATLAS, SLOT_PROC, MODES as OUTER_KIT_MODES } from './outer-kit.mjs';
 
 // Node 下 GLTFExporter 需要 FileReader（无贴图也会走到该分支）
 if (typeof globalThis.FileReader === 'undefined') {
@@ -65,6 +66,13 @@ const HUXINTING_IDS = new Set(['huxin-ting']);
 // assemble.py 导入 SITE-bazaar，分区按 ids.json zonePart 归 zone-bazaar-3…）。默认开（2026-09-26 机主「商城楼套件默认开启吧」）；BAZAAR_TOWERS=0 回到程序化 bazaarBlock。
 const BAZAAR_TOWERS = process.env.BAZAAR_TOWERS !== '0';  // 默认开（2026-09-26 机主定），BAZAAR_TOWERS=0 关
 const BAZAAR_TOWER_IDS = new Set(JSON.parse(fs.readFileSync(new URL('../modules/bazaar-tower-kit/ids.json', import.meta.url), 'utf8')).ids);
+// OUTER_KIT=1（wave7-outerkit 样板，默认关）：modules/outer-kit/ids.json 的 10 栋 outerBuilding 换成老城厢套件体块（src/outer-kit.mjs），
+// 其余 294 栋照旧是程序化方块；关时产物逐字节不变。OUTER_KIT_MODE = tex（默认，几何 + 共享立面图集）| geo | proc，
+// 后两者只供方案对比测量（见工单包 artifacts/RESULT.json approaches）。tex / proc 的材质由 export-zones.py 按 slot 绑定。
+const OUTER_KIT = process.env.OUTER_KIT === '1';
+const OUTER_KIT_MODE = process.env.OUTER_KIT_MODE || 'tex';
+if (OUTER_KIT && !OUTER_KIT_MODES.includes(OUTER_KIT_MODE)) throw new Error('OUTER_KIT_MODE must be one of ' + OUTER_KIT_MODES.join('/'));
+const OUTER_KIT_IDS = new Set(JSON.parse(fs.readFileSync(new URL('../modules/outer-kit/ids.json', import.meta.url), 'utf8')).ids);
 const layout = JSON.parse(fs.readFileSync(path.join(OUT, 'layout.json'), 'utf8'));
 
 // ---------- FANGBANG=1：方浜中路沿线路面片让位（V1-REDEFINITION：连接段 x -96.8..54、街段 54..138 精修归 fangbang） ----------
@@ -253,6 +261,23 @@ function buildOuterBuilding(o) {
   const walls = wallRing(fp, 0, h, base, 'w');
   const parts = [colorize(floor, 0x9a8f7c), colorize(top, 0x87806f), ...flattenParts(walls)];
   return mergedMesh(parts, o.key, o.ud);
+}
+
+// wave7-outerkit：老城厢套件体块（OUTER_KIT=1 且 id 在 modules/outer-kit/ids.json）。位置 / 轮廓全部由 layout footprint 现算。
+let outerKitRoads = null;
+const outerKitStats = [];
+function buildOuterKit(o) {
+  if (!outerKitRoads) outerKitRoads = roadSegments(layout);
+  const r = buildOuterKitGeometry(o, { roadSegs: outerKitRoads, others: neighbourRings(layout, o.id) }, OUTER_KIT_MODE);
+  if (r.overCap) throw new Error(`OUTER_KIT ${o.id}: ${r.tris} tris > cap even after degrade`);
+  const m = new THREE.Mesh(r.geometry, MAT_VERTEX);
+  m.name = o.key;
+  Object.assign(o.ud, { outerKit: OUTER_KIT_MODE, kitType: r.plan.type, kitTris: r.tris });
+  if (OUTER_KIT_MODE !== 'geo') o.ud.slot = OUTER_KIT_MODE === 'tex' ? SLOT_ATLAS : SLOT_PROC;
+  m.userData = o.ud;
+  outerKitStats.push({ id: o.id, mode: OUTER_KIT_MODE, type: r.plan.type, roof: r.plan.roofKind, strips: r.plan.nStrip, tris: r.tris,
+    degrade: r.degrade, eave: +r.plan.eave.toFixed(2), ridge: +r.plan.ridge.toFixed(2), front: r.plan.front.length, party: r.plan.party.length, ...r.faces });
+  return m;
 }
 
 // 商城大楼壳 L1：黄墙 + 楼层线脚 + 临街分间窗组 + 转角壁柱 + 檐下托檐带 + 檐口。
@@ -1086,7 +1111,7 @@ for (const o of layout.objects) {
       mesh = shapeMesh(o.geometry.footprint, o.height, col, key); mesh.userData = ud;
       break;
     }
-    case 'outerBuilding': mesh = buildOuterBuilding({ ...o, key, ud }); break;
+    case 'outerBuilding': mesh = (OUTER_KIT && OUTER_KIT_IDS.has(o.id)) ? buildOuterKit({ ...o, key, ud }) : buildOuterBuilding({ ...o, key, ud }); break;
     case 'bazaarBlock': mesh = buildBazaarBlock({ ...o, key, ud }); break;
     case 'hall': case 'tower': case 'pavilion': case 'xuan': case 'waterside': case 'stage': {
       const [body, roof] = buildGardenBuilding({ ...o, key, ud });
@@ -1184,6 +1209,10 @@ for (const [z, g] of Object.entries(zoneGroups)) {
   fs.writeFileSync(f, bytes);
   procedural[z] = { file: 'out/' + zoneFiles[z], bytes: bytes.length, children: g.children.length };
   console.log(z, bytes.length, 'bytes,', g.children.length, 'meshes');
+}
+if (OUTER_KIT) {
+  stats.outerKit = { mode: OUTER_KIT_MODE, ids: outerKitStats.length, tris: outerKitStats.reduce((a, b) => a + b.tris, 0), buildings: outerKitStats };
+  console.log('OUTER_KIT', OUTER_KIT_MODE, outerKitStats.length, 'buildings,', stats.outerKit.tris, 'tris');
 }
 fs.writeFileSync(path.join(OUT, 'procedural-stats.json'), JSON.stringify({
   stats, deferred, procedural,
