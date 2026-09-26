@@ -2167,6 +2167,12 @@
       "sha256": "5bb1ecf048f1f3e26b1934e3eb7ecbc1e3533bca041178069c3c5d582ef3e671",
       "bytes": 1646168,
       "sourcePackage": "lead-2026-09-26-owner-enable-laofandian"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/resources/textures/outer-kit/outerkit-atlas.jpg",
+      "sha256": "c104a2a7d7c1b6e2b5e144f0498d498948d01e99dd9142e946a442501ef6e1bb",
+      "bytes": 42350,
+      "sourcePackage": "pawborough-wave7-outerkit-20260926"
     }
   ],
   "state": "uploaded_checksum_verified",
@@ -2185,6 +2191,7 @@
     "docs/migrations/20260926/CLOUD-RECEIPT-templeqa.json",
     "docs/migrations/20260926/CLOUD-RECEIPT-bazaar4.json",
     "docs/migrations/20260926/CLOUD-RECEIPT-eavekit.json",
-    "docs/migrations/20260926/CLOUD-RECEIPT-laofandian.json"
+    "docs/migrations/20260926/CLOUD-RECEIPT-laofandian.json",
+    "docs/migrations/20260926/CLOUD-RECEIPT-outerkit.json"
   ]
 }
