@@ -14,7 +14,7 @@
 //   proc 程序化 shader：几何同 tex 但不分层，UV 只编码「类别 + 檐口高 / 沿墙米数」，窗与瓦由运行时 shader 画（web/outer-kit-proc.js）。
 // 坐标：x 东、z 南、y 上，米；footprint 直接取 layout（不另存副本）。
 import * as THREE from 'three';
-import { orientRing, polyArea, minAreaRect, distToSeg, triangulateRing, offsetPolySafe, pointInPoly } from './lib.mjs';
+import { orientRing, polyArea, minAreaRect, distToSeg, triangulateRing, offsetPolySafe, pointInPoly, convexDecompose, polyIntersectionArea } from './lib.mjs';
 
 export const TRI_CAP = 400;
 export const SLOT_ATLAS = 'outerkit-atlas';
@@ -25,6 +25,7 @@ export const FRONT_MINLEN = 3;
 const OVERHANG = 0.35;             // 檐口 / 山墙出挑
 const ROOF_T = 0.12;               // 屋面板厚（底面 + 封檐板）
 const PLINTH = 0.6;                // 勒脚高
+const AWNING_OUT = 0.9;            // 店屋披檐外挑
 export const DESIGN_INFERENCE = [
   'layout height 视为平均屋面高：檐口 = height − rise/2，屋脊 = height + rise/2（与原方块体积平均高一致）',
   '坡度：民居 27°，公房 18°；rise 上限 2.8 m / 2.2 m；单坡 20°、上限 2.0 m',
@@ -52,6 +53,136 @@ function clipPoly(poly, f) {
     if ((fa > 0 && fb < 0) || (fa < 0 && fb > 0)) out.push(lerp2(a, b, fa / (fa - fb)));
   }
   return out;
+}
+
+// ---------- 邻栋避让（wave9-outerpolish）：共享边 / 近邻边规则 ----------
+// 1) 屋面轮廓逐边外扩：共墙边（partyEdges）外扩 0 —— 屋面在交界线收住，高出的一方露出本栋墙 = 山墙 / 封火墙；其余边照旧出挑 OVERHANG。
+// 2) 本栋 footprint 以外的一切外挑件（屋面檐口、檐底、屋脊压顶、披檐、封檐板）再减去每栋邻楼的「footprint 外扩 OVERHANG」区：
+//    A 的外挑 ⊆ offset(A) \ offset(B)，B 的外挑 ⊆ offset(B) \ offset(A)，A、B footprint 互不相交
+//    ⇒ 两栋的屋面类面片在平面投影上互不重叠，不可能互穿；本栋 footprint 以内的部分不动（屋面无洞）。
+// 凸多边形布尔：Sutherland–Hodgman 半平面裁剪；P \ C（C 凸）= 逐边取「C 外侧」片再收缩剩余，片片皆凸。
+const cross2 = (a, b, p) => (b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0]);
+const TINY = 1e-4;
+function convexCCW(poly) { return polyArea(poly) < 0 ? poly.slice().reverse() : poly; }
+function intersectConvex(P, C) {
+  let out = P;
+  for (let i = 0; i < C.length && out.length >= 3; i++) { const a = C[i], b = C[(i + 1) % C.length]; out = clipPoly(out, (p) => cross2(a, b, p)); }
+  return out.length >= 3 && Math.abs(polyArea(out)) > TINY ? out : null;
+}
+function subtractConvex(P, C) {
+  if (!intersectConvex(P, C)) return [P];
+  const res = [];
+  let rest = P;
+  for (let i = 0; i < C.length && rest.length >= 3; i++) {
+    const a = C[i], b = C[(i + 1) % C.length];
+    const o = clipPoly(rest, (p) => -cross2(a, b, p));
+    if (o.length >= 3 && Math.abs(polyArea(o)) > TINY) res.push(o);
+    rest = clipPoly(rest, (p) => cross2(a, b, p));
+  }
+  return res;
+}
+const bbOf = (pts) => { let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity; for (const p of pts) { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); z0 = Math.min(z0, p[1]); z1 = Math.max(z1, p[1]); } return { x0, x1, z0, z1 }; };
+const bbHit = (a, b, m = 0) => !(a.x0 > b.x1 + m || b.x0 > a.x1 + m || a.z0 > b.z1 + m || b.z0 > a.z1 + m);
+const EXCL_CACHE = new Map();
+function exclusionOf(o, dist) {
+  const key = o.id + ':' + dist + ':' + o.ring.length + ':' + o.ring[0].join(',');
+  if (!EXCL_CACHE.has(key)) {
+    const off = offsetPolySafe(o.ring, dist).pts;
+    EXCL_CACHE.set(key, { id: o.id, bb: bbOf(off), pieces: convexDecompose(off).map(convexCCW).map(pc => ({ pc, bb: bbOf(pc) })) });
+  }
+  return EXCL_CACHE.get(key);
+}
+// 对某栋建一个裁剪器：planar(3D 平面凸多边形) → 保留的 3D 凸片；segment(a,b) → 保留的 2D 子段。
+// dist = 邻楼避让区外扩量：屋面类外挑 OVERHANG；披檐（外挑 AWNING_OUT）用 AWNING_OUT —— 两栋披檐各自退出对方的 AWNING_OUT 区，同样互不重叠。
+export function makeClipper(ring, others = [], dist = OVERHANG, holes = []) {
+  const own = convexDecompose(ring).map(convexCCW);
+  const obb = bbOf(ring);
+  const ex = others.filter(o => bbHit(o.bb, obb, dist + 1.5)).map(o => exclusionOf(o, dist)).flatMap(e => e.pieces);
+  const hx = (holes || []).flatMap(h => convexDecompose(h).map(convexCCW)).map(pc => ({ pc, bb: bbOf(pc) }));
+  const stats = { split: 0, removedArea: 0 };
+  function clip2(poly) {
+    const pb = bbOf(poly);
+    const hit = ex.filter(e => bbHit(e.bb, pb) && intersectConvex(poly, e.pc));
+    const hitH = hx.filter(e => bbHit(e.bb, pb) && intersectConvex(poly, e.pc));
+    if (!hit.length && !hitH.length) return null;
+    let outside = [poly];
+    for (const C of own) outside = outside.flatMap(q => subtractConvex(q, C));
+    let inside = own.map(C => intersectConvex(poly, C)).filter(Boolean);
+    const aIn0 = inside.reduce((s, q) => s + Math.abs(polyArea(q)), 0);
+    for (const e of hitH) inside = inside.flatMap(q => subtractConvex(q, e.pc));
+    const aIn1 = inside.reduce((s, q) => s + Math.abs(polyArea(q)), 0);
+    const a0 = outside.reduce((s, q) => s + Math.abs(polyArea(q)), 0);
+    for (const e of hit) outside = outside.flatMap(q => subtractConvex(q, e.pc));
+    const a1 = outside.reduce((s, q) => s + Math.abs(polyArea(q)), 0);
+    if (a0 - a1 + aIn0 - aIn1 < TINY) return null;
+    stats.split++; stats.removedArea += a0 - a1 + aIn0 - aIn1;
+    return [...inside, ...outside];
+  }
+  return {
+    stats,
+    planar(pts3) {
+      // 平面法线按 Newell 法由顶点现算（调用方给的朝向提示不一定是精确平面法线）
+      let nx = 0, ny = 0, nz = 0;
+      for (let i = 0; i < pts3.length; i++) {
+        const p = pts3[i], q = pts3[(i + 1) % pts3.length];
+        nx += (p[1] - q[1]) * (p[2] + q[2]); ny += (p[2] - q[2]) * (p[0] + q[0]); nz += (p[0] - q[0]) * (p[1] + q[1]);
+      }
+      const nl = Math.hypot(nx, ny, nz);
+      if ((!ex.length && !hx.length) || nl < 1e-12 || Math.abs(ny / nl) < 1e-3) return [pts3];
+      nx /= nl; ny /= nl; nz /= nl;
+      const d = -(nx * pts3[0][0] + ny * pts3[0][1] + nz * pts3[0][2]);
+      const res = clip2(pts3.map(p => [p[0], p[2]]));
+      if (!res) return [pts3];
+      return res.map(q => q.map(([x, z]) => [x, (-d - nx * x - nz * z) / ny, z]));
+    },
+    segment(a, b) {
+      if (!ex.length) return [[a, b]];
+      let iv = [[0, 1]];
+      const sb = bbOf([a, b]);
+      for (const e of ex) {
+        if (!bbHit(e.bb, sb)) continue;
+        // Cyrus–Beck：段落在凸片内的参数区间
+        let t0 = 0, t1 = 1;
+        const C = e.pc;
+        for (let i = 0; i < C.length && t0 < t1; i++) {
+          const fa = cross2(C[i], C[(i + 1) % C.length], a), fb = cross2(C[i], C[(i + 1) % C.length], b);
+          if (fa < 0 && fb < 0) { t0 = 1; t1 = 0; break; }
+          if (fa < 0) t0 = Math.max(t0, fa / (fa - fb));
+          else if (fb < 0) t1 = Math.min(t1, fa / (fa - fb));
+        }
+        if (t1 - t0 < 1e-6) continue;
+        iv = iv.flatMap(([u0, u1]) => [[u0, Math.min(u1, t0)], [Math.max(u0, t1), u1]].filter(([p, q]) => q - p > 1e-6));
+      }
+      return iv.map(([u0, u1]) => [lerp2(a, b, u0), lerp2(a, b, u1)]);
+    },
+  };
+}
+// 屋面轮廓逐边外扩（ds[i] = 第 i 条边的外扩量，环须为正面积绕序）；尖角 / 近共线换向处倒角；出自交或面积不增返回 null
+function offsetEdges(ring, ds) {
+  const n = ring.length, out = [];
+  const nrm = ring.map((a, i) => { const b = ring[(i + 1) % n], L = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1; return [(b[1] - a[1]) / L, -(b[0] - a[0]) / L]; });
+  for (let i = 0; i < n; i++) {
+    const h = (i - 1 + n) % n, p = ring[i], n1 = nrm[h], n2 = nrm[i], d1 = ds[h], d2 = ds[i];
+    const det = n1[0] * n2[1] - n1[1] * n2[0];
+    const c1 = n1[0] * p[0] + n1[1] * p[1] + d1, c2 = n2[0] * p[0] + n2[1] * p[1] + d2;
+    const bevel = () => { out.push([p[0] + n1[0] * d1, p[1] + n1[1] * d1]); out.push([p[0] + n2[0] * d2, p[1] + n2[1] * d2]); };
+    if (Math.abs(det) < 0.05) { if (Math.abs(d1 - d2) < 1e-9) out.push([p[0] + n2[0] * d2, p[1] + n2[1] * d2]); else bevel(); continue; }
+    const q = [(c1 * n2[1] - c2 * n1[1]) / det, (n1[0] * c2 - n2[0] * c1) / det];
+    if (Math.hypot(q[0] - p[0], q[1] - p[1]) > 3 * Math.max(d1, d2) + 1e-9) bevel(); else out.push(q);
+  }
+  const r = [];
+  for (const p of out) if (!r.length || Math.hypot(p[0] - r[r.length - 1][0], p[1] - r[r.length - 1][1]) > 0.02) r.push(p);
+  while (r.length > 3 && Math.hypot(r[0][0] - r[r.length - 1][0], r[0][1] - r[r.length - 1][1]) <= 0.02) r.pop();
+  const selfX = () => {
+    for (let i = 0; i < r.length; i++) for (let j = i + 2; j < r.length; j++) {
+      if (i === 0 && j === r.length - 1) continue;
+      const a = r[i], b = r[i + 1], c = r[j], d = r[(j + 1) % r.length];
+      if (cross2(a, b, c) * cross2(a, b, d) < 0 && cross2(c, d, a) * cross2(c, d, b) < 0) return true;
+    }
+    return false;
+  };
+  if (r.length < 3 || polyArea(r) < polyArea(ring) - 1e-6 || selfX()) return null;
+  return r;
 }
 
 // ---------- 环境：道路段、邻栋 ----------
@@ -153,7 +284,13 @@ export function planBuilding(o, env, opt = {}) {
     const f = front.reduce((p, q) => (q.len > p.len ? q : p));
     streetLow = T(lerp2(ring[f.i], ring[(f.i + 1) % n], 0.5)) < tc;
   }
-  const plan = { id: o.id, seed, ring, h, levels, type, roofKind, axis, perp, t0, t1, s0, s1, D, Ls, nStrip, d, rise, eave,
+  // wave9：被本栋包住的邻楼（≥ 95% 面积在本栋 footprint 内、且比本栋小）→ 院落洞，那块地归邻楼（layout 数据：OSM 外楼与院内楼各一条 way）
+  const holes = (env.others || []).filter(q => q.bb.x0 >= Math.min(...ring.map(p => p[0])) - 0.1 && q.bb.x1 <= Math.max(...ring.map(p => p[0])) + 0.1
+    && q.bb.z0 >= Math.min(...ring.map(p => p[1])) - 0.1 && q.bb.z1 <= Math.max(...ring.map(p => p[1])) + 0.1)
+    .filter(q => { const aq = Math.abs(polyArea(q.ring)); return aq < Math.abs(polyArea(ring)) && polyIntersectionArea(q.ring, ring) >= 0.95 * aq; })
+    .map(q => q.ring);
+  const tone = pickTone(type, seed);   // wave9：墙色
+  const plan = { id: o.id, seed, ring, holes, tone, h, levels, type, roofKind, axis, perp, t0, t1, s0, s1, D, Ls, nStrip, d, rise, eave,
     ridge: eave + rise, pitch, front, party: [...party], streetLow, terrace: null, dormers: [] };
   // 晒台
   if (!opt.plain && !apt && roofKind === 'gable' && nStrip === 1 && Ls >= 12 && rnd(seed, 2) < 0.5) {
@@ -225,14 +362,15 @@ export function buildFaces(P, { slopeBand = 0 } = {}) {
   const PARAPET = 0.9;
   const walls = [], roofs = [], extras = [];
   const party = new Set(P.party), front = new Set(P.front.map(f => f.i));
-  // 墙：按 t 断线 / 晒台切线分段
-  for (let i = 0; i < n; i++) {
-    const a = ring[i], b = ring[(i + 1) % n];
+  // 墙：按 t 断线 / 晒台切线分段。wave9：被本栋包住的邻楼 footprint（P.holes）= 院落洞，洞边按负绕序走一圈，墙朝洞内、按共墙（素墙）处理
+  const wallRings = [{ r: ring, hole: false }, ...(P.holes || []).map(h => ({ r: polyArea(h) > 0 ? h.slice().reverse() : h, hole: true }))];
+  for (const WR of wallRings) for (let i = 0; i < WR.r.length; i++) {
+    const a = WR.r[i], b = WR.r[(i + 1) % WR.r.length];
     const dx = b[0] - a[0], dz = b[1] - a[1], len = Math.hypot(dx, dz);
     if (len < 0.05) continue;
     const nn = [dz / len, -dx / len];
     const along = Math.abs((dx * P.axis[0] + dz * P.axis[1]) / len);
-    const cls = party.has(i) ? 'party' : front.has(i) ? 'front' : P.type === 'apartment' ? 'apt' : along >= 0.7 ? 'long' : 'side';
+    const cls = WR.hole || party.has(i) ? 'party' : front.has(i) ? 'front' : P.type === 'apartment' ? 'apt' : along >= 0.7 ? 'long' : 'side';
     const lam = [0, 1];
     const ta = T(a), tb = T(b);
     for (const tv of br) if ((ta - tv) * (tb - tv) < 0) lam.push((tv - ta) / (tb - ta));
@@ -244,7 +382,7 @@ export function buildFaces(P, { slopeBand = 0 } = {}) {
       const p0 = lerp2(a, b, l0), p1 = lerp2(a, b, l1), mid = lerp2(a, b, (l0 + l1) / 2);
       const terr = inTerrace(mid);
       const top = (p) => (terr ? P.eave + PARAPET : roofPlaneY(P, T(p)));
-      walls.push({ cls, edge: i, a: p0, b: p1, al0: l0 * len, al1: l1 * len, len, y0: 0, top0: top(p0), top1: top(p1), n: nn, terr });
+      walls.push({ cls, edge: WR.hole ? -2 : i, a: p0, b: p1, al0: l0 * len, al1: l1 * len, len, y0: 0, top0: top(p0), top1: top(p1), n: nn, terr, hole: WR.hole });
     }
   }
   // 晒台：切口山墙（底 = 檐口）+ 平台板
@@ -269,8 +407,9 @@ export function buildFaces(P, { slopeBand = 0 } = {}) {
     const slab = clipPoly(ring, (p) => side * (S(p) - sv));
     for (const tri of triangulateRing(slab)) extras.push({ kind: 'slab', tri: tri.map(p => [p[0], P.eave, p[1]]) });
   }
-  // 屋面：外扩 OVERHANG 的轮廓按半坡带裁剪（晒台一侧另裁掉），每块是平面
-  let roofPoly = offsetPolySafe(ring, OVERHANG).pts;
+  // 屋面：外扩 OVERHANG 的轮廓按半坡带裁剪（晒台一侧另裁掉），每块是平面。
+  // wave9：共墙边不外扩（屋面在交界线收住）；逐边外扩失败时退回统一外扩（邻栋裁剪仍会去掉伸进邻楼的部分）
+  let roofPoly = (party.size && offsetEdges(ring, ring.map((_, i) => (party.has(i) ? 0 : OVERHANG)))) || offsetPolySafe(ring, OVERHANG).pts;
   if (P.terrace) { const sv = P.terrace.sCut + P.terrace.side * 0.25; roofPoly = clipPoly(roofPoly, (p) => -P.terrace.side * (S(p) - sv)); }
   const rbr = tBreaks(P, slopeBand);
   const bands = [-Infinity, ...rbr, Infinity];
@@ -286,6 +425,7 @@ export function buildFaces(P, { slopeBand = 0 } = {}) {
   }
   // 封檐板：roofPoly 边界按 t 断线分段
   const fascia = [];
+  const onRing = (p) => { for (let i = 0; i < n; i++) if (distToSeg(p, ring[i], ring[(i + 1) % n]) < 0.02) return true; return false; };
   for (let i = 0; i < roofPoly.length; i++) {
     const a = roofPoly[i], b = roofPoly[(i + 1) % roofPoly.length];
     const dx = b[0] - a[0], dz = b[1] - a[1], len = Math.hypot(dx, dz);
@@ -298,6 +438,7 @@ export function buildFaces(P, { slopeBand = 0 } = {}) {
     for (let k = 0; k + 1 < lam.length; k++) {
       const p0 = lerp2(a, b, lam[k]), p1 = lerp2(a, b, lam[k + 1]);
       if (Math.hypot(p1[0] - p0[0], p1[1] - p0[1]) < 0.02) continue;
+      if (onRing(p0) && onRing(p1)) continue;   // wave9：不外扩的共墙边上不做封檐板（贴着邻楼墙）
       fascia.push({ a: p0, b: p1, top0: roofPlaneY(P, T(p0)), top1: roofPlaneY(P, T(p1)), n: nn });
     }
   }
@@ -330,7 +471,8 @@ export function buildFaces(P, { slopeBand = 0 } = {}) {
     const tR = tm + dir * half * (1 - (yr - P.eave) / P.rise);
     const w = 1.8;
     const corners = [[dm.sc - w / 2, tf], [dm.sc + w / 2, tf], [dm.sc - w / 2, tR], [dm.sc + w / 2, tR]].map(([s, t]) => W(s, t));
-    if (!corners.every(c => pointInPoly(c, ring))) continue;
+    if (!corners.every(c => pointInPoly(c, ring) && !(P.holes || []).some(h => pointInPoly(c, h)))) continue;
+    if ((P.holes || []).some(h => h.some(q => pointInPoly(q, corners.length === 4 ? [corners[0], corners[1], corners[3], corners[2]] : corners)))) continue;
     dormers.push({ sc: dm.sc, w, tf, tW, tR, yb, yw, yr, dir });
   }
   // 店屋披檐
@@ -343,7 +485,7 @@ export function buildFaces(P, { slopeBand = 0 } = {}) {
       const dx = b[0] - a[0], dz = b[1] - a[1], len = Math.hypot(dx, dz);
       const nn = [dz / len, -dx / len];
       const p0 = lerp2(a, b, 0.3 / len), p1 = lerp2(a, b, 1 - 0.3 / len);
-      awnings.push({ a: p0, b: p1, n: nn, y: yA, out: 0.9, drop: 0.35, len: len - 0.6 });
+      awnings.push({ a: p0, b: p1, n: nn, y: yA, out: AWNING_OUT, drop: 0.35, len: len - 0.6 });
     }
   }
   return { walls, roofs, fascia, ridges, dormers, awnings, extras, S, T, W };
@@ -358,6 +500,9 @@ class Sink {
     let cx = uy * vz - uz * vy, cy = uz * vx - ux * vz, cz = ux * vy - uy * vx;
     const cl = Math.hypot(cx, cy, cz);
     if (cl < 1e-9) return;
+    // wave9：邻栋裁剪会切出贴边细条；高 < 2 mm 的细条法线在 float32 世界坐标下不稳（check-export 法线审计），丢掉（面积可忽略）
+    const e2 = Math.max(ux * ux + uy * uy + uz * uz, vx * vx + vy * vy + vz * vz, (vx - ux) ** 2 + (vy - uy) ** 2 + (vz - uz) ** 2);
+    if (cl < 0.002 * Math.sqrt(e2)) return;
     if (cx * n[0] + cy * n[1] + cz * n[2] < 0) { [q, r] = [r, q]; cx = -cx; cy = -cy; cz = -cz; }
     for (const v of [p, q, r]) {
       this.pos.push(v[0], v[1], v[2]);
@@ -379,16 +524,59 @@ class Sink {
 }
 const rgb = (hex) => { const c = new THREE.Color(hex); return [c.r, c.g, c.b]; };
 
-// ---------- 图集布局（tex）：512×1024，glTF UV（v=0 在图顶） ----------
+// ---------- 图集布局（tex）：v2 512×4096（wave9-outerpolish），glTF UV（v=0 在图顶） ----------
+// 行 0–255 瓦面；其后每条 128 px，顺序 = ATLAS_ROWS（与 modules/outer-kit/bake_atlas.py ROWS 同序）。
+// 墙色 4 种（TONES）× 每种 6 条（底层 A/B、楼层 A/B、山墙小窗、素墙）+ 店面 A/B + 公房 灰白 / 旧黄 各 A/B。
+export const TONES = ['cream', 'greywhite', 'greybrick', 'oldyellow'];   // 米白 / 灰白 / 浅灰砖 / 旧黄
+export const TONE_KEYS = ['resA', 'resB', 'upA', 'upB', 'sidewin', 'plain'];
+export const ATLAS_ROWS = ['shopA', 'shopB', 'aptGreyA', 'aptGreyB', 'aptYellowA', 'aptYellowB', ...TONES.flatMap(t => TONE_KEYS.map(k => t + ':' + k))];
 export const ATLAS = {
-  W: 512, H: 1024,
+  W: 512, H: 256 + 128 * ATLAS_ROWS.length, file: 'outerkit-atlas-v2.jpg',
   roof: { y0: 0, y1: 256, slopeM: 6.4, uM: 3.2 },          // 瓦面：V 周期 = 斜距 6.4 m，U 周期 3.2 m
-  strips: { shop: 256, res: 384, up: 512, apt: 640, sidewin: 768, plain: 896 },   // 各 128 px 一层
-  stripH: 128, pad: 3, bayM: 3.6, plainM: 6.4,
-  dark: [0.5, (256 + 10) / 1024],                           // 店面条顶部招牌暗带：封檐 / 檐底 / 屋脊压顶取这里
+  rowsY0: 256, stripH: 128, pad: 3, bayM: 3.6, plainM: 6.4,
+  dark: [0.5, (256 + 10) / (256 + 128 * ATLAS_ROWS.length)],   // shopA 条顶部招牌暗带：封檐 / 檐底 / 屋脊压顶取这里
 };
+export function atlasRow(name) {
+  const k = ATLAS_ROWS.indexOf(name);
+  if (k < 0) throw new Error('atlas row ' + name);
+  return ATLAS.rowsY0 + ATLAS.stripH * k;
+}
 function stripV(row, f) { // f ∈ [0,1] 自下而上
   return (row + ATLAS.pad + (1 - f) * (ATLAS.stripH - 2 * ATLAS.pad)) / ATLAS.H;
+}
+// 墙色分配（确定性）：按选型定权重、按 id 哈希取；公房只有灰白 / 旧黄两种公房条
+export const TONE_WEIGHTS = {
+  shophouse: { cream: 0.35, greywhite: 0.2, greybrick: 0.15, oldyellow: 0.3 },   // 临街店屋：粉刷为主
+  lilong: { cream: 0.3, greywhite: 0.2, greybrick: 0.3, oldyellow: 0.2 },        // 里弄民居：清水砖墙多一些
+  apartment: { cream: 0, greywhite: 0.6, greybrick: 0, oldyellow: 0.4 },
+};
+export function pickTone(type, seed) {
+  const w = TONE_WEIGHTS[type], r = rnd(seed, 30);
+  let acc = 0;
+  for (const t of TONES) { acc += w[t]; if (r < acc) return t; }
+  return TONES.filter(t => w[t] > 0).pop();
+}
+// 立面防重复（确定性）：每条墙边按开间（≈ 3.6 m）对齐；≥ LONG_FACADE_M 的临街 / 长墙 / 公房墙按 SEG_BAYS 开间（≈ 18 m）分段，
+// 段与段 A/B 条交替（换 tile），每段各自按哈希定镜像与起始开间（0 / 1 开间相位）；短墙一段，A/B、镜像、相位都按哈希。
+export const LONG_FACADE_M = 40;
+export const SEG_BAYS = 5;   // 每段开间数：每多一段每层多 2 个三角，3–4 开间会把 7 栋推过 400 三角降级，5 开间只多 2 栋
+export function facadeSegments(seed, edgeKey, len, segmented) {
+  const nb = Math.max(1, Math.round(len / ATLAS.bayM)), bay = len / nb;
+  const bounds = [0];
+  if (segmented && len >= LONG_FACADE_M) {
+    const k = SEG_BAYS;
+    let b = 0;
+    while (nb - b > k) { b += k; bounds.push(b); }
+  }
+  bounds.push(nb);
+  const v0 = rnd(seed, 51 + edgeKey * 5) < 0.5 ? 0 : 1;
+  const segs = [];
+  for (let j = 0; j + 1 < bounds.length; j++) {
+    const r = rnd(seed, 1000 + edgeKey * 64 + j);
+    segs.push({ b0: bounds[j], b1: bounds[j + 1], al0: bounds[j] * bay, al1: bounds[j + 1] * bay, bay,
+      variant: (v0 + j) % 2 ? 'B' : 'A', mirror: r < 0.5, phase: Math.floor(r * 4) % 2 });
+  }
+  return segs;
 }
 
 // ---------- 方案发射 ----------
@@ -413,6 +601,8 @@ function emitBuilding(o, env, mode, opt) {
   P.plain = !!opt.plain;
   const F = buildFaces(P, { slopeBand: mode === 'tex' ? ATLAS.roof.slopeM : 0 });
   const sink = new Sink(mode);
+  const CL = makeClipper(P.ring, env.others || [], OVERHANG, P.holes);   // wave9：外挑件避让邻楼；院落洞从屋面挖掉
+  const CLA = F.awnings.length ? makeClipper(P.ring, env.others || [], AWNING_OUT + 0.05) : CL;
   const seed = P.seed;
   const up = [0, 1, 0], down = [0, -1, 0];
   const n3 = (n2) => [n2[0], 0, n2[1]];
@@ -427,8 +617,19 @@ function emitBuilding(o, env, mode, opt) {
   const CODE = { roof: 0, front: 1, long: 2, side: 3, apt: 4, party: 5, dark: 6, slab: 7, dormer: 8 };
   const procUV = (code, e) => (u) => [u, code * 32 + Math.min(31.9, Math.max(0, e))];
   const darkUV = () => ATLAS.dark;
-  const uOff = rnd(seed, 12) * 4;   // tex：每栋 U 偏移，错开图集重复
-  const upperStrip = 'up';
+  const uOff = rnd(seed, 12) * 4;   // tex：每栋瓦面 U 偏移
+  // wave9：墙色 + 立面分段（tex）
+  const tone = P.tone;
+  const aptTone = tone === 'oldyellow' ? 'aptYellow' : 'aptGrey';
+  const tRow = (k) => atlasRow(tone + ':' + k);
+  const edgeKey = (w) => (w.edge >= 0 ? w.edge : w.hole ? 900 : 950);
+  const segCache = new Map();
+  const segsOf = (w) => {
+    const key = edgeKey(w) + ':' + w.len.toFixed(4);
+    if (!segCache.has(key)) segCache.set(key, facadeSegments(seed, edgeKey(w), w.len, ['front', 'long', 'apt'].includes(w.cls)));
+    return segCache.get(key);
+  };
+  const plainOff = (w) => rnd(seed, 2000 + edgeKey(w)) * 4;
 
   // ----- 墙 -----
   const wallPts = (w, ylo, yhi) => {
@@ -452,33 +653,47 @@ function emitBuilding(o, env, mode, opt) {
       const code = CODE[w.cls === 'apt' ? 'apt' : w.cls];
       const q = wallPts(w, w.y0, maxTop + 1); if (q) sink.poly(q, nn, (p) => procUV(code, w.terr || w.cut ? 0 : P.eave)(al(p)));
     } else {
-      // tex：层带（y0 < eave 的部分）+ 檐口以上（山尖 / 女儿墙）
-      const nb = Math.max(1, Math.round(w.len / ATLAS.bayM));
-      const uBay = (p) => uOff + (al(p) / w.len) * nb / 2;
-      const uPlain = (p) => uOff + al(p) / ATLAS.plainM;
-      for (let k = 0; k < P.levels; k++) {
-        const yb = k * fh, yt = (k + 1) * fh;
-        if (yt <= w.y0 + 1e-4) continue;
-        const q = wallPts(w, yb, yt); if (!q) continue;
-        let strip;
-        if (w.cls === 'front') strip = k === 0 ? 'shop' : upperStrip;
-        else if (w.cls === 'long') strip = k === 0 ? 'res' : upperStrip;
-        else if (w.cls === 'apt') strip = 'apt';
-        else if (w.cls === 'side') strip = (w.len >= 4.5 && k > 0) ? 'sidewin' : 'plain';
-        else strip = 'plain';
-        const row = ATLAS.strips[strip];
-        const uf = (strip === 'plain') ? uPlain : (strip === 'sidewin' ? (p) => uOff + al(p) / w.len * Math.max(1, Math.round(w.len / 6.4)) / 2 : uBay);
-        sink.poly(q, nn, (p) => [uf(p), stripV(row, Math.min(1, Math.max(0, (p[1] - yb) / fh)))]);
-      }
-      if (maxTop > P.eave + 1e-3) {
-        const q = wallPts(w, Math.max(P.eave, w.y0), maxTop + 1);
-        if (q) sink.poly(q, nn, (p) => [uPlain(p), stripV(ATLAS.strips.plain, Math.min(1, Math.max(0, (p[1] - P.eave) / 3.2)))]);
+      // tex：层带（y0 < eave 的部分）+ 檐口以上（山尖 / 女儿墙）。wave9：开间墙按立面分段切片，每段自己的 A/B 条、镜像、相位
+      const pOff = plainOff(w);
+      const uPlain = (p) => pOff + al(p) / ATLAS.plainM;
+      const bayed = ['front', 'long', 'apt'].includes(w.cls);
+      const pieces = [];
+      if (bayed) {
+        for (const sg of segsOf(w)) {
+          const lo = Math.max(w.al0, sg.al0), hi = Math.min(w.al1, sg.al1);
+          if (hi - lo < 1e-4) continue;
+          const f0 = (lo - w.al0) / (w.al1 - w.al0), f1 = (hi - w.al0) / (w.al1 - w.al0);
+          const sub = { ...w, a: lerp2(w.a, w.b, f0), b: lerp2(w.a, w.b, f1), al0: lo, al1: hi,
+            top0: w.top0 + (w.top1 - w.top0) * f0, top1: w.top0 + (w.top1 - w.top0) * f1 };
+          pieces.push({ w: sub, sg });
+        }
+      } else pieces.push({ w, sg: null });
+      for (const { w: ws, sg } of pieces) {
+        const als = alongOf(ws);
+        // 环为正面积绕序时 a→b 从楼外看是自右向左：U 沿 a→b 递减 = 图集正读，递增 = 镜像（wave7/8 全部是镜像读）
+        const uBay = sg ? (p) => 0.5 * sg.phase + (sg.mirror ? 1 : -1) * 0.5 * (als(p) - sg.al0) / sg.bay : null;
+        for (let k = 0; k < P.levels; k++) {
+          const yb = k * fh, yt = (k + 1) * fh;
+          if (yt <= ws.y0 + 1e-4) continue;
+          const q = wallPts(ws, yb, yt); if (!q) continue;
+          let row, uf;
+          if (ws.cls === 'front') { row = k === 0 ? atlasRow('shop' + sg.variant) : tRow('up' + sg.variant); uf = uBay; }
+          else if (ws.cls === 'long') { row = tRow((k === 0 ? 'res' : 'up') + sg.variant); uf = uBay; }
+          else if (ws.cls === 'apt') { row = atlasRow(aptTone + sg.variant); uf = uBay; }
+          else if (ws.cls === 'side' && ws.len >= 4.5 && k > 0) { row = tRow('sidewin'); uf = (p) => als(p) / ws.len * Math.max(1, Math.round(ws.len / 6.4)) / 2; }
+          else { row = tRow('plain'); uf = uPlain; }
+          sink.poly(q, nn, (p) => [uf(p), stripV(row, Math.min(1, Math.max(0, (p[1] - yb) / fh)))]);
+        }
+        if (Math.max(ws.top0, ws.top1) > P.eave + 1e-3) {
+          const q = wallPts(ws, Math.max(P.eave, ws.y0), maxTop + 1);
+          if (q) sink.poly(q, nn, (p) => [uPlain(p), stripV(tRow('plain'), Math.min(1, Math.max(0, (p[1] - P.eave) / 3.2)))]);
+        }
       }
     }
   }
   // ----- 晒台板 -----
-  for (const e of F.extras) sink.tri(e.tri[0], e.tri[1], e.tri[2], up,
-    mode === 'geo' ? () => pal.slab : mode === 'proc' ? (p) => procUV(CODE.slab, 0)(p[0]) : (p) => [p[0] / ATLAS.plainM, stripV(ATLAS.strips.plain, 0.5)]);
+  for (const e of F.extras) for (const pc of CL.planar(e.tri)) sink.poly(pc, up,
+    mode === 'geo' ? () => pal.slab : mode === 'proc' ? (p) => procUV(CODE.slab, 0)(p[0]) : (p) => [p[0] / ATLAS.plainM, stripV(tRow('plain'), 0.5)]);
   // ----- 屋面（顶 + 底）-----
   for (const r of F.roofs) {
     const [a, b, c] = r.tri;
@@ -494,14 +709,21 @@ function emitBuilding(o, env, mode, opt) {
           const f = (sd - Math.max(0, band) * ATLAS.roof.slopeM) / ATLAS.roof.slopeM;
           return [uOff + S([p[0], p[2]]) / ATLAS.roof.uM, (ATLAS.roof.y0 + ATLAS.pad + Math.min(1, Math.max(0, f)) * (ATLAS.roof.y1 - ATLAS.roof.y0 - 2 * ATLAS.pad)) / ATLAS.H];
         };
-    sink.tri(a, b, c, [nx, ny, nz], attr);
     const lo = (p) => [p[0], p[1] - ROOF_T, p[2]];
-    if (!opt.noUnderside) sink.tri(lo(a), lo(b), lo(c), [-nx, -ny, -nz], mode === 'geo' ? () => pal.dark : mode === 'proc' ? (p) => procUV(CODE.dark, 0)(0) : darkUV);
+    for (const pc of CL.planar([a, b, c])) {
+      sink.poly(pc, [nx, ny, nz], attr);
+      if (!opt.noUnderside) sink.poly(pc.map(lo), [-nx, -ny, -nz], mode === 'geo' ? () => pal.dark : mode === 'proc' ? (p) => procUV(CODE.dark, 0)(0) : darkUV);
+    }
   }
-  // ----- 封檐板 -----
+  // ----- 封檐板（wave9：伸进邻楼避让区的段裁掉）-----
   for (const f of F.fascia) {
-    const pts = [[f.a[0], f.top0 - ROOF_T, f.a[1]], [f.b[0], f.top1 - ROOF_T, f.b[1]], [f.b[0], f.top1, f.b[1]], [f.a[0], f.top0, f.a[1]]];
-    sink.poly(pts, n3(f.n), mode === 'geo' ? () => pal.dark : mode === 'proc' ? () => procUV(CODE.dark, 0)(0) : darkUV);
+    const L = Math.hypot(f.b[0] - f.a[0], f.b[1] - f.a[1]);
+    for (const [p0, p1] of CL.segment(f.a, f.b)) {
+      const k0 = Math.hypot(p0[0] - f.a[0], p0[1] - f.a[1]) / L, k1 = Math.hypot(p1[0] - f.a[0], p1[1] - f.a[1]) / L;
+      const y0 = f.top0 + (f.top1 - f.top0) * k0, y1 = f.top0 + (f.top1 - f.top0) * k1;
+      const pts = [[p0[0], y0 - ROOF_T, p0[1]], [p1[0], y1 - ROOF_T, p1[1]], [p1[0], y1, p1[1]], [p0[0], y0, p0[1]]];
+      sink.poly(pts, n3(f.n), mode === 'geo' ? () => pal.dark : mode === 'proc' ? () => procUV(CODE.dark, 0)(0) : darkUV);
+    }
   }
   // ----- 屋脊压顶（倒 V，两片斜面）-----
   for (const r of F.ridges) {
@@ -509,8 +731,9 @@ function emitBuilding(o, env, mode, opt) {
     const A = F.W(r.s0, r.t), B = F.W(r.s1, r.t), Al = F.W(r.s0, r.t - hw), Bl = F.W(r.s1, r.t - hw), Ar = F.W(r.s0, r.t + hw), Br = F.W(r.s1, r.t + hw);
     const top = [[A[0], y + hh, A[1]], [B[0], y + hh, B[1]]];
     const cc = mode === 'geo' ? () => rgb(0x3a3b3e) : mode === 'proc' ? () => procUV(CODE.dark, 0)(0) : darkUV;
-    sink.poly([[Al[0], y - 0.02, Al[1]], [Bl[0], y - 0.02, Bl[1]], top[1], top[0]], [-P.perp[0], 1, -P.perp[1]], cc);
-    sink.poly([[Ar[0], y - 0.02, Ar[1]], [Br[0], y - 0.02, Br[1]], top[1], top[0]], [P.perp[0], 1, P.perp[1]], cc);
+    const nL = [-P.perp[0], 1, -P.perp[1]], nR = [P.perp[0], 1, P.perp[1]];
+    for (const pc of CL.planar([[Al[0], y - 0.02, Al[1]], [Bl[0], y - 0.02, Bl[1]], top[1], top[0]])) sink.poly(pc, nL, cc);
+    for (const pc of CL.planar([[Ar[0], y - 0.02, Ar[1]], [Br[0], y - 0.02, Br[1]], top[1], top[0]])) sink.poly(pc, nR, cc);
   }
   // ----- 老虎窗 -----
   for (const dmr of F.dormers) {
@@ -521,9 +744,9 @@ function emitBuilding(o, env, mode, opt) {
     const front = [Wp(sL, tf, yb), Wp(sR, tf, yb), Wp(sR, tf, yw), Wp(sL, tf, yw)];
     const gable = [Wp(sL, tf, yw), Wp(sR, tf, yw), Wp(sc, tf, yr)];
     const fAttr = mode === 'geo' ? () => pal.wood : mode === 'proc' ? (p) => procUV(CODE.dormer, yw - yb)(F.S([p[0], p[2]]) - sL)
-      : (p) => [0.125 + (F.S([p[0], p[2]]) - sL) / w * 0.25, stripV(ATLAS.strips.up, 0.22 + 0.68 * (p[1] - yb) / (yw - yb))];   // 对准图集第一开间的窗
+      : (p) => [0.125 + (F.S([p[0], p[2]]) - sL) / w * 0.25, stripV(tRow('upA'), 0.22 + 0.68 * (p[1] - yb) / (yw - yb))];   // 对准图集第一开间的窗
     sink.poly(front, fn, fAttr);
-    const pAttr = mode === 'geo' ? () => pal.plaster : mode === 'proc' ? () => procUV(CODE.party, 0)(0) : (p) => [p[0] / ATLAS.plainM, stripV(ATLAS.strips.plain, 0.5)];
+    const pAttr = mode === 'geo' ? () => pal.plaster : mode === 'proc' ? () => procUV(CODE.party, 0)(0) : (p) => [p[0] / ATLAS.plainM, stripV(tRow('plain'), 0.5)];
     sink.tri(gable[0], gable[1], gable[2], fn, pAttr);
     for (const [s, sg] of [[sL, -1], [sR, 1]]) sink.tri(Wp(s, tf, yb), Wp(s, tf, yw), Wp(s, tW, yw), [sg * P.axis[0], 0, sg * P.axis[1]], pAttr);
     const rAttr = mode === 'geo' ? () => pal.tile : mode === 'proc' ? (p) => procUV(CODE.roof, 1)(F.S([p[0], p[2]])) : (p) => [F.S([p[0], p[2]]) / ATLAS.roof.uM, (ATLAS.roof.y0 + 40) / ATLAS.H];
@@ -538,9 +761,11 @@ function emitBuilding(o, env, mode, opt) {
     const o3 = (p, dy, out) => [p[0] + aw.n[0] * out, aw.y + dy, p[1] + aw.n[1] * out];
     const top = [o3(aw.a, 0, 0), o3(aw.b, 0, 0), o3(aw.b, -aw.drop, aw.out), o3(aw.a, -aw.drop, aw.out)];
     const nUp = [aw.n[0] * aw.drop, aw.out, aw.n[1] * aw.drop];
-    sink.poly(top, nUp, mode === 'geo' ? () => pal.tile : mode === 'proc' ? (p) => procUV(CODE.roof, 1)(Math.hypot(p[0] - aw.a[0], p[2] - aw.a[1])) : (p) => [uOff + Math.hypot(p[0] - aw.a[0], p[2] - aw.a[1]) / ATLAS.roof.uM, (ATLAS.roof.y0 + 20 + (p[1] < aw.y - 0.1 ? 60 : 0)) / ATLAS.H]);
-    const bot = top.map(p => [p[0], p[1] - 0.06, p[2]]);
-    sink.poly(bot, [-nUp[0], -nUp[1], -nUp[2]], mode === 'geo' ? () => pal.dark : mode === 'proc' ? () => procUV(CODE.dark, 0)(0) : darkUV);
+    for (const pc of CLA.planar(top)) {
+      sink.poly(pc, nUp, mode === 'geo' ? () => pal.tile : mode === 'proc' ? (p) => procUV(CODE.roof, 1)(Math.hypot(p[0] - aw.a[0], p[2] - aw.a[1])) : (p) => [uOff + Math.hypot(p[0] - aw.a[0], p[2] - aw.a[1]) / ATLAS.roof.uM, (ATLAS.roof.y0 + 20 + (p[1] < aw.y - 0.1 ? 60 : 0)) / ATLAS.H]);
+      const bot = pc.map(p => [p[0], p[1] - 0.06, p[2]]);
+      sink.poly(bot, [-nUp[0], -nUp[1], -nUp[2]], mode === 'geo' ? () => pal.dark : mode === 'proc' ? () => procUV(CODE.dark, 0)(0) : darkUV);
+    }
   }
   // ----- geo：窗 / 门 / 店面（贴面四边形，吃剩余预算）-----
   if (mode === 'geo') {
@@ -581,5 +806,7 @@ function emitBuilding(o, env, mode, opt) {
     for (const q of quads) if (sink.tris + 2 <= TRI_CAP) sink.poly(q.pts, q.n, () => q.col);
   }
   const geometry = sink.geometry();
-  return { geometry, plan: P, tris: sink.tris, faces: { walls: F.walls.length, roofs: F.roofs.length, ridges: F.ridges.length, dormers: F.dormers.length, awnings: F.awnings.length, terrace: !!P.terrace } };
+  const segAll = [...segCache.values()];
+  const facade = { edges: segAll.length, segmented: segAll.filter(x => x.length > 1).length, segments: segAll.reduce((n, x) => n + x.length, 0), mirrored: segAll.flat().filter(x => x.mirror).length };
+  return { geometry, plan: P, tris: sink.tris, clip: CL.stats, facade, faces: { walls: F.walls.length, roofs: F.roofs.length, ridges: F.ridges.length, dormers: F.dormers.length, awnings: F.awnings.length, terrace: !!P.terrace } };
 }

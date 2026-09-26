@@ -274,11 +274,12 @@ function buildOuterKit(o) {
   if (r.overCap) throw new Error(`OUTER_KIT ${o.id}: ${r.tris} tris > cap even after degrade`);
   const m = new THREE.Mesh(r.geometry, MAT_VERTEX);
   m.name = o.key;
-  Object.assign(o.ud, { outerKit: OUTER_KIT_MODE, kitType: r.plan.type, kitTris: r.tris });
+  Object.assign(o.ud, { outerKit: OUTER_KIT_MODE, kitType: r.plan.type, kitTris: r.tris, kitTone: r.plan.tone });   // wave9：墙色
   if (OUTER_KIT_MODE !== 'geo') o.ud.slot = OUTER_KIT_MODE === 'tex' ? SLOT_ATLAS : SLOT_PROC;
   m.userData = o.ud;
   outerKitStats.push({ id: o.id, mode: OUTER_KIT_MODE, type: r.plan.type, roof: r.plan.roofKind, strips: r.plan.nStrip, tris: r.tris,
-    degrade: r.degrade, eave: +r.plan.eave.toFixed(2), ridge: +r.plan.ridge.toFixed(2), front: r.plan.front.length, party: r.plan.party.length, ...r.faces });
+    degrade: r.degrade, eave: +r.plan.eave.toFixed(2), ridge: +r.plan.ridge.toFixed(2), front: r.plan.front.length, party: r.plan.party.length, ...r.faces,
+    tone: r.plan.tone, holes: r.plan.holes.length, clipSplit: r.clip.split, facadeSegments: r.facade.segments, facadeSegmented: r.facade.segmented });
   return m;
 }
 
