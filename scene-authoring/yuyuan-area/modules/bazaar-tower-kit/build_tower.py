@@ -47,6 +47,132 @@ FP = [list(q) for q in OBJ['geometry']['footprint']]
 if FP[0] == FP[-1]:
     FP = FP[:-1]
 
+# ---------- 通行老街避让（A2 2026-09-26）：building_passage 道路条带内低处几何让位 ----------
+# 有顶老街等 tunnel=building_passage 道路在程序化体块上由 src/passage-clip.mjs（build-scene cutPassages）
+# 切出 w = max(3.4, 路宽+0.4)、两端延 0.5 的条带（y ∈ [0.06, 3.5]）供人行走；套件楼此前整楼落地压住条带，
+# 0.15–2.5 m 投影带吃掉冻结 3 m swept route（check-commercial-route R2）。此处按同一口径在生成器内切除，
+# 高于 3.5 m 的腰檐 / 主屋面出挑不受影响。矩形定义与 scripts/repair-layout.py 完全一致。
+PASSAGE_H = 3.5
+PASSAGE_RECTS = []
+try:
+    _ov = json.load(open(os.path.join(ROOT, 'inputs', 'overpass.json'), encoding='utf-8'))
+    _tags = {o['id']: o.get('tags', {}) for o in _ov['elements'] if o.get('type') == 'way'}
+    for _o in LAYOUT['objects']:
+        if _tags.get((_o.get('sources') or {}).get('osmWay'), {}).get('tunnel') != 'building_passage':
+            continue
+        _line = _o['geometry']['polyline']
+        _w = max(3.4, _o['geometry']['width'] + .4)
+        for _a, _b in zip(_line, _line[1:]):
+            _dx, _dz = _b[0] - _a[0], _b[1] - _a[1]
+            _L = math.hypot(_dx, _dz)
+            if _L < 1e-6:
+                continue
+            _u = (_dx / _L, _dz / _L)
+            _n = (-_u[1], _u[0])
+            _e = .5
+            PASSAGE_RECTS.append(
+                [[_a[0] - _u[0] * _e + _n[0] * _w / 2, _a[1] - _u[1] * _e + _n[1] * _w / 2],
+                 [_b[0] + _u[0] * _e + _n[0] * _w / 2, _b[1] + _u[1] * _e + _n[1] * _w / 2],
+                 [_b[0] + _u[0] * _e - _n[0] * _w / 2, _b[1] + _u[1] * _e - _n[1] * _w / 2],
+                 [_a[0] - _u[0] * _e - _n[0] * _w / 2, _a[1] - _u[1] * _e - _n[1] * _w / 2]])
+except FileNotFoundError:
+    print('WARN inputs/overpass.json missing: no passage cut (test_street_band will catch)')
+
+def _rect_planes(rect):
+    """map 系矩形 → Blender 系 (x, -z, h) 的 6 张内向平面（4 侧 + h≥0.06 + h≤PASSAGE_H）。"""
+    rb = [(p[0], -p[1]) for p in rect]
+    cx = sum(p[0] for p in rb) / 4.0
+    cy = sum(p[1] for p in rb) / 4.0
+    pls = []
+    for i in range(4):
+        a, b = rb[i], rb[(i + 1) % 4]
+        nx = -(b[1] - a[1])
+        ny = b[0] - a[0]
+        d = -nx * a[0] - ny * a[1]
+        if nx * cx + ny * cy + d < 0:
+            nx, ny, d = -nx, -ny, -d
+        pls.append((nx, ny, 0.0, d))
+    pls.append((0.0, 0.0, 1.0, -0.06))
+    pls.append((0.0, 0.0, -1.0, PASSAGE_H))
+    return pls
+
+PASSAGE_PLANES = [_rect_planes(r) for r in PASSAGE_RECTS]
+
+def passage_cut_bm(bm):
+    """条带（矩形 × h∈[0.06, PASSAGE_H]）内几何让位：移植 src/passage-clip.mjs 的三角汤平面切割，
+    UV 沿切边插值、绕序保持。返回被切除的三角形数（measurements 记录）。"""
+    if not PASSAGE_PLANES or not len(bm.faces):
+        return 0
+    uvl = bm.loops.layers.uv.active
+    faces = list(bm.faces)
+    if not faces:
+        return 0
+    cut_n = 0
+    for f in faces:
+        polys = [[(v.co.copy(), (l[uvl].uv.copy()) if uvl else None) for v, l in zip(f.verts, f.loops)]]
+        touched = False
+        for pls in PASSAGE_PLANES:
+            nxt = []
+            for poly in polys:
+                if any(all(pl[0] * c[0].x + pl[1] * c[0].y + pl[2] * c[0].z + pl[3] < -1e-8 for c in poly) for pl in pls):
+                    nxt.append(poly)                     # 整面在该棱柱外：保留
+                    continue
+                rem = poly
+                lost = False
+                cut_any = False
+                for pl in pls:
+                    ins, out = [], []
+                    n = len(rem)
+                    for i in range(n):
+                        a, b = rem[i], rem[(i + 1) % n]
+                        da = pl[0] * a[0].x + pl[1] * a[0].y + pl[2] * a[0].z + pl[3]
+                        db = pl[0] * b[0].x + pl[1] * b[0].y + pl[2] * b[0].z + pl[3]
+                        if da >= 0:
+                            ins.append(a)
+                        else:
+                            out.append(a)
+                        if (da > 0 and db < 0) or (da < 0 and db > 0):
+                            t = da / (da - db)
+                            co = a[0].lerp(b[0], t)
+                            uv = a[1].lerp(b[1], t) if uvl else None
+                            ins.append((co, uv))
+                            out.append((co, uv))
+                    if len(out) >= 3:
+                        nxt.append(out)
+                        cut_any = True
+                    rem = ins
+                    if len(rem) < 3:
+                        lost = True
+                        break
+                if cut_any or lost or len(rem) != len(poly):
+                    touched = True                       # 只在真有面积被切时才重排，贴平面面保持原样
+            polys = nxt
+            if not polys:
+                break
+        if not touched:
+            continue
+        cut_n += 1
+        bm.faces.remove(f)
+        for poly in polys:
+            dd = [poly[0]]
+            for q in poly[1:]:
+                if (q[0] - dd[-1][0]).length > 1e-9:
+                    dd.append(q)
+            if len(dd) < 3:
+                continue
+            try:
+                nvs = [bm.verts.new(q[0]) for q in dd]
+                nf = bm.faces.new(nvs)
+                if uvl:
+                    for l, q in zip(nf.loops, dd):
+                        l[uvl].uv = q[1]
+                nf.normal_update()
+            except ValueError:
+                pass
+    return cut_n
+
+PASSAGE_CUT_LOG = []
+
 MS, FA, EKP0 = P['massing'], P['facades'], dict(P['eaveKit'])
 FM = P['materials']
 WALLI = MS['wallInsetM']
@@ -2184,6 +2310,9 @@ for (part, m), items in sorted(GROUPS.items()):
     bm = bmesh.new()
     bm.from_mesh(o.data)
     bmesh.ops.triangulate(bm, faces=list(bm.faces))
+    cut_n = passage_cut_bm(bm)
+    if cut_n:
+        PASSAGE_CUT_LOG.append({'part': o.name, 'trianglesCut': cut_n})
     bm.to_mesh(o.data)
     bm.free()
     final.append(o)
@@ -2279,6 +2408,7 @@ json.dump({'triangles': tris, 'byNode': by, 'glbBytes': os.path.getsize(glb), 'm
                        'riseM': round(r['rise'], 2)} for r in LEAN],
            'fillPatches': [{'block': f['block'], 'storey': f['storey'], 'areaM2': round(len(f['cells']) * f['cs'] ** 2, 1)} for f in FILL],
            'parapets': [{'block': q['block'], 'storey': q['storey'], 'edge': q['edge'], 's': [round(q['s0'], 2), round(q['s1'], 2)]} for q in PARAPET],
+           'passageCuts': {'rects': len(PASSAGE_RECTS), 'heightBelowM': PASSAGE_H, 'cutByPart': PASSAGE_CUT_LOG},
            'streetEdges': {str(k): s for k, s in enumerate(STREET) if s},
            'buildSeconds': round(time.time() - T0, 1)},
           open(os.path.join(OUT, 'measurements.json'), 'w'), ensure_ascii=False, indent=2)

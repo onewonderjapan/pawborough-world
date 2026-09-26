@@ -12,7 +12,10 @@
   "bld-553893867",
   "bld-389701971",
   "bld-553893873",
-  "bld-553893868"
+  "bld-553893868",
+  "bld-428202606",
+  "bld-428202607",
+  "bld-553893884"
  ],
  "params": {
   "bld-428202599": "params/huabao-bld-428202599.json",
@@ -26,7 +29,10 @@
   "bld-553893867": "params/gallery-bld-553893867.json",
   "bld-389701971": "params/mall-bld-389701971.json",
   "bld-553893873": "params/gallery-bld-553893873.json",
-  "bld-553893868": "params/shophouse-bld-553893868.json"
+  "bld-553893868": "params/shophouse-bld-553893868.json",
+  "bld-428202606": "params/gallery-bld-428202606.json",
+  "bld-428202607": "params/gallery-bld-428202607.json",
+  "bld-553893884": "params/shophouse-bld-553893884.json"
  },
  "zonePart": {
   "bld-428202599": 3,
@@ -40,7 +46,10 @@
   "bld-553893867": 4,
   "bld-389701971": 4,
   "bld-553893873": 4,
-  "bld-553893868": 4
+  "bld-553893868": 4,
+  "bld-428202606": 5,
+  "bld-428202607": 5,
+  "bld-553893884": 5
  },
  "ownerOverrides": {
   "bld-428202603": "referenceBasis: text-only (2023 renovation reports), no photo; needsPhoto=true（wave7 B2 按文字重建；0002-037 已确认为老庙黄金银楼，不再使用）"

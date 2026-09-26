@@ -727,10 +727,64 @@ for fe in obj.get('frontEdges', []):
         continue
     STREET_EDGES.append((k, fe['street'], A, B))
 _glass_c = _comps_by_mat('glass')
+# ---------- 通行老街（tunnel=building_passage，A2 2026-09-26）：底层店面玻璃覆盖的断言范围扣除通道段 ----------
+# 通道段由 layout + inputs/overpass.json 重算（与 build_tower 让位切口 / repair-layout / build-scene cutPassages
+# 同口径）；生成器已在条带内让位，通道是设计开口不是店面，覆盖率分母按扣除通道段后的临街边长计。
+try:
+    _ov = json.load(open(os.path.join(ROOT, 'inputs', 'overpass.json'), encoding='utf-8'))
+    _otags = {o['id']: o.get('tags', {}) for o in _ov['elements'] if o.get('type') == 'way'}
+except FileNotFoundError:
+    _otags = {}
+_PASSAGE_RECTS = []
+for _o in LAYOUT['objects']:
+    if _otags.get((_o.get('sources') or {}).get('osmWay'), {}).get('tunnel') != 'building_passage':
+        continue
+    _line = _o['geometry']['polyline']
+    _w = max(3.4, _o['geometry']['width'] + .4)
+    for _a, _b in zip(_line, _line[1:]):
+        _dx, _dz = _b[0] - _a[0], _b[1] - _a[1]
+        _Ll = math.hypot(_dx, _dz)
+        if _Ll < 1e-6:
+            continue
+        _u = (_dx / _Ll, _dz / _Ll)
+        _nn = (-_u[1], _u[0])
+        _e = .5
+        _PASSAGE_RECTS.append(
+            [[_a[0] - _u[0] * _e + _nn[0] * _w / 2, _a[1] - _u[1] * _e + _nn[1] * _w / 2],
+             [_b[0] + _u[0] * _e + _nn[0] * _w / 2, _b[1] + _u[1] * _e + _nn[1] * _w / 2],
+             [_b[0] + _u[0] * _e - _nn[0] * _w / 2, _b[1] + _u[1] * _e - _nn[1] * _w / 2],
+             [_a[0] - _u[0] * _e - _nn[0] * _w / 2, _a[1] - _u[1] * _e - _nn[1] * _w / 2]])
+
+def _strip_ivs(A, B, L, t, n, inset):
+    """临街边（含墙面内缩 inset 处）被通行条带覆盖的 s 区间（layout+overpass 重算）。"""
+    step = 0.05
+    ivs, cur = [], None
+    for j in range(int(L / step) + 2):
+        s = min(L, j * step)
+        inr = False
+        for off in (0.0, inset):
+            px, pz = A[0] + t[0] * s - n[0] * off, A[1] + t[1] * s - n[1] * off
+            if any(point_in_poly((px, pz), r) for r in _PASSAGE_RECTS):
+                inr = True
+                break
+        if inr:
+            cur = [s, s] if cur is None else [cur[0], s]
+        elif cur is not None:
+            ivs.append(tuple(cur))
+            cur = None
+    if cur is not None:
+        ivs.append(tuple(cur))
+    return [(max(0.0, a - step / 2), min(L, b + step / 2)) for a, b in ivs]
+
+_INSET = PRM.get('massing', {}).get('wallInsetM', 0.3)
 for k, st, A, B in STREET_EDGES:
     L, t, n = edge_frame_map(A, B)
+    exc = _strip_ivs(A, B, L, t, n, _INSET)
+    free = L - sum(b - a for a, b in exc)
     cov = coverage(_glass_c, A, B, 0.1, 2.6, 0.0, 6.0)
-    ok('test10b 临街边 v%d（%s，%.1f m）底层店面玻璃覆盖 %.0f%% ≥ 50%%' % (k, st, L, cov * 100), cov >= 0.5)
+    cov_free = cov * L / free if free > 0.5 else (1.0 if cov >= 0.5 else 0.0)
+    ok('test10b 临街边 v%d（%s，%.1f m，其中通行通道段 %.1f m）底层店面玻璃覆盖 %.0f%% ≥ 50%%'
+       % (k, st, L, L - free, cov_free * 100), free <= 0.5 or cov_free >= 0.5)
 
 # ---------- test 11：逐楼形制（主控文字规格 → 可测条目；位置 / 高度全部按 layout 重算） ----------
 def front_edge():
