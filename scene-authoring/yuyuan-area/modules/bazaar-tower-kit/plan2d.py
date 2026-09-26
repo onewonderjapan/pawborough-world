@@ -101,8 +101,9 @@ def edge_frame(a, b):
     return L, t, (t[1], -t[0])
 
 
-def offset_edges(poly, ds):
-    """逐边内缩：ds[i] = 边 i（poly[i]→poly[i+1]）向内平移量（负 = 外扩）；角点 = 相邻偏移线交点。"""
+def offset_edges(poly, ds, step_deg=0.0):
+    """逐边内缩：ds[i] = 边 i（poly[i]→poly[i+1]）向内平移量（负 = 外扩）；角点 = 相邻偏移线交点。
+    step_deg > 0（wave7 B）：相邻两边折角 < step_deg 且内缩量不同时不求交（近平行线交点会沿边飞出），改为在原顶点处做一个小台阶。"""
     poly = ccw(poly)
     n = len(poly)
     if not isinstance(ds, (list, tuple)):
@@ -112,11 +113,16 @@ def offset_edges(poly, ds):
         a, b = poly[i], poly[(i + 1) % n]
         L, t, nn = edge_frame(a, b)
         d = ds[i]
-        lines.append(((a[0] - nn[0] * d, a[1] - nn[1] * d), t))
+        lines.append(((a[0] - nn[0] * d, a[1] - nn[1] * d), t, nn))
     out = []
     for i in range(n):
-        p0, d0 = lines[i - 1]
-        p1, d1 = lines[i]
+        p0, d0, n0 = lines[i - 1]
+        p1, d1, n1 = lines[i]
+        if step_deg > 0 and abs(ds[i - 1] - ds[i]) > 1e-9 and abs(turn_deg(poly[i - 1], poly[i], poly[(i + 1) % n])) < step_deg:
+            v = poly[i]
+            out.append((v[0] - n0[0] * ds[i - 1], v[1] - n0[1] * ds[i - 1]))
+            out.append((v[0] - n1[0] * ds[i], v[1] - n1[1] * ds[i]))
+            continue
         x = _line_x(p0, d0, p1, d1)
         if x is None:                       # 平行（共线顶点）：取本边起点
             x = p1
@@ -207,6 +213,110 @@ def inscribed_rect(poly, cell=0.25, keepout=(), min_side=3.0, v0_max=None):
                 start = si
             stack.append((start, cur))
     return best[1]
+
+
+def rect_cover(poly, holes=(), keepout=(), cell=0.25, min_side=3.0, max_n=4, min_area=12.0):
+    """wave7 K0 附属坡屋面：把「poly 减去 holes（多边形）与 keepout（轴向矩形）」的剩余区贪心地铺成轴向矩形。
+    每轮取剩余格里面积最大的矩形（直方图法，格四角都在 poly 内、格心不在任何 hole / keepout 内、未被前几轮占用），
+    直到矩形短边 < min_side、面积 < min_area 或已取 max_n 个。返回 [(u0,u1,v0,v1), ...]（按面积降序）。"""
+    us = [p[0] for p in poly]
+    vs = [p[1] for p in poly]
+    u0, v0 = min(us), min(vs)
+    nu = int(math.ceil((max(us) - u0) / cell))
+    nv = int(math.ceil((max(vs) - v0) / cell))
+    corner_ok = [[point_in(poly, (u0 + i * cell, v0 + j * cell)) for i in range(nu + 1)] for j in range(nv + 1)]
+    free = []
+    for j in range(nv):
+        row = []
+        for i in range(nu):
+            good = corner_ok[j][i] and corner_ok[j][i + 1] and corner_ok[j + 1][i] and corner_ok[j + 1][i + 1]
+            if good:
+                c = (u0 + (i + 0.5) * cell, v0 + (j + 0.5) * cell)
+                if any(point_in(h, c) for h in holes) or any(a0 < c[0] < a1 and b0 < c[1] < b1 for (a0, a1, b0, b1) in keepout):
+                    good = False
+            row.append(good)
+        free.append(row)
+    out = []
+    while len(out) < max_n:
+        best = (0, None)
+        h = [0] * nu
+        for j in range(nv):
+            for i in range(nu):
+                h[i] = h[i] + 1 if free[j][i] else 0
+            stack = []
+            for i in range(nu + 1):
+                cur = h[i] if i < nu else 0
+                start = i
+                while stack and stack[-1][1] >= cur:
+                    si, sh = stack.pop()
+                    w = i - si
+                    if w * cell >= min_side and sh * cell >= min_side and w * sh > best[0]:
+                        best = (w * sh, (si, i, j - sh + 1, j + 1))
+                    start = si
+                stack.append((start, cur))
+        if best[1] is None or best[0] * cell * cell < min_area:
+            break
+        i0, i1, j0, j1 = best[1]
+        for j in range(j0, j1):
+            for i in range(i0, i1):
+                free[j][i] = False
+        out.append((u0 + i0 * cell, u0 + i1 * cell, v0 + j0 * cell, v0 + j1 * cell))
+    return out
+
+
+def frame_to_uv(ang, p):
+    """转角 ang（弧度）的矩形坐标系 (a, b) → 局部 (u, v)。"""
+    c, s = math.cos(ang), math.sin(ang)
+    return (p[0] * c - p[1] * s, p[0] * s + p[1] * c)
+
+
+def uv_to_frame(ang, p):
+    c, s = math.cos(ang), math.sin(ang)
+    return (p[0] * c + p[1] * s, -p[0] * s + p[1] * c)
+
+
+def frame_poly(ang, r):
+    """转角系矩形 r=(a0,a1,b0,b1) → 局部 (u, v) 四边形（CCW）。"""
+    return ccw([frame_to_uv(ang, q) for q in rect_poly(r)])
+
+
+def edge_dirs(poly, min_len=4.0, tol_deg=4.0):
+    """多边形长边方向（对 90° 取模），去重；恒含 0（前街边系）。"""
+    dirs = [0.0]
+    n = len(poly)
+    for i in range(n):
+        a, b = poly[i], poly[(i + 1) % n]
+        if math.hypot(b[0] - a[0], b[1] - a[1]) < min_len:
+            continue
+        ang = math.atan2(b[1] - a[1], b[0] - a[0]) % (math.pi / 2)
+        if ang > math.pi / 4:
+            ang -= math.pi / 2
+        if all(abs((ang - d + math.pi / 4) % (math.pi / 2) - math.pi / 4) > math.radians(tol_deg) for d in dirs):
+            dirs.append(ang)
+    return dirs
+
+
+def rect_cover_dirs(poly, holes=(), dirs=(0.0,), cell=0.25, min_side=3.0, max_n=4, min_area=12.0):
+    """wave7 B：多方向贪心铺矩形——每轮在各方向系里各找最大矩形，取面积最大者；已取的矩形（局部四边形）并入 holes。
+    返回 [(ang, (a0,a1,b0,b1)), ...]。非正交 footprint 的斜向翼可以落在自己方向的矩形里。"""
+    out = []
+    hs = [list(h) for h in holes]
+    for _ in range(max_n):
+        best = None
+        for ang in dirs:
+            pr = [uv_to_frame(ang, q) for q in poly]
+            hr = [[uv_to_frame(ang, q) for q in h] for h in hs]
+            R = rect_cover(pr, holes=hr, cell=cell, min_side=min_side, max_n=1, min_area=min_area)
+            if R:
+                a0, a1, b0, b1 = R[0]
+                A = (a1 - a0) * (b1 - b0)
+                if best is None or A > best[0] + 1e-6:
+                    best = (A, ang, R[0])
+        if best is None:
+            break
+        out.append((best[1], best[2]))
+        hs.append(frame_poly(best[1], best[2]))
+    return out
 
 
 def corner_notch(poly, rect):

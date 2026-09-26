@@ -12,7 +12,7 @@
 """
 import bpy, json, math, os, sys
 import numpy as np
-from mathutils import Vector
+from mathutils import Matrix, Vector
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, '..', '..'))
@@ -22,7 +22,9 @@ def arg(flag, default):
 
 DIR = os.path.join(ROOT, arg('--dir', 'out-bazaar-towers/bld-428202599'))
 MEAS = json.load(open(os.path.join(DIR, 'measurements.json'), encoding='utf-8'))
-P = json.load(open(os.path.join(HERE, MEAS['params']), encoding='utf-8'))
+sys.path.insert(0, HERE)
+import params_load                                               # noqa: E402
+P = params_load.load(MEAS['params'])
 PROC = arg('--procedural', None)
 SUB = arg('--out-sub', 'renders-procedural' if PROC else 'renders')
 REND = SUB if os.path.isabs(SUB) else os.path.join(DIR, SUB)
@@ -33,7 +35,7 @@ OBJ = next(o for o in LAYOUT['objects'] if o['id'] == P['id'])
 FP = [list(q) for q in OBJ['geometry']['footprint']]
 if FP[0] == FP[-1]:
     FP = FP[:-1]
-i0, i1 = P['frontEdge']
+FP, i0, i1, _flip = params_load.ccw_frame(FP, P['frontEdge'])        # 顺时针 footprint 同生成器换算
 O = Vector((FP[i0][0], FP[i0][1]))
 du = Vector((FP[i1][0] - FP[i0][0], FP[i1][1] - FP[i0][1])).normalized()
 dv = Vector((-du.y, du.x))
@@ -126,17 +128,28 @@ extra = arg('--cam-json', None)                        # 追加机位（例：B5
 if extra:
     for k, (pp, ll, fv) in json.loads(extra).items():
         CAMS[k] = (to_b(*pp), to_b(*ll), fv)
+# wave7 K0：正上方正交俯视（航拍平屋顶带检查用；屋面覆盖的判定在 roof_cover.py，这张只给人看）
+TOPC = to_b(UC, VC, TOP + 60)
+CAMS['top'] = (TOPC, TOPC - Vector((0, 0, 1)), ('ortho', max(WID, DEP) * 1.25 * 1.6))
 names = arg('--cams', 'front,aerial-3q,back,street-eye').split(',')
 def cam(name, pos, look, fov):
     c = bpy.data.cameras.new(name)
-    c.lens_unit = 'FOV'
-    c.angle = math.radians(fov)
+    if isinstance(fov, tuple):
+        c.type = 'ORTHO'
+        c.ortho_scale = fov[1]
+    else:
+        c.lens_unit = 'FOV'
+        c.angle = math.radians(fov)
     c.clip_end = 2000
     o = bpy.data.objects.new(name, c)
     sc.collection.objects.link(o)
     o.location = pos
     o.rotation_mode = 'QUATERNION'
     o.rotation_quaternion = (look - pos).to_track_quat('-Z', 'Y')
+    if isinstance(fov, tuple):                          # 俯视：画面上方 = 楼内（+v），前街在下
+        up = (to_b(0, 1, 0) - to_b(0, 0, 0)).normalized()
+        x = up.cross(Vector((0, 0, 1))).normalized()
+        o.rotation_quaternion = Matrix((x, up, Vector((0, 0, 1)))).transposed().to_quaternion()
     return o
 blank = []
 stats = {}
@@ -153,7 +166,7 @@ for nm in names:
     dom = counts.max() / counts.sum()
     ok = std255 >= 2.0 and dom <= 0.95
     stats[nm] = {'std255': round(float(std255), 1), 'dominant': round(float(dom), 3), 'ok': bool(ok),
-                 'cam': [round(x, 2) for x in pos], 'look': [round(x, 2) for x in look], 'fov': fov}
+                 'cam': [round(x, 2) for x in pos], 'look': [round(x, 2) for x in look], 'fov': list(fov) if isinstance(fov, tuple) else fov}
     print('RENDER', nm, 'std255=%.1f' % std255, 'dominant=%.1f%%' % (dom * 100), 'OK' if ok else 'BLANK')
     if not ok:
         blank.append(nm)

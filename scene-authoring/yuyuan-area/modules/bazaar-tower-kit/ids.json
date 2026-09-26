@@ -1,27 +1,42 @@
 {
- "comment": "BAZAAR_TOWERS=1 接入的商城大楼套件 id 唯一来源（build-scene.mjs 让位、assemble.py 导入 SITE-bazaar、export-zones.py 分件、zone-split-test / test_tower.py 断言都读这里）。params = 生成器参数文件（相对 modules/bazaar-tower-kit/）；zonePart = 该楼进 bazaar 第几件（1 街面、2 程序化大楼体块，套件楼从 3 起；wave4 Z0 起套件楼不再与程序化体块同件）。每件原始 GLB ≤ 12 MB 且留 ≥ 2 MB 余量（zone-split-test）；件满了就给后加的楼换下一个件号。",
+ "comment": "BAZAAR_TOWERS=1 接入的商城大楼套件 id 唯一来源（build-scene.mjs 让位、assemble.py 导入 SITE-bazaar、export-zones.py 分件、zone-split-test / test_tower.py 断言都读这里）。params = 生成器参数文件（相对 modules/bazaar-tower-kit/）；zonePart = 该楼进 bazaar 第几件（1 街面、2 程序化大楼体块，套件楼从 3 起；wave4 Z0 起套件楼不再与程序化体块同件）。每件原始 GLB ≤ 12 MB 且留 ≥ 2 MB 余量（zone-split-test）；件满了就给后加的楼换下一个件号。 zonePartCmPositionBits：件号 → meshopt 位置量化位数（export-zones 写进 manifest，compress-zones 读；wave7 主控决定 2：zone-bazaar-4 用 14 位，同机位像素差证明看不出）。skipped：不接入的 bazaarBlock 与原因。",
  "ids": [
   "bld-428202599",
   "bld-428202601",
   "bld-389701812",
   "bld-428202602",
-  "bld-428202603"
+  "bld-428202603",
+  "bld-389701901",
+  "bld-165791764",
+  "bld-389702030",
+  "bld-553893867"
  ],
  "params": {
   "bld-428202599": "params/huabao-bld-428202599.json",
   "bld-428202601": "params/tianyu-bld-428202601.json",
   "bld-389701812": "params/hefeng-bld-389701812.json",
   "bld-428202602": "params/yuebin-bld-428202602.json",
-  "bld-428202603": "params/laofandian-bld-428202603.json"
+  "bld-428202603": "params/laofandian-bld-428202603.json",
+  "bld-389701901": "params/tonghanchun-bld-389701901.json",
+  "bld-165791764": "params/shophouse-bld-165791764.json",
+  "bld-389702030": "params/shophouse-bld-389702030.json",
+  "bld-553893867": "params/gallery-bld-553893867.json"
  },
  "zonePart": {
   "bld-428202599": 3,
   "bld-428202601": 3,
   "bld-389701812": 3,
   "bld-428202602": 3,
-  "bld-428202603": 3
+  "bld-428202603": 3,
+  "bld-389701901": 4,
+  "bld-165791764": 4,
+  "bld-389702030": 4,
+  "bld-553893867": 4
  },
  "ownerOverrides": {
-  "bld-428202603": "参照存疑（referenceDisputed=true），机主 2026-09-26「按图库先做」启用；有实拍后复核"
+  "bld-428202603": "referenceBasis: text-only (2023 renovation reports), no photo; needsPhoto=true（wave7 B2 按文字重建；0002-037 已确认为老庙黄金银楼，不再使用）"
+ },
+ "skipped": {
+  "bld-428202604": "小世界会所：layout 唯一登记的临街边（豫园老街 27.2 m）与 bld-553893884 同一条边重复登记，其余两边贴 bld-428202607，街上看不到这栋——保留程序化体块（wave7 主控决定 3）"
  }
 }

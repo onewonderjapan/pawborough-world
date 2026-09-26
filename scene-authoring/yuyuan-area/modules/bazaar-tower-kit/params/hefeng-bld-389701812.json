@@ -55,7 +55,37 @@
    "chu": 0.4,
    "reach": 2.8
   },
-  "ridgeAxis": "u"
+  "ridgeAxis": "u",
+  "eaveLiftM": 0.35,
+  "annex": {
+   "enabled": true,
+   "minSideM": 4.5,
+   "maxRoofs": 4,
+   "minAreaM2": 20.0,
+   "ridgeFrac": 0.36,
+   "breakFrac": 0.55,
+   "breakInsetFrac": 0.36,
+   "gableInsetM": 1.2,
+   "underUpperEaveM": 0.3,
+   "towerClearM": 0.5,
+   "eaveKit": {
+    "over": 1.2,
+    "chu": 0.35,
+    "qiao": 0.9,
+    "reach": 2.4,
+    "ornamentScale": "auto"
+   },
+   "note": "wave7 K0：退台 / 顶层矩形以外的平屋面：≥ 4.5 m 见方的铺附属小歇山（低于上一层檐口），更窄的条 / 楔形做披檐（单坡从上层墙根落到本层檐口），共享边一侧做封火墙瓦压顶；腰檐在这些段断开收口",
+   "eaveLiftM": 0.4,
+   "leanTo": {
+    "maxM": 4.5,
+    "pitchDeg": 16.0,
+    "minRiseM": 0.6,
+    "underUpperM": 1.2,
+    "eaveLiftM": 0.4,
+    "parapetHM": 0.9
+   }
+  }
  },
  "facades": {
   "bayRhythmM": [
@@ -245,7 +275,8 @@
   "红灯笼沿正立面檐下一排（节距 3.4 m），球形简化。",
   "二层白墙 + 深色木格窗带，檐下彩画额枋色块 + 密排斗拱，上压加厚加深的深瓦檐（eaveKitByStorey.2）。",
   "三层朱红栏杆外廊 + 格扇（screen 样式），四层临街退 1.6 m、红柱格扇、正中一块黑底金框空匾；顶为歇山。",
-  "东侧与 bld-553893868 共享边：该段不出檐、不出店面（hall-kit 共享边规则），檐口外缘收在边线内。"
+  "东侧与 bld-553893868 共享边：该段不出檐、不出店面（hall-kit 共享边规则），檐口外缘收在边线内。",
+  "wave7 K0 屋面收平带：顶层矩形 / 退台以外的平屋面改为附属小歇山（附属坡屋面，檐口 = 该层层顶，脊低于上层檐口），腰檐在附属屋面接管的段断开、端头收口（sharedEdgeEaveEnd=endcap，同华宝楼 E3 口径）；主屋面下檐抬 0.2 m（eaveLiftM，脊高不变）让墙线处瓦面盖过墙顶。"
  ],
  "notes": [
   "wave4 B5 同口径：挂落描金（棂条 0.30、金 d6ab4a、衬底深红木）与底层玻璃（alpha 0.5 + 店内暖色衬底 b08a60 + 微光 7a5a3a）调到看得出"
@@ -254,5 +285,6 @@
   "date": "2026-09-26",
   "front": "中心广场",
   "note": "机主确认正门朝中心广场"
- }
+ },
+ "sharedEdgeEaveEnd": "endcap"
 }

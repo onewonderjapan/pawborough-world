@@ -21,6 +21,9 @@ GLB = os.path.join(DIR, 'model.glb')
 P = json.load(open(os.path.join(DIR, 'measurements.json'), encoding='utf-8'))
 
 ID = os.path.basename(DIR)
+sys.path.insert(0, HERE)
+import params_load                                               # noqa: E402
+PLAIN_STONE = bool(params_load.load(P['params'])['materials'].get('plinthPlain'))
 LAYOUT = json.load(open(os.path.join(ROOT, 'baseline', 'layout.json'), encoding='utf-8'))
 obj = next(o for o in LAYOUT['objects'] if o['id'] == ID)
 FP = [q for q in obj['geometry']['footprint'] if True]
@@ -92,7 +95,9 @@ for o in meshes:
     linked = base.is_linked if base else False
     if not linked:
         # 允许解析色材质（gild/glass/dark），其余须有贴图
-        if not any(k in m.name for k in ('gild', 'glass', 'dark', 'shopback', 'lacquer', 'signred', 'lantern')):
+        # wave7 B：预设楼台基 / 楼板用素色石（params materials.plinthPlain），同属解析色材质
+        if not any(k in m.name for k in ('gild', 'glass', 'dark', 'shopback', 'lacquer', 'signred', 'lantern')) and \
+                not (PLAIN_STONE and 'stone' in m.name):
             bad_mat.append(o.name + ':base-color-not-textured')
     for n in m.node_tree.nodes:
         if n.type == 'TEX_IMAGE' and n.image:
@@ -111,7 +116,9 @@ gls = [k for k in alpha if 'glass' in k]
 # Blender 4.5 将 glTF MASK 导入为 HASHED；判断标准=Alpha 输入已连接到贴图 + 混合模式为遮罩类
 check('格心材质 Alpha 已连接、混合模式为遮罩类', bool(lat) and alpha[lat[0]][0] in ('CLIP', 'MASK', 'HASHED')
       and alpha[lat[0]][1] == 'linked', str(alpha.get(lat[0]) if lat else None))
-_PP = json.load(open(os.path.join(HERE, P['params']), encoding='utf-8'))
+sys.path.insert(0, HERE)
+import params_load                                               # noqa: E402
+_PP = params_load.load(P['params'])
 _GA = _PP['materials']['glassAlpha']
 check('玻璃材质为 BLEND 且 alpha≈%.2f（params）' % _GA, bool(gls) and alpha[gls[0]][0] == 'BLEND' and abs(alpha[gls[0]][1] - _GA) < 0.02,
       str(alpha.get(gls[0]) if gls else None))

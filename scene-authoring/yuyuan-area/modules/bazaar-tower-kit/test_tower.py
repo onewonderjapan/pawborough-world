@@ -23,7 +23,9 @@ SOURCE = arg('--source', 'module')
 REG = json.load(open(os.path.join(HERE, 'ids.json'), encoding='utf-8'))
 _PREL = arg('--params', None) or REG.get('params', {}).get(ID) or next(
     ('params/' + f for f in sorted(os.listdir(os.path.join(HERE, 'params'))) if f.endswith(ID + '.json')), None)
-PRM = json.load(open(os.path.join(HERE, _PREL), encoding='utf-8'))
+sys.path.insert(0, HERE)
+import params_load                                               # noqa: E402  wave7 K1：立面预设楼的 params 合并 + auto 值（名楼 params 原样）
+PRM = params_load.load(_PREL)
 BUDGET = PRM.get('budget', {})
 OUT_MODEL = os.path.join(ROOT, arg('--out', os.path.join('out-bazaar-towers', ID)))
 GLB = os.path.join(OUT_MODEL, 'model.glb')
@@ -268,6 +270,10 @@ _FPS = _simplify(FP)
 _O14, _O175 = _offset_out(_FPS, 1.4 + 0.001), _offset_out(_FPS, 1.75 + 0.001)
 def _edge_excess(pt):
     if point_in_poly(pt, _O14):
+        return -1.0
+    # wave7 B：离真实 footprint（不简化）欧氏距离 ≤ 1.4 m 也算合规——_FPS 去掉 < 5° 凸折角后弦在 footprint 以内，
+    # 贴着真实折线走的檐口（预设楼 kinkDeg 2°）会被按弦量成越界；圆角口径在直段上不比斜接宽松，在转角处更严
+    if point_in_poly(pt, FP, tol=1.4):
         return -1.0
     near_corner = min(math.hypot(pt[0] - q[0], pt[1] - q[1]) for q in FP) <= 3.0
     if near_corner and point_in_poly(pt, _O175):
@@ -685,7 +691,13 @@ if True:                       # lead 2026-09-26：华宝楼也按共享边规�
                                 (x - e['a'][0]) * e['n'][0] + (z - e['a'][1]) * e['n'][1]))
                 if max(p[1] for p in tri) <= worst:
                     continue
+                # wave7：只看共享边外 5 m 以内的三角（再远就不是「越过这条边」的出檐，而是凹 footprint 绕到这条边
+                # 延长线外侧的本栋自身体量——例 bld-165791764 绕着华宝楼东端，旧判据误报 30 m；插进邻栋由 test9b 管）
+                if min(p[1] for p in tri) > 5.0:
+                    continue
                 cp = _clip_s(tri, e['lo'], e['hi'])
+                if cp and max(p[1] for p in cp) > 5.0:            # 细长三角（邻边压顶 / 檐）只取 d ≤ 5 m 的部分
+                    cp = [(q[1], q[0]) for q in _clip_s([(p[1], p[0]) for p in cp], -1e9, 5.0)]
                 if cp:
                     worst = max(worst, max(p[1] for p in cp))
         ok('test9a 不越过与 %s 的共享边（重叠 %.2f m，最大越界 %.3f m ≤ 0.02）' % (e['other'], e['hi'] - e['lo'], worst), worst <= 0.02)
@@ -803,23 +815,23 @@ elif ID == 'bld-428202602':                                # 悦宾楼
           for c in _components(n_) if (max(p[1] for p in c) - min(p[1] for p in c)) < 0.4]
     brf = [c for c in br if -0.2 <= -s_d(A, t, n, comp_center(c)[0], comp_center(c)[2])[1] <= 1.2 and comp_center(c)[1] < 5.5]
     ok('test11e 悦宾楼 底层檐下斗拱密排：前街 %d 组，间距 ≤ 1.6 m（%.1f m 边）' % (len(brf), L), len(brf) >= L / 1.6)
-elif ID == 'bld-428202603':                                # 上海老饭店
+elif ID == 'bld-428202603':                                # 上海老饭店（wave7 B2：按 2023 翻新文字资料重建，无实拍）
     A, B, L, t, n = front_edge()
     gil = [v for n_ in meshes if any('gild' in mn for mn in n_.get('mats', [])) for v in world_verts(n_)]
     top = max(all_w, key=lambda v: v[1])
-    topg = max(gil, key=lambda v: v[1]) if gil else [0, 0, 0]
-    d3 = math.hypot(topg[0] - FP[3][0], topg[2] - FP[3][1])
-    ok('test11a 上海老饭店 最高点是鎏金宝顶（%.2f m，金 %.2f m），在旧校场路北端转角塔（离 v3 %.1f m ≤ 16）' % (top[1], topg[1], d3),
-       abs(top[1] - topg[1]) < 1e-6 and d3 <= 16.0 and topg[1] >= 23.0)
-    fin = [c for c in _comps_by_mat('gild') if min(p[1] for p in c) >= topg[1] - 3.0]
-    ok('test11b 上海老饭店 葫芦宝顶（塔顶鎏金件 %d 个 ≥ 3：座 / 下球 / 上球 / 尖）' % len(fin), len(fin) >= 3)
-    wv = [v for n_ in meshes if n_['name'].startswith('walls__') for v in world_verts(n_)
-          if math.hypot(v[0] - topg[0], v[2] - topg[2]) > 9.0 and 0 <= s_d(A, t, n, v[0], v[2])[0] <= L]
-    front_w = [v for v in wv if 0.25 <= s_d(A, t, n, v[0], v[2])[1] <= 5.5]
-    rear_w = [v for v in wv if s_d(A, t, n, v[0], v[2])[1] >= 9.0]
-    fh = max(v[1] for v in front_w) if front_w else 99
-    rh = max(v[1] for v in rear_w) if rear_w else 0
-    ok('test11c 上海老饭店 两层前楼（临街 5.5 m 进深内墙顶 %.2f ≤ 8.0 m）+ 后楼四层（墙顶 %.2f ≥ 13.0 m）' % (fh, rh), fh <= 8.0 and rh >= 13.0)
+    gtop = max((v[1] for v in gil), default=0.0)
+    wtop = max((v[1] for n_ in meshes if n_['name'].startswith('walls__') for v in world_verts(n_)), default=0.0)
+    # 11a：不是老庙黄金银楼的金色宝顶转角塔——最高点不是鎏金件，鎏金件都不高于墙顶（layout height）+ 1 m
+    ok('test11a 上海老饭店 无金色宝顶塔：最高点 %.2f m 非鎏金，鎏金件最高 %.2f ≤ 墙顶 %.1f + 1 m' % (top[1], gtop, obj['height']),
+       gtop <= obj['height'] + 1.0 and (not gil or abs(top[1] - gtop) > 1e-6))
+    # 11b：商城语汇——沿旧校场路（params 前街边）每层外廊（直棂栏杆），≥ 3 个标高、每层通长 ≥ 60 %
+    sl = _comps_by_mat('slats')
+    levels = sorted({round(min(p[1] for p in c), 1) for c in sl})
+    covs = {h: coverage([c for c in sl if abs(min(q[1] for q in c) - h) < 0.06], A, B, -1.6, 0.6) for h in levels}
+    good = [h for h, c in covs.items() if c >= 0.6]
+    ok('test11b 上海老饭店 旧校场路外廊 %d 层 ≥ 3（通长 ≥ 60%%：%s）' % (len(good), {h: '%.0f%%' % (c * 100) for h, c in covs.items()}), len(good) >= 3)
+    # 11c：层数 / 墙顶照 layout（4 层 13.6 m）：墙体件最高 = layout height ± 0.2
+    ok('test11c 上海老饭店 墙顶 %.2f m = layout %.1f m ± 0.2（%d 层）' % (wtop, obj['height'], obj.get('levels')), abs(wtop - obj['height']) <= 0.2)
 
 # ---------- test 12：匾额 / 招牌是空板（材质无贴图 = 无字）；模块里没有带贴图的匾 ----------
 _board = [m for k, m in mats.items() if any(x in k for x in ('dark', 'gild', 'signred'))]
@@ -914,13 +926,65 @@ if PRM.get('sharedEdgeEaveEnd') == 'endcap':
             for e in SHARED_L:
                 s_ = (cx - e['a'][0]) * e['t'][0] + (cz - e['a'][1]) * e['t'][1]
                 d_ = (cx - e['a'][0]) * e['n'][0] + (cz - e['a'][1]) * e['n'][1]
-                if e['lo'] + 0.05 < s_ < e['hi'] - 0.05 and abs(d_) <= _over + 0.5:
+                # wave7：墙线以内（d < −wallInset − 0.05）的瓦面是相邻非共享边在转角处的腰檐，不算「共享段上出檐」（test14a 另管内收）
+                if e['lo'] + 0.05 < s_ < e['hi'] - 0.05 and -_inset <= d_ <= _over + 0.5:
                     _near_shared += 1
                     break
-    ok('test14a 共享端腰檐收口：腰檐瓦面三角 %d 个里在墙线以内（内收 / 回折）的 %d 个 = 0' % (_ntri, _inside), _ntri > 0 and _inside == 0)
-    ok('test14b 共享段（%d 段）上不出腰檐瓦面（贴着共享段的瓦面三角 %d 个 = 0）' % (len(SHARED_L), _near_shared), SHARED_L and _near_shared == 0)
+    if PRM['massing'].get('upperPlan'):          # wave7：上层只在部分平面上起（老饭店后楼）的楼，上层腰檐本来就在 footprint 墙线以内
+        skip('test14a 共享端腰檐收口（墙线以内瓦面 %d / %d）' % (_inside, _ntri), 'params.massing.upperPlan：上层腰檐合法地落在墙线以内，此判据不适用')
+    else:
+        ok('test14a 共享端腰檐收口：腰檐瓦面三角 %d 个里在墙线以内（内收 / 回折）的 %d 个 = 0' % (_ntri, _inside), _ntri > 0 and _inside == 0)
+    if SHARED_L:
+        ok('test14b 共享段（%d 段）上不出腰檐瓦面（贴着共享段的瓦面三角 %d 个 = 0）' % (len(SHARED_L), _near_shared), _near_shared == 0)
+    else:                                                # wave7：endcap 口径也用于无共享边的楼（附属屋面接管段断檐）
+        skip('test14b 共享段上不出腰檐瓦面', 'layout 检出本栋无共享边')
 else:
     skip('test14 共享端腰檐收口', 'params 未设 sharedEdgeEaveEnd=endcap')
+
+# ---------- test 16：共享边规则（hall-kit 口径，wave7 B 主控定）逐段：(a) 任何三角越过共享段 ≤ 0.02 m；
+#            (b) 檐口在共享段处断开收口——任何瓦面（腰檐 / 披檐 / 附属屋面 / 主屋面的 roof 材质三角；封火墙压顶除外）
+#            形心投影在共享段内 (lo+0.05, hi−0.05) 时离共享边线向内 ≥ 0.30 m、且不在线外 ----------
+_ek16 = PRM['eaveKit']['over']
+for e in SHARED_L:
+    worst, nearbad, where, nearwho = -1e9, 0, '', ''
+    for nd in meshes:
+        wv = world_verts(nd)
+        is_tile = any('roof' in mn for mn in nd.get('mats', [])) and not nd['name'].startswith('parapet__')
+        for (ia, ib, ic) in nd['idxTris']:
+            tri = [((wv[ii][0] - e['a'][0]) * e['t'][0] + (wv[ii][2] - e['a'][1]) * e['t'][1],
+                    (wv[ii][0] - e['a'][0]) * e['n'][0] + (wv[ii][2] - e['a'][1]) * e['n'][1]) for ii in (ia, ib, ic)]
+            if min(p[1] for p in tri) <= 5.0 and max(p[1] for p in tri) > worst:
+                cp = _clip_s(tri, e['lo'], e['hi'])
+                if cp and max(p[1] for p in cp) > 5.0:
+                    cp = [(q[1], q[0]) for q in _clip_s([(p[1], p[0]) for p in cp], -1e9, 5.0)]
+                if cp and max(p[1] for p in cp) > worst:
+                    worst = max(p[1] for p in cp)
+                    where = nd['name']
+            if is_tile:
+                cs = sum(p[0] for p in tri) / 3
+                cd = sum(p[1] for p in tri) / 3
+                if e['lo'] + 0.05 < cs < e['hi'] - 0.05 and -0.30 < cd <= _ek16 + 0.5:
+                    nearbad += 1
+                    nearwho = nd['name']
+    ok('test16a 共享段 fpEdge %d / %s（%.2f m）最大越界 %.3f m ≤ 0.02（最越者 %s）' % (e['edge'], e['other'], e['hi'] - e['lo'], worst, where),
+       worst <= 0.02)
+    ok('test16b 共享段 fpEdge %d / %s 檐口断开收口：贴线瓦面三角 %d = 0 %s' % (e['edge'], e['other'], nearbad, nearwho), nearbad == 0)
+if not SHARED_L:
+    skip('test16 共享边规则', 'layout 检出本栋无共享边')
+
+# ---------- test 15：航拍看不到平屋顶带（wave7 K0）：正上方正交俯视 z-buffer（roof_cover.py，只读 GLB 网格与 layout footprint），
+#            footprint 内最上层是瓦面或坡面的像素 ≥ 97%；最上层是水平（|法线 z| > 0.99）非瓦面的像素 ≤ 3% ----------
+sys.path.insert(0, HERE)
+import roof_cover as RC                                    # noqa: E402
+_rc = RC.raster(RC.load_glb(GLB, ID, zone_subtree=(SOURCE == 'zone')), [tuple(q) for q in FP], px=0.1)
+_rc_s = '瓦 %.1f%% + 坡 %.1f%%、平 %.1f%%、空 %.1f%%；平面来源 %s' % (
+    _rc['tile'] * 100, _rc['slope'] * 100, _rc['flat'] * 100, _rc['empty'] * 100,
+    {k: v for k, v in list(_rc['flatM2ByNode'].items())[:4]})
+if PRM.get('roofCoverExempt'):
+    skip('test15 航拍屋面覆盖 %.1f%%（%s）' % (_rc['roofCover'] * 100, _rc_s), 'params.roofCoverExempt：' + PRM['roofCoverExempt'])
+else:
+    ok('test15a 俯视屋面覆盖 %.1f%% ≥ 97%%（%s）' % (_rc['roofCover'] * 100, _rc_s), _rc['roofCover'] >= 0.97)
+    ok('test15b 俯视平屋顶 %.1f%% ≤ 3%%' % (_rc['flat'] * 100), _rc['flat'] <= 0.03)
 
 print('\ntest_tower: %d pass, %d fail, %d skip' % (pass_n, fail_n, skip_n))
 if fail_n:
