@@ -1,5 +1,5 @@
 {
- "comment": "OUTER_KIT=1 样板 id 唯一来源（wave7-outerkit，2026-09-26）。build-scene.mjs 只替换这里列出的 outerBuilding；其余 294 栋照旧是程序化方块。生成器 src/outer-kit.mjs，测试 tests/outer-kit-test.mjs。样板按 高度 × 形状 × 临街 分散挑选（选取依据见 samples 各条 why；临街按 layout 道路中线 − 半宽 ≤ 6 m 的边判定，与生成器同一函数）。铺开到 304 栋前需主控复验与预算决定。",
+ "comment": "wave7-outerkit 样板 10 栋（ids）+ wave8-outerlazy 全铺开复查代表点（review12）。2026-09-26 机主定「外围 301 栋全部铺开」后，替换范围 = 外围区全部 outerBuilding（除与湖心亭 footprint 重合的占位），由 build-scene.mjs 按 layout 现算，本文件不再决定范围；ids 只用于 tests/outer-kit-test.mjs 的样板选取检查与 wave7 联系表延续，review12 用于 modules/outer-kit/contact-shots.mjs IDS=review12 前后对照。生成器 src/outer-kit.mjs，测试 tests/outer-kit-test.mjs。",
  "ids": [
   "bld-858807443",
   "bld-408450722",
@@ -23,5 +23,55 @@
   "bld-495101843": "12.8 m / 4 层；26.8×14.4；不临街 → 多层",
   "bld-505641137": "16 m / 5 层；35.1×14.2 矩形；不临街 → 多层公房",
   "bld-505641155": "16 m / 5 层；8 点凹轮廓 34.9×36.5；光启路临街"
- }
+ },
+ "review12": [
+  {
+   "id": "bld-858807409",
+   "why": "wave7 sample: eaves swallowed between boxes"
+  },
+  {
+   "id": "bld-858824363",
+   "why": "wave7 sample: 21-pt footprint, box neighbours"
+  },
+  {
+   "id": "bld-701981165",
+   "why": "wave7 sample: 9.6 m between 6.4 m boxes"
+  },
+  {
+   "id": "bld-408450722",
+   "why": "Anren St shophouse row"
+  },
+  {
+   "id": "bld-858807474",
+   "why": "Anren St centreline over building (data)"
+  },
+  {
+   "id": "bld-505641154",
+   "why": "degraded x4 (342 tris); neighbour 505641143 degraded x2"
+  },
+  {
+   "id": "bld-1318374446",
+   "why": "Sipailou Rd shophouse (231 tris)"
+  },
+  {
+   "id": "bld-520214805",
+   "why": "largest lilong block, 6 ridges"
+  },
+  {
+   "id": "bld-858807440",
+   "why": "Renmin Rd 20-pt shophouse"
+  },
+  {
+   "id": "bld-300480894",
+   "why": "far west 16 m apt, 3 ridges"
+  },
+  {
+   "id": "bld-389701874",
+   "why": "narrow shed-roof house"
+  },
+  {
+   "id": "bld-505661358",
+   "why": "far west 12.8 m apt row"
+  }
+ ]
 }

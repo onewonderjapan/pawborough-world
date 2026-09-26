@@ -1,5 +1,5 @@
 // 外围老城厢建筑套件（wave7-outerkit，2026-09-26）：outerBuilding footprint → 灰瓦坡顶 + 分层立面的廉价体块。
-// 只由 build-scene.mjs 在 OUTER_KIT=1 时对 modules/outer-kit/ids.json 的样板 id 调用；默认关，默认产物逐字节不变。
+// 由 build-scene.mjs 对外围区全部 outerBuilding 调用（wave8-outerlazy：OUTER_KIT 默认开，301 栋全铺开；OUTER_KIT=0 关，产物回到方块）。
 //
 // 形制（上海老城厢 / 里弄 2–3 层民居与沿街店屋；推断部分见 DESIGN_INFERENCE）：
 //   - 选型按 layout 字段自动：levels ≥ 4 → apartment（多层公房）；有临街边 → shophouse（沿街店屋）；否则 lilong（里弄民居）。
