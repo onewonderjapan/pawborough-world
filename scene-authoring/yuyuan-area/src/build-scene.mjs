@@ -884,14 +884,25 @@ function buildFacadeBay(o) {
   const door = new THREE.BoxGeometry(doorW, 2.5, 0.1);
   door.translate(doorX, 1.25, 0.1);
   parts.push([door, 0x3f3a34]);
-  // 橱窗（门另一侧，通长至壁柱）+ 楣窗
-  const shopW = w - doorW - 0.5;
-  if (shopW > 0.6) {
-    const winX = doorX + Math.sign(-doorX || 1) * (doorW / 2 + shopW / 2 + 0.1);
-    const win = new THREE.BoxGeometry(shopW, 1.35, 0.08);
+  // 橱窗 + 楣窗：按当前宽度现算门区间与左右真实可用区间，窗（含框）必须整体落在
+  // 自由区间与原开间边界内——不越开间、不与壁柱交叉、不与门重叠。
+  // 居中门用左右余量各一樘；偏门用主要自由侧（门偏左时右侧恒更宽，与旧式同侧）。
+  // 窗缘距壁柱内缘 0.07，框比窗每侧宽 0.05 → 框留 0.02 气隙，不与壁柱/门共面闪烁。
+  const pilIn = w / 2 - pilW;
+  const gapDoor = 0.1, gapPil = 0.07, minWin = 0.6;
+  const sides = [
+    { lo: -pilIn + gapPil, hi: doorX - doorW / 2 - gapDoor },   // 门左可用区间
+    { lo: doorX + doorW / 2 + gapDoor, hi: pilIn - gapPil },    // 门右可用区间
+  ].filter((s) => s.hi - s.lo >= minWin);
+  const main = sides.length ? sides.reduce((a, b) => (b.hi - b.lo > a.hi - a.lo ? b : a)) : null;
+  const picks = doorX === 0 ? sides : (main ? [main] : []);
+  for (const s of picks) {
+    const winW = s.hi - s.lo;
+    const winX = (s.lo + s.hi) / 2;
+    const win = new THREE.BoxGeometry(winW, 1.35, 0.08);
     win.translate(winX, 1.05, 0.12);
     parts.push([win, 0x4a5560]);
-    const frame = new THREE.BoxGeometry(shopW + 0.1, 0.09, 0.12);
+    const frame = new THREE.BoxGeometry(winW + 0.1, 0.09, 0.12);
     frame.translate(winX, 1.78, 0.12);
     parts.push([frame, 0x8a7a62]);
   }
