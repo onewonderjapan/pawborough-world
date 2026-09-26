@@ -92,7 +92,13 @@ console.log(`REPORT 首载 ${firstBytes} B；deferred+on-demand 增量 ${totalBy
 // T5 与改前产物逐件比
 if (BASE && fs.existsSync(path.join(BASE, 'zones-manifest.json'))) {
   const bm = manifest(BASE);
-  const strip = j => { const c = JSON.parse(JSON.stringify(j)); delete c.buffers; delete c.bufferViews; delete c.images; return JSON.stringify(c); };
+  // bufferView 下标会因删掉图的 bufferView 而重排：访问器里的 bufferView 下标换成该 bufferView 的描述（去掉偏移）再比
+  const bvDesc = (j, i) => { const bv = j.bufferViews[i]; const mc = bv.extensions?.EXT_meshopt_compression;
+    return { buffer: bv.buffer, byteLength: bv.byteLength, byteStride: bv.byteStride, target: bv.target, mc: mc && { buffer: mc.buffer, byteLength: mc.byteLength, byteStride: mc.byteStride, mode: mc.mode, filter: mc.filter, count: mc.count } }; };
+  const strip = j => { const c = JSON.parse(JSON.stringify(j));
+    for (const a of c.accessors || []) { if (a.bufferView !== undefined) a.bufferView = bvDesc(j, a.bufferView);
+      if (a.sparse) { a.sparse.indices.bufferView = bvDesc(j, a.sparse.indices.bufferView); a.sparse.values.bufferView = bvDesc(j, a.sparse.values.bufferView); } }
+    delete c.buffers; delete c.bufferViews; delete c.images; return JSON.stringify(c); };
   const streams = g => g.json.bufferViews.map(bv => bv.extensions?.EXT_meshopt_compression).filter(Boolean)
     .map(mc => sha(g.bin.subarray(mc.byteOffset || 0, (mc.byteOffset || 0) + mc.byteLength)));
   for (const z of parts.filter(z => z.cm)) {

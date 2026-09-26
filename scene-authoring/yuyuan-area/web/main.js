@@ -13,6 +13,7 @@ import { setupPerf } from './perf.js';         // M4 性能采样（仅 ?perf=1 
 import { installTargetMask } from './target-mask.js'; // wave3-tourfix T2：导览机位渲染后目标像素复核钩子 window.__targetMask
 import { installBatching } from './batching.js';     // wave4-drawcalls：运行时按材质合批（?batch=0 关闭；原网格保留身份，见 web/batching.js）
 import { isRoofNodeSelf } from './roofs.js';        // wave5-rooftoggle：屋面命名判定唯一正本（厅堂/湖心亭/商城大楼/三穗堂/庙区/瓦面/程序化，见 web/roofs.js）
+import { installSharedTextures } from './shared-textures.js';   // wave9-sharedtex：分区件共用外置贴图，同 URL 只下载一次
 import { patchOuterKitProc } from './outer-kit-proc.js';   // wave7-outerkit 方案 C（OUTER_KIT_MODE=proc，对比测量用）：extras outerKit=proc 的网格换运行时 shader；无此类网格时不改任何东西
 
 const app = document.getElementById('app');
@@ -76,6 +77,9 @@ const ktx2 = new KTX2Loader().setTranscoderPath('/node_modules/three/examples/js
 ktx2.detectSupport(renderer);
 loader.setKTX2Loader(ktx2);   // fangbang cm 使用 KHR_texture_basisu（-tc），其它分区仍是原贴图
 const RAW = new URLSearchParams(location.search).get('raw') === '1';   // ?raw=1 loads uncompressed zone GLBs for comparison
+// wave9-sharedtex：cm 件的共用贴图外置在 out/tex/（内容寻址），同 URL 整个会话只下载 / 解码一次（web/shared-textures.js）；
+// ?sharedtex=0 关掉加载器层去重（仍能加载，只靠 HTTP 缓存，用于对照测量）。
+if (new URLSearchParams(location.search).get('sharedtex') !== '0') installSharedTextures({ manager: loader.manager, ktx2Loader: ktx2 });
 const t0 = performance.now();
 const params = new URLSearchParams(location.search);
 const batcher = installBatching({ camera, enabled: params.get('batch') !== '0' });
@@ -100,6 +104,14 @@ function countTris(root) {
   return t;
 }
 const zoneLoad = {};   // id -> {bytes, ms, tris, state}
+// wave9-sharedtex 运行时字节口径：一个件 = cm GLB 字节 + 它引用的、本会话还没下载过的外置贴图字节（manifest textures{}）
+const texCounted = new Set();
+function partBytes(m, e, have) {
+  if (!(e.cm && !RAW)) return e.bytes;
+  let s = e.cm.bytes;
+  for (const u of e.cm.textures || []) if (!have.has(u)) { have.add(u); s += (m.textures && m.textures[u] ? m.textures[u].bytes : 0); }
+  return s;
+}
 let zoneManifest = null;
 let fangbangReady = false;
 const fangbangLoading = new Map();
@@ -186,7 +198,7 @@ async function loadZoneFiles(m, ids, { firstPaint = false } = {}) {
       if (!roofsOn) applyRoofs(false, grp);   // wave5-rooftoggle：后加载分区补吃当前屋顶开关状态
       scene.add(grp);
       allRoots.push(grp);
-      zoneLoad[key] = { state: 'ok', bytes: useCm ? e.cm.bytes : e.bytes, ms: performance.now() - ts };
+      zoneLoad[key] = { state: 'ok', bytes: partBytes(m, e, texCounted), ms: performance.now() - ts };
       if (first) { first = false; afterFirstPaint(); } else setZone(curZone, false);
       hud(RAW ? '分区加载（未压缩 ?raw=1）' : '分区加载（meshopt 压缩）');
     } catch (err) { zoneLoad[key] = { state: 'fail' }; console.error('zone load failed', key, err); }
@@ -230,7 +242,8 @@ async function loadZones(m) {
   // deferred 区（外围）在首载到齐、首帧渲染之后自动排队，不管当前视图是什么（?zone=all 取景用 manifest bounds，不等外围 GLB）。
   const want = (ZONES[view] || ZONES.core).filter(z => (!skip.has(z) || view === z) && !later.has(z));
   const order = [...m.order.filter(z => want.includes(z)), ...m.order.filter(z => !want.includes(z) && !skip.has(z) && !later.has(z))];
-  const bytesOf = zs => m.zones.filter(e => zs.includes(e.id) && e.file).reduce((s, e) => s + (e.cm && !RAW ? e.cm.bytes : e.bytes), 0);
+  const planned = new Set();   // 首载已算过的外置贴图不再计入 deferred
+  const bytesOf = zs => m.zones.filter(e => zs.includes(e.id) && e.file).reduce((s, e) => s + partBytes(m, e, planned), 0);
   loadTimes.firstLoadZones = order; loadTimes.firstLoadBytes = bytesOf(order);
   const stillFirst = await loadZoneFiles(m, order, { firstPaint: true });
   loadTimes.firstLoadMs = +performance.now().toFixed(0);

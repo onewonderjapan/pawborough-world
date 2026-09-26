@@ -569,7 +569,9 @@ for (const HK_ID of IDS) {
       if (hasHall) ok(`${z.file} 格心图只嵌一份（${lat.length}）`, lat.length === 1);
     }
     const core = new Set(['garden', 'temple', 'bazaar', 'pond']);
-    const coreCm = (mm) => mm.zones.filter((z) => core.has(z.id) && z.file && z.loadPolicy !== 'on-demand').reduce((s, z) => s + (z.cm ? z.cm.bytes : z.bytes), 0);
+    // wave9-sharedtex：含 cm 件引用的外置贴图并集（manifest textures{}）
+    const coreCm = (mm) => { const zs = mm.zones.filter((z) => core.has(z.id) && z.file && z.loadPolicy !== 'on-demand'); const have = new Set();
+      return zs.reduce((s, z) => s + (z.cm ? z.cm.bytes : z.bytes), 0) + zs.reduce((s, z) => s + ((z.cm && z.cm.textures) || []).reduce((t, u) => (have.has(u) ? t : (have.add(u), t + mm.textures[u].bytes)), 0), 0); };
     const baseDir = process.env.HALL_KIT_BASE_OUT ? path.resolve(ROOT, process.env.HALL_KIT_BASE_OUT) : null;
     if (baseDir && fs.existsSync(path.join(baseDir, 'zones-manifest.json'))) {
       const b = JSON.parse(fs.readFileSync(path.join(baseDir, 'zones-manifest.json'), 'utf8'));

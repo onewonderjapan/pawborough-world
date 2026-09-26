@@ -18,6 +18,7 @@ const MIME = {
   '.json': 'application/json', '.glb': 'model/gltf-binary', '.svg': 'image/svg+xml',
   '.png': 'image/png', '.css': 'text/css', '.blend': 'application/octet-stream',
   '.wasm': 'application/wasm',
+  '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.ktx2': 'image/ktx2',
 };
 
 const server = http.createServer((req, res) => {
@@ -34,7 +35,10 @@ const server = http.createServer((req, res) => {
   if (!allowed.some(b => file === b || file.startsWith(b + path.sep))) { res.writeHead(403); res.end(); return; }
   fs.readFile(file, (err, buf) => {
     if (err) { res.writeHead(404); res.end('not found'); return; }
-    res.writeHead(200, { 'content-type': MIME[path.extname(file)] || 'application/octet-stream' });
+    const headers = { 'content-type': MIME[path.extname(file)] || 'application/octet-stream' };
+    // wave9-sharedtex：out/tex/ 文件名是内容哈希，内容变了名字就变 → 可长期缓存
+    if (base === OUTDIR && /^\/tex\/[0-9a-f]{16}\.[a-z0-9]+$/.test(p)) headers['cache-control'] = 'public, max-age=31536000, immutable';
+    res.writeHead(200, headers);
     res.end(buf);
   });
 });

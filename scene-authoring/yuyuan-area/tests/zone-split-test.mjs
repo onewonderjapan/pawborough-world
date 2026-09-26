@@ -180,7 +180,9 @@ for (const { z } of gd) {
 // 首次加载体积：「核心三区」（web/main.js ZONES.core，loadPolicy≠on-demand）meshopt 件合计，拆件前后差 ≤ ±2%
 // （GOAL wave3-zonesplit 目标 2）。需给拆件前产物目录 ZONE_SPLIT_BASE_OUT，否则跳过。
 const FIRST_LOAD_TOL = 0.02, CORE_ZONES = new Set(['garden', 'temple', 'bazaar', 'pond']);
-const firstLoad = mm => mm.zones.filter(z => CORE_ZONES.has(z.id) && z.file && z.loadPolicy !== 'on-demand').reduce((s, z) => s + (z.cm ? z.cm.bytes : z.bytes), 0);
+// wave9-sharedtex：cm 件的共用贴图外置在 tex/（manifest textures{}，每件 cm.textures 列引用），一组件的运行时字节 = Σ GLB + 引用贴图并集（have 里已下载的不再计）
+const texBytes = (mm, zs, have = new Set()) => zs.reduce((s, z) => s + ((z.cm && z.cm.textures) || []).reduce((t, u) => (have.has(u) ? t : (have.add(u), t + mm.textures[u].bytes)), 0), 0);
+const firstLoad = mm => { const zs = mm.zones.filter(z => CORE_ZONES.has(z.id) && z.file && z.loadPolicy !== 'on-demand'); return zs.reduce((s, z) => s + (z.cm ? z.cm.bytes : z.bytes), 0) + texBytes(mm, zs); };
 const baseOut = process.env.ZONE_SPLIT_BASE_OUT ? path.resolve(process.env.ZONE_SPLIT_BASE_OUT) : null;
 if (baseOut && fs.existsSync(path.join(baseOut, 'zones-manifest.json'))) {
   const bm = JSON.parse(fs.readFileSync(path.join(baseOut, 'zones-manifest.json'), 'utf8'));
@@ -188,7 +190,7 @@ if (baseOut && fs.existsSync(path.join(baseOut, 'zones-manifest.json'))) {
   ok(`核心三区首次加载 ${a} → ${b}（${(r * 100).toFixed(2)}%）在 ±${FIRST_LOAD_TOL * 100}% 内`, Math.abs(r) <= FIRST_LOAD_TOL);
 } else console.log('SKIP 首次加载 ±2%（未给 ZONE_SPLIT_BASE_OUT）');
 // wave8-outerlazy（2026-09-26 机主「外围改后台懒加载」）：加载策略与首载预算。
-//   首载 = web/main.js 进页即拉的件 = loadPolicy 既不是 deferred 也不是 on-demand 的件（meshopt 件，无 cm 时原始件），合计 ≤ 20 MB；
+//   首载 = web/main.js 进页即拉的件 = loadPolicy 既不是 deferred 也不是 on-demand 的件（meshopt 件，无 cm 时原始件）+ 它们引用的外置贴图并集（wave9），合计 ≤ 20 MB；
 //   外围（id outer）每件 loadPolicy = deferred（首帧后自动排队，与方浜 on-demand 区分）；核心四区的件都不带 loadPolicy（首载）；
 //   loadPolicy 只许 deferred / on-demand 两个值。总运行时体积（全部件 cm 合计，含 deferred 与 on-demand）只报告。
 {
@@ -196,16 +198,18 @@ if (baseOut && fs.existsSync(path.join(baseOut, 'zones-manifest.json'))) {
   const files = m.zones.filter(z => z.file);
   const rt = z => (z.cm ? z.cm.bytes : z.bytes);
   const firstLoadFiles = files.filter(z => !POLICIES.has(z.loadPolicy));
-  const firstBytes = firstLoadFiles.reduce((s, z) => s + rt(z), 0);
-  const sumOf = pol => files.filter(z => z.loadPolicy === pol).reduce((s, z) => s + rt(z), 0);
-  const totalRt = files.reduce((s, z) => s + rt(z), 0);
+  const got = new Set();   // 首载已下载的外置贴图（deferred / on-demand 只计新增的）
+  const firstBytes = firstLoadFiles.reduce((s, z) => s + rt(z), 0) + texBytes(m, firstLoadFiles, got);
+  const sumOf = pol => { const zs = files.filter(z => z.loadPolicy === pol); return zs.reduce((s, z) => s + rt(z), 0) + texBytes(m, zs, got); };
+  const deferredRt = sumOf('deferred'), onDemandRt = sumOf('on-demand');
+  const totalRt = firstBytes + deferredRt + onDemandRt;
   ok(`loadPolicy 取值只有 deferred / on-demand（实得 ${[...new Set(files.map(z => z.loadPolicy).filter(Boolean))].join(',') || '无'}）`, files.every(z => z.loadPolicy === undefined || POLICIES.has(z.loadPolicy)));
   const outerParts = files.filter(z => z.id === 'outer');
   ok(`外围 ${outerParts.length} 件 loadPolicy 全为 deferred（${outerParts.map(z => `${z.file}:${z.loadPolicy || '首载'}`).join(', ')}）`, outerParts.length > 0 && outerParts.every(z => z.loadPolicy === 'deferred'));
   const coreDeferred = files.filter(z => CORE_ZONES.has(z.id) && z.loadPolicy);
   ok(`核心四区件都在首载（带 loadPolicy 的 ${coreDeferred.map(z => z.file).join(',') || '无'}）`, coreDeferred.length === 0);
   ok(`首载 ${firstLoadFiles.length} 件 ${firstBytes} B（${(firstBytes / 1e6).toFixed(2)} MB）≤ ${FIRST_LOAD_CAP / 1e6} MB`, firstBytes <= FIRST_LOAD_CAP);
-  console.log(`REPORT 运行时体积：首载 ${firstBytes} B（${firstLoadFiles.map(z => z.id + (z.part ? '#' + z.part : '')).join(' ')}）+ deferred ${sumOf('deferred')} B + on-demand ${sumOf('on-demand')} B = 总计 ${totalRt} B（${(totalRt / 1e6).toFixed(2)} MB，${files.length} 件）`);
+  console.log(`REPORT 运行时体积：首载 ${firstBytes} B（${firstLoadFiles.map(z => z.id + (z.part ? '#' + z.part : '')).join(' ')}）+ deferred ${deferredRt} B + on-demand ${onDemandRt} B（均含外置贴图，只计新增） = 总计 ${totalRt} B（${(totalRt / 1e6).toFixed(2)} MB，${files.length} 件）`);
 }
 console.log(`zone-split-test: ${pass} pass, ${fail} fail; total ${m.totalBytes} bytes in ${m.zones.filter(z => z.file).length} files`);
 process.exit(fail ? 1 : 0);

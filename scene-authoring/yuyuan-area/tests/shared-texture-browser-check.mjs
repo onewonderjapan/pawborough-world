@@ -7,7 +7,7 @@
 //   N4 viewer __loadTimes.firstLoadBytes 与 N3 同值（viewer 口径含外置图）；
 //   N5 场景里带贴图的材质数 > 0，且每个 map 的 image 已解码（宽高 > 0）——外置图真的挂上了。
 // 像素：SHOT_DIR 下存各机位 canvas PNG；给 REF_DIR（改前同一脚本存的图）时逐像素比：
-//   严格口径 = 任一通道差 > 0 的像素数（报告）；断言 ≤ 容差（改前自身重跑噪声底，见 NOISE_REPORTS）；另报最大通道差。
+//   严格口径 = 任一通道差 > 0 的像素数；fixed-order 遍断言 ≤ PIXEL_TOL（默认 0），default 遍只报告（见下方像素段注释）。
 // 用法：BASE=http://127.0.0.1:5493/ OUT_DIR=out-zone [SHOT_DIR=…] [REF_DIR=…] [REPORT=…] node tests/shared-texture-browser-check.mjs
 import { createRequire } from 'node:module';
 import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto';
@@ -20,9 +20,7 @@ const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
 const BASE = process.env.BASE || 'http://127.0.0.1:5493/';
 const SHOT_DIR = process.env.SHOT_DIR || null, REF_DIR = process.env.REF_DIR || null;
 const PIXEL_TOL = +(process.env.PIXEL_TOL || 0);
-// 噪声底：改前产物自己重跑、同机位与 REF_DIR 比出的差异像素数（NOISE_REPORTS = 那几次 REPORT json，逗号分隔，逐机位取最大）。
-// 实测改前产物同一脚本重跑就有 0–2216 个像素不同：商铺招牌带与墙面共面 z-fighting，胜负随异步加载后的对象 / 材质创建顺序变。
-// 容差 = max(PIXEL_TOL, 2 × 噪声底 + 50)；另有 N6（解码后贴图像素逐字节同）与 shared-texture-test T5（几何 / 材质 JSON 全同）兜底。
+// 噪声底（只报告）：改前产物自己重跑、default 遍同机位与 REF_DIR 比出的差异像素数（NOISE_REPORTS = 那几次 REPORT json，逗号分隔，逐机位取最大）。
 const NOISE = {};
 for (const f of (process.env.NOISE_REPORTS || '').split(',').filter(Boolean)) {
   const r = JSON.parse(fs.readFileSync(f, 'utf8'));
@@ -60,14 +58,22 @@ await page.addInitScript(() => {
   Object.defineProperty(window, '__firstLoadReady', { configurable: true, get: () => v, set: (x) => { v = x; if (x === true && window.__firstReadyAt == null) window.__firstReadyAt = Date.now(); } });
 });
 const requests = new Map();   // path -> count
-const bodies = [];            // { path, kind, bytes, t }
+const bodies = [];            // { path, kind, buf, t }
 const pending = [];
-page.on('request', r => { const p = new URL(r.url()).pathname; if (/^\/out\/.*\.glb$/.test(p) || p.startsWith('/out/tex/')) requests.set(p, (requests.get(p) || 0) + 1); });
-page.on('response', r => {
-  const p = new URL(r.url()).pathname;
-  if (!(/^\/out\/.*\.glb$/.test(p) || p.startsWith('/out/tex/'))) return;
-  const t = Date.now();
-  pending.push(r.body().then(b => bodies.push({ path: p, kind: p.endsWith('.glb') ? 'glb' : 'tex', buf: b, t })).catch(e => bodies.push({ path: p, err: String(e) })));
+// 用 page.route 截获 GLB 与 tex/ 请求并原样转发：Playwright 的 response.body() 对 fetch→blob 的图片响应返回空，
+// 截获则拿得到真实响应体；截获同时关掉浏览器 HTTP 缓存，重复请求一定打到网络，计数只会偏严。
+const isAsset = p => /^\/out\/.*\.glb$/.test(p) || p.startsWith('/out/tex/');
+await page.route(u => isAsset(u.pathname), async route => {
+  const p = new URL(route.request().url()).pathname;
+  requests.set(p, (requests.get(p) || 0) + 1);
+  const job = (async () => {
+    const resp = await route.fetch();
+    const buf = await resp.body();
+    bodies.push({ path: p, kind: p.endsWith('.glb') ? 'glb' : 'tex', buf, t: Date.now() });
+    await route.fulfill({ response: resp, body: buf });
+  })();
+  pending.push(job.catch(e => bodies.push({ path: p, err: String(e) })));
+  await job.catch(() => {});
 });
 await page.goto(BASE + '?zone=all&cam=oblique', { waitUntil: 'domcontentloaded' });
 await page.waitForFunction(() => window.__ready === true, null, { timeout: 900000 });
@@ -153,35 +159,50 @@ const VIEWS = [
   ['fangbang-street-east', p => p.evaluate(() => { window.__goto('fangbang', 'oblique'); window.__streetView('east'); })],
 ];
 const settle = () => page.evaluate(() => new Promise(r => { let k = 0; const f = () => (++k >= 12 ? r() : requestAnimationFrame(f)); requestAnimationFrame(f); }));
+async function diffVs(rf, url) {
+  return page.evaluate(async ({ a, b }) => {
+    const load = u => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = u; });
+    const [ia, ib] = await Promise.all([load(a), load(b)]);
+    if (ia.width !== ib.width || ia.height !== ib.height) return { error: 'size' };
+    const c = document.createElement('canvas'); c.width = ia.width; c.height = ia.height; const g = c.getContext('2d', { willReadFrequently: true });
+    g.drawImage(ia, 0, 0); const pa = g.getImageData(0, 0, c.width, c.height).data;
+    g.clearRect(0, 0, c.width, c.height); g.drawImage(ib, 0, 0); const pb = g.getImageData(0, 0, c.width, c.height).data;
+    let diff = 0, maxd = 0, lumSum = 0, lumSq = 0;
+    for (let i = 0; i < pa.length; i += 4) {
+      const dd = Math.max(Math.abs(pa[i] - pb[i]), Math.abs(pa[i + 1] - pb[i + 1]), Math.abs(pa[i + 2] - pb[i + 2]));
+      if (dd > 0) diff++; if (dd > maxd) maxd = dd;
+      const l = .2126 * pb[i] + .7152 * pb[i + 1] + .0722 * pb[i + 2]; lumSum += l; lumSq += l * l;
+    }
+    const n = pa.length / 4, mean = lumSum / n;
+    return { diffPixels: diff, maxChannelDiff: maxd, pixels: n, lumStd: +Math.sqrt(Math.max(0, lumSq / n - mean * mean)).toFixed(1) };
+  }, { a: 'data:image/png;base64,' + fs.readFileSync(rf).toString('base64'), b: url });
+}
+// 两遍：
+//   default     = 查看器原样渲染。three 的不透明排序先按 material.id，而 GLTFLoader 的材质要等贴图 Promise 兑现才创建，
+//                 id 随异步完成顺序变 → 共面面（商铺招牌带 / 立面饰条）z-fighting 胜负随机。改前产物自己重跑就差 0–2216 像素，
+//                 所以这一遍只报告（与 NOISE_REPORTS 噪声底并列），不断言；
+//   fixed-order = 测试侧经 scene.onBeforeRender 把 renderer.sortObjects 关掉（改前 / 改后同一处理，查看器代码不动），
+//                 绘制顺序 = 场景树顺序（分区按序加载，确定）→ 渲染确定；断言与改前逐像素相同（差异像素 ≤ PIXEL_TOL，默认 0）。
 const pixels = {};
 if (SHOT_DIR) fs.mkdirSync(SHOT_DIR, { recursive: true });
-for (const [name, go] of VIEWS) {
-  await go(page); await settle();
-  const url = await page.evaluate(() => document.querySelector('#app canvas').toDataURL('image/png'));
-  if (SHOT_DIR) fs.writeFileSync(path.join(SHOT_DIR, name + '.png'), Buffer.from(url.split(',')[1], 'base64'));
-  if (REF_DIR) {
-    const rf = path.join(REF_DIR, name + '.png');
-    if (!fs.existsSync(rf)) { check(false, `P ${name}: 缺改前图 ${rf}`); continue; }
-    const d = await page.evaluate(async ({ a, b }) => {
-      const load = u => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = u; });
-      const [ia, ib] = await Promise.all([load(a), load(b)]);
-      if (ia.width !== ib.width || ia.height !== ib.height) return { error: 'size' };
-      const c = document.createElement('canvas'); c.width = ia.width; c.height = ia.height; const g = c.getContext('2d', { willReadFrequently: true });
-      g.drawImage(ia, 0, 0); const pa = g.getImageData(0, 0, c.width, c.height).data;
-      g.clearRect(0, 0, c.width, c.height); g.drawImage(ib, 0, 0); const pb = g.getImageData(0, 0, c.width, c.height).data;
-      let diff = 0, maxd = 0, lumSum = 0, lumSq = 0;
-      for (let i = 0; i < pa.length; i += 4) {
-        const dd = Math.max(Math.abs(pa[i] - pb[i]), Math.abs(pa[i + 1] - pb[i + 1]), Math.abs(pa[i + 2] - pb[i + 2]));
-        if (dd > 0) diff++; if (dd > maxd) maxd = dd;
-        const l = .2126 * pb[i] + .7152 * pb[i + 1] + .0722 * pb[i + 2]; lumSum += l; lumSq += l * l;
-      }
-      const n = pa.length / 4, mean = lumSum / n;
-      return { diffPixels: diff, maxChannelDiff: maxd, pixels: n, lumStd: +Math.sqrt(Math.max(0, lumSq / n - mean * mean)).toFixed(1) };
-    }, { a: 'data:image/png;base64,' + fs.readFileSync(rf).toString('base64'), b: url });
-    pixels[name] = d;
-    const floor = NOISE[name] ?? 0, allow = Math.max(PIXEL_TOL, 2 * floor + 50);
-    d.noiseFloor = floor; d.allowed = allow;
-    check(!d.error && d.diffPixels <= allow && d.lumStd >= 2, `P ${name}: 与改前同机位差异像素 ${d.diffPixels}（最大通道差 ${d.maxChannelDiff}/255，亮度 std ${d.lumStd}）≤ 容差 ${allow}（改前自身重跑噪声底 ${floor}）`);
+for (const mode of ['default', 'fixed-order']) {
+  if (mode === 'fixed-order') await page.evaluate(() => { window.__scene.onBeforeRender = (r) => { r.sortObjects = false; }; });
+  for (const [name, go] of VIEWS) {
+    const shot = mode === 'default' ? name : `${name}.${mode}`;
+    await go(page); await settle();
+    const url = await page.evaluate(() => document.querySelector('#app canvas').toDataURL('image/png'));
+    if (SHOT_DIR) fs.writeFileSync(path.join(SHOT_DIR, shot + '.png'), Buffer.from(url.split(',')[1], 'base64'));
+    if (!REF_DIR) continue;
+    const rf = path.join(REF_DIR, shot + '.png');
+    if (!fs.existsSync(rf)) { check(false, `P ${shot}: 缺改前图 ${rf}`); continue; }
+    const d = await diffVs(rf, url);
+    pixels[shot] = d;
+    if (mode === 'default') {
+      d.noiseFloor = NOISE[shot] ?? null;
+      console.log(`INFO P ${shot}: 与改前同机位差异像素 ${d.diffPixels}（最大通道差 ${d.maxChannelDiff}/255）；改前自身重跑噪声底 ${d.noiseFloor ?? '未测'}（只报告）`);
+    } else {
+      check(!d.error && d.diffPixels <= PIXEL_TOL && d.lumStd >= 2, `P ${shot}: 与改前同机位差异像素 ${d.diffPixels}（最大通道差 ${d.maxChannelDiff}/255，亮度 std ${d.lumStd}）≤ ${PIXEL_TOL}`);
+    }
   }
 }
 await browser.close();

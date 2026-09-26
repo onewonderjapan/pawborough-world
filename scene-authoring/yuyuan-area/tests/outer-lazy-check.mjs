@@ -30,7 +30,10 @@ const firstFiles = files.filter(z => !POL.has(z.loadPolicy));
 const deferredFiles = files.filter(z => z.loadPolicy === 'deferred');
 const onDemandFiles = files.filter(z => z.loadPolicy === 'on-demand');
 const outerFiles = files.filter(z => z.id === 'outer');
-const expFirstBytes = firstFiles.reduce((s, z) => s + rt(z), 0), expDeferredBytes = deferredFiles.reduce((s, z) => s + rt(z), 0);
+// wave9-sharedtex：cm 件的共用贴图外置在 tex/（manifest textures{}，每件 cm.textures 列引用），一组件的运行时字节 = Σ GLB + 引用贴图并集（have 里已下载的不再计）
+const texGot = new Set();
+const texBytes = zs => zs.reduce((s, z) => s + ((z.cm && z.cm.textures) || []).reduce((t, u) => (texGot.has(u) ? t : (texGot.add(u), t + m.textures[u].bytes)), 0), 0);
+const expFirstBytes = firstFiles.reduce((s, z) => s + rt(z), 0) + texBytes(firstFiles), expDeferredBytes = deferredFiles.reduce((s, z) => s + rt(z), 0) + texBytes(deferredFiles);
 
 let pass = 0, fails = 0;
 const check = (ok, msg) => { if (ok) { pass++; console.log('PASS', msg); } else { fails++; console.error('FAIL:', msg); } };
