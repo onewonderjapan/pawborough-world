@@ -21,6 +21,9 @@ GLB = os.path.join(DIR, 'model.glb')
 P = json.load(open(os.path.join(DIR, 'measurements.json'), encoding='utf-8'))
 
 ID = os.path.basename(DIR)
+sys.path.insert(0, HERE)
+import params_load                                               # noqa: E402
+PLAIN_STONE = bool(params_load.load(P['params'])['materials'].get('plinthPlain'))
 LAYOUT = json.load(open(os.path.join(ROOT, 'baseline', 'layout.json'), encoding='utf-8'))
 obj = next(o for o in LAYOUT['objects'] if o['id'] == ID)
 FP = [q for q in obj['geometry']['footprint'] if True]
@@ -92,7 +95,9 @@ for o in meshes:
     linked = base.is_linked if base else False
     if not linked:
         # 允许解析色材质（gild/glass/dark），其余须有贴图
-        if not any(k in m.name for k in ('gild', 'glass', 'dark', 'shopback', 'lacquer', 'signred', 'lantern')):
+        # wave7 B：预设楼台基 / 楼板用素色石（params materials.plinthPlain），同属解析色材质
+        if not any(k in m.name for k in ('gild', 'glass', 'dark', 'shopback', 'lacquer', 'signred', 'lantern')) and \
+                not (PLAIN_STONE and 'stone' in m.name):
             bad_mat.append(o.name + ':base-color-not-textured')
     for n in m.node_tree.nodes:
         if n.type == 'TEX_IMAGE' and n.image:

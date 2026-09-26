@@ -4,7 +4,8 @@
  "detail": {
   "eaveSegM": 1.7,
   "bevelM": 0.0,
-  "kinkDeg": 5.0
+  "kinkDeg": 2.0,
+  "minEdgeM": 0.6
  },
  "eaves": {
   "overhangM": 1.2,
@@ -15,7 +16,7 @@
  "materials": {
   "timberTint": "8e2c1f",
   "plasterTint": "f2efe8",
-  "plinthTint": "8b9089",
+  "plinthTint": "7f847e",
   "gilded": "b08a3e",
   "glass": "46525a",
   "glassAlpha": 0.5,
@@ -41,7 +42,8 @@
   "shopEmission": "7a5a3a",
   "guoluoGold": "d6ab4a",
   "gildMetallic": 0.25,
-  "gildRough": 0.45
+  "gildRough": 0.45,
+  "plinthPlain": true
  },
  "eaveKit": {
   "over": 1.2,
@@ -54,11 +56,12 @@
   "rootRise": 0.95,
   "curve": 1.7,
   "soffitRise": 0.15,
-  "straightStep": 3.0,
+  "straightStep": 4.0,
   "cornerStep": 0.25,
-  "cornerSteps": 6,
-  "bracketStepM": 3.6,
-  "rings": 7
+  "cornerSteps": 4,
+  "bracketStepM": 6.5,
+  "rings": 5,
+  "bracketStepPlainM": 8.0
  },
  "sharedEdgeEaveEnd": "endcap",
  "zone": "bazaar",
@@ -76,7 +79,12 @@
   "storeyHeightsM": "auto",
   "setbackStoreys": [],
   "setbackStreetM": 0.0,
-  "topPlan": "rect"
+  "topPlan": "rect",
+  "podium": {
+   "rectShareBelow": 0.6,
+   "fromStorey": 2,
+   "note": "wave7 B1：碎平面（最大矩形占比 < 60%）二层起落在最大矩形上，一层裙楼"
+  }
  },
  "roof": {
   "type": "xishan",
@@ -89,13 +97,13 @@
    "qiao": 0.8,
    "chu": 0.3,
    "reach": 2.2,
-   "ornamentScale": "auto"
+   "ornamentScale": "auto-h"
   },
   "annex": {
    "enabled": true,
-   "minSideM": 4.5,
-   "maxRoofs": 4,
-   "minAreaM2": 20.0,
+   "minSideM": 3.0,
+   "maxRoofs": 6,
+   "minAreaM2": 9.0,
    "ridgeFrac": 0.36,
    "breakFrac": 0.55,
    "breakInsetFrac": 0.36,
@@ -112,18 +120,28 @@
    "note": "wave7 K0：退台 / 顶层矩形以外的平屋面：≥ 4.5 m 见方的铺附属小歇山（低于上一层檐口），更窄的条 / 楔形做披檐（单坡从上层墙根落到本层檐口），共享边一侧做封火墙瓦压顶；腰檐在这些段断开收口",
    "eaveLiftM": 0.4,
    "leanTo": {
-    "maxM": 4.5,
+    "maxM": 9.0,
     "pitchDeg": 16.0,
     "minRiseM": 0.6,
     "underUpperM": 1.2,
     "eaveLiftM": 0.4,
     "parapetHM": 0.9,
-    "towerMaxM": 9.0
+    "towerMaxM": 9.0,
+    "sharedLean": true,
+    "parapetTopHM": 0.7
+   },
+   "fill": {
+    "cellM": 0.5,
+    "riseM": 0.8,
+    "minAreaM2": 1.0
    }
   },
   "ridgeAboveFrac": 0.22,
   "breakAboveFrac": 0.09,
-  "ridgeAboveMaxM": 4.6
+  "ridgeAboveMaxM": 4.6,
+  "maxDepthM": 18.0,
+  "ridgeAboveMaxWallFrac": 0.45,
+  "multiFrame": true
  },
  "facades": {
   "bayRhythmM": [
@@ -179,12 +197,12 @@
      "style": "blank"
     },
     "2": {
-     "style": "ends",
-     "pitchM": 4.6
+     "style": "ends4"
     }
    }
   },
   "galleryStoreys": []
  },
- "features": {}
+ "features": {},
+ "trimNote": "wave7 B 降本：非临街面斗拱 8 m 一组、上层疏窗 ends4；檐 / 屋面放样环 7→5、翼角扫掠 6→4 步、直段取样 3→4 m、临街斗拱 5.2→6.5 m"
 }

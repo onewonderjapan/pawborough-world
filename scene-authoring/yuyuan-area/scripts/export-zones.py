@@ -250,6 +250,10 @@ for it in plan:
     if z == 'bazaar' and part_index in TOWER_PARTS:
         entry['role'] = 'bazaar-towers'
         entry['towerIds'] = sorted(o.name for o in objs if o.name in TOWER_REG['zonePart'])
+        # wave7（主控决定 2）：套件件的 meshopt 位置量化位数按 ids.json zonePartCmPositionBits（zone-bazaar-4 = 14）
+        _cb = (TOWER_REG.get('zonePartCmPositionBits') or {}).get(str(part_index))
+        if _cb:
+            entry['cmPositionBits'] = int(_cb)
     manifest['zones'].append(entry)
     print('zone', z, part_index, len(b), 'bytes')
     for sp in it['subparts']:
