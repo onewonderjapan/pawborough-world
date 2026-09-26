@@ -101,6 +101,10 @@ PARTS = [
     ('outer',  1, ['ZONE-outer', 'INST-outer'], None),
 ]
 OPTIONAL_PARTS = {('bazaar', n) for n in TOWER_PARTS}   # 套件件：无楼（开关关）时不出文件、不进 manifest
+# 分区加载策略（manifest loadPolicy；缺省 = 首载，web/main.js 进页即拉、计入首载体积）：
+#   deferred  首载（核心四区）全部到齐、首帧渲染之后自动排队加载，不需要用户操作，不计入首载体积（wave8-outerlazy，2026-09-26 机主定「外围改后台懒加载」）；
+#   on-demand 默认不拉，用户切到该区或步行逼近才拉（方浜中路，见下方 FANGBANG 段）。
+DEFERRED_ZONES = {'outer'}
 # 分件文件名：单件区 zone-<z>.glb；多件区首件沿用 zone-<z>.glb（garden、bazaar：查看器/外部引用不换名），
 # 后续件 zone-<z>-<n>.glb；庙区沿用历史命名 zone-temple-1/2/3.glb。
 BASE_NAME_ZONES = {'garden', 'bazaar'}
@@ -270,6 +274,7 @@ for it in plan:
              'collections': [c for c in colls if c in bpy.data.collections],
              'objects': len(objs), 'bounds': bounds(objs), 'withinCap': len(b) <= CAP}
     if note: entry['note'] = note[part_index]
+    if z in DEFERRED_ZONES: entry['loadPolicy'] = 'deferred'
     if z == 'bazaar' and part_index in TOWER_PARTS:
         entry['role'] = 'bazaar-towers'
         entry['towerIds'] = sorted(o.name for o in objs if o.name in TOWER_REG['zonePart'])
@@ -284,7 +289,7 @@ for it in plan:
         manifest['zones'].append({'id': z, 'part': sp['part'], 'file': sp['file'], 'bytes': len(b2), 'sha256': hashlib.sha256(b2).hexdigest(),
                                   'collections': sp['colls'], 'objects': len(sp['objs']),
                                   'bounds': bounds(sp['objs']), 'withinCap': len(b2) <= CAP,
-                                  'note': sp['note'], **sp['extra']})
+                                  'note': sp['note'], **sp['extra'], **({'loadPolicy': 'deferred'} if z in DEFERRED_ZONES else {})})
         print('zone', z, sp['part'], len(b2), 'bytes')
 # ---------- 方浜中路分区（FANGBANG=1）----------
 # R1：同一模块的全部实例进同一件，导出时多节点引用同一 mesh（Blender 链接复制）。

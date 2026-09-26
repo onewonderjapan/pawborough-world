@@ -64,7 +64,15 @@ export function setupPerf({ renderer, camera, controls, walk, hud }) {
 
   async function start() {
     await loaded;
-    report.loadCompleteMs = +(performance.now()).toFixed(0); // 自导航起的首次加载完成耗时
+    report.loadCompleteMs = +(performance.now()).toFixed(0); // 自导航起、自动加载的分区（首载 + deferred 外围）全部到齐的耗时（口径同 wave8 之前的「首次加载完成」）
+    // wave8-outerlazy：区分首载与外围后台加载（时刻由 web/main.js window.__loadTimes 记，自导航起 ms）
+    const lt = window.__loadTimes;
+    if (lt) {
+      report.firstLoadMs = lt.firstLoadMs;             // 首载分区（核心四区）全部加入场景
+      report.firstFrameMs = lt.firstFrameMs;           // 其后首帧渲染完成
+      report.outerLoadedMs = lt.deferredLoadedMs;      // deferred 分区（外围）加载完成并渲染一帧
+      report.load = { firstLoadZones: lt.firstLoadZones, firstLoadBytes: lt.firstLoadBytes, deferredZones: lt.deferredZones, deferredBytes: lt.deferredBytes };
+    }
     report.memory = memory();
     report.gpu = gpuInfo(renderer);
     // 每帧口径：renderer.info 保持 autoReset（每次 render() 开头清零），等两帧后读到的就是「最后一次 render」
