@@ -303,6 +303,12 @@ def summarize(raw):
             'visualVerdict': n.get('visual'),
         })
     tot_raw = sum(b['glbBytes'] or 0 for b in blocks)
+    # K2 实测修正：贴图只在同一分区件里去重，新开一件就要再带一整套贴图（≈ 单楼内嵌贴图字节，cm 后 ≈ 0.35 MB）。
+    # 11 座几何合计（原始 GLB − 各自内嵌贴图，件内只留一套）约 9 MB，按 10 MB 余量线可装进一个新件 → 记 1 套贴图
+    img_set = max((r.get('cmImageBytes') or 0) for r in raw)
+
+    new_parts = max(1, math.ceil((tot_raw - (len([b for b in blocks if b['glbBytes']]) - 1) * 360000) / 10_000_000))
+    est_tex = new_parts * img_set
     out = {
         'ticket': 'wave7-bazaarblocks-20260926 K1', 'status': 'diagnosis only — not in ids.json',
         'generator': 'modules/bazaar-tower-kit/build_tower.py（一个生成器；立面预设 presets/{gallery,shophouse,mall}.json 经 params_load 合并）',
@@ -311,13 +317,18 @@ def summarize(raw):
         'presetRule': '两层 = shophouse（两层店屋）；≥ 3 层且占地 ≥ 1500 m² = mall（大体量商场）；其余 = gallery（名楼式多层外廊）',
         'blocks': blocks,
         'budget': {
-            'firstLoadDeltaEstBytes_all11': int(est), 'budgetBytes': BUDGET, 'withinBudget': est <= BUDGET,
+            'firstLoadDeltaEstBytes_all11': int(est + est_tex), 'budgetBytes': BUDGET, 'withinBudget': est + est_tex <= BUDGET,
+            'geometryPartBytes': int(est), 'textureSetPerNewZonePartBytes': img_set, 'newZoneParts': new_parts,
+            'k2Check': {'samples': ['bld-389701901', 'bld-165791764'], 'measuredDeltaBytes': 704852,
+                        'estimatedBytes': 187897 + 247243 + img_set,
+                        'note': 'K2 实测：两座样板进新件 zone-bazaar-4，核心首载 +704,852 B（zone-bazaar-4 cm 735,920 − zone-bazaar-2 减 31,068）；'
+                                '同法估算 788,562 B（高估 12%）。K1 初版估算漏了「新件要再带一套贴图」，已修正'},
             'calibration': CAL,
             'basis': '每栋：gltfpack（同 compress-zones 参数）后字节 − 内嵌贴图字节（已由名楼带入首载、分件导出去重）− 被替换的程序化体块在 '
                      'zone-bazaar-2 的网格字节 × 该件压缩比；合计 × 标定系数 1.115（K0 实测 5 座名楼 1,869,272 B / 同法估算 1,676,229 B）',
             'rawGlbBytes_all11': tot_raw,
-            'zoneParts': '现 zone-bazaar-3 原始 9.53 MB（test6 余量线 10 MB）装不下；11 座原始合计约 %.1f MB（含各自内嵌贴图，分件去重后更小），'
-                         '需新开 zone-bazaar-4 / -5（每件 ≤ 12 MB、留 2 MB 余量）' % (tot_raw / 1e6),
+            'zoneParts': '现 zone-bazaar-3 原始 9.53 MB（test6 余量线 10 MB）装不下；11 座原始 GLB 合计 %.1f MB，件内贴图只留一套后约 %.1f MB，'
+                         '可全放进一个新件 zone-bazaar-4（K2 两座样板已在该件，实测原始 2.31 MB）' % (tot_raw / 1e6, (tot_raw - 10 * 360000) / 1e6),
         },
     }
     out['budget'].update(notes.get('_budget', {}))

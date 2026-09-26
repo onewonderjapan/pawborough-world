@@ -5,21 +5,27 @@
   "bld-428202601",
   "bld-389701812",
   "bld-428202602",
-  "bld-428202603"
+  "bld-428202603",
+  "bld-389701901",
+  "bld-165791764"
  ],
  "params": {
   "bld-428202599": "params/huabao-bld-428202599.json",
   "bld-428202601": "params/tianyu-bld-428202601.json",
   "bld-389701812": "params/hefeng-bld-389701812.json",
   "bld-428202602": "params/yuebin-bld-428202602.json",
-  "bld-428202603": "params/laofandian-bld-428202603.json"
+  "bld-428202603": "params/laofandian-bld-428202603.json",
+  "bld-389701901": "params/tonghanchun-bld-389701901.json",
+  "bld-165791764": "params/shophouse-bld-165791764.json"
  },
  "zonePart": {
   "bld-428202599": 3,
   "bld-428202601": 3,
   "bld-389701812": 3,
   "bld-428202602": 3,
-  "bld-428202603": 3
+  "bld-428202603": 3,
+  "bld-389701901": 4,
+  "bld-165791764": 4
  },
  "ownerOverrides": {
   "bld-428202603": "参照存疑（referenceDisputed=true），机主 2026-09-26「按图库先做」启用；有实拍后复核"
