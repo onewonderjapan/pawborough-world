@@ -188,7 +188,8 @@ paving_mats = {}
 # wave7-outerkit / wave8 全铺开（OUTER_KIT 默认开时 build-scene 给外围 301 栋写 outerkit-atlas slot；OUTER_KIT=0 时不出现，本段不生效）：
 #   outerkit-atlas 外围套件共享立面图集（modules/outer-kit/bake_atlas.py 生成），UV 已由 src/outer-kit.mjs 落到图集横条；
 #   outerkit-proc  程序化 shader 方案（方案对比用）：无贴图白底材质，窗 / 瓦由 web/outer-kit-proc.js 按 UV 编码现画。
-OUTER_KIT_TEX = {'outerkit-atlas': os.path.join(ROOT, 'resources', 'textures', 'outer-kit', 'outerkit-atlas.jpg'), 'outerkit-proc': None}
+# wave9-outerpolish：图集 v2（512×4096，4 种墙色 × A/B 变体；v1 outerkit-atlas.jpg 文件保留不动，只是不再被读）
+OUTER_KIT_TEX = {'outerkit-atlas': os.path.join(ROOT, 'resources', 'textures', 'outer-kit', 'outerkit-atlas-v2.jpg'), 'outerkit-proc': None}
 def paving_material(slot):
     if slot in paving_mats: return paving_mats[slot]
     if slot in OUTER_KIT_TEX and OUTER_KIT_TEX[slot] is None:

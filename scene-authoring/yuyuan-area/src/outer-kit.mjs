@@ -289,7 +289,8 @@ export function planBuilding(o, env, opt = {}) {
     && q.bb.z0 >= Math.min(...ring.map(p => p[1])) - 0.1 && q.bb.z1 <= Math.max(...ring.map(p => p[1])) + 0.1)
     .filter(q => { const aq = Math.abs(polyArea(q.ring)); return aq < Math.abs(polyArea(ring)) && polyIntersectionArea(q.ring, ring) >= 0.95 * aq; })
     .map(q => q.ring);
-  const plan = { id: o.id, seed, ring, holes, h, levels, type, roofKind, axis, perp, t0, t1, s0, s1, D, Ls, nStrip, d, rise, eave,
+  const tone = pickTone(type, seed);   // wave9：墙色
+  const plan = { id: o.id, seed, ring, holes, tone, h, levels, type, roofKind, axis, perp, t0, t1, s0, s1, D, Ls, nStrip, d, rise, eave,
     ridge: eave + rise, pitch, front, party: [...party], streetLow, terrace: null, dormers: [] };
   // 晒台
   if (!opt.plain && !apt && roofKind === 'gable' && nStrip === 1 && Ls >= 12 && rnd(seed, 2) < 0.5) {
@@ -523,16 +524,42 @@ class Sink {
 }
 const rgb = (hex) => { const c = new THREE.Color(hex); return [c.r, c.g, c.b]; };
 
-// ---------- 图集布局（tex）：512×1024，glTF UV（v=0 在图顶） ----------
+// ---------- 图集布局（tex）：v2 512×4096（wave9-outerpolish），glTF UV（v=0 在图顶） ----------
+// 行 0–255 瓦面；其后每条 128 px，顺序 = ATLAS_ROWS（与 modules/outer-kit/bake_atlas.py ROWS 同序）。
+// 墙色 4 种（TONES）× 每种 6 条（底层 A/B、楼层 A/B、山墙小窗、素墙）+ 店面 A/B + 公房 灰白 / 旧黄 各 A/B。
+export const TONES = ['cream', 'greywhite', 'greybrick', 'oldyellow'];   // 米白 / 灰白 / 浅灰砖 / 旧黄
+export const TONE_KEYS = ['resA', 'resB', 'upA', 'upB', 'sidewin', 'plain'];
+export const ATLAS_ROWS = ['shopA', 'shopB', 'aptGreyA', 'aptGreyB', 'aptYellowA', 'aptYellowB', ...TONES.flatMap(t => TONE_KEYS.map(k => t + ':' + k))];
 export const ATLAS = {
-  W: 512, H: 1024,
+  W: 512, H: 256 + 128 * ATLAS_ROWS.length, file: 'outerkit-atlas-v2.jpg',
   roof: { y0: 0, y1: 256, slopeM: 6.4, uM: 3.2 },          // 瓦面：V 周期 = 斜距 6.4 m，U 周期 3.2 m
-  strips: { shop: 256, res: 384, up: 512, apt: 640, sidewin: 768, plain: 896 },   // 各 128 px 一层
-  stripH: 128, pad: 3, bayM: 3.6, plainM: 6.4,
-  dark: [0.5, (256 + 10) / 1024],                           // 店面条顶部招牌暗带：封檐 / 檐底 / 屋脊压顶取这里
+  rowsY0: 256, stripH: 128, pad: 3, bayM: 3.6, plainM: 6.4,
+  dark: [0.5, (256 + 10) / (256 + 128 * ATLAS_ROWS.length)],   // shopA 条顶部招牌暗带：封檐 / 檐底 / 屋脊压顶取这里
 };
+export function atlasRow(name) {
+  const k = ATLAS_ROWS.indexOf(name);
+  if (k < 0) throw new Error('atlas row ' + name);
+  return ATLAS.rowsY0 + ATLAS.stripH * k;
+}
 function stripV(row, f) { // f ∈ [0,1] 自下而上
   return (row + ATLAS.pad + (1 - f) * (ATLAS.stripH - 2 * ATLAS.pad)) / ATLAS.H;
+}
+// 墙色分配（确定性）：按选型定权重、按 id 哈希取；公房只有灰白 / 旧黄两种公房条
+export const TONE_WEIGHTS = {
+  shophouse: { cream: 0.35, greywhite: 0.2, greybrick: 0.15, oldyellow: 0.3 },   // 临街店屋：粉刷为主
+  lilong: { cream: 0.3, greywhite: 0.2, greybrick: 0.3, oldyellow: 0.2 },        // 里弄民居：清水砖墙多一些
+  apartment: { cream: 0, greywhite: 0.6, greybrick: 0, oldyellow: 0.4 },
+};
+export function pickTone(type, seed) {
+  const w = TONE_WEIGHTS[type], r = rnd(seed, 30);
+  let acc = 0;
+  for (const t of TONES) { acc += w[t]; if (r < acc) return t; }
+  return TONES.filter(t => w[t] > 0).pop();
+}
+// 开间墙映射：整条墙边一段、只用 A 条；U 相位沿用每栋 uOff（与 wave8 相同的横向起点）
+export function facadeSegments(seed, edgeKey, len) {
+  const nb = Math.max(1, Math.round(len / ATLAS.bayM)), bay = len / nb;
+  return [{ b0: 0, b1: nb, al0: 0, al1: len, bay, variant: 'A', mirror: false, phase: rnd(seed, 12) * 8 }];
 }
 
 // ---------- 方案发射 ----------
@@ -573,8 +600,19 @@ function emitBuilding(o, env, mode, opt) {
   const CODE = { roof: 0, front: 1, long: 2, side: 3, apt: 4, party: 5, dark: 6, slab: 7, dormer: 8 };
   const procUV = (code, e) => (u) => [u, code * 32 + Math.min(31.9, Math.max(0, e))];
   const darkUV = () => ATLAS.dark;
-  const uOff = rnd(seed, 12) * 4;   // tex：每栋 U 偏移，错开图集重复
-  const upperStrip = 'up';
+  const uOff = rnd(seed, 12) * 4;   // tex：每栋瓦面 U 偏移
+  // wave9：墙色 + 立面分段（tex）
+  const tone = P.tone;
+  const aptTone = tone === 'oldyellow' ? 'aptYellow' : 'aptGrey';
+  const tRow = (k) => atlasRow(tone + ':' + k);
+  const edgeKey = (w) => (w.edge >= 0 ? w.edge : w.hole ? 900 : 950);
+  const segCache = new Map();
+  const segsOf = (w) => {
+    const key = edgeKey(w) + ':' + w.len.toFixed(4);
+    if (!segCache.has(key)) segCache.set(key, facadeSegments(seed, edgeKey(w), w.len, ['front', 'long', 'apt'].includes(w.cls)));
+    return segCache.get(key);
+  };
+  const plainOff = (w) => rnd(seed, 2000 + edgeKey(w)) * 4;
 
   // ----- 墙 -----
   const wallPts = (w, ylo, yhi) => {
@@ -598,33 +636,46 @@ function emitBuilding(o, env, mode, opt) {
       const code = CODE[w.cls === 'apt' ? 'apt' : w.cls];
       const q = wallPts(w, w.y0, maxTop + 1); if (q) sink.poly(q, nn, (p) => procUV(code, w.terr || w.cut ? 0 : P.eave)(al(p)));
     } else {
-      // tex：层带（y0 < eave 的部分）+ 檐口以上（山尖 / 女儿墙）
-      const nb = Math.max(1, Math.round(w.len / ATLAS.bayM));
-      const uBay = (p) => uOff + (al(p) / w.len) * nb / 2;
-      const uPlain = (p) => uOff + al(p) / ATLAS.plainM;
-      for (let k = 0; k < P.levels; k++) {
-        const yb = k * fh, yt = (k + 1) * fh;
-        if (yt <= w.y0 + 1e-4) continue;
-        const q = wallPts(w, yb, yt); if (!q) continue;
-        let strip;
-        if (w.cls === 'front') strip = k === 0 ? 'shop' : upperStrip;
-        else if (w.cls === 'long') strip = k === 0 ? 'res' : upperStrip;
-        else if (w.cls === 'apt') strip = 'apt';
-        else if (w.cls === 'side') strip = (w.len >= 4.5 && k > 0) ? 'sidewin' : 'plain';
-        else strip = 'plain';
-        const row = ATLAS.strips[strip];
-        const uf = (strip === 'plain') ? uPlain : (strip === 'sidewin' ? (p) => uOff + al(p) / w.len * Math.max(1, Math.round(w.len / 6.4)) / 2 : uBay);
-        sink.poly(q, nn, (p) => [uf(p), stripV(row, Math.min(1, Math.max(0, (p[1] - yb) / fh)))]);
-      }
-      if (maxTop > P.eave + 1e-3) {
-        const q = wallPts(w, Math.max(P.eave, w.y0), maxTop + 1);
-        if (q) sink.poly(q, nn, (p) => [uPlain(p), stripV(ATLAS.strips.plain, Math.min(1, Math.max(0, (p[1] - P.eave) / 3.2)))]);
+      // tex：层带（y0 < eave 的部分）+ 檐口以上（山尖 / 女儿墙）。wave9：开间墙按立面分段切片，每段自己的 A/B 条、镜像、相位
+      const pOff = plainOff(w);
+      const uPlain = (p) => pOff + al(p) / ATLAS.plainM;
+      const bayed = ['front', 'long', 'apt'].includes(w.cls);
+      const pieces = [];
+      if (bayed) {
+        for (const sg of segsOf(w)) {
+          const lo = Math.max(w.al0, sg.al0), hi = Math.min(w.al1, sg.al1);
+          if (hi - lo < 1e-4) continue;
+          const f0 = (lo - w.al0) / (w.al1 - w.al0), f1 = (hi - w.al0) / (w.al1 - w.al0);
+          const sub = { ...w, a: lerp2(w.a, w.b, f0), b: lerp2(w.a, w.b, f1), al0: lo, al1: hi,
+            top0: w.top0 + (w.top1 - w.top0) * f0, top1: w.top0 + (w.top1 - w.top0) * f1 };
+          pieces.push({ w: sub, sg });
+        }
+      } else pieces.push({ w, sg: null });
+      for (const { w: ws, sg } of pieces) {
+        const als = alongOf(ws);
+        const uBay = sg ? (p) => 0.5 * sg.phase + (sg.mirror ? -1 : 1) * 0.5 * (als(p) - sg.al0) / sg.bay : null;
+        for (let k = 0; k < P.levels; k++) {
+          const yb = k * fh, yt = (k + 1) * fh;
+          if (yt <= ws.y0 + 1e-4) continue;
+          const q = wallPts(ws, yb, yt); if (!q) continue;
+          let row, uf;
+          if (ws.cls === 'front') { row = k === 0 ? atlasRow('shop' + sg.variant) : tRow('up' + sg.variant); uf = uBay; }
+          else if (ws.cls === 'long') { row = tRow((k === 0 ? 'res' : 'up') + sg.variant); uf = uBay; }
+          else if (ws.cls === 'apt') { row = atlasRow(aptTone + sg.variant); uf = uBay; }
+          else if (ws.cls === 'side' && ws.len >= 4.5 && k > 0) { row = tRow('sidewin'); uf = (p) => als(p) / ws.len * Math.max(1, Math.round(ws.len / 6.4)) / 2; }
+          else { row = tRow('plain'); uf = uPlain; }
+          sink.poly(q, nn, (p) => [uf(p), stripV(row, Math.min(1, Math.max(0, (p[1] - yb) / fh)))]);
+        }
+        if (Math.max(ws.top0, ws.top1) > P.eave + 1e-3) {
+          const q = wallPts(ws, Math.max(P.eave, ws.y0), maxTop + 1);
+          if (q) sink.poly(q, nn, (p) => [uPlain(p), stripV(tRow('plain'), Math.min(1, Math.max(0, (p[1] - P.eave) / 3.2)))]);
+        }
       }
     }
   }
   // ----- 晒台板 -----
   for (const e of F.extras) for (const pc of CL.planar(e.tri)) sink.poly(pc, up,
-    mode === 'geo' ? () => pal.slab : mode === 'proc' ? (p) => procUV(CODE.slab, 0)(p[0]) : (p) => [p[0] / ATLAS.plainM, stripV(ATLAS.strips.plain, 0.5)]);
+    mode === 'geo' ? () => pal.slab : mode === 'proc' ? (p) => procUV(CODE.slab, 0)(p[0]) : (p) => [p[0] / ATLAS.plainM, stripV(tRow('plain'), 0.5)]);
   // ----- 屋面（顶 + 底）-----
   for (const r of F.roofs) {
     const [a, b, c] = r.tri;
@@ -675,9 +726,9 @@ function emitBuilding(o, env, mode, opt) {
     const front = [Wp(sL, tf, yb), Wp(sR, tf, yb), Wp(sR, tf, yw), Wp(sL, tf, yw)];
     const gable = [Wp(sL, tf, yw), Wp(sR, tf, yw), Wp(sc, tf, yr)];
     const fAttr = mode === 'geo' ? () => pal.wood : mode === 'proc' ? (p) => procUV(CODE.dormer, yw - yb)(F.S([p[0], p[2]]) - sL)
-      : (p) => [0.125 + (F.S([p[0], p[2]]) - sL) / w * 0.25, stripV(ATLAS.strips.up, 0.22 + 0.68 * (p[1] - yb) / (yw - yb))];   // 对准图集第一开间的窗
+      : (p) => [0.125 + (F.S([p[0], p[2]]) - sL) / w * 0.25, stripV(tRow('upA'), 0.22 + 0.68 * (p[1] - yb) / (yw - yb))];   // 对准图集第一开间的窗
     sink.poly(front, fn, fAttr);
-    const pAttr = mode === 'geo' ? () => pal.plaster : mode === 'proc' ? () => procUV(CODE.party, 0)(0) : (p) => [p[0] / ATLAS.plainM, stripV(ATLAS.strips.plain, 0.5)];
+    const pAttr = mode === 'geo' ? () => pal.plaster : mode === 'proc' ? () => procUV(CODE.party, 0)(0) : (p) => [p[0] / ATLAS.plainM, stripV(tRow('plain'), 0.5)];
     sink.tri(gable[0], gable[1], gable[2], fn, pAttr);
     for (const [s, sg] of [[sL, -1], [sR, 1]]) sink.tri(Wp(s, tf, yb), Wp(s, tf, yw), Wp(s, tW, yw), [sg * P.axis[0], 0, sg * P.axis[1]], pAttr);
     const rAttr = mode === 'geo' ? () => pal.tile : mode === 'proc' ? (p) => procUV(CODE.roof, 1)(F.S([p[0], p[2]])) : (p) => [F.S([p[0], p[2]]) / ATLAS.roof.uM, (ATLAS.roof.y0 + 40) / ATLAS.H];
@@ -737,5 +788,7 @@ function emitBuilding(o, env, mode, opt) {
     for (const q of quads) if (sink.tris + 2 <= TRI_CAP) sink.poly(q.pts, q.n, () => q.col);
   }
   const geometry = sink.geometry();
-  return { geometry, plan: P, tris: sink.tris, clip: CL.stats, faces: { walls: F.walls.length, roofs: F.roofs.length, ridges: F.ridges.length, dormers: F.dormers.length, awnings: F.awnings.length, terrace: !!P.terrace } };
+  const segAll = [...segCache.values()];
+  const facade = { edges: segAll.length, segmented: segAll.filter(x => x.length > 1).length, segments: segAll.reduce((n, x) => n + x.length, 0), mirrored: segAll.flat().filter(x => x.mirror).length };
+  return { geometry, plan: P, tris: sink.tris, clip: CL.stats, facade, faces: { walls: F.walls.length, roofs: F.roofs.length, ridges: F.ridges.length, dormers: F.dormers.length, awnings: F.awnings.length, terrace: !!P.terrace } };
 }
