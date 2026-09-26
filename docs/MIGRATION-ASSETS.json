@@ -6,7 +6,7 @@
     "objectPrefix": "objects/sha256/",
     "snapshotKey": "snapshots/owner/reorganization-20260922-202629/MIGRATION-MANIFEST.json"
   },
-  "uniqueBytes": 413215217,
+  "uniqueBytes": 417225413,
   "files": [
     {
       "path": "scene-authoring/yuyuan-area/baseline/scene-areas.glb",
@@ -2202,21 +2202,24 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-165791764/model.glb",
-      "sha256": "fbe01d99380ba9362c2c26ee4463fa5d32028ef241612fb61fe45c14c01cfa2a",
-      "bytes": 1115616,
-      "sourcePackage": "pawborough-wave7-bazaarblocks-20260926"
+      "sha256": "9169a6eb099bb42d50965a87f8bc98dbedc2523c352cb6b08e01218addf73b15",
+      "bytes": 1138084,
+      "sourcePackage": "pawborough-night-bazaar-20260926",
+      "pendingLeadArchive": true
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389702030/model.glb",
-      "sha256": "478f5effc10e1968508b2eaee959922155fa5d43cf828b7010b616a031cba70e",
-      "bytes": 797104,
-      "sourcePackage": "pawborough-wave7-bazaarblocks-20260926"
+      "sha256": "5e979571b7787f85353c6387b0e3dac19da17a8384208e14ea26521f52229da0",
+      "bytes": 817300,
+      "sourcePackage": "pawborough-night-bazaar-20260926",
+      "pendingLeadArchive": true
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893867/model.glb",
-      "sha256": "43406f663ca91ab11ec29be61e6f21943596032ae1c3b982ee1e3fad3390097f",
-      "bytes": 850328,
-      "sourcePackage": "pawborough-wave7-bazaarblocks-20260926"
+      "sha256": "ca4a32812df816784f5485bf9ba7cdea12548b51f21209f665373830f5c99b78",
+      "bytes": 859012,
+      "sourcePackage": "pawborough-night-bazaar-20260926",
+      "pendingLeadArchive": true
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701971/model.glb",
@@ -2232,9 +2235,10 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893868/model.glb",
-      "sha256": "241f52bbe6467bd8c241130ee137d938120040059c7f01cd3832fb6623d3f3b5",
-      "bytes": 574780,
-      "sourcePackage": "pawborough-wave8-bazaar-batch-glm-20260926"
+      "sha256": "2ddaa026eb47d3f849d9556fb6bb29147f430a27c679a3eddc03edb335d210b2",
+      "bytes": 592564,
+      "sourcePackage": "pawborough-night-bazaar-20260926",
+      "pendingLeadArchive": true
     },
     {
       "path": "scene-authoring/yuyuan-area/resources/textures/outer-kit/outerkit-atlas-v2.jpg",
@@ -2243,6 +2247,27 @@
       "sourcePackage": "pawborough-wave9-outerpolish-20260926",
       "archiveState": "pending_lead_archive",
       "note": "wave9 v2 atlas (512x4096, 4 wall tones x A/B rows), baked by modules/outer-kit/bake_atlas.py; read by scripts/export-zones.py OUTER_KIT_TEX. Pending lead archiving (not uploaded)."
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202606/model.glb",
+      "sha256": "be1cde23c0761ded18f7853e6a031f2524ad7aa655fd7f38e64907d191f2ac36",
+      "bytes": 1681440,
+      "sourcePackage": "pawborough-night-bazaar-20260926",
+      "pendingLeadArchive": true
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202607/model.glb",
+      "sha256": "25cf55dda58fd5aca92b80847749a3ac6da366a0ad201fe66de6dd8027362e1a",
+      "bytes": 1045468,
+      "sourcePackage": "pawborough-night-bazaar-20260926",
+      "pendingLeadArchive": true
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893884/model.glb",
+      "sha256": "124d970a69223f195e557854ee1511a36593eebc0026edc6771dbca20fd2adba",
+      "bytes": 1214156,
+      "sourcePackage": "pawborough-night-bazaar-20260926",
+      "pendingLeadArchive": true
     }
   ],
   "state": "uploaded_checksum_verified",
