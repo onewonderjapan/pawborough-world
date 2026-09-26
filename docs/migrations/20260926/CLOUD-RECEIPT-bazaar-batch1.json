@@ -1,0 +1,33 @@
+{
+ "status": "complete",
+ "finishedAt": "2026-09-26T15:03:41.606239+09:00",
+ "bucket": "onewonder-pawborough-assets-566601428909-apne1",
+ "region": "ap-northeast-1",
+ "public": false,
+ "objects": 3,
+ "uploaded": 3,
+ "reused": 0,
+ "results": [
+  {
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701971/model.glb",
+   "sha256": "c167c8bc36d1ee7cb26741873a1f7410c60bd118cef9250ac438ea4e5402e4cf",
+   "bytes": 1289512,
+   "key": "objects/sha256/c1/c167c8bc36d1ee7cb26741873a1f7410c60bd118cef9250ac438ea4e5402e4cf",
+   "result": "uploaded"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893868/model.glb",
+   "sha256": "241f52bbe6467bd8c241130ee137d938120040059c7f01cd3832fb6623d3f3b5",
+   "bytes": 574780,
+   "key": "objects/sha256/24/241f52bbe6467bd8c241130ee137d938120040059c7f01cd3832fb6623d3f3b5",
+   "result": "uploaded"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893873/model.glb",
+   "sha256": "b017f5e76acc4cdf011d8b7bc6cdafd250ddaad53228e1a249c09d349ace1d3b",
+   "bytes": 1033580,
+   "key": "objects/sha256/b0/b017f5e76acc4cdf011d8b7bc6cdafd250ddaad53228e1a249c09d349ace1d3b",
+   "result": "uploaded"
+  }
+ ]
+}
