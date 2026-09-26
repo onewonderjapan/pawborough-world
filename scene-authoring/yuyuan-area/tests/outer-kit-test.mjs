@@ -8,7 +8,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { polySymDiffArea, polyArea as libPolyArea } from '../src/lib.mjs';
+import { polySymDiffArea, polyArea as libPolyArea, polyIntersectionArea } from '../src/lib.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out');
@@ -162,11 +162,25 @@ const mode = [...modes][0];
     ok('tex 网格带 UV、不带顶点色', kitEntries.every(e => e.attrs.has('TEXCOORD_0') && !e.attrs.has('COLOR_0')));
   }
 }
+// wave9：被某栋套件楼包住的别栋（≥ 95% 面积在其 footprint 内、面积更小）= 院落洞：那块地归被包住的楼，
+// 外楼屋面在洞上挖空、洞边起朝内的墙（从 layout 现算）
+const HOLE_KINDS = new Set(['outerBuilding', 'bazaarBlock']);
+const holesOf = (id) => {
+  const r = ringOf(byId.get(id).geometry.footprint), A = Math.abs(area(r));
+  const xs = r.map(p => p[0]), zs = r.map(p => p[1]);
+  return layout.objects.filter(q => q.id !== id && HOLE_KINDS.has(q.kind) && q.geometry && q.geometry.footprint).map(q => ringOf(q.geometry.footprint))
+    .filter(q => q.every(p => p[0] >= Math.min(...xs) - 0.1 && p[0] <= Math.max(...xs) + 0.1 && p[1] >= Math.min(...zs) - 0.1 && p[1] <= Math.max(...zs) + 0.1))
+    .filter(q => { const aq = Math.abs(area(q)); return aq < A && polyIntersectionArea(q, r) >= 0.95 * aq; });
+};
+const holeReport = [];
 const typeCount = {}, stats = { tris: 0, maxTris: 0, maxOut: 0, maxRidgeOver: 0 };
 for (const id of KIT_IDS) {
   const o = byId.get(id), es = kitEntries.filter(e => e.id === id);
   if (es.length !== 1) { ok(`${id} 恰一个套件节点`, false); continue; }
   const e = es[0], r = ringOf(o.geometry.footprint), A = Math.abs(area(r));
+  const holes = holesOf(id);
+  if (holes.length) holeReport.push(id + '⊃' + holes.length);
+  const onAnyBoundary = (p) => Math.min(boundaryDist(p, r), ...holes.map(h => boundaryDist(p, h)));
   const h = o.height, levels = o.levels || Math.round(h / 3.2);
   ok(`${id} 三角 ${e.tris.length} ≤ ${TRI_CAP}`, e.tris.length <= TRI_CAP && e.tris.length > 0);
   typeCount[e.extras.kitType] = (typeCount[e.extras.kitType] || 0) + 1;
@@ -177,8 +191,12 @@ for (const id of KIT_IDS) {
   // 位置 / 轮廓：地面层顶点全在 footprint 边上（≤ 3 cm）；footprint 每个角都有地面顶点
   const all = e.tris.flatMap(t => t.v);
   const ground = all.filter(p => Math.abs(p[1]) <= 0.02);
-  const gd = Math.max(...ground.map(p => boundaryDist([p[0], p[2]], r)));
-  ok(`${id} 地面顶点 ${ground.length} 个都落在 layout footprint 边上（最大偏 ${gd.toFixed(3)} m）`, ground.length >= r.length && gd <= 0.03);
+  const gd = Math.max(...ground.map(p => onAnyBoundary([p[0], p[2]])));
+  ok(`${id} 地面顶点 ${ground.length} 个都落在 layout footprint 边（含院落洞边）上（最大偏 ${gd.toFixed(3)} m）`, ground.length >= r.length && gd <= 0.03);
+  if (holes.length) {
+    const hm = holes.flat().filter(c => !ground.some(p => Math.hypot(p[0] - c[0], p[2] - c[1]) <= 0.03)).length;
+    ok(`${id} 院落洞 ${holes.length} 个的角都有墙脚顶点（缺 ${hm}）`, hm === 0);
+  }
   const cornerMiss = r.filter(c => !ground.some(p => Math.hypot(p[0] - c[0], p[2] - c[1]) <= 0.03)).length;
   ok(`${id} footprint ${r.length} 个角都有墙脚顶点（缺 ${cornerMiss}）`, cornerMiss === 0);
   // 外扩上限：屋檐 0.35 + 披檐 0.9 → 所有顶点距 footprint ≤ 1.3 m（在外时）
@@ -205,18 +223,24 @@ for (const id of KIT_IDS) {
     const s3 = (a[0] - c[0]) * (p[1] - c[1]) - (a[1] - c[1]) * (p[0] - c[0]);
     return (s1 >= -1e-9 && s2 >= -1e-9 && s3 >= -1e-9) || (s1 <= 1e-9 && s2 <= 1e-9 && s3 <= 1e-9);
   };
-  let xs = r.map(p => p[0]), zs = r.map(p => p[1]), nIn = 0, nCov = 0;
+  let xs = r.map(p => p[0]), zs = r.map(p => p[1]), nIn = 0, nCov = 0, holeRoofed = 0;
   for (let x = Math.min(...xs) + 0.25; x < Math.max(...xs); x += 0.5) for (let z = Math.min(...zs) + 0.25; z < Math.max(...zs); z += 0.5) {
     if (!inside([x, z], r) || boundaryDist([x, z], r) < 0.05) continue;
+    if (holes.some(h => boundaryDist([x, z], h) < 0.05)) continue;   // 洞边 5 cm 内不判
+    if (holes.some(h => inside([x, z], h))) {   // 院落洞：必须空（归被包住的楼）
+      if (upTris.some(t => inTri([x, z], t))) holeRoofed++;
+      continue;
+    }
     nIn++;
     if (upTris.some(t => inTri([x, z], t))) nCov++;
   }
   ok(`${id} 屋面覆盖 footprint 采样点 ${nCov}/${nIn}（无洞）`, nIn > 0 && nCov === nIn);
+  if (holes.length) ok(`${id} 院落洞上方没有本栋屋面（压住 ${holeRoofed} 个采样点）`, holeRoofed === 0);
   ok(`${id} 三角绕序与法线一致（反向 ${wind}）`, wind === 0);
 }
 // 套件范围外的 outerBuilding（湖心亭重合占位）无套件标记
 ok('套件范围外的外围楼无套件标记', obEntries.filter(e => !KIT_IDS.includes(e.id)).every(e => !e.extras.outerKit));
-console.log(`REPORT 选型 ${JSON.stringify(typeCount)}；套件三角合计 ${stats.tris}，单栋最多 ${stats.maxTris}；最大外挑 ${stats.maxOut.toFixed(2)} m；屋脊最多高出 layout height ${stats.maxRidgeOver.toFixed(2)} m`);
+console.log(`REPORT 院落洞 ${holeReport.join(',') || '无'}；选型 ${JSON.stringify(typeCount)}；套件三角合计 ${stats.tris}，单栋最多 ${stats.maxTris}；最大外挑 ${stats.maxOut.toFixed(2)} m；屋脊最多高出 layout height ${stats.maxRidgeOver.toFixed(2)} m`);
 // cm 件 validator 0 错
 const man = JSON.parse(fs.readFileSync(path.join(OUT, 'zones-manifest.json'), 'utf8'));
 const zo = man.zones.find(z => z.id === 'outer');
