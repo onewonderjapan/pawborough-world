@@ -35,7 +35,13 @@ const fileKey = (z) => z.file;
 function permuted(kind) {
   const m = JSON.parse(JSON.stringify(manifest));
   if (kind === 'reverse') { m.order = [...m.order].reverse(); m.zones = [...m.zones].reverse(); }
-  if (kind === 'garden-3-first') { const i = m.zones.findIndex(z => z.id === 'garden' && /garden-3/.test(z.file || '')); m.zones = [m.zones[i], ...m.zones.filter((_, k) => k !== i)]; }
+  // 园区分件打头：优先厅堂件 garden-3；HALL_KIT=0 时没有该件（findIndex = −1 曾把 undefined 塞进 zones，viewer 解析 manifest 抛错、
+  // 退回 scene-areas.glb 单文件取景 —— wave8 全关验收发现，39e642b3 的 main.js 同样失败），改用编号最大的非主件园区分件。
+  if (kind === 'garden-3-first') {
+    let i = m.zones.findIndex(z => z.id === 'garden' && /garden-3/.test(z.file || ''));
+    if (i < 0) { const subs = m.zones.map((z, k) => [z, k]).filter(([z]) => z.id === 'garden' && z.file && z.file !== 'zone-garden.glb').sort((a, b) => b[0].part - a[0].part); i = subs.length ? subs[0][1] : -1; }
+    if (i >= 0) m.zones = [m.zones[i], ...m.zones.filter((_, k) => k !== i)];
+  }
   if (kind === 'bazaar-first') m.order = ['bazaar', ...m.order.filter(z => z !== 'bazaar')];
   if (kind === 'pond-first') m.order = ['pond', ...m.order.filter(z => z !== 'pond')];
   return m;
