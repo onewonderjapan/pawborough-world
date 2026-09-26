@@ -34,7 +34,8 @@ def arg(flag, default):
     return ARGS[ARGS.index(flag) + 1] if flag in ARGS else default
 
 PARAMS_REL = arg('--params', 'params/huabao-bld-428202599.json')
-P = json.load(open(os.path.join(HERE, PARAMS_REL), encoding='utf-8'))
+import params_load                                               # noqa: E402  wave7 K1：立面预设 + auto 值
+P = params_load.load(PARAMS_REL)
 ROOT = os.path.abspath(os.path.join(HERE, '..', '..'))          # scene-authoring/yuyuan-area
 OUT = os.path.join(ROOT, arg('--out', os.path.join('out-bazaar-towers', P['id'])))
 os.makedirs(OUT, exist_ok=True)
@@ -711,6 +712,199 @@ for b in BLOCKS:
             b['roofRect'] = G.inscribed_rect(shared_keepout_poly(top, ov + EKP0['chu'] - WALLI + 0.1), cell=0.25,
                                              keepout=tower_keepout(b['roof'].get('towerClearM', 1.0)) if TOWER else [])
 
+# ---- 附属坡屋面（wave7 K0）：退台 / 顶层矩形以外露出的平屋面，改铺若干座低一级的小歇山 ----
+# 规则（params roof.annex，缺省关 = 原输出）：每个「本层平面 ≠ 上一层平面」的楼层 k，露台区 = 第 k 层平面
+# − 第 k+1 层平面（上层墙线）− 角塔（外扩 towerClearM）；共享边一侧内收同主屋面（檐口不越共享边）。露台区用
+# plan2d.rect_cover 贪心铺轴向矩形，每个矩形一座歇山，檐口标高 = 第 k 层层顶（与该层腰檐同高，腰檐在这些段断开、
+# 端头收口，由附属屋面自己出檐）。正脊平行于它贴着的上层墙（坡面对着上层墙落下，交线藏在上层檐下）；
+# 脊高 = min(ridgeFrac × 进深, 上层层高 − underUpperEaveM)，附属屋面始终低于上一层的檐口。
+ANNEX = []
+for b in BLOCKS:
+    b['annex'] = []
+    an = b['roof'].get('annex')
+    if not an or not an.get('enabled', True):
+        continue
+    if not EAVE_END_CAP:
+        raise SystemExit('roof.annex needs sharedEdgeEaveEnd=endcap (waist eaves break where an annex roof takes over)')
+    aek = dict(EKP0)
+    aek.update(an.get('eaveKit', {}))
+    for k in range(1, b['N']):
+        lower, upper = b['plansN'][k - 1], b['plansN'][k]
+        if upper == lower:
+            continue
+        src = shared_keepout_poly(lower, aek['over'] + aek['chu'] - WALLI + 0.1)
+        holes = [G.ccw(upper)]
+        if TOWER and TOWER['block'] is b:
+            holes.append(G.ccw(G.offset_edges(TOWER['poly'], -an.get('towerClearM', 1.0))))
+        rects = G.rect_cover(src, holes=holes, cell=an.get('cellM', 0.25), min_side=an.get('minSideM', 3.0),
+                             max_n=an.get('maxRoofs', 4), min_area=an.get('minAreaM2', 12.0))
+        # 出檐包络：附属屋面的檐口 / 翼角（矩形外 over、角上再 chu 斜出）不得出 footprint 各边 1.35 m（test1a 1.4 留 5 cm）；
+        # 斜边（非正交 footprint）处翼角会探出，矩形向内收 0.25 m 一步直到四角翼角与四边檐口中点都在包络内
+        ENV = G.offset_edges(FPS, -1.35)
+        def _env_ok(r_):
+            u0, u1, v0, v1 = r_
+            e, c = aek['over'], aek['over'] + aek['chu']
+            pts = [(u0 - c, v0 - c), (u1 + c, v0 - c), (u1 + c, v1 + c), (u0 - c, v1 + c),
+                   ((u0 + u1) / 2, v0 - e), ((u0 + u1) / 2, v1 + e), (u0 - e, (v0 + v1) / 2), (u1 + e, (v0 + v1) / 2)]
+            return [i for i, q in enumerate(pts) if not G.point_in(ENV, q)]
+        fixed = []
+        for r_ in rects:
+            r_ = list(r_)
+            for _ in range(40):
+                bad = _env_ok(r_)
+                if not bad:
+                    break
+                for i in bad:                             # 角 i：0 (u0,v0) 1 (u1,v0) 2 (u1,v1) 3 (u0,v1)；中点 4 v0 5 v1 6 u0 7 u1
+                    if i in (0, 3, 6): r_[0] += 0.25
+                    if i in (1, 2, 7): r_[1] -= 0.25
+                    if i in (0, 1, 4): r_[2] += 0.25
+                    if i in (2, 3, 5): r_[3] -= 0.25
+            if not _env_ok(r_) and r_[1] - r_[0] >= an.get('minSideM', 3.0) and r_[3] - r_[2] >= an.get('minSideM', 3.0):
+                fixed.append(tuple(r_))
+        rects = fixed
+        for ri, r in enumerate(rects):
+            u0, u1, v0, v1 = r
+            # 贴着上层墙的边（该边中线向外 0.4 m 落在上层平面内）→ 正脊平行于它；都不贴 → 沿长边
+            touch = {}
+            for side, mid, out in (('v0', ((u0 + u1) / 2, v0), (0, -1)), ('v1', ((u0 + u1) / 2, v1), (0, 1)),
+                                   ('u0', (u0, (v0 + v1) / 2), (-1, 0)), ('u1', (u1, (v0 + v1) / 2), (1, 0))):
+                probe = (mid[0] + out[0] * 0.4, mid[1] + out[1] * 0.4)
+                if G.point_in(holes[0], probe):
+                    touch[side] = (u1 - u0) if side[0] == 'v' else (v1 - v0)
+            if touch:
+                s_ = max(touch, key=touch.get)
+                along_u = s_[0] == 'v'
+            else:
+                along_u = (u1 - u0) >= (v1 - v0)
+            dep = (v1 - v0) if along_u else (u1 - u0)
+            ln = (u1 - u0) if along_u else (v1 - v0)
+            cap = b['heights'][k] - an.get('underUpperEaveM', 0.3)
+            rz = min(an.get('ridgeFrac', 0.36) * dep, cap)
+            ANNEX.append({'block': b['name'], 'storey': k, 'rect': r, 'alongU': along_u, 'touch': sorted(touch),
+                          'z': b['ZT'][k], 'ridgeAbove': rz, 'breakAbove': rz * an.get('breakFrac', 0.55),
+                          'depth': dep, 'length': ln, 'gableInset': min(an.get('gableInsetM', 1.2), 0.12 * ln),
+                          'eaveKit': aek, 'breakInsetFrac': an.get('breakInsetFrac', 0.36),
+                          # 下檐抬高（脊高不变）：檐口 = 层顶 + lift − drop 高过本层墙顶 / 露台板面，
+                          # 露台与墙顶不会从附属屋面檐口一带的瓦面里露出来
+                          'lift': an.get('eaveLiftM', aek['drop'] + 0.1)})
+            b['annex'].append(ANNEX[-1])
+
+def _ray_hit(p, d, polys):
+    """p 沿单位向量 d 的射线与若干多边形边界的最近交点距离（无交点 None）。"""
+    best = None
+    for poly in polys:
+        n_ = len(poly)
+        for i in range(n_):
+            a_, b_ = poly[i], poly[(i + 1) % n_]
+            ex, ey = b_[0] - a_[0], b_[1] - a_[1]
+            den = d[0] * ey - d[1] * ex
+            if abs(den) < 1e-12:
+                continue
+            tt = ((a_[0] - p[0]) * ey - (a_[1] - p[1]) * ex) / den
+            uu = ((a_[0] - p[0]) * d[1] - (a_[1] - p[1]) * d[0]) / den
+            if tt > 1e-6 and -1e-9 <= uu <= 1 + 1e-9 and (best is None or tt < best):
+                best = tt
+    return best
+
+# ---- 披檐（wave7 K0）：附属歇山铺不下的窄露台（上层墙与本层墙之间 0.25–leanTo.maxM 宽的条 / 楔形，多因 footprint 边
+# 不正交而顶层是轴向矩形），腰檐的根从本层墙线移到上层墙（或角塔墙）根：一片单坡瓦面从上层墙根落到本层檐口，檐口外伸
+# 同腰檐。逐墙线取样（0.5 m）：向内射线先碰到上层平面 / 角塔（而不是附属屋面）且距离在范围内的样点连成段；
+# 相邻两边的段在阳角处用斜接檐角 + 上层墙角连成一个小戗角。共享边上不做披檐（那里做封火墙压顶，见下）。
+# ---- 封火墙压顶（wave7 K0）：共享边一侧上层后退、露出露台的段，本层墙向上接 parapetHM 高的封火墙，顶上两坡瓦压顶，
+# 压顶外缘止于 footprint 边线内 0.02 m（不越共享边），俯视把墙线与墙外 wallInset 空隙都盖住。
+LEAN, PARAPET = [], []
+for b in BLOCKS:
+    an = b['roof'].get('annex')
+    if not an or not an.get('enabled', True):
+        continue
+    aek = dict(EKP0)
+    aek.update(an.get('eaveKit', {}))
+    lt = an.get('leanTo', {})
+    wmax = lt.get('maxM', 4.5)
+    for k in range(1, b['N']):
+        if b['plansN'][k] == b['plansN'][k - 1]:
+            continue
+        lower, upper = G.ccw(b['plansN'][k - 1]), G.ccw(b['plansN'][k])
+        ups = [upper]
+        if TOWER and TOWER['block'] is b:
+            ups.append(G.ccw(TOWER['poly']))
+        anx = [G.rect_poly(a['rect']) for a in ANNEX if a['block'] == b['name'] and a['storey'] == k]
+        n_ = len(lower)
+        for i in range(n_):
+            a_, b_ = lower[i], lower[(i + 1) % n_]
+            L, t, nn = G.edge_frame(a_, b_)
+            if L < 0.5:
+                continue
+            segs = classify(a_, b_, near_max=0.8)
+            m_ = max(2, int(math.ceil(L / 0.5)))
+            samp, par = [], []
+            for j in range(m_ + 1):
+                s = L * j / m_
+                sm = min(max(s, 0.05), L - 0.05)
+                role = next((r for s0, s1, r, _ in segs if s0 - 1e-6 <= sm <= s1 + 1e-6), 'plain')
+                d = (-nn[0], -nn[1])
+                sp = min(max(s, 0.02), L - 0.02)                  # 射线起点离角点 2 cm（不落在相邻边上）
+                p2 = (a_[0] + t[0] * sp + d[0] * 0.02, a_[1] + t[1] * sp + d[1] * 0.02)
+                wu = _ray_hit(p2, d, ups[:1])
+                wt = _ray_hit(p2, d, ups[1:]) if len(ups) > 1 else None
+                lim = wmax
+                if wt is not None and (wu is None or wt < wu):          # 先碰到角塔：披檐靠塔身，许更宽（towerMaxM）
+                    wu, lim = wt, lt.get('towerMaxM', wmax)
+                wa = _ray_hit(p2, d, anx) if anx else None
+                exposed = wu is not None and wu + 0.02 > 0.25 and (wa is None or wa > wu)
+                if any(G.point_in(q, p2) for q in ups):             # 起点已在上层 / 塔身里（塔正面贴本层墙线）：不是露台
+                    exposed = False
+                if role == 'shared':
+                    par.append((s, exposed))
+                    samp.append((s, None))
+                else:
+                    samp.append((s, wu + 0.02 if exposed and wu + 0.02 <= lim else None))
+            # 连续样点成段；段端离边端 < 1.0 m 的并到边端（与腰檐断开的并端规则一致）
+            for src_, dst in ((samp, 'lean'), (par, 'par')):
+                runs, cur = [], []
+                for s, w in src_:
+                    if (w is not None and w is not False):
+                        cur.append((s, w))
+                    elif cur:
+                        runs.append(cur)
+                        cur = []
+                if cur:
+                    runs.append(cur)
+                for r in runs:
+                    if len(r) < 2:
+                        continue
+                    if 0 < r[0][0] < 1.0:
+                        r.insert(0, (0.0, r[0][1]))
+                    if L - 1.0 < r[-1][0] < L:
+                        r.append((L, r[-1][1]))
+                    if dst == 'par':
+                        PARAPET.append({'block': b['name'], 'storey': k, 'z': b['ZT'][k], 'edge': i, 'a': a_, 't': t, 'n': nn,
+                                        's0': r[0][0], 's1': r[-1][0], 'h': lt.get('parapetHM', 0.9)})
+                        continue
+                    LEAN.append({'block': b['name'], 'storey': k, 'z': b['ZT'][k], 'edge': i, 'a': a_, 't': t, 'n': nn, 'L': L,
+                                 'samples': r, 'nEdges': n_,
+                                 'rise': max(lt.get('minRiseM', 0.6), min(b['heights'][k] - lt.get('underUpperM', 1.2),
+                                             math.tan(math.radians(lt.get('pitchDeg', 16.0))) * (max(w for _, w in r) + aek['over']))),
+                                 'eaveKit': aek, 'lift': lt.get('eaveLiftM', aek['drop'] + 0.1)})
+
+def lean_cover(z, block_name, edge, s):
+    """该块该标高的第 edge 条墙线（CCW 序）上 s 处是否归披檐（腰檐该处断开）。"""
+    for r in LEAN:
+        if r['block'] == block_name and abs(r['z'] - z) < 1e-6 and r['edge'] == edge and \
+                r['samples'][0][0] - 1e-6 <= s <= r['samples'][-1][0] + 1e-6:
+            return True
+    return False
+
+def annex_cover(pt, z, block_name, probe_in=1.0):
+    """墙线上一点（局部 u,v）向内 probe_in 处是否落在同块同标高的附属屋面矩形里（腰檐该处断开）。"""
+    for a in ANNEX:
+        if a['block'] != block_name or abs(a['z'] - z) > 1e-6:
+            continue
+        u0, u1, v0, v1 = a['rect']
+        if u0 - 1e-6 <= pt[0] <= u1 + 1e-6 and v0 - 1e-6 <= pt[1] <= v1 + 1e-6:
+            return True
+    return False
+
 # ---- 体积（外露判定）：每块每层 + 角塔 ----
 VOLS = []
 for b in BLOCKS:
@@ -868,6 +1062,13 @@ def ring_with_pulls(poly, z, over_total, owner):
                 po = (a[0] + t[0] * s + nn[0] * 0.8, a[1] + t[1] * s + nn[1] * 0.8)
                 if inside_other(po, z + 0.3, owner) and not in_tower(po, z):
                     pulls.append((max(0.0, L * j / k - 0.3), min(L, L * (j + 1) / k + 0.3)))
+        if ANNEX or LEAN:                        # wave7 K0：附属屋面 / 披檐接管的段（墙线向内 1.0 m 落在附属屋面矩形里，或归披檐）腰檐断开
+            k = max(1, int(math.ceil(L / 0.5)))
+            for j in range(k):
+                s = L * (j + 0.5) / k
+                pi_ = (a[0] + t[0] * s - nn[0] * 1.0, a[1] + t[1] * s - nn[1] * 1.0)
+                if annex_cover(pi_, z, owner) or lean_cover(z, owner, i, s):
+                    pulls.append((L * j / k, L * (j + 1) / k))
         # 合并区间，离端点 < 1.0 m 并到端点
         pulls.sort()
         merged = []
@@ -924,6 +1125,96 @@ def ring_with_pulls(poly, z, over_total, owner):
             x = G._line_x(prev['p1'], prev['t'], cur_['p0'], cur_['t'])
             pts.append(x if x else cur_['p0'])
     return G.simplify(pts, 0.5, 0.05), True
+
+def _oface(pts, face, want):
+    """按期望朝向 want（局部 u,v,h）定面序（右手：(b-a)×(c-a) 为法线）；配合 _ek_add() 的镜像修正写入。"""
+    a, b, c = (pts[i] for i in face[:3])
+    e1 = (b[0] - a[0], b[1] - a[1], b[2] - a[2])
+    e2 = (c[0] - a[0], c[1] - a[1], c[2] - a[2])
+    nrm = (e1[1] * e2[2] - e1[2] * e2[1], e1[2] * e2[0] - e1[0] * e2[2], e1[0] * e2[1] - e1[1] * e2[0])
+    return tuple(face) if sum(x * y for x, y in zip(nrm, want)) >= 0 else (face[0],) + tuple(reversed(face[1:]))
+
+_ADDR = _ek_add()
+def _emit(name, pts, uvs, faces_want, m, part):
+    items = [(p, uv) for p, uv in zip(pts, uvs)]
+    _ADDR(name, items, [_oface(pts, f, w) for f, w in faces_want], m, part)
+
+def build_lean(r, runs, tag):
+    """披檐一段：瓦面（上层墙根 → 檐口）+ 瓦头 + 封檐板 + 檐底（檐口 → 本层墙线），阳角与相邻段斜接成小戗角，开口端封山墙。"""
+    z, ek = r['z'], r['eaveKit']
+    drop, tH, bH, over = ek['drop'], ek['tileH'], ek['boardH'], ek['over']
+    zl = z + r['lift'] - drop
+    zr = zl + r['rise']
+    a, t, n, L = r['a'], r['t'], r['n'], r['L']
+    P = [(a[0] + t[0] * s, a[1] + t[1] * s) for s, _ in r['samples']]
+    R = [(p[0] - n[0] * (w + 0.05), p[1] - n[1] * (w + 0.05)) for p, (_, w) in zip(P, r['samples'])]
+    Q = [(p[0] + n[0] * over, p[1] + n[1] * over) for p in P]
+    ne = r['nEdges']
+    nxt = next((q for q in runs if q['storey'] == r['storey'] and q['edge'] == (r['edge'] + 1) % ne and q['samples'][0][0] < 1e-6), None) \
+        if r['samples'][-1][0] > L - 1e-6 else None
+    prv = next((q for q in runs if q['storey'] == r['storey'] and q['edge'] == (r['edge'] - 1) % ne and q['samples'][-1][0] > q['L'] - 1e-6), None) \
+        if r['samples'][0][0] < 1e-6 else None
+    def miter(e0, e1):
+        c = (e0['a'][0] + e0['t'][0] * e0['L'], e0['a'][1] + e0['t'][1] * e0['L'])
+        x = G._line_x((c[0] + e0['n'][0] * over, c[1] + e0['n'][1] * over), e0['t'],
+                      (c[0] + e1['n'][0] * over, c[1] + e1['n'][1] * over), e1['t'])
+        return x or (c[0] + e0['n'][0] * over, c[1] + e0['n'][1] * over)
+    if nxt is not None:
+        Q[-1] = miter(r, nxt)
+    if prv is not None:
+        Q[0] = miter(prv, r)
+    m = len(P)
+    def ztile(i):                                         # 墙线处瓦面高（R → Q 直线插值）
+        wi = r['samples'][i][1] + 0.05
+        return zl + r['rise'] * over / (wi + over)
+    # 瓦面
+    pts = [(q[0], q[1], zl) for q in Q] + [(p[0], p[1], zr) for p in R]
+    uvs = [(r['samples'][i][0], 0.0) for i in range(m)] + [(r['samples'][i][0], r['samples'][i][1] + over) for i in range(m)]
+    fw = [((i, i + 1, m + i + 1, m + i), (0, 0, 1)) for i in range(m - 1)]
+    _emit('lean-tile-' + tag, pts, uvs, fw, 'roof', 'roof-lean')
+    # 瓦头 / 封檐板 / 檐底
+    for part_, h0, h1, mt in (('tileend', 0.0, tH, 'dark'), ('board', tH, tH + bH, ek.get('boardMaterial', 'wood'))):
+        pts = [(q[0], q[1], zl - h0) for q in Q] + [(q[0], q[1], zl - h1) for q in Q]
+        uvs = [(r['samples'][i][0], 0.0) for i in range(m)] + [(r['samples'][i][0], h1 - h0) for i in range(m)]
+        fw = [((i, i + 1, m + i + 1, m + i), (n[0], n[1], 0)) for i in range(m - 1)]
+        _emit('lean-%s-%s' % (part_, tag), pts, uvs, fw, mt, 'roof-lean')
+    pts = [(q[0], q[1], zl - tH - bH) for q in Q] + [(p[0], p[1], z + ek.get('soffitRise', 0.15)) for p in P]
+    uvs = [(r['samples'][i][0], 0.0) for i in range(m)] + [(r['samples'][i][0], over) for i in range(m)]
+    fw = [((i, i + 1, m + i + 1, m + i), (0, 0, -1)) for i in range(m - 1)]
+    _emit('lean-soffit-' + tag, pts, uvs, fw, 'dark', 'roof-lean')
+    # 阳角小戗角：本段末 R、上层墙角 U、下段首 R'、斜接檐角 Qm
+    if nxt is not None:
+        Rn = (nxt['a'][0] - nxt['n'][0] * (nxt['samples'][0][1] + 0.05), nxt['a'][1] - nxt['n'][1] * (nxt['samples'][0][1] + 0.05))
+        U = G._line_x(R[-1], t, Rn, nxt['t']) or R[-1]
+        pts = [(R[-1][0], R[-1][1], zr), (U[0], U[1], zr), (Rn[0], Rn[1], zr), (Q[-1][0], Q[-1][1], zl)]
+        _emit('lean-hip-' + tag, pts, [(0, 0), (1, 0), (2, 0), (1, 1)], [((0, 1, 3), (0, 0, 1)), ((1, 2, 3), (0, 0, 1))], 'roof', 'roof-lean')
+    # 开口端：山墙封板（墙线以内，白墙）+ 檐头断面（深色）
+    for end, i, nb in ((0, 0, prv), (1, m - 1, nxt)):
+        if nb is not None:
+            continue
+        sgn = -1.0 if end == 0 else 1.0
+        want = (t[0] * sgn, t[1] * sgn, 0)
+        zp = ztile(i)
+        pts = [(P[i][0], P[i][1], z), (R[i][0], R[i][1], z), (R[i][0], R[i][1], zr), (P[i][0], P[i][1], zp)]
+        _emit('lean-gable-%s-%d' % (tag, end), pts, [(0, 0), (1, 0), (1, 1), (0, 1)], [((0, 1, 2, 3), want)], 'wall', 'roof-lean')
+        pts = [(Q[i][0], Q[i][1], zl), (Q[i][0], Q[i][1], zl - tH - bH), (P[i][0], P[i][1], z + ek.get('soffitRise', 0.15)),
+               (P[i][0], P[i][1], zp)]
+        _emit('lean-end-%s-%d' % (tag, end), pts, [(0, 0), (0, 1), (1, 1), (1, 0)], [((0, 1, 2, 3), want)], 'dark', 'roof-lean')
+
+def build_parapet(pr, tag):
+    """封火墙：本层墙线上接一段墙（o ∈ [−WT, 0]），两坡瓦压顶，压顶外缘 o = wallInset − 0.02（不越 footprint 边）。"""
+    a, t, n = pr['a'], pr['t'], pr['n']
+    run = Run(a, (a[0] + t[0] * 100.0, a[1] + t[1] * 100.0))
+    s0, s1, z, h = pr['s0'], pr['s1'], pr['z'], pr['h']
+    obox('parapet-' + tag, run, s0, s1, -WT, 0.0, z, z + h, 'wall', 'parapet', bevel=0)
+    oi, oo = -WT - 0.3, WALLI - 0.02
+    om, ze, zm = (oi + oo) / 2, z + h - 0.02, z + h + 0.22
+    P_ = lambda s, o, hh: (run.p(s, o)[0], run.p(s, o)[1], hh)
+    pts = [P_(s0, oi, ze), P_(s1, oi, ze), P_(s1, om, zm), P_(s0, om, zm), P_(s0, oo, ze), P_(s1, oo, ze)]
+    uvs = [(0, 0), (s1 - s0, 0), (s1 - s0, 0.5), (0, 0.5), (0, 0), (s1 - s0, 0)]
+    _emit('coping-' + tag, pts, uvs, [((0, 1, 2, 3), (0, 0, 1)), ((3, 2, 5, 4), (0, 0, 1))], 'roof', 'parapet')
+    pts = [P_(s0, oi, ze), P_(s0, om, zm), P_(s0, oo, ze), P_(s1, oi, ze), P_(s1, om, zm), P_(s1, oo, ze)]
+    _emit('coping-end-' + tag, pts, [(0, 0)] * 6, [((0, 1, 2), (-t[0], -t[1], 0)), ((3, 4, 5), (t[0], t[1], 0))], 'dark', 'parapet')
 
 EAVE_LOG = []
 BRACKET_N = 0
@@ -1077,16 +1368,22 @@ for b in BLOCKS:
         ZN = ZT[N]
         if 'ridgeHeightM' in rf:
             bz, rz = rf['breakHeightM'], rf['ridgeHeightM']
+        elif 'ridgeAboveFrac' in rf:                    # wave7 K1 预设：脊高按屋面进深取比例（封顶 ridgeAboveMaxM）
+            bz = ZN + min(rf['breakAboveFrac'] * depth, rf.get('ridgeAboveMaxM', 99) * 0.45)
+            rz = ZN + min(rf['ridgeAboveFrac'] * depth, rf.get('ridgeAboveMaxM', 99))
         else:
             bz = ZN + rf['breakAboveM']
             rz = ZN + rf['ridgeAboveM']
         RP.update(breakZ=bz, ridgeZ=rz, breakInset=depth / 2 * rf['breakInsetFrac'], gableInset=rf['gableInsetM'])
         b['ridgeZ'] = rz
+        # wave7 K0：eaveLiftM = 下檐整体抬高（脊高不变）。xieshan 下檐在墙线处的瓦面比檐口标高低约 0.1 m，
+        # 墙顶 / 外框柱顶会从瓦面里露出一条（航拍看是沿墙线的细平带）；抬 0.2 m 后墙线处瓦面高于墙顶
+        ZE = ZN + rf.get('eaveLiftM', 0.0)
         if long_u:
-            EK.xieshan_roof('roof-' + bn, (u0, u1, v0, v1), ZN, RP, PART)
+            EK.xieshan_roof('roof-' + bn, (u0, u1, v0, v1), ZE, RP, PART)
         else:                                           # 纵向矩形：旋转 90°（仍右手系）让正脊沿长边
             ek_frame(lambda tu, tv: (-tv, tu))
-            EK.xieshan_roof('roof-' + bn, (v0, v1, -u1, -u0), ZN, RP, PART)
+            EK.xieshan_roof('roof-' + bn, (v0, v1, -u1, -u0), ZE, RP, PART)
             ek_reset()
         # 华宝楼 'poly' 顶层：屋面矩形之外的顶层面做平屋面（直角多边形按格拆盒）
         if b['topPlan'] != 'rect':
@@ -1104,6 +1401,30 @@ for b in BLOCKS:
                     box('terrace-top-%s-%.1f-%.1f' % (bn, cu, cvv), ua, ub, va, vb, ZN - 0.06, ZN + 0.06, 'stone', 'terrace')
     else:
         b['ridgeZ'] = ZT[N]
+
+    # ---- 附属坡屋面（wave7 K0，见上方 ANNEX 规则）----
+    for ai, a in enumerate(b['annex']):
+        PART = 'roof-annex'
+        u0, u1, v0, v1 = a['rect']
+        RP = dict(a['eaveKit'])
+        RP.update(breakZ=a['z'] + a['breakAbove'], ridgeZ=a['z'] + a['ridgeAbove'],
+                  breakInset=a['depth'] / 2 * a['breakInsetFrac'], gableInset=a['gableInset'],
+                  ornamentScale=RP.get('ornamentScale', 'auto'))
+        nm = 'annex-%s-s%d-%d' % (bn, a['storey'], ai)
+        if a['alongU']:
+            EK.xieshan_roof(nm, (u0, u1, v0, v1), a['z'] + a['lift'], RP, PART)
+        else:
+            ek_frame(lambda tu, tv: (-tv, tu))
+            EK.xieshan_roof(nm, (v0, v1, -u1, -u0), a['z'] + a['lift'], RP, PART)
+            ek_reset()
+
+    # ---- 披檐（wave7 K0，见上方 LEAN 规则）----
+    runs_b = [r for r in LEAN if r['block'] == bn]
+    for li, r in enumerate(runs_b):
+        build_lean(r, runs_b, '%s-%d' % (bn, li))
+    # ---- 封火墙压顶（wave7 K0，见上方 PARAPET 规则）----
+    for pi_, pr in enumerate([q for q in PARAPET if q['block'] == bn]):
+        build_parapet(pr, '%s-%d' % (bn, pi_))
 
     # ================= 立面：底层店面 =================
     sf = FA['shopfront']
@@ -1577,6 +1898,13 @@ json.dump({'triangles': tris, 'byNode': by, 'glbBytes': os.path.getsize(glb), 'm
            'blocks': blocks_rec, 'tower': tower_rec, 'eaves': EAVE_LOG, 'brackets': BRACKET_N,
            'plaques': PLAQUE_LOG, 'lanterns': LANTERN_N, 'lions': LION_LOG,
            'sharedEdges': [{'other': e['other'], 'overlapM': round(e['overlapM'], 2), 'fpEdge': e['edge']} for e in SHARED],
+           'annexRoofs': [{'block': a['block'], 'storey': a['storey'], 'rectUV': [round(x, 2) for x in a['rect']],
+                           'ridgeAlongU': a['alongU'], 'touchesUpper': a['touch'], 'eaveZ': round(a['z'], 2),
+                           'ridgeZ': round(a['z'] + a['ridgeAbove'], 2), 'depthM': round(a['depth'], 2)} for a in ANNEX],
+           'leanTo': [{'block': r['block'], 'storey': r['storey'], 'edge': r['edge'], 's': [round(r['samples'][0][0], 2), round(r['samples'][-1][0], 2)],
+                       'widthM': [round(min(w for _, w in r['samples']), 2), round(max(w for _, w in r['samples']), 2)],
+                       'riseM': round(r['rise'], 2)} for r in LEAN],
+           'parapets': [{'block': q['block'], 'storey': q['storey'], 'edge': q['edge'], 's': [round(q['s0'], 2), round(q['s1'], 2)]} for q in PARAPET],
            'streetEdges': {str(k): s for k, s in enumerate(STREET) if s},
            'buildSeconds': round(time.time() - T0, 1)},
           open(os.path.join(OUT, 'measurements.json'), 'w'), ensure_ascii=False, indent=2)

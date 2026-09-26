@@ -53,7 +53,37 @@
       "chu": 0.4,
       "reach": 2.8
     },
-    "ridgeAxis": "u"
+    "ridgeAxis": "u",
+    "eaveLiftM": 0.35,
+    "annex": {
+      "enabled": true,
+      "minSideM": 4.5,
+      "maxRoofs": 4,
+      "minAreaM2": 20.0,
+      "ridgeFrac": 0.36,
+      "breakFrac": 0.55,
+      "breakInsetFrac": 0.36,
+      "gableInsetM": 1.2,
+      "underUpperEaveM": 0.3,
+      "towerClearM": 0.5,
+      "eaveKit": {
+        "over": 1.2,
+        "chu": 0.35,
+        "qiao": 0.9,
+        "reach": 2.4,
+        "ornamentScale": "auto"
+      },
+      "note": "wave7 K0：退台 / 顶层矩形以外的平屋面：≥ 4.5 m 见方的铺附属小歇山（低于上一层檐口），更窄的条 / 楔形做披檐（单坡从上层墙根落到本层檐口），共享边一侧做封火墙瓦压顶；腰檐在这些段断开收口",
+      "eaveLiftM": 0.4,
+      "leanTo": {
+        "maxM": 4.5,
+        "pitchDeg": 16.0,
+        "minRiseM": 0.6,
+        "underUpperM": 1.2,
+        "eaveLiftM": 0.4,
+        "parapetHM": 0.9
+      }
+    }
   },
   "facades": {
     "bayRhythmM": [
@@ -210,9 +240,11 @@
     "正立面取粮厅路边（26.7 m，与主控「立面较窄」一致）；旧校场路长边同样按临街处理。",
     "底层一条红色招牌带（空板，不写字）替代横披格心；檐下额枋为青绿彩画色块（无图案），斗拱节距 1.3 m 密排。",
     "入口上方黑底金框横匾（空板）挂在二层窗屏前；红灯笼沿两条临街面檐下一排。照片里的红色横幅属临时装饰，不建。",
-    "二至四层木构长窗屏 + 每层檐下彩画额枋；主控规格未提外廊 → 不做外廊（不发明构件）；顶为歇山。"
+    "二至四层木构长窗屏 + 每层檐下彩画额枋；主控规格未提外廊 → 不做外廊（不发明构件）；顶为歇山。",
+    "wave7 K0 屋面收平带：顶层矩形 / 退台以外的平屋面改为附属小歇山（附属坡屋面，檐口 = 该层层顶，脊低于上层檐口），腰檐在附属屋面接管的段断开、端头收口（sharedEdgeEaveEnd=endcap，同华宝楼 E3 口径）；主屋面下檐抬 0.2 m（eaveLiftM，脊高不变）让墙线处瓦面盖过墙顶。"
   ],
   "notes": [
     "wave4 B5 同口径：挂落描金（棂条 0.30、金 d6ab4a、衬底深红木）与底层玻璃（alpha 0.5 + 店内暖色衬底 b08a60 + 微光 7a5a3a）调到看得出"
-  ]
+  ],
+  "sharedEdgeEaveEnd": "endcap"
 }

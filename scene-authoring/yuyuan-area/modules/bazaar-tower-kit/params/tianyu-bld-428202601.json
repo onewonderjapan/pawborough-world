@@ -55,7 +55,38 @@
       "reach": 3.2
     },
     "rectAnchor": "front",
-    "ridgeAxis": "u"
+    "ridgeAxis": "u",
+    "eaveLiftM": 0.35,
+    "annex": {
+      "enabled": true,
+      "minSideM": 4.5,
+      "maxRoofs": 4,
+      "minAreaM2": 20.0,
+      "ridgeFrac": 0.36,
+      "breakFrac": 0.55,
+      "breakInsetFrac": 0.36,
+      "gableInsetM": 1.2,
+      "underUpperEaveM": 0.3,
+      "towerClearM": 0.5,
+      "eaveKit": {
+        "over": 1.2,
+        "chu": 0.35,
+        "qiao": 0.9,
+        "reach": 2.4,
+        "ornamentScale": "auto"
+      },
+      "note": "wave7 K0：退台 / 顶层矩形以外的平屋面：≥ 4.5 m 见方的铺附属小歇山（低于上一层檐口），更窄的条 / 楔形做披檐（单坡从上层墙根落到本层檐口），共享边一侧做封火墙瓦压顶；腰檐在这些段断开收口",
+      "eaveLiftM": 0.4,
+      "leanTo": {
+        "maxM": 4.5,
+        "pitchDeg": 16.0,
+        "minRiseM": 0.6,
+        "underUpperM": 1.2,
+        "eaveLiftM": 0.4,
+        "parapetHM": 0.9,
+        "towerMaxM": 9.0
+      }
+    }
   },
   "tower": {
     "corner": {
@@ -229,9 +260,11 @@
     "底层「深进的店面带」= 临街面店面退到柱列后 1.6 m（店面廊），上压一道深灰瓦腰檐。",
     "二至四层每层连续朱红直棂栏杆外廊 + 白墙窗带（红柱分间），每层单独出腰檐、翼角起翘；顶层大歇山（顶层平面 = 让开塔楼后的最大矩形），翼角起翘 1.25 m。",
     "配色：白墙 f2efe8、朱红木构 8e2c1f、深灰瓦（roof 贴图 × a6a9ad）。",
-    "非临街两面（南面、东面临巷）同窗带语言，无外廊、无店面。"
+    "非临街两面（南面、东面临巷）同窗带语言，无外廊、无店面。",
+    "wave7 K0 屋面收平带：顶层矩形 / 退台以外的平屋面改为附属小歇山（附属坡屋面，檐口 = 该层层顶，脊低于上层檐口），腰檐在附属屋面接管的段断开、端头收口（sharedEdgeEaveEnd=endcap，同华宝楼 E3 口径）；主屋面下檐抬 0.2 m（eaveLiftM，脊高不变）让墙线处瓦面盖过墙顶。"
   ],
   "notes": [
     "wave4 B5 同口径：挂落描金（棂条 0.30、金 d6ab4a、衬底深红木）与底层玻璃（alpha 0.5 + 店内暖色衬底 b08a60 + 微光 7a5a3a）调到看得出"
-  ]
+  ],
+  "sharedEdgeEaveEnd": "endcap"
 }

@@ -111,7 +111,9 @@ gls = [k for k in alpha if 'glass' in k]
 # Blender 4.5 将 glTF MASK 导入为 HASHED；判断标准=Alpha 输入已连接到贴图 + 混合模式为遮罩类
 check('格心材质 Alpha 已连接、混合模式为遮罩类', bool(lat) and alpha[lat[0]][0] in ('CLIP', 'MASK', 'HASHED')
       and alpha[lat[0]][1] == 'linked', str(alpha.get(lat[0]) if lat else None))
-_PP = json.load(open(os.path.join(HERE, P['params']), encoding='utf-8'))
+sys.path.insert(0, HERE)
+import params_load                                               # noqa: E402
+_PP = params_load.load(P['params'])
 _GA = _PP['materials']['glassAlpha']
 check('玻璃材质为 BLEND 且 alpha≈%.2f（params）' % _GA, bool(gls) and alpha[gls[0]][0] == 'BLEND' and abs(alpha[gls[0]][1] - _GA) < 0.02,
       str(alpha.get(gls[0]) if gls else None))

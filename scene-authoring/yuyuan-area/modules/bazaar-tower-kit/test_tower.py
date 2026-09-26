@@ -23,7 +23,9 @@ SOURCE = arg('--source', 'module')
 REG = json.load(open(os.path.join(HERE, 'ids.json'), encoding='utf-8'))
 _PREL = arg('--params', None) or REG.get('params', {}).get(ID) or next(
     ('params/' + f for f in sorted(os.listdir(os.path.join(HERE, 'params'))) if f.endswith(ID + '.json')), None)
-PRM = json.load(open(os.path.join(HERE, _PREL), encoding='utf-8'))
+sys.path.insert(0, HERE)
+import params_load                                               # noqa: E402  wave7 K1：立面预设楼的 params 合并 + auto 值（名楼 params 原样）
+PRM = params_load.load(_PREL)
 BUDGET = PRM.get('budget', {})
 OUT_MODEL = os.path.join(ROOT, arg('--out', os.path.join('out-bazaar-towers', ID)))
 GLB = os.path.join(OUT_MODEL, 'model.glb')
@@ -917,10 +919,30 @@ if PRM.get('sharedEdgeEaveEnd') == 'endcap':
                 if e['lo'] + 0.05 < s_ < e['hi'] - 0.05 and abs(d_) <= _over + 0.5:
                     _near_shared += 1
                     break
-    ok('test14a 共享端腰檐收口：腰檐瓦面三角 %d 个里在墙线以内（内收 / 回折）的 %d 个 = 0' % (_ntri, _inside), _ntri > 0 and _inside == 0)
-    ok('test14b 共享段（%d 段）上不出腰檐瓦面（贴着共享段的瓦面三角 %d 个 = 0）' % (len(SHARED_L), _near_shared), SHARED_L and _near_shared == 0)
+    if PRM['massing'].get('upperPlan'):          # wave7：上层只在部分平面上起（老饭店后楼）的楼，上层腰檐本来就在 footprint 墙线以内
+        skip('test14a 共享端腰檐收口（墙线以内瓦面 %d / %d）' % (_inside, _ntri), 'params.massing.upperPlan：上层腰檐合法地落在墙线以内，此判据不适用')
+    else:
+        ok('test14a 共享端腰檐收口：腰檐瓦面三角 %d 个里在墙线以内（内收 / 回折）的 %d 个 = 0' % (_ntri, _inside), _ntri > 0 and _inside == 0)
+    if SHARED_L:
+        ok('test14b 共享段（%d 段）上不出腰檐瓦面（贴着共享段的瓦面三角 %d 个 = 0）' % (len(SHARED_L), _near_shared), _near_shared == 0)
+    else:                                                # wave7：endcap 口径也用于无共享边的楼（附属屋面接管段断檐）
+        skip('test14b 共享段上不出腰檐瓦面', 'layout 检出本栋无共享边')
 else:
     skip('test14 共享端腰檐收口', 'params 未设 sharedEdgeEaveEnd=endcap')
+
+# ---------- test 15：航拍看不到平屋顶带（wave7 K0）：正上方正交俯视 z-buffer（roof_cover.py，只读 GLB 网格与 layout footprint），
+#            footprint 内最上层是瓦面或坡面的像素 ≥ 97%；最上层是水平（|法线 z| > 0.99）非瓦面的像素 ≤ 3% ----------
+sys.path.insert(0, HERE)
+import roof_cover as RC                                    # noqa: E402
+_rc = RC.raster(RC.load_glb(GLB, ID, zone_subtree=(SOURCE == 'zone')), [tuple(q) for q in FP], px=0.1)
+_rc_s = '瓦 %.1f%% + 坡 %.1f%%、平 %.1f%%、空 %.1f%%；平面来源 %s' % (
+    _rc['tile'] * 100, _rc['slope'] * 100, _rc['flat'] * 100, _rc['empty'] * 100,
+    {k: v for k, v in list(_rc['flatM2ByNode'].items())[:4]})
+if PRM.get('roofCoverExempt'):
+    skip('test15 航拍屋面覆盖 %.1f%%（%s）' % (_rc['roofCover'] * 100, _rc_s), 'params.roofCoverExempt：' + PRM['roofCoverExempt'])
+else:
+    ok('test15a 俯视屋面覆盖 %.1f%% ≥ 97%%（%s）' % (_rc['roofCover'] * 100, _rc_s), _rc['roofCover'] >= 0.97)
+    ok('test15b 俯视平屋顶 %.1f%% ≤ 3%%' % (_rc['flat'] * 100), _rc['flat'] <= 0.03)
 
 print('\ntest_tower: %d pass, %d fail, %d skip' % (pass_n, fail_n, skip_n))
 if fail_n:

@@ -209,6 +209,55 @@ def inscribed_rect(poly, cell=0.25, keepout=(), min_side=3.0, v0_max=None):
     return best[1]
 
 
+def rect_cover(poly, holes=(), keepout=(), cell=0.25, min_side=3.0, max_n=4, min_area=12.0):
+    """wave7 K0 附属坡屋面：把「poly 减去 holes（多边形）与 keepout（轴向矩形）」的剩余区贪心地铺成轴向矩形。
+    每轮取剩余格里面积最大的矩形（直方图法，格四角都在 poly 内、格心不在任何 hole / keepout 内、未被前几轮占用），
+    直到矩形短边 < min_side、面积 < min_area 或已取 max_n 个。返回 [(u0,u1,v0,v1), ...]（按面积降序）。"""
+    us = [p[0] for p in poly]
+    vs = [p[1] for p in poly]
+    u0, v0 = min(us), min(vs)
+    nu = int(math.ceil((max(us) - u0) / cell))
+    nv = int(math.ceil((max(vs) - v0) / cell))
+    corner_ok = [[point_in(poly, (u0 + i * cell, v0 + j * cell)) for i in range(nu + 1)] for j in range(nv + 1)]
+    free = []
+    for j in range(nv):
+        row = []
+        for i in range(nu):
+            good = corner_ok[j][i] and corner_ok[j][i + 1] and corner_ok[j + 1][i] and corner_ok[j + 1][i + 1]
+            if good:
+                c = (u0 + (i + 0.5) * cell, v0 + (j + 0.5) * cell)
+                if any(point_in(h, c) for h in holes) or any(a0 < c[0] < a1 and b0 < c[1] < b1 for (a0, a1, b0, b1) in keepout):
+                    good = False
+            row.append(good)
+        free.append(row)
+    out = []
+    while len(out) < max_n:
+        best = (0, None)
+        h = [0] * nu
+        for j in range(nv):
+            for i in range(nu):
+                h[i] = h[i] + 1 if free[j][i] else 0
+            stack = []
+            for i in range(nu + 1):
+                cur = h[i] if i < nu else 0
+                start = i
+                while stack and stack[-1][1] >= cur:
+                    si, sh = stack.pop()
+                    w = i - si
+                    if w * cell >= min_side and sh * cell >= min_side and w * sh > best[0]:
+                        best = (w * sh, (si, i, j - sh + 1, j + 1))
+                    start = si
+                stack.append((start, cur))
+        if best[1] is None or best[0] * cell * cell < min_area:
+            break
+        i0, i1, j0, j1 = best[1]
+        for j in range(j0, j1):
+            for i in range(i0, i1):
+                free[j][i] = False
+        out.append((u0 + i0 * cell, u0 + i1 * cell, v0 + j0 * cell, v0 + j1 * cell))
+    return out
+
+
 def corner_notch(poly, rect):
     """从多边形挖去位于某个角上的轴向矩形 rect=(u0,u1,v0,v1)（华宝楼角亭做法：体块平面让出角塔）。
     角点 = 离矩形中心最远、且落在矩形内的多边形顶点；返回新多边形（CCW）。"""
