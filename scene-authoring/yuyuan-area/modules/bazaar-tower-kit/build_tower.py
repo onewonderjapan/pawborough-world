@@ -263,7 +263,8 @@ class _Mats(dict):
 M = _Mats()
 
 # ================================================================ 局部系与网格工具
-i0, i1 = P['frontEdge']
+# wave7 K1：顺时针 footprint（layout 里少数 bazaarBlock）倒序成逆时针，前街边下标随之换算（params 仍按 layout 原序写）
+FP, i0, i1, FP_FLIPPED = params_load.ccw_frame(FP, P['frontEdge'])
 O = Vector((FP[i0][0], FP[i0][1]))
 du = Vector((FP[i1][0] - FP[i0][0], FP[i1][1] - FP[i0][1])).normalized()
 dv = Vector((-du.y, du.x))          # 前街边旋转 +90°：footprint 为 CCW（layout x,z）时指向楼内

@@ -687,7 +687,13 @@ if True:                       # lead 2026-09-26：华宝楼也按共享边规�
                                 (x - e['a'][0]) * e['n'][0] + (z - e['a'][1]) * e['n'][1]))
                 if max(p[1] for p in tri) <= worst:
                     continue
+                # wave7：只看共享边外 5 m 以内的三角（再远就不是「越过这条边」的出檐，而是凹 footprint 绕到这条边
+                # 延长线外侧的本栋自身体量——例 bld-165791764 绕着华宝楼东端，旧判据误报 30 m；插进邻栋由 test9b 管）
+                if min(p[1] for p in tri) > 5.0:
+                    continue
                 cp = _clip_s(tri, e['lo'], e['hi'])
+                if cp and max(p[1] for p in cp) > 5.0:            # 细长三角（邻边压顶 / 檐）只取 d ≤ 5 m 的部分
+                    cp = [(q[1], q[0]) for q in _clip_s([(p[1], p[0]) for p in cp], -1e9, 5.0)]
                 if cp:
                     worst = max(worst, max(p[1] for p in cp))
         ok('test9a 不越过与 %s 的共享边（重叠 %.2f m，最大越界 %.3f m ≤ 0.02）' % (e['other'], e['hi'] - e['lo'], worst), worst <= 0.02)
@@ -916,7 +922,8 @@ if PRM.get('sharedEdgeEaveEnd') == 'endcap':
             for e in SHARED_L:
                 s_ = (cx - e['a'][0]) * e['t'][0] + (cz - e['a'][1]) * e['t'][1]
                 d_ = (cx - e['a'][0]) * e['n'][0] + (cz - e['a'][1]) * e['n'][1]
-                if e['lo'] + 0.05 < s_ < e['hi'] - 0.05 and abs(d_) <= _over + 0.5:
+                # wave7：墙线以内（d < −wallInset − 0.05）的瓦面是相邻非共享边在转角处的腰檐，不算「共享段上出檐」（test14a 另管内收）
+                if e['lo'] + 0.05 < s_ < e['hi'] - 0.05 and -_inset <= d_ <= _over + 0.5:
                     _near_shared += 1
                     break
     if PRM['massing'].get('upperPlan'):          # wave7：上层只在部分平面上起（老饭店后楼）的楼，上层腰檐本来就在 footprint 墙线以内

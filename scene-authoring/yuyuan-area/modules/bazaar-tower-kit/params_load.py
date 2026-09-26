@@ -30,8 +30,54 @@ def _fp(obj):
     return fp[:-1] if fp[0] == fp[-1] else fp
 
 
-def auto_front_edge(obj):
+def shared_edge_len(obj, layout):
+    """layout 重算：本栋各 footprint 边与其他会渲染建筑边重合的长度（端点离直线 ≤ 0.05、重叠 ≥ 0.3 m；同 hall-kit 规则）。"""
+    try:
+        kinds = set(json.load(open(os.path.join(HERE, '..', 'hall-kit', 'defaults.json'), encoding='utf-8'))['sharedEdgeKinds'])
+    except Exception:
+        kinds = {'hall', 'tower', 'xuan', 'stage', 'waterside', 'pavilion', 'bazaarBlock', 'outerBuilding'}
     fp = _fp(obj)
+    out = {}
+    for i in range(len(fp)):
+        a, b = fp[i], fp[(i + 1) % len(fp)]
+        L = math.hypot(b[0] - a[0], b[1] - a[1])
+        if L < 0.3:
+            continue
+        ux, uz = (b[0] - a[0]) / L, (b[1] - a[1]) / L
+        for q in layout['objects']:
+            if q['id'] == obj['id'] or q.get('skipRender') or q.get('kind') not in kinds:
+                continue
+            qf = (q.get('geometry') or {}).get('footprint')
+            if not qf or len(qf) < 3:
+                continue
+            for j in range(len(qf)):
+                c, d = qf[j], qf[(j + 1) % len(qf)]
+                if abs(-(c[0] - a[0]) * uz + (c[1] - a[1]) * ux) > 0.05 or abs(-(d[0] - a[0]) * uz + (d[1] - a[1]) * ux) > 0.05:
+                    continue
+                tc = (c[0] - a[0]) * ux + (c[1] - a[1]) * uz
+                td = (d[0] - a[0]) * ux + (d[1] - a[1]) * uz
+                lo, hi = max(0.0, min(tc, td)), min(L, max(tc, td))
+                if hi - lo >= 0.3:
+                    out[i] = out.get(i, 0.0) + hi - lo
+    return out
+
+
+def ccw_frame(fp, fe):
+    """footprint 若是顺时针（layout 里少数 bazaarBlock），倒序成逆时针；前街边 [i, i+1] 换成倒序后同一条边（方向随之反转）。
+    返回 (fp_ccw, i0, i1, flipped)。"""
+    n = len(fp)
+    a2 = sum(fp[i][0] * fp[(i + 1) % n][1] - fp[(i + 1) % n][0] * fp[i][1] for i in range(n))
+    i0, i1 = fe
+    if a2 >= 0:
+        return fp, i0, i1, False
+    rev = fp[::-1]
+    return rev, n - 1 - i1, n - 1 - i0, True
+
+
+def auto_front_edge(obj, layout=None):
+    """最长的非共享临街边（共享 > 50% 的边不算：那一面贴着邻栋，出不了店面）。"""
+    fp = _fp(obj)
+    sh = shared_edge_len(obj, layout) if layout else {}
     best = None
     for fe in obj.get('frontEdges', []):
         (a, b) = fe['edge']
@@ -41,6 +87,8 @@ def auto_front_edge(obj):
             p, q = fp[i], fp[(i + 1) % len(fp)]
             if abs(p[0] - a[0]) < .02 and abs(p[1] - a[1]) < .02 and abs(q[0] - b[0]) < .02 and abs(q[1] - b[1]) < .02:
                 L = math.hypot(q[0] - p[0], q[1] - p[1])
+                if sh.get(i, 0.0) > 0.5 * L:
+                    continue
                 if best is None or L > best[0]:
                     best = (L, [i, (i + 1) % len(fp)], fe['street'])
     return best
@@ -64,7 +112,7 @@ def load(path, layout=None):
     L = layout or json.load(open(os.path.join(ROOT, 'baseline', 'layout.json'), encoding='utf-8'))
     obj = next(o for o in L['objects'] if o['id'] == P['id'])
     if P.get('frontEdge', 'auto') == 'auto':
-        fe = auto_front_edge(obj)
+        fe = auto_front_edge(obj, L)
         if fe is None:
             raise SystemExit('%s: no street edge >= 5 m matching the footprint order; set frontEdge by hand' % P['id'])
         P['frontEdge'], P['frontName'] = fe[1], fe[2]

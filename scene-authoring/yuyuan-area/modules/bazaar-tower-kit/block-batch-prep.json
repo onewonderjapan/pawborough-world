@@ -1,0 +1,1191 @@
+{
+ "ticket": "wave7-bazaarblocks-20260926 K1",
+ "status": "diagnosis only — not in ids.json",
+ "generator": "modules/bazaar-tower-kit/build_tower.py（一个生成器；立面预设 presets/{gallery,shophouse,mall}.json 经 params_load 合并）",
+ "method": "逐栋最小 params {id, preset, frontEdge:auto} → 生成 → test_tower（layout 重算，STRICT）+ roof_cover 俯视 z-buffer + gltfpack 压缩；6.8 m 按两层（3.8 + 3.0），10.2 m / 3 层 = 4.0 + 3.1 × 2，13.6 m / 4 层 = 4.0 + 3.2 × 3；产物在 out-bazaar-towers-prep/（不入库）",
+ "presetRule": "两层 = shophouse（两层店屋）；≥ 3 层且占地 ≥ 1500 m² = mall（大体量商场）；其余 = gallery（名楼式多层外廊）",
+ "blocks": [
+  {
+   "id": "bld-165791764",
+   "name": null,
+   "levels": 2,
+   "heightM": 6.8,
+   "storeyHeightsM": [
+    3.8,
+    3.0
+   ],
+   "footprintAreaM2": 1764.8,
+   "footprintVerts": 16,
+   "roofCover": 0.9766,
+   "flatRoof": 0.0225,
+   "emptyInFootprint": 0.0009,
+   "roofPieces": {
+    "annexXieshan": 2,
+    "leanTo": 6,
+    "parapet": 1
+   },
+   "sharedEdges": [
+    {
+     "fpEdge": 11,
+     "other": "bld-428202599",
+     "otherKind": "bazaarBlock",
+     "otherName": "华宝楼",
+     "overlapM": 29.49
+    },
+    {
+     "fpEdge": 12,
+     "other": "bld-428202599",
+     "otherKind": "bazaarBlock",
+     "otherName": "华宝楼",
+     "overlapM": 5.24
+    }
+   ],
+   "streetEdges": [
+    {
+     "fpEdge": 0,
+     "street": "中心广场",
+     "lenM": 3.44
+    },
+    {
+     "fpEdge": 1,
+     "street": "中心广场",
+     "lenM": 10.21
+    },
+    {
+     "fpEdge": 7,
+     "street": "方浜中路",
+     "lenM": 13.27
+    },
+    {
+     "fpEdge": 8,
+     "street": "方浜中路",
+     "lenM": 5.32
+    },
+    {
+     "fpEdge": 9,
+     "street": "方浜中路",
+     "lenM": 6.45
+    },
+    {
+     "fpEdge": 12,
+     "street": "中心广场",
+     "lenM": 5.24
+    },
+    {
+     "fpEdge": 13,
+     "street": "中心广场",
+     "lenM": 18.83
+    },
+    {
+     "fpEdge": 14,
+     "street": "中心广场",
+     "lenM": 5.63
+    },
+    {
+     "fpEdge": 15,
+     "street": "中心广场",
+     "lenM": 4.91
+    }
+   ],
+   "frontEdge": {
+    "fpEdge": [
+     13,
+     14
+    ],
+    "street": "中心广场"
+   },
+   "presetRecommended": "shophouse",
+   "presetWhy": "两层（6.8 m）：两层店屋",
+   "tris": 12068,
+   "glbBytes": 1175308,
+   "maxHeightM": 13.02,
+   "cmGeometryBytes": 184901,
+   "proceduralReplacedCmBytes": 16383,
+   "firstLoadDeltaEstBytes": 187897,
+   "testTower": {
+    "pass": 30,
+    "fail": 1,
+    "skip": 1
+   },
+   "expectedProblems": [
+    "复杂平面：16 顶点、3 个阴角、4 个非正交角——顶层轴向矩形 + 附属屋面 / 披檐拼接，屋面块数多",
+    "共享边 34.7 m（2 段，邻栋 ['bld-428202599']）"
+   ],
+   "recommendation": "direct",
+   "recommendationText": "直接放",
+   "recommendationWhy": "除未登记外 test_tower 0 失败、覆盖 97.7%；与华宝楼东端共享边两段都不越界。K2 两层样板选它",
+   "visualVerdict": "两层店屋：大歇山主楼 + 前街附属歇山，店面 / 挂落 / 二层长窗成立；贴华宝楼的一面是整片白墙（共享边，本应被华宝楼挡住）。"
+  },
+  {
+   "id": "bld-389701901",
+   "name": "童涵春堂",
+   "levels": 4,
+   "heightM": 13.6,
+   "storeyHeightsM": [
+    4.0,
+    3.2,
+    3.2,
+    3.2
+   ],
+   "footprintAreaM2": 986.8,
+   "footprintVerts": 5,
+   "roofCover": 0.9892,
+   "flatRoof": 0.0108,
+   "emptyInFootprint": 0.0,
+   "roofPieces": {
+    "annexXieshan": 0,
+    "leanTo": 3,
+    "parapet": 0
+   },
+   "sharedEdges": [],
+   "streetEdges": [
+    {
+     "fpEdge": 1,
+     "street": "黄金广场",
+     "lenM": 4.95
+    },
+    {
+     "fpEdge": 2,
+     "street": "黄金广场",
+     "lenM": 25.7
+    },
+    {
+     "fpEdge": 4,
+     "street": "旧校场路",
+     "lenM": 32.47
+    }
+   ],
+   "frontEdge": {
+    "fpEdge": [
+     4,
+     0
+    ],
+    "street": "旧校场路"
+   },
+   "presetRecommended": "gallery",
+   "presetWhy": "4 层、占地 987 m²：名楼式多层外廊",
+   "tris": 14652,
+   "glbBytes": 1490336,
+   "maxHeightM": 22.24,
+   "cmGeometryBytes": 237382,
+   "proceduralReplacedCmBytes": 15639,
+   "firstLoadDeltaEstBytes": 247243,
+   "testTower": {
+    "pass": 22,
+    "fail": 1,
+    "skip": 2
+   },
+   "expectedProblems": [],
+   "recommendation": "direct",
+   "recommendationText": "直接放",
+   "recommendationWhy": "五边形近正交，test_tower 除未登记外 0 失败，覆盖 98.9%。K2 13.6 m 样板选它",
+   "visualVerdict": "名楼式外廊四层 + 大歇山，旧校场路立面与天裕楼同一语言，干净。"
+  },
+  {
+   "id": "bld-389701971",
+   "name": "皕灵楼",
+   "levels": 4,
+   "heightM": 13.6,
+   "storeyHeightsM": [
+    4.0,
+    3.2,
+    3.2,
+    3.2
+   ],
+   "footprintAreaM2": 1958.5,
+   "footprintVerts": 4,
+   "roofCover": 0.9863,
+   "flatRoof": 0.0137,
+   "emptyInFootprint": 0.0,
+   "roofPieces": {
+    "annexXieshan": 0,
+    "leanTo": 0,
+    "parapet": 0
+   },
+   "sharedEdges": [],
+   "streetEdges": [
+    {
+     "fpEdge": 3,
+     "street": "旧校场路",
+     "lenM": 57.49
+    }
+   ],
+   "frontEdge": {
+    "fpEdge": [
+     3,
+     0
+    ],
+    "street": "旧校场路"
+   },
+   "presetRecommended": "mall",
+   "presetWhy": "4 层、占地 1958 m² ≥ 1500：大体量商场（外廊铺满四周太重，底层招牌 + 窗带）",
+   "tris": 13478,
+   "glbBytes": 1276684,
+   "maxHeightM": 22.22,
+   "cmGeometryBytes": 191876,
+   "proceduralReplacedCmBytes": 14790,
+   "firstLoadDeltaEstBytes": 197450,
+   "testTower": {
+    "pass": 20,
+    "fail": 1,
+    "skip": 3
+   },
+   "expectedProblems": [],
+   "recommendation": "direct",
+   "recommendationText": "直接放",
+   "recommendationWhy": "矩形，test_tower 除未登记外 0 失败，覆盖 98.6%",
+   "visualVerdict": "大体量商场：底层红招牌 + 彩画、上层窗带、57 m 长大歇山；体量大但单调（整面同一节奏），批量时可加一座转角亭或匾打破。"
+  },
+  {
+   "id": "bld-389702030",
+   "name": null,
+   "levels": 2,
+   "heightM": 6.8,
+   "storeyHeightsM": [
+    3.8,
+    3.0
+   ],
+   "footprintAreaM2": 636.1,
+   "footprintVerts": 11,
+   "roofCover": 0.7825,
+   "flatRoof": 0.1984,
+   "emptyInFootprint": 0.019,
+   "roofPieces": {
+    "annexXieshan": 1,
+    "leanTo": 1,
+    "parapet": 3
+   },
+   "sharedEdges": [
+    {
+     "fpEdge": 1,
+     "other": "bld-553893884",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 24.52
+    },
+    {
+     "fpEdge": 2,
+     "other": "bld-553893884",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 8.46
+    },
+    {
+     "fpEdge": 3,
+     "other": "bld-428202606",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 6.94
+    },
+    {
+     "fpEdge": 4,
+     "other": "bld-428202606",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 11.51
+    },
+    {
+     "fpEdge": 5,
+     "other": "bld-428202606",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 9.57
+    },
+    {
+     "fpEdge": 6,
+     "other": "bld-428202606",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 2.66
+    },
+    {
+     "fpEdge": 7,
+     "other": "bld-428202605",
+     "otherKind": "outerBuilding",
+     "otherName": "景容楼",
+     "overlapM": 24.39
+    }
+   ],
+   "streetEdges": [
+    {
+     "fpEdge": 0,
+     "street": "黄金广场",
+     "lenM": 9.66
+    },
+    {
+     "fpEdge": 1,
+     "street": "豫园老街",
+     "lenM": 24.52
+    },
+    {
+     "fpEdge": 2,
+     "street": "豫园老街",
+     "lenM": 8.46
+    },
+    {
+     "fpEdge": 3,
+     "street": "豫园老街",
+     "lenM": 6.94
+    },
+    {
+     "fpEdge": 7,
+     "street": "黄金广场",
+     "lenM": 24.39
+    },
+    {
+     "fpEdge": 8,
+     "street": "黄金广场",
+     "lenM": 2.78
+    },
+    {
+     "fpEdge": 9,
+     "street": "黄金广场",
+     "lenM": 4.11
+    },
+    {
+     "fpEdge": 10,
+     "street": "黄金广场",
+     "lenM": 20.82
+    }
+   ],
+   "frontEdge": {
+    "fpEdge": [
+     10,
+     0
+    ],
+    "street": "黄金广场"
+   },
+   "presetRecommended": "shophouse",
+   "presetWhy": "两层（6.8 m）：两层店屋",
+   "tris": 6106,
+   "glbBytes": 809292,
+   "maxHeightM": 9.444,
+   "cmGeometryBytes": 114701,
+   "proceduralReplacedCmBytes": 17337,
+   "firstLoadDeltaEstBytes": 108560,
+   "testTower": {
+    "pass": 28,
+    "fail": 6,
+    "skip": 1
+   },
+   "expectedProblems": [
+    "test9a 檐口越过共享边：不越过与 bld-428202606 的共享边（重叠 6.94 m，最大越界 0.142 m ≤ 0.02）",
+    "test9a 檐口越过共享边：不越过与 bld-428202606 的共享边（重叠 11.51 m，最大越界 0.323 m ≤ 0.02）",
+    "test9b 构件插进邻栋 footprint：构件不插进共享边邻栋 bld-428202606 的 footprint（> 0.05 m 顶点 37 个）",
+    "test15a 航拍平带（屋面覆盖 < 97%）：俯视屋面覆盖 78.2% ≥ 97%（瓦 71.7% + 坡 6.6%、平 19.8%、空 1.9%；平面来源 {'terrace__stone': 107.48, 'roof-main__dark': 8.89, 'base__stone': 5.41, 'roof-annex__dark': 4.41}）",
+    "test15b 平屋顶 > 3%：俯视平屋顶 19.8% ≤ 3%",
+    "共享边 88.0 m（7 段，邻栋 ['bld-428202605', 'bld-428202606', 'bld-553893884']）",
+    "和 428202606、553893884 是一串互相共享边的连楼（豫园老街 × 黄金广场转角），逐栋独立生成会各出一套檐口互相穿插——宜按一组连楼处理（共享边一侧不出檐、屋面在共享边处收山墙）"
+   ],
+   "recommendation": "special",
+   "recommendationText": "特殊处理",
+   "recommendationWhy": "共享边 88 m（7 段）夹在 553893884 / 428202606 / 428202605 之间，檐口越界 0.14–0.32 m、插进 428202606；航拍覆盖只有 78%",
+   "visualVerdict": "屋面碎成三块，右侧留一个白色平顶盒子（共享边一侧上层后退后既铺不下附属歇山也不在披檐范围内）。"
+  },
+  {
+   "id": "bld-428202604",
+   "name": "小世界会所",
+   "levels": 4,
+   "heightM": 13.6,
+   "storeyHeightsM": [
+    4.0,
+    3.2,
+    3.2,
+    3.2
+   ],
+   "footprintAreaM2": 659.7,
+   "footprintVerts": 4,
+   "roofCover": 0.9055,
+   "flatRoof": 0.0922,
+   "emptyInFootprint": 0.0023,
+   "roofPieces": {
+    "annexXieshan": 0,
+    "leanTo": 0,
+    "parapet": 2
+   },
+   "sharedEdges": [
+    {
+     "fpEdge": 1,
+     "other": "bld-553893884",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 27.24
+    },
+    {
+     "fpEdge": 2,
+     "other": "bld-428202607",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 22.45
+    }
+   ],
+   "streetEdges": [
+    {
+     "fpEdge": 1,
+     "street": "豫园老街",
+     "lenM": 27.24
+    }
+   ],
+   "frontEdge": {
+    "fpEdge": [
+     3,
+     0
+    ],
+    "street": null
+   },
+   "presetRecommended": "gallery",
+   "presetWhy": "4 层、占地 660 m²：名楼式多层外廊",
+   "tris": 6054,
+   "glbBytes": 795324,
+   "maxHeightM": 19.84,
+   "cmGeometryBytes": 102102,
+   "proceduralReplacedCmBytes": 7814,
+   "firstLoadDeltaEstBytes": 105131,
+   "testTower": {
+    "pass": 14,
+    "fail": 9,
+    "skip": 4
+   },
+   "expectedProblems": [
+    "无 ≥ 5 m 的非共享临街边（layout 登记的临街边与邻栋共享），诊断用最长非共享边 [3, 0] 当正面",
+    "test3e 无店面玻璃：玻璃材质 alphaMode=BLEND None",
+    "test9a 檐口越过共享边：不越过与 bld-428202607 的共享边（重叠 22.45 m，最大越界 0.237 m ≤ 0.02）",
+    "test9b 构件插进邻栋 footprint：构件不插进共享边邻栋 bld-428202607 的 footprint（> 0.05 m 顶点 13 个）",
+    "test10a 正面不是 layout 临街边：params.frontEdge [3, 0] = layout 临街边（None）",
+    "test12 无匾额 / 招牌：匾额 / 招牌存在 无 plaques__* 节点与 signred 材质",
+    "test14b 共享段上仍有腰檐瓦面：共享段（2 段）上不出腰檐瓦面（贴着共享段的瓦面三角 3 个 = 0）",
+    "test15a 航拍平带（屋面覆盖 < 97%）：俯视屋面覆盖 90.5% ≥ 97%（瓦 84.4% + 坡 6.1%、平 9.2%、空 0.2%；平面来源 {'terrace__stone': 50.47, 'roof-main__dark': 10.05, 'base__stone': 0.28, 'framecol__wood': 0.04}）",
+    "test15b 平屋顶 > 3%：俯视平屋顶 9.2% ≤ 3%",
+    "共享边 49.7 m（2 段，邻栋 ['bld-428202607', 'bld-553893884']）",
+    "layout 数据冲突：bld-428202604 与 bld-553893884 同一条边都登记为豫园老街临街边（未核实哪栋真临街）"
+   ],
+   "recommendation": "skip",
+   "recommendationText": "跳过",
+   "recommendationWhy": "唯一登记的临街边（豫园老街 27.2 m）与 553893884 共享——layout 两栋都把同一条边登记为豫园老街临街；其余两边贴 428202607，本栋实际被包在里面、街上看不到。保留程序化体块，或只出屋面",
+   "visualVerdict": "四层外廊楼但底层没有店面（没有真临街边），屋面转角还剩一块平台；街上视角只有白墙底座。"
+  },
+  {
+   "id": "bld-428202606",
+   "name": null,
+   "levels": 4,
+   "heightM": 13.6,
+   "storeyHeightsM": [
+    4.0,
+    3.2,
+    3.2,
+    3.2
+   ],
+   "footprintAreaM2": 1377.4,
+   "footprintVerts": 18,
+   "roofCover": 0.8705,
+   "flatRoof": 0.1212,
+   "emptyInFootprint": 0.0083,
+   "roofPieces": {
+    "annexXieshan": 3,
+    "leanTo": 4,
+    "parapet": 2
+   },
+   "sharedEdges": [
+    {
+     "fpEdge": 0,
+     "other": "bld-428202605",
+     "otherKind": "outerBuilding",
+     "otherName": "景容楼",
+     "overlapM": 6.45
+    },
+    {
+     "fpEdge": 1,
+     "other": "bld-389702030",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 2.66
+    },
+    {
+     "fpEdge": 2,
+     "other": "bld-389702030",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 9.57
+    },
+    {
+     "fpEdge": 3,
+     "other": "bld-389702030",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 11.51
+    },
+    {
+     "fpEdge": 4,
+     "other": "bld-389702030",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 6.94
+    },
+    {
+     "fpEdge": 5,
+     "other": "bld-553893884",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 5.51
+    },
+    {
+     "fpEdge": 6,
+     "other": "bld-553893884",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 6.5
+    },
+    {
+     "fpEdge": 15,
+     "other": "bld-553893872",
+     "otherKind": "outerBuilding",
+     "otherName": null,
+     "overlapM": 17.61
+    }
+   ],
+   "streetEdges": [
+    {
+     "fpEdge": 4,
+     "street": "豫园老街",
+     "lenM": 6.94
+    },
+    {
+     "fpEdge": 5,
+     "street": "豫园老街",
+     "lenM": 5.51
+    },
+    {
+     "fpEdge": 6,
+     "street": "豫园老街",
+     "lenM": 6.5
+    },
+    {
+     "fpEdge": 7,
+     "street": "豫园老街",
+     "lenM": 12.45
+    },
+    {
+     "fpEdge": 8,
+     "street": "豫园老街",
+     "lenM": 2.71
+    },
+    {
+     "fpEdge": 9,
+     "street": "豫园老街",
+     "lenM": 2.7
+    },
+    {
+     "fpEdge": 10,
+     "street": "豫园老街",
+     "lenM": 5.42
+    },
+    {
+     "fpEdge": 11,
+     "street": "豫园老街",
+     "lenM": 10.07
+    },
+    {
+     "fpEdge": 13,
+     "street": "九曲桥广场",
+     "lenM": 4.82
+    },
+    {
+     "fpEdge": 14,
+     "street": "九曲桥广场",
+     "lenM": 4.46
+    },
+    {
+     "fpEdge": 15,
+     "street": "九曲桥广场",
+     "lenM": 17.61
+    },
+    {
+     "fpEdge": 17,
+     "street": "粮厅路",
+     "lenM": 3.73
+    }
+   ],
+   "frontEdge": {
+    "fpEdge": [
+     7,
+     8
+    ],
+    "street": "豫园老街"
+   },
+   "presetRecommended": "gallery",
+   "presetWhy": "4 层、占地 1377 m²：名楼式多层外廊",
+   "tris": 17314,
+   "glbBytes": 1670576,
+   "maxHeightM": 20.32,
+   "cmGeometryBytes": 273334,
+   "proceduralReplacedCmBytes": 26907,
+   "firstLoadDeltaEstBytes": 274766,
+   "testTower": {
+    "pass": 31,
+    "fail": 6,
+    "skip": 1
+   },
+   "expectedProblems": [
+    "test1a 出檐超包络（非正交 footprint 处主屋面翼角）：全部顶点在各边外 ≤1.4 m（角部 3 m 内 +0.35 出翘）（36664 顶点） 越界 16 个，例 [('roof-main__dark', [-174.87, 14.65, -117.76]), ('roof-main__dark', [-174.87, 14.65, -117.76]), ('roof-m",
+    "test9a 檐口越过共享边：不越过与 bld-389702030 的共享边（重叠 11.51 m，最大越界 0.500 m ≤ 0.02）",
+    "test9b 构件插进邻栋 footprint：构件不插进共享边邻栋 bld-389702030 的 footprint（> 0.05 m 顶点 46 个）",
+    "test15a 航拍平带（屋面覆盖 < 97%）：俯视屋面覆盖 87.1% ≥ 97%（瓦 81.6% + 坡 5.4%、平 12.1%、空 0.8%；平面来源 {'terrace__stone': 144.43, 'roof-main__dark': 11.98, 'roof-annex__dark': 7.15, 'base__stone': 3.01}）",
+    "test15b 平屋顶 > 3%：俯视平屋顶 12.1% ≤ 3%",
+    "复杂平面：18 顶点、3 个阴角、6 个非正交角——顶层轴向矩形 + 附属屋面 / 披檐拼接，屋面块数多",
+    "共享边 66.8 m（8 段，邻栋 ['bld-389702030', 'bld-428202605', 'bld-553893872', 'bld-553893884']）",
+    "同 389702030 的连楼问题",
+    "非正交 footprint 下主屋面矩形的翼角需要和附属屋面一样做包络收缩（K0 只给附属屋面加了收缩）"
+   ],
+   "recommendation": "special",
+   "recommendationText": "特殊处理",
+   "recommendationWhy": "18 顶点、6 个非正交角，主屋面翼角出包络（test1a 16 顶点）、檐口越过与 389702030 的共享边 0.5 m，航拍覆盖 87%",
+   "visualVerdict": "四层外廊楼，屋面由主歇山 + 几座附属歇山 + 披檐拼成，屋面碎、翼角挤在一起，读作一簇楼阁而不是一栋楼。"
+  },
+  {
+   "id": "bld-428202607",
+   "name": null,
+   "levels": 4,
+   "heightM": 13.6,
+   "storeyHeightsM": [
+    4.0,
+    3.2,
+    3.2,
+    3.2
+   ],
+   "footprintAreaM2": 591.9,
+   "footprintVerts": 4,
+   "roofCover": 0.9158,
+   "flatRoof": 0.0804,
+   "emptyInFootprint": 0.0038,
+   "roofPieces": {
+    "annexXieshan": 0,
+    "leanTo": 2,
+    "parapet": 2
+   },
+   "sharedEdges": [
+    {
+     "fpEdge": 0,
+     "other": "bld-428202604",
+     "otherKind": "bazaarBlock",
+     "otherName": "小世界会所",
+     "overlapM": 22.45
+    },
+    {
+     "fpEdge": 1,
+     "other": "bld-553893884",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 24.52
+    }
+   ],
+   "streetEdges": [
+    {
+     "fpEdge": 1,
+     "street": "豫园老街",
+     "lenM": 24.52
+    },
+    {
+     "fpEdge": 2,
+     "street": "黄金广场",
+     "lenM": 26.61
+    },
+    {
+     "fpEdge": 3,
+     "street": "粮厅路",
+     "lenM": 24.72
+    }
+   ],
+   "frontEdge": {
+    "fpEdge": [
+     2,
+     3
+    ],
+    "street": "黄金广场"
+   },
+   "presetRecommended": "gallery",
+   "presetWhy": "4 层、占地 592 m²：名楼式多层外廊",
+   "tris": 8532,
+   "glbBytes": 1027868,
+   "maxHeightM": 19.72,
+   "cmGeometryBytes": 160230,
+   "proceduralReplacedCmBytes": 19535,
+   "firstLoadDeltaEstBytes": 156874,
+   "testTower": {
+    "pass": 25,
+    "fail": 3,
+    "skip": 1
+   },
+   "expectedProblems": [
+    "test15a 航拍平带（屋面覆盖 < 97%）：俯视屋面覆盖 91.6% ≥ 97%（瓦 85.3% + 坡 6.3%、平 8.0%、空 0.4%；平面来源 {'terrace__stone': 38.98, 'roof-main__dark': 7.71, 'base__stone': 0.85, 'colbase__stone': 0.02}）",
+    "test15b 平屋顶 > 3%：俯视平屋顶 8.0% ≤ 3%",
+    "共享边 47.0 m（2 段，邻栋 ['bld-428202604', 'bld-553893884']）",
+    "放宽 leanTo.maxM（同上海老饭店 6.5 m）或加一座附属歇山即可，属参数级处理"
+   ],
+   "recommendation": "special",
+   "recommendationText": "特殊处理",
+   "recommendationWhy": "四边形、三个非正交角，顶层矩形外的楔形露台在一角超过披檐 4.5 m 上限，航拍覆盖 91.6%；共享边两段不越界",
+   "visualVerdict": "外廊四层 + 歇山，立面成立；航拍一角还留三角平台，山花从街上看偏高。"
+  },
+  {
+   "id": "bld-553893867",
+   "name": null,
+   "levels": 3,
+   "heightM": 10.2,
+   "storeyHeightsM": [
+    4.0,
+    3.1,
+    3.1
+   ],
+   "footprintAreaM2": 382.1,
+   "footprintVerts": 13,
+   "roofCover": 0.9563,
+   "flatRoof": 0.0423,
+   "emptyInFootprint": 0.0014,
+   "roofPieces": {
+    "annexXieshan": 1,
+    "leanTo": 2,
+    "parapet": 1
+   },
+   "sharedEdges": [
+    {
+     "fpEdge": 10,
+     "other": "bld-553893868",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 2.79
+    },
+    {
+     "fpEdge": 11,
+     "other": "bld-553893868",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 3.63
+    }
+   ],
+   "streetEdges": [
+    {
+     "fpEdge": 0,
+     "street": "中心广场",
+     "lenM": 4.7
+    },
+    {
+     "fpEdge": 1,
+     "street": "中心广场",
+     "lenM": 3.91
+    },
+    {
+     "fpEdge": 12,
+     "street": "中心广场",
+     "lenM": 7.26
+    }
+   ],
+   "frontEdge": {
+    "fpEdge": [
+     12,
+     0
+    ],
+    "street": "中心广场"
+   },
+   "presetRecommended": "gallery",
+   "presetWhy": "3 层、占地 382 m²：名楼式多层外廊",
+   "tris": 8452,
+   "glbBytes": 993800,
+   "maxHeightM": 13.562,
+   "cmGeometryBytes": 160586,
+   "proceduralReplacedCmBytes": 7337,
+   "firstLoadDeltaEstBytes": 170872,
+   "testTower": {
+    "pass": 23,
+    "fail": 3,
+    "skip": 1
+   },
+   "expectedProblems": [
+    "test15a 航拍平带（屋面覆盖 < 97%）：俯视屋面覆盖 95.6% ≥ 97%（瓦 87.5% + 坡 8.2%、平 4.2%、空 0.1%；平面来源 {'roof-main__dark': 9.0, 'terrace__stone': 4.86, 'roof-annex__dark': 2.27, 'base__stone': 0.01}）",
+    "test15b 平屋顶 > 3%：俯视平屋顶 4.2% ≤ 3%",
+    "复杂平面：13 顶点、6 个阴角、0 个非正交角——顶层轴向矩形 + 附属屋面 / 披檐拼接，屋面块数多",
+    "共享边 6.4 m（2 段，邻栋 ['bld-553893868']）",
+    "阴角多，顶层矩形很小，附属屋面 + 披檐拼成多级台阶，外观碎"
+   ],
+   "recommendation": "special",
+   "recommendationText": "特殊处理",
+   "recommendationWhy": "10.2 m / 三层，13 顶点 6 个阴角，覆盖 95.6%；一侧出现整面白墙体块",
+   "visualVerdict": "三层小楼，一侧是一整块白墙盒子（共享边 / 披檐范围外），主屋面偏小，像两栋拼在一起。"
+  },
+  {
+   "id": "bld-553893868",
+   "name": null,
+   "levels": 2,
+   "heightM": 6.8,
+   "storeyHeightsM": [
+    3.8,
+    3.0
+   ],
+   "footprintAreaM2": 332.8,
+   "footprintVerts": 10,
+   "roofCover": 0.9658,
+   "flatRoof": 0.0283,
+   "emptyInFootprint": 0.006,
+   "roofPieces": {
+    "annexXieshan": 0,
+    "leanTo": 1,
+    "parapet": 2
+   },
+   "sharedEdges": [
+    {
+     "fpEdge": 2,
+     "other": "bld-389701812",
+     "otherKind": "bazaarBlock",
+     "otherName": "和丰楼",
+     "overlapM": 18.05
+    },
+    {
+     "fpEdge": 3,
+     "other": "bld-389701812",
+     "otherKind": "bazaarBlock",
+     "otherName": "和丰楼",
+     "overlapM": 17.28
+    },
+    {
+     "fpEdge": 8,
+     "other": "bld-553893867",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 2.79
+    },
+    {
+     "fpEdge": 9,
+     "other": "bld-553893867",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 3.63
+    }
+   ],
+   "streetEdges": [
+    {
+     "fpEdge": 0,
+     "street": "中心广场",
+     "lenM": 5.31
+    },
+    {
+     "fpEdge": 1,
+     "street": "中心广场",
+     "lenM": 4.63
+    },
+    {
+     "fpEdge": 4,
+     "street": "九曲桥广场",
+     "lenM": 3.66
+    },
+    {
+     "fpEdge": 5,
+     "street": "九曲桥广场",
+     "lenM": 5.28
+    }
+   ],
+   "frontEdge": {
+    "fpEdge": [
+     0,
+     1
+    ],
+    "street": "中心广场"
+   },
+   "presetRecommended": "shophouse",
+   "presetWhy": "两层（6.8 m）：两层店屋",
+   "tris": 4256,
+   "glbBytes": 673964,
+   "maxHeightM": 8.725,
+   "cmGeometryBytes": 81433,
+   "proceduralReplacedCmBytes": 6802,
+   "firstLoadDeltaEstBytes": 83213,
+   "testTower": {
+    "pass": 28,
+    "fail": 2,
+    "skip": 1
+   },
+   "expectedProblems": [
+    "test15a 航拍平带（屋面覆盖 < 97%）：俯视屋面覆盖 96.6% ≥ 97%（瓦 85.4% + 坡 11.2%、平 2.8%、空 0.6%；平面来源 {'roof-main__dark': 7.54, 'terrace__stone': 1.74, 'base__stone': 0.09, 'colbase__stone': 0.03}）",
+    "共享边 41.8 m（4 段，邻栋 ['bld-389701812', 'bld-553893867']）"
+   ],
+   "recommendation": "special",
+   "recommendationText": "特殊处理",
+   "recommendationWhy": "覆盖 96.6%（差 0.4%：333 m² 小楼上正脊顶面占 2.3%），共享边四段不越界；参数级处理（脊比例 / 小屋面 ornamentScale）即可直接放",
+   "visualVerdict": "窄长两层店屋，歇山相对楼身偏大偏高（檐口起翘在窄楼上显得头重）。"
+  },
+  {
+   "id": "bld-553893873",
+   "name": null,
+   "levels": 4,
+   "heightM": 13.6,
+   "storeyHeightsM": [
+    4.0,
+    3.2,
+    3.2,
+    3.2
+   ],
+   "footprintAreaM2": 508.5,
+   "footprintVerts": 11,
+   "roofCover": 0.9771,
+   "flatRoof": 0.0229,
+   "emptyInFootprint": 0.0,
+   "roofPieces": {
+    "annexXieshan": 0,
+    "leanTo": 8,
+    "parapet": 0
+   },
+   "sharedEdges": [],
+   "streetEdges": [
+    {
+     "fpEdge": 5,
+     "street": "九曲桥广场",
+     "lenM": 6.78
+    },
+    {
+     "fpEdge": 6,
+     "street": "九曲桥广场",
+     "lenM": 3.06
+    },
+    {
+     "fpEdge": 7,
+     "street": "九曲桥广场",
+     "lenM": 6.15
+    },
+    {
+     "fpEdge": 8,
+     "street": "九曲桥广场",
+     "lenM": 12.23
+    },
+    {
+     "fpEdge": 9,
+     "street": "九曲桥广场",
+     "lenM": 1.99
+    },
+    {
+     "fpEdge": 10,
+     "street": "九曲桥广场",
+     "lenM": 2.06
+    }
+   ],
+   "frontEdge": {
+    "fpEdge": [
+     8,
+     9
+    ],
+    "street": "九曲桥广场"
+   },
+   "presetRecommended": "gallery",
+   "presetWhy": "4 层、占地 509 m²：名楼式多层外廊",
+   "tris": 12790,
+   "glbBytes": 1308396,
+   "maxHeightM": 18.52,
+   "cmGeometryBytes": 210766,
+   "proceduralReplacedCmBytes": 9895,
+   "firstLoadDeltaEstBytes": 223971,
+   "testTower": {
+    "pass": 22,
+    "fail": 2,
+    "skip": 2
+   },
+   "expectedProblems": [
+    "test1a 出檐超包络（非正交 footprint 处主屋面翼角）：全部顶点在各边外 ≤1.4 m（角部 3 m 内 +0.35 出翘）（26394 顶点） 越界 13 个，例 [('roof-main__dark', [-150.62, 14.65, -92.81]), ('roof-main__dark', [-150.62, 14.65, -92.81]), ('roof-mai",
+    "复杂平面：11 顶点、7 个阴角、7 个非正交角——顶层轴向矩形 + 附属屋面 / 披檐拼接，屋面块数多",
+    "同 428202606：主屋面矩形需要包络收缩"
+   ],
+   "recommendation": "special",
+   "recommendationText": "特殊处理",
+   "recommendationWhy": "11 顶点 7 个阴角 7 个非正交角，主屋面翼角出包络 13 顶点（test1a）；其余全过、覆盖 97.7%",
+   "visualVerdict": "塔状四层外廊小楼，四面叠檐，像一座楼阁，好看；只差主屋面翼角越界。"
+  },
+  {
+   "id": "bld-553893884",
+   "name": null,
+   "levels": 2,
+   "heightM": 6.8,
+   "storeyHeightsM": [
+    3.8,
+    3.0
+   ],
+   "footprintAreaM2": 1018.1,
+   "footprintVerts": 14,
+   "roofCover": 0.7774,
+   "flatRoof": 0.1931,
+   "emptyInFootprint": 0.0295,
+   "roofPieces": {
+    "annexXieshan": 1,
+    "leanTo": 3,
+    "parapet": 3
+   },
+   "sharedEdges": [
+    {
+     "fpEdge": 6,
+     "other": "bld-428202606",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 6.5
+    },
+    {
+     "fpEdge": 7,
+     "other": "bld-428202606",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 5.51
+    },
+    {
+     "fpEdge": 8,
+     "other": "bld-389702030",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 8.46
+    },
+    {
+     "fpEdge": 9,
+     "other": "bld-389702030",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 24.52
+    },
+    {
+     "fpEdge": 12,
+     "other": "bld-428202607",
+     "otherKind": "bazaarBlock",
+     "otherName": null,
+     "overlapM": 24.52
+    },
+    {
+     "fpEdge": 13,
+     "other": "bld-428202604",
+     "otherKind": "bazaarBlock",
+     "otherName": "小世界会所",
+     "overlapM": 27.24
+    }
+   ],
+   "streetEdges": [
+    {
+     "fpEdge": 0,
+     "street": "豫园老街",
+     "lenM": 5.54
+    },
+    {
+     "fpEdge": 1,
+     "street": "豫园老街",
+     "lenM": 5.34
+    },
+    {
+     "fpEdge": 2,
+     "street": "豫园老街",
+     "lenM": 26.87
+    },
+    {
+     "fpEdge": 3,
+     "street": "豫园老街",
+     "lenM": 13.75
+    },
+    {
+     "fpEdge": 4,
+     "street": "豫园老街",
+     "lenM": 14.99
+    },
+    {
+     "fpEdge": 5,
+     "street": "豫园老街",
+     "lenM": 31.04
+    },
+    {
+     "fpEdge": 6,
+     "street": "豫园老街",
+     "lenM": 6.5
+    },
+    {
+     "fpEdge": 7,
+     "street": "豫园老街",
+     "lenM": 5.51
+    },
+    {
+     "fpEdge": 8,
+     "street": "豫园老街",
+     "lenM": 8.46
+    },
+    {
+     "fpEdge": 9,
+     "street": "豫园老街",
+     "lenM": 24.52
+    },
+    {
+     "fpEdge": 10,
+     "street": "黄金广场",
+     "lenM": 3.38
+    },
+    {
+     "fpEdge": 11,
+     "street": "黄金广场",
+     "lenM": 3.37
+    },
+    {
+     "fpEdge": 12,
+     "street": "豫园老街",
+     "lenM": 24.52
+    },
+    {
+     "fpEdge": 13,
+     "street": "豫园老街",
+     "lenM": 27.24
+    }
+   ],
+   "frontEdge": {
+    "fpEdge": [
+     5,
+     6
+    ],
+    "street": "豫园老街"
+   },
+   "presetRecommended": "shophouse",
+   "presetWhy": "两层（6.8 m）：两层店屋",
+   "tris": 13074,
+   "glbBytes": 1298652,
+   "maxHeightM": 9.174,
+   "cmGeometryBytes": 197837,
+   "proceduralReplacedCmBytes": 32011,
+   "firstLoadDeltaEstBytes": 184895,
+   "testTower": {
+    "pass": 30,
+    "fail": 8,
+    "skip": 1
+   },
+   "expectedProblems": [
+    "test9a 檐口越过共享边：不越过与 bld-428202607 的共享边（重叠 24.52 m，最大越界 0.898 m ≤ 0.02）",
+    "test9a 檐口越过共享边：不越过与 bld-428202604 的共享边（重叠 27.24 m，最大越界 0.240 m ≤ 0.02）",
+    "test9b 构件插进邻栋 footprint：构件不插进共享边邻栋 bld-428202604 的 footprint（> 0.05 m 顶点 30 个）",
+    "test9b 构件插进邻栋 footprint：构件不插进共享边邻栋 bld-428202607 的 footprint（> 0.05 m 顶点 378 个）",
+    "test14a 腰檐在墙线内回折：共享端腰檐收口：腰檐瓦面三角 132 个里在墙线以内（内收 / 回折）的 12 个 = 0",
+    "test15a 航拍平带（屋面覆盖 < 97%）：俯视屋面覆盖 77.7% ≥ 97%（瓦 70.7% + 坡 7.1%、平 19.3%、空 2.9%；平面来源 {'terrace__stone': 172.92, 'roof-main__dark': 17.4, 'base__stone': 3.78, 'roof-annex__dark': 2.4}）",
+    "test15b 平屋顶 > 3%：俯视平屋顶 19.3% ≤ 3%",
+    "复杂平面：14 顶点、1 个阴角、4 个非正交角——顶层轴向矩形 + 附属屋面 / 披檐拼接，屋面块数多",
+    "共享边 96.8 m（6 段，邻栋 ['bld-389702030', 'bld-428202604', 'bld-428202606', 'bld-428202607']）",
+    "同 389702030 的连楼问题；另与 428202604 的临街边登记冲突"
+   ],
+   "recommendation": "special",
+   "recommendationText": "特殊处理",
+   "recommendationWhy": "豫园老街上最长的两层店屋（14 顶点），共享边 96.8 m：檐口越过与 428202607 的共享边 0.9 m、插进 428202607 / 428202604；航拍覆盖 78%",
+   "visualVerdict": "沿豫园老街一长条两层店屋，街面店面 + 挂落成立；屋面为一条极长的歇山，后侧露台大片平顶。"
+  }
+ ],
+ "budget": {
+  "firstLoadDeltaEstBytes_all11": 1940872,
+  "budgetBytes": 2000000,
+  "withinBudget": true,
+  "calibration": {
+   "measuredDeltaBytes": 1869272,
+   "estimatedSameMethodBytes": 1676229,
+   "factor": 1.115
+  },
+  "basis": "每栋：gltfpack（同 compress-zones 参数）后字节 − 内嵌贴图字节（已由名楼带入首载、分件导出去重）− 被替换的程序化体块在 zone-bazaar-2 的网格字节 × 该件压缩比；合计 × 标定系数 1.115（K0 实测 5 座名楼 1,869,272 B / 同法估算 1,676,229 B）",
+  "rawGlbBytes_all11": 12520200,
+  "zoneParts": "现 zone-bazaar-3 原始 9.53 MB（test6 余量线 10 MB）装不下；11 座原始合计约 12.5 MB（含各自内嵌贴图，分件去重后更小），需新开 zone-bazaar-4 / -5（每件 ≤ 12 MB、留 2 MB 余量）",
+  "costReductionIfNeeded": [
+   "1 跳过 bld-428202604（街上看不到）：−0.105 MB",
+   "2 非临街面斗拱步距 5.2 → 8 m、非临街层窗改 ends4：估 −8~12%（三角 / 字节）",
+   "3 特殊处理楼的附属屋面 / 披檐加上后会各 +10~20 KB，届时按 1 + 2 回到 2.0 MB 以内",
+   "4 仍超：bazaar 套件件的 gltfpack 位置量化 16 → 14 bit（件级 cmPositionBits，同 garden-halls 做法；世界坐标下约 1 cm 误差）"
+  ],
+  "marginNote": "全部 11 座按现状估 1.94 MB，只比 2.0 MB 低 3%；特殊处理会加屋面块，批量时很可能需要上面 1 / 2"
+ }
+}

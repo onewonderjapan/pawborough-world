@@ -35,7 +35,7 @@ OBJ = next(o for o in LAYOUT['objects'] if o['id'] == P['id'])
 FP = [list(q) for q in OBJ['geometry']['footprint']]
 if FP[0] == FP[-1]:
     FP = FP[:-1]
-i0, i1 = P['frontEdge']
+FP, i0, i1, _flip = params_load.ccw_frame(FP, P['frontEdge'])        # 顺时针 footprint 同生成器换算
 O = Vector((FP[i0][0], FP[i0][1]))
 du = Vector((FP[i1][0] - FP[i0][0], FP[i1][1] - FP[i0][1])).normalized()
 dv = Vector((-du.y, du.x))
