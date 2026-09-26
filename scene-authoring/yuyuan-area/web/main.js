@@ -13,6 +13,7 @@ import { setupPerf } from './perf.js';         // M4 性能采样（仅 ?perf=1 
 import { installTargetMask } from './target-mask.js'; // wave3-tourfix T2：导览机位渲染后目标像素复核钩子 window.__targetMask
 import { installBatching } from './batching.js';     // wave4-drawcalls：运行时按材质合批（?batch=0 关闭；原网格保留身份，见 web/batching.js）
 import { isRoofNodeSelf } from './roofs.js';        // wave5-rooftoggle：屋面命名判定唯一正本（厅堂/湖心亭/商城大楼/三穗堂/庙区/瓦面/程序化，见 web/roofs.js）
+import { patchOuterKitProc } from './outer-kit-proc.js';   // wave7-outerkit 方案 C（OUTER_KIT_MODE=proc，对比测量用）：extras outerKit=proc 的网格换运行时 shader；无此类网格时不改任何东西
 
 const app = document.getElementById('app');
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -91,6 +92,7 @@ function prepare(root) {
       if (o.material && o.material.map === null && o.material.vertexColors === false) o.material.side = THREE.FrontSide;
     }
   });
+  patchOuterKitProc(root);
 }
 function countTris(root) {
   let t = 0;

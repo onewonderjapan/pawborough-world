@@ -181,13 +181,36 @@ for it in plan:
 # 无外部素材；UV 已在 build-scene.mjs 按世界坐标平铺（1 单位 = 1 m）。只换材质，不改几何。
 PAVING_TEX_DIR = os.path.join(ROOT, 'resources', 'textures', 'paving')
 paving_mats = {}
+# wave7-outerkit（OUTER_KIT=1 时 build-scene 才写这两个 slot；关时不出现，本段不生效）：
+#   outerkit-atlas 外围套件共享立面图集（modules/outer-kit/bake_atlas.py 生成），UV 已由 src/outer-kit.mjs 落到图集横条；
+#   outerkit-proc  程序化 shader 方案（方案对比用）：无贴图白底材质，窗 / 瓦由 web/outer-kit-proc.js 按 UV 编码现画。
+OUTER_KIT_TEX = {'outerkit-atlas': os.path.join(ROOT, 'resources', 'textures', 'outer-kit', 'outerkit-atlas.jpg'), 'outerkit-proc': None}
 def paving_material(slot):
     if slot in paving_mats: return paving_mats[slot]
-    jpg = os.path.join(PAVING_TEX_DIR, slot + '.jpg')
+    if slot in OUTER_KIT_TEX and OUTER_KIT_TEX[slot] is None:
+        m = bpy.data.materials.new(slot)
+        m.use_nodes = True
+        bsdf = next(n for n in m.node_tree.nodes if n.type == 'BSDF_PRINCIPLED')
+        bsdf.inputs['Roughness'].default_value = 0.93
+        bsdf.inputs['Metallic'].default_value = 0.0
+        # 4×4 白图：Blender glTF 导出只保留被贴图用到的 UV；proc 的类别编码在 UV 里，挂一张白图把 UV 带出去
+        # （gltfpack 量化后的 UV 反量化参数也挂在这张图的 KHR_texture_transform 上，运行时 shader 用 vMapUv 读）
+        img = bpy.data.images.new('outerkit-proc-white', 4, 4)
+        img.pixels = [1.0] * 64
+        img.file_format = 'PNG'
+        img.pack()
+        tex = m.node_tree.nodes.new('ShaderNodeTexImage')
+        tex.image = img
+        tex.interpolation = 'Closest'
+        m.node_tree.links.new(tex.outputs['Color'], bsdf.inputs['Base Color'])
+        paving_mats[slot] = m
+        return m
+    jpg = OUTER_KIT_TEX.get(slot) or os.path.join(PAVING_TEX_DIR, slot + '.jpg')
     if not os.path.exists(jpg):
-        raise SystemExit(f'paving texture missing: {jpg} (run: blender -b -P scripts/bake-paving-textures.py)')
+        raise SystemExit(f'paving texture missing: {jpg} (run: blender -b -P scripts/bake-paving-textures.py'
+                         ' / python3 -X utf8 modules/outer-kit/bake_atlas.py)')
     img = bpy.data.images.load(jpg, check_existing=True)
-    m = bpy.data.materials.new('paving-' + slot)
+    m = bpy.data.materials.new(slot if slot in OUTER_KIT_TEX else 'paving-' + slot)
     m.use_nodes = True
     bsdf = next(n for n in m.node_tree.nodes if n.type == 'BSDF_PRINCIPLED')
     bsdf.inputs['Roughness'].default_value = 0.93
