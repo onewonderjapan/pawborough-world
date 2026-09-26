@@ -556,10 +556,27 @@ export function pickTone(type, seed) {
   for (const t of TONES) { acc += w[t]; if (r < acc) return t; }
   return TONES.filter(t => w[t] > 0).pop();
 }
-// 开间墙映射：整条墙边一段、只用 A 条；U 相位沿用每栋 uOff（与 wave8 相同的横向起点）
-export function facadeSegments(seed, edgeKey, len) {
+// 立面防重复（确定性）：每条墙边按开间（≈ 3.6 m）对齐；≥ LONG_FACADE_M 的临街 / 长墙 / 公房墙按 SEG_BAYS 开间（≈ 18 m）分段，
+// 段与段 A/B 条交替（换 tile），每段各自按哈希定镜像与起始开间（0 / 1 开间相位）；短墙一段，A/B、镜像、相位都按哈希。
+export const LONG_FACADE_M = 40;
+export const SEG_BAYS = 5;   // 每段开间数：每多一段每层多 2 个三角，3–4 开间会把 7 栋推过 400 三角降级，5 开间只多 2 栋
+export function facadeSegments(seed, edgeKey, len, segmented) {
   const nb = Math.max(1, Math.round(len / ATLAS.bayM)), bay = len / nb;
-  return [{ b0: 0, b1: nb, al0: 0, al1: len, bay, variant: 'A', mirror: false, phase: rnd(seed, 12) * 8 }];
+  const bounds = [0];
+  if (segmented && len >= LONG_FACADE_M) {
+    const k = SEG_BAYS;
+    let b = 0;
+    while (nb - b > k) { b += k; bounds.push(b); }
+  }
+  bounds.push(nb);
+  const v0 = rnd(seed, 51 + edgeKey * 5) < 0.5 ? 0 : 1;
+  const segs = [];
+  for (let j = 0; j + 1 < bounds.length; j++) {
+    const r = rnd(seed, 1000 + edgeKey * 64 + j);
+    segs.push({ b0: bounds[j], b1: bounds[j + 1], al0: bounds[j] * bay, al1: bounds[j + 1] * bay, bay,
+      variant: (v0 + j) % 2 ? 'B' : 'A', mirror: r < 0.5, phase: Math.floor(r * 4) % 2 });
+  }
+  return segs;
 }
 
 // ---------- 方案发射 ----------
@@ -653,7 +670,8 @@ function emitBuilding(o, env, mode, opt) {
       } else pieces.push({ w, sg: null });
       for (const { w: ws, sg } of pieces) {
         const als = alongOf(ws);
-        const uBay = sg ? (p) => 0.5 * sg.phase + (sg.mirror ? -1 : 1) * 0.5 * (als(p) - sg.al0) / sg.bay : null;
+        // 环为正面积绕序时 a→b 从楼外看是自右向左：U 沿 a→b 递减 = 图集正读，递增 = 镜像（wave7/8 全部是镜像读）
+        const uBay = sg ? (p) => 0.5 * sg.phase + (sg.mirror ? 1 : -1) * 0.5 * (als(p) - sg.al0) / sg.bay : null;
         for (let k = 0; k < P.levels; k++) {
           const yb = k * fh, yt = (k + 1) * fh;
           if (yt <= ws.y0 + 1e-4) continue;

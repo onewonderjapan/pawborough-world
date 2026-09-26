@@ -229,6 +229,60 @@ if (mode === 'tex') {
   console.log(`REPORT 墙色 ${JSON.stringify(toneCount)} 按选型 ${JSON.stringify(byType)}`);
 }
 
+// ---------- wave9-outerpolish P3：长立面防重复 ----------
+// 从产物读：footprint 每条 ≥ 40 m 的边上的开间墙（店面 / 民居 / 楼层 / 公房条）三角，按层归组，
+// 由 UV 反推「条 + 镜像（dU/d沿墙 的符号）+ 相位（U 截距）」；同一套映射沿墙连续铺开的最长距离 ≤ 20 m，且每层至少换一次条（A/B）。
+// 全部开间墙（不论长短）：镜像的比例在 25–75%，B 条比例在 25–75%。
+if (mode === 'tex') {
+  const BAYED = (r) => r && (r.startsWith('shop') || r.startsWith('apt') || /:(res|up)[AB]$/.test(r));
+  const long = [], allGroups = [];
+  for (const id of KIT_IDS) {
+    // 墙边方向统一成「从楼外看自左向右」（环按 x-z 正面积绕序，a→b 在外看是自右向左，所以反过来走）
+    const e = kitEntries.find(x => x.id === id), r0 = ringOf(byId.get(id).geometry.footprint), r = area(r0) > 0 ? r0.slice().reverse() : r0;
+    for (let i = 0; i < r.length; i++) {
+      const a = r[i], b = r[(i + 1) % r.length], L = Math.hypot(b[0] - a[0], b[1] - a[1]);
+      if (L < 3) continue;
+      const dir = [(b[0] - a[0]) / L, (b[1] - a[1]) / L];
+      const onEdge = (p) => { const s = (p[0] - a[0]) * dir[0] + (p[2] - a[1]) * dir[1], d = Math.abs(-(p[0] - a[0]) * dir[1] + (p[2] - a[1]) * dir[0]); return d <= 0.03 && s >= -0.03 && s <= L + 0.03; };
+      const levels = new Map();
+      for (const t of e.tris) {
+        if (!t.uv || !t.v.every(onEdge)) continue;
+        const row = rowName(vOf(t));
+        if (!BAYED(row)) continue;
+        const al = t.v.map(p => (p[0] - a[0]) * dir[0] + (p[2] - a[1]) * dir[1]);
+        let j0 = 0, j1 = 1;
+        for (let x = 0; x < 3; x++) for (let y = x + 1; y < 3; y++) if (Math.abs(al[y] - al[x]) > Math.abs(al[j1] - al[j0])) { j0 = x; j1 = y; }
+        if (Math.abs(al[j1] - al[j0]) < 0.05) continue;
+        const slope = (t.uv[j1][0] - t.uv[j0][0]) / (al[j1] - al[j0]);
+        const icpt = t.uv[j0][0] - slope * al[j0];
+        const lk = Math.round(Math.min(...t.v.map(p => p[1])) * 20);
+        if (!levels.has(lk)) levels.set(lk, []);
+        levels.get(lk).push({ a0: Math.min(...al), a1: Math.max(...al), key: row + '|' + Math.sign(slope) + '|' + Math.round(icpt * 200), row, mirror: slope < 0 });
+      }
+      for (const [lk, iv] of levels) {
+        iv.sort((p, q) => p.a0 - q.a0);
+        let run = null, maxRun = 0;
+        const runs = [];
+        for (const x of iv) {
+          if (run && x.key === run.key && x.a0 <= run.a1 + 0.05) run.a1 = Math.max(run.a1, x.a1);
+          else { if (run) runs.push(run); run = { ...x }; }
+        }
+        if (run) runs.push(run);
+        for (const q of runs) maxRun = Math.max(maxRun, q.a1 - q.a0);
+        const grp = { id, edge: i, len: L, level: lk / 20, maxRun, rows: new Set(iv.map(x => x.row)).size, mirror: iv[0].mirror, b: iv[0].row.endsWith('B') };
+        allGroups.push(grp);
+        if (L >= 40) long.push(grp);
+      }
+    }
+  }
+  const worst = long.reduce((p, q) => (!p || q.maxRun > p.maxRun ? q : p), null);
+  ok(`≥ 40 m 开间立面 ${new Set(long.map(x => x.id + '#' + x.edge)).size} 条 / ${long.length} 层：同一映射最长连续 ${worst ? worst.maxRun.toFixed(1) : 0} m ≤ 20 m（最长 ${worst ? worst.id + '#' + worst.edge : '-'}）`, long.length > 0 && worst.maxRun <= 20);
+  const noSwap = long.filter(x => x.rows < 2);
+  ok(`≥ 40 m 开间立面每层都换条（A/B）：没换的 ${noSwap.length} 层`, noSwap.length === 0);
+  const fm = allGroups.filter(x => x.mirror).length / (allGroups.length || 1), fb = allGroups.filter(x => x.b).length / (allGroups.length || 1);
+  ok(`开间墙 ${allGroups.length} 层组：镜像 ${(fm * 100).toFixed(0)}%、B 条 ${(fb * 100).toFixed(0)}% 都在 25–75%`, fm >= 0.25 && fm <= 0.75 && fb >= 0.25 && fb <= 0.75);
+  console.log(`REPORT 长立面 ≥ 40 m：${new Set(long.map(x => x.id + '#' + x.edge)).size} 条 / ${long.length} 层，同一映射最长连续 ${worst ? worst.maxRun.toFixed(1) : 0} m（${worst ? worst.id + '#' + worst.edge : '-'}），没换条 ${noSwap.length} 层；开间墙 ${allGroups.length} 层组 镜像 ${(fm * 100).toFixed(0)}% / B 条 ${(fb * 100).toFixed(0)}%`);
+}
 ok('套件范围外的外围楼无套件标记', obEntries.filter(e => !KIT_IDS.includes(e.id)).every(e => !e.extras.outerKit));
 console.log(`REPORT 院落洞 ${holeReport.join(',') || '无'}；选型 ${JSON.stringify(typeCount)}；套件三角合计 ${stats.tris}，单栋最多 ${stats.maxTris}；最大外挑 ${stats.maxOut.toFixed(2)} m；屋脊最多高出 layout height ${stats.maxRidgeOver.toFixed(2)} m`);
 // cm 件 validator 0 错

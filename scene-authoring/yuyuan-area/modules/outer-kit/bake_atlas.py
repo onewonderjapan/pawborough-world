@@ -178,7 +178,7 @@ TONES = ['cream', 'greywhite', 'greybrick', 'oldyellow']          # 米白 / 灰
 TONE_PLASTER = {
     'cream':     {'res': 0xe2ddd1, 'up': 0xe6e1d6, 'side': 0xdcd6ca},
     'greywhite': {'res': 0xd6d7d3, 'up': 0xdadbd7, 'side': 0xd0d1cd},
-    'oldyellow': {'res': 0xd6c49b, 'up': 0xdac9a0, 'side': 0xcfbe93},
+    'oldyellow': {'res': 0xd2c4a2, 'up': 0xd6c8a6, 'side': 0xccbe9b},   # P3 前压低饱和度（P2 联系表里偏艳）
 }
 BRICK = {'brick': 0x9c9b96, 'mortar': 0xc3c0b8, 'lintel': 0xcdc9bf}
 
@@ -334,7 +334,7 @@ if V == '1':
 else:
     ROWS = [('shopA', shop), ('shopB', shopB),
             ('aptGreyA', lambda: aptA(0xcfcbc2)), ('aptGreyB', lambda: aptB(0xcfcbc2)),
-            ('aptYellowA', lambda: aptA(0xd3c197)), ('aptYellowB', lambda: aptB(0xd3c197))]
+            ('aptYellowA', lambda: aptA(0xd0c29f)), ('aptYellowB', lambda: aptB(0xd0c29f))]
     for t in TONES:
         ROWS += [(t + ':resA', lambda t=t: resA(t)), (t + ':resB', lambda t=t: resB(t)), (t + ':upA', lambda t=t: upA(t)),
                  (t + ':upB', lambda t=t: upB(t)), (t + ':sidewin', lambda t=t: sidewin_t(t)), (t + ':plain', lambda t=t: plain_t(t))]
