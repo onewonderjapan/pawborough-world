@@ -112,6 +112,7 @@ if RECT:
 APEX_Y = EAVE_Y + RISE
 META = {}
 COLL = []
+ORIENT_FLIP = {}   # finalize() 逐连通块定向记录 {part__mat: {closed: 翻转块数, open: 翻转片数}}
 
 
 def lin(h):
@@ -280,13 +281,29 @@ def tube(name, outer, inner, m, part='body', y_top=None):
 
 
 def cyl_to(name, a, b, r, m, part='roof', sides=8, cap_a=True, cap_b=True):
-    """Cylinder/rod between GLB points a-b."""
+    """Cylinder/rod between GLB points a-b. cap_a/cap_b=False 删除端盖（smallqa 发现6修复：
+    戗脊分段圆柱的接头盖帽焊进下一杆体内，成为朝内/共面重复面——428179924 朝内40/内嵌16、
+    428196098 朝内72/内嵌36；续接段不封口，接头在杆内部不可见）。"""
     va, vb = glb_to_blender(a), glb_to_blender(b)
     d = vb - va
     q = d.to_track_quat('Z', 'Y')
     bpy.ops.mesh.primitive_cylinder_add(vertices=sides, radius=r, depth=d.length,
                                         location=(va + vb) / 2)
     o = bpy.context.object
+    if not (cap_a and cap_b):
+        me = o.data
+        bm = bmesh.new()
+        bm.from_mesh(me)
+        zmin = min(v.co.z for v in bm.verts)
+        zmax = max(v.co.z for v in bm.verts)
+        dead = [f for f in bm.faces
+                if (not cap_a and all(abs(v.co.z - zmin) < 1e-6 for v in f.verts))
+                or (not cap_b and all(abs(v.co.z - zmax) < 1e-6 for v in f.verts))]
+        if dead:
+            bmesh.ops.delete(bm, geom=dead, context='FACES')
+        bm.to_mesh(me)
+        bm.free()
+        me.update()
     o.rotation_mode = 'QUATERNION'
     o.rotation_quaternion = q
     o.data.materials.append(M[m])
@@ -329,15 +346,21 @@ def box_between(name, p0, p1, width, thick, m, part='roof', up_hint=(0, 1, 0)):
     return o
 
 
-def eave_trim(eave_loop, inner_ref):
+def eave_trim(eave_loop, inner_ref, sheet_y=None):
     """Fascia + R1-fix2 rafters + tile lips along a closed eave loop (arc-length walked).
 
     R1 fix2: rafter ends sit DIRECTLY UNDER the eave line (axis RAFTER_DROP below the local
     lifted eave height -> top at eave-0.06 <= eave-0.05), radial run RAFTER_LEN, never above
     the tile lips; within the corner-reach zone the height follows the lifted eave (corner-sync).
-    Returns the min clearance (rafter top vs eave-0.05) for the build report."""
+    Returns the min clearance (rafter top vs eave-0.05) for the build report.
+
+    smallqa 发现4修复（2026-09-26）：角区内凹瓦坡原本戳穿椽头内端（5/5 亭，椽端顶点高出正下方
+    瓦面 0.030–0.088 m，近景见棕色楔片）。给出 sheet_y(i, t)（eave 采样 i 沿径向参数 t 的瓦面
+    高，t 线性于半径：ring x,z = eave x,z × (1−t)）后，椽头内端轴高压到当地瓦面下 RAFTER_DROP，
+    椽身随坡微倾，端面不再穿瓦。"""
     NE = len(eave_loop)
     margins = []
+    sheet_margins = []
     next_lip = LIP_SPACING / 2
     next_raf = 0.0
     for i in range(NE):
@@ -346,8 +369,8 @@ def eave_trim(eave_loop, inner_ref):
         seg = math.hypot(b[0] - a[0], b[2] - a[2])
         tx, tz = (b[0] - a[0]) / seg, (b[2] - a[2]) / seg
         nx_, nz_ = -tz, tx
-        # fascia 0.14 hanging from the eave line
-        mesh('eave-fascia', [a, b, (b[0], b[1] - FASCIA_H, b[2]), (a[0], a[1] - FASCIA_H, a[2])],
+        # fascia 0.14 hanging from the eave line（eave_loop 元素可带第 4 位 lift，几何取前 3 位）
+        mesh('eave-fascia', [a[:3], b[:3], (b[0], b[1] - FASCIA_H, b[2]), (a[0], a[1] - FASCIA_H, a[2])],
              [(0, 3, 2, 1)], 'dark', 'roof')
         inner_pt = inner_ref[i]
         # rafters every 0.28
@@ -360,7 +383,20 @@ def eave_trim(eave_loop, inner_ref):
             dl = math.hypot(dxi, dzi) or 1.0
             ytip = ey - RAFTER_DROP         # axis; cross-section 0.06 -> top at ey-0.06
             tip = (px, ytip, pz)
-            st = (px + dxi / dl * RAFTER_LEN, ytip, pz + dzi / dl * RAFTER_LEN)
+            stx, stz = px + dxi / dl * RAFTER_LEN, pz + dzi / dl * RAFTER_LEN
+            if sheet_y is not None:
+                # 椽内端沿 p→inner_pt 方向走 RAFTER_LEN（段内分数 t、径向分数 2/RINGS 的参数平面里
+                # 仿射近似：ts' = t·(1−f), t' = (2/RINGS)·f，f = RAFTER_LEN/dl）。直接沿用 t 或纯径向
+                # 假设都会在角区高估表面 → 椽端仍穿瓦 0.03。
+                f = RAFTER_LEN / dl
+                ts_st = t * (1.0 - f)
+                t_st = min(0.999, (2.0 / RINGS) * f)
+                y_surf = sheet_y(i, ts_st, t_st)
+                y_st = y_surf - RAFTER_DROP
+                sheet_margins.append(y_surf - (y_st + RAFTER_SECTIONS[1] / 2))
+                st = (stx, y_st, stz)
+            else:
+                st = (stx, ytip, stz)
             box_between(f'rafter-{i}-{int(pos * 100)}', st, tip,
                         RAFTER_SECTIONS[0], RAFTER_SECTIONS[1], 'timber', 'roof')
             margins.append((ey - 0.05) - (ytip + RAFTER_SECTIONS[1] / 2))
@@ -383,7 +419,26 @@ def eave_trim(eave_loop, inner_ref):
                  'tile', 'roof')
             pos += LIP_SPACING
         next_lip = pos - seg
+    if sheet_margins:
+        assert min(sheet_margins) >= 0.02, 'finding-4 fix violated: rafter end not under the sheet'
     return margins
+
+
+def ring_y_at(i, t, apex_y):
+    """roof-surface y at radial fraction t on eave sample i 的径向线（ring 平面半径线性于 1−t，
+    同 ring()/ring_rect() 的插值式；发现4修复的椽端贴瓦计算用）。"""
+    e = E[i]
+    base = e[1] - e[3]
+    tt = t ** 1.5
+    return base + (apex_y - base) * tt + e[3] * (1 - t) ** 2.2
+
+
+def sheet_y_at(i, ts, t, apex_y):
+    """roof-surface y at (段内分数 ts, 径向分数 t)：瓦面网格在相邻两条径向线之间是双线性片，
+    只取 i 线的解析值会在角区（邻线 lift 骤降处）高估 → 椽端戳穿（修前 0.030–0.088 m）。
+    双线性 (1−ts)·Y_i(t) + ts·Y_{i+1}(t) 与网格四边形的上下界一致。"""
+    n = len(E)
+    return (1 - ts) * ring_y_at(i, t, apex_y) + ts * ring_y_at((i + 1) % n, t, apex_y)
 
 
 # ================================================================== platform + steps
@@ -625,7 +680,7 @@ if not RECT:
     nf = [tuple(reversed((0, k + 1, k + 2))) for k in range(N - 2)]
     mesh('eave-soffit', [ctr] + soff, nf, 'dark', 'roof')
 
-    RAFTER_MARGINS = eave_trim(eave_loop, rings[2])
+    RAFTER_MARGINS = eave_trim(E, rings[2], sheet_y=lambda i, ts, t: sheet_y_at(i, ts, t, APEX_Y))
 
     # ---- hip ridges: n rods (r 0.07) from corners to apex, tile; sampled on rings 2/5/8 (tri budget)
     vtx_idx = [fi * SEGS_PER_FACET for fi in range(N)]
@@ -634,7 +689,8 @@ if not RECT:
         for j in (2, 5, RINGS):
             q = rings[j][ci] if j < RINGS else apex
             q = (q[0], q[1] + 0.045, q[2])
-            cyl_to(f'hip-ridge-{ci}-{j}', prev, q, 0.07, 'tile', 'roof', 8)
+            cyl_to(f'hip-ridge-{ci}-{j}', prev, q, 0.07, 'tile', 'roof', 8,
+                   cap_a=(j == 2), cap_b=(j == RINGS))   # 发现6: 接头不封盖
             prev = q
 
     # ---- 宝顶 gourd finial (lathe 12 sides), dark lacquer
@@ -724,7 +780,7 @@ else:
     sc = [(rect_pt(p)[0], sy, rect_pt(p)[1]) for p in sc_uv]
     mesh('eave-soffit', sc, [(2, 1, 0, 3)], 'dark', 'roof')
 
-    RAFTER_MARGINS = eave_trim(eave_loop, rings[2])
+    RAFTER_MARGINS = eave_trim(E, rings[2], sheet_y=lambda i, ts, t: sheet_y_at(i, ts, t, RY))
 
     # hip rods: 4, from the eave corners (on the corner-column diagonals) up to the short-ridge
     # ENDS (sampled rings 2/5/RINGS like gate v2), tile
@@ -736,7 +792,8 @@ else:
         for j in (2, 5, RINGS):
             q = rings[j][ci]
             q = (q[0], q[1] + 0.045, q[2])
-            cyl_to(f'hip-ridge-{ci}-{j}', prev, q, 0.07, 'tile', 'roof', 8)
+            cyl_to(f'hip-ridge-{ci}-{j}', prev, q, 0.07, 'tile', 'roof', 8,
+                   cap_a=(j == 2), cap_b=(j == RINGS))   # 发现6: 接头不封盖
             prev = q
         HIP_TOPS.append([round(prev[0], 4), round(prev[1], 4), round(prev[2], 4)])
     # 正脊 ridge box along the rect u axis (rotated with the building)
@@ -886,19 +943,53 @@ def finalize(items, name):
     bmesh.ops.triangulate(bm, faces=list(bm.faces))
     bm.to_mesh(o.data)
     bm.free()
-    # open single-surface parts (roof): make the dominant normal face GLB +Y (up)
+    # 朝向收口（smallqa 发现5修复，2026-09-26）：按连通块分别定向——闭合块（椽头盒、宝顶等）
+    # 有向体积必须为正；开口块（瓦面主坡等）沿用原「主导法线朝 GLB +Y」口径。
+    # 旧逻辑对整个 roof__ 组按法线总和统一翻转，闭合的椽头盒被连带翻成整块反向
+    # （bld-428186467/428196085/428196091 各 70/61/72 块 vol≈−0.0009，靠 doubleSided 掩盖）。
     me = o.data
-    me.calc_loop_triangles()
-    s = 0.0
-    for t in me.loop_triangles:
-        s += t.normal.z          # blender z == glb y
-    if name.startswith('roof__') and s < 0:
-        bm = bmesh.new()
-        bm.from_mesh(me)
-        bmesh.ops.reverse_faces(bm, faces=list(bm.faces))
-        bm.to_mesh(me)
-        bm.free()
+    bm = bmesh.new()
+    bm.from_mesh(me)
+    seen = set()
+    stats_flip = {'closed': 0, 'open': 0}
+    for f0 in bm.faces:
+        if f0.index in seen:
+            continue
+        comp = []
+        stack = [f0]
+        seen.add(f0.index)
+        while stack:
+            f = stack.pop()
+            comp.append(f)
+            for e in f.edges:
+                for lf in e.link_faces:
+                    if lf.index not in seen:
+                        seen.add(lf.index)
+                        stack.append(lf)
+        compset = set(comp)
+        edges = set()
+        for f in comp:
+            edges.update(f.edges)
+        closed = all(len(set(e.link_faces) & compset) == 2 for e in edges)
+        vol = 0.0
+        s_up = 0.0
+        for f in comp:
+            vs = f.verts
+            for k in range(1, len(vs) - 1):
+                a, b, c = vs[0].co, vs[k].co, vs[k + 1].co
+                vol += a.dot(b.cross(c)) / 6.0
+            s_up += f.normal.z
+        if closed:
+            if vol < 0:
+                bmesh.ops.reverse_faces(bm, faces=comp)
+                stats_flip['closed'] += 1
+        elif name.startswith('roof__') and s_up < 0:
+            bmesh.ops.reverse_faces(bm, faces=comp)
+            stats_flip['open'] += 1
+    bm.to_mesh(me)
+    bm.free()
     o.data.calc_loop_triangles()
+    ORIENT_FLIP[name] = stats_flip
     bpy.ops.object.select_all(action='DESELECT')
     return o
 
@@ -959,6 +1050,13 @@ r1_record = {
     'rafterRule': 'axis localEaveY-0.09 -> top eaveY-0.06 (<= eave-0.05), radial length 0.25, '
                   'below tile lips; height follows lifted eave line (corner-sync)',
     'rafterTopMarginMin': round(min(RAFTER_MARGINS), 4),
+    'rafterSheetFix': 'smallqa finding-4 (2026-09-26): rafter inner end axis at local sheet '
+                      'y(t)-0.09 -> top 0.06 under the tile surface, no more corner poke-through',
+    'orientFix': 'smallqa finding-5 (2026-09-26): per-connected-component orientation in finalize '
+                 '(closed islands positive volume; open roof sheet faces GLB +Y)',
+    'orientFlip': {k: v for k, v in ORIENT_FLIP.items() if v['closed'] or v['open']},
+    'hipRodCaps': 'smallqa finding-6 (2026-09-26): hip-ridge segment joint caps removed '
+                  '(cap_a/cap_b=False on continuation segments)',
 }
 if RECT:
     r1_record.update({

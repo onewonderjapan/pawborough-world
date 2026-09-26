@@ -6,7 +6,7 @@
     "objectPrefix": "objects/sha256/",
     "snapshotKey": "snapshots/owner/reorganization-20260922-202629/MIGRATION-MANIFEST.json"
   },
-  "uniqueBytes": 413255393,
+  "uniqueBytes": 413215217,
   "files": [
     {
       "path": "scene-authoring/yuyuan-area/baseline/scene-areas.glb",
@@ -1822,9 +1822,10 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-165791764-6.glb",
-      "sha256": "fd559f22fa0787a70b7576b5f23e797ec83e2d76f0586d44d806914d581dfa6d",
-      "bytes": 37868,
-      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+      "sha256": "e9a75109021ef32507a96a8d359797758b28775bb7c019d9cb13bd4d62bbcd98",
+      "bytes": 35516,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922",
+      "status": "changed-20260926-night-smallfix-pending-archive"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-389701812-5.glb",
@@ -1834,15 +1835,17 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-389701901-2.glb",
-      "sha256": "98a2e6a078af4f07192281f187b79222971d7da14698dc8dd58ad553542886f8",
-      "bytes": 60872,
-      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+      "sha256": "e8cbfbb0e52d3ab5aefc61346ba620c0dedd0d650d25f7f5adbf782b7275e550",
+      "bytes": 60940,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922",
+      "status": "changed-20260926-night-smallfix-pending-archive"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-389701971-0.glb",
-      "sha256": "b76e04d5769ee1aa7db70fac58136c91d868fa1d1b8797768ebc4630192a3b02",
-      "bytes": 102908,
-      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+      "sha256": "72bd945d4c0ea900a860d63f21b6a45f8198a1ca366dbc0c5c4788150e207e6a",
+      "bytes": 102312,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922",
+      "status": "changed-20260926-night-smallfix-pending-archive"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-389702030-1.glb",
@@ -1852,27 +1855,31 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202599-2.glb",
-      "sha256": "7bdb3a5d08ff7d8be4e2b19ca01e6a6a3fdd50f01d8f66d0797f43f9a74e74c2",
-      "bytes": 79156,
-      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+      "sha256": "f9fac85e67a23464037fe546a9eba3eec8152bf6ed2632c3828def3e4f2567f3",
+      "bytes": 79196,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922",
+      "status": "changed-20260926-night-smallfix-pending-archive"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202601-2.glb",
-      "sha256": "e2c6337f7213c333d3380d88bf3d147befae0894f25e9dfd42af6d329194c6ef",
-      "bytes": 71324,
-      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+      "sha256": "7a78d8cb6a0c4fe0aa235fd439a6a088a4705a162fd9aa54b36dc3407fc261f1",
+      "bytes": 71368,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922",
+      "status": "changed-20260926-night-smallfix-pending-archive"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202602-2.glb",
-      "sha256": "bb2afc4e165f2dade2726761b8d4992a1d1470a5955d3c51c45448c768007679",
-      "bytes": 123316,
-      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+      "sha256": "ae3e85803d313944e5e4ebda35d08b9a4c17d9300312750d50986e9af22bd7d6",
+      "bytes": 122636,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922",
+      "status": "changed-20260926-night-smallfix-pending-archive"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202603-0.glb",
-      "sha256": "8322768052bdd351fec8a999a87fb92b4a293520a3d5d54a108e1826e908e60d",
-      "bytes": 73852,
-      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+      "sha256": "6d72ff98634900242541150ff9c912342537495215b30ffdfa2e2a5249ba97e5",
+      "bytes": 73896,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922",
+      "status": "changed-20260926-night-smallfix-pending-archive"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202604-0.glb",
@@ -1888,33 +1895,38 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202607-1.glb",
-      "sha256": "4790734180862477a224ad6743e400f6c65d5e81f6c6960a80a285fbff5fc6e8",
-      "bytes": 50768,
-      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+      "sha256": "7d940574de5c59b427775ac6f3bfeb3534c740e948c6dd9fe78bdb482cc4d955",
+      "bytes": 48372,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922",
+      "status": "changed-20260926-night-smallfix-pending-archive"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-553893867-2.glb",
-      "sha256": "0ccbc22c5fe1125059ff255292f88e93584b907a787be2e56e1f4fd35d409cbc",
-      "bytes": 17416,
-      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+      "sha256": "0213646b836537fc78c4fc2abc219ccd13531ebfe5714682500a6b5b3d9d6a86",
+      "bytes": 17408,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922",
+      "status": "changed-20260926-night-smallfix-pending-archive"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-553893868-0.glb",
-      "sha256": "2764824abd20a09136758ddff311437a360687b28603345dcbdb659c31ff9c5d",
-      "bytes": 14784,
-      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+      "sha256": "e23c0b73d9d0ea70cab4001ca6c3a5a895d6d8fd7bd563f43876555606ea553b",
+      "bytes": 12512,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922",
+      "status": "changed-20260926-night-smallfix-pending-archive"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-553893873-3.glb",
-      "sha256": "9505c09ca02a4e7c968e45310f65fdb5447443dfa6b2ce467acf8dcd0b71f483",
-      "bytes": 25140,
-      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+      "sha256": "1af0abb7fda72aefaf24d2d2e1d203f2fbb2be492354535c31c4449ec2100cab",
+      "bytes": 25204,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922",
+      "status": "changed-20260926-night-smallfix-pending-archive"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-553893884-5.glb",
-      "sha256": "b0766658571875375e73af8abe3f9b687d54395dc826ff26b1df909dbb3e8232",
-      "bytes": 58352,
-      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+      "sha256": "17d4f142e5ef7e596ce969c2a8654d89c95c7c962b08044cb142f7c197131cfc",
+      "bytes": 58432,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922",
+      "status": "changed-20260926-night-smallfix-pending-archive"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/bench.glb",
@@ -1924,15 +1936,17 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/stall-drink.glb",
-      "sha256": "665eaf7e85b690052a25a53917a99f7c69ca79d0e0fcc1655bb7a1cb087cae0b",
+      "sha256": "1427c3bfb0946b433565fa94059d4f6fdc92a6de26f14b242d7b0cc6c9645306",
       "bytes": 40192,
-      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922",
+      "status": "changed-20260926-night-smallfix-pending-archive"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/stall-grill.glb",
-      "sha256": "a83eb0171e391ad7ac921074b5064cfe0f12ea3456fe38e8d6ba492476a3bedf",
-      "bytes": 38856,
-      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922"
+      "sha256": "9df80daf5da0158ee8bc39568f750a67b0ad3fc9fe031631af90390ce4032dd7",
+      "bytes": 38852,
+      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922",
+      "status": "changed-20260926-night-smallfix-pending-archive"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/stall-steam.glb",
@@ -1954,33 +1968,38 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428179924/model.glb",
-      "sha256": "369565c5e058484020d7547b56144e810039a69fd8d348d69dabd9360d166b89",
-      "bytes": 435024,
-      "sourcePackage": "pawborough-w1-pavilion-kit-r1-20260923"
+      "sha256": "970931fb73f70710769a93466faad4a30f94628fa06a468e7db68fe2e374caf9",
+      "bytes": 429380,
+      "sourcePackage": "pawborough-w1-pavilion-kit-r1-20260923",
+      "status": "changed-20260926-night-smallfix-pending-archive"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428186467/model.glb",
-      "sha256": "45ce4c9c1eccff7b2bb7af5a08ba505bdd3f98e84df3d0d9992e571e91eefa15",
-      "bytes": 432148,
-      "sourcePackage": "pawborough-w1-pavilion-kit-r1-20260923"
+      "sha256": "2a5d4f14ffc5cc294e24ac146e6ce1cb9a93e0dcef69dface7a6cb4fa1579d22",
+      "bytes": 428500,
+      "sourcePackage": "pawborough-w1-pavilion-kit-r1-20260923",
+      "status": "changed-20260926-night-smallfix-pending-archive"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428196085/model.glb",
-      "sha256": "39fc579e2f714d7aad4c1013624e6a75cee3892355ea422d381454cc7ddcf35e",
-      "bytes": 456060,
-      "sourcePackage": "pawborough-w1-pavilion-kit-r1-20260923"
+      "sha256": "59e5c8b44b16b8f7215592ccda61d0a98517b1cf6c152d6f217c6c6e67119e3b",
+      "bytes": 448276,
+      "sourcePackage": "pawborough-w1-pavilion-kit-r1-20260923",
+      "status": "changed-20260926-night-smallfix-pending-archive"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428196091/model.glb",
-      "sha256": "f06824ee7fa49798ab891600666f5e4a867b1dab45fb0600ce7c673009b89cd0",
-      "bytes": 480400,
-      "sourcePackage": "pawborough-w1-pavilion-kit-r1-20260923"
+      "sha256": "9a27e295f6151513191b0512cd3dda978be0abde4a9fa860b863cad4e0309a23",
+      "bytes": 472788,
+      "sourcePackage": "pawborough-w1-pavilion-kit-r1-20260923",
+      "status": "changed-20260926-night-smallfix-pending-archive"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428196098/model.glb",
-      "sha256": "89d3c4b36a5fb703d82ede429e1dd5c30f24c2ae50518b397ed6f2ef036a805f",
-      "bytes": 473584,
-      "sourcePackage": "pawborough-w1-pavilion-kit-r1-20260923"
+      "sha256": "a96016d202373cd8ec9a24fefee444fac32075be562531c207b58b59a855645b",
+      "bytes": 466064,
+      "sourcePackage": "pawborough-w1-pavilion-kit-r1-20260923",
+      "status": "changed-20260926-night-smallfix-pending-archive"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-garden-kits/ring-corridor-bld-428179906.glb",

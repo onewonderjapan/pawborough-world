@@ -18,17 +18,17 @@
   },
   "stall-grill.glb": {
    "tris": 416,
-   "bytes": 38856,
+   "bytes": 38852,
    "budget": 1500,
    "budgetOk": true,
-   "sha256": "a83eb0171e391ad7ac921074b5064cfe0f12ea3456fe38e8d6ba492476a3bedf"
+   "sha256": "9df80daf5da0158ee8bc39568f750a67b0ad3fc9fe031631af90390ce4032dd7"
   },
   "stall-drink.glb": {
    "tris": 460,
    "bytes": 40192,
    "budget": 1500,
    "budgetOk": true,
-   "sha256": "665eaf7e85b690052a25a53917a99f7c69ca79d0e0fcc1655bb7a1cb087cae0b"
+   "sha256": "1427c3bfb0946b433565fa94059d4f6fdc92a6de26f14b242d7b0cc6c9645306"
   },
   "bench.glb": {
    "tris": 72,
@@ -42,6 +42,21 @@
   "stalls": 43,
   "benches": 8
  },
+ "repairs": [
+  {
+   "date": "2026-09-26",
+   "id": "bench-cluster-1",
+   "moved": [
+    "stall-49",
+    "stall-50",
+    "stall-51"
+   ],
+   "finding": "stall-49/50/51 同排长凳间距 0.80 m < 凳长 1.60 m，两两半叠（互穿 46 交线/5.06 m 每对）",
+   "fix": "保持首凳基准与 rotY，后续沿凳轴 1.70 m 等距（凳长 1.60 + 0.10 缝）",
+   "rule": "同排长凳沿轴间距 = 模块长 + 0.10 m 缝；tests/smallqa-test.mjs bench-row-spacing 守恒",
+   "by": "wave8-smallqa Q2① (1d7a3eac)；生成器重放 night-smallfix-20260926"
+  }
+ ],
  "stalls": [
   {
    "id": "stall-1",
@@ -2209,8 +2224,8 @@
    "kind": "bench",
    "module": "bench.glb",
    "position": [
-    -126.812726,
-    21.666731
+    -126.81272554350473,
+    21.666731441829583
    ],
    "rotY": 0.10479451694280902,
    "height": 0.5,
@@ -2228,8 +2243,8 @@
    "kind": "bench",
    "module": "bench.glb",
    "position": [
-    -125.122052,
-    21.488906
+    -125.12208818683229,
+    21.488559254820483
    ],
    "rotY": 0.10479451694280902,
    "height": 0.5,
@@ -2247,8 +2262,8 @@
    "kind": "bench",
    "module": "bench.glb",
    "position": [
-    -123.431378,
-    21.311081
+    -123.43145083015983,
+    21.310387067811384
    ],
    "rotY": 0.10479451694280902,
    "height": 0.5,
@@ -2260,15 +2275,6 @@
     ],
     "height": 0.5
    }
-  }
- ],
- "repairs": [
-  {
-   "date": "2026-09-26",
-   "id": "bench-cluster-1",
-   "finding": "stall-49/50/51 同排长凳间距 0.80 m < 凳长 1.60 m，两两半叠（互穿 46 交线/5.06 m 每对）",
-   "fix": "保持 stall-49 基准与 rotY，stall-50/51 沿凳轴移到 1.70 m 等距（凳长 1.60 + 0.10 缝）",
-   "rule": "同排长凳沿轴间距 = 模块长 + 0.10 m 缝；tests/smallqa-test.mjs bench-row-spacing 守恒"
   }
  ]
 }
