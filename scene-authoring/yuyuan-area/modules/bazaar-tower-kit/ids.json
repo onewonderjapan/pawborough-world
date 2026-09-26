@@ -9,7 +9,10 @@
   "bld-389701901",
   "bld-165791764",
   "bld-389702030",
-  "bld-553893867"
+  "bld-553893867",
+  "bld-389701971",
+  "bld-553893873",
+  "bld-553893868"
  ],
  "params": {
   "bld-428202599": "params/huabao-bld-428202599.json",
@@ -20,7 +23,10 @@
   "bld-389701901": "params/tonghanchun-bld-389701901.json",
   "bld-165791764": "params/shophouse-bld-165791764.json",
   "bld-389702030": "params/shophouse-bld-389702030.json",
-  "bld-553893867": "params/gallery-bld-553893867.json"
+  "bld-553893867": "params/gallery-bld-553893867.json",
+  "bld-389701971": "params/mall-bld-389701971.json",
+  "bld-553893873": "params/gallery-bld-553893873.json",
+  "bld-553893868": "params/shophouse-bld-553893868.json"
  },
  "zonePart": {
   "bld-428202599": 3,
@@ -31,7 +37,10 @@
   "bld-389701901": 4,
   "bld-165791764": 4,
   "bld-389702030": 4,
-  "bld-553893867": 4
+  "bld-553893867": 4,
+  "bld-389701971": 4,
+  "bld-553893873": 4,
+  "bld-553893868": 4
  },
  "ownerOverrides": {
   "bld-428202603": "referenceBasis: text-only (2023 renovation reports), no photo; needsPhoto=true（wave7 B2 按文字重建；0002-037 已确认为老庙黄金银楼，不再使用）"
