@@ -10,7 +10,7 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 import {
   bbox, polyArea, centroid, offsetPolySafe, dist2d, principalAxis, orientRing,
   shapeMesh, shapeGeo, wallRing, makeRoof, ribbon, corridor, rock, tree,
-  dropFloatingSegments, polySymDiffArea,
+  dropFloatingSegments, polySymDiffArea, triangulateRing,
 } from './lib.mjs';
 import { buildOuterKitGeometry, roadSegments, neighbourRings, SLOT_ATLAS, SLOT_PROC, MODES as OUTER_KIT_MODES } from './outer-kit.mjs';
 
@@ -62,6 +62,19 @@ const ROCKERY_IDS = new Set(['rockery-dajiashan', 'rockery-yulinglong']);
 // 默认开启（2026-09-25 机主定「湖心亭默认开启吧」）；HUXINTING=0 退回程序化占位。
 const HUXINTING = process.env.HUXINTING !== '0';
 const HUXINTING_IDS = new Set(['huxin-ting']);
+// wave10-pondqa（默认开，POND_QA=0 关 = wave10 之前的产物）：池带三处程序化修复，只作用于下面点名的 layout 对象。
+//  ① 池岸驳岸：九曲桥水池 water-62072388 原是一张 y=-0.14 的单面平板，四周 68% 的岸是外围地面 -0.40（比水面低 0.26），
+//     其余铺面 / 台基直接切到水边，一条竖向岸面都没有。沿水池边向池内 0.35 m 一圈加石驳岸：压顶 0.06、外侧岸墙落到外围地面、
+//     内侧池壁入水到 -0.18。网格归池带分件（pond|water-62072388|revetment|L1，kind=revetment，不是地面节点，步行碰撞不变），
+//     水面本身不动（仍在 zone-bazaar，layout 归区）。
+//  ② 桥端台阶实心：jiuqu-bridge-step-w/e 每级从踏面顶落到外围地面 -0.40（原每级是一块 rise 厚的板，下面空，东台阶整座离地 0.44 m）；
+//     踏面顶与平面位置不变。
+//  ③ 池西步道 pond-west-link 裁掉压进水池多边形的部分（原压水 11.9 m²，大部分在商城楼檐下；给驳岸让位），岸上部分不变。
+const POND_QA = process.env.POND_QA !== '0';
+const POND_WATER_ID = 'water-62072388';
+const POND_PATH_CLIP_IDS = new Set(['pond-west-link']);
+const GROUND_Y = -0.4;                        // layout 'ground'（外围地面）的固定高度，见下方 case 'ground'
+const REVET = { band: 0.35, top: 0.06, poolWallBottom: -0.18, cope: 0x9b917f, wall: 0x8c8474 };
 // BAZAAR_TOWERS=1：商城命名大楼由 modules/bazaar-tower-kit 世界坐标 GLB 承担（id 表 modules/bazaar-tower-kit/ids.json；
 // assemble.py 导入 SITE-bazaar，分区按 ids.json zonePart 归 zone-bazaar-3…）。默认开（2026-09-26 机主「商城楼套件默认开启吧」）；BAZAAR_TOWERS=0 回到程序化 bazaarBlock。
 const BAZAAR_TOWERS = process.env.BAZAAR_TOWERS !== '0';  // 默认开（2026-09-26 机主定），BAZAAR_TOWERS=0 关
@@ -805,8 +818,80 @@ function buildMoonGate(o) {
 }
 
 function buildPath(o) {
-  const g = ribbon(o.geometry.polyline, o.width || 2.0, o.height || 0.05, 0xbfae8e, o.key).geometry;
+  let g = ribbon(o.geometry.polyline, o.width || 2.0, o.height || 0.05, 0xbfae8e, o.key).geometry;
+  if (POND_QA && POND_PATH_CLIP_IDS.has(o.id)) {
+    const water = layout.objects.find((w) => w.id === POND_WATER_ID);
+    g = clipFlatOutside(g, water.geometry.footprint, o.height || 0.05);
+  }
   return mergedMesh([colorize(g, 0xbfae8e)], o.key, o.ud);
+}
+
+// wave10-pondqa ③：水平面片（y 恒定）减去多边形 poly（地图 x,z）。poly 的补集 = 外包矩形带洞三角化（每块凸），
+// 每个输入三角对每块补集三角做 Sutherland–Hodgman，结果扇形三角化、法线朝上。
+function clipConvexCCW(subject, clip) {
+  let out = subject;
+  for (let i = 0; i < clip.length && out.length; i++) {
+    const a = clip[i], b = clip[(i + 1) % clip.length];
+    const side = (p) => (b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0]);
+    const inp = out; out = [];
+    for (let k = 0; k < inp.length; k++) {
+      const P = inp[k], Q = inp[(k + 1) % inp.length], sp = side(P), sq = side(Q);
+      if (sp >= 0) out.push(P);
+      if ((sp >= 0) !== (sq >= 0)) { const t = sp / (sp - sq); out.push([P[0] + (Q[0] - P[0]) * t, P[1] + (Q[1] - P[1]) * t]); }
+    }
+  }
+  return out;
+}
+function upFacingGeometry(polys, y) {
+  const pos = [];
+  for (const poly of polys) {
+    if (poly.length < 3 || Math.abs(polyArea(poly)) < 1e-6) continue;
+    for (let k = 1; k + 1 < poly.length; k++) {
+      let A = poly[0], B = poly[k], C = poly[k + 1];
+      // three.js y-up：(B-A)×(C-A) 的 y 分量 = (Bz-Az)(Cx-Ax) - (Bx-Ax)(Cz-Az)，要 > 0（朝上）
+      if ((B[1] - A[1]) * (C[0] - A[0]) - (B[0] - A[0]) * (C[1] - A[1]) < 0) [B, C] = [C, B];
+      pos.push(A[0], y, A[1], B[0], y, B[1], C[0], y, C[1]);
+    }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(pos.map((_, i) => (i % 3 === 1 ? 1 : 0)), 3));
+  return g;
+}
+function clipFlatOutside(geo, polyIn, y) {
+  const poly = orientRing(polyIn);
+  const src = geo.index ? geo.toNonIndexed() : geo;
+  const P = src.attributes.position;
+  const xs = [...poly.map((p) => p[0])], zs = [...poly.map((p) => p[1])];
+  for (let i = 0; i < P.count; i++) { xs.push(P.getX(i)); zs.push(P.getZ(i)); }
+  const x0 = Math.min(...xs) - 2, x1 = Math.max(...xs) + 2, z0 = Math.min(...zs) - 2, z1 = Math.max(...zs) + 2;
+  const outside = triangulateRing([[x0, z0], [x1, z0], [x1, z1], [x0, z1]], [poly]).map((t) => orientRing(t));
+  const pieces = [];
+  for (let i = 0; i < P.count; i += 3) {
+    const tri = [0, 1, 2].map((k) => [P.getX(i + k), P.getZ(i + k)]);
+    for (const c of outside) { const r = clipConvexCCW(tri, c); if (r.length >= 3) pieces.push(r); }
+  }
+  return upFacingGeometry(pieces, y);
+}
+
+// wave10-pondqa ①：池岸驳岸（压顶环带 + 外侧岸墙 + 内侧池壁），合成一件网格，贴青石板槽（同桥端台阶）。
+function buildPondRevetment(o) {
+  const outer = orientRing(o.geometry.footprint);
+  const inner = offsetPolySafe(outer, -REVET.band);
+  if (inner.method !== 'offset') throw new Error(`pond revetment: inward offset ${REVET.band} m not clean (${inner.method}, usedD ${inner.usedD})`);
+  const cope = upFacingGeometry(triangulateRing(outer, [inner.pts]), REVET.top);
+  const outerWall = wallRing(outer, GROUND_Y, REVET.top, REVET.wall, 'revet-outer').geometry;
+  // 内侧池壁朝池心：wallRing 法线朝环外（= 朝压顶），逐三角换绕序并反法线
+  const iw = wallRing(inner.pts, REVET.poolWallBottom, REVET.top, REVET.wall, 'revet-inner').geometry;
+  const ip = iw.attributes.position.array, inr = iw.attributes.normal.array;
+  for (let t = 0; t < ip.length; t += 9) for (let c = 0; c < 3; c++) { const a = ip[t + 3 + c]; ip[t + 3 + c] = ip[t + 6 + c]; ip[t + 6 + c] = a; }
+  for (let i = 0; i < inr.length; i++) inr[i] = -inr[i];
+  const key = `pond|${o.id}|revetment|L1`;
+  const ud = { id: o.id, zone: 'pond', kind: 'revetment', lod: 'L1', module: 'pond-revetment', slot: 'paving-blue-stone',
+    inference: 'wave10-pondqa: stone revetment ring 0.35 m inside the frozen water outline (coping 0.06, outer wall to ground -0.40, pool wall to -0.18); water surface unchanged' };
+  const mesh = mergedMesh([colorize(cope, REVET.cope), colorize(outerWall, REVET.wall), colorize(iw, REVET.wall)], key, ud);
+  worldUV(mesh.geometry);
+  return mesh;
 }
 
 function buildGatePad(o) {
@@ -1115,7 +1200,7 @@ for (const o of layout.objects) {
       const [x0, z0, x1, z1] = o.geometry.bounds;
       const gnd = new THREE.Mesh(new THREE.PlaneGeometry(x1 - x0, z1 - z0), new THREE.MeshStandardMaterial({ color: 0xcfc6b4, roughness: 1 }));
       gnd.rotation.x = -Math.PI / 2;
-      gnd.position.set((x0 + x1) / 2, -0.4, (z0 + z1) / 2);
+      gnd.position.set((x0 + x1) / 2, GROUND_Y, (z0 + z1) / 2);
       gnd.name = key; gnd.userData = ud;
       zoneGroups.outer.add(gnd);
       stats.meshes++;
@@ -1141,6 +1226,12 @@ for (const o of layout.objects) {
     case 'water': {
       const col = o.zone === 'garden' ? 0x4e7d84 : o.zone === 'pond' ? 0x557f8f : 0x5b7f92;
       mesh = shapeMesh(o.geometry.footprint, o.height, col, key); mesh.userData = ud;
+      if (POND_QA && o.id === POND_WATER_ID) {
+        const rv = buildPondRevetment(o);
+        zoneGroups.pond.add(rv);
+        stats.meshes++;
+        stats.byKind.revetment = (stats.byKind.revetment || 0) + 1;
+      }
       break;
     }
     case 'outerBuilding': mesh = (OUTER_KIT && o.zone === 'outer' && !HUXINTING_DUP.has(o.id)) ? buildOuterKit({ ...o, key, ud }) : buildOuterBuilding({ ...o, key, ud }); break;
