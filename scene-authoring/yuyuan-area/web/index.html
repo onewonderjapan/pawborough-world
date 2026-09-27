@@ -15,6 +15,9 @@ button.active{background:#704731;color:#fff6e4;border-color:#704731}
 .lbl.note{color:#8b1d1d;border-color:#c07f7f}
 .lbl.region{font-weight:600;background:#fff7e2d9}
 .lbl.res{color:#7a1010;background:#ffececd9;border:1px dashed #b03030;font-size:10px}
+button:disabled{opacity:.55;cursor:not-allowed}
+.startup-error{max-width:650px;margin:20px;padding:24px;background:#faf5e9;border:1px solid #b9a77f;font-size:16px;overflow-wrap:anywhere}
+.startup-error h2{margin:0 0 12px;font-size:22px}.startup-error input{width:100%;padding:8px;font:inherit}.startup-error .actions{display:flex;gap:10px;margin:14px 0}.startup-error pre{font-size:12px;white-space:pre-wrap}
 #loadmsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:18px;color:#7d715d}
 </style></head><body>
 <div id="app"><div id="labels"></div></div>
@@ -33,5 +36,55 @@ button.active{background:#704731;color:#fff6e4;border-color:#704731}
 <div id="info"></div>
 <div id="loadmsg">加载场景 …</div>
 <script type="importmap">{"imports":{"/src/world/":"/vendor-src/world/","three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/","@dimforge/rapier3d-compat":"/vendor/@dimforge/rapier3d-compat/rapier.mjs"}}</script>
-<script type="module" src="/web/main.js"></script>
+<script>
+// Keep recovery UI independent of all viewer/module imports.
+(() => {
+  const bar = document.getElementById('bar');
+  const controls = () => document.querySelectorAll('#bar button,#bar select');
+  controls().forEach(b => { b.disabled = true; });
+  let failed = false;
+  window.__viewerStartup = {
+    rendererReady() {
+      if (failed) return;
+      controls().forEach(b => { b.disabled = false; });
+      // Renderer creation is not scene loading; keep the normal load message.
+    },
+    fail(error) {
+      if (failed) return;
+      failed = true;
+      window.__ready = false; window.__firstLoadReady = false;
+      controls().forEach(b => { b.disabled = true; });
+      bar.style.display = 'none';
+      const webgl = error?.code === 'WEBGL_STARTUP_FAILED';
+      const title = webgl ? '当前浏览器未能启用 WebGL' : '场景启动失败，页面模块未能正常加载';
+      document.getElementById('hud').textContent = title + '，3D 场景尚未启动。';
+      const box = document.getElementById('loadmsg');
+      box.dataset.state = 'error'; box.replaceChildren();
+      const panel = document.createElement('section'); panel.className = 'startup-error'; panel.setAttribute('role','alert');
+      const heading = document.createElement('h2'); heading.textContent = title;
+      const guide = document.createElement('p');
+      guide.textContent = '复制当前本地网址，在独立 Chrome / Edge 中打开。检查浏览器图形支持与硬件加速设置后，可重新加载。';
+      const url = document.createElement('input'); url.readOnly = true; url.value = location.href; url.setAttribute('aria-label','当前本地网址');
+      const actions = document.createElement('div'); actions.className = 'actions';
+      const copy = document.createElement('button'); copy.type = 'button'; copy.textContent = '复制当前网址';
+      const retry = document.createElement('button'); retry.type = 'button'; retry.textContent = '重新加载';
+      const feedback = document.createElement('p'); feedback.setAttribute('role','status');
+      copy.addEventListener('click', async () => {
+        try {
+          if (!navigator.clipboard?.writeText) throw Error('clipboard unavailable');
+          await navigator.clipboard.writeText(url.value); feedback.textContent = '网址已复制，请在独立 Chrome / Edge 中打开。';
+        } catch {
+          url.focus(); url.select(); feedback.textContent = '无法自动复制，网址已选中，请手动复制后在独立 Chrome / Edge 中打开。';
+        }
+      });
+      retry.addEventListener('click', () => location.reload());
+      actions.append(copy,retry);
+      const details = document.createElement('details'); const summary = document.createElement('summary'); summary.textContent = '技术信息';
+      const message = document.createElement('pre'); message.textContent = error?.message || String(error);
+      details.append(summary,message); panel.append(heading,guide,url,actions,feedback,details); box.append(panel);
+    }
+  };
+  import('/web/main.js').catch(error => window.__viewerStartup.fail(error));
+})();
+</script>
 </body></html>

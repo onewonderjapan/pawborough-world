@@ -17,12 +17,21 @@ import { installSharedTextures } from './shared-textures.js';   // wave9-sharedt
 import { patchOuterKitProc } from './outer-kit-proc.js';   // wave7-outerkit 方案 C（OUTER_KIT_MODE=proc，对比测量用）：extras outerKit=proc 的网格换运行时 shader；无此类网格时不改任何东西
 
 const app = document.getElementById('app');
-const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
-renderer.setSize(innerWidth, innerHeight);
-renderer.setPixelRatio(Math.min(2, devicePixelRatio));
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
-app.appendChild(renderer.domElement);
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.setPixelRatio(Math.min(2, devicePixelRatio));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+  app.appendChild(renderer.domElement);
+} catch (error) {
+  const failure = new Error(error?.message || String(error));
+  failure.code = 'WEBGL_STARTUP_FAILED';
+  failure.cause = error;
+  throw failure; // index bootstrap catches this before any scene/asset initialization
+}
+window.__viewerStartup?.rendererReady();
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xdfe8ec);
