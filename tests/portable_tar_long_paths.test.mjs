@@ -1,0 +1,9 @@
+// Narrow ustar byte-boundary regression; archives and rejected inputs retained.
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import{writeTar,readTar,TarUnsafeError}from'../tools/portable/tar.mjs';
+if(!process.env.ART_DIR)throw Error('ART_DIR required');const out=fs.mkdtempSync(path.join(path.resolve(process.env.ART_DIR),'ustar-long-'));const data=Buffer.from('真实微型往返\n','utf8'),cases=[];
+function roundtrip(name,label){const archive=writeTar([{path:name,type:'0',data}]);fs.writeFileSync(path.join(out,label+'.tar'),archive);const entry=readTar(archive).find(e=>e.type==='0');assert.equal(entry.path,name);assert.deepEqual(entry.data,data);cases.push({name:label,pass:true,pathBytes:Buffer.byteLength(name)})}
+roundtrip('candidate-trial-6e330d8a/code/scene-authoring/yuyuan-area/modules/bazaar-tower-kit/params/gallery-bld-428202606.json','actual-failed-path');
+const prefix='界'.repeat(30)+'/'+'界'.repeat(20)+'aaaa',suffix='猫'.repeat(33)+'x';assert.equal(Buffer.byteLength(prefix),155);assert.equal(Buffer.byteLength(suffix),100);roundtrip(prefix+'/'+suffix,'utf8-prefix155-name100');
+roundtrip('😀'.repeat(25),'utf8-basename100');
+for(const[name,label]of[['x'.repeat(101),'ascii-unencodable-basename'],['猫'.repeat(34),'utf8-unencodable-basename']]){fs.writeFileSync(path.join(out,label+'.json'),JSON.stringify({path:name,bytes:Buffer.byteLength(name)},null,2)+'\n');assert.throws(()=>writeTar([{path:name,type:'0',data}]),e=>e instanceof TarUnsafeError&&/NAME_TOO_LONG/.test(e.message));cases.push({name:label,pass:true,rejected:true,pathBytes:Buffer.byteLength(name)})}
+fs.writeFileSync(path.join(out,'CHECK.json'),JSON.stringify({time:new Date().toISOString(),pass:true,scope:'only real writer-reader long path cases; no world or old QA',retainedDir:out,cases},null,2)+'\n');console.log(JSON.stringify({pass:true,cases:cases.length,retainedDir:out}));

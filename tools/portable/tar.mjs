@@ -27,8 +27,8 @@ function header(entry) {
   if (name.length > 100) {
     // ustar 前缀拆分：在 '/' 边界切，prefix ≤155、name ≤100
     let cut = -1;
-    for (let i = name.length - 101; i >= 0; i--) {
-      if (name[i] === 0x2f) { cut = i; break; }
+    for (let i = Math.min(155, name.length - 1); i >= 0; i--) {
+      if (name[i] === 0x2f && name.length - i - 1 <= 100) { cut = i; break; }
     }
     if (cut < 0 || name.length - cut - 1 > 100 || cut > 155) {
       throw new TarUnsafeError(`NAME_TOO_LONG: ${entry.path}`);
