@@ -1,6 +1,6 @@
 // 方浜中路第五分区验收（GOAL wave1-fangbang F2 + 主控放行口径 2026-09-23）。
 // 对照基准全部取自源数据（不拿产物和自己比）：
-//   实例/位置 = world/fangbang-temple-v7/instances.json + (53.5,-17.4)；
+//   实例/位置 = world/fangbang-temple-v7/instances.json（+ baseline/fangbang-placement-overrides.json 全域覆盖）+ (53.5,-17.4)；
 //   剔除规则独立重算：westext-seal-wall 一律去（决定 1）；168/170/171 与 layout 实体 footprint 多边形、
 //     v7 庙轴碰撞盒（=全域庙区包围盒，山门锚逐位一致）任一相交即剔（决定 1）；
 //   补齐件 = OUT_DIR/fangbang-infill.json 的位姿，但几何合法性（不相交、在断带内、路口保留）全部用
@@ -14,6 +14,7 @@ import { fileURLToPath } from 'node:url';
 import { obbToWorld } from '../../../src/world/collisionAdapter.js';
 import { triangleCounts } from '../src/reconcile.mjs';
 import { readGlb, transformPoint } from '../../../src/world/glbReader.js';
+import { loadV7WithOverrides } from '../scripts/fangbang-overrides.mjs';
 
 const AREA = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const REPO = path.resolve(AREA, '..', '..');
@@ -87,10 +88,11 @@ if (!files.length) {
 for (const f of [path.join(OUT, 'collision-fangbang.json'), path.join(OUT, 'fangbang-route.json'), path.join(OUT, 'fangbang-infill.json'), path.join(OUT, 'assemble-stats.json')]) {
   if (!fs.existsSync(f)) { console.log('fangbang-test: NOT BUILT — missing', path.basename(f)); process.exit(2); }
 }
-const instDoc = JSON.parse(fs.readFileSync(path.join(FB7, 'instances.json'), 'utf8'));
+// 源数据 = v7 instances / collision-world + 全域放置覆盖 baseline/fangbang-placement-overrides.json（源数据，非产物；
+// 与 assemble.py / export-collision-fangbang.mjs 同读一份）
+const { instDoc, colDoc } = loadV7WithOverrides(REPO);
 const v7 = new Map(instDoc.instances.map(i => [i.id, i]));
 const templeIds = new Set(instDoc.instances.filter(i => i.group === 'temple-axis-v2').map(i => i.id));
-const colDoc = JSON.parse(fs.readFileSync(path.join(FB7, 'collision-world.json'), 'utf8'));
 const perId = new Map();
 for (const r of colDoc.colliders) {
   const id = r.name.split(':')[0];

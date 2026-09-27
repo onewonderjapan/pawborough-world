@@ -520,10 +520,16 @@ fangbang_placed = 0
 fangbang_excluded = []
 fangbang_infill = []
 fangbang_gapfill_placed = []
+fangbang_overrides_applied = []
 if os.environ.get('FANGBANG', '1') != '0':
     REPO = os.path.dirname(os.path.dirname(ROOT))   # 仓库根
     FB7 = os.path.join(REPO, 'world', 'fangbang-temple-v7')
-    fb_inst = json.load(open(os.path.join(FB7, 'instances.json'), encoding='utf-8'))['instances']
+    # 全域放置覆盖（baseline/fangbang-placement-overrides.json；wave5 F-09 S04 平移等）：共享数据集 v7 保持与原客户端
+    # 整装 GLB 一致，全域需要挪的实例只在覆盖文件登记，装配 / 补齐 / 碰撞导出同读一份（scripts/fangbang_overrides.py）。
+    sys.path.insert(0, os.path.join(ROOT, 'scripts'))
+    import fangbang_overrides
+    fb_inst, fb_col, fangbang_overrides_applied = fangbang_overrides.load_v7(REPO, ROOT)
+    print('fangbang placement overrides applied', fangbang_overrides_applied)
     fb_man = json.load(open(os.path.join(FB7, 'review-manifest.json'), encoding='utf-8'))
     fb_path = {m['id']: os.path.join(REPO, m['path'][2:]) for m in fb_man['modules']}
     missing_fb = sorted({i['module'] for i in fb_inst if i.get('group') != 'temple-axis-v2' and i['module'] not in fb_path})
@@ -543,7 +549,6 @@ if os.environ.get('FANGBANG', '1') != '0':
     FB_CHECK_IDS = ['westshop-shop-168', 'westshop-shop-170', 'westshop-shop-171']
     SOLID_KINDS = {'outerBuilding', 'bazaarBlock', 'tower', 'hall', 'xuan', 'pavilion', 'waterside',
                    'stage', 'wall', 'corridor', 'watersideGallery', 'moonGateWall', 'wallHead'}
-    fb_col = json.load(open(os.path.join(FB7, 'collision-world.json'), encoding='utf-8'))['colliders']
     fb_by_id = {}
     for r in fb_col:
         fb_by_id.setdefault(r['name'].split(':')[0], []).append(r)
@@ -1120,6 +1125,7 @@ stats = {
     'gardenKitPlaced': garden_kit_placed,
     'fangbangPlaced': fangbang_placed,
     'fangbangExcluded': fangbang_excluded,
+    'fangbangPlacementOverrides': fangbang_overrides_applied,
     'fangbangInfillIds': [i['id'] for i in fangbang_infill] + [i['id'] for i in fangbang_gapfill_placed],
 }
 json.dump(stats, open(os.path.join(OUT, 'assemble-stats.json'), 'w'), indent=1)
