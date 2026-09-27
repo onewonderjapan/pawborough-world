@@ -1317,9 +1317,15 @@ for (const o0 of layout.objects) {
       const cols = { 2: 0x8f8a83, 1: 0x9c968d, 0: 0xb0a99d };
       const col = cols[o.geometry.priority] ?? 0xb0a99d;
       // wave10-streetfix S3：路面多边形已按建筑 footprint 裁块（repair-layout 写 surfaceFootprints，
-      // surfaceFootprint 保留最大块给路线/商业检查等旧消费方），渲染端逐块成面后合并
-      let fps = o.geometry.surfaceFootprints || (o.geometry.surfaceFootprint ? [o.geometry.surfaceFootprint] : null);
-      let poly = o.geometry.polyline;
+      // surfaceFootprint 保留最大块给路线/商业检查等旧消费方），渲染端逐块成面后合并。
+      // wave10-streetfix R3（审查必修2）：surfaceFootprints 存在即权威，空数组 = 该路不渲染，
+      // 不再回退 ribbon / surfaceFootprint（R2 版 `surfaceFootprints || ...` 把空数组当真值取走、
+      // 再因 fps.length===0 落回 ribbon，被裁掉的路面会随 ribbon 复活；JS 空数组是真值而 Python
+      // 空列表是假值，渲染端与测试语义必须统一——road-footprint-clearance-test.py 同口径）。
+      const hasSfs = Array.isArray(o.geometry.surfaceFootprints);
+      let fps = hasSfs ? o.geometry.surfaceFootprints
+        : (o.geometry.surfaceFootprint ? [o.geometry.surfaceFootprint] : null);
+      let poly = hasSfs ? null : o.geometry.polyline;   // 权威字段存在时不给 ribbon 任何回退路径
       if (FANGBANG_ROAD_CLIP && FANGBANG_ROAD_CLIP[o.id]) {
         const [xmin, xmax] = FANGBANG_ROAD_CLIP[o.id];
         if (fps) fps = fps.map(r => clipPolyX(r, xmin, xmax)).filter(r => r && r.length >= 3);
