@@ -66,7 +66,7 @@ for (const name of want) {
   if (!v) throw new Error(`unknown view ${name}`);
   if (v.fangbang && !fangbangLoaded) {
     // 等到按钮回调真正切到方浜分区（ensureZone → 碰撞刷新 → setZone 重新取景）之后再摆相机，否则取景会被覆盖
-    await page.click('[data-zone="fangbang"]');
+    await page.click('[data-zone="fangbang"]', { timeout: 600000 });   // swiftshader + 机器负载下主线程可能长时间忙（点光着色器编译），点击本身也要等
     await page.waitForFunction(() => document.querySelector('[data-zone="fangbang"]')?.classList.contains('active'), null, { timeout: 600000 });
     await page.waitForTimeout(500);
     fangbangLoaded = true;
