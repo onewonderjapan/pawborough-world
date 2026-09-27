@@ -520,10 +520,16 @@ fangbang_placed = 0
 fangbang_excluded = []
 fangbang_infill = []
 fangbang_gapfill_placed = []
+fangbang_overrides_applied = []
 if os.environ.get('FANGBANG', '1') != '0':
     REPO = os.path.dirname(os.path.dirname(ROOT))   # 仓库根
     FB7 = os.path.join(REPO, 'world', 'fangbang-temple-v7')
-    fb_inst = json.load(open(os.path.join(FB7, 'instances.json'), encoding='utf-8'))['instances']
+    # 全域放置覆盖（baseline/fangbang-placement-overrides.json；wave5 F-09 S04 平移等）：共享数据集 v7 保持与原客户端
+    # 整装 GLB 一致，全域需要挪的实例只在覆盖文件登记，装配 / 补齐 / 碰撞导出同读一份（scripts/fangbang_overrides.py）。
+    sys.path.insert(0, os.path.join(ROOT, 'scripts'))
+    import fangbang_overrides
+    fb_inst, fb_col, fangbang_overrides_applied = fangbang_overrides.load_v7(REPO, ROOT)
+    print('fangbang placement overrides applied', fangbang_overrides_applied)
     fb_man = json.load(open(os.path.join(FB7, 'review-manifest.json'), encoding='utf-8'))
     fb_path = {m['id']: os.path.join(REPO, m['path'][2:]) for m in fb_man['modules']}
     missing_fb = sorted({i['module'] for i in fb_inst if i.get('group') != 'temple-axis-v2' and i['module'] not in fb_path})
@@ -543,7 +549,6 @@ if os.environ.get('FANGBANG', '1') != '0':
     FB_CHECK_IDS = ['westshop-shop-168', 'westshop-shop-170', 'westshop-shop-171']
     SOLID_KINDS = {'outerBuilding', 'bazaarBlock', 'tower', 'hall', 'xuan', 'pavilion', 'waterside',
                    'stage', 'wall', 'corridor', 'watersideGallery', 'moonGateWall', 'wallHead'}
-    fb_col = json.load(open(os.path.join(FB7, 'collision-world.json'), encoding='utf-8'))['colliders']
     fb_by_id = {}
     for r in fb_col:
         fb_by_id.setdefault(r['name'].split(':')[0], []).append(r)
@@ -727,6 +732,63 @@ if os.environ.get('FANGBANG', '1') != '0':
     # 分区拆件归街段件）；锚位姿 = 地图平移 (53.5, -17.4) -> Blender (53.5, +17.4, 0)，与实例同一坐标契约
     sg_objs = import_glb(os.path.join(FB7, 'street-reviewed-lanes.glb'), 'SITE-fangbang')
     sg_keep = [o for o in sg_objs if o.name.startswith('street-kit__')]
+    # wave10-streetfix S2（wave5 F-10；R2 按审查必修1改为整件剔除）：精修街段东端巷尾残件剔除。
+    # street-kit__blue-gray-brick / street-kit__oxblood-stained-timber 是沿街条墙+木件的合并网格
+    # （GLB 本体只读，只在装配时删三角形），东段伸进最后一栋店 S07-plain-v2 以东的空地
+    # （地图 x 126–128、z −0.4…1.5，wave5 F-10 判定「立在空地上像残件」，不属于任何店屋；
+    # F-10 记录残件范围 brick 到 v7 x 74.7、timber 到 73.3）。
+    # 剔除规则：两网格先按几何连通分量分组（1 mm 量化焊接共享顶点位置——坐标按 SG_EPS 网格取整
+    # 同格即连；注意这是毫米量化焊接而非「距离 ≤1 mm」判定：跨格近点可能漏连、同格对角点可距
+    # ~1.7 mm。GLB 在接缝处会复制顶点，单看索引会漏连），任一顶点 v7 x > 72.2 的分量判为残件、
+    # 整件删除。R1 按单个顶点截断把跨线
+    # 木箱（x 72.076–72.676，各 108 三角形）切成薄片、分区 GLB 残留 84 三角形，R2 审查打回；
+    # 目标分量共 6 件（brick 2 件各 6 tris + timber 4 件各 108 tris = 444 tris），
+    # S07 店前杂物（timber x ≤ 71.999 的 4 件）与街面其余部分不动。
+    import bmesh
+    SG_TRIM_X = 72.2
+    SG_EPS = 0.001
+    SG_TRIM_IDS = ('street-kit__blue-gray-brick', 'street-kit__oxblood-stained-timber')
+    sg_trimmed = []
+    for o in sg_keep:
+        if o.name not in SG_TRIM_IDS:
+            continue
+        mw = o.matrix_world
+        bm = bmesh.new()
+        bm.from_mesh(o.data)
+        bm.verts.ensure_lookup_table()
+        parent = list(range(len(bm.verts)))
+        def sg_find(a):
+            while parent[a] != a:
+                parent[a] = parent[parent[a]]
+                a = parent[a]
+            return a
+        def sg_union(a, b):
+            ra, rb = sg_find(a), sg_find(b)
+            if ra != rb:
+                parent[ra] = rb
+        by_key = {}
+        for i, v in enumerate(bm.verts):
+            w = mw @ v.co
+            key = (round(w.x / SG_EPS), round(w.y / SG_EPS), round(w.z / SG_EPS))
+            if key in by_key:
+                sg_union(i, by_key[key])
+            else:
+                by_key[key] = i
+        for f in bm.faces:
+            base = f.verts[0].index
+            for v in f.verts[1:]:
+                sg_union(base, v.index)
+        bad_roots = {sg_find(v.index) for v in bm.verts if (mw @ v.co).x > SG_TRIM_X}
+        drop_faces = [f for f in bm.faces if sg_find(f.verts[0].index) in bad_roots]
+        bmesh.ops.delete(bm, geom=drop_faces, context='FACES')
+        loose = [v for v in bm.verts if not v.link_faces]
+        if loose:
+            bmesh.ops.delete(bm, geom=loose, context='VERTS')
+        bm.to_mesh(o.data)
+        bm.free()
+        o.data.update()
+        sg_trimmed.append(f'{o.name}: -{len(drop_faces)} faces')
+    print('fangbang street-ground yard remnants dropped as whole components (any vert v7 x >', SG_TRIM_X, '):', sg_trimmed)
     sg_anchor = bpy.data.objects.new('fangbang-street-ground', None)
     sg_anchor.location = (53.5, 17.4, 0)
     sg_anchor.rotation_euler = (0, 0, 0)
@@ -1063,6 +1125,7 @@ stats = {
     'gardenKitPlaced': garden_kit_placed,
     'fangbangPlaced': fangbang_placed,
     'fangbangExcluded': fangbang_excluded,
+    'fangbangPlacementOverrides': fangbang_overrides_applied,
     'fangbangInfillIds': [i['id'] for i in fangbang_infill] + [i['id'] for i in fangbang_gapfill_placed],
 }
 json.dump(stats, open(os.path.join(OUT, 'assemble-stats.json'), 'w'), indent=1)

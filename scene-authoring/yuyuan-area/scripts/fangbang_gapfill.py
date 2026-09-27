@@ -23,6 +23,8 @@ import os
 import re
 import struct
 
+import fangbang_overrides
+
 OFF = (53.5, -17.4)          # 地图 = v7 + OFF
 STEP = 0.25                  # 沿路线扫描步长 m
 MARGIN = 0.6                 # 与邻居盒的净空、同批相邻两件的间隔
@@ -164,8 +166,8 @@ def plan(repo, layout_path, excluded_ids, existing_infill, shop_dims):
     excluded_ids：不放置的 v7 实例（封墙 / 171 等）；existing_infill：已放补齐件 [{id, donor, positionGlb, rotY}]；
     shop_dims：外围店屋单元 {module: (frontageM, depthM)}（resources/shops measurements）。"""
     fb7 = os.path.join(repo, 'world', 'fangbang-temple-v7')
-    inst = json.load(open(os.path.join(fb7, 'instances.json'), encoding='utf-8'))['instances']
-    col = json.load(open(os.path.join(fb7, 'collision-world.json'), encoding='utf-8'))['colliders']
+    # v7 instances / collision-world + 全域放置覆盖（baseline/fangbang-placement-overrides.json，与 assemble / 碰撞导出同一份）
+    inst, col, _applied = fangbang_overrides.load_v7(repo)
     man = json.load(open(os.path.join(fb7, 'review-manifest.json'), encoding='utf-8'))
     route = json.load(open(os.path.join(fb7, 'route.json'), encoding='utf-8'))
     L = json.load(open(layout_path, encoding='utf-8'))
