@@ -32,6 +32,7 @@
     "test:walk": "OUT_DIR=${OUT_DIR:-out-zone} node tests/zone-walk-check.mjs",
     "test:templeqa": "OUT_DIR=${OUT_DIR:-out-zone} node tests/templeqa-test.mjs",
     "test:pondqa": "OUT_DIR=${OUT_DIR:-out-zone} node tests/pondqa-test.mjs",
+    "test:huxwalk": "OUT_DIR=${OUT_DIR:-out-zone} node tests/huxinting-walkin-check.mjs",
     "test:facade-identity": "node tests/facade-identity-test.mjs && OUT_DIR=${OUT_DIR:-out-identity} PRE_OUT_DIR=${PRE_OUT_DIR:-out} node tests/facade-identity-geometry-test.mjs && OUT_DIR=${OUT_DIR:-out-identity} node tests/facade-bay-fit-test.mjs"
   },
   "dependencies": {
