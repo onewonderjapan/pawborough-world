@@ -5,9 +5,10 @@
 #   是假值，两侧语义必须一致）。baseline 要求渲染的道路若产物给出空数组 → 失败（「应渲染却无面」）。
 #   每块必须 ≥3 个不同的有限坐标点、buffer(0) 后有效且面积 > 0.01 m² 才计入渲染面；退化块记失败。
 #   检查数只统计有 ≥1 块有效面的道路；0 条 → 失败。
-# 负例（审查给的两类，内存变异当前产物 layout，不写文件）：
-#   ROAD_CLEARANCE_NEGCASE=1  全部可渲染 road 的 surfaceFootprints 设为 [[]] 或三点重合退化环 → 必须失败；
-#   ROAD_CLEARANCE_NEGCASE=2  全部设为 [] 且保留旧 surfaceFootprint → 必须失败（不许回退单块字段）。
+# 负例（审查给的三类，内存变异当前产物 layout，不写文件；R4 起三类各自独立断言）：
+#   ROAD_CLEARANCE_NEGCASE=1  全部可渲染 road 的 surfaceFootprints 设为 [[]]（空环）→ 必须失败；
+#   ROAD_CLEARANCE_NEGCASE=2  全部设为 [[p,p,p]]（正确嵌套的三点重合退化环，审查可选项2）→ 必须失败；
+#   ROAD_CLEARANCE_NEGCASE=3  全部设为 [] 且保留旧 surfaceFootprint → 必须失败（不许回退单块字段）。
 #   负例模式断言「变异被检出」，检出 = PASS（exit 0）；未被检出 = FAIL（exit 2）。
 # 其余口径与 R2 版一致：
 #   应检查道路集合 = baseline/layout.json 所有会渲染的 road（剔除 baseline 已 skipRender 的
@@ -181,33 +182,35 @@ def check(doc, label):
     return fails, checked, multi
 
 # ---------- 负例：内存变异当前产物 layout（不写文件） ----------
+# R4（审查可选项2）：三类负例各自独立断言（negcase1/2/3），不许混在一组里「任一失败即整组通过」；
+# 三点重合负例按审查指出改为正确嵌套的 [[p,p,p]]（一个三点重合的退化环），旧版写成 [p,p,p] 实际
+# 测的是「三个畸形面」的列表。
 def renderable(doc):
     return [o for o in doc['objects'] if o.get('kind') == 'road' and not o.get('skipRender')]
 
 NEG = os.environ.get('ROAD_CLEARANCE_NEGCASE')
-if NEG == '1':
+if NEG == '1':                      # 全部 [ [] ]：空环
     doc = copy.deepcopy(out)
-    for i, o in enumerate(renderable(doc)):
+    for o in renderable(doc):
+        o['geometry']['surfaceFootprints'] = [[]]
+elif NEG == '2':                    # 全部 [[p,p,p]]：正确嵌套的三点重合退化环
+    doc = copy.deepcopy(out)
+    for o in renderable(doc):
         p = (o['geometry'].get('polyline') or [[0, 0]])[0]
-        o['geometry']['surfaceFootprints'] = [[]] if i % 2 == 0 else [p, p, p]   # 退化环：空 / 三点重合
+        o['geometry']['surfaceFootprints'] = [[p, p, p]]
+elif NEG == '3':                    # 全部 [] 且保留旧 surfaceFootprint——不许回退（原 negcase2）
+    doc = copy.deepcopy(out)
+    for o in renderable(doc):
+        o['geometry']['surfaceFootprints'] = []
+else:
+    doc = None
+if NEG in ('1', '2', '3'):
     fails, checked, multi = check(doc, f'negcase{NEG}')
     if fails:
         print(f'PASS road-footprint-clearance negcase{NEG}: mutation detected — {len(fails)} failures over {checked} roads '
               f'(e.g. {fails[0]})')
         sys.exit(0)
     print(f'FAIL road-footprint-clearance negcase{NEG}: degenerate/empty faces still counted as {checked} checked roads, 0 failures')
-    sys.exit(2)
-if NEG == '2':
-    doc = copy.deepcopy(out)
-    for o in renderable(doc):
-        o['geometry']['surfaceFootprints'] = []   # 保留旧 surfaceFootprint——不许回退
-    fails, checked, multi = check(doc, f'negcase{NEG}')
-    if fails:
-        print(f'PASS road-footprint-clearance negcase{NEG}: empty-array mutation detected — {len(fails)} failures '
-              f'(e.g. {fails[0]})')
-        sys.exit(0)
-    print(f'FAIL road-footprint-clearance negcase{NEG}: surfaceFootprints=[] fell back to surfaceFootprint/ribbon, '
-          f'{checked} roads passed')
     sys.exit(2)
 if NEG:
     print(f'FAIL road-footprint-clearance: unknown ROAD_CLEARANCE_NEGCASE={NEG}')

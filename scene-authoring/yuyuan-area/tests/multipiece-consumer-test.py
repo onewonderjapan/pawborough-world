@@ -192,20 +192,68 @@ ok(f'test_street_band[B] 对照（缺第二块 → 路线退出判定）', len(l
 # ---------- 消费方 3：build-scene.mjs FANGBANG_ROAD_SINK ----------
 # FANGBANG=0 时下沉判定整体关闭（build-scene.mjs：FANGBANG=0 → sink 集为 null，不打印 sink 行），
 # 此时断言「无 sink 行」即为该开关下的正确行为。
+# wave10-streetfix R4（审查必修3）：子进程回执先断言 returncode==0（失败打印 stderr），再判 sink 行
+# ——崩溃子进程「没有 sink 行」≠「不下沉」。注入负例（MULTIPIECE_NEGCASE，不跑真子进程）：
+#   =1  A/B 两份回执都替换成 returncode=1、stdout=''（配合 FANGBANG=0 即审查场景：
+#       「6/0 不能证明构建子进程正常执行」）；=2  只把 B 换成失败回执（默认开关下崩溃被当作「不下沉」）。
+#   注入必须被检出：检出 → PASS exit 0；未被检出 → FAIL exit 2。
 fb_off = os.environ.get('FANGBANG') == '0'
 sink = {}
+
+
+def sink_probe_assertions(results, note=''):
+    """对 A/B 两份 CompletedProcess 回执断言，判定顺序：子进程成功退出 → sink 行。"""
+    for mode in ('A', 'B'):
+        r = results[mode]
+        # 审查必修3：先断言子进程成功退出（失败时把 stderr 打出来），再判 sink 行
+        ok('build-scene 子进程成功退出[%s]%s (returncode==0)' % (mode, note), r.returncode == 0,
+           'returncode=%s stderr=%s' % (r.returncode, (getattr(r, 'stderr', '') or '')[-300:]))
+        line = ''
+        if r.returncode == 0:
+            line = next((l for l in (r.stdout or '').splitlines() if l.startswith('FANGBANG road sink')), '')
+        ids = set(re.findall(r'road-\d+', line))
+        sink[mode] = (Y in ids, line)
+    if fb_off:
+        ok('build-scene FANGBANG_ROAD_SINK[FANGBANG=0] 判定关闭（A/B 均无 sink 行）%s' % note,
+           sink['A'][1] == '' and sink['B'][1] == '',
+           'A=' + repr(sink['A'][1][:80]) + ' B=' + repr(sink['B'][1][:80]))
+    else:
+        ok('build-scene FANGBANG_ROAD_SINK[A] 含 %s（第二块进走廊 → 下沉）%s' % (Y, note), sink['A'][0], sink['A'][1][:160])
+        ok('build-scene FANGBANG_ROAD_SINK[B] 对照（缺第二块 → 不下沉）%s' % note, not sink['B'][0], sink['B'][1][:160])
+
+
+def crashed_receipt():
+    return subprocess.CompletedProcess(args=['node', str(R / 'src' / 'build-scene.mjs')],
+                                       returncode=1, stdout='', stderr='injected crash (negative probe)')
+
+
+NEG = os.environ.get('MULTIPIECE_NEGCASE')
+if NEG in ('1', '2'):
+    fail_before = fail_n
+    if NEG == '1':
+        sink_probe_assertions({'A': crashed_receipt(), 'B': crashed_receipt()},
+                              note=" [注入 returncode=1/stdout='']")
+    else:
+        real = {}
+        for mode in ('A', 'B'):
+            real[mode] = crashed_receipt() if mode == 'B' else run(
+                ['node', str(R / 'src' / 'build-scene.mjs')], dict(env_base, OUT_DIR=str(dirs[mode])))
+        sink_probe_assertions(real, note=" [B 注入 returncode=1/stdout='']")
+    if fail_n > fail_before:
+        print('PASS multipiece-consumer negcase%s: 注入的失败回执被检出（%d 条断言失败）'
+              % (NEG, fail_n - fail_before))
+        sys.exit(0)
+    print("FAIL multipiece-consumer negcase%s: 注入 returncode=1/stdout='' 的回执仍被判 PASS"
+          '（子进程崩溃被当作通过）' % NEG)
+    sys.exit(2)
+if NEG:
+    print('FAIL multipiece-consumer: unknown MULTIPIECE_NEGCASE=%r' % NEG)
+    sys.exit(2)
+
+results = {}
 for mode in ('A', 'B'):
-    r = run(['node', str(R / 'src' / 'build-scene.mjs')], dict(env_base, OUT_DIR=str(dirs[mode])))
-    line = next((l for l in r.stdout.splitlines() if l.startswith('FANGBANG road sink')), '')
-    ids = set(re.findall(r'road-\d+', line))
-    sink[mode] = (Y in ids, line)
-if fb_off:
-    ok('build-scene FANGBANG_ROAD_SINK[FANGBANG=0] 判定关闭（A/B 均无 sink 行）',
-       sink['A'][1] == '' and sink['B'][1] == '',
-       'A=' + repr(sink['A'][1][:80]) + ' B=' + repr(sink['B'][1][:80]))
-else:
-    ok(f'build-scene FANGBANG_ROAD_SINK[A] 含 {Y}（第二块进走廊 → 下沉）', sink['A'][0], sink['A'][1][:160])
-    ok(f'build-scene FANGBANG_ROAD_SINK[B] 对照（缺第二块 → 不下沉）', not sink['B'][0], sink['B'][1][:160])
+    results[mode] = run(['node', str(R / 'src' / 'build-scene.mjs')], dict(env_base, OUT_DIR=str(dirs[mode])))
+sink_probe_assertions(results)
 
 print('MULTIPIECE-CONSUMER-TEST %d pass / %d fail' % (pass_n, fail_n))
 if failures:
