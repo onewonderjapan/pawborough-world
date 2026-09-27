@@ -646,7 +646,8 @@ const GROUND_RE = {
   outer: '^outer\\|[^|]+\\|(road|plaza|path|paving|steps|ground)\\|',
 };
 const EXTRA_GROUND = {
-  garden: FROZEN_EXTRA_GROUND,
+  // G2: existing visible 0.12m entrance pad bridges the road/gate interface.
+  garden: [...FROZEN_EXTRA_GROUND, 'garden|garden-gate|gateAnchor|L2'],
   pond: FROZEN_EXTRA_GROUND,
   // 庙区模块地坪逐一列名（节点名取自分区 GLB：*-body__worn-stone 等不用通配防跨件误配）
   temple: [...FROZEN_EXTRA_GROUND,
