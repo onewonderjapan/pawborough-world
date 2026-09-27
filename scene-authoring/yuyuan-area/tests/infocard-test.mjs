@@ -13,10 +13,15 @@
 //   T2 白名单：卡片 DOM 只有 h2 名称 + 6 组 dt/dd + 1 行固定说明，无任何其他文本；
 //   T3 无名对象不弹卡，但 __pickDebug 仍写 { id, name:null }；空白点击写 { id:null, name:null }；
 //   T4 Esc 关卡（先断言卡片已打开）+ 标签高亮清除；
-//   T5 步行模式不弹卡（先断言卡片已打开；切步行时已开卡片立即关闭并清高亮），退回轨道恢复弹卡；
-//   T6 关闭屋顶后点选：与 ?batch=0 同屏点 __pickDebug.id 逐点一致（隐藏几何不抢点击，无名命中也计）；
+//   T5 步行模式不弹卡（先断言卡片已打开；切步行时已开卡片立即关闭并清高亮，enter 与 spawnAt 两条路径都测），
+//      退回轨道恢复弹卡；
+//   T6 隐藏几何不抢点击：T6a 关屋顶后与 ?batch=0 同屏点 __pickDebug.id 逐点一致（保留 A/B 对照）；
+//      T6b/T6c 确定期望 ID 用例——前景对象自身 / 父节点 visible=false 后真实点击必须命中后景 id（≠前景）；
+//      T6d 浏览器实点「屋顶」按钮（web/roofs.js 规则）后逐点点选，命中 id 与测试独立筛出的隐藏 id 集合无交集；
 //   T7 375px 手机宽度：卡片停靠在工具区之外（矩形不相交），每个工具按钮中心 elementFromPoint 命中按钮本身，
-//      实点「步行」确认模式真的切换。
+//      实点「步行」确认模式真的切换；
+//   T8 九曲桥来源按命中构件（R3 必修3）：折线顶视命中桥面/栏杆、受控隐藏后点击命中桥体，
+//      两个点的期望值 = raw GLB 命中节点向上最近 extras.module，精确相等（不是集合成员）。
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -168,25 +173,30 @@ function buildGlbOracle() {
       for (const prim of mesh.primitives) {
         const acc = g.accessors[prim.attributes.POSITION];
         if (!acc || !acc.min || !acc.max) continue;
+        let primMaxY = -Infinity;
         for (const cx of [acc.min[0], acc.max[0]]) for (const cy of [acc.min[1], acc.max[1]]) for (const cz of [acc.min[2], acc.max[2]]) {
           const y = w[1] * cx + w[5] * cy + w[9] * cz + w[13];
-          if (!(id in byId)) byId[id] = { maxY: -Infinity, minX: Infinity, maxX: -Infinity, minZ: Infinity, maxZ: -Infinity, modules: new Set() };
+          if (!(id in byId)) byId[id] = { maxY: -Infinity, minX: Infinity, maxX: -Infinity, minZ: Infinity, maxZ: -Infinity, modules: new Set(), modTop: {} };
           const xx = w[0] * cx + w[4] * cy + w[8] * cz + w[12];
           const zz = w[2] * cx + w[6] * cy + w[10] * cz + w[14];
           if (y > byId[id].maxY) byId[id].maxY = y;
+          if (y > primMaxY) primMaxY = y;
           if (xx < byId[id].minX) byId[id].minX = xx;
           if (xx > byId[id].maxX) byId[id].maxX = xx;
           if (zz < byId[id].minZ) byId[id].minZ = zz;
           if (zz > byId[id].maxZ) byId[id].maxZ = zz;
         }
-        if (mod) byId[id].modules.add(mod);
+        if (mod) {
+          byId[id].modules.add(mod);
+          byId[id].modTop[mod] = Math.max(byId[id].modTop[mod] ?? -Infinity, primMaxY);   // 该 module 网格的世界最高点（多模块 id 的顶面排序用）
+        }
       }
     });
   }
   const out = {};
   for (const [id, v] of Object.entries(byId)) {
     void v.modules.size;
-    out[id] = { maxY: Math.max(0, v.maxY), cx: (v.minX + v.maxX) / 2, cz: (v.minZ + v.maxZ) / 2, modules: [...v.modules].sort() };
+    out[id] = { maxY: Math.max(0, v.maxY), cx: (v.minX + v.maxX) / 2, cz: (v.minZ + v.maxZ) / 2, modules: [...v.modules].sort(), modTop: v.modTop };
   }
   return out;
 }
@@ -290,7 +300,7 @@ const pickDebug = () => page.evaluate(() => (window.__pickDebug === undefined ? 
 for (const t of TARGETS) {
   const o = t.o;
   const cp = clickPoint(o);
-  if (!cp) { fail(`T1 ${t.nm} 无可算点击锚点`); continue; }
+  if (!cp) { fail(`T1 ${t.nm} 无可算点击锚点`); report.targets[o.id] = { name: t.nm, ok: false, failCount: 1, error: 'no-anchor' }; continue; }
   await aim(cp);
   await page.waitForTimeout(100);
   await page.mouse.click(700, 450);
@@ -300,7 +310,7 @@ for (const t of TARGETS) {
   report.targets[o.id] = { name: t.nm, want, got };
   report.oracle[o.id] = GLB_ORA[o.id] || null;
   if (SHOT_DIR) await page.screenshot({ path: path.join(SHOT_DIR, `infocard-${o.id}.png`) });
-  if (!got.open) { fail(`T1 ${t.nm} 点击后卡片未弹出`); continue; }
+  if (!got.open) { fail(`T1 ${t.nm} 点击后卡片未弹出`); report.targets[o.id].ok = false; report.targets[o.id].failCount = 1; continue; }   // R3 可选2：未弹卡也写 ok:false/failCount
   const bad = [];
   if (got.name !== want.name) bad.push(`名称 ${JSON.stringify(got.name)} != ${JSON.stringify(want.name)}`);
   if (JSON.stringify(got.dts) !== JSON.stringify(want.dts)) bad.push(`dt ${JSON.stringify(got.dts)} != ${JSON.stringify(want.dts)}`);
@@ -311,10 +321,12 @@ for (const t of TARGETS) {
       if (!Number.isFinite(hv) || !Number.isFinite(wv) || Math.abs(hv - wv) > 0.1) bad.push(`模型高度 ${got.dds?.[2]} != ${want.dds[2]}(±0.1)`);
       continue;
     }
-    if (i === 5) {   // 模型来源：GLB 模块集合成员断言（同一 id 不同网格可挂不同 module，卡片取命中点父链最近者）
+    if (i === 5) {   // 模型来源：R3 按命中父链精确相等；单模块 id 直接全串比对，多模块 id（九曲桥）由 T8 双构件精确断言兜底
       const v = String(got.dds?.[5] ?? '');
       const m = v.startsWith('套件：') ? v.slice(3) : null;
-      if (want.srcModules.length ? !(m && want.srcModules.includes(m)) : v !== '程序化体块') bad.push(`模型来源 ${JSON.stringify(v)} 不在 GLB 集合 ${JSON.stringify(want.srcModules)}`);
+      if (want.srcModules.length === 1) {
+        if (v !== `套件：${want.srcModules[0]}`) bad.push(`模型来源 ${JSON.stringify(v)} != 精确 ${JSON.stringify(`套件：${want.srcModules[0]}`)}`);
+      } else if (want.srcModules.length ? !(m && want.srcModules.includes(m)) : v !== '程序化体块') bad.push(`模型来源 ${JSON.stringify(v)} 不在 GLB 集合 ${JSON.stringify(want.srcModules)}`);
       continue;
     }
     if (got.dds?.[i] !== want.dds[i]) bad.push(`${want.dts[i]} ${JSON.stringify(got.dds?.[i])} != ${JSON.stringify(want.dds[i])}`);
@@ -428,9 +440,22 @@ for (const t of TARGETS) {
   got = await readCard();
   if (!got.open || got.name !== '华宝楼') fail(`T5 退回轨道后未恢复弹卡：${JSON.stringify(got)}`);
   else ok('T5 退回轨道后恢复弹卡（华宝楼）');
+  // R3 可选1：spawnAt() 走 walk.js 内部 setMode（pb:mode 统一通知），不再依赖 __walk.enter 包装 —— 卡片也必须立即关
+  await page.evaluate(() => window.__walk.spawnAt('main'));
+  const closedSpawn = await readCard();
+  if (closedSpawn.open) fail(`T5 spawnAt() 进入步行后已开卡片未立即关闭：${JSON.stringify(closedSpawn.name)}`);
+  else ok('T5 spawnAt()（内部 setMode）进入步行：卡片立即关闭');
+  await page.waitForFunction(() => window.__walk.status().mode === 'walk', null, { timeout: 300000 });
+  await page.evaluate(() => window.__walk.exit());
+  await page.waitForFunction(() => window.__walk.status().mode === 'orbit', null, { timeout: 60000 });
 }
 
-// ---------- T6 关闭屋顶后点选：与 ?batch=0 逐点 __pickDebug.id 一致 ----------
+// ---------- T6 隐藏几何不抢点击 ----------
+// R3（REVIEW-astra-R2 必修2）：在原 A/B 对照之外，加「确定期望 ID」的用例：
+//   T6b 前景对象自身 visible=false → 必须命中后景 id（≠前景）；
+//   T6c 前景父节点 visible=false → 同上；
+//   T6d 浏览器里实际点击「屋顶」按钮（正式按钮，规则在 web/roofs.js），再点选：
+//       命中 id 的网格必须与测试独立从场景里筛出的「隐藏 id 集合」无交集（父链全部可见）。
 {
   const pts = [];
   for (let j = 0; j < 3; j++) for (let i = 0; i < 5; i++) pts.push([Math.round(170 + i * 212), Math.round(230 + j * 200)]);
@@ -448,6 +473,8 @@ for (const t of TARGETS) {
   const pickGrid = (p) => p.evaluate(async (pts) => {
     const out = [];
     for (const [x, y] of pts) {
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));   // R3：每点前清卡，防卡片盖住后续样本
+      await new Promise(r => setTimeout(r, 30));
       window.__pickDebug = undefined;
       const el = document.elementFromPoint(x, y);
       const target = el && (el.closest('canvas') || el);
@@ -459,6 +486,8 @@ for (const t of TARGETS) {
     }
     return out;
   }, pts);
+
+  // ---- T6a 关屋顶（按名隐藏）后与 batch=0 逐点一致（原有对照，保留）----
   await bothReset();
   const nRoofA = await hideRoofs(page, false);
   const nRoofU = await hideRoofs(pageU, false);
@@ -476,6 +505,210 @@ for (const t of TARGETS) {
   else ok(`T6 关屋顶后 20→15 点选与 batch=0 逐点一致（含 ${nulls} 个空白点）`);
   await hideRoofs(page, true);
   await hideRoofs(pageU, true);
+
+  // ---- T6b/T6c 确定期望 ID：前景（自身 / 父节点）隐藏 → 必须命中后景 id 且 ≠ 前景 ----
+  // 流程（全程真实鼠标点击同一屏幕点）：点击得前景 id → 按 id 隐藏（记录被藏对象）→ 同点点击得后景（期望）→
+  // 只恢复自己藏的对象并复核点回前景 → 再同样隐藏复测后景一致。期望值由测试独立从场景状态推导。
+  const CAND = [[700, 450], [500, 300], [900, 600], [400, 520], [1000, 350]];
+  const hideById = (how, fgId) => page.evaluate(({ how, fgId }) => {
+    const idOf = (node) => { for (let n = node; n; n = n.parent) { if (n.userData && n.userData.id) return n.userData.id; const p = String(n.name || '').split('|'); if (p.length >= 4) return p[1]; } return null; };
+    window.__t6hidden = [];
+    let n = 0;
+    if (how === 'self') {
+      window.__scene.traverse(o => { if (o.isMesh && o.visible && idOf(o) === fgId) { o.visible = false; n++; window.__t6hidden.push(o); } });
+    } else {
+      // 「父节点隐藏」：从网格向上找最小的「子树覆盖全部前景网格」的祖先再藏它 ——
+      // 只藏第一个网格的直接父节点时，同对象的其它网格（别的包装节点）仍可见，前景照样被命中。
+      const meshes = [];
+      window.__scene.traverse(o => { if (o.isMesh && idOf(o) === fgId) meshes.push(o); });
+      const isAnc = (a, m) => { for (let x = m; x; x = x.parent) if (x === a) return true; return false; };
+      let cand = null;
+      for (let a = meshes[0] && meshes[0].parent; a && a !== window.__scene; a = a.parent) {
+        if (meshes.every(m => isAnc(a, m))) { cand = a; break; }
+      }
+      if (!cand && meshes[0]) cand = meshes[0].parent;
+      if (cand && cand.visible) { cand.visible = false; n = 1; window.__t6hidden.push(cand); }
+    }
+    window.__batchSync?.();
+    return n;
+  }, { how, fgId });
+  const showHidden = () => page.evaluate(() => {
+    for (const o of window.__t6hidden || []) o.visible = true;
+    window.__t6hidden = [];
+    window.__batchSync?.();
+  });
+  const pickAt = async (x, y) => {
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(30);
+    await page.evaluate(() => { window.__pickDebug = undefined; });
+    await page.mouse.click(x, y);
+    await page.waitForTimeout(90);
+    return page.evaluate(() => (window.__pickDebug ? window.__pickDebug.id ?? null : 'no-write'));
+  };
+  await bothReset();
+  let fgId = null, fx = 0, fy = 0;
+  for (const [cx, cy] of CAND) {
+    const d = await pickAt(cx, cy);
+    if (d !== 'no-write' && d !== null) { fgId = d; fx = cx; fy = cy; break; }
+  }
+  if (!fgId) fail('T6b 找不到前景对象（候选点全部空白）');
+  else {
+    report.T6bc = { fgId, at: [fx, fy] };
+    for (const [tag, how] of [['T6b', 'self'], ['T6c', 'parent']]) {
+      const n1 = await hideById(how, fgId);
+      const bg1 = await pickAt(fx, fy);
+      await showHidden();
+      await page.waitForTimeout(150);
+      const reFg = await pickAt(fx, fy);        // 恢复态复核：点回前景
+      await hideById(how, fgId);                // 同样隐藏态复测
+      const bg2 = await pickAt(fx, fy);
+      await showHidden();
+      await page.waitForTimeout(150);
+      const bads = [];
+      if (!n1) bads.push('没有隐藏到任何网格/节点');
+      if ([bg1, bg2, reFg].includes('no-write')) bads.push(`有拾取没写 __pickDebug（bg1=${bg1} bg2=${bg2} reFg=${reFg}）`);
+      else {
+        if (bg1 === null || bg2 === null) bads.push(`隐藏前景后命中空白（bg1=${bg1} bg2=${bg2}），该像素没有可验证的后景`);
+        if (bg1 !== bg2) bads.push(`同样隐藏态两次拾取不一致：${bg1} vs ${bg2}`);
+        if (bg1 === fgId) bads.push(`隐藏的前景仍被命中（${fgId}）——visible 过滤失效`);
+        if (reFg !== fgId) bads.push(`恢复可见后未点回前景：${reFg} != ${fgId}`);
+      }
+      report.T6bc[tag] = { how, fgId, hidden: n1, bg1, bg2, reFg };
+      if (bads.length) fail(`${tag} 前景${how === 'self' ? '自身' : '父节点'}隐藏：${bads.join('；')}`);
+      else ok(`${tag} 前景${how === 'self' ? '自身' : '父节点'}隐藏（${n1} 项）后命中后景 ${bg1}（≠前景 ${fgId}），恢复点回前景，复测一致`);
+    }
+  }
+
+  // ---- T6d 实点「屋顶」按钮（web/roofs.js 规则）后再点选：命中 id 不得属于隐藏 id 集合 ----
+  const idOfIn = `(node) => { for (let n = node; n; n = n.parent) { if (n.userData && n.userData.id) return n.userData.id; const p = String(n.name || '').split('|'); if (p.length >= 4) return p[1]; } return null; }`;
+  const visIn = `(node) => { for (let n = node; n; n = n.parent) if (n.visible === false) return false; return true; }`;
+  await bothReset();
+  await page.click('#t-roofs');
+  await pageU.click('#t-roofs');
+  await page.waitForTimeout(300);
+  await pageU.waitForTimeout(300);
+  const hiddenIdsOf = (p) => p.evaluate(`(() => { const idOf = ${idOfIn}; const vis = ${visIn}; const H = new Set(); window.__scene.traverse(o => { if (o.isMesh && !vis(o)) { const id = idOf(o); if (id) H.add(id); } }); return [...H]; })()`);
+  const hiddenIdsB = await hiddenIdsOf(page);
+  const hiddenIdsU = await hiddenIdsOf(pageU);
+  const [rb, ru] = await Promise.all([pickGrid(page), pickGrid(pageU)]);
+  // 独立 oracle：测试端用 three 自己做射线（visibleChain 过滤 + 第一个有 id 的命中），
+  // 与实现的拾取路径无关 —— 两边同时漏掉可见性过滤也会被抓到（REVIEW-astra-R2 必修2）。
+  const oraclePicks = (p) => p.evaluate(async (pts) => {
+    const THREE = await import('three');
+    const cam = window.__cam();
+    const camera = new THREE.PerspectiveCamera(46, innerWidth / innerHeight, 0.5, 4000);
+    camera.position.set(cam.p[0], cam.p[1], cam.p[2]);
+    camera.lookAt(cam.t[0], cam.t[1], cam.t[2]);
+    camera.updateMatrixWorld();
+    const idOf = (node) => { for (let n = node; n; n = n.parent) { if (n.userData && n.userData.id) return n.userData.id; const p2 = String(n.name || '').split('|'); if (p2.length >= 4) return p2[1]; } return null; };
+    const vis = (node) => { for (let n = node; n; n = n.parent) if (n.visible === false) return false; return true; };
+    const ray = new THREE.Raycaster();
+    ray.layers.enableAll();   // 与 web/main.js 的点选 raycaster 同口径：合批原网格在 ORIGINAL_LAYER，不开就一个都打不中
+    const out = [];
+    for (const [x, y] of pts) {
+      ray.setFromCamera(new THREE.Vector2((x / innerWidth) * 2 - 1, -(y / innerHeight) * 2 + 1), camera);
+      const hits = ray.intersectObjects(window.__scene.children, true);
+      let id = null;
+      for (const h of hits) { if (!vis(h.object)) continue; const hid = idOf(h.object); if (!hid) continue; id = hid; break; }
+      out.push(id);
+    }
+    return out;
+  }, pts);
+  const [ob, ou] = await Promise.all([oraclePicks(page), oraclePicks(pageU)]);
+  report.T6d = { hiddenIds: hiddenIdsB, oracleBatched: ob, oracleUnbatched: ou, batched: rb, unbatched: ru };
+  const diffD = pts.map((p, i) => [p, rb[i]?.id, ru[i]?.id]).filter(r => r[1] !== r[2]);
+  const vsOracle = pts.map((p, i) => [p, rb[i]?.id ?? null, ob[i]]).filter(r => (r[1] ?? null) !== r[2]);
+  const badsD = [];
+  if (!hiddenIdsB.length) badsD.push('屋顶按钮没有隐藏任何 id 的网格（点不出「隐藏不抢点」）');
+  if (hiddenIdsB.length !== hiddenIdsU.length) badsD.push(`两侧隐藏 id 数不同：${hiddenIdsB.length} vs ${hiddenIdsU.length}`);
+  if (vsOracle.length) badsD.push(`${vsOracle.length} 个点与测试端独立射线 oracle 不一致：${JSON.stringify(vsOracle.slice(0, 4))}`);
+  if (diffD.length) badsD.push(`与 batch=0 不一致：${JSON.stringify(diffD.slice(0, 4))}`);
+  if (badsD.length) fail(`T6d 屋顶按钮点选：${badsD.join('；')}`);
+  else ok(`T6d 实点「屋顶」按钮（隐藏 ${hiddenIdsB.length} 个 id）后 15 点点选：与测试端独立射线 oracle 逐点一致、与 batch=0 一致`);
+  await page.click('#t-roofs');   // 恢复屋顶
+  await pageU.click('#t-roofs');
+  await page.waitForTimeout(200);
+}
+
+// ---------- T8 九曲桥来源按命中构件（必修3）：两点精确相等，不是集合成员 ----------
+// 点 1：折线顶视（桥面/栏杆，module=顶面更高的构件）真实点击；
+// 点 2：受控隐藏同 id 的 garden-kit 网格（与屋顶开关同一可见性技术）后真实点击，命中 bridge-head 桥体。
+// 期望值一律 = raw GLB 里命中网格所在节点向上最近的 extras.module（chainModule），精确相等。
+{
+  const bridge = layout.objects.find(o => o.kind === 'zigzagBridge' && o.name === '九曲桥');
+  const ora = GLB_ORA[bridge.id];
+  if (!ora || ora.modules.length !== 2 || !ora.modTop) {
+    fail(`T8 raw GLB 里九曲桥应有且应有两个 module（实测 ${JSON.stringify(ora && ora.modules)}）`);
+  } else {
+    const modsByTop = Object.entries(ora.modTop).sort((a, b) => b[1] - a[1]);   // 顶面从高到低
+    const topMod = modsByTop[0][0];       // 桥面/栏杆（最高面，顶视首先命中）
+    const bodyMod = modsByTop[modsByTop.length - 1][0];   // 桥体（顶面更低，被桥面/栏杆包住）
+    const poly = bridge.geometry.polyline;
+    const seg = Math.floor(poly.length / 2);
+    const [px, pz] = poly[seg];
+    const [qx, qz] = poly[(seg + 1) % poly.length];
+    const dl = Math.hypot(qx - px, qz - pz) || 1;
+    const nx = -(qz - pz) / dl, nz = (qx - px) / dl;      // 折线左法线 → 偏向栏杆
+    // 桥端陆地段中点（折线末段中点）：bridge-head 平台只铺在两端陆地段（raw GLB extras.inference：
+    // 折线伸出池岸的东西两段读作实体桥头平台，桥体中部没有平台几何，顶视会打到水面）
+    const p2x = (poly[poly.length - 1][0] + poly[poly.length - 2][0]) / 2;
+    const p2z = (poly[poly.length - 1][1] + poly[poly.length - 2][1]) / 2;
+    const aimClick = async (x, z, ty) => {
+      await page.evaluate(([e, t]) => window.__viewAt(e, t), [[x, 40, z + 0.3], [x, ty, z]]);
+      await page.waitForTimeout(140);
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(30);
+      await page.evaluate(() => { window.__pickDebug = undefined; });
+      await page.mouse.click(700, 450);
+      await page.waitForTimeout(100);
+      return page.evaluate(() => {
+        const el = document.getElementById('info');
+        const dds = el.style.display === 'block' ? [...el.querySelectorAll(':scope > dl > dd')].map(d => d.textContent) : null;
+        return {
+          open: el.style.display === 'block',
+          src: dds ? dds[dds.length - 1] : null,
+          id: window.__pickDebug ? window.__pickDebug.id ?? null : 'no-write',
+        };
+      });
+    };
+    report.T8 = { topMod, bodyMod };
+    // 点 1：桥面/栏杆（折线点向栏杆侧偏 0.4 m，顶视首先命中最高构件）
+    const r1 = await aimClick(px + nx * 0.4, pz + nz * 0.4, 0.8);
+    const bads1 = [];
+    if (r1.id !== bridge.id) bads1.push(`命中 id ${JSON.stringify(r1.id)} != ${bridge.id}`);
+    if (r1.src !== `套件：${topMod}`) bads1.push(`来源 ${JSON.stringify(r1.src)} != 精确 ${JSON.stringify(`套件：${topMod}`)}`);
+    report.T8.railing = r1;
+    if (bads1.length) fail(`T8 点1（${topMod} 构件）：${bads1.join('；')}`);
+    else ok(`T8 点1 顶视命中 ${topMod} 构件：来源精确 = ${r1.src}`);
+
+    // 点 2：受控隐藏 garden-kit（=点1 命中的构件模块）网格 → 点击暴露的桥体 → 恢复
+    const hideKit = await page.evaluate(async ({ idWanted, modWanted }) => {
+      const scene = window.__scene;
+      const idOf = (node) => { for (let n = node; n; n = n.parent) { if (n.userData && n.userData.id) return n.userData.id; const p = String(n.name || '').split('|'); if (p.length >= 4) return p[1]; } return null; };
+      const modOf = (node) => { for (let n = node; n; n = n.parent) { if (n.userData && n.userData.module != null) return String(n.userData.module); } return null; };
+      let n = 0;
+      scene.traverse(o => { if (o.isMesh && idOf(o) === idWanted && modOf(o) === modWanted) { o.visible = false; n++; } });
+      window.__batchSync?.();
+      return n;
+    }, { idWanted: bridge.id, modWanted: topMod });
+    const r2 = await aimClick(p2x, p2z, 0.3);
+    await page.evaluate(({ idWanted, modWanted }) => {
+      const scene = window.__scene;
+      const idOf = (node) => { for (let n = node; n; n = n.parent) { if (n.userData && n.userData.id) return n.userData.id; const p = String(n.name || '').split('|'); if (p.length >= 4) return p[1]; } return null; };
+      const modOf = (node) => { for (let n = node; n; n = n.parent) { if (n.userData && n.userData.module != null) return String(n.userData.module); } return null; };
+      scene.traverse(o => { if (o.isMesh && idOf(o) === idWanted && modOf(o) === modWanted) { o.visible = true; } });
+      window.__batchSync?.();
+    }, { idWanted: bridge.id, modWanted: topMod });
+    const r3 = await aimClick(px + nx * 0.4, pz + nz * 0.4, 0.8);   // 恢复后复核点 1
+    const bads2 = [];
+    if (hideKit === 0) bads2.push(`没有隐藏到任何 ${topMod} 网格（受控暴露失败）`);
+    if (r2.id !== bridge.id) bads2.push(`命中 id ${JSON.stringify(r2.id)} != ${bridge.id}`);
+    if (r2.src !== `套件：${bodyMod}`) bads2.push(`来源 ${JSON.stringify(r2.src)} != 精确 ${JSON.stringify(`套件：${bodyMod}`)}`);
+    if (r3.src !== `套件：${topMod}`) bads2.push(`恢复后点1 复核来源 ${JSON.stringify(r3.src)} != ${JSON.stringify(`套件：${topMod}`)}`);
+    report.T8.body = { hidden: hideKit, r2, r3 };
+    if (bads2.length) fail(`T8 点2（${bodyMod} 构件，受控暴露）：${bads2.join('；')}`);
+    else ok(`T8 点2 隐藏 ${hideKit} 个 ${topMod} 网格后点击桥体：来源精确 = ${r2.src}；恢复后复核一致`);
+  }
 }
 await pageU.close();
 

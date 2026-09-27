@@ -81,6 +81,9 @@ if (want('I0')) {
 }
 
 // ---------- I1 点选溯源（R2 恢复原契约：读 __pickDebug，阈值 ≥8，无名对象计入命中） ----------
+// R3（REVIEW-astra-R2 必修1）：恢复每点前清卡（Esc 收卡并断言卡确实关了）；
+//   只允许对固定 HUD（#bar/#hud）的矩形做受控排除（矩形列进日志），信息卡或任何其它元素
+//   遮挡样本点一律算失败、不许跳过；canvasPts 用 filter(...).length 统计真实 canvas 样本数。
 if (want('I1')) {
   const [camB, camU] = await both(p => p.evaluate(() => window.__cam().p));
   const camSame = JSON.stringify(camB) === JSON.stringify(camU);
@@ -88,14 +91,38 @@ if (want('I1')) {
   if (!camSame) fail(`I1 两边机位不同 B=${JSON.stringify(camB)} U=${JSON.stringify(camU)}`);
   const pts = [];
   for (let j = 0; j < 4; j++) for (let i = 0; i < 5; i++) pts.push([Math.round(140 + i * 280), Math.round(200 + j * 190)]);
-  const pick = async (page) => {
+  // 固定 HUD 排除矩形：只排除 #bar/#hud 两个持久 UI 区。先定死 hud 文本（两页加载文案不同会导致
+  // 高度漂移、同一点一边 canvas 一边被排除），再各页实测矩形并要求两边一致。
+  await both(p => p.evaluate(() => { const h = document.getElementById('hud'); if (h) h.textContent = 'I1'; }));
+  await both(p => p.waitForTimeout(60));
+  const hudRectsOf = (p) => p.evaluate(() => ['#bar', '#hud'].flatMap(sel => {
+    const el = document.querySelector(sel);
+    if (!el) return [];
+    const r = el.getBoundingClientRect();
+    return [{ sel, x: r.x, y: r.y, w: r.width, h: r.height }];
+  }));
+  const hudRectsB = await hudRectsOf(B), hudRectsU = await hudRectsOf(U);
+  report.I1hudRects = { batched: hudRectsB, unbatched: hudRectsU };
+  console.log('I1 固定 HUD 排除矩形：batched=' + JSON.stringify(hudRectsB) + ' unbatched=' + JSON.stringify(hudRectsU));
+  if (JSON.stringify(hudRectsB) !== JSON.stringify(hudRectsU)) fail(`I1 两边固定 HUD 矩形不一致：${JSON.stringify(hudRectsB)} vs ${JSON.stringify(hudRectsU)}`);
+  const pick = async (page, hudRects) => {
+    const inHud = (x, y) => hudRects.findIndex(r => x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h);
     const out = [];
     for (const [x, y] of pts) {
+      // 每点前清卡：Esc 收卡（走实现的真实关闭路径），并断言卡确实关了
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(30);
+      const stillOpen = await page.evaluate(() => document.getElementById('info')?.style.display === 'block');
+      if (stillOpen) { out.push({ ui: 'card-unclosable' }); continue; }
       const ui = await page.evaluate(([x, y]) => {
         const el = document.elementFromPoint(x, y);
         return el && el.tagName === 'CANVAS' ? 'canvas' : 'ui:' + (el ? (el.id || el.className || el.tagName) : 'none');
       }, [x, y]);
-      if (ui !== 'canvas') { out.push({ ui }); continue; }
+      if (ui !== 'canvas') {
+        // 受控排除：只允许固定 HUD；信息卡/标签/未知元素遮挡 = 失败（不许静默跳过）
+        out.push({ ui, hud: ui.startsWith('ui:') && inHud(x, y) >= 0 ? hudRects[inHud(x, y)].sel : null });
+        continue;
+      }
       await page.evaluate(() => { window.__pickDebug = undefined; });
       await page.mouse.click(x, y);
       out.push(await page.evaluate(() => {
@@ -105,16 +132,24 @@ if (want('I1')) {
     }
     return out;
   };
-  const [pb, pu] = await both(pick);
+  const [pb, pu] = await Promise.all([pick(B, hudRectsB), pick(U, hudRectsU)]);
   const same = pb.every((v, i) => JSON.stringify(v) === JSON.stringify(pu[i]));
-  const canvasPts = pb.map((v, i) => (v && v.ui === undefined)).length;
+  const canvasPts = pb.filter(v => v && v.ui === undefined).length;   // R3：真实 canvas 样本数（原 map().length 恒等于 20）
   const hits = pb.filter(v => v && v.id != null).length;
   const noWrite = pb.filter(v => v && v.ui === 'no-write').length;
-  report.I1 = { points: pts, batched: pb, unbatched: pu };
-  if (camSame && noWrite > 0) fail(`I1 有 ${noWrite} 个点没写 __pickDebug（每次拾取都必须写，无名对象也写 id）`);
+  const occluded = pb.filter(v => v && v.ui && v.ui !== 'no-write' && v.ui !== 'canvas' && !v.hud);
+  const unclosable = pb.filter(v => v && v.ui === 'card-unclosable');
+  report.I1 = { points: pts, hudRects: hudRectsB, batched: pb, unbatched: pu, canvasPts, occludedN: occluded.length };
+  if (camSame && unclosable.length) fail(`I1 ${unclosable.length} 个点 Esc 后卡片仍未关闭（清卡失效，卡片会遮挡后续样本点）`);
+  else if (camSame && occluded.length) fail(`I1 ${occluded.length} 个点被非固定 HUD 元素遮挡（信息卡遮挡一律算失败，不许跳过）：${JSON.stringify(occluded.slice(0, 5))}`);
+  else if (camSame && noWrite > 0) fail(`I1 有 ${noWrite} 个点没写 __pickDebug（每次拾取都必须写，无名对象也写 id）`);
   else if (camSame && !same) fail(`I1 点选结果不一致：${JSON.stringify(pts.map((p, i) => [p, pb[i], pu[i]]).filter(r => JSON.stringify(r[1]) !== JSON.stringify(r[2])))}`);
+  else if (camSame && canvasPts < 8) fail(`I1 真实 canvas 样本点只有 ${canvasPts} 个（阈值 ≥8）`);
   else if (camSame && hits < 8) fail(`I1 命中过少（${hits}/${canvasPts}，阈值 ≥8；无名对象计入命中）`);
-  else if (camSame) ok(`I1 点选溯源 ${hits}/${canvasPts} 点命中（含无名对象），两边逐点相同（UI 覆盖点两边一致地跳过）`);
+  else if (camSame) {
+    const hudSkipped = pb.filter(v => v && v.hud).length;
+    ok(`I1 点选溯源 ${hits}/${canvasPts} 点命中（含无名对象），两边逐点相同；HUD 受控排除 ${hudSkipped} 点（矩形见日志）`);
+  }
 }
 
 

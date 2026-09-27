@@ -241,19 +241,12 @@ export function installInfocard({ raycaster, camera, scene, renderer, getLayout,
     else close();   // 无名对象 / 空白收卡
   });
   addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
-  // R2（可选1）：已开卡片时切换模式 / 回到锚点 → 立即关卡并清高亮（按钮路径 + 程序化 enter/exit 路径都覆盖）
+  // R3（可选1）：模式变化统一走 walk.js 内部 setMode 派发的 pb:mode 事件（按钮 / enter / exit / spawnAt 全覆盖），
+  // 不再包装 __walk.enter。#w-home 不切模式（步行内回锚点），保留点击关卡。
+  addEventListener('pb:mode', () => close());
   document.addEventListener('click', (e) => {
-    if (e.target && e.target.closest && e.target.closest('#w-mode, #w-home')) close();
+    if (e.target && e.target.closest && e.target.closest('#w-home')) close();
   });
-  const wrapWalk = () => {
-    const w = window.__walk;
-    if (!w || w.__infocardWrapped) return;
-    w.__infocardWrapped = true;
-    const enter0 = w.enter.bind(w), exit0 = w.exit.bind(w);
-    w.enter = async (...a) => { close(); return enter0(...a); };
-    w.exit = (...a) => { const r = exit0(...a); return r; };
-  };
-  wrapWalk();
   addEventListener('resize', () => { if (el.style.display === 'block') dock(); });
   return { open, close, _el: el };
 }
