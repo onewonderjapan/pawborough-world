@@ -504,6 +504,62 @@ for (const f of ['garden-wall.glb', 'temple-wall.glb', 'moon-gate.glb', 'jiuqu-b
   }
 }
 
+// ---------- 8.6) wave11-huxwalk（主控 2026-09-27 选项 1）：桥在湖心亭抱厦正面可走过去 ----------
+// 湖心亭局部系从 layout 重算（同 modules/huxinting/build.py：footprint 面积形心 + 最长边主轴，+v 临桥）；桥中线与抱厦中心线
+// u = 0 的交点 vC，桥面临亭边线 vC − 半宽。步行胶囊直径 0.70：|u| ≤ 0.35 这条通道上
+//  ① garden-kit-collision.json 的桥栏杆盒（balustrade）一个采样点都不能落在盒里（碰撞与视觉开口一致）；
+//  ② 桥面临亭边 0.12 m 边石带内下行射线首中必须是桥面 0.55（不再是边石顶 0.61）：门槛处桥面直接接抱厦地面。
+{
+  const ht = LAYOUT.objects.find((o) => o.id === 'huxin-ting');
+  const br = LAYOUT.objects.find((o) => o.id === 'jiuqu-bridge');
+  let fp = ht.geometry.footprint;
+  if (fp[0][0] === fp.at(-1)[0] && fp[0][1] === fp.at(-1)[1]) fp = fp.slice(0, -1);
+  let a2 = 0, sx = 0, sz = 0;
+  fp.forEach((p, i) => { const q = fp[(i + 1) % fp.length]; const cr = p[0] * q[1] - q[0] * p[1]; a2 += cr; sx += (p[0] + q[0]) * cr; sz += (p[1] + q[1]) * cr; });
+  const CX = sx / (3 * a2), CZ = sz / (3 * a2);
+  let best = null;
+  fp.forEach((p, i) => { const q = fp[(i + 1) % fp.length]; const L = Math.hypot(q[0] - p[0], q[1] - p[1]); if (!best || L > best[0]) best = [L, p, q]; });
+  let UX = (best[2][0] - best[1][0]) / best[0], UZ = (best[2][1] - best[1][1]) / best[0];
+  if (UX < 0) { UX = -UX; UZ = -UZ; }
+  const VX = UZ, VZ = -UX;
+  const loc = (x, z) => [(x - CX) * UX + (z - CZ) * UZ, (x - CX) * VX + (z - CZ) * VZ];
+  const wld = (u, v) => [CX + u * UX + v * VX, CZ + u * UZ + v * VZ];
+  const LV = fp.map((p) => loc(p[0], p[1])[1]);
+  const V0 = (Math.max(...LV) - Math.min(...LV)) / 2;
+  const BL = br.geometry.polyline.map((p) => loc(p[0], p[1]));
+  let vC = null;
+  for (let i = 0; i + 1 < BL.length; i++) {
+    const [ua, va] = BL[i], [ub, vb] = BL[i + 1];
+    if ((ua > 0) === (ub > 0) || ua === ub) continue;
+    const v = va + (vb - va) * (ua / (ua - ub));
+    if (v > V0 && (vC === null || v < vC)) vC = v;
+  }
+  const edgeV = vC - (br.width ?? 2.4) / 2;
+  const coll = JSON.parse(fs.readFileSync(path.join(STAGED, 'garden-kit-collision.json'), 'utf8'));
+  const bal = coll.modules['jiuqu-bridge'].boxes.filter((b) => b.name === 'balustrade');
+  let inBox = 0, n = 0;
+  for (let u = -0.35; u <= 0.35 + 1e-9; u += 0.05) for (let v = edgeV - 0.05; v <= edgeV + 0.6 + 1e-9; v += 0.05) {
+    const [x, z] = wld(u, v);
+    n++;
+    for (const b of bal) {
+      const dx = Math.sin(b.yaw), dz = Math.cos(b.yaw);
+      const rx = x - b.center[0], rz = z - b.center[2];
+      if (Math.abs(rx * dx + rz * dz) <= b.size[2] / 2 && Math.abs(rx * dz - rz * dx) <= b.size[0] / 2) { inBox++; break; }
+    }
+  }
+  ok(`抱厦正面桥栏碰撞盒开口：|u|≤0.35、桥面临亭边起 0.6 m 内 ${n} 个采样点落在栏杆盒里 ${inBox} 个（应 0）`, inBox === 0);
+  // 门槛通道 |u| ≤ 0.35、桥面临亭边内 0.02..0.11 m（边石带内）每 0.05 m 下行射线：首中高度必须是桥面 0.55±0.02（有边石则 0.61）
+  let curbHits = 0, nC = 0, worstY = null;
+  for (let u = -0.35; u <= 0.35 + 1e-9; u += 0.05) for (const dv of [0.02, 0.06, 0.10]) {
+    const [x, z] = wld(u, edgeV + dv);
+    const hit = raycast(bridge, [x, 2, z], [0, -1, 0], 2.0, 0.7);
+    nC++;
+    const y = hit === null ? null : 2 - hit;
+    if (y === null || Math.abs(y - 0.55) > 0.02) { curbHits++; if (y !== null && (worstY === null || y > worstY)) worstY = y; }
+  }
+  ok(`抱厦正面门槛：桥面临亭边 0.02–0.10 m 带、|u|≤0.35 下行射线 ${nC} 条首中不是桥面 0.55 的 ${curbHits} 条（应 0；边石顶 0.61）`, curbHits === 0, `highest ${worstY}`);
+}
+
 // ---------- 9) scene-areas ≤ 30 MB + gardenRouteAudit 全 ok ----------
 {
   const sa = path.join(OUT, 'scene-areas.glb');
