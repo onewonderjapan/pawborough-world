@@ -33,7 +33,7 @@
    "sun": { "azimuthDeg": 255, "elevationDeg": 9, "color": "#ffa35c", "intensity": 2.2, "angularDiameterDeg": 1.2 },
    "ambient": { "sky": "#8e9cc4", "ground": "#6b5645", "intensity": 1.25 },
    "sky": { "zenith": "#3d5688", "horizon": "#f0a568", "ground": "#6d5a4b", "exponent": 0.45, "sunGlow": 0.6, "sunGlowColor": "#ffb070", "sunGlowPower": 12 },
-   "exposure": 1.0,
+   "exposure": 0.9,
    "emissiveScale": 0.35,
    "pointLights": 0
   },
