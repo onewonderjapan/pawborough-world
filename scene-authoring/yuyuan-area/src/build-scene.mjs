@@ -1313,23 +1313,38 @@ for (const o0 of layout.objects) {
     }
     case 'road': {
       const cols = { 2: 0x8f8a83, 1: 0x9c968d, 0: 0xb0a99d };
-      let fp = o.geometry.surfaceFootprint, poly = o.geometry.polyline;
+      const col = cols[o.geometry.priority] ?? 0xb0a99d;
+      // wave10-streetfix S3：路面多边形已按建筑 footprint 裁块（repair-layout 写 surfaceFootprints，
+      // surfaceFootprint 保留最大块给路线/商业检查等旧消费方），渲染端逐块成面后合并
+      let fps = o.geometry.surfaceFootprints || (o.geometry.surfaceFootprint ? [o.geometry.surfaceFootprint] : null);
+      let poly = o.geometry.polyline;
       if (FANGBANG_ROAD_CLIP && FANGBANG_ROAD_CLIP[o.id]) {
         const [xmin, xmax] = FANGBANG_ROAD_CLIP[o.id];
-        if (fp) fp = clipPolyX(fp, xmin, xmax);
+        if (fps) fps = fps.map(r => clipPolyX(r, xmin, xmax)).filter(r => r && r.length >= 3);
         if (poly) poly = clipPolylineX(poly, xmin, xmax);
-        if ((!fp || !fp.length) && (!poly || poly.length < 2)) continue;   // 整段让位
+        if ((!fps || !fps.length) && (!poly || poly.length < 2)) continue;   // 整段让位
       }
-      let g = fp ? shapeGeo(fp, o.height)
-        : (poly && poly.length > 1 ? ribbon(poly, o.geometry.width, o.height, cols[o.geometry.priority] ?? 0xb0a99d, key).geometry : null);
-      if (!g) continue;
+      let geos = (fps && fps.length)
+        ? fps.map(r => shapeGeo(r, o.height))
+        : (poly && poly.length > 1 ? [ribbon(poly, o.geometry.width, o.height, col, key).geometry] : null);
+      if (!geos) continue;
       if (POND_QA) {
-        const r = clipOutOfPond(g, o.height);
-        if (r === 'empty') { deferred.push({ id: o.id, kind: o.kind, why: 'road-inside-pond-outline' }); continue; }
-        if (r) { g = r; ud.pondClip = 'wave10-pondqa: surface inside the pond outline removed'; }
+        // wave10-pondqa 池内裁面，逐块做（streetfix 起路面可能是多块）
+        const kept = []; let clipped = false;
+        for (const g of geos) {
+          const r = clipOutOfPond(g, o.height);
+          if (r === 'empty') { clipped = true; continue; }
+          if (r) { kept.push(r); clipped = true; } else kept.push(g);
+        }
+        if (!kept.length) { deferred.push({ id: o.id, kind: o.kind, why: 'road-inside-pond-outline' }); continue; }
+        if (clipped) ud.pondClip = 'wave10-pondqa: surface inside the pond outline removed';
+        geos = kept;
       }
-      if (FANGBANG_ROAD_SINK && FANGBANG_ROAD_SINK.has(o.id)) { g.translate(0, -FANGBANG_ROAD_SINK_M, 0); ud.fangbangSinkM = FANGBANG_ROAD_SINK_M; }
-      mesh = mergedMesh([colorize(g, cols[o.geometry.priority] ?? 0xb0a99d)], key, ud);
+      if (FANGBANG_ROAD_SINK && FANGBANG_ROAD_SINK.has(o.id)) {
+        for (const g of geos) g.translate(0, -FANGBANG_ROAD_SINK_M, 0);
+        ud.fangbangSinkM = FANGBANG_ROAD_SINK_M;
+      }
+      mesh = mergedMesh(geos.map(g => colorize(g, col)), key, ud);
       break;
     }
     case 'plaza': {

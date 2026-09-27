@@ -727,6 +727,29 @@ if os.environ.get('FANGBANG', '1') != '0':
     # 分区拆件归街段件）；锚位姿 = 地图平移 (53.5, -17.4) -> Blender (53.5, +17.4, 0)，与实例同一坐标契约
     sg_objs = import_glb(os.path.join(FB7, 'street-reviewed-lanes.glb'), 'SITE-fangbang')
     sg_keep = [o for o in sg_objs if o.name.startswith('street-kit__')]
+    # wave10-streetfix S2（wave5 F-10）：精修街段东端巷尾残件剔除。street-kit__blue-gray-brick /
+    # street-kit__oxblood-stained-timber 是沿街条墙+木件的合并网格（GLB 本体只读，只在装配时删三角形），
+    # 其东段越过最后一栋店 S07-plain-v2 东墙（源 collision base 最大 x = 71.05）伸进东端空地
+    # （地图 x 126–128、z −0.4…1.5，wave5 F-10 判定「立在空地上像残件」，不属于任何店屋）。
+    # 剔除规则：两节点内 v7 x > 72.2 的三角形整体删除（任一顶点越界即删）。72.2 取两段网格的自然顶点
+    # 空隙：S07 自带木件止于 x 72.0，巷尾残件起于 x 72.25（S07 东墙 +1.15 m）；x ≤ 72.2 的全部保留。
+    import bmesh
+    SG_TRIM_X = 72.2
+    SG_TRIM_IDS = ('street-kit__blue-gray-brick', 'street-kit__oxblood-stained-timber')
+    sg_trimmed = []
+    for o in sg_keep:
+        if o.name not in SG_TRIM_IDS:
+            continue
+        mw = o.matrix_world
+        bm = bmesh.new()
+        bm.from_mesh(o.data)
+        drop = [v for v in bm.verts if (mw @ v.co).x > SG_TRIM_X]
+        bmesh.ops.delete(bm, geom=drop, context='VERTS')
+        bm.to_mesh(o.data)
+        bm.free()
+        o.data.update()
+        sg_trimmed.append(o.name)
+    print('fangbang street-ground yard remnants trimmed (v7 x >', SG_TRIM_X, '):', sg_trimmed)
     sg_anchor = bpy.data.objects.new('fangbang-street-ground', None)
     sg_anchor.location = (53.5, 17.4, 0)
     sg_anchor.rotation_euler = (0, 0, 0)

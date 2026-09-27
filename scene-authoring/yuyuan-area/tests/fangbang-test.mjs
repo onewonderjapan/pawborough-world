@@ -384,6 +384,210 @@ ok('route junction at shanmen anchor (<=0.01m)', route.junction && route.junctio
   console.log('R1 triangles', { unique, placed, ref, partsSharingMultiMesh: shareOk });
 }
 
+// ---------- W7（wave10 S1，来源 wave5 F-09）：每家店的挂件（店招/灯笼）不与邻店本体相交 ----------
+// 挂件包围盒 = 模块 GLB 里名字含 sign/lantern 的网格局部 AABB × 实例位姿（旋转矩形）；邻店本体 =
+// 该实例的源碰撞记录（v7 collision-world / sidecar）里底 ≤ 1.0 m 的矩形逐条比对。弯街上旋转 AABB 有
+// 膨胀假阳（wave5 F-09 报的 0.32–0.56 m 即那一口径），这里用真实多边形相交：面积 ≥ 0.01 m² 且 y 区间
+// 重叠才算穿入。补齐件同口径（donor 模块 × fangbang-infill.json 位姿；补齐件互相之间由第 3 节 AABB
+// 校验覆盖）。庙轴记录不作邻居（山门缝与越庙墙由第 5 节与 W5 的口径管）。
+{
+  const man7 = JSON.parse(fs.readFileSync(path.join(FB7, 'review-manifest.json'), 'utf8'));
+  const modPath7 = new Map(man7.modules.map(m => [m.id, path.join(REPO, m.path.replace(/^\.\//, ''))]));
+  const isBase7 = r => !(r.obb && r.obb.center[1] - r.obb.size[1] / 2 > 1.0);
+  const rect7 = r => {
+    const w = obbToWorld(r);
+    const c = Math.cos(w.yaw), s = Math.sin(w.yaw);
+    const [hx, , hz] = w.halfExtents;
+    return {
+      pts: [
+        [w.center[0] + c * hx + s * hz, w.center[2] - s * hx + c * hz],
+        [w.center[0] + c * hx - s * hz, w.center[2] - s * hx - c * hz],
+        [w.center[0] - c * hx - s * hz, w.center[2] + s * hx - c * hz],
+        [w.center[0] - c * hx + s * hz, w.center[2] + s * hx + c * hz],
+      ],
+      ylo: w.center[1] - w.halfExtents[1], yhi: w.center[1] + w.halfExtents[1], name: r.name,
+    };
+  };
+  // 凸四边形 × 凸四边形相交面积（半平面裁剪 + 鞋带）
+  const clipArea = (subject, clip) => {
+    let poly = subject;
+    for (let i = 0; i < clip.length && poly.length; i++) {
+      const [ax, az] = clip[i], [bx, bz] = clip[(i + 1) % clip.length];
+      const inside = p => (bx - ax) * (p[1] - az) - (bz - az) * (p[0] - ax) <= 0;
+      const next = [];
+      for (let k = 0; k < poly.length; k++) {
+        const p = poly[k], q = poly[(k + 1) % poly.length];
+        const dp = (bx - ax) * (p[1] - az) - (bz - az) * (p[0] - ax);
+        const dq = (bx - ax) * (q[1] - az) - (bz - az) * (q[0] - ax);
+        const pi = inside(p), qi = inside(q);
+        if (pi) next.push(p);
+        if (pi !== qi) {
+          const t = dp / (dp - dq);
+          next.push([p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t]);
+        }
+      }
+      poly = next;
+    }
+    if (poly.length < 3) return 0;
+    let a = 0;
+    for (let k = 0; k < poly.length; k++) {
+      const p = poly[k], q = poly[(k + 1) % poly.length];
+      a += p[0] * q[1] - q[0] * p[1];
+    }
+    return Math.abs(a) / 2;
+  };
+  const hangCache = new Map();   // module -> [{name, lo, hi}]
+  const hangParts = module => {
+    if (!hangCache.has(module)) {
+      const out = [], byName = new Map();
+      for (const m of readGlb(fs.readFileSync(modPath7.get(module))).meshes) {
+        if (!/sign|lantern/i.test(m.name || '')) continue;
+        const lo = [1e9, 1e9, 1e9], hi = [-1e9, -1e9, -1e9];
+        for (let i = 0; i < m.positions.length; i += 3) {
+          const w = transformPoint(m.matrix, [m.positions[i], m.positions[i + 1], m.positions[i + 2]]);
+          for (let k = 0; k < 3; k++) { lo[k] = Math.min(lo[k], w[k]); hi[k] = Math.max(hi[k], w[k]); }
+        }
+        if (!byName.has(m.name)) byName.set(m.name, [lo, hi]);
+        else {
+          const [plo, phi] = byName.get(m.name);
+          for (let k = 0; k < 3; k++) { plo[k] = Math.min(plo[k], lo[k]); phi[k] = Math.max(phi[k], hi[k]); }
+        }
+      }
+      for (const [name, [lo, hi]] of byName) out.push({ name, lo, hi });
+      hangCache.set(module, out);
+    }
+    return hangCache.get(module);
+  };
+  const bandPoly = (lo, hi, rot, px, pz) => {
+    const c = Math.cos(rot), s = Math.sin(rot);
+    return [
+      [px + c * lo[0] + s * lo[2], pz - s * lo[0] + c * lo[2]],
+      [px + c * hi[0] + s * lo[2], pz - s * hi[0] + c * lo[2]],
+      [px + c * hi[0] + s * hi[2], pz - s * hi[0] + c * hi[2]],
+      [px + c * lo[0] + s * hi[2], pz - s * lo[0] + c * hi[2]],
+    ];
+  };
+  const instById7 = new Map(instDoc.instances.map(i => [i.id, i]));
+  const placedV7_7 = v7Expected.map(i => i.id);   // 与第 1 节同源的源重算已放置集
+  const base7 = new Map();   // id -> rects（v7 坐标）
+  for (const id of placedV7_7) {
+    base7.set(id, (perId.get(id) || []).filter(isBase7).map(rect7));
+  }
+  // 补齐件矩形 = donor 记录的局部 center/size 按补齐位姿重建（同 export-collision-fangbang 的克隆口径）；v7 系
+  const infillRects = infillSpec.map(it => ({
+    id: it.id,
+    recs: (perId.get(it.donor) || []).filter(isBase7).map(r => {
+      if (!r.obb) throw new Error(`infill donor record ${r.name} not obb form`);
+      const o = r.obb;
+      const c = Math.cos(it.rotY), s = Math.sin(it.rotY);
+      const cx = it.positionGlb[0] + c * o.center[0] + s * o.center[2];
+      const cz = it.positionGlb[2] - s * o.center[0] + c * o.center[2];
+      const cc = Math.cos(it.rotY), ss = Math.sin(it.rotY);
+      const hx = o.size[0] / 2, hz = o.size[2] / 2;
+      return {
+        pts: [
+          [cx + cc * hx + ss * hz, cz - ss * hx + cc * hz],
+          [cx + cc * hx - ss * hz, cz - ss * hx - cc * hz],
+          [cx - cc * hx - ss * hz, cz + ss * hx - cc * hz],
+          [cx - cc * hx + ss * hz, cz + ss * hx + cc * hz],
+        ],
+        ylo: o.center[1] - o.size[1] / 2, yhi: o.center[1] + o.size[1] / 2, name: r.name,
+      };
+    }),
+  }));
+  const AREA_MIN = 0.01;
+  const bad7 = [];
+  const check = (id, module, rot, px, pz) => {
+    for (const p of hangParts(module)) {
+      const A = bandPoly(p.lo, p.hi, rot, px, pz);
+      for (const [oid, rects] of base7) {
+        if (oid === id) continue;
+        for (const r of rects) {
+          if (Math.min(p.hi[1], r.yhi) <= Math.max(p.lo[1], r.ylo)) continue;
+          const area = clipArea(A, r.pts);
+          if (area >= AREA_MIN) bad7.push(`${id}:${p.name} -> ${oid}:${r.name.split(':').pop()} (${area.toFixed(3)} m^2)`);
+        }
+      }
+      for (const { id: iid, recs } of infillRects) {
+        if (iid === id) continue;
+        for (const r of recs) {
+          if (Math.min(p.hi[1], r.yhi) <= Math.max(p.lo[1], r.ylo)) continue;
+          const area = clipArea(A, r.pts);
+          if (area >= AREA_MIN) bad7.push(`${id}:${p.name} -> ${iid}:${r.name.split(':').pop()} (${area.toFixed(3)} m^2)`);
+        }
+      }
+    }
+  };
+  for (const i of v7Expected) {
+    const parts = hangParts(i.module);
+    if (parts.length) check(i.id, i.module, i.rotationYRad, i.positionGlb[0], i.positionGlb[2]);
+  }
+  for (const it of infillSpec) check(it.id, instById7.get(it.donor).module, it.rotY, it.positionGlb[0], it.positionGlb[2]);
+  ok(`hanging parts (sign/lantern) clear of neighbour bodies (${bad7.length} penetrations)`, bad7.length === 0, bad7.slice(0, 4).join(' | '));
+}
+
+// ---------- W8（wave10 S2，来源 wave5 F-10）：街尾巷尾残件已从放置中剔除 ----------
+// 规则（与 assemble.py SG_TRIM 同一规则，map = v7 + 53.5）：street-kit__blue-gray-brick /
+// street-kit__oxblood-stained-timber 两个合并网格里，v7 x > 72.2 的三角形不得进入分区 ——
+// 那是越过最后一栋店 S07-plain-v2 东墙（源 collision base 最大 x = 71.05）伸进东端空地的残件
+// （wave5 F-10：地图 x 126–128、z −0.4…1.5，两段孤立矮砖墙 + 木件）。阈值取源 GLB 的自然顶点空隙
+// （S07 自带木件止于 x 72.0，残件起于 x 72.25）。反向校验：x ≤ 71.05（靠店一侧）的三角形数与源
+// GLB 相等（只删残件、不多删）。
+{
+  const SG_TRIM_X_MAP = 72.2 + 53.5;
+  const S07_KEEP_X_MAP = 71.05 + 53.5;
+  const SG_IDS = ['street-kit__blue-gray-brick', 'street-kit__oxblood-stained-timber'];
+  const triBuckets = m => {
+    let keep = 0, drop = 0;
+    for (let t = 0; t < m.indices.length; t += 3) {
+      let allKeep = true, anyDrop = false;
+      for (let k = 0; k < 3; k++) {
+        const vi = m.indices[t + k];
+        const w = transformPoint(m.matrix, [m.positions[vi * 3], m.positions[vi * 3 + 1], m.positions[vi * 3 + 2]]);
+        const x = w[0] + OFF[0];   // 源 GLB 是 v7 世界坐标；产物里 matrix 已含锚平移，用 w[0] 直接比
+        if (x > SG_TRIM_X_MAP) anyDrop = true;
+        if (x > S07_KEEP_X_MAP) allKeep = false;
+      }
+      if (anyDrop) drop++;
+      else if (allKeep) keep++;
+    }
+    return { keep, drop };
+  };
+  const srcBuckets = new Map();
+  for (const m of readGlb(fs.readFileSync(path.join(FB7, 'street-reviewed-lanes.glb'))).meshes) {
+    if (SG_IDS.includes(m.name)) srcBuckets.set(m.name, triBuckets(m));
+  }
+  const prodBuckets = new Map(srcBuckets);
+  prodBuckets.forEach((_, k) => prodBuckets.set(k, { keep: 0, drop: 0 }));
+  for (const f of files) {
+    for (const m of readGlb(fs.readFileSync(f)).meshes) {
+      if (!SG_IDS.includes(m.name)) continue;
+      // 产物里 matrix 含锚平移，顶点已是地图坐标，不再加 OFF
+      const b = prodBuckets.get(m.name);
+      for (let t = 0; t < m.indices.length; t += 3) {
+        let allKeep = true, anyDrop = false;
+        for (let k = 0; k < 3; k++) {
+          const vi = m.indices[t + k];
+          const w = transformPoint(m.matrix, [m.positions[vi * 3], m.positions[vi * 3 + 1], m.positions[vi * 3 + 2]]);
+          if (w[0] > SG_TRIM_X_MAP) anyDrop = true;
+          if (w[0] > S07_KEEP_X_MAP) allKeep = false;
+        }
+        if (anyDrop) b.drop++;
+        else if (allKeep) b.keep++;
+      }
+    }
+  }
+  const leftovers = [], overcut = [];
+  for (const id of SG_IDS) {
+    const s = srcBuckets.get(id), p = prodBuckets.get(id);
+    if (p.drop > 0) leftovers.push(`${id}: ${p.drop} remnant tris left`);
+    if (p.keep !== s.keep) overcut.push(`${id}: keep ${p.keep} != source ${s.keep}`);
+  }
+  ok(`street-kit yard remnants (v7 x > 72.2) absent from product (${leftovers.length})`, leftovers.length === 0, leftovers.join(', '));
+  ok(`street-kit trim did not overcut shop-side tris (keep counts match source: ${SG_IDS.map(id => prodBuckets.get(id).keep + '/' + srcBuckets.get(id).keep).join(', ')})`,
+    overcut.length === 0, overcut.join(', '));
+}
+
 // ================= wave5-fangbangqa（Q2）新增：眼高普查 F-01 / F-03 / F-04 / F-05 / F-06 =================
 // 全部对照源数据（v7 instances / collision sidecar / review-manifest、baseline/layout.json）或另一分区的产物，不拿产物和自己比。
 
