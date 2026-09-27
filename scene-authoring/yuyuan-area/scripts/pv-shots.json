@@ -84,14 +84,14 @@
    "act": "方浜中路 / Fangbang Road",
    "title": "街面行进到山门前（复用①末段）",
    "intent": {
-    "zh": "眼高沿方浜中路走到庙前转角，镜头转向城隍庙山门，完成从街到庙的落地",
-    "en": "Eye-level walk to the corner in front of the temple, turning to face the temple gate: the landing from street to temple"
+    "zh": "眼高沿方浜中路走完庙前最后一段，镜头转向城隍庙山门，完成从街到庙的落地（只取①末段，避开前段街角店屋侧墙）",
+    "en": "Eye-level walk over the last stretch of Fangbang Road in front of the temple, turning to face the temple gate: the landing from street to temple (only the tail of shot 1, skipping the corner shop's blank side wall)"
    },
    "targetId": "temple-shanmen",
    "reuse": {
     "shot": "fangbang-westbound",
     "segment": [
-     0.87,
+     0.93,
      1.0
     ],
     "ease": "linear"
@@ -99,7 +99,7 @@
    "camClass": "ground",
    "move": "dolly-turn",
    "genMode": "travel",
-   "durationS": 6,
+   "durationS": 4,
    "light": "day",
    "transitionIn": "cut",
    "transitionOut": "dissolve 12f",
@@ -219,7 +219,7 @@
    "camClass": "crane",
    "move": "crane-up",
    "genMode": "fixed-push",
-   "durationS": 5,
+   "durationS": 4,
    "light": "day",
    "transitionIn": "cut",
    "transitionOut": "dissolve 12f",
