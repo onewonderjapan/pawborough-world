@@ -1,0 +1,107 @@
+[
+  {
+    "path": "scene-authoring/yuyuan-area/web/",
+    "why": "查看器（server 以 /web 提供的页面与模块）"
+  },
+  {
+    "path": "scene-authoring/yuyuan-area/scripts/server.mjs",
+    "why": "静态服务入口（恢复后 localhost 启动）"
+  },
+  {
+    "path": "scene-authoring/yuyuan-area/package.json",
+    "why": "area 依赖声明"
+  },
+  {
+    "path": "scene-authoring/yuyuan-area/package-lock.json",
+    "why": "area 固定版本锁文件"
+  },
+  {
+    "path": "scene-authoring/yuyuan-area/src/",
+    "why": "area src（web 相对引用如 ../src/walkGround.js，server 以 /src 提供）"
+  },
+  {
+    "path": "src/",
+    "why": "仓库根 DOM-free 模块（server 以 /vendor-src 提供：步行/物理/地面/GLB 解析/巡游）"
+  },
+  {
+    "path": "package.json",
+    "why": "仓库根依赖声明（/vendor 提供的 rapier 等）"
+  },
+  {
+    "path": "package-lock.json",
+    "why": "仓库根固定版本锁文件"
+  },
+  {
+    "path": "docs/PORTABLE-RESTORE.md",
+    "why": "本包操作文档（旧 head 可能未提交；包内 START-HERE 兜底）",
+    "required": false
+  },
+  {
+    "path": "docs/THIRD-PARTY-NOTICES.md",
+    "why": "第三方许可声明（合法分发所需）"
+  },
+  {
+    "path": "PROJECT.json",
+    "why": "项目清单/来源说明"
+  },
+  {
+    "path": "index-v1.html",
+    "why": "本版唯一同源候选入口"
+  },
+  {
+    "path": "docs/CANDIDATE-HANDOFF.zh-CN.md",
+    "why": "W2人工接收与取证说明"
+  },
+  {
+    "path": "tools/candidate-entry/",
+    "why": "候选版本生成与证据绑定工具"
+  },
+  {
+    "path": "tools/portable/",
+    "why": "显式闭包/恢复/短接线工具与本版配置"
+  },
+  {
+    "path": "docs/licenses/",
+    "why": "第三方软件许可副本"
+  },
+  {
+    "path": "scene-authoring/yuyuan-area/docs/CONTROL-PASSES.md",
+    "why": "控制层编码/复导规范"
+  },
+  {
+    "path": "scene-authoring/yuyuan-area/docs/THIRD-PARTY-NOTICES.md",
+    "why": "区域第三方许可边界"
+  },
+  {
+    "path": "scene-authoring/yuyuan-area/baseline/layout.json",
+    "why": "冻结控制层布局源"
+  },
+  {
+    "path": "scene-authoring/yuyuan-area/modules/bazaar-tower-kit/params/",
+    "why": "控制镜头目标高度的参数源"
+  },
+  {
+    "path": "scene-authoring/yuyuan-area/scripts/build-control-shots.py",
+    "why": "当版控制层相机/渲染/校验/联系表复导源码"
+  },
+  {
+    "path": "scene-authoring/yuyuan-area/scripts/control_shot_spec.py",
+    "why": "当版控制层相机/渲染/校验/联系表复导源码"
+  },
+  {
+    "path": "scene-authoring/yuyuan-area/scripts/control-shots-spec.json",
+    "why": "当版控制层相机/渲染/校验/联系表复导源码"
+  },
+  {
+    "path": "scene-authoring/yuyuan-area/scripts/render-control-passes.py",
+    "why": "当版控制层相机/渲染/校验/联系表复导源码"
+  },
+  {
+    "path": "scene-authoring/yuyuan-area/scripts/check-control-passes.py",
+    "why": "当版控制层相机/渲染/校验/联系表复导源码"
+  },
+  {
+    "path": "scene-authoring/yuyuan-area/scripts/control-contact-sheet.py",
+    "why": "当版控制层相机/渲染/校验/联系表复导源码"
+  }
+]

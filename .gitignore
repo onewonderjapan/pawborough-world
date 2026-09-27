@@ -71,3 +71,6 @@ artifacts/world-ten-hour/round-005/delivery/*.zip
 /scene-authoring/**/review/*.jpg
 /scene-authoring/**/renders/*.png
 /scene-authoring/**/renders/*.jpg
+
+# Generated portable fixture journal is retained outside source, never tracked.
+/tests/portable-fixtures-record.jsonl

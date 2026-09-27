@@ -11,12 +11,13 @@
 //                              assemble-stats/scene-areas.glb 等）
 //   R6 collision-zone          collision-<id>.json，id = manifest 分区 id 全集 ∪ {fangbang}
 //                              （main.js collisionZones()：ZONES.all + fangbangReady）
+//   R7 explicit-runtime       --runtime-paths [{path,why}] 附加项；不替换 R1–R6
 // 附属推导（随代码包走，不属于 OUT_DIR 闭包，但恢复探针要用）：
 //   vendor-src                 web/*.js 中 /vendor-src/<path> 导入（仓库根 src/）
 //   moduleMap                  web/index.html importmap 的 three / rapier 路径
 import fsp from 'node:fs/promises';
 import path from 'node:path';
-import { readJson, sha256File } from './lib.mjs';
+import { readJson, sha256File, safeJoin } from './lib.mjs';
 
 const JS_REF = /['"`]\/out\/([A-Za-z0-9][A-Za-z0-9._-]*)['"`]/g;
 const VENDOR_SRC_REF = /\/vendor-src\/([A-Za-z0-9][A-Za-z0-9._/-]*)/g;
@@ -24,7 +25,7 @@ const VENDOR_SRC_REF = /\/vendor-src\/([A-Za-z0-9][A-Za-z0-9._/-]*)/g;
 // 提供这些路径（/src/...），属于恢复包代码白名单必须覆盖的“代码引用闭包”。
 const AREA_REL_REF = /['"](\.\.?\/[A-Za-z0-9._/-]+)['"]/g;
 
-export async function deriveRuntimeClosure({ outDir, zonesManifestPath, webDir }) {
+export async function deriveRuntimeClosure({ outDir, zonesManifestPath, webDir, runtimePaths = [] }) {
   const files = new Map(); // rel -> { bytes, sha256, rules: [] }
   const notes = [];
   const add = (rel, rule) => {
@@ -32,6 +33,16 @@ export async function deriveRuntimeClosure({ outDir, zonesManifestPath, webDir }
     const e = files.get(rel);
     if (!e.rules.includes(rule)) e.rules.push(rule);
   };
+
+  if (!Array.isArray(runtimePaths)) throw new Error('BAD_RUNTIME_PATHS: expected [{path, why}]');
+  const additionalRuntimePaths = runtimePaths.map(e => {
+    if (typeof e?.path !== 'string' || typeof e?.why !== 'string' || !e.why.trim()) throw new Error('BAD_RUNTIME_PATHS: path/why required');
+    const rel = e.path.replace(/\\/g, '/');
+    if (!rel || rel.startsWith('/') || /^[A-Za-z]:/.test(rel) || rel.split('/').includes('..')) throw new Error(`CLOSURE_PATH_ESCAPE: ${e.path}`);
+    safeJoin(outDir, rel);
+    return { path: path.posix.normalize(rel), why: e.why };
+  });
+  for (const e of additionalRuntimePaths) add(e.path, `R7:explicit-runtime:${e.why}`);
 
   const manifest = await readJson(zonesManifestPath);
   if (!manifest || !Array.isArray(manifest.zones)) {
@@ -92,7 +103,7 @@ export async function deriveRuntimeClosure({ outDir, zonesManifestPath, webDir }
       throw new Error(`CLOSURE_PATH_ESCAPE: ${rel}`);
     }
     try {
-      const st = await fsp.stat(abs);
+      const st = await fsp.lstat(abs);
       if (!st.isFile()) throw new Error('not a regular file');
       e.bytes = st.size;
       e.sha256 = await sha256File(abs);
@@ -113,6 +124,7 @@ export async function deriveRuntimeClosure({ outDir, zonesManifestPath, webDir }
       zoneEntryCount: manifest.zones.length,
       capPerZoneBytes: manifest.capPerZoneBytes ?? null,
     },
+    additionalRuntimePaths,
     files: resolved,
     missing,
     vendorSrc: [...vendorSrc].sort(),

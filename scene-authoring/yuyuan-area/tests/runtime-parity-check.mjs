@@ -316,7 +316,9 @@ const A1 = [0, 0, 0], B1 = [1, 0, 0], C1 = [0, 1, 0], D1 = [1, 1, 1];
 function selftest() {
   const results = [];
   const check = (name, cond) => { results.push({ name, pass: !!cond }); console.error(`[selftest] ${cond ? 'PASS' : 'FAIL'} ${name}`); };
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'parity-selftest-'));
+  const retainedRoot = process.env.ART_DIR ? path.resolve(process.env.ART_DIR) : path.join(os.tmpdir(), 'pawborough-parity-retained');
+  fs.mkdirSync(retainedRoot, { recursive: true });
+  const tmp = fs.mkdtempSync(path.join(retainedRoot, 'parity-selftest-'));
   const dA = path.join(tmp, 'a'), dB = path.join(tmp, 'b');
   for (const d of [dA, dB]) fs.mkdirSync(d, { recursive: true });
 
@@ -346,9 +348,10 @@ function selftest() {
   r = runParity(dA, dF, ['zone-pond-2.glb']);
   check('negative: part missing on one side = fail', !r.allPass && r.parts[0].verdict === 'PART_MISSING_IN_ONE_SIDE');
 
-  fs.rmSync(tmp, { recursive: true, force: true });
+  const retentionRecord = path.join(retainedRoot, 'runtime-parity-fixtures.jsonl');
+  fs.appendFileSync(retentionRecord, JSON.stringify({ retainedDir: tmp, retainedAt: new Date().toISOString(), purpose: 'micro parity selftest; final samples retained; earlier deleted worker fixtures cannot be claimed present' }) + '\n', 'utf8');
   const pass = results.every(x => x.pass);
-  console.log(JSON.stringify({ pass, cases: results }));
+  console.log(JSON.stringify({ pass, cases: results, retainedDir: tmp, retentionRecord }));
   process.exit(pass ? 0 : 1);
 }
 

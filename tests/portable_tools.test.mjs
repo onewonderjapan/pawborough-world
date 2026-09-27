@@ -1,6 +1,6 @@
 // portable 交付/恢复工具回归（返修版）：
 //   - R3：不再 fsp.rm 清理——所有 fixture/坏样本保留在盘，路径追加记录到
-//     tests/portable-fixtures-record.jsonl（每次运行新增行，不删旧行）；
+//     ART_DIR/portable-fixtures-record.jsonl 或 os.tmpdir()/pawborough-portable-retained/（持久保留）；
 //   - 闭包推导（R1–R6）与缺件 fail-closed；缺件 fixture 用“构建时就不含目标”构造；
 //   - R2：恶意 tar 负例（../、绝对路径、symlink、hardlink、pax 头）在解包前整体拒绝，
 //     dest 内外都不产生文件，坏归档保留；
@@ -21,11 +21,13 @@ import { assertEmptyDest, copyTree, safeJoin, safeTarName } from '../tools/porta
 import { writeTar, readTar, extractTar, rawTarBlock, TarUnsafeError } from '../tools/portable/tar.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const FIXTURE_RECORD = path.join(root, 'tests', 'portable-fixtures-record.jsonl');
+const FIXTURE_RECORD_DIR = process.env.ART_DIR ? path.resolve(process.env.ART_DIR) : path.join(os.tmpdir(), 'pawborough-portable-retained');
+const FIXTURE_RECORD = path.join(FIXTURE_RECORD_DIR, 'portable-fixtures-record.jsonl');
 
 // R3：保留并登记，绝不删除
 async function retain(dir, purpose) {
   await fsp.mkdir(dir, { recursive: true });
+  await fsp.mkdir(FIXTURE_RECORD_DIR, { recursive: true });
   await fsp.appendFile(FIXTURE_RECORD, JSON.stringify({
     path: dir, purpose, retainedAt: new Date().toISOString(), pid: process.pid,
   }) + '\n', 'utf8');

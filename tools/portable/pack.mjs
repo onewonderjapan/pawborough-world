@@ -11,7 +11,7 @@
 //     --repo <git仓库或worktree> --head <已提交sha> \
 //     --out-dir <OUT_DIR目录> --manifest <OUT_DIR/zones-manifest.json> \
 //     --out <目标包目录，必须不存在> [--source-cache <npm离线缓存目录>] [--tar] \
-//     [--source-paths <白名单json>]
+//     [--source-paths <白名单json>] [--runtime-paths <附加运行文件json>]
 //
 // 其余边界与原版一致：--out 已存在非空即拒绝；闭包缺件 fail-closed；
 // docs/MIGRATION-ASSETS.json 的 pending 块如实记为 pending_lead_archive。
@@ -85,6 +85,8 @@ if (args['source-paths']) {
   whitelist = parsed;
 }
 
+const runtimePaths = args['runtime-paths'] ? await readJson(path.resolve(String(args['runtime-paths']))) : [];
+
 // ---- 1. 运行时闭包（web 源码按 head 状态扫描，文件字节按 OUT_DIR 现盘）------
 const tmp = await fsp.mkdtemp(path.join(os.tmpdir(), 'paw-pack-'));
 try {
@@ -101,7 +103,7 @@ try {
     await fsp.writeFile(safeJoin(webScanDir, path.basename(f)), git(['show', `${commit}:${f}`]), 'utf8');
   }
 
-  const closure = await deriveRuntimeClosure({ outDir, zonesManifestPath: manifestPath, webDir: webScanDir });
+  const closure = await deriveRuntimeClosure({ outDir, zonesManifestPath: manifestPath, webDir: webScanDir, runtimePaths });
   if (closure.missing.length > 0) {
     console.error(`FAIL runtime closure incomplete: ${closure.missing.length} missing in ${outDir}`);
     for (const m of closure.missing) console.error(`  MISSING ${m.path}  (${m.rules.join(', ')})`);
@@ -181,7 +183,8 @@ try {
   await writeJson(safeJoin(pkgOut, 'MANIFEST-runtime.json'), {
     sourceOutDir: outDir,
     sourceZonesManifest: manifestPath,
-    derivationRules: 'see tools/portable/closure.mjs header (R1–R6)',
+    derivationRules: 'see tools/portable/closure.mjs header (R1–R7)',
+    additionalRuntimePaths: closure.additionalRuntimePaths,
     zonesManifest: closure.zonesManifest,
     totals: closure.totals,
     files: closure.files,
@@ -344,7 +347,7 @@ try {
   console.log(`  files=${pkgManifest.totals.files} bytes=${fmtBytes(pkgManifest.totals.bytes)} ` +
     `(code=${codeFiles.length} whitelist files, runtime=${fmtBytes(closure.totals.bytes)})`);
 } finally {
-  await fsp.rm(tmp, { recursive: true, force: true }).catch(() => {});
+  console.log(`retained source-scan work: ${tmp} (no automatic deletion)`);
 }
 
 async function fileShaOrCommit(commit, rel) {
