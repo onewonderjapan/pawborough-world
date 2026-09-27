@@ -526,6 +526,68 @@ ok('route junction at shanmen anchor (<=0.01m)', route.junction && route.junctio
   ok(`hanging parts (sign/lantern) clear of neighbour bodies (${bad7.length} penetrations)`, bad7.length === 0, bad7.slice(0, 4).join(' | '));
 }
 
+// ---------- W8（wave10 S2，来源 wave5 F-10）：街尾巷尾残件已从放置中剔除 ----------
+// 规则（与 assemble.py SG_TRIM 同一规则，map = v7 + 53.5）：street-kit__blue-gray-brick /
+// street-kit__oxblood-stained-timber 两个合并网格里，v7 x > 72.2 的三角形不得进入分区 ——
+// 那是越过最后一栋店 S07-plain-v2 东墙（源 collision base 最大 x = 71.05）伸进东端空地的残件
+// （wave5 F-10：地图 x 126–128、z −0.4…1.5，两段孤立矮砖墙 + 木件）。阈值取源 GLB 的自然顶点空隙
+// （S07 自带木件止于 x 72.0，残件起于 x 72.25）。反向校验：x ≤ 71.05（靠店一侧）的三角形数与源
+// GLB 相等（只删残件、不多删）。
+{
+  const SG_TRIM_X_MAP = 72.2 + 53.5;
+  const S07_KEEP_X_MAP = 71.05 + 53.5;
+  const SG_IDS = ['street-kit__blue-gray-brick', 'street-kit__oxblood-stained-timber'];
+  const triBuckets = m => {
+    let keep = 0, drop = 0;
+    for (let t = 0; t < m.indices.length; t += 3) {
+      let allKeep = true, anyDrop = false;
+      for (let k = 0; k < 3; k++) {
+        const vi = m.indices[t + k];
+        const w = transformPoint(m.matrix, [m.positions[vi * 3], m.positions[vi * 3 + 1], m.positions[vi * 3 + 2]]);
+        const x = w[0] + OFF[0];   // 源 GLB 是 v7 世界坐标；产物里 matrix 已含锚平移，用 w[0] 直接比
+        if (x > SG_TRIM_X_MAP) anyDrop = true;
+        if (x > S07_KEEP_X_MAP) allKeep = false;
+      }
+      if (anyDrop) drop++;
+      else if (allKeep) keep++;
+    }
+    return { keep, drop };
+  };
+  const srcBuckets = new Map();
+  for (const m of readGlb(fs.readFileSync(path.join(FB7, 'street-reviewed-lanes.glb'))).meshes) {
+    if (SG_IDS.includes(m.name)) srcBuckets.set(m.name, triBuckets(m));
+  }
+  const prodBuckets = new Map(srcBuckets);
+  prodBuckets.forEach((_, k) => prodBuckets.set(k, { keep: 0, drop: 0 }));
+  for (const f of files) {
+    for (const m of readGlb(fs.readFileSync(f)).meshes) {
+      if (!SG_IDS.includes(m.name)) continue;
+      // 产物里 matrix 含锚平移，顶点已是地图坐标，不再加 OFF
+      const b = prodBuckets.get(m.name);
+      for (let t = 0; t < m.indices.length; t += 3) {
+        let allKeep = true, anyDrop = false;
+        for (let k = 0; k < 3; k++) {
+          const vi = m.indices[t + k];
+          const w = transformPoint(m.matrix, [m.positions[vi * 3], m.positions[vi * 3 + 1], m.positions[vi * 3 + 2]]);
+          if (w[0] > SG_TRIM_X_MAP) anyDrop = true;
+          if (w[0] > S07_KEEP_X_MAP) allKeep = false;
+        }
+        if (anyDrop) b.drop++;
+        else if (allKeep) b.keep++;
+      }
+    }
+  }
+  const leftovers = [], overcut = [];
+  for (const id of SG_IDS) {
+    const s = srcBuckets.get(id), p = prodBuckets.get(id);
+    if (p.drop > 0) leftovers.push(`${id}: ${p.drop} remnant tris left`);
+    if (p.keep !== s.keep) overcut.push(`${id}: keep ${p.keep} != source ${s.keep}`);
+  }
+  ok(`street-kit yard remnants (v7 x > 72.2) absent from product (${leftovers.length})`, leftovers.length === 0, leftovers.join(', '));
+  ok(`street-kit trim did not overcut shop-side tris (keep counts match source: ${SG_IDS.map(id => prodBuckets.get(id).keep + '/' + srcBuckets.get(id).keep).join(', ')})`,
+    overcut.length === 0, overcut.join(', '));
+}
+
 // ================= wave5-fangbangqa（Q2）新增：眼高普查 F-01 / F-03 / F-04 / F-05 / F-06 =================
 // 全部对照源数据（v7 instances / collision sidecar / review-manifest、baseline/layout.json）或另一分区的产物，不拿产物和自己比。
 
