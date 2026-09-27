@@ -34,6 +34,14 @@ let fails = 0;
 const check = (ok, msg) => { if (!ok) { console.error('FAIL:', msg); fails++; } };
 
 const layout = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline', 'layout.json'), 'utf8'));
+// wave10-streetfix R3：FANGBANG=0 时重建不生成 fangbang-route.json（rebuild-review.sh 跳过
+// export-collision-fangbang），镜头①（方浜中路沿街西行）失去路线依据，生成器也读不到该文件
+// ——与 test_street_band 的「GLB 未构建 SKIP」同一惯例：整测 SKIP（exit 0），默认开关不受影响。
+// 红：out-fb0 轮 npm test 在此 ENOENT 崩溃（artifacts/r3/../SUMMARY 记录）。
+if (process.env.FANGBANG === '0' || !fs.existsSync(path.join(OUT, 'fangbang-route.json'))) {
+  console.log('control-shots-test: SKIP (FANGBANG=0: fangbang-route.json not generated, shot 1 has no route basis)');
+  process.exit(0);
+}
 const fbRoute = JSON.parse(fs.readFileSync(path.join(OUT, 'fangbang-route.json'), 'utf8'));
 
 // 由源重生成一遍：同一冻结输入必须给出同一相机路径（确定性）
