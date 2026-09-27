@@ -526,66 +526,126 @@ ok('route junction at shanmen anchor (<=0.01m)', route.junction && route.junctio
   ok(`hanging parts (sign/lantern) clear of neighbour bodies (${bad7.length} penetrations)`, bad7.length === 0, bad7.slice(0, 4).join(' | '));
 }
 
-// ---------- W8（wave10 S2，来源 wave5 F-10）：街尾巷尾残件已从放置中剔除 ----------
-// 规则（与 assemble.py SG_TRIM 同一规则，map = v7 + 53.5）：street-kit__blue-gray-brick /
-// street-kit__oxblood-stained-timber 两个合并网格里，v7 x > 72.2 的三角形不得进入分区 ——
-// 那是越过最后一栋店 S07-plain-v2 东墙（源 collision base 最大 x = 71.05）伸进东端空地的残件
-// （wave5 F-10：地图 x 126–128、z −0.4…1.5，两段孤立矮砖墙 + 木件）。阈值取源 GLB 的自然顶点空隙
-// （S07 自带木件止于 x 72.0，残件起于 x 72.25）。反向校验：x ≤ 71.05（靠店一侧）的三角形数与源
-// GLB 相等（只删残件、不多删）。
+// ---------- W8（wave10 S2 · R2 按审查必修1改写，来源 wave5 F-10）：街尾残件按整件（连通分量）剔除 ----------
+// 规则（与 assemble.py SG_TRIM 同一规则）：street-kit__blue-gray-brick /
+// street-kit__oxblood-stained-timber 两个合并网格先按「共享顶点位置，容差 1 mm」分成几何连通分量；
+// 任一顶点 v7 x > 72.2 的分量判为巷尾残件，整件不得进入分区。R1 按单个顶点截断把跨线木箱
+// （x 72.076–72.676，各 108 tris）切成薄片、分区 GLB 残留 84 三角形（R2 审查必修1打回）。
+// 目标分量独立从源 GLB 普查（v7 世界坐标，组件按最小 x 排序编号），R2 契约清单：
+//   street-kit__blue-gray-brick 共 5 件（每件 6 tris）：目标 #3（x 70.681–72.557, z 14.462–15.665）
+//     与 #4（x 73.245–74.750, z 16.018–17.015）= wave5 F-10「两段孤立矮砖墙」（到 v7 x 74.7）；
+//   street-kit__oxblood-stained-timber 共 8 件（每件 108 tris）：目标 #4/#5（叠放木箱 x 72.076–72.676）、
+//     #6（薄板 x 72.226–73.126）、#7（木箱 x 72.696–73.296）= F-10「木构件…到 73.3」。
+// 断言：目标分量逐件在产物里 0 三角形；非目标分量逐件三角形数与源相等（覆盖全部非目标件，不止靠店一段）。
+// 三角形按 v7 坐标（产物 x−53.5 / z+17.4，实测锚平移）1 mm 容差逐件匹配。
 {
-  const SG_TRIM_X_MAP = 72.2 + 53.5;
-  const S07_KEEP_X_MAP = 71.05 + 53.5;
+  const SG_TRIM_X = 72.2, SG_EPS = 0.001;
   const SG_IDS = ['street-kit__blue-gray-brick', 'street-kit__oxblood-stained-timber'];
-  const triBuckets = m => {
-    let keep = 0, drop = 0;
-    for (let t = 0; t < m.indices.length; t += 3) {
-      let allKeep = true, anyDrop = false;
-      for (let k = 0; k < 3; k++) {
-        const vi = m.indices[t + k];
-        const w = transformPoint(m.matrix, [m.positions[vi * 3], m.positions[vi * 3 + 1], m.positions[vi * 3 + 2]]);
-        const x = w[0] + OFF[0];   // 源 GLB 是 v7 世界坐标；产物里 matrix 已含锚平移，用 w[0] 直接比
-        if (x > SG_TRIM_X_MAP) anyDrop = true;
-        if (x > S07_KEEP_X_MAP) allKeep = false;
-      }
-      if (anyDrop) drop++;
-      else if (allKeep) keep++;
-    }
-    return { keep, drop };
+  // R2 契约清单（源 GLB 普查结果；若源漂移则此断言失败并提示重新普查）
+  const CONTRACT = {
+    'street-kit__blue-gray-brick': [
+      { i: 3, tris: 6, x: [70.681, 72.557], z: [14.462, 15.665] },
+      { i: 4, tris: 6, x: [73.245, 74.750], z: [16.018, 17.015] },
+    ],
+    'street-kit__oxblood-stained-timber': [
+      { i: 4, tris: 108, x: [72.076, 72.676], z: [17.562, 18.162] },
+      { i: 5, tris: 108, x: [72.076, 72.676], z: [17.562, 18.162] },
+      { i: 6, tris: 108, x: [72.226, 73.126], z: [18.162, 18.862] },
+      { i: 7, tris: 108, x: [72.696, 73.296], z: [17.562, 18.162] },
+    ],
   };
-  const srcBuckets = new Map();
-  for (const m of readGlb(fs.readFileSync(path.join(FB7, 'street-reviewed-lanes.glb'))).meshes) {
-    if (SG_IDS.includes(m.name)) srcBuckets.set(m.name, triBuckets(m));
+  const compsOf = (m, toV7) => {
+    const nv = m.positions.length / 3;
+    const parent = new Int32Array(nv).map((_, i) => i);
+    const find = a => { while (parent[a] !== a) { parent[a] = parent[parent[a]]; a = parent[a]; } return a; };
+    const uni = (a, b) => { a = find(a); b = find(b); if (a !== b) parent[a] = b; };
+    const w = vi => toV7(transformPoint(m.matrix, [m.positions[vi * 3], m.positions[vi * 3 + 1], m.positions[vi * 3 + 2]]));
+    const q = p => `${Math.round(p[0] / SG_EPS)},${Math.round(p[1] / SG_EPS)},${Math.round(p[2] / SG_EPS)}`;
+    const byKey = new Map();
+    for (let v = 0; v < nv; v++) {
+      const key = q(w(v));
+      if (byKey.has(key)) uni(v, byKey.get(key)); else byKey.set(key, v);
+    }
+    for (let t = 0; t < m.indices.length; t += 3) { uni(m.indices[t], m.indices[t + 1]); uni(m.indices[t], m.indices[t + 2]); }
+    const order = [], comps = new Map();
+    for (let t = 0; t < m.indices.length; t += 3) {
+      const r = find(m.indices[t]);
+      let c = comps.get(r);
+      if (!c) {
+        c = { tris: 0, sigs: new Map(), lo: [1e9, 1e9], hi: [-1e9, -1e9] };
+        comps.set(r, c); order.push(c);
+      }
+      c.tris++;
+      const vs = [w(m.indices[t]), w(m.indices[t + 1]), w(m.indices[t + 2])];
+      c.sigs.set(vs.map(q).sort().join('|'), (c.sigs.get(vs.map(q).sort().join('|')) || 0) + 1);
+      for (const p of vs) { c.lo[0] = Math.min(c.lo[0], p[0]); c.hi[0] = Math.max(c.hi[0], p[0]); c.lo[1] = Math.min(c.lo[1], p[2]); c.hi[1] = Math.max(c.hi[1], p[2]); }
+    }
+    order.sort((a, b) => a.lo[0] - b.lo[0]);   // 编号 = 按最小 x 排序
+    return { order, comps };
+  };
+  const srcGlb = readGlb(fs.readFileSync(path.join(FB7, 'street-reviewed-lanes.glb')));
+  const src = new Map();     // name -> { list: [{i, tris, x, z, sigs, target}], bySig }
+  const bySig = new Map();   // 三角形签名 -> {name, i, n}
+  const toV7src = p => p;
+  for (const m of srcGlb.meshes) {
+    if (!SG_IDS.includes(m.name)) continue;
+    const { order, comps } = compsOf(m, toV7src);
+    const list = order.map((c, i) => ({ i, tris: c.tris, x: [c.lo[0], c.hi[0]], z: [c.lo[1], c.hi[1]], sigs: c.sigs, target: c.hi[0] > SG_TRIM_X }));
+    src.set(m.name, list);
+    for (const c of list) for (const [s, n] of c.sigs) bySig.set(s, { name: m.name, i: c.i, n });
   }
-  const prodBuckets = new Map(srcBuckets);
-  prodBuckets.forEach((_, k) => prodBuckets.set(k, { keep: 0, drop: 0 }));
+  // 契约核对：源普查必须仍是 R2 记录的那 6 件目标（源漂移时在此失败，重新普查后再更新契约）
+  const drift = [];
+  for (const [name, want] of Object.entries(CONTRACT)) {
+    const got = (src.get(name) || []).filter(c => c.target);
+    if (got.length !== want.length) { drift.push(`${name}: ${got.length} target comps != ${want.length}`); continue; }
+    got.forEach((c, k) => {
+      const wv = want[k];
+      if (c.i !== wv.i || c.tris !== wv.tris
+        || Math.abs(c.x[0] - wv.x[0]) > 0.002 || Math.abs(c.x[1] - wv.x[1]) > 0.002
+        || Math.abs(c.z[0] - wv.z[0]) > 0.002 || Math.abs(c.z[1] - wv.z[1]) > 0.002)
+        drift.push(`${name}#${c.i}: x[${c.x}] z[${c.z}] ${c.tris}tris != contract #${wv.i} x[${wv.x}] z[${wv.z}] ${wv.tris}tris`);
+    });
+  }
+  ok(`street-kit target components match R2 contract (6 pieces: brick #3/#4, timber #4-#7)`, drift.length === 0, drift.join(' | '));
+  // 产物逐三角形归类（产物坐标 -> v7；±1 bin 邻域兜底量化边界翻转）
+  const prodCount = new Map(), unmatched = [];
+  for (const [name, list] of src) for (const c of list) prodCount.set(`${name}#${c.i}`, 0);
+  const probe = new Map();
   for (const f of files) {
     for (const m of readGlb(fs.readFileSync(f)).meshes) {
-      if (!SG_IDS.includes(m.name)) continue;
-      // 产物里 matrix 含锚平移，顶点已是地图坐标，不再加 OFF
-      const b = prodBuckets.get(m.name);
+      if (!src.has(m.name)) continue;
+      const toV7 = p => [p[0] - OFF[0], p[1], p[2] + 17.4];
       for (let t = 0; t < m.indices.length; t += 3) {
-        let allKeep = true, anyDrop = false;
-        for (let k = 0; k < 3; k++) {
+        const vs = [0, 1, 2].map(k => {
           const vi = m.indices[t + k];
-          const w = transformPoint(m.matrix, [m.positions[vi * 3], m.positions[vi * 3 + 1], m.positions[vi * 3 + 2]]);
-          if (w[0] > SG_TRIM_X_MAP) anyDrop = true;
-          if (w[0] > S07_KEEP_X_MAP) allKeep = false;
+          return toV7(transformPoint(m.matrix, [m.positions[vi * 3], m.positions[vi * 3 + 1], m.positions[vi * 3 + 2]]));
+        });
+        const q = p => `${Math.round(p[0] / SG_EPS)},${Math.round(p[1] / SG_EPS)},${Math.round(p[2] / SG_EPS)}`;
+        const key = vs.map(q).sort().join('|');
+        let hit = bySig.get(key);
+        if (!hit) {
+          outer:
+          for (const a of [-1, 0, 1]) for (const b of [-1, 0, 1]) for (const c of [-1, 0, 1]) {
+            const k2 = vs.map(p => `${Math.round(p[0] / SG_EPS) + a},${Math.round(p[1] / SG_EPS) + b},${Math.round(p[2] / SG_EPS) + c}`).sort().join('|');
+            if (bySig.has(k2)) { hit = bySig.get(k2); break outer; }
+          }
         }
-        if (anyDrop) b.drop++;
-        else if (allKeep) b.keep++;
+        if (!hit) { unmatched.push(`${m.name} tri@x${vs[0][0].toFixed(2)}`); continue; }
+        const id = `${hit.name}#${hit.i}`;
+        prodCount.set(id, prodCount.get(id) + 1);
       }
     }
   }
   const leftovers = [], overcut = [];
-  for (const id of SG_IDS) {
-    const s = srcBuckets.get(id), p = prodBuckets.get(id);
-    if (p.drop > 0) leftovers.push(`${id}: ${p.drop} remnant tris left`);
-    if (p.keep !== s.keep) overcut.push(`${id}: keep ${p.keep} != source ${s.keep}`);
+  for (const [name, list] of src) for (const c of list) {
+    const id = `${name}#${c.i}`, got = prodCount.get(id);
+    if (c.target && got > 0) leftovers.push(`${id}: ${got}/${c.tris} target tris left`);
+    if (!c.target && got !== c.tris) overcut.push(`${id}: ${got} != source ${c.tris}`);
   }
-  ok(`street-kit yard remnants (v7 x > 72.2) absent from product (${leftovers.length})`, leftovers.length === 0, leftovers.join(', '));
-  ok(`street-kit trim did not overcut shop-side tris (keep counts match source: ${SG_IDS.map(id => prodBuckets.get(id).keep + '/' + srcBuckets.get(id).keep).join(', ')})`,
-    overcut.length === 0, overcut.join(', '));
+  ok(`street-kit remnant components (any vert v7 x > 72.2) fully absent (${leftovers.length})`, leftovers.length === 0, leftovers.join(', '));
+  ok(`street-kit non-target components intact piece-by-piece (${overcut.length})`, overcut.length === 0, overcut.join(', '));
+  ok(`street-kit product triangles all matched to source components (${unmatched.length} unmatched)`, unmatched.length === 0, unmatched.slice(0, 4).join(', '));
 }
 
 // ================= wave5-fangbangqa（Q2）新增：眼高普查 F-01 / F-03 / F-04 / F-05 / F-06 =================

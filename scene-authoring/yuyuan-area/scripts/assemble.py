@@ -727,14 +727,19 @@ if os.environ.get('FANGBANG', '1') != '0':
     # 分区拆件归街段件）；锚位姿 = 地图平移 (53.5, -17.4) -> Blender (53.5, +17.4, 0)，与实例同一坐标契约
     sg_objs = import_glb(os.path.join(FB7, 'street-reviewed-lanes.glb'), 'SITE-fangbang')
     sg_keep = [o for o in sg_objs if o.name.startswith('street-kit__')]
-    # wave10-streetfix S2（wave5 F-10）：精修街段东端巷尾残件剔除。street-kit__blue-gray-brick /
-    # street-kit__oxblood-stained-timber 是沿街条墙+木件的合并网格（GLB 本体只读，只在装配时删三角形），
-    # 其东段越过最后一栋店 S07-plain-v2 东墙（源 collision base 最大 x = 71.05）伸进东端空地
-    # （地图 x 126–128、z −0.4…1.5，wave5 F-10 判定「立在空地上像残件」，不属于任何店屋）。
-    # 剔除规则：两节点内 v7 x > 72.2 的三角形整体删除（任一顶点越界即删）。72.2 取两段网格的自然顶点
-    # 空隙：S07 自带木件止于 x 72.0，巷尾残件起于 x 72.25（S07 东墙 +1.15 m）；x ≤ 72.2 的全部保留。
+    # wave10-streetfix S2（wave5 F-10；R2 按审查必修1改为整件剔除）：精修街段东端巷尾残件剔除。
+    # street-kit__blue-gray-brick / street-kit__oxblood-stained-timber 是沿街条墙+木件的合并网格
+    # （GLB 本体只读，只在装配时删三角形），东段伸进最后一栋店 S07-plain-v2 以东的空地
+    # （地图 x 126–128、z −0.4…1.5，wave5 F-10 判定「立在空地上像残件」，不属于任何店屋；
+    # F-10 记录残件范围 brick 到 v7 x 74.7、timber 到 73.3）。
+    # 剔除规则：两网格先按几何连通分量分组（共享顶点位置，容差 1 mm——GLB 在接缝处会复制顶点，
+    # 单看索引会漏连），任一顶点 v7 x > 72.2 的分量判为残件、整件删除。R1 按单个顶点截断把跨线
+    # 木箱（x 72.076–72.676，各 108 三角形）切成薄片、分区 GLB 残留 84 三角形，R2 审查打回；
+    # 目标分量共 6 件（brick 2 件各 6 tris + timber 4 件各 108 tris = 444 tris），
+    # S07 店前杂物（timber x ≤ 71.999 的 4 件）与街面其余部分不动。
     import bmesh
     SG_TRIM_X = 72.2
+    SG_EPS = 0.001
     SG_TRIM_IDS = ('street-kit__blue-gray-brick', 'street-kit__oxblood-stained-timber')
     sg_trimmed = []
     for o in sg_keep:
@@ -743,13 +748,40 @@ if os.environ.get('FANGBANG', '1') != '0':
         mw = o.matrix_world
         bm = bmesh.new()
         bm.from_mesh(o.data)
-        drop = [v for v in bm.verts if (mw @ v.co).x > SG_TRIM_X]
-        bmesh.ops.delete(bm, geom=drop, context='VERTS')
+        bm.verts.ensure_lookup_table()
+        parent = list(range(len(bm.verts)))
+        def sg_find(a):
+            while parent[a] != a:
+                parent[a] = parent[parent[a]]
+                a = parent[a]
+            return a
+        def sg_union(a, b):
+            ra, rb = sg_find(a), sg_find(b)
+            if ra != rb:
+                parent[ra] = rb
+        by_key = {}
+        for i, v in enumerate(bm.verts):
+            w = mw @ v.co
+            key = (round(w.x / SG_EPS), round(w.y / SG_EPS), round(w.z / SG_EPS))
+            if key in by_key:
+                sg_union(i, by_key[key])
+            else:
+                by_key[key] = i
+        for f in bm.faces:
+            base = f.verts[0].index
+            for v in f.verts[1:]:
+                sg_union(base, v.index)
+        bad_roots = {sg_find(v.index) for v in bm.verts if (mw @ v.co).x > SG_TRIM_X}
+        drop_faces = [f for f in bm.faces if sg_find(f.verts[0].index) in bad_roots]
+        bmesh.ops.delete(bm, geom=drop_faces, context='FACES')
+        loose = [v for v in bm.verts if not v.link_faces]
+        if loose:
+            bmesh.ops.delete(bm, geom=loose, context='VERTS')
         bm.to_mesh(o.data)
         bm.free()
         o.data.update()
-        sg_trimmed.append(o.name)
-    print('fangbang street-ground yard remnants trimmed (v7 x >', SG_TRIM_X, '):', sg_trimmed)
+        sg_trimmed.append(f'{o.name}: -{len(drop_faces)} faces')
+    print('fangbang street-ground yard remnants dropped as whole components (any vert v7 x >', SG_TRIM_X, '):', sg_trimmed)
     sg_anchor = bpy.data.objects.new('fangbang-street-ground', None)
     sg_anchor.location = (53.5, 17.4, 0)
     sg_anchor.rotation_euler = (0, 0, 0)
