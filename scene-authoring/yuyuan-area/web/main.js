@@ -15,6 +15,7 @@ import { installBatching } from './batching.js';     // wave4-drawcalls：运行
 import { isRoofNodeSelf } from './roofs.js';        // wave5-rooftoggle：屋面命名判定唯一正本（厅堂/湖心亭/商城大楼/三穗堂/庙区/瓦面/程序化，见 web/roofs.js）
 import { installSharedTextures } from './shared-textures.js';   // wave9-sharedtex：分区件共用外置贴图，同 URL 只下载一次
 import { patchOuterKitProc } from './outer-kit-proc.js';   // wave7-outerkit 方案 C（OUTER_KIT_MODE=proc，对比测量用）：extras outerKit=proc 的网格换运行时 shader；无此类网格时不改任何东西
+import { installLighting } from './lighting.js';   // wave11-lighting：?light=day|dusk|night 预设 + 太阳阴影（?shadow=0 关）+ 渐变天空 + 夜间自发光 / 点光池；参数唯一来源 lighting/presets.json
 
 const app = document.getElementById('app');
 let renderer;
@@ -34,16 +35,12 @@ try {
 window.__viewerStartup?.rendererReady();
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xdfe8ec);
-const hemi = new THREE.HemisphereLight(0xffffff, 0x9a927e, 1.35);
-scene.add(hemi);
-const sun = new THREE.DirectionalLight(0xfff4e0, 1.6);
-sun.position.set(-260, 420, -180);
-scene.add(sun);
-
 const camera = new THREE.PerspectiveCamera(46, innerWidth / innerHeight, 0.5, 4000);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
+let walkModeOf = () => 'orbit';   // 步行控制器装好后改指 walk.mode()（阴影焦点：步行 = 视线前方，轨道 = 注视点）
+// wave11-lighting：灯光 / 阴影 / 天空由 web/lighting.js 按 lighting/presets.json 建（旧的固定 Hemisphere + Directional 是其读不到预设时的回退）
+const lighting = installLighting({ renderer, scene, camera, controls, params: new URLSearchParams(location.search), getWalkMode: () => walkModeOf() });
 
 const ZONES = {
   core: ['garden', 'temple', 'bazaar', 'pond'],
@@ -106,6 +103,7 @@ function prepare(root) {
     }
   });
   patchOuterKitProc(root);
+  lighting.registerRoot(root);   // wave11-lighting：阴影开关、夜间自发光材质登记、点光候选位置
 }
 function countTris(root) {
   let t = 0;
@@ -204,6 +202,7 @@ async function loadZoneFiles(m, ids, { firstPaint = false } = {}) {
       prepare(root);
       const grp = new THREE.Group(); grp.name = 'ZN-' + z; grp.add(root);
       batcher.batchGroup(grp);   // wave4-drawcalls：件内按材质合批（节点树与身份不动）
+      lighting.registerBatches(grp);   // wave11-lighting：合批网格继承阴影开关
       if (!roofsOn) applyRoofs(false, grp);   // wave5-rooftoggle：后加载分区补吃当前屋顶开关状态
       scene.add(grp);
       allRoots.push(grp);
@@ -276,7 +275,8 @@ async function loadZones(m) {
   perf?.markLoaded(); perf?.start();
   hud('分区加载完成');
 }
-fetch('/out/zones-manifest.json').then(r => { if (!r.ok) throw 0; return r.json(); }).then(m => {
+// wave11-lighting：先等灯光预设（本地小 JSON），首帧就是目标预设的光；读不到时回退旧灯光照常加载
+lighting.ready.then(() => fetch('/out/zones-manifest.json')).then(r => { if (!r.ok) throw 0; return r.json(); }).then(m => {
   const skip = new Set([...onDemandIds(m), ...deferredIds(m)]);
   const n = m.zones.filter(z => z.file && !skip.has(z.id)).length;
   document.getElementById('loadmsg').textContent = `按分区加载 ${n} 个 GLB …`;
@@ -384,10 +384,12 @@ document.getElementById('bar').addEventListener('click', (e) => {
   }
   if (b.id === 't-bg') {
     bgOn = !bgOn; b.classList.toggle('active', bgOn);
-    scene.background = bgOn ? new THREE.Color(0xdfe8ec) : new THREE.Color(0x101418);
-    hemi.intensity = bgOn ? 1.35 : 0.7;
+    lighting.setBackdrop(bgOn);   // wave11-lighting：背景开 = 预设天空，关 = 深色底（灯光不变）
   }
 });
+// wave11-lighting：光照预设下拉（同 ?light=，切换后写回地址栏）
+document.getElementById('t-light')?.addEventListener('change', (e) => lighting.set(e.target.value));
+lighting.ready.then(() => { const sel = document.getElementById('t-light'); const st = lighting.state(); if (sel && st.preset) sel.value = st.preset; });
 function restoreHud() {
   const hud = document.getElementById('hud');
   if (hud.dataset.base) { hud.innerHTML = hud.dataset.base; delete hud.dataset.base; }
@@ -576,11 +578,13 @@ const walk = installWalkMode({
     if (distToAabb(f[0], f[2], box) <= 60) ensureZone('fangbang').catch(e => console.error('walk zone activation failed', e));
   },
 });
+walkModeOf = () => walk.mode();
 
 // M4：?perf=1 时挂性能采样（60s 轨道 + 60s 巡游步行帧时采样在 perf.tick 内完成，
 // 顺序必须在 walk.tick 之前 —— CruiseDriver 要先于控制器步进设置输入）
 const perf = setupPerf({ renderer, camera, controls, walk, hud });
-renderer.setAnimationLoop(() => { perf?.tick(); controls.update(); walk?.tick(); renderer.render(scene, camera); drawLabels(); });
+renderer.setAnimationLoop(() => { perf?.tick(); controls.update(); walk?.tick(); lighting.tick(); renderer.render(scene, camera); drawLabels(); });
+window.__renderOnce = () => { lighting.tick(); renderer.render(scene, camera); };   // wave11-lighting：测量钩子（scripts/lighting-perf.mjs 强制渲染计时）
 
 // playwright 钩子
 window.__ready = false;             // 自动加载的分区（首载 + deferred 外围）全部到齐
