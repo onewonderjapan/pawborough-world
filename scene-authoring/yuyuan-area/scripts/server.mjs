@@ -17,13 +17,29 @@ const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.mjs': 'text/javascript',
   '.json': 'application/json', '.glb': 'model/gltf-binary', '.svg': 'image/svg+xml',
   '.png': 'image/png', '.css': 'text/css', '.blend': 'application/octet-stream',
-  '.wasm': 'application/wasm',
+  '.wasm': 'application/wasm', '.md': 'text/plain; charset=utf-8',
   '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.ktx2': 'image/ktx2',
 };
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost');
   let p = url.pathname;
+  const candidateRoutes = {
+    '/candidate': path.join(REPO, 'index-v1.html'),
+    '/candidate/': path.join(REPO, 'index-v1.html'),
+    '/index-v1.html': path.join(REPO, 'index-v1.html'),
+    '/candidate/guide': path.join(REPO, 'docs', 'CANDIDATE-HANDOFF.zh-CN.md'),
+  };
+  if (Object.hasOwn(candidateRoutes, p)) {
+    const file = candidateRoutes[p];
+    fs.readFile(file, (err, buf) => {
+      if (err) { res.writeHead(404); res.end('candidate file unavailable'); return; }
+      res.writeHead(200, { 'content-type': MIME[path.extname(file)] || 'text/plain; charset=utf-8', 'cache-control': 'no-store' });
+      res.end(buf);
+    });
+    return;
+  }
+
   if (p === '/') p = '/web/index.html';
   let base = ROOT;
   if (p.startsWith('/out/')) { base = OUTDIR; p = p.replace(/^\/out/, ''); }

@@ -1,68 +1,46 @@
-<!doctype html><html lang="zh-CN"><meta charset="utf-8">
-<title>Pawborough v1.0 候选包 — 入口</title>
-<style>
- body{font-family:system-ui,sans-serif;margin:2rem;max-width:1200px;color:#222;background:#faf9f7}
- h1{font-size:1.4rem} table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.9rem}
- td,th{border:1px solid #ccc;padding:.35rem .5rem;text-align:left} .num{text-align:right}
- .sha{font-family:monospace;font-size:.8rem} code{font-size:.85em}
- .note{background:#fff3cd;padding:.6rem .9rem;border:1px solid #e0c870;font-size:.9rem}
- .meta{color:#666;font-size:.85rem}
-</style>
-<h1>Pawborough v1.0 候选包 — 入口（index-v1）</h1>
-<p class="note">采用状态：机主 2026-09-19 已裁决采用全部已交付视觉（OWNER_DECISION-20260919.json G1 adopt_all）；各批 RESULT.json 的 ownerAdopted=true，历史批在本页 VERSION.json.adoption 登记。压缩变体<b>默认加载</b>（<code>*.cm.glb</code>），URL 加 <code>?compressed=0</code> 可回原始字节。生成时间 2026-09-19T16:44:13.297Z · head <code>1b9033ce4b7e0530bc44914c6394633ff47165d9</code></p>
-<h2 id="yuyuan-area-entry">豫园区域（全域候选）</h2>
-<p>分区流式加载的全域候选场景（豫园 + 城隍庙 + 豫园商城 + 池带），带固定取景导览机位（<code>tour.json</code>，非行走）。预览服务由区域模块提供，端口<b>不写死</b>：在下面输入实际端口（记住选择），或改用 <code>PORT=… npm run world</code> 指定。</p>
-<p>启动预览：<code>cd scene-authoring/yuyuan-area &amp;&amp; npm run world</code>（默认 <code>OUT_DIR=out-zone</code>、端口 5486，服务会打印实际地址）。</p>
-<p style="display:flex;gap:.5rem;align-items:center">
-  <label for="area-port">预览端口</label>
-  <input id="area-port" type="text" size="8" value="5486" style="font:inherit;padding:.2rem .4rem">
-  <button id="area-open" type="button" style="font:inherit;padding:.3rem .8rem">打开豫园区域预览 →</button>
-  <a id="area-direct" href="http://127.0.0.1:5486/?zone=core">或直接打开 http://127.0.0.1:5486/?zone=core</a>
-</p>
-<script>
-(function () {
-  var input = document.getElementById('area-port');
-  var link = document.getElementById('area-direct');
-  try { var saved = localStorage.getItem('pawborough-area-port'); if (saved) input.value = saved; } catch (e) {}
-  function href() { return 'http://127.0.0.1:' + (input.value.trim() || '5486') + '/?zone=core'; }
-  function refresh() { link.href = href(); link.textContent = '或直接打开 ' + href(); }
-  input.addEventListener('input', refresh);
-  refresh();
-  document.getElementById('area-open').addEventListener('click', function () {
-    try { localStorage.setItem('pawborough-area-port', input.value.trim()); } catch (e) {}
-    location.href = href();
-  });
-})();
-</script>
-<h2>页面（站点相对 URL —— dev/preview/dist 同源直接可用）</h2>
-<table>
-<tr><th>页面</th><th>URL</th><th>数据集</th><th>placedTriangles</th></tr>
-  <tr><td>桥接世界 v4（现役数据集）</td><td><a href="fangbang.html?ds=fangbang-temple-v4"><code>fangbang.html?ds=fangbang-temple-v4</code></a></td><td><code>world/fangbang-temple-v4/</code></td><td class="num">171464</td></tr>
-  <tr><td>桥接世界 v4 + 背面外皮 + 街道道具</td><td><a href="fangbang.html?ds=fangbang-temple-v4&skins=1&props=1"><code>fangbang.html?ds=fangbang-temple-v4&amp;skins=1&amp;props=1</code></a></td><td><code>world/fangbang-temple-v4/</code></td><td class="num">171464</td></tr>
-  <tr><td>桥接世界 v3（街道）</td><td><a href="fangbang.html?ds=fangbang-temple-v3"><code>fangbang.html?ds=fangbang-temple-v3</code></a></td><td><code>world/fangbang-temple-v3/</code></td><td class="num">171464</td></tr>
-  <tr><td>庙轴线 v2（temple-v2）</td><td><a href="temple-v2.html"><code>temple-v2.html</code></a></td><td><code>world/temple-axis-v2/</code></td><td class="num">143832</td></tr>
-  <tr><td>庙轴线 v3（temple-v3）</td><td><a href="temple-v3.html"><code>temple-v3.html</code></a></td><td><code>world/temple-axis-v3/</code></td><td class="num">166046</td></tr>
-  <tr><td>方浜街道（街区行走）</td><td><a href="fangbang.html"><code>fangbang.html</code></a></td><td><code>world/</code></td><td class="num">171464</td></tr>
-  <tr><td>庙入口组（temple-entry）</td><td><a href="temple-entry.html"><code>temple-entry.html</code></a></td><td><code>world/temple-shanmen/</code></td><td class="num">—</td></tr>
-  <tr><td>大殿（dadian）</td><td><a href="dadian.html"><code>dadian.html</code></a></td><td><code>world/temple-dadian/</code></td><td class="num">104142</td></tr>
-</table>
-<h2>数据集（world/ 全集）</h2>
-<table>
-<tr><th>datasetId</th><th>路径</th><th>placedTris</th><th>files / bytes</th><th>机位</th><th>ownerAdopted</th><th>status</th><th>文件摘要(sha256 前16)</th></tr>
-  <tr><td><code>world</code></td><td><code>world/</code></td><td class="num">171464</td><td class="num">562 / 548.0 MB</td><td class="num">11</td><td><b>false</b></td><td>—</td><td class="sha">bfcc057cf2a95b4f…</td></tr>
-  <tr><td><code>world/east-edge</code></td><td><code>world/east-edge/</code></td><td class="num">171464</td><td class="num">26 / 5.7 MB</td><td class="num">17</td><td><b>false</b></td><td>—</td><td class="sha">3da1d43ec175d7de…</td></tr>
-  <tr><td><code>fangbang-temple-v2</code></td><td><code>world/fangbang-temple-v2/</code></td><td class="num">171464</td><td class="num">41 / 41.1 MB</td><td class="num">8</td><td><b>false</b></td><td>delivered_for_lead_review</td><td class="sha">7065487cfe443604…</td></tr>
-  <tr><td><code>fangbang-temple-v3</code></td><td><code>world/fangbang-temple-v3/</code></td><td class="num">171464</td><td class="num">44 / 41.3 MB</td><td class="num">8</td><td><b>false</b></td><td>delivered_for_lead_review</td><td class="sha">2115eb436f2f357c…</td></tr>
-  <tr><td><code>fangbang-temple-v4</code></td><td><code>world/fangbang-temple-v4/</code></td><td class="num">171464</td><td class="num">50 / 42.9 MB</td><td class="num">11</td><td><b>false</b></td><td>delivered_for_lead_review</td><td class="sha">30326dd01cafcaa9…</td></tr>
-  <tr><td><code>fangbang-temple</code></td><td><code>world/fangbang-temple/</code></td><td class="num">171464</td><td class="num">32 / 28.9 MB</td><td class="num">8</td><td><b>false</b></td><td>delivered_for_lead_review</td><td class="sha">c50dff9f63e269df…</td></tr>
-  <tr><td><code>world/laneb</code></td><td><code>world/laneb/</code></td><td class="num">176736</td><td class="num">8 / 26.5 MB</td><td class="num">14</td><td><b>false</b></td><td>—</td><td class="sha">2a4d6546b1a55d61…</td></tr>
-  <tr><td><code>world/street-completion</code></td><td><code>world/street-completion/</code></td><td class="num">171464</td><td class="num">27 / 13.1 MB</td><td class="num">29</td><td><b>false</b></td><td>—</td><td class="sha">71809475c4cfc656…</td></tr>
-  <tr><td><code>street-props</code></td><td><code>world/street-props/</code></td><td class="num">11176</td><td class="num">14 / 0.3 MB</td><td class="num">—</td><td><b>false</b></td><td>delivered_for_lead_review</td><td class="sha">720ea5b02298734b…</td></tr>
-  <tr><td><code>street-sidefaces</code></td><td><code>world/street-sidefaces/</code></td><td class="num">2117</td><td class="num">177 / 135.2 MB</td><td class="num">70</td><td><b>false</b></td><td>delivered_for_lead_review</td><td class="sha">0f696d1ef75eb122…</td></tr>
-  <tr><td><code>temple-axis-v2</code></td><td><code>world/temple-axis-v2/</code></td><td class="num">143832</td><td class="num">35 / 38.7 MB</td><td class="num">10</td><td><b>false</b></td><td>delivered_for_lead_review</td><td class="sha">dab0478836893600…</td></tr>
-  <tr><td><code>temple-axis-v3</code></td><td><code>world/temple-axis-v3/</code></td><td class="num">166046</td><td class="num">37 / 39.0 MB</td><td class="num">10</td><td><b>false</b></td><td>delivered_for_lead_review</td><td class="sha">61807b5e223e169b…</td></tr>
-  <tr><td><code>temple-dadian</code></td><td><code>world/temple-dadian/</code></td><td class="num">104142</td><td class="num">23 / 26.5 MB</td><td class="num">10</td><td><b>false</b></td><td>delivered_for_lead_review</td><td class="sha">8d2f5090fd649f61…</td></tr>
-  <tr><td><code>temple-entry</code></td><td><code>world/temple-entry/</code></td><td class="num">56356</td><td class="num">18 / 16.0 MB</td><td class="num">8</td><td><b>false</b></td><td>delivered_for_lead_review</td><td class="sha">9c078e81fc4ad4ea…</td></tr>
-  <tr><td><code>temple-shanmen</code></td><td><code>world/temple-shanmen/</code></td><td class="num">—</td><td class="num">13 / 8.0 MB</td><td class="num">6</td><td><b>false</b></td><td>delivered_for_lead_review</td><td class="sha">99b561c01ab4ee73…</td></tr>
-</table>
-<p class="meta">完整逐文件 sha256 见 <code>VERSION.json</code>（world/** 562 文件 + building/** 75 文件）。一条命令校验：<code>bash tools/verify_all.sh</code>。机主决策清单见 <code>GATE.md</code>。</p>
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pawborough 世界 v1 · 候选入口</title>
+<style>body{font:16px/1.65 system-ui,sans-serif;color:#292722;background:#faf9f7;max-width:960px;margin:36px auto;padding:0 22px}h1{font-size:26px;line-height:1.3}h2{font-size:19px;margin-top:28px}.note{background:#fff3d3;border:1px solid #dfc680;padding:12px 16px}.actions{display:flex;flex-wrap:wrap;gap:12px;margin:22px 0}.actions a{background:#5a4935;color:white;padding:12px 18px;border-radius:4px;text-decoration:none}table{border-collapse:collapse;width:100%}td,th{text-align:left;border-bottom:1px solid #ddd;padding:9px 12px;vertical-align:top}th{width:150px}code{font-size:13px;overflow-wrap:anywhere}.muted{font-size:14px;color:#68645e}li{margin:8px 0}</style></head><body>
+<h1>Pawborough 世界 v1 · 候选入口</h1>
+<p>豫园、城隍庙、商城、池带，以及已完成的方浜街段和连接道路。</p>
+<p class="note" id="headline">候选状态未核实。当前候选未采用，等待机主确认。</p>
+<div class="actions"><a id="core-link" href="/?zone=core">浏览核心区域</a><a id="street-link" href="/?zone=fangbang&amp;walk=1&amp;at=fangbang-street">从方浜街段开始步行</a></div>
+<p class="muted">查看器与本页使用同一服务器。步行用 WASD，点击画面控制视角；“回到锚点”属于传送，不计入完整行走证据。</p>
+<h2>本版信息</h2>
+<table><tbody>
+<tr><th>候选标识</th><td id="candidate">未核实</td></tr>
+<tr><th>构建源码 HEAD</th><td><code id="build-head">未核实</code></td></tr>
+<tr><th>打包 HEAD</th><td><code id="package-head">未核实</code></td></tr>
+<tr><th>技术状态</th><td id="technical">未核实</td></tr>
+<tr><th>核心视觉首载</th><td id="budget">未核实</td></tr>
+<tr><th>统计口径</th><td id="scope">GLB + 唯一外置贴图；不含 JS/WASM、步行原始物理 GLB 下载、后台外围和按需方浜。</td></tr>
+<tr><th>完整往返</th><td id="walk">未核实</td></tr>
+<tr><th>控制层</th><td id="control">未核实</td></tr>
+<tr><th>恢复验证</th><td id="restore">未核实</td></tr>
+<tr><th>采用 / S3归档</th><td>待机主确认 / pending</td></tr>
+</tbody></table>
+<p id="topology">实际路线：进入庙内后院后，经原山门返回，再沿现有道路到商城和豫园入口。</p>
+<h2>待机主项</h2>
+<ol id="owner-tasks"><li>W2 真 GPU 性能取证，并亲手完成一次完整正向与返程。</li><li>确认湖心亭、九曲桥、大假山的采用。</li><li>登录 S3（当前 SSO 过期），确认本版归档回执。</li></ol>
+<p><a href="/candidate/guide">启动、操作与人工取证说明</a></p>
+<p class="muted">管理正本在 W2。本页是当前执行交付包；9/19 的历史采用、旧桥接版本和旧端口不代表本版。</p>
+<script type="module">
+const set=(id,value)=>{document.getElementById(id).textContent=String(value)};
+const status=r=>({passed:'已核实',pending:'待补齐',failed:'未通过',unverified:'未核实'}[r?.status]||'未核实');
+fetch('/out/candidate-version.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('本版状态文件尚未生成');return r.json()}).then(async s=>{
+ if(s.schemaVersion!==1||s.projectId!=='pawborough-world'||typeof s.candidateId!=='string')throw Error('本版状态格式未核实');
+ const current=await fetch('/out/zones-manifest.json',{cache:'no-store'});if(!current.ok)throw Error('当前分区清单尚未核实');
+ const digest=await crypto.subtle.digest('SHA-256',await current.arrayBuffer());
+ const manifestMatches=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('')===s.manifestSha256;
+ const verified=manifestMatches&&s.technicalStatus==='passed'&&/^[a-f0-9]{40}$/.test(s.sourceBuildHead||'')&&/^[a-f0-9]{40}$/.test(s.packageHead||'')&&/^[a-f0-9]{64}$/.test(s.manifestSha256||'')&&s.budget?.status==='passed'&&['bytes','glbBytes','uniqueTextureBytes'].every(k=>Number.isSafeInteger(s.budget[k]))&&['technical','walk','control','restore'].every(k=>s.reviews?.[k]?.status==='passed');
+ set('headline',!manifestMatches?'候选状态未核实：清单与版本文件不匹配。':s.fixture?'验证样例：只用于入口接线，不是最终新 HEAD 构建或采用证明。':verified?'技术就绪候选，等待机主确认采用。':'候选证据待补齐，状态未核实。');
+ set('candidate',s.candidateId);set('build-head',s.sourceBuildHead||'未核实');set('package-head',s.packageHead||'未核实');
+ set('technical',verified?'四类技术审查已核实；人工确认仍待完成':'未核实');
+ if(manifestMatches&&s.budget?.status==='passed'&&['bytes','glbBytes','uniqueTextureBytes'].every(k=>Number.isSafeInteger(s.budget[k])))set('budget',`${s.budget.bytes.toLocaleString('zh-CN')} B（GLB ${s.budget.glbBytes.toLocaleString('zh-CN')} B + 唯一贴图 ${s.budget.uniqueTextureBytes.toLocaleString('zh-CN')} B）`);
+ set('scope',s.budget?.scope||document.getElementById('scope').textContent);
+ for(const k of ['walk','control','restore'])set(k,`${manifestMatches?status(s.reviews?.[k]):'未核实'}${s.reviews?.[k]?.reason?' · '+s.reviews[k].reason:''}`);
+ if(typeof s.walkTopology==='string')set('topology','实际路线：'+s.walkTopology);
+ if(Array.isArray(s.ownerTasks)&&s.ownerTasks.every(v=>typeof v==='string')){const list=document.getElementById('owner-tasks');list.replaceChildren();for(const t of s.ownerTasks){const li=document.createElement('li');li.textContent=t;list.appendChild(li)}}
+}).catch(e=>set('headline',`候选状态未核实：${e.message}。当前候选未采用。`));
+</script></body></html>
