@@ -5,20 +5,24 @@ beauty / depth / normal / segmentation，加每帧相机内外参与分割 LUT�
 
 ## 产物
 
-`3 镜头 × 24 帧 × 4 通道 + cameras + LUT`，落在工单包 `artifacts/control/`（**不进仓库**；仓库只进脚本与本文档）：
+`11 镜头 × 24 帧 × 4 通道 + cameras + LUT`（①–③ 为初始推导镜头，④–⑪ 为 wave5-shots2 经
+`scripts/control-shots-spec.json` 增补；早先文档只写 3 镜头，已按当前实现更新），落在工单包
+`artifacts/control/`（**不进仓库**；仓库只进脚本与本文档）：
 
 ```
 artifacts/control/
-├── segmentation-lut.json        # layout id ↔ RGB 双向映射
+├── segmentation-lut.json        # layout id（含 175 个 G1 稳定 facade id 与伪 id）↔ RGB 双向映射
 ├── timings.json                 # 每帧各通道渲染耗时
 ├── fangbang-westbound/          # ① 方浜中路沿街西行，停步山门前 6 m，末 6 帧转向山门
-├── habao-plaza-pan/             # ② 华宝楼前中心广场沿弧线环视（R1；round 0 是定点 360° 环视）
+├── habao-plaza-pan/             # ② 华宝楼前中心广场沿弧线环视（BAZAAR_TOWERS=1 为当前默认变体，注视点随目标高上移）
 │   ├── beauty/frame-000.png     # 参考/构图参考（Workbench，默认 AA）
 │   ├── depth/frame-000.png      # 16-bit 灰度
 │   ├── normal/frame-000.png     # 8-bit RGB
 │   ├── segmentation/frame-000.png
 │   └── cameras/frame-000.json   # 每帧内外参
-└── jiuqu-to-huxinting/          # ③ 九曲桥上走向湖心亭（R1：升高机位、注视锁定湖心亭）
+├── jiuqu-to-huxinting/          # ③ 九曲桥上走向湖心亭（R1：升高机位、注视高度 3.8→6.3 m 线性抬升）
+└── …（④–⑪ 见下文 wave5-shots2 一节：garden-entry-sansuitang / dajiashan-across-pond / garden-corridor-walk /
+    temple-axis-push / temple-dadian-rise / bazaar-plaza-orbit / huxinting-across-pond / fangbang-eastbound）
 ```
 
 R1 重出的 ②③ 在 `artifacts/r1/control/`（默认程序化体块）与 `artifacts/r1/control-towers/`
@@ -33,7 +37,7 @@ R1 重出的 ②③ 在 `artifacts/r1/control/`（默认程序化体块）与 `a
 前置：先过公共验收全流程重建（`OUT_DIR=out-zone … bash scripts/rebuild-review.sh`），产物齐全。
 
 ```bash
-# 1) 推导三镜头相机路径 -> $OUT_DIR/control-shots.json（python3，无需 Blender）
+# 1) 推导 11 镜头相机路径 -> $OUT_DIR/control-shots.json（python3，无需 Blender；①–③ 代码推导，④–⑪ 读 control-shots-spec.json）
 python3 scripts/build-control-shots.py --out-zone out-zone
 
 # 2) 渲染四通道（Blender CPU，-t 4；输出目录在仓库外，图不进仓库）
@@ -214,3 +218,19 @@ spec 里的点全部写成「相对冻结源对象」：layout 对象形心 / �
 - shoprow-p167 与山门重叠由方浜 QA 工单按规则移除（主控定），两包合并后重出①⑪。
 - ⑥ GOAL 写「复廊 / 曲廊」，但园廊套件（柱 ±1.0 m，中线净距 0.88 m）与复廊（单侧廊道净距 0.75 m）都过不了净距 ≥ 1.0 m，
   所以用宽 2.6 m 的积玉水廊；其南段净段只有约 7 m，右侧（东）是园外街区，厅堂主要在左侧与前方。
+
+## goal-control（2026-09-27，G1/G2 合并后当版重出）
+
+G1（facadeBay 稳定身份）改了 segmentation 标签集合、G2（方浜跨区补面）加了实际几何，旧 PNG 无法证明是当前源的
+渲染 → 11 镜头全部按当版默认链产物（`out-goal-current/scene-areas.glb`，含 temple-4 / pond-2 两个补面）重出，
+相机文件仍由 `build-control-shots.py` 从冻结源重算（与 wave5 逐帧比对：眼位全部一致；仅②注视高度随
+`BAZAAR_TOWERS=1`（2026-09-26 起默认）目标高 24.3 m 上移，与 R1 文档「注视点随目标高上移」一致，无审美改动）。
+
+分割归属新增两条（`render-control-passes.py`）：
+
+- 175 个 G1 稳定 facade id（`bazaar|facade-<parentShort>-<base36>|facadeBay|L1` 管道名第 2 段）直接进 LUT，
+  与 layout `facadeIdentity.legacyAliases` 一一对应；
+- G2 两个主控批准补面按精确显式映射归属，不允许静默归为 unassigned：
+  - `temple-ground__paving-frontage-passage` → id `shanmen-passage-floor`（运行时分件 zone-temple-4.glb）；
+  - `pond|east-landing-access-apron|paving|L1` → id `east-landing-access-apron`（管道名规则，运行时分件 zone-pond-2.glb）。
+  LUT 的 `patchFaces` 块记录两者的 module / inference / runtimePart 溯源；映射只匹配这两个确切对象名，无任何泛化。
