@@ -3,7 +3,7 @@ import os,sys,json
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'.python-deps'))
 from shapely.geometry import Polygon,LineString
-from shapely.ops import unary_union
+from shapely.ops import unary_union,polygonize
 R=Path(__file__).resolve().parents[1]; O=R/os.environ.get('OUT_DIR','out')
 O.mkdir(exist_ok=True,parents=True)
 BASE=R/os.environ.get('BASE_LAYOUT','baseline/layout.json')
@@ -71,6 +71,51 @@ for o in d['objects']:
  o['geometry']['surfaceFootprints']=[list(p.exterior.coords) for p in pieces]
  o['geometry']['surfaceFootprint']=list(pieces[0].exterior.coords)
  roadclip.append({'id':o['id'],'name':o.get('name'),'removedM2':round(g.area-sum(p.area for p in pieces),1),'pieces':len(pieces)})
+# wave10-streetfix R2（审查必修2）：ribbon 渲染的道路纳入同一裁剪规则。渲染端对没有 surfaceFootprint(s)
+# 的道路按 ribbon(polyline,width) 画路面（src/lib.mjs：中心差分方向、平头端 quad strip），R1 的裁剪只
+# 覆盖 explicit paving 已生成 surfaceFootprint 的道路，远场两条路仍压楼（road-33683439 8.271 m²、
+# road-444342365 21.493 m²，R2 审查按渲染端几何只读复算）。这里用与渲染端完全相同的几何复算 ribbon
+# 路面多边形：与建筑接地足迹重叠 > 0.05 m² 的改写成裁后的 surfaceFootprints（渲染端自动改为逐块画），
+# surfaceFootprint 保留最大块给旧消费方；无重叠的保持 ribbon 不动，其余道路的渲染不受影响。
+# 裁块若带孔（建筑完全落在路面内）拆成无孔多边形（每孔到外环最近顶点对连桥缝后 polygonize），
+# 不许只存 exterior 把孔填回去。
+def split_holes(p):
+ if not p.interiors:return [p]
+ ext=list(p.exterior.coords)[:-1]
+ lines=[LineString(p.exterior.coords)]+[LineString(r.coords) for r in p.interiors]
+ for h in p.interiors:
+  best=None
+  for hp in list(h.coords)[:-1]:
+   for ep in ext:
+    d=(hp[0]-ep[0])**2+(hp[1]-ep[1])**2
+    if best is None or d<best[0]:best=(d,hp,ep)
+  if best[0]>1e-12:lines.append(LineString([best[1],best[2]]))
+ return [f for f in polygonize(unary_union(lines)) if f.area>1e-9 and f.intersection(p).area>0.99*f.area]
+ribbonclip=[]
+for o in d['objects']:
+ if o['kind']!='road' or o.get('skipRender') or 'surfaceFootprint' in o['geometry'] or 'surfaceFootprints' in o['geometry']:continue
+ line=o['geometry'].get('polyline')
+ if not line or len(line)<2:continue
+ n=len(line);w=o['geometry']['width'];left=[];right=[]
+ for i in range(n):
+  a=line[max(0,i-1)];b=line[min(n-1,i+1)]
+  dx,dz=b[0]-a[0],b[1]-a[1];L=(dx*dx+dz*dz)**.5 or 1
+  nx,nz=-dz/L*w/2,dx/L*w/2
+  left.append([line[i][0]+nx,line[i][1]+nz]);right.append([line[i][0]-nx,line[i][1]-nz])
+ g=Polygon(left+right[::-1]).buffer(0)
+ if g.area<=0.05 or g.intersection(bldcuts).area<=0.05:continue
+ rem=g.difference(bldcuts)
+ flats=[]
+ for p in (rem.geoms if hasattr(rem,'geoms') else [rem]):
+  if p.area>0.05:flats.extend(f for f in split_holes(p) if f.area>0.05)
+ if not flats:
+  o['skipRender']=True
+  ribbonclip.append({'id':o['id'],'name':o.get('name'),'removedM2':round(g.area,1),'note':'ribbon surface fully inside building footprints; not rendered'})
+  continue
+ flats.sort(key=lambda f:-f.area)
+ o['geometry']['surfaceFootprints']=[list(f.exterior.coords) for f in flats]
+ o['geometry']['surfaceFootprint']=list(flats[0].exterior.coords)
+ ribbonclip.append({'id':o['id'],'name':o.get('name'),'removedM2':round(g.area-sum(f.area for f in flats),2),'pieces':len(flats),'source':'ribbon'})
 # Preserve all shop units; slide the one blocking the mapped center-square approach
 # 1.6m along its row. Adjacent roof envelopes remain separated (>10.2m module span).
 import math
@@ -82,6 +127,6 @@ for o in d['objects']:
  if o['id']==inst['id']:o['geometry']['position']=new;o['reviewRepair']='1.6m along-row shift to clear mapped center-square approach'
 for lab in d['labels']:
  if lab.get('id')==inst['id'] and 'position' in lab:lab['position']=new
-d['reviewRepair']={'sourceSemantics':fixes,'passages':passages,'roadClip':roadclip,'sourceFootprintsPreserved':True}
+d['reviewRepair']={'sourceSemantics':fixes,'passages':passages,'roadClip':roadclip,'ribbonRoadClip':ribbonclip,'sourceFootprintsPreserved':True}
 (O/'layout.json').write_text(json.dumps(d,ensure_ascii=False,indent=1)+'\n',encoding='utf-8')
 print(json.dumps(d['reviewRepair'],ensure_ascii=False))

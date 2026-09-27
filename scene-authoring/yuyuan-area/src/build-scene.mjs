@@ -157,7 +157,9 @@ const FANGBANG_ROAD_SINK = (() => {
   for (const o of layout.objects) {
     if (o.kind !== 'road' || (FANGBANG_ROAD_CLIP && FANGBANG_ROAD_CLIP[o.id])) continue;
     const g = o.geometry || {};
-    const hit = g.surfaceFootprint ? densify(g.surfaceFootprint, true).some(([x, z]) => dist(x, z) <= 6)
+    // wave10-streetfix R2：裁块路面读 surfaceFootprints 全部块（可多块），单块字段只作回退
+    const sfs = g.surfaceFootprints || (g.surfaceFootprint ? [g.surfaceFootprint] : null);
+    const hit = sfs ? sfs.some(s => densify(s, true).some(([x, z]) => dist(x, z) <= 6))
       : (g.polyline && g.polyline.length > 1 ? densify(g.polyline, false).some(([x, z]) => dist(x, z) <= 6 + (g.width || 0) / 2) : false);
     if (hit) ids.add(o.id);
   }

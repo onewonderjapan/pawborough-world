@@ -14,7 +14,11 @@ surfaces=[];obstacles=[]
 for o in d['objects']:
  g=o['geometry']
  if o.get('skipRender'):continue
- if o['kind']=='road' and g.get('polyline'):surfaces.append(Polygon(g['surfaceFootprint']) if g.get('surfaceFootprint') else LineString(g['polyline']).buffer(g['width']/2,cap_style=2,join_style=2))
+ if o['kind']=='road' and g.get('polyline'):
+  # wave10-streetfix R2：裁块路面读 surfaceFootprints 取并集（可多块），单块字段只作回退
+  fps=g.get('surfaceFootprints') or ([g['surfaceFootprint']] if g.get('surfaceFootprint') else [])
+  if fps:surfaces.extend(Polygon(f).buffer(0) for f in fps)
+  else:surfaces.append(LineString(g['polyline']).buffer(g['width']/2,cap_style=2,join_style=2))
  if o['kind']=='plaza':surfaces.append(Polygon(g['footprint']).buffer(0))
  if o['kind'] in ['outerBuilding','bazaarBlock','hall','tower','pavilion','xuan','waterside','watersideGallery','stage'] and g.get('footprint'):
   obstacles.extend(Polygon(fp).buffer(0) for fp in g.get('groundFootprints',[g['footprint']]))
