@@ -121,7 +121,7 @@ for (const o of Q.STEPS) {
   ok(`池水从上方露出 ≥ 88%（${(100 * visible / inside).toFixed(1)}%；驳岸压顶只占沿边一圈）`, visible / inside >= 0.88);
   // 除桥墩、湖心亭桩与驳岸池壁外没有三角穿过水面
   const toTris = (nodes) => { const out = []; for (const n of nodes) { const { P, T } = n; for (let t = 0; t < T.length; t += 3) { const A = [P[T[t] * 3], P[T[t] * 3 + 1], P[T[t] * 3 + 2]], B = [P[T[t + 1] * 3], P[T[t + 1] * 3 + 1], P[T[t + 1] * 3 + 2]], C = [P[T[t + 2] * 3], P[T[t + 2] * 3 + 1], P[T[t + 2] * 3 + 2]]; const mn = [0, 1, 2].map((c) => Math.min(A[c], B[c], C[c])), mx = [0, 1, 2].map((c) => Math.max(A[c], B[c], C[c])); if (mx[0] < REGION[0] || mn[0] > REGION[2] || mx[2] < REGION[1] || mn[2] > REGION[3]) continue; out.push({ A, B, C, node: n.file + ' ' + n.id, min: mn, max: mx }); } } return out; };
-  const TO = toTris(W.nodes.filter((n) => !isWater(n) && !isStructure(n) && !isRevet(n))).filter((t) => t.min[1] < Q.WATER_Y && t.max[1] > Q.WATER_Y);
+  const TO = toTris(W.nodes.filter((n) => !isWater(n) && !isStructure(n) && !isRevet(n) && n.kind !== 'bridgeHead')).filter((t) => t.min[1] < Q.WATER_Y && t.max[1] > Q.WATER_Y);
   const x = crossIntersect(toTris(water), TO, 1.0);
   ok(`除桥墩 / 湖心亭桩 / 驳岸池壁外无三角穿过水面（${x.crossings}）`, x.crossings === 0, x.pairs.slice(0, 3).map((p) => p.pair).join('; '));
   // 桥端接缝（09-27 Sol 岸端修复）：桥端 ±0.6 m、横向 -1.1..1.1 顶面剖面无缺口、无错台
@@ -149,7 +149,13 @@ for (const o of Q.STEPS) {
   ok(`池带程序化件 ${flat.length} 节点：绕序 / 法线不一致 ${mism}、反向闭合块 / 朝内面 ${inv}`, mism === 0 && inv === 0);
   // 本单不动的站点模块：九曲桥 GLB、湖心亭模块（sha 与基线一致）
   const sha = (f) => crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex');
-  ok('九曲桥站点模块未动（staged/site-modules/jiuqu-bridge.glb sha256 61499669…）', sha(path.join(Q.ROOT, 'staged', 'site-modules', 'jiuqu-bridge.glb')).startsWith('61499669ecf00f4f'));
+  // wave10 第二轮起桥 GLB 由生成器重出（主控批准）：staged 副本须等于 docs/MIGRATION-ASSETS.json 登记的最新 sha（待归档段优先）
+  const mig = JSON.parse(fs.readFileSync(path.join(Q.ROOT, '..', '..', 'docs', 'MIGRATION-ASSETS.json'), 'utf8'));
+  const rel = 'scene-authoring/yuyuan-area/staged/site-modules/jiuqu-bridge.glb';
+  const pend = (mig.wave10PondqaPendingLeadArchive?.changedStagedAssets || []).find((f) => f.path === rel);
+  const reg = pend || mig.files.find((f) => f.path === rel);
+  const cur = sha(path.join(Q.ROOT, 'staged', 'site-modules', 'jiuqu-bridge.glb'));
+  ok(`九曲桥站点模块 = MIGRATION-ASSETS 登记（${pend ? 'wave10 待归档段' : 'files[]'} ${reg?.sha256?.slice(0, 12)}，实际 ${cur.slice(0, 12)}）`, reg && cur === reg.sha256);
 }
 
 // ---------------- 5) 驳岸自身：压顶高、落地、不碰桥与湖心亭 ----------------
@@ -190,6 +196,195 @@ for (const o of Q.STEPS) {
     const bad = xb.pairs.filter((p) => p.max[1] !== null && p.max[1] > 0.37);
     ok(`驳岸只与桥墩柱相交、不碰桥面 / 栏杆（交线 ${xb.lenM} m，桥面以上 ${bad.length} 组）`, bad.length === 0);
   }
+}
+
+// ================= wave10-pondqa 第二轮（主控 2026-09-27 定 #1 #4 #5 #6 #8 #9 与东接驳垫）=================
+const MAN = JSON.parse(fs.readFileSync(path.join(OUT, 'zones-manifest.json'), 'utf8'));
+const toTris = (nodes) => { const out = []; for (const n of nodes) { const { P, T } = n; for (let t = 0; t < T.length; t += 3) { const A = [P[T[t] * 3], P[T[t] * 3 + 1], P[T[t] * 3 + 2]], B = [P[T[t + 1] * 3], P[T[t + 1] * 3 + 1], P[T[t + 1] * 3 + 2]], C = [P[T[t + 2] * 3], P[T[t + 2] * 3 + 1], P[T[t + 2] * 3 + 2]]; out.push({ A, B, C, node: n.name, min: [0, 1, 2].map((c) => Math.min(A[c], B[c], C[c])), max: [0, 1, 2].map((c) => Math.max(A[c], B[c], C[c])) }); } } return out; };
+const BR_HALF = (Q.BRIDGE.width ?? 2.4) / 2, EDGE_IN = 0.19;
+// 桥栏线 = 桥面边线内缩 0.19（望柱心线），斜接按本侧法线（layout 重算，不读桥 GLB）
+function mitreHalf(i, side, half) {
+  const pts = Q.BRIDGE_LINE, n = pts.length;
+  const nr = (k) => { const dx = pts[k + 1][0] - pts[k][0], dz = pts[k + 1][1] - pts[k][1], l = Math.hypot(dx, dz); return [-dz / l, dx / l]; };
+  if (i <= 0) { const q = nr(0); return [pts[0][0] + q[0] * side * half, pts[0][1] + q[1] * side * half]; }
+  if (i >= n - 1) { const q = nr(n - 2); return [pts[n - 1][0] + q[0] * side * half, pts[n - 1][1] + q[1] * side * half]; }
+  const n0 = nr(i - 1), n1 = nr(i);
+  let cx = (n0[0] + n1[0]) * side, cz = (n0[1] + n1[1]) * side, cl = Math.hypot(cx, cz);
+  if (cl < 1e-6) { cx = n1[0] * side; cz = n1[1] * side; cl = 1; }
+  cx /= cl; cz /= cl;
+  const m = Math.min(half / Math.max((cx * n1[0] + cz * n1[1]) * side, 0.35), 1.9);
+  return [pts[i][0] + cx * m, pts[i][1] + cz * m];
+}
+// 湖心亭抱厦开口（layout 重算：footprint 面积形心 + 最长边主轴，+v 临桥；开口 = 抱厦中心线 ±0.75，湖心亭一侧）
+const HTF = (() => {
+  const fp = Q.HT_POLY, n = fp.length; let a2 = 0, cx = 0, cz = 0;
+  for (let k = 0; k < n; k++) { const p = fp[k], q = fp[(k + 1) % n], c = p[0] * q[1] - q[0] * p[1]; a2 += c; cx += (p[0] + q[0]) * c; cz += (p[1] + q[1]) * c; }
+  cx /= 3 * a2; cz /= 3 * a2;
+  let best = null; for (let k = 0; k < n; k++) { const p = fp[k], q = fp[(k + 1) % n], L = Math.hypot(q[0] - p[0], q[1] - p[1]); if (!best || L > best[0]) best = [L, p, q]; }
+  let ux = (best[2][0] - best[1][0]) / best[0], uz = (best[2][1] - best[1][1]) / best[0]; if (ux < 0) { ux = -ux; uz = -uz; }
+  return { cx, cz, ux, uz, vx: uz, vz: -ux };
+})();
+const htLocal = (x, z) => [(x - HTF.cx) * HTF.ux + (z - HTF.cz) * HTF.uz, (x - HTF.cx) * HTF.vx + (z - HTF.cz) * HTF.vz];
+const bridgeNodes = W.nodes.filter(isBridge);
+const BG = new Q.VGrid(bridgeNodes, { cell: 0.5 });
+
+// ---------------- 6) #5 栏杆不透光：板脚 / 板柱之间没有缝，且整排栏杆在桥面上 ----------------
+{
+  const pts = Q.BRIDGE_LINE;
+  let samples = 0, see = 0, openSee = 0, openSamples = 0; const where = [];
+  const heights = [0.02, 0.4, 0.75];
+  for (let i = 0; i + 1 < pts.length; i++) for (const side of [-1, 1]) {
+    const a = mitreHalf(i, side, BR_HALF - EDGE_IN), b = mitreHalf(i + 1, side, BR_HALF - EDGE_IN);
+    const el = Math.hypot(b[0] - a[0], b[1] - a[1]); if (el < 0.3) continue;
+    const ed = [(b[0] - a[0]) / el, (b[1] - a[1]) / el];
+    const nrm = [-ed[1], ed[0]];
+    for (let t = 0.12; t <= el - 0.12; t += 0.005) {
+      const p = [a[0] + ed[0] * t, a[1] + ed[1] * t];
+      const [lu, lv] = htLocal(p[0], p[1]);
+      const cNear = Q.distToPolyline(p, pts).at;
+      const htSide = (p[0] - cNear[0]) * (HTF.cx - cNear[0]) + (p[1] - cNear[1]) * (HTF.cz - cNear[1]) > 0;   // 栏杆线在桥中线的湖心亭一侧
+      // 开口 = 抱厦中心线 ±0.75（两侧望柱心）：|u| < 0.5 必须通透；0.5–0.70 是望柱半弦过渡带，两项都不计
+      const nearOpen = htSide && Math.abs(lu) < 0.70 && lv > 0 && lv < 9;
+      const inOpen = nearOpen && Math.abs(lu) < 0.5;
+      for (const h of heights) {
+        const y = Q.DECK_Y + h;
+        // 横穿栏杆线的水平线段：从桥面一侧 0.30 m（在望柱 0.22 方柱外）到外侧；板脚高度只到 +0.06（不碰桥面边石）
+        const out = h < 0.07 ? 0.06 : 0.30;
+        const A = [p[0] - nrm[0] * 0.30 * side, y, p[1] - nrm[1] * 0.30 * side], B = [p[0] + nrm[0] * out * side, y, p[1] + nrm[1] * out * side];
+        const hit = Q.segHit(BG.near(A[0], A[2], B[0], B[2]).filter((tr) => tr.y0 <= y && tr.y1 >= y), A, B);
+        if (inOpen) { openSamples++; if (!hit) openSee++; continue; }
+        if (nearOpen) continue;
+        samples++;
+        if (!hit) { see++; if (where.length < 4) where.push(`span${i}/${side} t${t.toFixed(2)} h${h}`); }
+      }
+    }
+  }
+  ok(`#5 栏杆线（桥面边内缩 0.19，layout 重算）不透光：板脚 +0.02 / 板中 +0.40 / 扶手下 +0.75 三个高度每 5 mm 采样 ${samples}，透光 ${see}`, see === 0, where.join('; '));
+  ok(`#1 抱厦正对处栏杆开口：开口内采样 ${openSamples}，通透 ${openSee}（≥ 95%）`, openSamples > 0 && openSee / openSamples >= 0.95);
+  // 开口两侧望柱：开口端点（抱厦中心线 ±0.75，湖心亭一侧栏杆线上）0.06 m 内有望柱（桥面 +0.5 处水平截到柱）
+  let postsOk = 0;
+  for (const su of [-0.75, 0.75]) {
+    const x = HTF.cx + HTF.ux * su, z = HTF.cz + HTF.uz * su;
+    // 从抱厦中心线沿 v 找到栏杆线：湖心亭一侧栏杆线 = 桥中线 − (1.2 − 0.19)
+    const near = Q.distToPolyline([x, z], pts);
+    const dir = [near.at[0] - x, near.at[1] - z], L = Math.hypot(...dir);
+    const q = [near.at[0] - dir[0] / L * (BR_HALF - EDGE_IN), near.at[1] - dir[1] / L * (BR_HALF - EDGE_IN)];
+    const col = BG.column(q[0], q[1]).filter((h) => h.y > Q.DECK_Y + 0.9 && h.y < Q.DECK_Y + 0.97);
+    if (col.length) postsOk++;
+  }
+  ok(`#1 开口两侧各有望柱（${postsOk}/2）`, postsOk === 2);
+}
+
+// ---------------- 7) #1 湖心亭让桥：桥栏顶以下不进桥面、行走带 +2.2 m 以下无构件、与桥无互穿 / 共面 ----------------
+{
+  const ht = W.nodes.filter(isHT);
+  let low = 0, head = 0;
+  for (const n of ht) for (let i = 0; i < n.P.length / 3; i++) {
+    const x = n.P[i * 3], y = n.P[i * 3 + 1], z = n.P[i * 3 + 2];
+    if (y < -0.1) continue;
+    const d = Q.distToPolyline([x, z], Q.BRIDGE_LINE).d;
+    if (y < Q.DECK_Y + 1.23 && d < BR_HALF - 0.005) low++;
+    if (y < Q.DECK_Y + 2.2 && d < BR_HALF - 0.30) head++;
+  }
+  ok(`#1 桥栏顶（桥面 +1.23）以下湖心亭顶点不进桥面（${low}）`, low === 0);
+  ok(`#1 桥面 +2.2 m 以下湖心亭顶点不进栏杆内行走带（${head}）`, head === 0);
+  const x = crossIntersect(toTris(ht), toTris(bridgeNodes), 1.0);
+  // 共面重叠按面积量：0.05 m 网格上两者都在同一高度（±3 mm）有朝上面 = z-fight 面积
+  const HGt = new Q.VGrid(ht, { cell: 0.5 });
+  let both = 0;
+  const hx = Q.HT_POLY.map((p) => p[0]), hz = Q.HT_POLY.map((p) => p[1]);
+  for (let gx = Math.min(...hx) - 4; gx <= Math.max(...hx) + 4; gx += 0.05) for (let gz = Math.min(...hz) - 4; gz <= Math.max(...hz) + 4; gz += 0.05) {
+    const hs = HGt.column(gx, gz).filter((q) => q.ny > 0.2); if (!hs.length) continue;
+    const bs = BG.column(gx, gz).filter((q) => q.ny > 0.2);
+    if (hs.some((a) => bs.some((b) => Math.abs(a.y - b.y) < 0.003))) both++;
+  }
+  ok(`#1 湖心亭 × 九曲桥 三角互穿 ${x.crossings}、朝上共面重叠 ${(both * 0.0025).toFixed(3)} m²`, x.crossings === 0 && both === 0, x.pairs.slice(0, 3).map((p) => p.pair).join('; '));
+}
+
+// ---------------- 8) #4 桥东端岸上段：实心桥头台把岸上桥墩全包住，台不越桥面边、不高过桥面底 ----------------
+{
+  const head = W.nodes.filter((n) => n.kind === 'bridgeHead');
+  ok(`#4 桥头台网格存在（${head.map((n) => n.file + ':' + n.name).join(',') || '无'}）`, head.length === 1 && head[0].file.startsWith('zone-pond'));
+  if (head.length) {
+    const ys = head.flatMap((n) => Array.from({ length: n.P.length / 3 }, (_, i) => n.P[i * 3 + 1]));
+    ok(`#4 桥头台顶 ${Math.max(...ys).toFixed(3)} ≤ 桥面底 ${(Q.DECK_Y - 0.18).toFixed(2)}，底 = 外围地面 ${Math.min(...ys).toFixed(3)}`, Math.max(...ys) <= Q.DECK_Y - 0.18 + 1e-3 && Math.abs(Math.min(...ys) - GROUND_Y) < 1e-3);
+    // 台的每个顶点向桥中线收 0.02 m 后，正上方必须是桥面（台不越出桥面轮廓）
+    const DG = new Q.VGrid(bridgeNodes.filter((n) => /deck-stone/.test(n.mat)), { cell: 0.5 });
+    let out = 0;
+    // 收向「两端各缩 0.05 m 的桥中线」上的最近点（桥端角点不会沿端线滑）
+    const BL = Q.BRIDGE_LINE.map((p) => p.slice());
+    for (const [e, f] of [[0, 1], [BL.length - 1, BL.length - 2]]) { const d = [BL[f][0] - BL[e][0], BL[f][1] - BL[e][1]], l = Math.hypot(...d); BL[e] = [BL[e][0] + d[0] / l * 0.05, BL[e][1] + d[1] / l * 0.05]; }
+    for (const n of head) for (let i = 0; i < n.P.length / 3; i++) {
+      const p = [n.P[i * 3], n.P[i * 3 + 2]], c = Q.distToPolyline(p, BL).at, d = Math.hypot(p[0] - c[0], p[1] - c[1]) || 1;
+      const q = [p[0] + (c[0] - p[0]) / d * 0.02, p[1] + (c[1] - p[1]) / d * 0.02];
+      if (!DG.column(q[0], q[1]).some((h) => h.ny > 0.2 && Math.abs(h.y - Q.DECK_Y) < 0.01)) out++;
+    }
+    ok(`#4 桥头台不越出桥面轮廓（越出顶点 ${out}）`, out === 0);
+  }
+  // 驳岸内沿（看得见的水边）以外的桥墩：墩柱四角与中心都落在桥头台或桥端台阶（实心落地）的平面里 = 从任何方向都看不见
+  const { islands } = await import('./templeqa-lib.mjs');
+  const cover = new Q.VGrid([...head, ...W.nodes.filter((n) => /^jiuqu-bridge-step-/.test(n.id || ''))], { cell: 0.5 });
+  let landPiers = 0, exposed = 0; const ex = [];
+  for (const n of bridgeNodes.filter((m) => /grey-stone/.test(m.mat))) {
+    for (const L of islands(n).list) {
+      if (!(L.min[1] < -0.3 && L.max[1] <= Q.DECK_Y - 0.17)) continue;
+      const c = [(L.min[0] + L.max[0]) / 2, (L.min[2] + L.max[2]) / 2];
+      if (Q.pointInPoly(c, Q.WATER_POLY) && Q.distToPolyline(c, Q.WATER_POLY, true).d > 0.35) continue;       // 在看得见的水里
+      landPiers++;
+      const corners = [[L.min[0], L.min[2]], [L.max[0], L.min[2]], [L.min[0], L.max[2]], [L.max[0], L.max[2]], c];
+      const miss = corners.filter(([x, z]) => !cover.column(x, z).some((h) => h.ny > 0.5 && h.y >= Q.DECK_Y - 0.19));   // 覆盖面顶 ≥ 墩顶（桥面底 0.37）
+      if (miss.length) { exposed++; if (ex.length < 4) ex.push(c.map((v) => v.toFixed(2)).join(',')); }
+    }
+  }
+  ok(`#4 驳岸内沿以外的桥墩 ${landPiers} 根全部包在桥头台 / 实心台阶里（露出 ${exposed}）`, landPiers >= 12 && exposed === 0, ex.join('; '));
+}
+
+// ---------------- 9) 东接驳垫：面片顶面不变（y 0.02），下方实心落到外围地面 ----------------
+{
+  const ap = W.nodes.filter((n) => n.id === 'east-landing-access-apron');
+  const tops = ap.filter((n) => n.kind === 'paving');
+  const tys = tops.flatMap((n) => Array.from({ length: n.P.length / 3 }, (_, i) => n.P[i * 3 + 1]));
+  ok(`东接驳垫步行面片在（${tops.length} 件，y ${tys.length ? Math.min(...tys).toFixed(3) + '..' + Math.max(...tys).toFixed(3) : '-'} = 0.02）`, tops.length === 1 && Math.abs(Math.min(...tys) - 0.02) < 1e-3 && Math.abs(Math.max(...tys) - 0.02) < 1e-3);
+  const AG = new Q.VGrid(ap, { cell: 0.5 });
+  let hollow = 0, n = 0;
+  const T = tops[0];
+  if (T) {
+    const xs2 = [], zs2 = []; for (let i = 0; i < T.P.length / 3; i++) { xs2.push(T.P[i * 3]); zs2.push(T.P[i * 3 + 2]); }
+    const cx = xs2.reduce((a, b) => a + b) / xs2.length, cz = zs2.reduce((a, b) => a + b) / zs2.length;
+    for (const f of [0, 0.3, 0.6]) for (let k = 0; k < xs2.length; k++) {
+      const x = cx + (xs2[k] - cx) * f, z = cz + (zs2[k] - cz) * f;
+      const col = AG.column(x, z); n++;
+      const lowest = col.length ? col[col.length - 1].y : null;
+      if (lowest === null || lowest > GROUND_Y + 0.01) hollow++;
+    }
+  }
+  ok(`东接驳垫实心落地（${n} 点中下方未到 ${GROUND_Y} 的 ${hollow}）`, n > 0 && hollow === 0);
+}
+
+// ---------------- 10) #9 池水归池带 / #6 池水材质 ----------------
+{
+  const pondFiles = new Set(MAN.zones.filter((z) => z.id === 'pond').map((z) => z.file));
+  const waterIn = W.nodes.filter((n) => n.id === Q.POND_WATER_ID && n.kind === 'water').map((n) => n.file);
+  ok(`#9 池水（layout.zones.pond.polygon 即其轮廓）只在池带分件（实际在 ${waterIn.join(',') || '无'}）`, waterIn.length === 1 && pondFiles.has(waterIn[0]));
+  const w = W.nodes.find((n) => n.id === Q.POND_WATER_ID && n.kind === 'water');
+  const { readGlbRaw } = await import('./templeqa-lib.mjs');
+  let mat = null;
+  if (w) { const { json } = readGlbRaw(path.join(OUT, w.file)); mat = (json.materials || []).find((m) => m.name === w.mat); }
+  const bc = mat?.pbrMetallicRoughness?.baseColorFactor || [0, 0, 0], rough = mat?.pbrMetallicRoughness?.roughnessFactor ?? 1;
+  const lin = (h) => { const c = h / 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+  const want = [0x4a, 0x66, 0x5c].map(lin);
+  const dc = Math.max(...want.map((v, i) => Math.abs(v - bc[i])));
+  ok(`#6 池水颜色 = 主控定调 #4a665c（线性差 ${dc.toFixed(4)} ≤ 0.002）、粗糙度 ${rough.toFixed(2)} = 0.35`, dc <= 0.002 && Math.abs(rough - 0.35) < 0.01);
+}
+
+// ---------------- 11) #8 池内没有路面 ----------------
+{
+  let over = 0; const by = new Map();
+  for (let x = Math.floor(Math.min(...xs)); x <= Math.max(...xs); x += 0.25) for (let z = Math.floor(Math.min(...zs)); z <= Math.max(...zs); z += 0.25) {
+    if (!Q.pointInPoly([x, z], Q.WATER_POLY)) continue;
+    for (const h of G.column(x, z)) if (['road', 'plaza'].includes(h.node.kind)) { over++; by.set(h.node.id, (by.get(h.node.id) || 0) + 1 / 16); break; }
+  }
+  ok(`#8 池水轮廓内的路面 ${(over / 16).toFixed(2)} m² ≤ 0.05`, over / 16 <= 0.05, JSON.stringify(Object.fromEntries([...by].map(([k, v]) => [k, +v.toFixed(2)]))));
 }
 
 console.log(`\npondqa-test: ${pass} pass, ${fail} fail (${OUT})`);

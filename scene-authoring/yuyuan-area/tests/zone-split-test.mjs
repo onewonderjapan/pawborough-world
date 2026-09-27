@@ -211,5 +211,19 @@ if (baseOut && fs.existsSync(path.join(baseOut, 'zones-manifest.json'))) {
   ok(`首载 ${firstLoadFiles.length} 件 ${firstBytes} B（${(firstBytes / 1e6).toFixed(2)} MB）≤ ${FIRST_LOAD_CAP / 1e6} MB`, firstBytes <= FIRST_LOAD_CAP);
   console.log(`REPORT 运行时体积：首载 ${firstBytes} B（${firstLoadFiles.map(z => z.id + (z.part ? '#' + z.part : '')).join(' ')}）+ deferred ${deferredRt} B + on-demand ${onDemandRt} B（均含外置贴图，只计新增） = 总计 ${totalRt} B（${(totalRt / 1e6).toFixed(2)} MB，${files.length} 件）`);
 }
+// wave10-pondqa #9（主控 2026-09-27）：池水归池带。期望从 layout 推：layout.zones.pond.polygon 是「九曲桥水池带」的归区轮廓，
+// 轮廓与它相同的 water 对象（water-62072388，layout 里 zone 字段因 assignZone 先命中商城而写成 bazaar）必须导出在 pond 分件，
+// 其他分区的分件里不得有它。POND_QA=0 构建（旧归区）会在这里失败。
+{
+  const L = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, '..', 'baseline', 'layout.json'), 'utf8'));
+  const same = (a, b) => a.length === b.length && a.every(p => b.some(q => Math.abs(p[0] - q[0]) < 1e-6 && Math.abs(p[1] - q[1]) < 1e-6));
+  const pondPoly = L.zones?.pond?.polygon;
+  const pondWater = pondPoly ? L.objects.filter(o => o.kind === 'water' && same(o.geometry.footprint, pondPoly)) : [];
+  ok(`layout 里轮廓 = zones.pond.polygon 的水面 ${pondWater.map(o => o.id).join(',') || '无'} 恰 1 块`, pondWater.length === 1);
+  for (const o of pondWater) {
+    const holders = m.zones.filter(z => z.file).filter(z => meshNames(parseGlbJson(fs.readFileSync(path.join(OUT, z.file)))).some(n => n.includes(`|${o.id}|water|`)));
+    ok(`${o.id} 只在 pond 分件（现在 ${holders.map(z => z.file).join(',') || '无'}）`, holders.length === 1 && holders[0].id === 'pond');
+  }
+}
 console.log(`zone-split-test: ${pass} pass, ${fail} fail; total ${m.totalBytes} bytes in ${m.zones.filter(z => z.file).length} files`);
 process.exit(fail ? 1 : 0);
