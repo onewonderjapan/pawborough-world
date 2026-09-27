@@ -34,15 +34,23 @@ let fails = 0;
 const check = (ok, msg) => { if (!ok) { console.error('FAIL:', msg); fails++; } };
 
 const layout = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline', 'layout.json'), 'utf8'));
-// wave10-streetfix R3：FANGBANG=0 时重建不生成 fangbang-route.json（rebuild-review.sh 跳过
-// export-collision-fangbang），镜头①（方浜中路沿街西行）失去路线依据，生成器也读不到该文件
-// ——与 test_street_band 的「GLB 未构建 SKIP」同一惯例：整测 SKIP（exit 0），默认开关不受影响。
-// 红：out-fb0 轮 npm test 在此 ENOENT 崩溃（artifacts/r3/../SUMMARY 记录）。
-if (process.env.FANGBANG === '0' || !fs.existsSync(path.join(OUT, 'fangbang-route.json'))) {
-  console.log('control-shots-test: SKIP (FANGBANG=0: fangbang-route.json not generated, shot 1 has no route basis)');
-  process.exit(0);
+// wave10-streetfix R4（审查必修2）：SKIP 收窄。只有 FANGBANG=0 显式关闭（rebuild-review.sh 不生成
+// fangbang-route.json / collision-fangbang.json）时，才跳过依赖方浜分区数据的两个镜头——
+// ① fangbang-westbound（路线依据）与 ⑪ fangbang-eastbound（店屋碰撞集 + 方浜街面不在场景里），
+// 其余镜头照常生成、照常检查，不得把整测 SKIP 记作完整镜头验收。
+// 默认 / FANGBANG=1 下缺 fangbang-route.json 必须失败（默认路径缺件不许混进「显式关闭」的 SKIP）——
+// 红：FANGBANG=1 OUT_DIR=out-fb0 在旧版被整测 SKIP 退出 0（artifacts/r4/red-control-shots-fb1-missing-route.txt）。
+const FB_OFF = process.env.FANGBANG === '0';
+const hasFbRoute = fs.existsSync(path.join(OUT, 'fangbang-route.json'));
+const hasFbColl = fs.existsSync(path.join(OUT, 'collision-fangbang.json'));
+if (!FB_OFF && !hasFbRoute) {
+  console.error(`FAIL: fangbang-route.json missing in ${path.relative(ROOT, OUT)} while FANGBANG!=0 — the default build must generate it (shot 1 has no route basis)`);
+  process.exit(1);
 }
-const fbRoute = JSON.parse(fs.readFileSync(path.join(OUT, 'fangbang-route.json'), 'utf8'));
+const FB_SHOTS = new Set(['fangbang-westbound', 'fangbang-eastbound']);
+const fbSkipShots = FB_OFF && (!hasFbRoute || !hasFbColl);
+const genSkipsShot1 = FB_OFF && !hasFbRoute;
+const fbRoute = hasFbRoute ? JSON.parse(fs.readFileSync(path.join(OUT, 'fangbang-route.json'), 'utf8')) : null;
 
 // 由源重生成一遍：同一冻结输入必须给出同一相机路径（确定性）
 execFileSync('python3', ['scripts/build-control-shots.py', '--out-zone', OUT, ...(process.env.CONTROL_SHOTS_SPEC ? ['--spec', process.env.CONTROL_SHOTS_SPEC] : [])], { cwd: ROOT, stdio: 'pipe' });
@@ -50,13 +58,14 @@ const doc = JSON.parse(fs.readFileSync(path.join(OUT, 'control-shots.json'), 'ut
 
 const objById = (id) => layout.objects.find(o => o.id === id);
 const layoutIds = new Set(layout.objects.map(o => o.id));
-const ms = fbRoute.mainStreet.map(p => [p[0], p[2]]);
+const ms = fbRoute ? fbRoute.mainStreet.map(p => [p[0], p[2]]) : null;
 const shanmen = layout.instances.find(i => i.id === 'temple-shanmen').position;
 
 check(doc.version === 1, 'version != 1');
 check(doc.width === 1280 && doc.height === 720, '分辨率 != 1280x720');
 check(doc.eyeHeightM === 1.6, 'eyeHeightM != 1.6');
-check(doc.shots.length === 11, `镜头数 ${doc.shots.length} != 11（①–③ + wave5 ④–⑪）`);
+const expectedShots = genSkipsShot1 ? 9 : 11;   // FANGBANG=0：①（无路线依据）与⑪（方浜街面场景缺失）都不出
+check(doc.shots.length === expectedShots, `镜头数 ${doc.shots.length} != ${expectedShots}（①–③ + wave5 ④–⑪${genSkipsShot1 ? '，FANGBANG=0 不出①⑪' : ''}）`);
 const byId = Object.fromEntries(doc.shots.map(s => [s.id, s]));
 for (const s of doc.shots) {
   check(s.frames === 24, `${s.id} 帧数 ${s.frames} != 24`);
@@ -74,12 +83,18 @@ for (const s of doc.shots) {
     check(!!expected[s.id] && s.targetId === expected[s.id], `${s.id} 取景目标 targetId=${s.targetId} != ${expected[s.id]}`);
     check(layoutIds.has(s.targetId), `${s.id} targetId ${s.targetId} 不在 layout objects 里`);
   }
-  for (const id of Object.keys(expected)) check(!!byId[id], `缺 ${id}`);
+  for (const id of Object.keys(expected)) {
+    if (fbSkipShots && FB_SHOTS.has(id)) continue;   // FANGBANG=0：镜头①不生成（无路线依据）
+    check(!!byId[id], `缺 ${id}`);
+  }
 }
 
-// ① 方浜中路西行
+// ① 方浜中路西行（FANGBANG=0 显式关闭时生成器不出该镜头，检查整体跳过）
 {
   const s = byId['fangbang-westbound'];
+  if (fbSkipShots) {
+    check(!s, `FANGBANG=0 下镜头①不应生成（无 fangbang-route.json 路线依据），实际 ${s ? '存在' : '不存在'}`);
+  } else {
   check(!!s, '缺 fangbang-westbound');
   if (s) {
     check(s.eye.every(p => Math.abs(p[1] - 1.6) < 1e-9), '①眼高 != 1.6 m');
@@ -113,6 +128,7 @@ for (const s of doc.shots) {
     check(Math.abs(lt[1] - 4.0) < 1e-9, '①末帧注视高度 != 4.0 m');
     check(dist2d([last[0], last[2]], shanmen) >= 4 && dist2d([last[0], last[2]], shanmen) <= 15,
       `①停步点距山门 ${dist2d([last[0], last[2]], shanmen).toFixed(1)} m 不在 4–15`);
+  }
   }
 }
 
@@ -179,9 +195,11 @@ const habaoH = BAZAAR_TOWERS ? Math.max(towerP.roof.ridgeHeightM, towerP.pavilio
 const W5_IDS = new Set(['garden-entry-sansuitang', 'dajiashan-across-pond', 'garden-corridor-walk', 'temple-axis-push',
   'temple-dadian-rise', 'bazaar-plaza-orbit', 'huxinting-across-pond', 'fangbang-eastbound']);
 const W5_MIN_CLR = 1.0;
-const boxesAll = loadColliders(ROOT, path.relative(ROOT, OUT), [...ZONE_FILES, 'fangbang']);
+// FANGBANG=0：collision-fangbang.json 未生成（loadColliders 缺件会抛错），且⑪所在的方浜街面不在场景里
+const boxesAll = loadColliders(ROOT, path.relative(ROOT, OUT), fbSkipShots ? ZONE_FILES : [...ZONE_FILES, 'fangbang']);
 const r1Summary = {};
 for (const s of doc.shots) {
+  if (fbSkipShots && FB_SHOTS.has(s.id)) { r1Summary[s.id] = 'skipped (FANGBANG=0: fangbang route/collision not built)'; continue; }
   const w5 = W5_IDS.has(s.id);
   const minClr = w5 ? W5_MIN_CLR : R1.minClr;
   const ev = evaluateShot({ ...s, targetHeightM: s.targetId === habaoObj.id ? habaoH : undefined, railCheck: s.id === 'jiuqu-to-huxinting' }, layout, w5 ? boxesAll : boxes);
@@ -279,6 +297,7 @@ const collBox = (id) => { // 碰撞盒并集 AABB（锚点型对象的实物位�
 const w5Summary = {};
 for (const [id, spec] of Object.entries(W5)) {
   const s = byId[id];
+  if (fbSkipShots && id === 'fangbang-eastbound') { w5Summary[id] = 'skipped (FANGBANG=0: fangbang route/collision not built)'; continue; }
   check(!!s, `W5 缺镜头 ${id}（④–⑪ 第 ${spec.no} 号）`);
   if (!s) continue;
   const n = s.frames, tgt = spec.target();
@@ -515,7 +534,10 @@ for (const [id, spec] of Object.entries(W5)) {
 //    或 ≥ 2.5 m 高的碰撞盒——店屋 / 方浜西延店面 / 摊位棚，按 3 m 高投影）。
 {
   const s = byId['fangbang-eastbound'];
-  if (s) {
+  if (fbSkipShots) {
+    // FANGBANG=0：方浜街面（两侧店屋）不在场景里，⑪的两侧建筑检查也随镜头一起跳过
+    check(!s, `FANGBANG=0 下镜头⑪不应生成（方浜街面场景缺失），实际 ${s ? '存在' : '不存在'}`);
+  } else if (s) {
     const n = s.frames;
     const roads = layout.objects.filter(o => o.kind === 'road' && o.name === '方浜中路');
     s.eye.forEach((p, k) => {
@@ -554,5 +576,6 @@ for (const s of doc.shots) {
   }
 }
 
-console.log(`control-shots-test: ${fails ? fails + ' fail' : 'all pass'}`);
+console.log(`control-shots-test: ${fails ? fails + ' fail' : 'all pass'}` +
+  (fbSkipShots ? ' (FANGBANG=0: ①⑪ skipped — fangbang route/collision not built; 其余镜头照常检查)' : ''));
 process.exit(fails ? 1 : 0);
