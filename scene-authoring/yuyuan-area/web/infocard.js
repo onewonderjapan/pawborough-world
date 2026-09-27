@@ -12,7 +12,8 @@
 //   模型来源    命中节点父链上最近的 glTF extras `module`（three.js 里是 userData.module）→「套件：<module>」，
 //               父链上没有 → 「程序化体块」。R1 的静态 KIT_IDS 表已删除（默认开关和关套件时都会误报）。
 // 固定边界说明一行不变；不写任何描述性文字、历史介绍、年代、评价；不引用图库图片。
-// 调试契约（非展示）：window.__pickDebug = { id, name } 每次轨道拾取都写，无名对象也写 id（batch-identity-check I1 消费）。
+// 调试契约（非展示）：window.__pickDebug = { id, name, node } 每次轨道拾取都写，无名对象也写 id（batch-identity-check I1 消费 id/name；
+// R4 追加只读字段 node = 实际命中网格 uuid，供 infocard-test 核对命中节点身份）。
 // 顶层只放纯函数与常量（node 测试可直接 import），DOM 只在 installInfocard 里创建。
 import * as THREE from 'three';
 
@@ -236,7 +237,8 @@ export function installInfocard({ raycaster, camera, scene, renderer, getLayout,
       break;
     }
     // 调试契约（非展示）：每次轨道拾取都写；无名对象也写 id，空白写 null（batch-identity-check I1 消费）
-    window.__pickDebug = { id: id, name: obj && obj.name ? obj.name : null };
+    // R4：附加 node = 实际命中网格的 three uuid（只读调试字段，不影响弹卡；infocard-test T6/T8 用它核对命中节点身份）
+    window.__pickDebug = { id: id, name: obj && obj.name ? obj.name : null, node: hitNode ? hitNode.uuid : null };
     if (obj && obj.name) open(obj, hitNode);
     else close();   // 无名对象 / 空白收卡
   });

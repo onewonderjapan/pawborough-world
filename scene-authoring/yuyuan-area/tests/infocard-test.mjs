@@ -7,25 +7,30 @@
 //               OUT_DIR 的 raw 分区 GLB（节点变换 × POSITION accessor min/max，y<0 截 0），与卡片值差 ≤ 0.1 m；
 //   层数       layout storeys → levels，都没有 → 未核实（不从模型猜）；
 //   轮廓面积    layout footprint 鞋带面积现算（输入轮廓口径）；
-//   模型来源    oracle 从 raw GLB 该 id 节点父链 extras 独立读 module（无静态套件表）。
+//   模型来源    R4：oracle = 本次点击射线的独立命中网格 → 对回 raw GLB 节点 → raw 父链最近 extras.module（无静态套件表）。
 // 断言：
 //   T1 9 个对象（默认 8 + 反例仪门戏楼）真实点击逐个弹卡，6 字段 + 名称逐项核对（高度按 ≤0.1 m 数值容差）；
+//      R4：模型来源期望 = 本次点击射线的独立 oracle（见 tests/infocard-raw-oracle.mjs）命中节点 → raw GLB 父链最近
+//      extras.module，精确相等；同时核对 __pickDebug.node 与 oracle 命中网格是同一对象；
 //   T2 白名单：卡片 DOM 只有 h2 名称 + 6 组 dt/dd + 1 行固定说明，无任何其他文本；
 //   T3 无名对象不弹卡，但 __pickDebug 仍写 { id, name:null }；空白点击写 { id:null, name:null }；
 //   T4 Esc 关卡（先断言卡片已打开）+ 标签高亮清除；
 //   T5 步行模式不弹卡（先断言卡片已打开；切步行时已开卡片立即关闭并清高亮，enter 与 spawnAt 两条路径都测），
 //      退回轨道恢复弹卡；
 //   T6 隐藏几何不抢点击：T6a 关屋顶后与 ?batch=0 同屏点 __pickDebug.id 逐点一致（保留 A/B 对照）；
-//      T6b/T6c 确定期望 ID 用例——前景对象自身 / 父节点 visible=false 后真实点击必须命中后景 id（≠前景）；
-//      T6d 浏览器实点「屋顶」按钮（web/roofs.js 规则）后逐点点选，命中 id 与测试独立筛出的隐藏 id 集合无交集；
+//      T6b/T6c（R4）前景对象自身 / 父节点 visible=false 后：被测拾取 id 与「独立射线第一个可见命中 → raw GLB 父链 id」
+//      精确相等，命中节点同一；恢复态 oracle 与实现都回到前景；
+//      T6d（R4）浏览器实点「屋顶」按钮（web/roofs.js 规则）后逐点点选：比较实际命中节点身份（three uuid 与 raw GLB 节点）
+//      而非只比 id，并要求至少 1 个「隐藏同 id 屋面在前、可见网格在后」的反例点；
 //   T7 375px 手机宽度：卡片停靠在工具区之外（矩形不相交），每个工具按钮中心 elementFromPoint 命中按钮本身，
 //      实点「步行」确认模式真的切换；
-//   T8 九曲桥来源按命中构件（R3 必修3）：折线顶视命中桥面/栏杆、受控隐藏后点击命中桥体，
-//      两个点的期望值 = raw GLB 命中节点向上最近 extras.module，精确相等（不是集合成员）。
+//   T8（R4）九曲桥来源按命中父链：T8a 默认顶视点精确相等；T8b 默认状态 bridge-head 可达性射线扫描（不可达如实记限制）；
+//      T8c 内存受控构造（抬高/平移 bridge-head 构件组，同 id 两个 module 同时可见、分别可点）两处各点一次，精确相等。
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { RawGlbIndex, installPageOracle } from './infocard-raw-oracle.mjs';
 
 const require = createRequire('/home/baibai/pawborough-world/node_modules/');
 const { chromium } = require('playwright');
@@ -201,6 +206,8 @@ function buildGlbOracle() {
   return out;
 }
 const GLB_ORA = buildGlbOracle();
+// R4：命中节点 oracle —— raw 分区 GLB 三角形索引（命中三角形 → raw 节点 → raw 父链 id / module）
+const RAW = new RawGlbIndex(OUT);
 
 function expectedCard(t) {
   const o = t.o;
@@ -261,6 +268,10 @@ if (!UNNAMED_OBJ || !(UNNAMED_OBJ.d >= 80)) { console.error(`SETUP 无名外围�
 const UNNAMED = UNNAMED_OBJ.o.id;
 
 // ---------- 跑测试 ----------
+// ONLY=T6,T8 只跑列出的分组（调试 / 最小用例集用；验收与红绿收据一律全量跑，不设 ONLY）
+const ONLY = process.env.ONLY ? new Set(process.env.ONLY.split(',')) : null;
+const run = (t) => !ONLY || ONLY.has(t);
+if (ONLY) console.log(`ONLY=${[...ONLY].join(',')}（非全量）`);
 let fails = 0;
 const fail = (m) => { console.error('FAIL', m); fails++; };
 const ok = (m) => console.log('ok  ', m);
@@ -277,6 +288,27 @@ async function newPage(qs, viewport = { width: 1400, height: 900 }) {
 }
 const page = await newPage('?zone=core&cam=oblique');
 const pageU = await newPage('?zone=core&cam=oblique&batch=0');   // T6 对照：改前渲染路径
+await installPageOracle(page);
+await installPageOracle(pageU);
+// R4：一次真实鼠标点击的完整记录：__pickDebug {id,name,node} + 被测实现本次点选的射线（被动记录）+ 卡片来源
+const clickFull = async (p, x, y) => {
+  await p.keyboard.press('Escape');
+  await p.waitForTimeout(30);
+  const n0 = await p.evaluate(() => { window.__pickDebug = undefined; return window.__oraLastRay ? window.__oraLastRay.n : 0; });
+  await p.mouse.click(x, y);
+  await p.waitForTimeout(100);
+  return p.evaluate((n0) => {
+    const el = document.getElementById('info');
+    const open = el.style.display === 'block';
+    const dds = open ? [...el.querySelectorAll(':scope > dl > dd')].map(d => d.textContent) : null;
+    const d = window.__pickDebug;
+    const r = window.__oraLastRay;
+    return { id: d ? d.id ?? null : 'no-write', name: d ? d.name ?? null : null, node: d ? d.node ?? null : null, open, src: dds ? dds[dds.length - 1] : null, ray: r && r.n > n0 ? { o: r.o, d: r.d } : null };
+  }, n0);
+};
+const oracleAt = async (p, ray) => (ray ? RAW.expect(await p.evaluate((r) => window.__oraHits(r, 16), ray)) : { error: '没有射线', id: null, module: null, uuid: null, raw: null });
+const slim = (r) => (r ? { id: r.id, node: r.node, open: r.open, src: r.src } : r);
+const slimO = (o) => (o ? { id: o.id, module: o.module, uuid: o.uuid, raw: o.raw ? `${o.raw.file}#${o.raw.node} ${o.raw.name}` : null, rawPath: o.raw ? o.raw.path : null, ambiguous: o.raw ? o.raw.ambiguous : null, firstHidden: o.firstHidden, error: o.error } : o);
 
 const aim = (p) => page.evaluate(([e, t]) => window.__viewAt(e, t), [p.eye, p.target]);
 const readCard = () => page.evaluate(() => {
@@ -297,17 +329,19 @@ const readCard = () => page.evaluate(() => {
 const pickDebug = () => page.evaluate(() => (window.__pickDebug === undefined ? 'undefined' : { id: window.__pickDebug.id ?? null, name: window.__pickDebug.name ?? null }));
 
 // ---------- T1 + T2 逐对象点击并核对（默认 8 目标 + 反例仪门戏楼） ----------
-for (const t of TARGETS) {
+for (const t of (run('T1') ? TARGETS : [])) {
   const o = t.o;
   const cp = clickPoint(o);
   if (!cp) { fail(`T1 ${t.nm} 无可算点击锚点`); report.targets[o.id] = { name: t.nm, ok: false, failCount: 1, error: 'no-anchor' }; continue; }
   await aim(cp);
   await page.waitForTimeout(100);
-  await page.mouse.click(700, 450);
-  await page.waitForTimeout(80);
+  const clk = await clickFull(page, 700, 450);
   const got = await readCard();
   const want = expectedCard(t);
-  report.targets[o.id] = { name: t.nm, want, got };
+  // R4：模型来源期望 = 本次点击射线的独立 oracle 命中节点 → raw GLB 父链最近 extras.module（所有目标一律精确相等）
+  const ora = await oracleAt(page, clk.ray);
+  want.dds[5] = ora.module ? `套件：${ora.module}` : '程序化体块';
+  report.targets[o.id] = { name: t.nm, want, got, pick: slim(clk), oracle: slimO(ora) };
   report.oracle[o.id] = GLB_ORA[o.id] || null;
   if (SHOT_DIR) await page.screenshot({ path: path.join(SHOT_DIR, `infocard-${o.id}.png`) });
   if (!got.open) { fail(`T1 ${t.nm} 点击后卡片未弹出`); report.targets[o.id].ok = false; report.targets[o.id].failCount = 1; continue; }   // R3 可选2：未弹卡也写 ok:false/failCount
@@ -321,12 +355,11 @@ for (const t of TARGETS) {
       if (!Number.isFinite(hv) || !Number.isFinite(wv) || Math.abs(hv - wv) > 0.1) bad.push(`模型高度 ${got.dds?.[2]} != ${want.dds[2]}(±0.1)`);
       continue;
     }
-    if (i === 5) {   // 模型来源：R3 按命中父链精确相等；单模块 id 直接全串比对，多模块 id（九曲桥）由 T8 双构件精确断言兜底
-      const v = String(got.dds?.[5] ?? '');
-      const m = v.startsWith('套件：') ? v.slice(3) : null;
-      if (want.srcModules.length === 1) {
-        if (v !== `套件：${want.srcModules[0]}`) bad.push(`模型来源 ${JSON.stringify(v)} != 精确 ${JSON.stringify(`套件：${want.srcModules[0]}`)}`);
-      } else if (want.srcModules.length ? !(m && want.srcModules.includes(m)) : v !== '程序化体块') bad.push(`模型来源 ${JSON.stringify(v)} 不在 GLB 集合 ${JSON.stringify(want.srcModules)}`);
+    if (i === 5) {   // 模型来源：R4 = 独立射线命中节点 raw 父链 module，精确相等（不再按 id 取集合）
+      if (ora.error) { bad.push(`模型来源 oracle 错误：${ora.error}`); continue; }
+      if (ora.id !== o.id) { bad.push(`独立射线首个可见命中是 ${JSON.stringify(ora.id)} 不是目标 ${o.id}（点击点前置失败）`); continue; }
+      if (clk.node !== ora.uuid) bad.push(`实际命中节点 ${clk.node} != oracle 命中网格 ${ora.uuid}`);
+      if (got.dds?.[5] !== want.dds[5]) bad.push(`模型来源 ${JSON.stringify(got.dds?.[5])} != 命中父链精确 ${JSON.stringify(want.dds[5])}（raw ${ora.raw.file}#${ora.raw.node} ${ora.raw.name}）`);
       continue;
     }
     if (got.dds?.[i] !== want.dds[i]) bad.push(`${want.dts[i]} ${JSON.stringify(got.dds?.[i])} != ${JSON.stringify(want.dds[i])}`);
@@ -334,7 +367,7 @@ for (const t of TARGETS) {
   if (got.note !== want.note) bad.push(`固定说明 ${JSON.stringify(got.note)}`);
   const tags = (got.childTags || []).join(',');
   if (tags !== 'H2,DL,P.infocard-note') bad.push(`白名单外元素 ${tags}`);
-  const joined = want.name + want.dts.flatMap((d, i) => [d, i === 5 ? got.dds[i] : want.dds[i]]).join('') + want.note;
+  const joined = want.name + want.dts.flatMap((d, i) => [d, i === 2 ? got.dds[i] : want.dds[i]]).join('') + want.note;   // 高度按容差另判，文本比对取实值
   if (got.text !== joined) bad.push(`白名单外文本 ${JSON.stringify(got.text.slice(0, 160))}`);
   report.targets[o.id].ok = bad.length === 0;   // 必修6：逐对象 ok 由该对象断言失败数决定
   report.targets[o.id].failCount = bad.length;
@@ -343,7 +376,7 @@ for (const t of TARGETS) {
 }
 
 // ---------- T4 Esc 关卡（先断言已打开）+ 高亮清除 ----------
-{
+if (run('T4')) {
   const san = TARGETS[0].o;
   await aim(clickPoint(san));
   await page.waitForTimeout(100);
@@ -362,12 +395,11 @@ for (const t of TARGETS) {
 }
 
 // ---------- T3 无名对象 / 空白点击（__pickDebug 契约） ----------
-{
+if (run('T3')) {
   const cp = clickPoint(objs.get(UNNAMED));
   await aim(cp);
   await page.waitForTimeout(100);
-  await page.mouse.click(700, 450);
-  await page.waitForTimeout(80);
+  const clk3 = await clickFull(page, 700, 450);
   let got = await readCard();
   if (got.open) fail(`T3 无名对象 ${UNNAMED} 弹了卡：${JSON.stringify(got.name)}`);
   else ok('T3 无名对象不弹卡');
@@ -375,6 +407,22 @@ for (const t of TARGETS) {
   if (dbg === 'undefined') fail('T3 __pickDebug 未定义（身份契约缺失）');
   else if (!dbg.id || dbg.name !== null) fail(`T3 无名对象 __pickDebug 应为 { id 非空, name:null }：${JSON.stringify(dbg)}`);
   else ok(`T3 无名对象 __pickDebug = { id:${dbg.id}, name:null }`);
+  // R4（合并 streetfix 后道路无名点复核）：被测拾取 id / 命中节点 = 独立射线 raw GLB 期望，且该 id 在 layout 里无名
+  {
+    const o3 = await oracleAt(page, clk3.ray);
+    report.T3 = { unnamedTarget: UNNAMED, pick: slim(clk3), oracle: slimO(o3) };
+    const b3 = [];
+    if (o3.error) b3.push(`oracle 错误：${o3.error}`);
+    else {
+      if (clk3.id !== o3.id) b3.push(`被测 id ${JSON.stringify(clk3.id)} != 独立射线 raw GLB 期望 ${JSON.stringify(o3.id)}`);
+      if (clk3.node !== o3.uuid) b3.push(`实际命中节点 ${clk3.node} != oracle ${o3.uuid}`);
+      const lo = o3.id ? objs.get(o3.id) : null;
+      if (!o3.id) b3.push('独立射线在无名道路点没有命中任何有 id 的网格');
+      else if (lo && lo.name) b3.push(`独立射线命中的 ${o3.id} 在 layout 里有名（${lo.name}），不是无名点`);
+    }
+    if (b3.length) fail(`T3 无名道路点身份：${b3.join('；')}`);
+    else ok(`T3 无名道路点：被测拾取 = 独立射线 raw GLB 期望 ${o3.id}（${o3.raw.file}#${o3.raw.node} ${o3.raw.name}）${o3.id === UNNAMED ? '' : `（≠ 选定道路 ${UNNAMED}，同为无名）`}`);
+  }
   // 空白：先开卡再点空白（必修：关闭测试先断言卡片已打开）
   const san = TARGETS[0].o;
   await aim(clickPoint(san));
@@ -406,7 +454,7 @@ for (const t of TARGETS) {
 }
 
 // ---------- T5 步行模式（先开卡；切步行立即关卡清高亮；退回轨道恢复弹卡） ----------
-{
+if (run('T5')) {
   const hb = TARGETS[5].o;   // 华宝楼
   const cp = clickPoint(hb);
   await aim(cp);
@@ -456,7 +504,7 @@ for (const t of TARGETS) {
 //   T6c 前景父节点 visible=false → 同上；
 //   T6d 浏览器里实际点击「屋顶」按钮（正式按钮，规则在 web/roofs.js），再点选：
 //       命中 id 的网格必须与测试独立从场景里筛出的「隐藏 id 集合」无交集（父链全部可见）。
-{
+if (run('T6')) {
   const pts = [];
   for (let j = 0; j < 3; j++) for (let i = 0; i < 5; i++) pts.push([Math.round(170 + i * 212), Math.round(230 + j * 200)]);
   const bothReset = async () => {
@@ -476,13 +524,15 @@ for (const t of TARGETS) {
       window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));   // R3：每点前清卡，防卡片盖住后续样本
       await new Promise(r => setTimeout(r, 30));
       window.__pickDebug = undefined;
+      const n0 = window.__oraLastRay ? window.__oraLastRay.n : 0;
       const el = document.elementFromPoint(x, y);
       const target = el && (el.closest('canvas') || el);
       if (target && target.dispatchEvent) {
         target.dispatchEvent(new MouseEvent('click', { clientX: x, clientY: y, bubbles: true }));
       }
       await new Promise(r => setTimeout(r, 60));
-      out.push(window.__pickDebug ? { id: window.__pickDebug.id ?? null, name: window.__pickDebug.name ?? null } : 'no-pick');
+      const r = window.__oraLastRay;
+      out.push(window.__pickDebug ? { id: window.__pickDebug.id ?? null, name: window.__pickDebug.name ?? null, node: window.__pickDebug.node ?? null, ray: r && r.n > n0 ? { o: r.o, d: r.d } : null } : { id: 'no-write', node: null, ray: null });
     }
     return out;
   }, pts);
@@ -496,8 +546,8 @@ for (const t of TARGETS) {
   await page.waitForTimeout(200);
   await pageU.waitForTimeout(200);
   const [pb, pu] = await Promise.all([pickGrid(page), pickGrid(pageU)]);
-  report.T6 = { points: pts, batched: pb, unbatched: pu };
-  const noPick = pb.filter(v => v === 'no-pick').length;
+  report.T6 = { points: pts, batched: pb.map(slim), unbatched: pu.map(slim) };
+  const noPick = pb.filter(v => v.id === 'no-write').length;
   if (noPick) fail(`T6 ${noPick} 个点没有写入 __pickDebug（每次拾取都必须写）`);
   const diff = pts.map((p, i) => [p, pb[i]?.id, pu[i]?.id]).filter(r => r[1] !== r[2]);
   const nulls = pb.filter(v => v && v.id === null).length;
@@ -506,9 +556,11 @@ for (const t of TARGETS) {
   await hideRoofs(page, true);
   await hideRoofs(pageU, true);
 
-  // ---- T6b/T6c 确定期望 ID：前景（自身 / 父节点）隐藏 → 必须命中后景 id 且 ≠ 前景 ----
-  // 流程（全程真实鼠标点击同一屏幕点）：点击得前景 id → 按 id 隐藏（记录被藏对象）→ 同点点击得后景（期望）→
-  // 只恢复自己藏的对象并复核点回前景 → 再同样隐藏复测后景一致。期望值由测试独立从场景状态推导。
+  // ---- T6b/T6c 确定期望 ID（R4 按 REVIEW-astra-R3 必修1 重写）----
+  // 期望值独立确定：被测实现点击时算出的同一条射线（Raycaster.setFromCamera 被动记录）→ 测试自己的
+  // THREE.Raycaster 求命中 → 第一个父链全部可见的命中三角形按世界坐标对回 raw GLB 节点 → raw 父链 layout id。
+  // 被测拾取（__pickDebug.id）与之精确相等；命中节点（__pickDebug.node）与 oracle 命中网格是同一个对象。
+  // 仅「≠前景 / 两次一致」不再算通过（REVIEW-astra-R3：把后景换成 ground 旧断言照样过）。
   const CAND = [[700, 450], [500, 300], [900, 600], [400, 520], [1000, 350]];
   const hideById = (how, fgId) => page.evaluate(({ how, fgId }) => {
     const idOf = (node) => { for (let n = node; n; n = n.parent) { if (n.userData && n.userData.id) return n.userData.id; const p = String(n.name || '').split('|'); if (p.length >= 4) return p[1]; } return null; };
@@ -517,8 +569,7 @@ for (const t of TARGETS) {
     if (how === 'self') {
       window.__scene.traverse(o => { if (o.isMesh && o.visible && idOf(o) === fgId) { o.visible = false; n++; window.__t6hidden.push(o); } });
     } else {
-      // 「父节点隐藏」：从网格向上找最小的「子树覆盖全部前景网格」的祖先再藏它 ——
-      // 只藏第一个网格的直接父节点时，同对象的其它网格（别的包装节点）仍可见，前景照样被命中。
+      // 「父节点隐藏」：从网格向上找最小的「子树覆盖全部前景网格」的祖先再藏它
       const meshes = [];
       window.__scene.traverse(o => { if (o.isMesh && idOf(o) === fgId) meshes.push(o); });
       const isAnc = (a, m) => { for (let x = m; x; x = x.parent) if (x === a) return true; return false; };
@@ -537,183 +588,349 @@ for (const t of TARGETS) {
     window.__t6hidden = [];
     window.__batchSync?.();
   });
-  const pickAt = async (x, y) => {
-    await page.keyboard.press('Escape');
-    await page.waitForTimeout(30);
-    await page.evaluate(() => { window.__pickDebug = undefined; });
-    await page.mouse.click(x, y);
-    await page.waitForTimeout(90);
-    return page.evaluate(() => (window.__pickDebug ? window.__pickDebug.id ?? null : 'no-write'));
-  };
   await bothReset();
   let fgId = null, fx = 0, fy = 0;
   for (const [cx, cy] of CAND) {
-    const d = await pickAt(cx, cy);
-    if (d !== 'no-write' && d !== null) { fgId = d; fx = cx; fy = cy; break; }
+    const d = await clickFull(page, cx, cy);
+    if (d.id && d.id !== 'no-write') { fgId = d.id; fx = cx; fy = cy; break; }
   }
   if (!fgId) fail('T6b 找不到前景对象（候选点全部空白）');
   else {
     report.T6bc = { fgId, at: [fx, fy] };
     for (const [tag, how] of [['T6b', 'self'], ['T6c', 'parent']]) {
-      const n1 = await hideById(how, fgId);
-      const bg1 = await pickAt(fx, fy);
-      await showHidden();
-      await page.waitForTimeout(150);
-      const reFg = await pickAt(fx, fy);        // 恢复态复核：点回前景
-      await hideById(how, fgId);                // 同样隐藏态复测
-      const bg2 = await pickAt(fx, fy);
-      await showHidden();
-      await page.waitForTimeout(150);
       const bads = [];
-      if (!n1) bads.push('没有隐藏到任何网格/节点');
-      if ([bg1, bg2, reFg].includes('no-write')) bads.push(`有拾取没写 __pickDebug（bg1=${bg1} bg2=${bg2} reFg=${reFg}）`);
-      else {
-        if (bg1 === null || bg2 === null) bads.push(`隐藏前景后命中空白（bg1=${bg1} bg2=${bg2}），该像素没有可验证的后景`);
-        if (bg1 !== bg2) bads.push(`同样隐藏态两次拾取不一致：${bg1} vs ${bg2}`);
-        if (bg1 === fgId) bads.push(`隐藏的前景仍被命中（${fgId}）——visible 过滤失效`);
-        if (reFg !== fgId) bads.push(`恢复可见后未点回前景：${reFg} != ${fgId}`);
-      }
-      report.T6bc[tag] = { how, fgId, hidden: n1, bg1, bg2, reFg };
-      if (bads.length) fail(`${tag} 前景${how === 'self' ? '自身' : '父节点'}隐藏：${bads.join('；')}`);
-      else ok(`${tag} 前景${how === 'self' ? '自身' : '父节点'}隐藏（${n1} 项）后命中后景 ${bg1}（≠前景 ${fgId}），恢复点回前景，复测一致`);
+      const rec = { how, fgId };
+      try {
+        const n1 = await hideById(how, fgId);
+        const r1 = await clickFull(page, fx, fy);
+        const o1 = await oracleAt(page, r1.ray);
+        await showHidden();
+        await page.waitForTimeout(150);
+        const r0 = await clickFull(page, fx, fy);        // 恢复态：oracle 与实现都应回到前景
+        const o0 = await oracleAt(page, r0.ray);
+        await hideById(how, fgId);                       // 同样隐藏态复测
+        const r2 = await clickFull(page, fx, fy);
+        const o2 = await oracleAt(page, r2.ray);
+        await showHidden();
+        await page.waitForTimeout(150);
+        Object.assign(rec, { hidden: n1, r1: slim(r1), o1: slimO(o1), r0: slim(r0), o0: slimO(o0), r2: slim(r2), o2: slimO(o2) });
+        if (!n1) bads.push('没有隐藏到任何网格/节点');
+        for (const [lbl, r, o] of [['隐藏态1', r1, o1], ['恢复态', r0, o0], ['隐藏态2', r2, o2]]) {
+          if (!r.ray) { bads.push(`${lbl} 没记录到被测实现的射线`); continue; }
+          if (r.id === 'no-write') { bads.push(`${lbl} 拾取没写 __pickDebug`); continue; }
+          if (o.error) { bads.push(`${lbl} oracle 错误：${o.error}`); continue; }
+          if (r.id !== o.id) bads.push(`${lbl} 被测拾取 ${JSON.stringify(r.id)} != 独立射线 raw GLB 期望 ${JSON.stringify(o.id)}（${o.raw ? o.raw.file + '#' + o.raw.node + ' ' + o.raw.name : '无命中'}）`);
+          if (r.node !== o.uuid) bads.push(`${lbl} 实际命中节点 ${r.node} != oracle 命中网格 ${o.uuid}`);
+        }
+        if (!o1.error && !o0.error) {
+          if (o1.id === null) bads.push('隐藏前景后 oracle 无后景命中（该像素无可验证后景，换候选点）');
+          if (o1.id === fgId) bads.push(`隐藏后 oracle 仍命中前景 ${fgId}（隐藏没盖住，前置失败）`);
+          if (o0.id !== fgId) bads.push(`恢复态 oracle 期望 ${o0.id} != 前景 ${fgId}（前置失败）`);
+        }
+        if (bads.length) fail(`${tag} 前景${how === 'self' ? '自身' : '父节点'}隐藏：${bads.join('；')}`);
+        else ok(`${tag} 前景${how === 'self' ? '自身' : '父节点'}隐藏（${n1} 项）：被测拾取 = 独立射线 raw GLB 期望 ${o1.id}（${o1.raw.file}#${o1.raw.node} ${o1.raw.name}），命中节点同一；恢复态 = 前景 ${fgId}；复测一致`);
+      } catch (e) { fail(`${tag} 异常中断：${e.message.split('\n')[0]}`); await showHidden().catch(() => {}); }
+      report.T6bc[tag] = rec;
     }
   }
 
-  // ---- T6d 实点「屋顶」按钮（web/roofs.js 规则）后再点选：命中 id 不得属于隐藏 id 集合 ----
-  const idOfIn = `(node) => { for (let n = node; n; n = n.parent) { if (n.userData && n.userData.id) return n.userData.id; const p = String(n.name || '').split('|'); if (p.length >= 4) return p[1]; } return null; }`;
-  const visIn = `(node) => { for (let n = node; n; n = n.parent) if (n.visible === false) return false; return true; }`;
+  // ---- T6d 实点「屋顶」按钮后点选：比较实际命中节点身份，不只比 layout id（R4 必修1）----
+  // 对每个样本点：被测实现 __pickDebug.node（three uuid）必须 === oracle 第一个父链全部可见的命中网格，
+  // 其父链全部可见，且两者对回 raw GLB 是同一节点（file#node）；batch=0 页对回的 raw 节点也相同。
+  // 同 id 反例覆盖：统计「射线上先有隐藏的同 id 网格（屋面）、后有可见网格」的点，另加 3 个厅殿顶视专点，须 ≥1——
+  // 只比 id 的旧 T6d 在这些点上无法区分「命中隐藏屋顶」与「命中可见墙身」。
   await bothReset();
-  await page.click('#t-roofs');
-  await pageU.click('#t-roofs');
-  await page.waitForTimeout(300);
-  await pageU.waitForTimeout(300);
-  const hiddenIdsOf = (p) => p.evaluate(`(() => { const idOf = ${idOfIn}; const vis = ${visIn}; const H = new Set(); window.__scene.traverse(o => { if (o.isMesh && !vis(o)) { const id = idOf(o); if (id) H.add(id); } }); return [...H]; })()`);
-  const hiddenIdsB = await hiddenIdsOf(page);
-  const hiddenIdsU = await hiddenIdsOf(pageU);
-  const [rb, ru] = await Promise.all([pickGrid(page), pickGrid(pageU)]);
-  // 独立 oracle：测试端用 three 自己做射线（visibleChain 过滤 + 第一个有 id 的命中），
-  // 与实现的拾取路径无关 —— 两边同时漏掉可见性过滤也会被抓到（REVIEW-astra-R2 必修2）。
-  const oraclePicks = (p) => p.evaluate(async (pts) => {
-    const THREE = await import('three');
-    const cam = window.__cam();
-    const camera = new THREE.PerspectiveCamera(46, innerWidth / innerHeight, 0.5, 4000);
-    camera.position.set(cam.p[0], cam.p[1], cam.p[2]);
-    camera.lookAt(cam.t[0], cam.t[1], cam.t[2]);
-    camera.updateMatrixWorld();
-    const idOf = (node) => { for (let n = node; n; n = n.parent) { if (n.userData && n.userData.id) return n.userData.id; const p2 = String(n.name || '').split('|'); if (p2.length >= 4) return p2[1]; } return null; };
-    const vis = (node) => { for (let n = node; n; n = n.parent) if (n.visible === false) return false; return true; };
-    const ray = new THREE.Raycaster();
-    ray.layers.enableAll();   // 与 web/main.js 的点选 raycaster 同口径：合批原网格在 ORIGINAL_LAYER，不开就一个都打不中
-    const out = [];
-    for (const [x, y] of pts) {
-      ray.setFromCamera(new THREE.Vector2((x / innerWidth) * 2 - 1, -(y / innerHeight) * 2 + 1), camera);
-      const hits = ray.intersectObjects(window.__scene.children, true);
-      let id = null;
-      for (const h of hits) { if (!vis(h.object)) continue; const hid = idOf(h.object); if (!hid) continue; id = hid; break; }
-      out.push(id);
+  await page.keyboard.press('Escape');
+  await pageU.keyboard.press('Escape');
+  // 真实鼠标点正式按钮中心（先确认中心点命中按钮本身）。不用 page.click：两页同时 swiftshader 渲染时
+  // playwright 的滚动/稳定性等帧会拖到超时（R3 红2 就是在这里中断的）。
+  const realClickBtn = async (p, sel) => {
+    const c = await p.evaluate((sel) => { const b = document.querySelector(sel); const r = b.getBoundingClientRect(); const x = r.x + r.width / 2, y = r.y + r.height / 2; return { x, y, hitSelf: document.elementFromPoint(x, y) === b, active: b.classList.contains('active') }; }, sel);
+    if (!c.hitSelf) throw new Error(`${sel} 按钮中心被其它元素遮挡`);
+    await p.mouse.click(c.x, c.y);
+    await p.waitForFunction(([sel, a]) => document.querySelector(sel).classList.contains('active') !== a, [sel, c.active], { timeout: 60000 });
+  };
+  try {
+    await realClickBtn(page, '#t-roofs');
+    await realClickBtn(pageU, '#t-roofs');
+    await page.waitForTimeout(300);
+    await pageU.waitForTimeout(300);
+    const hiddenRoofMeshes = await page.evaluate(() => { let n = 0; window.__scene.traverse(o => { if (o.isMesh && !o.isBatchedMesh) { for (let x = o; x; x = x.parent) if (x.visible === false) { n++; break; } } }); return n; });
+    const [rb, ru] = [await pickGrid(page), await pickGrid(pageU)];
+    const rows = [];
+    const badsD = [];
+    let sameIdCases = 0;
+    const checkPoint = async (p, r, tagPt) => {
+      const o = await oracleAt(p, r.ray);
+      const row = { at: tagPt, impl: slim(r), oracle: slimO(o) };
+      const b = [];
+      if (!r.ray) b.push('没记录到被测实现的射线');
+      else if (o.error) b.push(`oracle 错误：${o.error}`);
+      else {
+        if ((r.id ?? null) !== o.id) b.push(`id ${JSON.stringify(r.id)} != oracle ${JSON.stringify(o.id)}`);
+        if ((r.node ?? null) !== o.uuid) {
+          const nh = r.node ? await p.evaluate(([ray, u]) => window.__oraNodeHit(ray, u), [r.ray, r.node]) : null;
+          const rm = nh && nh.hit && nh.hit.tri ? RAW.matchTriangle(nh.hit.tri, nh.hit.point) : null;
+          row.implNode = nh ? { visibleChain: nh.visibleChain, roof: nh.roof, raw: rm ? `${rm.file}#${rm.node} ${rm.name}` : null } : null;
+          b.push(`实际命中节点 ${r.node}${nh ? `（父链${nh.visibleChain ? '可见' : '含隐藏'}${nh.roof ? '，屋面' : ''}，raw ${row.implNode.raw}）` : ''} != oracle 可见命中 ${o.uuid}（raw ${o.raw ? o.raw.file + '#' + o.raw.node + ' ' + o.raw.name : '—'}）`);
+        } else if (r.node) {
+          const nh = await p.evaluate(([ray, u]) => window.__oraNodeHit(ray, u), [r.ray, r.node]);
+          if (!nh.found || !nh.visibleChain) b.push(`实际命中节点 ${r.node} 父链含隐藏节点`);
+        }
+        if (o.firstHidden && o.id && o.firstHidden.id === o.id) { row.sameIdHiddenInFront = o.firstHidden; }
+      }
+      row.bads = b;
+      return row;
+    };
+    for (let i = 0; i < pts.length; i++) {
+      const a = await checkPoint(page, rb[i], pts[i]);
+      const u = await checkPoint(pageU, ru[i], pts[i]);
+      if (a.sameIdHiddenInFront) sameIdCases++;
+      const rawA = a.oracle.raw, rawU = u.oracle.raw;
+      if ((rawA || null) !== (rawU || null)) a.bads.push(`batch=0 页 oracle 节点不同：${rawA} vs ${rawU}`);
+      if (a.bads.length) badsD.push(`${JSON.stringify(pts[i])} ${a.bads.join('，')}`);
+      if (u.bads.length) badsD.push(`${JSON.stringify(pts[i])}(batch=0) ${u.bads.join('，')}`);
+      rows.push({ batched: a, unbatched: u });
     }
-    return out;
-  }, pts);
-  const [ob, ou] = await Promise.all([oraclePicks(page), oraclePicks(pageU)]);
-  report.T6d = { hiddenIds: hiddenIdsB, oracleBatched: ob, oracleUnbatched: ou, batched: rb, unbatched: ru };
-  const diffD = pts.map((p, i) => [p, rb[i]?.id, ru[i]?.id]).filter(r => r[1] !== r[2]);
-  const vsOracle = pts.map((p, i) => [p, rb[i]?.id ?? null, ob[i]]).filter(r => (r[1] ?? null) !== r[2]);
-  const badsD = [];
-  if (!hiddenIdsB.length) badsD.push('屋顶按钮没有隐藏任何 id 的网格（点不出「隐藏不抢点」）');
-  if (hiddenIdsB.length !== hiddenIdsU.length) badsD.push(`两侧隐藏 id 数不同：${hiddenIdsB.length} vs ${hiddenIdsU.length}`);
-  if (vsOracle.length) badsD.push(`${vsOracle.length} 个点与测试端独立射线 oracle 不一致：${JSON.stringify(vsOracle.slice(0, 4))}`);
-  if (diffD.length) badsD.push(`与 batch=0 不一致：${JSON.stringify(diffD.slice(0, 4))}`);
-  if (badsD.length) fail(`T6d 屋顶按钮点选：${badsD.join('；')}`);
-  else ok(`T6d 实点「屋顶」按钮（隐藏 ${hiddenIdsB.length} 个 id）后 15 点点选：与测试端独立射线 oracle 逐点一致、与 batch=0 一致`);
-  await page.click('#t-roofs');   // 恢复屋顶
-  await pageU.click('#t-roofs');
+    // 厅殿顶视专点（只在合批页，屋顶仍关）：射线必先穿过隐藏的同 id 屋面
+    const special = [];
+    for (const nm of ['三穗堂', '仰山堂', '大殿']) {
+      const t = TARGETS.find(x => x.nm === nm);
+      const [mx, , mz] = clickPoint(t.o).target;   // 与 T1 同一锚点（footprint 质心 / GLB 网格质心）
+      await page.evaluate(([e, tt]) => window.__viewAt(e, tt), [[mx + 0.5, 60, mz + 0.5], [mx, 0, mz]]);
+      await page.waitForTimeout(400);
+      const r = await clickFull(page, 700, 450);
+      const row = await checkPoint(page, r, nm);
+      if (row.sameIdHiddenInFront) sameIdCases++;
+      if (row.bads.length) badsD.push(`${nm} 顶视 ${row.bads.join('，')}`);
+      special.push(row);
+    }
+    report.T6d = { hiddenMeshes: hiddenRoofMeshes, rows, special, sameIdCases };
+    if (!hiddenRoofMeshes) badsD.push('屋顶按钮没有隐藏任何网格');
+    if (sameIdCases < 1) badsD.push('没有任何样本点出现「隐藏同 id 网格在前、可见网格在后」——同 id 反例未覆盖，T6d 区分不了隐藏屋顶与墙身');
+    if (badsD.length) fail(`T6d 屋顶按钮点选：${badsD.slice(0, 6).join('；')}${badsD.length > 6 ? `（共 ${badsD.length} 条）` : ''}`);
+    else ok(`T6d 实点「屋顶」按钮（隐藏 ${hiddenRoofMeshes} 个网格）后 15 点×2 页 + 3 厅殿顶视：实际命中节点 = 独立射线第一个可见命中（raw GLB 同一节点、父链全部可见），两页一致；同 id 隐藏在前的反例点 ${sameIdCases} 个`);
+  } catch (e) { fail(`T6d 异常中断：${e.message.split('\n')[0]}`); }
+  await page.keyboard.press('Escape');
+  await pageU.keyboard.press('Escape');
+  for (const p of [page, pageU]) {   // 恢复屋顶（只在当前为关时再点一次）
+    const off = await p.evaluate(() => !document.getElementById('t-roofs').classList.contains('active'));
+    if (off) await realClickBtn(p, '#t-roofs').catch(e => fail(`T6d 恢复屋顶失败：${e.message.split('\n')[0]}`));
+  }
   await page.waitForTimeout(200);
 }
 
-// ---------- T8 九曲桥来源按命中构件（必修3）：两点精确相等，不是集合成员 ----------
-// 点 1：折线顶视（桥面/栏杆，module=顶面更高的构件）真实点击；
-// 点 2：受控隐藏同 id 的 garden-kit 网格（与屋顶开关同一可见性技术）后真实点击，命中 bridge-head 桥体。
-// 期望值一律 = raw GLB 里命中网格所在节点向上最近的 extras.module（chainModule），精确相等。
-{
+// ---------- T8 九曲桥来源按命中父链（R4 按 REVIEW-astra-R3 必修2 重写）----------
+// oracle：被测实现同一条射线 → 测试独立 Raycaster 第一个可见命中 → 对回 raw GLB 节点 → raw 父链最近 extras.module，
+// 卡片来源与之精确相等（有 module →「套件：<module>」，无 →「程序化体块」）。
+//   T8a 默认状态折线顶视点：精确相等；
+//   T8b 默认状态 bridge-head 可达性扫描（只算射线不点击）：找到可达像素就真实点击断言；找不到如实记为限制（不算失败）；
+//   T8c 受控构造（只动内存场景，不改产物）：把 bridge-head 构件组整体抬高（必要时平移），使同一 layout id 下两个
+//       module 同时可见、顶视分别首中；两处各真实点击一次，来源必须各自等于命中父链的 module。
+//       变异「返回该 id 当前可见的最高 module」：默认状态 T8b 的 bridge-head 点被判成 garden-kit，
+//       受控状态 garden-kit 点被判成（抬高后最高的）bridge-head → 两处都失败。
+if (run('T8')) {
   const bridge = layout.objects.find(o => o.kind === 'zigzagBridge' && o.name === '九曲桥');
-  const ora = GLB_ORA[bridge.id];
-  if (!ora || ora.modules.length !== 2 || !ora.modTop) {
-    fail(`T8 raw GLB 里九曲桥应有且应有两个 module（实测 ${JSON.stringify(ora && ora.modules)}）`);
-  } else {
-    const modsByTop = Object.entries(ora.modTop).sort((a, b) => b[1] - a[1]);   // 顶面从高到低
-    const topMod = modsByTop[0][0];       // 桥面/栏杆（最高面，顶视首先命中）
-    const bodyMod = modsByTop[modsByTop.length - 1][0];   // 桥体（顶面更低，被桥面/栏杆包住）
-    const poly = bridge.geometry.polyline;
+  const poly = bridge.geometry.polyline;
+  const srcOf = (o) => (o.module ? `套件：${o.module}` : '程序化体块');
+  const topDown = async (x, z) => {
+    await page.evaluate(([e, t]) => window.__viewAt(e, t), [[x, 40, z + 0.3], [x, 0.5, z]]);
+    await page.waitForTimeout(250);
+  };
+  const judge = (tag, r, o, wantModule) => {
+    const b = [];
+    if (!r.ray) b.push('没记录到被测实现的射线');
+    else if (o.error) b.push(`oracle 错误：${o.error}`);
+    else {
+      if (o.id !== bridge.id) b.push(`oracle 命中 ${JSON.stringify(o.id)} 不是九曲桥（前置失败）`);
+      if (wantModule !== undefined && o.module !== wantModule) b.push(`oracle 命中 module ${JSON.stringify(o.module)} 不是本点预期构件 ${wantModule}（前置失败）`);
+      if (r.id !== o.id) b.push(`被测 id ${JSON.stringify(r.id)} != ${o.id}`);
+      if (r.node !== o.uuid) b.push(`实际命中节点 ${r.node} != oracle ${o.uuid}`);
+      if (r.src !== srcOf(o)) b.push(`来源 ${JSON.stringify(r.src)} != 命中父链精确 ${JSON.stringify(srcOf(o))}（raw ${o.raw.file}#${o.raw.node} ${o.raw.path}）`);
+    }
+    if (b.length) fail(`${tag}：${b.join('；')}`);
+    else ok(`${tag}：来源 ${r.src} = raw GLB 命中节点 ${o.raw.file}#${o.raw.node}「${o.raw.name}」父链最近 module，精确相等`);
+    return b.length === 0;
+  };
+  report.T8 = {};
+  // T8a 默认状态
+  try {
     const seg = Math.floor(poly.length / 2);
     const [px, pz] = poly[seg];
     const [qx, qz] = poly[(seg + 1) % poly.length];
     const dl = Math.hypot(qx - px, qz - pz) || 1;
-    const nx = -(qz - pz) / dl, nz = (qx - px) / dl;      // 折线左法线 → 偏向栏杆
-    // 桥端陆地段中点（折线末段中点）：bridge-head 平台只铺在两端陆地段（raw GLB extras.inference：
-    // 折线伸出池岸的东西两段读作实体桥头平台，桥体中部没有平台几何，顶视会打到水面）
-    const p2x = (poly[poly.length - 1][0] + poly[poly.length - 2][0]) / 2;
-    const p2z = (poly[poly.length - 1][1] + poly[poly.length - 2][1]) / 2;
-    const aimClick = async (x, z, ty) => {
-      await page.evaluate(([e, t]) => window.__viewAt(e, t), [[x, 40, z + 0.3], [x, ty, z]]);
-      await page.waitForTimeout(140);
-      await page.keyboard.press('Escape');
-      await page.waitForTimeout(30);
-      await page.evaluate(() => { window.__pickDebug = undefined; });
-      await page.mouse.click(700, 450);
-      await page.waitForTimeout(100);
-      return page.evaluate(() => {
-        const el = document.getElementById('info');
-        const dds = el.style.display === 'block' ? [...el.querySelectorAll(':scope > dl > dd')].map(d => d.textContent) : null;
-        return {
-          open: el.style.display === 'block',
-          src: dds ? dds[dds.length - 1] : null,
-          id: window.__pickDebug ? window.__pickDebug.id ?? null : 'no-write',
-        };
-      });
-    };
-    report.T8 = { topMod, bodyMod };
-    // 点 1：桥面/栏杆（折线点向栏杆侧偏 0.4 m，顶视首先命中最高构件）
-    const r1 = await aimClick(px + nx * 0.4, pz + nz * 0.4, 0.8);
-    const bads1 = [];
-    if (r1.id !== bridge.id) bads1.push(`命中 id ${JSON.stringify(r1.id)} != ${bridge.id}`);
-    if (r1.src !== `套件：${topMod}`) bads1.push(`来源 ${JSON.stringify(r1.src)} != 精确 ${JSON.stringify(`套件：${topMod}`)}`);
-    report.T8.railing = r1;
-    if (bads1.length) fail(`T8 点1（${topMod} 构件）：${bads1.join('；')}`);
-    else ok(`T8 点1 顶视命中 ${topMod} 构件：来源精确 = ${r1.src}`);
+    const nx = -(qz - pz) / dl, nz = (qx - px) / dl;
+    await topDown(px + nx * 0.4, pz + nz * 0.4);
+    const r = await clickFull(page, 700, 450);
+    const o = await oracleAt(page, r.ray);
+    report.T8.a = { impl: slim(r), oracle: slimO(o) };
+    judge('T8a 默认状态折线顶视点', r, o);
+  } catch (e) { fail(`T8a 异常中断：${e.message.split('\n')[0]}`); }
 
-    // 点 2：受控隐藏 garden-kit（=点1 命中的构件模块）网格 → 点击暴露的桥体 → 恢复
-    const hideKit = await page.evaluate(async ({ idWanted, modWanted }) => {
-      const scene = window.__scene;
+  // T8b 默认状态 bridge-head 可达性扫描（射线，不点击）
+  try {
+    const bh = [];   // bridge-head 在 raw GLB 的世界包围盒中心（按 module 过滤 raw 三角形索引）
+    for (const P of RAW.prims) { const c = RAW.chain(P.file, P.node); if (c.id === bridge.id && c.module === 'bridge-head') bh.push(P); }
+    const ctrs = bh.map(P => [(P.min[0] + P.max[0]) / 2, (P.min[1] + P.max[1]) / 2, (P.min[2] + P.max[2]) / 2]);
+    const ends = [poly[0], poly[poly.length - 1], [(poly[0][0] + poly[1][0]) / 2, (poly[0][1] + poly[1][1]) / 2], [(poly.at(-1)[0] + poly.at(-2)[0]) / 2, (poly.at(-1)[1] + poly.at(-2)[1]) / 2]];
+    const cams = [];
+    for (const [ex, ez] of [...ends, ...ctrs.map(c => [c[0], c[2]])]) {
+      cams.push([[ex, 30, ez + 0.3], [ex, 0.3, ez]]);
+      for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4; cams.push([[ex + Math.cos(a) * 6, 1.2, ez + Math.sin(a) * 6], [ex, 0.3, ez]]); }
+    }
+    let rays = 0, found = null;
+    const tally = {};
+    for (const [e, t] of cams) {
+      await page.evaluate(([e, t]) => window.__viewAt(e, t), [e, t]);
+      await page.waitForTimeout(250);
+      const hitsList = await page.evaluate(() => {
+        const out = [];
+        for (let y = 60; y <= 860; y += 50) for (let x = 60; x <= 1340; x += 64) { const ray = window.__oraPixelRay(x, y); out.push({ x, y, ray, hits: window.__oraHits(ray, 8) }); }
+        return out;
+      });
+      for (const h of hitsList) {
+        rays++;
+        const o = RAW.expect(h.hits);
+        if (o.id === bridge.id) tally[o.module ?? '(none)'] = (tally[o.module ?? '(none)'] || 0) + 1;
+        if (!found && o.id === bridge.id && o.module === 'bridge-head') found = { cam: [e, t], x: h.x, y: h.y };
+      }
+      if (found) break;
+    }
+    report.T8.b = { bridgeHeadPrims: bh.length, bridgeHeadCenters: ctrs, cams: cams.length, rays, tally, found };
+    if (!bh.length) fail('T8b raw GLB 里没有九曲桥 bridge-head 构件（产物变了，前置失败）');
+    else if (found) {
+      await page.evaluate(([e, t]) => window.__viewAt(e, t), found.cam);
+      await page.waitForTimeout(250);
+      const r = await clickFull(page, found.x, found.y);
+      const o = await oracleAt(page, r.ray);
+      report.T8.b.click = { impl: slim(r), oracle: slimO(o) };
+      judge(`T8b 默认状态 bridge-head 可达像素 (${found.x},${found.y})`, r, o, 'bridge-head');
+    } else {
+      report.T8.b.limitation = `默认状态下 ${cams.length} 个机位 × ${rays / cams.length} 像素共 ${rays} 条射线，命中九曲桥的首个可见网格全部是 ${JSON.stringify(tally)}，bridge-head 不可达（被 garden-kit 桥面/栏杆包住）；由 T8c 受控用例验证父链取 module`;
+      ok(`T8b 限制（不算失败）：${report.T8.b.limitation}`);
+    }
+  } catch (e) { fail(`T8b 异常中断：${e.message.split('\n')[0]}`); }
+
+  // T8c 受控构造（只动内存场景，不改产物）：把 bridge-head 构件组整体抬高并可选平移，使它与 garden-kit 同时可见、
+  // 顶视各自首中；同一 layout id 下两个 module 各真实点击一次。没有隐藏任何网格。
+  // 变异「返回该 id 当前可见的最高 module」：抬高后 bridge-head 最高，garden-kit 点会被判成 bridge-head → 失败。
+  try {
+    const OFFS = [[0, 20, 0], [30, 20, 0], [-30, 20, 0], [0, 20, 30], [0, 20, -30], [45, 20, 45], [-45, 20, -45]];
+    // bridge-head 探测点：raw GLB 里 bridge-head 朝上、且不与别的节点重合（raw 里 bridge-head 顶面有与 garden-kit
+    // 桥面逐顶点重合的三角形，oracle 对这类重合几何判 ambiguous）的三角形中面积最大者的质心（raw 几何现算，不写死坐标）
+    let bhTop = null;
+    const ups = [];
+    for (const P of RAW.prims) {
+      const c = RAW.chain(P.file, P.node);
+      if (c.id !== bridge.id || c.module !== 'bridge-head') continue;
+      for (let t = 0; t + 2 < P.idx.length; t += 3) {
+        const v = [0, 1, 2].map(k => [P.wpos[P.idx[t + k] * 3], P.wpos[P.idx[t + k] * 3 + 1], P.wpos[P.idx[t + k] * 3 + 2]]);
+        const e1 = v[1].map((x, i) => x - v[0][i]), e2 = v[2].map((x, i) => x - v[0][i]);
+        const n = [e1[1] * e2[2] - e1[2] * e2[1], e1[2] * e2[0] - e1[0] * e2[2], e1[0] * e2[1] - e1[1] * e2[0]];
+        const a = Math.hypot(...n) / 2;
+        if (a > 0.05 && n[1] / (2 * a) > 0.9) ups.push({ a, v });
+      }
+    }
+    ups.sort((x, y) => y.a - x.a);
+    let coincident = 0;
+    for (const u of ups) {
+      const ctr = [0, 1, 2].map(i => (u.v[0][i] + u.v[1][i] + u.v[2][i]) / 3);
+      const m = RAW.matchTriangle(u.v, ctr);
+      if (!m || m.ambiguous) { coincident++; continue; }
+      bhTop = [ctr[0], ctr[2]];
+      break;
+    }
+    report.T8.bhTopCoincidentSkipped = coincident;
+    if (!bhTop) throw new Error('raw GLB 里找不到 bridge-head 朝上三角形');
+    const setup = await page.evaluate(({ idWanted }) => {
       const idOf = (node) => { for (let n = node; n; n = n.parent) { if (n.userData && n.userData.id) return n.userData.id; const p = String(n.name || '').split('|'); if (p.length >= 4) return p[1]; } return null; };
-      const modOf = (node) => { for (let n = node; n; n = n.parent) { if (n.userData && n.userData.module != null) return String(n.userData.module); } return null; };
-      let n = 0;
-      scene.traverse(o => { if (o.isMesh && idOf(o) === idWanted && modOf(o) === modWanted) { o.visible = false; n++; } });
-      window.__batchSync?.();
-      return n;
-    }, { idWanted: bridge.id, modWanted: topMod });
-    const r2 = await aimClick(p2x, p2z, 0.3);
-    await page.evaluate(({ idWanted, modWanted }) => {
-      const scene = window.__scene;
+      const G = [];
+      window.__scene.traverse(o => {
+        if (o.userData && o.userData.module === 'bridge-head' && idOf(o) === idWanted) {
+          let top = true; for (let p = o.parent; p; p = p.parent) if (p.userData && p.userData.module === 'bridge-head' && idOf(p) === idWanted) top = false;
+          if (top) G.push(o);
+        }
+      });
+      window.__t8G = G;
+      window.__t8G0 = G.map(g => g.position.toArray());
+      window.__t8Id = idWanted;
+      return { groups: G.map(g => ({ uuid: g.uuid, name: g.name })) };
+    }, { idWanted: bridge.id });
+    report.T8.c = { groups: setup.groups, bhTop };
+    if (!setup.groups.length) throw new Error('场景里找不到九曲桥 bridge-head 构件组');
+    const moveBy = (d) => page.evaluate((d) => {
+      window.__oraUndo = {};
+      for (let i = 0; i < window.__t8G.length; i++) {
+        const g = window.__t8G[i];
+        const p0 = window.__t8G0[i];
+        g.position.set(p0[0], p0[1], p0[2]); g.updateMatrixWorld(true);
+        const w0 = g.getWorldPosition(g.position.clone());
+        if (d) {
+          const wp = w0.clone(); wp.x += d[0]; wp.y += d[1]; wp.z += d[2];
+          const lp = g.parent ? g.parent.worldToLocal(wp.clone()) : wp;   // 世界位移换算到父坐标系
+          g.position.copy(lp); g.updateMatrixWorld(true);
+          const w1 = g.getWorldPosition(g.position.clone());
+          window.__oraUndo[g.uuid] = [w1.x - w0.x, w1.y - w0.y, w1.z - w0.z];   // oracle 对 raw GLB 前扣回
+        }
+      }
       const idOf = (node) => { for (let n = node; n; n = n.parent) { if (n.userData && n.userData.id) return n.userData.id; const p = String(n.name || '').split('|'); if (p.length >= 4) return p[1]; } return null; };
-      const modOf = (node) => { for (let n = node; n; n = n.parent) { if (n.userData && n.userData.module != null) return String(n.userData.module); } return null; };
-      scene.traverse(o => { if (o.isMesh && idOf(o) === idWanted && modOf(o) === modWanted) { o.visible = true; } });
-      window.__batchSync?.();
-    }, { idWanted: bridge.id, modWanted: topMod });
-    const r3 = await aimClick(px + nx * 0.4, pz + nz * 0.4, 0.8);   // 恢复后复核点 1
-    const bads2 = [];
-    if (hideKit === 0) bads2.push(`没有隐藏到任何 ${topMod} 网格（受控暴露失败）`);
-    if (r2.id !== bridge.id) bads2.push(`命中 id ${JSON.stringify(r2.id)} != ${bridge.id}`);
-    if (r2.src !== `套件：${bodyMod}`) bads2.push(`来源 ${JSON.stringify(r2.src)} != 精确 ${JSON.stringify(`套件：${bodyMod}`)}`);
-    if (r3.src !== `套件：${topMod}`) bads2.push(`恢复后点1 复核来源 ${JSON.stringify(r3.src)} != ${JSON.stringify(`套件：${topMod}`)}`);
-    report.T8.body = { hidden: hideKit, r2, r3 };
-    if (bads2.length) fail(`T8 点2（${bodyMod} 构件，受控暴露）：${bads2.join('；')}`);
-    else ok(`T8 点2 隐藏 ${hideKit} 个 ${topMod} 网格后点击桥体：来源精确 = ${r2.src}；恢复后复核一致`);
+      const modOf = (node) => { for (let n = node; n; n = n.parent) if (n.userData && n.userData.module != null) return String(n.userData.module); return null; };
+      const vis = (node) => { for (let n = node; n; n = n.parent) if (n.visible === false) return false; return true; };
+      const cnt = {};
+      window.__scene.traverse(o => { if (o.isMesh && !o.isBatchedMesh && idOf(o) === window.__t8Id && vis(o)) { const m = modOf(o) ?? '(none)'; cnt[m] = (cnt[m] || 0) + 1; } });
+      return { undo: window.__oraUndo, visibleByModule: cnt };
+    }, d);
+    const seg = Math.floor(poly.length / 2);
+    const [px, pz] = poly[seg];
+    const [qx, qz] = poly[(seg + 1) % poly.length];
+    const dl = Math.hypot(qx - px, qz - pz) || 1;
+    const gk = [px - (qz - pz) / dl * 0.4, pz + (qx - px) / dl * 0.4];   // 与 T8a 同一点
+    const probe = async (x, z) => {   // 只算射线（不点击）：顶视画面中心的 oracle
+      await topDown(x, z);
+      return page.evaluate(() => window.__oraHits(window.__oraPixelRay(700, 450), 12)).then(h => RAW.expect(h));
+    };
+    let chosen = null;
+    const tried = [];
+    for (const d of OFFS) {
+      const st = await moveBy(d);
+      const bhPt = [bhTop[0] + d[0], bhTop[1] + d[2]];
+      const ob = await probe(...bhPt);
+      const og = await probe(...gk);
+      tried.push({ d, bh: [ob.id, ob.module, ob.error], gk: [og.id, og.module, og.error] });
+      if (ob.id === bridge.id && ob.module === 'bridge-head' && og.id === bridge.id && og.module === 'garden-kit') { chosen = { d, st, gkPt: gk, bhPt }; break; }
+    }
+    report.T8.c.tried = tried;
+    if (!chosen) { await moveBy(null); throw new Error(`候选位移都凑不出「两构件同时可见且分别首中」的受控场景：${JSON.stringify(tried)}`); }
+    report.T8.c.setup = chosen;
+    const vbm = chosen.st.visibleByModule;
+    if (!(vbm['garden-kit'] > 0 && vbm['bridge-head'] > 0)) fail(`T8c 受控场景同 id 两个 module 未同时可见：${JSON.stringify(vbm)}`);
+    else ok(`T8c 受控场景：bridge-head 构件组世界位移 ${JSON.stringify(chosen.d)}，同 id 可见网格 ${JSON.stringify(vbm)}（两 module 同时可见，未隐藏任何网格）`);
+    await topDown(...chosen.bhPt);
+    const rB = await clickFull(page, 700, 450);
+    const oB = await oracleAt(page, rB.ray);
+    await topDown(...chosen.gkPt);
+    const rG = await clickFull(page, 700, 450);
+    const oG = await oracleAt(page, rG.ray);
+    report.T8.c.bridgeHead = { impl: slim(rB), oracle: slimO(oB) };
+    report.T8.c.gardenKit = { impl: slim(rG), oracle: slimO(oG) };
+    judge('T8c 受控 bridge-head 点', rB, oB, 'bridge-head');
+    judge('T8c 受控 garden-kit 点', rG, oG, 'garden-kit');
+    await moveBy(null);   // 还原
+    await page.evaluate(() => { window.__oraUndo = {}; });
+    await topDown(...gk);
+    const rR = await clickFull(page, 700, 450);
+    const oR = await oracleAt(page, rR.ray);
+    report.T8.c.restored = { impl: slim(rR), oracle: slimO(oR) };
+    judge('T8c 还原后默认点', rR, oR, 'garden-kit');
+  } catch (e) {
+    fail(`T8c 异常中断：${e.message.split('\n')[0]}`);
+    await page.evaluate(() => { if (window.__t8G) window.__t8G.forEach((g, i) => { g.position.fromArray(window.__t8G0[i]); g.updateMatrixWorld(true); }); window.__oraUndo = {}; }).catch(() => {});
   }
 }
 await pageU.close();
 
 // ---------- T7 375px 手机宽度 ----------
-{
+if (run('T7')) try {
   const mp = await newPage('?zone=garden&cam=oblique', { width: 375, height: 667 });
   const o = TARGETS[0].o;   // 三穗堂
   const fp = o.geometry.footprint;
@@ -764,7 +981,7 @@ await pageU.close();
   else ok('T7 实点「步行」：卡片立即关闭');
   await mp.evaluate(() => window.__walk.exit());
   await mp.close();
-}
+} catch (e) { fail(`T7 异常中断：${e.message.split('\n')[0]}`); }
 
 await browser.close();
 if (process.env.REPORT) fs.writeFileSync(process.env.REPORT, JSON.stringify(report, null, 1) + '\n');
