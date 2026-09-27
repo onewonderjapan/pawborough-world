@@ -19,9 +19,11 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]                                           # scene-authoring/yuyuan-area
 sys.path.insert(0, str(ROOT / '.python-deps'))
+sys.path.insert(0, str(ROOT / 'scripts'))
 import shapely                                                   # noqa: E402
 from shapely.geometry import LineString, Point, Polygon          # noqa: E402
 from shapely.ops import unary_union                              # noqa: E402
+from road_surface import road_surface_polys                      # noqa: E402  (wave10 R4 共享取面)
 
 ARGS = sys.argv[1:]
 def arg(flag, default):
@@ -84,12 +86,9 @@ def base_walk():
         if o.get('skipRender'):
             continue
         if o['kind'] == 'road' and g.get('polyline'):
-            # wave10-streetfix R2：裁块路面读 surfaceFootprints 取并集（可多块），单块字段只作回退
-            fps = g.get('surfaceFootprints') or ([g['surfaceFootprint']] if g.get('surfaceFootprint') else [])
-            if fps:
-                surfaces.extend(Polygon(f).buffer(0) for f in fps)
-            else:
-                surfaces.append(LineString(g['polyline']).buffer(g['width'] / 2, cap_style=2, join_style=2))
+            # wave10-streetfix R4（审查必修1）：取面走 scripts/road_surface.py 共享实现——
+            # surfaceFootprints 存在即权威，空数组 = 空几何，不回退单块字段或折线
+            surfaces.extend(road_surface_polys(g))
         elif o['kind'] == 'plaza':
             surfaces.append(Polygon(g['footprint']).buffer(0))
         elif o['kind'] in ['outerBuilding', 'bazaarBlock', 'hall', 'tower', 'pavilion', 'xuan', 'waterside', 'watersideGallery', 'stage'] and g.get('footprint'):

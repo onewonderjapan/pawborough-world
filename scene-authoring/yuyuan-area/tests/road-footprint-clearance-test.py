@@ -32,6 +32,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 from shapely.geometry import Polygon, LineString, box
 from shapely.ops import unary_union
 from ribbon_geom import ribbon_polygon  # 审查必修3：与渲染端逐三角一致的共用实现
+from road_surface import road_surface_footprints  # 审查 R4 必修1：字段权威判定走共享实现
 
 R = Path(__file__).resolve().parents[1]
 O = R / os.environ.get('OUT_DIR', 'out-zone')
@@ -136,13 +137,14 @@ def check(doc, label):
             continue
         g = po.get('geometry') or {}
         pieces = []
-        if 'surfaceFootprints' in g:
-            # 存在即权威：空数组 = 不渲染，不回退（与 build-scene.mjs 同步的语义）
-            if not g['surfaceFootprints']:
+        sfs = road_surface_footprints(g)
+        if sfs is not None:
+            # 存在即权威（scripts/road_surface.py 共享实现）：空数组 = 不渲染，不回退（与 build-scene.mjs 同步的语义）
+            if not sfs:
                 fails.append(f'{rid}: 应渲染却无面 (surfaceFootprints 空数组 = 不渲染, baseline renders it)')
                 continue
             bad = False
-            for k, ring in enumerate(g['surfaceFootprints']):
+            for k, ring in enumerate(sfs):
                 issue = ring_issue(rid, k, ring)
                 if issue:
                     fails.append(issue + ' [surfaceFootprints]')
