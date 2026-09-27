@@ -80,6 +80,18 @@ check_case('两孔案例', Polygon([(0, 0), (20, 0), (20, 8), (0, 8)]),
                         Polygon([(12, 2), (15, 2), (15, 6), (12, 6)])]),
            140.0)
 
+# R4（审查可选项3）：候选切线全部失败 → 必须抛错，不许静默返回带孔面（exterior 序列化会填回）。
+# 该失败路径在有效几何上不可达（过孔环包围盒的竖直/水平候选线按介值定理必穿孔环，interiors 必递减；
+# 人造无效几何会被 GEOS 正则化、同样到不了该路径），所以除常规用例外，按 AST 断言函数末尾的
+# 兜底语句是 raise 而不是 return [p]——行为用例（上两例）保证正常路径，结构断言保证失败路径显式。
+src = (ROOT / 'scripts' / 'repair-layout.py').read_text(encoding='utf-8')
+fn_ast = next(n for n in ast.parse(src).body if isinstance(n, ast.FunctionDef) and n.name == 'split_holes')
+ok('split_holes 末尾兜底是 raise（切线全部失败时显式失败）', isinstance(fn_ast.body[-1], ast.Raise),
+   '末尾语句: ' + type(fn_ast.body[-1]).__name__)
+ok('split_holes 序列化前断言无孔（repair-layout 两处 assert all(not f.interiors)）',
+   src.count('assert all(not f.interiors for f in flats)') >= 2,
+   '出现 %d 处' % src.count('assert all(not f.interiors for f in flats)'))
+
 print('SPLIT-HOLES-TEST %d pass / %d fail' % (pass_n, fail_n))
 if failures:
     print('FAILURES:')

@@ -60,6 +60,10 @@ def check_case(name, pts, width, want_area=None):
            abs(truth.area - want_area) <= 0.01, '差 %.4f' % (truth.area - want_area))
     dev = abs(mine.area - truth.area)
     ok(name + ': ribbon_polygon %.6f 与渲染端差 ≤0.01' % mine.area, dev <= 0.01, '差 %.4f m²' % dev)
+    # R4（审查可选项3）：除总面积外，加对称差 ≤ 0.01 m² 断言——面积相等但形状错开（面积守恒的错位）
+    # 也必须被抓到；对称差 = (mine∖truth) ∪ (truth∖mine) 的面积。
+    sym = mine.symmetric_difference(truth).area
+    ok(name + ': 与渲染端并集对称差 %.6f ≤0.01 m²' % sym, sym <= 0.01, '对称差 %.4f m²' % sym)
 
 
 # A) baseline 仍走 ribbon 的 road-1064398308（期望值 = 第 2 轮审查独立复算 4713.565546 m²）

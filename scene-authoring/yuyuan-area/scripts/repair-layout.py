@@ -76,7 +76,10 @@ def split_holes(p):
    out=[]
    for q in pieces:out.extend(split_holes(q))
    return out
- return [p]
+ # R4（审查可选项3）：候选切线全部失败 → 显式抛错，不许静默返回带孔面（exterior-only 序列化会把孔
+ # 填回建筑，R2 的老问题）。有效几何上此路径按介值定理应不可达（竖直/水平候选线过孔环包围盒必穿孔环，
+# interiors 数必递减），到达即说明输入退化/无效 —— 宁可失败也不许写出带孔渲染件。
+ raise RuntimeError('split_holes: all %d candidate cut lines failed to reduce interiors (%d left); refusing to return a holed polygon' % (len(cands),len(p.interiors)))
 bldcuts=unary_union([Polygon(fp).buffer(0) for b in d['objects'] if b['kind'] in ('outerBuilding','bazaarBlock') and b['geometry'].get('footprint') for fp in b['geometry'].get('groundFootprints',[b['geometry']['footprint']])])
 roadclip=[]
 for o in d['objects']:
@@ -89,6 +92,8 @@ for o in d['objects']:
  # R3（审查必修1）：差集块可能带孔（建筑完全落在路面内），同样必须拆成无孔块再只存 exterior；
  # R2 版此分支直接存 exterior，孔洞被填回建筑。
  flats=[f for pp in pieces for f in split_holes(pp) if f.area>0.05]
+ # R4（审查可选项3）：序列化前断言无孔——只存 exterior，任何残留 interiors 都等于把孔填回建筑
+ assert all(not f.interiors for f in flats),o['id']+': split_holes 输出仍带孔（exterior 序列化会填回）'
  if not flats:
   o['skipRender']=True
   roadclip.append({'id':o['id'],'name':o.get('name'),'removedM2':round(g.area,1),'note':'surface fully inside building footprints; not rendered'})
@@ -115,6 +120,7 @@ for o in d['objects']:
  if g.area<=0.05 or g.intersection(bldcuts).area<=0.05:continue
  rem=g.difference(bldcuts)
  flats=[f for pp in (rem.geoms if hasattr(rem,'geoms') else [rem]) if pp.area>0.05 for f in split_holes(pp) if f.area>0.05]
+ assert all(not f.interiors for f in flats),o['id']+': split_holes 输出仍带孔（exterior 序列化会填回）'
  if not flats:
   o['skipRender']=True
   ribbonclip.append({'id':o['id'],'name':o.get('name'),'removedM2':round(g.area,1),'note':'ribbon surface fully inside building footprints; not rendered'})
