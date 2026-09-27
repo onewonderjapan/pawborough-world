@@ -20,6 +20,9 @@ import { readJson, sha256File } from './lib.mjs';
 
 const JS_REF = /['"`]\/out\/([A-Za-z0-9][A-Za-z0-9._-]*)['"`]/g;
 const VENDOR_SRC_REF = /\/vendor-src\/([A-Za-z0-9][A-Za-z0-9._/-]*)/g;
+// web 内的相对模块引用（如 walk.js 的 '../src/walkGround.js'）——server 以 area 根
+// 提供这些路径（/src/...），属于恢复包代码白名单必须覆盖的“代码引用闭包”。
+const AREA_REL_REF = /['"](\.\.?\/[A-Za-z0-9._/-]+)['"]/g;
 
 export async function deriveRuntimeClosure({ outDir, zonesManifestPath, webDir }) {
   const files = new Map(); // rel -> { bytes, sha256, rules: [] }
@@ -55,6 +58,7 @@ export async function deriveRuntimeClosure({ outDir, zonesManifestPath, webDir }
   try { webFiles = (await fsp.readdir(webDir)).filter((f) => f.endsWith('.js')); }
   catch (e) { throw new Error(`BAD_WEB_DIR: ${webDir} (${e.message})`); }
   const vendorSrc = new Set();
+  const areaRelative = new Set();
   for (const f of webFiles) {
     const src = await fsp.readFile(path.join(webDir, f), 'utf8');
     for (const m of src.matchAll(JS_REF)) {
@@ -62,6 +66,15 @@ export async function deriveRuntimeClosure({ outDir, zonesManifestPath, webDir }
       if (/\.[A-Za-z0-9]+$/.test(m[1])) add(m[1], `R5:web-literal:${f}`);
     }
     for (const m of src.matchAll(VENDOR_SRC_REF)) vendorSrc.add(m[1].replace(/['")].*$/, ''));
+    for (const m of src.matchAll(AREA_REL_REF)) {
+      // 以 /web/ 为基解析相对引用（URL 语义）：'../src/x.js' → '/src/x.js'，
+      // 即 server 以 area 根提供的代码文件；仍在 web/ 内的引用随 web/ 整体打包
+      const resolved = path.posix.normalize(path.posix.join('/web/', m[1]));
+      if (!resolved.startsWith('/') || resolved.split('/').includes('..')) continue; // 解析后越出 area 根：非本仓代码
+      const rel = resolved.replace(/^\//, '');
+      if (rel === '' || rel.startsWith('web/')) continue;
+      areaRelative.add(rel);
+    }
   }
   let moduleMap = null;
   try {
@@ -103,6 +116,7 @@ export async function deriveRuntimeClosure({ outDir, zonesManifestPath, webDir }
     files: resolved,
     missing,
     vendorSrc: [...vendorSrc].sort(),
+    areaRelative: [...areaRelative].sort(),
     moduleMap,
     notes,
     totals: {

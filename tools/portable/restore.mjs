@@ -13,7 +13,8 @@ import { spawn, spawnSync } from 'node:child_process';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { assertEmptyDest, assertSymlinksInside, copyTree, exists, nonClobberPath, parseArgs, readJson, safeJoin, safeTarName, sha256File, writeJson } from './lib.mjs';
+import { assertEmptyDest, assertSymlinksInside, copyTree, exists, nonClobberPath, parseArgs, readJson, safeJoin, sha256File, writeJson } from './lib.mjs';
+import { readTar, extractTar, TarUnsafeError } from './tar.mjs';
 import { verifyPackage } from './verify.mjs';
 import { runBrowserCheck } from './browser_check.mjs';
 
@@ -24,6 +25,7 @@ const pkg = path.resolve(String(args.package));
 const dest = path.resolve(String(args.dest));
 const port = Number(args.port || 5603);
 const sourceCache = args['source-cache'] ? path.resolve(String(args['source-cache'])) : null;
+const browserExecutable = args['browser-executable'] ? path.resolve(String(args['browser-executable'])) : null;
 const skipInstall = !!args['skip-install'];
 const withBrowser = !args['no-browser'];
 const checkAndExit = !!args['check-and-exit'];
@@ -40,9 +42,15 @@ const report = {
   stages: {},
   failures: [],
 };
+// 进程纪律：只终止本进程 spawn 并在此记录的服务子进程（PID 见报告 stages.serve.pid）
+let serverChild = null;
 const fail = async (stage, msg) => {
   report.failures.push({ stage, msg });
   report.finishedAt = new Date().toISOString();
+  if (serverChild?.pid) {
+    report.serverKilledOnFail = { pid: serverChild.pid };
+    serverChild.kill('SIGTERM');
+  }
   console.error(`RESTORE_FAIL [${stage}] ${msg}`);
   await writeReportAndExit(1);
 };
@@ -58,16 +66,22 @@ async function writeReportAndExit(code) {
 try { await assertEmptyDest(dest); } catch (e) { await fail('dest', e.message); }
 await fsp.mkdir(dest, { recursive: true });
 
-// ---- 2. 包 → dest（tar 安全解包 / 目录拒绝符号链接复制）---------------------
+// ---- 2. 包 → dest（严格 tar 校验先行 / 目录拒绝符号链接复制）---------------
 if (pkg.endsWith('.tar') && (await exists(pkg))) {
-  const listing = spawnSync('tar', ['-tf', pkg], { encoding: 'utf8' });
-  if (listing.status !== 0) await fail('extract', `tar -tf failed: ${listing.stderr}`);
-  try { for (const n of listing.stdout.split('\n').filter(Boolean)) safeTarName(n); }
-  catch (e) { await fail('extract', e.message); }
-  const tv = spawnSync('tar', ['-tvf', pkg], { encoding: 'utf8' });
-  if (tv.stdout.split('\n').some((l) => /->/.test(l))) await fail('extract', 'tar contains symlink entries — refusing');
-  const x = spawnSync('tar', ['-xf', pkg, '-C', dest], { stdio: 'inherit' });
-  if (x.status !== 0) await fail('extract', 'tar extraction failed');
+  // R2：解包【前】整体校验全部条目（路径 + 类型；拒绝 symlink/hardlink/special/扩展头）
+  let buf;
+  try { buf = await fsp.readFile(pkg); } catch (e) { await fail('extract', e.message); }
+  try {
+    const entries = readTar(buf);
+    report.tarEntriesChecked = entries.length;
+  } catch (e) {
+    await fail('extract', e instanceof TarUnsafeError ? e.message : String(e.message || e));
+  }
+  try {
+    await extractTar(buf, dest);
+  } catch (e) {
+    await fail('extract', e instanceof TarUnsafeError ? e.message : String(e.message || e));
+  }
   await flattenSingleTopDir(dest);
 } else {
   try { await copyTree(pkg, dest); }
@@ -121,22 +135,17 @@ const postBad = postRestore.filter((p) => !p.match);
 report.postRestore = { files: postRestore.length, mismatches: postBad.length, missing: postBad.filter((p) => !p.actual).map((p) => p.path).slice(0, 20) };
 if (postBad.length) await fail('post-restore', `${postBad.length} runtime closure files differ after restore (first: ${postBad[0].path})`);
 
-// ---- 3.5 解包代码（code.tar → dest 根，冲突即失败），再安放运行时闭包 --------
-const codeManifest = await readJson(safeJoin(dest, 'MANIFEST-code.json'));
-report.stages.codeExtract = { startedAt: new Date().toISOString() };
-{
-  const staging = safeJoin(dest, '.code-staging');
-  await fsp.mkdir(staging);
-  const x = spawnSync('tar', ['-xf', safeJoin(dest, 'code.tar'), '-C', staging], { stdio: 'inherit' });
-  if (x.status !== 0) await fail('code-extract', 'code.tar extraction failed');
-  for (const e of await fsp.readdir(staging)) {
-    if (await exists(safeJoin(dest, e))) await fail('code-extract', `collision extracting code: ${e} already exists`);
-    await fsp.rename(safeJoin(staging, e), safeJoin(dest, e));
-  }
-  await fsp.rmdir(staging);
-}
-report.stages.codeExtract.done = true;
+// ---- 3.5 白名单代码树展平到恢复根（镜像仓库布局），再安放运行时闭包 --------
 const restoreJsonEarly = await readJson(safeJoin(dest, 'RESTORE.json'));
+const codeDir = safeJoin(dest, 'code');
+if (!(await exists(codeDir))) await fail('code-extract', 'code/ directory absent from package');
+report.stages.codeExtract = { startedAt: new Date().toISOString(), mode: 'whitelist-dir-flatten' };
+for (const entry of await fsp.readdir(codeDir, { withFileTypes: true })) {
+  if (await exists(safeJoin(dest, entry.name))) await fail('code-extract', `collision flattening code: ${entry.name} already exists at restore root`);
+  await fsp.rename(safeJoin(codeDir, entry.name), safeJoin(dest, entry.name));
+}
+await fsp.rmdir(codeDir);
+report.stages.codeExtract.done = true;
 const runtimeTarget = safeJoin(dest, restoreJsonEarly.source.areaDir, restoreJsonEarly.serve.outDirEnv);
 if (await exists(runtimeTarget)) await fail('place-runtime', `${runtimeTarget} already exists — refusing to overwrite`);
 await fsp.mkdir(path.dirname(runtimeTarget), { recursive: true });
@@ -197,6 +206,7 @@ const server = spawn(process.execPath, ['scripts/server.mjs'], {
   env: { ...process.env, PORT: String(port), OUT_DIR: restoreJson.serve.outDirEnv },
   stdio: ['ignore', 'pipe', 'pipe'],
 });
+serverChild = server;
 let serverLog = '';
 server.stdout.on('data', (d) => { serverLog += d; });
 server.stderr.on('data', (d) => { serverLog += d; });
@@ -257,6 +267,7 @@ if (!html.includes('importmap')) probes.push({ path: 'web/index.html', kind: 'en
 else probes.push({ path: 'web/index.html', kind: 'entry', ok: true, detail: 'importmap present' });
 for (const p of Object.values(restoreJson.probes.moduleMap || {})) if (p.endsWith('.js') || p.endsWith('.mjs')) await modProbe(p, 'module-map');
 for (const v of restoreJson.probes.vendorSrc || []) await modProbe('/vendor-src/' + v, 'vendor-src');
+for (const v of restoreJson.probes.areaSrcRefs || []) await modProbe('/' + v, 'area-relative');
 report.stages.probes = probes;
 const badProbes = probes.filter((p) => !p.ok);
 if (badProbes.length) await fail('probes', `${badProbes.length}/${probes.length} probes failed (first: ${JSON.stringify(badProbes[0])})`);
@@ -264,11 +275,14 @@ console.log(`probes: ${probes.length}/${probes.length} ok`);
 
 // ---- 7. 浏览器 core 冷加载非空白 -------------------------------------------
 if (withBrowser) {
-  report.stages.browser = { startedAt: new Date().toISOString() };
+  report.stages.browser = { startedAt: new Date().toISOString(), browserExecutable };
   try {
-    const bc = await runBrowserCheck({ url: base + '/', playwrightFrom: safeJoin(dest, areaDir), evidenceDir, label: 'core-cold-load' });
+    const bc = await runBrowserCheck({
+      url: base + '/', playwrightFrom: safeJoin(dest, areaDir), evidenceDir, label: 'core-cold-load',
+      browserExecutable, readyTimeoutMs: 180000,
+    });
     report.stages.browser = { ...report.stages.browser, ...bc };
-    if (!bc.pass) await fail('browser', `cold-load frame blank: ${JSON.stringify(bc.frame)}`);
+    if (!bc.pass) await fail('browser', `cold-load not acceptable: ${JSON.stringify(bc.frame ?? bc.error ?? bc)}`);
     console.log(`browser: PASS browser=${bc.browser} readyMs=${bc.readyMs} frame=${JSON.stringify(bc.frame)}`);
   } catch (e) {
     await fail('browser', String(e.message || e));
