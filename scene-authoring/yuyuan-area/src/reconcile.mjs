@@ -21,6 +21,11 @@ export function buildExpectations(layout, proceduralStats) {
   const kindOf = {};
   for (const o of layout.objects) {
     kindOf[o.id] = o.kind;
+    // wave10-pondqa #8：路面整条落在池水轮廓内、build-scene 按规则不渲染的（deferred why = road-inside-pond-outline）必须缺席
+    if (deferredMap.get(o.id)?.why === 'road-inside-pond-outline') {
+      expectations.push({ id: o.id, expect: 'absent', reason: 'road surface entirely inside the pond outline (build-scene POND_QA rule)' });
+      continue;
+    }
     if (o.kind === 'ground' || o.kind === 'road') {
       // ground 单独节点；road 为 ribbon merged 节点；skipRender(并入九曲桥)必须缺席
       if (o.skipRender) expectations.push({ id: o.id, expect: 'absent', reason: o.reason || o.disposition });

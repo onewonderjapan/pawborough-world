@@ -56,13 +56,45 @@ const LOCS = FP.map(loc);
 const U0 = (Math.max(...LOCS.map((q) => q[0])) - Math.min(...LOCS.map((q) => q[0]))) / 2;
 const V0 = (Math.max(...LOCS.map((q) => q[1])) - Math.min(...LOCS.map((q) => q[1]))) / 2;
 const PLATFORM_Y = HT.platformY;               // 0.55
-// 承台外伸常量（与 build.py 一致的设计值，重算口径）
-const DECK_SIDE = 1.3, DECK_BRIDGE = 2.3;
+// 承台外伸（wave10-pondqa 改口径，主控 2026-09-27 定 #1 选项 2）：
+// R2 的桥接口是「承台边到桥中线 ≤0.3 m」——桥中线不是桥面边，桥面半宽 1.2 m，按这个口径承台、抱厦、西端外廊都压在桥面上
+// （抱厦墙离桥中线 0.28 m、桥栏穿墙、承台与桥面共面 18 m²）。改为量到桥面边线：承台不得进入桥面（到桥中线 ≥ 半宽 1.2），
+// 临桥边离桥面边 ≤0.30 m（接得上）。各边外伸 = 设计值（三面 1.3 / 临桥 2.3）与「让桥上限」的小者；
+// 让桥上限在这里从 layout 独立重算（只伸这一边的矩形到每跨桥中线距离 ≥ 1.2 + 0.02 的最大外伸，二分）。
+const DESIGN_EXT = { w: 1.3, e: 1.3, s: 1.3, b: 2.3 };
+const BR = LAYOUT.objects.find((o) => o.id === 'jiuqu-bridge');
+const BR_LINE = BR.geometry.polyline;
+const BR_HALF = (BR.width ?? 2.4) / 2;
+const BR_LOC = BR_LINE.map(loc);
+function segSegDist(p1, p2, q1, q2) {
+  const cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  if (cr(q1, q2, p1) * cr(q1, q2, p2) < 0 && cr(p1, p2, q1) * cr(p1, p2, q2) < 0) return 0;
+  return Math.min(distPointSeg(p1[0], p1[1], q1, q2), distPointSeg(p2[0], p2[1], q1, q2), distPointSeg(q1[0], q1[1], p1, p2), distPointSeg(q2[0], q2[1], p1, p2));
+}
+function rectClear([u0, v0, u1, v1]) {
+  const R = [[u0, v0], [u1, v0], [u1, v1], [u0, v1]];
+  let best = Infinity;
+  for (let i = 0; i + 1 < BR_LOC.length; i++) {
+    const a = BR_LOC[i], b = BR_LOC[i + 1];
+    if ([a, b].some((p) => p[0] >= u0 && p[0] <= u1 && p[1] >= v0 && p[1] <= v1)) return 0;
+    for (let k = 0; k < 4; k++) best = Math.min(best, segSegDist(R[k], R[(k + 1) % 4], a, b));
+  }
+  return best;
+}
+const rectOf = (x) => [-(U0 + x.w), -(V0 + x.s), U0 + x.e, V0 + x.b];
+const EXPECT_EXT = {};
+for (const sd of ['w', 'e', 's', 'b']) {
+  const one = { w: 0, e: 0, s: 0, b: 0 };
+  one[sd] = DESIGN_EXT[sd];
+  if (rectClear(rectOf(one)) >= BR_HALF + 0.02) { EXPECT_EXT[sd] = DESIGN_EXT[sd]; continue; }
+  let lo = 0, hi = DESIGN_EXT[sd];
+  for (let k = 0; k < 40; k++) { const mid = (lo + hi) / 2; one[sd] = mid; if (rectClear(rectOf(one)) >= BR_HALF + 0.02) lo = mid; else hi = mid; }
+  EXPECT_EXT[sd] = lo;
+}
 const DECK_POLY = [
-  [-(U0 + DECK_SIDE), -(V0 + DECK_SIDE)], [U0 + DECK_SIDE, -(V0 + DECK_SIDE)],
-  [U0 + DECK_SIDE, V0 + DECK_BRIDGE], [-(U0 + DECK_SIDE), V0 + DECK_BRIDGE],
+  [-(U0 + EXPECT_EXT.w), -(V0 + EXPECT_EXT.s)], [U0 + EXPECT_EXT.e, -(V0 + EXPECT_EXT.s)],
+  [U0 + EXPECT_EXT.e, V0 + EXPECT_EXT.b], [-(U0 + EXPECT_EXT.w), V0 + EXPECT_EXT.b],
 ];
-const BR_LINE = LAYOUT.objects.find((o) => o.id === 'jiuqu-bridge').geometry.polyline;
 
 function distPointSeg(px, py, a, b) {
   const dx = b[0] - a[0], dy = b[1] - a[1];
@@ -168,10 +200,11 @@ ok('GLB 节点名全部为 huxin-ting__*（无游离散件节点）', prefixOk, 
   if (deck) {
     const us = deck.map((q) => q[0]), vs = deck.map((q) => q[1]), ys = deck.map((q) => q[2]);
     const uMin = Math.min(...us), uMax = Math.max(...us), vMin = Math.min(...vs), vMax = Math.max(...vs), yMax = Math.max(...ys);
-    ok(`承台外包 = footprint 外扩(西/东/北 ${DECK_SIDE} / 桥侧 ${DECK_BRIDGE})（实测 u ${uMin.toFixed(2)}..${uMax.toFixed(2)} v ${vMin.toFixed(2)}..${vMax.toFixed(2)}）`,
-      Math.abs(uMin + U0 + DECK_SIDE) <= 0.02 && Math.abs(uMax - U0 - DECK_SIDE) <= 0.02 &&
-      Math.abs(vMin + V0 + DECK_SIDE) <= 0.02 && Math.abs(vMax - V0 - DECK_BRIDGE) <= 0.02,
-      `期望 u ±${(U0 + DECK_SIDE).toFixed(2)} v ${(-(V0 + DECK_SIDE)).toFixed(2)}..${(V0 + DECK_BRIDGE).toFixed(2)}`);
+    const ex = EXPECT_EXT;
+    ok(`承台外包 = footprint 外扩（西 ${ex.w.toFixed(2)} / 东 ${ex.e.toFixed(2)} / 北 ${ex.s.toFixed(2)} / 桥侧 ${ex.b.toFixed(2)}，设计值与让桥上限的小者）（实测 u ${uMin.toFixed(2)}..${uMax.toFixed(2)} v ${vMin.toFixed(2)}..${vMax.toFixed(2)}）`,
+      Math.abs(uMin + U0 + ex.w) <= 0.02 && Math.abs(uMax - U0 - ex.e) <= 0.02 &&
+      Math.abs(vMin + V0 + ex.s) <= 0.02 && Math.abs(vMax - V0 - ex.b) <= 0.02,
+      `期望 u ${(-(U0 + ex.w)).toFixed(2)}..${(U0 + ex.e).toFixed(2)} v ${(-(V0 + ex.s)).toFixed(2)}..${(V0 + ex.b).toFixed(2)}`);
     ok(`承台顶面 y = platformY(${PLATFORM_Y})`, Math.abs(yMax - PLATFORM_Y) <= 0.01, `yMax=${yMax.toFixed(3)}`);
   }
 }
@@ -230,35 +263,41 @@ ok('GLB 节点名全部为 huxin-ting__*（无游离散件节点）', prefixOk, 
   ok(`包络：y>0.7 顶点全部在 footprint 外扩盒内、≤12.1（违例 ${bad}）`, bad === 0, worst);
 }
 
-// ---------------- 2) 九曲桥接口：桥折线最近点落在承台边 ±0.3 m ----------------
+// ---------------- 2) 九曲桥接口（wave10-pondqa 改口径）：量到桥面边线，不量到桥中线 ----------------
+// 为什么改：R2 断言「承台边到桥中线 ≤0.3 m」，桥面半宽 1.2 m，满足它就意味着承台伸进桥面 0.9 m 以上——
+// 抱厦和西端外廊正是这样立到了桥面上。现在：承台 / 湖心亭任何构件不进入桥面（到桥中线 ≥ 1.2），
+// 临桥边离桥面边 ≤0.30 m（桥栏在抱厦正面开口，承台接得上）；另查桥栏以下 / 行走净空内没有湖心亭构件。
 {
-  // 口径重算（layout）：桥折线（转本地系）到承台多边形（本地系重算）的最近距离
-  const brLocal = BR_LINE.map(loc);
-  let bestV = Infinity, bestVtx = null;
-  for (const [px, pz] of brLocal) {
-    const d = distToPolyEdge(px, pz, DECK_POLY);
-    if (d < bestV) { bestV = d; bestVtx = [px, pz]; }
-  }
-  let bestS = Infinity;
-  for (let i = 0; i < brLocal.length - 1; i++) {
-    for (let k = 0; k <= 24; k++) {
-      const t = k / 24;
-      const px = brLocal[i][0] + (brLocal[i + 1][0] - brLocal[i][0]) * t;
-      const pz = brLocal[i][1] + (brLocal[i + 1][1] - brLocal[i][1]) * t;
-      bestS = Math.min(bestS, distToPolyEdge(px, pz, DECK_POLY));
+  // layout 口径：按让桥规则重算的承台多边形
+  const clearL = rectClear([DECK_POLY[0][0], DECK_POLY[0][1], DECK_POLY[2][0], DECK_POLY[2][1]]);
+  ok(`桥接口(layout 口径)：重算承台到桥中线 ${clearL.toFixed(3)} m ≥ 桥面半宽 ${BR_HALF}（不进桥面）`, clearL >= BR_HALF);
+  // 临桥边（v 最大边）上、抱厦正面范围内（|u| ≤ 2.2）离桥面边的距离
+  const edgeGapAt = (u, v) => Math.min(...BR_LOC.slice(1).map((b, i) => distPointSeg(u, v, BR_LOC[i], b))) - BR_HALF;
+  const gapsL = [-2.2, -1, 0, 1, 2.2].map((u) => edgeGapAt(u, DECK_POLY[2][1]));
+  ok(`桥接口(layout 口径)：临桥边离桥面边 ${Math.min(...gapsL).toFixed(3)}..${Math.max(...gapsL).toFixed(3)} m 在 [0, 0.30]（抱厦正面 |u|≤2.2）`,
+    Math.min(...gapsL) >= 0 && Math.max(...gapsL) <= 0.30);
+
+  // 产物口径：GLB 承台网格
+  const deck = partVertsLocal('huxin-ting__deck');
+  const minD = Math.min(...deck.map((q) => Math.min(...BR_LOC.slice(1).map((b, i) => distPointSeg(q[0], q[1], BR_LOC[i], b)))));
+  ok(`桥接口(GLB 口径)：承台网格到桥中线最近 ${minD.toFixed(3)} m ≥ ${BR_HALF}（不进桥面）`, minD >= BR_HALF - 0.005);
+  // 承台是矩形棱柱：临桥边 = v 最大的顶点所在边，沿它在抱厦正面范围 |u| ≤ 2.2 取样
+  const vEdge = Math.max(...deck.map((q) => q[1]));
+  const gapsG = vEdge > V0 + 0.5 ? [-2.2, -1, 0, 1, 2.2].map((u) => edgeGapAt(u, vEdge)) : [];
+  ok(`桥接口(GLB 口径)：承台临桥边离桥面边 ${gapsG.length ? Math.min(...gapsG).toFixed(3) + '..' + Math.max(...gapsG).toFixed(3) : 'n/a'} m 在 [0, 0.30]`, gapsG.length > 0 && Math.min(...gapsG) >= -0.005 && Math.max(...gapsG) <= 0.30);
+
+  // 全模块：桥栏顶（桥面 + 1.23，碰撞栏杆盒顶）以下，湖心亭构件到桥中线 ≥ 1.2；桥面 + 2.2 以下，不进桥栏内皮线（中线 ± 0.9）
+  const deckY = BR.deckY ?? 0.55;
+  let lowIn = 0, headIn = 0; const lowWorst = [], headWorst = [];
+  for (const nm of allParts) {
+    for (const q of parts.get(nm).verts.map(toLocal)) {
+      const d = Math.min(...BR_LOC.slice(1).map((b, i) => distPointSeg(q[0], q[1], BR_LOC[i], b)));
+      if (q[2] < deckY + 1.23 && q[2] > -0.1 && d < BR_HALF - 0.005) { lowIn++; if (lowWorst.length < 3) lowWorst.push(`${nm}@${d.toFixed(2)}`); }
+      if (q[2] < deckY + 2.2 && q[2] > -0.1 && d < BR_HALF - 0.30) { headIn++; if (headWorst.length < 3) headWorst.push(`${nm}@${d.toFixed(2)}`); }
     }
   }
-  ok(`桥接口(layout 口径)：桥折线最近顶点距承台边 ${bestV.toFixed(3)} m ≤ 0.3（最近顶点地图系 (${bestVtx[0].toFixed(2)}, ${bestVtx[1].toFixed(2)})）`, bestV <= 0.3);
-  ok(`桥接口(layout 口径)：桥折线采样最近点距承台边 ${bestS.toFixed(3)} m ≤ 0.3`, bestS <= 0.3);
-
-  // 产物口径：GLB 承台网格桥侧边缘顶点（本地系）到桥折线（本地系）的最近距离
-  const deck = partVertsLocal('huxin-ting__deck');
-  const edge = deck.filter((q) => q[1] > V0 + 1.5).map((q) => [q[0], q[1]]);
-  let bestG = Infinity;
-  for (let i = 0; i < brLocal.length - 1; i++) {
-    for (const [ex, ey] of edge) bestG = Math.min(bestG, distPointSeg(ex, ey, brLocal[i], brLocal[i + 1]));
-  }
-  ok(`桥接口(GLB 口径)：承台网格桥侧边到桥折线最近 ${bestG.toFixed(3)} m ≤ 0.35`, bestG <= 0.35, `bestG=${bestG}`);
+  ok(`桥栏顶以下湖心亭构件不进桥面（顶点 ${lowIn}）`, lowIn === 0, lowWorst.join(','));
+  ok(`桥面 +2.2 m 以下湖心亭构件不进桥栏内的行走带（顶点 ${headIn}）`, headIn === 0, headWorst.join(','));
 }
 
 // ---------------- 3) 预算：tris / bytes / glTF validator ----------------
@@ -748,7 +787,7 @@ function components(p) {
   const topErr = Math.max(...piles.map((p) => Math.abs(p.top - deckBot)));
   ok(`桩 ${piles.length} 根，桩顶顶住板底（最大偏差 ${topErr.toFixed(3)} m ≤ 0.02），桩脚入水（最高桩底 ${Math.max(...piles.map((p) => p.bot)).toFixed(2)} < ${WY}）`,
     piles.length >= 8 && topErr <= 0.02 && piles.every((p) => p.bot < WY));
-  const du0 = -(U0 + DECK_SIDE), du1 = U0 + DECK_SIDE, dv0 = -(V0 + DECK_SIDE), dv1 = V0 + DECK_BRIDGE;
+  const du0 = -(U0 + EXPECT_EXT.w), du1 = U0 + EXPECT_EXT.e, dv0 = -(V0 + EXPECT_EXT.s), dv1 = V0 + EXPECT_EXT.b;
   const sides = [
     { tag: '西', edge: (p) => p.u0 - du0, along: (p) => p.cv, a: dv0, b: dv1 },
     { tag: '东', edge: (p) => du1 - p.u1, along: (p) => p.cv, a: dv0, b: dv1 },
