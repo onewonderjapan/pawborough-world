@@ -73,6 +73,7 @@ const HUXINTING_IDS = new Set(['huxin-ting']);
 const POND_QA = process.env.POND_QA !== '0';
 const POND_WATER_ID = 'water-62072388';
 const POND_PATH_CLIP_IDS = new Set(['pond-west-link']);
+const POND_SOLID_STEP_IDS = new Set(['jiuqu-bridge-step-w', 'jiuqu-bridge-step-e']);
 const GROUND_Y = -0.4;                        // layout 'ground'（外围地面）的固定高度，见下方 case 'ground'
 const REVET = { band: 0.35, top: 0.06, poolWallBottom: -0.18, cope: 0x9b917f, wall: 0x8c8474 };
 // BAZAAR_TOWERS=1：商城命名大楼由 modules/bazaar-tower-kit 世界坐标 GLB 承担（id 表 modules/bazaar-tower-kit/ids.json；
@@ -936,14 +937,17 @@ function buildSteps(o) {
   const landingFront = endpoint
     ? Math.max(-0.02, (endpoint[0] - x) * Math.sin(ang) + (endpoint[1] - z) * Math.cos(ang) + 0.02)
     : -0.02;
+  // wave10-pondqa ②：桥端台阶每级实心落到外围地面（踏面顶 topY - rise·i 不变）
+  const solid = POND_QA && POND_SOLID_STEP_IDS.has(o.id);
   for (let i = 0; i < n; i++) {
     const topLanding = i === 0 && endpoint;
-    const st = new THREE.BoxGeometry(w, rise, topLanding ? landingFront + 0.34 : tread);
+    const top = topY - rise * i, bot = solid ? GROUND_Y : top - rise;
+    const st = new THREE.BoxGeometry(w, top - bot, topLanding ? landingFront + 0.34 : tread);
     const lz = topLanding ? (landingFront - 0.34) / 2 : -(0.18 + i * tread);
     const wx = x + lz * Math.sin(ang);
     const wz = z + lz * Math.cos(ang);
     if (endpoint) st.rotateY(ang);
-    st.translate(wx, topY - rise * (i + 0.5), wz);
+    st.translate(wx, (top + bot) / 2, wz);
     parts.push(colorize(st, 0x9b917f));
   }
   return mergedMesh(parts, o.key, o.ud);
