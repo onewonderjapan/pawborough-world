@@ -1,8 +1,11 @@
 // wave4-drawcalls：运行时合批（web/batching.js）不破坏按对象身份的消费者 —— 同机位 A/B：默认（合批）对 ?batch=0（改前渲染路径）。
 // 断言：
 //   I0 合批确实生效：默认页 __batchStats().batches > 0，且核心视图每帧 WebGL 绘制调用 < batch=0 的一半；
-//   I1 点选溯源：核心视图 5×4 网格屏幕点逐个真实鼠标点击，#info 面板（wave11-infocard 起为信息卡：只有 layout 有名
-//      的对象才弹卡，见 web/infocard.js）显示的名称两边逐点相同（无名点两边同为不弹；有名命中 ≥ 5 个）；
+//   I1 点选溯源：核心视图 5×4 网格屏幕点逐个真实鼠标点击，读 window.__pickDebug = { id, name }
+//      （wave11-infocard R2 的非展示调试接口：每次轨道拾取都写，无名对象也写 id；卡片弹不弹与它解耦），
+//      合批 / batch=0 两边逐点 id 相同；命中（id 非空）≥ 8。
+//      R1 曾把口径改成「读 #info、有名弹卡 ≥5」，R2 撤销该修订，恢复原身份契约。
+
 //   I2 导览目标着色（web/target-mask.js window.__targetMask，tour-render-check 的同一钩子）：每个导览机位
 //      目标像素占比两边相差 ≤ 0.002（绝对值），layout-id 目标的 meshesMatched 逐 id 相同；
 //   I3 可见性：屋顶按钮（产物里有 roof 标记节点时）与通用「原网格 visible=false → __batchSync」两边一致，画面确有变化，恢复后 < 1%；
@@ -77,32 +80,43 @@ if (want('I0')) {
   else ok(`I0 合批生效：${fb.batch.batches} 批 / ${fb.batch.batchedMeshes} 网格；每帧调用 ${fu.apiCalls} → ${fb.apiCalls}`);
 }
 
-// ---------- I1 点选溯源 ----------
+// ---------- I1 点选溯源（R2 恢复原契约：读 __pickDebug，阈值 ≥8，无名对象计入命中） ----------
 if (want('I1')) {
+  const [camB, camU] = await both(p => p.evaluate(() => window.__cam().p));
+  const camSame = JSON.stringify(camB) === JSON.stringify(camU);
+  report.I1cam = { batched: camB, unbatched: camU };
+  if (!camSame) fail(`I1 两边机位不同 B=${JSON.stringify(camB)} U=${JSON.stringify(camU)}`);
   const pts = [];
   for (let j = 0; j < 4; j++) for (let i = 0; i < 5; i++) pts.push([Math.round(140 + i * 280), Math.round(200 + j * 190)]);
   const pick = async (page) => {
     const out = [];
     for (const [x, y] of pts) {
-      await page.evaluate(() => { const el = document.getElementById('info'); el.style.display = 'none'; el.innerHTML = ''; });
+      const ui = await page.evaluate(([x, y]) => {
+        const el = document.elementFromPoint(x, y);
+        return el && el.tagName === 'CANVAS' ? 'canvas' : 'ui:' + (el ? (el.id || el.className || el.tagName) : 'none');
+      }, [x, y]);
+      if (ui !== 'canvas') { out.push({ ui }); continue; }
+      await page.evaluate(() => { window.__pickDebug = undefined; });
       await page.mouse.click(x, y);
       out.push(await page.evaluate(() => {
-        const el = document.getElementById('info');
-        if (el.style.display !== 'block') return null;
-        const dt = [...el.querySelectorAll('dt')].find(d => d.textContent === 'ID');
-        return dt ? dt.nextElementSibling.textContent : el.querySelector('h2')?.textContent || null;
+        const d = window.__pickDebug;
+        return d ? { id: d.id ?? null, name: d.name ?? null } : { ui: 'no-write' };
       }));
     }
     return out;
   };
   const [pb, pu] = await both(pick);
-  const same = pb.every((v, i) => v === pu[i]);
-  const hits = pb.filter(Boolean).length;
+  const same = pb.every((v, i) => JSON.stringify(v) === JSON.stringify(pu[i]));
+  const canvasPts = pb.map((v, i) => (v && v.ui === undefined)).length;
+  const hits = pb.filter(v => v && v.id != null).length;
+  const noWrite = pb.filter(v => v && v.ui === 'no-write').length;
   report.I1 = { points: pts, batched: pb, unbatched: pu };
-  if (!same) fail(`I1 点选 ID 不一致：${JSON.stringify(pts.map((p, i) => [p, pb[i], pu[i]]).filter(r => r[1] !== r[2]))}`);
-  else if (hits < 5) fail(`I1 有名弹卡命中太少（${hits}/20）——wave11 起无名对象不弹卡，20 点里应有 ≥5 个有名对象可弹`);
-  else ok(`I1 点选溯源 ${hits}/20 点有名弹卡，两边逐点相同（含同名不弹点）`);
+  if (camSame && noWrite > 0) fail(`I1 有 ${noWrite} 个点没写 __pickDebug（每次拾取都必须写，无名对象也写 id）`);
+  else if (camSame && !same) fail(`I1 点选结果不一致：${JSON.stringify(pts.map((p, i) => [p, pb[i], pu[i]]).filter(r => JSON.stringify(r[1]) !== JSON.stringify(r[2])))}`);
+  else if (camSame && hits < 8) fail(`I1 命中过少（${hits}/${canvasPts}，阈值 ≥8；无名对象计入命中）`);
+  else if (camSame) ok(`I1 点选溯源 ${hits}/${canvasPts} 点命中（含无名对象），两边逐点相同（UI 覆盖点两边一致地跳过）`);
 }
+
 
 // ---------- I2 导览目标着色 ----------
 if (want('I2')) {
