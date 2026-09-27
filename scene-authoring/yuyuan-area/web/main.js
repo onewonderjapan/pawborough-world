@@ -204,6 +204,11 @@ async function loadZoneFiles(m, ids, { firstPaint = false } = {}) {
     } catch (err) { zoneLoad[key] = { state: 'fail' }; console.error('zone load failed', key, err); }
   }
   publishZones();
+  const fbParts = m.zones.filter(e => e.id === 'fangbang' && e.file);
+  fangbangReady = fbParts.length > 0 && fbParts.every(e => {
+    const key = fbParts.length > 1 && e.part ? `fangbang#${e.part}` : 'fangbang';
+    return zoneLoad[key]?.state === 'ok';
+  });
   applyFangbangSupersede();
   return first;
 }
@@ -223,11 +228,11 @@ async function ensureZone(z) {
   if (!zoneManifest) return;
   if (z === 'fangbang' && fangbangReady) return;
   if (fangbangLoading.has(z)) return fangbangLoading.get(z);
-  const job = loadZoneFiles(zoneManifest, [z]).then(() => {
+  const job = loadZoneFiles(zoneManifest, [z]).then(async () => {
     if (z === 'fangbang') {
-      fangbangReady = true;
-      refreshOccluders();
-      if (walk && walk.mode && walk.mode() === 'walk') walk.rebuildPhysics();
+      if (!fangbangReady) throw new Error('fangbang: incomplete GLB activation');
+      await refreshOccluders();
+      if (walk.mode() === 'walk') await walk.addCollisionZone('fangbang');
     }
   });
   fangbangLoading.set(z, job);
@@ -236,7 +241,7 @@ async function ensureZone(z) {
 async function loadZones(m) {
   zoneManifest = m;
   window.__fangbangAabb = fangbangAabb(m);
-  const view = params.get('zone') || 'core';
+  const view = params.get('zone') || (params.get('at') === 'fangbang-street' ? 'fangbang' : 'core');
   const skip = onDemandIds(m), later = deferredIds(m);
   // 首载 = 当前视图各区（on-demand 区只在视图就是它时算）+ 其余非 on-demand 区，一律除去 deferred 区；
   // deferred 区（外围）在首载到齐、首帧渲染之后自动排队，不管当前视图是什么（?zone=all 取景用 manifest bounds，不等外围 GLB）。
@@ -559,7 +564,7 @@ const walk = installWalkMode({
   onFeet: (f) => {
     const box = window.__fangbangAabb;
     if (!box || fangbangReady || !f) return;
-    if (distToAabb(f[0], f[2], box) <= 60) ensureZone('fangbang');
+    if (distToAabb(f[0], f[2], box) <= 60) ensureZone('fangbang').catch(e => console.error('walk zone activation failed', e));
   },
 });
 

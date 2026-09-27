@@ -1014,6 +1014,14 @@ def export_glb(path, objects):
         bpy.ops.export_scene.gltf(filepath=path, export_format='GLB', export_yup=True, use_selection=True)
     print('exported', path, os.path.getsize(path), 'bytes')
 
+# G2: visible measured gate passage gap; physics reads this same final mesh.
+import importlib.util
+_passage_spec = importlib.util.spec_from_file_location('shanmen_passage', os.path.join(ROOT, 'scripts', 'route-interface-paving.py'))
+_passage = importlib.util.module_from_spec(_passage_spec)
+_passage_spec.loader.exec_module(_passage)
+_passage.add_passage(LAYOUT)
+_passage.add_east_apron(LAYOUT)
+
 SITE_ALL = [o for c in ('SITE-garden', 'SITE-temple', 'SITE-pond', 'SITE-fangbang', 'SITE-bazaar')
             if c in bpy.data.collections for o in bpy.data.collections[c].objects]
 all_objs = [o for c in ('ZONE-garden', 'ZONE-temple', 'ZONE-bazaar', 'ZONE-pond', 'ZONE-outer',

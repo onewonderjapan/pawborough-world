@@ -89,12 +89,20 @@ def tower_part_of(o):
 def tower_pred(n):
     return lambda o, mod, collname: collname == 'SITE-bazaar' and tower_part_of(o) == n
 
+def is_east_apron(o):
+    return o.get('module') == 'east-landing-access-apron'
+
+def is_shanmen_passage(o):
+    return o.get('module') == 'shanmen-passage'
+
 PARTS = [
     ('garden', 1, ['ZONE-garden', 'INST-garden', 'SITE-garden'], None),
-    ('pond',   1, ['ZONE-pond', 'SITE-pond'], None),
-    ('temple', 1, ['ZONE-temple', 'SITE-temple', 'INST-temple'], lambda o, m, c: c != 'INST-temple' or m in TEMPLE_FRONT or not m),   # module rule on INST only: SITE anchors carry module='garden-kit', ZONE carries none — both stay in part 1
+    ('pond',   1, ['ZONE-pond', 'SITE-pond'], lambda o,m,c: not is_east_apron(o)),
+    ('pond', 2, ['SITE-pond'], lambda o,m,c: is_east_apron(o)),
+    ('temple', 1, ['ZONE-temple', 'SITE-temple', 'INST-temple'], lambda o, m, c: not is_shanmen_passage(o) and (c != 'INST-temple' or m in TEMPLE_FRONT or not m)),   # module rule on INST only: SITE anchors carry module='garden-kit', ZONE carries none — both stay in part 1
     ('temple', 2, ['INST-temple'], lambda o, m, c: c == 'INST-temple' and bool(m) and m not in TEMPLE_FRONT and m not in TEMPLE_REAR),
     ('temple', 3, ['INST-temple'], lambda o, m, c: c == 'INST-temple' and m in TEMPLE_REAR),
+    ('temple', 4, ['SITE-temple'], lambda o, m, c: is_shanmen_passage(o)),
     ('bazaar', 1, ['ZONE-bazaar', 'INST-bazaar', 'FOOD-bazaar'], is_bazaar_street),
     ('bazaar', 2, ['ZONE-bazaar'], is_bazaar_block),
     *[('bazaar', n, ['SITE-bazaar'], tower_pred(n)) for n in TOWER_PARTS],
@@ -107,7 +115,7 @@ OPTIONAL_PARTS = {('bazaar', n) for n in TOWER_PARTS}   # 套件件：无楼（�
 DEFERRED_ZONES = {'outer'}
 # 分件文件名：单件区 zone-<z>.glb；多件区首件沿用 zone-<z>.glb（garden、bazaar：查看器/外部引用不换名），
 # 后续件 zone-<z>-<n>.glb；庙区沿用历史命名 zone-temple-1/2/3.glb。
-BASE_NAME_ZONES = {'garden', 'bazaar'}
+BASE_NAME_ZONES = {'garden', 'bazaar', 'pond'}
 bpy.ops.wm.open_mainfile(filepath=os.path.join(OUT, 'scene.blend'))
 # 同名同尺寸贴图合并（同 assemble.py SITE_MODULES 路径的做法；只省字节，不改材质）
 seen = {}

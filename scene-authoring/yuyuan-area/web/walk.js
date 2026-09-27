@@ -4,12 +4,9 @@
 // 位移只经 WalkController（CruiseDriver 同一条输入链）。默认仍是轨道模式，不加 ?walk=1 不加载任何物理。
 import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat';
-import { collectGroundTriangles } from '/vendor-src/world/groundExtractor.js';
-import { readGlb } from '/vendor-src/world/glbReader.js';
-import { buildPhysicsWorld } from '/vendor-src/world/physics.js';
 import { WalkController } from '/vendor-src/player/WalkController.js';
 import { applyWalkOrientation } from '/vendor-src/player/walkCamera.js';
-import { selectAreaGroundMeshes } from '../src/walkGround.js';
+import { AreaWalkPhysics } from '../src/areaWalkPhysics.js';
 
 const ZONE_FILES = ['garden', 'pond', 'temple', 'bazaar', 'outer'];
 const CAPSULE = { radius: 0.35, halfHeight: 0.6, eyeHeight: 1.6 };
@@ -31,6 +28,7 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
   let mode = 'orbit';
   let physics = null, controller = null, physicsPromise = null;
   let anchors = {};
+  let zonePhysics = null;
   const params = new URLSearchParams(location.search);
   let anchor = params.get('at') || 'main';
   const keys = { forward: 0, right: 0 };
@@ -43,6 +41,8 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
       o.value = name; o.textContent = `锚点 ${name}`;
       sel.appendChild(o);
     }
+    const street = document.createElement('option');
+    street.value = 'fangbang-street'; street.textContent = '方浜街段'; sel.appendChild(street);
     sel.value = anchor;
   }).catch(() => {});
 
@@ -91,38 +91,35 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
   async function buildPhysics() {
     if (hud) hud('步行：构建碰撞世界 …');
     await RAPIER.init();
-    const zoneIds = [...ZONE_FILES, ...extraCollisionZones().filter(z => !ZONE_FILES.includes(z))];
-    const files = await Promise.all(zoneIds.map(z =>
-      fetch(`/out/collision-${z}.json`).then(r => { if (!r.ok) throw new Error(`collision-${z}.json: ${r.status}`); return r.json(); })));
-    const colliders = files.flatMap(f => f.colliders);
-    anchors = {};
-    for (const f of files) Object.assign(anchors, f.spawns || {});
+    const readJson = async file => {
+      const r = await fetch(`/out/${file}`);
+      if (!r.ok) throw new Error(`${file}: ${r.status}`);
+      return r.json();
+    };
+    const manifest = await readJson('zones-manifest.json');
+    zonePhysics = new AreaWalkPhysics({ RAPIER, manifest, readJson, readBytes: async file => {
+      const r = await fetch(`/out/${file}`);
+      if (!r.ok) throw new Error(`${file}: ${r.status}`);
+      return r.arrayBuffer();
+    } });
+    physics = await zonePhysics.loadZones([...ZONE_FILES, ...extraCollisionZones().filter(z => !ZONE_FILES.includes(z))]);
+    anchors = zonePhysics.anchors;
+    if (zonePhysics.zones.has('fangbang')) await addStreetAnchor(readJson);
     anchor = anchors[anchor] ? anchor : 'main';
     sel.value = anchor;
-
-    // 地面三角形：直接解析原始分区 GLB（zones-manifest.json 给出各分区分件，
-    // 与 tests/zone-walk-check.mjs 同一路径），再按各分区 collision 文件的
-    // groundNodeRe/extraGroundNodes 选网（walkGround）。不用渲染场景的 cm.glb ——
-    // gltfpack 合并把同材质网格并进别名组、网格名变 mesh_N，无法可靠对名。
-    const manifest = await fetch('/out/zones-manifest.json').then(r => r.json());
-    const partsOf = z => manifest.zones.filter(e => e.id === z && e.file).map(e => e.file);
-    const groundMeshes = [];
-    for (const f of files) {
-      if (!f.groundNodeRe) continue; // 没有地面选网规则的分区只贡献墙体碰撞
-      for (const part of partsOf(f.zone)) {
-        const buf = await fetch(`/out/${part}`).then(r => {
-          if (!r.ok) throw new Error(`${part}: ${r.status}`);
-          return r.arrayBuffer();
-        });
-        const { meshes } = readGlb(buf);
-        for (const m of selectAreaGroundMeshes(meshes, f)) groundMeshes.push(m);
-      }
-    }
-    if (!groundMeshes.length) throw new Error('walk: no ground meshes matched in zone GLBs');
-    const groundTriangles = collectGroundTriangles(groundMeshes);
-    physics = buildPhysicsWorld(RAPIER, { collision: { colliders }, groundTriangles });
     controller = new WalkController({ RAPIER, physics, capsule: { ...CAPSULE, spawn: [0, 1, 0] } });
     if (hud) hud(`步行：碰撞就绪（墙 ${physics.wallCount} · 地面 ${physics.groundTriangleCount} 三角）`);
+  }
+
+  async function addStreetAnchor(readJson = file => fetch(`/out/${file}`).then(r => {
+    if (!r.ok) throw new Error(`${file}: ${r.status}`);
+    return r.json();
+  })) {
+    const route = await readJson('fangbang-route.json');
+    const street = route.mainStreet.find(p => p[0] < 138 && p[0] >= 54);
+    if (!street) throw new Error('fangbang-route: reviewed street start missing');
+    // New optional spawn from the existing reviewed street route; core pins unchanged.
+    anchors['fangbang-street'] = [...street];
   }
 
   // ---------- 输入 ----------
@@ -185,8 +182,14 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
     return {
       mode,
       anchor,
+      camera: camera.position.toArray(),
+      cameraRotation: camera.rotation.toArray().slice(0, 3),
+      yaw: controller ? controller.yaw : null,
+      pitch: controller ? controller.pitch : null,
+      paused: controller ? controller.paused : false,
       anchors: Object.keys(anchors),
       physicsReady: !!physics,
+      zones: zonePhysics ? zonePhysics.status().zones : [],
       wallCount: physics ? physics.wallCount : 0,
       groundTriangleCount: physics ? physics.groundTriangleCount : 0,
       feet: controller ? controller.feetPosition() : null,
@@ -196,6 +199,7 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
   }
   window.__walk = {
     status,
+    get zonePhysics() { return zonePhysics; },
     get controller() { return controller; },   // M4：?perf=1 的 CruiseDriver 需要挂同一控制器
     async spawnAt(name) {
       anchor = name; sel.value = name;
@@ -229,9 +233,13 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
   return {
     tick,
     mode: () => mode,
-    async rebuildPhysics() {
-      physics = null; physicsPromise = null; controller = null;
-      if (mode === 'walk') await enterWalk();
+    async addCollisionZone(zone) {
+      await ensurePhysics();
+      await zonePhysics.loadZone(zone);
+      // Same world/capsule/velocity/input/yaw/pause state survives activation.
+      anchors = zonePhysics.anchors;
+      if (zone === 'fangbang') await addStreetAnchor();
+      return status();
     },
   };
 }
