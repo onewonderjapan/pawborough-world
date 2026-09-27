@@ -190,14 +190,22 @@ ok(f'test_street_band[B] 对照（缺第二块 → 路线退出判定）', len(l
    '输出: ' + ('; '.join(lines['B'])[:120] or ''))
 
 # ---------- 消费方 3：build-scene.mjs FANGBANG_ROAD_SINK ----------
+# FANGBANG=0 时下沉判定整体关闭（build-scene.mjs：FANGBANG=0 → sink 集为 null，不打印 sink 行），
+# 此时断言「无 sink 行」即为该开关下的正确行为。
+fb_off = os.environ.get('FANGBANG') == '0'
 sink = {}
 for mode in ('A', 'B'):
     r = run(['node', str(R / 'src' / 'build-scene.mjs')], dict(env_base, OUT_DIR=str(dirs[mode])))
     line = next((l for l in r.stdout.splitlines() if l.startswith('FANGBANG road sink')), '')
     ids = set(re.findall(r'road-\d+', line))
     sink[mode] = (Y in ids, line)
-ok(f'build-scene FANGBANG_ROAD_SINK[A] 含 {Y}（第二块进走廊 → 下沉）', sink['A'][0], sink['A'][1][:160])
-ok(f'build-scene FANGBANG_ROAD_SINK[B] 对照（缺第二块 → 不下沉）', not sink['B'][0], sink['B'][1][:160])
+if fb_off:
+    ok('build-scene FANGBANG_ROAD_SINK[FANGBANG=0] 判定关闭（A/B 均无 sink 行）',
+       sink['A'][1] == '' and sink['B'][1] == '',
+       'A=' + repr(sink['A'][1][:80]) + ' B=' + repr(sink['B'][1][:80]))
+else:
+    ok(f'build-scene FANGBANG_ROAD_SINK[A] 含 {Y}（第二块进走廊 → 下沉）', sink['A'][0], sink['A'][1][:160])
+    ok(f'build-scene FANGBANG_ROAD_SINK[B] 对照（缺第二块 → 不下沉）', not sink['B'][0], sink['B'][1][:160])
 
 print('MULTIPIECE-CONSUMER-TEST %d pass / %d fail' % (pass_n, fail_n))
 if failures:
