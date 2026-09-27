@@ -6072,9 +6072,9 @@
       "type": "box",
       "obb": {
         "pos": [
-          47.0076,
+          46.884,
           0,
-          1.8475
+          2.332
         ],
         "theta": 2.89171,
         "center": [
@@ -6105,9 +6105,9 @@
       "type": "box",
       "obb": {
         "pos": [
-          47.0076,
+          46.884,
           0,
-          1.8475
+          2.332
         ],
         "theta": 2.89171,
         "center": [
@@ -6138,9 +6138,9 @@
       "type": "box",
       "obb": {
         "pos": [
-          47.0076,
+          46.884,
           0,
-          1.8475
+          2.332
         ],
         "theta": 2.89171,
         "center": [
@@ -6171,9 +6171,9 @@
       "type": "box",
       "obb": {
         "pos": [
-          47.0076,
+          46.884,
           0,
-          1.8475
+          2.332
         ],
         "theta": 2.89171,
         "center": [
@@ -6204,9 +6204,9 @@
       "type": "box",
       "obb": {
         "pos": [
-          47.0076,
+          46.884,
           0,
-          1.8475
+          2.332
         ],
         "theta": 2.89171,
         "center": [
@@ -6237,9 +6237,9 @@
       "type": "box",
       "obb": {
         "pos": [
-          47.0076,
+          46.884,
           0,
-          1.8475
+          2.332
         ],
         "theta": 2.89171,
         "center": [
@@ -6270,9 +6270,9 @@
       "type": "box",
       "obb": {
         "pos": [
-          47.0076,
+          46.884,
           0,
-          1.8475
+          2.332
         ],
         "theta": 2.89171,
         "center": [
@@ -6303,9 +6303,9 @@
       "type": "box",
       "obb": {
         "pos": [
-          47.0076,
+          46.884,
           0,
-          1.8475
+          2.332
         ],
         "theta": 2.89171,
         "center": [
@@ -6336,9 +6336,9 @@
       "type": "box",
       "obb": {
         "pos": [
-          47.0076,
+          46.884,
           0,
-          1.8475
+          2.332
         ],
         "theta": 2.89171,
         "center": [
@@ -6369,9 +6369,9 @@
       "type": "box",
       "obb": {
         "pos": [
-          47.0076,
+          46.884,
           0,
-          1.8475
+          2.332
         ],
         "theta": 2.89171,
         "center": [
@@ -6402,9 +6402,9 @@
       "type": "box",
       "obb": {
         "pos": [
-          47.0076,
+          46.884,
           0,
-          1.8475
+          2.332
         ],
         "theta": 2.89171,
         "center": [
@@ -6435,9 +6435,9 @@
       "type": "box",
       "obb": {
         "pos": [
-          47.0076,
+          46.884,
           0,
-          1.8475
+          2.332
         ],
         "theta": 2.89171,
         "center": [
@@ -6468,9 +6468,9 @@
       "type": "box",
       "obb": {
         "pos": [
-          47.0076,
+          46.884,
           0,
-          1.8475
+          2.332
         ],
         "theta": 2.89171,
         "center": [
@@ -6501,9 +6501,9 @@
       "type": "box",
       "obb": {
         "pos": [
-          47.0076,
+          46.884,
           0,
-          1.8475
+          2.332
         ],
         "theta": 2.89171,
         "center": [
@@ -6534,9 +6534,9 @@
       "type": "box",
       "obb": {
         "pos": [
-          47.0076,
+          46.884,
           0,
-          1.8475
+          2.332
         ],
         "theta": 2.89171,
         "center": [
@@ -6567,9 +6567,9 @@
       "type": "box",
       "obb": {
         "pos": [
-          47.0076,
+          46.884,
           0,
-          1.8475
+          2.332
         ],
         "theta": 2.89171,
         "center": [
@@ -26688,30 +26688,30 @@
       "sampled": [
         {
           "name": "peidian-w:peidian-base",
-          "maxCornerErr": 5.76e-07
+          "maxCornerErr": 5.76e-7
         },
         {
           "name": "peidian-e:peidian-base",
-          "maxCornerErr": 6.347e-07
+          "maxCornerErr": 6.347e-7
         },
         {
           "name": "gallery-w:gallery-column",
-          "maxCornerErr": 4.243e-07
+          "maxCornerErr": 4.243e-7
         },
         {
           "name": "houdian:rear-wall",
-          "maxCornerErr": 5.271e-07
+          "maxCornerErr": 5.271e-7
         },
         {
           "name": "court3:boundary-wall",
-          "maxCornerErr": 3.385e-07
+          "maxCornerErr": 3.385e-7
         },
         {
           "name": "dadiancourt:court2-south-return",
-          "maxCornerErr": 4.134e-07
+          "maxCornerErr": 4.134e-7
         }
       ],
-      "maxCornerError": 6.346988499217332e-07
+      "maxCornerError": 6.346988499217332e-7
     },
     "lanesNote": "v5: removed placeholder lane-A/lane-B end walls; added world-space records for the three lanes-v2 assets (modules keep their local sidecars; interfaces sidecar is already world-space)"
   },
