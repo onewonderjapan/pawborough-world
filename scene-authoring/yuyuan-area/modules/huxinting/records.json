@@ -1,7 +1,7 @@
 {
  "id": "huxin-ting",
  "glb": "<OUT_DIR>/huxin-ting.glb",
- "bytes": 1316596,
+ "bytes": 1316588,
  "tris": 20968,
  "partTriCounts": {
   "deck": 12,
@@ -182,7 +182,9 @@
    "boardH": 0.25,
    "rings": 6,
    "ridgeEndLift": 0.2,
-   "ornamentScale": 0.25
+   "ornamentScale": 0.25,
+   "doorHalf": 0.66,
+   "sillV": 5.2072
   },
   "tower": {
    "half": 2.1,

@@ -1,0 +1,28 @@
+{
+ "schema": "pawborough.fangbang-placement-overrides/1",
+ "purpose": "全域制作侧（scene-authoring/yuyuan-area）对仓库根共享数据集 world/fangbang-temple-v7 的放置覆盖。共享数据集 instances.json / collision-world.json 保持与原客户端整装 GLB（review-manifest worldAssembly）一致，不在那里改位置；全域需要挪的实例只在本文件登记。",
+ "whyBaseline": "baseline/ 是全域管线的人工定稿输入目录（layout.json、food-placement.json、commercial-route.pinned.json 同级）；本文件同属「装配要读、人工定稿、非生成物」，且不属于任何单一模块（modules/<kit>/ 只放模块自身的生成源与记录）。",
+ "frame": "v7 数据集 GLB 坐标（Y-up，X 东，Z 南）；地图坐标 = v7 + (53.5, -17.4)",
+ "apply": "对 id 相同的 v7 实例：positionGlb += translateGlb；对名称前缀为 `<id>:` 的 collision-world 记录：obb.pos += translateGlb（形式 b 的 min/max 同加）。结果按 4 位小数取整（与 v7 数据集精度一致）。应用前校验实例原位置 == expectBasePositionGlb（容差 1e-4），不符即报错，防止共享数据集改动后重复平移。",
+ "consumers": [
+  "scripts/assemble.py（方浜分区店屋放置、补齐件排线、168/170/171 相交判定）",
+  "scripts/fangbang_gapfill.py（临街空档补齐的邻居障碍）",
+  "scripts/export-collision-fangbang.mjs（collision-fangbang.json）",
+  "tests/fangbang-test.mjs（期望值从源数据 + 本覆盖重算）",
+  "tests/fangbang-placement-override-test.mjs（原客户端一致性 + 全域模型/碰撞对齐）"
+ ],
+ "loaders": {
+  "python": "scripts/fangbang_overrides.py",
+  "node": "scripts/fangbang-overrides.mjs"
+ },
+ "overrides": [
+  {
+   "id": "S04-restaurant-b",
+   "translateGlb": [0.1236, 0, -0.4845],
+   "expectBasePositionGlb": [46.8837, 0, 2.3324],
+   "resultPositionGlb": [47.0073, 0, 1.8479],
+   "reason": "wave5 F-09：restaurant-b 悬挂招牌板尖端伸进 S05-plain-v3 右侧山墙 / 转角门面柱 0.18–0.20 m（多边形相交 0.041 / 0.048 m²），灯笼离同一转角仅 0.09 m。沿自身门面法线向街平移 0.50 m 后两处不相交（tests/fangbang-test.mjs W7）。",
+   "origin": "wave10-streetfix S1 提交 6c4d47c6 原先直接改共享数据集；R5 按 astra R4 终审必修项迁到本覆盖（共享数据集恢复为 main 23e2e790）。"
+  }
+ ]
+}
