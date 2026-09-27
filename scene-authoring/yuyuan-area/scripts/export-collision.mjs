@@ -668,6 +668,23 @@ if (HUXINTING) {
   stats.huxinting = htStats;
 }
 
+// HUXINTING=0（程序化占位，没有承台 / 抱厦）：九曲桥栏杆在抱厦处的开口（视觉 + garden-kit-collision.json 盒都开着）前面是水，
+// 补一道隐形挡板（尺寸同桥栏杆盒：宽 0.24、高 1.23、离中线 W/2−0.19），位置 = garden-kit-collision.json jiuqu-bridge.openings 的跨与区间。
+if (!HUXINTING) {
+  const br = layout.objects.find(x => x.id === 'jiuqu-bridge');
+  const bp = br.geometry.polyline, W = br.width ?? 2.4;
+  (gardenKitCollision.modules['jiuqu-bridge'].openings || []).forEach((op, k) => {
+    const a = bp[op.span], b = bp[op.span + 1];
+    const L = Math.hypot(b[0] - a[0], b[1] - a[1]), d = [(b[0] - a[0]) / L, (b[1] - a[1]) / L], nn = [-d[1], d[0]];
+    const s0 = Math.max(0, op.s[0]), s1 = Math.min(L, op.s[1]);
+    if (s1 - s0 < 0.05) return;
+    const sm = (s0 + s1) / 2, off = W / 2 - 0.19;
+    add(br.zone, `jiuqu-bridge:porch-opening-guard-${k}`, 'garden-kit:jiuqu-bridge', Math.atan2(d[0], d[1]),
+      [+(a[0] + d[0] * sm + nn[0] * op.side * off).toFixed(4), 0, +(a[1] + d[1] * sm + nn[1] * op.side * off).toFixed(4)],
+      [0, 0.55 + 0.615, 0], [0.24, 1.23, +(s1 - s0).toFixed(4)]);
+  });
+}
+
 // ---------- 14) spawns：nav-gap anchors 按layout zones 多边形落入分区 ----------
 function pointInPoly(x, z, poly) {
   let inside = false;
