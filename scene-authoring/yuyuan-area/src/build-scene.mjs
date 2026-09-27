@@ -1123,18 +1123,26 @@ for (const o of layout.objects) {
     }
     case 'road': {
       const cols = { 2: 0x8f8a83, 1: 0x9c968d, 0: 0xb0a99d };
-      let fp = o.geometry.surfaceFootprint, poly = o.geometry.polyline;
+      const col = cols[o.geometry.priority] ?? 0xb0a99d;
+      // wave10-streetfix S3：路面多边形已按建筑 footprint 裁块（repair-layout 写 surfaceFootprints，
+      // surfaceFootprint 保留最大块给路线/商业检查等旧消费方），渲染端逐块成面后合并
+      let fps = o.geometry.surfaceFootprints || (o.geometry.surfaceFootprint ? [o.geometry.surfaceFootprint] : null);
+      let poly = o.geometry.polyline;
       if (FANGBANG_ROAD_CLIP && FANGBANG_ROAD_CLIP[o.id]) {
         const [xmin, xmax] = FANGBANG_ROAD_CLIP[o.id];
-        if (fp) fp = clipPolyX(fp, xmin, xmax);
+        if (fps) fps = fps.map(r => clipPolyX(r, xmin, xmax)).filter(r => r && r.length >= 3);
         if (poly) poly = clipPolylineX(poly, xmin, xmax);
-        if ((!fp || !fp.length) && (!poly || poly.length < 2)) continue;   // 整段让位
+        if ((!fps || !fps.length) && (!poly || poly.length < 2)) continue;   // 整段让位
       }
-      const g = fp ? shapeGeo(fp, o.height)
-        : (poly && poly.length > 1 ? ribbon(poly, o.geometry.width, o.height, cols[o.geometry.priority] ?? 0xb0a99d, key).geometry : null);
-      if (!g) continue;
-      if (FANGBANG_ROAD_SINK && FANGBANG_ROAD_SINK.has(o.id)) { g.translate(0, -FANGBANG_ROAD_SINK_M, 0); ud.fangbangSinkM = FANGBANG_ROAD_SINK_M; }
-      mesh = mergedMesh([colorize(g, cols[o.geometry.priority] ?? 0xb0a99d)], key, ud);
+      const parts = (fps && fps.length)
+        ? fps.map(r => colorize(shapeGeo(r, o.height), col))
+        : (poly && poly.length > 1 ? [colorize(ribbon(poly, o.geometry.width, o.height, col, key).geometry, col)] : null);
+      if (!parts) continue;
+      if (FANGBANG_ROAD_SINK && FANGBANG_ROAD_SINK.has(o.id)) {
+        for (const p of parts) p.translate(0, -FANGBANG_ROAD_SINK_M, 0);
+        ud.fangbangSinkM = FANGBANG_ROAD_SINK_M;
+      }
+      mesh = mergedMesh(parts, key, ud);
       break;
     }
     case 'plaza': mesh = shapeMesh(o.geometry.footprint, 0.04, 0xb3aa9a, key); mesh.userData = ud; break;
