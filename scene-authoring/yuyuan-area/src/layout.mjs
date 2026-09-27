@@ -9,6 +9,7 @@ import {
   bbox, polyArea, centroid, pointInPoly, polyIntersectsPoly, vertsInside,
   dist2d, distToSeg, distToPolyline, principalAxis, offsetPoly,
 } from './lib.mjs';
+import { facadeBayId, legacyDoorVariant, registerFacadeId, FACADE_ID_SCHEME } from './facade-identity.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const IN = path.join(ROOT, 'inputs');
@@ -57,6 +58,11 @@ const roadPolys = map.roads.filter(r => r.priority >= 0).map(r => r.points);
 const FACADE_STREET_NAMES = ['豫园老街', '粮厅路', '九曲桥广场', '中心广场', '黄金广场'];
 const facadeRoads = map.roads.filter(r => r.width >= 5 || FACADE_STREET_NAMES.includes(r.name)).map(r => r.points);
 let facadeId = 0;
+// goal-identity-20260927：facadeBay 稳定唯一身份。旧 facade-N 计数保留 legacyId 语义（含
+// suppressed 递增的旧行为，保证与冻结基线逐位对齐）；新 id 由 parent+毫米几何指纹决定，
+// 重复/无法区分必须失败；门型显式 doorVariant 元数据（旧 hashStr(legacyId)%2 推导），换 id 不改门窗。
+const facadeBayIds = new Set();
+const facadeIdentityAliases = {};
 const facadeStats = { bays: 0, shophouses: 0, segments: [] };
 
 // ---------- zone 归属：多边形相交，不只看中心点 ----------
@@ -1478,10 +1484,16 @@ function emitFacadeBays(bldId, edge, faceDir, shellH, zone, street) {
   for (let i = 0; i < nBay; i++) {
     const t = (i + 0.5) * bayW;
     const cx = ax + ux * t, cz = az + uz * t;
+    // 旧计数 id 先行保留（legacyId）：值序列与冻结基线完全一致（suppressed 递增、rendered 不递增）
+    const legacyId = `facade-${facadeId}`;
     if (buried([cx, cz])) { suppressed++; facadeId++; continue; }
+    const bayGeometry = { position: [cx, cz], rotY: Math.atan2(faceDir[0], faceDir[1]), width: bayW * 0.94, dir: [faceDir[0], faceDir[1]] };
+    const id = registerFacadeId(facadeBayIds, facadeBayId(bldId, bayGeometry), `parent=${bldId} legacy=${legacyId}`);
+    (facadeIdentityAliases[legacyId] ||= []).push(id);
     emit({
-      id: `facade-${facadeId}`, zone, kind: 'facadeBay', lod: 'L1', disposition: 'rendered',
-      geometry: { position: [cx, cz], rotY: Math.atan2(faceDir[0], faceDir[1]), width: bayW * 0.94, dir: [faceDir[0], faceDir[1]] },
+      id, zone, kind: 'facadeBay', lod: 'L1', disposition: 'rendered',
+      geometry: bayGeometry,
+      doorVariant: legacyDoorVariant(legacyId), legacyId,
       height: Math.min(shellH, 4.2), parentBuilding: bldId, street,
       trade: TRADE[facadeId % TRADE.length],
       sources: { parentOsmWay: bldId }, confidence: 'bay rhythm design-inferred on real street-facing edge',
@@ -1588,6 +1600,15 @@ for (const { b, t } of byZone.bazaar) {
     });
   }
 }
+
+// goal-identity-20260927：facade 身份对账块（legacyId 一对多清单 + 方案说明）
+layoutExtras.facadeIdentity = {
+  scheme: FACADE_ID_SCHEME,
+  rule: 'id = facade-{parentShort}-{base36(fnv1a32(parentBuilding|px|pz|rYm|wm))}; px/pz=position mm, rY=rotY milliradians, wm=width mm; derived from parent + own geometry only so unrelated insertions never reshuffle ids; duplicates/indistinguishable bays fail at generation time',
+  doorVariant: "center = door centered (hashStr(legacyId)%2==0); offsetLeft = door offset -w*0.22; value derived from the legacy counter id, byte-parity with the frozen baseline visuals; buildFacadeBay reads this metadata first, un-migrated files fall back to legacy hashStr(id)",
+  totals: { bays: facadeBayIds.size, legacyIds: Object.keys(facadeIdentityAliases).length },
+  legacyAliases: facadeIdentityAliases,
+};
 
 // ---------- 豫园老街 / 粮厅路：店屋底模连续街面（成排，design rows） ----------
 {

@@ -888,9 +888,11 @@ function buildFacadeBay(o) {
     pil.translate(sx * (w / 2 - pilW / 2), h / 2, 0.1);
     parts.push([pil, 0xb5ab97]);
   }
-  // 门洞：偶数开间居中，奇数开间偏左（节奏变体）；深色内缩
+  // 门洞：门型读显式 doorVariant 元数据（goal-identity-20260927，换稳定 id 不改门窗画面）；
+  // 未迁移旧文件按旧 hashStr(id)%2 回退，行为与历史版本逐位一致。
+  const doorVariant = o.doorVariant ?? (hashStr(o.id) % 2 === 0 ? 'center' : 'offsetLeft');
   const doorW = Math.min(1.9, w * 0.4);
-  const doorX = hashStr(o.id) % 2 === 0 ? 0 : -w * 0.22;
+  const doorX = doorVariant === 'center' ? 0 : -w * 0.22;
   const door = new THREE.BoxGeometry(doorW, 2.5, 0.1);
   door.translate(doorX, 1.25, 0.1);
   parts.push([door, 0x3f3a34]);
@@ -933,6 +935,11 @@ function buildFacadeBay(o) {
   awn.translate(0, 2.95, 0.42);
   parts.push([awn, 0x6b4a33]);
   const geos = parts.map(([geo, hex]) => colorize(geo, hex));
+  // 身份元数据随 extras 进 GLB（gltfpack -ke 保留），供运行时追溯/定位
+  if (o.ud) {
+    if (o.doorVariant) o.ud.doorVariant = o.doorVariant;
+    if (o.legacyId) o.ud.legacyId = o.legacyId;
+  }
   const mesh = mergedMesh(geos, o.key, o.ud);
   mesh.position.copy(g.position);
   mesh.rotation.copy(g.rotation);
