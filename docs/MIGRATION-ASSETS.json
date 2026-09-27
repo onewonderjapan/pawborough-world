@@ -2078,7 +2078,6 @@
       "sha256": "ca33d55c69069df5c3416b3da769e26ab11664faffe6e6fa667caa190df421da",
       "bytes": 448256,
       "sourcePackage": "pawborough-wave11-huxwalk-20260927",
-      "pendingLeadArchive": true,
       "replaces": {
         "sha256": "d60215cb18dc6ba99484a6e7966b136e111245aa8ffe500236322aaa4a7d2729",
         "bytes": 448256
@@ -2101,7 +2100,6 @@
       "sha256": "6bec4b654ab03098258005a7affd5d2005f3d0520638c490d7e17909f4c3afe4",
       "bytes": 6222,
       "sourcePackage": "pawborough-wave11-huxwalk-20260927",
-      "pendingLeadArchive": true,
       "replaces": {
         "sha256": "69f37dc2b72389d33d6c99b037da6ac95ba01f4cde1c263b0d4bf08471da26f3",
         "bytes": 5975
@@ -2112,7 +2110,6 @@
       "sha256": "4b0169c3fef4a1529c3f63c8492bdb52b10501796757a51db4733f0a02e2ed6a",
       "bytes": 23241,
       "sourcePackage": "pawborough-wave11-huxwalk-20260927",
-      "pendingLeadArchive": true,
       "replaces": {
         "sha256": "d3396c04740ba6dc24d0a6d9818b409bf2b3d7f19ee9ac40244d410c835b2eaa",
         "bytes": 22916
@@ -2299,7 +2296,8 @@
     "docs/migrations/20260926/CLOUD-RECEIPT-outerkit.json",
     "docs/migrations/20260926/CLOUD-RECEIPT-bazaarblocks.json",
     "docs/migrations/20260926/CLOUD-RECEIPT-bazaar-batch1.json",
-    "docs/migrations/20260927/CLOUD-RECEIPT-consolidation.json"
+    "docs/migrations/20260927/CLOUD-RECEIPT-consolidation.json",
+    "docs/migrations/20260927/CLOUD-RECEIPT-huxwalk.json"
   ],
   "wave9SharedTexPendingLeadArchive": {
     "wave": "wave9-sharedtex-20260926",
