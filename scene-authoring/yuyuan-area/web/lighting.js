@@ -18,6 +18,7 @@
 // 读取失败（404 / 网络 / JSON 解析 / 结构校验不过 / 初始化抛错）或超过 PRESETS_TIMEOUT_MS=3 s 未到：统一回退旧灯光（Hemisphere + Directional、
 // ACES 1.05、纯色背景），不开阴影、不建点光、不改材质，P / cur 清空，state().error 记原因；ready 永不 reject，场景照常加载。
 // 超时不取消请求：迟到的应答若合法，再切到预设（state().lateApplied）；挂起则一直停在旧灯光（tests/lighting-fallback-check.mjs）。
+// 预设选择（R2）：set() 在预设未就绪时只记下请求，就绪（含迟到升级）后按最近一次请求初始化；每次成功应用 / 回退都经 onChange 推给界面、并同步地址栏 ?light=。
 // 测试钩子：window.__lighting.state()（当前预设 / 阴影 / 灯数 / 匹配到的材质数等）、window.__lighting.set(name)。
 import * as THREE from 'three';
 
@@ -110,6 +111,9 @@ function skyTexture(sky, sunDir, w, h) {
 
 export function installLighting({ renderer, scene, camera, controls, params, getWalkMode = () => 'orbit' }) {
   const want = params.get('light') || null;
+  let inFlight = true;   // presets.json 请求尚未有结果（超时回退后仍可能为 true：迟到升级）
+  let requested = want;   // 最近一次请求的预设（启动参数或之后 set()，含预设未就绪期间的选择；R2）
+  const listeners = new Set();   // onChange 回调：每次预设成功应用 / 回退后同步界面（下拉框）
   const shadowOn = params.get('shadow') !== '0';
   const glowOff = params.get('glow') === '0';   // 调试：夜间关掉自发光（对照测量用）
   const plOverride = params.has('plights') ? Math.max(0, Math.min(32, parseInt(params.get('plights'), 10) || 0)) : null;   // 测量用：覆盖点光池灯数（0–32，不受 max 限制）
@@ -244,7 +248,20 @@ export function installLighting({ renderer, scene, camera, controls, params, get
     const matched = applyEmissive();
     updatePool(); frame = 0;
     state.matchedMaterials = matched;
+    syncSelection();
     return true;
+  }
+  // R2：预设状态唯一出口——成功应用（首次、迟到升级、用户切换）或回退后，把实际状态推给地址栏与界面。
+  // 地址栏：已有 ?light= 或实际预设不是默认档时写 light=实际预设（默认 day 且原本没参数时不添参数）。
+  function syncSelection() {
+    if (cur) {
+      try {
+        const u = new URL(location.href);
+        if (u.searchParams.has('light') || cur !== P.default) { u.searchParams.set('light', cur); history.replaceState(history.state, '', u); }
+      } catch (e) { /* 非浏览器环境 */ }
+    }
+    const st = { preset: cur, requested, pending: !P && inFlight };
+    for (const fn of listeners) { try { fn(st); } catch (e) { console.warn('lighting onChange listener failed', e); } }
   }
 
   // 阴影相机跟随取景焦点（每帧）
@@ -310,6 +327,7 @@ export function installLighting({ renderer, scene, camera, controls, params, get
     skyTex?.dispose(); skyTex = null;
     scene.background = new THREE.Color(bgOn ? LEGACY.bg : 0x101418);
     console.warn('lighting presets unavailable, legacy lighting kept:', error);
+    syncSelection();
   }
   // 读取：3 s 内没有结果就先回退旧灯光让场景照常加载（ready 结束）；请求不取消——之后若迟到的应答合法，再切到预设
   // （「迟到升级」：swiftshader + 机器负载下主线程被占时，本地 6 KB 文件也可能超过 3 s 才轮到回调）。
@@ -328,7 +346,7 @@ export function installLighting({ renderer, scene, camera, controls, params, get
     }
     for (const r of [...roots, ...batchRoots]) r.traverse(setShadowFlags);
     for (const r of roots) collectCandidates(r);
-    apply(want && P.presets[want] ? want : P.default);
+    apply(requested && P.presets[requested] ? requested : P.default);   // R2：用最近一次请求（等待期间的下拉选择也算），不是启动时的 want
     error = null; state.error = null;
   }
   const t0 = performance.now();
@@ -346,16 +364,20 @@ export function installLighting({ renderer, scene, camera, controls, params, get
       .then(j => {
         clearTimeout(timer);
         state.presetsMs = Math.round(performance.now() - t0);
-        if (settled) state.lateApplied = true;
+        const late = settled;
+        inFlight = false;
         init(j);
+        if (late) state.lateApplied = true;   // R2：初始化成功后才记（迟到但非法的应答走 fallback，不留 lateApplied）
       })
-      .catch(e => { clearTimeout(timer); try { fallback(e); } catch (e2) { console.warn('lighting fallback failed', e2); } })
-      .finally(done);
+      .catch(e => { clearTimeout(timer); inFlight = false; try { fallback(e); } catch (e2) { console.warn('lighting fallback failed', e2); } })
+      .finally(() => { inFlight = false; done(); });
   });
 
   const api = {
     ready, tick, registerRoot, registerBatches,
-    set: (name) => { const ok = apply(name); if (ok) { const u = new URL(location.href); u.searchParams.set('light', cur); history.replaceState(null, '', u); } return ok; },
+    // R2：预设未就绪（等待迟到应答 / 已回退）时记下请求，就绪后按它初始化；返回 true = 已应用
+    set: (name) => { requested = name; state.requested = name; if (!P) { syncSelection(); return false; } return apply(name); },
+    onChange(fn) { listeners.add(fn); fn({ preset: cur, requested, pending: !P && inFlight }); return () => listeners.delete(fn); },
     setBackdrop(on) { bgOn = on; scene.background = on ? (skyTex || new THREE.Color(LEGACY.bg)) : new THREE.Color(0x101418); },
     get presets() { return P; },
     state() {

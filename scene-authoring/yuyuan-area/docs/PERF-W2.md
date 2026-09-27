@@ -61,11 +61,12 @@ ANGLE D3D11 上 multiDraw 在驱动层可能仍按段下发，所以驱动层绘
 - **天空**：运行时生成 256×128 等距柱状 DataTexture，不下载贴图。首载非场景字节 7,535,696 → 7,561,279（+25.6 KB：
   `web/lighting.js` 16.5 KB + `lighting/presets.json` 6.0 KB + main / index / perf 改动），在 ≤ 50 KB 的预算内。
 - **预设读取**（R1）：分区加载排在 `lighting/presets.json` 之后，读取上限 3 s（`PRESETS_TIMEOUT_MS`）。超时 / 404 / 解析失败 /
-  字段不全 → 旧灯光（无阴影、ACES 1.05）照常加载；超时不取消请求，迟到的合法应答会再切到预设（`__lighting.state().lateApplied`）。
+  字段不全 → 旧灯光（无阴影、ACES 1.05）照常加载；超时不取消请求，迟到的合法应答会再切到预设（`__lighting.state().lateApplied`，初始化成功后才置 true）。
+  等待期间在下拉框选的预设会被记下，迟到升级按它初始化；下拉框与地址栏 `?light=` 随每次成功应用同步（R2）。
   swiftshader + 高负载下实测过一次本地 6 KB 文件 15.6 s 才轮到回调（lighting-check R1 日志），所以 W2 上若首屏偶见旧灯光一闪属此机制。
 - `?perf=1` 的 `renderer.drawCalls / triangles` 现在是**含阴影通道的一整帧**（three r180 在 `render()` 里先画阴影贴图、后清零
   `renderer.info`，旧读法开阴影后只剩主通道，P1 对账会差一半）；另报 `renderer.shadowPass`（阴影通道那部分）、`renderer.includesShadowPass: true`（口径标记：
-  没有此字段的旧报告不含阴影通道，不能直接比）与 `lighting`（预设 / 阴影 / 点光数）。W2 上核心首屏应看到 drawCalls 约 480、其中 shadowPass 约 215。
+  字段缺失时口径未知——wave11 之前的报告不含阴影通道，2df32f06–200bb246 之间的报告已含阴影通道但尚无此字段，需结合版本或原始记录判断）与 `lighting`（预设 / 阴影 / 点光数）。W2 上核心首屏应看到 drawCalls 约 480、其中 shadowPass 约 215。
 
 在 W2 上请再各跑一次并把 JSON 发回（与上面 wave4 那两份同一页面、同一机位）：
 

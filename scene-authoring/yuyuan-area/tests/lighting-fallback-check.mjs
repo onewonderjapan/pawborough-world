@@ -3,7 +3,12 @@
 //   hang    请求一直挂起（不应答）；
 //   empty   返回 200 `{}`（合法 JSON、字段全缺）；
 //   missing 返回真实 presets.json 删掉顶层 pointLights（合法 JSON、缺一个必要字段）；
-//   slow    15 s 后才返回真实 presets.json（迟到升级：先按旧灯光加载，应答到了再切到 day 预设）。
+//   slow    15 s 后才返回真实 presets.json（迟到升级：先按旧灯光加载，应答到了再切到 day 预设）；
+//   late-night  ?light=night，presets.json 扣住到超时回退之后才放行（R2）：升级后实际 = 夜晚、下拉框 = 夜晚、地址栏 light=night，
+//               再在下拉框直接选「白天」→ 实际 = 白天、下拉框 = 白天、地址栏 light=day；
+//   late-select 无 ?light，扣住 presets.json；超时回退后（旧灯光）在下拉框选「夜晚」，再放行：实际 = 夜晚、下拉框 = 夜晚、地址栏 light=night（R2）。
+//   late-invalid 扣住到超时回退之后再放行 `{}`：仍是旧灯光、error 非空、lateApplied = false（R2：初始化成功后才记 lateApplied）。
+//   late-* 用例由测试手动放行应答（不是定时），保证「选择发生在应答之前」；负对照 = 200bb246 的 web/lighting.js + web/main.js。
 // 断言（每种情况）：
 //   F1 分区清单 /out/zones-manifest.json 在导航后 ≤ 60 s 内被请求（挂起时不能卡住加载；查看器超时为 3 s）；
 //   F2 window.__ready（首载 + 外围分区全部到齐）且已加载分区 ≥ 4 个；
@@ -24,7 +29,8 @@ const require = createRequire('/home/baibai/pawborough-world/node_modules/');
 const { chromium } = require('playwright');
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BASE = process.env.BASE || 'http://127.0.0.1:5491/';
-const CASES = (process.env.CASES || 'hang,empty,missing,slow').split(',').filter(Boolean);
+const CASES = (process.env.CASES || 'hang,empty,missing,slow,late-night,late-select,late-invalid').split(',').filter(Boolean);
+const LATE = CASES.filter(c => c.startsWith('late-'));
 const SLOW_MS = 15000;
 const real = JSON.parse(fs.readFileSync(path.join(ROOT, 'lighting', 'presets.json'), 'utf8'));
 const missing = { ...real }; delete missing.pointLights;
@@ -40,7 +46,7 @@ const ok = (c, cond, msg, data) => {
 
 const exe = '/home/baibai/.cache/ms-playwright/chromium-1234/chrome-linux/chrome';
 const browser = await chromium.launch({ executablePath: exe, args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
-for (const c of CASES) {
+for (const c of CASES.filter(c => !c.startsWith('late-'))) {
   report.cases[c] = {};
   const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
   const pageErrors = [], consoleErrors = [];
@@ -99,6 +105,59 @@ for (const c of CASES) {
   ok(c, pageErrors.length === 0 && consoleErrors.length === 0, 'F3 no pageerror / console.error', { pageErrors: pageErrors.slice(0, 3), pageErrorCount: pageErrors.length, consoleErrors: consoleErrors.slice(0, 3), consoleErrorCount: consoleErrors.length });
   if (c !== 'slow') report.cases[c].state = s;
   report.cases[c].image = img;
+  await page.close();
+}
+// ---------- R2：迟到升级时的预设选择同步 ----------
+for (const c of LATE) {
+  report.cases[c] = {};
+  const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
+  const pageErrors = [], consoleErrors = [];
+  page.on('pageerror', e => pageErrors.push(String(e).slice(0, 300)));
+  page.on('console', m => { if (m.type() === 'error' && !/favicon\.ico/.test(m.location()?.url || '')) consoleErrors.push(m.text().slice(0, 300)); });
+  let release = null;
+  const held = new Promise(r => { release = r; });
+  await page.route('**/lighting/presets.json', async route => { await held; await route.fulfill({ status: 200, contentType: 'application/json', body: c === 'late-invalid' ? '{}' : JSON.stringify(real) }).catch(() => {}); });
+  const qs = c === 'late-night' ? '&light=night' : '';
+  await page.goto(BASE + '?zone=core&cam=oblique' + qs, { waitUntil: 'domcontentloaded' });
+  let timedOut = true;
+  try { await page.waitForFunction(() => window.__lighting && window.__lighting.state().timedOut === true, null, { timeout: 180000, polling: 500 }); } catch { timedOut = false; }
+  const view = () => page.evaluate(() => {
+    const st = window.__lighting.state(), sel = document.getElementById('t-light');
+    return { preset: st.preset, requested: st.requested, lateApplied: st.lateApplied, error: st.error, select: sel ? sel.value : null, selectState: sel ? sel.dataset.state || null : null, url: new URL(location.href).searchParams.get('light') };
+  });
+  const before = await view();
+  ok(c, timedOut && before.preset === null, 'L0 presets held past the 3 s timeout: legacy lighting (preset null)', { timedOut, ...before });
+  if (c === 'late-select') {
+    await page.selectOption('#t-light', 'night');
+    const mid = await view();
+    report.cases[c].whilePending = mid;
+    ok(c, mid.preset === null && mid.select === 'night', 'L1 select night while presets pending: still legacy, selection kept', mid);
+  }
+  release();
+  if (c === 'late-invalid') {
+    let settledLate = true;
+    try { await page.waitForFunction(() => /invalid/.test(window.__lighting.state().error || ''), null, { timeout: 180000, polling: 500 }); } catch { settledLate = false; }
+    const v = await view();
+    report.cases[c].afterInvalid = v;
+    ok(c, settledLate && v.preset === null && v.lateApplied === false && v.selectState === 'fallback', 'L5 late invalid response: stays legacy, error = invalid, lateApplied false, dropdown marked fallback', { settledLate, ...v });
+    ok(c, pageErrors.length === 0 && consoleErrors.length === 0, 'F3 no pageerror / console.error', { pageErrors: pageErrors.slice(0, 3), consoleErrors: consoleErrors.slice(0, 3) });
+    await page.close();
+    continue;
+  }
+  let upgraded = true;
+  try { await page.waitForFunction(() => window.__lighting.state().preset !== null, null, { timeout: 180000, polling: 500 }); } catch { upgraded = false; }
+  const after = await view();
+  report.cases[c].afterUpgrade = after;
+  ok(c, upgraded && after.lateApplied === true && after.preset === 'night' && after.select === 'night' && after.url === 'night',
+    'L2 late upgrade: actual preset = night, dropdown = night, URL light=night', { upgraded, ...after });
+  ok(c, after.selectState === 'applied', 'L3 dropdown marked applied after upgrade', after.selectState);
+  if (c === 'late-night') {
+    await page.selectOption('#t-light', 'day');
+    const back = await view();
+    report.cases[c].afterSelectDay = back;
+    ok(c, back.preset === 'day' && back.select === 'day' && back.url === 'day', 'L4 choosing day in the dropdown switches back: actual = day, dropdown = day, URL light=day', back);
+  }
+  ok(c, pageErrors.length === 0 && consoleErrors.length === 0, 'F3 no pageerror / console.error', { pageErrors: pageErrors.slice(0, 3), consoleErrors: consoleErrors.slice(0, 3) });
   await page.close();
 }
 await browser.close();

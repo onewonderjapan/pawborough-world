@@ -388,8 +388,20 @@ document.getElementById('bar').addEventListener('click', (e) => {
   }
 });
 // wave11-lighting：光照预设下拉（同 ?light=，切换后写回地址栏）
-document.getElementById('t-light')?.addEventListener('change', (e) => lighting.set(e.target.value));
-lighting.ready.then(() => { const sel = document.getElementById('t-light'); const st = lighting.state(); if (sel && st.preset) sel.value = st.preset; });
+// R2：下拉框只跟 lighting.onChange 同步（首次应用、迟到升级、回退都会回调）：有实际预设时显示实际预设；
+// 预设未就绪时显示最近一次请求并在 title 注明「待预设加载后生效」；等待期间的选择由 lighting.set 记下，迟到应答按它初始化
+{
+  const sel = document.getElementById('t-light');
+  if (sel) {
+    sel.addEventListener('change', (e) => lighting.set(e.target.value));
+    lighting.onChange((st) => {
+      const v = st.preset || st.requested;
+      if (v && [...sel.options].some(o => o.value === v)) sel.value = v;
+      sel.title = st.preset ? '光照预设（同 ?light=）' : (st.pending ? '光照预设加载中：所选预设将在加载后生效' : '光照预设不可用（已回退默认灯光）');
+      sel.dataset.state = st.preset ? 'applied' : (st.pending ? 'pending' : 'fallback');
+    });
+  }
+}
 function restoreHud() {
   const hud = document.getElementById('hud');
   if (hud.dataset.base) { hud.innerHTML = hud.dataset.base; delete hud.dataset.base; }
