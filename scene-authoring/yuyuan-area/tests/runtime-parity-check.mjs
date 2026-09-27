@@ -1,13 +1,21 @@
 // G4 出口一验收工具：两个 runtime 目录的 zone GLB 三角形级几何对账 + G1 稳定身份审计。
-//   parity   ：逐分件比较三角形多重集（世界坐标量化 1e-4 m）。hash 不同不再允许宽泛 SKIP ——
-//              必须给出具体证据：三角形多重集是否一致、节点名集合差在哪、逐 prim 计数差在哪。
+//   parity   ：逐分件比较三角形多重集（世界坐标量化 1e-4 m，winding 保留）。hash 不同不再允许
+//              宽泛 SKIP —— 必须给出具体证据：三角形多重集是否一致、节点名集合差在哪、逐 prim 计数差在哪。
 //              用生产碰撞链同一 readGlb（src/world/glbReader.js），不吃任何中间格式。
 //   identity ：G1 稳定 facade 身份在当版 runtime 的完整性：175 个 bazaar|<newId>|facadeBay|L1 节点、
 //              extras 携带 id/legacyId/doorVariant、与 baseline/layout.json 双向一一对应、id 全局唯一。
+//   selftest ：工具自身微型正/负例（不触碰真实产物、不做全域遍历）。
+// 比较口径（重要）：非 bay 节点按名字逐节点比较；175 个 facadeBay 节点不做任何「旧 id → 新 id」改名映射 ——
+//   旧 bay 节点名只有 7 个共享计数值（facade-0/1/2/15/16/24/33），一对一改名映射不存在也不可造（那会把旧共享 id
+//   指向任意一间）；真正的迁移关系是 baseline/layout.json facadeIdentity.legacyAliases 的一对多别名清单。
+//   bay 侧一律按三角形质心最近邻做一一空间配对后逐 bay 比较。
+// winding：三角形键只允许循环移位（ABC/BCA/CAB）；镜像翻面（ACB）按不同几何计。
 // 用法：
-//   node tests/runtime-parity-check.mjs parity --a <dirA> --b <dirB> --report <json>
+//   node tests/runtime-parity-check.mjs parity --a <dirA> --b <dirB> [--parts f1,f2] --report <json>
 //   node tests/runtime-parity-check.mjs identity --out <OUT_DIR> --report <json>
+//   node tests/runtime-parity-check.mjs selftest
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readGlb } from '../../../src/world/glbReader.js';
@@ -33,10 +41,12 @@ function triMultiset(mesh) {
   const out = new Map();
   for (let t = 0; t < indices.length; t += 3) {
     const a = mul(indices[t]), b = mul(indices[t + 1]), c = mul(indices[t + 2]);
-    // 顶点环序无关：三点排序后拼接
-    const vs = [a, b, c].map(v => v.map(x => Math.round(x * Q))).sort((p, q) =>
-      p[0] - q[0] || p[1] - q[1] || p[2] - q[2]);
-    const key = vs.map(v => v.join(',')).join(';');
+    // 顶点环序无关但保留 winding：只取循环移位 (ABC/BCA/CAB) 的最小键。三点排序会把镜像翻转
+    // (ACB，法线反向的同位置三角形) 当相同 —— 禁止；翻面必须算差异。
+    const vs = [a, b, c].map(v => v.map(x => Math.round(x * Q)));
+    const keys = [0, 1, 2].map(s =>
+      [vs[s], vs[(s + 1) % 3], vs[(s + 2) % 3]].map(v => v.join(',')).join(';'));
+    const key = keys[0] <= keys[1] && keys[0] <= keys[2] ? keys[0] : (keys[1] <= keys[2] ? keys[1] : keys[2]);
     out.set(key, (out.get(key) || 0) + 1);
   }
   return out;
@@ -68,8 +78,8 @@ function nodeNames(gltf) {
 
 const isBayName = (n) => String(n).split('|').length === 4 && String(n).split('|')[2] === 'facadeBay';
 
-// bay 空间配对：G1 之前的 bay 节点名只有 7 个旧计数值（175 个 bay 共享），名字映射天然多对一，
-// 改用与 G1 交付相同的「按 bay 世界位置最近邻配对 → 逐 bay 三角形多重集比较」。
+// bay 空间配对：旧 bay 节点名只有 7 个计数值（175 个 bay 共享），名字层面天然多对一、没有一对一映射可用；
+// 与 G1 交付同口径，按 bay 世界位置最近邻一一配对后逐 bay 比较。
 // 位置键 = 三角形顶点质心（GLB 导出可能把变换烘焙进顶点、节点矩阵为单位阵，不能只看 matrix 平移）。
 function bayCentroid(m) {
   const { positions, indices, matrix } = m;
@@ -120,32 +130,18 @@ function parse(file) {
   return readGlb(fs.readFileSync(file));
 }
 
-function parity(dirA, dirB, report, layoutPath) {
-  // facade 改名归一：layout 里 legacyId -> 新 id 的映射（G1 稳定身份）。B 侧旧名经映射后参与逐节点比较，
-  // 这样「换 id 不换几何」可以逐节点证实，而不是被节点名差异整体掩盖。
-  let legacyToNew = null;
-  if (layoutPath) {
-    const layout = JSON.parse(fs.readFileSync(layoutPath, 'utf8'));
-    legacyToNew = {};
-    for (const o of layout.objects) if (o.legacyId) legacyToNew[o.legacyId] = o.id;
-  }
-  const rename = (n) => {
-    if (!legacyToNew) return n;
-    const s = String(n).split('|');
-    if (s.length === 4 && s[2] === 'facadeBay' && legacyToNew[s[1]]) {
-      return [s[0], legacyToNew[s[1]], s[2], s[3]].join('|');
-    }
-    return n;
-  };
+function runParity(dirA, dirB, parts = ZONE_PARTS) {
   const rows = [];
   let allPass = true;
-  for (const f of ZONE_PARTS) {
+  for (const f of parts) {
     const fa = path.join(dirA, f), fb = path.join(dirB, f);
     const row = { file: f, inA: fs.existsSync(fa), inB: fs.existsSync(fb) };
     if (!row.inA || !row.inB) {
+      // 预期分件任一侧缺失都直接失败（含双方都缺——静默放过会让空目录假阳性）。
       row.verdict = (row.inA || row.inB) ? 'PART_MISSING_IN_ONE_SIDE' : 'PART_MISSING_BOTH';
-      if (row.inA !== row.inB) allPass = false;
+      allPass = false;
       rows.push(row);
+      console.error(`[parity] ${f}: ${row.verdict}`);
       continue;
     }
     const A = parse(fa), B = parse(fb);
@@ -158,21 +154,19 @@ function parity(dirA, dirB, report, layoutPath) {
     for (const name of names) {
       if ((na.get(name) || 0) !== (nb.get(name) || 0)) { nodeSetDiff++; perName.push({ name, countA: na.get(name) || 0, countB: nb.get(name) || 0 }); }
     }
-    // 非 bay 节点：按名字逐节点比较（B 侧先做 facade 改名归一）；bay 节点：空间配对比较（见 pairBays）
+    // 非 bay 节点按名字逐节点比较；bay 节点空间配对（见 pairBays）——不存在旧→新 id 改名映射，不做改名归一。
     const meshA = A.meshes.filter((m) => !isBayName(m.name));
     const meshB = B.meshes.filter((m) => !isBayName(m.name));
     const bayA = A.meshes.filter((m) => isBayName(m.name));
     const bayB = B.meshes.filter((m) => isBayName(m.name));
     const maByNode = new Map(), mbByNode = new Map();
     for (const m of meshA) {
-      const nm = rename(m.name);
-      if (!maByNode.has(nm)) maByNode.set(nm, new Map());
-      merge(maByNode.get(nm), triMultiset(m));
+      if (!maByNode.has(m.name)) maByNode.set(m.name, new Map());
+      merge(maByNode.get(m.name), triMultiset(m));
     }
     for (const m of meshB) {
-      const nm = rename(m.name);
-      if (!mbByNode.has(nm)) mbByNode.set(nm, new Map());
-      merge(mbByNode.get(nm), triMultiset(m));
+      if (!mbByNode.has(m.name)) mbByNode.set(m.name, new Map());
+      merge(mbByNode.get(m.name), triMultiset(m));
     }
     let onlyA = 0, onlyB = 0;
     const geomDiffNodes = [];
@@ -183,7 +177,7 @@ function parity(dirA, dirB, report, layoutPath) {
         onlyA += d.onlyA; onlyB += d.onlyB;
       }
     }
-    // bay 空间配对（多重集；与 G1 交付同一口径：换 id 不换每 bay 几何）
+    // bay 一一空间配对（winding 保留多重集；换 id 不换每 bay 几何）
     const bayPairing = pairBays(bayA, bayB);
     onlyA += bayPairing.samples.reduce((s, x) => s + x.onlyInA, 0);
     onlyB += bayPairing.samples.reduce((s, x) => s + x.onlyInB, 0);
@@ -204,11 +198,16 @@ function parity(dirA, dirB, report, layoutPath) {
     rows.push(row);
     console.error(`[parity] ${f}: triA=${row.trianglesA} triB=${row.trianglesB} onlyA=${onlyA} onlyB=${onlyB} nodeDiff=${nodeSetDiff} -> ${row.verdict}`);
   }
+  return { allPass, parts: rows };
+}
+
+function parityMain(dirA, dirB, report, parts) {
+  const { allPass, parts: rows } = runParity(dirA, dirB, parts);
   const doc = { tool: 'tests/runtime-parity-check.mjs parity', dirA, dirB, allPass, parts: rows,
-    note: '三角形多重集比较（世界坐标量化 0.1 mm，环序无关）；--layout 时 B 侧 facadeBay 节点名经 layout legacyId→新 id 归一后再比， nodeNameDiff 只反映改名本身。多重集相同但文件 hash 不同 = 索引顺序/序列化差异，不代表几何变化。',
-    facadeRenameMap: legacyToNew ? Object.keys(legacyToNew).length : null };
+    note: '比较口径：非 bay 节点按名字逐节点；175 个 facadeBay 一一空间配对（三角形质心最近邻）后逐 bay 比较。旧 bay 节点名只有 7 个共享计数值，不存在（也不可造）旧→新一对一改名映射；真正的迁移关系是 baseline/layout.json facadeIdentity.legacyAliases 的一对多别名清单。三角形键 = 世界坐标量化 0.1 mm、只允许循环移位（ABC/BCA/CAB），winding 保留、镜像翻面算差异。多重集相同但文件 hash 不同 = 索引顺序/序列化差异，不代表几何变化。任一预期分件单侧或双侧缺失都判 FAIL。' };
   if (report) { fs.mkdirSync(path.dirname(report), { recursive: true }); fs.writeFileSync(report, JSON.stringify(doc, null, 1) + '\n'); }
-  console.log(JSON.stringify({ allPass, parts: rows.length, geomDiff: rows.filter(r => r.verdict === 'GEOMETRY_DIFF').map(r => r.file) }));
+  console.log(JSON.stringify({ allPass, parts: rows.length, geomDiff: rows.filter(r => r.verdict === 'GEOMETRY_DIFF').map(r => r.file),
+    missing: rows.filter(r => String(r.verdict).startsWith('PART_MISSING')).map(r => `${r.file}:${r.verdict}`) }));
   process.exit(allPass ? 0 : 1);
 }
 
@@ -273,9 +272,92 @@ function identity(outDir, report) {
   process.exit(doc.pass ? 0 : 1);
 }
 
+// ---------------- selftest：工具自身微型正/负例（合成 GLB，临时目录，不触真实产物） ----------------
+
+// 极小 GLB 写入器：tris = [[[x,y,z],[x,y,z],[x,y,z]] ...]（世界坐标，矩阵单位阵）。
+function tinyGlb(tris, nodeName) {
+  const pos = new Float32Array(tris.flat(2));
+  const idx = new Uint32Array(tris.length * 3);
+  for (let i = 0; i < idx.length; i++) idx[i] = i;
+  const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
+  for (let i = 0; i < pos.length; i += 3) {
+    for (let k = 0; k < 3; k++) { min[k] = Math.min(min[k], pos[i + k]); max[k] = Math.max(max[k], pos[i + k]); }
+  }
+  const posBuf = Buffer.from(pos.buffer), idxBuf = Buffer.from(idx.buffer);
+  const bin = Buffer.concat([posBuf, idxBuf]);
+  const gltf = {
+    asset: { version: '2.0' }, scene: 0, scenes: [{ nodes: [0] }],
+    nodes: [{ mesh: 0, name: nodeName }],
+    meshes: [{ primitives: [{ attributes: { POSITION: 0 }, indices: 1 }] }],
+    accessors: [
+      { bufferView: 0, componentType: 5126, count: pos.length / 3, type: 'VEC3', min, max },
+      { bufferView: 1, componentType: 5125, count: idx.length, type: 'SCALAR' },
+    ],
+    bufferViews: [
+      { buffer: 0, byteOffset: 0, byteLength: posBuf.length },
+      { buffer: 0, byteOffset: posBuf.length, byteLength: idxBuf.length },
+    ],
+    buffers: [{ byteLength: bin.length }],
+  };
+  let js = Buffer.from(JSON.stringify(gltf));
+  const pad4 = (n) => (4 - (n % 4)) % 4;
+  js = Buffer.concat([js, Buffer.alloc(pad4(js.length), 0x20)]);  // GLB 规范：JSON chunk 用空格补齐
+  const binP = Buffer.concat([bin, Buffer.alloc(pad4(bin.length))]);
+  const header = Buffer.alloc(12);
+  header.writeUInt32LE(0x46546c67, 0); header.writeUInt32LE(2, 4); header.writeUInt32LE(12 + 8 + js.length + 8 + binP.length, 8);
+  const cj = Buffer.alloc(8); cj.writeUInt32LE(js.length, 0); cj.writeUInt32LE(0x4e4f534a, 4);
+  const cb = Buffer.alloc(8); cb.writeUInt32LE(binP.length, 0); cb.writeUInt32LE(0x004e4942, 4);
+  return Buffer.concat([header, cj, js, cb, binP]);
+}
+
+const TRI = (a, b, c) => [a, b, c];
+const A1 = [0, 0, 0], B1 = [1, 0, 0], C1 = [0, 1, 0], D1 = [1, 1, 1];
+
+function selftest() {
+  const results = [];
+  const check = (name, cond) => { results.push({ name, pass: !!cond }); console.error(`[selftest] ${cond ? 'PASS' : 'FAIL'} ${name}`); };
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'parity-selftest-'));
+  const dA = path.join(tmp, 'a'), dB = path.join(tmp, 'b');
+  for (const d of [dA, dB]) fs.mkdirSync(d, { recursive: true });
+
+  // 正例：循环换起点（ABC→BCA）+ 三角形绘制顺序重排 → 仍判相同
+  const trisBase = [TRI(A1, B1, C1), TRI(A1, C1, D1)];
+  const trisRot = [TRI(C1, A1, B1), TRI(D1, A1, C1)];           // 每个三角循环移位 + 顺序对调
+  fs.writeFileSync(path.join(dA, 'zone-pond-2.glb'), tinyGlb(trisBase, 'test-mesh'));
+  fs.writeFileSync(path.join(dB, 'zone-pond-2.glb'), tinyGlb(trisRot, 'test-mesh'));
+  let r = runParity(dA, dB, ['zone-pond-2.glb']);
+  check('positive: cyclic vertex rotation + tri reorder = identical', r.allPass && r.parts[0].verdict === 'IDENTICAL_GEOMETRY_AND_NODES');
+
+  // 负例：单三角翻面（最后一个三角 ACB，镜像 winding）→ 必须差异
+  const trisFlip = [TRI(A1, B1, C1), TRI(A1, D1, C1)];
+  fs.writeFileSync(path.join(dB, 'zone-pond-2.glb'), tinyGlb(trisFlip, 'test-mesh'));
+  r = runParity(dA, dB, ['zone-pond-2.glb']);
+  check('negative: single triangle flipped winding (ACB) = GEOMETRY_DIFF',
+    !r.allPass && r.parts[0].verdict === 'GEOMETRY_DIFF' && (r.parts[0].trisOnlyInA + r.parts[0].trisOnlyInB) === 2);
+
+  // 负例：预期分件双方都缺 → 必须失败（不允许空目录假阳性）
+  const dE = path.join(tmp, 'e'), dF = path.join(tmp, 'f');
+  fs.mkdirSync(dE, { recursive: true }); fs.mkdirSync(dF, { recursive: true });
+  r = runParity(dE, dF, ['zone-pond-2.glb']);
+  check('negative: part missing on BOTH sides = fail', !r.allPass && r.parts[0].verdict === 'PART_MISSING_BOTH');
+
+  // 负例：单侧缺件 → 必须失败
+  fs.writeFileSync(path.join(dA, 'zone-pond-2.glb'), tinyGlb(trisBase, 'test-mesh'));
+  r = runParity(dA, dF, ['zone-pond-2.glb']);
+  check('negative: part missing on one side = fail', !r.allPass && r.parts[0].verdict === 'PART_MISSING_IN_ONE_SIDE');
+
+  fs.rmSync(tmp, { recursive: true, force: true });
+  const pass = results.every(x => x.pass);
+  console.log(JSON.stringify({ pass, cases: results }));
+  process.exit(pass ? 0 : 1);
+}
+
 const [, , mode, ...rest] = process.argv;
 const arg = (k, d) => { const i = rest.indexOf(k); return i >= 0 ? rest[i + 1] : d; };
-if (mode === 'parity') parity(path.resolve(arg('--a')), path.resolve(arg('--b')), arg('--report'),
-  arg('--layout') ? path.resolve(ROOT, arg('--layout')) : null);
+if (mode === 'parity') {
+  const parts = arg('--parts') ? arg('--parts').split(',').map(s => s.trim()).filter(Boolean) : undefined;
+  parityMain(path.resolve(arg('--a')), path.resolve(arg('--b')), arg('--report'), parts);
+}
 else if (mode === 'identity') identity(path.resolve(ROOT, arg('--out', 'out-goal-current')), arg('--report'));
-else { console.error('usage: parity --a DIR --b DIR --report JSON [--layout baseline/layout.json] | identity --out DIR --report JSON'); process.exit(2); }
+else if (mode === 'selftest') selftest();
+else { console.error('usage: parity --a DIR --b DIR [--parts f1,f2] --report JSON | identity --out DIR --report JSON | selftest'); process.exit(2); }
