@@ -15,6 +15,7 @@ import { installBatching } from './batching.js';     // wave4-drawcalls：运行
 import { isRoofNodeSelf } from './roofs.js';        // wave5-rooftoggle：屋面命名判定唯一正本（厅堂/湖心亭/商城大楼/三穗堂/庙区/瓦面/程序化，见 web/roofs.js）
 import { installSharedTextures } from './shared-textures.js';   // wave9-sharedtex：分区件共用外置贴图，同 URL 只下载一次
 import { patchOuterKitProc } from './outer-kit-proc.js';   // wave7-outerkit 方案 C（OUTER_KIT_MODE=proc，对比测量用）：extras outerKit=proc 的网格换运行时 shader；无此类网格时不改任何东西
+import { installInfocard } from './infocard.js';   // wave11-infocard：点击地标弹信息卡（逻辑全在 web/infocard.js，本文件只挂这一钩子）
 
 const app = document.getElementById('app');
 let renderer;
@@ -536,30 +537,10 @@ function drawResiduals() {
   }
 }
 
-// ---------- 点选 ----------
+// ---------- 点选（R2 合并为一次拾取：web/infocard.js 内完成，遗留 #info 调试面板监听已删除 ----------
+// batch-identity-check I1 改读 infocard 写的 window.__pickDebug ----------
 const ray = new THREE.Raycaster();
 ray.layers.enableAll();   // wave4-drawcalls：已合批的原网格挪到 ORIGINAL_LAYER，点选仍命中原网格（合批网格不参与 raycast）
-renderer.domElement.addEventListener('click', (e) => {
-  ray.setFromCamera(new THREE.Vector2((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1), camera);
-  const hits = ray.intersectObjects(scene.children, true);
-  for (const hit of hits) {
-    const info = infoOf(hit.object);
-    if (!info) continue;
-    const el = document.getElementById('info');
-    el.style.display = 'block';
-    el.innerHTML = `<h2>${info.name || info.id}</h2><dl>` +
-      `<dt>ID</dt><dd>${info.id || '-'}</dd>` +
-      (info.zone ? `<dt>分区</dt><dd>${info.zone}</dd>` : '') +
-      (info.kind ? `<dt>类别</dt><dd>${info.kind}</dd>` : '') +
-      (info.lod ? `<dt>精度</dt><dd>${info.lod}</dd>` : '') +
-      (info.trade ? `<dt>业态候选</dt><dd>${info.trade}</dd>` : '') +
-      (info.disposition ? `<dt>处理</dt><dd>${info.disposition}</dd>` : '') +
-      (info.inference ? `<dt>推断</dt><dd>${info.inference}</dd>` : '') +
-      `</dl>`;
-    break;
-  }
-});
-
 addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
@@ -576,6 +557,10 @@ const walk = installWalkMode({
     if (distToAabb(f[0], f[2], box) <= 60) ensureZone('fangbang').catch(e => console.error('walk zone activation failed', e));
   },
 });
+
+// wave11-infocard：点击地标弹信息卡。逻辑全在 web/infocard.js（白名单字段 + Esc/空白关闭 + 步行不弹 + 标签高亮）。
+// 挂在本文件遗留的 #info 点选监听之后：点击时遗留面板内容会被卡片覆盖或收起，batch-identity-check I1 的 #info 口径不变。
+installInfocard({ raycaster: ray, camera, scene, renderer, getLayout: () => layoutData, getMode: () => walk.mode() });
 
 // M4：?perf=1 时挂性能采样（60s 轨道 + 60s 巡游步行帧时采样在 perf.tick 内完成，
 // 顺序必须在 walk.tick 之前 —— CruiseDriver 要先于控制器步进设置输入）
