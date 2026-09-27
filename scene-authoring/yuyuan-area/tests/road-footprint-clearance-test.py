@@ -32,6 +32,8 @@ from shapely.ops import unary_union
 
 R = Path(__file__).resolve().parents[1]
 O = R / os.environ.get('OUT_DIR', 'out-zone')
+sys.path.insert(0, str(R / 'scripts'))
+from ribbon_geom import ribbon_polygon  # R3（审查必修3）：与渲染端逐三角一致的共用实现
 base = json.loads((R / 'baseline' / 'layout.json').read_text(encoding='utf-8'))
 out = json.loads((O / 'layout.json').read_text(encoding='utf-8'))
 
@@ -75,18 +77,9 @@ cut = unary_union(cuts)
 
 # ---------- 渲染面几何（与渲染端/repair 同一规则） ----------
 def ribbon_surface(pts, width):
-    """src/lib.mjs ribbon()：中心差分方向、平头端 quad strip 的外轮廓。"""
-    n = len(pts)
-    left, right = [], []
-    for i in range(n):
-        a = pts[max(0, i - 1)]
-        b = pts[min(n - 1, i + 1)]
-        dx, dz = b[0] - a[0], b[1] - a[1]
-        L = math.hypot(dx, dz) or 1
-        nx, nz = -dz / L * width / 2, dx / L * width / 2
-        left.append([pts[i][0] + nx, pts[i][1] + nz])
-        right.append([pts[i][0] - nx, pts[i][1] - nz])
-    return Polygon(left + right[::-1]).buffer(0)
+    """src/lib.mjs ribbon()：中心差分方向、平头端 quad strip——按渲染端索引逐三角并集
+    （scripts/ribbon_geom.py 共用实现；R2 版外环+buffer(0) 在急弯/自交时与渲染端不等价）。"""
+    return ribbon_polygon(pts, width)
 
 AREA_BOX = box(-300, -280, 85, 65)
 
