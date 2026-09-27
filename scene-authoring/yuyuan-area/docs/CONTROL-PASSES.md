@@ -250,7 +250,27 @@ segmentation 三个条件通道必须不变。做法：`render-control-passes.py
 
 非默认引擎另写 `<out>/beauty-meta.json`（引擎、实际设备、采样、视图变换、预设、点光数、自发光材质数）。
 
-**灯光（Cycles / EEVEE 同一套）**，参数全部来自 `lighting/presets.json`，单位约定写在该文件 `conventions`：
+**共享预设来源**：查看器与 Blender 读同一份 `lighting/presets.json`（没有第二份三档参数表），但不是每个字段两端都用，
+也有少数值只在某一端代码里（R1 按 Codex astra 审查补清）：
+
+| 字段 | 查看器 `web/lighting.js` | Blender `render-control-passes.py` |
+|---|---|---|
+| `presets.*.sun`（方位角 / 高度角 / 颜色 / 强度） | 用 | 用 |
+| `presets.*.sun.angularDiameterDeg` | —（阴影软度由 PCFSoft 决定） | 用（Sun 角径 → 软阴影） |
+| `presets.*.ambient` / `presets.*.sky` | 用（HemisphereLight / 天空贴图） | 用（世界节点，同式） |
+| `presets.*.exposure` | 用（toneMappingExposure） | 用（视图曝光 log2 档） |
+| `presets.*.emissiveScale` + `emissiveGroups` | 用 | 用 |
+| `presets.*.pointLights`（灯数） | 用（点光池大小） | 只作开关（> 0 时在**全部**候选位置放灯） |
+| `pointLights.color / intensity / sources` | 用 | 用（功率 = 4π × intensity） |
+| `pointLights.distance / decay / max / reassignFrames` | 用 | **不用**（Cycles 平方反比、无截断、无上限） |
+| `viewer.*`（toneMapping、shadow、skyTexture） | 用 | — |
+| `blender.*`（viewTransform、cycles、eevee、ambientOcclusion） | — | 用 |
+
+两端各自写死的值：色调映射两端分别配置（查看器 `viewer.toneMapping: "neutral"` → NeutralToneMapping，Blender `blender.viewTransform`
+→ 'Khronos PBR Neutral'，同一算子但是两个字段）；Blender 点光半径 `shadow_soft_size = 0.15` m 写死在脚本里；
+读取失败时查看器回退旧灯光（`web/lighting.js` 的 LEGACY 常量，3 s 超时），Blender 直接报错退出。
+
+**灯光（Cycles / EEVEE 同一套）**，单位约定写在 `lighting/presets.json` 的 `conventions`：
 
 - 太阳：Sun 灯，方向 = 方位角 / 高度角（地图系 +x 东、-z 北），强度 = 查看器 DirectionalLight.intensity（两端都是辐照度，
   漫反射 albedo/π，同一口径），角径 → 软阴影；

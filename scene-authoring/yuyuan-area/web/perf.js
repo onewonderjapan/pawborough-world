@@ -96,7 +96,7 @@ export function setupPerf({ renderer, camera, controls, walk, hud }) {
       renderer.render = origRender; renderer.shadowMap.render = origShadow; renderer.info.autoReset = true;
     }
     report.renderer = { drawCalls: frame ? frame.drawCalls : renderer.info.render.calls, triangles: frame ? frame.triangles : renderer.info.render.triangles,
-      shadowPass: frame ? frame.shadow : null, programs: renderer.info.programs?.length ?? null, perFrame: true };
+      shadowPass: frame ? frame.shadow : null, includesShadowPass: !!frame, programs: renderer.info.programs?.length ?? null, perFrame: true };
     if (window.__batchStats) report.batching = window.__batchStats();
     if (window.__lighting) report.lighting = window.__lighting.state();   // wave11-lighting：预设 / 阴影 / 点光数，同一台机器 A/B（?shadow=0、?light=night）对照用
     setPhase('orbit', ORBIT_SECONDS);

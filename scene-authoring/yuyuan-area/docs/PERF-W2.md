@@ -51,7 +51,7 @@ ANGLE D3D11 上 multiDraw 在驱动层可能仍按段下发，所以驱动层绘
 | night `&plights=16` | 479 / 547 / 187 万 | 386 / 1804 | 190 / 865 |
 
 - **阴影**：一张 2048² PCFSoft 太阳阴影贴图，正交阴影相机跟随取景焦点（轨道 = 注视点，半宽 = 距离 × 0.9，夹在 40–420 m；
-  步行 = 视线前方 45 m）。代价 = 多画一遍投影网格：核心首屏每帧调用 263 → 479、三角面 ×2.1；合批的 BatchedMesh 直接投影，
+  步行 = 中心在视点水平视线前方 27 m、半宽 45 m）。代价 = 多画一遍投影网格：核心首屏每帧调用 263 → 479、三角面 ×2.1；合批的 BatchedMesh 直接投影，
   所以阴影通道的调用数也是合批后的量级（仍 ≤ 1200 预算，`tests/lighting-check.mjs` S4）。swiftshader 下渲染耗时约 +45%（华宝楼 795 → 1142 ms）。
 - **点光**：three 的点光按灯数展开进每个着色器（改灯数要重编译，逐像素逐灯计算），所以夜间用固定大小的「点光池」：
   灯数只在切换预设时变，池里的灯每 15 帧（或焦点跳变 > 11 m 时当帧）分给离取景焦点最近的候选（灯笼材质聚类 75 处 + 摊位 51 处）。
@@ -60,9 +60,12 @@ ANGLE D3D11 上 multiDraw 在驱动层可能仍按段下发，所以驱动层绘
 - **自发光**（灯笼 / 店招 / 店面后壁 / 窗玻璃 / 格扇背板 / 摊柜）：只改共用材质的 emissive，合批网格同步生效，不增加绘制调用。
 - **天空**：运行时生成 256×128 等距柱状 DataTexture，不下载贴图。首载非场景字节 7,535,696 → 7,561,279（+25.6 KB：
   `web/lighting.js` 16.5 KB + `lighting/presets.json` 6.0 KB + main / index / perf 改动），在 ≤ 50 KB 的预算内。
+- **预设读取**（R1）：分区加载排在 `lighting/presets.json` 之后，读取上限 3 s（`PRESETS_TIMEOUT_MS`）。超时 / 404 / 解析失败 /
+  字段不全 → 旧灯光（无阴影、ACES 1.05）照常加载；超时不取消请求，迟到的合法应答会再切到预设（`__lighting.state().lateApplied`）。
+  swiftshader + 高负载下实测过一次本地 6 KB 文件 15.6 s 才轮到回调（lighting-check R1 日志），所以 W2 上若首屏偶见旧灯光一闪属此机制。
 - `?perf=1` 的 `renderer.drawCalls / triangles` 现在是**含阴影通道的一整帧**（three r180 在 `render()` 里先画阴影贴图、后清零
-  `renderer.info`，旧读法开阴影后只剩主通道，P1 对账会差一半）；另报 `renderer.shadowPass`（阴影通道那部分）与 `lighting`
-  （预设 / 阴影 / 点光数）。W2 上核心首屏应看到 drawCalls 约 480、其中 shadowPass 约 215。
+  `renderer.info`，旧读法开阴影后只剩主通道，P1 对账会差一半）；另报 `renderer.shadowPass`（阴影通道那部分）、`renderer.includesShadowPass: true`（口径标记：
+  没有此字段的旧报告不含阴影通道，不能直接比）与 `lighting`（预设 / 阴影 / 点光数）。W2 上核心首屏应看到 drawCalls 约 480、其中 shadowPass 约 215。
 
 在 W2 上请再各跑一次并把 JSON 发回（与上面 wave4 那两份同一页面、同一机位）：
 
