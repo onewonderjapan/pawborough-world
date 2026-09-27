@@ -3358,5 +3358,47 @@
       }
     ],
     "ownerAdopted": false
+  },
+  "wave10PondqaPendingLeadArchive": {
+    "task": "pawborough-wave10-pondqa-20260927",
+    "baseCommit": "273934c9",
+    "ownerAdopted": false,
+    "pendingLeadArchive": true,
+    "note": "Regenerated garden-kit bridge assets (lead decision 2026-09-27: #1 porch opening, #5 flush panels; plus the side=-1 mitre/inward-normal fix found while regenerating). Proof: the unchanged generator reproduced the staged jiuqu-bridge.glb byte for byte (sha 61499669...) before any edit; garden-wall/temple-wall/moon-gate/garden-kit-collision regenerate byte-identical after the edit. catalog/reimport JSON differ only by the absolute textureDir path and the bridge counts. files[] and cloud receipts are left untouched until the lead uploads these objects.",
+    "changedStagedAssets": [
+      {
+        "path": "scene-authoring/yuyuan-area/staged/site-modules/jiuqu-bridge.glb",
+        "sha256": "d60215cb18dc6ba99484a6e7966b136e111245aa8ffe500236322aaa4a7d2729",
+        "bytes": 448256,
+        "pendingLeadArchive": true,
+        "replaces": {
+          "sha256": "61499669ecf00f4f19617b0a6d42c026a062c6fc188ef78304315d09af9857b3",
+          "bytes": 492824
+        },
+        "builtBy": "modules/garden-kit/build_garden_kit.py (branch work/wave10-pondqa-20260927)"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/staged/site-modules/garden-kit-catalog.json",
+        "sha256": "69f37dc2b72389d33d6c99b037da6ac95ba01f4cde1c263b0d4bf08471da26f3",
+        "bytes": 5975,
+        "pendingLeadArchive": true,
+        "replaces": {
+          "sha256": "f952deddbd65e0bd012839da2c76b3198551f44d3af1b39efcebe39c17852815",
+          "bytes": 5777
+        },
+        "builtBy": "modules/garden-kit/build_garden_kit.py (branch work/wave10-pondqa-20260927)"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/staged/site-modules/garden-kit-reimport.json",
+        "sha256": "2d4865e9b51c55cffaed9072daf182fcbcc62eebf086730e98d2f7ae02df90e1",
+        "bytes": 1995,
+        "pendingLeadArchive": true,
+        "replaces": {
+          "sha256": "cfce710ff4591b769be5f8a091d8f269aeaa0d72b5e33e9bdae5ece19f814a2a",
+          "bytes": 1995
+        },
+        "builtBy": "modules/garden-kit/build_garden_kit.py (branch work/wave10-pondqa-20260927)"
+      }
+    ]
   }
 }
