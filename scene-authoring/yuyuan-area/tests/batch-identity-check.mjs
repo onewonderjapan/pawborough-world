@@ -80,10 +80,15 @@ if (want('I0')) {
 if (want('I1')) {
   const pts = [];
   for (let j = 0; j < 4; j++) for (let i = 0; i < 5; i++) pts.push([Math.round(140 + i * 280), Math.round(200 + j * 190)]);
+  // wave11-lighting 查明：右上角 #hud 的高度随「分区：… 13.5s」这类加载耗时文本换行而变（swiftshader + 机器负载下两页耗时位数不同），
+  // 较慢那一页的 HUD 会盖住 (1260,200)，真实鼠标点在 HUD 上、canvas 收不到 click → 一边 null（改前 main 2afa10db 同样失败）。
+  // 点选溯源比的是 3D 拾取，不是 HUD：两边都先隐藏 HUD，并逐点确认 elementFromPoint 就是 canvas，被界面遮挡的点直接判失败（不跳过）。
   const pick = async (page) => {
-    const out = [];
+    const out = [], covered = [];
+    await page.evaluate(() => { const h = document.getElementById('hud'); h.dataset.i1Display = h.style.display; h.style.display = 'none'; });
     for (const [x, y] of pts) {
       await page.evaluate(() => { const el = document.getElementById('info'); el.style.display = 'none'; el.innerHTML = ''; });
+      if (!(await page.evaluate(([x, y]) => document.elementFromPoint(x, y) === document.querySelector('#app canvas'), [x, y]))) covered.push([x, y]);
       await page.mouse.click(x, y);
       out.push(await page.evaluate(() => {
         const el = document.getElementById('info');
@@ -92,12 +97,15 @@ if (want('I1')) {
         return dt ? dt.nextElementSibling.textContent : el.querySelector('h2')?.textContent || null;
       }));
     }
-    return out;
+    await page.evaluate(() => { const h = document.getElementById('hud'); h.style.display = h.dataset.i1Display || ''; delete h.dataset.i1Display; });
+    return { out, covered };
   };
-  const [pb, pu] = await both(pick);
+  const [rb, ru] = await both(pick);
+  const pb = rb.out, pu = ru.out;
   const same = pb.every((v, i) => v === pu[i]);
   const hits = pb.filter(Boolean).length;
-  report.I1 = { points: pts, batched: pb, unbatched: pu };
+  report.I1 = { points: pts, batched: pb, unbatched: pu, coveredBatched: rb.covered, coveredUnbatched: ru.covered };
+  if (rb.covered.length || ru.covered.length) fail(`I1 点位被界面元素遮挡（点不到 canvas）：合批 ${JSON.stringify(rb.covered)} / batch=0 ${JSON.stringify(ru.covered)}`);
   if (!same) fail(`I1 点选 ID 不一致：${JSON.stringify(pts.map((p, i) => [p, pb[i], pu[i]]).filter(r => r[1] !== r[2]))}`);
   else if (hits < 8) fail(`I1 点选命中太少（${hits}/20），样本不足`);
   else ok(`I1 点选溯源 ${hits}/20 点命中，两边 ID 逐点相同`);
