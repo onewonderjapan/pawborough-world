@@ -33,6 +33,18 @@
   <shot>/cameras/frame-###.json    fov、分辨率、K、worldToCamera（OpenGL 与 OpenCV 两种，4x4，
                                    glTF Y-up 世界约定）、depthNear/Far、编码说明
 
+wave11-lighting 附加（默认行为不变，不给这些参数 = 旧输出逐字节相同）：
+  --beauty workbench|cycles|eevee   beauty 通道引擎（默认 workbench = 旧口径）。cycles / eevee 按 lighting/presets.json
+                                   （查看器同一份）布太阳 + 天空 + 环境光 + 夜间自发光 / 点光：软阴影（太阳角径）、
+                                   环境光遮蔽（Cycles 路径追踪自带；EEVEE 开光线追踪 + 水平线扫描）、降噪（Cycles OIDN）。
+  --preset day|dusk|night           灯光预设（默认 presets.json default）；--presets <json> 换参数文件。
+  --beauty-samples N / --beauty-device GPU|CPU   覆盖 presets.json blender 段的采样数 / 设备（默认 GPU）。
+  --frames 0,23|last|-1             只渲这些帧（四通道同一组帧；默认全部）。
+  --passes beauty,seg,normal        只渲这些通道（normal 含 depth；默认全部）。
+  depth / normal / segmentation 通道在 --beauty cycles|eevee 下不变：灯光物体在这三段渲染时 hide_render，
+  世界切回 control-world，Cycles 设置由 config_cycles 全部重设；自发光只改材质 Emission，分割（OBJECT 色）与
+  法线（material_override）不读材质。非默认引擎另写 <out>/beauty-meta.json（引擎 / 设备 / 采样 / 预设）。
+
 坐标约定：地图 (x,z) -> Blender (x,-z,y)；glTF Y-up 世界 = 地图 (x, y高度, z)（与 GLB/three.js 同系）。
 分割归属：GLB 节点名 zone|id|kind|lod 取第 2 段；否则沿父链找 layout id 锚空节点；方浜中路件锚名
 fangbang-*（v7 记录，非 layout 对象）单列成 id；其余 = unassigned。
@@ -71,6 +83,14 @@ def parse_args():
     ap.add_argument('--out', required=True)
     ap.add_argument('--layout', default=os.path.join(ROOT, 'baseline', 'layout.json'))
     ap.add_argument('--shots', default='')
+    # wave11-lighting（默认值 = 旧行为）
+    ap.add_argument('--beauty', default='workbench', choices=('workbench', 'cycles', 'eevee'))
+    ap.add_argument('--preset', default='')
+    ap.add_argument('--presets', default=os.path.join(ROOT, 'lighting', 'presets.json'))
+    ap.add_argument('--beauty-samples', type=int, default=0)
+    ap.add_argument('--beauty-device', default='', choices=('', 'GPU', 'CPU'))
+    ap.add_argument('--frames', default='')
+    ap.add_argument('--passes', default='beauty,seg,normal')
     return ap.parse_args(argv)
 
 
@@ -194,6 +214,283 @@ def config_workbench(scene, mode):
             pass
         u = UNASSIGNED
         world_color(scene, (u[0] / 255, u[1] / 255, u[2] / 255))
+
+
+# ---------------- wave11-lighting：beauty 灯光（lighting/presets.json，查看器同一份） ----------------
+def srgb_lin(hexstr):
+    h = hexstr.lstrip('#')
+    out = []
+    for i in (0, 2, 4):
+        c = int(h[i:i + 2], 16) / 255.0
+        out.append(c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4)
+    return tuple(out)
+
+
+def base_mat_name(n):
+    return strip_suffix(n)
+
+
+def sun_dir_map(sun):
+    """presets conventions：方位角从北（-z）顺时针到东（+x）；返回地图系单位向量（指向光源）。"""
+    az, el = math.radians(sun['azimuthDeg']), math.radians(sun['elevationDeg'])
+    return (math.sin(az) * math.cos(el), math.sin(el), -math.cos(az) * math.cos(el))
+
+
+def enable_gpu(scene):
+    prefs = bpy.context.preferences.addons['cycles'].preferences
+    for t in ('OPTIX', 'CUDA', 'HIP'):
+        try:
+            prefs.compute_device_type = t
+        except TypeError:
+            continue
+        prefs.get_devices()
+        devs = [d for d in prefs.devices if d.type == t]
+        if devs:
+            for d in prefs.devices:
+                d.use = d.type == t
+            return t, [d.name for d in devs]
+    return None, []
+
+
+def build_lighting_world(P, preset):
+    """相机射线 = 预设天空渐变（查看器天空贴图同式，除以曝光抵消视图曝光）；其余射线 = 半球环境光（上 sky×I/π、下 ground×I/π）。"""
+    p = P['presets'][preset]
+    w = bpy.data.worlds.get('lighting-world')
+    if w is None:
+        w = bpy.data.worlds.new('lighting-world')
+    w.use_nodes = True
+    nt = w.node_tree
+    for n in list(nt.nodes):
+        nt.nodes.remove(n)
+    N, L = nt.nodes.new, nt.links.new
+
+    def rgb(hexstr, scale=1.0):
+        n = N('ShaderNodeRGB')
+        c = srgb_lin(hexstr)
+        n.outputs[0].default_value = (c[0] * scale, c[1] * scale, c[2] * scale, 1)
+        return n.outputs[0]
+
+    def math_node(op, a, b=None, clamp=False):
+        n = N('ShaderNodeMath')
+        n.operation = op
+        n.use_clamp = clamp
+        for i, v in enumerate((a, b)):
+            if v is None:
+                continue
+            if isinstance(v, (int, float)):
+                n.inputs[i].default_value = v
+            else:
+                L(v, n.inputs[i])
+        return n.outputs[0]
+
+    def mix(a, b, fac):
+        n = N('ShaderNodeMix')
+        n.data_type = 'RGBA'
+        L(fac, n.inputs['Factor'])
+        L(a, n.inputs['A'])
+        L(b, n.inputs['B'])
+        return n.outputs['Result']
+
+    sky = p['sky']
+    tc = N('ShaderNodeTexCoord')
+    nv = N('ShaderNodeVectorMath')
+    nv.operation = 'NORMALIZE'
+    L(tc.outputs['Generated'], nv.inputs[0])
+    sep = N('ShaderNodeSeparateXYZ')
+    L(nv.outputs['Vector'], sep.inputs[0])
+    z = sep.outputs['Z']                                       # Blender z = 地图 y（仰角正弦）
+    t_up = math_node('POWER', math_node('MAXIMUM', z, 0.0), sky['exponent'])
+    t_dn = math_node('MINIMUM', math_node('MULTIPLY', math_node('MAXIMUM', math_node('MULTIPLY', z, -1.0), 0.0), 8.0), 1.0)
+    hor = rgb(sky['horizon'])
+    up = mix(hor, rgb(sky['zenith']), t_up)
+    dn = mix(hor, rgb(sky['ground']), t_dn)
+    add1 = N('ShaderNodeVectorMath')
+    add1.operation = 'ADD'
+    L(up, add1.inputs[0])
+    L(dn, add1.inputs[1])
+    sub = N('ShaderNodeVectorMath')
+    sub.operation = 'SUBTRACT'
+    L(add1.outputs['Vector'], sub.inputs[0])
+    L(hor, sub.inputs[1])
+    sd = sun_dir_map(p['sun'])
+    dot = N('ShaderNodeVectorMath')
+    dot.operation = 'DOT_PRODUCT'
+    L(nv.outputs['Vector'], dot.inputs[0])
+    dot.inputs[1].default_value = (sd[0], -sd[2], sd[1])       # 地图 -> Blender
+    glow = math_node('MULTIPLY', math_node('POWER', math_node('MAXIMUM', dot.outputs['Value'], 0.0), sky['sunGlowPower']), sky['sunGlow'])
+    gc = N('ShaderNodeVectorMath')
+    gc.operation = 'SCALE'
+    L(rgb(sky['sunGlowColor']), gc.inputs[0])
+    L(glow, gc.inputs['Scale'])
+    add2 = N('ShaderNodeVectorMath')
+    add2.operation = 'ADD'
+    L(sub.outputs['Vector'], add2.inputs[0])
+    L(gc.outputs['Vector'], add2.inputs[1])
+    bg_cam = N('ShaderNodeBackground')
+    L(add2.outputs['Vector'], bg_cam.inputs['Color'])
+    bg_cam.inputs['Strength'].default_value = 1.0 / p['exposure']
+    # 半球环境光：z ≥ 0 → sky，z < 0 → ground，强度 I/π
+    amb = p['ambient']
+    step = math_node('GREATER_THAN', z, 0.0)
+    hemi = mix(rgb(amb['ground']), rgb(amb['sky']), step)
+    bg_amb = N('ShaderNodeBackground')
+    L(hemi, bg_amb.inputs['Color'])
+    bg_amb.inputs['Strength'].default_value = amb['intensity'] / math.pi
+    lp = N('ShaderNodeLightPath')
+    ms = N('ShaderNodeMixShader')
+    L(lp.outputs['Is Camera Ray'], ms.inputs['Fac'])
+    L(bg_amb.outputs['Background'], ms.inputs[1])
+    L(bg_cam.outputs['Background'], ms.inputs[2])
+    out = N('ShaderNodeOutputWorld')
+    L(ms.outputs['Shader'], out.inputs['Surface'])
+    return w
+
+
+def light_candidates(P):
+    """点光候选位置（查看器 web/lighting.js 同一规则）：灯笼材质顶点按 clusterM 网格聚类中心、摊位锚点上方 offsetY。Blender 世界坐标。"""
+    import re
+    out = []
+    for src in P['pointLights']['sources']:
+        if src['kind'] == 'node-anchor':
+            rx = re.compile(src['pattern'])
+            for ob in bpy.data.objects:
+                if rx.search(strip_suffix(ob.name)) and not ob.hide_render:
+                    loc = ob.matrix_world.translation
+                    out.append((loc.x, loc.y, loc.z + src['offsetY']))
+        elif src['kind'] == 'material-clusters':
+            c = src['clusterM']
+            cells = {}
+            for ob in bpy.data.objects:
+                if ob.type != 'MESH' or ob.hide_render:
+                    continue
+                if not any(m and base_mat_name(m.name) in src['materials'] for m in ob.data.materials):
+                    continue
+                mw = ob.matrix_world
+                for v in ob.data.vertices:
+                    wv = mw @ v.co
+                    # 聚类格按地图系（x, 高, z）取，与查看器一致
+                    k = (math.floor(wv.x / c), math.floor(wv.z / c), math.floor(-wv.y / c))
+                    e = cells.setdefault(k, [0.0, 0.0, 0.0, 0])
+                    e[0] += wv.x
+                    e[1] += wv.y
+                    e[2] += wv.z
+                    e[3] += 1
+            for e in cells.values():
+                out.append((e[0] / e[3], e[1] / e[3], e[2] / e[3] + src['offsetY']))
+    return out
+
+
+def setup_beauty_lighting(scene, P, preset):
+    """太阳 + 点光 + 自发光材质。返回灯光物体列表（非 beauty 段 hide_render）。"""
+    from mathutils import Vector
+    p = P['presets'][preset]
+    objs = []
+    old = [ob for ob in bpy.data.objects if ob.name.startswith('lighting-')]
+    for ob in old:
+        bpy.data.objects.remove(ob, do_unlink=True)
+    sd = sun_dir_map(p['sun'])
+    sun = bpy.data.lights.new('lighting-sun', 'SUN')
+    sun.energy = p['sun']['intensity']                       # 辐照度，= three DirectionalLight.intensity
+    sun.color = srgb_lin(p['sun']['color'])
+    sun.angle = math.radians(p['sun']['angularDiameterDeg'])
+    so = bpy.data.objects.new('lighting-sun', sun)
+    so.rotation_euler = (-Vector((sd[0], -sd[2], sd[1]))).to_track_quat('-Z', 'Y').to_euler()
+    scene.collection.objects.link(so)
+    objs.append(so)
+    npl = 0
+    scale = p.get('emissiveScale', 0)
+    if p.get('pointLights', 0) > 0:
+        pl = P['pointLights']
+        for i, pos in enumerate(light_candidates(P)):
+            ld = bpy.data.lights.new('lighting-point-%03d' % i, 'POINT')
+            ld.energy = 4 * math.pi * pl['intensity']            # three 坎德拉 I（E=I/d²）-> Cycles 功率 P=4πI（E=P/(4πd²)，已用单平面标定）
+            ld.color = srgb_lin(pl['color'])
+            ld.shadow_soft_size = 0.15
+            lo = bpy.data.objects.new('lighting-point-%03d' % i, ld)
+            lo.location = pos
+            scene.collection.objects.link(lo)
+            objs.append(lo)
+            npl += 1
+    nmat = 0
+    groups = {m: g for g in P['emissiveGroups'] for m in g['materials']}
+    for mat in bpy.data.materials:
+        g = groups.get(base_mat_name(mat.name))
+        if not g or not mat.use_nodes or scale <= 0:
+            continue
+        bsdf = next((n for n in mat.node_tree.nodes if n.type == 'BSDF_PRINCIPLED'), None)
+        if bsdf is None:
+            continue
+        col = srgb_lin(g['color'])
+        nt = mat.node_tree
+        for l in list(bsdf.inputs['Emission Color'].links):
+            nt.links.remove(l)
+        base_links = bsdf.inputs['Base Color'].links
+        if g.get('useMap') and base_links:
+            mul = nt.nodes.new('ShaderNodeMix')
+            mul.data_type = 'RGBA'
+            mul.blend_type = 'MULTIPLY'
+            mul.inputs['Factor'].default_value = 1.0
+            nt.links.new(base_links[0].from_socket, mul.inputs['A'])
+            mul.inputs['B'].default_value = (col[0], col[1], col[2], 1)
+            nt.links.new(mul.outputs['Result'], bsdf.inputs['Emission Color'])
+        else:
+            bsdf.inputs['Emission Color'].default_value = (col[0], col[1], col[2], 1)
+        bsdf.inputs['Emission Strength'].default_value = g['intensity'] * scale
+        nmat += 1
+    log('beauty lighting: preset %s sun az %.0f el %.0f, point lights %d, emissive materials %d'
+        % (preset, p['sun']['azimuthDeg'], p['sun']['elevationDeg'], npl, nmat))
+    return objs, {'pointLights': npl, 'emissiveMaterials': nmat}
+
+
+def config_beauty_lit(scene, P, preset, engine, samples, device, world):
+    scene.world = world
+    B = P['blender']
+    if engine == 'cycles':
+        scene.render.engine = 'CYCLES'
+        dev_type, dev_names = (enable_gpu(scene) if device == 'GPU' else (None, []))
+        scene.cycles.device = 'GPU' if dev_type else 'CPU'
+        c = B['cycles']
+        scene.cycles.samples = samples or c['samples']
+        scene.cycles.use_adaptive_sampling = True
+        scene.cycles.max_bounces = c['maxBounces']
+        scene.cycles.diffuse_bounces = c['maxBounces']
+        scene.cycles.glossy_bounces = c['maxBounces']
+        scene.cycles.transmission_bounces = c['maxBounces']
+        scene.cycles.transparent_max_bounces = 8
+        scene.cycles.sample_clamp_indirect = c['clampIndirect']
+        scene.cycles.use_denoising = True
+        scene.cycles.denoiser = c['denoise']
+        try:
+            scene.cycles.denoising_use_gpu = bool(dev_type)
+        except AttributeError:
+            pass
+        scene.render.filter_size = 1.5
+        meta = {'engine': 'CYCLES', 'device': scene.cycles.device, 'computeDeviceType': dev_type, 'devices': dev_names,
+                'samples': scene.cycles.samples, 'denoiser': c['denoise'], 'maxBounces': c['maxBounces']}
+    else:
+        scene.render.engine = 'BLENDER_EEVEE_NEXT'
+        e = B['eevee']
+        ee = scene.eevee
+        ee.taa_render_samples = samples or e['samples']
+        for attr, val in (('use_shadows', True), ('use_raytracing', e['raytracing']), ('ray_tracing_method', 'SCREEN'),
+                          ('fast_gi_method', 'GLOBAL_ILLUMINATION'), ('use_fast_gi', True),
+                          ('fast_gi_distance', P['blender']['ambientOcclusion']['distanceM']),
+                          ('shadow_resolution_scale', e['shadowResolutionScale'])):
+            try:
+                setattr(ee, attr, val)
+            except (AttributeError, TypeError):
+                pass
+        scene.render.filter_size = 1.5
+        meta = {'engine': 'BLENDER_EEVEE_NEXT', 'device': 'GPU (OpenGL/EGL)', 'samples': ee.taa_render_samples}
+    try:
+        scene.view_settings.view_transform = B['viewTransform']
+    except TypeError:
+        scene.view_settings.view_transform = 'AgX'
+    scene.view_settings.look = 'None'
+    scene.view_settings.exposure = math.log2(P['presets'][preset]['exposure'])
+    scene.view_settings.gamma = 1
+    meta.update({'viewTransform': scene.view_settings.view_transform, 'exposureStops': scene.view_settings.exposure, 'preset': preset})
+    return meta
 
 
 def config_cycles(scene, near, far, out_dir):
@@ -344,6 +641,14 @@ def main():
     near, far = shots_doc['nearM'], shots_doc['farM']
     want = [s for s in shots_doc['shots'] if not args.shots or s['id'] in args.shots.split(',')]
     os.makedirs(args.out, exist_ok=True)
+    passes = set(args.passes.split(','))
+    lit = args.beauty != 'workbench'
+    P = preset = None
+    if lit:
+        P = json.load(open(args.presets, encoding='utf-8'))
+        preset = args.preset or P['default']
+        if preset not in P['presets']:
+            raise SystemExit('unknown preset %s' % preset)
 
     layout_ids = set()
     if os.path.exists(args.layout):
@@ -421,6 +726,23 @@ def main():
     scene.camera = cam_ob
     scene.frame_start = 0
 
+    lit_objs, lit_world, lit_meta = [], None, None
+    if lit:
+        lit_world = build_lighting_world(P, preset)
+        lit_objs, lit_info = setup_beauty_lighting(scene, P, preset)
+        for ob in lit_objs:
+            ob.hide_render = True
+
+    def frame_ids(n):
+        if not args.frames:
+            return list(range(n))
+        ids = []
+        for tok in args.frames.split(','):
+            tok = tok.strip()
+            k = n - 1 if tok == 'last' else int(tok)
+            ids.append(k + n if k < 0 else k)
+        return [k for k in ids if 0 <= k < n]
+
     timings = {}
     for shot in want:
         sid = shot['id']
@@ -446,18 +768,34 @@ def main():
 
         # 每镜头三段连续渲染：beauty(WB) -> seg(WB) -> normal+depth(Cycles)，
         # 引擎各只切换一次，Cycles BVH 借 use_persistent_data 跨帧复用。
+        ks = frame_ids(n_frames)
         unconfig_cycles(scene)
-        config_workbench(scene, 'beauty')
-        for k in range(n_frames):
+        if lit and 'beauty' in passes:
+            for ob in lit_objs:
+                ob.hide_render = False
+            lit_meta = config_beauty_lit(scene, P, preset, args.beauty, args.beauty_samples,
+                                         args.beauty_device or P['blender']['cycles']['device'], lit_world)
+            lit_meta.update(lit_info)
+        elif 'beauty' in passes:
+            config_workbench(scene, 'beauty')
+        for k in (ks if 'beauty' in passes else []):
             pose(k)
             t = time.perf_counter()
             scene.render.filepath = os.path.join(sdir, 'beauty', 'frame-%03d.png' % k)
             bpy.ops.render.render(write_still=True)
             st.setdefault('frame-%03d' % k, {})['beauty_s'] = round(time.perf_counter() - t, 2)
             log('%s frame-%03d beauty %.1fs' % (sid, k, st['frame-%03d' % k]['beauty_s']))
+        if lit:
+            # 回到控制层口径：灯光不渲、世界 = control-world（config_workbench / config_cycles 只改它的颜色）
+            for ob in lit_objs:
+                ob.hide_render = True
+            cw = bpy.data.worlds.get('control-world')
+            if cw is not None:
+                scene.world = cw
 
-        config_workbench(scene, 'seg')
-        for k in range(n_frames):
+        if 'seg' in passes:
+            config_workbench(scene, 'seg')
+        for k in (ks if 'seg' in passes else []):
             pose(k)
             t = time.perf_counter()
             scene.render.filepath = os.path.join(sdir, 'segmentation', 'frame-%03d.png' % k)
@@ -465,9 +803,11 @@ def main():
             st.setdefault('frame-%03d' % k, {})['seg_s'] = round(time.perf_counter() - t, 2)
             log('%s frame-%03d seg %.1fs' % (sid, k, st['frame-%03d' % k]['seg_s']))
 
+        if 'normal' not in passes:
+            continue
         config_cycles(scene, near, far, sdir)
         tmp = os.path.join(sdir, '_depth_tmp')
-        for k in range(n_frames):
+        for k in ks:
             pose(k)
             ft = st.setdefault('frame-%03d' % k, {})
             t = time.perf_counter()
@@ -495,6 +835,10 @@ def main():
     with open(tpath, 'w', encoding='utf-8') as f:
         json.dump(timings, f, ensure_ascii=False, indent=1)
         f.write('\n')
+    if lit and lit_meta is not None:
+        with open(os.path.join(args.out, 'beauty-meta.json'), 'w', encoding='utf-8') as f:
+            json.dump(dict(lit_meta, presetsFile=args.presets, shots=[s['id'] for s in want]), f, ensure_ascii=False, indent=1)
+            f.write('\n')
     log('done: %d shots, %d frames total' % (len(want), sum(len(s['eye']) if 'eye' in s else 1 for s in want)))
 
 
