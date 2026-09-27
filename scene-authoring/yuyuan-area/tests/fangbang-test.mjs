@@ -1,6 +1,6 @@
 // 方浜中路第五分区验收（GOAL wave1-fangbang F2 + 主控放行口径 2026-09-23）。
 // 对照基准全部取自源数据（不拿产物和自己比）：
-//   实例/位置 = world/fangbang-temple-v7/instances.json + (53.5,-17.4)；
+//   实例/位置 = world/fangbang-temple-v7/instances.json（+ baseline/fangbang-placement-overrides.json 全域覆盖）+ (53.5,-17.4)；
 //   剔除规则独立重算：westext-seal-wall 一律去（决定 1）；168/170/171 与 layout 实体 footprint 多边形、
 //     v7 庙轴碰撞盒（=全域庙区包围盒，山门锚逐位一致）任一相交即剔（决定 1）；
 //   补齐件 = OUT_DIR/fangbang-infill.json 的位姿，但几何合法性（不相交、在断带内、路口保留）全部用
@@ -14,6 +14,7 @@ import { fileURLToPath } from 'node:url';
 import { obbToWorld } from '../../../src/world/collisionAdapter.js';
 import { triangleCounts } from '../src/reconcile.mjs';
 import { readGlb, transformPoint } from '../../../src/world/glbReader.js';
+import { loadV7WithOverrides } from '../scripts/fangbang-overrides.mjs';
 
 const AREA = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const REPO = path.resolve(AREA, '..', '..');
@@ -87,10 +88,11 @@ if (!files.length) {
 for (const f of [path.join(OUT, 'collision-fangbang.json'), path.join(OUT, 'fangbang-route.json'), path.join(OUT, 'fangbang-infill.json'), path.join(OUT, 'assemble-stats.json')]) {
   if (!fs.existsSync(f)) { console.log('fangbang-test: NOT BUILT — missing', path.basename(f)); process.exit(2); }
 }
-const instDoc = JSON.parse(fs.readFileSync(path.join(FB7, 'instances.json'), 'utf8'));
+// 源数据 = v7 instances / collision-world + 全域放置覆盖 baseline/fangbang-placement-overrides.json（源数据，非产物；
+// 与 assemble.py / export-collision-fangbang.mjs 同读一份）
+const { instDoc, colDoc } = loadV7WithOverrides(REPO);
 const v7 = new Map(instDoc.instances.map(i => [i.id, i]));
 const templeIds = new Set(instDoc.instances.filter(i => i.group === 'temple-axis-v2').map(i => i.id));
-const colDoc = JSON.parse(fs.readFileSync(path.join(FB7, 'collision-world.json'), 'utf8'));
 const perId = new Map();
 for (const r of colDoc.colliders) {
   const id = r.name.split(':')[0];
@@ -382,6 +384,270 @@ ok('route junction at shanmen anchor (<=0.01m)', route.junction && route.junctio
   const cmBytes = fbCm.reduce((s, z) => s + z.cm.bytes, 0) + [...fbTex].reduce((s, u) => s + manifest.textures[u].bytes, 0);
   ok(`fangbang cm total ${(cmBytes / 1e6).toFixed(2)}MB <= 7MB`, cmBytes > 0 && cmBytes <= 7e6, String(cmBytes));
   console.log('R1 triangles', { unique, placed, ref, partsSharingMultiMesh: shareOk });
+}
+
+// ---------- W7（wave10 S1，来源 wave5 F-09）：每家店的挂件（店招/灯笼）不与邻店本体相交 ----------
+// 挂件包围盒 = 模块 GLB 里名字含 sign/lantern 的网格局部 AABB × 实例位姿（旋转矩形）；邻店本体 =
+// 该实例的源碰撞记录（v7 collision-world / sidecar）里底 ≤ 1.0 m 的矩形逐条比对。弯街上旋转 AABB 有
+// 膨胀假阳（wave5 F-09 报的 0.32–0.56 m 即那一口径），这里用真实多边形相交：面积 ≥ 0.01 m² 且 y 区间
+// 重叠才算穿入。补齐件同口径（donor 模块 × fangbang-infill.json 位姿；补齐件互相之间由第 3 节 AABB
+// 校验覆盖）。庙轴记录不作邻居（山门缝与越庙墙由第 5 节与 W5 的口径管）。
+{
+  const man7 = JSON.parse(fs.readFileSync(path.join(FB7, 'review-manifest.json'), 'utf8'));
+  const modPath7 = new Map(man7.modules.map(m => [m.id, path.join(REPO, m.path.replace(/^\.\//, ''))]));
+  const isBase7 = r => !(r.obb && r.obb.center[1] - r.obb.size[1] / 2 > 1.0);
+  const rect7 = r => {
+    const w = obbToWorld(r);
+    const c = Math.cos(w.yaw), s = Math.sin(w.yaw);
+    const [hx, , hz] = w.halfExtents;
+    return {
+      pts: [
+        [w.center[0] + c * hx + s * hz, w.center[2] - s * hx + c * hz],
+        [w.center[0] + c * hx - s * hz, w.center[2] - s * hx - c * hz],
+        [w.center[0] - c * hx - s * hz, w.center[2] + s * hx - c * hz],
+        [w.center[0] - c * hx + s * hz, w.center[2] + s * hx + c * hz],
+      ],
+      ylo: w.center[1] - w.halfExtents[1], yhi: w.center[1] + w.halfExtents[1], name: r.name,
+    };
+  };
+  // 凸四边形 × 凸四边形相交面积（半平面裁剪 + 鞋带）
+  const clipArea = (subject, clip) => {
+    let poly = subject;
+    for (let i = 0; i < clip.length && poly.length; i++) {
+      const [ax, az] = clip[i], [bx, bz] = clip[(i + 1) % clip.length];
+      const inside = p => (bx - ax) * (p[1] - az) - (bz - az) * (p[0] - ax) <= 0;
+      const next = [];
+      for (let k = 0; k < poly.length; k++) {
+        const p = poly[k], q = poly[(k + 1) % poly.length];
+        const dp = (bx - ax) * (p[1] - az) - (bz - az) * (p[0] - ax);
+        const dq = (bx - ax) * (q[1] - az) - (bz - az) * (q[0] - ax);
+        const pi = inside(p), qi = inside(q);
+        if (pi) next.push(p);
+        if (pi !== qi) {
+          const t = dp / (dp - dq);
+          next.push([p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t]);
+        }
+      }
+      poly = next;
+    }
+    if (poly.length < 3) return 0;
+    let a = 0;
+    for (let k = 0; k < poly.length; k++) {
+      const p = poly[k], q = poly[(k + 1) % poly.length];
+      a += p[0] * q[1] - q[0] * p[1];
+    }
+    return Math.abs(a) / 2;
+  };
+  const hangCache = new Map();   // module -> [{name, lo, hi}]
+  const hangParts = module => {
+    if (!hangCache.has(module)) {
+      const out = [], byName = new Map();
+      for (const m of readGlb(fs.readFileSync(modPath7.get(module))).meshes) {
+        if (!/sign|lantern/i.test(m.name || '')) continue;
+        const lo = [1e9, 1e9, 1e9], hi = [-1e9, -1e9, -1e9];
+        for (let i = 0; i < m.positions.length; i += 3) {
+          const w = transformPoint(m.matrix, [m.positions[i], m.positions[i + 1], m.positions[i + 2]]);
+          for (let k = 0; k < 3; k++) { lo[k] = Math.min(lo[k], w[k]); hi[k] = Math.max(hi[k], w[k]); }
+        }
+        if (!byName.has(m.name)) byName.set(m.name, [lo, hi]);
+        else {
+          const [plo, phi] = byName.get(m.name);
+          for (let k = 0; k < 3; k++) { plo[k] = Math.min(plo[k], lo[k]); phi[k] = Math.max(phi[k], hi[k]); }
+        }
+      }
+      for (const [name, [lo, hi]] of byName) out.push({ name, lo, hi });
+      hangCache.set(module, out);
+    }
+    return hangCache.get(module);
+  };
+  const bandPoly = (lo, hi, rot, px, pz) => {
+    const c = Math.cos(rot), s = Math.sin(rot);
+    return [
+      [px + c * lo[0] + s * lo[2], pz - s * lo[0] + c * lo[2]],
+      [px + c * hi[0] + s * lo[2], pz - s * hi[0] + c * lo[2]],
+      [px + c * hi[0] + s * hi[2], pz - s * hi[0] + c * hi[2]],
+      [px + c * lo[0] + s * hi[2], pz - s * lo[0] + c * hi[2]],
+    ];
+  };
+  const instById7 = new Map(instDoc.instances.map(i => [i.id, i]));
+  const placedV7_7 = v7Expected.map(i => i.id);   // 与第 1 节同源的源重算已放置集
+  const base7 = new Map();   // id -> rects（v7 坐标）
+  for (const id of placedV7_7) {
+    base7.set(id, (perId.get(id) || []).filter(isBase7).map(rect7));
+  }
+  // 补齐件矩形 = donor 记录的局部 center/size 按补齐位姿重建（同 export-collision-fangbang 的克隆口径）；v7 系
+  const infillRects = infillSpec.map(it => ({
+    id: it.id,
+    recs: (perId.get(it.donor) || []).filter(isBase7).map(r => {
+      if (!r.obb) throw new Error(`infill donor record ${r.name} not obb form`);
+      const o = r.obb;
+      const c = Math.cos(it.rotY), s = Math.sin(it.rotY);
+      const cx = it.positionGlb[0] + c * o.center[0] + s * o.center[2];
+      const cz = it.positionGlb[2] - s * o.center[0] + c * o.center[2];
+      const cc = Math.cos(it.rotY), ss = Math.sin(it.rotY);
+      const hx = o.size[0] / 2, hz = o.size[2] / 2;
+      return {
+        pts: [
+          [cx + cc * hx + ss * hz, cz - ss * hx + cc * hz],
+          [cx + cc * hx - ss * hz, cz - ss * hx - cc * hz],
+          [cx - cc * hx - ss * hz, cz + ss * hx - cc * hz],
+          [cx - cc * hx + ss * hz, cz + ss * hx + cc * hz],
+        ],
+        ylo: o.center[1] - o.size[1] / 2, yhi: o.center[1] + o.size[1] / 2, name: r.name,
+      };
+    }),
+  }));
+  const AREA_MIN = 0.01;
+  const bad7 = [];
+  const check = (id, module, rot, px, pz) => {
+    for (const p of hangParts(module)) {
+      const A = bandPoly(p.lo, p.hi, rot, px, pz);
+      for (const [oid, rects] of base7) {
+        if (oid === id) continue;
+        for (const r of rects) {
+          if (Math.min(p.hi[1], r.yhi) <= Math.max(p.lo[1], r.ylo)) continue;
+          const area = clipArea(A, r.pts);
+          if (area >= AREA_MIN) bad7.push(`${id}:${p.name} -> ${oid}:${r.name.split(':').pop()} (${area.toFixed(3)} m^2)`);
+        }
+      }
+      for (const { id: iid, recs } of infillRects) {
+        if (iid === id) continue;
+        for (const r of recs) {
+          if (Math.min(p.hi[1], r.yhi) <= Math.max(p.lo[1], r.ylo)) continue;
+          const area = clipArea(A, r.pts);
+          if (area >= AREA_MIN) bad7.push(`${id}:${p.name} -> ${iid}:${r.name.split(':').pop()} (${area.toFixed(3)} m^2)`);
+        }
+      }
+    }
+  };
+  for (const i of v7Expected) {
+    const parts = hangParts(i.module);
+    if (parts.length) check(i.id, i.module, i.rotationYRad, i.positionGlb[0], i.positionGlb[2]);
+  }
+  for (const it of infillSpec) check(it.id, instById7.get(it.donor).module, it.rotY, it.positionGlb[0], it.positionGlb[2]);
+  ok(`hanging parts (sign/lantern) clear of neighbour bodies (${bad7.length} penetrations)`, bad7.length === 0, bad7.slice(0, 4).join(' | '));
+}
+
+// ---------- W8（wave10 S2 · R2 按审查必修1改写，来源 wave5 F-10）：街尾残件按整件（连通分量）剔除 ----------
+// 规则（与 assemble.py SG_TRIM 同一规则）：street-kit__blue-gray-brick /
+// street-kit__oxblood-stained-timber 两个合并网格先按「共享顶点位置，容差 1 mm」分成几何连通分量；
+// 任一顶点 v7 x > 72.2 的分量判为巷尾残件，整件不得进入分区。R1 按单个顶点截断把跨线木箱
+// （x 72.076–72.676，各 108 tris）切成薄片、分区 GLB 残留 84 三角形（R2 审查必修1打回）。
+// 目标分量独立从源 GLB 普查（v7 世界坐标，组件按最小 x 排序编号），R2 契约清单：
+//   street-kit__blue-gray-brick 共 5 件（每件 6 tris）：目标 #3（x 70.681–72.557, z 14.462–15.665）
+//     与 #4（x 73.245–74.750, z 16.018–17.015）= wave5 F-10「两段孤立矮砖墙」（到 v7 x 74.7）；
+//   street-kit__oxblood-stained-timber 共 8 件（每件 108 tris）：目标 #4/#5（叠放木箱 x 72.076–72.676）、
+//     #6（薄板 x 72.226–73.126）、#7（木箱 x 72.696–73.296）= F-10「木构件…到 73.3」。
+// 断言：目标分量逐件在产物里 0 三角形；非目标分量逐件三角形数与源相等（覆盖全部非目标件，不止靠店一段）。
+// 三角形按 v7 坐标（产物 x−53.5 / z+17.4，实测锚平移）1 mm 容差逐件匹配。
+{
+  const SG_TRIM_X = 72.2, SG_EPS = 0.001;
+  const SG_IDS = ['street-kit__blue-gray-brick', 'street-kit__oxblood-stained-timber'];
+  // R2 契约清单（源 GLB 普查结果；若源漂移则此断言失败并提示重新普查）
+  const CONTRACT = {
+    'street-kit__blue-gray-brick': [
+      { i: 3, tris: 6, x: [70.681, 72.557], z: [14.462, 15.665] },
+      { i: 4, tris: 6, x: [73.245, 74.750], z: [16.018, 17.015] },
+    ],
+    'street-kit__oxblood-stained-timber': [
+      { i: 4, tris: 108, x: [72.076, 72.676], z: [17.562, 18.162] },
+      { i: 5, tris: 108, x: [72.076, 72.676], z: [17.562, 18.162] },
+      { i: 6, tris: 108, x: [72.226, 73.126], z: [18.162, 18.862] },
+      { i: 7, tris: 108, x: [72.696, 73.296], z: [17.562, 18.162] },
+    ],
+  };
+  const compsOf = (m, toV7) => {
+    const nv = m.positions.length / 3;
+    const parent = new Int32Array(nv).map((_, i) => i);
+    const find = a => { while (parent[a] !== a) { parent[a] = parent[parent[a]]; a = parent[a]; } return a; };
+    const uni = (a, b) => { a = find(a); b = find(b); if (a !== b) parent[a] = b; };
+    const w = vi => toV7(transformPoint(m.matrix, [m.positions[vi * 3], m.positions[vi * 3 + 1], m.positions[vi * 3 + 2]]));
+    const q = p => `${Math.round(p[0] / SG_EPS)},${Math.round(p[1] / SG_EPS)},${Math.round(p[2] / SG_EPS)}`;
+    const byKey = new Map();
+    for (let v = 0; v < nv; v++) {
+      const key = q(w(v));
+      if (byKey.has(key)) uni(v, byKey.get(key)); else byKey.set(key, v);
+    }
+    for (let t = 0; t < m.indices.length; t += 3) { uni(m.indices[t], m.indices[t + 1]); uni(m.indices[t], m.indices[t + 2]); }
+    const order = [], comps = new Map();
+    for (let t = 0; t < m.indices.length; t += 3) {
+      const r = find(m.indices[t]);
+      let c = comps.get(r);
+      if (!c) {
+        c = { tris: 0, sigs: new Map(), lo: [1e9, 1e9], hi: [-1e9, -1e9] };
+        comps.set(r, c); order.push(c);
+      }
+      c.tris++;
+      const vs = [w(m.indices[t]), w(m.indices[t + 1]), w(m.indices[t + 2])];
+      c.sigs.set(vs.map(q).sort().join('|'), (c.sigs.get(vs.map(q).sort().join('|')) || 0) + 1);
+      for (const p of vs) { c.lo[0] = Math.min(c.lo[0], p[0]); c.hi[0] = Math.max(c.hi[0], p[0]); c.lo[1] = Math.min(c.lo[1], p[2]); c.hi[1] = Math.max(c.hi[1], p[2]); }
+    }
+    order.sort((a, b) => a.lo[0] - b.lo[0]);   // 编号 = 按最小 x 排序
+    return { order, comps };
+  };
+  const srcGlb = readGlb(fs.readFileSync(path.join(FB7, 'street-reviewed-lanes.glb')));
+  const src = new Map();     // name -> { list: [{i, tris, x, z, sigs, target}], bySig }
+  const bySig = new Map();   // 三角形签名 -> {name, i, n}
+  const toV7src = p => p;
+  for (const m of srcGlb.meshes) {
+    if (!SG_IDS.includes(m.name)) continue;
+    const { order, comps } = compsOf(m, toV7src);
+    const list = order.map((c, i) => ({ i, tris: c.tris, x: [c.lo[0], c.hi[0]], z: [c.lo[1], c.hi[1]], sigs: c.sigs, target: c.hi[0] > SG_TRIM_X }));
+    src.set(m.name, list);
+    for (const c of list) for (const [s, n] of c.sigs) bySig.set(s, { name: m.name, i: c.i, n });
+  }
+  // 契约核对：源普查必须仍是 R2 记录的那 6 件目标（源漂移时在此失败，重新普查后再更新契约）
+  const drift = [];
+  for (const [name, want] of Object.entries(CONTRACT)) {
+    const got = (src.get(name) || []).filter(c => c.target);
+    if (got.length !== want.length) { drift.push(`${name}: ${got.length} target comps != ${want.length}`); continue; }
+    got.forEach((c, k) => {
+      const wv = want[k];
+      if (c.i !== wv.i || c.tris !== wv.tris
+        || Math.abs(c.x[0] - wv.x[0]) > 0.002 || Math.abs(c.x[1] - wv.x[1]) > 0.002
+        || Math.abs(c.z[0] - wv.z[0]) > 0.002 || Math.abs(c.z[1] - wv.z[1]) > 0.002)
+        drift.push(`${name}#${c.i}: x[${c.x}] z[${c.z}] ${c.tris}tris != contract #${wv.i} x[${wv.x}] z[${wv.z}] ${wv.tris}tris`);
+    });
+  }
+  ok(`street-kit target components match R2 contract (6 pieces: brick #3/#4, timber #4-#7)`, drift.length === 0, drift.join(' | '));
+  // 产物逐三角形归类（产物坐标 -> v7；±1 bin 邻域兜底量化边界翻转）
+  const prodCount = new Map(), unmatched = [];
+  for (const [name, list] of src) for (const c of list) prodCount.set(`${name}#${c.i}`, 0);
+  const probe = new Map();
+  for (const f of files) {
+    for (const m of readGlb(fs.readFileSync(f)).meshes) {
+      if (!src.has(m.name)) continue;
+      const toV7 = p => [p[0] - OFF[0], p[1], p[2] + 17.4];
+      for (let t = 0; t < m.indices.length; t += 3) {
+        const vs = [0, 1, 2].map(k => {
+          const vi = m.indices[t + k];
+          return toV7(transformPoint(m.matrix, [m.positions[vi * 3], m.positions[vi * 3 + 1], m.positions[vi * 3 + 2]]));
+        });
+        const q = p => `${Math.round(p[0] / SG_EPS)},${Math.round(p[1] / SG_EPS)},${Math.round(p[2] / SG_EPS)}`;
+        const key = vs.map(q).sort().join('|');
+        let hit = bySig.get(key);
+        if (!hit) {
+          outer:
+          for (const a of [-1, 0, 1]) for (const b of [-1, 0, 1]) for (const c of [-1, 0, 1]) {
+            const k2 = vs.map(p => `${Math.round(p[0] / SG_EPS) + a},${Math.round(p[1] / SG_EPS) + b},${Math.round(p[2] / SG_EPS) + c}`).sort().join('|');
+            if (bySig.has(k2)) { hit = bySig.get(k2); break outer; }
+          }
+        }
+        if (!hit) { unmatched.push(`${m.name} tri@x${vs[0][0].toFixed(2)}`); continue; }
+        const id = `${hit.name}#${hit.i}`;
+        prodCount.set(id, prodCount.get(id) + 1);
+      }
+    }
+  }
+  const leftovers = [], overcut = [];
+  for (const [name, list] of src) for (const c of list) {
+    const id = `${name}#${c.i}`, got = prodCount.get(id);
+    if (c.target && got > 0) leftovers.push(`${id}: ${got}/${c.tris} target tris left`);
+    if (!c.target && got !== c.tris) overcut.push(`${id}: ${got} != source ${c.tris}`);
+  }
+  ok(`street-kit remnant components (any vert v7 x > 72.2) fully absent (${leftovers.length})`, leftovers.length === 0, leftovers.join(', '));
+  ok(`street-kit non-target components intact piece-by-piece (${overcut.length})`, overcut.length === 0, overcut.join(', '));
+  ok(`street-kit product triangles all matched to source components (${unmatched.length} unmatched)`, unmatched.length === 0, unmatched.slice(0, 4).join(', '));
 }
 
 // ================= wave5-fangbangqa（Q2）新增：眼高普查 F-01 / F-03 / F-04 / F-05 / F-06 =================

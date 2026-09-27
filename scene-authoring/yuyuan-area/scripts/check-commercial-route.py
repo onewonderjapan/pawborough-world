@@ -4,17 +4,22 @@ A route graph edge alone is never evidence of passage; obstacles are ground foot
 import os,sys,json,heapq,math,hashlib
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'.python-deps'))
+sys.path.insert(0,str(Path(__file__).resolve().parent))
 import numpy as np
 import shapely
 from shapely.geometry import Polygon,LineString,Point,box
 from shapely.ops import unary_union
+from road_surface import road_surface_polys
 R=Path(__file__).resolve().parents[1];O=R/os.environ.get('OUT_DIR','out');d=json.loads((O/'layout.json').read_text(encoding='utf-8'))
 by={o['id']:o for o in d['objects']};area=box(-300,-280,85,65)
 surfaces=[];obstacles=[]
 for o in d['objects']:
  g=o['geometry']
  if o.get('skipRender'):continue
- if o['kind']=='road' and g.get('polyline'):surfaces.append(Polygon(g['surfaceFootprint']) if g.get('surfaceFootprint') else LineString(g['polyline']).buffer(g['width']/2,cap_style=2,join_style=2))
+ if o['kind']=='road' and g.get('polyline'):
+  # wave10-streetfix R4（审查必修1）：取面走 scripts/road_surface.py 共享实现——surfaceFootprints
+  # 存在即权威，空数组 = 空几何，不回退单块字段或折线（契约与 build-scene.mjs road 分支一致）
+  surfaces.extend(road_surface_polys(g))
  if o['kind']=='plaza':surfaces.append(Polygon(g['footprint']).buffer(0))
  if o['kind'] in ['outerBuilding','bazaarBlock','hall','tower','pavilion','xuan','waterside','watersideGallery','stage'] and g.get('footprint'):
   obstacles.extend(Polygon(fp).buffer(0) for fp in g.get('groundFootprints',[g['footprint']]))
@@ -96,10 +101,15 @@ for k,s in shapes.items():
  except ValueError as e:errors.append(k+': '+str(e))
 from shapely.ops import nearest_points
 parts=list(free.geoms) if hasattr(free,'geoms') else [free]
-mainpart=next(g for g in parts if g.covers(Point(anchor_xy['main'])))
-centerpart=next(g for g in parts if g.covers(Point(anchor_xy['center'])))
-pa,pb=nearest_points(mainpart,centerpart)
-(O/'nav-gap.json').write_text(json.dumps({'main':[pa.x,pa.y],'center':[pb.x,pb.y],'gap':pa.distance(pb),'anchors':{k:tuple(v) for k,v in anchor_xy.items()},'anchorSource':anchor_src},indent=1),encoding='utf-8')
+# wave10-streetfix R4（审查必修1）：锚点可以全部失守（如空数组负例：路上没有任何可站立面）——
+# 如实写报告并判不通，不许在这里 KeyError 崩掉导致无报告（判不通也必须是「报告出来的不通」）。
+mainpart=next((g for g in parts if 'main' in anchor_xy and g.covers(Point(anchor_xy['main']))),None)
+centerpart=next((g for g in parts if 'center' in anchor_xy and g.covers(Point(anchor_xy['center']))),None)
+if mainpart is not None and centerpart is not None:
+ pa,pb=nearest_points(mainpart,centerpart);gaprec={'main':[pa.x,pa.y],'center':[pb.x,pb.y],'gap':pa.distance(pb)}
+else:
+ gaprec={'main':None,'center':None,'gap':None}
+(O/'nav-gap.json').write_text(json.dumps({**gaprec,'anchors':{k:tuple(v) for k,v in anchor_xy.items()},'anchorSource':anchor_src},indent=1),encoding='utf-8')
 routes=[]
 def ribbon_ok(pts):return bool(pts) and walk.covers(LineString(pts).buffer(1.5,cap_style=2,join_style=2))
 pinned_routes={(r['from'],r['to']):r['points'] for r in pinned.get('routes',[])}

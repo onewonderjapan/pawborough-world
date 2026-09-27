@@ -171,55 +171,62 @@ def main():
     oz = args.out_zone if os.path.isabs(args.out_zone) else os.path.join(ROOT, args.out_zone)
 
     layout = load_json(os.path.join(ROOT, 'baseline', 'layout.json'))
-    fb_route = load_json(os.path.join(oz, 'fangbang-route.json'))
+    # wave10-streetfix R4（审查必修2）：SKIP 收窄到镜头级。FANGBANG=0（rebuild-review.sh 不生成
+    # fangbang-route.json / collision-fangbang.json）时镜头①失去路线依据 → 不出①、照常出其余镜头；
+    # 默认 / FANGBANG=1 下缺文件仍然直接抛错（默认路径缺件必须失败，不许混成「显式关闭」）。
+    fb_path = os.path.join(oz, 'fangbang-route.json')
+    fb_off_missing = os.environ.get('FANGBANG') == '0' and not os.path.exists(fb_path)
+    fb_route = None if fb_off_missing else load_json(fb_path)
     commercial = load_json(os.path.join(oz, 'commercial-route.json'))
     objs = {o['id']: o for o in layout['objects']}
     insts = {i['id']: i for i in layout['instances']}
     N = args.frames
     errors = []
 
-    # ---------- 镜头① 方浜中路西行到山门 ----------
-    ms = [[p[0], p[2]] for p in fb_route['mainStreet']]     # 路线点是 [x, y(=0), z]
-    shanmen_id = 'temple-shanmen'
-    shanmen = insts[shanmen_id]['position']                  # layout 重算：山门锚 [x, z]
-    # mainStreet 的 E-W 段在庙前转角（idx 297 附近）折向南；山门在转角西南、被街角店块遮挡，
-    # 但物理街道与山门视廊在折线终点以西仍在（实测 (-78, 22) 处山门可见）。
-    # 取 E-W 段 + 沿末段方向 12 m 外推作为行走折线，停步点在转角后 8 m（与山门齐平偏西），末 6 帧转向山门。
-    sj = min((i for i in range(1, len(ms)) if ms[i][0] > ms[i - 1][0] + 0.3 and i > len(ms) * 0.5),
-             default=None)
-    if sj is None or sj < 10:
-        sj = min(range(len(ms)), key=lambda i: math.dist(ms[i], shanmen))
-    # 找 E-W 段终点：最后一个 x 单调西行、且下一段急转（z 变化 >> x 变化）的折点
-    corner = len(ms) - 1
-    for i in range(1, len(ms)):
-        dx = ms[i][0] - ms[i - 1][0]
-        dz = ms[i][1] - ms[i - 1][1]
-        if abs(dz) > abs(dx) and ms[i][0] < -50:   # 首次南向占优段（E-W 街在庙前折向南）
-            corner = i - 1
-            break
-    leg = ms[:corner + 1]
-    tail_dir = [(leg[-1][0] - leg[-2][0]), (leg[-1][1] - leg[-2][1])]
-    tl = math.hypot(*tail_dir)
-    tail_dir = [tail_dir[0] / tl, tail_dir[1] / tl]
-    walk_poly = leg + [[leg[-1][0] + tail_dir[0] * 12.0, leg[-1][1] + tail_dir[1] * 12.0]]
-    acc = polyline_arc(walk_poly)
-    s_corner = acc[len(leg) - 1]
-    s_stop = s_corner + 8.0
-    s0 = max(0.0, s_stop - FANGBANG_WALK_M)
-    walk = resample(walk_poly, N, s0, s_stop)
+    # ---------- 镜头① 方浜中路西行到山门（FANGBANG=0 缺路线依据时不出该镜头） ----------
+    ms = sj = corner = None
     fb_eye, fb_tgt = [], []
-    for k, p in enumerate(walk):
-        s = s0 + (s_stop - s0) * k / (N - 1)
-        la = point_at(walk_poly, acc, min(s + LOOK_AHEAD_M, s_stop))
-        w = max(0.0, (k - (N - 7)) / 6.0)                    # 末 6 帧注视点平滑转向山门
-        w = w * w * (3 - 2 * w)
-        tx = la[0] * (1 - w) + shanmen[0] * w
-        tz = la[1] * (1 - w) + shanmen[1] * w
-        th = EYE * (1 - w) + 4.0 * w
-        fb_eye.append([p[0], EYE, p[1]])
-        fb_tgt.append([tx, th, tz])
-    if math.dist(walk[-1], shanmen) > 15:
-        errors.append('镜头①末点离山门锚 %.1f m > 12' % math.dist(walk[-1], shanmen))
+    if fb_route is not None:
+        ms = [[p[0], p[2]] for p in fb_route['mainStreet']]     # 路线点是 [x, y(=0), z]
+        shanmen_id = 'temple-shanmen'
+        shanmen = insts[shanmen_id]['position']                  # layout 重算：山门锚 [x, z]
+        # mainStreet 的 E-W 段在庙前转角（idx 297 附近）折向南；山门在转角西南、被街角店块遮挡，
+        # 但物理街道与山门视廊在折线终点以西仍在（实测 (-78, 22) 处山门可见）。
+        # 取 E-W 段 + 沿末段方向 12 m 外推作为行走折线，停步点在转角后 8 m（与山门齐平偏西），末 6 帧转向山门。
+        sj = min((i for i in range(1, len(ms)) if ms[i][0] > ms[i - 1][0] + 0.3 and i > len(ms) * 0.5),
+                 default=None)
+        if sj is None or sj < 10:
+            sj = min(range(len(ms)), key=lambda i: math.dist(ms[i], shanmen))
+        # 找 E-W 段终点：最后一个 x 单调西行、且下一段急转（z 变化 >> x 变化）的折点
+        corner = len(ms) - 1
+        for i in range(1, len(ms)):
+            dx = ms[i][0] - ms[i - 1][0]
+            dz = ms[i][1] - ms[i - 1][1]
+            if abs(dz) > abs(dx) and ms[i][0] < -50:   # 首次南向占优段（E-W 街在庙前折向南）
+                corner = i - 1
+                break
+        leg = ms[:corner + 1]
+        tail_dir = [(leg[-1][0] - leg[-2][0]), (leg[-1][1] - leg[-2][1])]
+        tl = math.hypot(*tail_dir)
+        tail_dir = [tail_dir[0] / tl, tail_dir[1] / tl]
+        walk_poly = leg + [[leg[-1][0] + tail_dir[0] * 12.0, leg[-1][1] + tail_dir[1] * 12.0]]
+        acc = polyline_arc(walk_poly)
+        s_corner = acc[len(leg) - 1]
+        s_stop = s_corner + 8.0
+        s0 = max(0.0, s_stop - FANGBANG_WALK_M)
+        walk = resample(walk_poly, N, s0, s_stop)
+        for k, p in enumerate(walk):
+            s = s0 + (s_stop - s0) * k / (N - 1)
+            la = point_at(walk_poly, acc, min(s + LOOK_AHEAD_M, s_stop))
+            w = max(0.0, (k - (N - 7)) / 6.0)                    # 末 6 帧注视点平滑转向山门
+            w = w * w * (3 - 2 * w)
+            tx = la[0] * (1 - w) + shanmen[0] * w
+            tz = la[1] * (1 - w) + shanmen[1] * w
+            th = EYE * (1 - w) + 4.0 * w
+            fb_eye.append([p[0], EYE, p[1]])
+            fb_tgt.append([tx, th, tz])
+        if math.dist(walk[-1], shanmen) > 15:
+            errors.append('镜头①末点离山门锚 %.1f m > 12' % math.dist(walk[-1], shanmen))
 
     # ---------- 镜头② 华宝楼前广场弧线环视（R1） ----------
     # 中心广场是围合院落：楼前进深只有 ~25 m，而华宝楼临广场立面 44 m 宽（塔楼变体角亭宝顶 24.3 m）。
@@ -289,6 +296,25 @@ def main():
     if not any(r.get('pass') for r in commercial.get('routes', [])):
         errors.append('commercial-route.json 无 pass 路线（校验源数据异常）')
 
+    shots = []
+    if fb_route is not None:
+        shots.append(
+            {'id': 'fangbang-westbound',
+             'description': '方浜中路沿街西行过庙前转角 8 m（与山门齐平），末 6 帧注视点转向城隍庙山门（路线 mainStreet 重采样 %.0f m，眼高 1.6 m，注视点前视 %.0f m）' % (FANGBANG_WALK_M, LOOK_AHEAD_M),
+             'targetId': shanmen_id, 'targetName': '城隍庙山门',
+             'frames': N, 'eye': fb_eye, 'target': fb_tgt})
+    shots.append(
+            {'id': 'habao-plaza-pan',
+             'description': '商城华宝楼前中心广场沿弧线环视：机位绕楼包围盒中心 R=%.0f m、方位 %+.0f°→%+.0f°（东南→西南，%.0f° 弧），眼高 1.6 m，%.0f mm 超广角逐帧整楼居中（目标高 %.1f m：%s）' % (HB_ARC_R, HB_ARC_A0, HB_ARC_A1, abs(HB_ARC_A1 - HB_ARC_A0), HB_LENS_MM, hb_h, hb_variant),
+             'targetId': habao['id'], 'targetName': '华宝楼', 'targetHeightM': hb_h,
+             'lensMm': HB_LENS_MM,
+             'frames': N, 'eye': hb_eye, 'target': hb_tgt})
+    shots.append(
+            {'id': 'jiuqu-to-huxinting',
+             'description': '九曲桥上走向湖心亭：桥中线 ±%.1f m 滑动平均切角（离中线 ≤%.1f m），机位高 %.1f m（桥面 0.55 + %.2f），注视锁定湖心亭形心、高度 %.1f→%.1f m 线性抬升（宝顶/屋脊上方留天），%.0f mm，停步离亭形心 %.1f m' % (JQ_SMOOTH_M, JQ_MAX_OFF, JQ_CAM_Y, JQ_CAM_Y - DECK, JQ_AIM_Y0, JQ_AIM_Y1, JQ_LENS_MM, d_end),
+             'targetId': 'huxin-ting', 'targetName': '湖心亭',
+             'lensMm': JQ_LENS_MM,
+             'frames': N, 'eye': jq_eye, 'target': jq_tgt})
     doc = {
         'version': 1,
         'width': 1280, 'height': 720,
@@ -297,28 +323,14 @@ def main():
         'coordinateNote': '坐标为地图系 [x, y高度, z]（同 out-zone/tour.json）；Blender 世界=(x,-z,y)；glTF Y-up 世界=本文件坐标',
         'sources': {
             'layout': 'baseline/layout.json',
-            'fangbangRoute': os.path.relpath(os.path.join(oz, 'fangbang-route.json'), ROOT),
+            'fangbangRoute': 'skipped (FANGBANG=0: fangbang-route.json not generated)' if fb_route is None
+                else os.path.relpath(os.path.join(oz, 'fangbang-route.json'), ROOT),
             'commercialRoute': os.path.relpath(os.path.join(oz, 'commercial-route.json'), ROOT),
             'shanmenJunctionIdx': sj,
             'jiuquEndCentrelineArcM': round(dense_s[end_i], 2),
             'habaoTargetHeight': hb_variant,
         },
-        'shots': [
-            {'id': 'fangbang-westbound',
-             'description': '方浜中路沿街西行过庙前转角 8 m（与山门齐平），末 6 帧注视点转向城隍庙山门（路线 mainStreet 重采样 %.0f m，眼高 1.6 m，注视点前视 %.0f m）' % (FANGBANG_WALK_M, LOOK_AHEAD_M),
-             'targetId': shanmen_id, 'targetName': '城隍庙山门',
-             'frames': N, 'eye': fb_eye, 'target': fb_tgt},
-            {'id': 'habao-plaza-pan',
-             'description': '商城华宝楼前中心广场沿弧线环视：机位绕楼包围盒中心 R=%.0f m、方位 %+.0f°→%+.0f°（东南→西南，%.0f° 弧），眼高 1.6 m，%.0f mm 超广角逐帧整楼居中（目标高 %.1f m：%s）' % (HB_ARC_R, HB_ARC_A0, HB_ARC_A1, abs(HB_ARC_A1 - HB_ARC_A0), HB_LENS_MM, hb_h, hb_variant),
-             'targetId': habao['id'], 'targetName': '华宝楼', 'targetHeightM': hb_h,
-             'lensMm': HB_LENS_MM,
-             'frames': N, 'eye': hb_eye, 'target': hb_tgt},
-            {'id': 'jiuqu-to-huxinting',
-             'description': '九曲桥上走向湖心亭：桥中线 ±%.1f m 滑动平均切角（离中线 ≤%.1f m），机位高 %.1f m（桥面 0.55 + %.2f），注视锁定湖心亭形心、高度 %.1f→%.1f m 线性抬升（宝顶/屋脊上方留天），%.0f mm，停步离亭形心 %.1f m' % (JQ_SMOOTH_M, JQ_MAX_OFF, JQ_CAM_Y, JQ_CAM_Y - DECK, JQ_AIM_Y0, JQ_AIM_Y1, JQ_LENS_MM, d_end),
-             'targetId': 'huxin-ting', 'targetName': '湖心亭',
-             'lensMm': JQ_LENS_MM,
-             'frames': N, 'eye': jq_eye, 'target': jq_tgt},
-        ],
+        'shots': shots,
     }
     # ---------- wave5-shots2：声明式镜头 ④–⑪（scripts/control-shots-spec.json，通用求值，无按镜头特例） ----------
     if args.spec and args.spec != 'none':
@@ -327,6 +339,9 @@ def main():
         spec = load_json(args.spec)
         extra, spec_err = build_spec_shots(spec, SpecContext(ROOT, oz, layout), N)
         errors += spec_err
+        if fb_off_missing:
+            # ⑪方浜中路东行的场景上下文（方浜街面店屋碰撞）在 FANGBANG=0 下不存在，随①一起跳过
+            extra = [x for x in extra if x['id'] != 'fangbang-eastbound']
         doc['shots'] += extra
         doc['sources']['spec'] = os.path.relpath(os.path.abspath(args.spec), ROOT)
     if errors:
@@ -338,11 +353,14 @@ def main():
         json.dump(doc, f, ensure_ascii=False, indent=1)
         f.write('\n')
     print('control-shots.json:', ', '.join('%s x%d' % (s['id'], s['frames']) for s in doc['shots']))
-    for s in doc['shots'][3:]:
+    for s in [x for x in doc['shots'] if 'spec' in x]:
         print('  %s -> %s lens %.0f mm eye path %.1f m, eye0 (%.1f, %.1f, %.1f) eye%d (%.1f, %.1f, %.1f)'
               % (s['id'], s['targetId'], s['lensMm'], s['eyePathM'], *s['eye'][0], s['frames'] - 1, *s['eye'][-1]))
-    print('  shanmen junction idx', sj, '(%0.1f, %0.1f)' % (ms[sj][0], ms[sj][1]),
-          '| E-W corner idx', corner, '| walk %.0f m' % (s_stop - s0))
+    if fb_route is not None:
+        print('  shanmen junction idx', sj, '(%0.1f, %0.1f)' % (ms[sj][0], ms[sj][1]),
+              '| E-W corner idx', corner, '| walk %.0f m' % (s_stop - s0))
+    else:
+        print('  FANGBANG=0: shot ① skipped (no fangbang-route.json); ②③④–⑩ generated')
     print('  habao arc R %.1f m az %+.0f..%+.0f deg lens %.0f mm, target height %.1f m (%s), eye0 (%0.2f, %0.2f) eye23 (%0.2f, %0.2f)'
           % (HB_ARC_R, HB_ARC_A0, HB_ARC_A1, HB_LENS_MM, hb_h, hb_variant, hb_eye[0][0], hb_eye[0][2], hb_eye[-1][0], hb_eye[-1][2]))
     print('  jiuqu walk %.1f m (centreline arc %.1f m) cam y %.2f lens %.0f mm -> end %.1f m from huxin (%0.2f, %0.2f)'
