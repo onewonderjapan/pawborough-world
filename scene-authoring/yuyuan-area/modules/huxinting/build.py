@@ -308,9 +308,91 @@ def box_uv(name, u0, v0, u1, v1, z0, z1, mat, part):
     v0, v1 = min(v0, v1), max(v0, v1)
     return prism(name, [(u0, v0), (u1, v0), (u1, v1), (u0, v1)], z0, z1, mat, part)
 
+# ---------------------------------------------------------------- 承台让桥（wave10-pondqa，主控 2026-09-27 定 #1 选项 2）----
+# R2 的桥接口按「承台边到桥中线 ≤0.3 m」定，承台临桥外伸 2.3 m / 西端 1.3 m 的结果是承台、抱厦、西端外廊都压在九曲桥桥面上
+# （抱厦墙离桥中线 0.28 m，桥栏穿墙）。改为按桥面边线算：九曲桥桥面半宽 1.2 m（layout jiuqu-bridge.width / 2），
+# 承台（矩形，本地系）到桥中线任一跨的距离 ≥ 半宽 + CLEAR_GAP，临桥边尽量贴近桥面边（与桥面边距 ≤0.30 m，
+# 由 tests/huxinting-test.mjs 断言）。各边外伸取「设计值」与「让桥上限」的小者；抱厦进深、西端外廊进深随之收。
+BR = next(o for o in LAYOUT['objects'] if o['id'] == 'jiuqu-bridge')
+BR_HALF = BR.get('width', 2.4) / 2
+CLEAR_GAP = 0.02
+BR_LOC = [loc_uv(p[0], p[1]) for p in BR['geometry']['polyline']]
+
+def _seg_seg_dist(p1, p2, q1, q2):
+    def pd(p, a, b):
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        L2 = dx * dx + dy * dy or 1e-12
+        t = max(0.0, min(1.0, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / L2))
+        return math.hypot(p[0] - a[0] - dx * t, p[1] - a[1] - dy * t)
+    def cross(o, a, b):
+        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+    d1, d2, d3, d4 = cross(q1, q2, p1), cross(q1, q2, p2), cross(p1, p2, q1), cross(p1, p2, q2)
+    if d1 * d2 < 0 and d3 * d4 < 0:
+        return 0.0
+    return min(pd(p1, q1, q2), pd(p2, q1, q2), pd(q1, p1, p2), pd(q2, p1, p2))
+
+def rect_bridge_clearance(u0, v0, u1, v1):
+    R = [(u0, v0), (u1, v0), (u1, v1), (u0, v1)]
+    best = float('inf')
+    for i in range(len(BR_LOC) - 1):
+        a, b = BR_LOC[i], BR_LOC[i + 1]
+        inside = any(u0 <= p[0] <= u1 and v0 <= p[1] <= v1 for p in (a, b))
+        if inside:
+            return 0.0
+        for k in range(4):
+            best = min(best, _seg_seg_dist(R[k], R[(k + 1) % 4], a, b))
+    return best
+
+EXT = dict(w=D['deckSide'], e=D['deckSide'], s=D['deckSide'], b=D['deckBridge'])   # -u / +u / -v / +v(临桥)
+def _rect(ext):
+    return (-(U0 + ext['w']), -(V0 + ext['s']), U0 + ext['e'], V0 + ext['b'])
+NEED = BR_HALF + CLEAR_GAP
+# 各边独立求让桥上限（其余三边取 0 = 只外伸这一边），再合起来复核（角部两边同时外伸时再按 1 mm 步长收最近的一边）
+_zero = dict(w=0.0, e=0.0, s=0.0, b=0.0)
+for side in ('b', 'w', 'e', 's'):
+    trial = dict(_zero); trial[side] = EXT[side]
+    if rect_bridge_clearance(*_rect(trial)) >= NEED:
+        continue
+    lo, hi = 0.0, EXT[side]
+    for _ in range(40):
+        mid = (lo + hi) / 2
+        trial[side] = mid
+        if rect_bridge_clearance(*_rect(trial)) >= NEED:
+            lo = mid
+        else:
+            hi = mid
+    EXT[side] = lo
+_guard = 0
+while rect_bridge_clearance(*_rect(EXT)) < NEED and _guard < 2000:
+    # 每步只收「收 1 mm 后让桥距离增得最多」的那一边
+    best = max(('w', 'e', 's', 'b'), key=lambda sd: rect_bridge_clearance(*_rect({**EXT, sd: max(0.0, EXT[sd] - 0.001)})))
+    EXT[best] = max(0.0, EXT[best] - 0.001)
+    _guard += 1
+assert rect_bridge_clearance(*_rect(EXT)) >= NEED - 1e-6, ('huxinting platform cannot clear the bridge deck', EXT)
+D['deckBridge'] = EXT['b']
+D['deckExt'] = {k: round(v, 4) for k, v in EXT.items()}
+D['porch']['depth'] = min(D['porch']['depth'], EXT['b'] - 0.11)     # 抱厦前檐裙墙外皮（+0.04）留在承台边内 0.07
+GAL_W = min(D['gallery'], EXT['w'] - 0.2)                            # 西端外廊柱列离承台边 ≥0.2
+# 抱厦屋面出檐：R2 出檐 0.8（+ 角部出翘 chu），抱厦退后后檐口仍伸进桥面 0.84 m、离桥面仅 1.6 m（行人碰头）。
+# 限到檐口（含出翘）不越过桥栏内皮线（桥中线 − 半宽 + 0.30）再退 0.05 m；只收出檐，不动檐高 / 脊高。
+_pu = D['porch']['uHalf']
+_segs_v = []
+for i in range(len(BR_LOC) - 1):
+    (ua, va), (ub, vb) = BR_LOC[i], BR_LOC[i + 1]
+    for k in range(21):
+        t = k / 20
+        u_, v_ = ua + (ub - ua) * t, va + (vb - va) * t
+        if abs(u_) <= _pu + D['porch']['over'] + D['porch']['chu'] and v_ > V0:
+            _segs_v.append(v_)
+PORCH_EAVE_LIMIT = (min(_segs_v) - (BR_HALF - 0.30) - 0.05) if _segs_v else None
+if PORCH_EAVE_LIMIT is not None:
+    D['porch']['over'] = max(0.15, min(D['porch']['over'], PORCH_EAVE_LIMIT - (V0 + D['porch']['depth']) - D['porch']['chu']))
+print('huxinting bridge clearance: ext', D['deckExt'], 'porch depth', round(D['porch']['depth'], 3), 'porch over', round(D['porch']['over'], 3), 'west gallery', round(GAL_W, 3),
+      'clearance', round(rect_bridge_clearance(*_rect(EXT)), 4))
+
 # ---------------------------------------------------------------- 承台 + 石桩 ----
-DECK = [(-(U0 + D['deckSide']), -(V0 + D['deckSide'])), (U0 + D['deckSide'], -(V0 + D['deckSide'])),
-        (U0 + D['deckSide'], V0 + D['deckBridge']), (-(U0 + D['deckSide']), V0 + D['deckBridge'])]
+DECK = [(-(U0 + EXT['w']), -(V0 + EXT['s'])), (U0 + EXT['e'], -(V0 + EXT['s'])),
+        (U0 + EXT['e'], V0 + EXT['b']), (-(U0 + EXT['w']), V0 + EXT['b'])]
 prism('deck', DECK, D['deckBot'], PLATFORM_Y, 'ht-stone-deck', 'deck')
 # R2：桩列中心距板边 pileInset（R1 为 0.8），列数取使中距 ≤ pileSpacing 的最小值（R1 为 ceil(边长/3)，中距 3.09 / 2.95）
 PI = D['pileInset']
@@ -328,7 +410,7 @@ for i, u in enumerate(us):
 # ---------------------------------------------------------------- 主楼（歇山两层）----
 UW, UE = -U0, U0 - D['tower']['half'] * 2      # 主楼体块（东端 4.2 m 让塔亭）；体块东缘伸入塔亭墙内防缝
 GAL = D['gallery']
-gu0, gu1, gv0, gv1 = UW - GAL, UE + GAL, -V0 - GAL, V0 + GAL
+gu0, gu1, gv0, gv1 = UW - GAL_W, UE + GAL, -V0 - GAL, V0 + GAL    # 西端外廊进深按让桥收（GAL_W），其余三面 1.1
 prism('body1', [(UW + 0.12, -V0 + 0.12), (UE + 0.2, -V0 + 0.12), (UE + 0.2, V0 - 0.12), (UW + 0.12, V0 - 0.12)],
       PLATFORM_Y, PLATFORM_Y + D['st1'], 'ht-wood-red', 'body1')
 # R2 白色裙墙（主楼）：墙面（±(V0-0.12) / UW+0.12）向外 skirt.out，顶 = 一层窗下沿 W1A；
@@ -542,7 +624,15 @@ railing('ht__r2', UW - 0.9, -V0 - 0.9, UE + 0.9, V0 + 0.9, PLATFORM_Y + D['st1']
 
 # ---------------------------------------------------------------- 抱厦（临桥侧单层歇山小顶 + 匾额空板）----
 PU, PD, PT = D['porch']['uHalf'], D['porch']['depth'], D['porch']['wallTop']
-prism('porch-floor', [(-PU, V0 - 0.05), (PU, V0 - 0.05), (PU, V0 + PD), (-PU, V0 + PD)], D['deckBot'], PLATFORM_Y + 0.02, 'ht-wood-red', 'porch')
+# wave11-huxwalk（主控 2026-09-27 选项 1：从九曲桥走进抱厦）：抱厦地面前沿（门槛）伸到承台临桥边 V0 + EXT['b']（原止于前檐柱外皮
+# V0 + PD，前面 0.11 m 是承台面 0.55），地面顶 0.57 与桥面 0.55 高差 0.02 ≤ 0.05；这块地面是步行地面（export-collision extraGroundNodes）。
+PORCH_SILL_V = V0 + EXT['b']
+prism('porch-floor', [(-PU, V0 - 0.05), (PU, V0 - 0.05), (PU, PORCH_SILL_V), (-PU, PORCH_SILL_V)], D['deckBot'], PLATFORM_Y + 0.02, 'ht-wood-red', 'porch')
+# wave11-huxwalk：门口 = 中间开间两根前檐柱 pcol-1/pcol-2 之间（柱心 ±0.75、柱宽 0.18 → 内皮 ±0.66，净宽 1.32 m）。
+# 原前檐窗 / 窗下裙墙内端在 ±0.30（门口净宽 0.60 < 步行胶囊直径 0.70），收到柱内皮。
+DOOR_HALF = 0.75 - 0.09
+D['porch']['doorHalf'] = DOOR_HALF
+D['porch']['sillV'] = round(PORCH_SILL_V, 4)
 for i, u in enumerate((-PU + 0.1, -0.75, 0.75, PU - 0.1)):
     box_uv('huxin-ting__pcol-%d' % i, u - 0.09, V0 + PD - 0.18, u + 0.09, V0 + PD, PLATFORM_Y, PT - 0.05, 'ht-wood-red', 'porch')
 box_uv('ht__pwall-w', -PU, V0, -PU + 0.18, V0 + PD, PLATFORM_Y, PT, 'ht-wood-red', 'porch')
@@ -554,10 +644,11 @@ box_uv('ht__pframe-l', -1.35, V0 - 0.12, -1.15, V0 + 0.16, PLATFORM_Y, PLATFORM_
 box_uv('ht__pframe-r', 1.15, V0 - 0.12, 1.35, V0 + 0.16, PLATFORM_Y, PLATFORM_Y + 2.45, 'ht-wood-red', 'porch')
 box_uv('ht__pframe-t', -1.35, V0 - 0.12, 1.35, V0 + 0.16, PLATFORM_Y + 2.25, PLATFORM_Y + 2.45, 'ht-wood-red', 'porch')
 # 抱厦前檐窗：前面无墙，窗扇悬在柱间，做双面（从抱厦里看也有框、格心、玻璃）
-win_row('ht__pwin-w', -PU + 0.30, V0 + PD - 0.05, -0.30, V0 + PD - 0.05, PLATFORM_Y + 0.95, PLATFORM_Y + 2.40, group='porch', two_sided=True)
-win_row('ht__pwin-e', 0.30, V0 + PD - 0.05, PU - 0.30, V0 + PD - 0.05, PLATFORM_Y + 0.95, PLATFORM_Y + 2.40, group='porch', two_sided=True)
+win_row('ht__pwin-w', -PU + 0.30, V0 + PD - 0.05, -DOOR_HALF, V0 + PD - 0.05, PLATFORM_Y + 0.95, PLATFORM_Y + 2.40, group='porch', two_sided=True)
+win_row('ht__pwin-e', DOOR_HALF, V0 + PD - 0.05, PU - 0.30, V0 + PD - 0.05, PLATFORM_Y + 0.95, PLATFORM_Y + 2.40, group='porch', two_sided=True)
 # R2 抱厦前檐窗下白色裙墙（R1 窗下是空的）：角柱内皮到中间入口两侧，顶 = 前檐窗下沿，厚同窗框（双面可见）
-for _k, (_a, _b) in enumerate(((-PU + 0.19, -0.30), (0.30, PU - 0.19))):
+# 裙墙内端比柱内皮再收进柱身 0.01（端面不与柱内皮共面，防 z-fight）
+for _k, (_a, _b) in enumerate(((-PU + 0.19, -DOOR_HALF - 0.01), (DOOR_HALF + 0.01, PU - 0.19))):
     box_uv('ht__dado-p%d' % _k, _a, V0 + PD - 0.10, _b, V0 + PD + 0.04, PLATFORM_Y, PLATFORM_Y + 0.95, 'ht-plaster-white', 'porch')
 PQ = D['plaque']
 box_uv('ht__plaque', -PQ['w'] / 2, V0 + PD - 0.34, PQ['w'] / 2, V0 + PD - 0.28, PQ['z0'], PQ['z0'] + PQ['h'], 'ht-win-dark', 'porch')
@@ -652,8 +743,9 @@ rec = dict(
     designValues=D,
     heights=dict(platformY=PLATFORM_Y, storey1Top=PLATFORM_Y + D['st1'], storey2Top=PLATFORM_Y + D['st1'] + D['st2'],
                  mainRidgeZ=D['roof']['ridgeZ'], towerApex=tw['apex'], finialTop=tw['finialTop']),
-    bridge=dict(polylineRef='baseline/layout.json jiuqu-bridge.polyline', deckBridgeMargin=D['deckBridge'],
-                tolerance=0.3, note='deck edge to nearest bridge polyline vertex ≤0.3 m; tested in tests/huxinting-test.mjs'),
+    bridge=dict(polylineRef='baseline/layout.json jiuqu-bridge.polyline', deckBridgeMargin=round(D['deckBridge'], 4), deckExt=D['deckExt'],
+                porchDepth=round(D['porch']['depth'], 4), porchOver=round(D['porch']['over'], 4), westGallery=round(GAL_W, 4), bridgeHalfWidth=BR_HALF, clearGap=CLEAR_GAP,
+                tolerance=0.3, note='wave10-pondqa: platform clears the bridge DECK EDGE (centreline + half width 1.2), bridge-side edge within 0.30 m of the deck edge; tested in tests/huxinting-test.mjs'),
     materials={k: v['rgb'] for k, v in PALETTE.items()},
     eaveKit='modules/shared/eave_kit.py (lead-owned, read-only)',
 )
