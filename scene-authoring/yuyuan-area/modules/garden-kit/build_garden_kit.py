@@ -682,6 +682,8 @@ def build_moon_gate():
 
 # ================================================================ 九曲桥
 BRIDGE_OPENINGS = []
+OPEN_WORLD = {}     # wave11-huxwalk：(span, side) -> 开口两根望柱柱心（地图 x, z）
+CURB_CUTS = []
 def build_bridge():
     o = SI['objects']['jiuqu-bridge']
     pts = [tuple(p) for p in o['geometry']['polyline']]
@@ -713,16 +715,6 @@ def build_bridge():
         # m 恒取上限 1.9：该侧桥面边 / 边石 / 栏杆在每个折点都外凸到 1.9 m（共线折点 9 处外凸 0.7 m），栏杆随之偏出桥面。
         m = min(half / max((cx * n1[0] + cz * n1[1]) * side, 0.35), 1.9)
         return (pts[i][0] + cx * m, pts[i][1] + cz * m)
-    for i in range(n - 1):
-        corners = [mitre(i, -1), mitre(i + 1, -1), mitre(i + 1, 1), mitre(i, 1)]
-        verts = [bl_pt(cx, cz, deckY) for cx, cz in corners] + [bl_pt(cx, cz, botY) for cx, cz in corners]
-        mesh_part(mod, 'deck', verts, [(0, 1, 2, 3), (7, 6, 5, 4), (0, 4, 5, 1), (1, 5, 6, 2), (2, 6, 7, 3), (3, 7, 4, 0)], M['deckStone'], smooth_faces=list(range(6)))
-        for side in (-1, 1):
-            e0, e1 = mitre(i, side), mitre(i + 1, side)
-            nn = nrms[i]
-            f = [(e0[0], e0[1]), (e1[0], e1[1]), (e1[0] - nn[0] * side * 0.12, e1[1] - nn[1] * side * 0.12), (e0[0] - nn[0] * side * 0.12, e0[1] - nn[1] * side * 0.12)]
-            verts = [bl_pt(ax, az, deckY) for ax, az in f] + [bl_pt(ax, az, deckY + 0.06) for ax, az in f]
-            mesh_part(mod, 'curb', verts, [(0, 1, 2, 3), (7, 6, 5, 4), (0, 4, 5, 1), (1, 5, 6, 2), (2, 6, 7, 3), (3, 7, 4, 0)], M['greyStone'], smooth_faces=list(range(6)), uv_vertex=True)
     # ---- 栏杆（R1#2）：望柱 0.22x0.22x0.95 只在桥面两侧边缘（外侧面内缩 0.08）、间距 <=1.5 m，
     # 每折线顶点的内/外角点（mitre 点）各一柱、不在中线；柱间实心栏板 0.72x0.06 一面凹 0.02；
     # 柱头莲蕾 0.28 高 r0.10；扶手石梁 0.12x0.10 方截面压顶
@@ -754,8 +746,8 @@ def build_bridge():
     # wave10-pondqa（主控 2026-09-27 定 #1 选项 2）：湖心亭抱厦正对桥面处栏杆开口。开口中心 = 抱厦中心线（湖心亭局部 u=0，
     # 局部系按 modules/huxinting/build.py 同式从 baseline/layout.json huxin-ting footprint 重算：面积形心 + 最长边主轴，+v 临桥），
     # 半宽 = 抱厦中间开间两根前檐柱 pcol-1/pcol-2 的柱心 ±0.75（build.py porch 常数，两处同值）；开口两侧各立望柱。
-    # 只作用于湖心亭一侧、与抱厦正面平行、边线离抱厦中心线 ≤ 3 m 的栏杆带。桥碰撞盒（garden-kit-collision.json）不开口：
-    # 湖心亭没有步行地面，开口只是视觉入口。
+    # 只作用于湖心亭一侧、与抱厦正面平行、边线离抱厦中心线 ≤ 3 m 的栏杆带。wave11-huxwalk（主控选项 1）起
+    # 桥碰撞盒（garden-kit-collision.json）与桥面边石也在此开口（见 OPEN_WORLD / curb_cuts），湖心亭抱厦可走入。
     OPEN_HALF = 0.75
     ht = next((ob for ob in json.load(open(LAYOUT_PATH, encoding='utf-8'))['objects'] if ob['id'] == 'huxin-ting'), None)
     openings = {}
@@ -784,6 +776,40 @@ def build_bridge():
             if hi < -0.05 or lo > el + 0.05:
                 continue
             openings[(i, side)] = (lo, hi)
+    # wave11-huxwalk：开口的世界坐标（望柱柱心、内皮），供边石切口与碰撞盒开口使用（与视觉开口同一来源）
+    curb_cuts = {}
+    for key, (lo, hi) in openings.items():
+        a, ed, inn, ts, el = span_bands[key]
+        pc = [(a[0] + ed[0] * t + inn[0] * edge_in, a[1] + ed[1] * t + inn[1] * edge_in) for t in (lo, hi)]
+        OPEN_WORLD[key] = pc
+        curb_cuts[key] = [(a[0] + ed[0] * t + inn[0] * edge_in, a[1] + ed[1] * t + inn[1] * edge_in) for t in (lo + 0.11, hi - 0.11)]
+    for i in range(n - 1):
+        corners = [mitre(i, -1), mitre(i + 1, -1), mitre(i + 1, 1), mitre(i, 1)]
+        verts = [bl_pt(cx, cz, deckY) for cx, cz in corners] + [bl_pt(cx, cz, botY) for cx, cz in corners]
+        mesh_part(mod, 'deck', verts, [(0, 1, 2, 3), (7, 6, 5, 4), (0, 4, 5, 1), (1, 5, 6, 2), (2, 6, 7, 3), (3, 7, 4, 0)], M['deckStone'], smooth_faces=list(range(6)))
+        for side in (-1, 1):
+            e0, e1 = mitre(i, side), mitre(i + 1, side)
+            nn = nrms[i]
+            # wave11-huxwalk（主控 2026-09-27 选项 1）：抱厦开口处桥面边石切断（门槛：桥面 0.55 直接接抱厦地面 0.57），
+            # 切口 = 开口两根望柱的内皮（柱心 ±OPEN_HALF 各向内收半柱 0.11），边石两端落在望柱下。
+            pieces = [(e0, e1)]
+            if (i, side) in curb_cuts:
+                el_ = math.dist(e0, e1)
+                dh = ((e1[0] - e0[0]) / el_, (e1[1] - e0[1]) / el_)
+                c0, c1 = sorted((q[0] - e0[0]) * dh[0] + (q[1] - e0[1]) * dh[1] for q in curb_cuts[(i, side)])
+                # 切口可越过本跨端点（开口跨过共线折点）：两段各自夹在 [0, el_] 内，长度 ≤ 0.02 的不出
+                pieces = []
+                if min(c0, el_) > 0.02:
+                    k0 = min(c0, el_)
+                    pieces.append((e0, (e0[0] + dh[0] * k0, e0[1] + dh[1] * k0)))
+                if el_ - max(c1, 0.0) > 0.02:
+                    k1 = max(c1, 0.0)
+                    pieces.append(((e0[0] + dh[0] * k1, e0[1] + dh[1] * k1), e1))
+                CURB_CUTS.append({'span': i, 'side': side, 'edgeT': [round(c0, 3), round(c1, 3)], 'edgeLength': round(el_, 3)})
+            for p0, p1 in pieces:
+                f = [(p0[0], p0[1]), (p1[0], p1[1]), (p1[0] - nn[0] * side * 0.12, p1[1] - nn[1] * side * 0.12), (p0[0] - nn[0] * side * 0.12, p0[1] - nn[1] * side * 0.12)]
+                verts = [bl_pt(ax, az, deckY) for ax, az in f] + [bl_pt(ax, az, deckY + 0.06) for ax, az in f]
+                mesh_part(mod, 'curb', verts, [(0, 1, 2, 3), (7, 6, 5, 4), (0, 4, 5, 1), (1, 5, 6, 2), (2, 6, 7, 3), (3, 7, 4, 0)], M['greyStone'], smooth_faces=list(range(6)), uv_vertex=True)
     def in_open(key, t, pad=0.01):
         o = openings.get(key)
         return o is not None and o[0] + pad < t < o[1] - pad
@@ -916,7 +942,7 @@ def build_bridge():
         nn = best[1]
         for side in (-1, 1):
             box_part(mod, 'piercol', (px + nn[0] * side * 0.9, (botY - 0.7) / 2, pz + nn[1] * side * 0.9), (0.36, botY - (-0.7), 0.36), 0.0, M['greyStone'], smooth_all=True)
-    return {'posts': len(posts), 'panels': panels, 'piers': len(uniq), 'spans': n - 1, 'porchOpenings': BRIDGE_OPENINGS}
+    return {'posts': len(posts), 'panels': panels, 'piers': len(uniq), 'spans': n - 1, 'porchOpenings': BRIDGE_OPENINGS, 'curbCuts': CURB_CUTS}
 
 # ================================================================ 执行
 print('== garden-kit build start ==')
@@ -1015,17 +1041,29 @@ COLL['modules']['moon-gate'] = {'boxes': mb}
 o = SI['objects']['jiuqu-bridge']
 bpts = [tuple(p) for p in o['geometry']['polyline']]
 bb = []
+bb_spans = []       # 跨序号（与 build_bridge 的 span i 一致：此处 L<0.3 的跨不存在，全部 17 跨都 ≥0.3 m，下面断言）
+BOX_OPENINGS = []
 for a, b in zip(bpts, bpts[1:]):
     L = math.dist(a, b)
-    if L < 0.3:
-        continue
+    assert L >= 0.3, 'bridge span shorter than 0.3 m breaks the span index used for openings'
     bb.append({'center': [(a[0] + b[0]) / 2, 0.55 - 0.09, (a[1] + b[1]) / 2], 'size': [o.get('width', 2.4), 0.18, L], 'yaw': seg_yaw(a, b), 'type': 'box', 'walkableTop': 0.55})
     for side in (-1, 1):
         d = seg_dir(a, b)
         nn = (-d[1], d[0])
         off = o.get('width', 2.4) / 2 - 0.19
-        bb.append({'center': [(a[0] + b[0]) / 2 + nn[0] * side * off, 0.55 + 0.615, (a[1] + b[1]) / 2 + nn[1] * side * off], 'size': [0.24, 1.23, L], 'yaw': seg_yaw(a, b), 'type': 'box', 'name': 'balustrade'})
-COLL['modules']['jiuqu-bridge'] = {'boxes': bb}
+        # wave11-huxwalk（主控 2026-09-27 选项 1）：抱厦开口处栏杆盒断开，断点 = 开口两根望柱柱心（与视觉开口 ±0.75 同一来源 OPEN_WORLD）
+        runs = [(0.0, L)]
+        key = (len(bb_spans), side)
+        if key in OPEN_WORLD:
+            s0, s1 = sorted((q[0] - a[0]) * d[0] + (q[1] - a[1]) * d[1] for q in OPEN_WORLD[key])
+            runs = [(r0, r1) for r0, r1 in ((0.0, s0), (s1, L)) if r1 - r0 > 0.05]
+            BOX_OPENINGS.append({'span': key[0], 'side': side, 's': [round(s0, 3), round(s1, 3)], 'reason': 'huxinting porch entrance (wave11-huxwalk)'})
+        for r0, r1 in runs:
+            sm = (r0 + r1) / 2
+            bb.append({'center': [a[0] + d[0] * sm + nn[0] * side * off, 0.55 + 0.615, a[1] + d[1] * sm + nn[1] * side * off], 'size': [0.24, 1.23, r1 - r0], 'yaw': seg_yaw(a, b), 'type': 'box', 'name': 'balustrade'})
+    bb_spans.append(L)
+assert len(BOX_OPENINGS) == len(OPEN_WORLD), (BOX_OPENINGS, list(OPEN_WORLD))
+COLL['modules']['jiuqu-bridge'] = {'boxes': bb, 'openings': BOX_OPENINGS}
 json.dump(COLL, open(os.path.join(OUT, 'garden-kit-collision.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 json.dump(catalog, open(os.path.join(OUT, 'garden-kit-catalog.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 
