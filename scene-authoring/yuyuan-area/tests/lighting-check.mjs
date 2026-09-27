@@ -10,12 +10,13 @@
 //   S3 阴影看得见：三穗堂 / 华宝楼导览机位，默认 vs ?shadow=0 同机位 canvas：亮度下降 > 20/255 的像素 ≥ 2%。
 //   S4 绘制预算：核心首屏（?zone=core&cam=oblique）开阴影后每帧 WebGL 绘制调用（独立计数，含阴影通道）≤ 1200（同 perf-drawcalls B1）。
 //   S5 夜间：自发光按组命中（lantern / sign / shop-interior / window / lattice / stall 在核心区各 ≥ 1 个材质）；白天 0 个材质被改；
-//      点光池灯数 = presets.night.pointLights，全部可见且都在候选位置上，候选（灯笼聚类 + 摊位锚点）≥ 20；
-//      九曲桥机位 night vs night&glow=0：变亮 > 20/255 的像素 ≥ 0.5%（自发光看得见）；
-//      华宝楼机位 night vs night&glow=0&plights=0：变亮 > 20/255 的像素 ≥ 2%（夜间灯光整体看得见，切机位后点光当帧跟上）。
+//      点光池灯数 = presets.night.pointLights 且全部可见，候选（灯笼聚类 + 摊位锚点）≥ 20 且 = 本文件独立重算的候选数；
+//      切导览机位后第一次 tick() 的灯位 = 独立重算的离焦点最近 N 个候选（三个机位连续切换，R1）；
+//      九曲桥机位 night&plights=0 vs night&glow=0&plights=0：变亮 > 20/255 的像素 ≥ 0.5%（只差自发光）；
+//      华宝楼机位 night vs night&glow=0&plights=0：变亮 > 20/255 的像素 ≥ 2%（夜间灯光整体看得见）。
 //   S6 空白帧守卫：三档核心首屏亮度标准差 ≥ 8/255 且主色占比 < 95%；夜 < 黄昏 < 白天（平均亮度）。
 //   S7 天空不下载贴图：首载期间没有 /lighting/ 下除 presets.json 以外的请求、没有图片类请求落在 /out/tex/ 以外；presets.json ≤ 16 KB。
-// 用法：BASE=http://127.0.0.1:5491/ [REPORT=<json>] [SHOT_DIR=<目录>] node tests/lighting-check.mjs
+// 用法：BASE=http://127.0.0.1:5491/ [OUT_DIR=out-zone] [ONLY=S5] [REPORT=<json>] [SHOT_DIR=<目录>] node tests/lighting-check.mjs
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -26,6 +27,9 @@ const require = createRequire('/home/baibai/pawborough-world/node_modules/');
 const { chromium } = require('playwright');
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BASE = process.env.BASE || 'http://127.0.0.1:5491/';
+const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
+const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null;   // 例 ONLY=S5：只开 night 页跑夜间段（负对照用），其余段跳过
+const want = (k) => !ONLY || ONLY.includes(k);
 const SHOT_DIR = process.env.SHOT_DIR || null;
 if (SHOT_DIR) fs.mkdirSync(SHOT_DIR, { recursive: true });
 const PRESETS_FILE = path.join(ROOT, 'lighting', 'presets.json');
@@ -66,6 +70,9 @@ async function open(qs, { counter = false } = {}) {
   first = false;
   await page.waitForFunction(() => window.__ready === true, null, { timeout: 900000 });
   await page.waitForFunction(() => window.__tour && document.querySelectorAll('[data-tour]').length > 0, null, { timeout: 60000 });
+  // R1：每个页面都必须真的落了预设（不是 3 s 超时后的旧灯光回退）——否则后面的 A/B 像素对照会拿两种灯光比
+  const ls = await page.evaluate(() => (window.__lighting ? window.__lighting.state() : null));
+  ok(ls && ls.preset && !ls.error, `page ${qs || '(default)'}: lighting presets applied (not legacy fallback)`, ls && { preset: ls.preset, error: ls.error, timedOut: ls.timedOut, lateApplied: ls.lateApplied, presetsMs: ls.presetsMs });
   return { page, reqs, errors };
 }
 const settle = (page) => page.evaluate(() => new Promise(r => { let k = 0; const f = () => (++k >= 8 ? r() : requestAnimationFrame(f)); requestAnimationFrame(f); }));
@@ -112,7 +119,7 @@ const save = (name, url) => { if (SHOT_DIR) fs.writeFileSync(path.join(SHOT_DIR,
 // ---------- S1 / S2 / S4 / S6：三档各开一页 ----------
 const pages = {};
 const stats = {};
-for (const n of [null, ...NAMES]) {
+for (const n of (ONLY && !want('S1') ? ['night'] : [null, ...NAMES])) {
   const key = n || 'default';
   const { page, reqs, errors } = await open(n ? '&light=' + n : '', { counter: n === null });
   pages[key] = page;
@@ -147,10 +154,10 @@ for (const n of [null, ...NAMES]) {
   // swiftshader 下每个打开的页面都在 rAF 里持续渲染（含阴影通道）；后面用不到的页面立即关掉，免得几页同时抢 CPU
   if (key !== 'default' && key !== 'night') { await page.close(); delete pages[key]; }
 }
-ok(stats.night.mean < stats.dusk.mean && stats.dusk.mean < stats.day.mean, 'S6 mean luminance night < dusk < day', { day: stats.day.mean, dusk: stats.dusk.mean, night: stats.night.mean });
+if (stats.day && stats.dusk && stats.night) ok(stats.night.mean < stats.dusk.mean && stats.dusk.mean < stats.day.mean, 'S6 mean luminance night < dusk < day', { day: stats.day.mean, dusk: stats.dusk.mean, night: stats.night.mean });
 
 // ---------- S2 / S3：?shadow=0 ----------
-{
+if (pages.default) {
   const { page } = await open('&shadow=0');
   const st = await lightState(page);
   const f = await shadowFlags(page);
@@ -164,7 +171,7 @@ ok(stats.night.mean < stats.dusk.mean && stats.dusk.mean < stats.day.mean, 'S6 m
   }
   await page.close();
 }
-await pages.default.close(); delete pages.default;   // 后面只用 night 页，默认页不再占 swiftshader
+if (pages.default) { await pages.default.close(); delete pages.default; }   // 后面只用 night 页，默认页不再占 swiftshader
 
 // ---------- S5：夜间 ----------
 {
@@ -178,18 +185,78 @@ await pages.default.close(); delete pages.default;   // 后面只用 night 页�
     return ls;
   });
   ok(onCand.length === P.presets.night.pointLights, 'S5 night: pool lights present in scene', onCand.length);
-  // 自发光单独看：九曲桥导览机位（湖心亭窗 ht-win-glass、厅堂格扇背板在画面里），night vs night&glow=0（点光两边相同）
-  const { page: g0 } = await open('&light=night&glow=0');
-  const a = await canvasAt(g0, 'jiuqu-bridge'), b = await canvasAt(pages.night, 'jiuqu-bridge');
-  save('jiuqu-night.png', b); save('jiuqu-night-glow0.png', a);
-  const d = await lumDiff(g0, a, b);
+  // R1：切机位后第一次 tick() 的点光位置 = 独立算出的离焦点最近候选。
+  // 候选在本文件里按 presets.json conventions 重算（灯笼材质世界顶点按 clusterM 分格取均值 + offsetY、摊位锚点 + offsetY），
+  // 不调用 web/lighting.js 的任何函数；焦点 = 导览机位注视点（OUT_DIR/tour.json 的 t，轨道模式焦点 = controls.target）。
+  // 三个导览机位连续切换、每次只 tick 一次（同一个同步 evaluate，中间没有 rAF）：连续三帧里至多一帧恰逢 reassignFrames 周期，
+  // 所以只靠周期重分的实现必然有机位对不上（负对照记录见工单包 artifacts/r1/）。容差 1 m 覆盖阴影纹素对齐对焦点的偏移（≤ 0.3 m）。
+  {
+    const tourJson = JSON.parse(fs.readFileSync(path.join(OUT, 'tour.json'), 'utf8'));
+    const seq = ['sansuitang', 'huabaolou', 'jiuqu-bridge'].map(k => ({ k, t: tourJson[k].t }));
+    const res = await pages.night.evaluate(({ srcs, seq }) => {
+      const base = (n) => String(n || '').replace(/\.\d{3}$/, '');
+      const cand = [];
+      window.__scene.updateMatrixWorld(true);
+      for (const src of srcs) {
+        if (src.kind === 'node-anchor') {
+          const re = new RegExp(src.pattern);
+          window.__scene.traverse(o => { if (re.test(o.name || '')) { const e = o.matrixWorld.elements; cand.push([e[12], e[13] + src.offsetY, e[14]]); } });
+        } else {
+          const cells = new Map();
+          window.__scene.traverse(o => {
+            if (!o.isMesh || o.isBatchedMesh || !o.geometry?.attributes?.position) return;
+            const m = Array.isArray(o.material) ? o.material[0] : o.material;
+            if (!m || !src.materials.includes(base(m.name))) return;
+            const pa = o.geometry.attributes.position, e = o.matrixWorld.elements;
+            for (let i = 0; i < pa.count; i++) {
+              const x = pa.getX(i), y = pa.getY(i), z = pa.getZ(i);
+              const w = e[3] * x + e[7] * y + e[11] * z + e[15];
+              const X = (e[0] * x + e[4] * y + e[8] * z + e[12]) / w, Y = (e[1] * x + e[5] * y + e[9] * z + e[13]) / w, Z = (e[2] * x + e[6] * y + e[10] * z + e[14]) / w;
+              const k = `${Math.floor(X / src.clusterM)},${Math.floor(Y / src.clusterM)},${Math.floor(Z / src.clusterM)}`;
+              const c = cells.get(k) || [0, 0, 0, 0]; c[0] += X; c[1] += Y; c[2] += Z; c[3]++; cells.set(k, c);
+            }
+          });
+          for (const c of cells.values()) cand.push([c[0] / c[3], c[1] / c[3] + src.offsetY, c[2] / c[3]]);
+        }
+      }
+      const out = [];
+      for (const { k, t } of seq) {
+        window.__tour(k);
+        window.__lighting.tick();   // 切机位后的第一次 tick
+        const lights = []; window.__scene.traverse(o => { if (o.isPointLight && /^lighting-pool-/.test(o.name) && o.visible) lights.push(o.position.toArray()); });
+        out.push({ k, t, lights });
+      }
+      return { cand, out, stateCandidates: window.__lighting.state().candidates };
+    }, { srcs: P.pointLights.sources, seq });
+    ok(res.cand.length === res.stateCandidates && res.cand.length >= 20, 'S5 night: independently recomputed candidates = viewer candidate count', { test: res.cand.length, viewer: res.stateCandidates });
+    const d3 = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+    const n = P.presets.night.pointLights;
+    for (const { k, t, lights } of res.out) {
+      const ranked = res.cand.map(c => d3(c, t)).sort((x, y) => x - y);
+      const kth = ranked[n - 1];
+      const onCandidate = lights.every(l => res.cand.some(c => d3(c, l) < 1e-3));
+      const maxD = Math.max(...lights.map(l => d3(l, t)));
+      const distinct = new Set(lights.map(l => l.map(v => v.toFixed(3)).join(','))).size === lights.length;
+      ok(lights.length === n && onCandidate && distinct && maxD <= kth + 1.0,
+        `S5 night ${k}: first tick after camera switch places all ${n} pool lights on the ${n} nearest candidates`,
+        { lights: lights.length, onCandidate, distinct, maxAssignedDist: +maxD.toFixed(2), nthNearest: +kth.toFixed(2) });
+    }
+  }
+  // 自发光单独看：九曲桥导览机位（湖心亭窗 ht-win-glass、厅堂格扇背板在画面里），night&plights=0 vs night&glow=0&plights=0（两边都无点光，只差自发光）
+  const { page: n0 } = await open('&light=night&plights=0');
+  const { page: dark } = await open('&light=night&glow=0&plights=0');
+  const pl = [await lightState(n0), await lightState(dark)].map(x => x && x.pointLights);
+  const pn = [await lightState(n0), await lightState(dark)].map(x => x && x.preset);
+  ok(pl[0] === 0 && pl[1] === 0 && pn[0] === 'night' && pn[1] === 'night', 'S5 night emissive A/B: both sides on the night preset with 0 point lights', { pointLights: pl, preset: pn });
+  const a = await canvasAt(dark, 'jiuqu-bridge'), b = await canvasAt(n0, 'jiuqu-bridge');
+  save('jiuqu-night-plights0.png', b); save('jiuqu-night-glow0-plights0.png', a);
+  const d = await lumDiff(dark, a, b);
   stats.nightGlow = d;
-  ok(d.brighter >= 0.005, 'S5 night jiuqu-bridge: emissive brightens ≥ 0.5% of pixels (>20/255)', d);
-  await g0.close();
+  ok(d.brighter >= 0.005, 'S5 night jiuqu-bridge: emissive brightens ≥ 0.5% of pixels (>20/255), point lights off on both sides', d);
+  await n0.close();
   // 华宝楼（商城楼套件）夜景整体：自发光 + 点光池 vs 两者都关（night&glow=0&plights=0）。
   // 只比自发光在这个机位不成立：套件楼上窗洞是 core__dark 整件的一部分（不改几何点不亮），底层店面玻璃 / 后壁被前排石库门挡住，
-  // 实测 night vs glow=0 变亮像素仅 0.06%；点光池切机位后当帧重分（web/lighting.js），广场与店面由点光照亮
-  const { page: dark } = await open('&light=night&glow=0&plights=0');
+  // 实测 night vs glow=0 变亮像素仅 0.06%；点光池的灯位由上面的直接断言检查，这里只看整体夜间灯光看得见
   const c = await canvasAt(dark, 'huabaolou'), e = await canvasAt(pages.night, 'huabaolou');
   save('huabaolou-night.png', e); save('huabaolou-night-dark.png', c);
   const d2 = await lumDiff(dark, c, e);
