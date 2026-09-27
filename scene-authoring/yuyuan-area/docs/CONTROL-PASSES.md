@@ -303,6 +303,9 @@ Workbench 默认口径不动：11 镜头控制层不重渲。
 - 新脚本默认参数 vs 2afa10db 原脚本，镜头③⑩ 全 48 帧：beauty / depth / normal / segmentation / cameras 5 × 48 全等，LUT 相等；
 - `--beauty cycles` day / dusk / night vs 原脚本，镜头③⑩ 第 20–23 帧：depth / normal / segmentation / cameras 4 × 8 × 3 全等，LUT 相等；
 - 负对照：原脚本在 layout 路径错误（id 全集为空）时跑出的分割图，对账 48 帧 segmentation 全部报差、LUT 不等 → 退出 1。
+- **证明范围 = 所选子集**：镜头③⑩ 这些帧、上面列的通道，场景为 2afa10db 产物。脚本按 `--a` 目录逐帧比，允许 `--b` 多帧（8 帧对 48 帧），
+  不等于两个目录完整帧集相等；不代表其余 9 个镜头、EEVEE 控制通道、PNG 文件字节，也不外推到之后几何或控制镜头输入变了的场景
+  （例如合入 wave10-streetfix 后的 main）。
 
 用法（PV 参考帧，输出在仓库外）：
 
