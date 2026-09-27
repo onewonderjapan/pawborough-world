@@ -214,19 +214,9 @@ if NEG:
 # ---------- 正式检查：产物 ----------
 fails, checked, multi = check(out, 'product')
 
-# 护栏：多块路面出现时，旧消费方必须读 surfaceFootprints 并集（wave10-streetfix R2 已改三处；
-# 若此处失败说明有人回退了消费方——按审查可选项1改读并集后再合入）
-if multi:
-    consumers = [
-        R / 'scripts' / 'check-commercial-route.py',
-        R / 'modules' / 'bazaar-tower-kit' / 'test_street_band.py',
-        R / 'src' / 'build-scene.mjs',
-    ]
-    missing = [str(c.relative_to(R)) for c in consumers
-               if 'surfaceFootprints' not in c.read_text(encoding='utf-8')]
-    if missing:
-        fails.append('multi-piece road surfaces exist but consumers do not read surfaceFootprints union: '
-                     + ', '.join(missing) + ' — 改消费方')
+# （多块消费方护栏已升级为行为用例：tests/multipiece-consumer-test.py 用「第二块才与路线相交」
+# 的两块探针分别驱动 check-commercial-route.py / test_street_band.py / build-scene 的
+# FANGBANG_ROAD_SINK 判定，R3 审查可选项2；此处的字符串检查已删除。）
 
 if not roads:
     print('FAIL road-footprint-clearance: no baseline roads resolved to check')
