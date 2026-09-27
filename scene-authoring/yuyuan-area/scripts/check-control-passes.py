@@ -38,6 +38,7 @@ import math
 import os
 import random
 import sys
+from datetime import datetime
 
 W, H = 1280, 720
 CHANNELS = ('beauty', 'depth', 'normal', 'segmentation')
@@ -330,7 +331,7 @@ def main():
         'item': 'AI 视频控制层导出校验（WP11 C3；wave5-shots2 起含 ④–⑪）',
         'status': status,
         'ownerAdopted': False,
-        'checkedAt': '2026-09-25',
+        'checkedAt': datetime.now().astimezone().isoformat(timespec='seconds'),
         'controlDir': os.path.abspath(control),
         'checks': checks,
         'numbers': {
