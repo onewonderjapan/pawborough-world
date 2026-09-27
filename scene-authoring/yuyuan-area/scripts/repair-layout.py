@@ -3,7 +3,7 @@ import os,sys,json
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'.python-deps'))
 from shapely.geometry import Polygon,LineString
-from shapely.ops import unary_union,polygonize
+from shapely.ops import unary_union
 R=Path(__file__).resolve().parents[1]; O=R/os.environ.get('OUT_DIR','out')
 O.mkdir(exist_ok=True,parents=True)
 BASE=R/os.environ.get('BASE_LAYOUT','baseline/layout.json')
@@ -55,6 +55,28 @@ for o in d['objects']:
 # 生成逻辑，不手改 layout 顶点；layout 顶点仍是源，裁剪在渲染输入生成时确定。接地部分用
 # groundFootprints（拱廊/骑楼 building_passage 已挖空）——与 check-commercial-route.py 的障碍口径
 # 一致，骑楼下的路面保留，老街穿行路线不受影响。
+# 裁块若带孔（建筑完全落在路面内）拆成无孔多边形，不许只存 exterior 把孔填回去。
+# R3（审查必修1）重写：R2 版每孔只连一条桥缝后 polygonize，最小案例（[0,10]²路面挖 [4,6]²孔）
+# 返回的块仍带 interiors；渲染字段只存 exterior，序列化后孔洞被填回建筑。新实现用过孔的竖直
+# （退化时水平）直线把多边形切成两半（difference/intersection 各取块）：直线横穿孔环 → 孔环被
+# 断开成边界上的开口，总 interiors 数严格递减，递归到每块无孔。面积划分恒等（left+right=p），
+# 各块 exterior 序列化往返面积不变。测试：tests/split-holes-test.py（最小案例 + 两孔案例）。
+def split_holes(p):
+ if p.geom_type!='Polygon' or not p.interiors:return [p]
+ minx,miny,maxx,maxy=p.bounds
+ pad=(maxx-minx)+(maxy-miny)+10
+ hx0,hy0,hx1,hy1=p.interiors[0].bounds
+ cands=[('v',(hx0+hx1)/2),('h',(hy0+hy1)/2),('v',hx0+(hx1-hx0)*.25),('v',hx0+(hx1-hx0)*.75),('h',hy0+(hy1-hy0)*.25),('h',hy0+(hy1-hy0)*.75)]
+ for axis,c in cands:
+  if axis=='v':right=Polygon([(c,miny-pad),(maxx+pad,miny-pad),(maxx+pad,maxy+pad),(c,maxy+pad)])
+  else:right=Polygon([(minx-pad,c),(maxx+pad,c),(maxx+pad,maxy+pad),(minx-pad,maxy+pad)])
+  lp=p.difference(right);rp=p.intersection(right)
+  pieces=[g for part in (lp,rp) for g in (part.geoms if hasattr(part,'geoms') else [part]) if g.geom_type=='Polygon' and g.area>1e-9]
+  if pieces and sum(len(q.interiors) for q in pieces)<len(p.interiors):
+   out=[]
+   for q in pieces:out.extend(split_holes(q))
+   return out
+ return [p]
 bldcuts=unary_union([Polygon(fp).buffer(0) for b in d['objects'] if b['kind'] in ('outerBuilding','bazaarBlock') and b['geometry'].get('footprint') for fp in b['geometry'].get('groundFootprints',[b['geometry']['footprint']])])
 roadclip=[]
 for o in d['objects']:
@@ -64,33 +86,22 @@ for o in d['objects']:
  rem=g.difference(bldcuts)
  if g.area-rem.area<=0.05:continue   # 与建筑无实际重叠，保持原样
  pieces=sorted((p for p in (rem.geoms if hasattr(rem,'geoms') else [rem]) if p.area>0.05), key=lambda p:-p.area)
- if not pieces:
+ # R3（审查必修1）：差集块可能带孔（建筑完全落在路面内），同样必须拆成无孔块再只存 exterior；
+ # R2 版此分支直接存 exterior，孔洞被填回建筑。
+ flats=[f for pp in pieces for f in split_holes(pp) if f.area>0.05]
+ if not flats:
   o['skipRender']=True
   roadclip.append({'id':o['id'],'name':o.get('name'),'removedM2':round(g.area,1),'note':'surface fully inside building footprints; not rendered'})
   continue
- o['geometry']['surfaceFootprints']=[list(p.exterior.coords) for p in pieces]
- o['geometry']['surfaceFootprint']=list(pieces[0].exterior.coords)
- roadclip.append({'id':o['id'],'name':o.get('name'),'removedM2':round(g.area-sum(p.area for p in pieces),1),'pieces':len(pieces)})
+ o['geometry']['surfaceFootprints']=[list(f.exterior.coords) for f in flats]
+ o['geometry']['surfaceFootprint']=list(flats[0].exterior.coords)
+ roadclip.append({'id':o['id'],'name':o.get('name'),'removedM2':round(g.area-sum(f.area for f in flats),1),'pieces':len(flats)})
 # wave10-streetfix R2（审查必修2）：ribbon 渲染的道路纳入同一裁剪规则。渲染端对没有 surfaceFootprint(s)
 # 的道路按 ribbon(polyline,width) 画路面（src/lib.mjs：中心差分方向、平头端 quad strip），R1 的裁剪只
 # 覆盖 explicit paving 已生成 surfaceFootprint 的道路，远场两条路仍压楼（road-33683439 8.271 m²、
 # road-444342365 21.493 m²，R2 审查按渲染端几何只读复算）。这里用与渲染端完全相同的几何复算 ribbon
 # 路面多边形：与建筑接地足迹重叠 > 0.05 m² 的改写成裁后的 surfaceFootprints（渲染端自动改为逐块画），
 # surfaceFootprint 保留最大块给旧消费方；无重叠的保持 ribbon 不动，其余道路的渲染不受影响。
-# 裁块若带孔（建筑完全落在路面内）拆成无孔多边形（每孔到外环最近顶点对连桥缝后 polygonize），
-# 不许只存 exterior 把孔填回去。
-def split_holes(p):
- if not p.interiors:return [p]
- ext=list(p.exterior.coords)[:-1]
- lines=[LineString(p.exterior.coords)]+[LineString(r.coords) for r in p.interiors]
- for h in p.interiors:
-  best=None
-  for hp in list(h.coords)[:-1]:
-   for ep in ext:
-    d=(hp[0]-ep[0])**2+(hp[1]-ep[1])**2
-    if best is None or d<best[0]:best=(d,hp,ep)
-  if best[0]>1e-12:lines.append(LineString([best[1],best[2]]))
- return [f for f in polygonize(unary_union(lines)) if f.area>1e-9 and f.intersection(p).area>0.99*f.area]
 ribbonclip=[]
 for o in d['objects']:
  if o['kind']!='road' or o.get('skipRender') or 'surfaceFootprint' in o['geometry'] or 'surfaceFootprints' in o['geometry']:continue
