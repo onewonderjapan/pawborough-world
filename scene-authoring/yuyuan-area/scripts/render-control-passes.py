@@ -51,6 +51,13 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UNASSIGNED = (255, 0, 255)
 ARGS = None
 
+# G2 两个主控批准补面（scripts/route-interface-paving.py）在分割里的精确显式映射，不允许静默归为
+# unassigned：pond 补面名是 zone|id|kind|lod 管道式（规则 1 已命中 id east-landing-access-apron），
+# 只有 temple 补面是普通名、任何既有规则都够不到，这里按确切对象名单列（不做任何前缀/模式泛化）。
+EXTRA_OBJECT_IDS = {
+    'temple-ground__paving-frontage-passage': 'shanmen-passage-floor',
+}
+
 
 def log(*a):
     print('[control]', *a, flush=True)
@@ -370,9 +377,11 @@ def main():
             if anchor is not None and strip_suffix(anchor.name).startswith('fangbang-'):
                 ident = strip_suffix(anchor.name)      # 方浜中路 v7 件伪 id（见脚本头注释）
         if ident is None:
-            ob.color = (UNASSIGNED[0] / 255, UNASSIGNED[1] / 255, UNASSIGNED[2] / 255, 1)
-            n_un += 1
-            continue
+            ident = EXTRA_OBJECT_IDS.get(strip_suffix(ob.name))
+            if ident is None:
+                ob.color = (UNASSIGNED[0] / 255, UNASSIGNED[1] / 255, UNASSIGNED[2] / 255, 1)
+                n_un += 1
+                continue
         if ident not in id2rgb:
             id2rgb[ident] = color_for(used, ident)
         c = id2rgb[ident]
@@ -388,6 +397,15 @@ def main():
         'note': '方浜中路件为伪 id fangbang-<v7id>（v7 记录不在 baseline/layout.json）；未归属几何与空背景=unassigned',
         'sourceGlb': args.scene,
         'meshObjects': {'mapped': n_map, 'unassigned': n_un},
+        # G2 两个主控批准补面的可追溯归属（GLB extras 携带同源 module/inference，见 scripts/route-interface-paving.py）
+        'patchFaces': {
+            'shanmen-passage-floor': {'node': 'temple-ground__paving-frontage-passage',
+                                      'module': 'shanmen-passage', 'runtimePart': 'zone-temple-4.glb',
+                                      'inference': 'lead-approved measured existing gate-floor gap; no historical survey claim'},
+            'east-landing-access-apron': {'node': 'pond|east-landing-access-apron|paving|L1',
+                                          'module': 'east-landing-access-apron', 'runtimePart': 'zone-pond-2.glb',
+                                          'inference': 'lead-approved .715m2 visible dry road-to-lowest-tread interface; existing bridge and stairs unchanged'},
+        },
     }
     with open(os.path.join(args.out, 'segmentation-lut.json'), 'w', encoding='utf-8') as f:
         json.dump(lut, f, ensure_ascii=False, indent=1)
