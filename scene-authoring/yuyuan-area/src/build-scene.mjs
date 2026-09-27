@@ -10,7 +10,7 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 import {
   bbox, polyArea, centroid, offsetPolySafe, dist2d, principalAxis, orientRing,
   shapeMesh, shapeGeo, wallRing, makeRoof, ribbon, corridor, rock, tree,
-  dropFloatingSegments, polySymDiffArea, triangulateRing,
+  dropFloatingSegments, polySymDiffArea, triangulateRing, pointInPoly, mat,
 } from './lib.mjs';
 import { buildOuterKitGeometry, roadSegments, neighbourRings, SLOT_ATLAS, SLOT_PROC, MODES as OUTER_KIT_MODES } from './outer-kit.mjs';
 
@@ -76,6 +76,20 @@ const POND_PATH_CLIP_IDS = new Set(['pond-west-link']);
 const POND_SOLID_STEP_IDS = new Set(['jiuqu-bridge-step-w', 'jiuqu-bridge-step-e']);
 const GROUND_Y = -0.4;                        // layout 'ground'（外围地面）的固定高度，见下方 case 'ground'
 const REVET = { band: 0.35, top: 0.06, poolWallBottom: -0.18, cope: 0x9b917f, wall: 0x8c8474 };
+// wave10-pondqa 第二轮（主控 2026-09-27 定）：
+//  #9 池水归池带：layout 把 water-62072388 归 bazaar（assignZone 先命中商城多边形），但 layout.zones.pond.polygon 本身就是这块
+//     水面的轮廓（src/layout.mjs「水池带独立归区」）。按这条 layout 事实改归 pond（节点 pond|water-62072388|water|L1，
+//     导出进 zone-pond），池水专用颜色随之生效。layout 不改；水面防落水挡墙仍按 layout 归区。
+//  #6 池水观感：只调颜色与粗糙度（无反射，反射另开工单）：#4a665c（灰绿）、roughness 0.35（有太阳高光）。
+//  #8 池内路面：路面（road / plaza 渲染面）落在池水轮廓内的部分裁掉，整条在池内的不渲染（deferred 记 road-inside-pond-outline）。
+//  #4 桥东端桥头台：九曲桥伸出池岸的一段（桥中线离开驳岸内沿之后）下面做实心石台，外轮廓 = 桥面（半宽 1.2 的斜接带），
+//     从外围地面 -0.40 到桥面底（桥面 0.55 − 0.18），把立在岸上的桥墩包进去；桥面与台阶不动。designInference。
+const POND_WATER_COLOR = 0x4a665c, POND_WATER_ROUGH = 0.35;
+function samePolygon(a, b, eps = 1e-6) {
+  const A = orientRing(a), B = orientRing(b);
+  return A.length === B.length && A.every((p) => B.some((q) => Math.abs(p[0] - q[0]) < eps && Math.abs(p[1] - q[1]) < eps));
+}
+const isPondWater = (o) => o.kind === 'water' && layout.zones?.pond?.polygon && samePolygon(o.geometry.footprint, layout.zones.pond.polygon);
 // BAZAAR_TOWERS=1：商城命名大楼由 modules/bazaar-tower-kit 世界坐标 GLB 承担（id 表 modules/bazaar-tower-kit/ids.json；
 // assemble.py 导入 SITE-bazaar，分区按 ids.json zonePart 归 zone-bazaar-3…）。默认开（2026-09-26 机主「商城楼套件默认开启吧」）；BAZAAR_TOWERS=0 回到程序化 bazaarBlock。
 const BAZAAR_TOWERS = process.env.BAZAAR_TOWERS !== '0';  // 默认开（2026-09-26 机主定），BAZAAR_TOWERS=0 关
@@ -875,6 +889,91 @@ function clipFlatOutside(geo, polyIn, y) {
   return upFacingGeometry(pieces, y);
 }
 
+// wave10-pondqa #8：水平路面减去池水轮廓。与池水轮廓不相交 → null（原几何不动，逐字节不变）；全在池内 → 'empty'。
+const POND_POLY = () => layout.zones?.pond?.polygon;
+function flatArea(geo) {
+  const src = geo.index ? geo.toNonIndexed() : geo, P = src.attributes.position;
+  let a = 0;
+  for (let i = 0; i < P.count; i += 3) a += Math.abs((P.getX(i + 1) - P.getX(i)) * (P.getZ(i + 2) - P.getZ(i)) - (P.getX(i + 2) - P.getX(i)) * (P.getZ(i + 1) - P.getZ(i))) / 2;
+  return a;
+}
+function clipOutOfPond(geo, y) {
+  const poly = POND_POLY();
+  if (!poly) return null;
+  const pb = bbox(poly), src = geo.index ? geo.toNonIndexed() : geo, P = src.attributes.position;
+  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
+  for (let i = 0; i < P.count; i++) { x0 = Math.min(x0, P.getX(i)); x1 = Math.max(x1, P.getX(i)); z0 = Math.min(z0, P.getZ(i)); z1 = Math.max(z1, P.getZ(i)); }
+  if (x1 < pb.x0 || x0 > pb.x1 || z1 < pb.z0 || z0 > pb.z1) return null;
+  const before = flatArea(src);
+  const out = clipFlatOutside(src, poly, y);
+  const after = flatArea(out);
+  if (before - after < 1e-4) return null;
+  if (after < 1e-4) return 'empty';
+  return out;
+}
+
+// wave10-pondqa #4：九曲桥东端伸出池岸的一段下面的实心桥头台（桥面斜接带轮廓，GROUND_Y → 桥面底）。
+function bridgeMitre(pts, i, side, half) {
+  const dirs = [], nrms = [];
+  for (let k = 0; k + 1 < pts.length; k++) { const dx = pts[k + 1][0] - pts[k][0], dz = pts[k + 1][1] - pts[k][1], l = Math.hypot(dx, dz); dirs.push([dx / l, dz / l]); nrms.push([-dz / l, dx / l]); }
+  const n = pts.length;
+  if (i <= 0) return [pts[0][0] + nrms[0][0] * side * half, pts[0][1] + nrms[0][1] * side * half];
+  if (i >= n - 1) return [pts[n - 1][0] + nrms[n - 2][0] * side * half, pts[n - 1][1] + nrms[n - 2][1] * side * half];
+  const n0 = nrms[i - 1], n1 = nrms[i];
+  let cx = (n0[0] + n1[0]) * side, cz = (n0[1] + n1[1]) * side, cl = Math.hypot(cx, cz);
+  if (cl < 1e-6) { cx = n1[0] * side; cz = n1[1] * side; cl = 1; }
+  cx /= cl; cz /= cl;
+  const m = Math.min(half / Math.max((cx * n1[0] + cz * n1[1]) * side, 0.35), 1.9);   // 同 build_garden_kit.py（wave10 修正后的斜接）
+  return [pts[i][0] + cx * m, pts[i][1] + cz * m];
+}
+function buildBridgeHead() {
+  const br = layout.objects.find((o) => o.id === 'jiuqu-bridge');
+  const water = layout.objects.find((o) => o.id === POND_WATER_ID);
+  if (!br || !water) return null;
+  const pts = br.geometry.polyline, half = (br.width ?? 2.4) / 2, deckY = br.deckY ?? 0.55, topY = deckY - 0.18;
+  const inner = offsetPolySafe(orientRing(water.geometry.footprint), -REVET.band).pts;   // 驳岸内沿 = 看得见的池水边
+  const seg = []; let acc = 0;
+  for (let k = 0; k + 1 < pts.length; k++) { const L = Math.hypot(pts[k + 1][0] - pts[k][0], pts[k + 1][1] - pts[k][1]); seg.push([acc, L]); acc += L; }
+  const at = (sv) => { let k = seg.findIndex(([a0, L]) => sv <= a0 + L + 1e-9); if (k < 0) k = seg.length - 1; const t = (sv - seg[k][0]) / seg[k][1]; return { k, p: [pts[k][0] + (pts[k + 1][0] - pts[k][0]) * t, pts[k][1] + (pts[k + 1][1] - pts[k][1]) * t] }; };
+  // 两端各找桥中线在驳岸内沿以外的连续段；台再向池内多伸 PIER_PAD，把骑在切口上的桥墩（0.36 方）整根包进去
+  const PIER_PAD = 0.4;
+  let sW = 0; while (sW < acc && !pointInPoly(at(sW).p, inner)) sW += 0.05;
+  let sE = acc; while (sE > 0 && !pointInPoly(at(sE).p, inner)) sE -= 0.05;
+  const spans = [];
+  if (sW > 0.05) spans.push([0, Math.min(acc, sW + PIER_PAD)]);
+  if (acc - sE > 0.05) spans.push([Math.max(0, sE - PIER_PAD), acc]);
+  const unitDir = (k) => { const dx = pts[k + 1][0] - pts[k][0], dz = pts[k + 1][1] - pts[k][1], l = Math.hypot(dx, dz); return [dx / l, dz / l]; };
+  const cut = (sv) => { const a = at(sv), d = unitDir(a.k), nn = [-d[1], d[0]]; return { k: a.k, d, l: [a.p[0] + nn[0] * half, a.p[1] + nn[1] * half], r: [a.p[0] - nn[0] * half, a.p[1] - nn[1] * half] }; };
+  const parts = [];
+  let lengthM = 0;
+  for (const [sA, sB] of spans) {
+    const A = cut(sA), B = cut(sB);
+    // A、B 之间的折点（不含两端）
+    const ks = []; for (let k = A.k + 1; k <= B.k; k++) ks.push(k);
+    const side = (s1, cutPt, dir) => {
+      const list = ks.map((k) => bridgeMitre(pts, k, s1, half));
+      let first = cutPt.a, last = cutPt.b;
+      // 切口点越过相邻折点的斜接点（内角）→ 该侧用斜接点作端点
+      if (list.length && (first[0] - list[0][0]) * dir.a[0] + (first[1] - list[0][1]) * dir.a[1] > 0) first = list.shift();
+      if (list.length && (last[0] - list[list.length - 1][0]) * dir.b[0] + (last[1] - list[list.length - 1][1]) * dir.b[1] < 0) last = list.pop();
+      return [first, ...list, last];
+    };
+    const left = side(1, { a: A.l, b: B.l }, { a: A.d, b: B.d });
+    const right = side(-1, { a: A.r, b: B.r }, { a: A.d, b: B.d });
+    const ring = [...left, ...right.reverse()];
+    parts.push(colorize(wallRing(ring, GROUND_Y, topY, 0x8f887a, 'bridge-head').geometry, 0x8f887a));
+    parts.push(colorize(upFacingGeometry(triangulateRing(orientRing(ring)), topY), 0x8f887a));
+    lengthM += sB - sA;
+  }
+  if (!parts.length) return null;
+  const key = 'pond|jiuqu-bridge|bridgeHead|L1';
+  const ud = { id: 'jiuqu-bridge', zone: 'pond', kind: 'bridgeHead', lod: 'L1', module: 'bridge-head', slot: 'paving-blue-stone', designInference: true,
+    inference: `wave10-pondqa (lead #4 option 3): the frozen bridge polyline runs past the visible pond edge onto dry land at both ends (east ${(acc - sE).toFixed(2)} m, west ${sW.toFixed(2)} m); those stretches are read as solid stone bridge-head platforms under the deck (deck outline, ground -0.40 to deck underside ${topY.toFixed(2)}, reaching ${PIER_PAD} m into the pool to enclose the piers on the cut), hiding the land piers; deck and steps unchanged` };
+  const mesh = mergedMesh(parts, key, ud);
+  worldUV(mesh.geometry);
+  return { mesh, lengthM };
+}
+
 // wave10-pondqa ①：池岸驳岸（压顶环带 + 外侧岸墙 + 内侧池壁），合成一件网格，贴青石板槽（同桥端台阶）。
 function buildPondRevetment(o) {
   const outer = orientRing(o.geometry.footprint);
@@ -1177,7 +1276,8 @@ const HUXINTING_DUP = new Map();
   if (HUXINTING) console.log('HUXINTING duplicate footprints of huxin-ting:', JSON.stringify([...HUXINTING_DUP].map(([id, r]) => [id, +r.toFixed(4)])));
 }
 
-for (const o of layout.objects) {
+for (const o0 of layout.objects) {
+  const o = POND_QA && isPondWater(o0) ? { ...o0, zone: 'pond', layoutZone: o0.zone } : o0;
   if (o.skipRender) { deferred.push({ id: o.id, kind: o.kind, why: o.disposition }); continue; }
   if (SITE_MODULES && SITE_MODULE_KINDS.has(o.kind)) { deferred.push({ id: o.id, kind: o.kind, why: 'site-module' }); continue; }
   if (STALL_KIT && STALL_KIT_KINDS.has(o.kind)) { deferred.push({ id: o.id, kind: o.kind, why: 'stall-kit' }); continue; }
@@ -1196,6 +1296,7 @@ for (const o of layout.objects) {
   if (o.trade) ud.trade = o.trade;
   if (o.inferences && o.inferences.length) ud.inference = o.inferences.join(' | ');
   if (o.disposition) ud.disposition = o.disposition;
+  if (o.layoutZone) { ud.layoutZone = o.layoutZone; ud.zoneRule = 'wave10-pondqa: footprint == layout.zones.pond.polygon -> pond'; }
   const key = `${o.zone}|${o.id}|${o.kind}|${o.lod}`;
   const ctx = { key, ud };
   let mesh = null;
@@ -1219,17 +1320,31 @@ for (const o of layout.objects) {
         if (poly) poly = clipPolylineX(poly, xmin, xmax);
         if ((!fp || !fp.length) && (!poly || poly.length < 2)) continue;   // 整段让位
       }
-      const g = fp ? shapeGeo(fp, o.height)
+      let g = fp ? shapeGeo(fp, o.height)
         : (poly && poly.length > 1 ? ribbon(poly, o.geometry.width, o.height, cols[o.geometry.priority] ?? 0xb0a99d, key).geometry : null);
       if (!g) continue;
+      if (POND_QA) {
+        const r = clipOutOfPond(g, o.height);
+        if (r === 'empty') { deferred.push({ id: o.id, kind: o.kind, why: 'road-inside-pond-outline' }); continue; }
+        if (r) { g = r; ud.pondClip = 'wave10-pondqa: surface inside the pond outline removed'; }
+      }
       if (FANGBANG_ROAD_SINK && FANGBANG_ROAD_SINK.has(o.id)) { g.translate(0, -FANGBANG_ROAD_SINK_M, 0); ud.fangbangSinkM = FANGBANG_ROAD_SINK_M; }
       mesh = mergedMesh([colorize(g, cols[o.geometry.priority] ?? 0xb0a99d)], key, ud);
       break;
     }
-    case 'plaza': mesh = shapeMesh(o.geometry.footprint, 0.04, 0xb3aa9a, key); mesh.userData = ud; break;
+    case 'plaza': {
+      mesh = shapeMesh(o.geometry.footprint, 0.04, 0xb3aa9a, key); mesh.userData = ud;
+      if (POND_QA) {
+        const r = clipOutOfPond(mesh.geometry, 0.04);
+        if (r === 'empty') { deferred.push({ id: o.id, kind: o.kind, why: 'road-inside-pond-outline' }); continue; }
+        if (r) { mesh.geometry = r; ud.pondClip = 'wave10-pondqa: surface inside the pond outline removed'; }
+      }
+      break;
+    }
     case 'water': {
-      const col = o.zone === 'garden' ? 0x4e7d84 : o.zone === 'pond' ? 0x557f8f : 0x5b7f92;
+      const col = o.zone === 'garden' ? 0x4e7d84 : o.zone === 'pond' ? (POND_QA ? POND_WATER_COLOR : 0x557f8f) : 0x5b7f92;
       mesh = shapeMesh(o.geometry.footprint, o.height, col, key); mesh.userData = ud;
+      if (POND_QA && o.zone === 'pond') mesh.material = mat(col, { rough: POND_WATER_ROUGH });
       if (POND_QA && o.id === POND_WATER_ID) {
         const rv = buildPondRevetment(o);
         zoneGroups.pond.add(rv);
@@ -1311,6 +1426,11 @@ for (const o of layout.objects) {
   stats.meshes++;
   stats.byZone[o.zone] = (stats.byZone[o.zone] || 0) + 1;
   stats.byKind[o.kind] = (stats.byKind[o.kind] || 0) + 1;
+}
+
+if (POND_QA) {
+  const bh = buildBridgeHead();
+  if (bh) { zoneGroups.pond.add(bh.mesh); stats.meshes++; stats.byKind.bridgeHead = 1; console.log('bridge head platform', bh.lengthM.toFixed(2), 'm'); }
 }
 
 // ---------- 导出 ----------
