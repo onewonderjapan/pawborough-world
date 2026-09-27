@@ -1,7 +1,8 @@
 // wave4-drawcalls：运行时合批（web/batching.js）不破坏按对象身份的消费者 —— 同机位 A/B：默认（合批）对 ?batch=0（改前渲染路径）。
 // 断言：
 //   I0 合批确实生效：默认页 __batchStats().batches > 0，且核心视图每帧 WebGL 绘制调用 < batch=0 的一半；
-//   I1 点选溯源：核心视图 5×4 网格屏幕点逐个真实鼠标点击，#info 面板显示的对象 ID 两边逐点相同（且命中 ≥ 8 个）；
+//   I1 点选溯源：核心视图 5×4 网格屏幕点逐个真实鼠标点击，#info 面板（wave11-infocard 起为信息卡：只有 layout 有名
+//      的对象才弹卡，见 web/infocard.js）显示的名称两边逐点相同（无名点两边同为不弹；有名命中 ≥ 5 个）；
 //   I2 导览目标着色（web/target-mask.js window.__targetMask，tour-render-check 的同一钩子）：每个导览机位
 //      目标像素占比两边相差 ≤ 0.002（绝对值），layout-id 目标的 meshesMatched 逐 id 相同；
 //   I3 可见性：屋顶按钮（产物里有 roof 标记节点时）与通用「原网格 visible=false → __batchSync」两边一致，画面确有变化，恢复后 < 1%；
@@ -99,8 +100,8 @@ if (want('I1')) {
   const hits = pb.filter(Boolean).length;
   report.I1 = { points: pts, batched: pb, unbatched: pu };
   if (!same) fail(`I1 点选 ID 不一致：${JSON.stringify(pts.map((p, i) => [p, pb[i], pu[i]]).filter(r => r[1] !== r[2]))}`);
-  else if (hits < 8) fail(`I1 点选命中太少（${hits}/20），样本不足`);
-  else ok(`I1 点选溯源 ${hits}/20 点命中，两边 ID 逐点相同`);
+  else if (hits < 5) fail(`I1 有名弹卡命中太少（${hits}/20）——wave11 起无名对象不弹卡，20 点里应有 ≥5 个有名对象可弹`);
+  else ok(`I1 点选溯源 ${hits}/20 点有名弹卡，两边逐点相同（含同名不弹点）`);
 }
 
 // ---------- I2 导览目标着色 ----------
