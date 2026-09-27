@@ -102,23 +102,19 @@ for o in d['objects']:
 # road-444342365 21.493 m²，R2 审查按渲染端几何只读复算）。这里用与渲染端完全相同的几何复算 ribbon
 # 路面多边形：与建筑接地足迹重叠 > 0.05 m² 的改写成裁后的 surfaceFootprints（渲染端自动改为逐块画），
 # surfaceFootprint 保留最大块给旧消费方；无重叠的保持 ribbon 不动，其余道路的渲染不受影响。
+# R3（审查必修3）：ribbon 复算改用 scripts/ribbon_geom.py 的 ribbon_polygon（与渲染端逐三角一致）。
+# R2 版把左右偏移边串成外环再 buffer(0)，急弯/自交（bowtie）时丢掉实际渲染的区域
+# （road-1064398308 外环法 4707.790604 vs 渲染端三角形并集 4713.565546，对称差 5.77 m²）。
+from ribbon_geom import ribbon_polygon
 ribbonclip=[]
 for o in d['objects']:
  if o['kind']!='road' or o.get('skipRender') or 'surfaceFootprint' in o['geometry'] or 'surfaceFootprints' in o['geometry']:continue
  line=o['geometry'].get('polyline')
  if not line or len(line)<2:continue
- n=len(line);w=o['geometry']['width'];left=[];right=[]
- for i in range(n):
-  a=line[max(0,i-1)];b=line[min(n-1,i+1)]
-  dx,dz=b[0]-a[0],b[1]-a[1];L=(dx*dx+dz*dz)**.5 or 1
-  nx,nz=-dz/L*w/2,dx/L*w/2
-  left.append([line[i][0]+nx,line[i][1]+nz]);right.append([line[i][0]-nx,line[i][1]-nz])
- g=Polygon(left+right[::-1]).buffer(0)
+ g=ribbon_polygon(line,o['geometry']['width'])
  if g.area<=0.05 or g.intersection(bldcuts).area<=0.05:continue
  rem=g.difference(bldcuts)
- flats=[]
- for p in (rem.geoms if hasattr(rem,'geoms') else [rem]):
-  if p.area>0.05:flats.extend(f for f in split_holes(p) if f.area>0.05)
+ flats=[f for pp in (rem.geoms if hasattr(rem,'geoms') else [rem]) if pp.area>0.05 for f in split_holes(pp) if f.area>0.05]
  if not flats:
   o['skipRender']=True
   ribbonclip.append({'id':o['id'],'name':o.get('name'),'removedM2':round(g.area,1),'note':'ribbon surface fully inside building footprints; not rendered'})
