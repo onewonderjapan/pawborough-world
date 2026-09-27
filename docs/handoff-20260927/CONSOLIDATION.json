@@ -1,0 +1,615 @@
+{
+  "checkedAt": "2026-09-27T04:34:28.566847+00:00",
+  "state": "PASS",
+  "scope": "Pawborough only; local source and validated asset consolidation; no deletion or remote push",
+  "canonicalRoot": "/home/baibai/work/onewonderjapan/pawborough-world",
+  "branch": "main",
+  "sourceIntegrationHead": "601d42a27b0d3552a9800f328f6ea2e050153072",
+  "previousMain": "fefb6ee50d497ced4eec182b584f2cc1be0f0190",
+  "remoteMain": "fefb6ee50d497ced4eec182b584f2cc1be0f0190",
+  "mergeMethod": "fast-forward",
+  "worktreeCount": 26,
+  "referenceCount": 29,
+  "allHeadsContained": true,
+  "sourceTreeEqualsReviewed601BeforeDocumentation": true,
+  "fullQaRepeated": false,
+  "worktrees": [
+    {
+      "path": "/home/baibai/work/onewonderjapan/pawborough-world",
+      "branch": "refs/heads/main",
+      "sourceHead": "601d42a27b0d3552a9800f328f6ea2e050153072",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 0,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-flash-facade-20260927/workspace",
+      "branch": "refs/heads/work/flash-facade-20260927",
+      "sourceHead": "30991050eaf447cb9d19ae0e47ab3d3573aafb13",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-goal-control-20260927/workspace",
+      "branch": "refs/heads/work/goal-control-20260927",
+      "sourceHead": "5dec3d3747ca61c9a81f959421af55a283f084a1",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-goal-delivery-20260927/workspace",
+      "branch": "refs/heads/work/goal-delivery-20260927",
+      "sourceHead": "a4c91ec44f951a2d3de33b24ada97b26a3eeb2e3",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 0,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-goal-entry-20260927/workspace",
+      "branch": "refs/heads/work/goal-entry-20260927",
+      "sourceHead": "d60d7fe30f50c275bd1ecd85f5bb6bf7fead3f3e",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 0,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-goal-identity-20260927/workspace",
+      "branch": "refs/heads/work/goal-identity-20260927",
+      "sourceHead": "e6e8dd85f8f2697c4fd9309105145e616d4d825b",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-goal-integrate-20260927/workspace",
+      "branch": "refs/heads/work/goal-integrate-20260927",
+      "sourceHead": "601d42a27b0d3552a9800f328f6ea2e050153072",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-goal-restore-20260927/workspace",
+      "branch": "refs/heads/work/goal-restore-20260927",
+      "sourceHead": "e028dddc071f9bf610d326a420034e13c911c1d4",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-goal-route-20260927/workspace",
+      "branch": "refs/heads/work/goal-route-20260927",
+      "sourceHead": "1546a18cc8ec492989cc58a37469081791534dde",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-night-bazaar-20260926/workspace",
+      "branch": "refs/heads/work/night-bazaar-20260926",
+      "sourceHead": "56b895fe44203943cbcf4bab8580419d05b6c2ca",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-night-integrate-20260926/workspace",
+      "branch": "refs/heads/work/night-integrate-20260926",
+      "sourceHead": "1224b41665ed471f65f4167b6d7d2f2ccfdbbb97",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-night-smallfix-20260926/workspace",
+      "branch": "refs/heads/work/night-smallfix-20260926",
+      "sourceHead": "f5faecac18f04f722e77f32afb4204782462abc2",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-sol-bridge-20260927/workspace",
+      "branch": "refs/heads/work/sol-bridge-20260927",
+      "sourceHead": "e04f26e4d8b0c9d909a0c9da01b854ffa52f02bc",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-wave1-bazaar-refs-20260923/workspace",
+      "branch": "refs/heads/work/wave1-bazaar-refs-20260923",
+      "sourceHead": "8a7d18d29602c2304798d99bc81e2e6409ab2015",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-wave1-fangbang-20260923/workspace",
+      "branch": "refs/heads/work/wave1-fangbang-20260923",
+      "sourceHead": "3db99ffd75ff70a0732c21fbcb538daf3eac3c5a",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-wave1-integrate-20260923/workspace",
+      "branch": "refs/heads/work/wave1-integrate-20260923",
+      "sourceHead": "fefb6ee50d497ced4eec182b584f2cc1be0f0190",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-wave1-paving-20260923/workspace",
+      "branch": "refs/heads/work/wave1-paving-20260923",
+      "sourceHead": "a1556c79391b3ebaef678fc49c3084a0da983f01",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-wave1-tour-20260923/workspace",
+      "branch": "refs/heads/work/wave1-tour-20260923",
+      "sourceHead": "408c92794e5923759e6c38fb2eab98d36137c184",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-wave1-walk-20260923/workspace",
+      "branch": "refs/heads/work/wave1-walk-20260923",
+      "sourceHead": "5f1809a342f2851534e1e4a8b697f71d24946d2e",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-wave1-walkr1-20260923/workspace",
+      "branch": "refs/heads/work/wave1-walkr1-20260923",
+      "sourceHead": "a36239c3ac3098854ffce354598453a18f8c43ba",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-wave8-bazaar-batch-glm-20260926/workspace",
+      "branch": "refs/heads/work/wave8-bazaar-batch-glm-20260926",
+      "sourceHead": "de1886d1447a514cf6b37bf1fdabff89b72cb867",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-wave8-smallqa-glm-20260926/workspace",
+      "branch": "refs/heads/work/wave8-smallqa-glm-20260926",
+      "sourceHead": "1af8aa28f1d7fb6d66b515fa9302b570a2cf720e",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-wave9-outerpolish-20260926/workspace",
+      "branch": "refs/heads/work/wave9-outerpolish-20260926",
+      "sourceHead": "c8262d826da227df5c31d6f066935fd6a10ad51a",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-wave9-sharedtex-20260926/workspace",
+      "branch": "refs/heads/work/wave9-sharedtex-20260926",
+      "sourceHead": "f44f1f6110ae4b7a68f822d9e2b875788b63b0b2",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 1,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-webgl-startup-20260927/workspace",
+      "branch": "refs/heads/work/webgl-startup-20260927",
+      "sourceHead": "601d42a27b0d3552a9800f328f6ea2e050153072",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 0,
+      "preserved": true
+    },
+    {
+      "path": "/home/baibai/outbox/pawborough-zone-split-20260923/workspace",
+      "branch": "refs/heads/work/zone-split-20260923",
+      "sourceHead": "28616b55f5f10aab328a4ca6e46e2aadc29c287b",
+      "includedInSource": true,
+      "beforeTrackedDirtyCount": 0,
+      "beforeUntrackedCount": 2,
+      "preserved": true
+    }
+  ],
+  "refs": [
+    {
+      "ref": "refs/heads/main",
+      "head": "601d42a27b0d3552a9800f328f6ea2e050153072",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/flash-facade-20260927",
+      "head": "30991050eaf447cb9d19ae0e47ab3d3573aafb13",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/goal-control-20260927",
+      "head": "5dec3d3747ca61c9a81f959421af55a283f084a1",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/goal-delivery-20260927",
+      "head": "a4c91ec44f951a2d3de33b24ada97b26a3eeb2e3",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/goal-entry-20260927",
+      "head": "d60d7fe30f50c275bd1ecd85f5bb6bf7fead3f3e",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/goal-identity-20260927",
+      "head": "e6e8dd85f8f2697c4fd9309105145e616d4d825b",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/goal-integrate-20260927",
+      "head": "601d42a27b0d3552a9800f328f6ea2e050153072",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/goal-restore-20260927",
+      "head": "e028dddc071f9bf610d326a420034e13c911c1d4",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/goal-route-20260927",
+      "head": "1546a18cc8ec492989cc58a37469081791534dde",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/night-bazaar-20260926",
+      "head": "56b895fe44203943cbcf4bab8580419d05b6c2ca",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/night-integrate-20260926",
+      "head": "1224b41665ed471f65f4167b6d7d2f2ccfdbbb97",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/night-smallfix-20260926",
+      "head": "f5faecac18f04f722e77f32afb4204782462abc2",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/sol-bridge-20260927",
+      "head": "e04f26e4d8b0c9d909a0c9da01b854ffa52f02bc",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/wave1-bazaar-refs-20260923",
+      "head": "8a7d18d29602c2304798d99bc81e2e6409ab2015",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/wave1-fangbang-20260923",
+      "head": "3db99ffd75ff70a0732c21fbcb538daf3eac3c5a",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/wave1-integrate-20260923",
+      "head": "fefb6ee50d497ced4eec182b584f2cc1be0f0190",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/wave1-paving-20260923",
+      "head": "a1556c79391b3ebaef678fc49c3084a0da983f01",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/wave1-tour-20260923",
+      "head": "408c92794e5923759e6c38fb2eab98d36137c184",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/wave1-walk-20260923",
+      "head": "5f1809a342f2851534e1e4a8b697f71d24946d2e",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/wave1-walkr1-20260923",
+      "head": "a36239c3ac3098854ffce354598453a18f8c43ba",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/wave8-bazaar-batch-glm-20260926",
+      "head": "de1886d1447a514cf6b37bf1fdabff89b72cb867",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/wave8-smallqa-glm-20260926",
+      "head": "1af8aa28f1d7fb6d66b515fa9302b570a2cf720e",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/wave9-outerpolish-20260926",
+      "head": "c8262d826da227df5c31d6f066935fd6a10ad51a",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/wave9-sharedtex-20260926",
+      "head": "f44f1f6110ae4b7a68f822d9e2b875788b63b0b2",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/webgl-startup-20260927",
+      "head": "601d42a27b0d3552a9800f328f6ea2e050153072",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/heads/work/zone-split-20260923",
+      "head": "28616b55f5f10aab328a4ca6e46e2aadc29c287b",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/remotes/origin/backup/pre-claude-20260921-201636",
+      "head": "bb45ca6f73c9ca7648a0c979903bacf2027d86f5",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/remotes/origin/main",
+      "head": "fefb6ee50d497ced4eec182b584f2cc1be0f0190",
+      "includedInSource": true
+    },
+    {
+      "ref": "refs/remotes/origin/work/zone-split-20260923",
+      "head": "28616b55f5f10aab328a4ca6e46e2aadc29c287b",
+      "includedInSource": true
+    }
+  ],
+  "assets": {
+    "checkedAt": "2026-09-27T04:28:23.312001+00:00",
+    "state": "PASS",
+    "sourceHead": "601d42a27b0d3552a9800f328f6ea2e050153072",
+    "mainRoot": "/home/baibai/work/onewonderjapan/pawborough-world",
+    "inputManifest": "/home/baibai/work/onewonderjapan/pawborough-world/docs/MIGRATION-ASSETS.json",
+    "inputFilesVerified": 372,
+    "inputFilesUpdated": 27,
+    "previousInputFilesRetained": [
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-165791764-6.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-165791764-6.glb",
+        "sha256": "fd559f22fa0787a70b7576b5f23e797ec83e2d76f0586d44d806914d581dfa6d"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-389701901-2.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-389701901-2.glb",
+        "sha256": "98a2e6a078af4f07192281f187b79222971d7da14698dc8dd58ad553542886f8"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-389701971-0.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-389701971-0.glb",
+        "sha256": "b76e04d5769ee1aa7db70fac58136c91d868fa1d1b8797768ebc4630192a3b02"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202599-2.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202599-2.glb",
+        "sha256": "7bdb3a5d08ff7d8be4e2b19ca01e6a6a3fdd50f01d8f66d0797f43f9a74e74c2"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202601-2.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202601-2.glb",
+        "sha256": "e2c6337f7213c333d3380d88bf3d147befae0894f25e9dfd42af6d329194c6ef"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202602-2.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202602-2.glb",
+        "sha256": "bb2afc4e165f2dade2726761b8d4992a1d1470a5955d3c51c45448c768007679"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202603-0.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202603-0.glb",
+        "sha256": "8322768052bdd351fec8a999a87fb92b4a293520a3d5d54a108e1826e908e60d"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202607-1.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-428202607-1.glb",
+        "sha256": "4790734180862477a224ad6743e400f6c65d5e81f6c6960a80a285fbff5fc6e8"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-553893867-2.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-553893867-2.glb",
+        "sha256": "0ccbc22c5fe1125059ff255292f88e93584b907a787be2e56e1f4fd35d409cbc"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-553893868-0.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-553893868-0.glb",
+        "sha256": "2764824abd20a09136758ddff311437a360687b28603345dcbdb659c31ff9c5d"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-553893873-3.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-553893873-3.glb",
+        "sha256": "9505c09ca02a4e7c968e45310f65fdb5447443dfa6b2ce467acf8dcd0b71f483"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-553893884-5.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-bazaar-stalls/awnings/awning-bld-553893884-5.glb",
+        "sha256": "b0766658571875375e73af8abe3f9b687d54395dc826ff26b1df909dbb3e8232"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/stall-drink.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-bazaar-stalls/stall-drink.glb",
+        "sha256": "665eaf7e85b690052a25a53917a99f7c69ca79d0e0fcc1655bb7a1cb087cae0b"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/stall-grill.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-bazaar-stalls/stall-grill.glb",
+        "sha256": "a83eb0171e391ad7ac921074b5064cfe0f12ea3456fe38e8d6ba492476a3bedf"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428179924/model.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428179924/model.glb",
+        "sha256": "369565c5e058484020d7547b56144e810039a69fd8d348d69dabd9360d166b89"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428186467/model.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428186467/model.glb",
+        "sha256": "45ce4c9c1eccff7b2bb7af5a08ba505bdd3f98e84df3d0d9992e571e91eefa15"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428196085/model.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428196085/model.glb",
+        "sha256": "39fc579e2f714d7aad4c1013624e6a75cee3892355ea422d381454cc7ddcf35e"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428196091/model.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428196091/model.glb",
+        "sha256": "f06824ee7fa49798ab891600666f5e4a867b1dab45fb0600ce7c673009b89cd0"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428196098/model.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-garden-kits/pavilion-bld-428196098/model.glb",
+        "sha256": "89d3c4b36a5fb703d82ede429e1dd5c30f24c2ae50518b397ed6f2ef036a805f"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-165791764/model.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-bazaar-towers/bld-165791764/model.glb",
+        "sha256": "fbe01d99380ba9362c2c26ee4463fa5d32028ef241612fb61fe45c14c01cfa2a"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389702030/model.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-bazaar-towers/bld-389702030/model.glb",
+        "sha256": "478f5effc10e1968508b2eaee959922155fa5d43cf828b7010b616a031cba70e"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893867/model.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893867/model.glb",
+        "sha256": "43406f663ca91ab11ec29be61e6f21943596032ae1c3b982ee1e3fad3390097f"
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893868/model.glb",
+        "backup": "/home/baibai/outbox/pawborough-claude-handoff-20260927/retained-main-inputs/scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893868/model.glb",
+        "sha256": "241f52bbe6467bd8c241130ee137d938120040059c7f01cd3832fb6623d3f3b5"
+      }
+    ],
+    "runtimeManifest": "/home/baibai/outbox/pawborough-goal-integrate-20260927/delivery/pawborough-world-v1-candidate-20260927/MANIFEST-runtime.json",
+    "runtimeManifestSha256": "d1e92dc4492844ae6f3228837eb6dab60e89c1e72de9ea5e59a59ba3df59456e",
+    "runtimeRoot": "/home/baibai/work/onewonderjapan/pawborough-world/scene-authoring/yuyuan-area/out-goal-current",
+    "runtimeFilesCopiedAndVerified": 90,
+    "runtimeBytes": 186420305,
+    "fullRebuildOrQaRepeated": false
+  },
+  "preview": {
+    "checkedAt": "2026-09-27T04:30:07.805237+00:00",
+    "state": "PASS",
+    "unit": "pawborough-main-preview-20260927.service",
+    "sourceRoot": "/home/baibai/work/onewonderjapan/pawborough-world",
+    "url": "http://127.0.0.1:5607/candidate/",
+    "probes": [
+      {
+        "path": "/candidate/",
+        "status": 200,
+        "bytes": 5709,
+        "sha256": "486d5c900ddde2c6f759633086ce0781f98e48f126f21ca02251ee43bfd38002",
+        "byteIdenticalToBefore": true
+      },
+      {
+        "path": "/?zone=core",
+        "status": 200,
+        "bytes": 6667,
+        "sha256": "dcc59c6b4c7d8dcf6f7d70582a1f95f28bea194de06d4f88141f663e54beb196",
+        "byteIdenticalToBefore": true
+      },
+      {
+        "path": "/web/main.js",
+        "status": 200,
+        "bytes": 34379,
+        "sha256": "9662f3756dc66bf346fa4d167ebde5ed5d07f847cca63cd731c5c7788aea3e09",
+        "byteIdenticalToBefore": true
+      },
+      {
+        "path": "/out/zones-manifest.json",
+        "status": 200,
+        "bytes": 31754,
+        "sha256": "bca56d95ef6cd9925314602bef9b96d14548baefd6296b6ff4eda710154bbe04",
+        "byteIdenticalToBefore": true
+      },
+      {
+        "path": "/out/candidate-version.json",
+        "status": 200,
+        "bytes": 5766,
+        "sha256": "a38a152e2e5099aa14055eb3448074266f70fcae40a7b424685b13387cd89301",
+        "byteIdenticalToBefore": true
+      },
+      {
+        "path": "/out/fangbang-route.json",
+        "status": 200,
+        "bytes": 13618,
+        "sha256": "4b717a2ea768e79b19947215b6759e37bbf9f68822f7d904143d620db9e82295",
+        "byteIdenticalToBefore": true
+      },
+      {
+        "path": "/node_modules/three/build/three.module.js",
+        "status": 200,
+        "bytes": 603113,
+        "sha256": "c8211c69345d2e9949dc7a8ac969380497aa0600a5a8ac6a459c8cd02dd9cb8a",
+        "byteIdenticalToBefore": true
+      },
+      {
+        "path": "/vendor/@dimforge/rapier3d-compat/rapier.mjs",
+        "status": 200,
+        "bytes": 2219371,
+        "sha256": "1ade6875c663c1398f490d4fa67837386b2d7e0aad45fe54e9b7af52b8198a49",
+        "byteIdenticalToBefore": true
+      },
+      {
+        "path": "/vendor-src/world/physics.js",
+        "status": 200,
+        "bytes": 2934,
+        "sha256": "ff89b3a4a9059876554791925383d2969f5d16ed6fe182336ea7ad6342cd4d11",
+        "byteIdenticalToBefore": true
+      },
+      {
+        "path": "/vendor-src/player/WalkController.js",
+        "status": 200,
+        "bytes": 6588,
+        "sha256": "2354a26d3b4f26f7719ad2b1c43e711f02c3b7d8cb0203e4d4961783d05106a4",
+        "byteIdenticalToBefore": true
+      }
+    ],
+    "browserFullQaRepeated": false,
+    "note": "Only serving-root changed; code/dependencies/current runtime are byte-identical. Existing browser and physics results reused."
+  },
+  "finalGitReceipt": "/home/baibai/outbox/pawborough-claude-handoff-20260927/FINAL_MERGE_RECEIPT.json",
+  "inventoryBefore": "/home/baibai/outbox/pawborough-claude-handoff-20260927/INVENTORY_BEFORE.json",
+  "remaining": "W2 owner review, visual adoption, SSO renewal and verified binary archive before main push"
+}
