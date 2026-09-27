@@ -707,7 +707,8 @@ function components(p) {
     { tag: '塔亭东', axis: 0, sgn: -1, from: U0 + 4, spans: [[-TOWER_HALF + 0.3, TOWER_HALF - 0.3]] },
     { tag: '塔亭南', axis: 1, sgn: 1, from: -(V0 + 4), spans: [[UE + 0.5, U0 - 0.3]] },
     { tag: '塔亭北', axis: 1, sgn: -1, from: V0 + 4, spans: [[UE + 0.5, U0 - 0.3]] },
-    { tag: '抱厦前檐窗下', axis: 1, sgn: -1, from: V0 + PORCH_DEPTH + 4, spans: [[-1.9, -0.45], [0.45, 1.9]] },
+    // wave11-huxwalk：门口加宽到前檐柱内皮 ±0.66（主控 2026-09-27 选项 1），窗下裙墙只在柱外侧，采样段让开门口与柱（|u| ≥ 0.9）
+    { tag: '抱厦前檐窗下', axis: 1, sgn: -1, from: V0 + PORCH_DEPTH + 4, spans: [[-1.9, -0.9], [0.9, 1.9]] },
   ];
   const frameVerts = [...parts.keys()].filter((n) => /__win-(main|tower|porch)-frame$/.test(n)).flatMap((n) => parts.get(n).verts.map(toLocal));
   for (const f of facades) {
@@ -854,6 +855,55 @@ function components(p) {
   }
   const n = Object.values(bad).reduce((s, x) => s + x, 0);
   ok(`瓦面朝上 / 檐底朝下（反向三角 ${n}：${Object.entries(bad).map(([k, v]) => `${k.replace('huxin-ting__', '')} ${v}`).join(', ') || '无'}）`, n === 0);
+}
+
+// ---------------- 14) wave11-huxwalk 抱厦门口可走（主控 2026-09-27 选项 1：从九曲桥走进抱厦，GLB 实测） ----------------
+// 步行胶囊直径 0.70（WalkController 半径 0.35）。
+//   ① 门口净宽：局部 v ∈ [V0+0.95, V0+1.30]（前檐柱 / 窗下裙墙 / 前檐窗所在带）× 高 台面上 0.3–1.7 m，从 u=0 向 ±u 水平射线，
+//      两侧首中距离之和的最小值 ≥ 0.90 m（原门口 0.60 m）；
+//   ② 门槛：|u| ≤ 0.5、v 从 V0+1.0 到承台临桥边前 0.02 m，自台面上 0.5 m 下行射线首中必须是抱厦地面（porch-floor，顶 0.57），
+//      即抱厦地面连到承台临桥边（原地面止于前檐柱外皮，前面 0.11 m 是承台面 0.55）。承台临桥边 = 局部 v 最大的 deck 顶点。
+{
+  const T = [];
+  for (const [nm, p] of parts) {
+    const L = p.verts.map(toLocal);
+    for (const [a, b, c] of p.tris) T.push({ A: L[a], B: L[b], C: L[c], nm });
+  }
+  function ray(o, d) {
+    let best = null;
+    for (const t of T) {
+      const e1 = [t.B[0] - t.A[0], t.B[1] - t.A[1], t.B[2] - t.A[2]], e2 = [t.C[0] - t.A[0], t.C[1] - t.A[1], t.C[2] - t.A[2]];
+      const pv = [d[1] * e2[2] - d[2] * e2[1], d[2] * e2[0] - d[0] * e2[2], d[0] * e2[1] - d[1] * e2[0]];
+      const det = e1[0] * pv[0] + e1[1] * pv[1] + e1[2] * pv[2];
+      if (Math.abs(det) < 1e-12) continue;
+      const tv = [o[0] - t.A[0], o[1] - t.A[1], o[2] - t.A[2]];
+      const uu = (tv[0] * pv[0] + tv[1] * pv[1] + tv[2] * pv[2]) / det;
+      if (uu < 0 || uu > 1) continue;
+      const qv = [tv[1] * e1[2] - tv[2] * e1[1], tv[2] * e1[0] - tv[0] * e1[2], tv[0] * e1[1] - tv[1] * e1[0]];
+      const vv = (d[0] * qv[0] + d[1] * qv[1] + d[2] * qv[2]) / det;
+      if (vv < 0 || uu + vv > 1) continue;
+      const tt = (e2[0] * qv[0] + e2[1] * qv[1] + e2[2] * qv[2]) / det;
+      if (tt > 1e-6 && (!best || tt < best.t)) best = { t: tt, nm: t.nm };
+    }
+    return best;
+  }
+  let minClear = Infinity, at = null;
+  for (let v = V0 + 0.95; v <= V0 + 1.30 + 1e-9; v += 0.05) for (let h = PLATFORM_Y + 0.3; h <= PLATFORM_Y + 1.7 + 1e-9; h += 0.2) {
+    const r = ray([0, v, h], [1, 0, 0]), l = ray([0, v, h], [-1, 0, 0]);
+    const w = (r ? r.t : 9) + (l ? l.t : 9);
+    if (w < minClear) { minClear = w; at = `v=V0+${(v - V0).toFixed(2)} h=${h.toFixed(2)} ${l ? l.nm.replace('huxin-ting__', '') : '-'}|${r ? r.nm.replace('huxin-ting__', '') : '-'}`; }
+  }
+  ok(`抱厦门口净宽 ${minClear.toFixed(3)} m ≥ 0.90（步行胶囊 0.70；最窄处 ${at}）`, minClear >= 0.90);
+  const deckV = partVertsLocal('huxin-ting__deck');
+  const edgeV = deckV ? Math.max(...deckV.map((q) => q[1])) : NaN;
+  let bad = 0, n = 0;
+  const badAt = [];
+  for (let u = -0.5; u <= 0.5 + 1e-9; u += 0.1) for (let v = V0 + 1.0; v <= edgeV - 0.02 + 1e-9; v += 0.02) {
+    const hit = ray([u, v, PLATFORM_Y + 0.5], [0, 0, -1]);
+    n++;
+    if (!hit || hit.nm !== 'huxin-ting__porch-floor') { bad++; if (badAt.length < 3) badAt.push(`v=V0+${(v - V0).toFixed(2)}:${hit ? hit.nm.replace('huxin-ting__', '') : 'miss'}`); }
+  }
+  ok(`抱厦门槛：|u|≤0.5 从门内到承台临桥边（V0+${(edgeV - V0).toFixed(3)}）下行射线 ${n} 条首中抱厦地面，不是的 ${bad} 条（应 0）`, n > 0 && bad === 0, badAt.join(' '));
 }
 
 console.log(`RESULT pass=${pass} fail=${fail} skipped=${skipped}`);

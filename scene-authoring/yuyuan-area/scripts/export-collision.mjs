@@ -35,6 +35,10 @@ const HALLKIT_SET = new Set(HALLKIT_IDS);
 const HALLKIT_DEFAULTS = JSON.parse(fs.readFileSync(path.join(AREA, 'modules', 'hall-kit', 'defaults.json'), 'utf8'));
 const hallkitWorld = HALL_KIT ? JSON.parse(fs.readFileSync(path.join(OUT, 'hallkit-collision-world.json'), 'utf8')) : null;
 
+// wave11-huxwalk（主控 2026-09-27 选项 1）：湖心亭站点模块开启时（默认，HUXINTING=0 关）不再用 footprint 薄墙，
+// 改为逐件碰撞（OUT/huxin-ting.glb 实际网格）+ 抱厦地面进步行地面，见下方第 16 节。
+const HUXINTING = process.env.HUXINTING !== '0';
+const HUXINTING_ID = 'huxin-ting';
 const AXIS = 'glTF Y-up; X east, Z south; heights from ground y=0';
 const EDGE_THICK = 0.3, EDGE_H_DEFAULT = 6;   // 建筑 footprint 薄墙（冻结格式）
 const WALL_THICK = 0.45;                       // garden-wall / temple-wall 墙厚（garden-kit 记录）
@@ -138,6 +142,7 @@ for (const o of layout.objects) {
   const isBuilding = ['hall', 'tower', 'xuan', 'stage', 'waterside', 'pavilion', 'bazaarBlock'].includes(o.kind)
     || (o.kind === 'outerBuilding' && o.zone === 'bazaar');
   if (!isBuilding || !g.footprint || o.id === SANSUITANG_ID || HALLKIT_SET.has(o.id) || PAV.has(o.id)) continue;
+  if (HUXINTING && o.id === HUXINTING_ID) continue;   // 湖心亭走模块逐件碰撞（第 16 节）
   const h = o.height || EDGE_H_DEFAULT;
   ringEdges(g.footprint).forEach(([a, b], i) => {
     // 非凸老街块（旧校场路沿线）的「街口边」：路线中心线 0.55 m 内的是街口，真实墙在店前不含这条边
@@ -599,6 +604,70 @@ for (const [oid, cfg] of Object.entries(CORRIDOR_CFG)) {
 }
 stats.corridorKits = corridorKitStats;
 
+// ---------- 16) 湖心亭（HUXINTING 默认开）：逐件碰撞 + 抱厦地面（wave11-huxwalk，主控 2026-09-27 选项 1） ----------
+// 局部系从 layout 重算（同 modules/huxinting/build.py：footprint 面积形心 + 最长边主轴，+u 取 x 正向，+v = (UZ, -UX) 临桥）。
+// 盒子 = OUT/huxin-ting.glb 里一层实体网格在局部系的轴对齐包围盒（这些件在 build.py 里都是局部系轴对齐的 box_uv / prism），
+// 每件与 GLB 顶点逐一复核（顶点全在盒内，且盒的 8 个角都离最近顶点 ≤ 0.02 m），不是设计值抄数。
+// 取件：身体带（台面 0.55 以上 0.05–2.0 m）内的主楼 / 塔亭一层体块、白裙墙、抱厦两侧墙、前檐柱、门框、外廊柱、一层外廊栏杆（下横杆 → 整道栏 0.55–1.60）。
+// 门扇 / 窗扇合并网格（跨门口）与门楣、匾额（2.8 m 以上）不取。只有抱厦地面（门槛伸到承台临桥边）是步行地面：
+// 承台其余部分与一层廊从桥上到不了（主控：不做「到不了的可走面」），不进地面分类；抱厦三面有墙、正面是门口，没有临水的开口边。
+const htStats = {};
+if (HUXINTING) {
+  const o = layout.objects.find(x => x.id === HUXINTING_ID);
+  if (!o) throw new Error('huxinting: layout object missing');
+  const glbPath = path.join(OUT, 'huxin-ting.glb');
+  if (!fs.existsSync(glbPath)) throw new Error(`HUXINTING (default on): missing ${glbPath}; set HUXINTING=0 for the placeholder`);
+  let fp = ring(o.geometry.footprint);
+  let a2 = 0, sx = 0, sz = 0;
+  fp.forEach((p, i) => { const q = fp[(i + 1) % fp.length]; const cr = p[0] * q[1] - q[0] * p[1]; a2 += cr; sx += (p[0] + q[0]) * cr; sz += (p[1] + q[1]) * cr; });
+  const CX = sx / (3 * a2), CZ = sz / (3 * a2);
+  let best = null;
+  fp.forEach((p, i) => { const q = fp[(i + 1) % fp.length]; const L = Math.hypot(q[0] - p[0], q[1] - p[1]); if (!best || L > best[0]) best = [L, p, q]; });
+  let UX = (best[2][0] - best[1][0]) / best[0], UZ = (best[2][1] - best[1][1]) / best[0];
+  if (UX < 0) { UX = -UX; UZ = -UZ; }
+  const VX = UZ, VZ = -UX;
+  const theta = Math.atan2(-UZ, UX);            // obbToWorld：本地 +X -> (cos θ, -sin θ) = +u；本地 +Z -> (sin θ, cos θ) = -v
+  const PY = o.platformY ?? 0.55;
+  const { meshes } = readGlb(fs.readFileSync(glbPath));
+  const PART_RE = /^huxin-ting__(body1|tower0|dado-[a-z0-9-]+|pwall-[we]|pcol-\d+|pframe-[lr]|gcol-\d+|r1-rail-\d+)$/;
+  let nBox = 0, worstCorner = 0;
+  for (const m of meshes) {
+    const nm = m.name || '';
+    const mm = nm.match(PART_RE);
+    if (!mm) continue;
+    const P = [];
+    for (let i = 0; i < m.positions.length; i += 3) {
+      const x0 = m.positions[i], y0 = m.positions[i + 1], z0 = m.positions[i + 2], M = m.matrix;
+      const x = M[0] * x0 + M[4] * y0 + M[8] * z0 + M[12], y = M[1] * x0 + M[5] * y0 + M[9] * z0 + M[13], z = M[2] * x0 + M[6] * y0 + M[10] * z0 + M[14];
+      P.push([(x - CX) * UX + (z - CZ) * UZ, y, (x - CX) * VX + (z - CZ) * VZ]);
+    }
+    const lo = [0, 1, 2].map(k => Math.min(...P.map(q => q[k]))), hi = [0, 1, 2].map(k => Math.max(...P.map(q => q[k])));
+    const part = mm[1];
+    if (/^r1-rail-/.test(part)) {
+      if (lo[1] > PY + 0.3) continue;             // 上横杆：由下横杆那条整道栏代表
+      hi[1] = PY + 1.05;                          // 整道栏：下横杆底 → 栏杆顶（build.py railH 1.05，望柱顶）
+    }
+    if (hi[1] < PY + 0.05 || lo[1] > PY + 2.0) continue;
+    // 复核：包围盒的 8 个角都要贴近真实顶点（盒 = 实体，不是斜放件的外包）
+    if (!/^r1-rail-/.test(part)) for (const cu of [lo[0], hi[0]]) for (const cy of [lo[1], hi[1]]) for (const cv of [lo[2], hi[2]]) {
+      const d = Math.min(...P.map(q => Math.hypot(q[0] - cu, q[1] - cy, q[2] - cv)));
+      worstCorner = Math.max(worstCorner, d);
+      if (d > 0.02) throw new Error(`huxinting ${part}: box corner ${d.toFixed(3)} m from the nearest vertex (not an axis-aligned block in the local frame)`);
+    }
+    const uc = (lo[0] + hi[0]) / 2, vc = (lo[2] + hi[2]) / 2;
+    const wx = CX + uc * UX + vc * VX, wz = CZ + uc * UZ + vc * VZ;
+    add(o.zone, `${HUXINTING_ID}:${part}`, 'huxinting', theta, [+wx.toFixed(4), 0, +wz.toFixed(4)],
+      [0, +((lo[1] + hi[1]) / 2).toFixed(4), 0], [+(hi[0] - lo[0]).toFixed(4), +(hi[1] - lo[1]).toFixed(4), +(hi[2] - lo[2]).toFixed(4)]);
+    nBox += 1;
+  }
+  if (!meshes.some(m => m.name === 'huxin-ting__porch-floor')) throw new Error('huxinting: porch-floor mesh missing (walk ground)');
+  for (const need of ['body1', 'tower0', 'pwall-w', 'pwall-e', 'pcol-1', 'pcol-2', 'dado-p0', 'dado-p1'])
+    if (!zones[o.zone].colliders.some(c => c.name === `${HUXINTING_ID}:${need}`)) throw new Error(`huxinting: collider ${need} missing`);
+  htStats.boxes = nBox; htStats.frame = { centroid: [+CX.toFixed(4), +CZ.toFixed(4)], axis: [+UX.toFixed(6), +UZ.toFixed(6)], theta: +theta.toFixed(6) };
+  htStats.maxCornerToVertexM = +worstCorner.toFixed(4);
+  stats.huxinting = htStats;
+}
+
 // ---------- 14) spawns：nav-gap anchors 按layout zones 多边形落入分区 ----------
 function pointInPoly(x, z, poly) {
   let inside = false;
@@ -648,7 +717,8 @@ const GROUND_RE = {
 const EXTRA_GROUND = {
   // G2: existing visible 0.12m entrance pad bridges the road/gate interface.
   garden: [...FROZEN_EXTRA_GROUND, 'garden|garden-gate|gateAnchor|L2'],
-  pond: FROZEN_EXTRA_GROUND,
+  // wave11-huxwalk：湖心亭抱厦地面（门槛伸到承台临桥边，与桥面高差 0.02）；分区 GLB 节点名带 assemble 的 mesh- 前缀
+  pond: HUXINTING ? [...FROZEN_EXTRA_GROUND, 'mesh-huxin-ting__porch-floor'] : FROZEN_EXTRA_GROUND,
   // 庙区模块地坪逐一列名（节点名取自分区 GLB：*-body__worn-stone 等不用通配防跨件误配）
   temple: [...FROZEN_EXTRA_GROUND,
     'shanmen-body__worn-stone*', 'entry-court__worn-stone*', 'yimen-body__worn-stone*',
@@ -677,4 +747,5 @@ for (const z of ZONES) {
 console.log(`export-collision: wrote ${ZONES.length} files to ${OUT}`);
 console.log(JSON.stringify(stats.zones));
 console.log('spawn assignment:', JSON.stringify(stats.spawnAssignment));
+if (stats.huxinting) console.log('huxinting colliders:', JSON.stringify(stats.huxinting));
 console.log(`street-mouth edges skipped: ${stats.skippedStreetMouths.length}, water openings: ${stats.openings.length}`);
