@@ -15,7 +15,7 @@ import { installBatching } from './batching.js';     // wave4-drawcalls：运行
 import { isRoofNodeSelf } from './roofs.js';        // wave5-rooftoggle：屋面命名判定唯一正本（厅堂/湖心亭/商城大楼/三穗堂/庙区/瓦面/程序化，见 web/roofs.js）
 import { installSharedTextures } from './shared-textures.js';   // wave9-sharedtex：分区件共用外置贴图，同 URL 只下载一次
 import { patchOuterKitProc } from './outer-kit-proc.js';   // wave7-outerkit 方案 C（OUTER_KIT_MODE=proc，对比测量用）：extras outerKit=proc 的网格换运行时 shader；无此类网格时不改任何东西
-import { installLighting } from './lighting.js';   // wave11-lighting：?light=day|dusk|night 预设 + 太阳阴影（?shadow=0 关）+ 渐变天空 + 夜间自发光 / 点光池；参数唯一来源 lighting/presets.json
+import { installLighting } from './lighting.js';   // wave11-lighting：?light=day|dusk|night 预设 + 太阳阴影（?shadow=0 关）+ 渐变天空 + 夜间自发光 / 点光池；共享预设来源 lighting/presets.json（读取失败 / 超时 3 s 回退旧灯光）
 
 const app = document.getElementById('app');
 let renderer;
