@@ -60,6 +60,39 @@ def add_east_apron(layout):
     obj['module'] = 'east-landing-access-apron'
     obj['slot'] = 'paving-blue-stone'  # canonical export rebinds the same adjacent stair material
     obj['inference'] = 'lead-approved .715m2 visible dry road-to-lowest-tread interface; existing bridge and stairs unchanged'
+    # wave10-pondqa（主控 2026-09-27）：接驳垫面片离外围地面 -0.40 悬空 0.42 m。上面这块步行面片（顶面、名字、材质）原样保留，
+    # 另加一件实心基座：四周立面 + 底面，从面片四边落到 -0.40（同桥端台阶的做法）。基座 kind = apronBase，不是地面节点。
+    if os.environ.get('POND_QA', '1') != '0':
+        bname = 'pond|east-landing-access-apron|apronBase|L1'
+        GROUND_Y = -0.4
+        top = [tuple(v) for v in verts]                       # Blender 系 (x, -z_map, y)
+        bot = [(v[0], v[1], GROUND_Y) for v in verts]
+        bverts = top + bot
+        # 顶面环 top 的绕序与面片同（面 (0,3,2,1) 朝上）；侧面沿 0→3→2→1 走外侧
+        order = [0, 3, 2, 1]
+        faces = []
+        for k in range(4):
+            a, b = order[k], order[(k + 1) % 4]
+            faces.append((a, 4 + a, 4 + b, b))
+        faces.append((4 + 1, 4 + 2, 4 + 3, 4 + 0))           # 底面朝下
+        bm = bpy.data.meshes.new(bname); bm.from_pydata(bverts, [], faces); bm.update()
+        # 侧面朝外校正：面法线与「面中心 - 形心」同向
+        from mathutils import Vector
+        c = sum((Vector(v) for v in bverts), Vector()) / len(bverts)
+        for poly in bm.polygons:
+            if abs(poly.normal.z) < 0.5 and poly.normal.dot(poly.center - c) < 0:
+                poly.flip()
+        bm.update()
+        bobj = bpy.data.objects.new(bname, bm)
+        collection.objects.link(bobj); bm.materials.append(donor.data.materials[0])
+        buv = bm.uv_layers.new(name='UVMap')
+        for poly in bm.polygons:
+            for li in poly.loop_indices:
+                v = bverts[bm.loops[li].vertex_index]
+                buv.data[li].uv = (v[0] + v[1], v[2]) if abs(poly.normal.z) < 0.5 else (v[0], -v[1])
+        bobj['id'], bobj['zone'], bobj['kind'], bobj['lod'] = 'east-landing-access-apron', 'pond', 'apronBase', 'L1'
+        bobj['module'] = 'east-landing-access-apron'
+        bobj['inference'] = 'wave10-pondqa: solid base under the G2 apron down to ground -0.40; walk surface unchanged'
     return obj
 
 if __name__ == '__main__':
