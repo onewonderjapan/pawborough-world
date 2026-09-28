@@ -332,3 +332,26 @@ python3 tests/control-pass-parity.py --a <工单包>/artifacts/pv-ref --b <Workb
 护栏：倍率范围 [1.0, 4.0]；湖心亭 / 九曲桥机位全画面高光裁切占比（max 通道 ≥ 250）相比倍率 1.0
 增加 ≤ 0.5 个百分点；夜晚最亮 0.5% 像素 R > B 占比 ≥ 0.8（湖心亭 / 九曲桥 / 华宝楼）。
 
+
+## wave12-r1（2026-09-28）Cycles beauty 外观与查看器对齐（导入后材质处理）
+
+**现象**（B3 联系表，倍率 1.0 时就有）：三穗堂格扇在 Cycles 里是实心红板、湖心亭窗格消失；地面铺装是平涂米色；
+三穗堂门前、华宝楼广场地面有纯黑三角块。**只改 Blender 端**：`render-control-passes.py` 在 `--beauty cycles|eevee`
+下导入 `scene-areas.glb` 后调一次 `prepare_beauty_materials`（默认 `--beauty workbench` 不调，旧输出不变）。
+根因与处理（证据在工单包 `artifacts/r1/`）：
+
+| 现象 | 根因（实测） | 处理 |
+|---|---|---|
+| 铺装平涂、外围立面无窗 | `export-zones.py` 只在导出运行时分区件时按对象 `slot` 绑定贴图材质（`resources/textures/paving/<slot>.jpg`、外围套件图集）；`scene-areas.glb` 更早导出，只有 `slot`（node extras）+ 世界 UV，材质仍是顶点色 | `bind_slot_materials`：同一约定导入后绑定（465 件；只换材质槽 0，不改几何 / UV）；`outerkit-proc` 为查看器着色器现画，不复刻 |
+| 纯黑三角块 | 相邻路面件在同一高度（z = 0.02 m）共面叠放（如 `road-428179933/934`）；查看器同材质共面只是深度打架，Cycles 从一层发出的阴影 / 漫反射射线在 t≈0 打中另一层 → 无日光也无环境光 | `isolate_flat_slot_layers`：全水平的 slot 件只对相机（与镜面）射线可见（160 件） |
+| （同类隐患）| 34 个面顶点法线朝上、绕序朝下，命中背面时 Cycles 把着色法线翻进地面 → 黑 | `fix_inverted_winding_shading`：着色法线与几何法线点积 < −0.5 时取反（其余面恒等） |
+| 格扇 / 窗格纹样消失 | 镂空贴图透明像素的 RGB 是白色。查看器是 WebGL 三线性 mipmap + 非预乘 alpha：缩小采样时白底混进窗棂，格心呈浅色纹样；Cycles 不做 mipmap，alpha 测试后只剩纯色窗棂，而三穗堂格扇背板（`sst-timber-darkred` #8a4030）与窗棂同色 → 纹样消失 | `emulate_viewer_texture_filtering`：MASK / 带贴图 BLEND 材质（84 个）的 baseColor 贴图换成查看器同式 mip 链（非预乘、线性空间 2×2 盒式平均），着色器里按 λ = log2(视距 · 每像素视角 · 贴图边长 / (每 UV 单位米数 · |cos 入射角|)) 三线性选层（sampler 为 NEAREST_MIPMAP_* 时取整层），alpha 测试仍走导入器节点链。每像素视角由 `set_pixel_angle` 按镜头写进场景 custom prop `pb_pix_angle`，每 UV 单位米数为面属性 `pb_uv_m` |
+
+- depth / normal / segmentation 不读这些材质 / 可见性（normal 用 material_override，seg 是 Workbench OBJECT 色，相机可见性不变）；
+  对账见工单包 `artifacts/r1/parity/`（123bad15 原脚本 vs 本分支，镜头③⑩ 第 20–23 帧，workbench 默认口径五通道 + cycles 三档四通道）。
+- **不能靠材质修的差异**：三穗堂门洞内部、格扇背后的厅内在 Cycles 里仍很暗——厅内地面天空可见率实测 1.8%、内门 0.1%，
+  是路径追踪的真实遮蔽；查看器半球环境光不被遮挡，所以门洞里是亮灰。这属于环境光倍率 / 灯光模型的范围，不是材质问题。
+- 测试：`tests/beauty-materials-test.py`（挂在 npm test 链尾；手写 glTF 合成小场景 + 真 Blender Cycles，四项机制各一断言，
+  期望值在测试里独立算）。
+- 标定（`calibrate-blender-ambient.py`）同样在导入后调 `prepare_beauty_materials`；华宝楼广场纳入裁切护栏，最优点破护栏时退到护栏内
+  最大倍率并记 `guardLimited`。R1 重标定结果在工单包 `artifacts/r1/calib/calibration.json`。

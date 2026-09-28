@@ -44,6 +44,8 @@ wave11-lighting 附加（默认行为不变，不给这些参数 = 旧输出逐�
   depth / normal / segmentation 通道在 --beauty cycles|eevee 下不变：灯光物体在这三段渲染时 hide_render，
   世界切回 control-world，Cycles 设置由 config_cycles 全部重设；自发光只改材质 Emission，分割（OBJECT 色）与
   法线（material_override）不读材质。非默认引擎另写 <out>/beauty-meta.json（引擎 / 设备 / 采样 / 预设）。
+wave12-r1：--beauty cycles|eevee 下导入后调 prepare_beauty_materials（slot 贴图绑定 / 共面铺装只对相机可见 / 绕序相反面
+  法线纠正 / 查看器同式 mip 采样镂空贴图），使 beauty 外观与查看器一致；详见 docs/CONTROL-PASSES.md wave12-r1 段。
 
 坐标约定：地图 (x,z) -> Blender (x,-z,y)；glTF Y-up 世界 = 地图 (x, y高度, z)（与 GLB/three.js 同系）。
 分割归属：GLB 节点名 zone|id|kind|lod 取第 2 段；否则沿父链找 layout id 锚空节点；方浜中路件锚名
@@ -451,6 +453,420 @@ def setup_beauty_lighting(scene, P, preset):
     return objs, {'pointLights': npl, 'emissiveMaterials': nmat}
 
 
+# ---------------- wave12-r1：beauty 材质与查看器对齐（只在 --beauty cycles|eevee 下调用） ----------------
+# scene-areas.glb 与查看器读的运行时分区件 zone-*.glb 出自同一 scene.blend，但 Blender 渲染与查看器有三处外观差异
+# （工单包 artifacts/r1 实测定位）：
+#  1) 铺装 / 外围立面贴图：export-zones.py 在导出分区件前按对象 custom prop `slot` 换成贴图材质（paving-<slot>.jpg /
+#     outer-kit 图集），scene-areas.glb 更早导出，只带 slot（glTF node extras）+ 世界 UV，材质仍是顶点色平涂
+#     → bind_slot_materials 按同一约定在导入后绑定（只换材质槽，不改几何 / UV）。
+#  2a) 共面叠放的地面铺装：相邻 slot 路面 / 铺装件在同一高度（如 z=0.02）互相重叠。查看器里同材质共面只是深度打架、看不出；
+#     Cycles 从一层表面发出的阴影 / 漫反射射线在 t≈0 处立即打中另一层 → 该区域既无日光也无环境光 → 纯黑三角块
+#     （三穗堂门前 road-428179933/934 实测）→ isolate_flat_slot_layers：全水平的 slot 件只对相机（与镜面）可见，
+#     不再遮挡 / 反弹给彼此；相机可见性不变，所以 depth / normal / segmentation 不受影响。
+#  2b) 28 个路面三角形（outer road / bazaar paving 的 slot 网格）顶点法线朝上而绕序朝下：Cycles / EEVEE 命中背面时把
+#     着色法线一并翻到朝下（插进地面）→ 纯黑；查看器（three DoubleSide）翻法线后仍吃不被遮挡的半球环境光，与相邻面
+#     同亮 → fix_inverted_winding_shading：着色法线与几何法线相背（点积 < -0.5，只有这类数据矛盾面）时取反回来。
+#  3) 镂空贴图（MASK / 带贴图的 BLEND）：查看器是 WebGL 三线性 mipmap + 非预乘 alpha，透明像素的白底 RGB 在缩小
+#     采样时混进窗棂 → 格心呈浅色纹样；Cycles 不做 mipmap，alpha 测试后只剩纯红窗棂，而三穗堂格扇背板与窗棂同色
+#     → 纹样消失。emulate_viewer_texture_filtering 按查看器同式（λ = log2(像素足迹 / 纹素)）在着色器里选 mip 层，
+#     alpha 测试仍走导入器生成的节点链（阈值 0.5 = alphaCutoff 缺省）；滤波方式取 GLB sampler。
+# depth / normal / segmentation 不读这些材质（normal = material_override，seg = Workbench OBJECT 色）；默认 workbench beauty 不调用。
+PAVING_TEX_DIR = os.path.join(ROOT, 'resources', 'textures', 'paving')
+# 与 scripts/export-zones.py 的 OUTER_KIT_TEX 同一约定；outerkit-proc 由查看器着色器现画（web/outer-kit-proc.js），Blender 端不复刻
+SLOT_TEX = {'outerkit-atlas': os.path.join(ROOT, 'resources', 'textures', 'outer-kit', 'outerkit-atlas-v2.jpg')}
+GL_NEAREST_MIPMAP = (9984, 9986)          # NEAREST_MIPMAP_NEAREST / NEAREST_MIPMAP_LINEAR：取整层
+GL_NEAREST_MAG = 9728
+PIX_ANGLE_PROP = 'pb_pix_angle'           # 场景 custom prop：画面中心每像素视角（弧度），镜头变了要重设（set_pixel_angle）
+UV_SCALE_ATTR = 'pb_uv_m'                 # 面属性：每个 UV 单位对应的世界长度（米，取最密方向）
+
+
+def read_glb_json(path):
+    import struct
+    with open(path, 'rb') as f:
+        head = f.read(20)
+        n = struct.unpack('<I', head[12:16])[0]
+        return json.loads(f.read(n))
+
+
+def slot_material(slot, cache):
+    if slot in cache:
+        return cache[slot]
+    jpg = SLOT_TEX.get(slot) or os.path.join(PAVING_TEX_DIR, slot + '.jpg')
+    if not os.path.exists(jpg):
+        cache[slot] = None
+        return None
+    img = bpy.data.images.load(jpg, check_existing=True)
+    m = bpy.data.materials.new(slot if slot in SLOT_TEX else 'paving-' + slot)
+    m.use_nodes = True
+    bsdf = next(n for n in m.node_tree.nodes if n.type == 'BSDF_PRINCIPLED')
+    bsdf.inputs['Roughness'].default_value = 0.93
+    bsdf.inputs['Metallic'].default_value = 0.0
+    tex = m.node_tree.nodes.new('ShaderNodeTexImage')
+    tex.image = img
+    tex.interpolation = 'Linear'
+    tex.extension = 'REPEAT'
+    m.node_tree.links.new(tex.outputs['Color'], bsdf.inputs['Base Color'])
+    cache[slot] = m
+    return m
+
+
+def bind_slot_materials():
+    """slot 网格换贴图材质（export-zones.py apply_paving 同式：只换材质槽 0，UV 用第 0 层）。"""
+    cache, n, seen, missing = {}, 0, set(), {}
+    for ob in bpy.data.objects:
+        if ob.type != 'MESH' or ob.data in seen:
+            continue
+        slot = ob.get('slot')
+        if not slot or not ob.data.uv_layers:
+            continue
+        seen.add(ob.data)
+        mat = slot_material(str(slot), cache)
+        if mat is None:
+            missing[str(slot)] = missing.get(str(slot), 0) + 1
+            continue
+        if ob.data.materials:
+            ob.data.materials[0] = mat
+        else:
+            ob.data.materials.append(mat)
+        ob.data.uv_layers[0].active = True
+        ob.data.uv_layers[0].active_render = True
+        n += 1
+    return {'slotMeshes': n, 'slotMaterials': sorted(k for k, v in cache.items() if v), 'slotMissing': missing}
+
+
+def isolate_flat_slot_layers():
+    """全水平的 slot 铺装件：关掉阴影 / 漫反射 / 透射 / 体积射线可见性（相机、镜面保留）。"""
+    import numpy as np
+    n = 0
+    for ob in bpy.data.objects:
+        if ob.type != 'MESH' or not ob.get('slot') or ob.hide_render or not ob.data.polygons:
+            continue
+        me = ob.data
+        pn = np.empty(len(me.polygons) * 3, np.float32)
+        me.polygons.foreach_get('normal', pn)
+        nz = (np.array(ob.matrix_world.to_3x3(), np.float64) @ pn.reshape(-1, 3).T)[2]
+        lens = np.linalg.norm((np.array(ob.matrix_world.to_3x3(), np.float64) @ pn.reshape(-1, 3).T), axis=0)
+        if not np.all(np.abs(nz) >= 0.999 * np.maximum(lens, 1e-9)):
+            continue
+        ob.visible_shadow = False
+        ob.visible_diffuse = False
+        ob.visible_transmission = False
+        ob.visible_volume_scatter = False
+        n += 1
+    return {'flatSlotCameraOnly': n}
+
+
+def _normal_fix_group():
+    g = bpy.data.node_groups.get('pb-winding-normal-fix')
+    if g is not None:
+        return g
+    g = bpy.data.node_groups.new('pb-winding-normal-fix', 'ShaderNodeTree')
+    g.interface.new_socket('Normal', in_out='INPUT', socket_type='NodeSocketVector')
+    g.interface.new_socket('Normal', in_out='OUTPUT', socket_type='NodeSocketVector')
+    N, L = g.nodes.new, g.links.new
+    gi, go = N('NodeGroupInput'), N('NodeGroupOutput')
+    geo = N('ShaderNodeNewGeometry')
+    dot = N('ShaderNodeVectorMath')
+    dot.operation = 'DOT_PRODUCT'
+    L(geo.outputs['Normal'], dot.inputs[0])
+    L(geo.outputs['True Normal'], dot.inputs[1])
+    lt = N('ShaderNodeMath')
+    lt.operation = 'LESS_THAN'
+    L(dot.outputs['Value'], lt.inputs[0])
+    lt.inputs[1].default_value = -0.5
+    sign = N('ShaderNodeMath')                 # 1 - 2·[相背]
+    sign.operation = 'MULTIPLY_ADD'
+    L(lt.outputs['Value'], sign.inputs[0])
+    sign.inputs[1].default_value = -2.0
+    sign.inputs[2].default_value = 1.0
+    sc = N('ShaderNodeVectorMath')
+    sc.operation = 'SCALE'
+    L(gi.outputs['Normal'], sc.inputs[0])
+    L(sign.outputs['Value'], sc.inputs['Scale'])
+    L(sc.outputs['Vector'], go.inputs['Normal'])
+    return g
+
+
+def fix_inverted_winding_shading():
+    """找出「顶点法线与绕序相背」的多边形所用材质，给其 BSDF 法线接上相背纠正（其余面上是恒等变换）。"""
+    import numpy as np
+    mats, n_poly, n_obj, seen = set(), 0, 0, set()
+    for ob in bpy.data.objects:
+        if ob.type != 'MESH' or ob.data in seen or ob.hide_render:
+            continue
+        me = ob.data
+        seen.add(me)
+        npoly = len(me.polygons)
+        if npoly == 0 or not me.materials:
+            continue
+        pn = np.empty(npoly * 3, np.float32)
+        me.polygons.foreach_get('normal', pn)
+        ls = np.empty(npoly, np.int32)
+        me.polygons.foreach_get('loop_start', ls)
+        lt = np.empty(npoly, np.int32)
+        me.polygons.foreach_get('loop_total', lt)
+        cn = np.empty(len(me.loops) * 3, np.float32)
+        me.corner_normals.foreach_get('vector', cn)
+        acc = np.add.reduceat(cn.reshape(-1, 3), ls, axis=0)
+        d = (acc * pn.reshape(-1, 3)).sum(1) / np.maximum(lt, 1)
+        bad = np.nonzero(d < -0.5)[0]
+        if len(bad) == 0:
+            continue
+        mi = np.empty(npoly, np.int32)
+        me.polygons.foreach_get('material_index', mi)
+        for k in set(mi[bad].tolist()):
+            if k < len(me.materials) and me.materials[k] is not None:
+                mats.add(me.materials[k])
+        n_poly += len(bad)
+        n_obj += 1
+    grp = _normal_fix_group()
+    fixed = []
+    for mat in mats:
+        if not mat.use_nodes:
+            continue
+        nt = mat.node_tree
+        for bsdf in [n for n in nt.nodes if n.type == 'BSDF_PRINCIPLED']:
+            gn = nt.nodes.new('ShaderNodeGroup')
+            gn.node_tree = grp
+            links = list(bsdf.inputs['Normal'].links)
+            if links:
+                nt.links.new(links[0].from_socket, gn.inputs['Normal'])
+                nt.links.remove(links[0])
+            else:
+                geo = nt.nodes.new('ShaderNodeNewGeometry')
+                nt.links.new(geo.outputs['Normal'], gn.inputs['Normal'])
+            nt.links.new(gn.outputs['Normal'], bsdf.inputs['Normal'])
+        fixed.append(mat.name)
+    return {'invertedWindingPolygons': n_poly, 'invertedWindingMeshes': n_obj, 'normalFixMaterials': sorted(fixed)}
+
+
+def _srgb_to_lin(c):
+    import numpy as np
+    return np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+
+
+def _lin_to_srgb(c):
+    import numpy as np
+    c = np.maximum(c, 0.0)
+    return np.where(c <= 0.0031308, c * 12.92, 1.055 * np.power(c, 1 / 2.4) - 0.055)
+
+
+def _mip_chain(img):
+    """查看器同式 mip 链：非预乘 RGBA 逐层 2×2 盒式平均（sRGB 贴图在线性空间平均，alpha 直接平均），直到 1×1。"""
+    import numpy as np
+    w, h = img.size
+    px = np.empty(w * h * 4, np.float32)
+    img.pixels.foreach_get(px)
+    lin = px.reshape(h, w, 4).astype(np.float64)
+    srgb = img.colorspace_settings.name == 'sRGB'
+    if srgb:
+        lin[..., :3] = _srgb_to_lin(lin[..., :3])
+    levels = []
+    k = 0
+    while lin.shape[0] > 1 or lin.shape[1] > 1:
+        k += 1
+        hh, ww = lin.shape[0], lin.shape[1]
+        nh, nw = max(1, hh // 2), max(1, ww // 2)
+        fy, fx = hh // nh, ww // nw
+        lin = lin[:nh * fy, :nw * fx].reshape(nh, fy, nw, fx, 4).mean(axis=(1, 3))
+        out = lin.copy()
+        if srgb:
+            out[..., :3] = _lin_to_srgb(out[..., :3])
+        im = bpy.data.images.new('%s#mip%d' % (img.name, k), nw, nh, alpha=True)
+        im.colorspace_settings.name = img.colorspace_settings.name
+        im.alpha_mode = 'CHANNEL_PACKED'
+        im.pixels.foreach_set(np.clip(out, 0, 1).astype(np.float32).ravel())
+        im.pack()
+        levels.append(im)
+    return levels
+
+
+def _mip_group(img, nearest_mip, closest):
+    name = 'pb-viewer-mip|%s|%s%s' % (img.name, 'N' if nearest_mip else 'L', 'c' if closest else '')
+    g = bpy.data.node_groups.get(name)
+    if g is not None:
+        return g
+    imgs = [img] + _mip_chain(img)
+    g = bpy.data.node_groups.new(name, 'ShaderNodeTree')
+    g.interface.new_socket('Vector', in_out='INPUT', socket_type='NodeSocketVector')
+    g.interface.new_socket('Color', in_out='OUTPUT', socket_type='NodeSocketColor')
+    g.interface.new_socket('Alpha', in_out='OUTPUT', socket_type='NodeSocketFloat')
+    g.interface.new_socket('Lod', in_out='OUTPUT', socket_type='NodeSocketFloat')
+    N, L = g.nodes.new, g.links.new
+    gi, go = N('NodeGroupInput'), N('NodeGroupOutput')
+
+    def m(op, a, b=None):
+        n = N('ShaderNodeMath')
+        n.operation = op
+        for i, v in enumerate((a, b)):
+            if v is None:
+                continue
+            if isinstance(v, (int, float)):
+                n.inputs[i].default_value = v
+            else:
+                L(v, n.inputs[i])
+        return n.outputs[0]
+
+    # λ = log2( 视距 · 每像素视角 · 贴图边长 / (每 UV 单位米数 · |cos 入射角|) )，夹到 [0, 层数-1]
+    cam = N('ShaderNodeCameraData')
+    geo = N('ShaderNodeNewGeometry')
+    pix = N('ShaderNodeAttribute')
+    pix.attribute_type = 'VIEW_LAYER'
+    pix.attribute_name = PIX_ANGLE_PROP
+    uvm = N('ShaderNodeAttribute')
+    uvm.attribute_type = 'GEOMETRY'
+    uvm.attribute_name = UV_SCALE_ATTR
+    cos = N('ShaderNodeVectorMath')
+    cos.operation = 'DOT_PRODUCT'
+    L(geo.outputs['Incoming'], cos.inputs[0])
+    L(geo.outputs['True Normal'], cos.inputs[1])
+    cosa = m('MAXIMUM', m('ABSOLUTE', cos.outputs['Value']), 0.02)
+    size = float(max(img.size))
+    foot = m('MULTIPLY', m('MULTIPLY', cam.outputs['View Distance'], pix.outputs['Fac']), size)
+    den = m('MULTIPLY', m('MAXIMUM', uvm.outputs['Fac'], 1e-6), cosa)
+    lod = m('MINIMUM', m('MAXIMUM', m('LOGARITHM', m('MAXIMUM', m('DIVIDE', foot, den), 1e-6), 2.0), 0.0),
+            float(len(imgs) - 1))
+    if nearest_mip:
+        lod = m('ROUND', lod)
+    col_acc = alpha_acc = None
+    for k, im in enumerate(imgs):
+        t = N('ShaderNodeTexImage')
+        t.image = im
+        t.interpolation = 'Closest' if closest else 'Linear'
+        t.extension = 'REPEAT'
+        L(gi.outputs['Vector'], t.inputs['Vector'])
+        w = m('MAXIMUM', m('SUBTRACT', 1.0, m('ABSOLUTE', m('SUBTRACT', lod, float(k)))), 0.0)   # 三线性权重
+        cs = N('ShaderNodeVectorMath')
+        cs.operation = 'SCALE'
+        L(t.outputs['Color'], cs.inputs[0])
+        L(w, cs.inputs['Scale'])
+        aw = m('MULTIPLY', t.outputs['Alpha'], w)
+        if col_acc is None:
+            col_acc, alpha_acc = cs.outputs['Vector'], aw
+        else:
+            ad = N('ShaderNodeVectorMath')
+            ad.operation = 'ADD'
+            L(col_acc, ad.inputs[0])
+            L(cs.outputs['Vector'], ad.inputs[1])
+            col_acc = ad.outputs['Vector']
+            alpha_acc = m('ADD', alpha_acc, aw)
+    L(col_acc, go.inputs['Color'])
+    L(alpha_acc, go.inputs['Alpha'])
+    L(lod, go.inputs['Lod'])
+    return g
+
+
+def _uv_scale_attr(ob):
+    """面属性 pb_uv_m：UV→世界 雅可比的最小奇异值（米 / UV 单位，最密方向；GL 取两轴里纹素变化更快的那轴）。"""
+    import numpy as np
+    me = ob.data
+    if UV_SCALE_ATTR in me.attributes or not me.uv_layers:
+        return
+    me.calc_loop_triangles()
+    nt = len(me.loop_triangles)
+    npoly = len(me.polygons)
+    vals = np.full(npoly, 1.0, np.float32)
+    if nt:
+        tl = np.empty(nt * 3, np.int32)
+        me.loop_triangles.foreach_get('loops', tl)
+        tp = np.empty(nt, np.int32)
+        me.loop_triangles.foreach_get('polygon_index', tp)
+        tv = np.empty(nt * 3, np.int32)
+        me.loop_triangles.foreach_get('vertices', tv)
+        co = np.empty(len(me.vertices) * 3, np.float32)
+        me.vertices.foreach_get('co', co)
+        mw = np.array(ob.matrix_world, np.float64)
+        co = co.reshape(-1, 3).astype(np.float64) @ mw[:3, :3].T
+        uv = np.empty(len(me.loops) * 2, np.float32)
+        me.uv_layers[0].data.foreach_get('uv', uv)
+        uv = uv.reshape(-1, 2).astype(np.float64)
+        P = co[tv.reshape(-1, 3)]
+        U = uv[tl.reshape(-1, 3)]
+        e1, e2 = P[:, 1] - P[:, 0], P[:, 2] - P[:, 0]
+        d1, d2 = U[:, 1] - U[:, 0], U[:, 2] - U[:, 0]
+        det = d1[:, 0] * d2[:, 1] - d1[:, 1] * d2[:, 0]
+        ok = np.abs(det) > 1e-12
+        inv = np.where(ok, 1.0 / np.where(ok, det, 1.0), 0.0)
+        Ju = (e1 * d2[:, 1:2] - e2 * d1[:, 1:2]) * inv[:, None]     # dP/du
+        Jv = (e2 * d1[:, 0:1] - e1 * d2[:, 0:1]) * inv[:, None]     # dP/dv
+        a, b, c = (Ju * Ju).sum(1), (Ju * Jv).sum(1), (Jv * Jv).sum(1)
+        tr, dt = a + c, a * c - b * b
+        lmin = np.maximum(tr / 2 - np.sqrt(np.maximum(tr * tr / 4 - dt, 0)), 0)
+        s = np.where(ok, np.sqrt(lmin), np.inf)
+        best = np.full(npoly, np.inf)
+        np.minimum.at(best, tp, s)
+        vals = np.where(np.isfinite(best) & (best > 0), best, 1.0).astype(np.float32)
+    at = me.attributes.new(UV_SCALE_ATTR, 'FLOAT', 'FACE')
+    at.data.foreach_set('value', vals)
+
+
+def emulate_viewer_texture_filtering(glb_json):
+    """MASK / 带贴图 BLEND 材质的 baseColor 贴图换成查看器同式三线性 mip 采样（alpha 测试沿用导入器节点链）。"""
+    gm = {m.get('name'): m for m in glb_json.get('materials', [])}
+    samplers = glb_json.get('samplers', [])
+    textures = glb_json.get('textures', [])
+    target = {}
+    for mat in bpy.data.materials:
+        g = gm.get(mat.name) or gm.get(strip_suffix(mat.name))
+        if not g or g.get('alphaMode') not in ('MASK', 'BLEND') or not mat.use_nodes:
+            continue
+        bt = g.get('pbrMetallicRoughness', {}).get('baseColorTexture')
+        if not bt or bt['index'] >= len(textures):
+            continue
+        t = textures[bt['index']]
+        s = samplers[t['sampler']] if 'sampler' in t and t['sampler'] < len(samplers) else {}
+        target[mat] = (s.get('minFilter') in GL_NEAREST_MIPMAP, s.get('magFilter') == GL_NEAREST_MAG)
+    users = [ob for ob in bpy.data.objects
+             if ob.type == 'MESH' and any(m in target for m in ob.data.materials)]
+    for ob in users:
+        _uv_scale_attr(ob)
+    done = []
+    for mat, (nearest_mip, closest) in target.items():
+        nt = mat.node_tree
+        for tex in [n for n in nt.nodes if n.type == 'TEX_IMAGE' and n.image is not None]:
+            # 只换 baseColor 贴图（sRGB）；法线 / ORM 等 Non-Color 图不动
+            if tex.image.colorspace_settings.name != 'sRGB':
+                continue
+            if not (tex.outputs['Color'].links or tex.outputs['Alpha'].links):
+                continue
+            grp = nt.nodes.new('ShaderNodeGroup')
+            grp.node_tree = _mip_group(tex.image, nearest_mip, closest)
+            vl = list(tex.inputs['Vector'].links)
+            if vl:
+                nt.links.new(vl[0].from_socket, grp.inputs['Vector'])
+            else:
+                uvn = nt.nodes.new('ShaderNodeUVMap')
+                nt.links.new(uvn.outputs['UV'], grp.inputs['Vector'])
+            for outn in ('Color', 'Alpha'):
+                for lk in list(tex.outputs[outn].links):
+                    to = lk.to_socket
+                    nt.links.remove(lk)
+                    nt.links.new(grp.outputs[outn], to)
+            done.append(mat.name)
+    return {'mipFilteredMaterials': sorted(set(done)), 'mipFilteredMeshes': len(users)}
+
+
+def prepare_beauty_materials(scene_path):
+    """导入 scene-areas.glb 之后、布光之前调用一次（只改 beauty 引擎读的材质；返回统计写进 beauty-meta.json）。"""
+    info = {}
+    info.update(bind_slot_materials())
+    info.update(isolate_flat_slot_layers())
+    info.update(fix_inverted_winding_shading())
+    info.update(emulate_viewer_texture_filtering(read_glb_json(scene_path)))
+    log('beauty materials: flat slot layers camera-only %d' % info['flatSlotCameraOnly'])
+    log('beauty materials: slot meshes %d (%s; missing %s), inverted-winding polys %d -> %d materials, '
+        'viewer-mip materials %d' % (info['slotMeshes'], ','.join(info['slotMaterials']), info['slotMissing'] or '-',
+                                     info['invertedWindingPolygons'], len(info['normalFixMaterials']),
+                                     len(info['mipFilteredMaterials'])))
+    return info
+
+
+def set_pixel_angle(scene, cam_data, w, h):
+    """画面中心每像素视角（弧度）写进场景 custom prop，mip 选层用；AUTO 适配下长边铺满传感器。"""
+    scene[PIX_ANGLE_PROP] = cam_data.sensor_width / (cam_data.lens * float(max(w, h)))
+    return scene[PIX_ANGLE_PROP]
+
+
 def config_beauty_lit(scene, P, preset, engine, samples, device, world):
     scene.world = world
     B = P['blender']
@@ -738,6 +1154,7 @@ def main():
 
     lit_objs, lit_world, lit_meta = [], None, None
     if lit:
+        mat_info = prepare_beauty_materials(args.scene)      # wave12-r1：材质与查看器对齐（控制通道不读）
         lit_world = build_lighting_world(P, preset)
         lit_objs, lit_info = setup_beauty_lighting(scene, P, preset)
         for ob in lit_objs:
@@ -767,6 +1184,8 @@ def main():
         # R1：每镜头可选焦距 lensMm（36 mm 横幅传感器，AUTO 适配=水平）；缺省 50 mm（Blender 默认，①与 round 0 一致）
         cam_data.sensor_width = 36.0
         cam_data.lens = float(shot.get('lensMm', 50.0))
+        if lit:
+            set_pixel_angle(scene, cam_data, w, h)             # wave12-r1：mip 选层用的每像素视角
 
         def pose(k):
             eye_b, tgt_b = to_blender(eyes[k]), to_blender(tgts[k])
@@ -786,6 +1205,7 @@ def main():
             lit_meta = config_beauty_lit(scene, P, preset, args.beauty, args.beauty_samples,
                                          args.beauty_device or P['blender']['cycles']['device'], lit_world)
             lit_meta.update(lit_info)
+            lit_meta['beautyMaterials'] = {k: (v if not isinstance(v, list) else len(v)) for k, v in mat_info.items()}
         elif 'beauty' in passes:
             config_workbench(scene, 'beauty')
         for k in (ks if 'beauty' in passes else []):
