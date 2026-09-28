@@ -1085,15 +1085,20 @@ else:
 # 的 lattice 发光组按材质名点亮）；数量 = 生成器 window() 实际出背板次数（measurements.windowBackingCalls）；
 # 底层店面背板 shop-back-* 仍是原材质 btk-shopback（W1 不动店面）。
 # 材质名从 raw GLB 逐 primitive 解析；每块背板 = 1 个 rpanel 四边形 = 2 三角，节点三角数 // 2 = 块数。
+# 分区 GLB（--source zone）里 assemble 合并多楼后 Blender 给重名材质加 .001 数字后缀（对所有 btk-* 一致），
+# 故按名匹配容忍该后缀；模块 GLB（默认 --source module）是精确名。
+def _mat_is(name, base):
+    return name == base or (name.startswith(base + '.') and name[len(base) + 1:].isdigit())
 _wb_nodes = [n_ for n_ in meshes if n_['name'].startswith('windows__winback')]
 _wb_mats = sorted({mn for n_ in _wb_nodes for mn in n_.get('mats', [])})
+_wb_ok = bool(_wb_nodes) and all(_mat_is(mn, 'btk-winback') for mn in _wb_mats)
 _wb_cnt = sum(n_['tris'] for n_ in _wb_nodes) // 2
 _wb_expect = _meas.get('windowBackingCalls')
 if _wb_expect == 0 and not _wb_nodes:
     skip('test17a/17b 楼上窗背板', '本楼无 window() 背板（全 band 样式且无角塔，生成器计数 = 0）')
 else:
     ok('test17a 楼上窗背板材质 = btk-winback（%d 块，材质 %s）' % (_wb_cnt, _wb_mats),
-       bool(_wb_nodes) and _wb_mats == ['btk-winback'],
+       _wb_ok,
        'windows__winback 节点缺失或材质不符（改前为 btk-wood）')
     ok('test17b 窗背板数量 %d = window() 调用计数 %s' % (_wb_cnt, _wb_expect),
        _wb_expect is not None and _wb_cnt == _wb_expect,
@@ -1101,7 +1106,8 @@ else:
 _sb_nodes = [n_ for n_ in meshes if n_['name'].startswith('shopfront__shopback')]
 _sb_mats = sorted({mn for n_ in _sb_nodes for mn in n_.get('mats', [])})
 if _sb_nodes:
-    ok('test17c 底层店面背板仍 = btk-shopback（材质 %s）' % (_sb_mats,), _sb_mats == ['btk-shopback'])
+    ok('test17c 底层店面背板仍 = btk-shopback（材质 %s）' % (_sb_mats,),
+       all(_mat_is(mn, 'btk-shopback') for mn in _sb_mats))
 else:
     skip('test17c 底层店面背板', '本楼无 shopfront 店面背板')
 
