@@ -1080,29 +1080,67 @@ else:
     ok('test15a 俯视屋面覆盖 %.1f%% ≥ 97%%（%s）' % (_rc['roofCover'] * 100, _rc_s), _rc['roofCover'] >= 0.97)
     ok('test15b 俯视平屋顶 %.1f%% ≤ 3%%' % (_rc['flat'] * 100), _rc['flat'] <= 0.03)
 
-# ---------- test 17：楼上窗背板专用材质（wave12-towerwin W1）----------
-# 契约：window() 的背板 winb-* 全部 = btk-winback（白天观感与原 wood 一致，夜晚由 lighting presets
-# 的 lattice 发光组按材质名点亮）；数量 = 生成器 window() 实际出背板次数（measurements.windowBackingCalls）；
-# 底层店面背板 shop-back-* 仍是原材质 btk-shopback（W1 不动店面）。
-# 材质名从 raw GLB 逐 primitive 解析；每块背板 = 1 个 rpanel 四边形 = 2 三角，节点三角数 // 2 = 块数。
-# 分区 GLB（--source zone）里 assemble 合并多楼后 Blender 给重名材质加 .001 数字后缀（对所有 btk-* 一致），
-# 故按名匹配容忍该后缀；模块 GLB（默认 --source module）是精确名。
+# ---------- test 17：楼上窗背板专用材质（wave12-towerwin W1；wave12-towerwin2 扩 screen/band 拆段）----------
+# 契约：
+#   a) windows__winback* 节点材质 = btk-winback 家族：wood 段 → btk-winback；非 wood timber 段 →
+#      btk-winback-<timber>（着色参数与该 timber 完全相同，extras pbRole=window-backing）；节点名族
+#      （windows__ 后的部分）与材质族一致。
+#   b) 背板只盖格心覆盖段（towerwin2 拆段）：btk-winback 家族材质不得出现在 windows__winback* 之外的节点；
+#      且每个 windows__winback* 节点几何 y 下沿 ≥ 本楼格心节点（windows__lattice*）y 下沿 − 0.005——
+#      改动前 window() 的 winb-* 是整块背板，下沿伸到格心底以下约 (1−lf)·(h+0.14)（实心段无格心遮挡，
+#      夜间随背板裸亮，T0 缺陷）。拆段后 lit 段与格心同底（win-*/winleaf-*/bandleaf-* 三类逐一成立），
+#      全楼取 min 后等号成立。
+#   c) 数量对账：windows__winback* 节点三角 //2 = 生成器三类出板调用计数之和
+#      （measurements.windowBackingCalls + screenBackingCalls + bandBackingCalls，后两类 towerwin2 新增），
+#      并逐 timber 族对账：windows__winback ↔ winbackByTimber.wood、windows__winback-<t> ↔ .<t>，
+#      族和 = 三类和（互为守恒）。期望值来源 = 生成器调用计数（W1 test17b 同口径，GOAL 认可的独立来源）。
+#   d) 底层店面背板 shop-back-* 仍是原材质 btk-shopback（W1 不动店面）。
+# 材质名从 raw GLB 逐 primitive 解析；每块 lit 背板 = 1 个 rpanel 四边形 = 2 三角，节点三角数 // 2 = 块数。
+# 分区 GLB（--source zone）里 assemble 合并多楼后 Blender 给重名材质/节点加 .001 数字后缀（对所有 btk-* 一致），
+# 故按基名匹配容忍该后缀；模块 GLB（默认 --source module）是精确名。高度轴 = glTF Y-up 的 y。
 def _mat_is(name, base):
     return name == base or (name.startswith(base + '.') and name[len(base) + 1:].isdigit())
+def _base(nm):
+    return nm[:-4] if len(nm) > 4 and nm[-4] == '.' and nm[-3:].isdigit() else nm
 _wb_nodes = [n_ for n_ in meshes if n_['name'].startswith('windows__winback')]
+_wb_fam = lambda n_: _base(n_['name'])[len('windows__'):]          # 'winback' / 'winback-<timber>'
+_wb_fam_bad = [(n_['name'], mn) for n_ in _wb_nodes for mn in n_['mats'] if not _mat_is(mn, 'btk-' + _wb_fam(n_))]
 _wb_mats = sorted({mn for n_ in _wb_nodes for mn in n_.get('mats', [])})
-_wb_ok = bool(_wb_nodes) and all(_mat_is(mn, 'btk-winback') for mn in _wb_mats)
 _wb_cnt = sum(n_['tris'] for n_ in _wb_nodes) // 2
 _wb_expect = _meas.get('windowBackingCalls')
-if _wb_expect == 0 and not _wb_nodes:
-    skip('test17a/17b 楼上窗背板', '本楼无 window() 背板（全 band 样式且无角塔，生成器计数 = 0）')
+_sb_cnt = _meas.get('screenBackingCalls')
+_bb_cnt = _meas.get('bandBackingCalls')
+_wb_timber = _meas.get('winbackByTimber')
+if not _wb_nodes and _wb_expect in (0, None):
+    skip('test17a/17b/17d 楼上窗背板', '本楼无 window() 背板（全 band 样式且无角塔，生成器计数 = 0）')
 else:
-    ok('test17a 楼上窗背板材质 = btk-winback（%d 块，材质 %s）' % (_wb_cnt, _wb_mats),
-       _wb_ok,
-       'windows__winback 节点缺失或材质不符（改前为 btk-wood）')
-    ok('test17b 窗背板数量 %d = window() 调用计数 %s' % (_wb_cnt, _wb_expect),
-       _wb_expect is not None and _wb_cnt == _wb_expect,
-       '期望值缺失（旧版生成器产物）或与 GLB 背板块数不一致')
+    ok('test17a 楼上窗背板材质族 = btk-winback*（%d 块，材质 %s）' % (_wb_cnt, _wb_mats),
+       bool(_wb_nodes) and not _wb_fam_bad,
+       'windows__winback* 节点缺失或材质族与节点名不一致（应为 btk-winback / btk-winback-<timber>）: %s' % (_wb_fam_bad[:4],))
+    _calls_missing = [f for f, v in (('windowBackingCalls', _wb_expect), ('screenBackingCalls', _sb_cnt),
+                                     ('bandBackingCalls', _bb_cnt)) if v is None]
+    ok('test17b 窗背板数量 %d = window(%s)+screen(%s)+band(%s) 出板调用计数' % (_wb_cnt, _wb_expect, _sb_cnt, _bb_cnt),
+       None not in (_wb_expect, _sb_cnt, _bb_cnt) and _wb_cnt == _wb_expect + _sb_cnt + _bb_cnt,
+       '期望值缺失（旧版生成器产物，无 towerwin2 三类记账字段: %s）或与 GLB 背板块数不一致' % (_calls_missing,))
+    _fam_cnt = {t: sum(n_['tris'] for n_ in _wb_nodes if _wb_fam(n_) == ('winback' if t == 'wood' else 'winback-' + t)) // 2
+                for t in (_wb_timber or {})}
+    ok('test17d 逐 timber 族对账 %s（GLB 节点族计数 %s）' % (_wb_timber, _fam_cnt),
+       _wb_timber is not None and _fam_cnt == _wb_timber and sum(_wb_timber.values()) == _wb_cnt,
+       'winbackByTimber 缺失（旧版生成器产物）或某 timber 族节点三角数与计数不一致')
+# b) 家族材质不出现在 windows__winback* 之外；z 下沿 ≥ 格心节点 z 下沿（实心段不带发光材质的几何不变式）
+_wb_elsewhere = sorted((n_['name'], mn) for n_ in meshes if not n_['name'].startswith('windows__winback')
+                       for mn in n_.get('mats', []) if _base(mn).startswith('btk-winback'))
+_lat_nodes = [n_ for n_ in meshes if n_['name'].startswith('windows__lattice')]
+_lat_zmin = min((min(v[1] for v in world_verts(n_)) for n_ in _lat_nodes), default=None)
+_wb_zmin = min((min(v[1] for v in world_verts(n_)) for n_ in _wb_nodes), default=None)
+if _wb_nodes:
+    ok('test17e btk-winback 家族材质只在 windows__winback* 节点（他处 %s）' % (_wb_elsewhere or '无',),
+       not _wb_elsewhere, '实心段或其他部件误挂发光材质（背板未按格心覆盖段拆分）')
+    ok('test17f 背板 y 下沿 %.3f ≥ 格心下沿 %.3f − 0.005（拆段后与格心同底；改前整板下探实心段）' % (_wb_zmin, _lat_zmin),
+       _lat_zmin is not None and _wb_zmin >= _lat_zmin - 0.005,
+       'windows__lattice* 缺失或背板下沿低于格心下沿（winb 整板未拆段）')
+else:
+    skip('test17e/17f 背板范围', '本楼无 windows__winback* 背板节点')
 _sb_nodes = [n_ for n_ in meshes if n_['name'].startswith('shopfront__shopback')]
 _sb_mats = sorted({mn for n_ in _sb_nodes for mn in n_.get('mats', [])})
 if _sb_nodes:
