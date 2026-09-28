@@ -78,10 +78,27 @@ export function setupPerf({ renderer, camera, controls, walk, hud }) {
     // 每帧口径：renderer.info 保持 autoReset（每次 render() 开头清零），等两帧后读到的就是「最后一次 render」
     // 一帧的量。wave4-drawcalls 修：旧写法关掉 autoReset 再等两个 rAF，读到的是两帧之和（报告值 = 2 × 每帧）。
     // 检查：tests/perf-drawcalls-check.mjs P1（与页面内独立的 WebGL 调用计数逐帧核对）。
-    renderer.info.autoReset = true;
-    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
-    report.renderer = { drawCalls: renderer.info.render.calls, triangles: renderer.info.render.triangles, programs: renderer.info.programs?.length ?? null, perFrame: true };
+    // wave11-lighting 修：three r180 的 render() 先画阴影贴图、后 info.reset()（autoReset），开阴影后 renderer.info 只剩主通道，
+    // 比独立 WebGL 计数少一截（P1 实测 263 vs 479）。改为测量的两帧里临时接管：每次 render() 前手动清零（autoReset 关），
+    // 阴影通道画完时另记一笔 → drawCalls / triangles = 一整帧（主通道 + 阴影通道），shadowPass 单列；测完原样恢复。
+    let frame = null;
+    const origRender = renderer.render, origShadow = renderer.shadowMap.render;
+    renderer.info.autoReset = false;
+    renderer.shadowMap.render = function (...a) { origShadow.apply(this, a); frame.shadow = { drawCalls: renderer.info.render.calls, triangles: renderer.info.render.triangles }; };
+    renderer.render = function (...a) {
+      renderer.info.reset(); frame = { shadow: { drawCalls: 0, triangles: 0 } };
+      origRender.apply(this, a);
+      frame.drawCalls = renderer.info.render.calls; frame.triangles = renderer.info.render.triangles;
+    };
+    try {
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    } finally {
+      renderer.render = origRender; renderer.shadowMap.render = origShadow; renderer.info.autoReset = true;
+    }
+    report.renderer = { drawCalls: frame ? frame.drawCalls : renderer.info.render.calls, triangles: frame ? frame.triangles : renderer.info.render.triangles,
+      shadowPass: frame ? frame.shadow : null, includesShadowPass: !!frame, programs: renderer.info.programs?.length ?? null, perFrame: true };
     if (window.__batchStats) report.batching = window.__batchStats();
+    if (window.__lighting) report.lighting = window.__lighting.state();   // wave11-lighting：预设 / 阴影 / 点光数，同一台机器 A/B（?shadow=0、?light=night）对照用
     setPhase('orbit', ORBIT_SECONDS);
     orbitBase = { target: controls.target.clone(), pos: camera.position.clone() };
     orbitAngle = Math.atan2(orbitBase.pos.z - orbitBase.target.z, orbitBase.pos.x - orbitBase.target.x);
