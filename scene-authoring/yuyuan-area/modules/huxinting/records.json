@@ -1,8 +1,8 @@
 {
  "id": "huxin-ting",
  "glb": "<OUT_DIR>/huxin-ting.glb",
- "bytes": 1316588,
- "tris": 20968,
+ "bytes": 1623160,
+ "tris": 21220,
  "partTriCounts": {
   "deck": 12,
   "piles": 288,
@@ -10,10 +10,10 @@
   "gallery1": 264,
   "railing": 1896,
   "body2": 24,
-  "porch": 3184,
+  "porch": 3208,
   "tower": 6296,
   "finial": 260,
-  "roof": 6242,
+  "roof": 6470,
   "windows": 2418
  },
  "partObjectCounts": {
@@ -23,9 +23,9 @@
   "gallery1": 22,
   "railing": 158,
   "body2": 2,
-  "porch": 40,
+  "porch": 42,
   "tower": 24,
-  "roof": 22,
+  "roof": 24,
   "windows": 3
  },
  "tileRidges": {
@@ -71,6 +71,20 @@
    "cols": 7,
    "closed": false
   },
+  "mainroof-satou-w": {
+   "ribs": 19,
+   "ribLengthM": 19.02,
+   "rows": 2,
+   "cols": 2,
+   "closed": false
+  },
+  "mainroof-satou-e": {
+   "ribs": 19,
+   "ribLengthM": 19.02,
+   "rows": 2,
+   "cols": 2,
+   "closed": false
+  },
   "porchroof-lower": {
    "ribs": 60,
    "ribLengthM": 70.75,
@@ -90,6 +104,20 @@
    "ribLengthM": 13.99,
    "rows": 4,
    "cols": 7,
+   "closed": false
+  },
+  "porchroof-satou-w": {
+   "ribs": 2,
+   "ribLengthM": 1.8,
+   "rows": 2,
+   "cols": 2,
+   "closed": false
+  },
+  "porchroof-satou-e": {
+   "ribs": 2,
+   "ribLengthM": 1.8,
+   "rows": 2,
+   "cols": 2,
    "closed": false
   }
  },
@@ -251,6 +279,11 @@
    0.1559264637078274,
    0.1589608350608804,
    0.1651321945016676
+  ],
+  "ht-tile-tex": [
+   1,
+   1,
+   1
   ],
   "ht-ridge-dark": [
    0.045,

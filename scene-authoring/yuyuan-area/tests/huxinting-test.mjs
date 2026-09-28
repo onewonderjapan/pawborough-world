@@ -309,14 +309,70 @@ ok('GLB 节点名全部为 huxin-ting__*（无游离散件节点）', prefixOk, 
   const errs = rep.issues?.errors || 0, warns = rep.issues?.warnings || 0;
   ok(`glTF validator 0 错（warnings=${warns}）`, errs === 0, `errors=${errs}`);
 }
-// 灰瓦按灰做（0010 lead QC：推理图偏蓝不照抄）
+// 灰瓦按灰做（0010 lead QC：推理图偏蓝不照抄）。M1（wave13-matdetail）后瓦色承载：瓦面 = ht-tile-tex
+// 贴图（factor 白）、瓦垄 = ht-tile-grey × COLOR_0 顶点色（factor 白缺省），材质 baseColorFactor 不再写色值；
+// 中性灰判据移到 ①瓦垄 COLOR_0 均值 ②瓦纹贴图 PNG 亮像素均值（同判 |r-g|、|g-b| ≤ 0.03）。
 {
   const mat = gltf.materials.find((m) => m.name === 'ht-tile-grey');
   ok('灰瓦材质存在（ht-tile-grey）', !!mat);
-  if (mat) {
-    const c = mat.pbrMetallicRoughness.baseColorFactor;
-    ok(`瓦色为中性灰（rgb ${c.slice(0, 3).map((v) => v.toFixed(2)).join(',')}，|r-g|、|g-b| ≤ 0.03）`,
-      Math.abs(c[0] - c[1]) <= 0.03 && Math.abs(c[1] - c[2]) <= 0.03);
+  // COLOR_0 走现成 accessor()（导出实测 FLOAT VEC3 / 或 BYTE_COLOR unorm），均值判中性灰
+  const color0Means = [];
+  for (const n of gltf.nodes) {
+    if (n.mesh === undefined) continue;
+    const mesh = gltf.meshes[n.mesh];
+    if (!/-wa$/.test(mesh.name || '') || /-bofeng-/.test(mesh.name || '')) continue;
+    for (const prim of mesh.primitives) {
+      const ai = prim.attributes.COLOR_0;
+      if (ai === undefined) continue;
+      const a = gltf.accessors[ai];
+      const vals = accessor(ai);
+      const k = a.normalized ? 1 / 255 : 1;
+      let r = 0, g = 0, b = 0;
+      for (const c of vals) { r += c[0] * k; g += c[1] * k; b += c[2] * k; }
+      color0Means.push([r / vals.length, g / vals.length, b / vals.length]);
+    }
+  }
+  const cm = color0Means.reduce((s, c) => [s[0] + c[0] / color0Means.length, s[1] + c[1] / color0Means.length, s[2] + c[2] / color0Means.length], [0, 0, 0]);
+  ok(`瓦垄 COLOR_0 均值为中性灰（rgb ${cm.map((v) => v.toFixed(2)).join(',')}，|r-g|、|g-b| ≤ 0.03，网格 ${color0Means.length}）`,
+    color0Means.length > 0 && Math.abs(cm[0] - cm[1]) <= 0.03 && Math.abs(cm[1] - cm[2]) <= 0.03);
+  // 瓦纹贴图均值（ht-tile-tex baseColorTexture，128×128 RGBA）同为中性灰
+  const texMat = gltf.materials.find((m) => m.name === 'ht-tile-tex');
+  ok('瓦纹贴图材质存在（ht-tile-tex）', !!texMat);
+  if (texMat) {
+    const img = gltf.images[gltf.textures[texMat.pbrMetallicRoughness.baseColorTexture.index].source];
+    const bv = gltf.bufferViews[img.bufferView];
+    const ib = bin.subarray(bv.byteOffset || 0, (bv.byteOffset || 0) + bv.byteLength);
+    const dec = await import('node:zlib').then((z) => z.inflateSync);
+    // PNG 手工解码最小 IHDR/IDAT（truecolor RGB 8bit，无隔行）——导出器写的是无调色板 RGBA/RGB
+    let off = 8, w = 0, h = 0, depth = 0, ctype = 0; const idat = [];
+    while (off < ib.length) {
+      const len = ib.readUInt32BE(off), type = ib.toString('ascii', off + 4, off + 8);
+      if (type === 'IHDR') { w = ib.readUInt32BE(off + 8); h = ib.readUInt32BE(off + 12); depth = ib[off + 16]; ctype = ib[off + 17]; }
+      if (type === 'IDAT') idat.push(ib.subarray(off + 8, off + 8 + len));
+      off += 12 + len;
+    }
+    const raw = Buffer.concat(idat);
+    const bpp = ctype === 6 ? 4 : 3;
+    const rowLen = w * bpp;
+    const up = Buffer.alloc(h * rowLen);
+    let rp = 0;
+    for (let y = 0; y < h; y++) {
+      const f = raw[rp++]; const row = raw.subarray(rp, rp + rowLen); rp += rowLen;
+      const prev = y ? up.subarray((y - 1) * rowLen, y * rowLen) : Buffer.alloc(rowLen);
+      const cur = up.subarray(y * rowLen, (y + 1) * rowLen);
+      for (let x = 0; x < rowLen; x++) {
+        const a2 = x >= bpp ? cur[x - bpp] : 0, b2 = prev[x], c2 = x >= bpp ? prev[x - bpp] : 0;
+        let v = row[x];
+        if (f === 1) v += a2; else if (f === 2) v += b2; else if (f === 3) v += (a2 + b2) >> 1;
+        else if (f === 4) { const pp = a2 + b2 - c2, pa = Math.abs(pp - a2), pb = Math.abs(pp - b2), pc = Math.abs(pp - c2); v += (pa <= pb && pa <= pc) ? a2 : (pb <= pc ? b2 : c2); }
+        cur[x] = v & 255;
+      }
+    }
+    let r = 0, g = 0, b = 0, n2 = 0;
+    for (let i = 0; i < up.length; i += bpp) { r += up[i]; g += up[i + 1]; b += up[i + 2]; n2++; }
+    const tm = [r / n2 / 255, g / n2 / 255, b / n2 / 255];
+    ok(`瓦纹贴图 ${w}×${h} 均值为中性灰（rgb ${tm.map((v) => v.toFixed(2)).join(',')}，|r-g|、|g-b| ≤ 0.03）`,
+      w === 128 && Math.abs(tm[0] - tm[1]) <= 0.03 && Math.abs(tm[1] - tm[2]) <= 0.03);
   }
 }
 
@@ -450,11 +506,14 @@ const isWood = (m) => !m.pbrMetallicRoughness.baseColorTexture &&
   const tileRe = /-(lower|upper-[sn]|tile|cone|satou-[we])$/;
   const tileParts = allParts.filter((n) => tileRe.test(n));
   const tileMats = [...new Set(tileParts.flatMap(matsOfPart))];
+  // M1：瓦面统一 ht-tile-tex 贴图材质（factor 白，中性灰由「瓦纹贴图均值为中性灰」断言；瓦垄顶点色另断言）
   const grey = tileMats.length === 1 && (() => {
-    const c = tileMats[0].pbrMetallicRoughness.baseColorFactor;
-    return Math.abs(c[0] - c[1]) <= 0.03 && Math.abs(c[1] - c[2]) <= 0.03 && !tileMats[0].pbrMetallicRoughness.baseColorTexture;
+    const m = tileMats[0];
+    if (!m.pbrMetallicRoughness.baseColorTexture) return false;
+    const c = m.pbrMetallicRoughness.baseColorFactor ?? [1, 1, 1, 1];
+    return Math.abs(c[0] - c[1]) <= 0.03 && Math.abs(c[1] - c[2]) <= 0.03;
   })();
-  ok(`瓦面 ${tileParts.length} 件全部用同一中性灰瓦材质（${tileMats.map((m) => m.name).join(',')}）`, tileParts.length >= 8 && grey);
+  ok(`瓦面 ${tileParts.length} 件全部用同一瓦纹贴图材质（${tileMats.map((m) => m.name).join(',')}）`, tileParts.length >= 8 && grey);
 }
 
 // ---------------- 7b) 拉伸体封顶（R1 施工中发现：round-0 prism() 两个端面都建在底环上，顶面缺失） ----------------
@@ -495,7 +554,9 @@ const isWood = (m) => !m.pbrMetallicRoughness.baseColorTexture &&
       img.name === 'lattice-core-alpha' && img.mimeType === 'image/png' && w === sw && h === sh);
     const sha = (b) => crypto.createHash('sha256').update(b).digest('hex');
     ok('格心贴图字节 = modules/hall-kit/textures/lattice-core-alpha.png（复用，不另画）', sha(ib) === sha(srcBuf));
-    ok(`GLB 只含这 1 张贴图（实测 ${(gltf.images || []).length}）`, (gltf.images || []).length === 1);
+    // M1：格心贴图 + 瓦纹贴图共 2 张（瓦纹贴图断言在瓦色段）
+    ok(`GLB 只含格心 + 瓦纹这 2 张贴图（实测 ${(gltf.images || []).length}）`,
+      (gltf.images || []).length === 2 && (gltf.images || []).some((im) => im.name === 'lattice-core-alpha') && (gltf.images || []).some((im) => im.name === 'ht-tile-tex'));
     // 格心面：有 UV，1 UV = 1 m（hall-kit cellM 0.125 = 8 格 / 米）
     let area = 0, worst = 0, noUv = 0, prims = 0;
     for (const n of gltf.nodes) {
@@ -622,9 +683,11 @@ function components(p) {
   return [...groups.values()];
 }
 {
-  const tileMat = gltf.materials.find((m) => m.name === 'ht-tile-grey');
-  const surfaces = allParts.filter((n) => /-(lower|upper-[sn]|cone|tile)$/.test(n) && matsOfPart(n).every((m) => m === tileMat));
-  ok(`瓦面件 ${surfaces.length} 块（主楼下檐 + 上段两坡、抱厦下檐 + 上段两坡、塔亭攒尖 + 两道腰檐 = 9）`, surfaces.length === 9, surfaces.join(','));
+  // M1：瓦面材质 = ht-tile-tex（瓦纹贴图；瓦垄 -wa 仍为 ht-tile-grey × 顶点色），撒头 satou 纳入瓦面件口径
+  const tileMat = gltf.materials.find((m) => m.name === 'ht-tile-tex');
+  const tileGreyMat = gltf.materials.find((m) => m.name === 'ht-tile-grey');
+  const surfaces = allParts.filter((n) => /-(lower|upper-[sn]|cone|tile|satou-[we])$/.test(n) && matsOfPart(n).every((m) => m === tileMat));
+  ok(`瓦面件 ${surfaces.length} 块（主楼下檐 + 上段两坡、抱厦下檐 + 上段两坡、塔亭攒尖 + 两道腰檐 = 9 + 撒头 4 = 13）`, surfaces.length === 13, surfaces.join(','));
   const heights = [];
   let floatMax = 0;
   const wrongMat = [];
@@ -634,7 +697,7 @@ function components(p) {
     const tag = s.replace('huxin-ting__', '');
     const rp = parts.get(`${s}-wa`);
     if (!rp) { ok(`${tag} 有瓦垄件 -wa（瓦面 ${area.toFixed(1)} m²）`, false, '无 -wa 件：瓦面是平的'); continue; }
-    if (!matsOfPart(`${s}-wa`).every((m) => m === tileMat)) wrongMat.push(tag);
+    if (!matsOfPart(`${s}-wa`).every((m) => m === tileGreyMat)) wrongMat.push(tag);
     const comps = components(rp);
     const STris = S.tris.map(([a, b, c]) => [S.verts[a], S.verts[b], S.verts[c]]);
     let len = 0;

@@ -102,6 +102,7 @@ TILE_SRGB = '6e6f71'     # 灰瓦（0010 lead QC：湖心亭必须灰瓦，推�
 PALETTE = {
     # Base Color 输入为线性值；从 sRGB 十六进制换算（round-0 手填的线性近似值与此相差 < 0.001）
     'ht-tile-grey':     dict(rgb=srgb(TILE_SRGB), rough=0.85),
+    'ht-tile-tex':      dict(rgb=(1, 1, 1), rough=0.85),           # M1：瓦面贴图材质（factor 白，颜色全在贴图里，基色同 ht-tile-grey）
     'ht-ridge-dark':    dict(rgb=(0.045, 0.045, 0.050), rough=0.90),
     'ht-wood-red':      dict(rgb=srgb(WOOD_SRGB), rough=0.72),
     'ht-plaster-white': dict(rgb=(0.800, 0.780, 0.740), rough=0.90),
@@ -129,6 +130,54 @@ def mat_new(name):
     return m
 
 MATS_ALL = {k: mat_new(k) for k in PALETTE}
+
+# M1：垄条顶点色材质。Base Color 直连 Color Attribute('Col')，顶点色写绝对色（瓦灰 × 明暗系数）——
+# glTF 导出 COLOR_0 × factor(白)，viewer 与 Cycles 同语义。若材质节点树不含 Color Attribute 节点，
+# 导出器会把同一层颜色双写成 COLOR_0+COLOR_1（5121/5123 两种位深），炸 cm validator。
+_nda = MATS_ALL['ht-tile-grey'].node_tree.nodes.new('ShaderNodeAttribute')
+_nda.attribute_name = 'Col'
+MATS_ALL['ht-tile-grey'].node_tree.links.new(
+    _nda.outputs['Color'], MATS_ALL['ht-tile-grey'].node_tree.nodes.get('Principled BSDF').inputs['Base Color'])
+
+# M1 瓦纹贴图（wave13-matdetail）：航拍距离下 0.07 m 高的几何瓦垄只占 1–2 px，纯色材质读作平滑灰板
+# （wave13-nightqa 报告第 5 条）。程序化生成灰瓦条纹贴图（自有生成，不下载外部图）：
+#   u 方向 1 周期 = 1 垄距 0.33 m（D['wa']['pitch']）：0–0.42 垄间瓦面（基色），0.42–0.70 渐暗入沟，
+#   0.70–0.82 沟底（基色 ×0.74，瓦沟阴影），0.82–1.00 渐亮回瓦面；v 方向 8 个周期各带 ±4% 亮度微扰 +
+#   全图 ±2% 细粒噪声，打破机械条纹感。基色 = TILE_SRGB 灰瓦（同 ht-tile-grey）。
+# UV 由 tile_ridges 按「檐口弧长 / 垄距」写入（几何独立口径），贴图条纹与几何瓦垄同 pitch；
+# 两者相位不强制对齐（逐列垄数取整导致相位滑动 ≤ 半周期，航拍 1–2 px 不可辨，写明权衡）。
+def tile_texture():
+    W = H = 128
+    base = srgb(TILE_SRGB)
+    rng = math.sin
+    px = []
+    for y in range(H):
+        v = y / H
+        band = 1.0 + 0.04 * rng(v * 8 * 6.283)          # v 方向逐带微扰
+        for x in range(W):
+            u = x / W
+            if u < 0.42:
+                f = 1.0
+            elif u < 0.70:
+                f = 1.0 - 0.26 * (u - 0.42) / 0.28       # 渐暗入沟
+            elif u < 0.82:
+                f = 0.74                                  # 沟底
+            else:
+                f = 0.74 + 0.26 * (u - 0.82) / 0.18       # 渐亮回瓦面
+            g = 1.0 + 0.02 * rng(x * 12.9898 + y * 78.233)
+            k = band * f * g
+            px.append((min(1, base[0] * k), min(1, base[1] * k), min(1, base[2] * k), 1))
+    img = bpy.data.images.new('ht-tile-tex', W, H)
+    img.pixels = [c for p in px for c in p]
+    img.pack()
+    m = MATS_ALL['ht-tile-tex']
+    t = m.node_tree.nodes.new('ShaderNodeTexImage')
+    t.image = img
+    t.extension = 'REPEAT'
+    m.node_tree.links.new(t.outputs['Color'], m.node_tree.nodes.get('Principled BSDF').inputs['Base Color'])
+    return img
+
+TILE_TEX_IMG = tile_texture()
 
 # R1 格心：复用 hall-kit 的格心 alpha 贴图（同名同尺寸 160×160，assemble / export-zones 按「名称+尺寸」去重合并），
 # 不另画。材质做法同 hall-kit hk-lattice-core：贴图 Color->Base Color、Alpha->Alpha，导出后改 MASK / cutoff 0.5。
@@ -162,7 +211,7 @@ def world(u, v, h):
     """本地 (u,v,h) -> 地图 (x,z) -> Blender (x,-z,h)。"""
     return (CX + u * UX + v * VX, -(CZ + u * UZ + v * VZ), h)
 
-def mesh_obj(name, verts, faces, mat, part):
+def mesh_obj(name, verts, faces, mat, part, colors=None):
     for pre in ('huxin-ting__', 'ht__'):
         while name.startswith(pre):
             name = name[len(pre):]
@@ -171,6 +220,12 @@ def mesh_obj(name, verts, faces, mat, part):
     me.from_pydata(verts, [], faces)
     me.validate(verbose=False)
     me.update()
+    if colors is not None and len(colors) == len(verts):
+        # M1：垄条顶点色（垄脊亮 / 垄脚暗）。CORNER 域逐 loop 写（POINT 域会被导出器多写一份 COLOR_1，炸 cm validator）。
+        ca = me.color_attributes.new(name='Col', type='BYTE_COLOR', domain='CORNER')
+        for li in range(len(me.loops)):
+            c = colors[me.loops[li].vertex_index]
+            ca.data[li].color = (*c, 1)
     ob = bpy.data.objects.new(name, me)
     ob.data.materials.append(MATS_ALL[mat])
     SC.collection.objects.link(ob)
@@ -188,19 +243,19 @@ def mesh_obj_uv(name, verts, faces, uvs, mat, part):
             uv.data[li].uv = uvs[me.loops[li].vertex_index]
     return ob
 
-def add_local(name, items, faces, material, part):
+def add_local(name, items, faces, material, part, colors=None):
     """eave_kit 注入口：items=[((u,v,h),(uu,vv))]，局部系换算到 Blender 世界坐标。"""
     verts = [world(it[0][0], it[0][1], it[0][2]) for it in items]
-    mesh_obj('huxin-ting__' + name, verts, [list(f) for f in faces], MATS[material], part)
+    return mesh_obj('huxin-ting__' + name, verts, [list(f) for f in faces], MATS[material], part, colors)
 
 ROOF_SURF = []                                 # R2：eave_kit 出的瓦面网格（局部系），屋面建完后逐块铺瓦垄
 
 def add_local_rec(name, items, faces, material, part):
-    # eave_kit 注入口 + 记录瓦面网格（R2 瓦垄用）。朝向由 eave_kit 源头保证（wave6-eavekit E1：瓦面朝上、檐底朝下、
-    # 脊 / 戗脊朝体外）；本模块局部 -> Blender 行列式 +1，原样传递，不再逐面翻面（R2-1b 的局部校正已撤）。
-    add_local(name, items, faces, material, part)
-    if material == 'roof' and re.search(r'-(lower|upper-[sn]|cone|tile)$', name):
-        ROOF_SURF.append((name, [tuple(it[0]) for it in items], [tuple(f) for f in faces], part))
+    # eave_kit 注入口 + 记录瓦面网格（R2 瓦垄用；M1 另存网格对象以写瓦纹 UV、换贴图材质）。
+    # 朝向由 eave_kit 源头保证（wave6-eavekit E1：瓦面朝上、檐底朝下、脊 / 戗脊朝体外）；本模块局部 -> Blender 行列式 +1，原样传递，不再逐面翻面（R2-1b 的局部校正已撤）。
+    ob = add_local(name, items, faces, material, part)
+    if material == 'roof' and re.search(r'-(lower|upper-[sn]|cone|tile|satou-[we])$', name):
+        ROOF_SURF.append((name, [tuple(it[0]) for it in items], [tuple(f) for f in faces], part, ob))
 
 eave_kit.init(add_local_rec)
 
@@ -224,14 +279,24 @@ def _v3norm(a):
 
 WA_STATS = {}
 
-def tile_ridges(name, pts, faces, part):
+def tile_ridges(name, pts, faces, part, ob=None):
     W = D['wa']
+    is_satou = '-satou-' in name
+    satou_order = None
+    if is_satou:
+        # M1：撒头（歇山两端「两坡交接三角面」）eave_kit 输出为环形 4 点（外缘 2 + 内缘 2），不是行优先网格；
+        # 重排成 2 行 × 2 列（行 = 坡向，外缘 -> 山花脚），垄沿坡向铺、沿檐均分。网格顶点顺序不变，
+        # 记录 satou_order（重排后位置 -> 原顶点索引）供 UV 按原索引写回。
+        outer = sorted(range(0, 2), key=lambda i: (pts[i][1], pts[i][0]))
+        inner = sorted(range(2, 4), key=lambda i: (pts[i][1], pts[i][0]))
+        satou_order = outer + inner
+        pts = [pts[i] for i in satou_order]
     S = max(faces[0]) - 1
     R = len(pts) // S
-    closed = not re.search(r'-upper-[sn]$', name)
+    closed = not (re.search(r'-upper-[sn]$', name) or is_satou)
     eave_row = R - 1 if name.endswith('-tile') else 0          # 腰檐：行 0 = 墙根，末行 = 檐口
     P = [[pts[r * S + c] for c in range(S)] for r in range(R)]
-    verts, fcs, nrib, length = [], [], 0, 0.0
+    verts, fcs, cols, nrib, length = [], [], [], 0, 0.0
 
     def tri(a, b, c, want):
         n = _v3cross(_v3sub(verts[b], verts[a]), _v3sub(verts[c], verts[a]))
@@ -270,8 +335,12 @@ def tile_ridges(name, pts, faces, part):
             if len(rows) < 2:
                 continue
             base = len(verts)
+            tb = PALETTE['ht-tile-grey']['rgb']
             for la, top, lb, _nn, _ts in rows:
                 verts.extend((la, top, lb))
+                # M1 顶点色（绝对色 = 瓦灰 × 明暗）：向光斜面垄脊亮、背光斜面垄脚暗（近景立体；材质 Base Color
+                # 直连 Color Attribute，glTF COLOR_0 × factor(白)，viewer / Cycles 同语义）
+                cols.extend((tuple(tb[i] * 1.08 for i in range(3)), tuple(tb[i] for i in range(3)), tuple(tb[i] * 0.80 for i in range(3))))
             for i in range(len(rows) - 1):
                 i0, i1 = base + 3 * i, base + 3 * (i + 1)
                 la, top, lb, nn, _ = rows[i]
@@ -286,8 +355,36 @@ def tile_ridges(name, pts, faces, part):
             tri(e1, e1 + 1, e1 + 2, rows[-1][4])
             nrib += 1
     if fcs:
-        add_local(name + '-wa', [(v, (0.0, 0.0)) for v in verts], fcs, 'roof', part)
+        add_local(name + '-wa', [(v, (0.0, 0.0)) for v in verts], fcs, 'roof', part, colors=cols)
+    # M1：瓦面换贴图材质 + 写瓦纹 UV（u = 檐口行弧长 / 垄距，v = 坡向弧长 / 垄距；satou 按重排后的网格口径）。
+    if ob is not None:
+        ob.data.materials[0] = MATS_ALL['ht-tile-tex']
+        uvl = ob.data.uv_layers.new(name='UVMap')
+        eave = P[eave_row]
+        cum = [0.0]
+        for c in range(S - 1):
+            cum.append(cum[-1] + _v3len(_v3sub(eave[(c + 1) % S], eave[c])))
+        if closed:
+            cum.append(cum[0] + _v3len(_v3sub(eave[0], eave[S - 1])))   # 环形合拢段（列 S-1 的右边界）
+        uv_of = {}
+        if is_satou:
+            v_lo = min(p[1] for p in pts)
+            u_ref = min(p[0] for p in pts)
+            for j, p in enumerate(pts):
+                uv_of[satou_order[j]] = ((p[1] - v_lo) / W['pitch'], abs(p[0] - u_ref) / W['pitch'])
+        else:
+            for r in range(R):
+                for c in range(S):
+                    v_span = 0.0
+                    rr0, rr1 = (eave_row, r) if r <= eave_row else (r, eave_row)
+                    for rr in range(rr0, rr1):
+                        v_span += _v3len(_v3sub(P[rr][c], P[rr + 1][c]))
+                    uv_of[r * S + c] = (cum[c] / W['pitch'], v_span / W['pitch'])
+        for poly in ob.data.polygons:
+            for li in poly.loop_indices:
+                uvl.data[li].uv = uv_of[ob.data.loops[li].vertex_index]
     WA_STATS[name] = dict(ribs=nrib, ribLengthM=round(length, 2), rows=R, cols=S, closed=closed)
+
 
 def prism(name, poly_uv, z0, z1, mat, part):
     """CCW 多边形拉伸；侧面 [a0,b0,b1,a1] 外法线 = 边右向（CCW 时朝外）。"""
@@ -702,9 +799,9 @@ eave_kit.xieshan_roof('porchroof', (-PU, PU, V0 - 0.25, V0 + PD), po['zEave'],
                            drop=po['drop'], tileH=po['tileH'], boardH=po['boardH'], curve=1.6, rings=po['rings'],
                            ridgeEndLift=po['ridgeEndLift'], ornamentScale=po['ornamentScale']), 'porch')
 
-# R2 瓦垄：全部 eave_kit 屋面建完后逐块铺
-for _nm, _pts, _fcs, _part in ROOF_SURF:
-    tile_ridges(_nm, _pts, _fcs, _part)
+# R2 瓦垄：全部 eave_kit 屋面建完后逐块铺（M1：同函数内给瓦面写瓦纹 UV / 换贴图材质 / 垄条顶点色）
+for _nm, _pts, _fcs, _part, _ob in ROOF_SURF:
+    tile_ridges(_nm, _pts, _fcs, _part, _ob)
 
 flush_windows()
 
