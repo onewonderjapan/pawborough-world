@@ -29,9 +29,12 @@ PRESETS = ('day', 'dusk', 'night')
 
 
 def export_command(shot_ids, light, out_root):
+    # R2 审查必修1：Blender 与脚本参数之间只能有一个 --（第二个会终止 argparse 选项解析，
+    # 渲染前即报 the following arguments are required: --out）；解析级检查见 tests/pv-export-args-test.py。
+    # R2 可选：--out 按灯光分子目录（control-24fps-<light>），三组的 beauty-meta.json 各留一份，不再相互覆盖。
     return ('~/.local/bin/blender -b -t 4 --python-exit-code 1 --python scripts/render-control-passes.py -- \\\n'
-            '    --scene out-zone/scene-areas.glb --cameras out-zone/pv-cameras.json -- \\\n'
-            '    --out %s --shots %s --beauty %s --preset %s' % (out_root + '/control-24fps', ','.join(shot_ids), BEAUTY_ENGINE, light))
+            '    --scene out-zone/scene-areas.glb --cameras out-zone/pv-cameras.json \\\n'
+            '    --out %s/control-24fps-%s --shots %s --beauty %s --preset %s' % (out_root, light, ','.join(shot_ids), BEAUTY_ENGINE, light))
 
 
 def light_groups(shots):
@@ -114,7 +117,7 @@ def main():
 
     # ---------------- STORYBOARD.md ----------------
     L = []
-    L.append('# Pawborough PV 分镜（wave11-pvboard，2026-09-28 R1）\n')
+    L.append('# Pawborough PV 分镜（wave11-pvboard，2026-09-28 R2）\n')
     L.append('**结论**：%d 个镜头、总长 %.0f s（24 fps，%d 帧）；新镜头 %d 个、复用既有控制层镜头 %d 个（全部按 PV 重设时长）。'
              '灯光只打标签：day %.0f s / dusk %.0f s / night %.0f s，预设由 lighting/presets.json（wave11-lighting，已合入 main）提供。动态样片：`%s/animatic.mp4`（%d fps、%d×%d、%.1f s、无音轨）。\n'
              % (len(shots), total, sum(s['frames'] for s in shots), n_new, len(shots) - n_new, lights.get('day', 0), lights.get('dusk', 0),
@@ -181,7 +184,7 @@ def main():
     # ---------------- AI-HANDOFF.md ----------------
     groups = light_groups(shots)
     H = []
-    H.append('# Pawborough PV — AI 视频生成交接包（wave11-pvboard，2026-09-28 R1）\n')
+    H.append('# Pawborough PV — AI 视频生成交接包（wave11-pvboard，2026-09-28 R2）\n')
     H.append('**用途**：机主定的视频路线是「AI 视频生成，3D 场景只出控制层与参考帧」。本文件给出每个镜头的控制层导出命令、需要的通道、'
              '中英提示词、负面词、时长与运镜描述，以及控制层与生成结果的对位方法。灯光已合入 main（ce0bae94）：'
              '第 1 节命令按 day / dusk / night 分组，显式带 `--beauty cycles --preset`，同一条命令同时出控制层与带灯光参考帧'
@@ -202,15 +205,17 @@ def main():
         H.append(cmd + '\n')
     H.append('```\n')
     H.append('- **自检**：生成器对本文全部导出命令（第 1 节分组命令 + 第 5 节逐镜命令）断言「`--preset` = 该镜 pv-shots.json 的 `light`、'
-             '`--beauty` ∈ cycles|eevee、`--shots` 与分组一致」，不一致即报错退出、不写文件。')
+             '`--beauty` ∈ cycles|eevee、`--shots` 与分组一致」，不一致即报错退出、不写文件；'
+             '另有解析级检查 `tests/pv-export-args-test.py`（挂 npm test）：按 Blender 规则取第一个 `--` 之后的参数、'
+             '交给渲染器自己的 argparse 解析，19 条命令必须全部解析成功且预设 / 分组一致（Blender 与脚本参数之间只能有一个 `--`）。')
     H.append('- 规模：%d 帧 × 4 通道。控制层三通道约 1.2–1.3 s/帧（Workbench 批量实测）；beauty 按 CONTROL-PASSES 实测 Cycles GPU 8–13.4 s/帧'
              '（day/dusk/night），全量 %d 帧合计估算 %.0f–%.0f 小时（**按实测外推，整批未实测**）；'
              '本包样片只出了 Workbench 首 / 中 / 末三帧，平均 %.1f s/帧（三帧批次，BVH 复用摊不开，不代表批量速度）。'
              % (sum(s['frames'] for s in shots), sum(s['frames'] for s in shots),
                 sum(s['frames'] for s in shots) * (1.2 + 8) / 3600, sum(s['frames'] for s in shots) * (1.35 + 13.4) / 3600,
                 notes['previewSecPerFrame']))
-    H.append('- 输出（`%s/control-24fps/`）：`segmentation-lut.json`（layout id ↔ RGB 双向映射）、`timings.json`（每帧耗时）、'
-             '`beauty-meta.json`（非默认引擎时写：引擎 / 设备 / 采样 / 预设 / 点光数 / 自发光材质数）；每镜 `<id>/{beauty,depth,normal,segmentation}/frame-###.png` + `<id>/cameras/frame-###.json`。' % pv_root)
+    H.append('- 输出（`%s/control-24fps-<light>/`，按灯光分 day / dusk / night 三个子目录）：`segmentation-lut.json`（layout id ↔ RGB 双向映射）、`timings.json`（每帧耗时）、'
+             '`beauty-meta.json`（非默认引擎时写：引擎 / 设备 / 采样 / 预设 / 点光数 / 自发光材质数；三组各留一份，后跑的组不再覆盖先跑的组）；每镜 `<id>/{beauty,depth,normal,segmentation}/frame-###.png` + `<id>/cameras/frame-###.json`。' % pv_root)
     H.append('- 编码与坐标约定不变（见 `scene-authoring/yuyuan-area/docs/CONTROL-PASSES.md`）：1280×720；depth 16-bit 视轴 z，near 0.3 / far 300 m；'
              'normal 为 glTF Y-up 世界系 (n+1)/2；segmentation 用 LUT 逐字节色（±2 反查）；每帧 cameras json 带 K、worldToCameraOpenGL / OpenCV。')
     H.append('- 航拍镜头远端超过 300 m 的几何在 depth / normal 通道被裁掉（深度 = far），beauty 同样裁剪；生成时远景按「薄雾天际」处理，不要让模型补出新建筑。\n')
@@ -241,11 +246,11 @@ def main():
         H.append('- 运镜：%s' % move_desc(s))
         H.append('- 控制层导出（单独补渲该镜；与第 1 节分组命令同参数，预设 = 该镜 light）：\n```bash\n%s\n```' % cmd)
         H.append('- 输出路径与有效帧范围（%s）：' % rng)
-        H.append('  - 参考帧 beauty：`%s/control-24fps/%s/beauty/frame-000.png … frame-%03d.png`（%s 预设布光）' % (pv_root, s['id'], n - 1, s['light']))
-        H.append('  - 深度 depth：`%s/control-24fps/%s/depth/frame-000.png … frame-%03d.png`（16-bit，同帧范围）' % (pv_root, s['id'], n - 1))
-        H.append('  - 法线 normal：`%s/control-24fps/%s/normal/frame-000.png … frame-%03d.png`（含 depth；同帧范围）' % (pv_root, s['id'], n - 1))
-        H.append('  - 分割 segmentation：`%s/control-24fps/%s/segmentation/frame-000.png … frame-%03d.png`（同帧范围）' % (pv_root, s['id'], n - 1))
-        H.append('  - 相机 cameras：`%s/control-24fps/%s/cameras/frame-000.json … frame-%03d.json`（每帧 K / worldToCamera，与同号帧一一对应）' % (pv_root, s['id'], n - 1))
+        H.append('  - 参考帧 beauty：`%s/control-24fps-%s/%s/beauty/frame-000.png … frame-%03d.png`（%s 预设布光）' % (pv_root, s['light'], s['id'], n - 1, s['light']))
+        H.append('  - 深度 depth：`%s/control-24fps-%s/%s/depth/frame-000.png … frame-%03d.png`（16-bit，同帧范围）' % (pv_root, s['light'], s['id'], n - 1))
+        H.append('  - 法线 normal：`%s/control-24fps-%s/%s/normal/frame-000.png … frame-%03d.png`（含 depth；同帧范围）' % (pv_root, s['light'], s['id'], n - 1))
+        H.append('  - 分割 segmentation：`%s/control-24fps-%s/%s/segmentation/frame-000.png … frame-%03d.png`（同帧范围）' % (pv_root, s['light'], s['id'], n - 1))
+        H.append('  - 相机 cameras：`%s/control-24fps-%s/%s/cameras/frame-000.json … frame-%03d.json`（每帧 K / worldToCamera，与同号帧一一对应）' % (pv_root, s['light'], s['id'], n - 1))
         H.append('- 参考帧：首帧 `beauty/frame-000.png`，末帧 `beauty/frame-%03d.png`（%s 预设；与控制层同一命令同批产出，天然对齐）' % (n - 1, s['light']))
         H.append('- 提示词（中）：%s' % s['prompt']['zh'])
         H.append('- Prompt (EN): %s' % s['prompt']['en'])
