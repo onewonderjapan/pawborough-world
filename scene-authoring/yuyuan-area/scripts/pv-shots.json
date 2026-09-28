@@ -1,0 +1,726 @@
+{
+ "version": 1,
+ "comment": "wave11-pvboard PV 分镜（正本）。scripts/build-pv-shots.py 读本文件 → $OUT_DIR/pv-cameras.json（24 fps 逐帧相机，render-control-passes.py 同格式）。新镜头 eye/look 写法与 control-shots-spec.json 相同（scripts/control_shot_spec.py 求值，全部相对冻结源对象，无绝对坐标）；复用镜头只写 reuse.shot（control-shots.json 里的 id）+ reuse.segment（原镜头归一化时间段）+ 新时长。light 只是标签，预设由 wave11-lighting 提供。断言：tests/pv-shots-test.mjs。",
+ "fps": 24,
+ "lightTags": [
+  "day",
+  "dusk",
+  "night"
+ ],
+ "styleNote": {
+  "zh": "形制词一律写成外观描述：「1990 年代改建后的商城形象」「呈现 1990 年代改建后外观的仿古楼」，配灰瓦飞檐、深色木构、白墙、江南园林；正向补「维护良好、不刻意做旧」；不写「重建」等史实表述，不写任何可读文字或招牌内容，不写建造年代与史实。",
+  "en": "Style words always describe the look, not history: a bazaar presenting a 1990s-renovated look / Yuyuan bazaar buildings with a 1990s-renovated appearance, grey tile roofs with upturned eaves, dark timber, white plaster walls, Jiangnan garden; always add well-kept, not artificially aged; never say rebuilt or claim reconstruction history, no readable text or sign content, no dates or historical claims."
+ },
+ "negative": {
+  "zh": "可读文字，汉字，字母，招牌字样，匾额文字，标志，水印，字幕，人物，人群，人脸特写，汽车，现代玻璃幕墙高楼，结构扭曲，屋顶变形，建筑漂移，画面闪烁，参考帧之外新增建筑，鱼眼畸变，过饱和，老旧，风化，破败，锈迹",
+  "en": "readable text, Chinese characters, letters, sign lettering, plaque inscriptions, logos, watermark, subtitles, people, crowds, close-up faces, cars, modern glass towers, warped geometry, deformed roofs, drifting buildings, flicker, extra buildings not in the reference, fisheye distortion, oversaturation, aged, weathered, ruined, rusty"
+ },
+ "shots": [
+  {
+   "id": "pv01-aerial-reveal",
+   "no": 1,
+   "status": "new",
+   "act": "揭示 / Reveal",
+   "title": "航拍揭示：城隍庙—商城—湖心亭全貌",
+   "intent": {
+    "zh": "高空斜俯视缓推并略降，从方浜中路上空越过商城楼群屋面：近处商城灰瓦屋面、右侧城隍庙院落、中景九曲桥池面、远处北侧豫园，一次交代全区格局",
+    "en": "High oblique drone push-in with a slight descent from above Fangbang Road over the bazaar roofs: bazaar roofs in the foreground, the temple courtyards on the right, the zigzag-bridge pond in the middle distance and the garden to the north, laying out the whole quarter in one move"
+   },
+   "targetId": "bld-389701812",
+   "camClass": "aerial",
+   "move": "aerial-push",
+   "genMode": "aerial",
+   "durationS": 6,
+   "light": "day",
+   "transitionIn": "fade-from-black 12f",
+   "transitionOut": "cut",
+   "minTargetFrac": 0.03,
+   "lensMm": 28,
+   "eye": {
+    "path": [
+     {
+      "ref": "huxin-ting",
+      "at": "centroid",
+      "local": [
+       -25.3,
+       173.9
+      ],
+      "y": 90
+     },
+     {
+      "ref": "huxin-ting",
+      "at": "centroid",
+      "local": [
+       -22.3,
+       148.9
+      ],
+      "y": 75
+     }
+    ],
+    "ease": "smooth"
+   },
+   "look": {
+    "path": [
+     {
+      "ref": "huxin-ting",
+      "at": "centroid",
+      "local": [
+       0.3,
+       23.9
+      ],
+      "y": 0
+     }
+    ]
+   },
+   "prompt": {
+    "zh": "电影感航拍，高空斜俯视缓慢前推并轻微下降。上海豫园一带 1990 年代改建后形象的仿古街区全景：近处呈现 1990 年代改建后外观的豫园商城仿古楼群层层灰瓦屋面，右侧城隍庙院落与石板庭院，中景池面上的曲折石桥与亭阁，远处江南园林的树木与亭台。灰瓦飞檐、深色木构、白墙。稳定平滑的无人机运镜，空气通透，远景淡入薄雾，真实比例。",
+    "en": "Cinematic drone shot, high oblique angle, slow push-in with a gentle descent. Wide view of a quarter presenting a 1990s-renovated look in Shanghai's Yuyuan area: layered grey tile roofs of Yuyuan bazaar buildings presenting a 1990s-renovated look in the foreground, temple courtyards with stone paving on the right, a zigzag stone bridge and a pavilion on the pond in the middle distance, Jiangnan garden trees and pavilions beyond. Grey tile roofs with upturned eaves, dark timber, white plaster walls. Smooth stabilized drone motion, clear air fading into light haze in the distance, true-to-scale architecture."
+   }
+  },
+  {
+   "id": "pv02-shanmen-arrive",
+   "no": 2,
+   "status": "reused",
+   "act": "方浜中路 / Fangbang Road",
+   "title": "街面行进到山门前（复用①末段）",
+   "intent": {
+    "zh": "眼高沿方浜中路走完庙前最后一段，镜头转向城隍庙山门，完成从街到庙的落地（只取①末段，避开前段街角店屋侧墙）",
+    "en": "Eye-level tracking move over the last stretch of Fangbang Road in front of the temple, turning to face the temple gate: the landing from street to temple (only the tail of shot 1, skipping the corner shop's blank side wall)"
+   },
+   "targetId": "temple-shanmen",
+   "reuse": {
+    "shot": "fangbang-westbound",
+    "segment": [
+     0.93,
+     1.0
+    ],
+    "ease": "linear"
+   },
+   "camClass": "ground",
+   "move": "dolly-turn",
+   "genMode": "travel",
+   "durationS": 4,
+   "light": "day",
+   "transitionIn": "cut",
+   "transitionOut": "dissolve 12f",
+   "reveal": true,
+   "prompt": {
+    "zh": "眼高平稳前移的移动摄影（机位匀速前行，非人物行走），沿 1990 年代改建后形象的仿古商业街走到街角，镜头缓缓转向城隍庙山门：重檐灰瓦、深色木构门楼、两侧白墙，建筑维护良好、不刻意做旧。平稳匀速的移动镜头，真实比例。",
+    "en": "Gimbal-stabilised eye-level tracking move (a steady camera dolly, not a person walking) along a shopping street presenting a 1990s-renovated look, to the corner, the camera slowly turning to face the temple gate: layered grey tile eaves, dark timber gatehouse, white walls on both sides, buildings well-kept and not artificially aged. Smooth, steady camera move, true-to-scale."
+   }
+  },
+  {
+   "id": "pv03-temple-axis",
+   "no": 3,
+   "status": "reused",
+   "act": "城隍庙中轴 / Temple axis",
+   "title": "山门→仪门中轴推进（复用⑦）",
+   "intent": {
+    "zh": "进山门后沿庙中轴眼高推进，仪门居中、屋脊上方留天",
+    "en": "Past the gate, eye-level push along the temple axis with the inner gate centred and sky above the ridge"
+   },
+   "targetId": "temple-yimen",
+   "reuse": {
+    "shot": "temple-axis-push",
+    "segment": [
+     0,
+     1
+    ],
+    "ease": "linear"
+   },
+   "camClass": "ground",
+   "move": "push",
+   "genMode": "fixed-push",
+   "durationS": 4,
+   "light": "day",
+   "transitionIn": "dissolve 12f",
+   "transitionOut": "cut",
+   "prompt": {
+    "zh": "眼高沿寺庙中轴线缓慢前推，前院石板铺地，正前方仪门居中：灰瓦歇山顶、深色木构、左右对称的白墙与廊。呈现 1990 年代改建后外观。庄重、安静、对称构图。",
+    "en": "Slow eye-level push along the temple's central axis over a stone-paved forecourt toward the centred inner gate: grey tile hip-and-gable roof, dark timber structure, symmetrical white walls and galleries. Presenting a 1990s-renovated look. Calm, solemn, symmetrical composition."
+   }
+  },
+  {
+   "id": "pv04-temple-aerial",
+   "no": 4,
+   "status": "new",
+   "act": "城隍庙中轴 / Temple axis",
+   "title": "城隍庙院落航拍环绕",
+   "intent": {
+    "zh": "40 m 高度在庙前上空沿中轴两侧环绕 30°，俯视山门—仪门—大殿—后殿的中轴层次",
+    "en": "40 m drone orbit of 30° across the axis in front of the temple, looking down the gate / inner gate / main hall / rear hall sequence"
+   },
+   "targetId": "temple-dadian",
+   "camClass": "aerial",
+   "move": "aerial-orbit",
+   "genMode": "aerial",
+   "durationS": 6,
+   "light": "day",
+   "transitionIn": "cut",
+   "transitionOut": "cut",
+   "lensMm": 28,
+   "eye": {
+    "orbit": {
+     "center": {
+      "ref": "temple-shanmen",
+      "at": "instance",
+      "local": [
+       0,
+       -30
+      ]
+     },
+     "r": 60,
+     "az": [
+      -15,
+      15
+     ],
+     "y": 40
+    },
+    "ease": "smooth"
+   },
+   "look": {
+    "path": [
+     {
+      "ref": "temple-shanmen",
+      "at": "instance",
+      "local": [
+       0,
+       -32
+      ],
+      "y": 2
+     }
+    ]
+   },
+   "prompt": {
+    "zh": "无人机 40 米高度缓慢环绕一组中轴对称的寺庙院落：山门、仪门、大殿、后殿依次排开，灰瓦屋面层层叠落，院内石板地与古树，四周白墙围合。呈现 1990 年代改建后外观。平滑环绕，真实比例。",
+    "en": "Drone orbiting slowly at about 40 m around an axially symmetrical temple compound: gate, inner gate, main hall and rear hall in sequence, layered grey tile roofs, stone-paved courtyards with old trees, enclosed by white walls. Presenting a 1990s-renovated look. Smooth orbit, true-to-scale."
+   },
+   "minTargetFrac": 0.03
+  },
+  {
+   "id": "pv05-dadian-rise",
+   "no": 5,
+   "status": "reused",
+   "act": "城隍庙中轴 / Temple axis",
+   "title": "大殿前仰视升高（复用⑧）",
+   "intent": {
+    "zh": "殿前院落中轴原地升高 1.6→6 m，全程仰视大殿",
+    "en": "On-axis crane-up from 1.6 to 6 m in the main-hall courtyard, looking up at the hall throughout"
+   },
+   "targetId": "temple-dadian",
+   "reuse": {
+    "shot": "temple-dadian-rise",
+    "segment": [
+     0,
+     1
+    ],
+    "ease": "linear"
+   },
+   "camClass": "crane",
+   "move": "crane-up",
+   "genMode": "fixed-push",
+   "durationS": 4,
+   "light": "day",
+   "transitionIn": "cut",
+   "transitionOut": "dissolve 12f",
+   "prompt": {
+    "zh": "镜头在殿前院落正中缓慢升高，仰视一座重檐大殿：宽大的灰瓦屋面、深色木柱与格扇门、檐下阴影层次分明。呈现 1990 年代改建后外观。庄重、稳定的升降运镜。",
+    "en": "Camera rising slowly in the centre of the courtyard, looking up at a double-eaved main hall: broad grey tile roof, dark timber columns and lattice doors, deep shadows under the eaves. Presenting a 1990s-renovated look. Solemn, steady crane move."
+   }
+  },
+  {
+   "id": "pv06-bazaar-orbit",
+   "no": 6,
+   "status": "reused",
+   "act": "商城广场 / Bazaar plaza",
+   "title": "商城中心广场低空环绕（复用⑨）",
+   "intent": {
+    "zh": "广场上空 18 m 环绕华宝楼与天裕楼交角，天际线入画",
+    "en": "18 m orbit over the central plaza around the corner of Huabao and Tianyu buildings, skyline in frame"
+   },
+   "targetId": "bld-428202599",
+   "reuse": {
+    "shot": "bazaar-plaza-orbit",
+    "segment": [
+     0,
+     1
+    ],
+    "ease": "linear"
+   },
+   "camClass": "aerial",
+   "move": "aerial-orbit",
+   "genMode": "aerial",
+   "durationS": 5,
+   "light": "day",
+   "transitionIn": "dissolve 12f",
+   "transitionOut": "cut",
+   "prompt": {
+    "zh": "低空无人机绕商业广场转角缓慢环绕，呈现 1990 年代改建后外观的豫园商城仿古楼：多层灰瓦飞檐、深色木窗格、白墙，屋顶角楼错落，形成天际线。平滑环绕，真实比例。",
+    "en": "Low drone slowly orbiting a corner of a commercial plaza lined with Yuyuan bazaar buildings presenting a 1990s-renovated look: multi-tier grey tile eaves, dark timber window grids, white walls, rooftop corner pavilions forming a skyline. Smooth orbit, true-to-scale."
+   }
+  },
+  {
+   "id": "pv07-bazaar-to-pond",
+   "no": 7,
+   "status": "new",
+   "act": "商城广场 / Bazaar plaza",
+   "title": "商城街口走向池边，湖心亭展开",
+   "intent": {
+    "zh": "从和丰楼北侧街口眼高向北走到池边，两侧商城楼夹出的视廊里池面、九曲桥与湖心亭逐渐展开，作为商城到池区的过渡",
+    "en": "Eye-level tracking move north from the street mouth beside the Hefeng building to the pond edge; between the bazaar blocks the water, the zigzag bridge and the lake pavilion open up — the bridge from bazaar to pond"
+   },
+   "targetId": "huxin-ting",
+   "camClass": "ground",
+   "move": "walk",
+   "genMode": "travel",
+   "durationS": 5,
+   "light": "day",
+   "transitionIn": "cut",
+   "transitionOut": "cut",
+   "lensMm": 40,
+   "eye": {
+    "path": [
+     {
+      "ref": "bld-389701812",
+      "at": "centroid",
+      "local": [
+       13.27,
+       -32.96
+      ],
+      "y": 1.6
+     },
+     {
+      "ref": "bld-389701812",
+      "at": "centroid",
+      "local": [
+       13.27,
+       -40.46
+      ],
+      "y": 1.6
+     }
+    ],
+    "ease": "linear"
+   },
+   "look": {
+    "path": [
+     {
+      "ref": "huxin-ting",
+      "at": "centroid",
+      "local": [
+       0,
+       0
+      ],
+      "y": 4
+     }
+    ]
+   },
+   "prompt": {
+    "zh": "稳定器眼高平稳前移（移动摄影，非人物行走），两侧是呈现 1990 年代改建后外观的豫园商城仿古楼，深色木窗格与层层挑檐，前方视廊打开，平静的池面上曲折石桥通向一座两层重檐亭阁，远处江南园林树木。移动平稳匀速，真实比例。",
+    "en": "Gimbal-stabilised eye-level tracking move (a steady camera dolly, not a person walking) between Yuyuan bazaar buildings presenting a 1990s-renovated look, with dark timber window grids and tiered eaves; ahead the view opens onto a calm pond where a zigzag stone bridge leads to a two-storey double-eaved pavilion, Jiangnan garden trees beyond. Smooth steady camera move, true-to-scale."
+   }
+  },
+  {
+   "id": "pv08-huxin-aerial",
+   "no": 8,
+   "status": "new",
+   "act": "九曲桥 / 湖心亭 · Bridge & pavilion",
+   "title": "湖心亭与九曲桥航拍环绕",
+   "intent": {
+    "zh": "32 m 高度绕湖心亭环绕 35°，九曲桥折线与池面同框",
+    "en": "32 m drone orbit of 35° around the lake pavilion, the zigzag bridge and the pond in the same frame"
+   },
+   "targetId": "huxin-ting",
+   "camClass": "aerial",
+   "move": "aerial-orbit",
+   "genMode": "aerial",
+   "durationS": 6,
+   "light": "day",
+   "transitionIn": "cut",
+   "transitionOut": "cut",
+   "lensMm": 32,
+   "eye": {
+    "orbit": {
+     "center": {
+      "ref": "huxin-ting",
+      "at": "centroid",
+      "local": [
+       0,
+       0
+      ]
+     },
+     "r": 40,
+     "az": [
+      70,
+      35
+     ],
+     "y": 32
+    },
+    "ease": "smooth"
+   },
+   "look": {
+    "path": [
+     {
+      "ref": "huxin-ting",
+      "at": "centroid",
+      "local": [
+       0,
+       0
+      ],
+      "y": 3
+     }
+    ]
+   },
+   "prompt": {
+    "zh": "无人机缓慢环绕池中一座两层重檐亭阁，曲折的石桥在水面上连向岸边，池面平静有倒影，四周是呈现 1990 年代改建后外观的仿古楼与江南园林树木。灰瓦飞檐、深红木构。平滑环绕，真实比例。",
+    "en": "Drone slowly orbiting a two-storey double-eaved pavilion in the middle of a pond, a zigzag stone bridge crossing the water to the shore, calm water with reflections, surrounded by buildings presenting a 1990s-renovated look and Jiangnan garden trees. Grey tile upturned eaves, dark red timber. Smooth orbit, true-to-scale."
+   }
+  },
+  {
+   "id": "pv09-jiuqu-walk",
+   "no": 9,
+   "status": "reused",
+   "act": "九曲桥 / 湖心亭 · Bridge & pavilion",
+   "title": "九曲桥上走向湖心亭（复用③）",
+   "intent": {
+    "zh": "桥面升高机位沿曲折桥面走近湖心亭，仰摇保持宝顶上方留天",
+    "en": "Raised camera travelling along the zigzag deck toward the pavilion, tilting up to keep sky above the finial"
+   },
+   "targetId": "huxin-ting",
+   "reuse": {
+    "shot": "jiuqu-to-huxinting",
+    "segment": [
+     0,
+     1
+    ],
+    "ease": "linear"
+   },
+   "camClass": "raised",
+   "move": "travel-tilt",
+   "genMode": "travel",
+   "durationS": 5,
+   "light": "day",
+   "transitionIn": "cut",
+   "transitionOut": "dissolve 12f",
+   "prompt": {
+    "zh": "稍高于人眼的稳定机位沿曲折石桥前行，桥栏低于画面，前方湖心亭逐渐放大：两层重檐、灰瓦、深红木构、宝顶。池水平静。呈现 1990 年代改建后外观。平稳前进并轻微上摇。",
+    "en": "Slightly raised stabilized camera moving along a zigzag stone bridge, railings below frame, the lake pavilion growing ahead: two storeys, double eaves, grey tiles, dark red timber, a finial on top. Calm water. Presenting a 1990s-renovated look. Steady forward travel with a gentle tilt up."
+   }
+  },
+  {
+   "id": "pv10-garden-aerial",
+   "no": 10,
+   "status": "new",
+   "act": "豫园 / Garden",
+   "title": "豫园园林航拍前飞",
+   "intent": {
+    "zh": "40 m 高度从池北岸上空向西北缓慢前飞、较陡俯视，三穗堂、仰山堂屋面、西池与大假山依次入画，交代园林格局",
+    "en": "Slow north-west drone flight at about 40 m from above the north shore with a steep downward view: the Sansui and Yangshan hall roofs, the west pond and the great rockery come into frame in turn, laying out the garden"
+   },
+   "targetId": "rockery-dajiashan",
+   "camClass": "aerial",
+   "move": "aerial-push",
+   "genMode": "aerial",
+   "durationS": 5,
+   "light": "day",
+   "transitionIn": "dissolve 12f",
+   "transitionOut": "dissolve 12f",
+   "minTargetFrac": 0.03,
+   "lensMm": 32,
+   "eye": {
+    "path": [
+     {
+      "ref": "rockery-dajiashan",
+      "at": "centroid",
+      "local": [
+       -21.44,
+       75
+      ],
+      "y": 42
+     },
+     {
+      "ref": "rockery-dajiashan",
+      "at": "centroid",
+      "local": [
+       -15.44,
+       61
+      ],
+      "y": 38
+     }
+    ],
+    "ease": "smooth"
+   },
+   "look": {
+    "path": [
+     {
+      "ref": "rockery-dajiashan",
+      "at": "centroid",
+      "local": [
+       1.56,
+       30
+      ],
+      "y": 0
+     }
+    ]
+   },
+   "prompt": {
+    "zh": "无人机 40 米高度缓慢前飞、较陡俯瞰一座江南园林：灰瓦歇山厅堂、曲折的园路与白色园墙、水池与层叠的黄石假山、成片树木。呈现 1990 年代改建后外观的园林建筑，维护良好、不刻意做旧。平滑前飞，真实比例。",
+    "en": "Drone flying slowly forward at about 40 m, looking steeply down over a Jiangnan garden: grey-tiled halls with hip-and-gable roofs, winding paths and white garden walls, a pond and a layered yellow-stone rockery, groves of trees. Garden buildings presenting a 1990s-renovated look, well-kept and not artificially aged. Smooth forward flight, true-to-scale."
+   }
+  },
+  {
+   "id": "pv11-sansuitang",
+   "no": 11,
+   "status": "reused",
+   "act": "豫园 / Garden",
+   "title": "园门内推向三穗堂（复用④）",
+   "intent": {
+    "zh": "从园门楼檐下起步眼高推进，终帧正对三穗堂格扇立面",
+    "en": "Eye-level push from under the garden gatehouse eave to a square-on view of the hall's lattice facade"
+   },
+   "targetId": "bld-428179901",
+   "reuse": {
+    "shot": "garden-entry-sansuitang",
+    "segment": [
+     0,
+     1
+    ],
+    "ease": "linear"
+   },
+   "camClass": "ground",
+   "move": "push",
+   "genMode": "fixed-push",
+   "durationS": 4,
+   "light": "day",
+   "transitionIn": "dissolve 12f",
+   "transitionOut": "cut",
+   "prompt": {
+    "zh": "眼高缓慢前推，穿过园门进入庭院，正前方一座宽阔的园林厅堂：一排深色木格扇门、灰瓦屋檐、石阶与铺地。江南园林，呈现 1990 年代改建后外观。安静、正面对称构图。",
+    "en": "Slow eye-level push through a garden gate into a courtyard facing a broad garden hall: a row of dark timber lattice doors, grey tile eaves, stone steps and paving. Jiangnan garden presenting a 1990s-renovated look. Quiet, frontal symmetrical composition."
+   }
+  },
+  {
+   "id": "pv12-dajiashan",
+   "no": 12,
+   "status": "reused",
+   "act": "豫园 / Garden",
+   "title": "隔池横移望大假山（复用⑤）",
+   "intent": {
+    "zh": "西岸眼高隔水横移，黄石假山与岸树为画面主体",
+    "en": "Eye-level lateral truck across the water on the west bank, the yellow-stone rockery and shore trees as the subject"
+   },
+   "targetId": "rockery-dajiashan",
+   "reuse": {
+    "shot": "dajiashan-across-pond",
+    "segment": [
+     0,
+     1
+    ],
+    "ease": "linear"
+   },
+   "camClass": "ground",
+   "move": "truck",
+   "genMode": "fixed-push",
+   "durationS": 4,
+   "light": "day",
+   "transitionIn": "cut",
+   "transitionOut": "cut",
+   "prompt": {
+    "zh": "眼高隔着水面缓慢横移，对岸是层叠的黄石假山与松树，山后白墙灰瓦的园林建筑。江南园林，呈现 1990 年代改建后外观。水面平静，横移平稳。",
+    "en": "Slow eye-level lateral truck across the water: on the far bank a layered yellow-stone rockery with pines, white-walled grey-tiled garden buildings behind. Jiangnan garden, Presenting a 1990s-renovated look. Calm water, smooth lateral move."
+   }
+  },
+  {
+   "id": "pv13-corridor-walk",
+   "no": 13,
+   "status": "reused",
+   "act": "豫园 / Garden",
+   "title": "积玉水廊内行走（复用⑥）",
+   "intent": {
+    "zh": "水廊中线眼高北行 7 m，廊柱节奏与两侧厅堂入画",
+    "en": "Eye-level tracking move of 7 m along the covered waterside gallery, column rhythm with halls on both sides"
+   },
+   "targetId": "bld-428179920",
+   "reuse": {
+    "shot": "garden-corridor-walk",
+    "segment": [
+     0,
+     1
+    ],
+    "ease": "linear"
+   },
+   "camClass": "ground",
+   "move": "walk",
+   "genMode": "travel",
+   "durationS": 5,
+   "light": "day",
+   "transitionIn": "cut",
+   "transitionOut": "dissolve 12f",
+   "prompt": {
+    "zh": "稳定器眼高沿园林长廊中线平稳前移（移动摄影，非人物行走），深红木柱与廊顶有节奏地掠过，廊外是白墙灰瓦的厅堂与树木。江南园林，呈现 1990 年代改建后外观。移动平稳匀速。",
+    "en": "Gimbal-stabilised eye-level tracking move down the centre of a covered garden gallery, dark red timber columns and the gallery roof passing in rhythm, white-walled grey-tiled halls and trees outside. Jiangnan garden presenting a 1990s-renovated look. Smooth steady camera move."
+   }
+  },
+  {
+   "id": "pv14-bazaar-dusk",
+   "status": "new",
+   "act": "黄昏 / Dusk",
+   "title": "黄昏：商城中心广场升高望华宝楼",
+   "intent": {
+    "zh": "中心广场东北角，机位从眼高 1.6 m 原地升到 8 m，斜看华宝楼与天裕楼转角和楼顶角楼，黄昏光（预设由灯光单提供）",
+    "en": "From the north-east corner of the central plaza the camera rises in place from 1.6 m to 8 m, a three-quarter view of the Huabao and Tianyu corner and the rooftop pavilion in dusk light (preset from the lighting package)"
+   },
+   "targetId": "bld-428202599",
+   "camClass": "crane",
+   "move": "crane-up",
+   "genMode": "fixed-push",
+   "durationS": 5,
+   "light": "dusk",
+   "transitionIn": "dissolve 12f",
+   "transitionOut": "cut",
+   "lensMm": 20,
+   "eye": {
+    "path": [
+     {
+      "ref": "bld-428202599",
+      "at": "centroid",
+      "local": [
+       6.77,
+       -39.94
+      ],
+      "y": 1.6
+     },
+     {
+      "ref": "bld-428202599",
+      "at": "centroid",
+      "local": [
+       6.77,
+       -39.94
+      ],
+      "y": 8.0
+     }
+    ],
+    "ease": "smooth"
+   },
+   "look": {
+    "path": [
+     {
+      "ref": "bld-428202599",
+      "at": "centroid",
+      "local": [
+       -18.23,
+       -1.94
+      ],
+      "y": 11.0
+     },
+     {
+      "ref": "bld-428202599",
+      "at": "centroid",
+      "local": [
+       -18.23,
+       -1.94
+      ],
+      "y": 10.0
+     }
+    ],
+    "ease": "smooth"
+   },
+   "prompt": {
+    "zh": "黄昏，低角度暖阳把立面染成暖橙色，天顶偏蓝；镜头在商业广场上缓慢升高，仰望一座呈现 1990 年代改建后外观的豫园商城仿古楼：多层灰瓦飞檐、深色木窗格、白墙，楼顶角楼；灯笼与红店招亮着暖光，窗格与店铺内透出暖光。建筑维护良好、不刻意做旧。广场空旷安静。灯光以参考帧为准。",
+    "en": "Dusk, low warm sunlight tinting the facades orange while the sky stays blue overhead, the camera rising slowly in a commercial plaza toward a Yuyuan bazaar building presenting a 1990s-renovated look: multi-tier grey tile upturned eaves, dark timber window grids, white walls, a rooftop pavilion; lanterns and red shop signs glowing warm, warm light from the windows and shop interiors. Well-kept buildings, not artificially aged. The plaza is quiet and open. Lighting follows the reference frame."
+   },
+   "no": 14
+  },
+  {
+   "id": "pv15-huxin-dusk",
+   "status": "reused",
+   "act": "黄昏 / Dusk",
+   "title": "黄昏：北岸定机位微推湖心亭（复用⑩）",
+   "intent": {
+    "zh": "北岸眼高定机位微推 2.7 m，前景九曲桥东段，湖心亭窗格透出暖光，黄昏光",
+    "en": "Fixed eye-level position on the north bank with a 2.7 m micro push, the east run of the zigzag bridge in the foreground, warm light glowing in the pavilion's lattice windows in dusk light"
+   },
+   "targetId": "huxin-ting",
+   "reuse": {
+    "shot": "huxinting-across-pond",
+    "segment": [
+     0,
+     1
+    ],
+    "ease": "linear"
+   },
+   "camClass": "ground",
+   "move": "push",
+   "genMode": "fixed-push",
+   "durationS": 4,
+   "light": "dusk",
+   "transitionIn": "cut",
+   "transitionOut": "dissolve 12f",
+   "prompt": {
+    "zh": "黄昏，眼高几乎固定的机位缓慢微推，前景曲折石桥栏杆，中景池中两层重檐亭阁的窗格透出暖色光，水面映着灯光与亭影，背景呈现 1990 年代改建后外观的豫园商城仿古楼群轮廓，灯笼与店招散着暖光。天顶偏蓝，天际一线暖橙。灯光以参考帧为准。",
+    "en": "Dusk, an almost locked-off eye-level camera with a slow micro push, zigzag bridge railings in the foreground, the double-eaved pavilion in the midground with warm light in its lattice windows and reflections on the water, silhouettes of Yuyuan bazaar buildings presenting a 1990s-renovated look behind, lanterns and shop signs dotted with warm light. Blue overhead, a band of warm orange at the horizon. Lighting follows the reference frame."
+   },
+   "no": 15
+  },
+  {
+   "id": "pv16-night-finale",
+   "no": 16,
+   "status": "new",
+   "act": "夜景收尾 / Night finale",
+   "title": "夜景：从池上空后拉升高收尾",
+   "intent": {
+    "zh": "从池东北上空 26 m 后拉并升到 55 m，湖心亭居中，商城与园林夜景铺满画面后淡出",
+    "en": "Pull back and rise from 26 m to 55 m above the north-east of the pond, the pavilion centred, the bazaar and garden night lights filling the frame before fading out"
+   },
+   "targetId": "huxin-ting",
+   "camClass": "aerial",
+   "move": "aerial-pullback",
+   "genMode": "aerial",
+   "durationS": 6,
+   "light": "night",
+   "transitionIn": "dissolve 12f",
+   "transitionOut": "fade-to-black 24f",
+   "minTargetFrac": 0.005,
+   "lensMm": 28,
+   "eye": {
+    "path": [
+     {
+      "ref": "huxin-ting",
+      "at": "centroid",
+      "polar": [
+       -135,
+       45
+      ],
+      "y": 26
+     },
+     {
+      "ref": "huxin-ting",
+      "at": "centroid",
+      "polar": [
+       -135,
+       95
+      ],
+      "y": 55
+     }
+    ],
+    "ease": "smooth"
+   },
+   "look": {
+    "path": [
+     {
+      "ref": "huxin-ting",
+      "at": "centroid",
+      "local": [
+       0,
+       20
+      ],
+      "y": 0
+     }
+    ]
+   },
+   "prompt": {
+    "zh": "夜景航拍，无人机缓慢后拉并升高，池中亭阁的窗格透出暖光，灯影落在水面上；四周呈现 1990 年代改建后外观的仿古楼群灯笼成串亮着暖橙光，店招与窗格透光，摊位灯照亮台面，深蓝夜空，灰瓦屋面在灯光下有层次。平滑后拉，结尾安静。灯光以参考帧为准。",
+    "en": "Night aerial, drone slowly pulling back and rising; warm light in the pond pavilion's lattice windows with reflections on the water; around it, strings of lanterns glowing warm orange on bazaar buildings presenting a 1990s-renovated look, shop signs and windows lit from within, stall lamps lighting the counters, deep blue night sky, grey tile roofs layered by the light. Smooth pull-back, quiet ending. Lighting follows the reference frame."
+   }
+  }
+ ]
+}
