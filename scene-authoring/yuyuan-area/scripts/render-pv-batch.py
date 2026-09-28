@@ -203,6 +203,13 @@ def guard_shot(out_root, light, sid, n):
 def make_sheet(out_root, light, sid, n, dst):
     from PIL import Image, ImageDraw, ImageFont
 
+    def open_tile(path):
+        """8-bit 通道直接转 RGB；16-bit depth（mode I，值 0..65535，背景 far 可略超）仿射压到 0-255 再钳位。"""
+        src = Image.open(path)
+        if src.mode in ('I', 'I;16', 'I;16L', 'I;16B'):
+            src = src.point(lambda v: v * 255 / 65535)
+        return src.convert('RGB').resize((tw, th))
+
     def font(sz):
         for p in ('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
                   '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf'):
@@ -229,8 +236,7 @@ def make_sheet(out_root, light, sid, n, dst):
             x0 = pad + j * (tw + pad)
             tile = Image.new('RGB', (tw, th), (48, 16, 16))
             try:
-                with Image.open(os.path.join(out_root, 'control-24fps-%s' % light, sid, ch, 'frame-%03d.png' % k)) as src:
-                    tile = src.convert('RGB').resize((tw, th))
+                tile = open_tile(os.path.join(out_root, 'control-24fps-%s' % light, sid, ch, 'frame-%03d.png' % k))
             except Exception as e:
                 dr.text((x0 + 8, y + th // 2), 'missing (%s)' % type(e).__name__, fill=(255, 120, 120), font=f8)
             im.paste(tile, (x0, y + lab))
@@ -398,12 +404,6 @@ def main():
             prog['stoppedReason'] = '%s beauty 空白帧守卫失败' % sid
             return False
         p['status'] = 'rendered-%s' % rendered_via
-        try:
-            make_sheet(a.out_root, s['light'], sid, s['frames'], os.path.join(a.out_root, 'sheets', '%s.png' % sid))
-            p['sheet'] = 'sheets/%s.png' % sid
-        except Exception as e:
-            p['sheet'] = 'error:%s' % e
-            log('WARN 联系表失败 %s：%r' % (sid, e))
         return True
 
     def eta_update():
@@ -468,10 +468,20 @@ def main():
                 break
             eta_update()
 
-    # 收尾：遗留 running 归一为 pending（停批时未轮到的镜头），再写 RESULT.json + 进度终态
+    # 收尾：遗留 running 归一为 pending（停批时未轮到的镜头）；对全部齐全镜头统一出联系表（含续跑跳过的镜头）；
+    # 写 RESULT.json + 进度终态
     for sid, p in prog['shots'].items():
         if p['status'] == 'running':
             p.update(status='pending', note='未轮到（批次提前停止）')
+    for s in sel:
+        p = prog['shots'][s['id']]
+        if p['status'] in ('complete-preexisting', 'rendered-group', 'rendered-shot'):
+            try:
+                make_sheet(a.out_root, s['light'], s['id'], s['frames'], os.path.join(a.out_root, 'sheets', '%s.png' % s['id']))
+                p['sheet'] = 'sheets/%s.png' % s['id']
+            except Exception as e:
+                p['sheet'] = 'error:%s' % e
+                log('WARN 联系表失败 %s：%r' % (s['id'], e))
     prog['updatedAt'] = now_iso()
     prog['stoppedReason'] = stop['reason']
     eta_update()
