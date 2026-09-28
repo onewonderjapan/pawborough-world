@@ -349,6 +349,13 @@ _MAT_DEFS = {
     'winback': lambda: mat('winback', rough=.7, base='wood-stain-color.jpg', tint=FM['timberTint'],
                            normal='Wood092_2K-JPG_NormalGL_1K.jpg', tile=tuple(FM['timberTile']),
                            extras={'pbRole': 'window-backing'}),
+    # wave12-towerwin2：非 wood timber 的窗背板变体（winback_key：winback-<timber>）。着色参数与该 timber
+    # 逐项相同（wood2 同 timber2Tint），仅多 pbRole extras——白天观感不变；夜间按名进 presets lattice 组
+    # 点亮（glTF 材质名 = btk-winback-wood2）。新 timber 出现在窗段时须在此加对应 def（缺了构建期 KeyError）。
+    'winback-wood2': lambda: mat('winback-wood2', rough=.7, base='wood-stain-color.jpg',
+                                 tint=FM.get('timber2Tint', FM['timberTint']),
+                                 normal='Wood092_2K-JPG_NormalGL_1K.jpg', tile=tuple(FM['timberTile']),
+                                 extras={'pbRole': 'window-backing'}),
     # wave7 B：预设楼（zone-bazaar-4 件）台基 / 楼板用素色石（materials.plinthPlain），件里少带一张 130 KB 砖纹贴图
     'stone': lambda: (mat('stone', lin(FM['plinthTint']), .92) if FM.get('plinthPlain') else
                       mat('stone', rough=.92, base='Bricks061_2K-JPG_Color_1K.jpg', tint=FM['plinthTint'], tile=tuple(FM['plinthTile']))),
@@ -1424,7 +1431,26 @@ def bays(r, a, b):
     return G.bay_lines(a, b, FA['bayRhythmM'], CS)
 
 # ---- 窗：木樘背板 + 格心（长窗 / 半窗） ----
-WINBACK_N = 0                                   # wave12：实际出背板的 window() 调用数（measurements 记账，test17b 期望值）
+# wave12：出背板的 window() 调用数（measurements 记账，test17b 期望值）。
+# wave12-towerwin2：screen / band 两类格心背后也出 winback 背板（拆段后只盖格心覆盖段），
+# 三类分开记账（windowBackingCalls / screenBackingCalls / bandBackingCalls），并按 timber 族记
+# winbackByTimber（= 各族 lit 背板块数，test17d 期望值）。
+WINBACK_N = 0
+SCREENBACK_N = 0
+BANDBACK_N = 0
+WINBACK_BY_TIMBER = {}
+
+def winback_key(timber):
+    """窗背板材质名：wood 段用已有 winback；其他 timber 用 winback-<timber> 变体（_MAT_DEFS 须有 def）。"""
+    return 'winback' if timber == 'wood' else 'winback-' + timber
+
+def _winback_panel(name, r, sc, o, z0, z1, w, timber, part):
+    """出 lit 背板并记账（wave7 B 守卫拦下时不出板不计数，同 W1）。"""
+    o_ = rpanel(name, r, sc, o, z0, z1, w, winback_key(timber), part)
+    if o_ is not None:
+        WINBACK_BY_TIMBER[timber] = WINBACK_BY_TIMBER.get(timber, 0) + 1
+    return o_
+
 def window(name, r, sc, zfloor, ztop, w, h, sill, lf, timber='wood', part='windows'):
     global WINBACK_N
     z0 = zfloor + sill
@@ -1433,10 +1459,14 @@ def window(name, r, sc, zfloor, ztop, w, h, sill, lf, timber='wood', part='windo
     if h < 0.8:
         return
     lat = 'lattice' if timber == 'wood' else 'lattice2'
-    # wave12 W1：背板改专用材质 btk-winback（几何 / UV 不变）；跨共享边被 wave7 B 守卫拦下时不出板也不计数
-    if rpanel('winb-' + name, r, sc, 0.03, z0 - 0.07, z0 + h + 0.07, w + 0.14, 'winback', part) is not None:
-        WINBACK_N += 1
     zl0 = z0 - 0.07 + (1.0 - lf) * (h + 0.14)
+    # wave12 W1：背板改专用材质 btk-winback（几何 / UV 不变）；跨共享边被 wave7 B 守卫拦下时不出板也不计数
+    # wave12-towerwin2 T0：背板拆两块——格心覆盖段（zl0 以上，与 win-* 格心底同高，含格心上缘 0.04 收边）
+    # = winback 材质；其下实心段 = 原 timber（无格心遮挡，夜间不得发光）。两块同深同宽，总面积与外轮廓不变。
+    if zl0 - (z0 - 0.07) > 0.01:
+        rpanel('winb-solid-' + name, r, sc, 0.03, z0 - 0.07, zl0, w + 0.14, timber, part)
+    if _winback_panel('winb-' + name, r, sc, 0.03, zl0, z0 + h + 0.07, w + 0.14, timber, part) is not None:
+        WINBACK_N += 1
     rpanel('win-' + name, r, sc, 0.054, zl0, z0 + h + 0.03, w - 0.02, lat, part)
 
 def architrave(name, r, s0, s1, z0, z1, timber='wood'):
@@ -2092,7 +2122,13 @@ for b in BLOCKS:
                     if sty == 'screen':                         # 长窗屏：整樘木背板 + 每开间数扇格心长窗
                         nlv, gap, lf = FA['longWindowLeaves'], FA['leafGapM'], FA['longWindowLatticeFrac']
                         zw0 = zl0 + (1.0 - lf) * (zl1 - zl0)
-                        rpanel('winbay-%s-%d' % (tag, bi), r, (g0 + g1) / 2, 0.02, zl0, zl1, g1 - g0, tim, 'windows')
+                        # wave12-towerwin2 T1：背板拆两块——格心覆盖段（zw0..zl1，与 winleaf-* 格心底同高）=
+                        # winback 材质；其下实心段（zl0..zw0）= 原 timber（无格心遮挡，夜间不得发光）。
+                        # 两块同深同宽，总面积与外轮廓不变（原整板 zl0..zl1 在 zw0 处一分为二）。
+                        if zw0 - zl0 > 0.01:
+                            rpanel('winbay-solid-%s-%d' % (tag, bi), r, (g0 + g1) / 2, 0.02, zl0, zw0, g1 - g0, tim, 'windows')
+                        if _winback_panel('winbay-%s-%d' % (tag, bi), r, (g0 + g1) / 2, 0.02, zw0, zl1, g1 - g0, tim, 'windows') is not None:
+                            SCREENBACK_N += 1
                         pitch = (g1 - g0) / nlv
                         for kk in range(nlv):
                             rpanel('winleaf-%s-%d-%d' % (tag, bi, kk), r, g0 + pitch * (kk + 0.5), 0.045, zw0, zl1 - 0.03,
@@ -2102,7 +2138,16 @@ for b in BLOCKS:
                         zb0 = z + bs
                         zb1 = min(zb0 + bh, zl1 - 0.1)
                         m_ = 0.18
-                        rpanel('bandb-%s-%d' % (tag, bi), r, (g0 + g1) / 2, 0.03, zb0 - 0.08, zb1 + 0.08, g1 - g0 - 2 * m_ + 0.16, tim, 'windows')
+                        # wave12-towerwin2 T1：横带窗背板拆三段——格心覆盖段（zb0..zb1，与 bandleaf-* 同高）=
+                        # winback 材质；上下露出的边框段（各 0.08）= 原 timber。总跨度与外轮廓不变。
+                        # zb1 <= zb0 的退化参数下整体保持原 timber、不出 lit 段（不发光）。
+                        if zb1 - zb0 > 0.01:
+                            rpanel('bandb-edge-lo-%s-%d' % (tag, bi), r, (g0 + g1) / 2, 0.03, zb0 - 0.08, zb0, g1 - g0 - 2 * m_ + 0.16, tim, 'windows')
+                            if _winback_panel('bandb-%s-%d' % (tag, bi), r, (g0 + g1) / 2, 0.03, zb0, zb1, g1 - g0 - 2 * m_ + 0.16, tim, 'windows') is not None:
+                                BANDBACK_N += 1
+                            rpanel('bandb-edge-hi-%s-%d' % (tag, bi), r, (g0 + g1) / 2, 0.03, zb1, zb1 + 0.08, g1 - g0 - 2 * m_ + 0.16, tim, 'windows')
+                        else:
+                            rpanel('bandb-%s-%d' % (tag, bi), r, (g0 + g1) / 2, 0.03, zb0 - 0.08, zb1 + 0.08, g1 - g0 - 2 * m_ + 0.16, tim, 'windows')
                         nlv = max(2, int(round((g1 - g0 - 2 * m_) / 0.75)))
                         pitch = (g1 - g0 - 2 * m_) / nlv
                         for kk in range(nlv):
@@ -2463,6 +2508,9 @@ json.dump({'triangles': tris, 'byNode': by, 'glbBytes': os.path.getsize(glb), 'm
            'anchorMap': [round(CX, 4), round(CZ, 4)], 'footprintAreaM2': round(AREA, 2),
            'textures': texs, 'textureTotalBytes': sum(texs.values()), 'params': PARAMS_REL,
            'windowBackingCalls': WINBACK_N,
+           'screenBackingCalls': SCREENBACK_N,
+           'bandBackingCalls': BANDBACK_N,
+           'winbackByTimber': WINBACK_BY_TIMBER,
            'blocks': blocks_rec, 'tower': tower_rec, 'eaves': EAVE_LOG, 'brackets': BRACKET_N,
            'plaques': PLAQUE_LOG, 'lanterns': LANTERN_N, 'lions': LION_LOG,
            'sharedEdges': [{'other': e['other'], 'overlapM': round(e['overlapM'], 2), 'fpEdge': e['edge']} for e in SHARED],
