@@ -110,9 +110,15 @@ export class RawGlbIndex {
   }
   // 世界坐标三角形（three 端测得，已扣除测试受控位移）→ raw GLB 节点。
   // 得分 = 三个顶点各自到候选三角形最近顶点的距离取最大（与顶点顺序无关）；< tol 才算对上。
-  // 同分（≤ 1e-4 m）而节点不同 → ambiguous（重合几何），调用方按需处理。
+  // wave12-debt D3 收紧（REVIEW-astra-R4 可选 3）：容差内全部候选都要核对身份，不再只比 best/second 两名——
+  //   ① 同 id 不同 module 的两面相距 3 cm、命中偏 2 cm：两名得分差远大于并列阈值，旧版静默映射到
+  //     得分最低者（可能是错误 module）；新版要求容差内所有候选 (id, module) 一致，不一致即 ambiguous；
+  //   ② 三个重合节点 module 为 A/A/B：旧版只比较前两名（A 对 A），第三名 B 永远不被核对。
+  // 结果记录匹配误差（score）与候选间距（gap = 第二名得分 − best 得分；null = 容差内无第二名）。
+  // 内存回归用例：tests/infocard-raw-oracle-unit-test.mjs（红绿对照见工单包 artifacts/d3/）。
   matchTriangle(tri, point, tol = 0.06) {
     let best = null, second = null;
+    const candMin = new Map();          // file\u0000node -> { file, node, score }（容差内全部候选，同节点多三角取最小得分）
     for (const P of this.prims) {
       if (point[0] < P.min[0] - tol || point[0] > P.max[0] + tol || point[1] < P.min[1] - tol || point[1] > P.max[1] + tol
         || point[2] < P.min[2] - tol || point[2] > P.max[2] + tol) continue;
@@ -132,6 +138,9 @@ export class RawGlbIndex {
           if (d > score) score = d;
         }
         if (score >= tol) continue;
+        const key = P.file + '\u0000' + P.node;
+        const prev = candMin.get(key);
+        if (!prev || score < prev.score) candMin.set(key, { file: P.file, node: P.node, score });
         const cand = { file: P.file, node: P.node, name: P.name, score };
         if (!best || score < best.score) {
           if (best && (best.file !== cand.file || best.node !== cand.node)) second = best;
@@ -140,8 +149,17 @@ export class RawGlbIndex {
       }
     }
     if (!best) return null;
-    const ambiguous = !!(second && second.score - best.score <= 1e-4);
-    return { ...best, ambiguous, second: ambiguous ? { file: second.file, node: second.node, name: second.name } : null, ...this.chain(best.file, best.node) };
+    const identities = [...candMin.values()].map(c => ({ file: c.file, node: c.node, score: c.score, ...this.chain(c.file, c.node) }));
+    const distinct = new Set(identities.map(c => `${c.id} ${c.module}`));
+    const ambiguous = distinct.size > 1;
+    return {
+      ...best,
+      ambiguous,
+      gap: second ? +(second.score - best.score).toFixed(6) : null,
+      nCandidates: identities.length,
+      candidates: ambiguous ? identities.map(c => ({ file: c.file, node: c.node, id: c.id, module: c.module, score: +c.score.toFixed(4) })) : null,
+      ...this.chain(best.file, best.node),
+    };
   }
   // 由浏览器 __oraHits 的命中列表求期望：第一个「父链全部可见 + raw 父链有 layout id」的命中。
   // 同时给出第一个被跳过的「不可见且有 id」命中（用于同 id 反例统计）。
@@ -162,11 +180,14 @@ export class RawGlbIndex {
       }
       if (!m.id) { out.skipped.push({ uuid: h.uuid, why: 'raw-chain-no-id' }); continue; }
       if (m.ambiguous) {
-        const c2 = this.chain(m.second.file, m.second.node);
-        if (c2.id !== m.id || c2.module !== m.module) { out.error = `命中三角形在 raw GLB 里有两处重合且身份不同：${m.file}#${m.node}(${m.id}/${m.module}) vs ${m.second.file}#${m.second.node}(${c2.id}/${c2.module})`; return out; }
+        // wave12-debt D3：容差内候选身份不一致（id 或 module）——映射不再可靠，直接报错，
+        // 不许拿得分最低者静默当真（同 id 换 module 的错换与 A/A/B 漏检都由此堵住）。
+        out.error = `命中三角形在 raw GLB 0.06 m 容差内候选身份不一致（${m.nCandidates} 个候选）：`
+          + m.candidates.map(c => `${c.file}#${c.node}(${c.id}/${c.module},score=${c.score})`).join(' vs ');
+        return out;
       }
       if (h.threeId && h.threeId !== m.id) { out.error = `three 父链 id ${h.threeId} != raw 父链 id ${m.id}（${m.file}#${m.node}）`; return out; }
-      Object.assign(out, { id: m.id, module: m.module, uuid: h.uuid, raw: { file: m.file, node: m.node, name: m.name, path: m.path, score: +m.score.toFixed(4), ambiguous: m.ambiguous, second: m.second } });
+      Object.assign(out, { id: m.id, module: m.module, uuid: h.uuid, raw: { file: m.file, node: m.node, name: m.name, path: m.path, score: +m.score.toFixed(4), matchGapM: m.gap, candidates: m.nCandidates, ambiguous: m.ambiguous } });
       return out;
     }
     return out;
