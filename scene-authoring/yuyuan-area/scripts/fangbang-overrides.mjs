@@ -2,6 +2,11 @@
 // 覆盖数据只定义在 baseline/fangbang-placement-overrides.json 一处；两端按同一规则应用：
 //   实例 positionGlb += translateGlb；名称前缀 `<id>:` 的碰撞记录 obb.pos（或 min/max）+= translateGlb；
 //   结果取 4 位小数；应用前校验实例原位置 == expectBasePositionGlb（容差 1e-4）。
+// 「取 4 位小数」的共享规则（wave12-debt D5，两端逐字一致，勿单边改写）：
+//   四舍五入到 1e-4、半数远离零 = sign(x) * floor(|x| * 1e4 + 0.5) / 1e4 —— 与 Python 端
+//   scripts/fangbang_overrides.py 的 _round4_half_up 同一公式、同一 double 运算序（先乘、加 0.5、
+//   取 floor、再除回），IEEE 754 基本运算确定，两端逐位相等。不用 toFixed()：它与 Python round()
+//   在 0.03125 这类二进精确半数上分歧（0.0313 vs 0.0312）。契约测试：tests/fangbang-rounding-contract-test.mjs。
 // 仓库根 world/fangbang-temple-v7/{instances,collision-world}.json 是原客户端共享数据集，不在那里改位置。
 import fs from 'node:fs';
 import path from 'node:path';
@@ -17,7 +22,9 @@ export function loadOverrides(file = OVERRIDES_PATH) {
   return doc.overrides;
 }
 
-const add = (v, d) => [0, 1, 2].map(k => (d[k] ? +(v[k] + d[k]).toFixed(4) : v[k]));
+// 四舍五入到 1e-4、半数远离零（共享规则见文件头；与 fangbang_overrides.py 同一 double 运算序）
+export const round4HalfUp = (x) => (x < 0 ? -1 : 1) * Math.floor(Math.abs(x) * 10000 + 0.5) / 10000;
+export const add = (v, d) => [0, 1, 2].map(k => (d[k] ? round4HalfUp(v[k] + d[k]) : v[k]));
 
 // 原地修改 instDoc.instances / colDoc.colliders，返回应用记录。
 export function applyOverrides(instDoc, colDoc, overrides) {

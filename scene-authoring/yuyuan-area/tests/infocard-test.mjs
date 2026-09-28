@@ -949,6 +949,13 @@ if (run('T7')) try {
       const hit = document.elementFromPoint(c.x + c.width / 2, c.y + c.height / 2);
       return { id: b.id || b.textContent, hitSelf: hit === b };
     });
+    // wave12-debt D4：工具区不止 button——#bar select（光照下拉 #t-light）同样按中心点 elementFromPoint
+    // 验命中（R2 审查可选 1：旧断言只枚举 button，不能宣称覆盖下拉）。
+    const selects = [...document.querySelectorAll('#bar select')].map(el => {
+      const c = el.getBoundingClientRect();
+      const hit = document.elementFromPoint(c.x + c.width / 2, c.y + c.height / 2);
+      return { id: el.id, value: el.value, hitSelf: hit === el, state: el.dataset.state || null };
+    });
     return {
       open: el.style.display === 'block',
       name: el.querySelector(':scope > h2')?.textContent ?? null,
@@ -956,6 +963,7 @@ if (run('T7')) try {
       barRect: { x: +bar.x.toFixed(1), y: +bar.y.toFixed(1), w: +bar.width.toFixed(1), h: +bar.height.toFixed(1) },
       overlapBar: overlap,
       buttons,
+      selects,
       scrollW: document.documentElement.scrollWidth,
       vw: innerWidth,
     };
@@ -968,6 +976,9 @@ if (run('T7')) try {
   const badBtn = (res.buttons || []).filter(b => !b.hitSelf);
   if (badBtn.length) fail(`T7 ${badBtn.length} 个工具按钮中心 elementFromPoint 未命中按钮本身：${JSON.stringify(badBtn)}`);
   else ok(`T7 ${(res.buttons || []).length} 个工具按钮中心全部命中按钮本身`);
+  const badSel = (res.selects || []).filter(x => !x.hitSelf);
+  if (badSel.length) fail(`T7 ${badSel.length} 个工具下拉中心 elementFromPoint 未命中自身：${JSON.stringify(badSel)}`);
+  else ok(`T7 ${(res.selects || []).length} 个工具下拉（光照）中心全部命中自身`);
   if (res.scrollW > 375) fail(`T7 手机宽度出现横向滚动：scrollWidth=${res.scrollW}`);
   // 实点「步行」，确认模式真的切换（同时验证已开卡片被立即关闭）
   const walkBtn = await mp.$('#w-mode');
@@ -980,6 +991,22 @@ if (run('T7')) try {
   if (!closed) fail('T7 实点「步行」后已开卡片未关闭');
   else ok('T7 实点「步行」：卡片立即关闭');
   await mp.evaluate(() => window.__walk.exit());
+  // wave12-debt D4：实际切换一次光照档位（day→night）确认下拉真的生效——selectOption 触发 change →
+  // lighting.set → __lighting.state().preset 变为 night，且下拉回填 applied 状态（不只是枚举命中）。
+  try {
+    const before = await mp.evaluate(() => ({ preset: window.__lighting && window.__lighting.state().preset }));
+    await mp.selectOption('#t-light', 'night');
+    await mp.waitForFunction(() => window.__lighting && window.__lighting.state().preset === 'night', null, { timeout: 120000 });
+    const after = await mp.evaluate(() => {
+      const sel = document.getElementById('t-light');
+      return { preset: window.__lighting.state().preset, selValue: sel.value, selState: sel.dataset.state || null };
+    });
+    if (after.preset !== 'night') fail(`T7 光照下拉切 night 未生效：${JSON.stringify({ before, after })}`);
+    else if (after.selValue !== 'night' || after.selState !== 'applied') fail(`T7 光照下拉状态未回填 applied：${JSON.stringify(after)}`);
+    else ok(`T7 光照下拉实切生效：${before.preset || '(none)'} → night，select 回填 applied`);
+    await mp.selectOption('#t-light', before.preset && before.preset !== 'night' ? before.preset : 'day');
+    await mp.waitForFunction(() => window.__lighting && window.__lighting.state().preset !== 'night', null, { timeout: 120000 });
+  } catch (e) { fail(`T7 光照下拉切换异常：${String(e.message).split('\n')[0]}`); }
   await mp.close();
 } catch (e) { fail(`T7 异常中断：${e.message.split('\n')[0]}`); }
 

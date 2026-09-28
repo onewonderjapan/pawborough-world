@@ -574,7 +574,8 @@ const walk = installWalkMode({
 walkModeOf = () => walk.mode();
 
 // wave11-infocard：点击地标弹信息卡。逻辑全在 web/infocard.js（白名单字段 + Esc/空白关闭 + 步行不弹 + 标签高亮）。
-// 挂在本文件遗留的 #info 点选监听之后：点击时遗留面板内容会被卡片覆盖或收起，batch-identity-check I1 的 #info 口径不变。
+// wave12-debt D3 注释更正：本文件已无遗留 #info 调试面板点选监听（R2 合并为一次拾取时删除，
+// 见上方「点选」分节注释）；batch-identity-check I1 读的是 infocard 写的 window.__pickDebug，不是 #info。
 installInfocard({ raycaster: ray, camera, scene, renderer, getLayout: () => layoutData, getMode: () => walk.mode() });
 
 // M4：?perf=1 时挂性能采样（60s 轨道 + 60s 巡游步行帧时采样在 perf.tick 内完成，

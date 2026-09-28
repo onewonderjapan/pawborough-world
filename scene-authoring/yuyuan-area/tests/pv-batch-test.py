@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""wave12-pvbatch R1+R2：PV 批量调度器（scripts/render-pv-batch.py）测试 — 假渲染器，不启动 Blender。
+"""wave12-pvbatch R1+R2+R3：PV 批量调度器（scripts/render-pv-batch.py）测试 — 假渲染器，不启动 Blender。
 
-R2 按 REVIEW-astra-R1 必修 1-4 + 可选 3 项返修；红绿对照见 artifacts/r2/logs/。
+R2 按 REVIEW-astra-R1 必修 1-4 + 可选 3 项返修；R3 按 REVIEW-astra-R2 必修 1：测试自带合成
+场景 GLB 与相机输入（经调度器 --scene/--cameras 注入参数），新环境没有 out-zone/pv-cameras.json
+也能全绿——实际命令、指纹 sha 与齐全判定期望尺寸用同一份合成输入；保留真实 SHA 校验（注入相机
+内容变化 → camerasSha256 指纹阻止复用）与缺件负例（注入文件缺失 → 「指纹输入缺失」报错零渲染），
+不跳过任何指纹门禁。红绿对照见 artifacts/r3/logs/。
 
 调度器经 PV_BATCH_BLENDER 指向一个写占位 PNG 的 stub（接收与 Blender 相同的 argv；
 stub 按真实 argparse 语义解析：后值覆盖 + 缩写展开 + 未知/歧义参数拒绝），帧数从正本
@@ -47,7 +51,8 @@ namespace：隔离软链工作区同一路径改内容（不用 PV_BATCH_LAYOUT_
   回归：dry-run 19 条 = pv-docs 独立生成（折叠空白后单行一致）、1872 帧；续跑只补缺失镜；
      进度/RESULT 字段完整；--frames 2 传给渲染器。
 
-用法：python3 -X utf8 tests/pv-batch-test.py（npm test 已挂；无需 out-zone 重建，不碰仓库文件）
+用法：python3 -X utf8 tests/pv-batch-test.py（npm test 已挂；无需 out-zone 重建与 pv-cameras.json，
+不碰仓库文件——场景/相机输入为测试自建合成件）
 """
 import fcntl
 import importlib.util
@@ -70,6 +75,7 @@ CHANNELS = ('beauty', 'depth', 'normal', 'segmentation')
 FAILS = []
 TMPS = []
 ORPHANS = []  # 锁测试起的 stub pid，finally 兜底清理
+SYNTH = {}  # R3 必修1：合成输入注入（--scene/--cameras），main() 里一次性创建
 
 STUB_SRC = '''#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
@@ -253,14 +259,21 @@ def base_env(stub, invlog, mode='ok', gpu_lock=None, sleep=None, pidfile=None):
     return env
 
 
+def sched_cmd(out_root, group, more, sched=None):
+    """R3 必修1：调度命令统一带合成输入注入（--scene/--cameras）；SYNTH 由 main() 先建。
+    缺件/内容负例临时改 SYNTH 指向的路径即可，其余全部走同一份合成输入。
+    sched（E1）=隔离软链工作区里的调度器路径（shadow 用例）：同一 argparse，注入照常生效。"""
+    return ([sys.executable, '-X', 'utf8', sched or SCHEDULER, '--out-root', out_root, '--group', group]
+            + ['--scene', SYNTH['scene'], '--cameras', SYNTH['cameras']] + list(more))
+
+
 def run_sched(out_root, group, env=None, more=(), sched=None):
-    cmd = [sys.executable, '-X', 'utf8', sched or SCHEDULER, '--out-root', out_root, '--group', group] + list(more)
-    return subprocess.run(cmd, capture_output=True, text=True, env=env, cwd=AREA)
+    return subprocess.run(sched_cmd(out_root, group, more, sched), capture_output=True, text=True, env=env, cwd=AREA)
 
 
 def popen_sched(out_root, group, env, more=()):
-    cmd = [sys.executable, '-X', 'utf8', SCHEDULER, '--out-root', out_root, '--group', group] + list(more)
-    return subprocess.Popen(cmd, env=env, cwd=AREA, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    return subprocess.Popen(sched_cmd(out_root, group, more), env=env, cwd=AREA,
+                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
 
 
 def invocations(log_path):
@@ -374,6 +387,18 @@ def make_corrupt_pixel_png(path, w=160, h=90):
         pass
 
 
+def make_minimal_glb(path):
+    """R3 必修1：最小合法 GLB（glTF 2.0 空场景，12 字节头 + JSON chunk + 空 BIN chunk）——
+    测试自带的合成 --scene 输入。调度器对场景输入做存在性与 sha 指纹（渲染由 stub 完成），
+    最小件即可，不依赖 out-zone/scene-areas.glb 工作区产物。"""
+    import struct
+    js = json.dumps({'asset': {'version': '2.0'}, 'scenes': [{'nodes': []}], 'scene': 0},
+                    separators=(',', ':')).encode('utf-8')
+    js += b' ' * ((4 - len(js) % 4) % 4)  # JSON chunk 4 字节对齐（空格是合法 JSON 尾随空白）
+    body = struct.pack('<I', len(js)) + b'JSON' + js + struct.pack('<I', 0) + b'BIN\x00'
+    open(path, 'wb').write(b'glTF' + struct.pack('<II', 12 + len(body), 2) + body)
+
+
 def main():
     # 0) 调度器存在性（红检锚点：脚本不存在时本测试直接红）
     if not check('调度器存在 scripts/render-pv-batch.py', os.path.isfile(SCHEDULER)):
@@ -387,6 +412,14 @@ def main():
     os.chmod(stub, 0o755)
     invlog = os.path.join(tmp, 'inv.log')
     gpu_lock = os.path.join(tmp, 'gpu.lock')
+
+    # ---------------- R3 必修1：测试自带合成场景 GLB 与相机输入（不依赖 out-zone 工作区产物）----------------
+    # 相机输入 width/height 与 PV_BATCH_FRAME_SIZE=160x90 同口径：齐全判定读这份输入与 stub 写帧一致。
+    SYNTH['scene'] = os.path.join(tmp, 'scene-mini.glb')
+    SYNTH['cameras'] = os.path.join(tmp, 'pv-cameras-mini.json')
+    make_minimal_glb(SYNTH['scene'])
+    with open(SYNTH['cameras'], 'w', encoding='utf-8') as f:
+        json.dump({'width': 160, 'height': 90, 'fps': 24, 'shots': []}, f)
 
     # ---------------- 必修8：参数契约（docstring 无裸 --beauty-denoise）----------------
     src = open(SCHEDULER, encoding='utf-8').read()
@@ -422,6 +455,9 @@ def main():
     check('可选2 实际 argv 含替换后可执行文件与 nice',
           len(exec_lines) == 19 and all(stub in l and 'nice -n 5' in l for l in exec_lines),
           exec_lines[0][:160] if exec_lines else '<无>')
+    check('R3必修1 dry-run exec-argv 注入合成 --scene/--cameras（19 条同源）',
+          len(exec_lines) == 19 and all(SYNTH['scene'] in l and SYNTH['cameras'] in l for l in exec_lines),
+          exec_lines[0][:200] if exec_lines else '<无>')
     check('dry-run 总帧数 1872', any('# commands=19  selected-frames=1872' in l for l in r.stdout.splitlines()))
     check('dry-run 不写文件', not os.path.exists(out_root))
 
@@ -453,13 +489,17 @@ def main():
     ok_fp = (d14 is not None and d14.get('guard') == 'pass' and all(k in fp14 for k in need_fp)
              and fp14.get('framesCount') == 120 and fp14.get('mode') == 'formal'
              and fp14.get('rendererSha256') == sha256_file(RENDERER)
-             and fp14.get('sceneSha256') == sha256_file(os.path.join(AREA, 'out-zone', 'scene-areas.glb'))
-             and fp14.get('camerasSha256') == sha256_file(os.path.join(AREA, 'out-zone', 'pv-cameras.json'))
+             and fp14.get('sceneSha256') == sha256_file(SYNTH['scene'])
+             and fp14.get('camerasSha256') == sha256_file(SYNTH['cameras'])
              and fp14.get('presetsSha256') == sha256_file(os.path.join(AREA, 'lighting', 'presets.json'))
              and fp14.get('layoutSha256') == sha256_file(os.path.join(AREA, 'baseline', 'layout.json'))
              and isinstance(fp14.get('argv'), list) and '--shots' in fp14['argv']
              and fp14['argv'][fp14['argv'].index('--shots') + 1] == 'pv14-bazaar-dusk')
     check('必修1 pv14 .done.json 指纹字段齐且与实际文件 sha 一致', ok_fp, str(fp14)[:300])
+    check('R3必修1 实际命令与指纹用同一份合成输入（argv 含注入路径）',
+          ok_fp and SYNTH['scene'] in fp14['argv'] and SYNTH['cameras'] in fp14['argv']
+          and 'out-zone/scene-areas.glb' not in fp14['argv'] and 'out-zone/pv-cameras.json' not in fp14['argv'],
+          str(fp14.get('argv'))[:220] if fp14 else '<无>')
 
     # 进度/RESULT 字段完整（回归）
     prog = jload(os.path.join(out1, 'pv-batch-progress.json'))
@@ -942,6 +982,31 @@ def main():
           r.returncode != 0 and 'no-such-future-param' in out_txt and '未启动 Blender' in out_txt,
           'rc=%d %s' % (r.returncode, out_txt.strip()[-260:]))
     check('R2必修4 两种拒绝都零渲染调用', len(invocations(inv_m4)) == 0, 'n=%d' % len(invocations(inv_m4)))
+
+    # ---------------- R3 必修1：缺件负例 + 注入输入的真实 SHA 校验 ----------------
+    # a) 注入的相机输入文件不存在 → 「指纹输入缺失」报错停下、零渲染（不跳过指纹门禁）
+    inv_r3 = os.path.join(tmp, 'inv-r3.log')
+    saved_cam, SYNTH['cameras'] = SYNTH['cameras'], os.path.join(tmp, 'no-such-pv-cameras.json')
+    r = run_sched(os.path.join(tmp, 'r3-missing'), 'dusk', base_env(stub, inv_r3), more=('--shots', 'pv14'))
+    out_txt = r.stdout + r.stderr
+    check('R3必修1 缺件负例：注入的相机输入缺失 → 指纹门禁报错停下（零渲染）',
+          r.returncode != 0 and '指纹输入缺失' in out_txt and 'camerasSha256' in out_txt
+          and len(invocations(inv_r3)) == 0, 'rc=%d %s' % (r.returncode, out_txt.strip()[-220:]))
+    SYNTH['cameras'] = saved_cam
+
+    # b) 注入的相机输入内容变化（sha 变、仍是合法 JSON）→ camerasSha256 指纹不一致阻止复用
+    out_r3b = os.path.join(tmp, 'r3-camsha')
+    inv_r3b = os.path.join(tmp, 'inv-r3-camsha.log')
+    r = run_sched(out_r3b, 'dusk', base_env(stub, inv_r3b), more=('--shots', 'pv14'))
+    check('R3必修1 相机内容指纹基线跑退出码 0', r.returncode == 0, (r.stdout + r.stderr).strip()[-300:])
+    n_r3b = len(invocations(inv_r3b))
+    with open(SYNTH['cameras'], 'a', encoding='utf-8') as f:
+        f.write(' \n')  # 尾随空白：json.load 不受影响（仍是合法输入），sha256 变化
+    r = run_sched(out_r3b, 'dusk', base_env(stub, inv_r3b), more=('--shots', 'pv14'))
+    out_txt = r.stdout + r.stderr
+    check('R3必修1 注入相机输入内容变化：camerasSha256 阻止复用（按指纹报错、零渲染）',
+          r.returncode != 0 and '指纹' in out_txt and 'camerasSha256' in out_txt
+          and len(invocations(inv_r3b)) == n_r3b, 'rc=%d %s' % (r.returncode, out_txt.strip()[-240:]))
 
     if FAILS:
         print('pv-batch-test：%d 项 FAIL（tmp 保留：%s）' % (len(FAILS), tmp))
