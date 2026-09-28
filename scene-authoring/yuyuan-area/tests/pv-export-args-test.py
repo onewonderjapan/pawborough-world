@@ -13,7 +13,10 @@
      这一行、其余原样执行，结尾不再是裸 main() 即报错退出，不许静默跳过）；
   3. 断言：全部解析成功；--scene / --cameras / --out / --shots / --beauty / --preset
      均按选项读到；--preset = 该镜 pv-shots.json 的 light；--beauty = cycles；
-     分组命令的 --shots 依序恰好覆盖全部分镜、逐镜命令各只含该镜。
+     分组命令的 --shots 依序恰好覆盖全部分镜、逐镜命令各只含该镜；
+     --shots 解析值与期望镜头 id 集合相等、--out 等于期望目录（wave12-debt D1 补语义断言：
+     期望由 pv-shots.json 的 light 字段独立分组得出，不调生成器的 light_groups，
+     也不拿被测命令自身的输出当期望；--out 期望 = <pv-root>/control-24fps-<light>）。
 
 --docs <AI-HANDOFF.md> 可选：对已交付文档里的命令做同一套检查（§1 分组 + §5 逐镜），
 保证交付物与生成器一致。
@@ -76,35 +79,61 @@ def parse_with_renderer(rcp, cmd_one_line):
         return None, 'argparse 拒绝（退出码 %s）：%s' % (e.code, msg[-1] if msg else '<无输出>')
 
 
-def expected_commands(pv_docs, shots):
-    """由生成器现生成应有命令：[(tag, 单行命令, [id…])]，分组在前、逐镜在后（与 AI-HANDOFF 同序）。"""
-    flat = lambda cmd: ' '.join(cmd.replace(' \\\n', ' ').split())
-    out = []
-    for light, ids in pv_docs.light_groups(shots):
-        out.append(('group:%s' % light, flat(pv_docs.export_command(ids, light, PV_ROOT)), ids))
+def independent_groups(shots):
+    """wave12-debt D1：只由 pv-shots.json 的 light 字段做连续分组（不调生成器 light_groups），
+    作为 --shots / --out 语义期望的独立来源，防止生成器分组错了测试跟着错。"""
+    g = []
     for s in shots:
-        out.append(('shot:%s' % s['id'], flat(pv_docs.export_command([s['id']], s['light'], PV_ROOT)), [s['id']]))
+        if g and g[-1][0] == s['light']:
+            g[-1][1].append(s['id'])
+        else:
+            g.append([s['light'], [s['id']]])
+    return g
+
+
+def expected_semantics(shots):
+    """独立语义期望：[(tag, 期望镜头 id 列表, 期望 light)]，分组在前、逐镜在后。"""
+    out = [('group:%s' % light, ids, light) for light, ids in independent_groups(shots)]
+    out += [('shot:%s' % s['id'], [s['id']], s['light']) for s in shots]
     return out
 
 
-def check_one(rcp, by_id, tag, cmd, ids):
+def expected_out(light):
+    """独立期望目录：pv 参考帧按灯光分子目录（wave11-pvboard R2 契约，非从命令读回）。"""
+    return '%s/control-24fps-%s' % (PV_ROOT, light)
+
+
+def generated_commands(pv_docs, shots):
+    """由生成器现生成命令 [(kind, 单行命令)]，分组在前、逐镜在后（被测对象）。"""
+    flat = lambda cmd: ' '.join(cmd.replace(' \\\n', ' ').split())
+    out = [('group', flat(pv_docs.export_command(ids, light, PV_ROOT)))
+           for light, ids in pv_docs.light_groups(shots)]
+    out += [('shot', flat(pv_docs.export_command([s['id']], s['light'], PV_ROOT))) for s in shots]
+    return out
+
+
+def check_one(rcp, cmd, exp_ids, exp_light):
     ns, err = parse_with_renderer(rcp, cmd)
     if err:
         return False, err
-    lights = {by_id[i]['light'] for i in ids if i in by_id}
-    if lights != {ns.preset}:
-        return False, '--preset=%r 但该组镜头 light=%s' % (ns.preset, sorted(lights))
+    got_ids = ns.shots.split(',') if ns.shots else []
+    if set(got_ids) != set(exp_ids):
+        return False, '--shots=%r 与期望 id 集合 %s 不等（pv-shots.json 独立分组）' % (ns.shots, sorted(exp_ids))
+    if ns.out != expected_out(exp_light):
+        return False, '--out=%r 与期望目录 %r 不等' % (ns.out, expected_out(exp_light))
+    if ns.preset != exp_light:
+        return False, '--preset=%r 但该组期望 light=%r' % (ns.preset, exp_light)
     if ns.beauty != 'cycles':
-        return False, '--beauty=%r（须 cycles，workbench 出不了灯光参考帧）' % ns.beauty
+        return False, '--beauty=%r（须 cycles，workbench 出不了灯光参考帧）' % (ns.beauty,)
     if ns.scene != 'out-zone/scene-areas.glb' or ns.cameras != 'out-zone/pv-cameras.json':
         return False, '--scene/--cameras 未按选项读到（%r / %r）——典型第二个 -- 症状' % (ns.scene, ns.cameras)
     return True, 'preset=%s shots=%s out=%s' % (ns.preset, ns.shots, ns.out)
 
 
-def run_suite(rcp, by_id, entries, label):
+def run_suite(rcp, entries, label):
     ok_n = 0
-    for tag, cmd, ids in entries:
-        ok, msg = check_one(rcp, by_id, tag, cmd, ids)
+    for tag, cmd, exp_ids, exp_light in entries:
+        ok, msg = check_one(rcp, cmd, exp_ids, exp_light)
         print('%s %s %s：%s' % ('PASS' if ok else 'FAIL', label, tag, msg))
         ok_n += 1 if ok else 0
     print('%s：%d/%d pass' % (label, ok_n, len(entries)))
@@ -150,27 +179,35 @@ def main():
     docs = rest[rest.index('--docs') + 1] if '--docs' in rest else None
     import json
     shots = json.load(open(PV_SHOTS, encoding='utf-8'))['shots']
-    by_id = {s['id']: s for s in shots}
     pv_docs = load_module(script, 'pv_docs_under_test')
     rcp = load_renderer(RENDERER)
+    sem = expected_semantics(shots)
+    sem_groups = [x for x in sem if x[0].startswith('group:')]
+    sem_shots = [x for x in sem if x[0].startswith('shot:')]
 
-    all_ok = run_suite(rcp, by_id, expected_commands(pv_docs, shots),
-                       '生成器(%s)' % os.path.relpath(script, AREA))
+    gen = generated_commands(pv_docs, shots)
+    gen_group_n = sum(1 for kind, _ in gen if kind == 'group')
+    all_ok = True
+    if gen_group_n != len(sem_groups) or len(gen) != len(sem):
+        print('FAIL 生成器(%s) 命令条数：分组 %d（独立期望 %d）、总 %d（独立期望 %d）'
+              % (os.path.relpath(script, AREA), gen_group_n, len(sem_groups), len(gen), len(sem)))
+        all_ok = False
+    else:
+        entries = [('%s#gen' % tag, cmd, exp_ids, exp_light)
+                   for (tag, exp_ids, exp_light), (_, cmd) in zip(sem, gen)]
+        all_ok = run_suite(rcp, entries, '生成器(%s)' % os.path.relpath(script, AREA))
 
     if docs:
         got = extract_doc_commands(docs)
-        exp = expected_commands(pv_docs, shots)
-        n_group = sum(1 for t, _, _ in exp if t.startswith('group:'))
-        struct_ok = (len(got['group']) == n_group and len(got['shot']) == len(shots))
-        if not struct_ok:
-            print('FAIL 文档(%s) 命令条数：分组 %d（应 %d）、逐镜 %d（应 %d）'
-                  % (docs, len(got['group']), n_group, len(got['shot']), len(shots)))
+        if len(got['group']) != len(sem_groups) or len(got['shot']) != len(sem_shots):
+            print('FAIL 文档(%s) 命令条数：分组 %d（独立期望 %d）、逐镜 %d（独立期望 %d）'
+                  % (docs, len(got['group']), len(sem_groups), len(got['shot']), len(sem_shots)))
             all_ok = False
         else:
-            entries = ([('group#%d' % i, c, ids) for i, ((_, _, ids), c) in
-                        enumerate(zip(exp[:n_group], got['group']))]
-                       + [('shot#%d' % i, c, [s['id']]) for i, (s, c) in enumerate(zip(shots, got['shot']))])
-            all_ok = run_suite(rcp, by_id, entries, '文档(%s)' % docs) and all_ok
+            entries = [('%s#doc' % tag, c, exp_ids, exp_light)
+                       for (tag, exp_ids, exp_light), c in zip(sem_groups + sem_shots,
+                                                               got['group'] + got['shot'])]
+            all_ok = run_suite(rcp, entries, '文档(%s)' % docs) and all_ok
 
     if not all_ok:
         raise SystemExit(1)
