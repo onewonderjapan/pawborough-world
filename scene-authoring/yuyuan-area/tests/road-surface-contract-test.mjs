@@ -10,9 +10,10 @@
 //
 // 两端驱动方式（同 tests/fangbang-rounding-contract-test.mjs 的跨语言方式）：
 //   Python 端：子进程 import scripts/road_surface.py 的 road_surface_footprints，直喂审查点名的合成 geometry；
-//   JS 端：类型检查在 build-scene.mjs road 分支内联（不可 import），用临时 OUT_DIR + 真实 out-zone/layout.json
-//   的单路变异驱动（检查只看这两个字段，变异后的 geometry 与合成用例等价）。合法空数组以
-//   procedural-stats.json 的 byKind.road / meshes 计数证明该路不再产生任何 mesh（= 空几何）。
+//   JS 端：类型检查在 build-scene.mjs road 分支内联（不可 import），用临时 OUT_DIR + 当前重建 OUT_DIR
+//   （process.env.OUT_DIR || 'out-zone'，R3 起支持绝对路径）的 layout.json 单路变异驱动（检查只看这两个字段，
+//   变异后的 geometry 与合成用例等价）。合法空数组以 procedural-stats.json 的 byKind.road / meshes 计数证明
+//   该路不再产生任何 mesh（= 空几何）。变异输出始终写独立临时目录，不写输入 OUT_DIR。
 // 红（aa021030，artifacts/r1/RED-road-surface-contract.log + .patch）：E1/E2 的 Python 断言 FAIL，JS 端全过。
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -26,7 +27,10 @@ const ok = (cond, msg, data) => { if (cond) { console.log('PASS', msg); } else {
 
 // ---------- 变异目标：第一条「有旧单块 surfaceFootprint、无 surfaceFootprints、非 skipRender、不在 FANGBANG 裁让名单」的路 ----------
 const FANGBANG_CLIP_IDS = ['road-238219466', 'road-238219464', 'road-33683439'];   // 与 build-scene FANGBANG_ROAD_CLIP 同源名单
-const LAYOUT = JSON.parse(fs.readFileSync(path.join(ROOT, 'out-zone', 'layout.json'), 'utf8'));
+// R3（REVIEW-astra-R2 必修2）：输入 layout 从 OUT_DIR 解析（支持绝对路径；默认 out-zone）——
+// 指定新 OUT_DIR 重建时不再回头读旧的 out-zone/layout.json。变异输出仍写独立临时目录（runScene）。
+const IN_ZONE = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
+const LAYOUT = JSON.parse(fs.readFileSync(path.join(IN_ZONE, 'layout.json'), 'utf8'));
 const target = LAYOUT.objects.find(o => o.kind === 'road' && !o.skipRender
   && !FANGBANG_CLIP_IDS.includes(o.id)
   && Array.isArray(o.geometry.surfaceFootprint) && o.geometry.surfaceFootprint.length
