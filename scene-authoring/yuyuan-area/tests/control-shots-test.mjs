@@ -38,18 +38,21 @@ const layout = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline', 'layout.js
 // fangbang-route.json / collision-fangbang.json）时，才跳过依赖方浜分区数据的两个镜头——
 // ① fangbang-westbound（路线依据）与 ⑪ fangbang-eastbound（店屋碰撞集 + 方浜街面不在场景里），
 // 其余镜头照常生成、照常检查，不得把整测 SKIP 记作完整镜头验收。
+// wave12-debt D6：是否跳过①⑪只由显式开关 FANGBANG=0 决定，不再看文件是否残留——旧口径
+// 「FANGBANG=0 且文件缺失」才跳，生成器与测试在「仅路线残留、碰撞缺失」等组合下会分歧
+// （astra R4 可选 2：FANGBANG=0 + 残留文件仍生成 11 镜头）。
 // 默认 / FANGBANG=1 下缺 fangbang-route.json 必须失败（默认路径缺件不许混进「显式关闭」的 SKIP）——
-// 红：FANGBANG=1 OUT_DIR=out-fb0 在旧版被整测 SKIP 退出 0（artifacts/r4/red-control-shots-fb1-missing-route.txt）。
+// 红：FANGBANG=1 OUT_DIR=out-fb0 在旧版被整测 SKIP 退出 0（artifacts/r4/red-control-shots-fb1-missing-route.txt）；
+// D6 红：FANGBANG=0 + 残留文件在旧生成器仍出 11 镜头、新断言（9）红（本工单包 artifacts/d6/）。
 const FB_OFF = process.env.FANGBANG === '0';
 const hasFbRoute = fs.existsSync(path.join(OUT, 'fangbang-route.json'));
-const hasFbColl = fs.existsSync(path.join(OUT, 'collision-fangbang.json'));
 if (!FB_OFF && !hasFbRoute) {
   console.error(`FAIL: fangbang-route.json missing in ${path.relative(ROOT, OUT)} while FANGBANG!=0 — the default build must generate it (shot 1 has no route basis)`);
   process.exit(1);
 }
 const FB_SHOTS = new Set(['fangbang-westbound', 'fangbang-eastbound']);
-const fbSkipShots = FB_OFF && (!hasFbRoute || !hasFbColl);
-const genSkipsShot1 = FB_OFF && !hasFbRoute;
+const fbSkipShots = FB_OFF;        // 显式开关唯一决定，文件残留不再参与判定
+const genSkipsShot1 = FB_OFF;
 const fbRoute = hasFbRoute ? JSON.parse(fs.readFileSync(path.join(OUT, 'fangbang-route.json'), 'utf8')) : null;
 
 // 由源重生成一遍：同一冻结输入必须给出同一相机路径（确定性）

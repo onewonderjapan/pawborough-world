@@ -1322,6 +1322,11 @@ for (const o0 of layout.objects) {
       // 不再回退 ribbon / surfaceFootprint（R2 版 `surfaceFootprints || ...` 把空数组当真值取走、
       // 再因 fps.length===0 落回 ribbon，被裁掉的路面会随 ribbon 复活；JS 空数组是真值而 Python
       // 空列表是假值，渲染端与测试语义必须统一——road-footprint-clearance-test.py 同口径）。
+      // wave12-debt D6（与 scripts/road_surface.py 字段类型检查对齐）：两个字段存在但不是数组 = 数据损坏，
+      // 直接抛错——不许静默走回退链（Array.isArray 把非数组当「字段不存在」吞掉，Python 端键存在判断
+      // 会把字符串当权威值，两端对非数组必须同样显式报错）。
+      for (const [fld, v] of [['surfaceFootprints', o.geometry.surfaceFootprints], ['surfaceFootprint', o.geometry.surfaceFootprint]])
+        if (v !== undefined && !Array.isArray(v)) throw new Error(`road ${o.id}: ${fld} 存在但不是数组（${typeof v}），数据损坏，拒绝静默回退`);
       const hasSfs = Array.isArray(o.geometry.surfaceFootprints);
       let fps = hasSfs ? o.geometry.surfaceFootprints
         : (o.geometry.surfaceFootprint ? [o.geometry.surfaceFootprint] : null);

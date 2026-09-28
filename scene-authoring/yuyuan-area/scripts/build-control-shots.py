@@ -171,19 +171,21 @@ def main():
     oz = args.out_zone if os.path.isabs(args.out_zone) else os.path.join(ROOT, args.out_zone)
 
     layout = load_json(os.path.join(ROOT, 'baseline', 'layout.json'))
-    # wave10-streetfix R4（审查必修2）：SKIP 收窄到镜头级。FANGBANG=0（rebuild-review.sh 不生成
-    # fangbang-route.json / collision-fangbang.json）时镜头①失去路线依据 → 不出①、照常出其余镜头；
-    # 默认 / FANGBANG=1 下缺文件仍然直接抛错（默认路径缺件必须失败，不许混成「显式关闭」）。
+    # wave10-streetfix R4（审查必修2）：SKIP 收窄到镜头级。FANGBANG=0 时不生成镜头①⑪。
+    # wave12-debt D6：是否跳过只由显式开关 FANGBANG=0 决定，不再看文件是否残留——旧逻辑
+    # 「FANGBANG=0 且文件不存在」才跳，残留旧文件时照样出①⑪，与 control-shots-test 的跳过口径
+    # 在「仅路线残留、碰撞缺失」等组合下分歧（astra R4 可选 2）。默认 / FANGBANG=1 下缺文件仍然
+    # 直接抛错（默认路径缺件必须失败，不许混成「显式关闭」）。
     fb_path = os.path.join(oz, 'fangbang-route.json')
-    fb_off_missing = os.environ.get('FANGBANG') == '0' and not os.path.exists(fb_path)
-    fb_route = None if fb_off_missing else load_json(fb_path)
+    fb_off = os.environ.get('FANGBANG') == '0'
+    fb_route = None if fb_off else load_json(fb_path)
     commercial = load_json(os.path.join(oz, 'commercial-route.json'))
     objs = {o['id']: o for o in layout['objects']}
     insts = {i['id']: i for i in layout['instances']}
     N = args.frames
     errors = []
 
-    # ---------- 镜头① 方浜中路西行到山门（FANGBANG=0 缺路线依据时不出该镜头） ----------
+    # ---------- 镜头① 方浜中路西行到山门（FANGBANG=0 显式关闭时不出该镜头，不看文件残留） ----------
     ms = sj = corner = None
     fb_eye, fb_tgt = [], []
     if fb_route is not None:
@@ -323,7 +325,7 @@ def main():
         'coordinateNote': '坐标为地图系 [x, y高度, z]（同 out-zone/tour.json）；Blender 世界=(x,-z,y)；glTF Y-up 世界=本文件坐标',
         'sources': {
             'layout': 'baseline/layout.json',
-            'fangbangRoute': 'skipped (FANGBANG=0: fangbang-route.json not generated)' if fb_route is None
+            'fangbangRoute': 'skipped (FANGBANG=0: fangbang shots disabled by explicit switch)' if fb_route is None
                 else os.path.relpath(os.path.join(oz, 'fangbang-route.json'), ROOT),
             'commercialRoute': os.path.relpath(os.path.join(oz, 'commercial-route.json'), ROOT),
             'shanmenJunctionIdx': sj,
@@ -339,7 +341,7 @@ def main():
         spec = load_json(args.spec)
         extra, spec_err = build_spec_shots(spec, SpecContext(ROOT, oz, layout), N)
         errors += spec_err
-        if fb_off_missing:
+        if fb_off:
             # ⑪方浜中路东行的场景上下文（方浜街面店屋碰撞）在 FANGBANG=0 下不存在，随①一起跳过
             extra = [x for x in extra if x['id'] != 'fangbang-eastbound']
         doc['shots'] += extra
@@ -360,7 +362,7 @@ def main():
         print('  shanmen junction idx', sj, '(%0.1f, %0.1f)' % (ms[sj][0], ms[sj][1]),
               '| E-W corner idx', corner, '| walk %.0f m' % (s_stop - s0))
     else:
-        print('  FANGBANG=0: shot ① skipped (no fangbang-route.json); ②③④–⑩ generated')
+        print('  FANGBANG=0: shot ① skipped (explicit switch, residual files ignored); ②③④–⑩ generated')
     print('  habao arc R %.1f m az %+.0f..%+.0f deg lens %.0f mm, target height %.1f m (%s), eye0 (%0.2f, %0.2f) eye23 (%0.2f, %0.2f)'
           % (HB_ARC_R, HB_ARC_A0, HB_ARC_A1, HB_LENS_MM, hb_h, hb_variant, hb_eye[0][0], hb_eye[0][2], hb_eye[-1][0], hb_eye[-1][2]))
     print('  jiuqu walk %.1f m (centreline arc %.1f m) cam y %.2f lens %.0f mm -> end %.1f m from huxin (%0.2f, %0.2f)'
