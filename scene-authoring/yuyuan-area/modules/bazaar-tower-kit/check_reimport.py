@@ -116,6 +116,13 @@ gls = [k for k in alpha if 'glass' in k]
 # Blender 4.5 将 glTF MASK 导入为 HASHED；判断标准=Alpha 输入已连接到贴图 + 混合模式为遮罩类
 check('格心材质 Alpha 已连接、混合模式为遮罩类', bool(lat) and alpha[lat[0]][0] in ('CLIP', 'MASK', 'HASHED')
       and alpha[lat[0]][1] == 'linked', str(alpha.get(lat[0]) if lat else None))
+# wave12 W1：楼上窗背板专用材质 btk-winback（背板按 (part,材质) 合并为单节点；每块背板 2 三角，
+# 三角数 // 2 应等于生成器调用计数 measurements.windowBackingCalls；无 window() 的楼为 0/0）
+_wb_calls = P.get('windowBackingCalls', 0)
+_wb = [o for o in meshes if o.data.materials and o.data.materials[0] and o.data.materials[0].name.endswith('winback')]
+_wb_tris = sum(len(o.data.loop_triangles) for o in _wb)
+check('楼上窗背板 btk-winback：节点 %d、三角 // 2 = %d == windowBackingCalls %d（wave12 W1）'
+      % (len(_wb), _wb_tris // 2, _wb_calls), _wb_tris // 2 == _wb_calls and (bool(_wb) or _wb_calls == 0))
 sys.path.insert(0, HERE)
 import params_load                                               # noqa: E402
 _PP = params_load.load(P['params'])
