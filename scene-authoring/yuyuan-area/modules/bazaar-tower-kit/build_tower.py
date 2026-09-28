@@ -1453,6 +1453,9 @@ def _winback_panel(name, r, sc, o, z0, z1, w, timber, part):
 
 def window(name, r, sc, zfloor, ztop, w, h, sill, lf, timber='wood', part='windows'):
     global WINBACK_N
+    if not 0.0 <= lf <= 1.0:
+        # E3（towerwin2 可选3）：lf 超出 [0,1] 直接报错——越界值会把格心底推到背板外，不许静默生成
+        raise SystemExit('E: window %s lf=%r 超出 [0,1]——拒绝生成（参数范围校验）' % (name, lf))
     z0 = zfloor + sill
     if z0 + h > ztop - 0.25:
         h = ztop - 0.25 - z0
@@ -1463,11 +1466,17 @@ def window(name, r, sc, zfloor, ztop, w, h, sill, lf, timber='wood', part='windo
     # wave12 W1：背板改专用材质 btk-winback（几何 / UV 不变）；跨共享边被 wave7 B 守卫拦下时不出板也不计数
     # wave12-towerwin2 T0：背板拆两块——格心覆盖段（zl0 以上，与 win-* 格心底同高，含格心上缘 0.04 收边）
     # = winback 材质；其下实心段 = 原 timber（无格心遮挡，夜间不得发光）。两块同深同宽，总面积与外轮廓不变。
-    if zl0 - (z0 - 0.07) > 0.01:
-        rpanel('winb-solid-' + name, r, sc, 0.03, z0 - 0.07, zl0, w + 0.14, timber, part)
-    if _winback_panel('winb-' + name, r, sc, 0.03, zl0, z0 + h + 0.07, w + 0.14, timber, part) is not None:
-        WINBACK_N += 1
-    rpanel('win-' + name, r, sc, 0.054, zl0, z0 + h + 0.03, w - 0.02, lat, part)
+    # E3（towerwin2 可选3）：拆段与 band 同款退化保护——覆盖段（zl0..上缘）高 ≤ 0.01 时不拆段不出
+    # lit 板不计数，整体保留 timber（完整覆盖）；实心段为正高度（含 ≤ 1cm 细条）就出板，
+    # 总背板覆盖恒等于 h+0.14，不因拆段缩水。
+    if (z0 + h + 0.07) - zl0 > 0.01:
+        if zl0 - (z0 - 0.07) > 0.0:
+            rpanel('winb-solid-' + name, r, sc, 0.03, z0 - 0.07, zl0, w + 0.14, timber, part)
+        if _winback_panel('winb-' + name, r, sc, 0.03, zl0, z0 + h + 0.07, w + 0.14, timber, part) is not None:
+            WINBACK_N += 1
+        rpanel('win-' + name, r, sc, 0.054, zl0, z0 + h + 0.03, w - 0.02, lat, part)
+    else:
+        rpanel('winb-solid-' + name, r, sc, 0.03, z0 - 0.07, z0 + h + 0.07, w + 0.14, timber, part)
 
 def architrave(name, r, s0, s1, z0, z1, timber='wood'):
     obox('frame-' + name, r, s0, s1, FPR - FDP, FPR, z0, z1, timber, 'frame')
@@ -2121,18 +2130,26 @@ for b in BLOCKS:
                         continue
                     if sty == 'screen':                         # 长窗屏：整樘木背板 + 每开间数扇格心长窗
                         nlv, gap, lf = FA['longWindowLeaves'], FA['leafGapM'], FA['longWindowLatticeFrac']
+                        if not 0.0 <= lf <= 1.0:
+                            # E3（towerwin2 可选3）：lf 超出 [0,1] 直接报错（与 window 同款参数校验）
+                            raise SystemExit('E: screen %s lf=%r 超出 [0,1]——拒绝生成（参数范围校验）' % (tag, lf))
                         zw0 = zl0 + (1.0 - lf) * (zl1 - zl0)
                         # wave12-towerwin2 T1：背板拆两块——格心覆盖段（zw0..zl1，与 winleaf-* 格心底同高）=
                         # winback 材质；其下实心段（zl0..zw0）= 原 timber（无格心遮挡，夜间不得发光）。
                         # 两块同深同宽，总面积与外轮廓不变（原整板 zl0..zl1 在 zw0 处一分为二）。
-                        if zw0 - zl0 > 0.01:
-                            rpanel('winbay-solid-%s-%d' % (tag, bi), r, (g0 + g1) / 2, 0.02, zl0, zw0, g1 - g0, tim, 'windows')
-                        if _winback_panel('winbay-%s-%d' % (tag, bi), r, (g0 + g1) / 2, 0.02, zw0, zl1, g1 - g0, tim, 'windows') is not None:
-                            SCREENBACK_N += 1
-                        pitch = (g1 - g0) / nlv
-                        for kk in range(nlv):
-                            rpanel('winleaf-%s-%d-%d' % (tag, bi, kk), r, g0 + pitch * (kk + 0.5), 0.045, zw0, zl1 - 0.03,
-                                   pitch - gap, 'lattice' if tim == 'wood' else 'lattice2', 'windows')
+                        # E3（towerwin2 可选3）：拆段与 band 同款退化保护——覆盖段（zw0..zl1）高 ≤ 0.01 时
+                        # 不拆段不出 lit 板不计数，整体保留 timber；实心段为正高度（含 ≤ 1cm 细条）就出板。
+                        if zl1 - zw0 > 0.01:
+                            if zw0 - zl0 > 0.0:
+                                rpanel('winbay-solid-%s-%d' % (tag, bi), r, (g0 + g1) / 2, 0.02, zl0, zw0, g1 - g0, tim, 'windows')
+                            if _winback_panel('winbay-%s-%d' % (tag, bi), r, (g0 + g1) / 2, 0.02, zw0, zl1, g1 - g0, tim, 'windows') is not None:
+                                SCREENBACK_N += 1
+                            pitch = (g1 - g0) / nlv
+                            for kk in range(nlv):
+                                rpanel('winleaf-%s-%d-%d' % (tag, bi, kk), r, g0 + pitch * (kk + 0.5), 0.045, zw0, zl1 - 0.03,
+                                       pitch - gap, 'lattice' if tim == 'wood' else 'lattice2', 'windows')
+                        else:
+                            rpanel('winbay-solid-%s-%d' % (tag, bi), r, (g0 + g1) / 2, 0.02, zl0, zl1, g1 - g0, tim, 'windows')
                     else:                                       # 窗带：白墙上一条通开间的格心窗（上下露白墙）
                         bh, bs = stl.get('bandHM', 1.3), stl.get('bandSillM', 0.95)
                         zb0 = z + bs
