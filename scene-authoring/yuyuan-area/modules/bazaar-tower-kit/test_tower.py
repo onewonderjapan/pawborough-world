@@ -340,11 +340,24 @@ lat_m = next((v for k, v in mats.items() if 'lattice' in k), None)
 gl_m = next((v for k, v in mats.items() if 'glass' in k), None)
 # wave12-debt D7：glTF 2.0 alphaCutoff 缺省值是 0.5（gltfpack 会省略等于缺省的字段）——
 # 省略须按 0.5 判，旧写法 `or 0` 把省略当 0，--source zone 下 16 个既有失败即由此而来。
+# wave12-debt R1（审查可选）：省略与显式非法值要区分——alphaCutoff 是 number，显式 null/bool/字符串
+# 违反 schema，属格式错误（返回 None，调用方判失败），不得偷换成缺省 0.5 掩盖导出器写坏。
 def _cutoff(m):
-    ac = m.get('alphaCutoff')
-    return 0.5 if ac is None else ac
-ok('test3d 格心材质 alphaMode=MASK + cutoff 0.5（省略按 glTF 缺省 0.5）', bool(lat_m) and lat_m.get('alphaMode') == 'MASK'
+    if 'alphaCutoff' not in m:
+        return 0.5
+    ac = m['alphaCutoff']
+    return ac if isinstance(ac, (int, float)) and not isinstance(ac, bool) else None
+ok('test3d 格心材质 alphaMode=MASK + cutoff 0.5（省略按 glTF 缺省 0.5；显式 null/非数按格式错误拒绝）',
+   bool(lat_m) and lat_m.get('alphaMode') == 'MASK' and _cutoff(lat_m) is not None
    and abs(_cutoff(lat_m) - 0.5) < 1e-6, str(lat_m and lat_m.get('alphaMode')))
+# wave12-debt R1（审查可选）：负例——显式 null / 非法值不是「省略」（glTF 2.0 alphaCutoff 是 number，
+# null/bool/字符串都违反 schema），不得偷换成缺省 0.5 放过（掩盖导出器写坏）；省略与合法数值行为不变。
+ok('test3d0 负例 alphaCutoff 显式 null/字符串/bool = 格式错误（None），省略=0.5、数值照常',
+   _cutoff({'alphaMode': 'MASK', 'alphaCutoff': None}) is None
+   and _cutoff({'alphaMode': 'MASK', 'alphaCutoff': '0.5'}) is None
+   and _cutoff({'alphaMode': 'MASK', 'alphaCutoff': True}) is None
+   and _cutoff({'alphaMode': 'MASK'}) == 0.5
+   and _cutoff({'alphaMode': 'MASK', 'alphaCutoff': 0.37}) == 0.37)
 ok('test3e 玻璃材质 alphaMode=BLEND', bool(gl_m) and gl_m.get('alphaMode') == 'BLEND',
    str(gl_m and gl_m.get('alphaMode')))
 
@@ -488,8 +501,12 @@ def huabao_r2_tests():
     mats_by_name = {m.get('name', ''): m for m in gj.get('materials', [])}
     def mask_ok(sub):
         m = next((v for k, v in mats_by_name.items() if sub in k), None)
-        # alphaCutoff 省略按 glTF 2.0 缺省 0.5（wave12-debt D7，同 test3d 的 _cutoff）
-        return bool(m) and m.get('alphaMode') == 'MASK' and abs(_cutoff(m) - 0.5) < 1e-6
+        # alphaCutoff 省略按 glTF 2.0 缺省 0.5（wave12-debt D7，同 test3d 的 _cutoff）；
+        # 显式 null/非数是格式错误（R1：_cutoff 返回 None → 判失败，不按缺省 0.5 放过）
+        if not m or m.get('alphaMode') != 'MASK':
+            return False
+        c = _cutoff(m)
+        return c is not None and abs(c - 0.5) < 1e-6
     ok('test8a 直棂(slats)/挂落(guoluo) alpha 材质 MASK+0.5', mask_ok('slats') and mask_ok('guoluo'),
        str({k: v.get('alphaMode') for k, v in mats_by_name.items() if 'slats' in k or 'guoluo' in k}))
 
