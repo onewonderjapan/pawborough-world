@@ -77,6 +77,6 @@
   "cycles": { "samples": 64, "maxBounces": 4, "denoise": "OPENIMAGEDENOISE", "device": "GPU", "clampIndirect": 5.0 },
   "eevee": { "samples": 32, "shadowResolutionScale": 1.0, "raytracing": true },
   "ambientOcclusion": { "distanceM": 1.5 },
-  "ambientMultiplier": { "day": 2.1835, "dusk": 2.1238, "night": 1.4607 }
+  "ambientMultiplier": { "day": 2.2038, "dusk": 2.2038, "night": 1.5157 }
  }
 }

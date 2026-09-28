@@ -12,7 +12,8 @@
         厅堂 = modules/hall-kit/ids.json 全部 id），用 Workbench FLAT+OBJECT 白/黑遮挡掩膜渲染，
         读 PNG 红通道 > 127 —— 与 web/target-mask.js 的深度遮挡语义一致。
   立面带：掩膜屏幕包围盒自上 45% 处到盒底的像素（= 包围盒下 55%），测 beauty 图平均 sRGB V=max(R,G,B)。
-  护栏：倍率 ∈ [1,4]；湖心亭 / 九曲桥机位全画面裁切占比（max 通道 ≥ 250）相比倍率 1.0 增加 ≤ 0.5 pp；
+  护栏：倍率 ∈ [1,4]；湖心亭 / 九曲桥 / 华宝楼广场机位全画面裁切占比（max 通道 ≥ 250）相比倍率 1.0 增加 ≤ 0.5 pp
+        （wave12-r1 起华宝楼广场纳入；最优点破护栏时退到护栏内最大倍率，记 guardLimited）；
         夜晚最亮 0.5% 像素 R > B 占比 ≥ 0.8（湖心亭 / 九曲桥 / 华宝楼）。
 
 做法：beauty 渲染走 render-control-passes.py 自己的 build_lighting_world / setup_beauty_lighting /
@@ -152,6 +153,9 @@ class Calibrator:
         t0 = time.perf_counter()
         bpy.ops.import_scene.gltf(filepath=os.path.abspath(args.scene))
         log('glb imported in %.1fs, objects=%d' % (time.perf_counter() - t0, len(bpy.data.objects)))
+        # wave12-r1：与渲染器 --beauty cycles 同一套导入后材质对齐（铺装贴图 / 共面叠放 / 绕序 / 查看器 mip），
+        # 否则标定的是「缺贴图、有黑块」的 Cycles 画面（R1 前的 B2 标定即如此）
+        self.material_info = rcp.prepare_beauty_materials(os.path.abspath(args.scene))
         self.meshes = [ob for ob in bpy.data.objects if ob.type == 'MESH' and not ob.hide_render]
         self.ident = {ob.name: rcp.layout_id_of(ob, id_universe) for ob in self.meshes}
         cam_data = bpy.data.cameras.new('calib-cam')
@@ -161,6 +165,7 @@ class Calibrator:
         cam_data.clip_start = CLIP_NEAR
         cam_data.clip_end = CLIP_FAR
         self.cam_data = cam_data
+        rcp.set_pixel_angle(self.scene, cam_data, W, H)
         self.cam_ob = bpy.data.objects.new('calib-cam', cam_data)
         self.scene.collection.objects.link(self.cam_ob)
         self.scene.camera = self.cam_ob
@@ -370,22 +375,50 @@ def calibrate_preset(cal, preset, tgt_sh):
             break
         cand = min(grid, key=max_err)   # 确认点已进 cache/折线，重选
 
+    # 3) 护栏（湖心亭 / 九曲桥 / 华宝楼广场三机位裁切增量 ≤ 0.5 pp；夜晚最亮 0.5% 暖色占比 ≥ 0.8）。
+    #    wave12-r1：华宝楼广场纳入裁切护栏；最优点破护栏时，在 [1, 最优点] 上对「护栏全过」几何二分，取最大可行倍率
+    #    （裁切占比随 m 单调不减），再实测该点两处立面 V 作为最终结果，如实记录 guardLimited。
+    def guard_at(m):
+        g = {}
+        for v in VIEWS_GUARD:
+            now = measure(v, m)
+            b = base[v]
+            entry = {'clipShare1': b['clipShare'], 'clipShare': now['clipShare'],
+                     'clipDeltaPp': round((now['clipShare'] - b['clipShare']) * 100, 4)}
+            if preset == 'night':
+                entry['warmShare1'] = b.get('warmShare')
+                entry['warmShare'] = now.get('warmShare')
+            g[v] = entry
+        c_ok = all(g[v]['clipDeltaPp'] <= CLIP_GUARD_PP + 1e-9 for v in VIEWS_GUARD)
+        w_ok = preset != 'night' or all((g[v].get('warmShare') or 0) >= WARM_GUARD for v in VIEWS_GUARD)
+        return g, c_ok, w_ok
+
+    unconstrained = dict(best)
     m_final = best['multiplier']
-    # 3) 护栏机位在最终倍率下实测（基线 1.0 已有）
-    guard = {}
-    for v in VIEWS_GUARD:
-        now = measure(v, m_final)
-        b = base[v]
-        entry = {'clipShare1': b['clipShare'], 'clipShare': now['clipShare'],
-                 'clipDeltaPp': round((now['clipShare'] - b['clipShare']) * 100, 4)}
-        if preset == 'night':
-            entry['warmShare1'] = b.get('warmShare')
-            entry['warmShare'] = now.get('warmShare')
-        guard[v] = entry
-    clip_ok = all(guard[v]['clipDeltaPp'] <= CLIP_GUARD_PP + 1e-9 for v in ('huxinting', 'jiuqu'))
-    warm_ok = True
-    if preset == 'night':
-        warm_ok = all((guard[v].get('warmShare') or 0) >= WARM_GUARD for v in VIEWS_GUARD)
+    guard, clip_ok, warm_ok = guard_at(m_final)
+    guard_limited = False
+    if not (clip_ok and warm_ok) and m_final > MULT_MIN:
+        lo, hi = MULT_MIN, m_final
+        g1, c1, w1 = guard_at(lo)
+        if c1 and w1:
+            for _ in range(cal.args.iters):
+                mid = round(math.sqrt(lo * hi), 4)
+                _g, c, w = guard_at(mid)
+                if c and w:
+                    lo = mid
+                else:
+                    hi = mid
+                if hi / lo < 1.02:
+                    break
+            m_final = lo
+            guard, clip_ok, warm_ok = guard_at(m_final)
+            got = {v: measure(v, m_final) for v in VIEWS_BISECT}
+            errs = {v: abs(got[v]['facadeV'] - t) / t for v, t in zip(VIEWS_BISECT, tgt_sh)}
+            best = {'round': best['round'], 'multiplier': m_final,
+                    'facadeV': {v: got[v]['facadeV'] for v in VIEWS_BISECT},
+                    'relErr': {v: round(errs[v], 4) for v in VIEWS_BISECT},
+                    'maxRelErr': round(max(errs.values()), 4)}
+            guard_limited = True
 
     iters = sorted(({'view': k[0], 'multiplier': k[1], **cache[k]} for k in cache if k[0] in VIEWS_BISECT),
                    key=lambda r: (r['multiplier'], r['view']))
@@ -395,6 +428,7 @@ def calibrate_preset(cal, preset, tgt_sh):
            'confirmRounds': best['round'] + 1, 'guard': guard,
            'clipGuardOK': clip_ok, 'warmGuardOK': warm_ok,
            'clipGuardLimitPp': CLIP_GUARD_PP, 'warmGuardMin': WARM_GUARD,
+           'clipGuardViews': list(VIEWS_GUARD), 'guardLimited': guard_limited, 'unconstrainedBest': unconstrained,
            'iterations': iters}
     dump(meas_path, cache)
     log('%s result: m=%s facadeV=%s maxRelErr=%s clipOK=%s warmOK=%s'
@@ -423,7 +457,8 @@ def main():
         json.dump({'version': 1,
                    'targetsSource': 'viewer facadeBand V，灯光工单 R2 实测（GOAL 口径）；每次迭代原始测量在 meas-<preset>.json',
                    'presets': summary, 'cameras': views, 'targetIds': tgt,
-                   'lensMm': cal.cam_data.lens, 'size': [W, H], 'fovYDeg': FOV_Y_DEG},
+                   'lensMm': cal.cam_data.lens, 'size': [W, H], 'fovYDeg': FOV_Y_DEG,
+                   'beautyMaterials': {k: (v if not isinstance(v, list) else len(v)) for k, v in cal.material_info.items()}},
                   f, ensure_ascii=False, indent=1)
         f.write('\n')
     for preset, s in summary.items():
