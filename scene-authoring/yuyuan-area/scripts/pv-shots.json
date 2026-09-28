@@ -8,12 +8,12 @@
   "night"
  ],
  "styleNote": {
-  "zh": "形制词一律写成「1990 年代重建的仿古」：1990 年代重建的豫园商城仿古楼、灰瓦飞檐、深色木构、白墙、江南园林；不写任何可读文字或招牌内容，不写建造年代与史实。",
-  "en": "Style words are always framed as 1990s-style rebuilt: 1990s-style rebuilt Yuyuan bazaar buildings, grey tile roofs with upturned eaves, dark timber, white plaster walls, Jiangnan garden; no readable text or sign content, no dates or historical claims."
+  "zh": "形制词一律写成外观描述：「1990 年代改建后的商城形象」「呈现 1990 年代改建后外观的仿古楼」，配灰瓦飞檐、深色木构、白墙、江南园林；正向补「维护良好、不刻意做旧」；不写「重建」等史实表述，不写任何可读文字或招牌内容，不写建造年代与史实。",
+  "en": "Style words always describe the look, not history: a bazaar presenting a 1990s-renovated look / Yuyuan bazaar buildings with a 1990s-renovated appearance, grey tile roofs with upturned eaves, dark timber, white plaster walls, Jiangnan garden; always add well-kept, not artificially aged; never say rebuilt or claim reconstruction history, no readable text or sign content, no dates or historical claims."
  },
  "negative": {
-  "zh": "可读文字，汉字，字母，招牌字样，匾额文字，标志，水印，字幕，人物，人群，人脸特写，汽车，现代玻璃幕墙高楼，结构扭曲，屋顶变形，建筑漂移，画面闪烁，参考帧之外新增建筑，鱼眼畸变，过饱和",
-  "en": "readable text, Chinese characters, letters, sign lettering, plaque inscriptions, logos, watermark, subtitles, people, crowds, close-up faces, cars, modern glass towers, warped geometry, deformed roofs, drifting buildings, flicker, extra buildings not in the reference, fisheye distortion, oversaturation"
+  "zh": "可读文字，汉字，字母，招牌字样，匾额文字，标志，水印，字幕，人物，人群，人脸特写，汽车，现代玻璃幕墙高楼，结构扭曲，屋顶变形，建筑漂移，画面闪烁，参考帧之外新增建筑，鱼眼畸变，过饱和，老旧，风化，破败，锈迹",
+  "en": "readable text, Chinese characters, letters, sign lettering, plaque inscriptions, logos, watermark, subtitles, people, crowds, close-up faces, cars, modern glass towers, warped geometry, deformed roofs, drifting buildings, flicker, extra buildings not in the reference, fisheye distortion, oversaturation, aged, weathered, ruined, rusty"
  },
  "shots": [
   {
@@ -73,8 +73,8 @@
     ]
    },
    "prompt": {
-    "zh": "电影感航拍，高空斜俯视缓慢前推并轻微下降。上海豫园一带 1990 年代重建的仿古街区全景：近处 1990 年代重建的豫园商城仿古楼群层层灰瓦屋面，右侧城隍庙院落与石板庭院，中景池面上的曲折石桥与亭阁，远处江南园林的树木与亭台。灰瓦飞檐、深色木构、白墙。稳定平滑的无人机运镜，空气通透，远景淡入薄雾，真实比例。",
-    "en": "Cinematic drone shot, high oblique angle, slow push-in with a gentle descent. Wide view of a 1990s-style rebuilt quarter in Shanghai's Yuyuan area: layered grey tile roofs of 1990s-style rebuilt Yuyuan bazaar buildings in the foreground, temple courtyards with stone paving on the right, a zigzag stone bridge and a pavilion on the pond in the middle distance, Jiangnan garden trees and pavilions beyond. Grey tile roofs with upturned eaves, dark timber, white plaster walls. Smooth stabilized drone motion, clear air fading into light haze in the distance, true-to-scale architecture."
+    "zh": "电影感航拍，高空斜俯视缓慢前推并轻微下降。上海豫园一带 1990 年代改建后形象的仿古街区全景：近处呈现 1990 年代改建后外观的豫园商城仿古楼群层层灰瓦屋面，右侧城隍庙院落与石板庭院，中景池面上的曲折石桥与亭阁，远处江南园林的树木与亭台。灰瓦飞檐、深色木构、白墙。稳定平滑的无人机运镜，空气通透，远景淡入薄雾，真实比例。",
+    "en": "Cinematic drone shot, high oblique angle, slow push-in with a gentle descent. Wide view of a quarter presenting a 1990s-renovated look in Shanghai's Yuyuan area: layered grey tile roofs of Yuyuan bazaar buildings presenting a 1990s-renovated look in the foreground, temple courtyards with stone paving on the right, a zigzag stone bridge and a pavilion on the pond in the middle distance, Jiangnan garden trees and pavilions beyond. Grey tile roofs with upturned eaves, dark timber, white plaster walls. Smooth stabilized drone motion, clear air fading into light haze in the distance, true-to-scale architecture."
    }
   },
   {
@@ -85,7 +85,7 @@
    "title": "街面行进到山门前（复用①末段）",
    "intent": {
     "zh": "眼高沿方浜中路走完庙前最后一段，镜头转向城隍庙山门，完成从街到庙的落地（只取①末段，避开前段街角店屋侧墙）",
-    "en": "Eye-level walk over the last stretch of Fangbang Road in front of the temple, turning to face the temple gate: the landing from street to temple (only the tail of shot 1, skipping the corner shop's blank side wall)"
+    "en": "Eye-level tracking move over the last stretch of Fangbang Road in front of the temple, turning to face the temple gate: the landing from street to temple (only the tail of shot 1, skipping the corner shop's blank side wall)"
    },
    "targetId": "temple-shanmen",
    "reuse": {
@@ -105,8 +105,8 @@
    "transitionOut": "dissolve 12f",
    "reveal": true,
    "prompt": {
-    "zh": "稳定器手持眼高前行，沿 1990 年代重建风格的仿古商业街走到街角，镜头缓缓转向城隍庙山门：重檐灰瓦、深色木构门楼、两侧白墙。平稳步速，真实比例。",
-    "en": "Gimbal walk at eye level along a 1990s-style rebuilt shopping street to the corner, the camera slowly turning to face the temple gate: layered grey tile eaves, dark timber gatehouse, white walls on both sides. Steady walking pace, true-to-scale."
+    "zh": "眼高平稳前移的移动摄影（机位匀速前行，非人物行走），沿 1990 年代改建后形象的仿古商业街走到街角，镜头缓缓转向城隍庙山门：重檐灰瓦、深色木构门楼、两侧白墙，建筑维护良好、不刻意做旧。平稳匀速的移动镜头，真实比例。",
+    "en": "Gimbal-stabilised eye-level tracking move (a steady camera dolly, not a person walking) along a shopping street presenting a 1990s-renovated look, to the corner, the camera slowly turning to face the temple gate: layered grey tile eaves, dark timber gatehouse, white walls on both sides, buildings well-kept and not artificially aged. Smooth, steady camera move, true-to-scale."
    }
   },
   {
@@ -136,8 +136,8 @@
    "transitionIn": "dissolve 12f",
    "transitionOut": "cut",
    "prompt": {
-    "zh": "眼高沿寺庙中轴线缓慢前推，前院石板铺地，正前方仪门居中：灰瓦歇山顶、深色木构、左右对称的白墙与廊。1990 年代重建风格。庄重、安静、对称构图。",
-    "en": "Slow eye-level push along the temple's central axis over a stone-paved forecourt toward the centred inner gate: grey tile hip-and-gable roof, dark timber structure, symmetrical white walls and galleries. 1990s-style rebuilt. Calm, solemn, symmetrical composition."
+    "zh": "眼高沿寺庙中轴线缓慢前推，前院石板铺地，正前方仪门居中：灰瓦歇山顶、深色木构、左右对称的白墙与廊。呈现 1990 年代改建后外观。庄重、安静、对称构图。",
+    "en": "Slow eye-level push along the temple's central axis over a stone-paved forecourt toward the centred inner gate: grey tile hip-and-gable roof, dark timber structure, symmetrical white walls and galleries. Presenting a 1990s-renovated look. Calm, solemn, symmetrical composition."
    }
   },
   {
@@ -192,8 +192,8 @@
     ]
    },
    "prompt": {
-    "zh": "无人机 40 米高度缓慢环绕一组中轴对称的寺庙院落：山门、仪门、大殿、后殿依次排开，灰瓦屋面层层叠落，院内石板地与古树，四周白墙围合。1990 年代重建风格。平滑环绕，真实比例。",
-    "en": "Drone orbiting slowly at about 40 m around an axially symmetrical temple compound: gate, inner gate, main hall and rear hall in sequence, layered grey tile roofs, stone-paved courtyards with old trees, enclosed by white walls. 1990s-style rebuilt. Smooth orbit, true-to-scale."
+    "zh": "无人机 40 米高度缓慢环绕一组中轴对称的寺庙院落：山门、仪门、大殿、后殿依次排开，灰瓦屋面层层叠落，院内石板地与古树，四周白墙围合。呈现 1990 年代改建后外观。平滑环绕，真实比例。",
+    "en": "Drone orbiting slowly at about 40 m around an axially symmetrical temple compound: gate, inner gate, main hall and rear hall in sequence, layered grey tile roofs, stone-paved courtyards with old trees, enclosed by white walls. Presenting a 1990s-renovated look. Smooth orbit, true-to-scale."
    },
    "minTargetFrac": 0.03
   },
@@ -224,8 +224,8 @@
    "transitionIn": "cut",
    "transitionOut": "dissolve 12f",
    "prompt": {
-    "zh": "镜头在殿前院落正中缓慢升高，仰视一座重檐大殿：宽大的灰瓦屋面、深色木柱与格扇门、檐下阴影层次分明。1990 年代重建风格。庄重、稳定的升降运镜。",
-    "en": "Camera rising slowly in the centre of the courtyard, looking up at a double-eaved main hall: broad grey tile roof, dark timber columns and lattice doors, deep shadows under the eaves. 1990s-style rebuilt. Solemn, steady crane move."
+    "zh": "镜头在殿前院落正中缓慢升高，仰视一座重檐大殿：宽大的灰瓦屋面、深色木柱与格扇门、檐下阴影层次分明。呈现 1990 年代改建后外观。庄重、稳定的升降运镜。",
+    "en": "Camera rising slowly in the centre of the courtyard, looking up at a double-eaved main hall: broad grey tile roof, dark timber columns and lattice doors, deep shadows under the eaves. Presenting a 1990s-renovated look. Solemn, steady crane move."
    }
   },
   {
@@ -255,8 +255,8 @@
    "transitionIn": "dissolve 12f",
    "transitionOut": "cut",
    "prompt": {
-    "zh": "低空无人机绕商业广场转角缓慢环绕，1990 年代重建的豫园商城仿古楼：多层灰瓦飞檐、深色木窗格、白墙，屋顶角楼错落，形成天际线。平滑环绕，真实比例。",
-    "en": "Low drone slowly orbiting a corner of a commercial plaza lined with 1990s-style rebuilt Yuyuan bazaar buildings: multi-tier grey tile eaves, dark timber window grids, white walls, rooftop corner pavilions forming a skyline. Smooth orbit, true-to-scale."
+    "zh": "低空无人机绕商业广场转角缓慢环绕，呈现 1990 年代改建后外观的豫园商城仿古楼：多层灰瓦飞檐、深色木窗格、白墙，屋顶角楼错落，形成天际线。平滑环绕，真实比例。",
+    "en": "Low drone slowly orbiting a corner of a commercial plaza lined with Yuyuan bazaar buildings presenting a 1990s-renovated look: multi-tier grey tile eaves, dark timber window grids, white walls, rooftop corner pavilions forming a skyline. Smooth orbit, true-to-scale."
    }
   },
   {
@@ -267,7 +267,7 @@
    "title": "商城街口走向池边，湖心亭展开",
    "intent": {
     "zh": "从和丰楼北侧街口眼高向北走到池边，两侧商城楼夹出的视廊里池面、九曲桥与湖心亭逐渐展开，作为商城到池区的过渡",
-    "en": "Eye-level walk north from the street mouth beside the Hefeng building to the pond edge; between the bazaar blocks the water, the zigzag bridge and the lake pavilion open up — the bridge from bazaar to pond"
+    "en": "Eye-level tracking move north from the street mouth beside the Hefeng building to the pond edge; between the bazaar blocks the water, the zigzag bridge and the lake pavilion open up — the bridge from bazaar to pond"
    },
    "targetId": "huxin-ting",
    "camClass": "ground",
@@ -315,8 +315,8 @@
     ]
    },
    "prompt": {
-    "zh": "稳定器眼高向前步行，两侧是 1990 年代重建的豫园商城仿古楼，深色木窗格与层层挑檐，前方视廊打开，平静的池面上曲折石桥通向一座两层重檐亭阁，远处江南园林树木。步速平稳，真实比例。",
-    "en": "Gimbal walk at eye level between 1990s-style rebuilt Yuyuan bazaar buildings with dark timber window grids and tiered eaves; ahead the view opens onto a calm pond where a zigzag stone bridge leads to a two-storey double-eaved pavilion, Jiangnan garden trees beyond. Steady pace, true-to-scale."
+    "zh": "稳定器眼高平稳前移（移动摄影，非人物行走），两侧是呈现 1990 年代改建后外观的豫园商城仿古楼，深色木窗格与层层挑檐，前方视廊打开，平静的池面上曲折石桥通向一座两层重檐亭阁，远处江南园林树木。移动平稳匀速，真实比例。",
+    "en": "Gimbal-stabilised eye-level tracking move (a steady camera dolly, not a person walking) between Yuyuan bazaar buildings presenting a 1990s-renovated look, with dark timber window grids and tiered eaves; ahead the view opens onto a calm pond where a zigzag stone bridge leads to a two-storey double-eaved pavilion, Jiangnan garden trees beyond. Smooth steady camera move, true-to-scale."
    }
   },
   {
@@ -371,8 +371,8 @@
     ]
    },
    "prompt": {
-    "zh": "无人机缓慢环绕池中一座两层重檐亭阁，曲折的石桥在水面上连向岸边，池面平静有倒影，四周是 1990 年代重建的仿古楼与江南园林树木。灰瓦飞檐、深红木构。平滑环绕，真实比例。",
-    "en": "Drone slowly orbiting a two-storey double-eaved pavilion in the middle of a pond, a zigzag stone bridge crossing the water to the shore, calm water with reflections, surrounded by 1990s-style rebuilt buildings and Jiangnan garden trees. Grey tile upturned eaves, dark red timber. Smooth orbit, true-to-scale."
+    "zh": "无人机缓慢环绕池中一座两层重檐亭阁，曲折的石桥在水面上连向岸边，池面平静有倒影，四周是呈现 1990 年代改建后外观的仿古楼与江南园林树木。灰瓦飞檐、深红木构。平滑环绕，真实比例。",
+    "en": "Drone slowly orbiting a two-storey double-eaved pavilion in the middle of a pond, a zigzag stone bridge crossing the water to the shore, calm water with reflections, surrounded by buildings presenting a 1990s-renovated look and Jiangnan garden trees. Grey tile upturned eaves, dark red timber. Smooth orbit, true-to-scale."
    }
   },
   {
@@ -402,8 +402,8 @@
    "transitionIn": "cut",
    "transitionOut": "dissolve 12f",
    "prompt": {
-    "zh": "稍高于人眼的稳定机位沿曲折石桥前行，桥栏低于画面，前方湖心亭逐渐放大：两层重檐、灰瓦、深红木构、宝顶。池水平静。1990 年代重建风格。平稳前进并轻微上摇。",
-    "en": "Slightly raised stabilized camera moving along a zigzag stone bridge, railings below frame, the lake pavilion growing ahead: two storeys, double eaves, grey tiles, dark red timber, a finial on top. Calm water. 1990s-style rebuilt. Steady forward travel with a gentle tilt up."
+    "zh": "稍高于人眼的稳定机位沿曲折石桥前行，桥栏低于画面，前方湖心亭逐渐放大：两层重檐、灰瓦、深红木构、宝顶。池水平静。呈现 1990 年代改建后外观。平稳前进并轻微上摇。",
+    "en": "Slightly raised stabilized camera moving along a zigzag stone bridge, railings below frame, the lake pavilion growing ahead: two storeys, double eaves, grey tiles, dark red timber, a finial on top. Calm water. Presenting a 1990s-renovated look. Steady forward travel with a gentle tilt up."
    }
   },
   {
@@ -423,7 +423,7 @@
    "durationS": 5,
    "light": "day",
    "transitionIn": "dissolve 12f",
-   "transitionOut": "cut",
+   "transitionOut": "dissolve 12f",
    "minTargetFrac": 0.03,
    "lensMm": 32,
    "eye": {
@@ -463,8 +463,8 @@
     ]
    },
    "prompt": {
-    "zh": "无人机 40 米高度缓慢前飞、较陡俯瞰一座江南园林：灰瓦歇山厅堂、曲折的园路与白色园墙、水池与层叠的黄石假山、成片树木。1990 年代重建风格的园林建筑。平滑前飞，真实比例。",
-    "en": "Drone flying slowly forward at about 40 m, looking steeply down over a Jiangnan garden: grey-tiled halls with hip-and-gable roofs, winding paths and white garden walls, a pond and a layered yellow-stone rockery, groves of trees. 1990s-style rebuilt garden buildings. Smooth forward flight, true-to-scale."
+    "zh": "无人机 40 米高度缓慢前飞、较陡俯瞰一座江南园林：灰瓦歇山厅堂、曲折的园路与白色园墙、水池与层叠的黄石假山、成片树木。呈现 1990 年代改建后外观的园林建筑，维护良好、不刻意做旧。平滑前飞，真实比例。",
+    "en": "Drone flying slowly forward at about 40 m, looking steeply down over a Jiangnan garden: grey-tiled halls with hip-and-gable roofs, winding paths and white garden walls, a pond and a layered yellow-stone rockery, groves of trees. Garden buildings presenting a 1990s-renovated look, well-kept and not artificially aged. Smooth forward flight, true-to-scale."
    }
   },
   {
@@ -494,8 +494,8 @@
    "transitionIn": "dissolve 12f",
    "transitionOut": "cut",
    "prompt": {
-    "zh": "眼高缓慢前推，穿过园门进入庭院，正前方一座宽阔的园林厅堂：一排深色木格扇门、灰瓦屋檐、石阶与铺地。江南园林，1990 年代重建风格。安静、正面对称构图。",
-    "en": "Slow eye-level push through a garden gate into a courtyard facing a broad garden hall: a row of dark timber lattice doors, grey tile eaves, stone steps and paving. Jiangnan garden, 1990s-style rebuilt. Quiet, frontal symmetrical composition."
+    "zh": "眼高缓慢前推，穿过园门进入庭院，正前方一座宽阔的园林厅堂：一排深色木格扇门、灰瓦屋檐、石阶与铺地。江南园林，呈现 1990 年代改建后外观。安静、正面对称构图。",
+    "en": "Slow eye-level push through a garden gate into a courtyard facing a broad garden hall: a row of dark timber lattice doors, grey tile eaves, stone steps and paving. Jiangnan garden presenting a 1990s-renovated look. Quiet, frontal symmetrical composition."
    }
   },
   {
@@ -525,8 +525,8 @@
    "transitionIn": "cut",
    "transitionOut": "cut",
    "prompt": {
-    "zh": "眼高隔着水面缓慢横移，对岸是层叠的黄石假山与松树，山后白墙灰瓦的园林建筑。江南园林，1990 年代重建风格。水面平静，横移平稳。",
-    "en": "Slow eye-level lateral truck across the water: on the far bank a layered yellow-stone rockery with pines, white-walled grey-tiled garden buildings behind. Jiangnan garden, 1990s-style rebuilt. Calm water, smooth lateral move."
+    "zh": "眼高隔着水面缓慢横移，对岸是层叠的黄石假山与松树，山后白墙灰瓦的园林建筑。江南园林，呈现 1990 年代改建后外观。水面平静，横移平稳。",
+    "en": "Slow eye-level lateral truck across the water: on the far bank a layered yellow-stone rockery with pines, white-walled grey-tiled garden buildings behind. Jiangnan garden, Presenting a 1990s-renovated look. Calm water, smooth lateral move."
    }
   },
   {
@@ -537,7 +537,7 @@
    "title": "积玉水廊内行走（复用⑥）",
    "intent": {
     "zh": "水廊中线眼高北行 7 m，廊柱节奏与两侧厅堂入画",
-    "en": "Eye-level walk of 7 m along the covered waterside gallery, column rhythm with halls on both sides"
+    "en": "Eye-level tracking move of 7 m along the covered waterside gallery, column rhythm with halls on both sides"
    },
    "targetId": "bld-428179920",
    "reuse": {
@@ -556,8 +556,8 @@
    "transitionIn": "cut",
    "transitionOut": "dissolve 12f",
    "prompt": {
-    "zh": "稳定器眼高沿园林长廊中线向前步行，深红木柱与廊顶有节奏地掠过，廊外是白墙灰瓦的厅堂与树木。江南园林，1990 年代重建风格。步速平稳。",
-    "en": "Gimbal walk at eye level down the centre of a covered garden gallery, dark red timber columns and the gallery roof passing in rhythm, white-walled grey-tiled halls and trees outside. Jiangnan garden, 1990s-style rebuilt. Steady pace."
+    "zh": "稳定器眼高沿园林长廊中线平稳前移（移动摄影，非人物行走），深红木柱与廊顶有节奏地掠过，廊外是白墙灰瓦的厅堂与树木。江南园林，呈现 1990 年代改建后外观。移动平稳匀速。",
+    "en": "Gimbal-stabilised eye-level tracking move down the centre of a covered garden gallery, dark red timber columns and the gallery roof passing in rhythm, white-walled grey-tiled halls and trees outside. Jiangnan garden presenting a 1990s-renovated look. Smooth steady camera move."
    }
   },
   {
@@ -625,8 +625,8 @@
     "ease": "smooth"
    },
    "prompt": {
-    "zh": "黄昏，天空暖橙转蓝，镜头在商业广场上缓慢升高，仰望一座 1990 年代重建的豫园商城仿古楼：多层灰瓦飞檐、深色木窗格、白墙，楼顶角楼，檐下亮起暖色灯带。广场空旷安静。灯光以参考帧为准。",
-    "en": "Dusk, sky shifting from warm orange to blue, the camera rising slowly in a commercial plaza toward a 1990s-style rebuilt Yuyuan bazaar building: multi-tier grey tile upturned eaves, dark timber window grids, white walls, a rooftop pavilion, warm light strips glowing under the eaves. The plaza is quiet and open. Lighting follows the reference frame."
+    "zh": "黄昏，低角度暖阳把立面染成暖橙色，天顶偏蓝；镜头在商业广场上缓慢升高，仰望一座呈现 1990 年代改建后外观的豫园商城仿古楼：多层灰瓦飞檐、深色木窗格、白墙，楼顶角楼；灯笼与红店招亮着暖光，窗格与店铺内透出暖光。建筑维护良好、不刻意做旧。广场空旷安静。灯光以参考帧为准。",
+    "en": "Dusk, low warm sunlight tinting the facades orange while the sky stays blue overhead, the camera rising slowly in a commercial plaza toward a Yuyuan bazaar building presenting a 1990s-renovated look: multi-tier grey tile upturned eaves, dark timber window grids, white walls, a rooftop pavilion; lanterns and red shop signs glowing warm, warm light from the windows and shop interiors. Well-kept buildings, not artificially aged. The plaza is quiet and open. Lighting follows the reference frame."
    },
    "no": 14
   },
@@ -636,8 +636,8 @@
    "act": "黄昏 / Dusk",
    "title": "黄昏：北岸定机位微推湖心亭（复用⑩）",
    "intent": {
-    "zh": "北岸眼高定机位微推 2.7 m，前景九曲桥东段，湖心亭檐下灯光亮起，黄昏光",
-    "en": "Fixed eye-level position on the north bank with a 2.7 m micro push, the east run of the zigzag bridge in the foreground, the pavilion's eave lights coming on in dusk light"
+    "zh": "北岸眼高定机位微推 2.7 m，前景九曲桥东段，湖心亭窗格透出暖光，黄昏光",
+    "en": "Fixed eye-level position on the north bank with a 2.7 m micro push, the east run of the zigzag bridge in the foreground, warm light glowing in the pavilion's lattice windows in dusk light"
    },
    "targetId": "huxin-ting",
    "reuse": {
@@ -656,8 +656,8 @@
    "transitionIn": "cut",
    "transitionOut": "dissolve 12f",
    "prompt": {
-    "zh": "黄昏，眼高几乎固定的机位缓慢微推，前景曲折石桥栏杆，中景池中两层重檐亭阁亮起暖色灯光，水面倒影，背景 1990 年代重建的豫园商城仿古楼群轮廓。天空由橙转蓝。灯光以参考帧为准。",
-    "en": "Dusk, an almost locked-off eye-level camera with a slow micro push, zigzag bridge railings in the foreground, the double-eaved pavilion in the midground with warm lights coming on and reflections on the water, silhouettes of 1990s-style rebuilt Yuyuan bazaar buildings behind. Sky shifting from orange to blue. Lighting follows the reference frame."
+    "zh": "黄昏，眼高几乎固定的机位缓慢微推，前景曲折石桥栏杆，中景池中两层重檐亭阁的窗格透出暖色光，水面映着灯光与亭影，背景呈现 1990 年代改建后外观的豫园商城仿古楼群轮廓，灯笼与店招散着暖光。天顶偏蓝，天际一线暖橙。灯光以参考帧为准。",
+    "en": "Dusk, an almost locked-off eye-level camera with a slow micro push, zigzag bridge railings in the foreground, the double-eaved pavilion in the midground with warm light in its lattice windows and reflections on the water, silhouettes of Yuyuan bazaar buildings presenting a 1990s-renovated look behind, lanterns and shop signs dotted with warm light. Blue overhead, a band of warm orange at the horizon. Lighting follows the reference frame."
    },
    "no": 15
   },
@@ -718,8 +718,8 @@
     ]
    },
    "prompt": {
-    "zh": "夜景航拍，无人机缓慢后拉并升高，池中亭阁与曲折石桥被暖色灯光勾勒，四周 1990 年代重建的仿古楼群屋檐亮起灯带，深蓝夜空。灰瓦屋面在灯光下有层次。平滑后拉，结尾安静。灯光以参考帧为准。",
-    "en": "Night aerial, drone slowly pulling back and rising; the pond pavilion and zigzag bridge outlined in warm light, eave lighting on the surrounding 1990s-style rebuilt buildings, deep blue night sky, grey tile roofs layered by the light. Smooth pull-back, quiet ending. Lighting follows the reference frame."
+    "zh": "夜景航拍，无人机缓慢后拉并升高，池中亭阁的窗格透出暖光，灯影落在水面上；四周呈现 1990 年代改建后外观的仿古楼群灯笼成串亮着暖橙光，店招与窗格透光，摊位灯照亮台面，深蓝夜空，灰瓦屋面在灯光下有层次。平滑后拉，结尾安静。灯光以参考帧为准。",
+    "en": "Night aerial, drone slowly pulling back and rising; warm light in the pond pavilion's lattice windows with reflections on the water; around it, strings of lanterns glowing warm orange on bazaar buildings presenting a 1990s-renovated look, shop signs and windows lit from within, stall lamps lighting the counters, deep blue night sky, grey tile roofs layered by the light. Smooth pull-back, quiet ending. Lighting follows the reference frame."
    }
   }
  ]

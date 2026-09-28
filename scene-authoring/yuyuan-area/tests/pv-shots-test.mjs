@@ -5,9 +5,10 @@
 // S 结构（GOAL P1）：12–16 镜头；每镜 3–6 s、24 fps（帧数 = 时长 × 24）；总长 60–90 s；新镜头 ≥ 6；复用镜头的源在 control-shots.json
 //   里、且按 PV 重设时长（帧数 ≠ 原 24 帧）、段端点与源镜头同参数位置的机位一致；灯光标签 ∈ day|dusk|night；每镜有中英意图、
 //   转场、镜头类别（ground / raised / crane / aerial）与生成方式（fixed-push / travel / aerial）。
-// T 文案（GOAL P3 规则）：正向提示词中文含「1990 年代」、英文含「1990s-style rebuilt」；正向提示词不写可读文字 / 招牌内容
+// T 文案（GOAL P3 规则 + R1 审查可选1）：正向提示词中文含「1990 年代」、英文含「1990s」；不写「重建 / rebuilt」等史实表述
+//   （只写 1990 年代改建后外观，正向含「维护良好、不刻意做旧」）；正向提示词不写可读文字 / 招牌内容
 //   （写着 / 字样 / 题字 / lettering / inscription / text …），不写年代与史实（四位年份，1990 除外；朝代 / 始建 / founded …）；
-//   全局负面词覆盖文字类（文字 / 招牌 / 水印 / text / letters / watermark）。
+//   全局负面词覆盖文字类（文字 / 招牌 / 水印 / text / letters / watermark）与做旧类（老旧 / 风化 / aged / weathered / ruined）。
 // P 路径（control-shots-spec 同口径）：逐帧离任何碰撞盒 ≥ 1.0 m（全部高度，含方浜中路分区；水面隐形挡墙不算）；相邻帧连线不穿碰撞盒；
 //   ground 镜头眼高 1.6 m、不进建筑 footprint、不进水面；raised 镜头 ≥ 桥面 + 1.6 m；crane 起点眼高 1.6 m；
 //   aerial 镜头标明航拍高度（≥ 12 m），机位在建筑 footprint 上空时高出该建筑保守屋顶高 ≥ 3 m（layout 高 × 1.6 与 +6 m 取大，
@@ -94,13 +95,28 @@ for (const s of pvSrc.shots) {
   check(!!(p.zh && p.en), `${s.id} 缺中英提示词`);
   if (!(p.zh && p.en)) continue;
   check(/1990 ?年代/.test(p.zh), `${s.id} 中文提示词没有标「1990 年代」形制`);
-  check(/1990s-style rebuilt/.test(p.en), `${s.id} 英文提示词没有标「1990s-style rebuilt」`);
+  check(/1990s/.test(p.en), `${s.id} 英文提示词没有标「1990s」形制`);
+  check(!/重建|rebuilt/i.test(p.zh) && !/重建|rebuilt/i.test(p.en), `${s.id} 正向提示词含「重建 / rebuilt」史实表述（应写 1990 年代改建后外观）`);
   for (const re of FORBID_TEXT) check(!re.test(p.zh) && !re.test(p.en), `${s.id} 正向提示词含文字 / 招牌内容描述 ${re}`);
   for (const re of FORBID_HISTORY) check(!re.test(p.zh.replace(/1990 ?年代/g, '')) && !re.test(p.en.replace(/1990s/g, '')), `${s.id} 正向提示词含年代 / 史实 ${re}`);
 }
 const neg = pvSrc.negative || {};
 check(/文字/.test(neg.zh || '') && /招牌/.test(neg.zh || '') && /水印/.test(neg.zh || ''), '中文负面词未覆盖 文字 / 招牌 / 水印');
 check(/text/.test(neg.en || '') && /letters/.test(neg.en || '') && /watermark/.test(neg.en || ''), '英文负面词未覆盖 text / letters / watermark');
+check(/老旧/.test(neg.zh || '') && /风化/.test(neg.zh || ''), '中文负面词未覆盖做旧类（老旧 / 风化）');
+check(/aged/.test(neg.en || '') && /weathered/.test(neg.en || '') && /ruined/.test(neg.en || ''), '英文负面词未覆盖 aged / weathered / ruined');
+check(/维护良好/.test((pvSrc.styleNote || {}).zh || ''), '形制词规则未补「维护良好、不刻意做旧」');
+
+// ---------- 转场一致性（R1 审查必修2）：出场与下一镜入场的类型和帧数必须相同 ----------
+const tparts = (t) => {
+  const m = /^(fade-from-black|fade-to-black|dissolve|cut)(?:\s+(\d+)\s*f)?$/.exec(String(t).trim());
+  return m ? [m[1], m[2] ? +m[2] : null] : [String(t).trim(), null];
+};
+for (let i = 0; i + 1 < pvSrc.shots.length; i++) {
+  const [to, fo] = tparts(pvSrc.shots[i].transitionOut);
+  const [ti, fi] = tparts(pvSrc.shots[i + 1].transitionIn);
+  check(to === ti && fo === fi, `${pvSrc.shots[i].id} 出场「${pvSrc.shots[i].transitionOut}」与 ${pvSrc.shots[i + 1].id} 入场「${pvSrc.shots[i + 1].transitionIn}」不一致（类型与帧数须相同）`);
+}
 
 // ---------- P 路径 ----------
 const boxes = loadColliders(ROOT, path.relative(ROOT, OUT), [...ZONE_FILES, 'fangbang']);

@@ -22,6 +22,56 @@ CHANNELS = {
     'travel': ('depth + normal + segmentation + 参考帧（首 / 末帧）', '机位行进、视差大：深度与法线约束几何，分割约束「楼不漂、桥不断」，首末帧双锚'),
     'aerial': ('depth + segmentation + 参考帧（首帧）', '航拍大场景：深度给层次，分割锁住楼群 / 池面 / 院落的分区不串位；normal 在远景意义小'),
 }
+# R1 审查必修1：渲染器按整次调用的 --preset 工作（不读每镜 light 字段），导出命令必须按 light 分组并显式带引擎与预设。
+# 引擎按 docs/CONTROL-PASSES.md：PV 参考帧选 Cycles（GPU）；EEVEE 只作快速预览；Workbench 出不了灯光参考帧。
+BEAUTY_ENGINE = 'cycles'
+PRESETS = ('day', 'dusk', 'night')
+
+
+def export_command(shot_ids, light, out_root):
+    return ('~/.local/bin/blender -b -t 4 --python-exit-code 1 --python scripts/render-control-passes.py -- \\\n'
+            '    --scene out-zone/scene-areas.glb --cameras out-zone/pv-cameras.json -- \\\n'
+            '    --out %s --shots %s --beauty %s --preset %s' % (out_root + '/control-24fps', ','.join(shot_ids), BEAUTY_ENGINE, light))
+
+
+def light_groups(shots):
+    """按 pv-shots.json 的 light 字段把镜头顺序分组：[[light, [id…]]…]（不手写，由数据生成）。"""
+    g = []
+    for s in shots:
+        if g and g[-1][0] == s['light']:
+            g[-1][1].append(s['id'])
+        else:
+            g.append([s['light'], [s['id']]])
+    return g
+
+
+def check_export_commands(entries, shots):
+    """检查生成的每条导出命令：预设 = 该镜 light、引擎非 workbench、--shots 与组一致。"""
+    import re as _re
+    by_id = {s['id']: s for s in shots}
+    errs = []
+    for tag, cmd, ids in entries:
+        mp = _re.search(r'--preset (\S+)', cmd)
+        mb = _re.search(r'--beauty (\S+)', cmd)
+        ms = _re.search(r'--shots (\S+)', cmd)
+        if not (mp and mb and ms):
+            errs.append('%s: 缺 --beauty / --preset / --shots' % tag)
+            continue
+        preset, beauty, listed = mp.group(1), mb.group(1), ms.group(1).split(',')
+        if preset not in PRESETS:
+            errs.append('%s: 预设 %s 不在 day|dusk|night' % (tag, preset))
+        if beauty not in ('cycles', 'eevee'):
+            errs.append('%s: beauty 引擎 %s 出不了灯光参考帧（须 cycles|eevee）' % (tag, beauty))
+        if listed != ids:
+            errs.append('%s: --shots %s 与预期 %s 不符' % (tag, listed, ids))
+        for sid in listed:
+            if sid not in by_id:
+                errs.append('%s: 镜头 %s 不在分镜' % (tag, sid))
+            elif by_id[sid]['light'] != preset:
+                errs.append('%s: 镜头 %s light=%s 但命令预设 %s' % (tag, sid, by_id[sid]['light'], preset))
+    if errs:
+        raise SystemExit('导出命令自检失败：\n  ' + '\n  '.join(errs))
+    print('export-command check: %d commands, all presets match shot light' % len(entries))
 
 
 def load(p):
@@ -60,21 +110,22 @@ def main():
     anim_by = {x['id']: x for x in anim['shots']}
     P = notes['packageRoot']
     wt = notes['worktreeArea']
+    pv_root = notes.get('pvRoot', P + '/artifacts/pv')
 
     # ---------------- STORYBOARD.md ----------------
     L = []
-    L.append('# Pawborough PV 分镜（wave11-pvboard，2026-09-27）\n')
+    L.append('# Pawborough PV 分镜（wave11-pvboard，2026-09-28 R1）\n')
     L.append('**结论**：%d 个镜头、总长 %.0f s（24 fps，%d 帧）；新镜头 %d 个、复用既有控制层镜头 %d 个（全部按 PV 重设时长）。'
-             '灯光只打标签：day %.0f s / dusk %.0f s / night %.0f s，预设由 wave11-lighting 提供。动态样片：`%s/animatic.mp4`（%d fps、%d×%d、%.1f s、无音轨）。\n'
+             '灯光只打标签：day %.0f s / dusk %.0f s / night %.0f s，预设由 lighting/presets.json（wave11-lighting，已合入 main）提供。动态样片：`%s/animatic.mp4`（%d fps、%d×%d、%.1f s、无音轨）。\n'
              % (len(shots), total, sum(s['frames'] for s in shots), n_new, len(shots) - n_new, lights.get('day', 0), lights.get('dusk', 0),
-                lights.get('night', 0), P + '/artifacts/pv', anim['fps'], anim['width'], anim['height'], anim['durationS']))
+                lights.get('night', 0), pv_root, anim['fps'], anim['width'], anim['height'], anim['durationS']))
     L.append('**本单替主控定的默认值**（可改，改 `%s/scripts/pv-shots.json` 后重跑即可）：\n' % wt)
     for d in notes['defaults']:
         L.append('- ' + d)
     L.append('\n**正本与复现**：分镜正本 `%s/scripts/pv-shots.json`（新镜头点位全部相对 layout 对象 / 实例，无绝对坐标）；'
-             '逐帧相机 `%s/artifacts/pv/pv-cameras-24fps.json`（= `build-pv-shots.py` 输出，render-control-passes.py 同格式）。'
+             '逐帧相机 `%s/pv-cameras-24fps.json`（= `build-pv-shots.py` 输出，render-control-passes.py 同格式）。'
              '断言 `tests/pv-shots-test.mjs`（%d 项全过）；渲染侧 `scripts/check-pv-frames.py`（%d 个镜头标记）。\n'
-             % (wt, P, test['checks'], len(fc['flagged'])))
+             % (wt, pv_root, test['checks'], len(fc['flagged'])))
     L.append('## 结构\n')
     acts = []
     for s in shots:
@@ -114,8 +165,8 @@ def main():
                  % ('/'.join('%.1f' % f['targetPct'] for f in fr), '/'.join('%.0f' % f['skyPct'] for f in fr),
                     '/'.join('%.0f' % f['nearWallPct'] for f in fr), '/'.join('%.0f' % f['flatPct'] for f in fr),
                     '/'.join('%.0f' % f['waterPct'] for f in fr)))
-        L.append('- 预览帧：`%s/artifacts/pv/preview/control/%s/{beauty,depth,normal,segmentation}/frame-00{0,1,2}.png`（对应 24 fps 帧 %s）\n'
-                 % (P, s['id'], '/'.join(str(x) for x in s.get('sourceFrames', [0, (s['frames'] - 1) // 2, s['frames'] - 1]))))
+        L.append('- 预览帧：`%s/preview/control/%s/{beauty,depth,normal,segmentation}/frame-00{0,1,2}.png`（对应 24 fps 帧 %s）\n'
+                 % (pv_root, s['id'], '/'.join(str(x) for x in s.get('sourceFrames', [0, (s['frames'] - 1) // 2, s['frames'] - 1]))))
     L.append('## 删掉的镜头（看图后）\n')
     for d in notes['dropped']:
         L.append('- **%s**（%s）：%s 证据：`%s`' % (d['id'], d['draft'], d['why'], d['evidence']))
@@ -128,26 +179,38 @@ def main():
     open(os.path.join(a.out_dir, 'STORYBOARD.md'), 'w', encoding='utf-8').write('\n'.join(L) + '\n')
 
     # ---------------- AI-HANDOFF.md ----------------
+    groups = light_groups(shots)
     H = []
-    H.append('# Pawborough PV — AI 视频生成交接包（wave11-pvboard，2026-09-27）\n')
+    H.append('# Pawborough PV — AI 视频生成交接包（wave11-pvboard，2026-09-28 R1）\n')
     H.append('**用途**：机主定的视频路线是「AI 视频生成，3D 场景只出控制层与参考帧」。本文件给出每个镜头的控制层导出命令、需要的通道、'
-             '中英提示词、负面词、时长与运镜描述，以及控制层与生成结果的对位方法。**正式控制层与带灯光参考帧须等 wave11-lighting 合并后批量出**；'
-             '本包里的预览（Workbench beauty + 首 / 中 / 末三帧四通道）只用于定分镜，不作生成输入。\n')
-    H.append('## 1. 一次性导出（灯光合并后在同一 worktree 执行）\n')
+             '中英提示词、负面词、时长与运镜描述，以及控制层与生成结果的对位方法。灯光已合入 main（ce0bae94）：'
+             '第 1 节命令按 day / dusk / night 分组，显式带 `--beauty cycles --preset`，同一条命令同时出控制层与带灯光参考帧'
+             '（depth / normal / segmentation 三通道不受灯光影响）；本包里的样片预览（Workbench beauty）只用于定分镜与节奏，不作生成输入。\n')
+    H.append('## 1. 一次性导出（在同一 worktree 执行）\n')
     H.append('```bash\ncd <worktree>/scene-authoring/yuyuan-area\n'
              '# 0) 公共验收全流程重建（产物 out-zone/scene-areas.glb 与碰撞）\n'
              'OUT_DIR=out-zone PYTHONPATH=$PWD/.python-deps SITE_MODULES=1 STALL_KIT=1 GARDEN_KITS=1 SANSUITANG=1 ZONE_SPLIT=1 bash scripts/rebuild-review.sh\n'
              '# 1) 分镜 → 24 fps 逐帧相机（先从冻结源重算 control-shots.json，再生成 out-zone/pv-cameras.json）\n'
              'python3 -X utf8 scripts/build-pv-shots.py --out-zone out-zone\n'
              'OUT_DIR=out-zone node tests/pv-shots-test.mjs      # 必须 0 fail\n'
-             '# 2) 四通道控制层（beauty/depth/normal/segmentation + 每帧相机 json + LUT），按镜头分批；Blender 同时只跑 1 个\n'
-             '~/.local/bin/blender -b -t 4 --python-exit-code 1 --python scripts/render-control-passes.py -- \\\n'
-             '    --scene out-zone/scene-areas.glb --cameras out-zone/pv-cameras.json \\\n'
-             '    --out <工单包>/artifacts/pv/control-24fps --shots <镜头 id[,id…]>\n'
-             '# 3) 带灯光的参考帧：用 wave11-lighting 的预设按同一相机 json 出（接口以灯光单合并结果为准，本单未核实）\n```\n')
-    H.append('- 规模：%d 帧 × 4 通道。耗时按 goal-control 当版实测稳态约 1.2–1.3 s/帧/镜头（三通道合计，24 帧批次）估算约 %.0f–%.0f 分钟（**估算，未实测**）；'
-             '本单预览只出了首 / 中 / 末三帧，平均 %.1f s/帧（三帧批次，BVH 复用摊不开，不代表批量速度）。'
-             % (sum(s['frames'] for s in shots), sum(s['frames'] for s in shots) * 1.2 / 60, sum(s['frames'] for s in shots) * 1.35 / 60, notes['previewSecPerFrame']))
+             '# 2) 四通道控制层 + 带灯光参考帧。渲染器按整次调用的 --preset 工作、不读每镜 light 字段，\n'
+             '#    所以下面各组由 pv-shots.json 的 light 字段生成（组内 --shots + 对应 --preset），不许手写：\n')
+    cmds = []
+    for light, ids in groups:
+        cmd = export_command(ids, light, pv_root)
+        cmds.append(('group:' + light, cmd.replace(' \\\n', ' '), ids))
+        H.append(cmd + '\n')
+    H.append('```\n')
+    H.append('- **自检**：生成器对上面每条命令断言「`--preset` = 组内每个镜头 pv-shots.json 的 `light`、`--beauty` ∈ cycles|eevee、`--shots` 与分组一致」，'
+             '不一致即报错退出（本文件生成时已通过 %d 条）。' % len(cmds))
+    H.append('- 规模：%d 帧 × 4 通道。控制层三通道约 1.2–1.3 s/帧（Workbench 批量实测）；beauty 按 CONTROL-PASSES 实测 Cycles GPU 8–13.4 s/帧'
+             '（day/dusk/night），全量 %d 帧合计估算 %.0f–%.0f 小时（**按实测外推，整批未实测**）；'
+             '本包样片只出了 Workbench 首 / 中 / 末三帧，平均 %.1f s/帧（三帧批次，BVH 复用摊不开，不代表批量速度）。'
+             % (sum(s['frames'] for s in shots), sum(s['frames'] for s in shots),
+                sum(s['frames'] for s in shots) * (1.2 + 8) / 3600, sum(s['frames'] for s in shots) * (1.35 + 13.4) / 3600,
+                notes['previewSecPerFrame']))
+    H.append('- 输出（`%s/control-24fps/`）：`segmentation-lut.json`（layout id ↔ RGB 双向映射）、`timings.json`（每帧耗时）、'
+             '`beauty-meta.json`（非默认引擎时写：引擎 / 设备 / 采样 / 预设 / 点光数 / 自发光材质数）；每镜 `<id>/{beauty,depth,normal,segmentation}/frame-###.png` + `<id>/cameras/frame-###.json`。' % pv_root)
     H.append('- 编码与坐标约定不变（见 `scene-authoring/yuyuan-area/docs/CONTROL-PASSES.md`）：1280×720；depth 16-bit 视轴 z，near 0.3 / far 300 m；'
              'normal 为 glTF Y-up 世界系 (n+1)/2；segmentation 用 LUT 逐字节色（±2 反查）；每帧 cameras json 带 K、worldToCameraOpenGL / OpenCV。')
     H.append('- 航拍镜头远端超过 300 m 的几何在 depth / normal 通道被裁掉（深度 = far），beauty 同样裁剪；生成时远景按「薄雾天际」处理，不要让模型补出新建筑。\n')
@@ -167,16 +230,27 @@ def main():
     H.append('## 5. 逐镜头\n')
     for s in shots:
         an = anim_by.get(s['id'], {})
+        n = s['frames']
+        rng = 'frame-000 – frame-%03d（共 %d 帧 = 24 fps 第 0–%d 帧，t = 0 – %.3f s）' % (n - 1, n, n - 1, (n - 1) / 24.0)
+        cmd = export_command([s['id']], s['light'], pv_root)
+        cmds.append(('shot:%s' % s['id'], cmd.replace(' \\\n', ' '), [s['id']]))
         H.append('### %02d `%s` — %s\n' % (s['no'], s['id'], s['title']))
         H.append('- 时长 %.1f s = %d 帧 @24 fps；灯光 `%s`；转场 %s / %s；样片时间码 %s–%s' % (
-            s['durationS'], s['frames'], s['light'], s['transitionIn'], s['transitionOut'], an.get('start', ''), an.get('end', '')))
+            s['durationS'], n, s['light'], s['transitionIn'], s['transitionOut'], an.get('start', ''), an.get('end', '')))
         H.append('- 生成方式：%s；通道：%s' % (GEN_ZH[s['genMode']], CHANNELS[s['genMode']][0]))
         H.append('- 运镜：%s' % move_desc(s))
-        H.append('- 控制层导出：`~/.local/bin/blender -b -t 4 --python-exit-code 1 --python scripts/render-control-passes.py -- --scene out-zone/scene-areas.glb --cameras out-zone/pv-cameras.json --out <包>/artifacts/pv/control-24fps --shots %s`' % s['id'])
-        H.append('- 参考帧：首帧 `control-24fps/%s/beauty/frame-000.png`，末帧 `frame-%03d.png`（灯光合并后用带灯光版本替换）' % (s['id'], s['frames'] - 1))
+        H.append('- 控制层导出（单独补渲该镜；与第 1 节分组命令同参数，预设 = 该镜 light）：\n```bash\n%s\n```' % cmd)
+        H.append('- 输出路径与有效帧范围（%s）：' % rng)
+        H.append('  - 参考帧 beauty：`%s/control-24fps/%s/beauty/frame-000.png … frame-%03d.png`（%s 预设布光）' % (pv_root, s['id'], n - 1, s['light']))
+        H.append('  - 深度 depth：`%s/control-24fps/%s/depth/frame-000.png … frame-%03d.png`（16-bit，同帧范围）' % (pv_root, s['id'], n - 1))
+        H.append('  - 法线 normal：`%s/control-24fps/%s/normal/frame-000.png … frame-%03d.png`（含 depth；同帧范围）' % (pv_root, s['id'], n - 1))
+        H.append('  - 分割 segmentation：`%s/control-24fps/%s/segmentation/frame-000.png … frame-%03d.png`（同帧范围）' % (pv_root, s['id'], n - 1))
+        H.append('  - 相机 cameras：`%s/control-24fps/%s/cameras/frame-000.json … frame-%03d.json`（每帧 K / worldToCamera，与同号帧一一对应）' % (pv_root, s['id'], n - 1))
+        H.append('- 参考帧：首帧 `beauty/frame-000.png`，末帧 `beauty/frame-%03d.png`（%s 预设；与控制层同一命令同批产出，天然对齐）' % (n - 1, s['light']))
         H.append('- 提示词（中）：%s' % s['prompt']['zh'])
         H.append('- Prompt (EN): %s' % s['prompt']['en'])
         H.append('- 负面词：全局负面词（第 4 节）%s\n' % (notes['extraNegative'].get(s['id'], '')))
+    check_export_commands(cmds, shots)
     H.append('## 6. 音乐与旁白（只留占位，不生成）\n')
     H.append('| 时间码 | 镜头 | 音乐占位 | 旁白占位 |')
     H.append('|---|---|---|---|')
