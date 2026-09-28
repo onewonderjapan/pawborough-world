@@ -39,11 +39,14 @@ wave11-lighting 附加（默认行为不变，不给这些参数 = 旧输出逐�
                                    环境光遮蔽（Cycles 路径追踪自带；EEVEE 开光线追踪 + 水平线扫描）、降噪（Cycles OIDN）。
   --preset day|dusk|night           灯光预设（默认 presets.json default）；--presets <json> 换参数文件。
   --beauty-samples N / --beauty-device GPU|CPU   覆盖 presets.json blender 段的采样数 / 设备（默认 GPU）。
+  --beauty-denoise on|off           Cycles OIDN 降噪（默认 on = 旧行为）；格扇近景可 off 配高 --beauty-samples（wave12-r2）。
   --frames 0,23|last|-1             只渲这些帧（四通道同一组帧；默认全部）。
   --passes beauty,seg,normal        只渲这些通道（normal 含 depth；默认全部）。
   depth / normal / segmentation 通道在 --beauty cycles|eevee 下不变：灯光物体在这三段渲染时 hide_render，
   世界切回 control-world，Cycles 设置由 config_cycles 全部重设；自发光只改材质 Emission，分割（OBJECT 色）与
   法线（material_override）不读材质。非默认引擎另写 <out>/beauty-meta.json（引擎 / 设备 / 采样 / 预设）。
+wave12-r1：--beauty cycles|eevee 下导入后调 prepare_beauty_materials（slot 贴图绑定 / 共面铺装只对相机可见 / 绕序相反面
+  法线纠正 / 查看器同式 mip 采样镂空贴图），使 beauty 外观与查看器一致；详见 docs/CONTROL-PASSES.md wave12-r1 段。
 
 坐标约定：地图 (x,z) -> Blender (x,-z,y)；glTF Y-up 世界 = 地图 (x, y高度, z)（与 GLB/three.js 同系）。
 分割归属：GLB 节点名 zone|id|kind|lod 取第 2 段；否则沿父链找 layout id 锚空节点；方浜中路件锚名
@@ -89,6 +92,7 @@ def parse_args():
     ap.add_argument('--presets', default=os.path.join(ROOT, 'lighting', 'presets.json'))
     ap.add_argument('--beauty-samples', type=int, default=0)
     ap.add_argument('--beauty-device', default='', choices=('', 'GPU', 'CPU'))
+    ap.add_argument('--beauty-denoise', default='on', choices=('on', 'off'))   # wave12-r2：格扇近景可关 OIDN 配高采样
     ap.add_argument('--frames', default='')
     ap.add_argument('--passes', default='beauty,seg,normal')
     return ap.parse_args(argv)
@@ -252,6 +256,15 @@ def enable_gpu(scene):
     return None, []
 
 
+def ambient_multiplier(P, preset):
+    """wave12-blenderamb：Blender 端单独的环境光倍率（blender.ambientMultiplier，查看器不用）。
+    Cycles 的环境光被深檐遮挡而查看器的半球环境光不会，檐下立面因此偏暗；倍率只补这一端。
+    缺字段 / 缺档按 1.0（向后兼容 = wave11 行为）。"""
+    m = P.get('blender', {}).get('ambientMultiplier', {})
+    v = m.get(preset, 1.0) if isinstance(m, dict) else 1.0
+    return v if isinstance(v, (int, float)) and v > 0 else 1.0
+
+
 def build_lighting_world(P, preset):
     """相机射线 = 预设天空渐变（查看器天空贴图同式，除以曝光抵消视图曝光）；其余射线 = 半球环境光（上 sky×I/π、下 ground×I/π）。"""
     p = P['presets'][preset]
@@ -335,7 +348,7 @@ def build_lighting_world(P, preset):
     hemi = mix(rgb(amb['ground']), rgb(amb['sky']), step)
     bg_amb = N('ShaderNodeBackground')
     L(hemi, bg_amb.inputs['Color'])
-    bg_amb.inputs['Strength'].default_value = amb['intensity'] / math.pi
+    bg_amb.inputs['Strength'].default_value = amb['intensity'] / math.pi * ambient_multiplier(P, preset)
     lp = N('ShaderNodeLightPath')
     ms = N('ShaderNodeMixShader')
     L(lp.outputs['Is Camera Ray'], ms.inputs['Fac'])
@@ -442,7 +455,619 @@ def setup_beauty_lighting(scene, P, preset):
     return objs, {'pointLights': npl, 'emissiveMaterials': nmat}
 
 
-def config_beauty_lit(scene, P, preset, engine, samples, device, world):
+# ---------------- wave12-r1：beauty 材质与查看器对齐（只在 --beauty cycles|eevee 下调用） ----------------
+# scene-areas.glb 与查看器读的运行时分区件 zone-*.glb 出自同一 scene.blend，但 Blender 渲染与查看器有三处外观差异
+# （工单包 artifacts/r1 实测定位）：
+#  1) 铺装 / 外围立面贴图：export-zones.py 在导出分区件前按对象 custom prop `slot` 换成贴图材质（paving-<slot>.jpg /
+#     outer-kit 图集），scene-areas.glb 更早导出，只带 slot（glTF node extras）+ 世界 UV，材质仍是顶点色平涂
+#     → bind_slot_materials 按同一约定在导入后绑定（只换材质槽，不改几何 / UV）。
+#  2a) 共面叠放的地面层：部分路面 / 铺装件在同一高度互相重叠（如 z=0.02 的 road-428179933/934）。查看器里同材质共面只是
+#     深度打架、看不出；Cycles 从一层发出的阴影 / 漫反射射线在 t≈0 立即打中另一层 → 该处既无日光也无环境光 → 纯黑块。
+#     → plan_coplanar_offsets（wave12-r2）：只找「整件水平的地面层」之间高度差 ≤ 2 mm 且三角形投影实际交叠的冲突对，
+#     冲突图贪心分层，面积大的留原高度，次层逐级下沉 4 mm（仅 beauty 段；控制通道前 location 原值写回）。
+#     不冲突的铺装不动，照常投影 / 反弹 / 被透射看到（R1 的整件关射线可见性已撤掉）。
+#  2b) 28 个路面三角形（outer road / bazaar paving 的 slot 网格）顶点法线朝上而绕序朝下：Cycles / EEVEE 命中背面时把
+#     着色法线一并翻到朝下（插进地面）→ 纯黑；查看器（three DoubleSide）翻法线后仍吃不被遮挡的半球环境光，与相邻面
+#     同亮 → fix_inverted_winding_shading：着色法线与几何法线相背（点积 < -0.5，只有这类数据矛盾面）时取反回来。
+#  3) 镂空贴图（MASK / 带贴图的 BLEND）：查看器是 WebGL 三线性 mipmap + 非预乘 alpha，透明像素的白底 RGB 在缩小
+#     采样时混进窗棂 → 格心呈浅色纹样；Cycles 不做 mipmap，alpha 测试后只剩纯红窗棂，而三穗堂格扇背板与窗棂同色
+#     → 纹样消失。emulate_viewer_texture_filtering 按查看器同式（λ = log2(像素足迹 / 纹素)）在着色器里选 mip 层，
+#     alpha 测试仍走导入器生成的节点链（阈值 0.5 = alphaCutoff 缺省）；滤波方式取 GLB sampler。
+# depth / normal / segmentation 不读这些材质（normal = material_override，seg = Workbench OBJECT 色）；默认 workbench beauty 不调用。
+PAVING_TEX_DIR = os.path.join(ROOT, 'resources', 'textures', 'paving')
+# 与 scripts/export-zones.py 的 OUTER_KIT_TEX 同一约定；outerkit-proc 由查看器着色器现画（web/outer-kit-proc.js），Blender 端不复刻
+SLOT_TEX = {'outerkit-atlas': os.path.join(ROOT, 'resources', 'textures', 'outer-kit', 'outerkit-atlas-v2.jpg')}
+# 已知例外：查看器着色器现画的程序化材质，Blender 端保留导入材质并单列计数（不是缺图）
+SLOT_KNOWN_EXCEPTIONS = {'outerkit-proc': 'web/outer-kit-proc.js 着色器现画，Blender 端不复刻'}
+# GL 缩小过滤枚举：9984 NEAREST_MIPMAP_NEAREST / 9985 LINEAR_MIPMAP_NEAREST / 9986 NEAREST_MIPMAP_LINEAR / 9987 LINEAR_MIPMAP_LINEAR
+#   后半段 = 层间（*_MIPMAP_NEAREST 取最近层，*_MIPMAP_LINEAR 两层插值），前半段 = 层内（NEAREST_* 取最近纹素）；
+#   magFilter 只管放大（λ ≤ 0）时的第 0 层。wave12-r2 起按这个拆开（R1 把 9986 误当作层间取整、层内统一用 magFilter）。
+GL_MIP_NEAREST_BETWEEN = (9984, 9985)
+GL_MIN_NEAREST_WITHIN = (9984, 9986, 9728)
+GL_NEAREST_MAG = 9728
+PIX_ANGLE_PROP = 'pb_pix_angle'           # 场景 custom prop：画面中心每像素视角（弧度），镜头变了要重设（set_pixel_angle）
+UV_SCALE_ATTR = 'pb_uv_m'                 # 面属性：每个 UV 单位对应的世界长度（米，取最密方向）
+
+
+def read_glb_json(path):
+    import struct
+    with open(path, 'rb') as f:
+        head = f.read(20)
+        n = struct.unpack('<I', head[12:16])[0]
+        return json.loads(f.read(n))
+
+
+def slot_material(slot, cache):
+    if slot in cache:
+        return cache[slot]
+    if slot in SLOT_KNOWN_EXCEPTIONS:
+        cache[slot] = None
+        return None
+    jpg = SLOT_TEX.get(slot) or os.path.join(PAVING_TEX_DIR, slot + '.jpg')
+    if not os.path.exists(jpg):
+        # 与 export-zones.py 一致：预期贴图缺失即失败，不许悄悄退回顶点色平涂（wave12-r2）
+        raise SystemExit('E: slot %s 的贴图缺失: %s（run: blender -b -P scripts/bake-paving-textures.py'
+                         ' / python3 -X utf8 modules/outer-kit/bake_atlas.py）' % (slot, jpg))
+    img = bpy.data.images.load(jpg, check_existing=True)
+    m = bpy.data.materials.new(slot if slot in SLOT_TEX else 'paving-' + slot)
+    m.use_nodes = True
+    bsdf = next(n for n in m.node_tree.nodes if n.type == 'BSDF_PRINCIPLED')
+    bsdf.inputs['Roughness'].default_value = 0.93
+    bsdf.inputs['Metallic'].default_value = 0.0
+    tex = m.node_tree.nodes.new('ShaderNodeTexImage')
+    tex.image = img
+    tex.interpolation = 'Linear'
+    tex.extension = 'REPEAT'
+    m.node_tree.links.new(tex.outputs['Color'], bsdf.inputs['Base Color'])
+    cache[slot] = m
+    return m
+
+
+def bind_slot_materials():
+    """slot 网格换贴图材质（export-zones.py apply_paving 同式：只换材质槽 0，UV 用第 0 层）。"""
+    cache, n, seen, missing = {}, 0, set(), {}
+    for ob in bpy.data.objects:
+        if ob.type != 'MESH' or ob.data in seen:
+            continue
+        slot = ob.get('slot')
+        if not slot or not ob.data.uv_layers:
+            continue
+        seen.add(ob.data)
+        mat = slot_material(str(slot), cache)
+        if mat is None:
+            missing[str(slot)] = missing.get(str(slot), 0) + 1      # 只可能是 SLOT_KNOWN_EXCEPTIONS
+            continue
+        if ob.data.materials:
+            ob.data.materials[0] = mat
+        else:
+            ob.data.materials.append(mat)
+        ob.data.uv_layers[0].active = True
+        ob.data.uv_layers[0].active_render = True
+        n += 1
+    return {'slotMeshes': n, 'slotMaterials': sorted(k for k, v in cache.items() if v), 'slotKnownExceptions': missing}
+
+
+COPLANAR_TOL_M = 0.002          # 两层水平三角形高度差 ≤ 2 mm 视为共面
+COPLANAR_MIN_AREA_M2 = 1e-4     # 投影交叠面积 ≥ 1 cm² 才算冲突（边贴边的相邻铺装不算）
+COPLANAR_STEP_M = 0.004         # 次层逐级下沉 4 mm（只在 beauty 段，控制通道前恢复）
+
+
+def _flat_layer_triangles(ob, np):
+    """整件全是水平三角形的网格（地面层：铺装 / 路面 / 广场 / 地面）→ (N,3,3) 世界坐标三角形；否则 None。"""
+    me = ob.data
+    me.calc_loop_triangles()
+    nt = len(me.loop_triangles)
+    if nt == 0:
+        return None
+    tv = np.empty(nt * 3, np.int32)
+    me.loop_triangles.foreach_get('vertices', tv)
+    co = np.empty(len(me.vertices) * 3, np.float32)
+    me.vertices.foreach_get('co', co)
+    mw = np.array(ob.matrix_world, np.float64)
+    co = co.reshape(-1, 3).astype(np.float64) @ mw[:3, :3].T + mw[:3, 3]
+    T = co[tv.reshape(-1, 3)]
+    n = np.cross(T[:, 1] - T[:, 0], T[:, 2] - T[:, 0])
+    ln = np.linalg.norm(n, axis=1)
+    ok = ln > 1e-10
+    if not ok.any():
+        return None
+    if not np.all(np.abs(n[ok, 2]) >= 0.999 * ln[ok]):
+        return None
+    T = T[ok]
+    if np.any(T[:, :, 2].max(1) - T[:, :, 2].min(1) > COPLANAR_TOL_M):
+        return None
+    return T
+
+
+def _clip_area(a, b):
+    """两个 xy 三角形交叠面积（Sutherland–Hodgman，先统一成逆时针）。"""
+    def ccw(t):
+        return t if (t[1][0] - t[0][0]) * (t[2][1] - t[0][1]) - (t[1][1] - t[0][1]) * (t[2][0] - t[0][0]) > 0 else t[::-1]
+    poly = ccw(a)
+    clip = ccw(b)
+    for i in range(3):
+        c0, c1 = clip[i], clip[(i + 1) % 3]
+        ex, ey = c1[0] - c0[0], c1[1] - c0[1]
+
+        def side(p):
+            return ex * (p[1] - c0[1]) - ey * (p[0] - c0[0])
+        out = []
+        for j in range(len(poly)):
+            p, q = poly[j], poly[(j + 1) % len(poly)]
+            sp, sq = side(p), side(q)
+            if sp >= 0:
+                out.append(p)
+            if (sp >= 0) != (sq >= 0):
+                t = sp / (sp - sq)
+                out.append((p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])))
+        poly = out
+        if len(poly) < 3:
+            return 0.0
+    s = 0.0
+    for j in range(len(poly)):
+        s += poly[j][0] * poly[(j + 1) % len(poly)][1] - poly[(j + 1) % len(poly)][0] * poly[j][1]
+    return abs(s) / 2
+
+
+def find_coplanar_conflicts(offsets=None):
+    """地面层（整件水平）两两之间：高度差 ≤ COPLANAR_TOL_M 且三角形 xy 投影实际交叠 ≥ COPLANAR_MIN_AREA_M2 的冲突对。
+    offsets：{对象名: dz}，按偏移后的高度复查。返回 ({(a, b): 交叠面积}, {对象名: 该层三角形总面积})。"""
+    import numpy as np
+    offsets = offsets or {}
+    layers, areas = {}, {}
+    for ob in bpy.data.objects:
+        if ob.type != 'MESH' or ob.hide_render or not ob.data.polygons:
+            continue
+        T = _flat_layer_triangles(ob, np)
+        if T is None:
+            continue
+        T = T.copy()
+        T[:, :, 2] += offsets.get(ob.name, 0.0)
+        layers[ob.name] = T
+        areas[ob.name] = float(np.abs(np.cross(T[:, 1, :2] - T[:, 0, :2], T[:, 2, :2] - T[:, 0, :2])).sum() / 2)
+    # 三角形级网格索引（2 m 格）
+    CELL = 2.0
+    grid = {}
+    recs = []
+    for name, T in layers.items():
+        lo, hi = T[:, :, :2].min(1), T[:, :, :2].max(1)
+        z = T[:, :, 2].mean(1)
+        for k in range(len(T)):
+            rid = len(recs)
+            recs.append((name, k, lo[k], hi[k], z[k]))
+            for gx in range(int(math.floor(lo[k][0] / CELL)), int(math.floor(hi[k][0] / CELL)) + 1):
+                for gy in range(int(math.floor(lo[k][1] / CELL)), int(math.floor(hi[k][1] / CELL)) + 1):
+                    grid.setdefault((gx, gy), []).append(rid)
+    conflicts, seen = {}, set()
+    for ids in grid.values():
+        for i in range(len(ids)):
+            ra = recs[ids[i]]
+            for j in range(i + 1, len(ids)):
+                rb = recs[ids[j]]
+                if ra[0] == rb[0] or abs(ra[4] - rb[4]) > COPLANAR_TOL_M:
+                    continue
+                if ra[2][0] >= rb[3][0] or rb[2][0] >= ra[3][0] or ra[2][1] >= rb[3][1] or rb[2][1] >= ra[3][1]:
+                    continue
+                key = (ids[i], ids[j]) if ids[i] < ids[j] else (ids[j], ids[i])
+                if key in seen:
+                    continue
+                seen.add(key)
+                ta = [tuple(p[:2]) for p in layers[ra[0]][ra[1]]]
+                tb = [tuple(p[:2]) for p in layers[rb[0]][rb[1]]]
+                a = _clip_area(ta, tb)
+                if a >= COPLANAR_MIN_AREA_M2:
+                    pk = tuple(sorted((ra[0], rb[0])))
+                    conflicts[pk] = conflicts.get(pk, 0.0) + a
+    return conflicts, areas
+
+
+def plan_coplanar_offsets():
+    """冲突图贪心分层：面积大的先占 0 层（保持原高度、完整参与光照），与之冲突的逐级下沉 COPLANAR_STEP_M；
+    次层在交叠区被上层盖住（相机看不到、上层射线也打不到它），非交叠部分只低 4 mm，照常投影 / 反弹 / 被透射看到。"""
+    conflicts, areas = find_coplanar_conflicts()
+    nb = {}
+    for a, b in conflicts:
+        nb.setdefault(a, set()).add(b)
+        nb.setdefault(b, set()).add(a)
+    rank = {}
+    for name in sorted(nb, key=lambda n: (-areas.get(n, 0.0), n)):
+        used = {rank[m] for m in nb[name] if m in rank}
+        r = 0
+        while r in used:
+            r += 1
+        rank[name] = r
+    offsets = {n: -COPLANAR_STEP_M * r for n, r in rank.items() if r > 0}
+    remaining, _ = find_coplanar_conflicts(offsets)
+    return offsets, {'coplanarConflictPairs': len(conflicts),
+                     'coplanarConflictObjects': len(nb),
+                     'coplanarOverlapM2': round(sum(conflicts.values()), 3),
+                     'coplanarLoweredObjects': len(offsets),
+                     'coplanarMaxRank': max(rank.values()) if rank else 0,
+                     'coplanarRemainingAfterOffset': len(remaining),
+                     'coplanarPairs': {'%s <> %s' % k: round(v, 3) for k, v in sorted(conflicts.items())}}
+
+
+_OFFSET_SAVED = {}
+
+
+def apply_beauty_offsets(offsets, on):
+    """beauty 段前 on=True 下沉次层（世界 z 方向 dz，换算到父空间改 location）；控制通道前 on=False 把 location
+    原值写回（存的是原 float，不经矩阵分解，逐值不变）。"""
+    from mathutils import Vector
+    for name, dz in offsets.items():
+        ob = bpy.data.objects.get(name)
+        if ob is None:
+            continue
+        if on:
+            if name in _OFFSET_SAVED:
+                continue
+            _OFFSET_SAVED[name] = tuple(ob.location)
+            base = ob.parent.matrix_world @ ob.matrix_parent_inverse if ob.parent else None
+            d = Vector((0.0, 0.0, dz))
+            if base is not None:
+                d = base.to_3x3().inverted() @ d
+            ob.location = ob.location + d
+        elif name in _OFFSET_SAVED:
+            ob.location = _OFFSET_SAVED.pop(name)
+    bpy.context.view_layer.update()
+
+
+def _normal_fix_group():
+    g = bpy.data.node_groups.get('pb-winding-normal-fix')
+    if g is not None:
+        return g
+    g = bpy.data.node_groups.new('pb-winding-normal-fix', 'ShaderNodeTree')
+    g.interface.new_socket('Normal', in_out='INPUT', socket_type='NodeSocketVector')
+    g.interface.new_socket('Normal', in_out='OUTPUT', socket_type='NodeSocketVector')
+    N, L = g.nodes.new, g.links.new
+    gi, go = N('NodeGroupInput'), N('NodeGroupOutput')
+    geo = N('ShaderNodeNewGeometry')
+    dot = N('ShaderNodeVectorMath')
+    dot.operation = 'DOT_PRODUCT'
+    L(geo.outputs['Normal'], dot.inputs[0])
+    L(geo.outputs['True Normal'], dot.inputs[1])
+    lt = N('ShaderNodeMath')
+    lt.operation = 'LESS_THAN'
+    L(dot.outputs['Value'], lt.inputs[0])
+    lt.inputs[1].default_value = -0.5
+    sign = N('ShaderNodeMath')                 # 1 - 2·[相背]
+    sign.operation = 'MULTIPLY_ADD'
+    L(lt.outputs['Value'], sign.inputs[0])
+    sign.inputs[1].default_value = -2.0
+    sign.inputs[2].default_value = 1.0
+    sc = N('ShaderNodeVectorMath')
+    sc.operation = 'SCALE'
+    L(gi.outputs['Normal'], sc.inputs[0])
+    L(sign.outputs['Value'], sc.inputs['Scale'])
+    L(sc.outputs['Vector'], go.inputs['Normal'])
+    return g
+
+
+def fix_inverted_winding_shading():
+    """找出「顶点法线与绕序相背」的多边形所用材质，给其 BSDF 法线接上相背纠正（其余面上是恒等变换）。"""
+    import numpy as np
+    mats, n_poly, n_obj, seen = set(), 0, 0, set()
+    for ob in bpy.data.objects:
+        if ob.type != 'MESH' or ob.data in seen or ob.hide_render:
+            continue
+        me = ob.data
+        seen.add(me)
+        npoly = len(me.polygons)
+        if npoly == 0 or not me.materials:
+            continue
+        pn = np.empty(npoly * 3, np.float32)
+        me.polygons.foreach_get('normal', pn)
+        ls = np.empty(npoly, np.int32)
+        me.polygons.foreach_get('loop_start', ls)
+        lt = np.empty(npoly, np.int32)
+        me.polygons.foreach_get('loop_total', lt)
+        cn = np.empty(len(me.loops) * 3, np.float32)
+        me.corner_normals.foreach_get('vector', cn)
+        acc = np.add.reduceat(cn.reshape(-1, 3), ls, axis=0)
+        d = (acc * pn.reshape(-1, 3)).sum(1) / np.maximum(lt, 1)
+        bad = np.nonzero(d < -0.5)[0]
+        if len(bad) == 0:
+            continue
+        mi = np.empty(npoly, np.int32)
+        me.polygons.foreach_get('material_index', mi)
+        for k in set(mi[bad].tolist()):
+            if k < len(me.materials) and me.materials[k] is not None:
+                mats.add(me.materials[k])
+        n_poly += len(bad)
+        n_obj += 1
+    grp = _normal_fix_group()
+    fixed = []
+    for mat in mats:
+        if not mat.use_nodes:
+            continue
+        nt = mat.node_tree
+        for bsdf in [n for n in nt.nodes if n.type == 'BSDF_PRINCIPLED']:
+            gn = nt.nodes.new('ShaderNodeGroup')
+            gn.node_tree = grp
+            links = list(bsdf.inputs['Normal'].links)
+            if links:
+                nt.links.new(links[0].from_socket, gn.inputs['Normal'])
+                nt.links.remove(links[0])
+            else:
+                geo = nt.nodes.new('ShaderNodeNewGeometry')
+                nt.links.new(geo.outputs['Normal'], gn.inputs['Normal'])
+            nt.links.new(gn.outputs['Normal'], bsdf.inputs['Normal'])
+        fixed.append(mat.name)
+    return {'invertedWindingPolygons': n_poly, 'invertedWindingMeshes': n_obj, 'normalFixMaterials': sorted(fixed)}
+
+
+def _srgb_to_lin(c):
+    import numpy as np
+    return np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+
+
+def _lin_to_srgb(c):
+    import numpy as np
+    c = np.maximum(c, 0.0)
+    return np.where(c <= 0.0031308, c * 12.92, 1.055 * np.power(c, 1 / 2.4) - 0.055)
+
+
+def _linear_colorspace(im):
+    for cs in ('Linear Rec.709', 'Linear', 'Linear CIE-XYZ D65'):
+        try:
+            im.colorspace_settings.name = cs
+            return cs
+        except TypeError:
+            continue
+    return im.colorspace_settings.name
+
+
+def _mip_chain(img):
+    """查看器同式 mip 链（含第 0 层）：非预乘 RGBA；sRGB 贴图先解码成线性再逐层 2×2 盒式平均，直到 1×1。
+    各层都存成线性浮点图（wave12-r2）：WebGL 的 SRGB8_ALPHA8 在解码后的线性空间做双线性 / 层间插值，
+    而 Cycles 对 8 位 sRGB 图是在编码值上插值（合成场景 T6b 实测偏暗）——换成线性浮点图后两者同一空间。"""
+    import numpy as np
+    w, h = img.size
+    px = np.empty(w * h * 4, np.float32)
+    img.pixels.foreach_get(px)
+    lin = px.reshape(h, w, 4).astype(np.float64)
+    if img.colorspace_settings.name == 'sRGB':
+        lin[..., :3] = _srgb_to_lin(lin[..., :3])
+    levels = []
+    k = 0
+    while True:
+        hh, ww = lin.shape[0], lin.shape[1]
+        im = bpy.data.images.new('%s#lin-mip%d' % (img.name, k), ww, hh, alpha=True, float_buffer=True)
+        _linear_colorspace(im)
+        im.alpha_mode = 'CHANNEL_PACKED'
+        im.pixels.foreach_set(np.clip(lin, 0, None).astype(np.float32).ravel())
+        im.pack()
+        levels.append(im)
+        if hh == 1 and ww == 1:
+            break
+        k += 1
+        nh, nw = max(1, hh // 2), max(1, ww // 2)
+        fy, fx = hh // nh, ww // nw
+        lin = lin[:nh * fy, :nw * fx].reshape(nh, fy, nw, fx, 4).mean(axis=(1, 3))
+    return levels
+
+
+def _mip_group(img, nearest_mip, min_closest, mag_closest):
+    name = 'pb-viewer-mip|%s|%s%s%s' % (img.name, 'N' if nearest_mip else 'L', 'c' if min_closest else 'l',
+                                        'c' if mag_closest else 'l')
+    g = bpy.data.node_groups.get(name)
+    if g is not None:
+        return g
+    imgs = _mip_chain(img)
+    g = bpy.data.node_groups.new(name, 'ShaderNodeTree')
+    g.interface.new_socket('Vector', in_out='INPUT', socket_type='NodeSocketVector')
+    g.interface.new_socket('Color', in_out='OUTPUT', socket_type='NodeSocketColor')
+    g.interface.new_socket('Alpha', in_out='OUTPUT', socket_type='NodeSocketFloat')
+    g.interface.new_socket('Lod', in_out='OUTPUT', socket_type='NodeSocketFloat')
+    N, L = g.nodes.new, g.links.new
+    gi, go = N('NodeGroupInput'), N('NodeGroupOutput')
+
+    def m(op, a, b=None):
+        n = N('ShaderNodeMath')
+        n.operation = op
+        for i, v in enumerate((a, b)):
+            if v is None:
+                continue
+            if isinstance(v, (int, float)):
+                n.inputs[i].default_value = v
+            else:
+                L(v, n.inputs[i])
+        return n.outputs[0]
+
+    # λ = log2( 视距 · 每像素视角 · 贴图边长 / (每 UV 单位米数 · |cos 入射角|) )，夹到 [0, 层数-1]
+    cam = N('ShaderNodeCameraData')
+    geo = N('ShaderNodeNewGeometry')
+    pix = N('ShaderNodeAttribute')
+    pix.attribute_type = 'VIEW_LAYER'
+    pix.attribute_name = PIX_ANGLE_PROP
+    uvm = N('ShaderNodeAttribute')
+    uvm.attribute_type = 'GEOMETRY'
+    uvm.attribute_name = UV_SCALE_ATTR
+    cos = N('ShaderNodeVectorMath')
+    cos.operation = 'DOT_PRODUCT'
+    L(geo.outputs['Incoming'], cos.inputs[0])
+    L(geo.outputs['True Normal'], cos.inputs[1])
+    cosa = m('MAXIMUM', m('ABSOLUTE', cos.outputs['Value']), 0.02)
+    size = float(max(img.size))
+    foot = m('MULTIPLY', m('MULTIPLY', cam.outputs['View Distance'], pix.outputs['Fac']), size)
+    den = m('MULTIPLY', m('MAXIMUM', uvm.outputs['Fac'], 1e-6), cosa)
+    raw = m('LOGARITHM', m('MAXIMUM', m('DIVIDE', foot, den), 1e-6), 2.0)
+    lod = m('MINIMUM', m('MAXIMUM', raw, 0.0), float(len(imgs) - 1))
+    if nearest_mip:
+        # GL：*_MIPMAP_NEAREST 取 d = ceil(λ + 1/2) - 1（λ 恰为 k+0.5 时取 k）
+        lod = m('SUBTRACT', m('CEIL', m('ADD', lod, 0.5)), 1.0)
+        lod = m('MAXIMUM', lod, 0.0)
+    magnify = m('LESS_THAN', raw, 1e-6)            # λ ≤ 0：放大，第 0 层按 magFilter
+    col_acc = alpha_acc = None
+
+    def add(color, alpha, w):
+        nonlocal col_acc, alpha_acc
+        cs = N('ShaderNodeVectorMath')
+        cs.operation = 'SCALE'
+        L(color, cs.inputs[0])
+        L(w, cs.inputs['Scale'])
+        aw = m('MULTIPLY', alpha, w)
+        if col_acc is None:
+            col_acc, alpha_acc = cs.outputs['Vector'], aw
+        else:
+            ad = N('ShaderNodeVectorMath')
+            ad.operation = 'ADD'
+            L(col_acc, ad.inputs[0])
+            L(cs.outputs['Vector'], ad.inputs[1])
+            col_acc = ad.outputs['Vector']
+            alpha_acc = m('ADD', alpha_acc, aw)
+
+    def tex(im, closest):
+        t = N('ShaderNodeTexImage')
+        t.image = im
+        t.interpolation = 'Closest' if closest else 'Linear'
+        t.extension = 'REPEAT'
+        L(gi.outputs['Vector'], t.inputs['Vector'])
+        return t
+
+    for k, im in enumerate(imgs):
+        w = m('MAXIMUM', m('SUBTRACT', 1.0, m('ABSOLUTE', m('SUBTRACT', lod, float(k)))), 0.0)   # 层间权重
+        if k == 0:
+            tm = tex(im, mag_closest)
+            add(tm.outputs['Color'], tm.outputs['Alpha'], m('MULTIPLY', w, magnify))
+            t0 = tex(im, min_closest)
+            add(t0.outputs['Color'], t0.outputs['Alpha'], m('MULTIPLY', w, m('SUBTRACT', 1.0, magnify)))
+        else:
+            t = tex(im, min_closest)
+            add(t.outputs['Color'], t.outputs['Alpha'], w)
+    L(col_acc, go.inputs['Color'])
+    L(alpha_acc, go.inputs['Alpha'])
+    L(lod, go.inputs['Lod'])
+    return g
+
+
+def _uv_scale_attr(ob):
+    """面属性 pb_uv_m：UV→世界 雅可比的最小奇异值（米 / UV 单位，最密方向；GL 取两轴里纹素变化更快的那轴）。"""
+    import numpy as np
+    me = ob.data
+    if UV_SCALE_ATTR in me.attributes or not me.uv_layers:
+        return
+    me.calc_loop_triangles()
+    nt = len(me.loop_triangles)
+    npoly = len(me.polygons)
+    vals = np.full(npoly, 1.0, np.float32)
+    if nt:
+        tl = np.empty(nt * 3, np.int32)
+        me.loop_triangles.foreach_get('loops', tl)
+        tp = np.empty(nt, np.int32)
+        me.loop_triangles.foreach_get('polygon_index', tp)
+        tv = np.empty(nt * 3, np.int32)
+        me.loop_triangles.foreach_get('vertices', tv)
+        co = np.empty(len(me.vertices) * 3, np.float32)
+        me.vertices.foreach_get('co', co)
+        mw = np.array(ob.matrix_world, np.float64)
+        co = co.reshape(-1, 3).astype(np.float64) @ mw[:3, :3].T
+        uv = np.empty(len(me.loops) * 2, np.float32)
+        me.uv_layers[0].data.foreach_get('uv', uv)
+        uv = uv.reshape(-1, 2).astype(np.float64)
+        P = co[tv.reshape(-1, 3)]
+        U = uv[tl.reshape(-1, 3)]
+        e1, e2 = P[:, 1] - P[:, 0], P[:, 2] - P[:, 0]
+        d1, d2 = U[:, 1] - U[:, 0], U[:, 2] - U[:, 0]
+        det = d1[:, 0] * d2[:, 1] - d1[:, 1] * d2[:, 0]
+        ok = np.abs(det) > 1e-12
+        inv = np.where(ok, 1.0 / np.where(ok, det, 1.0), 0.0)
+        Ju = (e1 * d2[:, 1:2] - e2 * d1[:, 1:2]) * inv[:, None]     # dP/du
+        Jv = (e2 * d1[:, 0:1] - e1 * d2[:, 0:1]) * inv[:, None]     # dP/dv
+        a, b, c = (Ju * Ju).sum(1), (Ju * Jv).sum(1), (Jv * Jv).sum(1)
+        tr, dt = a + c, a * c - b * b
+        lmin = np.maximum(tr / 2 - np.sqrt(np.maximum(tr * tr / 4 - dt, 0)), 0)
+        s = np.where(ok, np.sqrt(lmin), np.inf)
+        best = np.full(npoly, np.inf)
+        np.minimum.at(best, tp, s)
+        vals = np.where(np.isfinite(best) & (best > 0), best, 1.0).astype(np.float32)
+    at = me.attributes.new(UV_SCALE_ATTR, 'FLOAT', 'FACE')
+    at.data.foreach_set('value', vals)
+
+
+def emulate_viewer_texture_filtering(glb_json):
+    """MASK / 带贴图 BLEND 材质的 baseColor 贴图换成查看器同式三线性 mip 采样（alpha 测试沿用导入器节点链）。"""
+    gm = {m.get('name'): m for m in glb_json.get('materials', [])}
+    samplers = glb_json.get('samplers', [])
+    textures = glb_json.get('textures', [])
+    target = {}
+    for mat in bpy.data.materials:
+        g = gm.get(mat.name) or gm.get(strip_suffix(mat.name))
+        if not g or g.get('alphaMode') not in ('MASK', 'BLEND') or not mat.use_nodes:
+            continue
+        bt = g.get('pbrMetallicRoughness', {}).get('baseColorTexture')
+        if not bt or bt['index'] >= len(textures):
+            continue
+        t = textures[bt['index']]
+        s = samplers[t['sampler']] if 'sampler' in t and t['sampler'] < len(samplers) else {}
+        mn = s.get('minFilter', 9987)
+        target[mat] = (mn in GL_MIP_NEAREST_BETWEEN, mn in GL_MIN_NEAREST_WITHIN, s.get('magFilter') == GL_NEAREST_MAG)
+    users = [ob for ob in bpy.data.objects
+             if ob.type == 'MESH' and any(m in target for m in ob.data.materials)]
+    for ob in users:
+        _uv_scale_attr(ob)
+    done = []
+    for mat, (nearest_mip, min_closest, mag_closest) in target.items():
+        nt = mat.node_tree
+        for tex in [n for n in nt.nodes if n.type == 'TEX_IMAGE' and n.image is not None]:
+            # 只换 baseColor 贴图（sRGB）；法线 / ORM 等 Non-Color 图不动
+            if tex.image.colorspace_settings.name != 'sRGB':
+                continue
+            if not (tex.outputs['Color'].links or tex.outputs['Alpha'].links):
+                continue
+            grp = nt.nodes.new('ShaderNodeGroup')
+            grp.node_tree = _mip_group(tex.image, nearest_mip, min_closest, mag_closest)
+            vl = list(tex.inputs['Vector'].links)
+            if vl:
+                nt.links.new(vl[0].from_socket, grp.inputs['Vector'])
+            else:
+                uvn = nt.nodes.new('ShaderNodeUVMap')
+                nt.links.new(uvn.outputs['UV'], grp.inputs['Vector'])
+            for outn in ('Color', 'Alpha'):
+                for lk in list(tex.outputs[outn].links):
+                    to = lk.to_socket
+                    nt.links.remove(lk)
+                    nt.links.new(grp.outputs[outn], to)
+            done.append(mat.name)
+    return {'mipFilteredMaterials': sorted(set(done)), 'mipFilteredMeshes': len(users)}
+
+
+BEAUTY_OFFSETS = {}
+
+
+def prepare_beauty_materials(scene_path, apply_offsets=True):
+    """导入 scene-areas.glb 之后、布光之前调用一次（只改 beauty 引擎读的材质 / 状态；返回统计写进 beauty-meta.json）。
+    共面次层的下沉量存进 BEAUTY_OFFSETS；apply_offsets=True 时立即进入 beauty 状态，控制通道前须
+    apply_beauty_offsets(BEAUTY_OFFSETS, False) 恢复（main 每镜头 beauty 段前后各调一次）。"""
+    info = {}
+    info.update(bind_slot_materials())
+    offsets, cinfo = plan_coplanar_offsets()
+    BEAUTY_OFFSETS.clear()
+    BEAUTY_OFFSETS.update(offsets)
+    info.update(cinfo)
+    info['coplanarOffsets'] = {k: round(v, 4) for k, v in sorted(offsets.items())}
+    if apply_offsets:
+        apply_beauty_offsets(BEAUTY_OFFSETS, True)
+    info.update(fix_inverted_winding_shading())
+    info.update(emulate_viewer_texture_filtering(read_glb_json(scene_path)))
+    log('beauty coplanar layers: %d conflict pairs among %d objects (%.3f m2 overlap), %d lowered (max rank %d), '
+        'remaining after offset %d' % (info['coplanarConflictPairs'], info['coplanarConflictObjects'],
+                                       info['coplanarOverlapM2'], info['coplanarLoweredObjects'],
+                                       info['coplanarMaxRank'], info['coplanarRemainingAfterOffset']))
+    log('beauty materials: slot meshes %d (%s; known exceptions %s), inverted-winding polys %d -> %d materials, '
+        'viewer-mip materials %d' % (info['slotMeshes'], ','.join(info['slotMaterials']), info['slotKnownExceptions'] or '-',
+                                     info['invertedWindingPolygons'], len(info['normalFixMaterials']),
+                                     len(info['mipFilteredMaterials'])))
+    return info
+
+
+def set_pixel_angle(scene, cam_data, w, h):
+    """画面中心每像素视角（弧度）写进场景 custom prop，mip 选层用；AUTO 适配下长边铺满传感器。"""
+    scene[PIX_ANGLE_PROP] = cam_data.sensor_width / (cam_data.lens * float(max(w, h)))
+    return scene[PIX_ANGLE_PROP]
+
+
+def config_beauty_lit(scene, P, preset, engine, samples, device, world, denoise=True):
     scene.world = world
     B = P['blender']
     if engine == 'cycles':
@@ -458,7 +1083,7 @@ def config_beauty_lit(scene, P, preset, engine, samples, device, world):
         scene.cycles.transmission_bounces = c['maxBounces']
         scene.cycles.transparent_max_bounces = 8
         scene.cycles.sample_clamp_indirect = c['clampIndirect']
-        scene.cycles.use_denoising = True
+        scene.cycles.use_denoising = bool(denoise)
         scene.cycles.denoiser = c['denoise']
         try:
             scene.cycles.denoising_use_gpu = bool(dev_type)
@@ -466,7 +1091,7 @@ def config_beauty_lit(scene, P, preset, engine, samples, device, world):
             pass
         scene.render.filter_size = 1.5
         meta = {'engine': 'CYCLES', 'device': scene.cycles.device, 'computeDeviceType': dev_type, 'devices': dev_names,
-                'samples': scene.cycles.samples, 'denoiser': c['denoise'], 'maxBounces': c['maxBounces']}
+                'samples': scene.cycles.samples, 'denoiser': c['denoise'] if denoise else None, 'maxBounces': c['maxBounces']}
     else:
         scene.render.engine = 'BLENDER_EEVEE_NEXT'
         e = B['eevee']
@@ -489,7 +1114,8 @@ def config_beauty_lit(scene, P, preset, engine, samples, device, world):
     scene.view_settings.look = 'None'
     scene.view_settings.exposure = math.log2(P['presets'][preset]['exposure'])
     scene.view_settings.gamma = 1
-    meta.update({'viewTransform': scene.view_settings.view_transform, 'exposureStops': scene.view_settings.exposure, 'preset': preset})
+    meta.update({'viewTransform': scene.view_settings.view_transform, 'exposureStops': scene.view_settings.exposure,
+                 'preset': preset, 'ambientMultiplier': ambient_multiplier(P, preset)})
     return meta
 
 
@@ -728,6 +1354,8 @@ def main():
 
     lit_objs, lit_world, lit_meta = [], None, None
     if lit:
+        mat_info = prepare_beauty_materials(args.scene)      # wave12-r1：材质与查看器对齐（控制通道不读）
+        apply_beauty_offsets(BEAUTY_OFFSETS, False)          # wave12-r2：共面次层下沉只在 beauty 段生效
         lit_world = build_lighting_world(P, preset)
         lit_objs, lit_info = setup_beauty_lighting(scene, P, preset)
         for ob in lit_objs:
@@ -757,6 +1385,8 @@ def main():
         # R1：每镜头可选焦距 lensMm（36 mm 横幅传感器，AUTO 适配=水平）；缺省 50 mm（Blender 默认，①与 round 0 一致）
         cam_data.sensor_width = 36.0
         cam_data.lens = float(shot.get('lensMm', 50.0))
+        if lit:
+            set_pixel_angle(scene, cam_data, w, h)             # wave12-r1：mip 选层用的每像素视角
 
         def pose(k):
             eye_b, tgt_b = to_blender(eyes[k]), to_blender(tgts[k])
@@ -771,11 +1401,14 @@ def main():
         ks = frame_ids(n_frames)
         unconfig_cycles(scene)
         if lit and 'beauty' in passes:
+            apply_beauty_offsets(BEAUTY_OFFSETS, True)
             for ob in lit_objs:
                 ob.hide_render = False
             lit_meta = config_beauty_lit(scene, P, preset, args.beauty, args.beauty_samples,
-                                         args.beauty_device or P['blender']['cycles']['device'], lit_world)
+                                         args.beauty_device or P['blender']['cycles']['device'], lit_world,
+                                         denoise=args.beauty_denoise == 'on')
             lit_meta.update(lit_info)
+            lit_meta['beautyMaterials'] = {k: (v if not isinstance(v, (list, dict)) else len(v)) for k, v in mat_info.items()}
         elif 'beauty' in passes:
             config_workbench(scene, 'beauty')
         for k in (ks if 'beauty' in passes else []):
@@ -786,7 +1419,8 @@ def main():
             st.setdefault('frame-%03d' % k, {})['beauty_s'] = round(time.perf_counter() - t, 2)
             log('%s frame-%03d beauty %.1fs' % (sid, k, st['frame-%03d' % k]['beauty_s']))
         if lit:
-            # 回到控制层口径：灯光不渲、世界 = control-world（config_workbench / config_cycles 只改它的颜色）
+            # 回到控制层口径：灯光不渲、世界 = control-world（config_workbench / config_cycles 只改它的颜色）、共面次层回原高度
+            apply_beauty_offsets(BEAUTY_OFFSETS, False)
             for ob in lit_objs:
                 ob.hide_render = True
             cw = bpy.data.worlds.get('control-world')
