@@ -473,9 +473,14 @@ def fingerprint_diff(old_fp, new_fp):
     if not isinstance(old_fp, dict):
         return ['指纹记录缺失']
 
-    def brief(v):
-        if isinstance(v, list):
-            return (' '.join(map(str, v)))[:200]
+    def brief(v, nv=None):
+        if isinstance(v, list) and isinstance(nv, list):
+            for i, (x, y) in enumerate(zip(v, nv)):
+                if x != y:
+                    return '首个不同 token #%d：%r → %r' % (i, x, y)
+            if len(v) != len(nv):
+                return '长度 %d → %d（多出 %r）' % (len(v), len(nv), (nv[len(v):] or v[len(nv):]))
+            return '一致'
         if isinstance(v, str):
             return v[:16] + ('…' if len(v) > 16 else '')
         return repr(v)
@@ -484,7 +489,7 @@ def fingerprint_diff(old_fp, new_fp):
     for k in FP_FIELDS:
         ov, nv = old_fp.get(k), (new_fp or {}).get(k)
         if ov != nv:
-            out.append('%s（旧 [%s] 新 [%s]）' % (k, brief(ov), brief(nv)))
+            out.append('%s（%s）' % (k, brief(ov, nv)))
     return out
 
 
