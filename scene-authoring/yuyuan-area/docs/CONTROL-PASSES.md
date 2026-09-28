@@ -263,6 +263,7 @@ segmentation 三个条件通道必须不变。做法：`render-control-passes.py
 | `presets.*.pointLights`（灯数） | 用（点光池大小） | 只作开关（> 0 时在**全部**候选位置放灯） |
 | `pointLights.color / intensity / sources` | 用 | 用（功率 = 4π × intensity） |
 | `pointLights.distance / decay / max / reassignFrames` | 用 | **不用**（Cycles 平方反比、无截断、无上限） |
+| `blender.ambientMultiplier`（wave12-blenderamb，day / dusk / night 三档） | —（查看器不用） | 用：只乘世界节点里**非相机射线**的环境光 Background（bg_amb）强度 = `ambient.intensity / π × 倍率`；相机可见天空（bg_cam）、太阳、点光、自发光、depth / normal / segmentation 一概不动；缺字段或缺档按 1.0（= wave11 行为） |
 | `viewer.*`（toneMapping、shadow、skyTexture） | 用 | — |
 | `blender.*`（viewTransform、cycles、eevee、ambientOcclusion） | — | 用 |
 
@@ -315,3 +316,75 @@ blender -b -t 4 --python scripts/render-control-passes.py -- \
     --out <工单包>/artifacts/pv-ref --shots jiuqu-to-huxinting --beauty cycles --preset dusk [--frames last] [--passes beauty]
 python3 tests/control-pass-parity.py --a <工单包>/artifacts/pv-ref --b <Workbench 同镜头目录>
 ```
+
+## wave12-blenderamb（2026-09-28）Blender 端单独的环境光倍率 `blender.ambientMultiplier`
+
+**为什么**：同一份预设下，查看器的半球环境光（three HemisphereLight）不被遮挡，Cycles 的环境光会被深檐
+遮挡（路径追踪自然算出的环境光遮蔽），所以 Cycles 檐下立面比查看器暗；灯光工单 R2 实测调亮后檐下立面
+只提亮 ×1.08–1.25。PV 参考帧要和机主在浏览器里看到的亮度接近，故给 Blender 端单独加一个环境光倍率
+（初值 1.0 = wave11 行为；标定后的值仍写在同一份 presets.json，查看器 `web/lighting.js` 不读它）。
+
+**标定方法**（`scripts/calibrate-blender-ambient.py`，结果在工单包 `artifacts/b2/calibration.json`）：
+用与查看器相同的机位（三穗堂导览机位、厅堂 = 镜头⑥终帧；1400×900、FOV 46° 垂直视场）渲 Cycles，
+在与 `scripts/lighting-shots.mjs` 同口径的「目标掩膜包围盒下 55% 立面带」上测平均 sRGB V
+（掩膜 = layout id 本体 + 其 facadeBay 开间，白/黑 Workbench OBJECT 遮挡掩膜），按档二分 /
+比例搜索倍率使两处 V 与查看器实测值的相对误差 ≤ 10%（不能同时满足时取最大相对误差最小者，如实记录）。
+护栏：倍率范围 [1.0, 4.0]；湖心亭 / 九曲桥机位全画面高光裁切占比（max 通道 ≥ 250）相比倍率 1.0
+增加 ≤ 0.5 个百分点；夜晚最亮 0.5% 像素 R > B 占比 ≥ 0.8（湖心亭 / 九曲桥 / 华宝楼）。
+
+
+## wave12-r1（2026-09-28）Cycles beauty 外观与查看器对齐（导入后材质处理）
+
+**现象**（B3 联系表，倍率 1.0 时就有）：三穗堂格扇在 Cycles 里是实心红板、湖心亭窗格消失；地面铺装是平涂米色；
+三穗堂门前、华宝楼广场地面有纯黑三角块。**只改 Blender 端**：`render-control-passes.py` 在 `--beauty cycles|eevee`
+下导入 `scene-areas.glb` 后调一次 `prepare_beauty_materials`（默认 `--beauty workbench` 不调，旧输出不变）。
+根因与处理（证据在工单包 `artifacts/r1/`）：
+
+| 现象 | 根因（实测） | 处理 |
+|---|---|---|
+| 铺装平涂、外围立面无窗 | `export-zones.py` 只在导出运行时分区件时按对象 `slot` 绑定贴图材质（`resources/textures/paving/<slot>.jpg`、外围套件图集）；`scene-areas.glb` 更早导出，只有 `slot`（node extras）+ 世界 UV，材质仍是顶点色 | `bind_slot_materials`：同一约定导入后绑定（465 件；只换材质槽 0，不改几何 / UV）；`outerkit-proc` 为查看器着色器现画，不复刻 |
+| 纯黑三角块 | 相邻路面件在同一高度（z = 0.02 m）共面叠放（如 `road-428179933/934`）；查看器同材质共面只是深度打架，Cycles 从一层发出的阴影 / 漫反射射线在 t≈0 打中另一层 → 无日光也无环境光 | ~~R1 `isolate_flat_slot_layers`（全水平 slot 件整件关射线可见性）~~ → **R2 起**改为 `plan_coplanar_offsets`：只处理实际共面重叠的冲突对，次层 beauty 段临时下沉（见下方 wave12-r2 段） |
+| （同类隐患）| 34 个面顶点法线朝上、绕序朝下，命中背面时 Cycles 把着色法线翻进地面 → 黑 | `fix_inverted_winding_shading`：着色法线与几何法线点积 < −0.5 时取反（其余面恒等） |
+| 格扇 / 窗格纹样消失 | 镂空贴图透明像素的 RGB 是白色。查看器是 WebGL 三线性 mipmap + 非预乘 alpha：缩小采样时白底混进窗棂，格心呈浅色纹样；Cycles 不做 mipmap，alpha 测试后只剩纯色窗棂，而三穗堂格扇背板（`sst-timber-darkred` #8a4030）与窗棂同色 → 纹样消失 | `emulate_viewer_texture_filtering`：MASK / 带贴图 BLEND 材质（84 个）的 baseColor 贴图换成查看器同式 mip 链（非预乘、线性空间 2×2 盒式平均），着色器里按 λ = log2(视距 · 每像素视角 · 贴图边长 / (每 UV 单位米数 · |cos 入射角|)) 选层，alpha 测试仍走导入器节点链。λ 是**近似**（中心像素角 + UV 最小奇异值 + 入射角，没有屏幕横纵两个方向的完整纹理导数），不是 WebGL 的精确复现。每像素视角由 `set_pixel_angle` 按镜头写进场景 custom prop `pb_pix_angle`，每 UV 单位米数为面属性 `pb_uv_m` |
+
+- depth / normal / segmentation 不读这些材质 / 可见性（normal 用 material_override，seg 是 Workbench OBJECT 色，相机可见性不变）；
+  对账见工单包 `artifacts/r1/parity/`（123bad15 原脚本 vs 本分支，镜头③⑩ 第 20–23 帧，workbench 默认口径五通道 + cycles 三档四通道）。
+- **不能靠材质修的差异**：三穗堂门洞内部、格扇背后的厅内在 Cycles 里仍很暗——厅内地面天空可见率实测 1.8%、内门 0.1%，
+  是路径追踪的真实遮蔽；查看器半球环境光不被遮挡，所以门洞里是亮灰。这属于环境光倍率 / 灯光模型的范围，不是材质问题。
+- 测试：`tests/beauty-materials-test.py`（挂在 npm test 链尾；手写 glTF 合成小场景 + 真 Blender Cycles，四项机制各一断言，
+  期望值在测试里独立算）。
+- 标定（`calibrate-blender-ambient.py`）同样在导入后调 `prepare_beauty_materials`；华宝楼广场纳入裁切护栏，最优点破护栏时退到护栏内
+  最大倍率并记 `guardLimited`。R1 重标定结果在工单包 `artifacts/r1/calib/calibration.json`。
+- R1 重标定（修后画面、全新渲染）：day **2.2038**（三穗堂 V 0.2251 / 厅堂 0.3433，相对误差 22.4% / 22.2%）、
+  dusk **2.2038**（0.1192 / 0.2505，30.7% / 30.5%）、night **1.5157**（0.1196 / 0.2540，12.0% / 10.0%）。
+  三档都做不到两处同时 ≤ 10%，取最大相对误差最小点：三穗堂立面带在深檐与格扇背板后，对倍率不敏感（day m=4 也只到 0.2951），
+  厅堂敏感（day m≈1.5 即达标）。护栏：湖心亭 / 九曲桥 / 华宝楼广场裁切增量 ≤ 0.0002 pp（夜间为负），夜晚最亮 0.5% 暖色占比 1.0。
+
+## wave12-r2（2026-09-28）astra 审查修正
+
+- **共面叠放只处理实际冲突**（必修）：R1 的 `isolate_flat_slot_layers` 把 160 个全水平 slot 件整件关掉阴影 / 漫反射 / 透射 / 体积
+  可见性，其中有与任何铺装都不交叠的件，也不止 0.02 m 一个高度——正常铺装因此不再向别处投影、不再作漫反射面。R2 撤掉它，改为
+  `plan_coplanar_offsets`：在「整件全是水平三角形的地面层」（186 件，含 160 个 slot 件）之间，按高度差 ≤ 2 mm 且三角形 xy 投影
+  实际交叠 ≥ 1 cm² 找冲突对（场景实测 **258 对 / 151 件**，交叠共 8381 m²；outer 路面 249 对、garden 园路 8 对、outer–pond 1 对），
+  冲突图按面积贪心分层：面积大的留原高度、完整参与光照，次层逐级下沉 4 mm（98 件；4/8/12/16/20 mm = 54/30/10/2/2 件），
+  下沉后复查冲突 0。下沉**只在 beauty 段**：`main` 每镜头 beauty 前 `apply_beauty_offsets(…, True)`、seg/normal/depth 前写回
+  `location` 原值（存原 float，不经矩阵分解），控制通道逐值不变。不冲突的铺装不动。
+- **采样器枚举**：GL 缩小过滤 9984/9985 = 层间取最近层（R1 误写 9984/9986），层内过滤看 minFilter 的前半段（NEAREST_* 取最近纹素），
+  `magFilter` 只管放大（λ ≤ 0）时的第 0 层。mip 各层（含第 0 层）改存线性浮点图：WebGL 的 SRGB8_ALPHA8 在解码后的线性空间插值，
+  Cycles 对 8 位 sRGB 图是在编码值上插值，合成场景实测会偏暗（T6b）。
+- **缺贴图明确失败**：`bind_slot_materials` 遇到预期贴图缺失直接 `SystemExit`（与 `export-zones.py` 一致）；`outerkit-proc`
+  （查看器着色器现画）作为已知例外单列 `slotKnownExceptions`。
+- **`--beauty-denoise on|off`**（默认 on = 旧行为），与 `--beauty-samples` 配合给格扇近景用；四组对比见工单包 `artifacts/r2/sampling/`。
+- **标定**：`--out` 目录写 `fingerprint.json`（场景 GLB、渲染器、标定脚本、去掉 ambientMultiplier 的 presets、铺装 / 外围贴图、机位与目标
+  来源的 sha256），不符或无指纹却有旧缓存即拒绝续用；确认轮改为明确收敛条件（两处 ≤10% / 新候选与已测倍率差 < 1% /
+  折线预测改善 < 0.5 pp / 满 5 轮），停因写进 `confirmStop`。
+- 测试 `tests/beauty-materials-test.py` 增 T5a–c（不重叠铺装仍投影、上方物体影子仍在、铺装仍作漫反射面）与 T6a–b（9985 取最近层 /
+  9987 与独立 numpy 三线性模拟一致）；1cb269a3 上 T5a、T5c、T6a、T6b 红。
+- **R2 重标定**（修后画面，全新缓存目录 + 指纹，工单包 `artifacts/r2/calib/`）：day **2.4737**（三穗堂 V 0.2185 / 厅堂 0.3479，
+  24.7% / 23.8%）、dusk **2.3511**（0.1180 / 0.2510，31.4% / 30.7%）、night **1.9097**（0.1199 / 0.2574，11.9% / 11.4%）。
+  三档停因都是「新候选与已实渲倍率相差 < 1%」（折线预测再测只能改善 ≤0.2 pp），`guardLimited` 均为 false；
+  护栏：三机位裁切增量 ≤ 0.0074 pp，夜晚暖色占比 1.0。比 R1 高是因为铺装恢复参与漫反射后，立面收到的地面反弹来自深色铺装
+  而不是其下的浅色地面（R1 关掉铺装可见性时射线穿到 z=−0.4 的米色地面）。
+- 格扇近景采样（三穗堂导览机位 day，工单包 `artifacts/r2/sampling/`）：64 spp + OIDN 格心高频对比 0.035 / 0.041，
+  256 + OIDN 0.036 / 0.048，256 无降噪 0.117 / 0.111（含噪声），512 无降噪 0.095 / 0.098，2048 无降噪参照 0.089 / 0.092，
+  查看器 0.104 / 0.108。OIDN 是纹样变淡的主因；正式 PV 格扇近景建议 `--beauty-samples 512 --beauty-denoise off`（约 48 s/帧），远景维持默认。

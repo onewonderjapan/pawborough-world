@@ -76,6 +76,7 @@
   "viewTransform": "Khronos PBR Neutral",
   "cycles": { "samples": 64, "maxBounces": 4, "denoise": "OPENIMAGEDENOISE", "device": "GPU", "clampIndirect": 5.0 },
   "eevee": { "samples": 32, "shadowResolutionScale": 1.0, "raytracing": true },
-  "ambientOcclusion": { "distanceM": 1.5 }
+  "ambientOcclusion": { "distanceM": 1.5 },
+  "ambientMultiplier": { "day": 2.4737, "dusk": 2.3511, "night": 1.9097 }
  }
 }
