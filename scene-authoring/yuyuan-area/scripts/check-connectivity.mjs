@@ -203,7 +203,12 @@ r3.status = r3.segments.every(s => s.classification !== 'blocked') && r3.entranc
 const surfacePieces = (o) => {
   const g = o.geometry || {};
   if (Array.isArray(g.surfaceFootprints)) return g.surfaceFootprints;   // 权威，可能为 []
-  return null;                                                          // 字段不存在 → 旧回退
+  // wave12-debt D6：只有旧单块 surfaceFootprint 的道路也用实际路面而非中心线（与
+  // scripts/road_surface.py 的回退链 surfaceFootprints → [surfaceFootprint] → 无权威对齐；
+  // repair-layout 只在裁块时成对写两个字段，但「explicit paving 未与建筑重叠」的路只有旧单块字段，
+  // 旧代码让它们落回中心线计距，桥端「接实铺面」判断会高估距离）。
+  if (g.surfaceFootprint) return [g.surfaceFootprint];
+  return null;                                                          // 两个字段都不存在 → 旧回退（中心线）
 };
 const distToSurfacePieces = (p, pieces) =>
   Math.min(...pieces.map(fp => (pointInPoly(p, fp) ? 0 : distToPolyline(p, [...fp, fp[0]]))));
