@@ -449,6 +449,33 @@ def add_local(name, items, faces, m, part=None, smooth=False):
     GROUPS.setdefault((o['part'], m), []).append(o)
     return o
 
+def _canonical_bm_to_mesh(bm, me):
+    """wave13-debt2 R1 确定性：bmesh.ops.bevel / primitive_uv_sphere 内部按指针哈希排布元素，
+    输出顶点/面序随进程内存布局漂移——同一栋楼两次生成 GLB 字节不同（华宝/和丰/悦宾实测，
+    三角形集合相同、顺序不同）。这里按内容规范序重建顶点与面后写回 me：几何、UV、平滑标记
+    逐位不变，仅排列固定，使产物逐字节可复现。from_pydata / prism / cylinder 路径本来就确定，
+    不走这里（既有产物逐字节不变）。"""
+    bm.verts.ensure_lookup_table()
+    bm.faces.ensure_lookup_table()
+    uvl = bm.loops.layers.uv.active
+    vorder = sorted(range(len(bm.verts)), key=lambda i: tuple(bm.verts[i].co))
+    vmap = {old: new for new, old in enumerate(vorder)}
+    bm2 = bmesh.new()
+    for old in vorder:
+        bm2.verts.new(bm.verts[old].co)
+    bm2.verts.ensure_lookup_table()
+    # uv 层必须沿用源层名（UVMap）——verify() 会建出叫 Float2 的层，join 后两套 UV 并存、
+    # 导出器取错活跃层，TEXCOORD_0 会被顶成默认 (0,1)（华宝宝顶/灯笼球实测踩过）。
+    luv2 = bm2.loops.layers.uv.new(uvl.name) if uvl else None
+    for f in sorted(bm.faces, key=lambda f_: tuple(vmap[v.index] for v in f_.verts)):
+        nf = bm2.faces.new(tuple(bm2.verts[vmap[v.index]] for v in f.verts))
+        nf.smooth = f.smooth
+        if luv2:
+            for ls, ld in zip(f.loops, nf.loops):
+                ld[luv2].uv = ls[uvl].uv
+    bm2.to_mesh(me)
+    bm2.free()
+
 def hexa(name, c8, m, part=None, bevel=None):
     """任意六面体（8 角点局部系：底 4 + 顶 4，同序），法线自动朝外，按主轴投影米制 UV。"""
     faces = [(0, 3, 2, 1), (4, 5, 6, 7), (0, 4, 7, 3), (1, 2, 6, 5), (0, 1, 5, 4), (3, 7, 6, 2)]
@@ -465,7 +492,10 @@ def hexa(name, c8, m, part=None, bevel=None):
         bmesh.ops.bevel(bm, geom=list(bm.edges), offset=min(bw, min(ext) * .3),
                         segments=2, affect='EDGES', clamp_overlap=True)
     bmesh.ops.triangulate(bm, faces=list(bm.faces))
-    bm.to_mesh(me)
+    if bw > 0:                              # 只有 bevel 路径元素序不确定；bevel=0 保持原序
+        _canonical_bm_to_mesh(bm, me)
+    else:
+        bm.to_mesh(me)
     bm.free()
     t = TILE.get(m) or (M[m] and TILE[m])
     uv = me.uv_layers.new(name='UVMap')
@@ -547,6 +577,10 @@ def sphere(name, c, r, m, part=None, seg=12, rings=8, scale_z=1.0):
     o = bpy.context.object
     o.name = name
     o.scale = (1, 1, scale_z)
+    bm = bmesh.new()                        # primitive_uv_sphere 输出元素序跨进程不稳定 → 规范序重建
+    bm.from_mesh(o.data)
+    _canonical_bm_to_mesh(bm, o.data)
+    bm.free()
     o.data.materials.append(M[m])
     o['part'] = part or PART
     GROUPS.setdefault((o['part'], m), []).append(o)
