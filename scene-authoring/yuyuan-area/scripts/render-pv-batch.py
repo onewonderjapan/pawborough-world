@@ -1,22 +1,43 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""wave12-pvbatch P1 / R1 返修：PV 正式帧批量渲染调度器（纯 python3，不依赖 bpy）。
+"""wave12-pvbatch P1 / R1+R2 返修：PV 正式帧批量渲染调度器（纯 python3，不依赖 bpy）。
 
 按 wave11-pvboard 交接的 3 条分组命令 + 16 条逐镜命令调度 scripts/render-control-passes.py
 批量出 PV 四通道控制层 + Cycles beauty 参考帧。命令构造直接 import scripts/pv-docs.py 的
 export_command / light_groups（同一套规则，不复制拼命令逻辑）；本单不改渲染器本身，
 机主拍板的采样类参数经 --extra 原样透传（如 --beauty-samples 128 --beauty-denoise on——
-降噪参数带值 on|off，与同期渲染器分支 work/wave12-blenderamb 的参数契约一致）。
+降噪参数带值 on|off，与渲染器参数契约一致）。
+
+R2 返修要点（REVIEW-astra-R1 必修 1-4 + 可选；R1 修复全部保留不回退）：
+  1. 重渲前作废旧完成标记：指纹检查先于完整性分支（文件不齐不能掩盖配置不一致）；
+     任何对已有镜头目录的覆盖开始前，先把整个旧镜头目录（含 .done.json）原子移入
+     <out-root>/_discard/<id>-<时间戳>/，在干净目录整镜重渲；只有本次全部完成且守卫
+     通过才写新的成功记录。配置不一致仍默认报错（--rerender-mismatch 才移走重渲）；
+     文件不齐但配置一致时同样先移走再整镜重渲——旧成功标记在任何覆盖路径上都不存活。
+  2. --extra 拒绝自管选项的**出现**（与值是否等于首镜无关）：用渲染器自己的 parser 逐
+     token 识别完整名、缩写、= 形式，出现即拒绝。启动每条 Blender 命令前再用渲染器
+     parser 完整解析实际执行的 argv，断言自管字段等于调度器期望（由规范命令独立重建）；
+     --fast-group 组命令另须与逐镜命令在除 --shots 外的自管字段上逐镜等价，等价才把
+     组渲出的镜头按逐镜规范 argv 记指纹。
+  3. layout 纳入指纹：从真实 parser 最终 namespace 取 --layout 路径（默认
+     baseline/layout.json），把内容 sha256（或缺失状态）写进指纹；--layout 列为自管
+     选项，同路径 layout 内容变化即阻止复用。
+  4. 启动前全量解析：正式与冒烟运行都要求整条 argv 被当前渲染器 parser 成功解析才
+     启动 Blender——未知参数、缺值（如降噪开关漏写 on|off 值）都在启动前拒绝并提示
+     正确写法（启动前一次性预检 + 每条命令执行前再校验）。
+  可选：像素流损坏 PNG 负例（尺寸/编码正确仅像素流坏，独立证明 load()）；out-root 锁
+     单独验证与 SIGTERM 孙进程回收；可信续跑分支 RESULT 回填守卫状态并注明来源；
+     camera 矩阵拒绝 NaN/Infinity/布尔值。
 
 R1 返修要点（REVIEW-astra 必修 1-8；设计原则：宁可慢、宁可停，也不把不可信的帧当完成）：
   1. 配置指纹：每镜守卫后原子写 <out-root>/control-24fps-<light>/<id>/.done.json，内容 =
      实际 argv 数组（逐镜规范形式；组渲出的镜头也记其逐镜等价 argv，避免组/单镜差异误报。
      nice 不入指纹：不影响输出）、渲染脚本 sha256、presets.json sha256、场景 GLB sha256、
-     相机输入 sha256、帧数、mode、守卫结果。续跑只有「帧齐全 + 记录存在 + 指纹完全一致 +
-     guard=pass」才跳过；无记录 / 不一致（含正式模式读到 smoke 记录）默认报错停下并说明
-     是哪个字段不同；加 --rerender-mismatch 才把整镜移到 <out-root>/_discard/<id>-<时间戳>/
-     后重渲（不删文件）。守卫失败的镜头同样写记录（guard=fail）：续跑时重新守卫，仍失败
-     就仍停——完整文件没有可信记录不算完成（必修 3）。
+     相机输入 sha256、layout sha256、帧数、mode、守卫结果。续跑只有「帧齐全 + 记录存在 +
+     指纹完全一致 + guard=pass」才跳过；无记录 / 不一致（含正式模式读到 smoke 记录）默认
+     报错停下并说明是哪个字段不同；加 --rerender-mismatch 才把整镜移到
+     <out-root>/_discard/<id>-<时间戳>/ 后重渲（不删文件）。守卫失败的镜头同样写记录
+     （guard=fail）：续跑时重新守卫，仍失败就仍停——完整文件没有可信记录不算完成（必修 3）。
   2. 齐全判定：PNG verify() 后重新打开 load() 完整解码，校验尺寸（相机输入 json 的
      width/height；PV_BATCH_FRAME_SIZE=WxH 可覆盖，测试 stub 用）与通道编码（depth 须
      16-bit I 系；beauty/normal/segmentation 须 RGB）；cameras JSON 逐帧解析并校验
@@ -29,17 +50,19 @@ R1 返修要点（REVIEW-astra 必修 1-8；设计原则：宁可慢、宁可停
      时终止整个进程组并 wait 回收。锁 fd 经 pass_fds 传给渲染子进程：父进程被杀时锁仍由
      存活的渲染进程持有，GPU 不会被误判空闲。
   5. --extra：只 shlex.split 一次、从构造到执行一律参数数组；安检用渲染器自己的 argparse
-     （参考 tests/pv-export-args-test.py 的加载方式，不重写解析规则）行为级判定：任何能被
-     解析为自管选项（--out/--shots/--scene/--cameras/--preset/--frames/--passes，含缩写与
-     = 形式）的参数一律拒绝；渲染器暂不认识的未来参数（如未合入分支的 --beauty-denoise on|off
-     降噪开关）不在拒绝集，原样透传、由渲染器运行期裁决。--out-root 路径不能含空格（pv-docs
-     规范命令按空格拼接、无引号）。
+     （参考 tests/pv-export-args-test.py 的加载方式，不重写解析规则）行为级判定：自管选项
+     （--out/--shots/--scene/--cameras/--preset/--frames/--passes/--layout，含缩写与 = 形式）
+     **出现即拒绝**，与值是否等于首镜无关（R2 必修2：同值自管参数可能改写后续镜头）；
+     非自管参数须能被当前渲染器 parser 成功解析，未知参数 / 缺值在启动 Blender 前拒绝并
+     提示正确写法。--out-root 路径不能含空格（pv-docs 规范命令按空格拼接、无引号）。
   6. 冒烟隔离：--frames N 强制输出到 <out-root>/_smoke/ 子目录（.done.json 标 mode=smoke，
      RESULT/进度/日志/联系表同在 _smoke 下）；正式模式拒绝把 smoke 记录当完成，也不在
      正式目录写冒烟产物。
 
-断点续跑（镜粒度）：帧齐全且指纹一致的镜头跳过；不齐整镜重渲（渲染器按镜覆写，逐帧确定性
-输出，不做帧级增量）。
+断点续跑（镜粒度）：帧齐全且指纹一致的镜头跳过；指纹检查先于完整性判定——配置不一致的镜
+（无论帧全不全）默认报错停下，--rerender-mismatch 才整镜重渲；帧不齐的镜先把整个旧镜头目录
+（含旧 .done.json）原子移入 _discard/ 再在干净目录整镜重渲（逐帧确定性输出，不做帧级增量），
+旧成功标记在任何覆盖路径上都不存活。
 
 质量守卫：每镜完成后抽 beauty 首/中/末帧，按 COMMON 空白判据（灰度 std < 2/255 或主灰阶
 > 95% 像素，与 check-pv-frames.py BLANK 同口径，直方图实现免 numpy）判空白；全黑/全白即
@@ -67,6 +90,7 @@ import hashlib
 import importlib.util
 import io
 import json
+import math
 import os
 import shlex
 import signal
@@ -85,10 +109,11 @@ CHANNELS = ('beauty', 'depth', 'normal', 'segmentation')
 # COMMON 空白帧判据（与 scripts/check-pv-frames.py 的 BLANK 同口径：灰度 std<2 灰阶、主灰阶>95% 像素）
 BLANK_STD_MAX = 2.0
 BLANK_DOMINANT_MAX = 0.95
-# 必修6：调度器自管的渲染器选项（GOAL R1 列举；缩写与 = 形式同样拒绝——用渲染器自己的 parser 判定）
-SELF_MANAGED = ('out', 'shots', 'scene', 'cameras', 'preset', 'frames', 'passes')
-# .done.json 指纹参与逐字段比较的字段（mode 并入：正式/冒烟记录不互通）
-FP_FIELDS = ('argv', 'rendererSha256', 'presetsSha256', 'sceneSha256', 'camerasSha256', 'framesCount', 'mode')
+# 必修6/R2必修2：调度器自管的渲染器选项（出现即拒绝；缩写与 = 形式同样拒绝——用渲染器自己的 parser 判定）
+SELF_MANAGED = ('out', 'shots', 'scene', 'cameras', 'preset', 'frames', 'passes', 'layout')
+# .done.json 指纹参与逐字段比较的字段（mode 并入：正式/冒烟记录不互通；R2 必修3 并入 layoutSha256）
+FP_FIELDS = ('argv', 'rendererSha256', 'presetsSha256', 'sceneSha256', 'camerasSha256', 'layoutSha256',
+             'framesCount', 'mode')
 INPUT_SHA_KEYS = (('--scene', 'sceneSha256'), ('--cameras', 'camerasSha256'), ('--presets', 'presetsSha256'))
 DEPTH_MODES = ('I', 'I;16', 'I;16L', 'I;16B')  # 16-bit 深度 PNG 的 PIL 模式
 
@@ -172,25 +197,18 @@ def parse_renderer_argv(rcp, renderer_tokens):
 
 
 def check_extra_tokens(extra_tokens, base_render_tokens, rcp):
-    """--extra 安检（必修6）：拒绝任何能被渲染器 argparse 解析为自管选项的参数。
+    """--extra 安检（必修6 + R2 必修2）：自管选项**出现即拒绝**，与值是否等于首镜无关。
 
-    A 全量对比：base+extra 与 base 分别解析，任何自管字段被改写 → 拒绝（覆盖完整名、缩写、= 形式）；
-    B 逐 token 探针：A 解析失败时（含渲染器暂不认识的未来参数），对每个选项样 token 单独探针——
-      token 能把某自管字段吃成探针值 → 拒绝（拦尾部缺值等 A 够不到的情形）。
-    渲染器不认识的参数不在拒绝集：原样透传，由渲染器运行期裁决（如未合入分支的 --beauty-denoise）。"""
+    逐 token 探针：把候选 token 的选项名 + 探针值追加到基础命令后用渲染器自己的 parse_args()
+    解析（argparse 后值覆盖语义）——token 能把某自管字段吃成探针值，说明它就是（或缩写是）
+    自管选项，拒绝。覆盖完整名（--preset）、缩写（--pre/--sho）、= 形式（--preset=day）与
+    尾部缺值（--preset）等一切形态；同值绕过（--preset=day 且首镜也是 day）同样命中。
+    非自管 token 不在此拒——能否被当前渲染器解析由启动前全量解析（R2 必修4）裁决。"""
     if not extra_tokens:
         return
     if '--' in extra_tokens:
         raise SystemExit('E: --extra 不许包含裸 --（会终止渲染器选项解析、破坏自管参数契约）：%r' % (extra_tokens,))
     names = ', '.join('--' + k for k in SELF_MANAGED)
-    ns0, _ = parse_renderer_argv(rcp, base_render_tokens)
-    ns1, _ = parse_renderer_argv(rcp, base_render_tokens + list(extra_tokens))
-    if ns0 is not None and ns1 is not None:
-        hit = ['--' + k for k in SELF_MANAGED if getattr(ns1, k, None) != getattr(ns0, k, None)]
-        if hit:
-            raise SystemExit('E: --extra 覆盖调度器自管参数（%s）；自管项：%s（完整名/缩写/= 形式一律拒绝）'
-                             % (', '.join(hit), names))
-        return
     probe = '__PV_BATCH_EXTRA_PROBE__'
     for t in extra_tokens:
         if not t.startswith('-'):
@@ -200,8 +218,58 @@ def check_extra_tokens(extra_tokens, base_render_tokens, rcp):
             continue
         hit = ['--' + k for k in SELF_MANAGED if getattr(nsp, k, None) == probe]
         if hit:
-            raise SystemExit('E: --extra 含可被渲染器解析为自管选项的参数 %r（命中 %s）；自管项：%s'
+            raise SystemExit('E: --extra 含调度器自管选项 %r（命中 %s）——出现即拒绝，与值是否等于'
+                             '首镜无关（同值自管参数可能改写后续镜头/分组）；自管项：%s'
                              % (t, ', '.join(hit), names))
+
+
+def renderer_tokens_from_exec(argv_exec):
+    """实际执行 argv → 渲染器参数段（Blender 约定第一个 -- 之后交给脚本）。
+
+    兼容可选的 nice 前缀；--extra 禁含裸 --、规范命令也只有脚本前一个 --，取第一个即安全。"""
+    if '--' not in argv_exec:
+        raise SystemExit('E: 执行 argv 缺少 Blender/脚本分隔符 --：%s' % ' '.join(argv_exec))
+    return argv_exec[argv_exec.index('--') + 1:]
+
+
+def verify_exec_argv(rcp, argv_exec, expect_tokens, label):
+    """R2 必修2/4：启动 Blender 前，用渲染器自己的 parser 完整解析实际执行的 argv。
+
+    解析失败（未知参数 / 缺值 / 非法 choices）→ 启动前拒绝并提示正确写法；
+    解析成功 → 断言自管字段与调度器期望（由规范命令独立重建的 token）完全一致。
+    返回实际 namespace（组渲等价验证复用）。"""
+    toks = renderer_tokens_from_exec(argv_exec)
+    ns, err = parse_renderer_argv(rcp, toks)
+    if ns is None:
+        raise SystemExit('E: [%s] 实际执行 argv 无法被当前渲染器解析，未启动 Blender：%s\n'
+                         '  argv: %s\n  提示：参数须与 scripts/render-control-passes.py 的 argparse 匹配——'
+                         '缺值参数须带值（降噪开关写 --beauty-denoise=on 或 --beauty-denoise on 形式）；'
+                         '未知参数待渲染器升级支持后再用' % (label, err, ' '.join(shlex.quote(t) for t in toks)))
+    ens, eerr = parse_renderer_argv(rcp, expect_tokens)
+    if ens is None:
+        raise SystemExit('E: [%s] 调度器期望 argv 解析失败（内部错误）：%s\n  期望: %s'
+                         % (label, eerr, ' '.join(shlex.quote(t) for t in expect_tokens)))
+    bad = [(k, getattr(ns, k, None), getattr(ens, k, None)) for k in SELF_MANAGED
+           if getattr(ns, k, None) != getattr(ens, k, None)]
+    if bad:
+        raise SystemExit('E: [%s] 启动前校验失败：自管字段与调度器期望不符，拒绝启动 Blender：%s\n'
+                         '  实际 argv: %s' % (label, '；'.join('--%s：%r ≠ %r' % b for b in bad),
+                                              ' '.join(shlex.quote(t) for t in toks)))
+    return ns
+
+
+def verify_group_equivalence(rcp, group_ns, member_expect, label):
+    """R2 必修2：--fast-group 组命令与逐镜命令在除 --shots 外的自管字段上逐镜等价，
+    等价才允许把组渲出的镜头按逐镜规范 argv 记指纹（否则指纹会包装出「伪等价」）。"""
+    for sid, member_tokens in member_expect:
+        mns, merr = parse_renderer_argv(rcp, member_tokens)
+        if mns is None:
+            raise SystemExit('E: [%s] 逐镜期望 argv 解析失败（内部错误）：%s' % (label, merr))
+        bad = [(k, getattr(group_ns, k, None), getattr(mns, k, None)) for k in SELF_MANAGED
+               if k != 'shots' and getattr(group_ns, k, None) != getattr(mns, k, None)]
+        if bad:
+            raise SystemExit('E: [%s] 组命令与逐镜命令 %s 不等价（%s）——拒绝按逐镜规范 argv 记指纹'
+                             % (label, sid, '；'.join('--%s：%r ≠ %r' % b for b in bad)))
 
 
 def load_shots(path):
@@ -302,6 +370,19 @@ def input_sha_from_argv(argv):
     return out
 
 
+def layout_sha_from_ns(ns):
+    """R2 必修3：从渲染器 parser 最终 namespace 取 --layout 路径（默认 baseline/layout.json），
+    对其内容做 sha256；文件缺失记 None（=指纹不一致，阻止复用）。相对路径按渲染器 cwd（AREA）
+    解析。PV_BATCH_LAYOUT_OVERRIDE 是测试隔离口（同 PV_BATCH_FRAME_SIZE 口径；真机不设，
+    生产始终读 parser namespace 的路径）。返回 (sha 或 None, 实际使用的路径)。"""
+    p = os.environ.get('PV_BATCH_LAYOUT_OVERRIDE', '').strip() or getattr(ns, 'layout', '') or ''
+    if not p:
+        return None, p
+    if not os.path.isabs(p):
+        p = os.path.join(AREA, p)
+    return (sha256_file(p) if os.path.isfile(p) else None), p
+
+
 def frame_expect_size(cameras_input):
     """齐全性判定期望尺寸：PV_BATCH_FRAME_SIZE=WxH 覆盖（测试 stub 用），否则相机输入 json 的
     width/height；都拿不到时兜底 1280x720（分辨率错误由渲染器/后续校验兜底）。"""
@@ -363,9 +444,13 @@ def camera_json_ok(path, sid, k, expect_wh):
     if (doc.get('width'), doc.get('height')) != expect_wh:
         return 'wh=%r,%r' % (doc.get('width'), doc.get('height'))
 
+    def num(v):
+        # R2 可选：布尔（bool 是 int 子类）与非有限值（json 的 NaN/Infinity）都不是可用矩阵元素
+        return isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v)
+
     def mat(v, rows, cols):
         return isinstance(v, list) and len(v) == rows and all(
-            isinstance(r, list) and len(r) == cols and all(isinstance(x, (int, float)) for x in r) for r in v)
+            isinstance(r, list) and len(r) == cols and all(num(x) for x in r) for r in v)
 
     if not mat(doc.get('K'), 3, 3):
         return 'K'
@@ -628,12 +713,32 @@ def main():
     def exec_argv(canonical_cmd, with_nice):
         return exec_argv_of(canonical_cmd, blender_exec, extra_tokens, a.frames, a.nice if with_nice else None)
 
-    # --extra 安检（必修6）：用渲染器自己的 argparse 行为级判定
-    base_toks = shlex.split(shot_cmds[sel[0]['id']])
-    check_extra_tokens(extra_tokens, base_toks[base_toks.index('--') + 1:], load_renderer_module())
+    # --extra 安检（必修6 + R2 必修2 自管选项出现即拒绝）：渲染器自己的 argparse 行为级判定
+    rcp = load_renderer_module()
 
-    # 指纹公共输入 sha 与齐全性判定期望尺寸
-    fp_inputs = input_sha_from_argv(exec_argv(shot_cmds[sel[0]['id']], False))
+    def expect_render_tokens(canonical_cmd):
+        """R2 必修2：调度器期望的渲染器参数段——由规范命令独立重建（shlex 后取 -- 段，
+        再附 extra 与 --frames），与实际执行 argv 的构造路径彼此独立，可交叉验证。"""
+        toks = shlex.split(canonical_cmd)
+        out = toks[toks.index('--') + 1:] + list(extra_tokens)
+        if a.frames is not None:
+            out += ['--frames', ','.join(str(k) for k in range(a.frames))]
+        return out
+
+    base_toks = shlex.split(shot_cmds[sel[0]['id']])
+    check_extra_tokens(extra_tokens, base_toks[base_toks.index('--') + 1:], rcp)
+    # R2 必修4：启动前全量解析（拿锁、建目录、启动 Blender 之前）——extra 对每条命令相同，
+    # 解析成败与 --shots 值无关，首条命令即可代表；未知参数 / 缺值在此拒绝并提示正确写法
+    verify_exec_argv(rcp, exec_argv(shot_cmds[sel[0]['id']], True),
+                     expect_render_tokens(shot_cmds[sel[0]['id']]), 'prelaunch:%s' % sel[0]['id'])
+
+    # 指纹公共输入 sha 与齐全性判定期望尺寸（layout 从真实 parser 最终 namespace 取路径：R2 必修3）
+    fp_argv0 = exec_argv(shot_cmds[sel[0]['id']], False)
+    fp_ns, fp_ns_err = parse_renderer_argv(rcp, renderer_tokens_from_exec(fp_argv0))
+    if fp_ns is None:
+        raise SystemExit('E: 首镜渲染 argv 解析失败（内部错误）：%s' % fp_ns_err)
+    fp_inputs = input_sha_from_argv(fp_argv0)
+    fp_inputs['layoutSha256'], layout_path_used = layout_sha_from_ns(fp_ns)
     renderer_sha = sha256_file(RENDERER) if os.path.isfile(RENDERER) else None
     expect_wh = frame_expect_size(os.path.join(AREA, 'out-zone', 'pv-cameras.json'))
 
@@ -664,13 +769,18 @@ def main():
             print('[%s %s] shots=%d frames=%d' % (kind, tag, len(ids), fr))
             print(display_cmd(cmd))
             print('  exec-argv: %s' % ' '.join(shlex.quote(t) for t in exec_argv(cmd, True)))
+            # R2 必修2/4：dry-run 同样逐条全量解析 + 自管字段断言 + 组/逐镜等价（不渲染也先暴露）
+            ns_cmd = verify_exec_argv(rcp, exec_argv(cmd, True), expect_render_tokens(cmd), tag)
+            if kind == 'group':
+                verify_group_equivalence(rcp, ns_cmd,
+                                         [(i, expect_render_tokens(shot_cmds[i])) for i in ids], tag)
         skipped = sum(1 for s in sel if shot_state(product_root, s['light'], s['id'], s['frames'], expect_wh)[0]) \
             if os.path.isdir(product_root) else 0
         print('# commands=%d  selected-frames=%d  already-complete-shots=%d' % (len(plan), total_sel_frames, skipped))
         return 0
 
     # ---------------- 实跑 ----------------
-    miss = [f for f in ('presetsSha256', 'sceneSha256', 'camerasSha256') if fp_inputs.get(f) is None]
+    miss = [f for f in ('presetsSha256', 'sceneSha256', 'camerasSha256', 'layoutSha256') if fp_inputs.get(f) is None]
     if renderer_sha is None:
         miss.append('rendererSha256')
     if miss:
@@ -723,7 +833,7 @@ def main():
         prog['updatedAt'] = now_iso()
         write_json(progress_path, prog)
 
-    # ---------------- 续跑评估（必修1/3/7：可信才跳过）----------------
+    # ---------------- 续跑评估（必修1/3/7 + R2 必修1：可信才跳过）----------------
     problems = []      # [(sid, 原因)] —— 无记录 / 指纹不一致 / mode 不符
     reguard_fail = None
     for s in sel:
@@ -731,45 +841,55 @@ def main():
         p = prog['shots'][sid]
         sdir = shot_dir_of(product_root, s['light'], sid)
         d = read_done(sdir)
-        # mode 门禁先于齐全性：含 smoke 记录的目录不许当正式根用（反之亦然），帧不全也不许覆盖
+        # mode 门禁最先：含 smoke 记录的目录不许当正式根用（反之亦然），帧不全也不许覆盖
         if d is not None and d.get('mode') != mode:
             reason = '完成记录 mode=%r 与本次 mode=%r 不符（正式模式拒绝把 smoke 记录当完成，反之亦然）' % (
                 d.get('mode'), mode)
             problems.append((sid, reason))
             p.update(status='blocked-fingerprint', note=reason)
             continue
-        ok, per = shot_state(product_root, s['light'], sid, s['frames'], expect_wh)
-        p['framesDone'] = per['beauty']['ok']
-        if not ok:
-            p.update(note='帧文件不齐全，待渲：%s' % json.dumps(per, ensure_ascii=False))
-            continue
-        if d is None:
-            reason = '帧齐全但无完成记录（.done.json 缺失或不可解析）——没有可信记录的完整文件不算完成'
-        else:
+        # R2 必修1：指纹检查先于完整性分支——文件不齐不能掩盖配置不一致
+        #（「缺文件 + 换配置」默认报错停下，不因帧不全直接转待渲绕过比较）
+        if d is not None:
             diff = fingerprint_diff(d.get('fingerprint'), fingerprint_of(sid))
             if diff:
                 reason = '指纹不一致：%s' % '；'.join(diff)
-            elif d.get('guard') == 'pass':
+                problems.append((sid, reason))
+                p.update(status='blocked-fingerprint', note=reason)
+                continue
+        ok, per = shot_state(product_root, s['light'], sid, s['frames'], expect_wh)
+        p['framesDone'] = per['beauty']['ok']
+        if not ok:
+            # R2 必修1：帧不齐（指纹一致或无记录）→ 待渲；渲染开始前整个旧镜头目录会被
+            # 原子移入 _discard/（含旧 .done.json），在干净目录整镜重渲，不会覆盖出混合产物
+            p.update(note='帧文件不齐全，待渲（渲染前旧目录整镜移 _discard，干净目录重渲）：%s'
+                     % json.dumps(per, ensure_ascii=False))
+            continue
+        if d is None:
+            reason = '帧齐全但无完成记录（.done.json 缺失或不可解析）——没有可信记录的完整文件不算完成'
+        elif d.get('guard') == 'pass':
+            # R2 可选3：可信续跑分支回填守卫状态并注明来源（此前 RESULT 里一直是 not-run）
+            p.update(status='complete-preexisting', framesDone=s['frames'],
+                     guard=d.get('guard', 'not-run'), guardDetail=d.get('guardDetail'),
+                     note='帧齐全且 .done.json 指纹一致、守卫 pass，跳过；guard 状态取自完成记录（本次未重跑守卫）')
+            continue
+        else:
+            # guard != pass（必修3）：重新守卫，仍失败就仍停——不重渲、更不洗白
+            g_ok, g_detail = guard_shot(product_root, s['light'], sid, s['frames'])
+            p['guard'] = 'pass' if g_ok else 'fail'
+            p['guardDetail'] = g_detail
+            if g_ok:
+                write_done(sdir, {'version': 1, 'mode': mode, 'finishedAt': now_iso(),
+                                  'fingerprint': fingerprint_of(sid), 'guard': 'pass', 'guardDetail': g_detail,
+                                  'note': '上次守卫失败/未过：续跑重新守卫通过'})
                 p.update(status='complete-preexisting', framesDone=s['frames'],
-                         note='帧齐全且 .done.json 指纹一致、守卫 pass，跳过')
-                continue
+                         note='上次守卫失败/未过：本次重新守卫通过（.done.json 已更新）')
             else:
-                # guard != pass（必修3）：重新守卫，仍失败就仍停——不重渲、更不洗白
-                g_ok, g_detail = guard_shot(product_root, s['light'], sid, s['frames'])
-                p['guard'] = 'pass' if g_ok else 'fail'
-                p['guardDetail'] = g_detail
-                if g_ok:
-                    write_done(sdir, {'version': 1, 'mode': mode, 'finishedAt': now_iso(),
-                                      'fingerprint': fingerprint_of(sid), 'guard': 'pass', 'guardDetail': g_detail,
-                                      'note': '上次守卫失败/未过：续跑重新守卫通过'})
-                    p.update(status='complete-preexisting', framesDone=s['frames'],
-                             note='上次守卫失败/未过：本次重新守卫通过（.done.json 已更新）')
-                else:
-                    p.update(status='failed-guard',
-                             note='上次守卫失败：续跑重新守卫仍失败（未调用渲染器）')
-                    prog['stoppedReason'] = '%s 续跑重新守卫仍失败' % sid
-                    reguard_fail = reguard_fail or sid
-                continue
+                p.update(status='failed-guard',
+                         note='上次守卫失败：续跑重新守卫仍失败（未调用渲染器）')
+                prog['stoppedReason'] = '%s 续跑重新守卫仍失败' % sid
+                reguard_fail = reguard_fail or sid
+            continue
         problems.append((sid, reason))
         p.update(status='blocked-fingerprint', note=reason)
 
@@ -789,17 +909,32 @@ def main():
         raise SystemExit('E: %d 镜续跑校验未过，已停下（未渲染任何帧）——宁可停，不把不可信的帧当完成：\n  %s\n'
                          '   要用本次配置整镜重渲：加 --rerender-mismatch（整镜移到 _discard/，不删文件）'
                          % (len(problems), '\n  '.join('%s：%s' % (sid, reason) for sid, reason in problems)))
-    if problems and a.rerender_mismatch:
+
+    def discard_before_render(sid, reason):
+        """R2 必修1：任何对已有镜头目录的覆盖开始前，先把整个旧镜头目录（含 .done.json）
+        原子移入 <product-root>/_discard/<id>-<时间戳>/——旧成功标记在覆盖路径上不可能存活；
+        在干净目录整镜重渲，只有本次全部完成且守卫通过才写新的成功记录。目录不存在则无事可做。"""
+        src = shot_dir_of(product_root, shot_by_id[sid]['light'], sid)
+        if not os.path.isdir(src):
+            return
         droot = os.path.join(product_root, '_discard')
+        os.makedirs(droot, exist_ok=True)
+        base = '%s-%s' % (sid, stamp)
+        dst = os.path.join(droot, base)
+        n = 1
+        while os.path.exists(dst):  # 同秒内同镜多次移走时加序号，不覆盖既有 _discard 内容
+            n += 1
+            dst = os.path.join(droot, '%s-%d' % (base, n))
+        os.replace(src, dst)  # 同文件系统内原子移走整个目录
+        rel = os.path.relpath(dst, product_root)
+        discarded.append({'id': sid, 'movedTo': rel, 'reason': reason})
+        prog['shots'][sid].update(note='%s；旧目录已原子移到 %s（不删文件）' % (reason, rel))
+        log('DISCARD %s：%s；整镜移到 %s' % (sid, reason, dst))
+
+    if problems and a.rerender_mismatch:
         for sid, reason in problems:
-            s = shot_by_id[sid]
-            src = shot_dir_of(product_root, s['light'], sid)
-            dst = os.path.join(droot, '%s-%s' % (sid, stamp))
-            os.makedirs(droot, exist_ok=True)
-            os.replace(src, dst)
-            discarded.append({'id': sid, 'movedTo': os.path.relpath(dst, product_root)})
-            prog['shots'][sid].update(status='pending', note='%s → _discard 后重渲（--rerender-mismatch，不删文件）' % reason)
-            log('DISCARD %s：%s；整镜移到 %s' % (sid, reason, dst))
+            prog['shots'][sid].update(status='pending')
+            discard_before_render(sid, '%s（--rerender-mismatch 整镜重渲）' % reason)
 
     stop = {'reason': reguard_fail and ('%s 续跑重新守卫仍失败' % reguard_fail)}
     exit_code = 0
@@ -898,9 +1033,17 @@ def main():
                 tag = 'group:%s' % light
                 cmd = cmd_by_tag[tag][0]
                 argv_exec = exec_argv(cmd, True)
+                # R2 必修2/4：启动前全量解析 + 自管字段断言；组命令与逐镜命令等价（除 --shots）
+                # 验证通过才允许把组渲出的镜头按逐镜规范 argv 记指纹
+                g_ns = verify_exec_argv(rcp, argv_exec, expect_render_tokens(cmd), tag)
+                verify_group_equivalence(rcp, g_ns,
+                                         [(i, expect_render_tokens(shot_cmds[i])) for i in ids], tag)
                 for sid in ids:
                     prog['shots'][sid].update(status='running', attempts=prog['shots'][sid]['attempts'] + 1,
                                               command=display_cmd(cmd))
+                # R2 必修1：组命令覆盖开始前，先把待渲镜头的旧目录（含旧 .done.json）整镜移走
+                for sid in missing:
+                    discard_before_render(sid, '组命令覆盖开始前移走旧镜头目录（含旧 .done.json），干净目录整镜重渲')
                 eta_update()
                 rc, dt = run_renderer(tag, argv_exec)
                 ok_all = True
@@ -927,7 +1070,11 @@ def main():
                     continue
                 cmd = shot_cmds[sid]
                 argv_exec = exec_argv(cmd, True)
+                # R2 必修2/4：启动 Blender 前全量解析实际 argv + 断言自管字段等于调度器期望
+                verify_exec_argv(rcp, argv_exec, expect_render_tokens(cmd), 'shot:%s' % sid)
                 p.update(status='running', attempts=p['attempts'] + 1, command=display_cmd(cmd))
+                # R2 必修1：覆盖开始前把旧镜头目录（含旧 .done.json）整镜移走，干净目录重渲
+                discard_before_render(sid, '覆盖开始前移走旧镜头目录（含旧 .done.json），干净目录整镜重渲')
                 eta_update()
                 rc, dt = run_renderer('shot:%s' % sid, argv_exec)
                 if rc != 0:

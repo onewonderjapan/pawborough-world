@@ -1,17 +1,26 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""wave12-pvbatch R1：PV 批量调度器（scripts/render-pv-batch.py）测试 — 假渲染器，不启动 Blender。
+"""wave12-pvbatch R1+R2：PV 批量调度器（scripts/render-pv-batch.py）测试 — 假渲染器，不启动 Blender。
 
-R1 按 REVIEW-astra 8 必修 + 2 可选返修。红绿对照：R0 交付（24533371）上本测试的必修负例
-全部 FAIL（artifacts/r1/logs/pv-batch-test-R1-RED.log），返修后全绿。
+R2 按 REVIEW-astra-R1 必修 1-4 + 可选 3 项返修；红绿对照见 artifacts/r2/logs/。
 
-调度器经 PV_BATCH_BLENDER 指向一个写占位 PNG 的 stub（接收与 Blender 相同的 argv），
-帧数从正本 scripts/pv-shots.json 的 durationS×fps 推导，与调度器同一口径。
-齐全性判定期望尺寸用 PV_BATCH_FRAME_SIZE=160x90（stub 同读该 env 写同尺寸帧与 cameras json）。
-GPU 锁用 PV_BATCH_GPU_LOCK 指到 tmp（不碰真机 /tmp/pawborough-gpu.lock）。
+调度器经 PV_BATCH_BLENDER 指向一个写占位 PNG 的 stub（接收与 Blender 相同的 argv；
+R2 起 opt() 用真实 argparse 后值覆盖语义），帧数从正本 scripts/pv-shots.json 的 durationS×fps
+推导，与调度器同一口径。齐全性判定期望尺寸用 PV_BATCH_FRAME_SIZE=160x90（stub 同读该 env
+写同尺寸帧与 cameras json）。GPU 锁用 PV_BATCH_GPU_LOCK 指到 tmp（不碰真机
+/tmp/pawborough-gpu.lock）。layout 指纹隔离用 PV_BATCH_LAYOUT_OVERRIDE（同 FRAME_SIZE 口径）。
 
-覆盖（对应审查编号）：
-  必修1 配置指纹：.done.json 字段（argv/渲染器 sha/场景/相机/presets sha/帧数/mode/守卫）；
+覆盖（对应审查编号；R1 项全保留）：
+  R2必修1 重渲前作废旧标记：指纹检查先于完整性分支（缺文件+换配置 → 报错零渲染）；
+     帧不齐(配置一致) → 旧目录(含 .done.json)整镜移 _discard 后干净目录重渲；
+     覆盖中断（stub 写一帧后被 SIGTERM）+ 原配置续跑不得被判完成。
+  R2必修2 --extra 同值自管选项出现即拒绝（--preset=day 且首镜 day、--sho 首镜 id）；
+     stub 后值覆盖语义自证。
+  R2必修3 layout 内容 sha 纳入指纹：同路径内容变化阻止复用；--layout 自管。
+  R2必修4 启动前全量解析：裸 --beauty-denoise（缺值）与未知参数在启动 Blender 前被拒并提示。
+  R2可选 像素流损坏 PNG（尺寸/编码正确仅像素流坏）；out-root 锁单独互斥（GPU 锁空闲）；
+     SIGTERM 孙进程一并回收；complete-preexisting 回填 guard 并注明来源；矩阵 NaN/布尔拒绝。
+  必修1 配置指纹：.done.json 字段（argv/渲染器 sha/场景/相机/presets/layout sha/帧数/mode/守卫）；
      指纹不一致默认报错停下且不渲任何帧、说明字段（argv）；--rerender-mismatch 整镜移 _discard
      （不删文件）后重渲；帧齐全但无 .done.json → 报错停下。
   必修2 齐全判定：缺 cameras json、截断 JSON、cameras shot 字段错、中间帧尺寸错、
@@ -23,7 +32,7 @@ GPU 锁用 PV_BATCH_GPU_LOCK 指到 tmp（不碰真机 /tmp/pawborough-gpu.lock�
      锁仍被孤儿渲染进程持有（pass_fds）；SIGTERM 终止渲染进程组并回收、退出码 143、写 RESULT；
      空闲后两个并发启动恰一个成功。
   必修6 --extra：完整名/缩写/= 形式的自管参数被拒；带空格路径 argv 不被拆；
-     渲染器暂不认识的未来参数（--beauty-denoise on）透传。
+     --presets 透传 + --beauty-denoise on 可跑。
   必修7 冒烟隔离：--frames N 产物全在 <out-root>/_smoke/，done 标 mode=smoke；
      正式模式拒绝把 smoke 记录当完成。
   必修8 参数契约：docstring 无裸 --beauty-denoise（必须带 on|off 值）。
@@ -33,6 +42,7 @@ GPU 锁用 PV_BATCH_GPU_LOCK 指到 tmp（不碰真机 /tmp/pawborough-gpu.lock�
 
 用法：python3 -X utf8 tests/pv-batch-test.py（npm test 已挂；无需 out-zone 重建，不碰仓库文件）
 """
+import fcntl
 import importlib.util
 import json
 import os
@@ -56,13 +66,21 @@ ORPHANS = []  # 锁测试起的 stub pid，finally 兜底清理
 
 STUB_SRC = '''#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# wave12-pvbatch R1 测试 stub：Blender 替身。接收 Blender 同款 argv（第一个 -- 之后是渲染器参数），
+# wave12-pvbatch R1/R2 测试 stub：Blender 替身。接收 Blender 同款 argv（第一个 -- 之后是渲染器参数），
 # 按 --out/--shots/--frames 写占位 PNG（四通道，depth 16-bit）+ 契约完整的 cameras json。
+# R2：opt() 采用真实 argparse「后值覆盖」语义（同名选项取最后一次出现，支持 --opt value 与
+#     --opt=value），与 render-control-passes.py 的 parse_args 行为一致，避免 stub 与真机语义漂移。
 # PV_BATCH_STUB_MODE=ok|black|white|nocam；PV_BATCH_STUB_SLEEP=N 先睡 N 秒（锁/信号测试）；
 # PV_BATCH_STUB_PIDFILE 追加写自身 pid（父进程被杀测试用）；PV_BATCH_STUB_LOG 追加写
 # 'ARGV <json数组>'（--extra 空格保真断言用）与旧行为一行空格拼接。
+# PV_BATCH_STUB_TOUCH=<绝对路径>：写一个契约完整的文件后立即对自身 SIGTERM（R2 必修1
+#     「覆盖中断」负例：模拟渲染早期补齐某文件后进程被杀）。
+# PV_BATCH_STUB_GRANDCHILD=1：额外起一个孙进程（同一进程组，60s 睡眠）并把 pid 追加进
+#     pidfile（R2 可选：验证 SIGTERM 杀整个进程组连孙进程一起回收）。
 import json
 import os
+import signal
+import subprocess
 import sys
 import time
 
@@ -77,6 +95,11 @@ pidfile = os.environ.get('PV_BATCH_STUB_PIDFILE')
 if pidfile:
     with open(pidfile, 'a', encoding='utf-8') as f:
         f.write('%d\\n' % os.getpid())
+if os.environ.get('PV_BATCH_STUB_GRANDCHILD'):
+    g = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(60)'])
+    if pidfile:
+        with open(pidfile, 'a', encoding='utf-8') as f:
+            f.write('%d\\n' % g.pid)
 sleep_s = float(os.environ.get('PV_BATCH_STUB_SLEEP', '0') or 0)
 if sleep_s:
     time.sleep(sleep_s)
@@ -85,9 +108,19 @@ args = argv[argv.index('--') + 1:] if '--' in argv else []
 
 
 def opt(name):
-    if name in args and args.index(name) + 1 < len(args):
-        return args[args.index(name) + 1]
-    return ''
+    """真实 argparse 后值覆盖语义：同名选项取最后一次出现；--opt value 与 --opt=value 都认。"""
+    val = ''
+    i = 0
+    while i < len(args):
+        t = args[i]
+        if t == name and i + 1 < len(args):
+            val = args[i + 1]
+            i += 2
+            continue
+        if t.startswith(name + '='):
+            val = t[len(name) + 1:]
+        i += 1
+    return val
 
 
 out = opt('--out')
@@ -103,6 +136,24 @@ from PIL import Image
 
 I4 = [[1.0] * 4 for _ in range(4)]
 K3 = [[800.0, 0, W / 2], [0, 800.0, H / 2], [0, 0, 1]]
+
+touch = os.environ.get('PV_BATCH_STUB_TOUCH')
+if touch:
+    os.makedirs(os.path.dirname(touch), exist_ok=True)
+    if touch.endswith('.json'):
+        sid0 = [x for x in want.split(',') if x][0]
+        with open(touch, 'w', encoding='utf-8') as f:
+            json.dump({'shot': sid0, 'frame': 0, 'width': W, 'height': H,
+                       'K': K3, 'worldToCameraOpenGL': I4, 'worldToCameraOpenCV': I4}, f)
+    elif os.sep + 'depth' + os.sep in touch:
+        Image.linear_gradient('L').resize((W, H)).convert('I').point(lambda v: v * 257).save(touch)
+    else:
+        g = Image.linear_gradient('L').resize((W, H))
+        Image.merge('RGB', (g, g, g)).save(touch)
+    print('stub touched %s then self-SIGTERM' % touch)
+    sys.stdout.flush()
+    os.kill(os.getpid(), signal.SIGTERM)
+    time.sleep(5)  # SIGTERM 未立即生效时的兜底阻塞（保持进程存活到被杀）
 
 for sid in [i for i in want.split(',') if i]:
     n = int(round(float(by_id[sid]['durationS']) * fps))
@@ -259,6 +310,37 @@ def make_undecodable_png(path, w=16, h=16):
     open(path, 'wb').write(png)
 
 
+def make_corrupt_pixel_png(path, w=160, h=90):
+    """R2 可选：尺寸与编码都正确（160×90、8-bit RGB、块结构与 CRC 全对、IDAT 长度完整）、
+    只有像素流（zlib 压缩数据中部一位翻转）损坏——verify() 过、load() 挂。
+    与截断 IDAT 不同：删掉 load() 后尺寸/模式检查也拦不住它，独立证明完整解码机制在起作用。"""
+    import struct
+    import zlib
+    raw = b''.join(b'\x00' + bytes(((k * 5 + x) % 256) for x in range(3 * w)) for k in range(h))
+    good = zlib.compress(raw, 9)
+    mid = len(good) // 2
+    bad = good[:mid] + bytes([good[mid] ^ 0xFF]) + good[mid + 1:]
+
+    def chunk(tag, data):
+        return struct.pack('>I', len(data)) + tag + data + struct.pack('>I', zlib.crc32(tag + data) & 0xffffffff)
+
+    png = (b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', struct.pack('>IIBBBBB', w, h, 8, 2, 0, 0, 0))
+           + chunk(b'IDAT', bad) + chunk(b'IEND', b''))
+    open(path, 'wb').write(png)
+    # 自证双保险：verify 通过、load 失败（否则本负例本身不成立）
+    from PIL import Image
+    with Image.open(path) as im:
+        im.verify()
+    try:
+        with Image.open(path) as im:
+            im.load()
+        raise AssertionError('corrupt-pixel 负例构造失败：load() 未报错')
+    except AssertionError:
+        raise
+    except Exception:
+        pass
+
+
 def main():
     # 0) 调度器存在性（红检锚点：脚本不存在时本测试直接红）
     if not check('调度器存在 scripts/render-pv-batch.py', os.path.isfile(SCHEDULER)):
@@ -333,13 +415,15 @@ def main():
     # 必修1：.done.json 字段与指纹
     d14 = jload(os.path.join(base1, 'pv14-bazaar-dusk', '.done.json'))
     fp14 = (d14 or {}).get('fingerprint') or {}
-    need_fp = ('argv', 'rendererSha256', 'presetsSha256', 'sceneSha256', 'camerasSha256', 'framesCount', 'mode')
+    need_fp = ('argv', 'rendererSha256', 'presetsSha256', 'sceneSha256', 'camerasSha256', 'layoutSha256',
+               'framesCount', 'mode')
     ok_fp = (d14 is not None and d14.get('guard') == 'pass' and all(k in fp14 for k in need_fp)
              and fp14.get('framesCount') == 120 and fp14.get('mode') == 'formal'
              and fp14.get('rendererSha256') == sha256_file(RENDERER)
              and fp14.get('sceneSha256') == sha256_file(os.path.join(AREA, 'out-zone', 'scene-areas.glb'))
              and fp14.get('camerasSha256') == sha256_file(os.path.join(AREA, 'out-zone', 'pv-cameras.json'))
              and fp14.get('presetsSha256') == sha256_file(os.path.join(AREA, 'lighting', 'presets.json'))
+             and fp14.get('layoutSha256') == sha256_file(os.path.join(AREA, 'baseline', 'layout.json'))
              and isinstance(fp14.get('argv'), list) and '--shots' in fp14['argv']
              and fp14['argv'][fp14['argv'].index('--shots') + 1] == 'pv14-bazaar-dusk')
     check('必修1 pv14 .done.json 指纹字段齐且与实际文件 sha 一致', ok_fp, str(fp14)[:300])
@@ -368,6 +452,10 @@ def main():
     st2 = {x['id']: x['status'] for x in res2['shots']} if res2 else {}
     check('续跑 RESULT：pv14 指纹一致跳过、pv15 逐镜补渲',
           st2 == {'pv14-bazaar-dusk': 'complete-preexisting', 'pv15-huxin-dusk': 'rendered-shot'}, str(st2))
+    ent14 = next((x for x in res2['shots'] if x['id'] == 'pv14-bazaar-dusk'), {}) if res2 else {}
+    check('R2可选3 complete-preexisting 回填 guard=pass 并注明来源',
+          ent14.get('guard') == 'pass' and ent14.get('note') and ('记录' in ent14['note'] or '.done' in ent14['note']),
+          str(ent14)[:220])
 
     # ---------------- 必修1：指纹不一致默认报错停下（不渲任何帧、说明字段）----------------
     r = run_sched(out1, 'dusk', base_env(stub, inv1), more=('--extra', '--beauty-samples 999'))
@@ -487,11 +575,27 @@ def main():
     corrupt_then_rerun('中间帧尺寸错（8×8）', _wrong_size)
     corrupt_then_rerun('不可解码 PNG（截断 IDAT：verify 过 load 挂）',
                        lambda: make_undecodable_png(os.path.join(beauty14, 'frame-061.png')))
+    corrupt_then_rerun('像素流损坏 PNG（尺寸/编码正确仅像素流坏）',
+                       lambda: make_corrupt_pixel_png(os.path.join(beauty14, 'frame-063.png')))
 
     def _depth_8bit():
         from PIL import Image
         Image.new('RGB', (160, 90), (5, 5, 5)).save(os.path.join(depth14, 'frame-062.png'))
     corrupt_then_rerun('depth 非 16-bit（RGB 8-bit）', _depth_8bit)
+
+    def _k_nan():
+        p = os.path.join(cam14, 'frame-013.json')
+        d = jload(p) or {}
+        d['K'][0][0] = float('nan')
+        json.dump(d, open(p, 'w', encoding='utf-8'))
+    corrupt_then_rerun('K 矩阵含 NaN', _k_nan)
+
+    def _mat_bool():
+        p = os.path.join(cam14, 'frame-014.json')
+        d = jload(p) or {}
+        d['worldToCameraOpenGL'][0][0] = True  # json 布尔；bool 是 int 子类，旧判据会放行
+        json.dump(d, open(p, 'w', encoding='utf-8'))
+    corrupt_then_rerun('worldToCamera 矩阵含布尔', _mat_bool)
 
     # ---------------- 必修6：--extra 自管参数拒绝（完整名/缩写/= 形式）----------------
     for label, extra in (('--sho 缩写覆盖镜头', '--sho pv15-huxin-dusk'),
@@ -578,16 +682,20 @@ def main():
               and run_sched(os.path.join(tmp, 'lock-d2'), 'dusk', fast_env, more=('--shots', 'pv14')).returncode == 0)
 
     # d) SIGTERM：终止渲染进程组并回收、退出码 143、写 RESULT
+    #    R2 可选：stub 再起一个孙进程（同进程组睡 60s）——杀组必须连孙进程一起回收
     pidf3 = os.path.join(tmp, 'stub-pids3.txt')
-    slow3 = base_env(stub, os.path.join(tmp, 'inv-lock3.log'), sleep=8, pidfile=pidf3, gpu_lock=gpu_lock)
+    slow3 = base_env(stub, os.path.join(tmp, 'inv-lock3.log'), sleep=8, pidfile=pidf3, gpu_lock=gpu_lock) \
+        | {'PV_BATCH_STUB_GRANDCHILD': '1'}
     pa = popen_sched(os.path.join(tmp, 'lock-e'), 'dusk', slow3, more=('--shots', 'pv14'))
     pids = wait_pidfile(pidf3)
     ORPHANS.extend(pids)
     pa.send_signal(signal.SIGTERM)
     rc_sig = pa.wait(timeout=30)
-    child = pids[-1] if pids else 0
+    child = pids[0] if pids else 0
+    grand = pids[1] if len(pids) > 1 else 0
     check('必修5 SIGTERM 退出码 143（128+15）', rc_sig == 143, 'rc=%s' % rc_sig)
     check('必修5 SIGTERM 后渲染子进程（进程组）已终止回收', not child or wait_gone(child), 'pid=%s' % child)
+    check('R2可选 SIGTERM 连孙进程一并回收（杀的是整个进程组）', not grand or wait_gone(grand), 'pid=%s' % grand)
     res_sig = jload(os.path.join(tmp, 'lock-e', 'RESULT.json'))
     check('必修5 信号停批也写 RESULT 且说明原因',
           res_sig and res_sig.get('status') == 'failed' and '信号' in (res_sig.get('stoppedReason') or ''),
@@ -604,6 +712,153 @@ def main():
     check('必修5 并发启动恰一个成功（另一个被锁拒绝）', (rc1 == 0) != (rc2 == 0), 'rc1=%s rc2=%s' % (rc1, rc2))
     for pid in wait_pidfile(race_pidf, 1.0):
         ORPHANS.append(pid)
+
+    # f) R2 可选：GPU 锁空闲时单独验证 out-root 锁（此前同目录竞争用例先被 GPU 锁挡住）
+    out_lr = os.path.join(tmp, 'r2-lockroot')
+    os.makedirs(out_lr, exist_ok=True)
+    lr_lock = os.path.join(out_lr, '.pv-batch.lock')
+    lr_fd = os.open(lr_lock, os.O_CREAT | os.O_RDWR, 0o666)
+    fcntl.flock(lr_fd, fcntl.LOCK_EX)
+    r = run_sched(out_lr, 'dusk', base_env(stub, os.path.join(tmp, 'inv-lr.log'),
+                                           gpu_lock=os.path.join(tmp, 'gpu-free.lock')), more=('--shots', 'pv14'))
+    check('R2可选 out-root 锁单独互斥（GPU 锁空闲仍拒绝）',
+          r.returncode != 0 and 'out-root' in (r.stdout + r.stderr),
+          'rc=%d %s' % (r.returncode, (r.stdout + r.stderr).strip()[-200:]))
+    fcntl.flock(lr_fd, fcntl.LOCK_UN)
+    os.close(lr_fd)
+
+    # ---------------- R2 必修1：重渲前作废旧完成标记 ----------------
+    # a) 「缺一个 camera + 换配置」必须报错不渲染（指纹检查先于完整性分支；
+    #    只选 pv14 隔离该镜——否则旧树上 pv15 的指纹报错会掩盖 pv14 这条路径）
+    out_m1 = os.path.join(tmp, 'r2m1')
+    inv_m1 = os.path.join(tmp, 'inv-r2m1.log')
+    r = run_sched(out_m1, 'dusk', base_env(stub, inv_m1))
+    check('R2必修1 基线跑 dusk 退出码 0', r.returncode == 0, (r.stdout + r.stderr).strip()[-300:])
+    n_m1 = len(invocations(inv_m1))
+    os.remove(os.path.join(out_m1, 'control-24fps-dusk', 'pv14-bazaar-dusk', 'cameras', 'frame-005.json'))
+    r = run_sched(out_m1, 'dusk', base_env(stub, inv_m1), more=('--shots', 'pv14', '--extra', '--beauty-samples 999'))
+    out_txt = r.stdout + r.stderr
+    check('R2必修1 缺文件+换配置：默认报错不渲染（指纹先于完整性）',
+          r.returncode != 0 and '指纹' in out_txt and '不一致' in out_txt,
+          'rc=%d %s' % (r.returncode, out_txt.strip()[-260:]))
+    check('R2必修1 缺文件+换配置：零渲染调用', len(invocations(inv_m1)) == n_m1,
+          'n=%d（期望 %d）' % (len(invocations(inv_m1)), n_m1))
+
+    # b) 帧不齐但配置一致 → 旧镜头目录（含旧 .done.json）整镜移 _discard 后干净目录重渲
+    out_m1b = os.path.join(tmp, 'r2m1b')
+    inv_m1b = os.path.join(tmp, 'inv-r2m1b.log')
+    r = run_sched(out_m1b, 'dusk', base_env(stub, inv_m1b))
+    check('R2必修1(b) 基线跑退出码 0', r.returncode == 0, (r.stdout + r.stderr).strip()[-300:])
+    os.remove(os.path.join(out_m1b, 'control-24fps-dusk', 'pv14-bazaar-dusk', 'beauty', 'frame-010.png'))
+    r = run_sched(out_m1b, 'dusk', base_env(stub, inv_m1b))
+    check('R2必修1 帧不齐(配置一致)：移走重渲退出码 0', r.returncode == 0, (r.stdout + r.stderr).strip()[-300:])
+    disc_m1b = os.path.join(out_m1b, '_discard')
+    ddirs_m1b = os.listdir(disc_m1b) if os.path.isdir(disc_m1b) else []
+    moved = [d for d in ddirs_m1b if d.startswith('pv14-bazaar-dusk')]
+    check('R2必修1 旧 pv14 目录已移入 _discard（含旧 .done.json 与 119 帧 beauty）',
+          len(moved) == 1 and os.path.isfile(os.path.join(disc_m1b, moved[0], '.done.json'))
+          and len(os.listdir(os.path.join(disc_m1b, moved[0], 'beauty'))) == 119, str(ddirs_m1b))
+    check('R2必修1 完成后 _discard 无 pv15（完整镜不受影响）',
+          not any(d.startswith('pv15') for d in ddirs_m1b), str(ddirs_m1b))
+    check('R2必修1 重渲后 pv14 帧全齐（beauty 120）',
+          len(os.listdir(os.path.join(out_m1b, 'control-24fps-dusk', 'pv14-bazaar-dusk', 'beauty'))) == 120)
+    res_m1b = jload(os.path.join(out_m1b, 'RESULT.json'))
+    st_m1b = {x['id']: x['status'] for x in res_m1b['shots']} if res_m1b else {}
+    check('R2必修1 RESULT：pv14 rendered-shot、pv15 complete-preexisting、discarded 带 reason',
+          st_m1b.get('pv14-bazaar-dusk') == 'rendered-shot' and st_m1b.get('pv15-huxin-dusk') == 'complete-preexisting'
+          and len(res_m1b.get('discarded', [])) == 1 and res_m1b['discarded'][0].get('reason'),
+          str(st_m1b) + ' ' + str(res_m1b.get('discarded'))[:200])
+
+    # c) 覆盖中断（stub 写一帧后被 SIGTERM）+ 用原配置再次续跑 → 不得被判为完成
+    out_m1c = os.path.join(tmp, 'r2m1c')
+    inv_m1c = os.path.join(tmp, 'inv-r2m1c.log')
+    r = run_sched(out_m1c, 'dusk', base_env(stub, inv_m1c))
+    check('R2必修1(c) 基线跑退出码 0', r.returncode == 0, (r.stdout + r.stderr).strip()[-300:])
+    os.remove(os.path.join(out_m1c, 'control-24fps-dusk', 'pv14-bazaar-dusk', 'beauty', 'frame-010.png'))
+    touch_png = os.path.join(out_m1c, 'control-24fps-dusk', 'pv14-bazaar-dusk', 'beauty', 'frame-010.png')
+    env_touch = base_env(stub, inv_m1c) | {'PV_BATCH_STUB_TOUCH': touch_png}
+    r = run_sched(out_m1c, 'dusk', env_touch)
+    check('R2必修1 覆盖中断：调度器非 0 退出（渲染器被杀）', r.returncode != 0, 'rc=%d' % r.returncode)
+    disc_m1c = os.path.join(out_m1c, '_discard')
+    ddirs_m1c = os.listdir(disc_m1c) if os.path.isdir(disc_m1c) else []
+    check('R2必修1 覆盖开始前旧 .done.json 已随旧目录移走（新目录无成功标记）',
+          not os.path.exists(os.path.join(out_m1c, 'control-24fps-dusk', 'pv14-bazaar-dusk', '.done.json'))
+          and any(d.startswith('pv14-bazaar-dusk') and os.path.isfile(os.path.join(disc_m1c, d, '.done.json'))
+                  for d in ddirs_m1c), str(ddirs_m1c))
+    r = run_sched(out_m1c, 'dusk', base_env(stub, inv_m1c))
+    res_m1c = jload(os.path.join(out_m1c, 'RESULT.json'))
+    st_m1c = {x['id']: x['status'] for x in res_m1c['shots']} if res_m1c else {}
+    check('R2必修1 覆盖中断后原配置续跑：pv14 重新渲染而非判完成',
+          r.returncode == 0 and st_m1c.get('pv14-bazaar-dusk') == 'rendered-shot'
+          and st_m1c.get('pv15-huxin-dusk') == 'complete-preexisting', str(st_m1c))
+    disc_m1c_all = os.listdir(disc_m1c) if os.path.isdir(disc_m1c) else []
+    check('R2必修1 中断的半成品目录再移 _discard（两代旧目录都在，不删文件）',
+          len([d for d in disc_m1c_all if d.startswith('pv14-bazaar-dusk')]) == 2, str(disc_m1c_all))
+
+    # ---------------- R2 必修2：同值自管选项出现即拒绝 ----------------
+    inv_m2 = os.path.join(tmp, 'inv-r2m2.log')
+    for label, extra in (('--preset=day（与首镜同值）', '--preset=day'),
+                         ('--sho 缩写（值=首镜 id）', '--sho pv01-aerial-reveal')):
+        r = run_sched(os.path.join(tmp, 'r2m2'), 'day', base_env(stub, inv_m2),
+                      more=('--shots', 'pv01', '--extra=' + extra))
+        out_txt = r.stdout + r.stderr
+        check('R2必修2 拒绝同值自管选项 %s' % label,
+              r.returncode != 0 and '自管' in out_txt and ('出现' in out_txt or '无关' in out_txt),
+              'rc=%d %s' % (r.returncode, out_txt.strip()[-220:]))
+    check('R2必修2 拒绝时未起任何渲染', len(invocations(inv_m2)) == 0, 'n=%d' % len(invocations(inv_m2)))
+
+    # stub 采用真实 argparse「后值覆盖」语义（同名选项取最后一次出现）
+    stub_out = os.path.join(tmp, 'stub-lastwins')
+    r = subprocess.run([sys.executable, stub, '-b', '--', '--out', stub_out, '--shots', 'pv14-bazaar-dusk',
+                        '--frames', '0', '--frames', '1'], capture_output=True, text=True, cwd=AREA)
+    got_frames = sorted(os.listdir(os.path.join(stub_out, 'pv14-bazaar-dusk', 'beauty'))) \
+        if os.path.isdir(os.path.join(stub_out, 'pv14-bazaar-dusk', 'beauty')) else []
+    check('R2必修2 stub 后值覆盖语义（--frames 0 --frames 1 → 只渲 1）',
+          r.returncode == 0 and got_frames == ['frame-001.png'], 'frames=%s rc=%d' % (got_frames, r.returncode))
+
+    # ---------------- R2 必修3：layout 内容 sha 纳入指纹 ----------------
+    lay_a = os.path.join(tmp, 'layout-a.json')
+    lay_b = os.path.join(tmp, 'layout-b.json')
+    shutil.copyfile(os.path.join(AREA, 'baseline', 'layout.json'), lay_a)
+    shutil.copyfile(os.path.join(AREA, 'baseline', 'layout.json'), lay_b)
+    with open(lay_b, 'a', encoding='utf-8') as f:  # 同路径语义下内容变化：追加空白即可（sha 变、内容合法）
+        f.write(' \n')
+    out_m3 = os.path.join(tmp, 'r2m3')
+    inv_m3 = os.path.join(tmp, 'inv-r2m3.log')
+    r = run_sched(out_m3, 'dusk', base_env(stub, inv_m3) | {'PV_BATCH_LAYOUT_OVERRIDE': lay_a},
+                  more=('--shots', 'pv14'))
+    check('R2必修3 layout 内容入指纹（基线跑退出码 0）', r.returncode == 0, (r.stdout + r.stderr).strip()[-300:])
+    d_m3 = jload(os.path.join(out_m3, 'control-24fps-dusk', 'pv14-bazaar-dusk', '.done.json'))
+    check('R2必修3 .done.json 指纹含 layoutSha256 且与实际文件 sha 一致',
+          d_m3 and d_m3.get('fingerprint', {}).get('layoutSha256') == sha256_file(lay_a),
+          str((d_m3 or {}).get('fingerprint', {}))[:200])
+    r = run_sched(out_m3, 'dusk', base_env(stub, inv_m3) | {'PV_BATCH_LAYOUT_OVERRIDE': lay_b},
+                  more=('--shots', 'pv14'))
+    out_txt = r.stdout + r.stderr
+    check('R2必修3 同路径 layout 内容变化阻止复用（按指纹报错）',
+          r.returncode != 0 and '指纹' in out_txt and 'layoutSha256' in out_txt,
+          'rc=%d %s' % (r.returncode, out_txt.strip()[-260:]))
+    check('R2必修3 指纹报错时零渲染', len(invocations(inv_m3)) == 1, 'n=%d' % len(invocations(inv_m3)))
+    r = run_sched(out_m3, 'dusk', base_env(stub, inv_m3), more=('--shots', 'pv14', '--extra=--layout ' + lay_a))
+    check('R2必修2/3 --layout 列为自管选项（--extra 出现即拒绝）',
+          r.returncode != 0 and '自管' in (r.stdout + r.stderr) and 'layout' in (r.stdout + r.stderr),
+          'rc=%d' % r.returncode)
+
+    # ---------------- R2 必修4：启动前全量解析（未知参数/缺值在启动 Blender 前拒绝）----------------
+    inv_m4 = os.path.join(tmp, 'inv-r2m4.log')
+    r = run_sched(os.path.join(tmp, 'r2m4'), 'dusk', base_env(stub, inv_m4),
+                  more=('--shots', 'pv14', '--extra=--beauty-denoise'))
+    out_txt = r.stdout + r.stderr
+    check('R2必修4 裸 --beauty-denoise（缺值）启动前被拒并提示正确写法',
+          r.returncode != 0 and ('on' in out_txt and '渲染器' in out_txt) and '未启动 Blender' in out_txt,
+          'rc=%d %s' % (r.returncode, out_txt.strip()[-260:]))
+    r = run_sched(os.path.join(tmp, 'r2m4b'), 'dusk', base_env(stub, inv_m4),
+                  more=('--shots', 'pv14', '--extra=--no-such-future-param 3'))
+    out_txt = r.stdout + r.stderr
+    check('R2必修4 未知参数启动前被拒（提示与渲染器 argparse 匹配）',
+          r.returncode != 0 and 'no-such-future-param' in out_txt and '未启动 Blender' in out_txt,
+          'rc=%d %s' % (r.returncode, out_txt.strip()[-260:]))
+    check('R2必修4 两种拒绝都零渲染调用', len(invocations(inv_m4)) == 0, 'n=%d' % len(invocations(inv_m4)))
 
     if FAILS:
         print('pv-batch-test：%d 项 FAIL（tmp 保留：%s）' % (len(FAILS), tmp))
