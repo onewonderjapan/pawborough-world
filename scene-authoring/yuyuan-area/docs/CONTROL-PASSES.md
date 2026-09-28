@@ -263,6 +263,7 @@ segmentation 三个条件通道必须不变。做法：`render-control-passes.py
 | `presets.*.pointLights`（灯数） | 用（点光池大小） | 只作开关（> 0 时在**全部**候选位置放灯） |
 | `pointLights.color / intensity / sources` | 用 | 用（功率 = 4π × intensity） |
 | `pointLights.distance / decay / max / reassignFrames` | 用 | **不用**（Cycles 平方反比、无截断、无上限） |
+| `blender.ambientMultiplier`（wave12-blenderamb，day / dusk / night 三档） | —（查看器不用） | 用：只乘世界节点里**非相机射线**的环境光 Background（bg_amb）强度 = `ambient.intensity / π × 倍率`；相机可见天空（bg_cam）、太阳、点光、自发光、depth / normal / segmentation 一概不动；缺字段或缺档按 1.0（= wave11 行为） |
 | `viewer.*`（toneMapping、shadow、skyTexture） | 用 | — |
 | `blender.*`（viewTransform、cycles、eevee、ambientOcclusion） | — | 用 |
 
@@ -315,3 +316,19 @@ blender -b -t 4 --python scripts/render-control-passes.py -- \
     --out <工单包>/artifacts/pv-ref --shots jiuqu-to-huxinting --beauty cycles --preset dusk [--frames last] [--passes beauty]
 python3 tests/control-pass-parity.py --a <工单包>/artifacts/pv-ref --b <Workbench 同镜头目录>
 ```
+
+## wave12-blenderamb（2026-09-28）Blender 端单独的环境光倍率 `blender.ambientMultiplier`
+
+**为什么**：同一份预设下，查看器的半球环境光（three HemisphereLight）不被遮挡，Cycles 的环境光会被深檐
+遮挡（路径追踪自然算出的环境光遮蔽），所以 Cycles 檐下立面比查看器暗；灯光工单 R2 实测调亮后檐下立面
+只提亮 ×1.08–1.25。PV 参考帧要和机主在浏览器里看到的亮度接近，故给 Blender 端单独加一个环境光倍率
+（初值 1.0 = wave11 行为；标定后的值仍写在同一份 presets.json，查看器 `web/lighting.js` 不读它）。
+
+**标定方法**（`scripts/calibrate-blender-ambient.py`，结果在工单包 `artifacts/b2/calibration.json`）：
+用与查看器相同的机位（三穗堂导览机位、厅堂 = 镜头⑥终帧；1400×900、FOV 46° 垂直视场）渲 Cycles，
+在与 `scripts/lighting-shots.mjs` 同口径的「目标掩膜包围盒下 55% 立面带」上测平均 sRGB V
+（掩膜 = layout id 本体 + 其 facadeBay 开间，白/黑 Workbench OBJECT 遮挡掩膜），按档二分 /
+比例搜索倍率使两处 V 与查看器实测值的相对误差 ≤ 10%（不能同时满足时取最大相对误差最小者，如实记录）。
+护栏：倍率范围 [1.0, 4.0]；湖心亭 / 九曲桥机位全画面高光裁切占比（max 通道 ≥ 250）相比倍率 1.0
+增加 ≤ 0.5 个百分点；夜晚最亮 0.5% 像素 R > B 占比 ≥ 0.8（湖心亭 / 九曲桥 / 华宝楼）。
+

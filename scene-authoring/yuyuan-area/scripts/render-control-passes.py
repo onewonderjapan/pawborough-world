@@ -252,6 +252,15 @@ def enable_gpu(scene):
     return None, []
 
 
+def ambient_multiplier(P, preset):
+    """wave12-blenderamb：Blender 端单独的环境光倍率（blender.ambientMultiplier，查看器不用）。
+    Cycles 的环境光被深檐遮挡而查看器的半球环境光不会，檐下立面因此偏暗；倍率只补这一端。
+    缺字段 / 缺档按 1.0（向后兼容 = wave11 行为）。"""
+    m = P.get('blender', {}).get('ambientMultiplier', {})
+    v = m.get(preset, 1.0) if isinstance(m, dict) else 1.0
+    return v if isinstance(v, (int, float)) and v > 0 else 1.0
+
+
 def build_lighting_world(P, preset):
     """相机射线 = 预设天空渐变（查看器天空贴图同式，除以曝光抵消视图曝光）；其余射线 = 半球环境光（上 sky×I/π、下 ground×I/π）。"""
     p = P['presets'][preset]
@@ -335,7 +344,7 @@ def build_lighting_world(P, preset):
     hemi = mix(rgb(amb['ground']), rgb(amb['sky']), step)
     bg_amb = N('ShaderNodeBackground')
     L(hemi, bg_amb.inputs['Color'])
-    bg_amb.inputs['Strength'].default_value = amb['intensity'] / math.pi
+    bg_amb.inputs['Strength'].default_value = amb['intensity'] / math.pi * ambient_multiplier(P, preset)
     lp = N('ShaderNodeLightPath')
     ms = N('ShaderNodeMixShader')
     L(lp.outputs['Is Camera Ray'], ms.inputs['Fac'])
@@ -489,7 +498,8 @@ def config_beauty_lit(scene, P, preset, engine, samples, device, world):
     scene.view_settings.look = 'None'
     scene.view_settings.exposure = math.log2(P['presets'][preset]['exposure'])
     scene.view_settings.gamma = 1
-    meta.update({'viewTransform': scene.view_settings.view_transform, 'exposureStops': scene.view_settings.exposure, 'preset': preset})
+    meta.update({'viewTransform': scene.view_settings.view_transform, 'exposureStops': scene.view_settings.exposure,
+                 'preset': preset, 'ambientMultiplier': ambient_multiplier(P, preset)})
     return meta
 
 
