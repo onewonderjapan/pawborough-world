@@ -449,6 +449,33 @@ def add_local(name, items, faces, m, part=None, smooth=False):
     GROUPS.setdefault((o['part'], m), []).append(o)
     return o
 
+def _canonical_bm_to_mesh(bm, me):
+    """wave13-debt2 R1 确定性：bmesh.ops.bevel / primitive_uv_sphere 内部按指针哈希排布元素，
+    输出顶点/面序随进程内存布局漂移——同一栋楼两次生成 GLB 字节不同（华宝/和丰/悦宾实测，
+    三角形集合相同、顺序不同）。这里按内容规范序重建顶点与面后写回 me：几何、UV、平滑标记
+    逐位不变，仅排列固定，使产物逐字节可复现。from_pydata / prism / cylinder 路径本来就确定，
+    不走这里（既有产物逐字节不变）。"""
+    bm.verts.ensure_lookup_table()
+    bm.faces.ensure_lookup_table()
+    uvl = bm.loops.layers.uv.active
+    vorder = sorted(range(len(bm.verts)), key=lambda i: tuple(bm.verts[i].co))
+    vmap = {old: new for new, old in enumerate(vorder)}
+    bm2 = bmesh.new()
+    for old in vorder:
+        bm2.verts.new(bm.verts[old].co)
+    bm2.verts.ensure_lookup_table()
+    # uv 层必须沿用源层名（UVMap）——verify() 会建出叫 Float2 的层，join 后两套 UV 并存、
+    # 导出器取错活跃层，TEXCOORD_0 会被顶成默认 (0,1)（华宝宝顶/灯笼球实测踩过）。
+    luv2 = bm2.loops.layers.uv.new(uvl.name) if uvl else None
+    for f in sorted(bm.faces, key=lambda f_: tuple(vmap[v.index] for v in f_.verts)):
+        nf = bm2.faces.new(tuple(bm2.verts[vmap[v.index]] for v in f.verts))
+        nf.smooth = f.smooth
+        if luv2:
+            for ls, ld in zip(f.loops, nf.loops):
+                ld[luv2].uv = ls[uvl].uv
+    bm2.to_mesh(me)
+    bm2.free()
+
 def hexa(name, c8, m, part=None, bevel=None):
     """任意六面体（8 角点局部系：底 4 + 顶 4，同序），法线自动朝外，按主轴投影米制 UV。"""
     faces = [(0, 3, 2, 1), (4, 5, 6, 7), (0, 4, 7, 3), (1, 2, 6, 5), (0, 1, 5, 4), (3, 7, 6, 2)]
@@ -465,7 +492,10 @@ def hexa(name, c8, m, part=None, bevel=None):
         bmesh.ops.bevel(bm, geom=list(bm.edges), offset=min(bw, min(ext) * .3),
                         segments=2, affect='EDGES', clamp_overlap=True)
     bmesh.ops.triangulate(bm, faces=list(bm.faces))
-    bm.to_mesh(me)
+    if bw > 0:                              # 只有 bevel 路径元素序不确定；bevel=0 保持原序
+        _canonical_bm_to_mesh(bm, me)
+    else:
+        bm.to_mesh(me)
     bm.free()
     t = TILE.get(m) or (M[m] and TILE[m])
     uv = me.uv_layers.new(name='UVMap')
@@ -547,6 +577,10 @@ def sphere(name, c, r, m, part=None, seg=12, rings=8, scale_z=1.0):
     o = bpy.context.object
     o.name = name
     o.scale = (1, 1, scale_z)
+    bm = bmesh.new()                        # primitive_uv_sphere 输出元素序跨进程不稳定 → 规范序重建
+    bm.from_mesh(o.data)
+    _canonical_bm_to_mesh(bm, o.data)
+    bm.free()
     o.data.materials.append(M[m])
     o['part'] = part or PART
     GROUPS.setdefault((o['part'], m), []).append(o)
@@ -1453,6 +1487,9 @@ def _winback_panel(name, r, sc, o, z0, z1, w, timber, part):
 
 def window(name, r, sc, zfloor, ztop, w, h, sill, lf, timber='wood', part='windows'):
     global WINBACK_N
+    if not 0.0 <= lf <= 1.0:
+        # E3（towerwin2 可选3）：lf 超出 [0,1] 直接报错——越界值会把格心底推到背板外，不许静默生成
+        raise SystemExit('E: window %s lf=%r 超出 [0,1]——拒绝生成（参数范围校验）' % (name, lf))
     z0 = zfloor + sill
     if z0 + h > ztop - 0.25:
         h = ztop - 0.25 - z0
@@ -1463,11 +1500,17 @@ def window(name, r, sc, zfloor, ztop, w, h, sill, lf, timber='wood', part='windo
     # wave12 W1：背板改专用材质 btk-winback（几何 / UV 不变）；跨共享边被 wave7 B 守卫拦下时不出板也不计数
     # wave12-towerwin2 T0：背板拆两块——格心覆盖段（zl0 以上，与 win-* 格心底同高，含格心上缘 0.04 收边）
     # = winback 材质；其下实心段 = 原 timber（无格心遮挡，夜间不得发光）。两块同深同宽，总面积与外轮廓不变。
-    if zl0 - (z0 - 0.07) > 0.01:
-        rpanel('winb-solid-' + name, r, sc, 0.03, z0 - 0.07, zl0, w + 0.14, timber, part)
-    if _winback_panel('winb-' + name, r, sc, 0.03, zl0, z0 + h + 0.07, w + 0.14, timber, part) is not None:
-        WINBACK_N += 1
-    rpanel('win-' + name, r, sc, 0.054, zl0, z0 + h + 0.03, w - 0.02, lat, part)
+    # E3（towerwin2 可选3）：拆段与 band 同款退化保护——覆盖段（zl0..上缘）高 ≤ 0.01 时不拆段不出
+    # lit 板不计数，整体保留 timber（完整覆盖）；实心段为正高度（含 ≤ 1cm 细条）就出板，
+    # 总背板覆盖恒等于 h+0.14，不因拆段缩水。
+    if (z0 + h + 0.07) - zl0 > 0.01:
+        if zl0 - (z0 - 0.07) > 0.0:
+            rpanel('winb-solid-' + name, r, sc, 0.03, z0 - 0.07, zl0, w + 0.14, timber, part)
+        if _winback_panel('winb-' + name, r, sc, 0.03, zl0, z0 + h + 0.07, w + 0.14, timber, part) is not None:
+            WINBACK_N += 1
+        rpanel('win-' + name, r, sc, 0.054, zl0, z0 + h + 0.03, w - 0.02, lat, part)
+    else:
+        rpanel('winb-solid-' + name, r, sc, 0.03, z0 - 0.07, z0 + h + 0.07, w + 0.14, timber, part)
 
 def architrave(name, r, s0, s1, z0, z1, timber='wood'):
     obox('frame-' + name, r, s0, s1, FPR - FDP, FPR, z0, z1, timber, 'frame')
@@ -2121,18 +2164,26 @@ for b in BLOCKS:
                         continue
                     if sty == 'screen':                         # 长窗屏：整樘木背板 + 每开间数扇格心长窗
                         nlv, gap, lf = FA['longWindowLeaves'], FA['leafGapM'], FA['longWindowLatticeFrac']
+                        if not 0.0 <= lf <= 1.0:
+                            # E3（towerwin2 可选3）：lf 超出 [0,1] 直接报错（与 window 同款参数校验）
+                            raise SystemExit('E: screen %s lf=%r 超出 [0,1]——拒绝生成（参数范围校验）' % (tag, lf))
                         zw0 = zl0 + (1.0 - lf) * (zl1 - zl0)
                         # wave12-towerwin2 T1：背板拆两块——格心覆盖段（zw0..zl1，与 winleaf-* 格心底同高）=
                         # winback 材质；其下实心段（zl0..zw0）= 原 timber（无格心遮挡，夜间不得发光）。
                         # 两块同深同宽，总面积与外轮廓不变（原整板 zl0..zl1 在 zw0 处一分为二）。
-                        if zw0 - zl0 > 0.01:
-                            rpanel('winbay-solid-%s-%d' % (tag, bi), r, (g0 + g1) / 2, 0.02, zl0, zw0, g1 - g0, tim, 'windows')
-                        if _winback_panel('winbay-%s-%d' % (tag, bi), r, (g0 + g1) / 2, 0.02, zw0, zl1, g1 - g0, tim, 'windows') is not None:
-                            SCREENBACK_N += 1
-                        pitch = (g1 - g0) / nlv
-                        for kk in range(nlv):
-                            rpanel('winleaf-%s-%d-%d' % (tag, bi, kk), r, g0 + pitch * (kk + 0.5), 0.045, zw0, zl1 - 0.03,
-                                   pitch - gap, 'lattice' if tim == 'wood' else 'lattice2', 'windows')
+                        # E3（towerwin2 可选3）：拆段与 band 同款退化保护——覆盖段（zw0..zl1）高 ≤ 0.01 时
+                        # 不拆段不出 lit 板不计数，整体保留 timber；实心段为正高度（含 ≤ 1cm 细条）就出板。
+                        if zl1 - zw0 > 0.01:
+                            if zw0 - zl0 > 0.0:
+                                rpanel('winbay-solid-%s-%d' % (tag, bi), r, (g0 + g1) / 2, 0.02, zl0, zw0, g1 - g0, tim, 'windows')
+                            if _winback_panel('winbay-%s-%d' % (tag, bi), r, (g0 + g1) / 2, 0.02, zw0, zl1, g1 - g0, tim, 'windows') is not None:
+                                SCREENBACK_N += 1
+                            pitch = (g1 - g0) / nlv
+                            for kk in range(nlv):
+                                rpanel('winleaf-%s-%d-%d' % (tag, bi, kk), r, g0 + pitch * (kk + 0.5), 0.045, zw0, zl1 - 0.03,
+                                       pitch - gap, 'lattice' if tim == 'wood' else 'lattice2', 'windows')
+                        else:
+                            rpanel('winbay-solid-%s-%d' % (tag, bi), r, (g0 + g1) / 2, 0.02, zl0, zl1, g1 - g0, tim, 'windows')
                     else:                                       # 窗带：白墙上一条通开间的格心窗（上下露白墙）
                         bh, bs = stl.get('bandHM', 1.3), stl.get('bandSillM', 0.95)
                         zb0 = z + bs

@@ -36,6 +36,13 @@ R2 返修要点（REVIEW-astra-R1 必修 1-4 + 可选；R1 修复全部保留不
      单独验证与 SIGTERM 孙进程回收；可信续跑分支 RESULT 回填守卫状态并注明来源；
      camera 矩阵拒绝 NaN/Infinity/布尔值。
 
+wave13-debt2 E1（pvbatch R2 可选 1-3 收口）：
+  1. 指纹拒绝的提前退出也写本次 RESULT.json（status=blocked + 原因，build_result 唯一出口）——
+     旧成功收据不再存活过拒绝点。
+  2. layout 指纹无环境变量旁路：始终哈希渲染器 parser namespace 的路径
+     （<渲染器 ROOT>/baseline/layout.json）；PV_BATCH_LAYOUT_OVERRIDE 撤销。
+  3.（测试侧）stub 按 argparse 语义展开缩写、拒绝未知参数；--sho 红检用例改独立目录。
+
 R1 返修要点（REVIEW-astra 必修 1-8；设计原则：宁可慢、宁可停，也不把不可信的帧当完成）：
   1. 配置指纹：每镜守卫后原子写 <out-root>/control-24fps-<light>/<id>/.done.json，内容 =
      实际 argv 数组（逐镜规范形式；组渲出的镜头也记其逐镜等价 argv，避免组/单镜差异误报。
@@ -410,11 +417,12 @@ def input_sha_from_argv(argv):
 
 
 def layout_sha_from_ns(ns):
-    """R2 必修3：从渲染器 parser 最终 namespace 取 --layout 路径（默认 baseline/layout.json），
-    对其内容做 sha256；文件缺失记 None（=指纹不一致，阻止复用）。相对路径按渲染器 cwd（AREA）
-    解析。PV_BATCH_LAYOUT_OVERRIDE 是测试隔离口（同 PV_BATCH_FRAME_SIZE 口径；真机不设，
-    生产始终读 parser namespace 的路径）。返回 (sha 或 None, 实际使用的路径)。"""
-    p = os.environ.get('PV_BATCH_LAYOUT_OVERRIDE', '').strip() or getattr(ns, 'layout', '') or ''
+    """R2 必修3：从渲染器 parser 最终 namespace 取 --layout 路径（渲染器 argparse 默认
+    <渲染器 ROOT>/baseline/layout.json，绝对路径），对其内容做 sha256；文件缺失记 None
+    （=指纹不一致，阻止复用）。相对路径按渲染器 cwd（AREA）解析。没有环境变量旁路——
+    哈希对象就是渲染输入契约里那条路径的文件本身，同一路径内容变化必然进指纹
+    （E1/pvbatch R2 可选2：撤销 PV_BATCH_LAYOUT_OVERRIDE，它会使哈希对象偏离真实渲染输入）。"""
+    p = getattr(ns, 'layout', '') or ''
     if not p:
         return None, p
     if not os.path.isabs(p):
@@ -958,10 +966,45 @@ def main():
         log('断点续跑：%d 镜可信跳过（指纹一致+守卫 pass）：%s' % (len(pre), ', '.join(pre)))
 
     discarded = []
+
+    def build_result(status, stopped_reason):
+        """RESULT 构造唯一出口（E1/pvbatch R2 可选1）：正常结束、失败、指纹拒绝提前退出共用
+        同一构造，每次运行都在 product_root 留下本次收据——旧的成功 RESULT 不再存活过拒绝点。"""
+        res = {'version': 2, 'tool': 'scripts/render-pv-batch.py', 'outRoot': a.out_root,
+               'productRoot': product_root, 'mode': mode, 'fastGroup': bool(a.fast_group),
+               'startedAt': prog['startedAt'], 'finishedAt': now_iso(),
+               'group': a.group, 'shotsFilter': a.shots, 'extra': extra_display, 'extraArgv': extra_tokens,
+               'framesFirstN': a.frames, 'fps': fps, 'log': log_path, 'gpuLock': gpu_lock_path,
+               'discarded': discarded,
+               'status': status,
+               'stoppedReason': stopped_reason,
+               'shots': []}
+        for s in sel:
+            p = prog['shots'][s['id']]
+            res['shots'].append({'id': s['id'], 'light': s['light'], 'frames': s['frames'],
+                                 'framesFull': s['framesFull'], 'status': p['status'],
+                                 'secondsTotal': p['secondsTotal'], 'secondsPerFrame': p['secondsPerFrame'],
+                                 'guard': p['guard'], 'command': p['command'], 'note': p['note']})
+        res['totals'] = {'shots': len(sel), 'frames': total_sel_frames,
+                         'rendered': sum(1 for x in res['shots'] if x['status'].startswith('rendered-')),
+                         'skippedComplete': sum(1 for x in res['shots'] if x['status'] == 'complete-preexisting'),
+                         'failed': sum(1 for x in res['shots'] if x['status'].startswith('failed-')),
+                         'blocked': sum(1 for x in res['shots'] if x['status'] == 'blocked-fingerprint'),
+                         'seconds': round(sum(x['secondsTotal'] or 0 for x in res['shots']), 1)}
+        return res
+
     if problems and not a.rerender_mismatch:
         eta_update()
         for sid, reason in problems:
             log('BLOCK %s：%s' % (sid, reason))
+        # E1（R2 可选1）：指纹拒绝的提前退出也写本次 RESULT.json（status=blocked + 原因）——
+        # 拒绝点覆盖旧收据，且 stoppedReason 汇总逐镜拒绝原因，收据自足（不必翻日志）。
+        res_blocked = build_result(
+            'blocked',
+            '%d 镜续跑校验未过（指纹/完成记录问题），未渲染任何帧：%s'
+            % (len(problems), '；'.join('%s %s' % (sid, reason) for sid, reason in problems)))
+        write_json(os.path.join(product_root, 'RESULT.json'), res_blocked)
+        log('已写本次 blocked RESULT 收据：%s' % os.path.join(product_root, 'RESULT.json'))
         logf.close()
         raise SystemExit('E: %d 镜续跑校验未过，已停下（未渲染任何帧）——宁可停，不把不可信的帧当完成：\n  %s\n'
                          '   要用本次配置整镜重渲：加 --rerender-mismatch（整镜移到 _discard/，不删文件）'
@@ -1166,27 +1209,7 @@ def main():
     prog['updatedAt'] = now_iso()
     prog['stoppedReason'] = stop['reason']
     eta_update()
-    result = {'version': 2, 'tool': 'scripts/render-pv-batch.py', 'outRoot': a.out_root,
-              'productRoot': product_root, 'mode': mode, 'fastGroup': bool(a.fast_group),
-              'startedAt': prog['startedAt'], 'finishedAt': now_iso(),
-              'group': a.group, 'shotsFilter': a.shots, 'extra': extra_display, 'extraArgv': extra_tokens,
-              'framesFirstN': a.frames, 'fps': fps, 'log': log_path, 'gpuLock': gpu_lock_path,
-              'discarded': discarded,
-              'status': 'failed' if stop['reason'] else 'ok',
-              'stoppedReason': stop['reason'],
-              'shots': []}
-    for s in sel:
-        p = prog['shots'][s['id']]
-        result['shots'].append({'id': s['id'], 'light': s['light'], 'frames': s['frames'],
-                                'framesFull': s['framesFull'], 'status': p['status'],
-                                'secondsTotal': p['secondsTotal'], 'secondsPerFrame': p['secondsPerFrame'],
-                                'guard': p['guard'], 'command': p['command'], 'note': p['note']})
-    result['totals'] = {'shots': len(sel), 'frames': total_sel_frames,
-                        'rendered': sum(1 for x in result['shots'] if x['status'].startswith('rendered-')),
-                        'skippedComplete': sum(1 for x in result['shots'] if x['status'] == 'complete-preexisting'),
-                        'failed': sum(1 for x in result['shots'] if x['status'].startswith('failed-')),
-                        'blocked': sum(1 for x in result['shots'] if x['status'] == 'blocked-fingerprint'),
-                        'seconds': round(sum(x['secondsTotal'] or 0 for x in result['shots']), 1)}
+    result = build_result('failed' if stop['reason'] else 'ok', stop['reason'])
     write_json(os.path.join(product_root, 'RESULT.json'), result)
     log('pv-batch 结束：status=%s rendered=%d skipped=%d failed=%d%s' % (
         result['status'], result['totals']['rendered'], result['totals']['skippedComplete'],

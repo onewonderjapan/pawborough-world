@@ -21,8 +21,13 @@ Cycles GPU 渲染，比较像素。期望值全部在本文件里独立得出，
   T5 不重叠铺装完整参与光照（wave12-r2）：只有太阳；抬高 1.2 m 的 slot 铺装板仍在地面铺装上投影（T5a），
      铺装上方盒子的影子仍在（T5b），铺装板下表面只靠地面铺装的漫反射照亮、亮度 > 受光铺装的 5%（T5c）。
      R1（全水平 slot 件关阴影 / 漫反射可见性）上 T5a、T5c 红。
-  T6 采样器枚举（wave12-r2）：同一贴图 λ≈1.58，9985（层间取最近）→ 第 2 层整块不透明 ≈ 参照色；9987（层间插值）→
-     透明格 α<0.5 仍镂空。R1 把 9985 当层间插值 → T6a 红。
+  T6 采样器枚举（wave12-r2；E2 重设计）：行条纹贴图（α∈{1, 64/255} 的 4px 周期行，u 向均匀），
+     λ=1.51 → 9985（层间取最近）取第 2 层：均匀 α=0.625、色 = L2 期望，整块不透明 ≈ 参照块；
+     9987（层间插值）= 0.49·L1 + 0.51·L2，0.25-α 行的双线性下坡被拉过 0.5 阈值 → ≈16% 面积
+     丢弃露黑，窗口均值大幅偏离参照。E2 负对照：「只撤销枚举修复」（9985 摘出 nearest 元组）
+     重渲 t6 —— T6a 的块必须偏离参照超 TOL（新断言在旧枚举下判红），且偏离值落在 between
+     路径的独立逐像素模拟上（红因单因归到枚举）。旧 T6 用的 4×4 格心贴图在 λ=1.58 下两路径
+     窗口均值只差 0.25~0.5%（wave12 R2 审查实测），T6a 无辨别力 → 换纹理 + 负对照。
   T4 镂空 mip：MASK 方块，64² 贴图按 4×4 周期排布（每周期 2×2 透明白、其余不透明红），相机距离使查看器
      λ = log2(像素足迹 / 纹素) ≈ 3（≥2 各层内容相同）→ 查看器里整块不透明、颜色 = 0.75·红 + 0.25·白（线性）；
      与同场一块该色的不透明参照方块比，各通道相对差 ≤ 6%。改前 Cycles 不做 mip：透明处露出黑背景 → 红。
@@ -53,8 +58,11 @@ T4_RED = (0.55, 0.12, 0.08)                     # 线性
 T4_W, T4_H, T4_LENS = 96, 96, 50.0              # 36 mm 传感器
 T4_PIX = 36.0 / (T4_LENS * max(T4_W, T4_H))     # 每像素视角
 T4_DIST = 8.0 / (T4_PIX * T4_TEX)               # 足迹 8 纹素 → λ = 3（UV 1 单位 = 1 m）
-T6_LAMBDA = 1.58                                # 层间最近取第 2 层（ceil(λ+.5)-1），层间插值时透明格 α=0.58·0.75<0.5 仍镂空
+T6_LAMBDA = 1.51                                # 层间最近取第 2 层（ceil(λ+.5)-1）；层间权重 (0.49, 0.51)
 T6_DIST = 2 ** T6_LAMBDA / (T4_PIX * T4_TEX)
+T6_W = 288                                      # t6 渲染分辨率：3× 细分提窗口采样精度（λ 仍按 96 宽定义）
+T6_WIN = 24                                     # 断言窗口 24×24 px（块中心）
+T6_SUP = 3                                      # 模拟每输出像素 3×3 超采样（近似 Cycles 像素滤波）
 T5_SUN_DEG = 35.0                               # T5 太阳绕 Blender x 轴倾角：影子向 +y 偏 h·tan35°
 
 
@@ -190,6 +198,76 @@ def t4_expected_lin():
     return tuple(0.75 * r + 0.25 * 1.0 for r in red_q)
 
 
+def t6_texel_row(j):
+    """T6 贴图第 j 行的（线性 RGB, alpha）：j%4∈{0,1} 红 α=1；j%4∈{2,3} 白 α=64/255（非预乘）。
+    渲染 PNG 与 numpy 模拟共用本定义——期望值独立于渲染取得。"""
+    red = j % 4 in (0, 1)
+    rgb = [srgb_to_lin(round(255 * lin_to_srgb(c)) / 255.0) for c in T4_RED] if red else [1.0, 1.0, 1.0]
+    return rgb, 1.0 if red else 64.0 / 255.0
+
+
+def t6_texture():
+    pix = []
+    for j in range(T4_TEX):
+        rgb, a = t6_texel_row(j)
+        row = [int(round(255 * lin_to_srgb(c))) for c in rgb] + [int(round(a * 255))]
+        pix += row * T4_TEX
+    return png_rgba(T4_TEX, T4_TEX, pix)
+
+
+def t6_levels_lin():
+    """T6 贴图的查看器同式 mip 链：线性空间非预乘逐层 2×2 盒式平均（与渲染器 _mip_chain 同式）。"""
+    import numpy as np
+    L0 = np.zeros((T4_TEX, T4_TEX, 4))
+    for j in range(T4_TEX):
+        rgb, a = t6_texel_row(j)
+        L0[j, :, :3] = rgb
+        L0[j, :, 3] = a
+    levels = [L0]
+    while levels[-1].shape[0] > 1:
+        p = levels[-1]
+        h = p.shape[0] // 2
+        levels.append(p.reshape(h, 2, h, 2, 4).mean(axis=(1, 3)))
+    return levels
+
+
+def t6_window_exp(nearest, lam=T6_LAMBDA):
+    """T6 窗口的独立逐像素模拟：T6_WIN×T6_WIN px 窗口（块中心），每输出像素 T6_SUP×T6_SUP 超采样
+    （近似 Cycles 像素滤波）；双线性（纹素中心 (i+0.5)/N，REPEAT）；层间权重 max(1-|λ-k|,0)；
+    alpha < 0.5 丢弃（露黑背景）。nearest=True 取 ceil(λ+.5)-1 单层（9985 语义）；False 取层间
+    插值（9987 语义）。窗口 v 相位取块中心（条纹翻转不变），u 向贴图均匀。
+    返回 (窗口平均线性 RGB, 丢弃占比)。"""
+    import numpy as np
+    levels = t6_levels_lin()
+    dist = 2 ** lam / (T4_PIX * T4_TEX)
+    ppm = T6_W / (36.0 / T4_LENS * dist)
+    offs = (np.arange(T6_WIN * T6_SUP) + 0.5) / T6_SUP - T6_WIN / 2
+    U, V = np.meshgrid(offs / ppm, offs / ppm, indexing='xy')
+    u = (-1.3 + U.ravel())
+    v = (-1.0 + V.ravel())
+
+    def bil(Lk):
+        N = Lk.shape[0]
+        x, y = u * N - 0.5, v * N - 0.5
+        x0, y0 = np.floor(x).astype(int), np.floor(y).astype(int)
+        fx, fy = (x - x0)[:, None], (y - y0)[:, None]
+        g = lambda i, j: Lk[j % N, i % N]
+        return (g(x0, y0) * (1 - fx) * (1 - fy) + g(x0 + 1, y0) * fx * (1 - fy)
+                + g(x0, y0 + 1) * (1 - fx) * fy + g(x0 + 1, y0 + 1) * fx * fy)
+
+    if nearest:
+        k = max(math.ceil(lam + 0.5) - 1, 0)
+        s = bil(levels[k])
+    else:
+        k = math.floor(lam)
+        f = lam - k
+        s = bil(levels[k]) * (1 - f) + bil(levels[k + 1]) * f
+    keep = (s[:, 3] >= 0.5).reshape(T6_WIN * T6_SUP, T6_WIN * T6_SUP)
+    col = np.where(keep[..., None], s[:, :3].reshape(T6_WIN * T6_SUP, T6_WIN * T6_SUP, 3), 0.0)
+    px = col.reshape(T6_WIN, T6_SUP, T6_WIN, T6_SUP, 3).mean(axis=(1, 3))
+    return tuple(float(x) for x in px.reshape(-1, 3).mean(0)), float(1 - keep.mean())
+
+
 def box(x0, x1, y0, y1, z0, z1):
     """轴对齐盒子（24 顶点，法线朝外，逆时针从外看）。"""
     pos, nrm, uv, tris = [], [], [], []
@@ -206,39 +284,6 @@ def box(x0, x1, y0, y1, z0, z1):
         uv += [(0, 0), (1, 0), (1, 1), (0, 1)]
         tris += [(b, b + 1, b + 2), (b, b + 2, b + 3)]
     return pos, nrm, uv, tris
-
-
-def t6_expected_trilinear_lin(lam, n=200000, seed=7):
-    """独立的 GL 三线性采样模拟（numpy）：贴图同 t4_texture；非预乘 RGBA 在线性空间逐层 2×2 平均；层内双线性
-    （纹素中心 (i+0.5)/N，REPEAT）；层间按 λ 线性插值；alpha < 0.5 丢弃（露出黑背景）。返回像素平均线性色。"""
-    import numpy as np
-    red_q = [srgb_to_lin(round(255 * lin_to_srgb(c)) / 255.0) for c in T4_RED]
-    L0 = np.zeros((T4_TEX, T4_TEX, 4))
-    yy, xx = np.mgrid[0:T4_TEX, 0:T4_TEX]
-    clear = ((xx % 4) >= 2) & ((yy % 4) >= 2)
-    L0[..., :3] = np.where(clear[..., None], 1.0, np.array(red_q))
-    L0[..., 3] = np.where(clear, 0.0, 1.0)
-    levels = [L0]
-    while levels[-1].shape[0] > 1:
-        a = levels[-1]
-        h = a.shape[0] // 2
-        levels.append(a.reshape(h, 2, h, 2, 4).mean(axis=(1, 3)))
-    rng = np.random.default_rng(seed)
-    uv = rng.random((n, 2))
-
-    def bilinear(Lk):
-        N = Lk.shape[0]
-        x, y = uv[:, 0] * N - 0.5, uv[:, 1] * N - 0.5
-        x0, y0 = np.floor(x).astype(int), np.floor(y).astype(int)
-        fx, fy = (x - x0)[:, None], (y - y0)[:, None]
-        g = lambda i, j: Lk[j % N, i % N]
-        return (g(x0, y0) * (1 - fx) * (1 - fy) + g(x0 + 1, y0) * fx * (1 - fy)
-                + g(x0, y0 + 1) * (1 - fx) * fy + g(x0 + 1, y0 + 1) * fx * fy)
-    k = int(math.floor(lam))
-    f = lam - k
-    s = bilinear(levels[k]) * (1 - f) + bilinear(levels[k + 1]) * f
-    keep = s[:, 3] >= 0.5
-    return tuple(float(x) for x in (s[:, :3] * keep[:, None]).mean(0)), float(1 - keep.mean())
 
 
 def build_scenes(tmp):
@@ -288,18 +333,36 @@ def build_scenes(tmp):
     g.mesh('t5|box', *box(-3, -1, 1.0, 1.4, -1, 1), g.material(opaque(grey, 'box-grey')))
     g.write(os.path.join(tmp, 't5.glb'))
     out['t5'] = 't5.glb'
-    # T6：采样器枚举。同一张 T4 贴图，左块 LINEAR_MIPMAP_NEAREST(9985)，中块 LINEAR_MIPMAP_LINEAR(9987)，右块参照色
+    # T6：采样器枚举（E2 重设计：行条纹贴图）。左块 LINEAR_MIPMAP_NEAREST(9985)，中块 LINEAR_MIPMAP_LINEAR(9987)，
+    #     右块参照色 = nearest 路径的独立模拟期望（均匀第 2 层）
     g = Gltf()
-    png = t4_texture()
+    png = t6_texture()
     m_near = g.material({'name': 't6-9985', 'alphaMode': 'MASK', 'doubleSided': True,
                          'pbrMetallicRoughness': {'baseColorTexture': {'index': g.image(png, 9985)}, 'metallicFactor': 0.0, 'roughnessFactor': 1.0}})
     m_lin = g.material({'name': 't6-9987', 'alphaMode': 'MASK', 'doubleSided': True,
                         'pbrMetallicRoughness': {'baseColorTexture': {'index': g.image(png, 9987)}, 'metallicFactor': 0.0, 'roughnessFactor': 1.0}})
     g.mesh('t6|near', *vert_quad(-1.8, -0.8, 0.5, 1.5, 0.0), m_near)
     g.mesh('t6|lin', *vert_quad(-0.5, 0.5, 0.5, 1.5, 0.0), m_lin)
-    g.mesh('t6|ref', *vert_quad(0.8, 1.8, 0.5, 1.5, 0.0), g.material(opaque(t4_expected_lin(), 't6-ref', True)))
+    g.mesh('t6|ref', *vert_quad(0.8, 1.8, 0.5, 1.5, 0.0), g.material(opaque(t6_window_exp(True)[0], 't6-ref', True)))
     g.write(os.path.join(tmp, 't6.glb'))
     out['t6'] = 't6.glb'
+    # E2 门禁单元用例（不渲染，驱动里只调 prepare_beauty_materials 看是否失败）：
+    # t7：A(z=0) 与 B(z=+1.5mm) 共面冲突 → B 下沉 4mm 落到 C(z=-2.5mm) 上 → 复查出残余共面冲突 → 必须失败；
+    # t8：10 块 0.2mm 间距全两两共面冲突的层 → 贪心分层最深下沉 9×4=36mm > 32mm 预算 → 必须失败。
+    g = Gltf()
+    m = g.material(opaque((0.4, 0.4, 0.4), 'grey'))
+    g.mesh('t7|slab-a', *horiz_quad(-3, 3, -3, 3, y=0.0), m)          # 面积最大 → 占 0 层
+    g.mesh('t7|slab-b', *horiz_quad(-1, 1, -1, 1, y=0.0015), m)       # 与 A 冲突 → 下沉 4mm
+    g.mesh('t7|slab-c', *horiz_quad(-1, 1, -1, 1, y=-0.0025), m)      # 原本无冲突；B 下沉后同高 → 残余
+    g.write(os.path.join(tmp, 't7.glb'))
+    out['t7'] = 't7.glb'
+    g = Gltf()
+    m8 = g.material(opaque((0.4, 0.4, 0.4), 'grey'))
+    g.mesh('t8|s0', *horiz_quad(-1, 1, -1, 1, y=0.0), m8)
+    for kk in range(1, 10):
+        g.mesh('t8|s%d' % kk, *horiz_quad(-1, 1, -1, 1, y=0.0002 * kk), m8)   # 两两 |Δz| ≤ 1.8mm ≤ tol
+    g.write(os.path.join(tmp, 't8.glb'))
+    out['t8'] = 't8.glb'
     return out
 
 
@@ -312,18 +375,34 @@ def driver(argv):
     src = open(renderer, encoding='utf-8').read().rstrip()
     if not src.endswith('\nmain()'):
         raise SystemExit('E: 渲染器末尾不是裸 main()')
+    if os.environ.get('BEAUTY_MAT_T6_NEG') == '1':
+        # E2 负对照：只撤销枚举修复——9985 摘出 nearest 元组（与 9987 一样走层间插值），其余机制不动
+        anchor = 'GL_MIP_NEAREST_BETWEEN = (9984, 9985)'
+        if anchor not in src:
+            raise SystemExit('E: 负对照锚点缺失（渲染器枚举定义已变？拒绝盲跑）')
+        src = src.replace(anchor, 'GL_MIP_NEAREST_BETWEEN = (9984,)')
     rcp = types.ModuleType('rcp_under_test')
     rcp.__file__ = renderer
     exec(compile(src[:src.rindex('\nmain()')], renderer, 'exec'), rcp.__dict__)
     import numpy as np
     report = {}
-    # 每个用例：(镜头名, 相机设置)；T5 两个镜头（俯视 / 铺装板下仰视）
+    # 每个用例：(镜头名, 相机设置)；T5 两个镜头（俯视 / 铺装板下仰视）；t7/t8 只调 prepare 看门禁
+    cases_all = ('t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8')
+    want_cases = [c for c in os.environ.get('BEAUTY_MAT_CASES', ','.join(cases_all)).split(',') if c in cases_all]
     shots = {'t1': ['t1'], 't2': ['t2'], 't3': ['t3'], 't4': ['t4'], 't5': ['t5', 't5up'], 't6': ['t6']}
-    for case in ('t1', 't2', 't3', 't4', 't5', 't6'):
+    for case in want_cases:
         bpy.ops.wm.read_factory_settings(use_empty=True)
         sc = bpy.context.scene
         glb = os.path.join(tmp, case + '.glb')
         bpy.ops.import_scene.gltf(filepath=glb)
+        if case in ('t7', 't8'):
+            # E2 门禁用例：预期 prepare_beauty_materials 直接失败（SystemExit），记录失败原因
+            try:
+                rcp.prepare_beauty_materials(glb)
+                report[case] = {'gate': 'no-gate-fired（本应失败却通过了）'}
+            except SystemExit as e:
+                report[case] = {'gate': str(e)}
+            continue
         info = rcp.prepare_beauty_materials(glb) if hasattr(rcp, 'prepare_beauty_materials') else None
         # 世界：相机射线黑，其余射线白 1.0（均匀环境光）；T5 只要太阳（世界全黑），才能单看反弹与投影
         w = bpy.data.worlds.new('w')
@@ -383,7 +462,8 @@ def driver(argv):
             if shot in ('t4', 't6'):
                 cd.sensor_width = 36.0
                 cd.lens = T4_LENS
-                sc.render.resolution_x, sc.render.resolution_y = T4_W, T4_H
+                # t6 用 3× 分辨率渲染（提窗口采样精度）；像素角仍按 96 宽定义 → 模拟 λ = T6_LAMBDA 不变
+                sc.render.resolution_x, sc.render.resolution_y = ((T4_W, T4_H) if shot == 't4' else (T6_W, T6_W))
                 dist = T4_DIST if shot == 't4' else T6_DIST
                 cz = 1.0
                 co.location = Vector((0.0, -dist, cz))          # Blender：glTF (x,y,z) → (x,-z,y)；方块中心 glTF y=1 → z=1
@@ -510,25 +590,65 @@ def main():
     under = region('t5up', 8, 56, 8, 56).mean(0) @ lum
     ok(under / max(lit, 1e-6) > 0.05, 'T5c 铺装仍作为漫反射面：铺装板下表面只靠地面铺装反弹照亮（下表面/受光铺装 > 0.05）',
        {'underside': round(float(under), 5), 'litPaving': round(float(lit), 4), 'ratio': round(float(under / max(lit, 1e-6)), 4)})
-    # T6（wave12-r2）：采样器枚举。9985 层间取最近 → 第 2 层整块不透明 ≈ 参照色；9987 层间插值 → 透明格仍镂空（露黑）
+    # T6（wave12-r2；E2 重设计）：采样器枚举。行条纹贴图 + λ=1.51：9985 层间取最近 → 第 2 层（均匀 α=.625）
+    # 整块 ≈ 参照块；9987 层间插值 → 0.25-α 行下坡被拉过 0.5 阈值，≈16% 面积丢弃露黑，窗口均值大幅偏离。
     span6 = 36.0 / T4_LENS * T6_DIST
-    ppm6 = T4_W / span6
+    ppm6 = T6_W / span6
 
-    def at6(xm):
-        cx = int(round(T4_W / 2 + xm * ppm6))
-        cy = T4_H // 2
-        return np.load(os.path.join(tmp, 't6.npy'))[cy - 3:cy + 3, cx - 3:cx + 3].reshape(-1, 3).mean(0)
+    def at6(xm, base=tmp):
+        cx = int(round(T6_W / 2 + xm * ppm6))
+        cy = T6_W // 2
+        w = T6_WIN // 2
+        return np.load(os.path.join(base, 't6.npy'))[cy - w:cy + w, cx - w:cx + w].reshape(-1, 3).mean(0)
     near6, lin6, ref6 = at6(-1.3), at6(0.0), at6(1.3)
+    exp_n, holes_n = t6_window_exp(True)
+    exp_b, holes_b = t6_window_exp(False)
+    ok(holes_n == 0.0 and holes_b > TOL,
+       'T6c 独立模拟前置（期望独立取得）：nearest 无丢弃、between 丢弃 %.1f%% > TOL（两行为可分）' % (holes_b * 100),
+       {'holesNearest': holes_n, 'holesBetween': round(holes_b, 4),
+        'expNearest': [round(x, 4) for x in exp_n], 'expBetween': [round(x, 4) for x in exp_b]})
     ok(all(rel(near6[i], ref6[i]) <= TOL for i in range(3)),
        'T6a LINEAR_MIPMAP_NEAREST(9985) 按层间最近取第 2 层：整块不透明 ≈ 参照色（≤%d%%）' % (TOL * 100),
        {'9985': near6.round(4).tolist(), 'ref': ref6.round(4).tolist(), 'lambda': T6_LAMBDA})
-    exp_lin, hole = t6_expected_trilinear_lin(T6_LAMBDA)
-    # 参照块反照率 = t4_expected_lin，用它把「期望反照率」换成同光照下的期望像素值
-    alb = t4_expected_lin()
-    exp_px = [ref6[i] * exp_lin[i] / alb[i] for i in range(3)]
+    # 参照块反照率 = nearest 期望，用它把「期望反照率」换成同光照下的期望像素值
+    exp_px = [ref6[i] * exp_b[i] / exp_n[i] for i in range(3)]
     ok(all(rel(lin6[i], exp_px[i]) <= TOL for i in range(3)),
-       'T6b LINEAR_MIPMAP_LINEAR(9987) 层间插值：≈ 独立 numpy 三线性模拟（λ=%.2f，镂空 %.1f%%，≤%d%%）' % (T6_LAMBDA, hole * 100, TOL * 100),
-       {'9987': lin6.round(4).tolist(), 'expected': [round(float(x), 4) for x in exp_px], 'holeShare': round(hole, 4)})
+       'T6b LINEAR_MIPMAP_LINEAR(9987) 层间插值：≈ 独立逐像素模拟（λ=%.2f，丢弃 %.1f%%，≤%d%%）' % (T6_LAMBDA, holes_b * 100, TOL * 100),
+       {'9987': lin6.round(4).tolist(), 'expected': [round(float(x), 4) for x in exp_px], 'holeShare': round(holes_b, 4)})
+
+    # E2（blenderamb R2 可选3）负对照：只撤销枚举修复（9985 摘出 nearest 元组）重渲 t6——
+    # T6a 的块必须偏离参照超 TOL（证明新断言在旧枚举下会红），且偏离值落在 between 独立模拟上（红因单因归到枚举）。
+    tmp_neg = os.path.join(tmp, 'neg')
+    os.makedirs(tmp_neg, exist_ok=True)
+    build_scenes(tmp_neg)
+    r_neg = subprocess.run([BLENDER, '-b', '-t', '4', '--python', os.path.abspath(__file__), '--', '--driver',
+                            os.path.abspath(a.renderer), tmp_neg], capture_output=True, text=True, timeout=1800,
+                           env=dict(os.environ, BEAUTY_MAT_T6_NEG='1', BEAUTY_MAT_CASES='t6'))
+    ok(r_neg.returncode == 0 and os.path.exists(os.path.join(tmp_neg, 't6.npy')),
+       '负对照驱动跑完（enum 撤销，仅 t6）(exit %d)' % r_neg.returncode,
+       r_neg.stderr[-1500:] if r_neg.returncode else None)
+    if r_neg.returncode == 0:
+        near6n = at6(-1.3, tmp_neg)
+        ok(all(rel(near6n[i], ref6[i]) > TOL for i in range(3)),
+           '负对照 只撤销枚举修复 → T6a 判红（偏离参照 > %d%%）' % (TOL * 100),
+           {'neg9985': near6n.round(4).tolist(), 'ref': ref6.round(4).tolist()})
+        # 近块在 x=-1.3 偏轴：λ = log2(视距/cos × pix × 纹素) = λ0 + log2(1+(Δx/d)²)，丢弃带比中心块窄，
+        # 期望值用块的有效 λ 独立重算（不接受拿中心块期望硬套）
+        lam_neg = T6_LAMBDA + math.log2(1.0 + 1.3 ** 2 / T6_DIST ** 2)
+        exp_bn, holes_bn = t6_window_exp(False, lam=lam_neg)
+        exp_pxn = [ref6[i] * exp_bn[i] / exp_n[i] for i in range(3)]
+        ok(all(rel(near6n[i], exp_pxn[i]) <= TOL for i in range(3)),
+           '负对照 渲染值 = between 路径独立模拟（λ_eff=%.3f，丢弃 %.1f%%；红因单因归到枚举修复）'
+           % (lam_neg, holes_bn * 100),
+           {'neg9985': near6n.round(4).tolist(), 'expected': [round(float(x), 4) for x in exp_pxn]})
+
+    # E2 门禁单元用例（blenderamb R2 可选1）：t7 残余共面冲突、t8 位移超预算都必须让 prepare 直接失败
+    gate7 = (rep.get('t7') or {}).get('gate') or ''
+    ok('残余共面冲突' in gate7, 'E2 门禁 t7：下沉产生残余共面冲突时直接失败（不再只记录）',
+       {'gate': gate7[:200]})
+    gate8 = (rep.get('t8') or {}).get('gate') or ''
+    ok('预算' in gate8 and '32' in gate8, 'E2 门禁 t8：下沉位移超 32mm 预算直接失败',
+       {'gate': gate8[:200]})
     if not a.keep:
         shutil.rmtree(tmp, ignore_errors=True)
     print('beauty-materials-test: %d passed, %d failed' % (passes, fails))
