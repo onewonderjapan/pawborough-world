@@ -101,16 +101,19 @@ def make_lattice_image():
  out=OUTD/'textures'/'lattice-core-alpha.png';out.parent.mkdir(exist_ok=True)
  out.write_bytes(HK_LATTICE.read_bytes())
  img.pack()
- m=bpy.data.materials.new('sst-lattice-core');m.use_nodes=True
+ m=bpy.data.materials.new('hk-lattice-back');m.use_nodes=True
  nodes,links=m.node_tree.nodes,m.node_tree.links
  p=nodes.get('Principled BSDF');p.inputs['Roughness'].default_value=.7;p.inputs['Metallic'].default_value=0
  t=nodes.new('ShaderNodeTexImage');t.image=img;t.extension='REPEAT'
  links.new(t.outputs['Color'],p.inputs['Base Color']);links.new(t.outputs['Alpha'],p.inputs['Alpha'])
  try:m.blend_method='CLIP'
  except AttributeError:pass
- META['sst-lattice-core']={'alpha':'textures/lattice-core-alpha.png','cellM':0.125,'alphaMode':'MASK','alphaCutoff':0.5,
+ # wave13-nightbalance N3（nightqa #9）：材质名 = lattice 发光组语义名 hk-lattice-back（hall-kit 背板同组名；
+ # 本模块无独立背板、格心即窗体发光面）。lighting/presets.json 的 emissiveGroups 本单不许动（另一工单在改），
+ # 复用组内已列名让三穗堂格扇接入 lattice 组（dusk/night 格心棂条发光、alpha 镂空不变）。
+ META['hk-lattice-back']={'alpha':'textures/lattice-core-alpha.png','cellM':0.125,'alphaMode':'MASK','alphaCutoff':0.5,
   'sharedImage':'modules/hall-kit/textures/lattice-core-alpha.png（字节相同；总装按名 + 尺寸去重）'}
- MAT_TILE['sst-lattice-core']=(1.0,1.0)  # UV 单位=米，纹理即 1m 格网
+ MAT_TILE['hk-lattice-back']=(1.0,1.0)  # UV 单位=米，纹理即 1m 格网
  return m
 M['lattice']=make_lattice_image()
 
