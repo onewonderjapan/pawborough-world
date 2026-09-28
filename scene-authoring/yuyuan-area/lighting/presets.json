@@ -52,7 +52,8 @@
   { "id": "sign", "note": "店招：商城楼套件红招牌、方浜店招字牌图集（贴图本身发光，字可读）", "materials": ["btk-signred", "shop-sign-typeset-atlas", "shop-sign-generic-atlas"], "color": "#ffd7a0", "intensity": 1.2, "useMap": true },
   { "id": "shop-interior", "note": "店面内透光：商城楼套件店铺后壁、方浜店铺内景暗面", "materials": ["btk-shopback", "interior-warm-shadow"], "color": "#ffb56a", "intensity": 0.5, "useMap": false },
   { "id": "window", "note": "窗玻璃内透光：商业街 / 外围 / 方浜店屋窗、商城楼套件玻璃、湖心亭窗、饮品摊柜玻璃", "materials": ["recessed-old-glass", "btk-glass", "ht-win-glass", "glass"], "color": "#ffc680", "intensity": 0.9, "useMap": false },
-  { "id": "lattice", "note": "格扇内透光：厅堂套件 / 庙区格扇背板（格心镂空后面的板）", "materials": ["hk-lattice-back", "lattice-backing", "lattice-backing-dadian", "btk-winback", "btk-winback-wood2"], "color": "#ffae5e", "intensity": 1.0, "useMap": false },
+  { "id": "lattice", "note": "格扇内透光：厅堂套件 / 庙区格扇背板（格心镂空后面的板）", "materials": ["hk-lattice-back", "lattice-backing", "lattice-backing-dadian"], "color": "#ffae5e", "intensity": 1.0, "useMap": false },
+  { "id": "bazaar-window", "note": "商城楼屏窗 / 横带窗 / 格窗背板（btk-winback 家族，wave13 自 lattice 组拆出独立调强；color / intensity / useMap 与 lattice 完全相同，默认画面不变）", "materials": ["btk-winback", "btk-winback-wood2"], "color": "#ffae5e", "intensity": 1.0, "useMap": false },
   { "id": "stall", "note": "摊位：摊位套件没有灯笼，用摊柜内板（palewood，只摊位用）作摊灯照亮的台面", "materials": ["palewood"], "color": "#ffcf90", "intensity": 0.45, "useMap": false }
  ],
  "pointLights": {
