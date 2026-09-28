@@ -1172,6 +1172,135 @@ if _sb_nodes:
 else:
     skip('test17c 底层店面背板', '本楼无 shopfront 店面背板')
 
+# ---------- test 17g/17h（wave13-habaowin H1）：逐窗段「格心 ↔ 发光背板」对账 ----------
+# 契约（GOAL：每栋楼每个有格心的窗段都有对应的发光背板）：
+#   g) 不变式（纯 GLB 几何，不读任何生成器自报数）：windows__lattice* 的三角按「面心连通聚类」成窗段
+#      （同段 = 3D 距离 ≤0.75 且外法向夹角 ≤30°——同 bay 的 screen 长窗扇间距 ~0.55、band 格心条间距
+#      ~0.69 归一段；相邻 bay 净距 ≥2.9、正交墙角部两段 ≥1.0，均 >0.75 分开）。每个格心段背后必须存在
+#      windows__winback* 三角段：外法向同向、段心水平距 ≤0.6、且 z 覆盖不小于格心段（拆段后同底：
+#      |Δzmin| ≤0.06 且 back.zmax ≥ lat.zmax −0.06）。缺 = 该窗段夜间黑窗（towerwin2 拆段缺失类回归）。
+#   h) layout 独立期望：从 baseline/layout.json footprint + params（styles/LEGACY_STYLES、storeyHeightsM、
+#      frameLintelHM）独立复算「哪些层应有 screen/band 窗带」（不读生成器任何输出），与 GLB 格心段的
+#      层分布对账——layout 期望有窗带的层必须有段，GLB 多出的层也要能解释（防整层窗带丢失）。
+#      注：bay 级数量不做 layout 期望——开间切分依赖墙线内缩/被挡剔除/共享段，独立复算等于重写生成器，
+#      段级完整性由 17g 不变式把守；这里只把「层」这一可独立判定的粒度对死。
+_lat_all = [n_ for n_ in meshes if n_['name'].startswith('windows__lattice')]
+_wb_all = [n_ for n_ in meshes if n_['name'].startswith('windows__winback')]
+def _seg_cluster(nodes_, dmax=0.75, ndot=0.87):
+    """三角面心连通聚类成窗段（并查集）：同段 = 3D 距离 ≤dmax 且法向 dot ≥ndot。
+    返回 [{'c','n','ymin','ymax','ntri'}]（c=面心均值，y=高度轴）。"""
+    tris = []
+    for nd_ in nodes_:
+        wv_ = world_verts(nd_)
+        for (ia_, ib_, ic_) in nd_['idxTris']:
+            a_, b_, c_ = wv_[ia_], wv_[ib_], wv_[ic_]
+            cx_, cy_, cz_ = (a_[0] + b_[0] + c_[0]) / 3, (a_[1] + b_[1] + c_[1]) / 3, (a_[2] + b_[2] + c_[2]) / 3
+            u_ = [b_[i] - a_[i] for i in range(3)]
+            v_ = [c_[i] - a_[i] for i in range(3)]
+            nx_ = u_[1] * v_[2] - u_[2] * v_[1]
+            ny_ = u_[2] * v_[0] - u_[0] * v_[2]
+            nz_ = u_[0] * v_[1] - u_[1] * v_[0]
+            nl_ = math.sqrt(nx_ * nx_ + ny_ * ny_ + nz_ * nz_) or 1.0
+            tris.append((cx_, cy_, cz_, nx_ / nl_, ny_ / nl_, nz_ / nl_))
+    n_ = len(tris)
+    par_ = list(range(n_))
+    def find_(x_):
+        while par_[x_] != x_:
+            par_[x_] = par_[par_[x_]]
+            x_ = par_[x_]
+        return x_
+    for i_ in range(n_):
+        ti_ = tris[i_]
+        for k_ in range(i_ + 1, n_):
+            tk_ = tris[k_]
+            d2_ = (ti_[0] - tk_[0]) ** 2 + (ti_[1] - tk_[1]) ** 2 + (ti_[2] - tk_[2]) ** 2
+            if d2_ > dmax * dmax:
+                continue
+            if ti_[3] * tk_[3] + ti_[4] * tk_[4] + ti_[5] * tk_[5] < ndot:
+                continue
+            ri_, rk_ = find_(i_), find_(k_)
+            if ri_ != rk_:
+                par_[ri_] = rk_
+    groups = {}
+    for i_ in range(n_):
+        groups.setdefault(find_(i_), []).append(tris[i_])
+    segs = []
+    for g_ in groups.values():
+        k_ = len(g_)
+        segs.append({'c': [sum(t_[i] for t_ in g_) / k_ for i in range(3)],
+                     'n': [sum(t_[3 + i] for t_ in g_) / k_ for i in range(3)],
+                     'ymin': min(t_[1] for t_ in g_), 'ymax': max(t_[1] for t_ in g_), 'ntri': k_})
+    return segs
+if _lat_all and _wb_all:
+    _lat_segs = _seg_cluster(_lat_all)
+    _wb_tri = []
+    for nd_ in _wb_all:
+        wv_ = world_verts(nd_)
+        for (ia_, ib_, ic_) in nd_['idxTris']:
+            a_, b_, c_ = wv_[ia_], wv_[ib_], wv_[ic_]
+            cx_, cy_, cz_ = (a_[0] + b_[0] + c_[0]) / 3, (a_[1] + b_[1] + c_[1]) / 3, (a_[2] + b_[2] + c_[2]) / 3
+            u_ = [b_[i] - a_[i] for i in range(3)]
+            v_ = [c_[i] - a_[i] for i in range(3)]
+            nx_ = u_[1] * v_[2] - u_[2] * v_[1]
+            ny_ = u_[2] * v_[0] - u_[0] * v_[2]
+            nz_ = u_[0] * v_[1] - u_[1] * v_[0]
+            nl_ = math.sqrt(nx_ * nx_ + ny_ * ny_ + nz_ * nz_) or 1.0
+            _wb_tri.append((cx_, cy_, cz_, nx_ / nl_, ny_ / nl_, nz_ / nl_))
+    _miss = []
+    for ls_ in _lat_segs:
+        ys_ = []
+        for t_ in _wb_tri:
+            dot_ = ls_['n'][0] * t_[3] + ls_['n'][1] * t_[4] + ls_['n'][2] * t_[5]
+            if dot_ < 0.9:
+                continue
+            if math.hypot(ls_['c'][0] - t_[0], ls_['c'][2] - t_[2]) > 0.75:
+                continue
+            if t_[1] < ls_['ymin'] - 0.2 or t_[1] > ls_['ymax'] + 0.2:
+                continue
+            ys_.append(t_[1])
+        # 覆盖判据：格心段背后同法向、同 bay 的背板三角，其 y 并集盖住格心段（拆段后同底同顶缘）
+        covered = bool(ys_) and min(ys_) <= ls_['ymin'] + 0.06 and max(ys_) >= ls_['ymax'] - 0.06
+        if not covered:
+            _miss.append({'lat_c': [round(x_, 2) for x_ in ls_['c']], 'y': [round(ls_['ymin'], 2), round(ls_['ymax'], 2)], 'ntri': ls_['ntri']})
+    ok('test17g 每个格心窗段都有发光背板（%d 段全对上，缺 %d）' % (len(_lat_segs), len(_miss)),
+       not _miss, '缺背板的格心段（夜间黑窗）: %s' % (_miss[:6],))
+    # h) layout 独立层期望（前 N−1 层逐层 + 顶层按 wallTopM 兜底）
+    _sh = PRM['massing']['storeyHeightsM']
+    _zt = [0.0]
+    _acc = 0.0
+    for h_ in _sh:
+        _acc += h_
+        _zt.append(_acc)
+    _st = (PRM.get('facades') or {}).get('styles') or None
+    def _style_at(role_, storey_):
+        if _st is None:
+            tab_ = {'street': {'2': 'screen', '3': 'screen', '4': 'half'},
+                    'plain': {'2': 'ends', '3': 'ends', '4': 'ends4'}}.get(role_, {})
+            return tab_.get(str(storey_))
+        r_ = _st.get(role_) or {}
+        s_ = r_.get(str(storey_)) or r_.get('*')
+        return (s_ or {}).get('style') if isinstance(s_, dict) else s_
+    _lh = PRM.get('facades', {}).get('frameLintelHM', 0.25)
+    _wt = PRM['massing'].get('wallTopM')
+    _exp_levels = set()
+    for k_ in range(2, len(_sh) + 1):
+        z_ = _zt[k_ - 1]
+        ztop_ = _zt[k_] if k_ < len(_zt) else (_wt if _wt else z_ + _sh[-1])
+        zl0_, zl1_ = z_ + 0.06 + _lh + 0.02, ztop_ - 0.06 - _lh - 0.02
+        if zl1_ - zl0_ <= 0.01:
+            continue
+        for role_ in ('street', 'plain'):
+            if _style_at(role_, k_) in ('screen', 'band'):
+                _exp_levels.add(round((z_ + ztop_) / 2, 1))
+    _act_levels = {round(s_['ymin'] / 1.0, 0) for s_ in _lat_segs}
+    _act_mid = sorted({round((s_['ymin'] + s_['ymax']) / 2, 1) for s_ in _lat_segs})
+    _miss_lv = sorted(l_ for l_ in _exp_levels
+                      if not any(abs(m_ - l_) <= 0.6 for m_ in _act_mid))
+    ok('test17h layout 独立期望窗带层 %s 全有格心段（GLB 段层中点 %s）' % (sorted(_exp_levels), _act_mid),
+       not _miss_lv, 'layout 期望有窗带但 GLB 无格心段的层: %s' % (_miss_lv,))
+else:
+    skip('test17g/17h 逐窗段背板', '本楼无 windows__lattice*/windows__winback* 节点')
+
 print('\ntest_tower: %d pass, %d fail, %d skip' % (pass_n, fail_n, skip_n))
 if fail_n:
     for f in failures:
