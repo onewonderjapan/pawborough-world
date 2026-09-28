@@ -1310,7 +1310,9 @@ for (const o0 of layout.objects) {
   switch (o.kind) {
     case 'ground': {
       const [x0, z0, x1, z1] = o.geometry.bounds;
-      const gnd = new THREE.Mesh(new THREE.PlaneGeometry(x1 - x0, z1 - z0), new THREE.MeshStandardMaterial({ color: 0xcfc6b4, roughness: 1 }));
+      // wave13-nightbalance N1（nightqa #10 全局地面夜读「雪原」）：0xcfc6b4 线性 ≈0.55（白抹灰档）→ 0x949086
+      // 线性 ≈(0.30,0.28,0.24)，裸土/夯土合理区间（0.15–0.35）的干土上端；白天同机位场景区域亮度变化实测见工单包 RESULT。
+      const gnd = new THREE.Mesh(new THREE.PlaneGeometry(x1 - x0, z1 - z0), new THREE.MeshStandardMaterial({ color: 0x949086, roughness: 1 }));
       gnd.rotation.x = -Math.PI / 2;
       gnd.position.set((x0 + x1) / 2, GROUND_Y, (z0 + z1) / 2);
       gnd.name = key; gnd.userData = ud;

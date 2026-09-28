@@ -181,6 +181,16 @@ TONE_PLASTER = {
     'oldyellow': {'res': 0xd2c4a2, 'up': 0xd6c8a6, 'side': 0xccbe9b},   # P3 前压低饱和度（P2 联系表里偏艳）
 }
 BRICK = {'brick': 0x9c9b96, 'mortar': 0xc3c0b8, 'lintel': 0xcdc9bf}
+# wave13-nightbalance N1（nightqa #15 外围 L0 体块夜偏亮「雪原」）：墙色统一 ×0.88（≈线性反照率 -25%），
+# 老墙风化档：cream 0.76→0.54、greywhite 0.67→0.50、oldyellow 0.51→0.39、brick 0.33→0.24（线性），
+# 仍都在各自材质语义的合理区间内（白抹灰 0.6–0.8 的下缘、青砖 0.15–0.35）。屋面带 / 招牌暗带不动。
+# 注意必须逐通道缩放：对打包后的 24-bit 整数整体乘系数再取整，会把 R 通道 ×0.88 的小数（×65536 倍）
+# 灌进 G 通道造成串色（首版实测图集中部条带全花成品红/绿，已复现并回退验证）。
+def _dim_channel(h, k=0.88):
+    r, g, b = (h >> 16) & 255, (h >> 8) & 255, h & 255
+    return (int(round(r * k)) << 16) | (int(round(g * k)) << 8) | int(round(b * k))
+TONE_PLASTER = {t: {kk: _dim_channel(vv) for kk, vv in d.items()} for t, d in TONE_PLASTER.items()}
+BRICK = {kk: _dim_channel(vv) for kk, vv in BRICK.items()}
 
 def brick(stain=0.12):
     """清水青砖（浅灰）：顺砖错缝，一皮 4 行 ≈ 9 cm，一块 16 px ≈ 0.225 m（512 px 恰 32 块，横向无缝重复）"""

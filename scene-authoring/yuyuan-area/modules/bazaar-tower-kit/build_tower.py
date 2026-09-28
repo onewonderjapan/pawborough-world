@@ -433,6 +433,12 @@ def to_b(u, v, h):
 
 def add_local(name, items, faces, m, part=None, smooth=False):
     """items=[((u,v,h),(uu,vv))] 局部系；面绕序即法线方向。"""
+    # wave13-nightbalance N1（nightqa #10/#14）：eave_kit.xieshan_roof 把山花板固定用 'wall'（白抹灰）出网，
+    # 而 modules/shared/eave_kit.py 只读——在生成端拦截改名。山花板语义 = 深红木板（与博风板 'wood' 同），
+    # 白抹灰山花在 dusk/night 读作「雪原亮坡」（pv06 raycast 实证 = roof-main__wall.001 / btk-wall.001）。
+    # 只动 -shanhua-；lean-gable（设计即白墙封板）/ parapet 等真白墙不受影响。
+    if '-shanhua-' in name and m == 'wall':
+        m = 'wood'
     me = bpy.data.meshes.new(name)
     me.from_pydata([to_b(*p) for p, _ in items], [], faces)
     me.update()
