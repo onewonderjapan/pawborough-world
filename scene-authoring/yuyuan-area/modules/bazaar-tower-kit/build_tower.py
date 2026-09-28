@@ -215,7 +215,7 @@ def _tint_link(nodes, links, color_out, tint, p):
     links.new(mix.outputs[2], p.inputs['Base Color'])
 
 def mat(key, rgb=None, rough=.8, base=None, normal=None, tint=None, tile=(1, 1), metallic=0.0,
-        alpha=None, alpha_mode=None, emission=None):
+        alpha=None, alpha_mode=None, emission=None, extras=None):
     m = bpy.data.materials.new('btk-' + key)
     m.use_nodes = True
     nodes, links = m.node_tree.nodes, m.node_tree.links
@@ -245,6 +245,9 @@ def mat(key, rgb=None, rough=.8, base=None, normal=None, tint=None, tile=(1, 1),
     if emission:                                        # 店内灯光（glTF emissiveFactor）
         p.inputs['Emission Color'].default_value = (*lin(emission), 1)
         p.inputs['Emission Strength'].default_value = 1.0
+    if extras:                                          # 语义 extras（自定义属性 → glTF material.extras，export_extras=True）
+        for k, v in extras.items():
+            m[k] = v
     TILE[key] = tile
     META['btk-' + key] = {'tintSrgb': tint, 'rgbSrgb': None, 'roughness': rough, 'metallic': metallic, 'alpha': alpha,
                           'emissionSrgb': emission,
@@ -339,8 +342,13 @@ _MAT_DEFS = {
     # wave12 W1：楼上窗背板专用材质。白天与 wood 同贴图同 tint（同机位像素差≈0）；不自带 emission——
     # 夜间由 lighting presets 的 lattice 发光组按材质名点亮。名字不与 lattice-backing / hk-lattice-back 等
     # 别的套件重名（运行时材质按名去重，同名会互相顶掉）。
+    # wave12 R1：pbRole 语义 extras——着色参数与 wood 完全相同（同贴图同 tint 同 roughness），但 gltfpack -ke
+    # 下材质比较含 extras（本地 gltfpack 1.2 material.cpp keep_extras 路径），内容相同也不再合并，压缩后
+    # btk-winback 名字保住、夜间按名点灯接得上，compress-zones 无需按件 -km（-km 让整件全部具名材质停止
+    # 合并，核心首屏每帧调用 479→731）。
     'winback': lambda: mat('winback', rough=.7, base='wood-stain-color.jpg', tint=FM['timberTint'],
-                           normal='Wood092_2K-JPG_NormalGL_1K.jpg', tile=tuple(FM['timberTile'])),
+                           normal='Wood092_2K-JPG_NormalGL_1K.jpg', tile=tuple(FM['timberTile']),
+                           extras={'pbRole': 'window-backing'}),
     # wave7 B：预设楼（zone-bazaar-4 件）台基 / 楼板用素色石（materials.plinthPlain），件里少带一张 130 KB 砖纹贴图
     'stone': lambda: (mat('stone', lin(FM['plinthTint']), .92) if FM.get('plinthPlain') else
                       mat('stone', rough=.92, base='Bricks061_2K-JPG_Color_1K.jpg', tint=FM['plinthTint'], tile=tuple(FM['plinthTile']))),
