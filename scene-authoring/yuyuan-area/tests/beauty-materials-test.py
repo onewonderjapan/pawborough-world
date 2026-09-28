@@ -18,6 +18,11 @@ Cycles GPU 渲染，比较像素。期望值全部在本文件里独立得出，
   T2 共面叠放：两块 slot=paving-asphalt 方块在 y=0 重叠 2 m，重叠区与各自独占区（各 2×2 个周期）均值相对差 ≤ 6%。
      改前重叠区被自遮挡压黑 → 红。
   T3 绕序相反：一块灰色方块两个三角形，其一绕序朝下、顶点法线仍朝上（下方 0.4 m 有地面），两三角形均值相对差 ≤ 6%。
+  T5 不重叠铺装完整参与光照（wave12-r2）：只有太阳；抬高 1.2 m 的 slot 铺装板仍在地面铺装上投影（T5a），
+     铺装上方盒子的影子仍在（T5b），铺装板下表面只靠地面铺装的漫反射照亮、亮度 > 受光铺装的 5%（T5c）。
+     R1（全水平 slot 件关阴影 / 漫反射可见性）上 T5a、T5c 红。
+  T6 采样器枚举（wave12-r2）：同一贴图 λ≈1.58，9985（层间取最近）→ 第 2 层整块不透明 ≈ 参照色；9987（层间插值）→
+     透明格 α<0.5 仍镂空。R1 把 9985 当层间插值 → T6a 红。
   T4 镂空 mip：MASK 方块，64² 贴图按 4×4 周期排布（每周期 2×2 透明白、其余不透明红），相机距离使查看器
      λ = log2(像素足迹 / 纹素) ≈ 3（≥2 各层内容相同）→ 查看器里整块不透明、颜色 = 0.75·红 + 0.25·白（线性）；
      与同场一块该色的不透明参照方块比，各通道相对差 ≤ 6%。改前 Cycles 不做 mip：透明处露出黑背景 → 红。
@@ -48,6 +53,9 @@ T4_RED = (0.55, 0.12, 0.08)                     # 线性
 T4_W, T4_H, T4_LENS = 96, 96, 50.0              # 36 mm 传感器
 T4_PIX = 36.0 / (T4_LENS * max(T4_W, T4_H))     # 每像素视角
 T4_DIST = 8.0 / (T4_PIX * T4_TEX)               # 足迹 8 纹素 → λ = 3（UV 1 单位 = 1 m）
+T6_LAMBDA = 1.58                                # 层间最近取第 2 层（ceil(λ+.5)-1），层间插值时透明格 α=0.58·0.75<0.5 仍镂空
+T6_DIST = 2 ** T6_LAMBDA / (T4_PIX * T4_TEX)
+T5_SUN_DEG = 35.0                               # T5 太阳绕 Blender x 轴倾角：影子向 +y 偏 h·tan35°
 
 
 def srgb_to_lin(c):
@@ -116,11 +124,15 @@ class Gltf:
         self.j['nodes'].append(node)
         self.j['scenes'][0]['nodes'].append(len(self.j['nodes']) - 1)
 
-    def image(self, png):
-        self.j.setdefault('images', []).append({'name': 't4-lattice', 'mimeType': 'image/png', 'bufferView': self.view(png)})
-        self.j.setdefault('samplers', []).append({'magFilter': 9729, 'minFilter': 9987})
-        self.j.setdefault('textures', []).append({'sampler': 0, 'source': 0})
-        return 0
+    def image(self, png, min_filter=9987, mag_filter=9729):
+        """加一张图 + 一个 sampler + 一个 texture，返回 texture 下标（同一张 png 可多次加，各自 sampler）。"""
+        imgs = self.j.setdefault('images', [])
+        imgs.append({'name': 't-lattice-%d' % len(imgs), 'mimeType': 'image/png', 'bufferView': self.view(png)})
+        smp = self.j.setdefault('samplers', [])
+        smp.append({'magFilter': mag_filter, 'minFilter': min_filter})
+        tex = self.j.setdefault('textures', [])
+        tex.append({'sampler': len(smp) - 1, 'source': len(imgs) - 1})
+        return len(tex) - 1
 
     def write(self, path):
         while len(self.bin) % 4:
@@ -178,6 +190,57 @@ def t4_expected_lin():
     return tuple(0.75 * r + 0.25 * 1.0 for r in red_q)
 
 
+def box(x0, x1, y0, y1, z0, z1):
+    """轴对齐盒子（24 顶点，法线朝外，逆时针从外看）。"""
+    pos, nrm, uv, tris = [], [], [], []
+    faces = [((1, 0, 0), [(x1, y0, z0), (x1, y1, z0), (x1, y1, z1), (x1, y0, z1)]),
+             ((-1, 0, 0), [(x0, y0, z1), (x0, y1, z1), (x0, y1, z0), (x0, y0, z0)]),
+             ((0, 1, 0), [(x0, y1, z0), (x0, y1, z1), (x1, y1, z1), (x1, y1, z0)]),
+             ((0, -1, 0), [(x0, y0, z1), (x0, y0, z0), (x1, y0, z0), (x1, y0, z1)]),
+             ((0, 0, 1), [(x0, y0, z1), (x1, y0, z1), (x1, y1, z1), (x0, y1, z1)]),
+             ((0, 0, -1), [(x1, y0, z0), (x0, y0, z0), (x0, y1, z0), (x1, y1, z0)])]
+    for n, q in faces:
+        b = len(pos)
+        pos += q
+        nrm += [n] * 4
+        uv += [(0, 0), (1, 0), (1, 1), (0, 1)]
+        tris += [(b, b + 1, b + 2), (b, b + 2, b + 3)]
+    return pos, nrm, uv, tris
+
+
+def t6_expected_trilinear_lin(lam, n=200000, seed=7):
+    """独立的 GL 三线性采样模拟（numpy）：贴图同 t4_texture；非预乘 RGBA 在线性空间逐层 2×2 平均；层内双线性
+    （纹素中心 (i+0.5)/N，REPEAT）；层间按 λ 线性插值；alpha < 0.5 丢弃（露出黑背景）。返回像素平均线性色。"""
+    import numpy as np
+    red_q = [srgb_to_lin(round(255 * lin_to_srgb(c)) / 255.0) for c in T4_RED]
+    L0 = np.zeros((T4_TEX, T4_TEX, 4))
+    yy, xx = np.mgrid[0:T4_TEX, 0:T4_TEX]
+    clear = ((xx % 4) >= 2) & ((yy % 4) >= 2)
+    L0[..., :3] = np.where(clear[..., None], 1.0, np.array(red_q))
+    L0[..., 3] = np.where(clear, 0.0, 1.0)
+    levels = [L0]
+    while levels[-1].shape[0] > 1:
+        a = levels[-1]
+        h = a.shape[0] // 2
+        levels.append(a.reshape(h, 2, h, 2, 4).mean(axis=(1, 3)))
+    rng = np.random.default_rng(seed)
+    uv = rng.random((n, 2))
+
+    def bilinear(Lk):
+        N = Lk.shape[0]
+        x, y = uv[:, 0] * N - 0.5, uv[:, 1] * N - 0.5
+        x0, y0 = np.floor(x).astype(int), np.floor(y).astype(int)
+        fx, fy = (x - x0)[:, None], (y - y0)[:, None]
+        g = lambda i, j: Lk[j % N, i % N]
+        return (g(x0, y0) * (1 - fx) * (1 - fy) + g(x0 + 1, y0) * fx * (1 - fy)
+                + g(x0, y0 + 1) * (1 - fx) * fy + g(x0 + 1, y0 + 1) * fx * fy)
+    k = int(math.floor(lam))
+    f = lam - k
+    s = bilinear(levels[k]) * (1 - f) + bilinear(levels[k + 1]) * f
+    keep = s[:, 3] >= 0.5
+    return tuple(float(x) for x in (s[:, :3] * keep[:, None]).mean(0)), float(1 - keep.mean())
+
+
 def build_scenes(tmp):
     grey = (0.35, 0.35, 0.35)
     beige = (srgb_to_lin(0.749), srgb_to_lin(0.682), srgb_to_lin(0.557))
@@ -216,6 +279,27 @@ def build_scenes(tmp):
     g.mesh('t4|ref', *vert_quad(0.5, 2.5, 0, 2, 0.0), m_r)
     g.write(os.path.join(tmp, 't4.glb'))
     out['t4'] = 't4.glb'
+    # T5：不重叠的铺装仍完整参与光照（wave12-r2）。地面铺装 + 抬高 1.2 m 的水平 slot 铺装板（不与任何层共面）
+    #     + 一个非铺装盒子；只有太阳（世界全黑），俯视看影子，另从铺装板下方仰视看它的下表面（只能靠地面反弹照亮）。
+    g = Gltf()
+    m = g.material(opaque(beige, 'Material_1'))
+    g.mesh('t5|ground-paving|paving|L1', *horiz_quad(-4, 4, -3, 3), m, {'slot': 'paving-grey-brick'})
+    g.mesh('t5|canopy-paving|paving|L1', *horiz_quad(1, 3, -1, 1, y=1.2), m, {'slot': 'paving-grey-brick'})
+    g.mesh('t5|box', *box(-3, -1, 1.0, 1.4, -1, 1), g.material(opaque(grey, 'box-grey')))
+    g.write(os.path.join(tmp, 't5.glb'))
+    out['t5'] = 't5.glb'
+    # T6：采样器枚举。同一张 T4 贴图，左块 LINEAR_MIPMAP_NEAREST(9985)，中块 LINEAR_MIPMAP_LINEAR(9987)，右块参照色
+    g = Gltf()
+    png = t4_texture()
+    m_near = g.material({'name': 't6-9985', 'alphaMode': 'MASK', 'doubleSided': True,
+                         'pbrMetallicRoughness': {'baseColorTexture': {'index': g.image(png, 9985)}, 'metallicFactor': 0.0, 'roughnessFactor': 1.0}})
+    m_lin = g.material({'name': 't6-9987', 'alphaMode': 'MASK', 'doubleSided': True,
+                        'pbrMetallicRoughness': {'baseColorTexture': {'index': g.image(png, 9987)}, 'metallicFactor': 0.0, 'roughnessFactor': 1.0}})
+    g.mesh('t6|near', *vert_quad(-1.8, -0.8, 0.5, 1.5, 0.0), m_near)
+    g.mesh('t6|lin', *vert_quad(-0.5, 0.5, 0.5, 1.5, 0.0), m_lin)
+    g.mesh('t6|ref', *vert_quad(0.8, 1.8, 0.5, 1.5, 0.0), g.material(opaque(t4_expected_lin(), 't6-ref', True)))
+    g.write(os.path.join(tmp, 't6.glb'))
+    out['t6'] = 't6.glb'
     return out
 
 
@@ -231,14 +315,17 @@ def driver(argv):
     rcp = types.ModuleType('rcp_under_test')
     rcp.__file__ = renderer
     exec(compile(src[:src.rindex('\nmain()')], renderer, 'exec'), rcp.__dict__)
+    import numpy as np
     report = {}
-    for case in ('t1', 't2', 't3', 't4'):
+    # 每个用例：(镜头名, 相机设置)；T5 两个镜头（俯视 / 铺装板下仰视）
+    shots = {'t1': ['t1'], 't2': ['t2'], 't3': ['t3'], 't4': ['t4'], 't5': ['t5', 't5up'], 't6': ['t6']}
+    for case in ('t1', 't2', 't3', 't4', 't5', 't6'):
         bpy.ops.wm.read_factory_settings(use_empty=True)
         sc = bpy.context.scene
         glb = os.path.join(tmp, case + '.glb')
         bpy.ops.import_scene.gltf(filepath=glb)
         info = rcp.prepare_beauty_materials(glb) if hasattr(rcp, 'prepare_beauty_materials') else None
-        # 世界：相机射线黑，其余射线白 1.0（均匀环境光）
+        # 世界：相机射线黑，其余射线白 1.0（均匀环境光）；T5 只要太阳（世界全黑），才能单看反弹与投影
         w = bpy.data.worlds.new('w')
         w.use_nodes = True
         nt = w.node_tree
@@ -246,7 +333,7 @@ def driver(argv):
             nt.nodes.remove(n)
         lp, ms = nt.nodes.new('ShaderNodeLightPath'), nt.nodes.new('ShaderNodeMixShader')
         b1, b0 = nt.nodes.new('ShaderNodeBackground'), nt.nodes.new('ShaderNodeBackground')
-        b1.inputs['Color'].default_value = (1, 1, 1, 1)
+        b1.inputs['Color'].default_value = (0, 0, 0, 1) if case == 't5' else (1, 1, 1, 1)
         b0.inputs['Color'].default_value = (0, 0, 0, 1)
         o = nt.nodes.new('ShaderNodeOutputWorld')
         nt.links.new(lp.outputs['Is Camera Ray'], ms.inputs['Fac'])
@@ -254,32 +341,17 @@ def driver(argv):
         nt.links.new(b0.outputs[0], ms.inputs[2])
         nt.links.new(ms.outputs[0], o.inputs['Surface'])
         sc.world = w
-        if case in ('t2', 't3'):
+        if case in ('t2', 't3', 't5'):
             sun = bpy.data.lights.new('sun', 'SUN')
             sun.energy = 3.0
             sun.angle = math.radians(1.0)
             so = bpy.data.objects.new('sun', sun)
-            so.rotation_euler = (math.radians(30), math.radians(10), 0)
+            so.rotation_euler = (math.radians(T5_SUN_DEG), 0, 0) if case == 't5' else (math.radians(30), math.radians(10), 0)
             sc.collection.objects.link(so)
         cd = bpy.data.cameras.new('cam')
         co = bpy.data.objects.new('cam', cd)
         sc.collection.objects.link(co)
         sc.camera = co
-        if case == 't4':
-            cd.sensor_width = 36.0
-            cd.lens = T4_LENS
-            sc.render.resolution_x, sc.render.resolution_y = T4_W, T4_H
-            co.location = Vector((0.0, -T4_DIST, 1.0))        # Blender：glTF (x,y,z) → (x,-z,y)；方块中心 glTF y=1 → z=1
-            co.rotation_euler = (math.radians(90), 0, 0)
-            if hasattr(rcp, 'set_pixel_angle'):
-                rcp.set_pixel_angle(sc, cd, T4_W, T4_H)
-        else:
-            cd.type = 'ORTHO'
-            cd.ortho_scale = 6.0 if case != 't3' else 4.0
-            sc.render.resolution_x, sc.render.resolution_y = (192, 96) if case != 't3' else (128, 128)
-            co.location = (0, 0, 10)
-            co.rotation_euler = (0, 0, 0)
-            cd.clip_end = 100
         sc.render.engine = 'CYCLES'
         prefs = bpy.context.preferences.addons['cycles'].preferences
         dev = None
@@ -305,14 +377,39 @@ def driver(argv):
         sc.view_settings.exposure = 0
         sc.render.image_settings.file_format = 'OPEN_EXR'
         sc.render.image_settings.color_depth = '32'
-        sc.render.filepath = os.path.join(tmp, case + '.exr')
-        bpy.ops.render.render(write_still=True)
-        img = bpy.data.images.load(sc.render.filepath)
-        import numpy as np
-        px = np.empty(img.size[0] * img.size[1] * 4, np.float32)
-        img.pixels.foreach_get(px)
-        np.save(os.path.join(tmp, case + '.npy'), px.reshape(img.size[1], img.size[0], 4)[::-1, :, :3])
-        report[case] = {'info': {k: (v if not isinstance(v, list) else len(v)) for k, v in (info or {}).items()},
+        for shot in shots[case]:
+            cd.type = 'PERSP'
+            cd.clip_end = 100
+            if shot in ('t4', 't6'):
+                cd.sensor_width = 36.0
+                cd.lens = T4_LENS
+                sc.render.resolution_x, sc.render.resolution_y = T4_W, T4_H
+                dist = T4_DIST if shot == 't4' else T6_DIST
+                cz = 1.0
+                co.location = Vector((0.0, -dist, cz))          # Blender：glTF (x,y,z) → (x,-z,y)；方块中心 glTF y=1 → z=1
+                co.rotation_euler = (math.radians(90), 0, 0)
+                if hasattr(rcp, 'set_pixel_angle'):
+                    rcp.set_pixel_angle(sc, cd, T4_W, T4_H)
+            elif shot == 't5up':
+                cd.type = 'ORTHO'
+                cd.ortho_scale = 1.5
+                sc.render.resolution_x, sc.render.resolution_y = 64, 64
+                co.location = (2.0, 0.0, 0.6)                   # 铺装板正下方、地面上 0.6 m，仰视
+                co.rotation_euler = (math.radians(180), 0, 0)
+            else:
+                cd.type = 'ORTHO'
+                cd.ortho_scale = {'t3': 4.0, 't5': 8.0}.get(shot, 6.0)
+                sc.render.resolution_x, sc.render.resolution_y = {'t3': (128, 128), 't5': (256, 192)}.get(shot, (192, 96))
+                co.location = (0, 0, 10)
+                co.rotation_euler = (0, 0, 0)
+            sc.render.filepath = os.path.join(tmp, shot + '.exr')
+            bpy.ops.render.render(write_still=True)
+            img = bpy.data.images.load(sc.render.filepath)
+            px = np.empty(img.size[0] * img.size[1] * 4, np.float32)
+            img.pixels.foreach_get(px)
+            np.save(os.path.join(tmp, shot + '.npy'), px.reshape(img.size[1], img.size[0], 4)[::-1, :, :3])
+            bpy.data.images.remove(img)
+        report[case] = {'info': {k: (v if not isinstance(v, (list, dict)) else len(v)) for k, v in (info or {}).items()},
                         'device': sc.cycles.device}
     with open(os.path.join(tmp, 'driver.json'), 'w', encoding='utf-8') as f:
         json.dump(report, f, ensure_ascii=False)
@@ -399,6 +496,39 @@ def main():
        'T4 镂空贴图按查看器 mip 口径：格心块≈（0.75 红 + 0.25 白）参照块（≤%d%%）' % (TOL * 100),
        {'lattice': lat.round(4).tolist(), 'ref': rf.round(4).tolist(), 'expectedAlbedoLin': [round(x, 4) for x in t4_expected_lin()],
         'distM': round(T4_DIST, 3)})
+    # T5（wave12-r2）：256×192 正交 8 m → 32 px/m，图像行 0 = Blender y=+3。太阳绕 x 轴 35°，影子向 +y 偏 h·tan35°。
+    def box_px(x0, x1, y0, y1):
+        return region('t5', int((x0 + 4) * 32), int((x1 + 4) * 32), int((3 - y1) * 32), int((3 - y0) * 32)).mean(0)
+    lum = np.array([0.2126, 0.7152, 0.0722])
+    lit = box_px(-0.7, 0.7, 1.15, 1.6) @ lum
+    canopy_sh = box_px(1.3, 2.7, 1.15, 1.6) @ lum               # 铺装板（1.2 m）影子露出板外的部分
+    box_sh = box_px(-2.7, -1.3, 1.15, 1.6) @ lum                # 盒子影子露出盒外的部分
+    ok(lit > 0.05 and canopy_sh / lit < 0.5, 'T5a 不重叠的 slot 铺装板仍向地面投影（影区/受光 < 0.5）',
+       {'lit': round(float(lit), 4), 'shadow': round(float(canopy_sh), 4), 'ratio': round(float(canopy_sh / max(lit, 1e-6)), 3)})
+    ok(lit > 0.05 and box_sh / lit < 0.5, 'T5b 铺装上方物体在铺装上的影子仍在（影区/受光 < 0.5）',
+       {'lit': round(float(lit), 4), 'shadow': round(float(box_sh), 4), 'ratio': round(float(box_sh / max(lit, 1e-6)), 3)})
+    under = region('t5up', 8, 56, 8, 56).mean(0) @ lum
+    ok(under / max(lit, 1e-6) > 0.05, 'T5c 铺装仍作为漫反射面：铺装板下表面只靠地面铺装反弹照亮（下表面/受光铺装 > 0.05）',
+       {'underside': round(float(under), 5), 'litPaving': round(float(lit), 4), 'ratio': round(float(under / max(lit, 1e-6)), 4)})
+    # T6（wave12-r2）：采样器枚举。9985 层间取最近 → 第 2 层整块不透明 ≈ 参照色；9987 层间插值 → 透明格仍镂空（露黑）
+    span6 = 36.0 / T4_LENS * T6_DIST
+    ppm6 = T4_W / span6
+
+    def at6(xm):
+        cx = int(round(T4_W / 2 + xm * ppm6))
+        cy = T4_H // 2
+        return np.load(os.path.join(tmp, 't6.npy'))[cy - 3:cy + 3, cx - 3:cx + 3].reshape(-1, 3).mean(0)
+    near6, lin6, ref6 = at6(-1.3), at6(0.0), at6(1.3)
+    ok(all(rel(near6[i], ref6[i]) <= TOL for i in range(3)),
+       'T6a LINEAR_MIPMAP_NEAREST(9985) 按层间最近取第 2 层：整块不透明 ≈ 参照色（≤%d%%）' % (TOL * 100),
+       {'9985': near6.round(4).tolist(), 'ref': ref6.round(4).tolist(), 'lambda': T6_LAMBDA})
+    exp_lin, hole = t6_expected_trilinear_lin(T6_LAMBDA)
+    # 参照块反照率 = t4_expected_lin，用它把「期望反照率」换成同光照下的期望像素值
+    alb = t4_expected_lin()
+    exp_px = [ref6[i] * exp_lin[i] / alb[i] for i in range(3)]
+    ok(all(rel(lin6[i], exp_px[i]) <= TOL for i in range(3)),
+       'T6b LINEAR_MIPMAP_LINEAR(9987) 层间插值：≈ 独立 numpy 三线性模拟（λ=%.2f，镂空 %.1f%%，≤%d%%）' % (T6_LAMBDA, hole * 100, TOL * 100),
+       {'9987': lin6.round(4).tolist(), 'expected': [round(float(x), 4) for x in exp_px], 'holeShare': round(hole, 4)})
     if not a.keep:
         shutil.rmtree(tmp, ignore_errors=True)
     print('beauty-materials-test: %d passed, %d failed' % (passes, fails))

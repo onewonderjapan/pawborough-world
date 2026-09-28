@@ -47,6 +47,7 @@ FOV_Y_DEG = 46.0
 CLIP_NEAR, CLIP_FAR = 0.5, 4000.0
 MULT_MIN, MULT_MAX = 1.0, 4.0
 TARGET_ERR = 0.10            # 两处立面带 V 的相对误差上限
+MAX_CONFIRM = 5              # 确认轮上限（收敛条件见 calibrate_preset）
 CLIP_GUARD_PP = 0.5          # 裁切占比相对倍率 1.0 允许的增加量（百分点）
 WARM_GUARD = 0.8             # 夜晚最亮 0.5% 像素里 R > B 的占比下限
 TOP_FRAC = 0.005
@@ -359,9 +360,13 @@ def calibrate_preset(cal, preset, tgt_sh):
     grid = [round(math.exp(math.log(MULT_MIN) + (math.log(MULT_MAX) - math.log(MULT_MIN)) * i / 300.0), 4)
             for i in range(301)]
 
+    # 确认轮（wave12-r2 明确收敛条件）：折线最优候选实渲 → 进折线重选，直到
+    #   a) 两处都 ≤10%；或 b) 新候选与已实渲倍率相对差 < 1%（折线在已测点附近，再测无新信息）；
+    #   或 c) 折线预测的最大误差比已实渲最好值改善 < 0.5 个百分点；或 d) 满 MAX_CONFIRM 轮。停因记进结果。
     best = None
+    stop = 'maxRounds'
     cand = min(grid, key=max_err)
-    for rnd in range(2):
+    for rnd in range(MAX_CONFIRM):
         m_c = round(cand, 4)
         got = {v: measure(v, m_c) for v in VIEWS_BISECT}
         errs = {v: abs(got[v]['facadeV'] - t) / t for v, t in zip(VIEWS_BISECT, tgt_sh)}
@@ -372,8 +377,16 @@ def calibrate_preset(cal, preset, tgt_sh):
         if best is None or cand_res['maxRelErr'] < best['maxRelErr']:
             best = cand_res
         if max(errs.values()) <= TARGET_ERR:
+            stop = 'withinTarget'
             break
         cand = min(grid, key=max_err)   # 确认点已进 cache/折线，重选
+        measured = sorted({k[1] for k in cache if k[0] in VIEWS_BISECT})
+        if any(abs(cand - mm) / mm < 0.01 for mm in measured):
+            stop = 'candidateAlreadyMeasured'
+            break
+        if best['maxRelErr'] - max_err(cand) < 0.005:
+            stop = 'predictedGain<0.5pp'
+            break
 
     # 3) 护栏（湖心亭 / 九曲桥 / 华宝楼广场三机位裁切增量 ≤ 0.5 pp；夜晚最亮 0.5% 暖色占比 ≥ 0.8）。
     #    wave12-r1：华宝楼广场纳入裁切护栏；最优点破护栏时，在 [1, 最优点] 上对「护栏全过」几何二分，取最大可行倍率
@@ -425,7 +438,8 @@ def calibrate_preset(cal, preset, tgt_sh):
     out = {'preset': preset, 'multiplier': m_final, 'targets': list(tgt_sh),
            'facadeV': best['facadeV'], 'relErr': best['relErr'], 'maxRelErr': best['maxRelErr'],
            'withinTarget': best['maxRelErr'] <= TARGET_ERR,
-           'confirmRounds': best['round'] + 1, 'guard': guard,
+           'confirmRounds': rnd + 1, 'bestRound': best['round'] + 1, 'confirmStop': stop,
+           'nextCandidatePredicted': {'multiplier': round(cand, 4), 'maxRelErr': round(max_err(cand), 4)}, 'guard': guard,
            'clipGuardOK': clip_ok, 'warmGuardOK': warm_ok,
            'clipGuardLimitPp': CLIP_GUARD_PP, 'warmGuardMin': WARM_GUARD,
            'clipGuardViews': list(VIEWS_GUARD), 'guardLimited': guard_limited, 'unconstrainedBest': unconstrained,
@@ -436,8 +450,56 @@ def calibrate_preset(cal, preset, tgt_sh):
     return out
 
 
+def fingerprint(args):
+    """缓存指纹（wave12-r2）：场景 GLB、渲染器、本脚本、presets（去掉 blender.ambientMultiplier——标定会改写它，
+    测量本身按 doc 副本显式设倍率）、铺装 / 外围贴图、机位与目标来源。任一变了，旧渲染 / 旧测量都不能续用。"""
+    import glob
+    import hashlib
+
+    def sha(path):
+        h = hashlib.sha256()
+        with open(path, 'rb') as f:
+            for chunk in iter(lambda: f.read(1 << 20), b''):
+                h.update(chunk)
+        return h.hexdigest()
+    doc = json.load(open(args.presets, encoding='utf-8'))
+    doc.get('blender', {}).pop('ambientMultiplier', None)
+    tex = sorted(glob.glob(os.path.join(ROOT, 'resources', 'textures', 'paving', '*.jpg'))) + \
+        [os.path.join(ROOT, 'resources', 'textures', 'outer-kit', 'outerkit-atlas-v2.jpg')]
+    return {
+        'sceneGlb': sha(args.scene),
+        'renderer': sha(os.path.join(ROOT, 'scripts', 'render-control-passes.py')),
+        'calibrator': sha(os.path.abspath(__file__)),
+        'presetsSansMultiplier': hashlib.sha256(json.dumps(doc, sort_keys=True, ensure_ascii=False).encode('utf-8')).hexdigest(),
+        'textures': hashlib.sha256(''.join(os.path.basename(t) + sha(t) for t in tex if os.path.exists(t)).encode()).hexdigest(),
+        'tour': sha(args.tour), 'controlShots': sha(args.control_shots), 'layout': sha(args.layout), 'hallIds': sha(args.hall_ids),
+    }
+
+
+def check_cache(args):
+    """--out 里已有指纹则必须一致；没有指纹却已有渲染 / 测量（来历不明）也拒绝续用。"""
+    fp = fingerprint(args)
+    fpath = os.path.join(args.out, 'fingerprint.json')
+    if os.path.exists(fpath):
+        old = json.load(open(fpath, encoding='utf-8'))
+        diff = sorted(k for k in set(fp) | set(old) if fp.get(k) != old.get(k))
+        if diff:
+            raise SystemExit('E: %s 的缓存指纹不符（%s 变了），换一个 --out 目录重跑' % (args.out, ','.join(diff)))
+    else:
+        stale = [x for x in ('renders', 'masks') if os.path.isdir(os.path.join(args.out, x)) and os.listdir(os.path.join(args.out, x))]
+        stale += [f for f in os.listdir(args.out) if f.startswith('meas-')] if os.path.isdir(args.out) else []
+        if stale:
+            raise SystemExit('E: %s 已有无指纹的旧缓存 %s，换一个 --out 目录重跑' % (args.out, stale))
+        os.makedirs(args.out, exist_ok=True)
+        with open(fpath, 'w', encoding='utf-8') as f:
+            json.dump(fp, f, ensure_ascii=False, indent=1)
+            f.write('\n')
+    return fp
+
+
 def main():
     args = parse_args()
+    fp = check_cache(args)
     rcp = load_renderer(os.path.join(ROOT, 'scripts', 'render-control-passes.py'))
     views = camera_views(args)
     tgt, universe = target_ids(args)
@@ -457,8 +519,10 @@ def main():
         json.dump({'version': 1,
                    'targetsSource': 'viewer facadeBand V，灯光工单 R2 实测（GOAL 口径）；每次迭代原始测量在 meas-<preset>.json',
                    'presets': summary, 'cameras': views, 'targetIds': tgt,
-                   'lensMm': cal.cam_data.lens, 'size': [W, H], 'fovYDeg': FOV_Y_DEG,
-                   'beautyMaterials': {k: (v if not isinstance(v, list) else len(v)) for k, v in cal.material_info.items()}},
+                   'lensMm': cal.cam_data.lens, 'size': [W, H], 'fovYDeg': FOV_Y_DEG, 'fingerprint': fp,
+                   'beautyMaterials': {k: (v if not isinstance(v, (list, dict)) else len(v)) for k, v in cal.material_info.items()},
+                   'coplanarOffsets': cal.material_info.get('coplanarOffsets'),
+                   'coplanarPairs': cal.material_info.get('coplanarPairs')},
                   f, ensure_ascii=False, indent=1)
         f.write('\n')
     for preset, s in summary.items():

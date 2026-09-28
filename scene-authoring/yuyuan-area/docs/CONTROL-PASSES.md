@@ -343,9 +343,9 @@ python3 tests/control-pass-parity.py --a <工单包>/artifacts/pv-ref --b <Workb
 | 现象 | 根因（实测） | 处理 |
 |---|---|---|
 | 铺装平涂、外围立面无窗 | `export-zones.py` 只在导出运行时分区件时按对象 `slot` 绑定贴图材质（`resources/textures/paving/<slot>.jpg`、外围套件图集）；`scene-areas.glb` 更早导出，只有 `slot`（node extras）+ 世界 UV，材质仍是顶点色 | `bind_slot_materials`：同一约定导入后绑定（465 件；只换材质槽 0，不改几何 / UV）；`outerkit-proc` 为查看器着色器现画，不复刻 |
-| 纯黑三角块 | 相邻路面件在同一高度（z = 0.02 m）共面叠放（如 `road-428179933/934`）；查看器同材质共面只是深度打架，Cycles 从一层发出的阴影 / 漫反射射线在 t≈0 打中另一层 → 无日光也无环境光 | `isolate_flat_slot_layers`：全水平的 slot 件只对相机（与镜面）射线可见（160 件） |
+| 纯黑三角块 | 相邻路面件在同一高度（z = 0.02 m）共面叠放（如 `road-428179933/934`）；查看器同材质共面只是深度打架，Cycles 从一层发出的阴影 / 漫反射射线在 t≈0 打中另一层 → 无日光也无环境光 | ~~R1 `isolate_flat_slot_layers`（全水平 slot 件整件关射线可见性）~~ → **R2 起**改为 `plan_coplanar_offsets`：只处理实际共面重叠的冲突对，次层 beauty 段临时下沉（见下方 wave12-r2 段） |
 | （同类隐患）| 34 个面顶点法线朝上、绕序朝下，命中背面时 Cycles 把着色法线翻进地面 → 黑 | `fix_inverted_winding_shading`：着色法线与几何法线点积 < −0.5 时取反（其余面恒等） |
-| 格扇 / 窗格纹样消失 | 镂空贴图透明像素的 RGB 是白色。查看器是 WebGL 三线性 mipmap + 非预乘 alpha：缩小采样时白底混进窗棂，格心呈浅色纹样；Cycles 不做 mipmap，alpha 测试后只剩纯色窗棂，而三穗堂格扇背板（`sst-timber-darkred` #8a4030）与窗棂同色 → 纹样消失 | `emulate_viewer_texture_filtering`：MASK / 带贴图 BLEND 材质（84 个）的 baseColor 贴图换成查看器同式 mip 链（非预乘、线性空间 2×2 盒式平均），着色器里按 λ = log2(视距 · 每像素视角 · 贴图边长 / (每 UV 单位米数 · |cos 入射角|)) 三线性选层（sampler 为 NEAREST_MIPMAP_* 时取整层），alpha 测试仍走导入器节点链。每像素视角由 `set_pixel_angle` 按镜头写进场景 custom prop `pb_pix_angle`，每 UV 单位米数为面属性 `pb_uv_m` |
+| 格扇 / 窗格纹样消失 | 镂空贴图透明像素的 RGB 是白色。查看器是 WebGL 三线性 mipmap + 非预乘 alpha：缩小采样时白底混进窗棂，格心呈浅色纹样；Cycles 不做 mipmap，alpha 测试后只剩纯色窗棂，而三穗堂格扇背板（`sst-timber-darkred` #8a4030）与窗棂同色 → 纹样消失 | `emulate_viewer_texture_filtering`：MASK / 带贴图 BLEND 材质（84 个）的 baseColor 贴图换成查看器同式 mip 链（非预乘、线性空间 2×2 盒式平均），着色器里按 λ = log2(视距 · 每像素视角 · 贴图边长 / (每 UV 单位米数 · |cos 入射角|)) 选层，alpha 测试仍走导入器节点链。λ 是**近似**（中心像素角 + UV 最小奇异值 + 入射角，没有屏幕横纵两个方向的完整纹理导数），不是 WebGL 的精确复现。每像素视角由 `set_pixel_angle` 按镜头写进场景 custom prop `pb_pix_angle`，每 UV 单位米数为面属性 `pb_uv_m` |
 
 - depth / normal / segmentation 不读这些材质 / 可见性（normal 用 material_override，seg 是 Workbench OBJECT 色，相机可见性不变）；
   对账见工单包 `artifacts/r1/parity/`（123bad15 原脚本 vs 本分支，镜头③⑩ 第 20–23 帧，workbench 默认口径五通道 + cycles 三档四通道）。
@@ -359,3 +359,24 @@ python3 tests/control-pass-parity.py --a <工单包>/artifacts/pv-ref --b <Workb
   dusk **2.2038**（0.1192 / 0.2505，30.7% / 30.5%）、night **1.5157**（0.1196 / 0.2540，12.0% / 10.0%）。
   三档都做不到两处同时 ≤ 10%，取最大相对误差最小点：三穗堂立面带在深檐与格扇背板后，对倍率不敏感（day m=4 也只到 0.2951），
   厅堂敏感（day m≈1.5 即达标）。护栏：湖心亭 / 九曲桥 / 华宝楼广场裁切增量 ≤ 0.0002 pp（夜间为负），夜晚最亮 0.5% 暖色占比 1.0。
+
+## wave12-r2（2026-09-28）astra 审查修正
+
+- **共面叠放只处理实际冲突**（必修）：R1 的 `isolate_flat_slot_layers` 把 160 个全水平 slot 件整件关掉阴影 / 漫反射 / 透射 / 体积
+  可见性，其中有与任何铺装都不交叠的件，也不止 0.02 m 一个高度——正常铺装因此不再向别处投影、不再作漫反射面。R2 撤掉它，改为
+  `plan_coplanar_offsets`：在「整件全是水平三角形的地面层」（186 件，含 160 个 slot 件）之间，按高度差 ≤ 2 mm 且三角形 xy 投影
+  实际交叠 ≥ 1 cm² 找冲突对（场景实测 **258 对 / 151 件**，交叠共 8381 m²；outer 路面 249 对、garden 园路 8 对、outer–pond 1 对），
+  冲突图按面积贪心分层：面积大的留原高度、完整参与光照，次层逐级下沉 4 mm（98 件；4/8/12/16/20 mm = 54/30/10/2/2 件），
+  下沉后复查冲突 0。下沉**只在 beauty 段**：`main` 每镜头 beauty 前 `apply_beauty_offsets(…, True)`、seg/normal/depth 前写回
+  `location` 原值（存原 float，不经矩阵分解），控制通道逐值不变。不冲突的铺装不动。
+- **采样器枚举**：GL 缩小过滤 9984/9985 = 层间取最近层（R1 误写 9984/9986），层内过滤看 minFilter 的前半段（NEAREST_* 取最近纹素），
+  `magFilter` 只管放大（λ ≤ 0）时的第 0 层。mip 各层（含第 0 层）改存线性浮点图：WebGL 的 SRGB8_ALPHA8 在解码后的线性空间插值，
+  Cycles 对 8 位 sRGB 图是在编码值上插值，合成场景实测会偏暗（T6b）。
+- **缺贴图明确失败**：`bind_slot_materials` 遇到预期贴图缺失直接 `SystemExit`（与 `export-zones.py` 一致）；`outerkit-proc`
+  （查看器着色器现画）作为已知例外单列 `slotKnownExceptions`。
+- **`--beauty-denoise on|off`**（默认 on = 旧行为），与 `--beauty-samples` 配合给格扇近景用；四组对比见工单包 `artifacts/r2/sampling/`。
+- **标定**：`--out` 目录写 `fingerprint.json`（场景 GLB、渲染器、标定脚本、去掉 ambientMultiplier 的 presets、铺装 / 外围贴图、机位与目标
+  来源的 sha256），不符或无指纹却有旧缓存即拒绝续用；确认轮改为明确收敛条件（两处 ≤10% / 新候选与已测倍率差 < 1% /
+  折线预测改善 < 0.5 pp / 满 5 轮），停因写进 `confirmStop`。
+- 测试 `tests/beauty-materials-test.py` 增 T5a–c（不重叠铺装仍投影、上方物体影子仍在、铺装仍作漫反射面）与 T6a–b（9985 取最近层 /
+  9987 与独立 numpy 三线性模拟一致）；1cb269a3 上 T5a、T5c、T6a、T6b 红。
