@@ -2171,53 +2171,58 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202599/model.glb",
-      "sha256": "6f8a2d06d1b587be323555956f84958699d85ff170bf7e8d56ce6fd6d6e3284c",
-      "bytes": 1943584,
-      "sourcePackage": "pawborough-wave12-towerwin-glm-20260928",
+      "sha256": "19139c2347a810aa3433ed06dfba814d98f1a1e72d218b3920e20cf2ff874bb8",
+      "bytes": 1956180,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
       "replaces": {
-        "sha256": "3728b4ffa0b248889aa8e86728001f51b9792cdc33aba30786d08e4053d85f72",
-        "bytes": 1942284
-      }
+        "sha256": "6f8a2d06d1b587be323555956f84958699d85ff170bf7e8d56ce6fd6d6e3284c",
+        "bytes": 1943584
+      },
+      "pendingLeadArchive": true
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202601/model.glb",
-      "sha256": "667f440f1d1db3fcf3aaa98f388891805cd057e78b05ea9749948201299ddd47",
-      "bytes": 2343372,
-      "sourcePackage": "pawborough-wave12-towerwin-glm-20260928",
+      "sha256": "94dccbcc937b119ea150c04733c90de1baff907492d5c03938365a6a81f0fcee",
+      "bytes": 2388180,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
       "replaces": {
-        "sha256": "c24a5300180cadbda0b4c8416b8a9269306b7ac42491f85ac16784d0786ddeb3",
-        "bytes": 2342076
-      }
+        "sha256": "667f440f1d1db3fcf3aaa98f388891805cd057e78b05ea9749948201299ddd47",
+        "bytes": 2343372
+      },
+      "pendingLeadArchive": true
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701812/model.glb",
-      "sha256": "0021e206f27faf63d73bf1ac0277a924a34f3843622d2715ff3a89f4b660a171",
-      "bytes": 2236036,
-      "sourcePackage": "pawborough-wave12-towerwin-glm-20260928",
+      "sha256": "15175968580cc4e12571b3a58fc64fd13294f1c4fd356c530462261228c5b84c",
+      "bytes": 2263532,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
       "replaces": {
-        "sha256": "76700ef7744c6b2a7b5c1c30d456046ef64d1a947fd9625a61a5199fcaa4bc77",
-        "bytes": 2234740
-      }
+        "sha256": "0021e206f27faf63d73bf1ac0277a924a34f3843622d2715ff3a89f4b660a171",
+        "bytes": 2236036
+      },
+      "pendingLeadArchive": true
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202602/model.glb",
-      "sha256": "bac088d4b745bdcc1abd77e022e06077ef57096303a949244aaf459294344ad8",
-      "bytes": 2501580,
-      "sourcePackage": "pawborough-wave12-towerwin-glm-20260928",
+      "sha256": "d5db7d7c89fe8c7230daa9616c6cb76e5fb24bfc114c0afabf41359de68ae049",
+      "bytes": 2523600,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
       "replaces": {
-        "sha256": "76f8a9d78b8e3728fee762ea918f42eabf1288f9fd2d00ab5471a2c550968ff5",
-        "bytes": 2500284
-      }
+        "sha256": "bac088d4b745bdcc1abd77e022e06077ef57096303a949244aaf459294344ad8",
+        "bytes": 2501580
+      },
+      "pendingLeadArchive": true
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202603/model.glb",
-      "sha256": "78cf03c7f92bbaba0892402074578132c6de432b8d85453f6a93b207f75e9ec6",
-      "bytes": 1681064,
-      "sourcePackage": "pawborough-wave12-towerwin-glm-20260928",
+      "sha256": "79bb87b86f99b1d2781623e2d80a5863138d8269381ac1cbe50734790b7edbf4",
+      "bytes": 1704392,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
       "replaces": {
-        "sha256": "d7f1abfb16cf7ebf7f04cb8c852e9098e9e6564adac13b1cebb293a51b194d53",
-        "bytes": 1679768
-      }
+        "sha256": "78cf03c7f92bbaba0892402074578132c6de432b8d85453f6a93b207f75e9ec6",
+        "bytes": 1681064
+      },
+      "pendingLeadArchive": true
     },
     {
       "path": "scene-authoring/yuyuan-area/resources/textures/outer-kit/outerkit-atlas.jpg",
@@ -2228,70 +2233,81 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701901/model.glb",
-      "sha256": "aaf017d7273f2471b9082bf1c0adcfe04e302be60f37cb7d3f96cab63bdd5221",
-      "bytes": 1278468,
-      "sourcePackage": "pawborough-wave12-towerwin-glm-20260928",
+      "sha256": "82848a8898247fd6eff8ae3be033d3ae69640e01b176d1c34c9a036201d31932",
+      "bytes": 1301812,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
       "replaces": {
-        "sha256": "caec21f2c2a92cc19729deb62d460d94125faabc398a096a18de601561ff85de",
-        "bytes": 1277168
-      }
+        "sha256": "aaf017d7273f2471b9082bf1c0adcfe04e302be60f37cb7d3f96cab63bdd5221",
+        "bytes": 1278468
+      },
+      "pendingLeadArchive": true
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-165791764/model.glb",
-      "sha256": "26a848e1c2d3715d9aad1df7212e4a02427d58efddb10c3f7e9865106398b8d2",
-      "bytes": 1139368,
-      "sourcePackage": "pawborough-wave12-towerwin-glm-20260928",
+      "sha256": "34aabe001ef16ba622d1e78123cd89a674b7a89c02f1dbe144b380e15e65294a",
+      "bytes": 1144116,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
       "replaces": {
-        "sha256": "9169a6eb099bb42d50965a87f8bc98dbedc2523c352cb6b08e01218addf73b15",
-        "bytes": 1138084
-      }
+        "sha256": "26a848e1c2d3715d9aad1df7212e4a02427d58efddb10c3f7e9865106398b8d2",
+        "bytes": 1139368
+      },
+      "pendingLeadArchive": true
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389702030/model.glb",
-      "sha256": "99568cb189f20bcbdf81481f7011a3562de1a28f97f815756e76de717caa17b1",
-      "bytes": 818584,
-      "sourcePackage": "pawborough-wave12-towerwin-glm-20260928",
+      "sha256": "974c7308ce5d1cb5b560eaad974906ea93e46e38ab6a9966263e345a8b2a6b97",
+      "bytes": 821148,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
       "replaces": {
-        "sha256": "5e979571b7787f85353c6387b0e3dac19da17a8384208e14ea26521f52229da0",
-        "bytes": 817300
-      }
+        "sha256": "99568cb189f20bcbdf81481f7011a3562de1a28f97f815756e76de717caa17b1",
+        "bytes": 818584
+      },
+      "pendingLeadArchive": true
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893867/model.glb",
-      "sha256": "ca4a32812df816784f5485bf9ba7cdea12548b51f21209f665373830f5c99b78",
-      "bytes": 859012,
-      "sourcePackage": "pawborough-night-bazaar-20260926"
+      "sha256": "7a1f51c9f952ed670ba0f45128aae87b8d46f520f2e990e925b11395ef94aa92",
+      "bytes": 872588,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
+      "replaces": {
+        "sha256": "ca4a32812df816784f5485bf9ba7cdea12548b51f21209f665373830f5c99b78",
+        "bytes": 859012
+      },
+      "pendingLeadArchive": true
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701971/model.glb",
-      "sha256": "2ea5334a0b21d600a1aff205ae418347e07099dd6f15bbab94628cbed5f0209b",
-      "bytes": 1290804,
-      "sourcePackage": "pawborough-wave12-towerwin-glm-20260928",
+      "sha256": "2208ee3cc6d152b7f466b9edff21deb1318e33f2202b6a790ec6517b3f0139b7",
+      "bytes": 1315172,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
       "replaces": {
-        "sha256": "c167c8bc36d1ee7cb26741873a1f7410c60bd118cef9250ac438ea4e5402e4cf",
-        "bytes": 1289512
-      }
+        "sha256": "2ea5334a0b21d600a1aff205ae418347e07099dd6f15bbab94628cbed5f0209b",
+        "bytes": 1290804
+      },
+      "pendingLeadArchive": true
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893873/model.glb",
-      "sha256": "51525b32a23881132374424e4dd0722f32a53adf770051aebfff91778c7ceb0a",
-      "bytes": 1034872,
-      "sourcePackage": "pawborough-wave12-towerwin-glm-20260928",
+      "sha256": "e73b74292a8a20919592cf82094430dcffbb4eed32e0bf0e098fc69941500a15",
+      "bytes": 1046084,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
       "replaces": {
-        "sha256": "b017f5e76acc4cdf011d8b7bc6cdafd250ddaad53228e1a249c09d349ace1d3b",
-        "bytes": 1033580
-      }
+        "sha256": "51525b32a23881132374424e4dd0722f32a53adf770051aebfff91778c7ceb0a",
+        "bytes": 1034872
+      },
+      "pendingLeadArchive": true
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893868/model.glb",
-      "sha256": "f86d3953f9e48f9e8fd4d424293dd769a547dc019e036d2b0a713c27f0019144",
-      "bytes": 589800,
-      "sourcePackage": "pawborough-wave12-towerwin-glm-20260928",
+      "sha256": "e2b2fdd74f715cd7518e6da17e0cb4153e96dd41784ba271c3636a5fc4864755",
+      "bytes": 592628,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
       "status": "changed-20260927-night-final-pending-archive（自由段店面玻璃重排，仅此楼；见 pawborough-night-integrate-20260926 artifacts/night-final）",
       "replaces": {
-        "sha256": "dde53ded941e3bc0867bbb402cc599b912ea44feb0a209de11bc2a0a3dac5824",
-        "bytes": 588520
-      }
+        "sha256": "f86d3953f9e48f9e8fd4d424293dd769a547dc019e036d2b0a713c27f0019144",
+        "bytes": 589800
+      },
+      "pendingLeadArchive": true
     },
     {
       "path": "scene-authoring/yuyuan-area/resources/textures/outer-kit/outerkit-atlas-v2.jpg",
@@ -2303,33 +2319,156 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202606/model.glb",
-      "sha256": "e491030a787d34ab643e33f2df309dbb6d2dc7fb5235c7146b5cb184958a08f4",
-      "bytes": 1682736,
-      "sourcePackage": "pawborough-wave12-towerwin-glm-20260928",
+      "sha256": "18fd641a53ddc85c4baaf05aa059330728f29e58e8bdfdf420051b95fa3febc3",
+      "bytes": 1697604,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
       "replaces": {
-        "sha256": "be1cde23c0761ded18f7853e6a031f2524ad7aa655fd7f38e64907d191f2ac36",
-        "bytes": 1681440
-      }
+        "sha256": "e491030a787d34ab643e33f2df309dbb6d2dc7fb5235c7146b5cb184958a08f4",
+        "bytes": 1682736
+      },
+      "pendingLeadArchive": true
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202607/model.glb",
-      "sha256": "46bcdd96fd386846afb72db07067fa23c55aee851521315ef9dfeb703d6bedcf",
-      "bytes": 1046756,
-      "sourcePackage": "pawborough-wave12-towerwin-glm-20260928",
+      "sha256": "750a5ab1c4c618cc13ff686df3cda1596c511d55fd12dcedfa9092fd7ca9efe0",
+      "bytes": 1059092,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
       "replaces": {
-        "sha256": "25cf55dda58fd5aca92b80847749a3ac6da366a0ad201fe66de6dd8027362e1a",
-        "bytes": 1045468
-      }
+        "sha256": "46bcdd96fd386846afb72db07067fa23c55aee851521315ef9dfeb703d6bedcf",
+        "bytes": 1046756
+      },
+      "pendingLeadArchive": true
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893884/model.glb",
-      "sha256": "b3630b8b6e2e05bdf741124b0873721c99f70c32182f518768b09e4d544439c6",
-      "bytes": 1215444,
-      "sourcePackage": "pawborough-wave12-towerwin-glm-20260928",
+      "sha256": "7889470db37e05b7fe45b200a718379b4152446cf0a94de4b92702bda5d40863",
+      "bytes": 1220572,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
       "replaces": {
-        "sha256": "124d970a69223f195e557854ee1511a36593eebc0026edc6771dbca20fd2adba",
-        "bytes": 1214156
-      }
+        "sha256": "b3630b8b6e2e05bdf741124b0873721c99f70c32182f518768b09e4d544439c6",
+        "bytes": 1215444
+      },
+      "pendingLeadArchive": true
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-165791764/measurements.json",
+      "sha256": "c5d11ab84631ba8e14a2395f801b55c87b2439ef37a3699a35a4a4d75aa7b251",
+      "bytes": 6823,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
+      "pendingLeadArchive": true,
+      "firstRegistered": "2026-09-28 (measurements.json needed by tests/towerwin-night-check.mjs)"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701812/measurements.json",
+      "sha256": "1b54220254f19f9f83cb125971d0b42959ee08adf86ddf158518ad6580549338",
+      "bytes": 5588,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
+      "pendingLeadArchive": true,
+      "firstRegistered": "2026-09-28 (measurements.json needed by tests/towerwin-night-check.mjs)"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701901/measurements.json",
+      "sha256": "6280e4346c1beb10e53bc603501928030c57f8567ebab9882e932c02d7c07674",
+      "bytes": 3482,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
+      "pendingLeadArchive": true,
+      "firstRegistered": "2026-09-28 (measurements.json needed by tests/towerwin-night-check.mjs)"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701971/measurements.json",
+      "sha256": "0adfd87617054d4db3c3aaacc82b8dd0bdd6ceb4e85e0b6b294ce8d4b965f6fa",
+      "bytes": 2645,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
+      "pendingLeadArchive": true,
+      "firstRegistered": "2026-09-28 (measurements.json needed by tests/towerwin-night-check.mjs)"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389702030/measurements.json",
+      "sha256": "3c812b1f1a0c4ee74e899f0b303eb49e97dfae1227febdfedb8059e9e6b166f7",
+      "bytes": 6243,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
+      "pendingLeadArchive": true,
+      "firstRegistered": "2026-09-28 (measurements.json needed by tests/towerwin-night-check.mjs)"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202599/measurements.json",
+      "sha256": "d102a47dcf60633c6b424b55e776e3fca043c480c0511dfcb2d2a2a6230d1790",
+      "bytes": 4333,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
+      "pendingLeadArchive": true,
+      "firstRegistered": "2026-09-28 (measurements.json needed by tests/towerwin-night-check.mjs)"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202601/measurements.json",
+      "sha256": "e55455a28e86be3d1ee70191d5146cc0412e37afdaa4783c841d6da383c76ee7",
+      "bytes": 5343,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
+      "pendingLeadArchive": true,
+      "firstRegistered": "2026-09-28 (measurements.json needed by tests/towerwin-night-check.mjs)"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202602/measurements.json",
+      "sha256": "2fb8de4ca826a11ea1b09c6c999159c0591db24adf8f3d379c32b4aee6699666",
+      "bytes": 4103,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
+      "pendingLeadArchive": true,
+      "firstRegistered": "2026-09-28 (measurements.json needed by tests/towerwin-night-check.mjs)"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202603/measurements.json",
+      "sha256": "c72ecde91fac2afd868a4844f6f7e06c24b4083d1086bb00f3a63821441bd442",
+      "bytes": 4829,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
+      "pendingLeadArchive": true,
+      "firstRegistered": "2026-09-28 (measurements.json needed by tests/towerwin-night-check.mjs)"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202606/measurements.json",
+      "sha256": "3448cedeef45606f3cd757642b9ed4a32f6fb08504de16fc1cf7ad7519419d95",
+      "bytes": 8292,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
+      "pendingLeadArchive": true,
+      "firstRegistered": "2026-09-28 (measurements.json needed by tests/towerwin-night-check.mjs)"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202607/measurements.json",
+      "sha256": "699a18be924b2d1789b915fc9247e20458a998e218a1abf0fa9c3ee42566eb58",
+      "bytes": 4966,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
+      "pendingLeadArchive": true,
+      "firstRegistered": "2026-09-28 (measurements.json needed by tests/towerwin-night-check.mjs)"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893867/measurements.json",
+      "sha256": "2c8b24a80860c5cc5d81927df9c5ada35b62ce4ce23ab8900da45d0f552b6437",
+      "bytes": 4946,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
+      "pendingLeadArchive": true,
+      "firstRegistered": "2026-09-28 (measurements.json needed by tests/towerwin-night-check.mjs)"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893868/measurements.json",
+      "sha256": "07528f95e42659f20a5b846f0018685f8ebcf58994a63a78adf215d15cb89993",
+      "bytes": 5085,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
+      "pendingLeadArchive": true,
+      "firstRegistered": "2026-09-28 (measurements.json needed by tests/towerwin-night-check.mjs)"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893873/measurements.json",
+      "sha256": "e960a85dc91584932643f84f284f8bd0db75003ede78afb94c6a5337ca144751",
+      "bytes": 4732,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
+      "pendingLeadArchive": true,
+      "firstRegistered": "2026-09-28 (measurements.json needed by tests/towerwin-night-check.mjs)"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893884/measurements.json",
+      "sha256": "51f5b065c3d164015b752eb84e85b70fc86004674dd37f6403e237b4997d8be9",
+      "bytes": 7511,
+      "sourcePackage": "pawborough-wave12-towerwin2-glm-20260928",
+      "pendingLeadArchive": true,
+      "firstRegistered": "2026-09-28 (measurements.json needed by tests/towerwin-night-check.mjs)"
     }
   ],
   "state": "uploaded_checksum_verified",
