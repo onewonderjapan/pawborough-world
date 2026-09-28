@@ -14,8 +14,10 @@
 //   T3 浏览器 A/B 差分：同一页面加载两遍。
 //      B 侧：服务端 presets 原文。经 page.on('response') 记录 presets.json 的实际返回（命中次数 + 内容），
 //        并与仓库 lighting/presets.json 深比较——证明 B 侧点亮用的就是仓库 presets，不是旧缓存。
-//        背板 mesh 全部命中（数量与逐 mesh 三角 = raw），材质名语义匹配，night 下 emissiveIntensity > 0，
-//        且材质基名在 lattice 组 materials 里。
+//        背板 mesh 全部命中（数量与逐 mesh 三角 = raw），材质名语义匹配，night 下 emissive 颜色 = lattice
+//        组 color 且 emissiveIntensity = lattice 组 intensity × night.emissiveScale（wave12-debt D2：期望从
+//        仓库 presets.json 独立算出并断言 > 0——强度由 web/lighting.js applyEmissive 设为 g.intensity*scale，
+//        并不「恒为 1」，当前亮态为 1 只是 intensity=1.0 × scale=1.0 的数值巧合），基名在 lattice 组 materials。
 //      A 侧：playwright 请求拦截 presets.json，lattice 组去掉 btk-winback 后 fulfill（不改仓库文件），
 //        记录拦截命中次数；同样检查 night 生效 / error / timedOut / page errors（R1 补严）。
 //        同一批背板材质 emissiveIntensity 必须全部归 0（差分打在材质级，不看条目计数）；
@@ -106,7 +108,15 @@ for (const id of REG.ids) {
   if (!perFileExpect.has(f)) perFileExpect.set(f, []);
   perFileExpect.get(f).push(tris);
 }
-if (measMissing.length) console.log('WARN T1 generator measurements missing (degraded to raw-internal consistency only):', measMissing);
+if (measMissing.length) {
+  // wave12-debt D2：正式验收（TOWERWIN_STRICT=1，npm run test:towerwin-night 默认带上）下缺失即失败，
+  // 不许降级成「只做 raw 内部自洽」的弱证据；本地排查可 TOWERWIN_STRICT=0 跑出 WARN。
+  if (process.env.TOWERWIN_STRICT !== '0') {
+    ok(false, `T1 generator measurements complete (TOWERWIN_STRICT; missing = fail, not degrade): ${measMissing.join(', ')}`);
+  } else {
+    console.log('WARN T1 generator measurements missing (degraded to raw-internal consistency only):', measMissing);
+  }
+}
 for (const [f, expect] of perFileExpect) {
   const got = [...RAW[f].towers.values()].map(g => g.tris);
   ok(multiset(expect).join() === multiset(got).join(), `T1 raw GLB per-tower backing tris == generator windowBackingCalls*2 (${f})`, { expect, got });
@@ -174,9 +184,10 @@ async function openNight({ stripWinback }) {
       if (!hit) return;
       const mats = Array.isArray(o.material) ? o.material : [o.material];
       panels.push({ node: hit, tris: (o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3,
-                    // 注意：three 的 emissiveIntensity 默认恒为 1（glTF 无该字段），亮灭要看 emissive 颜色
-                    // （点亮 = 发光组 color，熄灭 = 000000，glTF emissiveFactor 缺省即黑）
-                    mats: mats.map(m => ({ name: m.name, base: m.name.replace(/\.\d{3}$/, ''), emissiveHex: m.emissive && m.emissive.getHexString() })) });
+                    // wave12-debt D2 更正旧注释：three 的 emissiveIntensity 默认值是 1（glTF 无该字段），
+                    // 但点亮后由 web/lighting.js applyEmissive 设为 g.intensity * scale，并不恒为 1——
+                    // 亮灭看 emissive 颜色（点亮 = 发光组 color，熄灭 = 000000），强度按 presets 期望另行断言。
+                    mats: mats.map(m => ({ name: m.name, base: m.name.replace(/\.\d{3}$/, ''), emissiveHex: m.emissive && m.emissive.getHexString(), emissiveIntensity: m.emissiveIntensity })) });
     });
     return panels;
   });
@@ -201,6 +212,16 @@ const bBadMat = B.panels.filter(p => !p.mats.length || p.mats.some(m => m.base !
 ok(bBadMat.length === 0, 'T3 B: every backing mesh material is btk-winback', bBadMat);
 const bDark = B.panels.filter(p => p.mats.some(m => m.emissiveHex !== LATTICE_COLOR_HEX));
 ok(bDark.length === 0, `T3 B: every backing material lit with lattice color ${LATTICE_COLOR_HEX} at night`, bDark);
+// wave12-debt D2：强度语义断言。期望从仓库 presets.json 独立计算（lattice.intensity × night.emissiveScale），
+// 与 web/lighting.js applyEmissive 的 m.emissiveIntensity = g.intensity * scale 同式 —— 颜色对而强度错/为零
+// 的漏检由此堵住（两边同读 presets.json 的同两个 double，同式乘法，=== 判等成立）。
+const LATTICE_INTENSITY = _REPO_PRESETS.emissiveGroups.find(g => g.id === 'lattice').intensity;
+const NIGHT_EMISSIVE_SCALE = _REPO_PRESETS.presets.night.emissiveScale;
+const EXP_WINBACK_INTENSITY = LATTICE_INTENSITY * NIGHT_EMISSIVE_SCALE;
+ok(EXP_WINBACK_INTENSITY > 0, `T3 B: expected winback intensity = lattice ${LATTICE_INTENSITY} × night.emissiveScale ${NIGHT_EMISSIVE_SCALE} must be > 0`, EXP_WINBACK_INTENSITY);
+const bWrongIntensity = B.panels.filter(p => p.mats.some(m => m.emissiveIntensity !== EXP_WINBACK_INTENSITY));
+ok(bWrongIntensity.length === 0, `T3 B: every backing material emissiveIntensity == ${EXP_WINBACK_INTENSITY} (lattice intensity × night.emissiveScale)`,
+  bWrongIntensity.slice(0, 3).map(p => ({ node: p.node, intensities: p.mats.map(m => m.emissiveIntensity) })));
 const bNotInGroup = B.panels.flatMap(p => p.mats).filter(m => !LATTICE_MATERIALS.includes(m.base));
 ok(bNotInGroup.length === 0, 'T3 B: backing material base names are in lattice group materials', bNotInGroup.map(m => m.name));
 
