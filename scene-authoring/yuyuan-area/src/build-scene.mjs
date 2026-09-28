@@ -84,7 +84,7 @@ const REVET = { band: 0.35, top: 0.06, poolWallBottom: -0.18, cope: 0x9b917f, wa
 //  #8 池内路面：路面（road / plaza 渲染面）落在池水轮廓内的部分裁掉，整条在池内的不渲染（deferred 记 road-inside-pond-outline）。
 //  #4 桥东端桥头台：九曲桥伸出池岸的一段（桥中线离开驳岸内沿之后）下面做实心石台，外轮廓 = 桥面（半宽 1.2 的斜接带），
 //     从外围地面 -0.40 到桥面底（桥面 0.55 − 0.18），把立在岸上的桥墩包进去；桥面与台阶不动。designInference。
-const POND_WATER_COLOR = 0x4a665c, POND_WATER_ROUGH = 0.35;
+const POND_WATER_COLOR = 0x4a665c;   // N2 起仅作顶点色（离线件显示）；运行时水面 = water 槽贴图材质
 function samePolygon(a, b, eps = 1e-6) {
   const A = orientRing(a), B = orientRing(b);
   return A.length === B.length && A.every((p) => B.some((q) => Math.abs(p[0] - q[0]) < eps && Math.abs(p[1] - q[1]) < eps));
@@ -220,6 +220,13 @@ const PAVING_SLOTS = {
   'pond|path':     'paving-pebble',        // 池畔径：卵石
   'pond|steps':    'paving-blue-stone',    // 台阶（九曲桥两端）：青石板，几何不动
   'outer|road':    'paving-asphalt',       // 外围道路：沥青灰
+  // wave13-nightbalance N2（nightqa #3/#8）：水面统一走 water 槽——深墨绿基色 + 程序化缓波法线 +
+  // roughness 0.5（export-zones.py / render-control-passes.py 的 water 分支双端同参数）。四区水面
+  // 全部入槽；顶点色保留，只作 scene-areas.glb 离线检查件的平色显示，运行时被槽材质替换。
+  'garden|water':  'water',
+  'pond|water':    'water',
+  'outer|water':   'water',
+  'bazaar|water':  'water',
 };
 // 园路支径走卵石（卵石镶边语言的支路），其余 garden path（门楼—三穗堂主径与东区主园路）走青砖
 const PEBBLE_PATH_IDS = new Set(['gpath-4', 'gpath-5', 'gpath-6', 'gpath-7']);
@@ -1379,7 +1386,8 @@ for (const o0 of layout.objects) {
     case 'water': {
       const col = o.zone === 'garden' ? 0x4e7d84 : o.zone === 'pond' ? (POND_QA ? POND_WATER_COLOR : 0x557f8f) : 0x5b7f92;
       mesh = shapeMesh(o.geometry.footprint, o.height, col, key); mesh.userData = ud;
-      if (POND_QA && o.zone === 'pond') mesh.material = mat(col, { rough: POND_WATER_ROUGH });
+      // wave13-nightbalance N2：池水专用 rough-0.35 平色材质取消——水面全部走 water 槽（上面 PAVING_SLOTS），
+      // 运行时贴图材质（深墨绿 + 缓波法线 + roughness 0.5）替换；顶点色只喂 scene-areas.glb 离线件。
       if (POND_QA && o.id === POND_WATER_ID) {
         const rv = buildPondRevetment(o);
         zoneGroups.pond.add(rv);

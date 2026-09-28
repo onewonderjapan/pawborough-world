@@ -370,11 +370,15 @@ const BG = new Q.VGrid(bridgeNodes, { cell: 0.5 });
   const { readGlbRaw } = await import('./templeqa-lib.mjs');
   let mat = null;
   if (w) { const { json } = readGlbRaw(path.join(OUT, w.file)); mat = (json.materials || []).find((m) => m.name === w.mat); }
-  const bc = mat?.pbrMetallicRoughness?.baseColorFactor || [0, 0, 0], rough = mat?.pbrMetallicRoughness?.roughnessFactor ?? 1;
-  const lin = (h) => { const c = h / 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
-  const want = [0x4a, 0x66, 0x5c].map(lin);
-  const dc = Math.max(...want.map((v, i) => Math.abs(v - bc[i])));
-  ok(`#6 池水颜色 = 主控定调 #4a665c（线性差 ${dc.toFixed(4)} ≤ 0.002）、粗糙度 ${rough.toFixed(2)} = 0.35`, dc <= 0.002 && Math.abs(rough - 0.35) < 0.01);
+  // wave13-nightbalance N2 改约：池水不再用 #4a665c / rough 0.35 平色材质（Cycles 夜景把天空/点光
+  // 聚成亮青绿镜面、白天团状高光斑），改走 water 槽贴图材质——paving-water（深墨绿基色贴图，线性
+  // 平均 ~0.058，由 tests/nightbalance-albedo-test.py C5 独立把关）+ 程序化缓波法线 + roughness 0.5
+  // （两端同参数：scripts/export-zones.py water_material / scripts/render-control-passes.py water_slot_material）。
+  const pbr = mat?.pbrMetallicRoughness || {};
+  const hasBase = !!pbr.baseColorTexture, hasNormal = !!mat?.normalTexture;
+  const rough = pbr.roughnessFactor ?? 1;
+  ok(`#6 池水材质 = water 槽（名 paving-water、基色贴图 + 法线贴图、粗糙度 ${rough.toFixed(2)} = 0.5）`,
+     mat?.name === 'paving-water' && hasBase && hasNormal && Math.abs(rough - 0.5) < 0.01);
 }
 
 // ---------------- 11) #8 池内没有路面 ----------------

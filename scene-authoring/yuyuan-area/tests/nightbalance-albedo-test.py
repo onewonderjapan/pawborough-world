@@ -101,6 +101,12 @@ try:
         ok(garbage == 0.0, f'C3 图集无串色坏带（饱和像素占比 {garbage:.4f} = 0）')
         lin = np.where(a <= 0.04045, a / 12.92, ((a + 0.055) / 1.055) ** 2.4).mean()
         ok(lin <= 0.365, f'C4 图集整体线性平均 {float(lin):.3f} ≤ 0.365（基线值，N1 压暗后 ~0.30）')
+    wp = os.path.join(ROOT, 'resources', 'textures', 'paving', 'water.jpg')
+    ok(os.path.exists(wp), 'C5 paving-water 贴图存在（wave13-nightbalance N2）')
+    if os.path.exists(wp):
+        a = np.asarray(Image.open(wp).convert('RGB'), dtype=np.float32) / 255.0
+        lin = float(np.where(a <= 0.04045, a / 12.92, ((a + 0.055) / 1.055) ** 2.4).mean())
+        ok(0.02 <= lin <= 0.10, f'C5 水面基色线性平均 {lin:.3f} ∈ [0.02,0.10]（深水反照率）')
 except ImportError:
     print('SKIP C（无 PIL/numpy）')
 
