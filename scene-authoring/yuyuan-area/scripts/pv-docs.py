@@ -201,8 +201,8 @@ def main():
         cmds.append(('group:' + light, cmd.replace(' \\\n', ' '), ids))
         H.append(cmd + '\n')
     H.append('```\n')
-    H.append('- **自检**：生成器对上面每条命令断言「`--preset` = 组内每个镜头 pv-shots.json 的 `light`、`--beauty` ∈ cycles|eevee、`--shots` 与分组一致」，'
-             '不一致即报错退出（本文件生成时已通过 %d 条）。' % len(cmds))
+    H.append('- **自检**：生成器对本文全部导出命令（第 1 节分组命令 + 第 5 节逐镜命令）断言「`--preset` = 该镜 pv-shots.json 的 `light`、'
+             '`--beauty` ∈ cycles|eevee、`--shots` 与分组一致」，不一致即报错退出、不写文件。')
     H.append('- 规模：%d 帧 × 4 通道。控制层三通道约 1.2–1.3 s/帧（Workbench 批量实测）；beauty 按 CONTROL-PASSES 实测 Cycles GPU 8–13.4 s/帧'
              '（day/dusk/night），全量 %d 帧合计估算 %.0f–%.0f 小时（**按实测外推，整批未实测**）；'
              '本包样片只出了 Workbench 首 / 中 / 末三帧，平均 %.1f s/帧（三帧批次，BVH 复用摊不开，不代表批量速度）。'
