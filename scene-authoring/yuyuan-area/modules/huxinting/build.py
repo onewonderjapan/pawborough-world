@@ -624,7 +624,15 @@ railing('ht__r2', UW - 0.9, -V0 - 0.9, UE + 0.9, V0 + 0.9, PLATFORM_Y + D['st1']
 
 # ---------------------------------------------------------------- 抱厦（临桥侧单层歇山小顶 + 匾额空板）----
 PU, PD, PT = D['porch']['uHalf'], D['porch']['depth'], D['porch']['wallTop']
-prism('porch-floor', [(-PU, V0 - 0.05), (PU, V0 - 0.05), (PU, V0 + PD), (-PU, V0 + PD)], D['deckBot'], PLATFORM_Y + 0.02, 'ht-wood-red', 'porch')
+# wave11-huxwalk（主控 2026-09-27 选项 1：从九曲桥走进抱厦）：抱厦地面前沿（门槛）伸到承台临桥边 V0 + EXT['b']（原止于前檐柱外皮
+# V0 + PD，前面 0.11 m 是承台面 0.55），地面顶 0.57 与桥面 0.55 高差 0.02 ≤ 0.05；这块地面是步行地面（export-collision extraGroundNodes）。
+PORCH_SILL_V = V0 + EXT['b']
+prism('porch-floor', [(-PU, V0 - 0.05), (PU, V0 - 0.05), (PU, PORCH_SILL_V), (-PU, PORCH_SILL_V)], D['deckBot'], PLATFORM_Y + 0.02, 'ht-wood-red', 'porch')
+# wave11-huxwalk：门口 = 中间开间两根前檐柱 pcol-1/pcol-2 之间（柱心 ±0.75、柱宽 0.18 → 内皮 ±0.66，净宽 1.32 m）。
+# 原前檐窗 / 窗下裙墙内端在 ±0.30（门口净宽 0.60 < 步行胶囊直径 0.70），收到柱内皮。
+DOOR_HALF = 0.75 - 0.09
+D['porch']['doorHalf'] = DOOR_HALF
+D['porch']['sillV'] = round(PORCH_SILL_V, 4)
 for i, u in enumerate((-PU + 0.1, -0.75, 0.75, PU - 0.1)):
     box_uv('huxin-ting__pcol-%d' % i, u - 0.09, V0 + PD - 0.18, u + 0.09, V0 + PD, PLATFORM_Y, PT - 0.05, 'ht-wood-red', 'porch')
 box_uv('ht__pwall-w', -PU, V0, -PU + 0.18, V0 + PD, PLATFORM_Y, PT, 'ht-wood-red', 'porch')
@@ -636,10 +644,11 @@ box_uv('ht__pframe-l', -1.35, V0 - 0.12, -1.15, V0 + 0.16, PLATFORM_Y, PLATFORM_
 box_uv('ht__pframe-r', 1.15, V0 - 0.12, 1.35, V0 + 0.16, PLATFORM_Y, PLATFORM_Y + 2.45, 'ht-wood-red', 'porch')
 box_uv('ht__pframe-t', -1.35, V0 - 0.12, 1.35, V0 + 0.16, PLATFORM_Y + 2.25, PLATFORM_Y + 2.45, 'ht-wood-red', 'porch')
 # 抱厦前檐窗：前面无墙，窗扇悬在柱间，做双面（从抱厦里看也有框、格心、玻璃）
-win_row('ht__pwin-w', -PU + 0.30, V0 + PD - 0.05, -0.30, V0 + PD - 0.05, PLATFORM_Y + 0.95, PLATFORM_Y + 2.40, group='porch', two_sided=True)
-win_row('ht__pwin-e', 0.30, V0 + PD - 0.05, PU - 0.30, V0 + PD - 0.05, PLATFORM_Y + 0.95, PLATFORM_Y + 2.40, group='porch', two_sided=True)
+win_row('ht__pwin-w', -PU + 0.30, V0 + PD - 0.05, -DOOR_HALF, V0 + PD - 0.05, PLATFORM_Y + 0.95, PLATFORM_Y + 2.40, group='porch', two_sided=True)
+win_row('ht__pwin-e', DOOR_HALF, V0 + PD - 0.05, PU - 0.30, V0 + PD - 0.05, PLATFORM_Y + 0.95, PLATFORM_Y + 2.40, group='porch', two_sided=True)
 # R2 抱厦前檐窗下白色裙墙（R1 窗下是空的）：角柱内皮到中间入口两侧，顶 = 前檐窗下沿，厚同窗框（双面可见）
-for _k, (_a, _b) in enumerate(((-PU + 0.19, -0.30), (0.30, PU - 0.19))):
+# 裙墙内端比柱内皮再收进柱身 0.01（端面不与柱内皮共面，防 z-fight）
+for _k, (_a, _b) in enumerate(((-PU + 0.19, -DOOR_HALF - 0.01), (DOOR_HALF + 0.01, PU - 0.19))):
     box_uv('ht__dado-p%d' % _k, _a, V0 + PD - 0.10, _b, V0 + PD + 0.04, PLATFORM_Y, PLATFORM_Y + 0.95, 'ht-plaster-white', 'porch')
 PQ = D['plaque']
 box_uv('ht__plaque', -PQ['w'] / 2, V0 + PD - 0.34, PQ['w'] / 2, V0 + PD - 0.28, PQ['z0'], PQ['z0'] + PQ['h'], 'ht-win-dark', 'porch')

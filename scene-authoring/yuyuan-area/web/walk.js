@@ -49,6 +49,9 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
   function setMode(m) {
     if (m === mode) return;
     mode = m;
+    // R3（可选1）：模式变化的唯一通知点 —— 按钮点击、enter/exit、spawnAt 全都汇到这里，
+    // 消费方（如 infocard.js 关卡）监听本事件即可，不必逐个包装 __walk 入口。
+    window.dispatchEvent(new CustomEvent('pb:mode', { detail: { mode: m } }));
     bMode.classList.toggle('active', m === 'walk');
     bMode.textContent = m === 'walk' ? '轨道' : '步行';
     if (m === 'walk') {

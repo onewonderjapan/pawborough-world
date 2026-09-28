@@ -1,0 +1,81 @@
+{
+ "version": 1,
+ "default": "day",
+ "readers": [
+  "web/lighting.js（查看器 ?light=day|dusk|night）",
+  "scripts/render-control-passes.py --beauty cycles|eevee --preset day|dusk|night（控制层 beauty / PV 参考帧）"
+ ],
+ "conventions": {
+  "coords": "地图系：+x 东、-z 北、+y 上（= glTF Y-up / three.js 世界）；Blender 世界 = (x, -z, y)",
+  "azimuthDeg": "光源方位：从北（-z）顺时针量到东（+x），度",
+  "elevationDeg": "光源高度角：地平线以上，度",
+  "colors": "sRGB 十六进制（两端都先转线性再用）",
+  "sun.intensity": "直射光辐照度：three DirectionalLight.intensity = Blender Sun strength（两端漫反射都按 albedo/π 计，同一口径）",
+  "ambient": "半球环境光：three HemisphereLight(sky, ground, intensity)；Blender 世界的非相机射线 = 上半球 sky×intensity/π、下半球 ground×intensity/π（对朗伯面给出同一辐照度）",
+  "sky": "看得见的天空渐变（只给相机看，不参与照明）：仰角 e≥0 时 mix(horizon, zenith, sin(e)^exponent)，e<0 时 mix(horizon, ground, min(1, -sin(e)×8))；再加太阳光晕 sunGlowColor×sunGlow×max(0,cos θ)^sunGlowPower（θ = 视线与光源方向夹角）。查看器生成 256×128 等距柱状 DataTexture（运行时生成，不下载贴图），Blender 世界节点按同式计算",
+  "exposure": "线性曝光倍数：three toneMappingExposure；Blender 视图曝光 = log2(exposure) 档",
+  "toneMapping": "neutral = Khronos PBR Neutral：three NeutralToneMapping / Blender 视图变换 'Khronos PBR Neutral'（两端同一算子）",
+  "emissive": "夜间自发光：按材质名（去掉 Blender 重名后缀 .NNN）匹配 emissiveGroups；three emissive=color、emissiveIntensity=intensity×preset.emissiveScale（useMap 时 emissiveMap=原底色贴图）；Blender Principled Emission Color/Strength 同值",
+  "pointLights": "查看器点光池：数量 = preset.pointLights（≤ pointLights.max），每 pointLights.reassignFrames 帧把池里的灯分给离视点最近的候选位置；候选 = sources。Blender 在全部候选位置放同参数点光（离线渲染不受实时上限约束）"
+ },
+ "presets": {
+  "day": {
+   "label": "白天",
+   "sun": { "azimuthDeg": 215, "elevationDeg": 52, "color": "#fff3e0", "intensity": 2.2, "angularDiameterDeg": 1.2 },
+   "ambient": { "sky": "#cfe0f2", "ground": "#978d78", "intensity": 2.2 },
+   "sky": { "zenith": "#6f9fd6", "horizon": "#dae6ee", "ground": "#b7b1a1", "exponent": 0.55, "sunGlow": 0.25, "sunGlowColor": "#fff3dc", "sunGlowPower": 48 },
+   "exposure": 1.0,
+   "emissiveScale": 0,
+   "pointLights": 0
+  },
+  "dusk": {
+   "label": "黄昏",
+   "sun": { "azimuthDeg": 255, "elevationDeg": 9, "color": "#ffa35c", "intensity": 2.2, "angularDiameterDeg": 1.2 },
+   "ambient": { "sky": "#8e9cc4", "ground": "#6b5645", "intensity": 2.6 },
+   "sky": { "zenith": "#3d5688", "horizon": "#f0a568", "ground": "#6d5a4b", "exponent": 0.45, "sunGlow": 0.6, "sunGlowColor": "#ffb070", "sunGlowPower": 12 },
+   "exposure": 0.9,
+   "emissiveScale": 0.35,
+   "pointLights": 0
+  },
+  "night": {
+   "label": "夜晚",
+   "sun": { "azimuthDeg": 140, "elevationDeg": 38, "color": "#9fb6ff", "intensity": 1.5, "angularDiameterDeg": 0.6 },
+   "ambient": { "sky": "#34466e", "ground": "#1c1a16", "intensity": 2.2 },
+   "sky": { "zenith": "#070d1e", "horizon": "#26314a", "ground": "#14131a", "exponent": 0.5, "sunGlow": 0.12, "sunGlowColor": "#b8c8ff", "sunGlowPower": 200 },
+   "exposure": 1.3,
+   "emissiveScale": 1.0,
+   "pointLights": 8
+  }
+ },
+ "emissiveGroups": [
+  { "id": "lantern", "note": "灯笼：商城楼套件 btk-lantern、方浜饭店红绸灯笼", "materials": ["btk-lantern", "red-silk-lantern"], "color": "#ff7a3c", "intensity": 3.0, "useMap": false },
+  { "id": "sign", "note": "店招：商城楼套件红招牌、方浜店招字牌图集（贴图本身发光，字可读）", "materials": ["btk-signred", "shop-sign-typeset-atlas", "shop-sign-generic-atlas"], "color": "#ffd7a0", "intensity": 1.2, "useMap": true },
+  { "id": "shop-interior", "note": "店面内透光：商城楼套件店铺后壁、方浜店铺内景暗面", "materials": ["btk-shopback", "interior-warm-shadow"], "color": "#ffb56a", "intensity": 0.5, "useMap": false },
+  { "id": "window", "note": "窗玻璃内透光：商业街 / 外围 / 方浜店屋窗、商城楼套件玻璃、湖心亭窗、饮品摊柜玻璃", "materials": ["recessed-old-glass", "btk-glass", "ht-win-glass", "glass"], "color": "#ffc680", "intensity": 0.9, "useMap": false },
+  { "id": "lattice", "note": "格扇内透光：厅堂套件 / 庙区格扇背板（格心镂空后面的板）", "materials": ["hk-lattice-back", "lattice-backing", "lattice-backing-dadian"], "color": "#ffae5e", "intensity": 1.0, "useMap": false },
+  { "id": "stall", "note": "摊位：摊位套件没有灯笼，用摊柜内板（palewood，只摊位用）作摊灯照亮的台面", "materials": ["palewood"], "color": "#ffcf90", "intensity": 0.45, "useMap": false }
+ ],
+ "pointLights": {
+  "max": 8,
+  "color": "#ffb46e",
+  "intensity": 60,
+  "distance": 22,
+  "decay": 2,
+  "reassignFrames": 15,
+  "sources": [
+   { "id": "lantern", "kind": "material-clusters", "materials": ["btk-lantern", "red-silk-lantern"], "clusterM": 3.0, "offsetY": -0.4 },
+   { "id": "stall", "kind": "node-anchor", "pattern": "^stall-\\d+$", "offsetY": 2.3 }
+  ]
+ },
+ "viewer": {
+  "toneMapping": "neutral",
+  "shadow": { "mapSize": 2048, "type": "PCFSoft", "bias": -0.0004, "normalBias": 0.04, "extentMinM": 40, "extentMaxM": 420, "extentPerDistance": 0.9, "walkExtentM": 45 },
+  "skyTexture": { "width": 256, "height": 128 }
+ },
+ "blender": {
+  "viewTransform": "Khronos PBR Neutral",
+  "cycles": { "samples": 64, "maxBounces": 4, "denoise": "OPENIMAGEDENOISE", "device": "GPU", "clampIndirect": 5.0 },
+  "eevee": { "samples": 32, "shadowResolutionScale": 1.0, "raytracing": true },
+  "ambientOcclusion": { "distanceM": 1.5 }
+ }
+}

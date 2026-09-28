@@ -196,14 +196,33 @@ for (let i = 0; i < seq.length - 1; i++) {
 r3.status = r3.segments.every(s => s.classification !== 'blocked') && r3.entrance && r3.entrance.wallOpenNearAxis ? 'pass' : 'fail';
 
 // ---------- 桥梁：着岸 + 端部接实铺面 + 高差过渡 ----------
-const walkSurfaces = layout.objects.filter(o =>
-  (['path', 'paving', 'road'].includes(o.kind) && o.geometry.polyline) ||
-  (o.kind === 'plaza' && o.geometry.footprint));
+// wave10-streetfix R4（审查必修1）：铺面集合遵守 surfaceFootprints 权威契约（与 build-scene.mjs road
+// 分支一致）：字段存在即权威，空数组 = 该路没有实际路面（不进铺面集合、绝不回退中心线）；有字段的路
+// 按实际路面多边形计距，不再用中心线；skipRender 的对象不渲染，也不算实铺面；字段不存在才回退中心线
+// （旧口径，path/paving 等未裁块对象不受影响）。
+const surfacePieces = (o) => {
+  const g = o.geometry || {};
+  if (Array.isArray(g.surfaceFootprints)) return g.surfaceFootprints;   // 权威，可能为 []
+  return null;                                                          // 字段不存在 → 旧回退
+};
+const distToSurfacePieces = (p, pieces) =>
+  Math.min(...pieces.map(fp => (pointInPoly(p, fp) ? 0 : distToPolyline(p, [...fp, fp[0]]))));
+const walkSurfaces = layout.objects.filter(o => {
+  if (o.skipRender) return false;
+  const g = o.geometry || {};
+  if (['path', 'paving', 'road'].includes(o.kind) && g.polyline) {
+    const pieces = surfacePieces(o);
+    return pieces === null || pieces.length > 0;      // 权威空数组 = 没有铺面
+  }
+  return o.kind === 'plaza' && !!g.footprint;
+});
 const surfaceNear = (p) => {
   let best = null, bd = Infinity;
   for (const o of walkSurfaces) {
-    const line = o.geometry.polyline || [...o.geometry.footprint, o.geometry.footprint[0]];
-    const d = distToPolyline(p, line);
+    const g = o.geometry;
+    const pieces = surfacePieces(o);
+    const d = pieces !== null ? distToSurfacePieces(p, pieces)
+      : distToPolyline(p, g.polyline || [...g.footprint, g.footprint[0]]);
     if (d < bd) { bd = d; best = o; }
   }
   return best ? { obj: best.id, kind: best.kind, distM: +bd.toFixed(1), y: best.height ?? (best.kind === 'plaza' ? 0.04 : 0.02) } : null;

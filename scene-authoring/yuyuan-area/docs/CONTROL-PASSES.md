@@ -234,3 +234,84 @@ G1（facadeBay 稳定身份）改了 segmentation 标签集合、G2（方浜跨�
   - `temple-ground__paving-frontage-passage` → id `shanmen-passage-floor`（运行时分件 zone-temple-4.glb）；
   - `pond|east-landing-access-apron|paving|L1` → id `east-landing-access-apron`（管道名规则，运行时分件 zone-pond-2.glb）。
   LUT 的 `patchFaces` 块记录两者的 module / inference / runtimePart 溯源；映射只匹配这两个确切对象名，无任何泛化。
+
+## wave11-lighting（2026-09-27）beauty 灯光：`--beauty cycles|eevee`（PV 参考帧）
+
+机主看过候选后要「加上灯光，然后做 PV」。PV 走 AI 视频生成，beauty 是给它的参考帧，需要像样的光；depth / normal /
+segmentation 三个条件通道必须不变。做法：`render-control-passes.py` 只**加**参数，默认值 = 旧行为。
+
+| 参数 | 默认 | 作用 |
+|---|---|---|
+| `--beauty workbench\|cycles\|eevee` | `workbench`（旧口径） | beauty 引擎 |
+| `--preset day\|dusk\|night` / `--presets <json>` | `lighting/presets.json` 的 `default`（day） | 灯光预设；与查看器 `?light=` 读**同一份** `lighting/presets.json` |
+| `--beauty-samples N` / `--beauty-device GPU\|CPU` | presets.json `blender` 段（64 spp / GPU） | 覆盖采样 / 设备 |
+| `--frames 20,21\|last\|-1` | 全部帧 | 只渲这些帧（四通道同一组） |
+| `--passes beauty,seg,normal` | 全部 | 只渲这些通道（normal 含 depth） |
+
+非默认引擎另写 `<out>/beauty-meta.json`（引擎、实际设备、采样、视图变换、预设、点光数、自发光材质数）。
+
+**共享预设来源**：查看器与 Blender 读同一份 `lighting/presets.json`（没有第二份三档参数表），但不是每个字段两端都用，
+也有少数值只在某一端代码里（R1 按 Codex astra 审查补清）：
+
+| 字段 | 查看器 `web/lighting.js` | Blender `render-control-passes.py` |
+|---|---|---|
+| `presets.*.sun`（方位角 / 高度角 / 颜色 / 强度） | 用 | 用 |
+| `presets.*.sun.angularDiameterDeg` | —（阴影软度由 PCFSoft 决定） | 用（Sun 角径 → 软阴影） |
+| `presets.*.ambient` / `presets.*.sky` | 用（HemisphereLight / 天空贴图） | 用（世界节点，同式） |
+| `presets.*.exposure` | 用（toneMappingExposure） | 用（视图曝光 log2 档） |
+| `presets.*.emissiveScale` + `emissiveGroups` | 用 | 用 |
+| `presets.*.pointLights`（灯数） | 用（点光池大小） | 只作开关（> 0 时在**全部**候选位置放灯） |
+| `pointLights.color / intensity / sources` | 用 | 用（功率 = 4π × intensity） |
+| `pointLights.distance / decay / max / reassignFrames` | 用 | **不用**（Cycles 平方反比、无截断、无上限） |
+| `viewer.*`（toneMapping、shadow、skyTexture） | 用 | — |
+| `blender.*`（viewTransform、cycles、eevee、ambientOcclusion） | — | 用 |
+
+两端各自写死的值：色调映射两端分别配置（查看器 `viewer.toneMapping: "neutral"` → NeutralToneMapping，Blender `blender.viewTransform`
+→ 'Khronos PBR Neutral'，同一算子但是两个字段）；Blender 点光半径 `shadow_soft_size = 0.15` m 写死在脚本里；
+读取失败时查看器回退旧灯光（`web/lighting.js` 的 LEGACY 常量，3 s 超时），Blender 直接报错退出。
+
+**灯光（Cycles / EEVEE 同一套）**，单位约定写在 `lighting/presets.json` 的 `conventions`：
+
+- 太阳：Sun 灯，方向 = 方位角 / 高度角（地图系 +x 东、-z 北），强度 = 查看器 DirectionalLight.intensity（两端都是辐照度，
+  漫反射 albedo/π，同一口径），角径 → 软阴影；
+- 世界：相机射线看到预设天空渐变（与查看器天空贴图同式，除以曝光以抵消视图曝光）；其余射线 = 半球环境光
+  （上半球 sky×I/π、下半球 ground×I/π，对朗伯面与 three HemisphereLight 给出同一辐照度），遮挡由路径追踪自然算出 = 环境光遮蔽；
+- 夜间 / 黄昏：`emissiveGroups` 按材质名（去 .NNN）改 Principled Emission（useMap 组用底色贴图 × 颜色）；夜间在全部点光候选位置
+  （灯笼材质顶点 3 m 聚类中心 + 摊位锚点上方 2.3 m，查看器同一规则）放点光，功率 = 4π × 查看器坎德拉值（单平面标定：
+  1000 W 点光 5 m 处辐照度实测 = 1000/(4π·25)，误差 0.3%）；
+- 视图变换 Khronos PBR Neutral（查看器 NeutralToneMapping，同一算子），曝光 = log2(preset.exposure) 档；
+- Cycles：CUDA GPU（本机 Blender 4.5.1 aarch64 没有 OptiX 后端），64 spp 自适应、4 次反弹、间接光钳制 5、OIDN 降噪、filter 1.5。
+
+**三通道不变的做法**：灯光物体在 seg / normal+depth 两段 `hide_render`，世界切回 `control-world`（Workbench / Cycles 控制层配置只改它的颜色），
+Cycles 设置由 `config_cycles` 全部重设；自发光只改材质 Emission，分割（OBJECT 色）与法线（material_override）都不读材质。
+
+**实测**（S1 GB10，1280×720，镜头③ jiuqu-to-huxinting 与⑩ huxinting-across-pond 第 20–23 帧，每档一次运行；运行时同机另有 headless 浏览器检查在跑）：
+
+| 引擎 / 预设 | 每镜头首帧 | 稳态每帧 | 备注 |
+|---|---|---|---|
+| Cycles GPU day | 11.4 / 12.1 s | 7.9–13.4 s（中位 8.6） | 场景导入 ~10–15 s 另计 |
+| Cycles GPU dusk | 10.6 / 10.6 s | 8.0–8.7 s | |
+| Cycles GPU night（136 盏点光 + 131 个自发光材质） | 11.1 / 12.5 s | 8.5–10.0 s | |
+| EEVEE Next day（无头可用，EGL） | 3.9 / 2.4 s（着色器缓存已热；冷启动首帧实测 26 s） | 2.5–2.9 s | 格扇等暗部偏亮、遮蔽弱于 Cycles |
+
+选 **Cycles GPU** 作 PV 参考帧引擎：每帧 ≤ 20 s 目标内，遮蔽 / 间接光物理正确；EEVEE 保留作快速预览（约 3 倍快）。
+Workbench 默认口径不动：11 镜头控制层不重渲。
+
+**三通道不变的证明**（`tests/control-pass-parity.py`，解码后逐值比较；PNG 文件字节不能比——Blender 往 PNG 写 `Date` / `RenderTime`
+元数据，同一脚本连跑两次字节也不同，已核对差异只有这两项）：
+
+- 新脚本默认参数 vs 2afa10db 原脚本，镜头③⑩ 全 48 帧：beauty / depth / normal / segmentation / cameras 5 × 48 全等，LUT 相等；
+- `--beauty cycles` day / dusk / night vs 原脚本，镜头③⑩ 第 20–23 帧：depth / normal / segmentation / cameras 4 × 8 × 3 全等，LUT 相等；
+- 负对照：原脚本在 layout 路径错误（id 全集为空）时跑出的分割图，对账 48 帧 segmentation 全部报差、LUT 不等 → 退出 1。
+- **证明范围 = 所选子集**：镜头③⑩ 这些帧、上面列的通道，场景为 2afa10db 产物。脚本按 `--a` 目录逐帧比，允许 `--b` 多帧（8 帧对 48 帧），
+  不等于两个目录完整帧集相等；不代表其余 9 个镜头、EEVEE 控制通道、PNG 文件字节，也不外推到之后几何或控制镜头输入变了的场景
+  （例如合入 wave10-streetfix 后的 main）。
+
+用法（PV 参考帧，输出在仓库外）：
+
+```bash
+blender -b -t 4 --python scripts/render-control-passes.py -- \
+    --scene out-zone/scene-areas.glb --cameras out-zone/control-shots.json \
+    --out <工单包>/artifacts/pv-ref --shots jiuqu-to-huxinting --beauty cycles --preset dusk [--frames last] [--passes beauty]
+python3 tests/control-pass-parity.py --a <工单包>/artifacts/pv-ref --b <Workbench 同镜头目录>
+```

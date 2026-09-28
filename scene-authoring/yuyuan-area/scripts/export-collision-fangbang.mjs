@@ -12,6 +12,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { obbToWorld } from '../../../src/world/collisionAdapter.js';
+import { loadV7WithOverrides } from './fangbang-overrides.mjs';
 
 const AREA = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const REPO = path.resolve(AREA, '..', '..');                 // 仓库根（world/ 所在）
@@ -19,8 +20,10 @@ const OUT = path.resolve(AREA, process.env.OUT_DIR || 'out-zone');
 const FB7 = path.join(REPO, 'world', 'fangbang-temple-v7');
 const OFF = [53.5, -17.4];                                   // 地图 = v7 + (53.5,-17.4)（v7 blocks.json anchor）
 
-const instDoc = JSON.parse(fs.readFileSync(path.join(FB7, 'instances.json'), 'utf8'));
-const colDoc = JSON.parse(fs.readFileSync(path.join(FB7, 'collision-world.json'), 'utf8'));
+// v7 instances / collision-world + 全域放置覆盖（baseline/fangbang-placement-overrides.json，与 assemble.py 同读一份；
+// 共享数据集本身保持与原客户端整装 GLB 一致）
+const { instDoc, colDoc, applied: overridesApplied } = loadV7WithOverrides(REPO);
+console.log('fangbang placement overrides applied', JSON.stringify(overridesApplied));
 const routeDoc = JSON.parse(fs.readFileSync(path.join(FB7, 'route.json'), 'utf8'));
 const layoutSha = crypto.createHash('sha256').update(fs.readFileSync(path.join(AREA, 'baseline', 'layout.json'))).digest('hex');
 
@@ -158,6 +161,7 @@ const collision = {
   axis: 'glTF Y-up; X east, Z south; heights from ground y=0',
   zone: 'fangbang',
   source: 'world/fangbang-temple-v7/collision-world.json non-temple-axis records translated by (53.5, -17.4); names prefixed fangbang-, module kept from v7',
+  placementOverrides: { file: 'baseline/fangbang-placement-overrides.json', applied: overridesApplied },
   sourceLayoutSha256: layoutSha,
   mapOffset: OFF,
   excludedTempleAxisRecords: skipped.length,
