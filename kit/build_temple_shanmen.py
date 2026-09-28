@@ -454,8 +454,14 @@ for kx, ky in rs['frontOutlineAbsXY']:
         print('T3_EQUATION_FAIL rear eave drop changed at', kx)
         sys.exit(8)
 print('T3 equation checks ok (ridge const / silhouette / no mid-depth lift / rear drop)')
-L.box('front-eave-soffit', (0, 6.36, .32), (2 * fr['bodyHalfWidthX'], .09, .72), 'dark', 0)
-L.box('rear-eave-soffit', (0, 6.30, -3.9), (2 * fr['bodyHalfWidthX'], .09, .5), 'dark', 0)
+# center-roof eave soffits: hugging the shell underside so the corner lift
+# carries them up (flat boxes left a wedge of sky at the lifted corners,
+# wave13-templefix T1). Inner edges match the old boxes.
+_eave_hw = rc['widthM'] / 2
+_eave_thick = rc['shellThicknessM']
+_eave_y = rc['frontEaveY']
+C.eave_soffit_strip(L, 'center-front-eave-soffit', _center_srf, _eave_hw, rc['frontEaveZ'], 1, 0.69, _eave_thick, _eave_y)
+C.eave_soffit_strip(L, 'center-rear-eave-soffit', _center_srf, _eave_hw, rc['rearEaveZ'], -1, 0.42, _eave_thick, rc['rearEaveY'])
 # N1: close the shoulder overhang bands (front dark end panels + rear plaster
 # panels + outer gable walls with timber frames) and dress the center/shoulder
 # seam with a sloped flashing; the shells and T1-T3 constraints are untouched

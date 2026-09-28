@@ -79,6 +79,7 @@
     "bottomY": 3.8,
     "topY": 4.92,
     "centerX": 0,
+    "construction": "backing-plate + stepped four-side frame rings + recessed text face",
     "steps": [
       {
         "zFront": 0.155,
@@ -208,6 +209,7 @@
         ]
       ],
       "ridgeY": 7.0,
+      "eaveBaselineY": 5.95,
       "ridgeZ": -1.8,
       "frontEaveZ": 0.5,
       "rearEaveZ": -4.0,
@@ -215,7 +217,22 @@
       "shellThicknessM": 0.12,
       "resampleSegments": 10,
       "innerSeamOverlapM": 0.25,
-      "notes": "continuous curved shell, built per side (no mirror of geometry/normals); inner seam tucks under central shell edge"
+      "tileRibs": {
+        "method": "finite continuous half-round ribs following the slope on visible front slopes (center + both shoulders); no per-tile box stacking",
+        "spacingM": [
+          0.2,
+          0.28
+        ],
+        "spacingChosenM": 0.24,
+        "radiusM": [
+          0.04,
+          0.065
+        ],
+        "radiusChosenM": 0.05,
+        "stripSections": 8,
+        "budgetExtraTrisMax": 8000
+      },
+      "notes": "T3 revision equation: baseY(t)=ridgeY-(ridgeY-eaveBaselineY)*drop(t), y=baseY+(frontOutline(|x|)-eaveBaselineY)*smoothstep(0.5,1,t)^2; ridge stays 7.0 for all shoulder x, outline lift only toward eaves, rear eave keeps 0.18m drop; seam skirt closes the central junction"
     },
     "sideBayCanopies": {
       "xSpans": [
@@ -324,9 +341,9 @@
       ]
     ],
     "boundsM": [
-      0.55,
-      1.35,
-      0.7
+      0.66,
+      1.55,
+      0.86
     ],
     "trisEachMax": 1800,
     "noAnimation": true,
@@ -354,7 +371,8 @@
     "rear": "plain closed rear frame; inferred design",
     "depthAndScale": "design choice",
     "ornamentMicrodetail": "simplified candidate, replaceable",
-    "era": "2015 front visual reference; 1990s unverified"
+    "era": "2015 front visual reference; 1990s unverified",
+    "lions": "seated guardian-lion silhouette (mane disc, ball/cub pairing) — R1 review revision; the old standing candidate read as a horse; still a replaceable candidate"
   },
-  "configSha256": "45cef778295a6e70c44b09e2e898f4927180dd1cf0deafe306e5a6a720428712"
+  "configSha256": "e846ab6f728d4359679f005dc03cb975f9f76b03d46ae69b05e6cf7c01302ba7"
 }

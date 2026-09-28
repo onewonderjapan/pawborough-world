@@ -317,6 +317,91 @@ def center_roof(L, rc, profile_samples=None):
     L.box('center-ridge-base', (0, ridge_y - .02, z_mid), (ridge_half * 2 + .18, .13, .52), 'roof', .01)
 
 
+def eave_soffit_strip(L, name, surface, hw, z_end, sdir, depth, thick, eave_y,
+                      nu=16, nj=8, mat='dark', drop=0.01, skirt_drop=0.16, inner_cap=None):
+    """Soffit strip under one eave overhang, sampled analytically so it hugs the
+    shell underside and the corner lift carries it up, plus a corner skirt: at
+    the outer edge the strip drops straight down to eave_y - skirt_drop wherever
+    the lifted edge stands above that line (no-lift columns get no skirt, so the
+    plain eave read is untouched). Together they close the wedge of sky the flat
+    soffit boxes left at lifted corners — both above the old box (strip) and
+    between the raised eave edge and the wall-top line below it (skirt).
+    inner_cap (when set) pulls the strip's inner edge down to a wall-top line so
+    no sightline can slip between the strip and the wall — the soffit then reads
+    as 顺坡望板 rising from the wall top to the eave (wave13-nightqa #2: the
+    pv05 pick ray passed clean through the gap).
+    Returns the added triangle count."""
+    z_out = z_end - sdir * 0.02
+    z_in = z_end - sdir * depth
+    skirt_y = eave_y - skirt_drop
+    cols = []
+    for i in range(nu + 1):
+        x = -hw + 2 * hw * i / nu
+        col = []
+        for j in range(nj + 1):
+            z = z_in + (z_out - z_in) * j / nj
+            y = surface(x, z)
+            n = _surface_normal(surface, x, z)
+            y -= (thick + drop) * n[1]
+            if inner_cap is not None and j == 0:
+                y = min(y, inner_cap)
+            col.append((x, y, z - (thick + drop) * n[2]))
+        cols.append(col)
+    tris = 0
+    for i in range(nu):
+        for j in range(nj):
+            xm = (cols[i][j][0] + cols[i + 1][j][0]) / 2
+            n = _surface_normal(surface, xm, cols[i][j][2])
+            quad_out(L, name, [cols[i][j], cols[i + 1][j], cols[i + 1][j + 1], cols[i][j + 1]],
+                     mat, [(0, 0), (1, 0), (1, 1), (0, 1)], (-n[0], -n[1], -n[2]))
+        tris += 2 * nj
+        # corner skirt at the outer row, wherever the lifted edge cleared the
+        # line; its top laps 2cm over the strip edge (buried inside the roof
+        # solid) so grazing rays hit its face instead of skimming the seam
+        p0, p1 = cols[i][nj], cols[i + 1][nj]
+        if max(p0[1], p1[1]) > skirt_y + 0.01:
+            q0 = (p0[0], max(p0[1], skirt_y) + 0.02, p0[2])
+            q1 = (p1[0], max(p1[1], skirt_y) + 0.02, p1[2])
+            quad_out(L, name + '-skirt', [q0, q1, (p1[0], skirt_y, p1[2]), (p0[0], skirt_y, p0[2])],
+                     mat, [(0, 0), (1, 0), (1, 1), (0, 1)], (0, 0, sdir))
+            tris += 2
+    return tris
+
+
+def band_base_flashing(L, name, surface, x_lo, x_hi, z_plane, top_y, z_sample, nu=24,
+                       mat='dark', bury=0.05, axis='z'):
+    """Vertical skirt wall closing a midband face down onto a roof surface: from
+    the band bottom edge (top_y) down to surface(...) at the face plane, buried
+    bury into the roof. The fixed-height base apron hung clear of the surface
+    and left an open slit along the whole band base — the pv05 sky ray entered
+    there, crossed the empty hall interior and left through the rear eave
+    (wave13-nightqa #2). axis='z': columns run along x (front/rear faces);
+    axis='x': columns run along z (side faces), surface takes (x_plane, z).
+    Returns the added triangle count."""
+    tris = 0
+    prev = None
+    for i in range(nu + 1):
+        t = i / nu
+        if axis == 'z':
+            c = x_lo + (x_hi - x_lo) * t
+            yb = surface(c, z_sample) - bury
+            p_bot = (c, yb, z_plane)
+        else:
+            zz = x_lo + (x_hi - x_lo) * t
+            yb = surface(z_sample, zz) - bury
+            p_bot = (z_sample, yb, zz)
+        p_top = (p_bot[0], top_y, p_bot[2])
+        if prev is not None:
+            hint = (0, 0, 1) if axis == 'z' and z_plane > 0 else \
+                   (0, 0, -1) if axis == 'z' else \
+                   (1, 0, 0) if z_sample > 0 else (-1, 0, 0)
+            quad_out(L, name, [prev[0], p_top, p_bot, prev[1]], mat,
+                     [(0, 0), (1, 0), (1, 1), (0, 1)], hint)
+            tris += 2
+        prev = (p_top, p_bot)
+    return tris
+
+
 # --------------------------------------------------------------------------
 # shoulder roof: T3 equation shell, normal-offset soffit, real seam closure
 

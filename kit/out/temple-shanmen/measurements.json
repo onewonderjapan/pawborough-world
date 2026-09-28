@@ -12,9 +12,9 @@
         "shanmen-plaque"
       ],
       "objects": 13,
-      "triangles": 16322,
-      "fileBytes": 3051572,
-      "sha256": "f59aeba7eb993b8d607d815e2d7f330cba950920065873c69d1595b2ae663f25"
+      "triangles": 22944,
+      "fileBytes": 3839524,
+      "sha256": "852e25fe43fe0fd9d64a821d9b348b961b00383b948d8c164765628c2c9f48c1"
     },
     "ground.glb": {
       "groups": [
@@ -22,17 +22,17 @@
       ],
       "objects": 2,
       "triangles": 360,
-      "fileBytes": 860724,
-      "sha256": "1b5099650973f9d1b5f339dcf24ef67ad01d51cd1a3910c9deacdae70810f6c9"
+      "fileBytes": 860916,
+      "sha256": "8d61e2a6b954d82d29eeb42d46a42e3401ac1fb972a3804d3657edc966ba25c7"
     },
     "lions.glb": {
       "groups": [
         "shanmen-lion"
       ],
       "objects": 1,
-      "triangles": 2648,
-      "fileBytes": 334864,
-      "sha256": "a237b80dc6002b7b8b5fd7d75f8d26921b72324e9d00be5db468caf08758f03a"
+      "triangles": 3556,
+      "fileBytes": 439964,
+      "sha256": "a31e003ecb74bc69e3516354545fa2726f8a44c1c28560171be55d0cfa694818"
     },
     "ornaments.glb": {
       "groups": [
@@ -40,31 +40,31 @@
       ],
       "objects": 2,
       "triangles": 2304,
-      "fileBytes": 437144,
-      "sha256": "e81425a559f03a6280a2663d588adea35a20c21445d088e850e7614e476cbbe3"
+      "fileBytes": 436280,
+      "sha256": "422ed3011e0428d66b6d5e6c1b3da7315ac3165bc59ddae06aeab1d5c5a63671"
     }
   },
   "timings": {
-    "totalSeconds": 5.6
+    "totalSeconds": 15.2
   },
   "budgets": {
     "buildingAndWallsTris": {
-      "actual": 16322,
+      "actual": 22944,
       "limit": 50000,
       "pass": true
     },
     "fullSetTris": {
-      "actual": 21634,
+      "actual": 29164,
       "limit": 60000,
       "pass": true
     },
     "mainGlbBytes": {
-      "actual": 3051572,
+      "actual": 3839524,
       "limit": 8000000,
       "pass": true
     },
     "groundGlbBytes": {
-      "actual": 860724,
+      "actual": 860916,
       "limit": 2000000,
       "pass": true
     },
@@ -72,10 +72,20 @@
       "actual": 2,
       "limit": 2,
       "pass": true
+    },
+    "tileRibsTris": {
+      "actual": 3978,
+      "limit": 8000,
+      "pass": true,
+      "note": "DESIGN_REVISION tileRibs allowance on top of the shells"
     }
   },
   "design": {
     "family": "chenghuangmiao-shanmen-pilot",
+    "variants": {
+      "lionsVersion": "v1",
+      "windowsVersion": "v1"
+    },
     "reference": {
       "imageId": "PBR-SH-0002-039",
       "referenceEra": 2015,
@@ -95,7 +105,7 @@
       "literalLeftToRight": "隅海障保",
       "readingRightToLeft": "保障海隅"
     },
-    "roofMethod": "continuous profile-lofted thin shells, closed undersides, no box stacks",
+    "roofMethod": "continuous profile-lofted thin shells (normal-offset soffits), T3 revision equation on the shoulders, closed seam skirts, finite half-round tile ribs on the front slopes; no box stacks",
     "wings": "built per side with own oriented frames (no mirrored normals)",
     "rearAndDepth": "design inference (no rear reference) — uncertaintyPolicy in config",
     "lionsOrnaments": "coarse candidates, replaceable; lead reviews silhouettes"

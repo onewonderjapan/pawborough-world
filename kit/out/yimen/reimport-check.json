@@ -1,6 +1,6 @@
 {
   "imported": true,
-  "meshes": 12,
+  "meshes": 13,
   "boundsBlender": [
     [
       -7.800000190734863,
@@ -14,6 +14,23 @@
     ]
   ],
   "materials": [
+    {
+      "name": "aged-brass.001",
+      "imageNodes": []
+    },
+    {
+      "name": "yimen-plaque-lacquer.001",
+      "imageNodes": [
+        {
+          "name": "yimen-plaques",
+          "size": [
+            2048,
+            1024
+          ],
+          "colorSpace": "sRGB"
+        }
+      ]
+    },
     {
       "name": "oxblood-stained-timber.001",
       "imageNodes": [
@@ -36,73 +53,6 @@
       ]
     },
     {
-      "name": "deep-door-lacquer.001",
-      "imageNodes": []
-    },
-    {
-      "name": "temple-relief-stone.001",
-      "imageNodes": [
-        {
-          "name": "temple-relief-normal",
-          "size": [
-            1024,
-            1024
-          ],
-          "colorSpace": "Non-Color"
-        }
-      ]
-    },
-    {
-      "name": "blue-gray-brick.001",
-      "imageNodes": [
-        {
-          "name": "Bricks061_2K-JPG_Color_1K",
-          "size": [
-            1024,
-            1024
-          ],
-          "colorSpace": "sRGB"
-        },
-        {
-          "name": "Bricks061_2K-JPG_Roughness_1K",
-          "size": [
-            1024,
-            1024
-          ],
-          "colorSpace": "Non-Color"
-        },
-        {
-          "name": "Bricks061_2K-JPG_NormalGL_1K",
-          "size": [
-            1024,
-            1024
-          ],
-          "colorSpace": "Non-Color"
-        }
-      ]
-    },
-    {
-      "name": "yimen-plaque-lacquer.001",
-      "imageNodes": [
-        {
-          "name": "yimen-plaques",
-          "size": [
-            2048,
-            1024
-          ],
-          "colorSpace": "sRGB"
-        }
-      ]
-    },
-    {
-      "name": "worn-stone.001",
-      "imageNodes": []
-    },
-    {
-      "name": "aged-brass.001",
-      "imageNodes": []
-    },
-    {
       "name": "gray-pan-tile.001",
       "imageNodes": [
         {
@@ -122,6 +72,10 @@
           "colorSpace": "Non-Color"
         }
       ]
+    },
+    {
+      "name": "worn-stone.001",
+      "imageNodes": []
     },
     {
       "name": "weathered-lime-plaster.001",
@@ -147,6 +101,56 @@
           "size": [
             1024,
             512
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
+    },
+    {
+      "name": "lattice-backing.001",
+      "imageNodes": []
+    },
+    {
+      "name": "temple-relief-stone.001",
+      "imageNodes": [
+        {
+          "name": "temple-relief-normal",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
+    },
+    {
+      "name": "deep-door-lacquer.001",
+      "imageNodes": []
+    },
+    {
+      "name": "blue-gray-brick.001",
+      "imageNodes": [
+        {
+          "name": "Bricks061_2K-JPG_Color_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "sRGB"
+        },
+        {
+          "name": "Bricks061_2K-JPG_Roughness_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        },
+        {
+          "name": "Bricks061_2K-JPG_NormalGL_1K",
+          "size": [
+            1024,
+            1024
           ],
           "colorSpace": "Non-Color"
         }
