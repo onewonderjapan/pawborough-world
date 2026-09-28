@@ -2,7 +2,9 @@
 悦宾楼 / 上海老饭店）通用断言与逐楼形制断言。
 
 纯 Python3（无 Blender）。位置/形心/朝向/共享边只认 baseline/layout.json 重算值；产物只读
-out-bazaar-towers/<id>/model.glb 与 OUT_DIR 分区产物；测试不读模块自报数字（measurements / recipe 一律不读）。
+out-bazaar-towers/<id>/model.glb 与 OUT_DIR 分区产物；测试不读模块自报数字（measurements / recipe 一律不读；
+唯一例外 wave12 test17b：窗背板数量期望 = 生成器 window() 调用计数 measurements.windowBackingCalls——
+背板在导出时按 (part,材质) 合并成单节点，产物内部无法分瓣计数，GOAL 明确认可生成器调用计数作独立来源）。
 模块 GLB 未构建时跳过（exit 0）；STRICT=1 时缺失也判 FAIL。
 --source zone：不读模块 GLB，改从 OUT_DIR 的 zone-bazaar-*.glb 里取该 id 的子树（锚节点 = id，或程序化体块节点名含 |id|）
 ——用于「新断言先在现有产物（程序化体块）上失败」的负例证明。
@@ -226,6 +228,8 @@ else:
 meshes = [n for n in nodes if n['mesh']]
 total_tris = sum(n['tris'] for n in meshes)
 print('%s（%s）：%d 节点（%d 网格）%d tris，文件 %.2f MB' % (ID, SOURCE, len(nodes), len(meshes), total_tris, os.path.getsize(GLB) / 1e6))
+_meas_p = os.path.join(OUT_MODEL, 'measurements.json')
+_meas = json.load(open(_meas_p, encoding='utf-8')) if os.path.exists(_meas_p) else {}
 
 # ---------- test 1：顶点包含（全部 ≤ footprint+1.4；墙体件 ≤ footprint−0.3+ε） ----------
 all_w = []
@@ -1075,6 +1079,37 @@ if PRM.get('roofCoverExempt'):
 else:
     ok('test15a 俯视屋面覆盖 %.1f%% ≥ 97%%（%s）' % (_rc['roofCover'] * 100, _rc_s), _rc['roofCover'] >= 0.97)
     ok('test15b 俯视平屋顶 %.1f%% ≤ 3%%' % (_rc['flat'] * 100), _rc['flat'] <= 0.03)
+
+# ---------- test 17：楼上窗背板专用材质（wave12-towerwin W1）----------
+# 契约：window() 的背板 winb-* 全部 = btk-winback（白天观感与原 wood 一致，夜晚由 lighting presets
+# 的 lattice 发光组按材质名点亮）；数量 = 生成器 window() 实际出背板次数（measurements.windowBackingCalls）；
+# 底层店面背板 shop-back-* 仍是原材质 btk-shopback（W1 不动店面）。
+# 材质名从 raw GLB 逐 primitive 解析；每块背板 = 1 个 rpanel 四边形 = 2 三角，节点三角数 // 2 = 块数。
+# 分区 GLB（--source zone）里 assemble 合并多楼后 Blender 给重名材质加 .001 数字后缀（对所有 btk-* 一致），
+# 故按名匹配容忍该后缀；模块 GLB（默认 --source module）是精确名。
+def _mat_is(name, base):
+    return name == base or (name.startswith(base + '.') and name[len(base) + 1:].isdigit())
+_wb_nodes = [n_ for n_ in meshes if n_['name'].startswith('windows__winback')]
+_wb_mats = sorted({mn for n_ in _wb_nodes for mn in n_.get('mats', [])})
+_wb_ok = bool(_wb_nodes) and all(_mat_is(mn, 'btk-winback') for mn in _wb_mats)
+_wb_cnt = sum(n_['tris'] for n_ in _wb_nodes) // 2
+_wb_expect = _meas.get('windowBackingCalls')
+if _wb_expect == 0 and not _wb_nodes:
+    skip('test17a/17b 楼上窗背板', '本楼无 window() 背板（全 band 样式且无角塔，生成器计数 = 0）')
+else:
+    ok('test17a 楼上窗背板材质 = btk-winback（%d 块，材质 %s）' % (_wb_cnt, _wb_mats),
+       _wb_ok,
+       'windows__winback 节点缺失或材质不符（改前为 btk-wood）')
+    ok('test17b 窗背板数量 %d = window() 调用计数 %s' % (_wb_cnt, _wb_expect),
+       _wb_expect is not None and _wb_cnt == _wb_expect,
+       '期望值缺失（旧版生成器产物）或与 GLB 背板块数不一致')
+_sb_nodes = [n_ for n_ in meshes if n_['name'].startswith('shopfront__shopback')]
+_sb_mats = sorted({mn for n_ in _sb_nodes for mn in n_.get('mats', [])})
+if _sb_nodes:
+    ok('test17c 底层店面背板仍 = btk-shopback（材质 %s）' % (_sb_mats,),
+       all(_mat_is(mn, 'btk-shopback') for mn in _sb_mats))
+else:
+    skip('test17c 底层店面背板', '本楼无 shopfront 店面背板')
 
 print('\ntest_tower: %d pass, %d fail, %d skip' % (pass_n, fail_n, skip_n))
 if fail_n:

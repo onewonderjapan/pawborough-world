@@ -215,7 +215,7 @@ def _tint_link(nodes, links, color_out, tint, p):
     links.new(mix.outputs[2], p.inputs['Base Color'])
 
 def mat(key, rgb=None, rough=.8, base=None, normal=None, tint=None, tile=(1, 1), metallic=0.0,
-        alpha=None, alpha_mode=None, emission=None):
+        alpha=None, alpha_mode=None, emission=None, extras=None):
     m = bpy.data.materials.new('btk-' + key)
     m.use_nodes = True
     nodes, links = m.node_tree.nodes, m.node_tree.links
@@ -245,6 +245,9 @@ def mat(key, rgb=None, rough=.8, base=None, normal=None, tint=None, tile=(1, 1),
     if emission:                                        # 店内灯光（glTF emissiveFactor）
         p.inputs['Emission Color'].default_value = (*lin(emission), 1)
         p.inputs['Emission Strength'].default_value = 1.0
+    if extras:                                          # 语义 extras（自定义属性 → glTF material.extras，export_extras=True）
+        for k, v in extras.items():
+            m[k] = v
     TILE[key] = tile
     META['btk-' + key] = {'tintSrgb': tint, 'rgbSrgb': None, 'roughness': rough, 'metallic': metallic, 'alpha': alpha,
                           'emissionSrgb': emission,
@@ -336,6 +339,16 @@ _MAT_DEFS = {
                         normal='Wood092_2K-JPG_NormalGL_1K.jpg', tile=tuple(FM['timberTile'])),
     'wood2': lambda: mat('wood2', rough=.7, base='wood-stain-color.jpg', tint=FM.get('timber2Tint', FM['timberTint']),
                          normal='Wood092_2K-JPG_NormalGL_1K.jpg', tile=tuple(FM['timberTile'])),
+    # wave12 W1：楼上窗背板专用材质。白天与 wood 同贴图同 tint（同机位像素差≈0）；不自带 emission——
+    # 夜间由 lighting presets 的 lattice 发光组按材质名点亮。名字不与 lattice-backing / hk-lattice-back 等
+    # 别的套件重名（运行时材质按名去重，同名会互相顶掉）。
+    # wave12 R1：pbRole 语义 extras——着色参数与 wood 完全相同（同贴图同 tint 同 roughness），但 gltfpack -ke
+    # 下材质比较含 extras（本地 gltfpack 1.2 material.cpp keep_extras 路径），内容相同也不再合并，压缩后
+    # btk-winback 名字保住、夜间按名点灯接得上，compress-zones 无需按件 -km（-km 让整件全部具名材质停止
+    # 合并，核心首屏每帧调用 479→731）。
+    'winback': lambda: mat('winback', rough=.7, base='wood-stain-color.jpg', tint=FM['timberTint'],
+                           normal='Wood092_2K-JPG_NormalGL_1K.jpg', tile=tuple(FM['timberTile']),
+                           extras={'pbRole': 'window-backing'}),
     # wave7 B：预设楼（zone-bazaar-4 件）台基 / 楼板用素色石（materials.plinthPlain），件里少带一张 130 KB 砖纹贴图
     'stone': lambda: (mat('stone', lin(FM['plinthTint']), .92) if FM.get('plinthPlain') else
                       mat('stone', rough=.92, base='Bricks061_2K-JPG_Color_1K.jpg', tint=FM['plinthTint'], tile=tuple(FM['plinthTile']))),
@@ -591,7 +604,7 @@ def rpanel(name, r, sc, o, z0, z1, w, m, part=None, uscale=1.0, vnorm=False):
     for ux, uz in ((-w / 2, 0), (w / 2, 0), (w / 2, z1 - z0), (-w / 2, z1 - z0)):
         q = r.p(sc + ux, o)
         items.append(((q[0], q[1], z0 + uz), ((ux + w / 2) / uscale, uz / (z1 - z0) if vnorm else uz)))
-    add_local(name, items, [(0, 1, 2, 3)], m, part=part)
+    return add_local(name, items, [(0, 1, 2, 3)], m, part=part)
 
 # ================================================================ 立面角色（layout 检出）
 def _same(p, q, tol=0.02):
@@ -1411,14 +1424,18 @@ def bays(r, a, b):
     return G.bay_lines(a, b, FA['bayRhythmM'], CS)
 
 # ---- 窗：木樘背板 + 格心（长窗 / 半窗） ----
+WINBACK_N = 0                                   # wave12：实际出背板的 window() 调用数（measurements 记账，test17b 期望值）
 def window(name, r, sc, zfloor, ztop, w, h, sill, lf, timber='wood', part='windows'):
+    global WINBACK_N
     z0 = zfloor + sill
     if z0 + h > ztop - 0.25:
         h = ztop - 0.25 - z0
     if h < 0.8:
         return
     lat = 'lattice' if timber == 'wood' else 'lattice2'
-    rpanel('winb-' + name, r, sc, 0.03, z0 - 0.07, z0 + h + 0.07, w + 0.14, timber, part)
+    # wave12 W1：背板改专用材质 btk-winback（几何 / UV 不变）；跨共享边被 wave7 B 守卫拦下时不出板也不计数
+    if rpanel('winb-' + name, r, sc, 0.03, z0 - 0.07, z0 + h + 0.07, w + 0.14, 'winback', part) is not None:
+        WINBACK_N += 1
     zl0 = z0 - 0.07 + (1.0 - lf) * (h + 0.14)
     rpanel('win-' + name, r, sc, 0.054, zl0, z0 + h + 0.03, w - 0.02, lat, part)
 
@@ -2445,6 +2462,7 @@ if TOWER:
 json.dump({'triangles': tris, 'byNode': by, 'glbBytes': os.path.getsize(glb), 'maxY': round(maxy, 3),
            'anchorMap': [round(CX, 4), round(CZ, 4)], 'footprintAreaM2': round(AREA, 2),
            'textures': texs, 'textureTotalBytes': sum(texs.values()), 'params': PARAMS_REL,
+           'windowBackingCalls': WINBACK_N,
            'blocks': blocks_rec, 'tower': tower_rec, 'eaves': EAVE_LOG, 'brackets': BRACKET_N,
            'plaques': PLAQUE_LOG, 'lanterns': LANTERN_N, 'lions': LION_LOG,
            'sharedEdges': [{'other': e['other'], 'overlapM': round(e['overlapM'], 2), 'fpEdge': e['edge']} for e in SHARED],
