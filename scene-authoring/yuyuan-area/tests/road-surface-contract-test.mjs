@@ -8,6 +8,10 @@
 //   类型检查先于取面优先级、同时覆盖两个字段（合法 surfaceFootprints=[] 不遮蔽已损坏的 surfaceFootprint）；
 //   存在但不是数组（含显式 null）= 数据损坏，两端都报错；合法空数组 = 两端都返回空几何（该路无面）。
 //
+// R3 可选（REVIEW-astra-R2）：审查内存验证的 7 组合法输入矩阵（Python 端逐字断言返回值，
+//   核心咬合点是 [] 权威空几何 vs null 无权威回退的区分）与 surfaceFootprints:null 等类型负例
+//   （N1-N5，两端对齐；JS 端另锁 build-scene 先查新字段后查旧字段的报错顺序）。
+//
 // 两端驱动方式（同 tests/fangbang-rounding-contract-test.mjs 的跨语言方式）：
 //   Python 端：子进程 import scripts/road_surface.py 的 road_surface_footprints，直喂审查点名的合成 geometry；
 //   JS 端：类型检查在 build-scene.mjs road 分支内联（不可 import），用临时 OUT_DIR + 当前重建 OUT_DIR
@@ -39,10 +43,29 @@ if (!target) { console.error('FAIL 找不到符合条件的变异目标路（有
 console.log('变异目标路:', target.id);
 
 // ---------- Python 端：合成 geometry 直喂 road_surface.road_surface_footprints ----------
+// R3 可选（REVIEW-astra-R2）：把审查内存验证的 7 组合法输入矩阵与 surfaceFootprints:null 等
+// 类型负例纳入测试，长期锁定两端一致性。矩阵特意区分「权威空几何 []」与「无权威 null
+// （可走 ribbon 回退）」——Python 空列表是假值，`or` 式回退会把 M2 偷换成 M4/M6 的语义。
+const RING = [[0, 0], [4, 0], [4, 2], [0, 2]];
+const RING2 = [[10, 10], [14, 10], [14, 12], [10, 12]];
 const PY_CASES = [
   { name: 'E1 {"surfaceFootprint": null} 报错', g: { surfaceFootprint: null }, want: 'raise', field: 'surfaceFootprint' },
   { name: 'E2 {"surfaceFootprints": [], "surfaceFootprint": "oops"} 报错', g: { surfaceFootprints: [], surfaceFootprint: 'oops' }, want: 'raise', field: 'surfaceFootprint' },
   { name: 'L1 {"surfaceFootprints": []} 返回空几何', g: { surfaceFootprints: [] }, want: 'empty' },
+  // 合法输入矩阵（审查 R2 内存验证的 7 组；M2/M4-M7 的 [] vs null 区分是矩阵的核心咬合点）
+  { name: 'M1 {"surfaceFootprints":[ring]} 新字段权威原样返回', g: { surfaceFootprints: [RING] }, want: 'value', value: [RING] },
+  { name: 'M2 {"surfaceFootprints":[]} 权威空几何（不是回退）', g: { surfaceFootprints: [] }, want: 'value', value: [] },
+  { name: 'M3 {"surfaceFootprint":ring} 旧单块 → [旧单块]', g: { surfaceFootprint: RING }, want: 'value', value: [RING] },
+  { name: 'M4 {"surfaceFootprint":[]} 旧空数组=无旧面（NO_AUTHORITY）', g: { surfaceFootprint: [] }, want: 'none' },
+  { name: 'M5 两字段都在：新字段权威、旧字段不再被读', g: { surfaceFootprints: [RING], surfaceFootprint: RING2 }, want: 'value', value: [RING] },
+  { name: 'M6 两字段都不在（无 polyline）→ NO_AUTHORITY', g: {}, want: 'none' },
+  { name: 'M7 两字段都不在（有 polyline）→ 仍 NO_AUTHORITY（ribbon 回退在消费方）', g: { polyline: [[0, 0], [4, 4]], width: 3 }, want: 'none' },
+  // 类型负例扩充（surfaceFootprints:null 等；遮蔽关系下坏字段照样先被拒）
+  { name: 'N1 {"surfaceFootprints": null} 报错', g: { surfaceFootprints: null }, want: 'raise', field: 'surfaceFootprints' },
+  { name: 'N2 坏新字段(null)+合法旧字段：类型检查先于取面，照样报错', g: { surfaceFootprints: null, surfaceFootprint: RING }, want: 'raise', field: 'surfaceFootprints' },
+  { name: 'N3 合法空数组+坏旧字段(null)：不遮蔽，照样报错', g: { surfaceFootprints: [], surfaceFootprint: null }, want: 'raise', field: 'surfaceFootprint' },
+  { name: 'N4 {"surfaceFootprints": "oops"} 报错', g: { surfaceFootprints: 'oops' }, want: 'raise', field: 'surfaceFootprints' },
+  { name: 'N5 {"surfaceFootprint": 0} 旧字段非数组报错', g: { surfaceFootprint: 0 }, want: 'raise', field: 'surfaceFootprint' },
 ];
 const pyCasesFile = path.join(os.tmpdir(), `road-surface-contract-py-${process.pid}.json`);
 fs.writeFileSync(pyCasesFile, JSON.stringify(PY_CASES.map(c => c.g)), 'utf8');
@@ -68,6 +91,10 @@ PY_CASES.forEach((c, i) => {
   const r = pyResults[i];
   if (c.want === 'raise') {
     ok(r.raised === true && r.msg.includes(`${c.field} 存在但不是数组`), `Python ${c.name}`, r);
+  } else if (c.want === 'value') {   // 矩阵：返回值逐字等于期望（[] 是权威空几何，不是回退）
+    ok(r.raised === false && JSON.stringify(r.value) === JSON.stringify(c.value), `Python ${c.name}`, r);
+  } else if (c.want === 'none') {    // 矩阵：NO_AUTHORITY 恰为 null（区别于 M2 的 []）
+    ok(r.raised === false && r.value === null, `Python ${c.name}`, r);
   } else {   // want === 'empty'：不抛错、返回空列表（权威空几何，而非 None 回退）
     ok(r.raised === false && Array.isArray(r.value) && r.value.length === 0, `Python ${c.name}`, r);
   }
@@ -112,6 +139,30 @@ ok(l1.code === 0 && l1.stats && l1.stats.byKind.road === base.stats.byKind.road 
   'JS L1 {"surfaceFootprints": []} 空几何（EXIT 0，byKind.road 与 meshes 恰各 -1）',
   { code: l1.code, road: l1.stats && l1.stats.byKind.road, base: base.stats.byKind.road,
     meshes: l1.stats && l1.stats.meshes, baseMeshes: base.stats.meshes });
+
+// M5'（矩阵的 JS 可观测面）：旧单块挪进新字段（ring 逐点同值）→ 计数与基线完全一致
+//   （渲染结果按面几何定，mesh 计数相等 = 新权威路径消费了同一份面；配合 Python M5 逐字断言）。
+const m5 = runScene(g => { g.surfaceFootprints = [g.surfaceFootprint]; }, 'm5');
+ok(m5.code === 0 && m5.stats && m5.stats.byKind.road === base.stats.byKind.road
+  && m5.stats.meshes === base.stats.meshes,
+  'JS M5 旧单块挪进 surfaceFootprints=[旧ring]：计数与基线一致（新权威消费同一份面）',
+  { code: m5.code, road: m5.stats && m5.stats.byKind.road, base: base.stats.byKind.road,
+    meshes: m5.stats && m5.stats.meshes, baseMeshes: base.stats.meshes });
+
+// 类型负例（R3 可选：surfaceFootprints:null 等；报错点名对应字段、退出非 0）
+//   注意 build-scene 的检查顺序是先 surfaceFootprints 后 surfaceFootprint——N2/N3 也锁这个顺序。
+const JS_NEGS = [
+  { name: 'JS N1 {"surfaceFootprints": null}（删旧字段，单独出现）报错', mut: g => { delete g.surfaceFootprint; g.surfaceFootprints = null; }, field: 'surfaceFootprints' },
+  { name: 'JS N2 坏新字段(null)+合法旧字段：照样报错（点名新字段）', mut: g => { g.surfaceFootprints = null; }, field: 'surfaceFootprints' },
+  { name: 'JS N3 合法空数组+坏旧字段(null)：不遮蔽，报错点名旧字段', mut: g => { g.surfaceFootprints = []; g.surfaceFootprint = null; }, field: 'surfaceFootprint' },
+  { name: 'JS N4 {"surfaceFootprints": "oops"} 报错', mut: g => { g.surfaceFootprints = 'oops'; }, field: 'surfaceFootprints' },
+  { name: 'JS N5 {"surfaceFootprint": 0} 旧字段非数组报错', mut: g => { g.surfaceFootprint = 0; }, field: 'surfaceFootprint' },
+];
+JS_NEGS.forEach((n, i) => {
+  const r = runScene(n.mut, `neg${i}`);
+  ok(r.code !== 0 && r.out.includes(`${target.id}: ${n.field} 存在但不是数组`),
+    n.name, { code: r.code, tail: r.out.trim().split('\n').slice(-2).join(' | ') });
+});
 
 for (const d of tmpDirs) fs.rmSync(d, { recursive: true, force: true });
 if (fails) { console.error(`road-surface-contract: ${fails} fail`); process.exit(1); }

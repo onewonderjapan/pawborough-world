@@ -158,7 +158,12 @@ const FANGBANG_ROAD_SINK = (() => {
     if (o.kind !== 'road' || (FANGBANG_ROAD_CLIP && FANGBANG_ROAD_CLIP[o.id])) continue;
     const g = o.geometry || {};
     // wave10-streetfix R2：裁块路面读 surfaceFootprints 全部块（可多块），单块字段只作回退
-    const sfs = g.surfaceFootprints || (g.surfaceFootprint ? [g.surfaceFootprint] : null);
+    // wave12-debt R3（可选，与 road 分支 D6 类型纪律对齐）：这里不许再用真值-or 读字段——
+    // 真值非数组（如 "oops"）会在到达 road 分支的类型检查前以无名 TypeError 崩溃；改用
+    // Array.isArray 判定后，损坏字段在本预扫按「无面」跳过、由 road 分支的契约检查点名报错。
+    // 合法值语义不变：新字段 [] 仍为空集（无 hit）、旧字段空数组仍走 polyline 判定。
+    const sfs = Array.isArray(g.surfaceFootprints) ? g.surfaceFootprints
+      : (Array.isArray(g.surfaceFootprint) && g.surfaceFootprint.length ? [g.surfaceFootprint] : null);
     const hit = sfs ? sfs.some(s => densify(s, true).some(([x, z]) => dist(x, z) <= 6))
       : (g.polyline && g.polyline.length > 1 ? densify(g.polyline, false).some(([x, z]) => dist(x, z) <= 6 + (g.width || 0) / 2) : false);
     if (hit) ids.add(o.id);
