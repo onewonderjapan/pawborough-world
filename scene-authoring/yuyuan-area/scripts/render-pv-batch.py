@@ -1,12 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""wave12-pvbatch P1 / R1+R2 返修：PV 正式帧批量渲染调度器（纯 python3，不依赖 bpy）。
+"""wave12-pvbatch P1 / R1+R2 返修 / R3 输入注入：PV 正式帧批量渲染调度器（纯 python3，不依赖 bpy）。
 
 按 wave11-pvboard 交接的 3 条分组命令 + 16 条逐镜命令调度 scripts/render-control-passes.py
 批量出 PV 四通道控制层 + Cycles beauty 参考帧。命令构造直接 import scripts/pv-docs.py 的
 export_command / light_groups（同一套规则，不复制拼命令逻辑）；本单不改渲染器本身，
 机主拍板的采样类参数经 --extra 原样透传（如 --beauty-samples 128 --beauty-denoise on——
 降噪参数带值 on|off，与渲染器参数契约一致）。
+
+R3 返修要点（REVIEW-astra-R2 必修1，测试可复现性）：
+  --scene/--cameras 输入路径注入：测试可用合成场景 GLB 与相机 json 替换 pv-docs 规范命令里
+  的 out-zone 输入（新环境无 out-zone/pv-cameras.json 时调度测试不再依赖工作区产物）。注入
+  同步作用于实际执行 argv、调度器期望 token（自管字段断言不产生伪差异）、指纹输入 sha 与
+  齐全判定期望尺寸——四处用同一份输入；输入文件缺失仍走「指纹输入缺失」报错，不跳过任何
+  指纹门禁。不设时行为与此前逐字节一致（生产路径不变）。
 
 R2 返修要点（REVIEW-astra-R1 必修 1-4 + 可选；R1 修复全部保留不回退）：
   1. 重渲前作废旧完成标记：指纹检查先于完整性分支（文件不齐不能掩盖配置不一致）；
@@ -322,12 +329,44 @@ def build_commands(pv_docs, groups, product_root):
     return out
 
 
-def exec_argv_of(canonical_cmd, blender_exec, extra_tokens, frames_first_n, nice):
+def replace_input_tokens(toks, overrides):
+    """R3 必修1：--scene/--cameras 输入注入——对 shlex 后的参数段原位替换选项值（--opt value 与
+    --opt=value 都认）。替换发生在实际执行 argv 与调度器期望 token 两处的同一环节，指纹 sha
+    （input_sha_from_argv 读实际 argv）与齐全判定期望尺寸（读 parser namespace 的 --cameras）
+    都从这同一份 argv 派生，三处天然同源。参数段里没有对应选项或缺值即报错——注入不许悄悄失效。"""
+    out = list(toks)
+    for name, new in overrides.items():
+        if not new:
+            continue
+        hit = False
+        i = 0
+        while i < len(out):
+            t = out[i]
+            if t == name:
+                if i + 1 >= len(out) or out[i + 1].startswith('--'):
+                    raise SystemExit('E: 参数段中 %s 缺值，无法应用输入覆盖（注入不得悄悄失效）' % name)
+                out[i + 1] = new
+                hit = True
+                i += 2
+                continue
+            if t.startswith(name + '='):
+                out[i] = '%s=%s' % (name, new)
+                hit = True
+            i += 1
+        if not hit:
+            raise SystemExit('E: 参数段中没有 %s，无法应用输入覆盖（注入不得悄悄失效）：%s' % (name, ' '.join(out)))
+    return out
+
+
+def exec_argv_of(canonical_cmd, blender_exec, extra_tokens, frames_first_n, nice, input_overrides=None):
     """规范命令 → 实际 argv 数组：shlex 解析（不再用裸 split，带引号参数不拆）、替换渲染可执行
-    文件（PV_BATCH_BLENDER 测试替换点）、附加 extra token 与 --frames、可选 nice 前缀。"""
+    文件（PV_BATCH_BLENDER 测试替换点）、附加 extra token 与 --frames、可选 nice 前缀。
+    input_overrides：--scene/--cameras 输入路径注入（R3 必修1，测试自带合成输入用）。"""
     toks = shlex.split(canonical_cmd)
     if toks[0] != CANON_BLENDER:
         raise SystemExit('E: 命令前缀不是 %s：%s' % (CANON_BLENDER, canonical_cmd))
+    if input_overrides:
+        toks = replace_input_tokens(toks, input_overrides)
     argv = [os.path.expanduser(blender_exec)] + toks[1:] + list(extra_tokens)
     if frames_first_n is not None:
         argv += ['--frames', ','.join(str(k) for k in range(frames_first_n))]
@@ -669,7 +708,10 @@ def main():
     ap.add_argument('--nice', type=int, nargs='?', const=10, default=None, metavar='N', help='渲染进程降权（nice -n N，缺省 10；不入指纹）')
     ap.add_argument('--dry-run', action='store_true', help='只打印将执行的命令、实际执行 argv 与预计帧数，不渲染、不写任何文件')
     ap.add_argument('--pv', default=PV_SHOTS, help='分镜正本（默认 scripts/pv-shots.json）')
+    ap.add_argument('--scene', default='', help='R3：覆盖渲染 --scene 输入路径（默认沿用 pv-docs 规范命令的 out-zone/scene-areas.glb；测试自带合成场景输入用。注入同一份路径进实际 argv/指纹 sha/尺寸读取，不跳过任何门禁）')
+    ap.add_argument('--cameras', default='', help='R3：覆盖渲染 --cameras 输入路径（默认沿用 out-zone/pv-cameras.json；测试自带合成相机输入用。齐全判定期望尺寸也从这份输入读，PV_BATCH_FRAME_SIZE 仍可再覆盖）')
     a = ap.parse_args()
+    INPUT_OVERRIDES = {k: v for k, v in (('--scene', a.scene), ('--cameras', a.cameras)) if v}
 
     if a.frames is not None and a.frames < 1:
         raise SystemExit('E: --frames 须 ≥ 1')
@@ -711,16 +753,22 @@ def main():
         return cmd + (' ' + ' '.join(shlex.quote(t) for t in extra_tokens) if extra_tokens else '')
 
     def exec_argv(canonical_cmd, with_nice):
-        return exec_argv_of(canonical_cmd, blender_exec, extra_tokens, a.frames, a.nice if with_nice else None)
+        return exec_argv_of(canonical_cmd, blender_exec, extra_tokens, a.frames,
+                            a.nice if with_nice else None, input_overrides=INPUT_OVERRIDES)
 
     # --extra 安检（必修6 + R2 必修2 自管选项出现即拒绝）：渲染器自己的 argparse 行为级判定
     rcp = load_renderer_module()
 
     def expect_render_tokens(canonical_cmd):
         """R2 必修2：调度器期望的渲染器参数段——由规范命令独立重建（shlex 后取 -- 段，
-        再附 extra 与 --frames），与实际执行 argv 的构造路径彼此独立，可交叉验证。"""
+        再附 extra 与 --frames），与实际执行 argv 的构造路径彼此独立，可交叉验证。
+        R3 必修1：--scene/--cameras 输入覆盖在此同步替换（与 exec_argv 同一 overrides 表），
+        两路 token 保持等价，自管字段断言不因注入产生伪差异。"""
         toks = shlex.split(canonical_cmd)
-        out = toks[toks.index('--') + 1:] + list(extra_tokens)
+        out = toks[toks.index('--') + 1:]
+        if INPUT_OVERRIDES:
+            out = replace_input_tokens(out, INPUT_OVERRIDES)
+        out = out + list(extra_tokens)
         if a.frames is not None:
             out += ['--frames', ','.join(str(k) for k in range(a.frames))]
         return out
@@ -740,7 +788,14 @@ def main():
     fp_inputs = input_sha_from_argv(fp_argv0)
     fp_inputs['layoutSha256'], layout_path_used = layout_sha_from_ns(fp_ns)
     renderer_sha = sha256_file(RENDERER) if os.path.isfile(RENDERER) else None
-    expect_wh = frame_expect_size(os.path.join(AREA, 'out-zone', 'pv-cameras.json'))
+    # R3 必修1：期望尺寸从实际渲染 argv 解析出的 --cameras 输入读（含注入覆盖）——与实际命令、
+    # 指纹 sha 用同一份输入；parser namespace 为空才退回旧的 out-zone 固定路径。
+    cameras_input = getattr(fp_ns, 'cameras', '') or ''
+    if not cameras_input:
+        cameras_input = os.path.join(AREA, 'out-zone', 'pv-cameras.json')
+    elif not os.path.isabs(cameras_input):
+        cameras_input = os.path.join(AREA, cameras_input)
+    expect_wh = frame_expect_size(cameras_input)
 
     def fingerprint_of(sid):
         fp = {'argv': exec_argv(shot_cmds[sid], False),  # 逐镜规范实际 argv（nice 不入指纹）
@@ -759,6 +814,8 @@ def main():
             print('# extra(shlex 解析一次): %s' % ' '.join(shlex.quote(t) for t in extra_tokens))
         if os.environ.get('PV_BATCH_BLENDER'):
             print('# renderer override: PV_BATCH_BLENDER=%s' % os.environ['PV_BATCH_BLENDER'])
+        if INPUT_OVERRIDES:
+            print('# input override: %s' % ', '.join('%s=%s' % (k.lstrip('-'), v) for k, v in INPUT_OVERRIDES.items()))
         if a.frames is not None:
             print('# frames: 每镜只渲前 %d 帧（--frames，冒烟产物在 _smoke/）' % a.frames)
         if a.nice is not None:

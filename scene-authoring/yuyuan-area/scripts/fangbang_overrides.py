@@ -3,10 +3,17 @@
 覆盖数据只定义在 baseline/fangbang-placement-overrides.json 一处；本模块与 .mjs 读取端按同一规则应用：
   实例 positionGlb += translateGlb；名称前缀 `<id>:` 的碰撞记录 obb.pos（或 min/max）+= translateGlb；
   结果取 4 位小数；应用前校验实例原位置 == expectBasePositionGlb（容差 1e-4）。
+「取 4 位小数」的共享规则（wave12-debt D5，两端逐字一致，勿单边改写）：
+  四舍五入到 1e-4、半数远离零 = sign(x) * floor(|x| * 1e4 + 0.5) / 1e4 —— 与 Node 端
+  scripts/fangbang-overrides.mjs 的 round4HalfUp 同一公式、同一 double 运算序（先乘、加 0.5、
+  取 floor、再除回），IEEE 754 基本运算确定，两端逐位相等。不用 round()：它是银行家舍入，
+  与 JS toFixed() 在 0.03125 这类二进精确半数上分歧（0.0312 vs 0.0313）。
+  契约测试：tests/fangbang-rounding-contract-test.mjs。
 仓库根 world/fangbang-temple-v7/{instances,collision-world}.json 是原客户端共享数据集，不在那里改位置。
 纯 Python（assemble.py 在 Blender 里 import；fangbang_gapfill.py 用系统 python 也能跑）。
 """
 import json
+import math
 import os
 
 OVERRIDES_REL = os.path.join('baseline', 'fangbang-placement-overrides.json')
@@ -25,8 +32,14 @@ def load_overrides(area_root=None):
     return doc['overrides']
 
 
+def _round4_half_up(x):
+    """四舍五入到 1e-4、半数远离零（共享规则见文件头；与 fangbang-overrides.mjs 同一 double 运算序）。"""
+    s = -1.0 if x < 0 else 1.0
+    return s * math.floor(abs(x) * 10000.0 + 0.5) / 10000.0
+
+
 def _add(v, d):
-    return [round(v[k] + d[k], 4) if d[k] else v[k] for k in range(3)]
+    return [_round4_half_up(v[k] + d[k]) if d[k] else v[k] for k in range(3)]
 
 
 def apply_overrides(instances, colliders, overrides):

@@ -60,7 +60,10 @@ for (const z of m.zones.filter(z => z.file)) {
   // 件级位置量化位数（export-zones 写 manifest cmPositionBits；目前只有 garden-halls 件 = 13，理由见 export-zones.py HALLS_CM_POSITION_BITS）
   if (z.cmPositionBits) args[args.indexOf('-vp') + 1] = String(z.cmPositionBits);
   pack(args, src, dst);
-  // wave12 R1：保护语义核查（硬报错，无 -km 兜底；检测口径见文件头）
+  // wave12 R1：保护语义核查（硬报错，无 -km 兜底；检测口径见文件头）。
+  // wave12-debt D2 注释更正：本核查的口径是「同基名三角总量」——按材质基名合计 src/dst 双方被引用的
+  // 三角数并要求相等；等量双向错换（A 楼的背板三角换给 B 楼）在这套总量口径下可能抵消，逐三角/逐楼
+  // 归属的核查由 tests/towerwin-night-check.mjs 的 T2（wrapper 节点归属 + 逐楼三角数对账）负责。
   const srcMats = glbMatStats(src);
   const dstMats = glbMatStats(dst);
   const dstRef = (base) => dstMats.filter(m => m.base === base && m.refTris > 0);

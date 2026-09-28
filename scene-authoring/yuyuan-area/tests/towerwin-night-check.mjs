@@ -11,7 +11,8 @@
 //   T1 raw GLB 独立真相：逐 bazaar 分件解析未压缩 GLB（assemble 产物，cm 由此压缩而来），按楼（锚节点）
 //      统计 btk-winback 家族背板的 primitive / 三角 / z 下沿 / 材质族；与 modules/bazaar-tower-kit
 //      measurements.json 独立对账：逐楼三角 = 三类出板调用计数之和（windowBackingCalls + screenBackingCalls
-//      + bandBackingCalls，缺字段即红——正式验收不再降级），逐楼 timber 族拆分 = winbackByTimber；
+//      + bandBackingCalls，缺字段即红——正式验收不再降级；wave12-debt D2 合并保留 TOWERWIN_STRICT
+//      语义：npm 默认 =1 即红，显式 =0 仅本地排查 WARN），逐楼 timber 族拆分 = winbackByTimber；
 //      并断言每楼背板 z 下沿 ≥ 该楼格心节点（windows__lattice*）z 下沿（拆段后同底；改前整板下探实心段，
 //      T0 缺陷）。bazaar 分件之外没有 winback 家族。
 //   T2 cm GLB 静态：压缩件同口径逐楼（+族）覆盖率与 raw 相等（背板三角一个不少）；windows__winback* 节点
@@ -170,7 +171,13 @@ for (const id of REG.ids) {
   if (!perFileExpect.has(f)) perFileExpect.set(f, []);
   perFileExpect.get(f).push(tris);
 }
-ok(measFail.length === 0, 'T1 generator cross-check: per-tower tris == (window+screen+band)*2 and timber family split == winbackByTimber', measFail);
+// wave12-debt D2（R2 合并保留）：STRICT 语义——npm run test:towerwin-night 默认 TOWERWIN_STRICT=1，
+// 缺 measurements / 缺字段 / 对账不符即红，不许降级成「raw 内部自洽」弱证据；=0 仅本地排查（WARN）。
+if (measFail.length && process.env.TOWERWIN_STRICT === '0') {
+  console.log('WARN T1 generator cross-check (TOWERWIN_STRICT=0 debug only):', measFail);
+} else {
+  ok(measFail.length === 0, 'T1 generator cross-check: per-tower tris == (window+screen+band)*2 and timber family split == winbackByTimber', measFail);
+}
 for (const [f, expect] of perFileExpect) {
   const got = [...RAW[f].towers.values()].map(g => g.tris);
   ok(multiset(expect).join() === multiset(got).join(), `T1 raw GLB per-tower backing tris == generator 3-class calls*2 (${f})`, { expect, got });
@@ -202,6 +209,9 @@ const LATTICE_COLOR_HEX = LATTICE.color.replace(/^#/, '').toLowerCase();
 // 期望亮度独立取自仓库 presets：emissiveIntensity = lattice 组 intensity × night 预设 emissiveScale
 // （lighting.js applyEmissive 的公式；R1 审查可选项2：只看颜色不防「颜色对、强度为零」）
 const LATTICE_INTENSITY_EXPECT = LATTICE.intensity * ((_REPO_PRESETS.presets && _REPO_PRESETS.presets.night && _REPO_PRESETS.presets.night.emissiveScale) || 0);
+// wave12-debt D2（R2 合并保留）：期望强度本身必须 > 0——预设与实际同时为零时等值断言不红
+// （颜色对、强度零的漏检；towerwin2 审查可选项2 同此）。
+ok(LATTICE_INTENSITY_EXPECT > 0, `T3 B: expected winback intensity = lattice(${LATTICE.intensity}) x night.emissiveScale must be > 0`, LATTICE_INTENSITY_EXPECT);
 const PRESET_URL = '**/lighting/presets.json';
 const browser = await chromium.launch({ executablePath: exe, args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
 
