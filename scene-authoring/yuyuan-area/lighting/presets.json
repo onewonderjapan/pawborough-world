@@ -22,7 +22,7 @@
   "day": {
    "label": "白天",
    "sun": { "azimuthDeg": 215, "elevationDeg": 52, "color": "#fff3e0", "intensity": 2.2, "angularDiameterDeg": 1.2 },
-   "ambient": { "sky": "#cfe0f2", "ground": "#978d78", "intensity": 1.35 },
+   "ambient": { "sky": "#cfe0f2", "ground": "#978d78", "intensity": 2.2 },
    "sky": { "zenith": "#6f9fd6", "horizon": "#dae6ee", "ground": "#b7b1a1", "exponent": 0.55, "sunGlow": 0.25, "sunGlowColor": "#fff3dc", "sunGlowPower": 48 },
    "exposure": 1.0,
    "emissiveScale": 0,
@@ -31,7 +31,7 @@
   "dusk": {
    "label": "黄昏",
    "sun": { "azimuthDeg": 255, "elevationDeg": 9, "color": "#ffa35c", "intensity": 2.2, "angularDiameterDeg": 1.2 },
-   "ambient": { "sky": "#8e9cc4", "ground": "#6b5645", "intensity": 1.25 },
+   "ambient": { "sky": "#8e9cc4", "ground": "#6b5645", "intensity": 2.6 },
    "sky": { "zenith": "#3d5688", "horizon": "#f0a568", "ground": "#6d5a4b", "exponent": 0.45, "sunGlow": 0.6, "sunGlowColor": "#ffb070", "sunGlowPower": 12 },
    "exposure": 0.9,
    "emissiveScale": 0.35,
@@ -39,8 +39,8 @@
   },
   "night": {
    "label": "夜晚",
-   "sun": { "azimuthDeg": 140, "elevationDeg": 38, "color": "#9fb6ff", "intensity": 0.6, "angularDiameterDeg": 0.6 },
-   "ambient": { "sky": "#34466e", "ground": "#1c1a16", "intensity": 0.9 },
+   "sun": { "azimuthDeg": 140, "elevationDeg": 38, "color": "#9fb6ff", "intensity": 1.5, "angularDiameterDeg": 0.6 },
+   "ambient": { "sky": "#34466e", "ground": "#1c1a16", "intensity": 2.2 },
    "sky": { "zenith": "#070d1e", "horizon": "#26314a", "ground": "#14131a", "exponent": 0.5, "sunGlow": 0.12, "sunGlowColor": "#b8c8ff", "sunGlowPower": 200 },
    "exposure": 1.3,
    "emissiveScale": 1.0,
