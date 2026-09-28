@@ -338,8 +338,13 @@ _used = {mn for n in meshes for mn in n.get('mats', [])}
 mats = {m.get('name', ''): m for m in gj.get('materials', []) if m.get('name', '') in _used}
 lat_m = next((v for k, v in mats.items() if 'lattice' in k), None)
 gl_m = next((v for k, v in mats.items() if 'glass' in k), None)
-ok('test3d 格心材质 alphaMode=MASK + cutoff 0.5', bool(lat_m) and lat_m.get('alphaMode') == 'MASK'
-   and abs((lat_m.get('alphaCutoff') or 0) - 0.5) < 1e-6, str(lat_m and lat_m.get('alphaMode')))
+# wave12-debt D7：glTF 2.0 alphaCutoff 缺省值是 0.5（gltfpack 会省略等于缺省的字段）——
+# 省略须按 0.5 判，旧写法 `or 0` 把省略当 0，--source zone 下 16 个既有失败即由此而来。
+def _cutoff(m):
+    ac = m.get('alphaCutoff')
+    return 0.5 if ac is None else ac
+ok('test3d 格心材质 alphaMode=MASK + cutoff 0.5（省略按 glTF 缺省 0.5）', bool(lat_m) and lat_m.get('alphaMode') == 'MASK'
+   and abs(_cutoff(lat_m) - 0.5) < 1e-6, str(lat_m and lat_m.get('alphaMode')))
 ok('test3e 玻璃材质 alphaMode=BLEND', bool(gl_m) and gl_m.get('alphaMode') == 'BLEND',
    str(gl_m and gl_m.get('alphaMode')))
 
@@ -483,7 +488,8 @@ def huabao_r2_tests():
     mats_by_name = {m.get('name', ''): m for m in gj.get('materials', [])}
     def mask_ok(sub):
         m = next((v for k, v in mats_by_name.items() if sub in k), None)
-        return bool(m) and m.get('alphaMode') == 'MASK' and abs((m.get('alphaCutoff') or 0) - 0.5) < 1e-6
+        # alphaCutoff 省略按 glTF 2.0 缺省 0.5（wave12-debt D7，同 test3d 的 _cutoff）
+        return bool(m) and m.get('alphaMode') == 'MASK' and abs(_cutoff(m) - 0.5) < 1e-6
     ok('test8a 直棂(slats)/挂落(guoluo) alpha 材质 MASK+0.5', mask_ok('slats') and mask_ok('guoluo'),
        str({k: v.get('alphaMode') for k, v in mats_by_name.items() if 'slats' in k or 'guoluo' in k}))
 
