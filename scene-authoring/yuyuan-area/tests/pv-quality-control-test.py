@@ -234,6 +234,53 @@ def main():
     check(pur.count_off_lut_pixels(im2, legal, ua) == 9,
           'T3: 全错图计数=%r（期望 9=全部像素）' % pur.count_off_lut_pixels(im2, legal, ua))
 
+    # ---- T4（Q18 混合器）：scripts/atmosphere-mix.py 的 mix() 显示域混合行为 ----
+    spec4 = importlib.util.spec_from_file_location('atmosphere_mix', os.path.join(AREA, 'scripts', 'atmosphere-mix.py'))
+    amix = importlib.util.module_from_spec(spec4)
+    spec4.loader.exec_module(amix)
+    check(hasattr(amix, 'mix'),
+          'T4: scripts/atmosphere-mix.py 没有 mix()（Q18 要求 depth 单独渲 + 显示域混合，'
+          '雾色取本帧顶部天空实际显示色，被 far 裁掉的背景不吃雾）')
+    if hasattr(amix, 'mix'):
+        import tempfile
+        from PIL import Image
+        tmp = tempfile.mkdtemp(prefix='pvq-t4-')
+        bp, dp = os.path.join(tmp, 'b.png'), os.path.join(tmp, 'd.png')
+        w, h, near, far = 4, 4, 0.3, 300.0
+
+        def write_case(beauty_rows, z_rows):
+            flat = bytes(v for row in beauty_rows for px in row for v in px)
+            Image.frombytes('RGB', (w, h), flat).save(bp)
+            zg = Image.new('I', (w, h))
+            zpx = zg.load()
+            for y in range(h):
+                for x in range(w):
+                    zpx[x, y] = z_rows[y]
+            zg.save(dp)
+
+        z250 = int(round(65535 * (250.0 - near) / (far - near)))
+        sky = (200, 210, 220)
+        # 构造：顶部行=天空色 (200,210,220) 且 z=背景（不吃雾）；其余行 z=250（fac=0.375）、纯黑
+        write_case([[sky] * w] + [[(0, 0, 0)] * w for _ in range(h - 1)],
+                   [65535] + [z250] * (h - 1))
+        st = amix.mix(bp, dp, near, far, 220.0, 80.0)
+        out = Image.open(bp).convert('RGB')
+        opx = out.load()
+        check(opx[0, 0] == sky,
+              'T4: 背景（z≥far-0.5，顶部天空行）被雾化 %s（期望原样 %s——天空不吃雾，否则整片天空被换色）'
+              % (opx[0, 0], sky))
+        fac = 0.375
+        expect = tuple(round(c * fac) for c in sky)     # 黑地面 × (1-fac) + 天空色 × fac
+        got = opx[0, 2]
+        check(all(abs(a - b) <= 1 for a, b in zip(got, expect)),
+              'T4: z=250 混合值 %s ≠ 期望 %s（雾色应取顶部天空行中位 %s、fac=(250-220)/80=0.375）'
+              % (got, expect, sky))
+        check(list(st.get('fogSampledRGB', [])) == [float(c) for c in sky],
+              'T4: fogSampledRGB=%r（期望 %s——本帧顶部天空实际显示色，保证远景与天空交界无缝）'
+              % (st.get('fogSampledRGB'), list(sky)))
+        check(abs(st.get('foggedFraction', -1) - 0.75) < 1e-6,
+              'T4: foggedFraction=%r（期望 0.75：4 行里除背景行外 3 行吃雾）' % st.get('foggedFraction'))
+
     print('pv-quality-control-test: %d pass, %d fail' % (passes, fails))
     return 1 if fails else 0
 

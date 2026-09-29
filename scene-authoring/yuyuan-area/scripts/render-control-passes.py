@@ -1145,20 +1145,29 @@ def config_beauty_lit(scene, P, preset, engine, samples, device, world, denoise=
 # ---------------- wave14-pvquality Q18：beauty 大气透视（镜头级 atmosphere 声明才开启） ----------------
 # pv01 航拍（眼高 90 m）远景地平线硬边取证：外围地面 ground 是 2000×800 m 大平面（边界在 2 km 外，
 # 不是网格太小），在 far clip=300 m 处被裁，米色地面（0xcfc6b4）直接切到世界背景天空，无大气透视。
-# 修法（GOAL 方向二，渲染端最小改动）：beauty 段开 Cycles Mist pass + compositor，把远景按 mist
-# 因子线性混入「天空地平色」，clip 边缘处 mist=1.0 完全隐入天空、交界不可见；只作用 beauty，
-# finally 卸载（depth 的 config_cycles 会整体重搭 compositor，不受影响；seg/normal 走各自配置）。
+# 修法（GOAL 方向二，渲染端最小改动）：atmosphere 镜头的 beauty 帧渲完后，同 pose 复用生产 depth
+# 链路（Cycles Z pass → compositor FileOutput BW16 PNG，16 镜生产验证过的路径）单独渲一张视轴 z，
+# 再在显示域按雾因子把远景线性混向「本帧实际天空色」，clip 边缘处雾因子=1 完全隐入天空、交界不可见。
+# 只作用声明的镜头；beauty 主渲染不经 compositor，seg/normal/depth 通道零接触。
+# 取证（wave14-pvquality，各一轮实渲定位）：
+#   a) Blender 4.5.1 Mist pass（world.mist_settings + use_pass_mist）合成器实测恒输出 1.0，不可用；
+#   b) compositor 内 RLayers.Depth→MapRange→MixRGB.Fac 混 beauty：FileOutput 侧雾因子图正确，
+#      但 Composite 侧行为异常（fac 常量有效、Depth 驱动时输出错位），不采用；
+#   c) 雾色若取预设 horizon 纯色，会把含太阳 glow 的天空整片换色——改为采样本帧顶部天空实际
+#      显示色，远景雾化带与紧邻背景像素同色，交界才真正无缝。
 # 默认参数按 pv01 取证：注视目标湖心亭约 175 m——起点必须 ≥175 免得画面主体吃雾；start+depth
 # 必须恰好 = far clip 300 m，裁剪边缘才完全雾化。
 MIST_START_M = 220.0
 MIST_DEPTH_M = 80.0
+# 深度不小于该余量视为「被 far 裁掉的背景」（天空）：不吃雾，保留原样
+ATMOS_BACKGROUND_TOL_M = 0.5
 
 
 def atmosphere_params(P, preset, shot):
     """镜头级 atmosphere 声明 → {startM, depthM, fogLinear}；无声明返回 None（场景一字节不动）。
-    声明 true 用默认参数；对象 {startM, depthM} 覆盖；非正数参数报错拒绝。雾色 =
-    srgb_lin(sky.horizon)/exposure：与 build_lighting_world 的相机射线天空色同一线性域
-    （背景 strength=1/exposure，曝光在 view transform 阶段才乘回）。"""
+    声明 true 用默认参数；对象 {startM, depthM} 覆盖；非正数参数报错拒绝。fogLinear =
+    srgb_lin(sky.horizon)/exposure（与 build_lighting_world 相机射线天空色同一线性域）仅作
+    记录/对照；混合用的雾色取自 beauty 帧顶部天空实际显示色（scripts/atmosphere-mix.py）。"""
     a = (shot or {}).get('atmosphere')
     if not a:
         return None
@@ -1175,32 +1184,47 @@ def atmosphere_params(P, preset, shot):
             'fogLinear': (fog[0] / p['exposure'], fog[1] / p['exposure'], fog[2] / p['exposure'])}
 
 
-def apply_beauty_atmosphere(scene, params):
-    """beauty 段开 Mist pass + compositor（RLayers.Image 按 Mist 混雾色 → Composite）。
-    须在 config_beauty_lit 之后调用（scene.world 已是 lighting-world，mist 参数挂在 world 上）。"""
-    ms = scene.world.mist_settings
-    ms.start = params['startM']
-    ms.depth = params['depthM']
-    ms.falloff = 'LINEAR'
-    bpy.context.view_layer.use_pass_mist = True
+def config_atmosphere_depth(scene, near, far, out_dir):
+    """atmosphere 专用 depth-only 配置：Cycles（引擎/设备沿用 beauty 段，BVH 借 use_persistent_data
+    复用）1 spp 无弹射、Raw 视图、黑世界，compositor 仅 RLayers.Depth → MapRange[near,far] →
+    FileOutput BW16 PNG——与生产 depth 通道同一数据链路。返回期望的输出 PNG 路径。"""
+    scene.render.engine = 'CYCLES'
+    scene.cycles.samples = 1
+    scene.cycles.use_adaptive_sampling = False
+    scene.cycles.use_denoising = False
+    scene.cycles.max_bounces = 0
+    scene.cycles.diffuse_bounces = 0
+    scene.cycles.glossy_bounces = 0
+    scene.cycles.transmission_bounces = 0
+    scene.cycles.transparent_max_bounces = 0
+    scene.render.filter_size = 0.0
+    set_view(scene, 'Raw')
+    world_color(scene, (0, 0, 0))
+    bpy.context.view_layer.use_pass_z = True
     scene.use_nodes = True
     nt = scene.node_tree
     for n in list(nt.nodes):
         nt.nodes.remove(n)
     rl = nt.nodes.new('CompositorNodeRLayers')
-    mix = nt.nodes.new('CompositorNodeMixRGB')
-    mix.blend_type = 'MIX'
-    fog = nt.nodes.new('CompositorNodeRGB')
-    fog.outputs[0].default_value = (params['fogLinear'][0], params['fogLinear'][1], params['fogLinear'][2], 1.0)
-    outn = nt.nodes.new('CompositorNodeComposite')
-    nt.links.new(rl.outputs['Image'], mix.inputs['Color1'])
-    nt.links.new(fog.outputs[0], mix.inputs['Color2'])
-    nt.links.new(rl.outputs['Mist'], mix.inputs['Fac'])
-    nt.links.new(mix.outputs[0], outn.inputs[0])
+    mr = nt.nodes.new('CompositorNodeMapRange')
+    mr.use_clamp = True
+    mr.inputs['From Min'].default_value = near
+    mr.inputs['From Max'].default_value = far
+    mr.inputs['To Min'].default_value = 0.0
+    mr.inputs['To Max'].default_value = 1.0
+    fo = nt.nodes.new('CompositorNodeOutputFile')
+    fo.format.file_format = 'PNG'
+    fo.format.color_mode = 'BW'
+    fo.format.color_depth = '16'
+    fo.format.compression = 15
+    fo.base_path = out_dir
+    nt.links.new(rl.outputs['Depth'], mr.inputs['Value'])
+    nt.links.new(mr.outputs['Value'], fo.inputs[0])
+    return os.path.join(out_dir, 'Image%04d.png' % (scene.frame_current + 1))
 
 
-def teardown_beauty_atmosphere(scene):
-    """beauty finally 卸载大气透视（幂等：未开启时也是安全复位）——防泄漏进 seg/normal/depth。"""
+def unconfig_atmosphere_depth(scene):
+    """depth-only 配置复位（幂等）：关 compositor 与 Z pass，交还给 beauty/控制通道配置。"""
     scene.use_nodes = False
     nt = scene.node_tree
     if nt:
@@ -1208,7 +1232,26 @@ def teardown_beauty_atmosphere(scene):
             nt.nodes.remove(n)
     vl = bpy.context.view_layer
     if vl is not None:
-        vl.use_pass_mist = False
+        vl.use_pass_z = False
+
+
+def run_atmosphere_mix(beauty_png, depth_png, near, far, start_m, depth_m):
+    """以系统 python3 子进程跑 scripts/atmosphere-mix.py（Blender 内置 python 无 PIL；
+    混合逻辑独立成脚本，tests/pv-quality-control-test.py 直接对它断言）。返回统计 dict。"""
+    import subprocess
+    script = os.path.join(ROOT, 'scripts', 'atmosphere-mix.py')
+    r = subprocess.run(['python3', '-X', 'utf8', script,
+                        '--beauty', beauty_png, '--depth', depth_png,
+                        '--near', repr(near), '--far', repr(far),
+                        '--start-m', repr(start_m), '--depth-m', repr(depth_m)],
+                       capture_output=True, text=True)
+    if r.returncode != 0:
+        raise SystemExit('E: atmosphere-mix 失败（exit %d）：\n%s\n%s'
+                         % (r.returncode, r.stdout[-2000:], r.stderr[-2000:]))
+    for line in r.stdout.splitlines():
+        if line.startswith('[atmosphere-mix]'):
+            return json.loads(line[len('[atmosphere-mix]'):].strip())
+    raise SystemExit('E: atmosphere-mix 无统计输出：\n%s' % r.stdout[-500:])
 
 
 def config_cycles(scene, near, far, out_dir):
@@ -1505,23 +1548,43 @@ def main():
                                              denoise=args.beauty_denoise == 'on')
                 lit_meta.update(lit_info)
                 lit_meta['beautyMaterials'] = {k: (v if not isinstance(v, (list, dict)) else len(v)) for k, v in mat_info.items()}
-                atmo = atmosphere_params(P, preset, shot)
-                if atmo is not None:
-                    apply_beauty_atmosphere(scene, atmo)     # wave14 Q18：只作用 beauty 段，finally 卸载
-                    lit_meta['atmosphere'] = atmo
-            for k in (ks if 'beauty' in passes else []):
-                pose(k)
-                t = time.perf_counter()
-                scene.render.filepath = os.path.join(sdir, 'beauty', 'frame-%03d.png' % k)
-                bpy.ops.render.render(write_still=True)
-                st.setdefault('frame-%03d' % k, {})['beauty_s'] = round(time.perf_counter() - t, 2)
-                log('%s frame-%03d beauty %.1fs' % (sid, k, st['frame-%03d' % k]['beauty_s']))
+                atmo = atmosphere_params(P, preset, shot)   # wave14 Q18：只作用声明镜头的 beauty，后处理显示域混合
+                for k in (ks if 'beauty' in passes else []):
+                    pose(k)
+                    t = time.perf_counter()
+                    scene.render.filepath = os.path.join(sdir, 'beauty', 'frame-%03d.png' % k)
+                    bpy.ops.render.render(write_still=True)
+                    if atmo is not None:
+                        # 同 pose 复用生产 depth 链路渲视轴 z（1 spp，BVH 借 use_persistent_data 复用），
+                        # 显示域把远景混向本帧实际天空色后覆写 beauty；配置即渲即卸，不跨帧泄漏。
+                        atmo_dir = os.path.join(sdir, '_atm_tmp')
+                        os.makedirs(atmo_dir, exist_ok=True)
+                        scene.frame_set(k)
+                        depth_png = config_atmosphere_depth(scene, near, far, atmo_dir)
+                        bpy.ops.render.render(write_still=False)
+                        produced = sorted((f for f in os.listdir(atmo_dir) if f.endswith('.png')),
+                                          key=lambda f: os.path.getmtime(os.path.join(atmo_dir, f)))
+                        if not produced:
+                            raise SystemExit('E: atmosphere depth 渲染未产出 PNG（%s）' % atmo_dir)
+                        depth_png = os.path.join(atmo_dir, produced[-1])
+                        atmo_stat = run_atmosphere_mix(os.path.join(sdir, 'beauty', 'frame-%03d.png' % k),
+                                                       depth_png, near, far, atmo['startM'], atmo['depthM'])
+                        os.remove(depth_png)
+                        os.rmdir(atmo_dir)
+                        unconfig_atmosphere_depth(scene)
+                        config_beauty_lit(scene, P, preset, args.beauty, args.beauty_samples,
+                                          args.beauty_device or P['blender']['cycles']['device'], lit_world,
+                                          denoise=args.beauty_denoise == 'on')
+                        set_pixel_angle(scene, cam_data, w, h)
+                        lit_meta['atmosphere'] = atmo_stat
+                    st.setdefault('frame-%03d' % k, {})['beauty_s'] = round(time.perf_counter() - t, 2)
+                    log('%s frame-%03d beauty %.1fs' % (sid, k, st['frame-%03d' % k]['beauty_s']))
         finally:
             if lit:
                 # E2（blenderamb R2 可选2）：下沉 + 亮灯 + lit 世界是受保护的临时状态——引擎配置或
                 # beauty 渲染抛异常也必须恢复 location / hide_render / control-world，
                 # 后续 seg/normal/depth 控制通道不吃 beauty 残留状态。
-                teardown_beauty_atmosphere(scene)            # wave14 Q18：compositor/Mist 只许活在 beauty 段
+                unconfig_atmosphere_depth(scene)             # wave14 Q18：compositor/Z pass 只许活在后处理瞬间
                 apply_beauty_offsets(BEAUTY_OFFSETS, False)
                 for ob in lit_objs:
                     ob.hide_render = True
