@@ -172,6 +172,10 @@ def main():
     ap.add_argument('--color-src-a', default=None, help='plaster-tint-a08560 原贴图（jpg）路径')
     ap.add_argument('--color-src-b', default=None, help='plaster-tint-836d4f 原贴图（jpg）路径')
     a = ap.parse_args(argv)
+    # R2（审查可选）：src==dst 时第二次 bake 会把上一次的输出当输入读（审查实测记录确为
+    # src==dst，无法区分"非逐位确定"与"读到上次输出"），禁止覆盖读；输出必须走新路径。
+    if os.path.realpath(a.src) == os.path.realpath(a.dst):
+        sys.exit('bake-strata-color: --src 与 --dst 不得同路径（会覆盖读上次输出）；请输出到新路径')
 
     src_buf = open(a.src, 'rb').read()
     src_fp = glb_geometry_fingerprint(src_buf)

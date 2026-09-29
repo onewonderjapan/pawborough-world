@@ -384,9 +384,13 @@ ok('GLB 节点名全部为 huxin-ting__*（无游离散件节点）', prefixOk, 
     }
     const srgbToLin = (c) => (c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
     let r = 0, g = 0, b = 0, n2 = 0;
-    for (let i = 0; i < up.length; i += bpp) { r += up[i]; g += up[i + 1]; b += up[i + 2]; n2++; }
-    const tmb = [r / n2, g / n2, b / n2];
-    const tmlin = tmb.map((v) => srgbToLin(v / 255));
+    // R2（审查可选）：逐像素解码到线性域再平均——"sRGB 字节均值再线性化"与真线性均色
+    // 在 OETF 凸性下不相等，报告值必须取后者口径。
+    for (let i = 0; i < up.length; i += bpp) { r += srgbToLin(up[i] / 255); g += srgbToLin(up[i + 1] / 255); b += srgbToLin(up[i + 2] / 255); n2++; }
+    const tmb = [0, 0, 0];
+    for (let i = 0; i < up.length; i += bpp) { tmb[0] += up[i]; tmb[1] += up[i + 1]; tmb[2] += up[i + 2]; }
+    tmb[0] /= n2; tmb[1] /= n2; tmb[2] /= n2;
+    const tmlin = [r / n2, g / n2, b / n2];
     const baseLin = [0x6e, 0x6f, 0x71].map((v) => srgbToLin(v / 255));
     const MULT_MEAN = 0.909;
     ok(`瓦纹贴图解码均值为中性灰（rgb 字节 ${tmb.map((v) => v.toFixed(1)).join('/')}，|r-g|、|g-b| ≤ 2）`,

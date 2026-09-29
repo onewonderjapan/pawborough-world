@@ -70,7 +70,7 @@ function solidPng(w, h, rgba) {
   const chunk = (tag, data) => {
     const len = Buffer.alloc(4); len.writeUInt32BE(data.length);
     const td = Buffer.concat([Buffer.from(tag, 'ascii'), data]);
-    const crc = Buffer.alloc(4); crc.writeUInt32LE(zlib.crc32(td) >>> 0);
+    const crc = Buffer.alloc(4); crc.writeUInt32BE(zlib.crc32(td) >>> 0); // R2：PNG CRC 是大端（原 LE 写出的负例 PNG 本身非法，虽仍触发断言但属巧合）
     return Buffer.concat([len, td, crc]);
   };
   const ihdr = Buffer.alloc(13);
