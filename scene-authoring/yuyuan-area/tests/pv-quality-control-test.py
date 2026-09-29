@@ -103,6 +103,7 @@ class FakeRender:
         self.engine = None
         self.filter_size = None
         self.dither_intensity = 1.0     # Blender 4.5 默认值（实测 DITHER_DEFAULT 1.0）
+        self.film_transparent = False   # setup_render_base 基线（atmosphere 掩码临时改 True 再恢复）
 
 
 class FakeWorld:
@@ -266,7 +267,9 @@ def make_fake_bpy():
     bpy = types.ModuleType('bpy')
     bpy.data = FakeData()
     bpy.context = types.SimpleNamespace(
-        view_layer=types.SimpleNamespace(use_pass_z=False, use_pass_alpha=False, material_override=None))
+        # 注意：故意不提供 use_pass_alpha——Blender 4.5 无此属性，代码若再碰它会当场
+        # AttributeError（R1 首轮渲染在 frame-0 全崩的根因），让测试红在这里而不是渲染时。
+        view_layer=types.SimpleNamespace(use_pass_z=False, material_override=None))
     bpy.ops = types.SimpleNamespace(render=types.SimpleNamespace(render=FakeRenderOps()))
     return bpy
 
@@ -331,6 +334,13 @@ def main():
     rcp.config_atmosphere_depth(sc5, 0.3, 300.0, tmp5)
     check(d5() == 0.0, 'T5: ⑥atmosphere depth（config_atmosphere_depth）后 dither=%r'
           '（期望 0.0——depth 数据通道）' % d5())
+    check(sc5.render.film_transparent is True,
+          'T5: ⑥atmosphere depth 后 film_transparent=True（R1必修1：RLayers.Alpha 掩码需要'
+          ' film_transparent 才能区分被裁天空 α=0 与表面 α=1；Blender 4.5 无 use_pass_alpha 属性）')
+    rcp.unconfig_atmosphere_depth(sc5)
+    check(sc5.render.film_transparent is False and sc5.use_nodes is False,
+          'T5: ⑥atmosphere depth 卸载后 film_transparent/use_nodes 复位'
+          '（不透明天空是 beauty/控制通道基线，残留透明背景会渲出黑天）')
     rcp.config_beauty_lit(sc5, P, 'day', 'cycles', 0, 'CPU', bpy_stub.data.worlds.new('w5b'))
     check(d5() == 1.0, 'T5: ⑦atm depth 后回到 lit beauty，dither=%r（期望 1.0——try/finally'
           ' 卸载后由阶段入口重新自设）' % d5())

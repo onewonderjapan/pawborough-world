@@ -1242,7 +1242,11 @@ def config_atmosphere_depth(scene, near, far, out_dir):
     set_view(scene, 'Raw')
     world_color(scene, (0, 0, 0))
     bpy.context.view_layer.use_pass_z = True
-    bpy.context.view_layer.use_pass_alpha = True   # R1必修1：alpha=天空/表面覆盖（掠射远景 alpha=1、被裁天空=0）
+    # R1必修1：alpha 覆盖掩码取自 RLayers['Alpha']（合成器常驻输出，无需 pass 开关）。
+    # 不透明世界下 alpha 恒 1 无区分度，必须 film_transparent=True：被裁天空 α=0、
+    # 表面 α=1（掠射远景表面也是 1）。Blender 4.5 没有 view_layer.use_pass_alpha 属性，
+    # 设它会 AttributeError 在 frame-0 崩掉整个渲染（2026-09-29 pv01 实测取证）。
+    scene.render.film_transparent = True
     scene.use_nodes = True
     nt = scene.node_tree
     for n in list(nt.nodes):
@@ -1269,21 +1273,24 @@ def config_atmosphere_depth(scene, near, far, out_dir):
     nt.links.new(rl.outputs['Depth'], mr.inputs['Value'])
     nt.links.new(mr.outputs['Value'], fo.inputs[0])
     nt.links.new(rl.outputs['Alpha'], fm.inputs[0])
-    return (os.path.join(out_dir, 'Image%04d.png' % (scene.frame_current + 1)),
-            os.path.join(out_dir, 'mask', 'Image%04d.png' % (scene.frame_current + 1)))
+    # FileOutput 实名 = 'Image%04d.png' % frame_current（Blender 4.5 实测：frame 0 → Image0000.png，
+    # 不是 frame_current+1）；调用方仍按产出目录 mtime 实收，这里只是声明路径。
+    return (os.path.join(out_dir, 'Image%04d.png' % scene.frame_current),
+            os.path.join(out_dir, 'mask', 'Image%04d.png' % scene.frame_current))
 
 
 def unconfig_atmosphere_depth(scene):
-    """depth-only 配置复位（幂等）：关 compositor 与 Z/alpha pass，交还给 beauty/控制通道配置。"""
+    """depth-only 配置复位（幂等）：关 compositor 与 Z pass、恢复不透明背景（setup_render_base
+    的 film_transparent=False 基线，beauty/控制通道的天空必须不透明），幂等可重复调用。"""
     scene.use_nodes = False
     nt = scene.node_tree
     if nt:
         for n in list(nt.nodes):
             nt.nodes.remove(n)
+    scene.render.film_transparent = False
     vl = bpy.context.view_layer
     if vl is not None:
         vl.use_pass_z = False
-        vl.use_pass_alpha = False
 
 
 def run_atmosphere_mix(beauty_png, depth_png, mask_png, near, far, start_m, depth_m):
@@ -1328,17 +1335,25 @@ def render_beauty_frames(ks, sdir, pose, scene, near, far, lit, P, preset, args_
             scene.frame_set(k)
             depth_png, mask_png = config_atmosphere_depth(scene, near, far, atmo_dir)
             bpy.ops.render.render(write_still=False)
+            # FileOutput 节点实名 = 'Image%04d.png' % frame_current（实测 Blender 4.5：frame 0 →
+            # Image0000.png），config 返回值只是声明路径；depth/mask 一律按产出目录 mtime 实收，
+            # 不依赖命名猜测。
             produced = sorted((f for f in os.listdir(atmo_dir) if f.endswith('.png')),
                               key=lambda f: os.path.getmtime(os.path.join(atmo_dir, f)))
             if not produced:
                 raise SystemExit('E: atmosphere depth 渲染未产出 PNG（%s）' % atmo_dir)
             depth_png = os.path.join(atmo_dir, produced[-1])
+            mask_dir = os.path.join(atmo_dir, 'mask')
+            masks = sorted((f for f in os.listdir(mask_dir) if f.endswith('.png')),
+                           key=lambda f: os.path.getmtime(os.path.join(mask_dir, f))) \
+                if os.path.isdir(mask_dir) else []
+            if not masks:
+                raise SystemExit('E: atmosphere alpha 掩码未产出 PNG（%s）' % mask_dir)
+            mask_png = os.path.join(mask_dir, masks[-1])
             atmo_stat = run_atmosphere_mix(os.path.join(sdir, 'beauty', 'frame-%03d.png' % k),
                                            depth_png, mask_png, near, far, atmo['startM'], atmo['depthM'])
             os.remove(depth_png)
-            if os.path.exists(mask_png):
-                os.remove(mask_png)
-            mask_dir = os.path.dirname(mask_png)
+            os.remove(mask_png)
             if os.path.isdir(mask_dir) and not os.listdir(mask_dir):
                 os.rmdir(mask_dir)
             os.rmdir(atmo_dir)
