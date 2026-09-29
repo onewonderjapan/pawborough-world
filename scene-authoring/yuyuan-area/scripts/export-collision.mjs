@@ -164,9 +164,12 @@ for (const o of layout.objects) {
   if (o.kind !== 'wall' || !Array.isArray((o.geometry || {}).segments)) continue;
   const h = WALL_HEIGHT[o.id] ?? 2.9;
   const keep = FLOATING_DROP_WALLS.has(o.id) ? new Set(dropFloatingSegments(o.geometry.segments)) : null;
+  // wave14-templeeast：生成端已丢掉悬空段时，geometry.segmentIndex 给出保留段的原索引（记录名不重编号）
+  const segIdx = o.geometry.segmentIndex;
+  if (segIdx && segIdx.length !== o.geometry.segments.length) throw new Error(`${o.id}: segmentIndex length ${segIdx.length} != segments ${o.geometry.segments.length}`);
   o.geometry.segments.forEach((s, i) => {
     if (keep && !keep.has(s)) return;
-    edgeWall(o.zone, `${o.id}:seg-${i}`, 'wall-segment', s[0], s[1], h, WALL_THICK);
+    edgeWall(o.zone, `${o.id}:seg-${segIdx ? segIdx[i] : i}`, 'wall-segment', s[0], s[1], h, WALL_THICK);
   });
 }
 
@@ -580,6 +583,30 @@ for (const [oid, cfg] of Object.entries(CORRIDOR_CFG)) {
   corridorKitStats['trees'] = tp.length;
 }
 
+// ---------- 12b) 庙东跨院（wave14-templeeast）：安仁街店屋单元盒 + 樟树干 + 宝鼎（hall-kit 楼/厅走 5b） ----------
+// 店屋：layout.instances 的位姿（原点=前墙中点，门脸 +Z、进深 −Z）+ resources/shops/<module>/measurements.json 的面宽/进深/檐高，
+// 一个实体盒（外围/商城店屋历来无碰撞，这里是庙区内的新店排，玩家从安仁街不能穿店进院）。
+{
+  const te = layout.instances.filter(i => i.id.startsWith('templeeast-'));
+  let nShop = 0, nTree = 0, nDing = 0;
+  for (const inst of te) {
+    const [x, z] = inst.position;
+    if (inst.module.startsWith('shop-')) {
+      const d = JSON.parse(fs.readFileSync(path.join(AREA, 'resources', 'shops', inst.module, 'measurements.json'), 'utf8')).design;
+      add(inst.zone, `${inst.id}:body`, 'templeeast-shop', inst.rotY, [x, 0, z], [0, d.eaveM / 2, -d.depthM / 2], [d.frontageM, d.eaveM, d.depthM]);
+      nShop++;
+    } else if (inst.module === 'temple-tree-camphor') {
+      add(inst.zone, `${inst.id}:tree-trunk-block`, 'templeeast-tree', 0, [0, 0, 0], [x, 1.5, z], [0.55, 3, 0.55]);
+      nTree++;
+    } else if (inst.module === 'templeeast-ding') {
+      const rec = JSON.parse(fs.readFileSync(path.join(AREA, 'out-garden-kits', 'templeeast-ding', 'collision.json'), 'utf8'));
+      for (const b of rec.colliders) add(inst.zone, `${inst.id}:${b.name}`, 'templeeast-ding', inst.rotY, [x, 0, z], b.center, b.size);
+      nDing++;
+    } else throw new Error(`templeeast instance ${inst.id}: unhandled module ${inst.module}`);
+  }
+  stats.templeEast = { shops: nShop, trees: nTree, ding: nDing };
+}
+
 // ---------- 13) 摊位/长凳（bazaar 51 件）：每件一个 GLB 包围盒盒；檐棚（身体带以上）不建 ----------
 {
   const sp = JSON.parse(fs.readFileSync(path.join(AREA, 'modules', 'bazaar-stalls', 'records', 'placements.json'), 'utf8'));
@@ -741,7 +768,8 @@ const EXTRA_GROUND = {
     'shanmen-body__worn-stone*', 'entry-court__worn-stone*', 'yimen-body__worn-stone*',
     'yimen-stage-body__worn-stone*', 'dadian-court__worn-stone*', 'peidian-body__worn-stone*',
     'gallery-body__worn-stone*', 'dadian-body__worn-stone*', 'court3-boundary__worn-stone*',
-    'houdian-body__worn-stone*'],
+    'houdian-body__worn-stone*',
+    'temple|templeeast-paving|plaza|L1*'],   // wave14-templeeast 庙东跨院青石板铺地（程序化 plaza，h 0.04）
   bazaar: FROZEN_EXTRA_GROUND,
   outer: FROZEN_EXTRA_GROUND,
 };
