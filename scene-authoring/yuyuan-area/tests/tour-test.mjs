@@ -3,7 +3,8 @@
 //  1) 覆盖 ≥11 机位：nav-gap 六锚点 + 三穗堂/九曲桥/大假山/玉玲珑/华宝楼；
 //  2) 机位不入任何建筑 footprint（且距建筑边 ≥0.8 m 走廊净距）；
 //  3) 目标点落在 targetObject 区域内或其 3 m 缓冲内；
-//  4) 锚点机位 ≤8 m 于 nav-gap 锚点、眼高 1.6 m；对象机位为眼高 1.6 m 或斜俯视（h≥8）两种之一；
+//  4) 锚点机位 ≤8 m 于 nav-gap 锚点、眼高 1.6 m（wave13-tourfix：gold/old-south/old-north 放宽到 ≤10 m、高 1.6/2.0 m，
+//     与生成器 TOURFIX 枚举同参）；对象机位为眼高 1.6 m 或斜俯视（h≥8）两种之一；
 //  5) R1：每个机位看得到目标 —— 包围盒 9 采样点（中心+8角）对 collision-*.json 射线遮挡 ≥5 点可见；
 //  6) R1：目标包围盒投影到画面（fov46/1400×900，同 web 相机）面积 ≥8%；
 //  7) R1：相机到最近可遮挡碰撞盒（顶 ≥1.6 m）≥1.5 m，不贴墙；
@@ -129,13 +130,16 @@ for (const [key, v] of Object.entries(tour)) {
     check(reg, `${key} targetObject ${v.targetObject} 不在 baseline/layout.json`);
     if (reg) check(regionDist(reg, t2) <= 3, `${key} 目标点距 ${v.targetObject} 区域 ${regionDist(reg, t2).toFixed(1)} m > 3 m`);
   }
-  // 4) 机位模式：锚点=眼高 1.6 m 且 ≤8 m 于 nav-gap 锚点；对象=眼高 1.6 m 或斜俯视 h≥8
+  // 4) 机位模式：锚点=眼高 1.6 m 且 ≤8 m 于 nav-gap 锚点（wave13-tourfix：巡检第 11 条点名的 gold/old-south/old-north
+  //    允许外移至 10 m、机位高 1.6/2.0 m —— 生成器同参数枚举，见 scripts/compute-area-tour.mjs TOURFIX）；对象=眼高 1.6 m 或斜俯视 h≥8
   if (key.startsWith('anchor-')) {
     const aKey = key.slice('anchor-'.length);
     const a = nav.anchors && nav.anchors[aKey];
+    const tf = aKey === 'gold' || aKey === 'old-south' || aKey === 'old-north';
+    const maxR = tf ? 10 : 8;
     check(!!a, `${key} 在 nav-gap.json 无对应锚点`);
-    if (a) check(dist2d(cam2, a) <= 8, `${key} 机位距锚点 ${dist2d(cam2, a).toFixed(1)} m > 8 m`);
-    check(Math.abs(v.p[1] - 1.6) < 0.01, `${key} 眼高 ${v.p[1]} ≠ 1.6`);
+    if (a) check(dist2d(cam2, a) <= maxR, `${key} 机位距锚点 ${dist2d(cam2, a).toFixed(1)} m > ${maxR} m`);
+    check(Math.abs(v.p[1] - 1.6) < 0.01 || (tf && Math.abs(v.p[1] - 2) < 0.01), `${key} 眼高 ${v.p[1]} ≠ 1.6${tf ? '/2.0' : ''}`);
   } else {
     check(Math.abs(v.p[1] - 1.6) < 0.01 || v.p[1] >= 8, `${key} 机位高 ${v.p[1]} 既非眼高 1.6 也非斜俯视(≥8)`);
   }
