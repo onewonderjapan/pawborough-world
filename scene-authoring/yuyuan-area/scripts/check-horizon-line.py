@@ -37,9 +37,10 @@ def check_frame(path, band_top, max_jump, x0, x1):
     up_line = np.minimum(d[:-1], -d[1:]).max(axis=1)    # 亮线：上跳后立即下跳
     dn_line = np.minimum(-d[:-1], d[1:]).max(axis=1)    # 暗线：下跳后立即上跳
     line = np.maximum(up_line, dn_line)                 # line[i] 属于行 i+1
-    yu = int(np.argmax(up_step[1:])) + 1
+    iu = int(np.argmax(up_step[1:])) + 1                # up_step[i] = 行 i→i+1 的上行台阶（跳过顶边 i=0）
+    yu = iu + 1
     yl = int(np.argmax(line)) + 1
-    up_v = round(float(up_step[yu - 1]), 1)
+    up_v = round(float(up_step[iu]), 1)
     ln_v = round(float(line[yl - 1]), 1)
     worst = max(up_v, ln_v)
     wy = yu if up_v >= ln_v else yl

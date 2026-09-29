@@ -624,6 +624,18 @@ def seg_purity_check(product_root, light, sid, n_frames, log):
     return None
 
 
+def completion_guard(product_root, light, sid, n_frames, log):
+    """写「成功完成记录」前的唯一守卫（新渲染与续跑共用，astra pvquality R1 必修1）：
+    beauty 首/中/末空白守卫通过后，再跑 seg 纯度检查。返回 (ok, detail, purity_fail)。"""
+    g_ok, g_detail = guard_shot(product_root, light, sid, n_frames)
+    purity_fail = seg_purity_check(product_root, light, sid, n_frames, log) if g_ok else None
+    if purity_fail is not None:
+        g_ok = False
+        g_detail = dict(g_detail or {})
+        g_detail['segPurity'] = purity_fail
+    return g_ok, g_detail, purity_fail
+
+
 def fingerprint_diff(old_fp, new_fp):
     """逐字段比较指纹；返回差异说明列表（空 = 一致）。"""
     if not isinstance(old_fp, dict):
@@ -969,7 +981,7 @@ def main():
             continue
         else:
             # guard != pass（必修3）：重新守卫，仍失败就仍停——不重渲、更不洗白
-            g_ok, g_detail = guard_shot(product_root, s['light'], sid, s['frames'])
+            g_ok, g_detail, _purity = completion_guard(product_root, s['light'], sid, s['frames'], log)
             p['guard'] = 'pass' if g_ok else 'fail'
             p['guardDetail'] = g_detail
             if g_ok:
@@ -1131,14 +1143,8 @@ def main():
             return False
         p['secondsTotal'] = round(seconds, 1)
         p['secondsPerFrame'] = round(seconds / max(1, s['frames']), 2)
-        g_ok, g_detail = guard_shot(product_root, s['light'], sid, s['frames'])
-        # R1可选1：守卫过后的 seg 纯度是写「成功完成记录」前的最后一道——非 LUT 像素必须 0
-        # 且按镜头声明完整帧号核对（--report 禁用；LUT 不存在 = 检查不适用，stub 链路自动跳过）
-        purity_fail = seg_purity_check(product_root, s['light'], sid, s['frames'], log) if g_ok else None
-        if purity_fail is not None:
-            g_ok = False
-            g_detail = dict(g_detail or {})
-            g_detail['segPurity'] = purity_fail
+        # R1可选1 + R1审查必修1：beauty 守卫 + seg 纯度（按镜头声明完整帧号，LUT 不存在 = 不适用）
+        g_ok, g_detail, purity_fail = completion_guard(product_root, s['light'], sid, s['frames'], log)
         p['guard'] = 'pass' if g_ok else 'fail'
         p['guardDetail'] = g_detail
         sdir = shot_dir_of(product_root, s['light'], sid)

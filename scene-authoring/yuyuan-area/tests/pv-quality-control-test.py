@@ -673,6 +673,54 @@ def main():
               'T4e: 高空天 %s 被改动（期望原样 %s——远离裁切带的天空一字节不动）'
               % (opx[0, 0], high_sky))
 
+    # ---- T7（astra pvquality R1 必修1）：所有写成功完成记录的路径都经 completion_guard（含 seg 纯度）----
+    import ast
+    batch_src_path = os.path.join(AREA, 'scripts', 'render-pv-batch.py')
+    batch_src = open(batch_src_path, encoding='utf-8').read()
+    tree = ast.parse(batch_src)
+    direct = []
+    for fn in ast.walk(tree):
+        if isinstance(fn, ast.FunctionDef) and fn.name != 'completion_guard':
+            for node in ast.walk(fn):
+                if isinstance(node, ast.Call) and getattr(node.func, 'id', None) == 'guard_shot':
+                    direct.append((fn.name, node.lineno))
+    # 嵌套函数会被外层 main 的 walk 再次遍历到，按行号去重后仍须为空
+    check(not direct, 'T7: guard_shot 只能经 completion_guard 调用（绕过 seg 纯度的路径：%s）' % sorted(set(direct)))
+    check(batch_src.count('completion_guard(product_root') >= 2,
+          'T7: 新渲染与续跑两条完成路径都须调用 completion_guard（实际 %d 处）' % batch_src.count('completion_guard(product_root'))
+    specb = importlib.util.spec_from_file_location('render_pv_batch_t7', batch_src_path)
+    rpb = importlib.util.module_from_spec(specb)
+    specb.loader.exec_module(rpb)
+    calls = []
+    rpb.guard_shot = lambda *a: (True, {'blank': 'ok'})
+    rpb.seg_purity_check = lambda *a: calls.append(a) or 'seg 纯度检查未过（测试注入）'
+    ok, detail, pf = rpb.completion_guard('/nonexistent', 'day', 'pv13-corridor-walk', 120, lambda m: None)
+    check(ok is False and pf and 'segPurity' in detail and len(calls) == 1,
+          'T7: 纯度失败时 completion_guard 必须判失败（ok=%r pf=%r calls=%d）' % (ok, pf, len(calls)))
+    rpb.seg_purity_check = lambda *a: None
+    ok2, _d2, pf2 = rpb.completion_guard('/nonexistent', 'day', 'pv13-corridor-walk', 120, lambda m: None)
+    check(ok2 is True and pf2 is None, 'T7: 守卫与纯度都过时 completion_guard 判通过')
+    rpb.guard_shot = lambda *a: (False, {'blank': 'fail'})
+    calls.clear(); rpb.seg_purity_check = lambda *a: calls.append(a)
+    ok3, _d3, _p3 = rpb.completion_guard('/nonexistent', 'day', 'pv13-corridor-walk', 120, lambda m: None)
+    check(ok3 is False and not calls, 'T7: beauty 守卫失败时直接判失败、不再跑纯度')
+
+    # ---- T8（astra pvquality R1 可选1）：check-horizon-line 平台台阶负例（20→80 并保持）----
+    import tempfile as _tf8
+    import numpy as _np8
+    from PIL import Image as _Img8
+    spech = importlib.util.spec_from_file_location('check_horizon_t8', os.path.join(AREA, 'scripts', 'check-horizon-line.py'))
+    chl = importlib.util.module_from_spec(spech)
+    spech.loader.exec_module(chl)
+    arr = _np8.full((720, 1280, 3), 20, dtype=_np8.uint8)
+    arr[62:, :, :] = 80
+    with _tf8.TemporaryDirectory() as td:
+        fp = os.path.join(td, 'plateau.png')
+        _Img8.fromarray(arr).save(fp)
+        r = chl.check_frame(fp, 0.125, 12.0, 600, 950)
+    check(r['ok'] is False and r['upStep'] >= 59 and r['upStepRow'] == 62,
+          'T8: y62 平台上跳 60 必须被抓（got upStep=%r row=%r ok=%r）' % (r['upStep'], r['upStepRow'], r['ok']))
+
     print('pv-quality-control-test: %d pass, %d fail' % (passes, fails))
     return 1 if fails else 0
 
