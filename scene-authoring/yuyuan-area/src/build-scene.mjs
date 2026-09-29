@@ -945,7 +945,8 @@ function buildBridgeHead() {
   const br = layout.objects.find((o) => o.id === 'jiuqu-bridge');
   const water = layout.objects.find((o) => o.id === POND_WATER_ID);
   if (!br || !water) return null;
-  const pts = br.geometry.polyline, half = (br.width ?? 2.4) / 2, deckY = br.deckY ?? 0.55, topY = deckY - 0.18;
+  // wave14-jiuqu：桥面板 0.18 -> 0.09（garden-kit build_bridge 同步改），桥头台顶随板底，仍包住岸上桥墩
+  const pts = br.geometry.polyline, half = (br.width ?? 2.4) / 2, deckY = br.deckY ?? 0.55, topY = deckY - 0.09;
   const inner = offsetPolySafe(orientRing(water.geometry.footprint), -REVET.band).pts;   // 驳岸内沿 = 看得见的池水边
   const seg = []; let acc = 0;
   for (let k = 0; k + 1 < pts.length; k++) { const L = Math.hypot(pts[k + 1][0] - pts[k][0], pts[k + 1][1] - pts[k][1]); seg.push([acc, L]); acc += L; }

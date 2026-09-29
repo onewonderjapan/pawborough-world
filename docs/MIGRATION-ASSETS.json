@@ -2095,11 +2095,12 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/staged/site-modules/jiuqu-bridge.glb",
-      "sha256": "ca33d55c69069df5c3416b3da769e26ab11664faffe6e6fa667caa190df421da",
-      "bytes": 448256,
-      "sourcePackage": "pawborough-wave11-huxwalk-20260927",
+      "sha256": "ce312a50d3c3268a50fe27132cabc72764adea226a7dcdfd2f47d384ac982682",
+      "bytes": 545928,
+      "sourcePackage": "pawborough-wave14-jiuqu-20260930",
+   "note": "镂空石栏杆+石墩+薄板桥面 wave14-jiuqu (replaces pawborough-wave11-huxwalk-20260927)",
       "replaces": {
-        "sha256": "d60215cb18dc6ba99484a6e7966b136e111245aa8ffe500236322aaa4a7d2729",
+        "sha256": "ca33d55c69069df5c3416b3da769e26ab11664faffe6e6fa667caa190df421da",
         "bytes": 448256
       }
     },
@@ -2117,12 +2118,13 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/staged/site-modules/garden-kit-catalog.json",
-      "sha256": "6bec4b654ab03098258005a7affd5d2005f3d0520638c490d7e17909f4c3afe4",
-      "bytes": 6222,
-      "sourcePackage": "pawborough-wave11-huxwalk-20260927",
+      "sha256": "2cbf95b8b76c2163957ba13a16c951f1e550f8d732000ed0dadd06b14e968e32",
+      "bytes": 7434,
+      "sourcePackage": "pawborough-wave14-jiuqu-20260930",
+   "note": "bridgeInfo 同步 wave14-jiuqu (replaces pawborough-wave11-huxwalk-20260927)",
       "replaces": {
-        "sha256": "69f37dc2b72389d33d6c99b037da6ac95ba01f4cde1c263b0d4bf08471da26f3",
-        "bytes": 5975
+        "sha256": "6bec4b654ab03098258005a7affd5d2005f3d0520638c490d7e17909f4c3afe4",
+        "bytes": 6222
       }
     },
     {
@@ -2137,9 +2139,14 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/staged/site-modules/garden-kit-reimport.json",
-      "sha256": "2d4865e9b51c55cffaed9072daf182fcbcc62eebf086730e98d2f7ae02df90e1",
-      "bytes": 1995,
-      "sourcePackage": "pawborough-wave10-pondqa-20260927"
+      "sha256": "87b589dae9eefaf098b50c364fc1996fbe9d6dac66034b56463d51a7d6307386",
+   "replaces": {
+    "sha256": "2d4865e9b51c55cffaed9072daf182fcbcc62eebf086730e98d2f7ae02df90e1",
+    "bytes": 1995
+   },
+      "bytes": 2121,
+      "sourcePackage": "pawborough-wave14-jiuqu-20260930",
+   "note": "reimport 核对重跑 wave14-jiuqu (replaces pawborough-wave10-pondqa-20260927)"
     },
     {
       "path": "scene-authoring/yuyuan-area/staged/site-modules/site-inputs.json",

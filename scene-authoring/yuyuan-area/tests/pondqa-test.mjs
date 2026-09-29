@@ -166,7 +166,7 @@ for (const o of Q.STEPS) {
     const ys = rv.flatMap((n) => Array.from({ length: n.P.length / 3 }, (_, i) => n.P[i * 3 + 1]));
     const top = Math.max(...ys), bot = Math.min(...ys);
     ok(`驳岸网格存在（${rv.map((n) => n.file + ':' + n.name).join(',')}）`, rv.every((n) => n.file.startsWith('zone-pond')));
-    ok(`驳岸压顶 ${top.toFixed(3)} 高出水面 ≥ 0.15、低于桥面底 0.37`, top >= Q.WATER_Y + 0.15 && top < 0.37);
+    ok(`驳岸压顶 ${top.toFixed(3)} 高出水面 ≥ 0.15、低于桥面底 ${(Q.DECK_Y - 0.09).toFixed(2)}（wave14-jiuqu 口径）`, top >= Q.WATER_Y + 0.15 && top < Q.DECK_Y - 0.09);
     ok(`驳岸岸墙落到外围地面 ${GROUND_Y}（实测底 ${bot.toFixed(3)}）`, Math.abs(bot - GROUND_Y) < 1e-3);
     // 朝向：压顶朝上；竖面按几何法线外推 0.1 m —— 外岸墙的点落在水池多边形外，池壁的点落在池内且离岸线 > 0.35 m
     let wrong = 0, faces = 0;
@@ -232,7 +232,12 @@ const BG = new Q.VGrid(bridgeNodes, { cell: 0.5 });
 {
   const pts = Q.BRIDGE_LINE;
   let samples = 0, see = 0, openSee = 0, openSamples = 0; const where = [];
-  const heights = [0.02, 0.4, 0.75];
+  // wave14-jiuqu：机主定栏杆改镂空（望柱+上下横枋+花瓶柱），实心板被删。
+  // 契约随之改：下枋 +0.10（带 0.05..0.15）与上枋 +0.85（带 0.79..0.91）必须整线挡光（挡人靠碰撞盒，视觉靠横枋）；
+  // +0.40 花瓶柱带「有挡有透」：挡光占比 ∈ [0.12, 0.75]（实心墙=1.0 旧口径必红，全空=0）。
+  const heights = [0.10, 0.85, 0.40];
+  const bandContract = { 0.10: [1.0, 1.0, '下枋带整线挡光'], 0.85: [1.0, 1.0, '上枋带整线挡光'], 0.40: [0.12, 0.75, '花瓶柱带有挡有透'] };
+  const stat = new Map(heights.map((h) => [h, { n: 0, hit: 0 }]));
   for (let i = 0; i + 1 < pts.length; i++) for (const side of [-1, 1]) {
     const a = mitreHalf(i, side, BR_HALF - EDGE_IN), b = mitreHalf(i + 1, side, BR_HALF - EDGE_IN);
     const el = Math.hypot(b[0] - a[0], b[1] - a[1]); if (el < 0.3) continue;
@@ -255,11 +260,16 @@ const BG = new Q.VGrid(bridgeNodes, { cell: 0.5 });
         if (inOpen) { openSamples++; if (!hit) openSee++; continue; }
         if (nearOpen) continue;
         samples++;
+        const st = stat.get(h); st.n++; if (hit) st.hit++;
         if (!hit) { see++; if (where.length < 4) where.push(`span${i}/${side} t${t.toFixed(2)} h${h}`); }
       }
     }
   }
-  ok(`#5 栏杆线（桥面边内缩 0.19，layout 重算）不透光：板脚 +0.02 / 板中 +0.40 / 扶手下 +0.75 三个高度每 5 mm 采样 ${samples}，透光 ${see}`, see === 0, where.join('; '));
+  for (const [h, st] of stat) {
+    const [lo, hi, name] = bandContract[h];
+    const ratio = st.n ? st.hit / st.n : 0;
+    ok(`#5 栏杆线（桥面边内缩 0.19，layout 重算）${name} +${h.toFixed(2)}：采样 ${st.n}，挡光 ${(ratio * 100).toFixed(1)}% ∈ [${lo * 100}, ${hi * 100}]`, st.n > 1000 && ratio >= lo - 1e-9 && ratio <= hi + 1e-9, `ratio=${ratio.toFixed(4)} n=${st.n}`);
+  }
   ok(`#1 抱厦正对处栏杆开口：开口内采样 ${openSamples}，通透 ${openSee}（≥ 95%）`, openSamples > 0 && openSee / openSamples >= 0.95);
   // 开口两侧望柱：开口端点（抱厦中心线 ±0.75，湖心亭一侧栏杆线上）0.06 m 内有望柱（桥面 +0.5 处水平截到柱）
   let postsOk = 0;
@@ -307,7 +317,8 @@ const BG = new Q.VGrid(bridgeNodes, { cell: 0.5 });
   ok(`#4 桥头台网格存在（${head.map((n) => n.file + ':' + n.name).join(',') || '无'}）`, head.length === 1 && head[0].file.startsWith('zone-pond'));
   if (head.length) {
     const ys = head.flatMap((n) => Array.from({ length: n.P.length / 3 }, (_, i) => n.P[i * 3 + 1]));
-    ok(`#4 桥头台顶 ${Math.max(...ys).toFixed(3)} ≤ 桥面底 ${(Q.DECK_Y - 0.18).toFixed(2)}，底 = 外围地面 ${Math.min(...ys).toFixed(3)}`, Math.max(...ys) <= Q.DECK_Y - 0.18 + 1e-3 && Math.abs(Math.min(...ys) - GROUND_Y) < 1e-3);
+    // wave14-jiuqu：桥面板 0.18 -> 0.09（机主定薄板），桥头台顶口径同步板底 0.46
+    ok(`#4 桥头台顶 ${Math.max(...ys).toFixed(3)} ≤ 桥面底 ${(Q.DECK_Y - 0.09).toFixed(2)}，底 = 外围地面 ${Math.min(...ys).toFixed(3)}`, Math.max(...ys) <= Q.DECK_Y - 0.09 + 1e-3 && Math.abs(Math.min(...ys) - GROUND_Y) < 1e-3);
     // 台的每个顶点向桥中线收 0.02 m 后，正上方必须是桥面（台不越出桥面轮廓）
     const DG = new Q.VGrid(bridgeNodes.filter((n) => /deck-stone/.test(n.mat)), { cell: 0.5 });
     let out = 0;
@@ -327,16 +338,18 @@ const BG = new Q.VGrid(bridgeNodes, { cell: 0.5 });
   let landPiers = 0, exposed = 0; const ex = [];
   for (const n of bridgeNodes.filter((m) => /grey-stone/.test(m.mat))) {
     for (const L of islands(n).list) {
-      if (!(L.min[1] < -0.3 && L.max[1] <= Q.DECK_Y - 0.17)) continue;
+      if (!(L.min[1] < -0.3 && L.max[1] <= Q.DECK_Y - 0.08)) continue;   // wave14-jiuqu：墩顶=板底 0.46（旧 0.37），口径 +0.01
       const c = [(L.min[0] + L.max[0]) / 2, (L.min[2] + L.max[2]) / 2];
       if (Q.pointInPoly(c, Q.WATER_POLY) && Q.distToPolyline(c, Q.WATER_POLY, true).d > 0.35) continue;       // 在看得见的水里
       landPiers++;
       const corners = [[L.min[0], L.min[2]], [L.max[0], L.min[2]], [L.min[0], L.max[2]], [L.max[0], L.max[2]], c];
-      const miss = corners.filter(([x, z]) => !cover.column(x, z).some((h) => h.ny > 0.5 && h.y >= Q.DECK_Y - 0.19));   // 覆盖面顶 ≥ 墩顶（桥面底 0.37）
+      const miss = corners.filter(([x, z]) => !cover.column(x, z).some((h) => h.ny > 0.5 && h.y >= Q.DECK_Y - 0.10));   // 覆盖面顶 ≥ 墩顶（桥面底 0.46，wave14-jiuqu）
       if (miss.length) { exposed++; if (ex.length < 4) ex.push(c.map((v) => v.toFixed(2)).join(',')); }
     }
   }
-  ok(`#4 驳岸内沿以外的桥墩 ${landPiers} 根全部包在桥头台 / 实心台阶里（露出 ${exposed}）`, landPiers >= 12 && exposed === 0, ex.join('; '));
+  // wave14-jiuqu：桥墩改单排方墩（旧 ±0.9 成对 → 岛数减半），阈值 12 → 6（两端岸上段各 ≥2 站，3 m 站距 + 折点站）；
+  // 保护点不变：岸上桥墩必须全部被桥头台 / 实心台阶包住（露出 0）。
+  ok(`#4 驳岸内沿以外的桥墩 ${landPiers} 根全部包在桥头台 / 实心台阶里（露出 ${exposed}）`, landPiers >= 6 && exposed === 0, ex.join('; '));
 }
 
 // ---------------- 9) 东接驳垫：面片顶面不变（y 0.02），下方实心落到外围地面 ----------------

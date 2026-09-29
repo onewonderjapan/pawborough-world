@@ -222,6 +222,10 @@ def mat(name, color='ffffff', rough=.8, base=None, normal=None, tint=None, tile=
 M = {
     'whitePlaster': mat('garden-white-plaster', base='PaintedPlaster017_2K-JPG_Color_1K.jpg', tint='ece8e0', rough=.85, tile=(2.5, 2.5), source='DESIGN_SPEC whitePlaster'),
     'greyStone': mat('garden-grey-stone', base='PaintedPlaster017_2K-JPG_Color_1K.jpg', tint='9d9a92', rough=.9, tile=(2.5, 2.5), source='DESIGN_SPEC greyStoneBase'),
+    # wave14-jiuqu 九曲桥栏杆石：浅粉米色。依据 = 参考照片 PBR-SH-0004-017/018/019（CC0）栏杆区白平衡标定采样，
+    # 反照率中位 ≈ #beb5b0（017 #b6a7a2 / 018 #d5cccb / 019 #cdc3c0），除以 PaintedPlaster017 线性均值
+    # (0.5151,0.5151,0.5029) 得 tint #fff3f0。照片曝光依赖，未核实。
+    'bridgeStone': mat('garden-bridge-stone', base='PaintedPlaster017_2K-JPG_Color_1K.jpg', tint='fff3f0', rough=.9, tile=(2.5, 2.5), source='wave14-jiuqu: PBR-SH-0004-017/018/019 white-balanced sampling (unverified)'),
     'tileCap': mat('garden-tile-cap', base='roof-color.jpg', normal='roof-normal.png', rough=.8, tile=(1.44, 1.36), source='DESIGN_SPEC tileCap'),
     'darkGlaze': mat('garden-dark-glaze', color='2f2d2b', rough=.55, source='DESIGN_SPEC darkGlaze'),
     'deckStone': mat('garden-deck-stone', base='PaintedPlaster017_2K-JPG_Color_1K.jpg', tint='b3ada2', rough=.8, tile=(2.5, 2.5), source='DESIGN_SPEC deckStone'),
@@ -690,7 +694,9 @@ def build_bridge():
     W = o.get('width', 2.4)
     deckY = o.get('deckY', 0.55)
     mod = 'jiuqu-bridge'
-    botY = deckY - 0.18
+    # wave14-jiuqu：桥面板 0.18 -> 0.09（"桥面石板薄一些"，参考 PBR-SH-0004-018/019 薄板+边缘线脚，未核实）；
+    # 顶面 deckY 不变（步行碰撞/路线依赖），板底 0.46 由单排方墩墩帽顶住。JS 侧 buildBridgeHead topY 同步改。
+    botY = deckY - 0.09
     n = len(pts)
     dirs = [seg_dir(pts[i], pts[i + 1]) for i in range(n - 1)]
     nrms = [(-d[1], d[0]) for d in dirs]
@@ -840,21 +846,25 @@ def build_bridge():
     for q in open_posts:
         add_post(q)
     for (px, pz) in posts:
-        box_part(mod, 'post', (px, deckY + 0.475, pz), (0.22, 0.95, 0.22), 0.0, M['greyStone'], smooth_all=True)
-        prof = [(0.100, 0.000), (0.058, 0.150), (0.006, 0.275)]  # 莲蕾柱头 0.28 x r0.10（5 棱 3 环减面，R1#4 30MB fallback）
+        # wave14-jiuqu：望柱 0.20x0.20x0.95（GOAL 0.16–0.2 / 0.9–1.0；旧 0.22 改 0.20），浅粉米色石；
+        # 位置/间距/开口逻辑不变（边缘内缩 0.19、≤1.5m、每折点必有望柱、抱厦开口两侧立柱）。
+        # 高度不变：柱头顶 deckY+1.23 = 碰撞 balustrade 盒顶，步行防护与 garden-kit-test 柱头带判据都不动。
+        box_part(mod, 'post', (px, deckY + 0.475, pz), (0.20, 0.95, 0.20), 0.0, M['bridgeStone'], smooth_all=True)
+        # 方锥台柱头略放大：底 0.25 -> 颈 0.17 -> 顶板 0.20，0.28 高（参考 PBR-SH-0004-019 前景望柱，未核实）
+        prof = [(0.125, 0.000), (0.085, 0.240), (0.100, 0.280)]
         rings = []
         for rj, hj in prof:
-            rings.append([bl_pt(px + rj * math.cos(2 * math.pi * m / 5), pz + rj * math.sin(2 * math.pi * m / 5), deckY + 0.95 + hj) for m in range(5)])
-        loft(mod, 'postcap', rings, M['greyStone'], smooth_sides=True, uv_vertex=True)
-    # 实心栏板：背板 0.04（内移 0.01）+ 外圈框 0.06 -> 外面凹槽 0.02
-    # wave10-pondqa（主控定 #5 选项 2）：R1 板底离桥面 0.08、板端离柱心 0.13，眼高能透过板脚横缝 / 板柱竖缝看到水面。
-    # 改为：外框下沿压进桥面 0.01（y0 = deckY + 框半宽 - 0.01），板顶仍在 deckY + 0.80；板端按望柱（地图轴对齐 0.22 方柱）
-    # 沿栏杆方向的实际弦长算，外框端压进柱身 0.01。
-    panels = 0
-    POST_H = 0.11
-    th2, wb = 0.03, 0.055 / 2
+            rings.append([bl_pt(px + sx * rj, pz + sz * rj, deckY + 0.95 + hj) for sx, sz in ((1, 1), (-1, 1), (-1, -1), (1, -1))])
+        loft(mod, 'postcap', rings, M['bridgeStone'], cap_end=True, smooth_sides=True, uv_vertex=True)
+    # wave14-jiuqu：删实心栏板（145 块连读成"墙"是机主打回点），柱间改上下两道横枋留空 + 花瓶柱
+    # （参考 PBR-SH-0004-019：柱间上枋/下枋之间一排车制花瓶柱，明显透空看水；尺寸按照片比例推算，未核实）。
+    # 下枋 0.10 高 x 0.09 厚 @deck+0.05..0.15；花瓶柱带 deck+0.15..0.72（上枋梁底 0.79 下留 0.07）。
+    botrails = 0
+    balusters = 0
+    POST_H = 0.10                       # 望柱半宽（0.20 方柱）
+    th2, wb = 0.03, 0.045 / 2
     def post_reach(ed, inn):
-        # 轴对齐方柱（半宽 POST_H）在栏板外框厚度范围（柱心线两侧 ±th2）内沿 ed 的最短半弦
+        # 轴对齐方柱（半宽 POST_H）在横枋厚度范围（柱心线两侧 ±th2）内沿 ed 的最短半弦
         best = None
         for e in (-th2, th2):
             tm = None
@@ -867,13 +877,11 @@ def build_bridge():
                 tm = v if tm is None else min(tm, v)
             best = tm if best is None else min(best, tm)
         return best
+    # 3 环收面：底 r0.052 / 鼓腹 r0.060 / 顶 r0.046（预算 30000 三角 / 900KB 内；4 棱 = 底16+帽4 三角/根）
+    BAL_PROFILE = [(0.052, 0.00), (0.060, 0.32), (0.046, 0.57)]
     for key, (a, ed, inn, ts, el) in span_bands.items():
         sn, cs = ed[0], ed[1]
-        nnx, nnz = cs, -sn   # 板厚方向（与 box_part 局部 +z 一致）
         yaw = math.atan2(ed[0], ed[1])
-        y0 = deckY + wb - 0.01
-        hh = deckY + 0.80 - y0
-        fb = 0.055
         reach = post_reach(ed, inn) - 0.01 + wb
         tl = band_posts[key]
         for k in range(len(tl) - 1):
@@ -885,28 +893,23 @@ def build_bridge():
             mx = a[0] + ed[0] * (t0 + t1) / 2 + inn[0] * edge_in
             mz = a[1] + ed[1] * (t0 + t1) / 2 + inn[1] * edge_in
             ln = t1 - t0
-            box_part(mod, 'panel', (mx + inn[0] * 0.01, y0 + hh / 2, mz + inn[1] * 0.01), (ln, hh, 0.04), yaw, M['greyStone'], smooth_all=True)
-            rect = [(0.0, 0.0), (ln, 0.0), (ln, hh), (0.0, hh)]
-            rings = []
-            for k2 in range(4):
-                a2 = rect[k2]
-                b3 = rect[(k2 + 1) % 4]
-                tm = (b3[0] - a2[0], b3[1] - a2[1])
-                tl2 = math.hypot(*tm)
-                tu_, tv_ = tm[0] / tl2, tm[1] / tl2
-                npx, npz = -tv_, tu_
-                ring = []
-                for tofs, wofs in ((th2, wb), (-th2, wb), (-th2, -wb), (th2, -wb)):
-                    ux_off = npx * wofs   # 面内 (u, v) 基下直接偏移
-                    v_off = npz * wofs
-                    ring.append(bl_pt(mx + (a2[0] - ln / 2 + ux_off) * sn + nnx * tofs,
-                                      mz + (a2[0] - ln / 2 + ux_off) * cs + nnz * tofs,
-                                      y0 + a2[1] + v_off))
-                rings.append(ring)
-            rings.append(rings[0])
-            loft(mod, 'panel', rings, M['greyStone'], cap_start=False, cap_end=False, smooth_sides=True, uv_vertex=True)
-            panels += 1
-    # 扶手石梁 0.12x0.10：压顶 0.79..0.91，沿 mitre 边线贯通到角点；开口处断开，两段各伸到开口望柱中心
+            # 下枋（地袱）
+            box_part(mod, 'botrail', (mx, deckY + 0.05 + 0.05, mz), (ln, 0.10, 0.09), yaw, M['bridgeStone'], smooth_all=True)
+            botrails += 1
+            # 花瓶柱：4 棱 7 环车制（减面：<=20 三角/根），柱距 ~0.32
+            nbay = max(1, int(round(ln / 0.48)))
+            for kb in range(nbay):
+                tb = t0 + ln * (kb + 0.5) / nbay
+                bx = a[0] + ed[0] * tb + inn[0] * edge_in
+                bz = a[1] + ed[1] * tb + inn[1] * edge_in
+                rings = []
+                for rj, hj in BAL_PROFILE:
+                    rings.append([bl_pt(bx + rj * math.cos(2 * math.pi * m5 / 4 + math.pi / 4),
+                                        bz + rj * math.sin(2 * math.pi * m5 / 4 + math.pi / 4),
+                                        deckY + 0.15 + hj) for m5 in range(4)])
+                loft(mod, 'baluster', rings, M['bridgeStone'], cap_start=True, cap_end=True, smooth_sides=True, uv_vertex=True)
+                balusters += 1
+    # 扶手石梁（上枋）0.12x0.10：压顶 0.79..0.91，沿 mitre 边线贯通到角点；开口处断开，两段各伸到开口望柱中心
     for key, (a, ed, inn, ts, el) in span_bands.items():
         pieces = [(0.0, el)]
         if key in openings:
@@ -915,9 +918,12 @@ def build_bridge():
         for s0, s1 in pieces:
             cx = a[0] + ed[0] * (s0 + s1) / 2 + inn[0] * edge_in
             cz = a[1] + ed[1] * (s0 + s1) / 2 + inn[1] * edge_in
-            box_part(mod, 'rail', (cx, deckY + 0.85, cz), (s1 - s0, 0.12, 0.10), math.atan2(ed[0], ed[1]), M['greyStone'], smooth_all=True)
+            box_part(mod, 'rail', (cx, deckY + 0.85, cz), (s1 - s0, 0.12, 0.10), math.atan2(ed[0], ed[1]), M['bridgeStone'], smooth_all=True)
     BRIDGE_OPENINGS.extend({'span': k[0], 'side': k[1], 't': [round(v, 3) for v in o]} for k, o in openings.items())
-    # 桥墩对：每 3.0 m + 每顶点
+    # 单排方形石墩：每 3.0 m + 每顶点（站序不变），沿桥中线立水中。
+    # wave14-jiuqu：旧 ±0.9 成对 0.36 柱改单排墩（"架在一排方形石墩上"，参考 PBR-SH-0004-018/019 方墩+外扩墩帽，未核实）：
+    # 墩身 0.42 方 -0.70..0.38，墩帽 0.60 方 0.38..0.46 顶住桥面板底（botY）。墩间透空见水。
+    # 岸上段桥墩由 JS buildBridgeHead 实心桥头台包住（topY 已同步 deckY-0.09），pondqa #4 判据同步。
     pier_pos, acc, next_at = [pts[0]], 0.0, 3.0
     for i in range(n - 1):
         L = math.dist(pts[i], pts[i + 1])
@@ -931,18 +937,9 @@ def build_bridge():
         if not any(math.dist(p, q) < 0.3 for q in uniq):
             uniq.append(p)
     for (px, pz) in uniq:
-        best = None
-        for i in range(n - 1):
-            d = seg_dir(pts[i], pts[i + 1])
-            t = max(0, min(math.dist(pts[i], pts[i + 1]), (px - pts[i][0]) * d[0] + (pz - pts[i][1]) * d[1]))
-            qx, qz = pts[i][0] + d[0] * t, pts[i][1] + d[1] * t
-            dist = math.hypot(px - qx, pz - qz)
-            if best is None or dist < best[0]:
-                best = (dist, (-d[1], d[0]))
-        nn = best[1]
-        for side in (-1, 1):
-            box_part(mod, 'piercol', (px + nn[0] * side * 0.9, (botY - 0.7) / 2, pz + nn[1] * side * 0.9), (0.36, botY - (-0.7), 0.36), 0.0, M['greyStone'], smooth_all=True)
-    return {'posts': len(posts), 'panels': panels, 'piers': len(uniq), 'spans': n - 1, 'porchOpenings': BRIDGE_OPENINGS, 'curbCuts': CURB_CUTS}
+        box_part(mod, 'piercol', (px, (-0.70 + 0.38) / 2, pz), (0.42, 1.08, 0.42), 0.0, M['greyStone'], smooth_all=True)
+        box_part(mod, 'piercap', (px, (0.38 + botY) / 2, pz), (0.60, botY - 0.38, 0.60), 0.0, M['greyStone'], smooth_all=True)
+    return {'posts': len(posts), 'botrails': botrails, 'balusters': balusters, 'piers': len(uniq), 'spans': n - 1, 'porchOpenings': BRIDGE_OPENINGS, 'curbCuts': CURB_CUTS}
 
 # ================================================================ 执行
 print('== garden-kit build start ==')
@@ -959,7 +956,7 @@ ASSUMPTIONS.append('temple-wall plain variant dims borrowed from garden cap rati
 mg = build_moon_gate()
 br = build_bridge()
 ASSUMPTIONS.append('R1#1 dragon head: ridge rises smoothly into the head over the 6 m of the head run (body top blends to 3.15 at the head, undulation fades in the window); other runs stay flat (head run seg8 starts at the head, disconnected seg7 tail ends 10.2m away). Head: ellipsoid 1.1x0.7x0.8 at ly 3.62, jaws open 0.32 with 6 wedge teeth each, eyes D0.08 + brows, whiskers r0.02 forward-up (tips +0.3 over crown), horns back-up r0.045 arcs, 5 mane wedges behind skull, 3 stepped neck rings on the neck pedestal')
-ASSUMPTIONS.append('R1#2 bridge balustrade: posts 0.22x0.95 on mitred deck edges inset 0.08 (outer face), spacing <=1.5, one post per inner/outer mitred corner (never on centerline); solid panels 0.72x0.06 (0.04 back slab + 0.06 frame = 0.02 outer recess), band deck+0.08..+0.80; lotus-bud caps 0.28 x r0.10; rail beam 0.12x0.10 at deck+0.79..+0.91')
+ASSUMPTIONS.append('R1#2 bridge balustrade (superseded by wave14-jiuqu, see below): posts on mitred deck edges inset 0.08, spacing <=1.5, one post per inner/outer mitred corner (never on centerline); rail beam 0.12x0.10 at deck+0.79..+0.91')
 ASSUMPTIONS.append('R1#3 moon gate: opening centre lowered 1.6 -> 1.45 per lead decision (apex 2.50 < wall 2.6, hole no longer meets cap); stone ring flat band r 0.98..1.05+0.07, 0.14 wide, 0.04 proud each face, rectangular section, flat shaded; wall face decomposed square-around-circle (no ear-clip slivers); cap ends butt into the 0.5x2.85x0.5 end piers')
 ASSUMPTIONS.append('lattice patterns simplified analytic 回纹/十字海棠 bars 0.035, <=26 bars per window (spec allows); render from both faces via 0.06 depth centered bars')
 
@@ -972,7 +969,8 @@ catalog = {'packageId': 'pawborough-yuyuan-garden-kit-r1-20260923',
            'baseRevision': 'work/yuyuan-garden-kit-20260922 @ b273f531',
            'coordinateContract': 'GLB Y-up world (x, y, z_map), origin map(0,0), no instance transform; Blender internal (x, -z_map, y); export_yup=True',
            'materials': {}, 'modules': {}, 'headInfo': HEAD_INFO, 'bridgeInfo': br, 'moonGateInfo': mg, 'assumptions': ASSUMPTIONS}
-ASSUMPTIONS.append('R1#2 bridge panel recess: 0.04 back slab (inset 0.01 toward deck) + 0.06 frame ring -> single 0.02 recess on the outer face (R1); deck-side face flush')
+ASSUMPTIONS.append('R1#2 bridge panel recess (superseded by wave14-jiuqu): solid panels removed')
+ASSUMPTIONS.append('wave14-jiuqu (owner 2026-09-30: 九曲桥修, ref photos PBR-SH-0004-017/018/019 CC0, dims photo-derived UNVERIFIED): openwork stone railing = posts 0.20x0.20x0.95 with battered square caps 0.25->0.17->0.20 x 0.28 (cap top deck+1.23 = collision box top, unchanged); between posts lower rail 0.10x0.09 at deck+0.05..+0.15 + 4-sided turned vase balusters (3 rings, ~0.57 tall, ~0.48 spacing) + top rail beam unchanged; solid panels deleted (owner: wall-like); deck slab 0.18 -> 0.09 thick (top deckY unchanged, underside 0.46); single row of square piers on the centreline: shaft 0.42 from -0.70 to 0.38 + flared cap 0.60 from 0.38 to deck-0.09, stations every 3.0 m + vertices (unchanged); railing material garden-bridge-stone = PaintedPlaster017 x tint #fff3f0 (white-balanced photo sampling median albedo ~#beb5b0 / texture linear mean 0.515,0.515,0.503); plan polyline / span count / deck elevation / collision boxes unchanged; land piers hidden by JS bridge-head platform whose top follows deck underside 0.46')
 ASSUMPTIONS.append('R1#4 tile lips spacing 0.6 -> 0.36 (r0.10 both sides; cap 0.72x0.14, roll r0.11 unchanged). 30MB gate exceeded after R1 growth (30,288,068B no-food / 30,160,292B with food) -> fallback: temple-wall mesh kept out of scene-areas via SITE_DROP_TEMPLE=1 (anchor node kept for reconcile; temple-wall.glb still delivered) + byte sampling coarsened (cap board/roll ds 0.45->0.9, undulating body ds 0.75->1.0, lotus bud 6->5 sides 3 rings); no spec dimension changed')
 for glb_name, mods in GROUPS:
     final, tri_by_mod = [], {}
@@ -1071,7 +1069,7 @@ json.dump(catalog, open(os.path.join(OUT, 'garden-kit-catalog.json'), 'w', encod
 reimport = {'checked': [], 'issues': []}
 EXPECT = {'garden-white-plaster': {'images': 1, 'colorspace': ['sRGB']}, 'garden-grey-stone': {'images': 1, 'colorspace': ['sRGB']},
           'garden-tile-cap': {'images': 2, 'colorspace': ['sRGB', 'Non-Color']}, 'garden-dark-glaze': {'images': 0, 'colorspace': []},
-          'garden-deck-stone': {'images': 1, 'colorspace': ['sRGB']}}
+          'garden-deck-stone': {'images': 1, 'colorspace': ['sRGB']}, 'garden-bridge-stone': {'images': 1, 'colorspace': ['sRGB']}}
 for glb_name, mods in GROUPS:
     before = set(bpy.data.objects)
     bpy.ops.import_scene.gltf(filepath=os.path.join(OUT, glb_name))

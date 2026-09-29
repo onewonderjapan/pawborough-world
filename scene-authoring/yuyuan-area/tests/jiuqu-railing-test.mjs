@@ -366,14 +366,22 @@ const pierCenters = [];
       o.sx += v[0] / 3; o.sz += v[2] / 3;
     }
   }
-  const piers = [...islands.values()].filter((o) => o.maxY >= PIER_TOP[0] && o.maxY <= PIER_TOP[1] && o.minY < WATER_Y + 0.02);
-  for (const o of piers) pierCenters.push([o.sx / o.n, o.sz / o.n]);
+  // 墩身/墩帽角点不共位（0.42 vs 0.60 方）→ 按中心聚簇合成整墩：top = 各岛最高，bottom = 各岛最低
+  const clustersP = [];
+  for (const o of islands.values()) {
+    const c = [o.sx / o.n, o.sz / o.n];
+    let best = null;
+    for (const cl of clustersP) if (Math.hypot(c[0] - cl.cx, c[1] - cl.cz) < 0.35) { best = cl; break; }
+    if (best) { best.minY = Math.min(best.minY, o.minY); best.maxY = Math.max(best.maxY, o.maxY); best.ext = Math.max(best.ext, o.maxX - o.minX, o.maxZ - o.minZ); best.n += o.n; }
+    else clustersP.push({ cx: c[0], cz: c[1], minY: o.minY, maxY: o.maxY, ext: Math.max(o.maxX - o.minX, o.maxZ - o.minZ), n: o.n });
+  }
+  const piers = clustersP.filter((o) => o.maxY >= PIER_TOP[0] && o.maxY <= PIER_TOP[1] && o.minY < WATER_Y + 0.02);
+  for (const o of piers) pierCenters.push([o.cx, o.cz]);
   const inWater = piers.filter((o) => o.minY < WATER_Y);
-  ok(`E 方墩岛 ${piers.length} ≥ ${PIER_MIN}（顶 ∈ [${PIER_TOP.map((x) => x.toFixed(2))}]、底入水；其中 minY<水面 ${inWater.length}）`, piers.length >= PIER_MIN && inWater.length >= PIER_MIN);
+  ok(`E 方墩 ${piers.length} ≥ ${PIER_MIN}（顶 ∈ [${PIER_TOP.map((x) => x.toFixed(2))}]、底入水；其中 minY<水面 ${inWater.length}）`, piers.length >= PIER_MIN && inWater.length >= PIER_MIN);
   let sqBad = 0;
   for (const o of piers) {
-    const ext = Math.max(o.maxX - o.minX, o.maxZ - o.minZ);
-    if (ext < PIER_SQ[0] || ext > PIER_SQ[1]) sqBad++;
+    if (o.ext < PIER_SQ[0] || o.ext > PIER_SQ[1]) sqBad++;
   }
   ok(`E 方墩见方 ∈ [${PIER_SQ}]（设计墩身 0.42/墩帽 0.60；测 ${piers.length} 根超 ${sqBad}）`, piers.length >= PIER_MIN && sqBad === 0);
   // 单排：墩心都在中线 0.6 m 内

@@ -93,7 +93,7 @@ const topSurface = (col, { maxY = 1.0, skip = () => false } = {}) => col.find((h
     for (const L of isl.list) {
       const dx = L.max[0] - L.min[0], dy = L.max[1] - L.min[1], dz = L.max[2] - L.min[2];
       let cls = 'other';
-      if (L.min[1] < 0 && L.max[1] <= Q.DECK_Y - 0.17) cls = 'pier';
+      if (L.min[1] < 0 && L.max[1] <= Q.DECK_Y - 0.08) cls = 'pier';   // wave14-jiuqu：墩顶=板底 0.46
       else if (Math.abs(L.min[1] - Q.DECK_Y) < 0.005 && Math.abs(dy - 0.95) < 0.01) cls = 'post';
       else if (L.min[1] >= Q.DECK_Y + 0.9) cls = 'postcap';
       else if (Math.abs(L.min[1] - Q.DECK_Y) < 0.005 && dy < 0.07) cls = 'curb';
