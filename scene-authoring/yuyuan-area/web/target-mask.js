@@ -198,14 +198,14 @@ export function installTargetMask({ renderer, scene, camera }) {
     for (const o of hidden) o.visible = true;
     scene.background = bg; scene.fog = fog;
     rt.dispose(); white.dispose(); black.dispose(); vol?.dispose(); stFac?.dispose(); stOther?.dispose(); for (const m of matCache.values()) m.dispose();
-    let n = 0, sky = 0, soffit = 0;
+    let n = 0, sky = 0, soffit = 0, near = 0;
     if (st) {
-      for (let i = 0; i < px.length; i += 4) { if (px[i] > 127) n++; if (px[i + 1] < 64) sky++; else if (px[i + 1] < 192) soffit++; }
+      for (let i = 0; i < px.length; i += 4) { if (px[i] > 127) n++; if (px[i + 1] < 64) sky++; else if (px[i + 1] < 192) soffit++; if (px[i + 2] > 127) near++; }
     } else {
       for (let i = 0; i < px.length; i += 4) if (Math.max(px[i], px[i + 1], px[i + 2]) > 8) n++;
     }
     const out = { share: n / (w * h), pixels: n, w, h, meshesMatched: st ? { facadeMeshes: Object.values(idCount).reduce((a, b) => a + b, 0) } : idCount };
-    if (st) Object.assign(out, { sky: sky / (w * h), soffit: soffit / (w * h) }, largestBottomComponent(px, w, h));
+    if (st) Object.assign(out, { sky: sky / (w * h), soffit: soffit / (w * h) }, largestBottomComponent(px, w, h), { nearFull: near / (w * h) });
     if (spec.png) { // 掩膜 PNG（上下翻转回屏幕朝向），供叠加截图
       const c = document.createElement('canvas'); c.width = w; c.height = h;
       const ctx = c.getContext('2d'), img = ctx.createImageData(w, h);

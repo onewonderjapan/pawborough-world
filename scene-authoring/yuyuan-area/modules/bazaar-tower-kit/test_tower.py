@@ -1172,6 +1172,753 @@ if _sb_nodes:
 else:
     skip('test17c 底层店面背板', '本楼无 shopfront 店面背板')
 
+# ---------- test 17g/17h/17n（wave13-habaowin H1；R1 按 REVIEW-astra 必修 1/2 重写；R2 按 GOAL-R2 必修 1–4 再修）----------
+# 契约（GOAL：每栋楼每个格心窗段背后都有发光背板；立面边×楼层×窗型与 layout/params 独立期望对账）：
+#   g) 不变式（纯 GLB 几何）：windows__lattice* 三角按「墙面局部坐标系」分段——
+#      共面组（法向 dot≥0.999、离面 ≤6mm）取平均法向 n 与顶点均值参照点，建立局部系
+#      （u=沿墙水平、v=高度 y、d=沿内法向深度；内侧符号 sint 用**墙面几何**定（R2 必修2）：
+#      生成器格心面凸出墙面 0.045~0.055，真实墙体只在格心面内侧 0.04~0.15 m——非窗节点竖直三角
+#      中该侧 u 跨并集 ≥50% 者为墙面侧（外侧只有框柱装饰面，实测 1~2%）；唯一墙面侧=内侧。
+#      歧义才回退 footprint 0.6/0.15m 双距探针（恰一侧命中才定号）；两侧同真/同假不得默认 +1，
+#      sint 未定的平面段全部计缺（FAIL 响亮）。sint 与三角绕向无关：整体反转格心+背板绕向，结果不变）。
+#      组内先按 v 跨签名（v0、v1 各自 ≤15mm）分簇：同一生成器窗叶 v 跨严格相等；
+#      同层 band 叶 [zb0,zb1] 与 ends4 窗 [zl0w,zl1w] v 跨不同、不会互并。
+#      簇内按 u 间隙 ≤T_SEG 连通成段，段 u/v 范围全部取三角顶点（非面心）。
+#      断言：每段背后（同法向 |dot|≥0.995、d∈[0.002,0.10]）存在 windows__winback* 三角，
+#      其 (u,v) **真实面积**覆盖该段 ≥95%（R2 必修1）：背板三角投影后必须是直角边平行 u/v 轴的
+#      半矩形三角，按 bbox 键归组、角点 4=完整矩形 / 3=半矩形——「第二个三角换成第一个的副本」
+#      只计半块面积（实测覆盖率精确=50% → FAIL），不再把三角形扩成外接矩形。
+#      分段依据（15 栋 2026-09-29 实测，v 签名簇内）：同一叶内三角 bbox 间隙 ≤0.004 m
+#      （四边形对角切分 bbox 相同）；不同叶/窗间隙 ≥0.05 m（screen 扇距 = leafGapM=0.05、
+#      band 条距 0.06、bay 间距 = columnSizeM+0.42=0.74）。T_SEG=0.02 居中，两侧余量 ≥2.4×。
+#      段只要求被单块背板盖住，切得再细不破坏判定（每叶整体落在其背板矩形内）。
+#   h) layout 独立期望对账（R2 必修3：期望带立面身份「edge×楼层×窗型」；不读生成器输出与
+#      measurements）。期望来源 = layout.json（frontEdges→street/plain）+ params（styles 三级回退、
+#      storeyHeightsM、frameLintelHM、长/半窗格心率、window、bandHM/bandSillM）× 立面锚定
+#      _t17_anchor（(edge,storey)→立面线内距，从墙体几何锚定、与格心段无关：非窗非塔竖直三角、
+#      平行该边 ≥0.995、s 整含边跨度、共享段(blank)排除、外圈 1m 内有墙只在 1m 内找、
+#      深线压制 + 立面组件带 ±0.15 合并覆盖 ≥max(2.5m,0.25L) + 带内 y 盖层带 ≥95%；
+#      podium 起落/斜切/塔体占位/blank 短边(<4m，15 栋实测无一开窗)自然无锚=只豁免该边该层）。
+#      有锚 → 该边该层按角色类窗型立期望。认领 = 归边（±25°、内距≤12、中心投影在跨度内、
+#      共线取内距最小）+ 同层 + v 跨 ±0.08（多认领：转角带一排窗服务多条边）——期望带 edge 身份
+#      后别的立面不可代位（R1 审查的 street 窗带代位即关死）。锚线被占位（该边该层的归边段全部
+#      disp=pav/interior 区域豁免）→ _t17_drop_occupied 核减期望（删段则核减失效、期望恢复把守）。
+#      逐边期望全空但格心节点在（复合排楼 868/884 无可确定立面线）→ 回退 R1 口径角色类×层守卫
+#      （17g 逐段覆盖不放宽），断言名注明 fallback。多出（必修4）：①已归属立面的段只认自身角色
+#      该层允许窗型（screen 段在 plain 边=错型必抓）；②塔窗豁免三关：pav-* 包围盒（塔件删则收缩）
+#      + 塔体墙盒高度（30m 伪窗超顶即拒）+ 塔体允许窗型 v 跨（_t17_pav_allowed：pav-body/tier 墙盒
+#      ×生成器窗公式 body h=1.6/sill=0.9、tier h=1.5/sill=0.8）；③非立面线（内天井/podium 内墙）
+#      该层任一角色类窗型 v 跨一致才豁免。期望存在而 windows__lattice*/windows__winback* 整类
+#      节点缺失 → FAIL（_t17_entry_missing，不再 SKIP）。
+#   n) 负例自检（仅华宝楼跑，证明 17g/17h 捕获力，全部内存突变、零重建）：
+#      N1 全部背板 u 向宽度缩到 1%（中心/高度/材质不变，按顶点连通分面板）→ 17g 必须 FAIL；
+#      N2 按**立面身份**定位并移除 screen 期望所在边×层的格心段（普通窗保留）→ 17h 必须缺 screen 期望；
+#      N3 格心段清空（=整类节点缺失）→ 17h 必须缺全部期望；
+#      N4 移除首个期望所在边的全部段 → 17h 必须缺该边全部期望（逐边独立对账把守）；
+#      入口级整类缺失判据 _t17_entry_missing 独立断言（R2 可选项）。
+_lat_nodes17 = [n_ for n_ in meshes if _base(n_['name']).startswith('windows__lattice')]
+_wb_nodes17 = [n_ for n_ in meshes if _base(n_['name']).startswith('windows__winback')]
+def _t17_tris(nodes_):
+    out = []
+    for nd_ in nodes_:
+        wv_ = world_verts(nd_)
+        for (ia_, ib_, ic_) in nd_['idxTris']:
+            a_, b_, c_ = wv_[ia_], wv_[ib_], wv_[ic_]
+            u_ = [b_[i] - a_[i] for i in range(3)]
+            w_ = [c_[i] - a_[i] for i in range(3)]
+            cr = [u_[1] * w_[2] - u_[2] * w_[1], u_[2] * w_[0] - u_[0] * w_[2], u_[0] * w_[1] - u_[1] * w_[0]]
+            ln = math.sqrt(cr[0] * cr[0] + cr[1] * cr[1] + cr[2] * cr[2]) or 1.0
+            out.append({'v': (a_, b_, c_), 'n': [cr[0] / ln, cr[1] / ln, cr[2] / ln]})
+    return out
+def _t17_wtris(exclude_pav):
+    """非窗节点（排除 windows__*；exclude_pav 再排除 pav-*）的竖直三角，位置与法向一次预计算——
+    sint 定号（含塔体：塔窗格心的内侧同样由塔体墙面证明）与立面线锚定（必修3 排除塔体，
+    塔身墙不得锚定常规立面线）的独立几何来源；纯位置/朝向判定，与三角绕向无关。"""
+    out = []
+    for nd_ in meshes:
+        bn_ = _base(nd_['name'])
+        if bn_.startswith('windows__') or (exclude_pav and bn_.startswith('pav-')):
+            continue
+        V_ = world_verts(nd_)
+        for (ia_, ib_, ic_) in nd_['idxTris']:
+            a_, b_, c_ = V_[ia_], V_[ib_], V_[ic_]
+            u_ = [b_[i] - a_[i] for i in range(3)]
+            w_ = [c_[i] - a_[i] for i in range(3)]
+            cr = [u_[1] * w_[2] - u_[2] * w_[1], u_[2] * w_[0] - u_[0] * w_[2], u_[0] * w_[1] - u_[1] * w_[0]]
+            ln = math.sqrt(cr[0] * cr[0] + cr[1] * cr[1] + cr[2] * cr[2])
+            if ln < 1e-9:
+                continue
+            n_ = [cr[0] / ln, cr[1] / ln, cr[2] / ln]
+            if math.hypot(n_[0], n_[2]) < 0.95:      # 只留竖直面（墙面）
+                continue
+            out.append((a_, b_, c_, n_))
+    return out
+def _t17_planes(tris_, wtris_=None):
+    planes = []
+    for t_ in tris_:
+        n_, p_ = t_['n'], t_['v'][0]
+        d_ = n_[0] * p_[0] + n_[1] * p_[1] + n_[2] * p_[2]
+        hit = None
+        for pl_ in planes:
+            if pl_['n'][0] * n_[0] + pl_['n'][1] * n_[1] + pl_['n'][2] * n_[2] >= 0.999 and abs(pl_['d'] - d_) <= 0.006:
+                hit = pl_
+                break
+        if hit is None:
+            hit = {'n': n_, 'd': d_, 'tris': []}
+            planes.append(hit)
+        hit['tris'].append(t_)
+    for pl_ in planes:
+        k_ = len(pl_['tris'])
+        n_ = [sum(t_['n'][i] for t_ in pl_['tris']) / k_ for i in range(3)]
+        nl_ = math.sqrt(n_[0] * n_[0] + n_[1] * n_[1] + n_[2] * n_[2]) or 1.0
+        nb_raw = [n_[0] / nl_, n_[1] / nl_, n_[2] / nl_]
+        vs_ = [v_ for t_ in pl_['tris'] for v_ in t_['v']]
+        p0_ = [sum(v_[i] for v_ in vs_) / len(vs_) for i in range(3)]
+        t2_raw = (-nb_raw[2], nb_raw[0])
+        us_ = [(v_[0] - p0_[0]) * t2_raw[0] + (v_[2] - p0_[2]) * t2_raw[1] for v_ in vs_]
+        ys_ = [v_[1] for v_ in vs_]
+        sint_ = None
+        if wtris_ is not None:
+            # sint（REVIEW-astra 必修2）：不依赖绕向、不默认选边。
+            # ① 墙面几何定号：生成器格心面凸出墙面 0.045~0.055（R1 实测净距 0.023~0.028 同源），
+            #    即真实墙体只存在于格心面**内侧** 0.04~0.15 m 处——查非窗节点竖直三角，
+            #    法向平行（≥0.995）、全部顶点带号深度 ∈[0.04,0.15]、(u,v) 与本平面格心范围交叠 ≥0.3m，
+            #    该侧 u 跨并集（截到格心跨度）≥50% = 墙面侧（外侧只有框柱等细小装饰面，实测并集 1~2%）。
+            #    唯一墙面侧 = 内侧。纯位置判定，三角绕向反转不改变结果。
+            # ② 歧义回退 footprint 探针（0.6m/0.15m 双距）：仅当恰一侧命中才定号；
+            #    两侧同真/同假（退台、塔体等深居 footprint 内的平面）不得默认 +1 → sint=None，
+            #    该平面段按「内侧不可证」处理（17g 全部计缺，FAIL 响亮）。
+            bb_ = (min(us_), max(us_), min(ys_), max(ys_))
+            span_ = max(bb_[1] - bb_[0], 1e-6)
+            uvs_ = {1: [], -1: []}
+            for (a_, b_, c_, n_) in wtris_:
+                if abs(n_[0] * nb_raw[0] + n_[2] * nb_raw[2]) < 0.995:
+                    continue
+                for sg_ in (1, -1):
+                    ok_ = True
+                    for v_ in (a_, b_, c_):
+                        d__ = ((v_[0] - p0_[0]) * nb_raw[0] + (v_[2] - p0_[2]) * nb_raw[2]) * sg_
+                        if not (0.04 <= d__ <= 0.15):
+                            ok_ = False
+                            break
+                    if not ok_:
+                        continue
+                    uu_ = [(v_[0] - p0_[0]) * t2_raw[0] + (v_[2] - p0_[2]) * t2_raw[1] for v_ in (a_, b_, c_)]
+                    vv_ = [v_[1] for v_ in (a_, b_, c_)]
+                    if max(min(uu_), bb_[0]) - min(max(uu_), bb_[1]) >= 0.3 or \
+                            max(min(vv_), bb_[2]) - min(max(vv_), bb_[3]) >= 0.3:
+                        continue
+                    uvs_[sg_].append((max(min(uu_), bb_[0]), min(max(uu_), bb_[1])))
+            cov_ = {}
+            for sg_ in (1, -1):
+                tot_ = 0.0
+                cur_ = None
+                for a_, b_ in sorted(uvs_[sg_]):
+                    if cur_ and a_ <= cur_[1]:
+                        cur_[1] = max(cur_[1], b_)
+                    else:
+                        if cur_:
+                            tot_ += cur_[1] - cur_[0]
+                        cur_ = [a_, b_]
+                if cur_:
+                    tot_ += cur_[1] - cur_[0]
+                cov_[sg_] = tot_ / span_
+            side_ = [sg_ for sg_ in (1, -1) if cov_[sg_] >= 0.5]
+            if len(side_) == 1:
+                sint_ = side_[0]
+            else:
+                for dist_ in (0.6, 0.15):
+                    q1 = point_in_poly((p0_[0] + dist_ * nb_raw[0], p0_[2] + dist_ * nb_raw[2]), FP, tol=0.0)
+                    q2 = point_in_poly((p0_[0] - dist_ * nb_raw[0], p0_[2] - dist_ * nb_raw[2]), FP, tol=0.0)
+                    if q1 != q2:
+                        sint_ = 1 if q1 else -1
+                        break
+        pl_['nb'] = [q_ * (sint_ or 1) for q_ in nb_raw]
+        pl_['p0'] = p0_
+        pl_['t2'] = (-pl_['nb'][2], pl_['nb'][0])
+        pl_['sint'] = sint_
+        pl_['nosint'] = wtris_ is not None and sint_ is None
+    return planes
+def _t17_loc(pl_, v_):
+    dx_, dz_ = v_[0] - pl_['p0'][0], v_[2] - pl_['p0'][2]
+    return (dx_ * pl_['t2'][0] + dz_ * pl_['t2'][1], v_[1], dx_ * pl_['nb'][0] + dz_ * pl_['nb'][2])
+T_SEG, T_VGRP, D_BACK, COV_MIN17 = 0.02, 0.015, (0.002, 0.10), 0.95
+_WTRIS17 = _t17_wtris(False)            # sint 定号：含塔体墙面
+_WTRIS_NOPAV17 = _t17_wtris(True)       # 必修3 立面线锚定：排除塔体
+def _t17_cover(segs, wb_nodes, cov_min=COV_MIN17):
+    """每段背后同法向背板对 (u,v) 段矩形的真实面积覆盖（REVIEW-astra 必修1，不再用三角形外接矩形）：
+    背板三角投影后必须是直角边平行 u/v 轴的半矩形三角（3 顶点恰取 2 个 u 值 × 2 个 v 值）；
+    按 bbox 键归组，记每个三角缺的角：缺角互为对角 = 共用对角线的互补三角对 = 整块；缺角相邻 = 两三角重叠、并集 3/4 块；只有一种缺角 = 半矩形（单三角或副本三角——
+    「每块背板第二个三角替换为第一个副本」负例：角点仍 3，只计半块面积 → 覆盖率 ≈50% → FAIL）。
+    覆盖面积 = Σ 矩形面积 × {1, 0.75, 0.5}（组间重叠 >0 或非半矩形三角 >0 → 该平面账本不可信 → 段记缺）。
+    深度过滤：三角全部顶点带号深度 ∈ D_BACK（nb 已规范化为内侧，镜像到格心前方的背板 d<0 被排除）。"""
+    ledger = {}
+    for s_ in segs:
+        pl_ = s_['pl']
+        key = id(pl_)
+        if key not in ledger:
+            groups = {}
+            bad = 0
+            for wl_ in _t17_planes(_t17_tris(wb_nodes)):
+                if abs(wl_['nb'][0] * pl_['nb'][0] + wl_['nb'][1] * pl_['nb'][1] + wl_['nb'][2] * pl_['nb'][2]) < 0.995:
+                    continue
+                for t_ in wl_['tris']:
+                    ls_ = [_t17_loc(pl_, v_) for v_ in t_['v']]
+                    if not all(D_BACK[0] <= q_[2] <= D_BACK[1] for q_ in ls_):
+                        continue
+                    us_ = sorted({round(q_[0], 3) for q_ in ls_})
+                    vs_ = sorted({round(q_[1], 3) for q_ in ls_})
+                    if len(us_) != 2 or len(vs_) != 2:
+                        bad += 1
+                        continue
+                    # 半矩形三角恰缺矩形的一个角；记下缺的角号（0=(u0,v0) 1=(u1,v0) 2=(u1,v1) 3=(u0,v1)）
+                    corners_ = [(us_[0], vs_[0]), (us_[1], vs_[0]), (us_[1], vs_[1]), (us_[0], vs_[1])]
+                    have_ = {(round(q_[0], 3), round(q_[1], 3)) for q_ in ls_}
+                    miss_ = [k_ for k_, c_ in enumerate(corners_) if c_ not in have_]
+                    if len(miss_) != 1:
+                        bad += 1
+                        continue
+                    groups.setdefault((us_[0], us_[1], vs_[0], vs_[1]), set()).add(miss_[0])
+            # 主控 R2 终审补丁（astra R2 必修1）：四角齐全不等于两三角互补——两三角共用同一条对角线
+            # 才拼成整块（缺角互为对角 0/2 或 1/3）；缺角相邻的两三角互相重叠，并集只有 3/4 块。
+            full, half = [], []
+            for rk_, om_ in groups.items():
+                if len(om_) >= 3 or om_ in ({0, 2}, {1, 3}):
+                    full.append((rk_, 1.0))
+                elif len(om_) == 2:
+                    full.append((rk_, 0.75))
+                else:
+                    half.append((rk_, 0.5))
+            rects = [r_ for r_, _ in full + half]
+            ov = 0
+            for i_ in range(len(rects)):
+                for j_ in range(i_ + 1, len(rects)):
+                    a_, b_ = rects[i_], rects[j_]
+                    if not (b_[1] <= a_[0] or a_[1] <= b_[0] or b_[3] <= a_[2] or a_[3] <= b_[2]):
+                        ov += 1
+            ledger[key] = {'full': full, 'half': half, 'bad': bad, 'ov': ov}
+            if os.environ.get('BTK17_DEBUG') and (bad or ov or pl_.get('nosint')):
+                print('DEBUG17 plane p0=%s nb=%s nosint=%s backing: full=%d half=%d bad=%d ov=%d' % (
+                    [round(q, 2) for q in pl_['p0']], [round(q, 2) for q in pl_['nb']],
+                    pl_.get('nosint'), len(full), len(half), bad, ov))
+        L_ = ledger[key]
+        if L_['bad'] or L_['ov'] or pl_.get('nosint'):
+            s_['cov'] = -1.0
+            continue
+        area = (s_['u1'] - s_['u0']) * (s_['v1'] - s_['v0'])
+        tot = 0.0
+        for r_, f_ in L_['full'] + L_['half']:
+            w_ = min(r_[1], s_['u1']) - max(r_[0], s_['u0'])
+            h_ = min(r_[3], s_['v1']) - max(r_[2], s_['v0'])
+            if w_ > 0 and h_ > 0:
+                tot += f_ * w_ * h_
+        s_['cov'] = tot / area if area > 1e-9 else 0.0
+    miss = [s_ for s_ in segs if s_['cov'] < cov_min]
+    return miss, (min((s_['cov'] for s_ in segs), default=1.0), max((s_['cov'] for s_ in segs), default=1.0)), len(segs) - len(miss)
+def _t17_segments(lat_nodes):
+    """格心 → 段（v 签名簇 + u 间隙连通）。段={'u0','u1','v0','v1','pl','cx','cz','ntri'}。"""
+    segs = []
+    for pl_ in _t17_planes(_t17_tris(lat_nodes), _WTRIS17):
+        vgroups = []
+        for t_ in pl_['tris']:
+            vs_ = [_t17_loc(pl_, v_) for v_ in t_['v']]
+            u0_, u1_ = min(q[0] for q in vs_), max(q[0] for q in vs_)
+            vy0_, vy1_ = min(q[1] for q in vs_), max(q[1] for q in vs_)
+            hit = None
+            for g_ in vgroups:
+                if abs(g_['v0'] - vy0_) <= T_VGRP and abs(g_['v1'] - vy1_) <= T_VGRP:
+                    hit = g_
+                    break
+            if hit is None:
+                hit = {'v0': vy0_, 'v1': vy1_, 'ivs': []}
+                vgroups.append(hit)
+            hit['ivs'].append((u0_, u1_))
+        for g_ in vgroups:
+            ivs = sorted(g_['ivs'])
+            segs_ = []
+            for u0_, u1_ in ivs:
+                if segs_ and u0_ - segs_[-1][1] <= T_SEG:
+                    segs_[-1][1] = max(segs_[-1][1], u1_)
+                else:
+                    segs_.append([u0_, u1_])
+            for (u0_, u1_) in segs_:
+                if (u1_ - u0_) * (g_['v1'] - g_['v0']) < 0.005:
+                    continue
+                um_ = (u0_ + u1_) / 2
+                segs.append({'u0': u0_, 'u1': u1_, 'v0': g_['v0'], 'v1': g_['v1'], 'pl': pl_,
+                             'cx': pl_['p0'][0] + pl_['t2'][0] * um_, 'cz': pl_['p0'][2] + pl_['t2'][1] * um_,
+                             'ntri': len(pl_['tris'])})
+    return segs
+
+# ---- 17h：layout+params 独立期望（哪面墙、哪层、什么窗型、格心 v 跨应是多少） ----
+_eq17 = lambda p_, q_: abs(p_[0] - q_[0]) <= 0.02 and abs(p_[1] - q_[1]) <= 0.02   # 同 build_tower._same 口径
+_FE17 = set()
+for _fe in obj.get('frontEdges', []):
+    _e = _fe['edge']
+    if _fe.get('lenM', 0) < 1.5:
+        continue
+    for _i in range(len(FP)):
+        _A, _B = FP[_i], FP[(_i + 1) % len(FP)]
+        if (_eq17(_e[0], _A) and _eq17(_e[1], _B)) or (_eq17(_e[0], _B) and _eq17(_e[1], _A)):
+            _FE17.add(_i)
+_blk17 = (PRM.get('massing') or {}).get('blocks') or [{}]
+_ST17 = next((b_.get('styles') for b_ in _blk17 if b_.get('styles')), None)
+if _ST17 is None:
+    _ST17 = (PRM.get('facades') or {}).get('styles')
+_LEG17 = {'street': {'1': {'style': 'shop'}, '2': {'style': 'screen'}, '3': {'style': 'screen'}, '4': {'style': 'half'}},
+          'plain': {'1': {'style': 'blank'}, '2': {'style': 'ends'}, '3': {'style': 'ends'}, '4': {'style': 'ends4'}}}
+if _ST17 is None:
+    _ST17 = _LEG17
+_FA17 = PRM.get('facades') or {}
+_MS17 = PRM.get('massing') or {}
+_LH17 = _FA17.get('frameLintelHM', 0.25)
+_LFL17 = _FA17.get('longWindowLatticeFrac', 0.62)
+_LFH17 = _FA17.get('halfWindowLatticeFrac', 0.5)
+_W17 = _FA17.get('window') or {}
+_WW17, _WH17, _WS17 = _W17.get('widthM', 1.7), _W17.get('heightM', 1.9), _W17.get('sillM', 0.9)
+_SH17 = _MS17.get('storeyHeightsM') or [4.0]
+_ZT17 = [0.0]
+for _h in _SH17:
+    _ZT17.append(_ZT17[-1] + _h)
+_N17 = len(_SH17)
+def _style17(role_, storey_):
+    if role_ == 'shared':
+        return {'style': 'blank'}
+    if role_ == 'internal':
+        role_ = 'plain' if 'internal' not in _ST17 else 'internal'
+    tab_ = _ST17.get(role_) or _ST17.get('plain') or {}
+    s_ = tab_.get(str(storey_)) or tab_.get('*') or {'style': 'blank'}
+    return dict(s_)
+def _t17_expect():
+    """「立面边 id × 楼层 × 窗型」期望（R2 必修3，带立面身份）：
+      - 对每个 (edge k, storey st≥2)：立面线 = _ANCH17[(k, st)]（墙体几何锚定，与格心段无关——
+        删窗段不动锚）；无锚 = podium 起落 / 退台斜切 / 塔体占位，**只豁免该边该层**；
+      - 有锚 → role = street/plain（k ∈ frontEdges）、窗型与格心 v 跨 = _t17_vrange（layout+params
+        公式与生成器一致）；v 跨 None（blank/带高不足）→ 该边该层无期望。
+      期望条目 {'edge','cls','role','storey','v0','v1'}——别的立面的段不可代位（认领须 edge 相同）。"""
+    exps = []
+    for (k_, st_), off_ in sorted(_ANCH17.items()):
+        A_, B_ = FP[k_], FP[(k_ + 1) % len(FP)]
+        if math.hypot(B_[0] - A_[0], B_[1] - A_[1]) < 4.0:
+            continue          # <4m 短边：15 栋实测无一开窗（最短有窗立面边 4.8m）——转角余量/柱廊断片
+        role_ = 'street' if k_ in _FE17 else 'plain'
+        kind_, vr_ = _t17_vrange(role_, st_)
+        if vr_ is None:
+            continue
+        exps.append({'edge': k_, 'cls': kind_, 'role': role_, 'storey': st_, 'v0': vr_[0], 'v1': vr_[1]})
+    return exps
+def _t17_win_range(z, ztop, h, sill, lf):
+    """生成器 win 类格心 v 跨公式（与 window() 一致）：窗台 z0=sill，窗高顶到 ztop−0.25 止。"""
+    z0 = z + sill
+    if z0 + h > ztop - 0.25:
+        h = ztop - 0.25 - z0
+    if h >= 0.8:
+        return (z0 - 0.07 + (1.0 - lf) * (h + 0.14), z0 + h + 0.03)
+    return None
+def _t17_anchor():
+    """(edge k, storey st) → 常规立面线内距（R2 必修3，从墙体几何锚定、与格心段无关）。
+    候选 = _WTRIS_NOPAV17（非窗非塔）：法向平行该边 ≥0.995（真立面与 FP 边共向；退台斜切墙
+    >5.7° 自动排除=斜切区不锚即只豁免斜切区域）、全部顶点在角塔水平范围外（塔体占位不锚）、
+    s 区间整含边跨度（±0.3）且不落在该边**共享带**内（生成器 classify 把贴邻栋墙线 ≤WALLI+0.6
+    的墙跑标 shared → blank 无窗；测试取同口径 0.6m 宽共享带 _SHARED_WIDE17，比 test9 的
+    0.05m 共面宽——873 gallery 排楼邻栋相距 0.1~0.3m，窄口径漏判会把共享 blank 墙误锚成缺窗
+    立面）、内距 ∈[-0.15,12]（立面粉面不出 FP 线 0.15）、y 与层带 [ZT+0.3, ZT+1−0.3] 重叠
+    ≥0.5m；按 5cm 内距桶聚合 s 跨度并集，覆盖 ≥ max(2.5m, 0.25·L) 的桶里取内距最小（最外）
+    者 = 该边该层的立面线。"""
+    out = {}
+    if not _WTRIS_NOPAV17:
+        return out
+    for k_ in range(len(FP)):
+        A, B = FP[k_], FP[(k_ + 1) % len(FP)]
+        L, t_, nn = edge_frame_map(A, B)
+        gate = max(2.5, 0.25 * L)
+        sh_ = [(e_['lo'] - 0.3, e_['hi'] + 0.3) for e_ in SHARED_L if e_['edge'] == k_]
+        for st_ in range(2, _N17 + 1):
+            ylo, yhi = _ZT17[st_ - 1] + 0.3, _ZT17[st_] - 0.3
+            if yhi - ylo < 0.5:
+                continue
+            buckets = {}
+            near_wall = False      # 外圈 1m 内有墙：立面线只能在 1m 内找（内院墙不得冒充 FP 边立面）
+            cands = []
+            for (a_, b_, c_, n_) in _WTRIS_NOPAV17:
+                if abs(n_[0] * nn[0] + n_[2] * nn[1]) < 0.995:
+                    continue
+                ys_ = (a_[1], b_[1], c_[1])
+                if min(max(ys_), yhi) - max(min(ys_), ylo) < 0.5:
+                    continue
+                if _TOW17 and all(point_in_poly((v_[0], v_[2]), _TOW17, tol=0.0) for v_ in (a_, b_, c_)):
+                    continue
+                off = -(((a_[0] + b_[0] + c_[0]) / 3 - A[0]) * nn[0] + ((a_[2] + b_[2] + c_[2]) / 3 - A[1]) * nn[1])
+                if off < -0.15 or off > 12.0:
+                    continue
+                ss_ = [(v_[0] - A[0]) * t_[0] + (v_[2] - A[1]) * t_[1] for v_ in (a_, b_, c_)]
+                # 三角 s 区间须整含于边跨度（±0.3）——近角处「邻边立面墙」的投影会伸进本边跨度，
+                # 只要求重叠会误锚（华宝楼 edge2 顶到 edge4 立面墙）；真立面墙三角都在本边线内。
+                if min(ss_) < -0.3 or max(ss_) > L + 0.3 or max(ss_) - min(ss_) <= 0.05:
+                    continue
+                if any(lo_ <= min(ss_) and max(ss_) <= hi_ for lo_, hi_ in sh_):
+                    continue                     # 共享段内的 blank 墙不锚（生成器 classify 同口径）
+                if -0.15 <= off <= 1.0:
+                    near_wall = True
+                cands.append((off, min(ss_), max(ss_), min(ys_), max(ys_)))
+            # 资格判定按「立面组件带」：以候选桶 off 为心 ±0.15m 带内全部墙三角（外墙面碎片+窗樘
+            # +框柱+金匾）合并算 s 跨与 y 覆盖——窗洞把外墙面打碎、格心带外凸 0.05，单桶覆盖会碎
+            # （华宝楼 edge0 外墙面碎片），而内墙面（+0.29）是整块，会反客为主锚到内面。
+            best = None
+            yband = yhi - ylo
+            seen_bk = {}
+            for off_, s0_, s1_, y0_, y1_ in cands:
+                seen_bk.setdefault(round(off_ / 0.05), []).append((off_, s0_, s1_, y0_, y1_))
+            for bk, own in seen_bk.items():
+                off_m = sum(q[0] for q in own) / len(own)
+                if near_wall and off_m > 1.0:
+                    continue                     # 外圈有墙：更深的墙跑是内院/退让，不是本边立面
+                if off_m > 1.0 and any(-0.15 <= q[0] < off_m - 0.6 for q in cands):
+                    continue                     # 深线压制：更外侧 0.6m 内还有墙（884 edge5 披屋 8.1
+                                                 # 冒充立面而真窗墙在 1.4）——退台立面只在「该带外圈
+                                                 # 确实无墙」时才成立（华宝楼四层 2.3 处 ✓）
+                band = [q for q in cands if abs(q[0] - off_m) <= 0.15]
+                # 带内墙 y 并集须盖住层带 ≥80%——披屋/压顶/檐口护板只占层带一小截（602 roof-annex
+                # y[11.8,12.9] 对 [12.3,15.1] 仅 21%），不是开窗立面；真立面墙盒纵贯层带。
+                by0 = min(q[3] for q in band)
+                by1 = max(q[4] for q in band)
+                if min(by1, yhi) - max(by0, ylo) < 0.95 * yband:
+                    continue
+                ivs = sorted((q[1], q[2]) for q in band)
+                tot, cur = 0.0, None
+                for a_, b_ in ivs:
+                    if cur and a_ <= cur[1]:
+                        cur[1] = max(cur[1], b_)
+                    else:
+                        if cur:
+                            tot += cur[1] - cur[0]
+                        cur = [a_, b_]
+                if cur:
+                    tot += cur[1] - cur[0]
+                if tot < gate:
+                    continue
+                if best is None or off_m < best:
+                    best = off_m
+            if best is not None:
+                out[(k_, st_)] = best
+    return out
+_ANCH17 = None          # 在 _TOW17 就绪后锚定（见下）
+def _t17_tower_poly():
+    """角塔/阁范围 = pav-* 部件（pav-base/body/tier/roof）包围盒外扩 0.5m；无 pav 件返回 None。
+    只用生成器输出划定「塔身区」以豁免塔窗的多出检查（期望仍全部来自 layout+params）；
+    塔件若被删，范围自动收缩，不会留下假豁免。外扩 0.5 盖住塔窗外凸 0.054 与基座出檐，
+    小于沿街格心带离墙线内距 0.245 的立面带宽，不吞沿立面真窗。"""
+    pts = [v_ for nd_ in meshes if _base(nd_['name']).startswith('pav-') for v_ in world_verts(nd_)]
+    if not pts:
+        return None
+    E = 0.5
+    x0, x1 = min(v_[0] for v_ in pts) - E, max(v_[0] for v_ in pts) + E
+    z0, z1 = min(v_[2] for v_ in pts) - E, max(v_[2] for v_ in pts) + E
+    return [(x0, z0), (x1, z0), (x1, z1), (x0, z1)]
+_TOW17 = _t17_tower_poly()
+def _t17_vrange(role_, storey_):
+    """(role, storey) 的期望格心 v 跨（screen/band/win 类公式与生成器一致；blank = None）。"""
+    sty = _style17(role_, storey_)
+    kind = sty.get('style')
+    z, ztop = _ZT17[storey_ - 1], _ZT17[storey_]
+    zl0, zl1 = z + 0.06 + _LH17 + 0.02, ztop - 0.06 - _LH17 - 0.02
+    if zl1 - zl0 <= 0.01:
+        return (kind, None)
+    if kind == 'screen':
+        zw0 = zl0 + (1.0 - _LFL17) * (zl1 - zl0)
+        return ('screen', (zw0, zl1 - 0.03)) if zl1 - zw0 > 0.01 else (kind, None)
+    if kind == 'band':
+        zb0, zb1 = z + sty.get('bandSillM', 0.95), min(z + sty.get('bandSillM', 0.95) + sty.get('bandHM', 1.3), zl1 - 0.1)
+        return ('band', (zb0, zb1)) if zb1 - zb0 > 0.01 else (kind, None)
+    if kind in ('half', 'ends', 'ends4'):
+        if kind == 'ends':
+            h, sill, lf = _WH17, _WS17, _LFL17
+        else:
+            h, sill, lf = 1.3, 1.45, _LFH17
+        vr_ = _t17_win_range(z, ztop, h, sill, lf)
+        return ('win', vr_) if vr_ else (kind, None)
+    return (kind, None)
+def _t17_pav_allowed():
+    """塔窗豁免双校验来源（R2 必修4）：允许窗型 v 跨 + 塔体墙盒高度范围。
+    来源 = pav-body / pav-tier<k> 墙盒（GLB 几何；塔件被删则豁免区自动收缩）× 生成器窗公式：
+    body 窗=层带内 h=1.6/sill=0.9（storey 2..N，v 跨须在 body 盒内）；tier 窗=盒上下沿 ±0.06 外推
+    层带 h=1.5/sill=0.8。伪窗段（如 30–31m 高于塔顶或 v 跨对不上任一塔窗）两边都过不了。"""
+    if _TOW17 is None:
+        return [], None
+    body = []
+    tiers = {}
+    for nd_ in meshes:
+        bn_ = _base(nd_['name'])
+        if bn_.startswith('pav-tier'):
+            tiers.setdefault(bn_.split('__')[0], []).extend(v_[1] for v_ in world_verts(nd_))
+        elif bn_.startswith('pav-body'):
+            body.extend(v_[1] for v_ in world_verts(nd_))
+    if not body and not tiers:
+        return [], None
+    vrs = []
+    if body:
+        b0, b1 = min(body), max(body)
+        for st_ in range(2, _N17 + 1):
+            vr_ = _t17_win_range(_ZT17[st_ - 1], _ZT17[st_], 1.6, 0.9, _LFL17)
+            if vr_ and b0 - 0.15 <= vr_[0] and vr_[1] <= b1 + 0.15:
+                vrs.append(vr_)
+    for tn_, ys_ in tiers.items():
+        a_, b_ = min(ys_), max(ys_)
+        vr_ = _t17_win_range(a_ - 0.06, b_ + 0.06, 1.5, 0.8, _LFL17)
+        if vr_ and a_ - 0.2 <= vr_[0] and vr_[1] <= b_ + 0.2:
+            vrs.append(vr_)
+    ymins = ([min(body)] if body else []) + [min(ys_) for ys_ in tiers.values()]
+    hmax = max(([max(body)] if body else []) + [max(ys_) for ys_ in tiers.values()])
+    return vrs, (min(ymins), hmax)
+_PAVVR17, _PAVH17 = _t17_pav_allowed()
+_ANCH17 = _t17_anchor()
+def _t17_account(segs, exps):
+    """对账（R2 必修3 立面身份 + 必修4 错型必抓）：
+    归边：平面 ±25° 平行某 FP 边、内距 [-0.5,12]、段中心投影在该边跨度内（共线延长边取内距最小者）。
+    立面身份：段内距贴合 (归边, 楼层) 的锚定立面线 ±0.15 → facade=(edge, storey)。
+    认领：期望 edge/storey 相同 + v 跨 ±0.08（别的立面代位不了——edge 身份不同）。
+    多出：
+      ① 有 facade 的段只认**自身角色该层**的允许窗型 v 跨（screen 段在 plain 立面=错型必抓）；
+      ② 塔窗豁免须三关：塔体水平范围 + 塔体墙盒高度 + 塔体允许窗型 v 跨（不只看水平包围盒）；
+      ③ 无 facade（内天井/podium 内墙/斜切，段归附不到锚定立面线）：该层任一角色类窗型 v 跨一致才豁免。"""
+    for s_ in segs:
+        pl_ = s_['pl']
+        best, offb = None, None
+        for k in range(len(FP)):
+            A, B = FP[k], FP[(k + 1) % len(FP)]
+            L, t_, nn = edge_frame_map(A, B)
+            if abs(pl_['nb'][0] * nn[0] + pl_['nb'][2] * nn[1]) < 0.9:
+                continue
+            off_i = -((pl_['p0'][0] - A[0]) * nn[0] + (pl_['p0'][2] - A[1]) * nn[1])   # 内距（正=边线以内）
+            if off_i < -0.5 or off_i > 12.0:
+                continue
+            sproj = (s_['cx'] - A[0]) * t_[0] + (s_['cz'] - A[1]) * t_[1]
+            if sproj < -0.3 or sproj > L + 0.3:
+                continue
+            if offb is None or abs(off_i) < abs(offb):
+                best, offb = k, off_i
+        s_['edge'] = best
+        s_['off'] = offb
+        s_['role'] = ('street' if best in _FE17 else 'plain') if best is not None else None
+        vmid = (s_['v0'] + s_['v1']) / 2
+        s_['storey'] = next((st_ for st_ in range(2, _N17 + 1) if _ZT17[st_ - 1] - 0.1 <= vmid < _ZT17[st_] - 0.1),
+                            1 if vmid < _ZT17[1] - 0.1 else None)
+        an_ = _ANCH17.get((best, s_['storey'])) if best is not None and s_['storey'] is not None else None
+        # 立面身份按**线匹配**（不止最近边）：长排楼 FP 常把同一条直线拆成多条边（884：段归到
+        # edge12 off4.166，锚在共线 edge2 off4.197）；退台斜切墙与边差 >5.7°（601 e2 四层）——
+        # 认领平行放宽到 25°（与归边同口径），须平面平行该边 + 段中心投影在该边跨度内 +
+        # 内距与锚线差 ≤0.5（跨立面代位仍被「同线±0.5、同层、同 v 跨」三重条件挡住）。
+        s_['facade'] = None
+        lines_ = []
+        if s_['storey'] is not None:
+            fb_, fd_, tol_ = None, 1e9, 0.5
+            for (k_, st_), aoff in _ANCH17.items():
+                if st_ != s_['storey']:
+                    continue
+                A, B = FP[k_], FP[(k_ + 1) % len(FP)]
+                L, t_, nn = edge_frame_map(A, B)
+                if abs(pl_['nb'][0] * nn[0] + pl_['nb'][2] * nn[1]) < 0.90:
+                    continue
+                off_k = -((pl_['p0'][0] - A[0]) * nn[0] + (pl_['p0'][2] - A[1]) * nn[1])
+                if abs(off_k - aoff) >= tol_:
+                    continue
+                sproj_ = (s_['cx'] - A[0]) * t_[0] + (s_['cz'] - A[1]) * t_[1]
+                if sproj_ < -1.0 or sproj_ > L + 1.0:
+                    continue                     # 转角斜切带中心投影常越出边端（601 e2/e4 四层），±1.0m
+                lines_.append(k_)
+                if abs(off_k - aoff) < fd_:
+                    fd_ = abs(off_k - aoff)
+                    fb_ = (k_, st_)
+            if fb_ is not None:
+                s_['facade'] = fb_
+            elif an_ is not None and abs(offb - an_) <= 0.5:
+                s_['facade'] = (best, s_['storey'])
+        s_['lines'] = lines_
+    claimed = set()
+    extra = []
+    for s_ in segs:
+        # 认领 = 归边 + 同层 + v 跨 ±0.08（多认领：转角带一排窗服务多条边）。归边本身已含
+        # 「平行 ±25°、内距 ≤12、中心投影在边跨度内、共线取内距最小」的立面身份——别的立面
+        # 归不到这条边（R1 审查的代位发生在角色类合并期望，期望带 edge 身份后即关死）。
+        # 锚线距离不进认领条件：外圈装饰墙/压顶会把锚线顶偏 ≥0.5m（607 e2 四层真窗在 1.33）。
+        cl_ = False
+        for ei_, e_ in enumerate(exps):
+            if (e_.get('edge') is None or s_.get('edge') == e_['edge']) and s_.get('role') == e_['role'] \
+                    and s_['storey'] == e_['storey'] \
+                    and abs(s_['v0'] - e_['v0']) <= 0.08 and abs(s_['v1'] - e_['v1']) <= 0.08:
+                claimed.add(ei_)
+                cl_ = True
+        if cl_:
+            s_['disp'] = 'claimed'
+            continue
+        if s_.get('facade') is not None:
+            # 已归属常规立面：只能匹配自身角色在该层的允许窗型（必修4：错型不放过）
+            fk_, fst_ = s_['facade']
+            vr_ = _t17_vrange('street' if fk_ in _FE17 else 'plain', fst_)[1]
+            if vr_ and abs(s_['v0'] - vr_[0]) <= 0.08 and abs(s_['v1'] - vr_[1]) <= 0.08:
+                s_['disp'] = 'facade-ok'      # 同边同层合法窗型（该期望已被同边其他段认领）
+                continue
+            s_['disp'] = 'extra'
+            extra.append(s_)
+            continue
+        # 塔窗豁免（必修4）：水平范围 + 塔体墙盒高度 + 允许窗型 v 跨
+        if _TOW17 and point_in_poly((s_['cx'], s_['cz']), _TOW17, tol=0.0) \
+                and _PAVH17 and _PAVH17[0] - 0.3 <= s_['v0'] and s_['v1'] <= _PAVH17[1] + 0.3 \
+                and any(abs(s_['v0'] - vr_[0]) <= 0.08 and abs(s_['v1'] - vr_[1]) <= 0.08 for vr_ in _PAVVR17):
+            s_['disp'] = 'pav'
+            continue
+        # 非立面线（内天井/podium 内墙）：该层任一角色类的期望窗型 v 跨一致才豁免
+        if s_['storey'] is not None:
+            vrs = [_t17_vrange(r_, s_['storey'])[1] for r_ in ('street', 'plain')]
+            if any(vr_ and abs(s_['v0'] - vr_[0]) <= 0.08 and abs(s_['v1'] - vr_[1]) <= 0.08 for vr_ in vrs):
+                s_['disp'] = 'interior'
+                continue
+        s_['disp'] = 'extra'
+        extra.append(s_)
+    missing = [e_ for ei_, e_ in enumerate(exps) if ei_ not in claimed]
+    return missing, extra
+def _t17_expect_legacy():
+    """回退期望（R1 口径：角色类×层×screen/band，无立面身份）。仅当逐边期望为空（复合排楼等
+    无可确定常规立面线：884 锯齿排楼墙面碎面化、868）但格心段存在时启用——退回 R1 级守卫
+    （17g 逐段背板覆盖不放宽），并在断言名中注明 fallback。"""
+    exps = []
+    for st_ in range(2, _N17 + 1):
+        z, ztop = _ZT17[st_ - 1], _ZT17[st_]
+        zl0, zl1 = z + 0.06 + _LH17 + 0.02, ztop - 0.06 - _LH17 - 0.02
+        if zl1 - zl0 <= 0.01:
+            continue
+        for role_ in ('street', 'plain'):
+            kind_, vr_ = _t17_vrange(role_, st_)
+            if kind_ in ('screen', 'band') and vr_ is not None:
+                exps.append({'edge': None, 'cls': kind_, 'role': role_, 'storey': st_, 'v0': vr_[0], 'v1': vr_[1]})
+    return exps
+def _t17_drop_occupied(exps, segs):
+    """占位核减（GOAL：豁免限定到具体受影响区域）：若 (edge,storey) 锚线 ±0.5m 上确有归边段、
+    但它们**全部**被区域豁免（disp=pav/interior：塔窗/内院线），则该常规立面被占位取代——
+    不立期望（601 e2 四层=塔身窗带）。认领段（disp=claimed）说明期望正常把守，不核减；
+    删段负例不受影响：段被删则 near 为空，期望恢复并把守（华宝楼删 edge0/3 二三层段仍 FAIL）。"""
+    out = []
+    for e_ in exps:
+        aoff = _ANCH17.get((e_['edge'], e_['storey']))
+        near = [s_ for s_ in segs if s_.get('edge') == e_['edge'] and s_.get('storey') == e_['storey']
+                and aoff is not None and s_.get('off') is not None and abs(s_['off'] - aoff) <= 0.5]
+        if near and all(s_.get('disp') in ('pav', 'interior') for s_ in near):
+            continue
+        out.append(e_)
+    return out
+def _t17_entry_missing(n_lat_, n_wb_, n_exp_):
+    """入口级「整类节点缺失」判据（R2 可选项，独立可测）：期望存在而格心/背板任一整类节点缺失。"""
+    return n_exp_ > 0 and (n_lat_ == 0 or n_wb_ == 0)
+_exp17 = _t17_expect()
+_LEGFALL17 = False
+if not _exp17 and _lat_nodes17:
+    # 逐边期望全空（复合排楼无可确定常规立面线）但格心节点在 → 回退 R1 口径守卫
+    _exp17 = _t17_expect_legacy()
+    _LEGFALL17 = bool(_exp17)
+if not _exp17:
+    skip('test17g/17h 逐窗段背板与立面期望', 'layout×params 期望本楼无 screen/band/普通窗（无格心守卫对象）')
+elif _t17_entry_missing(len(_lat_nodes17), len(_wb_nodes17), len(_exp17)):
+    ok('test17g/17h 格心/背板整类节点存在', False,
+       '期望 %d 条（edge×层×窗型 %s）但 windows__lattice*/windows__winback* 整类节点缺失（FAIL，不 SKIP）'
+       % (len(_exp17), sorted({e_['cls'] for e_ in _exp17})))
+else:
+    _segs17 = _t17_segments(_lat_nodes17)
+    _t17_account(_segs17, _exp17)                     # pass1：打 disp 标（占位核减需要）
+    _exp17 = _t17_drop_occupied(_exp17, _segs17) if not _LEGFALL17 else _exp17
+    _miss17, (_cmin, _cmax), _nok17 = _t17_cover(_segs17, _wb_nodes17)
+    ok('test17g 每个格心窗段背后同法向背板 (u,v) 真实面积覆盖 ≥95%%（%d 段全对上 %d，覆盖率 %.1f%%~%.1f%%，缺 %d）'
+       % (_nok17, len(_segs17), _cmin * 100, _cmax * 100, len(_miss17)),
+       not _miss17, '缺/欠覆盖格心段（夜间黑窗；cov=-1 = 内侧未定或背板账本异常——非半矩形三角/矩形组重叠）: %s' % [
+           {'u_w': round(s_['u1'] - s_['u0'], 2), 'v': [round(s_['v0'], 2), round(s_['v1'], 2)], 'cov': round(s_['cov'], 3)}
+           for s_ in _miss17[:6]])
+    _miss_e17, _extra17 = _t17_account(_segs17, _exp17)
+    if os.environ.get('BTK17_DEBUG'):
+        print('DEBUG17 streetEdges=%s anchor=%s pavVR=%s pavH=%s' % (
+            sorted(_FE17), {('%d,%d' % k): round(v, 3) for k, v in sorted(_ANCH17.items())},
+            [(round(a, 2), round(b, 2)) for a, b in _PAVVR17], None if _PAVH17 is None else [round(q, 2) for q in _PAVH17]))
+        for e_ in _exp17:
+            print('DEBUG17 exp edge=%d cls=%s role=%s storey=%d v=[%.3f,%.3f]' % (e_['edge'], e_['cls'], e_['role'], e_['storey'], e_['v0'], e_['v1']))
+        for s_ in _segs17:
+            print('DEBUG17 seg edge=%s off=%.3f facade=%s storey=%s u_w=%.3f v=[%.3f,%.3f] cov=%.3f c=(%.2f,%.2f)' % (
+                s_.get('edge'), s_.get('off') if s_.get('off') is not None else 99,
+                s_.get('facade'), s_.get('storey'), s_['u1'] - s_['u0'], s_['v0'], s_['v1'], s_['cov'], s_['cx'], s_['cz']))
+    ok('test17h layout 独立期望 %s 对账（期望 %d 条全认领，多出段 %d）'
+       % ('立面边×楼层×窗型' if not _LEGFALL17 else '角色类×层（fallback：本楼无可确定常规立面线，R1 口径）',
+          len(_exp17), len(_extra17)),
+       not _miss_e17 and not _extra17,
+       '缺: %s；多出: %s' % (
+           [(e_['cls'], 'e%d' % e_['edge'], e_['role'], e_['storey']) for e_ in _miss_e17[:6]],
+           [{'facade': s_.get('facade'), 'v': [round(s_['v0'], 2), round(s_['v1'], 2)]} for s_ in _extra17[:6]]))
+    if ID == HUABAO:
+        # ---- test 17n：负例自检（内存突变；证明 17g/17h 的捕获力） ----
+        _wb_copy17 = []
+        for nd_ in _wb_nodes17:
+            nd2 = dict(nd_)
+            V = [list(v_) for v_ in nd_['verts']]
+            par = list(range(len(V)))
+            def _f17(x_):
+                while par[x_] != x_:
+                    par[x_] = par[par[x_]]
+                    x_ = par[x_]
+                return x_
+            for (ia_, ib_, ic_) in nd_['idxTris']:
+                ra, rb, rc = _f17(ia_), _f17(ib_), _f17(ic_)
+                if ra != rb:
+                    par[ra] = rb
+                if rb != rc:
+                    par[rb] = rc
+            panels = {}
+            for (ia_, ib_, ic_) in nd_['idxTris']:
+                panels.setdefault(_f17(ia_), []).append((ia_, ib_, ic_))
+            for tris in panels.values():
+                vset = sorted({i_ for t_ in tris for i_ in t_})
+                n_ = [0.0, 0.0, 0.0]
+                for (ia_, ib_, ic_) in tris:
+                    a_, b_, c_ = V[ia_], V[ib_], V[ic_]
+                    u_ = [b_[i] - a_[i] for i in range(3)]
+                    w_ = [c_[i] - a_[i] for i in range(3)]
+                    cr = [u_[1] * w_[2] - u_[2] * w_[1], u_[2] * w_[0] - u_[0] * w_[2], u_[0] * w_[1] - u_[1] * w_[0]]
+                    ln = math.sqrt(cr[0] * cr[0] + cr[1] * cr[1] + cr[2] * cr[2]) or 1.0
+                    n_[0] += cr[0] / ln
+                    n_[1] += cr[1] / ln
+                    n_[2] += cr[2] / ln
+                nl = math.sqrt(n_[0] * n_[0] + n_[1] * n_[1] + n_[2] * n_[2]) or 1.0
+                n_ = [q / nl for q in n_]
+                cen = [sum(V[i_][k_] for i_ in vset) / len(vset) for k_ in range(3)]
+                t2 = (-n_[2], n_[0])
+                us = [(V[i_][0] - cen[0]) * t2[0] + (V[i_][2] - cen[2]) * t2[1] for i_ in vset]
+                uc = sum(us) / len(us)
+                for i_, u0_ in zip(vset, us):
+                    du = (uc + 0.01 * (u0_ - uc)) - u0_
+                    V[i_][0] += du * t2[0]
+                    V[i_][2] += du * t2[1]
+            nd2['verts'] = [tuple(q) for q in V]
+            _wb_copy17.append(nd2)
+        _segs_n1 = _t17_segments(_lat_nodes17)
+        _miss_n1, _, _ = _t17_cover(_segs_n1, _wb_copy17)
+        # N2/N4 按**立面身份**（锚定归边，非认领规则自身）定位要删除的段：
+        # N2 = 移除全部 screen 期望所在边×层的段（普通窗保留）→ 17h 必须缺 screen 期望；
+        # N4 = 移除首个期望所在边的全部段 → 17h 必须缺该边的全部期望（逐边独立对账把守）。
+        _scr_e17 = [e_ for e_ in _exp17 if e_['cls'] == 'screen']
+        _n2_keys = {(e_['edge'], e_['storey']) for e_ in _scr_e17}
+        _segs_n2 = [s_ for s_ in _segs17 if s_.get('facade') not in _n2_keys]
+        _miss_n2, _ = _t17_account(_segs_n2, _exp17)
+        _miss_n3, _ = _t17_account([], _exp17)
+        _e4 = _exp17[0]['edge']
+        _segs_n4 = [s_ for s_ in _segs17 if (s_.get('facade') or (None, None))[0] != _e4]
+        _miss_n4, _ = _t17_account(_segs_n4, _exp17)
+        _n_ok = len(_miss_n1) > 0 \
+            and len(_scr_e17) > 0 and all(any(e_['edge'] == k[0] and e_['storey'] == k[1] for e_ in _miss_n2) for k in _n2_keys) \
+            and len(_miss_n3) == len(_exp17) \
+            and all(e_['edge'] == _e4 for e_ in _miss_n4) and len(_miss_n4) > 0
+        ok('test17n 负例自检（背板缩宽 1%% 缺 %d 段 / 移除 screen 边×层缺 %d 期望 / 整类缺失缺 %d 期望 / 移除 edge%d 全部段缺 %d 期望 —— 全部被捕获）'
+           % (len(_miss_n1), len(_miss_n2), len(_miss_n3), _e4, len(_miss_n4)), _n_ok,
+           '负例未被捕获：N1=%d N2=%d N3=%d N4=%d（17g/17h 断言力不足）' % (len(_miss_n1), len(_miss_n2), len(_miss_n3), len(_miss_n4)))
+        # 入口级整类缺失判据（R2 可选项）：独立纯函数，期望存在而任一整类节点缺失 → 必须 True
+        ok('test17n 入口级整类缺失判据（lattice=0 或 winback=0 → True；两类俱在 → False）',
+           _t17_entry_missing(0, 5, 2) and _t17_entry_missing(5, 0, 2)
+           and not _t17_entry_missing(5, 5, 2) and not _t17_entry_missing(0, 0, 0))
+
 print('\ntest_tower: %d pass, %d fail, %d skip' % (pass_n, fail_n, skip_n))
 if fail_n:
     for f in failures:

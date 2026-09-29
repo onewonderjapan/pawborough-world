@@ -10,11 +10,53 @@
       ],
       [
         8.194592475891113,
-        4.150000095367432,
+        4.056166648864746,
         8.219999313354492
       ]
     ],
     "materials": [
+      {
+        "name": "weathered-lime-plaster.001",
+        "imageNodes": [
+          {
+            "name": "PaintedPlaster017_2K-JPG_Color_1K",
+            "size": [
+              1024,
+              512
+            ],
+            "colorSpace": "sRGB"
+          },
+          {
+            "name": "PaintedPlaster017_2K-JPG_Roughness_1K",
+            "size": [
+              1024,
+              512
+            ],
+            "colorSpace": "Non-Color"
+          },
+          {
+            "name": "PaintedPlaster017_2K-JPG_NormalGL_1K",
+            "size": [
+              1024,
+              512
+            ],
+            "colorSpace": "Non-Color"
+          }
+        ]
+      },
+      {
+        "name": "temple-plaque-lacquer.001",
+        "imageNodes": [
+          {
+            "name": "temple-plaque",
+            "size": [
+              2048,
+              720
+            ],
+            "colorSpace": "sRGB"
+          }
+        ]
+      },
       {
         "name": "gray-pan-tile.001",
         "imageNodes": [
@@ -28,44 +70,6 @@
           },
           {
             "name": "roof-normal",
-            "size": [
-              1024,
-              1024
-            ],
-            "colorSpace": "Non-Color"
-          }
-        ]
-      },
-      {
-        "name": "temple-relief-stone.001",
-        "imageNodes": [
-          {
-            "name": "temple-relief-normal",
-            "size": [
-              1024,
-              1024
-            ],
-            "colorSpace": "Non-Color"
-          }
-        ]
-      },
-      {
-        "name": "aged-brass.001",
-        "imageNodes": []
-      },
-      {
-        "name": "oxblood-stained-timber.001",
-        "imageNodes": [
-          {
-            "name": "wood-stain-color",
-            "size": [
-              1024,
-              1024
-            ],
-            "colorSpace": "sRGB"
-          },
-          {
-            "name": "Wood092_2K-JPG_NormalGL_1K",
             "size": [
               1024,
               1024
@@ -104,54 +108,50 @@
         ]
       },
       {
+        "name": "oxblood-stained-timber.001",
+        "imageNodes": [
+          {
+            "name": "wood-stain-color",
+            "size": [
+              1024,
+              1024
+            ],
+            "colorSpace": "sRGB"
+          },
+          {
+            "name": "Wood092_2K-JPG_NormalGL_1K",
+            "size": [
+              1024,
+              1024
+            ],
+            "colorSpace": "Non-Color"
+          }
+        ]
+      },
+      {
         "name": "deep-door-lacquer.001",
         "imageNodes": []
       },
       {
-        "name": "temple-plaque-lacquer.001",
-        "imageNodes": [
-          {
-            "name": "temple-plaque",
-            "size": [
-              2048,
-              720
-            ],
-            "colorSpace": "sRGB"
-          }
-        ]
-      },
-      {
-        "name": "weathered-lime-plaster.001",
-        "imageNodes": [
-          {
-            "name": "PaintedPlaster017_2K-JPG_Color_1K",
-            "size": [
-              1024,
-              512
-            ],
-            "colorSpace": "sRGB"
-          },
-          {
-            "name": "PaintedPlaster017_2K-JPG_Roughness_1K",
-            "size": [
-              1024,
-              512
-            ],
-            "colorSpace": "Non-Color"
-          },
-          {
-            "name": "PaintedPlaster017_2K-JPG_NormalGL_1K",
-            "size": [
-              1024,
-              512
-            ],
-            "colorSpace": "Non-Color"
-          }
-        ]
-      },
-      {
         "name": "worn-stone.001",
         "imageNodes": []
+      },
+      {
+        "name": "aged-brass.001",
+        "imageNodes": []
+      },
+      {
+        "name": "temple-relief-stone.001",
+        "imageNodes": [
+          {
+            "name": "temple-relief-normal",
+            "size": [
+              1024,
+              1024
+            ],
+            "colorSpace": "Non-Color"
+          }
+        ]
       }
     ]
   },
@@ -211,14 +211,14 @@
     "meshes": 1,
     "boundsBlender": [
       [
-        -2.4000000953674316,
-        -1.309999942779541,
+        -2.4650001525878906,
+        -1.5250000953674316,
         0.0
       ],
       [
-        2.4000000953674316,
-        -0.6899999976158142,
-        1.3450000286102295
+        2.4650001525878906,
+        -0.6499999761581421,
+        1.5550000667572021
       ]
     ],
     "materials": [
@@ -245,10 +245,6 @@
     ],
     "materials": [
       {
-        "name": "aged-brass.002",
-        "imageNodes": []
-      },
-      {
         "name": "gray-pan-tile.002",
         "imageNodes": [
           {
@@ -268,6 +264,10 @@
             "colorSpace": "Non-Color"
           }
         ]
+      },
+      {
+        "name": "aged-brass.002",
+        "imageNodes": []
       }
     ]
   }

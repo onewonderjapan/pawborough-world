@@ -651,7 +651,11 @@ def rpanel(name, r, sc, o, z0, z1, w, m, part=None, uscale=1.0, vnorm=False):
     for ux, uz in ((-w / 2, 0), (w / 2, 0), (w / 2, z1 - z0), (-w / 2, z1 - z0)):
         q = r.p(sc + ux, o)
         items.append(((q[0], q[1], z0 + uz), ((ux + w / 2) / uscale, uz / (z1 - z0) if vnorm else uz)))
-    return add_local(name, items, [(0, 1, 2, 3)], m, part=part)
+    # wave13-plaquefix：绕序 0-3-2-1。r.p 给的是地图系 (x, z)，add_local 经 to_b 的 (x, -z) 镜像进 Blender，
+    # 原绕序 0-1-2-3 在 Blender / glTF 里正面朝楼内（与本函数「法线 = run 外法线」的约定相反）。Cycles 不剔除
+    # 看不出来；查看器对无贴图材质（btk-dark / gild / signred / shopback / glass）按 FrontSide 剔除背面，
+    # 大匾、店招、店面后壁与玻璃从街面看整块消失。顶点与 UV 不变，只翻绕序（法线随之朝外）。
+    return add_local(name, items, [(0, 3, 2, 1)], m, part=part)
 
 # ================================================================ 立面角色（layout 检出）
 def _same(p, q, tol=0.02):

@@ -449,9 +449,11 @@ for sdir, z_end in ((1, ZF), (-1, ZR)):
                    [grid_t[aa], grid_t[aa + 1], grid_b[aa + 1], grid_b[aa]], 'dark',
                    [(grid_t[aa][0] / 1.44, 0), (grid_t[aa + 1][0] / 1.44, 0),
                     (grid_t[aa + 1][0] / 1.44, .14), (grid_t[aa][0] / 1.44, .14)], hint)
-# eave soffit boards under the front/rear overhangs
-L.box('front-eave-soffit', (0, rf['eaveY'] - .1, .38), (2 * HW - .1, .09, .8), 'dark', 0)
-L.box('rear-eave-soffit', (0, rf['eaveY'] - .1, -5.58), (2 * HW - .1, .09, .8), 'dark', 0)
+# eave soffit boards under the front/rear overhangs: hugging the shell underside
+# so the corner lift carries them up (flat boxes left a wedge of sky at the
+# lifted corners, wave13-templefix T1). Inner edges match the old boxes.
+C.eave_soffit_strip(L, 'roof-eave-soffit-front', roof_surface, HW, ZF, 1, 0.8, THICK, rf['eaveY'], inner_cap=fbY1 - 0.02)
+C.eave_soffit_strip(L, 'roof-eave-soffit-rear', roof_surface, HW, ZR, -1, 0.77, THICK, rf['eaveY'], inner_cap=fbY1 - 0.02)
 print(f'STAGE roof_shell ok ({time.time() - T0:.1f}s)')
 
 # tile ribs on both slopes (court sees the rear too)

@@ -37,28 +37,33 @@ def lacquer_mottle(w, h, rng):
 
 
 def draw_plaque(d, y0, chars_ltr, gold, gold_deep, edge_y):
-    """One plaque row: double gold border + four glyphs, left->right order."""
+    """One plaque row: double gold border + four glyphs, left->right order.
+    The plaque band is [y0, edge_y); every y is written band-relative so the
+    bottom atlas half (y0=HALF+6) lays out identically to the top — the old
+    y0-blind centering pushed the right plaque's glyphs past the atlas edge
+    and clipped them (wave13-nightqa #6: right plaque read as black)."""
     def gb(c, k):
         return tuple(int(v) for v in np.clip(c * k, 0, 255))
 
     m_out, w_out = 16, 9
-    d.rectangle([m_out, y0 + m_out, W - m_out, y0 + edge_y - m_out],
+    d.rectangle([m_out, y0 + m_out, W - m_out, edge_y - m_out],
                 outline=gb(gold * 255, 1.0), width=w_out)
-    d.rectangle([m_out + 22, y0 + m_out + 22, W - m_out - 22, y0 + edge_y - m_out - 22],
+    d.rectangle([m_out + 22, y0 + m_out + 22, W - m_out - 22, edge_y - m_out - 22],
                 outline=gb(gold_deep * 255, 1.0), width=4)
     for cx, cy in [(m_out + 5, y0 + m_out + 5), (W - m_out - 5, y0 + m_out + 5),
-                   (m_out + 5, y0 + edge_y - m_out - 5), (W - m_out - 5, y0 + edge_y - m_out - 5)]:
+                   (m_out + 5, edge_y - m_out - 5), (W - m_out - 5, edge_y - m_out - 5)]:
         d.ellipse([cx - 20, cy - 20, cx + 20, cy + 20], fill=gb(gold_deep * 255, 1.05))
 
     pad = 78
     cell = (W - 2 * pad) / 4
     size = int(cell * 0.74)
     font = ImageFont.truetype(FONT, size)
+    band_h = edge_y - y0
     for i, ch in enumerate(chars_ltr):
         bbox = font.getbbox(ch)
         cw, chh = bbox[2] - bbox[0], bbox[3] - bbox[1]
         x0 = pad + i * cell + (cell - cw) / 2 - bbox[0]
-        yy0 = y0 + (edge_y - chh) / 2 - bbox[1]
+        yy0 = y0 + (band_h - chh) / 2 - bbox[1]
         for off, col in ((4, (38, 26, 12)), (0, tuple(int(v) for v in gold_deep * 255))):
             d.text((x0 + off, yy0 + off), ch, font=font, fill=col)
         d.text((x0, yy0), ch, font=font, fill=tuple(int(v) for v in gold * 255))
