@@ -86,12 +86,15 @@ def main():
             if 'plaque' not in mname or 'TEXCOORD_0' not in prim.get('attributes', {}):
                 continue
             U = acc(prim['attributes']['TEXCOORD_0'])
+            X = acc(prim['attributes']['POSITION'])
             I = acc(prim['indices']) if 'indices' in prim else [[i] for i in range(len(U))]
             for k in range(0, len(I) - 2, 3):
-                uv = [U[I[k + j][0]] for j in range(3)]
+                idx = [I[k + j][0] for j in range(3)]
+                uv = [U[i] for i in idx]
                 us = [p[0] for p in uv]
                 vs = [p[1] for p in uv]
-                quads.append((min(us), max(us), min(vs), max(vs)))
+                cx = sum(X[i][0] for i in idx) / 3.0
+                quads.append((min(us), max(us), min(vs), max(vs), cx))
     # 匾面 quad：u 横跨 0..1（容差 0.02），v 各占半幅
     faces = [q for q in quads if q[1] - q[0] > 0.95]
     top = [q for q in faces if q[2] >= 0.5 - 0.02 and q[3] <= 1.02]
@@ -100,6 +103,56 @@ def main():
        len(top) >= 2 and len(bot) >= 2, f'faces={faces[:6]}')
     vspan_ok = all(abs((q[3] - q[2]) - 0.5) < 0.03 for q in faces)
     ok('匾面 UV v 跨度都为半幅 (0.5±0.03)', vspan_ok, str([round(q[3] - q[2], 3) for q in faces]))
+
+    # --- 内嵌贴图 + 左右实体对应（R1 lead review 可选）：外部 PNG 只是贴图源，
+    # 运行时真正显示的是 yimen.glb 内嵌副本；且图集上半(图片 y 0..H/2, UV v>=0.5)
+    # = 左匾实体、下半 = 右匾实体，防「源对了运行时还是黑的」。注意 GLB 坐标经
+    # Blender(-Y front) -> glTF(+Z front) 翻转：观察者视角的左匾在 x>0、右匾在 x<0。
+    emb = None
+    for m in g.get('meshes', []):
+        for prim in m['primitives']:
+            mats = g.get('materials', [])
+            mname = mats[prim['material']].get('name', '') if prim.get('material') is not None else ''
+            if 'plaque' not in mname:
+                continue
+            bct = (mats[prim['material']].get('pbrMetallicRoughness') or {}).get('baseColorTexture')
+            if bct is None:
+                continue
+            src = g['textures'][bct['index']].get('source')
+            bv = (g.get('images', [])[src] or {}).get('bufferView') if src is not None else None
+            if bv is None:
+                continue
+            v = g['bufferViews'][bv]
+            off = bin_off + (v.get('byteOffset') or 0)
+            raw = bytes(buf[off:off + v['byteLength']])
+            try:
+                emb = np.array(Image.open(__import__('io').BytesIO(raw)).convert('RGB'))
+                break
+            except Exception:
+                continue
+    ok(f'yimen.glb 内嵌匾额贴图可解码 {None if emb is None else emb.shape}',
+       emb is not None)
+    if emb is not None:
+        eh = emb.shape[0] // 2
+        e_left = half_stats(emb, 0, eh)
+        e_right = half_stats(emb, eh, emb.shape[0])
+        e_ratio = e_right['brightFrac'] / max(e_left['brightFrac'], 1e-9)
+        ok(f'内嵌贴图右/左匾亮字占比比 {e_ratio:.3f} >= 0.85',
+           e_ratio >= 0.85, f'left={e_left["brightFrac"]:.4f} right={e_right["brightFrac"]:.4f}')
+        # 内嵌与外部源是同一张图（占比差 < 0.05）
+        ok(f'内嵌贴图与外部 PNG 左匾占比差 {abs(e_left["brightFrac"] - left["brightFrac"]):.4f} < 0.05',
+           abs(e_left['brightFrac'] - left['brightFrac']) < 0.05)
+    # 左右实体对应：左匾(观察者视角, x>0)采图集上半 (v>=0.48)，右匾(x<0)采下半 (v<=0.52)
+    left_x = [q for q in faces if q[4] > 0]
+    right_x = [q for q in faces if q[4] < 0]
+    ok(f'匾面实体分布：左 x<0 共 {len(left_x)} / 右 x>0 共 {len(right_x)}（各 >=2）',
+       len(left_x) >= 2 and len(right_x) >= 2)
+    if left_x and right_x:
+        l_ok = all(q[2] >= 0.48 for q in left_x)
+        r_ok = all(q[3] <= 0.52 for q in right_x)
+        ok('左匾实体(x<0)采图集上半 (v_min>=0.48)，右匾实体采下半 (v_max<=0.52)',
+           l_ok and r_ok,
+           f'left v={[(round(q[2], 3), round(q[3], 3)) for q in left_x]} right v={[(round(q[2], 3), round(q[3], 3)) for q in right_x]}')
 
     print(f'\nyimen-plaque-texture: {len(failures)} failed')
     sys.exit(1 if failures else 0)

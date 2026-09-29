@@ -12,22 +12,22 @@
         "dadian-plaque"
       ],
       "objects": 13,
-      "triangles": 45074,
-      "fileBytes": 6435944,
-      "sha256": "12f0f128086c70b5b6ab4175e18cb9a4f9cd95e6dd0989fc7cc6137524936bde"
+      "triangles": 45202,
+      "fileBytes": 6453320,
+      "sha256": "22c92914a4521c08171c71949e9d1ff909aa3dbbc5c1f6130f28911cdab4056e"
     }
   },
   "timings": {
-    "totalSeconds": 5.3
+    "totalSeconds": 5.1
   },
   "budgets": {
     "dadianTris": {
-      "actual": 45074,
+      "actual": 45202,
       "limit": 58000,
       "pass": true
     },
     "dadianGlbBytes": {
-      "actual": 6435944,
+      "actual": 6453320,
       "limit": 9500000,
       "pass": true
     },

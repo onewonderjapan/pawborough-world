@@ -12,9 +12,9 @@
         "shanmen-plaque"
       ],
       "objects": 13,
-      "triangles": 22944,
-      "fileBytes": 3839524,
-      "sha256": "852e25fe43fe0fd9d64a821d9b348b961b00383b948d8c164765628c2c9f48c1"
+      "triangles": 23008,
+      "fileBytes": 3847012,
+      "sha256": "0b4d1bb8ff4eb697b90b5a91b66c192746642d67a794c7c2ef4e9ee04b5ab2f6"
     },
     "ground.glb": {
       "groups": [
@@ -22,8 +22,8 @@
       ],
       "objects": 2,
       "triangles": 360,
-      "fileBytes": 860916,
-      "sha256": "8d61e2a6b954d82d29eeb42d46a42e3401ac1fb972a3804d3657edc966ba25c7"
+      "fileBytes": 860820,
+      "sha256": "173692196a7d396bba71d48316ffbe72bc770b1b6e0cd8d9bc31b07fa5bac6a2"
     },
     "lions.glb": {
       "groups": [
@@ -31,8 +31,8 @@
       ],
       "objects": 1,
       "triangles": 3556,
-      "fileBytes": 439964,
-      "sha256": "a31e003ecb74bc69e3516354545fa2726f8a44c1c28560171be55d0cfa694818"
+      "fileBytes": 440060,
+      "sha256": "c0f1cbc16f2345bbf0bcd2a23e5cb2f43028dd9deb82bc38df6aa04939467320"
     },
     "ornaments.glb": {
       "groups": [
@@ -40,31 +40,31 @@
       ],
       "objects": 2,
       "triangles": 2304,
-      "fileBytes": 436280,
-      "sha256": "422ed3011e0428d66b6d5e6c1b3da7315ac3165bc59ddae06aeab1d5c5a63671"
+      "fileBytes": 437144,
+      "sha256": "83d8aa0618d36dcb99b824077aec4a7643849b71cc893b67b9c60f58fb93efa0"
     }
   },
   "timings": {
-    "totalSeconds": 15.2
+    "totalSeconds": 18.3
   },
   "budgets": {
     "buildingAndWallsTris": {
-      "actual": 22944,
+      "actual": 23008,
       "limit": 50000,
       "pass": true
     },
     "fullSetTris": {
-      "actual": 29164,
+      "actual": 29228,
       "limit": 60000,
       "pass": true
     },
     "mainGlbBytes": {
-      "actual": 3839524,
+      "actual": 3847012,
       "limit": 8000000,
       "pass": true
     },
     "groundGlbBytes": {
-      "actual": 860916,
+      "actual": 860820,
       "limit": 2000000,
       "pass": true
     },

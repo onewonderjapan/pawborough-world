@@ -15,15 +15,11 @@
   ],
   "materials": [
     {
-      "name": "deep-door-lacquer.001",
-      "imageNodes": []
-    },
-    {
       "name": "lattice-backing-dadian.001",
       "imageNodes": []
     },
     {
-      "name": "aged-brass.001",
+      "name": "deep-door-lacquer.001",
       "imageNodes": []
     },
     {
@@ -39,6 +35,39 @@
         },
         {
           "name": "roof-normal",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        }
+      ]
+    },
+    {
+      "name": "worn-stone.001",
+      "imageNodes": []
+    },
+    {
+      "name": "blue-gray-brick.001",
+      "imageNodes": [
+        {
+          "name": "Bricks061_2K-JPG_Color_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "sRGB"
+        },
+        {
+          "name": "Bricks061_2K-JPG_Roughness_1K",
+          "size": [
+            1024,
+            1024
+          ],
+          "colorSpace": "Non-Color"
+        },
+        {
+          "name": "Bricks061_2K-JPG_NormalGL_1K",
           "size": [
             1024,
             1024
@@ -77,10 +106,10 @@
       ]
     },
     {
-      "name": "blue-gray-brick.001",
+      "name": "oxblood-stained-timber.001",
       "imageNodes": [
         {
-          "name": "Bricks061_2K-JPG_Color_1K",
+          "name": "wood-stain-color",
           "size": [
             1024,
             1024
@@ -88,15 +117,7 @@
           "colorSpace": "sRGB"
         },
         {
-          "name": "Bricks061_2K-JPG_Roughness_1K",
-          "size": [
-            1024,
-            1024
-          ],
-          "colorSpace": "Non-Color"
-        },
-        {
-          "name": "Bricks061_2K-JPG_NormalGL_1K",
+          "name": "Wood092_2K-JPG_NormalGL_1K",
           "size": [
             1024,
             1024
@@ -119,27 +140,6 @@
       ]
     },
     {
-      "name": "oxblood-stained-timber.001",
-      "imageNodes": [
-        {
-          "name": "wood-stain-color",
-          "size": [
-            1024,
-            1024
-          ],
-          "colorSpace": "sRGB"
-        },
-        {
-          "name": "Wood092_2K-JPG_NormalGL_1K",
-          "size": [
-            1024,
-            1024
-          ],
-          "colorSpace": "Non-Color"
-        }
-      ]
-    },
-    {
       "name": "dadian-plaque-lacquer.001",
       "imageNodes": [
         {
@@ -153,7 +153,7 @@
       ]
     },
     {
-      "name": "worn-stone.001",
+      "name": "aged-brass.001",
       "imageNodes": []
     }
   ]

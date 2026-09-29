@@ -350,10 +350,16 @@ def eave_soffit_strip(L, name, surface, hw, z_end, sdir, depth, thick, eave_y,
     tris = 0
     for i in range(nu):
         for j in range(nj):
-            xm = (cols[i][j][0] + cols[i + 1][j][0]) / 2
-            n = _surface_normal(surface, xm, cols[i][j][2])
+            # winding keyed to the strip's own geometry (R1 review): inner_cap
+            # lowers the inner edge into a steeper secondary slope, and the old
+            # hint (-roof normal) inverted those quads to up-and-inward — the
+            # FrontSide viewer culled them and the sky slit returned through the
+            # culled boards. Facing rule for a soffit is just "look down": the
+            # quad keeps its listed winding whenever its geometric normal has
+            # ny <= 0, which leaves untouched panels unchanged and stands every
+            # capped-edge panel up facing down-and-outward.
             quad_out(L, name, [cols[i][j], cols[i + 1][j], cols[i + 1][j + 1], cols[i][j + 1]],
-                     mat, [(0, 0), (1, 0), (1, 1), (0, 1)], (-n[0], -n[1], -n[2]))
+                     mat, [(0, 0), (1, 0), (1, 1), (0, 1)], (0, -1, 0))
         tris += 2 * nj
         # corner skirt at the outer row, wherever the lifted edge cleared the
         # line; its top laps 2cm over the strip edge (buried inside the roof
@@ -365,6 +371,22 @@ def eave_soffit_strip(L, name, surface, hw, z_end, sdir, depth, thick, eave_y,
             quad_out(L, name + '-skirt', [q0, q1, (p1[0], skirt_y, p1[2]), (p0[0], skirt_y, p0[2])],
                      mat, [(0, 0), (1, 0), (1, 1), (0, 1)], (0, 0, sdir))
             tris += 2
+    # end caps at x = +/-hw (R1 review N1 side probes): the raw strip mesh just
+    # stops at the hip ends, so a side sightline at eave height slips through
+    # the open end corner between the strip edge, the fascia and the skirt.
+    # Close each end with a vertical curtain from the eave line down to the
+    # skirt bottom line (covering the fascia end grain as well), facing outward.
+    yb = min(min(p[1] for col in cols for p in col), skirt_y) - 0.02
+    for i_col, hint in ((0, (-1.0, 0.0, 0.0)), (nu, (1.0, 0.0, 0.0))):
+        col = cols[i_col]
+        for j in range(nj):
+            y0 = max(col[j][1], eave_y)
+            y1 = max(col[j + 1][1], eave_y)
+            quad_out(L, name + '-endcap',
+                     [(col[j][0], y0, col[j][2]), (col[j + 1][0], y1, col[j + 1][2]),
+                      (col[j + 1][0], yb, col[j + 1][2]), (col[j][0], yb, col[j][2])],
+                     mat, [(0, 0), (1, 0), (1, 1), (0, 1)], hint)
+        tris += 2 * nj
     return tris
 
 

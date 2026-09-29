@@ -12,22 +12,22 @@
         "yimen-plaque"
       ],
       "objects": 13,
-      "triangles": 26692,
-      "fileBytes": 4443892,
-      "sha256": "c466dbd4bce7b49fb248fbeee4267b787c9dc952576c3f46a70054c20f33af39"
+      "triangles": 26756,
+      "fileBytes": 4452628,
+      "sha256": "b2dc563c297623dfe37ecbb08b8738599088d93466d80fc3c4c05e8e80693988"
     }
   },
   "timings": {
-    "totalSeconds": 3.1
+    "totalSeconds": 5.2
   },
   "budgets": {
     "yimenTris": {
-      "actual": 26692,
+      "actual": 26756,
       "limit": 45000,
       "pass": true
     },
     "yimenGlbBytes": {
-      "actual": 4443892,
+      "actual": 4452628,
       "limit": 10000000,
       "pass": true
     },
