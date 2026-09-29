@@ -1,14 +1,18 @@
 // wave14-stalllight A 几何：烤制摊排烟罩必须有可信支撑（巡检 #19：罩+烟囱悬空在烤炉上方 0.56 m，视觉上靠细撑杆「漂浮」）。
 // 判据（设计意图，与产物无关的独立期望）：
-//   P1 罩（*_hood）下方存在 ≥2 根落地立柱（*_hoodPost）：柱底 y = 0（落地，容差 0.01）——落地是「立柱支撑」的定义，
-//      不从产物读；修前产物没有 hoodPost，本判据红。
+//   P1 罩（*_hood）下方存在 ≥2 根落地立柱（*_hoodPost）：柱底 y 绝对误差 |y_min| ≤ 0.01——
+//      落地是「立柱支撑」的定义，不从产物读；悬空（y_min>0.01）与深埋地下（y_min<−0.01）都不通过
+//      （astra R2 必修1 口径）；修前产物没有 hoodPost，本判据红。
 //   P2 立柱在罩 footprint 覆盖范围内（柱 x ∈ 罩 x 范围 ±0.1，柱 z 在罩后缘 −0.15…+0.05），柱顶到达罩底高度（y_max ≥ 罩 y_min − 0.05）。
 //   P3 每柱有一根托臂（*_hoodArm）同时与柱、罩的包围盒相交（托住罩后缘）。
+//   P4 立柱与柜台体（stallGrill_body）、台面顶板（stallGrill_top）无实体相交，且柱前缘距顶板后缘
+//      z 向净隙 ≥1 cm（astra R2 必修1：修前柱缘 z∈[-0.38,-0.34] 穿入顶板 z∈[-0.35,0.35] 约 1 cm）。
 // 负例（HOOD_NEG 环境变量，对解析结果做故障注入后断言必须 FAIL）：
-//   HOOD_NEG=lift  把 hoodPost 顶点整体抬离地面 +0.3（模拟「漂浮」）→ P1 红；
-//   HOOD_NEG=del   丢掉全部 hoodPost → P1 红；
-//   HOOD_NEG=tilt  把 hoodArm 抬高 0.2（臂不接触罩）→ P3 红。
-// 用法：[STALL_DIR=out-bazaar-stalls] [HOOD_NEG=lift|del|tilt] node tests/stall-hood-support-test.mjs
+//   HOOD_NEG=lift    把 hoodPost 顶点整体抬离地面 +0.3（模拟「漂浮」）→ P1 红；
+//   HOOD_NEG=del     丢掉全部 hoodPost → P1 红（数量 <2）；
+//   HOOD_NEG=tilt    把 hoodArm 抬高 0.2（臂不接触罩）→ P3 红；
+//   HOOD_NEG=pierce  把 hoodPost 整体前移 +0.05 z（柱缘 z∈[-0.35,-0.31] 扎进顶板/柜体，模拟「穿台面」）→ P4 红。
+// 用法：[STALL_DIR=out-bazaar-stalls] [HOOD_NEG=lift|del|tilt|pierce] node tests/stall-hood-support-test.mjs
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -92,6 +96,7 @@ const arms = parts.filter(p => /_hoodArm/.test(p.name));
 if (NEG === 'lift') for (const p of posts) { p.box.min[1] += 0.3; p.box.max[1] += 0.3; }
 if (NEG === 'del') posts.length = 0;
 if (NEG === 'tilt') for (const p of arms) { p.box.min[1] += 0.2; p.box.max[1] += 0.2; }
+if (NEG === 'pierce') for (const p of posts) { p.box.min[2] += 0.05; p.box.max[2] += 0.05; }
 
 let fails = 0;
 const fail = (msg) => { console.error('FAIL ' + msg); fails++; };
@@ -99,13 +104,14 @@ const ok = (msg) => console.log('PASS ' + msg);
 
 if (!hood.length) { fail(`${FILE}: 找不到 *_hood 网格`); process.exit(1); }
 if (!posts.length) fail(`${FILE}: 找不到 *_hoodPost 立柱（排烟罩无支撑来源——含 HOOD_NEG=del 注入的删柱故障）`);
+if (posts.length < 2) fail(`P1 立柱数量 ${posts.length} < 2（排烟罩支撑须至少两根柱；含 HOOD_NEG=del 注入的删柱故障）`);
 
-// P1 落地
-const grounded = posts.filter(p => p.box.min[1] <= 0.01);
+// P1 落地（柱底 y 绝对误差 ≤0.01：悬空与深埋地下都不通过——astra R2 必修1 口径）
+const grounded = posts.filter(p => Math.abs(p.box.min[1]) <= 0.01);
 if (posts.length && grounded.length !== posts.length)
-  fail(`P1 落地立柱 ${grounded.length}/${posts.length}（柱底 y 须 = 0±0.01；修前罩悬空即此判据）: ` +
+  fail(`P1 落地立柱 ${grounded.length}/${posts.length}（柱底 y 绝对误差须 ≤0.01；悬空 y_min>0.01 与深埋地下 y_min<−0.01 均不过——修前罩悬空即此判据族）: ` +
     posts.map(p => `${p.name} y_min=${p.box.min[1].toFixed(3)}`).join(', '));
-else if (posts.length) ok(`P1 ${grounded.length} 根立柱全部落地（y_min=0±0.01）`);
+else if (posts.length) ok(`P1 ${grounded.length} 根立柱全部落地（|y_min|≤0.01）`);
 // P2 位置与高度
 const h = hood[0].box;
 if (posts.length) {
@@ -129,6 +135,26 @@ for (const p of posts) {
   if (!overlap(arm.box, h)) fail(`P3 托臂 ${arm.name} 与罩包围盒不相交（未托住罩）`);
 }
 if (posts.length && arms.length && !fails) ok(`P3 ${arms.length} 根托臂均同时连接立柱与罩`);
+
+// P4 立柱与柜体、台面顶板无相交（astra R2 必修1：修前柱缘 z∈[-0.38,-0.34] 穿入顶板 z∈[-0.35,0.35]
+// 约 1 cm；负例 HOOD_NEG=pierce 注入柱整体前移 +0.05 → 须红）
+const body = parts.find(p => p.name === 'stallGrill_body');
+const slab = parts.find(p => p.name === 'stallGrill_top');
+if (!body || !slab) fail(`${FILE}: 找不到柜台体/台面顶板网格（stallGrill_body / stallGrill_top）`);
+// 实体相交 = AABB 三轴重叠都超过 eps（恰好贴面的零体积接触不算）
+const solidOverlap = (a, b, eps = 1e-4) =>
+  a.min[0] < b.max[0] - eps && b.min[0] < a.max[0] - eps &&
+  a.min[1] < b.max[1] - eps && b.min[1] < a.max[1] - eps &&
+  a.min[2] < b.max[2] - eps && b.min[2] < a.max[2] - eps;
+if (body && slab) {
+  for (const p of posts) {
+    for (const c of [body, slab])
+      if (solidOverlap(p.box, c.box)) fail(`P4 立柱 ${p.name} 与 ${c.name} 实体相交（AABB 三轴重叠）`);
+    const gap = slab.box.min[2] - p.box.max[2];   // 柱在顶板后缘外侧：前缘到顶板后缘的 z 向净隙
+    if (gap < 0.009) fail(`P4 立柱 ${p.name} 距台面顶板后缘 z 向净隙 ${(gap * 100).toFixed(2)} cm < 1 cm（astra R2 必修1：不许穿台面）`);
+  }
+  if (posts.length && !fails) ok(`P4 ${posts.length} 根立柱与柜体/顶板无相交（顶板后缘 z 向净隙 ≥1 cm）`);
+}
 
 console.log(`${NEG ? '[NEG ' + NEG + '] ' : ''}stall-hood-support-test: ${fails} failure(s)`);
 if (NEG) {

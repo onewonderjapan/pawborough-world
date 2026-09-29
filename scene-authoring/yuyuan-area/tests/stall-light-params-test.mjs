@@ -4,13 +4,15 @@
 //   棚布中段高 AWN_MID = 2.35 m（build_awning 前缘 2.2 / 后缘 2.5、z=0 中点线性插值 = 2.35）。
 //   点光位置 = 摊位锚点(0,0,0) + offsetY（presets.pointLights.sources[id=stall]，查看器 web/lighting.js 与
 //   Blender render-control-passes.py 同参）。
-// 判据：
-//   L1 光斑落台面（平方反比照度比）：灯到台面的照度 ∝ 1/(offsetY−CTR_H)² 必须不小于灯到棚布的照度
-//      ∝ 1/(AWN_MID−offsetY)²——等价 |offsetY−CTR_H| ≤ |AWN_MID−offsetY|，即 offsetY ≤ 1.625。
+// 判据（astra R2 措辞收窄：L1/L2 是设计常量上的参数筛选，不是光斑/色温的实测证明）：
+//   L1 降高方向约束（平方反比照度比，忽略遮挡、入射角与材质）：灯到台面的照度 ∝ 1/(offsetY−CTR_H)²
+//      不小于灯到棚布的照度 ∝ 1/(AWN_MID−offsetY)²——等价 |offsetY−CTR_H| ≤ |AWN_MID−offsetY|，
+//      即 offsetY ≤ 1.625。它只证明降高方向正确（棚布照度不再指数级压过台面），配合像素证据属
+//      「改善、partial」口径：不能单独证明光斑已限制在台面内（截图仍有地面泛光，见 SUMMARY partial 项）。
 //      修前 offsetY=2.3：灯距棚布 0.05 m、距台面 1.4 m，棚布照度是台面的 (1.4/0.05)² ≈ 784 倍 → 棚布炸亮成
 //      大光斑（舞台感）。此判据在修前参数上红。
-//   L2 暖白/琥珀色温：pointLights.color（sRGB）须 R>G>B 严格且 G/R ∈ [0.60,0.95]——琥珀带；粉色
-//      （R 高、G/R < 0.6，如 #ff6e9c G/R=0.43）判红。
+//   L2 琥珀色带筛选规则（sRGB R>G>B 且 G/R ∈ [0.60,0.95]；不是色温测量）：点光色须落在琥珀带；
+//      粉色（R 高、G/R < 0.6，如 #ff6e9c G/R=0.43）判红。
 //   L3 stall 自发光组（摊柜台面内透，模拟摊灯照亮台面）：组存在、含 palewood、color 同为琥珀带、intensity > 0。
 // 负例（STALL_LIGHT_NEG）：
 //   STALL_LIGHT_NEG=legacy  用修前参数（offsetY 2.3）代入判据 → L1 红；
@@ -40,18 +42,18 @@ if (!stallSrc) { fail('pointLights.sources 无 id=stall 条目'); process.exit(1
 const offsetY = NEG === 'legacy' ? 2.3 : stallSrc.offsetY;
 const color = NEG === 'pink' ? '#ff6e9c' : P.pointLights.color;
 
-// L1 光斑落台面
+// L1 降高方向约束（光斑是否限制在台面另由像素证据 partial 口径评估）
 const dCtr = Math.abs(offsetY - CTR_H), dAwn = Math.abs(AWN_MID - offsetY);
 if (!(dCtr <= dAwn))
   fail(`L1 灯 offsetY=${offsetY} 离台面 ${dCtr.toFixed(2)} m > 离棚布 ${dAwn.toFixed(2)} m（棚布照度/台面照度 = ${(dCtr / dAwn) ** 2} 倍 → 棚布炸亮大光斑；要求 offsetY ≤ ${(CTR_H + AWN_MID) / 2}）`);
 else
-  ok(`L1 灯 offsetY=${offsetY}：台面照度 ≥ 棚布照度（台距 ${dCtr.toFixed(2)} m ≤ 棚距 ${dAwn.toFixed(2)} m），光斑落台面`);
+  ok(`L1 灯 offsetY=${offsetY}：台面照度 ≥ 棚布照度（台距 ${dCtr.toFixed(2)} m ≤ 棚距 ${dAwn.toFixed(2)} m，降高方向约束成立）`);
 if (!(offsetY > CTR_H)) fail(`L1b 灯 offsetY=${offsetY} 不高于台面 ${CTR_H}（无意义）；`);
 
-// L2 色温
+// L2 琥珀色带筛选（非色温测量）
 const c = amberBand(color);
 if (!c.ok)
-  fail(`L2 点光色 ${color} 非暖白/琥珀（sRGB R=${c.r} G=${c.g} B=${c.b}，G/R=${(c.g / c.r).toFixed(2)} 要求 0.60–0.95 且 R>G>B；G/R<0.6 呈粉）`);
+  fail(`L2 点光色 ${color} 非琥珀带（sRGB R=${c.r} G=${c.g} B=${c.b}，G/R=${(c.g / c.r).toFixed(2)} 要求 0.60–0.95 且 R>G>B；G/R<0.6 呈粉）`);
 else
   ok(`L2 点光色 ${color} 为琥珀带（G/R=${(c.g / c.r).toFixed(2)}）`);
 

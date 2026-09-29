@@ -264,15 +264,19 @@ def build_grill(m):
     obs.append(box_glb(f'{tag}_grillGrate', (gx, 1.12, 0), (0.46, 0.02, 0.32), m['iron']))  # top = 1.13
     # smoke hood plane + chimney。wave14-stalllight 修复（巡检 #19）：罩+烟囱原是悬空板
     # （罩底 1.67–1.74，下方烤炉 grate 1.13，无任何支撑物，视觉上靠细撑杆「漂浮」）。
-    # 支撑选择 = 落地立柱：台面后缘外立两根铁柱（z=-0.36，柜台 z∈[-0.33,0.33] 之外不穿柜体），
-    # 柱顶托臂伸向罩后缘（z -0.37→-0.23）托住罩板。不选贴墙挂架（模块不知道放置处有无墙，rotY 不保证背面贴墙）、
-    # 不选檐口吊挂（布棚是布，吊挂荷载不可信）。guard: tests/stall-hood-support-test.mjs（落地/到位/托住三判据）。
+    # 支撑选择 = 落地立柱：台面后缘外立两根铁柱。astra R2 必修1：原柱心 z=-0.36（柱缘
+    # z∈[-0.38,-0.34]）避开了柜体（z∈[-0.33,0.33]）但穿入更宽的台面顶板（z∈[-0.35,0.35]）约 1 cm，
+    # 柱心后移到 z=-0.38（柱缘 z∈[-0.40,-0.36]，与顶板后缘净隙 1 cm，柜体更在外侧）。
+    # 柱顶托臂伸向罩后缘托住罩板。不选贴墙挂架（模块不知道放置处有无墙，rotY 不保证背面贴墙）、
+    # 不选檐口吊挂（布棚是布，吊挂荷载不可信）。guard: tests/stall-hood-support-test.mjs
+    # （P1 柱底落地绝对误差/至少两柱、P2 到位、P3 托住、P4 与柜体/顶板无相交 + HOOD_NEG=pierce 穿台面负例）。
     obs.append(box_glb(f'{tag}_hood', (gx, 1.70, -0.02), (0.70, 0.02, 0.48), m['iron'], rot_x_deg=8))
     obs.append(box_glb(f'{tag}_chimney', (gx, 1.98, -0.16), (0.11, 0.55, 0.11), m['iron']))  # base meets hood top
     for px in (gx - 0.27, gx + 0.27):   # -0.72 / -0.18：罩 x 范围 [-0.8,-0.1] 内、避开烤炉 [-0.7,-0.2] 之外侧
-        obs.append(cyl_glb(f'{tag}_hoodPost', (px, 0.89, -0.36), 0.020, 1.78, m['iron'], verts=8))
-        # 托臂：柱（z-0.36）→ 罩后缘（罩顶面后缘 y≈1.743），臂 y 1.725–1.755 与罩搭接
-        obs.append(box_glb(f'{tag}_hoodArm', (px, 1.74, -0.30), (0.05, 0.03, 0.14), m['iron']))
+        obs.append(cyl_glb(f'{tag}_hoodPost', (px, 0.89, -0.38), 0.020, 1.78, m['iron'], verts=8))
+        # 托臂：柱（柱心 z-0.38，柱缘 [-0.40,-0.36]）→ 罩后缘（罩顶面后缘 y≈1.743）。
+        # 臂 z -0.40→-0.22 全宽包住柱缘并盖过罩后缘（罩 AABB z_min≈-0.259），y 1.725–1.755 与罩搭接
+        obs.append(box_glb(f'{tag}_hoodArm', (px, 1.74, -0.31), (0.05, 0.03, 0.18), m['iron']))
     obs += build_tray(m, tag, TRAY_X, TRAY_Y, 0)
     # skewer rack on counter right
     for sz in (-0.24, 0.24):
@@ -424,7 +428,9 @@ def compute_oldsouth_lamps():
     return lamps
 
 def build_oldsouth_lamp(m):
-    """贴墙支架灯（wall bracket lamp）：原点 = 地面投影点，-Z 贴墙、+Z 朝街。挂高 2.19–2.75 m。"""
+    """贴墙支架灯（wall bracket lamp）：原点 = 地面投影点，-Z 贴墙、+Z 朝街。
+    高度实测口径（astra R2 措辞修正，原「挂高 2.19–2.75 m」不准）：底箍（rim）最低 2.1775 m，
+    整体最高约 2.70 m（背板顶 2.70）；无碰撞盒，步行胶囊 1.9 m 之上仍有合理净空。"""
     tag = 'oldsouthLamp'
     obs = []
     # 贴墙背板（放置离墙皮 0.22 → 背板 z∈[-0.22,-0.19] 正贴墙面）
@@ -581,7 +587,7 @@ def build_all():
     do('stall-drink.glb', build_drink, BUDGET['stallMax'])
     do('bench.glb', build_bench, BUDGET['benchMax'])
     do('oldsouth-lamp.glb', build_oldsouth_lamp, BUDGET['lampMax'],
-       extra={'note': 'old-south 街廊贴墙支架灯（挂高 2.19–2.75 m，无碰撞）；放置见 records/lamps.json'})
+       extra={'note': 'old-south 街廊贴墙支架灯（底箍最低 2.1775 m、整体最高约 2.70 m，无碰撞）；放置见 records/lamps.json'})
 
     # 12 active awning strips (16 site edges − 4 excluded: 1 tower clash + 3 passage-mouth flush edges)
     awn = []

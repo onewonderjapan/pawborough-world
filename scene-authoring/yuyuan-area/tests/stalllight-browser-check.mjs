@@ -59,8 +59,32 @@ const pv07 = pv.shots.find(s => s.id === 'pv07-bazaar-to-pond');
 if (!pv07) { console.error('pv-cameras.json 无 pv07-bazaar-to-pond'); process.exit(2); }
 const mid = pv07.frames >> 1;
 
-const exe = '/home/baibai/.cache/ms-playwright/chromium-1234/chrome-linux/chrome';
-const browser = await chromium.launch({ executablePath: exe, args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
+// Chromium 解析（astra R2 可选项：去掉硬编码的个人缓存路径）：
+//   1) 环境变量 CHROME_PATH 优先；
+//   2) 否则用 playwright registry 默认（executablePath 存在即交给 playwright 自己管）；
+//   3) registry 未下载时按 playwright 默认缓存目录（~/.cache/ms-playwright）动态取版本号最新的
+//      chromium-*/chrome-linux/chrome——版本目录随 playwright 版本漂移，不硬编码具体 revision。
+import os from 'node:os';
+function resolveChromiumExecutable() {
+  if (process.env.CHROME_PATH) return process.env.CHROME_PATH;
+  try {
+    if (fs.existsSync(chromium.executablePath())) return null;
+  } catch { /* registry 未配置，走缓存扫描 */ }
+  const cache = path.join(os.homedir(), '.cache', 'ms-playwright');
+  try {
+    const revs = fs.readdirSync(cache)
+      .map(d => { const m = /^chromium-(\d+)$/.exec(d); return m ? { d, rev: Number(m[1]) } : null; })
+      .filter(Boolean).sort((a, b) => b.rev - a.rev);
+    for (const { d } of revs) {
+      const p = path.join(cache, d, 'chrome-linux', 'chrome');
+      if (fs.existsSync(p)) return p;
+    }
+  } catch { /* 无默认缓存目录 */ }
+  return null;
+}
+const launchArgs = ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'];
+const exe = resolveChromiumExecutable();
+const browser = await chromium.launch(exe ? { executablePath: exe, args: launchArgs } : { args: launchArgs });
 const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
 
 let fails = 0;
