@@ -723,13 +723,7 @@ for (const [k, [x, z]] of Object.entries(nav.anchors)) {
 }
 
 // ---------- 15) 地面节点规则（浏览器/测试把分区 GLB 命中节点交给 collectGroundTriangles 别名层） ----------
-// jiuqu-bridge 项带 zone| 前缀（wave13-templefix R2）：分区 GLB 节点名是 assemble 四段式
-// `zone|id|kind|lod`（如 pond|jiuqu-bridge|zigzagBridge|L1），无前缀 glob 锚定整名开头永远
-// 失配——桥面 zigzagBridge 不进步行地面，huxinting-walkin 第一步即「no walk ground under
-// the feet」（R1 rebuild4 曾红、被旧分区件掩盖；R2 重导分区件后暴露）。前缀写法与下行
-// garden 的 'garden|garden-gate|gateAnchor|L2' 同式；pavilion/sansuitang 两项在现命名分区件
-// 无对应节点（dead entries）原样保留。
-const FROZEN_EXTRA_GROUND = ['pond|jiuqu-bridge*', 'pavilion-*/floor*', 'sansuitang*/platform*'];
+const FROZEN_EXTRA_GROUND = ['jiuqu-bridge*', 'pavilion-*/floor*', 'sansuitang*/platform*'];
 const GROUND_RE = {
   garden: '^(garden|pond)\\|[^|]+\\|(road|plaza|path|paving|steps|ground)\\|',
   pond: '^(garden|pond)\\|[^|]+\\|(road|plaza|path|paving|steps|ground)\\|',

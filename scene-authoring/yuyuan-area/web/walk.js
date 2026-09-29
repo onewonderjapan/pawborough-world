@@ -110,7 +110,7 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
     if (zonePhysics.zones.has('fangbang')) await addStreetAnchor(readJson);
     anchor = anchors[anchor] ? anchor : 'main';
     sel.value = anchor;
-    controller = new WalkController({ RAPIER, physics, capsule: { ...CAPSULE, spawn: [0, 1, 0] }, groundColliderHandles: new Set(zonePhysics.groundColliders.map((c) => c.handle)) });
+    controller = new WalkController({ RAPIER, physics, capsule: { ...CAPSULE, spawn: [0, 1, 0] } });
     if (hud) hud(`步行：碰撞就绪（墙 ${physics.wallCount} · 地面 ${physics.groundTriangleCount} 三角）`);
   }
 
