@@ -137,7 +137,7 @@ if (HUX0) {
   for (const du of [0, -0.3, 0.3]) {
     const [sx, sz] = B0;
     const sy = groundY(sx + UX * du, sz + UZ * du, 2);
-    const c = new WalkController({ RAPIER, physics, capsule: { ...capsule, spawn: [sx + UX * du, (sy ?? 0.55) + 0.05, sz + UZ * du] } });
+    const c = new WalkController({ RAPIER, physics, capsule: { ...capsule, spawn: [sx + UX * du, (sy ?? 0.55) + 0.05, sz + UZ * du] }, groundColliderHandles: groundHandles });
     for (let i = 0; i < 30; i++) c.step(1 / 60);
     c.yaw = Math.atan2(VX, VZ);            // 朝 −v（湖心亭方向）：forward = (−sin yaw, −cos yaw) = (−VX, −VZ)
     c.setMoveInput(1, 0);
@@ -158,7 +158,7 @@ const results = [];
 for (const [direction, pts] of routes) {
   const [sx, sz] = pts[0];
   const sy = groundY(sx, sz, 2);
-  const controller = new WalkController({ RAPIER, physics, capsule: { ...capsule, spawn: [sx, (sy ?? 0.55) + 0.05, sz] } });
+  const controller = new WalkController({ RAPIER, physics, capsule: { ...capsule, spawn: [sx, (sy ?? 0.55) + 0.05, sz] }, groundColliderHandles: groundHandles });
   const driver = new CruiseDriver({ controller, waypoints: pts.map(([x, z]) => [x, 0, z]), reachRadius: 0.18, timeoutSteps: 60 * 180 });
   let steps = 0, failure = null, stalled = 0, last = controller.feetPosition(), minV = Infinity, maxY = -Infinity, minY = Infinity;
   const trace = [];
@@ -188,7 +188,7 @@ const probes = [];
 if (results.every((r) => r.pass)) {
   for (let k = 0; k < 16; k++) {
     const yaw = (k / 16) * Math.PI * 2;
-    const c = new WalkController({ RAPIER, physics, capsule: { ...capsule, spawn: [I0[0], 0.62, I0[1]] } });
+    const c = new WalkController({ RAPIER, physics, capsule: { ...capsule, spawn: [I0[0], 0.62, I0[1]] }, groundColliderHandles: groundHandles });
     for (let i = 0; i < 30; i++) c.step(1 / 60);   // 落地
     c.yaw = yaw; c.setMoveInput(1, 0);
     let fail = null, far = 0;
