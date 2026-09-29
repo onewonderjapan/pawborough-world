@@ -735,7 +735,11 @@ def xieshan_roof(name, rect, z_eave, prm, part):
                 q3 = (q4[0] + nv * bw, q4[1] + nh * bw)
                 _prism_u(name + '-bofeng3d-%s%s' % (tag, side), [q1, q2, q3, q4],
                          ug - mout * 0.001, ug + mout * (bp - 0.001), 'wood', part)
-            # 悬鱼：山尖顶端脊下悬垂的鱼形饰板（头宽尾尖、尾端展鳍），比博风板退后留层次
+            # 悬鱼：山尖顶端脊下悬垂的鱼形饰板（头宽尾尖、尾端展鳍）。
+            # R1 返修（审查必修1）：R0 把悬鱼放在博风板后方（山花面外 0.008 起），正面投影被两条博风
+            # 在脊端合拢区盖死（实测抱厦 e 侧 100%、主楼 88%）。改为悬鱼**挂在博风板前方**：背面贴
+            # 博风前脸外 4 mm、往外伸出 xuanyuProud——即传统「悬鱼钉在博风合拢处之外」的层次，
+            # 正面投影中悬鱼完整可辨（博风在它背后）。
             w2 = xw / 2
             zt = zr - xt
             fish = [(vc + w2, zt), (vc + w2, zt - 0.35 * xl), (vc + 0.28 * xw, zt - 0.66 * xl),
@@ -743,7 +747,8 @@ def xieshan_roof(name, rect, z_eave, prm, part):
                     (vc, zt - xl),
                     (vc - 0.20 * xw, zt - 0.80 * xl), (vc - 0.28 * xw, zt - 0.66 * xl), (vc - w2, zt - 0.35 * xl),
                     (vc - w2, zt)]
-            _prism_u(name + '-xuanyu-' + tag, fish, ug + mout * 0.008, ug + mout * (0.008 + xp), 'dark', part)
+            xu_back = bp + 0.004
+            _prism_u(name + '-xuanyu-' + tag, fish, ug + mout * xu_back, ug + mout * (xu_back + xp), 'dark', part)
     # 正脊：沿 u 的方截面长条，两端起翘成吻
     ridge_items, ridge_faces = [], []
     ns = nr

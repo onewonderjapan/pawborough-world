@@ -16,15 +16,22 @@
      —— 负例： xuanyuLen=0.06（远小于设计下限）时失败。
   J5 所有装饰件每面法线朝体外（闭合盒自洽，凸包质心判据）
      —— 负例： 翻转全部面绕序后同一判据必须失败。
-  J6 设计值范围自检（huxinting 实际传入的设计 dict：出平面/板宽/悬鱼长相对山尖高的比例在合理建筑范围）
-     —— 负例： 把悬鱼长放大到山尖高 1.2 倍时失败。
+  J6 冻结尺寸/比例约束（tests/gable-constraints.py，独立常量唯一来源）应用到 records.json
+     designValues 的**真实传入参数**（博风宽/山花跨度、博风宽/山尖高、悬鱼长/山尖高、悬鱼宽/长等）
+     —— 负例： 把悬鱼长放大到山尖高 1.2 倍（模拟生成器参数与 records 同步越界）时失败。
+  J7 悬鱼挂在博风板前方（R1 必修1：R0 悬鱼在博风后被盖 100%/88%）：悬鱼背面沿山花法向
+     出平面距离 ≥ 博风前脸出平面距离
+     —— 负例： 把悬鱼顶点退回 R0 位置（山花面外 0.008）时失败。
 基线金值 fd0ade7c… 由 a2bc8104 的 eave_kit.py 在本测试同一批参数下捕获（独立 oracle，非被测代码输出）。
 """
 import hashlib
+import json
 import math
 import os
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import gable_constraints as FC                                  # noqa: E402  冻结约束唯一来源
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'modules', 'shared'))
 import eave_kit as EK                                          # noqa: E402
 
@@ -207,35 +214,78 @@ def main():
                for m in orn if '-bofeng3d-' in m['name'] or '-xuanyu-' in m['name']]
     expect_fail(check_box_normals(flipped), 'J5 全部面翻绕序必须红')
 
-    # ---- J6 设计值范围（huxinting 实际设计 dict 的建筑合理性）----
-    def check_design(go, gh):
+    # ---- J6 冻结尺寸/比例约束（gable-constraints.py 唯一来源）vs records.json 实际传入参数 ----
+    rec = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..',
+                                      'modules', 'huxinting', 'records.json'), encoding='utf-8'))
+    frv = rec['frame']['rectHalfV']
+
+    def check_design(go, rise, span):
         bad = []
-        if not 0.03 <= go['bofengProud'] <= 0.10:
-            bad.append('bofengProud 出平面 %s 出界' % go['bofengProud'])
-        if not 0.15 <= go['bofengWidth'] / gh <= 0.35:
-            bad.append('板宽/山尖高 %s 出界' % (go['bofengWidth'] / gh))
-        if not 0.25 <= go['xuanyuLen'] / gh <= 0.45:
-            bad.append('悬鱼长/山尖高 %s 出界' % (go['xuanyuLen'] / gh))
-        if not 0.3 <= go['xuanyuW'] / go['xuanyuLen'] <= 0.5:
-            bad.append('悬鱼宽长比出界')
-        if not go['xuanyuProud'] < go['bofengProud']:
-            bad.append('悬鱼应比博风板退后（层次）')
+        for tagc, val in (('bofengWidth/span', go['bofengWidth'] / span),
+                          ('bofengWidth/rise', go['bofengWidth'] / rise),
+                          ('xuanyuLen/rise', go['xuanyuLen'] / rise),
+                          ('xuanyuW/xuanyuLen', go['xuanyuW'] / go['xuanyuLen'])):
+            okc, msgc = FC.ratio_ok(tagc, val)
+            if not okc:
+                bad.append(msgc)
+        if not FC.XUANYU_PROUD[0] <= go['xuanyuProud'] <= FC.XUANYU_PROUD[1]:
+            bad.append('xuanyuProud %s 出冻结带' % go['xuanyuProud'])
+        if not FC.BOFENG_PROUD[0] <= go['bofengProud'] <= FC.BOFENG_PROUD[1]:
+            bad.append('bofengProud %s 出冻结带' % go['bofengProud'])
         return bad
 
-    ht_main = dict(bofengWidth=0.40, bofengProud=0.06, bofengDrop=0.12,
-                   xuanyuLen=0.60, xuanyuW=0.24, xuanyuProud=0.035)
-    ht_porch = dict(bofengWidth=0.24, bofengProud=0.05, bofengDrop=0.08,
-                    xuanyuLen=0.36, xuanyuW=0.15, xuanyuProud=0.03)
-    for nm, go, gh in (('mainroof', ht_main, 9.6 - 7.9), ('porchroof', ht_porch, 4.6 - 3.6)):
-        bad = check_design(go, gh)
+    for dkey, rname in (('roof', 'mainroof'), ('porch', 'porchroof')):
+        rp = rec['designValues'][dkey]
+        go = rp.get('gableOrnament')
+        if not go:
+            FAILS.append('J6 %s designValues 缺 gableOrnament' % dkey); CHECKS[0] += 1
+            continue
+        rise = rp['ridgeZ'] - rp['breakZ']
+        # 山花跨度（参数层，与生成器同一公式；产物层实测由 gable-product-check G5/G8 钉）
+        span = 2 * frv - 2 * rp['breakInset'] if rname == 'mainroof' else rp['depth'] + 0.25 - 2 * rp['breakInset']
+        bad = check_design(go, rise, span)
         CHECKS[0] += 1
         if bad:
-            FAILS.append('J6 %s 设计值出界: %s' % (nm, bad))
-    CHECKS[0] += 1
-    if not (1.05 <= ht_main['bofengWidth'] / ht_porch['bofengWidth'] <= 2.5):
-        FAILS.append('J6 主楼博风板应明显大于抱厦（比值 %s）' % (ht_main['bofengWidth'] / ht_porch['bofengWidth']))
-    # J6 负例：悬鱼长 = 1.2×山尖高（比山尖还长），范围判据必须红
-    expect_fail(check_design(dict(ht_main, xuanyuLen=1.2 * (9.6 - 7.9)), 9.6 - 7.9), 'J6 悬鱼比山尖还长必须红')
+            FAILS.append('J6 %s 设计值出冻结带: %s' % (dkey, bad))
+    # J6 负例：悬鱼长 = 1.2×山尖高（模拟生成器参数与 records 同步越界——判据用冻结带，同步改 records 也拦住）
+    go_n = dict(rec['designValues']['porch']['gableOrnament'],
+                xuanyuLen=1.2 * (rec['designValues']['porch']['ridgeZ'] - rec['designValues']['porch']['breakZ']))
+    rp_p = rec['designValues']['porch']
+    rise_p = rp_p['ridgeZ'] - rp_p['breakZ']
+    span_p = rp_p['depth'] + 0.25 - 2 * rp_p['breakInset']
+    expect_fail(check_design(go_n, rise_p, span_p), 'J6 悬鱼拉长到山尖高 1.2 倍（同步越界）必须红')
+
+    # ---- J7 悬鱼挂博风板前方（R1 必修1：R0 悬鱼在博风后被盖 100%/88%）----
+    def xuanyu_back_margin(meshes, tag_prefix='xs'):
+        bad = []
+        for tag, m_out in (('w', -1.0), ('e', 1.0)):
+            bm = [m for m in meshes if m['name'] == '%s-bofeng3d-%ss' % (tag_prefix, tag)]
+            xm = [m for m in meshes if m['name'] == '%s-xuanyu-%s' % (tag_prefix, tag)]
+            if len(bm) != 1 or len(xm) != 1:
+                bad.append('%s 端 J7 构件缺失' % tag); continue
+            bfront = max(m_out * v[0] for v in bm[0]['verts'])       # 博风前脸沿山花法向
+            xback = min(m_out * v[0] for v in xm[0]['verts'])        # 悬鱼背面沿山花法向
+            if xback < bfront - 1e-9:
+                bad.append('%s 悬鱼背面(mout %.4f) 在博风前脸(%.4f) 之后——正面会被博风遮挡' % (tag, xback, bfront))
+        return bad
+
+    for msg in xuanyu_back_margin(orn):
+        FAILS.append(msg); CHECKS[0] += 1
+
+    def shift_xuanyu(meshes, d):
+        """把悬鱼沿 u 平移 d（负例：退回 R0 位置）。"""
+        out = []
+        for m in meshes:
+            if '-xuanyu-' in m['name']:
+                m_out = -1.0 if m['name'].endswith('w') else 1.0
+                out.append(dict(m, verts=[(v[0] + m_out * d, v[1], v[2]) for v in m['verts']],
+                                items=[((p[0] + m_out * d, p[1], p[2]), uv) for p, uv in m['items']]))
+            else:
+                out.append(m)
+        return out
+
+    expect_fail(xuanyu_back_margin(shift_xuanyu(orn, -(ORB['bofengProud'] - 0.004))),
+                'J7 悬鱼退回 R0 位置（博风后方）必须红')
 
     print('gable-ornament-test: %d checks, %d fail' % (CHECKS[0], len(FAILS)))
     for f in FAILS:

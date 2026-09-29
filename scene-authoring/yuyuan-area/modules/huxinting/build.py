@@ -81,9 +81,12 @@ D = dict(
               ornamentScale=0.42,
               # wave14-gable（巡检 #14）：山尖装饰。eave_kit E5 opt-in（缺省仍输出旧件，塔楼 / hall-kit 不受影响）。
               # 山花面改深红木板（ht-wood-red，与商城楼 nightbalance N1 的 -shanhua-→wood 同口径），不再用纯白大平板。
-              # 尺寸取值：仓库内无参考库照片（PBR-SH 照片库不在本仓库），全部按亭子比例推、未核实——
-              # 山尖高 = ridgeZ−breakZ = 1.7 m：博风板宽 ≈1/4 山尖高 0.40、出山花面 0.06、下端沿斜边过撒头下探 0.12；
-              # 悬鱼自脊下 0.04 悬垂，长 ≈0.35 山尖高 0.60、最大宽 ≈0.4×长 0.24、出平面 0.035（比博风板退后留层次）。
+              # 尺寸取值：R1 更正——参考库本有湖心亭实拍 PBR-SH-0004-017（本次 R0 未利用），形制与视觉比例
+              # 按实拍（博风板为窄条 ≈山面跨度 10–20%）判断；精确米制尺寸仍未核实——
+              # 山尖高 = ridgeZ−breakZ = 1.7 m、山花底宽 = 2×(rectHalfV−breakInset) ≈ 6.22 m：
+              # 博风板宽 0.40 = 跨度 6.4%（实拍形制带内）、出山花面 0.06、下端沿斜边过撒头下探 0.12；
+              # 悬鱼自脊下 0.04 悬垂，长 ≈0.35 山尖高 0.60、最大宽 ≈0.4×长 0.24、出平面 0.035。
+              # R1：悬鱼挂在博风板前方（eave_kit 内背面贴博风前脸外 4 mm），不再退居博风后被盖 88%。
               shanhuaMaterial='wood',
               gableOrnament=dict(bofengWidth=0.40, bofengProud=0.06, bofengDrop=0.12,
                                  xuanyuLen=0.60, xuanyuW=0.24, xuanyuProud=0.035, xuanyuTuck=0.04)),
@@ -93,10 +96,14 @@ D = dict(
                # 'auto'（进深 2.45 -> 夹到 0.35）过线，但正脊只有 1.6 m 长，吻起翘 0.38 占满全长，
                # 九曲桥眼高看仍是两只「猫耳」；给实测定值 0.25：吻起翘 0.27、中段约 0.35 m 平脊。
                ornamentScale=0.25,
-               # wave14-gable：抱厦山尖（高 = 4.6−3.6 = 1.0 m）按同一比例缩小：板宽 0.24、出平面 0.05、下探 0.08；
-               # 悬鱼长 0.36、宽 0.15、出平面 0.03。未核实（同上）。
+               # wave14-gable：抱厦山尖（高 = 4.6−3.6 = 1.0 m）。
+               # R1 必修1：抱厦实际山花底宽只有 ≈0.436 m（v 跨 depth+0.25−2×breakInset，depth 被桥净空
+               # 压到 1.186 m）。R0 板宽 0.24 = 跨度 55%，两条博风在脊端合拢区把悬鱼投影盖死 100%。
+               # 按实际山花跨度重定：板宽 0.09 = 跨度 21%（实拍湖心亭 PBR-SH-0004-017 博风为窄条
+               # ≈跨度 10–20% 量级；米制仍未核实）；悬鱼长 0.36、宽 0.15、出平面 0.03 不变，
+               # 悬鱼挂在博风板前方（eave_kit）。
                shanhuaMaterial='wood',
-               gableOrnament=dict(bofengWidth=0.24, bofengProud=0.05, bofengDrop=0.08,
+               gableOrnament=dict(bofengWidth=0.09, bofengProud=0.05, bofengDrop=0.08,
                                   xuanyuLen=0.36, xuanyuW=0.15, xuanyuProud=0.03, xuanyuTuck=0.04)),
     tower=dict(half=2.1, over=0.9, zEave=9.65, apex=11.40, finialTop=12.0, drop=0.55, tileH=0.16, boardH=0.26,
                chu=0.2, qiao=0.6, reach=1.4, curve=1.5, rings=6,
