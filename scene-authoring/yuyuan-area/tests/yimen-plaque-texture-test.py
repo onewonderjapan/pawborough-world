@@ -145,12 +145,12 @@ def main():
     # 左右实体对应：左匾(观察者视角, x>0)采图集上半 (v>=0.48)，右匾(x<0)采下半 (v<=0.52)
     left_x = [q for q in faces if q[4] > 0]
     right_x = [q for q in faces if q[4] < 0]
-    ok(f'匾面实体分布：左 x<0 共 {len(left_x)} / 右 x>0 共 {len(right_x)}（各 >=2）',
+    ok(f'匾面实体分布：左 x>0 共 {len(left_x)} / 右 x<0 共 {len(right_x)}（各 >=2）',
        len(left_x) >= 2 and len(right_x) >= 2)
     if left_x and right_x:
         l_ok = all(q[2] >= 0.48 for q in left_x)
         r_ok = all(q[3] <= 0.52 for q in right_x)
-        ok('左匾实体(x<0)采图集上半 (v_min>=0.48)，右匾实体采下半 (v_max<=0.52)',
+        ok('左匾实体(x>0)采图集上半 (v_min>=0.48)，右匾实体(x<0)采下半 (v_max<=0.52)',
            l_ok and r_ok,
            f'left v={[(round(q[2], 3), round(q[3], 3)) for q in left_x]} right v={[(round(q[2], 3), round(q[3], 3)) for q in right_x]}')
 

@@ -588,6 +588,7 @@ window.__renderOnce = () => { lighting.tick(); renderer.render(scene, camera); }
 window.__ready = false;             // 自动加载的分区（首载 + deferred 外围）全部到齐
 window.__firstLoadReady = false;    // 首载分区到齐（外围仍在后台加载）
 window.__scene = scene;
+window.__camPose = (eye, tgt) => { camera.position.set(eye[0], eye[1], eye[2]); controls.target.set(tgt[0], tgt[1], tgt[2]); controls.update(); };   // wave13-templefix R2：pv 分镜机位截图（pv-cameras.json fmid 帧）精确定位
 installTargetMask({ renderer, scene, camera });
 batcher.wrapTargetMask();   // wave4-drawcalls：掩膜那一次按原网格着色
 window.__bigMeshes = () => {
