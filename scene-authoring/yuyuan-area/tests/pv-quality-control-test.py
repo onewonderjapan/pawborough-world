@@ -580,7 +580,9 @@ def main():
             check(all(abs(a - b) <= 1 for a, b in zip(got_b, sky)),
                   'T4c: 边界码 raw=%d 表面行混合值 %s ≠ 期望≈雾色 %s（fac≈0.9999 全雾化——'
                   '掩码路径下边界码表面照常吃雾，不吃雾只由 alpha=0 决定）' % (raw, got_b, sky))
-        check(opx[0, 3] == (0, 0, 0), 'T4c: raw=65535 且 alpha=0 保持原样')
+        check(opx[0, 3] == sky,
+              'T4c: raw=65535 且 alpha=0 的被裁天空行紧邻远带表面（cut_row±3 内）→ 边界 AA 渗漏'
+              '修复生效，eff=1 收敛到雾色 %s（本例雾色=顶部带中位=同色；v2 语义，见 T4e）' % (sky,))
 
         # ---- T4d（可选2）：无掩码回退路径与统一容差默认——三码排除语义与 CLI 默认一致 ----
         # tol=0.01 m、(far-near)=299.7 → 排除码 ≥ round((far-0.01-near)/(far-near)*65535)
@@ -602,6 +604,74 @@ def main():
               'T4d: 统计应含 fogSpreadWarn（顶部中位色 MAD 防护字段，R1可选3）')
         check(isinstance(st.get('topSpreadMAD'), float),
               'T4d: 统计应含 topSpreadMAD=%r（顶部样本分散度数字）' % st.get('topSpreadMAD'))
+
+        # ---- T4e（R1必修1 v2）：远裁边界 AA 渗漏修复 + 雾色地平线带取样 ----
+        # 真实根因（pv01 night frame-143 实测）：夜档月光把远地面照成亮蓝灰 (60,80,127)，far clip
+        # 把它直切暗天空；beauty 像素过滤把这行亮色渗进「中心射线是天空」的 AA 行，1 spp 掩码判
+        # 其为天空（α=0 不吃雾）→ 残留 1 行亮边 (15,30,62)。判据与 beauty 采样一致化：cut_row
+        # （远带表面像素最多的行）±3 行内、α=0 且 8 邻域有远带表面的像素 eff=1；雾色取 cut_row
+        # 上方净天空带中位（地平线本地天空，不是天顶向的顶部 2%）；紧邻近处屋顶（邻域 fac 低）
+        # 的天空不受影响。
+        W2, H2 = 8, 32
+        def write_case2(beauty_rows, z_rows, mask_rows):
+            flat = bytes(v for row in beauty_rows for px in row for v in px)
+            Image.frombytes('RGB', (W2, H2), flat).save(bp)
+            zg = Image.new('I', (W2, H2))
+            zpx = zg.load()
+            mg = Image.new('L', (W2, H2))
+            mpx = mg.load()
+            for y in range(H2):
+                for x in range(W2):
+                    zpx[x, y] = z_rows[y]
+                    mpx[x, y] = mask_rows[y]
+            zg.save(dp)
+            mg.save(mp)
+        high_sky, hor_sky, bright, roof, gnd = (10, 20, 30), (2, 1, 14), (60, 80, 127), (90, 60, 40), (30, 30, 30)
+        z299 = int(round(65535 * (299.25 - near) / (far - near)))
+        z297 = int(round(65535 * (297.0 - near) / (far - near)))
+        z100 = int(round(65535 * (100.0 - near) / (far - near)))
+        z250e = int(round(65535 * (250.0 - near) / (far - near)))
+        b_rows = ([high_sky] * W2, [high_sky] * W2, [high_sky] * W2) \
+            + ([hor_sky] * W2,) * 9 + ([roof] * W2,) + ([hor_sky] * W2,) * 13 \
+            + ([bright] * W2,) + ([bright] * W2,) * 2 + ([gnd] * W2,) * 3
+        b_rows = [list(r) for r in b_rows]
+        z_rows = [65535] * 27 + [z299] + [z297] + [z250e] * 3
+        z_rows[12] = z100                                   # 行12=近处屋顶（穿进天空区）
+        m_rows = [0] * 27 + [255] * 5
+        m_rows[12] = 255
+        m_rows[26] = 0                                      # 行26=边界渗漏 AA 行（中心射线是天空）
+        write_case2(b_rows, z_rows, m_rows)
+        st = amix.mix(bp, dp, near, far, 220.0, 80.0, mask_png=mp)
+        out = Image.open(bp).convert('RGB')
+        opx = out.load()
+        check(st.get('boundaryRow') == 27,
+              'T4e: boundaryRow=%r（期望 27=远带表面像素最多的裁切主线，而非行12 屋顶或行0 天空）'
+              % st.get('boundaryRow'))
+        check(list(st.get('fogSampledRGB', [])) == [float(c) for c in hor_sky] and st.get('fogSource') == 'horizon-sky',
+              'T4e: fogSampledRGB=%r fogSource=%r（期望 %s/horizon-sky——雾色取裁切主线上方净天空带'
+              '中位=地平线本地天空，不受行0-2 高空天 %s 影响）'
+              % (st.get('fogSampledRGB'), st.get('fogSource'), list(hor_sky), list(high_sky)))
+        check(opx[0, 26] == hor_sky,
+              'T4e: 渗漏 AA 行混合值 %s ≠ 雾色 %s（α=0 且紧邻 cut_row 远带表面 → eff=1 全雾化，'
+              '雾色=本地天空故与上方天空无缝——亮线消除的判据）' % (opx[0, 26], hor_sky))
+        check(opx[0, 11] == hor_sky,
+              'T4e: 屋顶邻接天空 %s 被改动（期望原样 %s——近处剪影的 AA 边缘是正常行为，'
+              '不做边界修复）' % (opx[0, 11], hor_sky))
+        got_far = opx[0, 27]
+        expect_far = tuple(round(c * 0.0094 + f * 0.9906) for c, f in zip(bright, hor_sky))
+        check(all(abs(a - b) <= 1 for a, b in zip(got_far, expect_far)),
+              'T4e: 裁切行表面混合值 %s ≠ 期望 %s（fac(z=299.25)=0.9906 标准路径）'
+              % (got_far, expect_far))
+        check(opx[0, 12] == roof,
+              'T4e: 近处屋顶 %s 被雾化（期望原样 %s——z=100 fac=0 不吃雾）' % (opx[0, 12], roof))
+        got_gnd = opx[0, 29]
+        expect_gnd = tuple(round(c * 0.625 + f * 0.375) for c, f in zip(gnd, hor_sky))
+        check(all(abs(a - b) <= 1 for a, b in zip(got_gnd, expect_gnd)),
+              'T4e: 近地面混合值 %s ≠ 期望 %s（z=250 fac=0.375 标准路径，雾色=地平线天）'
+              % (got_gnd, expect_gnd))
+        check(opx[0, 0] == high_sky,
+              'T4e: 高空天 %s 被改动（期望原样 %s——远离裁切带的天空一字节不动）'
+              % (opx[0, 0], high_sky))
 
     print('pv-quality-control-test: %d pass, %d fail' % (passes, fails))
     return 1 if fails else 0
