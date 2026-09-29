@@ -14,6 +14,23 @@ const TOUR_MAX_DIST = 120; // R1：导览机位下标签距离上限（m）
 const GHOST_OPACITY = '0.45'; // R1：地标被挡时的半透明
 const sizeCache = new WeakMap();
 
+// wave13-tourfix U2（巡检报告第 16 条）：个别标签的锚点高度偏移（查看器侧取景修正，不动 layout 数据/几何）。
+// 默认锚高 4 m（main.js drawLabels 同值）正落在城隍庙门楣匾额板面（temple.glb plaque-face 网格实测
+// 山门匾 y 3.9–4.8、仪门横匾 y 3.7–4.0），「山门」「仪门」chip 因此压住匾额文字（pv02/pv03 实拍）；
+// 下移到 2.6 m 让 chip 落在门楣以下的门洞留白处。
+export const LABEL_ANCHOR_Y = { '山门': 2.9, '仪门': 2.6 };
+export const LABEL_ANCHOR_Y_DEFAULT = 4;
+// chip 视口内收（报告第 16 条：tour-huabaolou 左下角「信大祥」chip 被视口裁半）。
+// 锚点在视口内时把 chip 矩形（transform: translate(-50%,-130%) 口径，同 rectOf）钳回视口；
+// 返回 null 表示锚点已出视口——chip 属于不在画内的对象，交由调用方隐藏，避免悬半截的裁切残留。
+export function clampChipIntoViewport(el, x, y, vw, vh) {
+  const { w, h } = sizeOf(el);
+  if (x < 0 || x > vw || y < 0 || y > vh) return null;
+  const cx = Math.min(Math.max(x, w / 2 + PAD), vw - w / 2 - PAD);
+  const cy = Math.min(Math.max(y, h * 1.3 + PAD), vh + h * 0.3 - PAD);
+  return { x: cx, y: cy };
+}
+
 function sizeOf(el) {
   let s = sizeCache.get(el);
   if (!s) { s = { w: el.offsetWidth, h: el.offsetHeight }; sizeCache.set(el, s); }
@@ -84,13 +101,16 @@ export function segBlockedByOccluders(occluders, a, b) {
 
 // items: [{el, prio(0=region,1=landmark,2=facility,3=note), x, y, dist, wpos?}]，x/y 为已设置的 left/top。
 // wpos = 标签世界锚点 [x,4,z]（main.js drawLabels 投影用同一高度）；无 wpos 的条目不做遮挡判定。
-// opts: { occluders, cam:[x,y,z], tourActive } —— R1/T2 遮挡剔除与导览机位距离上限。
+// opts: { occluders, cam, tourActive, reserved } —— R1/T2 遮挡剔除与导览机位距离上限；
+//   wave13-tourfix U2：reserved = 匾额文字区的屏幕矩形集（main.js 从 temple GLB plaque-face* 网格
+//   收集世界盒后逐帧投影），与保留区相交的 chip 一律隐藏——匾额文字不许被任何 chip 盖住
+//   （巡检报告第 16 条：山门/仪门 chip 压匾；修复后前院/仪门戏楼 chip 顶替占位同罪，一并按此拦）。
 // 处理顺序 = prio 升序（region/landmark 先占位）；与已放置矩形相交的后到者隐藏；
 // 非区域标签超出 CAP 时按 (prio, 距离) 保留前 CAP 个。
-// 返回 {hidden, overlaps, occludedHidden, occludedGhost, distCapHidden, maxVisibleDist}。
+// 返回 {hidden, overlaps, occludedHidden, occludedGhost, distCapHidden, reservedHidden, maxVisibleDist}。
 export function dedupeLabels(items, w, h, facilityCap = FACILITY_CAP, opts = {}) {
-  const { occluders, cam, tourActive } = opts;
-  let occludedHidden = 0, occludedGhost = 0, distCapHidden = 0, maxVisibleDist = 0;
+  const { occluders, cam, tourActive, reserved } = opts;
+  let occludedHidden = 0, occludedGhost = 0, distCapHidden = 0, reservedHidden = 0, maxVisibleDist = 0;
   const kept = [];
   for (const it of items) {
     // R1：导览机位下距离上限 120 m
@@ -99,6 +119,16 @@ export function dedupeLabels(items, w, h, facilityCap = FACILITY_CAP, opts = {})
       it.el.style.opacity = '';
       distCapHidden++;
       continue;
+    }
+    // wave13-tourfix U2：压匾额文字区的 chip 一律隐藏（优先级无关——匾额不是 chip，不让位）
+    if (reserved && reserved.length) {
+      const r = rectOf(it);
+      if (reserved.some(q => intersects(r, q))) {
+        it.el.style.visibility = 'hidden';
+        it.el.style.opacity = '';
+        reservedHidden++;
+        continue;
+      }
     }
     // R1：视线被碰撞盒挡住 → 隐藏；区域级/地标（prio ≤ 1，含 GOAL fallback 受保护地标
     // 三穗堂/老城隍庙/华宝楼——华宝楼同时是 REGION_LABELS，prio=0）改半透明保留
@@ -131,7 +161,7 @@ export function dedupeLabels(items, w, h, facilityCap = FACILITY_CAP, opts = {})
   for (let i = 0; i < placed.length; i++)
     for (let j = i + 1; j < placed.length; j++)
       if (intersects(placed[i].rect, placed[j].rect)) overlaps++;
-  return { hidden, overlaps, occludedHidden, occludedGhost, distCapHidden, maxVisibleDist: +maxVisibleDist.toFixed(1) };
+  return { hidden, overlaps, occludedHidden, occludedGhost, distCapHidden, reservedHidden, maxVisibleDist: +maxVisibleDist.toFixed(1) };
 }
 export const FACILITY_LABEL_CAP = FACILITY_CAP;
 export const TOUR_LABEL_MAX_DIST = TOUR_MAX_DIST;

@@ -7,7 +7,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
 import { setupTour } from './tour.js';   // WP13：取景导览逻辑在 web/tour.js
-import { dedupeLabels, buildLabelOccluders } from './labels.js'; // WP13：标签去重+R1遮挡剔除逻辑在 web/labels.js
+import { dedupeLabels, buildLabelOccluders, LABEL_ANCHOR_Y, LABEL_ANCHOR_Y_DEFAULT, clampChipIntoViewport } from './labels.js'; // WP13：标签去重+R1遮挡剔除逻辑在 web/labels.js；U2 锚点偏移/视口内收
 import { installWalkMode } from './walk.js';   // WP4 步行模式（默认不启用，按 ?walk=1 或「步行」按钮进入）
 import { setupPerf } from './perf.js';         // M4 性能采样（仅 ?perf=1 时激活；方法见 docs/PERF-W2.md）
 import { installTargetMask } from './target-mask.js'; // wave3-tourfix T2：导览机位渲染后目标像素复核钩子 window.__targetMask
@@ -36,6 +36,7 @@ try {
 window.__viewerStartup?.rendererReady();
 
 const scene = new THREE.Scene();
+window.__scene = scene; // headless 检查用场景句柄
 const camera = new THREE.PerspectiveCamera(46, innerWidth / innerHeight, 0.5, 4000);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
@@ -96,12 +97,21 @@ function applyRoofs(on, root = scene) {
   root.traverse(o => { if (isRoofNodeSelf(o)) o.visible = on; });
   batcher.syncVisibility();   // wave4-drawcalls：原网格可见性 → 合批实例
 }
+const plaqueBoxes = []; // wave13-tourfix U2：匾额文字区世界盒（temple GLB 的 plaque-face* 网格），供标签保留区
+window.__plaqueBoxes = plaqueBoxes; // 供 headless 检查核对收集是否生效
 function prepare(root) {
   root.traverse(o => {
     if (o.isMesh) {
       o.castShadow = false; o.receiveShadow = false;
       if (o.material && o.material.map === null && o.material.vertexColors === false) o.material.side = THREE.FrontSide;
     }
+  });
+  // wave13-tourfix U2：合批前按节点名收匾额整组盒（框+文字面，根在原点，updateMatrixWorld 即世界坐标）。
+  // 城隍庙匾额在 zone-temple-*.glb 的节点名为 <门>-plaque__<材质>（shanmen/yimen/dadian 三门）；
+  // 与 tests/tour-label-chip-check.mjs 解析的世界盒同源同参。
+  root.updateMatrixWorld(true);
+  root.traverse(o => {
+    if (/(shanmen|yimen|dadian)-plaque/.test(String(o.name || ''))) plaqueBoxes.push(new THREE.Box3().setFromObject(o).expandByScalar(0.15));
   });
   patchOuterKitProc(root);
   lighting.registerRoot(root);   // wave11-lighting：阴影开关、夜间自发光材质登记、点光候选位置
@@ -420,7 +430,7 @@ function buildLabels() {
     holder.appendChild(el);
     el.dataset.labelText = l.text;
     const prio = region ? 0 : LANDMARK_LABELS.has(l.text) && !isNote ? 1 : isNote ? 3 : 2;
-    labelEls.set(el, { x: l.x, z: l.z, zone: zoneOfLabel(l), note: isNote, region, prio, maxDist: isNote ? LABEL_DIST.note : region || prio === 1 ? LABEL_DIST.region : LABEL_DIST.facility });
+    labelEls.set(el, { x: l.x, z: l.z, ay: LABEL_ANCHOR_Y[l.text] ?? LABEL_ANCHOR_Y_DEFAULT, zone: zoneOfLabel(l), note: isNote, region, prio, maxDist: isNote ? LABEL_DIST.note : region || prio === 1 ? LABEL_DIST.region : LABEL_DIST.facility });
   }
   buildResiduals(holder);
   updateLabelVis();
@@ -453,22 +463,40 @@ function drawLabels() {
   const shown = [];
   for (const [el, p] of labelEls) {
     if (el.style.display === 'none') continue;
-    _v.set(p.x, 4, p.z).project(camera);
+    _v.set(p.x, p.ay, p.z).project(camera);
     if (_v.z > 1) { el.style.visibility = 'hidden'; continue; }
     // 按距离：超出层级阈值的标签不展示
-    const dist = camera.position.distanceTo(_w.set(p.x, 4, p.z));
+    const dist = camera.position.distanceTo(_w.set(p.x, p.ay, p.z));
     if (dist > p.maxDist) { el.style.visibility = 'hidden'; continue; }
-    el.style.visibility = 'visible';
     const sx = (_v.x * 0.5 + 0.5) * w, sy = (-_v.y * 0.5 + 0.5) * h;
-    el.style.left = sx + 'px';
-    el.style.top = sy + 'px';
-    shown.push({ el, prio: p.prio, x: sx, y: sy, dist, wpos: [p.x, 4, p.z] });
+    // wave13-tourfix U2：锚点在视口内 → chip 完整收进视口（修「信大祥」类裁半）；锚点出视口 → 隐藏
+    // （chip 属于不在画内的对象，悬半截的裁切残留只剩噪音）。
+    const c = clampChipIntoViewport(el, sx, sy, w, h);
+    if (!c) { el.style.visibility = 'hidden'; continue; }
+    el.style.visibility = 'visible';
+    el.style.left = c.x + 'px';
+    el.style.top = c.y + 'px';
+    shown.push({ el, prio: p.prio, x: c.x, y: c.y, dist, wpos: [p.x, p.ay, p.z] });
   }
+  // wave13-tourfix U2：匾额文字区投影成屏幕保留区（外扩 2px），任何 chip 压区即隐
+  const reserved = [];
+  for (const b of plaqueBoxes) {
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity, behind = false;
+    for (const cx of [b.min.x, b.max.x]) for (const cy of [b.min.y, b.max.y]) for (const cz of [b.min.z, b.max.z]) {
+      _v.set(cx, cy, cz).project(camera);
+      if (_v.z > 1) { behind = true; break; }
+      const sx = (_v.x * 0.5 + 0.5) * w, sy = (-_v.y * 0.5 + 0.5) * h;
+      x0 = Math.min(x0, sx); x1 = Math.max(x1, sx); y0 = Math.min(y0, sy); y1 = Math.max(y1, sy);
+    }
+    if (!behind && x1 > x0) reserved.push({ x0: x0 - 2, y0: y0 - 2, x1: x1 + 2, y1: y1 + 2 });
+  }
+  window.__lastReserved = reserved; // headless 检查核对用
   // WP13/T2 屏幕空间去重 + R1/T2 遮挡剔除与导览机位 120m 上限 —— 逻辑在 web/labels.js
   window.__lastLabelDedupe = dedupeLabels(shown, w, h, 12, {
     occluders: labelOccluders,
     cam: labelOccluders ? [camera.position.x, camera.position.y, camera.position.z] : null,
     tourActive: !!(tourCtl && tourCtl.curTour),
+    reserved,
   });
   drawResiduals();
 }
