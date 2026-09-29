@@ -7,7 +7,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
 import { setupTour } from './tour.js';   // WP13：取景导览逻辑在 web/tour.js
-import { dedupeLabels, buildLabelOccluders, LABEL_ANCHOR_Y, LABEL_ANCHOR_Y_DEFAULT, clampChipIntoViewport } from './labels.js'; // WP13：标签去重+R1遮挡剔除逻辑在 web/labels.js；U2 锚点偏移/视口内收
+import { dedupeLabels, buildLabelOccluders, segBlockedByOccluders, clusterTriangleFaces, plaqueFaceAxis, LABEL_ANCHOR_Y, LABEL_ANCHOR_Y_DEFAULT, clampChipIntoViewport } from './labels.js'; // WP13：标签去重+R1遮挡剔除逻辑在 web/labels.js；U2 锚点偏移/视口内收；R1 必修2 匾面拆分/朝向
 import { installWalkMode } from './walk.js';   // WP4 步行模式（默认不启用，按 ?walk=1 或「步行」按钮进入）
 import { setupPerf } from './perf.js';         // M4 性能采样（仅 ?perf=1 时激活；方法见 docs/PERF-W2.md）
 import { installTargetMask } from './target-mask.js'; // wave3-tourfix T2：导览机位渲染后目标像素复核钩子 window.__targetMask
@@ -97,8 +97,13 @@ function applyRoofs(on, root = scene) {
   root.traverse(o => { if (isRoofNodeSelf(o)) o.visible = on; });
   batcher.syncVisibility();   // wave4-drawcalls：原网格可见性 → 合批实例
 }
-const plaqueBoxes = []; // wave13-tourfix U2：匾额文字区世界盒（temple GLB 的 plaque-face* 网格），供标签保留区
+const plaqueBoxes = []; // wave13-tourfix U2/R1：匾额文字区世界盒（temple GLB 的 plaque 网格），供标签保留区；
+                        // R1 必修2 起每项 = { box:世界盒, normal:世界朝向(文字面外法线), center:世界盒中心 }，
+                        // 是按三角形连通性拆出的独立匾面（仪门左右两匾不再合成一个横跨门洞的大盒），同规则见 web/labels.js
 window.__plaqueBoxes = plaqueBoxes; // 供 headless 检查核对收集是否生效
+window.__labelFault = null; // R1 必修1：headless 负例注入（tests/tour-label-chip-check.mjs LABELCHIP_NEG），正常运行为 null：
+                            // {anchorY:{山门:4}} 锚高覆写（负例①恢复 4m）/ {noClamp:true} 关 chip 视口内收（负例②）/
+                            // {plaqueAlways:true} 关匾面可见性判断、按旧整组盒口径建保留区（必修2 场景负证）
 function prepare(root) {
   root.traverse(o => {
     if (o.isMesh) {
@@ -106,12 +111,58 @@ function prepare(root) {
       if (o.material && o.material.map === null && o.material.vertexColors === false) o.material.side = THREE.FrontSide;
     }
   });
-  // wave13-tourfix U2：合批前按节点名收匾额整组盒（框+文字面，根在原点，updateMatrixWorld 即世界坐标）。
-  // 城隍庙匾额在 zone-temple-*.glb 的节点名为 <门>-plaque__<材质>（shanmen/yimen/dadian 三门）；
-  // 与 tests/tour-label-chip-check.mjs 解析的世界盒同源同参。
+  // wave13-tourfix U2：合批前收匾额盒（框+文字面，根在原点，updateMatrixWorld 即世界坐标）。
+  // 城隍庙匾额在 zone-temple-*.glb 的节点名为 <门>-plaque__<材质>（shanmen/yimen/dadian 三门）。
+  // R1 必修2：不再整组一个盒——GLTFLoader 会把命名节点包成 Group（isMesh=false，名字被 sanitize
+  // 去点），按命名节点整组收集其下全部网格三角形，做世界空间三角形连通聚类（web/labels.js
+  // clusterTriangleFaces，link 3.0m：同匾框条/饰条连成一块，仪门左右两匾分拆），每簇一个世界盒；
+  // 文字面世界外法线取首个子网格局部薄轴挤出方向（plaqueFaceAxis）× 子网格世界旋转，供逐帧
+  // 「背向相机不建保留区」判断；与 tests/tour-label-chip-check.mjs 同规则自解析。
   root.updateMatrixWorld(true);
   root.traverse(o => {
-    if (/(shanmen|yimen|dadian)-plaque/.test(String(o.name || ''))) plaqueBoxes.push(new THREE.Box3().setFromObject(o).expandByScalar(0.15));
+    const nm = String(o.name || '');
+    if (!/(shanmen|yimen|dadian)-plaque/.test(nm)) return;
+    const parts = [];
+    o.traverse(c => { if (c.isMesh && c.geometry && c.geometry.attributes.position) parts.push(c); });
+    if (!parts.length) return;
+    const va = new THREE.Vector3(), vb = new THREE.Vector3(), vc = new THREE.Vector3();
+    const tris = []; // 世界空间三角形顶点展平（9/三角形）
+    for (const c of parts) {
+      const pos = c.geometry.attributes.position, idx = c.geometry.index;
+      const nTri = Math.floor((idx ? idx.count : pos.count) / 3);
+      for (let t = 0; t < nTri; t++) {
+        va.fromBufferAttribute(pos, idx ? idx.getX(t * 3) : t * 3).applyMatrix4(c.matrixWorld);
+        vb.fromBufferAttribute(pos, idx ? idx.getX(t * 3 + 1) : t * 3 + 1).applyMatrix4(c.matrixWorld);
+        vc.fromBufferAttribute(pos, idx ? idx.getX(t * 3 + 2) : t * 3 + 2).applyMatrix4(c.matrixWorld);
+        tris.push(va.x, va.y, va.z, vb.x, vb.y, vb.z, vc.x, vc.y, vc.z);
+      }
+    }
+    const nTri = tris.length / 9;
+    if (!nTri) return;
+    const cent = new Float32Array(nTri * 3);
+    for (let t = 0; t < nTri; t++) for (let k = 0; k < 3; k++)
+      cent[t * 3 + k] = (tris[t * 9 + k] + tris[t * 9 + 3 + k] + tris[t * 9 + 6 + k]) / 3;
+    const clusterOf = clusterTriangleFaces(cent, nTri);
+    const nClusters = Math.max(...clusterOf) + 1;
+    const lo = Array.from({ length: nClusters }, () => [Infinity, Infinity, Infinity]);
+    const hi = Array.from({ length: nClusters }, () => [-Infinity, -Infinity, -Infinity]);
+    for (let t = 0; t < nTri; t++) for (let k = 0; k < 9; k += 3) for (let j = 0; j < 3; j++) {
+      lo[clusterOf[t]][j] = Math.min(lo[clusterOf[t]][j], tris[t * 9 + k + j]);
+      hi[clusterOf[t]][j] = Math.max(hi[clusterOf[t]][j], tris[t * 9 + k + j]);
+    }
+    // 文字面外法线：首个子网格几何全量包围盒的局部薄轴（板从挂装面向薄轴正向挤出）× 世界旋转。
+    const first = parts[0];
+    first.geometry.computeBoundingBox();
+    const bb = first.geometry.boundingBox;
+    const normal = new THREE.Vector3(...plaqueFaceAxis([bb.min.x, bb.min.y, bb.min.z], [bb.max.x, bb.max.y, bb.max.z]))
+      .transformDirection(first.matrixWorld).normalize();
+    for (let cl = 0; cl < nClusters; cl++) {
+      const box = new THREE.Box3(
+        new THREE.Vector3(lo[cl][0], lo[cl][1], lo[cl][2]),
+        new THREE.Vector3(hi[cl][0], hi[cl][1], hi[cl][2]),
+      ).expandByScalar(0.15);
+      plaqueBoxes.push({ name: nm, box, normal, center: box.getCenter(new THREE.Vector3()) });
+    }
   });
   patchOuterKitProc(root);
   lighting.registerRoot(root);   // wave11-lighting：阴影开关、夜间自发光材质登记、点光候选位置
@@ -457,32 +508,46 @@ function updateLabelVis() {
 }
 const _v = new THREE.Vector3();
 const _w = new THREE.Vector3();
+const _n = new THREE.Vector3();
+const _probe = new THREE.Vector3();
 function drawLabels() {
   if (!layoutData) return;
   const w = innerWidth, h = innerHeight;
+  const fault = window.__labelFault;
   const shown = [];
   for (const [el, p] of labelEls) {
     if (el.style.display === 'none') continue;
-    _v.set(p.x, p.ay, p.z).project(camera);
+    const ay = fault?.anchorY?.[el.dataset.labelText] ?? p.ay; // R1 必修1 负例①：锚高覆写（恢复 4m）
+    _v.set(p.x, ay, p.z).project(camera);
     if (_v.z > 1) { el.style.visibility = 'hidden'; continue; }
     // 按距离：超出层级阈值的标签不展示
-    const dist = camera.position.distanceTo(_w.set(p.x, p.ay, p.z));
+    const dist = camera.position.distanceTo(_w.set(p.x, ay, p.z));
     if (dist > p.maxDist) { el.style.visibility = 'hidden'; continue; }
     const sx = (_v.x * 0.5 + 0.5) * w, sy = (-_v.y * 0.5 + 0.5) * h;
     // wave13-tourfix U2：锚点在视口内 → chip 完整收进视口（修「信大祥」类裁半）；锚点出视口 → 隐藏
-    // （chip 属于不在画内的对象，悬半截的裁切残留只剩噪音）。
-    const c = clampChipIntoViewport(el, sx, sy, w, h);
+    // （chip 属于不在画内的对象，悬半截的裁切残留只剩噪音）。R1 负例②：noClamp 关闭内收。
+    const c = fault?.noClamp ? { x: sx, y: sy } : clampChipIntoViewport(el, sx, sy, w, h);
     if (!c) { el.style.visibility = 'hidden'; continue; }
     el.style.visibility = 'visible';
     el.style.left = c.x + 'px';
     el.style.top = c.y + 'px';
-    shown.push({ el, prio: p.prio, x: c.x, y: c.y, dist, wpos: [p.x, p.ay, p.z] });
+    shown.push({ el, prio: p.prio, x: c.x, y: c.y, dist, wpos: [p.x, ay, p.z] });
   }
-  // wave13-tourfix U2：匾额文字区投影成屏幕保留区（外扩 2px），任何 chip 压区即隐
+  // wave13-tourfix U2：匾额文字区投影成屏幕保留区（外扩 2px），任何 chip 压区即隐。
+  // R1 必修2：只对可见匾面建区——文字面外法线背向相机（看到匾背）不建；相机→匾面前探点被碰撞盒
+  // 挡住（匾面被建筑遮挡，如门楼背面/隔楼观看）不建。碰撞集未就绪时跳过遮挡判断（保守护匾）。
+  // 负例注入 plaqueAlways = 旧整组盒口径（无可见性判断），供检查脚本证实场景能打红。
   const reserved = [];
   for (const b of plaqueBoxes) {
+    if (!fault?.plaqueAlways) {
+      if (_n.copy(b.normal).dot(_w.subVectors(camera.position, b.center)) <= 0) continue;
+      if (labelOccluders && labelOccluders.length) {
+        _probe.copy(b.center).addScaledVector(b.normal, 0.25);
+        if (segBlockedByOccluders(labelOccluders, [camera.position.x, camera.position.y, camera.position.z], [_probe.x, _probe.y, _probe.z])) continue;
+      }
+    }
     let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity, behind = false;
-    for (const cx of [b.min.x, b.max.x]) for (const cy of [b.min.y, b.max.y]) for (const cz of [b.min.z, b.max.z]) {
+    for (const cx of [b.box.min.x, b.box.max.x]) for (const cy of [b.box.min.y, b.box.max.y]) for (const cz of [b.box.min.z, b.box.max.z]) {
       _v.set(cx, cy, cz).project(camera);
       if (_v.z > 1) { behind = true; break; }
       const sx = (_v.x * 0.5 + 0.5) * w, sy = (-_v.y * 0.5 + 0.5) * h;

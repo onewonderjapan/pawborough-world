@@ -16,9 +16,12 @@ const sizeCache = new WeakMap();
 
 // wave13-tourfix U2（巡检报告第 16 条）：个别标签的锚点高度偏移（查看器侧取景修正，不动 layout 数据/几何）。
 // 默认锚高 4 m（main.js drawLabels 同值）正落在城隍庙门楣匾额板面（temple.glb plaque-face 网格实测
-// 山门匾 y 3.9–4.8、仪门横匾 y 3.7–4.0），「山门」「仪门」chip 因此压住匾额文字（pv02/pv03 实拍）；
-// 下移到 2.6 m 让 chip 落在门楣以下的门洞留白处。
-export const LABEL_ANCHOR_Y = { '山门': 2.9, '仪门': 2.6 };
+// 山门匾 y 3.9–4.8、仪门横匾 y 3.7–4.0），「山门」「仪门」chip 因此压住匾额文字（pv02/pv03 实拍）。
+// 山门 2.9 m：chip 落在门楣以下的门洞留白处。
+// 仪门 1.6 m：R1 必修1——2.6 m 时 pv03 中 chip 与「大殿」（prio 0，同轴竖排 sy≈604–625）重叠被挤掉；
+// 「后殿」chip 紧随其下（sy≈636–658），两圈之间放不下第三个 chip，再降到门洞内 1.6 m（实测 sy≈672–697，
+// 避开两圈；pv02 亦由被「大殿」挤掉变为可见；拆分匾面后门洞空隙无保留区，见 labels.js R1 必修2）。
+export const LABEL_ANCHOR_Y = { '山门': 2.9, '仪门': 1.6 };
 export const LABEL_ANCHOR_Y_DEFAULT = 4;
 // chip 视口内收（报告第 16 条：tour-huabaolou 左下角「信大祥」chip 被视口裁半）。
 // 锚点在视口内时把 chip 矩形（transform: translate(-50%,-130%) 口径，同 rectOf）钳回视口；
@@ -35,6 +38,61 @@ function sizeOf(el) {
   let s = sizeCache.get(el);
   if (!s) { s = { w: el.offsetWidth, h: el.offsetHeight }; sizeCache.set(el, s); }
   return s;
+}
+
+// ---------- wave13-tourfix R1 必修2：匾额整组网格 → 独立匾面 ----------
+// 巡检 R1：按材质合并的仪门匾额盒横跨左右两块匾之间的门洞空隙（x ±5.3 m 各一块匾、中间 ~6 m 空），
+// 保护范围远大于文字区。这里按三角形质心连通性把一块匾额网格拆成独立匾面：质心间距 ≤ PLAQUE_LINK_M
+// 视为同一匾面（单块匾 ~2.2 m 宽、三角形间距远小于它；两匾间隙 > 6 m 远大于它），viewer（web/main.js
+// prepare 收集 plaqueBoxes）与 headless 检查（tests/tour-label-chip-check.mjs 自解析 GLB）共用同一实现。
+// centroids: 长度 3n 的展平三角形质心（局部坐标）；返回长度 n 的簇号数组。
+// PLAQUE_LINK_M=3.0 实测依据：同一块匾的边框条/饰条与主体之间空档可达 ~3 m（dadian 边框条 x≈±2.26
+// 与内饰条 x≈±0.74，条间 ~1.5 m、框-饰条间 ~1.5 m），须连成一块；仪门左右两匾间隙 ~6.2 m
+// （质心最近距 ≈6.2 m），3.0 m 仍稳分两侧。
+export const PLAQUE_LINK_M = 3.0;
+export function clusterTriangleFaces(centroids, n, linkDist = PLAQUE_LINK_M) {
+  const label = new Int32Array(n).fill(-1);
+  // 网格哈希（cell = linkDist）找近邻对，n ≤ ~1100 三角形，一次加载只算一遍
+  const cell = new Map();
+  const key = (i, j, k) => i + ',' + j + ',' + k;
+  for (let t = 0; t < n; t++) {
+    const k = key(Math.floor(centroids[t * 3] / linkDist), Math.floor(centroids[t * 3 + 1] / linkDist), Math.floor(centroids[t * 3 + 2] / linkDist));
+    (cell.get(k) || cell.set(k, []).get(k)).push(t);
+  }
+  const find = (t) => { while (label[t] >= 0 && label[t] !== t) t = label[t]; return t; };
+  const union = (a, b) => { a = find(a); b = find(b); if (a !== b) label[Math.max(a, b)] = Math.min(a, b); };
+  for (let t = 0; t < n; t++) label[t] = t;
+  const d2 = linkDist * linkDist;
+  for (let t = 0; t < n; t++) {
+    const cx = Math.floor(centroids[t * 3] / linkDist), cy = Math.floor(centroids[t * 3 + 1] / linkDist), cz = Math.floor(centroids[t * 3 + 2] / linkDist);
+    for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) for (let k = -1; k <= 1; k++) {
+      const bucket = cell.get(key(cx + i, cy + j, cz + k));
+      if (!bucket) continue;
+      for (const u of bucket) {
+        if (u <= t) continue;
+        const dx = centroids[t * 3] - centroids[u * 3], dy = centroids[t * 3 + 1] - centroids[u * 3 + 1], dz = centroids[t * 3 + 2] - centroids[u * 3 + 2];
+        if (dx * dx + dy * dy + dz * dz <= d2) union(t, u);
+      }
+    }
+  }
+  const remap = new Map();
+  const roots = new Int32Array(n);
+  for (let t = 0; t < n; t++) roots[t] = find(t); // 先取全部根，再重映射（直接边 find 边覆写 label 会污染父链）
+  for (let t = 0; t < n; t++) {
+    if (!remap.has(roots[t])) remap.set(roots[t], remap.size);
+    label[t] = remap.get(roots[t]);
+  }
+  return label;
+}
+// 匾面文字板的朝向（局部坐标）：文字板是从挂装面向外挤出的薄盒，薄轴 = 包围盒最短边；
+// 文字面在外伸一侧（本资产组匾额板全部从 z≈0 挂装面向 +薄轴 挤出，如 yimen 板 z∈[0, 0.10]）。
+// 返回带符号的单位轴向量；配合节点世界变换得到世界朝向，用于「背向相机的匾面不建保留区」。
+export function plaqueFaceAxis(lo, hi) {
+  const ext = [hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]];
+  const ax = ext[0] < ext[1] ? (ext[0] < ext[2] ? 0 : 2) : (ext[1] < ext[2] ? 1 : 2);
+  const dir = [0, 0, 0];
+  dir[ax] = (lo[ax] + hi[ax]) / 2 >= 0 ? 1 : -1;
+  return dir;
 }
 // .lbl 的 transform 为 translate(-50%,-130%)：left/top 锚点在标签盒底部中心
 function rectOf(it) {

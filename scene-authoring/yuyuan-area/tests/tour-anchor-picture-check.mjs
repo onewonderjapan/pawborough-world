@@ -18,7 +18,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { streetCorridorBox, streetFacadeBand, facadeIds, STREET_VIEW } from '../scripts/tour-visibility.mjs';
 
-const require = createRequire('/home/baibai/pawborough-world/node_modules/');
+const require = createRequire(import.meta.url); // 从本包解析（devDependencies playwright）
 const { chromium } = require('playwright');
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
