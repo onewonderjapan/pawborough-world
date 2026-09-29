@@ -1,30 +1,37 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""wave14-pvquality：PV 渲染画质两修的行为级测试（Q18 pv01 地平线硬边 / Q20 segmentation 盐点）。
+"""wave14-pvquality R1：PV 渲染画质两修（Q18/Q20）+ R1 返修的行为级测试。
 
 不依赖 Blender 运行、不依赖 GPU 与渲染产物：stub bpy 后加载 render-control-passes.py
 （手法同 tests/pv-export-args-test.py：末尾无条件 main() 只截掉这一行，其余原样执行，
 结尾不再是裸 main() 即报错退出，不许静默跳过）。
 
-  T1（Q20）：Blender 4.5 的 scene.render.dither_intensity 默认 1.0，Workbench seg 通道
-     （OBJECT 色、filter_size=0、AA off）输出仍带 ±1 有序抖动——wave13-nightqa Q20 取证：
-     pv13 frame-059 半行抽样非 LUT 像素 87888 个、101 种颜色全部是某个 LUT 色（含
-     unassigned）的 ±1 变体（如 ground 87,133,82 → 86,132,81/88,134,83）。断言
-     config_workbench 的 seg 分支把 dither_intensity 写成 0.0（纯 ID 色无混色）；
-     beauty 分支不得写它（workbench beauty「不给参数 = 旧输出逐字节相同」契约不变）。
+  T1/T5（Q20+R1必修3）：Blender 4.5 的 scene.render.dither_intensity 默认 1.0（8-bit 输出
+     带 ±1 有序抖动；wave13-nightqa 取证：pv13 seg 单帧半行抽样 87888 个非 LUT 像素、
+     101 种颜色全部是某个 LUT 色/unassigned 的 ±1 变体）。主控裁定：dither 是场景共享
+     状态，每个阶段入口显式赋值——seg/normal/depth=0.0、beauty 两引擎=1.0。
+     T1 断言单阶段配置；T5 断言同一场景按 seg→beauty(WB)→normal+depth(Cycles)→seg→
+     lit beauty→atm depth 顺序切换后每阶段值正确（不依赖执行顺序）。
 
   T2（Q18）：pv01 航拍远景地平线硬边的根因是 far clip=300 m 处米色地面（ground 大平面
-     边界在 2 km 外，被 clip 切断）直接切到世界背景天空，无大气透视。修法（GOAL 方向二）：
-     beauty 段按镜头声明 atmosphere 走 Cycles Mist pass + compositor，把远景按 mist 因子
-     线性混入「天空地平色」，只作用 beauty；控制通道（seg/depth/normal）在 finally 卸载。
-     断言 atmosphere_params 纯函数：无声明 → None；true → 默认参数，雾色 =
-     srgb_lin(sky.horizon)/exposure（与 build_lighting_world 相机射线天空色同一线性域，
-     期望由测试自己的 sRGB 解码实现独立计算，不调被测函数的 srgb_lin）；对象声明可覆盖
-     startM/depthM；非正数参数报错拒绝。
+     边界在 2 km 外，被 clip 切断）直接切到世界背景天空，无大气透视。修法（R2 定稿）：
+     beauty 段按镜头声明 atmosphere 走 depth 后处理显示域混合，只作用 beauty；控制通道
+     （seg/depth/normal）在 finally 卸载。断言 atmosphere_params 纯函数。
 
   T3（Q20 统计器）：scripts/check-seg-purity.py 的 count_off_lut_pixels——非 LUT 颜色
-     像素统计是 Q20 验收判据，测试它「能失败」：纯 LUT/unassigned 色图 → 0；注入 ±1
-     变体像素 → ≥1；全错图 → 全部像素计数。
+     像素统计是 Q20 验收判据，测试它「能失败」。
+
+  T4/T4b/T4c/T4d（Q18+R1必修1）：scripts/atmosphere-mix.py 的 mix() 显示域混合。
+     R1必修1 重做了背景/表面判定：BW16 深度码 lsb≈4.6mm，round 量化把 z∈[far-2.3mm,far)
+     的掠射远景表面与被裁天空编成同一批码（pv01 末帧 y=62 x=600–949 亮线根因，任何
+     容差都只移动条带位置），改用同 pose 1spp alpha 覆盖掩码精确判定：天空 α=0 不吃雾、
+     表面 α=1 照常吃雾，有效雾化系数 fac×α。T4b 断言 raw=65535 的表面/天空各按 alpha
+     处理；T4c 断言边界深度码 65533/65534/65535 在掩码路径下全部按表面吃雾；T4d 锁定
+     无掩码回退路径的排除语义（tol 默认统一为 0.01=CLI 默认）与雾色分散度防护字段。
+
+  T6（R1必修4）：beauty 帧循环（render_beauty_frames）必须两引擎共用——workbench
+     （lit=False，--beauty 默认值）只渲染不混雾；断言 Workbench 分支实际 render 调用次数
+     =帧数、atmosphere 声明不触发非 lit 的二次渲染。
 
 用法：python3 -X utf8 tests/pv-quality-control-test.py
 """
@@ -32,7 +39,10 @@ import importlib.util
 import json
 import os
 import sys
+import tempfile
 import types
+
+from PIL import Image
 
 AREA = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RENDERER = os.path.join(AREA, 'scripts', 'render-control-passes.py')
@@ -117,6 +127,122 @@ class FakeWorlds:
 class FakeData:
     def __init__(self):
         self.worlds = FakeWorlds()
+        self.materials = FakeMaterials()
+
+
+class FakeMaterial:
+    def __init__(self, name):
+        self.name = name
+        self._use_nodes = False
+        self._node_tree = None
+
+    @property
+    def use_nodes(self):
+        return self._use_nodes
+
+    @use_nodes.setter
+    def use_nodes(self, v):
+        # Blender 里 use_nodes=True 自动建 node_tree，fake 同式模拟
+        self._use_nodes = bool(v)
+        if self._use_nodes and self._node_tree is None:
+            self._node_tree = FakeNodeTree()
+
+    @property
+    def node_tree(self):
+        return self._node_tree
+
+
+class FakeMaterials:
+    def __init__(self):
+        self._d = {}
+
+    def get(self, name):
+        return self._d.get(name)
+
+    def new(self, name):
+        m = FakeMaterial(name)
+        self._d[name] = m
+        return m
+
+
+# ---------------- compositor 节点树 fake（R1：config_cycles / config_atmosphere_depth 行为级测试用） ----------------
+class FakeSocketDict(dict):
+    def __missing__(self, k):
+        s = types.SimpleNamespace(default_value=None)
+        self[k] = s
+        return s
+
+
+class FakeNode:
+    def __init__(self, kind):
+        self.bl_idname = kind
+        self.inputs = FakeSocketDict()
+        self.outputs = FakeSocketDict()
+        self.operation = None
+        self.use_clamp = None
+        self.format = types.SimpleNamespace(file_format=None, color_mode=None, color_depth=None, compression=None)
+        self.base_path = None
+
+
+class FakeLinks:
+    def __init__(self):
+        self.links = []
+
+    def new(self, a, b):
+        self.links.append((a, b))
+
+
+class FakeNodeBag:
+    def __init__(self):
+        self._l = []
+
+    def __iter__(self):
+        return iter(list(self._l))
+
+    def new(self, kind):
+        n = FakeNode(kind)
+        self._l.append(n)
+        return n
+
+    def remove(self, n):
+        self._l.remove(n)
+
+
+class FakeNodeTree:
+    def __init__(self):
+        self.nodes = FakeNodeBag()
+        self.links = FakeLinks()
+
+
+class FakeCycles:
+    def __init__(self):
+        self.device = None
+        self.samples = 0
+        self.use_adaptive_sampling = None
+        self.use_denoising = None
+        self.max_bounces = None
+        self.diffuse_bounces = None
+        self.glossy_bounces = None
+        self.transmission_bounces = None
+        self.transparent_max_bounces = None
+        self.sample_clamp_indirect = None
+        self.denoiser = None
+        self.denoising_use_gpu = None
+
+
+class FakeRenderOps:
+    """bpy.ops.render.render 调用计数（R1必修4：Workbench 分支实际 render 次数）。
+    实例本身可调用（bpy.ops.render.render(write_still=...) 即调用实例）。"""
+
+    def __init__(self):
+        self.calls = []          # 每次的 write_still 值
+        self.filepaths = []      # 每次渲染前的 scene.render.filepath 快照
+
+    def __call__(self, write_still=False):
+        self.calls.append(write_still)
+
+    def render(self, write_still=False):
+        self.__call__(write_still)
 
 
 class FakeScene:
@@ -125,12 +251,23 @@ class FakeScene:
         self.display = FakeDisplay()
         self.view_settings = FakeViewSettings()
         self.world = None
+        self.use_nodes = False
+        self.node_tree = FakeNodeTree()
+        self.cycles = FakeCycles()
+        self.frame_current = 0
+        self.frame_set_calls = []
+
+    def frame_set(self, k):
+        self.frame_current = k
+        self.frame_set_calls.append(k)
 
 
 def make_fake_bpy():
     bpy = types.ModuleType('bpy')
     bpy.data = FakeData()
-    bpy.context = types.SimpleNamespace(view_layer=None)
+    bpy.context = types.SimpleNamespace(
+        view_layer=types.SimpleNamespace(use_pass_z=False, use_pass_alpha=False, material_override=None))
+    bpy.ops = types.SimpleNamespace(render=types.SimpleNamespace(render=FakeRenderOps()))
     return bpy
 
 
@@ -151,7 +288,7 @@ def main():
 
     P = json.load(open(PRESETS, encoding='utf-8'))
 
-    # ---- T1（Q20）：seg 通道 dither=0，beauty 分支不动 dither ----
+    # ---- T1（Q20/R1必修3）：seg 通道 dither=0，beauty 分支显式保持默认 1.0 ----
     sc = FakeScene()
     bpy_stub.data = FakeData()
     rcp.config_workbench(sc, 'seg')
@@ -163,8 +300,83 @@ def main():
     bpy_stub.data = FakeData()
     rcp.config_workbench(sc2, 'beauty')
     check(sc2.render.dither_intensity == 1.0,
-          'T1: config_workbench(beauty) 改了 dither_intensity=%r（期望保持默认 1.0 不写——'
-          'workbench beauty「不给参数 = 旧输出逐字节相同」契约）' % sc2.render.dither_intensity)
+          'T1: config_workbench(beauty) 后 dither_intensity=%r（期望显式 1.0——R1必修3 主控裁定：'
+          '每阶段自己设置，beauty 显式保持 Blender 原默认，不依赖「没被前面的 seg 碰过」）'
+          % sc2.render.dither_intensity)
+
+    # ---- T5（R1必修3）：同一场景按 seg→beauty(WB)→normal+depth(Cycles)→seg→lit beauty→atm depth
+    #      顺序切换（--fast-group 同进程多镜头的执行顺序），每阶段入口的 dither 值必须正确、
+    #      不依赖此前阶段写过什么。 ----
+    sc5 = FakeScene()
+    bpy_stub.data = FakeData()
+    vl5 = bpy_stub.context.view_layer
+    tmp5 = tempfile.mkdtemp(prefix='pvq-t5-')
+
+    def d5():
+        return sc5.render.dither_intensity
+
+    rcp.config_workbench(sc5, 'seg')
+    check(d5() == 0.0, 'T5: ①seg 后 dither=%r（期望 0.0）' % d5())
+    rcp.config_workbench(sc5, 'beauty')
+    check(d5() == 1.0, 'T5: ②seg 后紧接 workbench beauty，dither=%r（期望 1.0——阶段自设，'
+          '不是「没被碰过」）' % d5())
+    rcp.config_cycles(sc5, 0.3, 300.0, tmp5)
+    check(d5() == 0.0, 'T5: ③normal+depth（config_cycles）后 dither=%r（期望 0.0——'
+          '数据通道显式关，不依赖先跑过 seg）' % d5())
+    rcp.config_workbench(sc5, 'seg')
+    check(d5() == 0.0, 'T5: ④回到 seg 后 dither=%r（期望 0.0）' % d5())
+    P_day = P['presets']['day']
+    rcp.config_beauty_lit(sc5, P, 'day', 'cycles', 0, 'CPU', bpy_stub.data.worlds.new('w5'))
+    check(d5() == 1.0, 'T5: ⑤lit beauty（cycles）后 dither=%r（期望显式 1.0）' % d5())
+    rcp.config_atmosphere_depth(sc5, 0.3, 300.0, tmp5)
+    check(d5() == 0.0, 'T5: ⑥atmosphere depth（config_atmosphere_depth）后 dither=%r'
+          '（期望 0.0——depth 数据通道）' % d5())
+    rcp.config_beauty_lit(sc5, P, 'day', 'cycles', 0, 'CPU', bpy_stub.data.worlds.new('w5b'))
+    check(d5() == 1.0, 'T5: ⑦atm depth 后回到 lit beauty，dither=%r（期望 1.0——try/finally'
+          ' 卸载后由阶段入口重新自设）' % d5())
+    rcp.unconfig_cycles(sc5)
+    check(vl5.material_override is None and sc5.use_nodes is False,
+          'T5: unconfig_cycles 后 material_override/use_nodes 已复位')
+
+    # ---- T6（R1必修4）：Workbench 分支实际 render 调用次数——beauty 帧循环必须两引擎共用 ----
+    tmp6 = tempfile.mkdtemp(prefix='pvq-t6-')
+    sdir6 = os.path.join(tmp6, 'pv13-x')
+    for sub in ('beauty', 'depth', 'normal', 'segmentation', 'cameras'):
+        os.makedirs(os.path.join(sdir6, sub), exist_ok=True)
+    ops6 = FakeRenderOps()
+    bpy_stub.ops = types.SimpleNamespace(render=types.SimpleNamespace(render=ops6))
+    st6 = {}
+    ks6 = [0, 1, 2]
+    pose6_calls = []
+
+    def pose6(k):
+        pose6_calls.append(k)
+
+    def log6(msg):
+        pass
+
+    # Workbench（lit=False）：3 帧 3 次 write_still 渲染，filepath 依次是 beauty 帧路径
+    rcp.render_beauty_frames(ks6, sdir6, pose6, sc5, 0.3, 300.0, False, None, None,
+                             0, 0, '', None, True, None, None, 640, 360, st6, 'pv13-x',
+                             log6, None)
+    check(ops6.calls == [True, True, True],
+          'T6: workbench（lit=False）render 调用=%r（期望 [True,True,True]——R1必修4：'
+          'beauty 帧循环不得只在 lit 分支里，否则 --beauty workbench 默认调用一个 beauty 帧都不出）'
+          % ops6.calls)
+    exp_paths = [os.path.join(sdir6, 'beauty', 'frame-%03d.png' % k) for k in ks6]
+    check(sc5.render.filepath == exp_paths[-1] and pose6_calls == ks6,
+          'T6: 最后一次 filepath=%r / pose 序列=%r（期望逐帧 pose 后渲到 beauty/frame-00%d.png）'
+          % (sc5.render.filepath, pose6_calls, ks6[-1]))
+    check(sorted(st6.keys()) == ['frame-000', 'frame-001', 'frame-002'],
+          'T6: st 记录=%r（期望三帧各有 beauty_s）' % sorted(st6.keys()))
+    n_before = len(ops6.calls)
+    # workbench 下即使误带 atmo 声明也不得触发 atmosphere 渲染（lit 才混雾）
+    rcp.render_beauty_frames(ks6, sdir6, pose6, sc5, 0.3, 300.0, False, None, None,
+                             0, 0, '', None, True, {'startM': 220.0, 'depthM': 80.0},
+                             None, 640, 360, st6, 'pv13-x', log6, None)
+    check(len(ops6.calls) == n_before + 3,
+          'T6: workbench + atmosphere 声明时 render 调用增量=%r（期望仍只 +3——'
+          '非 lit 引擎不触发 atmosphere depth 二次渲染）' % (len(ops6.calls) - n_before))
 
     # ---- T2（Q18）：atmosphere_params 纯函数 ----
     check(hasattr(rcp, 'atmosphere_params'),
@@ -234,6 +446,36 @@ def main():
     check(pur.count_off_lut_pixels(im2, legal, ua) == 9,
           'T3: 全错图计数=%r（期望 9=全部像素）' % pur.count_off_lut_pixels(im2, legal, ua))
 
+    # ---- T3b（R1可选1）：purity --cameras 按镜头声明的完整帧号核对（缺帧 FAIL，不依赖显式 --frames）----
+    # 审查指出的缺口：目录仅剩 frame-000 时默认检查（查全部已有帧）仍返回成功；
+    # --cameras 声明 2 帧 → 缺 frame-001 必须 FAIL。调度器在写成功 .done.json 前按全帧号调用。
+    import subprocess
+    tmp3b = tempfile.mkdtemp(prefix='pvq-t3b-')
+    seg3b = os.path.join(tmp3b, 'x', 'segmentation')
+    os.makedirs(seg3b, exist_ok=True)
+    Image.new('RGB', (4, 4), (10, 20, 30)).save(os.path.join(seg3b, 'frame-000.png'))
+    lut3b = os.path.join(tmp3b, 'segmentation-lut.json')
+    with open(lut3b, 'w', encoding='utf-8') as f:
+        json.dump({'version': 1, 'unassigned': [255, 0, 255], 'colorSpace': 'test',
+                   'idToRgb': {'a': [10, 20, 30]}}, f)
+    cam3b = os.path.join(tmp3b, 'pv-cameras.json')
+    with open(cam3b, 'w', encoding='utf-8') as f:
+        json.dump({'width': 4, 'height': 4, 'fps': 24,
+                   'shots': [{'id': 'x', 'frames': 2, 'p': [0, 0, 0], 't': [1, 0, 0]}]}, f)
+    base_cmd = ['python3', '-X', 'utf8', PURITY, '--control', tmp3b, '--lut', lut3b, '--shot', 'x']
+    r3b_old = subprocess.run(base_cmd, capture_output=True, text=True)
+    check(r3b_old.returncode == 0,
+          'T3b: 无 --cameras 旧行为（查目录里已有帧）对仅剩 frame-000 的目录返回 %d'
+          '（保持兼容；缺口由 --cameras 补）' % r3b_old.returncode)
+    r3b_cam = subprocess.run(base_cmd + ['--cameras', cam3b], capture_output=True, text=True)
+    check(r3b_cam.returncode != 0 and 'frame-001' in (r3b_cam.stdout + r3b_cam.stderr),
+          'T3b: --cameras 声明 2 帧、目录只有 frame-000 → 缺帧 FAIL（得到 rc=%d %s）'
+          % (r3b_cam.returncode, (r3b_cam.stdout + r3b_cam.stderr).strip()[-120:]))
+    Image.new('RGB', (4, 4), (10, 20, 30)).save(os.path.join(seg3b, 'frame-001.png'))
+    r3b_ok = subprocess.run(base_cmd + ['--cameras', cam3b], capture_output=True, text=True)
+    check(r3b_ok.returncode == 0,
+          'T3b: 补齐 frame-001 后 --cameras 全帧核对通过（rc=%d）' % r3b_ok.returncode)
+
     # ---- T4（Q18 混合器）：scripts/atmosphere-mix.py 的 mix() 显示域混合行为 ----
     spec4 = importlib.util.spec_from_file_location('atmosphere_mix', os.path.join(AREA, 'scripts', 'atmosphere-mix.py'))
     amix = importlib.util.module_from_spec(spec4)
@@ -242,8 +484,6 @@ def main():
           'T4: scripts/atmosphere-mix.py 没有 mix()（Q18 要求 depth 单独渲 + 显示域混合，'
           '雾色取本帧顶部天空实际显示色，被 far 裁掉的背景不吃雾）')
     if hasattr(amix, 'mix'):
-        import tempfile
-        from PIL import Image
         tmp = tempfile.mkdtemp(prefix='pvq-t4-')
         bp, dp = os.path.join(tmp, 'b.png'), os.path.join(tmp, 'd.png')
         w, h, near, far = 4, 4, 0.3, 300.0
@@ -280,6 +520,78 @@ def main():
               % (st.get('fogSampledRGB'), list(sky)))
         check(abs(st.get('foggedFraction', -1) - 0.75) < 1e-6,
               'T4: foggedFraction=%r（期望 0.75：4 行里除背景行外 3 行吃雾）' % st.get('foggedFraction'))
+
+        # ---- T4b（R1必修1）：alpha 掩码路径——天空/表面判定与深度码解耦 ----
+        # 构造掠射远景表面：z raw=65535（深度阈值判定必然误判「被裁背景」——BW16 round 量化把
+        # z∈[far-2.3mm, far) 与被裁天空编成同一批码，pv01 末帧 y=62 亮线根因），alpha=255 表面
+        # vs alpha=0 天空各占两行。期望：表面行吃雾（fac≈1 → 雾色），天空行原样。
+        mp = os.path.join(tmp, 'm.png')
+        def write_mask(rows):
+            mg = Image.new('L', (w, h))
+            mpx = mg.load()
+            for y in range(h):
+                for x in range(w):
+                    mpx[x, y] = rows[y]
+            mg.save(mp)
+
+        write_case([[sky] * w] + [[(10, 12, 14)] * w for _ in range(h - 1)],
+                   [65535] * h)
+        write_mask([0, 255, 255, 255])
+        st = amix.mix(bp, dp, near, far, 220.0, 80.0, mask_png=mp)
+        out = Image.open(bp).convert('RGB')
+        opx = out.load()
+        check(opx[0, 0] == sky,
+              'T4b: raw=65535 且 alpha=0（被裁天空）被雾化 %s（期望原样 %s）' % (opx[0, 0], sky))
+        expect_far = tuple(round(c * (1.0 - (300.0 - 220.0) / 80.0) + fc * 1.0)
+                           for c, fc in zip((10, 12, 14), sky))
+        got_far = opx[0, 1]
+        check(all(abs(a - b) <= 1 for a, b in zip(got_far, expect_far)),
+              'T4b: raw=65535 且 alpha=255（掠射远景表面）混合值 %s ≠ 期望 %s（'
+              'z=far → fac=1 全雾化——深度阈值会把这行判成背景漏雾，alpha 判定纠正，'
+              '这就是 pv01 末帧 y=62 亮线的修复判据）' % (got_far, expect_far))
+        check(abs(st.get('skyFraction', -1) - 0.25) < 1e-6,
+              'T4b: skyFraction=%r（期望 0.25）' % st.get('skyFraction'))
+        check(st.get('farClipSaltPixels') == 12,
+              'T4b: farClipSaltPixels=%r（期望 12=3 行表面×4 列——量化歧义区 raw≥far-tol 且 '
+              'alpha=1 的真实表面像素数，被 alpha 判定纠正的量，出报告数字）'
+              % st.get('farClipSaltPixels'))
+
+        # ---- T4c（R1必修1/可选2）：边界深度码 65533/65534/65535 在掩码路径下全部按表面吃雾 ----
+        # 行0=雾色来源行（beauty=sky、z=65533、alpha=255），行1/2=边界码表面（beauty=黑），
+        # 行3=被裁天空（alpha=0）。若边界码被误判背景，行1/2 会保持黑色而挂。
+        write_case([[sky] * w] + [[(0, 0, 0)] * w for _ in range(h - 1)],
+                   [65533, 65534, 65535, 65535])
+        write_mask([255, 255, 255, 0])
+        st = amix.mix(bp, dp, near, far, 220.0, 80.0, mask_png=mp)
+        out = Image.open(bp).convert('RGB')
+        opx = out.load()
+        for x, raw in ((1, 65534), (2, 65535)):
+            got_b = opx[x, 1]
+            check(all(abs(a - b) <= 1 for a, b in zip(got_b, sky)),
+                  'T4c: 边界码 raw=%d 表面行混合值 %s ≠ 期望≈雾色 %s（fac≈0.9999 全雾化——'
+                  '掩码路径下边界码表面照常吃雾，不吃雾只由 alpha=0 决定）' % (raw, got_b, sky))
+        check(opx[0, 3] == (0, 0, 0), 'T4c: raw=65535 且 alpha=0 保持原样')
+
+        # ---- T4d（可选2）：无掩码回退路径与统一容差默认——三码排除语义与 CLI 默认一致 ----
+        # tol=0.01 m、(far-near)=299.7 → 排除码 ≥ round((far-0.01-near)/(far-near)*65535)
+        # = round(65532.85) = 65533，即 raw∈{65533,65534,65535} 全部判背景不吃雾（回退路径的
+        # 已知量化歧义——正式链路必须传掩码，这里锁定回退语义防漂移）。
+        write_case([[sky] * w] + [[(7, 7, 7)] * w for _ in range(h - 1)],
+                   [65533, 65534, 65535, int(round(65535 * (250.0 - near) / (far - near)))])
+        st = amix.mix(bp, dp, near, far, 220.0, 80.0)
+        out = Image.open(bp).convert('RGB')
+        opx = out.load()
+        check(opx[0, 1] == (7, 7, 7) and opx[0, 2] == (7, 7, 7),
+              'T4d: 回退路径 raw=65534/65535 应判背景不吃雾（tol=0.01 与 CLI 默认统一），'
+              '得到 %s' % [opx[0, i] for i in (1, 2)])
+        expect_d = tuple(round(c * 0.625 + fc * 0.375) for c, fc in zip((7, 7, 7), sky))
+        got_d = opx[0, 3]
+        check(all(abs(a - b) <= 1 for a, b in zip(got_d, expect_d)),
+              'T4d: raw=z250 行吃雾 %s ≠ 期望 %s（雾色=顶部 sky 行中位）' % (got_d, expect_d))
+        check(st.get('fogSpreadWarn') in (True, False),
+              'T4d: 统计应含 fogSpreadWarn（顶部中位色 MAD 防护字段，R1可选3）')
+        check(isinstance(st.get('topSpreadMAD'), float),
+              'T4d: 统计应含 topSpreadMAD=%r（顶部样本分散度数字）' % st.get('topSpreadMAD'))
 
     print('pv-quality-control-test: %d pass, %d fail' % (passes, fails))
     return 1 if fails else 0

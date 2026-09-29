@@ -58,6 +58,9 @@ def main():
     ap.add_argument('--lut', required=True, help='segmentation-lut.json 路径')
     ap.add_argument('--shot', default='', help='只查该镜头（缺省 = 目录下全部含 segmentation 子目录的镜头）')
     ap.add_argument('--frames', default='', help='逗号分隔帧号（缺省 = 全部已有帧）')
+    ap.add_argument('--cameras', default='',
+                    help='R1可选1：pv-cameras.json（渲染器同款 shots 文档）——按镜头声明的完整帧号'
+                         '核对（缺帧/多帧都 FAIL，不许只查目录里恰好存在的帧）；--frames 显式给定时优先')
     ap.add_argument('--report', action='store_true', help='只打印逐帧计数（EXIT 0），不校验')
     a = ap.parse_args()
 
@@ -73,9 +76,20 @@ def main():
     if not shots:
         raise SystemExit('E: %s 下没有镜头的 segmentation 目录' % a.control)
 
+    # R1可选1：期望帧集——显式 --frames 优先；否则 --cameras 声明（p/t 固定镜 frames 字段、
+    # eye 镜 len(eye) 帧）；两者都没有才退回「目录里有什么查什么」。
     want_frames = None
     if a.frames:
         want_frames = {'frame-%03d.png' % int(t) for t in a.frames.split(',') if t.strip() != ''}
+    expect_by_shot = None
+    if a.cameras and not a.frames:
+        doc = json.load(open(a.cameras, encoding='utf-8'))
+        expect_by_shot = {}
+        for s in doc['shots']:
+            if a.shot and s['id'] != a.shot:
+                continue
+            n = int(s['frames']) if 'frames' in s else len(s['eye']) if 'eye' in s else 1
+            expect_by_shot[s['id']] = {'frame-%03d.png' % k for k in range(n)}
 
     from PIL import Image
     total_bad = 0
@@ -88,6 +102,16 @@ def main():
             if missing:
                 raise SystemExit('E: %s 缺帧 %s（不许静默跳过）' % (sdir, sorted(missing)))
             names = [f for f in names if f in want_frames]
+        elif expect_by_shot is not None:
+            if sid not in expect_by_shot:
+                continue   # 该镜头不在相机声明里（--cameras 全量跑时目录里的额外镜头跳过不查）
+            expect = expect_by_shot[sid]
+            if set(names) != expect:
+                miss = sorted(expect - set(names))
+                extra = sorted(set(names) - expect)
+                raise SystemExit('E: %s 帧集与相机声明不符：缺 %s 多 %s（按声明的完整帧号核对，'
+                                 '不许只查恰好存在的帧）' % (sdir, miss, extra))
+            names = sorted(expect)
         if not names:
             raise SystemExit('E: %s 没有可统计的帧（查到 0 帧要失败，不许当通过）' % sdir)
         for f in names:

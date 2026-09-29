@@ -117,6 +117,7 @@ AREA = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PV_SHOTS = os.path.join(AREA, 'scripts', 'pv-shots.json')
 PV_DOCS = os.path.join(AREA, 'scripts', 'pv-docs.py')
 RENDERER = os.path.join(AREA, 'scripts', 'render-control-passes.py')
+ATMOS_MIX = os.path.join(AREA, 'scripts', 'atmosphere-mix.py')   # R1必修2：渲染器子进程调用的混雾脚本，进指纹
 CANON_BLENDER = '~/.local/bin/blender'  # pv-docs 命令的规范前缀；执行时可被 PV_BATCH_BLENDER 替换
 GPU_LOCK_DEFAULT = '/tmp/pawborough-gpu.lock'
 CHANNELS = ('beauty', 'depth', 'normal', 'segmentation')
@@ -125,9 +126,11 @@ BLANK_STD_MAX = 2.0
 BLANK_DOMINANT_MAX = 0.95
 # 必修6/R2必修2：调度器自管的渲染器选项（出现即拒绝；缩写与 = 形式同样拒绝——用渲染器自己的 parser 判定）
 SELF_MANAGED = ('out', 'shots', 'scene', 'cameras', 'preset', 'frames', 'passes', 'layout')
-# .done.json 指纹参与逐字段比较的字段（mode 并入：正式/冒烟记录不互通；R2 必修3 并入 layoutSha256）
-FP_FIELDS = ('argv', 'rendererSha256', 'presetsSha256', 'sceneSha256', 'camerasSha256', 'layoutSha256',
-             'framesCount', 'mode')
+# .done.json 指纹参与逐字段比较的字段（mode 并入：正式/冒烟记录不互通；R2 必修3 并入 layoutSha256；
+# R1必修2 并入 atmosphereMixSha256——渲染器以子进程调 atmosphere-mix.py 混雾，改混合脚本必须拒绝
+# 复用旧 done；旧记录缺该字段时 old_fp.get(k)=None ≠ 新 sha，天然判不匹配）
+FP_FIELDS = ('argv', 'rendererSha256', 'atmosphereMixSha256', 'presetsSha256', 'sceneSha256',
+             'camerasSha256', 'layoutSha256', 'framesCount', 'mode')
 INPUT_SHA_KEYS = (('--scene', 'sceneSha256'), ('--cameras', 'camerasSha256'), ('--presets', 'presetsSha256'))
 DEPTH_MODES = ('I', 'I;16', 'I;16L', 'I;16B')  # 16-bit 深度 PNG 的 PIL 模式
 
@@ -600,6 +603,27 @@ def write_done(sdir, record):
     write_json(os.path.join(sdir, '.done.json'), record)
 
 
+def seg_purity_check(product_root, light, sid, n_frames, log):
+    """R1可选1：写成功完成记录前按镜头声明的完整帧号跑 seg 纯度（非 LUT 像素必须 0、
+    缺帧 FAIL，不许只查目录里恰好存在的帧；显式 --frames 全帧号集，--report 禁用）。
+    LUT 不存在（stub 测试链路 / 本次未渲 segmentation 通道）返回 None=检查不适用；
+    失败返回错误摘要字符串，通过返回 None。"""
+    control_dir = os.path.join(product_root, 'control-24fps-%s' % light)
+    lut = os.path.join(control_dir, 'segmentation-lut.json')
+    if not os.path.isfile(lut):
+        return None
+    import subprocess
+    cmd = ['python3', '-X', 'utf8', os.path.join(AREA, 'scripts', 'check-seg-purity.py'),
+           '--control', control_dir, '--lut', lut, '--shot', sid,
+           '--frames', ','.join(str(k) for k in range(n_frames))]
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    if r.returncode != 0:
+        log('seg purity %s: exit %d\n%s' % (sid, r.returncode, (r.stdout + r.stderr).strip()[-800:]))
+        return ('seg 纯度检查未过（check-seg-purity exit %d，帧 0..%d 全查）：%s'
+                % (r.returncode, n_frames - 1, (r.stdout + r.stderr).strip()[-400:]))
+    return None
+
+
 def fingerprint_diff(old_fp, new_fp):
     """逐字段比较指纹；返回差异说明列表（空 = 一致）。"""
     if not isinstance(old_fp, dict):
@@ -796,6 +820,9 @@ def main():
     fp_inputs = input_sha_from_argv(fp_argv0)
     fp_inputs['layoutSha256'], layout_path_used = layout_sha_from_ns(fp_ns)
     renderer_sha = sha256_file(RENDERER) if os.path.isfile(RENDERER) else None
+    # R1必修2：混雾脚本是渲染器的行为输入（atmosphere 声明镜头的 beauty 由它覆写），
+    # sha 进指纹；文件缺失记 None（=指纹不一致，阻止复用）。
+    atmos_sha = sha256_file(ATMOS_MIX) if os.path.isfile(ATMOS_MIX) else None
     # R3 必修1：期望尺寸从实际渲染 argv 解析出的 --cameras 输入读（含注入覆盖）——与实际命令、
     # 指纹 sha 用同一份输入；parser namespace 为空才退回旧的 out-zone 固定路径。
     cameras_input = getattr(fp_ns, 'cameras', '') or ''
@@ -807,7 +834,7 @@ def main():
 
     def fingerprint_of(sid):
         fp = {'argv': exec_argv(shot_cmds[sid], False),  # 逐镜规范实际 argv（nice 不入指纹）
-              'rendererSha256': renderer_sha,
+              'rendererSha256': renderer_sha, 'atmosphereMixSha256': atmos_sha,
               'framesCount': shot_by_id[sid]['frames'], 'mode': mode}
         fp.update(fp_inputs)
         return fp
@@ -848,6 +875,8 @@ def main():
     miss = [f for f in ('presetsSha256', 'sceneSha256', 'camerasSha256', 'layoutSha256') if fp_inputs.get(f) is None]
     if renderer_sha is None:
         miss.append('rendererSha256')
+    if atmos_sha is None:
+        miss.append('atmosphereMixSha256')   # R1必修2：混雾脚本缺失同样禁止跑批
     if miss:
         raise SystemExit('E: 指纹输入缺失（%s）——先完成公共验收重建并确认 out-zone 输入件，再跑批' % ', '.join(miss))
 
@@ -1103,13 +1132,21 @@ def main():
         p['secondsTotal'] = round(seconds, 1)
         p['secondsPerFrame'] = round(seconds / max(1, s['frames']), 2)
         g_ok, g_detail = guard_shot(product_root, s['light'], sid, s['frames'])
+        # R1可选1：守卫过后的 seg 纯度是写「成功完成记录」前的最后一道——非 LUT 像素必须 0
+        # 且按镜头声明完整帧号核对（--report 禁用；LUT 不存在 = 检查不适用，stub 链路自动跳过）
+        purity_fail = seg_purity_check(product_root, s['light'], sid, s['frames'], log) if g_ok else None
+        if purity_fail is not None:
+            g_ok = False
+            g_detail = dict(g_detail or {})
+            g_detail['segPurity'] = purity_fail
         p['guard'] = 'pass' if g_ok else 'fail'
         p['guardDetail'] = g_detail
         sdir = shot_dir_of(product_root, s['light'], sid)
         write_done(sdir, done_record(sid, p['guard'], g_detail, argv_exec_display))
         if not g_ok:
-            p.update(status='failed-guard', note='beauty 首/中/末空白（COMMON 判据）；已写 .done.json(guard=fail)，续跑将重新守卫')
-            prog['stoppedReason'] = '%s beauty 空白帧守卫失败' % sid
+            why = ('seg 纯度检查未过' if purity_fail is not None else 'beauty 首/中/末空白（COMMON 判据）')
+            p.update(status='failed-guard', note='%s；已写 .done.json(guard=fail)，续跑将重新守卫' % why)
+            prog['stoppedReason'] = '%s %s（守卫失败）' % (sid, why)
             return False
         p['status'] = 'rendered-%s' % rendered_via
         if rendered_via == 'group':
