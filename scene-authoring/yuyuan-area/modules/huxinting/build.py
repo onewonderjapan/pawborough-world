@@ -102,9 +102,15 @@ D = dict(
                # 按实际山花跨度重定：板宽 0.09 = 跨度 21%（实拍湖心亭 PBR-SH-0004-017 博风为窄条
                # ≈跨度 10–20% 量级；米制仍未核实）；悬鱼长 0.36、宽 0.15、出平面 0.03 不变，
                # 悬鱼挂在博风板前方（eave_kit）。
+               # R2（审查必修 G9）：真实三角面深度遮挡实测 tuck=0.04 时抱厦两侧悬鱼可见率 65.3%——
+               # 悬鱼上部（h≥4.32）被上段瓦垄（porchroof-upper-*-wa，u 横跨 ±1.7 在悬鱼前方）
+               # 与 r2 平台栏杆（h 4.45–4.51，u −7.7 更靠外）遮挡；栏杆远在冻结带 XUANYU_PROUD
+               # 上限 0.08 之外，外移不可行。R2 将悬鱼顶下移到 ridgeZ−0.16 = 4.44 m，低于瓦垄/栏杆
+               # 两条遮挡带下缘（4.45/4.32 带），全遮挡口径可见率 65.3% → 85.5% ≥ 70%；
+               # 0.16 = 山尖高 1.0 的 16%，仍在「悬鱼悬于脊檩下」形制内。不改屋面标高/平面/桥面/碰撞。
                shanhuaMaterial='wood',
                gableOrnament=dict(bofengWidth=0.09, bofengProud=0.05, bofengDrop=0.08,
-                                  xuanyuLen=0.36, xuanyuW=0.15, xuanyuProud=0.03, xuanyuTuck=0.04)),
+                                  xuanyuLen=0.36, xuanyuW=0.15, xuanyuProud=0.03, xuanyuTuck=0.16)),
     tower=dict(half=2.1, over=0.9, zEave=9.65, apex=11.40, finialTop=12.0, drop=0.55, tileH=0.16, boardH=0.26,
                chu=0.2, qiao=0.6, reach=1.4, curve=1.5, rings=6,
                skirt1=dict(z=3.85, over=0.7), skirt2=dict(z=6.75, over=0.7)),

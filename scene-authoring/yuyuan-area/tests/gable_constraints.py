@@ -8,8 +8,8 @@
                                    生成器参数与 records 同步越界时 GLB 实测照样红）
 
 来源（R1 审查必修3，2026-09-29）：
-  - 形制与视觉比例：湖心亭实拍 PBR-SH-0004-017.jpg（/home/baibai/outbox/
-    pawborough-shanghai-reference-library-20260913/originals/，本地参考库已有，R0 未利用）——
+  - 形制与视觉比例：湖心亭实拍参考资产 ID PBR-SH-0004-017（pawborough-shanghai-reference-library
+    2026-09-13 批次 originals/ 内，PUBLIC 仓库按资产 ID 定位，R0 未利用）——
     照片中博风板为窄条，宽度约为山面跨度的 10–20%；悬鱼（若有）长约为山尖高的 1/3–1/2。
     照片不能证明精确米制尺寸，故区间放宽为形制带；**所有米制尺寸仍标注未核实**。
   - 通用形制边界：悬鱼悬于山尖内，垂长不得超过山尖高；悬鱼宽长比按鱼形（近菱形）取 0.2–0.8。

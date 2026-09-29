@@ -4,7 +4,7 @@
 
 用法：
   OUT_DIR=out-zone python3 -X utf8 tests/gable-product-check.py
-  GABLE_NEGCASE=1..5 OUT_DIR=... 同上   # 负例：内存突变被测模型，判据必须红
+  GABLE_NEGCASE=1..6 OUT_DIR=... 同上   # 负例：内存突变被测模型，判据必须红
 
 判据（期望独立取数：设计值读 modules/huxinting/records.json 的 frame + designValues；
 冻结尺寸/比例约束读 tests/gable-constraints.py，应用到**实际 GLB 测量值**——生成器参数与
@@ -18,15 +18,24 @@ records 同步越界时，GLB 实测照样红）：
   G7 博风板实际法向宽（GLB 截面实测）= bofengWidth
   G8 冻结约束（tests/gable-constraints.py）vs GLB 实测：博风宽/山花跨度、博风宽/山尖高、
      悬鱼长/山尖高、悬鱼长 ≤ 山尖高、悬鱼宽/长、悬鱼/博风出平面带
-  G9 悬鱼正面投影遮挡（沿山花法向采样）：每个悬鱼可见投影面积 ≥ 设计面积的 70%
-     —— R0 悬鱼在博风后方被合拢区盖死（实测抱厦 e 侧 100%、主楼 88%），R1 悬鱼挂博风前方
+  G9 悬鱼正面投影真实三角面深度遮挡（R2，512×512 沿山花外法向采样）：全部 GLB mesh 的
+     三角面参与遮挡判定（不按名称白名单排除，双面不透明材质均算遮挡物），可见率 =
+     可见投影面积 / 悬鱼未遮挡投影面积 ≥ 70%。
+     —— R0 悬鱼在博风后方被盖死；R1 挂博风前方；R1 的 G9 只枚举山尖端构件、排除瓦面等
+     实际遮挡物（审查 FAIL：抱厦两侧被上段瓦垄与 r2 栏杆遮到 65.4%）；R2 抱厦悬鱼顶下移
+     到 ridgeZ−0.16 避开瓦垄/栏杆带（实测 85.5%），主楼 e 端正对湖心亭自身塔楼、外部视线
+     结构上被挡（实测 0%，遮挡物 towerroof 系列）——按主控裁定从 ≥70% 验收中**排除**，
+     只断言悬鱼仍存在且朝向正确，不计 100%。
 GLB 缺失 = FAIL（交付守卫不静默跳过）。
 负例：
   NEG1 删悬鱼（节点视同缺失）→ G1 红
   NEG2 山花改回白抹灰 → G3 红
   NEG3 博风压回山花平面 → G2「未站在山花面外侧」红
   NEG4 悬鱼退回 R0 位置（山花面外 0.008、博风后方）→ G9 遮挡红（回到 R0 参数必须失败）
-  NEG5 悬鱼垂长拉伸到山尖高 1.2 倍 → G8「xuanyuLen/rise」红（同步越界必须失败）
+  NEG5 悬鱼几何与模拟 records designValues.xuanyuLen **同步**拉长到山尖高 1.2 倍
+       （G4 几何 vs records 自洽绿）→ G8 冻结带「xuanyuLen/rise」红（同步越界必须失败）
+  NEG6 悬鱼沿 u 再外移 0.5 m（山花/博风全在身后——「博风不遮挡」），上段瓦面/瓦垄与
+       r2 栏杆仍在视线上 → G9 遮挡红（R2 新 G9 必须看见山尖端构件之外的遮挡物）
 局部系还原：glTF 世界 (X,Y,Z) = (map_x, h, map_z)；u/v 由 records.frame 的 centroid/axis/normal 正交基还原。
 """
 import json
@@ -34,6 +43,8 @@ import math
 import os
 import struct
 import sys
+
+import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import gable_constraints as FC                                  # noqa: E402  冻结约束唯一来源
@@ -82,37 +93,99 @@ def mesh_materials(gj, mesh_idx):
         names.append(gj['materials'][mi]['name'] if mi is not None else None)
     return names
 
-# ---------------------------------------------------- 2D 几何（正面投影采样）----
-def convex2d(pts):
-    """Andrew monotone chain 凸包（CCW）。鱼形轮廓的凹鳍处被凸近似填平——
-    G9 的「设计面积」与「占据判定」用同一凸包，口径一致。"""
-    pts = sorted(set((round(p[0], 6), round(p[1], 6)) for p in pts))
-    if len(pts) <= 2:
-        return pts
-    def half(seq):
-        h = []
-        for p in seq:
-            while len(h) >= 2 and (h[-1][0] - h[-2][0]) * (p[1] - h[-2][1]) - (h[-1][1] - h[-2][1]) * (p[0] - h[-2][0]) <= 0:
-                h.pop()
-            h.append(p)
-        return h
-    lo = half(pts)
-    hi = half(reversed(pts))
-    return lo[:-1] + hi[:-1]
+# ---------------------------------------- G9 真实三角面深度遮挡（R2，numpy）----
+def _accessor(gj, bin_chunk, ai):
+    acc = gj['accessors'][ai]
+    bv = gj['bufferViews'][acc['bufferView']]
+    off = bv.get('byteOffset', 0) + acc.get('byteOffset', 0)
+    comp, item, npv = {5126: (4, 1, np.float32), 5123: (2, 1, np.uint16),
+                       5125: (4, 1, np.uint32), 5121: (1, 1, np.uint8)}[acc['componentType']]
+    ncomp = {'VEC3': 3, 'VEC2': 2, 'SCALAR': 1}[acc['type']]
+    raw = np.frombuffer(bin_chunk, dtype=np.uint8,
+                        count=acc['count'] * ncomp * comp, offset=off)
+    return raw.view(npv).reshape(acc['count'], ncomp if ncomp > 1 else 1)
 
-def shoelace(poly):
-    n = len(poly)
-    return abs(sum(poly[i][0] * poly[(i + 1) % n][1] - poly[(i + 1) % n][0] * poly[i][1] for i in range(n))) / 2.0
+def node_triangles(gj, bin_chunk, mesh_idx, node):
+    """mesh 的全部三角面 (T,3,3)，世界系，应用节点 TRS/matrix 变换。"""
+    m = np.eye(4)
+    if 'matrix' in node:
+        m = np.asarray(node['matrix'], dtype=np.float64).reshape(4, 4).T
+    else:
+        if 'scale' in node:
+            m[:3, :3] *= np.asarray(node['scale'])
+        if 'rotation' in node:
+            x, y, z, w = node['rotation']
+            r = np.array([
+                [1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)],
+                [2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)],
+                [2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)]])
+            m[:3, :3] = m[:3, :3] @ r
+        if 'translation' in node:
+            m[:3, 3] = node['translation']
+    tris = []
+    for prim in gj['meshes'][mesh_idx]['primitives']:
+        pos = _accessor(gj, bin_chunk, prim['attributes']['POSITION']).astype(np.float64)
+        idx = _accessor(gj, bin_chunk, prim['indices']).astype(np.int64).reshape(-1)
+        t = pos[idx].reshape(-1, 3, 3)
+        hom = np.concatenate([t, np.ones(t.shape[:2] + (1,))], axis=2)
+        tris.append((hom @ m.T)[..., :3])
+    return np.concatenate(tris, axis=0) if tris else np.zeros((0, 3, 3))
 
-def point_in_convex(p, poly):
-    """凸多边形点内测试（边界算内）。"""
-    n = len(poly)
-    for i in range(n):
-        a, b = poly[i], poly[(i + 1) % n]
-        cr = (b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0])
-        if cr < -1e-9:
-            return False
-    return True
+def scene_triangles_local(gj, bin_chunk, fr):
+    """全部节点三角面，转换到山花局部系 (u,v,h)。返回 dict(node名 -> (T,3,3))。"""
+    cx, cz = fr['centroid']
+    ux, uz = fr['axis']
+    vx, vz = fr['normal']
+    out = {}
+    for nd in gj['nodes']:
+        if 'mesh' not in nd:
+            continue
+        t = node_triangles(gj, bin_chunk, nd['mesh'], nd)
+        x, y, z = t[..., 0], t[..., 1], t[..., 2]
+        dx, dz = x - cx, z - cz
+        out[nd.get('name', '')] = np.stack([dx * ux + dz * uz, dx * vx + dz * vz, y], axis=-1)
+    return out
+
+def raster_depth(tris, m_out, box=None, N=512, pad=0.02):
+    """把三角面 (T,3,3)（局部 (u,v,h)）光栅化到 (v,h) N×N 网格。
+    返回 (depth, cover, box)：depth = 每像素最靠近观察者的 u（w 端 m_out=-1 取 min，e 端取
+    max），cover = 投影覆盖，box = (v0,v1,h0,h1,像素面积)。box 传入时沿用同一网格
+    （悬鱼与其遮挡物必须逐像素同框比较）。视线沿山花外法向，双面填充。"""
+    if box is None:
+        v0b, v1b = tris[..., 1].min() - pad, tris[..., 1].max() + pad
+        h0b, h1b = tris[..., 2].min() - pad, tris[..., 2].max() + pad
+    else:
+        v0b, v1b, h0b, h1b = box
+    dv, dh = (v1b - v0b) / N, (h1b - h0b) / N
+    depth = np.full((N, N), math.inf if m_out < 0 else -math.inf)
+    cover = np.zeros((N, N), dtype=bool)
+    tv = (tris[..., 1] - v0b) / (v1b - v0b) * N - 0.5
+    th = (tris[..., 2] - h0b) / (h1b - h0b) * N - 0.5
+    tu = tris[..., 0]
+    for k in range(len(tris)):
+        xs, ys, us = tv[k], th[k], tu[k]
+        i0 = max(0, int(math.floor(xs.min()))); i1 = min(N - 1, int(math.ceil(xs.max())))
+        j0 = max(0, int(math.floor(ys.min()))); j1 = min(N - 1, int(math.ceil(ys.max())))
+        if i1 < i0 or j1 < j0:
+            continue
+        gx, gy = np.meshgrid(np.arange(i0, i1 + 1) + 0.5, np.arange(j0, j1 + 1) + 0.5)
+        d0 = (xs[1] - xs[0]) * (gy - ys[0]) - (ys[1] - ys[0]) * (gx - xs[0])
+        d1 = (xs[2] - xs[1]) * (gy - ys[1]) - (ys[2] - ys[1]) * (gx - xs[1])
+        d2 = (xs[0] - xs[2]) * (gy - ys[2]) - (ys[0] - ys[2]) * (gx - xs[2])
+        inside = ((d0 >= 0) & (d1 >= 0) & (d2 >= 0)) | ((d0 <= 0) & (d1 <= 0) & (d2 <= 0))
+        if not inside.any():
+            continue
+        area = d0 + d1 + d2
+        w0 = np.where(np.abs(area) > 1e-12, d1 / area, 0.0)
+        w1 = np.where(np.abs(area) > 1e-12, d2 / area, 0.0)
+        ui = w0 * us[0] + w1 * us[1] + (1.0 - w0 - w1) * us[2]
+        sl = (slice(j0, j1 + 1), slice(i0, i1 + 1))
+        sub = depth[sl]
+        upd = (inside & (ui < sub)) if m_out < 0 else (inside & (ui > sub))
+        sub[upd] = ui[upd]
+        depth[sl] = sub
+        cover[sl] |= inside
+    return depth, cover, (v0b, v1b, h0b, h1b, dv * dh)
 
 def main():
     out_dir = os.environ.get('OUT_DIR', 'out-zone')
@@ -135,6 +208,7 @@ def main():
         return out
 
     gj, bin_chunk = load_glb(glb)
+    SCENE = scene_triangles_local(gj, bin_chunk, fr)      # G9：全场景三角面（局部系），一次解码
     neg = os.environ.get('GABLE_NEGCASE', '')
     D = rec['designValues']
 
@@ -227,10 +301,16 @@ def main():
             xl_meas = zt - zbm
             xw_meas = max(vs) - min(vs)
             xp_meas = max(us) - min(us)
+            neg5_stretch = 1.0
             if neg == '5':
-                # 负例：悬鱼垂长拉伸到山尖高的 1.2 倍（模拟生成器参数与 records 同步越界）
-                stretch = 1.2 * sh[tag]['rise'] / xl_meas
-                loc = [(x, v, zt - (zt - h) * stretch) for (x, v, h) in loc]
+                # R2 负例（审查可选固化）：几何与模拟 records **同步**越界——悬鱼几何与
+                # designValues.xuanyuLen 一起拉长到山尖高的 1.2 倍：G4「几何 vs records」
+                # 自洽绿，必须由 G8 冻结约束（xuanyuLen/rise 与 ≤山尖高）独立拦下。
+                new_xl = 1.2 * sh[tag]['rise']
+                neg5_stretch = new_xl / xl_meas
+                loc = [(x, v, zt - (zt - h) * neg5_stretch) for (x, v, h) in loc]
+                orb['xuanyuLen'] = new_xl          # 同步模拟 records（D = rec['designValues']）
+                xl = new_xl                        # 后续 G4 断言改用同步后的设计值
                 hs = [p[2] for p in loc]
                 xl_meas = zt - min(hs)
             ck(abs(zt - (zr - xt)) < 5e-3, '%s 悬鱼顶 %s != ridgeZ-tuck' % (nm, zt))
@@ -252,50 +332,43 @@ def main():
             for lbl, val2, band in (('xuanyuProud', xp_meas, FC.XUANYU_PROUD), ('bofengProud', bp, FC.BOFENG_PROUD)):
                 ck(band[0] <= val2 <= band[1],
                    'G8 %s-%s %s=%.4f 不在冻结带 %s' % (rname, tag, lbl, val2, band))
-            # ---- G9 正面投影遮挡采样：可见投影面积 ≥ 设计面积 70% ----
-            # 候选遮挡件 = 同 roof 同端的山尖构件（山花/博风×2/撒头/正脊）。
-            # 排除两侧悬鱼互遮（各在山一端，正面互不在对方之前）与瓦面/远处构件
-            # （upper/lower 瓦面在悬鱼 (v,h) 处的实体不在其 u 前方，物理不遮；此处按本意只查山尖端构件）。
-            fish_pts = [(p[1], p[2]) for p in loc]
-            ch_fish = convex2d(fish_pts)
-            area_design = shoelace(ch_fish)
-            cands = []
-            for suffix in ('-shanhua-' + tag, '-bofeng3d-' + tag + 's', '-bofeng3d-' + tag + 'n',
-                           '-satou-' + tag, '-ridge'):
-                cnm = 'huxin-ting__%s%s' % (rname, suffix)
-                cm = node_mesh(gj, cnm)
-                if cm is None:
-                    continue
-                cloc = to_local(positions(gj, bin_chunk, cm))
-                cus = [p[0] for p in cloc]
-                cands.append((min(cus), max(cus), convex2d([(p[1], p[2]) for p in cloc]), cnm))
-            EPS = 1e-4
-            x_umin, x_umax = min(us), max(us)
-            v0b, v1b = min(p[0] for p in ch_fish), max(p[0] for p in ch_fish)
-            h0b, h1b = min(p[1] for p in ch_fish), max(p[1] for p in ch_fish)
-            NG = 64
-            n_in = n_vis = 0
-            for iv in range(NG):
-                for ih in range(NG):
-                    pv = v0b + (v1b - v0b) * (iv + 0.5) / NG
-                    ph = h0b + (h1b - h0b) * (ih + 0.5) / NG
-                    if not point_in_convex((pv, ph), ch_fish):
-                        continue
-                    n_in += 1
-                    blocked = False
-                    for cumin, cumax, cch, _cn in cands:
-                        cross = cumin <= x_umax + EPS and cumax >= x_umin - EPS      # u 区间穿插
-                        front = (cumin > x_umax + EPS) if m_out > 0 else (cumax < x_umin - EPS)
-                        if (cross or front) and point_in_convex((pv, ph), cch):
-                            blocked = True
-                            break
-                    if not blocked:
-                        n_vis += 1
-            ratio = (n_vis / n_in) if n_in else 0.0
-            occ_report.append('%s-%s 可见 %d/%d = %.1f%%（设计面积 %.4f m²）'
-                              % (rname, tag, n_vis, n_in, ratio * 100, area_design))
-            ck(ratio >= 0.70,
-               'G9 %s-%s 悬鱼正面投影可见率 %.1f%% < 70%%（被山尖端构件遮挡）' % (rname, tag, ratio * 100))
+            # ---- G9 真实三角面深度遮挡（R2）：可见投影面积 / 悬鱼未遮挡投影面积 ≥ 70% ----
+            # 全部 GLB mesh 三角面参与遮挡判定（不按名称白名单排除；双面不透明材质均算
+            # 遮挡物）。视线沿山花外法向（local ±u），512×512 深度采样：悬鱼自身节点不算
+            # 遮挡物，两侧悬鱼互在对方身后（深度更远），深度比较天然排除。
+            fish_tris = SCENE[nm].copy()
+            if neg == '4':                       # 与顶点级 loc 同公式：退回 R0 位置
+                fish_tris[..., 0] -= m_out * (bp - 0.004)
+            elif neg == '6':
+                # 外移 0.5 m：山花/博风全在身后（「博风不遮挡」），但上段瓦面/瓦垄与
+                # r2 栏杆仍在视线上——真实遮挡必须仍然红。
+                fish_tris[..., 0] -= m_out * 0.5
+            elif neg == '5':
+                fish_tris[..., 2] = zt - (zt - fish_tris[..., 2]) * neg5_stretch
+            fd, fc, box = raster_depth(fish_tris, m_out)
+            others = [t for n2, t in SCENE.items() if n2 != nm]
+            occts = np.concatenate(others, axis=0) if others else np.zeros((0, 3, 3))
+            od, oc, _ = raster_depth(occts, m_out, box=box[:4])
+            blocked = (oc & (od < fd - 1e-5)) if m_out < 0 else (oc & (od > fd + 1e-5))
+            n_total = int(fc.sum())
+            n_blk = int((fc & blocked).sum())
+            a_total = n_total * box[4]
+            a_vis = (n_total - n_blk) * box[4]
+            ratio = (n_total - n_blk) / n_total if n_total else 0.0
+            if rname == 'mainroof' and tag == 'e':
+                # 主控裁定（R2 验收范围）：主楼 e 端山花正对湖心亭自身塔楼（towerroof 系列
+                # 构件实测挡在整片视线上，可见率 0%），从外部视线结构上就被挡——该端悬鱼
+                # 从 ≥70% 验收中排除，不计 100%；悬鱼仍须存在（G1 上方）且朝向正确
+                # （上方「未在山花面外侧」断言照跑）。
+                occ_report.append('%s-%s 实测可见 %.1f%%（%.4f/%.4f m²）——验收排除：'
+                                  '正对湖心亭自身塔楼，外部视线结构上被挡'
+                                  % (rname, tag, ratio * 100, a_vis, a_total))
+            else:
+                occ_report.append('%s-%s 可见 %.1f%%（%.4f/%.4f m²，%d/%d px）'
+                                  % (rname, tag, ratio * 100, a_vis, a_total, n_total - n_blk, n_total))
+                ck(ratio >= 0.70,
+                   'G9 %s-%s 悬鱼正面投影可见率 %.1f%% < 70%%（真实三角面深度遮挡）'
+                   % (rname, tag, ratio * 100))
 
     label = ('负例 %s' % neg) if neg else '验收'
     print('gable-product-check[%s]: %d checks, %d fail' % (label, CHECKS[0], len(FAILS)))
@@ -306,7 +379,8 @@ def main():
     if neg:
         # 负例必须红在「指定的那条」上，不能靠别的失败凑数
         need = {'1': '悬鱼节点缺失', '2': '山花材质', '3': '未站在山花面外侧',
-                '4': '悬鱼正面投影可见率', '5': 'xuanyuLen/rise'}[neg]
+                '4': '悬鱼正面投影可见率', '5': 'xuanyuLen/rise',
+                '6': '悬鱼正面投影可见率'}[neg]
         ok = any(need in f for f in FAILS)
         print('  负例期望失败「%s」：%s' % (need, '出现 ✓' if ok else '未出现 ✗'))
         return 0 if ok else 1
