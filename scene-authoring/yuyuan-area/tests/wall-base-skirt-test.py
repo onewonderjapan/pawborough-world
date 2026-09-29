@@ -6,7 +6,7 @@
 （src/build-scene.mjs GROUND_Y），园墙墙脚因此悬空 0.4 m。dusk 太阳仰角 9°（lighting/presets.json）
 掠射时，光从墙下缝漏过、阴影贴图在缝上打出一条与墙平行的硬直边黑带；pickDebug 证明黑带与
 "另一块地面"是同一个 ground 对象（不是两块材质）。修法：沿 baseline/layout.json garden-wall
-segments 加勒脚裙板（build-scene.mjs，-0.44..+0.05，闭合交界），交界自然。
+segments 加勒脚裙板（build-scene.mjs，-0.44..+0.03，闭合交界），交界自然。
 
 期望值全部独立于生成器输出：
   - 墙段来自 baseline/layout.json（冻结设计源）；
@@ -33,7 +33,7 @@ OUT = os.path.join(ROOT, os.environ.get('OUT_DIR', 'out-zone'))
 
 # 设计常量（与 src/build-scene.mjs 园墙勒脚块一致）
 SKIRT_BOT = -0.44
-SKIRT_TOP = 0.05
+SKIRT_TOP = 0.03
 
 pass_n = 0
 fail_n = 0
@@ -108,7 +108,11 @@ def node_tris(j, bin_):
         m = None
         cur = i
         chain = []
+        seen = set()
         while cur is not None:
+            if cur in seen:
+                raise RuntimeError('节点父链成环（node %d）——GLB 节点引用损坏' % cur)
+            seen.add(cur)
             chain.append(cur)
             cur = parent.get(cur)
         for c in reversed(chain):
@@ -189,14 +193,20 @@ def main():
         jlen = struct.unpack('<I', data[12:16])[0]
         j = json.loads(data[20:20 + jlen])
         if neg == '3':
-            j['nodes'] = [n for n in j['nodes'] if 'wallBaseSkirt' not in (n.get('name') or '')]
+            # 保留节点索引（children / scenes 引用不变），只摘掉裙板节点的 mesh 引用——
+            # 旧写法直接过滤 nodes 使后续索引整体前移，父链成环、无限循环吃满内存（2026-09-30 5 次 OOM 的根因）
+            hit = 0
+            for n in j['nodes']:
+                if 'wallBaseSkirt' in (n.get('name') or '') and 'mesh' in n:
+                    del n['mesh']; hit += 1
+            ok('NEG3 变异目标存在', hit > 0)
             # 必须把变异后的 JSON 写回 GLB 字节（只改解析对象不重写 = 副本等于原件，测了个寂寞）
             newj = json.dumps(j, separators=(',', ':')).encode('utf-8')
             if len(newj) % 4:
                 newj += b' ' * (4 - len(newj) % 4)
             off = 20 + jlen
             blen = struct.unpack('<I', data[off:off + 4])[0]
-            total = off + 8 + blen
+            total = 12 + 8 + len(newj) + 8 + blen
             data = (struct.pack('<III', 0x46546C67, 2, total)
                     + struct.pack('<I', len(newj)) + b'JSON' + newj
                     + struct.pack('<I', blen) + b'BIN\x00'
@@ -262,6 +272,8 @@ def run_assertions(got, segs, ground_design):
     ok('A2 裙板触及地面侧（min_y ≤ GROUND_Y+0.05）', min(ys) <= ground_design + 0.05,
        'min_y=%.3f' % min(ys))
     ok('A2b 裙板接到建造基面（max_y ≥ -0.02）', max(ys) >= -0.02, 'max_y=%.3f' % max(ys))
+    # A2c 顶面不与园路铺装（顶 +0.05）共面：至少低 1 cm，避免门楼通路交界深度争夺（astra 2026-09-30 必修2）
+    ok('A2c 裙板顶面低于园路铺装顶（≤ +0.04）', max(ys) <= 0.04, 'max_y=%.3f' % max(ys))
     # A3 逐段覆盖：每段中点附近有裙板三角，且其 y 在裙板跨度内
     missing = []
     for si, s in enumerate(segs):

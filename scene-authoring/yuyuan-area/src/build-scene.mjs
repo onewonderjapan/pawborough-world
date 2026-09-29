@@ -1484,14 +1484,15 @@ if (POND_QA) {
 // dusk 太阳仰角 9°（presets）掠射时，光从墙下缝漏过、阴影贴图在缝上打出一条与墙平行的硬直边
 // 黑带（tour-dajiashan 黄昏地面「灰/白两块硬拼」；pickDebug 取证：黑带与另一侧是同一个 ground
 // 对象，不是两块材质）。沿 layout 的 garden-wall segments 加一圈勒脚裙板闭合交界：
-//   y -0.44..+0.05（下探地面下 0.04 m 防露缝，上叠进墙脚 0.05 m）；
+//   y -0.44..+0.03（下探地面下 0.04 m 防露缝，上叠进墙脚 0.03 m；顶面低于园路铺装 +0.05，避免与
+//   path-gate-sansuitang 等铺装共面深度争夺——astra 审查 2026-09-30）；
 //   宽 0.90 m（站点模块墙基实测 ~0.6–0.8 m，勒脚略挑出属常规做法）；SITE_MODULES=0 回退程序化
 //   墙（thickness 0.45）时用 thickness+0.06，两态都闭合。tl;dr 只动 garden-wall，temple 区有自己的
 //   铺装面（temple-ground__* y≈-0.12..0）不受此缝影响。
 {
   const wall = layout.objects.find((o) => o.id === 'garden-wall');
   if (wall && Array.isArray(wall.geometry?.segments)) {
-    const SKIRT_BOT = -0.44, SKIRT_TOP = 0.05;
+    const SKIRT_BOT = -0.44, SKIRT_TOP = 0.03;
     const width = SITE_MODULES ? 0.90 : (wall.thickness || 0.45) + 0.06;
     const parts = [];
     let segCount = 0;
@@ -1509,7 +1510,7 @@ if (POND_QA) {
     if (parts.length) {
       const key = 'garden|garden-wall|wallBaseSkirt|L1';
       const ud = { id: 'garden-wall', zone: 'garden', kind: 'wallBaseSkirt', lod: 'L1', module: 'wall-base-skirt', designInference: true,
-        inference: `wave14-rockseam (巡检#12): the built-world base plane y=0 leaves the garden wall floating 0.40 m over the ${GROUND_Y} ground plane; at the 9° dusk sun this gap leaks light and throws a hard straight shadow band across the ground (both sides are the same ground mesh, see ticket artifacts). A plinth skirt (-0.44..+0.05, w=${width}) built from the frozen garden-wall segments closes the junction naturally (勒脚)` };
+        inference: `wave14-rockseam (巡检#12): the built-world base plane y=0 leaves the garden wall floating 0.40 m over the ${GROUND_Y} ground plane; at the 9° dusk sun this gap leaks light and throws a hard straight shadow band across the ground (both sides are the same ground mesh, see ticket artifacts). A plinth skirt (-0.44..+0.03, w=${width}) built from the frozen garden-wall segments closes the junction naturally (勒脚)` };
       const mesh = mergedMesh(parts, key, ud);
       zoneGroups.garden.add(mesh);
       stats.meshes++;
