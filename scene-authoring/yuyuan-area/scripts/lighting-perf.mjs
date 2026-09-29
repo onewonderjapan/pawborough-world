@@ -11,7 +11,7 @@ import { createRequire } from 'node:module';
 import fs from 'node:fs';
 import { glCounterInit, frameCounts } from '../tests/perf-lib.mjs';
 
-const require = createRequire('/home/baibai/pawborough-world/node_modules/');
+const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const BASE = process.env.BASE || 'http://127.0.0.1:5491/';
 const CONFIGS = (process.env.CONFIGS || 'default=').split(',').map(s => { const i = s.indexOf('='); return [s.slice(0, i), s.slice(i + 1)]; });

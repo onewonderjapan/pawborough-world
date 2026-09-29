@@ -21,7 +21,7 @@ import { fileURLToPath } from 'node:url';
 import { streetCorridorBox } from '../scripts/tour-visibility.mjs';
 import { glCounterInit, settle, frameCounts, canvasPng, pixelDiff, savePng, PIX_MAX } from './perf-lib.mjs';
 
-const require = createRequire('/home/baibai/pawborough-world/node_modules/');
+const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');

@@ -3532,5 +3532,147 @@
       }
     ],
     "ownerAdopted": false
+  },
+  "plaquefixPendingLeadArchive": {
+    "wave": "wave13-plaquefix-opus-20260929",
+    "status": "pending_lead_archive",
+    "note": "build_tower.py rpanel 绕序修正后重生成的 15 栋塔 model.glb（面板正面朝外，几何/节点/材质不变）。files[] 仍指向已上传的旧版；nightbalance 合并后 15 塔将按组合源码统一重生成并上传，届时以新结果更新 files[] 并移除本段。measurements.json 未变。",
+    "files": [
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202599/model.glb",
+        "sha256": "2f24419759fe464651cf2be7e4bee459bf26ca7696086e1597adc86356f15f23",
+        "bytes": 1956180,
+        "replaces": {
+          "sha256": "19139c2347a810aa3433ed06dfba814d98f1a1e72d218b3920e20cf2ff874bb8",
+          "bytes": 1956180
+        }
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202601/model.glb",
+        "sha256": "0275fe4411a9b0902a03801fbc1579c2cb0b7f5c9b9b7cb179f467d1cb0339d2",
+        "bytes": 2388180,
+        "replaces": {
+          "sha256": "94dccbcc937b119ea150c04733c90de1baff907492d5c03938365a6a81f0fcee",
+          "bytes": 2388180
+        }
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701812/model.glb",
+        "sha256": "545ed9ea883c9b69354a71a678dc0649f7f0910d046827aeeb93127df6352635",
+        "bytes": 2263532,
+        "replaces": {
+          "sha256": "15175968580cc4e12571b3a58fc64fd13294f1c4fd356c530462261228c5b84c",
+          "bytes": 2263532
+        }
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202602/model.glb",
+        "sha256": "87a0ccf2f300d6b7fb8f4cb932042f13f85fcda4ffd8d320097b645245b01a49",
+        "bytes": 2523600,
+        "replaces": {
+          "sha256": "d5db7d7c89fe8c7230daa9616c6cb76e5fb24bfc114c0afabf41359de68ae049",
+          "bytes": 2523600
+        }
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202603/model.glb",
+        "sha256": "d5ae3ac1a37bd7e201f40e5bd53561f1ad5cac4b39cd39d6c53d18717d973b0d",
+        "bytes": 1704392,
+        "replaces": {
+          "sha256": "79bb87b86f99b1d2781623e2d80a5863138d8269381ac1cbe50734790b7edbf4",
+          "bytes": 1704392
+        }
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701901/model.glb",
+        "sha256": "e9442d19177d80228900c4b75600361665ea77e37455ae4e897a6aa4d7a8a2a6",
+        "bytes": 1301812,
+        "replaces": {
+          "sha256": "82848a8898247fd6eff8ae3be033d3ae69640e01b176d1c34c9a036201d31932",
+          "bytes": 1301812
+        }
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-165791764/model.glb",
+        "sha256": "214a78cfdcb7983acca7bbf2749ed35a2241e87c087bc36b71bdfa52abdd66be",
+        "bytes": 1144116,
+        "replaces": {
+          "sha256": "34aabe001ef16ba622d1e78123cd89a674b7a89c02f1dbe144b380e15e65294a",
+          "bytes": 1144116
+        }
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389702030/model.glb",
+        "sha256": "679bf62262aec1847e06daef8b58e31904c745ea0695d66370ca9e2ca801592e",
+        "bytes": 821148,
+        "replaces": {
+          "sha256": "974c7308ce5d1cb5b560eaad974906ea93e46e38ab6a9966263e345a8b2a6b97",
+          "bytes": 821148
+        }
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893867/model.glb",
+        "sha256": "bdce04cc653f44c31660db0dde690cdc331f76001c6deca98311afab87f833ce",
+        "bytes": 872588,
+        "replaces": {
+          "sha256": "7a1f51c9f952ed670ba0f45128aae87b8d46f520f2e990e925b11395ef94aa92",
+          "bytes": 872588
+        }
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701971/model.glb",
+        "sha256": "8f30aebc319e5d46d8460cb55300cd5ddce88c80da68c907261869c09fb86e7c",
+        "bytes": 1315172,
+        "replaces": {
+          "sha256": "2208ee3cc6d152b7f466b9edff21deb1318e33f2202b6a790ec6517b3f0139b7",
+          "bytes": 1315172
+        }
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893873/model.glb",
+        "sha256": "e59dc38e268abf3e2f13382d3e806d7c9cbdb7a7dc428b3010df110f07eda144",
+        "bytes": 1046084,
+        "replaces": {
+          "sha256": "e73b74292a8a20919592cf82094430dcffbb4eed32e0bf0e098fc69941500a15",
+          "bytes": 1046084
+        }
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893868/model.glb",
+        "sha256": "87cd8b531a6071002e5deee9b299b265baffd97f24e2dbab96a84982ed6a217b",
+        "bytes": 592628,
+        "replaces": {
+          "sha256": "e2b2fdd74f715cd7518e6da17e0cb4153e96dd41784ba271c3636a5fc4864755",
+          "bytes": 592628
+        }
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202606/model.glb",
+        "sha256": "728183e491852ccbbc503126449b4625cd82ed9202dc8b33607579c0c25f9458",
+        "bytes": 1697604,
+        "replaces": {
+          "sha256": "18fd641a53ddc85c4baaf05aa059330728f29e58e8bdfdf420051b95fa3febc3",
+          "bytes": 1697604
+        }
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202607/model.glb",
+        "sha256": "8459b7f48dac7bbb33835a6be11444ca2d71130c81f3ce44075f8ce3be7873ae",
+        "bytes": 1059092,
+        "replaces": {
+          "sha256": "750a5ab1c4c618cc13ff686df3cda1596c511d55fd12dcedfa9092fd7ca9efe0",
+          "bytes": 1059092
+        }
+      },
+      {
+        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893884/model.glb",
+        "sha256": "0018a293a74b7bd69cb6647614c451592da3f9e5c6adb728e5745a6358668141",
+        "bytes": 1220572,
+        "replaces": {
+          "sha256": "7889470db37e05b7fe45b200a718379b4152446cf0a94de4b92702bda5d40863",
+          "bytes": 1220572
+        }
+      }
+    ]
   }
 }
