@@ -14,7 +14,7 @@ glTF (x,y,z) = 地图 (x, 高度, z)，锚点 = footprint 面积形心（锚 emp
 (u,v,h) -> Blender (x,-z,h) 行列式 +1，保 eave_kit 面绕序/法线。
 运行：blender -b -t 4 --python-exit-code 1 modules/huxinting/build.py   预算 ≤30k tris / ≤2.5 MB。
 """
-import bpy, json, math, os, re, sys
+import bpy, json, math, os, re, struct, sys, tempfile, zlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -144,16 +144,35 @@ MATS_ALL['ht-tile-grey'].node_tree.links.new(
 #   u 方向 1 周期 = 1 垄距 0.33 m（D['wa']['pitch']）：0–0.42 垄间瓦面（基色），0.42–0.70 渐暗入沟，
 #   0.70–0.82 沟底（基色 ×0.74，瓦沟阴影），0.82–1.00 渐亮回瓦面；v 方向 8 个周期各带 ±4% 亮度微扰 +
 #   全图 ±2% 细粒噪声，打破机械条纹感。基色 = TILE_SRGB 灰瓦（同 ht-tile-grey）。
-# UV 由 tile_ridges 按「檐口弧长 / 垄距」写入（几何独立口径），贴图条纹与几何瓦垄同 pitch；
-# 两者相位不强制对齐（逐列垄数取整导致相位滑动 ≤ 半周期，航拍 1–2 px 不可辨，写明权衡）。
+# 色彩空间（R1，审查项 2）：glTF baseColor 贴图按 sRGB 语义解码，PNG 字节必须 = OETF(线性目标值)、
+#   且只做这一次 sRGB 转换。像素在**线性域**生成（base_lin × 明暗乘子），字节域用 _srgb_oetf 编码；
+#   PNG 字节由本文件手写（_png_rgba），经临时文件 load + pack 原样内嵌进 GLB，不经过 Blender
+#   pixels/colorspace 的隐式转换（R0 的 img.pixels 直写被实测为无 OETF 量化，瓦面被额外压暗）。
+def _srgb_oetf(c):
+    """线性 [0,1] -> sRGB 字节 [0,255]（IEC 61966-2-1 OETF，逆向的 srgb() 线性化）。"""
+    c = max(0.0, min(1.0, c))
+    s = c / 12.92 if c <= 0.0031308 else 1.055 * c ** (1 / 2.4) - 0.055
+    return round(s * 255)
+
+def _png_rgba(w, h, rows):
+    """最小 PNG 编码器（RGBA 8bit 非隔行）；rows = 每行 w*4 字节（不含 filter 字节）。"""
+    def chunk(tag, data):
+        return (struct.pack('>I', len(data)) + tag + data
+                + struct.pack('>I', zlib.crc32(tag + data) & 0xFFFFFFFF))
+    raw = b''.join(b'\x00' + r for r in rows)
+    ihdr = struct.pack('>IIBBBBB', w, h, 8, 6, 0, 0, 0)
+    return (b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', ihdr)
+            + chunk(b'IDAT', zlib.compress(raw, 9)) + chunk(b'IEND', b''))
+
 def tile_texture():
     W = H = 128
     base = srgb(TILE_SRGB)
     rng = math.sin
-    px = []
+    rows = []
     for y in range(H):
         v = y / H
         band = 1.0 + 0.04 * rng(v * 8 * 6.283)          # v 方向逐带微扰
+        row = bytearray()
         for x in range(W):
             u = x / W
             if u < 0.42:
@@ -166,10 +185,24 @@ def tile_texture():
                 f = 0.74 + 0.26 * (u - 0.82) / 0.18       # 渐亮回瓦面
             g = 1.0 + 0.02 * rng(x * 12.9898 + y * 78.233)
             k = band * f * g
-            px.append((min(1, base[0] * k), min(1, base[1] * k), min(1, base[2] * k), 1))
-    img = bpy.data.images.new('ht-tile-tex', W, H)
-    img.pixels = [c for p in px for c in p]
-    img.pack()
+            for i in range(3):
+                row.append(_srgb_oetf(base[i] * k))       # 线性乘明暗后一次 OETF 编码
+            row.append(255)
+        rows.append(bytes(row))
+    # exporter __gather_name 优先取 filepath basename——临时目录里就叫 ht-tile-tex.png，
+    # GLB image name 即为 ht-tile-tex（export-zones / share-textures 按名合并依赖这个名字）
+    tmpdir = tempfile.mkdtemp()
+    try:
+        tmp = os.path.join(tmpdir, 'ht-tile-tex.png')
+        with open(tmp, 'wb') as fh:
+            fh.write(_png_rgba(W, H, rows))
+        img = bpy.data.images.load(tmp, check_existing=False)
+        img.pack()                                        # pack 后 exporter 直接嵌 packed bytes（= 本文件手写 PNG），
+        img.name = 'ht-tile-tex'                          # pack 会把 name 重置回文件 basename，改名在 pack 后兜底；
+        # 不改 source/filepath：标 GENERATED 会让 exporter 从未初始化的 pixels 重生成（黑图）
+    finally:
+        import shutil
+        shutil.rmtree(tmpdir, ignore_errors=True)
     m = MATS_ALL['ht-tile-tex']
     t = m.node_tree.nodes.new('ShaderNodeTexImage')
     t.image = img
@@ -357,6 +390,7 @@ def tile_ridges(name, pts, faces, part, ob=None):
     if fcs:
         add_local(name + '-wa', [(v, (0.0, 0.0)) for v in verts], fcs, 'roof', part, colors=cols)
     # M1：瓦面换贴图材质 + 写瓦纹 UV（u = 檐口行弧长 / 垄距，v = 坡向弧长 / 垄距；satou 按重排后的网格口径）。
+    # 贴图条纹与几何瓦垄同 pitch，相位不强制对齐（逐列垄数取整导致相位滑动 ≤ 半周期，航拍 1–2 px 不可辨）。
     if ob is not None:
         ob.data.materials[0] = MATS_ALL['ht-tile-tex']
         uvl = ob.data.uv_layers.new(name='UVMap')
@@ -365,7 +399,18 @@ def tile_ridges(name, pts, faces, part, ob=None):
         for c in range(S - 1):
             cum.append(cum[-1] + _v3len(_v3sub(eave[(c + 1) % S], eave[c])))
         if closed:
-            cum.append(cum[0] + _v3len(_v3sub(eave[0], eave[S - 1])))   # 环形合拢段（列 S-1 的右边界）
+            cum.append(cum[-1] + _v3len(_v3sub(eave[0], eave[S - 1])))   # 环形合拢段：U 连续累计到完整周长
+        full_u = cum[-1] / W['pitch']                                  # 闭环一整圈的 U 周期数（含合拢段）
+        # 坡向 V：檐口行 -> 本行逐列累加坡长（R1 修复审查项 1：原 rr0/rr1 次序反了致 range 恒空、
+        # V 恒 0（glTF 导出后恒 1），坡向纹理密度为零）
+        v_of = {}
+        for r in range(R):
+            lo_r, hi_r = (r, eave_row) if r <= eave_row else (eave_row, r)
+            for c in range(S):
+                v_span = 0.0
+                for rr in range(lo_r, hi_r):
+                    v_span += _v3len(_v3sub(P[rr][c], P[rr + 1][c]))
+                v_of[r * S + c] = v_span / W['pitch']
         uv_of = {}
         if is_satou:
             v_lo = min(p[1] for p in pts)
@@ -373,17 +418,23 @@ def tile_ridges(name, pts, faces, part, ob=None):
             for j, p in enumerate(pts):
                 uv_of[satou_order[j]] = ((p[1] - v_lo) / W['pitch'], abs(p[0] - u_ref) / W['pitch'])
         else:
-            for r in range(R):
-                for c in range(S):
-                    v_span = 0.0
-                    rr0, rr1 = (eave_row, r) if r <= eave_row else (r, eave_row)
-                    for rr in range(rr0, rr1):
-                        v_span += _v3len(_v3sub(P[rr][c], P[rr + 1][c]))
-                    uv_of[r * S + c] = (cum[c] / W['pitch'], v_span / W['pitch'])
+            for vi in range(R * S):
+                uv_of[vi] = (cum[vi % S] / W['pitch'], v_of[vi])
+        # R1 修复审查项 1：闭环合拢列（行内同时含列 S-1 与列 0 顶点的面）右边界顶点改用累计周长端点
+        # full_u——原按顶点写 UV 时合拢面两侧共用列 0 顶点（U=0），末列跨回 0 产生接缝回绕（一列 ~1 m
+        # 的边跨 ~周长/0.33 个周期，密纹失真）。按面角点（loop）写，接缝拆开、纹理连续。
         for poly in ob.data.polygons:
-            for li in poly.loop_indices:
-                uvl.data[li].uv = uv_of[ob.data.loops[li].vertex_index]
-    WA_STATS[name] = dict(ribs=nrib, ribLengthM=round(length, 2), rows=R, cols=S, closed=closed)
+            vis = [ob.data.loops[li].vertex_index for li in poly.loop_indices]
+            wrap = closed and not is_satou and (S - 1) in (vi % S for vi in vis) and 0 in (vi % S for vi in vis)
+            for li, vi in zip(poly.loop_indices, vis):
+                u, v = uv_of[vi]
+                if wrap and vi % S == 0:
+                    u = full_u
+                uvl.data[li].uv = (u, v)
+    _us = [uv[0] for uv in uv_of.values()]
+    _vs = [uv[1] for uv in uv_of.values()]
+    WA_STATS[name] = dict(ribs=nrib, ribLengthM=round(length, 2), rows=R, cols=S, closed=closed,
+                          uPeriods=round(max(_us) - min(_us), 2), vMaxPeriods=round(max(_vs), 2))
 
 
 def prism(name, poly_uv, z0, z1, mat, part):

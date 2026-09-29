@@ -335,28 +335,42 @@ ok('GLB 节点名全部为 huxin-ting__*（无游离散件节点）', prefixOk, 
   const cm = color0Means.reduce((s, c) => [s[0] + c[0] / color0Means.length, s[1] + c[1] / color0Means.length, s[2] + c[2] / color0Means.length], [0, 0, 0]);
   ok(`瓦垄 COLOR_0 均值为中性灰（rgb ${cm.map((v) => v.toFixed(2)).join(',')}，|r-g|、|g-b| ≤ 0.03，网格 ${color0Means.length}）`,
     color0Means.length > 0 && Math.abs(cm[0] - cm[1]) <= 0.03 && Math.abs(cm[1] - cm[2]) <= 0.03);
-  // 瓦纹贴图均值（ht-tile-tex baseColorTexture，128×128 RGBA）同为中性灰
+  // 瓦纹贴图（ht-tile-tex baseColorTexture，128×128 RGBA）：
+  // R1（审查项 2/3）：真解码（inflateSync + PNG 格式/长度校验，原实现把 zlib 压缩 IDAT 当像素 = 假绿）；
+  // 色彩空间验收 = 解码字节经 sRGB->linear 后的均色 ≈ 设计基色 #6e6f71 × 明暗乘子均值。
+  // 乘子均值（精确算术，非采样）：f(u) = 0.42×1.0 + 0.28×(1+0.74)/2 + 0.12×0.74 + 0.18×(0.74+1)/2 = 0.909，
+  // band（±4% 正弦）与细粒噪声（±2% sin hash）均值均为 1.0。
   const texMat = gltf.materials.find((m) => m.name === 'ht-tile-tex');
   ok('瓦纹贴图材质存在（ht-tile-tex）', !!texMat);
   if (texMat) {
     const img = gltf.images[gltf.textures[texMat.pbrMetallicRoughness.baseColorTexture.index].source];
     const bv = gltf.bufferViews[img.bufferView];
     const ib = bin.subarray(bv.byteOffset || 0, (bv.byteOffset || 0) + bv.byteLength);
-    const dec = await import('node:zlib').then((z) => z.inflateSync);
-    // PNG 手工解码最小 IHDR/IDAT（truecolor RGB 8bit，无隔行）——导出器写的是无调色板 RGBA/RGB
-    let off = 8, w = 0, h = 0, depth = 0, ctype = 0; const idat = [];
-    while (off < ib.length) {
+    const { inflateSync } = await import('node:zlib');
+    // PNG 结构校验：签名 / IHDR / 8bit truecolor 非隔行 / IDAT / IEND
+    ok('瓦纹贴图 PNG 签名与 IHDR', ib.length > 24 && ib[0] === 0x89 && ib[1] === 0x50 && ib.toString('ascii', 12, 16) === 'IHDR', `head=${ib.subarray(0, 8).toString('hex')}`);
+    let off = 8, w = 0, h = 0, depth = 0, ctype = 0, interlace = -1; const idat = []; let hasIEND = false;
+    while (off + 8 <= ib.length) {
       const len = ib.readUInt32BE(off), type = ib.toString('ascii', off + 4, off + 8);
-      if (type === 'IHDR') { w = ib.readUInt32BE(off + 8); h = ib.readUInt32BE(off + 12); depth = ib[off + 16]; ctype = ib[off + 17]; }
+      if (type === 'IHDR') { w = ib.readUInt32BE(off + 8); h = ib.readUInt32BE(off + 12); depth = ib[off + 16]; ctype = ib[off + 17]; interlace = ib[off + 20]; }
       if (type === 'IDAT') idat.push(ib.subarray(off + 8, off + 8 + len));
+      if (type === 'IEND') hasIEND = true;
       off += 12 + len;
     }
-    const raw = Buffer.concat(idat);
-    const bpp = ctype === 6 ? 4 : 3;
-    const rowLen = w * bpp;
+    ok(`瓦纹贴图 ${w}×${h} 8bit RGBA 非隔行（depth=${depth} ctype=${ctype} interlace=${interlace}）`,
+      w === 128 && h === 128 && depth === 8 && ctype === 6 && interlace === 0);
+    ok('瓦纹贴图含 IDAT 与 IEND', idat.length > 0 && hasIEND);
+    let decOk = false, raw = null;
+    try {
+      raw = inflateSync(Buffer.concat(idat));
+      decOk = raw.length === h * (1 + w * 4);            // 每行 1 filter 字节 + w×RGBA
+    } catch (e) { raw = null; }
+    ok(`瓦纹贴图 IDAT inflate 后长度${raw ? ` ${raw.length}` : ' 解压失败'} = ${h * (1 + w * 4)}`, decOk);
+    // 逆 filter（PNG spec 6）：Paeth 等四种，逐行还原
+    const bpp = 4, rowLen = w * bpp;
     const up = Buffer.alloc(h * rowLen);
     let rp = 0;
-    for (let y = 0; y < h; y++) {
+    for (let y = 0; y < h && rp + 1 + rowLen <= raw.length; y++) {
       const f = raw[rp++]; const row = raw.subarray(rp, rp + rowLen); rp += rowLen;
       const prev = y ? up.subarray((y - 1) * rowLen, y * rowLen) : Buffer.alloc(rowLen);
       const cur = up.subarray(y * rowLen, (y + 1) * rowLen);
@@ -368,11 +382,17 @@ ok('GLB 节点名全部为 huxin-ting__*（无游离散件节点）', prefixOk, 
         cur[x] = v & 255;
       }
     }
+    const srgbToLin = (c) => (c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
     let r = 0, g = 0, b = 0, n2 = 0;
     for (let i = 0; i < up.length; i += bpp) { r += up[i]; g += up[i + 1]; b += up[i + 2]; n2++; }
-    const tm = [r / n2 / 255, g / n2 / 255, b / n2 / 255];
-    ok(`瓦纹贴图 ${w}×${h} 均值为中性灰（rgb ${tm.map((v) => v.toFixed(2)).join(',')}，|r-g|、|g-b| ≤ 0.03）`,
-      w === 128 && Math.abs(tm[0] - tm[1]) <= 0.03 && Math.abs(tm[1] - tm[2]) <= 0.03);
+    const tmb = [r / n2, g / n2, b / n2];
+    const tmlin = tmb.map((v) => srgbToLin(v / 255));
+    const baseLin = [0x6e, 0x6f, 0x71].map((v) => srgbToLin(v / 255));
+    const MULT_MEAN = 0.909;
+    ok(`瓦纹贴图解码均值为中性灰（rgb 字节 ${tmb.map((v) => v.toFixed(1)).join('/')}，|r-g|、|g-b| ≤ 2）`,
+      Math.abs(tmb[0] - tmb[1]) <= 2 && Math.abs(tmb[1] - tmb[2]) <= 2);
+    ok(`瓦纹贴图色彩空间：解码线性均色 (${tmlin.map((v) => v.toFixed(4)).join(', ')}) ≈ 基色 linear ×${MULT_MEAN} (${baseLin.map((v) => (v * MULT_MEAN).toFixed(4)).join(', ')})，每通道 ±10%`,
+      tmlin.every((v, i) => Math.abs(v - baseLin[i] * MULT_MEAN) <= 0.1 * baseLin[i] * MULT_MEAN));
   }
 }
 
