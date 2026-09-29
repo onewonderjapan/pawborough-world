@@ -18,7 +18,7 @@
 // 用法：先起服务 PORT=5496 OUT_DIR=out-zone node scripts/server.mjs &
 //       BASE=http://127.0.0.1:5496/ SHOT=<png 前缀> node tests/roof-toggle-test.mjs
 import { createRequire } from 'node:module';
-const require = createRequire('/home/baibai/pawborough-world/node_modules/');
+const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const base = process.env.BASE || 'http://127.0.0.1:5496/';
 const shot = process.env.SHOT || null;

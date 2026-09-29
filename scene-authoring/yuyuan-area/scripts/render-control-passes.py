@@ -583,6 +583,7 @@ def bind_slot_materials():
 COPLANAR_TOL_M = 0.002          # 两层水平三角形高度差 ≤ 2 mm 视为共面
 COPLANAR_MIN_AREA_M2 = 1e-4     # 投影交叠面积 ≥ 1 cm² 才算冲突（边贴边的相邻铺装不算）
 COPLANAR_STEP_M = 0.004         # 次层逐级下沉 4 mm（只在 beauty 段，控制通道前恢复）
+COPLANAR_MAX_SINK_M = 0.032     # E2 门禁：次层下沉位移预算 32 mm（本场景实测最大 20 mm）；超出即失败
 
 
 def _flat_layer_triangles(ob, np):
@@ -696,7 +697,9 @@ def find_coplanar_conflicts(offsets=None):
 
 def plan_coplanar_offsets():
     """冲突图贪心分层：面积大的先占 0 层（保持原高度、完整参与光照），与之冲突的逐级下沉 COPLANAR_STEP_M；
-    次层在交叠区被上层盖住（相机看不到、上层射线也打不到它），非交叠部分只低 4 mm，照常投影 / 反弹 / 被透射看到。"""
+    次层在交叠区被上层盖住（相机看不到、上层射线也打不到它），非交叠部分只低 4 mm，照常投影 / 反弹 / 被透射看到。
+    E2 门禁（blenderamb R2 可选1）：任一对象下沉位移超出 COPLANAR_MAX_SINK_M，或按偏移复查仍有残余
+    共面冲突时直接失败拒绝渲染——复查结果不再只是记录进 meta（宁停，不出受污染的画面）。"""
     conflicts, areas = find_coplanar_conflicts()
     nb = {}
     for a, b in conflicts:
@@ -710,12 +713,27 @@ def plan_coplanar_offsets():
             r += 1
         rank[name] = r
     offsets = {n: -COPLANAR_STEP_M * r for n, r in rank.items() if r > 0}
+    over = sorted((n for n, dz in offsets.items() if -dz > COPLANAR_MAX_SINK_M))
+    if over:
+        raise SystemExit('E: 共面次层下沉位移超出预算 %.0f mm（COPLANAR_MAX_SINK_M；step %.0f mm × 层级，'
+                         'max rank %d）：%s——按位移上限拒绝渲染'
+                         % (COPLANAR_MAX_SINK_M * 1000, COPLANAR_STEP_M * 1000,
+                            max(rank.values()) if rank else 0,
+                            '；'.join('%s %.1f mm' % (n, -offsets[n] * 1000) for n in over[:8])))
     remaining, _ = find_coplanar_conflicts(offsets)
+    if remaining:
+        raise SystemExit('E: 按下沉偏移复查仍有 %d 对残余共面冲突（%s%s）——贪心分层对这些对象失效，'
+                         '拒绝渲染（复查不再只记录）'
+                         % (len(remaining),
+                            '；'.join('%s <> %s' % k for k in sorted(remaining)[:4]),
+                            '…' if len(remaining) > 4 else ''))
     return offsets, {'coplanarConflictPairs': len(conflicts),
                      'coplanarConflictObjects': len(nb),
                      'coplanarOverlapM2': round(sum(conflicts.values()), 3),
                      'coplanarLoweredObjects': len(offsets),
                      'coplanarMaxRank': max(rank.values()) if rank else 0,
+                     'coplanarMaxSinkM': round(max((-dz for dz in offsets.values()), default=0.0), 4),
+                     'coplanarSinkBudgetM': COPLANAR_MAX_SINK_M,
                      'coplanarRemainingAfterOffset': len(remaining),
                      'coplanarPairs': {'%s <> %s' % k: round(v, 3) for k, v in sorted(conflicts.items())}}
 
@@ -1437,28 +1455,33 @@ def main():
             apply_beauty_offsets(BEAUTY_OFFSETS, True)
             for ob in lit_objs:
                 ob.hide_render = False
-            lit_meta = config_beauty_lit(scene, P, preset, args.beauty, args.beauty_samples,
-                                         args.beauty_device or P['blender']['cycles']['device'], lit_world,
-                                         denoise=args.beauty_denoise == 'on')
-            lit_meta.update(lit_info)
-            lit_meta['beautyMaterials'] = {k: (v if not isinstance(v, (list, dict)) else len(v)) for k, v in mat_info.items()}
         elif 'beauty' in passes:
             config_workbench(scene, 'beauty')
-        for k in (ks if 'beauty' in passes else []):
-            pose(k)
-            t = time.perf_counter()
-            scene.render.filepath = os.path.join(sdir, 'beauty', 'frame-%03d.png' % k)
-            bpy.ops.render.render(write_still=True)
-            st.setdefault('frame-%03d' % k, {})['beauty_s'] = round(time.perf_counter() - t, 2)
-            log('%s frame-%03d beauty %.1fs' % (sid, k, st['frame-%03d' % k]['beauty_s']))
-        if lit:
-            # 回到控制层口径：灯光不渲、世界 = control-world（config_workbench / config_cycles 只改它的颜色）、共面次层回原高度
-            apply_beauty_offsets(BEAUTY_OFFSETS, False)
-            for ob in lit_objs:
-                ob.hide_render = True
-            cw = bpy.data.worlds.get('control-world')
-            if cw is not None:
-                scene.world = cw
+        try:
+            if lit and 'beauty' in passes:
+                lit_meta = config_beauty_lit(scene, P, preset, args.beauty, args.beauty_samples,
+                                             args.beauty_device or P['blender']['cycles']['device'], lit_world,
+                                             denoise=args.beauty_denoise == 'on')
+                lit_meta.update(lit_info)
+                lit_meta['beautyMaterials'] = {k: (v if not isinstance(v, (list, dict)) else len(v)) for k, v in mat_info.items()}
+            for k in (ks if 'beauty' in passes else []):
+                pose(k)
+                t = time.perf_counter()
+                scene.render.filepath = os.path.join(sdir, 'beauty', 'frame-%03d.png' % k)
+                bpy.ops.render.render(write_still=True)
+                st.setdefault('frame-%03d' % k, {})['beauty_s'] = round(time.perf_counter() - t, 2)
+                log('%s frame-%03d beauty %.1fs' % (sid, k, st['frame-%03d' % k]['beauty_s']))
+        finally:
+            if lit:
+                # E2（blenderamb R2 可选2）：下沉 + 亮灯 + lit 世界是受保护的临时状态——引擎配置或
+                # beauty 渲染抛异常也必须恢复 location / hide_render / control-world，
+                # 后续 seg/normal/depth 控制通道不吃 beauty 残留状态。
+                apply_beauty_offsets(BEAUTY_OFFSETS, False)
+                for ob in lit_objs:
+                    ob.hide_render = True
+                cw = bpy.data.worlds.get('control-world')
+                if cw is not None:
+                    scene.world = cw
 
         if 'seg' in passes:
             config_workbench(scene, 'seg')

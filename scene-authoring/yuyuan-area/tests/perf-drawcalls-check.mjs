@@ -19,7 +19,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { glCounterInit, settle, frameCounts, canvasPng, pixelDiff, savePng, CH_TOL, EDGE_GRAD, PIX_MAX } from './perf-lib.mjs';
 
-const require = createRequire('/home/baibai/pawborough-world/node_modules/');
+const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const BASE = process.env.BASE || 'http://127.0.0.1:5494/';
 const BUDGET = +(process.env.BUDGET || 1200);
