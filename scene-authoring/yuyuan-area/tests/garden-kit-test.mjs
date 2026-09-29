@@ -3,6 +3,7 @@
 // 缺 staged/site-modules（站点模块输入，M1 起与 OUT_DIR 解耦）时跳过（不进默认 npm test；test:garden-kit 单独跑）。
 // 用法：OUT_DIR=out-zone node tests/garden-kit-test.mjs（OUT_DIR 只影响第 9 节的总装产物核对）
 import fs from 'node:fs';
+import crypto from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateBytes } from 'gltf-validator';
@@ -463,12 +464,22 @@ for (const f of ['garden-wall.glb', 'temple-wall.glb', 'moon-gate.glb', 'jiuqu-b
 }
 
 // ---------- 8.5) M3：庙墙孤立段剔除（冻结 layout 重算，不拿产物自比） ----------
+// wave14-templeeast（主控 2026-09-29 裁定）：悬空段改在 layout 生成端丢掉——layout 只剩 24 段、再过滤一遍无可丢；
+// 被丢的段记在 temple-wall.droppedFloating（原索引 19），保留段原索引在 geometry.segmentIndex；
+// 其余 24 段逐段不变：与改动前冻结 layout（HEAD a2bc8104 的 25 段去掉第 19 段）JSON 的 sha256 相同。
 {
   const tw = LAYOUT.objects.find((o) => o.id === 'temple-wall');
   const segs = tw.geometry.segments;
   const kept = dropFloatingSegments(segs);
-  const dropped = segs.filter((s) => !kept.includes(s));
-  ok(`temple-wall 悬空段剔除：25 -> ${kept.length} 段（剔除 ${dropped.length}）`, segs.length === 25 && kept.length === 24 && dropped.length === 1);
+  const dropped = (tw.droppedFloating || []).map((d) => d.segment);
+  ok(`temple-wall layout 24 段且无悬空段可再丢（剩 ${kept.length}）`, segs.length === 24 && kept.length === 24);
+  ok(`temple-wall.droppedFloating 恰为原第 19 段（${(tw.droppedFloating || []).map((d) => d.index).join(',')}）`,
+    dropped.length === 1 && tw.droppedFloating[0].index === 19);
+  const idx = tw.geometry.segmentIndex || [];
+  ok('segmentIndex = 0..18,20..24（原索引不重编号）', JSON.stringify(idx) === JSON.stringify([...Array(25).keys()].filter((i) => i !== 19)));
+  const KEPT_SHA_FROZEN = '2e7bb5a080c163355b81ff0b0aa3eb2ba22423d5c2e1087c5d0b6a3e2726865b';   // HEAD a2bc8104 layout 25 段去掉第 19 段
+  const keptSha = crypto.createHash('sha256').update(JSON.stringify(segs)).digest('hex');
+  ok(`其余 24 段逐段不变（sha ${keptSha.slice(0, 12)} = 冻结 ${KEPT_SHA_FROZEN.slice(0, 12)}）`, keptSha === KEPT_SHA_FROZEN);
   if (dropped.length === 1) {
     const [a, b] = dropped[0];
     // FINDINGS：第 19 段 (-50.470,-38.793) -> (-48.412,-27.927)，两端 0.5 m 内无邻段端点
