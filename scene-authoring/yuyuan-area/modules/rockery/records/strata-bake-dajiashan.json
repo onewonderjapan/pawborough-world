@@ -1,0 +1,63 @@
+{
+ "cluster": "rockery-dajiashan",
+ "src": "out-garden-kits/rockery-dajiashan/model.glb",
+ "dst": "out-garden-kits/rockery-dajiashan/model.glb",
+ "colorTex": {
+  "rockery-stone": "out-garden-kits/rockery-dajiashan/textures/strata-tint-a08560.png",
+  "rockery-stone-dark": "out-garden-kits/rockery-dajiashan/textures/strata-tint-836d4f.png"
+ },
+ "ormTex": "out-garden-kits/rockery-dajiashan/textures/rockery-strata-orm.png",
+ "materials": [
+  "rockery-stone",
+  "rockery-stone-dark"
+ ],
+ "params": {
+  "strataPeriod": 0.8,
+  "tileM": 2.5,
+  "grooveDark": 0.7,
+  "crestLight": 1.08,
+  "fineAmp": 0.03,
+  "waveM": 0.06,
+  "roughFace": 0.85,
+  "roughGroove": 0.95,
+  "roughnessFactor": 1.0,
+  "roughnessNote": "ORM G encodes target roughness (face 0.85 / groove 0.95) on the same strata band field (incl. wave perturbation) as color; glTF roughnessFactor explicitly 1.0"
+ },
+ "texStats": {
+  "size": [
+   1024,
+   512
+  ],
+  "lumaMean": 95.92,
+  "lumaStd": 10.64,
+  "ormGMin": 0.851,
+  "ormGMax": 0.949
+ },
+ "guard": {
+  "srcTris": 23500,
+  "dstTris": 23500,
+  "srcAABB": [
+   -175.2351,
+   -0.1823,
+   -244.6371,
+   -147.5699,
+   7.6164,
+   -223.0635
+  ],
+  "dstAABB": [
+   -175.2351,
+   -0.1823,
+   -244.6371,
+   -147.5699,
+   7.6164,
+   -223.0635
+  ],
+  "srcVertsSubsetOfDst": true,
+  "dstSplitVerts": 0,
+  "orientedTrisEqual": true,
+  "orientedTriDiff": 0,
+  "geometryUnchanged": true
+ },
+ "bytes": 2013624,
+ "sha256": "92910653d2424c4211ed17016749db33978583b9336b9ff43cb515ad910b084a"
+}

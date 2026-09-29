@@ -1,8 +1,8 @@
 {
  "id": "huxin-ting",
  "glb": "<OUT_DIR>/huxin-ting.glb",
- "bytes": 1316588,
- "tris": 20968,
+ "bytes": 1616360,
+ "tris": 21220,
  "partTriCounts": {
   "deck": 12,
   "piles": 288,
@@ -10,10 +10,10 @@
   "gallery1": 264,
   "railing": 1896,
   "body2": 24,
-  "porch": 3184,
+  "porch": 3208,
   "tower": 6296,
   "finial": 260,
-  "roof": 6242,
+  "roof": 6470,
   "windows": 2418
  },
  "partObjectCounts": {
@@ -23,9 +23,9 @@
   "gallery1": 22,
   "railing": 158,
   "body2": 2,
-  "porch": 40,
+  "porch": 42,
   "tower": 24,
-  "roof": 22,
+  "roof": 24,
   "windows": 3
  },
  "tileRidges": {
@@ -34,63 +34,117 @@
    "ribLengthM": 73.34,
    "rows": 3,
    "cols": 44,
-   "closed": true
+   "closed": true,
+   "uPeriods": 74.89,
+   "vMaxPeriods": 4.52
   },
   "towerskirt1-tile": {
    "ribs": 60,
    "ribLengthM": 73.34,
    "rows": 3,
    "cols": 44,
-   "closed": true
+   "closed": true,
+   "uPeriods": 74.89,
+   "vMaxPeriods": 4.52
   },
   "towerroof-cone": {
    "ribs": 88,
    "ribLengthM": 185.38,
    "rows": 7,
    "cols": 20,
-   "closed": true
+   "closed": true,
+   "uPeriods": 76.01,
+   "vMaxPeriods": 15.12
   },
   "mainroof-lower": {
    "ribs": 156,
    "ribLengthM": 425.72,
    "rows": 8,
    "cols": 28,
-   "closed": true
+   "closed": true,
+   "uPeriods": 134.7,
+   "vMaxPeriods": 10.2
   },
   "mainroof-upper-s": {
    "ribs": 24,
    "ribLengthM": 86.82,
    "rows": 4,
    "cols": 7,
-   "closed": false
+   "closed": false,
+   "uPeriods": 23.43,
+   "vMaxPeriods": 11.3
   },
   "mainroof-upper-n": {
    "ribs": 24,
    "ribLengthM": 86.82,
    "rows": 4,
    "cols": 7,
-   "closed": false
+   "closed": false,
+   "uPeriods": 23.43,
+   "vMaxPeriods": 11.3
+  },
+  "mainroof-satou-w": {
+   "ribs": 19,
+   "ribLengthM": 19.02,
+   "rows": 2,
+   "cols": 2,
+   "closed": false,
+   "uPeriods": 18.85,
+   "vMaxPeriods": 3.03
+  },
+  "mainroof-satou-e": {
+   "ribs": 19,
+   "ribLengthM": 19.02,
+   "rows": 2,
+   "cols": 2,
+   "closed": false,
+   "uPeriods": 18.85,
+   "vMaxPeriods": 3.03
   },
   "porchroof-lower": {
    "ribs": 60,
    "ribLengthM": 70.75,
    "rows": 7,
    "cols": 28,
-   "closed": true
+   "closed": true,
+   "uPeriods": 45.32,
+   "vMaxPeriods": 4.61
   },
   "porchroof-upper-s": {
    "ribs": 12,
    "ribLengthM": 13.99,
    "rows": 4,
    "cols": 7,
-   "closed": false
+   "closed": false,
+   "uPeriods": 10.3,
+   "vMaxPeriods": 4.26
   },
   "porchroof-upper-n": {
    "ribs": 12,
    "ribLengthM": 13.99,
    "rows": 4,
    "cols": 7,
-   "closed": false
+   "closed": false,
+   "uPeriods": 10.3,
+   "vMaxPeriods": 4.26
+  },
+  "porchroof-satou-w": {
+   "ribs": 2,
+   "ribLengthM": 1.8,
+   "rows": 2,
+   "cols": 2,
+   "closed": false,
+   "uPeriods": 1.32,
+   "vMaxPeriods": 2.73
+  },
+  "porchroof-satou-e": {
+   "ribs": 2,
+   "ribLengthM": 1.8,
+   "rows": 2,
+   "cols": 2,
+   "closed": false,
+   "uPeriods": 1.32,
+   "vMaxPeriods": 2.73
   }
  },
  "frame": {
@@ -251,6 +305,11 @@
    0.1559264637078274,
    0.1589608350608804,
    0.1651321945016676
+  ],
+  "ht-tile-tex": [
+   1,
+   1,
+   1
   ],
   "ht-ridge-dark": [
    0.045,
