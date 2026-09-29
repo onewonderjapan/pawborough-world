@@ -1172,17 +1172,22 @@ if _sb_nodes:
 else:
     skip('test17c 底层店面背板', '本楼无 shopfront 店面背板')
 
-# ---------- test 17g/17h/17n（wave13-habaowin H1；R1 按 REVIEW-astra 必修 1/2 重写）----------
-# 契约（GOAL：每栋楼每个格心窗段背后都有发光背板；立面×层×窗型与 layout/params 独立期望对账）：
+# ---------- test 17g/17h/17n（wave13-habaowin H1；R1 按 REVIEW-astra 必修 1/2 重写；R2 按 GOAL-R2 必修 1–4 再修）----------
+# 契约（GOAL：每栋楼每个格心窗段背后都有发光背板；立面边×楼层×窗型与 layout/params 独立期望对账）：
 #   g) 不变式（纯 GLB 几何）：windows__lattice* 三角按「墙面局部坐标系」分段——
 #      共面组（法向 dot≥0.999、离面 ≤6mm）取平均法向 n 与顶点均值参照点，建立局部系
-#      （u=沿墙水平、v=高度 y、d=沿 n 深度；内侧符号 sint 由 footprint ±0.6m 探针定，
-#      不依赖面板绕向）。组内先按 v 跨签名（v0、v1 各自 ≤15mm）分簇：同一生成器窗叶
-#      v 跨严格相等；同层 band 叶 [zb0,zb1] 与 ends4 窗 [zl0w,zl1w] v 跨不同、不会互并。
+#      （u=沿墙水平、v=高度 y、d=沿内法向深度；内侧符号 sint 用**墙面几何**定（R2 必修2）：
+#      生成器格心面凸出墙面 0.045~0.055，真实墙体只在格心面内侧 0.04~0.15 m——非窗节点竖直三角
+#      中该侧 u 跨并集 ≥50% 者为墙面侧（外侧只有框柱装饰面，实测 1~2%）；唯一墙面侧=内侧。
+#      歧义才回退 footprint 0.6/0.15m 双距探针（恰一侧命中才定号）；两侧同真/同假不得默认 +1，
+#      sint 未定的平面段全部计缺（FAIL 响亮）。sint 与三角绕向无关：整体反转格心+背板绕向，结果不变）。
+#      组内先按 v 跨签名（v0、v1 各自 ≤15mm）分簇：同一生成器窗叶 v 跨严格相等；
+#      同层 band 叶 [zb0,zb1] 与 ends4 窗 [zl0w,zl1w] v 跨不同、不会互并。
 #      簇内按 u 间隙 ≤T_SEG 连通成段，段 u/v 范围全部取三角顶点（非面心）。
-#      断言：每段背后（同法向 |dot|≥0.995、d∈[0.002,0.10]——生成器格心面 0.045/0.054/0.055
-#      对背板面 0.02/0.03，实测净距 0.023~0.028）存在 windows__winback* 三角，其 (u,v)
-#      矩形并集覆盖该段 ≥95%（坐标压缩网格精确面积）。
+#      断言：每段背后（同法向 |dot|≥0.995、d∈[0.002,0.10]）存在 windows__winback* 三角，
+#      其 (u,v) **真实面积**覆盖该段 ≥95%（R2 必修1）：背板三角投影后必须是直角边平行 u/v 轴的
+#      半矩形三角，按 bbox 键归组、角点 4=完整矩形 / 3=半矩形——「第二个三角换成第一个的副本」
+#      只计半块面积（实测覆盖率精确=50% → FAIL），不再把三角形扩成外接矩形。
 #      分段依据（15 栋 2026-09-29 实测，v 签名簇内）：同一叶内三角 bbox 间隙 ≤0.004 m
 #      （四边形对角切分 bbox 相同）；不同叶/窗间隙 ≥0.05 m（screen 扇距 = leafGapM=0.05、
 #      band 条距 0.06、bay 间距 = columnSizeM+0.42=0.74）。T_SEG=0.02 居中，两侧余量 ≥2.4×。
@@ -1217,7 +1222,30 @@ def _t17_tris(nodes_):
             ln = math.sqrt(cr[0] * cr[0] + cr[1] * cr[1] + cr[2] * cr[2]) or 1.0
             out.append({'v': (a_, b_, c_), 'n': [cr[0] / ln, cr[1] / ln, cr[2] / ln]})
     return out
-def _t17_planes(tris_):
+def _t17_wtris(exclude_pav):
+    """非窗节点（排除 windows__*；exclude_pav 再排除 pav-*）的竖直三角，位置与法向一次预计算——
+    sint 定号（含塔体：塔窗格心的内侧同样由塔体墙面证明）与立面线锚定（必修3 排除塔体，
+    塔身墙不得锚定常规立面线）的独立几何来源；纯位置/朝向判定，与三角绕向无关。"""
+    out = []
+    for nd_ in meshes:
+        bn_ = _base(nd_['name'])
+        if bn_.startswith('windows__') or (exclude_pav and bn_.startswith('pav-')):
+            continue
+        V_ = world_verts(nd_)
+        for (ia_, ib_, ic_) in nd_['idxTris']:
+            a_, b_, c_ = V_[ia_], V_[ib_], V_[ic_]
+            u_ = [b_[i] - a_[i] for i in range(3)]
+            w_ = [c_[i] - a_[i] for i in range(3)]
+            cr = [u_[1] * w_[2] - u_[2] * w_[1], u_[2] * w_[0] - u_[0] * w_[2], u_[0] * w_[1] - u_[1] * w_[0]]
+            ln = math.sqrt(cr[0] * cr[0] + cr[1] * cr[1] + cr[2] * cr[2])
+            if ln < 1e-9:
+                continue
+            n_ = [cr[0] / ln, cr[1] / ln, cr[2] / ln]
+            if math.hypot(n_[0], n_[2]) < 0.95:      # 只留竖直面（墙面）
+                continue
+            out.append((a_, b_, c_, n_))
+    return out
+def _t17_planes(tris_, wtris_=None):
     planes = []
     for t_ in tris_:
         n_, p_ = t_['n'], t_['v'][0]
@@ -1235,40 +1263,151 @@ def _t17_planes(tris_):
         k_ = len(pl_['tris'])
         n_ = [sum(t_['n'][i] for t_ in pl_['tris']) / k_ for i in range(3)]
         nl_ = math.sqrt(n_[0] * n_[0] + n_[1] * n_[1] + n_[2] * n_[2]) or 1.0
-        pl_['nb'] = [n_[0] / nl_, n_[1] / nl_, n_[2] / nl_]
+        nb_raw = [n_[0] / nl_, n_[1] / nl_, n_[2] / nl_]
         vs_ = [v_ for t_ in pl_['tris'] for v_ in t_['v']]
-        pl_['p0'] = [sum(v_[i] for v_ in vs_) / len(vs_) for i in range(3)]
-        pl_['t2'] = (-pl_['nb'][2], pl_['nb'][0])
+        p0_ = [sum(v_[i] for v_ in vs_) / len(vs_) for i in range(3)]
+        t2_raw = (-nb_raw[2], nb_raw[0])
+        us_ = [(v_[0] - p0_[0]) * t2_raw[0] + (v_[2] - p0_[2]) * t2_raw[1] for v_ in vs_]
+        ys_ = [v_[1] for v_ in vs_]
         sint_ = None
-        for sg_ in (1, -1):
-            qx, qz = pl_['p0'][0] + sg_ * 0.6 * pl_['nb'][0], pl_['p0'][2] + sg_ * 0.6 * pl_['nb'][2]
-            if point_in_poly((qx, qz), FP, tol=0.0):
-                sint_ = sg_
-                break
+        if wtris_ is not None:
+            # sint（REVIEW-astra 必修2）：不依赖绕向、不默认选边。
+            # ① 墙面几何定号：生成器格心面凸出墙面 0.045~0.055（R1 实测净距 0.023~0.028 同源），
+            #    即真实墙体只存在于格心面**内侧** 0.04~0.15 m 处——查非窗节点竖直三角，
+            #    法向平行（≥0.995）、全部顶点带号深度 ∈[0.04,0.15]、(u,v) 与本平面格心范围交叠 ≥0.3m，
+            #    该侧 u 跨并集（截到格心跨度）≥50% = 墙面侧（外侧只有框柱等细小装饰面，实测并集 1~2%）。
+            #    唯一墙面侧 = 内侧。纯位置判定，三角绕向反转不改变结果。
+            # ② 歧义回退 footprint 探针（0.6m/0.15m 双距）：仅当恰一侧命中才定号；
+            #    两侧同真/同假（退台、塔体等深居 footprint 内的平面）不得默认 +1 → sint=None，
+            #    该平面段按「内侧不可证」处理（17g 全部计缺，FAIL 响亮）。
+            bb_ = (min(us_), max(us_), min(ys_), max(ys_))
+            span_ = max(bb_[1] - bb_[0], 1e-6)
+            uvs_ = {1: [], -1: []}
+            for (a_, b_, c_, n_) in wtris_:
+                if abs(n_[0] * nb_raw[0] + n_[2] * nb_raw[2]) < 0.995:
+                    continue
+                for sg_ in (1, -1):
+                    ok_ = True
+                    for v_ in (a_, b_, c_):
+                        d__ = ((v_[0] - p0_[0]) * nb_raw[0] + (v_[2] - p0_[2]) * nb_raw[2]) * sg_
+                        if not (0.04 <= d__ <= 0.15):
+                            ok_ = False
+                            break
+                    if not ok_:
+                        continue
+                    uu_ = [(v_[0] - p0_[0]) * t2_raw[0] + (v_[2] - p0_[2]) * t2_raw[1] for v_ in (a_, b_, c_)]
+                    vv_ = [v_[1] for v_ in (a_, b_, c_)]
+                    if max(min(uu_), bb_[0]) - min(max(uu_), bb_[1]) >= 0.3 or \
+                            max(min(vv_), bb_[2]) - min(max(vv_), bb_[3]) >= 0.3:
+                        continue
+                    uvs_[sg_].append((max(min(uu_), bb_[0]), min(max(uu_), bb_[1])))
+            cov_ = {}
+            for sg_ in (1, -1):
+                tot_ = 0.0
+                cur_ = None
+                for a_, b_ in sorted(uvs_[sg_]):
+                    if cur_ and a_ <= cur_[1]:
+                        cur_[1] = max(cur_[1], b_)
+                    else:
+                        if cur_:
+                            tot_ += cur_[1] - cur_[0]
+                        cur_ = [a_, b_]
+                if cur_:
+                    tot_ += cur_[1] - cur_[0]
+                cov_[sg_] = tot_ / span_
+            side_ = [sg_ for sg_ in (1, -1) if cov_[sg_] >= 0.5]
+            if len(side_) == 1:
+                sint_ = side_[0]
+            else:
+                for dist_ in (0.6, 0.15):
+                    q1 = point_in_poly((p0_[0] + dist_ * nb_raw[0], p0_[2] + dist_ * nb_raw[2]), FP, tol=0.0)
+                    q2 = point_in_poly((p0_[0] - dist_ * nb_raw[0], p0_[2] - dist_ * nb_raw[2]), FP, tol=0.0)
+                    if q1 != q2:
+                        sint_ = 1 if q1 else -1
+                        break
+        pl_['nb'] = [q_ * (sint_ or 1) for q_ in nb_raw]
+        pl_['p0'] = p0_
+        pl_['t2'] = (-pl_['nb'][2], pl_['nb'][0])
         pl_['sint'] = sint_
+        pl_['nosint'] = wtris_ is not None and sint_ is None
     return planes
 def _t17_loc(pl_, v_):
     dx_, dz_ = v_[0] - pl_['p0'][0], v_[2] - pl_['p0'][2]
-    return ((dx_ * pl_['t2'][0] + dz_ * pl_['t2'][1], v_[1],
-             (dx_ * pl_['nb'][0] + dz_ * pl_['nb'][2]) * (pl_['sint'] or 1)))
+    return (dx_ * pl_['t2'][0] + dz_ * pl_['t2'][1], v_[1], dx_ * pl_['nb'][0] + dz_ * pl_['nb'][2])
 T_SEG, T_VGRP, D_BACK, COV_MIN17 = 0.02, 0.015, (0.002, 0.10), 0.95
-def _t17_rect_area(u0, u1, v0, v1, rects_):
-    """段矩形 [u0,u1]×[v0,v1] 被矩形并集覆盖的面积（坐标压缩网格）。"""
-    xs = sorted({u0, u1} | {x for r in rects_ for x in (r[0], r[1]) if u0 - 1e-9 <= x <= u1 + 1e-9})
-    ys = sorted({v0, v1} | {y for r in rects_ for y in (r[2], r[3]) if v0 - 1e-9 <= y <= v1 + 1e-9})
-    if len(xs) < 2 or len(ys) < 2:
-        return 0.0
-    tot = 0.0
-    for x0, x1 in zip(xs[:-1], xs[1:]):
-        for y0, y1 in zip(ys[:-1], ys[1:]):
-            cx_, cy_ = (x0 + x1) / 2, (y0 + y1) / 2
-            if any(a <= cx_ <= b and c <= cy_ <= d for (a, b, c, d) in rects_):
-                tot += (x1 - x0) * (y1 - y0)
-    return tot
+_WTRIS17 = _t17_wtris(False)            # sint 定号：含塔体墙面
+_WTRIS_NOPAV17 = _t17_wtris(True)       # 必修3 立面线锚定：排除塔体
+def _t17_cover(segs, wb_nodes, cov_min=COV_MIN17):
+    """每段背后同法向背板对 (u,v) 段矩形的真实面积覆盖（REVIEW-astra 必修1，不再用三角形外接矩形）：
+    背板三角投影后必须是直角边平行 u/v 轴的半矩形三角（3 顶点恰取 2 个 u 值 × 2 个 v 值）；
+    按 bbox 键归组，组内并集角点数 4 = 完整矩形（互补三角对）、3 = 半矩形（单三角或副本三角——
+    「每块背板第二个三角替换为第一个副本」负例：角点仍 3，只计半块面积 → 覆盖率 ≈50% → FAIL）。
+    覆盖面积 = Σ 全矩形·1 + Σ 半矩形·0.5（组间重叠 >0 或非半矩形三角 >0 → 该平面账本不可信 → 段记缺）。
+    深度过滤：三角全部顶点带号深度 ∈ D_BACK（nb 已规范化为内侧，镜像到格心前方的背板 d<0 被排除）。"""
+    ledger = {}
+    for s_ in segs:
+        pl_ = s_['pl']
+        key = id(pl_)
+        if key not in ledger:
+            groups = {}
+            bad = 0
+            for wl_ in _t17_planes(_t17_tris(wb_nodes)):
+                if abs(wl_['nb'][0] * pl_['nb'][0] + wl_['nb'][1] * pl_['nb'][1] + wl_['nb'][2] * pl_['nb'][2]) < 0.995:
+                    continue
+                for t_ in wl_['tris']:
+                    ls_ = [_t17_loc(pl_, v_) for v_ in t_['v']]
+                    if not all(D_BACK[0] <= q_[2] <= D_BACK[1] for q_ in ls_):
+                        continue
+                    us_ = sorted({round(q_[0], 3) for q_ in ls_})
+                    vs_ = sorted({round(q_[1], 3) for q_ in ls_})
+                    if len(us_) != 2 or len(vs_) != 2:
+                        bad += 1
+                        continue
+                    g_ = groups.setdefault((us_[0], us_[1], vs_[0], vs_[1]), set())
+                    g_.update((round(q_[0], 3), round(q_[1], 3)) for q_ in ls_)
+            full, half = [], []
+            for (u0_, u1_, v0_, v1_), cs_ in groups.items():
+                if len(cs_) == 4:
+                    full.append((u0_, u1_, v0_, v1_))
+                elif len(cs_) == 3:
+                    half.append((u0_, u1_, v0_, v1_))
+                else:
+                    bad += 1
+            rects = full + half
+            ov = 0
+            for i_ in range(len(rects)):
+                for j_ in range(i_ + 1, len(rects)):
+                    a_, b_ = rects[i_], rects[j_]
+                    if not (b_[1] <= a_[0] or a_[1] <= b_[0] or b_[3] <= a_[2] or a_[3] <= b_[2]):
+                        ov += 1
+            ledger[key] = {'full': full, 'half': half, 'bad': bad, 'ov': ov}
+            if os.environ.get('BTK17_DEBUG') and (bad or ov or pl_.get('nosint')):
+                print('DEBUG17 plane p0=%s nb=%s nosint=%s backing: full=%d half=%d bad=%d ov=%d' % (
+                    [round(q, 2) for q in pl_['p0']], [round(q, 2) for q in pl_['nb']],
+                    pl_.get('nosint'), len(full), len(half), bad, ov))
+        L_ = ledger[key]
+        if L_['bad'] or L_['ov'] or pl_.get('nosint'):
+            s_['cov'] = -1.0
+            continue
+        area = (s_['u1'] - s_['u0']) * (s_['v1'] - s_['v0'])
+        tot = 0.0
+        for r_ in L_['full']:
+            w_ = min(r_[1], s_['u1']) - max(r_[0], s_['u0'])
+            h_ = min(r_[3], s_['v1']) - max(r_[2], s_['v0'])
+            if w_ > 0 and h_ > 0:
+                tot += w_ * h_
+        for r_ in L_['half']:
+            w_ = min(r_[1], s_['u1']) - max(r_[0], s_['u0'])
+            h_ = min(r_[3], s_['v1']) - max(r_[2], s_['v0'])
+            if w_ > 0 and h_ > 0:
+                tot += 0.5 * w_ * h_
+        s_['cov'] = tot / area if area > 1e-9 else 0.0
+    miss = [s_ for s_ in segs if s_['cov'] < cov_min]
+    return miss, (min((s_['cov'] for s_ in segs), default=1.0), max((s_['cov'] for s_ in segs), default=1.0)), len(segs) - len(miss)
 def _t17_segments(lat_nodes):
     """格心 → 段（v 签名簇 + u 间隙连通）。段={'u0','u1','v0','v1','pl','cx','cz','ntri'}。"""
     segs = []
-    for pl_ in _t17_planes(_t17_tris(lat_nodes)):
+    for pl_ in _t17_planes(_t17_tris(lat_nodes), _WTRIS17):
         vgroups = []
         for t_ in pl_['tris']:
             vs_ = [_t17_loc(pl_, v_) for v_ in t_['v']]
@@ -1299,29 +1438,6 @@ def _t17_segments(lat_nodes):
                              'cx': pl_['p0'][0] + pl_['t2'][0] * um_, 'cz': pl_['p0'][2] + pl_['t2'][1] * um_,
                              'ntri': len(pl_['tris'])})
     return segs
-def _t17_cover(segs, wb_nodes, cov_min=COV_MIN17):
-    """每段背后同法向背板矩形（逐三角顶点深度 ∈ D_BACK）的 (u,v) 覆盖率。返回 (miss, min_cov, n_ok)。"""
-    rects_by_pl = {}
-    for si_, s_ in enumerate(segs):
-        pl_ = s_['pl']
-        if id(pl_) not in rects_by_pl:
-            rects = []
-            for wl_ in _t17_planes(_t17_tris(wb_nodes)):
-                if wl_['nb'][0] * pl_['nb'][0] + wl_['nb'][1] * pl_['nb'][1] + wl_['nb'][2] * pl_['nb'][2] < 0.995:
-                    continue
-                for t_ in wl_['tris']:
-                    ls_ = [_t17_loc(pl_, v_) for v_ in t_['v']]
-                    if not all(D_BACK[0] <= q[2] <= D_BACK[1] for q in ls_):
-                        continue
-                    rects.append((min(q[0] for q in ls_), max(q[0] for q in ls_), min(q[1] for q in ls_), max(q[1] for q in ls_)))
-            rects_by_pl[id(pl_)] = rects
-        rects = [r for r in rects_by_pl[id(pl_)]
-                 if not (r[1] < s_['u0'] - 0.05 or r[0] > s_['u1'] + 0.05 or r[3] < s_['v0'] - 0.05 or r[2] > s_['v1'] + 0.05)]
-        area = (s_['u1'] - s_['u0']) * (s_['v1'] - s_['v0'])
-        cov = _t17_rect_area(s_['u0'], s_['u1'], s_['v0'], s_['v1'], rects) / area if area > 1e-9 else 0.0
-        s_['cov'] = cov
-    miss = [s_ for s_ in segs if s_['cov'] < cov_min]
-    return miss, (min((s_['cov'] for s_ in segs), default=1.0), max((s_['cov'] for s_ in segs), default=1.0)), len(segs) - len(miss)
 
 # ---- 17h：layout+params 独立期望（哪面墙、哪层、什么窗型、格心 v 跨应是多少） ----
 _eq17 = lambda p_, q_: abs(p_[0] - q_[0]) <= 0.02 and abs(p_[1] - q_[1]) <= 0.02   # 同 build_tower._same 口径
@@ -1491,9 +1607,9 @@ elif not _lat_nodes17 or not _wb_nodes17:
 else:
     _segs17 = _t17_segments(_lat_nodes17)
     _miss17, (_cmin, _cmax), _nok17 = _t17_cover(_segs17, _wb_nodes17)
-    ok('test17g 每个格心窗段背后同法向背板 (u,v) 覆盖 ≥95%%（%d 段全对上 %d，覆盖率 %.1f%%~%.1f%%，缺 %d）'
+    ok('test17g 每个格心窗段背后同法向背板 (u,v) 真实面积覆盖 ≥95%%（%d 段全对上 %d，覆盖率 %.1f%%~%.1f%%，缺 %d）'
        % (_nok17, len(_segs17), _cmin * 100, _cmax * 100, len(_miss17)),
-       not _miss17, '缺/欠覆盖格心段（夜间黑窗）: %s' % [
+       not _miss17, '缺/欠覆盖格心段（夜间黑窗；cov=-1 = 内侧未定或背板账本异常——非半矩形三角/矩形组重叠）: %s' % [
            {'u_w': round(s_['u1'] - s_['u0'], 2), 'v': [round(s_['v0'], 2), round(s_['v1'], 2)], 'cov': round(s_['cov'], 3)}
            for s_ in _miss17[:6]])
     _miss_e17, _extra17 = _t17_account(_segs17, _exp17)
