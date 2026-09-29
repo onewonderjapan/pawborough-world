@@ -2037,12 +2037,12 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/out-garden-kits/sansuitang-bld-428179901/model.glb",
-      "sha256": "c66ccdeb67713b958a700d9d6cb04626b30c84d8ec0f0d154b72633b22b4550d",
-      "bytes": 1411500,
-      "sourcePackage": "pawborough-wave13-nightbalance-flash-20260929",
+      "sha256": "28c089f273e17e271fee2b3c51bc93a6ef663defacad78fa2da790391a8b6c12",
+      "bytes": 1411512,
+      "sourcePackage": "pawborough-wave14-ridge-flash-20260929 (regenerated on merged main 05c839e1)",
       "replaces": {
-        "sha256": "6005435ed33f445865ade6cdd6907cacb7eee169c64fc82df595680646704d16",
-        "bytes": 1404260
+        "sha256": "c66ccdeb67713b958a700d9d6cb04626b30c84d8ec0f0d154b72633b22b4550d",
+        "bytes": 1411500
       }
     },
     {
@@ -3620,5 +3620,11 @@
         "ownerAdopted": false
       }
     }
+  },
+  "pendingUpload": {
+    "note": "files[] 已指向新 sha，但对象尚未上传 S3（2026-09-30 SSO 过期）。机主 aws sso login 后由主控 upload_migration_assets.py 上传，写回执后删除本段。",
+    "paths": [
+      "scene-authoring/yuyuan-area/out-garden-kits/sansuitang-bld-428179901/model.glb"
+    ]
   }
 }
