@@ -86,7 +86,8 @@ def path_len(pts):
 
 
 PV_KEYS = ('no', 'status', 'act', 'title', 'intent', 'camClass', 'move', 'durationS', 'light', 'transitionIn',
-           'transitionOut', 'reveal', 'minTargetFrac', 'prompt', 'negative', 'genMode', 'audio', 'channels')
+           'transitionOut', 'reveal', 'minTargetFrac', 'prompt', 'negative', 'genMode', 'audio', 'channels',
+           'atmosphere')
 
 
 def build(pv, ctl, ctx):

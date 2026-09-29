@@ -1,8 +1,8 @@
 {
  "id": "huxin-ting",
  "glb": "<OUT_DIR>/huxin-ting.glb",
- "bytes": 1616360,
- "tris": 21220,
+ "bytes": 1630072,
+ "tris": 21428,
  "partTriCounts": {
   "deck": 12,
   "piles": 288,
@@ -10,10 +10,10 @@
   "gallery1": 264,
   "railing": 1896,
   "body2": 24,
-  "porch": 3208,
+  "porch": 3312,
   "tower": 6296,
   "finial": 260,
-  "roof": 6470,
+  "roof": 6574,
   "windows": 2418
  },
  "partObjectCounts": {
@@ -23,9 +23,9 @@
   "gallery1": 22,
   "railing": 158,
   "body2": 2,
-  "porch": 42,
+  "porch": 44,
   "tower": 24,
-  "roof": 24,
+  "roof": 26,
   "windows": 3
  },
  "tileRidges": {
@@ -216,7 +216,17 @@
    "curve": 1.6,
    "rings": 7,
    "ridgeEndLift": 0.18,
-   "ornamentScale": 0.42
+   "ornamentScale": 0.42,
+   "shanhuaMaterial": "wood",
+   "gableOrnament": {
+    "bofengWidth": 0.4,
+    "bofengProud": 0.06,
+    "bofengDrop": 0.12,
+    "xuanyuLen": 0.6,
+    "xuanyuW": 0.24,
+    "xuanyuProud": 0.035,
+    "xuanyuTuck": 0.04
+   }
   },
   "porch": {
    "uHalf": 2.2,
@@ -237,6 +247,16 @@
    "rings": 6,
    "ridgeEndLift": 0.2,
    "ornamentScale": 0.25,
+   "shanhuaMaterial": "wood",
+   "gableOrnament": {
+    "bofengWidth": 0.09,
+    "bofengProud": 0.05,
+    "bofengDrop": 0.08,
+    "xuanyuLen": 0.36,
+    "xuanyuW": 0.15,
+    "xuanyuProud": 0.03,
+    "xuanyuTuck": 0.16
+   },
    "doorHalf": 0.66,
    "sillV": 5.2072
   },

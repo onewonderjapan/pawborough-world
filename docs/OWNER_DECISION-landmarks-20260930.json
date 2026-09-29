@@ -1,0 +1,13 @@
+{
+  "decisionId": "landmarks-adoption-20260930",
+  "decidedAt": "2026-09-30T01:15+09:00",
+  "owner": "机主",
+  "context": "v1.0 视觉底线：湖心亭 / 九曲桥 / 大假山三个标志物经机主看图采用（docs/V1-REDEFINITION-20260923.md）",
+  "evidence": "对照图 /home/baibai/outbox/pawborough-landmarks-20260930/landmarks-contact-sheet.png（main 39175e4c 浏览器画面，两机位白天 + 黄昏，右列参考库实拍 PBR-SH-0004-017/018）",
+  "ownerWords": "湖心亭采用 九曲桥修 大假山采用",
+  "decisions": {
+    "huxin-ting": {"ownerAdopted": true},
+    "rockery-dajiashan": {"ownerAdopted": true, "note": "黄石 R3 + wave13 层理贴图"},
+    "jiuqu-bridge": {"ownerAdopted": false, "action": "修：实心灰白栏墙改为镂空石栏杆（望柱 + 栏板），桥面架在石墩上、桥下见水，按参考实拍 PBR-SH-0004-017/018/019"}
+  }
+}

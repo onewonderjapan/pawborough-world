@@ -17,6 +17,8 @@ if [ "${HALL_KIT:-1}" != "0" ]; then
     blender -b -t 4 --python-exit-code 1 -P modules/hall-kit/build_hall.py -- --id "$hk_id"
   done
 fi
+# 庙东跨院宝鼎（wave14-templeeast）：layout 实例 templeeast-ding 的模块件，生成到 out-garden-kits/templeeast-ding/
+blender -b --python-exit-code 1 -P modules/temple-east/build_ding.py
 # 湖心亭站点模块（默认开启，2026-09-25 机主定；HUXINTING=0 关闭）：先生成 $OUT_DIR/huxin-ting.glb，assemble 导入 SITE-pond
 if [ "${HUXINTING:-1}" != "0" ]; then
   blender -b -t 4 --python-exit-code 1 -P modules/huxinting/build.py

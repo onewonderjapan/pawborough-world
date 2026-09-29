@@ -2037,12 +2037,12 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/out-garden-kits/sansuitang-bld-428179901/model.glb",
-      "sha256": "c66ccdeb67713b958a700d9d6cb04626b30c84d8ec0f0d154b72633b22b4550d",
-      "bytes": 1411500,
-      "sourcePackage": "pawborough-wave13-nightbalance-flash-20260929",
+      "sha256": "28c089f273e17e271fee2b3c51bc93a6ef663defacad78fa2da790391a8b6c12",
+      "bytes": 1411512,
+      "sourcePackage": "pawborough-wave14-ridge-flash-20260929 (regenerated on merged main 05c839e1)",
       "replaces": {
-        "sha256": "6005435ed33f445865ade6cdd6907cacb7eee169c64fc82df595680646704d16",
-        "bytes": 1404260
+        "sha256": "c66ccdeb67713b958a700d9d6cb04626b30c84d8ec0f0d154b72633b22b4550d",
+        "bytes": 1411500
       }
     },
     {
@@ -2549,1071 +2549,1082 @@
     "docs/migrations/20260928/CLOUD-RECEIPT-towerwin2.json",
     "docs/migrations/20260929/CLOUD-RECEIPT-wave13.json"
   ],
-  "wave9SharedTexPendingLeadArchive": {
-    "wave": "wave9-sharedtex-20260926",
-    "status": "pending_lead_archive",
-    "note": "wave9 共享贴图把运行时分区件里被 >=2 件内嵌的同内容贴图外置为 out-zone/tex/<sha256 前 16 位>.<ext>（内容寻址，字节与原内嵌图逐字节相同，scripts/share-textures.mjs 在每次 ZONE_SPLIT 重建时确定性再生）。下列外置贴图与变更后的 zone-*.cm.glb 是浏览器运行时必要文件，但属重建产物、未上传云端（无回执）：待主控归档后如需登记再并入 files[]。数据与工单包 artifacts/NEW-ASSETS.json 一致。",
-    "externalTextures": [
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/01a3c1f7c35e41c0.ktx2",
-        "sha256": "01a3c1f7c35e41c03aea7130aa789d6e4edd4490f0d89bc1332fc3a94d570fb1",
-        "bytes": 12025
+  "historicalBuildOutputRecords": {
+    "note": "2026-09-30 v1.0 封版前清理：以下记录原为 *PendingLeadArchive 段，内容全部是 rebuild-review.sh 的确定性构建产物（分区件、外置内容寻址贴图、zones-manifest、联合审阅运行时），不是管线输入件；新环境按 files[] 恢复输入件后由标准重建再生，不上传归档。保留原记录仅作历史追溯（其 sha 对应当时的构建，不代表当前产物）。",
+    "records": {
+      "wave9SharedTexPendingLeadArchive": {
+        "wave": "wave9-sharedtex-20260926",
+        "status": "pending_lead_archive",
+        "note": "wave9 共享贴图把运行时分区件里被 >=2 件内嵌的同内容贴图外置为 out-zone/tex/<sha256 前 16 位>.<ext>（内容寻址，字节与原内嵌图逐字节相同，scripts/share-textures.mjs 在每次 ZONE_SPLIT 重建时确定性再生）。下列外置贴图与变更后的 zone-*.cm.glb 是浏览器运行时必要文件，但属重建产物、未上传云端（无回执）：待主控归档后如需登记再并入 files[]。数据与工单包 artifacts/NEW-ASSETS.json 一致。",
+        "externalTextures": [
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/01a3c1f7c35e41c0.ktx2",
+            "sha256": "01a3c1f7c35e41c03aea7130aa789d6e4edd4490f0d89bc1332fc3a94d570fb1",
+            "bytes": 12025
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/029c076ed01ad292.png",
+            "sha256": "029c076ed01ad292245e5138a1c9b4be516ccdad1d6be90436f89deffa4c88c3",
+            "bytes": 10447
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/03ea1e6e2f817d17.ktx2",
+            "sha256": "03ea1e6e2f817d1714ac15c9609012b122766377b229f9851296aa6dec0f8176",
+            "bytes": 79316
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/0df21a86184548dc.ktx2",
+            "sha256": "0df21a86184548dc9d6f6eee50a7790c9f5d768e4ec47c636aa1a781d9ae715f",
+            "bytes": 52956
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/0f03f0b294b38dae.jpg",
+            "sha256": "0f03f0b294b38daef6b05fe6d6de3e2af1f45d2ee38449283ae203ead901e62b",
+            "bytes": 93246
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/122541263239cda4.ktx2",
+            "sha256": "122541263239cda4fd453055e7017c10694eedf17ea0d1515d8ebe73b5df45ba",
+            "bytes": 36823
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/1356c27d4ad420c0.jpg",
+            "sha256": "1356c27d4ad420c01301a3dadc6e656254d44fc4ec70c594cf4567938b99d80a",
+            "bytes": 157262
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/1f3ce8173e75b187.jpg",
+            "sha256": "1f3ce8173e75b187cb7ac8b097a94008e7d5cd1fecea799a593cc9743996b222",
+            "bytes": 129658
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/29f7781a740b99b7.ktx2",
+            "sha256": "29f7781a740b99b7e610bc17bb3d92d901e56b630e8b1237549982f6d178fe6e",
+            "bytes": 28199
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/3365006948025802.jpg",
+            "sha256": "3365006948025802c9c5f0026e091342e8226a70b765688fe889a7af6d1beda5",
+            "bytes": 75074
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/351b9aa84aea704d.ktx2",
+            "sha256": "351b9aa84aea704db8574b0269b0466925d16a2e908d01fe3ad5f69cb3c4fc51",
+            "bytes": 11224
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/356b795f692ce855.ktx2",
+            "sha256": "356b795f692ce8557f63ab3bcba8254a5842049ec1ce2459c8f98d85d147df96",
+            "bytes": 7716
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/3639fb022bafbcbb.ktx2",
+            "sha256": "3639fb022bafbcbb3f1984ea9125535abe0cdf473ec74876f72c77fd2a2c0326",
+            "bytes": 1914
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/36d2b2ad89ad7358.ktx2",
+            "sha256": "36d2b2ad89ad7358ce759d470e8d400596101d96be9690b9745136febeb6d1c5",
+            "bytes": 63065
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/3dab2be0650809f9.jpg",
+            "sha256": "3dab2be0650809f946cff08fa0bee17397eb26ef7ba13276494bbfb12fe935b7",
+            "bytes": 92337
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/447a3e6942f73600.ktx2",
+            "sha256": "447a3e6942f73600ad0e2b28bb68b48eff585558bedaf93c015a702dc9e4629b",
+            "bytes": 13367
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/46dc10b8662ad113.ktx2",
+            "sha256": "46dc10b8662ad113e97f3d1105429fba62cc655c028e6d8e545af6f07e95e10d",
+            "bytes": 67442
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/4df6fad9c4939bc7.jpg",
+            "sha256": "4df6fad9c4939bc73c5a0f6fa1103c37d19ec81011c8631305500e82f524637d",
+            "bytes": 21237
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/5448794402351aa6.ktx2",
+            "sha256": "5448794402351aa67901a77b73d478468d3994b64a4a417d90fadc40b6db7a06",
+            "bytes": 65669
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/5a363225e2851fd7.png",
+            "sha256": "5a363225e2851fd76652aa9303ff1786f33dcba068cfc79973e1cf76922cc0b3",
+            "bytes": 1811
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/64dc3670b62785b4.jpg",
+            "sha256": "64dc3670b62785b4f240b8b682f6b25777291d8028ad85b91e180e593a5cf0d2",
+            "bytes": 77477
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/8ae04e331b62a61a.jpg",
+            "sha256": "8ae04e331b62a61a9c216161af0c254944df296fbc313976bc23bfb364bceb37",
+            "bytes": 96996
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/8f8c44b7f7f879c1.ktx2",
+            "sha256": "8f8c44b7f7f879c166f55fda1e2fd827981a3add3ded6e9589017ffee07b73ec",
+            "bytes": 47577
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/93ac66defb8d124f.png",
+            "sha256": "93ac66defb8d124fa281bad7eb8d354cb6aa6d7804829f8474f7e5bb8db779a2",
+            "bytes": 4917
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/9c8e3ed462768472.jpg",
+            "sha256": "9c8e3ed46276847207fbd8f89dca515e1aeae31e9ec42a6a1754f0f1a64bcce9",
+            "bytes": 281132
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/a841a0166b589c5e.png",
+            "sha256": "a841a0166b589c5e220a2ecb938b6f04889772140bf3f896d50fda177b76ab4b",
+            "bytes": 4690
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/b491bab299622fa4.jpg",
+            "sha256": "b491bab299622fa4709bae1d939ec4674bffbaeaa9a1e10d66cffea1f70b37d5",
+            "bytes": 133723
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/bc13912b59fcd78d.ktx2",
+            "sha256": "bc13912b59fcd78dea6c82e1408f36566c972e1f137cbbd5c50722c17feb770c",
+            "bytes": 43232
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/bef4614146728879.ktx2",
+            "sha256": "bef46141467288792016e43e09e8cf2a1c536d852735e76b267e453ae7fb1285",
+            "bytes": 64314
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/bf28f2290bd75fcf.jpg",
+            "sha256": "bf28f2290bd75fcf0428c2a452ee992fce146c14c841d4d36ae840a3177a521d",
+            "bytes": 20122
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/c61a0d2f54f110c3.ktx2",
+            "sha256": "c61a0d2f54f110c34f295e655a19c2e7a7c75f8bf121872456e8a5d07879df1c",
+            "bytes": 71073
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/e2048d86ad467715.jpg",
+            "sha256": "e2048d86ad46771551aae0e693d41a130cf3903036144f189cd14112e5779616",
+            "bytes": 9058
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/e3ef80b6f7b54188.png",
+            "sha256": "e3ef80b6f7b54188910c4c8c21f9dadc2ab14a4841ba2c8ec660cf8b8c962249",
+            "bytes": 4308
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/e44c97223d1c9c37.ktx2",
+            "sha256": "e44c97223d1c9c3728949694efb92322267e7e4f5b03e5f5cb97eba005c197b7",
+            "bytes": 8340
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/e614db1778f98b4f.jpg",
+            "sha256": "e614db1778f98b4fdbc2451872f28197553a71962010ac31d395c291be3629e2",
+            "bytes": 452945
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/ed1be8f6bc86b315.jpg",
+            "sha256": "ed1be8f6bc86b31576c6437cc92b8dd6e969455f6730da42746d38b501e25013",
+            "bytes": 97139
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/tex/f98fee05cc72c00e.ktx2",
+            "sha256": "f98fee05cc72c00e61377aa60a79ea26cf2ffe2defe0395075491bbff6f5ef3a",
+            "bytes": 105056
+          }
+        ],
+        "changedRuntimeZoneGlbs": [
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/zone-garden.cm.glb",
+            "sha256": "896592538b9369105e1fecec4c57bf7dab1c497a3fbd01606f83af11f6b9db39",
+            "bytes": 1857964
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/zone-garden-2.cm.glb",
+            "sha256": "b1ee7c55747f609ecfe270c5619991844cdfc44e609a63da7d04839507ab4156",
+            "bytes": 419516
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/zone-garden-3.cm.glb",
+            "sha256": "4d6322f03bafa62fa856e5c45d20e41a729f23bc1dd8ff811f095a61fc89939f",
+            "bytes": 1212908
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/zone-pond.cm.glb",
+            "sha256": "5f3f3c20d912da43270b9c89dd4e5a2c8e2baaa5c346fb8a996d84f737b9d512",
+            "bytes": 591884
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/zone-temple-1.cm.glb",
+            "sha256": "c8ce5c7db158c2cb59801e3efd1a3aa79979e78bf618e6b7682e0968c9c37683",
+            "bytes": 1195160
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/zone-temple-2.cm.glb",
+            "sha256": "7b45710237cdfd964061769b49709fc27787df9884b6d22c325db289afe24181",
+            "bytes": 1034556
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/zone-temple-3.cm.glb",
+            "sha256": "d4c20fef557506af6cc292699532613504cc415fb97ee26d5f086a47201c9ab8",
+            "bytes": 303360
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/zone-bazaar.cm.glb",
+            "sha256": "a12df88a3fc4539c179de09cf52d21e4a15a10a1da726f2dbb8031287ddc049d",
+            "bytes": 2077540
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/zone-bazaar-2.cm.glb",
+            "sha256": "3cd4979bd26f1c96ad458f5b6d96a0717417362fce64624cc50b68bacf88a29c",
+            "bytes": 120872
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/zone-bazaar-3.cm.glb",
+            "sha256": "6fec23616727fd01d2f6541ca7af15242b8948294638666d705bb3b87a5cd942",
+            "bytes": 1614308
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/zone-bazaar-4.cm.glb",
+            "sha256": "a1c097d3c6cff3cc619fd7739d5f4dcbf70965b1aa8b17669e5069759efed173",
+            "bytes": 623952
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/zone-outer.cm.glb",
+            "sha256": "2a9cfb3402d52836b5a2cd7244c3a6c30619d44317d26b6b44b1e95b1d67e1ad",
+            "bytes": 1386196
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/zone-fangbang-1.cm.glb",
+            "sha256": "d1d0fd0606f33d36455fb64f5d4ba6fefa811aad749e056e7e3498d67c360f8d",
+            "bytes": 1407196
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-zone/zone-fangbang-2.cm.glb",
+            "sha256": "0e42835906f3e53d06f908c9034d3155c6c6c7d4247f01e7b4ebb3a1c7e3dd5c",
+            "bytes": 1370648
+          }
+        ],
+        "firstLoadBytes": {
+          "before": 18574796,
+          "after": 12815599
+        }
       },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/029c076ed01ad292.png",
-        "sha256": "029c076ed01ad292245e5138a1c9b4be516ccdad1d6be90436f89deffa4c88c3",
-        "bytes": 10447
+      "nightFinalRuntimePendingLeadArchive": {
+        "wave": "night-final-20260927",
+        "status": "pending_lead_archive",
+        "note": "night-final 联合默认重建（OUT_DIR=out-night-final）后的浏览器运行时必要文件：14 个分区 cm 件 + 38 张外置内容寻址贴图 + zones-manifest，均为重建确定性产物、未上传云端（无回执）。分区件数回到 14（bld-428202606/428202607/553893884 按主控决定从 zone-bazaar-5 恢复进 zone-bazaar-4，原始 zone-bazaar-4.glb=8,959,668 B ≤ 10,000,000 B）。核心首载 13,588,952 B ≤ 20,000,000 B。完整闭包（含原始 zone 件、碰撞 JSON、修复后 layout、商业路线）见工单包 artifacts/night-final/NEW-ASSETS.json；变更输入 GLB 已更新 files[]（bld-553893868）。本块取代 wave9SharedTexPendingLeadArchive 中 out-zone 路径的运行时清单（该 OUT_DIR 已不在磁盘）。",
+        "supersedesOutZonePathsOf": "wave9SharedTexPendingLeadArchive",
+        "runtimeZoneCmGlbs": [
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/zone-garden.cm.glb",
+            "sha256": "5e64c892260f20d09221aa5f409ee0b095dea4d5e1aa8866cf2e9e97f4e02e9e",
+            "bytes": 1855828
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/zone-garden-2.cm.glb",
+            "sha256": "b1ee7c55747f609ecfe270c5619991844cdfc44e609a63da7d04839507ab4156",
+            "bytes": 419516
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/zone-garden-3.cm.glb",
+            "sha256": "4d6322f03bafa62fa856e5c45d20e41a729f23bc1dd8ff811f095a61fc89939f",
+            "bytes": 1212908
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/zone-pond.cm.glb",
+            "sha256": "be39410f77296ed385684222d0a17ad801c6565570fa0ec5a4b64628cb0557fb",
+            "bytes": 591888
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/zone-temple-1.cm.glb",
+            "sha256": "c8ce5c7db158c2cb59801e3efd1a3aa79979e78bf618e6b7682e0968c9c37683",
+            "bytes": 1195160
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/zone-temple-2.cm.glb",
+            "sha256": "7b45710237cdfd964061769b49709fc27787df9884b6d22c325db289afe24181",
+            "bytes": 1034556
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/zone-temple-3.cm.glb",
+            "sha256": "d4c20fef557506af6cc292699532613504cc415fb97ee26d5f086a47201c9ab8",
+            "bytes": 303360
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/zone-bazaar.cm.glb",
+            "sha256": "5e1447b4282b7c09dd17d2e2f6526c21ec7c2a2766581cebd155d40ae7434fac",
+            "bytes": 1945496
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/zone-bazaar-2.cm.glb",
+            "sha256": "df7f7ec14922be105246088177135c6df0b841284bb085771763d808267d7cde",
+            "bytes": 11304
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/zone-bazaar-3.cm.glb",
+            "sha256": "a44f1822785528fa09dab7e5c537c92275b30806a697d79012826d39ec7a76f6",
+            "bytes": 1612780
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/zone-bazaar-4.cm.glb",
+            "sha256": "87649950fc66484d3a6cd678f48071f54ed339b8768e13e0f8eb75aca943cf84",
+            "bytes": 1641080
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/zone-outer.cm.glb",
+            "sha256": "b603750799ea6a306c69d2251e0cbb671d13f167472e4764d02c54d3a235b64f",
+            "bytes": 1584416
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/zone-fangbang-1.cm.glb",
+            "sha256": "65cfb020cb302d09ade025a3a09fffb85ce644f0fa9d7688130c766efb340bcd",
+            "bytes": 1407196
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/zone-fangbang-2.cm.glb",
+            "sha256": "5c9488c486b228a8d0e55387afafecf22ea798d9980e31b3efd1e4fef664721c",
+            "bytes": 1370648
+          }
+        ],
+        "externalTextures": [
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/029c076ed01ad292.png",
+            "sha256": "029c076ed01ad292245e5138a1c9b4be516ccdad1d6be90436f89deffa4c88c3",
+            "bytes": 10447
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/0f03f0b294b38dae.jpg",
+            "sha256": "0f03f0b294b38daef6b05fe6d6de3e2af1f45d2ee38449283ae203ead901e62b",
+            "bytes": 93246
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/1356c27d4ad420c0.jpg",
+            "sha256": "1356c27d4ad420c01301a3dadc6e656254d44fc4ec70c594cf4567938b99d80a",
+            "bytes": 157262
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/1f3ce8173e75b187.jpg",
+            "sha256": "1f3ce8173e75b187cb7ac8b097a94008e7d5cd1fecea799a593cc9743996b222",
+            "bytes": 129658
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/3365006948025802.jpg",
+            "sha256": "3365006948025802c9c5f0026e091342e8226a70b765688fe889a7af6d1beda5",
+            "bytes": 75074
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/3dab2be0650809f9.jpg",
+            "sha256": "3dab2be0650809f946cff08fa0bee17397eb26ef7ba13276494bbfb12fe935b7",
+            "bytes": 92337
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/4df6fad9c4939bc7.jpg",
+            "sha256": "4df6fad9c4939bc73c5a0f6fa1103c37d19ec81011c8631305500e82f524637d",
+            "bytes": 21237
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/5a363225e2851fd7.png",
+            "sha256": "5a363225e2851fd76652aa9303ff1786f33dcba068cfc79973e1cf76922cc0b3",
+            "bytes": 1811
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/64dc3670b62785b4.jpg",
+            "sha256": "64dc3670b62785b4f240b8b682f6b25777291d8028ad85b91e180e593a5cf0d2",
+            "bytes": 77477
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/6c11b4c5ecfae5fa.png",
+            "sha256": "6c11b4c5ecfae5fa10f7f42b417ceb6880cc125255991ca395930d3caac27fc4",
+            "bytes": 1497
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/8ae04e331b62a61a.jpg",
+            "sha256": "8ae04e331b62a61a9c216161af0c254944df296fbc313976bc23bfb364bceb37",
+            "bytes": 96996
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/93ac66defb8d124f.png",
+            "sha256": "93ac66defb8d124fa281bad7eb8d354cb6aa6d7804829f8474f7e5bb8db779a2",
+            "bytes": 4917
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/9c8e3ed462768472.jpg",
+            "sha256": "9c8e3ed46276847207fbd8f89dca515e1aeae31e9ec42a6a1754f0f1a64bcce9",
+            "bytes": 281132
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/a841a0166b589c5e.png",
+            "sha256": "a841a0166b589c5e220a2ecb938b6f04889772140bf3f896d50fda177b76ab4b",
+            "bytes": 4690
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/b491bab299622fa4.jpg",
+            "sha256": "b491bab299622fa4709bae1d939ec4674bffbaeaa9a1e10d66cffea1f70b37d5",
+            "bytes": 133723
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/bf28f2290bd75fcf.jpg",
+            "sha256": "bf28f2290bd75fcf0428c2a452ee992fce146c14c841d4d36ae840a3177a521d",
+            "bytes": 20122
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/e2048d86ad467715.jpg",
+            "sha256": "e2048d86ad46771551aae0e693d41a130cf3903036144f189cd14112e5779616",
+            "bytes": 9058
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/e3ef80b6f7b54188.png",
+            "sha256": "e3ef80b6f7b54188910c4c8c21f9dadc2ab14a4841ba2c8ec660cf8b8c962249",
+            "bytes": 4308
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/e614db1778f98b4f.jpg",
+            "sha256": "e614db1778f98b4fdbc2451872f28197553a71962010ac31d395c291be3629e2",
+            "bytes": 452945
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/ed1be8f6bc86b315.jpg",
+            "sha256": "ed1be8f6bc86b31576c6437cc92b8dd6e969455f6730da42746d38b501e25013",
+            "bytes": 97139
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/01a3c1f7c35e41c0.ktx2",
+            "sha256": "01a3c1f7c35e41c03aea7130aa789d6e4edd4490f0d89bc1332fc3a94d570fb1",
+            "bytes": 12025
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/03ea1e6e2f817d17.ktx2",
+            "sha256": "03ea1e6e2f817d1714ac15c9609012b122766377b229f9851296aa6dec0f8176",
+            "bytes": 79316
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/0df21a86184548dc.ktx2",
+            "sha256": "0df21a86184548dc9d6f6eee50a7790c9f5d768e4ec47c636aa1a781d9ae715f",
+            "bytes": 52956
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/122541263239cda4.ktx2",
+            "sha256": "122541263239cda4fd453055e7017c10694eedf17ea0d1515d8ebe73b5df45ba",
+            "bytes": 36823
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/29f7781a740b99b7.ktx2",
+            "sha256": "29f7781a740b99b7e610bc17bb3d92d901e56b630e8b1237549982f6d178fe6e",
+            "bytes": 28199
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/351b9aa84aea704d.ktx2",
+            "sha256": "351b9aa84aea704db8574b0269b0466925d16a2e908d01fe3ad5f69cb3c4fc51",
+            "bytes": 11224
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/356b795f692ce855.ktx2",
+            "sha256": "356b795f692ce8557f63ab3bcba8254a5842049ec1ce2459c8f98d85d147df96",
+            "bytes": 7716
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/3639fb022bafbcbb.ktx2",
+            "sha256": "3639fb022bafbcbb3f1984ea9125535abe0cdf473ec74876f72c77fd2a2c0326",
+            "bytes": 1914
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/36d2b2ad89ad7358.ktx2",
+            "sha256": "36d2b2ad89ad7358ce759d470e8d400596101d96be9690b9745136febeb6d1c5",
+            "bytes": 63065
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/447a3e6942f73600.ktx2",
+            "sha256": "447a3e6942f73600ad0e2b28bb68b48eff585558bedaf93c015a702dc9e4629b",
+            "bytes": 13367
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/46dc10b8662ad113.ktx2",
+            "sha256": "46dc10b8662ad113e97f3d1105429fba62cc655c028e6d8e545af6f07e95e10d",
+            "bytes": 67442
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/5448794402351aa6.ktx2",
+            "sha256": "5448794402351aa67901a77b73d478468d3994b64a4a417d90fadc40b6db7a06",
+            "bytes": 65669
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/8f8c44b7f7f879c1.ktx2",
+            "sha256": "8f8c44b7f7f879c166f55fda1e2fd827981a3add3ded6e9589017ffee07b73ec",
+            "bytes": 47577
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/bc13912b59fcd78d.ktx2",
+            "sha256": "bc13912b59fcd78dea6c82e1408f36566c972e1f137cbbd5c50722c17feb770c",
+            "bytes": 43232
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/bef4614146728879.ktx2",
+            "sha256": "bef46141467288792016e43e09e8cf2a1c536d852735e76b267e453ae7fb1285",
+            "bytes": 64314
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/c61a0d2f54f110c3.ktx2",
+            "sha256": "c61a0d2f54f110c34f295e655a19c2e7a7c75f8bf121872456e8a5d07879df1c",
+            "bytes": 71073
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/e44c97223d1c9c37.ktx2",
+            "sha256": "e44c97223d1c9c3728949694efb92322267e7e4f5b03e5f5cb97eba005c197b7",
+            "bytes": 8340
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/tex/f98fee05cc72c00e.ktx2",
+            "sha256": "f98fee05cc72c00e61377aa60a79ea26cf2ffe2defe0395075491bbff6f5ef3a",
+            "bytes": 105056
+          }
+        ],
+        "zonesManifest": [
+          {
+            "path": "scene-authoring/yuyuan-area/out-night-final/zones-manifest.json",
+            "sha256": "202d7251ae259c6bbb5c128b3c69f2a88a8e64672101b8b1fdee865bd837db67",
+            "bytes": 29814
+          }
+        ],
+        "firstLoadBytes": {
+          "coreTotal": 13588952,
+          "cap": 20000000
+        }
       },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/03ea1e6e2f817d17.ktx2",
-        "sha256": "03ea1e6e2f817d1714ac15c9609012b122766377b229f9851296aa6dec0f8176",
-        "bytes": 79316
+      "solBridgePendingLeadArchive": {
+        "task": "pawborough-sol-bridge-20260927",
+        "baseCommit": "0499f95d",
+        "ownerAdopted": false,
+        "pendingLeadArchive": true,
+        "outputDirectory": "scene-authoring/yuyuan-area/out-sol-bridge",
+        "changedBridgeAssets": [
+          {
+            "path": "scene-authoring/yuyuan-area/out-sol-bridge/procedural-pond.glb",
+            "bytes": 18456,
+            "sha256": "8a16e495449761e95260058c449abd4b4a863fa1a2b807131997edc96bebde4f",
+            "pendingLeadArchive": true
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-sol-bridge/zone-pond.glb",
+            "bytes": 2128904,
+            "sha256": "8f4c6e7b4e51fd9ea5d9a321bc1ba6f16c1e2546aa016502edbaa883b26c7d8d",
+            "pendingLeadArchive": true
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-sol-bridge/zone-pond.cm.glb",
+            "bytes": 592132,
+            "sha256": "796ac20b1b86b78df69e1bc12ca8ab730c973b15b9e20ad19c7327412a320fff",
+            "pendingLeadArchive": true
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-sol-bridge/collision-pond.json",
+            "bytes": 1877,
+            "sha256": "3bb9a82b9438e8d7ab91907edb41f3c90154db9b40233b7b136c97e52c95496c",
+            "pendingLeadArchive": true
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-sol-bridge/zones-manifest.json",
+            "bytes": 31190,
+            "sha256": "3f98d46ad519ab5af4fe2045037c674c14be4ca4330e365793810dd500ff51f0",
+            "pendingLeadArchive": true
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-sol-bridge/scene-areas.glb",
+            "bytes": 78028936,
+            "sha256": "24d97ade2a7d6e66688898f64ee5bb7b678534792d8672653053c839954338ac",
+            "pendingLeadArchive": true
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-sol-bridge/scene.blend",
+            "bytes": 175719550,
+            "sha256": "64571b24be0fbd61a7b371151ecd4795cee3a70dbec9ae39fa512b1514657310",
+            "pendingLeadArchive": true
+          }
+        ],
+        "newDesignedTextures": 0,
+        "scope": "Only shore-end top tread connection and bridge-step box yaw; existing garden-kit bridge unchanged. Full candidate runtime closure hashes in task artifacts/NEW-ASSETS.json. Original storage and cloud receipts remain unchanged."
       },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/0df21a86184548dc.ktx2",
-        "sha256": "0df21a86184548dc9d6f6eee50a7790c9f5d768e4ec47c636aa1a781d9ae715f",
-        "bytes": 52956
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/0f03f0b294b38dae.jpg",
-        "sha256": "0f03f0b294b38daef6b05fe6d6de3e2af1f45d2ee38449283ae203ead901e62b",
-        "bytes": 93246
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/122541263239cda4.ktx2",
-        "sha256": "122541263239cda4fd453055e7017c10694eedf17ea0d1515d8ebe73b5df45ba",
-        "bytes": 36823
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/1356c27d4ad420c0.jpg",
-        "sha256": "1356c27d4ad420c01301a3dadc6e656254d44fc4ec70c594cf4567938b99d80a",
-        "bytes": 157262
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/1f3ce8173e75b187.jpg",
-        "sha256": "1f3ce8173e75b187cb7ac8b097a94008e7d5cd1fecea799a593cc9743996b222",
-        "bytes": 129658
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/29f7781a740b99b7.ktx2",
-        "sha256": "29f7781a740b99b7e610bc17bb3d92d901e56b630e8b1237549982f6d178fe6e",
-        "bytes": 28199
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/3365006948025802.jpg",
-        "sha256": "3365006948025802c9c5f0026e091342e8226a70b765688fe889a7af6d1beda5",
-        "bytes": 75074
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/351b9aa84aea704d.ktx2",
-        "sha256": "351b9aa84aea704db8574b0269b0466925d16a2e908d01fe3ad5f69cb3c4fc51",
-        "bytes": 11224
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/356b795f692ce855.ktx2",
-        "sha256": "356b795f692ce8557f63ab3bcba8254a5842049ec1ce2459c8f98d85d147df96",
-        "bytes": 7716
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/3639fb022bafbcbb.ktx2",
-        "sha256": "3639fb022bafbcbb3f1984ea9125535abe0cdf473ec74876f72c77fd2a2c0326",
-        "bytes": 1914
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/36d2b2ad89ad7358.ktx2",
-        "sha256": "36d2b2ad89ad7358ce759d470e8d400596101d96be9690b9745136febeb6d1c5",
-        "bytes": 63065
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/3dab2be0650809f9.jpg",
-        "sha256": "3dab2be0650809f946cff08fa0bee17397eb26ef7ba13276494bbfb12fe935b7",
-        "bytes": 92337
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/447a3e6942f73600.ktx2",
-        "sha256": "447a3e6942f73600ad0e2b28bb68b48eff585558bedaf93c015a702dc9e4629b",
-        "bytes": 13367
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/46dc10b8662ad113.ktx2",
-        "sha256": "46dc10b8662ad113e97f3d1105429fba62cc655c028e6d8e545af6f07e95e10d",
-        "bytes": 67442
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/4df6fad9c4939bc7.jpg",
-        "sha256": "4df6fad9c4939bc73c5a0f6fa1103c37d19ec81011c8631305500e82f524637d",
-        "bytes": 21237
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/5448794402351aa6.ktx2",
-        "sha256": "5448794402351aa67901a77b73d478468d3994b64a4a417d90fadc40b6db7a06",
-        "bytes": 65669
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/5a363225e2851fd7.png",
-        "sha256": "5a363225e2851fd76652aa9303ff1786f33dcba068cfc79973e1cf76922cc0b3",
-        "bytes": 1811
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/64dc3670b62785b4.jpg",
-        "sha256": "64dc3670b62785b4f240b8b682f6b25777291d8028ad85b91e180e593a5cf0d2",
-        "bytes": 77477
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/8ae04e331b62a61a.jpg",
-        "sha256": "8ae04e331b62a61a9c216161af0c254944df296fbc313976bc23bfb364bceb37",
-        "bytes": 96996
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/8f8c44b7f7f879c1.ktx2",
-        "sha256": "8f8c44b7f7f879c166f55fda1e2fd827981a3add3ded6e9589017ffee07b73ec",
-        "bytes": 47577
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/93ac66defb8d124f.png",
-        "sha256": "93ac66defb8d124fa281bad7eb8d354cb6aa6d7804829f8474f7e5bb8db779a2",
-        "bytes": 4917
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/9c8e3ed462768472.jpg",
-        "sha256": "9c8e3ed46276847207fbd8f89dca515e1aeae31e9ec42a6a1754f0f1a64bcce9",
-        "bytes": 281132
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/a841a0166b589c5e.png",
-        "sha256": "a841a0166b589c5e220a2ecb938b6f04889772140bf3f896d50fda177b76ab4b",
-        "bytes": 4690
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/b491bab299622fa4.jpg",
-        "sha256": "b491bab299622fa4709bae1d939ec4674bffbaeaa9a1e10d66cffea1f70b37d5",
-        "bytes": 133723
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/bc13912b59fcd78d.ktx2",
-        "sha256": "bc13912b59fcd78dea6c82e1408f36566c972e1f137cbbd5c50722c17feb770c",
-        "bytes": 43232
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/bef4614146728879.ktx2",
-        "sha256": "bef46141467288792016e43e09e8cf2a1c536d852735e76b267e453ae7fb1285",
-        "bytes": 64314
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/bf28f2290bd75fcf.jpg",
-        "sha256": "bf28f2290bd75fcf0428c2a452ee992fce146c14c841d4d36ae840a3177a521d",
-        "bytes": 20122
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/c61a0d2f54f110c3.ktx2",
-        "sha256": "c61a0d2f54f110c34f295e655a19c2e7a7c75f8bf121872456e8a5d07879df1c",
-        "bytes": 71073
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/e2048d86ad467715.jpg",
-        "sha256": "e2048d86ad46771551aae0e693d41a130cf3903036144f189cd14112e5779616",
-        "bytes": 9058
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/e3ef80b6f7b54188.png",
-        "sha256": "e3ef80b6f7b54188910c4c8c21f9dadc2ab14a4841ba2c8ec660cf8b8c962249",
-        "bytes": 4308
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/e44c97223d1c9c37.ktx2",
-        "sha256": "e44c97223d1c9c3728949694efb92322267e7e4f5b03e5f5cb97eba005c197b7",
-        "bytes": 8340
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/e614db1778f98b4f.jpg",
-        "sha256": "e614db1778f98b4fdbc2451872f28197553a71962010ac31d395c291be3629e2",
-        "bytes": 452945
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/ed1be8f6bc86b315.jpg",
-        "sha256": "ed1be8f6bc86b31576c6437cc92b8dd6e969455f6730da42746d38b501e25013",
-        "bytes": 97139
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/tex/f98fee05cc72c00e.ktx2",
-        "sha256": "f98fee05cc72c00e61377aa60a79ea26cf2ffe2defe0395075491bbff6f5ef3a",
-        "bytes": 105056
+      "combinedReviewRuntimePendingLeadArchive": {
+        "status": "pending_lead_archive",
+        "source": "Sol e04f26e4 + Flash1 93c84f12 + Flash2 30991050",
+        "scope": "joint default runtime after source merge",
+        "coreRuntimeBytes": 13606096,
+        "files": [
+          {
+            "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893868/model.glb",
+            "sha256": "dde53ded941e3bc0867bbb402cc599b912ea44feb0a209de11bc2a0a3dac5824",
+            "bytes": 588520,
+            "role": "input-tower-glb-changed-free-section-fix"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-garden.glb",
+            "sha256": "0135a0e4c087106353402ac56269cb3f69d169cf59c2c8c51c2232fbafa9b24d",
+            "bytes": 8305988,
+            "role": "runtime-zone-glb-original-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-garden.cm.glb",
+            "sha256": "5e64c892260f20d09221aa5f409ee0b095dea4d5e1aa8866cf2e9e97f4e02e9e",
+            "bytes": 1855828,
+            "role": "runtime-zone-glb-meshopt-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-garden-2.glb",
+            "sha256": "65c7dc09dd02c65cf08111b67bbc6b58fdcb3559708dfb2677559a359688be3f",
+            "bytes": 1352384,
+            "role": "runtime-zone-glb-original-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-garden-2.cm.glb",
+            "sha256": "b1ee7c55747f609ecfe270c5619991844cdfc44e609a63da7d04839507ab4156",
+            "bytes": 419516,
+            "role": "runtime-zone-glb-meshopt-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-garden-3.glb",
+            "sha256": "d07ebed4e1a13726d8af67b489df476d56638f3b5acc1a7295f31cfde8eb0bb8",
+            "bytes": 5101136,
+            "role": "runtime-zone-glb-original-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-garden-3.cm.glb",
+            "sha256": "4d6322f03bafa62fa856e5c45d20e41a729f23bc1dd8ff811f095a61fc89939f",
+            "bytes": 1212908,
+            "role": "runtime-zone-glb-meshopt-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-pond.glb",
+            "sha256": "f036ced757c4b34a5dce6b04892bd7e3320d62d35cf782ccf947bc8901e2ed39",
+            "bytes": 2128904,
+            "role": "runtime-zone-glb-original-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-pond.cm.glb",
+            "sha256": "eeb36cb202a98a84423fb7f315ff0117c12be153837bf5d1b9349f55023cf5be",
+            "bytes": 592128,
+            "role": "runtime-zone-glb-meshopt-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-temple-1.glb",
+            "sha256": "3a2dabb8f08d01b9e6994fa6684f6b5ae6f80796b30bb311531a3a9192db6977",
+            "bytes": 7380308,
+            "role": "runtime-zone-glb-original-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-temple-1.cm.glb",
+            "sha256": "c8ce5c7db158c2cb59801e3efd1a3aa79979e78bf618e6b7682e0968c9c37683",
+            "bytes": 1195160,
+            "role": "runtime-zone-glb-meshopt-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-temple-2.glb",
+            "sha256": "4fcc051e4920571e5152d82f391c1c28ffdcd04c8c65063ea99bc68587d3c491",
+            "bytes": 6676312,
+            "role": "runtime-zone-glb-original-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-temple-2.cm.glb",
+            "sha256": "7b45710237cdfd964061769b49709fc27787df9884b6d22c325db289afe24181",
+            "bytes": 1034556,
+            "role": "runtime-zone-glb-meshopt-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-temple-3.glb",
+            "sha256": "219885fd85b2f1f4c37201a37f027e012eaf6faeb7950df9554fb5abf54e5b83",
+            "bytes": 3293864,
+            "role": "runtime-zone-glb-original-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-temple-3.cm.glb",
+            "sha256": "d4c20fef557506af6cc292699532613504cc415fb97ee26d5f086a47201c9ab8",
+            "bytes": 303360,
+            "role": "runtime-zone-glb-meshopt-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-bazaar.glb",
+            "sha256": "bd23336d531a634a865ef413eb97218e3ad09b943a0607fbf8570e25af93d443",
+            "bytes": 7296412,
+            "role": "runtime-zone-glb-original-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-bazaar.cm.glb",
+            "sha256": "dfd841cd5c6cde8fd7b0f530a26e6d31f8bcb3c00f678c3f37b8f31a85595960",
+            "bytes": 1962400,
+            "role": "runtime-zone-glb-meshopt-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-bazaar-2.glb",
+            "sha256": "5aaab5e1c17d0a192c7c29eb8d16c9cf5a62ca77d8b635f0fda86b4163c95e76",
+            "bytes": 78004,
+            "role": "runtime-zone-glb-original-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-bazaar-2.cm.glb",
+            "sha256": "df7f7ec14922be105246088177135c6df0b841284bb085771763d808267d7cde",
+            "bytes": 11304,
+            "role": "runtime-zone-glb-meshopt-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-bazaar-3.glb",
+            "sha256": "5768f1f822da85775de37d490642b26bc18868f903b5e1658137508f0e37e247",
+            "bytes": 9416012,
+            "role": "runtime-zone-glb-original-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-bazaar-3.cm.glb",
+            "sha256": "a44f1822785528fa09dab7e5c537c92275b30806a697d79012826d39ec7a76f6",
+            "bytes": 1612780,
+            "role": "runtime-zone-glb-meshopt-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-bazaar-4.glb",
+            "sha256": "4a0a9e3d6d2e115b5de68ed48119f23d4c0316b448d8b767757a9f1f4e2a7c2d",
+            "bytes": 8959668,
+            "role": "runtime-zone-glb-original-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-bazaar-4.cm.glb",
+            "sha256": "87649950fc66484d3a6cd678f48071f54ed339b8768e13e0f8eb75aca943cf84",
+            "bytes": 1641080,
+            "role": "runtime-zone-glb-meshopt-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-outer.glb",
+            "sha256": "80d3ef720dc8ee804469490cddcb280c14735bb500eb1db5a256bd540dbd5aa5",
+            "bytes": 6528100,
+            "role": "runtime-zone-glb-original-deferred"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-outer.cm.glb",
+            "sha256": "b603750799ea6a306c69d2251e0cbb671d13f167472e4764d02c54d3a235b64f",
+            "bytes": 1584416,
+            "role": "runtime-zone-glb-meshopt-deferred"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-fangbang-1.glb",
+            "sha256": "48dd6c1be7264fc3e6a4f9387834a363c9106d8d2ae56d5498e523df0769f21c",
+            "bytes": 9814552,
+            "role": "runtime-zone-glb-original-on-demand"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-fangbang-1.cm.glb",
+            "sha256": "65cfb020cb302d09ade025a3a09fffb85ce644f0fa9d7688130c766efb340bcd",
+            "bytes": 1407196,
+            "role": "runtime-zone-glb-meshopt-on-demand"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-fangbang-2.glb",
+            "sha256": "dd462e958a9cd0643d507d9c13a090b05da11e3700d7ac83922638eedf139a97",
+            "bytes": 9941820,
+            "role": "runtime-zone-glb-original-on-demand"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zone-fangbang-2.cm.glb",
+            "sha256": "5c9488c486b228a8d0e55387afafecf22ea798d9980e31b3efd1e4fef664721c",
+            "bytes": 1370648,
+            "role": "runtime-zone-glb-meshopt-on-demand"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/029c076ed01ad292.png",
+            "sha256": "029c076ed01ad292245e5138a1c9b4be516ccdad1d6be90436f89deffa4c88c3",
+            "bytes": 10447,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/0f03f0b294b38dae.jpg",
+            "sha256": "0f03f0b294b38daef6b05fe6d6de3e2af1f45d2ee38449283ae203ead901e62b",
+            "bytes": 93246,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/1356c27d4ad420c0.jpg",
+            "sha256": "1356c27d4ad420c01301a3dadc6e656254d44fc4ec70c594cf4567938b99d80a",
+            "bytes": 157262,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/1f3ce8173e75b187.jpg",
+            "sha256": "1f3ce8173e75b187cb7ac8b097a94008e7d5cd1fecea799a593cc9743996b222",
+            "bytes": 129658,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/3365006948025802.jpg",
+            "sha256": "3365006948025802c9c5f0026e091342e8226a70b765688fe889a7af6d1beda5",
+            "bytes": 75074,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/3dab2be0650809f9.jpg",
+            "sha256": "3dab2be0650809f946cff08fa0bee17397eb26ef7ba13276494bbfb12fe935b7",
+            "bytes": 92337,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/4df6fad9c4939bc7.jpg",
+            "sha256": "4df6fad9c4939bc73c5a0f6fa1103c37d19ec81011c8631305500e82f524637d",
+            "bytes": 21237,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/5a363225e2851fd7.png",
+            "sha256": "5a363225e2851fd76652aa9303ff1786f33dcba068cfc79973e1cf76922cc0b3",
+            "bytes": 1811,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/64dc3670b62785b4.jpg",
+            "sha256": "64dc3670b62785b4f240b8b682f6b25777291d8028ad85b91e180e593a5cf0d2",
+            "bytes": 77477,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/6c11b4c5ecfae5fa.png",
+            "sha256": "6c11b4c5ecfae5fa10f7f42b417ceb6880cc125255991ca395930d3caac27fc4",
+            "bytes": 1497,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/8ae04e331b62a61a.jpg",
+            "sha256": "8ae04e331b62a61a9c216161af0c254944df296fbc313976bc23bfb364bceb37",
+            "bytes": 96996,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/93ac66defb8d124f.png",
+            "sha256": "93ac66defb8d124fa281bad7eb8d354cb6aa6d7804829f8474f7e5bb8db779a2",
+            "bytes": 4917,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/9c8e3ed462768472.jpg",
+            "sha256": "9c8e3ed46276847207fbd8f89dca515e1aeae31e9ec42a6a1754f0f1a64bcce9",
+            "bytes": 281132,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/a841a0166b589c5e.png",
+            "sha256": "a841a0166b589c5e220a2ecb938b6f04889772140bf3f896d50fda177b76ab4b",
+            "bytes": 4690,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/b491bab299622fa4.jpg",
+            "sha256": "b491bab299622fa4709bae1d939ec4674bffbaeaa9a1e10d66cffea1f70b37d5",
+            "bytes": 133723,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/bf28f2290bd75fcf.jpg",
+            "sha256": "bf28f2290bd75fcf0428c2a452ee992fce146c14c841d4d36ae840a3177a521d",
+            "bytes": 20122,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/e2048d86ad467715.jpg",
+            "sha256": "e2048d86ad46771551aae0e693d41a130cf3903036144f189cd14112e5779616",
+            "bytes": 9058,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/e3ef80b6f7b54188.png",
+            "sha256": "e3ef80b6f7b54188910c4c8c21f9dadc2ab14a4841ba2c8ec660cf8b8c962249",
+            "bytes": 4308,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/e614db1778f98b4f.jpg",
+            "sha256": "e614db1778f98b4fdbc2451872f28197553a71962010ac31d395c291be3629e2",
+            "bytes": 452945,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/ed1be8f6bc86b315.jpg",
+            "sha256": "ed1be8f6bc86b31576c6437cc92b8dd6e969455f6730da42746d38b501e25013",
+            "bytes": 97139,
+            "role": "runtime-external-texture-firstload"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/01a3c1f7c35e41c0.ktx2",
+            "sha256": "01a3c1f7c35e41c03aea7130aa789d6e4edd4490f0d89bc1332fc3a94d570fb1",
+            "bytes": 12025,
+            "role": "runtime-external-texture-background"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/03ea1e6e2f817d17.ktx2",
+            "sha256": "03ea1e6e2f817d1714ac15c9609012b122766377b229f9851296aa6dec0f8176",
+            "bytes": 79316,
+            "role": "runtime-external-texture-background"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/0df21a86184548dc.ktx2",
+            "sha256": "0df21a86184548dc9d6f6eee50a7790c9f5d768e4ec47c636aa1a781d9ae715f",
+            "bytes": 52956,
+            "role": "runtime-external-texture-background"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/122541263239cda4.ktx2",
+            "sha256": "122541263239cda4fd453055e7017c10694eedf17ea0d1515d8ebe73b5df45ba",
+            "bytes": 36823,
+            "role": "runtime-external-texture-background"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/29f7781a740b99b7.ktx2",
+            "sha256": "29f7781a740b99b7e610bc17bb3d92d901e56b630e8b1237549982f6d178fe6e",
+            "bytes": 28199,
+            "role": "runtime-external-texture-background"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/351b9aa84aea704d.ktx2",
+            "sha256": "351b9aa84aea704db8574b0269b0466925d16a2e908d01fe3ad5f69cb3c4fc51",
+            "bytes": 11224,
+            "role": "runtime-external-texture-background"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/356b795f692ce855.ktx2",
+            "sha256": "356b795f692ce8557f63ab3bcba8254a5842049ec1ce2459c8f98d85d147df96",
+            "bytes": 7716,
+            "role": "runtime-external-texture-background"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/3639fb022bafbcbb.ktx2",
+            "sha256": "3639fb022bafbcbb3f1984ea9125535abe0cdf473ec74876f72c77fd2a2c0326",
+            "bytes": 1914,
+            "role": "runtime-external-texture-background"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/36d2b2ad89ad7358.ktx2",
+            "sha256": "36d2b2ad89ad7358ce759d470e8d400596101d96be9690b9745136febeb6d1c5",
+            "bytes": 63065,
+            "role": "runtime-external-texture-background"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/447a3e6942f73600.ktx2",
+            "sha256": "447a3e6942f73600ad0e2b28bb68b48eff585558bedaf93c015a702dc9e4629b",
+            "bytes": 13367,
+            "role": "runtime-external-texture-background"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/46dc10b8662ad113.ktx2",
+            "sha256": "46dc10b8662ad113e97f3d1105429fba62cc655c028e6d8e545af6f07e95e10d",
+            "bytes": 67442,
+            "role": "runtime-external-texture-background"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/5448794402351aa6.ktx2",
+            "sha256": "5448794402351aa67901a77b73d478468d3994b64a4a417d90fadc40b6db7a06",
+            "bytes": 65669,
+            "role": "runtime-external-texture-background"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/8f8c44b7f7f879c1.ktx2",
+            "sha256": "8f8c44b7f7f879c166f55fda1e2fd827981a3add3ded6e9589017ffee07b73ec",
+            "bytes": 47577,
+            "role": "runtime-external-texture-background"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/bc13912b59fcd78d.ktx2",
+            "sha256": "bc13912b59fcd78dea6c82e1408f36566c972e1f137cbbd5c50722c17feb770c",
+            "bytes": 43232,
+            "role": "runtime-external-texture-background"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/bef4614146728879.ktx2",
+            "sha256": "bef46141467288792016e43e09e8cf2a1c536d852735e76b267e453ae7fb1285",
+            "bytes": 64314,
+            "role": "runtime-external-texture-background"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/c61a0d2f54f110c3.ktx2",
+            "sha256": "c61a0d2f54f110c34f295e655a19c2e7a7c75f8bf121872456e8a5d07879df1c",
+            "bytes": 71073,
+            "role": "runtime-external-texture-background"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/e44c97223d1c9c37.ktx2",
+            "sha256": "e44c97223d1c9c3728949694efb92322267e7e4f5b03e5f5cb97eba005c197b7",
+            "bytes": 8340,
+            "role": "runtime-external-texture-background"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/tex/f98fee05cc72c00e.ktx2",
+            "sha256": "f98fee05cc72c00e61377aa60a79ea26cf2ffe2defe0395075491bbff6f5ef3a",
+            "bytes": 105056,
+            "role": "runtime-external-texture-background"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/zones-manifest.json",
+            "sha256": "6aee10d5931f228919550a1522fb6ebf839b4ea0a60c81bba8c11001636dd660",
+            "bytes": 29815,
+            "role": "runtime-zones-manifest"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/collision-bazaar.json",
+            "sha256": "c4fe89519e4bdec298a138292f702a95e09a75d085444d9ddaad36bf0f7e6ca1",
+            "bytes": 73764,
+            "role": "runtime-collision"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/collision-garden.json",
+            "sha256": "e830e6c6b6cba6d2e13e008993bd4faf749ceaf5637ed5a4203e2b2f78f2805c",
+            "bytes": 792693,
+            "role": "runtime-collision"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/collision-temple.json",
+            "sha256": "a1f831b65c6be727a077050f775951ff3b4ba2fa99d84d648f5d5cb52cb53381",
+            "bytes": 86214,
+            "role": "runtime-collision"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/collision-outer.json",
+            "sha256": "97e14b766b049bac3736c89056754066fda44ca827a4a6d3bd486763fe85e550",
+            "bytes": 54132,
+            "role": "runtime-collision"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/collision-pond.json",
+            "sha256": "3bb9a82b9438e8d7ab91907edb41f3c90154db9b40233b7b136c97e52c95496c",
+            "bytes": 1877,
+            "role": "runtime-collision"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/collision-fangbang.json",
+            "sha256": "4ea7ea95ab8e867cd4765e8b7229aa28d1ae34816a91593d0cfacdd451d03f55",
+            "bytes": 278959,
+            "role": "runtime-collision-fangbang"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/layout.json",
+            "sha256": "7f83b91d21f674ebd0f54b8d31b1bde8c244db4dc273687b07c9d6e7fbf61667",
+            "bytes": 851583,
+            "role": "runtime-layout-repaired"
+          },
+          {
+            "path": "scene-authoring/yuyuan-area/out-combined-review/commercial-route.json",
+            "sha256": "06096863e0ca8ee73ccd0b81b3b38170ffabba08cce7acb37f0314db2fffa4d7",
+            "bytes": 3726,
+            "role": "runtime-commercial-route-pinned-verified"
+          }
+        ],
+        "ownerAdopted": false
       }
-    ],
-    "changedRuntimeZoneGlbs": [
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/zone-garden.cm.glb",
-        "sha256": "896592538b9369105e1fecec4c57bf7dab1c497a3fbd01606f83af11f6b9db39",
-        "bytes": 1857964
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/zone-garden-2.cm.glb",
-        "sha256": "b1ee7c55747f609ecfe270c5619991844cdfc44e609a63da7d04839507ab4156",
-        "bytes": 419516
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/zone-garden-3.cm.glb",
-        "sha256": "4d6322f03bafa62fa856e5c45d20e41a729f23bc1dd8ff811f095a61fc89939f",
-        "bytes": 1212908
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/zone-pond.cm.glb",
-        "sha256": "5f3f3c20d912da43270b9c89dd4e5a2c8e2baaa5c346fb8a996d84f737b9d512",
-        "bytes": 591884
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/zone-temple-1.cm.glb",
-        "sha256": "c8ce5c7db158c2cb59801e3efd1a3aa79979e78bf618e6b7682e0968c9c37683",
-        "bytes": 1195160
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/zone-temple-2.cm.glb",
-        "sha256": "7b45710237cdfd964061769b49709fc27787df9884b6d22c325db289afe24181",
-        "bytes": 1034556
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/zone-temple-3.cm.glb",
-        "sha256": "d4c20fef557506af6cc292699532613504cc415fb97ee26d5f086a47201c9ab8",
-        "bytes": 303360
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/zone-bazaar.cm.glb",
-        "sha256": "a12df88a3fc4539c179de09cf52d21e4a15a10a1da726f2dbb8031287ddc049d",
-        "bytes": 2077540
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/zone-bazaar-2.cm.glb",
-        "sha256": "3cd4979bd26f1c96ad458f5b6d96a0717417362fce64624cc50b68bacf88a29c",
-        "bytes": 120872
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/zone-bazaar-3.cm.glb",
-        "sha256": "6fec23616727fd01d2f6541ca7af15242b8948294638666d705bb3b87a5cd942",
-        "bytes": 1614308
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/zone-bazaar-4.cm.glb",
-        "sha256": "a1c097d3c6cff3cc619fd7739d5f4dcbf70965b1aa8b17669e5069759efed173",
-        "bytes": 623952
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/zone-outer.cm.glb",
-        "sha256": "2a9cfb3402d52836b5a2cd7244c3a6c30619d44317d26b6b44b1e95b1d67e1ad",
-        "bytes": 1386196
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/zone-fangbang-1.cm.glb",
-        "sha256": "d1d0fd0606f33d36455fb64f5d4ba6fefa811aad749e056e7e3498d67c360f8d",
-        "bytes": 1407196
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-zone/zone-fangbang-2.cm.glb",
-        "sha256": "0e42835906f3e53d06f908c9034d3155c6c6c7d4247f01e7b4ebb3a1c7e3dd5c",
-        "bytes": 1370648
-      }
-    ],
-    "firstLoadBytes": {
-      "before": 18574796,
-      "after": 12815599
     }
   },
-  "nightFinalRuntimePendingLeadArchive": {
-    "wave": "night-final-20260927",
-    "status": "pending_lead_archive",
-    "note": "night-final 联合默认重建（OUT_DIR=out-night-final）后的浏览器运行时必要文件：14 个分区 cm 件 + 38 张外置内容寻址贴图 + zones-manifest，均为重建确定性产物、未上传云端（无回执）。分区件数回到 14（bld-428202606/428202607/553893884 按主控决定从 zone-bazaar-5 恢复进 zone-bazaar-4，原始 zone-bazaar-4.glb=8,959,668 B ≤ 10,000,000 B）。核心首载 13,588,952 B ≤ 20,000,000 B。完整闭包（含原始 zone 件、碰撞 JSON、修复后 layout、商业路线）见工单包 artifacts/night-final/NEW-ASSETS.json；变更输入 GLB 已更新 files[]（bld-553893868）。本块取代 wave9SharedTexPendingLeadArchive 中 out-zone 路径的运行时清单（该 OUT_DIR 已不在磁盘）。",
-    "supersedesOutZonePathsOf": "wave9SharedTexPendingLeadArchive",
-    "runtimeZoneCmGlbs": [
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/zone-garden.cm.glb",
-        "sha256": "5e64c892260f20d09221aa5f409ee0b095dea4d5e1aa8866cf2e9e97f4e02e9e",
-        "bytes": 1855828
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/zone-garden-2.cm.glb",
-        "sha256": "b1ee7c55747f609ecfe270c5619991844cdfc44e609a63da7d04839507ab4156",
-        "bytes": 419516
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/zone-garden-3.cm.glb",
-        "sha256": "4d6322f03bafa62fa856e5c45d20e41a729f23bc1dd8ff811f095a61fc89939f",
-        "bytes": 1212908
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/zone-pond.cm.glb",
-        "sha256": "be39410f77296ed385684222d0a17ad801c6565570fa0ec5a4b64628cb0557fb",
-        "bytes": 591888
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/zone-temple-1.cm.glb",
-        "sha256": "c8ce5c7db158c2cb59801e3efd1a3aa79979e78bf618e6b7682e0968c9c37683",
-        "bytes": 1195160
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/zone-temple-2.cm.glb",
-        "sha256": "7b45710237cdfd964061769b49709fc27787df9884b6d22c325db289afe24181",
-        "bytes": 1034556
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/zone-temple-3.cm.glb",
-        "sha256": "d4c20fef557506af6cc292699532613504cc415fb97ee26d5f086a47201c9ab8",
-        "bytes": 303360
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/zone-bazaar.cm.glb",
-        "sha256": "5e1447b4282b7c09dd17d2e2f6526c21ec7c2a2766581cebd155d40ae7434fac",
-        "bytes": 1945496
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/zone-bazaar-2.cm.glb",
-        "sha256": "df7f7ec14922be105246088177135c6df0b841284bb085771763d808267d7cde",
-        "bytes": 11304
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/zone-bazaar-3.cm.glb",
-        "sha256": "a44f1822785528fa09dab7e5c537c92275b30806a697d79012826d39ec7a76f6",
-        "bytes": 1612780
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/zone-bazaar-4.cm.glb",
-        "sha256": "87649950fc66484d3a6cd678f48071f54ed339b8768e13e0f8eb75aca943cf84",
-        "bytes": 1641080
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/zone-outer.cm.glb",
-        "sha256": "b603750799ea6a306c69d2251e0cbb671d13f167472e4764d02c54d3a235b64f",
-        "bytes": 1584416
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/zone-fangbang-1.cm.glb",
-        "sha256": "65cfb020cb302d09ade025a3a09fffb85ce644f0fa9d7688130c766efb340bcd",
-        "bytes": 1407196
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/zone-fangbang-2.cm.glb",
-        "sha256": "5c9488c486b228a8d0e55387afafecf22ea798d9980e31b3efd1e4fef664721c",
-        "bytes": 1370648
-      }
-    ],
-    "externalTextures": [
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/029c076ed01ad292.png",
-        "sha256": "029c076ed01ad292245e5138a1c9b4be516ccdad1d6be90436f89deffa4c88c3",
-        "bytes": 10447
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/0f03f0b294b38dae.jpg",
-        "sha256": "0f03f0b294b38daef6b05fe6d6de3e2af1f45d2ee38449283ae203ead901e62b",
-        "bytes": 93246
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/1356c27d4ad420c0.jpg",
-        "sha256": "1356c27d4ad420c01301a3dadc6e656254d44fc4ec70c594cf4567938b99d80a",
-        "bytes": 157262
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/1f3ce8173e75b187.jpg",
-        "sha256": "1f3ce8173e75b187cb7ac8b097a94008e7d5cd1fecea799a593cc9743996b222",
-        "bytes": 129658
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/3365006948025802.jpg",
-        "sha256": "3365006948025802c9c5f0026e091342e8226a70b765688fe889a7af6d1beda5",
-        "bytes": 75074
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/3dab2be0650809f9.jpg",
-        "sha256": "3dab2be0650809f946cff08fa0bee17397eb26ef7ba13276494bbfb12fe935b7",
-        "bytes": 92337
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/4df6fad9c4939bc7.jpg",
-        "sha256": "4df6fad9c4939bc73c5a0f6fa1103c37d19ec81011c8631305500e82f524637d",
-        "bytes": 21237
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/5a363225e2851fd7.png",
-        "sha256": "5a363225e2851fd76652aa9303ff1786f33dcba068cfc79973e1cf76922cc0b3",
-        "bytes": 1811
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/64dc3670b62785b4.jpg",
-        "sha256": "64dc3670b62785b4f240b8b682f6b25777291d8028ad85b91e180e593a5cf0d2",
-        "bytes": 77477
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/6c11b4c5ecfae5fa.png",
-        "sha256": "6c11b4c5ecfae5fa10f7f42b417ceb6880cc125255991ca395930d3caac27fc4",
-        "bytes": 1497
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/8ae04e331b62a61a.jpg",
-        "sha256": "8ae04e331b62a61a9c216161af0c254944df296fbc313976bc23bfb364bceb37",
-        "bytes": 96996
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/93ac66defb8d124f.png",
-        "sha256": "93ac66defb8d124fa281bad7eb8d354cb6aa6d7804829f8474f7e5bb8db779a2",
-        "bytes": 4917
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/9c8e3ed462768472.jpg",
-        "sha256": "9c8e3ed46276847207fbd8f89dca515e1aeae31e9ec42a6a1754f0f1a64bcce9",
-        "bytes": 281132
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/a841a0166b589c5e.png",
-        "sha256": "a841a0166b589c5e220a2ecb938b6f04889772140bf3f896d50fda177b76ab4b",
-        "bytes": 4690
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/b491bab299622fa4.jpg",
-        "sha256": "b491bab299622fa4709bae1d939ec4674bffbaeaa9a1e10d66cffea1f70b37d5",
-        "bytes": 133723
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/bf28f2290bd75fcf.jpg",
-        "sha256": "bf28f2290bd75fcf0428c2a452ee992fce146c14c841d4d36ae840a3177a521d",
-        "bytes": 20122
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/e2048d86ad467715.jpg",
-        "sha256": "e2048d86ad46771551aae0e693d41a130cf3903036144f189cd14112e5779616",
-        "bytes": 9058
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/e3ef80b6f7b54188.png",
-        "sha256": "e3ef80b6f7b54188910c4c8c21f9dadc2ab14a4841ba2c8ec660cf8b8c962249",
-        "bytes": 4308
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/e614db1778f98b4f.jpg",
-        "sha256": "e614db1778f98b4fdbc2451872f28197553a71962010ac31d395c291be3629e2",
-        "bytes": 452945
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/ed1be8f6bc86b315.jpg",
-        "sha256": "ed1be8f6bc86b31576c6437cc92b8dd6e969455f6730da42746d38b501e25013",
-        "bytes": 97139
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/01a3c1f7c35e41c0.ktx2",
-        "sha256": "01a3c1f7c35e41c03aea7130aa789d6e4edd4490f0d89bc1332fc3a94d570fb1",
-        "bytes": 12025
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/03ea1e6e2f817d17.ktx2",
-        "sha256": "03ea1e6e2f817d1714ac15c9609012b122766377b229f9851296aa6dec0f8176",
-        "bytes": 79316
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/0df21a86184548dc.ktx2",
-        "sha256": "0df21a86184548dc9d6f6eee50a7790c9f5d768e4ec47c636aa1a781d9ae715f",
-        "bytes": 52956
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/122541263239cda4.ktx2",
-        "sha256": "122541263239cda4fd453055e7017c10694eedf17ea0d1515d8ebe73b5df45ba",
-        "bytes": 36823
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/29f7781a740b99b7.ktx2",
-        "sha256": "29f7781a740b99b7e610bc17bb3d92d901e56b630e8b1237549982f6d178fe6e",
-        "bytes": 28199
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/351b9aa84aea704d.ktx2",
-        "sha256": "351b9aa84aea704db8574b0269b0466925d16a2e908d01fe3ad5f69cb3c4fc51",
-        "bytes": 11224
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/356b795f692ce855.ktx2",
-        "sha256": "356b795f692ce8557f63ab3bcba8254a5842049ec1ce2459c8f98d85d147df96",
-        "bytes": 7716
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/3639fb022bafbcbb.ktx2",
-        "sha256": "3639fb022bafbcbb3f1984ea9125535abe0cdf473ec74876f72c77fd2a2c0326",
-        "bytes": 1914
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/36d2b2ad89ad7358.ktx2",
-        "sha256": "36d2b2ad89ad7358ce759d470e8d400596101d96be9690b9745136febeb6d1c5",
-        "bytes": 63065
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/447a3e6942f73600.ktx2",
-        "sha256": "447a3e6942f73600ad0e2b28bb68b48eff585558bedaf93c015a702dc9e4629b",
-        "bytes": 13367
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/46dc10b8662ad113.ktx2",
-        "sha256": "46dc10b8662ad113e97f3d1105429fba62cc655c028e6d8e545af6f07e95e10d",
-        "bytes": 67442
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/5448794402351aa6.ktx2",
-        "sha256": "5448794402351aa67901a77b73d478468d3994b64a4a417d90fadc40b6db7a06",
-        "bytes": 65669
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/8f8c44b7f7f879c1.ktx2",
-        "sha256": "8f8c44b7f7f879c166f55fda1e2fd827981a3add3ded6e9589017ffee07b73ec",
-        "bytes": 47577
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/bc13912b59fcd78d.ktx2",
-        "sha256": "bc13912b59fcd78dea6c82e1408f36566c972e1f137cbbd5c50722c17feb770c",
-        "bytes": 43232
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/bef4614146728879.ktx2",
-        "sha256": "bef46141467288792016e43e09e8cf2a1c536d852735e76b267e453ae7fb1285",
-        "bytes": 64314
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/c61a0d2f54f110c3.ktx2",
-        "sha256": "c61a0d2f54f110c34f295e655a19c2e7a7c75f8bf121872456e8a5d07879df1c",
-        "bytes": 71073
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/e44c97223d1c9c37.ktx2",
-        "sha256": "e44c97223d1c9c3728949694efb92322267e7e4f5b03e5f5cb97eba005c197b7",
-        "bytes": 8340
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/tex/f98fee05cc72c00e.ktx2",
-        "sha256": "f98fee05cc72c00e61377aa60a79ea26cf2ffe2defe0395075491bbff6f5ef3a",
-        "bytes": 105056
-      }
-    ],
-    "zonesManifest": [
-      {
-        "path": "scene-authoring/yuyuan-area/out-night-final/zones-manifest.json",
-        "sha256": "202d7251ae259c6bbb5c128b3c69f2a88a8e64672101b8b1fdee865bd837db67",
-        "bytes": 29814
-      }
-    ],
-    "firstLoadBytes": {
-      "coreTotal": 13588952,
-      "cap": 20000000
-    }
-  },
-  "solBridgePendingLeadArchive": {
-    "task": "pawborough-sol-bridge-20260927",
-    "baseCommit": "0499f95d",
-    "ownerAdopted": false,
-    "pendingLeadArchive": true,
-    "outputDirectory": "scene-authoring/yuyuan-area/out-sol-bridge",
-    "changedBridgeAssets": [
-      {
-        "path": "scene-authoring/yuyuan-area/out-sol-bridge/procedural-pond.glb",
-        "bytes": 18456,
-        "sha256": "8a16e495449761e95260058c449abd4b4a863fa1a2b807131997edc96bebde4f",
-        "pendingLeadArchive": true
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-sol-bridge/zone-pond.glb",
-        "bytes": 2128904,
-        "sha256": "8f4c6e7b4e51fd9ea5d9a321bc1ba6f16c1e2546aa016502edbaa883b26c7d8d",
-        "pendingLeadArchive": true
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-sol-bridge/zone-pond.cm.glb",
-        "bytes": 592132,
-        "sha256": "796ac20b1b86b78df69e1bc12ca8ab730c973b15b9e20ad19c7327412a320fff",
-        "pendingLeadArchive": true
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-sol-bridge/collision-pond.json",
-        "bytes": 1877,
-        "sha256": "3bb9a82b9438e8d7ab91907edb41f3c90154db9b40233b7b136c97e52c95496c",
-        "pendingLeadArchive": true
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-sol-bridge/zones-manifest.json",
-        "bytes": 31190,
-        "sha256": "3f98d46ad519ab5af4fe2045037c674c14be4ca4330e365793810dd500ff51f0",
-        "pendingLeadArchive": true
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-sol-bridge/scene-areas.glb",
-        "bytes": 78028936,
-        "sha256": "24d97ade2a7d6e66688898f64ee5bb7b678534792d8672653053c839954338ac",
-        "pendingLeadArchive": true
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-sol-bridge/scene.blend",
-        "bytes": 175719550,
-        "sha256": "64571b24be0fbd61a7b371151ecd4795cee3a70dbec9ae39fa512b1514657310",
-        "pendingLeadArchive": true
-      }
-    ],
-    "newDesignedTextures": 0,
-    "scope": "Only shore-end top tread connection and bridge-step box yaw; existing garden-kit bridge unchanged. Full candidate runtime closure hashes in task artifacts/NEW-ASSETS.json. Original storage and cloud receipts remain unchanged."
-  },
-  "combinedReviewRuntimePendingLeadArchive": {
-    "status": "pending_lead_archive",
-    "source": "Sol e04f26e4 + Flash1 93c84f12 + Flash2 30991050",
-    "scope": "joint default runtime after source merge",
-    "coreRuntimeBytes": 13606096,
-    "files": [
-      {
-        "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893868/model.glb",
-        "sha256": "dde53ded941e3bc0867bbb402cc599b912ea44feb0a209de11bc2a0a3dac5824",
-        "bytes": 588520,
-        "role": "input-tower-glb-changed-free-section-fix"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-garden.glb",
-        "sha256": "0135a0e4c087106353402ac56269cb3f69d169cf59c2c8c51c2232fbafa9b24d",
-        "bytes": 8305988,
-        "role": "runtime-zone-glb-original-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-garden.cm.glb",
-        "sha256": "5e64c892260f20d09221aa5f409ee0b095dea4d5e1aa8866cf2e9e97f4e02e9e",
-        "bytes": 1855828,
-        "role": "runtime-zone-glb-meshopt-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-garden-2.glb",
-        "sha256": "65c7dc09dd02c65cf08111b67bbc6b58fdcb3559708dfb2677559a359688be3f",
-        "bytes": 1352384,
-        "role": "runtime-zone-glb-original-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-garden-2.cm.glb",
-        "sha256": "b1ee7c55747f609ecfe270c5619991844cdfc44e609a63da7d04839507ab4156",
-        "bytes": 419516,
-        "role": "runtime-zone-glb-meshopt-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-garden-3.glb",
-        "sha256": "d07ebed4e1a13726d8af67b489df476d56638f3b5acc1a7295f31cfde8eb0bb8",
-        "bytes": 5101136,
-        "role": "runtime-zone-glb-original-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-garden-3.cm.glb",
-        "sha256": "4d6322f03bafa62fa856e5c45d20e41a729f23bc1dd8ff811f095a61fc89939f",
-        "bytes": 1212908,
-        "role": "runtime-zone-glb-meshopt-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-pond.glb",
-        "sha256": "f036ced757c4b34a5dce6b04892bd7e3320d62d35cf782ccf947bc8901e2ed39",
-        "bytes": 2128904,
-        "role": "runtime-zone-glb-original-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-pond.cm.glb",
-        "sha256": "eeb36cb202a98a84423fb7f315ff0117c12be153837bf5d1b9349f55023cf5be",
-        "bytes": 592128,
-        "role": "runtime-zone-glb-meshopt-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-temple-1.glb",
-        "sha256": "3a2dabb8f08d01b9e6994fa6684f6b5ae6f80796b30bb311531a3a9192db6977",
-        "bytes": 7380308,
-        "role": "runtime-zone-glb-original-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-temple-1.cm.glb",
-        "sha256": "c8ce5c7db158c2cb59801e3efd1a3aa79979e78bf618e6b7682e0968c9c37683",
-        "bytes": 1195160,
-        "role": "runtime-zone-glb-meshopt-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-temple-2.glb",
-        "sha256": "4fcc051e4920571e5152d82f391c1c28ffdcd04c8c65063ea99bc68587d3c491",
-        "bytes": 6676312,
-        "role": "runtime-zone-glb-original-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-temple-2.cm.glb",
-        "sha256": "7b45710237cdfd964061769b49709fc27787df9884b6d22c325db289afe24181",
-        "bytes": 1034556,
-        "role": "runtime-zone-glb-meshopt-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-temple-3.glb",
-        "sha256": "219885fd85b2f1f4c37201a37f027e012eaf6faeb7950df9554fb5abf54e5b83",
-        "bytes": 3293864,
-        "role": "runtime-zone-glb-original-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-temple-3.cm.glb",
-        "sha256": "d4c20fef557506af6cc292699532613504cc415fb97ee26d5f086a47201c9ab8",
-        "bytes": 303360,
-        "role": "runtime-zone-glb-meshopt-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-bazaar.glb",
-        "sha256": "bd23336d531a634a865ef413eb97218e3ad09b943a0607fbf8570e25af93d443",
-        "bytes": 7296412,
-        "role": "runtime-zone-glb-original-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-bazaar.cm.glb",
-        "sha256": "dfd841cd5c6cde8fd7b0f530a26e6d31f8bcb3c00f678c3f37b8f31a85595960",
-        "bytes": 1962400,
-        "role": "runtime-zone-glb-meshopt-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-bazaar-2.glb",
-        "sha256": "5aaab5e1c17d0a192c7c29eb8d16c9cf5a62ca77d8b635f0fda86b4163c95e76",
-        "bytes": 78004,
-        "role": "runtime-zone-glb-original-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-bazaar-2.cm.glb",
-        "sha256": "df7f7ec14922be105246088177135c6df0b841284bb085771763d808267d7cde",
-        "bytes": 11304,
-        "role": "runtime-zone-glb-meshopt-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-bazaar-3.glb",
-        "sha256": "5768f1f822da85775de37d490642b26bc18868f903b5e1658137508f0e37e247",
-        "bytes": 9416012,
-        "role": "runtime-zone-glb-original-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-bazaar-3.cm.glb",
-        "sha256": "a44f1822785528fa09dab7e5c537c92275b30806a697d79012826d39ec7a76f6",
-        "bytes": 1612780,
-        "role": "runtime-zone-glb-meshopt-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-bazaar-4.glb",
-        "sha256": "4a0a9e3d6d2e115b5de68ed48119f23d4c0316b448d8b767757a9f1f4e2a7c2d",
-        "bytes": 8959668,
-        "role": "runtime-zone-glb-original-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-bazaar-4.cm.glb",
-        "sha256": "87649950fc66484d3a6cd678f48071f54ed339b8768e13e0f8eb75aca943cf84",
-        "bytes": 1641080,
-        "role": "runtime-zone-glb-meshopt-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-outer.glb",
-        "sha256": "80d3ef720dc8ee804469490cddcb280c14735bb500eb1db5a256bd540dbd5aa5",
-        "bytes": 6528100,
-        "role": "runtime-zone-glb-original-deferred"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-outer.cm.glb",
-        "sha256": "b603750799ea6a306c69d2251e0cbb671d13f167472e4764d02c54d3a235b64f",
-        "bytes": 1584416,
-        "role": "runtime-zone-glb-meshopt-deferred"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-fangbang-1.glb",
-        "sha256": "48dd6c1be7264fc3e6a4f9387834a363c9106d8d2ae56d5498e523df0769f21c",
-        "bytes": 9814552,
-        "role": "runtime-zone-glb-original-on-demand"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-fangbang-1.cm.glb",
-        "sha256": "65cfb020cb302d09ade025a3a09fffb85ce644f0fa9d7688130c766efb340bcd",
-        "bytes": 1407196,
-        "role": "runtime-zone-glb-meshopt-on-demand"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-fangbang-2.glb",
-        "sha256": "dd462e958a9cd0643d507d9c13a090b05da11e3700d7ac83922638eedf139a97",
-        "bytes": 9941820,
-        "role": "runtime-zone-glb-original-on-demand"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zone-fangbang-2.cm.glb",
-        "sha256": "5c9488c486b228a8d0e55387afafecf22ea798d9980e31b3efd1e4fef664721c",
-        "bytes": 1370648,
-        "role": "runtime-zone-glb-meshopt-on-demand"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/029c076ed01ad292.png",
-        "sha256": "029c076ed01ad292245e5138a1c9b4be516ccdad1d6be90436f89deffa4c88c3",
-        "bytes": 10447,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/0f03f0b294b38dae.jpg",
-        "sha256": "0f03f0b294b38daef6b05fe6d6de3e2af1f45d2ee38449283ae203ead901e62b",
-        "bytes": 93246,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/1356c27d4ad420c0.jpg",
-        "sha256": "1356c27d4ad420c01301a3dadc6e656254d44fc4ec70c594cf4567938b99d80a",
-        "bytes": 157262,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/1f3ce8173e75b187.jpg",
-        "sha256": "1f3ce8173e75b187cb7ac8b097a94008e7d5cd1fecea799a593cc9743996b222",
-        "bytes": 129658,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/3365006948025802.jpg",
-        "sha256": "3365006948025802c9c5f0026e091342e8226a70b765688fe889a7af6d1beda5",
-        "bytes": 75074,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/3dab2be0650809f9.jpg",
-        "sha256": "3dab2be0650809f946cff08fa0bee17397eb26ef7ba13276494bbfb12fe935b7",
-        "bytes": 92337,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/4df6fad9c4939bc7.jpg",
-        "sha256": "4df6fad9c4939bc73c5a0f6fa1103c37d19ec81011c8631305500e82f524637d",
-        "bytes": 21237,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/5a363225e2851fd7.png",
-        "sha256": "5a363225e2851fd76652aa9303ff1786f33dcba068cfc79973e1cf76922cc0b3",
-        "bytes": 1811,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/64dc3670b62785b4.jpg",
-        "sha256": "64dc3670b62785b4f240b8b682f6b25777291d8028ad85b91e180e593a5cf0d2",
-        "bytes": 77477,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/6c11b4c5ecfae5fa.png",
-        "sha256": "6c11b4c5ecfae5fa10f7f42b417ceb6880cc125255991ca395930d3caac27fc4",
-        "bytes": 1497,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/8ae04e331b62a61a.jpg",
-        "sha256": "8ae04e331b62a61a9c216161af0c254944df296fbc313976bc23bfb364bceb37",
-        "bytes": 96996,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/93ac66defb8d124f.png",
-        "sha256": "93ac66defb8d124fa281bad7eb8d354cb6aa6d7804829f8474f7e5bb8db779a2",
-        "bytes": 4917,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/9c8e3ed462768472.jpg",
-        "sha256": "9c8e3ed46276847207fbd8f89dca515e1aeae31e9ec42a6a1754f0f1a64bcce9",
-        "bytes": 281132,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/a841a0166b589c5e.png",
-        "sha256": "a841a0166b589c5e220a2ecb938b6f04889772140bf3f896d50fda177b76ab4b",
-        "bytes": 4690,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/b491bab299622fa4.jpg",
-        "sha256": "b491bab299622fa4709bae1d939ec4674bffbaeaa9a1e10d66cffea1f70b37d5",
-        "bytes": 133723,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/bf28f2290bd75fcf.jpg",
-        "sha256": "bf28f2290bd75fcf0428c2a452ee992fce146c14c841d4d36ae840a3177a521d",
-        "bytes": 20122,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/e2048d86ad467715.jpg",
-        "sha256": "e2048d86ad46771551aae0e693d41a130cf3903036144f189cd14112e5779616",
-        "bytes": 9058,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/e3ef80b6f7b54188.png",
-        "sha256": "e3ef80b6f7b54188910c4c8c21f9dadc2ab14a4841ba2c8ec660cf8b8c962249",
-        "bytes": 4308,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/e614db1778f98b4f.jpg",
-        "sha256": "e614db1778f98b4fdbc2451872f28197553a71962010ac31d395c291be3629e2",
-        "bytes": 452945,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/ed1be8f6bc86b315.jpg",
-        "sha256": "ed1be8f6bc86b31576c6437cc92b8dd6e969455f6730da42746d38b501e25013",
-        "bytes": 97139,
-        "role": "runtime-external-texture-firstload"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/01a3c1f7c35e41c0.ktx2",
-        "sha256": "01a3c1f7c35e41c03aea7130aa789d6e4edd4490f0d89bc1332fc3a94d570fb1",
-        "bytes": 12025,
-        "role": "runtime-external-texture-background"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/03ea1e6e2f817d17.ktx2",
-        "sha256": "03ea1e6e2f817d1714ac15c9609012b122766377b229f9851296aa6dec0f8176",
-        "bytes": 79316,
-        "role": "runtime-external-texture-background"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/0df21a86184548dc.ktx2",
-        "sha256": "0df21a86184548dc9d6f6eee50a7790c9f5d768e4ec47c636aa1a781d9ae715f",
-        "bytes": 52956,
-        "role": "runtime-external-texture-background"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/122541263239cda4.ktx2",
-        "sha256": "122541263239cda4fd453055e7017c10694eedf17ea0d1515d8ebe73b5df45ba",
-        "bytes": 36823,
-        "role": "runtime-external-texture-background"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/29f7781a740b99b7.ktx2",
-        "sha256": "29f7781a740b99b7e610bc17bb3d92d901e56b630e8b1237549982f6d178fe6e",
-        "bytes": 28199,
-        "role": "runtime-external-texture-background"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/351b9aa84aea704d.ktx2",
-        "sha256": "351b9aa84aea704db8574b0269b0466925d16a2e908d01fe3ad5f69cb3c4fc51",
-        "bytes": 11224,
-        "role": "runtime-external-texture-background"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/356b795f692ce855.ktx2",
-        "sha256": "356b795f692ce8557f63ab3bcba8254a5842049ec1ce2459c8f98d85d147df96",
-        "bytes": 7716,
-        "role": "runtime-external-texture-background"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/3639fb022bafbcbb.ktx2",
-        "sha256": "3639fb022bafbcbb3f1984ea9125535abe0cdf473ec74876f72c77fd2a2c0326",
-        "bytes": 1914,
-        "role": "runtime-external-texture-background"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/36d2b2ad89ad7358.ktx2",
-        "sha256": "36d2b2ad89ad7358ce759d470e8d400596101d96be9690b9745136febeb6d1c5",
-        "bytes": 63065,
-        "role": "runtime-external-texture-background"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/447a3e6942f73600.ktx2",
-        "sha256": "447a3e6942f73600ad0e2b28bb68b48eff585558bedaf93c015a702dc9e4629b",
-        "bytes": 13367,
-        "role": "runtime-external-texture-background"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/46dc10b8662ad113.ktx2",
-        "sha256": "46dc10b8662ad113e97f3d1105429fba62cc655c028e6d8e545af6f07e95e10d",
-        "bytes": 67442,
-        "role": "runtime-external-texture-background"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/5448794402351aa6.ktx2",
-        "sha256": "5448794402351aa67901a77b73d478468d3994b64a4a417d90fadc40b6db7a06",
-        "bytes": 65669,
-        "role": "runtime-external-texture-background"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/8f8c44b7f7f879c1.ktx2",
-        "sha256": "8f8c44b7f7f879c166f55fda1e2fd827981a3add3ded6e9589017ffee07b73ec",
-        "bytes": 47577,
-        "role": "runtime-external-texture-background"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/bc13912b59fcd78d.ktx2",
-        "sha256": "bc13912b59fcd78dea6c82e1408f36566c972e1f137cbbd5c50722c17feb770c",
-        "bytes": 43232,
-        "role": "runtime-external-texture-background"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/bef4614146728879.ktx2",
-        "sha256": "bef46141467288792016e43e09e8cf2a1c536d852735e76b267e453ae7fb1285",
-        "bytes": 64314,
-        "role": "runtime-external-texture-background"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/c61a0d2f54f110c3.ktx2",
-        "sha256": "c61a0d2f54f110c34f295e655a19c2e7a7c75f8bf121872456e8a5d07879df1c",
-        "bytes": 71073,
-        "role": "runtime-external-texture-background"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/e44c97223d1c9c37.ktx2",
-        "sha256": "e44c97223d1c9c3728949694efb92322267e7e4f5b03e5f5cb97eba005c197b7",
-        "bytes": 8340,
-        "role": "runtime-external-texture-background"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/tex/f98fee05cc72c00e.ktx2",
-        "sha256": "f98fee05cc72c00e61377aa60a79ea26cf2ffe2defe0395075491bbff6f5ef3a",
-        "bytes": 105056,
-        "role": "runtime-external-texture-background"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/zones-manifest.json",
-        "sha256": "6aee10d5931f228919550a1522fb6ebf839b4ea0a60c81bba8c11001636dd660",
-        "bytes": 29815,
-        "role": "runtime-zones-manifest"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/collision-bazaar.json",
-        "sha256": "c4fe89519e4bdec298a138292f702a95e09a75d085444d9ddaad36bf0f7e6ca1",
-        "bytes": 73764,
-        "role": "runtime-collision"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/collision-garden.json",
-        "sha256": "e830e6c6b6cba6d2e13e008993bd4faf749ceaf5637ed5a4203e2b2f78f2805c",
-        "bytes": 792693,
-        "role": "runtime-collision"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/collision-temple.json",
-        "sha256": "a1f831b65c6be727a077050f775951ff3b4ba2fa99d84d648f5d5cb52cb53381",
-        "bytes": 86214,
-        "role": "runtime-collision"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/collision-outer.json",
-        "sha256": "97e14b766b049bac3736c89056754066fda44ca827a4a6d3bd486763fe85e550",
-        "bytes": 54132,
-        "role": "runtime-collision"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/collision-pond.json",
-        "sha256": "3bb9a82b9438e8d7ab91907edb41f3c90154db9b40233b7b136c97e52c95496c",
-        "bytes": 1877,
-        "role": "runtime-collision"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/collision-fangbang.json",
-        "sha256": "4ea7ea95ab8e867cd4765e8b7229aa28d1ae34816a91593d0cfacdd451d03f55",
-        "bytes": 278959,
-        "role": "runtime-collision-fangbang"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/layout.json",
-        "sha256": "7f83b91d21f674ebd0f54b8d31b1bde8c244db4dc273687b07c9d6e7fbf61667",
-        "bytes": 851583,
-        "role": "runtime-layout-repaired"
-      },
-      {
-        "path": "scene-authoring/yuyuan-area/out-combined-review/commercial-route.json",
-        "sha256": "06096863e0ca8ee73ccd0b81b3b38170ffabba08cce7acb37f0314db2fffa4d7",
-        "bytes": 3726,
-        "role": "runtime-commercial-route-pinned-verified"
-      }
-    ],
-    "ownerAdopted": false
+  "pendingUpload": {
+    "note": "files[] 已指向新 sha，但对象尚未上传 S3（2026-09-30 SSO 过期）。机主 aws sso login 后由主控 upload_migration_assets.py 上传，写回执后删除本段。",
+    "paths": [
+      "scene-authoring/yuyuan-area/out-garden-kits/sansuitang-bld-428179901/model.glb"
+    ]
   }
 }
