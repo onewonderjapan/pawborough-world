@@ -1348,9 +1348,9 @@ _WTRIS_NOPAV17 = _t17_wtris(True)       # 必修3 立面线锚定：排除塔体
 def _t17_cover(segs, wb_nodes, cov_min=COV_MIN17):
     """每段背后同法向背板对 (u,v) 段矩形的真实面积覆盖（REVIEW-astra 必修1，不再用三角形外接矩形）：
     背板三角投影后必须是直角边平行 u/v 轴的半矩形三角（3 顶点恰取 2 个 u 值 × 2 个 v 值）；
-    按 bbox 键归组，组内并集角点数 4 = 完整矩形（互补三角对）、3 = 半矩形（单三角或副本三角——
+    按 bbox 键归组，记每个三角缺的角：缺角互为对角 = 共用对角线的互补三角对 = 整块；缺角相邻 = 两三角重叠、并集 3/4 块；只有一种缺角 = 半矩形（单三角或副本三角——
     「每块背板第二个三角替换为第一个副本」负例：角点仍 3，只计半块面积 → 覆盖率 ≈50% → FAIL）。
-    覆盖面积 = Σ 全矩形·1 + Σ 半矩形·0.5（组间重叠 >0 或非半矩形三角 >0 → 该平面账本不可信 → 段记缺）。
+    覆盖面积 = Σ 矩形面积 × {1, 0.75, 0.5}（组间重叠 >0 或非半矩形三角 >0 → 该平面账本不可信 → 段记缺）。
     深度过滤：三角全部顶点带号深度 ∈ D_BACK（nb 已规范化为内侧，镜像到格心前方的背板 d<0 被排除）。"""
     ledger = {}
     for s_ in segs:
@@ -1371,17 +1371,25 @@ def _t17_cover(segs, wb_nodes, cov_min=COV_MIN17):
                     if len(us_) != 2 or len(vs_) != 2:
                         bad += 1
                         continue
-                    g_ = groups.setdefault((us_[0], us_[1], vs_[0], vs_[1]), set())
-                    g_.update((round(q_[0], 3), round(q_[1], 3)) for q_ in ls_)
+                    # 半矩形三角恰缺矩形的一个角；记下缺的角号（0=(u0,v0) 1=(u1,v0) 2=(u1,v1) 3=(u0,v1)）
+                    corners_ = [(us_[0], vs_[0]), (us_[1], vs_[0]), (us_[1], vs_[1]), (us_[0], vs_[1])]
+                    have_ = {(round(q_[0], 3), round(q_[1], 3)) for q_ in ls_}
+                    miss_ = [k_ for k_, c_ in enumerate(corners_) if c_ not in have_]
+                    if len(miss_) != 1:
+                        bad += 1
+                        continue
+                    groups.setdefault((us_[0], us_[1], vs_[0], vs_[1]), set()).add(miss_[0])
+            # 主控 R2 终审补丁（astra R2 必修1）：四角齐全不等于两三角互补——两三角共用同一条对角线
+            # 才拼成整块（缺角互为对角 0/2 或 1/3）；缺角相邻的两三角互相重叠，并集只有 3/4 块。
             full, half = [], []
-            for (u0_, u1_, v0_, v1_), cs_ in groups.items():
-                if len(cs_) == 4:
-                    full.append((u0_, u1_, v0_, v1_))
-                elif len(cs_) == 3:
-                    half.append((u0_, u1_, v0_, v1_))
+            for rk_, om_ in groups.items():
+                if len(om_) >= 3 or om_ in ({0, 2}, {1, 3}):
+                    full.append((rk_, 1.0))
+                elif len(om_) == 2:
+                    full.append((rk_, 0.75))
                 else:
-                    bad += 1
-            rects = full + half
+                    half.append((rk_, 0.5))
+            rects = [r_ for r_, _ in full + half]
             ov = 0
             for i_ in range(len(rects)):
                 for j_ in range(i_ + 1, len(rects)):
@@ -1399,16 +1407,11 @@ def _t17_cover(segs, wb_nodes, cov_min=COV_MIN17):
             continue
         area = (s_['u1'] - s_['u0']) * (s_['v1'] - s_['v0'])
         tot = 0.0
-        for r_ in L_['full']:
+        for r_, f_ in L_['full'] + L_['half']:
             w_ = min(r_[1], s_['u1']) - max(r_[0], s_['u0'])
             h_ = min(r_[3], s_['v1']) - max(r_[2], s_['v0'])
             if w_ > 0 and h_ > 0:
-                tot += w_ * h_
-        for r_ in L_['half']:
-            w_ = min(r_[1], s_['u1']) - max(r_[0], s_['u0'])
-            h_ = min(r_[3], s_['v1']) - max(r_[2], s_['v0'])
-            if w_ > 0 and h_ > 0:
-                tot += 0.5 * w_ * h_
+                tot += f_ * w_ * h_
         s_['cov'] = tot / area if area > 1e-9 else 0.0
     miss = [s_ for s_ in segs if s_['cov'] < cov_min]
     return miss, (min((s_['cov'] for s_ in segs), default=1.0), max((s_['cov'] for s_ in segs), default=1.0)), len(segs) - len(miss)
