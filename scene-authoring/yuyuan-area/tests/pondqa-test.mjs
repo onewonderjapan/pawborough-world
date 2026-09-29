@@ -379,6 +379,39 @@ const BG = new Q.VGrid(bridgeNodes, { cell: 0.5 });
   const rough = pbr.roughnessFactor ?? 1;
   ok(`#6 池水材质 = water 槽（名 paving-water、基色贴图 + 法线贴图、粗糙度 ${rough.toFixed(2)} = 0.5）`,
      mat?.name === 'paving-water' && hasBase && hasNormal && Math.abs(rough - 0.5) < 0.01);
+  // wave13-nightbalance R1（astra 必修5）：#6 只查「有贴图」不够——补连接关系：
+  //   1) 水面 primitive 实际引用 paving-water（不是只有同名材质挂在文件里）；
+  //   2) 该 primitive 有 TEXCOORD_0（贴图无 UV 等于没贴）；
+  //   3) 材质引用的基色 / 法线贴图字节 = 磁盘 resources/textures/paving/water*.jpg（C5「磁盘贴图即所用贴图」的
+  //      连接端；均值口径：贴图实测线性均值 ~0.058 由 nightbalance-albedo-test.py C5 把关，RECIPE 里 #3d5348
+  //      基色估算 ~0.067 是另一口径，两者都不得混写成一个数）；
+  //   4) normalTexture.scale = 0.55（双端同参数的另一半）。
+  if (w && mat) {
+    const { json, bin } = readGlbRaw(path.join(OUT, w.file));
+    const matIdx = (json.materials || []).findIndex((m) => m.name === 'paving-water');
+    const prims = [];
+    for (const mesh of json.meshes || []) for (const prim of mesh.primitives || [])
+      if (prim.material === matIdx) prims.push({ mesh: mesh.name, prim });
+    ok(`#6b 水面 primitive 实际引用 paving-water（${prims.length} 个 primitive）`, prims.length >= 1);
+    const noUv = prims.filter((x) => !x.prim.attributes || x.prim.attributes.TEXCOORD_0 === undefined);
+    ok(`#6c 水面 primitive 全部带 TEXCOORD_0（缺 UV ${noUv.length} 个）`, prims.length >= 1 && noUv.length === 0);
+    const imgBytes = (texIdx) => {
+      const tex = (json.textures || [])[texIdx];
+      const im = (json.images || [])[tex?.source];
+      if (!im || im.bufferView === undefined) return null;
+      const bv = json.bufferViews[im.bufferView];
+      return bin.subarray((bv.byteOffset || 0), (bv.byteOffset || 0) + bv.byteLength);
+    };
+    const sha = (x) => crypto.createHash('sha256').update(x).digest('hex');
+    const disk = (f) => fs.readFileSync(path.join(Q.ROOT, 'resources', 'textures', 'paving', f));
+    const baseB = imgBytes(pbr.baseColorTexture?.index), normB = imgBytes(mat.normalTexture?.index);
+    ok(`#6d 基色贴图字节 = 磁盘 water.jpg（${baseB ? sha(baseB).slice(0, 12) : '无'} vs ${sha(disk('water.jpg')).slice(0, 12)}）`,
+       !!baseB && sha(baseB) === sha(disk('water.jpg')));
+    ok(`#6e 法线贴图字节 = 磁盘 water-normal.jpg（${normB ? sha(normB).slice(0, 12) : '无'} vs ${sha(disk('water-normal.jpg')).slice(0, 12)}）`,
+       !!normB && sha(normB) === sha(disk('water-normal.jpg')));
+    const ns = mat.normalTexture?.scale;
+    ok(`#6f normalTexture.scale ${ns} = 0.55（export-zones / render-control-passes 双端同参数）`, ns === 0.55);
+  }
 }
 
 // ---------------- 11) #8 池内没有路面 ----------------
