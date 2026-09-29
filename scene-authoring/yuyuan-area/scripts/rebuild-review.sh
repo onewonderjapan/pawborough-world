@@ -33,6 +33,10 @@ if [ "${ZONE_SPLIT:-0}" = "1" ]; then
   if [ "${ZONE_CM:-1}" = "1" ]; then node scripts/compress-zones.mjs; fi
   # wave9-sharedtex：多个 cm 件共有的贴图外置到 $OUT_DIR/tex/<内容哈希>.<ext>，查看器同 URL 只下载一次（SHARED_TEX=0 保持内嵌）
   if [ "${ZONE_CM:-1}" = "1" ] && [ "${SHARED_TEX:-1}" = "1" ]; then node scripts/share-textures.mjs; fi
+  # wave14-hygiene H2（审查建议接入）：分区件交付守卫（wave13-templefix R3 必修5）。
+  # 分区/压缩段完成后显式运行；分区块缺失必须 FAIL（守卫内建，不静默跳过），ZONE_CM=0 只查原件；
+  # 退出码经 set -euo pipefail 让重建失败。不入默认 npm test 链（npm run build 不产生分区件）。
+  npm run test:temple-eave-zones
 fi
 # 方浜中路 fifth zone (default on since 2026-09-24; FANGBANG=0 turns it off) -> zone collision + route
 if [ "${FANGBANG:-1}" != "0" ] && [ "${ZONE_SPLIT:-0}" = "1" ]; then

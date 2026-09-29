@@ -1,6 +1,6 @@
 # 项目入口与当前范围
 
-先在本次工单指定工程根读取 PROJECT.json；已有工程时从当前目录向上定位，或读 /home/baibai/pawborough-world/PROJECT.json（该链接只是S1统一入口）。文件中的 projectId 必须为 pawborough-world。
+先在本次工单指定工程根读取 PROJECT.json；已有工程时从当前目录向上定位，或读仓库根的 PROJECT.json（仓库内当前真实入口）。原 /home/baibai/pawborough-world/PROJECT.json 统一入口已失效（2026-09-29 清理软链，勿重建）。文件中的 projectId 必须为 pawborough-world。
 
 读取 canonicalRoadmap、phase、runtime、assets、evidence 和 capabilities；端口、资产与当前工单路径都从这里取得，不使用历史Skill中的旧端口。没有PROJECT时，只能按明确的bootstrap工单建立它，不能回退到某个过时current-project.json继续施工。
 

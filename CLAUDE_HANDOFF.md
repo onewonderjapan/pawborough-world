@@ -8,7 +8,7 @@
 
 所有分支的代码成果已收敛到本地主仓库 `main`。本次盘点覆盖 **26 个 worktree、26 个本地分支及 3 个远端引用**，所有 HEAD 均已包含在源码 `601d42a27b0d3552a9800f328f6ea2e050153072` 中。因此执行一次从 `fefb6ee5` 到 `601d42a2` 的 fast-forward 即可，没有遗漏提交或需要硬拼的冲突。本交接及清单另作一个文档提交；用 `git log -1` 查看最新文档 HEAD。
 
-- **唯一接续目录**：`/home/baibai/work/onewonderjapan/pawborough-world`，分支 `main`。`/home/baibai/pawborough-world` 是便利链接；对话初始目录 `/home/baibai/unity` 不是当前世界源码根。
+- **唯一接续目录**：`/home/baibai/work/onewonderjapan/pawborough-world`，分支 `main`。`/home/baibai/pawborough-world` 曾是便利链接，已失效（2026-09-29 清理，勿重建）；对话初始目录 `/home/baibai/unity` 不是当前世界源码根。
 - **当前本地预览**：<http://127.0.0.1:5607/candidate/>。页面、代码、依赖、运行资产现在都从主仓库提供，不再依赖施工 worktree 提供当前服务。
 - **当前运行目录**：`/home/baibai/work/onewonderjapan/pawborough-world/scene-authoring/yuyuan-area/out-goal-current`。不要把旧 `out/` 或 `out-zone/` 自动当成本版。
 - **当前服务**：`pawborough-main-preview-20260927.service`，只监听 `127.0.0.1:5607`。不启第二个同端口服务。

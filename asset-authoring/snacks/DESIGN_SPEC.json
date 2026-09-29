@@ -12,13 +12,13 @@
     "inputsReadOnly": "/home/baibai/outbox/pawborough-snacks-handheld-night-20260921/inputs",
     "baselineReadOnly": "/home/baibai/outbox/pawborough-snackshop-20260921",
     "neverModify": [
-      "/home/baibai/pawborough-world",
+      "/home/baibai/work/onewonderjapan/pawborough-world (main checkout; 旧便利链接 /home/baibai/pawborough-world 已失效，2026-09-29 清理)",
       "/home/baibai/outbox/pawborough-temple-shanmen-20260915/workspace",
       "/home/baibai/outbox/pawborough-snackshop-20260921"
     ],
     "toolsReadOnly": {
       "blender": "/home/baibai/.local/bin/blender",
-      "validator": "node /home/baibai/pawborough-world/scripts/validate_all.cjs --files <a.glb,b.glb> --root <workspace/props> --report <out.json>",
+      "validator": "node scripts/validate_all.cjs --files <a.glb,b.glb> --root <workspace/props> --report <out.json> （在 Pawborough 仓库根执行，等价于原 /home/baibai/pawborough-world/scripts/validate_all.cjs；该便利链接已失效，2026-09-29 清理）",
       "inspect": "python3 -X utf8 inputs/inspect_glb.py <glb> --out <json>",
       "systemPythonWithPIL": "python3 -X utf8 (PIL 10.2, numpy; Blender python has no PIL)",
       "font": "/usr/share/fonts/opentype/noto/NotoSerifCJK-Regular.ttc index=2"
