@@ -22,7 +22,7 @@ const BASE = process.env.BASE || 'http://127.0.0.1:5492/';
 const STEP = +(process.env.STEP || 15);
 const EYE = 1.6;
 const SHOTS = process.env.SHOTS !== '0';
-const require = createRequire('/home/baibai/pawborough-world/node_modules/');
+const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const CHROME = '/home/baibai/.cache/ms-playwright/chromium-1234/chrome-linux/chrome';
 

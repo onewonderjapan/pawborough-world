@@ -1,7 +1,7 @@
 // Headless Chromium (swiftshader) load of the viewer against a zone-split OUT_DIR: all zone GLBs load, first zone paints,
 // canvas not blank (read back in the same evaluate as a render), HUD reports every zone.
 import { createRequire } from 'node:module';
-const require = createRequire('/home/baibai/pawborough-world/node_modules/');
+const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const base = process.env.BASE || 'http://127.0.0.1:5489/';
 const exe = '/home/baibai/.cache/ms-playwright/chromium-1234/chrome-linux/chrome';

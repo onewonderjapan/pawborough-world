@@ -10,7 +10,7 @@
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
 import path from 'node:path';
-const require = createRequire('/home/baibai/pawborough-world/node_modules/');
+const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const base = process.env.BASE || 'http://127.0.0.1:5489/';
 const shotDir = process.env.SHOT_DIR || null;
