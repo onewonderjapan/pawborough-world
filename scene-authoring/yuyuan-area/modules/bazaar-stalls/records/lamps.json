@@ -1,0 +1,120 @@
+{
+ "packageId": "pawborough-w1-bazaar-stalls-20260922",
+ "generatedBy": "build_bazaar_stalls.py",
+ "source": "computed from baseline/commercial-route.pinned.json (old-south 第一段) + baseline/layout.json 建筑边；规则见 OLDSOUTH_* 常量与 tests/oldsouth-lamps-test.mjs（独立重算对账）",
+ "design": {
+  "corridorRoute": [
+   "old-south",
+   0,
+   1
+  ],
+  "tAlongM": [
+   5.0,
+   15.0,
+   25.0
+  ],
+  "setbackM": 0.22,
+  "shadeCenterY": 2.35,
+  "mountRangeY": [
+   2.19,
+   2.75
+  ],
+  "collision": "none (挂高 2.2 m 人体带之上，同檐棚 unreachable 契约)",
+  "nightLighting": "presets.json oldsouth-lamp emissiveGroup + oldsouth-lamp node-anchor 点光源（offsetY 2.05，罩底缘下方）"
+ },
+ "counts": {
+  "lamps": 6
+ },
+ "lamps": [
+  {
+   "id": "oldsouth-lamp-1",
+   "t": 5.0,
+   "side": 1,
+   "wall": "bld-428202604",
+   "position": [
+    -199.813,
+    -245.358
+   ],
+   "rotY": 1.608985,
+   "wallLat": 5.902,
+   "module": "oldsouth-lamp.glb",
+   "zone": "bazaar",
+   "height": 2.75
+  },
+  {
+   "id": "oldsouth-lamp-2",
+   "t": 5.0,
+   "side": -1,
+   "wall": "bld-553893884",
+   "position": [
+    -189.379,
+    -246.608
+   ],
+   "rotY": -1.525001,
+   "wallLat": 5.046,
+   "module": "oldsouth-lamp.glb",
+   "zone": "bazaar",
+   "height": 2.75
+  },
+  {
+   "id": "oldsouth-lamp-3",
+   "t": 15.0,
+   "side": 1,
+   "wall": "bld-428202604",
+   "position": [
+    -199.43,
+    -235.335
+   ],
+   "rotY": 1.608985,
+   "wallLat": 6.683,
+   "module": "oldsouth-lamp.glb",
+   "zone": "bazaar",
+   "height": 2.75
+  },
+  {
+   "id": "oldsouth-lamp-4",
+   "t": 15.0,
+   "side": -1,
+   "wall": "bld-553893884",
+   "position": [
+    -188.92,
+    -236.594
+   ],
+   "rotY": -1.525001,
+   "wallLat": 4.341,
+   "module": "oldsouth-lamp.glb",
+   "zone": "bazaar",
+   "height": 2.75
+  },
+  {
+   "id": "oldsouth-lamp-5",
+   "t": 25.0,
+   "side": 1,
+   "wall": "bld-428202604",
+   "position": [
+    -199.047,
+    -225.312
+   ],
+   "rotY": 1.608985,
+   "wallLat": 7.464,
+   "module": "oldsouth-lamp.glb",
+   "zone": "bazaar",
+   "height": 2.75
+  },
+  {
+   "id": "oldsouth-lamp-6",
+   "t": 25.0,
+   "side": -1,
+   "wall": "bld-553893884",
+   "position": [
+    -188.461,
+    -226.58
+   ],
+   "rotY": -1.525001,
+   "wallLat": 3.636,
+   "module": "oldsouth-lamp.glb",
+   "zone": "bazaar",
+   "height": 2.75
+  }
+ ]
+}

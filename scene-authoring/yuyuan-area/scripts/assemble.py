@@ -279,6 +279,27 @@ if os.environ.get('STALL_KIT') == '1':
               open(os.path.join(OUT, 'awning-poses.json'), 'w'), ensure_ascii=False, indent=1)
     print('stall kit placed', stall_placed)
 
+# ---------- 老城隍庙南侧街廊檐灯（OLDSOUTH_LAMPS=1 默认开，wave14-stalllight B） ----------
+# 位置 = modules/bazaar-stalls/records/lamps.json（build_bazaar_stalls.py 按 pinned 路线 + layout 建筑边重算，
+# tests/oldsouth-lamps-test.mjs 独立重算对账）。灯具挂高 2.19–2.75 m（2.2 m 人体带之上），
+# 无碰撞盒（export-collision 只读 placements 的 stalls/benches，灯不进碰撞世界）；
+# 夜间发光与点光候选由 lighting/presets.json 的 oldsouth-lamp 发光组 / oldsouth-lamp node-anchor 源驱动（两端同参）。
+oldsouth_lamp_placed = 0
+if os.environ.get('OLDSOUTH_LAMPS', '1') == '1':
+    OL_GLB = os.path.join(ROOT, os.environ.get('STALL_DIR', 'out-bazaar-stalls'))
+    lpj = json.load(open(os.path.join(ROOT, 'modules', 'bazaar-stalls', 'records', 'lamps.json'), encoding='utf-8'))
+    lamp_lib = None
+    for lm in lpj['lamps']:
+        if lamp_lib is None:
+            lamp_lib = import_glb(os.path.join(OL_GLB, lm['module']), 'MODLIB-OL')
+            for o in lamp_lib:
+                o.hide_render = True
+                o.hide_viewport = True
+        place(lamp_lib, {'id': lm['id'], 'module': 'stall-kit:' + lm['module'], 'zone': lm.get('zone', 'bazaar'), 'lod': 'L2',
+                         'position': lm['position'], 'rotY': lm['rotY']})
+        oldsouth_lamp_placed += 1
+    print('old-south lamps placed', oldsouth_lamp_placed)
+
 # ---------- 三穗堂实例模块（SANSUITANG=1：modules/sansuitang 细化件替代程序化 hall bld-428179901） ----------
 # 位置（wave2-sansuitang 主控 2026-09-25 定）= footprint 最小面积外接矩形中心，再沿 facade.dir 平移最小量，
 # 使模块后墙外皮（collision.json rear-wall 盒的本地 z 最小面，本地 x ±半宽）落在与仰山堂的共用边线上或其内侧；
