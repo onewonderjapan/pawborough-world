@@ -1,8 +1,10 @@
 // M2 大假山黄石层理测试（wave13-matdetail）。口径：
 //  - 被测件 = out-garden-kits/rockery-dajiashan/model.glb（staged 输入件，assemble ROCKERY_KIT 消费）。
 //  - 断言：① rockery-stone/-dark 的 baseColorTexture = 程序化层理贴图（strata-tint-*），贴图亮度
-//    std ≥ 阈值；② 两 stone 材质带 metallicRoughnessTexture 且 G 通道有层理变化；③ moss 材质
-//    不受影响（baseColorFactor = 5c6b4a 线性）；④ 几何不变守卫（tris 与 AABB，不超预算）。
+//    std ≥ 阈值；② 两 stone 材质带 metallicRoughnessTexture，ORM G 直接编码目标粗糙度
+//    （面带 ≈0.85 / 沟带 ≈0.95，roughnessFactor 显式 1.0 → 有效粗糙度 = G），且沟带行与颜色
+//    暗带行同相（颜色与粗糙度共用同一层理场，R1 审查项 4）；③ moss 材质不受影响
+//    （baseColorFactor = 5c6b4a 线性）；④ 几何不变守卫（tris 与 AABB，不超预算）。
 //
 // 阈值来源（渲染标定，2026-09-29，1280×720 Cycles 64spp+OIDN day）：
 //  tour-dajiashan（eye→target 18.2 m）岩面窗口 luma std：基线 13.42（平滑黏土感，巡检第 7 条）；
@@ -11,6 +13,8 @@
 //  层理贴图实测（modules/rockery/records/strata-bake-dajiashan.json texStats）：lumaStd 8.64 时
 //  渲染像素 std 达标（≥16.5）。贴图阈值 = 8.64 × 0.85 ≈ 7.3（15% 裕量，容忍共享纹理管道重采样）。
 //  基线贴图（PaintedPlaster017 灰泥 tint）lumaStd = 1.68 → 本测试在 6c6270fb 基线产物上红。
+//  玉玲珑参考帧 / ROI / 筛选规则 / 计算过程的可复算脚本：工单包 artifacts/r1/verify-thresholds.py
+//  （参考标定与候选验收分开；本贴图阈值保留为辅助回归门）。
 // 用法：node tests/rockery-strata-test.mjs
 import fs from 'node:fs';
 import path from 'node:path';
@@ -24,7 +28,11 @@ const GLB_PATH = process.env.DAJIASHAN_GLB
   : path.join(ROOT, 'out-garden-kits', 'rockery-dajiashan', 'model.glb');
 const BUDGET_TRIS = 25000;
 const LUMA_STD_MIN = 7.3;        // 层理贴图亮度 std 阈值（来源见头注）
-const ORM_G_STD_MIN = 0.006;     // G 通道层理变化（0.944↔1.0 理论 std ≈0.012，取一半）
+const ROUGH_FACE = 0.85;         // strata-texture.py ROUGH_FACE/GROOVE，GLB roughnessFactor 显式 1.0
+const ROUGH_GROOVE = 0.95;
+const ROUGH_FACTOR = 1.0;
+const ORM_G_TOL = 0.03;          // 面带/沟带 G 判定容差（8bit 量化步长 1/255 ≈ 0.004）
+const CORR_MAX = -0.5;           // ORM 行 G 与颜色行 luma 的皮尔逊相关上限（沟暗↔粗糙高，负相关）
 const MOSS_FACTOR = [0.10702310502529144, 0.14702726900577545, 0.06847816705703735];
 
 let pass = 0, fail = 0;
@@ -101,8 +109,10 @@ for (const name of ['rockery-stone', 'rockery-stone-dark']) {
   // ① 层理颜色贴图
   const texIdx = pbr.baseColorTexture?.index;
   ok(`${name} 带 baseColorTexture`, texIdx !== undefined);
+  let colorImgName = null;
   if (texIdx !== undefined) {
     const img = gj.images[gj.textures[texIdx].source];
+    colorImgName = img.name;
     ok(`${name} 颜色贴图 = 程序化层理贴图（${img.name}）`, /^strata-tint-/.test(img.name || ''), img.name);
     const bytes = imageBytes(img.name);
     ok(`${name} 层理贴图可解码（PNG）`, !!bytes && bytes[0] === 0x89 && bytes[1] === 0x50);
@@ -127,23 +137,65 @@ for (const name of ['rockery-stone', 'rockery-stone-dark']) {
         rstd >= 2, `rowStd=${rstd.toFixed(3)}`);
     }
   }
-  // ② 粗糙度层理（ORM G 通道）
+  // ② 粗糙度层理（ORM G 通道直接编码目标粗糙度；factor 显式 1.0 → 有效粗糙度 = G）
   const ormIdx = pbr.metallicRoughnessTexture?.index;
   ok(`${name} 带 metallicRoughnessTexture（粗糙度层理）`, ormIdx !== undefined);
+  const rf = pbr.roughnessFactor;
+  ok(`${name} roughnessFactor 显式 1.0（实测 ${rf}；有效粗糙度 = factor × ORM G）`,
+    rf === ROUGH_FACTOR, `roughnessFactor=${rf}`);
   if (ormIdx !== undefined) {
     const img = gj.images[gj.textures[ormIdx].source];
     const bytes = imageBytes(img.name);
     if (bytes && bytes[1] === 0x50) {
       const dec = decodePng(bytes);
       let s = 0, s2 = 0; const n = dec.w * dec.h;
-      for (let i = 0; i < n; i++) {
-        const g = dec.data[i * dec.bpp + 1] / 255;
-        s += g; s2 += g * g;
+      let nFace = 0, nGroove = 0, gMin = 1, gMax = 0;
+      const rowG = [];
+      for (let y = 0; y < dec.h; y++) {
+        let rs = 0;
+        for (let x = 0; x < dec.w; x++) {
+          const g = dec.data[(y * dec.w + x) * dec.bpp + 1] / 255;
+          s += g; s2 += g * g;
+          if (g <= ROUGH_FACE + 0.03) nFace++;
+          if (g >= ROUGH_GROOVE - 0.03) nGroove++;
+          gMin = Math.min(gMin, g); gMax = Math.max(gMax, g);
+          rs += g;
+        }
+        rowG.push(rs / dec.w);
       }
       const mean = s / n, std = Math.sqrt(Math.max(0, s2 / n - mean * mean));
-      ok(`${name} ORM G 均值 ${mean.toFixed(3)} ∈ [0.93, 1.0]（roughnessFactor 0.9 不变）`,
-        mean >= 0.93 && mean <= 1.0, `mean=${mean.toFixed(4)}`);
-      ok(`${name} ORM G 层理 std ${std.toFixed(4)} ≥ ${ORM_G_STD_MIN}`, std >= ORM_G_STD_MIN, `std=${std.toFixed(4)}`);
+      ok(`${name} 有效粗糙度范围 [${gMin.toFixed(3)}, ${gMax.toFixed(3)}] ⊆ [${ROUGH_FACE - ORM_G_TOL}, ${ROUGH_GROOVE + ORM_G_TOL}]（面 ${ROUGH_FACE} / 沟 ${ROUGH_GROOVE} × factor ${ROUGH_FACTOR}）`,
+        gMin >= ROUGH_FACE - ORM_G_TOL && gMax <= ROUGH_GROOVE + ORM_G_TOL, `G∈[${gMin.toFixed(4)},${gMax.toFixed(4)}]`);
+      ok(`${name} 面带像素占比 ${(nFace / n * 100).toFixed(1)}% ≥ 25%、沟带占比 ${(nGroove / n * 100).toFixed(1)}% ≥ 10%（双峰分布）`,
+        nFace / n >= 0.25 && nGroove / n >= 0.10);
+      ok(`${name} ORM G 层理 std ${std.toFixed(4)} ≥ 0.03（0.85↔0.95 双峰，均值 ${mean.toFixed(3)}）`, std >= 0.03, `std=${std.toFixed(4)}`);
+      // 沟面对应：颜色行 luma（重采样到 ORM 行数）与 ORM 行 G 负相关——颜色暗带（沟）= 高粗糙度行
+      if (name === 'rockery-stone') {
+        const cdec = decodePng(imageBytes(colorImgName));
+        const rowLuma = [];
+        for (let y = 0; y < dec.h; y++) {
+          const y0 = Math.floor(y * cdec.h / dec.h), y1 = Math.max(y0 + 1, Math.floor((y + 1) * cdec.h / dec.h));
+          let cs = 0, cn = 0;
+          for (let yy = y0; yy < Math.min(y1, cdec.h); yy++) {
+            for (let x = 0; x < cdec.w; x += 4) {
+              const o = (yy * cdec.w + x) * cdec.bpp;
+              cs += 0.2126 * cdec.data[o] + 0.7152 * cdec.data[o + 1] + 0.0722 * cdec.data[o + 2];
+              cn++;
+            }
+          }
+          rowLuma.push(cs / Math.max(1, cn));
+        }
+        const mG = rowG.reduce((a, b) => a + b, 0) / rowG.length;
+        const mL = rowLuma.reduce((a, b) => a + b, 0) / rowLuma.length;
+        let cov = 0, vg = 0, vl = 0;
+        for (let i = 0; i < rowG.length; i++) {
+          cov += (rowG[i] - mG) * (rowLuma[i] - mL);
+          vg += (rowG[i] - mG) ** 2; vl += (rowLuma[i] - mL) ** 2;
+        }
+        const corr = vg > 0 && vl > 0 ? cov / Math.sqrt(vg * vl) : 0;
+        ok(`层理对应（颜色行 luma × ORM 行 G 皮尔逊相关 ${corr.toFixed(3)} ≤ ${CORR_MAX}；沟=暗=高粗糙度，同一层理场）`,
+          corr <= CORR_MAX, `corr=${corr.toFixed(4)}`);
+      }
     }
   }
 }

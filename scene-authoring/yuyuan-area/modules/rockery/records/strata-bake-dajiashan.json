@@ -19,7 +19,9 @@
   "fineAmp": 0.03,
   "waveM": 0.06,
   "roughFace": 0.85,
-  "roughGroove": 0.95
+  "roughGroove": 0.95,
+  "roughnessFactor": 1.0,
+  "roughnessNote": "ORM G encodes target roughness (face 0.85 / groove 0.95) on the same strata band field (incl. wave perturbation) as color; glTF roughnessFactor explicitly 1.0"
  },
  "texStats": {
   "size": [
@@ -27,7 +29,9 @@
    512
   ],
   "lumaMean": 95.92,
-  "lumaStd": 10.64
+  "lumaStd": 10.64,
+  "ormGMin": 0.851,
+  "ormGMax": 0.949
  },
  "guard": {
   "srcTris": 23500,
@@ -49,9 +53,11 @@
    -223.0635
   ],
   "srcVertsSubsetOfDst": true,
-  "dstSplitVerts": 2,
+  "dstSplitVerts": 0,
+  "orientedTrisEqual": true,
+  "orientedTriDiff": 0,
   "geometryUnchanged": true
  },
- "bytes": 2005716,
- "sha256": "c9fc63ba467447177c456300063f131b498334eb4ba8b74074b9f49472e2814a"
+ "bytes": 2013624,
+ "sha256": "92910653d2424c4211ed17016749db33978583b9336b9ff43cb515ad910b084a"
 }
