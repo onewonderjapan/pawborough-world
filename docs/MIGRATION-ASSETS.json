@@ -3708,5 +3708,21 @@
         }
       }
     ]
+  },
+  "matdetailPendingLeadArchive": {
+    "wave": "wave13-matdetail-flash-20260929",
+    "status": "pending_lead_archive",
+    "note": "大假山层理颜色/ORM 烘焙后的输入件（表面几何不变，modules/garden-kits-staging.json 已随合并指向新 sha）。files[] 仍指向已上传旧版；本批统一上传后更新 files[] 并移除本段。bake PNG 副本按机主决定不入库、不登记。",
+    "files": [
+      {
+        "path": "scene-authoring/yuyuan-area/out-garden-kits/rockery-dajiashan/model.glb",
+        "sha256": "92910653d2424c4211ed17016749db33978583b9336b9ff43cb515ad910b084a",
+        "bytes": 2013624,
+        "replaces": {
+          "sha256": "3b4baaf941097961fc129fd860292b4cea5d39d70cf9c2cd327e06b3888c60d4",
+          "bytes": 940544
+        }
+      }
+    ]
   }
 }
