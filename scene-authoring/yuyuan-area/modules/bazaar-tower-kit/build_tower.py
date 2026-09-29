@@ -595,8 +595,10 @@ def sphere(name, c, r, m, part=None, seg=12, rings=8, scale_z=1.0):
 # ---- wave14-lantern（巡检 #17「灯笼简化为粉色蛋形」）：传统红灯笼几何 ----
 # 竖直轴 = Blender Z（与 cyl/sphere 同一世界系）。LANTRN_PROF 是鼓形母线：端部半径 RIM>0
 #（硬收口口沿——与端部收尖的椭球「蛋形」的判别特征，测试据此判红），中段最鼓。
-LANTRN_PROF = (0.42, 0.78, 0.97, 1.0, 0.97, 0.78, 0.42)   # 半径比，7 环
-LANTRN_SEG = 12          # 径向边数（flat shading 出纵向明暗棱）
+# 5 环 10 边 = 瘦身口径：40 只灯笼全部实例化在 zone-bazaar-3.glb，test6a 上限 10_000_000 B
+# 反推每只 ≤ 280 tri（2026-09-29 392/只版本实测分区件 10.33MB 超线）；240/只留 60 tri 余量。
+LANTRN_PROF = (0.42, 0.85, 1.0, 0.85, 0.42)   # 半径比，5 环
+LANTRN_SEG = 10          # 径向边数（flat shading 出纵向明暗棱）
 LANTRN_PETALS = 6        # 瓜棱瓣数
 LANTRN_PETAL = 0.05      # 瓣鼓幅度（径向 ±5%）
 
@@ -613,7 +615,8 @@ def _lantern_obj(name, bm, m, part):
 
 def lantern_body(name, c, r, part='lanterns-body'):
     """鼓形红灯笼主体：中段鼓、上下收口留口沿，径向 6 瓣微鼓（瓜棱）。flat 法线（新 mesh 默认）。
-    tris = 12 边 × 6 段 × 2 + 上下口沿圆盘 2×12 = 168。"""
+    c=(map_x, map_y, 悬挂中心高 zc)（与 cyl/sphere 同口径，内部 to_b 翻转）。
+    tris = 10 边 × 4 段 × 2 + 上下口沿圆盘 2×10 = 100。"""
     H = r * 2.1
     cx, cy, cz = to_b(*c)
     bm = bmesh.new()
@@ -640,8 +643,8 @@ def lantern_body(name, c, r, part='lanterns-body'):
     return _lantern_obj(name, bm, 'lantern', part)
 
 def lantern_rib(name, c, r, th, part='lanterns-rib'):
-    """一条纵向骨架棱：贴鼓身弧面的窄面片（θ=th±半宽，半径外偏 0.008），7 环 6 段 quad strip。
-    tris = 6 段 × 2 = 12/条。调用方把 th 放在瓣峰角（cos(6θ)=+1）——棱条凸出瓣面可见。
+    """一条纵向骨架棱：贴鼓身弧面的窄面片（θ=th±半宽，半径外偏 0.008），5 环 4 段 quad strip。
+    tris = 4 段 × 2 = 8/条。调用方把 th 放在瓣峰角（cos(6θ)=+1）——棱条凸出瓣面可见。
     dark 材质 → 夜间呈暗线切开发光面（不改组数值的『骨架纹』）。"""
     H = r * 2.1
     n = len(LANTRN_PROF)
@@ -2503,7 +2506,7 @@ for pi_, pq in enumerate(FEAT.get('plaques', [])):
 
 LANTERN_N = 0
 LANTERN_TRIS = {'body': 0, 'tassel': 0, 'cap': 0, 'handle': 0, 'rib': 0, 'cord': 0}
-LANTERN_BUDGET_PER_LAMP = 460   # wave14-lantern：每只预算（tris）。导出实测 392/只（GLB indices 计）：body 168 + rib 48（4条×12）+ cap 104（8边cyl 28×3 + 6边穗帽 20，n-gon caps=n−2 tri）+ handle 36（3段4边cyl 12）+ tassel 24（3根3边cyl 8）+ cord 12（4边cyl 12）。手工累计 LANTERN_TRIS 同步此口径。
+LANTERN_BUDGET_PER_LAMP = 260   # wave14-lantern：每只预算（tris）。瘦身版导出实测 240/只（GLB indices 计）：body 100（5环10边：4×10×2+口沿盘2×10）+ rib 32（4条×8，5环4段）+ cap 52（上下盖 6边cyl 20×2 + 穗帽 4边cyl 12）+ handle 24（2段4边cyl 12）+ tassel 24（3根3边cyl 8）+ cord 8（3边cyl 8）。预算 260 的上限依据：zone-bazaar-3.glb test6a ≤10_000_000B 反推每只 ≤280。手工累计 LANTERN_TRIS 同步此口径。
 if FEAT.get('lanterns'):
     ln = FEAT['lanterns']
     blk = BLOCK_BY[ln.get('block', BLOCKS[0]['name'])]
@@ -2518,40 +2521,38 @@ if FEAT.get('lanterns'):
             zc = Z1 - ln['zBelowEaveM']
             rr = ln['rM']
             # 传统红灯笼（wave14-lantern）：鼓形红主体 + 深色骨架棱 + 金盖/提梁 + 红流苏穗 + 吊线。
-            # 材质只用既有 lantern/gild/dark（lantern 组命中不变）；part 细分出 cap/handle/rib/tassel
-            # 供结构判据，浏览器按材质合批 → draw calls 不变。
+            # 灯身/骨架中心 = 悬挂点 zc（2026-09-29 修：曾误传 0.0 使灯身落地面、灯盖留在檐口，
+            # 被 lantern-shape 贴邻判据抓住）。材质只用既有 lantern/gild/dark（lantern 组命中不变）；
+            # part 细分出 cap/handle/rib/tassel 供结构判据，浏览器按材质合批 → draw calls 不变。
             H2 = rr * 2.1
             cap_h = rr * 0.16
-            lantern_body('lantern-body-%d-%d' % (ri, j), (q[0], q[1], 0.0), rr)
-            LANTERN_TRIS['body'] += 168
+            lantern_body('lantern-body-%d-%d' % (ri, j), (q[0], q[1], zc), rr)
+            LANTERN_TRIS['body'] += 100
             for k in range(4):   # 4 条骨架棱放在 6 瓣的瓣峰角（π/6 + k·π/3）
-                lantern_rib('lantern-rib-%d-%d-%d' % (ri, j, k), (q[0], q[1], 0.0), rr, math.pi / 6 + k * math.pi / 3)
-                LANTERN_TRIS['rib'] += 12
-            # 上盖两节（座 + 顶）、下盖、穗帽 —— 金
-            cyl('lantern-cap-%d-%d-top' % (ri, j), (q[0], q[1], zc + H2 / 2), (q[0], q[1], zc + H2 / 2 + cap_h), rr * 0.50, 'gild', 8, part='lanterns-cap')
-            LANTERN_TRIS['cap'] += 28
-            cyl('lantern-cap-%d-%d-tip' % (ri, j), (q[0], q[1], zc + H2 / 2 + cap_h), (q[0], q[1], zc + H2 / 2 + cap_h + rr * 0.10), rr * 0.30, 'gild', 8, part='lanterns-cap')
-            LANTERN_TRIS['cap'] += 28
-            cyl('lantern-cap-%d-%d-bot' % (ri, j), (q[0], q[1], zc - H2 / 2 - rr * 0.14), (q[0], q[1], zc - H2 / 2), rr * 0.50, 'gild', 8, part='lanterns-cap')
-            LANTERN_TRIS['cap'] += 28
-            cyl('lantern-cap-%d-%d-tcap' % (ri, j), (q[0], q[1], zc - H2 / 2 - rr * 0.20), (q[0], q[1], zc - H2 / 2 - rr * 0.14), rr * 0.20, 'gild', 6, part='lanterns-cap')
+                lantern_rib('lantern-rib-%d-%d-%d' % (ri, j, k), (q[0], q[1], zc), rr, math.pi / 6 + k * math.pi / 3)
+                LANTERN_TRIS['rib'] += 8
+            # 上盖、下盖（金）；穗帽（金）
+            cyl('lantern-cap-%d-%d-top' % (ri, j), (q[0], q[1], zc + H2 / 2), (q[0], q[1], zc + H2 / 2 + cap_h), rr * 0.48, 'gild', 6, part='lanterns-cap')
             LANTERN_TRIS['cap'] += 20
-            # 提梁：盖顶上方的三段拱（金）
+            cyl('lantern-cap-%d-%d-bot' % (ri, j), (q[0], q[1], zc - H2 / 2 - rr * 0.14), (q[0], q[1], zc - H2 / 2), rr * 0.48, 'gild', 6, part='lanterns-cap')
+            LANTERN_TRIS['cap'] += 20
+            cyl('lantern-cap-%d-%d-tcap' % (ri, j), (q[0], q[1], zc - H2 / 2 - rr * 0.20), (q[0], q[1], zc - H2 / 2 - rr * 0.14), rr * 0.20, 'gild', 4, part='lanterns-cap')
+            LANTERN_TRIS['cap'] += 12
+            # 提梁：上盖顶上方的金拱（mount → apex → mount，2 段）
             hw, hv = rr * 0.34, rr * 0.16
             zb_ = zc + H2 / 2 + cap_h
-            cyl('lantern-handle-%d-%d-a' % (ri, j), (q[0] - hw, q[1], zb_), (q[0] - hw * 0.55, q[1], zb_ + hv), 0.018, 'gild', 4, part='lanterns-handle')
-            cyl('lantern-handle-%d-%d-b' % (ri, j), (q[0] - hw * 0.55, q[1], zb_ + hv), (q[0] + hw * 0.55, q[1], zb_ + hv), 0.018, 'gild', 4, part='lanterns-handle')
-            cyl('lantern-handle-%d-%d-c' % (ri, j), (q[0] + hw * 0.55, q[1], zb_ + hv), (q[0] + hw, q[1], zb_), 0.018, 'gild', 4, part='lanterns-handle')
-            LANTERN_TRIS['handle'] += 36
+            cyl('lantern-handle-%d-%d-a' % (ri, j), (q[0] - hw, q[1], zb_), (q[0], q[1], zb_ + hv), 0.018, 'gild', 4, part='lanterns-handle')
+            cyl('lantern-handle-%d-%d-b' % (ri, j), (q[0], q[1], zb_ + hv), (q[0] + hw, q[1], zb_), 0.018, 'gild', 4, part='lanterns-handle')
+            LANTERN_TRIS['handle'] += 24
             # 流苏穗：穗帽下三根微外张的细锥（红，随主体进 lantern 组发光）
             for k, dx in ((0, 0.0), (1, -0.045), (2, 0.045)):
                 cyl('lantern-tassel-%d-%d-%d' % (ri, j, k),
                     (q[0] + dx, q[1], zc - H2 / 2 - rr * 0.20),
                     (q[0] + dx * 1.8, q[1], zc - H2 / 2 - rr * 0.20 - rr * 0.72), rr * 0.035, 'lantern', 3, part='lanterns-tassel')
                 LANTERN_TRIS['tassel'] += 8
-            # 吊线：盖顶到檐口（沿用原挂高）
-            cyl('lantern-cord-%d-%d' % (ri, j), (q[0], q[1], zc + H2 / 2 + cap_h), (q[0], q[1], Z1 - 0.02), 0.015, 'dark', 4, part='lanterns-cord')
-            LANTERN_TRIS['cord'] += 12
+            # 吊线：提梁顶点到檐口（沿用原挂高）
+            cyl('lantern-cord-%d-%d' % (ri, j), (q[0], q[1], zb_ + hv), (q[0], q[1], Z1 - 0.02), 0.015, 'dark', 3, part='lanterns-cord')
+            LANTERN_TRIS['cord'] += 8
             LANTERN_N += 1
 
 LION_LOG = []

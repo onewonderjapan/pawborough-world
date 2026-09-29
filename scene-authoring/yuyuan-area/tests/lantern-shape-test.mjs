@@ -22,10 +22,12 @@ const DESIGN = {
   profRim: 0.42,          // LANTRN_PROF 端部（口沿）半径比
   profMid: 1.0,           // 中段半径比
   petalDelta: 0.05,       // LANTRN_PETAL 瓣鼓幅度（径向 ±5%）
-  budgetPerLamp: 460,     // LANTERN_BUDGET_PER_LAMP（导出实测 392/只）
+  budgetPerLamp: 260,     // LANTERN_BUDGET_PER_LAMP（瘦身后导出实测 240/只；zone-bazaar-3.glb 10MB 口径反推：40 只 × >280 只会把分区件顶过 test_tower test6a 的 10_000_000 B）
   tasselTrisPerLamp: 24,  // 3 根 3 边 cyl（n-gon caps = n−2 tri）= 3 × 8
-  handleTrisPerLamp: 36,  // 3 段 4 边 cyl = 3 × 12
-  ribTrisPerLamp: 48,     // 4 条 quad strip（7 环 6 段）= 4 × 12
+  handleTrisPerLamp: 24,  // 2 段 4 边 cyl（左 mount→apex→右 mount）= 2 × 12
+  ribTrisPerLamp: 32,     // 4 条 quad strip（5 环 4 段）= 4 × 8
+  capGapMax: 0.15,        // 灯盖顶 y − 灯身顶 y 设计差 = cap_h = rr×0.16 ∈ [0.045,0.048]；容差窗 [−0.02, +0.15]。
+                          // 抓「灯身掉地面、灯盖留在檐口」类错位（2026-09-29 实际发生：lantern_body 传 z=0.0）
   bodyMatSuffix: 'lanterns-body', capPart: 'lanterns-cap', tasselPart: 'lanterns-tassel',
   handlePart: 'lanterns-handle', ribPart: 'lanterns-rib', cordPart: 'lanterns-cord',
   // lanternRed 设计色 #c8301f（build_tower.py FM.get('lanternRed','c8301f')；params/*.json 无覆盖——2026-09-29 全查）：
@@ -72,32 +74,44 @@ function nodeByName(g) {
 }
 
 // ---------- 判据函数（真产物与负例共用） ----------
+// 半径一律相对「本灯聚类中心」：塔 GLB 顶点是世界坐标（x≈−187…−140），
+// 到原点距离 ≈190m 会把口沿比/瓣差稀释成假绿（2026-09-29 修正前 rim/r 恒 ≈1.00 的根因）。
+// 塔 GLB export_yup=True → 高度轴 = y（分量 +1）；半径平面 = (x,z)。
+const U = 1, A = 0, B = 2;
 function rimRatio(verts) {
-  // 顶环带（高 ≥ hMax − 4% 高度带）最大半径 / 全局最大半径。鼓形口沿 ≈0.42；蛋形（端部收尖）→≈0。
-  // 塔 GLB export_yup=True → 高度轴 = y（分量 +1）；半径平面 = (x,z)。
-  const U = 1, A = 0, B = 2;
+  // 顶环带（高 ≥ hMax − 4% 高度带）最大半径 / 本体最大半径。鼓形口沿 ≈0.38–0.42；蛋形（端部收尖）→≈0。
   let hMin = Infinity, hMax = -Infinity, rMax = 0;
+  const cx = [], cz = [];
+  let sx = 0, sz = 0, n = 0;
   for (let i = 0; i < verts.length; i += 3) {
     hMin = Math.min(hMin, verts[i + U]); hMax = Math.max(hMax, verts[i + U]);
-    rMax = Math.max(rMax, Math.hypot(verts[i + A], verts[i + B]));
+    sx += verts[i + A]; sz += verts[i + B]; n++;
   }
+  const ccx = sx / n, ccz = sz / n;
+  for (let i = 0; i < verts.length; i += 3) rMax = Math.max(rMax, Math.hypot(verts[i + A] - ccx, verts[i + B] - ccz));
   const band = hMax - (hMax - hMin) * 0.04;
   let rim = 0;
   for (let i = 0; i < verts.length; i += 3) {
-    if (verts[i + U] >= band) rim = Math.max(rim, Math.hypot(verts[i + A], verts[i + B]));
+    if (verts[i + U] >= band) rim = Math.max(rim, Math.hypot(verts[i + A] - ccx, verts[i + B] - ccz));
   }
   return rim / (rMax || 1);
 }
 function petalDeltaFrac(verts) {
-  // 中段环带的径向峰谷差 / 最大半径。瓜棱鼓身 ≈2×petal(5%)×prof 比 ≥4%；光滑球 ≈0。高度轴 = y（同上）。
-  const U = 1, A = 0, B = 2;
+  // 中段环带（45–55% 高）的径向峰谷差 / 本体最大半径。瓜棱鼓身 ≈8–10%（10 边采样 6 瓣 ±5%）；光滑球 ≈0。
   const hs = [];
-  let hMin = Infinity, hMax = -Infinity, rMax = 0;
-  for (let i = 0; i < verts.length; i += 3) { hs.push(verts[i + U]); hMin = Math.min(hMin, verts[i + U]); hMax = Math.max(hMax, verts[i + U]); rMax = Math.max(rMax, Math.hypot(verts[i + A], verts[i + B])); }
+  let hMin = Infinity, hMax = -Infinity, rMax = 0, sx = 0, sz = 0;
+  const n = verts.length / 3;
+  for (let i = 0; i < verts.length; i += 3) {
+    hs.push(verts[i + U]); hMin = Math.min(hMin, verts[i + U]); hMax = Math.max(hMax, verts[i + U]);
+    sx += verts[i + A]; sz += verts[i + B];
+  }
+  const ccx = sx / n, ccz = sz / n;
   const lo = hMin + (hMax - hMin) * 0.45, hi = hMin + (hMax - hMin) * 0.55;
   let rMinBand = Infinity;
   for (let i = 0; i < hs.length; i++) {
-    if (hs[i] >= lo && hs[i] <= hi) rMinBand = Math.min(rMinBand, Math.hypot(verts[i * 3 + A], verts[i * 3 + B]));
+    const r = Math.hypot(verts[i * 3 + A] - ccx, verts[i * 3 + B] - ccz);
+    rMax = Math.max(rMax, r);
+    if (hs[i] >= lo && hs[i] <= hi) rMinBand = Math.min(rMinBand, r);
   }
   return (rMax - rMinBand) / (rMax || 1);
 }
@@ -132,9 +146,10 @@ function bodyColorJudge(g, bodyMatName) {
   if (v < DESIGN.minV) return { bad: `明度 V ${v.toFixed(2)} < ${DESIGN.minV} (${hex})` };
   return { good: `${hex} hue ${h.toFixed(1)}° S ${s.toFixed(2)} V ${v.toFixed(2)}` };
 }
-// 灯数：body 顶点 3D 格哈希聚类（单灯宽 0.63m，灯距 pitch≥3.4m → 1.5m 格邻域合并；
-// 多 run 塔（runs=street 的 yuebin 沿两条街）灯不在同一轴线上，单轴量化会把不同边的灯并簇——3D 距离才成立）
-function lampCount(verts) {
+// 灯聚类：body 顶点 3D 格哈希聚类（单灯宽 0.63m，灯距 pitch≥3.4m → 邻域合并只发生在同灯内；
+// 多 run 塔（runs=street 的 yuebin 沿两条街）灯不在同一轴线上，单轴量化会把不同边的灯并簇——3D 距离才成立）。
+// 返回簇数组（每簇 = 展平 xyz 数组），灯数 = 簇数；rim/petal 逐簇判据直接复用簇。
+function lampClusters(verts) {
   // 格 0.7m：单灯最大跨 0.63m < 0.7（同灯必在 ±1 邻域内连通）；灯间最小边缘距
   // pitch3.4 − 0.63 = 2.77m > 2.1m（±1 邻域的最大连通距离）→ 灯间必不连通
   const CELL = 0.7;
@@ -156,30 +171,32 @@ function lampCount(verts) {
     }
     return out;
   };
-  let clusters = 0;
+  const clusters = [];
   for (const start of pts) {
     if (start._seen) continue;
-    clusters++;
+    const comp = [];
     start._seen = true;
     const queue = [start];
     while (queue.length) {
       const p = queue.pop();
+      comp.push(p[0], p[1], p[2]);
       for (const q of neighbors(p)) {
         if (!q._seen) { q._seen = true; queue.push(q); }
       }
     }
+    clusters.push(comp);
   }
   return clusters;
 }
 
 // ---------- 合成负例（每个判据配一个明显错误输入） ----------
-function synthGlbJson({ rim, petal, colorHex, withTassel }) {
-  // 7 环 12 边鼓/蛋合成体：rim 控制端部收口比，petal 控制径向峰谷差
+function synthGlbJson({ rim, petal, colorHex, withTassel, withCap, bodyDropY }) {
+  // 7 环 12 边鼓/蛋合成体：rim 控制端部收口比，petal 控制径向峰谷差；bodyDropY 整体压低灯身（挂高错位负例）
   const verts = [];
   const prof = rim == null ? [0.42, 0.78, 0.97, 1.0, 0.97, 0.78, 0.42] : [rim, rim + (1 - rim) * 0.6, 1, 1, 1, rim + (1 - rim) * 0.6, rim];
   const H = 0.63;
   prof.forEach((pr, i) => {
-    const h = -H / 2 + H * i / (prof.length - 1);
+    const h = -H / 2 + H * i / (prof.length - 1) + (bodyDropY || 0);
     for (let j = 0; j < 12; j++) {
       const th = 2 * Math.PI * j / 12;
       const rad = 0.3 * pr * (1 + (petal || 0) * Math.cos(6 * th));
@@ -187,7 +204,7 @@ function synthGlbJson({ rim, petal, colorHex, withTassel }) {
     }
   });
   // 顶/底心点（y-up：高度在 y 分量）
-  verts.push(0, H / 2, 0); verts.push(0, -H / 2, 0);
+  verts.push(0, H / 2 + (bodyDropY || 0), 0); verts.push(0, -H / 2 + (bodyDropY || 0), 0);
   const idx = [];
   for (let i = 0; i < prof.length - 1; i++) for (let j = 0; j < 12; j++) {
     const a = i * 12 + j, b = i * 12 + (j + 1) % 12, c = (i + 1) * 12 + (j + 1) % 12, d = (i + 1) * 12 + j;
@@ -214,6 +231,20 @@ function synthGlbJson({ rim, petal, colorHex, withTassel }) {
     { buffer: 0, byteOffset: 0, byteLength: pos.length },
     { buffer: 0, byteOffset: pos.length, byteLength: ind.length },
   ];
+  let extraNodes = withTassel ? [{ name: 'lanterns-tassel__lantern', mesh: 1 }] : [];
+  if (withCap) {
+    // 灯盖合成：两根小梁组成的盖段，y ∈ [0.34, 0.38]（贴在未压低的灯身顶 0.315 之上 → 正例 gap=0.065 ∈ 窗）
+    const cp = Buffer.from(Float32Array.from([-0.1, 0.34, -0.1, 0.1, 0.34, -0.1, 0.1, 0.38, -0.1, -0.1, 0.38, -0.1]).buffer);
+    const ci = Buffer.from(Uint32Array.from([0, 1, 2, 0, 2, 3]).buffer);
+    const capMeshIdx = meshes.length;
+    meshes.push({ name: 'cap', primitives: [{ attributes: { POSITION: accessors.length }, indices: accessors.length + 1, material: 0 }] });
+    accessors.push({ bufferView: bufferViews.length, componentType: 5126, count: 4, type: 'VEC3', min: [-0.1, 0.34, -0.1], max: [0.1, 0.38, 0.1] });
+    accessors.push({ bufferView: bufferViews.length + 1, componentType: 5125, count: 6, type: 'SCALAR' });
+    bufferViews.push({ buffer: 0, byteOffset: -1, byteLength: cp.length });   // byteOffset 下面 concat 后修正
+    bufferViews.push({ buffer: 0, byteOffset: -1, byteLength: ci.length });
+    extraNodes = [...extraNodes, { name: 'lanterns-cap__gild', mesh: capMeshIdx }];
+    var capPos = cp, capIdx = ci;
+  }
   if (withTassel) {
     const tp = Buffer.from(Float32Array.from([0, -0.5, 0, 0, -0.8, 0]).buffer);
     const ti = Buffer.from(Uint32Array.from([0, 1, 1]).buffer); // 退化三根合成不可判 —— 用 36 个退化 tri 代表穗账目
@@ -227,8 +258,15 @@ function synthGlbJson({ rim, petal, colorHex, withTassel }) {
   } else {
     var binBuf = Buffer.concat([pos, ind]);
   }
-  const json = { asset: { version: '2.0' }, scene: 0, scenes: [{ nodes: [0, ...(withTassel ? [1] : [])] }],
-    nodes: [{ name: 'lanterns-body__lantern', mesh: 0 }, ...(withTassel ? [{ name: 'lanterns-tassel__lantern', mesh: 1 }] : [])],
+  if (withCap) {
+    // 把盖的 bufferView 指到 concat 后的真实偏移
+    const off = binBuf.length;
+    bufferViews[bufferViews.length - 2].byteOffset = off;
+    bufferViews[bufferViews.length - 1].byteOffset = off + capPos.length;
+    binBuf = Buffer.concat([binBuf, capPos, capIdx]);
+  }
+  const json = { asset: { version: '2.0' }, scene: 0, scenes: [{ nodes: [0, ...extraNodes.map((_, i) => i + 1)] }],
+    nodes: [{ name: 'lanterns-body__lantern', mesh: 0 }, ...extraNodes],
     meshes, accessors, bufferViews, materials: mats,
     buffers: [{ byteLength: binBuf.length }], bufferViews: bufferViews.map(b => ({ ...b, buffer: 0 })) };
   return { json, bin: binBuf };
@@ -264,15 +302,32 @@ for (const t of lanternTowers) {
 
   const body = nodes.get(bodyKeys[0]);
   const verts = readPositions(g, body.meshIdx);
-  const nLamps = lampCount(verts);
+  const clusters = lampClusters(verts);
+  const nLamps = clusters.length;
   lampTotal += nLamps;
   ok(nLamps >= 1, `${t.id}: 灯数（body 顶点聚类独立推）`, `lamps=${nLamps}`);
 
-  // 鼓形：口沿比 + 瓣差（负例见文末合成注入）
-  const rim = rimRatio(verts);
-  ok(rim >= DESIGN.profRim * 0.6, `${t.id}: 鼓形口沿（端部硬收口，非蛋形尖端）`, `rim/r=${rim.toFixed(2)} ≥ ${(DESIGN.profRim * 0.6).toFixed(2)}`);
-  const pd = petalDeltaFrac(verts);
-  ok(pd >= DESIGN.petalDelta * 0.6, `${t.id}: 纵向瓜棱（径向峰谷差）`, `Δr/r=${(pd * 100).toFixed(1)}% ≥ ${(DESIGN.petalDelta * 0.6 * 100).toFixed(0)}%`);
+  // 鼓形：口沿比 + 瓣差，逐灯判（取全灯最差值）；负例见文末合成注入
+  const rim = Math.min(...clusters.map(c => rimRatio(c)));
+  ok(rim >= DESIGN.profRim * 0.6, `${t.id}: 鼓形口沿（端部硬收口，非蛋形尖端，逐灯最差）`, `rim/r=${rim.toFixed(2)} ≥ ${(DESIGN.profRim * 0.6).toFixed(2)}`);
+  const pd = Math.min(...clusters.map(c => petalDeltaFrac(c)));
+  ok(pd >= DESIGN.petalDelta * 0.6, `${t.id}: 纵向瓜棱（径向峰谷差，逐灯最差）`, `Δr/r=${(pd * 100).toFixed(1)}% ≥ ${(DESIGN.petalDelta * 0.6 * 100).toFixed(0)}%`);
+
+  // 灯身-灯盖贴邻（挂高一致）：设计上灯盖顶 = 灯身顶 + cap_h（rr×0.16 ∈ [0.045,0.048]）。
+  // 抓「灯身掉在地面 z=0、灯盖留在檐口」类错位（2026-09-29 lantern_body 传 z=0.0 实际事故）。
+  {
+    const capKeysPre = byPart(DESIGN.capPart);
+    const bodyTop = Math.max(...verts.filter((_, i) => i % 3 === U));
+    let capTop = null;
+    if (capKeysPre.length) {
+      const cv = readPositions(g, nodes.get(capKeysPre[0]).meshIdx);
+      capTop = Math.max(...cv.filter((_, i) => i % 3 === U));
+    }
+    const gap = capTop == null ? null : capTop - bodyTop;
+    ok(gap != null && gap >= -0.02 && gap <= DESIGN.capGapMax,
+       `${t.id}: 灯身-灯盖贴邻（挂高一致，盖顶−身顶 ∈ [−0.02,${DESIGN.capGapMax}]）`,
+       gap == null ? 'cap 节点缺失' : `gap=${gap.toFixed(3)}（身顶 y=${bodyTop.toFixed(2)} 盖顶 y=${capTop.toFixed(2)}）`);
+  }
 
   // 主体色相（从设计色 #c8301f 推红范围）
   const col = bodyColorJudge(g, body.matName);
@@ -351,6 +406,23 @@ ok(fbHit, '分区 cm 件 lantern 组命中：red-silk-lantern 名字存活（方
   const g = synthGlbJson({});
   const names = [...nodeByName(g).keys()];
   ok(!names.some(n => n.startsWith(DESIGN.tasselPart)), '负例N5 无穗合成体 → 穗节点判据可检缺失（真产物要求其存在）', names.join(','));
+}
+// N6 挂高错位注入（灯身压低 5m、灯盖留在原位）→ 贴邻判据红；对照：不压低时绿（判据非恒红）
+{
+  const gOk = synthGlbJson({ withCap: true });
+  const capOk = nodeByName(gOk).get('lanterns-cap__gild');
+  const bodyOk = readPositions(gOk, 0);
+  const btOk = Math.max(...bodyOk.filter((_, i) => i % 3 === U));
+  const ctOk = Math.max(...readPositions(gOk, capOk.meshIdx).filter((_, i) => i % 3 === U));
+  const gapOk = ctOk - btOk;
+  ok(gapOk >= -0.02 && gapOk <= DESIGN.capGapMax, '正例N6a 贴邻合成体（盖在身顶上）→ 贴邻判据绿', `gap=${gapOk.toFixed(3)}`);
+  const gBad = synthGlbJson({ withCap: true, bodyDropY: -5 });
+  const capBad = nodeByName(gBad).get('lanterns-cap__gild');
+  const bodyBad = readPositions(gBad, 0);
+  const btBad = Math.max(...bodyBad.filter((_, i) => i % 3 === U));
+  const ctBad = Math.max(...readPositions(gBad, capBad.meshIdx).filter((_, i) => i % 3 === U));
+  const gapBad = ctBad - btBad;
+  ok(!(gapBad >= -0.02 && gapBad <= DESIGN.capGapMax), '负例N6b 灯身压低 5m → 贴邻判据红', `gap=${gapBad.toFixed(3)}`);
 }
 
 console.log(`\nlantern-shape: ${passes} pass, ${fails.length} fail`);
