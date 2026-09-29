@@ -43,7 +43,10 @@ const DARKEN_TOL_255 = 1.5;
 // 基线锚位 × 当前环境 = 回归门归因干净：他单资产变化两侧同乘，门只拦「机位选择导致的变暗」。
 // old-south night 2.1 即 R0 记录的照明欠项（~2/255），门只防再变暗、不要求亮起来（移交欠项）。
 const BASELINE_SUBJ_255 = {
-  'anchor-main':      { day: 77.3, dusk: 30.7, night: 114.8 },
+  // wave14-stalllight 主控裁定选项①（2026-09-30）：摊位点光落台面（巡检 #19）使庙前立面洗光下降，
+  // anchor-main night 修后实测 108.3（beforelight 对照定责：重建世界×基线 presets=114.8 与冻结逐位一致，
+  // 见工单包 artifacts/r1/anchor-picture-beforelight-report.json）。其余锚点常量不动。
+  'anchor-main':      { day: 77.3, dusk: 30.7, night: 108.3 },
   'anchor-gold':      { day: 93.9, dusk: 48.2, night: 15.1 },
   'anchor-center':    { day: 62.6, dusk: 30.1, night: 52.7 },
   'anchor-jiuqu':     { day: 62.7, dusk: 18.9, night: 43.6 },
