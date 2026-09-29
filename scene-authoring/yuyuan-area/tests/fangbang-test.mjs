@@ -795,7 +795,7 @@ ok(`seal walls blocking a continuing 方浜中路 not placed (${JSON.stringify(s
   // 浏览器侧（给 FANGBANG_BASE 时跑）：核心三区加载后外围件可见；点「方浜中路」加载后被让位件全部不可见，其余 shoprow 仍可见
   if (process.env.FANGBANG_BASE && sup) {
     const { createRequire } = await import('node:module');
-    const req = createRequire('/home/baibai/pawborough-world/node_modules/');
+    const req = createRequire(import.meta.url);
     const { chromium } = req('playwright');
     const browser = await chromium.launch({ executablePath: '/home/baibai/.cache/ms-playwright/chromium-1234/chrome-linux/chrome', args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
     const page = await browser.newPage({ viewport: { width: 800, height: 500 } });

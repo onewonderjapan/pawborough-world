@@ -30,6 +30,30 @@ const outLayout = JSON.parse(fs.readFileSync(path.join(OUT, 'layout.json'), 'utf
 const svScene = makeStreetViewScene(boxes, layout, { areaRoot: ROOT, ceilings: passageCeilings(outLayout), masses: passageMasses(outLayout) });
 // 生成器选位门槛 = 渲染门槛再留余量（代理与渲染的差：目标 p5 −3.9 点、天空 p95 +0.9 点，见 wave4-touranchor RESULT）
 const SV_GEN = { minTarget: STREET_VIEW.MIN_TARGET + 0.05, maxSky: STREET_VIEW.MAX_SKY - 0.05, maxNear: STREET_VIEW.MAX_NEAR_COMPONENT - 0.05 };
+// wave13-tourfix（巡检报告第 11 条）：三个问题锚点的追加门槛与选位自由度。
+//   - 近墙（整幅口径，近竖直面距相机 < NEAR_M 的像素占比）代理 < 0.20（渲染门槛 0.25 − 5 点余量，
+//     与上方 minTarget/maxSky/maxNear 同一余量约定）；渲染复核在 tests/tour-anchor-picture-check.mjs。
+//   - gold 追加构图门槛：目标里街面（走廊盒）像素 ≥ 立面带像素的 1/4——巡检实测其原机位目标是
+//     「5.9% 街面 + 44.2% 山墙脸」（近处白墙占半幅的量化形态），构图门槛迫使选位/朝向离开贴墙状态。
+//     只对 gold 生效：old-south 的目标主体是过街楼内街（box 4.4%/band 29.6% 是该街的真实形态），
+//     old-north 的缺陷是贴柱不是构图，全局套用会误伤（center 7.8% 也过不了 8% 一类绝对门槛）。
+//   - 选位自由度（GOAL：位置/朝向/高度）：这三个锚点候选环半径放宽到 10 m，机位高 {EYE, 2.0}，
+//     朝向在街廊注视点基础上加偏摆 {0,±5°,±11°,±22°}（tour-test 朝向窗口 25°，留 3° 余量取 22°）。
+//     其余锚点维持原规则（半径 8、EYE、无偏摆、20° 窗），选中结果不变。
+//   - 选法：其余锚点保持「第一个全过者胜」；被点名的锚点在**全部过检变体**里按各自被点名的毛病
+//     取代理最优（策略见 TOURFIX_ANCHORS.pick），不再是先过先赢——先过先赢会停在基线机位
+//     （它在枚举序最前、且原本就过检），正是巡检点名的取景。
+//     代理↔渲染的对应关系已在 out-zone 实测核验（run/sweep4–8，逐变体 day/nearFull/night 实拍）：
+//     old-north 取最小 nearFull（右柱出画：渲染近墙 28.6%→18.7%）；gold 取 targetBox×target 均衡
+//     （离开贴墙构图且不偏跑到深巷只看街面：街面占比 7.4%→13.7%、主体总占比 49%→55%）。
+//     old-south 不进 TOURFIX：它的整段路线都在过街楼连片屋面下（枚举 81 个合规变体实拍 day ≤41.8/255、
+//     night 主体 ≤2.9/255，含机位高/偏摆全组合），没有任何合规机位能实质改善「桥洞/廊下近全黑」，
+//     保持基线机位不动（避免无增益扰动）；结论与证据见 artifacts RESULT blocker。
+const TOURFIX_ANCHORS = {
+  gold: { comp: true, pick: 'targetBoxTimesTarget' },
+  'old-north': { pick: 'nearFull' },
+};
+const TOURFIX = { maxR: 10, heights: [1.6, 2.0], pansDeg: [0, 5, -5, 11, -11, 22, -22], maxNearFull: 0.20, headingDeg: 22 }; // heights[0] = EYE
 const obj = (id) => layout.objects.find(o => o.id === id);
 const closed = (fp) => [...fp, fp[0]];
 const EYE = 1.6;
@@ -186,7 +210,8 @@ const fail = (k, why) => { console.error('NO-CAM-FOUND:', k, why || ''); process
 for (const key of ['main', 'gold', 'center', 'jiuqu', 'old-south', 'old-north']) {
   const a = nav.anchors[key];
   if (!a) { fail('anchor-' + key); continue; }
-  const cands = anchorCamCandidates(a);
+  const tourfix = TOURFIX_ANCHORS[key] || null;
+  const cands = anchorCamCandidates(a, tourfix ? TOURFIX.maxR : 8);
   if (!cands.length) { fail('anchor-' + key, '锚点 8 m 内无净空点'); continue; }
   let done = null;
   if (key === 'jiuqu') {
@@ -200,7 +225,7 @@ for (const key of ['main', 'gold', 'center', 'jiuqu', 'old-south', 'old-north'])
         if (!v.ok) continue;
         // 桥头锚点规则（主控 D1）：目标保持九曲桥，画面另过天空/近景墙门槛（代理，留 5 点余量）
         const sv = streetViewProxy(svScene, [c[0], EYE, c[1]], look, NO_TARGET_BOX, NO_TARGET_BOX);
-        if (sv.sky <= SV_GEN.maxSky && sv.nearMax < SV_GEN.maxNear) { done = { cam: c, look, target: 'jiuqu-bridge', sv, how: '望九曲桥近段（桥头锚点：目标九曲桥 + 天空/近景墙门槛）' }; break; }
+        if (sv.sky <= SV_GEN.maxSky && sv.nearMax < SV_GEN.maxNear) { done = { cam: [c[0], EYE, c[1]], look, target: 'jiuqu-bridge', sv, how: '望九曲桥近段（桥头锚点：目标九曲桥 + 天空/近景墙门槛）' }; break; }
       }
       if (done) break;
     }
@@ -209,41 +234,78 @@ for (const key of ['main', 'gold', 'center', 'jiuqu', 'old-south', 'old-north'])
     if (!dirs.length) { fail('anchor-' + key, 'commercial-route.json 无出发路线'); continue; }
     // wave4-touranchor：R1 三条硬检查之外，再过街景画面代理（街面 + 两侧 6 m 立面 ≥ 30%、天空 ≤ 30%、下 1/3 近景墙 < 35%）；
     // 候选顺序不变（由近到远、路线按文件顺序），第一个全过者胜出。全部不过时取代理最好的一个并 WARN（tour-render-check 会判）。
+    // wave13-tourfix：三个点名锚点（TOURFIX_ANCHORS）追加近墙代理门槛与 位置×高度×偏摆 枚举（见 TOURFIX 注释），
+    // 其余锚点保持原枚举（单一注视点、EYE），选中结果与改动前一致。
     let best = null;
+    const passing = tourfix ? [] : null; // tourfix：收齐全部过检变体再按策略挑（见 TOURFIX_ANCHORS.pick 注释）
     outer:
     for (const c of cands) {
       for (const { route, dir, pts } of dirs) {
-        const look = streetCorridorAim(a, dir, pts);
-        const hd = [look[0] - c[0], look[2] - c[1]];
-        const hl = Math.hypot(...hd) || 1;
-        const dot = (hd[0] / hl) * dir[0] + (hd[1] / hl) * dir[1];
-        if (dot < Math.cos(20 * Math.PI / 180)) continue; // 留 5° 余量于测试的 25°
-        const corr = streetCorridorBox(a, dir, pts);
-        const v = passVisibility([c[0], EYE, c[1]], look, corr);
-        if (!v.ok) continue;
-        const sv = streetViewProxy(svScene, [c[0], EYE, c[1]], look, corr, streetFacadeBand(a, dir, pts));
-        const cand = { cam: c, look, target: 'street:' + route, sv, how: `沿出发方向（${route} 第一段，拐点前走廊）望街景` };
-        if (sv.target >= SV_GEN.minTarget && sv.sky <= SV_GEN.maxSky && sv.nearMax < SV_GEN.maxNear) { done = cand; break outer; }
-        const score = Math.min(sv.target - SV_GEN.minTarget, SV_GEN.maxSky - sv.sky, SV_GEN.maxNear - sv.nearMax);
-        if (!best || score > best.score) best = { ...cand, score };
+        const variants = tourfix
+          ? TOURFIX.pansDeg.flatMap(pan => TOURFIX.heights.map(h => ({ pan, h })))
+          : [{ pan: 0, h: EYE }];
+        for (const { pan, h } of variants) {
+          const aim = streetCorridorAim(a, dir, pts);
+          // look = 注视点绕相机竖轴右转 pan（right = cross(f, up) 口径）；c = [x, z]，旋转变换保长
+          const ax = aim[0] - c[0], az2 = aim[2] - c[1];
+          const th = pan * Math.PI / 180;
+          const look = [c[0] + ax * Math.cos(th) - az2 * Math.sin(th), aim[1], c[1] + az2 * Math.cos(th) + ax * Math.sin(th)];
+          const hd = [look[0] - c[0], look[2] - c[1]];
+          const hl = Math.hypot(...hd) || 1;
+          const dot = (hd[0] / hl) * dir[0] + (hd[1] / hl) * dir[1];
+          if (dot < Math.cos((tourfix ? TOURFIX.headingDeg : 20) * Math.PI / 180)) continue; // 偏摆后留 3° 余量于测试的 25°
+          const corr = streetCorridorBox(a, dir, pts);
+          const camY = h;
+          const v = passVisibility([c[0], camY, c[1]], look, corr);
+          if (!v.ok) continue;
+          const sv = streetViewProxy(svScene, [c[0], camY, c[1]], look, corr, streetFacadeBand(a, dir, pts));
+          const cand = { cam: [c[0], camY, c[1]], look, target: 'street:' + route, sv, how: `沿出发方向（${route} 第一段，拐点前走廊）望街景${pan ? `（注视点右偏 ${pan}°）` : ''}${h !== EYE ? `（机位高 ${h} m）` : ''}` };
+          const gates = sv.target >= SV_GEN.minTarget && sv.sky <= SV_GEN.maxSky && sv.nearMax < SV_GEN.maxNear
+            && (!tourfix || sv.nearFull < TOURFIX.maxNearFull)
+            && (!(tourfix && tourfix.comp) || sv.targetBox >= sv.targetBand / 4);
+          if (gates) {
+            if (!tourfix) { done = cand; break outer; }
+            passing.push(cand);
+          }
+          const score = Math.min(sv.target - SV_GEN.minTarget, SV_GEN.maxSky - sv.sky, SV_GEN.maxNear - sv.nearMax);
+          if (!best || score > best.score) best = { ...cand, score };
+        }
       }
     }
+    // wave13-tourfix R1（astra 可选）：tourfix 点名锚点（gold/old-north）若无候选满足新增画面条件，
+    // 明确失败——静默回退旧评分选位会让后续资产变化悄悄失去新增约束；非 tourfix 锚点保持原 WARN 回退。
+    if (!done && tourfix && !passing.length) { fail('anchor-' + key, 'tourfix 点名锚点无候选满足新增画面条件（近墙/主体均衡门槛）——明确失败，不回退旧评分选位'); continue; }
     if (!done && best) {
       console.warn(`WARN anchor-${key}: 没有候选同时过街景代理门槛，取代理最好的一个（目标 ${(best.sv.target * 100).toFixed(1)}%、天空 ${(best.sv.sky * 100).toFixed(1)}%、近景 ${(best.sv.nearMax * 100).toFixed(1)}%）`);
       done = best;
     }
+    if (tourfix && passing.length) {
+      // tourfix 选法：按被点名的毛病取代理最优（tie-break：目标占比大者优先，再取离锚点更近者）。
+      // metric 按 pick 名取：'nearFull' 取最小（近墙出画）；'targetBoxTimesTarget' 取乘积最大
+      // （街面占比与主体总占比均衡，单取 targetBox 会偏跑到深巷里只看暗街面）。
+      const metric = (cand) => cand.sv[tourfix.pick] != null
+        ? cand.sv[tourfix.pick]
+        : cand.sv.targetBox * cand.sv.target;
+      const minimize = tourfix.pick === 'nearFull';
+      const better = (a2, b2) => Math.abs(metric(a2) - metric(b2)) > 1e-9
+        ? (minimize ? metric(a2) < metric(b2) : metric(a2) > metric(b2))
+        : (Math.abs(a2.sv.target - b2.sv.target) > 1e-9 ? a2.sv.target > b2.sv.target : dist2d([a2.cam[0], a2.cam[2]], a) < dist2d([b2.cam[0], b2.cam[2]], a));
+      const winner = passing.reduce((w, c2) => (better(c2, w) ? c2 : w), passing[0]);
+      console.log(`anchor-${key}: tourfix 过检变体 ${passing.length} 个，按 ${tourfix.pick} 选优`);
+      done = winner;
+    }
   }
   if (!done) { fail('anchor-' + key, '所有候选机位过不了可见性检查'); continue; }
-  const nudged = dist2d(done.cam, a) > 0.5;
+  const nudged = dist2d([done.cam[0], done.cam[2]], a) > 0.5;
   tour['anchor-' + key] = {
     label: `锚点 ${key}`,
     zone: zoneOfPoint(a),
-    p: [+done.cam[0].toFixed(1), EYE, +done.cam[1].toFixed(1)],
+    p: [+done.cam[0].toFixed(1), +done.cam[1].toFixed(1), +done.cam[2].toFixed(1)],
     t: [+done.look[0].toFixed(1), +done.look[1].toFixed(1), +done.look[2].toFixed(1)],
     targetObject: done.target,
-    source: `computed(R1${done.sv ? '+wave4 街景代理' : ''}): nav-gap 锚点眼高 1.6 m 站立机位${nudged ? '（外移至净空点）' : ''}，${done.how}（baseline/layout.json + collision-* 重算）`,
+    source: `computed(R1${done.sv ? '+wave4 街景代理' : ''}${tourfix ? '+wave13-tourfix 近墙/构图门槛' : ''}): nav-gap 锚点站立机位${nudged ? '（外移至净空点）' : ''}，${done.how}（baseline/layout.json + collision-* 重算）`,
   };
-  if (done.sv) tour['anchor-' + key].streetViewProxy = { target: +done.sv.target.toFixed(3), sky: +done.sv.sky.toFixed(3), soffit: +done.sv.soffit.toFixed(3), nearMax: +done.sv.nearMax.toFixed(3) };
+  if (done.sv) tour['anchor-' + key].streetViewProxy = { target: +done.sv.target.toFixed(3), sky: +done.sv.sky.toFixed(3), soffit: +done.sv.soffit.toFixed(3), nearMax: +done.sv.nearMax.toFixed(3), nearFull: +done.sv.nearFull.toFixed(3), targetBox: +done.sv.targetBox.toFixed(3), targetBand: +done.sv.targetBand.toFixed(3) };
 }
 
 // ---------- 五对象取景机位 ----------
