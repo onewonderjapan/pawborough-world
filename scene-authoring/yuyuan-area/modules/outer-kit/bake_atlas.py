@@ -185,11 +185,11 @@ BRICK = {'brick': 0x9c9b96, 'mortar': 0xc3c0b8, 'lintel': 0xcdc9bf}
 # 老墙风化档：cream 0.76→0.54、greywhite 0.67→0.50、oldyellow 0.51→0.39、brick 0.33→0.24（线性），
 # 仍都在各自材质语义的合理区间内（白抹灰 0.6–0.8 的下缘、青砖 0.15–0.35）。屋面带 / 招牌暗带不动。
 # R1（astra 必修3：白天门槛不豁免）：×0.88 使外围/航拍白天全画幅约 -11%/-16%，超过 ≤8%。
-# 授权旋钮内的候选折衷是逐通道 k=0.94（与 ground 0xa49f99 分开调，不宣称已经过门槛）。
-# 白天各机位绝对变化以合并 main 后的标准口径重建实测为准；夜/黄昏仍沿压暗方向。
+# k=0.94 时航拍仍约 -11%。B1 抹灰上限 0.66 把 k 卡在 0.95（cream.up 线性 0.657）。
+# 与地面 0xafaaa3 分开调。白天各机位以合并 main 后的实测为准；夜/黄昏仍应比雪原基线暗。
 # 注意必须逐通道缩放：对打包后的 24-bit 整数整体乘系数再取整，会把 R 通道 ×0.88 的小数（×65536 倍）
 # 灌进 G 通道造成串色（首版实测图集中部条带全花成品红/绿，已复现并回退验证）。
-def _dim_channel(h, k=0.94):
+def _dim_channel(h, k=0.95):
     r, g, b = (h >> 16) & 255, (h >> 8) & 255, h & 255
     return (int(round(r * k)) << 16) | (int(round(g * k)) << 8) | int(round(b * k))
 TONE_PLASTER = {t: {kk: _dim_channel(vv) for kk, vv in d.items()} for t, d in TONE_PLASTER.items()}
