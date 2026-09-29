@@ -63,7 +63,9 @@ for (const o of layout.objects) {
     // 记录名保留原段索引 —— 契约按同一过滤后的集合核对。
     const segs = o.id === 'temple-wall' ? dropFloatingSegments(g.segments) : g.segments;
     const kept = new Set(segs);
-    g.segments.forEach((s, i) => { if (kept.has(s)) ok(`cover wall ${o.id}:seg-${i}`, has(`${o.id}:seg-${i}`)); });
+    // wave14-templeeast：生成端已丢悬空段时按 geometry.segmentIndex 的原索引核对记录名
+    const idx = g.segmentIndex || g.segments.map((_, i) => i);
+    g.segments.forEach((s, i) => { if (kept.has(s)) ok(`cover wall ${o.id}:seg-${idx[i]}`, has(`${o.id}:seg-${idx[i]}`)); });
   }
   if (o.kind === 'water' && g.footprint) {
     let fp = g.footprint;

@@ -26,7 +26,7 @@ const Q = 1e4; // 世界坐标量化到 0.1 mm
 const ZONE_PARTS = [
   'zone-garden.glb', 'zone-garden-2.glb', 'zone-garden-3.glb',
   'zone-pond.glb', 'zone-pond-2.glb',
-  'zone-temple-1.glb', 'zone-temple-2.glb', 'zone-temple-3.glb', 'zone-temple-4.glb',
+  'zone-temple-1.glb', 'zone-temple-2.glb', 'zone-temple-3.glb', 'zone-temple-4.glb', 'zone-temple-5.glb',
   'zone-bazaar.glb', 'zone-bazaar-2.glb', 'zone-bazaar-3.glb', 'zone-bazaar-4.glb',
   'zone-outer.glb', 'zone-fangbang-1.glb', 'zone-fangbang-2.glb',
 ];
