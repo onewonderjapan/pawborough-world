@@ -858,7 +858,8 @@ def build_bridge():
         loft(mod, 'postcap', rings, M['bridgeStone'], cap_end=True, smooth_sides=True, uv_vertex=True)
     # wave14-jiuqu：删实心栏板（145 块连读成"墙"是机主打回点），柱间改上下两道横枋留空 + 花瓶柱
     # （参考 PBR-SH-0004-019：柱间上枋/下枋之间一排车制花瓶柱，明显透空看水；尺寸按照片比例推算，未核实）。
-    # 下枋 0.10 高 x 0.09 厚 @deck+0.05..0.15；花瓶柱带 deck+0.15..0.72（上枋梁底 0.79 下留 0.07）。
+    # 下枋 0.10 高 x 0.09 厚 @deck+0.05..0.15；花瓶柱带 deck+0.15..0.795（顶环没入上枋底 5 mm——
+    # R1 审查必修1：R0 柱顶 0.72 对上枋底 0.79 全部 324 根留 7 cm 断接；石作的常规做法是柱顶嵌进梁底。
     botrails = 0
     balusters = 0
     POST_H = 0.10                       # 望柱半宽（0.20 方柱）
@@ -878,7 +879,7 @@ def build_bridge():
             best = tm if best is None else min(best, tm)
         return best
     # 3 环收面：底 r0.052 / 鼓腹 r0.060 / 顶 r0.046（预算 30000 三角 / 900KB 内；4 棱 = 底16+帽4 三角/根）
-    BAL_PROFILE = [(0.052, 0.00), (0.060, 0.32), (0.046, 0.57)]
+    BAL_PROFILE = [(0.052, 0.00), (0.060, 0.36), (0.046, 0.645)]
     for key, (a, ed, inn, ts, el) in span_bands.items():
         sn, cs = ed[0], ed[1]
         yaw = math.atan2(ed[0], ed[1])
@@ -932,9 +933,11 @@ def build_bridge():
             pier_pos.append((pts[i][0] + dirs[i][0] * t, pts[i][1] + dirs[i][1] * t))
             next_at += 3.0
         acc += L
+    # R1 审查可选：站位去重——折点站优先（pts 在前），0.8 m 内只保留折点墩（R0 固定间距站与折点站
+    # 最近墩心 0.381 m、墩身墩帽相交）。实测 layout 重算：48→41 根，最近墩心 0.917 m；岸上墩 7→6（pondqa #4 下限 6）。
     uniq = []
-    for p in pier_pos + pts[1:]:
-        if not any(math.dist(p, q) < 0.3 for q in uniq):
+    for p in pts + pier_pos:
+        if not any(math.dist(p, q) < 0.8 for q in uniq):
             uniq.append(p)
     for (px, pz) in uniq:
         box_part(mod, 'piercol', (px, (-0.70 + 0.38) / 2, pz), (0.42, 1.08, 0.42), 0.0, M['greyStone'], smooth_all=True)
@@ -970,7 +973,7 @@ catalog = {'packageId': 'pawborough-yuyuan-garden-kit-r1-20260923',
            'coordinateContract': 'GLB Y-up world (x, y, z_map), origin map(0,0), no instance transform; Blender internal (x, -z_map, y); export_yup=True',
            'materials': {}, 'modules': {}, 'headInfo': HEAD_INFO, 'bridgeInfo': br, 'moonGateInfo': mg, 'assumptions': ASSUMPTIONS}
 ASSUMPTIONS.append('R1#2 bridge panel recess (superseded by wave14-jiuqu): solid panels removed')
-ASSUMPTIONS.append('wave14-jiuqu (owner 2026-09-30: 九曲桥修, ref photos PBR-SH-0004-017/018/019 CC0, dims photo-derived UNVERIFIED): openwork stone railing = posts 0.20x0.20x0.95 with battered square caps 0.25->0.17->0.20 x 0.28 (cap top deck+1.23 = collision box top, unchanged); between posts lower rail 0.10x0.09 at deck+0.05..+0.15 + 4-sided turned vase balusters (3 rings, ~0.57 tall, ~0.48 spacing) + top rail beam unchanged; solid panels deleted (owner: wall-like); deck slab 0.18 -> 0.09 thick (top deckY unchanged, underside 0.46); single row of square piers on the centreline: shaft 0.42 from -0.70 to 0.38 + flared cap 0.60 from 0.38 to deck-0.09, stations every 3.0 m + vertices (unchanged); railing material garden-bridge-stone = PaintedPlaster017 x tint #fff3f0 (white-balanced photo sampling median albedo ~#beb5b0 / texture linear mean 0.515,0.515,0.503); plan polyline / span count / deck elevation / collision boxes unchanged; land piers hidden by JS bridge-head platform whose top follows deck underside 0.46')
+ASSUMPTIONS.append('wave14-jiuqu (owner 2026-09-30: 九曲桥修, ref photos PBR-SH-0004-017/018/019 CC0, dims photo-derived UNVERIFIED): openwork stone railing = posts 0.20x0.20x0.95 with battered square caps 0.25->0.17->0.20 x 0.28 (cap top deck+1.23 = collision box top, unchanged); between posts lower rail 0.10x0.09 at deck+0.05..+0.15 + 4-sided turned vase balusters (3 rings, 0.645 tall = deck+0.15..+0.795, top ring tucked 5 mm under the rail beam per R1 review fix — R0 left a 7 cm gap on all 324 balusters, ~0.48 spacing) + top rail beam unchanged; solid panels deleted (owner: wall-like); deck slab 0.18 -> 0.09 thick (top deckY unchanged, underside 0.46); single row of square piers on the centreline: shaft 0.42 from -0.70 to 0.38 + flared cap 0.60 from 0.38 to deck-0.09, stations every 3.0 m + vertices, R1 review fix: stations within 0.8 m of a vertex are dropped keeping the vertex pier (R0 nearest pier centres 0.381 m with shaft/cap intersection; after dedup nearest 0.917 m, 48 -> 41 piers, land piers 7 -> 6 = pondqa #4 lower bound); railing material garden-bridge-stone = PaintedPlaster017 x tint #fff3f0 (white-balanced photo sampling median albedo ~#beb5b0 / texture linear mean 0.515,0.515,0.503); plan polyline / span count / deck elevation / collision boxes unchanged; land piers hidden by JS bridge-head platform whose top follows deck underside 0.46')
 ASSUMPTIONS.append('R1#4 tile lips spacing 0.6 -> 0.36 (r0.10 both sides; cap 0.72x0.14, roll r0.11 unchanged). 30MB gate exceeded after R1 growth (30,288,068B no-food / 30,160,292B with food) -> fallback: temple-wall mesh kept out of scene-areas via SITE_DROP_TEMPLE=1 (anchor node kept for reconcile; temple-wall.glb still delivered) + byte sampling coarsened (cap board/roll ds 0.45->0.9, undulating body ds 0.75->1.0, lotus bud 6->5 sides 3 rings); no spec dimension changed')
 for glb_name, mods in GROUPS:
     final, tri_by_mod = [], {}

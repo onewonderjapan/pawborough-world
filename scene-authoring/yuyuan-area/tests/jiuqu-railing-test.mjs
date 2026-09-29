@@ -34,7 +34,7 @@ const PIER_TOP = [DECK_Y - 0.12, DECK_Y - 0.06];   // 墩帽顶 = 板底 deckY�
 const PIER_SQ = [0.35, 0.70];        // 方墩见方（墩身 0.42 / 墩帽 0.60）
 const PIER_MIN = 8;                  // 立水中方墩数下限（97 m 桥、3 m 站距）
 const PIER_NEAR = 0.55;              // 水下实体三角离最近墩心距离上限（墩间透空见水）
-const TINT_LIN = [1.0, 0.9137, 0.8987];            // #fff3f0 线性（照片标定中位 albedo ≈ #beb5b0 ÷ 纹理线性均值）
+const TINT_LIN = [1.0, 0.89627, 0.87137];          // #fff3f0 线性（sRGB→linear 精确转换：((c+0.055)/1.055)^2.4，R1 审查更正）
 const TINT_TOL = 0.03;
 
 // ---------- GLB 解析（garden-kit-test 同款：JSON+BIN、节点 TRS 展开、三角形世界坐标） ----------
@@ -222,7 +222,7 @@ function occlusion(geom, band, triIdx) {
     for (const y of heights) {
       const hit = raycast(geom, [ox, y, oz], d, 3.0, triIdx);
       total++;
-      if (hit !== null) { blocked++; hitAny = true; } 
+      if (hit !== null) { blocked++; hitAny = true; }
     }
     for (const y of [DECK_Y + 0.30, DECK_Y + 0.45, DECK_Y + 0.60]) {
       if (raycast(geom, [ox, y, oz], d, 3.0, triIdx) !== null) { openHere = false; break; }
@@ -459,6 +459,59 @@ const pierCenters = [];
   ok(`I 护栏盒离中线 ${(W / 2 - 0.19).toFixed(2)} m（位错 ${badOff}）`, badOff === 0);
   ok(`I 桥面碰撞盒 walkableTop=0.55 × ${deckBoxes.length} ≥ 17（步行面不变）`, deckBoxes.length >= 17);
   ok(`I 抱厦开口 2 处保留（实测 ${(br.openings || []).length}）`, (br.openings || []).length === 2);
+}
+
+// ---------- J) 必修1（R1 审查）：每根花瓶柱上下端与横枋接触（间隙 ≤ 5 mm） ----------
+// R0 断接：柱顶 deck+0.72 vs 上枋底 deck+0.79，324 根全部留 7 cm 空隙。顶环识别：
+// 离带线横向 |l| < 0.045（上/下枋棱线横向 ±0.05、边石 ±0.07、望柱棱线 ≥0.0795 全排除；折线 ±10.8° 下
+// 花瓶柱顶环角点横向最大 ≈0.038）且 y ∈ [deck+0.65, deck+0.82]（旧 0.72 / 接枋后 0.795 均在内，柱头 ≥deck+0.95 排除）。
+{
+  const RAIL_BOT = DECK_Y + 0.79;    // 上枋底（上枋 0.12 高、中心 deckY+0.85）
+  const BOT_TOP = DECK_Y + 0.15;     // 下枋顶（下枋 0.10 高、中心 deckY+0.10）
+  const GAP_MAX = 0.005;
+  const bals = [];
+  for (const { band } of BANDS) {
+    const ring = [];
+    for (let vi = 0; vi < g.verts.length; vi++) {
+      const v = g.verts[vi];
+      if (v[1] < DECK_Y + 0.65 || v[1] > DECK_Y + 0.82) continue;
+      const px = v[0] - band.a[0], pz = v[2] - band.a[1];
+      const s = px * band.ed[0] + pz * band.ed[1];
+      const l = px * band.inn[0] + pz * band.inn[1];
+      if (s < -0.3 || s > band.el + 0.3 || Math.abs(l) >= 0.045) continue;
+      ring.push([v[0], v[2], v[1]]);
+    }
+    const clusters = [];
+    for (const [x, z, y] of ring) {
+      let best = null;
+      for (const c of clusters) {
+        const d = Math.hypot(x - c.sx / c.n, z - c.sz / c.n);
+        if (d < 0.10 && (best === null || d < best.d)) best = { c, d };
+      }
+      if (best) { const c = best.c; c.sx += x; c.sz += z; c.n++; c.maxY = Math.max(c.maxY, y); }
+      else clusters.push({ sx: x, sz: z, n: 1, maxY: y });
+    }
+    for (const c of clusters) if (c.n >= 3) bals.push({ band, cx: c.sx / c.n, cz: c.sz / c.n, maxY: c.maxY });
+  }
+  ok(`J 花瓶柱顶环簇 ${bals.length} ≥ 300（R0 实测 324 根花瓶柱）`, bals.length >= 300);
+  let badTop = 0, worstGap = -1e9;
+  for (const c of bals) {
+    const gap = RAIL_BOT - c.maxY;
+    if (gap > worstGap) worstGap = gap;
+    if (gap > GAP_MAX) badTop++;
+  }
+  ok(`J 每根花瓶柱上端接上枋底：最大间隙 ${worstGap.toFixed(4)} m ≤ 0.005（断接 ${badTop}/${bals.length}；R0 旧件 0.07 必红）`,
+    bals.length >= 300 && badTop === 0);
+  let badBot = 0, worstBot = -1e9;
+  for (const c of bals) {
+    const ti = bandTriIndex(g, c.band);
+    const hit = raycast(g, [c.cx, DECK_Y + 0.40, c.cz], [0, -1, 0], 0.60, ti);
+    const gap = hit === null ? 1e9 : (DECK_Y + 0.40 - hit) - BOT_TOP;
+    if (gap > worstBot) worstBot = gap;
+    if (!(hit !== null && gap <= GAP_MAX)) badBot++;
+  }
+  ok(`J 每根花瓶柱下端坐低下枋顶：柱轴下射线首命中最大间隙 ${worstBot.toFixed(4)} m ≤ 0.005（悬空 ${badBot}/${bals.length}）`,
+    bals.length >= 300 && badBot === 0);
 }
 
 // ---------- N) 负例：注入连续实心墙 → B 组检查必须转红（证明专抓实心墙） ----------
