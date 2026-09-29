@@ -9,12 +9,16 @@ R1（astra 必修3）：门禁改**绝对变化率** |a-b|/b（正向增亮超�
   N2 主动改观感，单独记录，不算入白天 ≤8% 门槛（GOAL-R1 主控裁定）。
 退出码：0 = 全部机位通过（--gate-day 时参与门禁的机位全画幅 |delta| ≤ 8）；1 = 门禁超限 / 缺机位 / 基线无效。"""
 import json
+import math
 import sys
 
 if len(sys.argv) < 3:
     print('usage: nightbalance-daydelta.py <before.json> <after.json> [--gate-day]', file=sys.stderr)
     sys.exit(2)
 GATE = 8.0
+# 机主裁定的机位级例外（2026-09-29 15:10，方案 a）：航拍在地面 0xafaaa3（A1 0.399）/ 图集 k=0.95 下
+# 实测 −8.61%（87.55→80.01），超门槛 0.61 个百分点，机主接受。例外上限只放到 8.7%，再暗仍然 FAIL。
+OWNER_EXCEPTIONS = {'garden-aerial': 8.7}
 gate = '--gate-day' in sys.argv
 
 
@@ -30,8 +34,8 @@ def load(path, tag):
         sys.exit(1)
     for name, v in views.items():
         lum = v.get('meanLum') if isinstance(v, dict) else None
-        if not isinstance(lum, (int, float)) or lum <= 0:
-            print(f'INVALID-BASELINE {tag}: {path}: 机位 {name} meanLum 缺失/非正数', file=sys.stderr)
+        if isinstance(lum, bool) or not isinstance(lum, (int, float)) or not math.isfinite(lum) or lum <= 0:
+            print(f'INVALID-BASELINE {tag}: {path}: 机位 {name} meanLum 缺失/非有限/非正数', file=sys.stderr)
             sys.exit(1)
     return views
 
@@ -67,14 +71,15 @@ for name in sorted(before):
         la = 0.2126 * ca['meanSrgb'][0] + 0.7152 * ca['meanSrgb'][1] + 0.0722 * ca['meanSrgb'][2]
         dl = (la - lb) / lb * 100 if lb > 0 else 0
         regs.append(f"{k} {tuple(round(x*255) for x in cb['meanSrgb'])}->{tuple(round(x*255) for x in ca['meanSrgb'])} {dl:+.1f}%")
-    over = gate and d > GATE and name not in exclude
+    limit = OWNER_EXCEPTIONS.get(name, GATE)
+    over = gate and d > limit and name not in exclude
     bad |= over
-    print(f"{name:14s} {vb['meanLum']:7.2f} {va['meanLum']:7.2f} {d:10.1f}%{' OVER' if over else (' EXCLUDED' if gate and name in exclude else '')}  {' | '.join(regs)}")
+    print(f"{name:14s} {vb['meanLum']:7.2f} {va['meanLum']:7.2f} {d:10.1f}%{' OVER' if over else (' EXCLUDED' if gate and name in exclude else (f' OWNER-EXCEPTION ≤{limit}%' if gate and limit != GATE else ''))}  {' | '.join(regs)}")
     if gate and name in exclude:
         continue
     if worst is None or d > worst[1]:
         worst = (name, d, signed)
 if gate:
     print(f"GATE-DAY worst: {worst[0]} |{worst[1]:.1f}|% (signed {worst[2]:+.1f}%) "
-          f"({'OK 全部机位 |delta| ≤8%' if not bad else 'OVER 8% —— 门禁不通过'})")
+          f"({'OK 全部机位 |delta| ≤8%（机主例外机位按其上限）' if not bad else 'OVER —— 门禁不通过'})")
     sys.exit(1 if bad else 0)
