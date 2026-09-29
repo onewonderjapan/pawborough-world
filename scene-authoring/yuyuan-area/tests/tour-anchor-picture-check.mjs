@@ -1,16 +1,19 @@
-// wave13-tourfix U1：导览锚点画面质量渲染复核（近墙占比 + 暗度），补 tour-render-check 两个盲区：
-//   1) 近墙占比：tour-render-check 的近景墙只判「画面下 1/3 最大连通区」（STREET_VIEW.MAX_NEAR_COMPONENT），
-//      gold 的白墙占上半幅、old-south 的贴脸墙不在下 1/3，都漏判。这里按整幅口径：
-//      近竖直面（|n_y| < VERTICAL_NY）且距相机 < NEAR_M 的像素占全画幅 < 25%（全体 anchor-* 机位，day 档量）。
-//   2) 暗度：机位躲在桥洞/过街楼里三档近全黑（报告第 11 条 anchor-old-south）。两条渲染门槛：
-//      day 档整幅平均亮度 ≥ 60/255；
-//      night 档主体区（街景目标 = 街廊盒 + 立面带；桥头锚点 = 九曲桥 ids 掩膜）平均亮度 ≥
-//      同档「参照锚点」（未被本单点名的 anchor-main / anchor-center / anchor-jiuqu）主体区亮度的中位数。
-//      参照集取不在修复名单内的锚点：门槛与修复后机位无关（不随被修锚点自我漂移），语义 = 不低于验收合格锚点的典型水平。
+// wave13-tourfix U1/R1：导览锚点画面质量渲染复核。
+// R1（主控裁定，astra 审查第 2 点）：暗度门槛由「跨区域统一硬门」改为「机位修复回归门」——
+//   1) 近墙硬门（保持）：近竖直面（|n_y| < VERTICAL_NY）且距相机 < NEAR_M 的像素占全画幅 < 25%
+//      （全体 anchor-* 机位，day 档量）。tour-render-check 的下 1/3 口径抓不住 gold 上半幅白墙 /
+//      old-south 贴脸墙，这里按整幅口径补盲区。
+//   2) 暗度回归门（R1 新语义）：各锚点主体区（同 targetMask 掩膜）平均亮度不得明显低于冻结基线
+//      ——基线 = a45c3594 版生成器输出的锚位（本单开工前的机位），在本单合并 main 后的资产/灯光下
+//      实测。基线值与容差来源见 BASELINE_SUBJ_255 / DARKEN_TOL_255 常量注释；day/dusk/night 三档都判。
+//   3) 诊断报告（只打印，不判红）：跨区域参照锚点（未被本单点名的 anchor-main/center/jiuqu）
+//      night 主体亮度中位数、day 档整幅平均亮度（旧 60/255 参照线）。旧语义的「night 主体 ≥ 参照
+//      中位数」「day 整幅 ≥ 60」作为统一硬门被主控否决：各街廊照明/材质/主体内容不同，且参照值
+//      随参照画面漂移；old-south 夜间主体 ~2/255 属照明欠项，移交、不在本单解决（见 SUMMARY）。
 //   修复名单（巡检报告第 11 条）：anchor-old-south / anchor-old-north / anchor-gold。
 //   不放宽 tour-render-check 任何现有门槛；本文件只新增检查。soffit 沿旧例只报告不判（主控 D2）。
-// 方法：同 tour-render-check——headless 浏览器真实渲染，window.__viewAt / window.__targetMask（target-mask.js 的
-// nearFull = 整幅近景墙像素占比）；亮度读渲染画布（含色调映射，与用户所见一致）。1400×900，fov46。
+// 方法：同 tour-render-check——headless 浏览器真实渲染，window.__viewAt / window.__targetMask（
+//   nearFull = 整幅近景墙像素占比；主体亮度读渲染画布，含色调映射，与用户所见一致）。1400×900，fov46。
 // 用法：BASE=http://127.0.0.1:<port>/ OUT_DIR=out-zone [TOUR=<tour.json>] [SHOT_DIR=<目录>] [REPORT=<json>] node tests/tour-anchor-picture-check.mjs
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
@@ -26,10 +29,27 @@ const base = process.env.BASE || 'http://127.0.0.1:5497/';
 const shotDir = process.env.SHOT_DIR || null;
 if (shotDir) fs.mkdirSync(shotDir, { recursive: true });
 
-const MIN_DAY_MEAN = 60 / 255;        // day 档整幅平均亮度下限
-const MAX_NEAR_FULL = 0.25;           // 整幅近墙占比上限（近竖直面、距相机 < STREET_VIEW.NEAR_M）
-const FIXED_ANCHORS = ['anchor-old-south', 'anchor-old-north', 'anchor-gold']; // 修复名单（暗度门槛适用）
-const LIGHTS = ['day', 'dusk', 'night']; // dusk 只记录不判（GOAL 量化门槛只覆盖 day/night）
+const MAX_NEAR_FULL = 0.25;           // 整幅近墙占比上限（近竖直面、距相机 < STREET_VIEW.NEAR_M），day 档
+const FIXED_ANCHORS = ['anchor-old-south', 'anchor-old-north', 'anchor-gold']; // 本单点名修复的锚点（诊断用）
+const LIGHTS = ['day', 'dusk', 'night'];
+// 暗度回归门容差（R1）：同机位同档重复测量 3 次/锚点/档位，逐次完全一致（σ=0，headless 确定性渲染），
+// 全量数据见 artifacts/r1/baseline-measure.json；容差取绝对下限 1.5/255——覆盖跨环境亚像素级抖动，
+// 能拦住 ≥1.5/255 的真实变暗。本单修复后实测：gold dusk 47.2（基线 48.2，−1.0，过），其余全部变亮或持平。
+const DARKEN_TOL_255 = 1.5;
+// 冻结基线（/255）：a45c3594 锚位 = a45c3594 版 scripts/compute-area-tour.mjs 于 2026-09-29 重算的
+// tour.json（anchor-main/center/jiuqu/old-south 与现值逐位相同，gold/old-north 为本单修复前机位）；
+// 主体亮度在本单合并 main（0ba5a67b，含 bazaarglow 0.5）后的资产+灯光下 3 次重复实测
+// （tests/.r1-measure.mjs，σ=0，artifacts/r1/baseline-measure.json）。
+// 基线锚位 × 当前环境 = 回归门归因干净：他单资产变化两侧同乘，门只拦「机位选择导致的变暗」。
+// old-south night 2.1 即 R0 记录的照明欠项（~2/255），门只防再变暗、不要求亮起来（移交欠项）。
+const BASELINE_SUBJ_255 = {
+  'anchor-main':      { day: 77.3, dusk: 30.7, night: 114.8 },
+  'anchor-gold':      { day: 93.9, dusk: 48.2, night: 15.1 },
+  'anchor-center':    { day: 62.6, dusk: 30.1, night: 52.7 },
+  'anchor-jiuqu':     { day: 62.7, dusk: 18.9, night: 43.6 },
+  'anchor-old-south': { day: 13.7, dusk: 5.9,  night: 2.1 },
+  'anchor-old-north': { day: 41.9, dusk: 19.8, night: 12.7 },
+};
 
 const layout = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline', 'layout.json'), 'utf8'));
 const nav = JSON.parse(fs.readFileSync(path.join(OUT, 'nav-gap.json'), 'utf8'));
@@ -41,6 +61,7 @@ for (const o of layout.objects) if (o.parentBuilding) (bays[o.parentBuilding] ||
 const FACADE_IDS = facadeIds(layout);
 const BRIDGE_ANCHORS = { 'anchor-jiuqu': 'jiuqu-bridge' };
 const anchors = Object.keys(tour).filter(k => k.startsWith('anchor-'));
+for (const key of anchors) if (!(key in BASELINE_SUBJ_255)) { console.error(`tour-anchor-picture-check: ${key} 无冻结基线常量（BASELINE_SUBJ_255），先补基线再跑`); process.exit(2); }
 const REF_ANCHORS = anchors.filter(k => !FIXED_ANCHORS.includes(k));
 
 function streetSpec(key, tag) {
@@ -118,25 +139,37 @@ await browser.close();
 
 // ---------- 门槛判定 ----------
 const median = (arr) => { const a = arr.filter(x => x != null).sort((x, y) => x - y); if (!a.length) return null; const m = a.length >> 1; return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2; };
-const report = { gates: { minDayMean: MIN_DAY_MEAN, maxNearFull: MAX_NEAR_FULL, fixedAnchors: FIXED_ANCHORS, refAnchors: REF_ANCHORS }, views: {} };
+const report = { gates: { maxNearFull: MAX_NEAR_FULL, darkenTol255: DARKEN_TOL_255, baseline: BASELINE_SUBJ_255, baselineProvenance: 'a45c3594 锚位（a45c3594 版生成器 2026-09-29 重算）× 合并 main 后资产/灯光，3 次重复实测 σ=0，见 artifacts/r1/baseline-measure.json', fixedAnchors: FIXED_ANCHORS, refAnchors: REF_ANCHORS }, diagnostics: {}, views: {} };
 let fails = 0;
+// 诊断（主控裁定：只报告，不判红）
 const nightRefMedian = median(REF_ANCHORS.map(k => stats[k + '@night']?.subjMean));
-console.log(`night 参照锚点（${REF_ANCHORS.join('/')}）主体区亮度中位数: ${nightRefMedian != null ? (nightRefMedian * 255).toFixed(1) + '/255' : '—'}`);
+console.log(`[诊断] night 参照锚点（${REF_ANCHORS.join('/')}）主体区亮度中位数: ${nightRefMedian != null ? (nightRefMedian * 255).toFixed(1) + '/255' : '—'}（旧「night 主体 ≥ 参照中位数」统一硬门已废——参照值随参照画面漂移，主控裁定）`);
+for (const key of anchors) {
+  const d = stats[key + '@day'];
+  if (d.wholeMean * 255 < 60) console.log(`[诊断] ${key} day 整幅平均 ${(d.wholeMean * 255).toFixed(1)}/255 < 旧参照线 60/255（棚下/廊下街廊整幅天然偏暗，统一硬门已废；主体亮度回归门照判）`);
+}
+report.diagnostics.nightRefMedian = nightRefMedian != null ? +nightRefMedian.toFixed(4) : null;
+// 门槛 1：近墙硬门（day，全体锚点）；门槛 2：暗度回归门（day/dusk/night，逐锚点 vs 冻结基线）
 for (const key of anchors) {
   const why = [];
-  const d = stats[key + '@day'], n8 = stats[key + '@night'];
-  if (d.nearFull >= MAX_NEAR_FULL) why.push(`近墙占比(整幅,<6m) ${(d.nearFull * 100).toFixed(1)}% ≥ ${MAX_NEAR_FULL * 100}%`);
-  if (FIXED_ANCHORS.includes(key)) {
-    if (d.wholeMean < MIN_DAY_MEAN) why.push(`day 整幅平均亮度 ${(d.wholeMean * 255).toFixed(1)}/255 < ${MIN_DAY_MEAN * 255}`);
-    if (n8.subjMean == null) why.push('night 主体区无像素');
-    else if (nightRefMedian == null) why.push('night 参照锚点主体亮度缺失');
-    else if (n8.subjMean < nightRefMedian) why.push(`night 主体区 ${(n8.subjMean * 255).toFixed(1)}/255 < 参照中位数 ${(nightRefMedian * 255).toFixed(1)}/255`);
+  const d = stats[key + '@day'];
+  if (d.nearFull >= MAX_NEAR_FULL) why.push(`近墙占比(整幅,<${STREET_VIEW.NEAR_M}m,day) ${(d.nearFull * 100).toFixed(1)}% ≥ ${MAX_NEAR_FULL * 100}%`);
+  for (const light of LIGHTS) {
+    const subj = stats[key + '@' + light].subjMean;
+    const baseLine = BASELINE_SUBJ_255[key][light] / 255;
+    if (subj == null) { why.push(`${light} 主体区无像素（基线 ${BASELINE_SUBJ_255[key][light]}/255）`); continue; }
+    if (subj < baseLine - DARKEN_TOL_255 / 255) why.push(`${light} 主体 ${(subj * 255).toFixed(1)}/255 < 冻结基线 ${BASELINE_SUBJ_255[key][light]}/255 − 容差 ${DARKEN_TOL_255}`);
   }
   const ok = !why.length;
   if (!ok) fails++;
-  report.views[key] = { day: { wholeMean: +d.wholeMean.toFixed(4), nearFull: +d.nearFull.toFixed(4) }, dusk: { wholeMean: +stats[key + '@dusk'].wholeMean.toFixed(4), subjMean: stats[key + '@dusk'].subjMean != null ? +stats[key + '@dusk'].subjMean.toFixed(4) : null }, night: { wholeMean: +n8.wholeMean.toFixed(4), subjMean: n8.subjMean != null ? +n8.subjMean.toFixed(4) : null, sky: n8.sky != null ? +n8.sky.toFixed(4) : null }, pass: ok, fail: why };
+  report.views[key] = {
+    day: { wholeMean: +d.wholeMean.toFixed(4), nearFull: +d.nearFull.toFixed(4) },
+    dusk: { wholeMean: +stats[key + '@dusk'].wholeMean.toFixed(4), subjMean: stats[key + '@dusk'].subjMean != null ? +stats[key + '@dusk'].subjMean.toFixed(4) : null },
+    night: { wholeMean: +stats[key + '@night'].wholeMean.toFixed(4), subjMean: stats[key + '@night'].subjMean != null ? +stats[key + '@night'].subjMean.toFixed(4) : null, sky: stats[key + '@night'].sky != null ? +stats[key + '@night'].sky.toFixed(4) : null },
+    pass: ok, fail: why,
+  };
   console.log(`${key.padEnd(18)} ${ok ? 'OK' : 'FAIL: ' + why.join('; ')}`);
 }
 if (process.env.REPORT) fs.writeFileSync(process.env.REPORT, JSON.stringify(report, null, 1) + '\n');
-if (fails) { console.error(`tour-anchor-picture-check: ${fails}/${anchors.length} anchors fail (near-wall full-frame < ${MAX_NEAR_FULL * 100}%; day mean ≥ ${MIN_DAY_MEAN * 255}/255; night subject ≥ median of ${REF_ANCHORS.join('/')})`); process.exit(1); }
-console.log(`tour-anchor-picture-check: all ${anchors.length} anchors pass`);
+if (fails) { console.error(`tour-anchor-picture-check: ${fails}/${anchors.length} anchors fail (near-wall full-frame < ${MAX_NEAR_FULL * 100}% day; subject ≥ frozen a45c3594 baseline − ${DARKEN_TOL_255}/255, day/dusk/night)`); process.exit(1); }
+console.log(`tour-anchor-picture-check: all ${anchors.length} anchors pass (near-wall hard gate + darkness regression vs a45c3594 frozen anchors)`);

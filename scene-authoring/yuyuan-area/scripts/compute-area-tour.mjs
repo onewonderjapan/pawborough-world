@@ -272,7 +272,10 @@ for (const key of ['main', 'gold', 'center', 'jiuqu', 'old-south', 'old-north'])
         }
       }
     }
-    if (!done && (!tourfix || !passing.length) && best) {
+    // wave13-tourfix R1（astra 可选）：tourfix 点名锚点（gold/old-north）若无候选满足新增画面条件，
+    // 明确失败——静默回退旧评分选位会让后续资产变化悄悄失去新增约束；非 tourfix 锚点保持原 WARN 回退。
+    if (!done && tourfix && !passing.length) { fail('anchor-' + key, 'tourfix 点名锚点无候选满足新增画面条件（近墙/主体均衡门槛）——明确失败，不回退旧评分选位'); continue; }
+    if (!done && best) {
       console.warn(`WARN anchor-${key}: 没有候选同时过街景代理门槛，取代理最好的一个（目标 ${(best.sv.target * 100).toFixed(1)}%、天空 ${(best.sv.sky * 100).toFixed(1)}%、近景 ${(best.sv.nearMax * 100).toFixed(1)}%）`);
       done = best;
     }

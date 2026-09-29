@@ -130,12 +130,13 @@ for (const [key, v] of Object.entries(tour)) {
     check(reg, `${key} targetObject ${v.targetObject} 不在 baseline/layout.json`);
     if (reg) check(regionDist(reg, t2) <= 3, `${key} 目标点距 ${v.targetObject} 区域 ${regionDist(reg, t2).toFixed(1)} m > 3 m`);
   }
-  // 4) 机位模式：锚点=眼高 1.6 m 且 ≤8 m 于 nav-gap 锚点（wave13-tourfix：巡检第 11 条点名的 gold/old-south/old-north
-  //    允许外移至 10 m、机位高 1.6/2.0 m —— 生成器同参数枚举，见 scripts/compute-area-tour.mjs TOURFIX）；对象=眼高 1.6 m 或斜俯视 h≥8
+  // 4) 机位模式：锚点=眼高 1.6 m 且 ≤8 m 于 nav-gap 锚点（wave13-tourfix：巡检第 11 条点名的 gold/old-north
+  //    允许外移至 10 m、机位高 1.6/2.0 m —— 生成器同参数枚举，见 scripts/compute-area-tour.mjs TOURFIX；
+  //    R1（astra 可选）：old-south 恢复原守卫——本轮修复保持其基位不动，放宽没有必要）；对象=眼高 1.6 m 或斜俯视 h≥8
   if (key.startsWith('anchor-')) {
     const aKey = key.slice('anchor-'.length);
     const a = nav.anchors && nav.anchors[aKey];
-    const tf = aKey === 'gold' || aKey === 'old-south' || aKey === 'old-north';
+    const tf = aKey === 'gold' || aKey === 'old-north';
     const maxR = tf ? 10 : 8;
     check(!!a, `${key} 在 nav-gap.json 无对应锚点`);
     if (a) check(dist2d(cam2, a) <= maxR, `${key} 机位距锚点 ${dist2d(cam2, a).toFixed(1)} m > ${maxR} m`);
