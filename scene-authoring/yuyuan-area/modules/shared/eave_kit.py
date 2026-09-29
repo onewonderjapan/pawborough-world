@@ -33,6 +33,11 @@ E3（wave6-eavekit）：eave_path / eave_skirt 的 noLift（这些角不起翘�
 段端不起翘）。按角 / 按边参数口径同逐边 over：下标集合 / 等长布尔序列 / 可调用，按调用方 poly 顺序。
 E4（wave6-eavekit）：封檐板（-board）材质键 prm['boardMaterial']，缺省 'wood'（原输出不变）；eave_skirt / xieshan_roof /
 zanjian_roof（含 n 边形）一致。只换 -board 的材质键，几何与其他件不变（博风板仍是 'wood'）。
+E5（wave14-gable）：xieshan_roof 的 prm['shanhuaMaterial']（山花材质键，缺省 'wall'）与 prm['gableOrnament']
+（dict bofengWidth / bofengProud / bofengDrop / xuanyuLen / xuanyuW / xuanyuProud / xuanyuTuck，或 True = 全默认）：
+给出时博风板以 -bofeng3d-*（闭合木板条，eave_facing 角色 solid）替代旧 -bofeng-*（旧平面博风位于山花面后
+0.02 m，被山花板遮住，只露脊端一条楔形细边——巡检 #14「山尖无博风」的根因），并新增 -xuanyu-w/e 脊下悬鱼板
+（solid）；山花材质不再写死。两键缺省时输出逐字节不变（金值 tests/gable-ornament-test.py J1，基线 a2bc8104 捕获）。
 """
 import math
 
@@ -571,6 +576,26 @@ def brackets(name, points, z, part, w=0.5, d=0.55, h=0.32, box=None):
 
 
 # ------------------------------------------------------------ 歇山主屋面 ----
+def _prism_u(name, pts, u_back, u_front, material, part):
+    """闭合棱柱（wave14-gable 增补，只加不改）：截面多边形 pts=[(v, h)]，沿 u 从 u_back 拉伸到 u_front。
+    面朝向按截面有向面积与拉伸方向推定：前盖法线 = 拉伸方向，后盖相反；
+    侧面四边形 (B_i, B_{i+1}, F_{i+1}, F_i) 的法线 = (dz, −dv)·sign(拉伸)，与截面绕序取向一致时朝外。
+    uv 取 (v, h)。"""
+    n = len(pts)
+    du = u_front - u_back
+    a2 = sum(pts[i][0] * pts[(i + 1) % n][1] - pts[(i + 1) % n][0] * pts[i][1] for i in range(n))
+    pos = (du > 0) == (a2 > 0)
+    items = [((u_back, v, h), (v, h)) for (v, h) in pts] + [((u_front, v, h), (v, h)) for (v, h) in pts]
+    faces = []
+    faces.append(tuple(range(n, 2 * n)) if pos else tuple(range(2 * n - 1, n - 1, -1)))   # 前盖
+    faces.append(tuple(range(n - 1, -1, -1)) if pos else tuple(range(n)))                 # 后盖
+    for i in range(n):
+        j = (i + 1) % n
+        faces.append((i, j, n + j, n + i) if pos else (i, n + i, n + j, j))
+    _ADD(name, items, faces, material, part)
+
+
+
 def _rect_ring(u0, u1, v0, v1, n_u, n_v):
     """矩形环按「边 + 边参数」取样（CCW，从 (u0,v0) 起），各边点数固定，便于两个环一一对齐。"""
     pts = []
@@ -670,16 +695,60 @@ def xieshan_roof(name, rect, z_eave, prm, part):
                 fc.append(q if sgn < 0 else (q[0], q[3], q[2], q[1]))
         _ADD(name + '-upper-' + tag, it, fc, 'roof', part)
     # 山花（三角，内收到 gu0/gu1）+ 两端小坡（从折线环到山花脚，歇山的「撒头」）
+    # wave14-gable（巡检 #14）新增 opt-in 参数，缺省输出逐字节不变：
+    #   prm['shanhuaMaterial']：山花材质键（缺省 'wall'——白抹灰大平板即巡检问题来源）；
+    #   prm['gableOrnament']：dict(bofengWidth/bofengProud/bofengDrop/xuanyuLen/xuanyuW/xuanyuProud/xuanyuTuck)
+    #     或 True（全默认）。给出时：博风板改为山花面外侧的闭合木板条（旧平面博风藏在山花面后 0.02 m 被遮，
+    #     只露脊端一条楔形细边），并新增山尖顶端脊下悬鱼板。
+    _smt = prm.get('shanhuaMaterial', 'wall')
+    _gor = prm.get('gableOrnament')
     for tag, ub, ug, flip in (('w', bu0, gu0, False), ('e', bu1, gu1, True)):
         tri = [((ug, bv0, zb), (0, 0)), ((ug, bv1, zb), (1, 0)), ((ug, vc, zr), (0.5, zr - zb))]
-        _ADD(name + '-shanhua-' + tag, tri, [(0, 2, 1)] if not flip else [(0, 1, 2)], 'wall', part)
+        _ADD(name + '-shanhua-' + tag, tri, [(0, 2, 1)] if not flip else [(0, 1, 2)], _smt, part)
         quad = [((ub, bv0, zb), (0, 0)), ((ub, bv1, zb), (1, 0)), ((ug, bv1, zb + 0.05), (1, 1)), ((ug, bv0, zb + 0.05), (0, 1))]
         _ADD(name + '-satou-' + tag, quad, [(0, 1, 2, 3)] if flip else [(0, 3, 2, 1)], 'roof', part)
-        # 博风板：山花两斜边外侧一条深红木带
-        for side, vv in (('a', bv0), ('b', bv1)):
-            bf = [((ug + (0.02 if not flip else -0.02), vv, zb), (0, 0)), ((ug + (0.02 if not flip else -0.02), vc, zr + 0.05), (1, 0)),
-                  ((ug + (0.02 if not flip else -0.02), vc, zr - 0.35), (1, 1)), ((ug + (0.02 if not flip else -0.02), vv, zb - 0.35), (0, 1))]
-            _ADD(name + '-bofeng-%s%s' % (tag, side), bf, [(0, 1, 2, 3)] if (side == 'a') != flip else [(0, 3, 2, 1)], 'wood', part)
+        if _gor is None:
+            # 博风板：山花两斜边外侧一条深红木带
+            for side, vv in (('a', bv0), ('b', bv1)):
+                bf = [((ug + (0.02 if not flip else -0.02), vv, zb), (0, 0)), ((ug + (0.02 if not flip else -0.02), vc, zr + 0.05), (1, 0)),
+                      ((ug + (0.02 if not flip else -0.02), vc, zr - 0.35), (1, 1)), ((ug + (0.02 if not flip else -0.02), vv, zb - 0.35), (0, 1))]
+                _ADD(name + '-bofeng-%s%s' % (tag, side), bf, [(0, 1, 2, 3)] if (side == 'a') != flip else [(0, 3, 2, 1)], 'wood', part)
+        else:
+            go = _gor if isinstance(_gor, dict) else {}
+            bw = go.get('bofengWidth', 0.4)
+            bp = go.get('bofengProud', 0.06)
+            bd = go.get('bofengDrop', 0.12)
+            xl = go.get('xuanyuLen', 0.6)
+            xw = go.get('xuanyuW', 0.24)
+            xp = go.get('xuanyuProud', 0.035)
+            xt = go.get('xuanyuTuck', 0.04)
+            mout = -1.0 if not flip else 1.0                  # 山花面外向（w 端 −u，e 端 +u）
+            for side, vv in (('s', bv0), ('n', bv1)):         # 侧名 s/n 与 -upper-s/n 同语义；不用 a/b（-wa 撞瓦垄校验）
+                dv, dh = vc - vv, zr - zb
+                L = math.hypot(dv, dh) or 1.0
+                du_, dh_ = dv / L, dh / L
+                sgn = 1.0 if side == 's' else -1.0
+                nv, nh = sgn * dh_, -sgn * du_                # 山花面内、指向三角内部的坡法向
+                q1 = (vv - du_ * bd, zb - dh_ * bd)           # 下端沿斜边延长、过撒头下探 bd
+                q4 = (vc, zr)                                 # 脊端收到正脊线下（正脊盒盖住合拢缝）
+                q2 = (q1[0] + nv * bw, q1[1] + nh * bw)
+                q3 = (q4[0] + nv * bw, q4[1] + nh * bw)
+                _prism_u(name + '-bofeng3d-%s%s' % (tag, side), [q1, q2, q3, q4],
+                         ug - mout * 0.001, ug + mout * (bp - 0.001), 'wood', part)
+            # 悬鱼：山尖顶端脊下悬垂的鱼形饰板（头宽尾尖、尾端展鳍）。
+            # R1 返修（审查必修1）：R0 把悬鱼放在博风板后方（山花面外 0.008 起），正面投影被两条博风
+            # 在脊端合拢区盖死（实测抱厦 e 侧 100%、主楼 88%）。改为悬鱼**挂在博风板前方**：背面贴
+            # 博风前脸外 4 mm、往外伸出 xuanyuProud——即传统「悬鱼钉在博风合拢处之外」的层次，
+            # 正面投影中悬鱼完整可辨（博风在它背后）。
+            w2 = xw / 2
+            zt = zr - xt
+            fish = [(vc + w2, zt), (vc + w2, zt - 0.35 * xl), (vc + 0.28 * xw, zt - 0.66 * xl),
+                    (vc + 0.20 * xw, zt - 0.80 * xl),
+                    (vc, zt - xl),
+                    (vc - 0.20 * xw, zt - 0.80 * xl), (vc - 0.28 * xw, zt - 0.66 * xl), (vc - w2, zt - 0.35 * xl),
+                    (vc - w2, zt)]
+            xu_back = bp + 0.004
+            _prism_u(name + '-xuanyu-' + tag, fish, ug + mout * xu_back, ug + mout * (xu_back + xp), 'dark', part)
     # 正脊：沿 u 的方截面长条，两端起翘成吻
     ridge_items, ridge_faces = [], []
     ns = nr

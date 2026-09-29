@@ -95,14 +95,28 @@ def is_east_apron(o):
 def is_shanmen_passage(o):
     return o.get('module') == 'shanmen-passage'
 
+# wave14-templeeast：庙东跨院全部内容（layout id 前缀 templeeast-：hall-kit 楼/厅、安仁街店屋、樟、宝鼎、铺地；
+# HALL_KIT=0 时楼/厅是 ZONE-temple 程序化件 temple|templeeast-…）单独成件 zone-temple-5.glb（主控 2026-09-29 定新开 temple-5）。
+TEMPLE_EAST_PREFIX = 'templeeast-'
+
+def is_temple_east(o):
+    cur = o
+    while cur is not None:
+        if str(cur.get('id') or '').startswith(TEMPLE_EAST_PREFIX) or cur.name.startswith(TEMPLE_EAST_PREFIX) \
+                or cur.name.startswith('temple|' + TEMPLE_EAST_PREFIX):
+            return True
+        cur = cur.parent
+    return False
+
 PARTS = [
     ('garden', 1, ['ZONE-garden', 'INST-garden', 'SITE-garden'], None),
     ('pond',   1, ['ZONE-pond', 'SITE-pond'], lambda o,m,c: not is_east_apron(o)),
     ('pond', 2, ['SITE-pond'], lambda o,m,c: is_east_apron(o)),
-    ('temple', 1, ['ZONE-temple', 'SITE-temple', 'INST-temple'], lambda o, m, c: not is_shanmen_passage(o) and (c != 'INST-temple' or m in TEMPLE_FRONT or not m)),   # module rule on INST only: SITE anchors carry module='garden-kit', ZONE carries none — both stay in part 1
-    ('temple', 2, ['INST-temple'], lambda o, m, c: c == 'INST-temple' and bool(m) and m not in TEMPLE_FRONT and m not in TEMPLE_REAR),
-    ('temple', 3, ['INST-temple'], lambda o, m, c: c == 'INST-temple' and m in TEMPLE_REAR),
+    ('temple', 1, ['ZONE-temple', 'SITE-temple', 'INST-temple'], lambda o, m, c: not is_shanmen_passage(o) and not is_temple_east(o) and (c != 'INST-temple' or m in TEMPLE_FRONT or not m)),   # module rule on INST only: SITE anchors carry module='garden-kit', ZONE carries none — both stay in part 1
+    ('temple', 2, ['INST-temple'], lambda o, m, c: c == 'INST-temple' and bool(m) and m not in TEMPLE_FRONT and m not in TEMPLE_REAR and not is_temple_east(o)),
+    ('temple', 3, ['INST-temple'], lambda o, m, c: c == 'INST-temple' and m in TEMPLE_REAR and not is_temple_east(o)),
     ('temple', 4, ['SITE-temple'], lambda o, m, c: is_shanmen_passage(o)),
+    ('temple', 5, ['ZONE-temple', 'INST-temple'], lambda o, m, c: is_temple_east(o)),
     ('bazaar', 1, ['ZONE-bazaar', 'INST-bazaar', 'FOOD-bazaar'], is_bazaar_street),
     ('bazaar', 2, ['ZONE-bazaar'], is_bazaar_block),
     *[('bazaar', n, ['SITE-bazaar'], tower_pred(n)) for n in TOWER_PARTS],
@@ -319,6 +333,9 @@ for it in plan:
              'collections': [c for c in colls if c in bpy.data.collections],
              'objects': len(objs), 'bounds': bounds(objs), 'withinCap': len(b) <= CAP}
     if note: entry['note'] = note[part_index]
+    if z == 'temple' and part_index == 5:
+        entry['role'] = 'temple-east'
+        entry['note'] = 'wave14-templeeast east court: hall-kit towers/halls + 安仁街 shop row + camphors + burner + paving (layout ids templeeast-*)'
     if z in DEFERRED_ZONES: entry['loadPolicy'] = 'deferred'
     if z == 'bazaar' and part_index in TOWER_PARTS:
         entry['role'] = 'bazaar-towers'

@@ -71,6 +71,7 @@ SCHEDULER = os.path.join(AREA, 'scripts', 'render-pv-batch.py')
 PV_SHOTS = os.path.join(AREA, 'scripts', 'pv-shots.json')
 PV_DOCS = os.path.join(AREA, 'scripts', 'pv-docs.py')
 RENDERER = os.path.join(AREA, 'scripts', 'render-control-passes.py')
+ATMOS_MIX = os.path.join(AREA, 'scripts', 'atmosphere-mix.py')   # R1必修2：混雾脚本进指纹
 CHANNELS = ('beauty', 'depth', 'normal', 'segmentation')
 FAILS = []
 TMPS = []
@@ -484,11 +485,12 @@ def main():
     # 必修1：.done.json 字段与指纹
     d14 = jload(os.path.join(base1, 'pv14-bazaar-dusk', '.done.json'))
     fp14 = (d14 or {}).get('fingerprint') or {}
-    need_fp = ('argv', 'rendererSha256', 'presetsSha256', 'sceneSha256', 'camerasSha256', 'layoutSha256',
-               'framesCount', 'mode')
+    need_fp = ('argv', 'rendererSha256', 'atmosphereMixSha256', 'presetsSha256', 'sceneSha256',
+               'camerasSha256', 'layoutSha256', 'framesCount', 'mode')
     ok_fp = (d14 is not None and d14.get('guard') == 'pass' and all(k in fp14 for k in need_fp)
              and fp14.get('framesCount') == 120 and fp14.get('mode') == 'formal'
              and fp14.get('rendererSha256') == sha256_file(RENDERER)
+             and fp14.get('atmosphereMixSha256') == sha256_file(ATMOS_MIX)
              and fp14.get('sceneSha256') == sha256_file(SYNTH['scene'])
              and fp14.get('camerasSha256') == sha256_file(SYNTH['cameras'])
              and fp14.get('presetsSha256') == sha256_file(os.path.join(AREA, 'lighting', 'presets.json'))
@@ -578,6 +580,70 @@ def main():
     check('必修1 无 .done.json：帧齐全也报错停下', r.returncode != 0 and '完成记录' in (r.stdout + r.stderr),
           (r.stdout + r.stderr).strip()[-300:])
     check('必修1 无 .done.json：不渲染任何帧', len(invocations(inv_nb)) == 2, 'n=%d' % len(invocations(inv_nb)))
+
+    # ---------------- R1必修2：atmosphere-mix.py 进指纹（改混雾脚本/旧记录缺字段 → 拒绝复用）----------------
+    out_atm = os.path.join(tmp, 'run-atmfp')
+    inv_atm = os.path.join(tmp, 'inv-atmfp.log')
+    r = run_sched(out_atm, 'dusk', base_env(stub, inv_atm))
+    check('R1必修2 基线跑退出码 0', r.returncode == 0, (r.stdout + r.stderr).strip()[-300:])
+    atm14 = os.path.join(out_atm, 'control-24fps-dusk', 'pv14-bazaar-dusk', '.done.json')
+    d_atm = jload(atm14) or {}
+    fp_atm = d_atm.get('fingerprint') or {}
+    check('R1必修2 .done.json 指纹含 atmosphereMixSha256 且=当前混雾脚本 sha',
+          fp_atm.get('atmosphereMixSha256') == sha256_file(ATMOS_MIX), str(fp_atm.get('atmosphereMixSha256'))[:80])
+    n_atm = len(invocations(inv_atm))
+
+    def _tamper_fp(mutate):
+        d = jload(atm14) or {}
+        mutate(d.setdefault('fingerprint', {}))
+        json.dump(d, open(atm14, 'w', encoding='utf-8'))
+
+    _tamper_fp(lambda fp: fp.__setitem__('atmosphereMixSha256', '0' * 64))
+    r = run_sched(out_atm, 'dusk', base_env(stub, inv_atm))
+    out_txt = r.stdout + r.stderr
+    check('R1必修2 只改混合脚本 sha → 拒绝复用旧 done（退出码非 0）',
+          r.returncode != 0 and 'atmosphereMixSha256' in out_txt, 'rc=%d %s' % (r.returncode, out_txt.strip()[-200:]))
+    check('R1必修2 拒绝时不渲染任何帧', len(invocations(inv_atm)) == n_atm, 'n=%d vs %d' % (len(invocations(inv_atm)), n_atm))
+    _tamper_fp(lambda fp: fp.pop('atmosphereMixSha256', None))
+    r = run_sched(out_atm, 'dusk', base_env(stub, inv_atm))
+    check('R1必修2 旧记录缺该字段 → 同样判不匹配（退出码非 0）',
+          r.returncode != 0 and 'atmosphereMixSha256' in (r.stdout + r.stderr),
+          'rc=%d %s' % (r.returncode, (r.stdout + r.stderr).strip()[-200:]))
+    check('R1必修2 缺字段拒绝时也不渲染', len(invocations(inv_atm)) == n_atm, 'n=%d' % len(invocations(inv_atm)))
+    # 还原指纹后同 argv 应放行（证明拒绝只来自该字段）
+    _tamper_fp(lambda fp: fp.__setitem__('atmosphereMixSha256', sha256_file(ATMOS_MIX)))
+    r = run_sched(out_atm, 'dusk', base_env(stub, inv_atm))
+    check('R1必修2 还原该字段后指纹一致（两镜 complete-preexisting）',
+          r.returncode == 0, (r.stdout + r.stderr).strip()[-300:])
+
+    # ---------------- R1可选1：seg 纯度接入 .done 守卫（LUT 存在即按完整帧号全查）----------------
+    # stub 不写 segmentation-lut.json → 上面的所有用例自动跳过纯度检查；这里在新目录渲染前
+    # 先放一份 LUT（合法色不含 stub 灰度渐变色）模拟正式链路：写成功 .done.json 前必须过纯度。
+    out_pur = os.path.join(tmp, 'run-purity')
+    pr_root = os.path.join(out_pur, 'control-24fps-dusk')
+    os.makedirs(pr_root, exist_ok=True)
+    lut_atm = os.path.join(pr_root, 'segmentation-lut.json')
+    with open(lut_atm, 'w', encoding='utf-8') as f:
+        json.dump({'version': 1, 'unassigned': [255, 0, 255], 'colorSpace': 'test',
+                   'idToRgb': {'x': [10, 20, 30]}}, f)
+    inv_pur = os.path.join(tmp, 'inv-purity.log')
+    r = run_sched(out_pur, 'dusk', base_env(stub, inv_pur))
+    out_txt = r.stdout + r.stderr
+    check('R1可选1 非 LUT seg 帧（stub 灰度）→ 守卫失败停下（退出码非 0）',
+          r.returncode != 0 and 'seg 纯度' in out_txt, 'rc=%d %s' % (r.returncode, out_txt.strip()[-240:]))
+    check('R1可选1 纯度拒绝时只渲了 pv14（pv15 未开始）', len(invocations(inv_pur)) == 1
+          and '--shots pv14-bazaar-dusk' in invocations(inv_pur)[0],
+          'n=%d' % len(invocations(inv_pur)))
+    res_p = jload(os.path.join(out_pur, 'RESULT.json'))
+    st_p = {x['id']: x['status'] for x in (res_p or {}).get('shots', [])}
+    check('R1可选1 RESULT：pv14 failed-guard（纯度）、pv15 pending',
+          st_p.get('pv14-bazaar-dusk') == 'failed-guard' and st_p.get('pv15-huxin-dusk') == 'pending',
+          str(st_p))
+    d_p = jload(os.path.join(pr_root, 'pv14-bazaar-dusk', '.done.json')) or {}
+    check('R1可选1 .done.json 记 guard=fail 且 detail 提纯度',
+          d_p.get('guard') == 'fail' and '纯度' in str(d_p.get('guardDetail', '')),
+          str(d_p.get('guard')) + ' ' + str(d_p.get('guardDetail'))[:160])
+    os.remove(lut_atm)   # 测试自建文件，移除
 
     # ---------------- 必修4 + 必修3：黑帧 → 立即停，下一镜无产物；重跑重新守卫仍停 ----------------
     out3 = os.path.join(tmp, 'run-black')

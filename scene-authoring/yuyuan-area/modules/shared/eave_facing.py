@@ -8,7 +8,8 @@
   soffit   -soffit                                             檐底：法线朝下（n̂·up < 0）
   fascia   -tileend / -board / -endcap*                        檐口立面（瓦头 / 封檐板 / 端头收口）：朝外
   gable    -shanhua-* / -bofeng-*                              山花 / 博风：水平朝外（背离本屋面平面形心）
-  solid    -ridge / -qiangji-* / 斗拱块 <name>-<i>-<lvl>        实体：正面朝体外（射线奇偶）
+  solid    -ridge / -qiangji-* / -bofeng3d-* / -xuanyu-* / 斗拱块 <name>-<i>-<lvl>  实体：正面朝体外（射线奇偶）
+             （-bofeng3d- / -xuanyu- 为 wave14-gable 增补：xieshan gableOrnament 的闭合木板条 / 悬鱼盒）
 
 判定：
   - surface / soffit 的面若 |n̂·up| ≥ FLAT_TOL，直接按上 / 下判；
@@ -35,6 +36,7 @@ _ROLES = (
     (re.compile(r'-soffit$'), 'soffit'),
     (re.compile(r'-(tileend|board|endcap(-[a-z0-9]+)?)$'), 'fascia'),
     (re.compile(r'-(shanhua|bofeng)-[a-z]+$'), 'gable'),
+    (re.compile(r'-(bofeng3d|xuanyu)-[a-z]+$'), 'solid'),   # wave14-gable：xieshan gableOrnament 的闭合木板条 / 悬鱼盒
     (re.compile(r'-\d+-\d+$'), 'solid'),           # brackets: '%s-%d-%d' % (name, i, lvl)
 )
 

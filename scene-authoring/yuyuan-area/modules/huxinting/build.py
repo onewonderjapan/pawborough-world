@@ -7,6 +7,8 @@ glTF (x,y,z) = 地图 (x, 高度, z)，锚点 = footprint 面积形心（锚 emp
 一端（远离九曲桥）接方形攒尖塔亭（平面 4.2 m，比主楼高一层，鎏金宝顶 ≈12.0）；
 临九曲桥一侧单层抱厦（歇山小顶）；匾额空板。屋面必须用 modules/shared/eave_kit.py（只读），
 主楼出檐 1.1 / 出翘 0.3 / 起翘 0.8 / reach 2.0，塔亭攒尖 over 0.9；正脊 9.6 / 宝顶 12.0（design_inference）。
+（wave14-gable，巡检 #14）山尖装饰走 eave_kit E5 opt-in 参数（shanhuaMaterial / gableOrnament，缺省不变）：
+主楼与抱厦山花改深红木板、博风板改山花面外侧闭合木板条、新增脊下悬鱼；尺寸见 D['roof']/D['porch'] 注释（未核实）。
 瓦色按灰瓦做（generated/0010-lead-QC.json：推理图偏蓝不照抄）。
 九曲桥接口：承台边到桥折线最近点 ≤0.3 m（承台在桥侧外伸 2.3 m）。
 
@@ -76,13 +78,39 @@ D = dict(
               breakInset=0.8, gableInset=1.0, drop=0.55, tileH=0.18, boardH=0.30, curve=1.6, rings=7, ridgeEndLift=0.18,
               # R1：正脊 / 吻 / 戗脊按 eave_kit ornamentScale 缩放。'auto' 按进深 7.82/12 = 0.65 时吻端起翘
               # (0.18+0.9)*0.65 = 0.70 > 0.5 m 仍超限，故给实测定值 0.42：脊顶高出瓦面 0.13、吻起翘 0.45、戗脊截面 ≤0.25。
-              ornamentScale=0.42),
+              ornamentScale=0.42,
+              # wave14-gable（巡检 #14）：山尖装饰。eave_kit E5 opt-in（缺省仍输出旧件，塔楼 / hall-kit 不受影响）。
+              # 山花面改深红木板（ht-wood-red，与商城楼 nightbalance N1 的 -shanhua-→wood 同口径），不再用纯白大平板。
+              # 尺寸取值：R1 更正——参考库本有湖心亭实拍 PBR-SH-0004-017（本次 R0 未利用），形制与视觉比例
+              # 按实拍（博风板为窄条 ≈山面跨度 10–20%）判断；精确米制尺寸仍未核实——
+              # 山尖高 = ridgeZ−breakZ = 1.7 m、山花底宽 = 2×(rectHalfV−breakInset) ≈ 6.22 m：
+              # 博风板宽 0.40 = 跨度 6.4%（实拍形制带内）、出山花面 0.06、下端沿斜边过撒头下探 0.12；
+              # 悬鱼自脊下 0.04 悬垂，长 ≈0.35 山尖高 0.60、最大宽 ≈0.4×长 0.24、出平面 0.035。
+              # R1：悬鱼挂在博风板前方（eave_kit 内背面贴博风前脸外 4 mm），不再退居博风后被盖 88%。
+              shanhuaMaterial='wood',
+              gableOrnament=dict(bofengWidth=0.40, bofengProud=0.06, bofengDrop=0.12,
+                                 xuanyuLen=0.60, xuanyuW=0.24, xuanyuProud=0.035, xuanyuTuck=0.04)),
     porch=dict(uHalf=2.2, depth=2.2, wallTop=3.05, zEave=3.00, breakZ=3.60, ridgeZ=4.60, drop=0.45,
                over=0.8, chu=0.18, qiao=0.45, reach=1.2, breakInset=0.5, gableInset=0.9,
                tileH=0.15, boardH=0.25, rings=6, ridgeEndLift=0.2,
                # 'auto'（进深 2.45 -> 夹到 0.35）过线，但正脊只有 1.6 m 长，吻起翘 0.38 占满全长，
                # 九曲桥眼高看仍是两只「猫耳」；给实测定值 0.25：吻起翘 0.27、中段约 0.35 m 平脊。
-               ornamentScale=0.25),
+               ornamentScale=0.25,
+               # wave14-gable：抱厦山尖（高 = 4.6−3.6 = 1.0 m）。
+               # R1 必修1：抱厦实际山花底宽只有 ≈0.436 m（v 跨 depth+0.25−2×breakInset，depth 被桥净空
+               # 压到 1.186 m）。R0 板宽 0.24 = 跨度 55%，两条博风在脊端合拢区把悬鱼投影盖死 100%。
+               # 按实际山花跨度重定：板宽 0.09 = 跨度 21%（实拍湖心亭 PBR-SH-0004-017 博风为窄条
+               # ≈跨度 10–20% 量级；米制仍未核实）；悬鱼长 0.36、宽 0.15、出平面 0.03 不变，
+               # 悬鱼挂在博风板前方（eave_kit）。
+               # R2（审查必修 G9）：真实三角面深度遮挡实测 tuck=0.04 时抱厦两侧悬鱼可见率 65.3%——
+               # 悬鱼上部（h≥4.32）被上段瓦垄（porchroof-upper-*-wa，u 横跨 ±1.7 在悬鱼前方）
+               # 与 r2 平台栏杆（h 4.45–4.51，u −7.7 更靠外）遮挡；栏杆远在冻结带 XUANYU_PROUD
+               # 上限 0.08 之外，外移不可行。R2 将悬鱼顶下移到 ridgeZ−0.16 = 4.44 m，低于瓦垄/栏杆
+               # 两条遮挡带下缘（4.45/4.32 带），全遮挡口径可见率 65.3% → 85.5% ≥ 70%；
+               # 0.16 = 山尖高 1.0 的 16%，仍在「悬鱼悬于脊檩下」形制内。不改屋面标高/平面/桥面/碰撞。
+               shanhuaMaterial='wood',
+               gableOrnament=dict(bofengWidth=0.09, bofengProud=0.05, bofengDrop=0.08,
+                                  xuanyuLen=0.36, xuanyuW=0.15, xuanyuProud=0.03, xuanyuTuck=0.16)),
     tower=dict(half=2.1, over=0.9, zEave=9.65, apex=11.40, finialTop=12.0, drop=0.55, tileH=0.16, boardH=0.26,
                chu=0.2, qiao=0.6, reach=1.4, curve=1.5, rings=6,
                skirt1=dict(z=3.85, over=0.7), skirt2=dict(z=6.75, over=0.7)),
@@ -848,7 +876,8 @@ eave_kit.xieshan_roof('porchroof', (-PU, PU, V0 - 0.25, V0 + PD), po['zEave'],
                       dict(over=po['over'], chu=po['chu'], qiao=po['qiao'], reach=po['reach'], zEave=po['zEave'],
                            breakZ=po['breakZ'], ridgeZ=po['ridgeZ'], breakInset=po['breakInset'], gableInset=po['gableInset'],
                            drop=po['drop'], tileH=po['tileH'], boardH=po['boardH'], curve=1.6, rings=po['rings'],
-                           ridgeEndLift=po['ridgeEndLift'], ornamentScale=po['ornamentScale']), 'porch')
+                           ridgeEndLift=po['ridgeEndLift'], ornamentScale=po['ornamentScale'],
+                           shanhuaMaterial=po['shanhuaMaterial'], gableOrnament=po['gableOrnament']), 'porch')
 
 # R2 瓦垄：全部 eave_kit 屋面建完后逐块铺（M1：同函数内给瓦面写瓦纹 UV / 换贴图材质 / 垄条顶点色）
 for _nm, _pts, _fcs, _part, _ob in ROOF_SURF:

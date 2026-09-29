@@ -183,6 +183,15 @@ for inst in LAYOUT['instances']:
                 o.hide_viewport = True
             temple_objs[inst['module']] = objs
         place(temple_objs[inst['module']], inst)
+    elif inst['module'] == 'templeeast-ding':
+        # wave14-templeeast：庙东跨院北院宝鼎（modules/temple-east/build_ding.py 生成件）
+        if inst['module'] not in temple_objs:
+            objs = import_glb(os.path.join(ROOT, 'out-garden-kits', 'templeeast-ding', 'model.glb'), 'MODLIB')
+            for o in objs:
+                o.hide_render = True
+                o.hide_viewport = True
+            temple_objs[inst['module']] = objs
+        place(temple_objs[inst['module']], inst)
     else:
         print('SKIP unknown module', inst['module'])
 
