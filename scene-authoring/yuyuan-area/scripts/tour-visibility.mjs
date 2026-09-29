@@ -465,7 +465,7 @@ export function streetViewProxy(scene, cam, look, corridor, band, { grid = PROXY
     insert(p.fp, p, 'p');
   }
   const { nx, ny } = grid;
-  let tgt = 0, sky = 0, soffit = 0;
+  let tgt = 0, sky = 0, soffit = 0, nearCnt = 0, tgtBox = 0, tgtBand = 0;
   const near = new Uint8Array(nx * ny);
   const cls = debug ? new Array(nx * ny).fill('') : null; // 调试：逐格分类
   for (let j = 0; j < ny; j++) {
@@ -492,10 +492,13 @@ export function streetViewProxy(scene, cam, look, corridor, band, { grid = PROXY
       if (kind === 'ceiling') { soffit++; if (cls) cls[j * nx + i] = 'C'; continue; }
       if (kind === 'sky' || bestT > R) { if (d[1] >= 0) { sky++; if (cls) cls[j * nx + i] = ' '; continue; } }
       const p = [cam[0] + d[0] * bestT, cam[1] + d[1] * bestT, cam[2] + d[2] * bestT];
-      let isT = inObb2(corridor, p, pad);
-      if (!isT && vertical && hitId && scene.fac.has(hitId) && inObb2(band, p)) isT = true;
+      const inBox = inObb2(corridor, p, pad);
+      const inBand = !inBox && vertical && !!hitId && scene.fac.has(hitId) && inObb2(band, p);
+      const isT = inBox || inBand;
+      if (inBox) tgtBox++;
+      if (inBand) tgtBand++;
       if (isT) tgt++;
-      if (kind !== 'ground' && vertical && bestT < STREET_VIEW.NEAR_M) near[j * nx + i] = 1;
+      if (kind !== 'ground' && vertical && bestT < STREET_VIEW.NEAR_M) { near[j * nx + i] = 1; nearCnt++; }
       if (cls) cls[j * nx + i] = isT ? 'T' : kind === 'ground' ? '.' : vertical ? 'w' : 'h';
     }
   }
@@ -517,7 +520,9 @@ export function streetViewProxy(scene, cam, look, corridor, band, { grid = PROXY
     }
     best = Math.max(best, n);
   }
-  const out = { target: tgt / (nx * ny), sky: sky / (nx * ny), soffit: soffit / (nx * ny), nearMax: best / (nx * rows) };
+  // nearFull = 全画幅近景墙（近竖直面、距相机 < NEAR_M）像素占比（wave13-tourfix：整幅口径的近墙门槛，
+  // 与下 1/3 的 nearMax 互补——gold 的白墙在上半幅、old-south 的贴脸墙在下 1/3 之外，只有整幅口径抓得住）
+  const out = { target: tgt / (nx * ny), sky: sky / (nx * ny), soffit: soffit / (nx * ny), nearMax: best / (nx * rows), nearFull: nearCnt / (nx * ny), targetBox: tgtBox / (nx * ny), targetBand: tgtBand / (nx * ny) };
   if (cls) out.grid = Array.from({ length: ny }, (_, j) => cls.slice(j * nx, (j + 1) * nx).join(''));
   return out;
 }
