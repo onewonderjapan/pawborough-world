@@ -205,7 +205,7 @@ console.log('INFO cm winback materials per file (auxiliary, not asserted):', cmA
 // ---------- T3：浏览器 A/B ----------
 const _REPO_PRESETS = JSON.parse(fs.readFileSync(PRESETS_FILE, 'utf8'));
 // wave13：商城楼背板改按 bazaar-window 组断言（wave13 自 lattice 组拆出的独立发光组，
-// color / intensity / useMap 与 lattice 完全相同——默认画面不变，只为了单独调强）。
+// 拆组时参数与 lattice 相同；之后机主 2026-09-29 选档 intensity 0.5，期望值始终从 presets 读取）。
 const BAZAAR_WIN = _REPO_PRESETS.emissiveGroups.find(g => g.id === 'bazaar-window');
 ok(!!BAZAAR_WIN, 'T3 presets: emissiveGroup bazaar-window exists (btk-winback* split out of lattice)', _REPO_PRESETS.emissiveGroups.map(g => g.id));
 const BAZAAR_MATERIALS = BAZAAR_WIN ? BAZAAR_WIN.materials : [];
