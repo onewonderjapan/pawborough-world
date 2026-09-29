@@ -1,155 +1,374 @@
 {
- "note": "FANGBANG=1 管线读取的 v7 未跟踪资产：street-reviewed-lanes.glb 街段地面 + 非庙轴实例用到的全部模块 GLB（放行口径：77-19 庙轴-2 剔除=56 件，补齐件 fangbang-infill-s1..s5 复用其中 dry_goods_shop/curio-b 模块，无新增资产）。主控合并时登记上传",
+ "order": "wave13-nightbalance",
+ "round": "R1",
+ "generated": "2026-09-29",
+ "repo": "pawborough",
+ "worktree": "/home/baibai/outbox/pawborough-wave13-nightbalance-flash-20260929/workspace",
+ "head": "1b2e770d",
+ "mergedMain": "bc44037f",
  "assets": [
   {
-   "path": "./world/fangbang-temple-v7/street-reviewed-lanes.glb",
-   "sha256": "f8f90b7aacb421dd11740a3f5c7286361f050a0fd6b4841262c742ea9848d208",
-   "bytes": 20587068
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-165791764/model.glb",
+   "sha256": "777be08e418f3bb74c913ace035cb646a84bbddc33bcc2f3e428837d5caa16d8",
+   "bytes": 1142604,
+   "note": "合并 main bc44037f 后用 build_tower 重出：山花 -shanhua- wall→wood，plaquefix 绕序，debt2 确定性。",
+   "replacedOldSha256": "34aabe001ef16ba622d1e78123cd89a674b7a89c02f1dbe144b380e15e65294a"
   },
   {
-   "path": "./building/cat_corner/model.glb",
-   "sha256": "90f3d33ba782666093f2456b9890bed63bf2d45dc3019c136cbd6174eac072d3",
-   "bytes": 1580852
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-165791764/measurements.json",
+   "sha256": "f70ed0a97c25f991c0b69b0afc0826893a7fd14516f70fc1d2533bb24d56b3e5",
+   "bytes": 6770,
+   "note": "随塔 GLB 重出的 measurements.json。",
+   "replacedOldSha256": "c5d11ab84631ba8e14a2395f801b55c87b2439ef37a3699a35a4a4d75aa7b251"
   },
   {
-   "path": "./building/cloth_shop/model.glb",
-   "sha256": "87c89a4620532eb351df7af21665a29c40c43fad610fe3a759aa5335ec85362d",
-   "bytes": 2222268
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701812/model.glb",
+   "sha256": "f8aa695bb36941320dda61266beee5ab68104467713ff6e87b6ff8fbb9259d10",
+   "bytes": 2262008,
+   "note": "合并 main bc44037f 后用 build_tower 重出：山花 -shanhua- wall→wood，plaquefix 绕序，debt2 确定性。",
+   "replacedOldSha256": "15175968580cc4e12571b3a58fc64fd13294f1c4fd356c530462261228c5b84c"
   },
   {
-   "path": "./building/corner/model.glb",
-   "sha256": "3e68b5833c61d6f2bfe20cf96d561c90618483a319599abcc81385ca4e8bb9a5",
-   "bytes": 2146508
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701812/measurements.json",
+   "sha256": "1d94fa69e58024596ba002978bc793cd5b9a317e26def3695dbba619104ab195",
+   "bytes": 5534,
+   "note": "随塔 GLB 重出的 measurements.json。",
+   "replacedOldSha256": "1b54220254f19f9f83cb125971d0b42959ee08adf86ddf158518ad6580549338"
   },
   {
-   "path": "./building/curio-a/model.glb",
-   "sha256": "aa178b96876d22f5c598db3837b541229e852c069d18c43b5dda27dc52199747",
-   "bytes": 1972556
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701901/model.glb",
+   "sha256": "909dfc726dc88f6ed7edf165d6d8d41398936dcccdf1816d82508a208be7295f",
+   "bytes": 1300904,
+   "note": "合并 main bc44037f 后用 build_tower 重出：山花 -shanhua- wall→wood，plaquefix 绕序，debt2 确定性。",
+   "replacedOldSha256": "82848a8898247fd6eff8ae3be033d3ae69640e01b176d1c34c9a036201d31932"
   },
   {
-   "path": "./building/curio-b/model.glb",
-   "sha256": "768062ada15239ba5d086a09939a4e8b593677d0ac06180357728591c426ee40",
-   "bytes": 1953600
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701901/measurements.json",
+   "sha256": "e73172ba1d74ef95fdd518248cb59bb13c84561c9182631df17a3ee8b2b7d0a0",
+   "bytes": 3456,
+   "note": "随塔 GLB 重出的 measurements.json。",
+   "replacedOldSha256": "6280e4346c1beb10e53bc603501928030c57f8567ebab9882e932c02d7c07674"
   },
   {
-   "path": "./building/dry_goods_shop/model.glb",
-   "sha256": "052fadafda116d08356ded8544e32a71323f4adbff2ca9420dfce2f4e0bcd1c9",
-   "bytes": 3562760
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701971/model.glb",
+   "sha256": "4be3c29a6db9e9aa2848832a1fe401526b752707180ae91b1d4c07b6d767a7d5",
+   "bytes": 1314260,
+   "note": "合并 main bc44037f 后用 build_tower 重出：山花 -shanhua- wall→wood，plaquefix 绕序，debt2 确定性。",
+   "replacedOldSha256": "2208ee3cc6d152b7f466b9edff21deb1318e33f2202b6a790ec6517b3f0139b7"
   },
   {
-   "path": "./building/pharmacy_shop/model.glb",
-   "sha256": "f51cf055f8a86ca16bf763f43689a7a4cbe536a59f6bd420b9f50751c52b9574",
-   "bytes": 3679732
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701971/measurements.json",
+   "sha256": "cd0e82c65e97fee62d370545c1b3e7eab280cdb70f5cca549abcc3106da11f32",
+   "bytes": 2619,
+   "note": "随塔 GLB 重出的 measurements.json。",
+   "replacedOldSha256": "0adfd87617054d4db3c3aaacc82b8dd0bdd6ceb4e85e0b6b294ce8d4b965f6fa"
   },
   {
-   "path": "./building/photo_shop/model.glb",
-   "sha256": "5d885af6eb8b76ef1147a06499eed100da32593e149cd3dd6bf434d2acd84f76",
-   "bytes": 4105324
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389702030/model.glb",
+   "sha256": "01862f0461e3cb9d77fa4092cdcb6452c8088ca528750b7899ced637e7273341",
+   "bytes": 819476,
+   "note": "合并 main bc44037f 后用 build_tower 重出：山花 -shanhua- wall→wood，plaquefix 绕序，debt2 确定性。",
+   "replacedOldSha256": "974c7308ce5d1cb5b560eaad974906ea93e46e38ab6a9966263e345a8b2a6b97"
   },
   {
-   "path": "./building/plain-v1/model.glb",
-   "sha256": "9567bf0e96aec885116e2ad7692e4a90f440073d6d158b8454e344119910cbad",
-   "bytes": 1953264
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389702030/measurements.json",
+   "sha256": "629e437dce681686c4a15d4eda9ca5ce2be5a35439f46a06f5b6b71b113fc6d0",
+   "bytes": 6191,
+   "note": "随塔 GLB 重出的 measurements.json。",
+   "replacedOldSha256": "3c812b1f1a0c4ee74e899f0b303eb49e97dfae1227febdfedb8059e9e6b166f7"
   },
   {
-   "path": "./building/plain-v2/model.glb",
-   "sha256": "c08d816d6e144893bfcd9e6c4aacce890137d977de579fb8f6fab10cf4a04ea8",
-   "bytes": 1863044
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202599/model.glb",
+   "sha256": "c52caf1ee623b5f56e857e9be5c3ebe666de013f507b9edaa5234d6a6aa67aa9",
+   "bytes": 1955272,
+   "note": "合并 main bc44037f 后用 build_tower 重出：山花 -shanhua- wall→wood，plaquefix 绕序，debt2 确定性。",
+   "replacedOldSha256": "19139c2347a810aa3433ed06dfba814d98f1a1e72d218b3920e20cf2ff874bb8"
   },
   {
-   "path": "./building/plain-v3/model.glb",
-   "sha256": "155809ebd42e37dd319a7cee0b5ccbaad2b2db21a15b21930608e914714112b7",
-   "bytes": 1495532
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202599/measurements.json",
+   "sha256": "fb35e606a5e488fdabc44fbd0a040bb42309bc3ee61792c98b36dd21ca810bc8",
+   "bytes": 4307,
+   "note": "随塔 GLB 重出的 measurements.json。",
+   "replacedOldSha256": "d102a47dcf60633c6b424b55e776e3fca043c480c0511dfcb2d2a2a6230d1790"
   },
   {
-   "path": "./building/restaurant-a/model.glb",
-   "sha256": "40b5d2ded1554565739aa9041d35f1bd2fbc4d6dd50be9888e0336faf7300b7d",
-   "bytes": 2146768
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202601/model.glb",
+   "sha256": "6e4d6396af6a5a092dd4f46d609c50c8b90a2241c7407cfbc8fcffe96b16902c",
+   "bytes": 2385744,
+   "note": "合并 main bc44037f 后用 build_tower 重出：山花 -shanhua- wall→wood，plaquefix 绕序，debt2 确定性。",
+   "replacedOldSha256": "94dccbcc937b119ea150c04733c90de1baff907492d5c03938365a6a81f0fcee"
   },
   {
-   "path": "./building/restaurant-b/model.glb",
-   "sha256": "e083e811762487b415d289bbaa853bb1ad94e5283591ba3866c48b929c5fef2f",
-   "bytes": 2147344
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202601/measurements.json",
+   "sha256": "e9b958ffd1da7e3856c0327dba13bfdbcc5347b61231a90320ac6149b5a68bbf",
+   "bytes": 5265,
+   "note": "随塔 GLB 重出的 measurements.json。",
+   "replacedOldSha256": "e55455a28e86be3d1ee70191d5146cc0412e37afdaa4783c841d6da383c76ee7"
   },
   {
-   "path": "./world/east-edge/east-shop-128/model.glb",
-   "sha256": "acc09e566d3d1a0aa6340895d46ea9ba92903bb61f47a24800af5c9db2203567",
-   "bytes": 1727716
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202602/model.glb",
+   "sha256": "df185c2dab10ff0da8b8d265c31a29c76b4decd2a4f23dfec7106c708f5392f9",
+   "bytes": 2521916,
+   "note": "合并 main bc44037f 后用 build_tower 重出：山花 -shanhua- wall→wood，plaquefix 绕序，debt2 确定性。",
+   "replacedOldSha256": "d5db7d7c89fe8c7230daa9616c6cb76e5fb24bfc114c0afabf41359de68ae049"
   },
   {
-   "path": "./world/east-edge/east-shop-129/model.glb",
-   "sha256": "57ca21b5c9605102ea7f09cb256ff23052fe8183ee1b7f0f434cf6d9fc728286",
-   "bytes": 1722592
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202602/measurements.json",
+   "sha256": "d6ebc5d677bc8fff796dbda5c42075c698b4d8e2189db72216d2bb3d299d10f1",
+   "bytes": 4050,
+   "note": "随塔 GLB 重出的 measurements.json。",
+   "replacedOldSha256": "2fb8de4ca826a11ea1b09c6c999159c0591db24adf8f3d379c32b4aee6699666"
   },
   {
-   "path": "./world/fangbang-temple-v4/east-extension/seal-wall.glb",
-   "sha256": "5815ce8b9f413b28c51135bc732ce12054542a7fe2d45bf8268780a705be034d",
-   "bytes": 2608
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202603/model.glb",
+   "sha256": "9d5c6dda73b0072de2ba7e980227e0007d0ece50126ff7724782fb9d30579880",
+   "bytes": 1702572,
+   "note": "合并 main bc44037f 后用 build_tower 重出：山花 -shanhua- wall→wood，plaquefix 绕序，debt2 确定性。",
+   "replacedOldSha256": "79bb87b86f99b1d2781623e2d80a5863138d8269381ac1cbe50734790b7edbf4"
   },
   {
-   "path": "./world/fangbang-temple-v4/east-extension/surface.glb",
-   "sha256": "ea8a75c35cddc5107e0fa338acecfaa55869000e3c5d2f8a1cf97e5680a4b794",
-   "bytes": 1216532
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202603/measurements.json",
+   "sha256": "e4258641aa7021ff80446fc98383519a00dce20e04ac72e7861f779eaca1e0b7",
+   "bytes": 4776,
+   "note": "随塔 GLB 重出的 measurements.json。",
+   "replacedOldSha256": "c72ecde91fac2afd868a4844f6f7e06c24b4083d1086bb00f3a63821441bd442"
   },
   {
-   "path": "./world/fangbang-temple-v4/eastshops-strips.glb",
-   "sha256": "e8b4131a3ae635bcbf29ecb41e9e6a77d1f7f40a6db0bec7aa40b43bb63458bf",
-   "bytes": 7528
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202606/model.glb",
+   "sha256": "73e7155d009b5fa72aa4c457de1a6e5567b70b38f1dc8bd7194f3355bb8f7eec",
+   "bytes": 1695760,
+   "note": "合并 main bc44037f 后用 build_tower 重出：山花 -shanhua- wall→wood，plaquefix 绕序，debt2 确定性。",
+   "replacedOldSha256": "18fd641a53ddc85c4baaf05aa059330728f29e58e8bdfdf420051b95fa3febc3"
   },
   {
-   "path": "./world/fangbang-temple-v4/west-extension/forecourt-bounds.glb",
-   "sha256": "e9997259ad2ebe60819c5086f4e86fafdbae9de3c76233cecaf7a609186b49ef",
-   "bytes": 4020
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202606/measurements.json",
+   "sha256": "f0afe2b44b4e8fa4798fdefeffd205936583ba90803bf7def455d46c32f1e7cc",
+   "bytes": 8239,
+   "note": "随塔 GLB 重出的 measurements.json。",
+   "replacedOldSha256": "3448cedeef45606f3cd757642b9ed4a32f6fb08504de16fc1cf7ad7519419d95"
   },
   {
-   "path": "./world/fangbang-temple-v4/west-extension/seal-wall.glb",
-   "sha256": "dd07c8ea5d6ded4b74391b2fe887cf0926a997c746c2c9414d8b13da454fcd1a",
-   "bytes": 2804
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202607/model.glb",
+   "sha256": "7f39c4ccf0de43136200d2252d44c770ffab124c5e0812e823e9f10608a47468",
+   "bytes": 1057436,
+   "note": "合并 main bc44037f 后用 build_tower 重出：山花 -shanhua- wall→wood，plaquefix 绕序，debt2 确定性。",
+   "replacedOldSha256": "750a5ab1c4c618cc13ff686df3cda1596c511d55fd12dcedfa9092fd7ca9efe0"
   },
   {
-   "path": "./world/fangbang-temple-v4/west-extension/surface.glb",
-   "sha256": "01b8f82f3e26c40e8fc8fc75c872179f90dab4b9133659377eea27b6733f4d45",
-   "bytes": 1308304
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202607/measurements.json",
+   "sha256": "8d2a2bc121eef5b5f4ae6ec7c8fd8d19046b8469586bb63c4099954205b98f9a",
+   "bytes": 4913,
+   "note": "随塔 GLB 重出的 measurements.json。",
+   "replacedOldSha256": "699a18be924b2d1789b915fc9247e20458a998e218a1abf0fa9c3ee42566eb58"
   },
   {
-   "path": "./world/fangbang-temple-v4/westshops-strips.glb",
-   "sha256": "2f74208ad15b3871ed90703583803454858bfcdb0fbd0eb243ec05735b42a6c4",
-   "bytes": 12012
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893867/model.glb",
+   "sha256": "0b65c2c20702fcf8742a5d8024c33f3d717fb3a74d321278f88eff584d037e41",
+   "bytes": 870912,
+   "note": "合并 main bc44037f 后用 build_tower 重出：山花 -shanhua- wall→wood，plaquefix 绕序，debt2 确定性。",
+   "replacedOldSha256": "7a1f51c9f952ed670ba0f45128aae87b8d46f520f2e990e925b11395ef94aa92"
   },
   {
-   "path": "./world/lanes-v2/interfaces/model.glb",
-   "sha256": "70b6837cf4b19b3ddd90b99e2c512312b117f51bd773a4b70c41f55cbeddf8a0",
-   "bytes": 1489948
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893867/measurements.json",
+   "sha256": "073e657777c88553831a0b73ff1936a631ee3b63411a18930c7d74adbfbce4a1",
+   "bytes": 4893,
+   "note": "随塔 GLB 重出的 measurements.json。",
+   "replacedOldSha256": "2c8b24a80860c5cc5d81927df9c5ada35b62ce4ce23ab8900da45d0f552b6437"
   },
   {
-   "path": "./world/lanes-v2/lane-a/model.glb",
-   "sha256": "03aa6a0058c8bdd63039c6534cd8cd048d16cad13322f7822c9c2c6ed7099675",
-   "bytes": 2567564
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893868/model.glb",
+   "sha256": "e14022da15199d20a7bfcb250ba1c5dfbaec59c67b74d53d30c318194de980a0",
+   "bytes": 591728,
+   "note": "合并 main bc44037f 后用 build_tower 重出：山花 -shanhua- wall→wood，plaquefix 绕序，debt2 确定性。",
+   "replacedOldSha256": "e2b2fdd74f715cd7518e6da17e0cb4153e96dd41784ba271c3636a5fc4864755"
   },
   {
-   "path": "./world/lanes-v2/lane-b-v2/model.glb",
-   "sha256": "2f193af6b3004b4fef7e5138e28f38b7bc78e6689021160310b6f271201547b8",
-   "bytes": 2668592
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893868/measurements.json",
+   "sha256": "2e2fa37105458aa9c4ce53a3a0c1464fd061e8070e0a4df8fdd17ecd7c5621b4",
+   "bytes": 5059,
+   "note": "随塔 GLB 重出的 measurements.json。",
+   "replacedOldSha256": "07528f95e42659f20a5b846f0018685f8ebcf58994a63a78adf215d15cb89993"
   },
   {
-   "path": "./world/street-completion/east-shop-130/model.glb",
-   "sha256": "654022fbe6088079b287927ad9cdfb3cf5f526f4e7454209b54fb4fca1b076e3",
-   "bytes": 1751412
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893873/model.glb",
+   "sha256": "f8521653574d4f4e0f6111e1d69cf33675235652976f45dda0916886bbd7ff10",
+   "bytes": 1045180,
+   "note": "合并 main bc44037f 后用 build_tower 重出：山花 -shanhua- wall→wood，plaquefix 绕序，debt2 确定性。",
+   "replacedOldSha256": "e73b74292a8a20919592cf82094430dcffbb4eed32e0bf0e098fc69941500a15"
   },
   {
-   "path": "./world/street-completion/east-shop-131/model.glb",
-   "sha256": "0ee8b33eacac8b9b708e5e50649a426117829fba906c1fd438152e3051da9aad",
-   "bytes": 1742588
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893873/measurements.json",
+   "sha256": "91ffa3ccb23c12efb686e2f57be4960a5147013fe951bbb1934690957bda39b0",
+   "bytes": 4706,
+   "note": "随塔 GLB 重出的 measurements.json。",
+   "replacedOldSha256": "e960a85dc91584932643f84f284f8bd0db75003ede78afb94c6a5337ca144751"
   },
   {
-   "path": "./world/street-completion/east-shop-132/model.glb",
-   "sha256": "68716bb1a5f33d0cdc0fad1172984b5021281bf7c6874bf0da0077f761d775aa",
-   "bytes": 1793052
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893884/model.glb",
+   "sha256": "b3941e9ed4d3e41cfedbb8033c287a60c142b83b639353193b31d55cccf57bdf",
+   "bytes": 1218768,
+   "note": "合并 main bc44037f 后用 build_tower 重出：山花 -shanhua- wall→wood，plaquefix 绕序，debt2 确定性。",
+   "replacedOldSha256": "7889470db37e05b7fe45b200a718379b4152446cf0a94de4b92702bda5d40863"
   },
   {
-   "path": "./world/street-completion/east-shop-133/model.glb",
-   "sha256": "d443aac126f8e81c14a85efcb3baafc9f54d328e726c8f52cbaa524453fb90cc",
-   "bytes": 1755416
+   "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893884/measurements.json",
+   "sha256": "7550210d39cfc70fbab1586849286dd8321c61f95d593716ac7977aaeb4486f3",
+   "bytes": 7458,
+   "note": "随塔 GLB 重出的 measurements.json。",
+   "replacedOldSha256": "51f5b065c3d164015b752eb84e85b70fc86004674dd37f6403e237b4997d8be9"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/resources/textures/outer-kit/outerkit-atlas-v2.jpg",
+   "sha256": "a7500cbaba4cf4546e33be5f5d81710a1012b8a5e2effaa6f28077d0acc40507",
+   "bytes": 213637,
+   "note": "N1: 图集墙色逐通道 ×0.95（B1 抹灰上限 0.66 把 k 卡在 0.95；cream.up 线性约 0.657）。重烘 512×4096 q80。",
+   "replacedOldSha256": "63de67acd51e44304a067ea8698c47bca96e102d4ee12e4923aafcaf3d24bec0"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/resources/textures/paving/water.jpg",
+   "sha256": "25d03109de189bda862bc886b038c16f686aaa0f0031130a2cd02cbc73c8cca4",
+   "bytes": 24910,
+   "note": "N2: 本轮未改。贴图线性 RGB 算术均值约 0.058（albedo C5）；#3d5348 基色的 Rec.709 线性亮度约 0.067。两口径分开。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/resources/textures/paving/water-normal.jpg",
+   "sha256": "5956e941434a3fad92a433c9a34909c4db664cb94c7512087d56d14349741af2",
+   "bytes": 24957,
+   "note": "N2: 本轮未改。程序化缓波法线，压缩件 normalTexture.scale float32 ≈ 0.55。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-garden-kits/sansuitang-bld-428179901/model.glb",
+   "sha256": "c66ccdeb67713b958a700d9d6cb04626b30c84d8ec0f0d154b72633b22b4550d",
+   "bytes": 1411500,
+   "note": "N3: 格心 sst-lattice-core（MASK，不发光）+ 不透明背板 sst-lattice-back（#55483c，rough 0.35，extras.pbRole=window-backing）。压缩件 zone-garden.cm.glb 仍保留该 extras。",
+   "replacedOldSha256": "6005435ed33f445865ade6cdd6907cacb7eee169c64fc82df595680646704d16"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-garden-kits/sansuitang-bld-428179901/recipe.json",
+   "sha256": "62fbde3c00281291a119b0c79fd88952196f2b1343332621bc66503ac12147c1",
+   "bytes": 3050,
+   "note": "N3: 随三穗堂重出的 recipe.json。",
+   "replacedOldSha256": "eaa09e19987277a2fcd4c4bc9e66ef771dc7d2f67495911bbf37864198e43b9f"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/scene-areas.glb",
+   "sha256": "4a455c7a8ff64c7dfd280397de03a0adad8547b9faf04a666be61d7045d3e527",
+   "bytes": 80027868,
+   "note": "标准口径重建产物（OUT_DIR=out-zone，k=0.95，ground 0xafaaa3，合并后的塔与三穗堂）。gitignored 刮擦件。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/zones-manifest.json",
+   "sha256": "ae2dcbcf662ec68704d85c81f42131ff3c906d6c598e424f23ce4870075264e3",
+   "bytes": 33823,
+   "note": "标准口径重建产物（OUT_DIR=out-zone，k=0.95，ground 0xafaaa3，合并后的塔与三穗堂）。gitignored 刮擦件。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/tour.json",
+   "sha256": "e9c19952d90b3ba9f69c4cf800bea863322a0bdf19697e381f1ad5746b744ff8",
+   "bytes": 5308,
+   "note": "标准口径重建产物（OUT_DIR=out-zone，k=0.95，ground 0xafaaa3，合并后的塔与三穗堂）。gitignored 刮擦件。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/zone-bazaar-2.cm.glb",
+   "sha256": "9de1f823702199a3fbc4961cdffadafc95d253cf4b91a19ee4e8de199d90ab15",
+   "bytes": 11308,
+   "note": "标准口径重建产物（OUT_DIR=out-zone，k=0.95，ground 0xafaaa3，合并后的塔与三穗堂）。gitignored 刮擦件。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/zone-bazaar-3.cm.glb",
+   "sha256": "19d1f9b4025954a6c97a05bb8de2d0fd8a47c4bcb47cc6f98a930f4a285b9bb8",
+   "bytes": 1634504,
+   "note": "标准口径重建产物（OUT_DIR=out-zone，k=0.95，ground 0xafaaa3，合并后的塔与三穗堂）。gitignored 刮擦件。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/zone-bazaar-4.cm.glb",
+   "sha256": "3df24b6b2b78d74895b69cbb2ebccd18902a5f166e4f3a0114f17cd73ff26e4d",
+   "bytes": 1658408,
+   "note": "标准口径重建产物（OUT_DIR=out-zone，k=0.95，ground 0xafaaa3，合并后的塔与三穗堂）。gitignored 刮擦件。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/zone-bazaar.cm.glb",
+   "sha256": "c285ed5e04e674f25ba18c7f07ec1da2463ec6d0c64c01428c34384467a20994",
+   "bytes": 1978304,
+   "note": "标准口径重建产物（OUT_DIR=out-zone，k=0.95，ground 0xafaaa3，合并后的塔与三穗堂）。gitignored 刮擦件。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/zone-fangbang-1.cm.glb",
+   "sha256": "08385a9eb1a0dfa6061917606c0dbc5effbb3b8ca2e1ade35c74feaca9eded57",
+   "bytes": 1329420,
+   "note": "标准口径重建产物（OUT_DIR=out-zone，k=0.95，ground 0xafaaa3，合并后的塔与三穗堂）。gitignored 刮擦件。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/zone-fangbang-2.cm.glb",
+   "sha256": "271f7397284752c6126fbc26b8975f3ebcca7f74063bab1310f105107f295cdd",
+   "bytes": 1451824,
+   "note": "标准口径重建产物（OUT_DIR=out-zone，k=0.95，ground 0xafaaa3，合并后的塔与三穗堂）。gitignored 刮擦件。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/zone-garden-2.cm.glb",
+   "sha256": "4f33ad4c7fcd80db9bf28886d7c2813e611ec58ad3221300adcc5aefa41ee73d",
+   "bytes": 1484488,
+   "note": "标准口径重建产物（OUT_DIR=out-zone，k=0.95，ground 0xafaaa3，合并后的塔与三穗堂）。gitignored 刮擦件。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/zone-garden-3.cm.glb",
+   "sha256": "4d6322f03bafa62fa856e5c45d20e41a729f23bc1dd8ff811f095a61fc89939f",
+   "bytes": 1212908,
+   "note": "标准口径重建产物（OUT_DIR=out-zone，k=0.95，ground 0xafaaa3，合并后的塔与三穗堂）。gitignored 刮擦件。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/zone-garden.cm.glb",
+   "sha256": "901845a990e4c68e00fafd8a7a59d185e0b91a3cd295a65158dbc2eecd3a2d9f",
+   "bytes": 1861552,
+   "note": "标准口径重建产物（OUT_DIR=out-zone，k=0.95，ground 0xafaaa3，合并后的塔与三穗堂）。gitignored 刮擦件。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/zone-outer.cm.glb",
+   "sha256": "f9fc7e6d4611b744c5b0318d279e73b7c30798c5f136870b6b8c432e579536ef",
+   "bytes": 1582092,
+   "note": "标准口径重建产物（OUT_DIR=out-zone，k=0.95，ground 0xafaaa3，合并后的塔与三穗堂）。gitignored 刮擦件。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/zone-pond-2.cm.glb",
+   "sha256": "1f06f5b9b07509187c45859aa5d4ebfdc779059b51cb5bbd98de6a69287217f7",
+   "bytes": 3920,
+   "note": "标准口径重建产物（OUT_DIR=out-zone，k=0.95，ground 0xafaaa3，合并后的塔与三穗堂）。gitignored 刮擦件。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/zone-pond.cm.glb",
+   "sha256": "7aae03635d794406ca7ff8d7e234ad39a049567483ad9ccb03a0110ce91b1ac3",
+   "bytes": 603912,
+   "note": "标准口径重建产物（OUT_DIR=out-zone，k=0.95，ground 0xafaaa3，合并后的塔与三穗堂）。gitignored 刮擦件。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/zone-temple-1.cm.glb",
+   "sha256": "fca0688d5ea124babae05d9c4e429992ecb0e23920e847c75305ff0ac661d014",
+   "bytes": 1237568,
+   "note": "标准口径重建产物（OUT_DIR=out-zone，k=0.95，ground 0xafaaa3，合并后的塔与三穗堂）。gitignored 刮擦件。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/zone-temple-2.cm.glb",
+   "sha256": "285bd3cfc8195fa2aa80ef9c479e1e4e73102d2ed8bbb0826b247547f03ea1ae",
+   "bytes": 1042480,
+   "note": "标准口径重建产物（OUT_DIR=out-zone，k=0.95，ground 0xafaaa3，合并后的塔与三穗堂）。gitignored 刮擦件。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/zone-temple-3.cm.glb",
+   "sha256": "d4c20fef557506af6cc292699532613504cc415fb97ee26d5f086a47201c9ab8",
+   "bytes": 303360,
+   "note": "标准口径重建产物（OUT_DIR=out-zone，k=0.95，ground 0xafaaa3，合并后的塔与三穗堂）。gitignored 刮擦件。"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/out-zone/zone-temple-4.cm.glb",
+   "sha256": "8b6a73aa56542af7e39b0edaf44d330df19de00756936d0a93fe125305c12f80",
+   "bytes": 3296,
+   "note": "标准口径重建产物（OUT_DIR=out-zone，k=0.95，ground 0xafaaa3，合并后的塔与三穗堂）。gitignored 刮擦件。"
   }
+ ],
+ "notes": [
+  "旧 sha 以 docs/MIGRATION-ASSETS.json 为准；清单里没有的路径不写 replacedOldSha256。",
+  "水面两张贴图 sha 与上一轮登记相同，本轮未重烘。",
+  "out-zone 场景 / 分区 / 压缩件是刮擦重建，不进 git。",
+  "docs/MIGRATION-ASSETS.json 本单未改。"
  ]
 }

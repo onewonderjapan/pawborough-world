@@ -497,6 +497,37 @@ def read_glb_json(path):
         return json.loads(f.read(n))
 
 
+def water_slot_material(base_jpg, cache, slot):
+    """wave13-nightbalance N2：water 槽材质（beauty 端）。与 export-zones.py water_material 同参数：
+    深墨绿基色 + 程序化缓波法线（normalScale 0.55）+ roughness 0.5——Cycles 夜景水面读作深色水面、
+    有天空与灯光的柔和反射，白天无团状高光斑。"""
+    m = bpy.data.materials.new('paving-water')
+    m.use_nodes = True
+    bsdf = next(n for n in m.node_tree.nodes if n.type == 'BSDF_PRINCIPLED')
+    bsdf.inputs['Roughness'].default_value = 0.5
+    bsdf.inputs['Metallic'].default_value = 0.0
+    nt = m.node_tree
+    tex = nt.nodes.new('ShaderNodeTexImage')
+    tex.image = bpy.data.images.load(base_jpg, check_existing=True)
+    tex.interpolation = 'Linear'
+    tex.extension = 'REPEAT'
+    nt.links.new(tex.outputs['Color'], bsdf.inputs['Base Color'])
+    njpg = os.path.join(PAVING_TEX_DIR, 'water-normal.jpg')
+    if not os.path.exists(njpg):
+        raise SystemExit('E: slot %s 的法线贴图缺失: %s（run: blender -b -P scripts/bake-paving-textures.py）' % (slot, njpg))
+    nrm_img = bpy.data.images.load(njpg, check_existing=True)
+    nrm_img.colorspace_settings.name = 'Non-Color'
+    ntex = nt.nodes.new('ShaderNodeTexImage')
+    ntex.image = nrm_img
+    ntex.interpolation = 'Linear'
+    ntex.extension = 'REPEAT'
+    nm = nt.nodes.new('ShaderNodeNormalMap')
+    nm.inputs['Strength'].default_value = 0.55
+    nt.links.new(ntex.outputs['Color'], nm.inputs['Color'])
+    nt.links.new(nm.outputs['Normal'], bsdf.inputs['Normal'])
+    cache[slot] = m
+    return m
+
 def slot_material(slot, cache):
     if slot in cache:
         return cache[slot]
@@ -508,6 +539,8 @@ def slot_material(slot, cache):
         # 与 export-zones.py 一致：预期贴图缺失即失败，不许悄悄退回顶点色平涂（wave12-r2）
         raise SystemExit('E: slot %s 的贴图缺失: %s（run: blender -b -P scripts/bake-paving-textures.py'
                          ' / python3 -X utf8 modules/outer-kit/bake_atlas.py）' % (slot, jpg))
+    if slot == 'water':
+        return water_slot_material(jpg, cache, slot)
     img = bpy.data.images.load(jpg, check_existing=True)
     m = bpy.data.materials.new(slot if slot in SLOT_TEX else 'paving-' + slot)
     m.use_nodes = True
