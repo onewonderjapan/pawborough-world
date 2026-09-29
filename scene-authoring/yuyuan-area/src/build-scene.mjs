@@ -1480,6 +1480,47 @@ if (POND_QA) {
   if (bh) { zoneGroups.pond.add(bh.mesh); stats.meshes++; stats.byKind.bridgeHead = 1; console.log('bridge head platform', bh.lengthM.toFixed(2), 'm'); }
 }
 
+// ---------- wave14-rockseam 园墙勒脚裙板（巡检 #12） ----------
+// 建造基面约定 y=0（墙/铺装都从 0 起），全局地面平面在 GROUND_Y=-0.4，园墙墙脚因此悬空 0.4 m。
+// dusk 太阳仰角 9°（presets）掠射时，光从墙下缝漏过、阴影贴图在缝上打出一条与墙平行的硬直边
+// 黑带（tour-dajiashan 黄昏地面「灰/白两块硬拼」；pickDebug 取证：黑带与另一侧是同一个 ground
+// 对象，不是两块材质）。沿 layout 的 garden-wall segments 加一圈勒脚裙板闭合交界：
+//   y -0.44..+0.03（下探地面下 0.04 m 防露缝，上叠进墙脚 0.03 m；顶面低于园路铺装 +0.05，避免与
+//   path-gate-sansuitang 等铺装共面深度争夺——astra 审查 2026-09-30）；
+//   宽 0.90 m（站点模块墙基实测 ~0.6–0.8 m，勒脚略挑出属常规做法）；SITE_MODULES=0 回退程序化
+//   墙（thickness 0.45）时用 thickness+0.06，两态都闭合。tl;dr 只动 garden-wall，temple 区有自己的
+//   铺装面（temple-ground__* y≈-0.12..0）不受此缝影响。
+{
+  const wall = layout.objects.find((o) => o.id === 'garden-wall');
+  if (wall && Array.isArray(wall.geometry?.segments)) {
+    const SKIRT_BOT = -0.44, SKIRT_TOP = 0.03;
+    const width = SITE_MODULES ? 0.90 : (wall.thickness || 0.45) + 0.06;
+    const parts = [];
+    let segCount = 0;
+    for (const [a, b] of wall.geometry.segments) {
+      const len = dist2d(a, b);
+      if (len < 0.5) continue;   // 与 buildWall 同一最短段门槛
+      const cx = (a[0] + b[0]) / 2, cz = (a[1] + b[1]) / 2;
+      const ang = Math.atan2(b[0] - a[0], b[1] - a[1]);
+      const g = new THREE.BoxGeometry(width, SKIRT_TOP - SKIRT_BOT, len);
+      g.rotateY(ang);
+      g.translate(cx, (SKIRT_TOP + SKIRT_BOT) / 2, cz);
+      parts.push(colorize(g, 0x7a7466));
+      segCount++;
+    }
+    if (parts.length) {
+      const key = 'garden|garden-wall|wallBaseSkirt|L1';
+      const ud = { id: 'garden-wall', zone: 'garden', kind: 'wallBaseSkirt', lod: 'L1', module: 'wall-base-skirt', designInference: true,
+        inference: `wave14-rockseam (巡检#12): the built-world base plane y=0 leaves the garden wall floating 0.40 m over the ${GROUND_Y} ground plane; at the 9° dusk sun this gap leaks light and throws a hard straight shadow band across the ground (both sides are the same ground mesh, see ticket artifacts). A plinth skirt (-0.44..+0.03, w=${width}) built from the frozen garden-wall segments closes the junction naturally (勒脚)` };
+      const mesh = mergedMesh(parts, key, ud);
+      zoneGroups.garden.add(mesh);
+      stats.meshes++;
+      stats.byKind.wallBaseSkirt = 1;
+      console.log(`garden-wall base skirt: ${segCount} segments, w=${width}, y ${SKIRT_BOT}..${SKIRT_TOP}`);
+    }
+  }
+}
+
 // ---------- 导出 ----------
 const exporter = new GLTFExporter();
 const procedural = {};
