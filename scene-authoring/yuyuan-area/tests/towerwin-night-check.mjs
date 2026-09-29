@@ -22,14 +22,15 @@
 //      B 侧：服务端 presets 原文。经 page.on('response') 记录 presets.json 的实际返回（命中次数 + 内容），
 //        并与仓库 lighting/presets.json 深比较——证明 B 侧点亮用的就是仓库 presets，不是旧缓存。
 //        背板 mesh 全部命中（数量与逐 mesh 三角 = raw），材质名语义匹配（家族基名），night 下 emissive
-//        颜色 = lattice 组色、emissiveIntensity = 组 intensity × night 预设 emissiveScale（期望从仓库
+//        颜色 = bazaar-window 组色、emissiveIntensity = 组 intensity × night 预设 emissiveScale（期望从仓库
 //        presets 独立算，>0——R1 审查可选项2：只看颜色不防「颜色对强度零」）。
-//      A 侧：playwright 请求拦截 presets.json，lattice 组去掉全部 btk-winback* 后 fulfill（不改仓库文件），
+//      A 侧：playwright 请求拦截 presets.json，bazaar-window 组去掉全部 btk-winback* 后 fulfill（不改仓库文件），
 //        记录拦截命中次数；同样检查 night 生效 / error / timedOut / page errors（R1 补严）。
 //        同一批背板材质 emissive 必须全部归零色（差分打在材质级，不看条目计数）；
-//        其余发光组命中数两侧一致（拦截只许影响 lattice）。
-//   红态（R1 重证见工单包 artifacts/r1/；towerwin2 红态见本单 artifacts/logs/）：
-//     ① 漏 presets 接线（lattice 组去掉 btk-winback）→ B 侧点亮断言红；
+//        其余发光组命中数两侧一致（拦截只许影响 bazaar-window）。
+//   红态（R1 重证见工单包 artifacts/r1/；towerwin2 红态见本单 artifacts/logs/；wave13 拆组红态：
+//     旧 lattice 口径测试打 bazaar-window presets 恰红 bNotInGroup + A 侧归零两条，见工单包 artifacts/b1/）：
+//     ① 漏 presets 接线（bazaar-window 组丢 btk-winback* / 拆组被还原）→ B 侧点亮/归属断言红；
 //     ② 压缩后部分背板错归木料（受控篡改 cm 件的 primitive 材质索引）→ T2 归属/三角多集断言红；
 //     ③ towerwin2 基线（6a2bf26c 产物：screen/band 无背板、winb 整板未拆段）→ T1 逐楼对账 / z 下沿红。
 import { createRequire } from 'node:module';
@@ -203,15 +204,20 @@ console.log('INFO cm winback materials per file (auxiliary, not asserted):', cmA
 
 // ---------- T3：浏览器 A/B ----------
 const _REPO_PRESETS = JSON.parse(fs.readFileSync(PRESETS_FILE, 'utf8'));
-const LATTICE = _REPO_PRESETS.emissiveGroups.find(g => g.id === 'lattice');
-const LATTICE_MATERIALS = LATTICE.materials;
-const LATTICE_COLOR_HEX = LATTICE.color.replace(/^#/, '').toLowerCase();
-// 期望亮度独立取自仓库 presets：emissiveIntensity = lattice 组 intensity × night 预设 emissiveScale
-// （lighting.js applyEmissive 的公式；R1 审查可选项2：只看颜色不防「颜色对、强度为零」）
-const LATTICE_INTENSITY_EXPECT = LATTICE.intensity * ((_REPO_PRESETS.presets && _REPO_PRESETS.presets.night && _REPO_PRESETS.presets.night.emissiveScale) || 0);
-// wave12-debt D2（R2 合并保留）：期望强度本身必须 > 0——预设与实际同时为零时等值断言不红
-// （颜色对、强度零的漏检；towerwin2 审查可选项2 同此）。
-ok(LATTICE_INTENSITY_EXPECT > 0, `T3 B: expected winback intensity = lattice(${LATTICE.intensity}) x night.emissiveScale must be > 0`, LATTICE_INTENSITY_EXPECT);
+// wave13：商城楼背板改按 bazaar-window 组断言（wave13 自 lattice 组拆出的独立发光组，
+// color / intensity / useMap 与 lattice 完全相同——默认画面不变，只为了单独调强）。
+const BAZAAR_WIN = _REPO_PRESETS.emissiveGroups.find(g => g.id === 'bazaar-window');
+ok(!!BAZAAR_WIN, 'T3 presets: emissiveGroup bazaar-window exists (btk-winback* split out of lattice)', _REPO_PRESETS.emissiveGroups.map(g => g.id));
+const BAZAAR_MATERIALS = BAZAAR_WIN ? BAZAAR_WIN.materials : [];
+const BAZAAR_COLOR_HEX = BAZAAR_WIN ? BAZAAR_WIN.color.replace(/^#/, '').toLowerCase() : '';
+// 期望亮度独立取自仓库 presets：emissiveIntensity = bazaar-window 组 intensity × night 预设 emissiveScale
+// （lighting.js applyEmissive 的公式；R1 审查可选项2：只看颜色不防「颜色对、强度为零」→ 期望值必须 > 0；
+//  wave12-debt D2 合并保留：期望强度本身必须 > 0——预设与实际同时为零时等值断言不红）
+const BAZAAR_INTENSITY_EXPECT = BAZAAR_WIN ? BAZAAR_WIN.intensity * ((_REPO_PRESETS.presets && _REPO_PRESETS.presets.night && _REPO_PRESETS.presets.night.emissiveScale) || 0) : 0;
+ok(BAZAAR_INTENSITY_EXPECT > 0, 'T3 presets: bazaar-window intensity x night.emissiveScale > 0 (zero expectation would make the equality vacuous)', BAZAAR_INTENSITY_EXPECT);
+ok(BAZAAR_MATERIALS.length > 0 && BAZAAR_MATERIALS.every(m => m.startsWith('btk-winback')), 'T3 presets: bazaar-window group owns the btk-winback* family', BAZAAR_MATERIALS);
+const latticeGroup = _REPO_PRESETS.emissiveGroups.find(g => g.id === 'lattice');
+ok(latticeGroup && !latticeGroup.materials.some(m => m.startsWith('btk-winback')), 'T3 presets: lattice group no longer lists btk-winback* (wave13 split)', latticeGroup && latticeGroup.materials);
 const PRESET_URL = '**/lighting/presets.json';
 const browser = await chromium.launch({ executablePath: exe, args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
 
@@ -225,8 +231,8 @@ async function openNight({ stripWinback }) {
     await page.route(PRESET_URL, route => {
       presetHits.n++;
       const j = JSON.parse(fs.readFileSync(PRESETS_FILE, 'utf8'));
-      const g = j.emissiveGroups.find(g => g.id === 'lattice');
-      g.materials = g.materials.filter(m => !m.startsWith('btk-winback'));   // 家族整体摘除（btk-winback / btk-winback-wood2）
+      const g = j.emissiveGroups.find(g => g.id === 'bazaar-window');
+      g.materials = g.materials.filter(m => !m.startsWith('btk-winback'));   // 家族整体摘除（bazaar-window 组 = 全部 btk-winback*）
       const body = JSON.stringify(j);
       presetHits.bodies.push(body);
       route.fulfill({ status: 200, contentType: 'application/json', body });
@@ -279,14 +285,14 @@ const rawByNode = multiset(rawPanels.map(p => p.node + '#' + p.tris));
 ok(bByNode.join() === rawByNode.join(), 'T3 B: backing meshes in cm scene match raw coverage (per node + triangles)', { browser: B.panels.length, raw: rawPanels.length, sample: { browser: B.panels.slice(0, 3), raw: rawPanels.slice(0, 3) } });
 const bBadMat = B.panels.filter(p => !p.mats.length || p.mats.some(m => !isWinbackMat(m.base)));
 ok(bBadMat.length === 0, 'T3 B: every backing mesh material is btk-winback family', bBadMat);
-const bDark = B.panels.filter(p => p.mats.some(m => m.emissiveHex !== LATTICE_COLOR_HEX));
-ok(bDark.length === 0, `T3 B: every backing material lit with lattice color ${LATTICE_COLOR_HEX} at night`, bDark);
-const bIntensity = B.panels.filter(p => p.mats.some(m => !(Math.abs(m.emissiveIntensity - LATTICE_INTENSITY_EXPECT) < 1e-6)));
-ok(bIntensity.length === 0, `T3 B: every backing material emissiveIntensity == lattice(${LATTICE.intensity}) x night.emissiveScale = ${LATTICE_INTENSITY_EXPECT}`, bIntensity.map(p => ({ node: p.node, mats: p.mats.map(m => ({ n: m.name, i: m.emissiveIntensity })) })));
-const bNotInGroup = B.panels.flatMap(p => p.mats).filter(m => !LATTICE_MATERIALS.includes(m.base));
-ok(bNotInGroup.length === 0, 'T3 B: backing material base names are in lattice group materials', bNotInGroup.map(m => m.name));
+const bDark = B.panels.filter(p => p.mats.some(m => m.emissiveHex !== BAZAAR_COLOR_HEX));
+ok(bDark.length === 0, `T3 B: every backing material lit with bazaar-window color ${BAZAAR_COLOR_HEX} at night`, bDark);
+const bIntensity = B.panels.filter(p => p.mats.some(m => !(Math.abs(m.emissiveIntensity - BAZAAR_INTENSITY_EXPECT) < 1e-6)));
+ok(bIntensity.length === 0, `T3 B: every backing material emissiveIntensity == bazaar-window(${BAZAAR_WIN.intensity}) x night.emissiveScale = ${BAZAAR_INTENSITY_EXPECT}`, bIntensity.map(p => ({ node: p.node, mats: p.mats.map(m => ({ n: m.name, i: m.emissiveIntensity })) })));
+const bNotInGroup = B.panels.flatMap(p => p.mats).filter(m => !BAZAAR_MATERIALS.includes(m.base));
+ok(bNotInGroup.length === 0, 'T3 B: backing material base names are in bazaar-window group materials', bNotInGroup.map(m => m.name));
 
-// A 侧：拦截 presets，lattice 组去掉 btk-winback
+// A 侧：拦截 presets，bazaar-window 组去掉 btk-winback
 const A = await openNight({ stripWinback: true });
 ok(A.presetHits.n >= 1 && A.presetHits.bodies.length === A.presetHits.n, 'T3 A: interception hits recorded', A.presetHits.n);
 ok(A.st && A.st.preset === 'night' && !A.st.error && !A.st.timedOut, 'T3 A: night preset applied with stripped presets (no error, no timeout)', A.st && { preset: A.st.preset, error: A.st.error, timedOut: A.st.timedOut });
@@ -294,12 +300,12 @@ ok(A.errors.length === 0, 'T3 A: no page errors', A.errors);
 const aByNode = multiset(A.panels.map(p => p.node + '#' + p.tris));
 ok(aByNode.join() === rawByNode.join(), 'T3 A: backing meshes unchanged under stripped presets (interception only touches lighting)', A.panels.length);
 const aLit = A.panels.filter(p => p.mats.some(m => m.emissiveHex !== '000000'));
-ok(aLit.length === 0, 'T3 A: every backing material dark (emissive black) without btk-winback wiring', aLit);
+ok(aLit.length === 0, 'T3 A: every backing material dark (emissive black) without bazaar-window wiring', aLit);
 if (A.st && B.st) {
   const groups = Object.keys(B.st.emissiveByGroup || {});
-  const others = groups.filter(g => g !== 'lattice').every(g => (B.st.emissiveByGroup[g] || 0) === (A.st.emissiveByGroup[g] || 0));
-  ok(others, 'T3 A/B: stripping affects only the lattice group', { B: B.st.emissiveByGroup, A: A.st.emissiveByGroup });
-  console.log('INFO emissiveByGroup.lattice B/A (auxiliary):', B.st.emissiveByGroup?.lattice, '/', A.st.emissiveByGroup?.lattice,
+  const others = groups.filter(g => g !== 'bazaar-window').every(g => (B.st.emissiveByGroup[g] || 0) === (A.st.emissiveByGroup[g] || 0));
+  ok(others, 'T3 A/B: stripping affects only the bazaar-window group', { B: B.st.emissiveByGroup, A: A.st.emissiveByGroup });
+  console.log('INFO emissiveByGroup.bazaar-window B/A (auxiliary):', B.st.emissiveByGroup?.['bazaar-window'], '/', A.st.emissiveByGroup?.['bazaar-window'],
               '| distinct cm winback materials (auxiliary):', Object.values(cmAux).reduce((s, v) => s + v.materials, 0));
 }
 
