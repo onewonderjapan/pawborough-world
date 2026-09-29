@@ -6,6 +6,9 @@ set -u
 cd "$(dirname "$0")/.."
 WS=$(pwd)
 PKG=$(dirname "$WS")
+# wave14-hygiene H1: validator 用仓库内等价物（仓库根 scripts/validate_all.cjs，CLI 相同），
+# 按本脚本位置反推仓库根；旧 /home/baibai/pawborough-world 便利链接已失效（2026-09-29 清理）。
+REPO=$(cd "$WS/../../.." && pwd)
 ART="$PKG/artifacts/snacks-handheld"
 
 FAIL=0
@@ -34,9 +37,11 @@ print(','.join(i['id'] for i in spec['items']))")
 fi
 
 mkdir -p "$ART"
+# 仓库副本里 ART 是全新目录，validator 子目录不存在的重定向会先于 node 失败（wave14-hygiene 实跑发现）
+mkdir -p "$ART/validator"
 
 echo "== 1. gltf validator ($FILES) =="
-(cd "$PROPS" && node /home/baibai/pawborough-world/scripts/validate_all.cjs --files "$FILES" --root . --report "$ART/validator/report.json") > "$ART/validator/stdout.log" 2>&1
+(cd "$PROPS" && node "$REPO/scripts/validate_all.cjs" --files "$FILES" --root . --report "$ART/validator/report.json") > "$ART/validator/stdout.log" 2>&1
 VEXIT=$?
 echo "validator exit=$VEXIT (log: $ART/validator/stdout.log)"
 [ $VEXIT -ne 0 ] && FAIL=1

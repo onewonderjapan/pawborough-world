@@ -193,10 +193,39 @@ def bake_asphalt():
         a[dots] += 0.10
     save_jpg('paving-asphalt', np.stack([r, gg, b], -1))
 
+# ---------- 6. 水面 paving-water（wave13-nightbalance N2，nightqa #3/#8） ----------
+# 深墨绿基色（#3d5348：#4a665c 同色相加深，线性 ≈0.067，深水 0.03–0.10 区间）+ 低幅值云影/细波亮度
+# 起伏（±~7%，避免「平板平色」）。roughness / 法线在材质分支（export-zones.py、render-control-passes.py
+# 的 water 分支：roughness 0.5 + paving-water-normal.jpg，normalScale 0.55）——目的：Cycles 夜景不再把
+# 天空/点光聚成亮青绿大瓣高光、白天去掉团状高光斑，但保留柔和反光；两端（查看器/Cycles）同参数。
+def bake_water():
+    base = np.array([61, 83, 72], np.float32) / 255.0          # sRGB #3d5348
+    cloud = value_noise(6, 3, SEED + 51)
+    fine = value_noise(48, 2, SEED + 52)
+    v = 0.94 + (cloud - 0.5) * 0.10 + (fine - 0.5) * 0.05
+    save_jpg('water', np.clip(base[None, None, :] * v[:, :, None], 0.0, 1.0))
+
+def bake_water_normal():
+    """程序化缓波法线（无需外部图）：两组交叉方向缓波（噪声抖相位）+ 细碎起伏，最大斜率 ~0.35；
+    glTF normalTexture 按切线空间 (x,y,z)/2+0.5 编码，材质分支再乘 normalScale 0.55 → 有效扰动轻微。"""
+    yy, xx = np.mgrid[0:SIZE, 0:SIZE].astype(np.float32) / SIZE
+    ph = value_noise(8, 2, SEED + 53) * 2.0 * np.pi
+    h = (np.sin(2.0 * np.pi * xx * 3.0 + ph) + np.sin(2.0 * np.pi * yy * 4.0 - ph * 0.7)
+         + (value_noise(40, 2, SEED + 54) - 0.5) * 0.8)
+    gx = (np.roll(h, -1, axis=1) - np.roll(h, 1, axis=1)) * 0.5
+    gy = (np.roll(h, -1, axis=0) - np.roll(h, 1, axis=0)) * 0.5
+    k = 0.35
+    nx, ny = -gx * k, -gy * k
+    ln = np.sqrt(nx * nx + ny * ny + 1.0)
+    rgb = np.stack([nx / ln * 0.5 + 0.5, ny / ln * 0.5 + 0.5, 0.5 / ln + 0.5], -1)
+    save_jpg('water-normal', rgb)
+
 if __name__ == '__main__':
     bake_cobble()
     bake_brick()
     bake_pebble()
     bake_bluestone()
     bake_asphalt()
+    bake_water()
+    bake_water_normal()
     print('BAKE PAVING DONE ->', OUTDIR)

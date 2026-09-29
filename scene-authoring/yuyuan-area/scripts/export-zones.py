@@ -198,6 +198,37 @@ paving_mats = {}
 #   outerkit-proc  程序化 shader 方案（方案对比用）：无贴图白底材质，窗 / 瓦由 web/outer-kit-proc.js 按 UV 编码现画。
 # wave9-outerpolish：图集 v2（512×4096，4 种墙色 × A/B 变体；v1 outerkit-atlas.jpg 文件保留不动，只是不再被读）
 OUTER_KIT_TEX = {'outerkit-atlas': os.path.join(ROOT, 'resources', 'textures', 'outer-kit', 'outerkit-atlas-v2.jpg'), 'outerkit-proc': None}
+def water_material(base_jpg, cache, slot):
+    """wave13-nightbalance N2：water 槽材质（深色水面 + 缓波法线 + roughness 0.5）。"""
+    if slot in cache:
+        return cache[slot]
+    m = bpy.data.materials.new('paving-water')
+    m.use_nodes = True
+    bsdf = next(n for n in m.node_tree.nodes if n.type == 'BSDF_PRINCIPLED')
+    bsdf.inputs['Roughness'].default_value = 0.5
+    bsdf.inputs['Metallic'].default_value = 0.0
+    nt = m.node_tree
+    tex = nt.nodes.new('ShaderNodeTexImage')
+    tex.image = bpy.data.images.load(base_jpg, check_existing=True)
+    tex.interpolation = 'Linear'
+    tex.extension = 'REPEAT'
+    nt.links.new(tex.outputs['Color'], bsdf.inputs['Base Color'])
+    njpg = os.path.join(PAVING_TEX_DIR, 'water-normal.jpg')
+    if not os.path.exists(njpg):
+        raise SystemExit(f'paving texture missing: {njpg} (run: blender -b -P scripts/bake-paving-textures.py)')
+    nrm_img = bpy.data.images.load(njpg, check_existing=True)
+    nrm_img.colorspace_settings.name = 'Non-Color'
+    ntex = nt.nodes.new('ShaderNodeTexImage')
+    ntex.image = nrm_img
+    ntex.interpolation = 'Linear'
+    ntex.extension = 'REPEAT'
+    nm = nt.nodes.new('ShaderNodeNormalMap')
+    nm.inputs['Strength'].default_value = 0.55
+    nt.links.new(ntex.outputs['Color'], nm.inputs['Color'])
+    nt.links.new(nm.outputs['Normal'], bsdf.inputs['Normal'])
+    cache[slot] = m
+    return m
+
 def paving_material(slot):
     if slot in paving_mats: return paving_mats[slot]
     if slot in OUTER_KIT_TEX and OUTER_KIT_TEX[slot] is None:
@@ -222,6 +253,11 @@ def paving_material(slot):
     if not os.path.exists(jpg):
         raise SystemExit(f'paving texture missing: {jpg} (run: blender -b -P scripts/bake-paving-textures.py'
                          ' / python3 -X utf8 modules/outer-kit/bake_atlas.py)')
+    if slot == 'water':
+        # wave13-nightbalance N2（nightqa #3/#8）：水面 = 深墨绿基色贴图 + 程序化缓波法线 + roughness 0.5。
+        # 与 render-control-passes.py 的 water 分支同参数（查看器 / Cycles 两端同观感）——Cycles 夜景不再把
+        # 天空/点光聚成亮青绿镜面，白天去掉团状高光斑，保留柔和反光。
+        return water_material(jpg, paving_mats, slot)
     img = bpy.data.images.load(jpg, check_existing=True)
     m = bpy.data.materials.new(slot if slot in OUTER_KIT_TEX else 'paving-' + slot)
     m.use_nodes = True

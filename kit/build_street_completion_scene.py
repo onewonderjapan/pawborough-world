@@ -40,7 +40,9 @@ p.add_argument('--width', type=int, default=1280)
 p.add_argument('--samples', type=int, default=32)
 args = p.parse_args(argv)
 
-ROOT = Path('/home/baibai/pawborough-world')
+# wave14-hygiene H1: 仓库根按本文件位置反推（kit/ 的上一级）。原路径 /home/baibai/pawborough-world 已失效（2026-09-29 清理）。
+# 本脚本消费的 world/street-reviewed.glb 与 world/street-completion/ 都在仓库根下。
+ROOT = Path(__file__).resolve().parents[1]
 DATASET = ROOT / 'world' / 'street-completion'
 cams = json.loads((DATASET / 'cameras.json').read_text(encoding='utf-8'))['cameras']
 by_id = {c['id']: c for c in cams}

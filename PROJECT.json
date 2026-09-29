@@ -3,7 +3,8 @@
   "projectId": "pawborough-world",
   "phase": "world-v1",
   "workspaceRoot": ".",
-  "convenienceLink": "/home/baibai/pawborough-world",
+  "convenienceLink": "/home/baibai/work/onewonderjapan/pawborough-world",
+  "convenienceLinkNote": "旧便利链接 /home/baibai/pawborough-world 已失效（2026-09-29 清理），现指向主 checkout；勿重建该软链。（原注：Legacy link retained at original location; this new project is the migrated working root.）",
   "git": {
     "branch": "work/reorganization-20260922",
     "baselineBranch": "origin/main",
@@ -68,7 +69,6 @@
     ],
     "repoSnapshot": "docs/skills-snapshot/ (read-only copy for reproducibility; NOT a second editable canonical)"
   },
-  "convenienceLinkNote": "Legacy link retained at original location; this new project is the migrated working root.",
   "modules": {
     "explorationClient": ".",
     "areaAuthoring": "scene-authoring/yuyuan-area",
