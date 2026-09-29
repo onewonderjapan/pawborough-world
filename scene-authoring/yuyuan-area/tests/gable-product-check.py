@@ -128,8 +128,8 @@ def main():
             ck(sh[tag]['mats'][0] == 'ht-wood-red',
                '%s-shanhua-%s 山花材质 %s != ht-wood-red' % (rname, tag, sh[tag]['mats'][0]))
             # 博风板
-            for side in 'ab':
-                nm = 'huxin-ting__%s-bofeng-%s%s' % (rname, tag, side)
+            for side in ('s', 'n'):
+                nm = 'huxin-ting__%s-bofeng3d-%s%s' % (rname, tag, side)
                 mi = node_mesh(gj, nm)
                 if mi is None:
                     ck(False, '%s 博风板缺失' % nm); continue

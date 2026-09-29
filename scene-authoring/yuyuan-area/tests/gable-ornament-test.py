@@ -81,7 +81,7 @@ def check_box_normals(meshes, label=''):
     """J5：闭合装饰件（博风/悬鱼）每面法线朝体外（凸包质心判据）。"""
     bad = []
     for m in meshes:
-        if '-bofeng-' not in m['name'] and '-xuanyu-' not in m['name']:
+        if '-bofeng3d-' not in m['name'] and '-xuanyu-' not in m['name']:
             continue
         c = centroid(m)
         for f in m['faces']:
@@ -108,8 +108,8 @@ def check_ornament(meshes, prm, tag_prefix='xs', label=''):
         if sh[k]['material'] == 'wall':
             bad.append('%s 山花是白抹灰（ornament 模式不允许）' % label)
         # 博风板：每端 a/b 两条
-        for side in 'ab':
-            nm = '%s-bofeng-%s%s' % (tag_prefix, tag, side)
+        for side in ('s', 'n'):
+            nm = '%s-bofeng3d-%s%s' % (tag_prefix, tag, side)
             bm = [m for m in meshes if m['name'] == nm]
             if len(bm) != 1:
                 bad.append('%s 博风板 %s 不存在或重复' % (label, nm)); continue
@@ -121,7 +121,7 @@ def check_ornament(meshes, prm, tag_prefix='xs', label=''):
                 front_u = us[1] if m_out > 0 else us[0]
                 if (front_u - ug) * m_out <= 1e-9:
                     bad.append('%s 博风板 %s 未站在山花面外侧 (front_u=%s ug=%s)' % (label, nm, front_u, ug))
-            vv = bv0 if side == 'a' else bv1
+            vv = bv0 if side == 's' else bv1
             zb_min = min(v[2] for v in b['verts'])
             if zb_min > BREAKZ - ORB['bofengDrop'] + 1e-6:
                 bad.append('%s 博风板 %s 底端未下探 (min z=%s)' % (label, nm, zb_min))
@@ -177,7 +177,7 @@ def main():
     for msg in check_ornament(orn, prm):
         FAILS.append(msg); CHECKS[0] += 1
     ck(len([m for m in orn if '-xuanyu-' in m['name']]) == 2, '悬鱼应恰 2 件（w/e 各一）')
-    ck(len([m for m in orn if '-bofeng-' in m['name']]) == 4, '博风板应恰 4 件（2 端 × 2 边）')
+    ck(len([m for m in orn if '-bofeng3d-' in m['name']]) == 4, '博风板应恰 4 件（2 端 × 2 边）')
     # J1 负例：同一调用带 ornament，digest 必须变
     ck(digest(orn) != BASELINE_DIGEST, 'J1 负例失效：ornament 输出与缺省相同')
 
@@ -204,7 +204,7 @@ def main():
     # J5 负例：整体翻面
     flipped = [dict(name=m['name'], verts=m['verts'], material=m['material'], part=m['part'], items=m['items'],
                     faces=[tuple(reversed(f)) for f in m['faces']])
-               for m in orn if '-bofeng-' in m['name'] or '-xuanyu-' in m['name']]
+               for m in orn if '-bofeng3d-' in m['name'] or '-xuanyu-' in m['name']]
     expect_fail(check_box_normals(flipped), 'J5 全部面翻绕序必须红')
 
     # ---- J6 设计值范围（huxinting 实际设计 dict 的建筑合理性）----

@@ -35,9 +35,9 @@ E4（wave6-eavekit）：封檐板（-board）材质键 prm['boardMaterial']，�
 zanjian_roof（含 n 边形）一致。只换 -board 的材质键，几何与其他件不变（博风板仍是 'wood'）。
 E5（wave14-gable）：xieshan_roof 的 prm['shanhuaMaterial']（山花材质键，缺省 'wall'）与 prm['gableOrnament']
 （dict bofengWidth / bofengProud / bofengDrop / xuanyuLen / xuanyuW / xuanyuProud / xuanyuTuck，或 True = 全默认）：
-给出时 -bofeng-* 改为山花面外侧的闭合木板条（旧平面博风位于山花面后 0.02 m，被山花板遮住，只露脊端一条楔形细边——
-巡检 #14「山尖无博风」的根因），并新增 -xuanyu-w/e 脊下悬鱼板；山花材质不再写死。两键缺省时输出逐字节不变
-（金值 tests/gable-ornament-test.py J1，基线 a2bc8104 捕获）。
+给出时博风板以 -bofeng3d-*（闭合木板条，eave_facing 角色 solid）替代旧 -bofeng-*（旧平面博风位于山花面后
+0.02 m，被山花板遮住，只露脊端一条楔形细边——巡检 #14「山尖无博风」的根因），并新增 -xuanyu-w/e 脊下悬鱼板
+（solid）；山花材质不再写死。两键缺省时输出逐字节不变（金值 tests/gable-ornament-test.py J1，基线 a2bc8104 捕获）。
 """
 import math
 
@@ -723,17 +723,17 @@ def xieshan_roof(name, rect, z_eave, prm, part):
             xp = go.get('xuanyuProud', 0.035)
             xt = go.get('xuanyuTuck', 0.04)
             mout = -1.0 if not flip else 1.0                  # 山花面外向（w 端 −u，e 端 +u）
-            for side, vv in (('a', bv0), ('b', bv1)):
+            for side, vv in (('s', bv0), ('n', bv1)):         # 侧名 s/n 与 -upper-s/n 同语义；不用 a/b（-wa 撞瓦垄校验）
                 dv, dh = vc - vv, zr - zb
                 L = math.hypot(dv, dh) or 1.0
                 du_, dh_ = dv / L, dh / L
-                s = 1.0 if side == 'a' else -1.0
-                nv, nh = s * dh_, -s * du_                    # 山花面内、指向三角内部的坡法向
+                sgn = 1.0 if side == 's' else -1.0
+                nv, nh = sgn * dh_, -sgn * du_                # 山花面内、指向三角内部的坡法向
                 q1 = (vv - du_ * bd, zb - dh_ * bd)           # 下端沿斜边延长、过撒头下探 bd
                 q4 = (vc, zr)                                 # 脊端收到正脊线下（正脊盒盖住合拢缝）
                 q2 = (q1[0] + nv * bw, q1[1] + nh * bw)
                 q3 = (q4[0] + nv * bw, q4[1] + nh * bw)
-                _prism_u(name + '-bofeng-%s%s' % (tag, side), [q1, q2, q3, q4],
+                _prism_u(name + '-bofeng3d-%s%s' % (tag, side), [q1, q2, q3, q4],
                          ug - mout * 0.001, ug + mout * (bp - 0.001), 'wood', part)
             # 悬鱼：山尖顶端脊下悬垂的鱼形饰板（头宽尾尖、尾端展鳍），比博风板退后留层次
             w2 = xw / 2
