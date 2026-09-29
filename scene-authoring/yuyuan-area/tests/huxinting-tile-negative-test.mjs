@@ -93,6 +93,10 @@ function runTest(script, glbFile) {
     env: { ...process.env, HUXINTING_GLB: glbPath, OUT_DIR: emptyOut },
     cwd: ROOT,
   });
+  // 红日志证据：回显子测试实际触发的 FAIL 行（前 3 条），供 artifacts 负例存档
+  for (const line of (r.stdout || '').split('\n')) {
+    if (line.startsWith('FAIL')) console.log('  ↳ 子测试', script, '→', line.trim().slice(0, 120));
+  }
   return { status: r.status, out: (r.stdout || '') + (r.stderr || '') };
 }
 let glbBuf = null;
