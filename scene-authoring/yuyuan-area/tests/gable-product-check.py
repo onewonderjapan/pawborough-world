@@ -187,6 +187,9 @@ def raster_depth(tris, m_out, box=None, N=512, pad=0.02):
         cover[sl] |= inside
     return depth, cover, (v0b, v1b, h0b, h1b, dv * dh)
 
+NEG6_OLD_BAD = []
+
+
 def main():
     out_dir = os.environ.get('OUT_DIR', 'out-zone')
     glb = os.path.join(out_dir, 'huxin-ting.glb')
@@ -339,10 +342,12 @@ def main():
             fish_tris = SCENE[nm].copy()
             if neg == '4':                       # 与顶点级 loc 同公式：退回 R0 位置
                 fish_tris[..., 0] -= m_out * (bp - 0.004)
-            elif neg == '6':
-                # 外移 0.5 m：山花/博风全在身后（「博风不遮挡」），但上段瓦面/瓦垄与
-                # r2 栏杆仍在视线上——真实遮挡必须仍然红。
-                fish_tris[..., 0] -= m_out * 0.5
+            elif neg == '6' and rname == 'porchroof':
+                # 主控修正（astra R2 必修1）：抱厦悬鱼整体上移 0.12 m = 恢复 R1 安装高度
+                # （xuanyuTuck 0.16 → 0.04）。此时只看山尖端构件（R1 旧口径：山花/博风/撒头/
+                # 正脊）悬鱼 100% 可见；全三角面口径下被上段瓦面/瓦垄与 r2 栏杆遮挡 ≈65%
+                # ——真实遮挡必须红，同时断言旧口径是绿的（证明本负例专抓 R1 的漏检）。
+                fish_tris[..., 2] += 0.12
             elif neg == '5':
                 fish_tris[..., 2] = zt - (zt - fish_tris[..., 2]) * neg5_stretch
             fd, fc, box = raster_depth(fish_tris, m_out)
@@ -355,6 +360,21 @@ def main():
             a_total = n_total * box[4]
             a_vis = (n_total - n_blk) * box[4]
             ratio = (n_total - n_blk) / n_total if n_total else 0.0
+            if neg == '6' and rname == 'porchroof':
+                gable_nodes = ['huxin-ting__%s%s' % (rname, sfx) for sfx in
+                               ('-shanhua-' + tag, '-bofeng3d-' + tag + 's', '-bofeng3d-' + tag + 'n',
+                                '-satou-' + tag, '-ridge')]
+                olds = [SCENE[n2] for n2 in gable_nodes if n2 in SCENE]
+                if olds:
+                    od2, oc2, _ = raster_depth(np.concatenate(olds, axis=0), m_out, box=box[:4])
+                    blk2 = (oc2 & (od2 < fd - 1e-5)) if m_out < 0 else (oc2 & (od2 > fd + 1e-5))
+                    r_old = (n_total - int((fc & blk2).sum())) / n_total if n_total else 0.0
+                else:
+                    r_old = 0.0
+                occ_report.append('NEG6 %s-%s 旧口径（仅山尖端构件）可见 %.1f%%，全三角面 %.1f%%'
+                                  % (rname, tag, r_old * 100, ratio * 100))
+                if r_old < 0.70:
+                    NEG6_OLD_BAD.append('%s-%s 旧口径 %.1f%%' % (rname, tag, r_old * 100))
             if rname == 'mainroof' and tag == 'e':
                 # 主控裁定（R2 验收范围）：主楼 e 端山花正对湖心亭自身塔楼（towerroof 系列
                 # 构件实测挡在整片视线上，可见率 0%），从外部视线结构上就被挡——该端悬鱼
@@ -382,6 +402,10 @@ def main():
                 '4': '悬鱼正面投影可见率', '5': 'xuanyuLen/rise',
                 '6': '悬鱼正面投影可见率'}[neg]
         ok = any(need in f for f in FAILS)
+        if neg == '6':
+            # 负例只算数于：旧口径（仅山尖端构件）全绿、真实遮挡红——否则说明它抓的不是 R1 漏检
+            ok = ok and not NEG6_OLD_BAD and any('porchroof' in f and need in f for f in FAILS)
+            print('  NEG6 旧口径需全绿：%s' % ('✓' if not NEG6_OLD_BAD else '✗ ' + '; '.join(NEG6_OLD_BAD)))
         print('  负例期望失败「%s」：%s' % (need, '出现 ✓' if ok else '未出现 ✗'))
         return 0 if ok else 1
     return 1 if FAILS else 0
