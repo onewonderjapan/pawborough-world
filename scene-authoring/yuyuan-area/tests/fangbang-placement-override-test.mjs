@@ -123,7 +123,21 @@ if (fs.existsSync(asmPath)) {
   const covered = instDoc.instances.filter(i => byId.has(i.id));
   ok(`整装 GLB 实例节点组全部对应 v7 实例（${byId.size} 组）`, covered.length === byId.size && byId.size > 0,
     [...byId.keys()].filter(k => !instDoc.instances.some(i => i.id === k)).join(','));
-  for (const id of overrideIds) ok(`覆盖实例 ${id} 在整装 GLB 中（原客户端按整装渲染它）`, byId.has(id));
+  for (const id of overrideIds) {
+    if (byId.has(id)) {
+      ok(`覆盖实例 ${id} 在整装 GLB 中（原客户端按整装渲染它）`, true);
+    } else {
+      // wave14-templeside S1b：西延带店（westshop-shop-*）不在整装 street GLB——review-manifest westShops
+      // 写明这类件是「frozen building/ module instances (only referenced, never copied)」，原客户端按
+      // instances.json + 模块 GLB 渲染。对这类 id 改断言前提：v7 instances + 模块登记 + 碰撞记录齐；
+      // 全域侧 B1（位置 = 源+覆盖+偏移）/B2（模型-碰撞对齐）/B3（记录数与 OBB∈网格盒）另行核。
+      const inInst = instDoc.instances.some(i => i.id === id);
+      const inMan = man7.modules.some(mo => mo.id === id);
+      const nRec = colDoc.colliders.filter(r => r.name.split(':')[0] === id).length;
+      ok(`覆盖实例 ${id}（非整装件）在 v7 instances + 模块登记 + 碰撞记录（原客户端按模块实例渲染它）`,
+        inInst && inMan && nRec > 0, `inst=${inInst} man=${inMan} rec=${nRec}`);
+    }
+  }
   let a1Bad = [], a2Bad = [], a3Bad = [], nRec = 0;
   for (const it of covered) {
     const idxs = byId.get(it.id);

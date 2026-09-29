@@ -99,11 +99,21 @@ def is_shanmen_passage(o):
 # HALL_KIT=0 时楼/厅是 ZONE-temple 程序化件 temple|templeeast-…）单独成件 zone-temple-5.glb（主控 2026-09-29 定新开 temple-5）。
 TEMPLE_EAST_PREFIX = 'templeeast-'
 
+TEMPLESIDE_PREFIX = 'templeside-'   # wave14-templeside：后殿北院（跟随锚 id 分件，不进 temple-5）
 def is_temple_east(o):
+    # 先沿父链找实例锚 id（归属权威）：templeeast-* 锚的子件进 temple-5；templeside-* 锚的子件
+    # （如复用的 templeeast-ding 模块子网格名 templeeast-ding__*）跟随锚进 temple-2，不按子件名前缀误归 temple-5。
     cur = o
     while cur is not None:
-        if str(cur.get('id') or '').startswith(TEMPLE_EAST_PREFIX) or cur.name.startswith(TEMPLE_EAST_PREFIX) \
-                or cur.name.startswith('temple|' + TEMPLE_EAST_PREFIX):
+        oid = str(cur.get('id') or '')
+        if oid.startswith(TEMPLE_EAST_PREFIX):
+            return True
+        if oid.startswith(TEMPLESIDE_PREFIX):
+            return False
+        cur = cur.parent
+    cur = o
+    while cur is not None:
+        if cur.name.startswith(TEMPLE_EAST_PREFIX) or cur.name.startswith('temple|' + TEMPLE_EAST_PREFIX):
             return True
         cur = cur.parent
     return False

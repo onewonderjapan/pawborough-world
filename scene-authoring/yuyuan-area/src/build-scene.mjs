@@ -220,7 +220,8 @@ const PAVING_SLOTS = {
   'pond|path':     'paving-pebble',        // 池畔径：卵石
   'pond|steps':    'paving-blue-stone',    // 台阶（九曲桥两端）：青石板，几何不动
   'outer|road':    'paving-asphalt',       // 外围道路：沥青灰
-  'temple|plaza':  'paving-blue-stone',    // wave14-templeeast 庙东跨院铺地：青石板（庙内其余铺装仍在 temple-v3 模块件内）
+  'outer|plaza':   'paving-fine-cobble',   // wave14-templeside S2 安仁街东侧空地铺地：弹格路小方石（街面同族）
+  'temple|plaza':  'paving-blue-stone',    // wave14-templeeast 庙东跨院铺地：青石板（庙内其余铺装仍在 temple-v3 模块件内；wave14-templeside S3 后殿北院铺地复用同槽）
   // wave13-nightbalance N2（nightqa #3/#8）：水面统一走 water 槽——深墨绿基色 + 程序化缓波法线 +
   // roughness 0.5（export-zones.py / render-control-passes.py 的 water 分支双端同参数）。四区水面
   // 全部入槽；顶点色保留，只作 scene-areas.glb 离线检查件的平色显示，运行时被槽材质替换。
