@@ -9,10 +9,11 @@ R2 按 REVIEW-astra-R1 必修 1-4 + 可选 3 项返修；R3 按 REVIEW-astra-R2 
 不跳过任何指纹门禁。红绿对照见 artifacts/r3/logs/。
 
 调度器经 PV_BATCH_BLENDER 指向一个写占位 PNG 的 stub（接收与 Blender 相同的 argv；
-R2 起 opt() 用真实 argparse 后值覆盖语义），帧数从正本 scripts/pv-shots.json 的 durationS×fps
-推导，与调度器同一口径。齐全性判定期望尺寸用 PV_BATCH_FRAME_SIZE=160x90（stub 同读该 env
-写同尺寸帧与 cameras json）。GPU 锁用 PV_BATCH_GPU_LOCK 指到 tmp（不碰真机
-/tmp/pawborough-gpu.lock）。layout 指纹隔离用 PV_BATCH_LAYOUT_OVERRIDE（同 FRAME_SIZE 口径）。
+stub 按真实 argparse 语义解析：后值覆盖 + 缩写展开 + 未知/歧义参数拒绝），帧数从正本
+scripts/pv-shots.json 的 durationS×fps 推导，与调度器同一口径。齐全性判定期望尺寸用
+PV_BATCH_FRAME_SIZE=160x90（stub 同读该 env 写同尺寸帧与 cameras json）。GPU 锁用
+PV_BATCH_GPU_LOCK 指到 tmp（不碰真机 /tmp/pawborough-gpu.lock）。layout 指纹负例走真实
+namespace：隔离软链工作区同一路径改内容（不用 PV_BATCH_LAYOUT_OVERRIDE，该旁路已撤销）。
 
 覆盖（对应审查编号；R1 项全保留）：
   R2必修1 重渲前作废旧标记：指纹检查先于完整性分支（缺文件+换配置 → 报错零渲染）；
@@ -21,7 +22,13 @@ R2 起 opt() 用真实 argparse 后值覆盖语义），帧数从正本 scripts/
   R2必修2 --extra 同值自管选项出现即拒绝（--preset=day 且首镜 day、--sho 首镜 id）；
      stub 后值覆盖语义自证。
   R2必修3 layout 内容 sha 纳入指纹：同路径内容变化阻止复用；--layout 自管。
+     E1 起负例走真实 namespace：隔离工作区（软链镜像 area 根，仅 baseline/layout.json 是
+     可改副本）里同一路径改内容，渲染器自己的 argparse 默认 --layout（<其 ROOT>/baseline/
+     layout.json）就指向该文件——不用 PV_BATCH_LAYOUT_OVERRIDE（该旁路已从调度器撤销）。
   R2必修4 启动前全量解析：裸 --beauty-denoise（缺值）与未知参数在启动 Blender 前被拒并提示。
+  E1（pvbatch R2 可选1/3）：指纹拒绝提前退出写本次 blocked RESULT（覆盖旧 ok 收据）；
+     stub 自身 argparse 语义——缩写唯一前缀展开、歧义/未知参数按 argparse 退出码 2 拒绝；
+     --extra 各拒绝用例独立目录（同坏目录复用会被旧指纹拦住、掩盖真实拒绝原因）。
   R2可选 像素流损坏 PNG（尺寸/编码正确仅像素流坏）；out-root 锁单独互斥（GPU 锁空闲）；
      SIGTERM 孙进程一并回收；complete-preexisting 回填 guard 并注明来源；矩阵 NaN/布尔拒绝。
   必修1 配置指纹：.done.json 字段（argv/渲染器 sha/场景/相机/presets/layout sha/帧数/mode/守卫）；
@@ -72,10 +79,13 @@ SYNTH = {}  # R3 必修1：合成输入注入（--scene/--cameras），main() �
 
 STUB_SRC = '''#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# wave12-pvbatch R1/R2 测试 stub：Blender 替身。接收 Blender 同款 argv（第一个 -- 之后是渲染器参数），
-# 按 --out/--shots/--frames 写占位 PNG（四通道，depth 16-bit）+ 契约完整的 cameras json。
-# R2：opt() 采用真实 argparse「后值覆盖」语义（同名选项取最后一次出现，支持 --opt value 与
-#     --opt=value），与 render-control-passes.py 的 parse_args 行为一致，避免 stub 与真机语义漂移。
+# wave12-pvbatch R1/R2 + wave13-debt2 E1 测试 stub：Blender 替身。接收 Blender 同款 argv
+# （第一个 -- 之后是渲染器参数），按 --out/--shots/--frames 写占位 PNG（四通道，depth 16-bit）
+# + 契约完整的 cameras json。
+# 后值覆盖语义：同名选项取最后一次出现（--opt value 与 --opt=value 都认），与真实 argparse 一致。
+# E1（pvbatch R2 可选3）：选项名按 argparse 缩写规则解析——完整名直过、唯一前缀展开、
+#     歧义前缀与未知参数按 argparse 退出码 2 拒绝（选项表 = render-control-passes.py 的
+#     13 个长选项，全部带值，无 store_true）。
 # PV_BATCH_STUB_MODE=ok|black|white|nocam；PV_BATCH_STUB_SLEEP=N 先睡 N 秒（锁/信号测试）；
 # PV_BATCH_STUB_PIDFILE 追加写自身 pid（父进程被杀测试用）；PV_BATCH_STUB_LOG 追加写
 # 'ARGV <json数组>'（--extra 空格保真断言用）与旧行为一行空格拼接。
@@ -112,26 +122,49 @@ if sleep_s:
 
 args = argv[argv.index('--') + 1:] if '--' in argv else []
 
-
-def opt(name):
-    """真实 argparse 后值覆盖语义：同名选项取最后一次出现；--opt value 与 --opt=value 都认。"""
-    val = ''
-    i = 0
-    while i < len(args):
-        t = args[i]
-        if t == name and i + 1 < len(args):
-            val = args[i + 1]
-            i += 2
-            continue
-        if t.startswith(name + '='):
-            val = t[len(name) + 1:]
-        i += 1
-    return val
+# 与 render-control-passes.py argparse 一致的选项表（全部带值；--presets/--layout 有默认）
+KNOWN_OPTS = ('--scene', '--cameras', '--out', '--layout', '--shots', '--beauty', '--preset',
+              '--presets', '--beauty-samples', '--beauty-device', '--beauty-denoise',
+              '--frames', '--passes')
 
 
-out = opt('--out')
-want = opt('--shots')
-frames = opt('--frames')
+def resolve_opt(tok):
+    """argparse 缩写语义：完整名精确命中直过；否则唯一前缀展开；歧义/未知按 argparse 退出码 2 拒绝。"""
+    if tok in KNOWN_OPTS:
+        return tok
+    hits = [k for k in KNOWN_OPTS if k.startswith(tok)]
+    if len(hits) == 1:
+        return hits[0]
+    sys.stderr.write('stub: unrecognized%s argument: %s\\n'
+                     % (' (ambiguous: %s)' % ' '.join(hits) if hits else '', tok))
+    sys.exit(2)
+
+
+vals = {}
+_i = 0
+while _i < len(args):
+    _t = args[_i]
+    if _t.startswith('--'):
+        _name, _eq, _inline = _t.partition('=')
+        _name = resolve_opt(_name)
+        if _eq:
+            vals[_name] = _inline
+            _i += 1
+        elif _i + 1 < len(args) and not args[_i + 1].startswith('--'):
+            vals[_name] = args[_i + 1]
+            _i += 2
+        else:
+            sys.stderr.write('stub: argument %s: expected one value\\n' % _name)
+            sys.exit(2)
+    elif _t.startswith('-'):
+        sys.stderr.write('stub: unrecognized argument: %s\\n' % _t)
+        sys.exit(2)
+    else:
+        _i += 1  # 渲染器段契约上没有裸位置参数；容错跳过（不出帧不受影响）
+
+out = vals.get('--out', '')
+want = vals.get('--shots', '')
+frames = vals.get('--frames', '')
 mode = os.environ.get('PV_BATCH_STUB_MODE', 'ok')
 W, H = (int(x) for x in os.environ.get('PV_BATCH_FRAME_SIZE', '160x90').lower().split('x'))
 pv = json.load(open(os.path.join(AREA, 'scripts', 'pv-shots.json'), encoding='utf-8'))
@@ -226,15 +259,16 @@ def base_env(stub, invlog, mode='ok', gpu_lock=None, sleep=None, pidfile=None):
     return env
 
 
-def sched_cmd(out_root, group, more):
+def sched_cmd(out_root, group, more, sched=None):
     """R3 必修1：调度命令统一带合成输入注入（--scene/--cameras）；SYNTH 由 main() 先建。
-    缺件/内容负例临时改 SYNTH 指向的路径即可，其余全部走同一份合成输入。"""
-    return ([sys.executable, '-X', 'utf8', SCHEDULER, '--out-root', out_root, '--group', group]
+    缺件/内容负例临时改 SYNTH 指向的路径即可，其余全部走同一份合成输入。
+    sched（E1）=隔离软链工作区里的调度器路径（shadow 用例）：同一 argparse，注入照常生效。"""
+    return ([sys.executable, '-X', 'utf8', sched or SCHEDULER, '--out-root', out_root, '--group', group]
             + ['--scene', SYNTH['scene'], '--cameras', SYNTH['cameras']] + list(more))
 
 
-def run_sched(out_root, group, env=None, more=()):
-    return subprocess.run(sched_cmd(out_root, group, more), capture_output=True, text=True, env=env, cwd=AREA)
+def run_sched(out_root, group, env=None, more=(), sched=None):
+    return subprocess.run(sched_cmd(out_root, group, more, sched), capture_output=True, text=True, env=env, cwd=AREA)
 
 
 def popen_sched(out_root, group, env, more=()):
@@ -504,6 +538,16 @@ def main():
     check('必修1 报错时不渲染任何帧', len(invocations(inv1)) == 3, 'n=%d' % len(invocations(inv1)))
     prog = jload(os.path.join(out1, 'pv-batch-progress.json'))
     check('必修1 progress 记 blocked 状态', prog and all(p.get('status') == 'blocked-fingerprint' for p in prog['shots'].values()))
+    # E1（pvbatch R2 可选1）：指纹拒绝的提前退出也写本次 RESULT.json（status=blocked + 原因），
+    # 覆盖先前成功运行的 status=ok 收据——旧收据不再存活过拒绝点。
+    res_b = jload(os.path.join(out1, 'RESULT.json'))
+    check('E1 指纹拒绝写本次 blocked RESULT（覆盖旧 ok 收据）',
+          res_b and res_b.get('status') == 'blocked' and '指纹' in (res_b.get('stoppedReason') or '')
+          and res_b.get('totals', {}).get('blocked') == 2 and res_b.get('totals', {}).get('rendered') == 0,
+          str((res_b or {}).get('status')) + ' ' + str((res_b or {}).get('stoppedReason'))[:160])
+    check('E1 blocked RESULT 逐镜记 blocked-fingerprint 且带原因 note',
+          res_b and all(x['status'] == 'blocked-fingerprint' and x.get('note') for x in res_b.get('shots', [])),
+          str(res_b.get('shots'))[:200] if res_b else '<无>')
 
     # ---------------- 必修1：--rerender-mismatch 整镜移 _discard 后重渲（不删文件）----------------
     r = run_sched(out1, 'dusk', base_env(stub, inv1), more=('--extra', '--beauty-samples 999', '--rerender-mismatch'))
@@ -637,14 +681,16 @@ def main():
     corrupt_then_rerun('worldToCamera 矩阵含布尔', _mat_bool)
 
     # ---------------- 必修6：--extra 自管参数拒绝（完整名/缩写/= 形式）----------------
-    for label, extra in (('--sho 缩写覆盖镜头', '--sho pv15-huxin-dusk'),
-                         ('--frames=5 覆盖帧范围', '--frames=5'),
-                         ('--fra 缩写覆盖帧范围', '--fra 5'),
-                         ('--out= 形式覆盖输出', '--out=/tmp/evil'),
-                         ('--passes 破坏通道契约', '--passes beauty'),
-                         ('--sc 缩写覆盖场景', '--sc /tmp/x.glb'),
-                         ('裸 -- 终止渲染器选项解析', '--')):
-        r = run_sched(os.path.join(tmp, 'run-extra-reject'), 'dusk', base_env(stub, invlog),
+    # E1（pvbatch R2 可选3）：每个用例独立目录——同坏目录复用时，被改坏的调度器若在第 1 例
+    # 真渲染过，后续用例会被旧指纹拦住、以错误原因变红，无法独立证明各自的拒绝路径。
+    for ci, (label, extra) in enumerate((('--sho 缩写覆盖镜头', '--sho pv15-huxin-dusk'),
+                                         ('--frames=5 覆盖帧范围', '--frames=5'),
+                                         ('--fra 缩写覆盖帧范围', '--fra 5'),
+                                         ('--out= 形式覆盖输出', '--out=/tmp/evil'),
+                                         ('--passes 破坏通道契约', '--passes beauty'),
+                                         ('--sc 缩写覆盖场景', '--sc /tmp/x.glb'),
+                                         ('裸 -- 终止渲染器选项解析', '--'))):
+        r = run_sched(os.path.join(tmp, 'run-extra-reject-%d' % ci), 'dusk', base_env(stub, invlog),
                       more=('--extra=' + extra,))
         out_txt = r.stdout + r.stderr
         check('必修6 拒绝 %s' % label, r.returncode != 0 and '自管' in out_txt, 'rc=%d %s' % (r.returncode, out_txt.strip()[-160:]))
@@ -782,6 +828,11 @@ def main():
           'rc=%d %s' % (r.returncode, out_txt.strip()[-260:]))
     check('R2必修1 缺文件+换配置：零渲染调用', len(invocations(inv_m1)) == n_m1,
           'n=%d（期望 %d）' % (len(invocations(inv_m1)), n_m1))
+    res_m1a = jload(os.path.join(out_m1, 'RESULT.json'))
+    check('E1 单镜指纹拒绝也写本次 blocked RESULT（覆盖基线 ok）',
+          res_m1a and res_m1a.get('status') == 'blocked' and res_m1a.get('totals', {}).get('blocked') == 1
+          and '指纹' in (res_m1a.get('stoppedReason') or ''),
+          str((res_m1a or {}).get('stoppedReason'))[:160])
 
     # b) 帧不齐但配置一致 → 旧镜头目录（含旧 .done.json）整镜移 _discard 后干净目录重渲
     out_m1b = os.path.join(tmp, 'r2m1b')
@@ -836,9 +887,10 @@ def main():
 
     # ---------------- R2 必修2：同值自管选项出现即拒绝 ----------------
     inv_m2 = os.path.join(tmp, 'inv-r2m2.log')
-    for label, extra in (('--preset=day（与首镜同值）', '--preset=day'),
-                         ('--sho 缩写（值=首镜 id）', '--sho pv01-aerial-reveal')):
-        r = run_sched(os.path.join(tmp, 'r2m2'), 'day', base_env(stub, inv_m2),
+    for mi, (label, extra) in enumerate((('--preset=day（与首镜同值）', '--preset=day'),
+                                         ('--sho 缩写（值=首镜 id）', '--sho pv01-aerial-reveal'))):
+        # E1（R2 可选3）：独立目录——红检时缩写用例不得复用前一用例目录被旧指纹拦住
+        r = run_sched(os.path.join(tmp, 'r2m2-%d' % mi), 'day', base_env(stub, inv_m2),
                       more=('--shots', 'pv01', '--extra=' + extra))
         out_txt = r.stdout + r.stderr
         check('R2必修2 拒绝同值自管选项 %s' % label,
@@ -855,30 +907,62 @@ def main():
     check('R2必修2 stub 后值覆盖语义（--frames 0 --frames 1 → 只渲 1）',
           r.returncode == 0 and got_frames == ['frame-001.png'], 'frames=%s rc=%d' % (got_frames, r.returncode))
 
-    # ---------------- R2 必修3：layout 内容 sha 纳入指纹 ----------------
-    lay_a = os.path.join(tmp, 'layout-a.json')
-    lay_b = os.path.join(tmp, 'layout-b.json')
-    shutil.copyfile(os.path.join(AREA, 'baseline', 'layout.json'), lay_a)
-    shutil.copyfile(os.path.join(AREA, 'baseline', 'layout.json'), lay_b)
-    with open(lay_b, 'a', encoding='utf-8') as f:  # 同路径语义下内容变化：追加空白即可（sha 变、内容合法）
-        f.write(' \n')
+    # E1（pvbatch R2 可选3）：stub 自身 argparse 语义——缩写唯一前缀展开、歧义/未知拒绝。
+    # 旧 stub 只认完整名：--sho 会被静默忽略（want='' 不出帧），未知参数也被放过——红检时
+    # 无法独立证明「缩写后的渲染行为」。此处直测 stub，期望值按 argparse 规则独立取得。
+    stub_out_ab = os.path.join(tmp, 'stub-abbrev')
+    r = subprocess.run([sys.executable, stub, '-b', '--', '--out', stub_out_ab, '--sho', 'pv14-bazaar-dusk',
+                        '--fra', '0'], capture_output=True, text=True, cwd=AREA)
+    ab_frames = sorted(os.listdir(os.path.join(stub_out_ab, 'pv14-bazaar-dusk', 'beauty'))) \
+        if os.path.isdir(os.path.join(stub_out_ab, 'pv14-bazaar-dusk', 'beauty')) else []
+    check('E1 stub 缩写展开（--sho→--shots、--fra→--frames）按真实语义出帧',
+          r.returncode == 0 and ab_frames == ['frame-000.png'], 'rc=%d frames=%s' % (r.returncode, ab_frames))
+    r = subprocess.run([sys.executable, stub, '-b', '--', '--out', os.path.join(tmp, 'stub-unknown'),
+                        '--shots', 'pv14-bazaar-dusk', '--no-such-opt', '3'], capture_output=True, text=True, cwd=AREA)
+    check('E1 stub 拒绝未知参数（argparse 退出码 2 + stderr 点名）',
+          r.returncode == 2 and 'no-such-opt' in r.stderr, 'rc=%d err=%s' % (r.returncode, r.stderr.strip()[:140]))
+    r = subprocess.run([sys.executable, stub, '-b', '--', '--out', os.path.join(tmp, 'stub-ambig'),
+                        '--shots', 'pv14-bazaar-dusk', '--beauty-d'], capture_output=True, text=True, cwd=AREA)
+    check('E1 stub 拒绝歧义缩写（--beauty-d 同时命中 beauty-device/denoise）',
+          r.returncode == 2 and 'ambiguous' in r.stderr and 'beauty-device' in r.stderr and 'beauty-denoise' in r.stderr,
+          'rc=%d err=%s' % (r.returncode, r.stderr.strip()[:160]))
+
+    # ---------------- R2 必修3：layout 内容 sha 纳入指纹（真实 namespace 指向同一路径）----------------
+    # E1（pvbatch R2 可选2）：旧负例用 PV_BATCH_LAYOUT_OVERRIDE 在 lay_a/lay_b 两个路径间切
+    # 哈希对象，渲染器从未读过它们；现在搭隔离软链工作区——镜像 area 根（scripts/lighting/
+    # out-zone 软链回真身），仅 baseline/layout.json 是可改副本。调度器与渲染器模块都从隔离区
+    # 路径加载（软链不展开），渲染器自己的 argparse 默认 --layout = <隔离区 ROOT>/baseline/
+    # layout.json，指纹哈希的就是渲染输入契约里那条路径的文件；同一路径上改内容即阻止复用。
+    shadow = os.path.join(tmp, 'shadow-area')
+    os.makedirs(os.path.join(shadow, 'baseline'))
+    for d in ('scripts', 'lighting', 'out-zone'):
+        os.symlink(os.path.join(AREA, d), os.path.join(shadow, d))
+    lay_same = os.path.join(shadow, 'baseline', 'layout.json')
+    shutil.copyfile(os.path.join(AREA, 'baseline', 'layout.json'), lay_same)
+    sched_shadow = os.path.join(shadow, 'scripts', 'render-pv-batch.py')
     out_m3 = os.path.join(tmp, 'r2m3')
     inv_m3 = os.path.join(tmp, 'inv-r2m3.log')
-    r = run_sched(out_m3, 'dusk', base_env(stub, inv_m3) | {'PV_BATCH_LAYOUT_OVERRIDE': lay_a},
-                  more=('--shots', 'pv14'))
-    check('R2必修3 layout 内容入指纹（基线跑退出码 0）', r.returncode == 0, (r.stdout + r.stderr).strip()[-300:])
+    r = run_sched(out_m3, 'dusk', base_env(stub, inv_m3), more=('--shots', 'pv14'), sched=sched_shadow)
+    check('R2必修3 layout 内容入指纹（隔离区基线跑退出码 0）', r.returncode == 0, (r.stdout + r.stderr).strip()[-300:])
     d_m3 = jload(os.path.join(out_m3, 'control-24fps-dusk', 'pv14-bazaar-dusk', '.done.json'))
-    check('R2必修3 .done.json 指纹含 layoutSha256 且与实际文件 sha 一致',
-          d_m3 and d_m3.get('fingerprint', {}).get('layoutSha256') == sha256_file(lay_a),
+    check('R2必修3 .done.json 指纹 layoutSha256 = 同一路径文件实际 sha（真实 namespace 取路径）',
+          d_m3 and d_m3.get('fingerprint', {}).get('layoutSha256') == sha256_file(lay_same),
           str((d_m3 or {}).get('fingerprint', {}))[:200])
-    r = run_sched(out_m3, 'dusk', base_env(stub, inv_m3) | {'PV_BATCH_LAYOUT_OVERRIDE': lay_b},
-                  more=('--shots', 'pv14'))
+    with open(lay_same, 'a', encoding='utf-8') as f:  # 同一路径改内容：sha 变、JSON 仍合法
+        f.write(' \n')
+    r = run_sched(out_m3, 'dusk', base_env(stub, inv_m3), more=('--shots', 'pv14'), sched=sched_shadow)
     out_txt = r.stdout + r.stderr
     check('R2必修3 同路径 layout 内容变化阻止复用（按指纹报错）',
           r.returncode != 0 and '指纹' in out_txt and 'layoutSha256' in out_txt,
           'rc=%d %s' % (r.returncode, out_txt.strip()[-260:]))
     check('R2必修3 指纹报错时零渲染', len(invocations(inv_m3)) == 1, 'n=%d' % len(invocations(inv_m3)))
-    r = run_sched(out_m3, 'dusk', base_env(stub, inv_m3), more=('--shots', 'pv14', '--extra=--layout ' + lay_a))
+    res_m3 = jload(os.path.join(out_m3, 'RESULT.json'))
+    check('E1 layout 拒绝同样写本次 blocked RESULT（覆盖基线 ok 收据）',
+          res_m3 and res_m3.get('status') == 'blocked' and 'layoutSha256' in (res_m3.get('stoppedReason') or '')
+          and res_m3.get('totals', {}).get('blocked') == 1,
+          str((res_m3 or {}).get('stoppedReason'))[:200])
+    r = run_sched(out_m3, 'dusk', base_env(stub, inv_m3), more=('--shots', 'pv14', '--extra=--layout ' + lay_same),
+                  sched=sched_shadow)
     check('R2必修2/3 --layout 列为自管选项（--extra 出现即拒绝）',
           r.returncode != 0 and '自管' in (r.stdout + r.stderr) and 'layout' in (r.stdout + r.stderr),
           'rc=%d' % r.returncode)

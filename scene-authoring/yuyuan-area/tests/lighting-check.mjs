@@ -9,7 +9,9 @@
 //      ?shadow=0 全关（shadowMap 关、没有任何网格 castShadow）。
 //   S3 阴影看得见：三穗堂 / 华宝楼导览机位，默认 vs ?shadow=0 同机位 canvas：亮度下降 > 20/255 的像素 ≥ 2%。
 //   S4 绘制预算：核心首屏（?zone=core&cam=oblique）开阴影后每帧 WebGL 绘制调用（独立计数，含阴影通道）≤ 1200（同 perf-drawcalls B1）。
-//   S5 夜间：自发光按组命中（lantern / sign / shop-interior / window / lattice / stall 在核心区各 ≥ 1 个材质）；白天 0 个材质被改；
+//   S5 夜间：自发光按组命中（lantern / sign / shop-interior / window / lattice / stall / bazaar-window 在核心视图
+//      各 ≥ 1 个材质——wave13 拆组后 lattice 5 + bazaar-window 6 = 原 lattice 11，实测口径见工单包 artifacts/b1/；
+//      bazaar-window 组结构仍须出现在 state.emissiveByGroup，防查看器写死组清单）；白天 0 个材质被改；
 //      点光池灯数 = presets.night.pointLights 且全部可见，候选（灯笼聚类 + 摊位锚点）≥ 20 且 = 本文件独立重算的候选数；
 //      切导览机位后第一次 tick() 的灯位 = 独立重算的离焦点最近 N 个候选（三个机位连续切换，R1）；
 //      九曲桥机位 night&plights=0 vs night&glow=0&plights=0：变亮 > 20/255 的像素 ≥ 0.5%（只差自发光）；
@@ -176,8 +178,12 @@ if (pages.default) { await pages.default.close(); delete pages.default; }   // �
 // ---------- S5：夜间 ----------
 {
   const st = await lightState(pages.night);
-  const need = ['lantern', 'sign', 'shop-interior', 'window', 'lattice', 'stall'];
-  ok(st && need.every(g => (st.emissiveByGroup?.[g] || 0) >= 1), 'S5 night: every emissive group matched ≥ 1 material in core', st && st.emissiveByGroup);
+  // wave13 拆组：商城楼 btk-winback 家族移入 bazaar-window 组（核心视图实测命中 6，lattice 5 = 厅堂/庙区背板）。
+  const need = ['lantern', 'sign', 'shop-interior', 'window', 'lattice', 'stall', 'bazaar-window'];
+  ok(st && need.every(g => (st.emissiveByGroup?.[g] || 0) >= 1), 'S5 night: every emissive group matched ≥ 1 material in core view', st && st.emissiveByGroup);
+  // 组结构数据驱动：presets 全部发光组 id 都要被 state.emissiveByGroup 跟踪（防查看器按组名写死清单）。
+  const allGroupIds = P.emissiveGroups.map(g => g.id);
+  ok(st && st.emissiveByGroup && allGroupIds.every(g => g in st.emissiveByGroup), 'S5 night: every presets emissiveGroup id tracked in state (data-driven groups)', { presets: allGroupIds, state: st && Object.keys(st.emissiveByGroup || {}) });
   ok(st && st.pointLights === P.presets.night.pointLights && st.pointLightsVisible === st.pointLights, 'S5 night: point light pool = presets.night.pointLights, all placed', st && [st.pointLights, st.pointLightsVisible]);
   ok(st && st.candidates >= 20, 'S5 night: ≥ 20 point-light candidates (lantern clusters + stall anchors)', st && st.candidatesBySource);
   const onCand = await pages.night.evaluate(() => {
