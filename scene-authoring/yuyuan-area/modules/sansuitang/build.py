@@ -416,7 +416,10 @@ GROUP='hall-interior'
 rng('floor',-hw+.2,hw-.2,P0-.02,P0+.02,ZB+.2,ZW-.2,'stone')
 for x in xs:
  if abs(x)>hw-.1:continue
- rng('main-beam',x-.15,x+.15,D['gableBreakY']-1.6,D['gableBreakY']-1.2,ZB+.2,ZW-.2,'wood')
+ # wave14-ridge: 背端 ZB+.2(-13.5) 时梁顶 6.70 露出背面屋面（背面收檐 upperOverBack 后该处屋面仅
+ # ~6.64，航拍读作 4 个橙红贴片，巡检 #13）。缩进到 ZB+1.2(-12.5)，GLB zmin=-5.85，该线屋面
+ # 对梁顶 6.70 最小余量 +0.296 m（artifacts/forensics/cover-check.mjs 实测，四梁对称）。
+ rng('main-beam',x-.15,x+.15,D['gableBreakY']-1.6,D['gableBreakY']-1.2,ZB+1.2,ZW-.2,'wood')
  for z in (ZW-3.2,ZB+3.2):rng('guazhu',x-.12,x+.12,D['gableBreakY']-1.2,D['gableBreakY']-.1,z-.12,z+.12,'wood')
  if abs(x)<D['gableX']-.2:
   rng('upper-beam',x-.12,x+.12,D['gableBreakY']-.1,D['gableBreakY']+.2,ZB+3.2,ZW-3.2,'wood')
