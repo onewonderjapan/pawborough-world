@@ -643,8 +643,10 @@ def lantern_body(name, c, r, part='lanterns-body'):
     return _lantern_obj(name, bm, 'lantern', part)
 
 def lantern_rib(name, c, r, th, part='lanterns-rib'):
-    """一条纵向骨架棱：贴鼓身弧面的窄面片（θ=th±半宽，半径外偏 0.008），5 环 4 段 quad strip。
-    tris = 4 段 × 2 = 8/条。调用方把 th 放在瓣峰角（cos(6θ)=+1）——棱条凸出瓣面可见。
+    """一条纵向骨架棱：贴鼓身弧面的窄面片（θ=th±半宽，半径外偏 0.012），5 环 4 段 quad strip。
+    tris = 4 段 × 2 = 8/条。调用方必须把 th 放在瓣峰角 k·π/3（cos(6θ)=+1）——棱在瓣脊高程、
+    不被邻瓣遮挡；放 π/6+k·π/3（瓣谷，cos=−1）会整条沉进谷里不可见（2026-09-29 R2 实际事故，
+    lantern-shape 瓣脊高程判据抓住）。偏置 0.008→0.012 保证棱面全段高于瓣脊。
     dark 材质 → 夜间呈暗线切开发光面（不改组数值的『骨架纹』）。"""
     H = r * 2.1
     n = len(LANTRN_PROF)
@@ -656,7 +658,7 @@ def lantern_rib(name, c, r, th, part='lanterns-rib'):
         z = -H / 2 + H * i / (n - 1)
         for s, dth in ((0, -half_w), (1, +half_w)):
             th2 = th + dth
-            rad = r * pr * (1 + LANTRN_PETAL * math.cos(LANTRN_PETALS * th)) + 0.008
+            rad = r * pr * (1 + LANTRN_PETAL * math.cos(LANTRN_PETALS * th2)) + 0.012
             cols[s].append(bm.verts.new((cx + rad * math.cos(th2), cy + rad * math.sin(th2), cz + z)))
     for i in range(n - 1):
         # 绕序即外法线（角向 × +Z = 径向朝外）——开放面片不可用 recalc启发式（templefix R1 教训）
@@ -2528,8 +2530,8 @@ if FEAT.get('lanterns'):
             cap_h = rr * 0.16
             lantern_body('lantern-body-%d-%d' % (ri, j), (q[0], q[1], zc), rr)
             LANTERN_TRIS['body'] += 100
-            for k in range(4):   # 4 条骨架棱放在 6 瓣的瓣峰角（π/6 + k·π/3）
-                lantern_rib('lantern-rib-%d-%d-%d' % (ri, j, k), (q[0], q[1], zc), rr, math.pi / 6 + k * math.pi / 3)
+            for k in range(4):   # 4 条骨架棱放在 6 瓣的瓣峰角 k·π/3（cos(6θ)=+1；π/6+kπ/3 是瓣谷，棱会被邻瓣遮挡）
+                lantern_rib('lantern-rib-%d-%d-%d' % (ri, j, k), (q[0], q[1], zc), rr, k * math.pi / 3)
                 LANTERN_TRIS['rib'] += 8
             # 上盖、下盖（金）；穗帽（金）
             cyl('lantern-cap-%d-%d-top' % (ri, j), (q[0], q[1], zc + H2 / 2), (q[0], q[1], zc + H2 / 2 + cap_h), rr * 0.48, 'gild', 6, part='lanterns-cap')

@@ -28,6 +28,9 @@ const DESIGN = {
   ribTrisPerLamp: 32,     // 4 条 quad strip（5 环 4 段）= 4 × 8
   capGapMax: 0.15,        // 灯盖顶 y − 灯身顶 y 设计差 = cap_h = rr×0.16 ∈ [0.045,0.048]；容差窗 [−0.02, +0.15]。
                           // 抓「灯身掉地面、灯盖留在檐口」类错位（2026-09-29 实际发生：lantern_body 传 z=0.0）
+  ribCrestFrac: 0.8,      // 骨架棱中段顶点位于瓣脊高程（body 中段最大半径 −0.003）的占比下限。抓「棱放在瓣谷
+                          // （cos(6θ)=−1）、整条沉在谷里被凸鼓面自身遮挡」——2026-09-29 R2 实际发生：
+                          // 注释写 π/6+kπ/3 是瓣峰，实为瓣谷，棱白天黑夜都不可见
   bodyMatSuffix: 'lanterns-body', capPart: 'lanterns-cap', tasselPart: 'lanterns-tassel',
   handlePart: 'lanterns-handle', ribPart: 'lanterns-rib', cordPart: 'lanterns-cord',
   // lanternRed 设计色 #c8301f（build_tower.py FM.get('lanternRed','c8301f')；params/*.json 无覆盖——2026-09-29 全查）：
@@ -115,6 +118,30 @@ function petalDeltaFrac(verts) {
   }
   return (rMax - rMinBand) / (rMax || 1);
 }
+// 骨架棱位于瓣峰高程：单灯 body/rib 顶点切片 → body 中段环带（45–55% 高）最大半径 = 瓣脊高程。
+// rib 中段顶点半径 ≥ 瓣脊高程 − 0.003 的占比。棱在瓣峰 → ≈1（不被邻瓣遮挡）；
+// 棱在瓣谷 → 谷底 +0.008 仍低于瓣脊 ≈0.02r → 占比 ≈0（凸鼓面自身遮挡，白天黑夜都看不见——R2 实际 bug 形态）。
+function ribProudFrac(bodyVerts, ribVerts) {
+  let sx = 0, sz = 0, n = 0, hMin = Infinity, hMax = -Infinity;
+  for (let i = 0; i < bodyVerts.length; i += 3) {
+    sx += bodyVerts[i + A]; sz += bodyVerts[i + B]; n++;
+    hMin = Math.min(hMin, bodyVerts[i + U]); hMax = Math.max(hMax, bodyVerts[i + U]);
+  }
+  const cx = sx / n, cz = sz / n;
+  const lo = hMin + (hMax - hMin) * 0.45, hi = hMin + (hMax - hMin) * 0.55;
+  let crest = 0;
+  for (let i = 0; i < bodyVerts.length; i += 3) {
+    const y = bodyVerts[i + U]; if (y < lo || y > hi) continue;
+    crest = Math.max(crest, Math.hypot(bodyVerts[i + A] - cx, bodyVerts[i + B] - cz));
+  }
+  let proud = 0, tot = 0;
+  for (let i = 0; i < ribVerts.length; i += 3) {
+    const y = ribVerts[i + U]; if (y < lo || y > hi) continue;
+    tot++;
+    if (Math.hypot(ribVerts[i + A] - cx, ribVerts[i + B] - cz) >= crest - 0.003) proud++;
+  }
+  return tot ? proud / tot : 0;
+}
 function srgbHsv(hex) {
   const n = parseInt(hex.replace('#', ''), 16);
   const rgb = [(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255];
@@ -190,7 +217,7 @@ function lampClusters(verts) {
 }
 
 // ---------- 合成负例（每个判据配一个明显错误输入） ----------
-function synthGlbJson({ rim, petal, colorHex, withTassel, withCap, bodyDropY }) {
+function synthGlbJson({ rim, petal, colorHex, withTassel, withCap, bodyDropY, ribAt }) {
   // 7 环 12 边鼓/蛋合成体：rim 控制端部收口比，petal 控制径向峰谷差；bodyDropY 整体压低灯身（挂高错位负例）
   const verts = [];
   const prof = rim == null ? [0.42, 0.78, 0.97, 1.0, 0.97, 0.78, 0.42] : [rim, rim + (1 - rim) * 0.6, 1, 1, 1, rim + (1 - rim) * 0.6, rim];
@@ -264,6 +291,40 @@ function synthGlbJson({ rim, petal, colorHex, withTassel, withCap, bodyDropY }) 
     bufferViews[bufferViews.length - 2].byteOffset = off;
     bufferViews[bufferViews.length - 1].byteOffset = off + capPos.length;
     binBuf = Buffer.concat([binBuf, capPos, capIdx]);
+  }
+  if (ribAt) {
+    // 骨架棱合成：θc = valley(π/6, cos6θ=−1) 或 peak(0, +1)，列半径仿生成器公式（列各自角 + 偏置）
+    const thC = ribAt === 'valley' ? Math.PI / 6 : 0;
+    const prof5 = [0.42, 0.85, 1.0, 0.85, 0.42];
+    const H5 = 0.63, halfW = 0.05 / 0.3, ribOff = ribAt === 'valley' ? 0.008 : 0.012;
+    const rp = [], ri = [];
+    const cols = [[], []];
+    prof5.forEach((pr, i) => {
+      const h = -H5 / 2 + H5 * i / (prof5.length - 1);
+      for (let s = 0; s < 2; s++) {
+        const th = thC + (s ? halfW : -halfW);
+        const rad = 0.3 * pr * (1 + 0.05 * Math.cos(6 * th)) + ribOff;
+        rp.push(+(rad * Math.cos(th)).toFixed(5), +h.toFixed(4), +(rad * Math.sin(th)).toFixed(5));
+        cols[s].push(i * 2 + s);
+      }
+    });
+    for (let i = 0; i < prof5.length - 1; i++) ri.push(cols[0][i], cols[1][i], cols[1][i + 1], cols[0][i], cols[1][i + 1], cols[0][i + 1]);
+    const rpos = Buffer.from(Float32Array.from(rp).buffer);
+    const rind = Buffer.from(Uint32Array.from(ri).buffer);
+    const meshIdx0 = meshes.length;
+    meshes.push({ name: 'rib', primitives: [{ attributes: { POSITION: accessors.length }, indices: accessors.length + 1, material: 0 }] });
+    accessors.push({ bufferView: bufferViews.length, componentType: 5126, count: rp.length / 3, type: 'VEC3', min: [-0.4, -0.4, -0.4], max: [0.4, 0.4, 0.4] });
+    accessors.push({ bufferView: bufferViews.length + 1, componentType: 5125, count: ri.length, type: 'SCALAR' });
+    bufferViews.push({ buffer: 0, byteOffset: -1, byteLength: rpos.length });
+    bufferViews.push({ buffer: 0, byteOffset: -1, byteLength: rind.length });
+    extraNodes = [...extraNodes, { name: 'lanterns-rib__dark', mesh: meshIdx0 }];
+    var ribPosBuf = rpos, ribIdxBuf = rind;
+  }
+  if (ribAt) {
+    const off = binBuf.length;
+    bufferViews[bufferViews.length - 2].byteOffset = off;
+    bufferViews[bufferViews.length - 1].byteOffset = off + ribPosBuf.length;
+    binBuf = Buffer.concat([binBuf, ribPosBuf, ribIdxBuf]);
   }
   const json = { asset: { version: '2.0' }, scene: 0, scenes: [{ nodes: [0, ...extraNodes.map((_, i) => i + 1)] }],
     nodes: [{ name: 'lanterns-body__lantern', mesh: 0 }, ...extraNodes],
@@ -340,6 +401,25 @@ for (const t of lanternTowers) {
     `${t.id}: 灯盖/穗/提梁/骨架/吊线节点齐全`, `tassel=${tasselKeys.length} cap=${capKeys.length} handle=${handleKeys.length} rib=${ribKeys.length} cord=${cordKeys.length}`);
   let totalTris = meshTris(g, body.meshIdx);
   for (const k of [...tasselKeys, ...capKeys, ...handleKeys, ...ribKeys, ...cordKeys]) totalTris += meshTris(g, nodes.get(k).meshIdx);
+  // 骨架棱凸出瓣面：rib 簇 → 最近 body 簇（灯轴），逐簇判中段环带凸出占比，取最差
+  {
+    const ribVertsAll = ribKeys.length ? readPositions(g, nodes.get(ribKeys[0]).meshIdx) : [];
+    const ribClusters = ribVertsAll.length ? lampClusters(ribVertsAll) : [];
+    const bCtr = clusters.map(c => { let sx = 0, sz = 0, n = 0; for (let i = 0; i < c.length; i += 3) { sx += c[i]; sz += c[i + 2]; n++; } return [sx / n, sz / n]; });
+    let worst = 1, pairs = 0;
+    for (const rc of ribClusters) {
+      if (rc.length / 3 < 8) continue;
+      let sx = 0, sz = 0, n = 0; for (let i = 0; i < rc.length; i += 3) { sx += rc[i]; sz += rc[i + 2]; n++; }
+      const cx = sx / n, cz = sz / n;
+      let bi = 0, bd = Infinity;
+      bCtr.forEach((c, i) => { const d = (c[0] - cx) ** 2 + (c[1] - cz) ** 2; if (d < bd) { bd = d; bi = i; } });
+      worst = Math.min(worst, ribProudFrac(clusters[bi], rc));
+      pairs++;
+    }
+    ok(pairs >= 1 && worst >= DESIGN.ribCrestFrac,
+       `${t.id}: 骨架棱位于瓣脊高程（逐簇最差占比 ≥ ${DESIGN.ribCrestFrac}）`,
+       pairs ? `worst=${(worst * 100).toFixed(0)}% ribClusters=${pairs}` : 'rib 簇缺失');
+  }
   const tasselTris = tasselKeys.length ? meshTris(g, nodes.get(tasselKeys[0]).meshIdx) : 0;
   const handleTris = handleKeys.length ? meshTris(g, nodes.get(handleKeys[0]).meshIdx) : 0;
   const ribTris = ribKeys.length ? meshTris(g, nodes.get(ribKeys[0]).meshIdx) : 0;
@@ -423,6 +503,18 @@ ok(fbHit, '分区 cm 件 lantern 组命中：red-silk-lantern 名字存活（方
   const ctBad = Math.max(...readPositions(gBad, capBad.meshIdx).filter((_, i) => i % 3 === U));
   const gapBad = ctBad - btBad;
   ok(!(gapBad >= -0.02 && gapBad <= DESIGN.capGapMax), '负例N6b 灯身压低 5m → 贴邻判据红', `gap=${gapBad.toFixed(3)}`);
+}
+// N7 骨架棱位置：瓣谷注入（R2 实际 bug 形态：谷底 +0.008 仍低于瓣脊，被凸鼓面遮挡）→ 判据红；瓣峰对照 → 绿。
+// petal:0.05 必带——判据的「瓣脊高程」只在有瓣鼓的鼓身上才有意义（真实产物 Δr/r=8.6%）
+{
+  const gV = synthGlbJson({ ribAt: 'valley', petal: 0.05 });
+  const rbV = nodeByName(gV).get('lanterns-rib__dark');
+  const fV = ribProudFrac(readPositions(gV, 0), readPositions(gV, rbV.meshIdx));
+  ok(fV < DESIGN.ribCrestFrac, '负例N7a 棱在瓣谷 → 瓣脊高程判据红', `frac=${(fV * 100).toFixed(0)}%`);
+  const gP = synthGlbJson({ ribAt: 'peak', petal: 0.05 });
+  const rbP = nodeByName(gP).get('lanterns-rib__dark');
+  const fP = ribProudFrac(readPositions(gP, 0), readPositions(gP, rbP.meshIdx));
+  ok(fP >= DESIGN.ribCrestFrac, '正例N7b 棱在瓣峰 → 瓣脊高程判据绿（判据非恒红）', `frac=${(fP * 100).toFixed(0)}%`);
 }
 
 console.log(`\nlantern-shape: ${passes} pass, ${fails.length} fail`);
