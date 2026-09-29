@@ -410,7 +410,9 @@ const BG = new Q.VGrid(bridgeNodes, { cell: 0.5 });
     ok(`#6e 法线贴图字节 = 磁盘 water-normal.jpg（${normB ? sha(normB).slice(0, 12) : '无'} vs ${sha(disk('water-normal.jpg')).slice(0, 12)}）`,
        !!normB && sha(normB) === sha(disk('water-normal.jpg')));
     const ns = mat.normalTexture?.scale;
-    ok(`#6f normalTexture.scale ${ns} = 0.55（export-zones / render-control-passes 双端同参数）`, ns === 0.55);
+    // gltfpack 把 0.55 写成 float32 十进制（0.550000012），与 JS 字面量 0.55 不是 ===。
+    ok(`#6f normalTexture.scale ${ns} = 0.55（export-zones / render-control-passes 双端同参数，float32 容差）`,
+       typeof ns === 'number' && Math.abs(ns - 0.55) < 1e-5);
   }
 }
 
