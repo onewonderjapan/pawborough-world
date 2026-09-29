@@ -47,7 +47,8 @@
     "test:pv-batch": "python3 -X utf8 tests/pv-batch-test.py",
     "test:tour-anchor-picture": "OUT_DIR=${OUT_DIR:-out-zone} BASE=${BASE:-http://127.0.0.1:5497/} node tests/tour-anchor-picture-check.mjs",
     "test:tour-label-chip": "OUT_DIR=${OUT_DIR:-out-zone} BASE=${BASE:-http://127.0.0.1:5497/} node tests/tour-label-chip-check.mjs",
-    "test:templeeast": "OUT_DIR=${OUT_DIR:-out-zone} node tests/templeeast-test.mjs"
+    "test:templeeast": "OUT_DIR=${OUT_DIR:-out-zone} node tests/templeeast-test.mjs",
+    "test:templeeast-walk": "OUT_DIR=${OUT_DIR:-out-zone} node tests/templeeast-walk-check.mjs"
   },
   "dependencies": {
     "three": "0.180.0",

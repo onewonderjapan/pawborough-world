@@ -29040,24 +29040,24 @@
    "geometry": {
     "footprint": [
      [
-      -64.973,
-      -39.582
+      -65.206,
+      -40.962
      ],
      [
-      -59.254,
-      -40.546
+      -59.881,
+      -41.86
      ],
      [
-      -58.09,
-      -33.643
+      -58.9,
+      -36.042
      ],
      [
-      -63.809,
-      -32.679
+      -64.225,
+      -35.144
      ],
      [
-      -64.973,
-      -39.582
+      -65.206,
+      -40.962
      ]
     ]
    },
@@ -29094,24 +29094,24 @@
    "geometry": {
     "footprint": [
      [
-      -61.149,
-      -16.902
+      -61.681,
+      -20.057
      ],
      [
-      -55.43,
-      -17.866
+      -56.356,
+      -20.955
      ],
      [
-      -54.266,
-      -10.964
+      -55.376,
+      -15.137
      ],
      [
-      -59.985,
-      -9.999
+      -60.7,
+      -14.239
      ],
      [
-      -61.149,
-      -16.902
+      -61.681,
+      -20.057
      ]
     ]
    },
@@ -29147,8 +29147,8 @@
    "disposition": "reused",
    "geometry": {
     "position": [
-     -65.06,
-     -59.342
+     -65.109,
+     -59.638
     ],
     "rotY": 0.16703
    },
@@ -29170,8 +29170,8 @@
    "disposition": "reused",
    "geometry": {
     "position": [
-     -62.566,
-     -44.551
+     -62.948,
+     -46.819
     ],
     "rotY": 1.26703
    },
@@ -29193,8 +29193,8 @@
    "disposition": "reused",
    "geometry": {
     "position": [
-     -59.324,
-     -25.322
+     -59.739,
+     -27.788
     ],
     "rotY": 2.36703
    },
@@ -29216,8 +29216,8 @@
    "disposition": "reused",
    "geometry": {
     "position": [
-     -55.832,
-     -4.615
+     -55.999,
+     -5.601
     ],
     "rotY": 3.46703
    },
@@ -29239,8 +29239,8 @@
    "disposition": "reused",
    "geometry": {
     "position": [
-     -63.813,
-     -51.947
+     -64.029,
+     -53.229
     ],
     "rotY": 0.16703
    },
@@ -41744,8 +41744,8 @@
    "zone": "temple",
    "lod": "L2",
    "position": [
-    -65.06,
-    -59.342
+    -65.109,
+    -59.638
    ],
    "rotY": 0.16703,
    "sourcePath": "pawborough-world-ten-hour-20260921/workspace/world/temple-axis-v3/tree-camphor-v2.glb",
@@ -41760,8 +41760,8 @@
    "zone": "temple",
    "lod": "L2",
    "position": [
-    -62.566,
-    -44.551
+    -62.948,
+    -46.819
    ],
    "rotY": 1.26703,
    "sourcePath": "pawborough-world-ten-hour-20260921/workspace/world/temple-axis-v3/tree-camphor-v2.glb",
@@ -41776,8 +41776,8 @@
    "zone": "temple",
    "lod": "L2",
    "position": [
-    -59.324,
-    -25.322
+    -59.739,
+    -27.788
    ],
    "rotY": 2.36703,
    "sourcePath": "pawborough-world-ten-hour-20260921/workspace/world/temple-axis-v3/tree-camphor-v2.glb",
@@ -41792,8 +41792,8 @@
    "zone": "temple",
    "lod": "L2",
    "position": [
-    -55.832,
-    -4.615
+    -55.999,
+    -5.601
    ],
    "rotY": 3.46703,
    "sourcePath": "pawborough-world-ten-hour-20260921/workspace/world/temple-axis-v3/tree-camphor-v2.glb",
@@ -41807,8 +41807,8 @@
    "zone": "temple",
    "lod": "L2",
    "position": [
-    -63.813,
-    -51.947
+    -64.029,
+    -53.229
    ],
    "rotY": 0.16703,
    "sourcePath": "modules/temple-east/build_ding.py -> out-garden-kits/templeeast-ding/model.glb",
@@ -43422,7 +43422,7 @@
    ],
    "hallX": [
     17.4,
-    23.2
+    22.8
    ],
    "rows": [
     {
@@ -43465,39 +43465,39 @@
     {
      "id": "t1",
      "z": [
-      -47,
-      -40
+      -48.4,
+      -42.5
      ]
     },
     {
      "id": "t2",
      "z": [
-      -24,
-      -17
+      -27.2,
+      -21.3
      ]
     }
    ],
    "trees": [
     [
      20.6,
-     -66.5
+     -66.8
     ],
     [
      20.6,
-     -51.5
+     -53.8
     ],
     [
      20.6,
-     -32
+     -34.5
     ],
     [
      20.6,
-     -11
+     -12
     ]
    ],
    "ding": [
     20.6,
-    -59
+    -60.3
    ]
   },
   "objects": {

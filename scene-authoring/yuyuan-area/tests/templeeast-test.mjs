@@ -13,6 +13,11 @@
 //   C 分件（有 OUT_DIR/zones-manifest.json 时）：zone-temple-5.glb 存在、≤12 MB、role=temple-east；
 //     全部 templeeast 锚/节点只在 temple-5 出现，其它庙区分件一个都没有。
 //   D 碰撞（有 OUT_DIR/collision-temple.json 时）：每个 templeeast 对象都有碰撞记录；temple-wall:seg-19 缺席、seg-18/20 在。
+//   B6（R1，astra 必修）横厅东侧南北过道——从 layout + hall-kit defaults 独立推台基外扩与楼门前踏步包络：
+//      净宽 = 楼台基西缘 − 横厅台基东缘 ≥ 0.8 m；踏步块与横厅台基沿 z 间隔 ≥ 0.8 m（出入口不被夹窄）。
+//   E（R1）碰撞包络连续通道（有 collision-temple.json 时）：把庙区碰撞盒（顶 > 0.30 m 自动跨步上限、底 < 1.9 m）
+//      按 0.05 m 栅格投到庙轴本地系 x∈[16.5,24.3]（只留横厅与楼之间，不许绕安仁街/避弄），膨胀 0.40 m（通道 ≥0.8 m）后
+//      南院 → 中院 → 北院必须连通；并报告两段过道逐行最小净宽。TEMPLEEAST_COLLISION 可指定别的 collision-temple.json（负例）。
 // 用法：OUT_DIR=out-zone node tests/templeeast-test.mjs
 //      负例：TEMPLEEAST_LAYOUT=<旧 layout.json> 指向改动前的冻结 layout，A/B 必须 FAIL。
 import fs from 'node:fs';
@@ -27,6 +32,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
 const LAYOUT_PATH = process.env.TEMPLEEAST_LAYOUT ? path.resolve(process.env.TEMPLEEAST_LAYOUT) : path.join(ROOT, 'baseline', 'layout.json');
 const L = JSON.parse(fs.readFileSync(LAYOUT_PATH, 'utf8'));
+const HK_DEF = JSON.parse(fs.readFileSync(path.join(ROOT, 'modules', 'hall-kit', 'defaults.json'), 'utf8'));
 let pass = 0, fail = 0, skipped = 0;
 const failures = [];
 const ok = (name, cond, extra = '') => { if (cond) { pass++; console.log('PASS', name); } else { fail++; failures.push(name); console.log('FAIL', name, extra); } };
@@ -51,8 +57,13 @@ const towers = te.filter(o => o.kind === 'tower'), halls = te.filter(o => o.kind
 const shops = te.filter(o => o.kind === 'shopAnchor');
 const trees = teInst.filter(i => i.module === 'temple-tree-camphor'), ding = teInst.find(i => i.module === 'templeeast-ding');
 const paving = byId.get('templeeast-paving');
-ok(`庙东跨院对象齐：楼 ${towers.length}=3 厅 ${halls.length}=2 店屋 ${shops.length}≥6 樟 ${trees.length}=4 宝鼎 ${ding ? 1 : 0}=1 铺地 ${paving ? 1 : 0}=1`,
-  towers.length === 3 && halls.length === 2 && shops.length >= 6 && trees.length === 4 && !!ding && !!paving);
+const complete = towers.length === 3 && halls.length === 2 && shops.length >= 6 && trees.length === 4 && !!ding && !!paving;
+ok(`庙东跨院对象齐：楼 ${towers.length}=3 厅 ${halls.length}=2 店屋 ${shops.length}≥6 樟 ${trees.length}=4 宝鼎 ${ding ? 1 : 0}=1 铺地 ${paving ? 1 : 0}=1`, complete);
+if (!complete) {   // 旧 layout 负例：正常汇总失败退出（不让后续断言因缺对象抛 TypeError）
+  console.log(`\ntempleeast-test: ${pass} pass, ${fail} fail, ${skipped} skipped（对象不齐，其余断言不执行）`);
+  for (const f of failures) console.log('  FAIL:', f);
+  process.exit(1);
+}
 
 // ---------- A 生成器一致 ----------
 {
@@ -70,6 +81,8 @@ ok(`庙东跨院对象齐：楼 ${towers.length}=3 厅 ${halls.length}=2 店屋 
     ok(`A2 templeeast 对象集合 = 生成器（${te.length} / ${genTe.length}）`, genTe.length > 0 && eq(te.map(o => o.id).sort(), genTe.map(o => o.id).sort()));
     const diffObj = te.filter(o => !eq(o, gObj.get(o.id))).map(o => o.id);
     ok(`A3 templeeast 对象逐字段 = 生成器（不同 ${diffObj.length}）`, te.length > 0 && diffObj.length === 0, diffObj.slice(0, 5).join(','));
+    const genTeInst = G.instances.filter(i => i.id.startsWith('templeeast-'));
+    ok(`A4a templeeast 实例集合 = 生成器（${teInst.length} / ${genTeInst.length}）`, genTeInst.length > 0 && eq(teInst.map(i => i.id).sort(), genTeInst.map(i => i.id).sort()));
     const diffInst = teInst.filter(i => !eq(i, gInst.get(i.id))).map(i => i.id);
     ok(`A4 templeeast 实例逐字段 = 生成器（${teInst.length} 件，不同 ${diffInst.length}）`, teInst.length >= 11 && diffInst.length === 0, diffInst.slice(0, 5).join(','));
     ok('A5 顶层 templeEast 记录 = 生成器', !!L.templeEast && eq(L.templeEast, G.templeEast));
@@ -140,6 +153,86 @@ const plan = [...towers.map(o => ({ id: o.id, fp: o.geometry.footprint, kind: 't
   }
   ok(`B5b 樟/宝鼎不压平面（${onPlan.length}），樟到两层楼墙线 ≥3.3 m（${crown.toFixed(2)}）`, onPlan.length === 0 && crown >= 3.3, onPlan.join(' '));
 }
+
+// ---------- B6 横厅东侧过道（layout + hall-kit defaults 独立推台基 / 踏步包络） ----------
+const sm = L.instances.find(i => i.id === 'temple-shanmen');
+const [OX, OZ] = sm.position, TH0 = sm.rotY, C0 = Math.cos(TH0), S0 = Math.sin(TH0);
+const toLocal = ([x, z]) => [(x - OX) * C0 - (z - OZ) * S0, (x - OX) * S0 + (z - OZ) * C0];
+const rectLocal = fp => { const q = ring(fp).map(toLocal); const xs = q.map(p => p[0]), zs = q.map(p => p[1]);
+  return { x0: Math.min(...xs), x1: Math.max(...xs), z0: Math.min(...zs), z1: Math.max(...zs) }; };
+{
+  const PO = HK_DEF.platformOut, tread = HK_DEF.stepTread, stepW = HK_DEF.stepWidth;
+  const platY = k => (HK_DEF.kinds?.[k]?.platformY ?? HK_DEF.platformY);
+  let minW = Infinity, minZ = Infinity, pairs = 0;
+  for (const h of halls) {
+    const hr = rectLocal(h.geometry.footprint), hp = { x1: hr.x1 + PO, z0: hr.z0 - PO, z1: hr.z1 + PO };
+    for (const t of towers) {
+      const tr = rectLocal(t.geometry.footprint), tp = { x0: tr.x0 - PO, z0: tr.z0 - PO, z1: tr.z1 + PO };
+      if (tp.z1 < hp.z0 || tp.z0 > hp.z1) continue;
+      pairs++;
+      minW = Math.min(minW, tp.x0 - hp.x1);
+      // 楼门脸朝 −X，踏步居楼段中：台基外 n·tread，宽 stepWidth（build_hall.py：n = max(3, ceil(platformY/0.18))）
+      const n = Math.max(3, Math.ceil(platY('tower') / 0.18)), zc = (tr.z0 + tr.z1) / 2;
+      const st = { x0: tp.x0 - n * tread, z0: zc - stepW / 2, z1: zc + stepW / 2 };
+      if (st.x0 < hp.x1 + 0.8) {   // 踏步伸进过道：与横厅台基沿 z 的间隔
+        const gap = st.z1 < hp.z0 ? hp.z0 - st.z1 : st.z0 > hp.z1 ? st.z0 - hp.z1 : -Math.min(st.z1, hp.z1) + Math.max(st.z0, hp.z0);
+        minZ = Math.min(minZ, gap);
+      }
+    }
+  }
+  ok(`B6 横厅东侧过道净宽（台基包络）≥0.8 m（最窄 ${minW.toFixed(3)} m，${pairs} 对）`, pairs >= 2 && minW >= 0.8);
+  ok(`B6b 楼门前踏步与横厅台基沿 z 间隔 ≥0.8 m（${Number.isFinite(minZ) ? minZ.toFixed(3) : '无相邻踏步'}）`, !Number.isFinite(minZ) || minZ >= 0.8);
+}
+
+// ---------- E 碰撞包络连续通道 ----------
+const ctFile = process.env.TEMPLEEAST_COLLISION ? path.resolve(process.env.TEMPLEEAST_COLLISION) : path.join(OUT, 'collision-temple.json');
+if (fs.existsSync(ctFile)) {
+  const { obbToWorld } = await import('../../../src/world/collisionAdapter.js');
+  const ct = JSON.parse(fs.readFileSync(ctFile, 'utf8'));
+  const STEP = 0.05, X0 = 16.5, X1 = 24.3, Z0 = -72.0, Z1 = -4.0, RAD = 0.40, STEP_UP = 0.30;
+  const NX = Math.round((X1 - X0) / STEP), NZ = Math.round((Z1 - Z0) / STEP);
+  const occ = new Uint8Array(NX * NZ);
+  let used = 0;
+  for (const c of ct.colliders) {
+    const w = obbToWorld(c);
+    const yb = w.center[1] - w.halfExtents[1], yt = w.center[1] + w.halfExtents[1];
+    if (yt <= STEP_UP + 1e-6 || yb >= 1.9) continue;
+    const [hx, , hz] = w.halfExtents, cy = Math.cos(w.yaw), sy = Math.sin(w.yaw);
+    const corners = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) => toLocal([w.center[0] + a * hx * cy + b * hz * sy, w.center[2] - a * hx * sy + b * hz * cy]));
+    const xs = corners.map(p => p[0]), zs = corners.map(p => p[1]);
+    if (Math.max(...xs) < X0 || Math.min(...xs) > X1 || Math.max(...zs) < Z0 || Math.min(...zs) > Z1) continue;
+    used++;
+    const i0 = Math.max(0, Math.floor((Math.min(...xs) - X0) / STEP)), i1 = Math.min(NX - 1, Math.ceil((Math.max(...xs) - X0) / STEP));
+    const k0 = Math.max(0, Math.floor((Math.min(...zs) - Z0) / STEP)), k1 = Math.min(NZ - 1, Math.ceil((Math.max(...zs) - Z0) / STEP));
+    for (let k = k0; k <= k1; k++) for (let i = i0; i <= i1; i++) {
+      const p = [X0 + (i + 0.5) * STEP, Z0 + (k + 0.5) * STEP];
+      if (pointInPoly(p, corners)) occ[k * NX + i] = 1;
+    }
+  }
+  // 逐行过道净宽（横厅 z 范围内，从 x=23.5 向两侧找第一块障碍）
+  const rowWidth = (zl) => { const k = Math.floor((zl - Z0) / STEP); let i = Math.floor((23.5 - X0) / STEP);
+    if (occ[k * NX + i]) return 0; let a = i, b = i; while (a > 0 && !occ[k * NX + a - 1]) a--; while (b < NX - 1 && !occ[k * NX + b + 1]) b++;
+    return (b - a + 1) * STEP; };
+  const widths = halls.map(h => { const hr = rectLocal(h.geometry.footprint); let m = Infinity;
+    for (let zl = hr.z0; zl <= hr.z1; zl += STEP) m = Math.min(m, rowWidth(zl)); return { id: h.id, minWidthM: +m.toFixed(2) }; });
+  ok(`E1 碰撞包络过道逐行净宽 ≥0.8 m（${widths.map(w => `${w.id} ${w.minWidthM}`).join('，')}；碰撞盒 ${used}）`, used >= 20 && widths.every(w => w.minWidthM >= 0.8));   // 下限 20：HALL_KIT=0 时楼/厅只有 footprint 薄墙（实测 27 盒），默认 hall-kit 62 盒
+  // 膨胀 RAD 后 BFS：南院 → 北院（域限 x ≤ 24.3，只能走横厅东侧过道）
+  const r = Math.ceil(RAD / STEP), blocked = new Uint8Array(NX * NZ);
+  for (let k = 0; k < NZ; k++) for (let i = 0; i < NX; i++) if (occ[k * NX + i])
+    for (let dk = -r; dk <= r; dk++) for (let di = -r; di <= r; di++) {
+      if (di * di + dk * dk > r * r) continue; const kk = k + dk, ii = i + di;
+      if (kk >= 0 && kk < NZ && ii >= 0 && ii < NX) blocked[kk * NX + ii] = 1;
+    }
+  for (let k = 0; k < NZ; k++) for (let i = 0; i < NX; i++) if (X0 + (i + 0.5) * STEP > X1 - RAD) blocked[k * NX + i] = 1;
+  const cell = ([x, z]) => Math.floor((z - Z0) / STEP) * NX + Math.floor((x - X0) / STEP);
+  const reach = (from, to) => { const seen = new Uint8Array(NX * NZ); const q = [cell(from)]; if (blocked[q[0]]) return 'seed-blocked';
+    seen[q[0]] = 1; while (q.length) { const c = q.pop(); if (c === cell(to)) return true; const i = c % NX, k = (c - i) / NX;
+      for (const [di, dk] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const ii = i + di, kk = k + dk; if (ii < 0 || kk < 0 || ii >= NX || kk >= NZ) continue;
+        const n = kk * NX + ii; if (!seen[n] && !blocked[n]) { seen[n] = 1; q.push(n); } } } return false; };
+  const SOUTH = [22.0, -16.0], MID = [22.0, -31.0], NORTH = [22.0, -57.0];
+  const sm2 = reach(SOUTH, MID), mn = reach(MID, NORTH);
+  ok(`E2 胶囊 0.8 m 通道连通：南院→中院 ${sm2}，中院→北院 ${mn}（域 x∈[${X0},${X1}]，不绕街）`, sm2 === true && mn === true);
+} else skip('E 碰撞包络通道', `${ctFile} 不存在`);
 
 // ---------- C 分件 ----------
 const manPath = path.join(OUT, 'zones-manifest.json');

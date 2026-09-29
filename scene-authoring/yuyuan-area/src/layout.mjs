@@ -1482,16 +1482,20 @@ const TEMPLE_V3 = path.join(ROOT, 'resources/temple-v3');
       frame: { origin: 'temple-shanmen anchor', position: [OX, OZ], rotY: TH, axes: 'local +X ≈ east (toward 安仁街), +Z ≈ south' },
       shopFrontX: 36.8,            // 店屋前墙中线（本地 x）；安仁街路面西缘在本地 x 37.0–38.2
       towerX: [24.2, 28.9],        // 两层楼 footprint（进深 4.7 m，门脸 −X 朝院）；背后 ≥1.1 m 避弄到店屋后墙（x≈30.0–30.4）
-      hallX: [17.4, 23.2],         // 横厅（门脸 +Z 朝南）；西距 court3 东墙（模块 GLB 实测本地 x 16.82）≥0.58 m，东距楼前墙 1.0 m 过道
+      // 横厅（门脸 +Z 朝南）；西距 court3 东墙（模块 GLB 实测本地 x 16.82）≥0.58 m。
+      // wave14-templeeast R1（astra 必修）：东侧南北过道按碰撞包络留净宽——横厅台基东缘 x1+0.2 = 23.0，楼台基西缘 24.2−0.2 = 24.0，
+      // 净宽 1.0 m（≥0.8 m 要求，玩家胶囊直径 0.70）；楼门前踏步（台基外 0.9 m、宽 2.4 m、居楼段中）不落在横厅 z 范围内，
+      // 横厅台基与踏步沿 z 至少再隔 1.2 m（过道出入口不被踏步与横厅台基角夹窄）。
+      hallX: [17.4, 22.8],
       unitGapM: 0.6,               // 店屋单元间距（两侧檐出挑各 0.3 m）
       rows: [                      // 北→南；同段店屋与两层楼同长，段间 3 m 门道通安仁街
         { id: 'r1', z0: -71.0, shops: ['shop-02-double', 'shop-01-narrow', 'shop-06-endcap'] },
         { id: 'r2', z0: -48.2, shops: ['shop-03-threebay', 'shop-04-recess'] },
         { id: 'r3', z0: -28.6, shops: ['shop-01-narrow', 'shop-02-double', 'shop-06-endcap'] },
       ],
-      halls: [{ id: 't1', z: [-47.0, -40.0] }, { id: 't2', z: [-24.0, -17.0] }],
-      trees: [[20.6, -66.5], [20.6, -51.5], [20.6, -32.0], [20.6, -11.0]],
-      ding: [20.6, -59.0],
+      halls: [{ id: 't1', z: [-48.4, -42.5] }, { id: 't2', z: [-27.2, -21.3] }],
+      trees: [[20.6, -66.8], [20.6, -53.8], [20.6, -34.5], [20.6, -12.0]],
+      ding: [20.6, -60.3],
       trades: ['烟纸店', '南北杂货', '字画店', '饭馆', '绣品', '药材', '照相店', '烟纸店'],
     };
     const unitW = Object.fromEntries(SHOP_UNITS.map(u => [u.module, u]));
