@@ -505,14 +505,15 @@ for sgn in (-1, 1):
     for z_end, zh in ((0.0, 1.0), (mb['rearZ'], -1.0)):
         L.box('band-corner-post', (sgn * (mbX - mbT / 2), (mbY0 + mbY1) / 2, z_end + .12 * -zh),
               (mbT + .06, mbY1 - mbY0 + .06, .24), 'dark', .008)
-# base apron: dark flashing hugging the band outline at its bottom, sealing
-# the sliver between band bottom and the skirt surface (N1 seam lesson)
-ap = mb['baseApronH']
-L.box('band-apron-front', (0, mbY0 - ap / 2 + .01, -mbT / 2), (2 * mbX + .1, ap, mbT + .1), 'dark', 0)
-L.box('band-apron-rear', (0, mbY0 - ap / 2 + .01, mb['rearZ'] + mbT / 2), (2 * mbX + .1, ap, mbT + .1), 'dark', 0)
+# base flashing: each band face is skirted down onto the skirt-roof surface
+# (buried 5cm) — the fixed-height apron hung clear of the surface and left an
+# open slit along the whole band base; the pv05 sky ray entered there, crossed
+# the empty hall and left through the rear eave (wave13-templefix T1)
+_top = mbY0 + 0.01
+C.band_base_flashing(L, 'band-apron-front', low_y, -mbX - 0.05, mbX + 0.05, 0.01, _top, 0.01, axis='z')
+C.band_base_flashing(L, 'band-apron-rear', low_y, -mbX - 0.05, mbX + 0.05, mb['rearZ'] - 0.01, _top, mb['rearZ'], axis='z')
 for sgn in (-1, 1):
-    L.box('band-apron-side', (sgn * (mbX - mbT / 2), mbY0 - ap / 2 + .01, mb['rearZ'] / 2),
-          (mbT + .1, ap, bd['depthM'] - mbT + .1), 'dark', 0)
+    C.band_base_flashing(L, 'band-apron-side', low_y, 0.01, mb['rearZ'] - 0.01, sgn * (mbX + 0.01), _top, sgn * (mbX + 0.01), axis='x')
 print(f'STAGE midband ok ({time.time() - T0:.1f}s)')
 
 # S3. main plaque on the midband front face (T1 construction, full-atlas face)
@@ -660,12 +661,13 @@ def build_shell(tag, rf, surf):
                        [grid_t[aa], grid_t[aa + 1], grid_b[aa + 1], grid_b[aa]], 'dark',
                        [(grid_t[aa][0] / 1.44, 0), (grid_t[aa + 1][0] / 1.44, 0),
                         (grid_t[aa + 1][0] / 1.44, rf['eaveFasciaH']), (grid_t[aa][0] / 1.44, rf['eaveFasciaH'])], hint)
-    # soffit boards under front/rear overhangs
+    # soffit boards under front/rear overhangs: hugging the shell underside so
+    # the corner lift carries them up (flat boxes left a wedge of sky at the
+    # lifted corners, wave13-templefix T1)
     sd = rf['soffitDepthM']
     for sdir, z_end in ((1, ZF), (-1, ZR)):
-        zc = (z_end - sdir * sd / 2 + (0 if sdir > 0 else 0))
-        zc = z_end - sdir * sd / 2
-        L.box(f'{tag}-eave-soffit', (0, rf['eaveY'] - .1, zc), (2 * HW - .1, .09, sd - .05), 'dark', 0)
+        C.eave_soffit_strip(L, f'{tag}-eave-soffit', surf, HW, z_end, sdir, sd, THICK, rf['eaveY'],
+                            inner_cap=mbY1 - 0.02)
 
 
 def build_ribs(tag, rf, surf):

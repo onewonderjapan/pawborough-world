@@ -63,7 +63,7 @@
     "subDoorCount": 4,
     "waistRailY": 1.1,
     "latticeBarStepM": 0.34,
-    "backingMaterial": "dark",
+    "backingMaterial": "lattice",
     "visibleMaterial": "wood lattice + stiles + rails over dark recess (framed, never a bare slab)"
   },
   "frontBand": {
@@ -198,5 +198,5 @@
     "hipEndTopY": "derived silhouette value (design, not surveyed)",
     "era": "2015 front visual reference only"
   },
-  "configSha256": "843e0f9b63351e0fd0dd41f2ddd6f8e90b5dc8252dcddcbbdad8731023ca2d14"
+  "configSha256": "8c610c446c2335edcfc84b2054f292495347bb53797f20eded69fae13335c276"
 }
