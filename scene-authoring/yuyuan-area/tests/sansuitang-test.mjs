@@ -231,8 +231,15 @@ if (testOk) {
   ok('staging sha 与 out-garden-kits 文件一致', staging.files['sansuitang-bld-428179901/model.glb'] === sha);
   const latticeMat = (res.info?.materialsInfo && Object.values(res.info.materialsInfo).find(() => false)) || null;
   const g = parseGlb(SST_GLB);
-  const lat = g.materials.find((m) => /lattice/.test(m.name));
-  ok('格心材质 alphaMode=MASK', !!lat && lat.alphaMode === 'MASK', lat && lat.alphaMode);
+  // wave13-nightbalance R1（astra 必修1）：格心恢复原名 sst-lattice-core（alpha 镂空、不发光），
+  // 新增不透明背板 sst-lattice-back（extras pbRole=window-backing，presets lattice 组按名点亮）。
+  const core = g.materials.find((m) => m.name === 'sst-lattice-core');
+  ok('格心材质 sst-lattice-core alphaMode=MASK', !!core && core.alphaMode === 'MASK', core && core.alphaMode);
+  const back = g.materials.find((m) => m.name === 'sst-lattice-back');
+  ok('背板材质 sst-lattice-back 不透明（无 BLEND/MASK alphaMode）',
+     !!back && back.alphaMode !== 'BLEND' && back.alphaMode !== 'MASK', back && back.alphaMode);
+  ok('背板 extras.pbRole=window-backing（gltfpack -ke 下 extras 参与材质比较，防同内容合并）',
+     !!back && back.extras && back.extras.pbRole === 'window-backing', back && JSON.stringify(back.extras));
   const alphaImg = (g.json.images || []).some((i) => /lattice/.test(i.name || ''));
   ok('解析 alpha 贴图已内嵌', alphaImg);
 }

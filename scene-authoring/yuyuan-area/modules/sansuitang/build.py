@@ -44,7 +44,11 @@ RECIPE={'base':'lead grey model (reference-greymodel-build.py), frozen section u
               'whiteWall':{'base':'PaintedPlaster017_2K-JPG_Color_1K.jpg','tint':'f2efe8','tile':[2.2,2.2]},
               'blueStone':{'base':'Bricks061_2K-JPG_Color_1K.jpg','tint':'8b9089','tile':[2.0,1.0]},
               'latticeCore':{'alpha':'textures/lattice-core-alpha.png','cellM':0.125,'alphaMode':'MASK',
-                             'image':'modules/hall-kit/textures/lattice-core-alpha.png (same bytes, wave4-huxinting2)'}},
+                             'image':'modules/hall-kit/textures/lattice-core-alpha.png (same bytes, wave4-huxinting2)',
+                             'note':'wave13-nightbalance R1: restored own name, non-emissive alpha-cutout lattice (astra #1)'},
+              'latticeBack':{'baseColorSrgb':'55483c','roughness':.35,'pbRole':'window-backing',
+                             'offsetM':0.007,
+                             'note':'wave13-nightbalance R1 N3: opaque backing behind each lattice core (hall-kit hk-lattice-back semantics: colour = latticeBackSrgb, rough .35, core-to-back gap 7 mm); glows via presets lattice group'}},
  'reanchor':{'from':'front colonnade centre (lead grey model)','to':'plan centre of the pre-wave2 plinth extents (kept fixed)','shiftGlbZ':REANCHOR},
  'backSide':{'decision':'wave2-sansuitang lead 2026-09-25: back only; nothing may cross the shared edge with 仰山堂','plinthOutBack':'flush with rear wall outer face','lowerOverBack':'from ZB','upperOverBack':'from UZB','backEaveDressing':False,'frontHalfUnchanged':'every triangle lying entirely at local z>=0 (position, normal, UV) identical to the 2026-09-23 build'},
  'textureDir':TEX_DIR}
@@ -101,23 +105,37 @@ def make_lattice_image():
  out=OUTD/'textures'/'lattice-core-alpha.png';out.parent.mkdir(exist_ok=True)
  out.write_bytes(HK_LATTICE.read_bytes())
  img.pack()
- m=bpy.data.materials.new('hk-lattice-back');m.use_nodes=True
+ m=bpy.data.materials.new('sst-lattice-core');m.use_nodes=True
  nodes,links=m.node_tree.nodes,m.node_tree.links
  p=nodes.get('Principled BSDF');p.inputs['Roughness'].default_value=.7;p.inputs['Metallic'].default_value=0
  t=nodes.new('ShaderNodeTexImage');t.image=img;t.extension='REPEAT'
  links.new(t.outputs['Color'],p.inputs['Base Color']);links.new(t.outputs['Alpha'],p.inputs['Alpha'])
  try:m.blend_method='CLIP'
  except AttributeError:pass
- # wave13-nightbalance N3（nightqa #9）：材质名 = lattice 发光组语义名 hk-lattice-back（hall-kit 背板同组名；
- # 本模块无独立背板、格心即窗体发光面）。lighting/presets.json 的 emissiveGroups 本单不许动（另一工单在改），
- # 复用组内已列名让三穗堂格扇接入 lattice 组（dusk/night 格心棂条发光、alpha 镂空不变）。
- META['hk-lattice-back']={'alpha':'textures/lattice-core-alpha.png','cellM':0.125,'alphaMode':'MASK','alphaCutoff':0.5,
+ # wave13-nightbalance R1（astra 必修1：R0 把格心改名为组内语义名 hk-lattice-back 属「格心冒用背板名，
+ # 语义不成立」——发光的是 alpha 镂空的木棂条，孔洞仍透明，并没有得到背板内透光）。恢复原名 sst-lattice-core
+ # 且不发光（格心保持 alpha 镂空棂条语义）；「背板内透光」由格心后方新增的不透明背板承担（见 make_lattice_back）。
+ META['sst-lattice-core']={'alpha':'textures/lattice-core-alpha.png','cellM':0.125,'alphaMode':'MASK','alphaCutoff':0.5,
   'sharedImage':'modules/hall-kit/textures/lattice-core-alpha.png（字节相同；总装按名 + 尺寸去重）'}
- MAT_TILE['hk-lattice-back']=(1.0,1.0)  # UV 单位=米，纹理即 1m 格网
+ MAT_TILE['sst-lattice-core']=(1.0,1.0)  # UV 单位=米，纹理即 1m 格网
  return m
 M['lattice']=make_lattice_image()
+# wave13-nightbalance R1 N3 主控裁定「背板内透光」（与厅堂套件 hk-lattice-back、商城楼 btk-winback 同构）：
+# 不透明背板材质，纯色 = hall-kit defaults latticeBackSrgb #55483c、rough 0.35（同 hk-lattice-back），
+# 放在格心内侧 7 mm（hall-kit 窗 core 0.012 / back 0.005 的间距；门背板 0.053 同构）。
+# 材质级 extras pbRole=window-backing：gltfpack -ke 下 extras 参与材质比较，与内容完全相同的 hk-lattice-back
+# 也不合并（守卫 compress-zones.mjs：进 lattice 组后受保护材质三角数对账）；glTF 导出器把材质自定义属性
+# 写入 material.extras（export_extras 默认 True，同 bazaar-tower-kit build_tower.py 做法）。
+def make_lattice_back():
+ m=mat('sst-lattice-back',lin('55483c'),rough=.35)
+ m['pbRole']='window-backing'
+ META['sst-lattice-back']={'baseColorSrgb':'55483c','roughness':.35,'pbRole':'window-backing',
+  'note':'opaque backing panel behind lattice cores; per-presets lattice emissive group (backing glows, cores stay alpha-cutout)'}
+ MAT_TILE['sst-lattice-back']=(1,1)
+ return m
+M['latback']=make_lattice_back()
 
-TILE_OF={'wall':(2.2,2.2),'stone':(2.0,1.0),'wood':(0.9,2.2),'roof':(1.4,1.2),'dark':(1,1),'eave':(1,1),'lattice':(1.0,1.0)}
+TILE_OF={'wall':(2.2,2.2),'stone':(2.0,1.0),'wood':(0.9,2.2),'roof':(1.4,1.2),'dark':(1,1),'eave':(1,1),'lattice':(1.0,1.0),'latback':(1,1)}
 
 def tag(o):o['part']=GROUP;return o
 def box(name,c,s,m='wall',bevel=0,collision=False,tile=None):
@@ -255,6 +273,7 @@ for i in range(5):
   rng('sill-wall',a,b,P0,P0+.9,ZW-t/2,ZW+t/2,'wall',0,True)
   rng('half-window-frame',a,b,P0+.9,P0+D['colH'],ZW-.06,ZW+.06,'wood')
   quad_panel('half-window-core',((a+b)/2,P0+.98+(D['colH']-.98-.12)/2,ZW+.07),b-a-.16,D['colH']-.98-.12,0.0,'lattice')
+  quad_panel('half-window-back',((a+b)/2,P0+.98+(D['colH']-.98-.12)/2,ZW+.07-.007),b-a-.16,D['colH']-.98-.12,0.0,'latback')
   COLL.append({'name':'half-window','center':[(a+b)/2,(P0+.9+P0+D['colH'])/2,ZW],'size':[b-a,D['colH']-.9,.12],'type':'box'})
  else:
   n=6;pw=(b-a)/n
@@ -263,6 +282,7 @@ for i in range(5):
    if open_:continue
    rng('door-frame',x0,x0+pw,P0,P0+D['colH'],ZW-.05,ZW+.05,'wood')
    quad_panel('door-core',((x0+pw/2),P0+1.05+(D['colH']-1.05-.12)/2,ZW+.06),pw-.14,D['colH']-1.05-.12,0.0,'lattice')
+   quad_panel('door-back',((x0+pw/2),P0+1.05+(D['colH']-1.05-.12)/2,ZW+.053),pw-.14,D['colH']-1.05-.12,0.0,'latback')
    rng('door-tieband',x0+.06,x0+pw-.06,P0+.92,P0+1.05,ZW+.02,ZW+.05,'dark')
    rng('door-panel',x0+.08,x0+pw-.08,P0+.12,P0+.92,ZW-.03,ZW+.03,'dark')
    COLL.append({'name':'door-leaf','center':[x0+pw/2,(P0+P0+D['colH'])/2,ZW],'size':[pw,D['colH'],.1],'type':'box'})
@@ -271,10 +291,19 @@ for i in range(5):
 GROUP='hall-upper'
 yh0,yh1=D['lowerTop']+.25,D['upperEave']-.35
 for side in ('front','back','left','right'):
- if side=='front':quad_panel('upper-lattice-band',(0,(yh0+yh1)/2,UZF+t/2+.03),2*UX-.6,yh1-yh0,0.0,'lattice')
- elif side=='back':quad_panel('upper-lattice-band',(0,(yh0+yh1)/2,UZB-t/2-.03),2*UX-.6,yh1-yh0,0.0,'lattice')
- elif side=='left':quad_panel('upper-lattice-band',(-UX-t/2-.03,(yh0+yh1)/2,(UZF+UZB)/2),abs(UZF-UZB)-.6,yh1-yh0,math.pi/2,'lattice')
- else:quad_panel('upper-lattice-band',(UX+t/2+.03,(yh0+yh1)/2,(UZF+UZB)/2),abs(UZF-UZB)-.6,yh1-yh0,math.pi/2,'lattice')
+ BACK=0.007   # 背板在格心内侧 7 mm（hall-kit hk-lattice-back 间距），法线方向 = 各面外法线
+ if side=='front':
+  quad_panel('upper-lattice-band',(0,(yh0+yh1)/2,UZF+t/2+.03),2*UX-.6,yh1-yh0,0.0,'lattice')
+  quad_panel('upper-lattice-back',(0,(yh0+yh1)/2,UZF+t/2+.03-BACK),2*UX-.6,yh1-yh0,0.0,'latback')
+ elif side=='back':
+  quad_panel('upper-lattice-band',(0,(yh0+yh1)/2,UZB-t/2-.03),2*UX-.6,yh1-yh0,0.0,'lattice')
+  quad_panel('upper-lattice-back',(0,(yh0+yh1)/2,UZB-t/2-.03+BACK),2*UX-.6,yh1-yh0,0.0,'latback')
+ elif side=='left':
+  quad_panel('upper-lattice-band',(-UX-t/2-.03,(yh0+yh1)/2,(UZF+UZB)/2),abs(UZF-UZB)-.6,yh1-yh0,math.pi/2,'lattice')
+  quad_panel('upper-lattice-back',(-UX-t/2-.03+BACK,(yh0+yh1)/2,(UZF+UZB)/2),abs(UZF-UZB)-.6,yh1-yh0,math.pi/2,'latback')
+ else:
+  quad_panel('upper-lattice-band',(UX+t/2+.03,(yh0+yh1)/2,(UZF+UZB)/2),abs(UZF-UZB)-.6,yh1-yh0,math.pi/2,'lattice')
+  quad_panel('upper-lattice-back',(UX+t/2+.03-BACK,(yh0+yh1)/2,(UZF+UZB)/2),abs(UZF-UZB)-.6,yh1-yh0,math.pi/2,'latback')
 # ---------------- roofs（坡面 loft 冻结；檐口饰件=封檐板+椽头+瓦当滴水）
 GROUP='hall-roof'
 def loop(x0,x1,z0,z1,y,lift,reach,sag,nx=36,nz=28):
@@ -397,6 +426,7 @@ for k in range(4):
  x0=-1.9+k*.95
  rng('screen-frame',x0+.03,x0+.92,P0,P0+2.8,zs_-.05,zs_-.02,'wood')
  quad_panel('screen-core',(x0+.475,P0+1.46,zs_+0.0),.80,2.66,0.0,'lattice')
+ quad_panel('screen-back',(x0+.475,P0+1.46,zs_-0.007),.80,2.66,0.0,'latback')
  COLL.append({'name':'screen-door','center':[x0+.475,P0+1.4,zs_],'size':[.95,2.8,.1],'type':'box'})
 # ---------------- join per (part,material), re-anchor, triangulate, export
 def finalize(items,name):
@@ -415,7 +445,7 @@ for o in final:o.data.transform(Matrix.Translation((0,-REANCHOR,0)))
 bpy.ops.wm.save_as_mainfile(filepath=str(OUTD/'model.blend'))
 bpy.ops.object.select_all(action='DESELECT')
 for o in final:o.select_set(True)
-bpy.ops.export_scene.gltf(filepath=str(OUTD/'model.glb'),export_format='GLB',export_yup=True,export_apply=True,use_selection=True,export_animations=False,export_cameras=False,export_lights=False)
+bpy.ops.export_scene.gltf(filepath=str(OUTD/'model.glb'),export_format='GLB',export_yup=True,export_apply=True,use_selection=True,export_animations=False,export_cameras=False,export_lights=False,export_extras=True)  # export_extras: 背板 pbRole=window-backing
 # alphaMode 兜底：确保格心材质 = MASK + cutoff（Blender 4.5 导出为 BLEND）
 glb=OUTD/'model.glb';buf=bytearray(glb.read_bytes())
 jl=int.from_bytes(buf[12:16],'little')
@@ -427,7 +457,8 @@ assert bytes(buf[bl_off+4:bl_off+8])==b'BIN\x00'
 bindata=bytes(buf[bl_off+8:bl_off+8+bl])
 changed=False
 for m in j.get('materials',[]):
- if 'lattice' in m.get('name',''):
+ # 只兜底格心（alpha 镂空）；sst-lattice-back 是不透明背板，没有 alpha 输入，不得改写
+ if m.get('name')=='sst-lattice-core':
   if m.get('alphaMode')!='MASK':m['alphaMode']='MASK';changed=True
   if m.get('alphaCutoff')!=0.5:m['alphaCutoff']=0.5;changed=True
 if changed:
