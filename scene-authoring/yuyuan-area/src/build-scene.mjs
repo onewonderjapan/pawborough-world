@@ -1319,7 +1319,10 @@ for (const o0 of layout.objects) {
       const [x0, z0, x1, z1] = o.geometry.bounds;
       // wave13-nightbalance N1（nightqa #10 全局地面夜读「雪原」）：0xcfc6b4 线性 ≈0.55（白抹灰档）→ 0x949086
       // 线性 ≈(0.30,0.28,0.24)，裸土/夯土合理区间（0.15–0.35）的干土上端；白天同机位场景区域亮度变化实测见工单包 RESULT。
-      const gnd = new THREE.Mesh(new THREE.PlaneGeometry(x1 - x0, z1 - z0), new THREE.MeshStandardMaterial({ color: 0x949086, roughness: 1 }));
+      // R1（astra 必修3：白天门槛不豁免）：0x949086 使外围/航拍白天全画幅超过 ≤8%。
+      // 候选折衷色 0xa49f99（线性均值约 0.345，仍在裸土/夯土 0.15–0.35；A1 上限可到 0.40，本值未用满）。
+      // 是否全部机位 ≤8% 以合并 main 后的实测为准，不在这里预先宣称达标。
+      const gnd = new THREE.Mesh(new THREE.PlaneGeometry(x1 - x0, z1 - z0), new THREE.MeshStandardMaterial({ color: 0xa49f99, roughness: 1 }));
       gnd.rotation.x = -Math.PI / 2;
       gnd.position.set((x0 + x1) / 2, GROUND_Y, (z0 + z1) / 2);
       gnd.name = key; gnd.userData = ud;
