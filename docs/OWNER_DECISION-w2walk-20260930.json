@@ -1,0 +1,12 @@
+{
+  "decisionId": "w2-walk-automated-20260930",
+  "decidedAt": "2026-09-30",
+  "owner": "机主",
+  "context": "v1.0 第一人称步行验收原写「机器人巡游测试 + 机主在 W2 亲手走一遍」（docs/V1-REDEFINITION-20260923.md 第 2 条），V09/WP12 要求全域候选在 W2 真实 GPU 上实测 P50/P95 与加载",
+  "evidence": "docs/perf/W2-RESULTS-20260930.md、docs/perf/W2-20260930-perf.json（W2 RTX 3080 Laptop，1080p，CruiseDriver 同 WalkController 输入链巡游 main→gold）",
+  "ownerWords": "自动步行的数据够了，不用手动走",
+  "decisions": {
+    "w2-hands-on-walk": {"required": false, "note": "由 W2 自动巡游实测替代，v1.0 不再要求机主亲手走"},
+    "v09-wp12": {"accepted": true, "note": "默认档步行 P50 24.3 ms / P95 32.6 ms（约 41 fps），首次加载 3.8–5.3 s；阴影开销列入 v1.1"}
+  }
+}
