@@ -182,32 +182,47 @@ function angDistDeg(a, b) {
   const d = Math.abs(a - b) % 360;
   return d > 180 ? 360 - d : d;
 }
-// 棱簇相对灯心的方位角（GLB y-up：Blender x = gltf x，Blender y = −gltf z）
-function ribAzimuthsDeg(ribCluster, lampCtr) {
-  let sx = 0, sz = 0, n = 0;
-  for (let i = 0; i < ribCluster.length; i += 3) { sx += ribCluster[i] - lampCtr[0]; sz += ribCluster[i + 2] - lampCtr[1]; n++; }
-  return (Math.atan2(-sz / n, sx / n) * 180 / Math.PI + 360) % 360;
-}
-// 每灯判据：近立面侧至少一条棱在 streetRibMaxOffDeg 内 + 每灯棱数 = ribCountPerLamp。返回 { bad, detail }
+// 每灯判据：绕灯轴的棱顶点方位角环向解缠绕分组——棱顶点只存在于左右两列（θ=th±half_w，half_w=
+// 0.05/r rad：r=0.3→9.55°、r=0.28→10.2°），一条棱的两列相距 ≤20.5° 必须并入同组；相邻棱最近缘相距
+// ≥39.5° 必须分断。GAP=30° 两侧余量 ≥9.5°。组数 = 棱数（要求 = ribCountPerLamp），判据 = 最近组
+// 方位角到正立面外法向角距 ≤ maxOff。返回 { bad, detail } / { good }
 function streetRibJudge(lampClustersList, ribClusters, azF, maxOff) {
   if (!ribClusters.length) return { bad: 'rib 簇缺失' };
+  const GAP = 30;
+  const ribPts = [];
+  ribClusters.forEach(rc => { for (let i = 0; i < rc.length; i += 3) ribPts.push([rc[i], rc[i + 1], rc[i + 2]]); });
   let worst = 0, worstLamp = -1, countBad = 0;
   lampClustersList.forEach((c, li) => {
     let sx = 0, sz = 0, n = 0;
     for (let i = 0; i < c.length; i += 3) { sx += c[i]; sz += c[i + 2]; n++; }
     const ctr = [sx / n, sz / n];
-    const near = [];
-    ribClusters.forEach(rc => {
-      let rx = 0, rz = 0, m = 0;
-      for (let i = 0; i < rc.length; i += 3) { rx += rc[i]; rz += rc[i + 2]; m++; }
-      if (Math.hypot(rx / m - ctr[0], rz / m - ctr[1]) < 0.5) near.push(ribAzimuthsDeg(rc, ctr));
-    });
-    if (near.length !== DESIGN.ribCountPerLamp) countBad++;
-    if (!near.length) return;
-    const off = Math.min(...near.map(a => angDistDeg(a, azF)));
-    if (off > worst) { worst = off; worstLamp = li; }
+    const azs = [];
+    for (const p of ribPts) {
+      if (Math.hypot(p[0] - ctr[0], p[2] - ctr[1]) > 1.0) continue;
+      azs.push((Math.atan2(-(p[2] - ctr[1]), p[0] - ctr[0]) * 180 / Math.PI + 360) % 360);
+    }
+    if (!azs.length) { countBad++; return; }
+    azs.sort((a, b) => a - b);
+    const groups = [[azs[0]]];
+    for (let i = 1; i < azs.length; i++) {
+      if (azs[i] - azs[i - 1] > GAP) groups.push([]);
+      groups[groups.length - 1].push(azs[i]);
+    }
+    if (groups.length > 1 && 360 - azs[azs.length - 1] + azs[0] <= GAP) {
+      const last = groups.pop();          // 环绕并段（跨 0°）
+      groups[0] = last.concat(groups[0]);
+    }
+    if (groups.length !== DESIGN.ribCountPerLamp) { countBad++; return; }
+    let near = 360;
+    for (const grp of groups) {
+      let cx = 0, cy = 0;
+      for (const az of grp) { cx += Math.cos(az * Math.PI / 180); cy += Math.sin(az * Math.PI / 180); }
+      const azR = (Math.atan2(cy / grp.length, cx / grp.length) * 180 / Math.PI + 360) % 360;
+      near = Math.min(near, angDistDeg(azR, azF));
+    }
+    if (near > worst) { worst = near; worstLamp = li; }
   });
-  if (countBad) return { bad: `${countBad} 只灯的棱数 ≠ ${DESIGN.ribCountPerLamp}` };
+  if (countBad) return { bad: `${countBad} 只灯的棱分组数 ≠ ${DESIGN.ribCountPerLamp}（方位角环向分组）` };
   if (worst > maxOff) return { bad: `最差灯 #${worstLamp} 正立面方向最近棱角距 ${worst.toFixed(1)}° > ${maxOff}°` };
   return { good: `每灯 ${DESIGN.ribCountPerLamp} 条棱均布，正立面（az ${azF.toFixed(1)}°）最近棱角距最差 ${worst.toFixed(1)}° ≤ ${maxOff}°` };
 }

@@ -1,5 +1,5 @@
 // wave14-lantern R1 必修1：夜间最终画面判据（REVIEW-astra：不能只验底色）。
-// 对固定夜间机位的灯笼特写实拍（run/shoot-closeup-r1.mjs 产出 png + lantern-rect.json sidecar）做
+// 对固定夜间机位的灯笼特写实拍（scripts/shoot-closeup-r1.mjs 产出 png + lantern-rect.json sidecar）做
 // 灯身主体像素的色相/饱和度/削顶统计：
 //   取样区 = sidecar rect 的中心 50%（1.35m 特写下灯身充满该区，四角墙体/天空被排除）
 //   判据（阈值来源见 NIGHT 设计常量注释）：
