@@ -65,7 +65,7 @@
   "decay": 2,
   "reassignFrames": 15,
   "sources": [
-   { "id": "lantern", "kind": "material-clusters", "materials": ["btk-lantern", "red-silk-lantern"], "clusterM": 3.0, "offsetY": -0.4 },
+   { "id": "lantern", "kind": "material-clusters", "materials": ["btk-lantern", "red-silk-lantern"], "clusterM": 3.0, "offsetY": 0.0, "note": "wave14-lantern R2（机主 2026-09-30 定“现在修”）：点光放在灯笼发光材质簇中心（灯内），原 -0.4 落在灯底下方把灯身下 1/3 打成近白；Cycles 端灯笼分件不挡阴影（render-control-passes.py）" },
    { "id": "stall", "kind": "node-anchor", "pattern": "^stall-\\d+$", "offsetY": 1.6 },
    { "id": "oldsouth-lamp", "kind": "node-anchor", "pattern": "^oldsouth-lamp-\\d+$", "offsetY": 2.05 }
   ]

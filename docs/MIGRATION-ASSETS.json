@@ -2233,22 +2233,24 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701812/model.glb",
-      "sha256": "f8aa695bb36941320dda61266beee5ab68104467713ff6e87b6ff8fbb9259d10",
-      "bytes": 2262008,
-      "sourcePackage": "pawborough-wave13-nightbalance-flash-20260929",
+      "sha256": "65dfc0e283f685e7b15b29675c1fd1b81addda8d5845a5ba8f9a62d771fc24eb",
+      "bytes": 2382500,
+      "sourcePackage": "pawborough-wave14-lantern-20260929",
+      "note": "红灯笼 R1 双层（红纸+发光芯）+六棱全周；R2 穗改不发光 btk-lantern-tassel",
       "replaces": {
-        "sha256": "15175968580cc4e12571b3a58fc64fd13294f1c4fd356c530462261228c5b84c",
-        "bytes": 2263532
+        "sha256": "f8aa695bb36941320dda61266beee5ab68104467713ff6e87b6ff8fbb9259d10",
+        "bytes": 2262008
       }
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202602/model.glb",
-      "sha256": "df185c2dab10ff0da8b8d265c31a29c76b4decd2a4f23dfec7106c708f5392f9",
-      "bytes": 2521916,
-      "sourcePackage": "pawborough-wave13-nightbalance-flash-20260929",
+      "sha256": "6f57cf69494cd065815d5f94cfad8ceb129e23a2fec52c657722ac693590501f",
+      "bytes": 2732060,
+      "sourcePackage": "pawborough-wave14-lantern-20260929",
+      "note": "红灯笼 R1 双层（红纸+发光芯）+六棱全周；R2 穗改不发光 btk-lantern-tassel",
       "replaces": {
-        "sha256": "d5db7d7c89fe8c7230daa9616c6cb76e5fb24bfc114c0afabf41359de68ae049",
-        "bytes": 2523600
+        "sha256": "df185c2dab10ff0da8b8d265c31a29c76b4decd2a4f23dfec7106c708f5392f9",
+        "bytes": 2521916
       }
     },
     {
@@ -2380,152 +2382,167 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-165791764/measurements.json",
-      "sha256": "f70ed0a97c25f991c0b69b0afc0826893a7fd14516f70fc1d2533bb24d56b3e5",
-      "bytes": 6770,
-      "sourcePackage": "pawborough-wave13-nightbalance-flash-20260929",
+      "sha256": "9ca854849a87e8a877ae01ed0e2a200ae1720522f6f0ea68e68656b41ed9f0dc",
+      "bytes": 6956,
+      "sourcePackage": "pawborough-wave14-lantern-20260929",
+      "note": "measurements 重发（lanternBudget 口径）",
       "replaces": {
-        "sha256": "c5d11ab84631ba8e14a2395f801b55c87b2439ef37a3699a35a4a4d75aa7b251",
-        "bytes": 6823
+        "sha256": "f70ed0a97c25f991c0b69b0afc0826893a7fd14516f70fc1d2533bb24d56b3e5",
+        "bytes": 6770
       }
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701812/measurements.json",
-      "sha256": "1d94fa69e58024596ba002978bc793cd5b9a317e26def3695dbba619104ab195",
-      "bytes": 5534,
-      "sourcePackage": "pawborough-wave13-nightbalance-flash-20260929",
+      "sha256": "943b80baf648488af8c0e565b7115cd20d839c5675944981f8b155fcb383e5ec",
+      "bytes": 5900,
+      "sourcePackage": "pawborough-wave14-lantern-20260929",
+      "note": "measurements 重发（lanternBudget 口径）",
       "replaces": {
-        "sha256": "1b54220254f19f9f83cb125971d0b42959ee08adf86ddf158518ad6580549338",
-        "bytes": 5588
+        "sha256": "1d94fa69e58024596ba002978bc793cd5b9a317e26def3695dbba619104ab195",
+        "bytes": 5534
       }
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701901/measurements.json",
-      "sha256": "e73172ba1d74ef95fdd518248cb59bb13c84561c9182631df17a3ee8b2b7d0a0",
-      "bytes": 3456,
-      "sourcePackage": "pawborough-wave13-nightbalance-flash-20260929",
+      "sha256": "956b0c604dea2a91efc70277b3a674ab82bf2445100d9636e1fbbec380b00b47",
+      "bytes": 3642,
+      "sourcePackage": "pawborough-wave14-lantern-20260929",
+      "note": "measurements 重发（lanternBudget 口径）",
       "replaces": {
-        "sha256": "6280e4346c1beb10e53bc603501928030c57f8567ebab9882e932c02d7c07674",
-        "bytes": 3482
+        "sha256": "e73172ba1d74ef95fdd518248cb59bb13c84561c9182631df17a3ee8b2b7d0a0",
+        "bytes": 3456
       }
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389701971/measurements.json",
-      "sha256": "cd0e82c65e97fee62d370545c1b3e7eab280cdb70f5cca549abcc3106da11f32",
-      "bytes": 2619,
-      "sourcePackage": "pawborough-wave13-nightbalance-flash-20260929",
+      "sha256": "9312616d284577a0c1dee7062d579fec3c16d13c79162977d07a181a92a50db3",
+      "bytes": 2805,
+      "sourcePackage": "pawborough-wave14-lantern-20260929",
+      "note": "measurements 重发（lanternBudget 口径）",
       "replaces": {
-        "sha256": "0adfd87617054d4db3c3aaacc82b8dd0bdd6ceb4e85e0b6b294ce8d4b965f6fa",
-        "bytes": 2645
+        "sha256": "cd0e82c65e97fee62d370545c1b3e7eab280cdb70f5cca549abcc3106da11f32",
+        "bytes": 2619
       }
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-389702030/measurements.json",
-      "sha256": "629e437dce681686c4a15d4eda9ca5ce2be5a35439f46a06f5b6b71b113fc6d0",
-      "bytes": 6191,
-      "sourcePackage": "pawborough-wave13-nightbalance-flash-20260929",
+      "sha256": "acb26122432118b67a87a2f673067b342ef4db0e59d6f8a5c68c8fc0eb7f43b9",
+      "bytes": 6377,
+      "sourcePackage": "pawborough-wave14-lantern-20260929",
+      "note": "measurements 重发（lanternBudget 口径）",
       "replaces": {
-        "sha256": "3c812b1f1a0c4ee74e899f0b303eb49e97dfae1227febdfedb8059e9e6b166f7",
-        "bytes": 6243
+        "sha256": "629e437dce681686c4a15d4eda9ca5ce2be5a35439f46a06f5b6b71b113fc6d0",
+        "bytes": 6191
       }
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202599/measurements.json",
-      "sha256": "fb35e606a5e488fdabc44fbd0a040bb42309bc3ee61792c98b36dd21ca810bc8",
-      "bytes": 4307,
-      "sourcePackage": "pawborough-wave13-nightbalance-flash-20260929",
+      "sha256": "55a0d8f66b6abe9546d1fb6b344619fa82a050b3d7fedda4ed1ac08ba7c20fac",
+      "bytes": 4493,
+      "sourcePackage": "pawborough-wave14-lantern-20260929",
+      "note": "measurements 重发（lanternBudget 口径）",
       "replaces": {
-        "sha256": "d102a47dcf60633c6b424b55e776e3fca043c480c0511dfcb2d2a2a6230d1790",
-        "bytes": 4333
+        "sha256": "fb35e606a5e488fdabc44fbd0a040bb42309bc3ee61792c98b36dd21ca810bc8",
+        "bytes": 4307
       }
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202601/measurements.json",
-      "sha256": "e9b958ffd1da7e3856c0327dba13bfdbcc5347b61231a90320ac6149b5a68bbf",
-      "bytes": 5265,
-      "sourcePackage": "pawborough-wave13-nightbalance-flash-20260929",
+      "sha256": "6eb8d978e06805e5a934aa0e2d284b7173b91670b56b8e95dd6a5a7e5bd936b7",
+      "bytes": 5451,
+      "sourcePackage": "pawborough-wave14-lantern-20260929",
+      "note": "measurements 重发（lanternBudget 口径）",
       "replaces": {
-        "sha256": "e55455a28e86be3d1ee70191d5146cc0412e37afdaa4783c841d6da383c76ee7",
-        "bytes": 5343
+        "sha256": "e9b958ffd1da7e3856c0327dba13bfdbcc5347b61231a90320ac6149b5a68bbf",
+        "bytes": 5265
       }
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202602/measurements.json",
-      "sha256": "d6ebc5d677bc8fff796dbda5c42075c698b4d8e2189db72216d2bb3d299d10f1",
-      "bytes": 4050,
-      "sourcePackage": "pawborough-wave13-nightbalance-flash-20260929",
+      "sha256": "b9073bf42b37ebc38ebaae650cc7dc59346ac3784f9baec03cd409cb828f6403",
+      "bytes": 4417,
+      "sourcePackage": "pawborough-wave14-lantern-20260929",
+      "note": "measurements 重发（lanternBudget 口径）",
       "replaces": {
-        "sha256": "2fb8de4ca826a11ea1b09c6c999159c0591db24adf8f3d379c32b4aee6699666",
-        "bytes": 4103
+        "sha256": "d6ebc5d677bc8fff796dbda5c42075c698b4d8e2189db72216d2bb3d299d10f1",
+        "bytes": 4050
       }
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202603/measurements.json",
-      "sha256": "e4258641aa7021ff80446fc98383519a00dce20e04ac72e7861f779eaca1e0b7",
-      "bytes": 4776,
-      "sourcePackage": "pawborough-wave13-nightbalance-flash-20260929",
+      "sha256": "37ca77e485a8586a9167cf7031ac9e6eade784a92270a27d2eb0bea254a60355",
+      "bytes": 4962,
+      "sourcePackage": "pawborough-wave14-lantern-20260929",
+      "note": "measurements 重发（lanternBudget 口径）",
       "replaces": {
-        "sha256": "c72ecde91fac2afd868a4844f6f7e06c24b4083d1086bb00f3a63821441bd442",
-        "bytes": 4829
+        "sha256": "e4258641aa7021ff80446fc98383519a00dce20e04ac72e7861f779eaca1e0b7",
+        "bytes": 4776
       }
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202606/measurements.json",
-      "sha256": "f0afe2b44b4e8fa4798fdefeffd205936583ba90803bf7def455d46c32f1e7cc",
-      "bytes": 8239,
-      "sourcePackage": "pawborough-wave13-nightbalance-flash-20260929",
+      "sha256": "8c32e554c551ca29b83525f6a355e427a6632a49aed08b285050b7f6ecb6fac1",
+      "bytes": 8425,
+      "sourcePackage": "pawborough-wave14-lantern-20260929",
+      "note": "measurements 重发（lanternBudget 口径）",
       "replaces": {
-        "sha256": "3448cedeef45606f3cd757642b9ed4a32f6fb08504de16fc1cf7ad7519419d95",
-        "bytes": 8292
+        "sha256": "f0afe2b44b4e8fa4798fdefeffd205936583ba90803bf7def455d46c32f1e7cc",
+        "bytes": 8239
       }
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-428202607/measurements.json",
-      "sha256": "8d2a2bc121eef5b5f4ae6ec7c8fd8d19046b8469586bb63c4099954205b98f9a",
-      "bytes": 4913,
-      "sourcePackage": "pawborough-wave13-nightbalance-flash-20260929",
+      "sha256": "c42e3d7e86c6bcee40a34f3230e539e5b24e28c5fa38aedb2607c970b48bbd93",
+      "bytes": 5099,
+      "sourcePackage": "pawborough-wave14-lantern-20260929",
+      "note": "measurements 重发（lanternBudget 口径）",
       "replaces": {
-        "sha256": "699a18be924b2d1789b915fc9247e20458a998e218a1abf0fa9c3ee42566eb58",
-        "bytes": 4966
+        "sha256": "8d2a2bc121eef5b5f4ae6ec7c8fd8d19046b8469586bb63c4099954205b98f9a",
+        "bytes": 4913
       }
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893867/measurements.json",
-      "sha256": "073e657777c88553831a0b73ff1936a631ee3b63411a18930c7d74adbfbce4a1",
-      "bytes": 4893,
-      "sourcePackage": "pawborough-wave13-nightbalance-flash-20260929",
+      "sha256": "883dd49fd1c7f91541145043655515bd878bf233a7281a8b14479c0be544d8f5",
+      "bytes": 5079,
+      "sourcePackage": "pawborough-wave14-lantern-20260929",
+      "note": "measurements 重发（lanternBudget 口径）",
       "replaces": {
-        "sha256": "2c8b24a80860c5cc5d81927df9c5ada35b62ce4ce23ab8900da45d0f552b6437",
-        "bytes": 4946
+        "sha256": "073e657777c88553831a0b73ff1936a631ee3b63411a18930c7d74adbfbce4a1",
+        "bytes": 4893
       }
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893868/measurements.json",
-      "sha256": "2e2fa37105458aa9c4ce53a3a0c1464fd061e8070e0a4df8fdd17ecd7c5621b4",
-      "bytes": 5059,
-      "sourcePackage": "pawborough-wave13-nightbalance-flash-20260929",
+      "sha256": "837f5952f1fb218b9e4792a2b4acaf29eb36c4e816d633250ba8ea6b7b058e17",
+      "bytes": 5245,
+      "sourcePackage": "pawborough-wave14-lantern-20260929",
+      "note": "measurements 重发（lanternBudget 口径）",
       "replaces": {
-        "sha256": "07528f95e42659f20a5b846f0018685f8ebcf58994a63a78adf215d15cb89993",
-        "bytes": 5085
+        "sha256": "2e2fa37105458aa9c4ce53a3a0c1464fd061e8070e0a4df8fdd17ecd7c5621b4",
+        "bytes": 5059
       }
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893873/measurements.json",
-      "sha256": "91ffa3ccb23c12efb686e2f57be4960a5147013fe951bbb1934690957bda39b0",
-      "bytes": 4706,
-      "sourcePackage": "pawborough-wave13-nightbalance-flash-20260929",
+      "sha256": "5d8e3cced722b01882cabb146f3d7f3d75b34bf95f70d2fa60d0c02d472703d0",
+      "bytes": 4892,
+      "sourcePackage": "pawborough-wave14-lantern-20260929",
+      "note": "measurements 重发（lanternBudget 口径）",
       "replaces": {
-        "sha256": "e960a85dc91584932643f84f284f8bd0db75003ede78afb94c6a5337ca144751",
-        "bytes": 4732
+        "sha256": "91ffa3ccb23c12efb686e2f57be4960a5147013fe951bbb1934690957bda39b0",
+        "bytes": 4706
       }
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-towers/bld-553893884/measurements.json",
-      "sha256": "7550210d39cfc70fbab1586849286dd8321c61f95d593716ac7977aaeb4486f3",
-      "bytes": 7458,
-      "sourcePackage": "pawborough-wave13-nightbalance-flash-20260929",
+      "sha256": "4dfb29d19e9993c2e0e86b135d65e1ca8a904bb8d6eac8a977e740e7f61916d0",
+      "bytes": 7644,
+      "sourcePackage": "pawborough-wave14-lantern-20260929",
+      "note": "measurements 重发（lanternBudget 口径）",
       "replaces": {
-        "sha256": "51f5b065c3d164015b752eb84e85b70fc86004674dd37f6403e237b4997d8be9",
-        "bytes": 7511
+        "sha256": "7550210d39cfc70fbab1586849286dd8321c61f95d593716ac7977aaeb4486f3",
+        "bytes": 7458
       }
     },
     {

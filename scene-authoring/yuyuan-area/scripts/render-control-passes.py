@@ -423,6 +423,16 @@ def setup_beauty_lighting(scene, P, preset):
     scale = p.get('emissiveScale', 0)
     if p.get('pointLights', 0) > 0:
         pl = P['pointLights']
+        # wave14-lantern R2：灯笼点光在灯内（presets lantern 源 offsetY 0）。查看器点光不投影；Cycles 端让发光簇材质
+        # 与灯笼纸壳不挡阴影射线，否则灯内点光被自身纸壳/发光芯遮住，街面光池只剩 1−α 透过量，两端背离。
+        own = set(m for s_ in pl['sources'] if s_['kind'] == 'material-clusters' for m in s_['materials']) | {'btk-lantern-paper'}
+        nsh = 0
+        for ob in bpy.data.objects:
+            mats_ = [m for m in ob.data.materials if m] if ob.type == 'MESH' else []
+            if mats_ and all(base_mat_name(m.name) in own for m in mats_):   # 只动纯灯笼对象，混材质大件照常投影
+                ob.visible_shadow = False
+                nsh += 1
+        log('beauty lighting: %d lantern objects excluded from shadow rays' % nsh)
         for i, pos in enumerate(light_candidates(P)):
             ld = bpy.data.lights.new('lighting-point-%03d' % i, 'POINT')
             ld.energy = 4 * math.pi * pl['intensity']            # three 坎德拉 I（E=I/d²）-> Cycles 功率 P=4πI（E=P/(4πd²)，已用单平面标定）

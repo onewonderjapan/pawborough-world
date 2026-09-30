@@ -368,6 +368,22 @@ _MAT_DEFS = {
     'lacquer': lambda: mat('lacquer', lin(FM.get('lacquerTint', '15100e')), .32),
     'signred': lambda: mat('signred', lin(FM.get('signRed', 'a82a1e')), .55),
     'lantern': lambda: mat('lantern', lin(FM.get('lanternRed', 'c8301f')), .5),
+    # wave14-lantern R1：灯身「红纸」外层——不发光、不在任何 emissive 组。夜间粉白过曝根治（REVIEW-astra 必修1）：
+    # lantern 组（#ff7a3c ×3.0，数值与匹配冻结）整面平光打在灯身上时无论底色是什么夜间都被顶成粉白
+    # （R0 特写实测中心区 sMed 0.16、亮像素 V 全 clip=1.0）。修法选 GOAL 的「外层红纸 + 内层发光芯」而非
+    # emissiveMap 衰减：渲染端组应用是逐材质平光（web/lighting.js useMap=false 只保留材质自带 emissiveMap；
+    # render-control-passes.py L446 直接删 Emission Color 链接再赋平色），贴图方案在 Cycles 端必然被剥掉、
+    # 两端背离；分层方案走同一条 alpha 合成路径（透出 ≈ (1−α)·芯发光 + α·红纸着色，α=0.82 → 红-橙红高饱和，
+    # 预测线性 ≈(0.58,0.11,0.026)），three/Cycles/EEVEE 物理一致。α 取 0.82：白天与 R0 实心红观感差 <2 成，
+    # 夜间透光足够读作「红灯笼透暖光」（终判据 tests/lantern-night-pixel-check.mjs，R0 材质必须红）。
+    # 新名字不进 presets 任何组（lighting-check 组内材质名不重复；compress-zones 只保护组内名，
+    # 本材质内容唯一不会被 gltfpack 同内容合并、名字自然存活）。
+    'lantern-paper': lambda: mat('lantern-paper', lin(FM.get('lanternRed', 'c8301f')), .5, alpha=.82, alpha_mode='BLEND'),
+    # wave14-lantern R2（主控）：流苏穗改用不发光的深红丝材质，不在任何 emissive 组。穗原用 btk-lantern 会在
+    # 灯下单独聚成一簇点光候选（web/lighting.js material-clusters 按 3 m 网格聚类，y=3.0 网格线把穗与芯分开），
+    # 该点光落在灯底下方 0.3–0.6 m，把灯身下 1/3 打成近白（R2 同机位实测：下段近白 70%）。
+    # 颜色/粗糙度与 btk-lantern 不同，避免 gltfpack 按内容把它并回 btk-lantern。
+    'lantern-tassel': lambda: mat('lantern-tassel', lin('a3261a'), .6),
     'lionstone': lambda: (mat('lionstone', lin(FM.get('lionTint', 'a8a79f')), .9) if FM.get('plinthPlain') else
                           mat('lionstone', rough=.9, base='Bricks061_2K-JPG_Color_1K.jpg', tint=FM.get('lionTint', 'a8a79f'), tile=(0.6, 0.6))),
     'lattice': lambda: alpha_mat('lattice', gen_image('lattice', 'lattice-core-alpha.png', 256, 256, alpha_pattern('lattice')),
@@ -591,6 +607,102 @@ def sphere(name, c, r, m, part=None, seg=12, rings=8, scale_z=1.0):
     o['part'] = part or PART
     GROUPS.setdefault((o['part'], m), []).append(o)
     return o
+
+# ---- wave14-lantern（巡检 #17「灯笼简化为粉色蛋形」）：传统红灯笼几何 ----
+# 竖直轴 = Blender Z（与 cyl/sphere 同一世界系）。LANTRN_PROF 是鼓形母线：端部半径 RIM>0
+#（硬收口口沿——与端部收尖的椭球「蛋形」的判别特征，测试据此判红），中段最鼓。
+# 5 环 10 边 = 瘦身口径：40 只灯笼全部实例化在 zone-bazaar-3.glb，test6a 上限 10_000_000 B
+# 反推每只 ≤ 280 tri（2026-09-29 392/只版本实测分区件 10.33MB 超线）；240/只留 60 tri 余量。
+LANTRN_PROF = (0.42, 0.85, 1.0, 0.85, 0.42)   # 半径比，5 环
+LANTRN_SEG = 10          # 径向边数（flat shading 出纵向明暗棱）
+LANTRN_PETALS = 6        # 瓜棱瓣数
+LANTRN_PETAL = 0.05      # 瓣鼓幅度（径向 ±5%）
+
+def _lantern_obj(name, bm, m, part):
+    me = bpy.data.meshes.new(name)
+    bm.to_mesh(me)
+    bm.free()
+    me.materials.append(M[m])
+    o = bpy.data.objects.new(name, me)
+    bpy.context.collection.objects.link(o)
+    o['part'] = part
+    GROUPS.setdefault((part, m), []).append(o)
+    return o
+
+def lantern_body(name, c, r, part='lanterns-body'):
+    """鼓形红灯笼主体（红纸外层）：中段鼓、上下收口留口沿，径向 6 瓣微鼓（瓜棱）。flat 法线（新 mesh 默认）。
+    材质 = lantern-paper（半透红纸 α0.82，不在任何 emissive 组——夜间发光由内层 lantern_core 承担，
+    见 R1 材质段注释）。c=(map_x, map_y, 悬挂中心高 zc)（与 cyl/sphere 同口径，内部 to_b 翻转）。
+    tris = 10 边 × 4 段 × 2 + 上下口沿圆盘 2×10 = 100。"""
+    H = r * 2.1
+    cx, cy, cz = to_b(*c)
+    bm = bmesh.new()
+    rings = []
+    n = len(LANTRN_PROF)
+    for i, pr in enumerate(LANTRN_PROF):
+        z = -H / 2 + H * i / (n - 1)
+        ring = []
+        for j in range(LANTRN_SEG):
+            th = 2 * math.pi * j / LANTRN_SEG
+            rad = r * pr * (1 + LANTRN_PETAL * math.cos(LANTRN_PETALS * th))
+            ring.append(bm.verts.new((cx + rad * math.cos(th), cy + rad * math.sin(th), cz + z)))
+        rings.append(ring)
+    for i in range(n - 1):
+        for j in range(LANTRN_SEG):
+            bm.faces.new((rings[i][j], rings[i][(j + 1) % LANTRN_SEG],
+                          rings[i + 1][(j + 1) % LANTRN_SEG], rings[i + 1][j]))
+    for ring, top in ((rings[0], False), (rings[-1], True)):
+        ctr = bm.verts.new((cx, cy, cz + (H / 2 if top else -H / 2)))
+        for j in range(LANTRN_SEG):
+            j2 = (j + 1) % LANTRN_SEG
+            bm.faces.new((ctr, ring[j2], ring[j]) if top else (ctr, ring[j], ring[j2]))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    return _lantern_obj(name, bm, 'lantern-paper', part)
+
+def lantern_core(name, c, r, part='lanterns-core'):
+    """发光芯：鼓身内的 6 边开口圆筒（无上下盖，盖盘会挡住透光方向的端部无所谓但省 tris），
+    材质仍是 btk-lantern → lantern 组命中与点光候选锚点（按 lantern 材质顶点聚类）不变。
+    半径 0.60r / 高 0.52H：整段收在红纸内（纸鼓半径 ≥0.85r，不相交不穿出）；开口筒从外侧只能看到
+    朝向相机的前半壁（glTF 单面），正对视角即「灯芯透光」。tris = 6 边 × 1 段 × 2 = 12。"""
+    H = r * 2.1
+    cx, cy, cz = to_b(*c)
+    bm = bmesh.new()
+    top, bot = [], []
+    for j in range(6):
+        th = 2 * math.pi * j / 6
+        x, y = cx + 0.60 * r * math.cos(th), cy + 0.60 * r * math.sin(th)
+        bot.append(bm.verts.new((x, y, cz - 0.26 * H)))
+        top.append(bm.verts.new((x, y, cz + 0.26 * H)))
+    for j in range(6):
+        j2 = (j + 1) % 6
+        bm.faces.new((bot[j], bot[j2], top[j2], top[j]))   # 绕序即外法线（角向 × +Z = 径向朝外）
+    return _lantern_obj(name, bm, 'lantern', part)
+
+def lantern_rib(name, c, r, th, part='lanterns-rib'):
+    """一条纵向骨架棱：贴鼓身弧面的窄面片（θ=th±半宽，半径外偏 0.012），LANTRN_PROF[1:4] 3 环 2 段 quad strip
+    （棱只铺鼓身中段——夜间发光芯也在中段，棱的作用是在透光面上切暗线；端颈段被上下盖盘遮住，省 tris）。
+    tris = 2 段 × 2 = 4/条。调用方必须把 th 放在瓣峰角 k·π/3（cos(6θ)=+1）——棱在瓣脊高程、
+    不被邻瓣遮挡；放 π/6+k·π/3（瓣谷，cos=−1）会整条沉进谷里不可见（2026-09-29 R2 实际事故，
+    lantern-shape 瓣脊高程判据抓住）。偏置 0.008→0.012 保证棱面全段高于瓣脊。
+    dark 材质 → 夜间呈暗线切开发光面（不改组数值的『骨架纹』）。"""
+    H = r * 2.1
+    prof = LANTRN_PROF[1:4]                            # 3 环：z = −0.25H…+0.25H（鼓身中段）
+    n = len(prof)
+    half_w = 0.05 / max(r, 1e-3)                  # 半宽 ≈5cm 弧长 → Δθ
+    cx, cy, cz = to_b(*c)
+    bm = bmesh.new()
+    cols = [[], []]
+    for i, pr in enumerate(prof):
+        z = -H / 2 + H * (i + 1) / (len(LANTRN_PROF) - 1)   # 环号 1..3 的真实高度
+        for s, dth in ((0, -half_w), (1, +half_w)):
+            th2 = th + dth
+            rad = r * pr * (1 + LANTRN_PETAL * math.cos(LANTRN_PETALS * th2)) + 0.012
+            cols[s].append(bm.verts.new((cx + rad * math.cos(th2), cy + rad * math.sin(th2), cz + z)))
+    for i in range(n - 1):
+        # 绕序即外法线（角向 × +Z = 径向朝外）——开放面片不可用 recalc启发式（templefix R1 教训）
+        bm.faces.new((cols[0][i], cols[1][i], cols[1][i + 1], cols[0][i + 1]))
+    return _lantern_obj(name, bm, 'dark', part)
+
 
 # ---- 立面「段」（run）：多边形边上的一段，局部 (s 沿边, o 外法向, h) ----
 class Run:
@@ -2433,6 +2545,8 @@ for pi_, pq in enumerate(FEAT.get('plaques', [])):
                        'w': w_, 'h': h_})
 
 LANTERN_N = 0
+LANTERN_TRIS = {'body': 0, 'core': 0, 'tassel': 0, 'cap': 0, 'handle': 0, 'rib': 0, 'cord': 0}
+LANTERN_BUDGET_PER_LAMP = 260   # wave14-lantern：每只预算（tris）。R1 双层版导出账面 244/只（GLB indices 计）：body 100（5环10边红纸鼓身：4×10×2+口沿盘2×10）+ core 12（6边开口筒）+ rib 24（6条×4，3环2段——R1 起六瓣峰均布全覆盖 0°–360°，修 REVIEW-astra 必修2 的半圈空缺：R0 range(4)×k·π/3 只铺 0/60/120/180°，和丰正立面外向 ≈280.7° 落在空缺侧）+ cap 52（上下盖 6边cyl 20×2 + 穗帽 4边cyl 12）+ handle 24（2段4边cyl 12）+ tassel 24（3根3边cyl 8）+ cord 8（3边cyl 8）。预算 260 的上限依据：zone-bazaar-3.glb test6a ≤10_000_000B 反推每只 ≤280。手工累计 LANTERN_TRIS 同步此口径。
 if FEAT.get('lanterns'):
     ln = FEAT['lanterns']
     blk = BLOCK_BY[ln.get('block', BLOCKS[0]['name'])]
@@ -2446,10 +2560,43 @@ if FEAT.get('lanterns'):
             q = r.p(s, ln['o'])
             zc = Z1 - ln['zBelowEaveM']
             rr = ln['rM']
-            PART = 'lanterns'
-            sphere('lantern-%d-%d' % (ri, j), (q[0], q[1], zc), rr, 'lantern', 'lanterns', seg=8, rings=6, scale_z=1.25)
-            cyl('lantern-cap-%d-%d' % (ri, j), (q[0], q[1], zc + rr * 1.15), (q[0], q[1], zc + rr * 1.3), rr * 0.45, 'gild', 6, part='lanterns')
-            cyl('lantern-cord-%d-%d' % (ri, j), (q[0], q[1], zc + rr * 1.3), (q[0], q[1], Z1 - 0.02), 0.015, 'dark', 4, part='lanterns')
+            # 传统红灯笼（wave14-lantern R1 双层）：半透红纸鼓身（lantern-paper）+ 内部发光芯（btk-lantern，
+            # lantern 组命中不变）+ 深色骨架棱 + 金盖/提梁 + 红流苏穗 + 吊线。
+            # 灯身/骨架/芯中心 = 悬挂点 zc（2026-09-29 修：曾误传 0.0 使灯身落地面、灯盖留在檐口，
+            # 被 lantern-shape 贴邻判据抓住）。夜间终判据 = tests/lantern-night-pixel-check.mjs（固定机位
+            # 灯笼像素色相/饱和度，R0 单层平光材质必须红）。
+            H2 = rr * 2.1
+            cap_h = rr * 0.16
+            lantern_body('lantern-body-%d-%d' % (ri, j), (q[0], q[1], zc), rr)
+            LANTERN_TRIS['body'] += 100
+            lantern_core('lantern-core-%d-%d' % (ri, j), (q[0], q[1], zc), rr)
+            LANTERN_TRIS['core'] += 12
+            for k in range(6):   # 6 条骨架棱放在 6 瓣的瓣峰角 k·π/3（cos(6θ)=+1；π/6+kπ/3 是瓣谷，棱会被邻瓣遮挡）——
+                                 # 均布全周，任一街面方向 30° 内必有棱（R0 range(4) 只覆盖半圈，必修2）
+                lantern_rib('lantern-rib-%d-%d-%d' % (ri, j, k), (q[0], q[1], zc), rr, k * math.pi / 3)
+                LANTERN_TRIS['rib'] += 4
+            # 上盖、下盖（金）；穗帽（金）
+            cyl('lantern-cap-%d-%d-top' % (ri, j), (q[0], q[1], zc + H2 / 2), (q[0], q[1], zc + H2 / 2 + cap_h), rr * 0.48, 'gild', 6, part='lanterns-cap')
+            LANTERN_TRIS['cap'] += 20
+            cyl('lantern-cap-%d-%d-bot' % (ri, j), (q[0], q[1], zc - H2 / 2 - rr * 0.14), (q[0], q[1], zc - H2 / 2), rr * 0.48, 'gild', 6, part='lanterns-cap')
+            LANTERN_TRIS['cap'] += 20
+            cyl('lantern-cap-%d-%d-tcap' % (ri, j), (q[0], q[1], zc - H2 / 2 - rr * 0.20), (q[0], q[1], zc - H2 / 2 - rr * 0.14), rr * 0.20, 'gild', 4, part='lanterns-cap')
+            LANTERN_TRIS['cap'] += 12
+            # 提梁：上盖顶上方的金拱（mount → apex → mount，2 段）
+            hw, hv = rr * 0.34, rr * 0.16
+            zb_ = zc + H2 / 2 + cap_h
+            cyl('lantern-handle-%d-%d-a' % (ri, j), (q[0] - hw, q[1], zb_), (q[0], q[1], zb_ + hv), 0.018, 'gild', 4, part='lanterns-handle')
+            cyl('lantern-handle-%d-%d-b' % (ri, j), (q[0], q[1], zb_ + hv), (q[0] + hw, q[1], zb_), 0.018, 'gild', 4, part='lanterns-handle')
+            LANTERN_TRIS['handle'] += 24
+            # 流苏穗：穗帽下三根微外张的细锥（深红丝，不发光——见 'lantern-tassel' 材质注释）
+            for k, dx in ((0, 0.0), (1, -0.045), (2, 0.045)):
+                cyl('lantern-tassel-%d-%d-%d' % (ri, j, k),
+                    (q[0] + dx, q[1], zc - H2 / 2 - rr * 0.20),
+                    (q[0] + dx * 1.8, q[1], zc - H2 / 2 - rr * 0.20 - rr * 0.72), rr * 0.035, 'lantern-tassel', 3, part='lanterns-tassel')
+                LANTERN_TRIS['tassel'] += 8
+            # 吊线：提梁顶点到檐口（沿用原挂高）
+            cyl('lantern-cord-%d-%d' % (ri, j), (q[0], q[1], zb_ + hv), (q[0], q[1], Z1 - 0.02), 0.015, 'dark', 3, part='lanterns-cord')
+            LANTERN_TRIS['cord'] += 8
             LANTERN_N += 1
 
 LION_LOG = []
@@ -2573,7 +2720,7 @@ json.dump({'triangles': tris, 'byNode': by, 'glbBytes': os.path.getsize(glb), 'm
            'bandBackingCalls': BANDBACK_N,
            'winbackByTimber': WINBACK_BY_TIMBER,
            'blocks': blocks_rec, 'tower': tower_rec, 'eaves': EAVE_LOG, 'brackets': BRACKET_N,
-           'plaques': PLAQUE_LOG, 'lanterns': LANTERN_N, 'lions': LION_LOG,
+           'plaques': PLAQUE_LOG, 'lanterns': LANTERN_N, 'lanternBudget': {'perLamp': LANTERN_BUDGET_PER_LAMP, 'tris': dict(LANTERN_TRIS)}, 'lions': LION_LOG,
            'sharedEdges': [{'other': e['other'], 'overlapM': round(e['overlapM'], 2), 'fpEdge': e['edge']} for e in SHARED],
            'podium': [{'block': b['name'], 'rectShare': b.get('rectShare'), 'podiumRect': b['podium']} for b in BLOCKS],
            'roofSplit': [b.get('roofSplit', 1) for b in BLOCKS],
