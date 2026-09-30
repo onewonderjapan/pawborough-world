@@ -17,6 +17,7 @@
     "dev:temple-v3": "EVIDENCE_PORTS=530[67] EVIDENCE_DIR=kit/out/temple-axis-v3/web vite --host 127.0.0.1 --port 5306 --strictPort",
     "preview:temple-v3": "EVIDENCE_PORTS=530[67] EVIDENCE_DIR=kit/out/temple-axis-v3/web vite preview --host 127.0.0.1 --port 5307 --strictPort",
     "area:serve": "npm --prefix scene-authoring/yuyuan-area run server",
+    "area:rebuild": "npm --prefix scene-authoring/yuyuan-area run rebuild:v1",
     "area:verify": "npm --prefix scene-authoring/yuyuan-area run verify"
   },
   "dependencies": {

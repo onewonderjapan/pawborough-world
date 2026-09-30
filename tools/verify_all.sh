@@ -102,7 +102,7 @@ step sha_reconcile node -e '
       console.log(`sha_reconcile ok ${checked} files`);
     })().catch((e) => { console.error(e.message); process.exit(1); });
   '
-step dist_build bash -c 'npm run build && cp -r world building VERSION.json index-v1.html dist/'
+step dist_build bash -c 'npm run build && cp -r world building VERSION.json index-v1.html index-street-20260919.html dist/'
 # closeout batch: the full browser gate ORCHESTRATES ITS OWN servers
 # (ownership-verified, policy ports 5340/5341 -> 5344/5345/5346) — the old
 # preview_a/preview_b curl steps (nohup + pkill cleanup) only proved "a server

@@ -195,5 +195,7 @@ ${dsRows}
 </table>
 <p class="meta">完整逐文件 sha256 见 <code>VERSION.json</code>（world/** ${worldHashes.length} 文件 + building/** ${buildingHashes.length} 文件）。一条命令校验：<code>bash tools/verify_all.sh</code>。机主决策清单见 <code>GATE.md</code>。</p>
 `;
-await writeFile(resolve(root, 'index-v1.html'), html);
+// 2026-10-01：index-v1.html 已改为豫园区域 v1.0 唯一入口（WP13，docs/V1-REDEFINITION-20260923.md V10），
+// 街段 9/19 版本清单页改写到 index-street-20260919.html，避免跑 verify_all 时覆盖 v1.0 入口。
+await writeFile(resolve(root, 'index-street-20260919.html'), html);
 console.log(`VERSION_READY head=${version.git.head} datasets=${datasets.length} worldFiles=${worldHashes.length} buildingFiles=${buildingHashes.length}`);

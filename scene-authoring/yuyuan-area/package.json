@@ -54,7 +54,8 @@
     "test:stalllight-browser": "OUT_DIR=${OUT_DIR:-out-zone} BASE=${BASE:-http://127.0.0.1:5486/} GATE=1 node tests/stalllight-browser-check.mjs",
     "test:doubleside-browser": "OUT_DIR=${OUT_DIR:-out-zone} BASE=${BASE:-http://127.0.0.1:5487/} node tests/doubleside-browser-check.mjs",
     "test:lantern-shape": "OUT_DIR=${OUT_DIR:-out-zone} node tests/lantern-shape-test.mjs",
-    "test:lantern-night-pixel": "node tests/lantern-night-pixel-check.mjs"
+    "test:lantern-night-pixel": "node tests/lantern-night-pixel-check.mjs",
+    "rebuild:v1": "OUT_DIR=out-zone PYTHONPATH=$PWD/.python-deps SITE_MODULES=1 STALL_KIT=1 GARDEN_KITS=1 SANSUITANG=1 ZONE_SPLIT=1 bash scripts/rebuild-review.sh"
   },
   "dependencies": {
     "three": "0.180.0",
