@@ -18,7 +18,7 @@ SITE = '/home/baibai/outbox/pawborough-w1-bazaar-stalls-20260922/artifacts/bazaa
 os.makedirs(OUT, exist_ok=True)
 os.makedirs(os.path.join(OUT, 'awnings'), exist_ok=True)
 
-BUDGET = {'stallMax': 1500, 'benchMax': 300, 'awningPerMetreMax': 120}
+BUDGET = {'stallMax': 1500, 'benchMax': 300, 'awningPerMetreMax': 120, 'lampMax': 400}
 
 # palette (DESIGN_SPEC.materials) — constant colors only, no textures
 PAL = {
@@ -31,6 +31,10 @@ PAL = {
     'steel':      ('steel',      0x9da0a3, 0.40, 1.0),
     'pale':       ('palewood',   0xd8cdb4, 0.85, 0.0),
     'glass':      ('glass',      0xdfe8ea, 0.10, 0.0),  # alpha 0.25
+    # 老街檐灯（wave14-stalllight B）：红纸灯笼罩 + 黄铜箍。olds-lantern 是 lighting/presets.json
+    # oldsouth-lamp 发光组 / oldsouth-lamp 点光源保护集材质名，hex 唯一（防 gltfpack 内容合并吞名，另有 -km 兜底）。
+    'oldsLantern':('olds-lantern', 0xc8452e, 0.60, 0.0),
+    'oldsBrass':  ('olds-brass',  0xb08d3f, 0.35, 0.8),
 }
 
 def hexcol(h):
@@ -258,9 +262,21 @@ def build_grill(m):
     obs.append(box_glb(f'{tag}_grillBox', (gx, 1.005, 0), (0.50, 0.21, 0.36), m['steel']))
     obs.append(box_glb(f'{tag}_grillBed', (gx, 1.105, 0), (0.42, 0.03, 0.30), m['iron']))
     obs.append(box_glb(f'{tag}_grillGrate', (gx, 1.12, 0), (0.46, 0.02, 0.32), m['iron']))  # top = 1.13
-    # smoke hood plane + chimney
+    # smoke hood plane + chimney。wave14-stalllight 修复（巡检 #19）：罩+烟囱原是悬空板
+    # （罩底 1.67–1.74，下方烤炉 grate 1.13，无任何支撑物，视觉上靠细撑杆「漂浮」）。
+    # 支撑选择 = 落地立柱：台面后缘外立两根铁柱。astra R2 必修1：原柱心 z=-0.36（柱缘
+    # z∈[-0.38,-0.34]）避开了柜体（z∈[-0.33,0.33]）但穿入更宽的台面顶板（z∈[-0.35,0.35]）约 1 cm，
+    # 柱心后移到 z=-0.38（柱缘 z∈[-0.40,-0.36]，与顶板后缘净隙 1 cm，柜体更在外侧）。
+    # 柱顶托臂伸向罩后缘托住罩板。不选贴墙挂架（模块不知道放置处有无墙，rotY 不保证背面贴墙）、
+    # 不选檐口吊挂（布棚是布，吊挂荷载不可信）。guard: tests/stall-hood-support-test.mjs
+    # （P1 柱底落地绝对误差/至少两柱、P2 到位、P3 托住、P4 与柜体/顶板无相交 + HOOD_NEG=pierce 穿台面负例）。
     obs.append(box_glb(f'{tag}_hood', (gx, 1.70, -0.02), (0.70, 0.02, 0.48), m['iron'], rot_x_deg=8))
     obs.append(box_glb(f'{tag}_chimney', (gx, 1.98, -0.16), (0.11, 0.55, 0.11), m['iron']))  # base meets hood top
+    for px in (gx - 0.27, gx + 0.27):   # -0.72 / -0.18：罩 x 范围 [-0.8,-0.1] 内、避开烤炉 [-0.7,-0.2] 之外侧
+        obs.append(cyl_glb(f'{tag}_hoodPost', (px, 0.89, -0.38), 0.020, 1.78, m['iron'], verts=8))
+        # 托臂：柱（柱心 z-0.38，柱缘 [-0.40,-0.36]）→ 罩后缘（罩顶面后缘 y≈1.743）。
+        # 臂 z -0.40→-0.22 全宽包住柱缘并盖过罩后缘（罩 AABB z_min≈-0.259），y 1.725–1.755 与罩搭接
+        obs.append(box_glb(f'{tag}_hoodArm', (px, 1.74, -0.31), (0.05, 0.03, 0.18), m['iron']))
     obs += build_tray(m, tag, TRAY_X, TRAY_Y, 0)
     # skewer rack on counter right
     for sz in (-0.24, 0.24):
@@ -316,6 +332,121 @@ def build_bench(m):
         for sz in (-0.165, 0.165):
             obs.append(box_glb(f'{tag}_leg', (sx, 0.18, sz), (0.06, 0.36, 0.06), m['timberDark']))
     return obs
+
+# ---------------------------------------------------------------- old-south 檐灯（wave14-stalllight B）
+# 老城隍庙南侧过街楼街廊（anchor-old-south，tourfix 移交照明欠项：night 主体 ~2.1/255）夜间补光：
+# 在既有建筑墙面加贴墙支架灯（不新增建筑）。位置规则与 tests/oldsouth-lamps-test.mjs 同一定义、两端独立实现：
+#   走廊 = pinned 冻结路线 old-south->old-north 第一段 p0→p1；
+#   灯墙 = 走廊两侧「建筑类 footprint 边」（kinds 与 scripts/tour-visibility.mjs FACADE_KINDS 一致）中
+#          覆盖走廊投影 ≥8 m、横向距走廊 0.3–8 m 的边；
+#   每侧在走廊投影 t = 5/15/25 m 各一盏：位置 = 墙边在 t 处的插值点，沿墙边法线（朝走廊一侧）回退 0.22 m；
+#   rotY = 灯面朝走廊（模型 +Z）。灯具挂高 2.19–2.75 m（罩中心 2.35），2.2 m 人体带之上，无碰撞盒。
+OLDSOUTH_ROUTE = ('old-south', 0, 1)
+OLDSOUTH_TS = (5.0, 15.0, 25.0)
+OLDSOUTH_SETBACK_M = 0.22
+OLDSOUTH_FACADE_KINDS = {'outerBuilding', 'bazaarBlock', 'tower', 'hall', 'xuan', 'pavilion', 'corridor',
+                         'waterside', 'stage', 'watersideGallery', 'facadeBay', 'shopAnchor', 'templeAnchor',
+                         'wall', 'wallHead', 'moonGateWall', 'gateAnchor'}
+OLDSOUTH_LAMP_MOUNT_Y = 2.35   # 罩中心；点光候选 = 节点原点(地面) + presets 源 offsetY=2.05（罩底缘下方，灯在罩外避免 Cycles 被罩体遮死）
+
+def compute_oldsouth_lamps():
+    pin = json.load(open(os.path.join(AREA, 'baseline', 'commercial-route.pinned.json'), encoding='utf-8'))
+    r = next(x for x in pin['routes'] if x['from'] == OLDSOUTH_ROUTE[0])
+    p0, p1 = r['points'][OLDSOUTH_ROUTE[1]], r['points'][OLDSOUTH_ROUTE[2]]
+    L = math.hypot(p1[0] - p0[0], p1[1] - p0[1])
+    d = [(p1[0] - p0[0]) / L, (p1[1] - p0[1]) / L]
+    lay = json.load(open(os.path.join(AREA, 'baseline', 'layout.json'), encoding='utf-8'))
+
+    def cross(pt):
+        vx, vy = pt[0] - p0[0], pt[1] - p0[1]
+        return vx * (-d[1]) + vy * d[0]
+
+    def tproj(pt):
+        vx, vy = pt[0] - p0[0], pt[1] - p0[1]
+        return vx * d[0] + vy * d[1]
+
+    edges = []
+    for o in lay['objects']:
+        if o.get('kind') not in OLDSOUTH_FACADE_KINDS:
+            continue
+        fp = o.get('geometry', {}).get('footprint')
+        if not fp:
+            continue
+        pts = fp[:-1] if fp[0] == fp[-1] else fp
+        for a, b in zip(pts, pts[1:] + pts[:1]):
+            smp = [(a[0] + (b[0] - a[0]) * k / 20, a[1] + (b[1] - a[1]) * k / 20) for k in range(21)]
+            cs = [cross(q) for q in smp]
+            sides = set(1 if c > 0 else -1 for c in cs)
+            if len(sides) != 1:
+                continue
+            lats = [abs(c) for c in cs]
+            ts = [tproj(q) for q in smp]
+            cover = min(max(ts), L) - max(min(ts), 0)
+            if cover < 8 or max(lats) > 8 or min(lats) < 0.3:
+                continue
+            edges.append({'side': sides.pop(), 'a': a, 'b': b, 'id': o['id']})
+
+    def wallpoint(e, t):
+        ta, tb = tproj(e['a']), tproj(e['b'])
+        if tb == ta:
+            return None
+        u = (t - ta) / (tb - ta)
+        if not (0 <= u <= 1):
+            return None
+        x = e['a'][0] + (e['b'][0] - e['a'][0]) * u
+        z = e['a'][1] + (e['b'][1] - e['a'][1]) * u
+        return x, z, abs(cross((x, z)))
+
+    lamps = []
+    for t in OLDSOUTH_TS:
+        for side in (1, -1):
+            cand = []
+            for e in edges:
+                if e['side'] != side:
+                    continue
+                wp = wallpoint(e, t)
+                if wp:
+                    cand.append((wp[2], e, wp))
+            if not cand:
+                print(f"[oldsouth-lamp] t={t} side={side}: no qualifying wall, skipped")
+                continue
+            cand.sort(key=lambda c: c[0])
+            lat, e, wp = cand[0]
+            bx, bz = e['b'][0] - e['a'][0], e['b'][1] - e['a'][1]
+            bl = math.hypot(bx, bz)
+            bx, bz = bx / bl, bz / bl
+            nx, nz = bz, -bx   # 墙边法线（两选一，下按朝走廊定向）
+            gx, gz = p0[0] + d[0] * t - wp[0], p0[1] + d[1] * t - wp[1]
+            gl = math.hypot(gx, gz)
+            gx, gz = gx / gl, gz / gl
+            if nx * gx + nz * gz < 0:
+                nx, nz = -nx, -nz
+            lamps.append({'id': 'oldsouth-lamp-%d' % (len(lamps) + 1), 't': t, 'side': side, 'wall': e['id'],
+                          'position': [round(wp[0] + nx * OLDSOUTH_SETBACK_M, 3), round(wp[1] + nz * OLDSOUTH_SETBACK_M, 3)],
+                          'rotY': round(math.atan2(nx, nz), 6), 'wallLat': round(lat, 3),
+                          'module': 'oldsouth-lamp.glb', 'zone': 'bazaar', 'height': 2.75})
+    return lamps
+
+def build_oldsouth_lamp(m):
+    """贴墙支架灯（wall bracket lamp）：原点 = 地面投影点，-Z 贴墙、+Z 朝街。
+    高度实测口径（astra R2 措辞修正，原「挂高 2.19–2.75 m」不准）：底箍（rim）最低 2.1775 m，
+    整体最高约 2.70 m（背板顶 2.70）；无碰撞盒，步行胶囊 1.9 m 之上仍有合理净空。"""
+    tag = 'oldsouthLamp'
+    obs = []
+    # 贴墙背板（放置离墙皮 0.22 → 背板 z∈[-0.22,-0.19] 正贴墙面）
+    obs.append(box_glb(f'{tag}_backplate', (0, 2.45, -0.205), (0.16, 0.50, 0.03), m['iron']))
+    # 水平托臂（墙 z-0.22 → 街端 z+0.02，y 2.62）
+    obs.append(cyl_glb(f'{tag}_arm', (0, 2.62, -0.10), 0.015, 0.24, m['iron'], verts=8, axis='z'))
+    # 斜撑：墙端 (2.28,-0.20) → 臂端 (2.63,-0.03)，绕 X 转 +25.9°（+y 端朝街）
+    obs.append(box_glb(f'{tag}_brace', (0, 2.455, -0.115), (0.018, 0.39, 0.018), m['iron'], rot_x_deg=25.9))
+    # 吊杆连臂与罩顶
+    obs.append(cyl_glb(f'{tag}_stem', (0, 2.58, 0), 0.012, 0.12, m['iron'], verts=6))
+    # 六角红纸灯罩（中心 2.35）+ 黄铜顶盖/底缘
+    obs.append(cyl_glb(f'{tag}_shade', (0, 2.35, 0), 0.15, 0.30, m['oldsLantern'], verts=6))
+    obs.append(cyl_glb(f'{tag}_cap', (0, 2.515, 0), 0.17, 0.035, m['oldsBrass'], verts=6))
+    obs.append(cyl_glb(f'{tag}_rim', (0, 2.19, 0), 0.17, 0.025, m['oldsBrass'], verts=6))
+    return obs
+
 
 # ---------------------------------------------------------------- awning strip
 # per bazaarBlock front edge; wall-attach edge 2.85, street front edge 2.78, slope ~3.3deg,
@@ -436,7 +567,8 @@ def build_all():
 
     def do(name, fn, budget, extra=None):
         reset()
-        m = make_mats(['timber', 'timberDark', 'canvasCream', 'canvasWine', 'canvasIndigo', 'iron', 'steel', 'pale', 'glass'])
+        m = make_mats(['timber', 'timberDark', 'canvasCream', 'canvasWine', 'canvasIndigo', 'iron', 'steel', 'pale', 'glass',
+                       'oldsLantern', 'oldsBrass'])
         obs = fn(m)
         tris = sum(tris_of(o) for o in obs)
         ok = tris <= budget
@@ -454,6 +586,8 @@ def build_all():
     do('stall-grill.glb', build_grill, BUDGET['stallMax'])
     do('stall-drink.glb', build_drink, BUDGET['stallMax'])
     do('bench.glb', build_bench, BUDGET['benchMax'])
+    do('oldsouth-lamp.glb', build_oldsouth_lamp, BUDGET['lampMax'],
+       extra={'note': 'old-south 街廊贴墙支架灯（底箍最低 2.1775 m、整体最高约 2.70 m，无碰撞）；放置见 records/lamps.json'})
 
     # 12 active awning strips (16 site edges − 4 excluded: 1 tower clash + 3 passage-mouth flush edges)
     awn = []
@@ -572,6 +706,19 @@ def build_all():
     }
     with open(os.path.join(OUT, 'placements.json'), 'w', encoding='utf-8') as f:
         json.dump(placements, f, ensure_ascii=False, indent=1)
+    # 老街檐灯放置记录（records/ 是跟踪文件；assemble.py OLDSOUTH_LAMPS 段按此放置）
+    lamps = compute_oldsouth_lamps()
+    lamp_rec = {'packageId': site['packageId'], 'generatedBy': 'build_bazaar_stalls.py',
+                'source': 'computed from baseline/commercial-route.pinned.json (old-south 第一段) + baseline/layout.json 建筑边；规则见 OLDSOUTH_* 常量与 tests/oldsouth-lamps-test.mjs（独立重算对账）',
+                'design': {'corridorRoute': OLDSOUTH_ROUTE, 'tAlongM': list(OLDSOUTH_TS),
+                           'setbackM': OLDSOUTH_SETBACK_M, 'shadeCenterY': OLDSOUTH_LAMP_MOUNT_Y,
+                           'mountRangeY': [2.19, 2.75], 'collision': 'none (挂高 2.2 m 人体带之上，同檐棚 unreachable 契约)',
+                           'nightLighting': 'presets.json oldsouth-lamp emissiveGroup + oldsouth-lamp node-anchor 点光源（offsetY 2.05，罩底缘下方）'},
+                'counts': {'lamps': len(lamps)},
+                'lamps': lamps}
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'records', 'lamps.json'), 'w', encoding='utf-8') as f:
+        json.dump(lamp_rec, f, ensure_ascii=False, indent=1)
+    print(f'[kit] lamps.json written ({len(lamps)} lamps)')
     awp = {'packageId': site['packageId'], 'generatedBy': 'build_bazaar_stalls.py',
            'module': 'awning strip (parametric, one GLB per edge)',
            'design': {'projectionM': 1.2, 'frontHeightM': 2.78, 'wallHeightM': AWNING_WALL_Y,

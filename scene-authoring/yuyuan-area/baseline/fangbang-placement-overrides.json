@@ -23,6 +23,14 @@
    "resultPositionGlb": [47.0073, 0, 1.8479],
    "reason": "wave5 F-09：restaurant-b 悬挂招牌板尖端伸进 S05-plain-v3 右侧山墙 / 转角门面柱 0.18–0.20 m（多边形相交 0.041 / 0.048 m²），灯笼离同一转角仅 0.09 m。沿自身门面法线向街平移 0.50 m 后两处不相交（tests/fangbang-test.mjs W7）。",
    "origin": "wave10-streetfix S1 提交 6c4d47c6 原先直接改共享数据集；R5 按 astra R4 终审必修项迁到本覆盖（共享数据集恢复为 main 23e2e790）。"
+  },
+  {
+   "id": "westshop-shop-165",
+   "translateGlb": [0.2411, 0, 0.9705],
+   "expectBasePositionGlb": [-106.278, 0, 29.739],
+   "resultPositionGlb": [-106.0369, 0, 30.7095],
+   "reason": "wave14-templeside S1b：v7 精修店 westshop-shop-165（restaurant-b）背墙西端越过庙区南墙墙面 0.27 m（庙轴本地系，南墙 seg-22 中线在 x≈15 处 z=−0.53、墙厚 0.45 半厚 0.225，背墙 OBB 北缘 z=−1.02；v7 碰撞 OBB 口径，铺地 templeeast-paving 不冲突）。沿自身门面法线（rotY 0.243539 → 单位向量 (0.2411, 0.9705)）向街平移 1.0 m，修后墙面净距 0.28 m、对庙东铺地 ≥0.5 m。占位店 shoprow-p165（方浜未加载时可见）在 layout 生成端按 S1a 缩进深+南移，由 tests/templeside-test.mjs 分别断言。",
+   "origin": "wave14-templeside S1b（2026-09-30）：共享数据集不动，走本覆盖文件（wave10 R4 口径）。碰撞记录（16 条 westshop-shop-165:*）随覆盖机制同平移，collision-fangbang.json 由 export-collision-fangbang.mjs 重出。"
   }
  ]
 }

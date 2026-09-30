@@ -15,6 +15,7 @@
 //   I6 步行：两边 __walk.spawnAt('main')，物理墙数 / 地面三角数相同、脚点着地。
 // 用法：BASE=http://127.0.0.1:5494/ OUT_DIR=out-zone [SHOT_DIR=<目录>] [REPORT=<json>] node tests/batch-identity-check.mjs
 import { createRequire } from 'node:module';
+import os from 'node:os';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -56,8 +57,29 @@ const report = {};
 const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null;   // 例 ONLY=I3,I5 只跑这几段
 const want = (k) => !ONLY || ONLY.includes(k);
 
-const exe = '/home/baibai/.cache/ms-playwright/chromium-1234/chrome-linux/chrome';
-const browser = await chromium.launch({ executablePath: exe, args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
+
+// Chromium 解析（wave14-viewerside R1 必修4：去个人绝对路径；CHROME_PATH 优先，否则 Playwright 自管/缓存扫描）
+function resolveChromiumExecutable() {
+  if (process.env.CHROME_PATH) return process.env.CHROME_PATH;
+  try {
+    if (fs.existsSync(chromium.executablePath())) return null;
+  } catch { /* registry 未配置，走缓存扫描 */ }
+  const cache = path.join(os.homedir(), '.cache', 'ms-playwright');
+  try {
+    const revs = fs.readdirSync(cache)
+      .map(d => { const m = /^chromium-(\d+)$/.exec(d); return m ? { d, rev: Number(m[1]) } : null; })
+      .filter(Boolean).sort((a, b) => b.rev - a.rev);
+    for (const { d } of revs) {
+      const p = path.join(cache, d, 'chrome-linux', 'chrome');
+      if (fs.existsSync(p)) return p;
+    }
+  } catch { /* 无默认缓存目录 */ }
+  return null;
+}
+
+const exe = resolveChromiumExecutable();
+// GPU_WEBGL=1：机器 swiftshader WebGL 全灭时的环境开关（headless:false + 外部 DISPLAY/XAUTHORITY），默认关闭。
+const browser = await chromium.launch({ ...(exe ? { executablePath: exe } : {}), ...(process.env.GPU_WEBGL === '1' ? { headless: false } : {}), args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
 async function openPage(qs) {
   const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
   await page.addInitScript(glCounterInit);

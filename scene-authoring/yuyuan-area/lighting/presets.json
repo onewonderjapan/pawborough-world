@@ -54,7 +54,8 @@
   { "id": "window", "note": "窗玻璃内透光：商业街 / 外围 / 方浜店屋窗、商城楼套件玻璃、湖心亭窗、饮品摊柜玻璃", "materials": ["recessed-old-glass", "btk-glass", "ht-win-glass", "glass"], "color": "#ffc680", "intensity": 0.9, "useMap": false },
   { "id": "lattice", "note": "格扇内透光：厅堂套件 / 三穗堂格心背板（wave13-nightbalance R1：格心 sst-lattice-core 恢复原名且不发光，发光移到新增的不透明背板）/ 庙区格扇背板（格心镂空后面的板）", "materials": ["hk-lattice-back", "lattice-backing", "lattice-backing-dadian", "sst-lattice-back"], "color": "#ffae5e", "intensity": 1.0, "useMap": false },
   { "id": "bazaar-window", "note": "商城楼屏窗 / 横带窗 / 格窗背板（btk-winback 家族，wave13 自 lattice 组拆出独立调强；拆组时参数与 lattice 相同，之后机主 2026-09-29 选档 intensity 0.5）", "materials": ["btk-winback", "btk-winback-wood2"], "color": "#ffae5e", "intensity": 0.5, "useMap": false },
-  { "id": "stall", "note": "摊位：摊位套件没有灯笼，用摊柜内板（palewood，只摊位用）作摊灯照亮的台面", "materials": ["palewood"], "color": "#ffcf90", "intensity": 0.45, "useMap": false }
+  { "id": "stall", "note": "摊位：摊位套件没有灯笼，用摊柜内板（palewood，只摊位用）作摊灯照亮的台面（wave14-stalllight：点光 offsetY 2.3→1.6，光斑从棚布挪回台面，见 tests/stall-light-params-test.mjs L1）", "materials": ["palewood"], "color": "#ffcf90", "intensity": 0.45, "useMap": false },
+  { "id": "oldsouth-lamp", "note": "老城隍庙南侧街廊贴墙檐灯（wave14-stalllight B）：红纸灯罩 olds-lantern 自发光（灯笼红-橙，同 lantern 组色系）", "materials": ["olds-lantern"], "color": "#ff8a4a", "intensity": 2.5, "useMap": false }
  ],
  "pointLights": {
   "max": 8,
@@ -65,7 +66,8 @@
   "reassignFrames": 15,
   "sources": [
    { "id": "lantern", "kind": "material-clusters", "materials": ["btk-lantern", "red-silk-lantern"], "clusterM": 3.0, "offsetY": -0.4 },
-   { "id": "stall", "kind": "node-anchor", "pattern": "^stall-\\d+$", "offsetY": 2.3 }
+   { "id": "stall", "kind": "node-anchor", "pattern": "^stall-\\d+$", "offsetY": 1.6 },
+   { "id": "oldsouth-lamp", "kind": "node-anchor", "pattern": "^oldsouth-lamp-\\d+$", "offsetY": 2.05 }
   ]
  },
  "viewer": {

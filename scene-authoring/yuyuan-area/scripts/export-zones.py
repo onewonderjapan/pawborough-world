@@ -99,11 +99,21 @@ def is_shanmen_passage(o):
 # HALL_KIT=0 时楼/厅是 ZONE-temple 程序化件 temple|templeeast-…）单独成件 zone-temple-5.glb（主控 2026-09-29 定新开 temple-5）。
 TEMPLE_EAST_PREFIX = 'templeeast-'
 
+TEMPLESIDE_PREFIX = 'templeside-'   # wave14-templeside：后殿北院（跟随锚 id 分件，不进 temple-5）
 def is_temple_east(o):
+    # 先沿父链找实例锚 id（归属权威）：templeeast-* 锚的子件进 temple-5；templeside-* 锚的子件
+    # （如复用的 templeeast-ding 模块子网格名 templeeast-ding__*）跟随锚进 temple-2，不按子件名前缀误归 temple-5。
     cur = o
     while cur is not None:
-        if str(cur.get('id') or '').startswith(TEMPLE_EAST_PREFIX) or cur.name.startswith(TEMPLE_EAST_PREFIX) \
-                or cur.name.startswith('temple|' + TEMPLE_EAST_PREFIX):
+        oid = str(cur.get('id') or '')
+        if oid.startswith(TEMPLE_EAST_PREFIX):
+            return True
+        if oid.startswith(TEMPLESIDE_PREFIX):
+            return False
+        cur = cur.parent
+    cur = o
+    while cur is not None:
+        if cur.name.startswith(TEMPLE_EAST_PREFIX) or cur.name.startswith('temple|' + TEMPLE_EAST_PREFIX):
             return True
         cur = cur.parent
     return False
@@ -131,6 +141,26 @@ DEFERRED_ZONES = {'outer'}
 # 后续件 zone-<z>-<n>.glb；庙区沿用历史命名 zone-temple-1/2/3.glb。
 BASE_NAME_ZONES = {'garden', 'bazaar', 'pond'}
 bpy.ops.wm.open_mainfile(filepath=os.path.join(OUT, 'scene.blend'))
+# wave14-viewerside 查看器单双面契约（装配端打标记）：web/main.js prepare() 对「无贴图、无顶点色」材质
+# 强制 FrontSide，会把资产声明的双面也覆盖掉。真正的单层薄片（匾/旗/布幔/树叶片/玻璃薄窗/薄瓷圈/店面
+# 背板等）按 baseline/doublesided-materials.json 白名单（材质基名，忽略 .NNN 后缀）打 extras.pbDoubleSided=true：
+# export_extras=True 带进 raw 分区件，gltfpack -ke 保留进 cm 件，GLTFLoader 进 material.userData，查看器只对
+# 标记材质保留 THREE.DoubleSide。庙区生成器与 modules/hall-kit/** 不可改（并行工单），它们的薄片材质同样
+# 由这份装配端白名单覆盖。标记随 Blender 材质数据块走，模块实例共享材质只打一次。
+# 白名单里在场景中不存在的基名打印 WARN（配置漂移可见，不阻断）；测试 oracle 见 tests/doubleside-contract-test.mjs。
+_DS_CFG = json.load(open(os.path.join(ROOT, 'baseline', 'doublesided-materials.json'), encoding='utf-8'))
+_DS_BASES = {str(x) for x in _DS_CFG.get('materials', [])}
+_DS_TAGGED, _DS_SEEN = set(), set()
+for _m in bpy.data.materials:
+    _base = re.sub(r'\.\d{3}$', '', _m.name)
+    if _base in _DS_BASES:
+        _DS_SEEN.add(_base)
+        _m['pbDoubleSided'] = True
+        _DS_TAGGED.add(_base)
+print('pbDoubleSided tagged', len(_DS_TAGGED), 'material bases:', sorted(_DS_TAGGED))
+_DS_MISSING = sorted(_DS_BASES - _DS_SEEN)
+if _DS_MISSING:
+    print('WARN doublesided-materials whitelist names not found in scene:', _DS_MISSING)
 # 同名同尺寸贴图合并（同 assemble.py SITE_MODULES 路径的做法；只省字节，不改材质）
 seen = {}
 for img in list(bpy.data.images):

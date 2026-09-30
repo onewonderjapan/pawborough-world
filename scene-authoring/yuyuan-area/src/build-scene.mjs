@@ -220,7 +220,8 @@ const PAVING_SLOTS = {
   'pond|path':     'paving-pebble',        // 池畔径：卵石
   'pond|steps':    'paving-blue-stone',    // 台阶（九曲桥两端）：青石板，几何不动
   'outer|road':    'paving-asphalt',       // 外围道路：沥青灰
-  'temple|plaza':  'paving-blue-stone',    // wave14-templeeast 庙东跨院铺地：青石板（庙内其余铺装仍在 temple-v3 模块件内）
+  'outer|plaza':   'paving-fine-cobble',   // wave14-templeside S2 安仁街东侧空地铺地：弹格路小方石（街面同族）
+  'temple|plaza':  'paving-blue-stone',    // wave14-templeeast 庙东跨院铺地：青石板（庙内其余铺装仍在 temple-v3 模块件内；wave14-templeside S3 后殿北院铺地复用同槽）
   // wave13-nightbalance N2（nightqa #3/#8）：水面统一走 water 槽——深墨绿基色 + 程序化缓波法线 +
   // roughness 0.5（export-zones.py / render-control-passes.py 的 water 分支双端同参数）。四区水面
   // 全部入槽；顶点色保留，只作 scene-areas.glb 离线检查件的平色显示，运行时被槽材质替换。
@@ -945,7 +946,8 @@ function buildBridgeHead() {
   const br = layout.objects.find((o) => o.id === 'jiuqu-bridge');
   const water = layout.objects.find((o) => o.id === POND_WATER_ID);
   if (!br || !water) return null;
-  const pts = br.geometry.polyline, half = (br.width ?? 2.4) / 2, deckY = br.deckY ?? 0.55, topY = deckY - 0.18;
+  // wave14-jiuqu：桥面板 0.18 -> 0.09（garden-kit build_bridge 同步改），桥头台顶随板底，仍包住岸上桥墩
+  const pts = br.geometry.polyline, half = (br.width ?? 2.4) / 2, deckY = br.deckY ?? 0.55, topY = deckY - 0.09;
   const inner = offsetPolySafe(orientRing(water.geometry.footprint), -REVET.band).pts;   // 驳岸内沿 = 看得见的池水边
   const seg = []; let acc = 0;
   for (let k = 0; k + 1 < pts.length; k++) { const L = Math.hypot(pts[k + 1][0] - pts[k][0], pts[k + 1][1] - pts[k][1]); seg.push([acc, L]); acc += L; }
@@ -1478,6 +1480,47 @@ for (const o0 of layout.objects) {
 if (POND_QA) {
   const bh = buildBridgeHead();
   if (bh) { zoneGroups.pond.add(bh.mesh); stats.meshes++; stats.byKind.bridgeHead = 1; console.log('bridge head platform', bh.lengthM.toFixed(2), 'm'); }
+}
+
+// ---------- wave14-rockseam 园墙勒脚裙板（巡检 #12） ----------
+// 建造基面约定 y=0（墙/铺装都从 0 起），全局地面平面在 GROUND_Y=-0.4，园墙墙脚因此悬空 0.4 m。
+// dusk 太阳仰角 9°（presets）掠射时，光从墙下缝漏过、阴影贴图在缝上打出一条与墙平行的硬直边
+// 黑带（tour-dajiashan 黄昏地面「灰/白两块硬拼」；pickDebug 取证：黑带与另一侧是同一个 ground
+// 对象，不是两块材质）。沿 layout 的 garden-wall segments 加一圈勒脚裙板闭合交界：
+//   y -0.44..+0.03（下探地面下 0.04 m 防露缝，上叠进墙脚 0.03 m；顶面低于园路铺装 +0.05，避免与
+//   path-gate-sansuitang 等铺装共面深度争夺——astra 审查 2026-09-30）；
+//   宽 0.90 m（站点模块墙基实测 ~0.6–0.8 m，勒脚略挑出属常规做法）；SITE_MODULES=0 回退程序化
+//   墙（thickness 0.45）时用 thickness+0.06，两态都闭合。tl;dr 只动 garden-wall，temple 区有自己的
+//   铺装面（temple-ground__* y≈-0.12..0）不受此缝影响。
+{
+  const wall = layout.objects.find((o) => o.id === 'garden-wall');
+  if (wall && Array.isArray(wall.geometry?.segments)) {
+    const SKIRT_BOT = -0.44, SKIRT_TOP = 0.03;
+    const width = SITE_MODULES ? 0.90 : (wall.thickness || 0.45) + 0.06;
+    const parts = [];
+    let segCount = 0;
+    for (const [a, b] of wall.geometry.segments) {
+      const len = dist2d(a, b);
+      if (len < 0.5) continue;   // 与 buildWall 同一最短段门槛
+      const cx = (a[0] + b[0]) / 2, cz = (a[1] + b[1]) / 2;
+      const ang = Math.atan2(b[0] - a[0], b[1] - a[1]);
+      const g = new THREE.BoxGeometry(width, SKIRT_TOP - SKIRT_BOT, len);
+      g.rotateY(ang);
+      g.translate(cx, (SKIRT_TOP + SKIRT_BOT) / 2, cz);
+      parts.push(colorize(g, 0x7a7466));
+      segCount++;
+    }
+    if (parts.length) {
+      const key = 'garden|garden-wall|wallBaseSkirt|L1';
+      const ud = { id: 'garden-wall', zone: 'garden', kind: 'wallBaseSkirt', lod: 'L1', module: 'wall-base-skirt', designInference: true,
+        inference: `wave14-rockseam (巡检#12): the built-world base plane y=0 leaves the garden wall floating 0.40 m over the ${GROUND_Y} ground plane; at the 9° dusk sun this gap leaks light and throws a hard straight shadow band across the ground (both sides are the same ground mesh, see ticket artifacts). A plinth skirt (-0.44..+0.03, w=${width}) built from the frozen garden-wall segments closes the junction naturally (勒脚)` };
+      const mesh = mergedMesh(parts, key, ud);
+      zoneGroups.garden.add(mesh);
+      stats.meshes++;
+      stats.byKind.wallBaseSkirt = 1;
+      console.log(`garden-wall base skirt: ${segCount} segments, w=${width}, y ${SKIRT_BOT}..${SKIRT_TOP}`);
+    }
+  }
 }
 
 // ---------- 导出 ----------

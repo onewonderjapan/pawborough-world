@@ -1955,10 +1955,21 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/stall-grill.glb",
-      "sha256": "9df80daf5da0158ee8bc39568f750a67b0ad3fc9fe031631af90390ce4032dd7",
-      "bytes": 38852,
-      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922",
-      "status": "changed-20260926-night-smallfix-pending-archive"
+      "sha256": "ce844665af220289c45cee8691c6a13b32d2250f784d9f593849eed2b166e9cb",
+      "bytes": 45716,
+      "sourcePackage": "pawborough-wave14-stalllight-20260929",
+      "note": "排烟罩落地立柱+托臂（R2 立柱后移 z=-0.38，不穿台面）wave14-stalllight",
+      "replaces": {
+        "sha256": "9df80daf5da0158ee8bc39568f750a67b0ad3fc9fe031631af90390ce4032dd7",
+        "bytes": 38852
+      }
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/oldsouth-lamp.glb",
+      "sha256": "7f9d06406cbeb55d911046cd52c82d2dc1cf668fa21e1ea593b0ce4075c7a641",
+      "bytes": 13984,
+      "sourcePackage": "pawborough-wave14-stalllight-20260929",
+      "note": "老城隍庙南侧街廊贴墙檐灯（OLDSOUTH_LAMPS=1 默认开，assemble.py 导入的预生成输入）"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/stall-steam.glb",
@@ -2095,11 +2106,12 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/staged/site-modules/jiuqu-bridge.glb",
-      "sha256": "ca33d55c69069df5c3416b3da769e26ab11664faffe6e6fa667caa190df421da",
-      "bytes": 448256,
-      "sourcePackage": "pawborough-wave11-huxwalk-20260927",
+      "sha256": "e12027920da5a385c9fb551e388d2b986d95c9f109115930f145a32d7ee61b52",
+      "bytes": 541332,
+      "sourcePackage": "pawborough-wave14-jiuqu-20260930",
+      "note": "镂空石栏杆+石墩+薄板桥面；R1 审查必修1 花瓶柱接上枋+可选墩去重 wave14-jiuqu (replaces pawborough-wave14-jiuqu-20260930 R0 ce312a50)；main 链上前一版为 ca33d55c（R0 ce312a50 未进 main）",
       "replaces": {
-        "sha256": "d60215cb18dc6ba99484a6e7966b136e111245aa8ffe500236322aaa4a7d2729",
+        "sha256": "ca33d55c69069df5c3416b3da769e26ab11664faffe6e6fa667caa190df421da",
         "bytes": 448256
       }
     },
@@ -2117,12 +2129,13 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/staged/site-modules/garden-kit-catalog.json",
-      "sha256": "6bec4b654ab03098258005a7affd5d2005f3d0520638c490d7e17909f4c3afe4",
-      "bytes": 6222,
-      "sourcePackage": "pawborough-wave11-huxwalk-20260927",
+      "sha256": "baa88b9743fc53c590f935d33a2d25622d15524ede850ecc35191939b8916056",
+      "bytes": 7782,
+      "sourcePackage": "pawborough-wave14-jiuqu-20260930",
+      "note": "bridgeInfo 同步（piers 48→41）；R1 审查必修1 重出 wave14-jiuqu (replaces R0 2cbf95b8)；main 链上前一版为 6bec4b65（R0 2cbf95b8 未进 main）",
       "replaces": {
-        "sha256": "69f37dc2b72389d33d6c99b037da6ac95ba01f4cde1c263b0d4bf08471da26f3",
-        "bytes": 5975
+        "sha256": "6bec4b654ab03098258005a7affd5d2005f3d0520638c490d7e17909f4c3afe4",
+        "bytes": 6222
       }
     },
     {
@@ -2137,9 +2150,14 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/staged/site-modules/garden-kit-reimport.json",
-      "sha256": "2d4865e9b51c55cffaed9072daf182fcbcc62eebf086730e98d2f7ae02df90e1",
-      "bytes": 1995,
-      "sourcePackage": "pawborough-wave10-pondqa-20260927"
+      "sha256": "f8d0d5d482ccac46e2d7dc5cdd5eeb35c559fdbbfbb47399b5a2a0dff5735826",
+      "replaces": {
+        "sha256": "2d4865e9b51c55cffaed9072daf182fcbcc62eebf086730e98d2f7ae02df90e1",
+        "bytes": 1995
+      },
+      "bytes": 2121,
+      "sourcePackage": "pawborough-wave14-jiuqu-20260930",
+      "note": "reimport 核对重跑（R1 审查必修1 后，issues=[]） wave14-jiuqu (replaces R0 87b589da)；main 链上前一版为 2d4865e9（R0 87b589da 未进 main）"
     },
     {
       "path": "scene-authoring/yuyuan-area/staged/site-modules/site-inputs.json",
@@ -2547,7 +2565,8 @@
     "docs/migrations/20260927/CLOUD-RECEIPT-huxwalk.json",
     "docs/migrations/20260928/CLOUD-RECEIPT-towerwin.json",
     "docs/migrations/20260928/CLOUD-RECEIPT-towerwin2.json",
-    "docs/migrations/20260929/CLOUD-RECEIPT-wave13.json"
+    "docs/migrations/20260929/CLOUD-RECEIPT-wave13.json",
+    "docs/migrations/20260930/CLOUD-RECEIPT-ridge.json"
   ],
   "historicalBuildOutputRecords": {
     "note": "2026-09-30 v1.0 封版前清理：以下记录原为 *PendingLeadArchive 段，内容全部是 rebuild-review.sh 的确定性构建产物（分区件、外置内容寻址贴图、zones-manifest、联合审阅运行时），不是管线输入件；新环境按 files[] 恢复输入件后由标准重建再生，不上传归档。保留原记录仅作历史追溯（其 sha 对应当时的构建，不代表当前产物）。",
@@ -3620,11 +3639,5 @@
         "ownerAdopted": false
       }
     }
-  },
-  "pendingUpload": {
-    "note": "files[] 已指向新 sha，但对象尚未上传 S3（2026-09-30 SSO 过期）。机主 aws sso login 后由主控 upload_migration_assets.py 上传，写回执后删除本段。",
-    "paths": [
-      "scene-authoring/yuyuan-area/out-garden-kits/sansuitang-bld-428179901/model.glb"
-    ]
   }
 }
