@@ -134,7 +134,10 @@ function resolveChromiumExecutable() {
 }
 const launchArgs = ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'];
 const exe = resolveChromiumExecutable();
-const browser = await chromium.launch(exe ? { executablePath: exe, args: launchArgs } : { args: launchArgs });
+// GPU_WEBGL=1：机器 swiftshader WebGL 全灭时改走真 GPU（headless:false + 外部 DISPLAY/XAUTHORITY 环境变量，
+// 例 GPU_WEBGL=1 DISPLAY=:0 XAUTHORITY=/run/user/1000/gdm/Xauthority）。默认仍 headless swiftshader。
+const GPU = process.env.GPU_WEBGL === '1';
+const browser = await chromium.launch({ ...(exe ? { executablePath: exe } : {}), ...(GPU ? { headless: false } : {}), args: launchArgs });
 
 async function loadAndCheck(tag, g, inject = null) {
   for (const qs of ['', '&batch=0']) {
@@ -205,11 +208,11 @@ async function loadAndCheck(tag, g, inject = null) {
         ok(`D1[${tag}|${batchTag}] 标记材质 ${b}（变体 ${v.name} ×${v.n}）= DoubleSide 且带 pbDoubleSided`, v.side === 'DoubleSide' && v.pb, JSON.stringify(v));
       }
     }
-    // D2 / D3 / 合批只在主分区查一次
+    // D2 / D3 / 合批只在主分区查一次；合批生效断言只在默认合批页（batch=0 页合批本来就关）
     if (g === primary) {
       ok(`D2[${tag}|${batchTag}] 未标记无贴图材质 ${primary.unmarkedMapless[0]} = FrontSide 且无标记`, !!r.unmarked && r.unmarked.side === 'FrontSide' && !r.unmarked.pb, JSON.stringify(r.unmarked));
       ok(`D3[${tag}|${batchTag}] 画面非空白（亮度 std ≥ 8）`, r.lumStd >= 8, `lumStd=${r.lumStd.toFixed(1)}`);
-      ok(`D4[${tag}|${batchTag}] 合批路径生效（batches > 0）`, r.batched > 0, `batches=${r.batched}`);
+      if (!qs) ok(`D4[${tag}|${batchTag}] 合批路径生效（batches > 0）`, r.batched > 0, `batches=${r.batched}`);
     }
     await page.close();
   }
