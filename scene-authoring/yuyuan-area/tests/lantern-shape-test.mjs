@@ -582,7 +582,7 @@ for (const t of lanternTowers) {
     };
     const w = inside(src.offsetY), wLegacy = inside(-0.4);
     ok(coreCl.length === nLamps && w >= 0.05, `${t.id}: 灯笼点光落在灯内（芯中心 + offsetY ${src.offsetY} 距纸壳上下沿 ≥ 5 cm）`, `worst=${w.toFixed(3)} m，${coreCl.length} 簇`);
-    ok(wLegacy < 0.05, `${t.id}: 负例 旧 offsetY −0.4 判为灯外（判据有效）`, `legacyWorst=${wLegacy.toFixed(3)} m`);
+    ok(wLegacy < 0, `${t.id}: 负例 旧 offsetY −0.4 判为灯外（判据有效）`, `legacyWorst=${wLegacy.toFixed(3)} m`);
   }
   ok(handleTris >= DESIGN.handleTrisPerLamp * nLamps * 0.8, `${t.id}: 提梁账目`, `handleTris=${handleTris}`);
   ok(ribTris >= DESIGN.ribTrisPerLamp * nLamps * 0.8, `${t.id}: 骨架棱账目（6 条 × 4 tris）`, `ribTris=${ribTris}`);
@@ -598,7 +598,7 @@ if (!fs.existsSync(bzCm)) { ok(false, 'zone-bazaar-3.cm.glb 存在', `${bzCm} �
 else {
   const g = parseGlb(bzCm);
   const names = (g.json.materials || []).map(m => m.name || '');
-  ok(names.some(n => n.startsWith('btk-lantern')), '分区 cm 件 lantern 组命中：btk-lantern 名字存活', `hit=${names.filter(n => n.startsWith('btk-lantern')).join(',')}`);
+  ok(names.some(n => n.replace(/\.\d{3}$/, '') === 'btk-lantern'), '分区 cm 件 lantern 组命中：btk-lantern 名字存活（去后缀精确匹配，paper/tassel 不算）', `hit=${names.filter(n => n.startsWith('btk-lantern')).join(',')}`);
 }
 const fbCms = fs.existsSync(OUT) ? fs.readdirSync(OUT).filter(f => f.startsWith('zone-fangbang-') && f.endsWith('.cm.glb')) : [];
 ok(fbCms.length >= 1, 'zone-fangbang-*.cm.glb 存在', fbCms.join(','));

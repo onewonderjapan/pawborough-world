@@ -9,6 +9,7 @@
 //     P2 色相：亮像素中位 hue ∈ [−15°, 35°]（红—橙红；纸红 #c8301f ≈ 6°，lantern 组暖光 #ff7a3c ≈ 20°）
 //     P3 饱和度：亮像素中位 S ≥ 0.45（R0 粉白实测 0.11–0.27；白天同灯正红 ≈ 0.9）
 //     P4 近白占比：S < 0.25 且 V ≥ 0.80 的像素 ≤ 30%（粉白/白化的直接口径；不再用 max(R,G,B)≥0.995 冒充"白"）
+//     P5 分段近白：掩膜按高度三等分，每段近白占比 ≤ 30%（R2 实测修复前下段 70% 而整体仅 22%，整体口径拦不住局部白化）
 //   阈值沿用 R1 预先写定的数值（P4 改口径不改上限），不按 R2 的新图调整。
 // 用法: node tests/lantern-night-pixel-check.mjs <closeup-night.png> <lantern-mask.json>
 import fs from 'node:fs';
@@ -60,11 +61,15 @@ ok(litFrac >= NIGHT.litFracMin, 'P1 亮占比（灯亮着）', `${(litFrac * 100
 ok(hueMed >= NIGHT.hueMin && hueMed <= NIGHT.hueMax, 'P2 色相红—橙红', `hueMed=${hueMed.toFixed(1)}° ∈ [${NIGHT.hueMin}°, ${NIGHT.hueMax}°]`);
 ok(satMed >= NIGHT.satMin, 'P3 饱和度', `satMed=${satMed.toFixed(2)} ≥ ${NIGHT.satMin}`);
 ok(whiteFrac <= NIGHT.whiteFracMax, 'P4 近白占比（粉白）', `${(whiteFrac * 100).toFixed(1)}% ≤ ${NIGHT.whiteFracMax * 100}%`);
-// 仅报告：掩膜按高度分三段的饱和度与近白占比（定位白化出现在哪一段）
+// P5：掩膜按高度三等分，逐段近白占比（定位并拦住局部白化）
 const yMin = M.mask.rle.rows[0][0], yMax = M.mask.rle.rows[M.mask.rle.rows.length - 1][0], band = (y) => Math.min(2, Math.floor((y - yMin) / ((yMax - yMin + 1) / 3)));
+let worstBand = 0;
 for (let b = 0; b < 3; b++) {
   const a = px.filter((_, i) => band(rowOf[i]) === b);
-  console.log(`  info ${['上', '中', '下'][b]}段: n=${a.length} satMed=${med(a.map(p => p.s)).toFixed(2)} 近白=${(a.filter(isWhite).length / a.length * 100).toFixed(1)}%`);
+  const wf = a.filter(isWhite).length / (a.length || 1);
+  worstBand = Math.max(worstBand, wf);
+  console.log(`  info ${['上', '中', '下'][b]}段: n=${a.length} satMed=${med(a.map(p => p.s)).toFixed(2)} 近白=${(wf * 100).toFixed(1)}%`);
 }
-console.log(`lantern-night-pixel: ${8 - fails.length} pass, ${fails.length} fail`);
+ok(worstBand <= NIGHT.whiteFracMax, 'P5 分段近白（最差一段）', `${(worstBand * 100).toFixed(1)}% ≤ ${NIGHT.whiteFracMax * 100}%`);
+console.log(`lantern-night-pixel: ${9 - fails.length} pass, ${fails.length} fail`);
 if (fails.length) { console.log('FAILURES: ' + fails.join(' | ')); process.exit(1); }
