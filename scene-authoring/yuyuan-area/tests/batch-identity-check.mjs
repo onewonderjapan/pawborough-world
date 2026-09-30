@@ -79,7 +79,7 @@ function resolveChromiumExecutable() {
 
 const exe = resolveChromiumExecutable();
 // GPU_WEBGL=1：机器 swiftshader WebGL 全灭时的环境开关（headless:false + 外部 DISPLAY/XAUTHORITY），默认关闭。
-const browser = await chromium.launch({ executablePath: exe, ...(process.env.GPU_WEBGL === '1' ? { headless: false } : {}), args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
+const browser = await chromium.launch({ ...(exe ? { executablePath: exe } : {}), ...(process.env.GPU_WEBGL === '1' ? { headless: false } : {}), args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
 async function openPage(qs) {
   const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
   await page.addInitScript(glCounterInit);

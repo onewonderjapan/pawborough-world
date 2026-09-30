@@ -26,6 +26,8 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
 const BASE = process.env.BASE || 'http://127.0.0.1:5487/';
 const NEG = process.env.NEG === '1';
+// NEG=later：页内给目标基名最后一个网格换上同名克隆材质并改回 FrontSide（首个材质对象保持正常）→ D1 必须红（防只验首实例）
+const NEG_LATER = process.env.NEG === 'later';
 
 let pass = 0, fail = 0;
 const failures = [];
@@ -142,15 +144,28 @@ const browser = await chromium.launch({ ...(exe ? { executablePath: exe } : {}),
 async function loadAndCheck(tag, g, inject = null) {
   for (const qs of ['', '&batch=0']) {
     const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
-    if (inject) await page.route('**/' + inject.file, route => route.fulfill({ body: inject.body, contentType: 'model/gltf-binary' }));
+    if (inject && inject.file) await page.route('**/' + inject.file, route => route.fulfill({ body: inject.body, contentType: 'model/gltf-binary' }));
     page.on('pageerror', e => console.warn(`[warn][${tag}|zone=${g.id}] pageerror:`, String(e).slice(0, 200)));
     await page.goto(`${BASE}?zone=${g.id}&light=day${qs}`, { waitUntil: 'domcontentloaded' });
     await page.waitForFunction(() => window.__firstLoadReady === true, null, { timeout: 900000 });
     const markedBases = [...g.marked];
-    const r = await page.evaluate(async ({ marked, unmarked }) => {
+    const r = await page.evaluate(async ({ marked, unmarked, mutateLater }) => {
       const THREE = await import('three');
       const scene = window.__scene;
-      const out = { marked: {}, unmarked: null, batched: 0 };
+      const out = { marked: {}, unmarked: null, batched: 0, mutated: null };
+      if (mutateLater) {
+        // 实测同一分区内同名只有 1 个材质对象（GLTFLoader 按材质索引共享），故构造审查所述场景：
+        // 给最后一个使用该材质的网格换上同名克隆（保留 userData 标记）并改回 FrontSide——首个对象保持正常。
+        const meshes = [];
+        scene.traverse((o) => {
+          if (o.isMesh && o.material && !Array.isArray(o.material) && String(o.material.name || '').replace(/\.\d{3}$/, '') === mutateLater) meshes.push(o);
+        });
+        if (meshes.length >= 2) {
+          const o = meshes[meshes.length - 1], c = o.material.clone();
+          c.side = THREE.FrontSide; o.material = c;
+          out.mutated = { meshes: meshes.length, node: o.name, name: c.name, pbKept: !!(c.userData && c.userData.pbDoubleSided === true) };
+        }
+      }
       // D1 全变体收集：同一基名下每个运行时材质实例（含 .NNN 变体 / 合批后残留）都记下来
       const byBase = new Map();
       scene.traverse((o) => {
@@ -162,13 +177,21 @@ async function loadAndCheck(tag, g, inject = null) {
           if (!byBase.has(base)) byBase.set(base, new Map());
           const bucket = byBase.get(base);
           const key = m.name || '(unnamed)';
-          if (!bucket.has(key)) bucket.set(key, { name: key, n: 0, side: m.side === THREE.DoubleSide ? 'DoubleSide' : m.side === THREE.FrontSide ? 'FrontSide' : String(m.side), pb: !!(m.userData && m.userData.pbDoubleSided === true) });
-          bucket.get(key).n++;
+          // 逐材质对象验证：同名下每个独立材质对象都要 DoubleSide + 标记（合取），记录第一个异常对象身份
+          if (!bucket.has(key)) bucket.set(key, { name: key, n: 0, objs: 0, bad: 0, firstBad: null, seen: new Set() });
+          const v = bucket.get(key);
+          v.n++;
+          if (!v.seen.has(m)) {
+            v.seen.add(m); v.objs++;
+            const side = m.side === THREE.DoubleSide ? 'DoubleSide' : m.side === THREE.FrontSide ? 'FrontSide' : String(m.side);
+            const pb = !!(m.userData && m.userData.pbDoubleSided === true);
+            if (!(side === 'DoubleSide' && pb)) { v.bad++; if (!v.firstBad) v.firstBad = { side, pb, node: o.name, uuid: m.uuid }; }
+          }
         }
       });
       for (const b of marked) {
         const bucket = byBase.get(b);
-        out.marked[b] = bucket ? { variants: [...bucket.values()] } : null;   // null = 场景里没找到（覆盖缺口）
+        out.marked[b] = bucket ? { variants: [...bucket.values()].map(({ seen, ...v }) => v) } : null;   // null = 场景里没找到（覆盖缺口）
       }
       const findMat = (base) => {
         let found = null;
@@ -198,14 +221,15 @@ async function loadAndCheck(tag, g, inject = null) {
       const mean = sum / n;
       out.lumStd = Math.sqrt(Math.max(0, sum2 / n - mean * mean));
       return out;
-    }, { marked: markedBases, unmarked: primary.unmarkedMapless[0] });
+    }, { marked: markedBases, unmarked: primary.unmarkedMapless[0], mutateLater: inject && inject.mutateLater ? inject.mutateLater : null });
+    if (inject && inject.mutateLater) mutatedInfo = r.mutated;
     const batchTag = qs ? 'batch=0' : '默认合批';
     // D1：覆盖 + 全变体
     for (const b of markedBases) {
       const st = r.marked[b];
       ok(`D1[${tag}|${batchTag}] 白名单 ${b} 在 zone=${g.id} 场景中有材质实例（覆盖）`, !!st && st.variants.length > 0, JSON.stringify(st));
       if (st) for (const v of st.variants) {
-        ok(`D1[${tag}|${batchTag}] 标记材质 ${b}（变体 ${v.name} ×${v.n}）= DoubleSide 且带 pbDoubleSided`, v.side === 'DoubleSide' && v.pb, JSON.stringify(v));
+        ok(`D1[${tag}|${batchTag}] 标记材质 ${b}（变体 ${v.name} ×${v.n}，材质对象 ${v.objs}）= 全部 DoubleSide 且带 pbDoubleSided`, v.objs > 0 && v.bad === 0, JSON.stringify(v));
       }
     }
     // D2 / D3 / 合批只在主分区查一次；合批生效断言只在默认合批页（batch=0 页合批本来就关）
@@ -218,7 +242,20 @@ async function loadAndCheck(tag, g, inject = null) {
   }
 }
 
-if (NEG) {
+let mutatedInfo = null;
+if (NEG_LATER) {
+  const target = [...primary.marked][0];
+  console.log(`NEG=later: 页内给 ${target} 最后一个网格注入同名 FrontSide 克隆材质（首个材质对象不动），D1 必须红`);
+  const before = failures.length;
+  await loadAndCheck('NEG-后续实例', primary, { mutateLater: target });
+  ok('NEG=later 目标基名至少有 2 个网格、已注入同名 FrontSide 克隆（负例可构造）', !!mutatedInfo, JSON.stringify(mutatedInfo));
+  const negFails = failures.slice(before);
+  const targetFails = negFails.filter(x => x.includes(`标记材质 ${target}（变体`));
+  const collateral = negFails.filter(x => !targetFails.includes(x) && !x.startsWith('NEG=later'));
+  ok('NEG=later 后续实例被破坏时 D1 精确命中目标材质（断言有效）', targetFails.length > 0, targetFails.join(' | ') || '没有任何 D1 目标失败');
+  for (const line of targetFails) expectedRed.add(line);
+  ok('NEG=later 无连带失败', collateral.length === 0, collateral.join(' | '));
+} else if (NEG) {
   // 负例：请求拦截剥掉主分区某分件 cm 里目标材质的 pbDoubleSided → D1 必须红且精确命中 → 撤销注入 → D1 复绿。
   // 不改盘上文件：mutated 只存在于内存 Buffer，page.route 生命周期 = 页面生命周期，无恢复竞态。
   const target = [...primary.marked][0];

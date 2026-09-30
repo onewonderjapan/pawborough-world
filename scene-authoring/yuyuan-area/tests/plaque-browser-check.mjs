@@ -64,7 +64,7 @@ for (const t of TARGETS) ok(`truth ${t.id} ${t.key} 大匾在 raw GLB 中定位�
 const VIEWS = { huabao: { dist: 22, along: 6, eyeY: 1.7 }, yuebin: { dist: 5, along: 15, eyeY: 1.7 }, hefeng: { dist: 25, along: 0, eyeY: 4.0 } };
 
 // GPU_WEBGL=1：机器 swiftshader WebGL 全灭时的环境开关（headless:false + 外部 DISPLAY/XAUTHORITY），默认关闭。
-const browser = await chromium.launch({ executablePath: exe, ...(process.env.GPU_WEBGL === '1' ? { headless: false } : {}), args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
+const browser = await chromium.launch({ ...(exe ? { executablePath: exe } : {}), ...(process.env.GPU_WEBGL === '1' ? { headless: false } : {}), args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
 try {
   for (const light of LIGHTS) {
     const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
