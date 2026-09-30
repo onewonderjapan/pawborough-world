@@ -22,20 +22,32 @@ const DESIGN = {
   profRim: 0.42,          // LANTRN_PROF 端部（口沿）半径比
   profMid: 1.0,           // 中段半径比
   petalDelta: 0.05,       // LANTRN_PETAL 瓣鼓幅度（径向 ±5%）
-  budgetPerLamp: 260,     // LANTERN_BUDGET_PER_LAMP（瘦身后导出实测 240/只；zone-bazaar-3.glb 10MB 口径反推：40 只 × >280 只会把分区件顶过 test_tower test6a 的 10_000_000 B）
+  budgetPerLamp: 260,     // LANTERN_BUDGET_PER_LAMP（R1 双层版账面 244/只；zone-bazaar-3.glb 10MB 口径反推：40 只 × >280 只会把分区件顶过 test_tower test6a 的 10_000_000 B）
+  coreTrisPerLamp: 12,    // 发光芯：6 边开口筒（btk-lantern，lantern 组命中点）
   tasselTrisPerLamp: 24,  // 3 根 3 边 cyl（n-gon caps = n−2 tri）= 3 × 8
   handleTrisPerLamp: 24,  // 2 段 4 边 cyl（左 mount→apex→右 mount）= 2 × 12
-  ribTrisPerLamp: 32,     // 4 条 quad strip（5 环 4 段）= 4 × 8
+  ribTrisPerLamp: 24,     // R1：6 条 quad strip（3 环 2 段）= 6 × 4（R0 为 4 条×8=32，只铺半圈）
+  ribCountPerLamp: 6,     // R1 必修2：六瓣峰均布 k·π/3，全周覆盖（R0 range(4) 只铺 0/60/120/180°）
   capGapMax: 0.15,        // 灯盖顶 y − 灯身顶 y 设计差 = cap_h = rr×0.16 ∈ [0.045,0.048]；容差窗 [−0.02, +0.15]。
                           // 抓「灯身掉地面、灯盖留在檐口」类错位（2026-09-29 实际发生：lantern_body 传 z=0.0）
   ribCrestFrac: 0.8,      // 骨架棱中段顶点位于瓣脊高程（body 中段最大半径 −0.003）的占比下限。抓「棱放在瓣谷
                           // （cos(6θ)=−1）、整条沉在谷里被凸鼓面自身遮挡」——2026-09-29 R2 实际发生：
                           // 注释写 π/6+kπ/3 是瓣峰，实为瓣谷，棱白天黑夜都不可见
-  bodyMatSuffix: 'lanterns-body', capPart: 'lanterns-cap', tasselPart: 'lanterns-tassel',
+  streetRibMaxOffDeg: 36, // R1 必修2 新判据：正立面外法向方位角到最近骨架棱的角距上限。阈值来源：60° 棱间距 ×0.6；
+                          // R0 产物和丰实测 79.3°（棱半圈空缺，红）/ 六棱均布 19.3°（绿）——判别线两侧留量 ≥2×
+  hangTolM: 0.03,         // R1 可选：逐灯挂高 = params massing.storeyHeightsM[0] − features.lanterns.zBelowEaveM，容差 ±3cm
+  // 键 = params 文件名（去 .json；循环里 t.id 是 bld-* 短 id，塔目录用它）
+  expectedLamps: { 'hefeng-bld-389701812': 14, 'yuebin-bld-428202602': 26 },
+  expectedLampTotal: 40,  // 锁设计账 14+26=40（cnt=max(1,int(runLen/pitch))，runLen 由 layout 正立面边+平面管线推得；
+                          // R0 forensics 实测记录。测试只锁总数与各塔账，不读被测产物推真值）
+  bodyPart: 'lanterns-body', corePart: 'lanterns-core',
+  capPart: 'lanterns-cap', tasselPart: 'lanterns-tassel',
   handlePart: 'lanterns-handle', ribPart: 'lanterns-rib', cordPart: 'lanterns-cord',
+  bodyMat: 'btk-lantern-paper',   // R1：灯身=半透红纸外层（不发光、不在任何组）；发光芯材质=btk-lantern
   // lanternRed 设计色 #c8301f（build_tower.py FM.get('lanternRed','c8301f')；params/*.json 无覆盖——2026-09-29 全查）：
-  // sRGB (200,48,31) → hue≈7.4°, S≈0.85, V≈0.78。判据窗 ±10° / S≥0.60 / V≥0.30。
-  hueDeg: 7.4, hueTol: 10, minS: 0.60, minV: 0.30,
+  // sRGB (200,48,31)：max=R=200，d=169，hue = 60×(48−31)/169 = 6.04° ≈ 6.0°，S≈0.84，V≈0.78。
+  // 判据窗 ±10° / S≥0.60 / V≥0.30。（R0 注释写 7.4° 为计算笔误，REVIEW-astra 可选项已更正）
+  hueDeg: 6.0, hueTol: 10, minS: 0.60, minV: 0.30,
 };
 
 // ---------- GLB 解析 ----------
@@ -142,6 +154,76 @@ function ribProudFrac(bodyVerts, ribVerts) {
   }
   return tot ? proud / tot : 0;
 }
+// ---------- R1 新判据：正立面方向骨架可见（REVIEW-astra 必修2） ----------
+// 正立面外法向方位角从 baseline/layout.json footprint + params frontEdge 独立推（镜像 params_load.ccw_frame，
+// 不读被测产物）：a2<0 → 倒序换边；du = 单位化边向量；dv = (−du.z, du.x) 指向楼内（CCW (x,z) 多边形，2026-09-30
+// 实测 hefeng dv·(质心−边中点)>0 验证）；外法向 (map x,z) = (du.z, −du.x)；Blender y = −map z → 方位角 =
+// atan2(du.x, du.z)。和丰实测 280.7°（与 REVIEW-astra 一致）、悦宾 7.4°。
+function facadeAzDeg(layoutObj, params) {
+  const fpIn = layoutObj.geometry.footprint.map(q => [q[0], q[1]]);
+  if (fpIn[0] && fpIn[0][0] === fpIn[fpIn.length - 1][0] && fpIn[0][1] === fpIn[fpIn.length - 1][1]) fpIn.pop();
+  const n = fpIn.length;
+  let a2 = 0;
+  for (let i = 0; i < n; i++) a2 += fpIn[i][0] * fpIn[(i + 1) % n][1] - fpIn[(i + 1) % n][0] * fpIn[i][1];
+  let fp = fpIn, i0 = params.frontEdge[0], i1 = params.frontEdge[1];
+  if (a2 < 0) { fp = fpIn.slice().reverse(); const t = i0; i0 = n - 1 - i1; i1 = n - 1 - t; }
+  const a = fp[i0], b = fp[i1];
+  const dx = b[0] - a[0], dz = b[1] - a[1], L = Math.hypot(dx, dz);
+  const du = [dx / L, dz / L];
+  const dv = [-du[1], du[0]];                       // 指向楼内
+  const cx = fp.reduce((s, q) => s + q[0], 0) / n, cz = fp.reduce((s, q) => s + q[1], 0) / n;
+  const mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+  if (dv[0] * (cx - mid[0]) + dv[1] * (cz - mid[1]) < 0) { dv[0] = -dv[0]; dv[1] = -dv[1]; }   // 朝向实测校验（非 rely）
+  const nOut = [-dv[0], -dv[1]];                    // 外法向 (map x, z)
+  const az = Math.atan2(-nOut[1], nOut[0]) * 180 / Math.PI;   // Blender y = −map z
+  return (az % 360 + 360) % 360;
+}
+function angDistDeg(a, b) {
+  const d = Math.abs(a - b) % 360;
+  return d > 180 ? 360 - d : d;
+}
+// 棱簇相对灯心的方位角（GLB y-up：Blender x = gltf x，Blender y = −gltf z）
+function ribAzimuthsDeg(ribCluster, lampCtr) {
+  let sx = 0, sz = 0, n = 0;
+  for (let i = 0; i < ribCluster.length; i += 3) { sx += ribCluster[i] - lampCtr[0]; sz += ribCluster[i + 2] - lampCtr[1]; n++; }
+  return (Math.atan2(-sz / n, sx / n) * 180 / Math.PI + 360) % 360;
+}
+// 每灯判据：近立面侧至少一条棱在 streetRibMaxOffDeg 内 + 每灯棱数 = ribCountPerLamp。返回 { bad, detail }
+function streetRibJudge(lampClustersList, ribClusters, azF, maxOff) {
+  if (!ribClusters.length) return { bad: 'rib 簇缺失' };
+  let worst = 0, worstLamp = -1, countBad = 0;
+  lampClustersList.forEach((c, li) => {
+    let sx = 0, sz = 0, n = 0;
+    for (let i = 0; i < c.length; i += 3) { sx += c[i]; sz += c[i + 2]; n++; }
+    const ctr = [sx / n, sz / n];
+    const near = [];
+    ribClusters.forEach(rc => {
+      let rx = 0, rz = 0, m = 0;
+      for (let i = 0; i < rc.length; i += 3) { rx += rc[i]; rz += rc[i + 2]; m++; }
+      if (Math.hypot(rx / m - ctr[0], rz / m - ctr[1]) < 0.5) near.push(ribAzimuthsDeg(rc, ctr));
+    });
+    if (near.length !== DESIGN.ribCountPerLamp) countBad++;
+    if (!near.length) return;
+    const off = Math.min(...near.map(a => angDistDeg(a, azF)));
+    if (off > worst) { worst = off; worstLamp = li; }
+  });
+  if (countBad) return { bad: `${countBad} 只灯的棱数 ≠ ${DESIGN.ribCountPerLamp}` };
+  if (worst > maxOff) return { bad: `最差灯 #${worstLamp} 正立面方向最近棱角距 ${worst.toFixed(1)}° > ${maxOff}°` };
+  return { good: `每灯 ${DESIGN.ribCountPerLamp} 条棱均布，正立面（az ${azF.toFixed(1)}°）最近棱角距最差 ${worst.toFixed(1)}° ≤ ${maxOff}°` };
+}
+// 逐灯挂高：簇体高度中点 vs params 推导的 zc（massing.storeyHeightsM[0] − zBelowEaveM）
+function hangJudge(clusters, zcExp, tol) {
+  let worst = 0, worstLamp = -1;
+  clusters.forEach((c, li) => {
+    let mn = Infinity, mx = -Infinity;
+    for (let i = 0; i < c.length; i += 3) { mn = Math.min(mn, c[i + 1]); mx = Math.max(mx, c[i + 1]); }
+    const off = Math.abs((mn + mx) / 2 - zcExp);
+    if (off > worst) { worst = off; worstLamp = li; }
+  });
+  if (worst > tol) return { bad: `最差灯 #${worstLamp} 挂高中点偏差 ${worst.toFixed(3)}m > ${tol}m` };
+  return { good: `逐灯挂高中点最差偏差 ${worst.toFixed(3)}m ≤ ${tol}m（zc=${zcExp.toFixed(2)}）` };
+}
+
 function srgbHsv(hex) {
   const n = parseInt(hex.replace('#', ''), 16);
   const rgb = [(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255];
@@ -351,14 +433,16 @@ ok(lanternGroup && lanternGroup.color === '#ff7a3c' && lanternGroup.intensity ==
    lanternGroup ? `color=${lanternGroup.color} intensity=${lanternGroup.intensity}` : 'group missing');
 
 let lampTotal = 0;
+const layout = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline', 'layout.json'), 'utf8'));
 for (const t of lanternTowers) {
   const glbPath = path.join(ROOT, 'out-bazaar-towers', t.id, 'model.glb');
+  const tParams = JSON.parse(fs.readFileSync(path.join(ROOT, 'modules', 'bazaar-tower-kit', 'params', t.file), 'utf8'));
   if (!fs.existsSync(glbPath)) { ok(false, `${t.id}: 塔 GLB 存在`, `${glbPath} 缺失（先跑标准重建）`); continue; }
   const g = parseGlb(glbPath);
   const nodes = nodeByName(g);
   const byPart = (pre) => [...nodes.keys()].filter(k => k.startsWith(pre));
-  const bodyKeys = byPart(DESIGN.bodyMatSuffix);
-  ok(bodyKeys.length === 1, `${t.id}: 灯笼主体节点存在（${DESIGN.bodyMatSuffix}__*）`, bodyKeys.join(',') || 'missing');
+  const bodyKeys = byPart(DESIGN.bodyPart);
+  ok(bodyKeys.length === 1, `${t.id}: 灯笼主体节点存在（${DESIGN.bodyPart}__*）`, bodyKeys.join(',') || 'missing');
   if (bodyKeys.length !== 1) continue;   // 该塔判据已红，后续几何判据无从执行
 
   const body = nodes.get(bodyKeys[0]);
@@ -366,13 +450,24 @@ for (const t of lanternTowers) {
   const clusters = lampClusters(verts);
   const nLamps = clusters.length;
   lampTotal += nLamps;
-  ok(nLamps >= 1, `${t.id}: 灯数（body 顶点聚类独立推）`, `lamps=${nLamps}`);
+  // R1 可选：灯数锁设计账（14+26=40），不从产物推真值
+  const lampKey = t.file.replace(/\.json$/, '');
+  ok(nLamps === DESIGN.expectedLamps[lampKey], `${t.id}: 灯数锁设计账 ${DESIGN.expectedLamps[lampKey]}`,
+     `lamps=${nLamps}`);
 
   // 鼓形：口沿比 + 瓣差，逐灯判（取全灯最差值）；负例见文末合成注入
   const rim = Math.min(...clusters.map(c => rimRatio(c)));
   ok(rim >= DESIGN.profRim * 0.6, `${t.id}: 鼓形口沿（端部硬收口，非蛋形尖端，逐灯最差）`, `rim/r=${rim.toFixed(2)} ≥ ${(DESIGN.profRim * 0.6).toFixed(2)}`);
   const pd = Math.min(...clusters.map(c => petalDeltaFrac(c)));
   ok(pd >= DESIGN.petalDelta * 0.6, `${t.id}: 纵向瓜棱（径向峰谷差，逐灯最差）`, `Δr/r=${(pd * 100).toFixed(1)}% ≥ ${(DESIGN.petalDelta * 0.6 * 100).toFixed(0)}%`);
+
+  // R1 可选：逐灯挂高（params 推导 zc，独立于产物）
+  {
+    const ln = tParams.features.lanterns;
+    const zcExp = tParams.massing.storeyHeightsM[0] - ln.zBelowEaveM;
+    const h = hangJudge(clusters, zcExp, DESIGN.hangTolM);
+    ok(!!h.good, `${t.id}: 逐灯挂高（params 推导 zc=${zcExp.toFixed(2)} ±${DESIGN.hangTolM}m）`, h.good || h.bad);
+  }
 
   // 灯身-灯盖贴邻（挂高一致）：设计上灯盖顶 = 灯身顶 + cap_h（rr×0.16 ∈ [0.045,0.048]）。
   // 抓「灯身掉在地面 z=0、灯盖留在檐口」类错位（2026-09-29 lantern_body 传 z=0.0 实际事故）。
@@ -390,16 +485,31 @@ for (const t of lanternTowers) {
        gap == null ? 'cap 节点缺失' : `gap=${gap.toFixed(3)}（身顶 y=${bodyTop.toFixed(2)} 盖顶 y=${capTop.toFixed(2)}）`);
   }
 
+  // R1 必修1 结构侧：灯身材质 = 红纸外层（不在任何 emissive 组、BLEND 半透）；发光芯节点存在且材质 = btk-lantern。
+  // （夜间最终画面判据 = tests/lantern-night-pixel-check.mjs 对固定机位实拍做色相/饱和度统计——底色判据不替代画面。）
+  {
+    const bodyMatDef = (g.json.materials || []).find(m => m.name === body.matName);
+    const groupHit = presets.emissiveGroups.some(gr => gr.materials.includes(body.matName));
+    ok(body.matName === DESIGN.bodyMat && !groupHit && bodyMatDef && bodyMatDef.alphaMode === 'BLEND',
+       `${t.id}: 灯身=红纸外层（${DESIGN.bodyMat} 不在任何发光组、alphaMode BLEND）`,
+       `mat=${body.matName} groupHit=${groupHit} alphaMode=${bodyMatDef && bodyMatDef.alphaMode}`);
+    const coreKeys = byPart(DESIGN.corePart);
+    const coreMat = coreKeys.length ? nodes.get(coreKeys[0]).matName : null;
+    ok(coreKeys.length === 1 && coreMat === 'btk-lantern',
+       `${t.id}: 发光芯节点存在且 lantern 组命中（btk-lantern）`, `core=${coreKeys.join(',')} mat=${coreMat}`);
+  }
+
   // 主体色相（从设计色 #c8301f 推红范围）
   const col = bodyColorJudge(g, body.matName);
   ok(!!col.good, `${t.id}: 主体色相红色范围（设计色 #c8301f ±10°，S≥${DESIGN.minS}）`, col.good || col.bad);
 
   // 部件 + 账目
   const tasselKeys = byPart(DESIGN.tasselPart), capKeys = byPart(DESIGN.capPart),
-    handleKeys = byPart(DESIGN.handlePart), ribKeys = byPart(DESIGN.ribPart), cordKeys = byPart(DESIGN.cordPart);
-  ok(tasselKeys.length === 1 && capKeys.length === 1 && handleKeys.length === 1 && ribKeys.length === 1 && cordKeys.length === 1,
-    `${t.id}: 灯盖/穗/提梁/骨架/吊线节点齐全`, `tassel=${tasselKeys.length} cap=${capKeys.length} handle=${handleKeys.length} rib=${ribKeys.length} cord=${cordKeys.length}`);
-  let totalTris = meshTris(g, body.meshIdx);
+    handleKeys = byPart(DESIGN.handlePart), ribKeys = byPart(DESIGN.ribPart), cordKeys = byPart(DESIGN.cordPart),
+    coreKeys2 = byPart(DESIGN.corePart);
+  ok(tasselKeys.length === 1 && capKeys.length === 1 && handleKeys.length === 1 && ribKeys.length === 1 && cordKeys.length === 1 && coreKeys2.length === 1,
+    `${t.id}: 灯盖/穗/提梁/骨架/吊线/发光芯节点齐全`, `tassel=${tasselKeys.length} cap=${capKeys.length} handle=${handleKeys.length} rib=${ribKeys.length} cord=${cordKeys.length} core=${coreKeys2.length}`);
+  let totalTris = meshTris(g, body.meshIdx) + (coreKeys2.length ? meshTris(g, nodes.get(coreKeys2[0]).meshIdx) : 0);
   for (const k of [...tasselKeys, ...capKeys, ...handleKeys, ...ribKeys, ...cordKeys]) totalTris += meshTris(g, nodes.get(k).meshIdx);
   // 骨架棱凸出瓣面：rib 簇 → 最近 body 簇（灯轴），逐簇判中段环带凸出占比，取最差
   {
@@ -419,18 +529,25 @@ for (const t of lanternTowers) {
     ok(pairs >= 1 && worst >= DESIGN.ribCrestFrac,
        `${t.id}: 骨架棱位于瓣脊高程（逐簇最差占比 ≥ ${DESIGN.ribCrestFrac}）`,
        pairs ? `worst=${(worst * 100).toFixed(0)}% ribClusters=${pairs}` : 'rib 簇缺失');
+    // R1 必修2 新判据：主要街面方向（正立面外法向，layout+params 独立推）最近骨架棱角距
+    {
+      const layoutObj = layout.objects.find(o => o.id === tParams.id);
+      const azF = facadeAzDeg(layoutObj, tParams);
+      const sj = streetRibJudge(clusters, ribClusters, azF, DESIGN.streetRibMaxOffDeg);
+      ok(!!sj.good, `${t.id}: 正立面方向骨架可见（每灯 6 棱均布，立面 az ${azF.toFixed(1)}° 角距 ≤ ${DESIGN.streetRibMaxOffDeg}°）`, sj.good || sj.bad);
+    }
   }
   const tasselTris = tasselKeys.length ? meshTris(g, nodes.get(tasselKeys[0]).meshIdx) : 0;
   const handleTris = handleKeys.length ? meshTris(g, nodes.get(handleKeys[0]).meshIdx) : 0;
   const ribTris = ribKeys.length ? meshTris(g, nodes.get(ribKeys[0]).meshIdx) : 0;
   ok(tasselTris >= DESIGN.tasselTrisPerLamp * nLamps * 0.8, `${t.id}: 穗子账目`, `tasselTris=${tasselTris} ≥ ${Math.round(DESIGN.tasselTrisPerLamp * nLamps * 0.8)}（${nLamps} 只）`);
   ok(handleTris >= DESIGN.handleTrisPerLamp * nLamps * 0.8, `${t.id}: 提梁账目`, `handleTris=${handleTris}`);
-  ok(ribTris >= DESIGN.ribTrisPerLamp * nLamps * 0.8, `${t.id}: 骨架棱账目`, `ribTris=${ribTris}`);
+  ok(ribTris >= DESIGN.ribTrisPerLamp * nLamps * 0.8, `${t.id}: 骨架棱账目（6 条 × 4 tris）`, `ribTris=${ribTris}`);
   const perLamp = totalTris / nLamps;
   ok(totalTris <= DESIGN.budgetPerLamp * nLamps, `${t.id}: 每只三角预算 ≤ ${DESIGN.budgetPerLamp}`, `perLamp=${perLamp.toFixed(0)} total=${totalTris}`);
 }
 
-ok(lampTotal >= 30, '灯笼总数（两塔合计，设计账 14+26=40）', `total=${lampTotal}`);
+ok(lampTotal === DESIGN.expectedLampTotal, '灯笼总数锁设计账（14+26=40）', `total=${lampTotal}`);
 
 // 组命中（分区 cm 件材质名存活——compress-zones 保护集口径）
 const bzCm = path.join(OUT, 'zone-bazaar-3.cm.glb');
@@ -515,6 +632,36 @@ ok(fbHit, '分区 cm 件 lantern 组命中：red-silk-lantern 名字存活（方
   const rbP = nodeByName(gP).get('lanterns-rib__dark');
   const fP = ribProudFrac(readPositions(gP, 0), readPositions(gP, rbP.meshIdx));
   ok(fP >= DESIGN.ribCrestFrac, '正例N7b 棱在瓣峰 → 瓣脊高程判据绿（判据非恒红）', `frac=${(fP * 100).toFixed(0)}%`);
+}
+// N8 正立面方向骨架可见（R1 必修2）：R0 形态（4 棱 0/60/120/180°，半圈空缺）→ 红（棱数分支，与真产物同形态）；
+// 六棱但全挤背立面半圈 → 红（角距分支）；六棱均布 → 绿。方位角约定：ribAzimuthsDeg 里 az=atan2(−z,x)，
+// 即 math 角 a 的合成棱方位角 = −a（mod 360）。
+// 立面方位角用 hefeng 的 layout+params 实推值（≈280.7°，落在 R0 空缺侧——真产物红证见 red4 日志）。
+{
+  const hp = JSON.parse(fs.readFileSync(path.join(ROOT, 'modules', 'bazaar-tower-kit', 'params', 'hefeng-bld-389701812.json'), 'utf8'));
+  const hObj = layout.objects.find(o => o.id === hp.id);
+  const azF = facadeAzDeg(hObj, hp);
+  // 每条棱一个 2 顶点簇（map 不是 flatMap——flat 数组会被当成单簇、方位角平均成 0°）
+  const synthRibs = (angles) => angles.map(a => {
+    const th = a * Math.PI / 180;
+    return [0.32 * Math.cos(th), 0, 0.32 * Math.sin(th), 0.31 * Math.cos(th), 0.1, 0.31 * Math.sin(th)];
+  });
+  const bodySynth = [-0.3, -0.3, -0.3, 0.3, -0.3, 0.3, -0.3, 0.3, 0.3, 0.3, 0.3, -0.3];
+  const bad = streetRibJudge([bodySynth], synthRibs([0, 60, 120, 180]), azF, DESIGN.streetRibMaxOffDeg);
+  ok(!!bad.bad, '负例N8a R0 棱半圈形态（4 棱，立面侧空缺）→ 街面棱判据红', `${bad.bad}（az=${azF.toFixed(1)}°）`);
+  const bad2 = streetRibJudge([bodySynth], synthRibs([150, 180, 210, 240, 270, 300]), azF, DESIGN.streetRibMaxOffDeg);
+  ok(!!bad2.bad, '负例N8a2 六棱全挤背立面（方位角 60–210°，立面 280.7° 空）→ 角距分支红', `${bad2.bad}（az=${azF.toFixed(1)}°）`);
+  const good = streetRibJudge([bodySynth], synthRibs([0, 60, 120, 180, 240, 300]), azF, DESIGN.streetRibMaxOffDeg);
+  ok(!!good.good, '正例N8b 六棱均布 → 街面棱判据绿（判据非恒红）', `${good.good}`);
+}
+// N9 逐灯挂高（R1 可选）：整灯压低 0.5m → 红；原位（体高中点 = zcExp）→ 绿
+{
+  const zcExp = 3.2;
+  const mk = (dy) => [-0.3, zcExp - 0.315 + dy, -0.3, 0.3, zcExp - 0.315 + dy, 0.3, -0.3, zcExp + 0.315 + dy, 0.3, 0.3, zcExp + 0.315 + dy, -0.3];
+  const bad = hangJudge([mk(-0.5)], zcExp, DESIGN.hangTolM);
+  ok(!!bad.bad, '负例N9a 灯整体压低 0.5m → 挂高判据红', bad.bad);
+  const good = hangJudge([mk(0)], zcExp, DESIGN.hangTolM);
+  ok(!!good.good, '正例N9b 挂高原位 → 挂高判据绿（判据非恒红）', good.good);
 }
 
 console.log(`\nlantern-shape: ${passes} pass, ${fails.length} fail`);
