@@ -607,6 +607,25 @@ for (const [oid, cfg] of Object.entries(CORRIDOR_CFG)) {
   stats.templeEast = { shops: nShop, trees: nTree, ding: nDing };
 }
 
+// ---------- 12c) wave14-templeside：安仁街东地块 + 后殿北院（樟树干 + 复用鼎），S1 占位店 p165 有 scale3 ----------
+// 树干盒口径与 12b 相同（0.55×3×0.55）；鼎复用 templeeast-ding 的模块 collision.json。
+{
+  const ts = layout.instances.filter(i => i.id.startsWith('anreneast-') || i.id.startsWith('templeside-'));
+  let nTree = 0, nDing = 0;
+  for (const inst of ts) {
+    const [x, z] = inst.position;
+    if (inst.module === 'temple-tree-camphor') {
+      add(inst.zone, `${inst.id}:tree-trunk-block`, 'templeside-tree', 0, [0, 0, 0], [x, 1.5, z], [0.55, 3, 0.55]);
+      nTree++;
+    } else if (inst.module === 'templeeast-ding') {
+      const rec = JSON.parse(fs.readFileSync(path.join(AREA, 'out-garden-kits', 'templeeast-ding', 'collision.json'), 'utf8'));
+      for (const b of rec.colliders) add(inst.zone, `${inst.id}:${b.name}`, 'templeside-ding', inst.rotY, [x, 0, z], b.center, b.size);
+      nDing++;
+    } else throw new Error(`templeside instance ${inst.id}: unhandled module ${inst.module}`);
+  }
+  stats.templeside = { trees: nTree, ding: nDing };
+}
+
 // ---------- 13) 摊位/长凳（bazaar 51 件）：每件一个 GLB 包围盒盒；檐棚（身体带以上）不建 ----------
 {
   const sp = JSON.parse(fs.readFileSync(path.join(AREA, 'modules', 'bazaar-stalls', 'records', 'placements.json'), 'utf8'));
@@ -769,7 +788,8 @@ const EXTRA_GROUND = {
     'yimen-stage-body__worn-stone*', 'dadian-court__worn-stone*', 'peidian-body__worn-stone*',
     'gallery-body__worn-stone*', 'dadian-body__worn-stone*', 'court3-boundary__worn-stone*',
     'houdian-body__worn-stone*',
-    'temple|templeeast-paving|plaza|L1*'],   // wave14-templeeast 庙东跨院青石板铺地（程序化 plaza，h 0.04）
+    'temple|templeeast-paving|plaza|L1*',    // wave14-templeeast 庙东跨院青石板铺地（程序化 plaza，h 0.04）
+    'temple|templeside-paving|plaza|L1*'],   // wave14-templeside S3 后殿北院青石板铺地（程序化 plaza，h 0.04）
   bazaar: FROZEN_EXTRA_GROUND,
   outer: FROZEN_EXTRA_GROUND,
 };

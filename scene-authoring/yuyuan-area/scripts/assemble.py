@@ -50,7 +50,12 @@ def place(objs, inst):
     anchor.empty_display_size = 2
     anchor.location = (x, -z, 0)
     anchor.rotation_euler = (0, 0, inst['rotY'])
-    if inst.get('scale'):
+    if inst.get('scale3'):
+        # wave14-templeside S1a：非均匀缩放（GLB 轴约定 [宽,高,深]）。
+        # glTF Y-up -> Blender Z-up：glb(x,y,z) -> blender(x,-z,y)，所以 Blender 轴序 = (宽, 深, 高)。
+        sx, sy, sz = inst['scale3']
+        anchor.scale = (sx, sz, sy)
+    elif inst.get('scale'):
         anchor.scale = (inst['scale'],) * 3
     anchor['id'] = inst['id']
     anchor['module'] = inst['module']
@@ -62,6 +67,11 @@ def place(objs, inst):
     tgt.objects.link(anchor)
     for o in objs:
         dup = o.copy()  # 链接复制：共享 mesh/材质/贴图数据
+        # wave14-templeside：复用 templeeast-ding 模块的 templeside-* 实例，子件名随锚改名。
+        # 否则子件名前缀 templeeast-ding__* 会被 temple-5 的名字谓词误收（锚在 temple-2、子件成孤儿），
+        # 且 templeeast-test C5「其它庙区分件不含 templeeast 节点」按名字对账也会被误伤。
+        if inst['id'].startswith('templeside-') and dup.name.startswith('templeeast-ding'):
+            dup.name = inst['id'] + dup.name[len('templeeast-ding'):]
         dup.hide_render = False
         dup.hide_viewport = False
         tgt.objects.link(dup)
