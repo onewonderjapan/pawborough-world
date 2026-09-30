@@ -1,0 +1,12 @@
+{
+  "decisionId": "jiuqu-adoption-20261001",
+  "decidedAt": "2026-10-01",
+  "owner": "机主",
+  "context": "2026-09-30 三地标看图：九曲桥判「修」（docs/OWNER_DECISION-landmarks-20260930.json）。修复（镂空石栏杆 + 单排石墩 + 薄板桥面，R1 花瓶柱接上枋）经 astra 审查后合入 main 796332b4",
+  "evidence": "对照图 /home/baibai/outbox/pawborough-pv-v1-20260930/jiuqu-adoption-sheet.png（PV08 俯瞰、PV09 桥上修前/修后，main 8f4085dd v1 PV 重渲中帧；浏览器导览机位）",
+  "ownerWords": "采用",
+  "decisions": {
+    "jiuqu-bridge": { "ownerAdopted": true, "supersedes": "OWNER_DECISION-landmarks-20260930.json#jiuqu-bridge" }
+  },
+  "result": "湖心亭、九曲桥、大假山三地标全部采用（v1.0 视觉底线）"
+}
