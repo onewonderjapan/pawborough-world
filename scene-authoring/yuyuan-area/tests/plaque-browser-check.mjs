@@ -13,6 +13,8 @@
 // 红态：6c6270fb 产物（rpanel 绕序朝内 → prepare() FrontSide 剔除）三块匾 B1 / B2 全红（day / night），见工单包 artifacts/red-plaque-browser-*.log。
 // SHOTDIR=<目录>：另存三处人眼机位截图（华宝楼广场 / 悦宾楼街面 / 和丰楼）到该目录（只放工单包，不进仓库）。
 import { createRequire } from 'node:module';
+import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { ROOT, loadInputs, panelTriangles, bigPlaques } from './plaque-lib.mjs';
 
@@ -20,7 +22,27 @@ const require = createRequire(import.meta.url);   // 经本模块 node_modules�
 const { chromium } = require('playwright');
 const BASE = process.env.BASE || 'http://127.0.0.1:5490/';
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
-const exe = '/home/baibai/.cache/ms-playwright/chromium-1234/chrome-linux/chrome';
+
+// Chromium 解析（wave14-viewerside R1 必修4：去个人绝对路径；CHROME_PATH 优先，否则 Playwright 自管/缓存扫描）
+function resolveChromiumExecutable() {
+  if (process.env.CHROME_PATH) return process.env.CHROME_PATH;
+  try {
+    if (fs.existsSync(chromium.executablePath())) return null;
+  } catch { /* registry 未配置，走缓存扫描 */ }
+  const cache = path.join(os.homedir(), '.cache', 'ms-playwright');
+  try {
+    const revs = fs.readdirSync(cache)
+      .map(d => { const m = /^chromium-(\d+)$/.exec(d); return m ? { d, rev: Number(m[1]) } : null; })
+      .filter(Boolean).sort((a, b) => b.rev - a.rev);
+    for (const { d } of revs) {
+      const p = path.join(cache, d, 'chrome-linux', 'chrome');
+      if (fs.existsSync(p)) return p;
+    }
+  } catch { /* 无默认缓存目录 */ }
+  return null;
+}
+
+const exe = resolveChromiumExecutable();
 const LIGHTS = (process.env.LIGHTS || 'day,night').split(',');
 const BATCH0 = process.env.BATCH === '0';
 const SHOTDIR = process.env.SHOTDIR || '';
@@ -41,7 +63,8 @@ for (const t of TARGETS) ok(`truth ${t.id} ${t.key} 大匾在 raw GLB 中定位�
 // 华宝楼 / 和丰楼隔中心广场相对（约 28 m），悦宾楼大匾朝东对着约 6 m 宽的街，所以悦宾取街面斜看。
 const VIEWS = { huabao: { dist: 22, along: 6, eyeY: 1.7 }, yuebin: { dist: 5, along: 15, eyeY: 1.7 }, hefeng: { dist: 25, along: 0, eyeY: 4.0 } };
 
-const browser = await chromium.launch({ executablePath: exe, args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
+// GPU_WEBGL=1：机器 swiftshader WebGL 全灭时的环境开关（headless:false + 外部 DISPLAY/XAUTHORITY），默认关闭。
+const browser = await chromium.launch({ ...(exe ? { executablePath: exe } : {}), ...(process.env.GPU_WEBGL === '1' ? { headless: false } : {}), args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
 try {
   for (const light of LIGHTS) {
     const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });

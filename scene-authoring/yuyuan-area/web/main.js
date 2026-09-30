@@ -108,7 +108,16 @@ function prepare(root) {
   root.traverse(o => {
     if (o.isMesh) {
       o.castShadow = false; o.receiveShadow = false;
-      if (o.material && o.material.map === null && o.material.vertexColors === false) o.material.side = THREE.FrontSide;
+      // wave14-viewerside 单双面契约：既定策略维持——无贴图且无顶点色的材质强制 FrontSide（薄片背面剔除防闪烁/性能）；
+      // 唯一豁免 = 材质 extras.pbDoubleSided === true（装配端 export-zones.py 按 baseline/doublesided-materials.json
+      // 白名单打的标记，GLTFLoader 进 material.userData）：真正的单层薄片（树叶片/灯笼绸/玻璃薄窗/薄瓷圈/店面背板等）
+      // 保留 DoubleSide。数组材质维持旧口径（不强制），只对其中带标记的项生效。
+      const mats = Array.isArray(o.material) ? o.material : [o.material];
+      for (const m of mats) {
+        if (!m) continue;
+        if (m.userData && m.userData.pbDoubleSided === true) m.side = THREE.DoubleSide;
+        else if (!Array.isArray(o.material) && m.map === null && m.vertexColors === false) m.side = THREE.FrontSide;
+      }
     }
   });
   // wave13-tourfix U2：合批前收匾额盒（框+文字面，根在原点，updateMatrixWorld 即世界坐标）。

@@ -15,6 +15,7 @@
 // 用法：BASE=http://127.0.0.1:5494/ [PERF=0] [BUDGET=1200] [VIEWS=core-oblique,garden-oblique,...]
 //       [SHOT_DIR=<目录>] [BEFORE_DIR=<目录>] [REPORT=<json>] [AB=0] node tests/perf-drawcalls-check.mjs
 import { createRequire } from 'node:module';
+import os from 'node:os';
 import fs from 'node:fs';
 import path from 'node:path';
 import { glCounterInit, settle, frameCounts, canvasPng, pixelDiff, savePng, CH_TOL, EDGE_GRAD, PIX_MAX } from './perf-lib.mjs';
@@ -40,8 +41,29 @@ const ALL_VIEWS = {
 const VIEWS = (process.env.VIEWS ?? Object.keys(ALL_VIEWS).join(',')).split(',').filter(Boolean);
 if (SHOT_DIR) fs.mkdirSync(SHOT_DIR, { recursive: true });
 
-const exe = '/home/baibai/.cache/ms-playwright/chromium-1234/chrome-linux/chrome';
-const browser = await chromium.launch({ executablePath: exe, args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
+
+// Chromium 解析（wave14-viewerside R1 必修4：去个人绝对路径；CHROME_PATH 优先，否则 Playwright 自管/缓存扫描）
+function resolveChromiumExecutable() {
+  if (process.env.CHROME_PATH) return process.env.CHROME_PATH;
+  try {
+    if (fs.existsSync(chromium.executablePath())) return null;
+  } catch { /* registry 未配置，走缓存扫描 */ }
+  const cache = path.join(os.homedir(), '.cache', 'ms-playwright');
+  try {
+    const revs = fs.readdirSync(cache)
+      .map(d => { const m = /^chromium-(\d+)$/.exec(d); return m ? { d, rev: Number(m[1]) } : null; })
+      .filter(Boolean).sort((a, b) => b.rev - a.rev);
+    for (const { d } of revs) {
+      const p = path.join(cache, d, 'chrome-linux', 'chrome');
+      if (fs.existsSync(p)) return p;
+    }
+  } catch { /* 无默认缓存目录 */ }
+  return null;
+}
+
+const exe = resolveChromiumExecutable();
+// GPU_WEBGL=1：机器 swiftshader WebGL 全灭时的环境开关（headless:false + 外部 DISPLAY/XAUTHORITY），默认关闭。
+const browser = await chromium.launch({ ...(exe ? { executablePath: exe } : {}), ...(process.env.GPU_WEBGL === '1' ? { headless: false } : {}), args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
 async function openPage(qs) {
   const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
   await page.addInitScript(glCounterInit);
