@@ -1,15 +1,10 @@
 {
   "schema": 1,
-  "note": "wave14-viewerside 查看器单双面契约：web/main.js prepare() 对「无贴图、无顶点色」材质强制 FrontSide（防薄片背面闪烁的既有策略），本白名单是唯一豁免——scripts/export-zones.py 在装配端给命中基名（忽略 .NNN 后缀）的材质打 extras.pbDoubleSided=true，gltfpack -ke 保留进 cm 件，GLTFLoader 进 material.userData，查看器据此保留 THREE.DoubleSide。只收真正的单层薄片（匾/旗/布幔/树叶片/玻璃薄窗/薄瓷/单层内衬面等）；大面积结构壳体（btk-dark/btk-worn-stone 等屋面、墙面、街面）不进表——取证（工单包 artifacts/forensics/）显示其在常见视角无整体破洞，放开双面有性能与内壳闪烁风险；实心体绕序朝反（方浜 sctail 沥青 3 件）属生成器缺陷，另单修，不用本表掩盖。名单依据：取证 65 机位（tour 11 + control 22 + pv 32）逐网格正反面可见性统计 + 逐材质语义分类，明细见工单包 artifacts/forensics/frontface-findings.json 与 second-pass.json。",
+  "note": "wave14-viewerside R1 白名单（语义修正版）：web/main.js prepare() 对「无贴图、无顶点色」材质强制 FrontSide（防薄片背面闪烁的既有策略），本白名单是唯一豁免——scripts/export-zones.py 在装配端给命中基名（忽略 .NNN 后缀）的材质打 extras.pbDoubleSided=true，gltfpack -ke 保留进 cm 件，GLTFLoader 进 material.userData，查看器据此保留 THREE.DoubleSide。收录口径（R1，替代 R0 的取证口径）：只收「所有用途都是单层薄片」的材质，判定追溯到生成器源码建模函数（rpanel/cloth_glb 单面网格=薄片；blob/cyl/box/vessel 内外壁=实体），不凭材质名或 primitive 包围盒。R0 移除 8 项：实体树冠 tk-foliage-osmanthus-b/-willow-tuft（blob 二十面体）、red-silk-lantern（cyl 灯体）、recessed-old-glass（0.025m box）、interior-warm-shadow（0.20m box 后壁）、porcelain-blue-rim（vessel 内外壁）、btk-shopback（rpanel 薄片但无背面可见用途，法线朝街）、btk-gild（rpanel/obox/cyl/sphere 混用，无破洞证据不拆专用材质）——逐项源码证据见工单包 artifacts/r1/WHITELIST-EVIDENCE.md。补入 3 项：canvasCream/canvasWine/canvasIndigo（cloth_glb 单层棚面与垂幔；GLB 里 doubleSided=true 被 prepare() 覆盖回 FrontSide，棚下看棚面消失=本单修的可见问题）。大面积结构壳体（btk-dark/btk-worn-stone 等屋面、墙面、街面）不进表；实心体绕序朝反（方浜 sctail 沥青 3 件）属生成器缺陷另单修，不用本表掩盖。",
   "materials": [
-    "tk-foliage-osmanthus-b",
-    "tk-foliage-willow-tuft",
-    "red-silk-lantern",
     "btk-glass",
-    "recessed-old-glass",
-    "porcelain-blue-rim",
-    "btk-shopback",
-    "btk-gild",
-    "interior-warm-shadow"
+    "canvasCream",
+    "canvasWine",
+    "canvasIndigo"
   ]
 }

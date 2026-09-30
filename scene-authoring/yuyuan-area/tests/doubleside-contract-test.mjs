@@ -7,15 +7,17 @@
 // 实测从 out-zone 分区件（raw GLB + cm GLB）的 materials[].extras 读，按节点引用记账（引用计数 0 的材质
 // 会被 gltfpack 裁掉，不算被引用）。
 // 断言：
-//   C1 配置良构：schema=1、materials 非空数组、基名唯一、无空名；
-//   C2 白名单基名全部在分区件里解析到「被引用」材质，raw 与 cm 双路都带 extras.pbDoubleSided === true
-//      （查到 0 个 = FAIL，不静默缩圈）；
+//   C1 配置良构：schema=1、materials 非空数组、基名唯一、无空名；且不得含 KNOWN_SOLIDS（生成器语义
+//      已知的实体材质黑名单，独立期望，防「薄片白名单」被实体材质混入——R1 教训）；
+//   C2 白名单基名全部在分区件里解析到「被引用」材质，raw 与 cm **两路各自**都要命中（任一路查到 0 个
+//      = FAIL，不静默缩圈），且两路都带 extras.pbDoubleSided === true；
 //   C3 没有任何未被白名单命中的「被引用」材质带 pbDoubleSided（标记只能来自白名单）；
-//   C4 manifest 全部 zone 文件都参与检查（文件缺失 = FAIL）。
+//   C4 manifest 全部 zone 文件都参与检查，raw 与 cm 必须**成对存在**（任一缺失 = FAIL，不许跳过）。
 // 内嵌负例（故障注入实测断言会红，不靠旧版日志）：
 //   NEG1 配置漂移：白名单塞不存在的名字 + 抽掉一个真实名字 → C2 必须红；
 //   NEG2 剥标记：字节级改写某分区件 JSON chunk、删掉一个已标记材质的 pbDoubleSided → C2 必须红（改后字节还原并核对 sha）；
-//   NEG3 越权标记：给一个未列入白名单的被引用材质注入 extras.pbDoubleSided=true（内存对象）→ C3 必须红。
+//   NEG3 越权标记：给一个未列入白名单的被引用材质注入 extras.pbDoubleSided=true（内存对象）→ C3 必须红；
+//   NEG4 实体混入：把已知实体材质（tk-foliage-osmanthus-b，blob 二十面体树冠）重新写进白名单 → C1 必须红。
 // 用法：OUT_DIR=out-zone node tests/doubleside-contract-test.mjs（缺分区件时 SKIP——链内惯例；守卫另查重建流程）
 import fs from 'node:fs';
 import path from 'node:path';
@@ -57,6 +59,18 @@ function rewriteJsonChunk(p, json) {
 const stripDot = (s) => String(s || '').replace(/\.\d{3}$/, '');
 const sha256 = (p) => crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
 
+// 生成器语义清单（独立期望，不来自任何 GLB/产物）：已知「实体」材质基名——建模函数是封闭体
+// （blob 二十面体 / cyl 带盖圆柱 / box 六面体 / vessel 内外壁），不得按单层薄片进白名单。
+// 源码证据：工单包 artifacts/r1/WHITELIST-EVIDENCE.md（tree-kit blob / mb_lib box,cyl / geomlib vessel）。
+const KNOWN_SOLIDS = new Set([
+  'tk-foliage-osmanthus-b',   // blob() 二十面体树冠   tree-kit/scripts/s1s2_build_trees.py:89,388
+  'tk-foliage-willow-tuft',   // blob() 二十面体树冠   同上 :86,332-341
+  'red-silk-lantern',         // cyl() 封闭圆柱灯体    building/mb_lib.py:97; build_new_unit.py:36
+  'recessed-old-glass',       // box() 0.025 m 窗玻璃  building/mb_lib.py:83,180,193
+  'interior-warm-shadow',     // box() 0.20 m 后壁     building/mb_lib.py:85,294
+  'porcelain-blue-rim',       // vessel() 内外壁厚壳   snacks/handheld/kit/geomlib.py:128
+]);
+
 // ---------- 分区件被引用材质（与 compress-zones.mjs glbMatStats 同口径：按节点引用记账） ----------
 function referencedMats(p) {
   const { json } = jsonOfGlb(p);
@@ -86,7 +100,8 @@ function checkAll(cfg, zones) {
   if (new Set(names).size !== names.length) fails.push('C1 materials 有重复');
   if (names.some(n => !n.trim())) fails.push('C1 materials 有空名');
   const want = [...new Set(names)];
-  // C2 白名单解析 + 双路标记
+  for (const n of want) if (KNOWN_SOLIDS.has(n)) fails.push(`C1 白名单 ${n} 是生成器已知实体材质（blob/cyl/box/vessel 封闭体），不得按单层薄片放行`);
+  // C2 白名单解析 + 双路标记（raw / cm 各自独立命中：任一路 0 命中即红，不允许「另一路有就算过」）
   for (const base of want) {
     let rawHit = 0, cmHit = 0, rawUnmarked = 0, cmUnmarked = 0;
     for (const z of zones) {
@@ -95,8 +110,8 @@ function checkAll(cfg, zones) {
     }
     if (!rawHit) fails.push(`C2 白名单 ${base} 在任何分区件里都没有被引用的材质（查到 0 个）`);
     else if (rawUnmarked) fails.push(`C2 白名单 ${base} 有 ${rawUnmarked} 个被引用 raw 材质缺 pbDoubleSided=true`);
-    if (zHasCm(zones) && cmHit && cmUnmarked) fails.push(`C2 白名单 ${base} 有 ${cmUnmarked} 个被引用 cm 材质缺 pbDoubleSided=true`);
-    if (zHasCm(zones) && rawHit && !cmHit) fails.push(`C2 白名单 ${base} raw 有被引用材质但 cm 一路全部丢失（-ke 丢 extras?）`);
+    if (!cmHit) fails.push(`C2 白名单 ${base} 在 cm 一路没有被引用的材质（raw 命中 ${rawHit}；cm 缺失或 -ke 丢 extras?）`);
+    else if (cmUnmarked) fails.push(`C2 白名单 ${base} 有 ${cmUnmarked} 个被引用 cm 材质缺 pbDoubleSided=true`);
   }
   // C3 越权标记
   const wantSet = new Set(want);
@@ -108,6 +123,7 @@ function checkAll(cfg, zones) {
   return fails;
 }
 const zHasCm = (zones) => zones.some(z => z.cm.length);
+void zHasCm;   // C2 现按分区逐路要求命中，不再有全局 cm 门控；保留此行仅提示语义已变（无调用）
 
 // ---------- 主流程 ----------
 if (!fs.existsSync(CFG)) { console.log('SKIP doubleside-contract-test -', CFG, '不存在（契约未接线）'); process.exit(0); }
@@ -122,6 +138,8 @@ for (const z of zoneFiles) {
   const rawP = path.join(OUT, z.file);
   const cmP = rawP.replace(/\.glb$/, '.cm.glb');
   ok(`C4 ${z.file} 存在`, fs.existsSync(rawP));
+  // raw/cm 必须成对存在：cm 缺失 = FAIL（不许跳过——R0 版本在此静默放行，形成假通过路径）
+  ok(`C4 ${path.basename(cmP)} 存在（raw/cm 成对）`, fs.existsSync(cmP));
   if (!fs.existsSync(rawP)) { zones.push({ file: z.file, raw: [], cm: [] }); continue; }
   zones.push({ file: z.file, raw: referencedMats(rawP), cm: fs.existsSync(cmP) ? referencedMats(cmP) : [] });
 }
@@ -172,6 +190,14 @@ console.log(`census: zones=${zones.length} raw+cm 材质条目=${zones.reduce((s
     const f3 = checkAll(cfg, injected);
     ok('NEG3 越权标记 → C3 红', f3.some(x => x.startsWith('C3')), f3.join(' | ') || '断言没有红');
   }
+}
+{
+  // NEG4 实体混入（R1 新增）：把已知实体材质重新写进白名单 → C1 语义红。
+  // 独立期望 = 上面的 KNOWN_SOLIDS 常量（生成器建模函数语义），与任何 GLB 内容无关。
+  const solid = 'tk-foliage-osmanthus-b';
+  const drifted = { schema: 1, materials: [...cfg.materials, solid] };
+  const f4 = checkAll(drifted, zones);
+  ok('NEG4 实体材质混入白名单 → C1 语义红', f4.some(x => x.startsWith('C1') && x.includes(solid)), f4.join(' | ') || '断言没有红');
 }
 
 console.log(`RESULT pass=${pass} fail=${fail}${skipped ? ` skipped=${skipped}` : ''}`);

@@ -3,18 +3,21 @@
 //   - 期望名单：baseline/doublesided-materials.json（白名单 = 唯一真值）；
 //   - 材质事实：out-zone 分区件 raw GLB 的 materials[]（map 有无、基名、是否被引用），本文件自解析，不读页面状态。
 // 断言：
-//   D1 标记材质在查看器里是 DoubleSide 且带 userData.pbDoubleSided：选白名单命中件数最多的分区加载，
-//      白名单材质任一 mesh 的 material.side === THREE.DoubleSide（默认合批页与 ?batch=0 页都查）；
-//   D2 未标记的「无贴图」材质是 FrontSide（同页取一个不在白名单的无贴图被引用材质，side === THREE.FrontSide
-//      且 userData.pbDoubleSided 非真）——策略其余部分未被放宽；
+//   D1 覆盖白名单**每个基名**、场景里**每个实际材质变体**（运行时按名字收集全部实例，不是每基名只取第一个）：
+//      选中覆盖全白名单的最小分区集逐区加载，每个变体 material.side === THREE.DoubleSide 且带
+//      userData.pbDoubleSided（默认合批页与 ?batch=0 页都查）；
+//   D2 未标记的「无贴图」材质是 FrontSide（主分区取一个不在白名单的无贴图被引用材质）——策略其余部分未被放宽；
 //   D3 画面非空白：中心区域亮度标准差 ≥ 8/255（防止「断言挂在空帧上」）。
-// 负例（故障注入实测断言会红，不靠旧版日志）：NEG=1 时先把该分区 cm 件里白名单首名材质的
-//   extras.pbDoubleSided 字节级剥掉（JSON chunk 重写）→ 加载页面 D1 必须红 → 恢复原字节（sha 核对）→ D1 复绿。
+// 负例（NEG=1）：**请求拦截注入**——page.route 拦截目标分区 cm 件请求、fulfill 剥掉目标材质 pbDoubleSided 的
+//   内存副本（不写盘、无恢复竞态）→ 加载页面 D1 必须红，且红必须**精确命中目标材质**（其余材质 / D2 / D3
+//   出现任何连带失败都算 FAIL）；失败账本不整段清零，只有逐字命中的目标行被豁免（expectedNegRed），其余失败
+//   进 unexpectedFail 并决定退出码。注：多件区 ?zone=<id> 一页拉全部分件，canvas 在 part1、btk 玻璃在楼阁件。
+// Chromium 解析：CHROME_PATH 环境变量优先；否则交给 Playwright 管理的浏览器（registry / 默认缓存动态扫描）。
 // 用法：BASE=http://127.0.0.1:5487/ OUT_DIR=out-zone node tests/doubleside-browser-check.mjs（NEG=1 只跑负例段）
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
-import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
@@ -23,23 +26,22 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'out-zone');
 const BASE = process.env.BASE || 'http://127.0.0.1:5487/';
 const NEG = process.env.NEG === '1';
-const exe = '/home/baibai/.cache/ms-playwright/chromium-1234/chrome-linux/chrome';
 
 let pass = 0, fail = 0;
 const failures = [];
+const expectedRed = new Set();   // NEG 段被精确豁免的失败行（逐字匹配，防「任意失败数增加」冒充）
 const ok = (name, cond, detail = '') => { if (cond) { pass++; console.log('PASS', name); } else { fail++; failures.push(`${name}${detail ? ': ' + detail : ''}`); console.log('FAIL', name, detail); } };
 const stripDot = (s) => String(s || '').replace(/\.\d{3}$/, '');
-const sha256 = (p) => crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
 function jsonOfGlb(p) {
   const b = fs.readFileSync(p);
   if (b.readUInt32LE(0) !== 0x46546C67) throw new Error(p + ': not GLB');
   const n = b.readUInt32LE(12);
   return { json: JSON.parse(b.slice(20, 20 + n).toString('utf8')), bytes: b };
 }
-function rewriteJsonChunk(p, json) {
-  const b = fs.readFileSync(p);
-  const n = b.readUInt32LE(12);
-  const binStart = 20 + n, binLen = b.readUInt32LE(binStart), binType = b.slice(binStart + 4, binStart + 8);
+function rewriteJsonChunk(bytes, json) {
+  // 字节级重写 JSON chunk（对内存 Buffer 操作，请求拦截注入用；不落盘）
+  const n = bytes.readUInt32LE(12);
+  const binStart = 20 + n, binLen = bytes.readUInt32LE(binStart), binType = bytes.slice(binStart + 4, binStart + 8);
   let js = Buffer.from(JSON.stringify(json), 'utf8');
   const pad = (4 - (js.length % 4)) % 4;
   if (pad) js = Buffer.concat([js, Buffer.alloc(pad, 0x20)]);
@@ -49,19 +51,17 @@ function rewriteJsonChunk(p, json) {
   head.writeUInt32LE(js.length, 12); head.writeUInt32LE(0x4E4F534A, 16);
   const binHead = Buffer.alloc(8);
   binHead.writeUInt32LE(binLen, 0); binType.copy(binHead, 4);
-  return Buffer.concat([head, js, binHead, b.slice(binStart + 8)]);
+  return Buffer.concat([head, js, binHead, bytes.slice(binStart + 8)]);
 }
 
-// ---------- oracle（Node 侧独立解析） ----------
+// ---------- oracle（Node 侧独立解析）：按分区 id 分组（多件区一页全拉），贪心最小覆盖全白名单 ----------
 const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline', 'doublesided-materials.json'), 'utf8'));
 const manifest = JSON.parse(fs.readFileSync(path.join(OUT, 'zones-manifest.json'), 'utf8'));
-const entries = manifest.zones.filter(z => z.file);
-let pick = null; // { id, file, marked:[base...], unmarkedMapless: base }
-for (const e of entries) {
+const groups = new Map(); // id -> { id, files: [{file, cmPath}], marked: Set, unmarkedMapless: [base...] }
+for (const e of manifest.zones.filter(z => z.file)) {
   const p = path.join(OUT, e.file);
   if (!fs.existsSync(p)) continue;
   const { json } = jsonOfGlb(p);
-  // 被引用材质（按节点引用记账，引用 0 的会被压缩裁掉）
   const ref = new Map();
   for (const node of json.nodes || []) {
     if (node.mesh === undefined) continue;
@@ -74,37 +74,99 @@ for (const e of entries) {
   }
   const mats = [...ref.values()];
   const marked = [...new Set(mats.map(m => stripDot(m.name)).filter(b => cfg.materials.includes(b)))];
-  if (!pick || marked.length > pick.marked.length) {
-    const unmarkedMapless = [...new Set(mats
-      .filter(m => !(m.pbrMetallicRoughness && m.pbrMetallicRoughness.baseColorTexture))
-      .map(m => stripDot(m.name))
-      .filter(b => b && !cfg.materials.includes(b)))];
-    pick = { id: e.id, file: e.file, marked, unmarkedMapless };
-  }
+  if (!marked.length) continue;
+  const unmarkedMapless = [...new Set(mats
+    .filter(m => !(m.pbrMetallicRoughness && m.pbrMetallicRoughness.baseColorTexture))
+    .map(m => stripDot(m.name))
+    .filter(b => b && !cfg.materials.includes(b)))];
+  const g = groups.get(e.id) || { id: e.id, files: [], marked: new Set(), unmarkedMapless: [] };
+  g.files.push({ file: e.file, cmPath: p.replace(/\.glb$/, '.cm.glb'), relFile: path.basename(p).replace(/\.glb$/, '.cm.glb') });
+  for (const b of marked) g.marked.add(b);
+  if (!g.unmarkedMapless.length && unmarkedMapless.length) g.unmarkedMapless = unmarkedMapless;
+  groups.set(e.id, g);
 }
-if (!pick || !pick.marked.length || !pick.unmarkedMapless.length) {
-  console.error('FAIL oracle: 没有同时含白名单材质与未标记无贴图材质的分区件', pick);
+// 贪心最小覆盖：白名单每个基名都必须被至少一个选中分区覆盖（覆盖不了 = oracle 失败，不缩圈）
+const want = [...cfg.materials];
+const covered = new Set();
+const cover = [];
+while (covered.size < want.length) {
+  let best = null;
+  for (const g of groups.values()) {
+    const gain = [...g.marked].filter(b => !covered.has(b)).length;
+    if (gain > 0 && (!best || gain > best.gain)) best = { g, gain };
+  }
+  if (!best) break;
+  cover.push(best.g);
+  for (const b of best.g.marked) covered.add(b);
+}
+if (covered.size < want.length) {
+  console.error('FAIL oracle: 白名单基名没有被任何分区件覆盖，缺：', want.filter(b => !covered.has(b)));
   process.exit(1);
 }
-console.log(`oracle: zone=${pick.id} (${pick.file}) marked=[${pick.marked.join(',')}] unmarkedMapless 样本=${pick.unmarkedMapless[0]}`);
+const primary = cover.reduce((a, b) => (b.marked.size > a.marked.size ? b : a), cover[0]);
+if (!primary.unmarkedMapless.length) {
+  console.error('FAIL oracle: 主分区', primary.id, '没有未标记的无贴图材质可做 D2 样本');
+  process.exit(1);
+}
+// 选中分区的 cm 件必须成对存在（缺失 = FAIL，不许跳过默认路径）
+for (const g of cover) for (const f of g.files) {
+  if (!fs.existsSync(f.cmPath)) { console.error('FAIL oracle: cm 件缺失（raw/cm 必须成对）', f.cmPath); process.exit(1); }
+}
+console.log(`oracle: cover=[${cover.map(g => g.id).join(',')}] 主分区=${primary.id} 白名单覆盖=[${want.join(',')}] D2 样本=${primary.unmarkedMapless[0]}`);
 
-// cm 件（浏览器默认路径）；NEG 剥标记在这里做
-const cmPath = path.join(OUT, pick.file.replace(/\.glb$/, '.cm.glb'));
-const haveCm = fs.existsSync(cmPath);
+// ---------- Chromium 解析（R1 必修4：去个人绝对路径；CHROME_PATH 覆盖，否则 Playwright 自管） ----------
+function resolveChromiumExecutable() {
+  if (process.env.CHROME_PATH) return process.env.CHROME_PATH;
+  try {
+    if (fs.existsSync(chromium.executablePath())) return null;   // Playwright registry 管理的默认浏览器
+  } catch { /* registry 未配置，走缓存扫描 */ }
+  const cache = path.join(os.homedir(), '.cache', 'ms-playwright');
+  try {
+    const revs = fs.readdirSync(cache)
+      .map(d => { const m = /^chromium-(\d+)$/.exec(d); return m ? { d, rev: Number(m[1]) } : null; })
+      .filter(Boolean).sort((a, b) => b.rev - a.rev);
+    for (const { d } of revs) {
+      const p = path.join(cache, d, 'chrome-linux', 'chrome');
+      if (fs.existsSync(p)) return p;
+    }
+  } catch { /* 无默认缓存目录 */ }
+  return null;
+}
+const launchArgs = ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'];
+const exe = resolveChromiumExecutable();
+const browser = await chromium.launch(exe ? { executablePath: exe, args: launchArgs } : { args: launchArgs });
 
-const browser = await chromium.launch({ executablePath: exe, args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
-const EXES = haveCm ? ['', '&batch=0'] : ['&batch=0'];   // 默认合批路径 + 不合批路径
-
-async function loadAndCheck(tag) {
-  for (const qs of EXES) {
+async function loadAndCheck(tag, g, inject = null) {
+  for (const qs of ['', '&batch=0']) {
     const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
-    const errs = [];
-    page.on('pageerror', e => errs.push(String(e)));
-    await page.goto(`${BASE}?zone=${pick.id}&light=day${qs}`, { waitUntil: 'domcontentloaded' });
-    await page.waitForFunction(() => window.__ready === true, null, { timeout: 900000 });
+    if (inject) await page.route('**/' + inject.file, route => route.fulfill({ body: inject.body, contentType: 'model/gltf-binary' }));
+    page.on('pageerror', e => console.warn(`[warn][${tag}|zone=${g.id}] pageerror:`, String(e).slice(0, 200)));
+    await page.goto(`${BASE}?zone=${g.id}&light=day${qs}`, { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => window.__firstLoadReady === true, null, { timeout: 900000 });
+    const markedBases = [...g.marked];
     const r = await page.evaluate(async ({ marked, unmarked }) => {
       const THREE = await import('three');
       const scene = window.__scene;
+      const out = { marked: {}, unmarked: null, batched: 0 };
+      // D1 全变体收集：同一基名下每个运行时材质实例（含 .NNN 变体 / 合批后残留）都记下来
+      const byBase = new Map();
+      scene.traverse((o) => {
+        if (!o.isMesh || !o.material) return;
+        const arr = Array.isArray(o.material) ? o.material : [o.material];
+        for (const m of arr) {
+          const base = String(m.name || '').replace(/\.\d{3}$/, '');
+          if (!marked.includes(base)) continue;
+          if (!byBase.has(base)) byBase.set(base, new Map());
+          const bucket = byBase.get(base);
+          const key = m.name || '(unnamed)';
+          if (!bucket.has(key)) bucket.set(key, { name: key, n: 0, side: m.side === THREE.DoubleSide ? 'DoubleSide' : m.side === THREE.FrontSide ? 'FrontSide' : String(m.side), pb: !!(m.userData && m.userData.pbDoubleSided === true) });
+          bucket.get(key).n++;
+        }
+      });
+      for (const b of marked) {
+        const bucket = byBase.get(b);
+        out.marked[b] = bucket ? { variants: [...bucket.values()] } : null;   // null = 场景里没找到（覆盖缺口）
+      }
       const findMat = (base) => {
         let found = null;
         scene.traverse((o) => {
@@ -114,11 +176,6 @@ async function loadAndCheck(tag) {
         });
         return found;
       };
-      const out = { marked: {}, unmarked: null, batched: 0 };
-      for (const b of marked) {
-        const m = findMat(b);
-        out.marked[b] = m ? { side: m.side === THREE.DoubleSide ? 'DoubleSide' : m.side === THREE.FrontSide ? 'FrontSide' : String(m.side), pb: !!(m.userData && m.userData.pbDoubleSided === true) } : null;
-      }
       const mu = findMat(unmarked);
       out.unmarked = mu ? { side: mu.side === THREE.DoubleSide ? 'DoubleSide' : mu.side === THREE.FrontSide ? 'FrontSide' : String(mu.side), pb: !!(mu.userData && mu.userData.pbDoubleSided === true) } : null;
       if (window.__batchStats) out.batched = window.__batchStats().batches;
@@ -138,45 +195,57 @@ async function loadAndCheck(tag) {
       const mean = sum / n;
       out.lumStd = Math.sqrt(Math.max(0, sum2 / n - mean * mean));
       return out;
-    }, { marked: pick.marked, unmarked: pick.unmarkedMapless[0] });
+    }, { marked: markedBases, unmarked: primary.unmarkedMapless[0] });
     const batchTag = qs ? 'batch=0' : '默认合批';
-    for (const [b, st] of Object.entries(r.marked)) {
-      ok(`D1[${tag}|${batchTag}] 标记材质 ${b} = DoubleSide 且带 pbDoubleSided`, !!st && st.side === 'DoubleSide' && st.pb, JSON.stringify(st));
+    // D1：覆盖 + 全变体
+    for (const b of markedBases) {
+      const st = r.marked[b];
+      ok(`D1[${tag}|${batchTag}] 白名单 ${b} 在 zone=${g.id} 场景中有材质实例（覆盖）`, !!st && st.variants.length > 0, JSON.stringify(st));
+      if (st) for (const v of st.variants) {
+        ok(`D1[${tag}|${batchTag}] 标记材质 ${b}（变体 ${v.name} ×${v.n}）= DoubleSide 且带 pbDoubleSided`, v.side === 'DoubleSide' && v.pb, JSON.stringify(v));
+      }
     }
-    ok(`D2[${tag}|${batchTag}] 未标记无贴图材质 ${pick.unmarkedMapless[0]} = FrontSide 且无标记`, !!r.unmarked && r.unmarked.side === 'FrontSide' && !r.unmarked.pb, JSON.stringify(r.unmarked));
-    ok(`D3[${tag}|${batchTag}] 画面非空白（亮度 std ≥ 8）`, r.lumStd >= 8, `lumStd=${r.lumStd.toFixed(1)}`);
-    if (!qs) ok(`D1[${tag}|${batchTag}] 合批路径生效（batches > 0）`, r.batched > 0, `batches=${r.batched}`);
+    // D2 / D3 / 合批只在主分区查一次
+    if (g === primary) {
+      ok(`D2[${tag}|${batchTag}] 未标记无贴图材质 ${primary.unmarkedMapless[0]} = FrontSide 且无标记`, !!r.unmarked && r.unmarked.side === 'FrontSide' && !r.unmarked.pb, JSON.stringify(r.unmarked));
+      ok(`D3[${tag}|${batchTag}] 画面非空白（亮度 std ≥ 8）`, r.lumStd >= 8, `lumStd=${r.lumStd.toFixed(1)}`);
+      ok(`D4[${tag}|${batchTag}] 合批路径生效（batches > 0）`, r.batched > 0, `batches=${r.batched}`);
+    }
     await page.close();
   }
 }
 
 if (NEG) {
-  // 负例：字节级剥掉 cm 件白名单首名材质的标记 → D1 必须红 → 恢复 → D1 复绿
-  if (!haveCm) { console.error('FAIL NEG: 无 cm 件可注入'); process.exit(1); }
-  const target = pick.marked[0];
-  const origBytes = fs.readFileSync(cmPath);
-  const sha0 = sha256(cmPath);
-  const { json } = jsonOfGlb(cmPath);
+  // 负例：请求拦截剥掉主分区某分件 cm 里目标材质的 pbDoubleSided → D1 必须红且精确命中 → 撤销注入 → D1 复绿。
+  // 不改盘上文件：mutated 只存在于内存 Buffer，page.route 生命周期 = 页面生命周期，无恢复竞态。
+  const target = [...primary.marked][0];
+  const host = primary.files.find(f => {
+    const { json } = jsonOfGlb(f.cmPath);
+    return (json.materials || []).some(m => stripDot(m.name) === target && m.extras && m.extras.pbDoubleSided === true);
+  });
+  if (!host) { console.error('FAIL NEG: cm 件里没找到带标记的', target); process.exit(1); }
+  const { json, bytes } = jsonOfGlb(host.cmPath);
   let stripped = 0;
   for (const m of json.materials || []) {
     if (stripDot(m.name) === target && m.extras && m.extras.pbDoubleSided === true) { delete m.extras.pbDoubleSided; stripped++; }
   }
-  if (!stripped) { console.error('FAIL NEG: cm 件里没找到带标记的', target); process.exit(1); }
-  fs.writeFileSync(cmPath, rewriteJsonChunk(cmPath, json));
-  console.log(`NEG: 已从 ${path.basename(cmPath)} 剥掉 ${stripped} 个 ${target} 材质的 pbDoubleSided，重载页面（D1 必须红）`);
-  fail = 0; pass = 0;   // 负例段独立计数：redExpected 用 fail 数证明
-  const before = { pass, fail };
-  await loadAndCheck('NEG-剥标记');
-  ok('NEG 剥标记后 D1 变红（断言有效）', fail > before.fail, `fail=${fail}`);
-  fail = 0; failures.length = 0;   // 故意的红已由上一行裁决，清零后只让「还原后」段的真实失败影响退出码
-  fs.writeFileSync(cmPath, origBytes);
-  ok('NEG 还原后 cm sha 回到原值', sha256(cmPath) === sha0);
-  if (sha256(cmPath) !== sha0) process.exit(1);
-  await loadAndCheck('NEG-还原后');
+  if (!stripped) { console.error('FAIL NEG: 剥标记失败', target); process.exit(1); }
+  const mutated = rewriteJsonChunk(bytes, json);
+  console.log(`NEG: 拦截 ${host.relFile} 剥掉 ${stripped} 个 ${target} 材质的 pbDoubleSided（内存副本，不落盘），重载页面（D1 必须红）`);
+  const before = failures.length;
+  await loadAndCheck('NEG-剥标记', primary, { file: host.relFile, body: mutated });
+  const negFails = failures.slice(before);
+  const targetFails = negFails.filter(x => x.includes(`标记材质 ${target}（变体`));
+  const collateral = negFails.filter(x => !targetFails.includes(x));
+  ok('NEG 剥标记后 D1 精确命中目标材质（断言有效）', targetFails.length > 0, targetFails.join(' | ') || '没有任何 D1 目标失败');
+  for (const line of targetFails) expectedRed.add(line);   // 逐字豁免：只有目标行的红被豁免，账本不清零
+  ok('NEG 无连带失败（其余材质/D2/D3/覆盖不受影响）', collateral.length === 0, collateral.join(' | '));
+  await loadAndCheck('NEG-还原后', primary);   // 无注入：D1 应全绿
 } else {
-  await loadAndCheck('正例');
+  for (const g of cover) await loadAndCheck('正例', g);
 }
 
 await browser.close();
-console.log(`RESULT pass=${pass} fail=${fail}`);
-if (fail > 0) { for (const f of failures) console.log('  FAIL:', f); process.exit(1); }
+const unexpected = failures.filter(x => !expectedRed.has(x));
+console.log(`RESULT pass=${pass} fail=${fail} expectedNegRed=${expectedRed.size} unexpectedFail=${unexpected.length}`);
+if (unexpected.length > 0) { for (const f of unexpected) console.log('  FAIL:', f); process.exit(1); }
