@@ -2547,7 +2547,8 @@
     "docs/migrations/20260927/CLOUD-RECEIPT-huxwalk.json",
     "docs/migrations/20260928/CLOUD-RECEIPT-towerwin.json",
     "docs/migrations/20260928/CLOUD-RECEIPT-towerwin2.json",
-    "docs/migrations/20260929/CLOUD-RECEIPT-wave13.json"
+    "docs/migrations/20260929/CLOUD-RECEIPT-wave13.json",
+    "docs/migrations/20260930/CLOUD-RECEIPT-ridge.json"
   ],
   "historicalBuildOutputRecords": {
     "note": "2026-09-30 v1.0 封版前清理：以下记录原为 *PendingLeadArchive 段，内容全部是 rebuild-review.sh 的确定性构建产物（分区件、外置内容寻址贴图、zones-manifest、联合审阅运行时），不是管线输入件；新环境按 files[] 恢复输入件后由标准重建再生，不上传归档。保留原记录仅作历史追溯（其 sha 对应当时的构建，不代表当前产物）。",
@@ -3620,11 +3621,5 @@
         "ownerAdopted": false
       }
     }
-  },
-  "pendingUpload": {
-    "note": "files[] 已指向新 sha，但对象尚未上传 S3（2026-09-30 SSO 过期）。机主 aws sso login 后由主控 upload_migration_assets.py 上传，写回执后删除本段。",
-    "paths": [
-      "scene-authoring/yuyuan-area/out-garden-kits/sansuitang-bld-428179901/model.glb"
-    ]
   }
 }
