@@ -556,6 +556,34 @@ for (const t of lanternTowers) {
   const handleTris = handleKeys.length ? meshTris(g, nodes.get(handleKeys[0]).meshIdx) : 0;
   const ribTris = ribKeys.length ? meshTris(g, nodes.get(ribKeys[0]).meshIdx) : 0;
   ok(tasselTris >= DESIGN.tasselTrisPerLamp * nLamps * 0.8, `${t.id}: 穗子账目`, `tasselTris=${tasselTris} ≥ ${Math.round(DESIGN.tasselTrisPerLamp * nLamps * 0.8)}（${nLamps} 只）`);
+  // R2（主控）：灯笼点光须在灯内。穗不得在发光组（否则在灯下单独聚成点光候选）；presets lantern 源的 offsetY 加到
+  // 每灯发光芯中心上必须落在该灯纸壳竖向范围内（留 5 cm）。R2 同机位实测：点光在灯底下方时灯身下 1/3 近白 70%。
+  {
+    const tasselMat = tasselKeys.length ? nodes.get(tasselKeys[0]).matName : null;
+    const tasselGlow = presets.emissiveGroups.some(gr => gr.materials.includes(tasselMat));
+    ok(tasselKeys.length === 1 && !tasselGlow, `${t.id}: 穗材质不在任何发光组`, `tassel mat=${tasselMat}`);
+    const src = presets.pointLights.sources.find(s => s.id === 'lantern');
+    const coreCl = coreKeys2.length ? lampClusters(readPositions(g, nodes.get(coreKeys2[0]).meshIdx)) : [];
+    const inside = (offY) => {
+      let worst = Infinity;
+      for (const cc of coreCl) {
+        let sa = 0, su = 0, sb = 0, k = 0;
+        for (let i = 0; i < cc.length; i += 3) { sa += cc[i + A]; su += cc[i + U]; sb += cc[i + B]; k++; }
+        const [ca, cu, cb] = [sa / k, su / k, sb / k];
+        let best = null, bd = Infinity;
+        for (const bc of clusters) {
+          let xa = 0, xb = 0, n = 0; for (let i = 0; i < bc.length; i += 3) { xa += bc[i + A]; xb += bc[i + B]; n++; }
+          const d = (xa / n - ca) ** 2 + (xb / n - cb) ** 2; if (d < bd) { bd = d; best = bc; }
+        }
+        const ys = best.filter((_, i) => i % 3 === U), ly = cu + offY;
+        worst = Math.min(worst, ly - Math.min(...ys), Math.max(...ys) - ly);
+      }
+      return worst;
+    };
+    const w = inside(src.offsetY), wLegacy = inside(-0.4);
+    ok(coreCl.length === nLamps && w >= 0.05, `${t.id}: 灯笼点光落在灯内（芯中心 + offsetY ${src.offsetY} 距纸壳上下沿 ≥ 5 cm）`, `worst=${w.toFixed(3)} m，${coreCl.length} 簇`);
+    ok(wLegacy < 0.05, `${t.id}: 负例 旧 offsetY −0.4 判为灯外（判据有效）`, `legacyWorst=${wLegacy.toFixed(3)} m`);
+  }
   ok(handleTris >= DESIGN.handleTrisPerLamp * nLamps * 0.8, `${t.id}: 提梁账目`, `handleTris=${handleTris}`);
   ok(ribTris >= DESIGN.ribTrisPerLamp * nLamps * 0.8, `${t.id}: 骨架棱账目（6 条 × 4 tris）`, `ribTris=${ribTris}`);
   const perLamp = totalTris / nLamps;

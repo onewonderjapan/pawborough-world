@@ -41,8 +41,8 @@ const px = (W / 2) + (x / (d * tanV)) * (H / 2);
 const py = (H / 2) - (y / (d * tanV)) * (H / 2);
 const rPx = (R_LAMP / d) / tanV * (H / 2);
 
-const exe = '/home/baibai/.cache/ms-playwright/chromium-1234/chrome-linux/chrome';
-const browser = await chromium.launch({ executablePath: exe, args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
+// 浏览器：CHROME_PATH 环境变量优先，否则用 Playwright 自带浏览器（不写死个人缓存路径）
+const browser = await chromium.launch({ ...(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {}), args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
 for (const mode of ['night', 'day']) {
   const page = await browser.newPage({ viewport: { width: W, height: H } });
   await page.goto(`${BASE}?zone=bazaar&light=${mode}`, { waitUntil: 'domcontentloaded' });

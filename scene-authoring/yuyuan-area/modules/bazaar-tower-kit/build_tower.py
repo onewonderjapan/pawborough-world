@@ -379,6 +379,11 @@ _MAT_DEFS = {
     # 新名字不进 presets 任何组（lighting-check 组内材质名不重复；compress-zones 只保护组内名，
     # 本材质内容唯一不会被 gltfpack 同内容合并、名字自然存活）。
     'lantern-paper': lambda: mat('lantern-paper', lin(FM.get('lanternRed', 'c8301f')), .5, alpha=.82, alpha_mode='BLEND'),
+    # wave14-lantern R2（主控）：流苏穗改用不发光的深红丝材质，不在任何 emissive 组。穗原用 btk-lantern 会在
+    # 灯下单独聚成一簇点光候选（web/lighting.js material-clusters 按 3 m 网格聚类，y=3.0 网格线把穗与芯分开），
+    # 该点光落在灯底下方 0.3–0.6 m，把灯身下 1/3 打成近白（R2 同机位实测：下段近白 70%）。
+    # 颜色/粗糙度与 btk-lantern 不同，避免 gltfpack 按内容把它并回 btk-lantern。
+    'lantern-tassel': lambda: mat('lantern-tassel', lin('a3261a'), .6),
     'lionstone': lambda: (mat('lionstone', lin(FM.get('lionTint', 'a8a79f')), .9) if FM.get('plinthPlain') else
                           mat('lionstone', rough=.9, base='Bricks061_2K-JPG_Color_1K.jpg', tint=FM.get('lionTint', 'a8a79f'), tile=(0.6, 0.6))),
     'lattice': lambda: alpha_mat('lattice', gen_image('lattice', 'lattice-core-alpha.png', 256, 256, alpha_pattern('lattice')),
@@ -2583,11 +2588,11 @@ if FEAT.get('lanterns'):
             cyl('lantern-handle-%d-%d-a' % (ri, j), (q[0] - hw, q[1], zb_), (q[0], q[1], zb_ + hv), 0.018, 'gild', 4, part='lanterns-handle')
             cyl('lantern-handle-%d-%d-b' % (ri, j), (q[0], q[1], zb_ + hv), (q[0] + hw, q[1], zb_), 0.018, 'gild', 4, part='lanterns-handle')
             LANTERN_TRIS['handle'] += 24
-            # 流苏穗：穗帽下三根微外张的细锥（红，随主体进 lantern 组发光）
+            # 流苏穗：穗帽下三根微外张的细锥（深红丝，不发光——见 'lantern-tassel' 材质注释）
             for k, dx in ((0, 0.0), (1, -0.045), (2, 0.045)):
                 cyl('lantern-tassel-%d-%d-%d' % (ri, j, k),
                     (q[0] + dx, q[1], zc - H2 / 2 - rr * 0.20),
-                    (q[0] + dx * 1.8, q[1], zc - H2 / 2 - rr * 0.20 - rr * 0.72), rr * 0.035, 'lantern', 3, part='lanterns-tassel')
+                    (q[0] + dx * 1.8, q[1], zc - H2 / 2 - rr * 0.20 - rr * 0.72), rr * 0.035, 'lantern-tassel', 3, part='lanterns-tassel')
                 LANTERN_TRIS['tassel'] += 8
             # 吊线：提梁顶点到檐口（沿用原挂高）
             cyl('lantern-cord-%d-%d' % (ri, j), (q[0], q[1], zb_ + hv), (q[0], q[1], Z1 - 0.02), 0.015, 'dark', 3, part='lanterns-cord')
