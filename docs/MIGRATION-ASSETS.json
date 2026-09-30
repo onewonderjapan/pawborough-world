@@ -1955,10 +1955,21 @@
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/stall-grill.glb",
-      "sha256": "9df80daf5da0158ee8bc39568f750a67b0ad3fc9fe031631af90390ce4032dd7",
-      "bytes": 38852,
-      "sourcePackage": "pawborough-w1-bazaar-stalls-20260922",
-      "status": "changed-20260926-night-smallfix-pending-archive"
+      "sha256": "ce844665af220289c45cee8691c6a13b32d2250f784d9f593849eed2b166e9cb",
+      "bytes": 45716,
+      "sourcePackage": "pawborough-wave14-stalllight-20260929",
+      "note": "排烟罩落地立柱+托臂（R2 立柱后移 z=-0.38，不穿台面）wave14-stalllight",
+      "replaces": {
+        "sha256": "9df80daf5da0158ee8bc39568f750a67b0ad3fc9fe031631af90390ce4032dd7",
+        "bytes": 38852
+      }
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/oldsouth-lamp.glb",
+      "sha256": "7f9d06406cbeb55d911046cd52c82d2dc1cf668fa21e1ea593b0ce4075c7a641",
+      "bytes": 13984,
+      "sourcePackage": "pawborough-wave14-stalllight-20260929",
+      "note": "老城隍庙南侧街廊贴墙檐灯（OLDSOUTH_LAMPS=1 默认开，assemble.py 导入的预生成输入）"
     },
     {
       "path": "scene-authoring/yuyuan-area/out-bazaar-stalls/stall-steam.glb",
