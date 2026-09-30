@@ -7,7 +7,7 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import {
   bbox, polyArea, centroid, pointInPoly, polyIntersectsPoly, vertsInside,
-  dist2d, distToSeg, distToPolyline, principalAxis, offsetPoly,
+  dist2d, distToSeg, distToPolyline, principalAxis, offsetPoly, dropFloatingSegments,
 } from './lib.mjs';
 import { facadeBayId, legacyDoorVariant, registerFacadeId, FACADE_ID_SCHEME } from './facade-identity.mjs';
 
@@ -227,29 +227,56 @@ for (const st of PERIMETER_STREETS) {
   const inRegion = (p) => p[0] > -270 && p[0] < 45 && p[1] > -260 && p[1] < 32;
   let pseq = 0;
   const pStats = {};
+  // wave14-templeside S1a：提案店个体修正（只动放置/参数，不换模块、不做立面缩放）。
+  // shop-165（shoprow-p165）后部越过庙墙 seg-22，且与庙东跨院铺地（templeeast-paving）地面层重叠。
+  // 该处沿街条带（庙墙 seg-22 中线 → 方浜中路近边）实测 6.78–6.86 m，而店屋单元 GLB 实际进深
+  // 7.10 m（bbox −6.75/+0.35，原点前墙中点），纯平移无解——按工单第一选项缩短进深：深度轴 0.85
+  // （7.10→6.04，两坡屋面坡度随之放缓 15%，立面与面宽不变），并沿门脸法线南移 1.9 m。
+  // 修后实测（tests/templeside-test.mjs 从 layout 独立重算）：距南墙墙面 ≥0.18 m、
+  // 距 templeeast-paving ≥0.64 m、前墙距方浜中路近边 ≥0.60 m，全部 ≥0。
+  const PROPOSAL_ADJUST = {
+    'shop-165': {
+      scale3: [1, 1, 0.85], shiftZ: 1.9,
+      reason: 'wave14-templeside S1a: shoprow-p165 crossed temple-wall seg-22 and overlapped the templeeast paving at grade; band width 6.78-6.86 m < unit GLB depth 7.10 m so pure translation cannot clear the wall - depth axis scaled 0.85 and shifted 1.9 m along facade normal (south)',
+    },
+  };
   for (const sp of map.shops) {
     if (!inRegion(sp.point)) continue;
     pseq++;
     const zone = assignZone([[sp.point[0], sp.point[1]]]) || 'outer';
     // 提案 angle 即 facade +Z 朝向（老总图同一轴约定）
-    const rotY = sp.angle;
+    let rotY = sp.angle;
     // 选宽度最接近提案宽度的单元（提案 10.7m -> threebay 9.6 / double 7.2 交替制造节奏）
     const pool = pseq % 3 === 0 ? SHOP_UNITS : SHOP_UNITS.filter(u => u.w <= 9.6);
     let unit = pool[0];
     for (const u of pool) if (Math.abs(u.w - sp.width) < Math.abs(unit.w - sp.width)) unit = u;
+    const adj = PROPOSAL_ADJUST[sp.id] || null;
+    let [px, pz] = sp.point;
+    if (adj) {
+      // 沿门脸法线（本地 +Z，世界方向 (sin rotY, cos rotY)）平移
+      px = +(px + Math.sin(rotY) * adj.shiftZ).toFixed(3);
+      pz = +(pz + Math.cos(rotY) * adj.shiftZ).toFixed(3);
+    }
     instances.push({
       id: `shoprow-p${sp.id.replace('shop-', '')}`, module: unit.module, zone, lod: 'L2',
-      position: [sp.point[0], sp.point[1]], rotY, proposal: sp.id, proposalCategory: sp.category,
+      position: [px, pz], rotY, proposal: sp.id, proposalCategory: sp.category,
+      ...(adj ? { scale3: adj.scale3 } : {}),
       sourcePath: 'pawborough-shop-base-batch-20260921/workspace/out/' + unit.file,
       sha256: SHOP_SHA[unit.module].sha256, ownerAdopted: false,
-      axis: 'GLB Y-up, facade +Z, depth -Z, origin front-wall center bottom; scale 1',
+      axis: adj
+        ? 'GLB Y-up, facade +Z, depth -Z, origin front-wall center bottom; scale3 = [width, height, depth] in GLB axes (assemble.py maps to Blender x,z,y), scale 1 on other axes'
+        : 'GLB Y-up, facade +Z, depth -Z, origin front-wall center bottom; scale 1',
     });
     emit({
       id: `shoprow-p${sp.id.replace('shop-', '')}`, zone, kind: 'shopAnchor', name: null, lod: 'L2', disposition: 'reused',
-      geometry: { position: [sp.point[0], sp.point[1]], rotY }, proposal: sp.id,
+      geometry: { position: [px, pz], rotY }, proposal: sp.id,
+      ...(adj ? { scale3: adj.scale3 } : {}),
       trade: sp.category,
       sources: { mapDataShops: sp.id }, confidence: 'shop proposal point from shared base map; historicalPositionVerified=false',
-      inferences: ['unit fitted to proposal point (design proposal positions along 方浜中路/东门路); no historic shop addresses claimed'],
+      inferences: [
+        'unit fitted to proposal point (design proposal positions along 方浜中路/东门路); no historic shop addresses claimed',
+        ...(adj ? [adj.reason] : []),
+      ],
     });
     pStats[sp.category] = (pStats[sp.category] || 0) + 1;
   }
@@ -1344,13 +1371,23 @@ const TEMPLE_V3 = path.join(ROOT, 'resources/temple-v3');
     for (const rp of facadeRoads) if (distToPolyline(mid, rp) < 8) blocked = true;
     if (!blocked) segs.push([a, b]);
   }
+  // wave14-templeeast（主控 2026-09-29 裁定）：上面「距路 <8 m 不生成」会把邻段删掉，留下两端都悬空的孤立段
+  //（第 19 段：安仁街边 11.06 m 空地薄板，渲染/碰撞端早已按 M3 规则剔除）。生成端用同一规则
+  //（lib.dropFloatingSegments，tol 0.5 m）一致地丢掉，layout 不再带不渲染的段；其余段逐段不变。
+  // segmentIndex = 保留段在丢弃前序列里的原索引（碰撞记录名 temple-wall:seg-<原索引> 不重编号）。
+  const wallSegs = dropFloatingSegments(segs);
+  const segmentIndex = wallSegs.map(sg => segs.indexOf(sg));
+  const droppedFloating = segs.map((sg, i) => [sg, i]).filter(([sg]) => !wallSegs.includes(sg))
+    .map(([sg, i]) => ({ index: i, segment: sg, rule: 'both endpoints farther than 0.5 m from any other segment endpoint (lib.dropFloatingSegments); left dangling by the <8 m road-clearance filter' }));
   emit({
     id: 'temple-wall', zone: 'temple', kind: 'wall', name: '庙区院墙（走向示意）', lod: 'L1', disposition: 'rendered',
-    geometry: { segments: segs }, height: 2.6, thickness: 0.4,
+    geometry: { segments: wallSegs, segmentIndex }, height: 2.6, thickness: 0.4,
+    droppedFloating,
     sources: { base: 'temple zone boundary' }, confidence: 'design-inference',
     inferences: [
       'boundary wall follows temple zone polygon inset 2m; south opening at shanmen axis',
       ...(moved ? ['wall ring unchanged (zone boundary is source data); opening anchor follows the rigid-fit-adjusted shanmen axis'] : []),
+      ...(droppedFloating.length ? [`floating segment(s) ${droppedFloating.map(d => d.index).join(',')} dropped at generation (wave14-templeeast lead ruling 2026-09-29; never rendered/collided)`] : []),
     ],
   });
   // ---------- 山门前广场净空（wave5-fangbangqa F-02，主控 2026-09-26 决定：选项 1） ----------
@@ -1362,7 +1399,7 @@ const TEMPLE_V3 = path.join(ROOT, 'resources/temple-v3');
     const sm = instances.find(i => i.id === 'temple-shanmen');
     const f = [Math.sin(sm.rotY), Math.cos(sm.rotY)], nrm = [f[1], -f[0]];
     const side = q => (q[0] - sm.position[0]) * nrm[0] + (q[1] - sm.position[1]) * nrm[1];
-    const ends = segs.flat();
+    const ends = wallSegs.flat();
     const near = sgn => ends.filter(e => sgn * side(e) > 0).reduce((b, e) => (!b || dist2d(e, sm.position) < dist2d(b, sm.position) ? e : b), null);
     const A = near(1), B = near(-1);
     const fbRoads = map.roads.filter(r => r.name === '方浜中路');
@@ -1451,6 +1488,279 @@ const TEMPLE_V3 = path.join(ROOT, 'resources/temple-v3');
     labels.push({ id: `osmoutline-${b.id}`, text: 'OSM轮廓(未拉伸)', x: c[0], z: c[1], kind: 'osm-note', note: true });
   }
   // 庙区剩余建筑（外围到 zone 的其它轮廓已在 outer；此处不再补体）
+
+  // ---------- 庙东跨院（wave14-templeeast，机主 2026-09-29 拍板方案 B + 临街改铺面） ----------
+  // 设计轴以东、庙区轮廓以内的带状空地（约 1590 m²；阶段 A 取证见工单包 artifacts/PHASE-A.md）补一组附属院落：
+  //   沿安仁街：外围店屋底模（resources/shops，只读复用，不缩放）三段铺面，门脸朝安仁街；
+  //   店屋背后隔 1 m 避弄：hall-kit 两层楼三段（门脸朝院内）；院内两座单层横厅把空地分成南/中/北三院；
+  //   整片青石板铺地（plaza，slot paving-blue-stone）；4 棵樟（temple-tree-camphor 复用）+ 北院宝鼎（modules/temple-east）。
+  // 全部在庙轴本地系给出（原点 = 山门锚，rotY = 山门 rotY；本地 +X≈东、+Z≈南），与 temple-v3 模块同一轴。
+  // 依据（均非测绘，形制为推断）：1871《上海县志》城隍庙图庙东平行副轴祠殿院落；2015 实拍财神殿/三官殿两层带平座；
+  // 当代 OSM way 228035345 / 428202600 显示此地满建；黄浦区风貌区任务书要求安仁街连续界面。
+  // 1990s 安仁街西侧是否有店铺：未核实（临街铺面按机主 2026-09-29 决定做，属设计推断）。
+  {
+    const sm = instances.find(i => i.id === 'temple-shanmen');
+    const [OX, OZ] = sm.position, TH = sm.rotY, c = Math.cos(TH), s = Math.sin(TH);
+    const r3 = v => +v.toFixed(3);
+    const W = (lx, lz) => [r3(OX + lx * c + lz * s), r3(OZ - lx * s + lz * c)];
+    const dirW = (dx, dz) => [+(dx * c + dz * s).toFixed(6), +(-dx * s + dz * c).toFixed(6)];
+    const rect = (x0, x1, z0, z1) => [W(x0, z0), W(x1, z0), W(x1, z1), W(x0, z1), W(x0, z0)];
+    const TE = {
+      frame: { origin: 'temple-shanmen anchor', position: [OX, OZ], rotY: TH, axes: 'local +X ≈ east (toward 安仁街), +Z ≈ south' },
+      shopFrontX: 36.8,            // 店屋前墙中线（本地 x）；安仁街路面西缘在本地 x 37.0–38.2
+      towerX: [24.2, 28.9],        // 两层楼 footprint（进深 4.7 m，门脸 −X 朝院）；背后 ≥1.1 m 避弄到店屋后墙（x≈30.0–30.4）
+      // 横厅（门脸 +Z 朝南）；西距 court3 东墙（模块 GLB 实测本地 x 16.82）≥0.58 m。
+      // wave14-templeeast R1（astra 必修）：东侧南北过道按碰撞包络留净宽——横厅台基东缘 x1+0.2 = 23.0，楼台基西缘 24.2−0.2 = 24.0，
+      // 净宽 1.0 m（≥0.8 m 要求，玩家胶囊直径 0.70）；楼门前踏步（台基外 0.9 m、宽 2.4 m、居楼段中）不落在横厅 z 范围内，
+      // 横厅台基与踏步沿 z 至少再隔 1.2 m（过道出入口不被踏步与横厅台基角夹窄）。
+      hallX: [17.4, 22.8],
+      unitGapM: 0.6,               // 店屋单元间距（两侧檐出挑各 0.3 m）
+      rows: [                      // 北→南；同段店屋与两层楼同长，段间 3 m 门道通安仁街
+        { id: 'r1', z0: -71.0, shops: ['shop-02-double', 'shop-01-narrow', 'shop-06-endcap'] },
+        { id: 'r2', z0: -48.2, shops: ['shop-03-threebay', 'shop-04-recess'] },
+        { id: 'r3', z0: -28.6, shops: ['shop-01-narrow', 'shop-02-double', 'shop-06-endcap'] },
+      ],
+      halls: [{ id: 't1', z: [-48.4, -42.5] }, { id: 't2', z: [-27.2, -21.3] }],
+      trees: [[20.6, -66.8], [20.6, -53.8], [20.6, -34.5], [20.6, -12.0]],
+      ding: [20.6, -60.3],
+      trades: ['烟纸店', '南北杂货', '字画店', '饭馆', '绣品', '药材', '照相店', '烟纸店'],
+    };
+    const unitW = Object.fromEntries(SHOP_UNITS.map(u => [u.module, u]));
+    const made = { shops: [], towers: [], halls: [], trees: [], ding: null, paving: null };
+    let shopSeq = 0;
+    for (const row of TE.rows) {
+      let z = row.z0;
+      for (const mod of row.shops) {
+        const u = unitW[mod];
+        const zc = z + u.w / 2;
+        const id = `templeeast-shop-${++shopSeq}`;
+        const face = dirW(1, 0);
+        const rotY = +Math.atan2(face[0], face[1]).toFixed(6);
+        const position = W(TE.shopFrontX, zc);
+        instances.push({
+          id, module: u.module, zone: 'temple', lod: 'L2', position, rotY,
+          sourcePath: 'pawborough-shop-base-batch-20260921/workspace/out/' + u.file,
+          sha256: SHOP_SHA[u.module].sha256, ownerAdopted: false,
+          axis: 'GLB Y-up, facade +Z, depth -Z, origin front-wall center bottom; scale 1',
+        });
+        emit({
+          id, zone: 'temple', kind: 'shopAnchor', name: null, lod: 'L2', disposition: 'reused',
+          geometry: { position, rotY }, rowStreet: '安仁街', templeEastRow: row.id,
+          trade: TE.trades[(shopSeq - 1) % TE.trades.length],
+          unitFootprint: rect(TE.shopFrontX - u.d, TE.shopFrontX, z, z + u.w),
+          sources: { designPlan: 'wave14-templeeast', sha256: SHOP_SHA[u.module].sha256 },
+          confidence: 'design-inference: street frontage on 安仁街 west side; 1990s shops here UNVERIFIED; unit base model read-only reuse',
+          inferences: [`unit ${u.module} (${u.w}×${u.d} m) facing 安仁街; no scaling; trade is candidate only`],
+        });
+        made.shops.push(id);
+        z += u.w + TE.unitGapM;
+      }
+      const z1 = +(z - TE.unitGapM).toFixed(3);
+      row.z1 = z1;
+      const tid = `templeeast-${row.id}`;
+      emit({
+        id: tid, zone: 'temple', kind: 'tower', name: null, lod: 'L1', disposition: 'rendered',
+        geometry: { footprint: rect(TE.towerX[0], TE.towerX[1], row.z0, z1) },
+        height: 5.6, eave: 5.6, rise: 1.9, roofMode: 'gabled', storeys: 2, storeySource: 'design (garden tower family defaults)',
+        facade: { dir: dirW(-1, 0), basis: 'design: faces the east-court yard (temple-axis local -X)' },
+        sources: { designPlan: 'wave14-templeeast' }, category: 'tower', classSource: 'design',
+        confidence: 'design-inference: two-storey side building with balcony (2015 photos of 财神殿/三官殿 PBR-SH-0005-009/013); not survey',
+        inferences: ['hall-kit tower (2 storeys, gabled); back-to-back with the 安仁街 shop row across a ≥1 m drip lane'],
+      });
+      made.towers.push(tid);
+    }
+    for (const h of TE.halls) {
+      const hid = `templeeast-${h.id}`;
+      emit({
+        id: hid, zone: 'temple', kind: 'hall', name: null, lod: 'L1', disposition: 'rendered',
+        geometry: { footprint: rect(TE.hallX[0], TE.hallX[1], h.z[0], h.z[1]) },
+        height: 4, eave: 4, rise: 1.9, roofMode: 'gabled', storeys: 1, storeySource: 'design',
+        facade: { dir: dirW(0, 1), basis: 'design: faces south (temple-axis local +Z)' },
+        sources: { designPlan: 'wave14-templeeast' }, category: 'hall', classSource: 'design',
+        confidence: 'design-inference: transverse single-storey hall dividing the east court (1871 county-gazetteer plan shows a parallel east axis of halls); not survey',
+        inferences: ['hall-kit hall (1 storey, gabled)'],
+      });
+      made.halls.push(hid);
+    }
+    const CAMPHOR = 'tree-camphor-v2.glb';
+    const camphorSha = sha256(path.join(TEMPLE_V3, CAMPHOR));
+    TE.trees.forEach(([lx, lz], i) => {
+      const id = `templeeast-tree-${i + 1}`;
+      const position = W(lx, lz);
+      instances.push({
+        id, module: 'temple-tree-camphor', file: CAMPHOR, zone: 'temple', lod: 'L2', position, rotY: +(TH + i * 1.1).toFixed(5),
+        sourcePath: 'pawborough-world-ten-hour-20260921/workspace/world/temple-axis-v3/' + CAMPHOR, sha256: camphorSha, ownerAdopted: false,
+        axis: 'module local frame (origin trunk base) -> map; yaw varied per tree',
+      });
+      emit({
+        id, zone: 'temple', kind: 'templeAnchor', name: null, lod: 'L2', disposition: 'reused',
+        geometry: { position, rotY: +(TH + i * 1.1).toFixed(5) },
+        sources: { designPlan: 'wave14-templeeast', sha256: camphorSha },
+        confidence: 'design-inference: courtyard camphor (same module as the axis courtyards)', inferences: ['reuse temple-tree-camphor read-only'],
+      });
+      made.trees.push(id);
+    });
+    {
+      const id = 'templeeast-ding';
+      const position = W(TE.ding[0], TE.ding[1]);
+      instances.push({
+        id, module: 'templeeast-ding', zone: 'temple', lod: 'L2', position, rotY: TH,
+        sourcePath: 'modules/temple-east/build_ding.py -> out-garden-kits/templeeast-ding/model.glb', ownerAdopted: false,
+        axis: 'GLB Y-up, origin ground centre of plinth',
+      });
+      emit({
+        id, zone: 'temple', kind: 'templeAnchor', name: '宝鼎', lod: 'L2', disposition: 'reused',
+        geometry: { position, rotY: TH }, sources: { designPlan: 'wave14-templeeast', construction: 'kit/build_entry_court.py addBurner (x0.85 dadian burner) re-built standalone' },
+        confidence: 'design-inference', inferences: ['north-court incense burner; same construction as the entry-court burner'],
+      });
+      made.ding = id;
+    }
+    {
+      // 铺地：空地多边形。西界 court3 东墙外 0.3 m（模块 GLB 实测本地 x 16.82）/ 前院东墙外（本地 x 8.33 → 8.9），北/南界庙墙内，东界安仁街路面西缘。
+      const road = map.roads.find(r => r.name === '安仁街');
+      const westEdgeAtZ = (zl) => {
+        // 在本地系沿 z 找安仁街中线点，外推半路宽到西缘，返回本地 x
+        let best = null;
+        for (let i = 1; i < road.points.length; i++) {
+          const a = road.points[i - 1], b = road.points[i];
+          for (let k = 0; k <= 40; k++) {
+            const t = k / 40, q = [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+            const dx = q[0] - OX, dz = q[1] - OZ;
+            const lx = dx * c - dz * s, lz = dx * s + dz * c;
+            if (!best || Math.abs(lz - zl) < Math.abs(best[1] - zl)) best = [lx, lz];
+          }
+        }
+        return best[0] - road.width / 2;
+      };
+      const east = [-71.4, -60, -48, -36, -24, -12].map(zl => [+Math.min(westEdgeAtZ(zl), 37.3).toFixed(2), zl]);
+      const local = [[17.1, -71.4], ...east, [32.4, -6.3], [29.8, -3.4], [25.8, -1.5], [8.9, -0.8], [8.9, -23.4], [17.1, -23.4]];
+      const footprint = local.map(([x, z]) => W(x, z));
+      footprint.push(footprint[0]);
+      emit({
+        id: 'templeeast-paving', zone: 'temple', kind: 'plaza', name: '庙东跨院铺地', lod: 'L1', disposition: 'rendered',
+        geometry: { footprint }, height: 0.04,
+        sources: { designPlan: 'wave14-templeeast' }, confidence: 'design-inference',
+        inferences: ['bluestone paving over the east strip (slot paving-blue-stone); inset 0.3–0.6 m from temple-wall segments and the 安仁街 road edge'],
+      });
+      made.paving = 'templeeast-paving';
+    }
+    layoutExtras.templeEast = {
+      rule: 'wave14-templeeast scheme B (owner 2026-09-29): 安仁街 shopfront row (outer shop base models) + back-to-back hall-kit two-storey towers + two transverse single-storey halls → three courts; bluestone paving; 4 camphors; north-court burner',
+      frame: TE.frame,
+      local: { shopFrontX: TE.shopFrontX, towerX: TE.towerX, hallX: TE.hallX, rows: TE.rows.map(r => ({ id: r.id, z: [r.z0, r.z1], shops: r.shops })), halls: TE.halls, trees: TE.trees, ding: TE.ding },
+      objects: made,
+      evidence: ['PBR-SH-0003-001 (1871 county gazetteer temple plan: parallel east axis 鄞王廟/三聖閣/群忠祠/猛將祠, label reading medium confidence)',
+        'PBR-SH-0005-009 / 0005-013 (2015: two-storey side halls with balcony)', 'OSM way 228035345 / 428202600 (contemporary: strip built up)',
+        '黄浦区老城厢风貌区设计任务书：安仁街连续界面'],
+      unverified: ['1990s form of this strip', '1990s shops on the west side of 安仁街'],
+    };
+  }
+
+  // ---------- wave14-templeside：S2 安仁街东侧空地 + S3 后殿北侧院（机主 2026-09-29 三处之二） ----------
+  // 全部庙轴本地系（原点=山门锚，rotY=山门 rotY；本地 +X≈东、+Z≈南），与 templeEast 同一做法。
+  {
+    const sm = instances.find(i => i.id === 'temple-shanmen');
+    const [OX, OZ] = sm.position, TH = sm.rotY, c = Math.cos(TH), s = Math.sin(TH);
+    const r3 = v => +v.toFixed(3);
+    const W = (lx, lz) => [r3(OX + lx * c + lz * s), r3(OZ - lx * s + lz * c)];
+    const rect = (x0, x1, z0, z1) => [W(x0, z0), W(x1, z0), W(x1, z1), W(x0, z1), W(x0, z0)];
+    const CAMPHOR = 'tree-camphor-v2.glb';
+    const camphorSha = sha256(path.join(TEMPLE_V3, CAMPHOR));
+    const made = { paving: [], trees: [], ding: null };
+    const addTree = (id, zone, lx, lz, yaw) => {
+      const position = W(lx, lz);
+      const rotY = +(TH + yaw).toFixed(5);
+      instances.push({
+        id, module: 'temple-tree-camphor', file: CAMPHOR, zone, lod: 'L2', position, rotY,
+        sourcePath: 'pawborough-world-ten-hour-20260921/workspace/world/temple-axis-v3/' + CAMPHOR, sha256: camphorSha, ownerAdopted: false,
+        axis: 'module local frame (origin trunk base) -> map; yaw varied per tree',
+      });
+      emit({
+        id, zone, kind: 'templeAnchor', name: null, lod: 'L2', disposition: 'reused',
+        geometry: { position, rotY },
+        sources: { designPlan: 'wave14-templeside', sha256: camphorSha },
+        confidence: 'design-inference: courtyard/street-side camphor (same module as the axis courtyards)',
+        inferences: ['reuse temple-tree-camphor read-only'],
+      });
+      made.trees.push(id);
+    };
+
+    // S2：安仁街东侧空地（pv04 右缘 1–4%）。地块（庙轴本地 x≈44.4–56，z −72…−9.7）实测无任何既有内容：
+    // layout 对象、OSM 建筑轮廓、v7 方浜实例三者在此均为空（当代 OSM 亦无建筑轮廓 → 按开敞地补
+    // 铺地+树，不补建筑，避免与当代底图矛盾；1990s 形态未核实）。铺地沿用弹格路小方石（街面同族，
+    // slot outer|plaza），与庙东跨院青石板区分庙内/庙外。南界到 z=−9.7：提案店 shoprow-p163 的
+    // GLB 实际包围盒（原点后 −6.75）北缘到 z≈−8.2，留 ≥1.5 m 间隔。树 3 棵错列，距路缘 ≥2.5 m、距 p163 ≥10 m。
+    {
+      const road = map.roads.find(r => r.name === '安仁街' && r.points.length === 12);
+      const eastEdgeAt = (zl) => {
+        let best = null;
+        for (let i = 1; i < road.points.length; i++) {
+          const a = road.points[i - 1], b = road.points[i];
+          for (let k = 0; k <= 40; k++) {
+            const t = k / 40, q = [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+            const dx = q[0] - OX, dz = q[1] - OZ;
+            const lx = dx * c - dz * s, lz = dx * s + dz * c;
+            if (!best || Math.abs(lz - zl) < Math.abs(best[1] - zl)) best = [lx, lz];
+          }
+        }
+        return best[0] + road.width / 2 + 0.5;   // 路东缘再退 0.5 m 人行带
+      };
+      const zs = [-72, -39, -9.7];
+      const west = zs.map(zl => +eastEdgeAt(zl).toFixed(2));
+      const lot = [[west[0], -72], [west[0] + 11, -72], [west[2] + 11, -9.7], [west[2], -9.7]];
+      const footprint = lot.map(([x, z]) => W(x, z));
+      footprint.push(footprint[0]);
+      emit({
+        id: 'anreneast-paving', zone: 'outer', kind: 'plaza', name: '安仁街东侧铺地', lod: 'L1', disposition: 'rendered',
+        geometry: { footprint }, height: 0.04,
+        sources: { designPlan: 'wave14-templeside' }, confidence: 'design-inference',
+        inferences: ['open-lot reading consistent with contemporary OSM (no building polygon here); slot paving-fine-cobble (street family)'],
+      });
+      made.paving.push('anreneast-paving');
+      const S2_TREES = [[47.8, -18, 0.4], [50.3, -40, 1.7], [47.8, -62, 2.9]];
+      S2_TREES.forEach(([lx, lz, yaw], i) => addTree(`anreneast-tree-${i + 1}`, 'outer', lx, lz, yaw));
+    }
+
+    // S3：后殿北侧院内空地（pv01/pv16 各 1–2%）。院墙 seg-9…15 围合（本地 x −23.1…−1.1，z −71.7…−110.7），
+    // 后殿（houdian GLB 实测本地 x −7…7，z −83.0…−72.0）占东南角。铺地矩形距墙段中线 ≥0.66 m
+    // （最近处 seg-12 北墙）、距后殿北面 ≥1.26 m；复用 temple|plaza 青石板槽。3 棵樟 + 1 座鼎
+    // （复用 templeeast-ding 生成件，即前院宝鼎同构造 ×0.85），不新增大建筑。
+    {
+      const footprint = rect(-22.3, -2.3, -84.3, -108.9);
+      emit({
+        id: 'templeside-paving', zone: 'temple', kind: 'plaza', name: '后殿北院铺地', lod: 'L1', disposition: 'rendered',
+        geometry: { footprint }, height: 0.04,
+        sources: { designPlan: 'wave14-templeside' }, confidence: 'design-inference',
+        inferences: ['rear-court bluestone paving (slot temple|plaza); inset >=0.29 m from wall centrelines, >=1.26 m from the houdian north face'],
+      });
+      made.paving.push('templeside-paving');
+      const S3_TREES = [[-17.5, -88, 0.9], [-7.5, -94, 2.2], [-14, -103, 3.5]];
+      S3_TREES.forEach(([lx, lz, yaw], i) => addTree(`templeside-tree-${i + 1}`, 'temple', lx, lz, yaw));
+      {
+        const id = 'templeside-ding';
+        const position = W(-12, -97);
+        instances.push({
+          id, module: 'templeeast-ding', zone: 'temple', lod: 'L2', position, rotY: TH,
+          sourcePath: 'modules/temple-east/build_ding.py -> out-garden-kits/templeeast-ding/model.glb', ownerAdopted: false,
+          axis: 'GLB Y-up, origin ground centre of plinth',
+        });
+        emit({
+          id, zone: 'temple', kind: 'templeAnchor', name: '宝鼎', lod: 'L2', disposition: 'reused',
+          geometry: { position, rotY: TH }, sources: { designPlan: 'wave14-templeside', construction: 'reuse templeeast-ding build (same construction as the entry-court burner, x0.85)' },
+          confidence: 'design-inference', inferences: ['rear-court incense burner reusing the existing templeeast-ding module'],
+        });
+        made.ding = id;
+      }
+    }
+
+    layoutExtras.templeside = {
+      rule: 'wave14-templeside (owner 2026-09-29): S2 安仁街 east vacant lot (paving + 3 camphors, open-lot reading per contemporary OSM) + S3 north rear court (bluestone paving + 3 camphors + reused ding)',
+      evidence: ['contemporary OSM: no building polygon on the 安仁街 east strip (way-level check 2026-09-30)',
+        'PBR-SH-0002-001 (open green lot on 方浜中路, weak precedent for open lots inside the district)',
+        'PBR-SH-0003-001 (1871 gazetteer: rear temple courts walled, paved courtyards)'],
+      unverified: ['1990s form of the 安仁街 east strip', '1990s contents of the north rear court'],
+    };
+  }
 }
 
 // ---------- 豫园商城：大楼壳 + 开间门面 + 店屋实例 + 摊位 ----------

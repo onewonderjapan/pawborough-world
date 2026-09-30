@@ -1,0 +1,33 @@
+{
+ "status": "complete",
+ "finishedAt": "2026-09-30T10:18:43.611085+09:00",
+ "bucket": "onewonder-pawborough-assets-566601428909-apne1",
+ "region": "ap-northeast-1",
+ "public": false,
+ "objects": 3,
+ "uploaded": 3,
+ "reused": 0,
+ "results": [
+  {
+   "path": "scene-authoring/yuyuan-area/staged/site-modules/garden-kit-catalog.json",
+   "sha256": "baa88b9743fc53c590f935d33a2d25622d15524ede850ecc35191939b8916056",
+   "bytes": 7782,
+   "key": "objects/sha256/ba/baa88b9743fc53c590f935d33a2d25622d15524ede850ecc35191939b8916056",
+   "result": "uploaded"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/staged/site-modules/garden-kit-reimport.json",
+   "sha256": "f8d0d5d482ccac46e2d7dc5cdd5eeb35c559fdbbfbb47399b5a2a0dff5735826",
+   "bytes": 2121,
+   "key": "objects/sha256/f8/f8d0d5d482ccac46e2d7dc5cdd5eeb35c559fdbbfbb47399b5a2a0dff5735826",
+   "result": "uploaded"
+  },
+  {
+   "path": "scene-authoring/yuyuan-area/staged/site-modules/jiuqu-bridge.glb",
+   "sha256": "e12027920da5a385c9fb551e388d2b986d95c9f109115930f145a32d7ee61b52",
+   "bytes": 541332,
+   "key": "objects/sha256/e1/e12027920da5a385c9fb551e388d2b986d95c9f109115930f145a32d7ee61b52",
+   "result": "uploaded"
+  }
+ ]
+}

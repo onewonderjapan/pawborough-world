@@ -239,7 +239,13 @@ function maxBeyond(tris, e) {
   return worst;
 }
 
-const garden = parseGlb(path.join(OUT, 'garden.glb'));
+const gardenGlb = parseGlb(path.join(OUT, 'garden.glb'));
+// wave14-templeeast：庙东跨院的 hall-kit 楼/厅 zone=temple，锚点在总装 temple.glb（assemble 按 layout zone 分文件导出）
+const zoneAssembly = { garden: gardenGlb };
+const assemblyOf = (zone) => {
+  if (!zoneAssembly[zone]) zoneAssembly[zone] = parseGlb(path.join(OUT, `${zone}.glb`));
+  return zoneAssembly[zone];
+};
 const ps = JSON.parse(fs.readFileSync(path.join(OUT, 'procedural-stats.json'), 'utf8'));
 const cwPath = path.join(OUT, 'hallkit-collision-world.json');
 const cw = fs.existsSync(cwPath) ? JSON.parse(fs.readFileSync(cwPath, 'utf8')) : null;
@@ -257,9 +263,10 @@ for (const HK_ID of IDS) {
     `rotY=${E.rotY.toFixed(4)} coverage=${E.coverage.toFixed(2)}  INFO facade.dir 偏差 ${E.facadeDelta.toFixed(1)}°`);
   const row = { id: HK_ID, name: obj.name || null, kind: obj.kind, facadeDeltaDeg: +E.facadeDelta.toFixed(2), coverage: +E.coverage.toFixed(3) };
 
-  // ---------- 1) 总装 garden.glb 锚点实测 ----------
+  // ---------- 1) 总装 <zone>.glb 锚点实测（园区厅堂 garden.glb；庙东跨院 temple.glb） ----------
+  const garden = assemblyOf(obj.zone || 'garden');
   const anchorEntry = garden.nodesByName.get(HK_ID);
-  ok(`${tag} garden.glb 有锚节点`, !!anchorEntry);
+  ok(`${tag} ${obj.zone || 'garden'}.glb 有锚节点`, !!anchorEntry);
   if (anchorEntry) {
     const t = anchorEntry.n.translation || [0, 0, 0];
     const q = anchorEntry.n.rotation || [0, 0, 0, 1];

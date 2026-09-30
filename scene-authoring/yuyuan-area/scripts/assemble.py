@@ -50,7 +50,12 @@ def place(objs, inst):
     anchor.empty_display_size = 2
     anchor.location = (x, -z, 0)
     anchor.rotation_euler = (0, 0, inst['rotY'])
-    if inst.get('scale'):
+    if inst.get('scale3'):
+        # wave14-templeside S1a：非均匀缩放（GLB 轴约定 [宽,高,深]）。
+        # glTF Y-up -> Blender Z-up：glb(x,y,z) -> blender(x,-z,y)，所以 Blender 轴序 = (宽, 深, 高)。
+        sx, sy, sz = inst['scale3']
+        anchor.scale = (sx, sz, sy)
+    elif inst.get('scale'):
         anchor.scale = (inst['scale'],) * 3
     anchor['id'] = inst['id']
     anchor['module'] = inst['module']
@@ -62,6 +67,11 @@ def place(objs, inst):
     tgt.objects.link(anchor)
     for o in objs:
         dup = o.copy()  # 链接复制：共享 mesh/材质/贴图数据
+        # wave14-templeside：复用 templeeast-ding 模块的 templeside-* 实例，子件名随锚改名。
+        # 否则子件名前缀 templeeast-ding__* 会被 temple-5 的名字谓词误收（锚在 temple-2、子件成孤儿），
+        # 且 templeeast-test C5「其它庙区分件不含 templeeast 节点」按名字对账也会被误伤。
+        if inst['id'].startswith('templeside-') and dup.name.startswith('templeeast-ding'):
+            dup.name = inst['id'] + dup.name[len('templeeast-ding'):]
         dup.hide_render = False
         dup.hide_viewport = False
         tgt.objects.link(dup)
@@ -183,6 +193,15 @@ for inst in LAYOUT['instances']:
                 o.hide_viewport = True
             temple_objs[inst['module']] = objs
         place(temple_objs[inst['module']], inst)
+    elif inst['module'] == 'templeeast-ding':
+        # wave14-templeeast：庙东跨院北院宝鼎（modules/temple-east/build_ding.py 生成件）
+        if inst['module'] not in temple_objs:
+            objs = import_glb(os.path.join(ROOT, 'out-garden-kits', 'templeeast-ding', 'model.glb'), 'MODLIB')
+            for o in objs:
+                o.hide_render = True
+                o.hide_viewport = True
+            temple_objs[inst['module']] = objs
+        place(temple_objs[inst['module']], inst)
     else:
         print('SKIP unknown module', inst['module'])
 
@@ -278,6 +297,27 @@ if os.environ.get('STALL_KIT') == '1':
     json.dump({'source': 'recomputed from layout footprints (records dir/outward/rotY ignored)', 'awnings': awning_poses},
               open(os.path.join(OUT, 'awning-poses.json'), 'w'), ensure_ascii=False, indent=1)
     print('stall kit placed', stall_placed)
+
+# ---------- 老城隍庙南侧街廊檐灯（OLDSOUTH_LAMPS=1 默认开，wave14-stalllight B） ----------
+# 位置 = modules/bazaar-stalls/records/lamps.json（build_bazaar_stalls.py 按 pinned 路线 + layout 建筑边重算，
+# tests/oldsouth-lamps-test.mjs 独立重算对账）。灯具实测底箍最低 2.1775 m、整体最高约 2.70 m（步行胶囊高约 1.9 m 之上），
+# 无碰撞盒（export-collision 只读 placements 的 stalls/benches，灯不进碰撞世界）；
+# 夜间发光与点光候选由 lighting/presets.json 的 oldsouth-lamp 发光组 / oldsouth-lamp node-anchor 源驱动（两端同参）。
+oldsouth_lamp_placed = 0
+if os.environ.get('OLDSOUTH_LAMPS', '1') == '1':
+    OL_GLB = os.path.join(ROOT, os.environ.get('STALL_DIR', 'out-bazaar-stalls'))
+    lpj = json.load(open(os.path.join(ROOT, 'modules', 'bazaar-stalls', 'records', 'lamps.json'), encoding='utf-8'))
+    lamp_lib = None
+    for lm in lpj['lamps']:
+        if lamp_lib is None:
+            lamp_lib = import_glb(os.path.join(OL_GLB, lm['module']), 'MODLIB-OL')
+            for o in lamp_lib:
+                o.hide_render = True
+                o.hide_viewport = True
+        place(lamp_lib, {'id': lm['id'], 'module': 'stall-kit:' + lm['module'], 'zone': lm.get('zone', 'bazaar'), 'lod': 'L2',
+                         'position': lm['position'], 'rotY': lm['rotY']})
+        oldsouth_lamp_placed += 1
+    print('old-south lamps placed', oldsouth_lamp_placed)
 
 # ---------- 三穗堂实例模块（SANSUITANG=1：modules/sansuitang 细化件替代程序化 hall bld-428179901） ----------
 # 位置（wave2-sansuitang 主控 2026-09-25 定）= footprint 最小面积外接矩形中心，再沿 facade.dir 平移最小量，

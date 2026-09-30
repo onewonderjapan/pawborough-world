@@ -22,7 +22,12 @@ export function moduleFileMap() {
 export function templeInstances() {
   const MF = moduleFileMap();
   const L = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline', 'layout.json'), 'utf8'));
-  return L.instances.filter((i) => MF[i.module]).map((i) => ({ ...i, file: MF[i.module] }));
+  // wave14-templeeast：庙东跨院复用 temple-tree-camphor 的 4 棵樟（id templeeast-*）不属于 temple-v3 中轴 16 件，
+  // 由 tests/templeeast-test.mjs 单独核对（净距 / 分件 / 碰撞）；templeqa 仍只看中轴 16 件，口径不变。
+  // wave14-templeside：安仁街东 3 棵（anreneast-*，outer 区）与后殿北院 3 棵（templeside-*）同理排除，
+  // 由 tests/templeside-test.mjs 单独核对。
+  return L.instances.filter((i) => MF[i.module] && !i.id.startsWith('templeeast-')
+    && !i.id.startsWith('anreneast-') && !i.id.startsWith('templeside-')).map((i) => ({ ...i, file: MF[i.module] }));
 }
 
 // ---------- GLB 读取（扁平模块：节点无变换） ----------

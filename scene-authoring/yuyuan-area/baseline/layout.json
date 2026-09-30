@@ -768,13 +768,13 @@
   "sourceWaters": 14,
   "sourceShopProposals": 171,
   "sourceZones": 3,
-  "objects": 876,
-  "instances": 46,
+  "objects": 904,
+  "instances": 66,
   "labels": 73,
   "disposition": {
-   "rendered": 822,
+   "rendered": 830,
    "merged-into-bridge": 1,
-   "reused": 46,
+   "reused": 66,
    "replaced-by-design": 7
   },
   "zoneBuildings": {
@@ -818,7 +818,7 @@
     }
    ],
    "stallsAndBenches": 51,
-   "distinctSourceBuildings": 45
+   "distinctSourceBuildings": 53
   }
  },
  "objects": [
@@ -9920,19 +9920,25 @@
    "disposition": "reused",
    "geometry": {
     "position": [
-     -53.42,
-     9.52
+     -52.98,
+     11.368
     ],
     "rotY": 0.233508
    },
    "proposal": "shop-165",
+   "scale3": [
+    1,
+    1,
+    0.85
+   ],
    "trade": "饭馆",
    "sources": {
     "mapDataShops": "shop-165"
    },
    "confidence": "shop proposal point from shared base map; historicalPositionVerified=false",
    "inferences": [
-    "unit fitted to proposal point (design proposal positions along 方浜中路/东门路); no historic shop addresses claimed"
+    "unit fitted to proposal point (design proposal positions along 方浜中路/东门路); no historic shop addresses claimed",
+    "wave14-templeside S1a: shoprow-p165 crossed temple-wall seg-22 and overlapped the templeeast paving at grade; band width 6.78-6.86 m < unit GLB depth 7.10 m so pure translation cannot clear the wall - depth axis scaled 0.85 and shifted 1.9 m along facade normal (south)"
    ]
   },
   {
@@ -27965,16 +27971,6 @@
      ],
      [
       [
-       -50.46953233143541,
-       -38.79309562788724
-      ],
-      [
-       -48.412426488600794,
-       -27.926551786348675
-      ]
-     ],
-     [
-      [
        -43.04409100618627,
        -1.7203271105697135
       ],
@@ -28023,16 +28019,59 @@
        15.574366217958366
       ]
      ]
+    ],
+    "segmentIndex": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     20,
+     21,
+     22,
+     23,
+     24
     ]
    },
    "height": 2.6,
    "thickness": 0.4,
+   "droppedFloating": [
+    {
+     "index": 19,
+     "segment": [
+      [
+       -50.46953233143541,
+       -38.79309562788724
+      ],
+      [
+       -48.412426488600794,
+       -27.926551786348675
+      ]
+     ],
+     "rule": "both endpoints farther than 0.5 m from any other segment endpoint (lib.dropFloatingSegments); left dangling by the <8 m road-clearance filter"
+    }
+   ],
    "sources": {
     "base": "temple zone boundary"
    },
    "confidence": "design-inference",
    "inferences": [
-    "boundary wall follows temple zone polygon inset 2m; south opening at shanmen axis"
+    "boundary wall follows temple zone polygon inset 2m; south opening at shanmen axis",
+    "floating segment(s) 19 dropped at generation (wave14-templeeast lead ruling 2026-09-29; never rendered/collided)"
    ]
   },
   {
@@ -28449,6 +28488,1092 @@
    "confidence": "contemporary OSM outline retained in layout only (not extruded)",
    "inferences": [
     "kept as ground-source record; not rendered as volumes to avoid double buildings"
+   ]
+  },
+  {
+   "id": "templeeast-shop-1",
+   "zone": "temple",
+   "kind": "shopAnchor",
+   "name": null,
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -49.235,
+     -62.923
+    ],
+    "rotY": 1.737826
+   },
+   "rowStreet": "安仁街",
+   "templeEastRow": "r1",
+   "trade": "烟纸店",
+   "unitFootprint": [
+    [
+     -56.144,
+     -65.409
+    ],
+    [
+     -49.833,
+     -66.473
+    ],
+    [
+     -48.636,
+     -59.373
+    ],
+    [
+     -54.947,
+     -58.309
+    ],
+    [
+     -56.144,
+     -65.409
+    ]
+   ],
+   "sources": {
+    "designPlan": "wave14-templeeast",
+    "sha256": "d45ea61667e2f1fa1b44947d820b23cdfff56950cb4e8579ef2c3f5a4f0e7f1b"
+   },
+   "confidence": "design-inference: street frontage on 安仁街 west side; 1990s shops here UNVERIFIED; unit base model read-only reuse",
+   "inferences": [
+    "unit shop-02-double (7.2×6.4 m) facing 安仁街; no scaling; trade is candidate only"
+   ]
+  },
+  {
+   "id": "templeeast-shop-2",
+   "zone": "temple",
+   "kind": "shopAnchor",
+   "name": null,
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -48.088,
+     -56.119
+    ],
+    "rotY": 1.737826
+   },
+   "rowStreet": "安仁街",
+   "templeEastRow": "r1",
+   "trade": "南北杂货",
+   "unitFootprint": [
+    [
+     -54.847,
+     -57.718
+    ],
+    [
+     -48.536,
+     -58.782
+    ],
+    [
+     -47.639,
+     -53.457
+    ],
+    [
+     -53.95,
+     -52.393
+    ],
+    [
+     -54.847,
+     -57.718
+    ]
+   ],
+   "sources": {
+    "designPlan": "wave14-templeeast",
+    "sha256": "ff81dc4e5a7b971b927fdac441cf8e6244cd11a36198ea308d07170d17e59986"
+   },
+   "confidence": "design-inference: street frontage on 安仁街 west side; 1990s shops here UNVERIFIED; unit base model read-only reuse",
+   "inferences": [
+    "unit shop-01-narrow (5.4×6.4 m) facing 安仁街; no scaling; trade is candidate only"
+   ]
+  },
+  {
+   "id": "templeeast-shop-3",
+   "zone": "temple",
+   "kind": "shopAnchor",
+   "name": null,
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -47.04,
+     -49.907
+    ],
+    "rotY": 1.737826
+   },
+   "rowStreet": "安仁街",
+   "templeEastRow": "r1",
+   "trade": "字画店",
+   "unitFootprint": [
+    [
+     -53.85,
+     -51.801
+    ],
+    [
+     -47.539,
+     -52.865
+    ],
+    [
+     -46.541,
+     -46.949
+    ],
+    [
+     -52.852,
+     -45.885
+    ],
+    [
+     -53.85,
+     -51.801
+    ]
+   ],
+   "sources": {
+    "designPlan": "wave14-templeeast",
+    "sha256": "921e3dfafea9ece0b4cab7c70e3f9aab71d46d450bdbaee4b75352b26581ab1e"
+   },
+   "confidence": "design-inference: street frontage on 安仁街 west side; 1990s shops here UNVERIFIED; unit base model read-only reuse",
+   "inferences": [
+    "unit shop-06-endcap (6×6.4 m) facing 安仁街; no scaling; trade is candidate only"
+   ]
+  },
+  {
+   "id": "templeeast-r1",
+   "zone": "temple",
+   "kind": "tower",
+   "name": null,
+   "lod": "L1",
+   "disposition": "rendered",
+   "geometry": {
+    "footprint": [
+     [
+      -62.258,
+      -64.378
+     ],
+     [
+      -57.623,
+      -65.16
+     ],
+     [
+      -54.331,
+      -45.635
+     ],
+     [
+      -58.966,
+      -44.854
+     ],
+     [
+      -62.258,
+      -64.378
+     ]
+    ]
+   },
+   "height": 5.6,
+   "eave": 5.6,
+   "rise": 1.9,
+   "roofMode": "gabled",
+   "storeys": 2,
+   "storeySource": "design (garden tower family defaults)",
+   "facade": {
+    "dir": [
+     -0.986083,
+     0.166254
+    ],
+    "basis": "design: faces the east-court yard (temple-axis local -X)"
+   },
+   "sources": {
+    "designPlan": "wave14-templeeast"
+   },
+   "category": "tower",
+   "classSource": "design",
+   "confidence": "design-inference: two-storey side building with balcony (2015 photos of 财神殿/三官殿 PBR-SH-0005-009/013); not survey",
+   "inferences": [
+    "hall-kit tower (2 storeys, gabled); back-to-back with the 安仁街 shop row across a ≥1 m drip lane"
+   ]
+  },
+  {
+   "id": "templeeast-shop-4",
+   "zone": "temple",
+   "kind": "shopAnchor",
+   "name": null,
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -45.245,
+     -39.257
+    ],
+    "rotY": 1.737826
+   },
+   "rowStreet": "安仁街",
+   "templeEastRow": "r2",
+   "trade": "饭馆",
+   "unitFootprint": [
+    [
+     -52.354,
+     -42.926
+    ],
+    [
+     -46.043,
+     -43.99
+    ],
+    [
+     -44.447,
+     -34.524
+    ],
+    [
+     -50.758,
+     -33.46
+    ],
+    [
+     -52.354,
+     -42.926
+    ]
+   ],
+   "sources": {
+    "designPlan": "wave14-templeeast",
+    "sha256": "a971d23e0d1102882fc2e3d9c96fddc15aa54dac13e6593536aff3bfbb104c99"
+   },
+   "confidence": "design-inference: street frontage on 安仁街 west side; 1990s shops here UNVERIFIED; unit base model read-only reuse",
+   "inferences": [
+    "unit shop-03-threebay (9.6×6.4 m) facing 安仁街; no scaling; trade is candidate only"
+   ]
+  },
+  {
+   "id": "templeeast-shop-5",
+   "zone": "temple",
+   "kind": "shopAnchor",
+   "name": null,
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -43.815,
+     -30.777
+    ],
+    "rotY": 1.737826
+   },
+   "rowStreet": "安仁街",
+   "templeEastRow": "r2",
+   "trade": "绣品",
+   "unitFootprint": [
+    [
+     -51.052,
+     -32.802
+    ],
+    [
+     -44.347,
+     -33.932
+    ],
+    [
+     -43.283,
+     -27.621
+    ],
+    [
+     -49.988,
+     -26.491
+    ],
+    [
+     -51.052,
+     -32.802
+    ]
+   ],
+   "sources": {
+    "designPlan": "wave14-templeeast",
+    "sha256": "c07d5e711d7f02bda88754d64cc707e9a4c862694fc8f97ad9add5a9ee45d949"
+   },
+   "confidence": "design-inference: street frontage on 安仁街 west side; 1990s shops here UNVERIFIED; unit base model read-only reuse",
+   "inferences": [
+    "unit shop-04-recess (6.4×6.8 m) facing 安仁街; no scaling; trade is candidate only"
+   ]
+  },
+  {
+   "id": "templeeast-r2",
+   "zone": "temple",
+   "kind": "tower",
+   "name": null,
+   "lod": "L1",
+   "disposition": "rendered",
+   "geometry": {
+    "footprint": [
+     [
+      -58.467,
+      -41.896
+     ],
+     [
+      -53.833,
+      -42.677
+     ],
+     [
+      -51.073,
+      -26.308
+     ],
+     [
+      -55.707,
+      -25.527
+     ],
+     [
+      -58.467,
+      -41.896
+     ]
+    ]
+   },
+   "height": 5.6,
+   "eave": 5.6,
+   "rise": 1.9,
+   "roofMode": "gabled",
+   "storeys": 2,
+   "storeySource": "design (garden tower family defaults)",
+   "facade": {
+    "dir": [
+     -0.986083,
+     0.166254
+    ],
+    "basis": "design: faces the east-court yard (temple-axis local -X)"
+   },
+   "sources": {
+    "designPlan": "wave14-templeeast"
+   },
+   "category": "tower",
+   "classSource": "design",
+   "confidence": "design-inference: two-storey side building with balcony (2015 photos of 财神殿/三官殿 PBR-SH-0005-009/013); not survey",
+   "inferences": [
+    "hall-kit tower (2 storeys, gabled); back-to-back with the 安仁街 shop row across a ≥1 m drip lane"
+   ]
+  },
+  {
+   "id": "templeeast-shop-6",
+   "zone": "temple",
+   "kind": "shopAnchor",
+   "name": null,
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -42.335,
+     -22.001
+    ],
+    "rotY": 1.737826
+   },
+   "rowStreet": "安仁街",
+   "templeEastRow": "r3",
+   "trade": "药材",
+   "unitFootprint": [
+    [
+     -49.095,
+     -23.599
+    ],
+    [
+     -42.784,
+     -24.663
+    ],
+    [
+     -41.886,
+     -19.338
+    ],
+    [
+     -48.197,
+     -18.274
+    ],
+    [
+     -49.095,
+     -23.599
+    ]
+   ],
+   "sources": {
+    "designPlan": "wave14-templeeast",
+    "sha256": "ff81dc4e5a7b971b927fdac441cf8e6244cd11a36198ea308d07170d17e59986"
+   },
+   "confidence": "design-inference: street frontage on 安仁街 west side; 1990s shops here UNVERIFIED; unit base model read-only reuse",
+   "inferences": [
+    "unit shop-01-narrow (5.4×6.4 m) facing 安仁街; no scaling; trade is candidate only"
+   ]
+  },
+  {
+   "id": "templeeast-shop-7",
+   "zone": "temple",
+   "kind": "shopAnchor",
+   "name": null,
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -41.188,
+     -15.197
+    ],
+    "rotY": 1.737826
+   },
+   "rowStreet": "安仁街",
+   "templeEastRow": "r3",
+   "trade": "照相店",
+   "unitFootprint": [
+    [
+     -48.097,
+     -17.683
+    ],
+    [
+     -41.786,
+     -18.747
+    ],
+    [
+     -40.589,
+     -11.647
+    ],
+    [
+     -46.9,
+     -10.583
+    ],
+    [
+     -48.097,
+     -17.683
+    ]
+   ],
+   "sources": {
+    "designPlan": "wave14-templeeast",
+    "sha256": "d45ea61667e2f1fa1b44947d820b23cdfff56950cb4e8579ef2c3f5a4f0e7f1b"
+   },
+   "confidence": "design-inference: street frontage on 安仁街 west side; 1990s shops here UNVERIFIED; unit base model read-only reuse",
+   "inferences": [
+    "unit shop-02-double (7.2×6.4 m) facing 安仁街; no scaling; trade is candidate only"
+   ]
+  },
+  {
+   "id": "templeeast-shop-8",
+   "zone": "temple",
+   "kind": "shopAnchor",
+   "name": null,
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -39.991,
+     -8.097
+    ],
+    "rotY": 1.737826
+   },
+   "rowStreet": "安仁街",
+   "templeEastRow": "r3",
+   "trade": "烟纸店",
+   "unitFootprint": [
+    [
+     -46.801,
+     -9.991
+    ],
+    [
+     -40.49,
+     -11.055
+    ],
+    [
+     -39.492,
+     -5.139
+    ],
+    [
+     -45.803,
+     -4.075
+    ],
+    [
+     -46.801,
+     -9.991
+    ]
+   ],
+   "sources": {
+    "designPlan": "wave14-templeeast",
+    "sha256": "921e3dfafea9ece0b4cab7c70e3f9aab71d46d450bdbaee4b75352b26581ab1e"
+   },
+   "confidence": "design-inference: street frontage on 安仁街 west side; 1990s shops here UNVERIFIED; unit base model read-only reuse",
+   "inferences": [
+    "unit shop-06-endcap (6×6.4 m) facing 安仁街; no scaling; trade is candidate only"
+   ]
+  },
+  {
+   "id": "templeeast-r3",
+   "zone": "temple",
+   "kind": "tower",
+   "name": null,
+   "lod": "L1",
+   "disposition": "rendered",
+   "geometry": {
+    "footprint": [
+     [
+      -55.209,
+      -22.568
+     ],
+     [
+      -50.574,
+      -23.35
+     ],
+     [
+      -47.282,
+      -3.825
+     ],
+     [
+      -51.917,
+      -3.044
+     ],
+     [
+      -55.209,
+      -22.568
+     ]
+    ]
+   },
+   "height": 5.6,
+   "eave": 5.6,
+   "rise": 1.9,
+   "roofMode": "gabled",
+   "storeys": 2,
+   "storeySource": "design (garden tower family defaults)",
+   "facade": {
+    "dir": [
+     -0.986083,
+     0.166254
+    ],
+    "basis": "design: faces the east-court yard (temple-axis local -X)"
+   },
+   "sources": {
+    "designPlan": "wave14-templeeast"
+   },
+   "category": "tower",
+   "classSource": "design",
+   "confidence": "design-inference: two-storey side building with balcony (2015 photos of 财神殿/三官殿 PBR-SH-0005-009/013); not survey",
+   "inferences": [
+    "hall-kit tower (2 storeys, gabled); back-to-back with the 安仁街 shop row across a ≥1 m drip lane"
+   ]
+  },
+  {
+   "id": "templeeast-t1",
+   "zone": "temple",
+   "kind": "hall",
+   "name": null,
+   "lod": "L1",
+   "disposition": "rendered",
+   "geometry": {
+    "footprint": [
+     [
+      -65.206,
+      -40.962
+     ],
+     [
+      -59.881,
+      -41.86
+     ],
+     [
+      -58.9,
+      -36.042
+     ],
+     [
+      -64.225,
+      -35.144
+     ],
+     [
+      -65.206,
+      -40.962
+     ]
+    ]
+   },
+   "height": 4,
+   "eave": 4,
+   "rise": 1.9,
+   "roofMode": "gabled",
+   "storeys": 1,
+   "storeySource": "design",
+   "facade": {
+    "dir": [
+     0.166254,
+     0.986083
+    ],
+    "basis": "design: faces south (temple-axis local +Z)"
+   },
+   "sources": {
+    "designPlan": "wave14-templeeast"
+   },
+   "category": "hall",
+   "classSource": "design",
+   "confidence": "design-inference: transverse single-storey hall dividing the east court (1871 county-gazetteer plan shows a parallel east axis of halls); not survey",
+   "inferences": [
+    "hall-kit hall (1 storey, gabled)"
+   ]
+  },
+  {
+   "id": "templeeast-t2",
+   "zone": "temple",
+   "kind": "hall",
+   "name": null,
+   "lod": "L1",
+   "disposition": "rendered",
+   "geometry": {
+    "footprint": [
+     [
+      -61.681,
+      -20.057
+     ],
+     [
+      -56.356,
+      -20.955
+     ],
+     [
+      -55.376,
+      -15.137
+     ],
+     [
+      -60.7,
+      -14.239
+     ],
+     [
+      -61.681,
+      -20.057
+     ]
+    ]
+   },
+   "height": 4,
+   "eave": 4,
+   "rise": 1.9,
+   "roofMode": "gabled",
+   "storeys": 1,
+   "storeySource": "design",
+   "facade": {
+    "dir": [
+     0.166254,
+     0.986083
+    ],
+    "basis": "design: faces south (temple-axis local +Z)"
+   },
+   "sources": {
+    "designPlan": "wave14-templeeast"
+   },
+   "category": "hall",
+   "classSource": "design",
+   "confidence": "design-inference: transverse single-storey hall dividing the east court (1871 county-gazetteer plan shows a parallel east axis of halls); not survey",
+   "inferences": [
+    "hall-kit hall (1 storey, gabled)"
+   ]
+  },
+  {
+   "id": "templeeast-tree-1",
+   "zone": "temple",
+   "kind": "templeAnchor",
+   "name": null,
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -65.109,
+     -59.638
+    ],
+    "rotY": 0.16703
+   },
+   "sources": {
+    "designPlan": "wave14-templeeast",
+    "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85"
+   },
+   "confidence": "design-inference: courtyard camphor (same module as the axis courtyards)",
+   "inferences": [
+    "reuse temple-tree-camphor read-only"
+   ]
+  },
+  {
+   "id": "templeeast-tree-2",
+   "zone": "temple",
+   "kind": "templeAnchor",
+   "name": null,
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -62.948,
+     -46.819
+    ],
+    "rotY": 1.26703
+   },
+   "sources": {
+    "designPlan": "wave14-templeeast",
+    "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85"
+   },
+   "confidence": "design-inference: courtyard camphor (same module as the axis courtyards)",
+   "inferences": [
+    "reuse temple-tree-camphor read-only"
+   ]
+  },
+  {
+   "id": "templeeast-tree-3",
+   "zone": "temple",
+   "kind": "templeAnchor",
+   "name": null,
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -59.739,
+     -27.788
+    ],
+    "rotY": 2.36703
+   },
+   "sources": {
+    "designPlan": "wave14-templeeast",
+    "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85"
+   },
+   "confidence": "design-inference: courtyard camphor (same module as the axis courtyards)",
+   "inferences": [
+    "reuse temple-tree-camphor read-only"
+   ]
+  },
+  {
+   "id": "templeeast-tree-4",
+   "zone": "temple",
+   "kind": "templeAnchor",
+   "name": null,
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -55.999,
+     -5.601
+    ],
+    "rotY": 3.46703
+   },
+   "sources": {
+    "designPlan": "wave14-templeeast",
+    "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85"
+   },
+   "confidence": "design-inference: courtyard camphor (same module as the axis courtyards)",
+   "inferences": [
+    "reuse temple-tree-camphor read-only"
+   ]
+  },
+  {
+   "id": "templeeast-ding",
+   "zone": "temple",
+   "kind": "templeAnchor",
+   "name": "宝鼎",
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -64.029,
+     -53.229
+    ],
+    "rotY": 0.16703
+   },
+   "sources": {
+    "designPlan": "wave14-templeeast",
+    "construction": "kit/build_entry_court.py addBurner (x0.85 dadian burner) re-built standalone"
+   },
+   "confidence": "design-inference",
+   "inferences": [
+    "north-court incense burner; same construction as the entry-court burner"
+   ]
+  },
+  {
+   "id": "templeeast-paving",
+   "zone": "temple",
+   "kind": "plaza",
+   "name": "庙东跨院铺地",
+   "lod": "L1",
+   "disposition": "rendered",
+   "geometry": {
+    "footprint": [
+     [
+      -69.326,
+      -63.592
+     ],
+     [
+      -49.407,
+      -66.951
+     ],
+     [
+      -47.511,
+      -55.709
+     ],
+     [
+      -45.516,
+      -43.876
+     ],
+     [
+      -43.521,
+      -32.043
+     ],
+     [
+      -41.526,
+      -20.21
+     ],
+     [
+      -39.531,
+      -8.377
+     ],
+     [
+      -43.415,
+      -1.942
+     ],
+     [
+      -45.497,
+      1.35
+     ],
+     [
+      -49.125,
+      3.889
+     ],
+     [
+      -65.674,
+      7.388
+     ],
+     [
+      -69.431,
+      -14.897
+     ],
+     [
+      -61.345,
+      -16.26
+     ],
+     [
+      -69.326,
+      -63.592
+     ]
+    ]
+   },
+   "height": 0.04,
+   "sources": {
+    "designPlan": "wave14-templeeast"
+   },
+   "confidence": "design-inference",
+   "inferences": [
+    "bluestone paving over the east strip (slot paving-blue-stone); inset 0.3–0.6 m from temple-wall segments and the 安仁街 road edge"
+   ]
+  },
+  {
+   "id": "anreneast-paving",
+   "zone": "outer",
+   "kind": "plaza",
+   "name": "安仁街东侧铺地",
+   "lod": "L1",
+   "disposition": "rendered",
+   "geometry": {
+    "footprint": [
+     [
+      -42.436,
+      -68.734
+     ],
+     [
+      -31.589,
+      -70.563
+     ],
+     [
+      -20.206,
+      -9.303
+     ],
+     [
+      -31.053,
+      -7.474
+     ],
+     [
+      -42.436,
+      -68.734
+     ]
+    ]
+   },
+   "height": 0.04,
+   "sources": {
+    "designPlan": "wave14-templeside"
+   },
+   "confidence": "design-inference",
+   "inferences": [
+    "open-lot reading consistent with contemporary OSM (no building polygon here); slot paving-fine-cobble (street family)"
+   ]
+  },
+  {
+   "id": "anreneast-tree-1",
+   "zone": "outer",
+   "kind": "templeAnchor",
+   "name": null,
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -30.175,
+     -16.039
+    ],
+    "rotY": 0.56703
+   },
+   "sources": {
+    "designPlan": "wave14-templeside",
+    "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85"
+   },
+   "confidence": "design-inference: courtyard/street-side camphor (same module as the axis courtyards)",
+   "inferences": [
+    "reuse temple-tree-camphor read-only"
+   ]
+  },
+  {
+   "id": "anreneast-tree-2",
+   "zone": "outer",
+   "kind": "templeAnchor",
+   "name": null,
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -31.367,
+     -38.149
+    ],
+    "rotY": 1.86703
+   },
+   "sources": {
+    "designPlan": "wave14-templeside",
+    "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85"
+   },
+   "confidence": "design-inference: courtyard/street-side camphor (same module as the axis courtyards)",
+   "inferences": [
+    "reuse temple-tree-camphor read-only"
+   ]
+  },
+  {
+   "id": "anreneast-tree-3",
+   "zone": "outer",
+   "kind": "templeAnchor",
+   "name": null,
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -37.49,
+     -59.427
+    ],
+    "rotY": 3.06703
+   },
+   "sources": {
+    "designPlan": "wave14-templeside",
+    "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85"
+   },
+   "confidence": "design-inference: courtyard/street-side camphor (same module as the axis courtyards)",
+   "inferences": [
+    "reuse temple-tree-camphor read-only"
+   ]
+  },
+  {
+   "id": "templeside-paving",
+   "zone": "temple",
+   "kind": "plaza",
+   "name": "后殿北院铺地",
+   "lod": "L1",
+   "disposition": "rendered",
+   "geometry": {
+    "footprint": [
+     [
+      -110.322,
+      -69.762
+     ],
+     [
+      -90.6,
+      -73.087
+     ],
+     [
+      -94.69,
+      -97.345
+     ],
+     [
+      -114.412,
+      -94.02
+     ],
+     [
+      -110.322,
+      -69.762
+     ]
+    ]
+   },
+   "height": 0.04,
+   "sources": {
+    "designPlan": "wave14-templeside"
+   },
+   "confidence": "design-inference",
+   "inferences": [
+    "rear-court bluestone paving (slot temple|plaza); inset >=0.29 m from wall centrelines, >=1.26 m from the houdian north face"
+   ]
+  },
+  {
+   "id": "templeside-tree-1",
+   "zone": "temple",
+   "kind": "templeAnchor",
+   "name": null,
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -106.204,
+     -74.209
+    ],
+    "rotY": 1.06703
+   },
+   "sources": {
+    "designPlan": "wave14-templeside",
+    "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85"
+   },
+   "confidence": "design-inference: courtyard/street-side camphor (same module as the axis courtyards)",
+   "inferences": [
+    "reuse temple-tree-camphor read-only"
+   ]
+  },
+  {
+   "id": "templeside-tree-2",
+   "zone": "temple",
+   "kind": "templeAnchor",
+   "name": null,
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -97.341,
+     -81.788
+    ],
+    "rotY": 2.36703
+   },
+   "sources": {
+    "designPlan": "wave14-templeside",
+    "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85"
+   },
+   "confidence": "design-inference: courtyard/street-side camphor (same module as the axis courtyards)",
+   "inferences": [
+    "reuse temple-tree-camphor read-only"
+   ]
+  },
+  {
+   "id": "templeside-tree-3",
+   "zone": "temple",
+   "kind": "templeAnchor",
+   "name": null,
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -105.246,
+     -89.582
+    ],
+    "rotY": 3.66703
+   },
+   "sources": {
+    "designPlan": "wave14-templeside",
+    "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85"
+   },
+   "confidence": "design-inference: courtyard/street-side camphor (same module as the axis courtyards)",
+   "inferences": [
+    "reuse temple-tree-camphor read-only"
+   ]
+  },
+  {
+   "id": "templeside-ding",
+   "zone": "temple",
+   "kind": "templeAnchor",
+   "name": "宝鼎",
+   "lod": "L2",
+   "disposition": "reused",
+   "geometry": {
+    "position": [
+     -102.277,
+     -83.998
+    ],
+    "rotY": 0.16703
+   },
+   "sources": {
+    "designPlan": "wave14-templeside",
+    "construction": "reuse templeeast-ding build (same construction as the entry-court burner, x0.85)"
+   },
+   "confidence": "design-inference",
+   "inferences": [
+    "rear-court incense burner reusing the existing templeeast-ding module"
    ]
   },
   {
@@ -40401,16 +41526,21 @@
    "zone": "outer",
    "lod": "L2",
    "position": [
-    -53.42,
-    9.52
+    -52.98,
+    11.368
    ],
    "rotY": 0.233508,
    "proposal": "shop-165",
    "proposalCategory": "饭馆",
+   "scale3": [
+    1,
+    1,
+    0.85
+   ],
    "sourcePath": "pawborough-shop-base-batch-20260921/workspace/out/shop-03-threebay/model.glb",
    "sha256": "a971d23e0d1102882fc2e3d9c96fddc15aa54dac13e6593536aff3bfbb104c99",
    "ownerAdopted": false,
-   "axis": "GLB Y-up, facade +Z, depth -Z, origin front-wall center bottom; scale 1"
+   "axis": "GLB Y-up, facade +Z, depth -Z, origin front-wall center bottom; scale3 = [width, height, depth] in GLB axes (assemble.py maps to Blender x,z,y), scale 1 on other axes"
   },
   {
    "id": "shoprow-p166",
@@ -40738,6 +41868,314 @@
    "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85",
    "ownerAdopted": false,
    "axis": "module local frame (shanmen threshold origin, +Z south) -> map via yaw 0.16703 & shanmen anchor"
+  },
+  {
+   "id": "templeeast-shop-1",
+   "module": "shop-02-double",
+   "zone": "temple",
+   "lod": "L2",
+   "position": [
+    -49.235,
+    -62.923
+   ],
+   "rotY": 1.737826,
+   "sourcePath": "pawborough-shop-base-batch-20260921/workspace/out/shop-02-double/model.glb",
+   "sha256": "d45ea61667e2f1fa1b44947d820b23cdfff56950cb4e8579ef2c3f5a4f0e7f1b",
+   "ownerAdopted": false,
+   "axis": "GLB Y-up, facade +Z, depth -Z, origin front-wall center bottom; scale 1"
+  },
+  {
+   "id": "templeeast-shop-2",
+   "module": "shop-01-narrow",
+   "zone": "temple",
+   "lod": "L2",
+   "position": [
+    -48.088,
+    -56.119
+   ],
+   "rotY": 1.737826,
+   "sourcePath": "pawborough-shop-base-batch-20260921/workspace/out/shop-01-narrow/model.glb",
+   "sha256": "ff81dc4e5a7b971b927fdac441cf8e6244cd11a36198ea308d07170d17e59986",
+   "ownerAdopted": false,
+   "axis": "GLB Y-up, facade +Z, depth -Z, origin front-wall center bottom; scale 1"
+  },
+  {
+   "id": "templeeast-shop-3",
+   "module": "shop-06-endcap",
+   "zone": "temple",
+   "lod": "L2",
+   "position": [
+    -47.04,
+    -49.907
+   ],
+   "rotY": 1.737826,
+   "sourcePath": "pawborough-shop-base-batch-20260921/workspace/out/shop-06-endcap/model.glb",
+   "sha256": "921e3dfafea9ece0b4cab7c70e3f9aab71d46d450bdbaee4b75352b26581ab1e",
+   "ownerAdopted": false,
+   "axis": "GLB Y-up, facade +Z, depth -Z, origin front-wall center bottom; scale 1"
+  },
+  {
+   "id": "templeeast-shop-4",
+   "module": "shop-03-threebay",
+   "zone": "temple",
+   "lod": "L2",
+   "position": [
+    -45.245,
+    -39.257
+   ],
+   "rotY": 1.737826,
+   "sourcePath": "pawborough-shop-base-batch-20260921/workspace/out/shop-03-threebay/model.glb",
+   "sha256": "a971d23e0d1102882fc2e3d9c96fddc15aa54dac13e6593536aff3bfbb104c99",
+   "ownerAdopted": false,
+   "axis": "GLB Y-up, facade +Z, depth -Z, origin front-wall center bottom; scale 1"
+  },
+  {
+   "id": "templeeast-shop-5",
+   "module": "shop-04-recess",
+   "zone": "temple",
+   "lod": "L2",
+   "position": [
+    -43.815,
+    -30.777
+   ],
+   "rotY": 1.737826,
+   "sourcePath": "pawborough-shop-base-batch-20260921/workspace/out/shop-04-recess/model.glb",
+   "sha256": "c07d5e711d7f02bda88754d64cc707e9a4c862694fc8f97ad9add5a9ee45d949",
+   "ownerAdopted": false,
+   "axis": "GLB Y-up, facade +Z, depth -Z, origin front-wall center bottom; scale 1"
+  },
+  {
+   "id": "templeeast-shop-6",
+   "module": "shop-01-narrow",
+   "zone": "temple",
+   "lod": "L2",
+   "position": [
+    -42.335,
+    -22.001
+   ],
+   "rotY": 1.737826,
+   "sourcePath": "pawborough-shop-base-batch-20260921/workspace/out/shop-01-narrow/model.glb",
+   "sha256": "ff81dc4e5a7b971b927fdac441cf8e6244cd11a36198ea308d07170d17e59986",
+   "ownerAdopted": false,
+   "axis": "GLB Y-up, facade +Z, depth -Z, origin front-wall center bottom; scale 1"
+  },
+  {
+   "id": "templeeast-shop-7",
+   "module": "shop-02-double",
+   "zone": "temple",
+   "lod": "L2",
+   "position": [
+    -41.188,
+    -15.197
+   ],
+   "rotY": 1.737826,
+   "sourcePath": "pawborough-shop-base-batch-20260921/workspace/out/shop-02-double/model.glb",
+   "sha256": "d45ea61667e2f1fa1b44947d820b23cdfff56950cb4e8579ef2c3f5a4f0e7f1b",
+   "ownerAdopted": false,
+   "axis": "GLB Y-up, facade +Z, depth -Z, origin front-wall center bottom; scale 1"
+  },
+  {
+   "id": "templeeast-shop-8",
+   "module": "shop-06-endcap",
+   "zone": "temple",
+   "lod": "L2",
+   "position": [
+    -39.991,
+    -8.097
+   ],
+   "rotY": 1.737826,
+   "sourcePath": "pawborough-shop-base-batch-20260921/workspace/out/shop-06-endcap/model.glb",
+   "sha256": "921e3dfafea9ece0b4cab7c70e3f9aab71d46d450bdbaee4b75352b26581ab1e",
+   "ownerAdopted": false,
+   "axis": "GLB Y-up, facade +Z, depth -Z, origin front-wall center bottom; scale 1"
+  },
+  {
+   "id": "templeeast-tree-1",
+   "module": "temple-tree-camphor",
+   "file": "tree-camphor-v2.glb",
+   "zone": "temple",
+   "lod": "L2",
+   "position": [
+    -65.109,
+    -59.638
+   ],
+   "rotY": 0.16703,
+   "sourcePath": "pawborough-world-ten-hour-20260921/workspace/world/temple-axis-v3/tree-camphor-v2.glb",
+   "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85",
+   "ownerAdopted": false,
+   "axis": "module local frame (origin trunk base) -> map; yaw varied per tree"
+  },
+  {
+   "id": "templeeast-tree-2",
+   "module": "temple-tree-camphor",
+   "file": "tree-camphor-v2.glb",
+   "zone": "temple",
+   "lod": "L2",
+   "position": [
+    -62.948,
+    -46.819
+   ],
+   "rotY": 1.26703,
+   "sourcePath": "pawborough-world-ten-hour-20260921/workspace/world/temple-axis-v3/tree-camphor-v2.glb",
+   "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85",
+   "ownerAdopted": false,
+   "axis": "module local frame (origin trunk base) -> map; yaw varied per tree"
+  },
+  {
+   "id": "templeeast-tree-3",
+   "module": "temple-tree-camphor",
+   "file": "tree-camphor-v2.glb",
+   "zone": "temple",
+   "lod": "L2",
+   "position": [
+    -59.739,
+    -27.788
+   ],
+   "rotY": 2.36703,
+   "sourcePath": "pawborough-world-ten-hour-20260921/workspace/world/temple-axis-v3/tree-camphor-v2.glb",
+   "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85",
+   "ownerAdopted": false,
+   "axis": "module local frame (origin trunk base) -> map; yaw varied per tree"
+  },
+  {
+   "id": "templeeast-tree-4",
+   "module": "temple-tree-camphor",
+   "file": "tree-camphor-v2.glb",
+   "zone": "temple",
+   "lod": "L2",
+   "position": [
+    -55.999,
+    -5.601
+   ],
+   "rotY": 3.46703,
+   "sourcePath": "pawborough-world-ten-hour-20260921/workspace/world/temple-axis-v3/tree-camphor-v2.glb",
+   "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85",
+   "ownerAdopted": false,
+   "axis": "module local frame (origin trunk base) -> map; yaw varied per tree"
+  },
+  {
+   "id": "templeeast-ding",
+   "module": "templeeast-ding",
+   "zone": "temple",
+   "lod": "L2",
+   "position": [
+    -64.029,
+    -53.229
+   ],
+   "rotY": 0.16703,
+   "sourcePath": "modules/temple-east/build_ding.py -> out-garden-kits/templeeast-ding/model.glb",
+   "ownerAdopted": false,
+   "axis": "GLB Y-up, origin ground centre of plinth"
+  },
+  {
+   "id": "anreneast-tree-1",
+   "module": "temple-tree-camphor",
+   "file": "tree-camphor-v2.glb",
+   "zone": "outer",
+   "lod": "L2",
+   "position": [
+    -30.175,
+    -16.039
+   ],
+   "rotY": 0.56703,
+   "sourcePath": "pawborough-world-ten-hour-20260921/workspace/world/temple-axis-v3/tree-camphor-v2.glb",
+   "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85",
+   "ownerAdopted": false,
+   "axis": "module local frame (origin trunk base) -> map; yaw varied per tree"
+  },
+  {
+   "id": "anreneast-tree-2",
+   "module": "temple-tree-camphor",
+   "file": "tree-camphor-v2.glb",
+   "zone": "outer",
+   "lod": "L2",
+   "position": [
+    -31.367,
+    -38.149
+   ],
+   "rotY": 1.86703,
+   "sourcePath": "pawborough-world-ten-hour-20260921/workspace/world/temple-axis-v3/tree-camphor-v2.glb",
+   "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85",
+   "ownerAdopted": false,
+   "axis": "module local frame (origin trunk base) -> map; yaw varied per tree"
+  },
+  {
+   "id": "anreneast-tree-3",
+   "module": "temple-tree-camphor",
+   "file": "tree-camphor-v2.glb",
+   "zone": "outer",
+   "lod": "L2",
+   "position": [
+    -37.49,
+    -59.427
+   ],
+   "rotY": 3.06703,
+   "sourcePath": "pawborough-world-ten-hour-20260921/workspace/world/temple-axis-v3/tree-camphor-v2.glb",
+   "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85",
+   "ownerAdopted": false,
+   "axis": "module local frame (origin trunk base) -> map; yaw varied per tree"
+  },
+  {
+   "id": "templeside-tree-1",
+   "module": "temple-tree-camphor",
+   "file": "tree-camphor-v2.glb",
+   "zone": "temple",
+   "lod": "L2",
+   "position": [
+    -106.204,
+    -74.209
+   ],
+   "rotY": 1.06703,
+   "sourcePath": "pawborough-world-ten-hour-20260921/workspace/world/temple-axis-v3/tree-camphor-v2.glb",
+   "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85",
+   "ownerAdopted": false,
+   "axis": "module local frame (origin trunk base) -> map; yaw varied per tree"
+  },
+  {
+   "id": "templeside-tree-2",
+   "module": "temple-tree-camphor",
+   "file": "tree-camphor-v2.glb",
+   "zone": "temple",
+   "lod": "L2",
+   "position": [
+    -97.341,
+    -81.788
+   ],
+   "rotY": 2.36703,
+   "sourcePath": "pawborough-world-ten-hour-20260921/workspace/world/temple-axis-v3/tree-camphor-v2.glb",
+   "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85",
+   "ownerAdopted": false,
+   "axis": "module local frame (origin trunk base) -> map; yaw varied per tree"
+  },
+  {
+   "id": "templeside-tree-3",
+   "module": "temple-tree-camphor",
+   "file": "tree-camphor-v2.glb",
+   "zone": "temple",
+   "lod": "L2",
+   "position": [
+    -105.246,
+    -89.582
+   ],
+   "rotY": 3.66703,
+   "sourcePath": "pawborough-world-ten-hour-20260921/workspace/world/temple-axis-v3/tree-camphor-v2.glb",
+   "sha256": "eafd96ddc512231a06ee5ed025c1dbaabe1a42678a4606b72d3dfe2ef9a63b85",
+   "ownerAdopted": false,
+   "axis": "module local frame (origin trunk base) -> map; yaw varied per tree"
+  },
+  {
+   "id": "templeside-ding",
+   "module": "templeeast-ding",
+   "zone": "temple",
+   "lod": "L2",
+   "position": [
+    -102.277,
+    -83.998
+   ],
+   "rotY": 0.16703,
+   "sourcePath": "modules/temple-east/build_ding.py -> out-garden-kits/templeeast-ding/model.glb",
+   "ownerAdopted": false,
+   "axis": "GLB Y-up, origin ground centre of plinth"
   },
   {
    "id": "shopunit-428202608",
@@ -42326,5 +43764,154 @@
     "facade-553893884-3jppso"
    ]
   }
+ },
+ "templeEast": {
+  "rule": "wave14-templeeast scheme B (owner 2026-09-29): 安仁街 shopfront row (outer shop base models) + back-to-back hall-kit two-storey towers + two transverse single-storey halls → three courts; bluestone paving; 4 camphors; north-court burner",
+  "frame": {
+   "origin": "temple-shanmen anchor",
+   "position": [
+    -74.317,
+    9.657
+   ],
+   "rotY": 0.16703,
+   "axes": "local +X ≈ east (toward 安仁街), +Z ≈ south"
+  },
+  "local": {
+   "shopFrontX": 36.8,
+   "towerX": [
+    24.2,
+    28.9
+   ],
+   "hallX": [
+    17.4,
+    22.8
+   ],
+   "rows": [
+    {
+     "id": "r1",
+     "z": [
+      -71,
+      -51.2
+     ],
+     "shops": [
+      "shop-02-double",
+      "shop-01-narrow",
+      "shop-06-endcap"
+     ]
+    },
+    {
+     "id": "r2",
+     "z": [
+      -48.2,
+      -31.6
+     ],
+     "shops": [
+      "shop-03-threebay",
+      "shop-04-recess"
+     ]
+    },
+    {
+     "id": "r3",
+     "z": [
+      -28.6,
+      -8.8
+     ],
+     "shops": [
+      "shop-01-narrow",
+      "shop-02-double",
+      "shop-06-endcap"
+     ]
+    }
+   ],
+   "halls": [
+    {
+     "id": "t1",
+     "z": [
+      -48.4,
+      -42.5
+     ]
+    },
+    {
+     "id": "t2",
+     "z": [
+      -27.2,
+      -21.3
+     ]
+    }
+   ],
+   "trees": [
+    [
+     20.6,
+     -66.8
+    ],
+    [
+     20.6,
+     -53.8
+    ],
+    [
+     20.6,
+     -34.5
+    ],
+    [
+     20.6,
+     -12
+    ]
+   ],
+   "ding": [
+    20.6,
+    -60.3
+   ]
+  },
+  "objects": {
+   "shops": [
+    "templeeast-shop-1",
+    "templeeast-shop-2",
+    "templeeast-shop-3",
+    "templeeast-shop-4",
+    "templeeast-shop-5",
+    "templeeast-shop-6",
+    "templeeast-shop-7",
+    "templeeast-shop-8"
+   ],
+   "towers": [
+    "templeeast-r1",
+    "templeeast-r2",
+    "templeeast-r3"
+   ],
+   "halls": [
+    "templeeast-t1",
+    "templeeast-t2"
+   ],
+   "trees": [
+    "templeeast-tree-1",
+    "templeeast-tree-2",
+    "templeeast-tree-3",
+    "templeeast-tree-4"
+   ],
+   "ding": "templeeast-ding",
+   "paving": "templeeast-paving"
+  },
+  "evidence": [
+   "PBR-SH-0003-001 (1871 county gazetteer temple plan: parallel east axis 鄞王廟/三聖閣/群忠祠/猛將祠, label reading medium confidence)",
+   "PBR-SH-0005-009 / 0005-013 (2015: two-storey side halls with balcony)",
+   "OSM way 228035345 / 428202600 (contemporary: strip built up)",
+   "黄浦区老城厢风貌区设计任务书：安仁街连续界面"
+  ],
+  "unverified": [
+   "1990s form of this strip",
+   "1990s shops on the west side of 安仁街"
+  ]
+ },
+ "templeside": {
+  "rule": "wave14-templeside (owner 2026-09-29): S2 安仁街 east vacant lot (paving + 3 camphors, open-lot reading per contemporary OSM) + S3 north rear court (bluestone paving + 3 camphors + reused ding)",
+  "evidence": [
+   "contemporary OSM: no building polygon on the 安仁街 east strip (way-level check 2026-09-30)",
+   "PBR-SH-0002-001 (open green lot on 方浜中路, weak precedent for open lots inside the district)",
+   "PBR-SH-0003-001 (1871 gazetteer: rear temple courts walled, paved courtyards)"
+  ],
+  "unverified": [
+   "1990s form of the 安仁街 east strip",
+   "1990s contents of the north rear court"
+  ]
  }
 }

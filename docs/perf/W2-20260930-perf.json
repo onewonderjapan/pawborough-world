@@ -1,0 +1,779 @@
+{
+ "default": {
+  "kind": "pawborough-perf-sample",
+  "protocol": "M4/2026-09-25",
+  "startedAt": "2026-09-30T01:09:00.180Z",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+  "viewport": {
+   "w": 1920,
+   "h": 1080,
+   "dpr": 1
+  },
+  "note": "帧时为 rAF 间隔（含 vsync/合成）；swiftshader 或转发环境下不代表真实性能",
+  "loadCompleteMs": 4299,
+  "firstLoadMs": 3696,
+  "firstFrameMs": 3757,
+  "outerLoadedMs": 4298,
+  "load": {
+   "firstLoadZones": [
+    "garden",
+    "pond",
+    "temple",
+    "bazaar"
+   ],
+   "firstLoadBytes": 15593586,
+   "deferredZones": [
+    "outer"
+   ],
+   "deferredBytes": 1604940
+  },
+  "memory": {
+   "usedJSHeapMB": 130.2,
+   "totalJSHeapMB": 194.7,
+   "jsHeapLimitMB": 4192
+  },
+  "gpu": {
+   "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3080 Laptop GPU (0x000024DC) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+   "vendor": "Google Inc. (NVIDIA)",
+   "webglVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)"
+  },
+  "renderer": {
+   "drawCalls": 537,
+   "triangles": 2010289,
+   "shadowPass": {
+    "drawCalls": 245,
+    "triangles": 1064680
+   },
+   "includesShadowPass": true,
+   "programs": 26,
+   "perFrame": true
+  },
+  "batching": {
+   "enabled": true,
+   "groups": 15,
+   "batches": 174,
+   "batchedMeshes": 5648,
+   "leftAlone": 110,
+   "vertices": 1841911,
+   "indices": 3060798,
+   "float32Bytes": 67040920,
+   "buildMs": 253.2,
+   "perZone": {
+    "ZN-garden#1": {
+     "meshes": 286,
+     "batched": 268,
+     "batches": 33,
+     "vertices": 288290,
+     "ms": 40.6
+    },
+    "ZN-garden#2": {
+     "meshes": 6,
+     "batched": 2,
+     "batches": 1,
+     "vertices": 1498,
+     "ms": 0.7
+    },
+    "ZN-garden#3": {
+     "meshes": 452,
+     "batched": 452,
+     "batches": 8,
+     "vertices": 127887,
+     "ms": 18.3
+    },
+    "ZN-pond#4": {
+     "meshes": 321,
+     "batched": 315,
+     "batches": 10,
+     "vertices": 42543,
+     "ms": 5.2
+    },
+    "ZN-pond#5": {
+     "meshes": 2,
+     "batched": 0,
+     "batches": 0,
+     "vertices": 0,
+     "ms": 0
+    },
+    "ZN-temple#6": {
+     "meshes": 63,
+     "batched": 54,
+     "batches": 10,
+     "vertices": 160099,
+     "ms": 14.3
+    },
+    "ZN-temple#7": {
+     "meshes": 52,
+     "batched": 47,
+     "batches": 10,
+     "vertices": 148938,
+     "ms": 10.3
+    },
+    "ZN-temple#8": {
+     "meshes": 16,
+     "batched": 10,
+     "batches": 4,
+     "vertices": 41665,
+     "ms": 2.9
+    },
+    "ZN-temple#9": {
+     "meshes": 1,
+     "batched": 0,
+     "batches": 0,
+     "vertices": 0,
+     "ms": 0
+    },
+    "ZN-temple#10": {
+     "meshes": 413,
+     "batched": 411,
+     "batches": 16,
+     "vertices": 113022,
+     "ms": 11.5
+    },
+    "ZN-bazaar#11": {
+     "meshes": 2147,
+     "batched": 2121,
+     "batches": 37,
+     "vertices": 198528,
+     "ms": 27.9
+    },
+    "ZN-bazaar#12": {
+     "meshes": 1,
+     "batched": 0,
+     "batches": 0,
+     "vertices": 0,
+     "ms": 0.1
+    },
+    "ZN-bazaar#13": {
+     "meshes": 225,
+     "batched": 208,
+     "batches": 21,
+     "vertices": 208876,
+     "ms": 32.8
+    },
+    "ZN-bazaar#14": {
+     "meshes": 344,
+     "batched": 332,
+     "batches": 11,
+     "vertices": 204355,
+     "ms": 25.7
+    },
+    "ZN-outer#15": {
+     "meshes": 1429,
+     "batched": 1428,
+     "batches": 13,
+     "vertices": 306210,
+     "ms": 62.9
+    }
+   },
+   "float32MB": 63.9
+  },
+  "lighting": {
+   "preset": "day",
+   "requested": null,
+   "shadow": true,
+   "matchedMaterials": 0,
+   "error": null,
+   "timedOut": false,
+   "lateApplied": false,
+   "presetsMs": 99,
+   "shadowActive": true,
+   "sunDir": [
+    -0.3531,
+    0.788,
+    0.5043
+   ],
+   "sun": {
+    "intensity": 2.2,
+    "color": "#fff3e0",
+    "castShadow": true,
+    "mapSize": 2048,
+    "extent": 277.3
+   },
+   "hemi": {
+    "intensity": 2.2,
+    "sky": "#cfe0f2",
+    "ground": "#978d78"
+   },
+   "exposure": 1,
+   "toneMapping": "neutral",
+   "shadowMapEnabled": true,
+   "shadowCasters": 5893,
+   "pointLights": 0,
+   "pointLightsVisible": 0,
+   "candidates": 126,
+   "candidatesBySource": {
+    "stall": 51,
+    "lantern": 75
+   },
+   "emissiveByGroup": {
+    "lantern": 0,
+    "sign": 0,
+    "shop-interior": 0,
+    "window": 0,
+    "lattice": 0,
+    "bazaar-window": 0,
+    "stall": 0
+   },
+   "background": "sky-texture"
+  },
+  "orbitStartedAt": "2026-09-30T01:09:04.353Z",
+  "orbit": {
+   "seconds": 60,
+   "frames": 2115,
+   "p50Ms": 27.6,
+   "p95Ms": 36.4,
+   "meanMs": 28.37,
+   "minMs": 21.2,
+   "maxMs": 53.4,
+   "fpsP50": 36.2,
+   "memoryAfter": {
+    "usedJSHeapMB": 222.5,
+    "totalJSHeapMB": 257.4,
+    "jsHeapLimitMB": 4192
+   }
+  },
+  "walkRoute": "main->gold",
+  "walkStartedAt": "2026-09-30T01:10:06.914Z",
+  "walk": {
+   "seconds": 60,
+   "frames": 2383,
+   "p50Ms": 24.3,
+   "p95Ms": 32.6,
+   "meanMs": 25.18,
+   "minMs": 19,
+   "maxMs": 44,
+   "fpsP50": 41.2,
+   "memoryAfter": {
+    "usedJSHeapMB": 157.4,
+    "totalJSHeapMB": 206.1,
+    "jsHeapLimitMB": 4192
+   }
+  },
+  "finishedAt": "2026-09-30T01:11:06.926Z",
+  "memoryEnd": {
+   "usedJSHeapMB": 157.4,
+   "totalJSHeapMB": 206.1,
+   "jsHeapLimitMB": 4192
+  },
+  "wallSeconds": 128.337,
+  "pageErrors": []
+ },
+ "shadow0": {
+  "kind": "pawborough-perf-sample",
+  "protocol": "M4/2026-09-25",
+  "startedAt": "2026-09-30T01:11:08.581Z",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+  "viewport": {
+   "w": 1920,
+   "h": 1080,
+   "dpr": 1
+  },
+  "note": "帧时为 rAF 间隔（含 vsync/合成）；swiftshader 或转发环境下不代表真实性能",
+  "loadCompleteMs": 3833,
+  "firstLoadMs": 3433,
+  "firstFrameMs": 3476,
+  "outerLoadedMs": 3833,
+  "load": {
+   "firstLoadZones": [
+    "garden",
+    "pond",
+    "temple",
+    "bazaar"
+   ],
+   "firstLoadBytes": 15593586,
+   "deferredZones": [
+    "outer"
+   ],
+   "deferredBytes": 1604940
+  },
+  "memory": {
+   "usedJSHeapMB": 160.1,
+   "totalJSHeapMB": 205.9,
+   "jsHeapLimitMB": 4192
+  },
+  "gpu": {
+   "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3080 Laptop GPU (0x000024DC) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+   "vendor": "Google Inc. (NVIDIA)",
+   "webglVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)"
+  },
+  "renderer": {
+   "drawCalls": 292,
+   "triangles": 945609,
+   "shadowPass": {
+    "drawCalls": 0,
+    "triangles": 0
+   },
+   "includesShadowPass": true,
+   "programs": 19,
+   "perFrame": true
+  },
+  "batching": {
+   "enabled": true,
+   "groups": 15,
+   "batches": 174,
+   "batchedMeshes": 5648,
+   "leftAlone": 110,
+   "vertices": 1841911,
+   "indices": 3060798,
+   "float32Bytes": 67040920,
+   "buildMs": 311.1,
+   "perZone": {
+    "ZN-garden#1": {
+     "meshes": 286,
+     "batched": 268,
+     "batches": 33,
+     "vertices": 288290,
+     "ms": 48.8
+    },
+    "ZN-garden#2": {
+     "meshes": 6,
+     "batched": 2,
+     "batches": 1,
+     "vertices": 1498,
+     "ms": 0.5
+    },
+    "ZN-garden#3": {
+     "meshes": 452,
+     "batched": 452,
+     "batches": 8,
+     "vertices": 127887,
+     "ms": 21.7
+    },
+    "ZN-pond#4": {
+     "meshes": 321,
+     "batched": 315,
+     "batches": 10,
+     "vertices": 42543,
+     "ms": 8.1
+    },
+    "ZN-pond#5": {
+     "meshes": 2,
+     "batched": 0,
+     "batches": 0,
+     "vertices": 0,
+     "ms": 0.1
+    },
+    "ZN-temple#6": {
+     "meshes": 63,
+     "batched": 54,
+     "batches": 10,
+     "vertices": 160099,
+     "ms": 21.6
+    },
+    "ZN-temple#7": {
+     "meshes": 52,
+     "batched": 47,
+     "batches": 10,
+     "vertices": 148938,
+     "ms": 20.7
+    },
+    "ZN-temple#8": {
+     "meshes": 16,
+     "batched": 10,
+     "batches": 4,
+     "vertices": 41665,
+     "ms": 6
+    },
+    "ZN-temple#9": {
+     "meshes": 1,
+     "batched": 0,
+     "batches": 0,
+     "vertices": 0,
+     "ms": 0.1
+    },
+    "ZN-temple#10": {
+     "meshes": 413,
+     "batched": 411,
+     "batches": 16,
+     "vertices": 113022,
+     "ms": 17.1
+    },
+    "ZN-bazaar#11": {
+     "meshes": 2147,
+     "batched": 2121,
+     "batches": 37,
+     "vertices": 198528,
+     "ms": 50.2
+    },
+    "ZN-bazaar#12": {
+     "meshes": 1,
+     "batched": 0,
+     "batches": 0,
+     "vertices": 0,
+     "ms": 0
+    },
+    "ZN-bazaar#13": {
+     "meshes": 225,
+     "batched": 208,
+     "batches": 21,
+     "vertices": 208876,
+     "ms": 34.5
+    },
+    "ZN-bazaar#14": {
+     "meshes": 344,
+     "batched": 332,
+     "batches": 11,
+     "vertices": 204355,
+     "ms": 33.3
+    },
+    "ZN-outer#15": {
+     "meshes": 1429,
+     "batched": 1428,
+     "batches": 13,
+     "vertices": 306210,
+     "ms": 48.4
+    }
+   },
+   "float32MB": 63.9
+  },
+  "lighting": {
+   "preset": "day",
+   "requested": null,
+   "shadow": false,
+   "matchedMaterials": 0,
+   "error": null,
+   "timedOut": false,
+   "lateApplied": false,
+   "presetsMs": 80,
+   "shadowActive": false,
+   "sunDir": [
+    -0.3531,
+    0.788,
+    0.5043
+   ],
+   "sun": {
+    "intensity": 2.2,
+    "color": "#fff3e0",
+    "castShadow": false,
+    "mapSize": 512,
+    "extent": 277.3
+   },
+   "hemi": {
+    "intensity": 2.2,
+    "sky": "#cfe0f2",
+    "ground": "#978d78"
+   },
+   "exposure": 1,
+   "toneMapping": "neutral",
+   "shadowMapEnabled": false,
+   "shadowCasters": 0,
+   "pointLights": 0,
+   "pointLightsVisible": 0,
+   "candidates": 126,
+   "candidatesBySource": {
+    "stall": 51,
+    "lantern": 75
+   },
+   "emissiveByGroup": {
+    "lantern": 0,
+    "sign": 0,
+    "shop-interior": 0,
+    "window": 0,
+    "lattice": 0,
+    "bazaar-window": 0,
+    "stall": 0
+   },
+   "background": "sky-texture"
+  },
+  "orbitStartedAt": "2026-09-30T01:11:12.304Z",
+  "orbit": {
+   "seconds": 60,
+   "frames": 3062,
+   "p50Ms": 19.1,
+   "p95Ms": 25.5,
+   "meanMs": 19.6,
+   "minMs": 15.2,
+   "maxMs": 33.8,
+   "fpsP50": 52.4,
+   "memoryAfter": {
+    "usedJSHeapMB": 142,
+    "totalJSHeapMB": 237.1,
+    "jsHeapLimitMB": 4192
+   }
+  },
+  "walkRoute": "main->gold",
+  "walkStartedAt": "2026-09-30T01:12:14.433Z",
+  "walk": {
+   "seconds": 60,
+   "frames": 2957,
+   "p50Ms": 19.5,
+   "p95Ms": 27.3,
+   "meanMs": 20.29,
+   "minMs": 14.5,
+   "maxMs": 37.5,
+   "fpsP50": 51.3,
+   "memoryAfter": {
+    "usedJSHeapMB": 147.4,
+    "totalJSHeapMB": 206.1,
+    "jsHeapLimitMB": 4192
+   }
+  },
+  "finishedAt": "2026-09-30T01:13:14.436Z",
+  "memoryEnd": {
+   "usedJSHeapMB": 147.4,
+   "totalJSHeapMB": 206.1,
+   "jsHeapLimitMB": 4192
+  },
+  "wallSeconds": 127.539,
+  "pageErrors": []
+ },
+ "night": {
+  "kind": "pawborough-perf-sample",
+  "protocol": "M4/2026-09-25",
+  "startedAt": "2026-09-30T01:13:16.197Z",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+  "viewport": {
+   "w": 1920,
+   "h": 1080,
+   "dpr": 1
+  },
+  "note": "帧时为 rAF 间隔（含 vsync/合成）；swiftshader 或转发环境下不代表真实性能",
+  "loadCompleteMs": 5260,
+  "firstLoadMs": 4781,
+  "firstFrameMs": 4847,
+  "outerLoadedMs": 5259,
+  "load": {
+   "firstLoadZones": [
+    "garden",
+    "pond",
+    "temple",
+    "bazaar"
+   ],
+   "firstLoadBytes": 15593586,
+   "deferredZones": [
+    "outer"
+   ],
+   "deferredBytes": 1604940
+  },
+  "memory": {
+   "usedJSHeapMB": 131,
+   "totalJSHeapMB": 195.7,
+   "jsHeapLimitMB": 4192
+  },
+  "gpu": {
+   "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3080 Laptop GPU (0x000024DC) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+   "vendor": "Google Inc. (NVIDIA)",
+   "webglVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)"
+  },
+  "renderer": {
+   "drawCalls": 537,
+   "triangles": 2015436,
+   "shadowPass": {
+    "drawCalls": 245,
+    "triangles": 1069827
+   },
+   "includesShadowPass": true,
+   "programs": 47,
+   "perFrame": true
+  },
+  "batching": {
+   "enabled": true,
+   "groups": 15,
+   "batches": 174,
+   "batchedMeshes": 5648,
+   "leftAlone": 110,
+   "vertices": 1841911,
+   "indices": 3060798,
+   "float32Bytes": 67040920,
+   "buildMs": 261.3,
+   "perZone": {
+    "ZN-garden#1": {
+     "meshes": 286,
+     "batched": 268,
+     "batches": 33,
+     "vertices": 288290,
+     "ms": 52.9
+    },
+    "ZN-garden#2": {
+     "meshes": 6,
+     "batched": 2,
+     "batches": 1,
+     "vertices": 1498,
+     "ms": 0.5
+    },
+    "ZN-garden#3": {
+     "meshes": 452,
+     "batched": 452,
+     "batches": 8,
+     "vertices": 127887,
+     "ms": 20.2
+    },
+    "ZN-pond#4": {
+     "meshes": 321,
+     "batched": 315,
+     "batches": 10,
+     "vertices": 42543,
+     "ms": 6.4
+    },
+    "ZN-pond#5": {
+     "meshes": 2,
+     "batched": 0,
+     "batches": 0,
+     "vertices": 0,
+     "ms": 0.1
+    },
+    "ZN-temple#6": {
+     "meshes": 63,
+     "batched": 54,
+     "batches": 10,
+     "vertices": 160099,
+     "ms": 17.6
+    },
+    "ZN-temple#7": {
+     "meshes": 52,
+     "batched": 47,
+     "batches": 10,
+     "vertices": 148938,
+     "ms": 19.9
+    },
+    "ZN-temple#8": {
+     "meshes": 16,
+     "batched": 10,
+     "batches": 4,
+     "vertices": 41665,
+     "ms": 5.8
+    },
+    "ZN-temple#9": {
+     "meshes": 1,
+     "batched": 0,
+     "batches": 0,
+     "vertices": 0,
+     "ms": 0.1
+    },
+    "ZN-temple#10": {
+     "meshes": 413,
+     "batched": 411,
+     "batches": 16,
+     "vertices": 113022,
+     "ms": 12.4
+    },
+    "ZN-bazaar#11": {
+     "meshes": 2147,
+     "batched": 2121,
+     "batches": 37,
+     "vertices": 198528,
+     "ms": 33.8
+    },
+    "ZN-bazaar#12": {
+     "meshes": 1,
+     "batched": 0,
+     "batches": 0,
+     "vertices": 0,
+     "ms": 0
+    },
+    "ZN-bazaar#13": {
+     "meshes": 225,
+     "batched": 208,
+     "batches": 21,
+     "vertices": 208876,
+     "ms": 29.2
+    },
+    "ZN-bazaar#14": {
+     "meshes": 344,
+     "batched": 332,
+     "batches": 11,
+     "vertices": 204355,
+     "ms": 26.8
+    },
+    "ZN-outer#15": {
+     "meshes": 1429,
+     "batched": 1428,
+     "batches": 13,
+     "vertices": 306210,
+     "ms": 35.6
+    }
+   },
+   "float32MB": 63.9
+  },
+  "lighting": {
+   "preset": "night",
+   "requested": "night",
+   "shadow": true,
+   "matchedMaterials": 0,
+   "error": null,
+   "timedOut": false,
+   "lateApplied": false,
+   "presetsMs": 69,
+   "shadowActive": true,
+   "sunDir": [
+    0.5065,
+    0.6157,
+    0.6037
+   ],
+   "sun": {
+    "intensity": 1.5,
+    "color": "#9fb6ff",
+    "castShadow": true,
+    "mapSize": 2048,
+    "extent": 277.3
+   },
+   "hemi": {
+    "intensity": 2.2,
+    "sky": "#34466e",
+    "ground": "#1c1a16"
+   },
+   "exposure": 1.3,
+   "toneMapping": "neutral",
+   "shadowMapEnabled": true,
+   "shadowCasters": 5893,
+   "pointLights": 8,
+   "pointLightsVisible": 8,
+   "candidates": 126,
+   "candidatesBySource": {
+    "stall": 51,
+    "lantern": 75
+   },
+   "emissiveByGroup": {
+    "lantern": 1,
+    "sign": 2,
+    "shop-interior": 2,
+    "window": 7,
+    "lattice": 7,
+    "bazaar-window": 6,
+    "stall": 1
+   },
+   "background": "sky-texture"
+  },
+  "orbitStartedAt": "2026-09-30T01:13:21.379Z",
+  "orbit": {
+   "seconds": 60,
+   "frames": 2346,
+   "p50Ms": 25.5,
+   "p95Ms": 30.1,
+   "meanMs": 25.58,
+   "minMs": 20.3,
+   "maxMs": 37.9,
+   "fpsP50": 39.2,
+   "memoryAfter": {
+    "usedJSHeapMB": 219.3,
+    "totalJSHeapMB": 266.2,
+    "jsHeapLimitMB": 4192
+   }
+  },
+  "walkRoute": "main->gold",
+  "walkStartedAt": "2026-09-30T01:14:24.197Z",
+  "walk": {
+   "seconds": 60,
+   "frames": 2420,
+   "p50Ms": 24.4,
+   "p95Ms": 31.2,
+   "meanMs": 24.8,
+   "minMs": 18.4,
+   "maxMs": 49,
+   "fpsP50": 41,
+   "memoryAfter": {
+    "usedJSHeapMB": 146.2,
+    "totalJSHeapMB": 208.1,
+    "jsHeapLimitMB": 4192
+   }
+  },
+  "finishedAt": "2026-09-30T01:15:24.212Z",
+  "memoryEnd": {
+   "usedJSHeapMB": 146.2,
+   "totalJSHeapMB": 208.1,
+   "jsHeapLimitMB": 4192
+  },
+  "wallSeconds": 129.835,
+  "pageErrors": []
+ }
+}
