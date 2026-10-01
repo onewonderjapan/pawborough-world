@@ -98,18 +98,19 @@
     "note": "源码与标签已推送；可移交版本，未部署公开游戏服务。"
   },
   "development": {
-    "stage": "play-snacks-bicycle",
-    "codeHead": "9a7c9230623cc3a6035c321111250f56778f43f9",
+    "stage": "play-feedback-fixed",
+    "codeHead": "5e93c290f769870f4c3fceedd4d8b97070302e9b",
     "entry": "/?play=1&at=center",
     "assetManifest": "scene-authoring/yuyuan-area/inputs/play-character.json",
     "technicalStatus": "passed",
     "artStatus": "pending_world_review",
     "next": "Integrate the four remaining character-lab actors into the verified street-play loop",
-    "note": "Local playable development, real GPU normal-spawn route verified. Actor art remains pending world review; sealed v1.0 remains separate.",
+    "note": "Reverse riding, real skin contact fit, stable Esc camera and visibly closed shopfronts verified in local Chrome. Sealed world v1.0 remains unchanged; actor art retains its existing adoption status.",
     "assetManifests": [
       "scene-authoring/yuyuan-area/inputs/play-character.json",
       "scene-authoring/yuyuan-area/inputs/play-foods.json",
-      "scene-authoring/yuyuan-area/inputs/play-vehicle.json"
+      "scene-authoring/yuyuan-area/inputs/play-vehicle.json",
+      "scene-authoring/yuyuan-area/inputs/play-closed-facades.json"
     ],
     "features": [
       "minimap",
@@ -117,7 +118,12 @@
       "bicycle",
       "snack-pickup-eating",
       "three-taste-stamps",
-      "versioned-save"
-    ]
+      "versioned-save",
+      "bicycle-reverse",
+      "rider-contact-fit",
+      "esc-camera-freeze",
+      "closed-shopfronts"
+    ],
+    "feedbackReview": "docs/PLAY-FEEDBACK-20261001.md"
   }
 }
