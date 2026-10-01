@@ -24,7 +24,7 @@ export class WalkController {
     this.RAPIER = RAPIER;
     this.physics = physics;
     this.fixedDt = 1 / FIXED_HZ;
-    this.speed = WALK_SPEED;
+    this.speed = capsule.speed ?? WALK_SPEED;
     this.radius = capsule.radius;
     this.halfHeight = capsule.halfHeight;
     this.eyeHeight = capsule.eyeHeight;
@@ -43,7 +43,7 @@ export class WalkController {
       RAPIER.ColliderDesc.capsule(this.halfHeight, this.radius), this.body);
 
     this.controller = physics.world.createCharacterController(0.02);
-    this.controller.enableAutostep(STEP_UP, 0.18, false);
+    this.controller.enableAutostep(capsule.autostep ?? STEP_UP, 0.18, false);
     this.controller.enableSnapToGround(SNAP_TO_GROUND);
     this.controller.setApplyImpulsesToDynamicBodies(false);
 
@@ -157,11 +157,18 @@ export class WalkController {
   isGrounded() { return this.lastStep ? this.lastStep.grounded : false; }
 
   // --- teardown ------------------------------------------------------------
+  // Releases everything this controller OWNS (its collider, its rigid body and
+  // its character controller) so body/collider counts return to the world's
+  // baseline. The shared world itself stays alive and usable; idempotent.
   dispose() {
     if (this.disposed) return;
     this.disposed = true;
     this.physics.world.removeCollider(this.collider, true);
     this.physics.world.removeCharacterController(this.controller);
+    this.physics.world.removeRigidBody(this.body);
+    this.body = null;
+    this.collider = null;
+    this.controller = null;
   }
 }
 
