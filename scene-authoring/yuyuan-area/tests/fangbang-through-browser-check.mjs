@@ -7,8 +7,10 @@ import { chromium } from 'playwright';
 const ART = path.resolve(process.env.ART_DIR || (() => { throw new Error('ART_DIR required outside workspace'); })());
 const BASE = process.env.BASE || 'http://127.0.0.1:5601/';
 const route = JSON.parse(fs.readFileSync(path.join(ART, 'THROUGH-ROUTE.json'), 'utf8'));
-const browser = await chromium.launch({ executablePath: process.env.WALK_CHROME || '/home/baibai/.cache/ms-playwright/chromium-1234/chrome-linux/chrome',
-  headless: true, args: ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+// 浏览器：WALK_CHROME 环境变量优先，否则 Playwright 自带；GPU_WEBGL=1 时 headless:false 走真 GPU（需外部 DISPLAY/XAUTHORITY）。
+const GPU = process.env.GPU_WEBGL === '1';
+const browser = await chromium.launch({ ...(process.env.WALK_CHROME ? { executablePath: process.env.WALK_CHROME } : {}),
+  headless: !GPU, args: GPU ? ['--no-sandbox'] : ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 const renderFrame = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 const requests = [], errors = [];

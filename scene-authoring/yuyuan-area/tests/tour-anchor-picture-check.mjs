@@ -53,6 +53,22 @@ const BASELINE_SUBJ_255 = {
   'anchor-old-south': { day: 13.7, dusk: 5.9,  night: 2.1 },
   'anchor-old-north': { day: 41.9, dusk: 19.8, night: 12.7 },
 };
+// 真 GPU 口径基线（GPU_WEBGL=1，主控 2026-10-01 v1.0 封版）：上表是 headless swiftshader 确定性渲染实测，
+// 本机 swiftshader 已不可用，真 GPU 渲染与之有系统性小差（同一构建 b9e484d8 上 GPU 实测 anchor-main
+// 74.5/29.1/105.4、gold dusk 46.7，低于上表 1.6–3.8/255；wave14 合并前后数值不变，属渲染器口径差）。
+// 下表 = v1.0 构建（main 8b525cce out-zone）GPU 实测；anchor-center night 46.9 低于灯笼修正前同口径 52.4，
+// 来源是机主 2026-09-30 定的灯笼点光移入灯内（presets lantern offsetY −0.4→0），属有意变化。
+// 门只防此后在同一渲染口径下再变暗；两种口径不可混比。
+const BASELINE_SUBJ_255_GPU = {
+  'anchor-main':      { day: 73.5, dusk: 29.0, night: 105.3 },
+  'anchor-gold':      { day: 96.1, dusk: 46.7, night: 17.2 },
+  'anchor-center':    { day: 61.9, dusk: 29.3, night: 46.9 },
+  'anchor-jiuqu':     { day: 102.8, dusk: 44.7, night: 71.3 },
+  'anchor-old-south': { day: 13.5, dusk: 5.7,  night: 29.3 },
+  'anchor-old-north': { day: 53.9, dusk: 25.3, night: 15.8 },
+};
+const BASELINE = process.env.GPU_WEBGL === '1' ? BASELINE_SUBJ_255_GPU : BASELINE_SUBJ_255;
+const BASELINE_CALIBER = process.env.GPU_WEBGL === '1' ? 'gpu (v1.0 main 8b525cce)' : 'swiftshader (a45c3594 锚位)';
 
 const layout = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline', 'layout.json'), 'utf8'));
 const nav = JSON.parse(fs.readFileSync(path.join(OUT, 'nav-gap.json'), 'utf8'));
@@ -64,7 +80,7 @@ for (const o of layout.objects) if (o.parentBuilding) (bays[o.parentBuilding] ||
 const FACADE_IDS = facadeIds(layout);
 const BRIDGE_ANCHORS = { 'anchor-jiuqu': 'jiuqu-bridge' };
 const anchors = Object.keys(tour).filter(k => k.startsWith('anchor-'));
-for (const key of anchors) if (!(key in BASELINE_SUBJ_255)) { console.error(`tour-anchor-picture-check: ${key} 无冻结基线常量（BASELINE_SUBJ_255），先补基线再跑`); process.exit(2); }
+for (const key of anchors) if (!(key in BASELINE)) { console.error(`tour-anchor-picture-check: ${key} 无冻结基线常量（BASELINE_SUBJ_255），先补基线再跑`); process.exit(2); }
 const REF_ANCHORS = anchors.filter(k => !FIXED_ANCHORS.includes(k));
 
 function streetSpec(key, tag) {
@@ -90,7 +106,8 @@ function targetSpec(key, v) {
 }
 
 const exe = '/home/baibai/.cache/ms-playwright/chromium-1234/chrome-linux/chrome';
-const browser = await chromium.launch({ executablePath: exe, args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
+// GPU_WEBGL=1：机器 swiftshader WebGL 不可用时改走真 GPU（headless:false + 外部 DISPLAY/XAUTHORITY），默认关闭。
+const browser = await chromium.launch({ ...(exe ? { executablePath: exe } : {}), ...(process.env.GPU_WEBGL === '1' ? { headless: false } : {}), args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
 const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
 
 const stats = {}; // key@light -> {wholeMean, subjMean, nearFull, share, sky}
@@ -142,7 +159,7 @@ await browser.close();
 
 // ---------- 门槛判定 ----------
 const median = (arr) => { const a = arr.filter(x => x != null).sort((x, y) => x - y); if (!a.length) return null; const m = a.length >> 1; return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2; };
-const report = { gates: { maxNearFull: MAX_NEAR_FULL, darkenTol255: DARKEN_TOL_255, baseline: BASELINE_SUBJ_255, baselineProvenance: 'a45c3594 锚位（a45c3594 版生成器 2026-09-29 重算）× 合并 main 后资产/灯光，3 次重复实测 σ=0，见 artifacts/r1/baseline-measure.json', fixedAnchors: FIXED_ANCHORS, refAnchors: REF_ANCHORS }, diagnostics: {}, views: {} };
+const report = { gates: { maxNearFull: MAX_NEAR_FULL, darkenTol255: DARKEN_TOL_255, baseline: BASELINE, baselineCaliber: BASELINE_CALIBER, baselineProvenance: 'a45c3594 锚位（a45c3594 版生成器 2026-09-29 重算）× 合并 main 后资产/灯光，3 次重复实测 σ=0，见 artifacts/r1/baseline-measure.json', fixedAnchors: FIXED_ANCHORS, refAnchors: REF_ANCHORS }, diagnostics: {}, views: {} };
 let fails = 0;
 // 诊断（主控裁定：只报告，不判红）
 const nightRefMedian = median(REF_ANCHORS.map(k => stats[k + '@night']?.subjMean));
@@ -159,9 +176,9 @@ for (const key of anchors) {
   if (d.nearFull >= MAX_NEAR_FULL) why.push(`近墙占比(整幅,<${STREET_VIEW.NEAR_M}m,day) ${(d.nearFull * 100).toFixed(1)}% ≥ ${MAX_NEAR_FULL * 100}%`);
   for (const light of LIGHTS) {
     const subj = stats[key + '@' + light].subjMean;
-    const baseLine = BASELINE_SUBJ_255[key][light] / 255;
-    if (subj == null) { why.push(`${light} 主体区无像素（基线 ${BASELINE_SUBJ_255[key][light]}/255）`); continue; }
-    if (subj < baseLine - DARKEN_TOL_255 / 255) why.push(`${light} 主体 ${(subj * 255).toFixed(1)}/255 < 冻结基线 ${BASELINE_SUBJ_255[key][light]}/255 − 容差 ${DARKEN_TOL_255}`);
+    const baseLine = BASELINE[key][light] / 255;
+    if (subj == null) { why.push(`${light} 主体区无像素（基线 ${BASELINE[key][light]}/255）`); continue; }
+    if (subj < baseLine - DARKEN_TOL_255 / 255) why.push(`${light} 主体 ${(subj * 255).toFixed(1)}/255 < 冻结基线（${BASELINE_CALIBER}）${BASELINE[key][light]}/255 − 容差 ${DARKEN_TOL_255}`);
   }
   const ok = !why.length;
   if (!ok) fails++;

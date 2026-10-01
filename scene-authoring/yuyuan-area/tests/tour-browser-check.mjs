@@ -16,7 +16,8 @@ const base = process.env.BASE || 'http://127.0.0.1:5489/';
 const shotDir = process.env.SHOT_DIR || null;
 if (shotDir) fs.mkdirSync(shotDir, { recursive: true });
 const exe = '/home/baibai/.cache/ms-playwright/chromium-1234/chrome-linux/chrome';
-const browser = await chromium.launch({ executablePath: exe, args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
+// GPU_WEBGL=1：机器 swiftshader WebGL 不可用时改走真 GPU（headless:false + 外部 DISPLAY/XAUTHORITY），默认关闭。
+const browser = await chromium.launch({ ...(exe ? { executablePath: exe } : {}), ...(process.env.GPU_WEBGL === '1' ? { headless: false } : {}), args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
 const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
 await page.goto(base + '?zone=core&cam=oblique', { waitUntil: 'domcontentloaded' });
 await page.waitForFunction(() => window.__ready === true, null, { timeout: 600000 });
