@@ -67,8 +67,9 @@ export function installPlayHud({ core }) {
         : 'WASD 移动 · 鼠标控制视角 · P 暂停 · 点击画面锁定鼠标';
     },
     message,
-    assetsReady(actorId) {
-      message(`${actorId} 资产已就绪`);
+    assetsReady() {
+      // R1：面向玩家的措辞，不显示 raw actorId / 技术词
+      message('灰猫准备好了');
     },
     showAssetError(text) {
       errText.textContent = text;   // 中文可恢复说明（install.js 组装）

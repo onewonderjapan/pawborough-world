@@ -7,13 +7,11 @@ import RAPIER from '@dimforge/rapier3d-compat';
 import { WalkController } from '/vendor-src/player/WalkController.js';
 import { applyWalkOrientation } from '/vendor-src/player/walkCamera.js';
 import { AreaWalkPhysics } from '../src/areaWalkPhysics.js';
+import { computeStepMotion } from './play/telemetry.js';   // R1：play 档实测运动遥测
 
 const ZONE_FILES = ['garden', 'pond', 'temple', 'bazaar', 'outer'];
 const CAPSULE = { radius: 0.35, halfHeight: 0.6, eyeHeight: 1.6 };
 const MOUSE_SENS = 0.0022;
-// play 档：一步（1/60 s 固定步）实际校正水平位移超过该值才算“在走”——
-// 撞墙/静止时 Rapier 会把校正吃掉，walk 动画随之回到 idle（web/play/avatar.js）。
-const PLAY_MOVE_EPS_PER_STEP = 0.004;
 
 export function installWalkMode({ scene, camera, renderer, controls, getRoots, hud, extraCollisionZones = () => [], onFeet = null, play = null }) {
   // ---------- 界面 ----------
@@ -152,10 +150,10 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
   function applyKeys() { if (controller) controller.setMoveInput(keys.forward, keys.right); }
   addEventListener('keydown', (e) => {
     if (mode !== 'walk') return;
-    if (play && e.code === 'KeyP') {          // play：P 键暂停/继续（暂停时清键、清累计器）
+    if (play && e.code === 'KeyP') {          // play：P 键暂停/继续（暂停时清键、清累计器并释放指针锁）
       e.preventDefault();
       if (play.session.paused) play.session.resume(controller);
-      else play.session.pause(controller, 'user');
+      else { play.session.pause(controller, 'user'); document.exitPointerLock?.(); }
       if (play.onPauseChange) play.onPauseChange(play.session.paused);
       return;
     }
@@ -217,16 +215,19 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
     const dt = Math.min(0.25, (now - lastTick) / 1000); // 真实帧长；固定步整形在 WalkController 内部
     lastTick = now;
     controller.step(dt);
+    // R1（review R0-2）：脚点通知放在 play/viewer 共用路径——main.js 靠它做
+    // 方浜 60m 自然逼近加载，play 分支不得提前 return 跳过；每帧至多一次。
+    if (onFeet) onFeet(controller.feetPosition());
     if (play) {
-      // play 档：按固定步的实际校正位移判定 walk/idle；相机交给第三人称策略
-      const st = controller.lastStep;
-      const moving = !!(st && !play.session.paused
-        && Math.hypot(st.corrected[0], st.corrected[2]) > PLAY_MOVE_EPS_PER_STEP);
-      play.onFrame?.({ feet: controller.feetPosition(), yaw: controller.yaw, moving, grounded: controller.isGrounded(), paused: play.session.paused, dt });
+      // play 档：按固定步的实际校正位移/速度/方向判定 walk/idle、步频与人物朝向
+      const paused = play.session.paused;
+      const motion = paused
+        ? { moving: false, actualSpeed: 0, facingYaw: null }
+        : computeStepMotion(controller.lastStep, controller.fixedDt);
+      play.onFrame?.({ feet: controller.feetPosition(), yaw: controller.yaw, ...motion, grounded: controller.isGrounded(), paused, dt });
       play.updateCamera?.({ camera, controller, dt });
       return;
     }
-    if (onFeet) onFeet(controller.feetPosition());
     const eye = controller.eyePosition();
     camera.position.set(eye[0], eye[1], eye[2]);
     applyWalkOrientation(camera, controller.pitch, controller.yaw);
@@ -264,10 +265,11 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
     get zonePhysics() { return zonePhysics; },
     get controller() { return controller; },   // M4：?perf=1 的 CruiseDriver 需要挂同一控制器
     paused: () => (play ? play.session.paused : controller ? controller.paused : false),
-    // play 专用：HUD 暂停/继续按钮走这里；viewer 档为安全 no-op
+    // play 专用：HUD 暂停/继续按钮走这里；暂停统一释放指针锁（R1：P 后可直接点 HUD）
     pause() {
       if (play && mode === 'walk' && controller && !play.session.paused) {
         play.session.pause(controller, 'user');
+        document.exitPointerLock?.();
         if (play.onPauseChange) play.onPauseChange(true);
       }
       return status();

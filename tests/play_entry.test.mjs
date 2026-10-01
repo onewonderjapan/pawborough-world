@@ -43,13 +43,16 @@ check('play walk speed is 1.5 m/s', PLAY_PROFILE.speed === 1.5);
   core.attachAvatar(fakeAvatar);
   check('attachAvatar flips ready', core.status({ walkMode: 'orbit' }).ready === true);
 
-  core.onFrame({ feet: [1, 0, 2], yaw: 0.3, moving: true, paused: false, dt: 1 / 60 });
-  core.onFrame({ feet: [1, 0, 2], yaw: 0.3, moving: false, paused: false, dt: 1 / 60 });
-  check('onFrame forwards actual-motion to the avatar with play speed',
-    updates.length === 2 && updates[0].moving === true && updates[0].speed === 1.5
-    && updates[1].moving === false && updates[1].speed === null);
-  check('animation state follows the moving flag',
-    core.state.animation === 'idle'); // last frame was standing
+  core.onFrame({ feet: [1, 0, 2], yaw: 0.3, moving: true, actualSpeed: 0.7, facingYaw: -1.2, paused: false, dt: 1 / 60 });
+  core.onFrame({ feet: [1, 0, 2], yaw: 0.3, moving: false, actualSpeed: 0.02, facingYaw: null, paused: false, dt: 1 / 60 });
+  check('onFrame forwards ACTUAL speed and facing to the avatar (R0-4)',
+    updates.length === 2 && updates[0].moving === true && updates[0].speed === 0.7
+    && updates[0].facingYaw === -1.2
+    && updates[1].moving === false && updates[1].speed === null && updates[1].facingYaw === null);
+  check('animation state follows the moving flag', core.state.animation === 'idle');
+  core.onFrame({ feet: [1, 0, 2], yaw: 0.3, moving: true, paused: false, dt: 1 / 60 }); // legacy caller without telemetry
+  check('onFrame falls back to the play speed when no telemetry is given',
+    updates[2].speed === 1.5 && core.state.animation === 'walk');
 
   core.session.begin({ teleport() {}, resume() {} }, { spawnFeet: [1, 0, 2] });
   const stPlaying = core.status({ walkMode: 'walk', controller: { feetPosition: () => [1, 0.02, 2], yaw: 0.3 } });

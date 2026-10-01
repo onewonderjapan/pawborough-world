@@ -25,6 +25,8 @@ export const PLAY_PROFILE = {
   autostep: 0.15,
   shoulderHeight: 0.62,
   cameraDistance: 2.4,
+  // R1（review R0-1）：相机被墙压到该距离以下时隐藏角色本体（不移动玩家物理位置）
+  avatarHideDistance: 0.8,
 };
 
 // 中文失败说明（可恢复）：资产缺失/校验不符时给玩家看得懂的指引。
@@ -51,6 +53,8 @@ export function createPlayCore({ manifest = null } = {}) {
     profile: PLAY_PROFILE,
     attachAvatar(avatar) {
       if (!avatar || !(avatar.root)) throw new Error('play core: avatar required');
+      // 角色参与当前阴影投射/接收（沿用场景灯光预设；不改灯光/材质/资产）
+      avatar.model?.traverse?.((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
       state.avatar = avatar;
       state.ready = true;
     },
@@ -58,14 +62,19 @@ export function createPlayCore({ manifest = null } = {}) {
       state.assetError = assetFailureMessage(detail);
       return state.assetError;
     },
-    // walk.js play tick 每帧回调；paused 时冻结动画（mixer 不推进）
-    onFrame({ feet, yaw, moving, paused, dt }) {
+    // walk.js play tick 每帧回调；paused 时冻结动画（mixer 不推进）。
+    // R1（review R0-4）：速度/朝向用 tick 实测值（实际校正水平速度/位移方向），
+    // 老调用方不带 telemetry 时回退到标称 play 速度。
+    onFrame({ feet, yaw, moving, actualSpeed, facingYaw = null, paused, dt }) {
       const avatar = state.avatar;
       if (!avatar) return;
-      avatar.update({ feet, yaw, moving, speed: moving ? PLAY_PROFILE.speed : null, paused, dt });
+      const speed = actualSpeed === undefined ? (moving ? PLAY_PROFILE.speed : null)
+        : (moving ? actualSpeed : null);
+      avatar.update({ feet, yaw, moving, facingYaw, speed, paused, dt });
       state.animation = moving ? 'walk' : 'idle';
     },
-    // 只读检查钩子（window.__play.status），主控真浏览器复验用
+    // 只读检查钩子（window.__play.status），主控真浏览器复验用；facing 为人物
+    // 朝向（实际位移方向，非视角 yaw），供 R1 朝向解耦复验。
     status({ walkMode = 'orbit', controller = null, cameraMode } = {}) {
       const cam = cameraMode ?? (walkMode === 'walk' ? 'third-person' : 'orbit');
       return {
@@ -76,6 +85,7 @@ export function createPlayCore({ manifest = null } = {}) {
         paused: session.paused,
         feet: controller ? controller.feetPosition() : null,
         yaw: controller ? controller.yaw : null,
+        facing: state.avatar ? state.avatar.facingYaw : null,
         animation: state.animation,
         cameraMode: cam,
         assetError: state.assetError,
@@ -118,11 +128,19 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     onEnter: ({ outcome }) => {
       core.state.entered = true;
       hud.setPaused(core.session.paused);
-      hud.message(outcome?.restored ? '已回到上次的脚点和朝向' : '灰猫已就位');
+      // R1：HUD 面向玩家措辞，不露 actorId 等技术词
+      hud.message(outcome?.restored ? '灰猫回到上次的位置和朝向' : '灰猫已就位');
     },
     onPauseChange: (paused) => hud.setPaused(paused),
     onFrame: (info) => core.onFrame(info),
-    updateCamera: ({ controller, dt }) => playCamera.update({ controller, castRay, dt }),
+    // R1（review R0-1）：相机被近墙压到 avatarHideDistance 以下时隐藏角色本体
+    //（遮挡安全优先于舒服下限，相机可缩到很小距离）；只影响显示，不动玩家物理位置。
+    updateCamera: ({ camera, controller, dt }) => {
+      const place = playCamera.update({ controller, castRay, dt });
+      const avatar = core.state.avatar;
+      if (avatar) avatar.root.visible = !place || place.applied >= PLAY_PROFILE.avatarHideDistance;
+      return place;
+    },
   };
 
   // ---- 资产加载：真实 GLB + SHA256 校验；失败 = 中文说明，不进 play、无占位模型 ----

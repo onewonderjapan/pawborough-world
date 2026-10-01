@@ -2,8 +2,16 @@
 // objects and a stub controller/castRay (the browser wire-up only injects the
 // real Rapier ray that excludes the player's own capsule).
 //
+// R1 repair additions (review R0): occlusion safety beats the comfort floor
+// (near-wall retraction may shrink far below minDistance, pure boundary tests
+// + a real Rapier near-wall ray); view yaw is decoupled from the character
+// facing (facing follows actual displacement, idle/pause keep the last
+// facing); walk playback follows actual speed; dispose frees the avatar's OWN
+// GPU resources (geometry/material/texture/skeleton), idempotently.
+//
 // Run: node tests/play_camera.test.mjs   (exit 0 = contract holds)
 import * as THREE from 'three';
+import RAPIER from '@dimforge/rapier3d-compat';
 import { PlayCamera, computeCameraPlacement } from '../scene-authoring/yuyuan-area/web/play/camera.js';
 import { PlayAvatar, avatarYawFor, MODEL_FORWARD } from '../scene-authoring/yuyuan-area/web/play/avatar.js';
 
@@ -24,7 +32,7 @@ function stubController(feet, yaw, pitch = 0) {
   };
 }
 
-// --- pure placement math: free view, wall retraction, hard floor on distance
+// --- pure placement math: free view, wall retraction, occlusion beats comfort
 {
   const pivot = new THREE.Vector3(1, 0.8, 2);
   const dir = new THREE.Vector3(0, 0, 1);
@@ -36,12 +44,41 @@ function stubController(feet, yaw, pitch = 0) {
   check('wall: camera retracts to hit minus margin',
     close(wall.position.distanceTo(pivot), 0.88, 1e-9), `d=${wall.position.distanceTo(pivot).toFixed(4)}`);
 
-  const tight = computeCameraPlacement({ pivot, dir, distance: 2.4, hitT: 0.2, margin: 0.12, minDistance: 0.5 });
-  check('very close wall: distance floors at minDistance (camera never reaches the pivot)',
-    close(tight.position.distanceTo(pivot), 0.5, 1e-9), `d=${tight.position.distanceTo(pivot).toFixed(4)}`);
+  // R0-1: a wall CLOSER than minDistance+margin must win over the comfort floor
+  const near = computeCameraPlacement({ pivot, dir, distance: 2.4, hitT: 0.28, margin: 0.12, minDistance: 0.5 });
+  check('near wall (hit<minDistance+margin): safety beats minDistance (0.28-0.12=0.16, NOT 0.5)',
+    close(near.applied, 0.16, 1e-9) && near.position.distanceTo(pivot) < 0.28,
+    `applied=${near.applied.toFixed(4)}`);
+
+  // R0-1: hit closer than the margin itself — shrink to a tiny but finite distance
+  const tight = computeCameraPlacement({ pivot, dir, distance: 2.4, hitT: 0.05, margin: 0.12, minDistance: 0.5, minSafe: 0.02 });
+  check('hit<margin: shrinks to the tiny safe floor (never negative, never through the wall)',
+    close(tight.applied, 0.02, 1e-9) && tight.applied < 0.05 && Number.isFinite(tight.applied),
+    `applied=${tight.applied.toFixed(4)}`);
 
   const nan = computeCameraPlacement({ pivot, dir, distance: 2.4, hitT: NaN });
   check('NaN hitT is treated as no wall', close(nan.position.distanceTo(pivot), 2.4, 1e-9));
+}
+
+// --- real Rapier near-wall ray feeding the placement (R0-1)
+{
+  await RAPIER.init();
+  const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
+  // wall plane 0.28 m in front of the pivot along +Z
+  world.createCollider(RAPIER.ColliderDesc.cuboid(2, 2, 0.1).setTranslation(0, 0, 0.38));
+  world.step();
+  const pivot = new THREE.Vector3(0, 0.62, 0);
+  const dir = new THREE.Vector3(0, 0, 1);
+  const ray = new RAPIER.Ray({ x: pivot.x, y: pivot.y, z: pivot.z }, { x: dir.x, y: dir.y, z: dir.z });
+  const hit = world.castRay(ray, 2.4, true);
+  const hitT = hit ? hit.timeOfImpact : null;
+  check('rapier ray sees the near wall at ~0.28', hitT !== null && Math.abs(hitT - 0.28) < 1e-3,
+    `hitT=${hitT?.toFixed(4)}`);
+  const place = computeCameraPlacement({ pivot, dir, distance: 2.4, hitT, margin: 0.12, minDistance: 0.5, minSafe: 0.02 });
+  check('placement retracts to hit-margin despite minDistance=0.5',
+    close(place.applied, 0.16, 1e-3), `applied=${place.applied.toFixed(4)}`);
+  check('camera stays on the safe side of the wall plane',
+    place.position.z < 0.28 - 1e-6, `z=${place.position.z.toFixed(4)}`);
 }
 
 // --- PlayCamera.update: behind-the-model placement + look-at, wall retraction
@@ -83,11 +120,11 @@ function stubController(feet, yaw, pitch = 0) {
   pc.update({ controller: stubController([10, 0.02, -4], yaw), dt: NaN });
   pc.update({ controller: stubController([10, 0.02, -4], yaw), dt: -5 });
   check('NaN/negative dt leave the camera finite and unmoved',
-    camera.position.every?.call(camera.position, Number.isFinite) ?? Number.isFinite(camera.position.x + camera.position.y + camera.position.z));
+    Number.isFinite(camera.position.x + camera.position.y + camera.position.z));
   check('NaN dt did not re-place the camera', camera.position.distanceTo(before) < 1e-12);
 }
 
-// --- avatar: position from feet only, model-forward alignment, action states
+// --- avatar: facing decoupled from view yaw (R0-3), speed from actual motion (R0-4)
 {
   // minimal stand-in for the GLB graph: a group whose geometry spans
   // y [0, 0.964] with the face on +Z (real-asset facts are pinned separately
@@ -108,32 +145,48 @@ function stubController(feet, yaw, pitch = 0) {
     `minY=${avatar.modelMinY}`);
   check('avatar height matches geometry', close(avatar.height, 0.964, 1e-6));
 
-  const yaw = 0;
-  avatar.update({ feet: [3, 0.02, 7], yaw, moving: false, paused: false, dt: 1 / 60 });
-  check('outer wrapper sits at feet minus modelMinY (visual root never adds motion)',
-    close(avatar.root.position.x, 3) && close(avatar.root.position.y, 0.02 - avatar.modelMinY, 1e-9) && close(avatar.root.position.z, 7));
-  check('avatar yaw aligns the +Z model face with the controller forward',
-    (() => {
-      const modelFwd = MODEL_FORWARD.clone().applyEuler(new THREE.Euler(0, avatar.root.rotation.y, 0));
-      const ctrlFwd = controllerForward(yaw);
-      return modelFwd.distanceTo(ctrlFwd) < 1e-9;
-    })(), `rotation.y=${avatar.root.rotation.y.toFixed(4)} (model +Z faces controller forward)`);
-  check('avatarYawFor is the yaw+PI convention', close(avatarYawFor(0), Math.PI) && close(avatarYawFor(-Math.PI / 2), Math.PI / 2));
+  // first frames: no movement yet -> facing falls back to the view yaw
+  avatar.update({ feet: [3, 0.02, 7], yaw: 0, moving: false, paused: false, dt: 1 / 60 });
+  check('before any movement the cat faces the view direction', close(avatar.root.rotation.y, avatarYawFor(0), 1e-9));
+
+  // mouse-only view rotation while standing must NOT turn the character
+  avatar.update({ feet: [3, 0.02, 7], yaw: 1.1, moving: false, facingYaw: null, paused: false, dt: 1 / 60 });
+  check('idle view rotation keeps the last facing (camera orbits, cat stays)',
+    close(avatar.root.rotation.y, avatarYawFor(0), 1e-9), `rot=${avatar.root.rotation.y.toFixed(4)}`);
+
+  // actual displacement turns the cat toward the movement direction
+  avatar.update({ feet: [3, 0.02, 7], yaw: 1.1, moving: true, facingYaw: -Math.PI / 2, speed: 1.5, paused: false, dt: 1 / 60 });
+  check('walking: facing follows the actual movement direction (+X for f=-PI/2)',
+    close(avatar.root.rotation.y, avatarYawFor(-Math.PI / 2), 1e-9),
+    `rot=${avatar.root.rotation.y.toFixed(4)}`);
+  const modelFwd = MODEL_FORWARD.clone().applyEuler(new THREE.Euler(0, avatar.root.rotation.y, 0));
+  const ctrlFwd = controllerForward(-Math.PI / 2);
+  check('model +Z face points along the movement direction', modelFwd.distanceTo(ctrlFwd) < 1e-9);
+
+  // stopping keeps the last facing (no snap back to the view yaw)
+  avatar.update({ feet: [3, 0.02, 7], yaw: -0.4, moving: false, facingYaw: null, paused: false, dt: 1 / 60 });
+  check('stopped: facing persists (does not snap to the new view yaw)',
+    close(avatar.root.rotation.y, avatarYawFor(-Math.PI / 2), 1e-9));
 
   const idleW = () => avatar.actions.idle.getEffectiveWeight();
   const walkW = () => avatar.actions.walk.getEffectiveWeight();
-  check('standing plays idle', idleW() === 1 && walkW() === 0);
-  avatar.update({ feet: [3, 0.02, 7], yaw, moving: true, speed: 1.5, paused: false, dt: 1 / 60 });
-  check('actual corrected displacement (moving=true) switches to walk', walkW() === 1 && idleW() === 0);
-  check('walk timeScale follows actual speed (speed/cycleSpeed)', close(avatar.actions.walk.timeScale, 1.5 / avatar.walkCycleSpeed, 1e-9),
-    `timeScale=${avatar.actions.walk.timeScale}`);
-  avatar.update({ feet: [3, 0.02, 7], yaw, moving: false, paused: false, dt: 1 / 60 });
   check('stopped/wall-blocked switches back to idle', idleW() === 1 && walkW() === 0);
+  avatar.update({ feet: [3, 0.02, 7], yaw: -0.4, moving: true, facingYaw: 0, speed: 1.5, paused: false, dt: 1 / 60 });
+  check('actual corrected displacement (moving=true) switches to walk', walkW() === 1 && idleW() === 0);
+  check('walk timeScale follows ACTUAL speed (R0-4)', close(avatar.actions.walk.timeScale, 1.5 / avatar.walkCycleSpeed, 1e-9));
+  avatar.update({ feet: [3, 0.02, 7], yaw: -0.4, moving: true, facingYaw: 0, speed: 0.6, paused: false, dt: 1 / 60 });
+  check('half-blocked low speed slows the gait', close(avatar.actions.walk.timeScale, 0.6 / avatar.walkCycleSpeed, 1e-9),
+    `timeScale=${avatar.actions.walk.timeScale.toFixed(3)}`);
 
+  // paused mid-walk: keep weights and facing (freeze frame), mixer frozen
   const t0 = avatar.mixer.time;
-  avatar.update({ feet: [3, 0.02, 7], yaw, moving: false, paused: true, dt: 0.5 });
+  const wBefore = walkW();
+  avatar.update({ feet: [3, 0.02, 7], yaw: 2.0, moving: true, facingYaw: 0, speed: 1.5, paused: true, dt: 0.5 });
   check('paused freezes the mixer (animation cannot add motion)', close(avatar.mixer.time, t0, 1e-12));
-  avatar.update({ feet: [3, 0.02, 7], yaw, moving: false, paused: false, dt: NaN });
+  check('paused keeps the walk weight (no pose snap) and the facing', walkW() === wBefore
+    && close(avatar.root.rotation.y, avatarYawFor(0), 1e-9));
+
+  avatar.update({ feet: [3, 0.02, 7], yaw: -0.4, moving: false, paused: false, dt: NaN });
   check('NaN dt does not advance the mixer or NaN the wrapper', Number.isFinite(avatar.mixer.time)
     && Number.isFinite(avatar.root.position.x + avatar.root.position.y + avatar.root.position.z));
 
@@ -142,6 +195,41 @@ function stubController(feet, yaw, pitch = 0) {
   check('dispose detaches the avatar and stays idempotent', !avatar.root.parent);
   let err = null; try { avatar.dispose(); } catch (e) { err = e; }
   check('repeat dispose is a no-op', !err, err?.message ?? '');
+}
+
+// --- dispose frees the avatar's OWN GPU resources (R0-6), idempotent
+{
+  const model = new THREE.Group();
+  const geo = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+  const mat = new THREE.MeshStandardMaterial();
+  const tex = new THREE.Texture();
+  mat.map = tex;
+  let geoD = 0, matD = 0, texD = 0;
+  geo.addEventListener('dispose', () => geoD++);
+  mat.addEventListener('dispose', () => matD++);
+  tex.addEventListener('dispose', () => texD++);
+  const mesh = new THREE.SkinnedMesh(geo, mat);
+  const bone = new THREE.Bone();
+  const skeleton = new THREE.Skeleton([bone]);
+  let skelD = 0;
+  const origSkelDispose = skeleton.dispose.bind(skeleton);
+  skeleton.dispose = () => { skelD++; origSkelDispose(); };
+  mesh.skeleton = skeleton;
+  model.add(mesh);
+  const clip = new THREE.AnimationClip('idle', 1, [
+    new THREE.VectorKeyframeTrack('root.position', [0, 1], [0, 0, 0, 0, 0, 0]),
+  ]);
+  const walkClip = new THREE.AnimationClip('walk', 1, [
+    new THREE.VectorKeyframeTrack('root.position', [0, 1], [0, 0, 0, 0, 0, 0]),
+  ]);
+  const avatar = new PlayAvatar({ gltfScene: model, animations: [clip, walkClip] });
+  avatar.dispose();
+  check('dispose frees geometry', geoD === 1, `geoD=${geoD}`);
+  check('dispose frees material', matD === 1, `matD=${matD}`);
+  check('dispose frees texture', texD === 1, `texD=${texD}`);
+  check('dispose frees the owned skeleton', skelD === 1, `skelD=${skelD}`);
+  avatar.dispose();
+  check('repeat dispose does not double-free GPU resources', geoD === 1 && matD === 1 && texD === 1 && skelD === 1);
 }
 
 console.log(failures === 0 ? 'PLAY_CAMERA PASS' : `PLAY_CAMERA FAIL (${failures})`);
