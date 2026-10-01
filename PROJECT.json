@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "projectId": "pawborough-world",
-  "phase": "world-v1-plus-play-phase1",
+  "phase": "world-v1-plus-street-play",
   "workspaceRoot": ".",
   "convenienceLink": ".",
   "convenienceLinkNote": "以当前仓库根为工作入口；旧机器便利软链不作为定位依据。历史目录说明见迁移记录。",
@@ -98,13 +98,26 @@
     "note": "源码与标签已推送；可移交版本，未部署公开游戏服务。"
   },
   "development": {
-    "stage": "play-phase1",
-    "codeHead": "2e75e7e3afe788bb2a5d0e930be43be549d55a6a",
+    "stage": "play-snacks-bicycle",
+    "codeHead": "9a7c9230623cc3a6035c321111250f56778f43f9",
     "entry": "/?play=1&at=center",
     "assetManifest": "scene-authoring/yuyuan-area/inputs/play-character.json",
     "technicalStatus": "passed",
     "artStatus": "pending_world_review",
-    "next": "One stall, three snacks, pickup/held food/eat/basic save; bicycle afterwards",
-    "note": "Local playable development; original v1.0 tag/release remains unchanged."
+    "next": "Integrate the four remaining character-lab actors into the verified street-play loop",
+    "note": "Local playable development, real GPU normal-spawn route verified. Actor art remains pending world review; sealed v1.0 remains separate.",
+    "assetManifests": [
+      "scene-authoring/yuyuan-area/inputs/play-character.json",
+      "scene-authoring/yuyuan-area/inputs/play-foods.json",
+      "scene-authoring/yuyuan-area/inputs/play-vehicle.json"
+    ],
+    "features": [
+      "minimap",
+      "walk-run",
+      "bicycle",
+      "snack-pickup-eating",
+      "three-taste-stamps",
+      "versioned-save"
+    ]
   }
 }

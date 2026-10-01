@@ -1,6 +1,6 @@
 {
   "projectId": "pawborough-world",
-  "phase": "area-candidate-migrated",
+  "phase": "world-v1-plus-street-play",
   "runtime": {
     "host": "127.0.0.1",
     "port": 5486
@@ -9,5 +9,11 @@
   "assetManifest": "../../docs/MIGRATION-ASSETS.json",
   "inputs": "inputs",
   "frozenLayout": "baseline/layout.json",
-  "ownerAdopted": false
+  "ownerAdopted": false,
+  "development": {
+    "entry": "/?play=1&at=center",
+    "codeHead": "9a7c9230623cc3a6035c321111250f56778f43f9",
+    "actorArtStatus": "pending_world_review",
+    "technicalStatus": "passed"
+  }
 }
