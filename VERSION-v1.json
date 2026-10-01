@@ -1,0 +1,68 @@
+{
+  "project": "pawborough-world",
+  "version": "1.0.0",
+  "releasedAt": "2026-10-01",
+  "scope": "豫园区域全域版：garden / temple / bazaar / pond + fangbang（方浜中路街段与山门连接段，按需加载）；outer 为 L0 背景（延后加载）",
+  "scopeDecision": "docs/V1-REDEFINITION-20260923.md（机主 2026-09-23 签字）",
+  "deliveryNote": "docs/V1-RELEASE.md",
+  "build": {
+    "sourceHead": "8f4085ddee0da81fcac40b4a1664e3efe7eedcc5",
+    "note": "之后至封版提交只改文档、测试与工具脚本，不改构建输入",
+    "zonesManifestSha256": "6eb12546d5f347dc941b132836ca0695a6ed84313df6180a212542e643829762",
+    "command": "npm run area:rebuild",
+    "defaultTestSegments": 72
+  },
+  "runtime": {
+    "firstLoadBytes": 15688354,
+    "firstLoadLimitBytes": 20000000,
+    "allZoneVisualBytes": 20853846,
+    "caliber": "压缩分区 GLB + 唯一外置贴图；不含 JS/WASM、其他数据及步行模式物理 GLB",
+    "w2Perf": {
+      "doc": "docs/perf/W2-RESULTS-20260930.md",
+      "build": "2e4dc3bf",
+      "route": "main→gold 60 s 自动巡游",
+      "walkP50Ms": 24.3,
+      "walkP95Ms": 32.6
+    }
+  },
+  "visualBaseline": {
+    "gardenRefinedBuildings": 29,
+    "bazaarTowers": 15,
+    "namedBazaarTowers": [
+      "华宝楼",
+      "天裕楼",
+      "和丰楼",
+      "悦宾楼",
+      "老饭店"
+    ],
+    "landmarksAdopted": [
+      "湖心亭",
+      "大假山",
+      "九曲桥"
+    ]
+  },
+  "ownerDecisions": [
+    "docs/OWNER_DECISION-v1-redefinition.json",
+    "docs/OWNER_DECISION-landmarks-20260930.json",
+    "docs/OWNER_DECISION-w2walk-20260930.json",
+    "docs/OWNER_DECISION-jiuqu-20261001.json"
+  ],
+  "assets": {
+    "manifest": "docs/MIGRATION-ASSETS.json",
+    "files": 390,
+    "restoreTrial": "2026-10-01 干净克隆 390/390 恢复，重建 EXIT 0"
+  },
+  "controlLayer": {
+    "shots": 16,
+    "frames": 1872,
+    "passes": [
+      "beauty",
+      "depth",
+      "normal",
+      "segmentation",
+      "camera"
+    ],
+    "location": "S1 outbox pawborough-pv-v1-20260930（不入库）"
+  },
+  "supersedes": "VERSION.json / DELIVERY.md 为 2026-09-19 街段版记录，保留作历史"
+}

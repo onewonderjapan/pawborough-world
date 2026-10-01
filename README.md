@@ -1,3 +1,4 @@
+> **v1.0（2026-10-01 封版）**：豫园区域全域版——园、庙、商城、池带，并接方浜中路街段及其到城隍庙山门的连接段。交付书 [docs/V1-RELEASE.md](docs/V1-RELEASE.md)，版本记录 [VERSION-v1.json](VERSION-v1.json)。一条命令重建：`npm run area:rebuild`；预览：`npm run area:serve`（入口 `index-v1.html`）。下方旧说明保留供历史参考。
 > **2026-09-27 当前接续：[给 Claude 的交接与两日推进量](CLAUDE_HANDOFF.md)**。所有分支代码已合入本地 main，当前运行目录为 `scene-authoring/yuyuan-area/out-goal-current`；5607 候选入口见交接。下方旧迁移/默认启动说明保留供历史参考。本版新增资产尚未云端归档，本地 main 尚未推送。
 
 > 本地接续入口与资产恢复：[2026-09-22迁移说明](docs/MIGRATION-20260922.md)。全域预览：`npm run area:serve`；原客户端：`npm run preview`。

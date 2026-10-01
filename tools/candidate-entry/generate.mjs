@@ -69,10 +69,10 @@ export function generate(options) {
   const state = { schemaVersion: 1, projectId: 'pawborough-world', candidateId: options.id, generatedAt: new Date().toISOString(),
     fixture: !!options.fixture, sourceBuildHead: buildHead, packageHead, manifestSha256: null,
     budget: { status: 'unverified', bytes: null }, reviews: {}, issues: [],
-    adoption: { status: 'pending', reason: '本次候选未采用；9/19历史adopt_all不属于本版。' },
-    archive: { status: 'pending', reason: '本版S3归档待确认；历史账号/桶不能代替本版回执。' },
+    adoption: { status: 'pending', reason: '三地标已逐项采用（docs/OWNER_DECISION-landmarks-20260930.json、OWNER_DECISION-jiuqu-20261001.json）；版本整体以机主确认封版为准。9/19历史adopt_all不属于本版。' },
+    archive: { status: 'pending', reason: '本版归档回执见 docs/migrations/（2026-09-30 jiuqu/stalllight/lantern/ridge）；历史账号/桶不能代替本版回执。' },
     walkTopology: '进入庙内后院后，经原山门返回，再沿现有道路到商城和豫园入口。',
-    ownerTasks: ['W2真GPU性能取证，并手动完成一次完整正向与返程。', '确认湖心亭、九曲桥、大假山的采用。', '机主登录S3（当前SSO过期），确认本版归档回执。'] };
+    ownerTasks: ['确认 v1.0 封版（打 v1.0 标签并推送）。'] };
   try {
     const raw = fs.readFileSync(path.resolve(options.manifest || path.join(out, 'zones-manifest.json')));
     state.manifestSha256 = sha(raw); state.budget = runtimeBudget(out, JSON.parse(raw));
