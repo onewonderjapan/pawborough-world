@@ -3,10 +3,10 @@
   "projectId": "pawborough-world",
   "phase": "world-v1",
   "workspaceRoot": ".",
-  "convenienceLink": "/home/baibai/work/onewonderjapan/pawborough-world",
-  "convenienceLinkNote": "旧便利链接 /home/baibai/pawborough-world 已失效（2026-09-29 清理），现指向主 checkout；勿重建该软链。（原注：Legacy link retained at original location; this new project is the migrated working root.）",
+  "convenienceLink": ".",
+  "convenienceLinkNote": "以当前仓库根为工作入口；旧机器便利软链不作为定位依据。历史目录说明见迁移记录。",
   "git": {
-    "branch": "work/reorganization-20260922",
+    "branch": "main",
     "baselineBranch": "origin/main",
     "baselineCommit": "3271494886710135c1a750f0b6cc54d6e7845bd8",
     "remote": "https://github.com/onewonderjapan/pawborough-world.git",
@@ -17,14 +17,15 @@
       "binarySource": "https://github.com/git-lfs/git-lfs/releases/tag/v3.8.0 git-lfs-linux-arm64-v3.8.0.tar.gz",
       "binarySha256": "ac9c8efac980bb0505ead384d087e2acb6486fd8498691a2165fa174ec6118c2",
       "checksumFile": "sha256sums.asc (GPG-signed, key fingerprint 86CD3297749375BCF8206715F54FE648088335A9, uid Chris Darroch CODE SIGNING KEY)"
-    }
+    },
+    "baselineNote": "baselineCommit 记录 2026-09-22 迁移来源；当前交付版本见 release 和 VERSION-v1.json，运行前核对实际 Git 状态。"
   },
   "canonicalRoadmap": {
     "path": "docs/ROADMAP.snapshot.md",
     "scope": "V01–V10/P0–P6",
     "approvedSnapshot": "docs/ROADMAP.snapshot.md",
     "snapshotSha256": "14398f2df621853baf60e06e0ecbf94981af8bcf59bfb3ee922627ba434d6770",
-    "note": "Local approved snapshot for portability; W2 remains management authority."
+    "note": "历史路线图快照；当前 v1.0 范围以 v1Scope 和 docs/V1-REDEFINITION-20260923.md 为准，后续范围以机主当次指示为准。"
   },
   "ownerDecision": {
     "path": "docs/OWNER_DECISION.snapshot.json",
@@ -34,7 +35,10 @@
   "runtime": {
     "devPort": 5487,
     "previewPort": 5488,
-    "host": "127.0.0.1"
+    "host": "127.0.0.1",
+    "areaPreviewPort": 5486,
+    "areaOutDir": "scene-authoring/yuyuan-area/out-zone",
+    "note": "devPort / previewPort 用于原街段客户端；全域服务使用 areaPreviewPort，并显式指定 OUT_DIR=out-zone。"
   },
   "assets": {
     "mode": "assembly",
@@ -43,7 +47,8 @@
     "colliders": "world/collision-world.json",
     "route": "world/route.json",
     "cameras": "world/cameras.json",
-    "worldGlb": "world/street-reviewed.glb"
+    "worldGlb": "world/street-reviewed.glb",
+    "note": "本节路径为原街段客户端；当前全域场景按 docs/MIGRATION-ASSETS.json 恢复，运行清单为 scene-authoring/yuyuan-area/out-zone/zones-manifest.json。"
   },
   "evidence": {
     "migration": "docs/MIGRATION-20260922.md",
@@ -79,6 +84,17 @@
     "document": "docs/V1-REDEFINITION-20260923.md",
     "mainBody": "scene-authoring/yuyuan-area (garden, temple, bazaar, pond; outer as L0 backdrop)",
     "plus": "fangbang zone: 91 m 方浜中路 street + connecting section to the 城隍庙 gate (from world/fangbang-temple-v7)",
-    "areaPreview": "npm run area:serve"
+    "areaPreview": "OUT_DIR=out-zone npm run area:serve"
+  },
+  "release": {
+    "version": "1.0.0",
+    "tag": "v1.0",
+    "tagHead": "3f61883cab14ad05cedf248296d2898aebf4b844",
+    "sealedAt": "2026-10-01",
+    "deliveryNote": "docs/V1-RELEASE.md",
+    "versionRecord": "VERSION-v1.json",
+    "docsIndex": "docs/README.md",
+    "handoff": "CLAUDE_HANDOFF.md",
+    "note": "源码与标签已推送；可移交版本，未部署公开游戏服务。"
   }
 }

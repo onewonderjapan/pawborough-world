@@ -1,3 +1,37 @@
+# Pawborough 开发接手入口
+
+更新于 2026-10-01。当前版本为 **v1.0 豫园区域全域版**，标签 `v1.0` 对应 `3f61883cab14ad05cedf248296d2898aebf4b844`，源码与标签已推送。这是可移交版本，公开游戏服务尚未部署。
+
+## 接手顺序
+
+1. 读 [v1.0 交付书](docs/V1-RELEASE.md)和[版本记录](VERSION-v1.json)，核对本版范围、构建源与验收边界。
+2. 读[文档导航](docs/README.md)，按模块查资产、机主决定与历史材料。
+3. 核对当前分支、工作区和已运行服务，再执行所需命令；不要从旧工单恢复已结束任务。
+4. 后续施工范围以机主当次指示为准。角色方向已指定，具体角色和接入程度仍待明确；技术待办见交付书第 6 节。
+
+## 当前命令
+
+从本仓库根执行，场景输出为 `scene-authoring/yuyuan-area/out-zone/`：
+
+```bash
+git status --short --branch
+npm run area:rebuild
+OUT_DIR=out-zone npm run area:serve
+# 已有输出的验证：
+OUT_DIR=out-zone npm run area:verify
+```
+
+重建与验证按任务需要执行；交接本身不要求重复已有验收。`area:serve` 默认端口 5486，以实际输出为准。`out-goal-current`、5607 及下文未归档/未推送状态属于 9 月 27 日候选版，不能作为 v1.0 当前状态。
+
+入口 `candidate-version.json` 的技术收据已经绑定本版，但生成工具仍含封版前的人工待办文案；`v1.0` 标签已推送，不要因这条文案重复请求封版。版本整体采用与归档状态仍须依据对应决定和回执，不能只凭标签推断。详见[版本接收说明](docs/CANDIDATE-HANDOFF.zh-CN.md)。
+
+## 历史交接
+
+以下保留 2026-09-27 交接全文，仅用于核查当时的工作量、来源与证据。文中的“当前”、端口、资产数量、远端提交及待办均按当时记录理解。
+
+<details>
+<summary>查看 2026 年 9 月 27 日历史交接</summary>
+
 # Pawborough 给 Claude 的接续交接 · 2026-09-27 JST
 
 这是 S1 的执行交付和事实记录；W2 仍是项目管理正本。机主最新要求是“合并所有分支和 worktree，明确这两天推进了多少”。本文件优先于旧夜班工单里的进行中状态；旧路线图只用于查历史，不据此重复施工。
@@ -146,3 +180,5 @@ S3 身份授权来源保存在 `/home/baibai/outbox/pawborough-goal-20260927/con
 后续 3D 资产方法：优先盘点现有合格资产，再可复用套件，最后必要自建。规则为 `/home/baibai/.agents/skills/3d-asset-reuse/SKILL.md`，已读回执 `/home/baibai/outbox/3d-asset-reuse-skill-20260927/session-readbacks/unity.json`。当前交接只整合已验收资产，没有借方法同步启动新批次。
 
 可复用工程经验已在知识库私有 [PR 13](https://github.com/onewonderjapan/knowledge-base/pull/13)，待机主合并；不必再写同题笔记。它不是本 Pawborough 仓的待合分支，本次没有改它的合并状态。
+
+</details>

@@ -43,8 +43,10 @@ v1.0 是**可移交版本**，不是对外公开发布：浏览器里可以进�
 ```bash
 npm ci && npm --prefix scene-authoring/yuyuan-area ci
 npm run area:rebuild      # 标准重建 + 默认测试（需先按 MIGRATION-ASSETS 恢复资产）
-npm run area:serve        # 本地预览；入口页 index-v1.html
+OUT_DIR=out-zone npm run area:serve  # 本地预览；入口 /candidate/（index-v1.html）
 ```
+
+服务必须带 `OUT_DIR=out-zone`，否则默认读取历史 `out/`。入口状态文件重建后需要重新绑定收据，见 [CANDIDATE-HANDOFF.zh-CN.md](CANDIDATE-HANDOFF.zh-CN.md)。
 
 资产恢复需要有授权的 AWS 身份，见 [ASSET-RESTORE.md](ASSET-RESTORE.md) 与 `tools/restore_migration_assets.py`。
 

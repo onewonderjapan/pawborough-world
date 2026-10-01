@@ -1,36 +1,51 @@
-> **v1.0（2026-10-01 封版）**：豫园区域全域版——园、庙、商城、池带，并接方浜中路街段及其到城隍庙山门的连接段。交付书 [docs/V1-RELEASE.md](docs/V1-RELEASE.md)，版本记录 [VERSION-v1.json](VERSION-v1.json)。一条命令重建：`npm run area:rebuild`；预览：`npm run area:serve`（入口 `index-v1.html`）。下方旧说明保留供历史参考。
-> **2026-09-27 当前接续：[给 Claude 的交接与两日推进量](CLAUDE_HANDOFF.md)**。所有分支代码已合入本地 main，当前运行目录为 `scene-authoring/yuyuan-area/out-goal-current`；5607 候选入口见交接。下方旧迁移/默认启动说明保留供历史参考。本版新增资产尚未云端归档，本地 main 尚未推送。
+# Pawborough 方浜市声
 
-> 本地接续入口与资产恢复：[2026-09-22迁移说明](docs/MIGRATION-20260922.md)。全域预览：`npm run area:serve`；原客户端：`npm run preview`。
-> v1.0 主体（2026-09-23 机主签字）：豫园区域全域候选（园、庙、商城、池带），并接上方浜中路街段及其到城隍庙山门的连接段；见 [v1.0 改账](docs/V1-REDEFINITION-20260923.md)。
+Pawborough 是上海老城街景的 Three.js / Rapier 浏览与取景工程。当前交付版本为 **v1.0 豫园区域全域版**，于 2026-10-01 封版，源码与 `v1.0` 标签已推送。范围覆盖豫园、城隍庙、豫园商城、池带，以及方浜中路街段与山门连接段；外围为背景体块。
 
-# Pawborough / 方浜市声
+本版可用于浏览、步行和视频控制层导出。角色、完整玩法与 Unity 不在本版范围内；尚未部署公开游戏服务。
 
-上海老城街景的 Three.js / Rapier 浏览与取景实验工程。当前已有主街、两处支弄和庙前入口，支持步行、取景、机位保存及本地便携包构建。
+- [v1.0 交付书与已知边界](docs/V1-RELEASE.md)
+- [v1.0 版本与构建记录](VERSION-v1.json)
+- [文档与目录导航](docs/README.md)
+- [开发接手入口](CLAUDE_HANDOFF.md)
 
-This is a public source snapshot of an experimental Shanghai street exploration and framing project. It is not a finished game or a historical survey.
+## 恢复与启动
 
-## 当前公开范围
-
-- 代码、脚本、数据清单及相关历史提交已公开。初始化来源为 `bb45ca6f73c9ca7648a0c979903bacf2027d86f5`，包含仍待验收的可靠性修复；机主视觉采用与公开源码是不同状态。
-- **冻结快照的大型资产已归档到私有 S3。** 本仓保留 Git LFS 指针；只克隆代码仍不能启动完整3D场景。有授权AWS身份的使用者可按[资产恢复指南](docs/ASSET-RESTORE.md)取回文件，S3没有开放公共读取。
-- 资产清单见 [docs/ASSET-MANIFEST.json](docs/ASSET-MANIFEST.json)：10,647条路径、9,396个去重对象，约12.54GB。含历史渲染帧/源工程，不是网页每次要下载的数据量。本次归档由owner发起，绑定上述源提交；后续施工产物尚未自动同步。
-- 源码许可证待项目所有者选择。本次未将第三方贴图、参考照片、模型、解码器统一重新许可；参见 [第三方说明](docs/THIRD-PARTY-NOTICES.md)。
-
-## 查看源码
+仓库公开源码与资产清单，运行所需资产仍在私有存储。克隆代码后，先按[资产恢复指南](docs/ASSET-RESTORE.md)及[迁入资产清单](docs/MIGRATION-ASSETS.json)恢复匹配资产；只有已获授权的 AWS 身份可以下载。历史 LFS 对象与迁入资产是两套清单，不要用占位文件替代。
 
 ```bash
 GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/onewonderjapan/pawborough-world.git
 cd pawborough-world
 npm ci
+npm --prefix scene-authoring/yuyuan-area ci
 ```
 
-完整运行还需要按[恢复指南](docs/ASSET-RESTORE.md)取回匹配资产；未恢复时，`npm run dev` / 构建 / 部分测试会因资产缺失而失败。不要将占位文件或旧资产替换为同名文件后声称验证通过。
+按恢复指南完成资产与 Blender / Python 依赖准备后，从仓库根执行：
 
-本地资产齐全后：`npm run dev`，打开该服务下的 `world-preview.html`。源工程中的便携包制作脚本另见 `scripts/build_playable_package.mjs`。旧文档含S1工作机路径，供历史取证，外部使用者应以本README与后续发布的资产恢复指南为准。
+```bash
+npm run area:rebuild
+OUT_DIR=out-zone npm run area:serve
+```
 
-## 已知边界
+重建包含默认 72 段测试。服务默认监听 `127.0.0.1:5486`，以实际启动输出为准；打开该地址下的 `/candidate/` 查看版本入口，`/` 为 3D 查看器。**服务必须显式设置 `OUT_DIR=out-zone`**，否则默认读取历史 `out/`。
 
-项目仍在开发。相关记录包含已修项、候选与历史失败，不能把任意历史PASS当成当前版本整体通过。真实GPU性能与跨机部署不在本次公开中承诺；全开配置预算与部分街缘通行仍有后续工作。
+已有本版输出时可直接启动服务，或执行 `OUT_DIR=out-zone npm run area:verify`。重建会清除入口状态文件；证据绑定方法见[版本接收说明](docs/CANDIDATE-HANDOFF.zh-CN.md)。
 
-本仓未部署公开游戏服务。S3用于私有备份，不是公共资产CDN；公开分发素材前仍需逐项核对来源许可。
+## 模块
+
+| 目录 | 用途 |
+| --- | --- |
+| `scene-authoring/yuyuan-area/` | 当前全域场景制作与浏览入口 |
+| `asset-authoring/` | 店屋、门楼、食品等单体制作源 |
+| `src/`、`world/`、`building/`、`kit/` | 原街段客户端、资产与历史制作来源，仍有当前管线引用 |
+| `tools/`、`scripts/`、`tests/` | 恢复、封包、客户端构建及检查；按模块选择命令 |
+| `docs/` | 当前交付、决定、资产清单与历史证据索引 |
+| `artifacts/` | 历史施工及验收记录；新截图和渲染产物不入库 |
+
+原街段客户端继续保留，可使用 `npm run dev` / `npm run build` / `npm run preview`。它与全域 `area:*` 命令服务不同模块；历史 `VERSION.json`、`DELIVERY.md` 不能代表本版。
+
+## 交付边界
+
+核心视觉首载为 15,688,354 B，上限 20 MB；该口径只含分区视觉 GLB 与唯一外置贴图，不含 JS/WASM 和步行物理 GLB。W2 实测、控制层及恢复演练的范围与限制见[v1.0 交付书](docs/V1-RELEASE.md)。
+
+源码许可证待所有者选择。第三方贴图、参考照片、模型和解码器没有统一重新许可，见[第三方说明](docs/THIRD-PARTY-NOTICES.md)。私有 S3 不是公共资产 CDN。
