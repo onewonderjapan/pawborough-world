@@ -25,6 +25,7 @@ export class WalkController {
     this.physics = physics;
     this.fixedDt = 1 / FIXED_HZ;
     this.speed = capsule.speed ?? WALK_SPEED;
+    this.runSpeed = capsule.runSpeed ?? this.speed;   // Shift-sprint; absent = walk speed (viewer contract unchanged)
     this.radius = capsule.radius;
     this.halfHeight = capsule.halfHeight;
     this.eyeHeight = capsule.eyeHeight;
@@ -48,6 +49,7 @@ export class WalkController {
     this.controller.setApplyImpulsesToDynamicBodies(false);
 
     this.input = { forward: 0, right: 0, jump: false };
+    this.running = false;
     this.yaw = 0;
     this.pitch = 0;
     this.vy = 0;
@@ -73,6 +75,9 @@ export class WalkController {
     this.input.right = clampInput(right);
   }
   setJump(want) { this.input.jump = Boolean(want); }
+  // Shift-sprint intent. Like the move keys it is input state: pause/clearKeys
+  // reset it, and while held it only scales the desired translation speed.
+  setRunning(on) { this.running = Boolean(on); }
   look(yawDelta, pitchDelta) {
     // Camera look is instantaneous and separate from physics; it never
     // touches the capsule translation.
@@ -83,6 +88,7 @@ export class WalkController {
     this.input.forward = 0;
     this.input.right = 0;
     this.input.jump = false;
+    this.running = false;
   }
   pause() {
     this.paused = true;
@@ -114,7 +120,7 @@ export class WalkController {
     // forward = (-sin yaw, 0, -cos yaw); right = (cos yaw, 0, -sin yaw)
     let dx = 0, dz = 0;
     if (len > 0) {
-      const k = this.speed / len;
+      const k = (this.running ? this.runSpeed : this.speed) / len;
       dx = (-sy * f + cy * r) * k * dt;
       dz = (-cy * f - sy * r) * k * dt;
     }

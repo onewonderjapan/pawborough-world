@@ -1,0 +1,30 @@
+{
+  "labelZh": "三味手持小吃",
+  "note": "play 模式专用输入清单；原件不入库（resources/ 整体 gitignore）。SHA256 与包级 ASSET-INPUT.json 一致，浏览器加载时逐字校验，不符即中文报错、不用占位模型。恢复：按 sha256 校验后放回 path。",
+  "foods": [
+    {
+      "id": "xiaolongbao",
+      "labelZh": "小笼包",
+      "stallId": "stall-5",
+      "path": "resources/foods/handheld/xiaolongbao.glb",
+      "bytes": 31488,
+      "sha256": "439ff56d50780ddb669bc5388439662dff3c49100d3fbd7952677331895ccaed"
+    },
+    {
+      "id": "congyoubing",
+      "labelZh": "葱油饼",
+      "stallId": "stall-6",
+      "path": "resources/foods/handheld/congyoubing.glb",
+      "bytes": 77872,
+      "sha256": "f891634434e669c3178f133f1a5e3a67b7f0db97ee86da489e913a4d0df2b1ca"
+    },
+    {
+      "id": "youdunzi",
+      "labelZh": "油墩子",
+      "stallId": "stall-10",
+      "path": "resources/foods/handheld/youdunzi.glb",
+      "bytes": 112984,
+      "sha256": "290072ecb5846a0b2c813eb87821ba9cbf874bb220893dfaa4ee18f679eb1969"
+    }
+  ]
+}

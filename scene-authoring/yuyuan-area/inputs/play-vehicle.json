@@ -1,0 +1,16 @@
+{
+  "labelZh": "共享自行车（派生实时车）",
+  "note": "play 模式专用：由 scripts/build-play-bicycle.py 从 kit/build_props.py 的 bicycle 原语段派生（原件 bicycle-28.glb 不改）。GLB 不入库（resources/ 整体 gitignore），恢复/再生成见 artifacts/vehicle/ 元数据。SHA256 由浏览器加载时校验。",
+  "vehicle": {
+    "id": "play-bicycle",
+    "labelZh": "共享自行车",
+    "path": "resources/vehicles/play-bicycle.glb",
+    "forward": "-Z",
+    "up": "Y",
+    "riderHeightM": 0.964,
+    "parts": ["frame", "front-wheel", "rear-wheel", "steering", "crank", "saddle", "handlebar", "basket", "seat-anchor", "anchor-mount", "anchor-dismount"],
+    "triangles": 748,
+    "bytes": 82844,
+    "sha256": "681908c05fa185464428e013b8b9146498eb404779b217d1552b677d0f7462d7"
+  }
+}

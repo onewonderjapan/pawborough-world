@@ -21,7 +21,8 @@ check('play capsule is r=0.28 / halfHeight=0.20 / eyeHeight=0.80',
   PLAY_PROFILE.capsule.radius === 0.28 && PLAY_PROFILE.capsule.halfHeight === 0.2
   && PLAY_PROFILE.capsule.eyeHeight === 0.8,
   JSON.stringify(PLAY_PROFILE.capsule));
-check('play walk speed is 1.5 m/s', PLAY_PROFILE.speed === 1.5);
+check('play walk speed is 2.6 m/s with Shift run 4.2 (小吃工单)',
+  PLAY_PROFILE.speed === 2.6 && PLAY_PROFILE.walkSpeed === 2.6 && PLAY_PROFILE.runSpeed === 4.2);
 
 // --- real config: the entry manifest matches the profile it installs
 {
@@ -52,7 +53,7 @@ check('play walk speed is 1.5 m/s', PLAY_PROFILE.speed === 1.5);
   check('animation state follows the moving flag', core.state.animation === 'idle');
   core.onFrame({ feet: [1, 0, 2], yaw: 0.3, moving: true, paused: false, dt: 1 / 60 }); // legacy caller without telemetry
   check('onFrame falls back to the play speed when no telemetry is given',
-    updates[2].speed === 1.5 && core.state.animation === 'walk');
+    updates[2].speed === 2.6 && core.state.animation === 'walk');
 
   core.session.begin({ teleport() {}, resume() {} }, { spawnFeet: [1, 0, 2] });
   const stPlaying = core.status({ walkMode: 'walk', controller: { feetPosition: () => [1, 0.02, 2], yaw: 0.3 } });

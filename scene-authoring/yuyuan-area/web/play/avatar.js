@@ -70,9 +70,57 @@ export class PlayAvatar {
       eat: clips.has('eat') ? this.mixer.clipAction(clips.get('eat')) : null,
     };
     this.current = 'idle';
+    this.eatingPose = false;
     this.actions.idle.setEffectiveWeight(1).play();
     this.actions.walk.setEffectiveWeight(0).play();
+    // 表情 morph（eyeL/eyeR/mouth，extras.targetNames 提供名字；吃完成给 happy/content）
+    this.morphMeshes = [];
+    this.model.traverse((o) => {
+      if (o.isMesh && o.morphTargetInfluences) this.morphMeshes.push(o);
+    });
+    this._expression = null;   // { name, weight, decay }
     this.disposed = false;
+  }
+
+  // 设置表情权重（按 targetNames 名字；字典缺失时回退 extras 顺序索引）。
+  // weight 0 = 清除。返回是否命中了 morph。
+  setExpression(name, weight) {
+    let hit = false;
+    for (const mesh of this.morphMeshes) {
+      const dict = mesh.morphTargetDictionary;
+      const idx = dict && Object.hasOwn(dict, name)
+        ? dict[name]
+        : (mesh.userData?.targetNames ? mesh.userData.targetNames.indexOf(name) : -1);
+      if (idx >= 0 && idx < mesh.morphTargetInfluences.length) {
+        mesh.morphTargetInfluences[idx] = Math.max(0, Math.min(1, weight));
+        hit = true;
+      }
+    }
+    return hit;
+  }
+  // 吃完的满足反馈：happy+content 淡入，decaySeconds 后淡出（暂停时不衰减）
+  showSatisfaction({ weight = 1, hold = 1.2, decay = 1.5 } = {}) {
+    const ok = this.setExpression('happy', weight) | this.setExpression('content', weight);
+    if (!ok) return false;
+    this._expression = { weight, hold, decay };
+    return true;
+  }
+  _tickExpression(dt) {
+    const e = this._expression;
+    if (!e) return;
+    if (e.hold > 0) { e.hold -= dt; return; }
+    e.weight = Math.max(0, e.weight - dt / Math.max(0.05, e.decay));
+    this.setExpression('happy', e.weight);
+    this.setExpression('content', e.weight);
+    if (e.weight <= 0) this._expression = null;
+  }
+
+  // 吃相：eat 剪辑循环；吃的过程中移动已被外层禁止，walk 权重归零
+  setEatingPose(on) {
+    if (!this.actions.eat) return false;
+    this.eatingPose = Boolean(on);
+    if (this.eatingPose) this.actions.eat.reset().setEffectiveWeight(1).play();
+    return true;
   }
 
   update({ feet, yaw, moving, facingYaw = null, speed = null, paused, dt }) {
@@ -87,7 +135,8 @@ export class PlayAvatar {
     this.root.rotation.y = avatarYawFor(this.facingYaw);
     if (!paused) {
       this.mixer.update(dt);
-      const want = moving ? 'walk' : 'idle';
+      this._tickExpression(dt);
+      const want = this.eatingPose && this.actions.eat ? 'eat' : (moving ? 'walk' : 'idle');
       if (want !== this.current) {
         this.actions[this.current]?.setEffectiveWeight(0);
         this.actions[want].setEffectiveWeight(1);

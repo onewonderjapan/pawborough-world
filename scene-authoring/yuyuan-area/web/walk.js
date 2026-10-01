@@ -126,9 +126,9 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
     sel.value = anchor;
     controller = new WalkController({
       RAPIER, physics,
-      // play 档换胶囊/速度（r0.28/h0.2/eye0.8/1.5m/s），未开启 play 时保持 viewer 默认
+      // play 档换胶囊/速度（r0.28/h0.2/eye0.8/走2.6/Shift跑4.2），未开启 play 时保持 viewer 默认
       capsule: play
-        ? { ...play.capsule, speed: play.speed, autostep: play.autostep, spawn: [0, 1, 0] }
+        ? { ...play.capsule, speed: play.walkSpeed ?? play.speed, runSpeed: play.runSpeed ?? play.speed, autostep: play.autostep, spawn: [0, 1, 0] }
         : { ...CAPSULE, spawn: [0, 1, 0] },
     });
     if (hud) hud(`步行：碰撞就绪（墙 ${physics.wallCount} · 地面 ${physics.groundTriangleCount} 三角）`);
@@ -147,7 +147,11 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
 
   // ---------- 输入 ----------
   const KEYMAP = { KeyW: 'f+', ArrowUp: 'f+', KeyS: 'f-', ArrowDown: 'f-', KeyA: 'l-', ArrowLeft: 'l-', KeyD: 'r+', ArrowRight: 'r-' };
-  function applyKeys() { if (controller) controller.setMoveInput(keys.forward, keys.right); }
+  // 小吃工单：骑乘时活动位移权威是车控制器；吃的过程中移动锁死
+  const activeCtl = () => (play?.profile?.moveController ? play.profile.moveController() : null) ?? controller;
+  const ridingNow = () => Boolean(play?.profile?.riding?.());
+  function applyKeys() { const c = activeCtl(); if (c) c.setMoveInput(keys.forward, keys.right); }
+  function setBrake(on) { const c = activeCtl(); if (c?.setBrake) c.setBrake(on); }
   addEventListener('keydown', (e) => {
     if (mode !== 'walk') return;
     if (play && e.code === 'KeyP') {          // play：P 键暂停/继续（暂停时清键、清累计器并释放指针锁）
@@ -158,6 +162,17 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
       return;
     }
     if (play && play.session.paused) return;   // 暂停期间不吃移动键
+    if (play?.profile?.movementLocked?.()) {   // 吃的过程中禁止移动/上车
+      if (KEYMAP[e.code] || e.code === 'ShiftLeft' || e.code === 'ShiftRight') e.preventDefault();
+      return;
+    }
+    if (e.code === 'Space') { e.preventDefault(); setBrake(true); return; }   // 骑车刹车（步行无跳键，不影响原契约）
+    if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {   // Shift 跑/冲刺（走 4.2 · 车 7 m/s）
+      e.preventDefault();
+      const c = activeCtl();
+      if (c?.setRunning) c.setRunning(true);
+      return;
+    }
     const k = KEYMAP[e.code];
     if (!k) return;
     e.preventDefault();
@@ -166,6 +181,12 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
     applyKeys();
   });
   addEventListener('keyup', (e) => {
+    if (e.code === 'Space') { setBrake(false); return; }
+    if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {   // 松开 Shift 即回常速（与模式无关）
+      const c = activeCtl();
+      if (c?.setRunning) c.setRunning(false);
+      return;
+    }
     const k = KEYMAP[e.code];
     if (!k) return;
     if (k[0] === 'f') keys.forward = 0; else keys.right = 0;
@@ -181,7 +202,7 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
   });
   addEventListener('mousemove', (e) => {
     if (mode === 'walk' && controller && document.pointerLockElement === renderer.domElement && !(play && play.session.paused))
-      controller.look(e.movementX * MOUSE_SENS, e.movementY * MOUSE_SENS);
+      activeCtl().look(e.movementX * MOUSE_SENS, e.movementY * MOUSE_SENS);
   });
   // play：失焦 / 指针锁丢失 = 暂停（清键、位置不动）；viewer 档保持原行为不动
   addEventListener('blur', () => {
@@ -212,18 +233,32 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
   function tick() {
     if (mode !== 'walk' || !controller) return;
     const now = performance.now();
-    const dt = Math.min(0.25, (now - lastTick) / 1000); // 真实帧长；固定步整形在 WalkController 内部
+    const dt = Math.min(0.25, (now - lastTick) / 1000); // 真实帧长；固定步整形在各自控制器内部
     lastTick = now;
+    if (play && play.session.paused) return;   // 暂停：两个控制器都不步进（不消费输入、不跳帧）
+    // 小吃工单：骑乘时车控制器是唯一活动位移权威（步行胶囊不 step）
+    if (ridingNow()) {
+      const ride = activeCtl();
+      if (ride) {
+        ride.step(dt);
+        if (onFeet) onFeet(ride.feetPosition());
+        play.onFrame?.({
+          feet: ride.feetPosition(), yaw: ride.yaw,
+          moving: false, actualSpeed: 0, facingYaw: ride.yaw,   // 骑姿不播步行循环（轮/踏板由车视图驱动）
+          grounded: ride.isGrounded(), paused: false, dt,
+        });
+        play.updateCamera?.({ camera, controller: ride, dt });
+      }
+      return;
+    }
     controller.step(dt);
     // R1（review R0-2）：脚点通知放在 play/viewer 共用路径——main.js 靠它做
     // 方浜 60m 自然逼近加载，play 分支不得提前 return 跳过；每帧至多一次。
     if (onFeet) onFeet(controller.feetPosition());
     if (play) {
       // play 档：按固定步的实际校正位移/速度/方向判定 walk/idle、步频与人物朝向
-      const paused = play.session.paused;
-      const motion = paused
-        ? { moving: false, actualSpeed: 0, facingYaw: null }
-        : computeStepMotion(controller.lastStep, controller.fixedDt);
+      const paused = false;
+      const motion = computeStepMotion(controller.lastStep, controller.fixedDt);
       play.onFrame?.({ feet: controller.feetPosition(), yaw: controller.yaw, ...motion, grounded: controller.isGrounded(), paused, dt });
       play.updateCamera?.({ camera, controller, dt });
       return;
