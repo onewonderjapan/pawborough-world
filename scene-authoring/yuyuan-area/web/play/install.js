@@ -92,7 +92,7 @@ export function createPlayCore({ manifest = null } = {}) {
       const speed = actualSpeed === undefined ? (moving ? PLAY_PROFILE.speed : null)
         : (moving ? actualSpeed : null);
       avatar.update({ feet, yaw, moving, facingYaw, speed, paused, dt });
-      state.animation = moving ? 'walk' : 'idle';
+      state.animation = avatar.current ?? (moving ? 'walk' : 'idle');
     },
     // 只读检查钩子（window.__play.status），主控真浏览器复验用；facing 为人物
     // 朝向（实际位移方向，非视角 yaw），供 R1 朝向解耦复验。
@@ -125,6 +125,7 @@ async function readJson(url) {
 
 // Browser shell. scene/camera/renderer/controls come from main.js.
 export function installPlayMode({ scene, camera, renderer, controls, manifest = null }) {
+  let startupNotice = null;
   const core = createPlayCore({ manifest });
   const playCamera = new PlayCamera({
     camera,
@@ -143,8 +144,11 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     if (!ctl) return;
     try {
       storage().setItem(STORAGE_KEY, JSON.stringify(gameState.toSave({
-        feet: ctl.feetPosition(), yaw: ctl.yaw, pitch: rideCtl ? 0 : (walk?.controller?.pitch ?? 0),
+        feet: ctl.feetPosition(),
+        yaw: rideCtl ? ctl.yaw : (walk?.controller?.yaw ?? 0),      // 视角
+        pitch: rideCtl ? (ctl.pitch ?? 0) : (walk?.controller?.pitch ?? 0),
       })));
+      // 车辆航向/视角由 toSave 从 gameState.vehicle 取（frameGame 每帧同步）
     } catch { /* 存储满/禁用：不影响玩法 */ }
   }
   gameState.onChange((evt) => {
@@ -165,16 +169,26 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   // ---- 小地图（右上，真实 layout 底图） ----
   const minimap = installPlayMap();
 
-  // ---- 第三人称射线：真实 Rapier 世界，排除玩家自己的胶囊（不误撞自身） ----
+  // ---- 射线/形状查询（R0-5 共用件） ----
   // rapier3d-compat 签名：castRay(ray, maxToi, solid, flags, groups,
   //   excludeCollider, excludeRigidBody, filterPredicate)；谓词 = 传入 true 才检测。
   const worldNow = () => window.__walk?.zonePhysics?.physics?.world ?? null;
+  const groundCollidersNow = () => window.__walk?.zonePhysics?.groundColliders ?? [];
+  let groundKey = '';
+  let groundHandles = new Set();
+  const groundHandlesNow = () => {
+    const list = groundCollidersNow();
+    const key = list.map(c => c.handle).join(',');
+    if (key !== groundKey) { groundHandles = new Set(list.map(c => c.handle)); groundKey = key; }
+    return groundHandles;
+  };
   const playerHandles = () => {
     const s = new Set();
     const w = window.__walk?.controller?.collider; if (w) s.add(w.handle);
     if (rideCtl?.collider) s.add(rideCtl.collider.handle);
     return s;
   };
+  // 第三人称相机遮挡射线：排除玩家/车（墙才挡相机）
   const castRay = (origin, dir, maxToi) => {
     const world = worldNow();
     if (!world) return null;
@@ -186,15 +200,37 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       undefined, undefined, (c) => !exclude.has(c.handle));
     return hit ? hit.timeOfImpact : null;
   };
-  const groundYAt = (x, z, maxToi = 8) => {
+  // 支撑面查询（R0-5）：只认已登记 groundColliders——墙顶/柜台顶不算 ground。
+  // 所有取地面/停车/下车/存档校验共用这一个过滤器。
+  function supportAt(x, z, fromY = 8, maxToi = 12) {
     const world = worldNow();
     if (!world) return null;
-    const ray = new RAPIER.Ray({ x, y: 8, z }, { x: 0, y: -1, z: 0 });
-    const exclude = playerHandles();
+    const gh = groundHandlesNow();
+    if (!gh.size) return null;
+    const ray = new RAPIER.Ray({ x, y: fromY, z }, { x: 0, y: -1, z: 0 });
     const hit = world.castRay(ray, maxToi, true, undefined, undefined,
-      undefined, undefined, (c) => !exclude.has(c.handle));
-    return hit ? 8 - hit.timeOfImpact : null;
-  };
+      undefined, undefined, (c) => gh.has(c.handle));
+    return hit ? fromY - hit.timeOfImpact : null;
+  }
+  // 墙重叠检查：排除玩家/车自身与地面碰撞体（不抹掉真正墙体，R0-5）。
+  // 无世界时返回 true（视作被挡，调用方各自兜底）。
+  function wallOverlap(x, y, z, shape, yaw = 0) {
+    const world = worldNow();
+    if (!world) return true;
+    const gh = groundHandlesNow();
+    const excl = playerHandles();
+    return !!world.intersectionWithShape(
+      { x, y, z }, { x: 0, y: Math.sin(yaw / 2), z: 0, w: Math.cos(yaw / 2) }, shape,
+      undefined, undefined, undefined, undefined,
+      (c) => c.handle !== undefined && !gh.has(c.handle) && !excl.has(c.handle));
+  }
+  // 玩家脚点是否踩在可靠支撑面上（E 资格/存档恢复共用）
+  function feetSupported(feet, tol = 0.35) {
+    const gy = supportAt(feet[0], feet[2]);
+    const centerOffset = PLAY_PROFILE.capsule.radius + PLAY_PROFILE.capsule.halfHeight;
+    return gy !== null && Math.abs(gy - feet[1]) <= tol
+      && !wallOverlap(feet[0], feet[1] + centerOffset, feet[2], capsuleShape());
+  }
 
   // ---- 资产：角色 + 三味小吃 + 自行车（真实 GLB + SHA256 校验） ----
   const profile = {
@@ -207,7 +243,8 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       hud.setPaused(core.session.paused);
       hud.renderGoal(goalView());
       // R1：HUD 面向玩家措辞，不露 actorId 等技术词
-      hud.message(outcome?.restored ? '灰猫回到上次的位置和朝向' : '灰猫已就位，去尝遍三味吧');
+      hud.message(startupNotice ?? (outcome?.restored ? '灰猫回到上次的位置和朝向' : '灰猫已就位，去尝遍三味吧'));
+      startupNotice = null;
       saveNow();
     },
     onPauseChange: (paused) => {
@@ -311,21 +348,32 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     hud.message(foodFailureMessage(e?.message || String(e)));
   });
 
-  // ---- 存档恢复（入场时应用；坏档回安全出生点） ----
+  // ---- 存档恢复（入场时应用；坏档/无支撑/墙内位置回安全出生点，R0-5） ----
   try {
     const raw = storage().getItem(STORAGE_KEY);
     if (raw) {
-      const parsed = JSON.parse(raw);
-      const v = validateSave(parsed, FOODS);
-      if (v.ok) {
-        gameState.applySave(v.value);
-        pendingSave = v.value;
-      } else {
-        hud.message(`上次的散步存档无法读取（${v.reason}），已从出生点开始`);
+      let parsed = null, parsedOk = false;
+      try {
+        parsed = JSON.parse(raw);
+        parsedOk = true;
+      } catch (e) {
+        startupNotice = '上次的散步记录有些损坏，已从安全出生点开始';
         storage().removeItem(STORAGE_KEY);
       }
+      if (parsedOk) {
+        const v = validateSave(parsed, FOODS);
+        if (v.ok) {
+          gameState.applySave(v.value);
+          pendingSave = v.value;
+        } else {
+          startupNotice = String(v.reason).includes('version')
+            ? '这份散步记录属于旧版本，已从安全出生点开始'
+            : '上次的散步记录无法读取，已从安全出生点开始';
+          storage().removeItem(STORAGE_KEY);
+        }
+      }
     }
-  } catch { /* 坏 JSON 同样按坏档处理 */ }
+  } catch { /* 其它存储异常同样按坏档处理，不阻塞入场 */ }
 
   function applyPendingSave() {
     if (!pendingSave) return;
@@ -333,22 +381,27 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     const controller = walk?.controller;
     const s = pendingSave;
     pendingSave = null;
+    let placedFeet = false;
     if (controller && s.feet) {
-      // 显式恢复：session 记录为 explicit relocation，绝不当作走动证据
-      core.session.relocate(controller, s.feet, s.yaw ?? 0);
-      hud.message('回到上次的散步进度');
+      // 几何校验（R0-5）：脚点必须踩在已登记支撑面上（不接受空中/墙内位置）
+      if (feetSupported(s.feet)) {
+        // 显式恢复：session 记录为 explicit relocation，绝不当作走动证据
+        core.session.relocate(controller, s.feet, s.yaw ?? 0);
+        placedFeet = true;
+      } else {
+        hud.message('上次的落脚点不在可靠地面上，已回到安全出生点（集章进度保留）');
+      }
     }
-    // 车位置恢复（placed 且不在骑乘状态落地为停着的车）
-    if (gameState.vehicle.placed && bikeView && !gameState.vehicle.riding) {
-      bikeView.placeAt(gameState.vehicle.pos, gameState.vehicle.yaw);
-      bikePlaced = true;
-    }
-    // 手里/车篮的模型恢复
+    if (placedFeet) hud.message('回到上次的散步进度');
+    // 手里/车篮的模型恢复（恰好一个实例）
     refreshHeldModel();
+    if (gameState.eating) core.state.avatar?.setEatingPose(true, gameState.eating.elapsed);
     hud.renderGoal(goalView());
+    // 车的位置/骑乘恢复交给 ensureBikePlaced（物理/bikeView 就绪后按档校验落地）
   }
 
-  // ---- 车：借车站布置（真实支持面 + Rapier 检查）与上/下车 ----
+  // ---- 车：借车站布置（真实支持面 + Rapier 检查，R0-5）与上/下车 ----
+  let standFailAt = null;   // 找不到安全停车点时的提示节流
   function ensureBikePlaced() {
     if (bikePlaced || !bikeView) return;
     const walk = window.__walk;
@@ -356,54 +409,110 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     const controller = walk.controller;
     const feet = controller ? controller.feetPosition() : null;
     if (!feet) return;
-    const pos = gameState.vehicle.placed && gameState.vehicle.pos
-      ? [...gameState.vehicle.pos]
-      : findBikeStand(feet);
-    if (!pos) return;
-    const gy = groundYAt(pos[0], pos[2]);
-    if (gy === null) return;
-    bikeView.placeAt([pos[0], gy, pos[2]], gameState.vehicle.yaw ?? 0);
-    gameState.placeVehicle([pos[0], gy, pos[2]], gameState.vehicle.yaw ?? 0);
+
+    // 有存档：按档恢复（位置过几何校验才落地；骑乘档重建唯一车控制器）
+    if (gameState.vehicle.placed && gameState.vehicle.pos) {
+      const p = gameState.vehicle.pos;
+      const gy = bikeGroundY(p, gameState.vehicle.yaw ?? 0);
+      if (gy !== null) {
+        bikeView.placeAt([p[0], gy, p[2]], gameState.vehicle.yaw ?? 0);
+        if (gameState.vehicle.riding) {
+          restoreRide([p[0], gy, p[2]], gameState.vehicle.yaw ?? 0, gameState.vehicle.viewYaw ?? 0);
+        }
+        bikePlaced = true;
+        saveNow();
+        return;
+      }
+      hud.message('存档里的自行车位置不安全，已在出生点附近重新借车');
+      gameState.vehicle = { placed: false, pos: null, yaw: 0, viewYaw: 0, riding: false };
+    }
+
+    // 借车站：出生点附近环形找真实支持面（有支撑、无墙交叠）
+    const pos = findBikeStand(feet);
+    if (!pos) {
+      if (!standFailAt || performance.now() - standFailAt > 8000) {
+        standFailAt = performance.now();
+        hud.message('附近暂时没有安全的借车位置，走到开阔处再试试');
+      }
+      return;   // 不做无碰撞检查的兜底落点（R0-5）
+    }
+    bikeView.placeAt([pos[0], pos[1], pos[2]], 0);
+    gameState.placeVehicle([pos[0], pos[1], pos[2]], 0);
     bikePlaced = true;
     saveNow();
   }
-
-  // 借车站：正常出生点附近 1.2–3.5m 环形找真实支持面（有地面、无墙交叠、避开入口）
-  function findBikeStand(feet) {
-    const world = worldNow();
-    if (!world) return null;
-    const offsets = [];
-    for (let i = 0; i < 12; i++) {
-      const a = (i / 12) * Math.PI * 2;
-      const r = 1.4 + (i % 3) * 0.9;
-      offsets.push([Math.cos(a) * r, Math.sin(a) * r]);
+  const BIKE_RIDE_HALF = [0.34, 0.68, 0.82];
+  let _bikeShape = null;
+  function bikeShape() {
+    if (!_bikeShape) _bikeShape = new RAPIER.Cuboid(...BIKE_RIDE_HALF);
+    return _bikeShape;
+  }
+  function bikeGroundY(pos, heading) {
+    const gy = supportAt(pos[0], pos[2]);
+    if (gy === null || Math.abs(gy - pos[1]) > 0.35
+      || wallOverlap(pos[0], gy + BIKE_RIDE_HALF[1], pos[2], bikeShape(), heading)) return null;
+    const [hx, , hz] = BIKE_RIDE_HALF, s = Math.sin(heading), c = Math.cos(heading);
+    for (const [dx, dz] of [[-hx, -hz], [hx, -hz], [-hx, hz], [hx, hz], [0, -hz], [0, hz]]) {
+      const y = supportAt(pos[0] + dx * c + dz * s, pos[2] - dx * s + dz * c);
+      if (y === null || Math.abs(y - gy) > 0.16) return null;
     }
-    const probeShape = new RAPIER.Cuboid(0.34, 0.68, 0.82);
-    const exclude = playerHandles();
-    for (const [ox, oz] of offsets) {
-      const x = feet[0] + ox, z = feet[2] + oz;
-      const gy = groundYAt(x, z);
-      if (gy === null || Math.abs(gy - feet[1]) > 0.6) continue;
-      // 整车+骑手体量不得与静态墙交叠（排除玩家/车自身）
-      const clear = world.intersectionWithShape(
-        { x, y: gy + 0.68, z }, { x: 0, y: 0, z: 0, w: 1 }, probeShape,
-        undefined, undefined, undefined, undefined, (c) => !exclude.has(c.handle));
-      if (!clear) return [x, gy, z];
-    }
-    return [feet[0] + 2.0, feet[1], feet[2]];   // 兜底：出生点东侧 2m（地面射线在 placeAt 前再验）
+    return gy;
+  }
+  let _capsuleShape = null;
+  function capsuleShape() {
+    if (!_capsuleShape) _capsuleShape = new RAPIER.Capsule(0.2, 0.28);
+    return _capsuleShape;
   }
 
+  // 借车站：出生点附近 1.2–6m 环形找真实支持面（有支撑、车体不与墙交叠）。
+  // 找不到安全点返回 null（调用方提示玩家挪步，不落地）。
+  function findBikeStand(feet) {
+    for (let ring = 0; ring < 4; ring++) {
+      const n = 12;
+      const r0 = 1.2 + ring * 1.6;
+      for (let i = 0; i < n; i++) {
+        const a = (i / n) * Math.PI * 2 + ring * 0.26;
+        const x = feet[0] + Math.cos(a) * r0;
+        const z = feet[2] + Math.sin(a) * r0;
+        const gy = bikeGroundY([x, feet[1], z], 0);
+        if (gy === null) continue;
+        return [x, gy, z];
+      }
+    }
+    return null;
+  }
+
+  // ---- 手持/车篮：恰好一个模型实例（R0-5）——take 创建，上车移入车篮，
+  // 下车移回手，吃完摘除销毁引用（共享 geometry/material 由 FoodCatalog 唯一持有） ----
+  let heldObj = null;   // { foodId, obj }
+  function attachHand(obj) {
+    const avatar = core.state.avatar;
+    const armR = avatar?.model?.getObjectByName('armR');
+    if (!armR) return;
+    armR.add(obj);
+  }
   function refreshHeldModel() {
     const avatar = core.state.avatar;
     if (!avatar || !foods) return;
-    // 摘掉旧手持（不 dispose 共享资源）
+    avatar.setHoldingPose(Boolean(gameState.heldItem));
+    // 摘掉旧手持容器（不 dispose 共享资源）
     avatar.model.traverse((o) => {
       if (o.name?.startsWith('play-held-')) o.removeFromParent();
     });
-    if (!gameState.heldItem) return;
-    const armR = avatar.model.getObjectByName('armR');
-    if (!armR) return;
-    foods.attachToHand(gameState.heldItem, armR);
+    if (heldObj) { heldObj.obj.removeFromParent(); }
+    if (gameState.heldItem) {
+      const reusable = heldObj?.foodId === gameState.heldItem ? heldObj.obj : null;
+      heldObj = { foodId: gameState.heldItem, obj: foods.attachToHand(gameState.heldItem,
+        avatar.model.getObjectByName('armR') ?? avatar.model, reusable) };
+    } else if (gameState.basketItem && gameState.vehicle.riding && bikeView) {
+      // 车篮里的正是同一实例（上车时移入的），不再新建
+      if (!heldObj || heldObj.foodId !== gameState.basketItem) {
+        heldObj = { foodId: gameState.basketItem, obj: foods.makeHandInstance(gameState.basketItem) };
+      }
+      bikeView.attachBasket(heldObj.obj);
+    } else {
+      heldObj = null;
+    }
   }
 
   function toggleVehicle() {
@@ -424,55 +533,80 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     const d = Math.hypot(feet[0] - bike[0], feet[2] - bike[2]);
     if (d > MOUNT_RADIUS_M) { hud.setHint(`走近自行车再按 R（现在 ${d.toFixed(1)}m）`); return; }
     const walk = window.__walk;
+    controller.clearKeys();                       // 上车统一清输入（R0-1）
     rideCtl = new RideController({
       RAPIER, physics: walk.zonePhysics.physics,
       cruise: PLAY_PROFILE.bikeCruise, max: PLAY_PROFILE.bikeMax,
       excludeColliderHandles: [window.__walk?.controller?.collider?.handle].filter(Boolean),
+      groundColliders: groundCollidersNow,        // R0-2：支撑面只认已登记地面
     });
-    rideCtl.teleport([bike[0], bike[1], bike[2]], gameState.vehicle.yaw ?? 0);
-    // 上车：持物进车篮（不复制食物），骑姿接管
+    // 车头沿用停车 heading；视角保持玩家当前自由视角（R0-1 二者分离）
+    rideCtl.teleport([bike[0], bike[1], bike[2]], gameState.vehicle.yaw ?? 0, controller.yaw ?? 0);
+    // 上车：持物进车篮（不复制食物，同一实例移入），骑姿接管
     gameState.stowHeldToBasket();
-    refreshHeldModel();
     gameState.setRiding(true);
+    refreshHeldModel();
     playCamera.shoulderHeight = PLAY_PROFILE.rideShoulderHeight;
     playCamera.distance = PLAY_PROFILE.rideCameraDistance;
     bikeView.attachRider(core.state.avatar);
-    hud.message('骑上共享自行车（W 加速 · Shift 冲刺 · S/空格 刹车 · R 下车）');
+    window.dispatchEvent(new CustomEvent('pb:ride-change', { detail: { riding: true } }));
+    hud.message('骑上共享自行车（W 加速 · Shift 冲刺 · S/空格 刹车 · A/D 转向 · R 下车 · 鼠标自由看）');
     saveNow();
+  }
+
+  // 存档骑乘恢复（R0-5）：重建唯一车控制器/接骑姿和相机，视角与航向按档分离
+  function restoreRide(bikePos, heading, viewYaw) {
+    const walk = window.__walk;
+    const controller = walk?.controller;
+    if (!walk?.zonePhysics?.physics || !controller) return false;
+    controller.clearKeys();
+    rideCtl = new RideController({
+      RAPIER, physics: walk.zonePhysics.physics,
+      cruise: PLAY_PROFILE.bikeCruise, max: PLAY_PROFILE.bikeMax,
+      excludeColliderHandles: [controller?.collider?.handle].filter(Boolean),
+      groundColliders: groundCollidersNow,
+    });
+    rideCtl.teleport(bikePos, heading, viewYaw ?? heading);
+    gameState.setRiding(true);
+    gameState.setVehicleView(viewYaw ?? heading);
+    playCamera.shoulderHeight = PLAY_PROFILE.rideShoulderHeight;
+    playCamera.distance = PLAY_PROFILE.rideCameraDistance;
+    bikeView.attachRider(core.state.avatar);
+    window.dispatchEvent(new CustomEvent('pb:ride-change', { detail: { riding: true, restored: true } }));
+    refreshHeldModel();
+    hud.message('恢复骑乘（车与位置按上次存档还原）');
+    return true;
   }
 
   function dismount(controller) {
     const feet = rideCtl.feetPosition();
-    const yaw = rideCtl.yaw;
-    // 安全下车点：左/右/后方逐一真实地面 + 胶囊重叠检查（排除玩家/车）
-    const world = worldNow();
-    if (!world) { hud.setHint('物理世界还没就绪，稍等再下'); return; }
-    const shape = new RAPIER.Capsule(0.2, 0.28);
-    const exclude = playerHandles();
+    const heading = rideCtl.heading;
+    const viewYaw = rideCtl.yaw;
+    // 安全下车点：左/右/后方逐一真实支撑面 + 胶囊墙重叠检查（排除玩家/车，R0-5）
+    if (!worldNow()) { hud.setHint('物理世界还没就绪，稍等再下'); return; }
+    const shape = capsuleShape();
     const probe = (x, y, z) => {
-      const gy = groundYAt(x, z);
+      const gy = supportAt(x, z);
       if (gy === null || Math.abs(gy - y) > 1.2) return false;
-      const overlapping = world.intersectionWithShape(
-        { x, y: gy + 0.48, z }, { x: 0, y: 0, z: 0, w: 1 }, shape,
-        undefined, undefined, undefined, undefined, (c) => !exclude.has(c.handle));
-      return !overlapping;
+      return !wallOverlap(x, gy + 0.48, z, shape);
     };
-    const spot = pickDismountSpot(feet, yaw, probe);
+    const spot = pickDismountSpot(feet, heading, probe);
     if (!spot) { hud.setHint('周围没有安全下车点，请骑到开阔处再按 R'); return; }
     const bikeFinal = [feet[0], feet[1], feet[2]];
-    const bikeYaw = yaw;
     const speedAtStop = rideCtl.speed;
     rideCtl.dispose();
     rideCtl = null;
-    // 车停稳在骑乘结束点；玩家落到安全点
-    gameState.setRiding(false, bikeFinal, bikeYaw);
-    controller.teleport(spot.feet, yaw, 0);
+    // 车停稳在骑乘结束点（保存物理航向）；玩家落到安全点（视角沿用自由视角）
+    gameState.setRiding(false, bikeFinal, heading);
+    gameState.setVehicleView(viewYaw);
+    controller.teleport(spot.feet, viewYaw, 0);
     bikeView.detachRider(core.state.avatar);
-    bikeView.placeAt(bikeFinal, bikeYaw);
+    bikeView.placeAt(bikeFinal, heading);
     playCamera.shoulderHeight = PLAY_PROFILE.shoulderHeight;
     playCamera.distance = PLAY_PROFILE.cameraDistance;
     gameState.takeBackFromBasket();
     refreshHeldModel();
+    window.dispatchEvent(new CustomEvent('pb:ride-change', { detail: { riding: false } }));
     hud.message(speedAtStop > 1 ? '已停车下车' : '下车了');
     saveNow();
   }
@@ -509,6 +643,13 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     const controller = walk?.controller;
     if (!controller || !stalls.length) return;
     const feet = controller.feetPosition();
+    // E 资格加真实地面/高度门槛（R0-4）：脚点必须踩在已登记支撑面上，
+    // 且与顾客点地面高差合理——不能在空中/屋顶/墙顶远程取餐
+    const feetGy = supportAt(feet[0], feet[2]);
+    if (feetGy === null || Math.abs(feetGy - feet[1]) > 0.35) {
+      hud.setHint('脚下没有可靠地面，站稳后再取餐');
+      return;
+    }
     const result = canTakeNow({ state: gameState, feet, stalls, losCheck: losToStall });
     if (!result.ok) {
       const hint = takeFailHint(result);
@@ -538,6 +679,8 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   }
 
   // ---- 每帧玩法编排（walk.js play tick → play.onFrame → 这里） ----
+  // R0-1：物理步进只在 walk.js 骑乘分支发生（唯一固定步权威）；本函数只做
+  // 状态同步、视觉（轮/踏板/骑姿）与玩法计时，绝不再 step 任何控制器。
   function frameGame({ feet, yaw, paused, dt }) {
     const walk = window.__walk;
     const controller = walk?.controller;
@@ -545,13 +688,13 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     if (core.state.entered && !pendingSave) ensureBikePlaced();
     applyPendingSaveWhenReady();
 
-    // 骑乘物理与视觉（唯一活动位移权威：rideCtl 存在时 walk.js 不 step 步行控制器）
+    // 骑乘视觉/状态同步（不 step）：轮/踏板按真实校正位移（R0-3）
     if (rideCtl) {
-      if (!paused) rideCtl.step(dt);
       const pos = rideCtl.feetPosition();
-      gameState.moveVehicle(pos, rideCtl.yaw);
-      bikeView.updateRide(pos, rideCtl.yaw, rideCtl.speed, paused ? 0 : dt);
-      applyRiderPose(core.state.avatar, bikeView, rideCtl.yaw);
+      gameState.moveVehicle(pos, rideCtl.heading);
+      gameState.setVehicleView(rideCtl.yaw);
+      bikeView.updateRide(pos, rideCtl.heading, rideCtl, paused ? 0 : dt);
+      applyRiderPose(core.state.avatar, bikeView, rideCtl.heading);
     }
 
     // 吃：未暂停帧推进；暂停冻结（不调 eatTick 即不跳时）
@@ -560,6 +703,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       if (r && r.done) {
         core.state.avatar?.setEatingPose(false);
         core.state.avatar?.showSatisfaction();
+        refreshHeldModel();                    // 吃完手持模型实际摘除（R0-4）
         const food = FOODS.find(f => f.id === r.foodId);
         hud.message(r.complete
           ? '三味集齐！这条街你吃遍了 🎉'
@@ -574,14 +718,19 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       const bike = bikePlaced && !gameState.vehicle.riding ? {
         dist: Math.hypot(feet[0] - gameState.vehicle.pos[0], feet[2] - gameState.vehicle.pos[2]),
       } : null;
+      const step = rideCtl?.lastStep;
+      if (step?.unsupported) hud.setHint('车辆悬在边缘！原地按 R 下车或后退');
       hud.setHint(computeHint({
         state: gameState, feet, stalls,
         bike, riding: gameState.vehicle.riding,
-        blockedRatio: rideCtl?.lastStep?.blockedRatio ?? 0,
+        blockedRatio: step?.blockedRatio ?? 0,
+        turnBlocked: step?.turnBlocked ?? false,
+        aheadBlocked: step?.aheadBlocked ?? false,
       }));
       renderGoalDistance(feet);
       minimap.update({
         feet, yaw: rideCtl ? rideCtl.yaw : yaw,
+        facingYaw: rideCtl ? rideCtl.heading : core.state.avatar?.facingYaw,
         stalls: stalls.map(t => ({ x: t.customerPoint.x, z: t.customerPoint.z, done: gameState.tasted.has(t.foodId) })),
         bike: bikePlaced ? { x: gameState.vehicle.pos[0], z: gameState.vehicle.pos[2], gone: gameState.vehicle.riding } : null,
         targetIndex: gameState.complete ? -1 : stalls.findIndex(t => t.foodId === gameState.goal()?.id),
@@ -618,7 +767,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     placedMarker.visible = true;
     const gy = t.groundY ?? t.tray.y;
     placedMarker.position.set(t.customerPoint.x, gy + 2.1 + Math.sin(performance.now() / 400) * 0.08, t.customerPoint.z);
-    t.groundY = t.groundY ?? groundYAt(t.customerPoint.x, t.customerPoint.z) ?? gy;
+    t.groundY = t.groundY ?? supportAt(t.customerPoint.x, t.customerPoint.z) ?? gy;
   }
 
   function applyPendingSaveWhenReady() {
@@ -692,8 +841,10 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       tasted: [...gameState.tasted],
       riding: gameState.vehicle.riding,
       vehicle: gameState.vehicle.placed ? {
-        pos: gameState.vehicle.pos, yaw: gameState.vehicle.yaw, riding: gameState.vehicle.riding,
+        pos: gameState.vehicle.pos, yaw: gameState.vehicle.yaw, viewYaw: gameState.vehicle.viewYaw, riding: gameState.vehicle.riding,
       } : null,
+      heading: rideCtl ? rideCtl.heading : null,
+      viewYaw: rideCtl ? rideCtl.yaw : null,
       bikePlaced,
       stallsReady: stalls.length,
       foodsReady: !!foods,
@@ -702,5 +853,5 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     };
   }
 
-  return { profile, core, bind, status, playCamera, gameState };
+  return { profile, core, bind, status, playCamera, gameState, ride: () => rideCtl };
 }

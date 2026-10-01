@@ -62,6 +62,10 @@ export class PlayAvatar {
     this.height = box.max.y - box.min.y;
     this.walkCycleSpeed = walkCycleSpeed; // model-space m/s at walk timeScale 1
     this.facingYaw = null;                // last movement-derived facing (null = not yet)
+    this.restBoneQuaternions = new Map();
+    this.model.traverse(o => {
+      if (o.isBone) this.restBoneQuaternions.set(o.name, o.quaternion.clone());
+    });
 
     this.mixer = new THREE.AnimationMixer(this.model);
     this.actions = {
@@ -71,6 +75,10 @@ export class PlayAvatar {
     };
     this.current = 'idle';
     this.eatingPose = false;
+    this.holdingPose = false;
+    this.snackArm = this.model.getObjectByName('armR');
+    this._snackBase = null;
+    this._snackElapsed = 0;
     this.actions.idle.setEffectiveWeight(1).play();
     this.actions.walk.setEffectiveWeight(0).play();
     // 表情 morph（eyeL/eyeR/mouth，extras.targetNames 提供名字；吃完成给 happy/content）
@@ -116,11 +124,46 @@ export class PlayAvatar {
   }
 
   // 吃相：eat 剪辑循环；吃的过程中移动已被外层禁止，walk 权重归零
-  setEatingPose(on) {
+  setEatingPose(on, elapsed = 0) {
     if (!this.actions.eat) return false;
     this.eatingPose = Boolean(on);
-    if (this.eatingPose) this.actions.eat.reset().setEffectiveWeight(1).play();
+    if (this.eatingPose) {
+      this._snackElapsed = Number.isFinite(elapsed) && elapsed >= 0 ? elapsed : 0;
+      this.actions.eat.reset();
+      this.actions.eat.time = this._snackElapsed % Math.max(0.001, this.actions.eat.getClip().duration);
+      this.actions.eat.setEffectiveWeight(1).play();
+    } else this._restoreSnackArm();
     return true;
+  }
+
+  setHoldingPose(on) {
+    this.holdingPose = Boolean(on);
+    if (!this.holdingPose && !this.eatingPose) this._restoreSnackArm();
+  }
+  _restoreSnackArm() {
+    if (!this.snackArm || !this._snackBase) return;
+    this.snackArm.quaternion.copy(this._snackBase.q);
+    this.snackArm.position.copy(this._snackBase.p);
+    this._snackBase = null;
+  }
+  _applySnackArm(dt) {
+    if (!this.snackArm || (!this.holdingPose && !this.eatingPose)) return;
+    const arm = this.snackArm;
+    this._snackBase = { q: arm.quaternion.clone(), p: arm.position.clone() };
+    if (this.eatingPose) this._snackElapsed += dt;
+    const t = this.eatingPose ? Math.min(1, this._snackElapsed / 0.4) : 0;
+    const lift = t * t * (3 - 2 * t);
+    const bite = this.eatingPose ? Math.sin(this._snackElapsed * Math.PI * 6) * 0.05 * lift : 0;
+    arm.rotateX(-0.55 - 0.6 * lift + bite);
+    arm.rotateZ(0.35 * lift);
+    arm.position.y += 0.018 * lift;
+    arm.position.z += 0.045 * lift;
+    const rest = this.restBoneQuaternions.get('armR');
+    const angle = rest ? rest.angleTo(arm.quaternion) : 0;
+    if (angle > 1.35) {
+      const target = arm.quaternion.clone();
+      arm.quaternion.copy(rest).slerp(target, 1.35 / angle);
+    }
   }
 
   update({ feet, yaw, moving, facingYaw = null, speed = null, paused, dt }) {
@@ -134,6 +177,7 @@ export class PlayAvatar {
     else if (this.facingYaw === null) this.facingYaw = Number.isFinite(yaw) ? yaw : 0;
     this.root.rotation.y = avatarYawFor(this.facingYaw);
     if (!paused) {
+      this._restoreSnackArm();
       this.mixer.update(dt);
       this._tickExpression(dt);
       const want = this.eatingPose && this.actions.eat ? 'eat' : (moving ? 'walk' : 'idle');
@@ -142,6 +186,7 @@ export class PlayAvatar {
         this.actions[want].setEffectiveWeight(1);
         this.current = want;
       }
+      this._applySnackArm(dt);
     }
     const ts = speed === null || !Number.isFinite(speed) || speed <= 0
       ? 1
@@ -154,6 +199,10 @@ export class PlayAvatar {
     this.disposed = true;
     this.mixer.stopAllAction();
     this.mixer.uncacheRoot(this.model);
+    // Food meshes belong to the catalog even when parented to this skeleton.
+    const sharedAttachments = [];
+    this.model.traverse(o => { if (o.userData?.sharedPlayFood) sharedAttachments.push(o); });
+    for (const o of sharedAttachments) o.removeFromParent();
     // free every GPU resource owned by THIS glTF scene (the GLB is exclusively
     // ours); shared/static resources live elsewhere and are never touched here
     const geometries = new Set(), materials = new Set(), textures = new Set(), skeletons = new Set();

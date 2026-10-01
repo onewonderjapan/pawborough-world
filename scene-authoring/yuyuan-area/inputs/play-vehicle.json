@@ -8,9 +8,27 @@
     "forward": "-Z",
     "up": "Y",
     "riderHeightM": 0.964,
-    "parts": ["frame", "front-wheel", "rear-wheel", "steering", "crank", "saddle", "handlebar", "basket", "seat-anchor", "anchor-mount", "anchor-dismount"],
-    "triangles": 748,
-    "bytes": 82844,
-    "sha256": "681908c05fa185464428e013b8b9146498eb404779b217d1552b677d0f7462d7"
-  }
+    "parts": [
+      "frame",
+      "front-wheel",
+      "rear-wheel",
+      "steering",
+      "crank",
+      "saddle",
+      "handlebar",
+      "handle-L",
+      "handle-R",
+      "pedal-L",
+      "pedal-R",
+      "basket",
+      "basket-socket",
+      "seat",
+      "anchor-mount",
+      "anchor-dismount"
+    ],
+    "triangles": 708,
+    "bytes": 79592,
+    "sha256": "4b6b774cc196b98820ed87ad57a7f5f25321f49ccf8952d7ece4ea24672ada8a"
+  },
+  "r1Note": "R0-3 修正后重生成：轮轴沿 GLB X（直立轮）、辐条 YZ 直径线、座高拟合灰猫 hips 0.218m、加 seat/handle/pedal/basket socket；派生命令见 scripts/build-play-bicycle.py。"
 }

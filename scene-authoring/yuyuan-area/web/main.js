@@ -681,7 +681,12 @@ const walk = installWalkMode({
 });
 walkModeOf = () => walk.mode();
 play?.bind({ walk });
-window.__play = { status: () => (play ? play.status() : { enabled: false }) };   // 只读检查钩子（play 页由 install.js 提供 fields）
+window.__play = {
+  status: () => (play ? play.status() : { enabled: false }),   // 只读检查钩子（play 页由 install.js 提供 fields）
+  // 小吃工单只读复验钩子：玩法状态本体与骑乘控制器（只读访问，不替代任何输入链）
+  state: () => (play ? play.gameState : null),
+  ride: () => (play ? play.ride() : null),
+};   // 只读检查钩子（play 页由 install.js 提供 fields）
 
 // wave11-infocard：点击地标弹信息卡。逻辑全在 web/infocard.js（白名单字段 + Esc/空白关闭 + 步行不弹 + 标签高亮）。
 // wave12-debt D3 注释更正：本文件已无遗留 #info 调试面板点选监听（R2 合并为一次拾取时删除，

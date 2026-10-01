@@ -44,7 +44,7 @@ export function installPlayMap({ getSize = () => 210 } = {}) {
   let markers = { stalls: [], bike: null };
   let targetIdx = -1;
   let onPickTarget = null;
-  let feet = [0, 0, 0], yaw = 0;
+  let feet = [0, 0, 0], yaw = 0, facingYaw = 0, drawnView = null;
 
   const bCan = document.createElement('canvas');
   const bctx = bCan.getContext('2d');
@@ -127,8 +127,9 @@ export function installPlayMap({ getSize = () => 210 } = {}) {
   }
 
   // ---- 每帧：底图缓存 + 动态标记 ----
-  function update({ feet: f, yaw: y, stalls = [], bike = null, targetIndex = -1, complete = false }) {
+  function update({ feet: f, yaw: y, facingYaw: fy = null, stalls = [], bike = null, targetIndex = -1, complete = false }) {
     feet = f ?? feet; yaw = y ?? yaw; markers = { stalls, bike }; targetIdx = targetIndex;
+    facingYaw = fy ?? yaw;
     ctx.clearRect(0, 0, size, size);
     let view;
     if (mode === 'full') {
@@ -139,11 +140,11 @@ export function installPlayMap({ getSize = () => 210 } = {}) {
       ctx.drawImage(bCan, 0, 0);
     } else {
       view = nearBaseFor(feet);
-      // 底图平移：缓存中心≠当前视窗中心，按像素差贴
-      const [bx, by] = MC.project(view, view.cx, view.cz);
-      const [nx, ny] = MC.project(MC.makeNearView(feet, size), view.cx, view.cz);
-      ctx.drawImage(bCan, nx - bx, ny - by);
+      // The paper window and all markers share the cached projection. The
+      // window recenters after 20m; no translation can desync streets/markers.
+      ctx.drawImage(bCan, 0, 0);
     }
+    drawnView = view;
 
     // 摊位章（朱红未尝 / 浅绿已尝；当前目标加白圈+外环）
     markers.stalls.forEach((st, i) => {
@@ -168,8 +169,8 @@ export function installPlayMap({ getSize = () => 210 } = {}) {
       ctx.strokeStyle = C.bike; ctx.lineWidth = 1.5; ctx.stroke();
     }
     // 玩家箭头 + 视角须
-    if (!complete) {
-      const arrow = MC.playerArrow(view, feet, yaw);
+    {
+      const arrow = MC.playerArrow(view, feet, facingYaw);
       ctx.beginPath();
       arrow.forEach(([px, py], i) => i ? ctx.lineTo(px, py) : ctx.moveTo(px, py));
       ctx.closePath();
@@ -191,7 +192,7 @@ export function installPlayMap({ getSize = () => 210 } = {}) {
     const rect = canvas.getBoundingClientRect();
     const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
     const my = (e.clientY - rect.top) * (canvas.height / rect.height);
-    const view = mode === 'full' ? fullView : MC.makeNearView(feet, size);
+    const view = drawnView ?? (mode === 'full' ? fullView : MC.makeNearView(feet, size));
     let best = -1, bestD = 16;
     markers.stalls.forEach((st, i) => {
       const [px, py] = MC.project(view, st.x, st.z);

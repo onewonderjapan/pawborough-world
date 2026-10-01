@@ -29,7 +29,7 @@ export function canTakeNow({ state, feet, stalls, losCheck = null }) {
 }
 
 // 底部动态提示（每帧推给 HUD；返回 null = 不显示）
-export function computeHint({ state, feet, stalls, bike, riding = false, blockedRatio = 0 } = {}) {
+export function computeHint({ state, feet, stalls, bike, riding = false, blockedRatio = 0, turnBlocked = false, aheadBlocked = false } = {}) {
   if (!state.playing) return null;
   if (state.complete) {
     if (riding) return '三味集齐！骑车再兜一圈吧 · R 下车';
@@ -37,10 +37,12 @@ export function computeHint({ state, feet, stalls, bike, riding = false, blocked
     return '三味集齐！这条街你吃遍了';
   }
   if (riding) {
+    if (aheadBlocked) return '前方没有路面或台阶太高 · 已停稳，可倒车绕行或 R 下车';
+    if (turnBlocked) return '旁边太近转不过去 · 直行拉开距离再转向';
     if (blockedRatio > 0.6) return '前方过不去（窄路/台阶）· 减速或 R 下车推行';
-    return 'W 加速 · A/D 转向 · S/空格 刹车 · R 下车';
+    return 'W 加速 · A/D 转向 · S/空格 刹车 · R 下车 · 鼠标自由看';
   }
-  if (state.busyEating) return `正在品尝${eatingLabel(state)}…（P 暂停可冻结）`;
+  if (state.busyEating) return `正在品尝${eatingLabel(state)}… · P 暂停`;
   if (state.heldItem) return `手上有${heldLabel(state)} · F 开吃`;
   const near = nearestStall(stalls, feet);
   if (near && near.dist <= TAKE_RADIUS_M) return `E 取一份${near.stall.labelZh}（免费试吃）`;

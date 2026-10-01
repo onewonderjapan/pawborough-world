@@ -39,7 +39,7 @@ export class PlayGameState {
     this.eating = null;            // { foodId, elapsed } | null
     this.tasted = new Set();       // 已吃完的 foodId
     this.goalIndex = 0;            // 0..foods.length；=== foods.length = 三味完成
-    this.vehicle = { placed: false, pos: null, yaw: 0, riding: false };
+    this.vehicle = { placed: false, pos: null, yaw: 0, viewYaw: 0, riding: false };
     this._listeners = [];
   }
 
@@ -130,7 +130,12 @@ export class PlayGameState {
   // ---- 车 ----
   placeVehicle(pos, yaw = 0) {
     if (!Array.isArray(pos) || pos.length !== 3 || !pos.every(finite)) return false;
-    this.vehicle = { placed: true, pos: [...pos], yaw, riding: false };
+    this.vehicle = { placed: true, pos: [...pos], yaw, viewYaw: this.vehicle?.viewYaw ?? yaw, riding: false };
+    return true;
+  }
+  setVehicleView(viewYaw) {
+    if (!finite(viewYaw)) return false;
+    this.vehicle.viewYaw = viewYaw;
     return true;
   }
   setRiding(on, pos = null, yaw = null) {
@@ -169,6 +174,7 @@ export class PlayGameState {
         placed: this.vehicle.placed,
         pos: this.vehicle.pos ? this.vehicle.pos.map(v => +v.toFixed(3)) : null,
         yaw: +this.vehicle.yaw.toFixed(4),
+        viewYaw: finite(this.vehicle.viewYaw) ? +this.vehicle.viewYaw.toFixed(4) : +this.vehicle.yaw.toFixed(4),
         riding: this.vehicle.riding,
       },
     };
@@ -194,7 +200,7 @@ export class PlayGameState {
     this.eating = null;
     this.tasted = new Set();
     this.goalIndex = 0;
-    this.vehicle = { placed: false, pos: null, yaw: 0, riding: false };
+    this.vehicle = { placed: false, pos: null, yaw: 0, viewYaw: 0, riding: false };
     if (storage) storage.removeItem(STORAGE_KEY);
     this._emit({ type: 'reset' });
   }
@@ -230,6 +236,7 @@ export function validateSave(data, foods = FOODS) {
   if (typeof veh.placed !== 'boolean' || typeof veh.riding !== 'boolean') return bad('vehicle-flags');
   if (veh.placed && (!Array.isArray(veh.pos) || veh.pos.length !== 3 || !veh.pos.every(finite))) return bad('vehicle-pos');
   if (!finite(veh.yaw)) return bad('vehicle-yaw');
+  if (veh.viewYaw !== undefined && !finite(veh.viewYaw)) return bad('vehicle-viewYaw');
   // 手里与车篮不重复持同一份（不复制食物）
   if (data.heldItem && data.heldItem === data.basketItem) return bad('duplicated-food');
   return { ok: true, value: data };

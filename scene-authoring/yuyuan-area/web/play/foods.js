@@ -57,16 +57,20 @@ function makeFoodEntry(food, protoScene) {
   const size = new THREE.Vector3();
   box.getSize(size);
   // 手持姿态：socket_grip 对齐 armR 掌心（骨骼原点）；按食物 gripYaw 让朝向顺爪
-  const gripPos = grip?.position ?? new THREE.Vector3();
+  protoScene.updateMatrixWorld(true);
+  const gripPos = grip
+    ? protoScene.worldToLocal(grip.getWorldPosition(new THREE.Vector3()))
+    : new THREE.Vector3();
   return {
     id: food.id,
     proto: protoScene,
     gripOffset: gripPos.clone(),
     restOffset: rest?.position?.clone() ?? new THREE.Vector3(),
     lodShown, sizeM: [size.x, size.y, size.z],
-    // 掌心持握：食物原点 = 骨骼原点 - grip 偏移（随持握旋转），再微调让它停在爪前
+    // armR is the upper-arm joint. The palm is down the limb, in its local
+    // frame; the food grip is aligned separately inside the rotated holder.
     hand: {
-      pos: new THREE.Vector3(-gripPos.x, -gripPos.y + 0.02, -gripPos.z + 0.055),
+      pos: new THREE.Vector3(-0.015, -0.135, 0.04),
       rot: new THREE.Euler(-Math.PI / 2 + 0.35, Math.PI, 0),
     },
   };
@@ -78,15 +82,26 @@ export class FoodCatalog {
     this.disposed = false;
   }
   has(id) { return this.byId.has(id); }
-  // 手持实例：挂到指定骨骼（armR），随动画运动
-  attachToHand(id, bone) {
+  // One catalog-owned wrapper can move between the palm and the basket.
+  makeHandInstance(id) {
     const entry = this.byId.get(id);
-    if (!entry || !bone?.isBone) return null;
+    if (!entry) return null;
     const holder = new THREE.Group();
     holder.name = `play-held-${id}`;
+    holder.userData.sharedPlayFood = true;
+    holder.userData.playFoodId = id;
     const inst = entry.proto.clone();
     inst.name = `${id}-held`;
+    inst.position.sub(entry.gripOffset);
     holder.add(inst);
+    return holder;
+  }
+  // 手持实例：挂到指定骨骼（armR），随动画运动。
+  attachToHand(id, bone, reusable = null) {
+    const entry = this.byId.get(id);
+    if (!entry || !bone?.isBone) return null;
+    const holder = reusable?.userData?.playFoodId === id
+      ? reusable : this.makeHandInstance(id);
     holder.position.copy(entry.hand.pos);
     holder.rotation.copy(entry.hand.rot);
     holder.scale.setScalar(1);        // 真实尺寸
