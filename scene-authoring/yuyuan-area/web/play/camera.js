@@ -7,8 +7,8 @@
 //     (opposite the WalkController forward), looking at the pivot
 //   - the desired placement is ray-checked: a wall between pivot and camera
 //     retracts the camera to (hit - margin), never through geometry, and the
-//     distance floors at minDistance so the camera can never collapse onto
-//     the player
+//     comfort floor applies only when unobstructed; collision clearance
+//     always wins, and an obstructed camera may retract to the pivot
 //   - the camera is a pure follower: it NEVER writes the player's physics
 //     position, and illegal dt (NaN/negative) is a no-op instead of NaN soup
 import * as THREE from 'three';
@@ -18,12 +18,13 @@ import * as THREE from 'three';
 // R1 (review R0-1): occlusion safety beats the comfort floor — with a wall on
 // the line the applied distance is (hitT - margin), however small; the
 // minDistance floor only applies on a CLEAR line. A wall closer than the
-// margin clamps to the tiny minSafe floor (>= 0), never through the wall,
-// never negative; near-player hiding is handled by the caller.
+// margin retracts to the pivot (zero clearance), never through the wall,
+// never negative; near-player hiding is handled by the caller. minSafe stays
+// accepted for compatibility, but cannot override collision clearance.
 export function computeCameraPlacement({ pivot, dir, distance, hitT = null, margin = 0.12, minDistance = 0.5, minSafe = 0.02 }) {
   let d;
   if (hitT !== null && Number.isFinite(hitT)) {
-    d = Math.max(minSafe, Math.min(distance, hitT - margin));
+    d = Math.max(0, Math.min(distance, hitT - margin));
   } else {
     d = Math.max(minDistance, distance);
   }

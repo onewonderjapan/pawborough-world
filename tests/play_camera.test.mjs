@@ -50,11 +50,18 @@ function stubController(feet, yaw, pitch = 0) {
     close(near.applied, 0.16, 1e-9) && near.position.distanceTo(pivot) < 0.28,
     `applied=${near.applied.toFixed(4)}`);
 
-  // R0-1: hit closer than the margin itself — shrink to a tiny but finite distance
+  // Hit closer than the margin leaves zero safe clearance — stay at the pivot.
   const tight = computeCameraPlacement({ pivot, dir, distance: 2.4, hitT: 0.05, margin: 0.12, minDistance: 0.5, minSafe: 0.02 });
-  check('hit<margin: shrinks to the tiny safe floor (never negative, never through the wall)',
-    close(tight.applied, 0.02, 1e-9) && tight.applied < 0.05 && Number.isFinite(tight.applied),
+  check('hit<margin: zero safe clearance stays at the pivot (never negative or beyond the hit)',
+    close(tight.applied, 0, 1e-9) && tight.applied < 0.05 && Number.isFinite(tight.applied),
     `applied=${tight.applied.toFixed(4)}`);
+
+  for (const hitT of [0.005, 0]) {
+    const closeHit = computeCameraPlacement({ pivot, dir, distance: 2.4, hitT, margin: 0.12 });
+    check('even a sub-2cm/zero hit cannot be crossed by a safety floor',
+      closeHit.applied <= hitT && closeHit.applied >= 0,
+      `hit=${hitT} applied=${closeHit.applied}`);
+  }
 
   const nan = computeCameraPlacement({ pivot, dir, distance: 2.4, hitT: NaN });
   check('NaN hitT is treated as no wall', close(nan.position.distanceTo(pivot), 2.4, 1e-9));
