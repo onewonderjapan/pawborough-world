@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "projectId": "pawborough-world",
-  "phase": "world-v1",
+  "phase": "world-v1-plus-play-phase1",
   "workspaceRoot": ".",
   "convenienceLink": ".",
   "convenienceLinkNote": "以当前仓库根为工作入口；旧机器便利软链不作为定位依据。历史目录说明见迁移记录。",
@@ -55,13 +55,13 @@
     "assetManifest": "docs/MIGRATION-ASSETS.json"
   },
   "capabilities": {
-    "characters": "deferred_G1",
+    "characters": "gray-cat_play_phase1_candidate_pending_world_art_review",
     "unity": "optional_W2_import_once_nonblocking",
-    "gameplayExpansion": "deferred_G3"
+    "gameplayExpansion": "play_phase1_movement_camera_pause_complete; snacks_bicycle_save_next"
   },
   "managementAuthority": "W2",
   "implementation": {
-    "executor": "Codex migration; subsequent construction as owner directs",
+    "executor": "ZCode GLM-5.3-Flash construction; Codex dispatch and primary review",
     "executionMode": "explicit_task",
     "executionPolicy": "AGENTS.md"
   },
@@ -96,5 +96,15 @@
     "docsIndex": "docs/README.md",
     "handoff": "CLAUDE_HANDOFF.md",
     "note": "源码与标签已推送；可移交版本，未部署公开游戏服务。"
+  },
+  "development": {
+    "stage": "play-phase1",
+    "codeHead": "2e75e7e3afe788bb2a5d0e930be43be549d55a6a",
+    "entry": "/?play=1&at=center",
+    "assetManifest": "scene-authoring/yuyuan-area/inputs/play-character.json",
+    "technicalStatus": "passed",
+    "artStatus": "pending_world_review",
+    "next": "One stall, three snacks, pickup/held food/eat/basic save; bicycle afterwards",
+    "note": "Local playable development; original v1.0 tag/release remains unchanged."
   }
 }

@@ -9,6 +9,12 @@ Pawborough 是上海老城街景的 Three.js / Rapier 浏览与取景工程。�
 - [文档与目录导航](docs/README.md)
 - [开发接手入口](CLAUDE_HANDOFF.md)
 
+## 当前可玩开发版本
+
+2026-10-01 已接入阶段1直立灰猫：第三人称走动、按移动方向转身、暂停、取景往返和近墙镜头回缩。使用 `OUT_DIR=out-zone npm run area:serve` 后打开 `/?play=1&at=center`；角色资产需按[模块使用说明](scene-authoring/yuyuan-area/README.md)恢复，公开仓库不包含模型实体。
+
+这是本地可玩开发版本，角色美术仍待世界内审阅；小吃、骑车和保存为后续阶段，v1.0 封版记录不变。
+
 ## 恢复与启动
 
 仓库公开源码与资产清单，运行所需资产仍在私有存储。克隆代码后，先按[资产恢复指南](docs/ASSET-RESTORE.md)及[迁入资产清单](docs/MIGRATION-ASSETS.json)恢复匹配资产；只有已获授权的 AWS 身份可以下载。历史 LFS 对象与迁入资产是两套清单，不要用占位文件替代。
