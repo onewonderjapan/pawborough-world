@@ -1,0 +1,55 @@
+/* Play mode (?play=1) HUD. Scoped under #play-hud / body.play-mode so the
+   default viewer page is visually untouched. */
+body.play-mode #bar,
+body.play-mode #hud { display: none !important; }
+
+#play-hud {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 420px;
+  font: 13px/1.6 system-ui, sans-serif;
+  color: #332f25;
+}
+#play-hint {
+  background: #faf5e8e8;
+  border-left: 3px solid #956344;
+  padding: 6px 10px;
+  border-radius: 0 4px 4px 0;
+}
+#play-actions { display: flex; gap: 6px; }
+#play-actions button {
+  font: inherit;
+  background: #faf5e9;
+  border: 1px solid #c3b498;
+  border-radius: 4px;
+  padding: 5px 11px;
+  cursor: pointer;
+}
+#play-actions button.active { background: #704731; color: #fff6e4; border-color: #704731; }
+#play-msg {
+  background: #faf5e8d9;
+  border-left: 3px solid #b9a77f;
+  padding: 4px 10px;
+  border-radius: 0 4px 4px 0;
+}
+#play-asset-error {
+  background: #ffecec;
+  border: 1px solid #b03030;
+  border-left: 3px solid #b03030;
+  padding: 10px 12px;
+  border-radius: 0 4px 4px 0;
+}
+#play-asset-error p { margin: 0 0 8px; }
+#play-asset-error button {
+  font: inherit;
+  background: #fff6e4;
+  border: 1px solid #b03030;
+  border-radius: 4px;
+  padding: 4px 10px;
+  cursor: pointer;
+}

@@ -20,6 +20,8 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .startup-error h2{margin:0 0 12px;font-size:22px}.startup-error input{width:100%;padding:8px;font:inherit}.startup-error .actions{display:flex;gap:10px;margin:14px 0}.startup-error pre{font-size:12px;white-space:pre-wrap}
 #loadmsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:18px;color:#7d715d}
 </style></head><body>
+<!-- play 模式样式（?play=1 时由 web/play/hud.js 加 body.play-mode；默认页不受影响） -->
+<link rel="stylesheet" href="/web/play/play.css">
 <div id="app"><div id="labels"></div></div>
 <div id="bar">
   <button data-zone="core" class="active">核心三区</button><button data-zone="all">全域含外围</button>

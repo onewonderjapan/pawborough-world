@@ -17,6 +17,7 @@ import { installSharedTextures } from './shared-textures.js';   // wave9-sharedt
 import { patchOuterKitProc } from './outer-kit-proc.js';   // wave7-outerkit 方案 C（OUTER_KIT_MODE=proc，对比测量用）：extras outerKit=proc 的网格换运行时 shader；无此类网格时不改任何东西
 import { installLighting } from './lighting.js';   // wave11-lighting：?light=day|dusk|night 预设 + 太阳阴影（?shadow=0 关）+ 渐变天空 + 夜间自发光 / 点光池；共享预设来源 lighting/presets.json（读取失败 / 超时 3 s 回退旧灯光）
 import { installInfocard } from './infocard.js';   // wave11-infocard：点击地标弹信息卡（逻辑全在 web/infocard.js，本文件只挂这一钩子）
+import { installPlayMode } from './play/install.js';   // play（?play=1）：直立灰猫游玩入口；默认 viewer 页不启用（见 web/play/install.js）
 
 const app = document.getElementById('app');
 let renderer;
@@ -664,9 +665,14 @@ addEventListener('resize', () => {
 });
 
 // WP4 步行模式挂钩（注入「步行/轨道」「回到锚点」控件；物理仅在进入步行时懒构建）
+// play（?play=1）：直立灰猫游玩——play 档换胶囊/速度/第三人称相机，默认 viewer 不变
+const play = params.get('play') === '1'
+  ? installPlayMode({ scene, camera, renderer, controls })
+  : null;
 const walk = installWalkMode({
   scene, camera, renderer, controls, getRoots: () => allRoots, hud,
   extraCollisionZones: () => (fangbangReady ? ['fangbang'] : []),
+  play: play ? play.profile : null,
   onFeet: (f) => {
     const box = window.__fangbangAabb;
     if (!box || fangbangReady || !f) return;
@@ -674,6 +680,8 @@ const walk = installWalkMode({
   },
 });
 walkModeOf = () => walk.mode();
+play?.bind({ walk });
+window.__play = { status: () => (play ? play.status() : { enabled: false }) };   // 只读检查钩子（play 页由 install.js 提供 fields）
 
 // wave11-infocard：点击地标弹信息卡。逻辑全在 web/infocard.js（白名单字段 + Esc/空白关闭 + 步行不弹 + 标签高亮）。
 // wave12-debt D3 注释更正：本文件已无遗留 #info 调试面板点选监听（R2 合并为一次拾取时删除，
