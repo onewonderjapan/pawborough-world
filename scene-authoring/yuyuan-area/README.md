@@ -58,7 +58,9 @@ blender -b --factory-startup -t 4 -P scripts/build-play-bicycle.py -- \
 ```bash
 PB_BUILD_OUT=/home/baibai/outbox/pawborough-feedback-assets-rebuild
 python3 -X utf8 scripts/build-play-closed-facades.py --label-only --label-png "$PB_BUILD_OUT/plaque-label.png"
-blender -b --factory-startup -t 4 -P scripts/build-play-closed-facades.py --   --area "$PWD" --out "$PB_BUILD_OUT" --label-png "$PB_BUILD_OUT/plaque-label.png"   --manifest "$PWD/inputs/play-closed-facades.json"
+blender -b --factory-startup -t 4 -P scripts/build-play-closed-facades.py -- \
+  --area "$PWD" --out "$PB_BUILD_OUT" --label-png "$PB_BUILD_OUT/plaque-label.png" \
+  --manifest "$PWD/inputs/play-closed-facades.json"
 ```
 
 脚本复制GLB到忽略目录并写来源清单。独立Esc浏览器回归为仓库根的 `tests/play_esc_camera.test.mjs`，需实际GPU/显示环境；它不放进纯Node的test:play。补修范围和实机证据见 [反馈验收记录](../../docs/PLAY-FEEDBACK-20261001.md)。
