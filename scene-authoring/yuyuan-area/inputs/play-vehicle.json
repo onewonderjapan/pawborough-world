@@ -27,8 +27,21 @@
       "anchor-dismount"
     ],
     "triangles": 708,
-    "bytes": 79592,
-    "sha256": "4b6b774cc196b98820ed87ad57a7f5f25321f49ccf8952d7ece4ea24672ada8a"
+    "bytes": 79544,
+    "sha256": "11c39d6f301b9e428438c46ebf51c7a09136edc983e8ff978d32c5302bbc88db",
+    "fitM": {
+      "seatTopM": 0.32,
+      "bottomBracketM": [
+        0,
+        0.16,
+        0.05
+      ],
+      "crankRadiusM": 0.025,
+      "gripXM": 0.27,
+      "gripYM": 0.39,
+      "gripZM": -0.14,
+      "pedalXM": 0.135
+    }
   },
-  "r1Note": "R0-3 修正后重生成：轮轴沿 GLB X（直立轮）、辐条 YZ 直径线、座高拟合灰猫 hips 0.218m、加 seat/handle/pedal/basket socket；派生命令见 scripts/build-play-bicycle.py。"
+  "r1Note": "主控真实蒙皮接触校准：座高.32、五通GLB[0,.16,.05]、握把GLB[±.27,.39,-.14]、踏板x±.135、曲柄.025。原角色GLB不改；骑乘临时权重、实际皮肤簇解算，下车恢复原网格。复建见scripts/build-play-bicycle.py。"
 }

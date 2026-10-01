@@ -696,7 +696,16 @@ installInfocard({ raycaster: ray, camera, scene, renderer, getLayout: () => layo
 // M4：?perf=1 时挂性能采样（60s 轨道 + 60s 巡游步行帧时采样在 perf.tick 内完成，
 // 顺序必须在 walk.tick 之前 —— CruiseDriver 要先于控制器步进设置输入）
 const perf = setupPerf({ renderer, camera, controls, walk, hud });
-renderer.setAnimationLoop(() => { perf?.tick(); controls.update(); walk?.tick(); lighting.tick(); renderer.render(scene, camera); drawLabels(); });
+renderer.setAnimationLoop(() => {
+  perf?.tick();
+  // 工单 D（镜头所有权）：步行/游玩模式（含 Esc 解锁后的暂停）镜头归 walk/play
+  // 所有——orbit 的 update() 一律不跑（damping 也会把镜头拉回旧 target）；
+  // 只有明确回到取景（orbit 模式）才恢复 orbit update。
+  if (walkModeOf() !== 'walk') controls.update();
+  walk?.tick();
+  lighting.tick();
+  renderer.render(scene, camera); drawLabels();
+});
 window.__renderOnce = () => { lighting.tick(); renderer.render(scene, camera); };   // wave11-lighting：测量钩子（scripts/lighting-perf.mjs 强制渲染计时）
 
 // playwright 钩子

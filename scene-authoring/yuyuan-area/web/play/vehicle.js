@@ -8,16 +8,18 @@
 //   - 支撑面（R0-2）：车体/前后轴点只查已登记 groundColliders（地面射线过滤
 //     器共用，墙顶/柜台顶不算 ground）；前方无支持面/高台阶/陡坡 → 立即停
 //     （speed=0、不位移、不飘下边缘），unsupported/aheadBlocked 供 HUD 提示。
-//   - 方向性 kinematic cuboid（与可见整车+骑手尺寸匹配）；W 加速（巡航 5.5 /
-//     Shift 最高 7，平滑逼近），S/空格真刹车，无倒挡；不做摔车惩罚。
-//   - lastStep.corrected 是真实校正位移：轮/踏板角度按它累计，碰墙静止时
-//     轮子不按 desired 空转（R0-3）。
+//   - 方向性 kinematic cuboid（与可见整车+骑手尺寸匹配）；W/S 有符号速度：
+//     按住方向先制动到 0 再进入该方向（前进巡航 5.5 / Shift 7，倒车上限 1.6，
+//     Shift 不加速倒车），空格是纯刹车（任何方向只减速到 0，不换向）；不做摔车惩罚。
+//   - lastStep.corrected 是真实校正位移：unsigned distance 保留原口径（轮距总量），
+//     signedTravel 把校正位移投影到车头推进轴——倒车为负、碰墙静止不空转
+//     （R0-3；轮/曲柄视觉按 signedTravel 反转）。
 export const FIXED_HZ = 60;
 // 车体碰撞盒半尺寸（米）：与派生车 GLB 实际尺寸一致（build-play-bicycle.py）。
 export const BIKE_HALF_EXTENTS = [0.34, 0.68, 0.82];
 const AXLE_HALF_M = 0.36;      // 前后轮轴距半长（与 GLB wheelbaseHalfM 一致）
-const AHEAD_PROBE_M = 0.5;     // 前方支撑探针距离
-const MAX_STEP_DROP_M = 0.45;  // 前方可接受的最大下坎/台阶高差
+const AHEAD_PROBE_M = 0.5;     // 行进方向支撑探针距离（前后各一）
+const MAX_STEP_DROP_M = 0.45;  // 行进方向可接受的最大下坎/台阶高差
 const MIN_GROUND_NORMAL_Y = 0.7; // 法线过陡 = 墙/坡，不算可骑支撑
 
 function yawQuat(yaw) {
@@ -30,6 +32,7 @@ export class RideController {
     RAPIER, physics,
     halfExtents = BIKE_HALF_EXTENTS,
     cruise = 5.5, max = 7.0,
+    reverseMax = 1.6,
     accel = 3.5, brakeDecel = 9, coastDecel = 1.8,
     steerRate = 1.9,
     wheelRadius = 0.17,
@@ -42,6 +45,7 @@ export class RideController {
     this.halfExtents = halfExtents;
     this.cruise = cruise;
     this.max = max;
+    this.reverseMax = reverseMax;
     this.accel = accel;
     this.brakeDecel = brakeDecel;
     this.coastDecel = coastDecel;
@@ -59,8 +63,9 @@ export class RideController {
     this.yaw = 0;             // 视角 yaw（相机跟随；look 只改这个）
     this.pitch = 0;           // 视角 pitch（同上）
     this.heading = 0;         // 物理航向（只由 A/D 转向改）
-    this.speed = 0;           // m/s，前向标量（无倒挡）
-    this.distance = 0;        // 累计真实校正水平位移（轮/踏板唯一来源）
+    this.speed = 0;           // m/s，有符号：>0 前进，<0 倒车
+    this.distance = 0;        // 累计真实校正水平位移（unsigned，原口径不变）
+    this.signedTravel = 0;    // 校正位移在车头推进轴上的投影和（倒车为负；轮/曲柄唯一来源）
     this.input = { forward: 0, right: 0, brake: false, sprint: false };
     this.paused = false;
     this.accumulator = 0;
@@ -154,22 +159,36 @@ export class RideController {
   _axles() {
     const t = this.body.translation();
     const sy = Math.sin(this.heading), cy = Math.cos(this.heading);
-    // forward = (-sin, -cos)；前轴在前，后轴在后
+    // forward = (-sin, -cos)；前轴在前，后轴在后；behind = 后轴再向车尾探
     return {
       t,
       front: [t.x - sy * AXLE_HALF_M, t.z - cy * AXLE_HALF_M],
       rear: [t.x + sy * AXLE_HALF_M, t.z + cy * AXLE_HALF_M],
       ahead: [t.x - sy * (AXLE_HALF_M + AHEAD_PROBE_M), t.z - cy * (AXLE_HALF_M + AHEAD_PROBE_M)],
+      behind: [t.x + sy * (AXLE_HALF_M + AHEAD_PROBE_M), t.z + cy * (AXLE_HALF_M + AHEAD_PROBE_M)],
     };
   }
 
   fixedStep(dt) {
     const { forward, right, brake, sprint } = this.input;
-    // 速度：加速 → 巡航/极速；S/空格真刹车；松键滑行缓降；无倒挡
-    const target = forward > 0 ? (sprint ? this.max : this.cruise) : 0;
-    if (brake || forward < 0) this.speed = Math.max(0, this.speed - this.brakeDecel * dt);
-    else if (this.speed < target) this.speed = Math.min(target, this.speed + this.accel * dt);
-    else if (this.speed > target) this.speed = Math.max(target, this.speed - this.coastDecel * dt);
+    // 有符号速度（工单 A）：W/S 相对当前行进方向先真刹车到 0，继续按住才进入
+    // 该方向（前进巡航/极速、倒车低速上限）；Shift 只加速前进；空格纯刹车。
+    if (brake) {
+      this.speed = toward(this.speed, 0, this.brakeDecel * dt);
+    } else if (forward > 0) {
+      if (this.speed < 0) this.speed = toward(this.speed, 0, this.brakeDecel * dt);
+      else {
+        const target = sprint ? this.max : this.cruise;
+        this.speed = this.speed < target
+          ? toward(this.speed, target, this.accel * dt)
+          : toward(this.speed, target, this.coastDecel * dt);
+      }
+    } else if (forward < 0) {
+      if (this.speed > 0) this.speed = toward(this.speed, 0, this.brakeDecel * dt);
+      else this.speed = toward(this.speed, -this.reverseMax, this.accel * dt);   // Shift 不加速倒车
+    } else {
+      this.speed = toward(this.speed, 0, this.coastDecel * dt);
+    }
 
     const step = {
       desired: [0, 0], corrected: [0, 0], desiredSpeed: this.speed,
@@ -192,9 +211,11 @@ export class RideController {
     }
     const groundY = (sf && sf.ny >= MIN_GROUND_NORMAL_Y ? sf : sr).y;
 
-    // ---- 转向（R0-2）：候选旋转姿态先做真实碰撞检查 ----
-    const steerFactor = Math.min(1, this.speed / 2.5);
-    const dHeading = -right * this.steerRate * steerFactor * dt;
+    // ---- 转向（R0-2）：候选旋转姿态先做真实碰撞检查；随 |速度| 生效，
+    // 倒车时车尾摆向与前进相反（行进符号取反，真实倒车方向感） ----
+    const steerFactor = Math.min(1, Math.abs(this.speed) / 2.5);
+    const travelSign = this.speed < 0 ? -1 : 1;
+    const dHeading = -right * this.steerRate * steerFactor * travelSign * dt;
     if (dHeading !== 0 && this._rotationBlocked(this.heading + dHeading)) {
       step.turnBlocked = true;      // 保留安全 heading，HUD 提示
     } else if (dHeading !== 0) {
@@ -202,9 +223,10 @@ export class RideController {
       this.body.setRotation(yawQuat(this.heading), true);
     }
 
-    // ---- 前方支撑探针：无支持面/高坎/陡坡 → 立即停 ----
-    if (this.speed > 0.05) {
-      const sa = this.supportAt(ax.ahead[0], ax.ahead[1], fromY);
+    // ---- 行进方向支撑探针：无支持面/高坎/陡坡 → 立即停（倒车探车尾） ----
+    if (Math.abs(this.speed) > 0.05) {
+      const probe = this.speed > 0 ? ax.ahead : ax.behind;
+      const sa = this.supportAt(probe[0], probe[1], fromY);
       if (!sa || sa.ny < MIN_GROUND_NORMAL_Y || sa.y < groundY - MAX_STEP_DROP_M) {
         this.speed = 0;
         step.aheadBlocked = true;
@@ -213,7 +235,7 @@ export class RideController {
       }
     }
 
-    // ---- 位移（唯一活动位移权威；真实校正位移是轮转唯一来源） ----
+    // ---- 位移（唯一活动位移权威；signed speed 直接给出倒车方向） ----
     const sy = Math.sin(this.heading), cy = Math.cos(this.heading);
     const dx = -sy * this.speed * dt;
     const dz = -cy * this.speed * dt;
@@ -232,7 +254,10 @@ export class RideController {
     this.body.setNextKinematicTranslation({ x: t.x + m.x, y: t.y + m.y, z: t.z + m.z });
     this.physics.world.step();
     const horiz = Math.hypot(m.x, m.z);
-    this.distance += horiz;                      // 轮/踏板按真实位移累计
+    this.distance += horiz;                      // unsigned 口径不变
+    // signedTravel：校正位移投影到车头推进轴（前进 +，倒车 -；撞墙 ≈0 不空转）
+    const sy = Math.sin(this.heading), cy = Math.cos(this.heading);
+    this.signedTravel += m.x * -sy + m.z * -cy;
     const desiredH = Math.hypot(dx, dz);
     step.corrected = [m.x, m.z];
     step.blockedRatio = desiredH > 1e-6 ? 1 - Math.min(1, horiz / desiredH) : 0;
@@ -285,6 +310,13 @@ export class RideController {
 function clamp(v) {
   if (!Number.isFinite(v)) return 0;
   return Math.max(-1, Math.min(1, v));
+}
+
+// 把 v 向 target 最多移动 maxDelta（用于有符号速度的加速/制动/滑行）
+function toward(v, target, maxDelta) {
+  if (v < target) return Math.min(target, v + maxDelta);
+  if (v > target) return Math.max(target, v - maxDelta);
+  return target;
 }
 
 // ---- 安全下车点（纯决策，探针由调用方注入；节点测试用真实世界探针驱动） ----

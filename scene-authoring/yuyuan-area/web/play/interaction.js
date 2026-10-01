@@ -40,7 +40,7 @@ export function computeHint({ state, feet, stalls, bike, riding = false, blocked
     if (aheadBlocked) return '前方没有路面或台阶太高 · 已停稳，可倒车绕行或 R 下车';
     if (turnBlocked) return '旁边太近转不过去 · 直行拉开距离再转向';
     if (blockedRatio > 0.6) return '前方过不去（窄路/台阶）· 减速或 R 下车推行';
-    return 'W 加速 · A/D 转向 · S/空格 刹车 · R 下车 · 鼠标自由看';
+    return 'W 加速 · S 刹停后倒车 · Space 刹车 · A/D 转向 · R 下车 · 鼠标自由看';
   }
   if (state.busyEating) return `正在品尝${eatingLabel(state)}… · P 暂停`;
   if (state.heldItem) return `手上有${heldLabel(state)} · F 开吃`;

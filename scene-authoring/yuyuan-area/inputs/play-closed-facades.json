@@ -1,0 +1,5215 @@
+{
+ "labelZh": "已关闭的商铺门面（play 叠加层）",
+ "note": "play 模式专用：由 scripts/build-play-closed-facades.py 依据 out-zone/layout.json 的 facadeBay（与导出 zone GLB 节点一一对应）生成实心闭门 overlay；复用 buildFacadeBay 公式（pos+dir*.16、rotY、doorW=min(1.9,w*.4)、doorX=0 或 -w*.22），overlay 背面 localZ>=.17。只封实际导出的展示门面：真庙门/园门/月洞门/真通路/小吃摊不封；不新增碰撞与室内。GLB 不入库（resources/ gitignore），SHA256 由浏览器加载时校验；复建命令见 measurements.json。",
+ "facades": {
+  "id": "play-closed-facades",
+  "path": "resources/play-facades/play-closed-facades.glb",
+  "up": "Y",
+  "root": "play-closed-facades",
+  "sha256": "d42269ee03f5d90ed9286f4c70e8ecf26cc9229f57df811779d0fe338011c033",
+  "bytes": 4313784,
+  "triangles": 74484,
+  "drawCalls": 5,
+  "closedCount": 172,
+  "parentBuildings": 15,
+  "plaqueCount": 15,
+  "plaqueText": "暂不开放",
+  "excludedOnPassage": [
+   {
+    "id": "facade-553893868-1qygmo3",
+    "parentBuilding": "bld-553893868",
+    "reason": "onRealPassage",
+    "roadId": "road-428199197",
+    "distanceM": -0.084
+   },
+   {
+    "id": "facade-553893884-1uuzgwk",
+    "parentBuilding": "bld-553893884",
+    "reason": "onRealPassage",
+    "roadId": "road-428199190",
+    "distanceM": -0.161
+   },
+   {
+    "id": "facade-553893884-ot0d1n",
+    "parentBuilding": "bld-553893884",
+    "reason": "onRealPassage",
+    "roadId": "road-428199190",
+    "distanceM": 0.062
+   }
+  ],
+  "labelPng": {
+   "sha256": "c08e9c20bd782bdb17d77fd746928965b8f827bbe3444d8787c5f356cb6c327c",
+   "provenance": "artifacts/facades/plaque-label.png"
+  },
+  "source": {
+   "layout": "out-zone/layout.json",
+   "layoutSha256": "f53fb27d42f5f18ca0939a53aa2adb47a64383b4c9b36181c532a2c275df9829",
+   "zoneGlbScan": {
+    "zone-bazaar.glb": 175
+   },
+   "generator": "scripts/build-play-closed-facades.py"
+  }
+ },
+ "targets": [
+  {
+   "id": "facade-165791764-13q38tf",
+   "parentBuilding": "bld-165791764",
+   "zone": "bazaar",
+   "trade": "酒楼",
+   "doorVariant": "center",
+   "position": [
+    -133.4675,
+    -15.8525
+   ],
+   "dir": [
+    -0.9825702456970679,
+    0.18589166810485067
+   ],
+   "rotY": -1.3838170568759856,
+   "width": 4.424620040184241,
+   "height": 4.2,
+   "doorW": 1.7698480160736965,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -133.84579,
+    1.25,
+    -15.78093
+   ],
+   "doorNormalGlb": [
+    -0.98257,
+    0.185892
+   ]
+  },
+  {
+   "id": "facade-165791764-17i4x96",
+   "parentBuilding": "bld-165791764",
+   "zone": "bazaar",
+   "trade": "银楼",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -121.0475,
+    -40.1475
+   ],
+   "dir": [
+    -0.2047758353520722,
+    -0.9788088972091851
+   ],
+   "rotY": -2.93535796960489,
+   "width": 4.7969527181326255,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0553295979891777,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -120.09337,
+    1.25,
+    -40.74045
+   ],
+   "doorNormalGlb": [
+    -0.204776,
+    -0.978809
+   ]
+  },
+  {
+   "id": "facade-165791764-1g4589r",
+   "parentBuilding": "bld-165791764",
+   "zone": "bazaar",
+   "trade": "酒楼",
+   "doorVariant": "center",
+   "position": [
+    -134.3425,
+    -20.4775
+   ],
+   "dir": [
+    -0.9825702456970679,
+    0.18589166810485067
+   ],
+   "rotY": -1.3838170568759856,
+   "width": 4.424620040184241,
+   "height": 4.2,
+   "doorW": 1.7698480160736965,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -134.72079,
+    1.25,
+    -20.40593
+   ],
+   "doorNormalGlb": [
+    -0.98257,
+    0.185892
+   ]
+  },
+  {
+   "id": "facade-165791764-3agebo",
+   "parentBuilding": "bld-165791764",
+   "zone": "bazaar",
+   "trade": "银楼",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -114.285,
+    16.25
+   ],
+   "dir": [
+    0.4000865613513704,
+    -0.9164773556537206
+   ],
+   "rotY": 2.729981359398203,
+   "width": 6.061688230188018,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.333571410641364,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -112.90878,
+    1.25,
+    16.4307
+   ],
+   "doorNormalGlb": [
+    0.400087,
+    -0.916477
+   ]
+  },
+  {
+   "id": "facade-165791764-4kmk92",
+   "parentBuilding": "bld-165791764",
+   "zone": "bazaar",
+   "trade": "银楼",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -108.675,
+    17.715
+   ],
+   "dir": [
+    0.06577065315738811,
+    -0.9978347664735131
+   ],
+   "rotY": 3.075774489673344,
+   "width": 5.002230998264676,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.1004908196182288,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -107.55157,
+    1.25,
+    17.40321
+   ],
+   "doorNormalGlb": [
+    0.065771,
+    -0.997835
+   ]
+  },
+  {
+   "id": "facade-165791764-cozb6b",
+   "parentBuilding": "bld-165791764",
+   "zone": "bazaar",
+   "trade": "银楼",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -103.845,
+    17.493333333333332
+   ],
+   "dir": [
+    -0.17941612204901086,
+    -0.983773274260332
+   ],
+   "rotY": -2.9611997431558144,
+   "width": 4.156445501199846,
+   "height": 4.2,
+   "doorW": 1.6625782004799383,
+   "doorX": -0.9144180102639661,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -103.0145,
+    1.25,
+    16.95052
+   ],
+   "doorNormalGlb": [
+    -0.179416,
+    -0.983773
+   ]
+  },
+  {
+   "id": "facade-165791764-fys46n",
+   "parentBuilding": "bld-165791764",
+   "zone": "bazaar",
+   "trade": "银楼",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -126.04249999999999,
+    -39.1025
+   ],
+   "dir": [
+    -0.2047758353520722,
+    -0.9788088972091851
+   ],
+   "rotY": -2.93535796960489,
+   "width": 4.7969527181326255,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0553295979891777,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -125.08837,
+    1.25,
+    -39.69545
+   ],
+   "doorNormalGlb": [
+    -0.204776,
+    -0.978809
+   ]
+  },
+  {
+   "id": "facade-165791764-l5ezbm",
+   "parentBuilding": "bld-165791764",
+   "zone": "bazaar",
+   "trade": "酒楼",
+   "doorVariant": "center",
+   "position": [
+    -133.765,
+    -32.56
+   ],
+   "dir": [
+    -0.18482500980096633,
+    -0.9827714463455239
+   ],
+   "rotY": -2.9556988521199274,
+   "width": 5.289327461974726,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -133.83616,
+    1.25,
+    -32.93837
+   ],
+   "doorNormalGlb": [
+    -0.184825,
+    -0.982771
+   ]
+  },
+  {
+   "id": "facade-165791764-pjck9y",
+   "parentBuilding": "bld-165791764",
+   "zone": "bazaar",
+   "trade": "酒楼",
+   "doorVariant": "center",
+   "position": [
+    -136.0925,
+    -29.7275
+   ],
+   "dir": [
+    -0.9825702456970679,
+    0.18589166810485067
+   ],
+   "rotY": -1.3838170568759856,
+   "width": 4.424620040184241,
+   "height": 4.2,
+   "doorW": 1.7698480160736965,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -136.47079,
+    1.25,
+    -29.65593
+   ],
+   "doorNormalGlb": [
+    -0.98257,
+    0.185892
+   ]
+  },
+  {
+   "id": "facade-165791764-t17wp1",
+   "parentBuilding": "bld-165791764",
+   "zone": "bazaar",
+   "trade": "酒楼",
+   "doorVariant": "center",
+   "position": [
+    -135.2175,
+    -25.1025
+   ],
+   "dir": [
+    -0.9825702456970679,
+    0.18589166810485067
+   ],
+   "rotY": -1.3838170568759856,
+   "width": 4.424620040184241,
+   "height": 4.2,
+   "doorW": 1.7698480160736965,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -135.59579,
+    1.25,
+    -25.03093
+   ],
+   "doorNormalGlb": [
+    -0.98257,
+    0.185892
+   ]
+  },
+  {
+   "id": "facade-165791764-wcn76c",
+   "parentBuilding": "bld-165791764",
+   "zone": "bazaar",
+   "trade": "银楼",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -95.145,
+    15.906666666666666
+   ],
+   "dir": [
+    -0.17941612204901086,
+    -0.983773274260332
+   ],
+   "rotY": -2.9611997431558144,
+   "width": 4.156445501199846,
+   "height": 4.2,
+   "doorW": 1.6625782004799383,
+   "doorX": -0.9144180102639661,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -94.3145,
+    1.25,
+    15.36385
+   ],
+   "doorNormalGlb": [
+    -0.179416,
+    -0.983773
+   ]
+  },
+  {
+   "id": "facade-165791764-yo50ja",
+   "parentBuilding": "bld-165791764",
+   "zone": "bazaar",
+   "trade": "银楼",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -99.495,
+    16.7
+   ],
+   "dir": [
+    -0.17941612204901086,
+    -0.983773274260332
+   ],
+   "rotY": -2.9611997431558144,
+   "width": 4.156445501199846,
+   "height": 4.2,
+   "doorW": 1.6625782004799383,
+   "doorX": -0.9144180102639661,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -98.6645,
+    1.25,
+    16.15719
+   ],
+   "doorNormalGlb": [
+    -0.179416,
+    -0.983773
+   ]
+  },
+  {
+   "id": "facade-389701812-10hcdkk",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "酒楼",
+   "doorVariant": "center",
+   "position": [
+    -185.215,
+    -71.455
+   ],
+   "dir": [
+    0.9825544812881329,
+    -0.1859749749310588
+   ],
+   "rotY": 1.7578603819948786,
+   "width": 3.925617771623835,
+   "height": 4.2,
+   "doorW": 1.570247108649534,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -184.83672,
+    1.25,
+    -71.5266
+   ],
+   "doorNormalGlb": [
+    0.982554,
+    -0.185975
+   ]
+  },
+  {
+   "id": "facade-389701812-10r0r1l",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -138.96249999999998,
+    -43.2175
+   ],
+   "dir": [
+    -0.9777274395081649,
+    0.20987866502531397
+   ],
+   "rotY": -1.3593454676667533,
+   "width": 4.59074770598429,
+   "height": 4.2,
+   "doorW": 1.8362990823937162,
+   "doorX": -1.0099644953165439,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -139.5509,
+    1.25,
+    -44.12417
+   ],
+   "doorNormalGlb": [
+    -0.977727,
+    0.209879
+   ]
+  },
+  {
+   "id": "facade-389701812-14fxaf3",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -176.505,
+    -33.63
+   ],
+   "dir": [
+    0.1859017738273171,
+    0.9825683337497992
+   ],
+   "rotY": 0.18698955491618513,
+   "width": 4.854176382621464,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.067918804176722,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -177.48273,
+    1.25,
+    -33.05318
+   ],
+   "doorNormalGlb": [
+    0.185902,
+    0.982568
+   ]
+  },
+  {
+   "id": "facade-389701812-1c0uvtg",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -160.508125,
+    -88.715625
+   ],
+   "dir": [
+    -0.1867788945952468,
+    -0.9824019770612117
+   ],
+   "rotY": -2.9537103414600794,
+   "width": 4.699272912509979,
+   "height": 4.2,
+   "doorW": 1.8797091650039919,
+   "doorX": -1.0338400407521955,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -159.56439,
+    1.25,
+    -89.28695
+   ],
+   "doorNormalGlb": [
+    -0.186779,
+    -0.982402
+   ]
+  },
+  {
+   "id": "facade-389701812-1cknofn",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -139.9875,
+    -47.9925
+   ],
+   "dir": [
+    -0.9777274395081649,
+    0.20987866502531397
+   ],
+   "rotY": -1.3593454676667533,
+   "width": 4.59074770598429,
+   "height": 4.2,
+   "doorW": 1.8362990823937162,
+   "doorX": -1.0099644953165439,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -140.5759,
+    1.25,
+    -48.89917
+   ],
+   "doorNormalGlb": [
+    -0.977727,
+    0.209879
+   ]
+  },
+  {
+   "id": "facade-389701812-1ddkzhp",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -170.330625,
+    -86.848125
+   ],
+   "dir": [
+    -0.1867788945952468,
+    -0.9824019770612117
+   ],
+   "rotY": -2.9537103414600794,
+   "width": 4.699272912509979,
+   "height": 4.2,
+   "doorW": 1.8797091650039919,
+   "doorX": -1.0338400407521955,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -169.38689,
+    1.25,
+    -87.41945
+   ],
+   "doorNormalGlb": [
+    -0.186779,
+    -0.982402
+   ]
+  },
+  {
+   "id": "facade-389701812-1jvtjp4",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -180.15312500000002,
+    -84.980625
+   ],
+   "dir": [
+    -0.1867788945952468,
+    -0.9824019770612117
+   ],
+   "rotY": -2.9537103414600794,
+   "width": 4.699272912509979,
+   "height": 4.2,
+   "doorW": 1.8797091650039919,
+   "doorX": -1.0338400407521955,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -179.20939,
+    1.25,
+    -85.55195
+   ],
+   "doorNormalGlb": [
+    -0.186779,
+    -0.982402
+   ]
+  },
+  {
+   "id": "facade-389701812-1k40oxb",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -150.685625,
+    -90.583125
+   ],
+   "dir": [
+    -0.1867788945952468,
+    -0.9824019770612117
+   ],
+   "rotY": -2.9537103414600794,
+   "width": 4.699272912509979,
+   "height": 4.2,
+   "doorW": 1.8797091650039919,
+   "doorX": -1.0338400407521955,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -149.74189,
+    1.25,
+    -91.15445
+   ],
+   "doorNormalGlb": [
+    -0.186779,
+    -0.982402
+   ]
+  },
+  {
+   "id": "facade-389701812-1l5l1oq",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -175.241875,
+    -85.91437499999999
+   ],
+   "dir": [
+    -0.1867788945952468,
+    -0.9824019770612117
+   ],
+   "rotY": -2.9537103414600794,
+   "width": 4.699272912509979,
+   "height": 4.2,
+   "doorW": 1.8797091650039919,
+   "doorX": -1.0338400407521955,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -174.29814,
+    1.25,
+    -86.4857
+   ],
+   "doorNormalGlb": [
+    -0.186779,
+    -0.982402
+   ]
+  },
+  {
+   "id": "facade-389701812-1pvgnil",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -181.579,
+    -32.67
+   ],
+   "dir": [
+    0.1859017738273171,
+    0.9825683337497992
+   ],
+   "rotY": 0.18698955491618513,
+   "width": 4.854176382621464,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.067918804176722,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -182.55673,
+    1.25,
+    -32.09318
+   ],
+   "doorNormalGlb": [
+    0.185902,
+    0.982568
+   ]
+  },
+  {
+   "id": "facade-389701812-1u1c218",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "酒楼",
+   "doorVariant": "center",
+   "position": [
+    -185.99166666666667,
+    -75.55833333333334
+   ],
+   "dir": [
+    0.9825544812881329,
+    -0.1859749749310588
+   ],
+   "rotY": 1.7578603819948786,
+   "width": 3.925617771623835,
+   "height": 4.2,
+   "doorW": 1.570247108649534,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -185.61338,
+    1.25,
+    -75.62993
+   ],
+   "doorNormalGlb": [
+    0.982554,
+    -0.185975
+   ]
+  },
+  {
+   "id": "facade-389701812-1xmdxu3",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -185.064375,
+    -84.046875
+   ],
+   "dir": [
+    -0.1867788945952468,
+    -0.9824019770612117
+   ],
+   "rotY": -2.9537103414600794,
+   "width": 4.699272912509979,
+   "height": 4.2,
+   "doorW": 1.8797091650039919,
+   "doorX": -1.0338400407521955,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -184.12064,
+    1.25,
+    -84.6182
+   ],
+   "doorNormalGlb": [
+    -0.186779,
+    -0.982402
+   ]
+  },
+  {
+   "id": "facade-389701812-1yz8jua",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -155.596875,
+    -89.64937499999999
+   ],
+   "dir": [
+    -0.1867788945952468,
+    -0.9824019770612117
+   ],
+   "rotY": -2.9537103414600794,
+   "width": 4.699272912509979,
+   "height": 4.2,
+   "doorW": 1.8797091650039919,
+   "doorX": -1.0338400407521955,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -154.65314,
+    1.25,
+    -90.2207
+   ],
+   "doorNormalGlb": [
+    -0.186779,
+    -0.982402
+   ]
+  },
+  {
+   "id": "facade-389701812-7fgcgf",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "酒楼",
+   "doorVariant": "center",
+   "position": [
+    -184.43833333333333,
+    -67.35166666666666
+   ],
+   "dir": [
+    0.9825544812881329,
+    -0.1859749749310588
+   ],
+   "rotY": 1.7578603819948786,
+   "width": 3.925617771623835,
+   "height": 4.2,
+   "doorW": 1.570247108649534,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -184.06005,
+    1.25,
+    -67.42327
+   ],
+   "doorNormalGlb": [
+    0.982554,
+    -0.185975
+   ]
+  },
+  {
+   "id": "facade-389701812-8ad7p9",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -186.653,
+    -31.71
+   ],
+   "dir": [
+    0.1859017738273171,
+    0.9825683337497992
+   ],
+   "rotY": 0.18698955491618513,
+   "width": 4.854176382621464,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.067918804176722,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -187.63073,
+    1.25,
+    -31.13318
+   ],
+   "doorNormalGlb": [
+    0.185902,
+    0.982568
+   ]
+  },
+  {
+   "id": "facade-389701812-8blr02",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -151.135,
+    -38.43
+   ],
+   "dir": [
+    0.1859017738273171,
+    0.9825683337497992
+   ],
+   "rotY": 0.18698955491618513,
+   "width": 4.854176382621464,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.067918804176722,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -152.11273,
+    1.25,
+    -37.85318
+   ],
+   "doorNormalGlb": [
+    0.185902,
+    0.982568
+   ]
+  },
+  {
+   "id": "facade-389701812-dnyv4e",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -156.209,
+    -37.47
+   ],
+   "dir": [
+    0.1859017738273171,
+    0.9825683337497992
+   ],
+   "rotY": 0.18698955491618513,
+   "width": 4.854176382621464,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.067918804176722,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -157.18673,
+    1.25,
+    -36.89318
+   ],
+   "doorNormalGlb": [
+    0.185902,
+    0.982568
+   ]
+  },
+  {
+   "id": "facade-389701812-iu6hmg",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -171.43099999999998,
+    -34.59
+   ],
+   "dir": [
+    0.1859017738273171,
+    0.9825683337497992
+   ],
+   "rotY": 0.18698955491618513,
+   "width": 4.854176382621464,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.067918804176722,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -172.40873,
+    1.25,
+    -34.01318
+   ],
+   "doorNormalGlb": [
+    0.185902,
+    0.982568
+   ]
+  },
+  {
+   "id": "facade-389701812-jrvflu",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -161.283,
+    -36.51
+   ],
+   "dir": [
+    0.1859017738273171,
+    0.9825683337497992
+   ],
+   "rotY": 0.18698955491618513,
+   "width": 4.854176382621464,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.067918804176722,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -162.26073,
+    1.25,
+    -35.93318
+   ],
+   "doorNormalGlb": [
+    0.185902,
+    0.982568
+   ]
+  },
+  {
+   "id": "facade-389701812-mpj7a",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -165.419375,
+    -87.781875
+   ],
+   "dir": [
+    -0.1867788945952468,
+    -0.9824019770612117
+   ],
+   "rotY": -2.9537103414600794,
+   "width": 4.699272912509979,
+   "height": 4.2,
+   "doorW": 1.8797091650039919,
+   "doorX": -1.0338400407521955,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -164.47564,
+    1.25,
+    -88.3532
+   ],
+   "doorNormalGlb": [
+    -0.186779,
+    -0.982402
+   ]
+  },
+  {
+   "id": "facade-389701812-rxbbwr",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -147.665,
+    -88.07
+   ],
+   "dir": [
+    -0.9824969292783643,
+    0.18627878021552824
+   ],
+   "rotY": -1.3834230631127191,
+   "width": 5.7022061169340335,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.2544853457254874,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -148.27695,
+    1.25,
+    -89.23081
+   ],
+   "doorNormalGlb": [
+    -0.982497,
+    0.186279
+   ]
+  },
+  {
+   "id": "facade-389701812-vf8fqy",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -166.357,
+    -35.55
+   ],
+   "dir": [
+    0.1859017738273171,
+    0.9825683337497992
+   ],
+   "rotY": 0.18698955491618513,
+   "width": 4.854176382621464,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.067918804176722,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -167.33473,
+    1.25,
+    -34.97318
+   ],
+   "doorNormalGlb": [
+    0.185902,
+    0.982568
+   ]
+  },
+  {
+   "id": "facade-389701812-y8jier",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -140.987,
+    -40.35
+   ],
+   "dir": [
+    0.1859017738273171,
+    0.9825683337497992
+   ],
+   "rotY": 0.18698955491618513,
+   "width": 4.854176382621464,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.067918804176722,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -141.96473,
+    1.25,
+    -39.77318
+   ],
+   "doorNormalGlb": [
+    0.185902,
+    0.982568
+   ]
+  },
+  {
+   "id": "facade-389701812-yecrq6",
+   "parentBuilding": "bld-389701812",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -146.06099999999998,
+    -39.39
+   ],
+   "dir": [
+    0.1859017738273171,
+    0.9825683337497992
+   ],
+   "rotY": 0.18698955491618513,
+   "width": 4.854176382621464,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.067918804176722,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -147.03873,
+    1.25,
+    -38.81318
+   ],
+   "doorNormalGlb": [
+    0.185902,
+    0.982568
+   ]
+  },
+  {
+   "id": "facade-389701901-14fzzkv",
+   "parentBuilding": "bld-389701901",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -226.231,
+    -171.477
+   ],
+   "dir": [
+    -0.9957386892328377,
+    0.09221964413762422
+   ],
+   "rotY": -1.4784454667818587,
+   "width": 4.831508559445999,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0629318830781198,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -226.71238,
+    1.25,
+    -172.4999
+   ],
+   "doorNormalGlb": [
+    -0.995739,
+    0.09222
+   ]
+  },
+  {
+   "id": "facade-389701901-14iet2x",
+   "parentBuilding": "bld-389701901",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -227.179,
+    -181.713
+   ],
+   "dir": [
+    -0.9957386892328377,
+    0.09221964413762422
+   ],
+   "rotY": -1.4784454667818587,
+   "width": 4.831508559445999,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0629318830781198,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -227.66038,
+    1.25,
+    -182.7359
+   ],
+   "doorNormalGlb": [
+    -0.995739,
+    0.09222
+   ]
+  },
+  {
+   "id": "facade-389701901-15ea3u8",
+   "parentBuilding": "bld-389701901",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -255.72333333333336,
+    -160.8025
+   ],
+   "dir": [
+    -0.9876854329735189,
+    0.15645282193655943
+   ],
+   "rotY": -1.4136981083707,
+   "width": 5.086943506774091,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.1191275714903,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -256.27868,
+    1.25,
+    -161.84761
+   ],
+   "doorNormalGlb": [
+    -0.987685,
+    0.156453
+   ]
+  },
+  {
+   "id": "facade-389701901-1qwnhf5",
+   "parentBuilding": "bld-389701901",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -259.11,
+    -182.18249999999998
+   ],
+   "dir": [
+    -0.9876854329735189,
+    0.15645282193655943
+   ],
+   "rotY": -1.4136981083707,
+   "width": 5.086943506774091,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.1191275714903,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -259.66535,
+    1.25,
+    -183.22761
+   ],
+   "doorNormalGlb": [
+    -0.987685,
+    0.156453
+   ]
+  },
+  {
+   "id": "facade-389701901-1xgz0v4",
+   "parentBuilding": "bld-389701901",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -225.757,
+    -166.359
+   ],
+   "dir": [
+    -0.9957386892328377,
+    0.09221964413762422
+   ],
+   "rotY": -1.4784454667818587,
+   "width": 4.831508559445999,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0629318830781198,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -226.23838,
+    1.25,
+    -167.3819
+   ],
+   "doorNormalGlb": [
+    -0.995739,
+    0.09222
+   ]
+  },
+  {
+   "id": "facade-389701901-1yok1hh",
+   "parentBuilding": "bld-389701901",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -257.4166666666667,
+    -171.4925
+   ],
+   "dir": [
+    -0.9876854329735189,
+    0.15645282193655943
+   ],
+   "rotY": -1.4136981083707,
+   "width": 5.086943506774091,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.1191275714903,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -257.97202,
+    1.25,
+    -172.53761
+   ],
+   "doorNormalGlb": [
+    -0.987685,
+    0.156453
+   ]
+  },
+  {
+   "id": "facade-389701901-5simhs",
+   "parentBuilding": "bld-389701901",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -227.653,
+    -186.831
+   ],
+   "dir": [
+    -0.9957386892328377,
+    0.09221964413762422
+   ],
+   "rotY": -1.4784454667818587,
+   "width": 4.831508559445999,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0629318830781198,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -228.13438,
+    1.25,
+    -187.8539
+   ],
+   "doorNormalGlb": [
+    -0.995739,
+    0.09222
+   ]
+  },
+  {
+   "id": "facade-389701901-dm9dit",
+   "parentBuilding": "bld-389701901",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -258.2633333333333,
+    -176.83749999999998
+   ],
+   "dir": [
+    -0.9876854329735189,
+    0.15645282193655943
+   ],
+   "rotY": -1.4136981083707,
+   "width": 5.086943506774091,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.1191275714903,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -258.81868,
+    1.25,
+    -177.88261
+   ],
+   "doorNormalGlb": [
+    -0.987685,
+    0.156453
+   ]
+  },
+  {
+   "id": "facade-389701901-iegx3e",
+   "parentBuilding": "bld-389701901",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -259.95666666666665,
+    -187.52749999999997
+   ],
+   "dir": [
+    -0.9876854329735189,
+    0.15645282193655943
+   ],
+   "rotY": -1.4136981083707,
+   "width": 5.086943506774091,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.1191275714903,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -260.51202,
+    1.25,
+    -188.57261
+   ],
+   "doorNormalGlb": [
+    -0.987685,
+    0.156453
+   ]
+  },
+  {
+   "id": "facade-389701901-lay0jt",
+   "parentBuilding": "bld-389701901",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -256.57,
+    -166.14749999999998
+   ],
+   "dir": [
+    -0.9876854329735189,
+    0.15645282193655943
+   ],
+   "rotY": -1.4136981083707,
+   "width": 5.086943506774091,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.1191275714903,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -257.12535,
+    1.25,
+    -167.19261
+   ],
+   "doorNormalGlb": [
+    -0.987685,
+    0.156453
+   ]
+  },
+  {
+   "id": "facade-389701901-x97zin",
+   "parentBuilding": "bld-389701901",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -226.70499999999998,
+    -176.595
+   ],
+   "dir": [
+    -0.9957386892328377,
+    0.09221964413762422
+   ],
+   "rotY": -1.4784454667818587,
+   "width": 4.831508559445999,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0629318830781198,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -227.18638,
+    1.25,
+    -177.6179
+   ],
+   "doorNormalGlb": [
+    -0.995739,
+    0.09222
+   ]
+  },
+  {
+   "id": "facade-389701971-12b25pe",
+   "parentBuilding": "bld-389701971",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -237.95818181818183,
+    -61.793181818181814
+   ],
+   "dir": [
+    -0.9833707114542988,
+    0.18160959185534897
+   ],
+   "rotY": -1.3881733112814836,
+   "width": 4.912435766366587,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0807358686006492,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -238.53305,
+    1.25,
+    -62.78603
+   ],
+   "doorNormalGlb": [
+    -0.983371,
+    0.18161
+   ]
+  },
+  {
+   "id": "facade-389701971-147czhj",
+   "parentBuilding": "bld-389701971",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -237.0090909090909,
+    -56.65409090909091
+   ],
+   "dir": [
+    -0.9833707114542988,
+    0.18160959185534897
+   ],
+   "rotY": -1.3881733112814836,
+   "width": 4.912435766366587,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0807358686006492,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -237.58396,
+    1.25,
+    -57.64694
+   ],
+   "doorNormalGlb": [
+    -0.983371,
+    0.18161
+   ]
+  },
+  {
+   "id": "facade-389701971-16hvydg",
+   "parentBuilding": "bld-389701971",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -240.80545454545455,
+    -77.21045454545455
+   ],
+   "dir": [
+    -0.9833707114542988,
+    0.18160959185534897
+   ],
+   "rotY": -1.3881733112814836,
+   "width": 4.912435766366587,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0807358686006492,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -241.38032,
+    1.25,
+    -78.2033
+   ],
+   "doorNormalGlb": [
+    -0.983371,
+    0.18161
+   ]
+  },
+  {
+   "id": "facade-389701971-1aqrrh4",
+   "parentBuilding": "bld-389701971",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -231.31454545454545,
+    -25.819545454545455
+   ],
+   "dir": [
+    -0.9833707114542988,
+    0.18160959185534897
+   ],
+   "rotY": -1.3881733112814836,
+   "width": 4.912435766366587,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0807358686006492,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -231.88942,
+    1.25,
+    -26.81239
+   ],
+   "doorNormalGlb": [
+    -0.983371,
+    0.18161
+   ]
+  },
+  {
+   "id": "facade-389701971-1kiltm3",
+   "parentBuilding": "bld-389701971",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -232.26363636363638,
+    -30.958636363636366
+   ],
+   "dir": [
+    -0.9833707114542988,
+    0.18160959185534897
+   ],
+   "rotY": -1.3881733112814836,
+   "width": 4.912435766366587,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0807358686006492,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -232.83851,
+    1.25,
+    -31.95148
+   ],
+   "doorNormalGlb": [
+    -0.983371,
+    0.18161
+   ]
+  },
+  {
+   "id": "facade-389701971-1xmlcjd",
+   "parentBuilding": "bld-389701971",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -234.16181818181818,
+    -41.23681818181818
+   ],
+   "dir": [
+    -0.9833707114542988,
+    0.18160959185534897
+   ],
+   "rotY": -1.3881733112814836,
+   "width": 4.912435766366587,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0807358686006492,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -234.73669,
+    1.25,
+    -42.22966
+   ],
+   "doorNormalGlb": [
+    -0.983371,
+    0.18161
+   ]
+  },
+  {
+   "id": "facade-389701971-5lm62q",
+   "parentBuilding": "bld-389701971",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -233.21272727272728,
+    -36.097727272727276
+   ],
+   "dir": [
+    -0.9833707114542988,
+    0.18160959185534897
+   ],
+   "rotY": -1.3881733112814836,
+   "width": 4.912435766366587,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0807358686006492,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -233.7876,
+    1.25,
+    -37.09057
+   ],
+   "doorNormalGlb": [
+    -0.983371,
+    0.18161
+   ]
+  },
+  {
+   "id": "facade-389701971-ix3tfz",
+   "parentBuilding": "bld-389701971",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -235.1109090909091,
+    -46.37590909090909
+   ],
+   "dir": [
+    -0.9833707114542988,
+    0.18160959185534897
+   ],
+   "rotY": -1.3881733112814836,
+   "width": 4.912435766366587,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0807358686006492,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -235.68578,
+    1.25,
+    -47.36875
+   ],
+   "doorNormalGlb": [
+    -0.983371,
+    0.18161
+   ]
+  },
+  {
+   "id": "facade-389701971-l6ylha",
+   "parentBuilding": "bld-389701971",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -239.85636363636365,
+    -72.07136363636363
+   ],
+   "dir": [
+    -0.9833707114542988,
+    0.18160959185534897
+   ],
+   "rotY": -1.3881733112814836,
+   "width": 4.912435766366587,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0807358686006492,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -240.43123,
+    1.25,
+    -73.06421
+   ],
+   "doorNormalGlb": [
+    -0.983371,
+    0.18161
+   ]
+  },
+  {
+   "id": "facade-389701971-nfb924",
+   "parentBuilding": "bld-389701971",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -236.06,
+    -51.515
+   ],
+   "dir": [
+    -0.9833707114542988,
+    0.18160959185534897
+   ],
+   "rotY": -1.3881733112814836,
+   "width": 4.912435766366587,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0807358686006492,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -236.63487,
+    1.25,
+    -52.50784
+   ],
+   "doorNormalGlb": [
+    -0.983371,
+    0.18161
+   ]
+  },
+  {
+   "id": "facade-389701971-w0xtx5",
+   "parentBuilding": "bld-389701971",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -238.90727272727273,
+    -66.93227272727273
+   ],
+   "dir": [
+    -0.9833707114542988,
+    0.18160959185534897
+   ],
+   "rotY": -1.3881733112814836,
+   "width": 4.912435766366587,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0807358686006492,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -239.48214,
+    1.25,
+    -67.92512
+   ],
+   "doorNormalGlb": [
+    -0.983371,
+    0.18161
+   ]
+  },
+  {
+   "id": "facade-389702030-101dkxs",
+   "parentBuilding": "bld-389702030",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -200.69375,
+    -187.95375
+   ],
+   "dir": [
+    -0.9785344916745174,
+    0.20608311091230588
+   ],
+   "rotY": -1.3632258778407185,
+   "width": 4.891958373187573,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.076230842101266,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -201.29228,
+    1.25,
+    -188.92754
+   ],
+   "doorNormalGlb": [
+    -0.978534,
+    0.206083
+   ]
+  },
+  {
+   "id": "facade-389702030-15til4g",
+   "parentBuilding": "bld-389702030",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -197.47625,
+    -172.67624999999998
+   ],
+   "dir": [
+    -0.9785344916745174,
+    0.20608311091230588
+   ],
+   "rotY": -1.3632258778407185,
+   "width": 4.891958373187573,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.076230842101266,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -198.07478,
+    1.25,
+    -173.65004
+   ],
+   "doorNormalGlb": [
+    -0.978534,
+    0.206083
+   ]
+  },
+  {
+   "id": "facade-389702030-1jrpg5h",
+   "parentBuilding": "bld-389702030",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -194.2625,
+    -192.4875
+   ],
+   "dir": [
+    -0.2743109548050652,
+    -0.9616410453354899
+   ],
+   "rotY": -2.8637195550593075,
+   "width": 4.5404675904580545,
+   "height": 4.2,
+   "doorW": 1.816187036183222,
+   "doorX": -0.998902869900772,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -193.40752,
+    1.25,
+    -193.13174
+   ],
+   "doorNormalGlb": [
+    -0.274311,
+    -0.961641
+   ]
+  },
+  {
+   "id": "facade-389702030-76r9qi",
+   "parentBuilding": "bld-389702030",
+   "zone": "bazaar",
+   "trade": "饭馆",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -198.9075,
+    -191.1625
+   ],
+   "dir": [
+    -0.2743109548050652,
+    -0.9616410453354899
+   ],
+   "rotY": -2.8637195550593075,
+   "width": 4.5404675904580545,
+   "height": 4.2,
+   "doorW": 1.816187036183222,
+   "doorX": -0.998902869900772,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -198.05252,
+    1.25,
+    -191.80674
+   ],
+   "doorNormalGlb": [
+    -0.274311,
+    -0.961641
+   ]
+  },
+  {
+   "id": "facade-389702030-eg64y8",
+   "parentBuilding": "bld-389702030",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -198.54874999999998,
+    -177.76875
+   ],
+   "dir": [
+    -0.9785344916745174,
+    0.20608311091230588
+   ],
+   "rotY": -1.3632258778407185,
+   "width": 4.891958373187573,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.076230842101266,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -199.14728,
+    1.25,
+    -178.74254
+   ],
+   "doorNormalGlb": [
+    -0.978534,
+    0.206083
+   ]
+  },
+  {
+   "id": "facade-389702030-wp48wl",
+   "parentBuilding": "bld-389702030",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -199.62125,
+    -182.86124999999998
+   ],
+   "dir": [
+    -0.9785344916745174,
+    0.20608311091230588
+   ],
+   "rotY": -1.3632258778407185,
+   "width": 4.891958373187573,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.076230842101266,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -200.21978,
+    1.25,
+    -183.83504
+   ],
+   "doorNormalGlb": [
+    -0.978534,
+    0.206083
+   ]
+  },
+  {
+   "id": "facade-428202599-12bqym3",
+   "parentBuilding": "bld-428202599",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -135.39875,
+    -13.110624999999999
+   ],
+   "dir": [
+    -0.17835993886358287,
+    -0.9839653104701298
+   ],
+   "rotY": -2.9622732425446,
+   "width": 4.525820120500262,
+   "height": 4.2,
+   "doorW": 1.8103280482001047,
+   "doorX": -0.9956804265100576,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -134.4877,
+    1.25,
+    -13.66704
+   ],
+   "doorNormalGlb": [
+    -0.17836,
+    -0.983965
+   ]
+  },
+  {
+   "id": "facade-428202599-13hz46p",
+   "parentBuilding": "bld-428202599",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -163.82375000000002,
+    -7.958125
+   ],
+   "dir": [
+    -0.17835993886358287,
+    -0.9839653104701298
+   ],
+   "rotY": -2.9622732425446,
+   "width": 4.525820120500262,
+   "height": 4.2,
+   "doorW": 1.8103280482001047,
+   "doorX": -0.9956804265100576,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -162.9127,
+    1.25,
+    -8.51454
+   ],
+   "doorNormalGlb": [
+    -0.17836,
+    -0.983965
+   ]
+  },
+  {
+   "id": "facade-428202599-14ut1zg",
+   "parentBuilding": "bld-428202599",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -163.26833333333332,
+    21.91611111111111
+   ],
+   "dir": [
+    0.17850327684594774,
+    0.9839393173134504
+   ],
+   "rotY": 0.1794650867858646,
+   "width": 4.5697262567066925,
+   "height": 4.2,
+   "doorW": 1.827890502682677,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -163.19961,
+    1.25,
+    22.29493
+   ],
+   "doorNormalGlb": [
+    0.178503,
+    0.983939
+   ]
+  },
+  {
+   "id": "facade-428202599-1f4qrhg",
+   "parentBuilding": "bld-428202599",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -125.00166666666667,
+    14.973888888888888
+   ],
+   "dir": [
+    0.17850327684594774,
+    0.9839393173134504
+   ],
+   "rotY": 0.1794650867858646,
+   "width": 4.5697262567066925,
+   "height": 4.2,
+   "doorW": 1.827890502682677,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -124.93294,
+    1.25,
+    15.35271
+   ],
+   "doorNormalGlb": [
+    0.178503,
+    0.983939
+   ]
+  },
+  {
+   "id": "facade-428202599-1fy4trp",
+   "parentBuilding": "bld-428202599",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -140.13625000000002,
+    -12.251875
+   ],
+   "dir": [
+    -0.17835993886358287,
+    -0.9839653104701298
+   ],
+   "rotY": -2.9622732425446,
+   "width": 4.525820120500262,
+   "height": 4.2,
+   "doorW": 1.8103280482001047,
+   "doorX": -0.9956804265100576,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -139.2252,
+    1.25,
+    -12.80829
+   ],
+   "doorNormalGlb": [
+    -0.17836,
+    -0.983965
+   ]
+  },
+  {
+   "id": "facade-428202599-1j1gl73",
+   "parentBuilding": "bld-428202599",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -149.61125,
+    -10.534375
+   ],
+   "dir": [
+    -0.17835993886358287,
+    -0.9839653104701298
+   ],
+   "rotY": -2.9622732425446,
+   "width": 4.525820120500262,
+   "height": 4.2,
+   "doorW": 1.8103280482001047,
+   "doorX": -0.9956804265100576,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -148.7002,
+    1.25,
+    -11.09079
+   ],
+   "doorNormalGlb": [
+    -0.17836,
+    -0.983965
+   ]
+  },
+  {
+   "id": "facade-428202599-1mkhe5",
+   "parentBuilding": "bld-428202599",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -148.91833333333332,
+    19.31277777777778
+   ],
+   "dir": [
+    0.17850327684594774,
+    0.9839393173134504
+   ],
+   "rotY": 0.1794650867858646,
+   "width": 4.5697262567066925,
+   "height": 4.2,
+   "doorW": 1.827890502682677,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -148.84961,
+    1.25,
+    19.69159
+   ],
+   "doorNormalGlb": [
+    0.178503,
+    0.983939
+   ]
+  },
+  {
+   "id": "facade-428202599-1qz86ej",
+   "parentBuilding": "bld-428202599",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -139.35166666666666,
+    17.577222222222222
+   ],
+   "dir": [
+    0.17850327684594774,
+    0.9839393173134504
+   ],
+   "rotY": 0.1794650867858646,
+   "width": 4.5697262567066925,
+   "height": 4.2,
+   "doorW": 1.827890502682677,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -139.28294,
+    1.25,
+    17.95604
+   ],
+   "doorNormalGlb": [
+    0.178503,
+    0.983939
+   ]
+  },
+  {
+   "id": "facade-428202599-1sa9t9n",
+   "parentBuilding": "bld-428202599",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -158.48499999999999,
+    21.048333333333332
+   ],
+   "dir": [
+    0.17850327684594774,
+    0.9839393173134504
+   ],
+   "rotY": 0.1794650867858646,
+   "width": 4.5697262567066925,
+   "height": 4.2,
+   "doorW": 1.827890502682677,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -158.41628,
+    1.25,
+    21.42715
+   ],
+   "doorNormalGlb": [
+    0.178503,
+    0.983939
+   ]
+  },
+  {
+   "id": "facade-428202599-1t236yq",
+   "parentBuilding": "bld-428202599",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -154.34875,
+    -9.675625
+   ],
+   "dir": [
+    -0.17835993886358287,
+    -0.9839653104701298
+   ],
+   "rotY": -2.9622732425446,
+   "width": 4.525820120500262,
+   "height": 4.2,
+   "doorW": 1.8103280482001047,
+   "doorX": -0.9956804265100576,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -153.4377,
+    1.25,
+    -10.23204
+   ],
+   "doorNormalGlb": [
+    -0.17836,
+    -0.983965
+   ]
+  },
+  {
+   "id": "facade-428202599-1tzfvrl",
+   "parentBuilding": "bld-428202599",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -153.70166666666665,
+    20.180555555555557
+   ],
+   "dir": [
+    0.17850327684594774,
+    0.9839393173134504
+   ],
+   "rotY": 0.1794650867858646,
+   "width": 4.5697262567066925,
+   "height": 4.2,
+   "doorW": 1.827890502682677,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -153.63294,
+    1.25,
+    20.55937
+   ],
+   "doorNormalGlb": [
+    0.178503,
+    0.983939
+   ]
+  },
+  {
+   "id": "facade-428202599-1vh6bog",
+   "parentBuilding": "bld-428202599",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -168.56125,
+    -7.099375
+   ],
+   "dir": [
+    -0.17835993886358287,
+    -0.9839653104701298
+   ],
+   "rotY": -2.9622732425446,
+   "width": 4.525820120500262,
+   "height": 4.2,
+   "doorW": 1.8103280482001047,
+   "doorX": -0.9956804265100576,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -167.6502,
+    1.25,
+    -7.65579
+   ],
+   "doorNormalGlb": [
+    -0.17836,
+    -0.983965
+   ]
+  },
+  {
+   "id": "facade-428202599-1ws3gm5",
+   "parentBuilding": "bld-428202599",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -144.87375,
+    -11.393125
+   ],
+   "dir": [
+    -0.17835993886358287,
+    -0.9839653104701298
+   ],
+   "rotY": -2.9622732425446,
+   "width": 4.525820120500262,
+   "height": 4.2,
+   "doorW": 1.8103280482001047,
+   "doorX": -0.9956804265100576,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -143.9627,
+    1.25,
+    -11.94954
+   ],
+   "doorNormalGlb": [
+    -0.17836,
+    -0.983965
+   ]
+  },
+  {
+   "id": "facade-428202599-1ymajhz",
+   "parentBuilding": "bld-428202599",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -134.56833333333333,
+    16.709444444444443
+   ],
+   "dir": [
+    0.17850327684594774,
+    0.9839393173134504
+   ],
+   "rotY": 0.1794650867858646,
+   "width": 4.5697262567066925,
+   "height": 4.2,
+   "doorW": 1.827890502682677,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -134.49961,
+    1.25,
+    17.08826
+   ],
+   "doorNormalGlb": [
+    0.178503,
+    0.983939
+   ]
+  },
+  {
+   "id": "facade-428202599-1z08udn",
+   "parentBuilding": "bld-428202599",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -159.08625,
+    -8.816875
+   ],
+   "dir": [
+    -0.17835993886358287,
+    -0.9839653104701298
+   ],
+   "rotY": -2.9622732425446,
+   "width": 4.525820120500262,
+   "height": 4.2,
+   "doorW": 1.8103280482001047,
+   "doorX": -0.9956804265100576,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -158.1752,
+    1.25,
+    -9.37329
+   ],
+   "doorNormalGlb": [
+    -0.17836,
+    -0.983965
+   ]
+  },
+  {
+   "id": "facade-428202599-6x42gt",
+   "parentBuilding": "bld-428202599",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -129.785,
+    15.841666666666667
+   ],
+   "dir": [
+    0.17850327684594774,
+    0.9839393173134504
+   ],
+   "rotY": 0.1794650867858646,
+   "width": 4.5697262567066925,
+   "height": 4.2,
+   "doorW": 1.827890502682677,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -129.71628,
+    1.25,
+    16.22048
+   ],
+   "doorNormalGlb": [
+    0.178503,
+    0.983939
+   ]
+  },
+  {
+   "id": "facade-428202599-f0yuz",
+   "parentBuilding": "bld-428202599",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -144.135,
+    18.445
+   ],
+   "dir": [
+    0.17850327684594774,
+    0.9839393173134504
+   ],
+   "rotY": 0.1794650867858646,
+   "width": 4.5697262567066925,
+   "height": 4.2,
+   "doorW": 1.827890502682677,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -144.06628,
+    1.25,
+    18.82382
+   ],
+   "doorNormalGlb": [
+    0.178503,
+    0.983939
+   ]
+  },
+  {
+   "id": "facade-428202601-123n4hu",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -177.68875,
+    -7.911249999999999
+   ],
+   "dir": [
+    -0.9824449896141284,
+    0.18655251909876533
+   ],
+   "rotY": -1.383144440239611,
+   "width": 4.82464672333633,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -178.06699,
+    1.25,
+    -7.83943
+   ],
+   "doorNormalGlb": [
+    -0.982445,
+    0.186553
+   ]
+  },
+  {
+   "id": "facade-428202601-16uuxpb",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -179.60375,
+    -17.99625
+   ],
+   "dir": [
+    -0.9824449896141284,
+    0.18655251909876533
+   ],
+   "rotY": -1.383144440239611,
+   "width": 4.82464672333633,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -179.98199,
+    1.25,
+    -17.92443
+   ],
+   "doorNormalGlb": [
+    -0.982445,
+    0.186553
+   ]
+  },
+  {
+   "id": "facade-428202601-1dv8ox1",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -178.64625,
+    -12.953750000000001
+   ],
+   "dir": [
+    -0.9824449896141284,
+    0.18655251909876533
+   ],
+   "rotY": -1.383144440239611,
+   "width": 4.82464672333633,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -179.02449,
+    1.25,
+    -12.88193
+   ],
+   "doorNormalGlb": [
+    -0.982445,
+    0.186553
+   ]
+  },
+  {
+   "id": "facade-428202601-1ee9ld0",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -224.11642857142857,
+    11.75857142857143
+   ],
+   "dir": [
+    -0.981106388917045,
+    0.1934689991346315
+   ],
+   "rotY": -1.3760996014783764,
+   "width": 4.976655566189987,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -224.49415,
+    1.25,
+    11.83306
+   ],
+   "doorNormalGlb": [
+    -0.981106,
+    0.193469
+   ]
+  },
+  {
+   "id": "facade-428202601-1eh1sdc",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -208.486875,
+    27.485
+   ],
+   "dir": [
+    0.13750544975116646,
+    0.9905010102411455
+   ],
+   "rotY": 0.13794249843103154,
+   "width": 4.580182102889033,
+   "height": 4.2,
+   "doorW": 1.8320728411556133,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -208.43394,
+    1.25,
+    27.86634
+   ],
+   "doorNormalGlb": [
+    0.137505,
+    0.990501
+   ]
+  },
+  {
+   "id": "facade-428202601-1l3uum4",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -227.18928571428572,
+    -3.824285714285711
+   ],
+   "dir": [
+    -0.981106388917045,
+    0.1934689991346315
+   ],
+   "rotY": -1.3760996014783764,
+   "width": 4.976655566189987,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -227.56701,
+    1.25,
+    -3.7498
+   ],
+   "doorNormalGlb": [
+    -0.981106,
+    0.193469
+   ]
+  },
+  {
+   "id": "facade-428202601-1nx34kh",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -213.865,
+    25.72
+   ],
+   "dir": [
+    0.5779791582048668,
+    -0.8160515257511582
+   ],
+   "rotY": 2.525342506386464,
+   "width": 6.830696131434927,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -213.64248,
+    1.25,
+    25.40582
+   ],
+   "doorNormalGlb": [
+    0.577979,
+    -0.816052
+   ]
+  },
+  {
+   "id": "facade-428202601-1o0f43a",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -226.16500000000002,
+    1.370000000000001
+   ],
+   "dir": [
+    -0.981106388917045,
+    0.1934689991346315
+   ],
+   "rotY": -1.3760996014783764,
+   "width": 4.976655566189987,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -226.54273,
+    1.25,
+    1.44449
+   ],
+   "doorNormalGlb": [
+    -0.981106,
+    0.193469
+   ]
+  },
+  {
+   "id": "facade-428202601-1o89lk3",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -189.181875,
+    24.805
+   ],
+   "dir": [
+    0.13750544975116646,
+    0.9905010102411455
+   ],
+   "rotY": 0.13794249843103154,
+   "width": 4.580182102889033,
+   "height": 4.2,
+   "doorW": 1.8320728411556133,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -189.12894,
+    1.25,
+    25.18634
+   ],
+   "doorNormalGlb": [
+    0.137505,
+    0.990501
+   ]
+  },
+  {
+   "id": "facade-428202601-1quwiuu",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -179.529375,
+    23.465
+   ],
+   "dir": [
+    0.13750544975116646,
+    0.9905010102411455
+   ],
+   "rotY": 0.13794249843103154,
+   "width": 4.580182102889033,
+   "height": 4.2,
+   "doorW": 1.8320728411556133,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -179.47644,
+    1.25,
+    23.84634
+   ],
+   "doorNormalGlb": [
+    0.137505,
+    0.990501
+   ]
+  },
+  {
+   "id": "facade-428202601-1qwtwjk",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -180.56125,
+    -23.03875
+   ],
+   "dir": [
+    -0.9824449896141284,
+    0.18655251909876533
+   ],
+   "rotY": -1.383144440239611,
+   "width": 4.82464672333633,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -180.93949,
+    1.25,
+    -22.96693
+   ],
+   "doorNormalGlb": [
+    -0.982445,
+    0.186553
+   ]
+  },
+  {
+   "id": "facade-428202601-1rn6czv",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -229.23785714285714,
+    -14.212857142857136
+   ],
+   "dir": [
+    -0.981106388917045,
+    0.1934689991346315
+   ],
+   "rotY": -1.3760996014783764,
+   "width": 4.976655566189987,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -229.61558,
+    1.25,
+    -14.13837
+   ],
+   "doorNormalGlb": [
+    -0.981106,
+    0.193469
+   ]
+  },
+  {
+   "id": "facade-428202601-1t1gtbq",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -228.21357142857144,
+    -9.018571428571423
+   ],
+   "dir": [
+    -0.981106388917045,
+    0.1934689991346315
+   ],
+   "rotY": -1.3760996014783764,
+   "width": 4.976655566189987,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -228.5913,
+    1.25,
+    -8.94409
+   ],
+   "doorNormalGlb": [
+    -0.981106,
+    0.193469
+   ]
+  },
+  {
+   "id": "facade-428202601-5xksfk",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -198.834375,
+    26.145
+   ],
+   "dir": [
+    0.13750544975116646,
+    0.9905010102411455
+   ],
+   "rotY": 0.13794249843103154,
+   "width": 4.580182102889033,
+   "height": 4.2,
+   "doorW": 1.8320728411556133,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -198.78144,
+    1.25,
+    26.52634
+   ],
+   "doorNormalGlb": [
+    0.137505,
+    0.990501
+   ]
+  },
+  {
+   "id": "facade-428202601-9l51xi",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -174.703125,
+    22.795
+   ],
+   "dir": [
+    0.13750544975116646,
+    0.9905010102411455
+   ],
+   "rotY": 0.13794249843103154,
+   "width": 4.580182102889033,
+   "height": 4.2,
+   "doorW": 1.8320728411556133,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -174.65019,
+    1.25,
+    23.17634
+   ],
+   "doorNormalGlb": [
+    0.137505,
+    0.990501
+   ]
+  },
+  {
+   "id": "facade-428202601-c24pu1",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -223.09214285714287,
+    16.952857142857145
+   ],
+   "dir": [
+    -0.981106388917045,
+    0.1934689991346315
+   ],
+   "rotY": -1.3760996014783764,
+   "width": 4.976655566189987,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -223.46987,
+    1.25,
+    17.02734
+   ],
+   "doorNormalGlb": [
+    -0.981106,
+    0.193469
+   ]
+  },
+  {
+   "id": "facade-428202601-huhg0x",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -184.355625,
+    24.135
+   ],
+   "dir": [
+    0.13750544975116646,
+    0.9905010102411455
+   ],
+   "rotY": 0.13794249843103154,
+   "width": 4.580182102889033,
+   "height": 4.2,
+   "doorW": 1.8320728411556133,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -184.30269,
+    1.25,
+    24.51634
+   ],
+   "doorNormalGlb": [
+    0.137505,
+    0.990501
+   ]
+  },
+  {
+   "id": "facade-428202601-jl6qtg",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -194.008125,
+    25.475
+   ],
+   "dir": [
+    0.13750544975116646,
+    0.9905010102411455
+   ],
+   "rotY": 0.13794249843103154,
+   "width": 4.580182102889033,
+   "height": 4.2,
+   "doorW": 1.8320728411556133,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -193.95519,
+    1.25,
+    25.85634
+   ],
+   "doorNormalGlb": [
+    0.137505,
+    0.990501
+   ]
+  },
+  {
+   "id": "facade-428202601-ncvsff",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -184.45499999999998,
+    -24.915
+   ],
+   "dir": [
+    -0.18559133995985186,
+    -0.9826270169967375
+   ],
+   "rotY": -2.9549190304864585,
+   "width": 6.5337100333577816,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -184.52645,
+    1.25,
+    -25.29331
+   ],
+   "doorNormalGlb": [
+    -0.185591,
+    -0.982627
+   ]
+  },
+  {
+   "id": "facade-428202601-otcqv6",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -219.705,
+    21.585
+   ],
+   "dir": [
+    0.5777416105548898,
+    -0.8162197200714045
+   ],
+   "rotY": 2.525633570324407,
+   "width": 6.621991440646839,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -219.48257,
+    1.25,
+    21.27076
+   ],
+   "doorNormalGlb": [
+    0.577742,
+    -0.81622
+   ]
+  },
+  {
+   "id": "facade-428202601-vazimj",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -203.660625,
+    26.815
+   ],
+   "dir": [
+    0.13750544975116646,
+    0.9905010102411455
+   ],
+   "rotY": 0.13794249843103154,
+   "width": 4.580182102889033,
+   "height": 4.2,
+   "doorW": 1.8320728411556133,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -203.60769,
+    1.25,
+    27.19634
+   ],
+   "doorNormalGlb": [
+    0.137505,
+    0.990501
+   ]
+  },
+  {
+   "id": "facade-428202601-w3sisn",
+   "parentBuilding": "bld-428202601",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -225.1407142857143,
+    6.564285714285717
+   ],
+   "dir": [
+    -0.981106388917045,
+    0.1934689991346315
+   ],
+   "rotY": -1.3760996014783764,
+   "width": 4.976655566189987,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -225.51844,
+    1.25,
+    6.63877
+   ],
+   "doorNormalGlb": [
+    -0.981106,
+    0.193469
+   ]
+  },
+  {
+   "id": "facade-428202602-14tmwgd",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -252.46428571428572,
+    -142.24964285714287
+   ],
+   "dir": [
+    -0.9838932686235378,
+    0.1787569186277588
+   ],
+   "rotY": -1.3910734520424957,
+   "width": 4.597464409978658,
+   "height": 4.2,
+   "doorW": 1.838985763991463,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -252.84308,
+    1.25,
+    -142.18082
+   ],
+   "doorNormalGlb": [
+    -0.983893,
+    0.178757
+   ]
+  },
+  {
+   "id": "facade-428202602-17boa5j",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -222.469,
+    -141.28199999999998
+   ],
+   "dir": [
+    0.9916901050708236,
+    -0.12864966189080682
+   ],
+   "rotY": 1.6998035324867313,
+   "width": 5.012372287051312,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -222.0872,
+    1.25,
+    -141.33153
+   ],
+   "doorNormalGlb": [
+    0.99169,
+    -0.12865
+   ]
+  },
+  {
+   "id": "facade-428202602-19svjd",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -218.4,
+    -133.91
+   ],
+   "dir": [
+    -0.18116242947693567,
+    -0.9834531885890728
+   ],
+   "rotY": -2.9594243431170284,
+   "width": 5.811359469177572,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -218.46975,
+    1.25,
+    -134.28863
+   ],
+   "doorNormalGlb": [
+    -0.181162,
+    -0.983453
+   ]
+  },
+  {
+   "id": "facade-428202602-1bnay92",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -223.841,
+    -151.858
+   ],
+   "dir": [
+    0.9916901050708236,
+    -0.12864966189080682
+   ],
+   "rotY": 1.6998035324867313,
+   "width": 5.012372287051312,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -223.4592,
+    1.25,
+    -151.90753
+   ],
+   "doorNormalGlb": [
+    0.99169,
+    -0.12865
+   ]
+  },
+  {
+   "id": "facade-428202602-1c3zsp9",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -253.33857142857144,
+    -147.06178571428572
+   ],
+   "dir": [
+    -0.9838932686235378,
+    0.1787569186277588
+   ],
+   "rotY": -1.3910734520424957,
+   "width": 4.597464409978658,
+   "height": 4.2,
+   "doorW": 1.838985763991463,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -253.71737,
+    1.25,
+    -146.99296
+   ],
+   "doorNormalGlb": [
+    -0.983893,
+    0.178757
+   ]
+  },
+  {
+   "id": "facade-428202602-1eje41j",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -247.21857142857144,
+    -113.37678571428572
+   ],
+   "dir": [
+    -0.9838932686235378,
+    0.1787569186277588
+   ],
+   "rotY": -1.3910734520424957,
+   "width": 4.597464409978658,
+   "height": 4.2,
+   "doorW": 1.838985763991463,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -247.59737,
+    1.25,
+    -113.30796
+   ],
+   "doorNormalGlb": [
+    -0.983893,
+    0.178757
+   ]
+  },
+  {
+   "id": "facade-428202602-1hdsgky",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -245.47,
+    -103.7525
+   ],
+   "dir": [
+    -0.9838932686235378,
+    0.1787569186277588
+   ],
+   "rotY": -1.3910734520424957,
+   "width": 4.597464409978658,
+   "height": 4.2,
+   "doorW": 1.838985763991463,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -245.8488,
+    1.25,
+    -103.68368
+   ],
+   "doorNormalGlb": [
+    -0.983893,
+    0.178757
+   ]
+  },
+  {
+   "id": "facade-428202602-1ht612",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -221.783,
+    -135.994
+   ],
+   "dir": [
+    0.9916901050708236,
+    -0.12864966189080682
+   ],
+   "rotY": 1.6998035324867313,
+   "width": 5.012372287051312,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -221.4012,
+    1.25,
+    -136.04353
+   ],
+   "doorNormalGlb": [
+    0.99169,
+    -0.12865
+   ]
+  },
+  {
+   "id": "facade-428202602-1wiwap0",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -246.34428571428572,
+    -108.56464285714286
+   ],
+   "dir": [
+    -0.9838932686235378,
+    0.1787569186277588
+   ],
+   "rotY": -1.3910734520424957,
+   "width": 4.597464409978658,
+   "height": 4.2,
+   "doorW": 1.838985763991463,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -246.72308,
+    1.25,
+    -108.49582
+   ],
+   "doorNormalGlb": [
+    -0.983893,
+    0.178757
+   ]
+  },
+  {
+   "id": "facade-428202602-2il3f",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -254.21285714285716,
+    -151.87392857142856
+   ],
+   "dir": [
+    -0.9838932686235378,
+    0.1787569186277588
+   ],
+   "rotY": -1.3910734520424957,
+   "width": 4.597464409978658,
+   "height": 4.2,
+   "doorW": 1.838985763991463,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -254.59166,
+    1.25,
+    -151.80511
+   ],
+   "doorNormalGlb": [
+    -0.983893,
+    0.178757
+   ]
+  },
+  {
+   "id": "facade-428202602-49qvvs",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -244.59571428571428,
+    -98.94035714285714
+   ],
+   "dir": [
+    -0.9838932686235378,
+    0.1787569186277588
+   ],
+   "rotY": -1.3910734520424957,
+   "width": 4.597464409978658,
+   "height": 4.2,
+   "doorW": 1.838985763991463,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -244.97451,
+    1.25,
+    -98.87154
+   ],
+   "doorNormalGlb": [
+    -0.983893,
+    0.178757
+   ]
+  },
+  {
+   "id": "facade-428202602-54tn0h",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -248.96714285714285,
+    -123.00107142857144
+   ],
+   "dir": [
+    -0.9838932686235378,
+    0.1787569186277588
+   ],
+   "rotY": -1.3910734520424957,
+   "width": 4.597464409978658,
+   "height": 4.2,
+   "doorW": 1.838985763991463,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -249.34594,
+    1.25,
+    -122.93225
+   ],
+   "doorNormalGlb": [
+    -0.983893,
+    0.178757
+   ]
+  },
+  {
+   "id": "facade-428202602-fs7phg",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -224.52700000000002,
+    -157.146
+   ],
+   "dir": [
+    0.9916901050708236,
+    -0.12864966189080682
+   ],
+   "rotY": 1.6998035324867313,
+   "width": 5.012372287051312,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -224.1452,
+    1.25,
+    -157.19553
+   ],
+   "doorNormalGlb": [
+    0.99169,
+    -0.12865
+   ]
+  },
+  {
+   "id": "facade-428202602-fszkke",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -248.09285714285716,
+    -118.18892857142856
+   ],
+   "dir": [
+    -0.9838932686235378,
+    0.1787569186277588
+   ],
+   "rotY": -1.3910734520424957,
+   "width": 4.597464409978658,
+   "height": 4.2,
+   "doorW": 1.838985763991463,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -248.47166,
+    1.25,
+    -118.12011
+   ],
+   "doorNormalGlb": [
+    -0.983893,
+    0.178757
+   ]
+  },
+  {
+   "id": "facade-428202602-r050iu",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -242.84714285714284,
+    -89.31607142857142
+   ],
+   "dir": [
+    -0.9838932686235378,
+    0.1787569186277588
+   ],
+   "rotY": -1.3910734520424957,
+   "width": 4.597464409978658,
+   "height": 4.2,
+   "doorW": 1.838985763991463,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -243.22594,
+    1.25,
+    -89.24725
+   ],
+   "doorNormalGlb": [
+    -0.983893,
+    0.178757
+   ]
+  },
+  {
+   "id": "facade-428202602-tabmxf",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -251.59,
+    -137.4375
+   ],
+   "dir": [
+    -0.9838932686235378,
+    0.1787569186277588
+   ],
+   "rotY": -1.3910734520424957,
+   "width": 4.597464409978658,
+   "height": 4.2,
+   "doorW": 1.838985763991463,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -251.9688,
+    1.25,
+    -137.36868
+   ],
+   "doorNormalGlb": [
+    -0.983893,
+    0.178757
+   ]
+  },
+  {
+   "id": "facade-428202602-tmwdfm",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -249.84142857142857,
+    -127.81321428571428
+   ],
+   "dir": [
+    -0.9838932686235378,
+    0.1787569186277588
+   ],
+   "rotY": -1.3910734520424957,
+   "width": 4.597464409978658,
+   "height": 4.2,
+   "doorW": 1.838985763991463,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -250.22023,
+    1.25,
+    -127.74439
+   ],
+   "doorNormalGlb": [
+    -0.983893,
+    0.178757
+   ]
+  },
+  {
+   "id": "facade-428202602-tnirl1",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -243.72142857142856,
+    -94.12821428571428
+   ],
+   "dir": [
+    -0.9838932686235378,
+    0.1787569186277588
+   ],
+   "rotY": -1.3910734520424957,
+   "width": 4.597464409978658,
+   "height": 4.2,
+   "doorW": 1.838985763991463,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -244.10023,
+    1.25,
+    -94.05939
+   ],
+   "doorNormalGlb": [
+    -0.983893,
+    0.178757
+   ]
+  },
+  {
+   "id": "facade-428202602-uw75ux",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -223.155,
+    -146.57
+   ],
+   "dir": [
+    0.9916901050708236,
+    -0.12864966189080682
+   ],
+   "rotY": 1.6998035324867313,
+   "width": 5.012372287051312,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -222.7732,
+    1.25,
+    -146.61953
+   ],
+   "doorNormalGlb": [
+    0.99169,
+    -0.12865
+   ]
+  },
+  {
+   "id": "facade-428202602-yvstnk",
+   "parentBuilding": "bld-428202602",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -250.71571428571428,
+    -132.62535714285715
+   ],
+   "dir": [
+    -0.9838932686235378,
+    0.1787569186277588
+   ],
+   "rotY": -1.3910734520424957,
+   "width": 4.597464409978658,
+   "height": 4.2,
+   "doorW": 1.838985763991463,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -251.09451,
+    1.25,
+    -132.55654
+   ],
+   "doorNormalGlb": [
+    -0.983893,
+    0.178757
+   ]
+  },
+  {
+   "id": "facade-428202603-13crn4m",
+   "parentBuilding": "bld-428202603",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -267.75375,
+    -233.53625
+   ],
+   "dir": [
+    -0.9857044205427812,
+    0.16848381323563308
+   ],
+   "rotY": -1.4015050364114983,
+   "width": 4.75624325334607,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -268.13325,
+    1.25,
+    -233.47138
+   ],
+   "doorNormalGlb": [
+    -0.985704,
+    0.168484
+   ]
+  },
+  {
+   "id": "facade-428202603-18bcevd",
+   "parentBuilding": "bld-428202603",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -267.7316666666667,
+    -238.09833333333333
+   ],
+   "dir": [
+    -0.977304122099323,
+    -0.2118411030175002
+   ],
+   "rotY": -1.7842547620375262,
+   "width": 3.9787683063424977,
+   "height": 4.2,
+   "doorW": 1.5915073225369991,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -268.10793,
+    1.25,
+    -238.17989
+   ],
+   "doorNormalGlb": [
+    -0.977304,
+    -0.211841
+   ]
+  },
+  {
+   "id": "facade-428202603-18sprwx",
+   "parentBuilding": "bld-428202603",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -265.93833333333333,
+    -246.37166666666667
+   ],
+   "dir": [
+    -0.977304122099323,
+    -0.2118411030175002
+   ],
+   "rotY": -1.7842547620375262,
+   "width": 3.9787683063424977,
+   "height": 4.2,
+   "doorW": 1.5915073225369991,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -266.3146,
+    1.25,
+    -246.45323
+   ],
+   "doorNormalGlb": [
+    -0.977304,
+    -0.211841
+   ]
+  },
+  {
+   "id": "facade-428202603-1bzn6wv",
+   "parentBuilding": "bld-428202603",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -263.49125000000004,
+    -208.59875
+   ],
+   "dir": [
+    -0.9857044205427812,
+    0.16848381323563308
+   ],
+   "rotY": -1.4015050364114983,
+   "width": 4.75624325334607,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -263.87075,
+    1.25,
+    -208.53388
+   ],
+   "doorNormalGlb": [
+    -0.985704,
+    0.168484
+   ]
+  },
+  {
+   "id": "facade-428202603-1g9wa0n",
+   "parentBuilding": "bld-428202603",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -266.90125,
+    -228.54875
+   ],
+   "dir": [
+    -0.9857044205427812,
+    0.16848381323563308
+   ],
+   "rotY": -1.4015050364114983,
+   "width": 4.75624325334607,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -267.28075,
+    1.25,
+    -228.48388
+   ],
+   "doorNormalGlb": [
+    -0.985704,
+    0.168484
+   ]
+  },
+  {
+   "id": "facade-428202603-1m5ee4x",
+   "parentBuilding": "bld-428202603",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -266.04875,
+    -223.56125
+   ],
+   "dir": [
+    -0.9857044205427812,
+    0.16848381323563308
+   ],
+   "rotY": -1.4015050364114983,
+   "width": 4.75624325334607,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -266.42825,
+    1.25,
+    -223.49638
+   ],
+   "doorNormalGlb": [
+    -0.985704,
+    0.168484
+   ]
+  },
+  {
+   "id": "facade-428202603-1vc1nq2",
+   "parentBuilding": "bld-428202603",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -266.83500000000004,
+    -242.235
+   ],
+   "dir": [
+    -0.977304122099323,
+    -0.2118411030175002
+   ],
+   "rotY": -1.7842547620375262,
+   "width": 3.9787683063424977,
+   "height": 4.2,
+   "doorW": 1.5915073225369991,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -267.21126,
+    1.25,
+    -242.31656
+   ],
+   "doorNormalGlb": [
+    -0.977304,
+    -0.211841
+   ]
+  },
+  {
+   "id": "facade-428202603-b6fvoq",
+   "parentBuilding": "bld-428202603",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -262.63875,
+    -203.61124999999998
+   ],
+   "dir": [
+    -0.9857044205427812,
+    0.16848381323563308
+   ],
+   "rotY": -1.4015050364114983,
+   "width": 4.75624325334607,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -263.01825,
+    1.25,
+    -203.54638
+   ],
+   "doorNormalGlb": [
+    -0.985704,
+    0.168484
+   ]
+  },
+  {
+   "id": "facade-428202603-lbfcvn",
+   "parentBuilding": "bld-428202603",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -264.34375,
+    -213.58625
+   ],
+   "dir": [
+    -0.9857044205427812,
+    0.16848381323563308
+   ],
+   "rotY": -1.4015050364114983,
+   "width": 4.75624325334607,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -264.72325,
+    1.25,
+    -213.52138
+   ],
+   "doorNormalGlb": [
+    -0.985704,
+    0.168484
+   ]
+  },
+  {
+   "id": "facade-428202603-ocrfqd",
+   "parentBuilding": "bld-428202603",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -261.78625,
+    -198.62375
+   ],
+   "dir": [
+    -0.9857044205427812,
+    0.16848381323563308
+   ],
+   "rotY": -1.4015050364114983,
+   "width": 4.75624325334607,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -262.16575,
+    1.25,
+    -198.55888
+   ],
+   "doorNormalGlb": [
+    -0.985704,
+    0.168484
+   ]
+  },
+  {
+   "id": "facade-428202603-xx571",
+   "parentBuilding": "bld-428202603",
+   "zone": "bazaar",
+   "trade": "寿衣店",
+   "doorVariant": "center",
+   "position": [
+    -265.19625,
+    -218.57375
+   ],
+   "dir": [
+    -0.9857044205427812,
+    0.16848381323563308
+   ],
+   "rotY": -1.4015050364114983,
+   "width": 4.75624325334607,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": 0.0,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -265.57575,
+    1.25,
+    -218.50888
+   ],
+   "doorNormalGlb": [
+    -0.985704,
+    0.168484
+   ]
+  },
+  {
+   "id": "facade-428202606-110xdqd",
+   "parentBuilding": "bld-428202606",
+   "zone": "bazaar",
+   "trade": "皮货",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -168.0125,
+    -158.535
+   ],
+   "dir": [
+    0.9301840956667052,
+    -0.3670933779962722
+   ],
+   "rotY": 1.9466786318529776,
+   "width": 5.851099825673806,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.2872419616482373,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -167.18184,
+    1.25,
+    -157.47896
+   ],
+   "doorNormalGlb": [
+    0.930184,
+    -0.367093
+   ]
+  },
+  {
+   "id": "facade-428202606-1o3w3k9",
+   "parentBuilding": "bld-428202606",
+   "zone": "bazaar",
+   "trade": "皮货",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -171.01,
+    -147.0225
+   ],
+   "dir": [
+    -0.47167020590212155,
+    -0.8817750375601763
+   ],
+   "rotY": -2.6504086924372583,
+   "width": 4.7331800314376355,
+   "height": 4.2,
+   "doorW": 1.8932720125750544,
+   "doorX": -1.0412996069162799,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -170.2734,
+    1.25,
+    -147.85313
+   ],
+   "doorNormalGlb": [
+    -0.47167,
+    -0.881775
+   ]
+  },
+  {
+   "id": "facade-428202606-1saonwt",
+   "parentBuilding": "bld-428202606",
+   "zone": "bazaar",
+   "trade": "皮货",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -175.45,
+    -144.6475
+   ],
+   "dir": [
+    -0.47167020590212155,
+    -0.8817750375601763
+   ],
+   "rotY": -2.6504086924372583,
+   "width": 4.7331800314376355,
+   "height": 4.2,
+   "doorW": 1.8932720125750544,
+   "doorX": -1.0412996069162799,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -174.7134,
+    1.25,
+    -145.47813
+   ],
+   "doorNormalGlb": [
+    -0.47167,
+    -0.881775
+   ]
+  },
+  {
+   "id": "facade-428202606-1ypkm6k",
+   "parentBuilding": "bld-428202606",
+   "zone": "bazaar",
+   "trade": "皮货",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -170.16,
+    -150.55
+   ],
+   "dir": [
+    0.8629752508484884,
+    -0.505246193872837
+   ],
+   "rotY": 2.100463553274383,
+   "width": 5.0977128204715365,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.1214968205037381,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -169.26112,
+    1.25,
+    -149.7767
+   ],
+   "doorNormalGlb": [
+    0.862975,
+    -0.505246
+   ]
+  },
+  {
+   "id": "facade-428202606-ryixfl",
+   "parentBuilding": "bld-428202606",
+   "zone": "bazaar",
+   "trade": "皮货",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -170.2975,
+    -164.325
+   ],
+   "dir": [
+    0.9301840956667052,
+    -0.3670933779962722
+   ],
+   "rotY": 1.9466786318529776,
+   "width": 5.851099825673806,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.2872419616482373,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -169.46684,
+    1.25,
+    -163.26896
+   ],
+   "doorNormalGlb": [
+    0.930184,
+    -0.367093
+   ]
+  },
+  {
+   "id": "facade-428202607-15a75u9",
+   "parentBuilding": "bld-428202607",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -219.499,
+    -198.994
+   ],
+   "dir": [
+    -0.9985511003640836,
+    0.05381170840697906
+   ],
+   "rotY": -1.5169586140613234,
+   "width": 4.646572417083372,
+   "height": 4.2,
+   "doorW": 1.8586289668333489,
+   "doorX": -1.0222459317583419,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -219.93845,
+    1.25,
+    -199.99405
+   ],
+   "doorNormalGlb": [
+    -0.998551,
+    0.053812
+   ]
+  },
+  {
+   "id": "facade-428202607-171ltky",
+   "parentBuilding": "bld-428202607",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -219.233,
+    -194.058
+   ],
+   "dir": [
+    -0.9985511003640836,
+    0.05381170840697906
+   ],
+   "rotY": -1.5169586140613234,
+   "width": 4.646572417083372,
+   "height": 4.2,
+   "doorW": 1.8586289668333489,
+   "doorX": -1.0222459317583419,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -219.67245,
+    1.25,
+    -195.05805
+   ],
+   "doorNormalGlb": [
+    -0.998551,
+    0.053812
+   ]
+  },
+  {
+   "id": "facade-428202607-17kxxju",
+   "parentBuilding": "bld-428202607",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -201.348,
+    -197.239
+   ],
+   "dir": [
+    -0.30323467633082407,
+    -0.9529159097583272
+   ],
+   "rotY": -2.8335073210125055,
+   "width": 5.003253646178651,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.1007158021593033,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -200.41586,
+    1.25,
+    -197.93965
+   ],
+   "doorNormalGlb": [
+    -0.303235,
+    -0.952916
+   ]
+  },
+  {
+   "id": "facade-428202607-1g9qlmx",
+   "parentBuilding": "bld-428202607",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -220.297,
+    -213.80200000000002
+   ],
+   "dir": [
+    -0.9985511003640836,
+    0.05381170840697906
+   ],
+   "rotY": -1.5169586140613234,
+   "width": 4.646572417083372,
+   "height": 4.2,
+   "doorW": 1.8586289668333489,
+   "doorX": -1.0222459317583419,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -220.73645,
+    1.25,
+    -214.80205
+   ],
+   "doorNormalGlb": [
+    -0.998551,
+    0.053812
+   ]
+  },
+  {
+   "id": "facade-428202607-1kaoa7v",
+   "parentBuilding": "bld-428202607",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -206.42,
+    -195.625
+   ],
+   "dir": [
+    -0.30323467633082407,
+    -0.9529159097583272
+   ],
+   "rotY": -2.8335073210125055,
+   "width": 5.003253646178651,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.1007158021593033,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -205.48786,
+    1.25,
+    -196.32565
+   ],
+   "doorNormalGlb": [
+    -0.303235,
+    -0.952916
+   ]
+  },
+  {
+   "id": "facade-428202607-1qmnx8a",
+   "parentBuilding": "bld-428202607",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -196.276,
+    -198.853
+   ],
+   "dir": [
+    -0.30323467633082407,
+    -0.9529159097583272
+   ],
+   "rotY": -2.8335073210125055,
+   "width": 5.003253646178651,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.1007158021593033,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -195.34386,
+    1.25,
+    -199.55365
+   ],
+   "doorNormalGlb": [
+    -0.303235,
+    -0.952916
+   ]
+  },
+  {
+   "id": "facade-428202607-50mu6k",
+   "parentBuilding": "bld-428202607",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -219.765,
+    -203.93
+   ],
+   "dir": [
+    -0.9985511003640836,
+    0.05381170840697906
+   ],
+   "rotY": -1.5169586140613234,
+   "width": 4.646572417083372,
+   "height": 4.2,
+   "doorW": 1.8586289668333489,
+   "doorX": -1.0222459317583419,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -220.20445,
+    1.25,
+    -204.93005
+   ],
+   "doorNormalGlb": [
+    -0.998551,
+    0.053812
+   ]
+  },
+  {
+   "id": "facade-428202607-emjf05",
+   "parentBuilding": "bld-428202607",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -220.031,
+    -208.866
+   ],
+   "dir": [
+    -0.9985511003640836,
+    0.05381170840697906
+   ],
+   "rotY": -1.5169586140613234,
+   "width": 4.646572417083372,
+   "height": 4.2,
+   "doorW": 1.8586289668333489,
+   "doorX": -1.0222459317583419,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -220.47045,
+    1.25,
+    -209.86605
+   ],
+   "doorNormalGlb": [
+    -0.998551,
+    0.053812
+   ]
+  },
+  {
+   "id": "facade-428202607-l2hp1w",
+   "parentBuilding": "bld-428202607",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -211.492,
+    -194.011
+   ],
+   "dir": [
+    -0.30323467633082407,
+    -0.9529159097583272
+   ],
+   "rotY": -2.8335073210125055,
+   "width": 5.003253646178651,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.1007158021593033,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -210.55986,
+    1.25,
+    -194.71165
+   ],
+   "doorNormalGlb": [
+    -0.303235,
+    -0.952916
+   ]
+  },
+  {
+   "id": "facade-428202607-wim91k",
+   "parentBuilding": "bld-428202607",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -216.564,
+    -192.397
+   ],
+   "dir": [
+    -0.30323467633082407,
+    -0.9529159097583272
+   ],
+   "rotY": -2.8335073210125055,
+   "width": 5.003253646178651,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.1007158021593033,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -215.63186,
+    1.25,
+    -193.09765
+   ],
+   "doorNormalGlb": [
+    -0.303235,
+    -0.952916
+   ]
+  },
+  {
+   "id": "facade-553893867-1czo543",
+   "parentBuilding": "bld-553893867",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -130.01999999999998,
+    -48.775
+   ],
+   "dir": [
+    -0.9795609566876943,
+    0.20114753822279066
+   ],
+   "rotY": -1.3682670644091246,
+   "width": 6.822852579383495,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.501027567464369,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -130.69906,
+    1.25,
+    -50.16791
+   ],
+   "doorNormalGlb": [
+    -0.979561,
+    0.201148
+   ]
+  },
+  {
+   "id": "facade-553893868-s72fd1",
+   "parentBuilding": "bld-553893868",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -140.95499999999998,
+    -86.485
+   ],
+   "dir": [
+    -0.21793361821912915,
+    -0.9759635946334877
+   ],
+   "rotY": -2.921895958848522,
+   "width": 4.9602260029156,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.091249720641432,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -139.97388,
+    1.25,
+    -87.09857
+   ],
+   "doorNormalGlb": [
+    -0.217934,
+    -0.975964
+   ]
+  },
+  {
+   "id": "facade-553893873-1dv18wh",
+   "parentBuilding": "bld-553893873",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -154.6025,
+    -104.595
+   ],
+   "dir": [
+    -0.9765895119081252,
+    0.2151114251522919
+   ],
+   "rotY": -1.3539904021863964,
+   "width": 5.746324255556762,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.2641913362224877,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -155.25043,
+    1.25,
+    -105.74678
+   ],
+   "doorNormalGlb": [
+    -0.97659,
+    0.215111
+   ]
+  },
+  {
+   "id": "facade-553893873-1wqo90k",
+   "parentBuilding": "bld-553893873",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -144.85500000000002,
+    -113.155
+   ],
+   "dir": [
+    0.2345444004094843,
+    0.9721054079864773
+   ],
+   "rotY": 0.23674986854217972,
+   "width": 6.372354221165051,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.4019179286563113,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -146.12751,
+    1.25,
+    -112.45193
+   ],
+   "doorNormalGlb": [
+    0.234544,
+    0.972105
+   ]
+  },
+  {
+   "id": "facade-553893873-lvelz",
+   "parentBuilding": "bld-553893873",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -153.2875,
+    -98.625
+   ],
+   "dir": [
+    -0.9765895119081252,
+    0.2151114251522919
+   ],
+   "rotY": -1.3539904021863964,
+   "width": 5.746324255556762,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.2641913362224877,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -153.93543,
+    1.25,
+    -99.77678
+   ],
+   "doorNormalGlb": [
+    -0.97659,
+    0.215111
+   ]
+  },
+  {
+   "id": "facade-553893873-p680hw",
+   "parentBuilding": "bld-553893873",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -152.355,
+    -108.58500000000001
+   ],
+   "dir": [
+    0.3269429584915655,
+    0.945044074047757
+   ],
+   "rotY": 0.33306694373842216,
+   "width": 5.778989731778387,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.2713777409912452,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -153.43063,
+    1.25,
+    -107.80549
+   ],
+   "doorNormalGlb": [
+    0.326943,
+    0.945044
+   ]
+  },
+  {
+   "id": "facade-553893884-10s9dlb",
+   "parentBuilding": "bld-553893884",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -185.39166666666668,
+    -213.475
+   ],
+   "dir": [
+    0.9706111189255185,
+    -0.24065339353134607
+   ],
+   "rotY": 1.8138352991785889,
+   "width": 4.309655966676585,
+   "height": 4.2,
+   "doorW": 1.7238623866706342,
+   "doorX": -0.9481243126688488,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -184.78981,
+    1.25,
+    -212.64739
+   ],
+   "doorNormalGlb": [
+    0.970611,
+    -0.240653
+   ]
+  },
+  {
+   "id": "facade-553893884-132fdic",
+   "parentBuilding": "bld-553893884",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -180.00166666666667,
+    -194.35333333333332
+   ],
+   "dir": [
+    0.9536508096261742,
+    -0.3009154919563673
+   ],
+   "rotY": 1.8764488221606692,
+   "width": 4.86271629670313,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0697975852746886,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -179.31259,
+    1.25,
+    -193.44897
+   ],
+   "doorNormalGlb": [
+    0.953651,
+    -0.300915
+   ]
+  },
+  {
+   "id": "facade-553893884-1476nxi",
+   "parentBuilding": "bld-553893884",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -176.88833333333332,
+    -184.48666666666665
+   ],
+   "dir": [
+    0.9536508096261742,
+    -0.3009154919563673
+   ],
+   "rotY": 1.8764488221606692,
+   "width": 4.86271629670313,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0697975852746886,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -176.19926,
+    1.25,
+    -183.58231
+   ],
+   "doorNormalGlb": [
+    0.953651,
+    -0.300915
+   ]
+  },
+  {
+   "id": "facade-553893884-166j4ms",
+   "parentBuilding": "bld-553893884",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -189.257,
+    -248.756
+   ],
+   "dir": [
+    -0.9989515884249058,
+    0.04577907800903964
+   ],
+   "rotY": -1.5250012436352345,
+   "width": 5.0512157530638095,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.111267465674038,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -189.69247,
+    1.25,
+    -249.84848
+   ],
+   "doorNormalGlb": [
+    -0.998952,
+    0.045779
+   ]
+  },
+  {
+   "id": "facade-553893884-1axecjw",
+   "parentBuilding": "bld-553893884",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -187.59833333333333,
+    -222.375
+   ],
+   "dir": [
+    0.9706111189255185,
+    -0.24065339353134607
+   ],
+   "rotY": 1.8138352991785889,
+   "width": 4.309655966676585,
+   "height": 4.2,
+   "doorW": 1.7238623866706342,
+   "doorX": -0.9481243126688488,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -186.99648,
+    1.25,
+    -221.54739
+   ],
+   "doorNormalGlb": [
+    0.970611,
+    -0.240653
+   ]
+  },
+  {
+   "id": "facade-553893884-1gp0pdi",
+   "parentBuilding": "bld-553893884",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -173.775,
+    -174.62
+   ],
+   "dir": [
+    0.9536508096261742,
+    -0.3009154919563673
+   ],
+   "rotY": 1.8764488221606692,
+   "width": 4.86271629670313,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0697975852746886,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -173.08593,
+    1.25,
+    -173.71564
+   ],
+   "doorNormalGlb": [
+    0.953651,
+    -0.300915
+   ]
+  },
+  {
+   "id": "facade-553893884-1i2mfu2",
+   "parentBuilding": "bld-553893884",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -188.273,
+    -227.284
+   ],
+   "dir": [
+    -0.9989515884249058,
+    0.04577907800903964
+   ],
+   "rotY": -1.5250012436352345,
+   "width": 5.0512157530638095,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.111267465674038,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -188.70847,
+    1.25,
+    -228.37648
+   ],
+   "doorNormalGlb": [
+    -0.998952,
+    0.045779
+   ]
+  },
+  {
+   "id": "facade-553893884-1m5i1s2",
+   "parentBuilding": "bld-553893884",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -188.765,
+    -238.01999999999998
+   ],
+   "dir": [
+    -0.9989515884249058,
+    0.04577907800903964
+   ],
+   "rotY": -1.5250012436352345,
+   "width": 5.0512157530638095,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.111267465674038,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -189.20047,
+    1.25,
+    -239.11248
+   ],
+   "doorNormalGlb": [
+    -0.998952,
+    0.045779
+   ]
+  },
+  {
+   "id": "facade-553893884-1nan1ch",
+   "parentBuilding": "bld-553893884",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -178.445,
+    -189.42
+   ],
+   "dir": [
+    0.9536508096261742,
+    -0.3009154919563673
+   ],
+   "rotY": 1.8764488221606692,
+   "width": 4.86271629670313,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0697975852746886,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -177.75593,
+    1.25,
+    -188.51564
+   ],
+   "doorNormalGlb": [
+    0.953651,
+    -0.300915
+   ]
+  },
+  {
+   "id": "facade-553893884-1pnzvlv",
+   "parentBuilding": "bld-553893884",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -181.45666666666668,
+    -199.225
+   ],
+   "dir": [
+    0.9626237683826456,
+    -0.2708421690667735
+   ],
+   "rotY": 1.8450641190741626,
+   "width": 4.696954457707441,
+   "height": 4.2,
+   "doorW": 1.8787817830829763,
+   "doorX": -1.0333299806956369,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -180.80619,
+    1.25,
+    -198.33457
+   ],
+   "doorNormalGlb": [
+    0.962624,
+    -0.270842
+   ]
+  },
+  {
+   "id": "facade-553893884-1ucxa9e",
+   "parentBuilding": "bld-553893884",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -188.519,
+    -232.652
+   ],
+   "dir": [
+    -0.9989515884249058,
+    0.04577907800903964
+   ],
+   "rotY": -1.5250012436352345,
+   "width": 5.0512157530638095,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.111267465674038,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -188.95447,
+    1.25,
+    -233.74448
+   ],
+   "doorNormalGlb": [
+    -0.998952,
+    0.045779
+   ]
+  },
+  {
+   "id": "facade-553893884-3jppso",
+   "parentBuilding": "bld-553893884",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -172.21833333333333,
+    -169.68666666666667
+   ],
+   "dir": [
+    0.9536508096261742,
+    -0.3009154919563673
+   ],
+   "rotY": 1.8764488221606692,
+   "width": 4.86271629670313,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0697975852746886,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -171.52926,
+    1.25,
+    -168.78231
+   ],
+   "doorNormalGlb": [
+    0.953651,
+    -0.300915
+   ]
+  },
+  {
+   "id": "facade-553893884-8x81by",
+   "parentBuilding": "bld-553893884",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -186.495,
+    -217.925
+   ],
+   "dir": [
+    0.9706111189255185,
+    -0.24065339353134607
+   ],
+   "rotY": 1.8138352991785889,
+   "width": 4.309655966676585,
+   "height": 4.2,
+   "doorW": 1.7238623866706342,
+   "doorX": -0.9481243126688488,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -185.89315,
+    1.25,
+    -217.09739
+   ],
+   "doorNormalGlb": [
+    0.970611,
+    -0.240653
+   ]
+  },
+  {
+   "id": "facade-553893884-k83fn",
+   "parentBuilding": "bld-553893884",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -184.16333333333333,
+    -208.845
+   ],
+   "dir": [
+    0.9626237683826456,
+    -0.2708421690667735
+   ],
+   "rotY": 1.8450641190741626,
+   "width": 4.696954457707441,
+   "height": 4.2,
+   "doorW": 1.8787817830829763,
+   "doorX": -1.0333299806956369,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -183.51285,
+    1.25,
+    -207.95457
+   ],
+   "doorNormalGlb": [
+    0.962624,
+    -0.270842
+   ]
+  },
+  {
+   "id": "facade-553893884-l56prr",
+   "parentBuilding": "bld-553893884",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -175.33166666666668,
+    -179.55333333333334
+   ],
+   "dir": [
+    0.9536508096261742,
+    -0.3009154919563673
+   ],
+   "rotY": 1.8764488221606692,
+   "width": 4.86271629670313,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.0697975852746886,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -174.64259,
+    1.25,
+    -178.64897
+   ],
+   "doorNormalGlb": [
+    0.953651,
+    -0.300915
+   ]
+  },
+  {
+   "id": "facade-553893884-sed2qn",
+   "parentBuilding": "bld-553893884",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -182.81,
+    -204.035
+   ],
+   "dir": [
+    0.9626237683826456,
+    -0.2708421690667735
+   ],
+   "rotY": 1.8450641190741626,
+   "width": 4.696954457707441,
+   "height": 4.2,
+   "doorW": 1.8787817830829763,
+   "doorX": -1.0333299806956369,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -182.15952,
+    1.25,
+    -203.14457
+   ],
+   "doorNormalGlb": [
+    0.962624,
+    -0.270842
+   ]
+  },
+  {
+   "id": "facade-553893884-zl07rk",
+   "parentBuilding": "bld-553893884",
+   "zone": "bazaar",
+   "trade": "字画店",
+   "doorVariant": "offsetLeft",
+   "position": [
+    -189.011,
+    -243.388
+   ],
+   "dir": [
+    -0.9989515884249058,
+    0.04577907800903964
+   ],
+   "rotY": -1.5250012436352345,
+   "width": 5.0512157530638095,
+   "height": 4.2,
+   "doorW": 1.9,
+   "doorX": -1.111267465674038,
+   "glbSource": "zone-bazaar.glb",
+   "doorFrontCenterGlb": [
+    -189.44647,
+    1.25,
+    -244.48048
+   ],
+   "doorNormalGlb": [
+    -0.998952,
+    0.045779
+   ]
+  }
+ ]
+}

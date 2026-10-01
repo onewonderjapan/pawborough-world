@@ -159,6 +159,128 @@ function makeWorld({ edge = false, wall = false } = {}) {
   physics.world.free();
 }
 
+// --- 工单 A：有符号速度——前进→刹停→倒车 / 反向制动 / Shift 不加速倒车 / 空格纯刹车 ---
+{
+  const physics = makeWorld();
+  const ride = new RideController({ RAPIER, physics, cruise: 5.5, max: 7.0, reverseMax: 1.6 });
+  ride.teleport([0, 0.05, 8], 0, 0);
+  for (let i = 0; i < 30; i++) ride.step(1 / 60);
+
+  // 正常前进到巡航，然后一直按住 S：先真刹车到 0，继续按住进入低速倒车
+  ride.setMoveInput(1, 0);
+  for (let i = 0; i < 150; i++) ride.step(1 / 60);
+  check('倒车前先有正向巡航', ride.speed > 4.8, `v=${ride.speed.toFixed(2)}`);
+  ride.setMoveInput(-1, 0);
+  let crossedZero = false, minSpeed = 0;
+  for (let i = 0; i < 240; i++) {
+    ride.step(1 / 60);
+    if (ride.speed <= 0) crossedZero = true;
+    minSpeed = Math.min(minSpeed, ride.speed);
+  }
+  check('按住 S 先刹停再进入倒车', crossedZero && Math.abs(minSpeed + 1.6) < 0.05,
+    `min=${minSpeed.toFixed(3)}（期望 -1.6）`);
+  check('倒车不超低速上限 1.6', ride.speed >= -1.6 - 1e-9 && ride.speed < -1.5, `v=${ride.speed.toFixed(3)}`);
+
+  // Shift 不加速倒车
+  ride.setRunning(true);
+  for (let i = 0; i < 60; i++) ride.step(1 / 60);
+  check('Shift 不加速倒车（仍 ≤1.6）', Math.abs(ride.speed + 1.6) < 0.05, `v=${ride.speed.toFixed(3)}`);
+  ride.setRunning(false);
+
+  // 轮相位符号：signedTravel 增量为负（倒车反转）；unsigned distance 仍单调增
+  const st0 = ride.signedTravel, d0 = ride.distance;
+  for (let i = 0; i < 30; i++) ride.step(1 / 60);
+  check('倒车阶段 signedTravel 增量为负（轮反转）', ride.signedTravel < st0 - 0.1,
+    `Δ=${(ride.signedTravel - st0).toFixed(3)}`);
+  check('unsigned distance 口径不变（仍累计）', ride.distance > d0 + 0.1);
+
+  // 全程只倒车的控制器：signedTravel 为负（前进从未发生）
+  {
+    const physics2 = makeWorld();
+    const rev = new RideController({ RAPIER, physics: physics2 });
+    rev.teleport([0, 0.05, 0], 0, 0);
+    physics2.world.step();
+    rev.setMoveInput(-1, 0);
+    for (let i = 0; i < 120; i++) rev.step(1 / 60);
+    check('纯倒车控制器 signedTravel < 0（符号正确）', rev.signedTravel < -0.5, `signed=${rev.signedTravel.toFixed(3)}`);
+    rev.dispose();
+    physics2.world.free();
+  }
+
+  // 从倒车按 W：先制动到 0 再前进
+  ride.setMoveInput(1, 0);
+  let sawZero = false;
+  for (let i = 0; i < 240; i++) { ride.step(1 / 60); if (ride.speed === 0) sawZero = true; }
+  check('W 从倒车先制动到 0 再前进', sawZero && ride.speed > 4.8, `end=${ride.speed.toFixed(2)}`);
+
+  // 空格纯刹车：油门按住时从前进刹到 0，不反向；松开空格且无油门 → 保持 0
+  ride.setBrake(true);
+  for (let i = 0; i < 60; i++) ride.step(1 / 60);
+  check('空格刹车停死且不换向（W 仍按住）', ride.speed === 0, `v=${ride.speed.toFixed(3)}`);
+  ride.setBrake(false);
+  ride.clearKeys();
+  for (let i = 0; i < 30; i++) ride.step(1 / 60);
+  check('空格松开且无油门不自动起步', ride.speed === 0, `v=${ride.speed.toFixed(3)}`);
+  ride.dispose();
+  physics.world.free();
+}
+
+// --- 工单 A：车尾撞墙——倒车被墙挡住，不位移、signedTravel 不空转 ---
+{
+  const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
+  const groundCollider = world.createCollider(RAPIER.ColliderDesc.cuboid(50, 0.5, 50).setTranslation(0, -0.5, 0));
+  // 墙在车尾（+Z，heading 0 时后方）
+  const wallCollider = world.createCollider(RAPIER.ColliderDesc.cuboid(20, 2, 0.1).setTranslation(0, 1, 1.65));
+  world.step();
+  const ride = new RideController({ RAPIER, physics: { world, groundCollider } });
+  ride.teleport([0, 0.035, 0], 0, 0);
+  world.step();
+  ride.setMoveInput(1, 0);
+  for (let i = 0; i < 90; i++) ride.step(1 / 60);          // 先开向远离后墙
+  ride.setMoveInput(-1, 0);
+  for (let i = 0; i < 300; i++) ride.step(1 / 60);         // 倒向墙
+  const feet = ride.feetPosition();
+  const st1 = ride.signedTravel;
+  for (let i = 0; i < 60; i++) ride.step(1 / 60);
+  const st2 = ride.signedTravel, feet2 = ride.feetPosition();
+  let overlap = false;
+  const pos = ride.body.translation(), rot = ride.body.rotation();
+  world.intersectionsWithShape(pos, rot, ride.collider.shape, (c) => {
+    if (c.handle === wallCollider.handle) overlap = true;
+    return true;
+  });
+  check('倒车撞墙：车体不与后墙交叠', !overlap, `feet=${feet2.map(v => +v.toFixed(2))}`);
+  check('倒车撞墙：不穿墙不飘移（车尾停住）', feet2[2] < 1.65 - 0.8, `z=${feet2[2].toFixed(2)}`);
+  check('倒车撞墙：signedTravel 停止累计（轮不空转）', Math.abs(st2 - st1) < 0.02,
+    `Δ=${(st2 - st1).toFixed(4)}`);
+  ride.dispose();
+  world.free();
+}
+
+// --- 工单 A：倒车驶离支撑边缘——车尾探路，停住不飘下 ---
+{
+  const physics = makeWorld({ edge: true });
+  const ride = new RideController({ RAPIER, physics });
+  // heading π = 车头朝 +Z；edge 地面 z∈[-3,3]，向前开会让车尾逼近 z=3 边缘
+  ride.teleport([0, 0.035, 1.4], Math.PI, 0);
+  physics.world.step();
+  ride.setMoveInput(1, 0);                                 // W = 朝车头(+Z 方向的反向即 -Z?) 验证车尾探针
+  for (let i = 0; i < 240; i++) ride.step(1 / 60);
+  // heading π：forward = (-sin π, -cos π) = (0, +1)?? sin π≈0, -cos π=+1 → 车头朝 +Z… 车尾朝 -Z。
+  // 让车尾朝边缘：换 heading 0，车尾朝 +Z 边缘，按 S 倒车。
+  ride.teleport([0, 0.035, 1.4], 0, 0);
+  physics.world.step();
+  ride.setMoveInput(-1, 0);                                // S 倒车 → 车尾 (+Z) 驶向边缘 z=3
+  for (let i = 0; i < 240; i++) ride.step(1 / 60);
+  const feet = ride.feetPosition();
+  check('倒车到边缘前停住（车尾探针生效）', feet[2] <= 2.4 && feet[1] > -0.5,
+    `feet=${feet.map(v => +v.toFixed(2))}`);
+  check('边缘停住上报 aheadBlocked/unsupported', ride.lastStep?.aheadBlocked === true || ride.lastStep?.unsupported === true,
+    `last=${JSON.stringify({ a: ride.lastStep?.aheadBlocked, u: ride.lastStep?.unsupported })}`);
+  ride.dispose();
+  physics.world.free();
+}
+
 // --- 安全下车点 ---
 {
   const feet = [0, 0, 0], yaw = 0;

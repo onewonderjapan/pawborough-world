@@ -70,15 +70,19 @@ M = {
     'wood': mat('oxblood-stained-timber', '542c25', .65),  # 车篮木（同 world 货箱木色）
 }
 
-# --- 尺寸（米；真实灰猫骑手：hips y≈0.218、肩 y≈0.427、总高 0.964） ---
+# --- 尺寸（米；工单 B 重标定 v2：以真实皮肤簇测量反推，非初值 PASS）---
+# 实测口径：坐姿髋关节（leg 骨原点）在 seatTop+0.015-0.02，爪簇臂长 ≈0.21，
+# 脚簇腿长 ≈0.17；脚自然下垂在 GLB z≈+0.058 / y≈0.15（座 0.31 时）。
+# 据此反推：踏板轨道中心 GLB (y0.17, z+0.05)（下止点距脚簇 ≈0.02）、
+# 握把 GLB (±0.27, y0.39, z-0.14)；按实际蒙皮爪簇校准。
 WHEEL_R = 0.17
-WB = 0.36                       # 轴距半长（y 向前 +）
-BB = (0.0, 0.02, 0.12)          # 五通（低曲柄：脚位 0.04–0.20 ≈ 髋高）
-CP = 0.08                       # 曲柄半径
-SEAT = (0.0, -0.05, 0.19)       # 座管顶（坐面 0.22 ≈ 髋高 0.218）
-SEAT_TOP = 0.22
-HEAD_LO = (0.0, 0.355, 0.26)    # 夹管下端
-HEAD = (0.0, 0.33, 0.40)        # 车把中点（≈ 肩高 0.427，前伸自然）
+WB = 0.36                       # 轴距半长（y 向前 +；与 vehicle.js AXLE_HALF_M 一致）
+BB = (0.0, -0.05, 0.16)         # GLB z=+0.05 / y=0.16，匹配脚底轨迹
+CP = 0.025                      # 曲柄半径（GOAL B .025–.045 下限起步，按测量调）
+SEAT = (0.0, -0.05, 0.29)
+SEAT_TOP = 0.32
+HEAD_LO = (0.0, 0.19, 0.27)
+HEAD = (0.0, 0.14, 0.39)       # Blender +Y -> GLB -Z；留出转向时的前爪可达余量
 
 
 def cyl(name, a, b, r, m='iron', sides=10):
@@ -155,7 +159,7 @@ join_selected('frame')
 # 座位 / 车篮 / 后货架
 box('saddle', (0, SEAT[1], SEAT_TOP - 0.012), (0.10, 0.22, 0.03), 'dark')
 basket_parts = []
-BC = (0, 0.40, 0.33)   # 车篮中心
+BC = (0, 0.36, 0.30)   # 车篮中心（握把前方、避开爪部）
 for (c, s) in [
     ((BC[0], BC[1], BC[2] - 0.065), (0.26, 0.18, 0.012)),   # 底
     ((BC[0], BC[1] - 0.085, BC[2]), (0.26, 0.012, 0.13)),   # 后壁（贴把立）
@@ -175,12 +179,15 @@ bpy.ops.object.empty_add(location=(HEAD[0], HEAD[1], (HEAD_LO[2] + HEAD[2]) / 2)
 steering = bpy.context.object
 steering.name = 'steering'
 steering.empty_display_size = 0.05
+GRIP_X = 0.27
 steering_parts = [
     rod('fork-iron', HEAD_LO, (0, WB, WHEEL_R), 0.014),
-    rod('handlebar-iron', (-0.20, HEAD[1], HEAD[2]), (0.20, HEAD[1], HEAD[2]), 0.014),
-    box('handlebar-grip-dark', (-0.225, HEAD[1], HEAD[2]), (0.05, 0.024, 0.024), 'dark'),
-    box('handlebar-grip-dark', (0.225, HEAD[1], HEAD[2]), (0.05, 0.024, 0.024), 'dark'),
+    rod('handlebar-iron', (-0.29, HEAD[1], HEAD[2]), (0.29, HEAD[1], HEAD[2]), 0.014),
+    box('handlebar-grip-dark', (-GRIP_X, HEAD[1], HEAD[2]), (0.12, 0.024, 0.024), 'dark'),
+    box('handlebar-grip-dark', (GRIP_X, HEAD[1], HEAD[2]), (0.12, 0.024, 0.024), 'dark'),
 ]
+for o in steering_parts:
+    parent_keep(o, steering)
 
 
 def empty(name, loc, parent=None):
@@ -193,8 +200,8 @@ def empty(name, loc, parent=None):
     return e
 
 
-handle_l = empty('handle-L', (-0.225, HEAD[1], HEAD[2]), steering)
-handle_r = empty('handle-R', (0.225, HEAD[1], HEAD[2]), steering)
+handle_l = empty('handle-L', (-GRIP_X, HEAD[1], HEAD[2]), steering)
+handle_r = empty('handle-R', (GRIP_X, HEAD[1], HEAD[2]), steering)
 
 bpy.ops.object.empty_add(location=(0, WB, WHEEL_R))
 fw = bpy.context.object
@@ -222,15 +229,15 @@ crank = bpy.context.object
 crank.name = 'crank'
 crank.empty_display_size = 0.03
 crank_parts = [
-    rod('crank-arm-f', (0.055, BB[1], BB[2]), (0.055, BB[1], BB[2] + CP), 0.011),
-    box('pedal-f', (0.055, BB[1] + 0.012, BB[2] + CP), (0.08, 0.05, 0.013), 'dark'),
-    rod('crank-arm-b', (-0.055, BB[1], BB[2]), (-0.055, BB[1], BB[2] - CP), 0.011),
-    box('pedal-b', (-0.055, BB[1] - 0.012, BB[2] - CP), (0.08, 0.05, 0.013), 'dark'),
+    rod('crank-arm-f', (0.135, BB[1], BB[2]), (0.135, BB[1], BB[2] + CP), 0.011),
+    box('pedal-f', (0.135, BB[1] + 0.012, BB[2] + CP), (0.08, 0.05, 0.013), 'dark'),
+    rod('crank-arm-b', (-0.135, BB[1], BB[2]), (-0.135, BB[1], BB[2] - CP), 0.011),
+    box('pedal-b', (-0.135, BB[1] - 0.012, BB[2] - CP), (0.08, 0.05, 0.013), 'dark'),
 ]
 for o in crank_parts:
     parent_keep(o, crank)
-pedal_l = empty('pedal-L', (-0.055, BB[1] - 0.012, BB[2] - CP), crank)
-pedal_r = empty('pedal-R', (0.055, BB[1] + 0.012, BB[2] + CP), crank)
+pedal_l = empty('pedal-L', (-0.135, BB[1] - 0.012, BB[2] - CP), crank)
+pedal_r = empty('pedal-R', (0.135, BB[1] + 0.012, BB[2] + CP), crank)
 
 # --- 锚点/座位 socket（Three 端骑乘拟合/上下车/车篮参考） ---
 empty('seat', (0, SEAT[1], SEAT_TOP))
@@ -295,9 +302,9 @@ measure = {
     'fileBytes': len(data),
     'sha256': hashlib.sha256(data).hexdigest(),
     'generatedAt': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
-    'r1Note': 'R0-3 fix: wheel axle along X (endpoints vary cx), spokes are YZ-plane diameters, '
-              'seat lowered to cat hips height, sockets for seat/handles/pedals/basket added, '
-              'steering group contains fork+handlebar+front-wheel for visible steer feedback.',
+    'r2Note': '工单 B 重标定：座高 .34（真实坐姿，髋骨落座）、车把后移（GLB z≈-0.18、y≈0.39、'
+              '握把 x±0.285）、踏板加宽 x±0.135、小曲柄 .025、五通抬到 0.155；'
+              '终值以皮肤簇接触测量（<=.035 手/.05 脚）为准。',
 }
 (out / 'measurements.json').write_text(json.dumps(measure, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 

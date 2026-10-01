@@ -21,6 +21,7 @@ import { loadFoodCatalog } from './foods.js';
 import { RideController, pickDismountSpot } from './vehicle.js';
 import { canTakeNow, takeFailHint, computeHint, TAKE_RADIUS_M, MOUNT_RADIUS_M, nearestStall } from './interaction.js';
 import { loadBikeRig, BikeView, applyRiderPose } from './bike-view.js';
+import { createClosedFacades, closedFacadeHint } from './closed-facades.js';
 
 // GOAL.md play capsule/speed (小吃工单 20261001): r=0.28 / halfHeight=0.20 /
 // eye=0.80 / walk 2.6 m/s / Shift run 4.2 m/s. Bike cruise/max ride speeds live
@@ -38,6 +39,7 @@ export const PLAY_PROFILE = {
   rideCameraDistance: 3.3,
   // R1（review R0-1）：相机被墙压到该距离以下时隐藏角色本体（不移动玩家物理位置）
   avatarHideDistance: 0.8,
+  rideAvatarHideDistance: 1.15,
   // 骑车（GOAL.md 自行车）：巡航 5.5，Shift 最高 7
   bikeCruise: 5.5,
   bikeMax: 7.0,
@@ -131,6 +133,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     camera,
     shoulderHeight: PLAY_PROFILE.shoulderHeight,
     distance: PLAY_PROFILE.cameraDistance,
+    margin: 0.20, // 闭门门框比原墙面前伸最多 0.19m，镜头保留相应余量
   });
   let manifestLoaded = manifest ? Promise.resolve(manifest) : null;
 
@@ -263,8 +266,10 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     updateCamera: ({ camera: cam, controller, dt }) => {
       const place = playCamera.update({ controller, castRay, dt });
       const avatar = core.state.avatar;
-      if (avatar && !gameState.vehicle.riding) {
-        avatar.root.visible = !place || place.applied >= PLAY_PROFILE.avatarHideDistance;
+      if (avatar) {
+        const limit = gameState.vehicle.riding ? PLAY_PROFILE.rideAvatarHideDistance : PLAY_PROFILE.avatarHideDistance;
+        avatar.root.visible = !place || place.applied >= limit;
+        if (bikeView && gameState.vehicle.riding) bikeView.root.visible = avatar.root.visible;
       }
       return place;
     },
@@ -309,9 +314,28 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   let foods = null;             // FoodCatalog
   let bikeView = null;          // BikeView（车网格 + 轮转）
   let rideCtl = null;           // RideController（骑乘时的位移权威）
+  window.addEventListener('pb:mode', ({ detail }) => {
+    if (detail?.mode !== 'orbit') return;
+    if (core.state.avatar) core.state.avatar.root.visible = true;
+    if (bikeView) bikeView.root.visible = true;
+  });
   let pendingSave = null;       // 存档恢复（入场后应用）
   let bikePlaced = false;
   let placedMarker = null;      // 目标世界小标记
+
+  // ---- 闭门叠加层（工单 C）：不可进入的展示门面第一眼看出关门 ----
+  // 懒加载失败不假报 ready、不影响步行；owner 负责几何/材质/贴图释放。
+  let facadesHintAt = 0;
+  const closedFacades = createClosedFacades({
+    scene,
+    onHint: (msg) => {
+      const now = performance.now();
+      if (now - facadesHintAt < 8000) return;   // 提示节流，别刷屏
+      facadesHintAt = now;
+      hud.message(msg);
+    },
+  });
+  closedFacades.install();
 
   (async () => {
     const [layout, sockets] = await Promise.all([
@@ -548,9 +572,9 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     refreshHeldModel();
     playCamera.shoulderHeight = PLAY_PROFILE.rideShoulderHeight;
     playCamera.distance = PLAY_PROFILE.rideCameraDistance;
-    bikeView.attachRider(core.state.avatar);
+    bikeView.attachRider(core.state.avatar, rideCtl);
     window.dispatchEvent(new CustomEvent('pb:ride-change', { detail: { riding: true } }));
-    hud.message('骑上共享自行车（W 加速 · Shift 冲刺 · S/空格 刹车 · A/D 转向 · R 下车 · 鼠标自由看）');
+    hud.message('骑上共享自行车（W 加速 · S 刹停后倒车 · Space 刹车 · Shift 冲刺 · A/D 转向 · R 下车 · 鼠标自由看）');
     saveNow();
   }
 
@@ -571,7 +595,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     gameState.setVehicleView(viewYaw ?? heading);
     playCamera.shoulderHeight = PLAY_PROFILE.rideShoulderHeight;
     playCamera.distance = PLAY_PROFILE.rideCameraDistance;
-    bikeView.attachRider(core.state.avatar);
+    bikeView.attachRider(core.state.avatar, rideCtl);
     window.dispatchEvent(new CustomEvent('pb:ride-change', { detail: { riding: true, restored: true } }));
     refreshHeldModel();
     hud.message('恢复骑乘（车与位置按上次存档还原）');
@@ -848,10 +872,12 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       bikePlaced,
       stallsReady: stalls.length,
       foodsReady: !!foods,
+      ...closedFacades.status(),          // 闭门叠加层只读状态（工单 C）
       minimapMode: minimap.mode,
       saveKey: STORAGE_KEY,
     };
   }
 
-  return { profile, core, bind, status, playCamera, gameState, ride: () => rideCtl };
+  return { profile, core, bind, status, playCamera, gameState, ride: () => rideCtl,
+    closedFacades, closedFacadeHint };
 }

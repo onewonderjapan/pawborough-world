@@ -170,6 +170,14 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
   }
   addEventListener('keydown', (e) => {
     if (mode !== 'walk') return;
+    if (play && e.code === 'Escape') {
+      e.preventDefault();
+      resetLocalKeys();
+      play.session.pause(controller, 'escape');
+      document.exitPointerLock?.();
+      play.onPauseChange?.(true);
+      return;
+    }
     if (play && e.code === 'KeyP') {          // play：P 键暂停/继续（暂停时清键、清累计器并释放指针锁）
       e.preventDefault();
       if (play.session.paused) play.session.resume(controller);
@@ -182,8 +190,9 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
       if (KEYMAP[e.code] || e.code === 'ShiftLeft' || e.code === 'ShiftRight' || e.code === 'Space') e.preventDefault();
       return;
     }
-    // 骑乘：S/方向下/空格 = 真刹车（不再走 forward=-1 慢滑）
-    if (ridingNow() && (e.code === 'KeyS' || e.code === 'ArrowDown' || e.code === 'Space')) {
+    // 骑乘：空格 = 纯刹车（任何方向只减速到 0，不换向）；S/方向下走 KEYMAP
+    // forward=-1——控制器先真刹车到 0，继续按住进入低速倒车（工单 A）
+    if (ridingNow() && e.code === 'Space') {
       e.preventDefault();
       setBrake(true);
       return;
@@ -202,9 +211,9 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
     applyKeys();
   });
   addEventListener('keyup', (e) => {
-    if (e.code === 'KeyS' || e.code === 'ArrowDown' || e.code === 'Space') {
+    if (e.code === 'Space') {
       if (ridingNow()) setBrake(false);
-      // 步行挡 S/下 的 keyup 照常走 KEYMAP 清键
+      // S/下的 keyup 照常走 KEYMAP 清键（倒车输入随松键归零）
     }
     if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {   // 松开 Shift 即回常速（与模式无关）
       const c = activeCtl();
@@ -320,6 +329,7 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
       anchor,
       camera: camera.position.toArray(),
       cameraRotation: camera.rotation.toArray().slice(0, 3),
+      cameraQuat: camera.quaternion.toArray(),   // 工单 D：Esc 暂停镜头稳定性断言用（只读）
       yaw: controller ? controller.yaw : null,
       pitch: controller ? controller.pitch : null,
       paused: controller ? controller.paused : false,

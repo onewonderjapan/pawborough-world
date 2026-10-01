@@ -36,7 +36,8 @@ avatar.setEatingPose(false);avatar.setHoldingPose?.(false);
 leg.rotateX(.9); // A different last walk phase must not change the riding pose.
 const bikeRoot=new THREE.Group(),seat=new THREE.Object3D();seat.position.y=.4;bikeRoot.add(seat);
 const bike=new BikeView({root:bikeRoot,seat});bike.attachRider(avatar);bike.sit(avatar,0,0);
-check('mounting uses the neutral limb basis rather than the last walking phase',leg.rotation.x<0&&leg.rotation.x>-.8,leg.rotation.x);
+check('mounting without contact sockets restores the neutral limb basis instead of the last walking phase',
+  leg.quaternion.angleTo(avatar.restBoneQuaternions.get('legL')) < 1e-7, leg.rotation.x);
 bike.detachRider(avatar);
 const entry=catalog.byId.get('xiaolongbao'),display=catalog.makeDisplay('xiaolongbao');let disposed=0;
 entry.proto.traverse(o=>{if(o.isMesh)o.geometry.addEventListener('dispose',()=>disposed++);});
