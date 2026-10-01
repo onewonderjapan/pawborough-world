@@ -11,8 +11,11 @@ import { AreaWalkPhysics } from '../src/areaWalkPhysics.js';
 const ZONE_FILES = ['garden', 'pond', 'temple', 'bazaar', 'outer'];
 const CAPSULE = { radius: 0.35, halfHeight: 0.6, eyeHeight: 1.6 };
 const MOUSE_SENS = 0.0022;
+// play 档：一步（1/60 s 固定步）实际校正水平位移超过该值才算“在走”——
+// 撞墙/静止时 Rapier 会把校正吃掉，walk 动画随之回到 idle（web/play/avatar.js）。
+const PLAY_MOVE_EPS_PER_STEP = 0.004;
 
-export function installWalkMode({ scene, camera, renderer, controls, getRoots, hud, extraCollisionZones = () => [], onFeet = null }) {
+export function installWalkMode({ scene, camera, renderer, controls, getRoots, hud, extraCollisionZones = () => [], onFeet = null, play = null }) {
   // ---------- 界面 ----------
   const bar = document.getElementById('bar');
   const sel = document.createElement('select');
@@ -58,6 +61,7 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
       controls.enabled = false;
       enterWalk().catch(e => { if (hud) hud(`步行模式启动失败: ${e.message}`); console.error(e); });
     } else {
+      if (play && controller) play.session.end(controller);   // 捕获脚点/朝向，回游玩时原位恢复
       document.exitPointerLock?.();
       controls.enabled = true;
       // 轨道接管：以当前眼位为机位，目标取视线前方 8 m，衔接自然
@@ -70,13 +74,25 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
   async function enterWalk() {
     await ensurePhysics();
     if (mode !== 'walk') return;                        // 等待期间可能已切回轨道
-    teleportTo(anchors[anchor] || anchors.main);
-    if (hud) hud(`步行模式（WASD 移动 · 点击画面锁定鼠标）· 锚点 ${anchor}`);
+    if (play) {
+      // play 档：首次进入才出生，之后由 session 恢复捕获的脚点/朝向
+      const a = anchors[anchor] || anchors.main;
+      const [x, , z] = a;
+      const spawnFeet = [x, groundY(x, z) ?? 0.5, z];
+      const outcome = play.session.begin(controller, { spawnFeet });
+      if (play.onEnter) play.onEnter({ controller, outcome });
+      if (hud) hud(play.session.paused ? '游玩已暂停（继续 或 点击画面）' : '游玩模式（WASD 移动 · 鼠标视角 · P 暂停）');
+    } else {
+      teleportTo(anchors[anchor] || anchors.main);
+      if (hud) hud(`步行模式（WASD 移动 · 点击画面锁定鼠标）· 锚点 ${anchor}`);
+    }
   }
   function teleportTo(a) {
     const [x, , z] = a;
     const feetY = groundY(x, z) ?? 0.5;
-    controller.teleport([x, feetY, z], 0, 0);
+    const feet = [x, feetY, z];
+    if (play) play.session.relocate(controller, feet, 0);  // play：显式回锚点走 session 记录
+    else controller.teleport(feet, 0, 0);
   }
   function groundY(x, z) {
     const ray = new RAPIER.Ray({ x, y: 8, z }, { x: 0, y: -1, z: 0 });
@@ -110,7 +126,13 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
     if (zonePhysics.zones.has('fangbang')) await addStreetAnchor(readJson);
     anchor = anchors[anchor] ? anchor : 'main';
     sel.value = anchor;
-    controller = new WalkController({ RAPIER, physics, capsule: { ...CAPSULE, spawn: [0, 1, 0] } });
+    controller = new WalkController({
+      RAPIER, physics,
+      // play 档换胶囊/速度（r0.28/h0.2/eye0.8/1.5m/s），未开启 play 时保持 viewer 默认
+      capsule: play
+        ? { ...play.capsule, speed: play.speed, autostep: play.autostep, spawn: [0, 1, 0] }
+        : { ...CAPSULE, spawn: [0, 1, 0] },
+    });
     if (hud) hud(`步行：碰撞就绪（墙 ${physics.wallCount} · 地面 ${physics.groundTriangleCount} 三角）`);
   }
 
@@ -130,6 +152,14 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
   function applyKeys() { if (controller) controller.setMoveInput(keys.forward, keys.right); }
   addEventListener('keydown', (e) => {
     if (mode !== 'walk') return;
+    if (play && e.code === 'KeyP') {          // play：P 键暂停/继续（暂停时清键、清累计器）
+      e.preventDefault();
+      if (play.session.paused) play.session.resume(controller);
+      else play.session.pause(controller, 'user');
+      if (play.onPauseChange) play.onPauseChange(play.session.paused);
+      return;
+    }
+    if (play && play.session.paused) return;   // 暂停期间不吃移动键
     const k = KEYMAP[e.code];
     if (!k) return;
     e.preventDefault();
@@ -144,11 +174,30 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
     applyKeys();
   });
   renderer.domElement.addEventListener('click', () => {
-    if (mode === 'walk' && document.pointerLockElement !== renderer.domElement) renderer.domElement.requestPointerLock();
+    if (mode !== 'walk') return;
+    if (play && play.session.paused) {         // play：点画面即继续（随后重新锁定鼠标）
+      play.session.resume(controller);
+      if (play.onPauseChange) play.onPauseChange(false);
+    }
+    if (document.pointerLockElement !== renderer.domElement) renderer.domElement.requestPointerLock();
   });
   addEventListener('mousemove', (e) => {
-    if (mode === 'walk' && controller && document.pointerLockElement === renderer.domElement)
+    if (mode === 'walk' && controller && document.pointerLockElement === renderer.domElement && !(play && play.session.paused))
       controller.look(e.movementX * MOUSE_SENS, e.movementY * MOUSE_SENS);
+  });
+  // play：失焦 / 指针锁丢失 = 暂停（清键、位置不动）；viewer 档保持原行为不动
+  addEventListener('blur', () => {
+    if (play && mode === 'walk' && controller && !play.session.paused) {
+      play.session.pause(controller, 'blur');
+      if (play.onPauseChange) play.onPauseChange(true);
+    }
+  });
+  document.addEventListener('pointerlockchange', () => {
+    if (play && mode === 'walk' && controller && !play.session.paused
+      && document.pointerLockElement !== renderer.domElement) {
+      play.session.pause(controller, 'lock-lost');
+      if (play.onPauseChange) play.onPauseChange(true);
+    }
   });
 
   bMode.addEventListener('click', () => setMode(mode === 'walk' ? 'orbit' : 'walk'));
@@ -168,6 +217,15 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
     const dt = Math.min(0.25, (now - lastTick) / 1000); // 真实帧长；固定步整形在 WalkController 内部
     lastTick = now;
     controller.step(dt);
+    if (play) {
+      // play 档：按固定步的实际校正位移判定 walk/idle；相机交给第三人称策略
+      const st = controller.lastStep;
+      const moving = !!(st && !play.session.paused
+        && Math.hypot(st.corrected[0], st.corrected[2]) > PLAY_MOVE_EPS_PER_STEP);
+      play.onFrame?.({ feet: controller.feetPosition(), yaw: controller.yaw, moving, grounded: controller.isGrounded(), paused: play.session.paused, dt });
+      play.updateCamera?.({ camera, controller, dt });
+      return;
+    }
     if (onFeet) onFeet(controller.feetPosition());
     const eye = controller.eyePosition();
     camera.position.set(eye[0], eye[1], eye[2]);
@@ -204,6 +262,22 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
     status,
     get zonePhysics() { return zonePhysics; },
     get controller() { return controller; },   // M4：?perf=1 的 CruiseDriver 需要挂同一控制器
+    paused: () => (play ? play.session.paused : controller ? controller.paused : false),
+    // play 专用：HUD 暂停/继续按钮走这里；viewer 档为安全 no-op
+    pause() {
+      if (play && mode === 'walk' && controller && !play.session.paused) {
+        play.session.pause(controller, 'user');
+        if (play.onPauseChange) play.onPauseChange(true);
+      }
+      return status();
+    },
+    resume() {
+      if (play && mode === 'walk' && controller && play.session.paused) {
+        play.session.resume(controller);
+        if (play.onPauseChange) play.onPauseChange(false);
+      }
+      return status();
+    },
     async spawnAt(name) {
       anchor = name; sel.value = name;
       if (mode !== 'walk') setMode('walk');
