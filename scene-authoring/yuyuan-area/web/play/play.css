@@ -53,3 +53,6 @@ body.play-mode #hud { display: none !important; }
   padding: 4px 10px;
   cursor: pointer;
 }
+
+/* Keep development landmark labels off the character during play. */
+body.play-mode:not(.play-viewing) #labels { display: none; }

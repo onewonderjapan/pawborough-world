@@ -50,6 +50,7 @@ export function installPlayHud({ core }) {
   // walk.js 的唯一模式通知点（按钮/enter/exit 都汇到 pb:mode）
   window.addEventListener('pb:mode', (e) => {
     const playing = e.detail?.mode === 'walk';
+    document.body.classList.toggle('play-viewing', !playing);
     bEnter.hidden = playing;          // 游玩中不需要「回到游玩」
     if (playing) message(core.session.paused ? '已暂停' : '');
   });
