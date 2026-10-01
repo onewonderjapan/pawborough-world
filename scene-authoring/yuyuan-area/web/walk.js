@@ -260,6 +260,7 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
   }
   window.__walk = {
     status,
+    mode: () => mode,                          // play HUD/status 需要；viewer 契约只增不改
     get zonePhysics() { return zonePhysics; },
     get controller() { return controller; },   // M4：?perf=1 的 CruiseDriver 需要挂同一控制器
     paused: () => (play ? play.session.paused : controller ? controller.paused : false),

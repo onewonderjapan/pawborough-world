@@ -171,7 +171,9 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   }, 200);
 
   function bind({ walk }) {
-    hud.bind({ walk });
+    // HUD 按钮走 window.__walk 的完整 API（pause/resume/enter/exit 都挂在那里），
+    // main.js 传入的 walk 句柄只有 tick/mode/addCollisionZone。
+    hud.bind({ walk: window.__walk ?? walk });
   }
 
   function status() {
