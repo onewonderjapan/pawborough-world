@@ -87,6 +87,21 @@ const check = (name, cond, detail = '') => {
     const snap = configured.collectionSnapshot();
     check('快照包含发现与当前总数', snap.discovered.includes(extra.id) && snap.requiredCount === four.length);
   }
+  const disabledRegistry = {
+    ...registry,
+    foodsById: new Map(four.map(f => [f.id, { ...f, enabled: f.id !== extra.id }])),
+    requiredFoodIds: new Set(FOODS.map(f => f.id)),
+  };
+  const disabled = new PlayGameState({ foods: [] });
+  disabled.configureCatalog(disabledRegistry);
+  check('禁用食品不进入可玩目标与领取集合', disabled.foods.length === 3 && disabled.take(extra.id).ok === false && disabled.discover(extra.id) === false);
+  const interrupted = new PlayGameState({ foods: four });
+  interrupted.take(extra.id); interrupted.startEat(); interrupted.eatTick(.4);
+  check('资产失败可取消进食但保留手持与收藏', typeof interrupted.cancelEat === 'function');
+  if (typeof interrupted.cancelEat === 'function') {
+    check('取消进食解除忙碌且不盖章', interrupted.cancelEat() === true && interrupted.busyEating === false && interrupted.heldItem === extra.id && interrupted.stamps === 0);
+    check('重复取消无副作用', interrupted.cancelEat() === false);
+  }
 }
 
 // --- 车 ---

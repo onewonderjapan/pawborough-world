@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "taskId": "M01",
-  "stage": "implemented_pending_commit_receipt",
+  "stage": "reviewed_pending_fix_commit",
   "sourceHead": "8833a76e",
   "scope": "Pure validated three-food registry and metadata-first GameState/browser initialization; four future food pose profiles remain templates.",
   "checks": [
@@ -34,6 +34,12 @@
       "result": "PASS",
       "command": "npm --prefix scene-authoring/yuyuan-area run test:play",
       "log": "/home/baibai/outbox/pawborough-national-snacks-20261002/M01-PLAY-TEST.log"
+    },
+    {
+      "name": "review regressions",
+      "result": "PASS",
+      "command": "node tests/play_state.test.mjs; GPU_WEBGL=1 BASE=http://127.0.0.1:5613 node scene-authoring/yuyuan-area/tests/snack-catalog-browser-check.mjs",
+      "note": "Disabled food excluded; catalog error still supports bicycle; failed food cancels restored eating without stamps and preserves held item; actual W movement proven."
     }
   ],
   "worker": {
@@ -49,5 +55,13 @@
     "Current v1 save format is not final migration; M02 adds v2 and preserves collection separately.",
     "Food models still load together in this interim slice; M05 adds per-food streaming."
   ],
-  "recordedAt": "2026-10-02T22:24:18+09:00"
+  "recordedAt": "2026-10-02T22:24:18+09:00",
+  "independentReview": {
+    "model": "gpt-6.1-sol",
+    "effort": "xhigh",
+    "findings": 3,
+    "fixed": 3,
+    "result": "No remaining material issues in focused recheck",
+    "scope": "M01 only"
+  }
 }

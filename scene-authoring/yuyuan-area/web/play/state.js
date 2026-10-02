@@ -55,7 +55,7 @@ export class PlayGameState {
   configureCatalog(registry) {
     if (this.catalogConfigured || !registry?.foodsById || typeof registry.vendorsFor !== 'function') return false;
     if (this.heldItem || this.basketItem || this.eating || this.tasted.size || this.discovered.size) return false;
-    const source = [...registry.foodsById.values()];
+    const source = [...registry.foodsById.values()].filter(food => food.enabled !== false);
     const foods = source.map(food => {
       const vendor = registry.vendorsFor(food.id)[0];
       return {
@@ -147,6 +147,13 @@ export class PlayGameState {
     if (!gate.ok) return gate;
     this.eating = { foodId: this.heldItem, elapsed: 0 };
     return { ok: true, foodId: this.heldItem, duration: EAT_SECONDS };
+  }
+  cancelEat() {
+    if (!this.eating) return false;
+    const foodId = this.eating.foodId;
+    this.eating = null;
+    this._emit({ type: 'eating-cancelled', foodId });
+    return true;
   }
   // 吃的过程中禁止移动/上车（walk.js / vehicle.js 读这个）
   get busyEating() { return !!this.eating; }

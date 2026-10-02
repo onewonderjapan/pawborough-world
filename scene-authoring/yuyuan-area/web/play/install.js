@@ -384,6 +384,8 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       refreshHeldModel();
     } catch (e) {
       foodLoadError = e?.message || String(e);
+      // 恢复中的进食不能因模型失效永远锁住移动；保留手持与收藏，准备好后可重新品尝。
+      if (gameState.cancelEat()) core.state.avatar?.setEatingPose(false);
       console.error('play food assets failed', e);
       hud.message(foodFailureMessage(foodLoadError));
     }
@@ -755,7 +757,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     const walk = window.__walk;
     const controller = walk?.controller;
     if (!controller) return;
-    if (core.state.entered && catalogReady && saveRestoreAttempted && !pendingSave) ensureBikePlaced();
+    if (core.state.entered && !pendingSave && ((catalogReady && saveRestoreAttempted) || catalogError)) ensureBikePlaced();
     applyPendingSaveWhenReady();
 
     // 骑乘视觉/状态同步（不 step）：轮/踏板按真实校正位移（R0-3）
