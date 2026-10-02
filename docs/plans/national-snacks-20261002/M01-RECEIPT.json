@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "taskId": "M01",
-  "stage": "reviewed_pending_fix_commit",
+  "stage": "verified",
   "sourceHead": "8833a76e",
   "scope": "Pure validated three-food registry and metadata-first GameState/browser initialization; four future food pose profiles remain templates.",
   "checks": [
@@ -63,5 +63,6 @@
     "fixed": 3,
     "result": "No remaining material issues in focused recheck",
     "scope": "M01 only"
-  }
+  },
+  "resultCommit": "7b963788d16f36744378cddb5f89938a701567c0"
 }

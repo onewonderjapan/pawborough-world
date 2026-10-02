@@ -61,7 +61,7 @@
   },
   "managementAuthority": "W2",
   "implementation": {
-    "executor": "ZCode GLM-5.3-Flash construction; Codex dispatch and primary review",
+    "executor": "Gemini Flash / GLM Flash construction; Codex design/integration/primary acceptance; owner-authorized sol or Astra reviewers",
     "executionMode": "explicit_task",
     "executionPolicy": "AGENTS.md"
   },
@@ -155,7 +155,7 @@
     }
   },
   "planning": {
-    "stage": "executing_M01",
+    "stage": "executing_M02_M03",
     "planId": "pawborough-national-snacks-20261002",
     "handoff": "docs/LONG-RUN-HANDOFF-20261002.md",
     "spec": "docs/superpowers/specs/2026-10-02-national-snack-atlas-design.md",

@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "planId": "pawborough-national-snacks-20261002",
-  "overallStatus": "active_m01_m03",
+  "overallStatus": "active_m02_m03",
   "executionStarted": true,
   "workersStarted": true,
   "automationCreated": false,
   "cloudChanged": false,
-  "currentTask": "M03",
-  "lastUpdated": "2026-10-02T22:27:34+09:00",
+  "currentTask": "M02",
+  "lastUpdated": "2026-10-02T22:45:31+09:00",
   "baselineSourceHead": "31bae61f002a7bf5e04aac2c82b526909b87e78b",
   "localCompletionTaskIds": [
     "M00",
@@ -84,18 +84,18 @@
       "dependsOn": [
         "M00"
       ],
-      "status": "implemented",
+      "status": "verified",
       "owner": "Codex integrator; bounded agy registry workorder planned",
       "sourceHead": "16abd117b93b722681cbc1ec42c37b32748e5d3f",
-      "resultCommit": null,
+      "resultCommit": "7b963788d16f36744378cddb5f89938a701567c0",
       "evidencePaths": [
         "docs/plans/national-snacks-20261002/M01-RECEIPT.json",
         "tests/play_food_registry.test.mjs",
         "scene-authoring/yuyuan-area/tests/snack-catalog-browser-check.mjs",
         "/home/baibai/outbox/pawborough-national-snacks-20261002/M01-PLAY-TEST.log"
       ],
-      "lastCheck": "2026-10-02T22:24:18+09:00",
-      "nextAction": "Commit M01 files, then record exact resultCommit and mark verified.",
+      "lastCheck": "2026-10-02T22:45:31+09:00",
+      "nextAction": "M02 migration and dependent work may proceed; invalidate only if later related integration changes.",
       "blocker": null
     },
     {
@@ -105,13 +105,13 @@
       "dependsOn": [
         "M01"
       ],
-      "status": "not_started",
-      "owner": null,
-      "sourceHead": null,
+      "status": "running",
+      "owner": "GLM-5.3-Flash pure migration construction; Codex state/install integration",
+      "sourceHead": "7b963788d16f36744378cddb5f89938a701567c0",
       "resultCommit": null,
       "evidencePaths": [],
-      "lastCheck": null,
-      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "lastCheck": "2026-10-02T22:45:31+09:00",
+      "nextAction": "Complete bounded save-migration module and fixtures; integrate and validate old three-taste state in actual browser.",
       "blocker": null
     },
     {
@@ -125,9 +125,13 @@
       "owner": "Codex art design and integration; Gemini Flash / GLM Flash construction",
       "sourceHead": "8833a76e",
       "resultCommit": null,
-      "evidencePaths": [],
+      "evidencePaths": [
+        "scene-authoring/yuyuan-area/inputs/world-art-style.json",
+        "/home/baibai/outbox/pawborough-national-snacks-20261002/M03-FLASH-WORKORDER.md",
+        "/home/baibai/outbox/pawborough-national-snacks-20261002/M03-FLASH-WORKER.log"
+      ],
       "lastCheck": "2026-10-02T22:27:34+09:00",
-      "nextAction": "Opus PID631007 stopped at owner direction before file output; Codex freezes pilot recipe and dispatches Flash implementation.",
+      "nextAction": "Gemini material layer produced; Codex wires before batching, captures three GPU comparison views and tests fallback.",
       "blocker": null
     },
     {
