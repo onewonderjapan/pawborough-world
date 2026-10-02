@@ -1,0 +1,1687 @@
+{
+  "schemaVersion": 1,
+  "status": "m00_geometry_inventory_not_route_acceptance",
+  "sourceCommit": "31bae61f002a7bf5e04aac2c82b526909b87e78b",
+  "sourceFiles": [
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/layout.json",
+      "sha256": "f53fb27d42f5f18ca0939a53aa2adb47a64383b4c9b36181c532a2c275df9829"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/food-sockets.json",
+      "sha256": "1594a12b25ffc4c811abfa359dcc82423ac4cd92e5b5a811c91f7d1a68cbcbf7"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/zones-manifest.json",
+      "sha256": "6eb12546d5f347dc941b132836ca0695a6ed84313df6180a212542e643829762"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/nav-gap.json",
+      "sha256": "2581f2e8b88835c120a186d6a4d5d8b8eedbbfad5bb6defcfac106a70dbdda65"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/commercial-route.json",
+      "sha256": "071267dad3ad33233595737694647411e0ba0364da8074a7eafa3f62bf1d7a24"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/fangbang-route.json",
+      "sha256": "4508f96be8f67ce70600d13136286da0694b0d1d084b066a34f63295ed353617"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/collision-garden.json",
+      "sha256": "f767eca16d2ed35b4476d9a398cd44f3b049a6dc57a947f3886c04e2329bd019"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/collision-pond.json",
+      "sha256": "e9c5b6e87b4d5e2eb51fc2b9d5ae5f3fe539e97de61087b9884dce43dc96445e"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/collision-temple.json",
+      "sha256": "43396002698cc5fc8a171e784b803d65f35891fa1047a6f3755c2f480860b05b"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/collision-bazaar.json",
+      "sha256": "d884de3b5fcf2917184dc7441ac5973a81132e602d781b10f94e573055e6700d"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/collision-outer.json",
+      "sha256": "ae6bd187a94fd57ba6f8b3a42c1801ee14d3a86779882d4f3a72254a661283ac"
+    },
+    {
+      "path": "scene-authoring/yuyuan-area/out-zone/collision-fangbang.json",
+      "sha256": "596dbb6bd5afa0665e2a775da184899c6c8a596164d98223b87a6421eb88ac9f"
+    }
+  ],
+  "method": "Actual ignored out-zone raw zone GLBs plus collision JSON loaded through AreaWalkPhysics into Rapier. A 0.28 m radius/0.20 m half-height play capsule checks registered real ground (Y >= -0.1) and wall overlap at each customer point. A 1.2 x 0.8 m provisional cart footprint checks real ground center/four corners and existing wall overlap; 11 capsule samples check straight approach from a named existing route anchor to a point 1.5 m from cart center. No actual cart has been placed; source route links, line samples and isolated spots are not continuous gameplay-controller traversal, final aisle clearance or line-of-sight acceptance.",
+  "physicsSnapshot": {
+    "zones": [
+      "garden",
+      "pond",
+      "temple",
+      "bazaar",
+      "outer",
+      "fangbang"
+    ],
+    "pending": [],
+    "wallCount": 4273,
+    "groundTriangleCount": 54713
+  },
+  "stallInventory": {
+    "allLayoutStalls": 43,
+    "foodTrayDisplaySockets": 43,
+    "clusters": {
+      "1": 6,
+      "2": 6,
+      "3": 4,
+      "4": 6,
+      "5": 5,
+      "6": 5,
+      "7": 3,
+      "8": 6,
+      "9": 2
+    },
+    "proposedExistingCount": 18,
+    "proposedCartCount": 6
+  },
+  "existingStallCandidates": [
+    {
+      "foodId": "xiaolongbao",
+      "stallId": "stall-5",
+      "cluster": 1,
+      "road": "方浜中路",
+      "counterXZ": [
+        -139.94,
+        23.047
+      ],
+      "trayXYZ": [
+        -139.393,
+        1.01,
+        22.99
+      ],
+      "frontReferenceXZ": [
+        -139.114,
+        30.904
+      ],
+      "candidateCustomerSpots": [
+        {
+          "distanceFromCounterM": 2,
+          "xz": [
+            -139.731,
+            25.037
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 2.6,
+          "xz": [
+            -139.668,
+            25.633
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 1.5,
+          "xz": [
+            -139.783,
+            24.539
+          ],
+          "groundY": -0.4,
+          "wallColliderHandle": null,
+          "staticStandable": false
+        },
+        {
+          "distanceFromCounterM": 3,
+          "xz": [
+            -139.627,
+            26.031
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        }
+      ],
+      "suggestedCustomerXZ": [
+        -139.731,
+        25.037
+      ],
+      "staticSpotStatus": "static_spot_pass",
+      "continuousRouteStatus": "not_tested",
+      "playerInteractionStatus": "not_tested"
+    },
+    {
+      "foodId": "congyoubing",
+      "stallId": "stall-6",
+      "cluster": 1,
+      "road": "方浜中路",
+      "counterXZ": [
+        -142.625,
+        23.33
+      ],
+      "trayXYZ": [
+        -142.079,
+        1.01,
+        23.272
+      ],
+      "frontReferenceXZ": [
+        -141.799,
+        31.187
+      ],
+      "candidateCustomerSpots": [
+        {
+          "distanceFromCounterM": 2,
+          "xz": [
+            -142.416,
+            25.319
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 2.6,
+          "xz": [
+            -142.354,
+            25.916
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 1.5,
+          "xz": [
+            -142.469,
+            24.822
+          ],
+          "groundY": -0.4,
+          "wallColliderHandle": null,
+          "staticStandable": false
+        },
+        {
+          "distanceFromCounterM": 3,
+          "xz": [
+            -142.312,
+            26.313
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        }
+      ],
+      "suggestedCustomerXZ": [
+        -142.416,
+        25.319
+      ],
+      "staticSpotStatus": "static_spot_pass",
+      "continuousRouteStatus": "not_tested",
+      "playerInteractionStatus": "not_tested"
+    },
+    {
+      "foodId": "youdunzi",
+      "stallId": "stall-10",
+      "cluster": 2,
+      "road": "方浜中路",
+      "counterXZ": [
+        -174.721,
+        26.641
+      ],
+      "trayXYZ": [
+        -174.174,
+        1.01,
+        26.586
+      ],
+      "frontReferenceXZ": [
+        -173.929,
+        34.501
+      ],
+      "candidateCustomerSpots": [
+        {
+          "distanceFromCounterM": 2,
+          "xz": [
+            -174.52,
+            28.631
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 2.6,
+          "xz": [
+            -174.46,
+            29.228
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 1.5,
+          "xz": [
+            -174.571,
+            28.134
+          ],
+          "groundY": -0.4,
+          "wallColliderHandle": null,
+          "staticStandable": false
+        },
+        {
+          "distanceFromCounterM": 3,
+          "xz": [
+            -174.42,
+            29.626
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        }
+      ],
+      "suggestedCustomerXZ": [
+        -174.52,
+        28.631
+      ],
+      "staticSpotStatus": "static_spot_pass",
+      "continuousRouteStatus": "not_tested",
+      "playerInteractionStatus": "not_tested"
+    },
+    {
+      "foodId": "tanghulu",
+      "stallId": "stall-19",
+      "cluster": 4,
+      "road": "旧校场路",
+      "counterXZ": [
+        -272.436,
+        -250.352
+      ],
+      "trayXYZ": [
+        -272.359,
+        1.01,
+        -249.808
+      ],
+      "frontReferenceXZ": [
+        -277.783,
+        -249.598
+      ],
+      "candidateCustomerSpots": [
+        {
+          "distanceFromCounterM": 2,
+          "xz": [
+            -274.416,
+            -250.073
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 2.6,
+          "xz": [
+            -275.01,
+            -249.989
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 1.5,
+          "xz": [
+            -273.921,
+            -250.143
+          ],
+          "groundY": -0.4,
+          "wallColliderHandle": null,
+          "staticStandable": false
+        },
+        {
+          "distanceFromCounterM": 3,
+          "xz": [
+            -275.406,
+            -249.933
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        }
+      ],
+      "suggestedCustomerXZ": [
+        -274.416,
+        -250.073
+      ],
+      "staticSpotStatus": "static_spot_pass",
+      "continuousRouteStatus": "not_tested",
+      "playerInteractionStatus": "not_tested"
+    },
+    {
+      "foodId": "jianbing-guozi",
+      "stallId": "stall-41",
+      "cluster": 8,
+      "road": "九曲桥广场",
+      "counterXZ": [
+        -185.083,
+        -87.759
+      ],
+      "trayXYZ": [
+        -184.543,
+        1.01,
+        -87.861
+      ],
+      "frontReferenceXZ": [
+        -184.401,
+        -84.173
+      ],
+      "candidateCustomerSpots": [
+        {
+          "distanceFromCounterM": 2,
+          "xz": [
+            -184.71,
+            -85.794
+          ],
+          "groundY": 0.04,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 2.6,
+          "xz": [
+            -184.598,
+            -85.204
+          ],
+          "groundY": 0.04,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 1.5,
+          "xz": [
+            -184.803,
+            -86.285
+          ],
+          "groundY": 0.04,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 3,
+          "xz": [
+            -184.523,
+            -84.811
+          ],
+          "groundY": 0.04,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        }
+      ],
+      "suggestedCustomerXZ": [
+        -184.71,
+        -85.794
+      ],
+      "staticSpotStatus": "static_spot_pass",
+      "continuousRouteStatus": "not_tested",
+      "playerInteractionStatus": "not_tested"
+    },
+    {
+      "foodId": "ludagun",
+      "stallId": "stall-38",
+      "cluster": 7,
+      "road": "旧校场路",
+      "counterXZ": [
+        -222.026,
+        26.646
+      ],
+      "trayXYZ": [
+        -222.123,
+        1.01,
+        26.667
+      ],
+      "frontReferenceXZ": [
+        -227.309,
+        27.763
+      ],
+      "candidateCustomerSpots": [
+        {
+          "distanceFromCounterM": 2,
+          "xz": [
+            -223.982,
+            27.06
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 2.6,
+          "xz": [
+            -224.569,
+            27.184
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 1.5,
+          "xz": [
+            -223.493,
+            26.956
+          ],
+          "groundY": -0.4,
+          "wallColliderHandle": null,
+          "staticStandable": false
+        },
+        {
+          "distanceFromCounterM": 3,
+          "xz": [
+            -224.961,
+            27.267
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        }
+      ],
+      "suggestedCustomerXZ": [
+        -223.982,
+        27.06
+      ],
+      "staticSpotStatus": "static_spot_pass",
+      "continuousRouteStatus": "not_tested",
+      "playerInteractionStatus": "not_tested"
+    },
+    {
+      "foodId": "kaolengmian",
+      "stallId": "stall-26",
+      "cluster": 5,
+      "road": "旧校场路",
+      "counterXZ": [
+        -264.774,
+        -196.091
+      ],
+      "trayXYZ": [
+        -264.697,
+        1.01,
+        -195.546
+      ],
+      "frontReferenceXZ": [
+        -270.121,
+        -195.336
+      ],
+      "candidateCustomerSpots": [
+        {
+          "distanceFromCounterM": 2,
+          "xz": [
+            -266.755,
+            -195.811
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 2.6,
+          "xz": [
+            -267.349,
+            -195.727
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 1.5,
+          "xz": [
+            -266.259,
+            -195.881
+          ],
+          "groundY": -0.4,
+          "wallColliderHandle": null,
+          "staticStandable": false
+        },
+        {
+          "distanceFromCounterM": 3,
+          "xz": [
+            -267.745,
+            -195.671
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        }
+      ],
+      "suggestedCustomerXZ": [
+        -266.755,
+        -195.811
+      ],
+      "staticSpotStatus": "static_spot_pass",
+      "continuousRouteStatus": "not_tested",
+      "playerInteractionStatus": "not_tested"
+    },
+    {
+      "foodId": "niandoubao",
+      "stallId": "stall-28",
+      "cluster": 5,
+      "road": "旧校场路",
+      "counterXZ": [
+        -263.385,
+        -186.639
+      ],
+      "trayXYZ": [
+        -263.484,
+        1.01,
+        -186.624
+      ],
+      "frontReferenceXZ": [
+        -268.725,
+        -185.838
+      ],
+      "candidateCustomerSpots": [
+        {
+          "distanceFromCounterM": 2,
+          "xz": [
+            -265.363,
+            -186.342
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 2.6,
+          "xz": [
+            -265.956,
+            -186.253
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 1.5,
+          "xz": [
+            -264.868,
+            -186.416
+          ],
+          "groundY": -0.4,
+          "wallColliderHandle": null,
+          "staticStandable": false
+        },
+        {
+          "distanceFromCounterM": 3,
+          "xz": [
+            -266.352,
+            -186.194
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        }
+      ],
+      "suggestedCustomerXZ": [
+        -265.363,
+        -186.342
+      ],
+      "staticSpotStatus": "static_spot_pass",
+      "continuousRouteStatus": "not_tested",
+      "playerInteractionStatus": "not_tested"
+    },
+    {
+      "foodId": "jianfen",
+      "stallId": "stall-32",
+      "cluster": 6,
+      "road": "旧校场路",
+      "counterXZ": [
+        -259.481,
+        -163.631
+      ],
+      "trayXYZ": [
+        -259.374,
+        1.01,
+        -163.091
+      ],
+      "frontReferenceXZ": [
+        -264.777,
+        -162.577
+      ],
+      "candidateCustomerSpots": [
+        {
+          "distanceFromCounterM": 2,
+          "xz": [
+            -261.442,
+            -163.24
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 2.6,
+          "xz": [
+            -262.031,
+            -163.123
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 1.5,
+          "xz": [
+            -260.952,
+            -163.338
+          ],
+          "groundY": -0.4,
+          "wallColliderHandle": null,
+          "staticStandable": false
+        },
+        {
+          "distanceFromCounterM": 3,
+          "xz": [
+            -262.423,
+            -163.045
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        }
+      ],
+      "suggestedCustomerXZ": [
+        -261.442,
+        -163.24
+      ],
+      "staticSpotStatus": "static_spot_pass",
+      "continuousRouteStatus": "not_tested",
+      "playerInteractionStatus": "not_tested"
+    },
+    {
+      "foodId": "roujiamo",
+      "stallId": "stall-15",
+      "cluster": 3,
+      "road": "方浜中路",
+      "counterXZ": [
+        -214.718,
+        30.675
+      ],
+      "trayXYZ": [
+        -214.708,
+        1.01,
+        30.774
+      ],
+      "frontReferenceXZ": [
+        -213.926,
+        38.535
+      ],
+      "candidateCustomerSpots": [
+        {
+          "distanceFromCounterM": 2,
+          "xz": [
+            -214.518,
+            32.664
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 2.6,
+          "xz": [
+            -214.457,
+            33.261
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 1.5,
+          "xz": [
+            -214.568,
+            32.167
+          ],
+          "groundY": -0.4,
+          "wallColliderHandle": null,
+          "staticStandable": false
+        },
+        {
+          "distanceFromCounterM": 3,
+          "xz": [
+            -214.417,
+            33.659
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        }
+      ],
+      "suggestedCustomerXZ": [
+        -214.518,
+        32.664
+      ],
+      "staticSpotStatus": "static_spot_pass",
+      "continuousRouteStatus": "not_tested",
+      "playerInteractionStatus": "not_tested"
+    },
+    {
+      "foodId": "liangpi",
+      "stallId": "stall-17",
+      "cluster": 3,
+      "road": "方浜中路",
+      "counterXZ": [
+        -212.33,
+        30.434
+      ],
+      "trayXYZ": [
+        -211.783,
+        1.01,
+        30.379
+      ],
+      "frontReferenceXZ": [
+        -211.538,
+        38.294
+      ],
+      "candidateCustomerSpots": [
+        {
+          "distanceFromCounterM": 2,
+          "xz": [
+            -212.13,
+            32.424
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 2.6,
+          "xz": [
+            -212.07,
+            33.021
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 1.5,
+          "xz": [
+            -212.18,
+            31.926
+          ],
+          "groundY": -0.4,
+          "wallColliderHandle": null,
+          "staticStandable": false
+        },
+        {
+          "distanceFromCounterM": 3,
+          "xz": [
+            -212.029,
+            33.419
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        }
+      ],
+      "suggestedCustomerXZ": [
+        -212.13,
+        32.424
+      ],
+      "staticSpotStatus": "static_spot_pass",
+      "continuousRouteStatus": "not_tested",
+      "playerInteractionStatus": "not_tested"
+    },
+    {
+      "foodId": "yangrouchuan",
+      "stallId": "stall-21",
+      "cluster": 4,
+      "road": "旧校场路",
+      "counterXZ": [
+        -271.681,
+        -245.006
+      ],
+      "trayXYZ": [
+        -271.604,
+        1.01,
+        -244.461
+      ],
+      "frontReferenceXZ": [
+        -277.028,
+        -244.251
+      ],
+      "candidateCustomerSpots": [
+        {
+          "distanceFromCounterM": 2,
+          "xz": [
+            -273.661,
+            -244.726
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 2.6,
+          "xz": [
+            -274.255,
+            -244.642
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 1.5,
+          "xz": [
+            -273.166,
+            -244.796
+          ],
+          "groundY": -0.4,
+          "wallColliderHandle": null,
+          "staticStandable": false
+        },
+        {
+          "distanceFromCounterM": 3,
+          "xz": [
+            -274.651,
+            -244.586
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        }
+      ],
+      "suggestedCustomerXZ": [
+        -273.661,
+        -244.726
+      ],
+      "staticSpotStatus": "static_spot_pass",
+      "continuousRouteStatus": "not_tested",
+      "playerInteractionStatus": "not_tested"
+    },
+    {
+      "foodId": "dandanmian",
+      "stallId": "stall-30",
+      "cluster": 5,
+      "road": "旧校场路",
+      "counterXZ": [
+        -262.584,
+        -181.299
+      ],
+      "trayXYZ": [
+        -262.502,
+        1.01,
+        -180.755
+      ],
+      "frontReferenceXZ": [
+        -267.924,
+        -180.498
+      ],
+      "candidateCustomerSpots": [
+        {
+          "distanceFromCounterM": 2,
+          "xz": [
+            -264.561,
+            -181.002
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 2.6,
+          "xz": [
+            -265.155,
+            -180.913
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 1.5,
+          "xz": [
+            -264.067,
+            -181.076
+          ],
+          "groundY": -0.4,
+          "wallColliderHandle": null,
+          "staticStandable": false
+        },
+        {
+          "distanceFromCounterM": 3,
+          "xz": [
+            -265.55,
+            -180.854
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        }
+      ],
+      "suggestedCustomerXZ": [
+        -264.561,
+        -181.002
+      ],
+      "staticSpotStatus": "static_spot_pass",
+      "continuousRouteStatus": "not_tested",
+      "playerInteractionStatus": "not_tested"
+    },
+    {
+      "foodId": "hongyou-chaoshou",
+      "stallId": "stall-34",
+      "cluster": 6,
+      "road": "旧校场路",
+      "counterXZ": [
+        -257.279,
+        -152.387
+      ],
+      "trayXYZ": [
+        -257.177,
+        1.01,
+        -151.847
+      ],
+      "frontReferenceXZ": [
+        -262.586,
+        -151.39
+      ],
+      "candidateCustomerSpots": [
+        {
+          "distanceFromCounterM": 2,
+          "xz": [
+            -259.244,
+            -152.018
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 2.6,
+          "xz": [
+            -259.834,
+            -151.907
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 1.5,
+          "xz": [
+            -258.753,
+            -152.11
+          ],
+          "groundY": -0.4,
+          "wallColliderHandle": null,
+          "staticStandable": false
+        },
+        {
+          "distanceFromCounterM": 3,
+          "xz": [
+            -260.227,
+            -151.833
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        }
+      ],
+      "suggestedCustomerXZ": [
+        -259.244,
+        -152.018
+      ],
+      "staticSpotStatus": "static_spot_pass",
+      "continuousRouteStatus": "not_tested",
+      "playerInteractionStatus": "not_tested"
+    },
+    {
+      "foodId": "xianhuabing",
+      "stallId": "stall-39",
+      "cluster": 7,
+      "road": "旧校场路",
+      "counterXZ": [
+        -221.467,
+        29.288
+      ],
+      "trayXYZ": [
+        -221.353,
+        1.01,
+        29.826
+      ],
+      "frontReferenceXZ": [
+        -226.75,
+        30.405
+      ],
+      "candidateCustomerSpots": [
+        {
+          "distanceFromCounterM": 2,
+          "xz": [
+            -223.424,
+            29.701
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 2.6,
+          "xz": [
+            -224.011,
+            29.825
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 1.5,
+          "xz": [
+            -222.935,
+            29.598
+          ],
+          "groundY": -0.4,
+          "wallColliderHandle": null,
+          "staticStandable": false
+        },
+        {
+          "distanceFromCounterM": 3,
+          "xz": [
+            -224.402,
+            29.908
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        }
+      ],
+      "suggestedCustomerXZ": [
+        -223.424,
+        29.701
+      ],
+      "staticSpotStatus": "static_spot_pass",
+      "continuousRouteStatus": "not_tested",
+      "playerInteractionStatus": "not_tested"
+    },
+    {
+      "foodId": "reganmian",
+      "stallId": "stall-43",
+      "cluster": 8,
+      "road": "九曲桥广场",
+      "counterXZ": [
+        -179.778,
+        -88.767
+      ],
+      "trayXYZ": [
+        -179.238,
+        1.01,
+        -88.87
+      ],
+      "frontReferenceXZ": [
+        -179.097,
+        -85.182
+      ],
+      "candidateCustomerSpots": [
+        {
+          "distanceFromCounterM": 2,
+          "xz": [
+            -179.405,
+            -86.802
+          ],
+          "groundY": 0.04,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 2.6,
+          "xz": [
+            -179.293,
+            -86.213
+          ],
+          "groundY": 0.04,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 1.5,
+          "xz": [
+            -179.498,
+            -87.294
+          ],
+          "groundY": 0.04,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 3,
+          "xz": [
+            -179.218,
+            -85.82
+          ],
+          "groundY": 0.04,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        }
+      ],
+      "suggestedCustomerXZ": [
+        -179.405,
+        -86.802
+      ],
+      "staticSpotStatus": "static_spot_pass",
+      "continuousRouteStatus": "not_tested",
+      "playerInteractionStatus": "not_tested"
+    },
+    {
+      "foodId": "choudoufu",
+      "stallId": "stall-47",
+      "cluster": 9,
+      "road": "九曲桥广场",
+      "counterXZ": [
+        -171.322,
+        -101.377
+      ],
+      "trayXYZ": [
+        -171.863,
+        1.01,
+        -101.274
+      ],
+      "frontReferenceXZ": [
+        -172.004,
+        -104.963
+      ],
+      "candidateCustomerSpots": [
+        {
+          "distanceFromCounterM": 2,
+          "xz": [
+            -171.696,
+            -103.342
+          ],
+          "groundY": 0.04,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 2.6,
+          "xz": [
+            -171.808,
+            -103.931
+          ],
+          "groundY": 0.04,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 1.5,
+          "xz": [
+            -171.603,
+            -102.851
+          ],
+          "groundY": 0.04,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 3,
+          "xz": [
+            -171.883,
+            -104.324
+          ],
+          "groundY": 0.04,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        }
+      ],
+      "suggestedCustomerXZ": [
+        -171.696,
+        -103.342
+      ],
+      "staticSpotStatus": "static_spot_pass",
+      "continuousRouteStatus": "not_tested",
+      "playerInteractionStatus": "not_tested"
+    },
+    {
+      "foodId": "hulatang",
+      "stallId": "stall-12",
+      "cluster": 2,
+      "road": "方浜中路",
+      "counterXZ": [
+        -180.094,
+        27.183
+      ],
+      "trayXYZ": [
+        -179.547,
+        1.01,
+        27.128
+      ],
+      "frontReferenceXZ": [
+        -179.301,
+        35.043
+      ],
+      "candidateCustomerSpots": [
+        {
+          "distanceFromCounterM": 2,
+          "xz": [
+            -179.893,
+            29.173
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 2.6,
+          "xz": [
+            -179.833,
+            29.77
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        },
+        {
+          "distanceFromCounterM": 1.5,
+          "xz": [
+            -179.943,
+            28.676
+          ],
+          "groundY": -0.4,
+          "wallColliderHandle": null,
+          "staticStandable": false
+        },
+        {
+          "distanceFromCounterM": 3,
+          "xz": [
+            -179.793,
+            30.168
+          ],
+          "groundY": 0.02,
+          "wallColliderHandle": null,
+          "staticStandable": true
+        }
+      ],
+      "suggestedCustomerXZ": [
+        -179.893,
+        29.173
+      ],
+      "staticSpotStatus": "static_spot_pass",
+      "continuousRouteStatus": "not_tested",
+      "playerInteractionStatus": "not_tested"
+    }
+  ],
+  "provisionalCartSites": [
+    {
+      "cartSiteId": "center-cart",
+      "foodId": "changfen",
+      "areaHint": "中心广场的道路侧空地",
+      "sourceRouteAnchor": "main->center terminal",
+      "sourceAnchorXZ": [
+        -157.75,
+        -22.25
+      ],
+      "derivedOffsetXZ": [
+        4,
+        -4
+      ],
+      "provisionalCartCenterXZ": [
+        -153.75,
+        -26.25
+      ],
+      "provisionalCustomerXZ": [
+        -154.811,
+        -25.189
+      ],
+      "cartDimensionsProbeM": [
+        1.2,
+        1.1,
+        0.8
+      ],
+      "cartProbe": {
+        "xz": [
+          -153.75,
+          -26.25
+        ],
+        "groundY": 0.04,
+        "cornerGroundY": [
+          0.04,
+          0.04,
+          0.04,
+          0.04
+        ],
+        "wallColliderHandle": null,
+        "staticFootprintPass": true
+      },
+      "customerProbe": {
+        "xz": [
+          -154.811,
+          -25.189
+        ],
+        "groundY": 0.04,
+        "wallColliderHandle": null,
+        "staticStandable": true
+      },
+      "sourceAnchorToCustomerStaticSamplesPass": true,
+      "sourceAnchorToCustomerSampleCount": 11,
+      "nearestCurrentStall": {
+        "id": "stall-6",
+        "distanceM": 50.813
+      },
+      "placementStatus": "provisional_static_geometry_only",
+      "continuousRouteStatus": "not_tested",
+      "runtimeCollisionAfterCartStatus": "not_tested",
+      "artAndCulturalFitStatus": "not_reviewed"
+    },
+    {
+      "cartSiteId": "fangbang-main-cart",
+      "foodId": "shuangpinai",
+      "areaHint": "方浜主街宽敞路侧",
+      "sourceRouteAnchor": "fangbang-route mainStreet[260]",
+      "sourceAnchorXZ": [
+        69.335,
+        -21.932
+      ],
+      "derivedOffsetXZ": [
+        0,
+        4
+      ],
+      "provisionalCartCenterXZ": [
+        69.335,
+        -17.932
+      ],
+      "provisionalCustomerXZ": [
+        69.335,
+        -19.432
+      ],
+      "cartDimensionsProbeM": [
+        1.2,
+        1.1,
+        0.8
+      ],
+      "cartProbe": {
+        "xz": [
+          69.335,
+          -17.932
+        ],
+        "groundY": 0,
+        "cornerGroundY": [
+          0.09,
+          0,
+          0,
+          0
+        ],
+        "wallColliderHandle": null,
+        "staticFootprintPass": true
+      },
+      "customerProbe": {
+        "xz": [
+          69.335,
+          -19.432
+        ],
+        "groundY": 0,
+        "wallColliderHandle": null,
+        "staticStandable": true
+      },
+      "sourceAnchorToCustomerStaticSamplesPass": true,
+      "sourceAnchorToCustomerSampleCount": 11,
+      "nearestCurrentStall": {
+        "id": "stall-1",
+        "distanceM": 202.494
+      },
+      "placementStatus": "provisional_static_geometry_only",
+      "continuousRouteStatus": "not_tested",
+      "runtimeCollisionAfterCartStatus": "not_tested",
+      "artAndCulturalFitStatus": "not_reviewed"
+    },
+    {
+      "cartSiteId": "fangbang-end-cart",
+      "foodId": "jidanzi",
+      "areaHint": "方浜远端的骑行停留点",
+      "sourceRouteAnchor": "fangbang-route mainStreet[50]",
+      "sourceAnchorXZ": [
+        261.191,
+        27.992
+      ],
+      "derivedOffsetXZ": [
+        0,
+        5
+      ],
+      "provisionalCartCenterXZ": [
+        261.191,
+        32.992
+      ],
+      "provisionalCustomerXZ": [
+        261.191,
+        31.492
+      ],
+      "cartDimensionsProbeM": [
+        1.2,
+        1.1,
+        0.8
+      ],
+      "cartProbe": {
+        "xz": [
+          261.191,
+          32.992
+        ],
+        "groundY": 0.09,
+        "cornerGroundY": [
+          0.09,
+          0.09,
+          0.09,
+          0.09
+        ],
+        "wallColliderHandle": null,
+        "staticFootprintPass": true
+      },
+      "customerProbe": {
+        "xz": [
+          261.191,
+          31.492
+        ],
+        "groundY": 0,
+        "wallColliderHandle": null,
+        "staticStandable": true
+      },
+      "sourceAnchorToCustomerStaticSamplesPass": true,
+      "sourceAnchorToCustomerSampleCount": 11,
+      "nearestCurrentStall": {
+        "id": "stall-1",
+        "distanceM": 390.548
+      },
+      "placementStatus": "provisional_static_geometry_only",
+      "continuousRouteStatus": "not_tested",
+      "runtimeCollisionAfterCartStatus": "not_tested",
+      "artAndCulturalFitStatus": "not_reviewed"
+    },
+    {
+      "cartSiteId": "pond-bank-cart",
+      "foodId": "qingbuliang",
+      "areaHint": "池岸远侧的陆地步行区",
+      "sourceRouteAnchor": "jiuqu-bridge terminal",
+      "sourceAnchorXZ": [
+        -134.03,
+        -164.542
+      ],
+      "derivedOffsetXZ": [
+        -6,
+        2
+      ],
+      "provisionalCartCenterXZ": [
+        -140.03,
+        -162.542
+      ],
+      "provisionalCustomerXZ": [
+        -138.607,
+        -163.016
+      ],
+      "cartDimensionsProbeM": [
+        1.2,
+        1.1,
+        0.8
+      ],
+      "cartProbe": {
+        "xz": [
+          -140.03,
+          -162.542
+        ],
+        "groundY": 0.02,
+        "cornerGroundY": [
+          0.02,
+          0.02,
+          0.02,
+          0.02
+        ],
+        "wallColliderHandle": null,
+        "staticFootprintPass": true
+      },
+      "customerProbe": {
+        "xz": [
+          -138.607,
+          -163.016
+        ],
+        "groundY": 0.02,
+        "wallColliderHandle": null,
+        "staticStandable": true
+      },
+      "sourceAnchorToCustomerStaticSamplesPass": true,
+      "sourceAnchorToCustomerSampleCount": 11,
+      "nearestCurrentStall": {
+        "id": "stall-48",
+        "distanceM": 67.082
+      },
+      "placementStatus": "provisional_static_geometry_only",
+      "continuousRouteStatus": "not_tested",
+      "runtimeCollisionAfterCartStatus": "not_tested",
+      "artAndCulturalFitStatus": "not_reviewed"
+    },
+    {
+      "cartSiteId": "garden-entry-cart",
+      "foodId": "fenglisu",
+      "areaHint": "园林外入口连接道路",
+      "sourceRouteAnchor": "path-gate-sansuitang start",
+      "sourceAnchorXZ": [
+        -155.13,
+        -160.29
+      ],
+      "derivedOffsetXZ": [
+        4,
+        0
+      ],
+      "provisionalCartCenterXZ": [
+        -151.13,
+        -160.29
+      ],
+      "provisionalCustomerXZ": [
+        -152.63,
+        -160.29
+      ],
+      "cartDimensionsProbeM": [
+        1.2,
+        1.1,
+        0.8
+      ],
+      "cartProbe": {
+        "xz": [
+          -151.13,
+          -160.29
+        ],
+        "groundY": 0.12,
+        "cornerGroundY": [
+          0.12,
+          0.12,
+          0.12,
+          0.12
+        ],
+        "wallColliderHandle": null,
+        "staticFootprintPass": true
+      },
+      "customerProbe": {
+        "xz": [
+          -152.63,
+          -160.29
+        ],
+        "groundY": 0.12,
+        "wallColliderHandle": null,
+        "staticStandable": true
+      },
+      "sourceAnchorToCustomerStaticSamplesPass": true,
+      "sourceAnchorToCustomerSampleCount": 11,
+      "nearestCurrentStall": {
+        "id": "stall-48",
+        "distanceM": 60.985
+      },
+      "placementStatus": "provisional_static_geometry_only",
+      "continuousRouteStatus": "not_tested",
+      "runtimeCollisionAfterCartStatus": "not_tested",
+      "artAndCulturalFitStatus": "not_reviewed"
+    },
+    {
+      "cartSiteId": "temple-connector-cart",
+      "foodId": "portuguese-egg-tart",
+      "areaHint": "城隍庙外商业连接道路",
+      "sourceRouteAnchor": "fangbang-route junction.at",
+      "sourceAnchorXZ": [
+        -74.317,
+        9.657
+      ],
+      "derivedOffsetXZ": [
+        -2,
+        -4
+      ],
+      "provisionalCartCenterXZ": [
+        -76.317,
+        5.657
+      ],
+      "provisionalCustomerXZ": [
+        -75.646,
+        6.999
+      ],
+      "cartDimensionsProbeM": [
+        1.2,
+        1.1,
+        0.8
+      ],
+      "cartProbe": {
+        "xz": [
+          -76.317,
+          5.657
+        ],
+        "groundY": 0,
+        "cornerGroundY": [
+          0,
+          0,
+          -0.004,
+          0
+        ],
+        "wallColliderHandle": null,
+        "staticFootprintPass": true
+      },
+      "customerProbe": {
+        "xz": [
+          -75.646,
+          6.999
+        ],
+        "groundY": 0.002,
+        "wallColliderHandle": null,
+        "staticStandable": true
+      },
+      "sourceAnchorToCustomerStaticSamplesPass": true,
+      "sourceAnchorToCustomerSampleCount": 11,
+      "nearestCurrentStall": {
+        "id": "stall-1",
+        "distanceM": 55.326
+      },
+      "placementStatus": "provisional_static_geometry_only",
+      "continuousRouteStatus": "not_tested",
+      "runtimeCollisionAfterCartStatus": "not_tested",
+      "artAndCulturalFitStatus": "not_reviewed"
+    }
+  ],
+  "gates": [
+    "Recheck all cart center/body and customer points after runtime stall-front, bridge/passage and new cart colliders are installed.",
+    "For each vendor, actually walk from a normal spawn via production controller to the interaction point and back, with support and wall checks every step. A spot pass does not establish route reachability.",
+    "Verify E-range, line of sight, hand/food position, safe bicycle dismount, approach clearance and art fit in real browser.",
+    "If all customer candidates fail, leave vendor inactive with a visible reason; do not keep an unreachable 2 m marker.",
+    "Do not place carts in road/bridge choke points, water, temple interiors or false storefront entrances."
+  ]
+}

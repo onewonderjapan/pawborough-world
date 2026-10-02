@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "status": "M00 evidence gathered; route and art construction not yet accepted",
+  "sourceHead": "61facf5525fbc8bf821d22eb144c3305557cd2e4",
+  "runtimeSourceHead": "cc89c58ebf91e139277599d3b7a5514a50d42121",
+  "publishedVersionAtStart": "20261002-main-cc89c58e",
+  "canonicalWorkspace": "/home/baibai/work/onewonderjapan/pawborough-world",
+  "isolatedWorktree": "/home/baibai/.codex/worktrees/national-snack-atlas/pawborough-world",
+  "previewService": "pb-play-grey-cat-preview-20261001.service",
+  "baselineUrl": "http://127.0.0.1:5492/?play=1&at=center",
+  "assetHashes": {
+    "out-zone/layout.json": "f53fb27d42f5f18ca0939a53aa2adb47a64383b4c9b36181c532a2c275df9829",
+    "out-zone/food-sockets.json": "1594a12b25ffc4c811abfa359dcc82423ac4cd92e5b5a811c91f7d1a68cbcbf7",
+    "out-zone/zones-manifest.json": "6eb12546d5f347dc941b132836ca0695a6ed84313df6180a212542e643829762",
+    "inputs/play-foods.json": "99e8a3f461d8b3fd772d66d04dc67cd78d43ab4642ab2093fdba613ec6d28126",
+    "modules/food-handheld-revision.json": "70ed426db871b5022f9e0e682be504ff1be190430a56b4879b7283b440e304f6"
+  },
+  "assetRestore": {
+    "method": "independent copy of the canonical current same-repository ignored out-zone/resources into isolated worktree; no symlink",
+    "byteMatchProbed": [
+      "layout.json",
+      "food-sockets.json",
+      "zones-manifest.json",
+      "xiaolongbao.glb",
+      "congyoubing.glb",
+      "youdunzi.glb"
+    ],
+    "currentHandheldGlbCount": 27,
+    "currentHandheldBytes": 7579212,
+    "currentRevisionShaMatches": 27,
+    "olderPackageManifestShaMatches": 20,
+    "outdatedPackageManifestIds": [
+      "bean-dish",
+      "bean-jar",
+      "bean-packet-open",
+      "bean-single",
+      "congyoubing",
+      "shengjian",
+      "youdunzi"
+    ],
+    "currentPlayFoodManifestShaMatches": true
+  },
+  "worldInventory": {
+    "stalls": 43,
+    "foodTrayDisplaySockets": 43,
+    "stallClusters": 9,
+    "existingVendorCandidates": 18,
+    "newCartCandidates": 6,
+    "wallColliders": 4273,
+    "groundTriangles": 54713,
+    "staticSpotPass": true,
+    "continuousRoutesVerified": false,
+    "cartPostInstallClearanceVerified": false
+  },
+  "contentInventory": {
+    "candidateFoods": 24,
+    "chapters": 8,
+    "officialOrPrimaryAssociationSeeds": 24,
+    "publicCopyAccepted": false
+  },
+  "renderer": "ANGLE (NVIDIA Corporation, NVIDIA GB10/PCIe, OpenGL 4.5.0)",
+  "chromeVersion": "153.0.8010.52",
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "route": "center spawn; production keyboard W 3s, S 3s; RAF samples 8s; no teleport",
+  "frameTimes": {
+    "sampleCount": 440,
+    "p50Ms": 16.699999999999818,
+    "p95Ms": 33.29999999999927,
+    "maxMs": 33.5
+  },
+  "resourceCounts": {
+    "geometry": 3739,
+    "material": 306,
+    "texture": 248
+  },
+  "firstLoad": {
+    "firstLoadMs": 1828,
+    "firstLoadBytes": 15688354,
+    "deferredBytes": 1604940,
+    "foodModelsRequested": 3
+  },
+  "comparisonProbe": "scene-authoring/yuyuan-area/tests/snack-baseline-browser.mjs",
+  "artSampleViews": [
+    {
+      "view": "center",
+      "preset": "day",
+      "tourKey": "anchor-center",
+      "eye": [
+        -157.8,
+        1.6,
+        -22.3
+      ],
+      "look": [
+        -142.3,
+        1.8,
+        -36.4
+      ],
+      "screenshot": "/home/baibai/outbox/pawborough-national-snacks-20261002/m00/M00-center-day.png"
+    },
+    {
+      "view": "snack-street",
+      "preset": "day",
+      "tourKey": "anchor-main",
+      "eye": [
+        -183.5,
+        1.6,
+        36.3
+      ],
+      "look": [
+        -176.7,
+        1.8,
+        32
+      ],
+      "screenshot": "/home/baibai/outbox/pawborough-national-snacks-20261002/m00/M00-snack-street-day.png"
+    },
+    {
+      "view": "bridge-bank",
+      "preset": "day",
+      "tourKey": "jiuqu-bridge",
+      "eye": [
+        -147.1,
+        14,
+        -157
+      ],
+      "look": [
+        -151,
+        1.2,
+        -135.4
+      ],
+      "screenshot": "/home/baibai/outbox/pawborough-national-snacks-20261002/m00/M00-bridge-bank-day.png"
+    },
+    {
+      "view": "center",
+      "preset": "dusk",
+      "tourKey": "anchor-center",
+      "eye": [
+        -157.8,
+        1.6,
+        -22.3
+      ],
+      "look": [
+        -142.3,
+        1.8,
+        -36.4
+      ],
+      "screenshot": "/home/baibai/outbox/pawborough-national-snacks-20261002/m00/M00-center-dusk.png"
+    },
+    {
+      "view": "snack-street",
+      "preset": "dusk",
+      "tourKey": "anchor-main",
+      "eye": [
+        -183.5,
+        1.6,
+        36.3
+      ],
+      "look": [
+        -176.7,
+        1.8,
+        32
+      ],
+      "screenshot": "/home/baibai/outbox/pawborough-national-snacks-20261002/m00/M00-snack-street-dusk.png"
+    },
+    {
+      "view": "bridge-bank",
+      "preset": "dusk",
+      "tourKey": "jiuqu-bridge",
+      "eye": [
+        -147.1,
+        14,
+        -157
+      ],
+      "look": [
+        -151,
+        1.2,
+        -135.4
+      ],
+      "screenshot": "/home/baibai/outbox/pawborough-national-snacks-20261002/m00/M00-bridge-bank-dusk.png"
+    }
+  ],
+  "visualObservations": [
+    "中心广场可行走，但路面占画面比重大，街面层次与可停留的细节不足。",
+    "三味街近景摊位有基础，长段街面与远处的游玩目标辨识弱。",
+    "桥岸水体偏暗，灰白桥栏与深色建筑对比强；后续光照调整须保留桥头/路缘可读性。"
+  ],
+  "knownEvidenceLimits": [
+    "M00 的静态顾客点检查不是从出生点连续行走，也不证明放入新摊车后的净空。",
+    "本次 p95 来自一轮 8 秒键盘往返；不同运行会受 GPU/系统负载影响，最终与同脚本同设备复测比较。",
+    "24味来源只支撑候选地域/形态，最终公开文字与资产采用仍有阶段验收。"
+  ],
+  "artifactsRoot": "/home/baibai/outbox/pawborough-national-snacks-20261002/m00",
+  "recordedAt": "2026-10-02T22:00:36+09:00"
+}
