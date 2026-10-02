@@ -39,3 +39,9 @@ python3 -X utf8 tools/export_play_site.py --output /绝对路径/发布目录
 当前运行 `20261002-main-cebe4d2a`，169 文件、132,482,641 bytes。Gemini 3.8 Flash 独立试玩确认原版本四处仍可跌入背景底板；现已更新通行面判断、边缘阻止和地下存档校验。主控在新域名实测四条接近/退出路线八项及基础玩法八项通过。报告与未修项目见 `GEMINI-PLAYTEST-20261002.md`；不宣称全地图或全部视觉问题均通过。
 
 域名/变更集回执：`/home/baibai/outbox/pawborough-domain-20261002/artifacts/`；独立试玩和复验：`/home/baibai/outbox/pawborough-gemini-playtest-20261002/`。
+
+## 剩余试玩问题上线（2026-10-02）
+
+当前运行 `20261002-main-a5d3bd03`，源码 `a5d3bd03ded8c674967a547f0126d656801a4e00`；172 文件、132,522,376 bytes（126.38 MiB）。桥头通行/门廊窄缝、轮子落地/骑姿、老街北顶棚与取景标签已更新。专用桶逐对象 SHA256、类型与缓存核对通过；先上传不可变资源，安全策略生效后再切换入口。域名、现有证书与 Route53 A/AAAA 保留。域名和原 CloudFront 入口字节与本地发布包一致。
+
+公开 Chrome 24 项检查通过：基础加载与控制八项、老街北三项、取景三项、自行车八项、桥往返两项。普通按键从岸边到湖心亭门廊 17 点并返回 19 点，无位置写入冒充通行。40 份公开 GLB 与上一防陷版本字节一致。验收范围和截图见 `PLAYTEST-REMNANTS-20261002.md`；发布回执在原 preflight outbox，详细复验在 `/home/baibai/outbox/pawborough-remnants-20261002/artifacts/FINAL-ACCEPTANCE.json`。

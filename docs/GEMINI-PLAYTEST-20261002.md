@@ -21,3 +21,7 @@ Gemini 列出七项问题：老街北、九曲桥边、主入口、方浜四处�
 - 主控用普通键盘输入从公开锚点实际复验四条路线，截图与日志存于同一交付目录。不把出生点设置当作路线通行证据。
 
 域名为 `https://pawborough.onewonder.co.jp/`，使用现有公司域名、us-east-1 已签发证书与 Route53 A/AAAA，仍由原 CloudFront 分发提供相同运行文件。域名与修复版本的上线回执见 `docs/CLOUDFRONT-TRIAL.md`。
+
+## 后续修复状态
+
+剩余桥通行、单车视觉/停车、老街北顶棚和取景标签已在后续工单修复并公开复验，详见 `PLAYTEST-REMNANTS-20261002.md` 与 `CLOUDFRONT-TRIAL.md`。原始 Gemini 报告保留当时失败现场，没有把试玩者的根因推测改写成源码事实。

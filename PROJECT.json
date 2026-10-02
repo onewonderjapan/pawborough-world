@@ -98,14 +98,14 @@
     "note": "封存 v1.0 源码与标签已推送；当前独立公开试玩部署见 development.deployment。"
   },
   "development": {
-    "stage": "domain-published-ground-routes-verified",
-    "codeHead": "cebe4d2a9a7b6f44ee43be5bb8cadc38416dd5eb",
+    "stage": "published-playtest-remnants-verified",
+    "codeHead": "a5d3bd03ded8c674967a547f0126d656801a4e00",
     "entry": "/?play=1&at=center",
     "assetManifest": "scene-authoring/yuyuan-area/inputs/play-character.json",
-    "technicalStatus": "reported_floor_routes_passed_other_playtest_items_open",
+    "technicalStatus": "reported_routes_and_remnant_checks_passed",
     "artStatus": "pending_world_review",
-    "next": "Fix bridge access and remaining vehicle/art/viewfinder findings, then integrate the four remaining actors",
-    "note": "Gemini 3.8 Flash independently reported seven issues. Four reported foundation-drop routes are guarded and can retreat in public Chrome; bridge entry, vehicle visual fit, roof and photo labels remain open. Original GLB bytes and sealed v1.0 preserved.",
+    "next": "Integrate the remaining four upright actors, then extend repeatable snack and bicycle routes",
+    "note": "Independent reported bridge access, bicycle fit/parking, old-north soffit and photo-label issues repaired. Public Chrome 24 scoped checks pass; 40 public GLBs and sealed v1.0 bytes preserved. Full-world art review and mobile controls remain outside this acceptance.",
     "assetManifests": [
       "scene-authoring/yuyuan-area/inputs/play-character.json",
       "scene-authoring/yuyuan-area/inputs/play-foods.json",
@@ -124,20 +124,24 @@
       "esc-camera-freeze",
       "closed-shopfronts",
       "stall-frontage-collision",
-      "skin-bound-snacks"
+      "skin-bound-snacks",
+      "bridge-landing-access",
+      "passage-soffits",
+      "subject-aware-labels"
     ],
     "feedbackReview": "docs/PLAY-FEEDBACK-20261001.md",
     "feedbackReviews": [
       "docs/PLAY-FEEDBACK-20261001.md",
       "docs/SNACK-FEEDBACK-20261002.md",
-      "docs/GEMINI-PLAYTEST-20261002.md"
+      "docs/GEMINI-PLAYTEST-20261002.md",
+      "docs/PLAYTEST-REMNANTS-20261002.md"
     ],
     "deployment": {
       "kind": "static-trial",
       "url": "https://pawborough.onewonder.co.jp/",
-      "version": "20261002-main-cebe4d2a",
-      "sourceHead": "cebe4d2a9a7b6f44ee43be5bb8cadc38416dd5eb",
-      "verification": "HTTPS/bytes/CSP plus Chrome basic eight and ground route eight checks",
+      "version": "20261002-main-a5d3bd03",
+      "sourceHead": "a5d3bd03ded8c674967a547f0126d656801a4e00",
+      "verification": "HTTPS/entry SHA/CSP and public Chrome 24 scoped checks; 17 visual parts, six physics zones",
       "subdomain": "pawborough.onewonder.co.jp",
       "receipt": "docs/CLOUDFRONT-TRIAL.md",
       "cloudfrontUrl": "https://d1c74tvoxrrqcb.cloudfront.net/"
