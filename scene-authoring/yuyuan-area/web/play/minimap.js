@@ -8,26 +8,28 @@
 
 import * as MC from './map-core.js';
 
-// 纸+墨绿+朱红+金黄 工单配色
+// 逛吃手账 20261002 工单配色：底图由墨绿实块改温和蓝灰、水绿标线，
+// 纸面米白；标记保持胭脂/浅玉/蜂蜜。与 play.css 的 --pb-* 变量同源。
 const C = {
-  paper: '#f7f0df',
-  plaza: '#efe6cf',
-  water: '#cfe0d6',
-  road: '#6b9483',
-  block: '#233c37',
-  blockEdge: '#233c37',
-  player: '#d35a43',
-  view: '#233c37',
-  stall: '#d35a43',
-  stallDone: '#6b9483',
-  target: '#d35a43',
-  bike: '#e5b761',
+  paper: '#fff7e8',
+  plaza: '#f4ead2',
+  water: '#b9d8c9',
+  road: '#71aaa0',
+  block: '#5d7f90',
+  blockEdge: 'rgba(255,247,232,0.6)',
+  player: '#d56b70',
+  view: '#244f68',
+  stall: '#d56b70',
+  stallDone: '#71aaa0',
+  target: '#d56b70',
+  bike: '#deb26c',
 };
 
 export function installPlayMap({ getSize = () => 210 } = {}) {
   const root = document.createElement('div');
   root.id = 'play-map';
   root.innerHTML = `
+    <div id="play-map-title">附近街巷</div>
     <canvas id="play-map-canvas" width="${getSize()}" height="${getSize()}"></canvas>
     <div id="play-map-bar">
       <button type="button" id="p-map-mode">全图</button>
@@ -96,8 +98,8 @@ export function installPlayMap({ getSize = () => 210 } = {}) {
       bctx.stroke();
     }
 
-    // 建筑 footprint：墨绿实块 + 纸色细边（街道肌理）
-    fillRings(geom.blocks, C.block, 'rgba(247,240,223,0.5)');
+    // 建筑 footprint：温和蓝灰实块 + 纸色细边（街道肌理）
+    fillRings(geom.blocks, C.block, C.blockEdge);
     return baseCache(view);
   }
   function baseCache(view) { return { view: { ...view } }; }
@@ -120,7 +122,7 @@ export function installPlayMap({ getSize = () => 210 } = {}) {
     return [ax, az, bx, bz];
   }
 
-  function drawDisc(px, py, r, fill, stroke = '#f7f0df') {
+  function drawDisc(px, py, r, fill, stroke = C.paper) {
     ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI * 2);
     ctx.fillStyle = fill; ctx.fill();
     ctx.lineWidth = 1.5; ctx.strokeStyle = stroke; ctx.stroke();

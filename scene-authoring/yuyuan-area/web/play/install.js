@@ -21,6 +21,9 @@ import { loadFoodCatalog } from './foods.js';
 import { RideController, pickDismountSpot } from './vehicle.js';
 import { canTakeNow, takeFailHint, computeHint, TAKE_RADIUS_M, MOUNT_RADIUS_M, nearestStall } from './interaction.js';
 import { loadBikeRig, BikeView, applyRiderPose } from './bike-view.js';
+import { installBikeArt } from './bike-art.js';
+import { installCharacterArt } from './character-art.js';
+import { installInteractionArt } from './interaction-art.js';
 import { createClosedFacades, closedFacadeHint } from './closed-facades.js';
 
 // GOAL.md play capsule/speed (小吃工单 20261001): r=0.28 / halfHeight=0.20 /
@@ -130,6 +133,9 @@ async function readJson(url) {
 export function installPlayMode({ scene, camera, renderer, controls, manifest = null }) {
   let startupNotice = null;
   const core = createPlayCore({ manifest });
+  const interactionArt=installInteractionArt(scene);
+  let characterArt=null;
+  addEventListener('pagehide',e=>{if(!e.persisted){interactionArt.dispose();characterArt?.dispose();bikeView?.artFinish?.dispose();}});
   const playCamera = new PlayCamera({
     camera,
     shoulderHeight: PLAY_PROFILE.shoulderHeight,
@@ -303,6 +309,8 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       const avatar = new PlayAvatar({ gltfScene: gltf.scene, animations: gltf.animations });
       scene.add(avatar.root);
       core.attachAvatar(avatar);
+      characterArt=installCharacterArt(avatar);
+      avatar.artFinish=characterArt;
       hud.assetsReady(m.actorId);
     } catch (e) {
       console.error('play asset failed', e);
@@ -360,6 +368,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       const vm = await readJson('/inputs/play-vehicle.json');
       const rig = await loadBikeRig({ manifest: vm.vehicle });
       bikeView = new BikeView(rig);
+      bikeView.artFinish=installBikeArt(rig);
       scene.add(bikeView.root);
     } catch (e) {
       console.error('play vehicle failed', e);
@@ -742,6 +751,10 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
           : `集齐一枚「${food.labelZh}」章！下一味：${gameState.goal()?.labelZh ?? '—'}`);
       }
     }
+
+    characterArt?.update();
+    interactionArt.update({avatar:core.state.avatar,food:heldObj?.obj,state:gameState,feet,paused,dt});
+    hud.updateInteraction?.({heldItem:gameState.heldItem,eating:gameState.eating,riding:gameState.vehicle.riding,paused,complete:gameState.complete});
 
     // HUD：目标距离/提示/小地图（目标只导向不传送）
     updateTargetMarker();

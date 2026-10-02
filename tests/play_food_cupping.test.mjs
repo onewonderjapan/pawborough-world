@@ -10,7 +10,7 @@ const{GLTFLoader}=await import(A+'/node_modules/three/examples/jsm/loaders/GLTFL
 const g=await new Promise((ok,no)=>new GLTFLoader().parse(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength),'',ok,no));
 const avatar=new PlayAvatar({gltfScene:g.scene,animations:g.animations}),body=g.scene.getObjectByName('cat_body'),mouth=g.scene.getObjectByName('cat_mouth'),original=body.geometry,originalWeights=original.attributes.skinWeight.array.slice();
 const refresh=()=>{avatar.root.updateMatrixWorld(true);body.skeleton.update();mouth.skeleton.update();};
-const sampleIds=name=>{const bi=body.skeleton.bones.findIndex(b=>b.name===name),inv=body.skeleton.boneInverses[bi],geo=body.geometry,points=[],v=new T.Vector3();for(let i=0;i<geo.attributes.position.count;i++){let w=0;for(let k=0;k<4;k++)if(geo.attributes.skinIndex.getComponent(i,k)===bi)w+=geo.attributes.skinWeight.getComponent(i,k);v.fromBufferAttribute(geo.attributes.position,i).applyMatrix4(inv);if(w>=.3&&v.length()>.13)points.push({i,y:v.y});}const min=Math.min(...points.map(p=>p.y));return points.filter(p=>p.y<=min+.035).map(p=>p.i);};
+const sampleIds=name=>{const bi=body.skeleton.bones.findIndex(b=>b.name===name),inv=body.skeleton.boneInverses[bi],geo=body.geometry,points=[],v=new T.Vector3();for(let i=0;i<geo.attributes.position.count;i++){let w=0;for(let k=0;k<4;k++)if(geo.attributes.skinIndex.getComponent(i,k)===bi)w+=geo.attributes.skinWeight.getComponent(i,k);v.fromBufferAttribute(geo.attributes.position,i).applyMatrix4(inv);if(w>=.75&&v.length()>.13)points.push({i,y:v.y});}const min=Math.min(...points.map(p=>p.y));return points.filter(p=>p.y<=min+.035).map(p=>p.i);};
 const point=(mesh,ids)=>{const c=new T.Vector3(),v=new T.Vector3();for(const i of ids)c.add(mesh.getVertexPosition(i,v).applyMatrix4(mesh.matrixWorld));return c.divideScalar(ids.length);};
 const step=(dt=1/60,paused=false,yaw=0,moving=false)=>avatar.update({feet:[3,.06,-2],yaw,moving,paused,dt});
 for(const [id,width]of Object.entries({xiaolongbao:.18,congyoubing:.22,youdunzi:.18})){
@@ -18,8 +18,9 @@ for(const [id,width]of Object.entries({xiaolongbao:.18,congyoubing:.22,youdunzi:
  assert.ok(Math.abs(Math.max(size.x,size.z)-width)<.001,`${id} actual scaled geometry width`);
  const display=catalog.makeDisplay(id),displayBox=new T.Box3().setFromObject(display,true),protoBox=new T.Box3().setFromObject(entry.proto,true);
  assert.ok(Math.abs(displayBox.min.y-protoBox.min.y)<1e-6,`${id} display bottom stays on tray`);
- avatar.setHoldingPose(true);catalog.attachToHands(id,avatar.model,h);step();refresh();
- const left=sampleIds('armL'),right=sampleIds('armR');assert.ok(left.length>10&&right.length>10);
+ avatar.setHoldingPose(true);const left=sampleIds('armL'),right=sampleIds('armR');catalog.attachToHands(id,avatar.model,h);step();refresh();
+ // Keep anatomical samples fixed before the shoulder transition is smoothed.
+ assert.ok(left.length>5&&right.length>5);
  const checkPalms=()=>{refresh();const box=new T.Box3().setFromObject(h,true);for(const ids of[left,right])assert.ok(box.distanceToPoint(point(body,ids))<.07,`${id} both real palms support food: gap=${box.distanceToPoint(point(body,ids))} palm=${point(body,ids).toArray()} min=${box.min.toArray()} max=${box.max.toArray()}`);return box;};
  checkPalms();for(let i=0;i<10;i++)step(1/60,false,.7,true);checkPalms();
  const same=catalog.attachToHands(id,avatar.model,h);assert.equal(same,h);assert.equal(h.children[0].scale.x,entry.cupScale,'reattach does not accumulate scaling');

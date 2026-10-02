@@ -25,6 +25,7 @@
 //     idempotent; it never touches the static physics world or shared assets.
 import * as THREE from 'three';
 import { planRideSkinFix, skinCluster } from './rider-fit.js';
+import { smoothPlushShoulders, cupPalmVertices } from './plush-skin.js';
 
 // The GLB's face direction in model space (nose/mouth meshes sit at +Z).
 export const MODEL_FORWARD = new THREE.Vector3(0, 0, 1);
@@ -211,6 +212,8 @@ export class PlayAvatar {
     tips.forEach(o => pad.add(o.p));
     pad.divideScalar(Math.max(1, tips.length));
     this._snackGripVertices = tips.map(o => o.i);
+    this._cupLeftVertices=cupPalmVertices(mesh,'armL');
+    this._cupRightVertices=cupPalmVertices(mesh,'armR');
     this._snackGripOffset = pad.clone().normalize().multiplyScalar(0.015);
     this.snackGripLocal = new THREE.Vector3();
     const left = skinCluster(mesh, mesh.skeleton, 'armL', {minWeight:0.3,minDist:0.13});
@@ -240,13 +243,16 @@ export class PlayAvatar {
       o.quaternion.copy(upright);
     }
     const cup=this.model.children.find(o=>o.userData?.sharedPlayFood&&o.userData.playTwoHanded);
-    if(cup&&this._snackLeftVertices?.length) {
+    if(cup&&this._cupLeftVertices?.length&&this._cupRightVertices?.length) {
       const left=new THREE.Vector3();
-      for(const i of this._snackLeftVertices){mesh.getVertexPosition(i,v);left.add(v.applyMatrix4(mesh.matrixWorld));}
-      left.divideScalar(this._snackLeftVertices.length);
+      for(const i of this._cupLeftVertices){mesh.getVertexPosition(i,v);left.add(v.applyMatrix4(mesh.matrixWorld));}
+      left.divideScalar(this._cupLeftVertices.length);
+      const right=new THREE.Vector3();
+      for(const i of this._cupRightVertices){mesh.getVertexPosition(i,v);right.add(v.applyMatrix4(mesh.matrixWorld));}
+      right.divideScalar(this._cupRightVertices.length);
       // The rear lower edge rests between both actual skinned palms. Eating
       // tilts the edible edge toward the mouth; walking keeps the food level.
-      const midpoint=center.clone().add(left).multiplyScalar(.5);
+      const midpoint=right.clone().add(left).multiplyScalar(.5);
       const rootQ=this.root.getWorldQuaternion(new THREE.Quaternion());
       const thinLift=cup.userData.playFoodId === 'congyoubing' ? .013*(this._cupLift??0):0;
       midpoint.add(new THREE.Vector3(0,.012+.008*(this._cupLift??0)+thinLift,.018+.022*(this._cupLift??0)).applyQuaternion(rootQ));
@@ -260,6 +266,9 @@ export class PlayAvatar {
   }
 
   _applyCupArms(dt) {
+    if(this._handSkin&&!this._handSkin.plush){
+      smoothPlushShoulders(this._bodyMesh,this._handSkin.clone);this._handSkin.plush=true;
+    }
     const arms=['armL','armR'].map(n=>this.model.getObjectByName(n));
     if(arms.some(a=>!a?.isBone))return false;
     this._cupBase=arms.map(arm=>({arm,q:arm.quaternion.clone(),p:arm.position.clone()}));
@@ -331,6 +340,7 @@ export class PlayAvatar {
   dispose() {
     if (this.disposed) return;
     this.disposed = true;
+    this.artFinish?.dispose();
     this.releaseSnackSkin();   // 归还手持克隆；原 geometry 留给下方遍历释放
     this.mixer.stopAllAction();
     this.mixer.uncacheRoot(this.model);

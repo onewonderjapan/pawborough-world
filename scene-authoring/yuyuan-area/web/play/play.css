@@ -1,10 +1,20 @@
 /* Play mode (?play=1) HUD. Scoped under #play-hud / body.play-mode so the
    default viewer page is visually untouched.
-   小吃工单 20261001 配色：纸白 #f7f0df / 深墨绿 #233c37 / 浅绿 #6b9483 /
-   朱红 #d35a43 / 金黄 #e5b761。中文系统字体，少量圆角。 */
+   逛吃手账 20261002 冻结配色：瓷蓝 #244f68 / 浅玉 #71aaa0 / 米白 #fff7e8 /
+   胭脂 #d56b70 / 蜂蜜 #deb26c。圆润细描边纸卡，中文系统字体。 */
+body.play-mode {
+  --pb-porcelain: #244f68;
+  --pb-jade: #71aaa0;
+  --pb-cream: #fff7e8;
+  --pb-rouge: #d56b70;
+  --pb-honey: #deb26c;
+  --pb-ink: #2c4a5e;
+  --pb-soft: rgba(36, 79, 104, 0.08);
+}
 body.play-mode #bar,
 body.play-mode #hud { display: none !important; }
 
+/* 空白区域指针穿透：只有按钮/面板本体可点，信息条不挡鼠标锁定 */
 #play-hud {
   position: fixed;
   left: 12px;
@@ -12,94 +22,206 @@ body.play-mode #hud { display: none !important; }
   z-index: 30;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 8px;
-  max-width: 420px;
+  pointer-events: none;
   font: 13px/1.6 system-ui, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-  color: #233c37;
+  color: var(--pb-ink);
 }
-#play-hint {
-  background: #f7f0dfe8;
-  border-left: 3px solid #6b9483;
-  padding: 6px 10px;
-  border-radius: 0 4px 4px 0;
-}
-#play-actions { display: flex; gap: 6px; }
-#play-actions button {
+#play-hud button {
   font: inherit;
-  background: #f7f0df;
-  border: 1px solid #6b9483;
-  border-radius: 4px;
-  padding: 5px 11px;
+  color: var(--pb-ink);
+  background: var(--pb-cream);
+  border: 1.5px solid var(--pb-porcelain);
+  border-radius: 10px;
+  padding: 5px 12px;
   cursor: pointer;
-  color: #233c37;
 }
-#play-actions button.active { background: #233c37; color: #f7f0df; border-color: #233c37; }
+#play-hud button.active {
+  background: var(--pb-porcelain);
+  color: var(--pb-cream);
+  border-color: var(--pb-porcelain);
+}
+#play-actions { display: flex; gap: 6px; pointer-events: auto; }
 
-/* 左上：目标 + 集章（紧凑，不挡画面中心） */
+/* 左上：紧凑三味手账（宽约 240，不挡画面中心） */
 #play-goal {
   position: fixed;
   left: 12px;
   top: 12px;
   z-index: 30;
-  background: #f7f0dfe8;
-  border-left: 3px solid #d35a43;
-  border-radius: 0 6px 6px 0;
-  padding: 8px 12px;
-  min-width: 190px;
+  width: 240px;
+  box-sizing: border-box;
+  pointer-events: auto;
+  background: var(--pb-cream);
+  border: 1.5px solid rgba(36, 79, 104, 0.85);
+  border-radius: 14px;
+  padding: 9px 12px 10px;
+  box-shadow: 0 3px 10px rgba(36, 79, 104, 0.18);
 }
-#play-goal-title { font-weight: 700; letter-spacing: 0.5px; }
-#play-goal-sub { font-size: 12px; color: #233c37cc; margin-top: 1px; }
-#play-stamps { display: flex; gap: 5px; margin-top: 5px; }
-.stamp {
-  width: 22px; height: 22px;
-  display: inline-flex; align-items: center; justify-content: center;
-  border: 1.5px dashed #6b9483;
-  border-radius: 50%;
-  font-size: 11px;
-  color: #6b9483;
-  background: #f7f0df;
+#play-goal-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
 }
-.stamp.full {
-  border: 1.5px solid #d35a43;
-  background: #d35a43;
-  color: #f7f0df;
+#play-goal-title {
   font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--pb-porcelain);
+}
+#play-goal-count { font-size: 11px; color: var(--pb-porcelain); font-weight: 600; }
+#play-goal-sub { font-size: 12px; margin-top: 1px; }
+#play-goal-next { color: var(--pb-ink); }
+#play-goal-dist { color: rgba(44, 74, 94, 0.65); }
+#play-stamps { display: flex; gap: 7px; margin-top: 7px; }
+.stamp {
+  width: 30px; height: 30px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1.5px dashed var(--pb-jade);
+  border-radius: 50%;
+  color: var(--pb-jade);
+  background: transparent;
+}
+.stamp svg { width: 18px; height: 18px; display: block; }
+.stamp.full {
+  border: 1.5px solid var(--pb-rouge);
+  background: var(--pb-rouge);
+  color: var(--pb-cream);
+  box-shadow: inset 0 0 0 2px var(--pb-cream);
+}
+/* 落章动画：只在获得新章的一次重建上加类，不会每帧重播 */
+.stamp.just { animation: pb-stamp-drop 0.45s ease-out; }
+@keyframes pb-stamp-drop {
+  0% { transform: scale(1.7) rotate(-12deg); opacity: 0.4; }
+  60% { transform: scale(0.92) rotate(2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); }
 }
 
-/* 底部靠边动态交互提示（第 3 行 hud 之上，靠左下角不挡角色） */
-#play-bottom {
-  background: #233c37e6;
-  color: #f7f0df;
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-weight: 600;
-}
-#play-bottom:empty { display: none; }
-
+/* 临时消息：单条紧凑纸签，不占画面 */
 #play-msg {
-  background: #f7f0dfd9;
-  border-left: 3px solid #e5b761;
-  padding: 4px 10px;
-  border-radius: 0 4px 4px 0;
+  background: rgba(36, 79, 104, 0.92);
+  color: var(--pb-cream);
+  border-radius: 10px;
+  padding: 4px 11px;
+  font-size: 12px;
+  max-width: 300px;
 }
+
+/* 「慢慢品尝」进度卡（updateInteraction 接口渲染） */
+#play-interact {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--pb-cream);
+  border: 1.5px solid rgba(36, 79, 104, 0.85);
+  border-radius: 12px;
+  padding: 5px 10px;
+  box-shadow: 0 3px 10px rgba(36, 79, 104, 0.16);
+}
+.pi-icon { width: 22px; height: 22px; color: var(--pb-rouge); display: inline-flex; }
+.pi-icon svg { width: 100%; height: 100%; display: block; }
+.pi-body { display: flex; flex-direction: column; gap: 3px; }
+.pi-label { font-size: 11px; font-weight: 600; color: var(--pb-porcelain); letter-spacing: 1px; }
+.pi-bar {
+  width: 116px; height: 6px;
+  border-radius: 3px;
+  background: rgba(113, 170, 160, 0.3);
+  overflow: hidden;
+}
+.pi-fill {
+  display: block;
+  width: 0%;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--pb-rouge);
+  transition: width 0.15s linear;
+}
+
+/* 单条上下文按键提示 */
+#play-bottom {
+  background: rgba(255, 247, 232, 0.92);
+  border: 1px solid rgba(113, 170, 160, 0.9);
+  color: var(--pb-ink);
+  border-radius: 10px;
+  padding: 4px 11px;
+  font-size: 12px;
+  font-weight: 600;
+  max-width: 320px;
+}
+#play-bottom kbd,
+#play-hud kbd {
+  display: inline-block;
+  font: 600 11px/1.5 inherit;
+  font-family: inherit;
+  color: var(--pb-porcelain);
+  background: #fff;
+  border: 1px solid var(--pb-jade);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  padding: 0 5px;
+  margin: 0 1px;
+}
+#play-hint { font-size: 11px; color: rgba(44, 74, 94, 0.72); padding: 0 2px; }
+
 #play-asset-error {
-  background: #ffecec;
-  border: 1px solid #b03030;
-  border-left: 3px solid #b03030;
+  pointer-events: auto;
+  background: var(--pb-cream);
+  border: 1.5px solid var(--pb-rouge);
   padding: 10px 12px;
-  border-radius: 0 4px 4px 0;
+  border-radius: 12px;
+  max-width: 300px;
 }
 #play-asset-error p { margin: 0 0 8px; }
-#play-asset-error button {
-  font: inherit;
-  background: #fff6e4;
-  border: 1px solid #b03030;
-  border-radius: 4px;
-  padding: 4px 10px;
-  cursor: pointer;
+#play-asset-error button { border-color: var(--pb-rouge); color: var(--pb-rouge); background: #fff; }
+
+/* 「操作」折叠弹层：打开时游戏暂停 */
+#play-help {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(36, 79, 104, 0.38);
+  pointer-events: auto;
+}
+#play-help-card {
+  width: min(320px, calc(100vw - 32px));
+  box-sizing: border-box;
+  background: var(--pb-cream);
+  border: 1.5px solid var(--pb-porcelain);
+  border-radius: 16px;
+  padding: 12px 14px 10px;
+  box-shadow: 0 10px 30px rgba(36, 79, 104, 0.35);
+}
+#play-help-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--pb-porcelain);
+  margin-bottom: 8px;
+}
+#play-help-head button { padding: 2px 10px; font-size: 12px; }
+.help-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+  font-size: 12.5px;
+}
+.help-row kbd { min-width: 62px; text-align: center; }
+#play-help-note {
+  margin: 8px 0 0;
+  font-size: 11px;
+  color: rgba(44, 74, 94, 0.6);
+  border-top: 1px dashed var(--pb-jade);
+  padding-top: 6px;
 }
 
-/* 右上小地图：约 210px，小屏缩小，不挡角色（角色在画面中心/下中部） */
+/* 右上小地图：精致圆角外框 + 「附近街巷」小标题，底图温和蓝灰/水绿 */
 #play-map {
   position: fixed;
   right: 12px;
@@ -107,31 +229,67 @@ body.play-mode #hud { display: none !important; }
   z-index: 30;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   align-items: flex-end;
+}
+#play-map-title {
+  pointer-events: none;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--pb-porcelain);
+  background: rgba(255, 247, 232, 0.92);
+  border: 1px solid rgba(36, 79, 104, 0.5);
+  border-radius: 8px;
+  padding: 2px 9px;
 }
 #play-map-canvas {
   width: 210px;
   height: 210px;
-  border: 2px solid #233c37;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(35, 60, 55, 0.35);
-  background: #f7f0df;
+  border: 2px solid var(--pb-porcelain);
+  border-radius: 14px;
+  box-shadow: 0 3px 12px rgba(36, 79, 104, 0.22);
+  background: var(--pb-cream);
   cursor: pointer;
 }
 #play-map-bar { display: flex; gap: 4px; }
 #play-map-bar button {
   font: 12px/1.4 system-ui, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  background: #f7f0dfe8;
-  border: 1px solid #6b9483;
-  border-radius: 4px;
+  background: rgba(255, 247, 232, 0.92);
+  border: 1px solid var(--pb-jade);
+  border-radius: 8px;
   padding: 3px 10px;
   cursor: pointer;
-  color: #233c37;
+  color: var(--pb-ink);
 }
+
 @media (max-width: 720px) {
   #play-map-canvas { width: 140px; height: 140px; }
+  #play-goal { width: 196px; padding: 7px 9px 8px; }
+  #play-goal-sub { font-size: 11px; }
+  .stamp { width: 26px; height: 26px; }
+  .stamp svg { width: 15px; height: 15px; }
+  #play-hud { left: 8px; bottom: 8px; gap: 6px; }
+  #play-bottom { max-width: 240px; }
+}
+
+/* 减少动态：关掉落章/进度条等非必要动效 */
+@media (prefers-reduced-motion: reduce) {
+  #play-hud *,
+  #play-map * {
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
 /* Keep development landmark labels off the character during play. */
 body.play-mode:not(.play-viewing) #labels { display: none; }
+
+/* Author display rules must never override the native hidden contract. */
+#play-hud [hidden] { display: none !important; }
+body.play-eating #play-bottom { display: none; }
+#play-hint { background:rgba(255,247,232,.8);padding:2px 7px;border-radius:6px; }
+#play-hud button:focus-visible {outline:3px solid var(--pb-honey);outline-offset:2px;}
+
+#play-hud.is-paused .pi-fill { transition:none; }
+#play-hud.is-paused .stamp.just { animation-play-state:paused; }
