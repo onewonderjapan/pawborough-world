@@ -45,3 +45,9 @@ python3 -X utf8 tools/export_play_site.py --output /绝对路径/发布目录
 当前运行 `20261002-main-a5d3bd03`，源码 `a5d3bd03ded8c674967a547f0126d656801a4e00`；172 文件、132,522,376 bytes（126.38 MiB）。桥头通行/门廊窄缝、轮子落地/骑姿、老街北顶棚与取景标签已更新。专用桶逐对象 SHA256、类型与缓存核对通过；先上传不可变资源，安全策略生效后再切换入口。域名、现有证书与 Route53 A/AAAA 保留。域名和原 CloudFront 入口字节与本地发布包一致。
 
 公开 Chrome 24 项检查通过：基础加载与控制八项、老街北三项、取景三项、自行车八项、桥往返两项。普通按键从岸边到湖心亭门廊 17 点并返回 19 点，无位置写入冒充通行。40 份公开 GLB 与上一防陷版本字节一致。验收范围和截图见 `PLAYTEST-REMNANTS-20261002.md`；发布回执在原 preflight outbox，详细复验在 `/home/baibai/outbox/pawborough-remnants-20261002/artifacts/FINAL-ACCEPTANCE.json`。
+
+## 双爪捧食版本（2026-10-02）
+
+当前运行 `20261002-main-9108d443`，源码 `9108d4436723b69fbc212219eb408e17f1bd4f29`；172 文件、132,528,969 bytes。三味小吃按实际尺寸放大，双爪捧起并朝嘴进食，车篮/暂停/刷新行为保留。公开 Chrome 基础八项及小吃21项通过，域名和原 CloudFront 入口字节与本地一致；40份原GLB与上一版本字节一致。细节见 `SNACK-CUPPING-20261002.md`，回执与实景图在 `/home/baibai/outbox/pawborough-snack-cupping-20261002/artifacts/`。
+
+旧主机 Python SDK 读取过期SSO token失败，但同profile的CLI仍有有效角色凭证。发布工具改由CLI取得同账号凭证，仅在内存传给SDK；没有写出或打印凭证，没有修改登录配置。

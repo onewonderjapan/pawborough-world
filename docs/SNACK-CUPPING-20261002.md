@@ -11,3 +11,5 @@
 新增 `tests/play_food_cupping.test.mjs` 检查真实三味/灰猫：尺寸、双掌支撑、嘴部距离、暂停、原皮肤不改及共享资源；原 `play_food_pose` 单手/骑姿兼容契约保留。玩法测试和原客户端构建通过。Chrome真实贴图检查21项：三味双爪手持、走动、嘴边进食、暂停、集章，及一次车篮转移/下车/刷新。测试用中心区域存档夹具，不冒充新全城可达证明。
 
 截图与原失败数据：`/home/baibai/outbox/pawborough-snack-cupping-20261002/artifacts/`；发布回执见 `CLOUDFRONT-TRIAL.md`。
+
+已公开发布 `20261002-main-9108d443`。域名和原CloudFront地址均核对入口SHA；公開实景21项与基础8项通过。

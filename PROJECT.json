@@ -98,14 +98,14 @@
     "note": "封存 v1.0 源码与标签已推送；当前独立公开试玩部署见 development.deployment。"
   },
   "development": {
-    "stage": "published-playtest-remnants-verified",
-    "codeHead": "a5d3bd03ded8c674967a547f0126d656801a4e00",
+    "stage": "published-cupped-snacks-verified",
+    "codeHead": "9108d4436723b69fbc212219eb408e17f1bd4f29",
     "entry": "/?play=1&at=center",
     "assetManifest": "scene-authoring/yuyuan-area/inputs/play-character.json",
-    "technicalStatus": "reported_routes_and_remnant_checks_passed",
+    "technicalStatus": "reported_routes_passed_cupped_snacks_verified",
     "artStatus": "pending_world_review",
     "next": "Integrate the remaining four upright actors, then extend repeatable snack and bicycle routes",
-    "note": "Independent reported bridge access, bicycle fit/parking, old-north soffit and photo-label issues repaired. Public Chrome 24 scoped checks pass; 40 public GLBs and sealed v1.0 bytes preserved. Full-world art review and mobile controls remain outside this acceptance.",
+    "note": "Larger snacks with two-paw support and eating at the actual mouth. Public Chrome eight basic and 21 snack/transfer/pause/save checks pass. Original GLB bytes and prior map repairs preserved.",
     "assetManifests": [
       "scene-authoring/yuyuan-area/inputs/play-character.json",
       "scene-authoring/yuyuan-area/inputs/play-foods.json",
@@ -127,21 +127,23 @@
       "skin-bound-snacks",
       "bridge-landing-access",
       "passage-soffits",
-      "subject-aware-labels"
+      "subject-aware-labels",
+      "two-paw-snacks"
     ],
     "feedbackReview": "docs/PLAY-FEEDBACK-20261001.md",
     "feedbackReviews": [
       "docs/PLAY-FEEDBACK-20261001.md",
       "docs/SNACK-FEEDBACK-20261002.md",
       "docs/GEMINI-PLAYTEST-20261002.md",
-      "docs/PLAYTEST-REMNANTS-20261002.md"
+      "docs/PLAYTEST-REMNANTS-20261002.md",
+      "docs/SNACK-CUPPING-20261002.md"
     ],
     "deployment": {
       "kind": "static-trial",
       "url": "https://pawborough.onewonder.co.jp/",
-      "version": "20261002-main-a5d3bd03",
-      "sourceHead": "a5d3bd03ded8c674967a547f0126d656801a4e00",
-      "verification": "HTTPS/entry SHA/CSP and public Chrome 24 scoped checks; 17 visual parts, six physics zones",
+      "version": "20261002-main-9108d443",
+      "sourceHead": "9108d4436723b69fbc212219eb408e17f1bd4f29",
+      "verification": "HTTPS/entry SHA/CSP; public Chrome eight basic plus 21 cupped-snack checks",
       "subdomain": "pawborough.onewonder.co.jp",
       "receipt": "docs/CLOUDFRONT-TRIAL.md",
       "cloudfrontUrl": "https://d1c74tvoxrrqcb.cloudfront.net/"
