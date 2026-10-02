@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "planId": "pawborough-national-snacks-20261002",
-  "overallStatus": "active_m00",
+  "overallStatus": "active_m01",
   "executionStarted": true,
   "workersStarted": true,
   "automationCreated": false,
   "cloudChanged": false,
-  "currentTask": "M00",
-  "lastUpdated": "2026-10-02T22:00:36+09:00",
+  "currentTask": "M01",
+  "lastUpdated": "2026-10-02T22:02:13+09:00",
   "baselineSourceHead": "31bae61f002a7bf5e04aac2c82b526909b87e78b",
   "localCompletionTaskIds": [
     "M00",
@@ -62,10 +62,10 @@
       "title": "基线、资源与可达区域",
       "requiredForLocalCompletion": true,
       "dependsOn": [],
-      "status": "implemented",
+      "status": "verified",
       "owner": "Codex lead with bounded source and asset inventory workers",
       "sourceHead": "61facf5525fbc8bf821d22eb144c3305557cd2e4",
-      "resultCommit": null,
+      "resultCommit": "16abd117b93b722681cbc1ec42c37b32748e5d3f",
       "evidencePaths": [
         "docs/plans/national-snacks-20261002/baseline.json",
         "docs/plans/national-snacks-20261002/asset-reuse.json",
@@ -73,8 +73,8 @@
         "docs/plans/national-snacks-20261002/content-candidates.json",
         "/home/baibai/outbox/pawborough-national-snacks-20261002/m00/M00-browser-baseline.json"
       ],
-      "lastCheck": "2026-10-02T22:00:36+09:00",
-      "nextAction": "Self-check all evidence fields and commit M00; record commit hash in a follow-up receipt before marking verified.",
+      "lastCheck": "2026-10-02T22:02:13+09:00",
+      "nextAction": "Baseline fixed. M12 will prove continuous paths and installed-cart clearance; M14 will compare same GPU probe.",
       "blocker": null
     },
     {
@@ -84,13 +84,13 @@
       "dependsOn": [
         "M00"
       ],
-      "status": "not_started",
-      "owner": null,
-      "sourceHead": null,
+      "status": "running",
+      "owner": "Codex integrator; bounded agy registry workorder planned",
+      "sourceHead": "16abd117b93b722681cbc1ec42c37b32748e5d3f",
       "resultCommit": null,
       "evidencePaths": [],
-      "lastCheck": null,
-      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "lastCheck": "2026-10-02T22:02:13+09:00",
+      "nextAction": "Implement food registry and input schema, then integrate GameState with red/green checks.",
       "blocker": null
     },
     {
