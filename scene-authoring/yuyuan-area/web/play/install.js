@@ -519,12 +519,6 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   // ---- 手持/车篮：恰好一个模型实例（R0-5）——take 创建，上车移入车篮，
   // 下车移回手，吃完摘除销毁引用（共享 geometry/material 由 FoodCatalog 唯一持有） ----
   let heldObj = null;   // { foodId, obj }
-  function attachHand(obj) {
-    const avatar = core.state.avatar;
-    const armR = avatar?.model?.getObjectByName('armR');
-    if (!armR) return;
-    armR.add(obj);
-  }
   function refreshHeldModel() {
     const avatar = core.state.avatar;
     if (!avatar || !foods) return;
@@ -534,12 +528,9 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       if (o.name?.startsWith('play-held-')) o.removeFromParent();
     });
     if (heldObj) { heldObj.obj.removeFromParent(); }
-    const armR = avatar.model.getObjectByName('armR');
-    const gripLocal = armR?.isBone ? avatar.snackGripLocal : null;   // 真实爪掌前表面（手持补丁生效期）
     if (gameState.heldItem) {
       const reusable = heldObj?.foodId === gameState.heldItem ? heldObj.obj : null;
-      heldObj = { foodId: gameState.heldItem, obj: foods.attachToHand(gameState.heldItem,
-        armR ?? avatar.model, reusable, gripLocal) };
+      heldObj = { foodId: gameState.heldItem, obj: foods.attachToHands(gameState.heldItem, avatar.model, reusable) };
     } else if (gameState.basketItem && gameState.vehicle.riding && bikeView) {
       // 车篮里的正是同一实例（上车时移入的），不再新建
       if (!heldObj || heldObj.foodId !== gameState.basketItem) {

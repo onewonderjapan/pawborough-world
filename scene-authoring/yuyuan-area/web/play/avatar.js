@@ -79,6 +79,7 @@ export class PlayAvatar {
     this.holdingPose = false;
     this.snackArm = this.model.getObjectByName('armR');
     this._snackBase = null;
+    this._cupBase = null;
     this._snackElapsed = 0;
     // 手持/进食的爪皮肤跟随（工单：与骑乘共用 rider-fit 运行时改绑，可还原）。
     // _bodyMesh/_bodyOriginal 只用于识别「当前 geometry 是否还是原 GLB 对象」，
@@ -92,6 +93,7 @@ export class PlayAvatar {
     this._handSkin = null;        // { mesh, fix, clone } —— 手持期间的权重克隆
     this.snackGripLocal = null;   // 真实爪掌前表面（armR 骨空间）；仅补丁生效期有效
     this._snackGripVertices = null;
+    this._snackLeftVertices = null;
     this.actions.idle.setEffectiveWeight(1).play();
     this.actions.walk.setEffectiveWeight(0).play();
     // 表情 morph（eyeL/eyeR/mouth，extras.targetNames 提供名字；吃完成给 happy/content）
@@ -157,6 +159,10 @@ export class PlayAvatar {
     if (!this.holdingPose && !this.eatingPose) this._restoreSnackArm();
   }
   _restoreSnackArm() {
+    if (this._cupBase) {
+      for (const {arm,q,p} of this._cupBase) {arm.quaternion.copy(q);arm.position.copy(p);}
+      this._cupBase = null;
+    }
     if (!this.snackArm || !this._snackBase) return;
     this.snackArm.quaternion.copy(this._snackBase.q);
     this.snackArm.position.copy(this._snackBase.p);
@@ -180,6 +186,7 @@ export class PlayAvatar {
     this._handSkin = null;
     this.snackGripLocal = null;
     this._snackGripVertices = null;
+    this._snackLeftVertices = null;
     if (s.mesh.geometry !== s.clone) return false;   // 已被接管：还原由接管方负责
     s.fix.restore(s.clone);
     return true;
@@ -206,6 +213,12 @@ export class PlayAvatar {
     this._snackGripVertices = tips.map(o => o.i);
     this._snackGripOffset = pad.clone().normalize().multiplyScalar(0.015);
     this.snackGripLocal = new THREE.Vector3();
+    const left = skinCluster(mesh, mesh.skeleton, 'armL', {minWeight:0.3,minDist:0.13});
+    if (left?.vertexIndices.length) {
+      const li=mesh.skeleton.bones.findIndex(b=>b.name==='armL'), inv=mesh.skeleton.boneInverses[li];
+      const lp=left.vertexIndices.map(i=>({i,y:new THREE.Vector3().fromBufferAttribute(pos,i).applyMatrix4(inv).y}));
+      const lo=Math.min(...lp.map(o=>o.y));this._snackLeftVertices=lp.filter(o=>o.y<=lo+.035).map(o=>o.i);
+    }
     this._syncSnackGrip();
     return this.snackGripLocal;
   }
@@ -219,17 +232,55 @@ export class PlayAvatar {
     const center=new THREE.Vector3(),v=new THREE.Vector3();
     for(const i of indices){mesh.getVertexPosition(i,v);center.add(v.applyMatrix4(mesh.matrixWorld));}
     center.divideScalar(indices.length);
-    this.snackGripLocal.copy(arm.worldToLocal(center)).add(this._snackGripOffset);
+    this.snackGripLocal.copy(arm.worldToLocal(center.clone())).add(this._snackGripOffset);
     const upright=arm.getWorldQuaternion(new THREE.Quaternion()).invert()
       .multiply(this.root.getWorldQuaternion(new THREE.Quaternion()));
     for(const o of arm.children)if(o.userData?.sharedPlayFood){
       o.position.copy(this.snackGripLocal);
       o.quaternion.copy(upright);
     }
+    const cup=this.model.children.find(o=>o.userData?.sharedPlayFood&&o.userData.playTwoHanded);
+    if(cup&&this._snackLeftVertices?.length) {
+      const left=new THREE.Vector3();
+      for(const i of this._snackLeftVertices){mesh.getVertexPosition(i,v);left.add(v.applyMatrix4(mesh.matrixWorld));}
+      left.divideScalar(this._snackLeftVertices.length);
+      // The rear lower edge rests between both actual skinned palms. Eating
+      // tilts the edible edge toward the mouth; walking keeps the food level.
+      const midpoint=center.clone().add(left).multiplyScalar(.5);
+      const rootQ=this.root.getWorldQuaternion(new THREE.Quaternion());
+      const thinLift=cup.userData.playFoodId === 'congyoubing' ? .013*(this._cupLift??0):0;
+      midpoint.add(new THREE.Vector3(0,.012+.008*(this._cupLift??0)+thinLift,.018+.022*(this._cupLift??0)).applyQuaternion(rootQ));
+      const lifts={xiaolongbao:.65,congyoubing:1.30,youdunzi:1.0};
+      const tilt=(lifts[cup.userData.playFoodId]??.65)*(this._cupLift??0);
+      const desired=rootQ.clone().multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(-tilt,cup.userData.cupYaw??0,0)));
+      cup.quaternion.copy(this.model.getWorldQuaternion(new THREE.Quaternion()).invert().multiply(desired));
+      cup.position.copy(this.model.worldToLocal(midpoint));
+      cup.position.sub(cup.userData.cupRearOffset.clone().applyQuaternion(cup.quaternion));
+    }
+  }
+
+  _applyCupArms(dt) {
+    const arms=['armL','armR'].map(n=>this.model.getObjectByName(n));
+    if(arms.some(a=>!a?.isBone))return false;
+    this._cupBase=arms.map(arm=>({arm,q:arm.quaternion.clone(),p:arm.position.clone()}));
+    if(this.eatingPose)this._snackElapsed+=dt;
+    const t=this.eatingPose?Math.min(1,this._snackElapsed/.45):0;
+    this._cupLift=t*t*(3-2*t);
+    const pitch=-1.8-.25*this._cupLift;
+    const roll=.82-.02*this._cupLift;
+    for(let i=0;i<arms.length;i++) {
+      const arm=arms[i],rest=this.restBoneQuaternions.get(arm.name);
+      arm.quaternion.copy(rest);arm.rotateX(pitch);arm.rotateZ(i===0?-roll:roll);
+      const angle=rest.angleTo(arm.quaternion);
+      if(angle>2.1){const target=arm.quaternion.clone();arm.quaternion.copy(rest).slerp(target,2.1/angle);}
+    }
+    return true;
   }
 
   _applySnackArm(dt) {
     if (!this.snackArm || (!this.holdingPose && !this.eatingPose)) return;
+    const cup=this.model.children.find(o=>o.userData?.sharedPlayFood&&o.userData.playTwoHanded);
+    if(cup&&this._applyCupArms(dt))return;
     const arm = this.snackArm;
     this._snackBase = { q: arm.quaternion.clone(), p: arm.position.clone() };
     if (this.eatingPose) this._snackElapsed += dt;
