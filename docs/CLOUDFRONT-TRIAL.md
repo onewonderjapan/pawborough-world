@@ -51,3 +51,9 @@ python3 -X utf8 tools/export_play_site.py --output /绝对路径/发布目录
 当前运行 `20261002-main-9108d443`，源码 `9108d4436723b69fbc212219eb408e17f1bd4f29`；172 文件、132,528,969 bytes。三味小吃按实际尺寸放大，双爪捧起并朝嘴进食，车篮/暂停/刷新行为保留。公开 Chrome 基础八项及小吃21项通过，域名和原 CloudFront 入口字节与本地一致；40份原GLB与上一版本字节一致。细节见 `SNACK-CUPPING-20261002.md`，回执与实景图在 `/home/baibai/outbox/pawborough-snack-cupping-20261002/artifacts/`。
 
 旧主机 Python SDK 读取过期SSO token失败，但同profile的CLI仍有有效角色凭证。发布工具改由CLI取得同账号凭证，仅在内存传给SDK；没有写出或打印凭证，没有修改登录配置。
+
+## 毛绒角色与互动美术第一轮（2026-10-02）
+
+当前运行 `20261002-main-cc89c58e`，源码 `cc89c58ebf91e139277599d3b7a5514a50d42121`；176 文件、132,565,648 bytes（126.42 MiB）。包含角色材质/高光/肩腋过渡、单车轮圈与藤篮、热食与奖励反馈、逛吃手账和操作面板。域名及原 CloudFront 入口 SHA 匹配；40份原GLB未改。公开实景47项通过（资源/控制8、小吃24、单车8、界面7）。
+
+美术方向、定量范围与整图后续提案见 `ART-DIRECTION-20261002.md`；证据在 `/home/baibai/outbox/pawborough-art-upgrade-20261002/artifacts/`，前后对照为同目录上级 `art-review.html`。

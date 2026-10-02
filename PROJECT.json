@@ -98,14 +98,14 @@
     "note": "封存 v1.0 源码与标签已推送；当前独立公开试玩部署见 development.deployment。"
   },
   "development": {
-    "stage": "published-cupped-snacks-verified",
-    "codeHead": "9108d4436723b69fbc212219eb408e17f1bd4f29",
+    "stage": "published-plush-interaction-art-pass1",
+    "codeHead": "cc89c58ebf91e139277599d3b7a5514a50d42121",
     "entry": "/?play=1&at=center",
     "assetManifest": "scene-authoring/yuyuan-area/inputs/play-character.json",
-    "technicalStatus": "reported_routes_passed_cupped_snacks_verified",
-    "artStatus": "pending_world_review",
-    "next": "Integrate the remaining four upright actors, then extend repeatable snack and bicycle routes",
-    "note": "Larger snacks with two-paw support and eating at the actual mouth. Public Chrome eight basic and 21 snack/transfer/pause/save checks pass. Original GLB bytes and prior map repairs preserved.",
+    "technicalStatus": "plush_art_runtime_and_interaction_checks_passed",
+    "artStatus": "nearfield_pass1_verified_world_art_proposal_ready",
+    "next": "Pilot warm lighting/material unification at center, snack street and bridge; establish shared shoulder/elbow/wrist authoring before the remaining four actors",
+    "note": "Plush finish, shoulder transition smoothing, open-spoke jade bicycle, steam/reward feedback and food-journal HUD. Public Chrome 47 scoped checks pass. Full-world lighting/material and formal character retopology remain proposed next phases. Original GLB bytes preserved.",
     "assetManifests": [
       "scene-authoring/yuyuan-area/inputs/play-character.json",
       "scene-authoring/yuyuan-area/inputs/play-foods.json",
@@ -128,7 +128,11 @@
       "bridge-landing-access",
       "passage-soffits",
       "subject-aware-labels",
-      "two-paw-snacks"
+      "two-paw-snacks",
+      "plush-character-finish",
+      "refined-bicycle-art",
+      "food-interaction-effects",
+      "food-journal-hud"
     ],
     "feedbackReview": "docs/PLAY-FEEDBACK-20261001.md",
     "feedbackReviews": [
@@ -136,14 +140,15 @@
       "docs/SNACK-FEEDBACK-20261002.md",
       "docs/GEMINI-PLAYTEST-20261002.md",
       "docs/PLAYTEST-REMNANTS-20261002.md",
-      "docs/SNACK-CUPPING-20261002.md"
+      "docs/SNACK-CUPPING-20261002.md",
+      "docs/ART-DIRECTION-20261002.md"
     ],
     "deployment": {
       "kind": "static-trial",
       "url": "https://pawborough.onewonder.co.jp/",
-      "version": "20261002-main-9108d443",
-      "sourceHead": "9108d4436723b69fbc212219eb408e17f1bd4f29",
-      "verification": "HTTPS/entry SHA/CSP; public Chrome eight basic plus 21 cupped-snack checks",
+      "version": "20261002-main-cc89c58e",
+      "sourceHead": "cc89c58ebf91e139277599d3b7a5514a50d42121",
+      "verification": "HTTPS/entry SHA/CSP; public Chrome 47 scoped art/gameplay/UI checks",
       "subdomain": "pawborough.onewonder.co.jp",
       "receipt": "docs/CLOUDFRONT-TRIAL.md",
       "cloudfrontUrl": "https://d1c74tvoxrrqcb.cloudfront.net/"
