@@ -114,6 +114,33 @@ export class PlayGameState {
       trackedVendorId: this.trackedVendorId,
     };
   }
+  applyCollection(collection) {
+    const lists = [collection?.discovered, collection?.tasted, collection?.milestones,
+      collection?.orphanedProgress?.discovered, collection?.orphanedProgress?.tasted];
+    if (lists.some(list => !Array.isArray(list) || list.some(id => typeof id !== 'string' || !id))) return bad('invalid-collection');
+    const union = (current, incoming) => [...new Set([...current, ...incoming])];
+    const raw = { ...this.toSave(),
+      discovered: union(this.discovered, collection.discovered), tasted: union(this.tasted, collection.tasted),
+      milestones: union(this.milestones, collection.milestones),
+      orphanedProgress: { discovered: union(this.orphanedProgress.discovered, collection.orphanedProgress.discovered),
+        tasted: union(this.orphanedProgress.tasted, collection.orphanedProgress.tasted) } };
+    const v = validateSave(raw, this.foods, { registry: this.registry, catalogEdition: this.catalogEdition });
+    if (!v.ok) return v;
+    this.discovered = new Set(v.value.discovered);
+    this.tasted = new Set(v.value.tasted);
+    this.milestones = new Set(v.value.milestones);
+    this.orphanedProgress = { discovered: new Set(v.value.orphanedProgress.discovered), tasted: new Set(v.value.orphanedProgress.tasted) };
+    this._updateMilestones();
+    this._emit({ type: 'collection-changed' });
+    return { ok: true, warnings: v.warnings };
+  }
+  _updateMilestones() {
+    for (const n of [6, 12, 24]) if (this.stamps >= n) this.milestones.add(`tastes-${n}`);
+    for (const [id] of this.registry?.chaptersById ?? []) {
+      const foods = this.foods.filter(f => f.chapterId === id && this.requiredFoodIds.has(f.id));
+      if (foods.length && foods.every(f => this.tasted.has(f.id))) this.milestones.add(`chapter-${id}`);
+    }
+  }
   goal() {
     if (this.complete || !this.foods.length) return null;
     // 目标自动指下一味：当前目标未吃则保持，已吃则顺延到第一个未吃
@@ -123,9 +150,14 @@ export class PlayGameState {
     }
     return this.foods[this.goalIndex] ?? null;
   }
+  navigationGoal() {
+    return this.foods.find(food => food.id === this.trackedFoodId) ?? this.goal();
+  }
   selectGoal(index) {              // 小地图/点击只导向，不传送
     if (!Number.isInteger(index) || index < 0 || index >= this.foods.length) return false;
     this.goalIndex = index;
+    this.trackedFoodId = null;
+    this.trackedVendorId = null;
     return true;
   }
 
@@ -180,10 +212,15 @@ export class PlayGameState {
     const foodId = this.eating.foodId;
     this.eating = null;
     this.heldItem = null;          // 吃完从手中消失
+    if (this.trackedFoodId === foodId) {
+      this.trackedFoodId = null;
+      this.trackedVendorId = null;
+    }
     const first = !this.tasted.has(foodId);
     this.discover(foodId);
     if (first) {
       this.tasted.add(foodId);     // 首次真正吃完才盖章；重吃不重复涨
+      this._updateMilestones();
       this._emit({ type: 'stamped', foodId, stamps: this.stamps });
     }
     this._emit({ type: 'eaten', foodId, first });
@@ -236,7 +273,7 @@ export class PlayGameState {
   // ---- 保存（调用方传入相机/脚点；这里只管玩法事实） ----
   toSave({ feet, yaw, pitch = 0 } = {}) {
     const registry = this.registry ?? registryForFoods(this.foods, this.catalogEdition);
-    const goalId = this.goal()?.id ?? null;
+    const goalId = this.navigationGoal()?.id ?? null;
     const tracked = registry.vendorsById.get(this.trackedVendorId);
     const vendor = tracked?.foodId === goalId ? tracked : [...registry.vendorsById.values()].find(v => v.foodId === goalId);
     return {
@@ -276,6 +313,7 @@ export class PlayGameState {
     this.discovered = new Set(s.discovered);
     this.milestones = new Set(s.milestones);
     this.orphanedProgress = { discovered: new Set(s.orphanedProgress.discovered), tasted: new Set(s.orphanedProgress.tasted) };
+    this._updateMilestones();
     this.trackedFoodId = s.trackedFoodId;
     this.trackedVendorId = s.trackedVendorId;
     const trackedIndex = this.foods.findIndex(f => f.id === s.trackedFoodId);

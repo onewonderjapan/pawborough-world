@@ -35,7 +35,7 @@ const FOOD_SVG = {
 };
 const svgFor = (id) => FOOD_SVG[id] ?? FOOD_SVG.fallback;
 
-export function installPlayHud({ core, state = null }) {
+export function installPlayHud({ core, state = null, overlay = null }) {
   document.body.classList.add('play-mode');
   // 调试三排按钮 / 统计浮层在 play 页隐藏（默认 viewer 页不受影响）
   for (const id of ['bar', 'hud']) {
@@ -68,6 +68,7 @@ export function installPlayHud({ core, state = null }) {
       <button type="button" id="p-pause">暂停</button>
       <button type="button" id="p-view">取景</button>
       <button type="button" id="p-enter" hidden>回到游玩</button>
+      <button type="button" id="p-atlas" disabled>图鉴</button>
       <button type="button" id="p-help" aria-expanded="false" aria-controls="play-help">操作</button>
       <button type="button" id="p-reset" title="散步记录准备中" disabled>新散步</button>
     </div>
@@ -89,7 +90,8 @@ export function installPlayHud({ core, state = null }) {
 
   const $ = (id) => root.querySelector('#' + id);
   const bPause = $('p-pause'), bView = $('p-view'), bEnter = $('p-enter'), bReset = $('p-reset');
-  const bHelp = $('p-help');
+  const bHelp = $('p-help'), bAtlas = $('p-atlas');
+  let atlasOpener = null;
   const msg = $('play-msg'), errBox = $('play-asset-error'), errText = $('play-asset-error-text');
   const goalBox = $('play-goal'), goalCount = $('play-goal-count');
   const goalNext = $('play-goal-next'), goalDist = $('play-goal-dist'), stampsBox = $('play-stamps');
@@ -107,6 +109,7 @@ export function installPlayHud({ core, state = null }) {
     ['E', '在摊位前取一份小吃'],
     ['F', '开吃，慢慢品尝'],
     ['R', '骑上 / 下共享自行车'],
+    ['B', '打开 / 关闭寻味图鉴'],
     ['P', '暂停 / 继续'],
   ]) {
     const row = document.createElement('div');
@@ -135,6 +138,7 @@ export function installPlayHud({ core, state = null }) {
   });
   bView.addEventListener('click', () => { if (walk) walk.exit(); });
   bEnter.addEventListener('click', () => { if (walk) walk.enter(); });
+  bAtlas.addEventListener('click', () => atlasOpener?.());
   $('p-reload').addEventListener('click', () => location.reload());
   bReset.addEventListener('click', () => {
     if (!state) return;
@@ -143,6 +147,7 @@ export function installPlayHud({ core, state = null }) {
 
   // ---- 「操作」弹层：打开即暂停；关闭只解除弹层自己按下的那次暂停 ----
   let helpHeldPause = false;   // 这次打开是否由弹层按下的暂停
+  let helpToken = null;
   const helpCoversGame = () => !document.body.classList.contains('play-viewing');
   function openHelp() {
     if (!helpEl.hidden) return;
@@ -150,7 +155,8 @@ export function installPlayHud({ core, state = null }) {
     bHelp.setAttribute('aria-expanded', 'true');
     $('p-help-close').focus({preventScroll:true});
     helpHeldPause = false;
-    if (helpCoversGame() && walk && !core.session.paused) {
+    if (overlay) helpToken = overlay.open('help', { returnFocus: bHelp });
+    else if (helpCoversGame() && walk && !core.session.paused) {
       walk.pause();
       helpHeldPause = true;
     }
@@ -159,15 +165,18 @@ export function installPlayHud({ core, state = null }) {
     if (helpEl.hidden) return;
     helpEl.hidden = true;
     bHelp.setAttribute('aria-expanded', 'false');
-    bHelp.focus({preventScroll:true});
-    if (helpHeldPause && walk && core.session.paused) walk.resume();
+    if (helpToken) { helpToken.release(); helpToken = null; }
+    else {
+      bHelp.focus({preventScroll:true});
+      if (helpHeldPause && walk && core.session.paused) walk.resume();
+    }
     helpHeldPause = false;
   }
   bHelp.addEventListener('click', () => (helpEl.hidden ? openHelp() : closeHelp()));
   $('p-help-close').addEventListener('click', closeHelp);
   helpEl.addEventListener('click', (e) => { if (e.target === helpEl) closeHelp(); });
 
-  window.addEventListener('keydown', e=>{if(helpEl.hidden)return;if(e.code==='Tab'){e.preventDefault();$('p-help-close').focus();return;}if(e.code==='Escape'){e.preventDefault();e.stopImmediatePropagation();closeHelp();}else if(/^(Key[WASDPEFR]|Arrow|Shift|Space)/.test(e.code)){e.preventDefault();e.stopImmediatePropagation();}},true);
+  window.addEventListener('keydown', e=>{if(helpEl.hidden||overlay?.isOpen('atlas'))return;if(e.code==='Tab'){e.preventDefault();$('p-help-close').focus();return;}if(e.code==='Escape'){e.preventDefault();e.stopImmediatePropagation();closeHelp();}else if(/^(Key[WASDPEFR]|Arrow|Shift|Space)/.test(e.code)){e.preventDefault();e.stopImmediatePropagation();}},true);
 
   // walk.js 的唯一模式通知点（按钮/enter/exit 都汇到 pb:mode）
   window.addEventListener('pb:mode', (e) => {
@@ -270,6 +279,8 @@ export function installPlayHud({ core, state = null }) {
   let lastPaused = null;
   return {
     bind({ walk: w }) { walk = w; },
+    bindAtlas(open) { atlasOpener = open; bAtlas.disabled = !open; },
+    closeHelp,
     setTripResetReady(ready) {
       bReset.disabled = !ready;
       bReset.title = ready ? '重置行程，保留图鉴收藏' : '散步记录准备中';

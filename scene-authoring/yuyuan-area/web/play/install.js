@@ -18,6 +18,9 @@ import { installPlayMap } from './minimap.js';
 import { PlayGameState, STORAGE_KEY, SCENE_ASSET_VERSION, EAT_SECONDS } from './state.js';
 import { createFoodRegistry } from './catalog.js';
 import { loadPlaySave, persistPlaySave } from './save-migration.js';
+import { createOverlayController } from './overlay-controller.js';
+import { mountAtlas } from './atlas.js';
+import { exportCollection, importCollection } from './collection-transfer.js';
 import { deriveStallTargets, chooseReachable } from './stalls.js';
 import { loadFoodCatalog } from './foods.js';
 import { RideController, pickDismountSpot } from './vehicle.js';
@@ -148,6 +151,8 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
 
   // ---- 玩法状态（唯一 owner：手里/嘴里/集章/目标/车） ----
   const gameState = new PlayGameState();
+  let atlas = null;
+  let markerClock = 0;
   let catalogReady = false;
   let catalogError = null;
   let foodLoadError = null;
@@ -184,22 +189,71 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       ? '本机保存空间不足，本次进度暂未保存，旧记录已保留'
       : '本机暂时无法保存，本次进度仅在当前页面内，旧记录已保留';
   }
+  function clearOverlayInput() {
+    window.__walk?.controller?.clearKeys();
+    rideCtl?.clearKeys();
+    if (rideCtl) rideCtl.speed = 0;
+    if (window.__walk?.mode() !== 'walk') {
+      // Flush orbit damping without changing the captured view.
+      const pos = camera.position.clone(), q = camera.quaternion.clone(), target = controls.target.clone(), zoom = camera.zoom;
+      const damping = controls.enableDamping;
+      controls.enableDamping = false; controls.update(); controls.enableDamping = damping;
+      camera.position.copy(pos); camera.quaternion.copy(q); controls.target.copy(target); camera.zoom = zoom;
+      camera.updateProjectionMatrix(); camera.updateMatrixWorld(true);
+    }
+  }
+  function pauseForOverlay(reason = 'overlay') {
+    const wasPaused = core.session.paused;
+    window.__walk?.pause();
+    if (!wasPaused && core.session.paused) core.session.pausedReason = reason;
+  }
+  const overlay = createOverlayController({
+    captureState: () => ({ mode: window.__walk?.mode() === 'walk' ? 'play' : 'orbit',
+      paused: core.session.paused, pausedReason: core.session.pausedReason, focused: document.hasFocus() }),
+    pause: pauseForOverlay, resume: () => window.__walk?.resume(), clearInput: clearOverlayInput,
+    isFocused: () => document.hasFocus() && document.visibilityState === 'visible',
+  });
+  addEventListener('pagehide', event => { if (!event.persisted) { atlas?.dispose(); overlay.dispose(); } });
   gameState.onChange((evt) => {
     if (evt.type === 'reset') {
       startNewTrip().catch(error => { console.error('new trip failed', error); hud.message('新散步暂时无法开始，图鉴进度保留'); });
-    } else if (['stamped', 'eaten', 'discovered', 'tracked', 'collection-cleared', 'eating-cancelled'].includes(evt.type)) {
+    } else if (['stamped', 'eaten', 'discovered', 'tracked', 'collection-cleared', 'collection-changed', 'eating-cancelled'].includes(evt.type)) {
       hud.renderGoal(goalView());
+      atlas?.render();
       saveNow();
     }
   });
   function goalView() {
-    if (gameState.complete) return { complete: true, foods: gameState.foods, tasted: gameState.tasted };
-    const goal = gameState.goal();
+    if (gameState.complete && !gameState.trackedFoodId) return { complete: true, foods: gameState.foods, tasted: gameState.tasted };
+    const goal = gameState.navigationGoal();
     return { complete: false, foods: gameState.foods, tasted: gameState.tasted, goal };
   }
 
   // ---- HUD（web/play/hud.js 负责全部 DOM） ----
-  const hud = installPlayHud({ core, state: gameState });
+  const hud = installPlayHud({ core, state: gameState, overlay });
+  function maybeMountAtlas() {
+    if (atlas || !catalogReady || !saveRestoreAttempted || !core.state.entered || !window.__walk?.controller) return;
+    atlas = mountAtlas({ root: document.body, registry: gameState.registry,
+      getSnapshot: () => gameState.collectionSnapshot(), overlay,
+      actions: {
+        track: (foodId, vendorId) => gameState.track(foodId, vendorId),
+        exportCollection: () => exportCollection(gameState.collectionSnapshot()),
+        importCollection: text => {
+          try {
+            const imported = importCollection(text, { registry: gameState.registry, current: gameState.collectionSnapshot() });
+            const applied = gameState.applyCollection(imported.collection);
+            if (!applied.ok) return { ok: false, message: '这份收藏记录无法接续，请使用图鉴导出的备份' };
+            return { ok: true, message: saveError ? '收藏已合并，暂时无法保存；请导出备份保留本次记录' : '收藏已合并，已品尝的美味都保留了' };
+          } catch (error) {
+            console.warn('collection import rejected', error);
+            return { ok: false, message: '这份收藏记录无法读取，请选择图鉴导出的备份文件' };
+          }
+        },
+        resetCollection: () => { atlas.close(); hud.closeHelp(); gameState.resetCollection(); },
+      },
+    });
+    hud.bindAtlas(() => atlas.open());
+  }
 
   // ---- 小地图（右上，真实 layout 底图） ----
   const minimap = installPlayMap();
@@ -275,6 +329,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     onEnter: ({ outcome }) => {
       core.state.entered = true;
       gameState.playing = true;
+      if (overlay.isOpen()) pauseForOverlay();
       gameState.paused = core.session.paused;
       hud.setPaused(core.session.paused);
       hud.renderGoal(goalView());
@@ -292,8 +347,10 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       else rideCtl?.resume?.();
     },
     onFrame: (info) => {
-      core.onFrame(info);
-      frameGame(info);
+      if (overlay.isOpen() && !core.session.paused) pauseForOverlay();
+      const frame = overlay.isOpen() ? { ...info, paused: true, dt: 0 } : info;
+      core.onFrame(frame);
+      frameGame(frame);
     },
     // R1（review R0-1）：相机被近墙压到 avatarHideDistance 以下时隐藏角色本体
     //（遮挡安全优先于舒服下限，相机可缩到很小距离）；只影响显示，不动玩家物理位置。
@@ -388,6 +445,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     restorePlaySave();
     saveRestoreAttempted = true;
     hud.setTripResetReady(true);
+    maybeMountAtlas();
     applyPendingSaveWhenReady();
     for (const t of deriveStallTargets(layout, sockets, gameState.foods)) stalls.push(t);
     minimap.setGeometry(layout);
@@ -792,6 +850,8 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     const walk = window.__walk;
     const controller = walk?.controller;
     if (!controller) return;
+    maybeMountAtlas();
+    if (!paused) markerClock += dt;
     if (core.state.entered && !pendingSave && ((catalogReady && saveRestoreAttempted) || catalogError)) ensureBikePlaced();
     applyPendingSaveWhenReady();
 
@@ -845,7 +905,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
         facingYaw: rideCtl ? rideCtl.heading : core.state.avatar?.facingYaw,
         stalls: stalls.map(t => ({ x: t.customerPoint.x, z: t.customerPoint.z, done: gameState.tasted.has(t.foodId) })),
         bike: bikePlaced ? { x: gameState.vehicle.pos[0], z: gameState.vehicle.pos[2], gone: gameState.vehicle.riding } : null,
-        targetIndex: gameState.complete ? -1 : stalls.findIndex(t => t.foodId === gameState.goal()?.id),
+        targetIndex: stalls.findIndex(t => t.foodId === gameState.navigationGoal()?.id),
         complete: gameState.complete,
       });
     }
@@ -873,12 +933,12 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   function updateTargetMarker() {
     if (!placedMarker) return;
     if (gameState.complete || !stalls.length) { placedMarker.visible = false; return; }
-    const goal = gameState.goal();
+    const goal = gameState.navigationGoal();
     const t = stalls.find(s => s.foodId === goal?.id);
     if (!t) { placedMarker.visible = false; return; }
     placedMarker.visible = true;
     const gy = t.groundY ?? t.tray.y;
-    placedMarker.position.set(t.customerPoint.x, gy + 2.1 + Math.sin(performance.now() / 400) * 0.08, t.customerPoint.z);
+    placedMarker.position.set(t.customerPoint.x, gy + 2.1 + Math.sin(markerClock * 2.5) * 0.08, t.customerPoint.z);
     t.groundY = t.groundY ?? supportAt(t.customerPoint.x, t.customerPoint.z) ?? gy;
   }
 
@@ -916,6 +976,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   // ---- 世界+资产就绪后自动进入 play（资产失败则留在取景，只给错误说明） ----
   const waitReady = setInterval(() => {
     if (!window.__ready || !window.__walk) return;
+    if (overlay.isOpen()) return;
     if (!core.state.ready) {
       if (!core.state.assetError) return;   // 资产仍在加载
       clearInterval(waitReady);             // 资产失败：不进入，错误已展示
@@ -949,7 +1010,9 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       heldItem: gameState.heldItem,
       basketItem: gameState.basketItem,
       eating: gameState.eating ? { ...gameState.eating } : null,
-      goal: gameState.goal()?.id ?? null,
+      goal: gameState.navigationGoal()?.id ?? null,
+      rideSpeed: rideCtl?.speed ?? null,
+      rideInput: rideCtl ? { ...rideCtl.input } : null,
       tasted: [...gameState.tasted],
       riding: gameState.vehicle.riding,
       vehicle: gameState.vehicle.placed ? {
@@ -964,6 +1027,8 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       catalogError,
       foodLoadError,
       saveError,
+      atlasReady: !!atlas,
+      overlayOpen: overlay.isOpen(),
       ...closedFacades.status(),          // 闭门叠加层只读状态（工单 C）
       minimapMode: minimap.mode,
       saveKey: STORAGE_KEY,
@@ -971,5 +1036,5 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   }
 
   return { profile, core, bind, status, playCamera, gameState, ride: () => rideCtl,
-    closedFacades, closedFacadeHint };
+    closedFacades, closedFacadeHint, isOverlayOpen: () => overlay.isOpen() };
 }

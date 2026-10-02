@@ -1,0 +1,636 @@
+/* 全国寻味 · 毛绒上海小城图鉴手账样式 (M07: Food atlas styling) */
+/* 作用域限制在 .pb-atlas 内，严格保证 [hidden] { display: none !important; } */
+
+.pb-atlas[hidden],
+.pb-atlas [hidden] {
+  display: none !important;
+}
+
+.pb-atlas {
+  --pb-blue: #244f68;
+  --pb-jade: #71aaa0;
+  --pb-cream: #fff7e8;
+  --pb-rouge: #d56b70;
+  --pb-honey: #deb26c;
+  --pb-ink: #2b333a;
+  --pb-card-bg: #fffcf5;
+  --pb-shadow: rgba(36, 79, 104, 0.16);
+
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  color: var(--pb-ink);
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+.pb-atlas *,
+.pb-atlas *::before,
+.pb-atlas *::after {
+  box-sizing: inherit;
+}
+
+/* 背景毛玻璃遮罩 */
+.pb-atlas-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(24, 42, 54, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* 纸质手账弹窗容器 */
+.pb-atlas-dialog {
+  position: relative;
+  z-index: 1;
+  width: 92vw;
+  max-width: 980px;
+  height: 88vh;
+  max-height: 860px;
+  background-color: var(--pb-cream);
+  background-image: radial-gradient(rgba(222, 178, 108, 0.08) 1px, transparent 0);
+  background-size: 16px 16px;
+  border: 2px solid var(--pb-honey);
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 顶部标题栏 */
+.pb-atlas-header {
+  flex-shrink: 0;
+  background-color: var(--pb-blue);
+  color: var(--pb-cream);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--pb-honey);
+}
+
+.pb-atlas-header-left {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.pb-atlas-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+}
+
+.pb-atlas-subtitle {
+  font-size: 0.85rem;
+  color: var(--pb-jade);
+  font-weight: 500;
+}
+
+.pb-atlas-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.pb-atlas-progress-badge {
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: rgba(255, 247, 232, 0.15);
+  color: var(--pb-cream);
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(222, 178, 108, 0.4);
+}
+
+.pb-atlas-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--pb-cream);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.pb-atlas-close-btn:hover {
+  background-color: rgba(213, 107, 112, 0.4);
+  transform: scale(1.05);
+}
+
+/* 主体分栏结构 */
+.pb-atlas-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+/* 左侧章节导轨 (~180px) */
+.pb-atlas-chapter-rail {
+  width: 180px;
+  flex-shrink: 0;
+  background-color: rgba(113, 170, 160, 0.12);
+  border-right: 1px solid rgba(113, 170, 160, 0.35);
+  padding: 12px 8px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pb-atlas-chapter-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 8px 10px;
+  border-radius: 8px;
+  text-align: left;
+  font-size: 0.88rem;
+  color: var(--pb-ink);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.pb-atlas-chapter-btn:hover {
+  background-color: rgba(222, 178, 108, 0.2);
+}
+
+.pb-atlas-chapter-btn.is-active {
+  background-color: #ffffff;
+  color: var(--pb-blue);
+  font-weight: 700;
+  border-color: var(--pb-honey);
+  box-shadow: 0 2px 6px var(--pb-shadow);
+}
+
+.pb-atlas-chapter-count {
+  font-size: 0.78rem;
+  color: var(--pb-jade);
+  font-weight: normal;
+}
+
+.pb-atlas-chapter-btn.is-active .pb-atlas-chapter-count {
+  color: var(--pb-rouge);
+  font-weight: 600;
+}
+
+/* 右侧内容工作区 */
+.pb-atlas-content {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 18px;
+  overflow: hidden;
+}
+
+/* 筛选标签栏 */
+.pb-atlas-filters {
+  flex-shrink: 0;
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.pb-atlas-filter-btn {
+  background-color: rgba(36, 79, 104, 0.08);
+  border: 1px solid rgba(36, 79, 104, 0.2);
+  color: var(--pb-ink);
+  font-size: 0.85rem;
+  padding: 4px 12px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pb-atlas-filter-btn:hover {
+  background-color: rgba(113, 170, 160, 0.25);
+}
+
+.pb-atlas-filter-btn.is-active {
+  background-color: var(--pb-blue);
+  color: #ffffff;
+  border-color: var(--pb-blue);
+  font-weight: 600;
+}
+
+/* 中间分割布局：卡片列表 + 详情阅读区 */
+.pb-atlas-main-split {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 16px;
+  overflow: hidden;
+}
+
+/* 卡片网格区 */
+.pb-atlas-cards {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(136px, 1fr));
+  gap: 12px;
+  align-content: start;
+  padding-right: 6px;
+}
+
+.pb-atlas-card {
+  position: relative;
+  background-color: var(--pb-card-bg);
+  border: 1.5px solid rgba(36, 79, 104, 0.18);
+  border-radius: 10px;
+  padding: 10px 8px;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pb-atlas-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px var(--pb-shadow);
+  border-color: var(--pb-jade);
+}
+
+.pb-atlas-card.is-selected {
+  border-color: var(--pb-rouge);
+  box-shadow: 0 0 0 2px rgba(213, 107, 112, 0.35), 0 4px 12px var(--pb-shadow);
+  background-color: #ffffff;
+}
+
+.pb-atlas-card-thumb-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: rgba(113, 170, 160, 0.15);
+  border: 1px dashed var(--pb-jade);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.pb-atlas-card-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pb-atlas-placeholder-icon {
+  width: 44px;
+  height: 44px;
+  color: var(--pb-jade);
+}
+
+.pb-atlas-card.is-unseen .pb-atlas-card-thumb-wrap {
+  background-color: rgba(43, 51, 58, 0.08);
+  border-color: rgba(43, 51, 58, 0.25);
+}
+
+.pb-atlas-card.is-unseen .pb-atlas-placeholder-icon {
+  color: rgba(43, 51, 58, 0.35);
+}
+
+.pb-atlas-card-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--pb-blue);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.pb-atlas-card.is-unseen .pb-atlas-card-name {
+  color: rgba(43, 51, 58, 0.45);
+  font-style: italic;
+}
+
+/* 印章表现 */
+.pb-atlas-card-stamp {
+  font-size: 0.72rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.pb-atlas-card-stamp.is-tasted {
+  color: var(--pb-rouge);
+  border: 1px solid var(--pb-rouge);
+  background-color: rgba(213, 107, 112, 0.08);
+  transform: rotate(-4deg);
+}
+
+.pb-atlas-card-stamp.is-discovered {
+  color: var(--pb-blue);
+  border: 1px solid var(--pb-blue);
+  background-color: rgba(36, 79, 104, 0.08);
+}
+
+.pb-atlas-card-stamp.is-unseen {
+  color: #888888;
+  border: 1px dashed #aaaaaa;
+}
+
+/* 右侧详情阅读区 */
+.pb-atlas-detail {
+  width: 290px;
+  flex-shrink: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(222, 178, 108, 0.35);
+  border-radius: 12px;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pb-atlas-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pb-atlas-detail-thumb-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  background-color: rgba(113, 170, 160, 0.15);
+  border: 1px solid var(--pb-honey);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.pb-atlas-detail-title-group {
+  flex: 1;
+  min-width: 0;
+}
+
+.pb-atlas-detail-name {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--pb-blue);
+}
+
+.pb-atlas-detail-region {
+  font-size: 0.8rem;
+  color: var(--pb-jade);
+  font-weight: 600;
+}
+
+.pb-atlas-detail-desc {
+  font-size: 0.86rem;
+  color: var(--pb-ink);
+  background-color: rgba(255, 247, 232, 0.6);
+  padding: 10px;
+  border-radius: 8px;
+  border-left: 3px solid var(--pb-honey);
+  margin: 0;
+}
+
+.pb-atlas-detail-hint-box {
+  background-color: rgba(113, 170, 160, 0.1);
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: var(--pb-blue);
+}
+
+.pb-atlas-detail-hint-label {
+  font-weight: 600;
+}
+
+.pb-atlas-track-btn {
+  background-color: var(--pb-blue);
+  color: #ffffff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: auto;
+  transition: background-color 0.15s ease;
+}
+
+.pb-atlas-track-btn:hover {
+  background-color: #1a3b4e;
+}
+
+.pb-atlas-track-btn.is-tracking {
+  background-color: var(--pb-jade);
+}
+
+.pb-atlas-track-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* 底部操作工具栏 */
+.pb-atlas-footer {
+  flex-shrink: 0;
+  background-color: rgba(36, 79, 104, 0.05);
+  border-top: 1px solid rgba(222, 178, 108, 0.35);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pb-atlas-transfer-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.pb-atlas-transfer-btn {
+  background-color: #ffffff;
+  border: 1px solid rgba(36, 79, 104, 0.3);
+  color: var(--pb-blue);
+  font-size: 0.82rem;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.pb-atlas-transfer-btn:hover {
+  background-color: var(--pb-cream);
+  border-color: var(--pb-blue);
+}
+
+.pb-atlas-reset-btn {
+  background-color: rgba(213, 107, 112, 0.1);
+  border: 1px solid rgba(213, 107, 112, 0.4);
+  color: var(--pb-rouge);
+}
+
+.pb-atlas-reset-btn:hover {
+  background-color: var(--pb-rouge);
+  color: #ffffff;
+}
+
+.pb-atlas-message {
+  font-size: 0.82rem;
+  color: var(--pb-blue);
+  font-weight: 500;
+  min-height: 1.2em;
+}
+
+/* 二次确认对话框 */
+.pb-atlas-confirm-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pb-atlas-confirm-box {
+  background-color: var(--pb-cream);
+  border: 2px solid var(--pb-rouge);
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 360px;
+  width: 90%;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.pb-atlas-confirm-text {
+  margin: 0 0 16px 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--pb-ink);
+}
+
+.pb-atlas-confirm-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.pb-atlas-confirm-ok {
+  background-color: var(--pb-rouge);
+  color: #ffffff;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.pb-atlas-confirm-cancel {
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  color: var(--pb-ink);
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.86rem;
+}
+
+/* 焦点可见性 */
+.pb-atlas button:focus-visible,
+.pb-atlas .pb-atlas-card:focus-visible {
+  outline: 2px solid var(--pb-honey);
+  outline-offset: 2px;
+}
+
+/* 响应式：360x800 及窄屏设备转为单列阅读，max 90vh 滚动 */
+@media (max-width: 680px) {
+  .pb-atlas-dialog {
+    width: 96vw;
+    height: 92vh;
+    max-height: 90vh;
+  }
+
+  .pb-atlas-body {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .pb-atlas-chapter-rail {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-right: none;
+    border-bottom: 1px solid rgba(113, 170, 160, 0.35);
+    padding: 8px;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .pb-atlas-chapter-btn {
+    white-space: nowrap;
+    padding: 6px 10px;
+  }
+
+  .pb-atlas-content {
+    overflow: visible;
+    padding: 10px;
+  }
+
+  .pb-atlas-main-split {
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .pb-atlas-cards {
+    max-height: 260px;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+
+  .pb-atlas-detail {
+    width: 100%;
+    max-height: none;
+  }
+
+  .pb-atlas-footer {
+    padding: 8px 12px;
+  }
+}
+
+/* 减弱动态偏好 */
+@media (prefers-reduced-motion: reduce) {
+  .pb-atlas,
+  .pb-atlas * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

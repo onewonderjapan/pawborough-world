@@ -1,0 +1,26 @@
+{
+  "taskId": "M07",
+  "status": "verified",
+  "recordedAt": "2026-10-02T17:53:05.436263+00:00",
+  "scope": "Atlas/collection UI and mode integration with current three active foods; six/new assets activation belongs M05/M08",
+  "review": "sol focused reviewer: two keyboard focus issues reproduced and fixed, regression DOM/browser checks passed",
+  "checks": [
+    "play_atlas",
+    "play_overlay_controller",
+    "play_collection_transfer",
+    "play_collection_state",
+    "test:play all existing checks",
+    "atlas-component-browser-check",
+    "snack-atlas-browser-check actual GPU play/pause/help/ride/orbit/export/import/narrow"
+  ],
+  "evidence": [
+    "/home/baibai/outbox/pawborough-national-snacks-20261002/m07/M07-desktop.png",
+    "/home/baibai/outbox/pawborough-national-snacks-20261002/m07/M07-narrow.png",
+    "/home/baibai/outbox/pawborough-national-snacks-20261002/m07/M07-export-fixture.json"
+  ],
+  "notes": [
+    "Explicit navigation can revisit tasted foods without losing target on save. Import unions collection only.",
+    "Stationary post-resume checks assert zero bike speed/input and XZ float32 contact tolerance0.1mm; vertical ground settling is expected.",
+    "Original v1 key retained; no cloud change"
+  ]
+}

@@ -774,7 +774,10 @@ renderer.setAnimationLoop(() => {
   // 工单 D（镜头所有权）：步行/游玩模式（含 Esc 解锁后的暂停）镜头归 walk/play
   // 所有——orbit 的 update() 一律不跑（damping 也会把镜头拉回旧 target）；
   // 只有明确回到取景（orbit 模式）才恢复 orbit update。
-  if (walkModeOf() !== 'walk') controls.update();
+  if (walkModeOf() !== 'walk') {
+    controls.enabled = !play?.isOverlayOpen();
+    if (controls.enabled) controls.update();
+  }
   walk?.tick();
   lighting.tick();
   renderer.render(scene, camera); drawLabels();
