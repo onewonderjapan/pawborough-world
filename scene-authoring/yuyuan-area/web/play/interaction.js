@@ -29,7 +29,7 @@ export function canTakeNow({ state, feet, stalls, losCheck = null }) {
 }
 
 // 底部动态提示（每帧推给 HUD；返回 null = 不显示）
-export function computeHint({ state, feet, stalls, bike, riding = false, blockedRatio = 0, turnBlocked = false, aheadBlocked = false } = {}) {
+export function computeHint({ state, feet, stalls, bike, riding = false, blockedRatio = 0, turnBlocked = false, aheadBlocked = false, unsupported = false } = {}) {
   if (!state.playing) return null;
   if (state.complete) {
     if (riding) return '三味集齐！骑车再兜一圈吧 · R 下车';
@@ -43,6 +43,7 @@ export function computeHint({ state, feet, stalls, bike, riding = false, blocked
     return 'W 加速 · S 刹停后倒车 · Space 刹车 · A/D 转向 · R 下车 · 鼠标自由看';
   }
   if (state.busyEating) return `正在品尝${eatingLabel(state)}… · P 暂停`;
+  if (unsupported) return '前方没有可走的路面 · 请沿路绕行';
   if (state.heldItem) return `手上有${heldLabel(state)} · F 开吃`;
   const near = nearestStall(stalls, feet);
   if (near && near.dist <= TAKE_RADIUS_M) return `E 取一份${near.stall.labelZh}（免费试吃）`;

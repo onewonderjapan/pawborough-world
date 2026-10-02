@@ -33,6 +33,7 @@ export const PLAY_PROFILE = {
   runSpeed: 4.2,
   speed: 2.6,              // legacy alias = walk speed (install wiring + onFrame fallback)
   autostep: 0.15,
+  minimumGroundY: -0.1,    // v1 streets sit near Y=0; the -0.4 backdrop is not playable floor.
   shoulderHeight: 0.62,
   cameraDistance: 2.4,
   rideShoulderHeight: 1.02,
@@ -213,7 +214,8 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     const ray = new RAPIER.Ray({ x, y: fromY, z }, { x: 0, y: -1, z: 0 });
     const hit = world.castRay(ray, maxToi, true, undefined, undefined,
       undefined, undefined, (c) => gh.has(c.handle));
-    return hit ? fromY - hit.timeOfImpact : null;
+    const y=hit?fromY-hit.timeOfImpact:null;
+    return y!==null&&y>=PLAY_PROFILE.minimumGroundY?y:null;
   }
   // 墙重叠检查：排除玩家/车自身与地面碰撞体（不抹掉真正墙体，R0-5）。
   // 无世界时返回 true（视作被挡，调用方各自兜底）。
@@ -565,6 +567,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       cruise: PLAY_PROFILE.bikeCruise, max: PLAY_PROFILE.bikeMax,
       excludeColliderHandles: [window.__walk?.controller?.collider?.handle].filter(Boolean),
       groundColliders: groundCollidersNow,        // R0-2：支撑面只认已登记地面
+      minimumGroundY: PLAY_PROFILE.minimumGroundY,
     });
     // 车头沿用停车 heading；视角保持玩家当前自由视角（R0-1 二者分离）
     rideCtl.teleport([bike[0], bike[1], bike[2]], gameState.vehicle.yaw ?? 0, controller.yaw ?? 0);
@@ -592,6 +595,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       cruise: PLAY_PROFILE.bikeCruise, max: PLAY_PROFILE.bikeMax,
       excludeColliderHandles: [controller?.collider?.handle].filter(Boolean),
       groundColliders: groundCollidersNow,
+      minimumGroundY: PLAY_PROFILE.minimumGroundY,
     });
     rideCtl.teleport(bikePos, heading, viewYaw ?? heading);
     gameState.setRiding(true);
@@ -746,7 +750,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       const bike = bikePlaced && !gameState.vehicle.riding ? {
         dist: Math.hypot(feet[0] - gameState.vehicle.pos[0], feet[2] - gameState.vehicle.pos[2]),
       } : null;
-      const step = rideCtl?.lastStep;
+      const step = rideCtl?.lastStep ?? walk?.controller?.lastStep;
       if (step?.unsupported) hud.setHint('车辆悬在边缘！原地按 R 下车或后退');
       hud.setHint(computeHint({
         state: gameState, feet, stalls,
@@ -754,6 +758,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
         blockedRatio: step?.blockedRatio ?? 0,
         turnBlocked: step?.turnBlocked ?? false,
         aheadBlocked: step?.aheadBlocked ?? false,
+        unsupported: step?.unsupported ?? false,
       }));
       renderGoalDistance(feet);
       minimap.update({

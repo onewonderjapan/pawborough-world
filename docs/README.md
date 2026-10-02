@@ -58,3 +58,5 @@
 
 - [2026-10-02 小吃摊碰撞与手持修复](SNACK-FEEDBACK-20261002.md)
 - [独立 CloudFront 试玩发布](CLOUDFRONT-TRIAL.md)
+
+- [Gemini 独立试玩与地面防陷修复](GEMINI-PLAYTEST-20261002.md)

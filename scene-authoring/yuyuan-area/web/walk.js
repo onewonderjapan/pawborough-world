@@ -136,7 +136,7 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
       RAPIER, physics,
       // play 档换胶囊/速度（r0.28/h0.2/eye0.8/走2.6/Shift跑4.2），未开启 play 时保持 viewer 默认
       capsule: play
-        ? { ...play.capsule, speed: play.walkSpeed ?? play.speed, runSpeed: play.runSpeed ?? play.speed, autostep: play.autostep, groundColliders: () => zonePhysics.groundColliders, spawn: [0, 1, 0] }
+        ? { ...play.capsule, speed: play.walkSpeed ?? play.speed, runSpeed: play.runSpeed ?? play.speed, autostep: play.autostep, minimumGroundY: play.minimumGroundY, groundColliders: () => zonePhysics.groundColliders, spawn: [0, 1, 0] }
         : { ...CAPSULE, spawn: [0, 1, 0] },
     });
     if (hud) hud(`步行：碰撞就绪（墙 ${physics.wallCount} · 地面 ${physics.groundTriangleCount} 三角）`);

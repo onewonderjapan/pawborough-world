@@ -162,7 +162,32 @@
             }
           },
           "ViewerCertificate": {
-            "CloudFrontDefaultCertificate": true
+            "Fn::If": [
+              "HasDomain",
+              {
+                "AcmCertificateArn": {
+                  "Ref": "CertificateArn"
+                },
+                "SslSupportMethod": "sni-only",
+                "MinimumProtocolVersion": "TLSv1.2_2021"
+              },
+              {
+                "CloudFrontDefaultCertificate": true
+              }
+            ]
+          },
+          "Aliases": {
+            "Fn::If": [
+              "HasDomain",
+              [
+                {
+                  "Ref": "DomainName"
+                }
+              ],
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
           }
         },
         "Tags": [
@@ -202,6 +227,52 @@
           ]
         }
       }
+    },
+    "GameDnsA": {
+      "Type": "AWS::Route53::RecordSet",
+      "Condition": "HasDomain",
+      "Properties": {
+        "HostedZoneId": {
+          "Ref": "HostedZoneId"
+        },
+        "Name": {
+          "Ref": "DomainName"
+        },
+        "Type": "A",
+        "AliasTarget": {
+          "HostedZoneId": "Z2FDTNDATAQYW2",
+          "DNSName": {
+            "Fn::GetAtt": [
+              "Distribution",
+              "DomainName"
+            ]
+          },
+          "EvaluateTargetHealth": false
+        }
+      }
+    },
+    "GameDnsAAAA": {
+      "Type": "AWS::Route53::RecordSet",
+      "Condition": "HasDomain",
+      "Properties": {
+        "HostedZoneId": {
+          "Ref": "HostedZoneId"
+        },
+        "Name": {
+          "Ref": "DomainName"
+        },
+        "Type": "AAAA",
+        "AliasTarget": {
+          "HostedZoneId": "Z2FDTNDATAQYW2",
+          "DNSName": {
+            "Fn::GetAtt": [
+              "Distribution",
+              "DomainName"
+            ]
+          },
+          "EvaluateTargetHealth": false
+        }
+      }
     }
   },
   "Outputs": {
@@ -225,7 +296,15 @@
     },
     "GameUrl": {
       "Value": {
-        "Fn::Sub": "https://${Distribution.DomainName}/"
+        "Fn::If": [
+          "HasDomain",
+          {
+            "Fn::Sub": "https://${DomainName}/"
+          },
+          {
+            "Fn::Sub": "https://${Distribution.DomainName}/"
+          }
+        ]
       }
     }
   },
@@ -233,6 +312,35 @@
     "GameCsp": {
       "Type": "String",
       "Description": "Generated artifacts/HEADERS.json Content-Security-Policy for this version; preserve prior inline hashes for future rollbacks."
+    },
+    "DomainName": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Optional independent game hostname"
+    },
+    "CertificateArn": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Issued ACM certificate in us-east-1 covering DomainName"
+    },
+    "HostedZoneId": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Public Route53 zone ID for DomainName"
+    }
+  },
+  "Conditions": {
+    "HasDomain": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "DomainName"
+            },
+            ""
+          ]
+        }
+      ]
     }
   }
 }

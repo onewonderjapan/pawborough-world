@@ -19,7 +19,7 @@ const ground=(x,y,zp)=>{const hit=z.physics.world.castRay(new RAPIER.Ray({x,y,z:
 const targets=deriveStallTargets(await readJson('layout.json'),await readJson('food-sockets.json'));
 let failures=0;
 for(const t of targets)for(const lateral of [0,-.5,.5]){
- const p={radius:.28,halfHeight:.2,eyeHeight:.8,speed:2.6,runSpeed:4.2,autostep:.15,spawn:[0,1,0],groundColliders:()=>z.groundColliders};
+ const p={radius:.28,halfHeight:.2,eyeHeight:.8,speed:2.6,runSpeed:4.2,autostep:.15,minimumGroundY:-.1,spawn:[0,1,0],groundColliders:()=>z.groundColliders};
  const c=new WalkController({RAPIER,physics:z.physics,capsule:p});
  const x=t.counter.x+t.faceDir.x*2.45+t.faceDir.z*lateral,zz=t.counter.z+t.faceDir.z*2.45-t.faceDir.x*lateral;
  const gy=ground(x,8,zz);assert.notEqual(gy,null);c.teleport([x,gy+.02,zz],Math.atan2(t.faceDir.x,t.faceDir.z));

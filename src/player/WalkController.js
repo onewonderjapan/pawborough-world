@@ -35,6 +35,7 @@ export class WalkController {
     // verify the proposed feet against those surfaces before applying motion.
     this.groundColliders = capsule.groundColliders ?? null;
     this.groundProbeRise = capsule.autostep ?? STEP_UP;
+    this.minimumGroundY = capsule.minimumGroundY ?? -Infinity;
     const s = Array.isArray(capsule.spawn)
       ? { x: capsule.spawn[0], y: capsule.spawn[1], z: capsule.spawn[2] }
       : capsule.spawn;
@@ -140,21 +141,36 @@ export class WalkController {
         undefined, undefined, (c) => !this.excludeColliderHandles.has(c.handle));
     else
       this.controller.computeColliderMovement(this.collider, { x: dx, y: this.vy * dt, z: dz });
-    const m = this.controller.computedMovement();
-    if (this.groundColliders && this.vy <= 0) {
+    let m = this.controller.computedMovement();
+    let unsupported = false;
+    if (this.groundColliders) {
       const grounds = typeof this.groundColliders === 'function'
         ? this.groundColliders() : this.groundColliders;
       const handles = new Set(grounds.map(c => c.handle));
       const feetY = t.y - this.centerOffset;
-      const nextFeetY = feetY + m.y;
       const fromY = feetY + this.groundProbeRise;
-      const hit = this.physics.world.castRay(new this.RAPIER.Ray(
-        { x: t.x + m.x, y: fromY, z: t.z + m.z }, { x: 0, y: -1, z: 0 }),
-      Math.max(0.5, fromY - nextFeetY + SNAP_TO_GROUND), true,
-      undefined, undefined, undefined, undefined, c => handles.has(c.handle));
-      if (hit) {
-        const floorY = fromY - hit.timeOfImpact;
-        if (nextFeetY < floorY + 0.015) {
+      const supportAt = (x, z) => {
+        const hit=this.physics.world.castRay(new this.RAPIER.Ray(
+          {x,y:fromY,z},{x:0,y:-1,z:0}),2,true,
+          undefined,undefined,undefined,undefined,c=>handles.has(c.handle));
+        const y=hit?fromY-hit.timeOfImpact:null;
+        return y!==null&&y>=this.minimumGroundY?y:null;
+      };
+      const currentFloor=supportAt(t.x,t.z);
+      let floorY=supportAt(t.x+m.x,t.z+m.z);
+      // A registered backdrop foundation is not a navigable street. Check the
+      // corrected horizontal move, including wall sliding and airborne motion.
+      if(Number.isFinite(this.minimumGroundY)&&currentFloor!==null&&
+          (floorY===null||floorY<currentFloor-this.groundProbeRise-.025)){
+        unsupported=true;
+        this.controller.computeColliderMovement(this.collider,{x:0,y:this.vy*dt,z:0},
+          undefined,undefined,c=>!this.excludeColliderHandles.has(c.handle));
+        m=this.controller.computedMovement();
+        floorY=supportAt(t.x+m.x,t.z+m.z);
+        if(floorY===null){m.x=0;m.z=0;floorY=currentFloor;}
+      }
+      if(floorY!==null&&this.vy<=0){
+        if (feetY + m.y < floorY + 0.015) {
           m.y = floorY + 0.015 - feetY;
           this.vy = 0;
         }
@@ -166,6 +182,7 @@ export class WalkController {
       desired: [dx, this.vy * dt, dz],
       corrected: [m.x, m.y, m.z],
       grounded: this.controller.computedGrounded(),
+      unsupported,
     };
     // consume one-shot jump intent after applying it in a step
     if (this.input.jump && this.controller.computedGrounded()) this.input.jump = false;

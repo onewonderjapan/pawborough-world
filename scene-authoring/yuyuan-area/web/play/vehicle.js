@@ -38,6 +38,7 @@ export class RideController {
     wheelRadius = 0.17,
     excludeColliderHandles = null,
     groundColliders = null,     // array | () => array | null；缺省用 physics.groundCollider
+    minimumGroundY = -Infinity,
   } = {}) {
     this.RAPIER = RAPIER;
     this.physics = physics;
@@ -57,6 +58,7 @@ export class RideController {
         : (physics.groundCollider ? () => [physics.groundCollider] : () => []);
     this._groundHandles = new Set();
     this._groundKey = '';
+    this.minimumGroundY = minimumGroundY;
     this._cuboid = null;      // 惰性：rapier 形状对象，用于形状查询
 
     this.spawn = [0, 1, 0];
@@ -154,7 +156,8 @@ export class RideController {
     const hit = this.physics.world.castRayAndGetNormal(ray, 4, true,
       undefined, undefined, undefined, undefined, (c) => grounds.has(c.handle));
     if (!hit) return null;
-    return { y: fromY + 1.0 - hit.timeOfImpact, ny: hit.normal ? hit.normal.y : 1 };
+    const y=fromY+1.0-hit.timeOfImpact;
+    return y>=this.minimumGroundY?{y,ny:hit.normal?hit.normal.y:1}:null;
   }
   _axles() {
     const t = this.body.translation();
