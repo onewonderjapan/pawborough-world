@@ -2,11 +2,13 @@
 
 机主选择：专用 S3 + CloudFront，先使用 CloudFront 地址，后续再绑定子域名。游戏运行、碰撞和存档在浏览器内，不需要常驻 S1 游戏服务器。
 
-公开试玩：https://d1c74tvoxrrqcb.cloudfront.net/
+公开试玩：https://pawborough.onewonder.co.jp/
+
+原 CloudFront 地址仍可用：https://d1c74tvoxrrqcb.cloudfront.net/
 
 2026-10-02 已发布。运行版本 `20261002-main-df137ad1`，源码 `df137ad1`；169 个运行文件、132,481,245 bytes（约126.34 MiB），逐对象上传并校验 SHA256。专用 stack `onewonder-pawborough-web`，分发 `E3GZY0L85XH6FN`；公开 HTTP 入口字节与本地版本一致，CSP 匹配，S3 直接匿名读取返回403。真实 Chrome 公网检查八项通过（17 分片、6 碰撞区、资源加载、上车/倒车/Esc/CSP）；小吃相关本地 Chrome 21项及车篮/刷新六项通过。
 
-发布回执与截图：`/home/baibai/outbox/pawborough-cloudfront-preflight-20261002/artifacts/`。子域名尚未绑定，按机主选择留待后续。
+发布回执与截图：`/home/baibai/outbox/pawborough-cloudfront-preflight-20261002/artifacts/`。2026-10-02 已绑定 `pawborough.onewonder.co.jp`：现有 us-east-1 公司证书、Route53 A/AAAA 指向原分发。HTTPS 与入口字节验证通过。
 
 ## 导出运行包
 
@@ -22,7 +24,7 @@ python3 -X utf8 tools/export_play_site.py --output /绝对路径/发布目录
 
 ## 云资源与更新顺序
 
-`deploy/cloudfront-static.json` 是可复用的 CloudFormation 模板。`GameCsp` 参数取导出 `HEADERS.json` 的 Content-Security-Policy。专用 S3 阻断直接公开访问，开启版本控制与加密；CloudFront 通过 OAC 访问 `web/`，桶策略仅放行该分发。当前使用 CloudFront 默认证书，无 DNS/子域名修改。
+`deploy/cloudfront-static.json` 是可复用的 CloudFormation 模板。`GameCsp` 参数取导出 `HEADERS.json` 的 Content-Security-Policy。专用 S3 阻断直接公开访问，开启版本控制与加密；CloudFront 通过 OAC 访问 `web/`，桶策略仅放行该分发。可选 DomainName/CertificateArn/HostedZoneId 参数管理子域名；当前已启用公司证书与该站 A/AAAA。更新 GameCsp 时必须保留这些参数。
 
 上传者先核对 AWS 账户、该项目 stack/tag、桶名及分发 ID，按清单上传 `web/versions/当前版本/`，逐对象核对校验和/类型/缓存。所有依赖验证后最后上传 `web/index.html`；不删除旧版本、不对整个仓库做同步。版本文件缓存一年，入口不缓存。首次发布无需失效缓存；以后更新入口仅失效 `/` 与 `/index.html`。
 
@@ -31,3 +33,9 @@ python3 -X utf8 tools/export_play_site.py --output /绝对路径/发布目录
 公开后需要从 CloudFront 地址实际检查：17 个渲染分片、6 个碰撞分区、角色/小吃/自行车/关闭柜面全部加载；步行、倒车、Esc 暂停、取食及暂停后的手持稳定；没有脚本异常、资源 404 或 CSP 拦截。确认 S3 直接匿名访问拒绝。
 
 试玩存档保存在访问者浏览器，换电脑或以后换域名不会自动带过去。目前只交付电脑浏览器试玩，不宣称手机触屏已适配。
+
+## 独立试玩后的地面防陷版本
+
+当前运行 `20261002-main-cebe4d2a`，169 文件、132,482,641 bytes。Gemini 3.8 Flash 独立试玩确认原版本四处仍可跌入背景底板；现已更新通行面判断、边缘阻止和地下存档校验。主控在新域名实测四条接近/退出路线八项及基础玩法八项通过。报告与未修项目见 `GEMINI-PLAYTEST-20261002.md`；不宣称全地图或全部视觉问题均通过。
+
+域名/变更集回执：`/home/baibai/outbox/pawborough-domain-20261002/artifacts/`；独立试玩和复验：`/home/baibai/outbox/pawborough-gemini-playtest-20261002/`。

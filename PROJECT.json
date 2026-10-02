@@ -98,14 +98,14 @@
     "note": "封存 v1.0 源码与标签已推送；当前独立公开试玩部署见 development.deployment。"
   },
   "development": {
-    "stage": "cloudfront-trial-published",
-    "codeHead": "df137ad1b84e928ce343dbfaca4e5bf755c0e473",
+    "stage": "domain-published-ground-routes-verified",
+    "codeHead": "cebe4d2a9a7b6f44ee43be5bb8cadc38416dd5eb",
     "entry": "/?play=1&at=center",
     "assetManifest": "scene-authoring/yuyuan-area/inputs/play-character.json",
-    "technicalStatus": "passed",
+    "technicalStatus": "reported_floor_routes_passed_other_playtest_items_open",
     "artStatus": "pending_world_review",
-    "next": "Integrate the four remaining character-lab actors into the verified street-play loop",
-    "note": "Stall-front paving/collision and real skin-bound upright snacks verified in Chrome; independent CloudFront trial published with 17 world parts and six physics zones. Original GLB bytes and sealed v1.0 tag preserved.",
+    "next": "Fix bridge access and remaining vehicle/art/viewfinder findings, then integrate the four remaining actors",
+    "note": "Gemini 3.8 Flash independently reported seven issues. Four reported foundation-drop routes are guarded and can retreat in public Chrome; bridge entry, vehicle visual fit, roof and photo labels remain open. Original GLB bytes and sealed v1.0 preserved.",
     "assetManifests": [
       "scene-authoring/yuyuan-area/inputs/play-character.json",
       "scene-authoring/yuyuan-area/inputs/play-foods.json",
@@ -129,16 +129,18 @@
     "feedbackReview": "docs/PLAY-FEEDBACK-20261001.md",
     "feedbackReviews": [
       "docs/PLAY-FEEDBACK-20261001.md",
-      "docs/SNACK-FEEDBACK-20261002.md"
+      "docs/SNACK-FEEDBACK-20261002.md",
+      "docs/GEMINI-PLAYTEST-20261002.md"
     ],
     "deployment": {
       "kind": "static-trial",
-      "url": "https://d1c74tvoxrrqcb.cloudfront.net/",
-      "version": "20261002-main-df137ad1",
-      "sourceHead": "df137ad1b84e928ce343dbfaca4e5bf755c0e473",
-      "verification": "actual Chrome plus public HTTP/S3 checks",
-      "subdomain": "deferred per owner choice",
-      "receipt": "docs/CLOUDFRONT-TRIAL.md"
+      "url": "https://pawborough.onewonder.co.jp/",
+      "version": "20261002-main-cebe4d2a",
+      "sourceHead": "cebe4d2a9a7b6f44ee43be5bb8cadc38416dd5eb",
+      "verification": "HTTPS/bytes/CSP plus Chrome basic eight and ground route eight checks",
+      "subdomain": "pawborough.onewonder.co.jp",
+      "receipt": "docs/CLOUDFRONT-TRIAL.md",
+      "cloudfrontUrl": "https://d1c74tvoxrrqcb.cloudfront.net/"
     }
   }
 }
