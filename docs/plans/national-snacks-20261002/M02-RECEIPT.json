@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "taskId": "M02",
+  "stage": "reviewed_pending_commit",
+  "sourceHead": "fda9c15e",
+  "worker": {
+    "engine": "GLM-5.3-Flash",
+    "log": "/home/baibai/outbox/pawborough-national-snacks-20261002/M02-GLM-WORKER.log",
+    "note": "Pure module built by Flash; misplaced test moved to the planned root path; Codex integrated state/browser and fixed actual-registry cross-contract gaps."
+  },
+  "checks": [
+    {
+      "name": "migration fixtures",
+      "result": "PASS",
+      "sections": 31,
+      "command": "node tests/play_save_migration.test.mjs"
+    },
+    {
+      "name": "state and registry",
+      "result": "PASS",
+      "command": "node tests/play_state.test.mjs; node tests/play_food_registry.test.mjs"
+    },
+    {
+      "name": "affected full play suite",
+      "result": "PASS",
+      "command": "npm --prefix scene-authoring/yuyuan-area run test:play",
+      "log": "/home/baibai/outbox/pawborough-national-snacks-20261002/M02-PLAY-TEST.log"
+    },
+    {
+      "name": "real GPU save lifecycle",
+      "result": "PASS",
+      "command": "BASE=http://127.0.0.1:5613 GPU_WEBGL=1 node scene-authoring/yuyuan-area/tests/snack-save-browser-check.mjs",
+      "cases": [
+        "old v1 collection/held to v2 with exact v1 retained",
+        "riding refresh and basket restore",
+        "actual F eating and stamp",
+        "new trip while riding retains collection",
+        "partial v2 fallback to complete v1",
+        "delayed catalog disables new trip until restoration",
+        "quota preserves backup and visible warning"
+      ]
+    }
+  ],
+  "independentReview": {
+    "model": "gpt-6.1-sol",
+    "effort": "xhigh",
+    "findings": 2,
+    "fixed": 2,
+    "recheck": "No remaining substantive findings; targeted regression evidence reused."
+  },
+  "storagePolicy": {
+    "v1Written": false,
+    "v1Deleted": false,
+    "newKey": "pawborough.play.walk.v2",
+    "writeReadbackVerified": true,
+    "newTripRetainsCollection": true,
+    "explicitResetCollectionSeparate": true
+  },
+  "limits": [
+    "Atlas UI and JSON collection export arrive in M07.",
+    "Current runtime edition still three foods; expansion is later staged content."
+  ],
+  "recordedAt": "2026-10-03T00:20:42+09:00"
+}

@@ -124,6 +124,7 @@ const check = (name, cond, detail = '') => {
   s.placeVehicle([5, 0.02, 6], 1.1);
   const save = s.toSave({ feet: [1.23456, 0.021, 2.34567], yaw: 0.67891, pitch: 0.1 });
   check('schema 版本化', save.schemaVersion === STATE_SCHEMA_VERSION && save.sceneVersion === SCENE_ASSET_VERSION);
+  check('新版档使用 v2 与独立收藏字段', save.schemaVersion === 2 && Array.isArray(save.discovered) && Array.isArray(save.milestones) && !!save.orphanedProgress);
   check('位置节流精度（toFixed 截断）', save.feet[0] === 1.235 && save.feet[2] === 2.346);
   check('手中物与车/章都在档里', save.heldItem === 'congyoubing' && save.vehicle.placed === true && save.tasted.length === 0);
 
@@ -131,25 +132,32 @@ const check = (name, cond, detail = '') => {
   const back = s2.applySave(JSON.parse(JSON.stringify(save)));
   check('round-trip 恢复', back.ok === true && s2.heldItem === 'congyoubing' && s2.vehicle.pos[1] === 0.02);
 
-  // 坏档矩阵：全部拒绝且给原因
-  const cases = [
+  // 无法识别的结构拒绝；可恢复的位置/物品问题归一化，不抹掉收藏。
+  const rejected = [
     ['not-object', 'x'],
     ['schema-0', { ...save, schemaVersion: 0 }],
-    ['scene-old', { ...save, sceneVersion: 'old' }],
-    ['bad-held', { ...save, heldItem: 'pizza' }],
-    ['bad-feet-NaN', { ...save, feet: [NaN, 0, 0] }],
-    ['bad-feet-shape', { ...save, feet: [1, 2] }],
-    ['bad-eating', { ...save, eating: { foodId: 'congyoubing', elapsed: -1 } }],
-    ['bad-eating-too-long', { ...save, eating: { foodId: 'congyoubing', elapsed: EAT_SECONDS + 1 } }],
-    ['bad-tasted', { ...save, tasted: ['pizza'] }],
-    ['dup-tasted', { ...save, tasted: ['xiaolongbao', 'xiaolongbao'] }],
-    ['bad-goal', { ...save, goalIndex: 7 }],
-    ['bad-vehicle', { ...save, vehicle: { ...save.vehicle, pos: [Infinity, 0, 0] } }],
-    ['dup-food', { ...save, heldItem: 'youdunzi', basketItem: 'youdunzi' }],
+    ['missing-collection', { ...save, tasted: 'bad-array' }],
   ];
-  for (const [why, bad] of cases) {
+  for (const [why, bad] of rejected) {
     const v = validateSave(bad);
     check(`坏档拒绝：${why}`, v.ok === false && typeof v.reason === 'string');
+  }
+  const recovered = [
+    ['scene-old', { ...save, sceneVersion: 'old' }, v => v.feet === null && !v.vehicle.placed],
+    ['bad-held', { ...save, heldItem: 'pizza' }, v => v.heldItem === null],
+    ['bad-feet-NaN', { ...save, feet: [NaN, 0, 0] }, v => v.feet === null],
+    ['bad-feet-shape', { ...save, feet: [1, 2] }, v => v.feet === null],
+    ['bad-eating', { ...save, eating: { foodId: 'congyoubing', elapsed: -1 } }, v => v.eating === null],
+    ['bad-eating-too-long', { ...save, eating: { foodId: 'congyoubing', elapsed: EAT_SECONDS + 1 } }, v => v.eating === null],
+    ['unknown-taste', { ...save, tasted: ['pizza'] }, v => v.tasted.length === 0 && v.orphanedProgress?.tasted.includes('pizza')],
+    ['dup-tasted', { ...save, tasted: ['xiaolongbao', 'xiaolongbao'] }, v => v.tasted.length === 1],
+    ['invalid-tracking', { ...save, trackedFoodId: 'pizza', trackedVendorId: 'missing' }, v => v.trackedFoodId === null],
+    ['bad-vehicle', { ...save, vehicle: { ...save.vehicle, pos: [Infinity, 0, 0] } }, v => !v.vehicle.placed],
+    ['dup-food', { ...save, heldItem: 'youdunzi', basketItem: 'youdunzi' }, v => v.heldItem === 'youdunzi' && v.basketItem === null],
+  ];
+  for (const [why, data, predicate] of recovered) {
+    const v = validateSave(data);
+    check(`可恢复档归一化：${why}`, v.ok === true && predicate(v.value));
   }
   // NaN 不会被写入新档
   const s3 = new PlayGameState();
@@ -162,11 +170,17 @@ const check = (name, cond, detail = '') => {
   const store = new Map();
   const storage = { getItem: k => store.get(k) ?? null, setItem: (k, v) => store.set(k, v), removeItem: k => store.delete(k) };
   const s = new PlayGameState();
-  s.take('xiaolongbao'); s.placeVehicle([1, 0, 2], 0);
+  s.take('xiaolongbao'); s.startEat(); s.eatTick(EAT_SECONDS); s.take('congyoubing'); s.placeVehicle([1, 0, 2], 0);
   storage.setItem(STORAGE_KEY, JSON.stringify(s.toSave({ feet: [0, 0, 0], yaw: 0 })));
+  storage.setItem('pawborough.play.walk.v1', 'legacy-keep');
   s.reset({ storage });
-  check('重置清进度/手里/车', s.stamps === 0 && s.heldItem === null && s.vehicle.placed === false && s.goal()?.id === 'xiaolongbao');
-  check('重置清专用 key', storage.getItem(STORAGE_KEY) === null);
+  check('新散步保留收藏，只清手持与车', s.stamps === 1 && s.heldItem === null && s.vehicle.placed === false && s.goal()?.id === 'congyoubing');
+  check('新散步保留 v2 档和原 v1 备份', storage.getItem(STORAGE_KEY) !== null && storage.getItem('pawborough.play.walk.v1') === 'legacy-keep');
+  check('图鉴有独立的明确清空入口', typeof s.resetCollection === 'function');
+  if (typeof s.resetCollection === 'function') {
+    s.resetCollection({ storage });
+    check('清空图鉴后收藏清零且 v1 仍保留', s.stamps === 0 && s.discovered.size === 0 && storage.getItem('pawborough.play.walk.v1') === 'legacy-keep');
+  }
 }
 
 console.log(failures === 0 ? 'PLAY_STATE PASS' : `PLAY_STATE FAIL (${failures})`);

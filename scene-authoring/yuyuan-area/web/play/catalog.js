@@ -228,6 +228,7 @@ export function createFoodRegistry({ catalog, assets = {}, vendors = {}, profile
   }
 
   return Object.freeze({
+    editionId: catalog.editionId,
     foodsById,
     vendorsById,
     profilesById,

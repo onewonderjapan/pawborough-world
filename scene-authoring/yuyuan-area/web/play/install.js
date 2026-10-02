@@ -15,8 +15,9 @@ import { PlayCamera } from './camera.js';
 import { PlayAvatar } from './avatar.js';
 import { installPlayHud } from './hud.js';
 import { installPlayMap } from './minimap.js';
-import { PlayGameState, STORAGE_KEY, validateSave } from './state.js';
+import { PlayGameState, STORAGE_KEY, SCENE_ASSET_VERSION, EAT_SECONDS } from './state.js';
 import { createFoodRegistry } from './catalog.js';
+import { loadPlaySave, persistPlaySave } from './save-migration.js';
 import { deriveStallTargets, chooseReachable } from './stalls.js';
 import { loadFoodCatalog } from './foods.js';
 import { RideController, pickDismountSpot } from './vehicle.js';
@@ -151,25 +152,42 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   let catalogError = null;
   let foodLoadError = null;
   let saveRestoreAttempted = false;
+  let saveError = null;
+  let resettingTrip = false;
   let saveThrottle = 0;
   const storage = () => window.localStorage;
   function saveNow() {
     // 元数据和旧存档尚未处理时不能用空白进度覆盖玩家原有的三味记录。
-    if (!catalogReady || !saveRestoreAttempted) return;
+    if (!catalogReady || !saveRestoreAttempted || resettingTrip) return;
     const walk = window.__walk;
     const ctl = rideCtl ?? walk?.controller;
     if (!ctl) return;
     try {
-      storage().setItem(STORAGE_KEY, JSON.stringify(gameState.toSave({
+      const result = persistPlaySave(storage(), gameState.toSave({
         feet: ctl.feetPosition(),
         yaw: rideCtl ? ctl.yaw : (walk?.controller?.yaw ?? 0),      // 视角
         pitch: rideCtl ? (ctl.pitch ?? 0) : (walk?.controller?.pitch ?? 0),
-      })));
+      }));
+      reportSaveResult(result);
       // 车辆航向/视角由 toSave 从 gameState.vehicle 取（frameGame 每帧同步）
-    } catch { /* 存储满/禁用：不影响玩法 */ }
+    } catch { reportSaveResult({ ok: false, error: 'storage-unavailable' }); }
+  }
+  function reportSaveResult(result) {
+    if (result.ok) { saveError = null; return; }
+    if (saveError !== result.error) {
+      saveError = result.error;
+      hud.message(saveFailureNotice(saveError));
+    }
+  }
+  function saveFailureNotice(error) {
+    return error === 'quota-exceeded'
+      ? '本机保存空间不足，本次进度暂未保存，旧记录已保留'
+      : '本机暂时无法保存，本次进度仅在当前页面内，旧记录已保留';
   }
   gameState.onChange((evt) => {
-    if (evt.type === 'stamped' || evt.type === 'eaten') {
+    if (evt.type === 'reset') {
+      startNewTrip().catch(error => { console.error('new trip failed', error); hud.message('新散步暂时无法开始，图鉴进度保留'); });
+    } else if (['stamped', 'eaten', 'discovered', 'tracked', 'collection-cleared', 'eating-cancelled'].includes(evt.type)) {
       hud.renderGoal(goalView());
       saveNow();
     }
@@ -264,6 +282,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       hud.message(startupNotice ?? (outcome?.restored ? '灰猫回到上次的位置和朝向' : '灰猫已就位，去找下一味吧'));
       startupNotice = null;
       saveNow();
+      if (saveError) hud.message(saveFailureNotice(saveError));
     },
     onPauseChange: (paused) => {
       hud.setPaused(paused);
@@ -366,8 +385,9 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     const registry = createFoodRegistry({ catalog, assets, vendors, profiles });
     if (!gameState.configureCatalog(registry)) throw new Error('食品目录无法在存档恢复前配置');
     catalogReady = true;
-    restoreLegacySave();
+    restorePlaySave();
     saveRestoreAttempted = true;
+    hud.setTripResetReady(true);
     applyPendingSaveWhenReady();
     for (const t of deriveStallTargets(layout, sockets, gameState.foods)) stalls.push(t);
     minimap.setGeometry(layout);
@@ -412,31 +432,45 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     }
   })();
 
-  // ---- 旧存档恢复：元数据验证完毕后才解析，不提前删除或覆盖旧 key ----
-  function restoreLegacySave() {
+  // ---- 存档恢复：优先合法 v2，失败才从完整 v1 迁移；v1 永不写改 ----
+  function restorePlaySave() {
     try {
-    const raw = storage().getItem(STORAGE_KEY);
-    if (raw) {
-      let parsed = null, parsedOk = false;
-      try {
-        parsed = JSON.parse(raw);
-        parsedOk = true;
-      } catch (e) {
-        startupNotice = '上次的散步记录有些损坏，已从安全出生点开始';
-      }
-      if (parsedOk) {
-        const v = validateSave(parsed, gameState.foods);
-        if (v.ok) {
-          gameState.applySave(v.value);
-          pendingSave = v.value;
-        } else {
-          startupNotice = String(v.reason).includes('version')
-            ? '这份散步记录属于旧版本，已从安全出生点开始'
-            : '上次的散步记录无法读取，已从安全出生点开始';
-        }
-      }
-    }
-    } catch { /* 存储禁用不阻塞入场，M02 处理持久化反馈 */ }
+      const loaded = loadPlaySave(storage(), { registry: gameState.registry,
+        sceneVersion: SCENE_ASSET_VERSION, editionId: gameState.catalogEdition, eatSeconds: EAT_SECONDS });
+      if (!loaded) return;
+      const applied = gameState.applySave(loaded.save);
+      if (!applied.ok) return;
+      pendingSave = applied.value;
+      reportSaveResult(persistPlaySave(storage(), applied.value));
+      if (loaded.migrated) startupNotice = '旧三味记录已接续到图鉴，原记录也已保留';
+      if (loaded.warnings.includes('scene-mismatch') || loaded.warnings.includes('pose-reset')) startupNotice = '图鉴已保留，落脚点回到安全出生位置';
+    } catch { reportSaveResult({ ok: false, error: 'storage-unavailable' }); }
+  }
+
+  async function startNewTrip() {
+    if (resettingTrip) return;
+    resettingTrip = true;
+    try {
+      pendingSave = null;
+      rideCtl?.dispose(); rideCtl = null;
+      bikeView?.detachRider(core.state.avatar);
+      bikePlaced = false;
+      if (bikeView) bikeView.root.visible = false;
+      heldObj?.obj.removeFromParent(); heldObj = null;
+      core.state.avatar?.setEatingPose(false);
+      core.state.avatar?.setHoldingPose(false);
+      playCamera.shoulderHeight = PLAY_PROFILE.shoulderHeight;
+      playCamera.distance = PLAY_PROFILE.cameraDistance;
+      window.dispatchEvent(new CustomEvent('pb:ride-change', { detail: { riding: false } }));
+      const walk = window.__walk;
+      walk?.controller?.clearKeys();
+      await walk?.spawnAt('center');
+      walk?.resume();
+      hud.renderGoal(goalView());
+      hud.message('新散步已开始，图鉴收藏保留');
+    } finally { resettingTrip = false; }
+    ensureBikePlaced();
+    saveNow();
   }
 
   function applyPendingSave() {
@@ -754,6 +788,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   // R0-1：物理步进只在 walk.js 骑乘分支发生（唯一固定步权威）；本函数只做
   // 状态同步、视觉（轮/踏板/骑姿）与玩法计时，绝不再 step 任何控制器。
   function frameGame({ feet, yaw, paused, dt }) {
+    if (resettingTrip) return;
     const walk = window.__walk;
     const controller = walk?.controller;
     if (!controller) return;
@@ -928,6 +963,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       catalogReady,
       catalogError,
       foodLoadError,
+      saveError,
       ...closedFacades.status(),          // 闭门叠加层只读状态（工单 C）
       minimapMode: minimap.mode,
       saveKey: STORAGE_KEY,

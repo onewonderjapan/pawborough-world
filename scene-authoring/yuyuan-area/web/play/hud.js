@@ -69,7 +69,7 @@ export function installPlayHud({ core, state = null }) {
       <button type="button" id="p-view">取景</button>
       <button type="button" id="p-enter" hidden>回到游玩</button>
       <button type="button" id="p-help" aria-expanded="false" aria-controls="play-help">操作</button>
-      <button type="button" id="p-reset" title="清空本游戏集章/手中食物/自行车进度">新散步</button>
+      <button type="button" id="p-reset" title="散步记录准备中" disabled>新散步</button>
     </div>
     <div id="play-asset-error" role="alert" hidden>
       <p id="play-asset-error-text"></p>
@@ -138,17 +138,7 @@ export function installPlayHud({ core, state = null }) {
   $('p-reload').addEventListener('click', () => location.reload());
   bReset.addEventListener('click', () => {
     if (!state) return;
-    // 明确重置入口：只清本游戏进度，二次确认避免误触
-    if (!bReset.dataset.confirm) {
-      bReset.dataset.confirm = '1';
-      bReset.textContent = '确认新散步？';
-      setTimeout(() => { delete bReset.dataset.confirm; bReset.textContent = '新散步'; }, 4000);
-      return;
-    }
-    delete bReset.dataset.confirm;
-    bReset.textContent = '新散步';
-    state.reset({ storage: window.localStorage });
-    message('已开始新散步（集章与进度已清空）');
+    state.reset();
   });
 
   // ---- 「操作」弹层：打开即暂停；关闭只解除弹层自己按下的那次暂停 ----
@@ -280,6 +270,10 @@ export function installPlayHud({ core, state = null }) {
   let lastPaused = null;
   return {
     bind({ walk: w }) { walk = w; },
+    setTripResetReady(ready) {
+      bReset.disabled = !ready;
+      bReset.title = ready ? '重置行程，保留图鉴收藏' : '散步记录准备中';
+    },
     setPaused(paused) {
       if (paused === lastPaused) return;
       lastPaused = paused;

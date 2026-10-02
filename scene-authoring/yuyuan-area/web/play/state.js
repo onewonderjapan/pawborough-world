@@ -9,13 +9,16 @@
 //   - 手/车篮：手里有食物时不能重复领取；上车持物进车篮，下车回手，不复制。
 //   - 保存：版本化专用 key，自动保存在动作完成/暂停时机 + 位置节流由调用方控制；
 //     坏档/版本不符返回 {ok:false, reason}，调用方回安全出生点，绝不写 NaN/墙内。
-export const STATE_SCHEMA_VERSION = 1;
+import { SAVE_SCHEMA_VERSION, STORAGE_KEY_V2, LEGACY_STORAGE_KEY, decodePlaySave, persistPlaySave } from './save-migration.js';
+export const STATE_SCHEMA_VERSION = SAVE_SCHEMA_VERSION;
 // 专用 key：不碰既有相机/项目 localStorage（fangbangMain 的 STORE_KEY 等）
-export const STORAGE_KEY = 'pawborough.play.walk.v1';
+export const STORAGE_KEY = STORAGE_KEY_V2;
+export { LEGACY_STORAGE_KEY };
 // scene/asset 版本标记：食物/摊位/世界布局变化时递增，旧档按版本不符处理
 export const SCENE_ASSET_VERSION = 'play-snacks-20261001';
 
 export const EAT_SECONDS = 3.2;
+const DEFAULT_EDITION = 'legacy-three-foods';
 
 // 三味与摊位（GOAL.md 建议：stall-5 蒸煮小笼包 / stall-6 烤制葱油饼 / stall-10 点心油墩子）。
 // 坐标/朝向不在这里写死——stalls.js 从 out/layout.json + out/food-sockets.json 派生。
@@ -34,6 +37,7 @@ export class PlayGameState {
     this.requiredFoodIds = new Set(this.foodIds);
     this.registry = null;
     this.catalogConfigured = false;
+    this.catalogEdition = DEFAULT_EDITION;
     this.actorId = actorId;
     this.playing = false;          // 已进入 play（入场/退出由 session 管，这里只镜像）
     this.paused = false;
@@ -42,6 +46,8 @@ export class PlayGameState {
     this.eating = null;            // { foodId, elapsed } | null
     this.tasted = new Set();       // 已吃完的 foodId
     this.discovered = new Set();
+    this.milestones = new Set();
+    this.orphanedProgress = { discovered: new Set(), tasted: new Set() };
     this.goalIndex = 0;            // 0..foods.length；=== foods.length = 三味完成
     this.trackedFoodId = null;
     this.trackedVendorId = null;
@@ -72,6 +78,7 @@ export class PlayGameState {
     this.foodIds = ids;
     this.requiredFoodIds = required;
     this.registry = registry;
+    this.catalogEdition = registry.editionId ?? DEFAULT_EDITION;
     this.catalogConfigured = true;
     this.goalIndex = 0;
     return true;
@@ -100,6 +107,9 @@ export class PlayGameState {
       stamps: this.stamps,
       requiredCount: this.requiredFoodIds.size,
       complete: this.complete,
+      catalogEdition: this.catalogEdition,
+      milestones: [...this.milestones],
+      orphanedProgress: { discovered: [...this.orphanedProgress.discovered], tasted: [...this.orphanedProgress.tasted] },
       trackedFoodId: this.trackedFoodId,
       trackedVendorId: this.trackedVendorId,
     };
@@ -225,10 +235,15 @@ export class PlayGameState {
 
   // ---- 保存（调用方传入相机/脚点；这里只管玩法事实） ----
   toSave({ feet, yaw, pitch = 0 } = {}) {
+    const registry = this.registry ?? registryForFoods(this.foods, this.catalogEdition);
+    const goalId = this.goal()?.id ?? null;
+    const tracked = registry.vendorsById.get(this.trackedVendorId);
+    const vendor = tracked?.foodId === goalId ? tracked : [...registry.vendorsById.values()].find(v => v.foodId === goalId);
     return {
       schemaVersion: STATE_SCHEMA_VERSION,
       sceneVersion: SCENE_ASSET_VERSION,
       actorId: this.actorId,
+      catalogEdition: this.catalogEdition,
       feet: feet && feet.every(finite) ? feet.map(v => +v.toFixed(3)) : null,
       yaw: finite(yaw) ? +yaw.toFixed(4) : 0,
       pitch: finite(pitch) ? +pitch.toFixed(4) : 0,
@@ -236,7 +251,11 @@ export class PlayGameState {
       basketItem: this.basketItem,
       eating: this.eating ? { foodId: this.eating.foodId, elapsed: +this.eating.elapsed.toFixed(3) } : null,
       tasted: [...this.tasted],
-      goalIndex: this.goalIndex,
+      discovered: [...this.discovered],
+      milestones: [...this.milestones],
+      orphanedProgress: { discovered: [...this.orphanedProgress.discovered], tasted: [...this.orphanedProgress.tasted] },
+      trackedFoodId: goalId,
+      trackedVendorId: goalId ? vendor?.vendorId ?? vendor?.id ?? null : null,
       vehicle: {
         placed: this.vehicle.placed,
         pos: this.vehicle.pos ? this.vehicle.pos.map(v => +v.toFixed(3)) : null,
@@ -247,31 +266,49 @@ export class PlayGameState {
     };
   }
   applySave(data, { storage } = {}) {
-    const v = validateSave(data, this.foods);
+    const v = validateSave(data, this.foods, { registry: this.registry, catalogEdition: this.catalogEdition });
     if (!v.ok) return v;
     const s = v.value;
     this.heldItem = s.heldItem;
     this.basketItem = s.basketItem;
     this.eating = s.eating ? { foodId: s.eating.foodId, elapsed: s.eating.elapsed } : null;
     this.tasted = new Set(s.tasted);
-    this.discovered = new Set(s.tasted);
-    this.goalIndex = s.goalIndex;
+    this.discovered = new Set(s.discovered);
+    this.milestones = new Set(s.milestones);
+    this.orphanedProgress = { discovered: new Set(s.orphanedProgress.discovered), tasted: new Set(s.orphanedProgress.tasted) };
+    this.trackedFoodId = s.trackedFoodId;
+    this.trackedVendorId = s.trackedVendorId;
+    const trackedIndex = this.foods.findIndex(f => f.id === s.trackedFoodId);
+    const next = this.foods.findIndex(f => !this.tasted.has(f.id));
+    this.goalIndex = trackedIndex >= 0 ? trackedIndex : next >= 0 ? next : this.foods.length;
     this.vehicle = { ...s.vehicle };
-    if (storage) storage.setItem(STORAGE_KEY, JSON.stringify(this.toSave(s)));
+    if (storage) v.storageResult = persistPlaySave(storage, this.toSave(s));
     return v;
   }
 
-  // 「新散步」重置：只清本游戏进度（章/手中/车/目标），不动世界、不动旧业务数据
+  // 新散步只清行程；收藏与 v1 备份保留。明确清空图鉴由 resetCollection 负责。
   reset({ storage } = {}) {
     this.heldItem = null;
     this.basketItem = null;
     this.eating = null;
-    this.tasted = new Set();
-    this.discovered = new Set();
-    this.goalIndex = 0;
+    this.trackedFoodId = null;
+    this.trackedVendorId = null;
+    const next = this.foods.findIndex(f => !this.tasted.has(f.id));
+    this.goalIndex = next >= 0 ? next : this.foods.length;
     this.vehicle = { placed: false, pos: null, yaw: 0, viewYaw: 0, riding: false };
-    if (storage) storage.removeItem(STORAGE_KEY);
-    this._emit({ type: 'reset' });
+    const result = storage ? persistPlaySave(storage, this.toSave({ feet: null, yaw: 0 })) : { ok: true, error: null };
+    this._emit({ type: 'reset', storageError: result.error });
+    return result;
+  }
+  resetCollection({ storage } = {}) {
+    this.tasted.clear();
+    this.discovered.clear();
+    this.milestones.clear();
+    this.orphanedProgress.discovered.clear();
+    this.orphanedProgress.tasted.clear();
+    const result = this.reset({ storage });
+    this._emit({ type: 'collection-cleared' });
+    return result;
   }
 
   onChange(cb) { this._listeners.push(cb); }
@@ -279,35 +316,13 @@ export class PlayGameState {
 }
 
 // 严格校验：JSON 形状、已知枚举、数值有限。返回 {ok:true, value} | {ok:false, reason}。
-export function validateSave(data, foods = FOODS) {
-  if (!data || typeof data !== 'object' || Array.isArray(data)) return bad('not-object');
-  if (data.schemaVersion !== STATE_SCHEMA_VERSION) return bad(`schema-${data.schemaVersion}`);
-  if (data.sceneVersion !== SCENE_ASSET_VERSION) return bad(`scene-${data.sceneVersion}`);
-  if (typeof data.actorId !== 'string' || !data.actorId) return bad('actorId');
-  const ids = new Set(foods.map(f => f.id));
-  const foodOrNull = (v) => v === null || (typeof v === 'string' && ids.has(v));
-  if (!foodOrNull(data.heldItem)) return bad('heldItem');
-  if (!foodOrNull(data.basketItem)) return bad('basketItem');
-  for (const k of ['feet']) {
-    if (data[k] !== null && (!Array.isArray(data[k]) || data[k].length !== 3 || !data[k].every(finite))) return bad(k);
-  }
-  if (!finite(data.yaw) || !finite(data.pitch)) return bad('yaw/pitch');
-  if (data.eating !== null) {
-    const e = data.eating;
-    if (!e || typeof e !== 'object' || !foodOrNull(e.foodId) || e.foodId === null
-      || !finite(e.elapsed) || e.elapsed < 0 || e.elapsed >= EAT_SECONDS) return bad('eating');
-  }
-  if (!Array.isArray(data.tasted) || data.tasted.some(t => !ids.has(t))
-    || new Set(data.tasted).size !== data.tasted.length) return bad('tasted');
-  if (!Number.isInteger(data.goalIndex) || data.goalIndex < 0 || data.goalIndex > foods.length) return bad('goalIndex');
-  const veh = data.vehicle;
-  if (!veh || typeof veh !== 'object') return bad('vehicle');
-  if (typeof veh.placed !== 'boolean' || typeof veh.riding !== 'boolean') return bad('vehicle-flags');
-  if (veh.placed && (!Array.isArray(veh.pos) || veh.pos.length !== 3 || !veh.pos.every(finite))) return bad('vehicle-pos');
-  if (!finite(veh.yaw)) return bad('vehicle-yaw');
-  if (veh.viewYaw !== undefined && !finite(veh.viewYaw)) return bad('vehicle-viewYaw');
-  // 手里与车篮不重复持同一份（不复制食物）
-  if (data.heldItem && data.heldItem === data.basketItem) return bad('duplicated-food');
-  return { ok: true, value: data };
+export function validateSave(data, foods = FOODS, { registry = null, catalogEdition = DEFAULT_EDITION } = {}) {
+  const decoded = decodePlaySave(data, { registry: registry ?? registryForFoods(foods, catalogEdition),
+    sceneVersion: SCENE_ASSET_VERSION, editionId: catalogEdition, eatSeconds: EAT_SECONDS });
+  return decoded ? { ok: true, value: decoded.save, warnings: decoded.warnings } : bad('invalid-save');
+}
+function registryForFoods(foods, editionId) {
+  return { editionId, foodsById: new Map(foods.map(f => [f.id, f])),
+    vendorsById: new Map(foods.map(f => [`food-vendor-${f.id}`, { vendorId: `food-vendor-${f.id}`, foodId: f.id }])) };
 }
 function bad(reason) { return { ok: false, reason }; }

@@ -7,7 +7,7 @@
   "automationCreated": false,
   "cloudChanged": false,
   "currentTask": "M02",
-  "lastUpdated": "2026-10-02T23:32:14+09:00",
+  "lastUpdated": "2026-10-03T00:20:42+09:00",
   "baselineSourceHead": "31bae61f002a7bf5e04aac2c82b526909b87e78b",
   "localCompletionTaskIds": [
     "M00",
@@ -105,13 +105,18 @@
       "dependsOn": [
         "M01"
       ],
-      "status": "running",
+      "status": "implemented",
       "owner": "GLM-5.3-Flash pure migration construction; Codex state/install integration",
       "sourceHead": "7b963788d16f36744378cddb5f89938a701567c0",
       "resultCommit": null,
-      "evidencePaths": [],
-      "lastCheck": "2026-10-02T22:45:31+09:00",
-      "nextAction": "Complete bounded save-migration module and fixtures; integrate and validate old three-taste state in actual browser.",
+      "evidencePaths": [
+        "docs/plans/national-snacks-20261002/M02-RECEIPT.json",
+        "tests/play_save_migration.test.mjs",
+        "scene-authoring/yuyuan-area/tests/snack-save-browser-check.mjs",
+        "/home/baibai/outbox/pawborough-national-snacks-20261002/M02-PLAY-TEST.log"
+      ],
+      "lastCheck": "2026-10-03T00:20:42+09:00",
+      "nextAction": "Commit reviewed migration and record exact resultCommit; M07 may then start.",
       "blocker": null
     },
     {
