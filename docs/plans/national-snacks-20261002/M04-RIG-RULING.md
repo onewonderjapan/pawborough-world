@@ -27,3 +27,9 @@
 - 食品→篮→骑车→下车→食品循环，原骑姿契约不变；申请归还重复不留骨/重复dispose。
 
 硬分段可能让肘腕弯曲偏硬；只有实际连续画面失败时才转同网格同16骨的离线局部重绑/单个肘修形，不重做角色或缩减碗装范围。旧骑姿的整簇均值PASS不能改述为掌垫贴把PASS。
+
+## 2026-10-03 measured pose correction
+
+The first nominal target paths were unreachable with actual weighted paw samples. The source eat clip shoulder translations are retained, but the legacy single-hand overlay must be skipped for custom profiles. Wrapped bread now has width0.18m, support anchors±0.075m, exposed bite (0,.085,.030), pitch+.25; hold origin (0,mouthY-.20,mouthZ-.035). Skewer pitch+.65/roll-.06, hold origin(.01,mouthY-.18,mouthZ-.09) keeps the handle close to the body. Bowl bite tool direction normalizes(.70,.70,+.35), bringing its handle down and toward the body. Original .03m palm / .025m mouth / .004m stable bowl bounds remain unchanged.
+
+CCD uses a per-joint effective pivot from actual weighted skin contributions; cached bind-space sums preserve non-arm mass and morph signature. Direct double-precision bone world/inverse matrices match per-vertex centroid below1e-7m. Astra measured maximum5.37e-9m centroid error and5.66e-9m effective pivot prediction error, nonzero position/yaw invariant. All32 source-GLB proxy frames pass; current maximum paw gap.01547m bowl at.8s. Container/wrapper/tool retain scale; edible consumption starts after contact phase. Runtime visual and food-to-bike acceptance still pending.

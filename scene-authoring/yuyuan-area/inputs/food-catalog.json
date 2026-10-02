@@ -1,15 +1,30 @@
 {
   "schemaVersion": 1,
-  "editionId": "pawborough-snack-atlas-v1-shanghai",
+  "editionId": "pawborough-snack-atlas-v1-six",
   "requiredFoodIds": [
     "xiaolongbao",
     "congyoubing",
-    "youdunzi"
+    "youdunzi",
+    "tanghulu",
+    "roujiamo",
+    "shuangpinai"
   ],
   "chapters": [
     {
       "id": "shanghai",
       "name": "上海起点"
+    },
+    {
+      "id": "jingjin",
+      "name": "京津风味"
+    },
+    {
+      "id": "northwest",
+      "name": "西北风味"
+    },
+    {
+      "id": "lingnan-islands",
+      "name": "岭南海岛"
     }
   ],
   "foods": [
@@ -48,6 +63,55 @@
       "assetId": "youdunzi",
       "thumbId": null,
       "enabled": true
+    },
+    {
+      "id": "tanghulu",
+      "name": "糖葫芦",
+      "chapterId": "jingjin",
+      "regionLabel": "北京等北方地区",
+      "description": "山楂裹上薄薄的糖衣，红亮成串，入口酸甜。",
+      "locationHint": "现有商业区；按 layout 与顾客面定位",
+      "poseProfile": "skewer",
+      "assetId": "tanghulu",
+      "thumbId": null,
+      "utensilKind": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://www.visitbeijing.com.cn/article/47QmQuCN80M",
+        "https://www.visitbeijing.com.cn/article/47Qm5WBNk4T"
+      ]
+    },
+    {
+      "id": "roujiamo",
+      "name": "肉夹馍",
+      "chapterId": "northwest",
+      "regionLabel": "陕西风味",
+      "description": "烤香的白吉馍夹入卤肉丝，纸包托着吃，香浓又扎实。",
+      "locationHint": "现有商业区；按 layout 与顾客面定位",
+      "poseProfile": "wrapped",
+      "assetId": "roujiamo",
+      "thumbId": null,
+      "utensilKind": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://dfz.shaanxi.gov.cn/zslm/fzzlk/sxnj/202508/P020250822375845378471.pdf"
+      ]
+    },
+    {
+      "id": "shuangpinai",
+      "name": "双皮奶",
+      "chapterId": "lingnan-islands",
+      "regionLabel": "广东顺德风味",
+      "description": "柔滑奶皮与香甜奶冻盛在小碗里，用勺细细品尝。",
+      "locationHint": "方浜主街宽敞路侧",
+      "poseProfile": "bowl",
+      "assetId": "shuangpinai",
+      "thumbId": null,
+      "utensilKind": "spoon",
+      "enabled": true,
+      "sourceUrls": [
+        "https://lzhbwg.mofcom.gov.cn/edi_ecms_web_front/thb/detail/d406439d2f2b40d4b87319f20037061d"
+      ]
     }
   ]
 }

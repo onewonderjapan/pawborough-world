@@ -1,0 +1,48 @@
+// M04 integration: actual body switches atomically to food rig; fixed skin anchors are model-local.
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import * as T from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { PlayAvatar } from '../scene-authoring/yuyuan-area/web/play/avatar.js';
+globalThis.self = globalThis;
+globalThis.createImageBitmap = async () => ({ width: 4, height: 4, close() {} });
+const bytes = await readFile(new URL('../scene-authoring/yuyuan-area/resources/characters/gray-cat/character.glb', import.meta.url));
+const g = await new Promise((ok, no) => new GLTFLoader().parse(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength), '', ok, no));
+const avatar = new PlayAvatar({ gltfScene: g.scene, animations: g.animations });
+const body = g.scene.getObjectByName('cat_body'), originalGeometry = body.geometry, originalSkeleton = body.skeleton;
+assert.equal(typeof avatar.ensureFoodArmRig, 'function', 'Avatar must own the derived pair rather than an independent caller');
+avatar.setHoldingPose(true);
+const rig = avatar.ensureFoodArmRig();
+assert.ok(rig?.active);
+assert.equal(body.skeleton.bones.length, 16);
+for (const name of ['cat_eyeL', 'cat_eyeR', 'cat_nose', 'cat_mouth']) assert.equal(g.scene.getObjectByName(name).skeleton, originalSkeleton);
+avatar.update({ feet: [3, .06, -2], yaw: .7, moving: false, paused: false, dt: 1 / 60 });
+const ids = { armL: avatar._cupLeftVertices, armR: avatar._cupRightVertices };
+for (const side of ['armL', 'armR']) {
+  assert.ok(ids[side].length > 5);
+  const actual = new T.Vector3(), v = new T.Vector3();
+  for (const id of ids[side]) actual.add(avatar.model.worldToLocal(body.getVertexPosition(id, v).applyMatrix4(body.matrixWorld).clone()));
+  actual.divideScalar(ids[side].length);
+  assert.ok(actual.distanceTo(avatar.getFoodPalm(side)) < 1e-7);
+  assert.ok(avatar.getFoodShoulder(side).toArray().every(Number.isFinite));
+}
+assert.ok(avatar.getFoodMouth().toArray().every(Number.isFinite));
+avatar.setHoldingPose(false);
+assert.equal(body.geometry, originalGeometry);
+assert.equal(body.skeleton, originalSkeleton);
+assert.equal(rig.disposed, true);
+assert.equal(g.scene.getObjectByName('armL_forearm'), undefined);
+avatar.setHoldingPose(true);
+const second = avatar.ensureFoodArmRig();
+assert.notEqual(second, rig);
+assert.ok(second.active);
+avatar.setHoldingPose(false);
+assert.equal(body.skeleton, originalSkeleton);
+assert.equal(body.geometry, originalGeometry);
+const foreign = new T.Skeleton(originalSkeleton.bones, originalSkeleton.boneInverses);
+body.skeleton = foreign;
+assert.equal(avatar.ensureSnackSkin(), null, 'foreign Skeleton blocks a skin-only takeover');
+assert.equal(body.geometry, originalGeometry);
+body.skeleton = originalSkeleton;
+foreign.dispose(); avatar.dispose();
+console.log('PLAY_FOOD_AVATAR_LIFECYCLE PASS');

@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "planId": "pawborough-national-snacks-20261002",
-  "overallStatus": "active_m04",
+  "overallStatus": "active_six_food_slice",
   "executionStarted": true,
   "workersStarted": true,
   "automationCreated": false,
   "cloudChanged": false,
-  "currentTask": "M04",
-  "lastUpdated": "2026-10-03T00:24:09+09:00",
+  "currentTask": "M04/M05/M06/M08",
+  "lastUpdated": "2026-10-02T18:13:46.222726+00:00",
   "baselineSourceHead": "31bae61f002a7bf5e04aac2c82b526909b87e78b",
   "localCompletionTaskIds": [
     "M00",
@@ -155,17 +155,17 @@
         "docs/plans/national-snacks-20261002/M04-RIG-RULING.md",
         "/home/baibai/outbox/pawborough-national-snacks-20261002/M04-RIG-WORKORDER.md"
       ],
-      "lastCheck": "2026-10-02T23:32:14+09:00",
-      "nextAction": "Commit reviewed derived rig, integrate Avatar ownership, then build and verify four food profile drivers.",
+      "lastCheck": "2026-10-03T02:37:39.590282+09:00",
+      "nextAction": "All32actualGLB proxy contact frames PASS, Astra weighted centroid/pivot verified; complete continuous actual food browser and food-bike visual acceptance.",
       "blocker": null,
       "subtasks": {
         "derivedRig": {
-          "status": "implemented",
+          "status": "verified",
           "evidence": "docs/plans/national-snacks-20261002/M04A-RECEIPT.json",
-          "resultCommit": null
+          "resultCommit": "4d31723c21b4516c5d3fc360e80903fa90484d2f"
         },
         "profilesAndIntegration": {
-          "status": "not_started"
+          "status": "running"
         },
         "actualVisualAcceptance": {
           "status": "not_started"
@@ -180,13 +180,13 @@
         "M01",
         "M04"
       ],
-      "status": "not_started",
-      "owner": null,
+      "status": "running",
+      "owner": "Gemini Flash construction and Codex real integration/acceptance",
       "sourceHead": null,
       "resultCommit": null,
       "evidencePaths": [],
-      "lastCheck": null,
-      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "lastCheck": "2026-10-02T18:13:46.222726+00:00",
+      "nextAction": "Library13sections PASS with3sol findings fixed; source3meals adopted SHA; test actualmodels and local failure paths.",
       "blocker": null
     },
     {
@@ -198,13 +198,13 @@
         "M01",
         "M05"
       ],
-      "status": "not_started",
-      "owner": null,
+      "status": "running",
+      "owner": "Gemini Flash construction and Codex real integration/acceptance",
       "sourceHead": null,
       "resultCommit": null,
       "evidencePaths": [],
-      "lastCheck": null,
-      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "lastCheck": "2026-10-02T18:13:46.222726+00:00",
+      "nextAction": "Fake probes PASS; runtime firstphysics race fixed, vendors refresh on lazyzone physics activation; actual sixpoints/bicycle/continuous routes pending.",
       "blocker": null
     },
     {
@@ -215,13 +215,17 @@
         "M01",
         "M02"
       ],
-      "status": "not_started",
-      "owner": null,
-      "sourceHead": null,
-      "resultCommit": null,
-      "evidencePaths": [],
-      "lastCheck": null,
-      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "status": "verified",
+      "owner": "Gemini Flash atlas components; Codex integration; sol focused review",
+      "sourceHead": "4d31723c21b4516c5d3fc360e80903fa90484d2f",
+      "resultCommit": "a00c5ce2",
+      "evidencePaths": [
+        "tests/play_atlas.test.mjs",
+        "tests/play_collection_transfer.test.mjs",
+        "scene-authoring/yuyuan-area/tests/snack-atlas-browser-check.mjs"
+      ],
+      "lastCheck": "2026-10-03T02:37:39.590282+09:00",
+      "nextAction": "Atlas accepted for active metadata; M05/M06/M08 supply six-food content and discovery.",
       "blocker": null
     },
     {
@@ -236,13 +240,13 @@
         "M06",
         "M07"
       ],
-      "status": "not_started",
-      "owner": null,
+      "status": "running",
+      "owner": "Gemini Flash construction and Codex real integration/acceptance",
       "sourceHead": null,
       "resultCommit": null,
       "evidencePaths": [],
-      "lastCheck": null,
-      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "lastCheck": "2026-10-02T18:13:46.222726+00:00",
+      "nextAction": "Six-food actualbrowser E/F/pause/contact/completion check running; continuous route proof follows.",
       "blocker": null
     },
     {
@@ -276,7 +280,15 @@
       "evidencePaths": [],
       "lastCheck": null,
       "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
-      "blocker": null
+      "blocker": null,
+      "subtasks": {
+        "candidateAssets": {
+          "status": "running",
+          "owner": "Gemini Flash",
+          "workOrder": "/home/baibai/outbox/pawborough-national-snacks-20261002/M10-ASSETS-WORKORDER.md",
+          "activation": "waits M08 verified"
+        }
+      }
     },
     {
       "id": "M11",

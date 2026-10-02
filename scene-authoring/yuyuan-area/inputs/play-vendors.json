@@ -24,6 +24,39 @@
       "stallId": "stall-10",
       "labelZh": "油墩子摊",
       "areaHint": "现有商业区；按 layout 与顾客面定位"
+    },
+    {
+      "vendorId": "food-vendor-tanghulu",
+      "kind": "existing",
+      "stallId": "stall-19",
+      "areaHint": "现有商业区；按 layout 与顾客面定位",
+      "foodId": "tanghulu",
+      "labelZh": "糖葫芦摊"
+    },
+    {
+      "vendorId": "food-vendor-roujiamo",
+      "kind": "existing",
+      "stallId": "stall-15",
+      "areaHint": "现有商业区；按 layout 与顾客面定位",
+      "foodId": "roujiamo",
+      "labelZh": "肉夹馍摊"
+    },
+    {
+      "vendorId": "food-vendor-shuangpinai",
+      "kind": "cart",
+      "stallId": null,
+      "areaHint": "方浜主街宽敞路侧",
+      "foodId": "shuangpinai",
+      "labelZh": "双皮奶摊",
+      "position": [
+        69.335,
+        -17.932
+      ],
+      "customerPoint": [
+        69.335,
+        -19.432
+      ],
+      "rotationY": 3.141592653589793
     }
   ]
 }

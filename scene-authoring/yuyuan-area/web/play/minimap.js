@@ -201,7 +201,7 @@ export function installPlayMap({ getSize = () => 210 } = {}) {
       const d = Math.hypot(px - mx, py - my);
       if (d < bestD) { bestD = d; best = i; }
     });
-    if (best >= 0 && onPickTarget) onPickTarget(best);
+    if (best >= 0 && onPickTarget) onPickTarget(markers.stalls[best].vendorId??best);
   });
 
   return {

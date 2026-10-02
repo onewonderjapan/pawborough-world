@@ -26,6 +26,7 @@
 import * as THREE from 'three';
 import { planRideSkinFix, skinCluster } from './rider-fit.js';
 import { smoothPlushShoulders, cupPalmVertices } from './plush-skin.js';
+import { planFoodArmRig } from './food-arm-rig.js';
 
 // The GLB's face direction in model space (nose/mouth meshes sit at +Z).
 export const MODEL_FORWARD = new THREE.Vector3(0, 0, 1);
@@ -91,6 +92,9 @@ export class PlayAvatar {
       return m;
     })();
     this._bodyOriginal = this._bodyMesh?.geometry ?? null;
+    this._bodyOriginalSkeleton = this._bodyMesh?.skeleton ?? null;
+    this._foodArmRig = null;
+    this._foodPalmCache = new WeakMap();
     this._handSkin = null;        // { mesh, fix, clone } —— 手持期间的权重克隆
     this.snackGripLocal = null;   // 真实爪掌前表面（armR 骨空间）；仅补丁生效期有效
     this._snackGripVertices = null;
@@ -173,23 +177,100 @@ export class PlayAvatar {
   // 生效期：手持或进食。骑车接管（BikeView 自己 clone）期间不 apply；release 只
   // 归还自己持有的克隆，绝不动别人的 geometry（嵌套 clone 不泄漏、不错位还原）。
   ensureSnackSkin() {
-    if (this.disposed || this._handSkin || !this._bodyMesh || !this._bodyOriginal) return this.snackGripLocal;
-    if (this._bodyMesh.geometry !== this._bodyOriginal) return null;   // 骑乘克隆在场：不叠加
+    if (this.disposed || !this._bodyMesh || !this._bodyOriginal) return null;
+    if (this._handSkin) {
+      const s = this._handSkin, rig = this._foodArmRig;
+      const baseOwned = s.mesh.geometry === s.clone && s.mesh.skeleton === s.skeleton;
+      const rigOwned = rig?.active && s.mesh.geometry === rig.geometry && s.mesh.skeleton === rig.skeleton;
+      return baseOwned || rigOwned ? this.snackGripLocal : null;
+    }
+    if (this._bodyMesh.geometry !== this._bodyOriginal || this._bodyMesh.skeleton !== this._bodyOriginalSkeleton) return null;
     const fix = planRideSkinFix(this._bodyMesh);
     const clone = fix.apply();
-    this._handSkin = { mesh: this._bodyMesh, fix, clone };
+    this._handSkin = { mesh: this._bodyMesh, fix, clone, skeleton: this._bodyMesh.skeleton };
     this._calibrateSnackGrip();
     return this.snackGripLocal;
+  }
+  ensureFoodArmRig() {
+    if (!this.ensureSnackSkin() || !this._cupLeftVertices?.length || !this._cupRightVertices?.length) return null;
+    const s = this._handSkin;
+    if (!s.plush) { smoothPlushShoulders(s.mesh, s.clone); s.plush = true; }
+    if (this._foodArmRig?.disposed) this._foodArmRig = null;
+    if (!this._foodArmRig) this._foodArmRig = planFoodArmRig(s.mesh, {
+      palmVertexIds: { armL: this._cupLeftVertices, armR: this._cupRightVertices },
+    });
+    return this._foodArmRig.activate() ? this._foodArmRig : null;
+  }
+  getFoodPalm(side) {
+    const contributions = this.getFoodPalmContributions(side);
+    return contributions?.reduce((p, entry) => p.add(entry.position), new THREE.Vector3()) ?? null;
+  }
+  getFoodPalmContributions(side) {
+    if (!this._handSkin) return null;
+    const ids = side === 'armL' ? this._cupLeftVertices : this._cupRightVertices;
+    if (!ids?.length) return null;
+    const mesh = this._bodyMesh;
+    this.root.updateMatrixWorld(true); mesh.skeleton.update();
+    let cache = this._foodPalmCache.get(mesh.geometry);
+    if (!cache) { cache = new Map(); this._foodPalmCache.set(mesh.geometry,cache); }
+    const signature = (mesh.morphTargetInfluences ?? []).join(',');
+    let entry = cache.get(side);
+    if (!entry || entry.signature !== signature) {
+      const sums = new Map(), v = new THREE.Vector3();
+      const {skinIndex,skinWeight} = mesh.geometry.attributes;
+      for (const id of ids) {
+        THREE.Mesh.prototype.getVertexPosition.call(mesh,id,v);
+        v.applyMatrix4(mesh.bindMatrix);
+        for (let k=0;k<4;k++) {
+          const mass=skinWeight.getComponent(id,k)/ids.length;
+          if (!mass) continue;
+          const index=skinIndex.getComponent(id,k), sum=sums.get(index) ?? {index,mass:0,point:new THREE.Vector3()};
+          sum.mass+=mass; sum.point.addScaledVector(v,mass); sums.set(index,sum);
+        }
+      }
+      entry={signature,sums:[...sums.values()].map(s=>({...s,point:s.point.divideScalar(s.mass)}))};cache.set(side,entry);
+    }
+    const intoModel = this.model.matrixWorld.clone().invert().multiply(mesh.matrixWorld).multiply(mesh.bindMatrixInverse);
+    const boneMatrix = new THREE.Matrix4();
+    return entry.sums.map(({index,mass,point}) => {
+      boneMatrix.multiplyMatrices(mesh.skeleton.bones[index].matrixWorld,mesh.skeleton.boneInverses[index]);
+      return {bone:mesh.skeleton.bones[index],mass,position:point.clone().applyMatrix4(boneMatrix).applyMatrix4(intoModel).multiplyScalar(mass)};
+    });
+  }
+  getFoodShoulder(side) {
+    this.root.updateMatrixWorld(true);
+    const bone = this.model.getObjectByName(side);
+    return bone ? this.model.worldToLocal(bone.getWorldPosition(new THREE.Vector3())) : null;
+  }
+  getFoodMouth() {
+    const mesh = this.model.getObjectByName('cat_mouth');
+    if (!mesh?.geometry) return null;
+    this.root.updateMatrixWorld(true); mesh.skeleton?.update();
+    const intoModel = this.model.matrixWorld.clone().invert().multiply(mesh.matrixWorld);
+    const box = new THREE.Box3(), v = new THREE.Vector3();
+    for (let i = 0; i < mesh.geometry.attributes.position.count; i++) box.expandByPoint(mesh.getVertexPosition(i, v).applyMatrix4(intoModel));
+    const center = box.getCenter(new THREE.Vector3());
+    center.z = box.max.z;
+    return center;
   }
   releaseSnackSkin() {
     const s = this._handSkin;
     if (!s) return false;
+    const rig = this._foodArmRig;
+    if (rig) {
+      if (rig.active && (s.mesh.geometry !== rig.geometry || s.mesh.skeleton !== rig.skeleton)) return false;
+      rig.resetJoints();
+      if (!rig.deactivate() || !rig.dispose()) return false;
+      this._foodArmRig = null;
+    }
+    if (s.mesh.geometry !== s.clone || s.mesh.skeleton !== s.skeleton) return false;
+    s.fix.restore(s.clone);
     this._handSkin = null;
     this.snackGripLocal = null;
     this._snackGripVertices = null;
     this._snackLeftVertices = null;
-    if (s.mesh.geometry !== s.clone) return false;   // 已被接管：还原由接管方负责
-    s.fix.restore(s.clone);
+    this._cupLeftVertices = null;
+    this._cupRightVertices = null;
     return true;
   }
   // 真实爪掌接触点（armR 骨空间）：改绑后的 armR 皮肤簇（skinCluster，与骑乘
@@ -266,9 +347,9 @@ export class PlayAvatar {
   }
 
   _applyCupArms(dt) {
-    if(this._handSkin&&!this._handSkin.plush){
-      smoothPlushShoulders(this._bodyMesh,this._handSkin.clone);this._handSkin.plush=true;
-    }
+    const rig = this.ensureFoodArmRig();
+    if (!rig) return false;
+    rig.resetJoints();
     const arms=['armL','armR'].map(n=>this.model.getObjectByName(n));
     if(arms.some(a=>!a?.isBone))return false;
     this._cupBase=arms.map(arm=>({arm,q:arm.quaternion.clone(),p:arm.position.clone()}));
@@ -288,6 +369,7 @@ export class PlayAvatar {
 
   _applySnackArm(dt) {
     if (!this.snackArm || (!this.holdingPose && !this.eatingPose)) return;
+    if (this.model.children.some(o => o.userData?.foodPoseProfile && o.userData.foodPoseProfile !== 'cupped')) return;
     const cup=this.model.children.find(o=>o.userData?.sharedPlayFood&&o.userData.playTwoHanded);
     if(cup&&this._applyCupArms(dt))return;
     const arm = this.snackArm;

@@ -21,8 +21,10 @@ import { loadPlaySave, persistPlaySave } from './save-migration.js';
 import { createOverlayController } from './overlay-controller.js';
 import { mountAtlas } from './atlas.js';
 import { exportCollection, importCollection } from './collection-transfer.js';
-import { deriveStallTargets, chooseReachable } from './stalls.js';
+import { deriveVendors, createVendorLayer } from './vendor-layer.js';
+import { findDiscoveries } from './discovery.js';
 import { loadFoodCatalog } from './foods.js';
+import { sampleFoodPose, applyFoodPose, foodAnchorLocal } from './food-pose.js';
 import { RideController, pickDismountSpot } from './vehicle.js';
 import { canTakeNow, takeFailHint, computeHint, TAKE_RADIUS_M, MOUNT_RADIUS_M, nearestStall } from './interaction.js';
 import { loadBikeRig, BikeView, applyRiderPose } from './bike-view.js';
@@ -404,6 +406,21 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
 
   // ---- 玩法子系统的懒加载（元数据先于存档，模型与车相互独立） ----
   const stalls = [];            // stalls.js 派生目标（含顾客点/朝向/候选）
+  let vendorLayer=null, vendorFailures=[],displayClock=0,discoveryClock=0,firstDisplayFeet=null,vendorInputs=null,vendorPhysicsKey='';
+  function refreshVendors(){
+    if(!vendorInputs||!window.__walk?.controller)return;
+    const key=window.__walk.zonePhysics.status().zones.join(',');if(key===vendorPhysicsKey)return;vendorPhysicsKey=key;
+    vendorLayer?.dispose();
+    const probe={supportAt,isBlocked:(x,y,z)=>wallOverlap(x,y,z,capsuleShape())};
+    const derived=deriveVendors({...vendorInputs,world:probe}),old=new Map(stalls.map(t=>[t.vendorId,t]));
+    stalls.length=0;
+    for(const data of derived){const target=old.get(data.vendorId)??{};Object.assign(target,data);stalls.push(target);}
+    vendorFailures=stalls.filter(t=>!t.enabled).map(t=>({vendorId:t.vendorId,reason:t.reason}));
+    vendorLayer=createVendorLayer({scene,vendors:stalls,
+      addBoxCollider:box=>worldNow().createCollider(RAPIER.ColliderDesc.cuboid(...box.halfExtents).setTranslation(...box.center).setRotation({x:0,y:Math.sin(box.yaw/2),z:0,w:Math.cos(box.yaw/2)})),
+      removeCollider:collider=>worldNow()?.removeCollider(collider,false)});
+    for(const t of stalls.filter(t=>t.enabled))if(!feetSupported([t.customerPoint.x,t.groundY+.04,t.customerPoint.z])){t.enabled=false;vendorFailures.push({vendorId:t.vendorId,reason:'安装摊车后顾客位置不可站立'});}
+  }
   let foods = null;             // FoodCatalog
   let bikeView = null;          // BikeView（车网格 + 轮转）
   let rideCtl = null;           // RideController（骑乘时的位移权威）
@@ -447,17 +464,22 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     hud.setTripResetReady(true);
     maybeMountAtlas();
     applyPendingSaveWhenReady();
-    for (const t of deriveStallTargets(layout, sockets, gameState.foods)) stalls.push(t);
+    while(!window.__walk?.controller) await new Promise(ok=>setTimeout(ok,30));
+    vendorInputs={registry,layout,sockets};refreshVendors();
+    addEventListener('pagehide',event=>{if(!event.persisted){vendorLayer?.dispose();foods?.dispose();}});
     minimap.setGeometry(layout);
     try {
       // M05 将改为逐味按需加载；此处先保留三味真实 SHA 模型与陈列。
-      foods = await loadFoodCatalog({ foods: gameState.foods, manifest: assets });
-      for (const t of stalls) {
+      foods = await loadFoodCatalog({ foods: gameState.foods, manifest: assets,registry });
+      for (const t of stalls.filter(t=>t.enabled)) {
+        if (!foods.has(t.foodId)) continue;
+        await foods.acquire(t.foodId,t);
         const inst = foods.makeDisplay(t.foodId);
         inst.position.set(t.tray.x, t.tray.y, t.tray.z);
         inst.rotation.y = -t.tray.rotY;
         scene.add(inst);
         t.display = inst;
+        t.displayWanted = true;
       }
       refreshHeldModel();
     } catch (e) {
@@ -649,15 +671,27 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   // ---- 手持/车篮：恰好一个模型实例（R0-5）——take 创建，上车移入车篮，
   // 下车移回手，吃完摘除销毁引用（共享 geometry/material 由 FoodCatalog 唯一持有） ----
   let heldObj = null;   // { foodId, obj }
+  const heldFoodOwner = {};
+  let heldPinnedId = null, heldLoadGeneration = 0;
   function refreshHeldModel() {
     const avatar = core.state.avatar;
     if (!avatar || !foods) return;
-    avatar.setHoldingPose(Boolean(gameState.heldItem));
+    const desired=gameState.heldItem??gameState.basketItem;
+    const generation=++heldLoadGeneration;
+    if (heldPinnedId !== desired) { if(heldPinnedId)foods.release(heldPinnedId,heldFoodOwner);heldPinnedId=desired; }
+    avatar.setHoldingPose(Boolean(gameState.heldItem)&&foods.has(gameState.heldItem));
     // 摘掉旧手持容器（不 dispose 共享资源）
     avatar.model.traverse((o) => {
       if (o.name?.startsWith('play-held-')) o.removeFromParent();
     });
     if (heldObj) { heldObj.obj.removeFromParent(); }
+    if(desired&&!foods.has(desired)){
+      heldObj=null;
+      foods.acquire(desired,heldFoodOwner).then(()=>{if(generation===heldLoadGeneration)refreshHeldModel();})
+        .catch(()=>{if(generation===heldLoadGeneration){gameState.cancelEat();hud.message('这份小吃暂时无法准备，收藏保留；稍后再试');}});
+      return;
+    }
+    if(desired)foods.acquire(desired,heldFoodOwner).catch(()=>{});
     if (gameState.heldItem) {
       const reusable = heldObj?.foodId === gameState.heldItem ? heldObj.obj : null;
       heldObj = { foodId: gameState.heldItem, obj: foods.attachToHands(gameState.heldItem, avatar.model, reusable) };
@@ -819,6 +853,10 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       if (hint) hud.setHint(hint);
       return;
     }
+    if(!foods.has(result.foodId)){
+      hud.setHint('这份小吃正在准备，稍后再按 E 取餐');
+      const token={};foods.acquire(result.foodId,token).catch(()=>hud.message('摊位暂时备餐失败，稍后再来试试')).finally(()=>foods.release(result.foodId,token));return;
+    }
     gameState.take(result.foodId);
     refreshHeldModel();
     const food = gameState.foods.find(f => f.id === result.foodId);
@@ -828,7 +866,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
 
   function tryEat() {
     if (gameState.vehicle.riding) { hud.setHint('下车再吃，稳当些'); return; }
-    if (!foods) { hud.setHint('小吃模型尚未就绪，暂不能品尝'); return; }
+    if (!foods || !foods.has(gameState.heldItem)) { hud.setHint('小吃尚未准备好，稍候再品尝'); return; }
     const gate = gameState.canEat({});
     if (!gate.ok) {
       if (gate.reason === 'empty-hand') hud.setHint('手上没有小吃，先去摊位按 E 取');
@@ -851,6 +889,16 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     const controller = walk?.controller;
     if (!controller) return;
     maybeMountAtlas();
+    refreshVendors();
+    if(!paused&&gameState.playing){
+      discoveryClock+=dt;displayClock+=dt;
+      if(discoveryClock>.25){
+        discoveryClock=0;
+        const probe={supportAt,isBlocked:(x,y,z)=>wallOverlap(x,y,z,capsuleShape()),hasLineOfSight:(from,to)=>{const o=new THREE.Vector3(...from),d=new THREE.Vector3(...to).sub(o),n=d.length();if(n<.05)return true;d.normalize();const hit=castRay(o,d,n);return hit===null||hit>=n-.05;}};
+        for(const id of findDiscoveries({feet,mode:gameState.vehicle.riding?'ride':'walk',world:probe,vendors:stalls,knownIds:gameState.discovered}))gameState.discover(id);
+      }
+      if(displayClock>.5){displayClock=0;updateFoodDisplays(feet);}
+    }
     if (!paused) markerClock += dt;
     if (core.state.entered && !pendingSave && ((catalogReady && saveRestoreAttempted) || catalogError)) ensureBikePlaced();
     applyPendingSaveWhenReady();
@@ -865,7 +913,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     }
 
     // 吃：未暂停帧推进；暂停冻结（不调 eatTick 即不跳时）
-    if (gameState.eating && !paused && foods) {
+    if (gameState.eating && !paused && foods?.has(gameState.eating.foodId)) {
       const r = gameState.eatTick(dt);
       if (r && r.done) {
         core.state.avatar?.setEatingPose(false);
@@ -879,6 +927,15 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     }
 
     characterArt?.update();
+    const meal = heldObj?.obj?.foodInstance;
+    if (meal && gameState.heldItem && !paused) {
+      const anchors = Object.fromEntries(Object.entries(meal.anchors).map(([key,node]) => [key,
+        foodAnchorLocal(node,key.startsWith('tool') ? meal.parts.utensil : meal.root)]));
+      const targets = sampleFoodPose({profile:meal.presentation.profile,t:gameState.eating?.elapsed??0,
+        rig:{mouth:core.state.avatar?.getFoodMouth()},anchors,presentation:{...meal.presentation,eating:!!gameState.eating}});
+      const result = applyFoodPose(core.state.avatar,meal,targets);
+      meal.lastPose = {ok:result.ok,contacts:result.contacts,profile:meal.presentation.profile};
+    }
     interactionArt.update({avatar:core.state.avatar,food:heldObj?.obj,state:gameState,feet,paused,dt});
     hud.updateInteraction?.({heldItem:gameState.heldItem,eating:gameState.eating,riding:gameState.vehicle.riding,paused,complete:gameState.complete});
 
@@ -903,9 +960,9 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       minimap.update({
         feet, yaw: rideCtl ? rideCtl.yaw : yaw,
         facingYaw: rideCtl ? rideCtl.heading : core.state.avatar?.facingYaw,
-        stalls: stalls.map(t => ({ x: t.customerPoint.x, z: t.customerPoint.z, done: gameState.tasted.has(t.foodId) })),
+        stalls: visibleMapVendors().map(t => ({vendorId:t.vendorId,foodId:t.foodId,x:t.customerPoint.x,z:t.customerPoint.z,done:gameState.tasted.has(t.foodId)})),
         bike: bikePlaced ? { x: gameState.vehicle.pos[0], z: gameState.vehicle.pos[2], gone: gameState.vehicle.riding } : null,
-        targetIndex: stalls.findIndex(t => t.foodId === gameState.navigationGoal()?.id),
+        targetIndex: visibleMapVendors().findIndex(t => t.vendorId === navigationVendor()?.vendorId),
         complete: gameState.complete,
       });
     }
@@ -919,12 +976,25 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   }
 
   let goalDistThrottle = 0;
+  function visibleMapVendors(){return stalls.filter(t=>t.enabled&&gameState.discovered.has(t.foodId));}
+  function navigationVendor(){return stalls.find(t=>t.enabled&&t.vendorId===gameState.trackedVendorId)??stalls.find(t=>t.enabled&&t.foodId===gameState.navigationGoal()?.id);}
+  function updateFoodDisplays(feet){
+    if(!foods||!feet)return;firstDisplayFeet??=[...feet];
+    if(Math.hypot(feet[0]-firstDisplayFeet[0],feet[2]-firstDisplayFeet[2])<.5)return;
+    const wanted=new Set(stalls.filter(t=>t.enabled).sort((a,b)=>Math.hypot(a.customerPoint.x-feet[0],a.customerPoint.z-feet[2])-Math.hypot(b.customerPoint.x-feet[0],b.customerPoint.z-feet[2])).slice(0,3).filter(t=>Math.hypot(t.customerPoint.x-feet[0],t.customerPoint.z-feet[2])<45));
+    for(const t of stalls){
+      if(!wanted.has(t)){if(t.display){t.display.removeFromParent();t.display=null;}if(t.displayWanted){t.displayWanted=false;foods.release(t.foodId,t);}continue;}
+      if(t.display||t.displayWanted)continue;t.displayWanted=true;
+      foods.acquire(t.foodId,t).then(()=>{if(!t.displayWanted)return;const inst=foods.makeDisplay(t.foodId);if(!inst)return;inst.position.set(t.tray.x,t.tray.y,t.tray.z);inst.rotation.y=-t.tray.rotY;scene.add(inst);t.display=inst;}).catch(()=>{t.displayWanted=false;foods.release(t.foodId,t);});
+    }
+  }
   function renderGoalDistance(feet) {
     goalDistThrottle += 1;
     if (goalDistThrottle % 20 !== 1) return;    // ~1/3 秒一次
     const view = goalView();
     if (view.complete || !view.goal) return;
-    const t = stalls.find(s => s.foodId === view.goal.id);
+    if(!gameState.discovered.has(view.goal.id)){hud.renderGoal({...view,distM:null});return;}
+    const t = navigationVendor();
     if (!t) return;
     const d = Math.hypot(feet[0] - t.customerPoint.x, feet[2] - t.customerPoint.z);
     hud.renderGoal({ ...view, distM: d });
@@ -932,9 +1002,10 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
 
   function updateTargetMarker() {
     if (!placedMarker) return;
-    if (gameState.complete || !stalls.length) { placedMarker.visible = false; return; }
+    if ((gameState.complete&&!gameState.trackedFoodId) || !stalls.length) { placedMarker.visible = false; return; }
     const goal = gameState.navigationGoal();
-    const t = stalls.find(s => s.foodId === goal?.id);
+    const t = navigationVendor();
+    if(!gameState.discovered.has(goal?.id)){placedMarker.visible=false;return;}
     if (!t) { placedMarker.visible = false; return; }
     placedMarker.visible = true;
     const gy = t.groundY ?? t.tray.y;
@@ -967,8 +1038,9 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
 
   // 小地图目标点选：只导向（换目标味），不传送
   minimap.pickTarget((i) => {
-    if (gameState.selectGoal(i)) {
-      hud.message(`目标改为「${gameState.foods[i].labelZh}」`);
+    const vendor=visibleMapVendors().find(t=>t.vendorId===i);
+    if (vendor&&gameState.track(vendor.foodId,vendor.vendorId)) {
+      hud.message(`目标改为「${gameState.foods.find(f=>f.id===vendor.foodId)?.labelZh}」`);
       hud.renderGoal(goalView());
     }
   });
@@ -1021,8 +1093,14 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       heading: rideCtl ? rideCtl.heading : null,
       viewYaw: rideCtl ? rideCtl.yaw : null,
       bikePlaced,
-      stallsReady: stalls.length,
+      stallsReady: stalls.filter(t=>t.enabled).length,
+      vendors:stalls.map(t=>({vendorId:t.vendorId,foodId:t.foodId,customerPoint:t.customerPoint,groundY:t.groundY,enabled:t.enabled})),
+      vendorFailures,
+      cartCount:vendorLayer?.roots.size??0,
+      discovered:[...gameState.discovered],
       foodsReady: !!foods,
+      foodResources: foods?.status()??null,
+      foodPose: heldObj?.obj?.foodInstance?.lastPose??null,
       catalogReady,
       catalogError,
       foodLoadError,

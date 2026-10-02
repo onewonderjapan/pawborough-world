@@ -15,16 +15,16 @@
 // 陈列几何底面仍贴原托盘。socket_grip 偏移随比例转换（乘 cupScale），在新
 // 实例创建时一次性换算，任何 attach 路径都不再改 scale。
 import * as THREE from 'three';
+import { FoodLibrary } from './food-library.js';
 
 // 目标最大水平尺寸（米）：小笼包 .18 / 葱油饼 .22 / 油墩子 .18（主控 baseline 定版）
 export const CUP_TARGET_WIDTH = { xiaolongbao: 0.18, congyoubing: 0.22, youdunzi: 0.18 };
 
-export async function loadFoodCatalog({ foods, manifest, readJson = null } = {}) {
+export async function loadFoodCatalog({ foods, manifest, registry = null, initialIds = foods.slice(0,3).map(f=>f.id) } = {}) {
   const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
-  const loader = new GLTFLoader();
   const byId = new Map();
-  for (const food of foods) {
-    const entry = manifest.foods.find(f => f.id === food.id);
+  const loader = async (id,food) => {
+    const entry = manifest.foods.find(f => f.id === (food.assetId??id));
     if (!entry) throw new Error(`foods: manifest missing ${food.id}`);
     const res = await fetch('/' + entry.path);
     if (!res.ok) throw new Error(`/${entry.path} 返回 ${res.status}`);
@@ -35,9 +35,15 @@ export async function loadFoodCatalog({ foods, manifest, readJson = null } = {})
       if (sha !== entry.sha256) throw new Error(`${food.id}: SHA256 校验不符`);
     }
     const gltf = await new Promise((resolve, reject) => new GLTFLoader().parse(buf, '', resolve, reject));
-    byId.set(food.id, makeFoodEntry(food, gltf.scene));
-  }
-  return new FoodCatalog(byId);
+    return makeFoodEntry(food, gltf.scene);
+  };
+  const library = new FoodLibrary({registry:registry??{foodsById:new Map(foods.map(f=>[f.id,f]))},loader,
+    disposeModel:entry=>{if(byId.get(entry.id)===entry)byId.delete(entry.id);disposeFoodEntries([entry]);}});
+  const result = new FoodCatalog(byId,{library});
+  result.initialResults = await Promise.allSettled(initialIds.slice(0,3).map(async id=>{
+    const token=`bootstrap-${id}`;try{await result.acquire(id,token);}finally{result.release(id,token);}
+  }));
+  return result;
 }
 
 // 单层 LOD：隐藏 _LOD1/_LOD2（近景只留 LOD0），保持真实尺寸
@@ -58,7 +64,7 @@ function findNode(root, name) {
   return found;
 }
 
-function makeFoodEntry(food, protoScene) {
+export function makeFoodEntry(food, protoScene) {
   const grip = findNode(protoScene, 'socket_grip');
   const rest = findNode(protoScene, 'socket_rest');
   const lodShown = showSingleLod(protoScene);
@@ -79,6 +85,7 @@ function makeFoodEntry(food, protoScene) {
     (box.min.x + box.max.x) / 2, box.min.y, (box.min.z + box.max.z) / 2);
   return {
     id: food.id,
+    presentation: { profile: food.poseProfile ?? 'cupped', widthM: food.widthM ?? targetWidth ?? size.x, utensilKind: food.utensilKind ?? null },
     proto: protoScene,
     gripOffset: gripPos.clone(),
     restOffset: rest?.position?.clone() ?? new THREE.Vector3(),
@@ -98,11 +105,21 @@ function makeFoodEntry(food, protoScene) {
 }
 
 export class FoodCatalog {
-  constructor(byId) {
+  constructor(byId,{library=null}={}) {
     this.byId = byId;
+    this.library = library;
     this.disposed = false;
   }
   has(id) { return this.byId.has(id); }
+  async acquire(id,token) {
+    if(this.disposed)throw new Error('FoodCatalog disposed');
+    const entry=this.library ? await this.library.acquire(id,token) : this.byId.get(id);
+    if(this.disposed||!entry)throw new Error('FoodCatalog unavailable');
+    this.byId.set(id,entry);return entry;
+  }
+  release(id,token){return this.library?.release(id,token)??false;}
+  status(){return this.library?.status()??{residentCount:this.byId.size};}
+  getStatus(id){return this.library?.getStatus(id)??{phase:this.has(id)?'resident':'unknown'};}
   // One catalog-owned wrapper can move between the palm and the basket.
   // 比例换算只发生在实例创建：inner 绝对赋值 cupScale，socket_grip 随比例
   // 平移（-gripOffset*cupScale）保持钉在 holder 原点；holder 自身 scale 恒 1，
@@ -114,6 +131,7 @@ export class FoodCatalog {
     holder.name = `play-held-${id}`;
     holder.userData.sharedPlayFood = true;
     holder.userData.playFoodId = id;
+    holder.userData.foodPoseProfile = entry.presentation?.profile ?? 'cupped';
     holder.userData.cupBottomOffset = entry.cupBottomOffset.clone();
     holder.userData.cupRearOffset = entry.cupRearAnchor.clone().sub(entry.gripOffset).multiplyScalar(entry.cupScale);
     holder.userData.cupYaw = 0;
@@ -122,6 +140,15 @@ export class FoodCatalog {
     inst.scale.setScalar(entry.cupScale);                       // 幂等：绝对赋值
     inst.position.copy(entry.gripOffset).multiplyScalar(-entry.cupScale);
     holder.add(inst);
+    if (holder.userData.foodPoseProfile !== 'cupped') {
+      const parts = Object.fromEntries(['edible','wrapper','skewer','container','utensil'].map(name => [name,findNode(inst,name)]).filter(([,node]) => node));
+      if (parts.utensil) { holder.updateMatrixWorld(true); holder.attach(parts.utensil); }
+      const anchors = Object.fromEntries(['leftSupport','rightSupport','bite','content','toolGrip','toolBite'].map(name => [name,findNode(holder,name)]).filter(([,node]) => node));
+      const edibleScale=parts.edible?.scale.clone(), morsel=parts.utensil?.getObjectByName('toolFood');
+      holder.foodInstance={root:holder,parts,anchors,presentation:entry.presentation,
+        setBiteProgress(p) { if(edibleScale)parts.edible.scale.copy(edibleScale).multiplyScalar(1-.65*Math.max(0,Math.min(1,p))); if(morsel)morsel.visible=p<.8; },
+        dispose(){holder.removeFromParent();}};
+    }
     return holder;
   }
   // 手持实例：挂到指定骨骼（armR），随动画运动。gripLocal 是真实爪掌前表面
@@ -149,7 +176,7 @@ export class FoodCatalog {
     if (!entry || !anchor?.isObject3D) return null;
     const holder = reusable?.userData?.playFoodId === id
       ? reusable : this.makeHandInstance(id);
-    holder.userData.playTwoHanded = true;
+    holder.userData.playTwoHanded = holder.userData.foodPoseProfile === 'cupped';
     holder.position.copy(initLocal ?? new THREE.Vector3());
     holder.rotation.set(0, 0, 0);
     holder.scale.setScalar(1);
@@ -181,9 +208,14 @@ export class FoodCatalog {
   dispose() {
     if (this.disposed) return;
     this.disposed = true;
+    if(this.library){this.library.dispose();this.byId.clear();return;}
+    disposeFoodEntries(this.byId.values());this.byId.clear();
+  }
+}
+function disposeFoodEntries(entries) {
     const geometries = new Set(), materials = new Set(), textures = new Set();
     const TEX_KEYS = ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap', 'emissiveMap', 'alphaMap'];
-    for (const entry of this.byId.values()) {
+    for (const entry of entries) {
       entry.proto.traverse((o) => {
         if (!o.isMesh) return;
         if (o.geometry) geometries.add(o.geometry);
@@ -198,6 +230,4 @@ export class FoodCatalog {
     for (const g of geometries) g.dispose();
     for (const m of materials) m.dispose();
     for (const t of textures) t.dispose();
-    this.byId.clear();
-  }
 }

@@ -91,6 +91,7 @@ export function createFoodRegistry({ catalog, assets = {}, vendors = {}, profile
       throw new CatalogError(`${fieldPath}.id`, `duplicate asset ID: ${a.id}`);
     }
     validatePath(a.path, `${fieldPath}.path`);
+    if (a.thumbnail) validatePath(a.thumbnail.path,`${fieldPath}.thumbnail.path`);
     validateFiniteNumbers(a, fieldPath);
     assetsById.set(a.id, Object.freeze({ ...a }));
   }
@@ -235,5 +236,9 @@ export function createFoodRegistry({ catalog, assets = {}, vendors = {}, profile
     chaptersById,
     requiredFoodIds,
     vendorsFor,
+    thumbnailFor: foodId => {
+      const food=foodsById.get(foodId),thumb=assetsById.get(food?.assetId)?.thumbnail;
+      return thumb ? {...thumb,path:'/'+thumb.path} : null;
+    },
   });
 }

@@ -7,11 +7,23 @@
   "path": "resources/characters/gray-cat/character.glb",
   "bytes": 5256700,
   "sha256": "5f60f225f8c46515119007023268c95a0cb904363c830b580cce70c0ad613981",
-  "animations": ["idle", "walk", "eat"],
+  "animations": [
+    "idle",
+    "walk",
+    "eat"
+  ],
   "skinJoints": 12,
   "skinnedMeshes": 5,
   "modelHeightM": 0.964,
   "modelForward": "+Z",
   "artStatus": "pending_world_review",
-  "note": "资产原件不入库（resources/ 整体 gitignore）。恢复方法见 README 的 play 一节：按本清单的 sha256 校验后放回 path。play 模式专用，普通 viewer 不加载。"
+  "note": "资产原件不入库（resources/ 整体 gitignore）。恢复方法见 README 的 play 一节：按本清单的 sha256 校验后放回 path。play 模式专用，普通 viewer 不加载。",
+  "runtimeFoodRig": {
+    "version": "gray-food-arms-v2",
+    "jointCount": 16,
+    "sourceJointCount": 12,
+    "originalAssetUnchanged": true,
+    "method": "docs/plans/national-snacks-20261002/M04-RIG-RULING.md",
+    "module": "web/play/food-arm-rig.js"
+  }
 }

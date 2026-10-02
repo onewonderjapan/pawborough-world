@@ -11,6 +11,7 @@ const NEAR_HINT_M = 5.0;               // 底部提示的摊位感知半径
 export function nearestStall(stalls, feet) {
   let best = null, bestD = Infinity;
   for (const s of stalls) {
+    if(s.enabled===false||!s.customerPoint)continue;
     const d = distanceTo(s, feet);
     if (d < bestD) { bestD = d; best = s; }
   }

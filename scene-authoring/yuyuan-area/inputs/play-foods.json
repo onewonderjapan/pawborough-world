@@ -1,6 +1,6 @@
 {
-  "labelZh": "三味手持小吃",
-  "note": "play 模式专用输入清单；原件不入库（resources/ 整体 gitignore）。SHA256 与包级 ASSET-INPUT.json 一致，浏览器加载时逐字校验，不符即中文报错、不用占位模型。恢复：按 sha256 校验后放回 path。",
+  "labelZh": "寻味六味资产",
+  "note": "来源原件保持只读；新三味按本轮 outbox manifest SHA 采用。缩略图与 GLB 随静态发布包管理。",
   "foods": [
     {
       "id": "xiaolongbao",
@@ -25,6 +25,42 @@
       "path": "resources/foods/handheld/youdunzi.glb",
       "bytes": 112984,
       "sha256": "290072ecb5846a0b2c813eb87821ba9cbf874bb220893dfaa4ee18f679eb1969"
+    },
+    {
+      "id": "tanghulu",
+      "labelZh": "糖葫芦",
+      "path": "resources/foods/national/tanghulu.glb",
+      "sha256": "87f50c06ef08503b59511a83f197be09d4638316a86b17be4713c58b124919fb",
+      "bytes": 145136,
+      "thumbnail": {
+        "path": "resources/foods/thumbnails/tanghulu.png",
+        "sha256": "4156b5c85be732ca6cb5d031838224bb04215fd15335f541ac9ddf8370166655",
+        "bytes": 65177
+      }
+    },
+    {
+      "id": "roujiamo",
+      "labelZh": "肉夹馍",
+      "path": "resources/foods/national/roujiamo.glb",
+      "sha256": "2fccc932be2ae94c759c69449f4ed7e4cef7a75f93f57b75f4444384e8e64c2d",
+      "bytes": 167216,
+      "thumbnail": {
+        "path": "resources/foods/thumbnails/roujiamo.png",
+        "sha256": "48cb138ff1efe79aed724e8db831525df5e8b0e55a541688345fef9be9681eb1",
+        "bytes": 125620
+      }
+    },
+    {
+      "id": "shuangpinai",
+      "labelZh": "双皮奶",
+      "path": "resources/foods/national/shuangpinai.glb",
+      "sha256": "20a201a0cd94e0981a364b930c8b18eeb63673ac08e036447f2d0786ed19bd93",
+      "bytes": 93556,
+      "thumbnail": {
+        "path": "resources/foods/thumbnails/shuangpinai.png",
+        "sha256": "07ffccc83b6f990fff6fd80a1595e842867b8adfd93a04703bd981d83578a966",
+        "bytes": 85574
+      }
     }
   ]
 }

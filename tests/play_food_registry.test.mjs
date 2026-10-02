@@ -23,12 +23,20 @@ function loadFirstEditionInputs() {
   const vendorsPath = path.join(rootDir, 'scene-authoring/yuyuan-area/inputs/play-vendors.json');
   const profilesPath = path.join(rootDir, 'scene-authoring/yuyuan-area/inputs/food-pose-profiles.json');
 
-  return {
+  const inputs = {
     catalog: JSON.parse(fs.readFileSync(catalogPath, 'utf8')),
     assets: JSON.parse(fs.readFileSync(assetsPath, 'utf8')),
     vendors: JSON.parse(fs.readFileSync(vendorsPath, 'utf8')),
     profiles: JSON.parse(fs.readFileSync(profilesPath, 'utf8')),
   };
+  // Keep the original three-food fixture stable while runtime editions expand.
+  const legacy=new Set(['xiaolongbao','congyoubing','youdunzi']);
+  inputs.catalog.foods=inputs.catalog.foods.filter(f=>legacy.has(f.id));
+  inputs.catalog.requiredFoodIds=[...legacy];
+  inputs.catalog.chapters=inputs.catalog.chapters.filter(c=>c.id==='shanghai');
+  inputs.assets.foods=inputs.assets.foods.filter(f=>legacy.has(f.id));
+  inputs.vendors.vendors=inputs.vendors.vendors.filter(v=>legacy.has(v.foodId));
+  return inputs;
 }
 
 // 辅助：深拷贝
@@ -71,10 +79,10 @@ function clone(obj) {
   const pSkewer = reg.profilesById.get('skewer');
   const pBowl = reg.profilesById.get('bowl');
   check('4 种 profile 全部存在', !!(pCupped && pWrapped && pSkewer && pBowl));
-  check('wrapped/skewer/bowl 为 interface_template',
-    pWrapped?.status === 'interface_template' &&
-    pSkewer?.status === 'interface_template' &&
-    pBowl?.status === 'interface_template'
+  check('wrapped/skewer/bowl 已有可用实现',
+    pWrapped?.status === 'ready' &&
+    pSkewer?.status === 'ready' &&
+    pBowl?.status === 'ready'
   );
 
   // 验证注册表 immutable-ish 特性

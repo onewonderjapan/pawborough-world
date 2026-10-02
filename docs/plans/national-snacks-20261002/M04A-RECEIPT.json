@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "taskId": "M04-A",
-  "stage": "reviewed_pending_commit",
+  "stage": "verified_component",
   "parentTaskComplete": false,
   "sourceCharacterSha256": "5f60f225f8c46515119007023268c95a0cb904363c830b580cce70c0ad613981",
   "delivery": "runtime-only owned body geometry/Skeleton derivative; original GLB unchanged",
@@ -37,5 +37,6 @@
     "actual GPU motion/contact/visual acceptance",
     "food-to-bike ownership cycle"
   ],
-  "recordedAt": "2026-10-03T00:24:09+09:00"
+  "recordedAt": "2026-10-03T00:24:09+09:00",
+  "resultCommit": "4d31723c21b4516c5d3fc360e80903fa90484d2f"
 }
