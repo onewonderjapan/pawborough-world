@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "vendors": [
+    {
+      "vendorId": "food-vendor-xiaolongbao",
+      "foodId": "xiaolongbao",
+      "kind": "existing",
+      "stallId": "stall-5",
+      "labelZh": "小笼包摊",
+      "areaHint": "现有商业区；按 layout 与顾客面定位"
+    },
+    {
+      "vendorId": "food-vendor-congyoubing",
+      "foodId": "congyoubing",
+      "kind": "existing",
+      "stallId": "stall-6",
+      "labelZh": "葱油饼摊",
+      "areaHint": "现有商业区；按 layout 与顾客面定位"
+    },
+    {
+      "vendorId": "food-vendor-youdunzi",
+      "foodId": "youdunzi",
+      "kind": "existing",
+      "stallId": "stall-10",
+      "labelZh": "油墩子摊",
+      "areaHint": "现有商业区；按 layout 与顾客面定位"
+    }
+  ]
+}

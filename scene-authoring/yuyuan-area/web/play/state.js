@@ -25,12 +25,15 @@ export const FOODS = [
   { id: 'youdunzi', labelZh: '油墩子', stallId: 'stall-10', stallLabelZh: '点心小摊' },
 ];
 
-const FOOD_IDS = new Set(FOODS.map(f => f.id));
 const finite = (v) => Number.isFinite(v);
 
 export class PlayGameState {
   constructor({ foods = FOODS, actorId = 'gray-cat' } = {}) {
     this.foods = foods;
+    this.foodIds = new Set(foods.map(f => f.id));
+    this.requiredFoodIds = new Set(this.foodIds);
+    this.registry = null;
+    this.catalogConfigured = false;
     this.actorId = actorId;
     this.playing = false;          // 已进入 play（入场/退出由 session 管，这里只镜像）
     this.paused = false;
@@ -38,16 +41,71 @@ export class PlayGameState {
     this.basketItem = null;        // foodId | null（车篮）
     this.eating = null;            // { foodId, elapsed } | null
     this.tasted = new Set();       // 已吃完的 foodId
+    this.discovered = new Set();
     this.goalIndex = 0;            // 0..foods.length；=== foods.length = 三味完成
+    this.trackedFoodId = null;
+    this.trackedVendorId = null;
     this.vehicle = { placed: false, pos: null, yaw: 0, viewYaw: 0, riding: false };
     this._listeners = [];
   }
 
   // ---- 目标 ----
-  get complete() { return this.tasted.size >= this.foods.length; }
-  get stamps() { return this.tasted.size; }
+  get complete() { return this.requiredFoodIds.size > 0 && [...this.requiredFoodIds].every(id => this.tasted.has(id)); }
+  get stamps() { return [...this.requiredFoodIds].filter(id => this.tasted.has(id)).length; }
+  configureCatalog(registry) {
+    if (this.catalogConfigured || !registry?.foodsById || typeof registry.vendorsFor !== 'function') return false;
+    if (this.heldItem || this.basketItem || this.eating || this.tasted.size || this.discovered.size) return false;
+    const source = [...registry.foodsById.values()];
+    const foods = source.map(food => {
+      const vendor = registry.vendorsFor(food.id)[0];
+      return {
+        ...food,
+        labelZh: food.labelZh ?? food.name,
+        stallId: food.stallId ?? vendor?.stallId ?? null,
+        stallLabelZh: food.stallLabelZh ?? vendor?.labelZh ?? '寻味摊',
+      };
+    });
+    const ids = new Set(foods.map(food => food.id));
+    const required = new Set(registry.requiredFoodIds ?? ids);
+    if ([...required].some(id => !ids.has(id))) return false;
+    this.foods = foods;
+    this.foodIds = ids;
+    this.requiredFoodIds = required;
+    this.registry = registry;
+    this.catalogConfigured = true;
+    this.goalIndex = 0;
+    return true;
+  }
+  discover(foodId) {
+    if (!this.foodIds.has(foodId) || this.discovered.has(foodId)) return false;
+    this.discovered.add(foodId);
+    this._emit({ type: 'discovered', foodId });
+    return true;
+  }
+  track(foodId, vendorId) {
+    if (!this.foodIds.has(foodId) || !this.registry?.vendorsById?.has(vendorId)) return false;
+    if (this.registry.vendorsById.get(vendorId)?.foodId !== foodId) return false;
+    const index = this.foods.findIndex(food => food.id === foodId);
+    if (index < 0) return false;
+    this.goalIndex = index;
+    this.trackedFoodId = foodId;
+    this.trackedVendorId = vendorId;
+    this._emit({ type: 'tracked', foodId, vendorId });
+    return true;
+  }
+  collectionSnapshot() {
+    return {
+      discovered: [...this.discovered],
+      tasted: [...this.tasted],
+      stamps: this.stamps,
+      requiredCount: this.requiredFoodIds.size,
+      complete: this.complete,
+      trackedFoodId: this.trackedFoodId,
+      trackedVendorId: this.trackedVendorId,
+    };
+  }
   goal() {
-    if (this.complete) return null;
+    if (this.complete || !this.foods.length) return null;
     // 目标自动指下一味：当前目标未吃则保持，已吃则顺延到第一个未吃
     if (this.tasted.has(this.foods[this.goalIndex]?.id)) {
       const next = this.foods.findIndex(f => !this.tasted.has(f.id));
@@ -70,10 +128,11 @@ export class PlayGameState {
     return { ok: true, reason: null };
   }
   take(foodId) {
-    if (!FOOD_IDS.has(foodId)) return { ok: false, reason: 'unknown-food' };
+    if (!this.foodIds.has(foodId)) return { ok: false, reason: 'unknown-food' };
     const gate = this.canTake({});
     if (!gate.ok) return gate;
     this.heldItem = foodId;
+    this.discover(foodId);
     return { ok: true };
   }
   canEat({ playing = true } = {}) {
@@ -105,9 +164,10 @@ export class PlayGameState {
     this.eating = null;
     this.heldItem = null;          // 吃完从手中消失
     const first = !this.tasted.has(foodId);
+    this.discover(foodId);
     if (first) {
       this.tasted.add(foodId);     // 首次真正吃完才盖章；重吃不重复涨
-      this._emit({ type: 'stamped', foodId, stamps: this.tasted.size });
+      this._emit({ type: 'stamped', foodId, stamps: this.stamps });
     }
     this._emit({ type: 'eaten', foodId, first });
     return { foodId, done: true, first, complete: this.complete };
@@ -187,6 +247,7 @@ export class PlayGameState {
     this.basketItem = s.basketItem;
     this.eating = s.eating ? { foodId: s.eating.foodId, elapsed: s.eating.elapsed } : null;
     this.tasted = new Set(s.tasted);
+    this.discovered = new Set(s.tasted);
     this.goalIndex = s.goalIndex;
     this.vehicle = { ...s.vehicle };
     if (storage) storage.setItem(STORAGE_KEY, JSON.stringify(this.toSave(s)));
@@ -199,6 +260,7 @@ export class PlayGameState {
     this.basketItem = null;
     this.eating = null;
     this.tasted = new Set();
+    this.discovered = new Set();
     this.goalIndex = 0;
     this.vehicle = { placed: false, pos: null, yaw: 0, viewYaw: 0, riding: false };
     if (storage) storage.removeItem(STORAGE_KEY);

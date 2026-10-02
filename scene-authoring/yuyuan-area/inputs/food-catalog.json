@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "editionId": "pawborough-snack-atlas-v1-shanghai",
+  "requiredFoodIds": [
+    "xiaolongbao",
+    "congyoubing",
+    "youdunzi"
+  ],
+  "chapters": [
+    {
+      "id": "shanghai",
+      "name": "上海起点"
+    }
+  ],
+  "foods": [
+    {
+      "id": "xiaolongbao",
+      "name": "小笼包",
+      "chapterId": "shanghai",
+      "regionLabel": "上海风味",
+      "description": "皮薄汁鲜的传统蒸笼小吃，常见于江南早点与食摊。",
+      "locationHint": "商业街 5 号摊",
+      "poseProfile": "cupped",
+      "assetId": "xiaolongbao",
+      "thumbId": null,
+      "enabled": true
+    },
+    {
+      "id": "congyoubing",
+      "name": "葱油饼",
+      "chapterId": "shanghai",
+      "regionLabel": "上海风味",
+      "description": "酥脆起层的现煎扁圆面饼，带浓郁葱香与猪油焦香。",
+      "locationHint": "商业街 6 号摊",
+      "poseProfile": "cupped",
+      "assetId": "congyoubing",
+      "thumbId": null,
+      "enabled": true
+    },
+    {
+      "id": "youdunzi",
+      "name": "油墩子",
+      "chapterId": "shanghai",
+      "regionLabel": "上海风味",
+      "description": "金黄焦脆的油炸白萝卜丝饼，外壳香酥内馅绵软。",
+      "locationHint": "商业街 10 号摊",
+      "poseProfile": "cupped",
+      "assetId": "youdunzi",
+      "thumbId": null,
+      "enabled": true
+    }
+  ]
+}

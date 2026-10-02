@@ -66,7 +66,12 @@ const t0 = stalls[0];
   state.selectGoal(0); state.take('xiaolongbao'); state.startEat(); state.eatTick(99);
   state.take('congyoubing'); state.startEat(); state.eatTick(99);
   state.take('youdunzi'); state.startEat(); state.eatTick(99);
-  check('三味完成回报', /三味集齐/.test(computeHint({ state, feet: [0, 0, 0], stalls }) ?? ''));
+  check('三味完成回报来自当前目录数量', /3 味/.test(computeHint({ state, feet: [0, 0, 0], stalls }) ?? ''));
+
+  const four = new PlayGameState({ foods: [...FOODS, { id: 'roujiamo', labelZh: '肉夹馍', stallId: 'stall-15' }] });
+  four.playing = true;
+  for (const food of four.foods) { four.take(food.id); four.startEat(); four.eatTick(99); }
+  check('第四味版本完成文案显示四味', /4 味/.test(computeHint({ state: four, feet: [0, 0, 0], stalls }) ?? ''));
 
   const st = new PlayGameState(); st.playing = true;
   check('骑车提示操控', /R 下车/.test(computeHint({ state: st, feet: [0, 0, 0], stalls, riding: true }) ?? ''));

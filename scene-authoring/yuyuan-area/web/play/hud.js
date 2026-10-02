@@ -219,7 +219,7 @@ export function installPlayHud({ core, state = null }) {
       const n = foods.filter((_, i) => bits[i] === '1').length;
       goalCount.textContent = `已尝 ${n}/${foods.length}`;
       if (complete) {
-        goalNext.textContent = '三味集齐！这条街你吃遍了';
+        goalNext.textContent = `已尝齐 ${foods.length} 味！这条街你吃遍了`;
         goalDist.textContent = '';
       } else if (st.goal) {
         goalNext.textContent = `下一味：${st.goal.labelZh}（${st.goal.stallLabelZh}）`;
@@ -295,7 +295,7 @@ export function installPlayHud({ core, state = null }) {
     updateInteraction,
     assetsReady() {
       // R1：面向玩家的措辞，不显示 raw actorId / 技术词
-      message('灰猫准备好了，去尝遍三味吧');
+      message('灰猫准备好了，去找下一味吧');
     },
     showAssetError(text) {
       errText.textContent = text;   // 中文可恢复说明（install.js 组装）

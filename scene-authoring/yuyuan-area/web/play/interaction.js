@@ -32,9 +32,10 @@ export function canTakeNow({ state, feet, stalls, losCheck = null }) {
 export function computeHint({ state, feet, stalls, bike, riding = false, blockedRatio = 0, turnBlocked = false, aheadBlocked = false, unsupported = false } = {}) {
   if (!state.playing) return null;
   if (state.complete) {
-    if (riding) return '三味集齐！骑车再兜一圈吧 · R 下车';
-    if (bike && bike.dist <= MOUNT_RADIUS_M) return '三味集齐！R 骑车再兜一圈';
-    return '三味集齐！这条街你吃遍了';
+    const finish = `已尝齐 ${state.requiredFoodIds.size} 味！`;
+    if (riding) return `${finish}骑车再兜一圈吧 · R 下车`;
+    if (bike && bike.dist <= MOUNT_RADIUS_M) return `${finish}R 骑车再兜一圈`;
+    return `${finish}这条街你吃遍了`;
   }
   if (riding) {
     if (aheadBlocked) return '前方没有路面或台阶太高 · 已停稳，可倒车绕行或 R 下车';

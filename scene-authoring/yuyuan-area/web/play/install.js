@@ -15,7 +15,8 @@ import { PlayCamera } from './camera.js';
 import { PlayAvatar } from './avatar.js';
 import { installPlayHud } from './hud.js';
 import { installPlayMap } from './minimap.js';
-import { PlayGameState, FOODS, STORAGE_KEY, validateSave } from './state.js';
+import { PlayGameState, STORAGE_KEY, validateSave } from './state.js';
+import { createFoodRegistry } from './catalog.js';
 import { deriveStallTargets, chooseReachable } from './stalls.js';
 import { loadFoodCatalog } from './foods.js';
 import { RideController, pickDismountSpot } from './vehicle.js';
@@ -57,7 +58,7 @@ export function assetFailureMessage(detail) {
 }
 export function foodFailureMessage(detail) {
   return `小吃模型未能加载：${detail}。`
-    + '请按 inputs/play-foods.json 恢复 resources/foods/handheld/ 下三份 GLB 后刷新；取食/集章暂不可用，走路和小地图不受影响。';
+    + '请核对 inputs/play-foods.json 中对应资源后刷新；该食物暂不可取，走路和小地图不受影响。';
 }
 export function vehicleFailureMessage(detail) {
   return `自行车未能加载：${detail}。借车点暂不可用，步行逛吃不受影响。`;
@@ -146,9 +147,15 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
 
   // ---- 玩法状态（唯一 owner：手里/嘴里/集章/目标/车） ----
   const gameState = new PlayGameState();
+  let catalogReady = false;
+  let catalogError = null;
+  let foodLoadError = null;
+  let saveRestoreAttempted = false;
   let saveThrottle = 0;
   const storage = () => window.localStorage;
   function saveNow() {
+    // 元数据和旧存档尚未处理时不能用空白进度覆盖玩家原有的三味记录。
+    if (!catalogReady || !saveRestoreAttempted) return;
     const walk = window.__walk;
     const ctl = rideCtl ?? walk?.controller;
     if (!ctl) return;
@@ -254,7 +261,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       hud.setPaused(core.session.paused);
       hud.renderGoal(goalView());
       // R1：HUD 面向玩家措辞，不露 actorId 等技术词
-      hud.message(startupNotice ?? (outcome?.restored ? '灰猫回到上次的位置和朝向' : '灰猫已就位，去尝遍三味吧'));
+      hud.message(startupNotice ?? (outcome?.restored ? '灰猫回到上次的位置和朝向' : '灰猫已就位，去找下一味吧'));
       startupNotice = null;
       saveNow();
     },
@@ -319,7 +326,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   }
   loadAvatar();
 
-  // ---- 玩法子系统的懒加载（layout/food-sockets/小吃/车；互不阻塞入场） ----
+  // ---- 玩法子系统的懒加载（元数据先于存档，模型与车相互独立） ----
   const stalls = [];            // stalls.js 派生目标（含顾客点/朝向/候选）
   let foods = null;             // FoodCatalog
   let bikeView = null;          // BikeView（车网格 + 轮转）
@@ -348,22 +355,49 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   closedFacades.install();
 
   (async () => {
-    const [layout, sockets] = await Promise.all([
+    const [layout, sockets, catalog, assets, vendors, profiles] = await Promise.all([
       readJson('/out/layout.json'),
       readJson('/out/food-sockets.json'),
+      readJson('/inputs/food-catalog.json'),
+      readJson('/inputs/play-foods.json'),
+      readJson('/inputs/play-vendors.json'),
+      readJson('/inputs/food-pose-profiles.json'),
     ]);
-    for (const t of deriveStallTargets(layout, sockets, FOODS)) stalls.push(t);
+    const registry = createFoodRegistry({ catalog, assets, vendors, profiles });
+    if (!gameState.configureCatalog(registry)) throw new Error('食品目录无法在存档恢复前配置');
+    catalogReady = true;
+    restoreLegacySave();
+    saveRestoreAttempted = true;
+    applyPendingSaveWhenReady();
+    for (const t of deriveStallTargets(layout, sockets, gameState.foods)) stalls.push(t);
     minimap.setGeometry(layout);
-    // 陈列：真实小吃摆在托盘（真实 socket 世界位；共享同一目录资源）
-    foods = await loadFoodCatalog({ foods: FOODS, manifest: await readJson('/inputs/play-foods.json') });
-    for (const t of stalls) {
-      const inst = foods.makeDisplay(t.foodId);
-      inst.position.set(t.tray.x, t.tray.y, t.tray.z);
-      inst.rotation.y = -t.tray.rotY;      // layout rotY（Z-up 语义）→ GLB 世界系修正
-      scene.add(inst);
-      t.display = inst;
+    try {
+      // M05 将改为逐味按需加载；此处先保留三味真实 SHA 模型与陈列。
+      foods = await loadFoodCatalog({ foods: gameState.foods, manifest: assets });
+      for (const t of stalls) {
+        const inst = foods.makeDisplay(t.foodId);
+        inst.position.set(t.tray.x, t.tray.y, t.tray.z);
+        inst.rotation.y = -t.tray.rotY;
+        scene.add(inst);
+        t.display = inst;
+      }
+      refreshHeldModel();
+    } catch (e) {
+      foodLoadError = e?.message || String(e);
+      console.error('play food assets failed', e);
+      hud.message(foodFailureMessage(foodLoadError));
     }
-    // 车网格（失败只降级借车功能）
+    placedMarker = makeTargetMarker();
+    scene.add(placedMarker);
+    hud.renderGoal(goalView());
+  })().catch((e) => {
+    catalogError = e?.message || String(e);
+    console.error('play food catalog failed', e);
+    hud.message(`小吃目录暂时无法读取：${catalogError}。仍可走路和骑车，请刷新重试。`);
+  });
+
+  // 车网格独立加载：食品目录或单种模型失败不阻挡骑行。
+  (async () => {
     try {
       const vm = await readJson('/inputs/play-vehicle.json');
       const rig = await loadBikeRig({ manifest: vm.vehicle });
@@ -374,17 +408,11 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       console.error('play vehicle failed', e);
       hud.message(vehicleFailureMessage(e?.message || String(e)));
     }
-    // 目标小标记（世界内，指当前目标摊位）
-    placedMarker = makeTargetMarker();
-    scene.add(placedMarker);
-    hud.renderGoal(goalView());
-  })().catch((e) => {
-    console.error('play game assets failed', e);
-    hud.message(foodFailureMessage(e?.message || String(e)));
-  });
+  })();
 
-  // ---- 存档恢复（入场时应用；坏档/无支撑/墙内位置回安全出生点，R0-5） ----
-  try {
+  // ---- 旧存档恢复：元数据验证完毕后才解析，不提前删除或覆盖旧 key ----
+  function restoreLegacySave() {
+    try {
     const raw = storage().getItem(STORAGE_KEY);
     if (raw) {
       let parsed = null, parsedOk = false;
@@ -393,10 +421,9 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
         parsedOk = true;
       } catch (e) {
         startupNotice = '上次的散步记录有些损坏，已从安全出生点开始';
-        storage().removeItem(STORAGE_KEY);
       }
       if (parsedOk) {
-        const v = validateSave(parsed, FOODS);
+        const v = validateSave(parsed, gameState.foods);
         if (v.ok) {
           gameState.applySave(v.value);
           pendingSave = v.value;
@@ -404,11 +431,11 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
           startupNotice = String(v.reason).includes('version')
             ? '这份散步记录属于旧版本，已从安全出生点开始'
             : '上次的散步记录无法读取，已从安全出生点开始';
-          storage().removeItem(STORAGE_KEY);
         }
       }
     }
-  } catch { /* 其它存储异常同样按坏档处理，不阻塞入场 */ }
+    } catch { /* 存储禁用不阻塞入场，M02 处理持久化反馈 */ }
+  }
 
   function applyPendingSave() {
     if (!pendingSave) return;
@@ -680,6 +707,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
 
   function tryTake() {
     if (gameState.vehicle.riding) { hud.setHint('下车再取餐'); return; }
+    if (!foods) { hud.setHint('小吃模型还在准备中，稍后再来取餐'); return; }
     const walk = window.__walk;
     const controller = walk?.controller;
     if (!controller || !stalls.length) return;
@@ -699,13 +727,14 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     }
     gameState.take(result.foodId);
     refreshHeldModel();
-    const food = FOODS.find(f => f.id === result.foodId);
+    const food = gameState.foods.find(f => f.id === result.foodId);
     hud.message(`拿到一份${food.labelZh}（免费试吃）· F 开吃`);
     saveNow();
   }
 
   function tryEat() {
     if (gameState.vehicle.riding) { hud.setHint('下车再吃，稳当些'); return; }
+    if (!foods) { hud.setHint('小吃模型尚未就绪，暂不能品尝'); return; }
     const gate = gameState.canEat({});
     if (!gate.ok) {
       if (gate.reason === 'empty-hand') hud.setHint('手上没有小吃，先去摊位按 E 取');
@@ -726,7 +755,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     const walk = window.__walk;
     const controller = walk?.controller;
     if (!controller) return;
-    if (core.state.entered && !pendingSave) ensureBikePlaced();
+    if (core.state.entered && catalogReady && saveRestoreAttempted && !pendingSave) ensureBikePlaced();
     applyPendingSaveWhenReady();
 
     // 骑乘视觉/状态同步（不 step）：轮/踏板按真实校正位移（R0-3）
@@ -739,15 +768,15 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     }
 
     // 吃：未暂停帧推进；暂停冻结（不调 eatTick 即不跳时）
-    if (gameState.eating && !paused) {
+    if (gameState.eating && !paused && foods) {
       const r = gameState.eatTick(dt);
       if (r && r.done) {
         core.state.avatar?.setEatingPose(false);
         core.state.avatar?.showSatisfaction();
         refreshHeldModel();                    // 吃完手持模型实际摘除（R0-4）
-        const food = FOODS.find(f => f.id === r.foodId);
+        const food = gameState.foods.find(f => f.id === r.foodId);
         hud.message(r.complete
-          ? '三味集齐！这条街你吃遍了 🎉'
+          ? `已尝齐 ${gameState.requiredFoodIds.size} 味！这条街你吃遍了 🎉`
           : `集齐一枚「${food.labelZh}」章！下一味：${gameState.goal()?.labelZh ?? '—'}`);
       }
     }
@@ -842,7 +871,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   // 小地图目标点选：只导向（换目标味），不传送
   minimap.pickTarget((i) => {
     if (gameState.selectGoal(i)) {
-      hud.message(`目标改为「${FOODS[i].labelZh}」`);
+      hud.message(`目标改为「${gameState.foods[i].labelZh}」`);
       hud.renderGoal(goalView());
     }
   });
@@ -894,6 +923,9 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       bikePlaced,
       stallsReady: stalls.length,
       foodsReady: !!foods,
+      catalogReady,
+      catalogError,
+      foodLoadError,
       ...closedFacades.status(),          // 闭门叠加层只读状态（工单 C）
       minimapMode: minimap.mode,
       saveKey: STORAGE_KEY,

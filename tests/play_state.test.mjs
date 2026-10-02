@@ -57,6 +57,38 @@ const check = (name, cond, detail = '') => {
   check('手不空时不能回手（不复制）', (s.heldItem = 'xiaolongbao', s.takeBackFromBasket() === false));
 }
 
+// --- 多味目录：状态不能再依赖模块级三味集合 ---
+{
+  const extra = { id: 'roujiamo', labelZh: '肉夹馍', stallId: 'stall-15', stallLabelZh: '纸包摊' };
+  const four = [...FOODS, extra];
+  const s = new PlayGameState({ foods: four });
+  check('构造时传入的第四味可以取食', s.take(extra.id).ok === true);
+  if (s.heldItem === extra.id) {
+    s.startEat(); s.eatTick(EAT_SECONDS);
+    check('第四味吃完才增加一次图章', s.tasted.has(extra.id) && s.stamps === 1);
+  }
+  check('空目录尚未完成收集', new PlayGameState({ foods: [] }).complete === false);
+
+  const registry = {
+    foodsById: new Map(four.map(f => [f.id, f])),
+    vendorsById: new Map(four.map(f => [`vendor-${f.id}`, { vendorId: `vendor-${f.id}`, foodId: f.id, stallId: f.stallId }])),
+    requiredFoodIds: new Set(four.map(f => f.id)),
+    chaptersById: new Map([['starter', { id: 'starter', name: '起点' }]]),
+    vendorsFor(id) { return [{ vendorId: `vendor-${id}`, foodId: id, stallId: four.find(f => f.id === id)?.stallId }]; },
+  };
+  const configured = new PlayGameState({ foods: [] });
+  check('目录可在恢复存档前配置一次', typeof configured.configureCatalog === 'function');
+  if (typeof configured.configureCatalog === 'function') {
+    configured.configureCatalog(registry);
+    check('配置后目标和进度取自目录', configured.goal()?.id === 'xiaolongbao' && configured.complete === false);
+    check('同一存档不能二次换目录', configured.configureCatalog(registry) === false);
+    check('新食物发现只记一次', configured.discover(extra.id) === true && configured.discover(extra.id) === false);
+    check('按 ID 跟踪已注册摊位', configured.track(extra.id, `vendor-${extra.id}`) === true && configured.goal()?.id === extra.id);
+    const snap = configured.collectionSnapshot();
+    check('快照包含发现与当前总数', snap.discovered.includes(extra.id) && snap.requiredCount === four.length);
+  }
+}
+
 // --- 车 ---
 {
   const s = new PlayGameState();

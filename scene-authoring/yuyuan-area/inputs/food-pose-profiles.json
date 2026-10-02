@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "profiles": [
+    {
+      "id": "cupped",
+      "version": "1.0.0",
+      "status": "ready",
+      "description": "双爪托住底部或两侧，食物抬向嘴边咀嚼",
+      "holdStyle": "two_handed_cradle",
+      "defaultDurationSec": 3.2,
+      "phases": {
+        "prepare": 0.8,
+        "bite": 1.6,
+        "recover": 0.8
+      },
+      "supportedParts": [
+        "edible"
+      ]
+    },
+    {
+      "id": "wrapped",
+      "version": "1.0.0",
+      "status": "interface_template",
+      "description": "一爪支承纸包，另一爪稳住食物，嘴接触露出部分",
+      "holdStyle": "wrapped_support",
+      "defaultDurationSec": 3.2,
+      "phases": {
+        "prepare": 0.8,
+        "bite": 1.6,
+        "recover": 0.8
+      },
+      "supportedParts": [
+        "edible",
+        "wrapper"
+      ]
+    },
+    {
+      "id": "skewer",
+      "version": "1.0.0",
+      "status": "interface_template",
+      "description": "握签合理位置，另一爪辅助，食物接近嘴部且签头远离面部",
+      "holdStyle": "skewer_grip",
+      "defaultDurationSec": 3.2,
+      "phases": {
+        "prepare": 0.8,
+        "bite": 1.6,
+        "recover": 0.8
+      },
+      "supportedParts": [
+        "edible",
+        "skewer"
+      ]
+    },
+    {
+      "id": "bowl",
+      "version": "1.0.0",
+      "status": "interface_template",
+      "description": "一爪托碗，另一爪持小勺或筷子送食入口",
+      "holdStyle": "bowl_cradle_utensil",
+      "defaultDurationSec": 3.2,
+      "phases": {
+        "prepare": 0.8,
+        "bite": 1.6,
+        "recover": 0.8
+      },
+      "supportedParts": [
+        "edible",
+        "container",
+        "utensil"
+      ],
+      "utensilKinds": [
+        "spoon",
+        "chopsticks"
+      ]
+    }
+  ]
+}
