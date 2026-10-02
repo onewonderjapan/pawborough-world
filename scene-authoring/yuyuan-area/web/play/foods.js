@@ -43,6 +43,7 @@ export async function loadFoodCatalog({ foods, manifest, registry = null, initia
   result.initialResults = await Promise.allSettled(initialIds.slice(0,3).map(async id=>{
     const token=`bootstrap-${id}`;try{await result.acquire(id,token);}finally{result.release(id,token);}
   }));
+  result.initialErrors=result.initialResults.flatMap((r,i)=>r.status==='rejected'?[{foodId:initialIds[i],reason:String(r.reason?.message??r.reason)}]:[]);
   return result;
 }
 
@@ -196,6 +197,7 @@ export class FoodCatalog {
     // 缩放后 proto 点 p 映射到 wrapper 系：inst.position + s*p；要求底面中心
     // bc 落在原处（bc*1）：inst.position = (1-s)*bc
     inst.position.copy(entry.cupBottomAnchor).multiplyScalar(1 - entry.cupScale);
+    if(entry.presentation?.profile!=='cupped')inst.position.y-=entry.cupBottomAnchor.y;
     const wrapper = new THREE.Group();
     wrapper.name = `${id}-display-cupped`;
     wrapper.add(inst);

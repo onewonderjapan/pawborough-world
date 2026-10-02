@@ -155,7 +155,7 @@
     }
   },
   "planning": {
-    "stage": "executing_six_food_acceptance",
+    "stage": "M14_verified_candidate_git_closeout",
     "planId": "pawborough-national-snacks-20261002",
     "handoff": "docs/LONG-RUN-HANDOFF-20261002.md",
     "spec": "docs/superpowers/specs/2026-10-02-national-snack-atlas-design.md",
@@ -163,6 +163,6 @@
     "taskState": "docs/plans/national-snacks-20261002/task-state.json",
     "executionStarted": true,
     "scope": "Existing-world art upgrade, 24 snacks / 8 chapters, discovery and tasting atlas, legacy save migration",
-    "note": "M00–M03/M07 verified; six-food local candidate integrated, actual contact/input checks passed. M04–M06/M08 visual/cycle/continuous route acceptance active. Twelve-food asset candidates staged separately; public deployment unchanged."
+    "note": "24food/8chapterlocalcandidate: realGPU24E/FandstaticCSP,24continuousroutes,save/overlays,build/fullareachecksPASS;40originalGLBsunchanged. Gitintegration/cleanupandexistingAWS SSOpublicationpending."
   }
 }

@@ -1,0 +1,17 @@
+// Same Chrome/hardware/render-mode/viewport/route pair, no software inference.
+import assert from 'node:assert/strict';import fs from 'node:fs/promises';import{chromium}from'playwright';
+const output='/home/baibai/outbox/pawborough-national-snacks-20261002/m14-performance';await fs.mkdir(output,{recursive:true});
+const browser=await chromium.launch({executablePath:'/usr/bin/google-chrome',headless:true,args:['--no-sandbox','--enable-gpu','--use-gl=angle','--use-angle=gl','--disable-background-timer-throttling','--disable-renderer-backgrounding']});
+const reports=[];
+try{for(const[label,base]of [['M00',process.env.BASELINE_BASE??'http://127.0.0.1:5492/'],['M14',process.env.BASE??'http://127.0.0.1:5613/']]){
+ const page=await browser.newPage({viewport:{width:1280,height:720},deviceScaleFactor:1});await page.goto(new URL('?play=1&at=center',base).href);
+ await page.waitForFunction(()=>window.__ready&&window.__play?.status().ready&&window.__play.status().mode==='play'&&window.__play.status().foodsReady&&window.__play.status().bikePlaced&&window.__play.status().closedFacadesReady,undefined,{timeout:120000});
+ await page.bringToFront();await page.waitForTimeout(3000);
+ const meta=await page.evaluate(()=>{const gl=document.querySelector('canvas').getContext('webgl2'),e=gl.getExtension('WEBGL_debug_renderer_info'),geo=new Set(),mat=new Set(),tex=new Set();window.__scene.traverse(o=>{if(o.geometry)geo.add(o.geometry.uuid);for(const m of Array.isArray(o.material)?o.material:o.material?[o.material]:[]){mat.add(m.uuid);for(const v of Object.values(m))if(v?.isTexture)tex.add(v.uuid);}});return {renderer:e&&gl.getParameter(e.UNMASKED_RENDERER_WEBGL),viewport:[innerWidth,innerHeight],dpr:devicePixelRatio,resources:{geometry:geo.size,material:mat.size,texture:tex.size},play:window.__play.status(),walk:window.__walk.status(),art:window.__worldArtStyle?.status(),street:window.__streetLife?.status()};});assert.match(meta.renderer,/NVIDIA.*GB10/);
+ const sample=page.evaluate(()=>new Promise(ok=>{const times=[];let start=0,previous=0,hidden=0;function tick(t){if(!start)start=t;if(previous&&t-start>250){times.push(t-previous);if(document.visibilityState!=='visible')hidden++;}previous=t;if(t-start<8000)requestAnimationFrame(tick);else ok({times,hidden});}requestAnimationFrame(tick);}));
+ await page.keyboard.down('w');await page.waitForTimeout(3000);await page.keyboard.up('w');await page.keyboard.down('s');await page.waitForTimeout(3000);await page.keyboard.up('s');
+ const raw=await sample,sorted=[...raw.times].sort((a,b)=>a-b),percentile=p=>sorted[Math.floor((sorted.length-1)*p)];
+ const report={label,base,browser:browser.version(),headlessHardwareGpu:true,route:'3s W,3s S,2s idle;3s preload warmup',...meta,p50:percentile(.5),p95:percentile(.95),max:Math.max(...sorted),hidden:raw.hidden,frames:sorted.length,rawFrameTimes:raw.times};reports.push(report);await fs.writeFile(`${output}/${label}.json`,JSON.stringify(report,null,2)+'\n','utf8');console.log(label,JSON.stringify({p95:report.p95,frames:report.frames,hidden:report.hidden,renderer:report.renderer}));await page.close();
+}
+ const ratio=reports[1].p95/reports[0].p95;await fs.writeFile(`${output}/comparison.json`,JSON.stringify({sameConditions:true,baselineP95:reports[0].p95,currentP95:reports[1].p95,ratio,target:1.2},null,2)+'\n','utf8');assert.ok(reports.every(r=>r.hidden===0));assert.ok(ratio<=1.2,`p95ratio${ratio}`);console.log('GPU_PERFORMANCE_COMPARE PASS',ratio);
+}finally{await browser.close();}

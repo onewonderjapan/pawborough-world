@@ -9,6 +9,7 @@ import { applyWalkOrientation } from '/vendor-src/player/walkCamera.js';
 import { AreaWalkPhysics } from '../src/areaWalkPhysics.js';
 import { computeStepMotion } from './play/telemetry.js';   // R1：play 档实测运动遥测
 import { installStallFronts } from './play/stall-fronts.js';
+import { installGroundSeams } from './play/ground-seams.js';
 import { installPassageCeiling } from './play/scene-passage-fix.js';
 import { planBridgeAccess, planSeamBridges, porchApproachPath, applyAccessPhysics, applyAccessVisuals } from './play/bridge-access.js';   // 桥头通行补丁（工单 A 20261002，失败非致命）
 
@@ -131,6 +132,7 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
       return r.arrayBuffer();
     } });
     physics = await zonePhysics.loadZones([...ZONE_FILES, ...extraCollisionZones().filter(z => !ZONE_FILES.includes(z))]);
+    if(play)installGroundSeams({scene,RAPIER,zonePhysics});
     if(play){
       const layout=await readJson('layout.json');
       stallFronts=installStallFronts({scene,layout,RAPIER,zonePhysics});
@@ -435,6 +437,7 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
     async addCollisionZone(zone) {
       await ensurePhysics();
       await zonePhysics.loadZone(zone);
+      if(play)installGroundSeams({scene,RAPIER,zonePhysics});
       // Same world/capsule/velocity/input/yaw/pause state survives activation.
       anchors = zonePhysics.anchors;
       if (zone === 'fangbang') await addStreetAnchor();

@@ -1,0 +1,696 @@
+{
+  "stage": "24actualinputs_ready_before_fullactivation",
+  "foods": [
+    {
+      "id": "jianbing-guozi",
+      "profile": "wrapped",
+      "utensilKind": "none",
+      "glbBytes": 139568,
+      "glbSha256": "2027845f5d47814d6aa1b27ea5bd8ae291347a3dd32e3c77aac60fda4752bee9",
+      "thumbnailBytes": 37463,
+      "thumbnailSha256": "1b4ba36aed04a34341f83b7bbd37a06a7ab0ccf40dc2bda2af84ab517def1768",
+      "modelBounds": {
+        "min": [
+          -0.091,
+          -0.003,
+          -0.042
+        ],
+        "max": [
+          0.091,
+          0.104,
+          0.038
+        ],
+        "size": [
+          0.182,
+          0.107,
+          0.08
+        ]
+      },
+      "partNames": [
+        "edible",
+        "wrapper"
+      ],
+      "anchors": {
+        "leftSupport": [
+          0.075,
+          0,
+          0
+        ],
+        "rightSupport": [
+          -0.075,
+          0,
+          0
+        ],
+        "bite": [
+          0,
+          0.085,
+          0.03
+        ]
+      }
+    },
+    {
+      "id": "ludagun",
+      "profile": "cupped",
+      "utensilKind": "none",
+      "glbBytes": 305804,
+      "glbSha256": "4d41ddc863de63842298ac02830bdbece25ae904189dd813ec59a4726a8bfa8c",
+      "thumbnailBytes": 30072,
+      "thumbnailSha256": "0ad8374df5d6b297e16d4cea2155278afd353f13f1d6bff5b70b6750240a7834",
+      "modelBounds": {
+        "min": [
+          -0.0795,
+          0,
+          -0.032
+        ],
+        "max": [
+          0.0795,
+          0.0565,
+          0.0325
+        ],
+        "size": [
+          0.159,
+          0.0565,
+          0.0645
+        ]
+      },
+      "partNames": [
+        "edible"
+      ],
+      "anchors": {
+        "leftSupport": [
+          0.065,
+          0,
+          0
+        ],
+        "rightSupport": [
+          -0.065,
+          0,
+          0
+        ],
+        "bite": [
+          0,
+          0.055,
+          0.025
+        ]
+      }
+    },
+    {
+      "id": "jianfen",
+      "profile": "bowl",
+      "utensilKind": "spoon",
+      "glbBytes": 121324,
+      "glbSha256": "7e716d018d78a2cfa9aba5f125075391b4f833936520ac5e114f0de98b6e840d",
+      "thumbnailBytes": 33689,
+      "thumbnailSha256": "d5bb1650b5ff6474d8b182da7a8370d9d1d32564c7caf92ffc7cc42bc464c50c",
+      "modelBounds": {
+        "min": [
+          -0.075,
+          -0.025,
+          -0.075
+        ],
+        "max": [
+          0.096,
+          0.038,
+          0.075
+        ],
+        "size": [
+          0.171,
+          0.063,
+          0.15
+        ]
+      },
+      "partNames": [
+        "container",
+        "edible",
+        "utensil"
+      ],
+      "anchors": {
+        "leftSupport": [
+          0.07,
+          0,
+          -0.03
+        ],
+        "content": [
+          0,
+          0.03,
+          0
+        ],
+        "bite": [
+          0,
+          0.03,
+          0
+        ],
+        "rightSupport": [
+          -0.05,
+          0,
+          0
+        ],
+        "toolGrip": [
+          0,
+          0,
+          0
+        ],
+        "toolBite": [
+          0,
+          0,
+          0.11
+        ]
+      }
+    },
+    {
+      "id": "liangpi",
+      "profile": "bowl",
+      "utensilKind": "chopsticks",
+      "glbBytes": 127912,
+      "glbSha256": "ce755bc883017fe58f984213a7a1a5ae798ab5691826c16c056abc537abdc098",
+      "thumbnailBytes": 32185,
+      "thumbnailSha256": "bb6d963d228518e0d855d138328a1cc0366202ca765e8a1ca20c33536bf20499",
+      "modelBounds": {
+        "min": [
+          -0.075,
+          -0.025,
+          -0.075
+        ],
+        "max": [
+          0.0934,
+          0.0358,
+          0.075
+        ],
+        "size": [
+          0.1684,
+          0.0608,
+          0.15
+        ]
+      },
+      "partNames": [
+        "container",
+        "edible",
+        "utensil"
+      ],
+      "anchors": {
+        "leftSupport": [
+          0.07,
+          0,
+          -0.03
+        ],
+        "content": [
+          0,
+          0.03,
+          0
+        ],
+        "bite": [
+          0,
+          0.03,
+          0
+        ],
+        "rightSupport": [
+          -0.05,
+          0,
+          0
+        ],
+        "toolGrip": [
+          0,
+          0,
+          0
+        ],
+        "toolBite": [
+          0,
+          0,
+          0.11
+        ]
+      }
+    },
+    {
+      "id": "yangrouchuan",
+      "profile": "skewer",
+      "utensilKind": "none",
+      "glbBytes": 62840,
+      "glbSha256": "09c20f0e54f8f8fc67d467aec1b81136add6e1aab3d8cb08a08b746543cfbed8",
+      "thumbnailBytes": 22218,
+      "thumbnailSha256": "fa7a27a291ad7097f395ff74e40c42e99e0d7710490ddf2d016e843a174e6c0e",
+      "modelBounds": {
+        "min": [
+          -0.0211,
+          -0.0648,
+          -0.0185
+        ],
+        "max": [
+          0.0214,
+          0.135,
+          0.0223
+        ],
+        "size": [
+          0.0425,
+          0.1998,
+          0.0409
+        ]
+      },
+      "partNames": [
+        "edible",
+        "skewer"
+      ],
+      "anchors": {
+        "leftSupport": [
+          0.015,
+          -0.035,
+          0
+        ],
+        "rightSupport": [
+          -0.015,
+          -0.025,
+          0
+        ],
+        "bite": [
+          0,
+          0.115,
+          0.021
+        ]
+      }
+    },
+    {
+      "id": "dandanmian",
+      "profile": "bowl",
+      "utensilKind": "chopsticks",
+      "glbBytes": 682256,
+      "glbSha256": "febac8612bae344f25bb64be230f8f2f31bc38bac6453df57b40f72e8b7dd9a1",
+      "thumbnailBytes": 37497,
+      "thumbnailSha256": "bb5fb769dd775702a37043bda69d3dc79eb5bee96fe4e2e61df9cc809e4dc807",
+      "modelBounds": {
+        "min": [
+          -0.075,
+          -0.025,
+          -0.075
+        ],
+        "max": [
+          0.0934,
+          0.0457,
+          0.075
+        ],
+        "size": [
+          0.1684,
+          0.0707,
+          0.15
+        ]
+      },
+      "partNames": [
+        "container",
+        "edible",
+        "utensil"
+      ],
+      "anchors": {
+        "leftSupport": [
+          0.07,
+          0,
+          -0.03
+        ],
+        "content": [
+          0,
+          0.03,
+          0
+        ],
+        "bite": [
+          0,
+          0.03,
+          0
+        ],
+        "rightSupport": [
+          -0.05,
+          0,
+          0
+        ],
+        "toolGrip": [
+          0,
+          0,
+          0
+        ],
+        "toolBite": [
+          0,
+          0,
+          0.11
+        ]
+      }
+    },
+    {
+      "id": "hongyou-chaoshou",
+      "profile": "bowl",
+      "utensilKind": "spoon",
+      "glbBytes": 223376,
+      "glbSha256": "8a4c41a3f5898926c934a4d7d0b72477c0d3b182fc6ad18223741dddcc7eb420",
+      "thumbnailBytes": 30642,
+      "thumbnailSha256": "0be5eb4f99695550260837a08178e9692976193de57222cc1e1227ee611b00b3",
+      "modelBounds": {
+        "min": [
+          -0.075,
+          -0.025,
+          -0.075
+        ],
+        "max": [
+          0.096,
+          0.0337,
+          0.075
+        ],
+        "size": [
+          0.171,
+          0.0587,
+          0.15
+        ]
+      },
+      "partNames": [
+        "container",
+        "edible",
+        "utensil"
+      ],
+      "anchors": {
+        "leftSupport": [
+          0.07,
+          0,
+          -0.03
+        ],
+        "content": [
+          0,
+          0.03,
+          0
+        ],
+        "bite": [
+          0,
+          0.03,
+          0
+        ],
+        "rightSupport": [
+          -0.05,
+          0,
+          0
+        ],
+        "toolGrip": [
+          0,
+          0,
+          0
+        ],
+        "toolBite": [
+          0,
+          0,
+          0.11
+        ]
+      }
+    },
+    {
+      "id": "choudoufu",
+      "profile": "bowl",
+      "utensilKind": "spoon",
+      "glbBytes": 100952,
+      "glbSha256": "f132e11a26243a7b54f2ed7b10f8f0102a02957128368a38a8bcfb7caff2fcce",
+      "thumbnailBytes": 30416,
+      "thumbnailSha256": "c4217339127df607476a7ec07e2d56434a680aa272edc1be6551d4ff237dff5b",
+      "modelBounds": {
+        "min": [
+          -0.075,
+          -0.025,
+          -0.075
+        ],
+        "max": [
+          0.096,
+          0.0338,
+          0.075
+        ],
+        "size": [
+          0.171,
+          0.0588,
+          0.15
+        ]
+      },
+      "partNames": [
+        "container",
+        "edible",
+        "utensil"
+      ],
+      "anchors": {
+        "leftSupport": [
+          0.07,
+          0,
+          -0.03
+        ],
+        "content": [
+          0,
+          0.03,
+          0
+        ],
+        "bite": [
+          0,
+          0.03,
+          0
+        ],
+        "rightSupport": [
+          -0.05,
+          0,
+          0
+        ],
+        "toolGrip": [
+          0,
+          0,
+          0
+        ],
+        "toolBite": [
+          0,
+          0,
+          0.11
+        ]
+      }
+    },
+    {
+      "id": "hulatang",
+      "profile": "bowl",
+      "utensilKind": "spoon",
+      "glbBytes": 190608,
+      "glbSha256": "897c4294c8dc1d738eac82bdd6bfdc9e19bb8a97b0eac8218b35da531449bf66",
+      "thumbnailBytes": 32469,
+      "thumbnailSha256": "56f8f23d5f1b8edfeddfad687626561eef241fb896822bf2d9b31e0553ef9c03",
+      "modelBounds": {
+        "min": [
+          -0.075,
+          -0.025,
+          -0.075
+        ],
+        "max": [
+          0.096,
+          0.0333,
+          0.075
+        ],
+        "size": [
+          0.171,
+          0.0583,
+          0.15
+        ]
+      },
+      "partNames": [
+        "container",
+        "edible",
+        "utensil"
+      ],
+      "anchors": {
+        "leftSupport": [
+          0.07,
+          0,
+          -0.03
+        ],
+        "content": [
+          0,
+          0.03,
+          0
+        ],
+        "bite": [
+          0,
+          0.03,
+          0
+        ],
+        "rightSupport": [
+          -0.05,
+          0,
+          0
+        ],
+        "toolGrip": [
+          0,
+          0,
+          0
+        ],
+        "toolBite": [
+          0,
+          0,
+          0.11
+        ]
+      }
+    },
+    {
+      "id": "changfen",
+      "profile": "bowl",
+      "utensilKind": "chopsticks",
+      "glbBytes": 177020,
+      "glbSha256": "5d1d0d6537872dc81619c93ae3f470f03b4ea428d84b124f03659899a423668d",
+      "thumbnailBytes": 31828,
+      "thumbnailSha256": "614b919999800c9258ce60afff807249a2886ba0b8b0ddebed8fa91bdac3c5f5",
+      "modelBounds": {
+        "min": [
+          -0.075,
+          -0.025,
+          -0.075
+        ],
+        "max": [
+          0.0934,
+          0.0338,
+          0.075
+        ],
+        "size": [
+          0.1684,
+          0.0588,
+          0.15
+        ]
+      },
+      "partNames": [
+        "container",
+        "edible",
+        "utensil"
+      ],
+      "anchors": {
+        "leftSupport": [
+          0.07,
+          0,
+          -0.03
+        ],
+        "content": [
+          0,
+          0.03,
+          0
+        ],
+        "bite": [
+          0,
+          0.03,
+          0
+        ],
+        "rightSupport": [
+          -0.05,
+          0,
+          0
+        ],
+        "toolGrip": [
+          0,
+          0,
+          0
+        ],
+        "toolBite": [
+          0,
+          0,
+          0.11
+        ]
+      }
+    },
+    {
+      "id": "qingbuliang",
+      "profile": "bowl",
+      "utensilKind": "spoon",
+      "glbBytes": 190280,
+      "glbSha256": "c27acb9bfb50b2e058cb35a4b57cfb1c4b78559bce436b494c552eb84d4ac075",
+      "thumbnailBytes": 30754,
+      "thumbnailSha256": "2fbbda57d9b526b447838a65b6dc83d7c8fc81dbf6fab6903440aeeccd1f456d",
+      "modelBounds": {
+        "min": [
+          -0.075,
+          -0.025,
+          -0.075
+        ],
+        "max": [
+          0.096,
+          0.0345,
+          0.075
+        ],
+        "size": [
+          0.171,
+          0.0595,
+          0.15
+        ]
+      },
+      "partNames": [
+        "container",
+        "edible",
+        "utensil"
+      ],
+      "anchors": {
+        "leftSupport": [
+          0.07,
+          0,
+          -0.03
+        ],
+        "content": [
+          0,
+          0.03,
+          0
+        ],
+        "bite": [
+          0,
+          0.03,
+          0
+        ],
+        "rightSupport": [
+          -0.05,
+          0,
+          0
+        ],
+        "toolGrip": [
+          0,
+          0,
+          0
+        ],
+        "toolBite": [
+          0,
+          0,
+          0.11
+        ]
+      }
+    },
+    {
+      "id": "fenglisu",
+      "profile": "cupped",
+      "utensilKind": "none",
+      "glbBytes": 30900,
+      "glbSha256": "1d51a945756835c4d84d4254730632d65b777eb2ad82035beb0d6a4b6105b529",
+      "thumbnailBytes": 25846,
+      "thumbnailSha256": "2f1be7786303a1ab5e9156cdbb92343eb23610d8c85ec884ca30f0b63aca261b",
+      "modelBounds": {
+        "min": [
+          -0.0733,
+          0,
+          -0.03
+        ],
+        "max": [
+          0.0686,
+          0.0522,
+          0.0335
+        ],
+        "size": [
+          0.1419,
+          0.0522,
+          0.0635
+        ]
+      },
+      "partNames": [
+        "edible"
+      ],
+      "anchors": {
+        "leftSupport": [
+          0.065,
+          0,
+          0
+        ],
+        "rightSupport": [
+          -0.065,
+          0,
+          0
+        ],
+        "bite": [
+          0,
+          0.05,
+          0.02
+        ]
+      }
+    }
+  ],
+  "review": "All12renders inspected. Dandan corrected visible18strandheap overred sauce; other11distinctfoodshapesaccepted. Actual24GPU/pose/routes stillpending."
+}

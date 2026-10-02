@@ -42,7 +42,7 @@ try {
   assert.equal(x.status.heldItem, 'congyoubing');
   assert.equal(x.oldRaw, raw);
   assert.equal(x.saved.schemaVersion, 2);
-  assert.deepEqual(x.saved.discovered.sort(), ['congyoubing', 'xiaolongbao']);
+  assert.ok(['congyoubing','xiaolongbao'].every(id=>x.saved.discovered.includes(id)),'legacy discovered progress retained alongside real nearby discoveries');
   await page.keyboard.press('r');
   await page.waitForFunction(() => window.__play.status().riding, undefined, { timeout: 10000 });
   x = await read(page);

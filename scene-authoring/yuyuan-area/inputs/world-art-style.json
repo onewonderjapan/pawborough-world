@@ -1,37 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "plush-shanghai-pilot-20261002",
+  "id": "plush-shanghai-world-20261003",
   "enabled": true,
-  "mode": "pilot",
-  "scopes": [
-    {
-      "id": "center",
-      "boundsXZ": [
-        -198,
-        -66,
-        -118,
-        8
-      ]
-    },
-    {
-      "id": "snack-street",
-      "boundsXZ": [
-        -227,
-        7,
-        -140,
-        64
-      ]
-    },
-    {
-      "id": "bridge-bank",
-      "boundsXZ": [
-        -190,
-        -174,
-        -111,
-        -104
-      ]
-    }
-  ],
+  "mode": "full",
+  "scopes": [],
   "families": [
     {
       "id": "warm-paving",

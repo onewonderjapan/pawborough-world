@@ -7,7 +7,7 @@
       "kind": "existing",
       "stallId": "stall-5",
       "labelZh": "小笼包摊",
-      "areaHint": "现有商业区；按 layout 与顾客面定位"
+      "areaHint": "商业街食摊"
     },
     {
       "vendorId": "food-vendor-congyoubing",
@@ -15,7 +15,7 @@
       "kind": "existing",
       "stallId": "stall-6",
       "labelZh": "葱油饼摊",
-      "areaHint": "现有商业区；按 layout 与顾客面定位"
+      "areaHint": "商业街食摊"
     },
     {
       "vendorId": "food-vendor-youdunzi",
@@ -23,29 +23,150 @@
       "kind": "existing",
       "stallId": "stall-10",
       "labelZh": "油墩子摊",
-      "areaHint": "现有商业区；按 layout 与顾客面定位"
+      "areaHint": "商业街食摊"
     },
     {
       "vendorId": "food-vendor-tanghulu",
       "kind": "existing",
       "stallId": "stall-19",
-      "areaHint": "现有商业区；按 layout 与顾客面定位",
+      "areaHint": "老街南巷",
       "foodId": "tanghulu",
       "labelZh": "糖葫芦摊"
+    },
+    {
+      "vendorId": "food-vendor-jianbing-guozi",
+      "kind": "existing",
+      "stallId": "stall-41",
+      "areaHint": "老街南巷",
+      "foodId": "jianbing-guozi",
+      "labelZh": "煎饼果子摊"
+    },
+    {
+      "vendorId": "food-vendor-ludagun",
+      "kind": "existing",
+      "stallId": "stall-38",
+      "areaHint": "老街南巷",
+      "foodId": "ludagun",
+      "labelZh": "驴打滚摊"
+    },
+    {
+      "vendorId": "food-vendor-kaolengmian",
+      "kind": "existing",
+      "stallId": "stall-26",
+      "areaHint": "老街南巷",
+      "foodId": "kaolengmian",
+      "labelZh": "烤冷面摊"
+    },
+    {
+      "vendorId": "food-vendor-niandoubao",
+      "kind": "existing",
+      "stallId": "stall-28",
+      "areaHint": "老街南巷",
+      "foodId": "niandoubao",
+      "labelZh": "黏豆包摊"
+    },
+    {
+      "vendorId": "food-vendor-jianfen",
+      "kind": "existing",
+      "stallId": "stall-32",
+      "areaHint": "老街南巷",
+      "foodId": "jianfen",
+      "labelZh": "吉林煎粉摊"
     },
     {
       "vendorId": "food-vendor-roujiamo",
       "kind": "existing",
       "stallId": "stall-15",
-      "areaHint": "现有商业区；按 layout 与顾客面定位",
+      "areaHint": "商业街食摊",
       "foodId": "roujiamo",
       "labelZh": "肉夹馍摊"
+    },
+    {
+      "vendorId": "food-vendor-liangpi",
+      "kind": "existing",
+      "stallId": "stall-17",
+      "areaHint": "商业街食摊",
+      "foodId": "liangpi",
+      "labelZh": "凉皮摊"
+    },
+    {
+      "vendorId": "food-vendor-yangrouchuan",
+      "kind": "existing",
+      "stallId": "stall-21",
+      "areaHint": "商业街食摊",
+      "foodId": "yangrouchuan",
+      "labelZh": "羊肉串摊"
+    },
+    {
+      "vendorId": "food-vendor-dandanmian",
+      "kind": "existing",
+      "stallId": "stall-30",
+      "areaHint": "桥岸食摊街",
+      "foodId": "dandanmian",
+      "labelZh": "担担面摊"
+    },
+    {
+      "vendorId": "food-vendor-hongyou-chaoshou",
+      "kind": "existing",
+      "stallId": "stall-34",
+      "areaHint": "桥岸食摊街",
+      "foodId": "hongyou-chaoshou",
+      "labelZh": "红油抄手摊"
+    },
+    {
+      "vendorId": "food-vendor-xianhuabing",
+      "kind": "existing",
+      "stallId": "stall-39",
+      "areaHint": "桥岸食摊街",
+      "foodId": "xianhuabing",
+      "labelZh": "鲜花饼摊"
+    },
+    {
+      "vendorId": "food-vendor-reganmian",
+      "kind": "existing",
+      "stallId": "stall-43",
+      "areaHint": "桥岸食摊街",
+      "foodId": "reganmian",
+      "labelZh": "热干面摊"
+    },
+    {
+      "vendorId": "food-vendor-choudoufu",
+      "kind": "existing",
+      "stallId": "stall-47",
+      "areaHint": "桥岸食摊街",
+      "foodId": "choudoufu",
+      "labelZh": "臭豆腐摊"
+    },
+    {
+      "vendorId": "food-vendor-hulatang",
+      "kind": "existing",
+      "stallId": "stall-12",
+      "areaHint": "桥岸食摊街",
+      "foodId": "hulatang",
+      "labelZh": "胡辣汤摊"
+    },
+    {
+      "vendorId": "food-vendor-changfen",
+      "kind": "cart",
+      "stallId": null,
+      "areaHint": "中心广场食摊",
+      "foodId": "changfen",
+      "labelZh": "肠粉摊",
+      "position": [
+        -153.75,
+        -26.25
+      ],
+      "customerPoint": [
+        -154.811,
+        -25.189
+      ],
+      "rotationY": -0.7853981634
     },
     {
       "vendorId": "food-vendor-shuangpinai",
       "kind": "cart",
       "stallId": null,
-      "areaHint": "方浜主街宽敞路侧",
+      "areaHint": "方浜主街路侧",
       "foodId": "shuangpinai",
       "labelZh": "双皮奶摊",
       "position": [
@@ -57,6 +178,74 @@
         -19.432
       ],
       "rotationY": 3.141592653589793
+    },
+    {
+      "vendorId": "food-vendor-qingbuliang",
+      "kind": "cart",
+      "stallId": null,
+      "areaHint": "西桥岸入口食摊",
+      "foodId": "qingbuliang",
+      "labelZh": "清补凉摊",
+      "position": [
+        -178,
+        -92
+      ],
+      "customerPoint": [
+        -179.5,
+        -92
+      ],
+      "rotationY": -1.5707963268
+    },
+    {
+      "vendorId": "food-vendor-jidanzi",
+      "kind": "cart",
+      "stallId": null,
+      "areaHint": "方浜远街路侧",
+      "foodId": "jidanzi",
+      "labelZh": "鸡蛋仔摊",
+      "position": [
+        261.191,
+        32.992
+      ],
+      "customerPoint": [
+        261.191,
+        31.492
+      ],
+      "rotationY": 3.141592653589793
+    },
+    {
+      "vendorId": "food-vendor-fenglisu",
+      "kind": "cart",
+      "stallId": null,
+      "areaHint": "园外西侧老街食摊",
+      "foodId": "fenglisu",
+      "labelZh": "凤梨酥摊",
+      "position": [
+        -198.75,
+        -172.75
+      ],
+      "customerPoint": [
+        -198.75,
+        -171.25
+      ],
+      "rotationY": 0
+    },
+    {
+      "vendorId": "food-vendor-portuguese-egg-tart",
+      "kind": "cart",
+      "stallId": null,
+      "areaHint": "庙前连接街",
+      "foodId": "portuguese-egg-tart",
+      "labelZh": "葡式蛋挞摊",
+      "position": [
+        -76.317,
+        5.657
+      ],
+      "customerPoint": [
+        -75.646,
+        6.999
+      ],
+      "rotationY": 0.463647609
     }
   ]
 }

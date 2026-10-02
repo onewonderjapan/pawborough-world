@@ -14,7 +14,8 @@ export const STATE_SCHEMA_VERSION = SAVE_SCHEMA_VERSION;
 // 专用 key：不碰既有相机/项目 localStorage（fangbangMain 的 STORE_KEY 等）
 export const STORAGE_KEY = STORAGE_KEY_V2;
 export { LEGACY_STORAGE_KEY };
-// scene/asset 版本标记：食物/摊位/世界布局变化时递增，旧档按版本不符处理
+// 原始世界坐标/GLB 的位姿版本。目录扩展由 catalogEdition 标记；新增摊车
+// 与接缝用实际地面/碰撞校验恢复点，保留仍安全的旧散步与骑乘。
 export const SCENE_ASSET_VERSION = 'play-snacks-20261001';
 
 export const EAT_SECONDS = 3.2;
@@ -136,9 +137,9 @@ export class PlayGameState {
   }
   _updateMilestones() {
     for (const n of [6, 12, 24]) if (this.stamps >= n) this.milestones.add(`tastes-${n}`);
-    for (const [id] of this.registry?.chaptersById ?? []) {
+    for (const [id,chapter] of this.registry?.chaptersById ?? []) {
       const foods = this.foods.filter(f => f.chapterId === id && this.requiredFoodIds.has(f.id));
-      if (foods.length && foods.every(f => this.tasted.has(f.id))) this.milestones.add(`chapter-${id}`);
+      if (foods.length >= (chapter.targetCount??foods.length) && foods.length && foods.every(f => this.tasted.has(f.id))) this.milestones.add(`chapter-${id}`);
     }
   }
   goal() {

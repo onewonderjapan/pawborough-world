@@ -1,0 +1,895 @@
+{
+  "schemaVersion": 1,
+  "id": "national-food-festival-street-life-v1",
+  "items": [
+    {
+      "id": "sign-stall-5",
+      "sourceId": "stall-5",
+      "kind": "vendor-sign",
+      "position": [
+        -139.87231954122095,
+        1.53,
+        23.693922753673267
+      ],
+      "yaw": 0.1047945169428108,
+      "label": "小笼包",
+      "chapterId": "shanghai"
+    },
+    {
+      "id": "lantern-stall-5",
+      "sourceId": "stall-5",
+      "kind": "lantern",
+      "position": [
+        -140.43756841005577,
+        2.37,
+        23.09979001069324
+      ],
+      "yaw": 0.1047945169428108,
+      "chapterId": "shanghai"
+    },
+    {
+      "id": "flowers-stall-5",
+      "sourceId": "stall-5",
+      "kind": "counter-flower",
+      "position": [
+        -139.6220668662184,
+        1.01,
+        23.014015702191912
+      ],
+      "yaw": 0.1047945169428108,
+      "chapterId": "shanghai"
+    },
+    {
+      "id": "bunting-stall-5",
+      "sourceId": "stall-5",
+      "kind": "bunting",
+      "position": [
+        -139.94031137113055,
+        2.5300000000000002,
+        23.04748860307048
+      ],
+      "yaw": 0.1047945169428108,
+      "chapterId": "shanghai"
+    },
+    {
+      "id": "sign-stall-6",
+      "sourceId": "stall-6",
+      "kind": "vendor-sign",
+      "position": [
+        -142.55750755141713,
+        1.53,
+        23.97635035483618
+      ],
+      "yaw": 0.1047945169428108,
+      "label": "葱油饼",
+      "chapterId": "shanghai"
+    },
+    {
+      "id": "lantern-stall-6",
+      "sourceId": "stall-6",
+      "kind": "lantern",
+      "position": [
+        -143.12275642025196,
+        2.37,
+        23.382217611856152
+      ],
+      "yaw": 0.1047945169428108,
+      "chapterId": "shanghai"
+    },
+    {
+      "id": "flowers-stall-6",
+      "sourceId": "stall-6",
+      "kind": "counter-flower",
+      "position": [
+        -142.3072548764146,
+        1.01,
+        23.296443303354824
+      ],
+      "yaw": 0.1047945169428108,
+      "chapterId": "shanghai"
+    },
+    {
+      "id": "sign-stall-10",
+      "sourceId": "stall-10",
+      "kind": "vendor-sign",
+      "position": [
+        -174.6559095842517,
+        1.53,
+        27.288017307596633
+      ],
+      "yaw": 0.10049885507745582,
+      "label": "油墩子",
+      "chapterId": "shanghai"
+    },
+    {
+      "id": "lantern-stall-10",
+      "sourceId": "stall-10",
+      "kind": "lantern",
+      "position": [
+        -175.21860105238972,
+        2.37,
+        26.691461935745306
+      ],
+      "yaw": 0.10049885507745582,
+      "chapterId": "shanghai"
+    },
+    {
+      "id": "flowers-stall-10",
+      "sourceId": "stall-10",
+      "kind": "counter-flower",
+      "position": [
+        -174.402738576355,
+        1.01,
+        26.609191526736353
+      ],
+      "yaw": 0.10049885507745582,
+      "chapterId": "shanghai"
+    },
+    {
+      "id": "sign-stall-19",
+      "sourceId": "stall-19",
+      "kind": "vendor-sign",
+      "position": [
+        -273.07931982103366,
+        1.53,
+        -250.26159708322538
+      ],
+      "yaw": -1.43052732826393,
+      "label": "糖葫芦",
+      "chapterId": "jingjin"
+    },
+    {
+      "id": "lantern-stall-19",
+      "sourceId": "stall-19",
+      "kind": "lantern",
+      "position": [
+        -272.5056085838828,
+        2.37,
+        -250.84756245452886
+      ],
+      "yaw": -1.43052732826393,
+      "chapterId": "jingjin"
+    },
+    {
+      "id": "flowers-stall-19",
+      "sourceId": "stall-19",
+      "kind": "counter-flower",
+      "position": [
+        -272.3909648133655,
+        1.01,
+        -250.03561614726368
+      ],
+      "yaw": -1.43052732826393,
+      "chapterId": "jingjin"
+    },
+    {
+      "id": "bunting-stall-19",
+      "sourceId": "stall-19",
+      "kind": "bunting",
+      "position": [
+        -272.4357038457625,
+        2.5300000000000002,
+        -250.3524732427818
+      ],
+      "yaw": -1.43052732826393,
+      "chapterId": "jingjin"
+    },
+    {
+      "id": "sign-stall-41",
+      "sourceId": "stall-41",
+      "kind": "vendor-sign",
+      "position": [
+        -184.96182619843873,
+        1.53,
+        -87.12011184427963
+      ],
+      "yaw": 0.18788231212971668,
+      "label": "煎饼果子",
+      "chapterId": "jingjin"
+    },
+    {
+      "id": "lantern-stall-41",
+      "sourceId": "stall-41",
+      "kind": "lantern",
+      "position": [
+        -185.57443346845625,
+        2.37,
+        -87.6652836820718
+      ],
+      "yaw": 0.18788231212971668,
+      "chapterId": "jingjin"
+    },
+    {
+      "id": "flowers-stall-41",
+      "sourceId": "stall-41",
+      "kind": "counter-flower",
+      "position": [
+        -184.76886384726606,
+        1.01,
+        -87.8184423756399
+      ],
+      "yaw": 0.18788231212971668,
+      "chapterId": "jingjin"
+    },
+    {
+      "id": "sign-stall-38",
+      "sourceId": "stall-38",
+      "kind": "vendor-sign",
+      "position": [
+        -222.6614483777722,
+        1.53,
+        26.780561885444587
+      ],
+      "yaw": -1.3624728777701394,
+      "label": "驴打滚",
+      "chapterId": "jingjin"
+    },
+    {
+      "id": "lantern-stall-38",
+      "sourceId": "stall-38",
+      "kind": "lantern",
+      "position": [
+        -222.1289119503639,
+        2.37,
+        26.156939440785006
+      ],
+      "yaw": -1.3624728777701394,
+      "chapterId": "jingjin"
+    },
+    {
+      "id": "flowers-stall-38",
+      "sourceId": "stall-38",
+      "kind": "counter-flower",
+      "position": [
+        -221.95931964141795,
+        1.01,
+        26.95921024839699
+      ],
+      "yaw": -1.3624728777701394,
+      "chapterId": "jingjin"
+    },
+    {
+      "id": "sign-stall-26",
+      "sourceId": "stall-26",
+      "kind": "vendor-sign",
+      "position": [
+        -265.41776052304544,
+        1.53,
+        -195.9998194757473
+      ],
+      "yaw": -1.43052732826393,
+      "label": "烤冷面",
+      "chapterId": "northeast"
+    },
+    {
+      "id": "lantern-stall-26",
+      "sourceId": "stall-26",
+      "kind": "lantern",
+      "position": [
+        -264.8440492858946,
+        2.37,
+        -196.58578484705077
+      ],
+      "yaw": -1.43052732826393,
+      "chapterId": "northeast"
+    },
+    {
+      "id": "flowers-stall-26",
+      "sourceId": "stall-26",
+      "kind": "counter-flower",
+      "position": [
+        -264.72940551537727,
+        1.01,
+        -195.7738385397856
+      ],
+      "yaw": -1.43052732826393,
+      "chapterId": "northeast"
+    },
+    {
+      "id": "bunting-stall-26",
+      "sourceId": "stall-26",
+      "kind": "bunting",
+      "position": [
+        -264.77414454777426,
+        2.5300000000000002,
+        -196.09069563530372
+      ],
+      "yaw": -1.43052732826393,
+      "chapterId": "northeast"
+    },
+    {
+      "id": "sign-stall-28",
+      "sourceId": "stall-28",
+      "kind": "vendor-sign",
+      "position": [
+        -264.02759389828327,
+        1.53,
+        -186.54259295319136
+      ],
+      "yaw": -1.421882087294035,
+      "label": "黏豆包",
+      "chapterId": "northeast"
+    },
+    {
+      "id": "lantern-stall-28",
+      "sourceId": "stall-28",
+      "kind": "lantern",
+      "position": [
+        -263.45896984937457,
+        2.37,
+        -187.13349623715814
+      ],
+      "yaw": -1.421882087294035,
+      "chapterId": "northeast"
+    },
+    {
+      "id": "flowers-stall-28",
+      "sourceId": "stall-28",
+      "kind": "counter-flower",
+      "position": [
+        -263.3373109790374,
+        1.01,
+        -186.3225713828909
+      ],
+      "yaw": -1.421882087294035,
+      "chapterId": "northeast"
+    },
+    {
+      "id": "sign-stall-32",
+      "sourceId": "stall-32",
+      "kind": "vendor-sign",
+      "position": [
+        -260.1183930129471,
+        1.53,
+        -163.50383819931128
+      ],
+      "yaw": -1.3743962317196141,
+      "label": "吉林煎粉",
+      "chapterId": "northeast"
+    },
+    {
+      "id": "lantern-stall-32",
+      "sourceId": "stall-32",
+      "kind": "lantern",
+      "position": [
+        -259.5784589445195,
+        2.37,
+        -164.12106684556096
+      ],
+      "yaw": -1.3743962317196141,
+      "chapterId": "northeast"
+    },
+    {
+      "id": "flowers-stall-32",
+      "sourceId": "stall-32",
+      "kind": "counter-flower",
+      "position": [
+        -259.4184442227414,
+        1.01,
+        -163.31683100402302
+      ],
+      "yaw": -1.3743962317196141,
+      "chapterId": "northeast"
+    },
+    {
+      "id": "sign-stall-15",
+      "sourceId": "stall-15",
+      "kind": "vendor-sign",
+      "position": [
+        -214.65306999473418,
+        1.53,
+        31.32127394437694
+      ],
+      "yaw": 0.10049885507745582,
+      "label": "肉夹馍",
+      "chapterId": "northwest"
+    },
+    {
+      "id": "lantern-stall-15",
+      "sourceId": "stall-15",
+      "kind": "lantern",
+      "position": [
+        -215.2157614628722,
+        2.37,
+        30.724718572525614
+      ],
+      "yaw": 0.10049885507745582,
+      "chapterId": "northwest"
+    },
+    {
+      "id": "flowers-stall-15",
+      "sourceId": "stall-15",
+      "kind": "counter-flower",
+      "position": [
+        -214.39989898683748,
+        1.01,
+        30.64244816351666
+      ],
+      "yaw": 0.10049885507745582,
+      "chapterId": "northwest"
+    },
+    {
+      "id": "bunting-stall-15",
+      "sourceId": "stall-15",
+      "kind": "bunting",
+      "position": [
+        -214.71828434333884,
+        2.5300000000000002,
+        30.67455368898357
+      ],
+      "yaw": 0.10049885507745582,
+      "chapterId": "northwest"
+    },
+    {
+      "id": "sign-stall-17",
+      "sourceId": "stall-17",
+      "kind": "vendor-sign",
+      "position": [
+        -212.26517982097405,
+        1.53,
+        31.080482503375137
+      ],
+      "yaw": 0.10049885507745582,
+      "label": "凉皮",
+      "chapterId": "northwest"
+    },
+    {
+      "id": "lantern-stall-17",
+      "sourceId": "stall-17",
+      "kind": "lantern",
+      "position": [
+        -212.82787128911207,
+        2.37,
+        30.48392713152381
+      ],
+      "yaw": 0.10049885507745582,
+      "chapterId": "northwest"
+    },
+    {
+      "id": "flowers-stall-17",
+      "sourceId": "stall-17",
+      "kind": "counter-flower",
+      "position": [
+        -212.01200881307736,
+        1.01,
+        30.401656722514858
+      ],
+      "yaw": 0.10049885507745582,
+      "chapterId": "northwest"
+    },
+    {
+      "id": "sign-stall-21",
+      "sourceId": "stall-21",
+      "kind": "vendor-sign",
+      "position": [
+        -272.3243486493341,
+        1.53,
+        -244.91463359635708
+      ],
+      "yaw": -1.43052732826393,
+      "label": "羊肉串",
+      "chapterId": "northwest"
+    },
+    {
+      "id": "lantern-stall-21",
+      "sourceId": "stall-21",
+      "kind": "lantern",
+      "position": [
+        -271.75063741218327,
+        2.37,
+        -245.50059896766055
+      ],
+      "yaw": -1.43052732826393,
+      "chapterId": "northwest"
+    },
+    {
+      "id": "flowers-stall-21",
+      "sourceId": "stall-21",
+      "kind": "counter-flower",
+      "position": [
+        -271.63599364166595,
+        1.01,
+        -244.68865266039538
+      ],
+      "yaw": -1.43052732826393,
+      "chapterId": "northwest"
+    },
+    {
+      "id": "sign-stall-30",
+      "sourceId": "stall-30",
+      "kind": "vendor-sign",
+      "position": [
+        -263.2264257277703,
+        1.53,
+        -181.20235610801709
+      ],
+      "yaw": -1.421882087294035,
+      "label": "担担面",
+      "chapterId": "southwest"
+    },
+    {
+      "id": "lantern-stall-30",
+      "sourceId": "stall-30",
+      "kind": "lantern",
+      "position": [
+        -262.6578016788616,
+        2.37,
+        -181.79325939198387
+      ],
+      "yaw": -1.421882087294035,
+      "chapterId": "southwest"
+    },
+    {
+      "id": "flowers-stall-30",
+      "sourceId": "stall-30",
+      "kind": "counter-flower",
+      "position": [
+        -262.5361428085244,
+        1.01,
+        -180.98233453771664
+      ],
+      "yaw": -1.421882087294035,
+      "chapterId": "southwest"
+    },
+    {
+      "id": "bunting-stall-30",
+      "sourceId": "stall-30",
+      "kind": "bunting",
+      "position": [
+        -262.5836194408511,
+        2.5300000000000002,
+        -181.29879301743068
+      ],
+      "yaw": -1.421882087294035,
+      "chapterId": "southwest"
+    },
+    {
+      "id": "sign-stall-34",
+      "sourceId": "stall-34",
+      "kind": "vendor-sign",
+      "position": [
+        -257.91761960266194,
+        1.53,
+        -152.26727816508154
+      ],
+      "yaw": -1.3849606405130954,
+      "label": "红油抄手",
+      "chapterId": "southwest"
+    },
+    {
+      "id": "lantern-stall-34",
+      "sourceId": "stall-34",
+      "kind": "lantern",
+      "position": [
+        -257.3711951296457,
+        2.37,
+        -152.87876839009655
+      ],
+      "yaw": -1.3849606405130954,
+      "chapterId": "southwest"
+    },
+    {
+      "id": "flowers-stall-34",
+      "sourceId": "stall-34",
+      "kind": "counter-flower",
+      "position": [
+        -257.2196854553017,
+        1.01,
+        -152.07288699771914
+      ],
+      "yaw": -1.3849606405130954,
+      "chapterId": "southwest"
+    },
+    {
+      "id": "sign-stall-39",
+      "sourceId": "stall-39",
+      "kind": "vendor-sign",
+      "position": [
+        -222.10303467758433,
+        1.53,
+        29.422185276362075
+      ],
+      "yaw": -1.3624728777701394,
+      "label": "鲜花饼",
+      "chapterId": "southwest"
+    },
+    {
+      "id": "lantern-stall-39",
+      "sourceId": "stall-39",
+      "kind": "lantern",
+      "position": [
+        -221.57049825017603,
+        2.37,
+        28.798562831702494
+      ],
+      "yaw": -1.3624728777701394,
+      "chapterId": "southwest"
+    },
+    {
+      "id": "flowers-stall-39",
+      "sourceId": "stall-39",
+      "kind": "counter-flower",
+      "position": [
+        -221.4009059412301,
+        1.01,
+        29.600833639314477
+      ],
+      "yaw": -1.3624728777701394,
+      "chapterId": "southwest"
+    },
+    {
+      "id": "sign-stall-43",
+      "sourceId": "stall-43",
+      "kind": "vendor-sign",
+      "position": [
+        -179.6568555223082,
+        1.53,
+        -88.12871787509397
+      ],
+      "yaw": 0.18788231212971668,
+      "label": "热干面",
+      "chapterId": "central"
+    },
+    {
+      "id": "lantern-stall-43",
+      "sourceId": "stall-43",
+      "kind": "lantern",
+      "position": [
+        -180.26946279232573,
+        2.37,
+        -88.67388971288614
+      ],
+      "yaw": 0.18788231212971668,
+      "chapterId": "central"
+    },
+    {
+      "id": "flowers-stall-43",
+      "sourceId": "stall-43",
+      "kind": "counter-flower",
+      "position": [
+        -179.46389317113554,
+        1.01,
+        -88.82704840645424
+      ],
+      "yaw": 0.18788231212971668,
+      "chapterId": "central"
+    },
+    {
+      "id": "bunting-stall-43",
+      "sourceId": "stall-43",
+      "kind": "bunting",
+      "position": [
+        -179.77826180379512,
+        2.5300000000000002,
+        -88.76727916018376
+      ],
+      "yaw": 0.18788231212971668,
+      "chapterId": "central"
+    },
+    {
+      "id": "sign-stall-47",
+      "sourceId": "stall-47",
+      "kind": "vendor-sign",
+      "position": [
+        -171.4439071988186,
+        1.53,
+        -102.01558445214219
+      ],
+      "yaw": -2.9536624599073957,
+      "label": "臭豆腐",
+      "chapterId": "central"
+    },
+    {
+      "id": "lantern-stall-47",
+      "sourceId": "stall-47",
+      "kind": "lantern",
+      "position": [
+        -170.83127382582927,
+        2.37,
+        -101.47044194756224
+      ],
+      "yaw": -2.9536624599073957,
+      "chapterId": "central"
+    },
+    {
+      "id": "flowers-stall-47",
+      "sourceId": "stall-47",
+      "kind": "counter-flower",
+      "position": [
+        -171.63683611262,
+        1.01,
+        -101.31724468224546
+      ],
+      "yaw": -2.9536624599073957,
+      "chapterId": "central"
+    },
+    {
+      "id": "sign-stall-12",
+      "sourceId": "stall-12",
+      "kind": "vendor-sign",
+      "position": [
+        -180.02866247521203,
+        1.53,
+        27.8297980498507
+      ],
+      "yaw": 0.10049885507745582,
+      "label": "胡辣汤",
+      "chapterId": "central"
+    },
+    {
+      "id": "lantern-stall-12",
+      "sourceId": "stall-12",
+      "kind": "lantern",
+      "position": [
+        -180.59135394335004,
+        2.37,
+        27.233242677999375
+      ],
+      "yaw": 0.10049885507745582,
+      "chapterId": "central"
+    },
+    {
+      "id": "flowers-stall-12",
+      "sourceId": "stall-12",
+      "kind": "counter-flower",
+      "position": [
+        -179.77549146731533,
+        1.01,
+        27.150972268990422
+      ],
+      "yaw": 0.10049885507745582,
+      "chapterId": "central"
+    },
+    {
+      "id": "sign-food-vendor-changfen",
+      "sourceId": "food-vendor-changfen",
+      "kind": "vendor-sign",
+      "position": [
+        -153.75,
+        1.1400000000000001,
+        -26.25
+      ],
+      "yaw": -0.7853981634,
+      "label": "肠粉",
+      "chapterId": "lingnan-islands"
+    },
+    {
+      "id": "lantern-food-vendor-changfen",
+      "sourceId": "food-vendor-changfen",
+      "kind": "lantern",
+      "position": [
+        -153.75,
+        1.94,
+        -26.25
+      ],
+      "yaw": -0.7853981634,
+      "chapterId": "lingnan-islands"
+    },
+    {
+      "id": "sign-food-vendor-shuangpinai",
+      "sourceId": "food-vendor-shuangpinai",
+      "kind": "vendor-sign",
+      "position": [
+        69.335,
+        1.1,
+        -17.932
+      ],
+      "yaw": 3.141592653589793,
+      "label": "双皮奶",
+      "chapterId": "lingnan-islands"
+    },
+    {
+      "id": "lantern-food-vendor-shuangpinai",
+      "sourceId": "food-vendor-shuangpinai",
+      "kind": "lantern",
+      "position": [
+        69.335,
+        1.9,
+        -17.932
+      ],
+      "yaw": 3.141592653589793,
+      "chapterId": "lingnan-islands"
+    },
+    {
+      "id": "sign-food-vendor-qingbuliang",
+      "sourceId": "food-vendor-qingbuliang",
+      "kind": "vendor-sign",
+      "position": [
+        -178,
+        1.1400000000000001,
+        -92
+      ],
+      "yaw": -1.5707963268,
+      "label": "清补凉",
+      "chapterId": "lingnan-islands"
+    },
+    {
+      "id": "lantern-food-vendor-qingbuliang",
+      "sourceId": "food-vendor-qingbuliang",
+      "kind": "lantern",
+      "position": [
+        -178,
+        1.94,
+        -92
+      ],
+      "yaw": -1.5707963268,
+      "chapterId": "lingnan-islands"
+    },
+    {
+      "id": "sign-food-vendor-jidanzi",
+      "sourceId": "food-vendor-jidanzi",
+      "kind": "vendor-sign",
+      "position": [
+        261.191,
+        1.1900000000000002,
+        32.992
+      ],
+      "yaw": 3.141592653589793,
+      "label": "鸡蛋仔",
+      "chapterId": "hongkong-macao-taiwan"
+    },
+    {
+      "id": "lantern-food-vendor-jidanzi",
+      "sourceId": "food-vendor-jidanzi",
+      "kind": "lantern",
+      "position": [
+        261.191,
+        1.99,
+        32.992
+      ],
+      "yaw": 3.141592653589793,
+      "chapterId": "hongkong-macao-taiwan"
+    },
+    {
+      "id": "sign-food-vendor-fenglisu",
+      "sourceId": "food-vendor-fenglisu",
+      "kind": "vendor-sign",
+      "position": [
+        -198.75,
+        1.1400000000000001,
+        -172.75
+      ],
+      "yaw": 0,
+      "label": "凤梨酥",
+      "chapterId": "hongkong-macao-taiwan"
+    },
+    {
+      "id": "lantern-food-vendor-fenglisu",
+      "sourceId": "food-vendor-fenglisu",
+      "kind": "lantern",
+      "position": [
+        -198.75,
+        1.94,
+        -172.75
+      ],
+      "yaw": 0,
+      "chapterId": "hongkong-macao-taiwan"
+    },
+    {
+      "id": "sign-food-vendor-portuguese-egg-tart",
+      "sourceId": "food-vendor-portuguese-egg-tart",
+      "kind": "vendor-sign",
+      "position": [
+        -76.317,
+        1.1,
+        5.657
+      ],
+      "yaw": 0.463647609,
+      "label": "葡式蛋挞",
+      "chapterId": "hongkong-macao-taiwan"
+    },
+    {
+      "id": "lantern-food-vendor-portuguese-egg-tart",
+      "sourceId": "food-vendor-portuguese-egg-tart",
+      "kind": "lantern",
+      "position": [
+        -76.317,
+        1.9,
+        5.657
+      ],
+      "yaw": 0.463647609,
+      "chapterId": "hongkong-macao-taiwan"
+    }
+  ],
+  "placement": "Derived existingstall/tray attachments only; no walkingaisle props or new blocking solids"
+}

@@ -2,6 +2,7 @@
 // 默认"核心三区"视图（garden/temple/bazaar/pond 合并边界取景）；保留"全域含外围"。
 // 标签分层：全域/核心只显示区域级标签；分区视图显示设施名；OSM 注记默认隐藏（调试开关）。
 import * as THREE from 'three';
+import { installStreetLife } from './street-life.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
@@ -46,6 +47,12 @@ controls.enableDamping = true;
 let walkModeOf = () => 'orbit';   // 步行控制器装好后改指 walk.mode()（阴影焦点：步行 = 视线前方，轨道 = 注视点）
 // wave11-lighting：灯光 / 阴影 / 天空由 web/lighting.js 按 lighting/presets.json 建（旧的固定 Hemisphere + Directional 是其读不到预设时的回退）
 const lighting = installLighting({ renderer, scene, camera, controls, params: new URLSearchParams(location.search), getWalkMode: () => walkModeOf() });
+let streetLife=null,streetLifeError=null,streetLastTime=performance.now();
+fetch('/inputs/street-life.json').then(r=>{if(!r.ok)throw new Error('街区装饰暂未就绪');return r.json();})
+  .then(manifest=>{streetLife=installStreetLife({scene,manifest});})
+  .catch(error=>{streetLifeError=error.message;console.warn('street-life fallback',error);});
+window.__streetLife={status:()=>({ready:!!streetLife,error:streetLifeError,...streetLife?.stats})};
+addEventListener('pagehide',event=>{if(!event.persisted)streetLife?.dispose();});
 let worldArtStyle = null;
 const worldArtMaterials = new Map();
 const worldArtOwners = [];
@@ -770,6 +777,7 @@ installInfocard({ raycaster: ray, camera, scene, renderer, getLayout: () => layo
 // 顺序必须在 walk.tick 之前 —— CruiseDriver 要先于控制器步进设置输入）
 const perf = setupPerf({ renderer, camera, controls, walk, hud });
 renderer.setAnimationLoop(() => {
+  const costStart=performance.now();
   perf?.tick();
   // 工单 D（镜头所有权）：步行/游玩模式（含 Esc 解锁后的暂停）镜头归 walk/play
   // 所有——orbit 的 update() 一律不跑（damping 也会把镜头拉回旧 target）；
@@ -779,8 +787,15 @@ renderer.setAnimationLoop(() => {
     if (controls.enabled) controls.update();
   }
   walk?.tick();
+  const costWalk=performance.now();
   lighting.tick();
-  renderer.render(scene, camera); drawLabels();
+  const streetNow=performance.now();
+  streetLife?.update({feet:play?.ride()?.feetPosition()??window.__walk?.controller?.feetPosition()??camera.position.toArray(),
+    dt:Math.min(.05,Math.max(0,(streetNow-streetLastTime)/1000)),paused:play?.core.session.paused??false,timeOfDay:lighting.state().preset??'day'});
+  streetLastTime=streetNow;
+  const costLight=performance.now();
+  renderer.render(scene, camera);const costRender=performance.now();drawLabels();
+  window.__frameCosts={walkMs:costWalk-costStart,lightMs:costLight-costWalk,renderMs:costRender-costLight,labelsMs:performance.now()-costRender};
 });
 window.__renderOnce = () => { lighting.tick(); renderer.render(scene, camera); };   // wave11-lighting：测量钩子（scripts/lighting-perf.mjs 强制渲染计时）
 

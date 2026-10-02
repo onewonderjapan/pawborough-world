@@ -4,12 +4,13 @@
 
 ## 下一轮：整图美术与全国寻味
 
-2026-10-02 机主要求准备长任务计划，换模型后执行。当前 **计划就绪，施工未启动**；上一轮近景美术与公开站点状态见 [美术方向](ART-DIRECTION-20261002.md)。
+2026-10-02 机主要求准备长任务计划，换模型后执行。当前 **24 味 / 8 章本地候选已完成验收**；上一轮近景美术与公开站点状态见 [美术方向](ART-DIRECTION-20261002.md)。
 
+- [24 味验收与交付](NATIONAL-SNACK-ATLAS-20261003.md)：实际证据、运行方法、资源恢复和后续状态。
 - [换模型启动交接](LONG-RUN-HANDOFF-20261002.md)：真实基线、阅读顺序、可复制启动指令。
 - [产品与美术规格](superpowers/specs/2026-10-02-national-snack-atlas-design.md)：24 味/8 章、全图分布、图鉴、四类动作、旧档与性能边界。
 - [长任务实施计划](superpowers/plans/2026-10-02-world-art-snack-atlas.md)：M00–M14 按 6→12→24 交付本地完整候选；后续发布和其他四只角色另列。
-- [食品候选表](plans/national-snacks-20261002/content-candidates.json) / [任务状态](plans/national-snacks-20261002/task-state.json)：候选不等于已采用资产，所有施工任务尚未开始。
+- [食品候选表](plans/national-snacks-20261002/content-candidates.json) / [任务状态](plans/national-snacks-20261002/task-state.json)：全部 24 味模型与缩略图已采用；24 点实际互动、连续路线与旧档兼容已验收。
 
 ## 当前交付
 

@@ -3,19 +3,23 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import {chromium} from 'playwright';
 const base=process.env.BASE??'http://127.0.0.1:5613/',out=process.env.ART_DIR??'/home/baibai/outbox/pawborough-national-snacks-20261002/m08';
+const foodCount=Number(process.env.EXPECT_FOODS??6),cartCount=Number(process.env.EXPECT_CARTS??1);
 await fs.mkdir(out,{recursive:true});
-const browser=await chromium.launch({executablePath:'/usr/bin/google-chrome',headless:false,args:['--no-sandbox','--disable-backgrounding-occluded-windows','--disable-renderer-backgrounding']});
+const headlessGpu=process.env.PB_HEADLESS_GPU==='1';
+const browser=await chromium.launch({executablePath:'/usr/bin/google-chrome',headless:headlessGpu,args:['--no-sandbox','--disable-background-timer-throttling','--disable-backgrounding-occluded-windows','--disable-renderer-backgrounding',...(headlessGpu?['--enable-gpu','--use-gl=angle','--use-angle=gl']:[])]});
 try{
  const page=await browser.newPage({viewport:{width:1280,height:720}}),errors=[],requests=[];
+ await page.bringToFront();
  page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(/foods\/.*\.glb/.test(r.url()))requests.push(r.url());});
  await page.goto(new URL('?play=1&at=center',base).href);
  await page.waitForFunction(()=>window.__play?.status().foodsReady&&window.__play.status().bikePlaced,undefined,{timeout:120000});
+ const renderer=await page.evaluate(()=>{const gl=document.querySelector('canvas').getContext('webgl2'),e=gl.getExtension('WEBGL_debug_renderer_info');return e&&gl.getParameter(e.UNMASKED_RENDERER_WEBGL);});assert.match(renderer,/NVIDIA.*GB10/,'actual GPU required');
  const initial=await page.evaluate(()=>window.__play.status());
  const initialRequests=requests.length;assert.ok(initialRequests<=3,`birth first batch<=3 actual${initialRequests}`);
  await page.evaluate(()=>window.__walk.controller.teleport([69.335,.04,-21.932],0,0));
- await page.waitForFunction(()=>window.__play.status().stallsReady===6,undefined,{timeout:60000});
+ await page.waitForFunction(n=>window.__play.status().stallsReady===n,foodCount,{timeout:60000});
  const active=await page.evaluate(()=>window.__play.status());
- assert.equal(active.vendorFailures.length,0,JSON.stringify(active.vendorFailures));assert.equal(active.vendors.length,6);assert.equal(active.cartCount,1);
+ assert.equal(active.vendorFailures.length,0,JSON.stringify(active.vendorFailures));assert.equal(active.vendors.length,foodCount);assert.equal(active.cartCount,cartCount);
  const results=[];
  for(const vendor of active.vendors){
   await page.evaluate(v=>{window.__walk.resume();window.__walk.controller.teleport([v.customerPoint.x,v.groundY+.04,v.customerPoint.z],0,0);},vendor);
@@ -23,7 +27,9 @@ try{
   await page.waitForTimeout(600);await page.keyboard.press('e');
   if((await page.evaluate(()=>window.__play.status())).heldItem!==vendor.foodId){await page.waitForTimeout(800);await page.keyboard.press('e');}
   await page.waitForFunction(id=>window.__play.status().heldItem===id,vendor.foodId,{timeout:10000});
-  await page.keyboard.press('f');await page.waitForFunction(()=>window.__play.status().eating?.elapsed>=1.05,undefined,{timeout:5000});
+  await page.bringToFront();await page.keyboard.press('f');
+  try{await page.waitForFunction(()=>window.__play.status().eating?.elapsed>=1.05,undefined,{timeout:5000});}
+  catch(error){console.log('Food phase timeout',vendor.foodId,JSON.stringify(await page.evaluate(()=>{const gl=document.querySelector('canvas').getContext('webgl2'),e=gl.getExtension('WEBGL_debug_renderer_info');return {play:window.__play.status(),visibility:document.visibilityState,focus:document.hasFocus(),costs:window.__frameCosts,renderer:e&&gl.getParameter(e.UNMASKED_RENDERER_WEBGL)};})));throw error;}
   await page.keyboard.press('p');
   const frozen=await page.evaluate(()=>window.__play.status());
   assert.ok(frozen.paused);assert.ok(frozen.eating.elapsed<2.5);
@@ -36,11 +42,11 @@ try{
   await page.keyboard.press('p');await page.waitForFunction(id=>window.__play.status().tasted.includes(id)&&!window.__play.status().eating,vendor.foodId,{timeout:10000});
   results.push({foodId:vendor.foodId,pose:frozen.foodPose,elapsed:frozen.eating.elapsed});
  }
- assert.equal((await page.evaluate(()=>window.__play.status())).stamps,6);
+ assert.equal((await page.evaluate(()=>window.__play.status())).stamps,foodCount);
  await page.keyboard.press('b');await page.screenshot({path:`out/atlas-six.png`.replace('out/',out+'/')});await page.keyboard.press('Escape');
  const final=await page.evaluate(()=>window.__play.status());assert.ok(final.complete);assert.ok(final.foodResources.residentCount<=8);assert.ok(final.foodResources.loadingCount<=2);
  assert.deepEqual(errors,[]);
  await fs.writeFile(`${out}/M08-six-actual-assets.json`,JSON.stringify({scope:'actual input/food contact/pause/completion, explicit fixture relocation; continuous route proof separate',initialRequests,results,final,errors},null,2)+'\n','utf8');
- console.log('SNACK_SIX_BROWSER PASS: 6 real assets, actual E/F, measured custom palms, paused phases, six unique completion');
+ console.log(`SNACK_FOOD_BROWSER PASS: ${foodCount} real assets, actual E/F, measured custom palms, paused phases, unique completion`);
  await page.close();
 }finally{await browser.close();}

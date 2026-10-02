@@ -190,9 +190,11 @@ export function installPlayHud({ core, state = null, overlay = null }) {
   // ---- 目标/集章（renderGoal 每帧被调：只在 tasted/complete/goal 变化时重建章与文案，
   //      每帧只更新距离文本；新章只加一次落章动画类，不因重建而重播） ----
   let goalBits = '', goalComplete = false, goalId = null;
-  function buildStamps(foods, bits, newIds) {
+  function buildStamps(foods, bits, newIds, targetId) {
     stampsBox.replaceChildren();
-    foods.forEach((f, i) => {
+    let visible=foods.map((f,i)=>({f,i}));
+    if(visible.length>6){const all=visible;visible=all.filter(({i})=>bits[i]==='1').slice(-5);const target=all.find(({f})=>f.id===targetId);if(target&&!visible.some(({f})=>f.id===targetId))visible.push(target);for(const item of all){if(visible.length>=6)break;if(!visible.some(({f})=>f.id===item.f.id))visible.push(item);}}
+    visible.forEach(({f,i}) => {
       const s = document.createElement('span');
       s.className = 'stamp'
         + (bits[i] === '1' ? ' full' : '')
@@ -208,13 +210,13 @@ export function installPlayHud({ core, state = null, overlay = null }) {
     const foods = st.foods;
     const bits = foods.map((f) => (st.tasted.has(f.id) ? '1' : '0')).join('');
     const complete = !!st.complete;
-    const gid = st.goal?.id ?? null;
-    if (bits !== goalBits || complete !== goalComplete) {
+    const gid = st.goal ? `${st.goal.id}|${st.goal.labelZh}|${st.goal.stallLabelZh}` : null;
+    if (bits !== goalBits || complete !== goalComplete || gid !== goalId) {
       const newIds = [];
       foods.forEach((f, i) => {
         if (goalBits && bits[i] === '1' && goalBits[i] !== '1') newIds.push(f.id);
       });
-      buildStamps(foods, bits, newIds);
+      buildStamps(foods, bits, newIds,st.goal?.id);
       const n = foods.filter((_, i) => bits[i] === '1').length;
       goalCount.textContent = `已尝 ${n}/${foods.length}`;
       if (complete) {

@@ -23,6 +23,11 @@ const catalogJson = JSON.parse(await readFile(resolve(AREA, 'inputs/food-catalog
 const assetsJson = JSON.parse(await readFile(resolve(AREA, 'inputs/play-foods.json'), 'utf8'));
 const vendorsJson = JSON.parse(await readFile(resolve(AREA, 'inputs/play-vendors.json'), 'utf8'));
 const profilesJson = JSON.parse(await readFile(resolve(AREA, 'inputs/food-pose-profiles.json'), 'utf8'));
+// Fixed legacy fixture for candidate-choice negative cases. The full current
+// edition is checked separately with real physics/controller routes.
+const legacyIds=new Set(['xiaolongbao','congyoubing','youdunzi']);
+catalogJson.foods=catalogJson.foods.filter(f=>legacyIds.has(f.id));catalogJson.requiredFoodIds=[...legacyIds];
+vendorsJson.vendors=vendorsJson.vendors.filter(v=>legacyIds.has(v.foodId));
 
 const registry = createFoodRegistry({
   catalog: catalogJson,

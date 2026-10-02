@@ -119,6 +119,7 @@ export function atlasEntries(registry, snapshot) {
         id: ch.id,
         name: ch.name ?? ch.titleZh ?? ch.id,
         total: 0,
+        targetTotal: ch.targetCount??0,
         discovered: 0,
         tasted: 0,
       });
@@ -135,7 +136,7 @@ export function atlasEntries(registry, snapshot) {
     if (entry.isDiscovered) stat.discovered += 1;
     if (entry.isTasted) stat.tasted += 1;
   }
-  entries.chapters = Array.from(chaptersMap.values());
+  entries.chapters = Array.from(chaptersMap.values()).map(ch=>({...ch,available:ch.total,total:Math.max(ch.total,ch.targetTotal??0)}));
 
   // 筛选器辅助函数
   entries.filterBy = (filterKey) => {

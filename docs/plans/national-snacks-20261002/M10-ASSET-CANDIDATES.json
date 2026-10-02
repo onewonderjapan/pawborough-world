@@ -1,0 +1,302 @@
+{
+  "stage": "candidate_assets_adopted_inactive",
+  "sourceScript": "asset-authoring/snacks/national/build_twelve.py",
+  "foods": [
+    {
+      "id": "kaolengmian",
+      "profile": "wrapped",
+      "utensilKind": "none",
+      "glbBytes": 241860,
+      "glbSha256": "5e12f28897caf59d6382c677a77404dd2df4854759421a76f4907cf1d6618e3f",
+      "thumbnailBytes": 112062,
+      "thumbnailSha256": "a8eefbe272f0e022e8c75819e9fa387ae34137730376f4c1d9a5c941f58c9200",
+      "modelBounds": {
+        "min": [
+          -0.09,
+          -0.003,
+          -0.048
+        ],
+        "max": [
+          0.09,
+          0.092,
+          0.0519
+        ],
+        "size": [
+          0.18,
+          0.095,
+          0.0999
+        ]
+      },
+      "partNames": [
+        "edible",
+        "wrapper"
+      ],
+      "anchors": {
+        "leftSupport": [
+          0.075,
+          0,
+          0
+        ],
+        "rightSupport": [
+          -0.075,
+          0,
+          0
+        ],
+        "bite": [
+          0,
+          0.085,
+          0.03
+        ]
+      }
+    },
+    {
+      "id": "niandoubao",
+      "profile": "cupped",
+      "utensilKind": "none",
+      "glbBytes": 125468,
+      "glbSha256": "46c6f6698fc00406bf4114259b254923f5b8b00b15d3f08c77994454e00b4060",
+      "thumbnailBytes": 74125,
+      "thumbnailSha256": "b5a4b529bdbb95fd8645c817ca5844066c688b391365e689f09ba55cb4ad3ca1",
+      "modelBounds": {
+        "min": [
+          -0.08,
+          0,
+          -0.042
+        ],
+        "max": [
+          0.08,
+          0.066,
+          0.042
+        ],
+        "size": [
+          0.16,
+          0.066,
+          0.084
+        ]
+      },
+      "partNames": [
+        "edible"
+      ],
+      "anchors": {
+        "leftSupport": [
+          0.065,
+          0,
+          0
+        ],
+        "rightSupport": [
+          -0.065,
+          0,
+          0
+        ],
+        "bite": [
+          0,
+          0.06,
+          0.025
+        ]
+      }
+    },
+    {
+      "id": "xianhuabing",
+      "profile": "cupped",
+      "utensilKind": "none",
+      "glbBytes": 93528,
+      "glbSha256": "6488d4a2911e6956eaeaf36c5f959907870c72b56a1a20003f87e2eaac06d4c2",
+      "thumbnailBytes": 95110,
+      "thumbnailSha256": "23a0bba3b06c3357729826da535e5340df8144cc0d20609f80ed851c7949db99",
+      "modelBounds": {
+        "min": [
+          -0.082,
+          0,
+          -0.0808
+        ],
+        "max": [
+          0.082,
+          0.0518,
+          0.0808
+        ],
+        "size": [
+          0.164,
+          0.0518,
+          0.1615
+        ]
+      },
+      "partNames": [
+        "edible"
+      ],
+      "anchors": {
+        "leftSupport": [
+          0.065,
+          0,
+          0
+        ],
+        "rightSupport": [
+          -0.065,
+          0,
+          0
+        ],
+        "bite": [
+          0,
+          0.048,
+          0.03
+        ]
+      }
+    },
+    {
+      "id": "reganmian",
+      "profile": "bowl",
+      "utensilKind": "chopsticks",
+      "glbBytes": 304712,
+      "glbSha256": "a827e464d2b5bdbd051360a8efe7aea98255ace6d224a1ef0bab813e05b5c11d",
+      "thumbnailBytes": 114525,
+      "thumbnailSha256": "aaf3d29ed24ce0c79684deb7425e2af258471883be5559f71b3fa4b7ca652851",
+      "modelBounds": {
+        "min": [
+          -0.075,
+          -0.025,
+          -0.075
+        ],
+        "max": [
+          0.0934,
+          0.047,
+          0.075
+        ],
+        "size": [
+          0.1684,
+          0.072,
+          0.15
+        ]
+      },
+      "partNames": [
+        "container",
+        "edible",
+        "utensil"
+      ],
+      "anchors": {
+        "leftSupport": [
+          0.07,
+          0,
+          -0.03
+        ],
+        "content": [
+          0,
+          0.018,
+          0
+        ],
+        "bite": [
+          0,
+          0.018,
+          0
+        ],
+        "rightSupport": [
+          -0.05,
+          0,
+          0
+        ],
+        "toolGrip": [
+          0,
+          0,
+          0
+        ],
+        "toolBite": [
+          0,
+          0,
+          0.11
+        ]
+      }
+    },
+    {
+      "id": "jidanzi",
+      "profile": "wrapped",
+      "utensilKind": "none",
+      "glbBytes": 180484,
+      "glbSha256": "607d14cec90c94ea242a547c59f7fec8627173197ad7fa826417c107d3058fce",
+      "thumbnailBytes": 98977,
+      "thumbnailSha256": "4a18e089b2efae9cbc855bf07fde14ff35b841d6badfa6f4c8d5ea49dee8361f",
+      "modelBounds": {
+        "min": [
+          -0.085,
+          0,
+          -0.0386
+        ],
+        "max": [
+          0.085,
+          0.122,
+          0.0298
+        ],
+        "size": [
+          0.17,
+          0.122,
+          0.0684
+        ]
+      },
+      "partNames": [
+        "edible",
+        "wrapper"
+      ],
+      "anchors": {
+        "leftSupport": [
+          0.075,
+          0,
+          0
+        ],
+        "rightSupport": [
+          -0.075,
+          0,
+          0
+        ],
+        "bite": [
+          0,
+          0.085,
+          0.03
+        ]
+      }
+    },
+    {
+      "id": "portuguese-egg-tart",
+      "profile": "cupped",
+      "utensilKind": "none",
+      "glbBytes": 79856,
+      "glbSha256": "4853f78b4b91582243588ee81905011c502b57136316b4f17150aa6afec30222",
+      "thumbnailBytes": 87932,
+      "thumbnailSha256": "965f66481a8dd118f3793667ace0be9c2d508b2f47109d1d8a0a010cc508eee8",
+      "modelBounds": {
+        "min": [
+          -0.0772,
+          0,
+          -0.0772
+        ],
+        "max": [
+          0.0772,
+          0.035,
+          0.0772
+        ],
+        "size": [
+          0.1544,
+          0.035,
+          0.1544
+        ]
+      },
+      "partNames": [
+        "edible"
+      ],
+      "anchors": {
+        "leftSupport": [
+          0.065,
+          0,
+          0
+        ],
+        "rightSupport": [
+          -0.065,
+          0,
+          0
+        ],
+        "bite": [
+          0,
+          0.034,
+          0.045
+        ]
+      }
+    }
+  ],
+  "rootReview": "Actual six renders inspected; jidanzi membrane, visible reganmian noodles and kaolengmian filling repaired. Runtime activation waits M08."
+}

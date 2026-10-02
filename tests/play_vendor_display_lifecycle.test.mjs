@@ -1,0 +1,6 @@
+import assert from'node:assert/strict';import{requestVendorDisplay,cancelVendorDisplay}from'../scene-authoring/yuyuan-area/web/play/vendor-displays.js';
+let resolve;const promise=new Promise(ok=>resolve=ok),owners=new Set(),foods={acquire(_id,v){owners.add(v);return promise;},release(_id,v){owners.delete(v);}};
+const vendor={foodId:'food',enabled:true};let created=0,removed=0;const create=()=>{created++;return{removeFromParent(){removed++;}};};
+const first=requestVendorDisplay(vendor,foods,create);cancelVendorDisplay(vendor,foods);const second=requestVendorDisplay(vendor,foods,create);resolve();await Promise.all([first,second]);assert.equal(created,1,'only latest visibility request creates a display');assert.equal(owners.size,1);cancelVendorDisplay(vendor,foods);assert.equal(removed,1);assert.equal(owners.size,0);
+let fail;const rejected=new Promise((_ok,no)=>fail=no),bad={acquire(){return rejected;},release(){}};const v={foodId:'bad',enabled:true};const pending=requestVendorDisplay(v,bad,create);cancelVendorDisplay(v,bad);v.displayWanted=true;v.displayGeneration++;fail(new Error('old request'));await pending;assert.equal(v.displayWanted,true,'stale rejection must not cancel a later visibility request');
+console.log('VENDOR_DISPLAY_LIFECYCLE PASS: leave/re-enter pending download, one instance, no ghost pin, stale rejection safe');

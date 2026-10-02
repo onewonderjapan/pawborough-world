@@ -23,6 +23,7 @@ import { mountAtlas } from './atlas.js';
 import { exportCollection, importCollection } from './collection-transfer.js';
 import { deriveVendors, createVendorLayer } from './vendor-layer.js';
 import { findDiscoveries } from './discovery.js';
+import { requestVendorDisplay, cancelVendorDisplay } from './vendor-displays.js';
 import { loadFoodCatalog } from './foods.js';
 import { sampleFoodPose, applyFoodPose, foodAnchorLocal } from './food-pose.js';
 import { RideController, pickDismountSpot } from './vehicle.js';
@@ -228,7 +229,8 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   function goalView() {
     if (gameState.complete && !gameState.trackedFoodId) return { complete: true, foods: gameState.foods, tasted: gameState.tasted };
     const goal = gameState.navigationGoal();
-    return { complete: false, foods: gameState.foods, tasted: gameState.tasted, goal };
+    const displayGoal=goal&&!gameState.discovered.has(goal.id)?{...goal,labelZh:'沿街寻味',stallLabelZh:gameState.registry?.chaptersById.get(goal.chapterId)?.name??'附近食摊'}:goal;
+    return { complete: false, foods: gameState.foods, tasted: gameState.tasted, goal:displayGoal };
   }
 
   // ---- HUD（web/play/hud.js 负责全部 DOM） ----
@@ -470,7 +472,9 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     minimap.setGeometry(layout);
     try {
       // M05 将改为逐味按需加载；此处先保留三味真实 SHA 模型与陈列。
-      foods = await loadFoodCatalog({ foods: gameState.foods, manifest: assets,registry });
+      const bootIds=[...new Set([gameState.heldItem??gameState.basketItem,...gameState.foods.slice(0,3).map(f=>f.id)].filter(Boolean))].slice(0,3);
+      foods = await loadFoodCatalog({ foods: gameState.foods, manifest: assets,registry,initialIds:bootIds });
+      if(foods.initialErrors.length){foodLoadError='部分小吃尚未准备好';hud.message('部分摊位暂时备餐失败，其他小吃和骑车都可以继续');}
       for (const t of stalls.filter(t=>t.enabled)) {
         if (!foods.has(t.foodId)) continue;
         await foods.acquire(t.foodId,t);
@@ -573,7 +577,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     if (placedFeet) hud.message('回到上次的散步进度');
     // 手里/车篮的模型恢复（恰好一个实例）
     refreshHeldModel();
-    if (gameState.eating) core.state.avatar?.setEatingPose(true, gameState.eating.elapsed);
+    if (gameState.eating&&foods?.has(gameState.eating.foodId)) core.state.avatar?.setEatingPose(true, gameState.eating.elapsed);
     hud.renderGoal(goalView());
     // 车的位置/骑乘恢复交给 ensureBikePlaced（物理/bikeView 就绪后按档校验落地）
   }
@@ -688,10 +692,11 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     if(desired&&!foods.has(desired)){
       heldObj=null;
       foods.acquire(desired,heldFoodOwner).then(()=>{if(generation===heldLoadGeneration)refreshHeldModel();})
-        .catch(()=>{if(generation===heldLoadGeneration){gameState.cancelEat();hud.message('这份小吃暂时无法准备，收藏保留；稍后再试');}});
+        .catch(()=>{if(generation===heldLoadGeneration){gameState.cancelEat();avatar.setEatingPose(false);avatar.setHoldingPose(false);hud.message('这份小吃暂时无法准备，收藏保留；按 F 可以重新备餐');}});
       return;
     }
     if(desired)foods.acquire(desired,heldFoodOwner).catch(()=>{});
+    if(gameState.eating&&!avatar.eatingPose)avatar.setEatingPose(true,gameState.eating.elapsed);
     if (gameState.heldItem) {
       const reusable = heldObj?.foodId === gameState.heldItem ? heldObj.obj : null;
       heldObj = { foodId: gameState.heldItem, obj: foods.attachToHands(gameState.heldItem, avatar.model, reusable) };
@@ -866,7 +871,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
 
   function tryEat() {
     if (gameState.vehicle.riding) { hud.setHint('下车再吃，稳当些'); return; }
-    if (!foods || !foods.has(gameState.heldItem)) { hud.setHint('小吃尚未准备好，稍候再品尝'); return; }
+    if (!foods || !foods.has(gameState.heldItem)) { hud.setHint('小吃尚未准备好，正在重新备餐；稍候再按 F');if(gameState.heldItem)refreshHeldModel();return; }
     const gate = gameState.canEat({});
     if (!gate.ok) {
       if (gate.reason === 'empty-hand') hud.setHint('手上没有小吃，先去摊位按 E 取');
@@ -929,12 +934,13 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     characterArt?.update();
     const meal = heldObj?.obj?.foodInstance;
     if (meal && gameState.heldItem && !paused) {
+      const poseStarted=performance.now();
       const anchors = Object.fromEntries(Object.entries(meal.anchors).map(([key,node]) => [key,
         foodAnchorLocal(node,key.startsWith('tool') ? meal.parts.utensil : meal.root)]));
       const targets = sampleFoodPose({profile:meal.presentation.profile,t:gameState.eating?.elapsed??0,
         rig:{mouth:core.state.avatar?.getFoodMouth()},anchors,presentation:{...meal.presentation,eating:!!gameState.eating}});
       const result = applyFoodPose(core.state.avatar,meal,targets);
-      meal.lastPose = {ok:result.ok,contacts:result.contacts,profile:meal.presentation.profile};
+      meal.lastPose = {ok:result.ok,contacts:result.contacts,profile:meal.presentation.profile,cpuMs:performance.now()-poseStarted};
     }
     interactionArt.update({avatar:core.state.avatar,food:heldObj?.obj,state:gameState,feet,paused,dt});
     hud.updateInteraction?.({heldItem:gameState.heldItem,eating:gameState.eating,riding:gameState.vehicle.riding,paused,complete:gameState.complete});
@@ -983,9 +989,8 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     if(Math.hypot(feet[0]-firstDisplayFeet[0],feet[2]-firstDisplayFeet[2])<.5)return;
     const wanted=new Set(stalls.filter(t=>t.enabled).sort((a,b)=>Math.hypot(a.customerPoint.x-feet[0],a.customerPoint.z-feet[2])-Math.hypot(b.customerPoint.x-feet[0],b.customerPoint.z-feet[2])).slice(0,3).filter(t=>Math.hypot(t.customerPoint.x-feet[0],t.customerPoint.z-feet[2])<45));
     for(const t of stalls){
-      if(!wanted.has(t)){if(t.display){t.display.removeFromParent();t.display=null;}if(t.displayWanted){t.displayWanted=false;foods.release(t.foodId,t);}continue;}
-      if(t.display||t.displayWanted)continue;t.displayWanted=true;
-      foods.acquire(t.foodId,t).then(()=>{if(!t.displayWanted)return;const inst=foods.makeDisplay(t.foodId);if(!inst)return;inst.position.set(t.tray.x,t.tray.y,t.tray.z);inst.rotation.y=-t.tray.rotY;scene.add(inst);t.display=inst;}).catch(()=>{t.displayWanted=false;foods.release(t.foodId,t);});
+      if(!wanted.has(t)){if(t.display||t.displayWanted)cancelVendorDisplay(t,foods);continue;}
+      requestVendorDisplay(t,foods,v=>{const inst=foods.makeDisplay(v.foodId);if(!inst)return null;inst.position.set(v.tray.x,v.tray.y,v.tray.z);inst.rotation.y=-v.tray.rotY;scene.add(inst);return inst;});
     }
   }
   function renderGoalDistance(feet) {
@@ -1098,7 +1103,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       vendorFailures,
       cartCount:vendorLayer?.roots.size??0,
       discovered:[...gameState.discovered],
-      foodsReady: !!foods,
+      foodsReady: !!foods&&foods.byId.size>0,
       foodResources: foods?.status()??null,
       foodPose: heldObj?.obj?.foodInstance?.lastPose??null,
       catalogReady,
