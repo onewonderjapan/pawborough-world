@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "planId": "pawborough-national-snacks-20261002",
-  "overallStatus": "active_m02_m03",
+  "overallStatus": "active_m02_m04",
   "executionStarted": true,
   "workersStarted": true,
   "automationCreated": false,
   "cloudChanged": false,
   "currentTask": "M02",
-  "lastUpdated": "2026-10-02T23:21:52+09:00",
+  "lastUpdated": "2026-10-02T23:32:14+09:00",
   "baselineSourceHead": "31bae61f002a7bf5e04aac2c82b526909b87e78b",
   "localCompletionTaskIds": [
     "M00",
@@ -121,18 +121,18 @@
       "dependsOn": [
         "M00"
       ],
-      "status": "implemented",
+      "status": "verified",
       "owner": "Codex art design and integration; Gemini Flash / GLM Flash construction",
       "sourceHead": "8833a76e",
-      "resultCommit": null,
+      "resultCommit": "45b894c7eb215016afe91b5e0dc177bc5767f8a0",
       "evidencePaths": [
         "docs/plans/national-snacks-20261002/M03-RECEIPT.json",
         "/home/baibai/outbox/pawborough-national-snacks-20261002/m03-controlled/M03-browser-baseline.json",
         "/home/baibai/outbox/pawborough-national-snacks-20261002/M03-LIGHTING.json",
         "/home/baibai/outbox/pawborough-national-snacks-20261002/M03-LIGHTING-FALLBACK.json"
       ],
-      "lastCheck": "2026-10-02T23:21:52+09:00",
-      "nextAction": "Commit the tested art pilot, then record exact resultCommit and mark verified.",
+      "lastCheck": "2026-10-02T23:32:14+09:00",
+      "nextAction": "Pilot recipe accepted; promote in M09 after six-taste slice, no repeated full lighting checks unless related code changes.",
       "blocker": null
     },
     {
@@ -142,13 +142,16 @@
       "dependsOn": [
         "M01"
       ],
-      "status": "not_started",
-      "owner": null,
-      "sourceHead": null,
+      "status": "running",
+      "owner": "Codex frozen design; Astra method review; Gemini Flash derived-rig construction",
+      "sourceHead": "45b894c7eb215016afe91b5e0dc177bc5767f8a0",
       "resultCommit": null,
-      "evidencePaths": [],
-      "lastCheck": null,
-      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "evidencePaths": [
+        "docs/plans/national-snacks-20261002/M04-RIG-RULING.md",
+        "/home/baibai/outbox/pawborough-national-snacks-20261002/M04-RIG-WORKORDER.md"
+      ],
+      "lastCheck": "2026-10-02T23:32:14+09:00",
+      "nextAction": "Build and test derived body arm rig only; Codex integrates four food profiles and real visuals afterward.",
       "blocker": null
     },
     {

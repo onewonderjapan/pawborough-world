@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "taskId": "M03",
-  "stage": "implemented_pending_commit",
+  "stage": "verified",
   "sourceHead": "d30f226e",
   "artReview": "Codex accepted the three scoped light/material samples as a restrained foundation; street-life dressing remains M09, owner feedback is distinct.",
   "checks": {
@@ -47,5 +47,6 @@
     "No new world geometry or food models in this task.",
     "The earlier uncontrolled sample had a 1.268s stall; controlled matched pair waits all game assets, warms up and disables browser occlusion throttling; neither controlled run had >100ms frames."
   ],
-  "recordedAt": "2026-10-02T23:21:52+09:00"
+  "recordedAt": "2026-10-02T23:21:52+09:00",
+  "resultCommit": "45b894c7eb215016afe91b5e0dc177bc5767f8a0"
 }
