@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "planId": "pawborough-national-snacks-20261002",
-  "overallStatus": "active_m12_m14",
+  "overallStatus": "complete_local",
   "executionStarted": true,
   "workersStarted": true,
   "automationCreated": false,
   "cloudChanged": false,
-  "currentTask": "M12/M14",
-  "lastUpdated": "2026-10-02T21:19:38.886610+00:00",
+  "currentTask": null,
+  "lastUpdated": "2026-10-02T21:39:11.404797+00:00",
   "baselineSourceHead": "31bae61f002a7bf5e04aac2c82b526909b87e78b",
   "localCompletionTaskIds": [
     "M00",
@@ -46,7 +46,7 @@
       "dependsOn": [
         "M14"
       ],
-      "status": "not_started"
+      "status": "verified"
     }
   ],
   "allowedTaskStatuses": [
@@ -285,7 +285,7 @@
       "status": "verified",
       "owner": "Codex direction/integration, Gemini Flash bounded street-life layer",
       "sourceHead": null,
-      "resultCommit": null,
+      "resultCommit": "6767dda22df3da48a318251d8be5563325e331a0",
       "evidencePaths": [],
       "lastCheck": "2026-10-02T21:19:38.886610+00:00",
       "nextAction": "Localscopeverified; source receipts in docs/NATIONAL-SNACK-ATLAS-20261003.md andoutbox M14 logs. FinalGitintegrationpending.",
@@ -301,7 +301,7 @@
       "status": "verified",
       "owner": "Gemini Flash candidateassets/Codex adoption and activation",
       "sourceHead": null,
-      "resultCommit": null,
+      "resultCommit": "6767dda22df3da48a318251d8be5563325e331a0",
       "evidencePaths": [],
       "lastCheck": null,
       "nextAction": "Twelve actualGPUplay/pose/collection PASS.11roundtrips reused plusjidanzi seamfixfullroundtripPASS. Eightchapters/3carts ready.",
@@ -326,7 +326,7 @@
       "status": "verified",
       "owner": "Gemini Flash bounded6+6 batches, Codex frozenrecipes/oneDandanvisualrepair/adoption",
       "sourceHead": null,
-      "resultCommit": null,
+      "resultCommit": "6767dda22df3da48a318251d8be5563325e331a0",
       "evidencePaths": [],
       "lastCheck": null,
       "nextAction": "All24actualmodels andall24thumbnails SHAadopted.3.2game-timeGPU24foodsPASS, originalGLBsunchanged; thumbnails1308275bytes.",
@@ -343,7 +343,7 @@
       "status": "verified",
       "owner": "Codex actualworld/route acceptance",
       "sourceHead": null,
-      "resultCommit": null,
+      "resultCommit": "6767dda22df3da48a318251d8be5563325e331a0",
       "evidencePaths": [],
       "lastCheck": "2026-10-02T21:19:38.886610+00:00",
       "nextAction": "Localscopeverified; source receipts in docs/NATIONAL-SNACK-ATLAS-20261003.md andoutbox M14 logs. FinalGitintegrationpending.",
@@ -359,7 +359,7 @@
       "status": "verified",
       "owner": "Gemini Flash exportconstruction; sol boundaryreview; Codex reviewfix/integration",
       "sourceHead": null,
-      "resultCommit": null,
+      "resultCommit": "6767dda22df3da48a318251d8be5563325e331a0",
       "evidencePaths": [],
       "lastCheck": "2026-10-02T21:19:38.886610+00:00",
       "nextAction": "Localscopeverified; source receipts in docs/NATIONAL-SNACK-ATLAS-20261003.md andoutbox M14 logs. FinalGitintegrationpending.",
@@ -372,13 +372,13 @@
       "dependsOn": [
         "M13"
       ],
-      "status": "implemented",
+      "status": "verified",
       "owner": "Codex finalacceptance",
       "sourceHead": null,
-      "resultCommit": null,
+      "resultCommit": "6767dda22df3da48a318251d8be5563325e331a0",
       "evidencePaths": [],
-      "lastCheck": "2026-10-02T21:19:38.886610+00:00",
-      "nextAction": "AllrequiredchecksPASS inclstatic24GPU/night/narrow/legacy/17contracts/fullarea/rootbuild. Finishsourcecommit/merge/push/ownedworktreecleanup, then markverified.",
+      "lastCheck": "2026-10-02T21:39:11.404797+00:00",
+      "nextAction": "M00-M14complete. mainmerged/pushed;temporaryworktreearchivedandmergedbranchdeleted. Localstaticpackageverified, cloudR01requiresfreshAWS SSO login.",
       "blocker": null
     },
     {

@@ -1,0 +1,28 @@
+{
+  "status": "verified_local",
+  "runtimeSourceCommit": "6767dda22df3da48a318251d8be5563325e331a0",
+  "packageVersion": "20261003-main-6767dda2",
+  "publicFiles": 242,
+  "publicBytes": 137912864,
+  "modelsNew": 21,
+  "modelsNewBytes": 3784656,
+  "thumbnailCount": 24,
+  "thumbnailBytes": 1308275,
+  "originalGlbsPreserved": 40,
+  "gpuFoodsPass": 24,
+  "continuousRoutesPass": 24,
+  "legacyPlaySuites": "PASS",
+  "atlasContractSuites": 17,
+  "rootBuild": "PASS",
+  "areaVerify": "PASS;currentauthoringcaches/LFSrestored;Shapelyisolatedvenv;offlineCyclesCPU",
+  "sameGpuP95Ratio": 1,
+  "nightAndNarrowStaticCsp": "PASS",
+  "mainMergedAndPushed": true,
+  "activeWorktrees": 1,
+  "activeBranches": [
+    "main"
+  ],
+  "cloudChanged": false,
+  "R01": "AWS SSO tokenexpired;devicecodeexpireduncompleted,requiresfreshhumanlogin",
+  "recordedAt": "2026-10-02T21:39:11.404797+00:00"
+}
