@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "checkedAtDate": "2026-10-02",
+  "scope": "planning artifacts only; no production implementation or gameplay verification performed",
+  "result": "PASS",
+  "checks": {
+    "uniqueFoodIds": 24,
+    "chaptersWithExactlyThreeCandidates": 8,
+    "cumulativeWaveCounts": [
+      6,
+      12,
+      24
+    ],
+    "profilesRepresentedInFirstWave": 4,
+    "chaptersRepresentedByTwelve": 8,
+    "existingStallCandidatesFoundInActualLayout": 18,
+    "newCartCandidatesWithoutInventedCoordinates": 6,
+    "legacyFoodIdsAndStallsPreserved": true,
+    "taskDependencyGraphAcyclic": true,
+    "totalTasks": 17,
+    "requiredLocalCompletionTasks": 15,
+    "allTaskStatusesNotStarted": true,
+    "relativeMarkdownLinksResolved": 48,
+    "existingProjectDevelopmentAndDeploymentFactsUnchanged": true,
+    "utf8NoBomLf": true
+  },
+  "notVerified": [
+    "new food models",
+    "candidate placement reachability",
+    "new gameplay",
+    "future performance",
+    "final public copy for all 24 foods",
+    "new deployment"
+  ],
+  "executionStarted": false
+}

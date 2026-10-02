@@ -1,0 +1,684 @@
+{
+  "schemaVersion": 1,
+  "planId": "pawborough-national-snacks-20261002",
+  "status": "planning_candidates_only",
+  "executionStarted": false,
+  "baselineSourceHead": "31bae61f002a7bf5e04aac2c82b526909b87e78b",
+  "targetCount": 24,
+  "chapters": [
+    {
+      "id": "shanghai",
+      "name": "上海起点",
+      "targetCount": 3
+    },
+    {
+      "id": "jingjin",
+      "name": "京津风味",
+      "targetCount": 3
+    },
+    {
+      "id": "northeast",
+      "name": "东北风味",
+      "targetCount": 3
+    },
+    {
+      "id": "northwest",
+      "name": "西北风味",
+      "targetCount": 3
+    },
+    {
+      "id": "southwest",
+      "name": "西南风味",
+      "targetCount": 3
+    },
+    {
+      "id": "central",
+      "name": "华中风味",
+      "targetCount": 3
+    },
+    {
+      "id": "lingnan-islands",
+      "name": "岭南海岛",
+      "targetCount": 3
+    },
+    {
+      "id": "hongkong-macao-taiwan",
+      "name": "港澳台味",
+      "targetCount": 3
+    }
+  ],
+  "waves": [
+    {
+      "total": 6,
+      "newCount": 6
+    },
+    {
+      "total": 12,
+      "newCount": 6
+    },
+    {
+      "total": 24,
+      "newCount": 12
+    }
+  ],
+  "distribution": {
+    "existingStalls": 18,
+    "newCarts": 6,
+    "coordinatesVerified": false
+  },
+  "notes": [
+    "本文件是制作候选表，不是可直接发布的运行食品目录。",
+    "地域表述、造型、坐标和采用状态需按任务完成时的证据更新。",
+    "现有原三味玩法基线可复用；所有新增食品与布点均未在本次制作。"
+  ],
+  "foods": [
+    {
+      "id": "xiaolongbao",
+      "name": "小笼包",
+      "chapterId": "shanghai",
+      "regionLabelCandidate": "上海风味",
+      "poseProfile": "cupped",
+      "wave": 6,
+      "legacyId": true,
+      "visualIdentity": "褶纹包口、薄皮、蒸笼陈列",
+      "assetStatus": "existing_play_asset_to_revalidate",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-xiaolongbao",
+        "kind": "existing",
+        "stallId": "stall-5",
+        "areaHint": "现有商业区；按 layout 与顾客面定位",
+        "cartSiteId": null,
+        "position": null,
+        "placementStatus": "existing_three_food_route_baseline_only",
+        "evidence": []
+      },
+      "utensilKind": null
+    },
+    {
+      "id": "congyoubing",
+      "name": "葱油饼",
+      "chapterId": "shanghai",
+      "regionLabelCandidate": "上海风味",
+      "poseProfile": "cupped",
+      "wave": 6,
+      "legacyId": true,
+      "visualIdentity": "焦脆饼层、葱花、扁圆轮廓",
+      "assetStatus": "existing_play_asset_to_revalidate",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-congyoubing",
+        "kind": "existing",
+        "stallId": "stall-6",
+        "areaHint": "现有商业区；按 layout 与顾客面定位",
+        "cartSiteId": null,
+        "position": null,
+        "placementStatus": "existing_three_food_route_baseline_only",
+        "evidence": []
+      },
+      "utensilKind": null
+    },
+    {
+      "id": "youdunzi",
+      "name": "油墩子",
+      "chapterId": "shanghai",
+      "regionLabelCandidate": "上海风味",
+      "poseProfile": "cupped",
+      "wave": 6,
+      "legacyId": true,
+      "visualIdentity": "不规则炸壳、萝卜丝、厚边",
+      "assetStatus": "existing_play_asset_to_revalidate",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-youdunzi",
+        "kind": "existing",
+        "stallId": "stall-10",
+        "areaHint": "现有商业区；按 layout 与顾客面定位",
+        "cartSiteId": null,
+        "position": null,
+        "placementStatus": "existing_three_food_route_baseline_only",
+        "evidence": []
+      },
+      "utensilKind": null
+    },
+    {
+      "id": "tanghulu",
+      "name": "糖葫芦",
+      "chapterId": "jingjin",
+      "regionLabelCandidate": "北京等北方地区",
+      "poseProfile": "skewer",
+      "wave": 6,
+      "legacyId": false,
+      "visualIdentity": "红果、透明糖壳、细签",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-tanghulu",
+        "kind": "existing",
+        "stallId": "stall-19",
+        "areaHint": "现有商业区；按 layout 与顾客面定位",
+        "cartSiteId": null,
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": null
+    },
+    {
+      "id": "jianbing-guozi",
+      "name": "煎饼果子",
+      "chapterId": "jingjin",
+      "regionLabelCandidate": "天津风味",
+      "poseProfile": "wrapped",
+      "wave": 24,
+      "legacyId": false,
+      "visualIdentity": "折叠薄饼、酥脆夹层、半纸包",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-jianbing-guozi",
+        "kind": "existing",
+        "stallId": "stall-41",
+        "areaHint": "现有商业区；按 layout 与顾客面定位",
+        "cartSiteId": null,
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": null
+    },
+    {
+      "id": "ludagun",
+      "name": "驴打滚",
+      "chapterId": "jingjin",
+      "regionLabelCandidate": "北京风味",
+      "poseProfile": "cupped",
+      "wave": 24,
+      "legacyId": false,
+      "visualIdentity": "豆面粉、螺旋豆沙卷、浅托盘",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-ludagun",
+        "kind": "existing",
+        "stallId": "stall-38",
+        "areaHint": "现有商业区；按 layout 与顾客面定位",
+        "cartSiteId": null,
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": null
+    },
+    {
+      "id": "kaolengmian",
+      "name": "烤冷面",
+      "chapterId": "northeast",
+      "regionLabelCandidate": "东北风味",
+      "poseProfile": "wrapped",
+      "wave": 12,
+      "legacyId": false,
+      "visualIdentity": "卷折面皮、酱面、纸托",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-kaolengmian",
+        "kind": "existing",
+        "stallId": "stall-26",
+        "areaHint": "现有商业区；按 layout 与顾客面定位",
+        "cartSiteId": null,
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": null
+    },
+    {
+      "id": "niandoubao",
+      "name": "黏豆包",
+      "chapterId": "northeast",
+      "regionLabelCandidate": "东北风味",
+      "poseProfile": "cupped",
+      "wave": 12,
+      "legacyId": false,
+      "visualIdentity": "金黄糯皮、小圆包、豆沙切面",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-niandoubao",
+        "kind": "existing",
+        "stallId": "stall-28",
+        "areaHint": "现有商业区；按 layout 与顾客面定位",
+        "cartSiteId": null,
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": null
+    },
+    {
+      "id": "jianfen",
+      "name": "吉林煎粉",
+      "chapterId": "northeast",
+      "regionLabelCandidate": "吉林市风味",
+      "poseProfile": "bowl",
+      "wave": 24,
+      "legacyId": false,
+      "visualIdentity": "半透明粉块、酱汁、浅碗",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "official_association_seed_found",
+      "sourceUrls": [
+        "https://xxgk.jlcity.gov.cn/gzbm/swj_1/xbgkml/202009/t20200925_880735.html"
+      ],
+      "proposedVendor": {
+        "vendorId": "food-vendor-jianfen",
+        "kind": "existing",
+        "stallId": "stall-32",
+        "areaHint": "现有商业区；按 layout 与顾客面定位",
+        "cartSiteId": null,
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": "spoon"
+    },
+    {
+      "id": "roujiamo",
+      "name": "肉夹馍",
+      "chapterId": "northwest",
+      "regionLabelCandidate": "陕西风味",
+      "poseProfile": "wrapped",
+      "wave": 6,
+      "legacyId": false,
+      "visualIdentity": "厚馍开口、肉馅、半纸包",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-roujiamo",
+        "kind": "existing",
+        "stallId": "stall-15",
+        "areaHint": "现有商业区；按 layout 与顾客面定位",
+        "cartSiteId": null,
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": null
+    },
+    {
+      "id": "liangpi",
+      "name": "凉皮",
+      "chapterId": "northwest",
+      "regionLabelCandidate": "陕西风味",
+      "poseProfile": "bowl",
+      "wave": 24,
+      "legacyId": false,
+      "visualIdentity": "宽面带、红油与配菜、浅碗",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-liangpi",
+        "kind": "existing",
+        "stallId": "stall-17",
+        "areaHint": "现有商业区；按 layout 与顾客面定位",
+        "cartSiteId": null,
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": "chopsticks"
+    },
+    {
+      "id": "yangrouchuan",
+      "name": "羊肉串",
+      "chapterId": "northwest",
+      "regionLabelCandidate": "西北风味",
+      "poseProfile": "skewer",
+      "wave": 24,
+      "legacyId": false,
+      "visualIdentity": "烤肉块、焦边、香料、短签",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-yangrouchuan",
+        "kind": "existing",
+        "stallId": "stall-21",
+        "areaHint": "现有商业区；按 layout 与顾客面定位",
+        "cartSiteId": null,
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": null
+    },
+    {
+      "id": "dandanmian",
+      "name": "担担面",
+      "chapterId": "southwest",
+      "regionLabelCandidate": "四川风味",
+      "poseProfile": "bowl",
+      "wave": 24,
+      "legacyId": false,
+      "visualIdentity": "细面、肉臊、红油、小碗",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-dandanmian",
+        "kind": "existing",
+        "stallId": "stall-30",
+        "areaHint": "现有商业区；按 layout 与顾客面定位",
+        "cartSiteId": null,
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": "chopsticks"
+    },
+    {
+      "id": "hongyou-chaoshou",
+      "name": "红油抄手",
+      "chapterId": "southwest",
+      "regionLabelCandidate": "四川风味",
+      "poseProfile": "bowl",
+      "wave": 24,
+      "legacyId": false,
+      "visualIdentity": "折叠面皮、红油、葱花、碗",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-hongyou-chaoshou",
+        "kind": "existing",
+        "stallId": "stall-34",
+        "areaHint": "现有商业区；按 layout 与顾客面定位",
+        "cartSiteId": null,
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": "spoon"
+    },
+    {
+      "id": "xianhuabing",
+      "name": "鲜花饼",
+      "chapterId": "southwest",
+      "regionLabelCandidate": "云南风味",
+      "poseProfile": "cupped",
+      "wave": 12,
+      "legacyId": false,
+      "visualIdentity": "层酥圆饼、花瓣馅、断面",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-xianhuabing",
+        "kind": "existing",
+        "stallId": "stall-39",
+        "areaHint": "现有商业区；按 layout 与顾客面定位",
+        "cartSiteId": null,
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": null
+    },
+    {
+      "id": "reganmian",
+      "name": "热干面",
+      "chapterId": "central",
+      "regionLabelCandidate": "武汉风味",
+      "poseProfile": "bowl",
+      "wave": 12,
+      "legacyId": false,
+      "visualIdentity": "芝麻酱色面条、萝卜丁、纸碗",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-reganmian",
+        "kind": "existing",
+        "stallId": "stall-43",
+        "areaHint": "现有商业区；按 layout 与顾客面定位",
+        "cartSiteId": null,
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": "chopsticks"
+    },
+    {
+      "id": "choudoufu",
+      "name": "臭豆腐",
+      "chapterId": "central",
+      "regionLabelCandidate": "长沙风味",
+      "poseProfile": "bowl",
+      "wave": 24,
+      "legacyId": false,
+      "visualIdentity": "深色炸豆腐方块、酱汁、浅碗",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-choudoufu",
+        "kind": "existing",
+        "stallId": "stall-47",
+        "areaHint": "现有商业区；按 layout 与顾客面定位",
+        "cartSiteId": null,
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": "spoon"
+    },
+    {
+      "id": "hulatang",
+      "name": "胡辣汤",
+      "chapterId": "central",
+      "regionLabelCandidate": "河南风味",
+      "poseProfile": "bowl",
+      "wave": 24,
+      "legacyId": false,
+      "visualIdentity": "浓汤、可辨识配料、汤碗",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-hulatang",
+        "kind": "existing",
+        "stallId": "stall-12",
+        "areaHint": "现有商业区；按 layout 与顾客面定位",
+        "cartSiteId": null,
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": "spoon"
+    },
+    {
+      "id": "changfen",
+      "name": "肠粉",
+      "chapterId": "lingnan-islands",
+      "regionLabelCandidate": "广东风味",
+      "poseProfile": "bowl",
+      "wave": 24,
+      "legacyId": false,
+      "visualIdentity": "白色半透明粉皮、酱汁、浅盘",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-changfen",
+        "kind": "cart",
+        "stallId": null,
+        "areaHint": "中心广场的道路侧空地",
+        "cartSiteId": "center-cart",
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": "chopsticks"
+    },
+    {
+      "id": "shuangpinai",
+      "name": "双皮奶",
+      "chapterId": "lingnan-islands",
+      "regionLabelCandidate": "广东风味",
+      "poseProfile": "bowl",
+      "wave": 6,
+      "legacyId": false,
+      "visualIdentity": "奶白凝乳、双层表面、小瓷碗",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-shuangpinai",
+        "kind": "cart",
+        "stallId": null,
+        "areaHint": "方浜主街宽敞路侧",
+        "cartSiteId": "fangbang-main-cart",
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": "spoon"
+    },
+    {
+      "id": "qingbuliang",
+      "name": "清补凉",
+      "chapterId": "lingnan-islands",
+      "regionLabelCandidate": "海南风味",
+      "poseProfile": "bowl",
+      "wave": 24,
+      "legacyId": false,
+      "visualIdentity": "椰奶色汤底、彩色配料、小碗",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "official_association_seed_found",
+      "sourceUrls": [
+        "https://qionghai.hainan.gov.cn/rdzt/qhtx/2188/202506/t20250619_3883042.html"
+      ],
+      "proposedVendor": {
+        "vendorId": "food-vendor-qingbuliang",
+        "kind": "cart",
+        "stallId": null,
+        "areaHint": "池岸远侧的陆地步行区",
+        "cartSiteId": "pond-bank-cart",
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": "spoon"
+    },
+    {
+      "id": "jidanzi",
+      "name": "鸡蛋仔",
+      "chapterId": "hongkong-macao-taiwan",
+      "regionLabelCandidate": "香港风味",
+      "poseProfile": "wrapped",
+      "wave": 12,
+      "legacyId": false,
+      "visualIdentity": "连珠格状蛋饼、金黄烤面、纸袋",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "official_association_seed_found",
+      "sourceUrls": [
+        "https://www.discoverhongkong.com/tc/food-and-drink/must-try-street-food-in-hong-kong.html"
+      ],
+      "proposedVendor": {
+        "vendorId": "food-vendor-jidanzi",
+        "kind": "cart",
+        "stallId": null,
+        "areaHint": "方浜远端的骑行停留点",
+        "cartSiteId": "fangbang-end-cart",
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": null
+    },
+    {
+      "id": "fenglisu",
+      "name": "凤梨酥",
+      "chapterId": "hongkong-macao-taiwan",
+      "regionLabelCandidate": "台湾风味",
+      "poseProfile": "cupped",
+      "wave": 24,
+      "legacyId": false,
+      "visualIdentity": "方形酥皮、金黄断面、纤维馅",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "not_verified_in_this_plan",
+      "sourceUrls": [],
+      "proposedVendor": {
+        "vendorId": "food-vendor-fenglisu",
+        "kind": "cart",
+        "stallId": null,
+        "areaHint": "园林外入口连接道路",
+        "cartSiteId": "garden-entry-cart",
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": null
+    },
+    {
+      "id": "portuguese-egg-tart",
+      "name": "葡式蛋挞",
+      "chapterId": "hongkong-macao-taiwan",
+      "regionLabelCandidate": "澳门风味",
+      "poseProfile": "cupped",
+      "wave": 12,
+      "legacyId": false,
+      "visualIdentity": "层酥杯壁、焦斑蛋奶馅、小纸托",
+      "assetStatus": "not_produced",
+      "contentStatus": "candidate_copy_requires_source_check",
+      "sourceStatus": "official_association_seed_found",
+      "sourceUrls": [
+        "https://www.macaotourism.gov.mo/zh-hant/dining/taste-of-macao/macanese-and-portuguese-dishes"
+      ],
+      "proposedVendor": {
+        "vendorId": "food-vendor-portuguese-egg-tart",
+        "kind": "cart",
+        "stallId": null,
+        "areaHint": "城隍庙外商业连接道路",
+        "cartSiteId": "temple-connector-cart",
+        "position": null,
+        "placementStatus": "candidate_not_reachability_verified",
+        "evidence": []
+      },
+      "utensilKind": null
+    }
+  ]
+}

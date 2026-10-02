@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 1,
+  "planId": "pawborough-national-snacks-20261002",
+  "overallStatus": "plan_ready_execution_not_started",
+  "executionStarted": false,
+  "workersStarted": false,
+  "automationCreated": false,
+  "cloudChanged": false,
+  "currentTask": null,
+  "lastUpdated": "2026-10-02",
+  "baselineSourceHead": "31bae61f002a7bf5e04aac2c82b526909b87e78b",
+  "localCompletionTaskIds": [
+    "M00",
+    "M01",
+    "M02",
+    "M03",
+    "M04",
+    "M05",
+    "M06",
+    "M07",
+    "M08",
+    "M09",
+    "M10",
+    "M11",
+    "M12",
+    "M13",
+    "M14"
+  ],
+  "milestones": [
+    {
+      "id": "six",
+      "dependsOn": [
+        "M08"
+      ],
+      "status": "not_started"
+    },
+    {
+      "id": "twelve",
+      "dependsOn": [
+        "M10"
+      ],
+      "status": "not_started"
+    },
+    {
+      "id": "twenty-four-local",
+      "dependsOn": [
+        "M14"
+      ],
+      "status": "not_started"
+    }
+  ],
+  "allowedTaskStatuses": [
+    "not_started",
+    "running",
+    "implemented",
+    "verified",
+    "blocked"
+  ],
+  "tasks": [
+    {
+      "id": "M00",
+      "title": "基线、资源与可达区域",
+      "requiredForLocalCompletion": true,
+      "dependsOn": [],
+      "status": "not_started",
+      "owner": null,
+      "sourceHead": null,
+      "resultCommit": null,
+      "evidencePaths": [],
+      "lastCheck": null,
+      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "blocker": null
+    },
+    {
+      "id": "M01",
+      "title": "食品注册表与目录驱动状态",
+      "requiredForLocalCompletion": true,
+      "dependsOn": [
+        "M00"
+      ],
+      "status": "not_started",
+      "owner": null,
+      "sourceHead": null,
+      "resultCommit": null,
+      "evidencePaths": [],
+      "lastCheck": null,
+      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "blocker": null
+    },
+    {
+      "id": "M02",
+      "title": "旧存档迁移与安全持久化",
+      "requiredForLocalCompletion": true,
+      "dependsOn": [
+        "M01"
+      ],
+      "status": "not_started",
+      "owner": null,
+      "sourceHead": null,
+      "resultCommit": null,
+      "evidencePaths": [],
+      "lastCheck": null,
+      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "blocker": null
+    },
+    {
+      "id": "M03",
+      "title": "三处整图美术样板",
+      "requiredForLocalCompletion": true,
+      "dependsOn": [
+        "M00"
+      ],
+      "status": "not_started",
+      "owner": null,
+      "sourceHead": null,
+      "resultCommit": null,
+      "evidencePaths": [],
+      "lastCheck": null,
+      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "blocker": null
+    },
+    {
+      "id": "M04",
+      "title": "灰猫四类进食动作",
+      "requiredForLocalCompletion": true,
+      "dependsOn": [
+        "M01"
+      ],
+      "status": "not_started",
+      "owner": null,
+      "sourceHead": null,
+      "resultCommit": null,
+      "evidencePaths": [],
+      "lastCheck": null,
+      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "blocker": null
+    },
+    {
+      "id": "M05",
+      "title": "六味资产与按需资源库",
+      "requiredForLocalCompletion": true,
+      "dependsOn": [
+        "M01",
+        "M04"
+      ],
+      "status": "not_started",
+      "owner": null,
+      "sourceHead": null,
+      "resultCommit": null,
+      "evidencePaths": [],
+      "lastCheck": null,
+      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "blocker": null
+    },
+    {
+      "id": "M06",
+      "title": "摊点发现与小地图",
+      "requiredForLocalCompletion": true,
+      "dependsOn": [
+        "M00",
+        "M01",
+        "M05"
+      ],
+      "status": "not_started",
+      "owner": null,
+      "sourceHead": null,
+      "resultCommit": null,
+      "evidencePaths": [],
+      "lastCheck": null,
+      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "blocker": null
+    },
+    {
+      "id": "M07",
+      "title": "图鉴与收藏转移",
+      "requiredForLocalCompletion": true,
+      "dependsOn": [
+        "M01",
+        "M02"
+      ],
+      "status": "not_started",
+      "owner": null,
+      "sourceHead": null,
+      "resultCommit": null,
+      "evidencePaths": [],
+      "lastCheck": null,
+      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "blocker": null
+    },
+    {
+      "id": "M08",
+      "title": "六味闭环验收",
+      "requiredForLocalCompletion": true,
+      "dependsOn": [
+        "M02",
+        "M03",
+        "M04",
+        "M05",
+        "M06",
+        "M07"
+      ],
+      "status": "not_started",
+      "owner": null,
+      "sourceHead": null,
+      "resultCommit": null,
+      "evidencePaths": [],
+      "lastCheck": null,
+      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "blocker": null
+    },
+    {
+      "id": "M09",
+      "title": "全图美术推广",
+      "requiredForLocalCompletion": true,
+      "dependsOn": [
+        "M03",
+        "M08"
+      ],
+      "status": "not_started",
+      "owner": null,
+      "sourceHead": null,
+      "resultCommit": null,
+      "evidencePaths": [],
+      "lastCheck": null,
+      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "blocker": null
+    },
+    {
+      "id": "M10",
+      "title": "十二味与八章初开",
+      "requiredForLocalCompletion": true,
+      "dependsOn": [
+        "M08"
+      ],
+      "status": "not_started",
+      "owner": null,
+      "sourceHead": null,
+      "resultCommit": null,
+      "evidencePaths": [],
+      "lastCheck": null,
+      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "blocker": null
+    },
+    {
+      "id": "M11",
+      "title": "二十四味资产",
+      "requiredForLocalCompletion": true,
+      "dependsOn": [
+        "M10"
+      ],
+      "status": "not_started",
+      "owner": null,
+      "sourceHead": null,
+      "resultCommit": null,
+      "evidencePaths": [],
+      "lastCheck": null,
+      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "blocker": null
+    },
+    {
+      "id": "M12",
+      "title": "二十四点路线与完整收藏",
+      "requiredForLocalCompletion": true,
+      "dependsOn": [
+        "M09",
+        "M11"
+      ],
+      "status": "not_started",
+      "owner": null,
+      "sourceHead": null,
+      "resultCommit": null,
+      "evidencePaths": [],
+      "lastCheck": null,
+      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "blocker": null
+    },
+    {
+      "id": "M13",
+      "title": "静态包与发布工具",
+      "requiredForLocalCompletion": true,
+      "dependsOn": [
+        "M12"
+      ],
+      "status": "not_started",
+      "owner": null,
+      "sourceHead": null,
+      "resultCommit": null,
+      "evidencePaths": [],
+      "lastCheck": null,
+      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "blocker": null
+    },
+    {
+      "id": "M14",
+      "title": "最终验收与本地交付",
+      "requiredForLocalCompletion": true,
+      "dependsOn": [
+        "M13"
+      ],
+      "status": "not_started",
+      "owner": null,
+      "sourceHead": null,
+      "resultCommit": null,
+      "evidencePaths": [],
+      "lastCheck": null,
+      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "blocker": null
+    },
+    {
+      "id": "R01",
+      "title": "沿已有授权公开发布",
+      "requiredForLocalCompletion": false,
+      "dependsOn": [
+        "M14"
+      ],
+      "status": "not_started",
+      "owner": null,
+      "sourceHead": null,
+      "resultCommit": null,
+      "evidencePaths": [],
+      "lastCheck": null,
+      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "blocker": null
+    },
+    {
+      "id": "P2",
+      "title": "后续四只直立角色",
+      "requiredForLocalCompletion": false,
+      "dependsOn": [
+        "M14"
+      ],
+      "status": "not_started",
+      "owner": null,
+      "sourceHead": null,
+      "resultCommit": null,
+      "evidencePaths": [],
+      "lastCheck": null,
+      "nextAction": "执行时读取实施计划对应任务；先核实依赖与现有产物。",
+      "blocker": null
+    }
+  ]
+}
