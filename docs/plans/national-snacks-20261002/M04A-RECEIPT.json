@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "taskId": "M04-A",
+  "stage": "reviewed_pending_commit",
+  "parentTaskComplete": false,
+  "sourceCharacterSha256": "5f60f225f8c46515119007023268c95a0cb904363c830b580cce70c0ad613981",
+  "delivery": "runtime-only owned body geometry/Skeleton derivative; original GLB unchanged",
+  "joints": {
+    "original": 12,
+    "derivedBody": 16,
+    "faceMeshes": 12
+  },
+  "designRuling": "docs/plans/national-snacks-20261002/M04-RIG-RULING.md",
+  "construction": "Gemini 3.8 Flash, initial plus one bounded lifecycle fix pass",
+  "review": {
+    "model": "gpt-6-astra",
+    "result": "inverse-bind/four-slot/paw-rest approach approved; two lifecycle findings corrected and real face mesh assertions added"
+  },
+  "primaryChecks": {
+    "actualGLBNodeTest": "PASS",
+    "sourceInverseBindUnchanged": true,
+    "restAndOriginalAnimationToleranceM": 0.0001,
+    "weightSumTolerance": 1e-06,
+    "protectedRegionsAndFaceSkeletons": true,
+    "foreignTakeoverRejected": true,
+    "activateAfterDisposeRejected": true,
+    "noOriginalGeometryOrTextureDispose": true
+  },
+  "evidence": [
+    "tests/play_food_arm_rig.test.mjs",
+    "/home/baibai/outbox/pawborough-national-snacks-20261002/M04-RIG-WORKER.log",
+    "/home/baibai/outbox/pawborough-national-snacks-20261002/M04-RIG-FIX-WORKER.log"
+  ],
+  "remaining": [
+    "Avatar integration",
+    "four food profiles including spoon/chopsticks",
+    "actual GPU motion/contact/visual acceptance",
+    "food-to-bike ownership cycle"
+  ],
+  "recordedAt": "2026-10-03T00:24:09+09:00"
+}

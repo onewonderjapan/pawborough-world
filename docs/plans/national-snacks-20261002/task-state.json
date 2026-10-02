@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "planId": "pawborough-national-snacks-20261002",
-  "overallStatus": "active_m02_m04",
+  "overallStatus": "active_m04",
   "executionStarted": true,
   "workersStarted": true,
   "automationCreated": false,
   "cloudChanged": false,
-  "currentTask": "M02",
-  "lastUpdated": "2026-10-03T00:20:42+09:00",
+  "currentTask": "M04",
+  "lastUpdated": "2026-10-03T00:24:09+09:00",
   "baselineSourceHead": "31bae61f002a7bf5e04aac2c82b526909b87e78b",
   "localCompletionTaskIds": [
     "M00",
@@ -105,18 +105,18 @@
       "dependsOn": [
         "M01"
       ],
-      "status": "implemented",
+      "status": "verified",
       "owner": "GLM-5.3-Flash pure migration construction; Codex state/install integration",
       "sourceHead": "7b963788d16f36744378cddb5f89938a701567c0",
-      "resultCommit": null,
+      "resultCommit": "58f9bec31fe2edfc0faede8dee3fbac37f013e0f",
       "evidencePaths": [
         "docs/plans/national-snacks-20261002/M02-RECEIPT.json",
         "tests/play_save_migration.test.mjs",
         "scene-authoring/yuyuan-area/tests/snack-save-browser-check.mjs",
         "/home/baibai/outbox/pawborough-national-snacks-20261002/M02-PLAY-TEST.log"
       ],
-      "lastCheck": "2026-10-03T00:20:42+09:00",
-      "nextAction": "Commit reviewed migration and record exact resultCommit; M07 may then start.",
+      "lastCheck": "2026-10-03T00:24:09+09:00",
+      "nextAction": "M07 atlas can use the stable v2 collection API; v1 backups remain intact.",
       "blocker": null
     },
     {
@@ -156,8 +156,21 @@
         "/home/baibai/outbox/pawborough-national-snacks-20261002/M04-RIG-WORKORDER.md"
       ],
       "lastCheck": "2026-10-02T23:32:14+09:00",
-      "nextAction": "Build and test derived body arm rig only; Codex integrates four food profiles and real visuals afterward.",
-      "blocker": null
+      "nextAction": "Commit reviewed derived rig, integrate Avatar ownership, then build and verify four food profile drivers.",
+      "blocker": null,
+      "subtasks": {
+        "derivedRig": {
+          "status": "implemented",
+          "evidence": "docs/plans/national-snacks-20261002/M04A-RECEIPT.json",
+          "resultCommit": null
+        },
+        "profilesAndIntegration": {
+          "status": "not_started"
+        },
+        "actualVisualAcceptance": {
+          "status": "not_started"
+        }
+      }
     },
     {
       "id": "M05",

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "taskId": "M02",
-  "stage": "reviewed_pending_commit",
+  "stage": "verified",
   "sourceHead": "fda9c15e",
   "worker": {
     "engine": "GLM-5.3-Flash",
@@ -60,5 +60,6 @@
     "Atlas UI and JSON collection export arrive in M07.",
     "Current runtime edition still three foods; expansion is later staged content."
   ],
-  "recordedAt": "2026-10-03T00:20:42+09:00"
+  "recordedAt": "2026-10-03T00:20:42+09:00",
+  "resultCommit": "58f9bec31fe2edfc0faede8dee3fbac37f013e0f"
 }
