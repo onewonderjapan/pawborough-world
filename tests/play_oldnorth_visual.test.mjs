@@ -1,0 +1,43 @@
+// Actual layout, real geometry and Rapier: soffit restores authored clearance
+// without creating a new walkable floor or mutating imported source geometry.
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import * as THREE from 'three';
+import RAPIER from '@dimforge/rapier3d-compat';
+import {planPassageCeiling,ceilingGeometry,patchPassageRoot,installPassageCeiling} from '../scene-authoring/yuyuan-area/web/play/scene-passage-fix.js';
+const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const layout=JSON.parse(fs.readFileSync(path.join(ROOT,'scene-authoring/yuyuan-area/out-zone/layout.json'),'utf8'));
+const plan=planPassageCeiling(layout),building=layout.objects.find(o=>o.id===plan.buildingId);
+assert.equal(plan.height,building.geometry.passageHeight);
+assert.equal(plan.height,3.5);
+assert.equal(plan.passages.length,4);
+assert.equal(plan.companions.length,1);
+assert.equal(plan.companions[0].buildingId,'bld-553893884');
+const geometry=ceilingGeometry(plan);geometry.computeBoundingBox();
+assert.ok(Math.abs(geometry.boundingBox.min.y-plan.height)<1e-5);
+assert.ok(Math.abs(geometry.boundingBox.max.y-plan.height-.06)<1e-5);
+const scene=new THREE.Scene(),imported=new THREE.Mesh(new THREE.BoxGeometry(1,1,1),new THREE.MeshStandardMaterial());
+imported.material.name='btk-gild';imported.position.set(-174.75,1,-156.75);scene.add(imported);
+const original=imported.geometry;
+const patch=patchPassageRoot(scene,plan);
+assert.equal(patch.count,1);assert.notEqual(imported.geometry,original);
+assert.equal(imported.geometry.attributes.position.count,0,'interior fragments are removed from authored passage');
+patch.dispose();assert.equal(imported.geometry,original,'imported geometry restored on disposal');
+assert.equal(original.attributes.position.count,24,'source vertices stay untouched');
+await RAPIER.init();
+const world=new RAPIER.World({x:0,y:-9.81,z:0}),physics={world,colliders:[],wallCount:0};
+const zonePhysics={physics,groundColliders:[]};
+const installed=installPassageCeiling({scene,layout,RAPIER,zonePhysics});
+assert.equal(physics.colliders.length,1);assert.equal(zonePhysics.groundColliders.length,0,'ceiling never becomes walking support');
+const ray=new RAPIER.Ray({x:-174.75,y:.8,z:-156.75},{x:0,y:1,z:0});
+const hit=world.castRay(ray,5,true);
+assert.ok(hit&&Math.abs(.8+hit.timeOfImpact-plan.height)<1e-4,'physical ceiling matches visible clearance');
+scene.updateMatrixWorld(true);
+const visible=new THREE.Raycaster(new THREE.Vector3(-174.75,.8,-156.75),new THREE.Vector3(0,1,0),0,5)
+ .intersectObject(installed.group,true)[0];
+assert.ok(visible&&Math.abs(visible.point.y-plan.height)<1e-4,'underside closes the missing roof from below');
+installed.dispose();assert.equal(physics.colliders.length,0);assert.equal(scene.getObjectByName('play-oldnorth-soffit'),undefined);
+world.free();geometry.dispose();original.dispose();imported.material.dispose();
+console.log('PASS authored old-north ceiling, passage clipping, matching camera collision, ground exclusion and disposal');

@@ -9,6 +9,8 @@ import { applyWalkOrientation } from '/vendor-src/player/walkCamera.js';
 import { AreaWalkPhysics } from '../src/areaWalkPhysics.js';
 import { computeStepMotion } from './play/telemetry.js';   // R1：play 档实测运动遥测
 import { installStallFronts } from './play/stall-fronts.js';
+import { installPassageCeiling } from './play/scene-passage-fix.js';
+import { planBridgeAccess, planSeamBridges, porchApproachPath, applyAccessPhysics, applyAccessVisuals } from './play/bridge-access.js';   // 桥头通行补丁（工单 A 20261002，失败非致命）
 
 const ZONE_FILES = ['garden', 'pond', 'temple', 'bazaar', 'outer'];
 const CAPSULE = { radius: 0.35, halfHeight: 0.6, eyeHeight: 1.6 };
@@ -102,7 +104,9 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
   function groundY(x, z) {
     const ray = new RAPIER.Ray({ x, y: 8, z }, { x: 0, y: -1, z: 0 });
     // 排除自己的胶囊（回到锚点时旧胶囊可能高于射线起点）
-    const hit = physics.world.castRay(ray, 40, true, undefined, undefined, controller ? controller.collider : undefined);
+    const gh = play ? new Set(zonePhysics.groundColliders.map(c=>c.handle)) : null;
+    const hit = physics.world.castRay(ray, 40, true, undefined, undefined, controller ? controller.collider : undefined,
+      undefined, gh ? c=>gh.has(c.handle) : undefined);
     return hit ? 8 - hit.timeOfImpact : null;
   }
 
@@ -127,7 +131,33 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
       return r.arrayBuffer();
     } });
     physics = await zonePhysics.loadZones([...ZONE_FILES, ...extraCollisionZones().filter(z => !ZONE_FILES.includes(z))]);
-    if(play)stallFronts=installStallFronts({scene,layout:await readJson('layout.json'),RAPIER,zonePhysics});
+    if(play){
+      const layout=await readJson('layout.json');
+      stallFronts=installStallFronts({scene,layout,RAPIER,zonePhysics});
+      installPassageCeiling({scene,layout,RAPIER,zonePhysics});
+    }
+    // 桥钩子（工单 A）：九曲桥桥头护栏端帽回退 + 跨水开口唇墙 + 西桥头补踏步 + 桥面伸缩缝桥接。
+    // 全部从 layout/collision/物理世界探测推导；失败只降级为原始碰撞，不阻塞步行/游玩。
+    if (play) try {
+      const layoutJson = await readJson('layout.json');
+      const collisionZones = await Promise.all(ZONE_FILES.map(async z => ({ zone: z, records: (await readJson(`collision-${z}.json`)).colliders })));
+      const plan = planBridgeAccess({ layout: layoutJson, collisionZones, capsuleRadius: play?.capsule?.radius ?? CAPSULE.radius });
+      // 缝探测：桥折线 + 门口进出线走廊内的塌陷窄段（如抱厦门口让桥缝）用物理世界地面射线
+      const seamPaths = [layoutJson.objects.find(o => o.kind === 'zigzagBridge')?.geometry?.polyline, porchApproachPath(layoutJson)?.path].filter(Boolean);
+      if (seamPaths.length) {
+        const gh = new Set(zonePhysics.groundColliders.map(c => c.handle));
+        const probe = (x, z) => {
+          const h = physics.world.castRay(new RAPIER.Ray({ x, y: 3, z }, { x: 0, y: -1, z: 0 }), 8, true,
+            undefined, undefined, undefined, undefined, c => gh.has(c.handle));
+          return h ? 3 - h.timeOfImpact : null;
+        };
+        plan.seamSlabs = planSeamBridges({ paths: seamPaths, probe }).slabs;
+      }
+      const applied = applyAccessPhysics(RAPIER, physics, plan, zonePhysics);
+      applyAccessVisuals(THREE, scene, plan);
+      if (applied.trimmed.length || applied.lipsAdded || applied.stepsCollider !== null)
+        console.info('bridge access:', { trimmed: applied.trimmed, lips: applied.lipsAdded, seams: applied.seamSlabs, steps: applied.stepsCollider !== null });
+    } catch (e) { console.warn('bridge access patch skipped:', e); }
     anchors = zonePhysics.anchors;
     if (zonePhysics.zones.has('fangbang')) await addStreetAnchor(readJson);
     anchor = anchors[anchor] ? anchor : 'main';

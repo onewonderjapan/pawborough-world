@@ -439,9 +439,13 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     // 有存档：按档恢复（位置过几何校验才落地；骑乘档重建唯一车控制器）
     if (gameState.vehicle.placed && gameState.vehicle.pos) {
       const p = gameState.vehicle.pos;
-      const gy = bikeGroundY(p, gameState.vehicle.yaw ?? 0);
+      const heading = gameState.vehicle.yaw ?? 0;
+      const validGround = bikeGroundY(p, heading);
+      const gy = validGround === null ? null : bikeView
+        ? bikeView.parkingGroundY(supportAt, p[0], p[2], heading)
+        : bikeGroundY(p, heading);
       if (gy !== null) {
-        bikeView.placeAt([p[0], gy, p[2]], gameState.vehicle.yaw ?? 0);
+        bikeView.placeAt([p[0], gy, p[2]], heading);
         if (gameState.vehicle.riding) {
           restoreRide([p[0], gy, p[2]], gameState.vehicle.yaw ?? 0, gameState.vehicle.viewYaw ?? 0);
         }
@@ -492,6 +496,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
 
   // 借车站：出生点附近 1.2–6m 环形找真实支持面（有支撑、车体不与墙交叠）。
   // 找不到安全点返回 null（调用方提示玩家挪步，不落地）。
+  // 使用 bikeView.parkingGroundY 多点采样，确保前后轮均不陷地。
   function findBikeStand(feet) {
     for (let ring = 0; ring < 4; ring++) {
       const n = 12;
@@ -500,8 +505,11 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
         const a = (i / n) * Math.PI * 2 + ring * 0.26;
         const x = feet[0] + Math.cos(a) * r0;
         const z = feet[2] + Math.sin(a) * r0;
-        const gy = bikeGroundY([x, feet[1], z], 0);
+        const gy = bikeView
+          ? bikeView.parkingGroundY(supportAt, x, z, 0)
+          : supportAt(x, z);
         if (gy === null) continue;
+        if (bikeGroundY([x, gy, z], 0) === null) continue;
         return [x, gy, z];
       }
     }
@@ -633,7 +641,8 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     gameState.setVehicleView(viewYaw);
     controller.teleport(spot.feet, viewYaw, 0);
     bikeView.detachRider(core.state.avatar);
-    bikeView.placeAt(bikeFinal, heading);
+    const parkedY = bikeView.parkingGroundY(supportAt, bikeFinal[0], bikeFinal[2], heading);
+    bikeView.placeAt([bikeFinal[0], parkedY ?? bikeFinal[1], bikeFinal[2]], heading);
     playCamera.shoulderHeight = PLAY_PROFILE.shoulderHeight;
     playCamera.distance = PLAY_PROFILE.cameraDistance;
     gameState.takeBackFromBasket();

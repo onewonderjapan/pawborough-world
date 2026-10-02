@@ -7,7 +7,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
 import { setupTour } from './tour.js';   // WP13：取景导览逻辑在 web/tour.js
-import { dedupeLabels, buildLabelOccluders, segBlockedByOccluders, clusterTriangleFaces, plaqueFaceAxis, LABEL_ANCHOR_Y, LABEL_ANCHOR_Y_DEFAULT, clampChipIntoViewport } from './labels.js'; // WP13：标签去重+R1遮挡剔除逻辑在 web/labels.js；U2 锚点偏移/视口内收；R1 必修2 匾面拆分/朝向
+import { dedupeLabels, buildLabelOccluders, segBlockedByOccluders, clusterTriangleFaces, plaqueFaceAxis, LABEL_ANCHOR_Y, LABEL_ANCHOR_Y_DEFAULT, clampChipIntoViewport, rectFromWorldBox } from './labels.js'; // WP13：标签去重+R1遮挡剔除逻辑在 web/labels.js；U2 锚点偏移/视口内收；R1 必修2 匾面拆分/朝向；工单A 玩家剪影保留区
 import { installWalkMode } from './walk.js';   // WP4 步行模式（默认不启用，按 ?walk=1 或「步行」按钮进入）
 import { setupPerf } from './perf.js';         // M4 性能采样（仅 ?perf=1 时激活；方法见 docs/PERF-W2.md）
 import { installTargetMask } from './target-mask.js'; // wave3-tourfix T2：导览机位渲染后目标像素复核钩子 window.__targetMask
@@ -17,6 +17,7 @@ import { installSharedTextures } from './shared-textures.js';   // wave9-sharedt
 import { patchOuterKitProc } from './outer-kit-proc.js';   // wave7-outerkit 方案 C（OUTER_KIT_MODE=proc，对比测量用）：extras outerKit=proc 的网格换运行时 shader；无此类网格时不改任何东西
 import { installLighting } from './lighting.js';   // wave11-lighting：?light=day|dusk|night 预设 + 太阳阴影（?shadow=0 关）+ 渐变天空 + 夜间自发光 / 点光池；共享预设来源 lighting/presets.json（读取失败 / 超时 3 s 回退旧灯光）
 import { installInfocard } from './infocard.js';   // wave11-infocard：点击地标弹信息卡（逻辑全在 web/infocard.js，本文件只挂这一钩子）
+import { planPassageCeiling, patchPassageRoot } from './play/scene-passage-fix.js';
 import { installPlayMode } from './play/install.js';   // play（?play=1）：直立灰猫游玩入口；默认 viewer 页不启用（见 web/play/install.js）
 
 const app = document.getElementById('app');
@@ -91,6 +92,9 @@ const RAW = new URLSearchParams(location.search).get('raw') === '1';   // ?raw=1
 if (new URLSearchParams(location.search).get('sharedtex') !== '0') installSharedTextures({ manager: loader.manager, ktx2Loader: ktx2 });
 const t0 = performance.now();
 const params = new URLSearchParams(location.search);
+const passagePlan = params.get('play') === '1' ? fetch('/out/layout.json').then(r=>r.json()).then(planPassageCeiling) : null;
+const passagePatches = [];
+addEventListener('pagehide',e=>{if(!e.persisted)for(const patch of passagePatches)patch.dispose();});
 const batcher = installBatching({ camera, enabled: params.get('batch') !== '0' });
 // wave5-rooftoggle：屋顶开关 = 按命名规则置 visible（规则见 web/roofs.js），再同步到合批实例。
 // 后加载的分区（如步行逼近才拉的方浜中路）在 loadZoneFiles 里补吃当前开关状态。
@@ -272,6 +276,7 @@ async function loadZoneFiles(m, ids, { firstPaint = false } = {}) {
       const useCm = e.cm && !RAW;
       const root = await loadGlb('/out/' + (useCm ? e.cm.file : e.file));
       prepare(root);
+      if(passagePlan)passagePatches.push(patchPassageRoot(root,await passagePlan));
       const grp = new THREE.Group(); grp.name = 'ZN-' + z; grp.add(root);
       batcher.batchGroup(grp);   // wave4-drawcalls：件内按材质合批（节点树与身份不动）
       lighting.registerBatches(grp);   // wave11-lighting：合批网格继承阴影开关
@@ -355,8 +360,9 @@ lighting.ready.then(() => fetch('/out/zones-manifest.json')).then(r => { if (!r.
   loadZones(m);
 }).catch(() => {
   // fallback: single-file scene-areas.glb (pre zone-split outputs)
-    loadGlb('/out/scene-areas.glb').then(root => {
-      prepare(root); scene.add(root);
+    loadGlb('/out/scene-areas.glb').then(async root => {
+      prepare(root);
+      if(passagePlan)passagePatches.push(patchPassageRoot(root,await passagePlan)); scene.add(root);
       allRoots = root.children.length ? root.children : [root];
       afterFirstPaint(); hud('scene-areas.glb 已加载'); window.__firstLoadReady = true; window.__ready = true;
       loadTimes.firstLoadMs = loadTimes.firstFrameMs = loadTimes.deferredLoadedMs = +performance.now().toFixed(0);
@@ -520,6 +526,36 @@ const _v = new THREE.Vector3();
 const _w = new THREE.Vector3();
 const _n = new THREE.Vector3();
 const _probe = new THREE.Vector3();
+// ---------- 工单 A：玩家/坐骑剪影保留区（BUG-PLAYTEST-007：取景/游玩标签糊在猫头） ----------
+// 剪影尺寸一次性测量（角色模型包围盒，不逐帧遍历）；每帧只投影 8 个角。骑乘用坐骑外扩剪影。
+// viewer 页（无 ?play=1）不建区，行为与旧版完全一致。
+const playerSil = { key: null, corners: [] };
+function playerScreenRect(w, h) {
+  if (!play) return null;
+  const ctl = play.profile.moveController?.() ?? window.__walk?.controller;
+  const avatar = play.core.state.avatar;
+  if (!ctl || !avatar?.root?.visible) return null;
+  const root = avatar.root;
+  const key = `${root.uuid}:${play.gameState.vehicle.riding}`;
+  if (playerSil.key !== key) {
+    // Cache the actual skinned bounds once per walking/riding transition.
+    // Project through the current avatar transform, so turning and riding use
+    // the subject's real position without traversing meshes every frame.
+    root.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(root, true).expandByScalar(0.015);
+    if (box.isEmpty()) return null;
+    const inverse = root.matrixWorld.clone().invert();
+    playerSil.corners = [];
+    for (const x of [box.min.x, box.max.x]) for (const y of [box.min.y, box.max.y]) for (const z of [box.min.z, box.max.z])
+      playerSil.corners.push(new THREE.Vector3(x, y, z).applyMatrix4(inverse));
+    playerSil.key = key;
+  }
+  const corners = playerSil.corners.map(p => _w.copy(p).applyMatrix4(root.matrixWorld).toArray());
+  return rectFromWorldBox((x, y, z) => {
+    _v.set(x, y, z).project(camera);
+    return [(_v.x * 0.5 + 0.5) * w, (-_v.y * 0.5 + 0.5) * h, _v.z];
+  }, corners);
+}
 function drawLabels() {
   if (!layoutData) return;
   const w = innerWidth, h = innerHeight;
@@ -567,11 +603,15 @@ function drawLabels() {
   }
   window.__lastReserved = reserved; // headless 检查核对用
   // WP13/T2 屏幕空间去重 + R1/T2 遮挡剔除与导览机位 120m 上限 —— 逻辑在 web/labels.js
+  // 工单 A：playerRect = 玩家/坐骑剪影屏幕矩形，压在主角身上的 chip 一律隐藏（远处的地标标签保留）
+  const playerRect = playerScreenRect(w, h);
+  window.__lastPlayerRect = playerRect; // headless 检查核对用
   window.__lastLabelDedupe = dedupeLabels(shown, w, h, 12, {
     occluders: labelOccluders,
     cam: labelOccluders ? [camera.position.x, camera.position.y, camera.position.z] : null,
     tourActive: !!(tourCtl && tourCtl.curTour),
     reserved,
+    playerRect,
   });
   drawResiduals();
 }

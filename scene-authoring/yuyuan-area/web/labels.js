@@ -34,6 +34,22 @@ export function clampChipIntoViewport(el, x, y, vw, vh) {
   return { x: cx, y: cy };
 }
 
+// ---------- playtest-remnants 20261002 工单 A：取景/游玩画面里的玩家剪影保留区 ----------
+// 世界包围盒 8 角经 project(x,y,z)→[sx,sy] 投影后的屏幕外接矩形（含 margin px 外扩）。
+// pure：main.js 传相机投影闭包，node 测试传桩投影器（tests/play_photo_labels.test.mjs）。
+// 调用方每帧只投影 8 个角（玩家剪影尺寸一次性缓存），无逐帧网格遍历。
+export function rectFromWorldBox(project, corners, margin = 4) {
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  for (const p of corners) {
+    const s = project(p[0], p[1], p[2]);
+    if (!s || s[2] > 1) return null;   // 任一角在相机后方 → 不建保留区（玩家不在画内/被裁）
+    x0 = Math.min(x0, s[0]); x1 = Math.max(x1, s[0]);
+    y0 = Math.min(y0, s[1]); y1 = Math.max(y1, s[1]);
+  }
+  if (x1 < x0 || y1 < y0) return null;
+  return { x0: x0 - margin, y0: y0 - margin, x1: x1 + margin, y1: y1 + margin };
+}
+
 function sizeOf(el) {
   let s = sizeCache.get(el);
   if (!s) { s = { w: el.offsetWidth, h: el.offsetHeight }; sizeCache.set(el, s); }
@@ -159,16 +175,19 @@ export function segBlockedByOccluders(occluders, a, b) {
 
 // items: [{el, prio(0=region,1=landmark,2=facility,3=note), x, y, dist, wpos?}]，x/y 为已设置的 left/top。
 // wpos = 标签世界锚点 [x,4,z]（main.js drawLabels 投影用同一高度）；无 wpos 的条目不做遮挡判定。
-// opts: { occluders, cam, tourActive, reserved } —— R1/T2 遮挡剔除与导览机位距离上限；
+// opts: { occluders, cam, tourActive, reserved, playerRect } —— R1/T2 遮挡剔除与导览机位距离上限；
 //   wave13-tourfix U2：reserved = 匾额文字区的屏幕矩形集（main.js 从 temple GLB plaque-face* 网格
 //   收集世界盒后逐帧投影），与保留区相交的 chip 一律隐藏——匾额文字不许被任何 chip 盖住
 //   （巡检报告第 16 条：山门/仪门 chip 压匾；修复后前院/仪门戏楼 chip 顶替占位同罪，一并按此拦）。
+//   playtest-remnants 20261002 工单 A：playerRect = 玩家/坐骑剪影的屏幕矩形（main.js 由控制器脚点 +
+//   一次性缓存的角色剪影尺寸投影 8 角得来），游玩/取景画面里压在主角身上的 chip 一律隐藏
+//   （BUG-PLAYTEST-007：区域级标签糊在猫头）；与匾额区同口径——优先级无关，不让位。
 // 处理顺序 = prio 升序（region/landmark 先占位）；与已放置矩形相交的后到者隐藏；
 // 非区域标签超出 CAP 时按 (prio, 距离) 保留前 CAP 个。
-// 返回 {hidden, overlaps, occludedHidden, occludedGhost, distCapHidden, reservedHidden, maxVisibleDist}。
+// 返回 {hidden, overlaps, occludedHidden, occludedGhost, distCapHidden, reservedHidden, playerHidden, maxVisibleDist}。
 export function dedupeLabels(items, w, h, facilityCap = FACILITY_CAP, opts = {}) {
-  const { occluders, cam, tourActive, reserved } = opts;
-  let occludedHidden = 0, occludedGhost = 0, distCapHidden = 0, reservedHidden = 0, maxVisibleDist = 0;
+  const { occluders, cam, tourActive, reserved, playerRect } = opts;
+  let occludedHidden = 0, occludedGhost = 0, distCapHidden = 0, reservedHidden = 0, playerHidden = 0, maxVisibleDist = 0;
   const kept = [];
   for (const it of items) {
     // R1：导览机位下距离上限 120 m
@@ -177,6 +196,16 @@ export function dedupeLabels(items, w, h, facilityCap = FACILITY_CAP, opts = {})
       it.el.style.opacity = '';
       distCapHidden++;
       continue;
+    }
+    // 工单 A：压玩家/坐骑剪影的 chip 一律隐藏（优先级无关）
+    if (playerRect) {
+      const r = rectOf(it);
+      if (intersects(r, playerRect)) {
+        it.el.style.visibility = 'hidden';
+        it.el.style.opacity = '';
+        playerHidden++;
+        continue;
+      }
     }
     // wave13-tourfix U2：压匾额文字区的 chip 一律隐藏（优先级无关——匾额不是 chip，不让位）
     if (reserved && reserved.length) {
@@ -219,7 +248,7 @@ export function dedupeLabels(items, w, h, facilityCap = FACILITY_CAP, opts = {})
   for (let i = 0; i < placed.length; i++)
     for (let j = i + 1; j < placed.length; j++)
       if (intersects(placed[i].rect, placed[j].rect)) overlaps++;
-  return { hidden, overlaps, occludedHidden, occludedGhost, distCapHidden, reservedHidden, maxVisibleDist: +maxVisibleDist.toFixed(1) };
+  return { hidden, overlaps, occludedHidden, occludedGhost, distCapHidden, reservedHidden, playerHidden, maxVisibleDist: +maxVisibleDist.toFixed(1) };
 }
 export const FACILITY_LABEL_CAP = FACILITY_CAP;
 export const TOUR_LABEL_MAX_DIST = TOUR_MAX_DIST;

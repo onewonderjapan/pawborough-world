@@ -66,7 +66,36 @@ export class BikeView {
     this.rider = null;          // 挂在座位上的角色
     this._riderBoneSave = null; // 骑姿骨骼原四元数（下车还原）
     this._hipsOffset = null;    // 髋骨在角色 root 空间的偏移（座位拟合用）
+    this.seatLift = 0.025;       // 髋骨相对座面的抬升（几何标定值，见 tests/play_bike_visual）
     this.root.visible = false;  // 未布置前不显示
+    // 前后轮中心的模型空间偏移（用于停车地面多点采样）
+    // steering t=[0,0.33,-0.14], front-wheel t=[0,-0.16,-0.22]
+    // → front center model: Y=0.17, Z=-0.36
+    // rear-wheel t=[0,0.17,0.36] → rear center model: Y=0.17, Z=0.36
+    this._wheelModelZ = { front: -0.36, rear: 0.36 };
+  }
+
+  // 前后轮在世界 XZ 平面上的位置（考虑 heading 旋转）。用于停车多点地面采样。
+  // 世界 forward = (-sin h, -cos h)；前轮在模型 -Z → 世界 = pos + forward×0.36。
+  wheelContactXZ(cx, cz, heading) {
+    const sy = Math.sin(heading), cy_ = Math.cos(heading);
+    return {
+      front: [cx + sy * this._wheelModelZ.front, cz + cy_ * this._wheelModelZ.front],
+      rear:  [cx + sy * this._wheelModelZ.rear,  cz + cy_ * this._wheelModelZ.rear],
+    };
+  }
+
+  // 停车地面 Y：在前后轮位置分别采样，取最高值加余量，确保两轮都不陷地。
+  // supportAtFn(x, z) → groundY | null（由 install.js 注入，复用现有过滤器）。
+  parkingGroundY(supportAtFn, cx, cz, heading) {
+    const w = this.wheelContactXZ(cx, cz, heading);
+    const yCenter = supportAtFn(cx, cz);
+    const yFront  = supportAtFn(w.front[0], w.front[1]);
+    const yRear   = supportAtFn(w.rear[0],  w.rear[1]);
+    const samples = [yCenter, yFront, yRear];
+    if (!samples.every(Number.isFinite)) return null;
+    // 取最高地面 + 小余量（0.015m），两轮都在路面之上而非之中
+    return Math.max(...samples) + 0.015;
   }
 
   placeAt(pos, heading = 0) {
@@ -258,9 +287,11 @@ export class BikeView {
     avatar.root.rotation.y = rootYaw;
     if (this._hipsOffset) {
       const off = this._hipsOffset.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), rootYaw);
-      avatar.root.position.set(seatLocal.x - off.x, seatLocal.y - off.y + 0.015, seatLocal.z - off.z);
+      // 座位抬升：髋骨高于座面 seatLift（标定值），让骨盆视觉体积落在座面上沿
+      // 而不是穿过座鞍；同时不得超过臂/腿可达包络（皮肤接触测试约束）。
+      avatar.root.position.set(seatLocal.x - off.x, seatLocal.y - off.y + this.seatLift, seatLocal.z - off.z);
     } else {
-      avatar.root.position.set(seatLocal.x, seatLocal.y - 0.2, seatLocal.z);   // 无髋骨时的保守近似
+      avatar.root.position.set(seatLocal.x, seatLocal.y - 0.12, seatLocal.z);   // 无髋骨时的保守近似
     }
     avatar.root.updateMatrixWorld(true);
     // 脊柱前倾（固定档位；改完骨骼必须刷新矩阵再解算，臂挂在 spine 下）
