@@ -192,5 +192,23 @@
     "24味来源只支撑候选地域/形态，最终公开文字与资产采用仍有阶段验收。"
   ],
   "artifactsRoot": "/home/baibai/outbox/pawborough-national-snacks-20261002/m00",
-  "recordedAt": "2026-10-02T22:00:36+09:00"
+  "recordedAt": "2026-10-02T22:00:36+09:00",
+  "controlledComparison": {
+    "report": "/home/baibai/outbox/pawborough-national-snacks-20261002/m00-controlled/M00-browser-baseline.json",
+    "frameTimes": {
+      "sampleCount": 466,
+      "hiddenSamples": 0,
+      "p50Ms": 16.699999999999818,
+      "p95Ms": 16.799999999999272,
+      "maxMs": 16.80000000000109,
+      "over100ms": 0
+    },
+    "resourceCounts": {
+      "geometry": 4071,
+      "material": 364,
+      "texture": 321
+    },
+    "backgroundPolicy": "disable browser background timer/renderer/occluded-window throttling; all gameplay assets ready, then 3s warmup",
+    "renderer": "ANGLE (NVIDIA Corporation, NVIDIA GB10/PCIe, OpenGL 4.5.0)"
+  }
 }

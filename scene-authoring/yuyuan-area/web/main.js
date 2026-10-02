@@ -16,6 +16,7 @@ import { isRoofNodeSelf } from './roofs.js';        // wave5-rooftoggle：屋面
 import { installSharedTextures } from './shared-textures.js';   // wave9-sharedtex：分区件共用外置贴图，同 URL 只下载一次
 import { patchOuterKitProc } from './outer-kit-proc.js';   // wave7-outerkit 方案 C（OUTER_KIT_MODE=proc，对比测量用）：extras outerKit=proc 的网格换运行时 shader；无此类网格时不改任何东西
 import { installLighting } from './lighting.js';   // wave11-lighting：?light=day|dusk|night 预设 + 太阳阴影（?shadow=0 关）+ 渐变天空 + 夜间自发光 / 点光池；共享预设来源 lighting/presets.json（读取失败 / 超时 3 s 回退旧灯光）
+import { applyWorldArtStyle } from './material-style.js';
 import { installInfocard } from './infocard.js';   // wave11-infocard：点击地标弹信息卡（逻辑全在 web/infocard.js，本文件只挂这一钩子）
 import { planPassageCeiling, patchPassageRoot } from './play/scene-passage-fix.js';
 import { installPlayMode } from './play/install.js';   // play（?play=1）：直立灰猫游玩入口；默认 viewer 页不启用（见 web/play/install.js）
@@ -45,6 +46,32 @@ controls.enableDamping = true;
 let walkModeOf = () => 'orbit';   // 步行控制器装好后改指 walk.mode()（阴影焦点：步行 = 视线前方，轨道 = 注视点）
 // wave11-lighting：灯光 / 阴影 / 天空由 web/lighting.js 按 lighting/presets.json 建（旧的固定 Hemisphere + Directional 是其读不到预设时的回退）
 const lighting = installLighting({ renderer, scene, camera, controls, params: new URLSearchParams(location.search), getWalkMode: () => walkModeOf() });
+let worldArtStyle = null;
+const worldArtMaterials = new Map();
+const worldArtOwners = [];
+const worldArtFamilies = new Set();
+const worldArtStatus = { ready: false, error: null, matchedMeshes: 0 };
+const worldArtReady = (async () => {
+  const abort = new AbortController();
+  const timer = setTimeout(() => abort.abort(), 3000);
+  try {
+    const response = await fetch('/inputs/world-art-style.json', { signal: abort.signal });
+    if (!response.ok) throw new Error(`world-art-style.json: ${response.status}`);
+    const style = await response.json();
+    if (style.schemaVersion !== 1 || !Array.isArray(style.families) || !Array.isArray(style.scopes)) throw new Error('unsupported world art style data');
+    worldArtStyle = style;
+    worldArtStatus.ready = true;
+  } catch (error) {
+    worldArtStatus.error = error?.message || String(error);
+    console.warn('world art style unavailable; original materials retained', error);
+  } finally { clearTimeout(timer); }
+})();
+window.__worldArtStyle = { status: () => ({ ...worldArtStatus, id: worldArtStyle?.id ?? null,
+  uniqueVariants: worldArtMaterials.size, appliedFamilies: [...worldArtFamilies] }) };
+addEventListener('pagehide', event => {
+  if (event.persisted) return;
+  for (const owner of worldArtOwners) owner.dispose();
+});
 
 const ZONES = {
   core: ['garden', 'temple', 'bazaar', 'pond'],
@@ -179,6 +206,12 @@ function prepare(root) {
     }
   });
   patchOuterKitProc(root);
+  if (worldArtStyle) {
+    const owner = applyWorldArtStyle(root, { style: worldArtStyle, sharedMaterials: worldArtMaterials });
+    worldArtOwners.push(owner);
+    worldArtStatus.matchedMeshes += owner.stats.matchedMeshes;
+    owner.stats.appliedFamilies.forEach(id => worldArtFamilies.add(id));
+  }
   lighting.registerRoot(root);   // wave11-lighting：阴影开关、夜间自发光材质登记、点光候选位置
 }
 function countTris(root) {
@@ -353,7 +386,7 @@ async function loadZones(m) {
   hud('分区加载完成');
 }
 // wave11-lighting：先等灯光预设（本地小 JSON），首帧就是目标预设的光；读不到时回退旧灯光照常加载
-lighting.ready.then(() => fetch('/out/zones-manifest.json')).then(r => { if (!r.ok) throw 0; return r.json(); }).then(m => {
+Promise.all([lighting.ready, worldArtReady]).then(() => fetch('/out/zones-manifest.json')).then(r => { if (!r.ok) throw 0; return r.json(); }).then(m => {
   const skip = new Set([...onDemandIds(m), ...deferredIds(m)]);
   const n = m.zones.filter(z => z.file && !skip.has(z.id)).length;
   document.getElementById('loadmsg').textContent = `按分区加载 ${n} 个 GLB …`;

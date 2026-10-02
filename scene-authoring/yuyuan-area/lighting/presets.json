@@ -21,41 +21,178 @@
  "presets": {
   "day": {
    "label": "白天",
-   "sun": { "azimuthDeg": 215, "elevationDeg": 52, "color": "#fff3e0", "intensity": 2.2, "angularDiameterDeg": 1.2 },
-   "ambient": { "sky": "#cfe0f2", "ground": "#978d78", "intensity": 2.2 },
-   "sky": { "zenith": "#6f9fd6", "horizon": "#dae6ee", "ground": "#b7b1a1", "exponent": 0.55, "sunGlow": 0.25, "sunGlowColor": "#fff3dc", "sunGlowPower": 48 },
-   "exposure": 1.0,
+   "sun": {
+    "azimuthDeg": 215,
+    "elevationDeg": 52,
+    "color": "#ffe7c6",
+    "intensity": 1.75,
+    "angularDiameterDeg": 1.2
+   },
+   "ambient": {
+    "sky": "#d7e5ec",
+    "ground": "#b09c86",
+    "intensity": 2.6
+   },
+   "sky": {
+    "zenith": "#83aac6",
+    "horizon": "#e8dfcf",
+    "ground": "#b9a17f",
+    "exponent": 0.55,
+    "sunGlow": 0.25,
+    "sunGlowColor": "#fff3dc",
+    "sunGlowPower": 48
+   },
+   "exposure": 1.02,
    "emissiveScale": 0,
    "pointLights": 0
   },
   "dusk": {
    "label": "黄昏",
-   "sun": { "azimuthDeg": 255, "elevationDeg": 9, "color": "#ffa35c", "intensity": 2.2, "angularDiameterDeg": 1.2 },
-   "ambient": { "sky": "#8e9cc4", "ground": "#6b5645", "intensity": 2.6 },
-   "sky": { "zenith": "#3d5688", "horizon": "#f0a568", "ground": "#6d5a4b", "exponent": 0.45, "sunGlow": 0.6, "sunGlowColor": "#ffb070", "sunGlowPower": 12 },
-   "exposure": 0.9,
+   "sun": {
+    "azimuthDeg": 255,
+    "elevationDeg": 9,
+    "color": "#ffd2a0",
+    "intensity": 1.55,
+    "angularDiameterDeg": 1.2
+   },
+   "ambient": {
+    "sky": "#bdc7dd",
+    "ground": "#a98b70",
+    "intensity": 2.65
+   },
+   "sky": {
+    "zenith": "#7b89af",
+    "horizon": "#edb892",
+    "ground": "#8d7966",
+    "exponent": 0.45,
+    "sunGlow": 0.6,
+    "sunGlowColor": "#ffb070",
+    "sunGlowPower": 12
+   },
+   "exposure": 1.03,
    "emissiveScale": 0.35,
    "pointLights": 0
   },
   "night": {
    "label": "夜晚",
-   "sun": { "azimuthDeg": 140, "elevationDeg": 38, "color": "#9fb6ff", "intensity": 1.5, "angularDiameterDeg": 0.6 },
-   "ambient": { "sky": "#34466e", "ground": "#1c1a16", "intensity": 2.2 },
-   "sky": { "zenith": "#070d1e", "horizon": "#26314a", "ground": "#14131a", "exponent": 0.5, "sunGlow": 0.12, "sunGlowColor": "#b8c8ff", "sunGlowPower": 200 },
+   "sun": {
+    "azimuthDeg": 140,
+    "elevationDeg": 38,
+    "color": "#9fb6ff",
+    "intensity": 1.5,
+    "angularDiameterDeg": 0.6
+   },
+   "ambient": {
+    "sky": "#34466e",
+    "ground": "#1c1a16",
+    "intensity": 2.2
+   },
+   "sky": {
+    "zenith": "#070d1e",
+    "horizon": "#26314a",
+    "ground": "#14131a",
+    "exponent": 0.5,
+    "sunGlow": 0.12,
+    "sunGlowColor": "#b8c8ff",
+    "sunGlowPower": 200
+   },
    "exposure": 1.3,
    "emissiveScale": 1.0,
    "pointLights": 8
   }
  },
  "emissiveGroups": [
-  { "id": "lantern", "note": "灯笼：商城楼套件 btk-lantern、方浜饭店红绸灯笼", "materials": ["btk-lantern", "red-silk-lantern"], "color": "#ff7a3c", "intensity": 3.0, "useMap": false },
-  { "id": "sign", "note": "店招：商城楼套件红招牌、方浜店招字牌图集（贴图本身发光，字可读）", "materials": ["btk-signred", "shop-sign-typeset-atlas", "shop-sign-generic-atlas"], "color": "#ffd7a0", "intensity": 1.2, "useMap": true },
-  { "id": "shop-interior", "note": "店面内透光：商城楼套件店铺后壁、方浜店铺内景暗面", "materials": ["btk-shopback", "interior-warm-shadow"], "color": "#ffb56a", "intensity": 0.5, "useMap": false },
-  { "id": "window", "note": "窗玻璃内透光：商业街 / 外围 / 方浜店屋窗、商城楼套件玻璃、湖心亭窗、饮品摊柜玻璃", "materials": ["recessed-old-glass", "btk-glass", "ht-win-glass", "glass"], "color": "#ffc680", "intensity": 0.9, "useMap": false },
-  { "id": "lattice", "note": "格扇内透光：厅堂套件 / 三穗堂格心背板（wave13-nightbalance R1：格心 sst-lattice-core 恢复原名且不发光，发光移到新增的不透明背板）/ 庙区格扇背板（格心镂空后面的板）", "materials": ["hk-lattice-back", "lattice-backing", "lattice-backing-dadian", "sst-lattice-back"], "color": "#ffae5e", "intensity": 1.0, "useMap": false },
-  { "id": "bazaar-window", "note": "商城楼屏窗 / 横带窗 / 格窗背板（btk-winback 家族，wave13 自 lattice 组拆出独立调强；拆组时参数与 lattice 相同，之后机主 2026-09-29 选档 intensity 0.5）", "materials": ["btk-winback", "btk-winback-wood2"], "color": "#ffae5e", "intensity": 0.5, "useMap": false },
-  { "id": "stall", "note": "摊位：摊位套件没有灯笼，用摊柜内板（palewood，只摊位用）作摊灯照亮的台面（wave14-stalllight：点光 offsetY 2.3→1.6，光斑从棚布挪回台面，见 tests/stall-light-params-test.mjs L1）", "materials": ["palewood"], "color": "#ffcf90", "intensity": 0.45, "useMap": false },
-  { "id": "oldsouth-lamp", "note": "老城隍庙南侧街廊贴墙檐灯（wave14-stalllight B）：红纸灯罩 olds-lantern 自发光（灯笼红-橙，同 lantern 组色系）", "materials": ["olds-lantern"], "color": "#ff8a4a", "intensity": 2.5, "useMap": false }
+  {
+   "id": "lantern",
+   "note": "灯笼：商城楼套件 btk-lantern、方浜饭店红绸灯笼",
+   "materials": [
+    "btk-lantern",
+    "red-silk-lantern"
+   ],
+   "color": "#ff7a3c",
+   "intensity": 3.0,
+   "useMap": false
+  },
+  {
+   "id": "sign",
+   "note": "店招：商城楼套件红招牌、方浜店招字牌图集（贴图本身发光，字可读）",
+   "materials": [
+    "btk-signred",
+    "shop-sign-typeset-atlas",
+    "shop-sign-generic-atlas"
+   ],
+   "color": "#ffd7a0",
+   "intensity": 1.2,
+   "useMap": true
+  },
+  {
+   "id": "shop-interior",
+   "note": "店面内透光：商城楼套件店铺后壁、方浜店铺内景暗面",
+   "materials": [
+    "btk-shopback",
+    "interior-warm-shadow"
+   ],
+   "color": "#ffb56a",
+   "intensity": 0.5,
+   "useMap": false
+  },
+  {
+   "id": "window",
+   "note": "窗玻璃内透光：商业街 / 外围 / 方浜店屋窗、商城楼套件玻璃、湖心亭窗、饮品摊柜玻璃",
+   "materials": [
+    "recessed-old-glass",
+    "btk-glass",
+    "ht-win-glass",
+    "glass"
+   ],
+   "color": "#ffc680",
+   "intensity": 0.9,
+   "useMap": false
+  },
+  {
+   "id": "lattice",
+   "note": "格扇内透光：厅堂套件 / 三穗堂格心背板（wave13-nightbalance R1：格心 sst-lattice-core 恢复原名且不发光，发光移到新增的不透明背板）/ 庙区格扇背板（格心镂空后面的板）",
+   "materials": [
+    "hk-lattice-back",
+    "lattice-backing",
+    "lattice-backing-dadian",
+    "sst-lattice-back"
+   ],
+   "color": "#ffae5e",
+   "intensity": 1.0,
+   "useMap": false
+  },
+  {
+   "id": "bazaar-window",
+   "note": "商城楼屏窗 / 横带窗 / 格窗背板（btk-winback 家族，wave13 自 lattice 组拆出独立调强；拆组时参数与 lattice 相同，之后机主 2026-09-29 选档 intensity 0.5）",
+   "materials": [
+    "btk-winback",
+    "btk-winback-wood2"
+   ],
+   "color": "#ffae5e",
+   "intensity": 0.5,
+   "useMap": false
+  },
+  {
+   "id": "stall",
+   "note": "摊位：摊位套件没有灯笼，用摊柜内板（palewood，只摊位用）作摊灯照亮的台面（wave14-stalllight：点光 offsetY 2.3→1.6，光斑从棚布挪回台面，见 tests/stall-light-params-test.mjs L1）",
+   "materials": [
+    "palewood"
+   ],
+   "color": "#ffcf90",
+   "intensity": 0.45,
+   "useMap": false
+  },
+  {
+   "id": "oldsouth-lamp",
+   "note": "老城隍庙南侧街廊贴墙檐灯（wave14-stalllight B）：红纸灯罩 olds-lantern 自发光（灯笼红-橙，同 lantern 组色系）",
+   "materials": [
+    "olds-lantern"
+   ],
+   "color": "#ff8a4a",
+   "intensity": 2.5,
+   "useMap": false
+  }
  ],
  "pointLights": {
   "max": 8,
@@ -65,21 +202,69 @@
   "decay": 2,
   "reassignFrames": 15,
   "sources": [
-   { "id": "lantern", "kind": "material-clusters", "materials": ["btk-lantern", "red-silk-lantern"], "clusterM": 3.0, "offsetY": 0.0, "note": "wave14-lantern R2（机主 2026-09-30 定“现在修”）：点光放在灯笼发光材质簇中心（灯内），原 -0.4 落在灯底下方把灯身下 1/3 打成近白；Cycles 端灯笼分件不挡阴影（render-control-passes.py）" },
-   { "id": "stall", "kind": "node-anchor", "pattern": "^stall-\\d+$", "offsetY": 1.6 },
-   { "id": "oldsouth-lamp", "kind": "node-anchor", "pattern": "^oldsouth-lamp-\\d+$", "offsetY": 2.05 }
+   {
+    "id": "lantern",
+    "kind": "material-clusters",
+    "materials": [
+     "btk-lantern",
+     "red-silk-lantern"
+    ],
+    "clusterM": 3.0,
+    "offsetY": 0.0,
+    "note": "wave14-lantern R2（机主 2026-09-30 定“现在修”）：点光放在灯笼发光材质簇中心（灯内），原 -0.4 落在灯底下方把灯身下 1/3 打成近白；Cycles 端灯笼分件不挡阴影（render-control-passes.py）"
+   },
+   {
+    "id": "stall",
+    "kind": "node-anchor",
+    "pattern": "^stall-\\d+$",
+    "offsetY": 1.6
+   },
+   {
+    "id": "oldsouth-lamp",
+    "kind": "node-anchor",
+    "pattern": "^oldsouth-lamp-\\d+$",
+    "offsetY": 2.05
+   }
   ]
  },
  "viewer": {
   "toneMapping": "neutral",
-  "shadow": { "mapSize": 2048, "type": "PCFSoft", "bias": -0.0004, "normalBias": 0.04, "extentMinM": 40, "extentMaxM": 420, "extentPerDistance": 0.9, "walkExtentM": 45 },
-  "skyTexture": { "width": 256, "height": 128 }
+  "shadow": {
+   "mapSize": 2048,
+   "type": "PCFSoft",
+   "bias": -0.0004,
+   "normalBias": 0.04,
+   "extentMinM": 40,
+   "extentMaxM": 420,
+   "extentPerDistance": 0.9,
+   "walkExtentM": 45
+  },
+  "skyTexture": {
+   "width": 256,
+   "height": 128
+  }
  },
  "blender": {
   "viewTransform": "Khronos PBR Neutral",
-  "cycles": { "samples": 64, "maxBounces": 4, "denoise": "OPENIMAGEDENOISE", "device": "GPU", "clampIndirect": 5.0 },
-  "eevee": { "samples": 32, "shadowResolutionScale": 1.0, "raytracing": true },
-  "ambientOcclusion": { "distanceM": 1.5 },
-  "ambientMultiplier": { "day": 2.4737, "dusk": 2.3511, "night": 1.9097 }
+  "cycles": {
+   "samples": 64,
+   "maxBounces": 4,
+   "denoise": "OPENIMAGEDENOISE",
+   "device": "GPU",
+   "clampIndirect": 5.0
+  },
+  "eevee": {
+   "samples": 32,
+   "shadowResolutionScale": 1.0,
+   "raytracing": true
+  },
+  "ambientOcclusion": {
+   "distanceM": 1.5
+  },
+  "ambientMultiplier": {
+   "day": 2.4737,
+   "dusk": 2.3511,
+   "night": 1.9097
+  }
  }
 }

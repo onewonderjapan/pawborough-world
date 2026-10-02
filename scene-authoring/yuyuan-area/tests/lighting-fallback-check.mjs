@@ -44,8 +44,8 @@ const ok = (c, cond, msg, data) => {
   if (cond) { passes++; console.log('ok  ', c.padEnd(8), msg); } else { fails++; console.error('FAIL', c.padEnd(8), msg, data !== undefined ? JSON.stringify(data) : ''); }
 };
 
-const exe = '/home/baibai/.cache/ms-playwright/chromium-1234/chrome-linux/chrome';
-const browser = await chromium.launch({ executablePath: exe, args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
+const exe = process.env.CHROME_PATH || chromium.executablePath();
+const browser = await chromium.launch({ executablePath: exe, headless: process.env.GPU_WEBGL !== '1', args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
 for (const c of CASES.filter(c => !c.startsWith('late-'))) {
   report.cases[c] = {};
   const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });

@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "id": "plush-shanghai-pilot-20261002",
+  "enabled": true,
+  "mode": "pilot",
+  "scopes": [
+    {
+      "id": "center",
+      "boundsXZ": [
+        -198,
+        -66,
+        -118,
+        8
+      ]
+    },
+    {
+      "id": "snack-street",
+      "boundsXZ": [
+        -227,
+        7,
+        -140,
+        64
+      ]
+    },
+    {
+      "id": "bridge-bank",
+      "boundsXZ": [
+        -190,
+        -174,
+        -111,
+        -104
+      ]
+    }
+  ],
+  "families": [
+    {
+      "id": "warm-paving",
+      "materialNames": [
+        "paving-paving-fine-cobble"
+      ],
+      "tint": "#e8d9bd",
+      "colorBlend": 0.16,
+      "roughness": 0.95,
+      "metalness": 0,
+      "maxMeshSpanM": 120
+    },
+    {
+      "id": "blue-stone",
+      "materialNames": [
+        "paving-paving-blue-stone",
+        "paving-paving-pebble"
+      ],
+      "tint": "#bbbdb4",
+      "colorBlend": 0.18,
+      "roughness": 0.95,
+      "metalness": 0,
+      "maxMeshSpanM": 120
+    },
+    {
+      "id": "red-wood",
+      "materialNames": [
+        "btk-wood",
+        "btk-slats",
+        "btk-lattice",
+        "ht-wood-red"
+      ],
+      "tint": "#a75d48",
+      "colorBlend": 0.16,
+      "roughness": 0.82,
+      "metalness": 0,
+      "maxMeshSpanM": 90
+    },
+    {
+      "id": "dark-wood",
+      "materialNames": [
+        "btk-dark",
+        "btk-lacquer",
+        "btk-wood2",
+        "btk-lattice2",
+        "ht-ridge-dark",
+        "ht-win-dark"
+      ],
+      "tint": "#775c4d",
+      "colorBlend": 0.2,
+      "roughness": 0.83,
+      "metalness": 0,
+      "maxMeshSpanM": 90
+    },
+    {
+      "id": "lime-wall",
+      "materialNames": [
+        "light-lime-plaster",
+        "btk-wall",
+        "ht-plaster-white"
+      ],
+      "tint": "#efe4cc",
+      "colorBlend": 0.12,
+      "roughness": 0.9,
+      "metalness": 0,
+      "maxMeshSpanM": 90
+    },
+    {
+      "id": "grey-roof",
+      "materialNames": [
+        "gray-pan-tile",
+        "btk-roof",
+        "ht-tile-tex",
+        "ht-tile-grey"
+      ],
+      "tint": "#65787b",
+      "colorBlend": 0.16,
+      "roughness": 0.9,
+      "metalness": 0,
+      "maxMeshSpanM": 90
+    },
+    {
+      "id": "worn-stone",
+      "materialNames": [
+        "worn-stone",
+        "btk-stone",
+        "btk-lionstone",
+        "garden-grey-stone",
+        "garden-deck-stone",
+        "ht-stone-deck"
+      ],
+      "tint": "#c6b89c",
+      "colorBlend": 0.18,
+      "roughness": 0.94,
+      "metalness": 0,
+      "maxMeshSpanM": 90
+    },
+    {
+      "id": "bridge-rail",
+      "materialNames": [
+        "garden-bridge-stone"
+      ],
+      "tint": "#e1d2b9",
+      "colorBlend": 0.25,
+      "roughness": 0.94,
+      "metalness": 0,
+      "maxMeshSpanM": 90
+    },
+    {
+      "id": "stall-wood",
+      "materialNames": [
+        "palewood"
+      ],
+      "tint": "#d8be95",
+      "colorBlend": 0.18,
+      "roughness": 0.88,
+      "metalness": 0,
+      "maxMeshSpanM": 30
+    },
+    {
+      "id": "pond-water",
+      "materialNames": [
+        "paving-water"
+      ],
+      "tint": "#79a39b",
+      "colorBlend": 0.22,
+      "roughness": 0.64,
+      "metalness": 0,
+      "maxMeshSpanM": 230
+    }
+  ],
+  "note": "Warm restrained surface family pilot. Original geometry, textures, opacity, entrances and collision remain authoritative."
+}

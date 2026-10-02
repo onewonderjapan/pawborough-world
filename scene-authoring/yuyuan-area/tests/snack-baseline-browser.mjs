@@ -6,13 +6,14 @@ import { chromium } from 'playwright';
 
 const base = process.env.BASE || 'http://127.0.0.1:5492/';
 const art = process.env.ART_DIR;
+const prefix = process.env.PREFIX || 'M00';
 if (!art || !path.isAbsolute(art)) throw new Error('ART_DIR must be an absolute path');
 fs.mkdirSync(art, { recursive: true });
 
 const browser = await chromium.launch({
   executablePath: process.env.WALK_CHROME || '/usr/bin/google-chrome',
   headless: process.env.GPU_WEBGL !== '1',
-  args: ['--no-sandbox', ...(process.env.GPU_WEBGL === '1' ? [] : ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'])],
+  args: ['--no-sandbox', '--disable-background-timer-throttling', '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows', ...(process.env.GPU_WEBGL === '1' ? [] : ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'])],
 });
 const viewport = { width: 1280, height: 720 };
 const errors = [];
@@ -42,17 +43,31 @@ for (const preset of ['day', 'dusk']) {
   for (const view of views) {
     await world.evaluate(key => window.__tour(key), view.tourKey);
     await renderFrames(world);
-    await world.screenshot({ path: path.join(art, `M00-${view.id}-${preset}.png`) });
+    await world.screenshot({ path: path.join(art, `${prefix}-${view.id}-${preset}.png`) });
     const camera = await world.evaluate(() => window.__cam());
     viewsReport.push({ preset, view: view.id, tourKey: view.tourKey, eye: camera.p, look: camera.t, lighting: await world.evaluate(() => window.__lighting.state()) });
   }
 }
+const worldArtStatus = await world.evaluate(() => window.__worldArtStyle?.status() ?? null);
 await world.close();
+if (process.env.SKIP_PLAY === '1') {
+  const report = { schemaVersion: 1, base, chromeVersion: browser.version(), viewport,
+    mode: 'fixed-view art capture; no movement or performance claim', worldLoad, views: viewsReport, worldArt: worldArtStatus, errors };
+  fs.writeFileSync(path.join(art, `${prefix}-browser-baseline.json`), JSON.stringify(report, null, 2) + '\n', 'utf8');
+  await browser.close();
+  if (errors.length) throw new Error(`Page errors: ${errors.join(' | ')}`);
+  console.log(JSON.stringify({ screenshots: viewsReport.length, worldArt: worldArtStatus }, null, 2));
+  process.exit(0);
+}
 
 const play = await makePage();
 await play.goto(new URL('?play=1&at=center&light=day', base).href, { waitUntil: 'domcontentloaded' });
-await play.waitForFunction(() => window.__ready && window.__play?.status().ready && window.__play.status().mode === 'play', undefined, { timeout: 120000 });
-await play.waitForTimeout(1200);
+await play.waitForFunction(() => {
+  const s = window.__play?.status();
+  return window.__ready && s?.ready && s.mode === 'play' && s.feet?.length === 3 && s.foodsReady && s.bikePlaced && s.closedFacadesReady;
+}, undefined, { timeout: 120000 });
+await play.bringToFront();
+await play.waitForTimeout(3000);
 const before = await play.evaluate(() => {
   const canvas = document.querySelector('canvas');
   const gl = canvas?.getContext('webgl2');
@@ -71,20 +86,22 @@ const before = await play.evaluate(() => {
     load: { ...window.__loadTimes },
     renderer: ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : gl?.getParameter(gl.RENDERER),
     webgl2: !!gl,
+    visibility: document.visibilityState,
     resourceCounts: { geometry: geometry.size, material: material.size, texture: texture.size },
     foodRequests: [...new Set(performance.getEntriesByType('resource').map(e => e.name).filter(s => s.includes('/resources/foods/handheld/')))].length,
   };
 });
-await play.screenshot({ path: path.join(art, 'M00-play-center.png') });
+await play.screenshot({ path: path.join(art, `${prefix}-play-center.png`) });
 const sample = play.evaluate(() => new Promise(resolve => {
   const times = [];
+  let hiddenSamples = 0;
   let start = 0, previous = 0;
   const tick = t => {
     if (!start) start = t;
-    if (previous && t - start > 250) times.push(t - previous);
+    if (previous && t - start > 250) { times.push(t - previous); if (document.visibilityState !== 'visible') hiddenSamples++; }
     previous = t;
     if (t - start < 8000) requestAnimationFrame(tick);
-    else resolve(times);
+    else resolve({ times, hiddenSamples });
   };
   requestAnimationFrame(tick);
 }));
@@ -94,27 +111,30 @@ await play.keyboard.up('w');
 await play.keyboard.down('s');
 await play.waitForTimeout(3000);
 await play.keyboard.up('s');
-const samples = (await sample).filter(v => Number.isFinite(v) && v > 0).sort((a,b) => a-b);
+const captured = await sample;
+const samples = captured.times.filter(v => Number.isFinite(v) && v > 0).sort((a,b) => a-b);
 const quantile = q => samples[Math.min(samples.length - 1, Math.floor((samples.length - 1) * q))] ?? null;
 const after = await play.evaluate(() => ({ play: window.__play.status(), walk: window.__walk.status() }));
-await play.screenshot({ path: path.join(art, 'M00-play-after-route.png') });
+await play.screenshot({ path: path.join(art, `${prefix}-play-after-route.png`) });
 const report = {
   schemaVersion: 1,
   base,
   chromeVersion: browser.version(),
   viewport,
   deviceScaleFactor: 1,
+  backgroundPolicy: 'disable browser background timer/renderer/occluded-window throttling; all gameplay assets ready, then 3s warmup',
   mode: process.env.GPU_WEBGL === '1' ? 'headed-display-real-renderer' : 'headless-swiftshader',
   route: 'center spawn; production keyboard W 3s, S 3s; RAF samples 8s; no teleport',
   worldLoad,
+  worldArt: await play.evaluate(() => window.__worldArtStyle?.status() ?? null),
   views: viewsReport,
   before,
   after,
-  frameTimes: { sampleCount: samples.length, p50Ms: quantile(.5), p95Ms: quantile(.95), maxMs: samples.at(-1) ?? null },
+  frameTimes: { sampleCount: samples.length, hiddenSamples: captured.hiddenSamples, p50Ms: quantile(.5), p95Ms: quantile(.95), maxMs: samples.at(-1) ?? null, over100ms: samples.filter(v => v > 100).length },
   requests: { count: requests.length, unique: new Set(requests).size },
   errors,
 };
-fs.writeFileSync(path.join(art, 'M00-browser-baseline.json'), JSON.stringify(report, null, 2) + '\n', 'utf8');
+fs.writeFileSync(path.join(art, `${prefix}-browser-baseline.json`), JSON.stringify(report, null, 2) + '\n', 'utf8');
 await play.close();
 await browser.close();
 if (errors.length) throw new Error(`Page errors: ${errors.join(' | ')}`);
