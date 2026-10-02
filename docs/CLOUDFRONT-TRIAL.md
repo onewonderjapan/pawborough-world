@@ -2,7 +2,11 @@
 
 机主选择：专用 S3 + CloudFront，先使用 CloudFront 地址，后续再绑定子域名。游戏运行、碰撞和存档在浏览器内，不需要常驻 S1 游戏服务器。
 
-当前发布正在准备；公开网址和实测结果将在发布完成后补入本页。
+公开试玩：https://d1c74tvoxrrqcb.cloudfront.net/
+
+2026-10-02 已发布。运行版本 `20261002-main-df137ad1`，源码 `df137ad1`；169 个运行文件、132,481,245 bytes（约126.34 MiB），逐对象上传并校验 SHA256。专用 stack `onewonder-pawborough-web`，分发 `E3GZY0L85XH6FN`；公开 HTTP 入口字节与本地版本一致，CSP 匹配，S3 直接匿名读取返回403。真实 Chrome 公网检查八项通过（17 分片、6 碰撞区、资源加载、上车/倒车/Esc/CSP）；小吃相关本地 Chrome 21项及车篮/刷新六项通过。
+
+发布回执与截图：`/home/baibai/outbox/pawborough-cloudfront-preflight-20261002/artifacts/`。子域名尚未绑定，按机主选择留待后续。
 
 ## 导出运行包
 

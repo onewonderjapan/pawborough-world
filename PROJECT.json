@@ -95,17 +95,17 @@
     "versionRecord": "VERSION-v1.json",
     "docsIndex": "docs/README.md",
     "handoff": "CLAUDE_HANDOFF.md",
-    "note": "源码与标签已推送；可移交版本，未部署公开游戏服务。"
+    "note": "封存 v1.0 源码与标签已推送；当前独立公开试玩部署见 development.deployment。"
   },
   "development": {
-    "stage": "snack-feedback-fixed-release-ready",
-    "codeHead": "5e93c290f769870f4c3fceedd4d8b97070302e9b",
+    "stage": "cloudfront-trial-published",
+    "codeHead": "df137ad1b84e928ce343dbfaca4e5bf755c0e473",
     "entry": "/?play=1&at=center",
     "assetManifest": "scene-authoring/yuyuan-area/inputs/play-character.json",
     "technicalStatus": "passed",
     "artStatus": "pending_world_review",
-    "next": "Publish the accepted independent CloudFront trial, then integrate the four remaining actors",
-    "note": "Stall-front paving/collision, actual skinned palm contacts and upright snacks verified in real Chrome; riding and original GLB bytes preserved. Public upload pending.",
+    "next": "Integrate the four remaining character-lab actors into the verified street-play loop",
+    "note": "Stall-front paving/collision and real skin-bound upright snacks verified in Chrome; independent CloudFront trial published with 17 world parts and six physics zones. Original GLB bytes and sealed v1.0 tag preserved.",
     "assetManifests": [
       "scene-authoring/yuyuan-area/inputs/play-character.json",
       "scene-authoring/yuyuan-area/inputs/play-foods.json",
@@ -130,6 +130,15 @@
     "feedbackReviews": [
       "docs/PLAY-FEEDBACK-20261001.md",
       "docs/SNACK-FEEDBACK-20261002.md"
-    ]
+    ],
+    "deployment": {
+      "kind": "static-trial",
+      "url": "https://d1c74tvoxrrqcb.cloudfront.net/",
+      "version": "20261002-main-df137ad1",
+      "sourceHead": "df137ad1b84e928ce343dbfaca4e5bf755c0e473",
+      "verification": "actual Chrome plus public HTTP/S3 checks",
+      "subdomain": "deferred per owner choice",
+      "receipt": "docs/CLOUDFRONT-TRIAL.md"
+    }
   }
 }
