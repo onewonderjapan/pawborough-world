@@ -30,6 +30,11 @@ export class WalkController {
     this.halfHeight = capsule.halfHeight;
     this.eyeHeight = capsule.eyeHeight;
     this.centerOffset = capsule.halfHeight + capsule.radius;
+    // Play mode supplies the real area ground colliders, including late zones.
+    // The small capsule can receive a Rapier correction through a road edge;
+    // verify the proposed feet against those surfaces before applying motion.
+    this.groundColliders = capsule.groundColliders ?? null;
+    this.groundProbeRise = capsule.autostep ?? STEP_UP;
     const s = Array.isArray(capsule.spawn)
       ? { x: capsule.spawn[0], y: capsule.spawn[1], z: capsule.spawn[2] }
       : capsule.spawn;
@@ -136,6 +141,25 @@ export class WalkController {
     else
       this.controller.computeColliderMovement(this.collider, { x: dx, y: this.vy * dt, z: dz });
     const m = this.controller.computedMovement();
+    if (this.groundColliders && this.vy <= 0) {
+      const grounds = typeof this.groundColliders === 'function'
+        ? this.groundColliders() : this.groundColliders;
+      const handles = new Set(grounds.map(c => c.handle));
+      const feetY = t.y - this.centerOffset;
+      const nextFeetY = feetY + m.y;
+      const fromY = feetY + this.groundProbeRise;
+      const hit = this.physics.world.castRay(new this.RAPIER.Ray(
+        { x: t.x + m.x, y: fromY, z: t.z + m.z }, { x: 0, y: -1, z: 0 }),
+      Math.max(0.5, fromY - nextFeetY + SNAP_TO_GROUND), true,
+      undefined, undefined, undefined, undefined, c => handles.has(c.handle));
+      if (hit) {
+        const floorY = fromY - hit.timeOfImpact;
+        if (nextFeetY < floorY + 0.015) {
+          m.y = floorY + 0.015 - feetY;
+          this.vy = 0;
+        }
+      }
+    }
     this.body.setNextKinematicTranslation({ x: t.x + m.x, y: t.y + m.y, z: t.z + m.z });
     this.physics.world.step(); // applies the kinematic movement this step
     this.lastStep = {

@@ -8,6 +8,7 @@ import { WalkController } from '/vendor-src/player/WalkController.js';
 import { applyWalkOrientation } from '/vendor-src/player/walkCamera.js';
 import { AreaWalkPhysics } from '../src/areaWalkPhysics.js';
 import { computeStepMotion } from './play/telemetry.js';   // R1：play 档实测运动遥测
+import { installStallFronts } from './play/stall-fronts.js';
 
 const ZONE_FILES = ['garden', 'pond', 'temple', 'bazaar', 'outer'];
 const CAPSULE = { radius: 0.35, halfHeight: 0.6, eyeHeight: 1.6 };
@@ -30,6 +31,7 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
   let physics = null, controller = null, physicsPromise = null;
   let anchors = {};
   let zonePhysics = null;
+  let stallFronts = null;
   const params = new URLSearchParams(location.search);
   let anchor = params.get('at') || 'main';
   const keys = { forward: 0, right: 0 };
@@ -125,6 +127,7 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
       return r.arrayBuffer();
     } });
     physics = await zonePhysics.loadZones([...ZONE_FILES, ...extraCollisionZones().filter(z => !ZONE_FILES.includes(z))]);
+    if(play)stallFronts=installStallFronts({scene,layout:await readJson('layout.json'),RAPIER,zonePhysics});
     anchors = zonePhysics.anchors;
     if (zonePhysics.zones.has('fangbang')) await addStreetAnchor(readJson);
     anchor = anchors[anchor] ? anchor : 'main';
@@ -133,7 +136,7 @@ export function installWalkMode({ scene, camera, renderer, controls, getRoots, h
       RAPIER, physics,
       // play 档换胶囊/速度（r0.28/h0.2/eye0.8/走2.6/Shift跑4.2），未开启 play 时保持 viewer 默认
       capsule: play
-        ? { ...play.capsule, speed: play.walkSpeed ?? play.speed, runSpeed: play.runSpeed ?? play.speed, autostep: play.autostep, spawn: [0, 1, 0] }
+        ? { ...play.capsule, speed: play.walkSpeed ?? play.speed, runSpeed: play.runSpeed ?? play.speed, autostep: play.autostep, groundColliders: () => zonePhysics.groundColliders, spawn: [0, 1, 0] }
         : { ...CAPSULE, spawn: [0, 1, 0] },
     });
     if (hud) hud(`步行：碰撞就绪（墙 ${physics.wallCount} · 地面 ${physics.groundTriangleCount} 三角）`);

@@ -24,6 +24,7 @@
 //     textures and the owned skeleton found under the GLTF scene — and is
 //     idempotent; it never touches the static physics world or shared assets.
 import * as THREE from 'three';
+import { planRideSkinFix, skinCluster } from './rider-fit.js';
 
 // The GLB's face direction in model space (nose/mouth meshes sit at +Z).
 export const MODEL_FORWARD = new THREE.Vector3(0, 0, 1);
@@ -79,6 +80,18 @@ export class PlayAvatar {
     this.snackArm = this.model.getObjectByName('armR');
     this._snackBase = null;
     this._snackElapsed = 0;
+    // 手持/进食的爪皮肤跟随（工单：与骑乘共用 rider-fit 运行时改绑，可还原）。
+    // _bodyMesh/_bodyOriginal 只用于识别「当前 geometry 是否还是原 GLB 对象」，
+    // 骑乘（BikeView）持有自己的克隆期间，手持侧绝不重复 clone 或误还原。
+    this._bodyMesh = (() => {
+      let m = null;
+      this.model.traverse(o => { if (!m && o.isSkinnedMesh && o.skeleton) m = o; });
+      return m;
+    })();
+    this._bodyOriginal = this._bodyMesh?.geometry ?? null;
+    this._handSkin = null;        // { mesh, fix, clone } —— 手持期间的权重克隆
+    this.snackGripLocal = null;   // 真实爪掌前表面（armR 骨空间）；仅补丁生效期有效
+    this._snackGripVertices = null;
     this.actions.idle.setEffectiveWeight(1).play();
     this.actions.walk.setEffectiveWeight(0).play();
     // 表情 morph（eyeL/eyeR/mouth，extras.targetNames 提供名字；吃完成给 happy/content）
@@ -128,16 +141,19 @@ export class PlayAvatar {
     if (!this.actions.eat) return false;
     this.eatingPose = Boolean(on);
     if (this.eatingPose) {
+      this.ensureSnackSkin();
       this._snackElapsed = Number.isFinite(elapsed) && elapsed >= 0 ? elapsed : 0;
       this.actions.eat.reset();
       this.actions.eat.time = this._snackElapsed % Math.max(0.001, this.actions.eat.getClip().duration);
       this.actions.eat.setEffectiveWeight(1).play();
-    } else this._restoreSnackArm();
+    } else if (!this.holdingPose) this.releaseSnackSkin();
     return true;
   }
 
   setHoldingPose(on) {
     this.holdingPose = Boolean(on);
+    if (this.holdingPose) this.ensureSnackSkin();
+    else if (!this.eatingPose) this.releaseSnackSkin();
     if (!this.holdingPose && !this.eatingPose) this._restoreSnackArm();
   }
   _restoreSnackArm() {
@@ -146,6 +162,72 @@ export class PlayAvatar {
     this.snackArm.position.copy(this._snackBase.p);
     this._snackBase = null;
   }
+  // ---- 手持爪皮肤跟随（复用 rider-fit 的验收改绑；原 GLB 字节不变） ----
+  // 生效期：手持或进食。骑车接管（BikeView 自己 clone）期间不 apply；release 只
+  // 归还自己持有的克隆，绝不动别人的 geometry（嵌套 clone 不泄漏、不错位还原）。
+  ensureSnackSkin() {
+    if (this.disposed || this._handSkin || !this._bodyMesh || !this._bodyOriginal) return this.snackGripLocal;
+    if (this._bodyMesh.geometry !== this._bodyOriginal) return null;   // 骑乘克隆在场：不叠加
+    const fix = planRideSkinFix(this._bodyMesh);
+    const clone = fix.apply();
+    this._handSkin = { mesh: this._bodyMesh, fix, clone };
+    this._calibrateSnackGrip();
+    return this.snackGripLocal;
+  }
+  releaseSnackSkin() {
+    const s = this._handSkin;
+    if (!s) return false;
+    this._handSkin = null;
+    this.snackGripLocal = null;
+    this._snackGripVertices = null;
+    if (s.mesh.geometry !== s.clone) return false;   // 已被接管：还原由接管方负责
+    s.fix.restore(s.clone);
+    return true;
+  }
+  // 真实爪掌接触点（armR 骨空间）：改绑后的 armR 皮肤簇（skinCluster，与骑乘
+  // 同一标定）→ 簇顶点在骨空间的最低带（minY+0.035，与 armSegmentModel 同带规
+  // 则）质心 = 爪垫；沿肩→爪垫方向外推 0.015m 到爪掌前表面（纸托/包厚度）。
+  _calibrateSnackGrip() {
+    const mesh = this._handSkin?.mesh ?? this._bodyMesh;
+    if (!mesh) return null;
+    const cluster = skinCluster(mesh, mesh.skeleton, 'armR', { minWeight: 0.3, minDist: 0.13 });
+    if (!cluster?.vertexIndices?.length) { this.snackGripLocal = null; return null; }
+    const boneIndex = mesh.skeleton.bones.findIndex(b => b.name === 'armR');
+    const boneInverse = mesh.skeleton.boneInverses[boneIndex];
+    const pos = mesh.geometry.attributes.position;
+    const v = new THREE.Vector3();
+    const pts = [];
+    for (const i of cluster.vertexIndices) pts.push({i,p:v.fromBufferAttribute(pos, i).applyMatrix4(boneInverse).clone()});
+    const minY = Math.min(...pts.map(o => o.p.y));
+    const tips = pts.filter(o => o.p.y <= minY + 0.035);
+    const pad = new THREE.Vector3();
+    tips.forEach(o => pad.add(o.p));
+    pad.divideScalar(Math.max(1, tips.length));
+    this._snackGripVertices = tips.map(o => o.i);
+    this._snackGripOffset = pad.clone().normalize().multiplyScalar(0.015);
+    this.snackGripLocal = new THREE.Vector3();
+    this._syncSnackGrip();
+    return this.snackGripLocal;
+  }
+
+  // Keep the selected anatomical vertices fixed. Re-selecting the lowest
+  // vertices after posing can switch from paw to torso at a large arm angle.
+  _syncSnackGrip() {
+    const mesh=this._handSkin?.mesh,arm=this.snackArm,indices=this._snackGripVertices;
+    if(!mesh||!arm||!indices?.length)return;
+    this.root.updateMatrixWorld(true);mesh.skeleton.update();
+    const center=new THREE.Vector3(),v=new THREE.Vector3();
+    for(const i of indices){mesh.getVertexPosition(i,v);center.add(v.applyMatrix4(mesh.matrixWorld));}
+    center.divideScalar(indices.length);
+    this.snackGripLocal.copy(arm.worldToLocal(center)).add(this._snackGripOffset);
+    const upright=arm.getWorldQuaternion(new THREE.Quaternion()).invert()
+      .multiply(this.root.getWorldQuaternion(new THREE.Quaternion()));
+    for(const o of arm.children)if(o.userData?.sharedPlayFood){
+      o.position.copy(this.snackGripLocal);
+      o.quaternion.copy(upright);
+    }
+  }
+
   _applySnackArm(dt) {
     if (!this.snackArm || (!this.holdingPose && !this.eatingPose)) return;
     const arm = this.snackArm;
@@ -154,7 +236,7 @@ export class PlayAvatar {
     const t = this.eatingPose ? Math.min(1, this._snackElapsed / 0.4) : 0;
     const lift = t * t * (3 - 2 * t);
     const bite = this.eatingPose ? Math.sin(this._snackElapsed * Math.PI * 6) * 0.05 * lift : 0;
-    arm.rotateX(-0.55 - 0.6 * lift + bite);
+    arm.rotateX(-0.9 - 0.6 * lift + bite);
     arm.rotateZ(0.35 * lift);
     arm.position.y += 0.018 * lift;
     arm.position.z += 0.045 * lift;
@@ -187,6 +269,7 @@ export class PlayAvatar {
         this.current = want;
       }
       this._applySnackArm(dt);
+      this._syncSnackGrip();
     }
     const ts = speed === null || !Number.isFinite(speed) || speed <= 0
       ? 1
@@ -197,6 +280,7 @@ export class PlayAvatar {
   dispose() {
     if (this.disposed) return;
     this.disposed = true;
+    this.releaseSnackSkin();   // 归还手持克隆；原 geometry 留给下方遍历释放
     this.mixer.stopAllAction();
     this.mixer.uncacheRoot(this.model);
     // Food meshes belong to the catalog even when parented to this skeleton.

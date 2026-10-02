@@ -98,14 +98,14 @@
     "note": "源码与标签已推送；可移交版本，未部署公开游戏服务。"
   },
   "development": {
-    "stage": "play-feedback-fixed",
+    "stage": "snack-feedback-fixed-release-ready",
     "codeHead": "5e93c290f769870f4c3fceedd4d8b97070302e9b",
     "entry": "/?play=1&at=center",
     "assetManifest": "scene-authoring/yuyuan-area/inputs/play-character.json",
     "technicalStatus": "passed",
     "artStatus": "pending_world_review",
-    "next": "Integrate the four remaining character-lab actors into the verified street-play loop",
-    "note": "Reverse riding, real skin contact fit, stable Esc camera and visibly closed shopfronts verified in local Chrome. Sealed world v1.0 remains unchanged; actor art retains its existing adoption status.",
+    "next": "Publish the accepted independent CloudFront trial, then integrate the four remaining actors",
+    "note": "Stall-front paving/collision, actual skinned palm contacts and upright snacks verified in real Chrome; riding and original GLB bytes preserved. Public upload pending.",
     "assetManifests": [
       "scene-authoring/yuyuan-area/inputs/play-character.json",
       "scene-authoring/yuyuan-area/inputs/play-foods.json",
@@ -122,8 +122,14 @@
       "bicycle-reverse",
       "rider-contact-fit",
       "esc-camera-freeze",
-      "closed-shopfronts"
+      "closed-shopfronts",
+      "stall-frontage-collision",
+      "skin-bound-snacks"
     ],
-    "feedbackReview": "docs/PLAY-FEEDBACK-20261001.md"
+    "feedbackReview": "docs/PLAY-FEEDBACK-20261001.md",
+    "feedbackReviews": [
+      "docs/PLAY-FEEDBACK-20261001.md",
+      "docs/SNACK-FEEDBACK-20261002.md"
+    ]
   }
 }

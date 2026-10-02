@@ -96,13 +96,15 @@ export class FoodCatalog {
     holder.add(inst);
     return holder;
   }
-  // 手持实例：挂到指定骨骼（armR），随动画运动。
-  attachToHand(id, bone, reusable = null) {
+  // 手持实例：挂到指定骨骼（armR），随动画运动。gripLocal 是真实爪掌前表面
+  // （armR 骨空间，由 PlayAvatar.ensureSnackSkin 从改绑后的真实爪皮肤簇标定）；
+  // 不传时回退 legacy 固定偏移（假人骨架/测试路径）。
+  attachToHand(id, bone, reusable = null, gripLocal = null) {
     const entry = this.byId.get(id);
     if (!entry || !bone?.isBone) return null;
     const holder = reusable?.userData?.playFoodId === id
       ? reusable : this.makeHandInstance(id);
-    holder.position.copy(entry.hand.pos);
+    holder.position.copy(gripLocal ?? entry.hand.pos);
     holder.rotation.copy(entry.hand.rot);
     holder.scale.setScalar(1);        // 真实尺寸
     bone.add(holder);

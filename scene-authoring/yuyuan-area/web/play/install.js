@@ -231,7 +231,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   function feetSupported(feet, tol = 0.35) {
     const gy = supportAt(feet[0], feet[2]);
     const centerOffset = PLAY_PROFILE.capsule.radius + PLAY_PROFILE.capsule.halfHeight;
-    return gy !== null && Math.abs(gy - feet[1]) <= tol
+    return gy !== null && feet[1] >= gy - 0.025 && Math.abs(gy - feet[1]) <= tol
       && !wallOverlap(feet[0], feet[1] + centerOffset, feet[2], capsuleShape());
   }
 
@@ -524,10 +524,12 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       if (o.name?.startsWith('play-held-')) o.removeFromParent();
     });
     if (heldObj) { heldObj.obj.removeFromParent(); }
+    const armR = avatar.model.getObjectByName('armR');
+    const gripLocal = armR?.isBone ? avatar.snackGripLocal : null;   // 真实爪掌前表面（手持补丁生效期）
     if (gameState.heldItem) {
       const reusable = heldObj?.foodId === gameState.heldItem ? heldObj.obj : null;
       heldObj = { foodId: gameState.heldItem, obj: foods.attachToHand(gameState.heldItem,
-        avatar.model.getObjectByName('armR') ?? avatar.model, reusable) };
+        armR ?? avatar.model, reusable, gripLocal) };
     } else if (gameState.basketItem && gameState.vehicle.riding && bikeView) {
       // 车篮里的正是同一实例（上车时移入的），不再新建
       if (!heldObj || heldObj.foodId !== gameState.basketItem) {
@@ -572,6 +574,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     refreshHeldModel();
     playCamera.shoulderHeight = PLAY_PROFILE.rideShoulderHeight;
     playCamera.distance = PLAY_PROFILE.rideCameraDistance;
+    core.state.avatar?.releaseSnackSkin?.();   // 骑乘 clone 接管前归还手持爪补丁（防嵌套克隆）
     bikeView.attachRider(core.state.avatar, rideCtl);
     window.dispatchEvent(new CustomEvent('pb:ride-change', { detail: { riding: true } }));
     hud.message('骑上共享自行车（W 加速 · S 刹停后倒车 · Space 刹车 · Shift 冲刺 · A/D 转向 · R 下车 · 鼠标自由看）');
@@ -595,6 +598,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     gameState.setVehicleView(viewYaw ?? heading);
     playCamera.shoulderHeight = PLAY_PROFILE.rideShoulderHeight;
     playCamera.distance = PLAY_PROFILE.rideCameraDistance;
+    core.state.avatar?.releaseSnackSkin?.();   // 同 mount：骑乘 clone 前归还手持补丁
     bikeView.attachRider(core.state.avatar, rideCtl);
     window.dispatchEvent(new CustomEvent('pb:ride-change', { detail: { riding: true, restored: true } }));
     refreshHeldModel();
