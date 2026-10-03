@@ -175,7 +175,7 @@ function normalizeTrackedV2(raw, registry, warnings) {
 }
 
 function assembleSave({ sceneVersion, editionId, actorId, feet, yaw, pitch, held, basket, eating,
-  discovered, tasted, milestones, tracked, orphaned, vehicle }) {
+  discovered, tasted, milestones, tracked, orphaned, vehicle, route }) {
   return {
     schemaVersion: SAVE_SCHEMA_VERSION,
     sceneVersion,
@@ -194,6 +194,7 @@ function assembleSave({ sceneVersion, editionId, actorId, feet, yaw, pitch, held
     trackedVendorId: tracked.vendorId,
     orphanedProgress: { discovered: orphaned.discovered, tasted: orphaned.tasted },
     vehicle,
+    route: route ?? { id: 'free' },
   };
 }
 
@@ -240,6 +241,7 @@ export function migrateV1ToV2(v1, options = {}) {
     trackedVendorId: null,
     orphanedProgress: orphaned,
     vehicle,
+    route: { id: 'free' },
   };
 
   // 收藏：tasted ⊆ discovered；合法手持/车篮也算已发现
@@ -311,6 +313,18 @@ function normalizeV2Save(data, opts) {
   };
   if (orphaned.discovered.length || orphaned.tasted.length) warnings.push('orphaned-foods');
 
+  let route = { id: 'free' };
+  if (data.route !== undefined && data.route !== null) {
+    if (typeof data.route === 'object' && !Array.isArray(data.route) && typeof data.route.id === 'string' && ['taste', 'cruise', 'free'].includes(data.route.id)) {
+      route = { id: data.route.id };
+    } else if (typeof data.route === 'string' && ['taste', 'cruise', 'free'].includes(data.route)) {
+      route = { id: data.route };
+    } else {
+      warnings.push('route-fallback-free');
+      route = { id: 'free' };
+    }
+  }
+
   const save = assembleSave({
     sceneVersion: opts.sceneVersion,
     editionId: opts.editionId,
@@ -328,6 +342,7 @@ function normalizeV2Save(data, opts) {
     tracked: normalizeTrackedV2(data, registry, warnings),
     orphaned,
     vehicle,
+    route,
   });
 
   const sceneMismatch = data.sceneVersion !== opts.sceneVersion;
@@ -409,6 +424,10 @@ function isShallowValidV2(save) {
   if (veh.placed && (!Array.isArray(veh.pos) || veh.pos.length !== 3 || !veh.pos.every(finite))) return false;
   if (!finite(veh.yaw) || !finite(veh.viewYaw)) return false;
   if (veh.pos !== null && (!Array.isArray(veh.pos) || veh.pos.length !== 3 || !veh.pos.every(finite))) return false;
+  if (save.route !== undefined && save.route !== null) {
+    if (typeof save.route !== 'object' || Array.isArray(save.route)) return false;
+    if (typeof save.route.id !== 'string' || !save.route.id) return false;
+  }
   return true;
 }
 

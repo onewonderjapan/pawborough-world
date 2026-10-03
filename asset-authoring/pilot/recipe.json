@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "id": "u05-pilot-recipe",
+  "name": "整体美术试验段（中心—食摊—方浜）配方",
+  "provenance": {
+    "workOrder": "U05",
+    "baseWorkspace": "pawborough-world",
+    "targetAreas": [
+      "center",
+      "changfen",
+      "fangbang-seam"
+    ]
+  },
+  "materials": [
+    {
+      "id": "shop-glass",
+      "targetMaterial": "recessed-old-glass",
+      "intent": "死黑窗改造：微弱环境反射、柔和背板进深与窗棂阴影",
+      "baseColor": "#2d3e42",
+      "roughness": 0.22,
+      "metalness": 0.18,
+      "proceduralMap": "soft-glass-depth-gradient-128x128"
+    },
+    {
+      "id": "closed-door-lacquer",
+      "targetMaterial": "deep-door-lacquer",
+      "intent": "闭门旧木漆：古旧栗褐木漆、竖向板缝质感，明确闭店",
+      "baseColor": "#3f2b23",
+      "roughness": 0.78,
+      "metalness": 0.02,
+      "proceduralMap": "vertical-lacquer-grain-128x128"
+    },
+    {
+      "id": "warm-stone-curb",
+      "targetMaterial": "worn-stone",
+      "intent": "暖灰水刷石：沿街踢脚石、铺地边缘收口，压低泛灰对比",
+      "baseColor": "#c8bcab",
+      "roughness": 0.94,
+      "metalness": 0.0
+    },
+    {
+      "id": "blue-gray-brick",
+      "targetMaterial": "blue-gray-brick",
+      "intent": "温和青灰砖：柔化墙体明暗硬切，烘托温暖市井氛围",
+      "baseColor": "#82898f",
+      "roughness": 0.86,
+      "metalness": 0.0
+    }
+  ],
+  "props": [
+    {
+      "kind": "curb-trim",
+      "name": "暖灰水刷石路边踢脚",
+      "geometry": "BoxGeometry(1.2, 0.14, 0.12)",
+      "material": "warm-stone-curb",
+      "placementRule": "贴近既有建筑立面基座或铺地边界，距人行中心线>1.5m，严禁进入通道与门洞"
+    },
+    {
+      "kind": "closed-notice",
+      "name": "歇业休整闭店木牌",
+      "geometry": "BoxGeometry(0.35, 0.50, 0.02)",
+      "material": "closed-door-lacquer",
+      "placementRule": "挂于闭店门面木排门中央或门侧，明确不开放状态"
+    },
+    {
+      "kind": "wall-lantern",
+      "name": "贴墙小暖灯",
+      "geometry": "Compound(bracket=0.08m, lantern=0.18m)",
+      "placementRule": "安装高度Y>=2.2m，严禁侵占行人及骑行头部净空，灯光复用街区池（<=2盏PointLight）"
+    }
+  ],
+  "adoptedRuntime": "web/material-style.js + web/scoped-material.js",
+  "authoritativeConfig": "scene-authoring/yuyuan-area/inputs/world-art-style.json",
+  "actualMaterials": [
+    "facades-wood",
+    "facades-wood-dark",
+    "btk-glass"
+  ],
+  "scope": "center/fangbang frozen allowlist; two narrow glass rectangles",
+  "dormantProps": 8,
+  "sourceAssetPolicy": "original GLBs read-only, render clone reversible"
+}

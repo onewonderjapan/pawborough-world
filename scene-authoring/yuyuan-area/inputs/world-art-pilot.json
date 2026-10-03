@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "id": "pawborough-world-art-pilot-u05",
+  "name": "中心—食摊—方浜交界美术试验段",
+  "frozenPoints": {
+    "center": {
+      "name": "中心广场",
+      "position": [-157.75, 0.0, -22.25],
+      "camera": {
+        "day": { "p": [-157.8, 1.6, -22.3], "t": [-142.3, 1.8, -36.4] },
+        "night": { "p": [-157.8, 1.6, -22.3], "t": [-142.3, 1.8, -36.4] }
+      }
+    },
+    "changfen": {
+      "name": "肠粉摊前",
+      "position": [-154.811, 0.0, -25.189],
+      "camera": {
+        "day": { "p": [-156.2, 1.4, -23.8], "t": [-153.75, 1.2, -26.25] },
+        "night": { "p": [-156.2, 1.4, -23.8], "t": [-153.75, 1.2, -26.25] }
+      }
+    },
+    "fangbang_seam": {
+      "name": "方浜接缝",
+      "position": [-96.8, 0.09, 20.75],
+      "camera": {
+        "day": { "p": [-99.5, 1.6, 20.75], "t": [-93.5, 0.5, 20.75] },
+        "night": { "p": [-99.5, 1.6, 20.75], "t": [-93.5, 0.5, 20.75] }
+      }
+    }
+  },
+  "scopes": [
+    {
+      "id": "center",
+      "boundsXZ": [-198, -66, -118, 8]
+    },
+    {
+      "id": "fangbang-seam",
+      "boundsXZ": [-108, 12, -86, 30]
+    }
+  ],
+  "materials": {
+    "shop-glass": {
+      "targetNames": ["recessed-old-glass"],
+      "tint": "#44636d",
+      "colorBlend": 0.35,
+      "roughness": 0.22,
+      "metalness": 0.18,
+      "proceduralDepth": true
+    },
+    "closed-door-lacquer": {
+      "targetNames": ["deep-door-lacquer", "facades-wood", "facades-wood-dark"],
+      "tint": "#3f2b23",
+      "colorBlend": 0.40,
+      "roughness": 0.78,
+      "metalness": 0.02,
+      "proceduralGrain": true
+    },
+    "warm-stone": {
+      "targetNames": ["worn-stone", "garden-grey-stone"],
+      "tint": "#c8bcab",
+      "colorBlend": 0.20,
+      "roughness": 0.94,
+      "metalness": 0.0
+    },
+    "blue-gray-brick": {
+      "targetNames": ["blue-gray-brick"],
+      "tint": "#82898f",
+      "colorBlend": 0.18,
+      "roughness": 0.86,
+      "metalness": 0.0
+    },
+    "timber": {
+      "targetNames": ["stained-timber", "timber", "timberDark"],
+      "tint": "#6b4e3d",
+      "colorBlend": 0.22,
+      "roughness": 0.76,
+      "metalness": 0.0
+    }
+  },
+  "budget": {
+    "maxExtraTriangles": 500,
+    "maxExtraDrawCalls": 4,
+    "maxExtraTextures": 2,
+    "maxPointLights": 2,
+    "addedColliders": 0
+  }
+}

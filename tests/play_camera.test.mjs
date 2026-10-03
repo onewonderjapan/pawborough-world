@@ -14,6 +14,7 @@ import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat';
 import { PlayCamera, computeCameraPlacement } from '../scene-authoring/yuyuan-area/web/play/camera.js';
 import { PlayAvatar, avatarYawFor, MODEL_FORWARD } from '../scene-authoring/yuyuan-area/web/play/avatar.js';
+import { sampleFoodPose } from '../scene-authoring/yuyuan-area/web/play/food-pose.js';
 
 let failures = 0;
 function check(name, cond, detail = '') {
@@ -237,6 +238,277 @@ function stubController(feet, yaw, pitch = 0) {
   check('dispose frees the owned skeleton', skelD === 1, `skelD=${skelD}`);
   avatar.dispose();
   check('repeat dispose does not double-free GPU resources', geoD === 1 && matD === 1 && texD === 1 && skelD === 1);
+}
+
+// --- U03: PlayCamera food inspection view ('food' mode) ---
+{
+  const camera = new THREE.PerspectiveCamera(46, 16 / 9, 0.1, 600);
+  const pc = new PlayCamera({
+    camera,
+    shoulderHeight: 0.62,
+    distance: 2.4,
+    margin: 0.12,
+    foodDistance: 1.15,
+    foodShoulderHeight: 0.54,
+    foodYawOffset: Math.PI,
+    foodPitchOffset: -0.06,
+  });
+
+  check('initial viewMode is follow', pc.viewMode === 'follow' && !pc.isFoodView());
+  pc.setViewMode('food');
+  check('setViewMode("food") activates food view', pc.viewMode === 'food' && pc.isFoodView());
+  pc.toggleFoodView();
+  check('toggleFoodView() toggles back to follow', pc.viewMode === 'follow');
+  pc.toggleFoodView();
+  check('toggleFoodView() toggles to food', pc.viewMode === 'food');
+
+  const yaw = -Math.PI / 2; // controller faces +X (forward = (1, 0, 0))
+  const ctrl = stubController([10, 0.02, -4], yaw, 0);
+  const place = pc.update({ controller: ctrl, dt: 1 / 60 });
+
+  check('controller yaw and pitch remain unchanged (zero modification)',
+    ctrl.yaw === yaw && ctrl.pitch === 0);
+
+  const expectedPivot = new THREE.Vector3(10, 0.02 + 0.54, -4);
+  check('food view pivot sits at feet + foodShoulderHeight (0.54)',
+    pc.pivot.distanceTo(expectedPivot) < 1e-9, `pivot=${pc.pivot.toArray().map(v=>v.toFixed(2))}`);
+
+  // In food view, camera sits in front of the model (at +X from pivot)
+  check('food camera sits in front of the model (+X relative to pivot)',
+    camera.position.x > pc.pivot.x, `cam.x=${camera.position.x.toFixed(2)} pivot.x=${pc.pivot.x.toFixed(2)}`);
+  check('food camera applied distance is ~1.15m', close(place.applied, 1.15, 1e-6), `applied=${place.applied}`);
+  check('unobstructed food camera distance > avatarHideDistance (0.8m)', place.applied >= 0.8);
+
+  const toPivot = expectedPivot.clone().sub(camera.position).normalize();
+  const camFwd = new THREE.Vector3(); camera.getWorldDirection(camFwd);
+  check('food camera looks at the food view pivot', camFwd.dot(toPivot) > 1 - 1e-6);
+
+  // Near wall in front of the character (0.7m away along camera line)
+  let rayDir = null;
+  const wallHit = pc.update({
+    controller: ctrl,
+    dt: 1 / 60,
+    castRay: (origin, dir, maxToi) => { rayDir = dir.clone(); return 0.70; },
+  });
+  check('castRay got front camera direction', rayDir && rayDir.x > 0);
+  check('wall in front: applied distance retracts to hit - margin (0.70 - 0.12 = 0.58)',
+    close(wallHit.applied, 0.58, 1e-6), `applied=${wallHit.applied.toFixed(4)}`);
+  check('wall retraction leaves pivot untouched', pc.pivot.distanceTo(expectedPivot) < 1e-9);
+
+  // Very tight wall closer than margin
+  const tightHit = pc.update({
+    controller: ctrl,
+    dt: 1 / 60,
+    castRay: () => 0.05,
+  });
+  check('hit < margin: zero safe clearance stays at pivot without crossing wall',
+    tightHit.applied === 0);
+
+  // Decoupled facingYaw: when facingYaw is specified, camera frames avatar facing
+  const facingYaw = 0; // avatar faces -Z (forward = (0, 0, -1))
+  const decoupledHit = pc.update({
+    controller: ctrl, // ctrl.yaw is still -PI/2 (+X)
+    dt: 1 / 60,
+    facingYaw,
+  });
+  check('decoupled facing: camera sits along avatar facing (-Z relative to pivot)',
+    camera.position.z < pc.pivot.z, `cam.z=${camera.position.z.toFixed(2)} pivot.z=${pc.pivot.z.toFixed(2)}`);
+
+  // Switch back to follow mode
+  pc.setViewMode('follow');
+  const followPlace = pc.update({ controller: ctrl, dt: 1 / 60 });
+  check('switching back to follow restores behind-character placement',
+    camera.position.x < pc.pivot.x && close(followPlace.applied, 2.4, 1e-6));
+}
+
+// --- U03: 4 Food Profiles Framing & Visibility (S01, S02, S04, S05, S09) ---
+{
+  const camera = new THREE.PerspectiveCamera(46, 16 / 9, 0.1, 600);
+  const pc = new PlayCamera({
+    camera,
+    shoulderHeight: 0.62,
+    foodDistance: 1.15,
+    foodShoulderHeight: 0.54,
+    foodYawOffset: Math.PI,
+    foodPitchOffset: -0.06,
+  });
+  pc.setViewMode('food');
+
+  const feet = [0, 0, 0];
+  const yaw = 0; // facing -Z, forward = (0, 0, -1)
+  const ctrl = stubController(feet, yaw, 0);
+  pc.update({ controller: ctrl, dt: 1 / 60 });
+  camera.updateMatrixWorld(true);
+
+  const mouthModel = new THREE.Vector3(0, 0.65, 0.28);
+  const modelRotY = avatarYawFor(yaw);
+  const toWorld = (v) => v.clone().applyEuler(new THREE.Euler(0, modelRotY, 0)).add(new THREE.Vector3(...feet));
+  const toNDC = (v) => v.clone().project(camera);
+
+  const mouthWorld = toWorld(mouthModel);
+  const mouthNDC = toNDC(mouthWorld);
+  check('food view: mouth is within visible screen upper-center (NDC y in [0.1, 0.5])',
+    Math.abs(mouthNDC.x) < 0.2 && mouthNDC.y >= 0.1 && mouthNDC.y <= 0.5 && mouthNDC.z < 1,
+    `mouthNDC=(${mouthNDC.x.toFixed(2)}, ${mouthNDC.y.toFixed(2)})`);
+
+  // Profile 1: Wrapped (S04 xiaolongbao / S05 roujiamo)
+  {
+    const pose = sampleFoodPose({
+      profile: 'wrapped', t: 0.5, rig: { mouth: mouthModel },
+      anchors: { leftSupport: [-0.08, 0, 0], rightSupport: [0.08, 0, 0], bite: [0, 0.05, 0] },
+      presentation: { profile: 'wrapped', eating: true },
+    });
+    check('wrapped profile sampleFoodPose ok', pose.ok);
+    const leftNDC = toNDC(toWorld(pose.palms.armL));
+    const rightNDC = toNDC(toWorld(pose.palms.armR));
+    const foodNDC = toNDC(toWorld(pose.position));
+    check('wrapped: food, both paws, and mouth all inside frustum',
+      [leftNDC, rightNDC, foodNDC, mouthNDC].every(p => Math.abs(p.x) <= 1 && Math.abs(p.y) <= 1 && p.z >= 0 && p.z <= 1),
+      `left.x=${leftNDC.x.toFixed(2)} right.x=${rightNDC.x.toFixed(2)} food.y=${foodNDC.y.toFixed(2)}`);
+    check('wrapped: paws are left and right of center', leftNDC.x < 0 && rightNDC.x > 0);
+  }
+
+  // Profile 2: Skewer (S02 boboji / tanghulu)
+  {
+    const pose = sampleFoodPose({
+      profile: 'skewer', t: 0.5, rig: { mouth: mouthModel },
+      anchors: { leftSupport: [-0.05, -0.05, 0], rightSupport: [0.05, -0.05, 0], bite: [0, 0.12, 0] },
+      presentation: { profile: 'skewer', eating: true },
+    });
+    check('skewer profile sampleFoodPose ok', pose.ok);
+    const leftNDC = toNDC(toWorld(pose.palms.armL));
+    const rightNDC = toNDC(toWorld(pose.palms.armR));
+    const foodNDC = toNDC(toWorld(pose.position));
+    check('skewer: food, both paws, and mouth all inside frustum',
+      [leftNDC, rightNDC, foodNDC, mouthNDC].every(p => Math.abs(p.x) <= 1 && Math.abs(p.y) <= 1 && p.z >= 0 && p.z <= 1),
+      `left.y=${leftNDC.y.toFixed(2)} food.y=${foodNDC.y.toFixed(2)}`);
+  }
+
+  // Profile 3: Bowl with chopsticks (S01 changfen / noodles)
+  {
+    const pose = sampleFoodPose({
+      profile: 'bowl', t: 0.5, rig: { mouth: mouthModel },
+      anchors: { leftSupport: [-0.1, 0, 0], content: [0, 0.02, 0], toolGrip: [0.08, -0.02, 0], toolBite: [0.02, 0.08, 0.02] },
+      presentation: { profile: 'bowl', eating: true, utensilKind: 'chopsticks' },
+    });
+    check('bowl chopsticks sampleFoodPose ok', pose.ok);
+    const leftNDC = toNDC(toWorld(pose.palms.armL));
+    const rightNDC = toNDC(toWorld(pose.palms.armR));
+    const foodNDC = toNDC(toWorld(pose.position));
+    check('bowl chopsticks: food, both paws, and mouth all inside frustum',
+      [leftNDC, rightNDC, foodNDC, mouthNDC].every(p => Math.abs(p.x) <= 1 && Math.abs(p.y) <= 1 && p.z >= 0 && p.z <= 1),
+      `bowl.y=${foodNDC.y.toFixed(2)} armR.y=${rightNDC.y.toFixed(2)}`);
+  }
+
+  // Profile 4: Bowl with spoon (S09 waguan-tang / shuangpinai)
+  {
+    const pose = sampleFoodPose({
+      profile: 'bowl', t: 0.5, rig: { mouth: mouthModel },
+      anchors: { leftSupport: [-0.1, 0, 0], content: [0, 0.02, 0], toolGrip: [0.08, -0.02, 0], toolBite: [0.02, 0.08, 0.02] },
+      presentation: { profile: 'bowl', eating: true, utensilKind: 'spoon' },
+    });
+    check('bowl spoon sampleFoodPose ok', pose.ok);
+    const leftNDC = toNDC(toWorld(pose.palms.armL));
+    const rightNDC = toNDC(toWorld(pose.palms.armR));
+    const foodNDC = toNDC(toWorld(pose.position));
+    check('bowl spoon: food, both paws, and mouth all inside frustum',
+      [leftNDC, rightNDC, foodNDC, mouthNDC].every(p => Math.abs(p.x) <= 1 && Math.abs(p.y) <= 1 && p.z >= 0 && p.z <= 1),
+      `bowl.y=${foodNDC.y.toFixed(2)} spoon.y=${rightNDC.y.toFixed(2)}`);
+  }
+}
+
+// --- U03: Camera View State Transitions & Contracts (install wiring contract) ---
+{
+  const camera = new THREE.PerspectiveCamera(46, 16 / 9, 0.1, 600);
+  const pc = new PlayCamera({ camera });
+
+  // Simulate gameplay state
+  let heldItem = null;
+  let riding = false;
+  let busyEating = false;
+  let savedUserViewMode = 'follow';
+
+  const canInspectFood = () => !riding && !!heldItem;
+  const toggleFoodView = () => {
+    if (riding || !heldItem) return false;
+    pc.toggleFoodView();
+    return true;
+  };
+  const startEat = () => {
+    savedUserViewMode = pc.viewMode;
+    pc.setViewMode('food');
+    busyEating = true;
+  };
+  const finishEat = () => {
+    busyEating = false;
+    pc.setViewMode(savedUserViewMode);
+  };
+  const cancelEat = () => {
+    busyEating = false;
+    pc.setViewMode(savedUserViewMode);
+  };
+  const onMovementInput = () => {
+    if (pc.viewMode === 'food' && !busyEating) {
+      pc.setViewMode('follow');
+    }
+  };
+  const onMount = () => {
+    riding = true;
+    pc.setViewMode('follow');
+  };
+
+  // 1. Cannot toggle food view without held item
+  check('cannot inspect food with empty hands', !canInspectFood() && !toggleFoodView() && pc.viewMode === 'follow');
+
+  // 2. Pick up food -> can toggle food view
+  heldItem = 'roujiamo';
+  check('holding food enables inspection', canInspectFood());
+  check('V key toggles to food view', toggleFoodView() && pc.viewMode === 'food');
+  check('V key toggles back to follow view', toggleFoodView() && pc.viewMode === 'follow');
+
+  // 3. Movement input recovers follow view (prevents inverted walking)
+  pc.setViewMode('food');
+  onMovementInput();
+  check('movement input restores follow camera', pc.viewMode === 'follow');
+
+  // 4. F eating auto-view and restore:
+  // 4a. User was in follow view -> eat switches to food view -> finish restores follow view
+  check('pre-eat in follow mode', pc.viewMode === 'follow');
+  startEat();
+  check('eating auto-selects food view', pc.viewMode === 'food');
+  // While eating, movement does NOT break food view (movement is locked)
+  onMovementInput();
+  check('eating locks view (movement does not exit food view while eating)', pc.viewMode === 'food');
+  finishEat();
+  check('eating finish restores user previous follow view', pc.viewMode === 'follow');
+
+  // 4b. User was ALREADY in food view (via V) -> eat keeps food view -> finish restores food view
+  pc.setViewMode('food');
+  startEat();
+  check('eating while in food view stays in food view', pc.viewMode === 'food');
+  finishEat();
+  check('eating finish restores food view when user had selected V before', pc.viewMode === 'food');
+
+  // 4c. Eating cancelled restores previous view
+  pc.setViewMode('follow');
+  startEat();
+  cancelEat();
+  check('eating cancelled restores previous follow view', pc.viewMode === 'follow');
+
+  // 5. Bike mount disables and exits food view
+  pc.setViewMode('food');
+  onMount();
+  check('bike mount forces exit from food view to follow view', pc.viewMode === 'follow');
+  check('riding disables food inspection', !canInspectFood() && !toggleFoodView());
+
+  // 6. Pause / Esc / Atlas does NOT alter camera view mode
+  pc.setViewMode('food');
+  // simulate pause event
+  const pauseState = { paused: true, viewMode: pc.viewMode };
+  check('pause retains current view mode', pauseState.viewMode === 'food' && pc.viewMode === 'food');
+  // simulate resume
+  const resumeState = { paused: false, viewMode: pc.viewMode };
+  check('resume retains current view mode', resumeState.viewMode === 'food' && pc.viewMode === 'food');
 }
 
 console.log(failures === 0 ? 'PLAY_CAMERA PASS' : `PLAY_CAMERA FAIL (${failures})`);

@@ -1,4 +1,12 @@
 import * as THREE from 'three';
+import {
+  retainGlassDepthTexture,
+  releaseGlassDepthTexture,
+  retainLacquerTexture,
+  releaseLacquerTexture,
+  disposeWorldArtPilotTextures
+} from './world-art-pilot.js';
+import { createScopedGeometry } from './scoped-material.js';
 
 /**
  * Strips trailing Blender numeric suffix (e.g., 'btk-wood.001' -> 'btk-wood').
@@ -14,10 +22,13 @@ function stripBlenderSuffix(name) {
 function getMeshWorldBox(mesh) {
   if (!mesh.geometry) return null;
   if (!mesh.geometry.boundingBox) {
-    mesh.geometry.computeBoundingBox();
+    if (typeof mesh.geometry.computeBoundingBox === 'function') {
+      mesh.geometry.computeBoundingBox();
+    }
   }
   if (!mesh.geometry.boundingBox) return null;
-  return mesh.geometry.boundingBox.clone().applyMatrix4(mesh.matrixWorld);
+  const matrix = mesh.matrixWorld || new THREE.Matrix4();
+  return mesh.geometry.boundingBox.clone().applyMatrix4(matrix);
 }
 
 /**
@@ -78,6 +89,7 @@ export function applyWorldArtStyle(root, { style, sharedMaterials = new Map() } 
   const meshRestorations = [];
   const appliedFamiliesSet = new Set();
   let matchedMeshCount = 0;
+  let totalInsideTriangles = 0;
 
   root.traverse(obj => {
     // Skip non-mesh and SkinnedMesh
@@ -88,10 +100,10 @@ export function applyWorldArtStyle(root, { style, sharedMaterials = new Map() } 
     const box = getMeshWorldBox(obj);
     if (!box) return;
 
-    // Pilot scope check
-    if (style.mode === 'pilot' || (style.scopes && style.scopes.length > 0)) {
+    // Global style-level pilot scope check
+    if (style.mode === 'pilot' || (Array.isArray(style.scopes) && style.scopes.length > 0)) {
       if (!isMeshInScope(box, style.scopes)) {
-        return; // Out of scope
+        return; // Out of global scope
       }
     }
 
@@ -112,10 +124,39 @@ export function applyWorldArtStyle(root, { style, sharedMaterials = new Map() } 
       const baseName = stripBlenderSuffix(origMat.name);
       const family = familyByMatName.get(baseName);
       if (!family) continue; // Unknown material: skip
+      if (family.matchMeshNames && !family.matchMeshNames.includes(obj.name)) continue;
 
-      // Skip mesh if XZ max span exceeds family limit
-      if (typeof family.maxMeshSpanM === 'number' && maxMeshSpan > family.maxMeshSpanM) {
-        continue;
+      // Family-level scopes check (incremental pilot per family)
+      const hasFamilyScopes = Array.isArray(family.scopes) && family.scopes.length > 0;
+      if (hasFamilyScopes) {
+        if (!isMeshInScope(box, family.scopes)) {
+          continue; // Mesh outside this family's allowed scopes
+        }
+      }
+
+      // Check maxMeshSpanM
+      const exceedsSpan = typeof family.maxMeshSpanM === 'number' && maxMeshSpan > family.maxMeshSpanM;
+      if (exceedsSpan) {
+        // If family has no scopes, skip large mesh (baseline global protection)
+        if (!hasFamilyScopes) {
+          continue;
+        }
+        // Batched mesh with family.scopes: support mesh span > limit only if single material and no existing groups
+        if (isArray || (obj.geometry.groups && obj.geometry.groups.length > 0)) {
+          continue;
+        }
+      }
+
+      // Resolve actual eligible triangles before retaining shared resources.
+      const split = hasFamilyScopes && (exceedsSpan || family.triangleColor || family.preciseScope);
+      let scoped = null;
+      if (split) {
+        if (isArray || obj.geometry.groups.length) continue;
+        const trianglePredicate = family.triangleColor ? ({ c0, c1, c2, p0, p1, p2, normal }) =>
+          Math.abs(normal.y) < 0.2 && [p0,p1,p2].every(p => p.y >= 0.15 && p.y <= 2.25) &&
+          [c0,c1,c2].every(c => c && c.every((v,k) => Math.abs(v-family.triangleColor[k]) <= (family.colorTolerance ?? 0.006))) : null;
+        scoped = createScopedGeometry(obj, family.scopes, { trianglePredicate });
+        if (!scoped.applied) continue;
       }
 
       // Shared cache key: original material UUID + style ID + family ID
@@ -147,14 +188,58 @@ export function applyWorldArtStyle(root, { style, sharedMaterials = new Map() } 
           clone.metalness = family.metalness;
         }
 
+        // Procedural depth/backing for glass and closed doors if original has no map
+        let proceduralType = null;
+        if (!origMat.map) {
+          if (family.id === 'shop-glass' || family.proceduralTexture === 'shop-glass') {
+            clone.map = retainGlassDepthTexture();
+            proceduralType = 'shop-glass';
+            if (family.id === 'center-window-pilot' || family.triangleColor) { clone.vertexColors = false; clone.color.set('#f1f1ed'); }
+          } else if (family.id === 'closed-door-lacquer') {
+            clone.map = retainLacquerTexture();
+            proceduralType = 'closed-door-lacquer';
+            // 避黑上加黑：带程序漆木 map 时，inside clone.color 用中性/温暖较亮 base，夜灯仍原光照
+            clone.color = new THREE.Color('#d8c8b8');
+          }
+        }
+
         entry = {
           material: clone,
           clone: clone,
           refCount: 0,
           key: cacheKey,
-          family: family
+          family: family,
+          proceduralType
         };
         sharedMaterials.set(cacheKey, entry);
+      }
+
+      if (scoped) {
+
+        if (!ownedEntries.has(entry)) {
+          entry.refCount++;
+          ownedEntries.add(entry);
+        }
+
+        appliedFamiliesSet.add(family.id);
+        totalInsideTriangles += scoped.insideTriangleCount;
+        matchedMeshCount++;
+
+        meshRestorations.push({
+          mesh: obj,
+          originalMaterial: origMat,
+          originalGeometry: obj.geometry,
+          clonedGeometry: scoped.geometry
+        });
+
+        if (scoped.outsideTriangleCount > 0) {
+          obj.material = [origMat, entry.material];
+        } else {
+          obj.material = [entry.material];
+        }
+        obj.geometry = scoped.geometry;
+        meshChanged = false; // Already applied and recorded
+        break; // Single-material batched mesh finished
       }
 
       // Increment reference count once per root application
@@ -166,6 +251,10 @@ export function applyWorldArtStyle(root, { style, sharedMaterials = new Map() } 
       appliedFamiliesSet.add(family.id);
       meshChanged = true;
 
+      // Track inside triangle count for small mesh
+      const triCount = obj.geometry.index ? (obj.geometry.index.count / 3) : (obj.geometry.attributes.position ? obj.geometry.attributes.position.count / 3 : 0);
+      totalInsideTriangles += triCount;
+
       if (isArray) {
         targetMats[i] = entry.material;
       } else {
@@ -176,7 +265,9 @@ export function applyWorldArtStyle(root, { style, sharedMaterials = new Map() } 
     if (meshChanged) {
       meshRestorations.push({
         mesh: obj,
-        originalMaterial: obj.material
+        originalMaterial: obj.material,
+        originalGeometry: null,
+        clonedGeometry: null
       });
 
       if (isArray) {
@@ -193,9 +284,13 @@ export function applyWorldArtStyle(root, { style, sharedMaterials = new Map() } 
     if (disposed) return;
     disposed = true;
 
-    // Restore exact original material references on all affected meshes
+    // Restore exact original material and geometry references on all affected meshes
     for (const record of meshRestorations) {
       record.mesh.material = record.originalMaterial;
+      if (record.clonedGeometry) {
+        record.mesh.geometry = record.originalGeometry;
+        record.clonedGeometry.dispose();
+      }
     }
     meshRestorations.length = 0;
 
@@ -206,6 +301,11 @@ export function applyWorldArtStyle(root, { style, sharedMaterials = new Map() } 
         if (entry.material && typeof entry.material.dispose === 'function') {
           entry.material.dispose();
         }
+        if (entry.proceduralType === 'shop-glass') {
+          releaseGlassDepthTexture();
+        } else if (entry.proceduralType === 'closed-door-lacquer') {
+          releaseLacquerTexture();
+        }
         sharedMaterials.delete(entry.key);
       }
     }
@@ -215,7 +315,8 @@ export function applyWorldArtStyle(root, { style, sharedMaterials = new Map() } 
   const stats = {
     matchedMeshes: matchedMeshCount,
     uniqueVariants: ownedEntries.size,
-    appliedFamilies: Array.from(appliedFamiliesSet)
+    appliedFamilies: Array.from(appliedFamiliesSet),
+    insideTriangleCount: totalInsideTriangles
   };
 
   return { dispose, stats };

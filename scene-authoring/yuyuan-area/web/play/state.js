@@ -10,10 +10,11 @@
 //   - 保存：版本化专用 key，自动保存在动作完成/暂停时机 + 位置节流由调用方控制；
 //     坏档/版本不符返回 {ok:false, reason}，调用方回安全出生点，绝不写 NaN/墙内。
 import { SAVE_SCHEMA_VERSION, STORAGE_KEY_V2, LEGACY_STORAGE_KEY, decodePlaySave, persistPlaySave } from './save-migration.js';
+import { PLAYER_ROUTES, PLAYER_ROUTES_BY_ID, ROUTE_IDS, getRouteDefinition } from './player-routes.js';
 export const STATE_SCHEMA_VERSION = SAVE_SCHEMA_VERSION;
 // 专用 key：不碰既有相机/项目 localStorage（fangbangMain 的 STORE_KEY 等）
 export const STORAGE_KEY = STORAGE_KEY_V2;
-export { LEGACY_STORAGE_KEY };
+export { LEGACY_STORAGE_KEY, PLAYER_ROUTES, PLAYER_ROUTES_BY_ID, ROUTE_IDS, getRouteDefinition };
 // 原始世界坐标/GLB 的位姿版本。目录扩展由 catalogEdition 标记；新增摊车
 // 与接缝用实际地面/碰撞校验恢复点，保留仍安全的旧散步与骑乘。
 export const SCENE_ASSET_VERSION = 'play-snacks-20261001';
@@ -52,6 +53,7 @@ export class PlayGameState {
     this.goalIndex = 0;            // 0..foods.length；=== foods.length = 三味完成
     this.trackedFoodId = null;
     this.trackedVendorId = null;
+    this.currentRouteId = 'free';
     this.vehicle = { placed: false, pos: null, yaw: 0, viewYaw: 0, riding: false };
     this._listeners = [];
   }
@@ -93,13 +95,86 @@ export class PlayGameState {
   track(foodId, vendorId) {
     if (!this.foodIds.has(foodId) || !this.registry?.vendorsById?.has(vendorId)) return false;
     if (this.registry.vendorsById.get(vendorId)?.foodId !== foodId) return false;
+    // 目标与官方路线一致，已发现后可追踪；未发现食物不可生成追踪目标
+    if (!this.discovered.has(foodId)) return false;
     const index = this.foods.findIndex(food => food.id === foodId);
     if (index < 0) return false;
+    if (this.currentRouteId !== 'free' && this.goal()?.id !== foodId) this.setRoute('free');
     this.goalIndex = index;
     this.trackedFoodId = foodId;
     this.trackedVendorId = vendorId;
     this._emit({ type: 'tracked', foodId, vendorId });
     return true;
+  }
+  setRoute(routeId) {
+    if (!PLAYER_ROUTES_BY_ID.has(routeId)) return false;
+    this.currentRouteId = routeId;
+    this.trackedFoodId = null;
+    this.trackedVendorId = null;
+    this._updateMilestones();
+    this._emit({ type: 'route-selected', routeId });
+    return true;
+  }
+  get currentRoute() {
+    return PLAYER_ROUTES_BY_ID.get(this.currentRouteId) ?? PLAYER_ROUTES_BY_ID.get('free');
+  }
+  routeStatus(routeId = this.currentRouteId) {
+    const route = PLAYER_ROUTES_BY_ID.get(routeId);
+    if (!route) return null;
+    if (route.id === 'free') {
+      return {
+        id: 'free',
+        title: route.title,
+        subtitle: route.subtitle,
+        mode: route.mode,
+        description: route.description,
+        completed: this.complete,
+        stamps: this.stamps,
+        total: this.requiredFoodIds.size,
+        badgeId: null,
+        badgeTitle: null,
+        stepIndex: -1,
+        totalStations: this.requiredFoodIds.size,
+        currentStation: null,
+        currentFood: this.goal(),
+        stations: [],
+      };
+    }
+    const foodIds = route.foods;
+    const stations = foodIds.map((id, index) => {
+      const food = this.foods.find(f => f.id === id);
+      const tasted = this.tasted.has(id);
+      const discovered = this.discovered.has(id);
+      return {
+        index,
+        id,
+        name: food?.labelZh ?? food?.name ?? id,
+        tasted,
+        discovered,
+      };
+    });
+    const tastedCount = foodIds.filter(id => this.tasted.has(id)).length;
+    const completed = tastedCount === foodIds.length;
+    const nextUntastedIndex = stations.findIndex(s => !s.tasted);
+    const currentStation = nextUntastedIndex >= 0 ? stations[nextUntastedIndex] : null;
+    const currentFood = currentStation ? (this.foods.find(f => f.id === currentStation.id) ?? { id: currentStation.id, labelZh: currentStation.name, stallLabelZh: '路线摊位' }) : null;
+    return {
+      id: route.id,
+      title: route.title,
+      subtitle: route.subtitle,
+      mode: route.mode,
+      description: route.description,
+      completed,
+      stamps: tastedCount,
+      total: foodIds.length,
+      badgeId: route.badgeId,
+      badgeTitle: route.badgeTitle,
+      stepIndex: nextUntastedIndex >= 0 ? nextUntastedIndex : foodIds.length,
+      totalStations: foodIds.length,
+      currentStation,
+      currentFood,
+      stations,
+    };
   }
   collectionSnapshot() {
     return {
@@ -113,6 +188,7 @@ export class PlayGameState {
       orphanedProgress: { discovered: [...this.orphanedProgress.discovered], tasted: [...this.orphanedProgress.tasted] },
       trackedFoodId: this.trackedFoodId,
       trackedVendorId: this.trackedVendorId,
+      currentRouteId: this.currentRouteId,
     };
   }
   applyCollection(collection) {
@@ -141,8 +217,23 @@ export class PlayGameState {
       const foods = this.foods.filter(f => f.chapterId === id && this.requiredFoodIds.has(f.id));
       if (foods.length >= (chapter.targetCount??foods.length) && foods.length && foods.every(f => this.tasted.has(f.id))) this.milestones.add(`chapter-${id}`);
     }
+    for (const route of PLAYER_ROUTES) {
+      if (route.badgeId && Array.isArray(route.foods) && route.foods.length > 0) {
+        if (route.foods.every(id => this.tasted.has(id))) {
+          this.milestones.add(route.badgeId);
+        }
+      }
+    }
   }
   goal() {
+    if (this.currentRouteId && this.currentRouteId !== 'free') {
+      const route = PLAYER_ROUTES_BY_ID.get(this.currentRouteId);
+      if (route && Array.isArray(route.foods)) {
+        const nextUntastedId = route.foods.find(id => !this.tasted.has(id));
+        if (!nextUntastedId) return null;
+        return this.foods.find(f => f.id === nextUntastedId) ?? { id: nextUntastedId, labelZh: nextUntastedId, stallLabelZh: '路线目标' };
+      }
+    }
     if (this.complete || !this.foods.length) return null;
     // 目标自动指下一味：当前目标未吃则保持，已吃则顺延到第一个未吃
     if (this.tasted.has(this.foods[this.goalIndex]?.id)) {
@@ -152,6 +243,7 @@ export class PlayGameState {
     return this.foods[this.goalIndex] ?? null;
   }
   navigationGoal() {
+    if (this.currentRouteId !== 'free') return this.goal();
     return this.foods.find(food => food.id === this.trackedFoodId) ?? this.goal();
   }
   selectGoal(index) {              // 小地图/点击只导向，不传送
@@ -301,6 +393,9 @@ export class PlayGameState {
         viewYaw: finite(this.vehicle.viewYaw) ? +this.vehicle.viewYaw.toFixed(4) : +this.vehicle.yaw.toFixed(4),
         riding: this.vehicle.riding,
       },
+      route: {
+        id: this.currentRouteId ?? 'free',
+      },
     };
   }
   applySave(data, { storage } = {}) {
@@ -317,6 +412,13 @@ export class PlayGameState {
     this._updateMilestones();
     this.trackedFoodId = s.trackedFoodId;
     this.trackedVendorId = s.trackedVendorId;
+    if (s.route && typeof s.route === 'object' && typeof s.route.id === 'string' && PLAYER_ROUTES_BY_ID.has(s.route.id)) {
+      this.currentRouteId = s.route.id;
+    } else if (typeof s.route === 'string' && PLAYER_ROUTES_BY_ID.has(s.route)) {
+      this.currentRouteId = s.route;
+    } else {
+      this.currentRouteId = 'free';
+    }
     const trackedIndex = this.foods.findIndex(f => f.id === s.trackedFoodId);
     const next = this.foods.findIndex(f => !this.tasted.has(f.id));
     this.goalIndex = trackedIndex >= 0 ? trackedIndex : next >= 0 ? next : this.foods.length;
@@ -332,6 +434,7 @@ export class PlayGameState {
     this.eating = null;
     this.trackedFoodId = null;
     this.trackedVendorId = null;
+    this.currentRouteId = this.currentRouteId ?? 'free';
     const next = this.foods.findIndex(f => !this.tasted.has(f.id));
     this.goalIndex = next >= 0 ? next : this.foods.length;
     this.vehicle = { placed: false, pos: null, yaw: 0, viewYaw: 0, riding: false };
@@ -345,6 +448,7 @@ export class PlayGameState {
     this.milestones.clear();
     this.orphanedProgress.discovered.clear();
     this.orphanedProgress.tasted.clear();
+    this.currentRouteId = 'free';
     const result = this.reset({ storage });
     this._emit({ type: 'collection-cleared' });
     return result;

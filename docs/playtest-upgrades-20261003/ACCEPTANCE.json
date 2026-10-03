@@ -1,0 +1,70 @@
+{
+  "baseCommit": "0a4ea048",
+  "status": "accepted_local",
+  "orders": {
+    "U01": "accepted: labels, one primary hint, mobile9cards and detail/focus",
+    "U02": "accepted: visible clearance; real support height; C1 forward/brake/reverse",
+    "U03": "accepted: F food camera, V/button inspect, pure view/paused preservation",
+    "U04": "accepted: softened two bounded lights, cached actor, orbit off",
+    "U05": "accepted pilot: scoped wood groups and two glass rectangles;8untrusted props dormant; no full-map promotion",
+    "U06": "accepted: steamer/chili-oil basin/clay pot; ring oil not covered; prior8/2/3 budgets",
+    "U07": "measured pass: grip0.0228m,pedal0.0407m; original rig retained",
+    "U08": "accepted: short3/long8/free, saved route, post-reload next goal, unknown targets hidden",
+    "U09": "accepted: measured2cm asphalt seam0.062m2, geometry+ground, retained guard"
+  },
+  "officialTour": {
+    "id": "pb-official-tour-v1.1",
+    "checkpoints": 12,
+    "allOk": true,
+    "actualTastes": [
+      "changfen",
+      "boboji",
+      "xiaolongbao",
+      "roujiamo",
+      "naidoufu",
+      "qingbuliang",
+      "waguan-tang",
+      "lvrou-huoshao"
+    ],
+    "errors": [],
+    "evidence": "/home/baibai/outbox/pawborough-playtest-upgrades-20261003/root-composite/events.jsonl"
+  },
+  "performance": {
+    "renderer": "ANGLE (NVIDIA Corporation, NVIDIA GB10/PCIe, OpenGL 4.5.0)",
+    "viewport": [
+      1280,
+      720
+    ],
+    "dpr": 1,
+    "p50": 16.699999999999818,
+    "p95": 16.700000000000728,
+    "frames": 180,
+    "lights": 16,
+    "shadowLights": 1,
+    "feet": [
+      -157.75,
+      0.060092706680297814,
+      -22.25
+    ]
+  },
+  "limits": [
+    "Local candidate only; cloud not updated",
+    "World art remains pilot, dormant props not adopted",
+    "Window proof uses actual served cm chunks; older zone-bazaar.glb is not the rendered source",
+    "Return browser fixture teleports for setup only; full official route has no teleport",
+    "Worker exit0/partial reports never substitute root acceptance"
+  ],
+  "knowledgePR": "https://github.com/onewonderjapan/knowledge-base/pull/49",
+  "verification": {
+    "rootBuild": "PASS",
+    "atlasSuite": "PASS",
+    "routeRegression": "8 tests PASS",
+    "actualScopedGLB": "4 tests PASS",
+    "actualCMWindows": "2 tests PASS",
+    "groundSeamsAndReturn": "PASS",
+    "vehicle": "40 checks PASS",
+    "escCameraRealPointerLock": "PASS",
+    "UI": "PASS",
+    "cloudRelease": "not performed"
+  }
+}

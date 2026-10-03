@@ -109,6 +109,17 @@ export class BikeView {
     return node.getWorldPosition(out);
   }
 
+  // 停放与下车视觉净空参照：GLB 派生车实际视觉外包围与分件锚点
+  // modelBounds: X[-0.33, 0.33], Y[0, 0.407], Z[-0.53, 0.53]
+  // anchor-dismount 标定在左侧 [-0.52, 0.02, 0.05]，供视觉净空与停放参照
+  dismountClearance() {
+    return {
+      lateralM: 0.85,       // 避让车把(0.33)+猫身半宽(0.34)后的安全侧向净空
+      longitudinalM: 1.15,  // 避让前后轮(0.53)+猫长(0.40)后的纵向净空
+      anchor: this.rig.dismountAnchor ? this.worldPos(this.rig.dismountAnchor) : null,
+    };
+  }
+
   // 骑乘中每帧：位置/航向随 RideController；轮/曲柄按真实校正位移投影（signedTravel，
   // 倒车反转、碰墙不空转）；车把随 A/D。控制器基线在绑定/换绑时重置。
   updateRide(pos, heading, rideCtl, dt) {

@@ -2,6 +2,21 @@
 // 适配固定商业摊位 (existing) 与独立流浪小吃车 (cart)
 import * as THREE from 'three';
 import { deriveStallTargets } from './stalls.js';
+import {
+  attachVendorDressing,
+  createVendorDressing,
+  getVendorDressingTemplate,
+  hasVendorDressing,
+  VENDOR_DRESSING_TEMPLATES,
+} from './vendor-dressing.js';
+
+export {
+  attachVendorDressing,
+  createVendorDressing,
+  getVendorDressingTemplate,
+  hasVendorDressing,
+  VENDOR_DRESSING_TEMPLATES,
+};
 
 function isWorldBlocked(world, x, y, z) {
   if (!world || typeof world.isBlocked !== 'function') return false;
@@ -309,6 +324,7 @@ export function createVendorLayer({
   const poleGeom = trackGeom(new THREE.CylinderGeometry(0.015, 0.015, 0.9, 8));
 
   const roots = new Map();
+  const dressings = new Map();
   const collisionBoxes = [];
   const colliderHandles = [];
 
@@ -371,12 +387,18 @@ export function createVendorLayer({
     canopyMesh.rotation.y = Math.PI / 4;
     root.add(canopyMesh);
 
+    // 5. 摊位专用台面道具修饰 (U06 typed stall dressing)
+    const dressing = attachVendorDressing(root, v, { trackGeom, trackMat });
+    if (dressing) {
+      dressings.set(v.vendorId, dressing);
+    }
+
     if (scene && typeof scene.add === 'function') {
       scene.add(root);
     }
     roots.set(v.vendorId, root);
 
-    // 5. 碰撞盒描述符与注册
+    // 6. 碰撞盒描述符与注册
     // center: [cx, gy + .4, cz], halfExtents: [.475, .4, .325], yaw: rotY
     const colliderDesc = {
       vendorId: v.vendorId,
@@ -396,6 +418,12 @@ export function createVendorLayer({
   function dispose() {
     if (disposed) return;
     disposed = true;
+
+    // 释放修饰道具
+    for (const d of dressings.values()) {
+      d.dispose();
+    }
+    dressings.clear();
 
     // 幂等移除推车 Mesh
     for (const root of roots.values()) {
@@ -426,7 +454,13 @@ export function createVendorLayer({
 
   return {
     roots,
+    dressings,
     collisionBoxes,
+    update(dt = 0, { paused = false } = {}) {
+      for (const d of dressings.values()) {
+        d.update(dt, { paused });
+      }
+    },
     dispose,
   };
 }

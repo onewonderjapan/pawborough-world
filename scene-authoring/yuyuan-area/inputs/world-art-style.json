@@ -133,7 +133,167 @@
       "roughness": 0.64,
       "metalness": 0,
       "maxMeshSpanM": 230
+    },
+    {
+      "id": "shop-glass",
+      "materialNames": [
+        "recessed-old-glass"
+      ],
+      "tint": "#44636d",
+      "colorBlend": 0.35,
+      "roughness": 0.22,
+      "metalness": 0.18,
+      "maxMeshSpanM": 30,
+      "scopes": [
+        {
+          "id": "center",
+          "boundsXZ": [
+            -198,
+            -66,
+            -118,
+            8
+          ]
+        },
+        {
+          "id": "fangbang-seam",
+          "boundsXZ": [
+            -108,
+            12,
+            -86,
+            30
+          ]
+        }
+      ]
+    },
+    {
+      "id": "closed-door-lacquer",
+      "materialNames": [
+        "deep-door-lacquer",
+        "interior-warm-shadow",
+        "facades-wood",
+        "facades-wood-dark"
+      ],
+      "tint": "#3f2b23",
+      "colorBlend": 0.4,
+      "roughness": 0.78,
+      "metalness": 0.02,
+      "maxMeshSpanM": 30,
+      "scopes": [
+        {
+          "id": "center",
+          "boundsXZ": [
+            -198,
+            -66,
+            -118,
+            8
+          ]
+        },
+        {
+          "id": "fangbang-seam",
+          "boundsXZ": [
+            -108,
+            12,
+            -86,
+            30
+          ]
+        }
+      ]
+    },
+    {
+      "id": "blue-gray-brick",
+      "materialNames": [
+        "blue-gray-brick"
+      ],
+      "tint": "#82898f",
+      "colorBlend": 0.18,
+      "roughness": 0.86,
+      "metalness": 0,
+      "maxMeshSpanM": 90,
+      "scopes": [
+        {
+          "id": "center",
+          "boundsXZ": [
+            -198,
+            -66,
+            -118,
+            8
+          ]
+        },
+        {
+          "id": "fangbang-seam",
+          "boundsXZ": [
+            -108,
+            12,
+            -86,
+            30
+          ]
+        }
+      ]
+    },
+    {
+      "id": "timber",
+      "materialNames": [
+        "stained-timber",
+        "timber",
+        "timberDark"
+      ],
+      "tint": "#6b4e3d",
+      "colorBlend": 0.22,
+      "roughness": 0.76,
+      "metalness": 0,
+      "maxMeshSpanM": 90,
+      "scopes": [
+        {
+          "id": "center",
+          "boundsXZ": [
+            -198,
+            -66,
+            -118,
+            8
+          ]
+        },
+        {
+          "id": "fangbang-seam",
+          "boundsXZ": [
+            -108,
+            12,
+            -86,
+            30
+          ]
+        }
+      ]
+    },
+    {
+      "id": "center-window-pilot",
+      "materialNames": [
+        "btk-glass"
+      ],
+      "preciseScope": true,
+      "proceduralTexture": "shop-glass",
+      "roughness": 0.28,
+      "metalness": 0.12,
+      "maxMeshSpanM": 30,
+      "scopes": [
+        {
+          "id": "center-glass-left",
+          "boundsXZ": [
+            -159.5,
+            -39.2,
+            -158.43,
+            -38.93
+          ]
+        },
+        {
+          "id": "center-glass-right",
+          "boundsXZ": [
+            -158.44,
+            -39.4,
+            -157.37,
+            -39.13
+          ]
+        }
+      ]
     }
   ],
-  "note": "Warm restrained surface family pilot. Original geometry, textures, opacity, entrances and collision remain authoritative."
+  "note": "Warm restrained surface family baseline with scoped pilot additions. Original geometry, textures, opacity, entrances and collision remain authoritative."
 }

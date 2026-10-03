@@ -1,4 +1,5 @@
 // A leave/re-enter before download completion must not create orphan displays.
+export { getVendorDressingTemplate, hasVendorDressing, createVendorDressing } from './vendor-dressing.js';
 export function cancelVendorDisplay(vendor,foods){
   vendor.displayGeneration=(vendor.displayGeneration??0)+1;
   vendor.displayWanted=false;vendor.display?.removeFromParent();vendor.display=null;

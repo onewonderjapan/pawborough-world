@@ -293,3 +293,163 @@ body.play-eating #play-bottom { display: none; }
 
 #play-hud.is-paused .pi-fill { transition:none; }
 #play-hud.is-paused .stamp.just { animation-play-state:paused; }
+
+/* ---- 路线推荐弹层与卡片（工单 U08） ---- */
+#play-route-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(36, 79, 104, 0.38);
+  pointer-events: auto;
+}
+#play-route-card {
+  width: min(440px, calc(100vw - 24px));
+  max-height: min(580px, calc(100vh - 40px));
+  overflow-y: auto;
+  box-sizing: border-box;
+  background: var(--pb-cream);
+  border: 1.5px solid var(--pb-porcelain);
+  border-radius: 16px;
+  padding: 14px 16px 14px;
+  box-shadow: 0 10px 30px rgba(36, 79, 104, 0.35);
+}
+#play-route-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--pb-porcelain);
+  margin-bottom: 4px;
+}
+.prh-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+}
+.prh-icon { font-size: 16px; }
+#p-route-close { padding: 2px 10px; font-size: 12px; }
+#play-route-intro {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: rgba(44, 74, 94, 0.75);
+}
+#play-route-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pr-card {
+  background: #fff;
+  border: 1.5px solid rgba(113, 170, 160, 0.5);
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.pr-card:hover {
+  border-color: var(--pb-porcelain);
+  transform: translateY(-1px);
+}
+.pr-card.active {
+  border-color: var(--pb-porcelain);
+  background: linear-gradient(180deg, #fff7e8 0%, #f7efe0 100%);
+  box-shadow: 0 2px 8px rgba(36, 79, 104, 0.14);
+}
+.pr-card.completed {
+  border-color: var(--pb-jade);
+}
+.pr-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.pr-title-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.pr-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--pb-porcelain);
+}
+.pr-sub {
+  font-size: 11px;
+  color: rgba(44, 74, 94, 0.65);
+}
+.pr-status-tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: 6px;
+  background: rgba(36, 79, 104, 0.08);
+  color: var(--pb-porcelain);
+}
+.pr-status-tag.badge-gold {
+  background: var(--pb-honey);
+  color: #fff;
+}
+.pr-status-tag.badge-active {
+  background: var(--pb-porcelain);
+  color: var(--pb-cream);
+}
+.pr-desc {
+  margin: 3px 0 2px;
+  font-size: 12px;
+  color: var(--pb-ink);
+  line-height: 1.45;
+}
+.pr-seq {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--pb-porcelain);
+  background: rgba(113, 170, 160, 0.12);
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin: 3px 0;
+  line-height: 1.4;
+}
+.pr-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed rgba(113, 170, 160, 0.3);
+}
+.pr-note {
+  font-size: 11px;
+  color: rgba(44, 74, 94, 0.7);
+}
+.pr-btn {
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--pb-porcelain);
+  background: var(--pb-cream);
+  cursor: pointer;
+  color: var(--pb-porcelain);
+  font-weight: 600;
+}
+.pr-btn:hover:not(:disabled) {
+  background: var(--pb-porcelain);
+  color: var(--pb-cream);
+}
+.pr-btn:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+.stamp.current-station {
+  border-style: solid;
+  border-width: 2px;
+  border-color: var(--pb-porcelain);
+  box-shadow: 0 0 0 2px rgba(36, 79, 104, 0.2);
+}

@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "materials": {
+    "recessed-old-glass": {
+      "before": {
+        "baseColor": [0.0369, 0.0561, 0.0630, 1.0],
+        "roughness": 0.28,
+        "metalness": 0.12,
+        "appearance": "dead pitch-black window void with flat reflectivity"
+      },
+      "after": {
+        "baseColor": "#2d3e42",
+        "roughness": 0.22,
+        "metalness": 0.18,
+        "proceduralDepth": "shared canvas depth gradient (curtain & muntin shadow)",
+        "appearance": "subtle reflective twilight glass with interior soft depth"
+      }
+    },
+    "deep-door-lacquer": {
+      "before": {
+        "baseColor": [0.0185, 0.0168, 0.0144, 1.0],
+        "roughness": 0.53,
+        "metalness": 0.0,
+        "appearance": "dead dark void resembling an open hole"
+      },
+      "after": {
+        "baseColor": "#3f2b23",
+        "roughness": 0.78,
+        "metalness": 0.02,
+        "proceduralGrain": "vertical timber plank lineation",
+        "appearance": "traditional warm cinnabar old lacquer closed wooden doors"
+      }
+    },
+    "worn-stone": {
+      "before": {
+        "baseColor": [0.3231, 0.3231, 0.2622, 1.0],
+        "roughness": 0.92,
+        "metalness": 0.0,
+        "appearance": "cold grey concrete stone tone"
+      },
+      "after": {
+        "baseColor": "#c8bcab",
+        "roughness": 0.94,
+        "metalness": 0.0,
+        "appearance": "warm granolithic stone (暖灰水刷石)"
+      }
+    }
+  }
+}

@@ -8,6 +8,8 @@
 //
 // 纯决策可注入（node 测试不进浏览器）：fetchJson/fetchBuffer/parseGlb/digest。
 
+import { applyWorldArtStyle } from '../material-style.js';
+
 const MANIFEST_URL = '/inputs/play-closed-facades.json';
 
 async function defaultFetchJson(url) {
@@ -57,6 +59,9 @@ export function createClosedFacades(deps = {}) {
   const {
     scene,
     manifestUrl = MANIFEST_URL,
+    styleUrl = '/inputs/world-art-style.json',
+    style = null,
+    sharedMaterials = null,
     fetchJson = defaultFetchJson,
     fetchBuffer = defaultFetchBuffer,
     parseGlb = defaultParseGlb,
@@ -74,6 +79,9 @@ export function createClosedFacades(deps = {}) {
   let abort = null;
   let onUnload = null;
   let pending = null;
+  let artStyleOwner = null;
+  let facadesSharedMaterials = null;
+
   const owner = {
     state,
     status() {
@@ -82,51 +90,75 @@ export function createClosedFacades(deps = {}) {
         closedFacadesReady: state.ready,
         closedFacadeCount: state.count,
         closedFacadesError: state.error,
+        closedFacadesArtStyleMatched: artStyleOwner?.stats?.matchedMeshes ?? 0,
+        closedFacadesArtStyleFamilies: artStyleOwner?.stats?.appliedFamilies ?? [],
       };
     },
     install() {
       if (pending) return pending;
       pending = (async () => {
-      if (state.disposed || root || state.error) return state;
-      abort = new AbortController();
-      let loaded = null;
-      try {
-        const manifest = await fetchJson(manifestUrl);
-        const m = manifest?.facades;
-        if (!m?.path) throw new Error('manifest missing facades.path');
-        const buf = await fetchBuffer('/' + m.path.replace(/^\//, ''), abort.signal);
-        if (abort.signal.aborted) return state;
-        if (m.sha256) {
-          const sha = await digest(buf);
-          if (sha && sha !== m.sha256) {
-            throw new Error(`sha mismatch ${sha.slice(0, 12)}… != ${m.sha256.slice(0, 12)}…`);
+        if (state.disposed || root || state.error) return state;
+        abort = new AbortController();
+        let loaded = null;
+        try {
+          const manifest = await fetchJson(manifestUrl);
+          const m = manifest?.facades;
+          if (!m?.path) throw new Error('manifest missing facades.path');
+          const buf = await fetchBuffer('/' + m.path.replace(/^\//, ''), abort.signal);
+          if (abort.signal.aborted) return state;
+          if (m.sha256) {
+            const sha = await digest(buf);
+            if (sha && sha !== m.sha256) {
+              throw new Error(`sha mismatch ${sha.slice(0, 12)}… != ${m.sha256.slice(0, 12)}…`);
+            }
           }
+          if (abort.signal.aborted) return state;
+          loaded = await parseGlb(buf);
+          if (abort.signal.aborted) { releaseAsset(loaded); return state; }
+          // 计数口径：manifest 为准；GLB root extras 有 closedCount 且不符时按异常处理
+          const glbRoot = loaded.getObjectByName?.(m.root ?? 'play-closed-facades') ?? loaded;
+          const glbCount = glbRoot?.userData?.closedCount;
+          if (Number.isFinite(glbCount) && m.closedCount && glbCount !== m.closedCount) {
+            throw new Error(`closedCount mismatch ${glbCount} != ${m.closedCount}`);
+          }
+          root = loaded;
+          scene.add(root);
+
+          // Apply approved pilot / world art style if style is available or fetchable
+          let activeStyle = style;
+          if (!activeStyle && typeof fetchJson === 'function') {
+            try {
+              activeStyle = await fetchJson(styleUrl);
+            } catch {
+              activeStyle = null;
+            }
+          }
+          if (activeStyle && Array.isArray(activeStyle.families) && root) {
+            try {
+              facadesSharedMaterials = sharedMaterials || new Map();
+              artStyleOwner = applyWorldArtStyle(root, {
+                style: activeStyle,
+                sharedMaterials: facadesSharedMaterials
+              });
+            } catch (err) {
+              console.warn('closed facades art style application skipped:', err);
+            }
+          }
+
+          state.count = m.closedCount ?? glbCount ?? 0;
+          state.ready = true;
+          if (!onUnload && typeof window !== 'undefined' && window.addEventListener) {
+            onUnload = () => owner.dispose();
+            window.addEventListener('pagehide', onUnload, { once: true });
+          }
+        } catch (e) {
+          if (loaded && loaded !== root) releaseAsset(loaded);
+          if (state.disposed || abort?.signal.aborted) return state;
+          state.error = e?.message || String(e);
+          console.error('closed facades failed', e);
+          onHint?.(closedFacadeHint(state.error));
         }
-        if (abort.signal.aborted) return state;
-        loaded = await parseGlb(buf);
-        if (abort.signal.aborted) { releaseAsset(loaded); return state; }
-        // 计数口径：manifest 为准；GLB root extras 有 closedCount 且不符时按异常处理
-        const glbRoot = loaded.getObjectByName?.(m.root ?? 'play-closed-facades') ?? loaded;
-        const glbCount = glbRoot?.userData?.closedCount;
-        if (Number.isFinite(glbCount) && m.closedCount && glbCount !== m.closedCount) {
-          throw new Error(`closedCount mismatch ${glbCount} != ${m.closedCount}`);
-        }
-        root = loaded;
-        scene.add(root);
-        state.count = m.closedCount ?? glbCount ?? 0;
-        state.ready = true;
-        if (!onUnload && typeof window !== 'undefined' && window.addEventListener) {
-          onUnload = () => owner.dispose();
-          window.addEventListener('pagehide', onUnload, { once: true });
-        }
-      } catch (e) {
-        if (loaded && loaded !== root) releaseAsset(loaded);
-        if (state.disposed || abort?.signal.aborted) return state;
-        state.error = e?.message || String(e);
-        console.error('closed facades failed', e);
-        onHint?.(closedFacadeHint(state.error));
-      }
-      return state;
+        return state;
       })();
       return pending;
     },
@@ -135,6 +167,10 @@ export function createClosedFacades(deps = {}) {
       state.disposed = true;
       abort?.abort();
       if (onUnload && typeof window !== 'undefined') window.removeEventListener('pagehide', onUnload);
+      if (artStyleOwner) {
+        artStyleOwner.dispose();
+        artStyleOwner = null;
+      }
       if (root) {
         scene.remove(root);
         // 只释放本 GLB 自带的资源：traverse 整棵 overlay 子树，材质/贴图都是

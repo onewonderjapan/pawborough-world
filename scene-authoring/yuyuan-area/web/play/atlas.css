@@ -602,17 +602,38 @@
   outline-offset: 2px;
 }
 
-/* 响应式：360x800 及窄屏设备转为单列阅读，max 90vh 滚动 */
+/* 详情返回列表按钮：宽屏分栏常驻详情，按钮隐藏；仅窄屏抽屉态显示 */
+.pb-atlas-detail-back {
+  display: none;
+  align-items: center;
+  background-color: #ffffff;
+  border: 1px solid rgba(36, 79, 104, 0.3);
+  color: var(--pb-blue);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.pb-atlas-detail-back:hover {
+  background-color: var(--pb-cream);
+  border-color: var(--pb-blue);
+}
+
+/* 响应式：360x800 及窄屏设备列表优先，详情改为按需展开的抽屉 */
 @media (max-width: 680px) {
   .pb-atlas-dialog {
     width: 96vw;
-    height: 92vh;
-    max-height: 90vh;
+    height: 94vh;
+    max-height: 94vh;
   }
 
   .pb-atlas-body {
     flex-direction: column;
-    overflow-y: auto;
+    overflow: hidden;
   }
 
   .pb-atlas-chapter-rail {
@@ -622,38 +643,79 @@
     overflow-y: hidden;
     border-right: none;
     border-bottom: 1px solid rgba(113, 170, 160, 0.35);
-    padding: 8px;
+    padding: 6px 8px;
     gap: 8px;
     flex-shrink: 0;
   }
 
   .pb-atlas-chapter-btn {
     white-space: nowrap;
-    padding: 6px 10px;
+    padding: 5px 10px;
+    flex-shrink: 0;
   }
 
   .pb-atlas-content {
-    overflow: visible;
-    padding: 10px;
+    overflow: hidden;
+    padding: 8px 10px;
+    flex: 1;
+    min-height: 0;
   }
 
+  /* 筛选栏压缩为一行横滑，功能不丢 */
+  .pb-atlas-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+  }
+
+  .pb-atlas-filter-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 3px 10px;
+  }
+
+  .pb-atlas-region-select {
+    flex-shrink: 0;
+  }
+
+  /* 列表区占满剩余高度；详情抽屉覆盖其上，点卡片展开、返回列表收起 */
   .pb-atlas-main-split {
-    flex-direction: column;
-    overflow: visible;
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
   }
 
   .pb-atlas-cards {
-    max-height: 260px;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    max-height: none;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: 10px;
   }
 
   .pb-atlas-detail {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
     width: 100%;
-    max-height: none;
+    display: none;
+    background-color: var(--pb-cream);
+  }
+
+  .pb-atlas-main-split.is-detail-open .pb-atlas-detail {
+    display: flex;
+  }
+
+  .pb-atlas-detail-back {
+    display: inline-flex;
   }
 
   .pb-atlas-footer {
-    padding: 8px 12px;
+    padding: 6px 10px;
   }
 }
 

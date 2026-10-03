@@ -4,8 +4,55 @@ const ALLOWED_KINDS = new Set([
   'vendor-sign',
   'lantern',
   'bunting',
-  'counter-flower'
+  'counter-flower',
+  'curb-trim',
+  'closed-notice',
+  'wall-lantern'
 ]);
+
+/**
+ * Creates default 256x384 canvas texture for vertical closed shop notice plaques.
+ */
+function createNoticeCanvasTexture(label) {
+  if (typeof document !== 'undefined' && typeof document.createElement === 'function') {
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 384;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.fillStyle = '#3a241b';
+      ctx.fillRect(0, 0, 256, 384);
+      ctx.strokeStyle = '#c8a870';
+      ctx.lineWidth = 6;
+      ctx.strokeRect(12, 12, 232, 360);
+      ctx.lineWidth = 2;
+      ctx.strokeRect(18, 18, 220, 348);
+      ctx.font = 'bold 36px "Noto Sans CJK SC", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#fff4dc';
+      const text = label || '暂不开放';
+      if (text.length <= 4) {
+        for (let i = 0; i < text.length; i++) {
+          ctx.fillText(text[i], 128, 80 + i * 70);
+        }
+      } else {
+        ctx.fillText(text, 128, 192);
+      }
+    }
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.generateMipmaps = true;
+    texture.minFilter = THREE.LinearMipmapLinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    return texture;
+  }
+
+  const texture = new THREE.DataTexture(new Uint8Array([58, 36, 27, 255]), 1, 1);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.needsUpdate = true;
+  return texture;
+}
 
 /**
  * Creates default 384x128 canvas texture for Chinese vendor sign labels.
@@ -25,6 +72,7 @@ function createDefaultCanvasTexture(label) {
       ctx.fillText(label || '', 192, 64);
     }
     const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
     texture.generateMipmaps = true;
     texture.minFilter = THREE.LinearMipmapLinearFilter;
     texture.magFilter = THREE.LinearFilter;
@@ -33,6 +81,7 @@ function createDefaultCanvasTexture(label) {
 
   // Fallback for headless test environments without canvas
   const texture = new THREE.DataTexture(new Uint8Array(4), 1, 1);
+  texture.colorSpace = THREE.SRGBColorSpace;
   texture.needsUpdate = true;
   return texture;
 }
@@ -56,6 +105,10 @@ function validateManifest(manifest, options = {}) {
     const item = rawItems[i];
     if (!item || typeof item !== 'object') {
       throw new Error(`Invalid manifest item at index ${i}`);
+    }
+
+    if (item.enabled === false) {
+      continue;
     }
 
     if (item.id === undefined || item.id === null || item.id === '') {
@@ -162,6 +215,9 @@ export function installStreetLife({
   const lanterns = [];
   const buntings = [];
   const flowers = [];
+  const curbs = [];
+  const notices = [];
+  const wallLanterns = [];
 
   for (const item of validItems) {
     switch (item.kind) {
@@ -176,6 +232,15 @@ export function installStreetLife({
         break;
       case 'counter-flower':
         flowers.push(item);
+        break;
+      case 'curb-trim':
+        curbs.push(item);
+        break;
+      case 'closed-notice':
+        notices.push(item);
+        break;
+      case 'wall-lantern':
+        wallLanterns.push(item);
         break;
     }
   }
@@ -563,6 +628,138 @@ export function installStreetLife({
     ownerGroup.add(borderInst);
     ownerGroup.add(panelInst);
     ownerGroup.add(bracketInst);
+  }
+
+  // 5. CURB-TRIM (路边踢脚石)
+  if (curbs.length > 0) {
+    const curbGeo = trackGeometry(new THREE.BoxGeometry(1.2, 0.14, 0.12));
+    const curbMat = trackMaterial(new THREE.MeshStandardMaterial({
+      color: 0xb5ad9f, // warm granolithic stone (暖灰水刷石)
+      roughness: 0.92
+    }));
+    const curbInst = makeNoopRaycast(new THREE.InstancedMesh(curbGeo, curbMat, curbs.length));
+    curbInst.castShadow = false;
+
+    for (let i = 0; i < curbs.length; i++) {
+      const item = curbs[i];
+      dummy.position.set(...item.position);
+      dummy.rotation.set(0, item.yaw, 0);
+      dummy.scale.set(1, 1, 1);
+      dummy.updateMatrix();
+      curbInst.setMatrixAt(i, dummy.matrix);
+    }
+
+    curbInst.instanceMatrix.needsUpdate = true;
+    ownerGroup.add(curbInst);
+  }
+
+  // 6. CLOSED-NOTICE (闭店外观明确暂不开放)
+  if (notices.length > 0) {
+    const boardGeo = trackGeometry(new THREE.BoxGeometry(0.35, 0.50, 0.02));
+    const boardMat = trackMaterial(new THREE.MeshStandardMaterial({
+      color: 0x3d271e, // dark lacquer wood (旧木漆)
+      roughness: 0.72
+    }));
+    const noticeQuadGeo = trackGeometry(new THREE.PlaneGeometry(0.32, 0.46));
+    const boardInst = makeNoopRaycast(new THREE.InstancedMesh(boardGeo, boardMat, notices.length));
+    boardInst.castShadow = false;
+
+    for (let i = 0; i < notices.length; i++) {
+      const item = notices[i];
+      dummy.position.set(...item.position);
+      dummy.rotation.set(0, item.yaw, 0);
+      dummy.scale.set(1, 1, 1);
+      dummy.updateMatrix();
+      boardInst.setMatrixAt(i, dummy.matrix);
+
+      const noticeText = item.label || '暂不开放';
+      const labelKey = `notice:::${noticeText}`;
+      let cachedNotice = labelCache.get(labelKey);
+      if (!cachedNotice) {
+        const tex = createNoticeCanvasTexture(noticeText);
+        if (tex && typeof tex.dispose === 'function') {
+          ownedTextures.add(tex);
+        }
+        const labelMat = trackMaterial(new THREE.MeshBasicMaterial({
+          map: tex,
+          transparent: true,
+          depthTest: true,
+          depthWrite: false,
+          side: THREE.DoubleSide
+        }));
+        cachedNotice = { texture: tex, material: labelMat, owned: true };
+        labelCache.set(labelKey, cachedNotice);
+      }
+
+      const labelMesh = makeNoopRaycast(new THREE.Mesh(noticeQuadGeo, cachedNotice.material));
+      labelMesh.castShadow = false;
+      localMat.makeTranslation(0, 0, 0.012);
+      finalMat.multiplyMatrices(dummy.matrix, localMat);
+      finalMat.decompose(labelMesh.position, labelMesh.quaternion, labelMesh.scale);
+      ownerGroup.add(labelMesh);
+    }
+
+    boardInst.instanceMatrix.needsUpdate = true;
+    ownerGroup.add(boardInst);
+  }
+
+  // 7. WALL-LANTERN (贴边挂壁暖灯 - 灯光进入统一池)
+  if (wallLanterns.length > 0) {
+    const bracketGeo = trackGeometry(new THREE.BoxGeometry(0.06, 0.06, 0.12));
+    const shadeGeo = trackGeometry(new THREE.CylinderGeometry(0.06, 0.07, 0.18, 12));
+    const bracketMat = trackMaterial(new THREE.MeshStandardMaterial({
+      color: 0xb87333,
+      metalness: 0.6,
+      roughness: 0.35
+    }));
+    const shadeMat = trackMaterial(new THREE.MeshStandardMaterial({
+      color: 0xffe6b8,
+      emissive: 0xffaa44,
+      emissiveIntensity: 0.8,
+      roughness: 0.5
+    }));
+    const bracketInst = makeNoopRaycast(new THREE.InstancedMesh(bracketGeo, bracketMat, wallLanterns.length));
+    const shadeInst = makeNoopRaycast(new THREE.InstancedMesh(shadeGeo, shadeMat, wallLanterns.length));
+    bracketInst.castShadow = false;
+    shadeInst.castShadow = false;
+
+    for (let i = 0; i < wallLanterns.length; i++) {
+      const item = wallLanterns[i];
+      const [x, y, z] = item.position;
+      dummy.position.set(x, y, z);
+      dummy.rotation.set(0, item.yaw, 0);
+      dummy.scale.set(1, 1, 1);
+      dummy.updateMatrix();
+
+      bracketInst.setMatrixAt(i, dummy.matrix);
+      localMat.makeTranslation(0, -0.06, 0.06);
+      finalMat.multiplyMatrices(dummy.matrix, localMat);
+      shadeInst.setMatrixAt(i, finalMat);
+
+      lanternEntries.push({
+        id: item.id,
+        sourceId: item.sourceId,
+        position: new THREE.Vector3(x, y, z),
+        yaw: item.yaw
+      });
+    }
+
+    bracketInst.instanceMatrix.needsUpdate = true;
+    shadeInst.instanceMatrix.needsUpdate = true;
+    ownerGroup.add(bracketInst);
+    ownerGroup.add(shadeInst);
+
+    // If lights pool was not yet initialized because lanterns was 0, initialize up to 2 pooled lights
+    if (lights.length === 0 && lanternEntries.length > 0) {
+      const maxLights = Math.min(2, lanternEntries.length);
+      for (let i = 0; i < maxLights; i++) {
+        const pl = new THREE.PointLight(0xffbe76, 0, 8, 1.8);
+        pl.castShadow = false;
+        pl.raycast = () => {};
+        lights.push(pl);
+        ownerGroup.add(pl);
+      }
+    }
   }
 
   // Ensure all children are raycast noop

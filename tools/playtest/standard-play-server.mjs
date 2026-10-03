@@ -10,6 +10,7 @@ const root = fileURLToPath(new URL('../../', import.meta.url));
 const arg = key => { const i = process.argv.indexOf(key); return i < 0 ? null : process.argv[i + 1]; };
 const port = Number(arg('--port') ?? 5971);
 const variant = arg('--variant') ?? 'full';
+const baseUrl = arg('--base');
 const output = path.resolve(arg('--output') ?? '/tmp/pawborough-standard-play');
 const route = JSON.parse(await fs.readFile(path.join(root, 'docs/playtest-20261003/official-route.json'), 'utf8'));
 const resume = arg('--resume') ? JSON.parse(await fs.readFile(arg('--resume'), 'utf8')) : null;
@@ -43,12 +44,16 @@ const snapshot = async name => {
   await emit('snapshot', { name, file, state: await state() });
   return file;
 };
-await page.goto(arg('--base') ?? route.baseUrl, { waitUntil: 'domcontentloaded' });
+await page.goto(baseUrl ?? route.baseUrl, { waitUntil: 'domcontentloaded' });
 await page.waitForFunction(() => window.__walk?.controller && window.__play?.status().atlasReady && window.__play.status().foodsReady,
   undefined, { timeout: 60000 });
 // Geometry warmup changes loading only. The normal center spawn stays intact.
 await page.evaluate(() => window.__walk.zonePhysics.loadZones(['garden', 'pond', 'temple', 'bazaar', 'outer', 'fangbang']));
 await page.waitForTimeout(500);
+if (arg('--player-route')) {
+  await page.locator('#p-route').click();
+  await page.locator(`.pr-card[data-route-id="${arg('--player-route')}"] .pr-btn`).click();
+}
 const renderer = await page.evaluate(() => {
   const gl = document.querySelector('canvas').getContext('webgl2');
   const ext = gl.getExtension('WEBGL_debug_renderer_info');
@@ -163,7 +168,8 @@ async function step() {
     await page.waitForFunction(() => window.__play?.status?.()?.atlasReady && window.__play?.status?.()?.foodsReady);
     const after = await state(); if (before.stamps !== after.stamps) throw Error('Reload lost collection');
     await emit('reload-preserved', { before, after });
-    await page.goto(route.baseUrl + '&light=night'); await page.waitForFunction(() => window.__play?.status?.()?.atlasReady && window.__play?.status?.()?.foodsReady);
+    const nightUrl = new URL(baseUrl ?? route.baseUrl); nightUrl.searchParams.set('light', 'night');
+    await page.goto(nightUrl.href); await page.waitForFunction(() => window.__play?.status?.()?.atlasReady && window.__play?.status?.()?.foodsReady);
     await snapshot('night-plaza');
   }
   const shot = await snapshot(id); index++;

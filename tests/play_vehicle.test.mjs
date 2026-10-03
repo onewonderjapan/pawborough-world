@@ -281,16 +281,27 @@ function makeWorld({ edge = false, wall = false } = {}) {
   physics.world.free();
 }
 
-// --- 安全下车点 ---
+// --- 安全下车点（四侧视觉净空） ---
 {
   const feet = [0, 0, 0], yaw = 0;
   const cands = dismountCandidates(feet, yaw);
-  check('候选点 = 右/左/后三个', cands.length === 3
-    && close(cands[0][0], 0.75) && close(cands[1][0], -0.75) && close(cands[2][2], 1.1));
+  check('候选点 = 左/右/后/前四侧', cands.length === 4
+    && close(cands[0][0], -0.85) && close(cands[1][0], 0.85)
+    && close(cands[2][2], 1.15) && close(cands[3][2], -1.15));
   const first = pickDismountSpot(feet, yaw, () => true);
-  check('第一个安全点即右侧', close(first.feet[0], 0.75));
+  check('第一个安全点即左侧主下车位', close(first.feet[0], -0.85));
+  const second = pickDismountSpot(feet, yaw, (x) => x > 0);
+  check('左侧受阻时选右侧', close(second.feet[0], 0.85));
+  const third = pickDismountSpot(feet, yaw, (x, y, z) => z > 1.0);
+  check('两侧受阻时选后方', close(third.feet[2], 1.15));
+  const fourth = pickDismountSpot(feet, yaw, (x, y, z) => z < -1.0);
+  check('三侧受阻时选前方', close(fourth.feet[2], -1.15));
   const none = pickDismountSpot(feet, yaw, () => false);
-  check('全部不安全返回 null（提示移到开阔处，不穿墙）', none === null);
+  check('全部不安全返回 null（四侧拥挤提示移到开阔处，不穿墙）', none === null);
+  const raised = pickDismountSpot([0, 0.3, 0], yaw, () => 0.8);
+  check('实际支撑面高度用于下车脚点', close(raised.feet[1], 0.82));
+  const zero = pickDismountSpot([0, 0.3, 0], yaw, () => 0);
+  check('零米地面有效且保留脚点净距', close(zero.feet[1], 0.02));
 }
 
 console.log(failures === 0 ? 'PLAY_VEHICLE PASS' : `PLAY_VEHICLE FAIL (${failures})`);

@@ -323,18 +323,26 @@ function toward(v, target, maxDelta) {
 }
 
 // ---- 安全下车点（纯决策，探针由调用方注入；节点测试用真实世界探针驱动） ----
+// 四侧视觉净空落点：左侧（主下车位）/ 右侧 / 后方 / 前方
+// 避让整车视觉包围（车把宽 0.66m、前后轮距与车架 1.06m）与猫身/尾巴包络（宽 0.68m、长 0.72m），
+// 确保真实可见身体/尾巴与车轮/车架完全分离。
 export function dismountCandidates(feet, yaw) {
   const sy = Math.sin(yaw), cy = Math.cos(yaw);
-  const side = (sx) => [feet[0] + cy * sx, feet[1], feet[2] - sy * sx];       // right vector
+  const side = (sx) => [feet[0] + cy * sx, feet[1], feet[2] - sy * sx];       // right vector when sx>0, left when sx<0
   const back = (d) => [feet[0] + sy * d, feet[1], feet[2] + cy * d];          // -forward = (sy, cy)
-  return [side(0.75), side(-0.75), back(1.1)];
+  const front = (d) => [feet[0] - sy * d, feet[1], feet[2] - cy * d];         // forward = (-sy, -cy)
+  return [side(-0.85), side(0.85), back(1.15), front(1.15)];
 }
 
 // probe(x, y, z) → true 表示该胶囊落点安全（有真实支撑面且不与墙交叠）。
-// 返回第一个安全点；全部不安全返回 null（提示移到开阔处，不穿墙）。
+// 返回第一个安全点；全部不安全返回 null（四侧拥挤提示移到开阔处，不穿墙）。
 export function pickDismountSpot(feet, yaw, probe) {
   for (const c of dismountCandidates(feet, yaw)) {
-    if (probe(c[0], c[1], c[2])) return { feet: c };
+    const support = probe(c[0], c[1], c[2]);
+    if (support === true) return { feet: c }; // compatibility for boolean probes
+    if (typeof support === 'number' && Number.isFinite(support)) {
+      return { feet: [c[0], support + 0.02, c[2]] };
+    }
   }
   return null;
 }

@@ -35,7 +35,19 @@ export function computeCameraPlacement({ pivot, dir, distance, hitT = null, marg
 }
 
 export class PlayCamera {
-  constructor({ camera, shoulderHeight = 0.62, distance = 2.4, margin = 0.12, minDistance = 0.5, minSafe = 0.02 }) {
+  constructor({
+    camera,
+    shoulderHeight = 0.62,
+    distance = 2.4,
+    margin = 0.12,
+    minDistance = 0.5,
+    minSafe = 0.02,
+    foodDistance = 1.15,
+    foodShoulderHeight = 0.54,
+    foodYawOffset = Math.PI,
+    foodPitchOffset = -0.06,
+    foodMinDistance = 0.25,
+  }) {
     this.camera = camera;
     this.shoulderHeight = shoulderHeight;
     this.distance = distance;
@@ -45,33 +57,80 @@ export class PlayCamera {
     this.pivot = new THREE.Vector3();
     this._dir = new THREE.Vector3();
     this._look = new THREE.Vector3();
+
+    // Food inspection view state (U03)
+    this.viewMode = 'follow';
+    this.foodDistance = foodDistance;
+    this.foodShoulderHeight = foodShoulderHeight;
+    this.foodYawOffset = foodYawOffset;
+    this.foodPitchOffset = foodPitchOffset;
+    this.foodMinDistance = foodMinDistance;
+    this.lastPlacement = null;
+  }
+
+  setViewMode(mode) {
+    this.viewMode = mode === 'food' ? 'food' : 'follow';
+    return this.viewMode;
+  }
+
+  toggleFoodView() {
+    return this.setViewMode(this.viewMode === 'food' ? 'follow' : 'food');
+  }
+
+  isFoodView() {
+    return this.viewMode === 'food';
   }
 
   // controller: the WalkController (feetPosition/yaw/pitch). castRay:
   // (originVector3, dirVector3, maxToi) => timeOfImpact | null. Returns the
   // applied placement { applied, position }.
-  update({ controller, castRay = null, dt }) {
+  update({ controller, castRay = null, dt, facingYaw = null }) {
     if (!controller) return null;
     // a non-finite or negative frame time must never move the camera
     if (dt !== undefined && (!Number.isFinite(dt) || dt < 0)) return null;
     const feet = controller.feetPosition();
-    this.pivot.set(feet[0], feet[1] + this.shoulderHeight, feet[2]);
-    const { yaw, pitch } = controller;
-    // behind the model = opposite the controller forward (-sin yaw, -cos yaw),
-    // orbiting with pitch (same Euler convention as applyWalkOrientation)
-    this._dir.set(
-      Math.cos(pitch) * Math.sin(yaw),
-      -Math.sin(pitch),
-      Math.cos(pitch) * Math.cos(yaw),
-    );
-    const hitT = castRay ? castRay(this.pivot, this._dir, this.distance) : null;
-    const place = computeCameraPlacement({
-      pivot: this.pivot, dir: this._dir, distance: this.distance,
-      hitT, margin: this.margin, minDistance: this.minDistance, minSafe: this.minSafe,
-    });
-    this.camera.position.copy(place.position);
-    this._look.copy(this.pivot);
-    this.camera.lookAt(this._look);
-    return place;
+    const isFood = this.viewMode === 'food';
+
+    if (isFood) {
+      this.pivot.set(feet[0], feet[1] + this.foodShoulderHeight, feet[2]);
+      const baseYaw = facingYaw !== null && facingYaw !== undefined ? facingYaw : controller.yaw;
+      const camYaw = baseYaw + this.foodYawOffset;
+      const camPitch = Math.max(-0.25, Math.min(0.25, (controller.pitch ?? 0) * 0.3 + this.foodPitchOffset));
+      this._dir.set(
+        Math.cos(camPitch) * Math.sin(camYaw),
+        -Math.sin(camPitch),
+        Math.cos(camPitch) * Math.cos(camYaw),
+      );
+      const hitT = castRay ? castRay(this.pivot, this._dir, this.foodDistance) : null;
+      const place = computeCameraPlacement({
+        pivot: this.pivot, dir: this._dir, distance: this.foodDistance,
+        hitT, margin: this.margin, minDistance: this.foodMinDistance, minSafe: this.minSafe,
+      });
+      this.camera.position.copy(place.position);
+      this._look.copy(this.pivot);
+      this.camera.lookAt(this._look);
+      this.lastPlacement = { ...place, mode: 'food', hitT };
+      return place;
+    } else {
+      this.pivot.set(feet[0], feet[1] + this.shoulderHeight, feet[2]);
+      const { yaw, pitch } = controller;
+      // behind the model = opposite the controller forward (-sin yaw, -cos yaw),
+      // orbiting with pitch (same Euler convention as applyWalkOrientation)
+      this._dir.set(
+        Math.cos(pitch) * Math.sin(yaw),
+        -Math.sin(pitch),
+        Math.cos(pitch) * Math.cos(yaw),
+      );
+      const hitT = castRay ? castRay(this.pivot, this._dir, this.distance) : null;
+      const place = computeCameraPlacement({
+        pivot: this.pivot, dir: this._dir, distance: this.distance,
+        hitT, margin: this.margin, minDistance: this.minDistance, minSafe: this.minSafe,
+      });
+      this.camera.position.copy(place.position);
+      this._look.copy(this.pivot);
+      this.camera.lookAt(this._look);
+      this.lastPlacement = { ...place, mode: 'follow', hitT };
+      return place;
+    }
   }
 }

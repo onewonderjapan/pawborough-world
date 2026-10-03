@@ -150,6 +150,8 @@ export function installPlayMap({ getSize = () => 210 } = {}) {
 
     // 摊位章（朱红未尝 / 浅绿已尝；当前目标加白圈+外环）
     markers.stalls.forEach((st, i) => {
+      // 未发现食物不泄露坐标，不在小地图绘制标记
+      if (st.discovered === false || st.unknown) return;
       const p = MC.projectClamped(view, st.x, st.z);
       const done = st.done, isT = i === targetIndex && !complete;
       drawDisc(p.x, p.y, isT ? 5.5 : 4, done ? C.stallDone : C.stall);
@@ -197,11 +199,17 @@ export function installPlayMap({ getSize = () => 210 } = {}) {
     const view = drawnView ?? (mode === 'full' ? fullView : MC.makeNearView(feet, size));
     let best = -1, bestD = 16;
     markers.stalls.forEach((st, i) => {
+      if (st.discovered === false || st.unknown) return;
       const [px, py] = MC.project(view, st.x, st.z);
       const d = Math.hypot(px - mx, py - my);
       if (d < bestD) { bestD = d; best = i; }
     });
-    if (best >= 0 && onPickTarget) onPickTarget(markers.stalls[best].vendorId??best);
+    if (best >= 0 && onPickTarget) {
+      const picked = markers.stalls[best];
+      if (picked && picked.discovered !== false && !picked.unknown) {
+        onPickTarget(picked.vendorId ?? best);
+      }
+    }
   });
 
   return {

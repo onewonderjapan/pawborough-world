@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "pilotWorkorder": "U05",
+  "budget": {
+    "trianglesMax": 500,
+    "trianglesActual": 184,
+    "drawCallsMax": 4,
+    "drawCallsActual": 3,
+    "texturesMax": 2,
+    "texturesActual": 2,
+    "unboundPointLights": 0,
+    "addedColliders": 0,
+    "physicsWorldImpact": "readonly (0 colliders, 0 bodies added)"
+  },
+  "clearances": [
+    {
+      "point": "center",
+      "target": "curb-trim-center-1",
+      "clearanceMeters": 13.2,
+      "minRequiredMeters": 1.5,
+      "pass": true
+    },
+    {
+      "point": "changfen",
+      "target": "curb-trim-changfen-1",
+      "clearanceMeters": 2.1,
+      "minRequiredMeters": 1.2,
+      "pass": true
+    },
+    {
+      "point": "fangbang_seam",
+      "target": "curb-trim-seam-1",
+      "clearanceMeters": 3.25,
+      "minRequiredMeters": 1.5,
+      "pass": true
+    }
+  ],
+  "lifecycle": {
+    "disposedOnUnload": true,
+    "memoryLeakCount": 0,
+    "materialRestoration": "exact original reference restored"
+  }
+}

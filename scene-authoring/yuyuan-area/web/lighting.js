@@ -21,6 +21,7 @@
 // 预设选择（R2）：set() 在预设未就绪时只记下请求，就绪（含迟到升级）后按最近一次请求初始化；每次成功应用 / 回退都经 onChange 推给界面、并同步地址栏 ?light=。
 // 测试钩子：window.__lighting.state()（当前预设 / 阴影 / 灯数 / 匹配到的材质数等）、window.__lighting.set(name)。
 import * as THREE from 'three';
+import { createSubjectLight } from './play/subject-light.js';
 
 const LEGACY = { hemi: [0xffffff, 0x9a927e, 1.35], sun: [0xfff4e0, 1.6, [-260, 420, -180]], bg: 0xdfe8ec, exposure: 1.05 };
 
@@ -123,6 +124,7 @@ export function installLighting({ renderer, scene, camera, controls, params, get
   scene.add(hemi, sun, sun.target);
   scene.background = new THREE.Color(LEGACY.bg);
   renderer.toneMappingExposure = LEGACY.exposure;
+  const subjectLight = createSubjectLight({ scene, isActive: () => getWalkMode() === 'walk' });
 
   let shadowActive = false;   // 预设成功落地后才 = shadowOn；读不到 / 不合法 / 超时时保持 false（旧灯光无阴影）
   let P = null, cur = null, error = null, sunDir = new THREE.Vector3(...LEGACY.sun[2]).normalize();
@@ -247,6 +249,7 @@ export function installLighting({ renderer, scene, camera, controls, params, get
     scene.background = bgOn ? skyTex : new THREE.Color(0x101418);
     const matched = applyEmissive();
     updatePool(); frame = 0;
+    subjectLight.setPreset(name, p);
     state.matchedMaterials = matched;
     syncSelection();
     return true;
@@ -299,6 +302,7 @@ export function installLighting({ renderer, scene, camera, controls, params, get
   }
 
   function tick() {
+    subjectLight.tick();
     if (!P) return;
     fitShadow();
     // 每 reassignFrames 帧重分一次（新分区加载后的候选、步行缓慢移动）；导览 / 机位切换这类焦点跳变（> 点光半径的一半）当帧就重分，
@@ -319,6 +323,7 @@ export function installLighting({ renderer, scene, camera, controls, params, get
     shadowMeshes.clear();
     while (pool.length) scene.remove(pool.pop());
     candidates.length = 0;
+    subjectLight.setPreset(null);
     applyEmissive();   // cur = null → 全部材质恢复原 emissive
     hemi.color.set(LEGACY.hemi[0]); hemi.groundColor.set(LEGACY.hemi[1]); hemi.intensity = LEGACY.hemi[2];
     sun.color.set(LEGACY.sun[0]); sun.intensity = LEGACY.sun[1]; sun.position.set(...LEGACY.sun[2]); sun.target.position.set(0, 0, 0);
@@ -346,6 +351,7 @@ export function installLighting({ renderer, scene, camera, controls, params, get
     }
     for (const r of [...roots, ...batchRoots]) r.traverse(setShadowFlags);
     for (const r of roots) collectCandidates(r);
+    if (P.subjectLight) subjectLight.configure(P.subjectLight);
     apply(requested && P.presets[requested] ? requested : P.default);   // R2：用最近一次请求（等待期间的下拉选择也算），不是启动时的 want
     error = null; state.error = null;
   }
@@ -391,8 +397,10 @@ export function installLighting({ renderer, scene, camera, controls, params, get
         candidatesBySource: candidates.reduce((a, c) => ((a[c.source] = (a[c.source] || 0) + 1), a), {}),
         emissiveByGroup: P ? Object.fromEntries(P.emissiveGroups.map(g => [g.id, [...mats].filter(([m, r]) => g.materials.includes(r.base) && m.emissiveIntensity > 0 && cur && P.presets[cur].emissiveScale > 0 && !glowOff).length])) : null,
         background: scene.background && scene.background.isTexture ? 'sky-texture' : 'color',
+        subjectLight: subjectLight.state(),
       };
     },
+    subjectLight,
   };
   window.__lighting = api;
   return api;

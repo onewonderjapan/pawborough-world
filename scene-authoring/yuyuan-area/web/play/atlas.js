@@ -322,6 +322,13 @@ export function mountAtlas({ root, registry, getSnapshot, actions = {}, overlay 
   let isOpenState = false;
   let isDisposed = false;
   let lastFocusedElement = null;
+  // PLAY-07：窄屏（≤680px，与 atlas.css 断点一致）详情改为按需展开的抽屉，
+  // 列表优先；宽屏仍为左右分栏，此状态只被窄屏 CSS 消费。
+  const narrowQuery = typeof window.matchMedia === 'function'
+    ? window.matchMedia('(max-width: 680px)')
+    : null;
+  const isNarrowLayout = () => narrowQuery?.matches ?? false;
+  let detailOpen = false;
 
   // 1. 构建主 DOM 结构
   const modalEl = document.createElement('div');
@@ -666,6 +673,8 @@ export function mountAtlas({ root, registry, getSnapshot, actions = {}, overlay 
 
       const onSelect = () => {
         selectedFoodId = entry.id;
+        // PLAY-07：窄屏点卡片即展开详情抽屉；宽屏仍是右侧分栏
+        detailOpen = isNarrowLayout();
         render();
       };
       card.addEventListener('click', onSelect);
@@ -680,12 +689,23 @@ export function mountAtlas({ root, registry, getSnapshot, actions = {}, overlay 
       if (entry.id === focusedCardId) card.focus();
     }
 
-    // 渲染右侧详情阅读区
+    // 渲染右侧详情阅读区（窄屏下只在 is-detail-open 时以抽屉覆盖展示）
+    mainSplitEl.classList.toggle('is-detail-open', detailOpen);
     detailEl.textContent = '';
     const selectedEntry = entries.find((e) => e.id === selectedFoodId);
     if (selectedEntry) {
       const detailHeader = document.createElement('div');
       detailHeader.className = 'pb-atlas-detail-header';
+
+      // 窄屏返回列表按钮（宽屏 CSS 隐藏）
+      const backBtn = document.createElement('button');
+      backBtn.type = 'button';
+      backBtn.className = 'pb-atlas-detail-back';
+      backBtn.textContent = '‹ 返回列表';
+      backBtn.addEventListener('click', () => {
+        closeDetail();
+      });
+      detailHeader.appendChild(backBtn);
 
       const detailThumbWrap = document.createElement('div');
       detailThumbWrap.className = 'pb-atlas-detail-thumb-wrap';
@@ -771,10 +791,21 @@ export function mountAtlas({ root, registry, getSnapshot, actions = {}, overlay 
   }
 
   // 3. 事件路由与键盘捕获
+  // 窄屏详情抽屉：收起并回到列表，焦点回到选中卡片（键盘可达）
+  function closeDetail() {
+    if (!detailOpen) return;
+    detailOpen = false;
+    render();
+    const card = cardsEl.querySelector('.pb-atlas-card.is-selected')
+      ?? cardsEl.querySelector('.pb-atlas-card');
+    card?.focus({ preventScroll: true });
+  }
+
   function open() {
     if (isDisposed || isOpenState) return;
     isOpenState = true;
     lastFocusedElement = document.activeElement;
+    detailOpen = false;   // 打开图鉴总是先看到列表
 
     modalEl.hidden = false;
     render();
@@ -897,12 +928,14 @@ export function mountAtlas({ root, registry, getSnapshot, actions = {}, overlay 
     // 模态打开期间，隔绝所有全局游戏按键广播
     e.stopImmediatePropagation();
 
-    // Escape 优先关闭二次确认对话框或模态（即便在 editable 元素内也生效）
+    // Escape 按层收起：二次确认 > 窄屏详情抽屉 > 图鉴（即便在 editable 元素内也生效）
     if (e.key === 'Escape') {
       e.preventDefault();
       if (!confirmModalEl.hidden) {
         confirmModalEl.hidden = true;
         resetBtnEl.focus();
+      } else if (detailOpen) {
+        closeDetail();
       } else {
         close();
       }

@@ -163,6 +163,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   let saveError = null;
   let resettingTrip = false;
   let saveThrottle = 0;
+  let savedUserViewMode = 'follow';
   const storage = () => window.localStorage;
   function saveNow() {
     // 元数据和旧存档尚未处理时不能用空白进度覆盖玩家原有的三味记录。
@@ -220,7 +221,11 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   gameState.onChange((evt) => {
     if (evt.type === 'reset') {
       startNewTrip().catch(error => { console.error('new trip failed', error); hud.message('新散步暂时无法开始，图鉴进度保留'); });
-    } else if (['stamped', 'eaten', 'discovered', 'tracked', 'collection-cleared', 'collection-changed', 'eating-cancelled'].includes(evt.type)) {
+    } else if (['route-selected', 'stamped', 'eaten', 'discovered', 'tracked', 'collection-cleared', 'collection-changed', 'eating-cancelled'].includes(evt.type)) {
+      if (evt.type === 'eating-cancelled') {
+        playCamera.setViewMode(savedUserViewMode);
+        window.dispatchEvent(new CustomEvent('pb:camera-view-change', { detail: { viewMode: savedUserViewMode } }));
+      }
       hud.renderGoal(goalView());
       atlas?.render();
       saveNow();
@@ -359,7 +364,14 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     // R1（review R0-1）：相机被近墙压到 avatarHideDistance 以下时隐藏角色本体
     //（遮挡安全优先于舒服下限，相机可缩到很小距离）；只影响显示，不动玩家物理位置。
     updateCamera: ({ camera: cam, controller, dt }) => {
-      const place = playCamera.update({ controller, castRay, dt });
+      // 移动恢复跟随：手持特写视角下若发生位移（非进食锁定位），立即恢复常规跟随，绝不导致 W 背行
+      if (playCamera.viewMode === 'food' && !gameState.busyEating &&
+          Math.hypot(controller?.input?.forward ?? 0, controller?.input?.right ?? 0) > 0) {
+        playCamera.setViewMode('follow');
+        window.dispatchEvent(new CustomEvent('pb:camera-view-change', { detail: { viewMode: 'follow' } }));
+      }
+      const facingYaw = core.state.avatar?.facingYaw ?? controller?.yaw;
+      const place = playCamera.update({ controller, castRay, dt, facingYaw });
       const avatar = core.state.avatar;
       if (avatar) {
         const limit = gameState.vehicle.riding ? PLAY_PROFILE.rideAvatarHideDistance : PLAY_PROFILE.avatarHideDistance;
@@ -545,6 +557,8 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       core.state.avatar?.setHoldingPose(false);
       playCamera.shoulderHeight = PLAY_PROFILE.shoulderHeight;
       playCamera.distance = PLAY_PROFILE.cameraDistance;
+      playCamera.setViewMode('follow');
+      savedUserViewMode = 'follow';
       window.dispatchEvent(new CustomEvent('pb:ride-change', { detail: { riding: false } }));
       const walk = window.__walk;
       walk?.controller?.clearKeys();
@@ -745,6 +759,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     refreshHeldModel();
     playCamera.shoulderHeight = PLAY_PROFILE.rideShoulderHeight;
     playCamera.distance = PLAY_PROFILE.rideCameraDistance;
+    playCamera.setViewMode('follow');
     core.state.avatar?.releaseSnackSkin?.();   // 骑乘 clone 接管前归还手持爪补丁（防嵌套克隆）
     bikeView.attachRider(core.state.avatar, rideCtl);
     window.dispatchEvent(new CustomEvent('pb:ride-change', { detail: { riding: true } }));
@@ -770,6 +785,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     gameState.setVehicleView(viewYaw ?? heading);
     playCamera.shoulderHeight = PLAY_PROFILE.rideShoulderHeight;
     playCamera.distance = PLAY_PROFILE.rideCameraDistance;
+    playCamera.setViewMode('follow');
     core.state.avatar?.releaseSnackSkin?.();   // 同 mount：骑乘 clone 前归还手持补丁
     bikeView.attachRider(core.state.avatar, rideCtl);
     window.dispatchEvent(new CustomEvent('pb:ride-change', { detail: { riding: true, restored: true } }));
@@ -782,16 +798,20 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     const feet = rideCtl.feetPosition();
     const heading = rideCtl.heading;
     const viewYaw = rideCtl.yaw;
-    // 安全下车点：左/右/后方逐一真实支撑面 + 胶囊墙重叠检查（排除玩家/车，R0-5）
+    // 安全下车点：左/右/后/前四侧逐一真实支撑面 + 胶囊墙重叠检查（排除玩家/车，R0-5）
     if (!worldNow()) { hud.setHint('物理世界还没就绪，稍等再下'); return; }
     const shape = capsuleShape();
     const probe = (x, y, z) => {
       const gy = supportAt(x, z);
       if (gy === null || Math.abs(gy - y) > 1.2) return false;
-      return !wallOverlap(x, gy + 0.48, z, shape);
+      return wallOverlap(x, gy + 0.48, z, shape) ? false : gy;
     };
     const spot = pickDismountSpot(feet, heading, probe);
-    if (!spot) { hud.setHint('周围没有安全下车点，请骑到开阔处再按 R'); return; }
+    if (!spot) {
+      hud.setHint('周围拥挤没有安全净空，请骑到开阔处再按 R 下车');
+      hud.message('周围拥挤无法下车，请移到开阔处');
+      return;
+    }
     const bikeFinal = [feet[0], feet[1], feet[2]];
     const speedAtStop = rideCtl.speed;
     rideCtl.dispose();
@@ -801,6 +821,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     gameState.setVehicleView(viewYaw);
     controller.teleport(spot.feet, viewYaw, 0);
     bikeView.detachRider(core.state.avatar);
+    core.state.avatar?.update?.({ feet: spot.feet, yaw: viewYaw, moving: false, facingYaw: heading, paused: false, dt: 0 });
     const parkedY = bikeView.parkingGroundY(supportAt, bikeFinal[0], bikeFinal[2], heading);
     bikeView.placeAt([bikeFinal[0], parkedY ?? bikeFinal[1], bikeFinal[2]], heading);
     playCamera.shoulderHeight = PLAY_PROFILE.shoulderHeight;
@@ -812,7 +833,25 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     saveNow();
   }
 
-  // ---- E / F / R 按键（repeat 忽略；暂停/取景不吃键） ----
+  function canInspectFood() {
+    return !resettingTrip && !gameState.vehicle.riding && !!gameState.heldItem;
+  }
+
+  function tryToggleFoodView() {
+    if (core.session.paused || overlay.isOpen() || window.__walk?.mode() !== 'walk') return false;
+    if (gameState.vehicle.riding) { hud.setHint('骑车时无法查看手持食物'); return; }
+    if (!gameState.heldItem) { hud.setHint('手持小吃时按 V 可切换特写视角'); return; }
+    if (playCamera.viewMode === 'food') {
+      playCamera.setViewMode('follow');
+      hud.message('恢复常规视角');
+    } else {
+      playCamera.setViewMode('food');
+      hud.message('特写视角：查看食物与双爪 · 移动或按 V 恢复');
+    }
+    window.dispatchEvent(new CustomEvent('pb:camera-view-change', { detail: { viewMode: playCamera.viewMode } }));
+  }
+
+  // ---- E / F / V / R 按键（repeat 忽略；暂停/取景不吃键） ----
   addEventListener('keydown', (e) => {
     if (e.repeat) return;
     const walk = window.__walk;
@@ -820,8 +859,22 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     if (core.session.paused) return;
     if (e.code === 'KeyE') { e.preventDefault(); tryTake(); return; }
     if (e.code === 'KeyF') { e.preventDefault(); tryEat(); return; }
+    if (e.code === 'KeyV') { e.preventDefault(); tryToggleFoodView(); return; }
     if (e.code === 'KeyR') { e.preventDefault(); if (!gameState.busyEating) toggleVehicle(); return; }
+    // 移动输入恢复跟随：按住移动键时若处于手持特写视角，立即恢复常规跟随，绝不导致 W 背行
+    if (playCamera.viewMode === 'food' && !gameState.busyEating) {
+      const moveCodes = ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+      if (moveCodes.includes(e.code)) {
+        playCamera.setViewMode('follow');
+        window.dispatchEvent(new CustomEvent('pb:camera-view-change', { detail: { viewMode: 'follow' } }));
+      }
+    }
   });
+
+  addEventListener('pb:camera-view-toggle', () => {
+    tryToggleFoodView();
+  });
+  addEventListener('pb:food-view-toggle', tryToggleFoodView);
 
   function losToStall(stall) {
     const walk = window.__walk;
@@ -881,6 +934,9 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
     const walk = window.__walk;
     const controller = walk?.controller;
     if (controller) controller.clearKeys();       // 吃的过程中禁止移动
+    savedUserViewMode = playCamera.viewMode;
+    playCamera.setViewMode('food');
+    window.dispatchEvent(new CustomEvent('pb:camera-view-change', { detail: { viewMode: 'food', eating: true } }));
     gameState.startEat();
     core.state.avatar?.setEatingPose(true);
   }
@@ -924,11 +980,17 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
         core.state.avatar?.setEatingPose(false);
         core.state.avatar?.showSatisfaction();
         refreshHeldModel();                    // 吃完手持模型实际摘除（R0-4）
+        playCamera.setViewMode(savedUserViewMode);
+        window.dispatchEvent(new CustomEvent('pb:camera-view-change', { detail: { viewMode: savedUserViewMode } }));
         const food = gameState.foods.find(f => f.id === r.foodId);
         hud.message(r.complete
           ? `已尝齐 ${gameState.requiredFoodIds.size} 味！这条街你吃遍了 🎉`
           : `集齐一枚「${food.labelZh}」章！下一味：${gameState.goal()?.labelZh ?? '—'}`);
       }
+    }
+    if (!gameState.eating && !gameState.heldItem && playCamera.viewMode === 'food') {
+      playCamera.setViewMode('follow');
+      window.dispatchEvent(new CustomEvent('pb:camera-view-change', { detail: { viewMode: 'follow' } }));
     }
 
     characterArt?.update();
@@ -983,7 +1045,7 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
 
   let goalDistThrottle = 0;
   function visibleMapVendors(){return stalls.filter(t=>t.enabled&&gameState.discovered.has(t.foodId));}
-  function navigationVendor(){return stalls.find(t=>t.enabled&&t.vendorId===gameState.trackedVendorId)??stalls.find(t=>t.enabled&&t.foodId===gameState.navigationGoal()?.id);}
+  function navigationVendor(){const id=gameState.navigationGoal()?.id;return stalls.find(t=>t.enabled&&t.foodId===id&&t.vendorId===gameState.trackedVendorId)??stalls.find(t=>t.enabled&&t.foodId===id);}
   function updateFoodDisplays(feet){
     if(!foods||!feet)return;firstDisplayFeet??=[...feet];
     if(Math.hypot(feet[0]-firstDisplayFeet[0],feet[2]-firstDisplayFeet[2])<.5)return;
@@ -1083,6 +1145,8 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       ...base,
       // 小吃工单复验字段（只读）
       stamps: gameState.stamps,
+      routeId: gameState.currentRouteId,
+      routeProgress: gameState.routeStatus(),
       complete: gameState.complete,
       heldItem: gameState.heldItem,
       basketItem: gameState.basketItem,
@@ -1115,9 +1179,26 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
       ...closedFacades.status(),          // 闭门叠加层只读状态（工单 C）
       minimapMode: minimap.mode,
       saveKey: STORAGE_KEY,
+      cameraView: playCamera.viewMode,
+      cameraCanInspectFood: canInspectFood(),
+      cameraDistance: playCamera.lastPlacement?.applied ?? playCamera.distance,
     };
   }
 
-  return { profile, core, bind, status, playCamera, gameState, ride: () => rideCtl,
-    closedFacades, closedFacadeHint, isOverlayOpen: () => overlay.isOpen() };
+  const api = {
+    profile, core, bind, status, playCamera, gameState, ride: () => rideCtl,
+    closedFacades, closedFacadeHint, isOverlayOpen: () => overlay.isOpen(),
+    toggleFoodView: tryToggleFoodView, setFoodView: (m) => playCamera.setViewMode(m),
+    canInspectFood,
+    takeFood: (foodId) => { gameState.take(foodId); refreshHeldModel(); },
+    tryEat,
+    tryToggleFoodView,
+  };
+
+  if (typeof window !== 'undefined') {
+    window.__playCamera = playCamera;
+    window.__playInstall = api;
+  }
+
+  return api;
 }

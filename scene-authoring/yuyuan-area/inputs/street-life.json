@@ -1489,6 +1489,120 @@
       ],
       "yaw": 3.1415926536,
       "chapterId": "lingnan-islands"
+    },
+    {
+      "id": "pilot-curb-center-1",
+      "sourceId": "pilot-center",
+      "kind": "curb-trim",
+      "enabled": false,
+      "disabledReason": "Untrusted pilot point: lacking authoritative non-ground wall proxy collision coverage, dormant template",
+      "position": [
+        -158.5,
+        0.07,
+        -9.15
+      ],
+      "yaw": 0.0,
+      "chapterId": "pilot-u05"
+    },
+    {
+      "id": "pilot-notice-center-1",
+      "sourceId": "pilot-center",
+      "kind": "closed-notice",
+      "enabled": false,
+      "disabledReason": "Untrusted pilot point: lacking authoritative non-ground wall proxy collision coverage, dormant template",
+      "position": [
+        -159.08,
+        1.4,
+        -9.05
+      ],
+      "yaw": 0.0,
+      "label": "暂不开放",
+      "chapterId": "pilot-u05"
+    },
+    {
+      "id": "pilot-lantern-center-1",
+      "sourceId": "pilot-center",
+      "kind": "wall-lantern",
+      "enabled": false,
+      "disabledReason": "Untrusted pilot point: lacking authoritative non-ground wall proxy collision coverage, dormant template",
+      "position": [
+        -159.08,
+        2.3,
+        -9.05
+      ],
+      "yaw": 0.0,
+      "chapterId": "pilot-u05"
+    },
+    {
+      "id": "pilot-curb-changfen-1",
+      "sourceId": "pilot-changfen",
+      "kind": "curb-trim",
+      "enabled": false,
+      "disabledReason": "Untrusted pilot point: lacking authoritative non-ground wall proxy collision coverage, dormant template",
+      "position": [
+        -152.2,
+        0.07,
+        -27.8
+      ],
+      "yaw": -0.785,
+      "chapterId": "pilot-u05"
+    },
+    {
+      "id": "pilot-lantern-changfen-1",
+      "sourceId": "pilot-changfen",
+      "kind": "wall-lantern",
+      "enabled": false,
+      "disabledReason": "Untrusted pilot point: lacking authoritative non-ground wall proxy collision coverage, dormant template",
+      "position": [
+        -151.8,
+        2.3,
+        -28.2
+      ],
+      "yaw": -0.785,
+      "chapterId": "pilot-u05"
+    },
+    {
+      "id": "pilot-curb-seam-1",
+      "sourceId": "pilot-fangbang-seam",
+      "kind": "curb-trim",
+      "enabled": false,
+      "disabledReason": "Untrusted pilot point: lacking authoritative non-ground wall proxy collision coverage, dormant template",
+      "position": [
+        -96.8,
+        0.08,
+        17.5
+      ],
+      "yaw": 0.0,
+      "chapterId": "pilot-u05"
+    },
+    {
+      "id": "pilot-notice-seam-1",
+      "sourceId": "pilot-fangbang-seam",
+      "kind": "closed-notice",
+      "enabled": false,
+      "disabledReason": "Untrusted pilot point: lacking authoritative non-ground wall proxy collision coverage, dormant template",
+      "position": [
+        -95.15,
+        1.4,
+        16.0
+      ],
+      "yaw": 0.0,
+      "label": "休整暂闭",
+      "chapterId": "pilot-u05"
+    },
+    {
+      "id": "pilot-lantern-seam-1",
+      "sourceId": "pilot-fangbang-seam",
+      "kind": "wall-lantern",
+      "enabled": false,
+      "disabledReason": "Untrusted pilot point: lacking authoritative non-ground wall proxy collision coverage, dormant template",
+      "position": [
+        -95.15,
+        2.3,
+        16.0
+      ],
+      "yaw": 0.0,
+      "chapterId": "pilot-u05"
     }
   ],
   "placement": "Original attachments retained; new signs and lanterns attach only to validated roadside carts, without aisle props or extra walking colliders."
