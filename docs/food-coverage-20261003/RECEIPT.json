@@ -1,5 +1,5 @@
 {
-  "status": "verified_local_pending_git_closeout",
+  "status": "complete_local",
   "foods": 48,
   "regions": 34,
   "chapters": 11,
@@ -108,8 +108,9 @@
     "newDeliverySuite": "PASS24realnewGLBsplusall48SHA/thumbs",
     "newContactSuite": "PASS16newnoncuppedrealgraycatcontacts",
     "atlasSuites": "First16suites PASS; final static export failed due temporary dependency symlinks and stale24/21fixture counts, both fixed; static export now PASS. Unaffected16not repeated.",
-    "rootBuild": "PASS after restoring internal tool-launcher links; no productdependency changes",
-    "areaAuthoring": "Unchanged; prior M14 area:verify PASS reused, not rerun"
+    "rootBuild": "PASSfinalbuildafterinternaldependencylaunchersrestored",
+    "areaAuthoring": "Unchanged; prior M14 area:verify PASS reused, not rerun",
+    "cameraVisual": "Three inspected cases pass actual final approach and free front view; nearwall retraction is existing behavior, no camera code changed"
   },
   "workers": {
     "gemini": "A8,C8,atlas,retainedchickenbones,displayorigin",
@@ -117,7 +118,22 @@
   },
   "cloud": {
     "changed": false,
-    "status": "AWS SSO token expired and refresh failed;existing authorized release pending fresh owner login"
+    "status": "AWS SSO token expired and refresh failed;existing authorized release pending fresh owner login",
+    "liveReadbackVersion": "20261002-main-cc89c58e"
   },
-  "evidenceRoot": "/home/baibai/outbox/pawborough-food-coverage-20261003"
+  "evidenceRoot": "/home/baibai/outbox/pawborough-food-coverage-20261003",
+  "runtimeSourceCommit": "02258263c7844409e164f1fba88a96c5b10c3576",
+  "package": {
+    "version": "20261003-main-02258263",
+    "files": 290,
+    "bytes": 142033089,
+    "path": "/home/baibai/outbox/pawborough-food-coverage-20261003/final-package",
+    "staticGpuFourProfiles": "PASS48activevendors,4profilesE/F,CSP,errorfree"
+  },
+  "git": {
+    "mergedTo": "main",
+    "pushedTo": "origin/main",
+    "runtimeSourceCommit": "02258263c7844409e164f1fba88a96c5b10c3576",
+    "cleanup": "Managedworktree and mergedfeaturebranch scheduled for immediate archival/deletion after this receipt commit"
+  }
 }
