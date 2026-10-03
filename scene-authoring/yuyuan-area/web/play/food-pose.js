@@ -29,7 +29,7 @@ export function sampleFoodPose({profile, t=0, rig={}, anchors={}, presentation={
   if (!finite(left)) return {ok:false,reason:'missing-left-support'};
   const rotation = new T.Quaternion(), position = new T.Vector3();
   const out = {ok:true,profile:id,lift,biteProgress,rotation,position,palms:{},mouth:front,
-    mouthfulVisible:!presentation.eating||elapsed<1.4};
+    mouthfulVisible:Boolean(presentation.eating)&&elapsed<1.4};
   const isRefinedPortion = presentation.containerKind === 'shallowPlate' || presentation.portionMode === 'selected';
   out.isRefinedPortion = isRefinedPortion;
   out.containerKind = presentation.containerKind ?? null;
@@ -63,7 +63,7 @@ export function sampleFoodPose({profile, t=0, rig={}, anchors={}, presentation={
     out.bite = bite.applyQuaternion(rotation).add(position);
   } else {
     const content = vec(anchors.content), grip = vec(anchors.toolGrip), tip = vec(anchors.toolBite);
-    if (![content,grip,tip].every(finite) || !['spoon','chopsticks'].includes(presentation.utensilKind)) return {ok:false,reason:'missing-tool-anchors'};
+    if (![content,grip,tip].every(finite) || !['spoon','chopsticks','skewer'].includes(presentation.utensilKind)) return {ok:false,reason:'missing-tool-anchors'};
     position.set(.015,.38,.33);
     if (presentation.containerKind === 'shallowPlate' && Number.isFinite(presentation.plateHeight)) {
       position.y = presentation.plateHeight;

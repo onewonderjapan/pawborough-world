@@ -1,0 +1,358 @@
+[
+  {
+    "id": "congyoubing",
+    "name": "葱油饼",
+    "profile": "cupped",
+    "source": "resources/foods/handheld/congyoubing.glb",
+    "description": "酥脆起层的现煎扁圆面饼，带浓郁葱香与猪油焦香。",
+    "utensilKind": null,
+    "bytes": 77872,
+    "materials": [
+      "scallion-pancake-top",
+      "fried-crust"
+    ],
+    "nodes": [
+      "congyoubing_LOD0",
+      "congyoubing_LOD1",
+      "congyoubing_LOD2",
+      "socket_grip",
+      "socket_rest",
+      "congyoubing"
+    ],
+    "sourceSha256": "f891634434e669c3178f133f1a5e3a67b7f0db97ee86da489e913a4d0df2b1ca"
+  },
+  {
+    "id": "youdunzi",
+    "name": "油墩子",
+    "profile": "cupped",
+    "source": "resources/foods/handheld/youdunzi.glb",
+    "description": "金黄焦脆的油炸白萝卜丝饼，外壳香酥内馅绵软。",
+    "utensilKind": null,
+    "bytes": 112984,
+    "materials": [
+      "fried-batter",
+      "glutinous-dough",
+      "scallion-greens"
+    ],
+    "nodes": [
+      "socket_grip",
+      "socket_rest",
+      "youdunzi_LOD0",
+      "youdunzi_LOD1",
+      "youdunzi_LOD2",
+      "youdunzi"
+    ],
+    "sourceSha256": "290072ecb5846a0b2c813eb87821ba9cbf874bb220893dfaa4ee18f679eb1969"
+  },
+  {
+    "id": "ludagun",
+    "name": "驴打滚",
+    "profile": "cupped",
+    "source": "resources/foods/national/ludagun.glb",
+    "description": "豆面粉、螺旋豆沙卷、浅托盘",
+    "utensilKind": null,
+    "bytes": 305804,
+    "materials": [
+      "mat_dough",
+      "mat_redbean",
+      "mat_flour"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "ludagun"
+    ],
+    "sourceSha256": "4d41ddc863de63842298ac02830bdbece25ae904189dd813ec59a4726a8bfa8c"
+  },
+  {
+    "id": "niandoubao",
+    "name": "黏豆包",
+    "profile": "cupped",
+    "source": "resources/foods/national/niandoubao.glb",
+    "description": "金黄糯皮、小圆包、豆沙切面",
+    "utensilKind": null,
+    "bytes": 125468,
+    "materials": [
+      "mat_millet_dough",
+      "mat_redbean"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "niandoubao"
+    ],
+    "sourceSha256": "46c6f6698fc00406bf4114259b254923f5b8b00b15d3f08c77994454e00b4060"
+  },
+  {
+    "id": "xianhuabing",
+    "name": "鲜花饼",
+    "profile": "cupped",
+    "source": "resources/foods/national/xianhuabing.glb",
+    "description": "层酥圆饼、花瓣馅、断面",
+    "utensilKind": null,
+    "bytes": 93528,
+    "materials": [
+      "mat_pastry_crust",
+      "mat_pastry_toast",
+      "mat_rose_filling",
+      "mat_rose_petal",
+      "mat_sesame"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "xianhuabing"
+    ],
+    "sourceSha256": "6488d4a2911e6956eaeaf36c5f959907870c72b56a1a20003f87e2eaac06d4c2"
+  },
+  {
+    "id": "fenglisu",
+    "name": "凤梨酥",
+    "profile": "cupped",
+    "source": "resources/foods/national/fenglisu.glb",
+    "description": "方形酥皮、金黄断面、纤维馅",
+    "utensilKind": null,
+    "bytes": 30900,
+    "materials": [
+      "mat_shortbread",
+      "mat_toasted",
+      "mat_jam",
+      "mat_crumb"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "fenglisu"
+    ],
+    "sourceSha256": "1d51a945756835c4d84d4254730632d65b777eb2ad82035beb0d6a4b6105b529"
+  },
+  {
+    "id": "portuguese-egg-tart",
+    "name": "葡式蛋挞",
+    "profile": "cupped",
+    "source": "resources/foods/national/portuguese-egg-tart.glb",
+    "description": "层酥杯壁、焦斑蛋奶馅、小纸托",
+    "utensilKind": null,
+    "bytes": 79856,
+    "materials": [
+      "mat_tart_crust",
+      "mat_tart_toast",
+      "mat_custard",
+      "mat_caramel_spots"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "portuguese-egg-tart"
+    ],
+    "sourceSha256": "4853f78b4b91582243588ee81905011c502b57136316b4f17150aa6afec30222"
+  },
+  {
+    "id": "naidoufu",
+    "name": "奶豆腐",
+    "profile": "cupped",
+    "source": "resources/foods/national/naidoufu.glb",
+    "description": "乳汁发酵凝固、压模成块，奶豆腐是内蒙古常见的传统乳食。",
+    "utensilKind": null,
+    "bytes": 16220,
+    "materials": [
+      "mat_curd",
+      "mat_curd_brown",
+      "mat_butter"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "socket_grip",
+      "socket_rest",
+      "naidoufu"
+    ],
+    "sourceSha256": "66cc85f6c82ff7a5371f22adbe43c9f1d576536706f142737999f90e6624cfcb"
+  },
+  {
+    "id": "dingshenggao",
+    "name": "定胜糕",
+    "profile": "cupped",
+    "source": "resources/foods/national/dingshenggao.glb",
+    "description": "浅粉米糕两头宽、中间细，蒸出的软糯糕身带着杭州风味。",
+    "utensilKind": null,
+    "bytes": 45576,
+    "materials": [
+      "mat_cake_pink",
+      "mat_cake_white",
+      "mat_redbean",
+      "mat_osmanthus"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "socket_grip",
+      "socket_rest",
+      "dingshenggao"
+    ],
+    "sourceSha256": "efa0574ee3c800a7d8589038b4ae5322f1e0eb0bbefec3e233981ef998dc2de0"
+  },
+  {
+    "id": "sanzi",
+    "name": "馓子",
+    "profile": "cupped",
+    "source": "resources/foods/national/sanzi.glb",
+    "description": "细细的炸面条盘成金黄环束，留着空隙的脆面丝带来宁夏风味。",
+    "utensilKind": null,
+    "bytes": 272664,
+    "materials": [
+      "mat_gold",
+      "mat_deep"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "socket_grip",
+      "socket_rest",
+      "sanzi"
+    ],
+    "sourceSha256": "2389d359a725a6bb0c7ee09517e9a1733898ec63193c7eb063d9c4a7b401f455"
+  },
+  {
+    "id": "nang",
+    "name": "馕",
+    "profile": "cupped",
+    "source": "resources/foods/national/nang.glb",
+    "description": "圆饼厚边围着压印纹样，烤香的饼面撒着芝麻，是新疆常见主食。",
+    "utensilKind": null,
+    "bytes": 149512,
+    "materials": [
+      "mat_crust_golden",
+      "mat_toasted_caramel",
+      "mat_center_pale",
+      "mat_stamp_holes",
+      "mat_sesame"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "socket_grip",
+      "socket_rest",
+      "nang"
+    ],
+    "sourceSha256": "4ba45f76b609cbfc92bd9083e0eed3bc09c25b96a84742a0138d26f69e8928a7"
+  },
+  {
+    "id": "zanba",
+    "name": "糌粑",
+    "profile": "cupped",
+    "source": "resources/foods/national/zanba.glb",
+    "description": "炒青稞磨成粉再拌捏，这里把西藏常见主食做成便于手捧的试吃小份。",
+    "utensilKind": null,
+    "bytes": 86380,
+    "materials": [
+      "mat_zanba_dough",
+      "mat_zanba_grain",
+      "mat_butter_sheen"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "socket_grip",
+      "socket_rest",
+      "zanba"
+    ],
+    "sourceSha256": "9d2ca63ed4f6edbd55a738c84d3993a520852a1acc3d903c928395813f91db38"
+  },
+  {
+    "id": "shengjianbao",
+    "name": "生煎包",
+    "profile": "cupped",
+    "source": "resources/foods/national/shengjianbao.glb",
+    "description": "白色褶纹面皮托着焦香锅底，撒上芝麻与葱花，尝上海生煎风味。",
+    "utensilKind": null,
+    "bytes": 199168,
+    "materials": [
+      "mat_bun_white",
+      "mat_crisp_bottom",
+      "mat_black_sesame",
+      "mat_scallion",
+      "mat_pleat_crease"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "socket_grip",
+      "socket_rest",
+      "shengjianbao"
+    ],
+    "sourceSha256": "8b80ed567dac438a4178ff7ebb733bb8bd3e94a3bbdac1d5c4bdfc2e731d58c3"
+  },
+  {
+    "id": "mashu",
+    "name": "泉州花生麻糍",
+    "profile": "cupped",
+    "source": "resources/foods/national/mashu.glb",
+    "description": "软糯米团外裹花生芝麻粉，做成手捧试吃份，尝泉州街头麻糍风味。",
+    "utensilKind": null,
+    "bytes": 100216,
+    "materials": [
+      "mat_peanut_powder",
+      "mat_mochi_dough",
+      "mat_sesame_core",
+      "mat_powder_clumps"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "socket_grip",
+      "socket_rest",
+      "mashu"
+    ],
+    "sourceSha256": "7922318c2e1c550ae683518db8dd1bdef1f92d68ce46fc69afdc5923608f3ffc"
+  },
+  {
+    "id": "xiajiao",
+    "name": "虾饺",
+    "profile": "cupped",
+    "source": "resources/foods/national/xiajiao.glb",
+    "description": "半透明薄皮折出褶纹、包住虾馅，尝广东早茶中的小巧点心。",
+    "utensilKind": null,
+    "bytes": 106300,
+    "materials": [
+      "mat_crystal_skin",
+      "mat_pleats",
+      "mat_shrimp_core",
+      "mat_dimsum_paper"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "socket_grip",
+      "socket_rest",
+      "xiajiao"
+    ],
+    "sourceSha256": "db3158020eaae728647d837c808b0b0a398b15841788b13c9d2207681d08fa78"
+  }
+]

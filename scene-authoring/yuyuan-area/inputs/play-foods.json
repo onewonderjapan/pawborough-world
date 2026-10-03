@@ -1,14 +1,14 @@
 {
   "labelZh": "全国寻味48味资产",
-  "note": "原件只读；新增24味按coverage-20261003 outbox manifest SHA接入，沿用四类进食与逐味加载。",
+  "note": "原件只读；48味本地首轮美术修整，肠粉v5基准及47味refinement-rollout；摄影图鉴独立清单，进食与逐味加载契约保持。",
   "foods": [
     {
       "id": "xiaolongbao",
       "labelZh": "小笼包",
       "stallId": "stall-5",
-      "path": "resources/foods/handheld/xiaolongbao.glb",
-      "bytes": 31488,
-      "sha256": "439ff56d50780ddb669bc5388439662dff3c49100d3fbd7952677331895ccaed",
+      "path": "resources/foods/refinement-rollout/v2/xiaolongbao.glb",
+      "bytes": 447616,
+      "sha256": "0fc2d9b22498afea98136c1c02580635a218ae3b81c497cb44eebb1297627af4",
       "thumbnail": {
         "path": "resources/foods/thumbnails/xiaolongbao.png",
         "sha256": "e0d1bb43f63fcc9bcaa5e947651dd2d0efb63efc6988ab5f8a98c247a4d0d74c",
@@ -19,9 +19,9 @@
       "id": "congyoubing",
       "labelZh": "葱油饼",
       "stallId": "stall-6",
-      "path": "resources/foods/handheld/congyoubing.glb",
-      "bytes": 77872,
-      "sha256": "f891634434e669c3178f133f1a5e3a67b7f0db97ee86da489e913a4d0df2b1ca",
+      "path": "resources/foods/refinement-rollout/v2/congyoubing.glb",
+      "bytes": 42928,
+      "sha256": "7bda7188f16e78455ffb6021f04c064b1658699c4d162de754a3b728a06b6db0",
       "thumbnail": {
         "path": "resources/foods/thumbnails/congyoubing.png",
         "sha256": "cf4212f34dbf11f691d26b4d69f5c5b8c9fc64efad37f0a7573675a058f796e1",
@@ -32,9 +32,9 @@
       "id": "youdunzi",
       "labelZh": "油墩子",
       "stallId": "stall-10",
-      "path": "resources/foods/handheld/youdunzi.glb",
-      "bytes": 112984,
-      "sha256": "290072ecb5846a0b2c813eb87821ba9cbf874bb220893dfaa4ee18f679eb1969",
+      "path": "resources/foods/refinement-rollout/v2/youdunzi.glb",
+      "bytes": 124864,
+      "sha256": "c5ab6b532b2d76b69b00f158fc907faadbf8e3ce12f7f6ad2d22d24f0f6fe8ad",
       "thumbnail": {
         "path": "resources/foods/thumbnails/youdunzi.png",
         "sha256": "b3a1cb0a3e3a1e974921fc713d4a7047d7f92f532486b0a9f3e85eac41f3749c",
@@ -44,9 +44,9 @@
     {
       "id": "tanghulu",
       "labelZh": "糖葫芦",
-      "path": "resources/foods/national/tanghulu.glb",
-      "sha256": "87f50c06ef08503b59511a83f197be09d4638316a86b17be4713c58b124919fb",
-      "bytes": 145136,
+      "path": "resources/foods/refinement-rollout/v2/tanghulu.glb",
+      "sha256": "e42adee00d27a60b3f3404cfaba1ff6ac888a77327abf97039fbfe37fc720997",
+      "bytes": 234672,
       "thumbnail": {
         "path": "resources/foods/thumbnails/tanghulu.png",
         "sha256": "4156b5c85be732ca6cb5d031838224bb04215fd15335f541ac9ddf8370166655",
@@ -56,9 +56,9 @@
     {
       "id": "roujiamo",
       "labelZh": "肉夹馍",
-      "path": "resources/foods/national/roujiamo.glb",
-      "sha256": "2fccc932be2ae94c759c69449f4ed7e4cef7a75f93f57b75f4444384e8e64c2d",
-      "bytes": 167216,
+      "path": "resources/foods/refinement-rollout/v2/roujiamo.glb",
+      "sha256": "66944630b88a52c64226b9782c7c3c01a8be65b2aa236e20d6155a8d4e908311",
+      "bytes": 321076,
       "thumbnail": {
         "path": "resources/foods/thumbnails/roujiamo.png",
         "sha256": "48cb138ff1efe79aed724e8db831525df5e8b0e55a541688345fef9be9681eb1",
@@ -68,9 +68,9 @@
     {
       "id": "shuangpinai",
       "labelZh": "双皮奶",
-      "path": "resources/foods/national/shuangpinai.glb",
-      "sha256": "20a201a0cd94e0981a364b930c8b18eeb63673ac08e036447f2d0786ed19bd93",
-      "bytes": 93556,
+      "path": "resources/foods/refinement-rollout/v1/shuangpinai.glb",
+      "sha256": "deabc4448b5e4511c0865802d4b28abf9f6b2020351e23be12f0f0d33179c55a",
+      "bytes": 143168,
       "thumbnail": {
         "path": "resources/foods/thumbnails/shuangpinai.png",
         "sha256": "07ffccc83b6f990fff6fd80a1595e842867b8adfd93a04703bd981d83578a966",
@@ -79,9 +79,9 @@
     },
     {
       "id": "kaolengmian",
-      "path": "resources/foods/national/kaolengmian.glb",
-      "sha256": "5e12f28897caf59d6382c677a77404dd2df4854759421a76f4907cf1d6618e3f",
-      "bytes": 241860,
+      "path": "resources/foods/refinement-rollout/v2/kaolengmian.glb",
+      "sha256": "e533d4bb6efe46db204036ed6b6192d47f193f4587c2834272da1c1784ee0916",
+      "bytes": 63544,
       "thumbnail": {
         "path": "resources/foods/thumbnails/kaolengmian.png",
         "sha256": "a8eefbe272f0e022e8c75819e9fa387ae34137730376f4c1d9a5c941f58c9200",
@@ -90,9 +90,9 @@
     },
     {
       "id": "niandoubao",
-      "path": "resources/foods/national/niandoubao.glb",
-      "sha256": "46c6f6698fc00406bf4114259b254923f5b8b00b15d3f08c77994454e00b4060",
-      "bytes": 125468,
+      "path": "resources/foods/refinement-rollout/v2/niandoubao.glb",
+      "sha256": "f1cab7b85c79862f2a8cae96cf0b19ae9cb10ee91638a39750412c932b907fad",
+      "bytes": 104172,
       "thumbnail": {
         "path": "resources/foods/thumbnails/niandoubao.png",
         "sha256": "b5a4b529bdbb95fd8645c817ca5844066c688b391365e689f09ba55cb4ad3ca1",
@@ -101,9 +101,9 @@
     },
     {
       "id": "xianhuabing",
-      "path": "resources/foods/national/xianhuabing.glb",
-      "sha256": "6488d4a2911e6956eaeaf36c5f959907870c72b56a1a20003f87e2eaac06d4c2",
-      "bytes": 93528,
+      "path": "resources/foods/refinement-rollout/v2/xianhuabing.glb",
+      "sha256": "49cf8afe294c071265e2b8a1420dc51ec2582f3640441e9ccbb96a1294a8ac26",
+      "bytes": 79168,
       "thumbnail": {
         "path": "resources/foods/thumbnails/xianhuabing.png",
         "sha256": "23a0bba3b06c3357729826da535e5340df8144cc0d20609f80ed851c7949db99",
@@ -112,9 +112,9 @@
     },
     {
       "id": "reganmian",
-      "path": "resources/foods/national/reganmian.glb",
-      "sha256": "a827e464d2b5bdbd051360a8efe7aea98255ace6d224a1ef0bab813e05b5c11d",
-      "bytes": 304712,
+      "path": "resources/foods/refinement-rollout/v1/reganmian.glb",
+      "sha256": "d90e2b9adfa067e933bdaa8e9f79cd952e8cc8280c9dbaf266b7467f12b30646",
+      "bytes": 141556,
       "thumbnail": {
         "path": "resources/foods/thumbnails/reganmian.png",
         "sha256": "aaf3d29ed24ce0c79684deb7425e2af258471883be5559f71b3fa4b7ca652851",
@@ -123,9 +123,9 @@
     },
     {
       "id": "jidanzi",
-      "path": "resources/foods/national/jidanzi.glb",
-      "sha256": "607d14cec90c94ea242a547c59f7fec8627173197ad7fa826417c107d3058fce",
-      "bytes": 180484,
+      "path": "resources/foods/refinement-rollout/v2/jidanzi.glb",
+      "sha256": "db9418743c50bfbae3b00fcb083652d7f0b35c9879b1cfe8fd094374e625e13c",
+      "bytes": 346796,
       "thumbnail": {
         "path": "resources/foods/thumbnails/jidanzi.png",
         "sha256": "4a18e089b2efae9cbc855bf07fde14ff35b841d6badfa6f4c8d5ea49dee8361f",
@@ -134,9 +134,9 @@
     },
     {
       "id": "portuguese-egg-tart",
-      "path": "resources/foods/national/portuguese-egg-tart.glb",
-      "sha256": "4853f78b4b91582243588ee81905011c502b57136316b4f17150aa6afec30222",
-      "bytes": 79856,
+      "path": "resources/foods/refinement-rollout/v2/portuguese-egg-tart.glb",
+      "sha256": "533a2456a7f4d49a36bde1c490920cbf0613151c1cf7260a1b6cf30bd03a787a",
+      "bytes": 62060,
       "thumbnail": {
         "path": "resources/foods/thumbnails/portuguese-egg-tart.png",
         "sha256": "965f66481a8dd118f3793667ace0be9c2d508b2f47109d1d8a0a010cc508eee8",
@@ -145,9 +145,9 @@
     },
     {
       "id": "jianbing-guozi",
-      "path": "resources/foods/national/jianbing-guozi.glb",
-      "sha256": "2027845f5d47814d6aa1b27ea5bd8ae291347a3dd32e3c77aac60fda4752bee9",
-      "bytes": 139568,
+      "path": "resources/foods/refinement-rollout/v2/jianbing-guozi.glb",
+      "sha256": "fa38734c02d69275b761c2e8271ddfdff3a6ada62903e2935cf9661759fbafce",
+      "bytes": 92512,
       "thumbnail": {
         "path": "resources/foods/thumbnails/jianbing-guozi.png",
         "sha256": "1b4ba36aed04a34341f83b7bbd37a06a7ab0ccf40dc2bda2af84ab517def1768",
@@ -156,9 +156,9 @@
     },
     {
       "id": "ludagun",
-      "path": "resources/foods/national/ludagun.glb",
-      "sha256": "4d41ddc863de63842298ac02830bdbece25ae904189dd813ec59a4726a8bfa8c",
-      "bytes": 305804,
+      "path": "resources/foods/refinement-rollout/v2/ludagun.glb",
+      "sha256": "42f857975474a5234b544efa1a1e84060451a1f98fe11991fb9fb9859ceef965",
+      "bytes": 340340,
       "thumbnail": {
         "path": "resources/foods/thumbnails/ludagun.png",
         "sha256": "0ad8374df5d6b297e16d4cea2155278afd353f13f1d6bff5b70b6750240a7834",
@@ -167,9 +167,9 @@
     },
     {
       "id": "jianfen",
-      "path": "resources/foods/national/jianfen.glb",
-      "sha256": "7e716d018d78a2cfa9aba5f125075391b4f833936520ac5e114f0de98b6e840d",
-      "bytes": 121324,
+      "path": "resources/foods/refinement-rollout/v1/jianfen.glb",
+      "sha256": "8cbc71efd48f5960e89862216bd574e12a054039d9471bc95b20d15fb2d0c0ee",
+      "bytes": 98480,
       "thumbnail": {
         "path": "resources/foods/thumbnails/jianfen.png",
         "sha256": "d5bb1650b5ff6474d8b182da7a8370d9d1d32564c7caf92ffc7cc42bc464c50c",
@@ -178,9 +178,9 @@
     },
     {
       "id": "liangpi",
-      "path": "resources/foods/national/liangpi.glb",
-      "sha256": "ce755bc883017fe58f984213a7a1a5ae798ab5691826c16c056abc537abdc098",
-      "bytes": 127912,
+      "path": "resources/foods/refinement-rollout/v1/liangpi.glb",
+      "sha256": "a455763dea525c623f8ae57e2dd857132b7c8fc3ce2226256e3a21c9ae3682ec",
+      "bytes": 104832,
       "thumbnail": {
         "path": "resources/foods/thumbnails/liangpi.png",
         "sha256": "bb6d963d228518e0d855d138328a1cc0366202ca765e8a1ca20c33536bf20499",
@@ -189,9 +189,9 @@
     },
     {
       "id": "yangrouchuan",
-      "path": "resources/foods/national/yangrouchuan.glb",
-      "sha256": "09c20f0e54f8f8fc67d467aec1b81136add6e1aab3d8cb08a08b746543cfbed8",
-      "bytes": 62840,
+      "path": "resources/foods/refinement-rollout/v2/yangrouchuan.glb",
+      "sha256": "fce0059cb31f278e259abc8e93bd0ad2090fa3bd95a83c7c51026938b2a1e5ce",
+      "bytes": 49092,
       "thumbnail": {
         "path": "resources/foods/thumbnails/yangrouchuan.png",
         "sha256": "fa7a27a291ad7097f395ff74e40c42e99e0d7710490ddf2d016e843a174e6c0e",
@@ -200,9 +200,9 @@
     },
     {
       "id": "dandanmian",
-      "path": "resources/foods/national/dandanmian.glb",
-      "sha256": "febac8612bae344f25bb64be230f8f2f31bc38bac6453df57b40f72e8b7dd9a1",
-      "bytes": 682256,
+      "path": "resources/foods/refinement-rollout/v1/dandanmian.glb",
+      "sha256": "032d2ff1f82da971c73ca6b3e9dfa547e3562bb4233e407a20efd2027c0bc783",
+      "bytes": 189824,
       "thumbnail": {
         "path": "resources/foods/thumbnails/dandanmian.png",
         "sha256": "bb5fb769dd775702a37043bda69d3dc79eb5bee96fe4e2e61df9cc809e4dc807",
@@ -211,9 +211,9 @@
     },
     {
       "id": "hongyou-chaoshou",
-      "path": "resources/foods/national/hongyou-chaoshou.glb",
-      "sha256": "8a4c41a3f5898926c934a4d7d0b72477c0d3b182fc6ad18223741dddcc7eb420",
-      "bytes": 223376,
+      "path": "resources/foods/refinement-rollout/v1/hongyou-chaoshou.glb",
+      "sha256": "5a6d829a54e3b9c87255fcf5e4b1e9eca4a4062f9f6a0bcc7e91726513c4f87c",
+      "bytes": 160556,
       "thumbnail": {
         "path": "resources/foods/thumbnails/hongyou-chaoshou.png",
         "sha256": "0be5eb4f99695550260837a08178e9692976193de57222cc1e1227ee611b00b3",
@@ -222,9 +222,9 @@
     },
     {
       "id": "choudoufu",
-      "path": "resources/foods/national/choudoufu.glb",
-      "sha256": "f132e11a26243a7b54f2ed7b10f8f0102a02957128368a38a8bcfb7caff2fcce",
-      "bytes": 100952,
+      "path": "resources/foods/refinement-rollout/v1/choudoufu.glb",
+      "sha256": "4893289c7707869ced36f4a4a3cac6120f8790b8593a8ca332155ac2803943ac",
+      "bytes": 69376,
       "thumbnail": {
         "path": "resources/foods/thumbnails/choudoufu.png",
         "sha256": "c4217339127df607476a7ec07e2d56434a680aa272edc1be6551d4ff237dff5b",
@@ -233,9 +233,9 @@
     },
     {
       "id": "hulatang",
-      "path": "resources/foods/national/hulatang.glb",
-      "sha256": "897c4294c8dc1d738eac82bdd6bfdc9e19bb8a97b0eac8218b35da531449bf66",
-      "bytes": 190608,
+      "path": "resources/foods/refinement-rollout/v1/hulatang.glb",
+      "sha256": "52a83fd372c235aaf0e77902c999d5ec08b316b54ad83205bfdd9e45becd8f46",
+      "bytes": 98748,
       "thumbnail": {
         "path": "resources/foods/thumbnails/hulatang.png",
         "sha256": "56f8f23d5f1b8edfeddfad687626561eef241fb896822bf2d9b31e0553ef9c03",
@@ -255,9 +255,9 @@
     },
     {
       "id": "qingbuliang",
-      "path": "resources/foods/national/qingbuliang.glb",
-      "sha256": "c27acb9bfb50b2e058cb35a4b57cfb1c4b78559bce436b494c552eb84d4ac075",
-      "bytes": 190280,
+      "path": "resources/foods/refinement-rollout/v1/qingbuliang.glb",
+      "sha256": "210306964e068b34d0e7f305854d557dfdd6287f3698769519417717cd10f8d9",
+      "bytes": 171884,
       "thumbnail": {
         "path": "resources/foods/thumbnails/qingbuliang.png",
         "sha256": "2fbbda57d9b526b447838a65b6dc83d7c8fc81dbf6fab6903440aeeccd1f456d",
@@ -266,9 +266,9 @@
     },
     {
       "id": "fenglisu",
-      "path": "resources/foods/national/fenglisu.glb",
-      "sha256": "1d51a945756835c4d84d4254730632d65b777eb2ad82035beb0d6a4b6105b529",
-      "bytes": 30900,
+      "path": "resources/foods/refinement-rollout/v2/fenglisu.glb",
+      "sha256": "d9764f5de81468ebd4d6206b7292e1f70f8cd7ea2f6d122549a68c6e6676cb17",
+      "bytes": 39240,
       "thumbnail": {
         "path": "resources/foods/thumbnails/fenglisu.png",
         "sha256": "2f1be7786303a1ab5e9156cdbb92343eb23610d8c85ec884ca30f0b63aca261b",
@@ -278,9 +278,9 @@
     {
       "id": "lvrou-huoshao",
       "labelZh": "驴肉火烧",
-      "path": "resources/foods/national/lvrou-huoshao.glb",
-      "sha256": "4441050307c8103c602388b9df218fceb654dcb40cc5403f3252f48ff8472867",
-      "bytes": 107376,
+      "path": "resources/foods/refinement-rollout/v2/lvrou-huoshao.glb",
+      "sha256": "87838d2c1740adaac7e27df13e2740eb59d1c42347b23069b811c6b01b48c234",
+      "bytes": 77992,
       "thumbnail": {
         "path": "resources/foods/thumbnails/lvrou-huoshao.png",
         "sha256": "c398b3692610a5dacd9a76a1d1db74debef3f4499519158d6ec00ca5ac5cd2cd",
@@ -290,9 +290,9 @@
     {
       "id": "daoxiaomian",
       "labelZh": "刀削面",
-      "path": "resources/foods/national/daoxiaomian.glb",
-      "sha256": "d10cf9750d59dd410df57e76d309999396d946da987c08589ae13f5f6970a90b",
-      "bytes": 161208,
+      "path": "resources/foods/refinement-rollout/v1/daoxiaomian.glb",
+      "sha256": "20616c9bebd76ee3b0fcbafc836d995b3a12d267233511b30a865467225f9bfe",
+      "bytes": 88612,
       "thumbnail": {
         "path": "resources/foods/thumbnails/daoxiaomian.png",
         "sha256": "a91c8beb00216e6038ea32c615906ca9be161885a31cfe480d0aaccdd607c903",
@@ -302,9 +302,9 @@
     {
       "id": "naidoufu",
       "labelZh": "奶豆腐",
-      "path": "resources/foods/national/naidoufu.glb",
-      "sha256": "66cc85f6c82ff7a5371f22adbe43c9f1d576536706f142737999f90e6624cfcb",
-      "bytes": 16220,
+      "path": "resources/foods/refinement-rollout/v2/naidoufu.glb",
+      "sha256": "3ad81ff0f58826f14dfe07ba304e3ca822f594808fe74da9ebd29dd166dccc1d",
+      "bytes": 78464,
       "thumbnail": {
         "path": "resources/foods/thumbnails/naidoufu.png",
         "sha256": "496df013ee81b7bd4bf5f52b9bdf0b44dcc9782df33d099044c96e2e635fcca8",
@@ -314,9 +314,9 @@
     {
       "id": "shenyang-jijia",
       "labelZh": "沈阳鸡架",
-      "path": "resources/foods/national/shenyang-jijia.glb",
-      "sha256": "f1d50e00dc04febedc36de77f51b355884264f3107bd496a8c9345892c0fecb9",
-      "bytes": 93776,
+      "path": "resources/foods/refinement-rollout/v2/shenyang-jijia.glb",
+      "sha256": "96e9c686342fe2efc30b649ceaea8a3dd201ff4f7df62ff946554ff12987f59c",
+      "bytes": 122960,
       "thumbnail": {
         "path": "resources/foods/thumbnails/shenyang-jijia.png",
         "sha256": "a21856badde917d2f4018936ea2e87b52307875100858d43d89da38f2be12291",
@@ -326,9 +326,9 @@
     {
       "id": "jianbing-cong",
       "labelZh": "煎饼卷大葱",
-      "path": "resources/foods/national/jianbing-cong.glb",
-      "sha256": "ca5531494f5dad6bab7b47a33f3853fdc6e9a4847505fdda1a1a163fc5bdded8",
-      "bytes": 95760,
+      "path": "resources/foods/refinement-rollout/v2/jianbing-cong.glb",
+      "sha256": "28306ec66a35e0a0160b874a8355588b4ab461a587f498ac74944c64e1b0e6cf",
+      "bytes": 68740,
       "thumbnail": {
         "path": "resources/foods/thumbnails/jianbing-cong.png",
         "sha256": "25cea54af63f299de7539ebd47f57896bd0cb77e73f0345a9473c3d104219759",
@@ -338,9 +338,9 @@
     {
       "id": "yaxue-fensi",
       "labelZh": "鸭血粉丝汤",
-      "path": "resources/foods/national/yaxue-fensi.glb",
-      "sha256": "94a8e3488ad823b42c5febc6a0baf92fbb1a9cd1910efa4c843f392c29de6725",
-      "bytes": 73288,
+      "path": "resources/foods/refinement-rollout/v1/yaxue-fensi.glb",
+      "sha256": "b49c70e661d4fde4b10863948df46b6eb7f1f2042fe17a7bfd6f622efe141fbc",
+      "bytes": 149232,
       "thumbnail": {
         "path": "resources/foods/thumbnails/yaxue-fensi.png",
         "sha256": "d5166ded067cd6e6774dd8c5664adaeee0fb3e3df9bdf6346e299d17a26782cc",
@@ -350,9 +350,9 @@
     {
       "id": "dingshenggao",
       "labelZh": "定胜糕",
-      "path": "resources/foods/national/dingshenggao.glb",
-      "sha256": "efa0574ee3c800a7d8589038b4ae5322f1e0eb0bbefec3e233981ef998dc2de0",
-      "bytes": 45576,
+      "path": "resources/foods/refinement-rollout/v2/dingshenggao.glb",
+      "sha256": "ad1a31789e799ec99b0e3548fc5faed4b5d7ceb918d789540d5fcfcd2a9f3a33",
+      "bytes": 51076,
       "thumbnail": {
         "path": "resources/foods/thumbnails/dingshenggao.png",
         "sha256": "f8f2437ee2517f1eebc876736607fcc68f25da25fb880538c2749f82a6540fc2",
@@ -362,9 +362,9 @@
     {
       "id": "maodoufu",
       "labelZh": "毛豆腐",
-      "path": "resources/foods/national/maodoufu.glb",
-      "sha256": "798372460059a834c895d226497d4022e42e8f58425a3231566afa6eb6efaf55",
-      "bytes": 72320,
+      "path": "resources/foods/refinement-rollout/v1/maodoufu.glb",
+      "sha256": "9ad9c01ec34254dde7edc4212f053dd216e099430fbfa9be1d3b62e9023393b0",
+      "bytes": 125000,
       "thumbnail": {
         "path": "resources/foods/thumbnails/maodoufu.png",
         "sha256": "0be713b1af204924827436a1ee5a401f2181bbdff78575e50ee87485f78c9933",
@@ -374,9 +374,9 @@
     {
       "id": "shachamian",
       "labelZh": "沙茶面",
-      "path": "resources/foods/national/shachamian.glb",
-      "sha256": "c581903f611653bb6c108d46bc0300cc1bb5eae8afa45ced73de156078abd043",
-      "bytes": 490700,
+      "path": "resources/foods/refinement-rollout/v1/shachamian.glb",
+      "sha256": "2033d0acf64ad58318355588a31003a15b4731cf09b4628a8359d27b6fb01786",
+      "bytes": 168808,
       "thumbnail": {
         "path": "resources/foods/thumbnails/shachamian.png",
         "sha256": "3ec2d481bb64ac6ff3aa46343ed9c3483fa147b91a89ca03712d470d2885143c",
@@ -386,9 +386,9 @@
     {
       "id": "waguan-tang",
       "labelZh": "瓦罐汤",
-      "path": "resources/foods/national/waguan-tang.glb",
-      "sha256": "4bc740fa0b96767156a29b32b5497c6d3f50bd09c16e7b108280efae9755715e",
-      "bytes": 165080,
+      "path": "resources/foods/refinement-rollout/v1/waguan-tang.glb",
+      "sha256": "c55771a63f18e36b612b6d849272069dc6cf87fced66e050a925ea18bb9cb9f0",
+      "bytes": 116368,
       "thumbnail": {
         "path": "resources/foods/thumbnails/waguan-tang.png",
         "sha256": "2a4e35a664ddcde7f2aaa0790168e58b85a18dc4f6f0c318dcacb092d30fb5c4",
@@ -398,9 +398,9 @@
     {
       "id": "luosifen",
       "labelZh": "螺蛳粉",
-      "path": "resources/foods/national/luosifen.glb",
-      "sha256": "71659b66ef9b00fe01f58e6137febf9a10992f0a178ddca5583181e893a0c16f",
-      "bytes": 231776,
+      "path": "resources/foods/refinement-rollout/v1/luosifen.glb",
+      "sha256": "3d51b343f961f66e9e8d5f6c370f594a9dfc0db516d8586e4e009458dafb8d04",
+      "bytes": 156244,
       "thumbnail": {
         "path": "resources/foods/thumbnails/luosifen.png",
         "sha256": "4b55240f90905b8839fc96d553e8fd297e85eae5e65d10700ce66f545e6f025a",
@@ -410,9 +410,9 @@
     {
       "id": "siwawa",
       "labelZh": "丝娃娃",
-      "path": "resources/foods/national/siwawa.glb",
-      "sha256": "efa130a389b25ace3397966372b9ae3abda58a94039afae64595155fc701d1a5",
-      "bytes": 88932,
+      "path": "resources/foods/refinement-rollout/v2/siwawa.glb",
+      "sha256": "20c2d177e74eea4f1ee8560f35672fdea3f24e9ce0a04b03d8f95d0221fe7918",
+      "bytes": 88360,
       "thumbnail": {
         "path": "resources/foods/thumbnails/siwawa.png",
         "sha256": "e7ba2f36f5266b0805b18a93c7a78873b95437ae1357e523fdc9dd9225d7b42e",
@@ -422,9 +422,9 @@
     {
       "id": "suanlafen",
       "labelZh": "酸辣粉",
-      "path": "resources/foods/national/suanlafen.glb",
-      "sha256": "e7eaf6a6cb04521504391e0f1843d3ac784e3ba81b7ee2980862e336c5391914",
-      "bytes": 425832,
+      "path": "resources/foods/refinement-rollout/v1/suanlafen.glb",
+      "sha256": "ee056f5aaa8ae299dbd6294f852d8fb64f6c96edf3a0db0ed26358087837dd6d",
+      "bytes": 150924,
       "thumbnail": {
         "path": "resources/foods/thumbnails/suanlafen.png",
         "sha256": "c5c80f06a15fb88bd06ebce156944988b91e464d81b0f9dde8c6df3ec485734c",
@@ -434,9 +434,9 @@
     {
       "id": "niangpi",
       "labelZh": "酿皮",
-      "path": "resources/foods/national/niangpi.glb",
-      "sha256": "42d7005481e26105dffdf3bd08e2d8c957eab89084b566bfa53e97dff070dd33",
-      "bytes": 183816,
+      "path": "resources/foods/refinement-rollout/v1/niangpi.glb",
+      "sha256": "482dc5dfa7f6dc5224e610efd2733ad7194c761af11b1f92e35429c3c5a3a0c4",
+      "bytes": 79140,
       "thumbnail": {
         "path": "resources/foods/thumbnails/niangpi.png",
         "sha256": "8fcaa406f0658c7e660e7d80a898fbd83d9799c4b56bfb5b88f185c24ddca99f",
@@ -446,9 +446,9 @@
     {
       "id": "qinghai-yogurt",
       "labelZh": "青海酸奶",
-      "path": "resources/foods/national/qinghai-yogurt.glb",
-      "sha256": "f822cd87b20a7656f65d532867c5b6f8343bd780c9d4943e318f29bcea850d29",
-      "bytes": 108604,
+      "path": "resources/foods/refinement-rollout/v1/qinghai-yogurt.glb",
+      "sha256": "73b31c91a61e7e47244893b38547e5b16d4f45225243752ee2f253387eadc9d2",
+      "bytes": 77380,
       "thumbnail": {
         "path": "resources/foods/thumbnails/qinghai-yogurt.png",
         "sha256": "a1151e4b2d50b0578c6f5c0819e3c9c14b9b24dc6d42c6efa9c5f80dc8a55538",
@@ -458,9 +458,9 @@
     {
       "id": "sanzi",
       "labelZh": "馓子",
-      "path": "resources/foods/national/sanzi.glb",
-      "sha256": "2389d359a725a6bb0c7ee09517e9a1733898ec63193c7eb063d9c4a7b401f455",
-      "bytes": 272664,
+      "path": "resources/foods/refinement-rollout/v2/sanzi.glb",
+      "sha256": "7efded23f598dc97bc6688d36a7445927b83d78cc31a74e27073ce99ea10f9a9",
+      "bytes": 179184,
       "thumbnail": {
         "path": "resources/foods/thumbnails/sanzi.png",
         "sha256": "d6e9d58919c6b0d1dd1ce075d0842b1902e72d4db229e91515709460bef374e3",
@@ -470,9 +470,9 @@
     {
       "id": "nang",
       "labelZh": "馕",
-      "path": "resources/foods/national/nang.glb",
-      "sha256": "4ba45f76b609cbfc92bd9083e0eed3bc09c25b96a84742a0138d26f69e8928a7",
-      "bytes": 149512,
+      "path": "resources/foods/refinement-rollout/v2/nang.glb",
+      "sha256": "b44203d35a0307d9a13c789ee8e514302a298b8459d535cbb9d3ce7ccb0573c1",
+      "bytes": 176300,
       "thumbnail": {
         "path": "resources/foods/thumbnails/nang.png",
         "sha256": "2208c6dcf87ba12320e0c3f91312a5292ae22fe27a7cf653daea96b8071abff9",
@@ -482,9 +482,9 @@
     {
       "id": "zanba",
       "labelZh": "糌粑",
-      "path": "resources/foods/national/zanba.glb",
-      "sha256": "9d2ca63ed4f6edbd55a738c84d3993a520852a1acc3d903c928395813f91db38",
-      "bytes": 86380,
+      "path": "resources/foods/refinement-rollout/v2/zanba.glb",
+      "sha256": "7faae612a39a3d889607c81db1efd5bb16dabb70e9415f4112bb9bd1b3d46b77",
+      "bytes": 86988,
       "thumbnail": {
         "path": "resources/foods/thumbnails/zanba.png",
         "sha256": "b5b326a75916d0504bd03d2e302f7e3b04aed89fb550ab9487f271bebf0de105",
@@ -494,9 +494,9 @@
     {
       "id": "shengjianbao",
       "labelZh": "生煎包",
-      "path": "resources/foods/national/shengjianbao.glb",
-      "sha256": "8b80ed567dac438a4178ff7ebb733bb8bd3e94a3bbdac1d5c4bdfc2e731d58c3",
-      "bytes": 199168,
+      "path": "resources/foods/refinement-rollout/v2/shengjianbao.glb",
+      "sha256": "724ec698b0a61cf3daae9472395518c0024454acf48796285fd847ec13b2ccfb",
+      "bytes": 211604,
       "thumbnail": {
         "path": "resources/foods/thumbnails/shengjianbao.png",
         "sha256": "837fa1f298dada1e1c277f50e99f8d37cb54d25279338bd3f9d25622dd8ef34a",
@@ -506,9 +506,9 @@
     {
       "id": "tangou",
       "labelZh": "桂花糖藕",
-      "path": "resources/foods/national/tangou.glb",
-      "sha256": "3df907622951a095f71e73b4aaee04594a1fa47e47cf87712551603c66a43d11",
-      "bytes": 157604,
+      "path": "resources/foods/refinement-rollout/v1/tangou.glb",
+      "sha256": "00427ee60bf04c62dd1026ae9dc1dac2d24f1f17f9a06afd3b07c614edd45c75",
+      "bytes": 136288,
       "thumbnail": {
         "path": "resources/foods/thumbnails/tangou.png",
         "sha256": "554a9d32a28687b78ea6e8cfc1a368ea22f7895a0692549ee40728eb327de6d7",
@@ -518,9 +518,9 @@
     {
       "id": "ningbo-tangyuan",
       "labelZh": "宁波汤圆",
-      "path": "resources/foods/national/ningbo-tangyuan.glb",
-      "sha256": "9299ea49fac49b25f9b39678b1c0cc31040ac62d6cca64d4fe38876389ff860d",
-      "bytes": 208920,
+      "path": "resources/foods/refinement-rollout/v1/ningbo-tangyuan.glb",
+      "sha256": "2692b67769ea3008c1c63185c73c2d2e9287889c2bd149d7099e9221e8fcac43",
+      "bytes": 116212,
       "thumbnail": {
         "path": "resources/foods/thumbnails/ningbo-tangyuan.png",
         "sha256": "5673781609990e59f06a22811479db57ce230ca202ab97c593d2d70082c68ed3",
@@ -530,9 +530,9 @@
     {
       "id": "mashu",
       "labelZh": "泉州花生麻糍",
-      "path": "resources/foods/national/mashu.glb",
-      "sha256": "7922318c2e1c550ae683518db8dd1bdef1f92d68ce46fc69afdc5923608f3ffc",
-      "bytes": 100216,
+      "path": "resources/foods/refinement-rollout/v2/mashu.glb",
+      "sha256": "13dadb08054f44e54a9d370ac8e8160f9aad0a788beeac43da02fded72dc885a",
+      "bytes": 118416,
       "thumbnail": {
         "path": "resources/foods/thumbnails/mashu.png",
         "sha256": "c6c37fbdd398543f36dde6f18f7fd02059244c7342d91a1a60d47259a98c1804",
@@ -542,9 +542,9 @@
     {
       "id": "boboji",
       "labelZh": "钵钵鸡",
-      "path": "resources/foods/national/boboji.glb",
-      "sha256": "fbfa15eb82ba45d886af0698f3f0404f212a56de20b5ce9d6128396320bdc9dc",
-      "bytes": 167316,
+      "path": "resources/foods/refinement-rollout/v2/boboji.glb",
+      "sha256": "1d42e0f169e4d0fb9880acd8c753a63129bdb726ef96a98a31aa59175dda9fc4",
+      "bytes": 391816,
       "thumbnail": {
         "path": "resources/foods/thumbnails/boboji.png",
         "sha256": "fa5ee03db520a7e67b156eaa8089d14822038b723561af2620d2d4b1b208e26f",
@@ -554,9 +554,9 @@
     {
       "id": "xiajiao",
       "labelZh": "虾饺",
-      "path": "resources/foods/national/xiajiao.glb",
-      "sha256": "db3158020eaae728647d837c808b0b0a398b15841788b13c9d2207681d08fa78",
-      "bytes": 106300,
+      "path": "resources/foods/refinement-rollout/v2/xiajiao.glb",
+      "sha256": "848767f1826a7078007af415fc9ebfab04120df0d19e894505eb38cdc534c699",
+      "bytes": 162656,
       "thumbnail": {
         "path": "resources/foods/thumbnails/xiajiao.png",
         "sha256": "d7a2a49809f238592a4634143f8aa4c07ebbf9fb1245243449ca7fa26d12deec",

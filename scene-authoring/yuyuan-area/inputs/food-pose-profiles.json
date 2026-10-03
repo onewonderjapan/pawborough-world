@@ -55,7 +55,7 @@
       "id": "bowl",
       "version": "2.0.0",
       "status": "ready",
-      "description": "一爪托碗，另一爪持小勺或筷子送食入口",
+      "description": "一爪托碗或蒸笼，另一爪持小勺、筷子或竹签送食入口",
       "holdStyle": "bowl_cradle_utensil",
       "defaultDurationSec": 3.2,
       "phases": {
@@ -70,7 +70,8 @@
       ],
       "utensilKinds": [
         "spoon",
-        "chopsticks"
+        "chopsticks",
+        "skewer"
       ]
     }
   ]

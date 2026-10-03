@@ -44,6 +44,7 @@ assert.equal(entry.presentation.containerKind, 'shallowPlate');
 assert.equal(entry.presentation.portionMode, 'selected');
 assert.equal(entry.presentation.selectedPortionName, 'rice-piece-0');
 assert.equal(entry.presentation.platePitch, 0.04, 'optional plate pitch survives asset entry creation');
+assert.equal(entry.proto.getObjectByName('toolFood').visible, false, 'the separate bite is hidden in untouched stall display prototypes');
 
 const catalog = new FoodCatalog(new Map([['changfen', entry]]));
 const holder = catalog.attachToHands('changfen', avatar.model);

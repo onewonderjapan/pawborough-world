@@ -1,0 +1,263 @@
+[
+  {
+    "id": "tanghulu",
+    "name": "糖葫芦",
+    "profile": "skewer",
+    "source": "resources/foods/national/tanghulu.glb",
+    "description": "山楂裹上薄薄的糖衣，红亮成串，入口酸甜。",
+    "utensilKind": null,
+    "bytes": 145136,
+    "materials": [
+      "mat_hawthorn",
+      "mat_glaze",
+      "mat_wood"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "skewer",
+      "tanghulu"
+    ],
+    "sourceSha256": "87f50c06ef08503b59511a83f197be09d4638316a86b17be4713c58b124919fb"
+  },
+  {
+    "id": "jianbing-guozi",
+    "name": "煎饼果子",
+    "profile": "wrapped",
+    "source": "resources/foods/national/jianbing-guozi.glb",
+    "description": "折叠薄饼、酥脆夹层、半纸包",
+    "utensilKind": null,
+    "bytes": 139568,
+    "materials": [
+      "mat_crepe",
+      "mat_cracker",
+      "mat_sauce",
+      "mat_scallion",
+      "mat_sesame",
+      "mat_paper"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "wrapper",
+      "jianbing-guozi"
+    ],
+    "sourceSha256": "2027845f5d47814d6aa1b27ea5bd8ae291347a3dd32e3c77aac60fda4752bee9"
+  },
+  {
+    "id": "kaolengmian",
+    "name": "密山烤冷面",
+    "profile": "wrapped",
+    "source": "resources/foods/national/kaolengmian.glb",
+    "description": "卷折面皮、酱面、纸托",
+    "utensilKind": null,
+    "bytes": 241860,
+    "materials": [
+      "mat_noodle",
+      "mat_grill",
+      "mat_egg",
+      "mat_sausage",
+      "mat_scallion",
+      "mat_sauce",
+      "mat_parchment"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "wrapper",
+      "kaolengmian"
+    ],
+    "sourceSha256": "5e12f28897caf59d6382c677a77404dd2df4854759421a76f4907cf1d6618e3f"
+  },
+  {
+    "id": "roujiamo",
+    "name": "肉夹馍",
+    "profile": "wrapped",
+    "source": "resources/foods/national/roujiamo.glb",
+    "description": "烤香的白吉馍夹入卤肉丝，纸包托着吃，香浓又扎实。",
+    "utensilKind": null,
+    "bytes": 167216,
+    "materials": [
+      "mat_bun",
+      "mat_bun_toast",
+      "mat_meat",
+      "mat_herbs",
+      "mat_sesame",
+      "mat_parchment"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "wrapper",
+      "roujiamo"
+    ],
+    "sourceSha256": "2fccc932be2ae94c759c69449f4ed7e4cef7a75f93f57b75f4444384e8e64c2d"
+  },
+  {
+    "id": "yangrouchuan",
+    "name": "羊肉串",
+    "profile": "skewer",
+    "source": "resources/foods/national/yangrouchuan.glb",
+    "description": "烤肉块、焦边、香料、短签",
+    "utensilKind": null,
+    "bytes": 62840,
+    "materials": [
+      "mat_lamb",
+      "mat_fat",
+      "mat_char",
+      "mat_spice",
+      "mat_wood"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "skewer",
+      "yangrouchuan"
+    ],
+    "sourceSha256": "09c20f0e54f8f8fc67d467aec1b81136add6e1aab3d8cb08a08b746543cfbed8"
+  },
+  {
+    "id": "jidanzi",
+    "name": "鸡蛋仔",
+    "profile": "wrapped",
+    "source": "resources/foods/national/jidanzi.glb",
+    "description": "连珠格状蛋饼、金黄烤面、纸袋",
+    "utensilKind": null,
+    "bytes": 180484,
+    "materials": [
+      "mat_waffle",
+      "mat_waffle_toast",
+      "mat_parchment"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "wrapper",
+      "jidanzi"
+    ],
+    "sourceSha256": "607d14cec90c94ea242a547c59f7fec8627173197ad7fa826417c107d3058fce"
+  },
+  {
+    "id": "lvrou-huoshao",
+    "name": "驴肉火烧",
+    "profile": "wrapped",
+    "source": "resources/foods/national/lvrou-huoshao.glb",
+    "description": "酥烤火烧夹卤驴肉，热饼与咸香肉馅搭成河北街头风味。",
+    "utensilKind": null,
+    "bytes": 107376,
+    "materials": [
+      "mat_crust",
+      "mat_toast",
+      "mat_meat",
+      "mat_pepper",
+      "mat_paper"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "socket_grip",
+      "socket_rest",
+      "wrapper",
+      "lvrou-huoshao"
+    ],
+    "sourceSha256": "4441050307c8103c602388b9df218fceb654dcb40cc5403f3252f48ff8472867"
+  },
+  {
+    "id": "shenyang-jijia",
+    "name": "沈阳鸡架",
+    "profile": "wrapped",
+    "source": "resources/foods/national/shenyang-jijia.glb",
+    "description": "带肉鸡架烤出琥珀色表面；尝肉留骨，逛一口沈阳街头风味。",
+    "utensilKind": null,
+    "bytes": 93776,
+    "materials": [
+      "mat_roast_meat",
+      "mat_bone",
+      "mat_amber_skin",
+      "mat_sesame",
+      "mat_spice",
+      "mat_sleeve"
+    ],
+    "nodes": [
+      "bite",
+      "container",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "socket_grip",
+      "socket_rest",
+      "wrapper",
+      "shenyang-jijia"
+    ],
+    "sourceSha256": "f1d50e00dc04febedc36de77f51b355884264f3107bd496a8c9345892c0fecb9"
+  },
+  {
+    "id": "jianbing-cong",
+    "name": "煎饼卷大葱",
+    "profile": "wrapped",
+    "source": "resources/foods/national/jianbing-cong.glb",
+    "description": "杂粮薄煎饼卷上长葱段，露出的绿葱叶带来鲁中鲁南的家常气息。",
+    "utensilKind": null,
+    "bytes": 95760,
+    "materials": [
+      "mat_crepe",
+      "mat_crepe_toast",
+      "mat_sauce",
+      "mat_scallion_white",
+      "mat_scallion_green",
+      "mat_paper"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "socket_grip",
+      "socket_rest",
+      "wrapper",
+      "jianbing-cong"
+    ],
+    "sourceSha256": "ca5531494f5dad6bab7b47a33f3853fdc6e9a4847505fdda1a1a163fc5bdded8"
+  },
+  {
+    "id": "siwawa",
+    "name": "丝娃娃",
+    "profile": "wrapped",
+    "source": "resources/foods/national/siwawa.glb",
+    "description": "薄面皮包住彩色蔬菜丝，卷成小小襁褓状，配蘸水尝贵阳风味。",
+    "utensilKind": null,
+    "bytes": 88932,
+    "materials": [
+      "mat_crepe",
+      "mat_carrot",
+      "mat_cucumber",
+      "mat_sprout_y",
+      "mat_paper"
+    ],
+    "nodes": [
+      "bite",
+      "edible",
+      "leftSupport",
+      "rightSupport",
+      "socket_grip",
+      "socket_rest",
+      "wrapper",
+      "siwawa"
+    ],
+    "sourceSha256": "efa130a389b25ace3397966372b9ae3abda58a94039afae64595155fc701d1a5"
+  }
+]

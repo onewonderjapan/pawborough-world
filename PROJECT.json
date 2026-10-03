@@ -184,6 +184,16 @@
       "workorders": "docs/playtest-20261003/UPGRADE-WORKORDERS.json",
       "receipt": "docs/playtest-20261003/REVIEW-RECEIPT.json",
       "productConstructionStarted": false
+    },
+    "foodArtRefinement": {
+      "stage": "integrated_local_first_pass",
+      "foodModels": 48,
+      "newThisRollout": 47,
+      "photographicAtlasSamples": 3,
+      "document": "docs/FOOD-ART-ROLLOUT-20261003.md",
+      "assetManifest": "docs/FOOD-ART-ROLLOUT-ASSETS-20261003.json",
+      "scope": "Dish-specific shape/ingredient/vessel refinement; authored skewer/steamer eating; further sculptural andPBR polish pending",
+      "publicUpdated": false
     }
   }
 }

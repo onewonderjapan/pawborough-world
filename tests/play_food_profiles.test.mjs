@@ -28,8 +28,9 @@ function proxy(profile,utensilKind){
 }
 assert.ok(sampleFoodPose({profile:'cupped'}).legacyCupped);
 assert.equal(sampleFoodPose({profile:'bowl',rig:{mouth:new T.Vector3()},anchors:{},presentation:{utensilKind:'spoon'}}).ok,false);
-for(const [profile,utensilKind]of [['wrapped'],['skewer'],['bowl','spoon'],['bowl','chopsticks']]){
+for(const [profile,utensilKind]of [['wrapped'],['skewer'],['bowl','spoon'],['bowl','chopsticks'],['bowl','skewer']]){
  const instance=proxy(profile,utensilKind);avatar.setHoldingPose(true);
+ if(profile==='bowl'){const a=Object.fromEntries(Object.entries(instance.anchors).map(([k,v])=>[k,foodAnchorLocal(v,k.startsWith('tool')?instance.parts.utensil:instance.root)]));const carry=sampleFoodPose({profile,t:0,rig:{mouth:avatar.getFoodMouth()},anchors:a,presentation:{utensilKind,eating:false}});assert.equal(carry.mouthfulVisible,false,'idle bowl has no loose bite at tool tip');}
  let bowlPosition=null;
  for(const t of [0,.4,.8,1.1,1.5,1.8,2.5,3.2]){
   avatar.setEatingPose(true,t);avatar.update({feet:[3,.06,-2],yaw:.7,moving:false,paused:false,dt:0});

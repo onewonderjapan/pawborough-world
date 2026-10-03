@@ -116,14 +116,18 @@
       "regionLabel": "上海风味",
       "description": "皮薄汁鲜的传统蒸笼小吃，常见于江南早点与食摊。",
       "locationHint": "商业街食摊",
-      "poseProfile": "cupped",
+      "poseProfile": "bowl",
       "assetId": "xiaolongbao",
       "thumbId": null,
       "enabled": true,
       "regionId": "shanghai",
       "sourceUrls": [
         "https://english.shanghai.gov.cn/en-GlobalTasteinShanghai2026-LocalFlavors/20260316/00b0c6d1698d406c8d532a6e169e1a1e.html"
-      ]
+      ],
+      "utensilKind": "chopsticks",
+      "containerKind": "bambooSteamer",
+      "selectedPortionName": "bao-piece-0",
+      "portionMode": "selected"
     },
     {
       "id": "congyoubing",
@@ -946,15 +950,18 @@
       "regionLabel": "四川风味",
       "description": "竹签串起鸡肉与蔬菜，裹上红油芝麻，尝乐山钵钵鸡风味。",
       "locationHint": "西桥岸连接街",
-      "poseProfile": "skewer",
-      "utensilKind": null,
+      "poseProfile": "bowl",
+      "utensilKind": "skewer",
       "assetId": "boboji",
       "thumbId": null,
       "enabled": true,
       "sourceUrls": [
         "https://std.samr.gov.cn/db/search/stdDBDetailed?id=DF68B3A1A8249FE8E05397BE0A0A3BBC",
         "https://gxq.leshan.gov.cn/sgxq/gxdt1/202511/93716b3c8f2647b286123d2504bdd7b6.shtml"
-      ]
+      ],
+      "containerKind": "porcelainBowl",
+      "selectedPortionName": "skewer-piece-0",
+      "portionMode": "selected"
     },
     {
       "id": "xiajiao",

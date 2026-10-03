@@ -69,6 +69,12 @@ export function makeFoodEntry(food, protoScene) {
   const grip = findNode(protoScene, 'socket_grip');
   const rest = findNode(protoScene, 'socket_rest');
   const lodShown = showSingleLod(protoScene);
+  // GLB has no visibility channel. The separate bite must not duplicate food
+  // on the stall; held refined meals reveal it only after the transfer.
+  if (food.portionMode === 'selected' || food.poseProfile === 'bowl') {
+    const morsel = findNode(protoScene, 'toolFood');
+    if (morsel) morsel.visible = false;
+  }
   const box = new THREE.Box3().setFromObject(protoScene);
   const size = new THREE.Vector3();
   box.getSize(size);
@@ -79,7 +85,8 @@ export function makeFoodEntry(food, protoScene) {
     : new THREE.Vector3();
   // 双爪捧食比例（PRIMARY-NOTES）：目标最大水平尺寸 / 真实 bbox 最大水平边；
   // 未知味回退 1（不放大），固定每份一个值，绝不累乘。
-  const targetWidth = CUP_TARGET_WIDTH[food.id] ?? null;
+  const isCupped = (food.poseProfile ?? food.presentation?.profile ?? 'cupped') === 'cupped';
+  const targetWidth = isCupped ? CUP_TARGET_WIDTH[food.id] ?? null : null;
   const cupScale = targetWidth ? targetWidth / Math.max(size.x, size.z) : 1;
   // 底面中心（proto 系）：双手托举底面锚点 + 陈列底面贴盘补偿共用
   const bottomCenter = new THREE.Vector3(
