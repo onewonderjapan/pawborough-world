@@ -58,7 +58,8 @@
     "test:lantern-night-pixel": "node tests/lantern-night-pixel-check.mjs",
     "rebuild:v1": "OUT_DIR=out-zone PYTHONPATH=$PWD/.python-deps SITE_MODULES=1 STALL_KIT=1 GARDEN_KITS=1 SANSUITANG=1 ZONE_SPLIT=1 bash scripts/rebuild-review.sh",
     "test:atlas": "node ../../tests/play_food_registry.test.mjs && node ../../tests/play_save_migration.test.mjs && node ../../tests/play_food_arm_rig.test.mjs && node ../../tests/play_food_avatar_lifecycle.test.mjs && node ../../tests/play_food_profiles.test.mjs && node ../../tests/play_food_actual_meals.test.mjs && node ../../tests/play_food_library.test.mjs && node ../../tests/play_food_discovery.test.mjs && node ../../tests/play_vendor_routes.test.mjs && node ../../tests/play_vendor_display_lifecycle.test.mjs && node ../../tests/play_atlas.test.mjs && node ../../tests/play_overlay_controller.test.mjs && node ../../tests/play_collection_transfer.test.mjs && node ../../tests/play_collection_state.test.mjs && node ../../tests/play_street_life.test.mjs && node ../../tests/play_ground_seams.test.mjs && node ../../tests/play_static_export.test.mjs",
-    "test:food-refinement": "node ../../tests/play_food_photographs.test.mjs && node ../../tests/play_refined_food_portions.test.mjs && node ../../tests/play_food_rollout.test.mjs"
+    "test:food-refinement": "node ../../tests/play_food_photographs.test.mjs && node ../../tests/play_refined_food_portions.test.mjs && node ../../tests/play_food_rollout.test.mjs",
+    "test:hero-foods": "node ../../tests/play_hero_foods.test.mjs && node ../../tests/play_food_rollout.test.mjs"
   },
   "dependencies": {
     "three": "0.180.0",

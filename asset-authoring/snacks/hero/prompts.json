@@ -1,0 +1,19 @@
+{
+  "engine": "built-in image_gen",
+  "textures": [
+    {
+      "id": "custard-albedo-v1",
+      "purpose": "natural irregular caramelized custard color, flat diffuse texture, no vessel/rim/regularstars",
+      "source": "generatedtexture; notmeasured albedo",
+      "file": "asset-authoring/snacks/hero/assets/custard-albedo-v1.webp",
+      "prompt": "Generate one square 1024x1024 texture asset for a 3D Portuguese custard tart in a warm refined animated-film game. This is a base-color/albedo texture ONLY, not a picture of a tart. A perfectly flat orthographic extreme close-up of only the baked egg-custard surface filling the entire square, edge to edge. No pastry, no crust, no vessel, no border, no text. Creamy warm golden pale-yellow egg custard with naturally irregular amorphous caramelized brown cooking islands and speckled dark-mahogany blister clusters. Asymmetric, organic, varied sizes, sparse merged and broken areas, gentle golden transitions and halos into custard. About 15-25% caramelized areas, the rest soft pale-yellow cream. Avoid stars, flowers, dots in rings, regular repeated shapes, evenly spaced stains, radial patterns or crisp graphic stamps. Flat diffuse even illumination, no directional shadows, no cast shadows, no specular highlights, no gloss, no lighting gradients, no depth of field, no camera perspective, no rim or center hole. Fine restrained surface grain. It must work when mapped flat across the custard top in a GLB; the 3D engine supplies lighting and gloss. Appetizing natural baked custard tones, not orange paint, not burnt black."
+    },
+    {
+      "id": "bread-albedo-v1",
+      "purpose": "pale cream wheatbread with irregular griddlebrowning and finegrain; no rings/rays/woodgrain",
+      "source": "generatedtexture; notmeasured albedo",
+      "file": "asset-authoring/snacks/hero/assets/bread-albedo-v1.webp",
+      "prompt": "Create one square flat base-color texture for a handmade Chinese Baiji flatbread bun, for a 3D food model in a warm refined animated-film game. Orthographic macro texture edge-to-edge of pale cream and light golden baked wheat bread crust. Naturally irregular scattered golden-brown griddle-contact areas, softly merging caramelized amber edges, occasional tiny darker toasty patches, restrained fine crumb and small blister pores. 70 percent pale warm wheat cream, 25 percent light honey/golden toast, 5 percent caramel brown. Appetizing and delicate. No dark burnt-black areas, no concentric rings, no radial rays, no linear stripe pattern, no wood grain, no center mark, no flowers or stars. No actual round bun shape or perimeter: it is a square surface texture with the same material from edge to edge. Completely flat even diffuse illumination, no directional shadow or glossy highlights, no depth of field, no camera perspective, no text or logo. Avoid high-contrast graphic stamps and isolated floating toppings. Subtle irregular real baked crust, suitable for wrapping onto a softly domed bread model; 3D engine adds the lighting."
+    }
+  ]
+}

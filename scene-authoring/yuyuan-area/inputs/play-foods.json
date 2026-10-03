@@ -6,9 +6,9 @@
       "id": "xiaolongbao",
       "labelZh": "小笼包",
       "stallId": "stall-5",
-      "path": "resources/foods/refinement-rollout/v2/xiaolongbao.glb",
-      "bytes": 447616,
-      "sha256": "0fc2d9b22498afea98136c1c02580635a218ae3b81c497cb44eebb1297627af4",
+      "path": "resources/foods/hero-art/v2/xiaolongbao.glb",
+      "bytes": 608892,
+      "sha256": "e54967bed43bb8eb4794ccba1f5553aae94bfeb7cf1441abd2157a192e474343",
       "thumbnail": {
         "path": "resources/foods/thumbnails/xiaolongbao.png",
         "sha256": "e0d1bb43f63fcc9bcaa5e947651dd2d0efb63efc6988ab5f8a98c247a4d0d74c",
@@ -19,9 +19,9 @@
       "id": "congyoubing",
       "labelZh": "葱油饼",
       "stallId": "stall-6",
-      "path": "resources/foods/refinement-rollout/v2/congyoubing.glb",
-      "bytes": 42928,
-      "sha256": "7bda7188f16e78455ffb6021f04c064b1658699c4d162de754a3b728a06b6db0",
+      "path": "resources/foods/hero-art/v2/congyoubing.glb",
+      "bytes": 632232,
+      "sha256": "0f7e05eb32bbca557983cd8ad526e30045d93d906b77247c4cdcba52bacaa028",
       "thumbnail": {
         "path": "resources/foods/thumbnails/congyoubing.png",
         "sha256": "cf4212f34dbf11f691d26b4d69f5c5b8c9fc64efad37f0a7573675a058f796e1",
@@ -56,9 +56,9 @@
     {
       "id": "roujiamo",
       "labelZh": "肉夹馍",
-      "path": "resources/foods/refinement-rollout/v2/roujiamo.glb",
-      "sha256": "66944630b88a52c64226b9782c7c3c01a8be65b2aa236e20d6155a8d4e908311",
-      "bytes": 321076,
+      "path": "resources/foods/hero-art/v2/roujiamo.glb",
+      "sha256": "1dd9aa167af75c50d10fcd9db92b6d53d56e376522914268435efbd8440764dd",
+      "bytes": 654548,
       "thumbnail": {
         "path": "resources/foods/thumbnails/roujiamo.png",
         "sha256": "48cb138ff1efe79aed724e8db831525df5e8b0e55a541688345fef9be9681eb1",
@@ -134,9 +134,9 @@
     },
     {
       "id": "portuguese-egg-tart",
-      "path": "resources/foods/refinement-rollout/v2/portuguese-egg-tart.glb",
-      "sha256": "533a2456a7f4d49a36bde1c490920cbf0613151c1cf7260a1b6cf30bd03a787a",
-      "bytes": 62060,
+      "path": "resources/foods/hero-art/v2/portuguese-egg-tart.glb",
+      "sha256": "874e543d18a26aece4ef1a69c3e1c76a2a2c1b19f9cb653ff4341aa6433c47ba",
+      "bytes": 358180,
       "thumbnail": {
         "path": "resources/foods/thumbnails/portuguese-egg-tart.png",
         "sha256": "965f66481a8dd118f3793667ace0be9c2d508b2f47109d1d8a0a010cc508eee8",
@@ -244,9 +244,9 @@
     },
     {
       "id": "changfen",
-      "path": "resources/foods/refined/changfen-v5.glb",
-      "sha256": "ac297ba96c6075ce79ff7d141cbb7540ea5c5ab85725416cca484e5461b5ce64",
-      "bytes": 616636,
+      "path": "resources/foods/hero-art/v2/changfen.glb",
+      "sha256": "3e133257250e9dbc512c1c3e3712046c8f6f957d91d8bcd9322e55ebbd710278",
+      "bytes": 537172,
       "thumbnail": {
         "path": "resources/foods/thumbnails/changfen.png",
         "sha256": "614b919999800c9258ce60afff807249a2886ba0b8b0ddebed8fa91bdac3c5f5",
@@ -398,9 +398,9 @@
     {
       "id": "luosifen",
       "labelZh": "螺蛳粉",
-      "path": "resources/foods/refinement-rollout/v1/luosifen.glb",
-      "sha256": "3d51b343f961f66e9e8d5f6c370f594a9dfc0db516d8586e4e009458dafb8d04",
-      "bytes": 156244,
+      "path": "resources/foods/hero-art/v2/luosifen.glb",
+      "sha256": "67a35a8d0d3aeebadba46af51213fc755ba9963aa9ce467544ceebab56204654",
+      "bytes": 744924,
       "thumbnail": {
         "path": "resources/foods/thumbnails/luosifen.png",
         "sha256": "4b55240f90905b8839fc96d553e8fd297e85eae5e65d10700ce66f545e6f025a",
@@ -542,9 +542,9 @@
     {
       "id": "boboji",
       "labelZh": "钵钵鸡",
-      "path": "resources/foods/refinement-rollout/v2/boboji.glb",
-      "sha256": "1d42e0f169e4d0fb9880acd8c753a63129bdb726ef96a98a31aa59175dda9fc4",
-      "bytes": 391816,
+      "path": "resources/foods/hero-art/v2/boboji.glb",
+      "sha256": "18e6ab39a1e1dc569771c4eedac4d93a4c71010beef0704f7f51c939db5c1a35",
+      "bytes": 1086680,
       "thumbnail": {
         "path": "resources/foods/thumbnails/boboji.png",
         "sha256": "fa5ee03db520a7e67b156eaa8089d14822038b723561af2620d2d4b1b208e26f",
@@ -554,9 +554,9 @@
     {
       "id": "xiajiao",
       "labelZh": "虾饺",
-      "path": "resources/foods/refinement-rollout/v2/xiajiao.glb",
-      "sha256": "848767f1826a7078007af415fc9ebfab04120df0d19e894505eb38cdc534c699",
-      "bytes": 162656,
+      "path": "resources/foods/hero-art/v2/xiajiao.glb",
+      "sha256": "c0c9ca67d4932365b4036808fa699328dd82dd034c61aaa3db6e894d3e0f226e",
+      "bytes": 197612,
       "thumbnail": {
         "path": "resources/foods/thumbnails/xiajiao.png",
         "sha256": "d7a2a49809f238592a4634143f8aa4c07ebbf9fb1245243449ca7fa26d12deec",

@@ -1,0 +1,96 @@
+[
+  {
+    "food": {
+      "id": "congyoubing",
+      "name": "葱油饼",
+      "chapterId": "shanghai",
+      "regionLabel": "上海风味",
+      "description": "酥脆起层的现煎扁圆面饼，带浓郁葱香与猪油焦香。",
+      "locationHint": "商业街食摊",
+      "poseProfile": "cupped",
+      "assetId": "congyoubing",
+      "thumbId": null,
+      "enabled": true,
+      "regionId": "shanghai",
+      "sourceUrls": [
+        "https://www.shanghai.gov.cn/nw15343/20250818/4e2b327a8d504d5cb09608e5a625a06a.html"
+      ]
+    },
+    "asset": {
+      "id": "congyoubing",
+      "labelZh": "葱油饼",
+      "stallId": "stall-6",
+      "path": "resources/foods/refinement-rollout/v2/congyoubing.glb",
+      "bytes": 42928,
+      "sha256": "7bda7188f16e78455ffb6021f04c064b1658699c4d162de754a3b728a06b6db0",
+      "thumbnail": {
+        "path": "resources/foods/thumbnails/congyoubing.png",
+        "sha256": "cf4212f34dbf11f691d26b4d69f5c5b8c9fc64efad37f0a7573675a058f796e1",
+        "bytes": 21191
+      }
+    }
+  },
+  {
+    "food": {
+      "id": "roujiamo",
+      "name": "肉夹馍",
+      "chapterId": "northwest",
+      "regionLabel": "陕西风味",
+      "description": "烤香的白吉馍夹入卤肉丝，纸包托着吃，香浓又扎实。",
+      "locationHint": "商业街食摊",
+      "poseProfile": "wrapped",
+      "assetId": "roujiamo",
+      "thumbId": null,
+      "utensilKind": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://dfz.shaanxi.gov.cn/zslm/fzzlk/sxnj/202508/P020250822375845378471.pdf",
+        "https://www.nq.gov.cn/nqzd/nqztzl/rdzl/spaq/202512/1c41b8d6d7024372be3edead42296b06.shtml"
+      ],
+      "regionId": "shaanxi"
+    },
+    "asset": {
+      "id": "roujiamo",
+      "labelZh": "肉夹馍",
+      "path": "resources/foods/refinement-rollout/v2/roujiamo.glb",
+      "sha256": "66944630b88a52c64226b9782c7c3c01a8be65b2aa236e20d6155a8d4e908311",
+      "bytes": 321076,
+      "thumbnail": {
+        "path": "resources/foods/thumbnails/roujiamo.png",
+        "sha256": "48cb138ff1efe79aed724e8db831525df5e8b0e55a541688345fef9be9681eb1",
+        "bytes": 125620
+      }
+    }
+  },
+  {
+    "food": {
+      "id": "portuguese-egg-tart",
+      "name": "葡式蛋挞",
+      "chapterId": "hongkong-macao-taiwan",
+      "regionLabel": "澳门风味",
+      "description": "层酥杯壁、焦斑蛋奶馅、小纸托",
+      "locationHint": "庙前连接街",
+      "poseProfile": "cupped",
+      "assetId": "portuguese-egg-tart",
+      "thumbId": null,
+      "utensilKind": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://www.macaotourism.gov.mo/zh-hant/dining/taste-of-macao/macanese-and-portuguese-dishes",
+        "https://content.macaotourism.gov.mo/uploads/mgto_brouchures/13630ce2713055a8003b4666ef9a4b705d679958.pdf"
+      ],
+      "regionId": "macao"
+    },
+    "asset": {
+      "id": "portuguese-egg-tart",
+      "path": "resources/foods/refinement-rollout/v2/portuguese-egg-tart.glb",
+      "sha256": "533a2456a7f4d49a36bde1c490920cbf0613151c1cf7260a1b6cf30bd03a787a",
+      "bytes": 62060,
+      "thumbnail": {
+        "path": "resources/foods/thumbnails/portuguese-egg-tart.png",
+        "sha256": "965f66481a8dd118f3793667ace0be9c2d508b2f47109d1d8a0a010cc508eee8",
+        "bytes": 87932
+      }
+    }
+  }
+]

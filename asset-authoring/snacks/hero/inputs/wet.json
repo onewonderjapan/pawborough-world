@@ -1,0 +1,69 @@
+[
+  {
+    "food": {
+      "id": "boboji",
+      "name": "钵钵鸡",
+      "chapterId": "southwest",
+      "regionId": "sichuan",
+      "regionLabel": "四川风味",
+      "description": "竹签串起鸡肉与蔬菜，裹上红油芝麻，尝乐山钵钵鸡风味。",
+      "locationHint": "西桥岸连接街",
+      "poseProfile": "bowl",
+      "utensilKind": "skewer",
+      "assetId": "boboji",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://std.samr.gov.cn/db/search/stdDBDetailed?id=DF68B3A1A8249FE8E05397BE0A0A3BBC",
+        "https://gxq.leshan.gov.cn/sgxq/gxdt1/202511/93716b3c8f2647b286123d2504bdd7b6.shtml"
+      ],
+      "containerKind": "porcelainBowl",
+      "selectedPortionName": "skewer-piece-0",
+      "portionMode": "selected"
+    },
+    "asset": {
+      "id": "boboji",
+      "labelZh": "钵钵鸡",
+      "path": "resources/foods/refinement-rollout/v2/boboji.glb",
+      "sha256": "1d42e0f169e4d0fb9880acd8c753a63129bdb726ef96a98a31aa59175dda9fc4",
+      "bytes": 391816,
+      "thumbnail": {
+        "path": "resources/foods/thumbnails/boboji.png",
+        "sha256": "fa5ee03db520a7e67b156eaa8089d14822038b723561af2620d2d4b1b208e26f",
+        "bytes": 21237
+      }
+    }
+  },
+  {
+    "food": {
+      "id": "luosifen",
+      "name": "螺蛳粉",
+      "chapterId": "lingnan-islands",
+      "regionId": "guangxi",
+      "regionLabel": "广西风味",
+      "description": "米粉配酸笋、木耳和腐竹，红油与丰富配菜组成柳州风味。",
+      "locationHint": "庙前连接街",
+      "poseProfile": "bowl",
+      "utensilKind": "chopsticks",
+      "assetId": "luosifen",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://tzcjj.gxzf.gov.cn/gzdt/t7414206.shtml",
+        "https://guangxi.chinatax.gov.cn/liuzhou/gzdt_15016/gzdt_15017/202107/t20210726_342803.html"
+      ]
+    },
+    "asset": {
+      "id": "luosifen",
+      "labelZh": "螺蛳粉",
+      "path": "resources/foods/refinement-rollout/v1/luosifen.glb",
+      "sha256": "3d51b343f961f66e9e8d5f6c370f594a9dfc0db516d8586e4e009458dafb8d04",
+      "bytes": 156244,
+      "thumbnail": {
+        "path": "resources/foods/thumbnails/luosifen.png",
+        "sha256": "4b55240f90905b8839fc96d553e8fd297e85eae5e65d10700ce66f545e6f025a",
+        "bytes": 8516
+      }
+    }
+  }
+]

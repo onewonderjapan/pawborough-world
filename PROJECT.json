@@ -193,7 +193,24 @@
       "document": "docs/FOOD-ART-ROLLOUT-20261003.md",
       "assetManifest": "docs/FOOD-ART-ROLLOUT-ASSETS-20261003.json",
       "scope": "Dish-specific shape/ingredient/vessel refinement; authored skewer/steamer eating; further sculptural andPBR polish pending",
-      "publicUpdated": false
+      "publicUpdated": false,
+      "hero8": {
+        "stage": "verified_local",
+        "ids": [
+          "xiaolongbao",
+          "xiajiao",
+          "changfen",
+          "congyoubing",
+          "roujiamo",
+          "boboji",
+          "luosifen",
+          "portuguese-egg-tart"
+        ],
+        "document": "docs/FOOD-HERO-ART-20261004.md",
+        "assetManifest": "docs/FOOD-HERO-ASSETS-20261004.json",
+        "photoAtlasCount": 3,
+        "publicUpdated": false
+      }
     }
   }
 }

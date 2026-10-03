@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "status": "hero8_local_validated",
+  "runtimeCacheRoot": "/home/baibai/outbox/pawborough-food-refinement-20261003/hero/runtime-assets",
+  "sourceCacheRoot": "/home/baibai/outbox/pawborough-food-refinement-20261003/hero/source-assets",
+  "runtimeModule": "scene-authoring/yuyuan-area",
+  "runtimeAssets": [
+    {
+      "id": "xiaolongbao",
+      "path": "resources/foods/hero-art/v2/xiaolongbao.glb",
+      "sha256": "e54967bed43bb8eb4794ccba1f5553aae94bfeb7cf1441abd2157a192e474343",
+      "bytes": 608892
+    },
+    {
+      "id": "xiajiao",
+      "path": "resources/foods/hero-art/v2/xiajiao.glb",
+      "sha256": "c0c9ca67d4932365b4036808fa699328dd82dd034c61aaa3db6e894d3e0f226e",
+      "bytes": 197612
+    },
+    {
+      "id": "changfen",
+      "path": "resources/foods/hero-art/v2/changfen.glb",
+      "sha256": "3e133257250e9dbc512c1c3e3712046c8f6f957d91d8bcd9322e55ebbd710278",
+      "bytes": 537172
+    },
+    {
+      "id": "congyoubing",
+      "path": "resources/foods/hero-art/v2/congyoubing.glb",
+      "sha256": "0f7e05eb32bbca557983cd8ad526e30045d93d906b77247c4cdcba52bacaa028",
+      "bytes": 632232
+    },
+    {
+      "id": "roujiamo",
+      "path": "resources/foods/hero-art/v2/roujiamo.glb",
+      "sha256": "1dd9aa167af75c50d10fcd9db92b6d53d56e376522914268435efbd8440764dd",
+      "bytes": 654548
+    },
+    {
+      "id": "boboji",
+      "path": "resources/foods/hero-art/v2/boboji.glb",
+      "sha256": "18e6ab39a1e1dc569771c4eedac4d93a4c71010beef0704f7f51c939db5c1a35",
+      "bytes": 1086680
+    },
+    {
+      "id": "luosifen",
+      "path": "resources/foods/hero-art/v2/luosifen.glb",
+      "sha256": "67a35a8d0d3aeebadba46af51213fc755ba9963aa9ce467544ceebab56204654",
+      "bytes": 744924
+    },
+    {
+      "id": "portuguese-egg-tart",
+      "path": "resources/foods/hero-art/v2/portuguese-egg-tart.glb",
+      "sha256": "874e543d18a26aece4ef1a69c3e1c76a2a2c1b19f9cb653ff4341aa6433c47ba",
+      "bytes": 358180
+    }
+  ],
+  "sourceAssets": [
+    {
+      "path": "asset-authoring/snacks/hero/assets/custard-albedo-v1.webp",
+      "sha256": "36fbb8fe39c5034002270920219c12f1227c099d2d25ed0df8464a388d9070b7",
+      "bytes": 89286
+    },
+    {
+      "path": "asset-authoring/snacks/hero/assets/custard-albedo-v1.png",
+      "sha256": "0fde7e91134c042343bd005040719b1934eafe16c83f24a9c8b87b2cf1c55e11",
+      "bytes": 2869929
+    },
+    {
+      "path": "asset-authoring/snacks/hero/assets/bread-albedo-v1.webp",
+      "sha256": "16b5f416f51c5ca89b26ceed21b89bd707b8cac96a8b5f2cb4ee5c246289562e",
+      "bytes": 90078
+    },
+    {
+      "path": "asset-authoring/snacks/hero/assets/bread-albedo-v1.png",
+      "sha256": "4dde51fe7c40c239a307e0c8fcfd49f64b9dcdff36c2ea40915ca911067c9b37",
+      "bytes": 2872674
+    }
+  ],
+  "highSourcesFolder": "/home/baibai/outbox/pawborough-food-refinement-20261003/hero/final-v2",
+  "originals": "unchanged a34201b9 baseline",
+  "restore": "Copy runtime assets under runtimeModule and source assets under repo root from matching cacheRoots; verify hashes. High-source .blend files remain in highSourcesFolder with packedtextures."
+}

@@ -1,0 +1,105 @@
+[
+  {
+    "food": {
+      "id": "xiaolongbao",
+      "name": "小笼包",
+      "chapterId": "shanghai",
+      "regionLabel": "上海风味",
+      "description": "皮薄汁鲜的传统蒸笼小吃，常见于江南早点与食摊。",
+      "locationHint": "商业街食摊",
+      "poseProfile": "bowl",
+      "assetId": "xiaolongbao",
+      "thumbId": null,
+      "enabled": true,
+      "regionId": "shanghai",
+      "sourceUrls": [
+        "https://english.shanghai.gov.cn/en-GlobalTasteinShanghai2026-LocalFlavors/20260316/00b0c6d1698d406c8d532a6e169e1a1e.html"
+      ],
+      "utensilKind": "chopsticks",
+      "containerKind": "bambooSteamer",
+      "selectedPortionName": "bao-piece-0",
+      "portionMode": "selected"
+    },
+    "asset": {
+      "id": "xiaolongbao",
+      "labelZh": "小笼包",
+      "stallId": "stall-5",
+      "path": "resources/foods/refinement-rollout/v2/xiaolongbao.glb",
+      "bytes": 447616,
+      "sha256": "0fc2d9b22498afea98136c1c02580635a218ae3b81c497cb44eebb1297627af4",
+      "thumbnail": {
+        "path": "resources/foods/thumbnails/xiaolongbao.png",
+        "sha256": "e0d1bb43f63fcc9bcaa5e947651dd2d0efb63efc6988ab5f8a98c247a4d0d74c",
+        "bytes": 22869
+      }
+    }
+  },
+  {
+    "food": {
+      "id": "xiajiao",
+      "name": "虾饺",
+      "chapterId": "lingnan-islands",
+      "regionId": "guangdong",
+      "regionLabel": "广东风味",
+      "description": "半透明薄皮折出褶纹、包住虾馅，尝广东早茶中的小巧点心。",
+      "locationHint": "园外老街路侧",
+      "poseProfile": "cupped",
+      "utensilKind": null,
+      "assetId": "xiajiao",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://www.gzwxb.gov.cn/context/contextId/201200"
+      ]
+    },
+    "asset": {
+      "id": "xiajiao",
+      "labelZh": "虾饺",
+      "path": "resources/foods/refinement-rollout/v2/xiajiao.glb",
+      "sha256": "848767f1826a7078007af415fc9ebfab04120df0d19e894505eb38cdc534c699",
+      "bytes": 162656,
+      "thumbnail": {
+        "path": "resources/foods/thumbnails/xiajiao.png",
+        "sha256": "d7a2a49809f238592a4634143f8aa4c07ebbf9fb1245243449ca7fa26d12deec",
+        "bytes": 24577
+      }
+    }
+  },
+  {
+    "food": {
+      "id": "changfen",
+      "name": "肠粉",
+      "chapterId": "lingnan-islands",
+      "regionLabel": "广东风味",
+      "description": "薄软米皮裹住弯虾肉，少量豉油淋在浅瓷碟里，用筷子夹起一段品尝。",
+      "locationHint": "中心广场食摊",
+      "poseProfile": "bowl",
+      "assetId": "changfen",
+      "thumbId": null,
+      "utensilKind": "chopsticks",
+      "enabled": true,
+      "sourceUrls": [
+        "https://com.gd.gov.cn/attachment/0/513/513488/4095266.pdf",
+        "https://www.discoverhongkong.com/tc/food-and-drink/must-try-street-food-in-hong-kong.html"
+      ],
+      "regionId": "guangdong",
+      "labelZh": "鲜虾肠粉",
+      "containerKind": "shallowPlate",
+      "selectedPortionName": "rice-piece-0",
+      "portionMode": "selected",
+      "plateHeight": 0.38,
+      "platePitch": 0
+    },
+    "asset": {
+      "id": "changfen",
+      "path": "resources/foods/refined/changfen-v5.glb",
+      "sha256": "ac297ba96c6075ce79ff7d141cbb7540ea5c5ab85725416cca484e5461b5ce64",
+      "bytes": 616636,
+      "thumbnail": {
+        "path": "resources/foods/thumbnails/changfen.png",
+        "sha256": "614b919999800c9258ce60afff807249a2886ba0b8b0ddebed8fa91bdac3c5f5",
+        "bytes": 31828
+      }
+    }
+  }
+]
