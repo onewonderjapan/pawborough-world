@@ -1,0 +1,76 @@
+{
+  "id": "changfen",
+  "name": "广式鲜虾肠粉",
+  "profile": "bowl",
+  "utensilKind": "chopsticks",
+  "containerKind": "shallowPlate",
+  "selectedPortionName": "rice-piece-0",
+  "staticNodes": [
+    "container",
+    "sauce"
+  ],
+  "toolFoodDefaultHidden": true,
+  "specs": {
+    "plateLengthM": 0.23,
+    "plateWidthM": 0.16,
+    "plateHeightM": 0.014,
+    "rollCount": 3,
+    "rollLengthM": 0.145,
+    "rollSpacingM": 0.038,
+    "toolBiteWidthM": 0.028,
+    "toolFoodLengthM": 0.035,
+    "chopstickLengthM": 0.212
+  },
+  "anchors": {
+    "socket_grip": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "socket_rest": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "leftSupport": [
+      0.085,
+      0.0,
+      -0.01
+    ],
+    "rightSupport": [
+      -0.085,
+      0.0,
+      -0.01
+    ],
+    "content": [
+      0.0538,
+      0.011,
+      -0.038
+    ],
+    "bite": [
+      0.0538,
+      0.011,
+      -0.038
+    ],
+    "toolGrip": [
+      0.0,
+      0.0,
+      -0.106
+    ],
+    "toolBite": [
+      0.0,
+      0.0,
+      0.106
+    ],
+    "tipL": [
+      -0.014,
+      0.0,
+      0.106
+    ],
+    "tipR": [
+      0.014,
+      0.0,
+      0.106
+    ]
+  }
+}

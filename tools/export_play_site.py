@@ -27,6 +27,7 @@ for name in [
     'food-pose-profiles.json',
     'world-art-style.json',
     'street-life.json',
+    'food-photographs.json',
 ]:
     paths.add('/inputs/' + name)
 
@@ -49,6 +50,21 @@ for f in foods_list:
         assert len(tb) == f['thumbnail']['bytes'], f"Food thumb bytes mismatch for {f.get('id')}: {len(tb)} vs {f['thumbnail'].get('bytes')}"
         assert hashlib.sha256(tb).hexdigest() == f['thumbnail']['sha256'], f"Food thumb sha mismatch for {f.get('id')}"
         paths.add('/' + t_rel)
+
+photo_file = A / 'inputs/food-photographs.json'
+if photo_file.is_file():
+    photo_manifest = json.loads(photo_file.read_text(encoding='utf-8'))
+    if photo_manifest.get('enabled') is True:
+        for photo in photo_manifest.get('photos', []):
+            for image in [photo, photo.get('card')]:
+                if not image: continue
+                rel = image['path']
+                assert rel.startswith('resources/atlas/') and '..' not in rel and '\\' not in rel
+                source_image = (A / rel).resolve()
+                assert source_image.is_relative_to(A.resolve()) and source_image.is_file()
+                content = source_image.read_bytes()
+                assert len(content) == image['bytes'] and hashlib.sha256(content).hexdigest() == image['sha256']
+                paths.add('/' + rel)
 
 zone_manifest = json.loads((A / 'out-zone/zones-manifest.json').read_text(encoding='utf-8'))
 for zone in zone_manifest['zones']:
@@ -124,6 +140,12 @@ for path in sorted(paths):
             d = {k: v for k, v in d.items() if k not in ['note', 'source', 'sourcePath', 'originalPath']}
             if 'profiles' in d and isinstance(d['profiles'], list):
                 d['profiles'] = [{k: v for k, v in item.items() if k not in ['note', 'source', 'sourcePath', 'originalPath']} for item in d['profiles']]
+        elif path.endswith('food-photographs.json'):
+            d = {k: v for k, v in d.items() if k in ['schemaVersion', 'styleId', 'enabled', 'photos']}
+            for photo in d.get('photos', []):
+                photo['path'] = prefix + '/' + photo['path'].lstrip('/')
+                if photo.get('card'):
+                    photo['card']['path'] = prefix + '/' + photo['card']['path'].lstrip('/')
         elif path.endswith('world-art-style.json'):
             d = {k: v for k, v in d.items() if k not in ['note', 'source', 'sourcePath', 'originalPath']}
         elif path.endswith('street-life.json'):

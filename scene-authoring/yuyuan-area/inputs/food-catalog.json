@@ -434,7 +434,7 @@
       "name": "肠粉",
       "chapterId": "lingnan-islands",
       "regionLabel": "广东风味",
-      "description": "白色半透明粉皮、酱汁、浅盘",
+      "description": "薄软米皮裹住弯虾肉，少量豉油淋在浅瓷碟里，用筷子夹起一段品尝。",
       "locationHint": "中心广场食摊",
       "poseProfile": "bowl",
       "assetId": "changfen",
@@ -445,7 +445,13 @@
         "https://com.gd.gov.cn/attachment/0/513/513488/4095266.pdf",
         "https://www.discoverhongkong.com/tc/food-and-drink/must-try-street-food-in-hong-kong.html"
       ],
-      "regionId": "guangdong"
+      "regionId": "guangdong",
+      "labelZh": "鲜虾肠粉",
+      "containerKind": "shallowPlate",
+      "selectedPortionName": "rice-piece-0",
+      "portionMode": "selected",
+      "plateHeight": 0.38,
+      "platePitch": 0
     },
     {
       "id": "shuangpinai",

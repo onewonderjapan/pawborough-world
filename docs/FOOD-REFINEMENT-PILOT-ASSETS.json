@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "status": "local_pilot_pending_owner_review",
+  "adopted": false,
+  "sourceModule": "scene-authoring/yuyuan-area",
+  "cacheRoot": "/home/baibai/outbox/pawborough-food-refinement-20261003/runtime-assets",
+  "assets": [
+    {
+      "path": "resources/atlas/food-photo-pilot/changfen-detail-v1.webp",
+      "sha256": "c02bb19d126f1d67a8535b21f429b2831d8d2e53f9f3a63f7fa98d7a1085b88f",
+      "bytes": 76828
+    },
+    {
+      "path": "resources/atlas/food-photo-pilot/changfen-card-v1.webp",
+      "sha256": "dab6f0acfc3c9bc9ca49f21288e45ee8f77c842dcebb8c59d0c248a8a8d612d3",
+      "bytes": 8646
+    },
+    {
+      "path": "resources/atlas/food-photo-pilot/boboji-detail-v1.webp",
+      "sha256": "6f5bb378e39eaa9b0debeb93f5540e2b856ed2de186d7044af53495659e2cf00",
+      "bytes": 124542
+    },
+    {
+      "path": "resources/atlas/food-photo-pilot/boboji-card-v1.webp",
+      "sha256": "96a7fc0e4f261ccbc01f9eee3a5fcefa2df509f4daa3dea94de89d32de3515ef",
+      "bytes": 11226
+    },
+    {
+      "path": "resources/atlas/food-photo-pilot/xiaolongbao-detail-v1.webp",
+      "sha256": "4c50d4e36b8290fe1b2cf4b9cde8845c0d0cf285cebdaf771efbd55093db3d82",
+      "bytes": 91768
+    },
+    {
+      "path": "resources/atlas/food-photo-pilot/xiaolongbao-card-v1.webp",
+      "sha256": "b3879c902d0945a9b26748cc9b026bbc21b870e7d9910a9af394c241dcacd4e3",
+      "bytes": 10192
+    },
+    {
+      "path": "resources/foods/refined/changfen-v5.glb",
+      "sha256": "ac297ba96c6075ce79ff7d141cbb7540ea5c5ab85725416cca484e5461b5ce64",
+      "bytes": 616636
+    }
+  ],
+  "originalPhotoFolder": "/home/baibai/outbox/pawborough-food-refinement-20261003/photos",
+  "modelSource": "/home/baibai/outbox/pawborough-food-refinement-20261003/3d/v5",
+  "restore": "Copy each assets.path from cacheRoot into sourceModule; compare SHA256 before use. Existing national GLB and model thumbnails remain unchanged."
+}

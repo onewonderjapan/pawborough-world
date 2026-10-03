@@ -86,7 +86,16 @@ export function makeFoodEntry(food, protoScene) {
     (box.min.x + box.max.x) / 2, box.min.y, (box.min.z + box.max.z) / 2);
   return {
     id: food.id,
-    presentation: { profile: food.poseProfile ?? 'cupped', widthM: food.widthM ?? targetWidth ?? size.x, utensilKind: food.utensilKind ?? null },
+    presentation: {
+      profile: food.poseProfile ?? food.presentation?.profile ?? 'cupped',
+      widthM: food.widthM ?? food.presentation?.widthM ?? targetWidth ?? size.x,
+      utensilKind: food.utensilKind ?? food.presentation?.utensilKind ?? null,
+      containerKind: food.containerKind ?? food.presentation?.containerKind ?? null,
+      selectedPortionName: food.selectedPortionName ?? food.presentation?.selectedPortionName ?? null,
+      portionMode: food.portionMode ?? food.presentation?.portionMode ?? null,
+      plateHeight: food.plateHeight ?? food.presentation?.plateHeight ?? null,
+      platePitch: food.platePitch ?? food.presentation?.platePitch ?? null,
+    },
     proto: protoScene,
     gripOffset: gripPos.clone(),
     restOffset: rest?.position?.clone() ?? new THREE.Vector3(),
@@ -142,13 +151,57 @@ export class FoodCatalog {
     inst.position.copy(entry.gripOffset).multiplyScalar(-entry.cupScale);
     holder.add(inst);
     if (holder.userData.foodPoseProfile !== 'cupped') {
-      const parts = Object.fromEntries(['edible','wrapper','skewer','container','utensil'].map(name => [name,findNode(inst,name)]).filter(([,node]) => node));
+      const parts = Object.fromEntries(['edible','wrapper','skewer','container','sauce','utensil'].map(name => [name,findNode(inst,name)]).filter(([,node]) => node));
       if (parts.utensil) { holder.updateMatrixWorld(true); holder.attach(parts.utensil); }
-      const anchors = Object.fromEntries(['leftSupport','rightSupport','bite','content','toolGrip','toolBite'].map(name => [name,findNode(holder,name)]).filter(([,node]) => node));
-      const edibleScale=parts.edible?.scale.clone(), morsel=parts.utensil?.getObjectByName('toolFood');
-      holder.foodInstance={root:holder,parts,anchors,presentation:entry.presentation,
-        setBiteProgress(p) { if(edibleScale)parts.edible.scale.copy(edibleScale).multiplyScalar(1-.65*Math.max(0,Math.min(1,p))); if(morsel)morsel.visible=p<.8; },
-        dispose(){holder.removeFromParent();}};
+      const anchorKeys = ['leftSupport','rightSupport','bite','content','toolGrip','toolBite','socketgrip','rest'];
+      const anchors = {};
+      for (const key of anchorKeys) {
+        let node = findNode(holder, key);
+        if (!node && key === 'socketgrip') node = findNode(holder, 'socket_grip');
+        if (!node && key === 'rest') node = findNode(holder, 'socket_rest');
+        if (node) anchors[key] = node;
+      }
+      const edibleScale = parts.edible?.scale.clone();
+      const morsel = parts.utensil?.getObjectByName('toolFood');
+      const morselScale = morsel?.scale.clone();
+
+      const isRefinedPortion = entry.presentation?.containerKind === 'shallowPlate' || entry.presentation?.portionMode === 'selected';
+      const portionName = entry.presentation?.selectedPortionName ?? 'rice-piece-0';
+      const selectedPiece = parts.edible?.getObjectByName(portionName);
+
+      let refinedActive = false;
+      if (isRefinedPortion) {
+        if (selectedPiece) {
+          refinedActive = true;
+          parts.selectedPiece = selectedPiece;
+          if (morsel) morsel.visible = false;
+          selectedPiece.visible = true;
+        } else {
+          console.warn(`[FoodCatalog] refined food "${id}" missing selected portion node "${portionName}"; safe fallback to legacy edible behavior`);
+          holder.userData.missingSelectedPortionFallback = { missingNode: portionName };
+        }
+      }
+
+      holder.foodInstance = {
+        root: holder,
+        parts,
+        anchors,
+        presentation: entry.presentation,
+        refinedActive,
+        selectedPortionName: portionName,
+        setBiteProgress(p) {
+          if (refinedActive) {
+            if (morsel) {
+              if (morselScale) morsel.scale.copy(morselScale).multiplyScalar(Math.max(0, 1 - Math.max(0, Math.min(1, p))));
+              morsel.visible = p < 0.8;
+            }
+          } else {
+            if (edibleScale) parts.edible.scale.copy(edibleScale).multiplyScalar(1 - .65 * Math.max(0, Math.min(1, p)));
+            if (morsel) morsel.visible = p < .8;
+          }
+        },
+        dispose() { holder.removeFromParent(); }
+      };
     }
     return holder;
   }

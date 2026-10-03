@@ -53,7 +53,108 @@ function validateFiniteNumbers(val, fieldPath) {
   }
 }
 
-export function createFoodRegistry({ catalog, assets = {}, vendors = {}, profiles = {} } = {}) {
+// 2D 摄影图鉴试点 (F02)：独立照片索引，仅在 manifest 显式 enabled=true 时生效。
+// 照片路径必须留在私有 resources/atlas/ 下；未启用或缺失照片时完全回落到 3D asset.thumbnail。
+const PHOTO_STYLE_ID = 'pawborough-food-photo-v1';
+const PHOTO_SOURCE_KIND = 'generated-photographic';
+const PHOTO_DIR_RE = /^(?:versions\/[a-zA-Z0-9_-]+\/)?resources\/atlas\//;
+const SHA256_RE = /^[0-9a-f]{64}$/;
+
+function buildPhotoIndex(foodsById, manifest) {
+  const photosByFoodId = new Map();
+  if (manifest == null) return photosByFoodId;
+  if (typeof manifest !== 'object' || Array.isArray(manifest)) {
+    throw new CatalogError('photoManifest', 'photo manifest must be an object');
+  }
+  if (manifest.enabled !== true) return photosByFoodId;
+  if (manifest.styleId !== PHOTO_STYLE_ID) {
+    throw new CatalogError('photoManifest.styleId', `photo styleId must be '${PHOTO_STYLE_ID}': ${JSON.stringify(manifest.styleId)}`);
+  }
+  const list = manifest.photos ?? [];
+  if (!Array.isArray(list)) {
+    throw new CatalogError('photoManifest.photos', 'photos must be an array');
+  }
+  for (let i = 0; i < list.length; i++) {
+    const p = list[i];
+    const fieldPath = `photoManifest.photos[${i}]`;
+    if (!p || typeof p !== 'object' || Array.isArray(p)) {
+      throw new CatalogError(fieldPath, 'photo entry must be an object');
+    }
+    validateId(p.foodId, `${fieldPath}.foodId`);
+    if (!foodsById.has(p.foodId)) {
+      throw new CatalogError(`${fieldPath}.foodId`, `photo references unknown food: '${p.foodId}'`);
+    }
+    if (photosByFoodId.has(p.foodId)) {
+      throw new CatalogError(`${fieldPath}.foodId`, `duplicate photo for food: '${p.foodId}'`);
+    }
+    validatePath(p.path, `${fieldPath}.path`);
+    if (!PHOTO_DIR_RE.test(p.path)) {
+      throw new CatalogError(`${fieldPath}.path`, `photo path must stay inside private resources/atlas/: ${p.path}`);
+    }
+    if (!/\.(?:png|webp)$/.test(p.path)) {
+      throw new CatalogError(`${fieldPath}.path`, `photo path must reference a PNG or WebP file: ${p.path}`);
+    }
+    if (typeof p.sha256 !== 'string' || !SHA256_RE.test(p.sha256)) {
+      throw new CatalogError(`${fieldPath}.sha256`, 'photo sha256 must be a 64-char lowercase hex string');
+    }
+    for (const k of ['bytes', 'width', 'height']) {
+      const n = p[k];
+      if (!Number.isInteger(n) || n <= 0) {
+        throw new CatalogError(`${fieldPath}.${k}`, `photo ${k} must be a positive integer: ${JSON.stringify(n)}`);
+      }
+    }
+    if (p.sourceKind !== PHOTO_SOURCE_KIND) {
+      throw new CatalogError(`${fieldPath}.sourceKind`, `photo sourceKind must be '${PHOTO_SOURCE_KIND}': ${JSON.stringify(p.sourceKind)}`);
+    }
+    validateId(p.variant, `${fieldPath}.variant`);
+    if (p.card != null) {
+      validatePath(p.card.path, `${fieldPath}.card.path`);
+      if (!PHOTO_DIR_RE.test(p.card.path) || !/\.(?:png|webp)$/.test(p.card.path) || !SHA256_RE.test(p.card.sha256 ?? '')) {
+        throw new CatalogError(`${fieldPath}.card`, 'invalid card image path or checksum');
+      }
+      for (const k of ['bytes','width','height']) if (!Number.isInteger(p.card[k]) || p.card[k] <= 0) {
+        throw new CatalogError(`${fieldPath}.card.${k}`, 'card dimensions and bytes must be positive integers');
+      }
+    }
+    photosByFoodId.set(p.foodId, Object.freeze({
+      foodId: p.foodId,
+      path: p.path,
+      sha256: p.sha256,
+      bytes: p.bytes,
+      width: p.width,
+      height: p.height,
+      sourceKind: p.sourceKind,
+      styleId: manifest.styleId,
+      variant: p.variant,
+      card: p.card ? Object.freeze({...p.card}) : null,
+    }));
+  }
+  return photosByFoodId;
+}
+
+function thumbnailWithPhotos(photosByFoodId, fallbackFn, foodId) {
+  const photo = photosByFoodId.get(foodId);
+  if (photo) return { ...photo, path: '/' + photo.path, cardPath: photo.card ? '/' + photo.card.path : null, kind: 'photo' };
+  return fallbackFn(foodId);
+}
+
+/**
+ * 根接线代理：在既有 registry 之上叠加独立照片索引，不改写原 registry。
+ * 照片优先；3D 重建/asset.thumbnail 更新不会覆盖已启用的照片。
+ */
+export function attachFoodPhotographs(registry, manifest) {
+  if (!registry || typeof registry !== 'object' || !(registry.foodsById instanceof Map)) {
+    throw new CatalogError('registry', 'attachFoodPhotographs requires a createFoodRegistry result');
+  }
+  const photosByFoodId = buildPhotoIndex(registry.foodsById, manifest);
+  return Object.freeze({
+    ...registry,
+    photosByFoodId,
+    thumbnailFor: foodId => thumbnailWithPhotos(photosByFoodId, registry.thumbnailFor, foodId),
+  });
+}
+
+export function createFoodRegistry({ catalog, assets = {}, vendors = {}, profiles = {}, photoManifest = null } = {}) {
   if (!catalog || typeof catalog !== 'object') {
     throw new CatalogError('catalog', 'catalog must be a valid object');
   }
@@ -253,6 +354,8 @@ export function createFoodRegistry({ catalog, assets = {}, vendors = {}, profile
     return list ? [...list] : [];
   }
 
+  const photosByFoodId = buildPhotoIndex(foodsById, photoManifest);
+
   return Object.freeze({
     editionId: catalog.editionId,
     foodsById,
@@ -261,10 +364,11 @@ export function createFoodRegistry({ catalog, assets = {}, vendors = {}, profile
     chaptersById,
     regionsById,
     requiredFoodIds,
+    photosByFoodId,
     vendorsFor,
-    thumbnailFor: foodId => {
-      const food=foodsById.get(foodId),thumb=assetsById.get(food?.assetId)?.thumbnail;
+    thumbnailFor: foodId => thumbnailWithPhotos(photosByFoodId, id => {
+      const food=foodsById.get(id),thumb=assetsById.get(food?.assetId)?.thumbnail;
       return thumb ? {...thumb,path:'/'+thumb.path} : null;
-    },
+    }, foodId),
   });
 }

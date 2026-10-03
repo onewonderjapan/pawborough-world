@@ -66,9 +66,14 @@ export function atlasEntries(registry, snapshot) {
     const defaultVendorId = defaultVendor?.vendorId ?? defaultVendor?.id ?? null;
 
     let thumbPath = null;
+    let thumbCardPath = null;
+    let thumbKind = null;
     if (typeof registry?.thumbnailFor === 'function') {
       const t = registry.thumbnailFor(food.id);
       thumbPath = t?.path ?? null;
+      thumbCardPath = t?.cardPath ?? thumbPath;
+      // 'photo' 为 2D 摄影图；其余（3D 渲染缩略图）保持无标记
+      thumbKind = t?.kind ?? (t ? 'render' : null);
     } else if (food.thumbId) {
       thumbPath = food.thumbId;
     }
@@ -95,6 +100,8 @@ export function atlasEntries(registry, snapshot) {
         ? (food.description ?? '')
         : '在上海小城漫步探访，发现摊位即可解锁这道美味。',
       thumbnail: isDiscovered ? thumbPath : null,
+      thumbnailCard: isDiscovered ? thumbCardPath : null,
+      thumbnailKind: isDiscovered ? thumbKind : null,
     });
   }
 
@@ -634,15 +641,17 @@ export function mountAtlas({ root, registry, getSnapshot, actions = {}, overlay 
       card.setAttribute('tabindex', '0');
       card.dataset.foodId = entry.id;
 
-      // 缩略图 / 占位图
+      // 缩略图 / 占位图（圆角 4:3 框；摄影图 contain 完整器皿留边距，3D 渲染维持 cover）
+      const isPhotoThumb = entry.thumbnailKind === 'photo';
       const thumbWrap = document.createElement('div');
-      thumbWrap.className = 'pb-atlas-card-thumb-wrap';
+      thumbWrap.className = 'pb-atlas-card-thumb-wrap' + (isPhotoThumb ? ' is-photo' : '');
       if (entry.isDiscovered && entry.thumbnail) {
         const img = document.createElement('img');
-        img.className = 'pb-atlas-card-thumb';
-        img.src = entry.thumbnail;
+        img.className = 'pb-atlas-card-thumb' + (isPhotoThumb ? ' is-photo' : '');
+        img.src = entry.thumbnailCard ?? entry.thumbnail;
         img.alt = entry.displayName;
         img.loading = 'lazy';
+        img.decoding = 'async';
         img.onerror = () => {
           img.remove();
           thumbWrap.appendChild(createPlatePlaceholder(entry.status === 'unseen'));
@@ -707,22 +716,30 @@ export function mountAtlas({ root, registry, getSnapshot, actions = {}, overlay 
       });
       detailHeader.appendChild(backBtn);
 
-      const detailThumbWrap = document.createElement('div');
-      detailThumbWrap.className = 'pb-atlas-detail-thumb-wrap';
-      if (selectedEntry.isDiscovered && selectedEntry.thumbnail) {
-        const detailImg = document.createElement('img');
-        detailImg.className = 'pb-atlas-card-thumb';
-        detailImg.src = selectedEntry.thumbnail;
-        detailImg.alt = selectedEntry.displayName;
-        detailImg.onerror = () => {
-          detailImg.remove();
+      const isDetailPhoto = selectedEntry.isDiscovered
+        && selectedEntry.thumbnailKind === 'photo'
+        && !!selectedEntry.thumbnail;
+      if (!isDetailPhoto) {
+        // 3D 渲染沿用头部小缩略；2D 摄影图另用详情大幅同风格 4:3 框
+        const detailThumbWrap = document.createElement('div');
+        detailThumbWrap.className = 'pb-atlas-detail-thumb-wrap';
+        if (selectedEntry.isDiscovered && selectedEntry.thumbnail) {
+          const detailImg = document.createElement('img');
+          detailImg.className = 'pb-atlas-card-thumb';
+          detailImg.src = selectedEntry.thumbnail;
+          detailImg.alt = selectedEntry.displayName;
+          detailImg.loading = 'lazy';
+          detailImg.decoding = 'async';
+          detailImg.onerror = () => {
+            detailImg.remove();
+            detailThumbWrap.appendChild(createPlatePlaceholder(selectedEntry.status === 'unseen'));
+          };
+          detailThumbWrap.appendChild(detailImg);
+        } else {
           detailThumbWrap.appendChild(createPlatePlaceholder(selectedEntry.status === 'unseen'));
-        };
-        detailThumbWrap.appendChild(detailImg);
-      } else {
-        detailThumbWrap.appendChild(createPlatePlaceholder(selectedEntry.status === 'unseen'));
+        }
+        detailHeader.appendChild(detailThumbWrap);
       }
-      detailHeader.appendChild(detailThumbWrap);
 
       const titleGroup = document.createElement('div');
       titleGroup.className = 'pb-atlas-detail-title-group';
@@ -739,6 +756,24 @@ export function mountAtlas({ root, registry, getSnapshot, actions = {}, overlay 
 
       detailHeader.appendChild(titleGroup);
       detailEl.appendChild(detailHeader);
+
+      // 2D 摄影图：详情独立更大同风格 4:3 框（文字标注外置，图片不烧字）
+      if (isDetailPhoto) {
+        const photoFrame = document.createElement('div');
+        photoFrame.className = 'pb-atlas-detail-photo-frame';
+        const photoImg = document.createElement('img');
+        photoImg.className = 'pb-atlas-detail-photo';
+        photoImg.src = selectedEntry.thumbnail;
+        photoImg.alt = selectedEntry.displayName;
+        photoImg.loading = 'lazy';
+        photoImg.decoding = 'async';
+        photoImg.onerror = () => {
+          photoImg.remove();
+          photoFrame.appendChild(createPlatePlaceholder(selectedEntry.status === 'unseen'));
+        };
+        photoFrame.appendChild(photoImg);
+        detailEl.appendChild(photoFrame);
+      }
 
       // 描述文案
       const descEl = document.createElement('p');

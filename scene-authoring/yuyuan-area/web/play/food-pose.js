@@ -30,6 +30,28 @@ export function sampleFoodPose({profile, t=0, rig={}, anchors={}, presentation={
   const rotation = new T.Quaternion(), position = new T.Vector3();
   const out = {ok:true,profile:id,lift,biteProgress,rotation,position,palms:{},mouth:front,
     mouthfulVisible:!presentation.eating||elapsed<1.4};
+  const isRefinedPortion = presentation.containerKind === 'shallowPlate' || presentation.portionMode === 'selected';
+  out.isRefinedPortion = isRefinedPortion;
+  out.containerKind = presentation.containerKind ?? null;
+  out.portionMode = presentation.portionMode ?? null;
+  out.selectedPortionName = presentation.selectedPortionName ?? 'rice-piece-0';
+
+  if (isRefinedPortion) {
+    if (!presentation.eating) {
+      out.selectedPieceVisible = true;
+      out.toolFoodVisible = false;
+      out.mouthfulVisible = false;
+      out.portionTransferred = false;
+    } else {
+      // Transfer is irreversible for this bite, including the lowering phase.
+      const transfer = elapsed >= 0.4;
+      out.portionTransferred = transfer;
+      out.selectedPieceVisible = !transfer;
+      out.toolFoodVisible = transfer && biteProgress < 0.8 && elapsed < 2.5;
+      out.mouthfulVisible = out.toolFoodVisible;
+    }
+  }
+
   if (id !== 'bowl') {
     if (!finite(right) || !finite(bite)) return {ok:false,reason:'missing-food-anchors'};
     rotation.setFromEuler(new T.Euler(id==='wrapped'?.25:.65,0,id==='skewer'?-.06:0));
@@ -43,10 +65,19 @@ export function sampleFoodPose({profile, t=0, rig={}, anchors={}, presentation={
     const content = vec(anchors.content), grip = vec(anchors.toolGrip), tip = vec(anchors.toolBite);
     if (![content,grip,tip].every(finite) || !['spoon','chopsticks'].includes(presentation.utensilKind)) return {ok:false,reason:'missing-tool-anchors'};
     position.set(.015,.38,.33);
-    out.palms.armL = left.add(position);
+    if (presentation.containerKind === 'shallowPlate' && Number.isFinite(presentation.plateHeight)) {
+      position.y = presentation.plateHeight;
+    }
+    const pitch = presentation.containerKind === 'shallowPlate' && Number.isFinite(presentation.platePitch)
+      ? Math.max(-0.08, Math.min(0.08, presentation.platePitch))
+      : 0;
+    if (pitch !== 0) {
+      rotation.setFromEuler(new T.Euler(pitch, 0, 0));
+    }
+    out.palms.armL = left.clone().applyQuaternion(rotation).add(position);
     const axis = tip.clone().sub(grip);
     if (axis.length() < .01) return {ok:false,reason:'invalid-tool-length'};
-    const tipTarget = content.add(position).lerp(front,lift);
+    const tipTarget = content.applyQuaternion(rotation).add(position).lerp(front,lift);
     const direction = new T.Vector3(.82,.36,.45).normalize().lerp(new T.Vector3(.70,.70,.35).normalize(),lift).normalize();
     const toolRotation = new T.Quaternion().setFromUnitVectors(axis.normalize(),direction);
     const toolPosition = tipTarget.clone().sub(tip.clone().applyQuaternion(toolRotation));
@@ -77,7 +108,19 @@ export function applyFoodPose(avatar, instance, targets) {
   const contacts = {};
   for (const side of ['armL','armR']) contacts[side] = solveFoodArm(avatar,side,targets.palms[side]);
   instance.setBiteProgress?.(targets.biteProgress);
-  const morsel=instance.parts.utensil?.getObjectByName('toolFood');if(morsel)morsel.visible=targets.mouthfulVisible;
+  const morsel = instance.parts.utensil?.getObjectByName('toolFood');
+  if (targets.isRefinedPortion || instance.refinedActive) {
+    const portionName = targets.selectedPortionName ?? instance.selectedPortionName ?? 'rice-piece-0';
+    const selectedPiece = instance.parts?.selectedPiece ?? instance.parts?.edible?.getObjectByName(portionName);
+    if (selectedPiece) {
+      selectedPiece.visible = Boolean(targets.selectedPieceVisible);
+      if (morsel) morsel.visible = Boolean(targets.toolFoodVisible);
+    } else {
+      if (morsel) morsel.visible = targets.mouthfulVisible;
+    }
+  } else {
+    if (morsel) morsel.visible = targets.mouthfulVisible;
+  }
   avatar.root.updateMatrixWorld(true);
   return {ok:Object.values(contacts).every(v=>Number.isFinite(v.gap)&&v.gap<=.03),contacts,targets};
 }

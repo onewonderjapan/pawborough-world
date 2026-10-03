@@ -371,7 +371,9 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
         window.dispatchEvent(new CustomEvent('pb:camera-view-change', { detail: { viewMode: 'follow' } }));
       }
       const facingYaw = core.state.avatar?.facingYaw ?? controller?.yaw;
-      const place = playCamera.update({ controller, castRay, dt, facingYaw });
+      const inspection = heldObj?.obj?.foodInstance?.refinedActive
+        ? { height: 0.68, distance: 1.35, pitchOffset: -0.25 } : null;
+      const place = playCamera.update({ controller, castRay, dt, facingYaw, inspection });
       const avatar = core.state.avatar;
       if (avatar) {
         const limit = gameState.vehicle.riding ? PLAY_PROFILE.rideAvatarHideDistance : PLAY_PROFILE.avatarHideDistance;
@@ -462,15 +464,16 @@ export function installPlayMode({ scene, camera, renderer, controls, manifest = 
   closedFacades.install();
 
   (async () => {
-    const [layout, sockets, catalog, assets, vendors, profiles] = await Promise.all([
+    const [layout, sockets, catalog, assets, vendors, profiles, photoManifest] = await Promise.all([
       readJson('/out/layout.json'),
       readJson('/out/food-sockets.json'),
       readJson('/inputs/food-catalog.json'),
       readJson('/inputs/play-foods.json'),
       readJson('/inputs/play-vendors.json'),
       readJson('/inputs/food-pose-profiles.json'),
+      readJson('/inputs/food-photographs.json').catch(() => null),
     ]);
-    const registry = createFoodRegistry({ catalog, assets, vendors, profiles });
+    const registry = createFoodRegistry({ catalog, assets, vendors, profiles, photoManifest });
     if (!gameState.configureCatalog(registry)) throw new Error('食品目录无法在存档恢复前配置');
     catalogReady = true;
     restorePlaySave();
