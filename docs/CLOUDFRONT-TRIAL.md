@@ -57,3 +57,12 @@ python3 -X utf8 tools/export_play_site.py --output /绝对路径/发布目录
 当前运行 `20261002-main-cc89c58e`，源码 `cc89c58ebf91e139277599d3b7a5514a50d42121`；176 文件、132,565,648 bytes（126.42 MiB）。包含角色材质/高光/肩腋过渡、单车轮圈与藤篮、热食与奖励反馈、逛吃手账和操作面板。域名及原 CloudFront 入口 SHA 匹配；40份原GLB未改。公开实景47项通过（资源/控制8、小吃24、单车8、界面7）。
 
 美术方向、定量范围与整图后续提案见 `ART-DIRECTION-20261002.md`；证据在 `/home/baibai/outbox/pawborough-art-upgrade-20261002/artifacts/`，前后对照为同目录上级 `art-review.html`。
+
+
+## 2026-10-03 · 48味与官方路线反馈升级
+
+当前公开运行版本 `20261003-main-d40ac8f1`，源码 `d40ac8f1`；295文件、142,118,770 bytes（135.54MiB）。新版48味/34地区，3站尝鲜/8站巡游/自由收集，V查看食品、F自动进食视图，下车净空/实地高度与两个真实路缝修复，夜景有限补光，三类摊位与局部门面材质样板。
+
+294依赖先上传并逐对象核SHA/类型/缓存，CSP保留上个入口精确hash，策略生效后最后切首页。变更单仅WebHeaders，无替换；证书、域名A/AAAA、原点/OAC不变。两HTTPS入口SHA一致，公网路线选择/取食/观察/保存重载/图鉴与退出补光通过，游戏脚本/CSP/资源错误0；favicon.ico自动请求403单独记录。S3匿名直接访问403。
+
+正式本地官方12检查点连续通过并实际吃完8味；发布回执 `/home/baibai/outbox/pawborough-playtest-upgrades-20261003/CLOUD-RECEIPT.json`，验收页同目录 `review.html`。细节见 `playtest-upgrades-20261003/README.md`。美术仅局部样板，8个无碰撞覆盖的装饰保持停用。

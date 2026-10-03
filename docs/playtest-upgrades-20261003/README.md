@@ -20,4 +20,4 @@
 
 必要模块测试、原客户端构建和静态导出分别留证；未改原世界GLB或重做全域建模，复用原全域几何验证。新增材质验证读取实际渲染cm分区；旧单件zone-bazaar.glb的材质不能代替当前显示件。样板不代表全地图美术已推广。
 
-原报告、失败、修正和照片：`/home/baibai/outbox/pawborough-playtest-upgrades-20261003`。最终状态见ACCEPTANCE.json；本次没有CloudFront/S3写入，发布包待有效AWS登录。
+原报告、失败、修正和照片：`/home/baibai/outbox/pawborough-playtest-upgrades-20261003`。最终状态见ACCEPTANCE.json；已按既有发布授权上线： https://pawborough.onewonder.co.jp/ ，运行版本20261003-main-d40ac8f1。295文件、142,118,770 bytes；294依赖与入口逐项核验，安全策略仅更新WebHeaders，证书/别名/原点保持。公网取食/视角/路线/保存/图鉴/补光关闭通过，游戏脚本/CSP/游戏资源错误0；浏览器默认favicon.ico请求403单独记录。S3匿名直接访问仍403。

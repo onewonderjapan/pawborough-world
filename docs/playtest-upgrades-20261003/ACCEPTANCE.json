@@ -1,6 +1,6 @@
 {
   "baseCommit": "0a4ea048",
-  "status": "accepted_local",
+  "status": "accepted_and_published",
   "orders": {
     "U01": "accepted: labels, one primary hint, mobile9cards and detail/focus",
     "U02": "accepted: visible clearance; real support height; C1 forward/brake/reverse",
@@ -48,7 +48,7 @@
     ]
   },
   "limits": [
-    "Local candidate only; cloud not updated",
+    "Published runtime d40ac8f1; later documentation/test-only commits do not change runtime bytes",
     "World art remains pilot, dormant props not adopted",
     "Window proof uses actual served cm chunks; older zone-bazaar.glb is not the rendered source",
     "Return browser fixture teleports for setup only; full official route has no teleport",
@@ -65,6 +65,38 @@
     "vehicle": "40 checks PASS",
     "escCameraRealPointerLock": "PASS",
     "UI": "PASS",
-    "cloudRelease": "not performed"
+    "cloudRelease": "public UI/play + both entry SHAs +294dependency checksums +S3 anonymous403 PASS"
+  },
+  "release": {
+    "version": "20261003-main-d40ac8f1",
+    "sourceHead": "d40ac8f1e2c6ecfc632fa932ec2eefd4e2ca4ba3",
+    "indexSha256": "28ad83414da27d77a8e0e8e687f9f6c865702ab019bafeaa68cdff7837f1651c",
+    "indexVersionId": "2Si7fNle08qb5dLgEs4_bJ_FUsH6fCpH",
+    "invalidation": {
+      "Location": "https://cloudfront.amazonaws.com/2020-05-31/distribution/E3GZY0L85XH6FN/invalidation/IE89KLLXG0XSDGXWAH2JN9N0K3",
+      "Invalidation": {
+        "Id": "IE89KLLXG0XSDGXWAH2JN9N0K3",
+        "Status": "InProgress",
+        "CreateTime": "2026-10-03T06:16:01.166000+00:00",
+        "InvalidationBatch": {
+          "Paths": {
+            "Quantity": 2,
+            "Items": [
+              "/index.html",
+              "/"
+            ]
+          },
+          "CallerReference": "pawborough-d40ac8f1-1791008160"
+        }
+      }
+    },
+    "domain": "https://pawborough.onewonder.co.jp/",
+    "cloudFront": "https://d1c74tvoxrrqcb.cloudfront.net/",
+    "dependencyObjectsVerified": 294,
+    "entryVerified": true,
+    "publicPlayAccepted": true,
+    "anonymousS3": 403,
+    "policyChange": "WebHeaders only; no replacement, aliases/certificate/origin preserved",
+    "knownNonGameRequest": "favicon.ico403"
   }
 }
