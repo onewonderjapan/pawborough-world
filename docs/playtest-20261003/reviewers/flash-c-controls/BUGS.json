@@ -1,0 +1,153 @@
+[
+  {
+    "id": "BUG-C1-01",
+    "severity": "P1",
+    "title": "自行车下车（R）后主角直接生成在车架中心轴，身体与后轮及车体严重穿模穿插",
+    "checkpoint": "C1",
+    "reproducibleSteps": [
+      "1. 在中心广场靠近共享自行车，按 R 键上车。",
+      "2. 按 W 沿街骑行一段距离（如 20m），按 Space 刹停或按 S 倒车停止。",
+      "3. 保持完全静止，按 R 键下车。",
+      "4. 使用鼠标自由视角或默认后置摄像机观察主角与自行车相对位置。"
+    ],
+    "actual": "猫咪角色站立原点与自行车车体完全重合，灰猫腹部、右后腿直接陷在后轮辐条、链条和鞍座后方金属斜撑管内部，发生严重多边形穿插穿模。",
+    "expected": "执行下车逻辑时，系统应根据车身侧向法线方向赋予角色 0.6m~0.8m 的侧向位移（或调用 pickDismountSpot 寻找安全地面点），使角色自然站立在自行车左侧或右侧的地面上。",
+    "coordinates": [
+      -174.31,
+      0.060,
+      -31.90
+    ],
+    "screenshot": "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-c/browser/C1-07-dismounted.png",
+    "observedFact": "C1-07 截图中灰猫后肢与肚腹完全卡在自行车后车架与后车轮内部，角色与道具发生大面积穿透。",
+    "rootCauseHypothesis": "dismountVehicle 仅解除了骑乘物理绑定并注销了 RideController，未执行侧向落脚点计算与碰撞分离，导致直接采用车体当前 translation 恢复角色 feet 坐标。",
+    "reproCount": 1
+  },
+  {
+    "id": "BUG-C2-01",
+    "severity": "P1",
+    "title": "进食动作在默认第三人称背后视角下被角色后脑勺与后背100%遮挡，核心小吃与动作完全不可见",
+    "checkpoint": "C2",
+    "reproducibleSteps": [
+      "1. 从中心广场走到肠粉摊位前（或任意食品摊位）。",
+      "2. 保持默认第三人称跟踪视角，按 E 取餐拿到肠粉。",
+      "3. 按 F 键开始品尝，观察画面中心主角表现。"
+    ],
+    "actual": "摄像机固定在正后方背追机位，主角灰猫庞大的头部与厚重后背将胸前捧持的青瓷碗、肠粉模型、酱汁以及右爪木筷进食动作完全遮挡在盲区中；进食读条期间玩家仅能看见灰猫后背与左下角进度条，完全无法欣赏美食。",
+    "expected": "按下 F 键进食时，摄像机应触发专用的进食展示轨道（如平滑插值移动至前侧方 45 度半身特写机位），使玩家能清晰欣赏精细制作的美食模型与进食动作。",
+    "coordinates": [
+      -154.84,
+      0.060,
+      -25.16
+    ],
+    "screenshot": "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-c/browser/C2-03-eating-rear-default.png",
+    "observedFact": "C2-03 截图中画面中央仅呈现灰猫后脑勺与背毛，手中的碗碟与食物被 100% 遮挡。",
+    "rootCauseHypothesis": "进食状态机通用逻辑未配置自动化展示镜头轨道（Cinematic Camera Interpolation），依然沿用背追第三人称机位。",
+    "reproCount": 1
+  },
+  {
+    "id": "BUG-C0-01",
+    "severity": "P2",
+    "title": "HUD 左下角目标距离提示组件出现未定义变量占位符“undefined”",
+    "checkpoint": "C0",
+    "reproducibleSteps": [
+      "1. 进入游戏中心广场初始点。",
+      "2. 在未走近特定目标摊位前，直接观察屏幕左下角目标提示气泡。",
+      "3. 步行或骑车移动，观察该提示框内容刷新。"
+    ],
+    "actual": "左下角目标提示气泡文本字面渲染为“走近undefined（4.2m）可取肠粉摊”；在移动与下车后继续显示“走近undefined（3.6m）可取钵钵鸡摊”。",
+    "expected": "应显示正确的目标地名或区域名（如“走近肠粉摊（4.2m）”或“走近中心广场（4.2m）”），严禁出现字面 undefined 字符串。",
+    "coordinates": [
+      -157.75,
+      0.056,
+      -22.25
+    ],
+    "screenshot": "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-c/browser/C0-01-initial-center.png",
+    "observedFact": "C0-01、C0-02、C1-07 截图中左下角目标气泡首行文本明确包含“undefined”字符串。",
+    "rootCauseHypothesis": "HUD 目标提示模板字符串插值引用的目标对象属性（如 vendor.regionName 或 target.area）在部分配置中为 undefined，未做空值回退处理。",
+    "reproCount": 3
+  },
+  {
+    "id": "BUG-C1-02",
+    "severity": "P2",
+    "title": "骑乘状态下左下角操作指南出现三层卡片重复冗余堆叠",
+    "checkpoint": "C1",
+    "reproducibleSteps": [
+      "1. 在中心广场按 R 键骑上共享单车。",
+      "2. 保持骑乘状态，观察左下角 HUD 提示区域。"
+    ],
+    "actual": "左下角同时渲染了三层提示框：暗色背景操作气泡（包含W/S/Space/Shift/AD/R/鼠标）、常驻白色按键卡片（同样包含W/S/Space/AD/R/鼠标）、以及原本的步行控制条“WASD 走动 · Shift 小跑”，三层垂直堆叠严重占用视口空间。",
+    "expected": "骑上自行车后，步行操作条应立即隐藏；载具操作说明合并为单一张清晰卡片。",
+    "coordinates": [
+      -156.55,
+      0.051,
+      -22.25
+    ],
+    "screenshot": "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-c/browser/C1-01-bike-mounted.png",
+    "observedFact": "C1-01 截图中左下角明确呈现三层卡片同时并存渲染的视觉堆叠。",
+    "rootCauseHypothesis": "步行控制 HUD 组件与载具 HUD 组件各自监听独立的事件流，上车状态改变时未对步行条执行互斥隐藏。",
+    "reproCount": 1
+  },
+  {
+    "id": "BUG-C2-02",
+    "severity": "P2",
+    "title": "进食期间旧的“F 开吃”提示胶囊未清除残留，与品尝进度条重叠挂载",
+    "checkpoint": "C2",
+    "reproducibleSteps": [
+      "1. 取餐后按 F 键进入进食品尝状态。",
+      "2. 观察屏幕左下角进度条上方提示。"
+    ],
+    "actual": "在“慢慢品尝”进度条上方，依然持续显示旧的“拿到一份肠粉（免费试吃）· F 开吃”深色提示卡片。",
+    "expected": "进入 eating 状态后，旧的开吃动作引导胶囊应即时淡出销毁，只保留品尝进度提示。",
+    "coordinates": [
+      -154.84,
+      0.060,
+      -25.16
+    ],
+    "screenshot": "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-c/browser/C2-03-eating-rear-default.png",
+    "observedFact": "C2-03 截图中左下角品尝进度条上方依然并存正在提示 F 开吃的胶囊。",
+    "rootCauseHypothesis": "Toast 组件生命周期未监听 eating 状态机变化，导致旧通知未在状态进入 eating 时被清理。",
+    "reproCount": 1
+  },
+  {
+    "id": "BUG-C2-03",
+    "severity": "P2",
+    "title": "取餐后左下角弹出双层高度重合的开吃交互提示",
+    "checkpoint": "C2",
+    "reproducibleSteps": [
+      "1. 靠近肠粉摊按 E 键取餐。",
+      "2. 观察左下角弹出的交互气泡。"
+    ],
+    "actual": "左下角同时渲染了“拿到一份肠粉（免费试吃）· F 开吃”和“手上有肠粉 · F 开吃”两层同义气泡垂直重叠。",
+    "expected": "合并去重为单一条目提示，如“已拿到肠粉 · F 开吃”。",
+    "coordinates": [
+      -154.84,
+      0.060,
+      -25.16
+    ],
+    "screenshot": "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-c/browser/C2-02-changfen-held.png",
+    "observedFact": "C2-02 截图中两张提示卡片垂直叠放。",
+    "rootCauseHypothesis": "取餐成功事件触发的 Toast 与持有物品（heldItem）监听触发的 HUD Prompt 并发注入容器，缺少去重逻辑。",
+    "reproCount": 1
+  },
+  {
+    "id": "BUG-C2-04",
+    "severity": "P3",
+    "title": "取餐文案语法错误拼接摊位后缀：“取一份肠粉摊”",
+    "checkpoint": "C2",
+    "reproducibleSteps": [
+      "1. 在肠粉摊完成进食后，依然站在摊位前。",
+      "2. 观察左下角出现的再次可交互提示按键说明。"
+    ],
+    "actual": "按键提示文案显示为“E 取一份肠粉摊（免费试吃）”。",
+    "expected": "应为“E 取一份肠粉（免费试吃）”或“E 在肠粉摊取一份（免费试吃）”。",
+    "coordinates": [
+      -154.84,
+      0.060,
+      -25.16
+    ],
+    "screenshot": "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-c/browser/C2-05b-eating-front-detail.png",
+    "observedFact": "C2-05b 截图中文字明确显示“取一份肠粉摊”。",
+    "rootCauseHypothesis": "取餐交互模板使用了 vendor.title（肠粉摊）拼入“取一份{name}”，未去除“摊”字或未采用 food.name。",
+    "reproCount": 1
+  }
+]

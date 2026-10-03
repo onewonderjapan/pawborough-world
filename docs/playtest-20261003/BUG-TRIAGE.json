@@ -1,0 +1,176 @@
+{
+  "baseCommit": "9abe3ca4",
+  "scope": "OriginalFlashreportsretained;roottriage distinguishesobserved/renderedbehavior,verifiedcause,scriptdefectsandunmeasuredsuspicions.",
+  "issues": [
+    {
+      "id": "PLAY-01",
+      "severity": "P1",
+      "status": "confirmed_visual",
+      "title": "默认后视角遮挡手持食品与进食手势",
+      "reviewers": [
+        "a",
+        "b",
+        "c"
+      ],
+      "evidence": [
+        "flash-a/browser/boboji-held.png",
+        "flash-c/browser/C2-03-eating-rear-default.png"
+      ],
+      "note": "可用自由查看看见食品，但默认关键动作没有视觉回报；不是没有绑定或食物未生成。"
+    },
+    {
+      "id": "PLAY-02",
+      "severity": "P1",
+      "status": "confirmed_visual_rootcause_pending",
+      "title": "下车后角色可见身体与停放车架/后轮重叠",
+      "reviewers": [
+        "b",
+        "c"
+      ],
+      "evidence": [
+        "flash-c/browser/C1-07-dismounted.png"
+      ],
+      "note": "源代码已有pickDismountSpot及controller.teleport(spot.feet)；不能沿用“没算下车点”的试玩者推测。需核视觉网格与物理参照/净空。"
+    },
+    {
+      "id": "PLAY-03",
+      "severity": "P1",
+      "status": "confirmed_visual",
+      "title": "夜景角色毛色和体积被压成近黑剪影",
+      "reviewers": [
+        "b"
+      ],
+      "evidence": [
+        "flash-b/browser/extra-night-plaza.png"
+      ],
+      "note": "角色并非所有像素RGB0；实景屋檐明亮、角色暗部结构严重丢失。"
+    },
+    {
+      "id": "PLAY-04",
+      "severity": "P2",
+      "status": "observed_art",
+      "title": "方浜交界外景露大面积灰底/悬空远景",
+      "reviewers": [
+        "b"
+      ],
+      "evidence": [
+        "flash-b/browser/S08.png"
+      ],
+      "note": "图像层问题，不等同脚下穿地；保持已有可靠地面与安全边界。"
+    },
+    {
+      "id": "PLAY-05",
+      "severity": "P2",
+      "status": "confirmed_visual_and_source",
+      "title": "走近undefined、取一份XX摊的提示文案",
+      "reviewers": [
+        "a",
+        "b",
+        "c"
+      ],
+      "evidence": [
+        "flash-b/browser/extra-night-plaza.png"
+      ],
+      "note": "interaction.js混用stallLabelZh/labelZh和摊位名/食品名，建立稳定回退与准确文案。"
+    },
+    {
+      "id": "PLAY-06",
+      "severity": "P2",
+      "status": "confirmed_visual",
+      "title": "左下消息、状态提示与操作条多层重复堆叠",
+      "reviewers": [
+        "a",
+        "b",
+        "c"
+      ],
+      "evidence": [
+        "flash-a/browser/boboji-held.png"
+      ],
+      "note": "多个胶囊重复说拿到/手持/F开吃，抢占动作观看区。"
+    },
+    {
+      "id": "PLAY-07",
+      "severity": "P2",
+      "status": "observed_ux",
+      "title": "窄屏图鉴详情常驻挤压卡片浏览区",
+      "reviewers": [
+        "b"
+      ],
+      "evidence": [
+        "flash-b/browser/extra-atlas-mobile.png"
+      ],
+      "note": "边界不溢出不代表好用；详情折叠/抽屉与列表优先布局需单独验收。"
+    },
+    {
+      "id": "ART-08",
+      "severity": "P2",
+      "status": "subjective_art",
+      "title": "摊车台面、窗门和街道家具缺少类型差异与生活层次",
+      "reviewers": [
+        "a",
+        "b",
+        "c"
+      ],
+      "evidence": [
+        "flash-a/browser/boboji-held.png"
+      ],
+      "note": "当前统一毛绒/老街方向保持；可见道具、材质粗糙度、蒸气和摊牌差异按少量模板做小样。"
+    },
+    {
+      "id": "CHECK-09",
+      "severity": "P2",
+      "status": "reported_needs_measurement",
+      "title": "骑车脚踏接触、脚撑收起和动件细节需量化复核",
+      "reviewers": [
+        "a"
+      ],
+      "evidence": [
+        "flash-a/browser/bike-mounted.png"
+      ],
+      "note": "已有rider-fit实现，不能声称没有IK；先量真实骨骼脚点/踏板相位再决定修改。"
+    },
+    {
+      "id": "SCRIPT-01",
+      "severity": "P0",
+      "status": "fixed_tooling",
+      "title": "离线新增摊车未同步Rapier查询，规划踩到车中心",
+      "reviewers": [
+        "a",
+        "b",
+        "root_astra"
+      ],
+      "evidence": [
+        "flash-a/browser/blocked-S07.png",
+        "flash-b/browser/blocked-S09.png"
+      ],
+      "note": "world.step后清probeCache再规划；修正官方路线及旧路线测试初始化。游戏阻挡车体符合预期，不列游戏P0。"
+    },
+    {
+      "id": "SCRIPT-02",
+      "severity": "P1",
+      "status": "fixed_tooling_with_replay_pending",
+      "title": "卡住后的偏离路线坐标恢复会反向重走旧腿",
+      "reviewers": [
+        "a",
+        "root"
+      ],
+      "evidence": [
+        "flash-a/recovery-browser/blocked-S07.png"
+      ],
+      "note": "就近重入仅适合接近有效路线；实际存档被拒后从安全出生点重跑，A用真实已完成S06保存点补走。回放和连续旅程范围必须区分。"
+    },
+    {
+      "id": "CHECK-RETURN-10",
+      "severity": "P1",
+      "status": "observed_rootcause_pending",
+      "title": "旧v1方浜返程x50.37,z-20.45出现停滞",
+      "reviewers": [
+        "a-final"
+      ],
+      "evidence": [
+        "flash-a/final-browser/blocked-S11.png"
+      ],
+      "note": "复现2次；需分离地面/碰撞/格点跟路/转向容差。v1.1就地收尾减少冗余折返，不把改路线当作修游戏。"
+    }
+  ]
+}

@@ -1,0 +1,212 @@
+{
+  "total": 10,
+  "bugs": [
+    {
+      "id": "BUG-P0-01",
+      "severity": "P0",
+      "checkpoint": "S09",
+      "title": "S08>S09导航路线第40航点与毛豆腐餐车发生物理刚体撞击，导致巡航卡死阻断",
+      "coordinates": [
+        -39.5481,
+        0.0201,
+        17.048
+      ],
+      "reproSteps": "从 S08 检查点出发，沿官方路线 S08>S09 航线导航行进至第 40 个航点。",
+      "actual": "主角直线移动正对毛豆腐餐车（food-vendor-maodoufu，坐标 X:-37.75, Z:17.75）后轮与车体发生物理碰撞阻挡，无法进入航点 0.16m 半径内，5 秒内位移停滞，触发 Navigation stalled S09 waypoint 40 异常中断。",
+      "expected": "关卡摊位摆放应避开主街核心动线通道；同时 WalkController 应具备贴墙切线滑移或局部动态避障能力，即使路标靠近障碍物也不应死锁。",
+      "observedFacts": "连续两次执行均在坐标 [-39.5481, 0.0201, 17.0480] 产生 Navigation stalled S09 waypoint 40 错误；blocked-S09.png 截图中灰猫正脸贴住毛豆腐餐车后侧；events.jsonl 记录了 checkpoint-blocked。",
+      "rootCauseHypothesis": "毛豆腐摊位（customerPoint Z:17.75）的模型碰撞体半径约 1.2m，直接覆盖了路线航点 Z:16.75 的直线路径；而测试控制器的 go() 函数只执行刚性直接转向与直线驱动，无局部避障算子。",
+      "reproCount": 2,
+      "evidencePaths": [
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/browser/blocked-S09.png"
+      ]
+    },
+    {
+      "id": "BUG-P1-01",
+      "severity": "P1",
+      "checkpoint": "S01",
+      "title": "默认第三人称机位在进食及手持食物时被角色后背与头部完全遮挡，食物模型不可见",
+      "coordinates": [
+        -154.67,
+        0.06,
+        -25.33
+      ],
+      "reproSteps": "在任意摊位（肠粉、小笼包、肉夹馍等）按 E 取餐并按 F 进食，在默认摄像机角度下观察。",
+      "actual": "摄像机锁定在主角后方水平高度，主角庞大的头部与背部将双手捧持的食物、餐具及进食咀嚼动画 100% 挡住，玩家只能看到后脑勺与左下角抽象进度条。",
+      "expected": "进食动作触发时，镜头应平滑过渡至前侧 45 度半身机位或特写展示机位，使玩家清晰欣赏 48 款地域特色小吃的模型造型与进食细节。",
+      "observedFacts": "在 changfen-eating-default-view.png、xiaolongbao-eating-default-view.png、roujiamo-eating-default-view.png 中，进食时食物与面部动作均被完全遮挡，不可视率 100%。",
+      "rootCauseHypothesis": "进食状态机通用逻辑未挂载独立的 CameraTrack 进食特写轨道，摄像机继续沿用基础背追第三人称弹簧臂配置。",
+      "reproCount": 4,
+      "evidencePaths": [
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/browser/changfen-eating-default-view.png",
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/browser/xiaolongbao-eating-default-view.png",
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/browser/roujiamo-eating-default-view.png"
+      ]
+    },
+    {
+      "id": "BUG-P1-02",
+      "severity": "P1",
+      "checkpoint": "S03",
+      "title": "自行车下车（R）后主角生成于车身几何中心，与车架及后轮严重穿模",
+      "coordinates": [
+        -158.2,
+        0.7,
+        -26.1
+      ],
+      "reproSteps": "按 R 骑上共享自行车，行驶后按 S 倒车刹停，按 R 键下车。",
+      "actual": "角色下车瞬间直接立于自行车中轴线上，主角下腹部、双腿与车架立管、坐垫支架和后轮金属辐条严重穿插重叠。",
+      "expected": "下车逻辑应根据车身朝向，将角色下落点偏移至自行车左侧或右侧 0.6m~0.8m 处，自然站立在车侧。",
+      "observedFacts": "boboji-eating-default-view.png 截图中，灰猫下身与车架横管及后轮机械结构发生重度几何穿透。",
+      "rootCauseHypothesis": "dismountVehicle 函数仅解绑骑乘状态，未对角色 feet 世界坐标添加侧向法线偏移（lateral dismount offset）。",
+      "reproCount": 1,
+      "evidencePaths": [
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/browser/boboji-eating-default-view.png"
+      ]
+    },
+    {
+      "id": "BUG-P1-03",
+      "severity": "P1",
+      "checkpoint": "S08",
+      "title": "方浜交界处西侧（左半屏）外景遮挡大面积缺失，直面无限灰地与浮空远景穿帮",
+      "coordinates": [
+        -97.86,
+        0.04,
+        20.75
+      ],
+      "reproSteps": "行进至方浜交界路口（X: -95.5 ~ -98），面朝西向或南向街景观察。",
+      "actual": "道路左侧没有任何行道树、围墙、门头或弄堂山墙遮挡，画面左侧 50% 区域裸露大片未铺贴材质的纯灰地面，天际线处孤立漂浮着超低模纸片楼，严重破坏世界沉浸感。",
+      "expected": "街区边缘应设完整的封边资产（如 90 年代砖砌弄堂围墙、水刷石门楼、茂密梧桐行道树），严格封死视野视线，隐藏地图外虚空。",
+      "observedFacts": "seam-two-directions.png 与 S08.png 截图中左半侧画面大面积空洞穿帮。",
+      "rootCauseHypothesis": "方浜地块西侧与南侧属于未制作完成的外边缘，制作管线未布置边界阻挡网格（outer boundary facade/tree barrier）。",
+      "reproCount": 1,
+      "evidencePaths": [
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/browser/seam-two-directions.png",
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/browser/S08.png"
+      ]
+    },
+    {
+      "id": "BUG-P1-04",
+      "severity": "P1",
+      "checkpoint": "EXTRA-S11-OBS",
+      "title": "夜景模式（light=night）主角模型由于缺乏角色专属补光变成死黑剪影",
+      "coordinates": [
+        -157.75,
+        0.04,
+        -22.25
+      ],
+      "reproSteps": "加载带有 &light=night 参数的中心广场夜景环境。",
+      "actual": "建筑夜景灯火通明，但位于画面中央的主角灰猫完全沦为纯黑色剪影块（RGB 均值 < 10），毛发层次、五官结构与背部斑纹全部不可视。",
+      "expected": "夜景管线应挂载主角专属微弱边缘补光灯（Player Rim Light）或抬高角色材质的最小环境光发射（Emissive/Ambient floor），保证黑夜中角色生动可辨。",
+      "observedFacts": "extra-night-plaza.png 截图中，主角居中呈现一团无层次的死黑剪影。",
+      "rootCauseHypothesis": "夜景光照系统仅针对建筑环境添加了局部暖色点光源，缺乏动态跟随角色的三点式补光系统，且着色器材质无最小微光阈值。",
+      "reproCount": 1,
+      "evidencePaths": [
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/browser/extra-night-plaza.png"
+      ]
+    },
+    {
+      "id": "BUG-P2-01",
+      "severity": "P2",
+      "checkpoint": "S00",
+      "title": "交互提示框文本出现 undefined 占位符字符串漏洞",
+      "coordinates": [
+        -157.75,
+        0.06,
+        -22.25
+      ],
+      "reproSteps": "在中心广场或靠近未交互摊位时，观察左下角距离引导提示气泡。",
+      "actual": "提示框文案显示为“走近undefined（4.2m）可取肠粉摊”或“走近undefined（1.9m）可取毛豆腐摊”。",
+      "expected": "应正确显示目标地点名称，如“走近肠粉摊（4.2m）可取餐”，若地名为空应使用默认字样“走近摊位”。",
+      "observedFacts": "S00.png 与 blocked-S09.png 中均有“走近undefined”文字直接暴露在屏幕左下角。",
+      "rootCauseHypothesis": "摊位对象数据结构中未定义 targetName 或 vendorArea 字段，模板字符串  取到了 undefined 未作默认回退降级。",
+      "reproCount": 2,
+      "evidencePaths": [
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/browser/S00.png",
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/browser/blocked-S09.png"
+      ]
+    },
+    {
+      "id": "BUG-P2-02",
+      "severity": "P2",
+      "checkpoint": "S01",
+      "title": "拾取食物、进食中及骑行时 HUD 提示胶囊多层重叠与状态冗余",
+      "coordinates": [
+        -154.67,
+        0.06,
+        -25.33
+      ],
+      "reproSteps": "1. 拾取食物后观察提示；2. 进食中观察提示；3. 骑车时观察提示。",
+      "actual": "1. 拾取后同时显示“拿到一份XX · F 开吃”和“手上有XX · F 开吃”；2. 进食时“拿到一份XX · F 开吃”常驻于品尝进度条上方；3. 骑车时同时堆叠“骑上共享自行车...”、“W加速...”与“WASD走动...”。",
+      "expected": "HUD 提示容器应有严密的排他状态机，骑车时隐藏步行提示，进食时隐藏开吃提示，取餐时去重合并。",
+      "observedFacts": "changfen-held.png、changfen-eating-default-view.png、bike-mounted.png 中均记录了 2~3 层提示胶囊纵向堆叠霸屏。",
+      "rootCauseHypothesis": "Toast 组件、常驻交互提示组件与控制引导组件独立运行，缺乏统一的 UI 状态优先级仲裁器。",
+      "reproCount": 5,
+      "evidencePaths": [
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/browser/changfen-held.png",
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/browser/changfen-eating-default-view.png",
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/browser/bike-mounted.png"
+      ]
+    },
+    {
+      "id": "BUG-P2-03",
+      "severity": "P2",
+      "checkpoint": "S04",
+      "title": "商业街与路口建筑门窗立面大面积死黑无光泽，形成黑色空洞",
+      "coordinates": [
+        -139.73,
+        0.04,
+        25.1
+      ],
+      "reproSteps": "在小笼包摊位及方浜路口建筑前，观察背后商铺内景与门窗玻璃。",
+      "actual": "门洞与窗洞呈现大块纯黑切块（RGB 0,0,0），缺少室内空间层次或老式玻璃微弱漫反射反光。",
+      "expected": "封闭立面应贴合老上海杂货铺内景贴图、窗花格栅或带法线微漫反射材质，消除纯黑死角。",
+      "observedFacts": "S04.png 与 S08.png 中建筑大窗口与门廊处有非常扎眼的死黑矩形块。",
+      "rootCauseHypothesis": "closedFacades 网格采用全黑无漫反射材质，或由于环境背光被剔除漫反射计算。",
+      "reproCount": 2,
+      "evidencePaths": [
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/browser/S04.png",
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/browser/S08.png"
+      ]
+    },
+    {
+      "id": "BUG-P2-04",
+      "severity": "P2",
+      "checkpoint": "EXTRA-S11-OBS",
+      "title": "移动端窄屏（360x800）图鉴手账内容区被底部详情卡片严重挤压，浏览体验逼仄",
+      "coordinates": [
+        -157.75,
+        0.04,
+        -22.25
+      ],
+      "reproSteps": "将页面视口设为移动端尺寸（360x800），按 B 键打开寻味手账。",
+      "actual": "顶部标题/章节栏与底部小吃详情卡片固定占据了超过 70% 的纵向高度，中间核心的 2 列卡片滚动列表仅露出 1.5 行，玩家无法顺畅上下浏览。",
+      "expected": "窄屏模式下，详情卡片应默认收折为底部单行概要（点击后再向上滑出抽屉），将至少 60% 屏幕纵向面积让给小吃网格。",
+      "observedFacts": "extra-atlas-mobile.png 截图清晰显示中间网格卡片被上下两端挤压得极度狭窄。",
+      "rootCauseHypothesis": "CSS 媒体查询在小屏下固定写死了详情卡片的 padding 与 flex 比例，未作响应式折叠处理。",
+      "reproCount": 1,
+      "evidencePaths": [
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/browser/extra-atlas-mobile.png"
+      ]
+    },
+    {
+      "id": "BUG-P3-01",
+      "severity": "P3",
+      "checkpoint": "S01",
+      "title": "肠粉摊位取餐文本多余拼接“摊”字：“取一份肠粉摊”",
+      "coordinates": [
+        -154.67,
+        0.06,
+        -25.33
+      ],
+      "reproSteps": "在肠粉摊位前按 E 取餐后再次观察交互提示。",
+      "actual": "按钮提示文字为“E 取一份肠粉摊（免费试吃）”。",
+      "expected": "文字应为“E 取一份肠粉（免费试吃）”。",
+      "observedFacts": "S01.png 中交互按钮文案带有错误的“摊”字。",
+      "rootCauseHypothesis": "取餐逻辑将 vendorTitle（肠粉摊）直接代入“取一份{title}”字符串模板中。",
+      "reproCount": 1,
+      "evidencePaths": [
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/browser/S01.png"
+      ]
+    }
+  ]
+}

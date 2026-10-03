@@ -1,0 +1,201 @@
+{
+  "status": "plan_for_owner_review_not_started",
+  "baseCommit": "9abe3ca4",
+  "executionPolicy": "Flashconstruction;rootcontracts/acceptance;onewriterperfile;originalassetsreadonly;noautomaticcloudrelease",
+  "orders": [
+    {
+      "id": "U01",
+      "name": "提示与图鉴浏览整理",
+      "priority": "P2quick",
+      "scope": [
+        "web/play/interaction.js",
+        "web/play/hud.js",
+        "web/play/play.css",
+        "web/play/atlas.js",
+        "web/play/atlas.css"
+      ],
+      "depends": [],
+      "acceptance": [
+        "S00/S01/S03无undefined或取一份摊名",
+        "拿取/持有/进食/骑车只保留一条主要动作提示",
+        "360x800卡片列表至少稳定可浏览两行；详情按需展开",
+        "图鉴键盘焦点/Esc/进食暂停/旧收藏不回归"
+      ],
+      "skill": [
+        "game-playtest",
+        "game-ui-frontend"
+      ]
+    },
+    {
+      "id": "U02",
+      "name": "下车视觉净空与停放参照",
+      "priority": "P1",
+      "scope": [
+        "web/play/install.js",
+        "web/play/vehicle.js",
+        "web/play/bike-view.js",
+        "tests/play_vehicle.test.mjs"
+      ],
+      "depends": [],
+      "acceptance": [
+        "重现C1-07同场景R下车，真实可见身体/尾巴与车轮车架分离",
+        "落点仍有真实地面且胶囊不碰墙，四侧拥挤时给提示",
+        "车位置/物理heading/用户viewYaw/车篮食物UUID/存档不变形"
+      ],
+      "skill": [
+        "pawborough-game-client",
+        "three-webgl-game"
+      ]
+    },
+    {
+      "id": "U03",
+      "name": "持物与进食的可读镜头",
+      "priority": "P1",
+      "scope": [
+        "web/play/camera.js",
+        "web/play/install.js",
+        "web/play/food-pose.js",
+        "web/play/avatar.js"
+      ],
+      "depends": [
+        "U02"
+      ],
+      "acceptance": [
+        "S01/S02/S04/S05/S09默认或一次明确查看动作能看到食品、双爪和嘴部",
+        "四类进食、不同街宽/近墙、骑车上下来回验证",
+        "镜头变化不改玩家位置/车头，不绕过墙遮挡；Esc/图鉴/失焦恢复保持当前视图",
+        "食品容器/包装/工具不变小、握持与接触既有PASS保留"
+      ],
+      "skill": [
+        "pawborough-game-client",
+        "game-playtest",
+        "three-webgl-game"
+      ]
+    },
+    {
+      "id": "U04",
+      "name": "夜景角色与食物补光小样",
+      "priority": "P1art",
+      "scope": [
+        "web/lighting.js",
+        "web/material-style.js",
+        "web/play/avatar.js",
+        "lighting/presets.json"
+      ],
+      "depends": [],
+      "acceptance": [
+        "同S00/S01/S03镜头对比day/dusk/night：能辨识毛色、脸、四肢和食物",
+        "夜街保持暗景暖灯层次，不把整个世界照成白天",
+        "固定设备分辨率/相机实测资源与p95；不增加无界点光或过曝材质"
+      ],
+      "skill": [
+        "3d-asset-reuse",
+        "three-webgl-game",
+        "game-playtest"
+      ]
+    },
+    {
+      "id": "U05",
+      "name": "中心—食摊—方浜交界的整体美术试验段",
+      "priority": "P2art",
+      "scope": [
+        "web/material-style.js",
+        "web/street-life.js",
+        "inputs/world-art-style.json",
+        "inputs/street-life.json",
+        "asset-authoring小样"
+      ],
+      "depends": [
+        "U04"
+      ],
+      "acceptance": [
+        "固定三处昼夜照片，灰底/黑缝/死黑窗改成有深度的边界、反射/粗糙度与遮挡层次",
+        "地面保持真实通行面，闭店外观明确暂不开放，门洞/桥口不被视觉道具封掉",
+        "先交可见小样和before/after再推广全图；原世界GLB只读，素材复用来源/预算清楚"
+      ],
+      "skill": [
+        "pawborough-static-architecture",
+        "3d-asset-reuse",
+        "web-3d-asset-pipeline"
+      ]
+    },
+    {
+      "id": "U06",
+      "name": "小吃摊与食品展示的类型化",
+      "priority": "P2art",
+      "scope": [
+        "web/play/vendor-layer.js",
+        "web/play/vendor-displays.js",
+        "web/street-life.js",
+        "asset-authoring/snacks",
+        "inputs/street-life.json"
+      ],
+      "depends": [
+        "U03",
+        "U05"
+      ],
+      "acceptance": [
+        "选肠粉/钵钵鸡/瓦罐汤三摊：蒸箱/红油盆/煨罐与招牌能区别品类，手持份量能读",
+        "只做少量可共享模板，台面道具不伸入通行区，不放新碰撞遮住顾客点",
+        "陈列底面对齐、手/篮/嘴anchors、8resident/2concurrent/3nearbydisplay预算保持"
+      ],
+      "skill": [
+        "3d-asset-reuse",
+        "web-3d-asset-pipeline",
+        "game-playtest"
+      ]
+    },
+    {
+      "id": "U07",
+      "name": "骑乘姿势与机械细节量化",
+      "priority": "P2art_measurefirst",
+      "scope": [
+        "web/play/rider-fit.js",
+        "web/play/bike-view.js",
+        "web/play/bike-art.js",
+        "asset-authoring车辆小样"
+      ],
+      "depends": [
+        "U02"
+      ],
+      "acceptance": [
+        "按C1静止/前进/转弯/倒车，先量手—车把/臀—鞍座/脚—踏板的真实接触",
+        "确认是否脚撑未收或踏板未随相位；只改已测偏差，保留原角色身份",
+        "W/S/Space转向安全、物理尺寸/停放/载物/旧档兼容不改坏"
+      ],
+      "skill": [
+        "pawborough-game-client",
+        "3d-asset-reuse",
+        "game-playtest"
+      ]
+    },
+    {
+      "id": "U08",
+      "name": "把官方路线变成玩家短途体验引导",
+      "priority": "P2gameplay",
+      "scope": [
+        "web/play/state.js",
+        "web/play/hud.js",
+        "web/play/minimap.js",
+        "inputs路线/站点数据"
+      ],
+      "depends": [
+        "U01",
+        "U02",
+        "U03",
+        "U06"
+      ],
+      "acceptance": [
+        "新玩家能选择短途尝鲜/长街巡游/继续图鉴；第一口附近食物清楚可达",
+        "目标与官方路线一致，已发现后可追踪；未发现食物不泄露精确点位",
+        "沿既有可靠路线骑行与吃东西形成循环，48味/34地区收藏与旧档继续兼容",
+        "只加轻量路线目标/完成章，不顺手扩数据库、地图面积或换引擎"
+      ],
+      "skill": [
+        "pawborough-game-client",
+        "three-webgl-game",
+        "game-playtest"
+      ]
+    }
+  ]
+}

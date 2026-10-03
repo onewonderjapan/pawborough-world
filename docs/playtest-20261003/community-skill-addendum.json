@@ -1,0 +1,48 @@
+{
+  "title": "Pawborough社区Three.js Skill补充调查",
+  "date": "2026-10-03",
+  "scope": "只读线上研究；没有安装、复制、运行或修改",
+  "repository": {
+    "name": "Three.js Game Skills",
+    "url": "https://github.com/majidmanzarpour/threejs-game-skills",
+    "maintainer": "Majid Manzarpour",
+    "license": "MIT",
+    "licenseUrl": "https://github.com/majidmanzarpour/threejs-game-skills/blob/main/LICENSE",
+    "maintenanceEvidence": [
+      "GitHub仓库页面显示11 commits、2 issues、3 pull requests",
+      "README列出9个专用Skill和5个可试玩demo链接",
+      "README称提供Vite+TypeScript+Three.js脚手架、Playwright smoke/visual regression/bot templates"
+    ],
+    "unverified": [
+      "精确最新提交时间未确认",
+      "未展示发布版本或CI通过证据",
+      "demo未试玩、脚手架检查未运行",
+      "作者的AAA/production-grade自述未独立验证"
+    ]
+  },
+  "skillsReviewed": [
+    {
+      "name": "threejs-gameplay-systems",
+      "url": "https://raw.githubusercontent.com/majidmanzarpour/threejs-game-skills/main/skills/threejs-gameplay-systems/SKILL.md",
+      "maintainer": "Majid Manzarpour",
+      "license": "MIT via repository LICENSE",
+      "plainThree": "适配：Three.js modules, three/addons, Vite；Skill例子栈含TypeScript，现仓不应因此迁语言",
+      "interactionCameraPhysics": "明列input、camera、collision、vehicles、character controller；大改有三份设计工件，小改沿用现有设计，按可玩增量推进",
+      "gltfGlb": "本Skill没有明确的GLB loader/压缩契约；不以README中其他未审Skill替代证据",
+      "recommendation": "特定玩法/镜头工单可按需参考，暂不安装"
+    },
+    {
+      "name": "threejs-aaa-graphics-builder",
+      "url": "https://raw.githubusercontent.com/majidmanzarpour/threejs-game-skills/main/skills/threejs-aaa-graphics-builder/SKILL.md",
+      "maintainer": "Majid Manzarpour",
+      "license": "MIT via repository LICENSE",
+      "materialLight": "适配：先形体、再材质、后灯光与效果；要求从active-play截图定位弱项",
+      "performanceAssets": "提及technical art budgets、材质库、LOD/instancing、导入资产清理、shader/post-process；量化指标需按受影响范围应用",
+      "animation": "要求在真实玩法画面核对locomotion、blend、脚接触、受击时机、secondary motion",
+      "costRisk": "高级评分门槛可能过重；指标对Three.js r180未核；套件包含可选外部API生成流程，脚手架--force会覆盖碰撞文件",
+      "recommendation": "美术大改时可挑方法参考，暂不采用其总流程或评分门槛"
+    }
+  ],
+  "overallRecommendation": "可参考但暂不安装。优先沿用OpenAI已装game-playtest、three-webgl-game、web-3d-asset-pipeline和Pawborough项目Skills。社区候选增加玩法手感与形体到灯光的表达，但不替代本项目相机、骑车、碰撞和资产契约。",
+  "nextExperiment": "如有下一次镜头/玩法手感变更，固定现有路线的速度/输入、Rapier碰撞、相机起点和视口，只调一个变量；保存同条件截图/录像和Playwright路径证据，以Pawborough专用检查作通过依据。"
+}

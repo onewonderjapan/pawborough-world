@@ -1,0 +1,155 @@
+{
+  "total": 6,
+  "suggestions": [
+    {
+      "id": "ART-SUGG-01",
+      "theme": "进食手持交互与动态镜头轨道",
+      "title": "小吃进食与手持展示的自适应多角度机位与角色分层握姿升级",
+      "checkpoint": "S01/S04/S05/S09",
+      "coordinates": [
+        -154.67,
+        0.06,
+        -25.33
+      ],
+      "currentIssue": "默认第三人称镜头完全锁死在角色背后，灰猫圆硕的头部与宽大后背将双手捧拿的食物模型、餐具与咀嚼动画100%遮挡，致使48道高精度特色小吃在品尝核心时刻处于不可视盲区。",
+      "actualVsExpected": {
+        "actual": "changfen-eating-default-view.png、xiaolongbao-eating-default-view.png、waguan-tang-eating-default-view.png 中，进食时镜头固定在正后方，只能看到后脑勺与底部UI进度条，食物完全被自身遮挡。",
+        "expected": "进食触发时，镜头平滑切至侧前方45度半身特写机位（FoV收缩至45度，景深虚化背景），清晰呈现主角生动的进食咀嚼神态与精致的小吃造型。"
+      },
+      "concreteVisibleChanges": {
+        "cameraOrbit": "进食（按F）触发瞬间，摄像机通过平滑贝塞尔曲线自动绕转至角色侧前方45度、微俯角15度半身景别，将主角进食的萌系面部神态与精致小吃全貌置于黄金视觉中心。",
+        "handPosture": "依据小吃分类引入分层IK手姿：串品（钵钵鸡）单爪斜握竹签前倾20度；包点（小笼包、生煎）双手捧底轻托；汤罐（瓦罐汤）双爪合抱陶罐边缘；纸包（肉夹馍）双爪轻捏纸袋两侧。",
+        "foodProportions": "食物体量相比现实标准按卡通比例微幅放大15%，增强在猫咪掌心的视觉分量与食材颗粒辨识度。"
+      },
+      "evidencePaths": [
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/recovery-browser/changfen-eating-default-view.png",
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/recovery-browser/xiaolongbao-eating-default-view.png",
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/recovery-browser/waguan-tang-eating-default-view.png"
+      ]
+    },
+    {
+      "id": "ART-SUGG-02",
+      "theme": "建筑立面与街景软装（90年代海派小城风貌）",
+      "title": "90年代海派小城沿街商铺烟火气与生活质感软装升级（消除死黑窗洞）",
+      "checkpoint": "S04/S08",
+      "coordinates": [
+        -139.73,
+        0.04,
+        25.1
+      ],
+      "currentIssue": "沿街门面高度同质化，一律采用统一紧闭的素面木板门，招牌字号缺失，封闭立面窗框内部大面积死黑（RGB 0,0,0），整体街市像清空歇业的影视城布景。",
+      "actualVsExpected": {
+        "actual": "S04.png 与 S08.png 中，小吃摊位背后商铺门洞与整排窗户呈现大块死黑切块，无任何反光与空间感。",
+        "expected": "消除死黑空洞。门窗应贴合老海派杂货铺、南货店或居室内景贴图，附带老式海棠压花玻璃微漫反射及微弱暖黄室内光。"
+      },
+      "concreteVisibleChanges": {
+        "signageAndBranding": "为各商铺增设90年代海派手写美术字招牌、红底金字木匾、白底红字搪瓷门牌（如“方浜中路88号”）、红白条纹折叠遮阳雨篷与悬挂式老布幌子。",
+        "facadeMaterials": "彻底消除死黑窗洞。封闭窗框采用老上海老石库门常见的海棠压花毛玻璃贴图，附带微弱室内暖光透射贴图与老物件剪影（木书架、老座钟、热水瓶）。",
+        "streetProps": "沿墙角与门前增设90年代老物件生活道具组：墨绿色竹壳暖水瓶、叠放的木质啤酒周转箱、靠墙晾晒的竹竿衣架、生锈铁皮垃圾桶，地面铺装边缘增加青苔暗斑与排水明沟暗槽。"
+      },
+      "evidencePaths": [
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/recovery-browser/S04.png",
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/recovery-browser/S08.png"
+      ]
+    },
+    {
+      "id": "ART-SUGG-03",
+      "theme": "小吃食摊道具质感（48小吃食摊氛围）",
+      "title": "小吃摊位操作台材质精细化与热气蒸腾动态粒子组",
+      "checkpoint": "S01/S04/S09",
+      "coordinates": [
+        -154.67,
+        0.06,
+        -25.33
+      ],
+      "currentIssue": "小笼包、肠粉、瓦罐汤等摊位操作台面呈现无质感纯色色块，案台上蒸笼与炊具缺少制作细节、调料罐与现做现卖的热气腾腾氛围。",
+      "actualVsExpected": {
+        "actual": "S01.png、S04.png 中餐车案台平整空旷，蒸笼无蒸气冒出，瓦罐汤摊位无炭火煨制大瓮，缺乏市井小吃的食欲感。",
+        "expected": "蒸笼与火口上方应有轻柔袅袅升腾的半透明白烟水汽粒子，台面点缀青花调料罐、油壶与毛笔价格牌，唤醒市井烟火气。"
+      },
+      "concreteVisibleChanges": {
+        "steamParticles": "在小笼包竹蒸笼、肠粉蒸箱、瓦罐汤火口上方配置半透明柔和热气粒子发射器，粒子轻缓袅袅升腾1.5米后扩散淡出，带顺光微弱白色高光。",
+        "stallMaterials": "餐车木质台面增加深胡桃木色木纹与边缘轻度磨损凹凸贴图；案板区域赋予不锈钢金属度与水渍反光粗糙度贴图；蒸笼赋予清晰的竹篾横向编织纹与细密竹节圈。",
+        "propSetDressing": "案台上点缀青白瓷调料壶（红醋/香油）、深色粗陶酱菜罐、磨损木筷筒与手写毛笔小价格牌（“鲜肉小笼 肆元伍角”、“瓦罐老鸭汤 陆元”），强化小吃现场制作的生动感。"
+      },
+      "evidencePaths": [
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/recovery-browser/S01.png",
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/recovery-browser/S04.png",
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/recovery-browser/S09.png"
+      ]
+    },
+    {
+      "id": "ART-SUGG-04",
+      "theme": "场景闭合度与边界转角（消除方浜西侧穿帮）",
+      "title": "世界外边缘与边界转角的外景遮挡体系建设（方浜西侧封边）",
+      "checkpoint": "S08",
+      "coordinates": [
+        -98.0,
+        0.02,
+        20.75
+      ],
+      "currentIssue": "方浜交界路口西侧完全裸露未铺贴材质的单色灰色大平板地面，视野直接贯穿至天际线并露出浮空的低模切口，场景空间闭合性破损。",
+      "actualVsExpected": {
+        "actual": "seam-two-directions.png 与 S08.png 中，街区右侧为平直截断的灰色无材质平面与未完工地基切口，地图外虚空完全暴露。",
+        "expected": "街道尽头与右侧应有石库门山墙、砖砌弄堂高墙、过街骑楼以及交错繁茂的法国梧桐树冠，彻底将视线封闭在具有沉浸感的街巷内部。"
+      },
+      "concreteVisibleChanges": {
+        "architecturalEnclosure": "在方浜西侧道路尽头横向架构一座二层砖木过街楼骑楼，两侧衔接石库门风火山墙与水刷石高围墙，构成自然的街道视觉转折终点。",
+        "vegetationScreen": "沿开阔边缘错落密植3-5株老上海标志性的高大悬铃木（法国梧桐），利用交错的茂密掌状叶冠层封挡天空与远处虚空，地面散落微量落叶贴花。",
+        "skyboxDepth": "将浮空纸片楼替换为具备大气景深雾效的90年代上海远景城市天际线（多层红砖老公房剪影与远处水塔），消除穿帮感。"
+      },
+      "evidencePaths": [
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/recovery-browser/seam-two-directions.png",
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/recovery-browser/S08.png"
+      ]
+    },
+    {
+      "id": "ART-SUGG-05",
+      "theme": "夜景光影与角色辨识度（夜游照明系统）",
+      "title": "夜景模式主角专属边缘补光与复古街灯地景氛围营造",
+      "checkpoint": "S11",
+      "coordinates": [
+        -157.75,
+        0.04,
+        -22.25
+      ],
+      "currentIssue": "夜景模式（light=night）下，主角灰猫因背对建筑檐下灯光沦为纯黑死影（RGB接近0），失去角色毛绒质感与轮廓表现；自行车停放在阴暗处完全丢失结构细节。",
+      "actualVsExpected": {
+        "actual": "night-plaza.png 截图中，中心广场灯火通明，但画面中央的主角灰猫呈现完全没有色彩和毛发层次的纯黑剪影（RGB < 10）。",
+        "expected": "夜间主角身上应有浅金色微弱边缘轮廓光（Rim Light）以及眼部灵动高光，石板路面反射红灯笼与檐下暖光，形成润泽流光的夜市。"
+      },
+      "concreteVisibleChanges": {
+        "characterRimLight": "在夜景光照系统挂载跟随摄像机侧上方的无阴影冷暖双色专属补光灯（Rim Light，强度0.35），以浅金色细微高光勾勒出主角猫咪耳朵、脊背与尾部绒毛轮廓，并在眼部添加微弱反光高光点。",
+        "bikeDynamoLamp": "自行车龙头下端增配一盏老式复古磨电车灯，开启微弱黄色前向锥形聚光灯，投射出车前1.5米的光斑，骑行时随车身轻微晃动，极大强化夜行骑游情怀。",
+        "wetPavementSpecular": "在夜景石板路面着色器中提升湿润度反射，使灯笼红光与门楣暖黄光在石面形成柔美漫延倒影，呈现江南夜市典型的雨润石街质感。"
+      },
+      "evidencePaths": [
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/recovery-browser/night-plaza.png"
+      ]
+    },
+    {
+      "id": "ART-SUGG-06",
+      "theme": "关卡空间规划与街巷视线可读性（UX优化建议）",
+      "title": "商业街动线通视廊道与餐车点位微调规划建议",
+      "checkpoint": "S09",
+      "coordinates": [
+        -37.75,
+        0.02,
+        17.75
+      ],
+      "currentIssue": "原毛豆腐餐车（X:-37.75, Z:17.75）与酸辣粉车点位位于主街向狭窄弄堂转折的关键交界处，车体体积大（宽度约2.2米），容易在玩家第三人称视野中产生突兀阻断感。",
+      "actualVsExpected": {
+        "actual": "blocked-S09.png 记录了角色在直线巡航时正冲餐车后侧，虽然符合真实刚体物理，但对玩家步行视线有一定视觉压迫与路宽收紧感。",
+        "expected": "主路转角处预留宽度不低于 3.5 米的主通行廊道，大型餐车宜背靠实体墙面凹角放置，并在车体两侧增设暖色挂灯或地面引导地贴以明确可通行路径。"
+      },
+      "concreteVisibleChanges": {
+        "stallOffset": "将毛豆腐餐车向路侧建筑凹入台阶退避 0.8 米，车身沿街面微偏转 15 度顺应街巷走向，避免车尾正冲主街来向。",
+        "visualWayfinding": "在餐车侧面挂置复古手绘灯箱路牌，地面铺设与主干道略有区分的水磨石或红砖辅装，清晰提示玩家此为“摊位区”而非“行车主道”。"
+      },
+      "evidencePaths": [
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/browser/blocked-S09.png",
+        "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/recovery-browser/S09.png"
+      ]
+    }
+  ]
+}

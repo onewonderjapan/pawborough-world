@@ -1,0 +1,130 @@
+[
+  {
+    "id": "BUG-S07-01",
+    "severity": "P0",
+    "title": "S07官方巡游路线航点与酸辣粉摊位物理碰撞体重合导致自动导航完全卡死阻断",
+    "checkpoint": "S07",
+    "reproducibleSteps": [
+      "1. 从中心广场按顺序游览至 S06（奶豆腐摊位）并完成进食。",
+      "2. 执行官方路线下一站 S07（清补凉摊位，leg S06>S07）。",
+      "3. 观察角色沿着沥青路面人行道自动前行过程。"
+    ],
+    "actual": "行进至 leg S06>S07 waypoint 24（[-216.25, 0.04, -88.25]）时，角色正前方正面撞击酸辣粉摊位推车物理碰撞盒，卡在 [-217.025, 0.059, -88.250] 处无法靠近航点，5秒内位移不足0.06m抛出 \"Navigation stalled S07 waypoint 24\" 异常阻断；再次重试时因航点回放至起点，角色原地折返撞上沿街门面立柱再次卡死。",
+    "expected": "官方巡游路线的所有航点应与场景内所有实体推车、建筑与阻挡物保持至少1.5米以上安全净空；或摊位摆放不得跨越人行通道主干线；执行器遇障应具备局部绕行能力。",
+    "coordinates": [
+      -217.025,
+      0.059,
+      -88.25
+    ],
+    "screenshot": "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/browser/blocked-S07.png",
+    "observedFact": "official-route.json 中 leg S06>S07 waypoint 24 的坐标设定在 [-216.25, -88.25]，而 food-vendor-suanlafen 实体摊位恰好摆放在该点，导致角色刚体碰撞卡住无法达成 d<=0.16m 的达成条件。",
+    "rootCauseHypothesis": "1. 自动化路线路径生成时未引入场景静态碰撞体（Collider）交集排查；2. 生产WalkController步进器为纯视线直线推进控制器，无动态寻路避障能力；3. 错误捕获后重试逻辑直接重置为起点航点而非就近航点，造成反向撞墙。",
+    "reproCount": 2
+  },
+  {
+    "id": "BUG-S01-CAMERA-OCCLUSION",
+    "severity": "P1",
+    "title": "默认第三人称视角在取餐与进食期间角色身体完全遮挡小吃模型与进食手势动画",
+    "checkpoint": "S01",
+    "reproducibleSteps": [
+      "1. 靠近肠粉摊、钵钵鸡摊、小笼包摊、肉夹馍摊或奶豆腐摊。",
+      "2. 保持默认后置跟踪摄像机视角，按 E 取餐。",
+      "3. 按 F 开始进食，观察屏幕画面中心。"
+    ],
+    "actual": "从后置视角观看，猫咪圆润厚重的背部与头部将胸前手持的小吃模型（盘、签、笼、包）、筷子/勺子动作完全遮死在盲区中；进食读条过程中玩家仅能看猫背，无法感知食物外形与食用动作。",
+    "expected": "按 E 取餐或按 F 进食时，摄像机应触发近景特写轨道（如右前侧45度平滑运镜），或角色微转身45度，使精致的食物3D模型与进食微表情完整展现给玩家。",
+    "coordinates": [
+      -154.7,
+      0.06,
+      -25.3
+    ],
+    "screenshot": "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/browser/changfen-eating-default-view.png",
+    "observedFact": "后置摄像机在进食全程角度无变化，角色无主动朝向镜头转向，手部与嘴部处于摄像机完全盲区。",
+    "rootCauseHypothesis": "漫游视角系统未接入小吃交互的专用进食镜头插值（Cinematic Camera Mode）。",
+    "reproCount": 5
+  },
+  {
+    "id": "BUG-S00-01",
+    "severity": "P2",
+    "title": "交互引导气泡文本插值缺失，暴露未定义变量 \"走近undefined（4.2m）可取肠粉摊\"",
+    "checkpoint": "S00",
+    "reproducibleSteps": [
+      "1. 在游戏启动进入中心广场后，直接观察屏幕左下角目标提示卡片。",
+      "2. 在中心广场周围走动，观察引导文本变化。"
+    ],
+    "actual": "卡片文本首行直接渲染字面量 \"走近undefined（4.2m）可取肠粉摊\"。",
+    "expected": "应正常显示目标地名或区域名（如 \"走近中心广场（4.2m）可取肠粉摊\"），若区域名缺失应平滑降级为 \"走近肠粉摊（4.2m）\"，绝不暴露 undefined。",
+    "coordinates": [
+      -157.75,
+      0.06,
+      -22.25
+    ],
+    "screenshot": "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/browser/S00.png",
+    "observedFact": "DOM 元素内直接渲染了 \"undefined\" 字符串。",
+    "rootCauseHypothesis": "模板字符串引用的区域或摊位字段（如 vendor.areaName）为空，且缺少空值合并符（?? 或 ||）处理。",
+    "reproCount": 2
+  },
+  {
+    "id": "BUG-S01-01",
+    "severity": "P2",
+    "title": "手持食物及骑上自行车时左下角提示卡片发生多层垂直同义堆叠",
+    "checkpoint": "S01",
+    "reproducibleSteps": [
+      "1. 在任意摊位按 E 键取餐，观察左下角提示框。",
+      "2. 在自行车旁按 R 键上车，观察左下角按键操作指南。"
+    ],
+    "actual": "取餐时左下角同时垂直堆叠 \"拿到一份XX（免费试吃）· F 开吃\" 与 \"手上有XX · F 开吃\" 两个同义气泡；骑车时深色上车Toast与浅色载具操作指南卡片同时上下叠放。",
+    "expected": "单张卡片清晰提示当前操作与状态，状态切换时旧通知淡出，新指南平滑进入。",
+    "coordinates": [
+      -154.7,
+      0.06,
+      -25.3
+    ],
+    "screenshot": "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/browser/changfen-held.png",
+    "observedFact": "手持与动作Toast各自挂载独立的DOM容器，同时出现在屏幕上。",
+    "rootCauseHypothesis": "Toast消息队列与常驻HUD状态组件相互独立，未做去重或互斥合并控制。",
+    "reproCount": 6
+  },
+  {
+    "id": "BUG-S01-02",
+    "severity": "P3",
+    "title": "摊位按键交互文案词法不顺：错误包含\"摊\"字导致 \"取一份XX摊（免费试吃）\"",
+    "checkpoint": "S01",
+    "reproducibleSteps": [
+      "1. 在肠粉摊或奶豆腐摊完成进食后，再次靠近摊位。",
+      "2. 观察底部按键交互提示卡片文字。"
+    ],
+    "actual": "按键文案显示为 \"E 取一份肠粉摊（免费试吃）\" 与 \"E 取一份奶豆腐摊（免费试吃）\"。",
+    "expected": "文案应为 \"E 取一份肠粉（免费试吃）\" 或 \"E 取一份奶豆腐（免费试吃）\"。",
+    "coordinates": [
+      -154.7,
+      0.06,
+      -25.3
+    ],
+    "screenshot": "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/browser/S01.png",
+    "observedFact": "交互提示词将带有\"摊\"后缀的摊位标题直接作为量词\"一份\"的修饰宾语。",
+    "rootCauseHypothesis": "交互UI格式化模板中读取的是 vendor.name 字段而非 food.title / vendor.foodName 字段。",
+    "reproCount": 2
+  },
+  {
+    "id": "BUG-S03-01",
+    "severity": "P3",
+    "title": "共享自行车骑行中脚撑未收起且猫咪双脚悬空脱离脚踏板",
+    "checkpoint": "S03",
+    "reproducibleSteps": [
+      "1. 按 R 键骑上共享自行车。",
+      "2. 按 W/S 键进行前进与倒车，侧向旋转镜头观察角色与车架连接处。"
+    ],
+    "actual": "猫咪身体悬空于座垫上方约3-5cm，双脚收拢在半空中静止不踩动；自行车中轴下方的绿色金属脚撑垂直指向地面贴地穿插，行驶中未收回。",
+    "expected": "上车时脚撑自动旋转收拢；猫咪双脚紧贴左右脚踏板，随着车轮转动呈现自然的交替踩踏IK动画。",
+    "coordinates": [
+      -156.55,
+      0.05,
+      -22.25
+    ],
+    "screenshot": "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/browser/bike-mounted.png",
+    "observedFact": "单车脚撑呈垂直竖立状态，角色臀部与脚底均处于悬空无约束状态。",
+    "rootCauseHypothesis": "自行车模型未分离脚撑独立旋转骨骼/节点，角色模型未配置载具骑乘下肢IK链。",
+    "reproCount": 1
+  }
+]

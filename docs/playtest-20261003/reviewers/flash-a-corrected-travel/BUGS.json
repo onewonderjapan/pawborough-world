@@ -1,0 +1,291 @@
+[
+  {
+    "id": "SCRIPT-01",
+    "severity": "P0",
+    "status": "SCRIPT_FIXED",
+    "classification": "SCRIPT_FIXED",
+    "title": "【脚本问题已修复】离线新增摊车未同步Rapier query与probeCache，规划踩到车中心",
+    "checkpoint": "S07/S09",
+    "reproducibleSteps": [
+      "1. 回顾首轮测试报告中 BUG-S07-01 与 flash-b 中 S09 阻断现场。",
+      "2. 核对离线路径规划脚本 plan-route.mjs 中 Rapier cart 碰撞体注册与 AStar 寻路探针缓存逻辑。",
+      "3. 检查重规划生成的 official-route.json 中 S06>S07 及 S08>S09 航线坐标。"
+    ],
+    "actual": "首轮测试中角色在 S07 [-217.025, 0.059, -88.25] 撞击酸辣粉摊位推车、flash-b 在 S09 撞击毛豆腐推车，曾被误报为 P0 游戏物理碰撞 Bug。经彻底排查查明：推车刚体碰撞盒阻挡角色穿透符合游戏引擎正确物理预期；阻断根因为离线规划脚本 plan-route.mjs 在新增 48 摊位推车刚体后漏调 world.step() 和 planner.probeCache.clear()，导致射线探针读取了无推车时期的脏缓存生成了穿模路线。在离线脚本增加缓存同步后，重规划航线已与推车拉开 3 米安全净空。本次最后复玩中，角色沿新路线顺畅通过 S07 与 S09，零碰撞卡滞，100% 证实该问题已彻底闭环修复。",
+    "expected": "推车刚体物理碰撞正常阻挡属于游戏预期行为；自动化规划脚本应准确同步物理世界刚体，生成合理避障路径。",
+    "coordinates": [
+      -217.025,
+      0.059,
+      -88.25
+    ],
+    "evidence": [
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/browser/blocked-S07.png",
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/S07.png",
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/S09.png"
+    ],
+    "observedFact": "main 分支 9abe3ca4 源码完全未改；本次最后复玩使用重规划航线后，S07 清补凉与 S09 瓦罐汤均一次性顺利通过并成功品尝，印章顺利增加到 7 枚。",
+    "rootCauseHypothesis": "离线脚本 Rapier 探针缓存 probeCache 未在 cart 创建及 step 后刷新，导致 A* 规划穿透刚体碰撞箱。",
+    "reproCount": 1
+  },
+  {
+    "id": "SCRIPT-02",
+    "severity": "P1",
+    "status": "SCRIPT_FIXED",
+    "classification": "SCRIPT_FIXED",
+    "title": "【恢复流程问题已解决】卡住后的偏离路线位置恢复因执行器阈值硬编码导致反向倒走撞柱",
+    "checkpoint": "S07",
+    "reproducibleSteps": [
+      "1. 第二次复玩加载从卡住后偏离路线坐标导出的存档 resume.json（[-242.34, 0.06, -86.465]）。",
+      "2. standard-play-server.mjs 执行器就近航点重入判定因距离最近航点 2.78m > 2.0m 阈值而重置 first=0。",
+      "3. 角色原地掉头倒走撞向沿街门面立柱卡死。"
+    ],
+    "actual": "第二轮复玩使用了偏离路线的卡死现场存档，暴露了测试执行器重入阈值与偏离恢复流程的局限，而非游戏引擎缺陷。本次最后复玩规范了恢复数据源：采用真正合法完成 S06 的快照（resume-at-S06.json，坐标 [-247.752, 0.039, -88.216]），经生产存档校验器（Save Validator）成功验证并以 index 7 恢复执行，角色平稳起步完成 S07，未发生倒走撞柱，恢复流程问题彻底解决。",
+    "expected": "恢复数据源应从合法完成检查点的快照恢复；生产存档校验器验证通过后顺畅继续下一站。",
+    "coordinates": [
+      -247.752,
+      0.039,
+      -88.216
+    ],
+    "evidence": [
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/events.jsonl",
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/S07.png"
+    ],
+    "observedFact": "GET /status 返回 feet [-247.752, 0.039, -88.216]，未回退至中心点；POST /step 成功直行推进并完成 S07。",
+    "rootCauseHypothesis": "前次复玩恢复点选取为非航线偏离点，且执行器重入距离判定保护未支持宽街侧向距离。",
+    "reproCount": 1
+  },
+  {
+    "id": "SCRIPT-03",
+    "severity": "P1",
+    "status": "OPEN",
+    "classification": "SCRIPT_LIMITATION",
+    "title": "超长回程腿 S10>S11 离线 A* 网格步长（1.5m）较粗导致航线切角掠过人行道路缘石直角碰撞阻滞",
+    "checkpoint": "S11",
+    "reproducibleSteps": [
+      "1. 完成 S10 驴肉火烧取餐进食（已获 8 枚印章）。",
+      "2. POST /step 沿 S10>S11（总长423.7米，257个航点）返回中心广场。",
+      "3. 角色小跑通过前 76 个航点（横跨 114 米），行进至 [50.387, 0.02, -20.373]。"
+    ],
+    "actual": "角色在 waypoint 76 [50.75, -20.75] 转向 waypoint 77 [49.25, -19.25] 时，因航线斜向横跨人行道凸角，胶囊体边缘碰擦高约 9cm 的石质路缘石侧面，5 秒内无法推进 0.06m，抛出 Navigation stalled S11 waypoint 77 异常中止。",
+    "expected": "离线路径规划器在拐角处使用微步长（如 0.5m）或进行胶囊扫掠连续碰撞检测（Swept Capsule Check），沿人行道外侧 0.5 米安全动线平滑转弯，避免切角硬撞路缘石。",
+    "coordinates": [
+      50.387,
+      0.02,
+      -20.373
+    ],
+    "evidence": [
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/blocked-S11.png"
+    ],
+    "observedFact": "blocked-S11.png 中角色稳立在街道平地上，右侧紧挨石板台阶人行道路缘石。重试在同一航点 50.387 碰撞停止。游戏底层刚体阻挡完全正常，非游戏穿地/崩溃缺陷。",
+    "rootCauseHypothesis": "plan-route.mjs 中 AStar 规划步长使用 step: 1.5m 离散网格，跳步连接忽视了连续运动下胶囊半径 0.28m 对路缘凸角的刮蹭。",
+    "reproCount": 2
+  },
+  {
+    "id": "BUG-CAM-01",
+    "severity": "P1",
+    "status": "OPEN",
+    "classification": "GAME_UX_BUG",
+    "title": "默认第三人称后置视角在取餐与进食期间角色身体完全遮挡食物与进食手势动画",
+    "checkpoint": "S07/S09/S10",
+    "reproducibleSteps": [
+      "1. 靠近清补凉摊、瓦罐汤摊或驴肉火烧摊。",
+      "2. 保持默认后置跟踪摄像机视角，按 E 取餐。",
+      "3. 按 F 开始进食，观察屏幕画面中心。"
+    ],
+    "actual": "在本次复玩的 S07、S09、S10 站中全面复现。角色身体正对摊位、背朝镜头，头部与浑圆背部完全遮挡双手捧持的清补凉碗、瓦罐汤陶罐以及纸包驴肉火烧，玩家只能看到猫背和慢慢品尝进度条，无法欣赏食物建模与进食动作。",
+    "expected": "触发进食或手持状态时，相机平滑过渡至侧前偏 45 度半身机位，或略微仰视抬高镜头，呈现角色捧餐与品尝表情。",
+    "coordinates": [
+      -179.43,
+      0.06,
+      -92.07
+    ],
+    "evidence": [
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/qingbuliang-held.png",
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/qingbuliang-eating-default-view.png",
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/waguan-tang-held.png",
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/lvrou-huoshao-held.png"
+    ],
+    "observedFact": "所有后半段截图中猫背完全覆盖了手持物品所在的中央视域。",
+    "rootCauseHypothesis": "WalkController 相机跟随采用固定第三人称距离与俯仰角，未与角色 eating/held 交互状态机联动智能特写机位。",
+    "reproCount": 3
+  },
+  {
+    "id": "BUG-CAM-02",
+    "severity": "P1",
+    "status": "OPEN",
+    "classification": "GAME_UX_BUG",
+    "title": "瓦罐汤摊位到达后相机被过度推近，猫头占满全屏中央（60%+面积）阻挡摊位招牌与环境",
+    "checkpoint": "S09",
+    "reproducibleSteps": [
+      "1. 沿 S08>S09 导航到达瓦罐汤交互点 [34.25, 0.088, -6.29]。",
+      "2. 观察默认机位构图。"
+    ],
+    "actual": "相机距离角色不足 1.2 米，猫头充满画面中心 60% 面积，不仅手中的瓦罐汤完全不可见，连瓦罐汤摊位的布帘、招牌与台面也全被猫脑勺彻底阻挡。",
+    "expected": "在到达摊位交互点后，相机宜根据前方摊位几何体高度适度仰视或拉高至俯角，使摊位招牌、餐车食物与角色形成和谐的三分构图。",
+    "coordinates": [
+      34.245,
+      0.089,
+      -6.291
+    ],
+    "evidence": [
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/waguan-tang-held.png",
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/S09.png"
+    ],
+    "observedFact": "waguan-tang-held.png 和 S09.png 中猫咪头部与耳朵占据正中核心视野，背景招牌完全被遮死。",
+    "rootCauseHypothesis": "相机跟随逻辑未考虑近景物体的构图平衡，未按点位或交互触发 Smart Framing 机位。",
+    "reproCount": 1
+  },
+  {
+    "id": "BUG-LGT-01",
+    "severity": "P1",
+    "status": "OPEN",
+    "classification": "GRAPHICS_LIGHTING",
+    "title": "夜景模式（&light=night）下角色缺少环境光与面部补光被压成死黑剪影，且脚底无接触阴影浮空",
+    "checkpoint": "S11",
+    "reproducibleSteps": [
+      "1. 浏览器切至夜景参数 &light=night。",
+      "2. 观察中心广场上的灰猫外观与地面投影。"
+    ],
+    "actual": "背景亭台与灯笼金碧辉煌，但处于前景的角色背面近乎死黑（RGB 接近 0-10），毛皮纹理、明暗体积与毛发细节全部湮灭；且脚下毫无灯影照射产生的接触阴影，如同一张黑色剪纸贴片漂浮在发光地砖上。",
+    "expected": "在夜景着色器中为主角增加环境光（Ambient Light）低底补偿，或在角色周围绑定不可见的角色点光源补光（Rim/Key light）；地面渲染柔和的聚光灯投影。",
+    "coordinates": [
+      -157.75,
+      0.04,
+      -22.25
+    ],
+    "evidence": [
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/recovery-browser/night-plaza.png"
+    ],
+    "observedFact": "night-plaza.png 中灰猫后脑勺与后背完全无法辨认纹理层次，仅有微弱红色边光。",
+    "rootCauseHypothesis": "夜景灯光系统仅配置了建筑泛光和局部点光源，缺少全场景全局环境光（AmbientLight）或主角专属跟随补光层。",
+    "reproCount": 1
+  },
+  {
+    "id": "BUG-TXT-01",
+    "severity": "P2",
+    "status": "OPEN",
+    "classification": "UI_TEXT_DEFECT",
+    "title": "夜景漫游目标提示中泄漏 JS undefined 变量（「走近undefined（4.2m）可取肠粉摊」）",
+    "checkpoint": "S11",
+    "reproducibleSteps": [
+      "1. 进入夜景广场漫游。",
+      "2. 观察屏幕左下角目标提示胶囊。"
+    ],
+    "actual": "操作胶囊显示「走近undefined（4.2m）可取肠粉摊」，将未定义的 JS 变量直接渲染至用户界面。",
+    "expected": "提示应正确提取目标名称如「走近 肠粉摊（4.2m）」或在名称缺失时优雅回退为「走近目标摊位」。",
+    "coordinates": [
+      -157.75,
+      0.04,
+      -22.25
+    ],
+    "evidence": [
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/recovery-browser/night-plaza.png"
+    ],
+    "observedFact": "night-plaza.png 左下角明确存在「走近undefined（4.2m）可取肠粉摊」字符。",
+    "rootCauseHypothesis": "目标引导层读取目标对象属性时，混淆了 target.foodName、target.title 与 target.name，取值返回 undefined 未做非空防御。",
+    "reproCount": 1
+  },
+  {
+    "id": "BUG-TXT-02",
+    "severity": "P2",
+    "status": "OPEN",
+    "classification": "UI_TEXT_DEFECT",
+    "title": "交互提示按钮文案语法混淆，使用「取一份XX摊」而非「取一份XX」",
+    "checkpoint": "S10",
+    "reproducibleSteps": [
+      "1. 角色到达驴肉火烧摊位交互区。",
+      "2. 观察屏幕左下角按键提示文案。"
+    ],
+    "actual": "底部交互按钮显示为「E 取一份驴肉火烧摊（免费试吃）」，将摊位名称与食物名称语法混淆，形成语病。",
+    "expected": "文案应显示为「E 取一份驴肉火烧（免费试吃）」或「E 在驴肉火烧摊试吃」。",
+    "coordinates": [
+      164.665,
+      0.02,
+      6.252
+    ],
+    "evidence": [
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/S10.png"
+    ],
+    "observedFact": "S10.png 左下角提示为「[E] 取一份驴肉火烧摊（免费试吃）」。",
+    "rootCauseHypothesis": "interaction.js 中构建 promptLabel 时误将 vendor.labelZh（如驴肉火烧摊）直接拼接入「取一份${name}」模板中，未取 food.nameZh。",
+    "reproCount": 1
+  },
+  {
+    "id": "BUG-UI-01",
+    "severity": "P2",
+    "status": "OPEN",
+    "classification": "UI_OVERLAP",
+    "title": "取餐后左下角操作胶囊与状态提示双层重复堆叠",
+    "checkpoint": "S07/S09/S10",
+    "reproducibleSteps": [
+      "1. 靠近摊位按 E 拾取食物。",
+      "2. 观察屏幕左下角提示文案。"
+    ],
+    "actual": "左下角同时垂直弹出两个胶囊：上层显示「拿到一份XX（免费试吃）· F 开吃」，下层紧跟「手上有XX · F 开吃」，文案信息高度重复，挤占屏幕操作区。",
+    "expected": "整合为单一交互胶囊，状态与快捷键统一合并，避免瞬时多层吐司通知刷屏。",
+    "coordinates": [
+      -179.43,
+      0.06,
+      -92.07
+    ],
+    "evidence": [
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/qingbuliang-held.png",
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/waguan-tang-held.png",
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/lvrou-huoshao-held.png"
+    ],
+    "observedFact": "后半段每个取餐截图中左下角均存在两个同时可见的蓝色提示胶囊。",
+    "rootCauseHypothesis": "toastManager 与 interactionPrompt 独立触发且监听相同生命周期事件，缺少防重与互斥收拢机制。",
+    "reproCount": 3
+  },
+  {
+    "id": "BUG-UI-02",
+    "severity": "P2",
+    "status": "OPEN",
+    "classification": "UI_RESPONSIVE",
+    "title": "移动端竖屏（360x800）图鉴详情面板常驻挤占55%以上高度，食品网格列表严重截断",
+    "checkpoint": "S11",
+    "reproducibleSteps": [
+      "1. 将视口分辨率调整为移动端标准 360x800。",
+      "2. 按 B 键打开寻味手账图鉴。"
+    ],
+    "actual": "底部详情卡片固定占据屏幕下半部 55% 纵向高度，上半部卡片列表区仅能露出 1.2 行小吃图标，下半部卡片被完全截断无法预览；顶部「小吃 5/48 地区 5/34」徽章发生两行折行挤压。",
+    "expected": "在移动端采用抽屉式（Bottom Sheet）或折叠卡片，默认仅展开 25% 紧凑摘要，点击卡片后向上滑出完整详情，保障上方网格列表至少完整显示两行以上。",
+    "coordinates": [
+      -157.75,
+      0.04,
+      -22.25
+    ],
+    "evidence": [
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-b/recovery-browser/atlas-mobile.png"
+    ],
+    "observedFact": "atlas-mobile.png 中九宫格列表下方 2/3 被底部详情白色大卡片遮盖。",
+    "rootCauseHypothesis": "媒体查询 CSS 中 detail 面板采用固定最小高度或 flex-basis: 50%，未对小屏进行抽屉化自适应改造。",
+    "reproCount": 1
+  },
+  {
+    "id": "BUG-ART-01",
+    "severity": "P2",
+    "status": "OPEN",
+    "classification": "LEVEL_ART_GLITCH",
+    "title": "方浜交界建筑门面窗框为纯黑封闭面片，缺乏反射与生活质感",
+    "checkpoint": "S08",
+    "reproducibleSteps": [
+      "1. 角色步行至方浜交界处 [-98.0, 0.04, 20.75]。",
+      "2. 观察正前方街面建筑立面。"
+    ],
+    "actual": "门面橱窗呈现大片纯黑无光表面（Closed Facade），如同一堵实心黑墙，缺少玻璃微反射、室内剪影或木质窗板纹理，产生未加载完成的视觉假象。",
+    "expected": "封闭商铺宜使用老上海传统的木质排门（拼装木板门）、半降卷帘门或带微弱反光的橱窗贴图，避免纯黑吸光平板面片。",
+    "coordinates": [
+      -98.002,
+      0.04,
+      20.746
+    ],
+    "evidence": [
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/seam-two-directions.png",
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/S08.png"
+    ],
+    "observedFact": "seam-two-directions.png 与 S08.png 中建筑立面有三个巨型纯黑矩形窗洞。",
+    "rootCauseHypothesis": "closedFacades 生成器直接采用了漫反射为零的黑板面片作为低消耗遮挡几何体。",
+    "reproCount": 1
+  }
+]

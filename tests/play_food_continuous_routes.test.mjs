@@ -20,6 +20,8 @@ accessPlan.seamSlabs=planSeamBridges({paths:accessPaths,probe:(x,pz)=>planner.su
 applyAccessPhysics(RAPIER,z.physics,accessPlan,z);planner.probeCache.clear();
 const targets=deriveVendors({registry,layout,sockets:await read('out-zone/food-sockets.json'),world:probe});
 const layer=createVendorLayer({scene:new T.Scene(),vendors:targets,addBoxCollider:b=>z.physics.world.createCollider(RAPIER.ColliderDesc.cuboid(...b.halfExtents).setTranslation(...b.center).setRotation({x:0,y:Math.sin(b.yaw/2),z:0,w:Math.cos(b.yaw/2)})),removeCollider:c=>z.physics.world.removeCollider(c,false)});
+// Static cart creation must be visible to Rapier queries before planning.
+z.physics.world.step();planner.probeCache.clear();
 const start=[-157.75,.06,-22.25],capsule={radius:.28,halfHeight:.2,eyeHeight:.8,speed:2.6,runSpeed:4.2,autostep:.15,minimumGroundY:-.1,groundColliders:()=>z.groundColliders,spawn:start};
 const report={scope:'Continuous real WalkController per-vendor roundtrip from center; only initial fixture resets; no mid-route teleport',physics:z.status(),cartBoxes:layer.collisionBoxes,routes:[]};
 try{

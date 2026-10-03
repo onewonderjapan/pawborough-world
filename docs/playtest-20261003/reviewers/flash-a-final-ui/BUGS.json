@@ -1,0 +1,178 @@
+[
+  {
+    "id": "SCRIPT-01",
+    "severity": "P0",
+    "status": "SCRIPT_FIXED",
+    "classification": "SCRIPT_FIXED",
+    "title": "【离线脚本修复】离线新增推车未同步Rapier与probeCache导致规划穿车（历史误报P0已闭环）",
+    "checkpoint": "S07/S09",
+    "reproducibleSteps": [
+      "1. 审查初始试玩中 S07 清补凉与 S09 瓦罐汤碰擦推车阻断记录。",
+      "2. 检查 plan-route.mjs 中新增 48 摊位后是否同步物理世界与探针缓存。"
+    ],
+    "actual": "初始测试中角色撞击推车碰撞盒停滞，曾被误报为游戏物理缺陷。经排查证实推车刚体碰撞盒表现完全符合游戏物理预期；根因为离线规划脚本新增推车后漏调 world.step() 与 probeCache.clear()。脚本修复后航线预留 3 米安全净空，S07 与 S09 均零卡顿平稳通过，游戏物理碰撞正常，此条已彻底闭环。",
+    "expected": "游戏刚体碰撞体正常阻挡；规划脚本准确同步物理世界生成避障航线。",
+    "coordinates": [-217.025, 0.059, -88.25],
+    "evidence": [
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/browser/blocked-S07.png",
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/S07.png",
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/S09.png"
+    ],
+    "observedFact": "游戏源代码完全未改动；使用同步探针缓存后的航线，角色平滑绕开推车完成取餐与进食。",
+    "rootCauseHypothesis": "离线规划器 AStar 探针读取了未注册推车刚体的脏缓存。",
+    "reproCount": 1
+  },
+  {
+    "id": "SCRIPT-02",
+    "severity": "P1",
+    "status": "SCRIPT_FIXED",
+    "classification": "SCRIPT_FIXED",
+    "title": "【测试工具修复】测试执行器重载等待与存档重入Fixture修复（Root已修复）",
+    "checkpoint": "S11",
+    "reproducibleSteps": [
+      "1. 在 S11 执行 reload 测试。",
+      "2. 观察 reload 前 window.__play 是否存在及 page.addInitScript 是否重复覆盖 localStorage。"
+    ],
+    "actual": "Root 针对 standard-play-server.mjs 完成两项脚本缺陷修复：1) reload 期间 window.__play 可能为 undefined，补充可选链与状态等待；2) page.addInitScript 增加 localStorage 判空检查（if (!localStorage.getItem(...))），避免页面重载时将已达成的 8 枚印章重置回旧的 5 枚初始 fixture。本次 S11 执行证实 reload 前后印章数稳定保持 8 枚不变。",
+    "expected": "重载后平稳等待游戏就绪，且生产持久化存档不被测试工具的初始化钩子暴力覆盖。",
+    "coordinates": [-157.75, 0.06, -22.25],
+    "evidence": [
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-ui-browser/events.jsonl"
+    ],
+    "observedFact": "events.jsonl 明确记录 reload-preserved 事件：before.stamps=8, after.stamps=8，无报错。",
+    "rootCauseHypothesis": "Playwright addInitScript 在每次页面生命周期导航/重载时均会默认重新注入执行，需在脚本内做幂等保护。",
+    "reproCount": 1
+  },
+  {
+    "id": "OBS-RETURN-LEG",
+    "severity": "INFO",
+    "status": "OBSERVED_UNINVESTIGATED",
+    "classification": "ROUTE_OBSERVATION",
+    "title": "【离线航线调整与观察】旧S11超长无内容返程路缘阻滞保留为未判因观察；v1.1路线调整为就地收尾",
+    "checkpoint": "S11",
+    "reproducibleSteps": [
+      "1. 查阅前次复玩中 S10>S11 长达 423.7 米空旷返程航点 76 [50.387, 0.02, -20.373] 刮蹭人行道路缘石记录。",
+      "2. 查阅 official-route.json v1.1 路线定义及 plan-standard-route.mjs。"
+    ],
+    "actual": "旧版本官方路线设置了从 S10（驴肉火烧）步行 423.7 米返回中心广场的无交互空返程，并在 waypoint 76 碰擦 9cm 路缘石。官方路线 v1.1 根据游玩节奏设计，正式调整为在 S10 终点就地收尾（'Finish at current finalsnackpoint without positionchange'），删除了无内容的漫长回程。旧返程阻断现场保留为未判因观察，未做任何产品游戏代码修改。",
+    "expected": "官方导览路线聚焦于小吃探索与核心交互；对于无内容长距离返程予以裁撤，终点就地进行图鉴收尾与夜景转换。",
+    "coordinates": [50.387, 0.02, -20.373],
+    "evidence": [
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/blocked-S11.png"
+    ],
+    "observedFact": "游戏物理路缘石阻挡符合真实三维碰撞规律；v1.1 官方路线就地收尾避免了无意义的空程长跑。",
+    "rootCauseHypothesis": "原长程返线由粗粒度网格 A* 离散点生成，且缺乏沿途互动内容，属于路线设计与离线规划综合范畴。",
+    "reproCount": 1
+  },
+  {
+    "id": "BUG-S00-01",
+    "severity": "P2",
+    "status": "OPEN",
+    "classification": "GAME_UI_BUG",
+    "title": "交互目标引导气泡文本插值失败，暴露字面量 \"走近undefined（4.2m）可取肠粉摊\"",
+    "checkpoint": "S00/S11",
+    "reproducibleSteps": [
+      "1. 角色位于中心广场出生点附近（[-157.75, 0.06, -22.25]）。",
+      "2. 观察屏幕左下角常驻目标指引气泡文字。"
+    ],
+    "actual": "气泡第一行直接显示 \"走近undefined（4.2m）可取肠粉摊\"。无论在 S00 初始状态还是 S11 夜景广场状态，该文字均持续稳定复现。",
+    "expected": "应正常展示地名或区域名（如 \"走近中心广场（4.2m）可取肠粉摊\"），若区域字段不存在应回退为 \"走近肠粉摊（4.2m）\"，绝不出现 undefined。",
+    "coordinates": [-157.75, 0.06, -22.25],
+    "evidence": [
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-ui-browser/night-plaza.png",
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-ui-browser/S11.png"
+    ],
+    "observedFact": "DOM 元素渲染明确包含 \"走近undefined（4.2m）可取肠粉摊\" 字符串。",
+    "rootCauseHypothesis": "模板字符串拼接中读取的区域属性字段（如 vendor.areaName 或 location.name）为 undefined，缺少空值防护（??）。",
+    "reproCount": 2
+  },
+  {
+    "id": "BUG-S11-MOBILE-01",
+    "severity": "P2",
+    "status": "OPEN",
+    "classification": "GAME_UI_BUG",
+    "title": "移动端窄屏（360x800）寻味手账图鉴布局严重挤压，浏览区卡片被截断且文本异常折行",
+    "checkpoint": "S11",
+    "reproducibleSteps": [
+      "1. 按 B 键呼出寻味手账图鉴（.pb-atlas）。",
+      "2. 将视口切换至常见移动设备尺寸 360x800。",
+      "3. 观察图鉴头部徽章、中部列表与底部详情布局。"
+    ],
+    "actual": "1) 右上角数据徽章文本被窄屏挤压折行显示为 \"小吃 8/48 地\\n区 8/34\"；2) 顶部标签栏、筛选按钮与区域下拉框纵向堆叠占用了约 220px；3) 底部详情面板固定占用超过屏幕 50% 高度（约 350px）；4) 导致中央小吃列表浏览区有效高度仅剩约 160px，仅能勉强容纳 2 张小吃卡片，且卡片底部的状态标签（\"已品尝\"、\"已发现\"）被外层容器下边缘硬性裁剪截断，无法正常浏览 48 道小吃。",
+    "expected": "移动端视口下应采用自适应响应式布局：徽章单行自适应；详情面板改为可折叠抽屉（Bottom Sheet）或分步导航，确保中央网格浏览区拥有至少 2列x3行 的充裕滑动空间，卡片完整显示不被裁切。",
+    "coordinates": [-157.75, 0.06, -22.25],
+    "evidence": [
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-ui-browser/atlas-mobile.png"
+    ],
+    "observedFact": "atlas-mobile.png 截图直观呈现：小笼包与葱油饼卡片底部已品尝标签仅露出一半文字，中央区域严重被压扁。",
+    "rootCauseHypothesis": "图鉴 CSS 布局采用固定高度/Flex-grow 比例，未针对移动端微型视口编写专用的 @media (max-width: 600px) 响应式规则。",
+    "reproCount": 1
+  },
+  {
+    "id": "BUG-S11-NIGHT-01",
+    "severity": "P2",
+    "status": "OPEN",
+    "classification": "GAME_ART_LIGHTING_BUG",
+    "title": "夜景模式下默认第三人称后置视角角色背部严重黑死成剪影，毛发与形体细节完全丢失",
+    "checkpoint": "S11",
+    "reproducibleSteps": [
+      "1. 加载夜景参数 &light=night 进入中心广场或沿街街道。",
+      "2. 保持默认后置跟踪镜头观察主角灰猫背部。"
+    ],
+    "actual": "夜景照明光源（闭店门头暖光灯笼、摊位顶灯）全部位于角色前方、朝向摄像机照射。后置摄像机视角正对猫咪背部，因缺少来自相机方向的环境补光（Fill Light）或边缘轮廓光（Rim Light），导致猫咪头部、背部、耳朵和尾巴沦为大片无细节的纯黑剪影，与地面及门头高光形成刺眼反差，严重破坏毛绒质感与陪伴感。",
+    "expected": "在夜景模式下，角色 Shader 应接入菲涅尔轮廓光（Fresnel Rim Light）勾勒猫咪毛茸茸的形体轮廓；或在相机挂载一束微弱的柔和点补光，确保角色在黑夜中保持温润的灰猫毛色与背部形体立体感。",
+    "coordinates": [-157.75, 0.06, -22.25],
+    "evidence": [
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-ui-browser/night-plaza.png",
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-ui-browser/S11.png"
+    ],
+    "observedFact": "night-plaza.png 中主角灰猫背后近乎纯黑（RGB接近0），毛发法线与贴图完全被暗阴影抹平。",
+    "rootCauseHypothesis": "夜景环境光配置仅调低了全局 Directional/Ambient Light，并将光源主要赋予了建筑装饰点光源，未配置角色专属三点式光照或轮廓光着色器。",
+    "reproCount": 2
+  },
+  {
+    "id": "BUG-CAM-01",
+    "severity": "P1",
+    "status": "OPEN",
+    "classification": "GAME_UX_BUG",
+    "title": "默认第三人称后置视角在手持与进食期间角色身体完全遮挡食物模型与进食手势动画",
+    "checkpoint": "S01/S04/S05/S06/S07/S09/S10",
+    "reproducibleSteps": [
+      "1. 在任意小吃摊位按 E 取餐并按 F 进食。",
+      "2. 保持默认相机视角观察屏幕中央。"
+    ],
+    "actual": "角色浑圆的猫背与头部将双手捧持的小吃（餐盘、竹签、蒸笼、纸包、陶罐）完全遮挡在视线死角中，玩家在进食期间只能盯着猫背和读条，无法直接欣赏精致的美食 3D 模型与品尝动作。",
+    "expected": "触发取餐与进食动作时，相机平滑插值运镜至侧前偏 45 度半身机位，清晰展示小吃特写与进食动作。",
+    "coordinates": [-154.7, 0.06, -25.3],
+    "evidence": [
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/changfen-eating-default-view.png",
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/qingbuliang-eating-default-view.png",
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-browser/waguan-tang-held.png"
+    ],
+    "observedFact": "历次所有小吃进食截图中，后置机位均造成严重的食物视线遮挡。",
+    "rootCauseHypothesis": "相机控制器采用固定跟随距离与角度，未针对交互状态机接入特写运镜系统。",
+    "reproCount": 8
+  },
+  {
+    "id": "BUG-HUD-01",
+    "severity": "P3",
+    "status": "OPEN",
+    "classification": "GAME_UI_BUG",
+    "title": "左上角常驻手账 HUD 文本已尝数量与底部印章条红圈数量不一致（文字8味对比印章5圈）",
+    "checkpoint": "S11",
+    "reproducibleSteps": [
+      "1. 收集 8 枚印章后进入主界面。",
+      "2. 观察左上角手账卡片：文字显示 \"已尝 8/48\"，而下方展示的印章槽位依然为 5 个实心红圈 + 1 个虚线待解锁圈。"
+    ],
+    "actual": "虽然文字准确统计了已品尝 8/48，但视觉圆圈槽位被固定为 5 槽，造成印章槽位视觉上未同步更新超出 5 枚的印章进展，缺乏阶段翻页或总进度展开提示。",
+    "expected": "印章槽位应支持多阶段滑动展示，或在达成 5 枚阶段后自动进阶到下一阶段槽位（如 6-10 阶段），保持视觉与数字的一致性。",
+    "coordinates": [-157.75, 0.06, -22.25],
+    "evidence": [
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-ui-browser/night-plaza.png",
+      "/home/baibai/outbox/pawborough-official-playtest-20261003/flash-a/final-ui-browser/S11.png"
+    ],
+    "observedFact": "HUD 上文字为 \"已尝 8/48\"，但槽位圆圈渲染 5 个红色圆点。",
+    "rootCauseHypothesis": "HUD 印章组件设计为单一阶段 5 枚里程碑展示，未对超出 5 枚的数据实现分段翻页或连续累积展示。",
+    "reproCount": 2
+  }
+]

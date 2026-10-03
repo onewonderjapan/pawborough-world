@@ -1,0 +1,48 @@
+{
+  "status": "review_complete_plan_pending_owner",
+  "baseline": "9abe3ca4f251dea97b3c908f8441a59982f200cd",
+  "routeId": "pb-official-tour-v1.1",
+  "routeWalkingMeters": 962.6577214114524,
+  "reviewers": [
+    "Gemini3.8FlashAfull",
+    "Gemini3.8FlashBcontrols",
+    "Gemini3.8FlashCspeed/ride/freeview"
+  ],
+  "research": "GPT6Luna,official sources and1communityrepo compared",
+  "coreEvidence": "AinitialS00-S06 plus correctedcheckpoint-recoveryS07-S10; S11 recoveredfromactualS10 progress,gamevalidatedsafeSpawn; not uninterruptedtour",
+  "legitTastesAtEnd": [
+    "changfen",
+    "boboji",
+    "xiaolongbao",
+    "roujiamo",
+    "naidoufu",
+    "qingbuliang",
+    "waguan-tang",
+    "lvrou-huoshao"
+  ],
+  "stampsAtEnd": 8,
+  "reloadBeforeAfter": [
+    8,
+    8
+  ],
+  "inputAndMovementPolicy": "Core player position only productioncontroller; keyboardE/F/R/B/P/Space; no directstampwrites; recovery fixtures derivedonly fromactual completedcheckpoints and explicitly labeled.",
+  "scriptFixes": [
+    "Rapierworld.step then clearprobeCache afternewcartcreation",
+    "nearestvalidwaypointrejoin; rejectedpose restartsguide atsafeSpawn",
+    "resumefixture seededonce,notreloadedovernewprogress",
+    "optionalbootwait afterreload",
+    "v1.1finishinplace rather thanemptylongreturn"
+  ],
+  "openChecks": [
+    "v1returnx50.37,z-20.45stall cause notconfirmed; keepfailureevidence"
+  ],
+  "plannedWorkorders": 8,
+  "productChanges": false,
+  "toolingChanges": [
+    "tools/playtest/standard-play-server.mjs",
+    "tools/playtest/plan-standard-route.mjs",
+    "tests/play_food_continuous_routes.test.mjs queryinitialization only"
+  ],
+  "cloudChanged": false,
+  "evidenceRoot": "/home/baibai/outbox/pawborough-official-playtest-20261003"
+}

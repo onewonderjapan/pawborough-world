@@ -1,0 +1,125 @@
+{
+  "title": "Pawborough技术Skill调查",
+  "date": "2026-10-03",
+  "timezone": "Asia/Tokyo",
+  "scope": "研究；未安装、未修改产品/Skill、未发布",
+  "repo": "/home/baibai/work/onewonderjapan/pawborough-world",
+  "summary": "优先复用本机已安装的OpenAI Game Studio game-playtest、three-webgl-game、web-3d-asset-pipeline。它们与当前plain Three.js/Rapier/GLB栈匹配；项目自己的pawborough-game-client和static-architecture仍是角色/相机/碰撞/资产契约的权威。无须重写引擎。",
+  "candidates": [
+    {
+      "name": "game-playtest",
+      "status": "已安装",
+      "url": "https://github.com/openai/plugins/blob/main/plugins/game-studio/skills/game-playtest/SKILL.md",
+      "raw": "https://raw.githubusercontent.com/openai/plugins/main/plugins/game-studio/skills/game-playtest/SKILL.md",
+      "maintainer": "OpenAI",
+      "license": "MIT (Game Studio plugin manifest; per-file license not separately verified)",
+      "fit": "Playwright浏览器试玩、WebGL截图、主要操作、HUD/渲染分别检查、碰撞/材质/性能异常复现报告。",
+      "evidence": "Upstream SKILL.md readable; locally present in cached Game Studio 0.1.2. Includes ordered playtest loop and 3D checks; repo links checklist and WebGL debugging references. Existing Playwright means little added setup.",
+      "cost": "Needs task-specific route and viewports; no Pawborough test script is supplied. SpectorJS only if perf/render diagnosis is unclear.",
+      "recommendation": "之后的真实浏览器试玩直接使用，复用现有Playwright。"
+    },
+    {
+      "name": "three-webgl-game",
+      "status": "已安装",
+      "url": "https://github.com/openai/plugins/blob/main/plugins/game-studio/skills/three-webgl-game/SKILL.md",
+      "raw": "https://raw.githubusercontent.com/openai/plugins/main/plugins/game-studio/skills/three-webgl-game/SKILL.md",
+      "maintainer": "OpenAI",
+      "license": "MIT (Game Studio plugin manifest; per-file license not separately verified)",
+      "fit": "plain Three.js/Vite、Rapier、GLB、GLTFLoader、KTX2/Meshopt、DOM HUD和WebGL性能诊断匹配。",
+      "evidence": "Upstream SKILL.md readable; locally present in cached Game Studio 0.1.2; guidance explicitly describes vanilla imperative Three.js, Rapier, GLB, KTX2, Meshopt and SpectorJS.",
+      "cost": "Architecture guidance may overlap current modules and has no validated Pawborough cycling/camera values; do not migrate directory or rewrite.",
+      "recommendation": "新增或调整单个runtime subsystem时按需参考。"
+    },
+    {
+      "name": "web-3d-asset-pipeline",
+      "status": "已安装",
+      "url": "https://github.com/openai/plugins/blob/main/plugins/game-studio/skills/web-3d-asset-pipeline/SKILL.md",
+      "raw": "https://raw.githubusercontent.com/openai/plugins/main/plugins/game-studio/skills/web-3d-asset-pipeline/SKILL.md",
+      "maintainer": "OpenAI",
+      "license": "MIT (Game Studio plugin manifest; per-file license not separately verified)",
+      "fit": "GLB/glTF、Blender export、Meshopt、KTX2/Basis、LOD、碰撞代理、pivot/material/texture budgets。",
+      "evidence": "Upstream SKILL.md readable; locally present in cached Game Studio 0.1.2; workflow explicitly covers author-clean-export-optimize-validate-runtime delivery.",
+      "cost": "glTF Transform is a recommendation, not an installed dependency or proven benefit; may duplicate existing generators and inspection scripts.",
+      "recommendation": "有新资产、压缩或资源预算决策时作为清单；先复用已验收资产和仓库工具。"
+    },
+    {
+      "name": "web-game-foundations",
+      "status": "已安装；按需参考",
+      "url": "https://github.com/openai/plugins/blob/main/plugins/game-studio/skills/web-game-foundations/SKILL.md",
+      "raw": "https://raw.githubusercontent.com/openai/plugins/main/plugins/game-studio/skills/web-game-foundations/SKILL.md",
+      "maintainer": "OpenAI",
+      "license": "MIT (Game Studio plugin manifest; per-file license not separately verified)",
+      "fit": "可借鉴simulation/render/UI责任边界用于较大增量阶段设计；适合早期架构规划。",
+      "evidence": "Upstream skill file readable; included by Game Studio as shared architecture path; locally installed with plugin 0.1.2.",
+      "cost": "Pawborough引擎、v1范围和阶段入口已存在；完整套用会重复决策。",
+      "recommendation": "只在具体责任边界不清时看对应段落，不作为每次补丁强制门槛。"
+    }
+  ],
+  "projectSkills": [
+    {
+      "name": "pawborough-game-client",
+      "path": "/home/baibai/.codex/skills/pawborough-game-client/SKILL.md",
+      "authority": "项目专用；操控/相机/物理/路由/资源生命周期/真实浏览器验收优先遵循",
+      "publicLicense": "未核实"
+    },
+    {
+      "name": "pawborough-static-architecture",
+      "path": "/home/baibai/.codex/skills/pawborough-static-architecture/SKILL.md",
+      "authority": "项目专用；坐标/门洞/碰撞/材质/GLB验收与视觉取证",
+      "publicLicense": "未核实"
+    },
+    {
+      "name": "3d-asset-reuse",
+      "path": "/home/baibai/.agents/skills/3d-asset-reuse/SKILL.md",
+      "authority": "先评估现有资产复用与总集成成本，不强迫采购/下载",
+      "publicLicense": "未核实"
+    }
+  ],
+  "officialDocs": [
+    {
+      "name": "Rapier JavaScript Character Controller",
+      "url": "https://www.rapier.rs/docs/user_guides/javascript/character_controller/",
+      "type": "official documentation, not a Skill",
+      "use": "核对KCC移动校正、穿透、台阶与斜坡API；无完整骑行或相机方案"
+    },
+    {
+      "name": "Three.js GLTFLoader",
+      "url": "https://threejs.org/docs/pages/GLTFLoader.html",
+      "type": "official documentation, not a Skill",
+      "use": "Meshopt/KTX2/Basis扩展加载接口和bitmap资源释放提醒"
+    },
+    {
+      "name": "Three.js WebGLRenderer",
+      "url": "https://threejs.org/docs/pages/WebGLRenderer.html",
+      "type": "official documentation, not a Skill",
+      "use": "renderer.info draw calls/triangles/geometry/texture观察；不等同于FPS/GPU时间"
+    },
+    {
+      "name": "glTF Transform",
+      "url": "https://gltf-transform.dev/",
+      "type": "official project documentation, not a Skill",
+      "use": "只在需要GLB压缩/整理时参考"
+    },
+    {
+      "name": "Khronos glTF 2.0 specification",
+      "url": "https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html",
+      "type": "standards specification, not a Skill",
+      "use": "格式与扩展权威规范"
+    }
+  ],
+  "stagedMethod": [
+    "从PROJECT.json读取当前阶段和相关通过记录",
+    "固定一个子系统、资产哈希、相机、分辨率和路线建立基线",
+    "单次只改一个区域或机制",
+    "用相关检查和真实浏览器截图复验，区分离线图与试玩",
+    "保留候选态并记录未验证点和下一步，沿现有owner门禁处理采用与发布"
+  ],
+  "nextExperiment": "中心到桥段暖光/材质小样：固定GLB、相机、设备、视口及步行/骑行路线，只调材质与灯光；对比同机before/after截图、浏览器错误、draw calls、triangles、纹理数量和实测帧间隔。若性能归因不明再使用Performance面板或SpectorJS。",
+  "maintenance": "Game Studio local plugin version 0.1.2; upstream manifest also says 0.1.2, maintainer OpenAI, MIT. GitHub repository overview reported overall update 2026-09-16. Individual SKILL.md latest commit dates and automated per-skill evaluation were not verified; stars are not quality evidence.",
+  "unverified": [
+    "单一Skill文件最新commit日期未确认",
+    "Playwright配置是否覆盖各入口和设备未验证",
+    "线上Rapier文档与锁定0.19.0的全部API差异未核对",
+    "本次未运行构建或浏览器试玩"
+  ]
+}
