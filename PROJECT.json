@@ -163,6 +163,15 @@
     "taskState": "docs/plans/national-snacks-20261002/task-state.json",
     "executionStarted": true,
     "scope": "Existing-world art upgrade, 24 snacks / 8 chapters, discovery and tasting atlas, legacy save migration",
-    "note": "24foods/8chapters localcandidateverified. Source6767dda2 merged/pushedmain;onecanonicalworktree,mergedconstructionbranchdeleted. Immutablelocalstaticpackage20261003-main-6767dda2 verified. R01cloudpublicationpendingfreshAWS SSO;onlineunchanged."
+    "note": "24foods/8chapters localcandidateverified. Source6767dda2 merged/pushedmain;onecanonicalworktree,mergedconstructionbranchdeleted. Immutablelocalstaticpackage20261003-main-6767dda2 verified. R01cloudpublicationpendingfreshAWS SSO;onlineunchanged.",
+    "coverage48": {
+      "stage": "verified_local",
+      "foods": 48,
+      "regions": 34,
+      "vendors": 48,
+      "handoff": "docs/FOOD-COVERAGE-48-20261003.md",
+      "receipt": "docs/food-coverage-20261003/RECEIPT.json",
+      "cloudStatus": "awaiting_fresh_AWS_SSO"
+    }
   }
 }

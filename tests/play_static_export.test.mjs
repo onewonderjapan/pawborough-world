@@ -1,29 +1,30 @@
-// Contract test for Pawborough static runtime export (atlas24)
+// Contract test for Pawborough static runtime export (current catalog)
 // Run: node tests/play_static_export.test.mjs
 import assert from 'node:assert/strict';
-import { readFileSync, existsSync, statSync, mkdirSync, writeFileSync } from 'node:fs';
+import { readFileSync, existsSync, statSync, mkdirSync, writeFileSync, mkdtempSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
 import { createHash } from 'node:crypto';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(__dirname, '..');
 const sceneRoot = resolve(repoRoot, 'scene-authoring/yuyuan-area');
 
-const targetTrialDir = '/home/baibai/outbox/pawborough-national-snacks-20261002/export-trial';
+const targetTrialDir = mkdtempSync(join(tmpdir(), 'pawborough-export-test-'));
 let testOutputDir = targetTrialDir;
 
 // 1. Run actual export
 try {
-  execSync(`python3 -X utf8 tools/export_play_site.py --output "${testOutputDir}"`, {
+  execFileSync('python3', ['-X', 'utf8', 'tools/export_play_site.py', '--output', testOutputDir], {
     cwd: repoRoot,
     stdio: 'pipe',
   });
 } catch (err) {
   // If target directory is read-only in this sandbox environment, fallback to /tmp
-  testOutputDir = '/tmp/pawborough-export-trial-test';
-  execSync(`python3 -X utf8 tools/export_play_site.py --output "${testOutputDir}"`, {
+  testOutputDir = mkdtempSync(join(tmpdir(), 'pawborough-export-fallback-'));
+  execFileSync('python3', ['-X', 'utf8', 'tools/export_play_site.py', '--output', testOutputDir], {
     cwd: repoRoot,
     stdio: 'pipe',
   });
@@ -77,9 +78,10 @@ function verifyExportDir(outDir) {
   }
   assert.equal(manifest.bytes, totalBytes, 'Total manifest bytes equals sum of individual files');
 
-  // 3. Every current model (24 foods) and thumbnail (21 thumbs) and 5 new JSONs included
+  // 3. Every current model and thumbnail and 5 new JSONs included
   const foodsManifest = JSON.parse(readFileSync(join(sceneRoot, 'inputs/play-foods.json'), 'utf8'));
-  assert.equal(foodsManifest.foods.length, 24, 'Input play-foods has 24 foods');
+  const sourceCatalog = JSON.parse(readFileSync(join(sceneRoot, 'inputs/food-catalog.json'), 'utf8'));
+  assert.ok(sourceCatalog.foods.every(f => foodsManifest.foods.some(a => a.id === f.assetId)), 'Every catalog food has a declared model');
 
   const manifestPathSet = new Set(manifest.files.map(f => f.path));
 
@@ -106,7 +108,7 @@ function verifyExportDir(outDir) {
 
   // 4. Validate exported JSON content & path prefix & stripped private fields
   const exportedFoods = JSON.parse(readFileSync(join(versionDir, 'inputs/play-foods.json'), 'utf8'));
-  assert.equal(exportedFoods.foods.length, 24, 'Exported play-foods has 24 foods');
+  assert.equal(exportedFoods.foods.length, foodsManifest.foods.length, 'Every current declared food asset is exported');
   for (const f of exportedFoods.foods) {
     assert.ok(f.path.startsWith(`${versionPrefix}/`), `Food path prefixed: ${f.path}`);
     assert.ok(!f.path.startsWith('/'), `Food path has no leading slash: ${f.path}`);
@@ -124,7 +126,8 @@ function verifyExportDir(outDir) {
   }
 
   const exportedCatalog = JSON.parse(readFileSync(join(versionDir, 'inputs/food-catalog.json'), 'utf8'));
-  assert.equal(exportedCatalog.foods.length, 24, 'Exported catalog has 24 foods');
+  assert.equal(exportedCatalog.foods.length, sourceCatalog.foods.length, 'Exported catalog retains every current food');
+  assert.deepEqual(exportedCatalog.regions, sourceCatalog.regions, 'Region metadata survives static export');
   for (const f of exportedCatalog.foods) {
     assert.ok(typeof f.assetId === 'string' && !f.assetId.includes('/'), `assetId is logical ID: ${f.assetId}`);
     assert.ok(typeof f.chapterId === 'string' && !f.chapterId.includes('/'), `chapterId is logical ID: ${f.chapterId}`);
@@ -218,7 +221,9 @@ function verifyExportDir(outDir) {
   // 9. Resource budgets reported in artifacts
   assert.ok(budgets.models, 'budgets.models present');
   assert.ok(budgets.thumbnails, 'budgets.thumbnails present');
-  assert.equal(budgets.models.count, 21, 'New models count is 21');
+  const additionalModels = foodsManifest.foods.filter(f => !['xiaolongbao','congyoubing','youdunzi'].includes(f.id));
+  assert.equal(budgets.models.count, additionalModels.length, 'Budget includes every additional model');
+  assert.equal(budgets.models.bytes, additionalModels.reduce((sum, f) => sum + f.bytes, 0), 'All additional model bytes accounted');
   const declaredThumbs=exportedFoods.foods.filter(f=>f.thumbnail);
   assert.equal(budgets.thumbnails.count,declaredThumbs.length,'Budget includes every current thumbnail');
   assert.equal(budgets.thumbnails.bytes,declaredThumbs.reduce((sum,f)=>sum+f.thumbnail.bytes,0),'All thumbnail bytes accounted');
@@ -243,15 +248,15 @@ if (testOutputDir !== targetTrialDir && existsSync(join(targetTrialDir, 'artifac
 
 // Explicit test of old version exclusion in a dedicated temp location
 {
-  const tempDir = '/tmp/pawborough-old-version-test';
-  execSync(`python3 -X utf8 tools/export_play_site.py --output "${tempDir}"`, { cwd: repoRoot, stdio: 'pipe' });
+  const tempDir = mkdtempSync(join(tmpdir(), 'pawborough-old-version-test-'));
+  execFileSync('python3', ['-X', 'utf8', 'tools/export_play_site.py', '--output', tempDir], { cwd: repoRoot, stdio: 'pipe' });
   const dummyOldVer = 'versions/20261001-main-oldver00';
   const dummyFile = join(tempDir, 'site', dummyOldVer, 'old.json');
   mkdirSync(dirname(dummyFile), { recursive: true });
   writeFileSync(dummyFile, '{"old": true}', 'utf8');
 
   // Re-export
-  execSync(`python3 -X utf8 tools/export_play_site.py --output "${tempDir}"`, { cwd: repoRoot, stdio: 'pipe' });
+  execFileSync('python3', ['-X', 'utf8', 'tools/export_play_site.py', '--output', tempDir], { cwd: repoRoot, stdio: 'pipe' });
   const manifest = JSON.parse(readFileSync(join(tempDir, 'artifacts/PUBLIC-MANIFEST.json'), 'utf8'));
   assert.ok(!manifest.files.some(f => f.path.startsWith(dummyOldVer)), 'Old version directory is not listed in manifest after re-export');
   assert.ok(existsSync(dummyFile), 'Old version directory was not deleted');

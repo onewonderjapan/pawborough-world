@@ -231,6 +231,37 @@
   font-weight: 600;
 }
 
+/* 紧凑地区下拉筛选 */
+.pb-atlas-region-select {
+  background-color: #ffffff;
+  border: 1px solid rgba(36, 79, 104, 0.25);
+  color: var(--pb-ink);
+  font-size: 0.82rem;
+  padding: 3px 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  outline: none;
+  max-width: 150px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: border-color 0.15s ease;
+}
+
+.pb-atlas-region-select:focus-visible {
+  outline: 2px solid var(--pb-honey);
+  border-color: var(--pb-blue);
+}
+
+/* 列表空状态文案 */
+.pb-atlas-empty-state {
+  grid-column: 1 / -1;
+  padding: 36px 16px;
+  text-align: center;
+  color: rgba(43, 51, 58, 0.55);
+  font-size: 0.88rem;
+  font-style: italic;
+}
+
 /* 中间分割布局：卡片列表 + 详情阅读区 */
 .pb-atlas-main-split {
   flex: 1;
@@ -565,6 +596,7 @@
 
 /* 焦点可见性 */
 .pb-atlas button:focus-visible,
+.pb-atlas select:focus-visible,
 .pb-atlas .pb-atlas-card:focus-visible {
   outline: 2px solid var(--pb-honey);
   outline-offset: 2px;

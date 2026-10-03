@@ -136,7 +136,7 @@ export class PlayGameState {
     return { ok: true, warnings: v.warnings };
   }
   _updateMilestones() {
-    for (const n of [6, 12, 24]) if (this.stamps >= n) this.milestones.add(`tastes-${n}`);
+    for (const n of [6, 12, 24, 48]) if (this.stamps >= n) this.milestones.add(`tastes-${n}`);
     for (const [id,chapter] of this.registry?.chaptersById ?? []) {
       const foods = this.foods.filter(f => f.chapterId === id && this.requiredFoodIds.has(f.id));
       if (foods.length >= (chapter.targetCount??foods.length) && foods.length && foods.every(f => this.tasted.has(f.id))) this.milestones.add(`chapter-${id}`);

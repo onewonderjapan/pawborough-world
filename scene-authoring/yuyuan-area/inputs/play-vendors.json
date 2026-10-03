@@ -55,7 +55,7 @@
       "stallId": "stall-26",
       "areaHint": "老街南巷",
       "foodId": "kaolengmian",
-      "labelZh": "烤冷面摊"
+      "labelZh": "密山烤冷面摊"
     },
     {
       "vendorId": "food-vendor-niandoubao",
@@ -246,6 +246,390 @@
         6.999
       ],
       "rotationY": 0.463647609
+    },
+    {
+      "vendorId": "food-vendor-lvrou-huoshao",
+      "foodId": "lvrou-huoshao",
+      "kind": "cart",
+      "labelZh": "驴肉火烧摊",
+      "areaHint": "方浜东段路侧",
+      "position": [
+        163.477,
+        7.523
+      ],
+      "rotationY": 2.3561944902,
+      "customerPoint": [
+        164.75,
+        6.25
+      ]
+    },
+    {
+      "vendorId": "food-vendor-daoxiaomian",
+      "foodId": "daoxiaomian",
+      "kind": "cart",
+      "labelZh": "刀削面摊",
+      "areaHint": "方浜西段路侧",
+      "position": [
+        -1.439,
+        4.087
+      ],
+      "rotationY": 0.3926990817,
+      "customerPoint": [
+        -0.75,
+        5.75
+      ]
+    },
+    {
+      "vendorId": "food-vendor-naidoufu",
+      "foodId": "naidoufu",
+      "kind": "cart",
+      "labelZh": "奶豆腐摊",
+      "areaHint": "外围西街路侧",
+      "position": [
+        -249.55,
+        -88.25
+      ],
+      "rotationY": 1.5707963268,
+      "customerPoint": [
+        -247.75,
+        -88.25
+      ]
+    },
+    {
+      "vendorId": "food-vendor-shenyang-jijia",
+      "foodId": "shenyang-jijia",
+      "kind": "cart",
+      "labelZh": "沈阳鸡架摊",
+      "areaHint": "方浜东段路侧",
+      "position": [
+        212.977,
+        16.523
+      ],
+      "rotationY": 2.3561944902,
+      "customerPoint": [
+        214.25,
+        15.25
+      ]
+    },
+    {
+      "vendorId": "food-vendor-jianbing-cong",
+      "foodId": "jianbing-cong",
+      "kind": "cart",
+      "labelZh": "煎饼卷大葱摊",
+      "areaHint": "方浜东段路侧",
+      "position": [
+        117.95,
+        -14.75
+      ],
+      "rotationY": 1.5707963268,
+      "customerPoint": [
+        119.75,
+        -14.75
+      ]
+    },
+    {
+      "vendorId": "food-vendor-yaxue-fensi",
+      "foodId": "yaxue-fensi",
+      "kind": "cart",
+      "labelZh": "鸭血粉丝汤摊",
+      "areaHint": "外围西街路侧",
+      "position": [
+        -211.45,
+        -127.25
+      ],
+      "rotationY": -1.5707963268,
+      "customerPoint": [
+        -213.25,
+        -127.25
+      ]
+    },
+    {
+      "vendorId": "food-vendor-dingshenggao",
+      "foodId": "dingshenggao",
+      "kind": "cart",
+      "labelZh": "定胜糕摊",
+      "areaHint": "西桥岸连接街",
+      "position": [
+        -196.977,
+        -40.477
+      ],
+      "rotationY": -2.3561944902,
+      "customerPoint": [
+        -198.25,
+        -41.75
+      ]
+    },
+    {
+      "vendorId": "food-vendor-maodoufu",
+      "foodId": "maodoufu",
+      "kind": "cart",
+      "labelZh": "毛豆腐摊",
+      "areaHint": "方浜西段路侧",
+      "position": [
+        -39.023,
+        16.477
+      ],
+      "rotationY": 0.7853981634,
+      "customerPoint": [
+        -37.75,
+        17.75
+      ]
+    },
+    {
+      "vendorId": "food-vendor-shachamian",
+      "foodId": "shachamian",
+      "kind": "cart",
+      "labelZh": "沙茶面摊",
+      "areaHint": "外围西街路侧",
+      "position": [
+        -228.25,
+        -198.05
+      ],
+      "rotationY": 0,
+      "customerPoint": [
+        -228.25,
+        -196.25
+      ]
+    },
+    {
+      "vendorId": "food-vendor-waguan-tang",
+      "foodId": "waguan-tang",
+      "kind": "cart",
+      "labelZh": "瓦罐汤摊",
+      "areaHint": "庙前连接街",
+      "position": [
+        34.25,
+        -8.05
+      ],
+      "rotationY": 0,
+      "customerPoint": [
+        34.25,
+        -6.25
+      ]
+    },
+    {
+      "vendorId": "food-vendor-luosifen",
+      "foodId": "luosifen",
+      "kind": "cart",
+      "labelZh": "螺蛳粉摊",
+      "areaHint": "庙前连接街",
+      "position": [
+        -106.523,
+        30.023
+      ],
+      "rotationY": 2.3561944902,
+      "customerPoint": [
+        -105.25,
+        28.75
+      ]
+    },
+    {
+      "vendorId": "food-vendor-siwawa",
+      "foodId": "siwawa",
+      "kind": "cart",
+      "labelZh": "丝娃娃摊",
+      "areaHint": "外围西街路侧",
+      "position": [
+        -255.55,
+        -119.75
+      ],
+      "rotationY": 1.5707963268,
+      "customerPoint": [
+        -253.75,
+        -119.75
+      ]
+    },
+    {
+      "vendorId": "food-vendor-suanlafen",
+      "foodId": "suanlafen",
+      "kind": "cart",
+      "labelZh": "酸辣粉摊",
+      "areaHint": "外围西街路侧",
+      "position": [
+        -216.25,
+        -88.55
+      ],
+      "rotationY": 0,
+      "customerPoint": [
+        -216.25,
+        -86.75
+      ]
+    },
+    {
+      "vendorId": "food-vendor-niangpi",
+      "foodId": "niangpi",
+      "kind": "cart",
+      "labelZh": "酿皮摊",
+      "areaHint": "外围西街路侧",
+      "position": [
+        -228.25,
+        -162.05
+      ],
+      "rotationY": 0,
+      "customerPoint": [
+        -228.25,
+        -160.25
+      ]
+    },
+    {
+      "vendorId": "food-vendor-qinghai-yogurt",
+      "foodId": "qinghai-yogurt",
+      "kind": "cart",
+      "labelZh": "青海酸奶摊",
+      "areaHint": "西桥岸连接街",
+      "position": [
+        -174.023,
+        -2.523
+      ],
+      "rotationY": 0.7853981634,
+      "customerPoint": [
+        -172.75,
+        -1.25
+      ]
+    },
+    {
+      "vendorId": "food-vendor-sanzi",
+      "foodId": "sanzi",
+      "kind": "cart",
+      "labelZh": "馓子摊",
+      "areaHint": "庙前连接街",
+      "position": [
+        -88.55,
+        -16.25
+      ],
+      "rotationY": 1.5707963268,
+      "customerPoint": [
+        -86.75,
+        -16.25
+      ]
+    },
+    {
+      "vendorId": "food-vendor-nang",
+      "foodId": "nang",
+      "kind": "cart",
+      "labelZh": "馕摊",
+      "areaHint": "方浜东段路侧",
+      "position": [
+        94.25,
+        -19.55
+      ],
+      "rotationY": 0,
+      "customerPoint": [
+        94.25,
+        -17.75
+      ]
+    },
+    {
+      "vendorId": "food-vendor-zanba",
+      "foodId": "zanba",
+      "kind": "cart",
+      "labelZh": "糌粑摊",
+      "areaHint": "方浜东段路侧",
+      "position": [
+        140.75,
+        -3.05
+      ],
+      "rotationY": 0,
+      "customerPoint": [
+        140.75,
+        -1.25
+      ]
+    },
+    {
+      "vendorId": "food-vendor-shengjianbao",
+      "foodId": "shengjianbao",
+      "kind": "cart",
+      "labelZh": "生煎包摊",
+      "areaHint": "方浜东段路侧",
+      "position": [
+        188.977,
+        10.523
+      ],
+      "rotationY": 2.3561944902,
+      "customerPoint": [
+        190.25,
+        9.25
+      ]
+    },
+    {
+      "vendorId": "food-vendor-tangou",
+      "foodId": "tangou",
+      "kind": "cart",
+      "labelZh": "桂花糖藕摊",
+      "areaHint": "方浜东段路侧",
+      "position": [
+        238.25,
+        19.45
+      ],
+      "rotationY": 0,
+      "customerPoint": [
+        238.25,
+        21.25
+      ]
+    },
+    {
+      "vendorId": "food-vendor-ningbo-tangyuan",
+      "foodId": "ningbo-tangyuan",
+      "kind": "cart",
+      "labelZh": "宁波汤圆摊",
+      "areaHint": "外围西街路侧",
+      "position": [
+        -273.023,
+        -221.523
+      ],
+      "rotationY": 0.7853981634,
+      "customerPoint": [
+        -271.75,
+        -220.25
+      ]
+    },
+    {
+      "vendorId": "food-vendor-mashu",
+      "foodId": "mashu",
+      "kind": "cart",
+      "labelZh": "泉州花生麻糍摊",
+      "areaHint": "西桥岸连接街",
+      "position": [
+        -201.477,
+        -64.477
+      ],
+      "rotationY": -2.3561944902,
+      "customerPoint": [
+        -202.75,
+        -65.75
+      ]
+    },
+    {
+      "vendorId": "food-vendor-boboji",
+      "foodId": "boboji",
+      "kind": "cart",
+      "labelZh": "钵钵鸡摊",
+      "areaHint": "西桥岸连接街",
+      "position": [
+        -177.25,
+        -31.55
+      ],
+      "rotationY": 0,
+      "customerPoint": [
+        -177.25,
+        -29.75
+      ]
+    },
+    {
+      "vendorId": "food-vendor-xiajiao",
+      "foodId": "xiajiao",
+      "kind": "cart",
+      "labelZh": "虾饺摊",
+      "areaHint": "园外老街路侧",
+      "position": [
+        -204.25,
+        -104.45
+      ],
+      "rotationY": 3.1415926536,
+      "customerPoint": [
+        -204.25,
+        -106.25
+      ]
     }
   ]
 }

@@ -1,0 +1,123 @@
+{
+  "status": "verified_local_pending_git_closeout",
+  "foods": 48,
+  "regions": 34,
+  "chapters": 11,
+  "vendors": 48,
+  "existingStalls": 18,
+  "carts": 30,
+  "newModels": 24,
+  "newModelBytes": 3808344,
+  "allThumbnailBytes": 1560009,
+  "originalFoodAssetsPreserved": 24,
+  "continuousControllerRoutes": {
+    "pass": 48,
+    "scope": "Continuous actual WalkController with production world and all48cart/stall placements; future food IDs are placement fixtures only, model/eating acceptance separate; initial fixture resets only, no mid-route teleport",
+    "evidence": "/home/baibai/outbox/pawborough-food-coverage-20261003/routes-48/summary.json",
+    "adoptedPlacementMatches": true
+  },
+  "gpuNewFoodsEandF": {
+    "pass": 24,
+    "renderer": "ANGLE (NVIDIA Corporation, NVIDIA GB10/PCIe, OpenGL 4.5.0)",
+    "errors": [],
+    "httpErrors": [],
+    "evidence": "/home/baibai/outbox/pawborough-food-coverage-20261003/GPU-PLAY-RECEIPT.json",
+    "note": "Food input sub-scope passed; original QA selector for atlas was wrong. UI was corrected and independently passed, no repeated24-food claims."
+  },
+  "actualNewMealContacts": 16,
+  "atlasUi": {
+    "scope": "UI progress fixture seeded from actual24 new-food E/F receipt using production serializer; not extra earned tastes.",
+    "errors": [],
+    "header": "全国寻味\n毛绒上海小城 · 寻味手账\n小吃 24/48 地区 21/34\n✕",
+    "fujianCards": 2,
+    "mobile": {
+      "w": 360,
+      "documentW": 360,
+      "left": 7.203125,
+      "right": 352.796875,
+      "top": 40,
+      "bottom": 760
+    },
+    "pass": true
+  },
+  "old24SaveKeptAndUnsafeFeetReset": true,
+  "performance": {
+    "scope": "Same browser/hardware1280x720DPR1,3sec warmup,liveW3s/S3s/idle2s; current24canonical vs48worktree. Frame intervals, not JS render cost.",
+    "rows": [
+      {
+        "edition": "24",
+        "base": "http://127.0.0.1:5492",
+        "p50": 16.69999999999891,
+        "p95": 16.799999999999272,
+        "frames": 480,
+        "hidden": 0,
+        "renderer": "ANGLE (NVIDIA Corporation, NVIDIA GB10/PCIe, OpenGL 4.5.0)",
+        "resources": {
+          "residentCount": 4,
+          "pinnedCount": 1,
+          "unpinnedCount": 3,
+          "loadingCount": 0,
+          "queuedCount": 0,
+          "transientCount": 4,
+          "maxResident": 8,
+          "maxConcurrent": 2,
+          "disposed": false
+        }
+      },
+      {
+        "edition": "48",
+        "base": "http://127.0.0.1:5615",
+        "p50": 16.69999999999891,
+        "p95": 16.799999999999272,
+        "frames": 480,
+        "hidden": 0,
+        "renderer": "ANGLE (NVIDIA Corporation, NVIDIA GB10/PCIe, OpenGL 4.5.0)",
+        "resources": {
+          "residentCount": 6,
+          "pinnedCount": 3,
+          "unpinnedCount": 3,
+          "loadingCount": 0,
+          "queuedCount": 0,
+          "transientCount": 6,
+          "maxResident": 8,
+          "maxConcurrent": 2,
+          "disposed": false
+        }
+      }
+    ],
+    "p95Ratio": 1,
+    "pass": true
+  },
+  "routeSampleCoverage": {
+    "scope": "Same1271historical passed-route planning samples, not whole-map area coverage or an area percentage",
+    "before": {
+      "sampleCount": 1271,
+      "maxM": 98.81086655322886,
+      "p95M": 67.50944636863792,
+      "meanM": 26.29047969759578
+    },
+    "after": {
+      "sampleCount": 1271,
+      "maxM": 21.289668856043765,
+      "p95M": 16.770509831248425,
+      "meanM": 8.389576608574501
+    }
+  },
+  "verification": {
+    "regionSuite": "PASS",
+    "newDeliverySuite": "PASS24realnewGLBsplusall48SHA/thumbs",
+    "newContactSuite": "PASS16newnoncuppedrealgraycatcontacts",
+    "atlasSuites": "First16suites PASS; final static export failed due temporary dependency symlinks and stale24/21fixture counts, both fixed; static export now PASS. Unaffected16not repeated.",
+    "rootBuild": "PASS after restoring internal tool-launcher links; no productdependency changes",
+    "areaAuthoring": "Unchanged; prior M14 area:verify PASS reused, not rerun"
+  },
+  "workers": {
+    "gemini": "A8,C8,atlas,retainedchickenbones,displayorigin",
+    "glm": "Bbuilderandverifier authored;20minCLIdeadline124. Main agent ran unchangedBbuilder locally,8models+thumbs exportedand independentlyparsed."
+  },
+  "cloud": {
+    "changed": false,
+    "status": "AWS SSO token expired and refresh failed;existing authorized release pending fresh owner login"
+  },
+  "evidenceRoot": "/home/baibai/outbox/pawborough-food-coverage-20261003"
+}

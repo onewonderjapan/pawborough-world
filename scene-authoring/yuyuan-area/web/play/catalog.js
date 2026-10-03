@@ -75,6 +75,23 @@ export function createFoodRegistry({ catalog, assets = {}, vendors = {}, profile
     chaptersById.set(ch.id, Object.freeze({ ...ch }));
   }
 
+  // 1.5 校验与索引 Regions (可选元数据)
+  const regionsById = new Map();
+  const regionList = catalog.regions ?? [];
+  for (let i = 0; i < regionList.length; i++) {
+    const r = regionList[i];
+    const fieldPath = `catalog.regions[${i}]`;
+    if (!r || typeof r !== 'object') {
+      throw new CatalogError(fieldPath, 'region must be an object');
+    }
+    validateId(r.id, `${fieldPath}.id`);
+    if (regionsById.has(r.id)) {
+      throw new CatalogError(`${fieldPath}.id`, `duplicate region ID: ${r.id}`);
+    }
+    validateFiniteNumbers(r, fieldPath);
+    regionsById.set(r.id, Object.freeze({ ...r }));
+  }
+
   // 2. 校验与索引 Assets
   const assetList = Array.isArray(assets)
     ? assets
@@ -180,11 +197,19 @@ export function createFoodRegistry({ catalog, assets = {}, vendors = {}, profile
       }
     }
 
+    if (food.regionId != null) {
+      validateId(food.regionId, `${fieldPath}.regionId`);
+      if (catalog.regions != null && !regionsById.has(food.regionId)) {
+        throw new CatalogError(`${fieldPath}.regionId`, `unknown region reference: '${food.regionId}'`);
+      }
+    }
+
     validateFiniteNumbers(food, fieldPath);
 
     foodsById.set(food.id, Object.freeze({
       ...food,
       labelZh: food.labelZh ?? food.name,
+      regionId: food.regionId ?? null,
       enabled: food.enabled !== false,
     }));
   }
@@ -234,6 +259,7 @@ export function createFoodRegistry({ catalog, assets = {}, vendors = {}, profile
     vendorsById,
     profilesById,
     chaptersById,
+    regionsById,
     requiredFoodIds,
     vendorsFor,
     thumbnailFor: foodId => {

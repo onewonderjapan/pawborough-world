@@ -197,7 +197,8 @@ export class FoodCatalog {
     // 缩放后 proto 点 p 映射到 wrapper 系：inst.position + s*p；要求底面中心
     // bc 落在原处（bc*1）：inst.position = (1-s)*bc
     inst.position.copy(entry.cupBottomAnchor).multiplyScalar(1 - entry.cupScale);
-    if(entry.presentation?.profile!=='cupped')inst.position.y-=entry.cupBottomAnchor.y;
+    const isLegacyOrigin = Boolean(CUP_TARGET_WIDTH[id]);
+    if (!isLegacyOrigin) inst.position.y -= entry.cupBottomAnchor.y;
     const wrapper = new THREE.Group();
     wrapper.name = `${id}-display-cupped`;
     wrapper.add(inst);

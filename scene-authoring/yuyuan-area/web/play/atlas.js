@@ -22,6 +22,7 @@ export function atlasEntries(registry, snapshot) {
     : new Set();
 
   const foods = [];
+  const foodRegionMap = new Map();
   if (registry?.foodsById) {
     const rawFoods = typeof registry.foodsById.values === 'function'
       ? [...registry.foodsById.values()]
@@ -29,6 +30,7 @@ export function atlasEntries(registry, snapshot) {
     for (const food of rawFoods) {
       if (food.enabled === false) continue;
       foods.push(food);
+      foodRegionMap.set(food.id, food.regionId ?? null);
     }
   }
 
@@ -51,6 +53,11 @@ export function atlasEntries(registry, snapshot) {
       ? registry.chaptersById.get(food.chapterId)
       : registry?.chaptersById?.[food.chapterId];
     const chapterTitle = chapter?.name ?? chapter?.titleZh ?? food.chapterId;
+
+    const regionObj = food.regionId && registry?.regionsById?.get
+      ? registry.regionsById.get(food.regionId)
+      : (registry?.regionsById?.[food.regionId] ?? null);
+    const defaultRegionName = regionObj?.name ?? '上海风味';
 
     const vendors = typeof registry?.vendorsFor === 'function'
       ? registry.vendorsFor(food.id)
@@ -78,10 +85,11 @@ export function atlasEntries(registry, snapshot) {
       trackedVendorId: isTracked ? trackedVendorId : null,
       defaultVendorId: isDiscovered ? defaultVendorId : null,
       poseProfile: food.poseProfile ?? 'cupped',
-      // 未发现状态下严格隐藏名称、具体地点、地区与描述
+      // 未发现状态下严格隐藏名称、具体地点、地区与描述；regionId 仅在已发现/已品尝暴露
+      regionId: isDiscovered ? (food.regionId ?? null) : null,
       name: isDiscovered ? (food.name ?? food.labelZh) : null,
       displayName: isDiscovered ? (food.labelZh ?? food.name) : '???',
-      regionLabel: isDiscovered ? (food.regionLabel ?? '上海风味') : null,
+      regionLabel: isDiscovered ? (food.regionLabel ?? defaultRegionName) : null,
       locationHint: isDiscovered ? (food.locationHint ?? '商业街某摊位') : null,
       description: isDiscovered
         ? (food.description ?? '')
@@ -89,6 +97,49 @@ export function atlasEntries(registry, snapshot) {
       thumbnail: isDiscovered ? thumbPath : null,
     });
   }
+
+  // 地区统计汇总 (从有效地域食品生成，排斥已禁用项，单品非摊位去重)
+  const regionsMap = new Map();
+  if (registry?.regionsById) {
+    const rawRegions = typeof registry.regionsById.values === 'function'
+      ? [...registry.regionsById.values()]
+      : Object.values(registry.regionsById);
+    for (const r of rawRegions) {
+      regionsMap.set(r.id, {
+        id: r.id,
+        name: r.name ?? r.id,
+        total: 0,
+        discovered: 0,
+        tasted: 0,
+      });
+    }
+  }
+
+  for (let i = 0; i < foods.length; i++) {
+    const food = foods[i];
+    const entry = entries[i];
+    if (food.regionId != null) {
+      let rStat = regionsMap.get(food.regionId);
+      if (!rStat) {
+        rStat = {
+          id: food.regionId,
+          name: food.regionLabel ?? food.regionId,
+          total: 0,
+          discovered: 0,
+          tasted: 0,
+        };
+        regionsMap.set(food.regionId, rStat);
+      }
+      rStat.total += 1;
+      if (entry.isDiscovered) rStat.discovered += 1;
+      if (entry.isTasted) rStat.tasted += 1;
+    }
+  }
+  entries.regions = Array.from(regionsMap.values()).filter(r => r.total > 0);
+
+  const regionTotal = entries.regions.length;
+  const regionsDiscovered = entries.regions.filter(r => r.discovered > 0).length;
+  const regionsTasted = entries.regions.filter(r => r.tasted > 0).length;
 
   const total = entries.length;
   const incompleteCount = total - tastedCount;
@@ -100,6 +151,9 @@ export function atlasEntries(registry, snapshot) {
     tasted: tastedCount,
     incomplete: incompleteCount,
     required: requiredCount,
+    regionTotal,
+    regionsDiscovered,
+    regionsTasted,
   };
 
   entries.totalCount = total;
@@ -107,6 +161,9 @@ export function atlasEntries(registry, snapshot) {
   entries.tastedCount = tastedCount;
   entries.incompleteCount = incompleteCount;
   entries.requiredCount = requiredCount;
+  entries.regionTotal = regionTotal;
+  entries.regionsDiscovered = regionsDiscovered;
+  entries.regionsTasted = regionsTasted;
 
   // 章节统计统计汇总
   const chaptersMap = new Map();
@@ -157,7 +214,23 @@ export function atlasEntries(registry, snapshot) {
     }
   };
 
+  // 按地区筛选纯逻辑函数（使用私有全量食品映射，既支持筛选未发现占位条目，又绝不泄漏未发现元数据）
+  entries.filterByRegion = (regionId, filterKey = 'all') => {
+    const base = entries.filterBy(filterKey);
+    if (!regionId || regionId === 'all') return base;
+    return base.filter((e) => foodRegionMap.get(e.id) === regionId);
+  };
+
   return entries;
+}
+
+export function filterByRegion(entries, regionId, filterKey = 'all') {
+  if (typeof entries?.filterByRegion === 'function') {
+    return entries.filterByRegion(regionId, filterKey);
+  }
+  const base = typeof entries?.filterBy === 'function' ? entries.filterBy(filterKey) : (entries || []);
+  if (!regionId || regionId === 'all') return base;
+  return base.filter((e) => e.regionId === regionId);
 }
 
 // 占位线框 SVG (受控盘子 / 问号线条图，绝非破损图片)
@@ -243,6 +316,7 @@ export function mountAtlas({ root, registry, getSnapshot, actions = {}, overlay 
 
   // UI 内部交互状态（render 跨调用保持）
   let currentChapterId = 'all';
+  let currentRegionId = 'all';
   let currentFilter = 'all'; // 'all' | 'discovered' | 'tasted' | 'incomplete'
   let selectedFoodId = null;
   let isOpenState = false;
@@ -334,6 +408,17 @@ export function mountAtlas({ root, registry, getSnapshot, actions = {}, overlay 
     filtersEl.appendChild(btn);
     filterBtnMap.set(f.key, btn);
   }
+
+  const regionSelectEl = document.createElement('select');
+  regionSelectEl.className = 'pb-atlas-region-select';
+  regionSelectEl.setAttribute('aria-label', '地区');
+  regionSelectEl.hidden = true;
+  regionSelectEl.addEventListener('change', () => {
+    currentRegionId = regionSelectEl.value;
+    render();
+  });
+  filtersEl.appendChild(regionSelectEl);
+
   contentEl.appendChild(filtersEl);
 
   // 中间区域：卡片列表 + 详情阅读区
@@ -430,7 +515,11 @@ export function mountAtlas({ root, registry, getSnapshot, actions = {}, overlay 
     const entries = atlasEntries(registry, snapshot);
 
     // 更新顶部总进度徽章
-    progressBadgeEl.textContent = `已品尝 ${entries.counts.tasted} / ${entries.counts.required}`;
+    if (entries.counts.regionTotal > 0) {
+      progressBadgeEl.textContent = `小吃 ${entries.counts.tasted}/${entries.counts.required} 地区 ${entries.counts.regionsTasted}/${entries.counts.regionTotal}`;
+    } else {
+      progressBadgeEl.textContent = `已品尝 ${entries.counts.tasted} / ${entries.counts.required}`;
+    }
 
     // 更新章节导轨按钮
     railEl.textContent = ''; // 清空导轨按钮
@@ -466,6 +555,35 @@ export function mountAtlas({ root, registry, getSnapshot, actions = {}, overlay 
       railEl.appendChild(chBtn);
     }
 
+    // 更新地区筛选下拉选择框（紧凑，仅展示全部 + 已发现地区以保护秘密）
+    if (entries.counts.regionTotal > 0) {
+      regionSelectEl.hidden = false;
+      regionSelectEl.textContent = '';
+
+      const allOpt = document.createElement('option');
+      allOpt.value = 'all';
+      allOpt.textContent = '全部地区';
+      regionSelectEl.appendChild(allOpt);
+
+      const discoveredRegions = entries.regions.filter((r) => r.discovered > 0);
+      let regionFound = currentRegionId === 'all';
+      for (const r of discoveredRegions) {
+        const opt = document.createElement('option');
+        opt.value = r.id;
+        opt.textContent = `${r.name} (${r.tasted}/${r.total})`;
+        if (r.id === currentRegionId) regionFound = true;
+        regionSelectEl.appendChild(opt);
+      }
+      if (!regionFound) {
+        currentRegionId = 'all';
+      }
+      regionSelectEl.value = currentRegionId;
+    } else {
+      regionSelectEl.hidden = true;
+      regionSelectEl.textContent = '';
+      currentRegionId = 'all';
+    }
+
     // 更新筛选按钮选中状态
     for (const [key, btn] of filterBtnMap.entries()) {
       if (key === currentFilter) {
@@ -480,6 +598,10 @@ export function mountAtlas({ root, registry, getSnapshot, actions = {}, overlay 
     if (currentChapterId !== 'all') {
       visibleEntries = visibleEntries.filter((e) => e.chapterId === currentChapterId);
     }
+    if (currentRegionId !== 'all') {
+      const regionFoodIds = new Set(entries.filterByRegion(currentRegionId).map((e) => e.id));
+      visibleEntries = visibleEntries.filter((e) => regionFoodIds.has(e.id));
+    }
 
     // 确保 selectedFoodId 有效且稳定
     const hasCurrentSelected = visibleEntries.some((e) => e.id === selectedFoodId);
@@ -492,6 +614,12 @@ export function mountAtlas({ root, registry, getSnapshot, actions = {}, overlay 
     // 渲染卡片列表
     const focusedCardId = document.activeElement?.closest?.('.pb-atlas-card')?.dataset.foodId;
     cardsEl.textContent = '';
+    if (visibleEntries.length === 0) {
+      const emptyCardState = document.createElement('div');
+      emptyCardState.className = 'pb-atlas-empty-state';
+      emptyCardState.textContent = '当前筛选条件下暂无小吃。';
+      cardsEl.appendChild(emptyCardState);
+    }
     for (const entry of visibleEntries) {
       const card = document.createElement('div');
       card.className = `pb-atlas-card is-${entry.status} ${entry.id === selectedFoodId ? 'is-selected' : ''}`;
@@ -635,7 +763,9 @@ export function mountAtlas({ root, registry, getSnapshot, actions = {}, overlay 
     } else {
       const emptyMsg = document.createElement('div');
       emptyMsg.className = 'pb-atlas-detail-desc';
-      emptyMsg.textContent = '请从左侧选择一道小吃查看手账记录。';
+      emptyMsg.textContent = visibleEntries.length === 0
+        ? '当前筛选或地区暂无对应小吃记录。'
+        : '请从左侧选择一道小吃查看手账记录。';
       detailEl.appendChild(emptyMsg);
     }
   }

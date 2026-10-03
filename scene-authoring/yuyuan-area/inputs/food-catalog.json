@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "editionId": "pawborough-snack-atlas-v1-twenty-four",
+  "editionId": "pawborough-snack-atlas-v2-forty-eight",
   "requiredFoodIds": [
     "xiaolongbao",
     "congyoubing",
@@ -25,13 +25,37 @@
     "qingbuliang",
     "jidanzi",
     "fenglisu",
-    "portuguese-egg-tart"
+    "portuguese-egg-tart",
+    "lvrou-huoshao",
+    "daoxiaomian",
+    "naidoufu",
+    "shenyang-jijia",
+    "jianbing-cong",
+    "yaxue-fensi",
+    "dingshenggao",
+    "maodoufu",
+    "shachamian",
+    "waguan-tang",
+    "luosifen",
+    "siwawa",
+    "suanlafen",
+    "niangpi",
+    "qinghai-yogurt",
+    "sanzi",
+    "nang",
+    "zanba",
+    "shengjianbao",
+    "tangou",
+    "ningbo-tangyuan",
+    "mashu",
+    "boboji",
+    "xiajiao"
   ],
   "chapters": [
     {
       "id": "shanghai",
       "name": "上海起点",
-      "targetCount": 3
+      "targetCount": 4
     },
     {
       "id": "jingjin",
@@ -41,17 +65,17 @@
     {
       "id": "northeast",
       "name": "东北风味",
-      "targetCount": 3
+      "targetCount": 4
     },
     {
       "id": "northwest",
       "name": "西北风味",
-      "targetCount": 3
+      "targetCount": 8
     },
     {
       "id": "southwest",
       "name": "西南风味",
-      "targetCount": 3
+      "targetCount": 7
     },
     {
       "id": "central",
@@ -61,11 +85,26 @@
     {
       "id": "lingnan-islands",
       "name": "岭南海岛",
-      "targetCount": 3
+      "targetCount": 5
     },
     {
       "id": "hongkong-macao-taiwan",
       "name": "港澳台味",
+      "targetCount": 3
+    },
+    {
+      "id": "huabei",
+      "name": "冀晋鲁风味",
+      "targetCount": 3
+    },
+    {
+      "id": "jiangnan",
+      "name": "江南百味",
+      "targetCount": 5
+    },
+    {
+      "id": "minjiang",
+      "name": "闽赣风味",
       "targetCount": 3
     }
   ],
@@ -80,7 +119,11 @@
       "poseProfile": "cupped",
       "assetId": "xiaolongbao",
       "thumbId": null,
-      "enabled": true
+      "enabled": true,
+      "regionId": "shanghai",
+      "sourceUrls": [
+        "https://english.shanghai.gov.cn/en-GlobalTasteinShanghai2026-LocalFlavors/20260316/00b0c6d1698d406c8d532a6e169e1a1e.html"
+      ]
     },
     {
       "id": "congyoubing",
@@ -92,7 +135,11 @@
       "poseProfile": "cupped",
       "assetId": "congyoubing",
       "thumbId": null,
-      "enabled": true
+      "enabled": true,
+      "regionId": "shanghai",
+      "sourceUrls": [
+        "https://www.shanghai.gov.cn/nw15343/20250818/4e2b327a8d504d5cb09608e5a625a06a.html"
+      ]
     },
     {
       "id": "youdunzi",
@@ -104,7 +151,11 @@
       "poseProfile": "cupped",
       "assetId": "youdunzi",
       "thumbId": null,
-      "enabled": true
+      "enabled": true,
+      "regionId": "shanghai",
+      "sourceUrls": [
+        "https://www.shanghai.gov.cn/nw15343/20250818/4e2b327a8d504d5cb09608e5a625a06a.html"
+      ]
     },
     {
       "id": "tanghulu",
@@ -120,8 +171,10 @@
       "enabled": true,
       "sourceUrls": [
         "https://www.visitbeijing.com.cn/article/47QmQuCN80M",
-        "https://www.visitbeijing.com.cn/article/47Qm5WBNk4T"
-      ]
+        "https://www.visitbeijing.com.cn/article/47Qm5WBNk4T",
+        "https://whlyj.beijing.gov.cn/zwgk/xwzx/gzdt/202310/t20231017_3280716.html"
+      ],
+      "regionId": "beijing"
     },
     {
       "id": "jianbing-guozi",
@@ -137,13 +190,14 @@
       "enabled": true,
       "sourceUrls": [
         "https://whly.tj.gov.cn/XWDTYXWZX6562/MTJJ8464/202511/t20251104_7169581.html"
-      ]
+      ],
+      "regionId": "tianjin"
     },
     {
       "id": "ludagun",
       "name": "驴打滚",
       "chapterId": "jingjin",
-      "regionLabel": "京津风味",
+      "regionLabel": "北京风味",
       "description": "豆面粉、螺旋豆沙卷、浅托盘",
       "locationHint": "老街南巷",
       "poseProfile": "cupped",
@@ -152,14 +206,16 @@
       "utensilKind": null,
       "enabled": true,
       "sourceUrls": [
-        "https://s.visitbeijing.com.cn/food/222"
-      ]
+        "https://s.visitbeijing.com.cn/food/222",
+        "https://japanese.beijing.gov.cn/livinginbeijing/dining/202011/t20201120_2141472.html"
+      ],
+      "regionId": "beijing"
     },
     {
       "id": "kaolengmian",
-      "name": "烤冷面",
+      "name": "密山烤冷面",
       "chapterId": "northeast",
-      "regionLabel": "东北风味",
+      "regionLabel": "黑龙江密山风味",
       "description": "卷折面皮、酱面、纸托",
       "locationHint": "老街南巷",
       "poseProfile": "wrapped",
@@ -169,8 +225,12 @@
       "enabled": true,
       "sourceUrls": [
         "https://wlt.hlj.gov.cn/wlt/c114254/202401/c00_31703252.shtml",
-        "https://sw.wuhan.gov.cn/xwdt/gzdt/202206/t20220629_1996015.shtml"
-      ]
+        "https://sw.wuhan.gov.cn/xwdt/gzdt/202206/t20220629_1996015.shtml",
+        "https://www.hljms.gov.cn/mss/c100672/202509/c06_340488.shtml",
+        "https://www.jixi.gov.cn/jixi/c101259/202504/c06_329216.shtml"
+      ],
+      "regionId": "heilongjiang",
+      "labelZh": "密山烤冷面"
     },
     {
       "id": "niandoubao",
@@ -186,8 +246,10 @@
       "enabled": true,
       "sourceUrls": [
         "https://www.gojilin.gov.cn/songyuan/2021/11/12/c_8127.htm",
-        "https://wlt.hlj.gov.cn/wlt/c114254/202401/c00_31703252.shtml"
-      ]
+        "https://wlt.hlj.gov.cn/wlt/c114254/202401/c00_31703252.shtml",
+        "https://gxt.hlj.gov.cn/gxt/c107067/202411/c00_31788469.shtml"
+      ],
+      "regionId": null
     },
     {
       "id": "jianfen",
@@ -203,7 +265,8 @@
       "enabled": true,
       "sourceUrls": [
         "https://whhlyt.jl.gov.cn/ztzl/jlslyxlhxj/gdxl/jls/jls_424340/202507/t20250704_9273085.html"
-      ]
+      ],
+      "regionId": "jilin"
     },
     {
       "id": "roujiamo",
@@ -218,8 +281,10 @@
       "utensilKind": null,
       "enabled": true,
       "sourceUrls": [
-        "https://dfz.shaanxi.gov.cn/zslm/fzzlk/sxnj/202508/P020250822375845378471.pdf"
-      ]
+        "https://dfz.shaanxi.gov.cn/zslm/fzzlk/sxnj/202508/P020250822375845378471.pdf",
+        "https://www.nq.gov.cn/nqzd/nqztzl/rdzl/spaq/202512/1c41b8d6d7024372be3edead42296b06.shtml"
+      ],
+      "regionId": "shaanxi"
     },
     {
       "id": "liangpi",
@@ -235,7 +300,8 @@
       "enabled": true,
       "sourceUrls": [
         "https://sxwjw.shaanxi.gov.cn/hdjl/dczj/202511/P020251103589745415792.pdf"
-      ]
+      ],
+      "regionId": "shaanxi"
     },
     {
       "id": "yangrouchuan",
@@ -250,8 +316,10 @@
       "utensilKind": null,
       "enabled": true,
       "sourceUrls": [
-        "https://www.shandan.gov.cn/gysd/whly/sdms/tc/202601/t20260113_1498124.html"
-      ]
+        "https://www.shandan.gov.cn/gysd/whly/sdms/tc/202601/t20260113_1498124.html",
+        "https://www.xjyt.gov.cn/changyou/chi/2021-06-07/249.html"
+      ],
+      "regionId": null
     },
     {
       "id": "dandanmian",
@@ -267,7 +335,8 @@
       "enabled": true,
       "sourceUrls": [
         "https://scdfz.sc.gov.cn/upload/main/contentmanage/article/file/201701161555421063.pdf"
-      ]
+      ],
+      "regionId": "sichuan"
     },
     {
       "id": "hongyou-chaoshou",
@@ -284,7 +353,8 @@
       "sourceUrls": [
         "https://scdfz.sc.gov.cn/upload/main/contentmanage/article/file/201701161555421063.pdf",
         "https://lzhbwg.mofcom.gov.cn/edi_ecms_web_front/thb/detail/8236b3b91b554e27b8120caa19bd4f47"
-      ]
+      ],
+      "regionId": "sichuan"
     },
     {
       "id": "xianhuabing",
@@ -299,8 +369,11 @@
       "utensilKind": null,
       "enabled": true,
       "sourceUrls": [
-        "https://society.yunnan.cn/system/2024/04/27/033030815.shtml"
-      ]
+        "https://society.yunnan.cn/system/2024/04/27/033030815.shtml",
+        "https://yaoan.gov.cn/info/10573/506264.htm",
+        "https://industry.shqp.gov.cn/industry/yqdt/20241216/1221935.html"
+      ],
+      "regionId": "yunnan"
     },
     {
       "id": "reganmian",
@@ -316,7 +389,8 @@
       "enabled": true,
       "sourceUrls": [
         "https://wlt.hubei.gov.cn/bmdt/ztzl/zcwdk/ywzsk/ly/202312/t20231201_4982778.shtml"
-      ]
+      ],
+      "regionId": "hubei"
     },
     {
       "id": "choudoufu",
@@ -332,8 +406,10 @@
       "enabled": true,
       "sourceUrls": [
         "https://www.ihchina.cn/project_details/23593/",
-        "https://whhlyt.hunan.gov.cn/whhlyt/news/sxxw/202609/t20260903_34056225.html"
-      ]
+        "https://whhlyt.hunan.gov.cn/whhlyt/news/sxxw/202609/t20260903_34056225.html",
+        "https://lzhbwg.mofcom.gov.cn/edi_ecms_web_front/thb/detail/1d4ee9a486224861bab1199e81d1c4a2"
+      ],
+      "regionId": "hunan"
     },
     {
       "id": "hulatang",
@@ -348,8 +424,10 @@
       "utensilKind": "spoon",
       "enabled": true,
       "sourceUrls": [
-        "https://xcoss.henan.gov.cn/typtfile/20250611/0d401f49f151473d84f6ae1ca1444bbb.pdf"
-      ]
+        "https://xcoss.henan.gov.cn/typtfile/20250611/0d401f49f151473d84f6ae1ca1444bbb.pdf",
+        "https://www.zhengzhou.gov.cn/view43/6634544.jhtml"
+      ],
+      "regionId": "henan"
     },
     {
       "id": "changfen",
@@ -366,7 +444,8 @@
       "sourceUrls": [
         "https://com.gd.gov.cn/attachment/0/513/513488/4095266.pdf",
         "https://www.discoverhongkong.com/tc/food-and-drink/must-try-street-food-in-hong-kong.html"
-      ]
+      ],
+      "regionId": "guangdong"
     },
     {
       "id": "shuangpinai",
@@ -382,7 +461,8 @@
       "enabled": true,
       "sourceUrls": [
         "https://lzhbwg.mofcom.gov.cn/edi_ecms_web_front/thb/detail/d406439d2f2b40d4b87319f20037061d"
-      ]
+      ],
+      "regionId": "guangdong"
     },
     {
       "id": "qingbuliang",
@@ -398,7 +478,8 @@
       "enabled": true,
       "sourceUrls": [
         "https://en.hainan.gov.cn/englishsite/oinf/202506/ecb3fc9674f947c1a495aaa16e94478d.shtml?ddtab=true"
-      ]
+      ],
+      "regionId": "hainan"
     },
     {
       "id": "jidanzi",
@@ -414,7 +495,8 @@
       "enabled": true,
       "sourceUrls": [
         "https://www.discoverhongkong.com/tc/food-and-drink/must-try-street-food-in-hong-kong.html"
-      ]
+      ],
+      "regionId": "hongkong"
     },
     {
       "id": "fenglisu",
@@ -429,8 +511,11 @@
       "utensilKind": null,
       "enabled": true,
       "sourceUrls": [
-        "https://eng.taiwan.net.tw/view.aspx?uid=26265"
-      ]
+        "https://eng.taiwan.net.tw/view.aspx?uid=26265",
+        "https://www.taiwan.net.tw/m1.aspx?sNo=0020552",
+        "https://child.taiwan.net.tw/0000000046.htm"
+      ],
+      "regionId": "taiwan"
     },
     {
       "id": "portuguese-egg-tart",
@@ -447,7 +532,578 @@
       "sourceUrls": [
         "https://www.macaotourism.gov.mo/zh-hant/dining/taste-of-macao/macanese-and-portuguese-dishes",
         "https://content.macaotourism.gov.mo/uploads/mgto_brouchures/13630ce2713055a8003b4666ef9a4b705d679958.pdf"
+      ],
+      "regionId": "macao"
+    },
+    {
+      "id": "lvrou-huoshao",
+      "name": "驴肉火烧",
+      "chapterId": "huabei",
+      "regionId": "hebei",
+      "regionLabel": "河北风味",
+      "description": "酥烤火烧夹卤驴肉，热饼与咸香肉馅搭成河北街头风味。",
+      "locationHint": "方浜东段路侧",
+      "poseProfile": "wrapped",
+      "utensilKind": null,
+      "assetId": "lvrou-huoshao",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://scjg.hebei.gov.cn/info/113977",
+        "https://www.chinafuning.gov.cn/main/file/2024-10-21/1729469884318297ec9de92aaa4c2700192ac70279e0fa6.pdf"
       ]
+    },
+    {
+      "id": "daoxiaomian",
+      "name": "刀削面",
+      "chapterId": "huabei",
+      "regionId": "shanxi",
+      "regionLabel": "山西风味",
+      "description": "两端收尖的宽面片入碗，削出的柳叶轮廓是山西面食的识别点。",
+      "locationHint": "方浜西段路侧",
+      "poseProfile": "bowl",
+      "utensilKind": "chopsticks",
+      "assetId": "daoxiaomian",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://www.yunzhou.gov.cn/yzqrmzfz/sqglmzzj/202007/e806464524534484962843b6f738a2f3.shtml"
+      ]
+    },
+    {
+      "id": "naidoufu",
+      "name": "奶豆腐",
+      "chapterId": "northwest",
+      "regionId": "inner-mongolia",
+      "regionLabel": "内蒙古风味",
+      "description": "乳汁发酵凝固、压模成块，奶豆腐是内蒙古常见的传统乳食。",
+      "locationHint": "外围西街路侧",
+      "poseProfile": "cupped",
+      "utensilKind": null,
+      "assetId": "naidoufu",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://www.xlgl.gov.cn/eportal/ui?articleKey=bc2c91dbcdff4ecb8f03048f609061bb&columnId=ee680ba1900b45aeab766e72eb6495a5&pageId=13246891397e4b3f98b21c630dbd0497",
+        "https://www.zlq.gov.cn/zlq/mlzlq/ysdwh/mytc/72e42014e449436faac56b8ce178ed03/index.shtml"
+      ]
+    },
+    {
+      "id": "shenyang-jijia",
+      "name": "沈阳鸡架",
+      "chapterId": "northeast",
+      "regionId": "liaoning",
+      "regionLabel": "辽宁风味",
+      "description": "带肉鸡架烤出琥珀色表面；尝肉留骨，逛一口沈阳街头风味。",
+      "locationHint": "方浜东段路侧",
+      "poseProfile": "wrapped",
+      "utensilKind": null,
+      "assetId": "shenyang-jijia",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://wlgd.shenyang.gov.cn/xxfb/ywbb/202412/t20241212_4775387.html",
+        "https://www.ln.gov.cn/web/ywdt/zymtkln/2026073009065579109/index.shtml"
+      ]
+    },
+    {
+      "id": "jianbing-cong",
+      "name": "煎饼卷大葱",
+      "chapterId": "huabei",
+      "regionId": "shandong",
+      "regionLabel": "山东风味",
+      "description": "杂粮薄煎饼卷上长葱段，露出的绿葱叶带来鲁中鲁南的家常气息。",
+      "locationHint": "方浜东段路侧",
+      "poseProfile": "wrapped",
+      "utensilKind": null,
+      "assetId": "jianbing-cong",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://www.sdxc.gov.cn/sy/xcdt/202305/t20230507_11874754.htm",
+        "https://www.xihaian.gov.cn/ywdt/jzdt/202604/t20260424_10574137.shtml"
+      ]
+    },
+    {
+      "id": "yaxue-fensi",
+      "name": "鸭血粉丝汤",
+      "chapterId": "jiangnan",
+      "regionId": "jiangsu",
+      "regionLabel": "江苏风味",
+      "description": "细粉丝、暗红鸭血块与金黄豆泡入汤，一碗南京街头暖胃风味。",
+      "locationHint": "外围西街路侧",
+      "poseProfile": "bowl",
+      "utensilKind": "chopsticks",
+      "assetId": "yaxue-fensi",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://dfz.nanjing.gov.cn/gzdt/202506/t20250611_5583425.html",
+        "https://www.njtb.gov.cn/njjj/njms/"
+      ]
+    },
+    {
+      "id": "dingshenggao",
+      "name": "定胜糕",
+      "chapterId": "jiangnan",
+      "regionId": "zhejiang",
+      "regionLabel": "浙江风味",
+      "description": "浅粉米糕两头宽、中间细，蒸出的软糯糕身带着杭州风味。",
+      "locationHint": "西桥岸连接街",
+      "poseProfile": "cupped",
+      "utensilKind": null,
+      "assetId": "dingshenggao",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://www.zjskw.gov.cn/art/2023/2/13/art_1229614965_50987.html",
+        "https://www.zjskw.gov.cn/art/2024/9/20/art_1229515903_60774.html"
+      ]
+    },
+    {
+      "id": "maodoufu",
+      "name": "毛豆腐",
+      "chapterId": "jiangnan",
+      "regionId": "anhui",
+      "regionLabel": "安徽风味",
+      "description": "豆腐发酵后再煎出金黄焦面，蘸些辣酱尝徽州风味。",
+      "locationHint": "方浜西段路侧",
+      "poseProfile": "bowl",
+      "utensilKind": "chopsticks",
+      "assetId": "maodoufu",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://www.huangshan.gov.cn/zwgk/public/6615714/11213404.html",
+        "https://www.huangshan.gov.cn/zxzx/zwyw/8389655.html"
+      ]
+    },
+    {
+      "id": "shachamian",
+      "name": "沙茶面",
+      "chapterId": "minjiang",
+      "regionId": "fujian",
+      "regionLabel": "福建风味",
+      "description": "沙茶汤底配面条与海鲜，浓香汤色里藏着厦门街头味道。",
+      "locationHint": "外围西街路侧",
+      "poseProfile": "bowl",
+      "utensilKind": "chopsticks",
+      "assetId": "shachamian",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://std.samr.gov.cn/db/search/stdDBDetailedCNF?id=91D99E4DBB912E24E05397BE0A0A3A10",
+        "https://www.moe.gov.cn/jyb_xwfb/xw_zt/moe_357/jyzt_2018n/2018_zt21/18zt21_sssc/201810/W020181012369276003674.pdf"
+      ]
+    },
+    {
+      "id": "waguan-tang",
+      "name": "瓦罐汤",
+      "chapterId": "minjiang",
+      "regionId": "jiangxi",
+      "regionLabel": "江西风味",
+      "description": "小瓦罐慢煨肉与汤，厚口陶罐盛着南昌街头的热汤风味。",
+      "locationHint": "庙前连接街",
+      "poseProfile": "bowl",
+      "utensilKind": "spoon",
+      "assetId": "waguan-tang",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://www.nc.gov.cn/ncszf/xxgkzcwj/201806/9c230f5447d44de184cf2da71eee89be.shtml",
+        "https://www.nc.gov.cn/ncszf/whtya/201911/aa1f950471794a6bb6f4d83962001fe6.shtml"
+      ]
+    },
+    {
+      "id": "luosifen",
+      "name": "螺蛳粉",
+      "chapterId": "lingnan-islands",
+      "regionId": "guangxi",
+      "regionLabel": "广西风味",
+      "description": "米粉配酸笋、木耳和腐竹，红油与丰富配菜组成柳州风味。",
+      "locationHint": "庙前连接街",
+      "poseProfile": "bowl",
+      "utensilKind": "chopsticks",
+      "assetId": "luosifen",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://tzcjj.gxzf.gov.cn/gzdt/t7414206.shtml",
+        "https://guangxi.chinatax.gov.cn/liuzhou/gzdt_15016/gzdt_15017/202107/t20210726_342803.html"
+      ]
+    },
+    {
+      "id": "siwawa",
+      "name": "丝娃娃",
+      "chapterId": "southwest",
+      "regionId": "guizhou",
+      "regionLabel": "贵州风味",
+      "description": "薄面皮包住彩色蔬菜丝，卷成小小襁褓状，配蘸水尝贵阳风味。",
+      "locationHint": "外围西街路侧",
+      "poseProfile": "wrapped",
+      "utensilKind": null,
+      "assetId": "siwawa",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://rst.guizhou.gov.cn/xwzx/gggs/202311/P020231124578879357053.pdf",
+        "https://www.gzszx.gov.cn/gzzxb/web/doc/detail/2798/A4"
+      ]
+    },
+    {
+      "id": "suanlafen",
+      "name": "酸辣粉",
+      "chapterId": "southwest",
+      "regionId": "chongqing",
+      "regionLabel": "重庆风味",
+      "description": "弹滑粉条配酸辣汤与花生，浓亮红汤带来重庆街头风味。",
+      "locationHint": "外围西街路侧",
+      "poseProfile": "bowl",
+      "utensilKind": "chopsticks",
+      "assetId": "suanlafen",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://ghzrzyj.cq.gov.cn/bsfw_186/dtfw/mzyt/202511/t20251114_15163558_wap.html",
+        "https://www.cq.gov.cn/zwgk/zfxxgkml/zdlyxxgk/ggwh/wh/zxdt/202412/t20241202_13850887.html"
+      ]
+    },
+    {
+      "id": "niangpi",
+      "name": "酿皮",
+      "chapterId": "northwest",
+      "regionId": "gansu",
+      "regionLabel": "甘肃风味",
+      "description": "宽面皮搭配多孔面筋、红油与黄瓜，切开尝一口甘肃风味。",
+      "locationHint": "外围西街路侧",
+      "poseProfile": "bowl",
+      "utensilKind": "chopsticks",
+      "assetId": "niangpi",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://wsjk.gansu.gov.cn/wsjk/c113471/202407/173955955/files/4d8d23679edb4825a22ec5374e7da118.pdf",
+        "https://www.bjcc.gov.cn/article/13304.html"
+      ]
+    },
+    {
+      "id": "qinghai-yogurt",
+      "name": "青海酸奶",
+      "chapterId": "northwest",
+      "regionId": "qinghai",
+      "regionLabel": "青海风味",
+      "description": "碗装凝固酸奶覆着浅黄奶皮，用小勺尝青海乳食风味。",
+      "locationHint": "西桥岸连接街",
+      "poseProfile": "bowl",
+      "utensilKind": "spoon",
+      "assetId": "qinghai-yogurt",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://www.huangzhong.gov.cn/html/c/5803.html",
+        "https://hzjl.sh.gov.cn/n1308/20260126/6bdf55b554574910804d2fb108578393.html"
+      ]
+    },
+    {
+      "id": "sanzi",
+      "name": "馓子",
+      "chapterId": "northwest",
+      "regionId": "ningxia",
+      "regionLabel": "宁夏风味",
+      "description": "细细的炸面条盘成金黄环束，留着空隙的脆面丝带来宁夏风味。",
+      "locationHint": "庙前连接街",
+      "poseProfile": "cupped",
+      "utensilKind": null,
+      "assetId": "sanzi",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://www.wuzhong.gov.cn/sywz/cxwz/202302/t20230221_3968499.html",
+        "https://www.nx.gov.cn/ssjn/rwnx/pxms/202303/t20230307_3986890_wap.html",
+        "https://www.yining.gov.cn/yining/tsms/201603/93c49155e4b8481f9d2c7fac15b4b9c4.shtml"
+      ]
+    },
+    {
+      "id": "nang",
+      "name": "馕",
+      "chapterId": "northwest",
+      "regionId": "xinjiang",
+      "regionLabel": "新疆风味",
+      "description": "圆饼厚边围着压印纹样，烤香的饼面撒着芝麻，是新疆常见主食。",
+      "locationHint": "方浜东段路侧",
+      "poseProfile": "cupped",
+      "utensilKind": null,
+      "assetId": "nang",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://www.xjbh.gov.cn/xjbhx/c110090/201803/7d0bf2b059cf44968d92a3aa9a8dec4a.shtml",
+        "https://www.xinjiang.gov.cn/xinjiang/tsxj/201111/717dce3167b7460a8801fac6c514ae69.shtml"
+      ]
+    },
+    {
+      "id": "zanba",
+      "name": "糌粑",
+      "chapterId": "southwest",
+      "regionId": "tibet",
+      "regionLabel": "西藏风味",
+      "description": "炒青稞磨成粉再拌捏，这里把西藏常见主食做成便于手捧的试吃小份。",
+      "locationHint": "方浜东段路侧",
+      "poseProfile": "cupped",
+      "utensilKind": null,
+      "assetId": "zanba",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://www.naidong.gov.cn/zjnd/ndly/tsms/201901/t20190115_10214.html",
+        "https://wsb.xizang.gov.cn/xzjx/mzfq/201107/t20110713_100925.html"
+      ]
+    },
+    {
+      "id": "shengjianbao",
+      "name": "生煎包",
+      "chapterId": "shanghai",
+      "regionId": "shanghai",
+      "regionLabel": "上海风味",
+      "description": "白色褶纹面皮托着焦香锅底，撒上芝麻与葱花，尝上海生煎风味。",
+      "locationHint": "方浜东段路侧",
+      "poseProfile": "cupped",
+      "utensilKind": null,
+      "assetId": "shengjianbao",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://english.shanghai.gov.cn/en-GlobalTasteinShanghai2026-LocalFlavors/20260430/c012ba9f05414f3184be86244a03e950.html",
+        "https://mzj.sh.gov.cn/lnb-hf/20260824/ea7aeae38949467da150e100ae950c7e.html"
+      ]
+    },
+    {
+      "id": "tangou",
+      "name": "桂花糖藕",
+      "chapterId": "jiangnan",
+      "regionId": "jiangsu",
+      "regionLabel": "江苏风味",
+      "description": "糯米填入藕孔，切片后覆上甜亮糖汁与桂花，尝江南甜食风味。",
+      "locationHint": "方浜东段路侧",
+      "poseProfile": "bowl",
+      "utensilKind": "spoon",
+      "assetId": "tangou",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://www.jsxc.gov.cn/xcdt/202607/t20260713_94283.shtml",
+        "https://www.jiangning.gov.cn/sjb/xwzx/gzdt/202504/t20250430_5139500.html",
+        "https://shidian.gov.cn/info/1111/3855913.htm"
+      ]
+    },
+    {
+      "id": "ningbo-tangyuan",
+      "name": "宁波汤圆",
+      "chapterId": "jiangnan",
+      "regionId": "zhejiang",
+      "regionLabel": "浙江风味",
+      "description": "白糯米团裹住黑芝麻馅，在清甜汤里尝宁波风味。",
+      "locationHint": "外围西街路侧",
+      "poseProfile": "bowl",
+      "utensilKind": "spoon",
+      "assetId": "ningbo-tangyuan",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://www.haishu.gov.cn/art/2022/1/6/art_1229100195_58956055.html",
+        "https://www.haishu.gov.cn/art/2023/2/6/art_1229100495_58976090.html"
+      ]
+    },
+    {
+      "id": "mashu",
+      "name": "泉州花生麻糍",
+      "chapterId": "minjiang",
+      "regionId": "fujian",
+      "regionLabel": "福建风味",
+      "description": "软糯米团外裹花生芝麻粉，做成手捧试吃份，尝泉州街头麻糍风味。",
+      "locationHint": "西桥岸连接街",
+      "poseProfile": "cupped",
+      "utensilKind": null,
+      "assetId": "mashu",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://www.quanzhou.gov.cn/gastronomy/ch/msdh/xwqz/202412/t20241226_3122998.htm",
+        "https://www.quanzhou.gov.cn/gastronomy/ch/scdt/sdxw/202607/t20260708_3307750.htm"
+      ]
+    },
+    {
+      "id": "boboji",
+      "name": "钵钵鸡",
+      "chapterId": "southwest",
+      "regionId": "sichuan",
+      "regionLabel": "四川风味",
+      "description": "竹签串起鸡肉与蔬菜，裹上红油芝麻，尝乐山钵钵鸡风味。",
+      "locationHint": "西桥岸连接街",
+      "poseProfile": "skewer",
+      "utensilKind": null,
+      "assetId": "boboji",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://std.samr.gov.cn/db/search/stdDBDetailed?id=DF68B3A1A8249FE8E05397BE0A0A3BBC",
+        "https://gxq.leshan.gov.cn/sgxq/gxdt1/202511/93716b3c8f2647b286123d2504bdd7b6.shtml"
+      ]
+    },
+    {
+      "id": "xiajiao",
+      "name": "虾饺",
+      "chapterId": "lingnan-islands",
+      "regionId": "guangdong",
+      "regionLabel": "广东风味",
+      "description": "半透明薄皮折出褶纹、包住虾馅，尝广东早茶中的小巧点心。",
+      "locationHint": "园外老街路侧",
+      "poseProfile": "cupped",
+      "utensilKind": null,
+      "assetId": "xiajiao",
+      "thumbId": null,
+      "enabled": true,
+      "sourceUrls": [
+        "https://www.gzwxb.gov.cn/context/contextId/201200"
+      ]
+    }
+  ],
+  "regions": [
+    {
+      "id": "beijing",
+      "name": "北京"
+    },
+    {
+      "id": "tianjin",
+      "name": "天津"
+    },
+    {
+      "id": "hebei",
+      "name": "河北"
+    },
+    {
+      "id": "shanxi",
+      "name": "山西"
+    },
+    {
+      "id": "inner-mongolia",
+      "name": "内蒙古"
+    },
+    {
+      "id": "liaoning",
+      "name": "辽宁"
+    },
+    {
+      "id": "jilin",
+      "name": "吉林"
+    },
+    {
+      "id": "heilongjiang",
+      "name": "黑龙江"
+    },
+    {
+      "id": "shanghai",
+      "name": "上海"
+    },
+    {
+      "id": "jiangsu",
+      "name": "江苏"
+    },
+    {
+      "id": "zhejiang",
+      "name": "浙江"
+    },
+    {
+      "id": "anhui",
+      "name": "安徽"
+    },
+    {
+      "id": "fujian",
+      "name": "福建"
+    },
+    {
+      "id": "jiangxi",
+      "name": "江西"
+    },
+    {
+      "id": "shandong",
+      "name": "山东"
+    },
+    {
+      "id": "henan",
+      "name": "河南"
+    },
+    {
+      "id": "hubei",
+      "name": "湖北"
+    },
+    {
+      "id": "hunan",
+      "name": "湖南"
+    },
+    {
+      "id": "guangdong",
+      "name": "广东"
+    },
+    {
+      "id": "guangxi",
+      "name": "广西"
+    },
+    {
+      "id": "hainan",
+      "name": "海南"
+    },
+    {
+      "id": "chongqing",
+      "name": "重庆"
+    },
+    {
+      "id": "sichuan",
+      "name": "四川"
+    },
+    {
+      "id": "guizhou",
+      "name": "贵州"
+    },
+    {
+      "id": "yunnan",
+      "name": "云南"
+    },
+    {
+      "id": "tibet",
+      "name": "西藏"
+    },
+    {
+      "id": "shaanxi",
+      "name": "陕西"
+    },
+    {
+      "id": "gansu",
+      "name": "甘肃"
+    },
+    {
+      "id": "qinghai",
+      "name": "青海"
+    },
+    {
+      "id": "ningxia",
+      "name": "宁夏"
+    },
+    {
+      "id": "xinjiang",
+      "name": "新疆"
+    },
+    {
+      "id": "hongkong",
+      "name": "香港"
+    },
+    {
+      "id": "macao",
+      "name": "澳门"
+    },
+    {
+      "id": "taiwan",
+      "name": "台湾"
     }
   ]
 }

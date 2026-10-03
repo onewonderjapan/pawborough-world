@@ -1,0 +1,762 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-03",
+  "scope": "仅地区关联与文字/外观来源审查；不含模型、地图或全项目QC；未修改产品仓库",
+  "workspaceRoot": "/home/baibai/work/onewonderjapan/pawborough-world",
+  "frozenInput": "/home/baibai/outbox/pawborough-food-coverage-20261003/frozen-foods.json",
+  "evidencePolicy": [
+    "地区关联不等于唯一发源地；跨地域食品只能按明确风味版本计单省。",
+    "政府/官方文旅/官方标准网页为依据；部分官方页转载当地媒体实地报道，来源已在网页署名。",
+    "visualIdentity为来源支持的识别特征；unverifiedOrAuthoringChoices明确标出未核实细节，不是模型验收。",
+    "食品ID保持冻结版本；建议改显示名不改已存档ID。",
+    "来源中的传说、疗效、无添加等绝对宣传不进入图鉴。"
+  ],
+  "newCandidates": [
+    {
+      "regionId": "hebei",
+      "regionName": "河北",
+      "name": "驴肉火烧",
+      "foodId": "lvrou-huoshao",
+      "status": "verified_region_partial_visual",
+      "sourceUrls": [
+        "https://scjg.hebei.gov.cn/info/113977",
+        "https://www.chinafuning.gov.cn/main/file/2024-10-21/1729469884318297ec9de92aaa4c2700192ac70279e0fa6.pdf"
+      ],
+      "sourceFacts": "河北发布保定驴肉火烧地方食品标准；标准的保定火烧面坯为圆形，搭配卤煮驴肉。",
+      "visualIdentity": "酥烤火烧剖开露出卤肉；冻结的长方轮廓应标为河间型选择。",
+      "unverifiedOrAuthoringChoices": "本轮未找到直接确认河间长方轮廓及青椒固定配料的一手文字；不要把圆形保定标准当成长方造型证据。与肉夹馍相近，靠火烧层酥与轮廓区分。"
+    },
+    {
+      "regionId": "shanxi",
+      "regionName": "山西",
+      "name": "刀削面",
+      "foodId": "daoxiaomian",
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.yunzhou.gov.cn/yzqrmzfz/sqglmzzj/202007/e806464524534484962843b6f738a2f3.shtml"
+      ],
+      "sourceFacts": "云州区政府介绍山西刀削面和弧形削刀，描述削面如柳叶、存在扁条或三棱截面。",
+      "visualIdentity": "宽而厚薄不均、两端收尖的削面条，碗装。",
+      "unverifiedOrAuthoringChoices": "牛肉红汤是本次表现选择，不是刀削面唯一传统汤底；与现有细圆面条保持轮廓区别。"
+    },
+    {
+      "regionId": "inner-mongolia",
+      "regionName": "内蒙古",
+      "name": "奶豆腐",
+      "foodId": "naidoufu",
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.xlgl.gov.cn/eportal/ui?articleKey=bc2c91dbcdff4ecb8f03048f609061bb&columnId=ee680ba1900b45aeab766e72eb6495a5&pageId=13246891397e4b3f98b21c630dbd0497",
+        "https://www.zlq.gov.cn/zlq/mlzlq/ysdwh/mytc/72e42014e449436faac56b8ce178ed03/index.shtml"
+      ],
+      "sourceFacts": "锡林郭勒介绍奶豆腐为发酵凝固的奶食品，以乳白色为佳；正蓝旗介绍方、圆、菱形及花纹模具成型。",
+      "visualIdentity": "乳白压制乳块、干净切面，可带压模纹样。",
+      "unverifiedOrAuthoringChoices": "冻结造型的轻焦边未核实为普通奶豆腐固定特征；不要把奶豆腐解释为大豆豆腐。"
+    },
+    {
+      "regionId": "liaoning",
+      "regionName": "辽宁",
+      "name": "沈阳鸡架",
+      "foodId": "shenyang-jijia",
+      "status": "verified",
+      "sourceUrls": [
+        "https://wlgd.shenyang.gov.cn/xxfb/ywbb/202412/t20241212_4775387.html",
+        "https://www.ln.gov.cn/web/ywdt/zymtkln/2026073009065579109/index.shtml"
+      ],
+      "sourceFacts": "沈阳鸡架列入辽宁地标美食；政府转载实地报道说明鸡架可烤、炸、熏、拌，并作为街头小吃食用。",
+      "visualIdentity": "不规则带肉鸡架、可见胸肋骨弧线与熟制琥珀色表面。",
+      "unverifiedOrAuthoringChoices": "鸡架确属小吃，但骨架可读性和只吃肉不吞骨需设计；芝麻、纸套为本次表现选择。不能换成普通鸡翅后仍称鸡架；本轮不增加未经完整核实的辽宁替代菜。"
+    },
+    {
+      "regionId": "shandong",
+      "regionName": "山东",
+      "name": "煎饼卷大葱",
+      "foodId": "jianbing-cong",
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.sdxc.gov.cn/sy/xcdt/202305/t20230507_11874754.htm",
+        "https://www.xihaian.gov.cn/ywdt/jzdt/202604/t20260424_10574137.shtml"
+      ],
+      "sourceFacts": "山东宣传明确鲁中鲁南常吃煎饼，并区分胶东习惯；青岛活动说明煎饼薄脆、可裹葱和酱料。",
+      "visualIdentity": "杂粮色薄煎饼卷、露出长葱段和绿色葱叶。",
+      "unverifiedOrAuthoringChoices": "建议写山东鲁中鲁南风味，不写全山东天天吃；与天津煎饼果子区分葱段而非油条/薄脆夹层。"
+    },
+    {
+      "regionId": "jiangsu",
+      "regionName": "江苏",
+      "name": "鸭血粉丝汤",
+      "foodId": "yaxue-fensi",
+      "status": "verified",
+      "sourceUrls": [
+        "https://dfz.nanjing.gov.cn/gzdt/202506/t20250611_5583425.html",
+        "https://www.njtb.gov.cn/njjj/njms/"
+      ],
+      "sourceFacts": "南京地方志研究鸭血粉丝汤；南京官方美食页列鸭血、鸭肫、鸭肠、鸭肝、粉丝及豆果等。",
+      "visualIdentity": "细透明粉丝、暗红鸭血块、金黄豆泡、清汤和香菜。",
+      "unverifiedOrAuthoringChoices": "用南京风味关联江苏；不复述未经证实的发明传说，不用红面条替代粉丝。"
+    },
+    {
+      "regionId": "zhejiang",
+      "regionName": "浙江",
+      "name": "定胜糕",
+      "foodId": "dingshenggao",
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.zjskw.gov.cn/art/2023/2/13/art_1229614965_50987.html",
+        "https://www.zjskw.gov.cn/art/2024/9/20/art_1229515903_60774.html"
+      ],
+      "sourceFacts": "浙江社科官方介绍杭州定胜糕为米粉蒸糕，腰细、两头宽，带粉红/绯红色，可包豆沙。",
+      "visualIdentity": "浅粉红米糕、收腰轮廓、较宽顶底与豆沙局部切面。",
+      "unverifiedOrAuthoringChoices": "岳家军/韩家军故事各版本不一致，公开介绍只写杭州米糕，不把传说当确定历史。"
+    },
+    {
+      "regionId": "anhui",
+      "regionName": "安徽",
+      "name": "毛豆腐",
+      "foodId": "maodoufu",
+      "status": "verified_region_partial_visual",
+      "sourceUrls": [
+        "https://www.huangshan.gov.cn/zwgk/public/6615714/11213404.html",
+        "https://www.huangshan.gov.cn/zxzx/zwyw/8389655.html"
+      ],
+      "sourceFacts": "黄山官方介绍块状豆腐先发酵长白毛，再油煎至两面略焦；另一篇解释白色茸毛形成于发酵过程。",
+      "visualIdentity": "食用型为煎制豆腐块和焦黄面；白茸毛是发酵坯的特征。",
+      "unverifiedOrAuthoringChoices": "冻结造型熟品边缘保留明显白毛未核实；主控已计划熟毛豆腐避免明显白毛，不使用宠物毛绒表面。"
+    },
+    {
+      "regionId": "fujian",
+      "regionName": "福建",
+      "name": "沙茶面",
+      "foodId": "shachamian",
+      "status": "verified",
+      "sourceUrls": [
+        "https://std.samr.gov.cn/db/search/stdDBDetailedCNF?id=91D99E4DBB912E24E05397BE0A0A3A10",
+        "https://www.moe.gov.cn/jyb_xwfb/xw_zt/moe_357/jyzt_2018n/2018_zt21/18zt21_sssc/201810/W020181012369276003674.pdf"
+      ],
+      "sourceFacts": "国家标准平台有厦门特色沙茶面制作规范；教育部发布的厦门美食资料列沙茶汤、闽南油面和可选虾仁/豆腐等。",
+      "visualIdentity": "浓稠沙茶色汤、油面与虾、豆腐或蔬菜配料。",
+      "unverifiedOrAuthoringChoices": "建议写厦门沙茶面；鱿鱼圈、汤色精确深浅是制作选择，配料不固定。"
+    },
+    {
+      "regionId": "jiangxi",
+      "regionName": "江西",
+      "name": "瓦罐汤",
+      "foodId": "waguan-tang",
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.nc.gov.cn/ncszf/xxgkzcwj/201806/9c230f5447d44de184cf2da71eee89be.shtml",
+        "https://www.nc.gov.cn/ncszf/whtya/201911/aa1f950471794a6bb6f4d83962001fe6.shtml"
+      ],
+      "sourceFacts": "南昌市政策称瓦罐汤为本市风味小吃；市级非遗简介说明以土陶瓦罐为容器、用炭火煨制。",
+      "visualIdentity": "小土陶罐、厚口沿、可见清汤和一份食材。",
+      "unverifiedOrAuthoringChoices": "建议南昌瓦罐汤；猪肉块与蘑菇只是选定口味，陶罐是容器不能随食物吞掉。"
+    },
+    {
+      "regionId": "guangxi",
+      "regionName": "广西",
+      "name": "螺蛳粉",
+      "foodId": "luosifen",
+      "status": "verified",
+      "sourceUrls": [
+        "https://tzcjj.gxzf.gov.cn/gzdt/t7414206.shtml",
+        "https://guangxi.chinatax.gov.cn/liuzhou/gzdt_15016/gzdt_15017/202107/t20210726_342803.html"
+      ],
+      "sourceFacts": "广西官方介绍柳州米粉配酸笋、花生、油炸腐竹、蔬菜和螺蛳汤；地方税务报道也列木耳等配菜。",
+      "visualIdentity": "白色圆米粉、红油、浅色酸笋条、黑木耳及大块炸腐竹。",
+      "unverifiedOrAuthoringChoices": "螺蛳主要进入汤底，不要强制每碗摆满完整螺壳；避免与酸辣粉共用同一种面条。"
+    },
+    {
+      "regionId": "guizhou",
+      "regionName": "贵州",
+      "name": "丝娃娃",
+      "foodId": "siwawa",
+      "status": "verified",
+      "sourceUrls": [
+        "https://rst.guizhou.gov.cn/xwzx/gggs/202311/P020231124578879357053.pdf",
+        "https://www.gzszx.gov.cn/gzzxb/web/doc/detail/2798/A4"
+      ],
+      "sourceFacts": "贵州官方菜品遴选列贵阳丝娃娃；贵州政协发表的体验文说明薄面皮包多种菜丝，上大下小，食用时加酸辣蘸汁。",
+      "visualIdentity": "薄白面皮敞口兜状，彩色蔬菜丝从上方露出。",
+      "unverifiedOrAuthoringChoices": "建议贵阳丝娃娃；必须有菜丝和开口兜，不能做成封口包子或油炸春卷。"
+    },
+    {
+      "regionId": "chongqing",
+      "regionName": "重庆",
+      "name": "酸辣粉",
+      "foodId": "suanlafen",
+      "status": "verified",
+      "sourceUrls": [
+        "https://ghzrzyj.cq.gov.cn/bsfw_186/dtfw/mzyt/202511/t20251114_15163558_wap.html",
+        "https://www.cq.gov.cn/zwgk/zfxxgkml/zdlyxxgk/ggwh/wh/zxdt/202412/t20241202_13850887.html"
+      ],
+      "sourceFacts": "重庆规划局介绍重庆酸辣粉以本地红薯粉为主要材料；政府饮食文章涉及红薯粉、红油、花生和香菜等。",
+      "visualIdentity": "较透明的红薯粉条、红油酸辣汤、花生与葱菜。",
+      "unverifiedOrAuthoringChoices": "重庆关联有依据但不是仅重庆才有；精确深褐色是本次造型选择，不用普通白色细面冒充。"
+    },
+    {
+      "regionId": "gansu",
+      "regionName": "甘肃",
+      "name": "酿皮",
+      "foodId": "niangpi",
+      "status": "verified",
+      "sourceUrls": [
+        "https://wsjk.gansu.gov.cn/wsjk/c113471/202407/173955955/files/4d8d23679edb4825a22ec5374e7da118.pdf",
+        "https://www.bjcc.gov.cn/article/13304.html"
+      ],
+      "sourceFacts": "甘肃公开标准界定兰州酿皮的小麦加工、蒸制、切条等流程；官方食文化介绍说明酿皮在甘肃多地存在，并区分高担白酿皮。",
+      "visualIdentity": "短宽麦面浆皮条，可搭面筋、辣油和蔬菜。",
+      "unverifiedOrAuthoringChoices": "建议明确兰州酿皮；与已有陕西凉皮高度近似，需用厚度、面筋大块及器皿区分，不称甘肃独有。"
+    },
+    {
+      "regionId": "qinghai",
+      "regionName": "青海",
+      "name": "青海酸奶",
+      "foodId": "qinghai-yogurt",
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.huangzhong.gov.cn/html/c/5803.html",
+        "https://hzjl.sh.gov.cn/n1308/20260126/6bdf55b554574910804d2fb108578393.html"
+      ],
+      "sourceFacts": "湟中官方介绍酸奶上有黄色油脂层、下为白色酸奶；沪青协作资料明确青海凝固型老酸奶。",
+      "visualIdentity": "凝固白酸奶、黄色乳脂皮、勺破开的边缘。",
+      "unverifiedOrAuthoringChoices": "建议名称青海老酸奶；不要泛指所有酸奶都代表青海；与双皮奶通过黄皮与凝固口感区分。来源中的疗效/无添加绝对说法不进入图鉴。"
+    },
+    {
+      "regionId": "ningxia",
+      "regionName": "宁夏",
+      "name": "馓子",
+      "foodId": "sanzi",
+      "status": "verified_region_partial_visual",
+      "sourceUrls": [
+        "https://www.wuzhong.gov.cn/sywz/cxwz/202302/t20230221_3968499.html",
+        "https://www.nx.gov.cn/ssjn/rwnx/pxms/202303/t20230307_3986890_wap.html",
+        "https://www.yining.gov.cn/yining/tsms/201603/93c49155e4b8481f9d2c7fac15b4b9c4.shtml"
+      ],
+      "sourceFacts": "吴忠政府和宁夏文旅资料列馓子为当地面点/早茶搭配；伊宁官方制作文说明面条成环后炸至金黄。",
+      "visualIdentity": "金黄细油炸面条，多股环束并有明显空隙。",
+      "unverifiedOrAuthoringChoices": "宁夏吴忠地域关联可靠，但环束造型的一手文字来自新疆页面；宁夏专属形制未核实。可称吴忠风味馓子，不称宁夏独有。"
+    },
+    {
+      "regionId": "xinjiang",
+      "regionName": "新疆",
+      "name": "馕",
+      "foodId": "nang",
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.xjbh.gov.cn/xjbhx/c110090/201803/7d0bf2b059cf44968d92a3aa9a8dec4a.shtml",
+        "https://www.xinjiang.gov.cn/xinjiang/tsxj/201111/717dce3167b7460a8801fac6c514ae69.shtml"
+      ],
+      "sourceFacts": "博湖政府介绍圆馕中间薄、边厚和中心花纹，并列芝麻馕；自治区政府介绍不同馕品种。",
+      "visualIdentity": "金黄圆饼、厚外沿、中心戳孔纹样和芝麻点。",
+      "unverifiedOrAuthoringChoices": "馕也是主食，可用小份试吃；不是所有馕都同形。新疆覆盖由本项承担，不依赖泛西北羊肉串。"
+    },
+    {
+      "regionId": "tibet",
+      "regionName": "西藏",
+      "name": "糌粑",
+      "foodId": "zanba",
+      "status": "verified_region_partial_visual",
+      "sourceUrls": [
+        "https://www.naidong.gov.cn/zjnd/ndly/tsms/201901/t20190115_10214.html",
+        "https://wsb.xizang.gov.cn/xzjx/mzfq/201107/t20110713_100925.html"
+      ],
+      "sourceFacts": "乃东旅发委说明糌粑是主食，青稞炒熟磨粉后与酥油茶等调和；西藏外事资料也将糌粑称为主食。",
+      "visualIdentity": "炒青稞粉及调和后的小份成团表现；不是蒸制包子。",
+      "unverifiedOrAuthoringChoices": "冻结的三块捏痕试吃形态属表现选择，具体固定块形/粒点未核实。主控已决定归地方风味试吃，不称独有小吃；若严格只收点心，备选卡赛。"
+    },
+    {
+      "regionId": "shanghai",
+      "regionName": "上海",
+      "name": "生煎包",
+      "foodId": "shengjianbao",
+      "status": "verified",
+      "sourceUrls": [
+        "https://english.shanghai.gov.cn/en-GlobalTasteinShanghai2026-LocalFlavors/20260430/c012ba9f05414f3184be86244a03e950.html",
+        "https://mzj.sh.gov.cn/lnb-hf/20260824/ea7aeae38949467da150e100ae950c7e.html"
+      ],
+      "sourceFacts": "上海官方介绍生煎为本地常见食品；市民政刊物描述半发面外皮和金黄焦香底部。",
+      "visualIdentity": "白色包体、清晰焦黄平底、局部葱芝麻点缀。",
+      "unverifiedOrAuthoringChoices": "与小笼包按煎底和较厚面皮区分；黑芝麻配色/具体数量是制作选择，不写上海唯一发源地。"
+    },
+    {
+      "regionId": "jiangsu",
+      "regionName": "江苏",
+      "name": "桂花糖藕",
+      "foodId": "tangou",
+      "status": "verified_region_partial_visual",
+      "sourceUrls": [
+        "https://www.jsxc.gov.cn/xcdt/202607/t20260713_94283.shtml",
+        "https://www.jiangning.gov.cn/sjb/xwzx/gzdt/202504/t20250430_5139500.html",
+        "https://shidian.gov.cn/info/1111/3855913.htm"
+      ],
+      "sourceFacts": "江苏官方文旅推介和江宁文旅文章均列桂花糖藕；施甸政府制作介绍说明藕孔填糯米、熟制切片再加桂花糖浆。",
+      "visualIdentity": "糖色莲藕切片、可见糯米填孔、糖浆及桂花。",
+      "unverifiedOrAuthoringChoices": "江苏关联可用但跨江南多地，不称独有；冻结的恰好7孔是构型选择，不是固定菜品标准。"
+    },
+    {
+      "regionId": "zhejiang",
+      "regionName": "浙江",
+      "name": "宁波汤圆",
+      "foodId": "ningbo-tangyuan",
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.haishu.gov.cn/art/2022/1/6/art_1229100195_58956055.html",
+        "https://www.haishu.gov.cn/art/2023/2/6/art_1229100495_58976090.html"
+      ],
+      "sourceFacts": "海曙官方称汤圆为宁波著名小吃；报道指出经典猪油黑芝麻口味，切开可见亮黑芝麻馅。",
+      "visualIdentity": "白糯米圆子、小碗清汤、一个裂口露黑芝麻馅。",
+      "unverifiedOrAuthoringChoices": "宁波名明确，区域关联可靠；清甜汤、摆盘数量为表现选择。"
+    },
+    {
+      "regionId": "fujian",
+      "regionName": "福建",
+      "name": "麻薯",
+      "foodId": "mashu",
+      "status": "verified_region_partial_visual",
+      "sourceUrls": [
+        "https://www.quanzhou.gov.cn/gastronomy/ch/msdh/xwqz/202412/t20241226_3122998.htm",
+        "https://www.quanzhou.gov.cn/gastronomy/ch/scdt/sdxw/202607/t20260708_3307750.htm"
+      ],
+      "sourceFacts": "泉州美食官方介绍英都麻糍为糯米小球蘸花生芝麻糖粉；另一篇泉州报道说明花生麻糍可裹花生碎和薄脆。",
+      "visualIdentity": "软糯米制小食、浅褐花生芝麻粉外衣。",
+      "unverifiedOrAuthoringChoices": "主控已计划公开名泉州花生麻糍；冻结的黑芝麻内芯未核实为该地传统固定特征，勿把泛麻薯/日式大福直接当福建专属。foodId保持mashu。"
+    },
+    {
+      "regionId": "sichuan",
+      "regionName": "四川",
+      "name": "钵钵鸡",
+      "foodId": "boboji",
+      "status": "verified_region_partial_visual",
+      "sourceUrls": [
+        "https://std.samr.gov.cn/db/search/stdDBDetailed?id=DF68B3A1A8249FE8E05397BE0A0A3BBC",
+        "https://gxq.leshan.gov.cn/sgxq/gxdt1/202511/93716b3c8f2647b286123d2504bdd7b6.shtml"
+      ],
+      "sourceFacts": "官方标准平台列乐山钵钵鸡制作工艺；乐山非遗培训报道明确汤底调配与串签搭配。",
+      "visualIdentity": "鸡肉与素菜串签，蘸/浸调味汤底，可见油润熟食而非炭烤焦痕。",
+      "unverifiedOrAuthoringChoices": "冻结手持三串可作为从钵中取出的试吃份；碗钵展示和冷食汤底仍有辨识价值。本轮陶钵具体纹样、食材组合及冷热细节未逐项核实。"
+    },
+    {
+      "regionId": "guangdong",
+      "regionName": "广东",
+      "name": "虾饺",
+      "foodId": "xiajiao",
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.gzwxb.gov.cn/context/contextId/201200"
+      ],
+      "sourceFacts": "广州官方介绍早茶虾饺薄而透明，皮下能看见饱满虾仁。",
+      "visualIdentity": "半透明月牙形褶皮、透出粉橙色虾仁内馅。",
+      "unverifiedOrAuthoringChoices": "广东关联可靠但香港等地也常见；月牙褶线为传统样式表现，不混成厚白圆包。"
+    }
+  ],
+  "existingFoodRegionRecommendations": [
+    {
+      "foodId": "xiaolongbao",
+      "name": "小笼包",
+      "currentRegionLabel": "上海风味",
+      "regionId": "shanghai",
+      "suggestedRegionId": "shanghai",
+      "sourceUrls": [
+        "https://english.shanghai.gov.cn/en-GlobalTasteinShanghai2026-LocalFlavors/20260316/00b0c6d1698d406c8d532a6e169e1a1e.html"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "维持现有地区风味关联；不宣称唯一发源地。"
+    },
+    {
+      "foodId": "congyoubing",
+      "name": "葱油饼",
+      "currentRegionLabel": "上海风味",
+      "regionId": "shanghai",
+      "suggestedRegionId": "shanghai",
+      "sourceUrls": [
+        "https://www.shanghai.gov.cn/nw15343/20250818/4e2b327a8d504d5cb09608e5a625a06a.html"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "维持现有地区风味关联；不宣称唯一发源地。"
+    },
+    {
+      "foodId": "youdunzi",
+      "name": "油墩子",
+      "currentRegionLabel": "上海风味",
+      "regionId": "shanghai",
+      "suggestedRegionId": "shanghai",
+      "sourceUrls": [
+        "https://www.shanghai.gov.cn/nw15343/20250818/4e2b327a8d504d5cb09608e5a625a06a.html"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "维持现有地区风味关联；不宣称唯一发源地。"
+    },
+    {
+      "foodId": "tanghulu",
+      "name": "糖葫芦",
+      "currentRegionLabel": "北京等北方地区",
+      "regionId": "beijing",
+      "suggestedRegionId": "beijing",
+      "sourceUrls": [
+        "https://whlyj.beijing.gov.cn/zwgk/xwzx/gzdt/202310/t20231017_3280716.html"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "北京文旅官方非遗活动有糖葫芦制作体验，可按北京风味关联，但不是北京独有。"
+    },
+    {
+      "foodId": "jianbing-guozi",
+      "name": "煎饼果子",
+      "currentRegionLabel": "天津风味",
+      "regionId": "tianjin",
+      "suggestedRegionId": "tianjin",
+      "sourceUrls": [
+        "https://whly.tj.gov.cn/XWDTYXWZX6562/MTJJ8464/202511/t20251104_7169581.html"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "维持现有地区风味关联；不宣称唯一发源地。"
+    },
+    {
+      "foodId": "ludagun",
+      "name": "驴打滚",
+      "currentRegionLabel": "京津风味",
+      "regionId": "beijing",
+      "suggestedRegionId": "beijing",
+      "sourceUrls": [
+        "https://japanese.beijing.gov.cn/livinginbeijing/dining/202011/t20201120_2141472.html"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "北京政府多语种页明确传统北京糕点，建议北京风味；京津章节不是一个省级地区。"
+    },
+    {
+      "foodId": "kaolengmian",
+      "name": "烤冷面",
+      "currentRegionLabel": "东北风味",
+      "regionId": null,
+      "suggestedRegionId": "heilongjiang",
+      "sourceUrls": [
+        "https://www.hljms.gov.cn/mss/c100672/202509/c06_340488.shtml",
+        "https://www.jixi.gov.cn/jixi/c101259/202504/c06_329216.shtml"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "密山市商务和外事局报道当地烤冷面大赛和铁板煎烤演变；建议密山烤冷面/黑龙江密山风味。不能凭东北章节一次计三省。"
+    },
+    {
+      "foodId": "niandoubao",
+      "name": "黏豆包",
+      "currentRegionLabel": "东北风味",
+      "regionId": null,
+      "suggestedRegionId": null,
+      "sourceUrls": [
+        "https://www.gojilin.gov.cn/songyuan/2021/11/12/c_8127.htm",
+        "https://gxt.hlj.gov.cn/gxt/c107067/202411/c00_31788469.shtml"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "官方资料同时支持吉林和黑龙江常见；保持东北风味或指定亚沟/黑龙江版本，不能拿它无依据填辽宁覆盖。"
+    },
+    {
+      "foodId": "jianfen",
+      "name": "吉林煎粉",
+      "currentRegionLabel": "吉林市风味",
+      "regionId": "jilin",
+      "suggestedRegionId": "jilin",
+      "sourceUrls": [
+        "https://whhlyt.jl.gov.cn/ztzl/jlslyxlhxj/gdxl/jls/jls_424340/202507/t20250704_9273085.html"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "吉林文旅资料明确吉林城市代表性美食；建议吉林市煎粉。网页全文获取异常，本轮已核实官方搜索摘述。"
+    },
+    {
+      "foodId": "roujiamo",
+      "name": "肉夹馍",
+      "currentRegionLabel": "陕西风味",
+      "regionId": "shaanxi",
+      "suggestedRegionId": "shaanxi",
+      "sourceUrls": [
+        "https://www.nq.gov.cn/nqzd/nqztzl/rdzl/spaq/202512/1c41b8d6d7024372be3edead42296b06.shtml"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "维持现有地区风味关联；不宣称唯一发源地。"
+    },
+    {
+      "foodId": "liangpi",
+      "name": "凉皮",
+      "currentRegionLabel": "陕西风味",
+      "regionId": "shaanxi",
+      "suggestedRegionId": "shaanxi",
+      "sourceUrls": [
+        "https://sxwjw.shaanxi.gov.cn/hdjl/dczj/202511/P020251103589745415792.pdf"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "维持现有地区风味关联；不宣称唯一发源地。"
+    },
+    {
+      "foodId": "yangrouchuan",
+      "name": "羊肉串",
+      "currentRegionLabel": "西北风味",
+      "regionId": null,
+      "suggestedRegionId": null,
+      "sourceUrls": [
+        "https://www.xjyt.gov.cn/changyou/chi/2021-06-07/249.html",
+        "https://www.shandan.gov.cn/gysd/whly/sdms/tc/202601/t20260113_1498124.html"
+      ],
+      "sourceStatus": "new_xinjiang_source_verified_old_gansu_link_not_dish_evidence",
+      "recommendation": "目前名称和标签仅西北，不能计新疆或甘肃。原链接标题为山丹羊，未取得支撑串食省归属的内容；可在明确新疆式做法后改标新疆风味，新疆于田官方烤肉资料可作新依据。新增馕已保证新疆，无需强行归省。"
+    },
+    {
+      "foodId": "dandanmian",
+      "name": "担担面",
+      "currentRegionLabel": "四川风味",
+      "regionId": "sichuan",
+      "suggestedRegionId": "sichuan",
+      "sourceUrls": [
+        "https://scdfz.sc.gov.cn/upload/main/contentmanage/article/file/201701161555421063.pdf"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "维持现有地区风味关联；不宣称唯一发源地。"
+    },
+    {
+      "foodId": "hongyou-chaoshou",
+      "name": "红油抄手",
+      "currentRegionLabel": "四川风味",
+      "regionId": "sichuan",
+      "suggestedRegionId": "sichuan",
+      "sourceUrls": [
+        "https://scdfz.sc.gov.cn/upload/main/contentmanage/article/file/201701161555421063.pdf",
+        "https://lzhbwg.mofcom.gov.cn/edi_ecms_web_front/thb/detail/8236b3b91b554e27b8120caa19bd4f47"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "维持现有地区风味关联；不宣称唯一发源地。"
+    },
+    {
+      "foodId": "xianhuabing",
+      "name": "鲜花饼",
+      "currentRegionLabel": "云南风味",
+      "regionId": "yunnan",
+      "suggestedRegionId": "yunnan",
+      "sourceUrls": [
+        "https://yaoan.gov.cn/info/10573/506264.htm",
+        "https://industry.shqp.gov.cn/industry/yqdt/20241216/1221935.html"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "维持现有地区风味关联；不宣称唯一发源地。"
+    },
+    {
+      "foodId": "reganmian",
+      "name": "热干面",
+      "currentRegionLabel": "武汉风味",
+      "regionId": "hubei",
+      "suggestedRegionId": "hubei",
+      "sourceUrls": [
+        "https://wlt.hubei.gov.cn/bmdt/ztzl/zcwdk/ywzsk/ly/202312/t20231201_4982778.shtml"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "维持现有地区风味关联；不宣称唯一发源地。"
+    },
+    {
+      "foodId": "choudoufu",
+      "name": "臭豆腐",
+      "currentRegionLabel": "长沙风味",
+      "regionId": "hunan",
+      "suggestedRegionId": "hunan",
+      "sourceUrls": [
+        "https://lzhbwg.mofcom.gov.cn/edi_ecms_web_front/thb/detail/1d4ee9a486224861bab1199e81d1c4a2"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "维持现有地区风味关联；不宣称唯一发源地。"
+    },
+    {
+      "foodId": "hulatang",
+      "name": "胡辣汤",
+      "currentRegionLabel": "河南风味",
+      "regionId": "henan",
+      "suggestedRegionId": "henan",
+      "sourceUrls": [
+        "https://www.zhengzhou.gov.cn/view43/6634544.jhtml"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "维持现有地区风味关联；不宣称唯一发源地。"
+    },
+    {
+      "foodId": "changfen",
+      "name": "肠粉",
+      "currentRegionLabel": "广东风味",
+      "regionId": "guangdong",
+      "suggestedRegionId": "guangdong",
+      "sourceUrls": [
+        "https://com.gd.gov.cn/attachment/0/513/513488/4095266.pdf",
+        "https://www.discoverhongkong.com/tc/food-and-drink/must-try-street-food-in-hong-kong.html"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "维持现有地区风味关联；不宣称唯一发源地。"
+    },
+    {
+      "foodId": "shuangpinai",
+      "name": "双皮奶",
+      "currentRegionLabel": "广东顺德风味",
+      "regionId": "guangdong",
+      "suggestedRegionId": "guangdong",
+      "sourceUrls": [
+        "https://lzhbwg.mofcom.gov.cn/edi_ecms_web_front/thb/detail/d406439d2f2b40d4b87319f20037061d"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "维持现有地区风味关联；不宣称唯一发源地。"
+    },
+    {
+      "foodId": "qingbuliang",
+      "name": "清补凉",
+      "currentRegionLabel": "海南风味",
+      "regionId": "hainan",
+      "suggestedRegionId": "hainan",
+      "sourceUrls": [
+        "https://en.hainan.gov.cn/englishsite/oinf/202506/ecb3fc9674f947c1a495aaa16e94478d.shtml?ddtab=true"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "维持现有地区风味关联；不宣称唯一发源地。"
+    },
+    {
+      "foodId": "jidanzi",
+      "name": "鸡蛋仔",
+      "currentRegionLabel": "香港风味",
+      "regionId": "hongkong",
+      "suggestedRegionId": "hongkong",
+      "sourceUrls": [
+        "https://www.discoverhongkong.com/tc/food-and-drink/must-try-street-food-in-hong-kong.html"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "维持现有地区风味关联；不宣称唯一发源地。"
+    },
+    {
+      "foodId": "fenglisu",
+      "name": "凤梨酥",
+      "currentRegionLabel": "台湾风味",
+      "regionId": "taiwan",
+      "suggestedRegionId": "taiwan",
+      "sourceUrls": [
+        "https://www.taiwan.net.tw/m1.aspx?sNo=0020552",
+        "https://child.taiwan.net.tw/0000000046.htm"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "台湾观光署中文页面可正常检索并描述凤梨酥；原英文链接本轮无法读取，建议改用已核实中文来源。"
+    },
+    {
+      "foodId": "portuguese-egg-tart",
+      "name": "葡式蛋挞",
+      "currentRegionLabel": "澳门风味",
+      "regionId": "macao",
+      "suggestedRegionId": "macao",
+      "sourceUrls": [
+        "https://www.macaotourism.gov.mo/zh-hant/dining/taste-of-macao/macanese-and-portuguese-dishes",
+        "https://content.macaotourism.gov.mo/uploads/mgto_brouchures/13630ce2713055a8003b4666ef9a4b705d679958.pdf"
+      ],
+      "sourceStatus": "verified_official_excerpt_or_page",
+      "recommendation": "澳门旅游局资料与官方旅游手册支持当地葡挞；原一般菜式网页抓取缺段，官方手册已检索确认。"
+    }
+  ],
+  "coverageAssessment": {
+    "current24ExplicitRegionLabelAssociations": [
+      "beijing",
+      "guangdong",
+      "hainan",
+      "henan",
+      "hongkong",
+      "hubei",
+      "hunan",
+      "jilin",
+      "macao",
+      "shaanxi",
+      "shanghai",
+      "sichuan",
+      "taiwan",
+      "tianjin",
+      "yunnan"
+    ],
+    "current24ExplicitAssociationCount": 15,
+    "extraSixAreVarietyNotSixNewRegions": true,
+    "candidate48AssociationRegionsIfHeilongjiangLocalizationAdopted": [
+      "anhui",
+      "beijing",
+      "chongqing",
+      "fujian",
+      "gansu",
+      "guangdong",
+      "guangxi",
+      "guizhou",
+      "hainan",
+      "hebei",
+      "heilongjiang",
+      "henan",
+      "hongkong",
+      "hubei",
+      "hunan",
+      "inner-mongolia",
+      "jiangsu",
+      "jiangxi",
+      "jilin",
+      "liaoning",
+      "macao",
+      "ningxia",
+      "qinghai",
+      "shaanxi",
+      "shandong",
+      "shanghai",
+      "shanxi",
+      "sichuan",
+      "taiwan",
+      "tianjin",
+      "tibet",
+      "xinjiang",
+      "yunnan",
+      "zhejiang"
+    ],
+    "candidate48AssociationRegionCount": 34,
+    "conditions": [
+      "将现有烤冷面显示关联收窄为黑龙江密山，才补入黑龙江。",
+      "辽宁由沈阳鸡架覆盖，不能靠黏豆包任意归省。",
+      "新疆由馕覆盖，泛西北羊肉串不参与省份分母。",
+      "这里只核实饮食关联，不等于48味模型已验收，也不是34个地区独有菜品认证。"
+    ]
+  },
+  "priorityCorrections": [
+    {
+      "foodId": "mashu",
+      "proposedDisplayName": "泉州花生麻糍",
+      "coordinatorDecision": "已计划采用",
+      "reason": "泛麻薯不是福建专属；外裹花生芝麻粉有一手依据，黑芝麻内芯不是已核实固定传统。"
+    },
+    {
+      "foodId": "zanba",
+      "classification": "地方风味试吃/主食",
+      "coordinatorDecision": "已计划采用",
+      "reason": "官方资料将糌粑定义为主食，不能写成西藏独有街头小吃。"
+    },
+    {
+      "foodId": "maodoufu",
+      "coordinatorDecision": "熟品避免明显白毛，完成图后定向检查",
+      "reason": "白毛对应发酵坯；熟品局部毛绒边缘未核实。"
+    },
+    {
+      "foodId": "niangpi",
+      "reason": "与陕西凉皮同类近似，需明确兰州版及宽厚皮条/面筋等差异，不能只换色。"
+    },
+    {
+      "foodId": "lvrou-huoshao",
+      "reason": "已核实保定标准圆坯与冻结长方造型不同；长方形若作河间版，本轮形状一手证据尚未核实，勿引用保定标准证明。"
+    }
+  ],
+  "alternatives": [
+    {
+      "regionId": "tibet",
+      "name": "卡赛",
+      "foodId": "kasai",
+      "sourceUrls": [
+        "https://www.xizang.gov.cn/xwzx_406/bmkx/202502/t20250227_465055.html"
+      ],
+      "sourceFacts": "西藏政府报道将面粉和酥油揉成团、做多种形状并油炸至金黄，作为藏历新年点心。",
+      "visualIdentity": "金黄油炸酥点，可取驴耳/折叠宽带造型，与细丝环束馓子区分。",
+      "adoptionStatus": "仅替代建议，未替换冻结糌粑"
+    }
+  ],
+  "remainingUnverified": [
+    "河间长方火烧的直接一手形制文字/图及青椒固定配料。",
+    "泉州麻糍黑芝麻内芯作为传统固定配方。",
+    "熟毛豆腐可见白毛的具体剩余程度。",
+    "糌粑冻结三块捏痕的固定传统摆盘。",
+    "宁夏馓子的专属环束形制；当前环束制作文字来自新疆。",
+    "碗具颜色、金色碎点、固定7藕孔、面汤红色等为作者选择，不当作地区食品定义。"
+  ]
+}
